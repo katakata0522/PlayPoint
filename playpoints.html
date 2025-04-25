@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Playポイント計算機 v1.9.0 (最終確定版)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /* CSSコードは次の応答でここに挿入 */
+      /* 基本スタイル */
+body {
+  margin: 0;
+  padding: 0.8em;
+  background: #eef;
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 15px;
+}
+
+h1 {
+  color: #333;
+  font-size: 1.6em;
+  margin-bottom: 0.6em;
+}
+
+h2 {
+  color: #333;
+  font-size: 1.3em;
+  margin-bottom: 0.8em;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.3em;
+}
+
+.section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.2em;
+  margin: 0.8em auto;
+  max-width: 480px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  position: relative;
+  text-align: left;
+}
+
+/* フォーム要素スタイル */
+label {
+  display: block;
+  margin-bottom: 1em;
+  color: #555;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
+/* select と input[type=number] に共通のスタイル */
+select,
+input[type="number"] {
+  font-size: 1em;
+  padding: 0.5em;
+  width: 100%; /* 親要素に対して100%幅 */
+  max-width: none; /* 最大幅の制限なし */
+  margin: 0.4em auto 0 auto; /* 上マージン、左右auto、下マージンなし */
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* paddingとborderを幅計算に含める */
+}
+
+/* スピナーボタンの非表示（任意） */
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none; /* Chrome, Safari, Edge, Opera */
+  margin: 0;
+}
+
+
+/* ボタン スタイル */
+button {
+  font-size: 1.05em;
+  padding: 0.6em 1.5em;
+  background: #28a745; /* 基本色 */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 1em;
+  transition: background-color 0.2s ease;
+}
+button:hover:not(:disabled) {
+  background-color: #218838; /* ホバー色 */
+}
+button:disabled {
+  background-color: #aaa; /* 無効時の色 */
+  cursor: not-allowed;
+}
+
+
+/* 計算結果表示エリアの初期スタイル */
+.result {
+  font-weight: bold;
+  margin-top: 1em;    /* 上下のマージンのみ適用 */
+  margin-bottom: 0.8em;
+  font-size: 1.1em;
+  line-height: 1.5;
+  /* 初期状態では枠線、背景、パディングなし */
+}
+
+/* 結果が表示された時のスタイル */
+.result.has-result {
+  padding: 0.8em; /* パディング */
+  background-color: #f8f9fa; /* 背景色 */
+  border-left: 4px solid #28a745; /* 左のアクセント線 */
+  border-radius: 4px; /* 角丸（左の線に合わせる） */
+  text-align: left;
+}
+.result b {
+  color: #007bff; /* 強調テキストの色 */
+}
+
+
+/* タブ切り替えボタン */
+.tab-switch {
+  margin-top: 0.8em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+.tab-switch button {
+  background: #6c757d; /* 非アクティブ色 */
+  margin: 0 0.4em;
+  font-size: 1em;
+  padding: 0.5em 1.2em;
+  font-weight: normal; /* 非アクティブは通常の太さ */
+}
+.tab-switch button:hover:not(.active) {
+   background-color: #5a6268;
+}
+/* アクティブなタブボタンのスタイル */
+.tab-switch button.active {
+  background: #28a745; /* アクティブ色 */
+  font-weight: bold;   /* アクティブは太字 */
+}
+
+
+/* 情報ボタン (?) スタイル */
+.info-btn {
+  background: #aaa;
+  color: white;
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5em;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-align: center;
+  display: inline-block;
+  cursor: pointer;
+  margin-left: 0.4em;
+  position: relative;
+  vertical-align: middle;
+  user-select: none;
+  border: 2px solid transparent; /* フォーカスリング用 */
+}
+/* キーボードフォーカス時のスタイル */
+.info-btn:focus {
+  outline: none; /* デフォルトのアウトライン除去 */
+  border-color: #007bff; /* 青いボーダーでフォーカス表示 */
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* さらに影を追加 (任意) */
+}
+
+
+/* ツールチップボックス スタイル */
+.tooltip-box {
+  display: none; /* 初期非表示 */
+  position: absolute;
+  background: rgba(51, 51, 51, 0.95);
+  color: white;
+  padding: 0.9em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  white-space: pre-line; /* 改行を有効に */
+  max-width: 340px; /* 最大幅 */
+  top: 1.8em; /* ボタンの下に配置 */
+  left: 55%;   /* 少し右寄りに */
+  transform: translateX(-50%); /* 中央寄せ調整 */
+  z-index: 1000; /* 最前面に */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  text-align: left;
+  font-weight: normal;
+  word-break: keep-all;      /* 日本語の改行調整 */
+  overflow-wrap: break-word; /* 長い英単語の折り返し */
+}
+/* ツールチップ表示時のスタイル */
+.tooltip-box.visible {
+  display: block;
+}
+
+/* 警告メッセージ */
+.warning {
+  color: #dc3545; /* bootstrap の danger 色 */
+  font-size: 0.85em;
+  margin-top: 0.8em;
+  padding: 0.6em;
+  background-color: #f8d7da; /* bootstrap の danger 背景色 */
+  border: 1px solid #f5c6cb; /* bootstrap の danger ボーダー色 */
+  border-radius: 4px;
+  line-height: 1.4;
+}
+
+/* コピーボタン */
+#copyButton {
+  background: #007bff; /* 青色 */
+  font-size: 0.9em;
+  margin-left: 0.5em; /* 計算ボタンとの間に余白 */
+}
+#copyButton:hover {
+  background-color: #0056b3;
+}
+    </style>
+</head>
+<body>
+
+    <h1>Playポイント計算機 v1.9.0</h1>
+
+    <div class="tab-switch">
+        <button data-mode="main">通常計算</button>
+        <button data-mode="reverse">逆算モード</button>
+    </div>
+
+    <!-- 通常計算モード -->
+    <div id="mainMode">
+        <div class="section">
+            <h2>ステータス入力</h2>
+
+            <label for="currentStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 現在のステータスの確認方法:<br>
+                    1 Google Play ストアを開く<br>
+                    2 右上のプロフィールアイコンをタップ<br>
+                    3 「Play ポイント」を選択<br>
+                    → あなたのステータス（例：ゴールド）が表示されます<br>
+                    <br>
+                    ※ ステータスにより基本還元率が自動入力されます
+                </div>
+                <select id="currentStatus">
+                    <option value="1.0">ブロンズ</option>
+                    <option value="1.25">シルバー</option>
+                    <option value="1.5" selected>ゴールド</option>
+                    <option value="1.75">プラチナ</option>
+                    <option value="2.0">ダイヤモンド</option>
+                </select>
+            </label>
+
+            <label for="targetStatus">目標ステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ステータスの条件目安:<br>
+                    ・シルバー： 250pt以上<br>
+                    ・ゴールド： 1,000pt以上<br>
+                    ・プラチナ： 3,000pt以上<br>
+                    ・ダイヤモンド： 15,000pt以上
+                </div>
+                <select id="targetStatus"></select>
+            </label>
+
+            <label for="neededPoints">目標までの必要ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 必要ポイントの確認方法:<br>
+                    1 Google Play ストアを開く<br>
+                    2 プロフィールアイコン → Play ポイント<br>
+                    → 「次のステータスまで◯◯pt」と表示されます<br>
+                    → その数値をここに入力してください
+                </div>
+                <input type="number" id="neededPoints" placeholder="例：1728">
+            </label>
+        </div>
+
+        <div class="section">
+            <h2>還元設定</h2>
+
+            <label for="baseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 還元ポイントの入力:<br>
+                    ステータスに応じて自動入力されます<br>
+                    アプリ固有のポイント増量がある場合など<br>
+                    直接編集して最終的な還元率を入力します<br>
+                    <br>
+                    ※ 下の倍率キャンペーンと自動比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="baseRate" value="1.5" step="0.01" min="0.1" max="100">
+            </label>
+
+            <label for="multiplier">キャンペーン倍率（例：3倍）
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ポイント倍率とは<br>
+                    ステータスに応じた還元ポイントが<br>
+                    期間中に増加するキャンペーンの倍率です<br>
+                    (例: ゴールド1.5pt × 3倍 = 4.5pt)<br>
+                    <br>
+                    ※ 上記の基本還元ポイント入力値と比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10">
+            </label>
+
+            <!-- ▼ 修正: 警告文 -->
+            <div class="warning">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+        </div>
+
+        <div class="section">
+            <button id="calculateButton">課金額を計算</button>
+            <div class="result" id="result"></div>
+            <button id="copyButton">コピーする</button>
+        </div>
+    </div>
+
+    <!-- 逆算モード -->
+    <div id="reverseMode" style="display:none;">
+        <div class="section">
+            <h2>逆算モード</h2>
+
+            <label for="amountYen">課金額（円）
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 使った金額からポイント計算:<br>
+                    課金額を入力すると<br>
+                    獲得できるポイント数を予測します
+                </div>
+                <input type="number" id="amountYen" placeholder="例：5000">
+            </label>
+
+            <label for="reverseStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ステータスごとの還元率目安:<br>
+                    ・ブロンズ： 1.0pt / 100円<br>
+                    ・シルバー： 1.25pt / 100円<br>
+                    ・ゴールド： 1.5pt / 100円<br>
+                    ・プラチナ： 1.75pt / 100円<br>
+                    ・ダイヤモンド： 2.0pt / 100円<br>
+                    <br>
+                    ※ ステータス選択で基本還元率が自動入力され<br>
+                       倍率キャンペーン適用の比較に使われます
+                </div>
+                <select id="reverseStatus">
+                    <option value="1.0">ブロンズ</option>
+                    <option value="1.25">シルバー</option>
+                    <option value="1.5" selected>ゴールド</option>
+                    <option value="1.75">プラチナ</option>
+                    <option value="2.0">ダイヤモンド</option>
+                </select>
+            </label>
+
+            <label for="reverseBaseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                     ■ 還元ポイントの入力:<br>
+                     上のステータスに応じて自動入力されます<br>
+                     アプリ固有のポイント増量がある場合など<br>
+                     直接編集して最終的な還元率を入力します<br>
+                    <br>
+                    ※ 下の倍率キャンペーンと自動比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="reverseBaseRate" value="1.5" step="0.01" min="0.1" max="100">
+            </label>
+
+            <label for="reverseMultiplier">キャンペーン倍率
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ポイント倍率とは<br>
+                    ステータスに応じた還元ポイントが<br>
+                    期間中に増加するキャンペーンの倍率です<br>
+                    (例: ゴールド1.5pt × 3倍 = 4.5pt)<br>
+                    <br>
+                    ※ 上記の基本還元ポイント入力値と比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10">
+            </label>
+
+             <!-- ▼ 修正: 警告文 (通常モードと同じもの) -->
+            <div class="warning">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+
+
+            <button id="reverseCalculateButton">ポイントを計算</button>
+            <div class="result" id="reverseResult"></div>
+        </div>
+    </div>
+
+    <script>
+      // JavaScriptコードは後の応答でここに挿入
+      (function() {
+    'use strict'; // Strictモードを有効化
+
+    // --- 定数定義 ---
+    const CLASS_VISIBLE = 'visible';
+    const CLASS_HAS_RESULT = 'has-result';
+    const CLASS_ACTIVE = 'active';
+    const SELECTOR_INFO_BTN = '.info-btn';
+    const SELECTOR_TOOLTIP_BOX = '.tooltip-box';
+    const SELECTOR_RESULT_ERROR = 'span[style*="color: red"]';
+
+    // 目標ステータスと必要ポイント
+    const statusThresholds = { "シルバー": 250, "ゴールド": 1000, "プラチナ": 3000, "ダイヤモンド": 15000 };
+    // ステータスと選択可能な目標
+    const statusPointsMapping = { 1.0: ["シルバー", "ゴールド", "プラチナ", "ダイヤモンド"], 1.25: ["ゴールド", "プラチナ", "ダイヤモンド"], 1.5: ["プラチナ", "ダイヤモンド"], 1.75: ["ダイヤモンド"], 2.0: [] };
+    // ステータス値と基本還元率のマッピング
+    const statusRates = { 1.0: 1.0, 1.25: 1.25, 1.5: 1.5, 1.75: 1.75, 2.0: 2.0 };
+
+
+    // --- DOM要素参照 (初期化時に設定) ---
+    let mainModeDiv, reverseModeDiv, tabButtons,
+        currentStatusSelect, baseRateInput, targetStatusSelect, neededPointsInput, multiplierInput, calculateButton, resultDiv, copyButton,
+        amountYenInput, reverseStatusSelect, reverseBaseRateInput, reverseMultiplierInput, reverseCalculateButton, reverseResultDiv,
+        infoButtons;
+
+    // --- 関数定義 ---
+
+    function getRemainingMonths() {
+        const today = new Date();
+        return 12 - today.getMonth();
+    }
+
+    function updateBaseRateAndTarget() {
+        if (!currentStatusSelect || !baseRateInput || !targetStatusSelect) { console.warn("updateBaseRateAndTarget: DOM要素未初期化"); return; }
+        try {
+            const currentStatusValue = parseFloat(currentStatusSelect.value);
+            const rate = statusRates[currentStatusValue] || 1.0;
+            baseRateInput.value = rate.toFixed(2);
+
+            targetStatusSelect.innerHTML = "";
+            const availableTargets = statusPointsMapping[currentStatusValue] || [];
+            availableTargets.forEach(targetLabel => {
+                const points = statusThresholds[targetLabel];
+                if (points) {
+                    const option = document.createElement("option");
+                    option.value = points;
+                    option.textContent = `${targetLabel} (${points}pt)`;
+                    targetStatusSelect.appendChild(option);
+                }
+            });
+            if (availableTargets.length === 0) {
+                const option = document.createElement("option");
+                option.textContent = "次の目標はありません";
+                option.disabled = true;
+                targetStatusSelect.appendChild(option);
+            }
+        } catch(error) {
+             console.error("updateBaseRateAndTarget 関数でエラー:", error);
+        }
+    }
+
+    function updateReverseBaseRate() {
+        if (!reverseStatusSelect || !reverseBaseRateInput) { console.warn("updateReverseBaseRate: DOM要素未初期化"); return; }
+        try {
+            const selectedStatusValue = parseFloat(reverseStatusSelect.value);
+            const rate = statusRates[selectedStatusValue] || 1.0;
+            reverseBaseRateInput.value = rate.toFixed(2);
+        } catch(error) {
+            console.error("updateReverseBaseRate 関数でエラー:", error);
+        }
+    }
+
+
+    function getValidNumberInput(element, minValue = -Infinity, maxValue = Infinity) {
+        if (!element) { console.error("getValidNumberInput: 要素がnull"); return null; }
+        const value = parseFloat(element.value);
+        if (isNaN(value) || value < minValue || value > maxValue) { return null; }
+        return value;
+    }
+
+     function displayError(targetElement, message) {
+        if (!targetElement) { console.error("displayError: 対象要素がnull"); return; }
+        targetElement.innerHTML = `<span style="color: red;">${message}</span>`;
+        targetElement.classList.add(CLASS_HAS_RESULT);
+     }
+
+     function clearResult(targetElement) {
+         if (!targetElement) return;
+         targetElement.innerHTML = "";
+         targetElement.classList.remove(CLASS_HAS_RESULT);
+     }
+
+    /**
+     * 有利な方の還元率を決定するヘルパー関数
+     * @param {HTMLInputElement} baseRateElement - 編集可能な基本還元率入力要素
+     * @param {HTMLSelectElement} statusSelectElement - ステータス選択要素
+     * @param {HTMLInputElement} multiplierElement - 倍率入力要素
+     * @returns {number|null} 計算に使用する最終的な100円あたりのポイント数、無効な場合はnull
+     */
+    function getFinalRate(baseRateElement, statusSelectElement, multiplierElement) {
+        const editedBaseRate = getValidNumberInput(baseRateElement, 0.01); // 編集された基本レート
+        const multiplier = getValidNumberInput(multiplierElement, 1);      // 倍率
+        const statusValue = parseFloat(statusSelectElement.value);
+        const statusRate = statusRates[statusValue]; // ステータスに基づく標準レート
+
+        // 入力値の基本的な検証
+        if (editedBaseRate === null || multiplier === null || !statusRate) {
+             // statusRate が見つからない場合もエラーとする
+            console.error("getFinalRate: 入力値またはステータスレートが無効です。", {editedBaseRate, multiplier, statusValue, statusRate});
+            return null;
+        }
+
+        // 計算ロジック: より有利な方を適用
+        const rateFromMultiplier = statusRate * multiplier; // ステータスレート * 倍率
+        const finalRate = Math.max(editedBaseRate, rateFromMultiplier); // 編集値と(ステータス*倍率)の高い方
+
+        // console.log(`比較: 入力レート=${editedBaseRate}, ステータス*倍率=${rateFromMultiplier.toFixed(2)}, 採用レート=${finalRate.toFixed(2)}`); // デバッグ用
+
+        return finalRate;
+    }
+
+
+    /**
+     * 通常モードでの必要課金額を計算 (修正版ロジック)
+     */
+    function calculate() {
+        if (!resultDiv) return;
+        clearResult(resultDiv);
+
+        try {
+            const neededPoints = getValidNumberInput(neededPointsInput, 0.01);
+
+            // ▼ 修正: getFinalRateヘルパー関数で最終的なレートを取得
+            const finalRate = getFinalRate(baseRateInput, currentStatusSelect, multiplierInput);
+
+            // 入力値またはレート決定でエラーがあれば終了
+            if (neededPoints === null || finalRate === null) {
+                 displayError(resultDiv, "有効な数値を入力してください");
+                 // getFinalRate内で具体的なエラーはコンソールに出力されているはず
+                 return;
+            }
+
+            // ゼロ除算チェック
+            if (finalRate <= 0) {
+                 displayError(resultDiv, "計算に使用する還元率が0以下です");
+                 return;
+            }
+
+
+            const remainingMonths = getRemainingMonths();
+            if (remainingMonths <= 0) { displayError(resultDiv, "残り月数計算エラー"); return; }
+
+            // ▼ 修正: finalRate を使って計算
+            const totalYenNeeded = (neededPoints / finalRate) * 100;
+            const monthlyYenNeeded = totalYenNeeded / remainingMonths;
+
+            resultDiv.innerHTML = `
+                ◆ 目標までの必要ポイント: <b>${neededPoints.toLocaleString('ja-JP')} pt</b><br>
+                ◆ 合計の必要課金額目安: <b>${Math.ceil(totalYenNeeded).toLocaleString('ja-JP')} 円</b><br>
+                ◆ 月平均 (${remainingMonths}ヶ月): <b>約 ${Math.ceil(monthlyYenNeeded).toLocaleString('ja-JP')} 円/月</b><br>
+                <span style="font-size:0.8em; color:#666;">(適用還元率: ${finalRate.toFixed(2)} pt/100円)</span> <!-- 適用レート表示(任意) -->
+            `;
+            resultDiv.classList.add(CLASS_HAS_RESULT);
+
+        } catch (error) {
+            console.error("計算エラー (通常):", error);
+            displayError(resultDiv, "計算中にエラーが発生しました");
+        }
+    }
+
+    /**
+     * 逆算モードでの獲得ポイントを計算 (修正版ロジック)
+     */
+    function reverseCalculate() {
+        if (!reverseResultDiv) return;
+        clearResult(reverseResultDiv);
+
+        try {
+            const amountYen = getValidNumberInput(amountYenInput, 0);
+
+            // ▼ 修正: getFinalRateヘルパー関数で最終的なレートを取得
+            const finalRate = getFinalRate(reverseBaseRateInput, reverseStatusSelect, reverseMultiplierInput);
+
+            // 入力値またはレート決定でエラーがあれば終了
+            if (amountYen === null || finalRate === null) {
+                displayError(reverseResultDiv, "有効な数値を入力してください");
+                return;
+            }
+
+             // ゼロ除算チェック (通常ありえないが念のため)
+             if (finalRate < 0) { // 0は許容 (0円なら0pt)
+                 displayError(reverseResultDiv, "計算に使用する還元率が負数です");
+                 return;
+             }
+
+
+            // ▼ 修正: finalRate を使って計算
+            const earnedPoints = (amountYen / 100) * finalRate;
+
+            reverseResultDiv.innerHTML = `
+                ◆ 獲得ポイント予測: <b>${earnedPoints.toFixed(2)} pt</b><br>
+                 <span style="font-size:0.8em; color:#666;">(適用還元率: ${finalRate.toFixed(2)} pt/100円)</span> <!-- 適用レート表示(任意) -->
+                 `;
+            reverseResultDiv.classList.add(CLASS_HAS_RESULT);
+
+        } catch (error) {
+            console.error("計算エラー (逆算):", error);
+            displayError(reverseResultDiv, "計算中にエラーが発生しました");
+        }
+    }
+
+    /**
+     * 計算結果をクリップボードにコピー
+     */
+    function copyResult() {
+        if (!resultDiv) return;
+        // 結果表示エリアから、適用レート表示を除いたメインのテキストを取得する改善案
+        let textToCopy = "";
+        const mainResultLines = resultDiv.querySelectorAll('b'); // bタグのテキストを取得
+        if (mainResultLines.length > 0) {
+            textToCopy = Array.from(mainResultLines)
+                             .map(b => b.closest('div').innerText.split(':')[0] + ': ' + b.innerText) // ラベルと値を取得
+                             .join('\n'); // 改行で結合
+        } else {
+            // bタグがない場合（エラーメッセージなど）は従来の取得方法
+             textToCopy = (resultDiv.innerText || resultDiv.textContent || "").trim();
+        }
+
+
+        const isErrorMessage = resultDiv.querySelector(SELECTOR_RESULT_ERROR);
+        if (isErrorMessage || !textToCopy || !resultDiv.classList.contains(CLASS_HAS_RESULT)) {
+            alert("コピーする計算結果がありません");
+            return;
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("計算結果をコピーしました！");
+            }).catch(err => {
+                console.error('クリップボード API コピー失敗:', err);
+                fallbackCopyTextToClipboard(textToCopy);
+            });
+        } else {
+            console.warn("Clipboard API 非対応/非セキュア環境のためFallback実行");
+            fallbackCopyTextToClipboard(textToCopy);
+        }
+    }
+
+    /**
+     * クリップボードコピーのフォールバック (execCommandを使用)
+     * @param {string} text コピーするテキスト
+     */
+    function fallbackCopyTextToClipboard(text) {
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = text;
+        tempTextArea.style.position = 'absolute'; tempTextArea.style.top = '-9999px'; tempTextArea.style.left = '-9999px';
+        document.body.appendChild(tempTextArea);
+        tempTextArea.focus(); tempTextArea.select();
+        try {
+            const successful = document.execCommand('copy');
+            alert(successful ? "計算結果をコピーしました！" : "コピーに失敗しました");
+        } catch (err) {
+            alert("コピー中にエラーが発生しました"); console.error('Fallback copy error:', err);
+        } finally {
+            document.body.removeChild(tempTextArea);
+        }
+    }
+
+    /**
+     * 表示モード（通常計算／逆算）を切り替え
+     * @param {'main' | 'reverse'} mode 表示するモード
+     */
+    function switchMode(mode) {
+        if (!mainModeDiv || !reverseModeDiv || !tabButtons) { console.error("switchMode: DOM要素未初期化"); return; }
+        mainModeDiv.style.display = (mode === 'main') ? 'block' : 'none';
+        reverseModeDiv.style.display = (mode === 'reverse') ? 'block' : 'none';
+        tabButtons.forEach(button => {
+            if (button.dataset.mode === mode) { button.classList.add(CLASS_ACTIVE); }
+            else { button.classList.remove(CLASS_ACTIVE); }
+        });
+    }
+
+    // --- 後半 (ツールチップ関連、イベントリスナー設定、初期化) は次の応答に続きます ---
+        // --- (前半からの続き) ---
+
+    /**
+     * ツールチップの表示／非表示を切り替え
+     * @param {Event} event クリックまたはキーダウンイベント
+     */
+    function toggleTooltip(event) {
+        const btn = event.currentTarget;
+        if (!btn) return;
+        event.preventDefault(); event.stopPropagation();
+        const tooltip = btn.nextElementSibling;
+        if (!tooltip || !tooltip.classList.contains(SELECTOR_TOOLTIP_BOX.substring(1))) { console.error('Tooltip box not found', btn); return; }
+        const isCurrentlyVisible = tooltip.classList.contains(CLASS_VISIBLE);
+        closeAllTooltips(btn); // 自分以外のツールチップを閉じる
+        if (!isCurrentlyVisible) {
+            tooltip.classList.add(CLASS_VISIBLE);
+            btn.setAttribute('aria-expanded', 'true');
+        }
+        // isCurrentlyVisibleがtrueの場合、closeAllTooltipsで既に閉じられているはず
+    }
+
+     /**
+     * 開いているすべてのツールチップを閉じる
+     * @param {HTMLElement} [excludeButton=null] 除外するボタン要素
+     */
+    function closeAllTooltips(excludeButton = null) {
+        document.querySelectorAll(`${SELECTOR_TOOLTIP_BOX}.${CLASS_VISIBLE}`).forEach(box => {
+            const correspondingBtn = box.previousElementSibling;
+            if (excludeButton && correspondingBtn === excludeButton) { return; }
+            box.classList.remove(CLASS_VISIBLE);
+            if (correspondingBtn && correspondingBtn.matches(SELECTOR_INFO_BTN)) {
+                correspondingBtn.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    /**
+     * ドキュメントクリック時の処理（ツールチップ外クリックで閉じる）
+     * @param {Event} event クリックイベント
+     */
+    function handleDocumentClick(event) {
+        if (!event.target.closest(SELECTOR_INFO_BTN) && !event.target.closest(SELECTOR_TOOLTIP_BOX)) {
+            closeAllTooltips();
+        }
+    }
+
+    /**
+     * キーボード操作でツールチップを閉じる (Escapeキー)
+     * @param {KeyboardEvent} event キーダウンイベント
+     */
+    function handleKeyDown(event) {
+        if (event.key === 'Escape') { closeAllTooltips(); }
+    }
+
+
+    // --- 初期化処理 ---
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- DOM要素参照の取得 ---
+        // querySelectorAllはNodeListを返すため、存在しない場合は空のNodeListになる
+        tabButtons = document.querySelectorAll(".tab-switch button");
+        infoButtons = document.querySelectorAll(SELECTOR_INFO_BTN);
+
+        // getElementByIdは存在しない場合nullを返す
+        mainModeDiv = document.getElementById("mainMode");
+        reverseModeDiv = document.getElementById("reverseMode");
+        currentStatusSelect = document.getElementById("currentStatus");
+        baseRateInput = document.getElementById("baseRate");
+        targetStatusSelect = document.getElementById("targetStatus");
+        neededPointsInput = document.getElementById("neededPoints");
+        multiplierInput = document.getElementById("multiplier");
+        calculateButton = document.getElementById("calculateButton");
+        resultDiv = document.getElementById("result");
+        copyButton = document.getElementById("copyButton");
+        amountYenInput = document.getElementById("amountYen");
+        reverseStatusSelect = document.getElementById("reverseStatus");
+        reverseBaseRateInput = document.getElementById("reverseBaseRate"); // 追加
+        reverseMultiplierInput = document.getElementById("reverseMultiplier");
+        reverseCalculateButton = document.getElementById("reverseCalculateButton");
+        reverseResultDiv = document.getElementById("reverseResult");
+
+        // --- イベントリスナー設定 ---
+        // 要素の存在を確認してからリスナーを設定
+        if (currentStatusSelect) currentStatusSelect.addEventListener('change', updateBaseRateAndTarget);
+        else console.warn("初期化: #currentStatus not found.");
+
+        if (calculateButton) calculateButton.addEventListener('click', calculate);
+        else console.warn("初期化: #calculateButton not found.");
+
+        if (copyButton) copyButton.addEventListener('click', copyResult);
+        else console.warn("初期化: #copyButton not found.");
+
+        // ▼ 逆算モードのステータス変更リスナー
+        if (reverseStatusSelect) reverseStatusSelect.addEventListener('change', updateReverseBaseRate);
+        else console.warn("初期化: #reverseStatus not found.");
+
+        if (reverseCalculateButton) reverseCalculateButton.addEventListener('click', reverseCalculate);
+        else console.warn("初期化: #reverseCalculateButton not found.");
+
+        if (tabButtons.length > 0) {
+            tabButtons.forEach(button => {
+                if (button.dataset.mode) {
+                    button.addEventListener('click', () => {
+                         if(typeof switchMode === 'function') switchMode(button.dataset.mode);
+                         else console.error("switchMode is not defined.");
+                    });
+                } else console.warn("初期化: Tab button missing data-mode:", button);
+            });
+        } else console.warn("初期化: Tab buttons not found.");
+
+        if (infoButtons.length > 0) {
+            infoButtons.forEach(button => {
+                 button.addEventListener('click', toggleTooltip);
+                 button.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); toggleTooltip(event);
+                    }
+                 });
+            });
+        } else console.warn("初期化: Info buttons not found.");
+
+        document.addEventListener('click', handleDocumentClick);
+        document.addEventListener('keydown', handleKeyDown);
+
+        // --- 初期表示設定 ---
+        // try...catchで囲み、万が一エラーがあっても他の処理を止めないように
+        try {
+            // nullチェックを追加してより安全に
+            if (currentStatusSelect && baseRateInput && targetStatusSelect) updateBaseRateAndTarget();
+            if (reverseStatusSelect && reverseBaseRateInput) updateReverseBaseRate();
+            if (mainModeDiv && reverseModeDiv && tabButtons) switchMode('main');
+        } catch (error) {
+            console.error("初期化処理中にエラーが発生しました:", error);
+            const body = document.querySelector('body');
+            if (body) {
+                const errorP = document.createElement('p');
+                errorP.style.cssText = 'color:red; font-weight:bold; padding:1em; text-align:center; border:1px solid red; background-color:#fdd;';
+                errorP.textContent = "ページの読み込み中に問題が発生しました。お手数ですが、ページを再読み込みしてください。";
+                body.insertBefore(errorP, body.firstChild);
+            }
+        }
+
+        console.log("ポイント計算機 初期化完了 v1.9.0"); // バージョン番号を更新
+    }); // DOMContentLoaded リスナーここまで
+
+})(); // IIFE 即時実行 ここまで
+    </script>
+
+</body>
+</html>
