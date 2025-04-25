@@ -67,10 +67,12 @@ input[type="number"] {
 /* スピナーボタンの非表示（任意） */
 input[type="number"] {
   -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* ▼ 標準プロパティを追加 */
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none; /* Chrome, Safari, Edge, Opera */
+  appearance: none; /* ▼ 標準プロパティを追加 */
   margin: 0;
 }
 
@@ -833,7 +835,8 @@ button:disabled {
    <footer class="page-footer">
     <p>
       <a href="info.html">使い方・Q&A</a> |
-      <a href="#">ご意見・ご感想</a> <!-- 将来のフィードバックページ用 (今は # で仮置き) -->
+      <a href="https://forms.gle/EkP49ah4586uPgAE8"target="_blank" 
+      rel="noopener noreferrer">ご意見・ご感想</a> 
     </p>
   </footer>
   <!-- ▲▲▲ ここまで新しいフッター ▲▲▲ -->
