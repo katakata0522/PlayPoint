@@ -33,8 +33,19 @@ body {
 h1 {
   color: #333;
   font-size: 1.6em;
-  margin-bottom: 0.6em;
+  margin-bottom: 0.6em; /* h1下のマージン少し調整 */
 }
+
+/* ▼▼▼ 追加: サイト紹介文スタイル ▼▼▼ */
+.site-description {
+  font-size: 0.95em;
+  color: #555;
+  margin: 0.5em auto 1.2em auto; /* 上下マージン調整 */
+  max-width: 500px; /* 幅制限 */
+  line-height: 1.6;
+  text-align: center;
+}
+/* ▲▲▲ 追加: サイト紹介文スタイル ▲▲▲ */
 
 h2 {
   color: #333;
@@ -233,7 +244,7 @@ button:disabled {
   background-color: #0056b3;
 }
 
-/* ▼▼▼ 追加: シェアボタン用スタイル ▼▼▼ */
+/* シェアボタン用スタイル */
 #tweetButton {
   background: #1DA1F2; /* Twitterブルー */
   font-size: 1em; /* 少し小さめに */
@@ -247,13 +258,11 @@ button:disabled {
 #tweetButton:hover {
   background-color: #0c85d0;
 }
-/* ▲▲▲ 追加: シェアボタン用スタイル ▲▲▲ */
 
-/* ▼▼▼ 追加: 非表示用クラス ▼▼▼ */
+/* 非表示用クラス */
 .hidden {
   display: none !important; /* 確実に非表示にする */
 }
-/* ▲▲▲ 追加: 非表示用クラス ▲▲▲ */
 
 /* フッター用スタイル */
 .page-footer {
@@ -290,6 +299,11 @@ button:disabled {
     </div>
 
     <h1>Playポイント計算機 v1.9.0</h1> <!-- バージョンは適宜更新 -->
+
+    <!-- ▼▼▼ 追加: サイト紹介文 ▼▼▼ -->
+    <p class="site-description">現在のステータスから目標達成までの必要課金額の計算ができます！<br>
+        さらに課金額から獲得できるポイントも計算できます！</p>
+    <!-- ▲▲▲ 追加: サイト紹介文 ▲▲▲ -->
 
     <div class="tab-switch">
         <button data-mode="main">通常計算</button>
@@ -386,9 +400,8 @@ button:disabled {
             <button id="calculateButton">課金額を計算</button>
             <div class="result" id="result"></div> <!-- 結果表示エリア -->
             <button id="copyButton">コピーする</button>
-            <!-- ▼▼▼ 追加: シェアボタン (初期非表示) ▼▼▼ -->
+            <!-- シェアボタン (初期非表示) -->
             <button id="tweetButton" class="hidden">結果をXでシェア</button>
-            <!-- ▲▲▲ 追加: シェアボタン ▲▲▲ -->
         </div>
     </div>
 
@@ -476,7 +489,7 @@ button:disabled {
     const CLASS_VISIBLE = 'visible';
     const CLASS_HAS_RESULT = 'has-result';
     const CLASS_ACTIVE = 'active';
-    const CLASS_HIDDEN = 'hidden'; // ▼ 追加
+    const CLASS_HIDDEN = 'hidden';
     const SELECTOR_INFO_BTN = '.info-btn';
     const SELECTOR_TOOLTIP_BOX = '.tooltip-box';
     const SELECTOR_RESULT_ERROR = 'span[style*="color: red"]';
@@ -491,7 +504,7 @@ button:disabled {
 
     // --- DOM要素参照 (初期化時に設定) ---
     let mainModeDiv, reverseModeDiv, tabButtons,
-        currentStatusSelect, baseRateInput, targetStatusSelect, neededPointsInput, multiplierInput, calculateButton, resultDiv, copyButton, tweetButton, // ▼ tweetButton追加
+        currentStatusSelect, baseRateInput, targetStatusSelect, neededPointsInput, multiplierInput, calculateButton, resultDiv, copyButton, tweetButton,
         amountYenInput, reverseStatusSelect, reverseBaseRateInput, reverseMultiplierInput, reverseCalculateButton, reverseResultDiv,
         infoButtons;
 
@@ -517,7 +530,7 @@ button:disabled {
                     const option = document.createElement("option");
                     option.value = points;
                     option.textContent = `${targetLabel} (${points}pt)`;
-                    option.dataset.statusLabel = targetLabel; // ▼ data-status-label を追加
+                    option.dataset.statusLabel = targetLabel; // data-status-label を追加
                     targetStatusSelect.appendChild(option);
                 }
             });
@@ -555,17 +568,17 @@ button:disabled {
         if (!targetElement) { console.error("displayError: 対象要素がnull"); return; }
         targetElement.innerHTML = `<span style="color: red;">${message}</span>`;
         targetElement.classList.add(CLASS_HAS_RESULT);
-        // ▼ エラー時はデータ属性削除 & シェアボタン非表示
+        // エラー時はデータ属性削除 & シェアボタン非表示
         targetElement.removeAttribute('data-required-yen');
         targetElement.removeAttribute('data-target-status-label');
-        if (tweetButton) tweetButton.classList.add(CLASS_HIDDEN);
+        if (tweetButton && targetElement === resultDiv) tweetButton.classList.add(CLASS_HIDDEN);
      }
 
      function clearResult(targetElement) {
          if (!targetElement) return;
          targetElement.innerHTML = "";
          targetElement.classList.remove(CLASS_HAS_RESULT);
-         // ▼ 結果クリア時もデータ属性削除 & シェアボタン非表示
+         // 結果クリア時もデータ属性削除 & シェアボタン非表示
          targetElement.removeAttribute('data-required-yen');
          targetElement.removeAttribute('data-target-status-label');
          if (tweetButton && targetElement === resultDiv) { // 通常モードの結果クリア時のみ
@@ -597,18 +610,16 @@ button:disabled {
      * 通常モードでの必要課金額を計算
      */
     function calculate() {
-        if (!resultDiv || !targetStatusSelect) return; // targetStatusSelectもチェック
-        clearResult(resultDiv); // シェアボタンもここで非表示になる
+        if (!resultDiv || !targetStatusSelect) return;
+        clearResult(resultDiv);
 
         try {
             const neededPoints = getValidNumberInput(neededPointsInput, 0.01);
             const finalRate = getFinalRate(baseRateInput, currentStatusSelect, multiplierInput);
-
-            // ▼ 目標ステータス名を取得 (選択されているoptionから)
             const selectedTargetOption = targetStatusSelect.options[targetStatusSelect.selectedIndex];
-            const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null; // data-status-labelから取得
+            const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
 
-            if (neededPoints === null || finalRate === null || !targetStatusLabel) { // targetStatusLabelもチェック
+            if (neededPoints === null || finalRate === null || !targetStatusLabel) {
                  displayError(resultDiv, "有効な数値を入力し、目標ステータスを選択してください");
                  return;
             }
@@ -620,7 +631,7 @@ button:disabled {
             const remainingMonths = getRemainingMonths();
             if (remainingMonths <= 0) { displayError(resultDiv, "残り月数計算エラー"); return; }
 
-            const totalYenNeeded = Math.ceil((neededPoints / finalRate) * 100); // 計算結果は切り上げ
+            const totalYenNeeded = Math.ceil((neededPoints / finalRate) * 100);
             const monthlyYenNeeded = Math.ceil(totalYenNeeded / remainingMonths);
 
             resultDiv.innerHTML = `
@@ -631,7 +642,7 @@ button:disabled {
             `;
             resultDiv.classList.add(CLASS_HAS_RESULT);
 
-            // ▼ 計算成功時にデータ属性を設定 & シェアボタン表示
+            // 計算成功時にデータ属性を設定 & シェアボタン表示
             resultDiv.dataset.requiredYen = totalYenNeeded;
             resultDiv.dataset.targetStatusLabel = targetStatusLabel;
             if (tweetButton) tweetButton.classList.remove(CLASS_HIDDEN);
@@ -687,6 +698,7 @@ button:disabled {
             textToCopy = Array.from(mainResultLines)
                              .map(b => {
                                  const labelNode = b.previousSibling;
+                                 // previousSiblingがテキストノードの場合と要素ノードの場合があるため、textContentで取得
                                  const labelText = labelNode ? labelNode.textContent.trim().split(':')[0] : '';
                                  return labelText ? `${labelText}: ${b.innerText}` : b.innerText;
                              })
@@ -744,7 +756,7 @@ button:disabled {
             if (button.dataset.mode === mode) { button.classList.add(CLASS_ACTIVE); }
             else { button.classList.remove(CLASS_ACTIVE); }
         });
-        // ▼ モード切替時に通常モードの結果表示エリアをクリア
+        // モード切替時に通常モードの結果表示エリアをクリア
         if (resultDiv) clearResult(resultDiv);
     }
 
@@ -795,17 +807,17 @@ button:disabled {
         if (event.key === 'Escape') { closeAllTooltips(); }
     }
 
-        // ▼▼▼ 修正: シェアボタンの処理 (サイトURL追加版) ▼▼▼
-        function shareOnTwitter() {
+    /**
+     * シェアボタンの処理 (サイトURL追加版)
+     */
+    function shareOnTwitter() {
         if (!resultDiv || !resultDiv.classList.contains(CLASS_HAS_RESULT)) {
             console.warn("シェアする計算結果がありません。");
             return;
         }
-        // データ属性から情報を取得
         const requiredYenRaw = resultDiv.dataset.requiredYen;
         const targetStatusLabel = resultDiv.dataset.targetStatusLabel;
 
-        // データが存在し、エラーでないことを確認
         if (!requiredYenRaw || !targetStatusLabel || resultDiv.querySelector(SELECTOR_RESULT_ERROR)) {
             console.error("シェアに必要な情報が見つからないか、結果がエラーです。");
             alert("シェアできる有効な計算結果がありません。");
@@ -813,26 +825,17 @@ button:disabled {
         }
 
         try {
-            // 金額を数値に変換し、フォーマット
             const requiredYen = parseFloat(requiredYenRaw);
             if (isNaN(requiredYen)) {
                 throw new Error("金額データが無効です。");
             }
             const formattedYen = requiredYen.toLocaleString('ja-JP');
+            const siteUrl = "https://katakata0522.github.io/PlayPoint/playpoints.html"; // サイトURL
 
-            // ★★★ サイトのURLを定義 ★★★
-            const siteUrl = "https://katakata0522.github.io/PlayPoint/playpoints.html"; // あなたのサイトURL
+            const tweetText = `【Play ポイント試算結果】\n${targetStatusLabel}ステータス到達まで\n${formattedYen}円課金が必要です。\n\n#Playポイント計算してみた\n#GooglePlay\n\n${siteUrl}`;
 
-            // ツイート文を作成 (末尾にサイトURLを追加)
-            const tweetText = `【Play ポイント試算結果】\n${targetStatusLabel}ステータス到達まで\n${formattedYen}円課金が必要です。\n\n#Playポイント計算してみた\n#GooglePlay\n\n${siteUrl}`; // ← ここにURLを追加
-
-            // URLエンコード
             const encodedText = encodeURIComponent(tweetText);
-
-            // Twitterの投稿画面URL作成
             const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
-
-            // 新しいタブで開く
             window.open(twitterUrl, '_blank');
 
         } catch (error) {
@@ -840,7 +843,6 @@ button:disabled {
             alert("ツイートの準備中にエラーが発生しました。");
         }
     }
-    // ▲▲▲ 修正: シェアボタンの処理 (サイトURL追加版) ▲▲▲
 
 
     // --- 初期化処理 ---
@@ -858,7 +860,7 @@ button:disabled {
         calculateButton = document.getElementById("calculateButton");
         resultDiv = document.getElementById("result");
         copyButton = document.getElementById("copyButton");
-        tweetButton = document.getElementById("tweetButton"); // ▼ tweetButton取得
+        tweetButton = document.getElementById("tweetButton");
         amountYenInput = document.getElementById("amountYen");
         reverseStatusSelect = document.getElementById("reverseStatus");
         reverseBaseRateInput = document.getElementById("reverseBaseRate");
@@ -873,7 +875,7 @@ button:disabled {
         else console.warn("初期化: #calculateButton not found.");
         if (copyButton) copyButton.addEventListener('click', copyResult);
         else console.warn("初期化: #copyButton not found.");
-        if (tweetButton) tweetButton.addEventListener('click', shareOnTwitter); // ▼ tweetButtonリスナー追加
+        if (tweetButton) tweetButton.addEventListener('click', shareOnTwitter);
         else console.warn("初期化: #tweetButton not found.");
         if (reverseStatusSelect) reverseStatusSelect.addEventListener('change', updateReverseBaseRate);
         else console.warn("初期化: #reverseStatus not found.");
@@ -907,7 +909,7 @@ button:disabled {
             if (currentStatusSelect && baseRateInput && targetStatusSelect) updateBaseRateAndTarget();
             if (reverseStatusSelect && reverseBaseRateInput) updateReverseBaseRate();
             if (mainModeDiv && reverseModeDiv && tabButtons) switchMode('main');
-            if (tweetButton) tweetButton.classList.add(CLASS_HIDDEN); // ▼ 初期は非表示
+            if (tweetButton) tweetButton.classList.add(CLASS_HIDDEN); // 初期は非表示
         } catch (error) {
             console.error("初期化処理中にエラーが発生しました:", error);
             const body = document.querySelector('body');
@@ -918,7 +920,7 @@ button:disabled {
                 body.insertBefore(errorP, body.firstChild);
             }
         }
-        console.log("ポイント計算機 初期化完了 (SNSシェア機能付き)"); // メッセージ更新
+        console.log("ポイント計算機 初期化完了 (SNSシェア/紹介文付き)"); // メッセージ更新
     }); // DOMContentLoaded リスナーここまで
 
 })(); // IIFE 即時実行 ここまで
