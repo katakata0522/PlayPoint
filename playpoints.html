@@ -79,13 +79,15 @@ input[type="number"] {
   box-sizing: border-box; /* paddingとborderを幅計算に含める */
 }
 
-/* スピナーボタンの非表示（任意） */
+/* スピナーボタンの非表示 */
 input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
+  appearance: none; /* ★ 標準プロパティを追加 */
+  -moz-appearance: textfield; /* Firefox 用 (互換性のため残す) */
 }
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none; /* Chrome, Safari, Edge, Opera */
+  appearance: none; /* ★ 標準プロパティを追加 */
+  -webkit-appearance: none; /* Webkit系ブラウザ用 */
   margin: 0;
 }
 
