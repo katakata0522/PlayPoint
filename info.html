@@ -5,64 +5,70 @@
     <title>あとがき・Q&A - Playポイント計算ツール</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      /* --- info.html スタイル --- */
-
-      /* 基本スタイル (playpoints.html と共通部分) */
       body {
         margin: 0;
         padding: 0.8em;
-        background: #eef; /* 明るい背景 */
+        background: #eef;
         font-family: sans-serif;
         text-align: center;
         font-size: 15px;
       }
 
-      h1 { /* ページタイトル (使い方・Q&A) */
+      .header-links {
+        text-align: right;
+        font-size: 0.85em;
+        margin-bottom: 0.5em;
+      }
+      .header-links a {
+        color: #555;
+        text-decoration: none;
+        margin-left: 1em;
+      }
+      .header-links a:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
         color: #333;
         font-size: 1.6em;
-        margin-bottom: 1em; /* タイトル下のマージン */
-        text-align: center; /* 中央揃え */
+        margin-bottom: 1em;
+        text-align: center;
       }
 
-      /* --- ここから info.html 固有のスタイル調整 --- */
-
-      /* 情報セクション共通スタイル */
-      .section.info-section { /* .section かつ .info-section クラスを持つ要素 */
-        background-color: #fff; /* 白背景 */
-        border: 1px solid #eee; /* 薄い境界線 */
-        border-radius: 8px; /* 角丸 */
-        padding: 1.5em; /* 内側余白 */
-        margin: 1.5em auto; /* セクション間のマージン */
-        max-width: 600px; /* 情報ページは少し幅広にしても良いかも */
+      .section.info-section {
+        background-color: #fff;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 1.5em;
+        margin: 1.5em auto;
+        max-width: 600px;
         box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         text-align: left;
-        font-size: 0.95em; /* 文字サイズ */
-        line-height: 1.7; /* 行間 */
+        font-size: 0.95em;
+        line-height: 1.7;
       }
 
-      .info-section h2 { /* セクション見出し */
+      .info-section h2 {
         font-size: 1.3em;
         color: #333;
-        border-bottom: 2px solid #4a90e2; /* アクセントカラーの下線 */
+        border-bottom: 2px solid #4a90e2;
         padding-bottom: 0.4em;
-        margin-bottom: 1em; /* 見出しと内容の間隔 */
+        margin-bottom: 1em;
       }
 
-      /* Q&Aリストのスタイル */
       #qa-section dl {
         margin-left: 0;
         padding-left: 0;
       }
 
-      #qa-section dt { /* 質問 (Q.) */
+      #qa-section dt {
         font-weight: bold;
-        color: #4a90e2; /* アクセントカラー */
+        color: #4a90e2;
         margin-top: 1.5em;
         margin-bottom: 0.3em;
         position: relative;
-        padding-left: 2em; /* Q. 用スペース */
+        padding-left: 2em;
       }
-      /* 質問の前にQマークを追加 */
       #qa-section dt::before {
           content: "Q.";
           position: absolute;
@@ -72,14 +78,13 @@
           font-weight: bold;
       }
 
-      #qa-section dd { /* 回答 (A.) */
-        margin-left: 2em; /* 質問のインデントに合わせる */
-        padding-left: 2em; /* A. 用スペース */
+      #qa-section dd {
+        margin-left: 2em;
+        padding-left: 2em;
         margin-bottom: 1em;
         color: #555;
         position: relative;
       }
-      /* 回答の前にAマークを追加 */
       #qa-section dd::before {
           content: "A.";
           position: absolute;
@@ -89,14 +94,12 @@
           font-weight: bold;
       }
 
-      /* 感謝とお願い、あとがきセクションの段落スタイル */
       #thanks-section p,
       #about-section p {
         margin-bottom: 1em;
         color: #444;
       }
 
-      /* セクション内のリンク */
       .info-section a {
         color: #007bff;
         text-decoration: none;
@@ -105,7 +108,6 @@
         text-decoration: underline;
       }
 
-      /* 戻るリンクのスタイル (ボタン風) */
       .back-link {
         display: block;
         text-align: center;
@@ -115,11 +117,11 @@
       .back-link a {
         display: inline-block;
         padding: 0.6em 1.5em;
-        background-color: #6c757d; /* 非アクティブなタブの色 */
+        background-color: #6c757d;
         color: white;
         border-radius: 6px;
         text-decoration: none;
-        font-size: 1em; /* 少し調整 */
+        font-size: 1em;
         transition: background-color 0.2s ease;
       }
       .back-link a:hover {
@@ -127,7 +129,6 @@
         text-decoration: none;
       }
 
-      /* フッターのスタイル (playpoints.htmlにも適用すると統一感が出る) */
       .page-footer {
         text-align: center;
         margin-top: 2em;
@@ -139,20 +140,22 @@
       .page-footer a {
         color: #007bff;
         text-decoration: none;
-        margin: 0 0.5em; /* リンク間の左右マージン */
+        margin: 0 0.5em;
       }
       .page-footer a:hover {
         text-decoration: underline;
       }
-
-      /* --- スタイル調整ここまで --- */
     </style>
 </head>
 <body>
 
+    <div class="header-links">
+      <a href="privacy.html" target="_blank">プライバシーポリシー</a>
+      <a href="terms.html" target="_blank">利用規約</a>
+    </div>
+
     <h1>あとがき・Q&A</h1>
 
-    <!-- 1. 感謝とお願いセクション -->
     <div class="section info-section" id="thanks-section">
       <h2>ご利用ありがとうございます！</h2>
       <p>
@@ -162,74 +165,57 @@
       <p>
         「もっとこうだったら使いやすいのに」「こんな機能も欲しい！」などのご意見・ご感想がありましたら、ぜひお聞かせください。<br>
         今後の改善の参考にさせていただきます！<br>
-        <!-- ▼▼▼ 修正: リンクテキストとURL ▼▼▼ -->
         → <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">ご意見・ご感想はこちらから</a>
-        <!-- ▲▲▲ 修正: リンクテキストとURL ▲▲▲ -->
       </p>
       <p>
         これからも、より良いツールを目指して開発を続けていきますので、どうぞよろしくお願いいたします！
       </p>
     </div>
 
-    <!-- 2. Q&Aセクション -->
     <div class="section info-section" id="qa-section">
       <h2>よくある質問 (Q&A)</h2>
       <dl>
         <dt>Q. 月平均の「○ヶ月」って何ですか？</dt>
-        <!-- ▼▼▼ 修正: 改行追加 ▼▼▼ -->
         <dd>A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。</dd>
-        <!-- ▲▲▲ 修正: 改行追加 ▲▲▲ -->
 
         <dt>Q. 例題の「1728」って何ですか？</dt>
         <dd>A. あとがきに書いてあるので暇につぶされそうなら是非お読みになってください。</dd>
 
         <dt>Q. 還元設定の計算はどうなっていますか？</dt>
-        <!-- ▼▼▼ 修正: 改行追加 ▼▼▼ -->
         <dd>A. 「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を内部で比較し、より獲得ポイント数が多くなる方（有利な方）の還元率を自動的に適用して計算しています。<br>これは実際のGoogle Play ストアの仕様と同様で、両方の特典が同時に適用されることはありません。</dd>
-        <!-- ▲▲▲ 修正: 改行追加 ▲▲▲ -->
-
-        <!-- 他のQ&Aがあればここに追加 -->
       </dl>
     </div>
 
-    <!-- 3. あとがきセクション -->
     <div class="section info-section" id="about-section">
       <h2>あとがき・開発経緯</h2>
-      <!-- ▼▼▼ 修正: 改行追加 ▼▼▼ -->
       <p>
         これを作ろうと思ったきっかけはニコニコ超会議でした。<br>ニコ超にはGoogle Playブースというものがあり、プラチナ会員になるとそこで2000プレイポイントがもらえます。<br>一般入場が3800円なので半分返ってくる計算です。（WAO!クレイジー!）<br>
         私はゴールドステータスだったのでどれくらい課金すればプラチナになれるか計算ツールを調べましたが全く出てこず...<br>それならば作ってしまえとできたのがこのサイト（アプリ）。<br>
         例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>キャンペーンなしだとおおよそ85,000円です。(WAO!ファンタスティック!)<br>
         そんなノリと勢いでできたこのサイトが、あなたの生活をほんの少し豊かにすることを願っています。<br>ここまでお読みいただきありがとうございました！
       </p>
-      <!-- ▲▲▲ 修正: 改行追加 ▲▲▲ -->
       <p>
         開発者: かたかた
       </p>
       <p>
-        最終更新日: 2025年4月29日 (v1.9.2) <!-- 日付は適宜更新してください -->
+        最終更新日: 2025年4月29日 (v1.9.2)
       </p>
     </div>
-　
-    <!-- 計算ツールへ戻るリンク -->
+
     <div class="back-link">
-        <!-- playpoints.html のファイル名を index.html に変更した場合は href="index.html" または href="./" にする -->
         <a href="index.html">← 計算ツールに戻る</a>
     </div>
- <a href="about-playpoints.html">Playポイントって何？</a> |
 
-    
-    <!-- ▼▼▼ 追加: フッター (コピーライトなど) ▼▼▼ -->
     <footer class="page-footer">
       <p>
-        <a href="privacy.html" target="_blank">プライバシーポリシー</a> |
-        <a href="terms.html" target="_blank">利用規約</a>
+        <a href="info.html">あとがき・Q&A</a> |
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform" target="_blank">ご意見・ご感想</a> |
+        <a href="about-playpoints.html">Playポイントって何？</a>
       </p>
       <p>
         © 2025 PlayPoint Simulation Tool
       </p>
     </footer>
-    <!-- ▲▲▲ 追加: フッター ▲▲▲ -->
 
 </body>
 </html>
