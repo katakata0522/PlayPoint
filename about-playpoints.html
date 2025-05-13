@@ -8,12 +8,25 @@
     body {
       font-family: sans-serif;
       background: #eef;
-      padding: 2em;
-      max-width: 700px;
-      margin: auto;
+      padding: 1em;
+      margin: 0;
       line-height: 1.7;
       font-size: 16px;
       color: #333;
+      text-align: center;
+    }
+    .header-links {
+      text-align: right;
+      margin: 0.5em 1em 0 0;
+      font-size: 0.8em;
+    }
+    .header-links a {
+      color: #555;
+      text-decoration: none;
+      margin-left: 1em;
+    }
+    .header-links a:hover {
+      text-decoration: underline;
     }
     h1, h2 {
       color: #222;
@@ -34,6 +47,7 @@
     }
     ul {
       padding-left: 1.2em;
+      text-align: left;
     }
     ul li {
       margin-bottom: 0.5em;
@@ -51,17 +65,56 @@
       border-radius: 10px;
       padding: 1.5em;
       margin: 1.5em auto;
+      max-width: 700px;
       box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      text-align: left;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 1.5em;
+    }
+    .back-link a {
+      display: inline-block;
+      padding: 0.6em 1.5em;
+      background-color: #6c757d;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1em;
+      transition: background-color 0.2s ease;
+    }
+    .back-link a:hover {
+      background-color: #5a6268;
+      text-decoration: none;
+    }
+    .page-footer {
+      text-align: center;
+      margin-top: 2em;
+      padding-top: 1em;
+      border-top: 1px solid #ddd;
+      font-size: 0.9em;
+      color: #666;
+    }
+    .page-footer a {
+      color: #007bff;
+      text-decoration: none;
+      margin: 0 0.5em;
+    }
+    .page-footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-    <!-- ヘッダーリンク -->
+
+  <!-- ヘッダーリンク -->
   <div class="header-links">
     <a href="privacy.html" target="_blank">プライバシーポリシー</a> |
     <a href="terms.html" target="_blank">利用規約</a>
   </div>
-  
+
   <div class="section">
     <h1>💡 Playポイントって何？</h1>
     <p>
@@ -123,17 +176,17 @@
       <li>🎪 ニコニコ超会議のGoogle Playブースで会員限定プレゼントに出会えるチャンスも！</li>
       <li>🎉 ポイントアップウィークの「倍率」がゴールドとは段違い！</li>
       <li>👑 限定イベント・先行体験・抽選で特製グッズなど、VIP感たっぷりの特典もあり！</li>
-      <li>※あくまで今までの事例や傾向からの特典であり、毎年や常時それらのものが提供されるとは限りません。</li>
+      ※今までの事例や傾向からの特典であり、毎年や常時それらのものが提供されるとは限りません。ご了承ください。
     </ul>
 
     <h2>🔗 公式情報もチェック！</h2>
     <p>
       👉 <a href="https://play.google.com/about/playpoints/" target="_blank" rel="noopener noreferrer">
-        Google公式であなたのPlayポイントやお得なキャンペーンをチェックしよう🔍</a>
+         Google公式であなたのPlayポイントやお得なキャンペーンをチェックしよう🔍</a>
     </p>
   </div>
 
- <!-- 計算ツールへ戻るリンク -->
+  <!-- 計算ツールへ戻るリンク -->
   <div class="back-link">
     <a href="index.html">← 計算ツールに戻る</a>
   </div>
@@ -147,6 +200,6 @@
     </p>
     <p>© 2025 PlayPoint Simulation Tool</p>
   </footer>
-  
+
 </body>
 </html>
