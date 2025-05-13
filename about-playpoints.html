@@ -7,14 +7,17 @@
   <style>
     body {
       font-family: sans-serif;
-      background: #f9f9f9;
+      background: #eef;
       padding: 2em;
       max-width: 700px;
       margin: auto;
       line-height: 1.7;
+      font-size: 16px;
+      color: #333;
     }
     h1, h2 {
-      color: #333;
+      color: #222;
+      margin-top: 1.5em;
     }
     table {
       width: 100%;
@@ -27,85 +30,101 @@
       text-align: center;
     }
     th {
-      background-color: #eee;
+      background-color: #e0efff;
     }
     ul {
       padding-left: 1.2em;
+    }
+    ul li {
+      margin-bottom: 0.5em;
     }
     a {
       color: #0077cc;
       text-decoration: none;
     }
+    a:hover {
+      text-decoration: underline;
+    }
+    .section {
+      background-color: #fff;
+      border: 1px solid #cce0ff;
+      border-radius: 10px;
+      padding: 1.5em;
+      margin: 1.5em auto;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
   </style>
 </head>
 <body>
-  <h1>💡 Playポイントって何？</h1>
+  <div class="section">
+    <h1>💡 Playポイントって何？</h1>
+    <p>
+      Google Playポイントは、Google Play ストアでの購入に応じてポイントが貯まる、Google公式のポイントプログラム。
+      貯めたポイントはゲームアイテムやクーポンなどに使えるため、知っておくとお得な制度です！
+    </p>
 
-  <p>
-    Google Playポイントは、Google Play ストアでの購入に応じてポイントが貯まる、Google公式のポイントプログラム。
-    貯めたポイントはゲームアイテムやクーポンなどに使えるため、知っておくとお得な制度です！
-  </p>
+    <h2>🎮 ポイントの貯め方</h2>
+    <ul>
+      <li>アプリやゲームの課金</li>
+      <li>映画・書籍・音楽の購入</li>
+      <li>YouTube Premiumなどの定期購入</li>
+      <li>期間限定のポイント増量キャンペーン</li>
+    </ul>
 
-  <h2>🎮 ポイントの貯め方</h2>
-  <ul>
-    <li>アプリやゲームの課金</li>
-    <li>映画・書籍・音楽の購入</li>
-    <li>YouTube Premiumなどの定期購入</li>
-    <li>期間限定のポイント増量キャンペーン</li>
-  </ul>
+    <h2>💎 ステータス制度</h2>
+    <p>1年間の獲得ポイントに応じて、5つのランクに分かれます。</p>
 
-  <h2>💎 ステータス制度</h2>
-  <p>1年間の獲得ポイントに応じて、5つのランクに分かれます。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>ランク</th>
+          <th>条件例（年間獲得pt）</th>
+          <th>主な特典</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ブロンズ</td>
+          <td>初期ランク</td>
+          <td>通常ポイント付与</td>
+        </tr>
+        <tr>
+          <td>シルバー</td>
+          <td>250pt~</td>
+          <td>ポイント還元率up</td>
+        </tr>
+        <tr>
+          <td>ゴールド</td>
+          <td>1,000pt〜</td>
+          <td>ポイント還元倍率さらにUP</td>
+        </tr>
+        <tr>
+          <td>プラチナ</td>
+          <td>3,000pt〜</td>
+          <td>ポイント還元率さらにさらにup、限定キャンペーン参加、特別抽選</td>
+        </tr>
+        <tr>
+          <td>ダイヤモンド</td>
+          <td>15,000pt〜</td>
+          <td>還元率最大＋超レア特典</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ランク</th>
-        <th>条件例（年間獲得pt）</th>
-        <th>主な特典</th>
-      </tr>
-    </thead>
-    <tbody>
-    　 <tr>
-        <td>ブロンズ</td>
-        <td>初期ランク</td>
-        <td>通常ポイント付与</td>
-      </tr>
-      <tr>
-        <td>シルバー</td>
-        <td>250pt~</td>
-        <td>ポイント還元率up</td>
-      </tr>
-      <tr>
-        <td>ゴールド</td>
-        <td>1,000pt〜</td>
-        <td>ポイント還元倍率さらにUP</td>
-      </tr>
-      <tr>
-        <td>プラチナ</td>
-        <td>4,000pt〜</td>
-        <td>ポイント還元率さらにさらにup、限定キャンペーン参加、特別抽選</td>
-      </tr>
-      <tr>
-        <td>ダイヤモンド</td>
-        <td>15,000pt〜</td>
-        <td>還元率最大＋超レア特典</td>
-      </tr>
-    </tbody>
-  </table>
+    <h2>🎁 さらに…プラチナ・ダイヤモンド会員になると？</h2>
+    <ul>
+      <li>🕵️‍♂️ 専任のサポートエージェントがあなたを完全サポート！？</li>
+      <li>🎪 ニコニコ超会議のGoogle Playブースで会員限定プレゼントに出会えるチャンスも！</li>
+      <li>🎉 ポイントアップウィークの「倍率」がゴールドとは段違い！</li>
+      <li>👑 限定イベント・先行体験・抽選で特製グッズなど、VIP感たっぷりの特典もあり！</li>
+      <li>※あくまで今までの事例や傾向からの特典であり、毎年や常時それらのものが提供されるとは限りません。</li>
+    </ul>
 
-  <h2>🎁 さらに…プラチナ・ダイヤモンド会員になると？</h2>
-  <ul>
-    <li>🕵️‍♂️ 専任のサポートエージェントがあなたを完全サポート！？</li>
-    <li>🎪 ニコニコ超会議のGoogle Playブースで**会員限定プレゼント**に出会えるチャンスも！</li>
-    <li>🎉 ポイントアップウィークの「倍率」がゴールドとは段違い！</li>
-    <li>👑 限定イベント・先行体験・抽選で特製グッズなど、VIP感たっぷりの特典もあり！</li>
-    <li>🌈提供されるとは限りません。</p>
-
-  <h2>🔗 公式情報もチェック！</h2>
-  <p>
-    👉 <a href="https://play.google.com/about/playpoints/" target="_blank" rel="noopener noreferrer">
-    Google公式のPlayポイント解説はこちら</a>
-  </p>
+    <h2>🔗 公式情報もチェック！</h2>
+    <p>
+      👉 <a href="https://play.google.com/about/playpoints/" target="_blank" rel="noopener noreferrer">
+        Google公式であなたのPlayポイントやお得なキャンペーンをチェックしよう🔍</a>
+    </p>
+  </div>
 </body>
 </html>
