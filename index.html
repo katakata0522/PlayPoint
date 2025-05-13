@@ -465,7 +465,7 @@ button:disabled {
                     (例: ゴールド1.5pt × 3倍 = 4.5pt)<br>
                     <br>
                     ※ 上記の基本還元ポイント入力値と比較され<br>
-                       有利な方が計算に適用されます
+                       有利な方が計算に適用されま
                 </div>
                 <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10">
             </label>
@@ -477,8 +477,10 @@ button:disabled {
 
             <button id="reverseCalculateButton">ポイントを計算</button>
             <div class="result" id="reverseResult"></div>
-            <!-- 逆算モードにはシェアボタンはつけない想定 -->
         </div>
+        <button id="share-twitter-reverse" class="share-button twitter-share-button" style="display: none;">
+                        <i class="fab fa-twitter"></i> Xでシェアする
+                    </button>
     </div>
 
     <script>
