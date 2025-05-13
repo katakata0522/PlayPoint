@@ -245,19 +245,42 @@ button:disabled {
 }
 
 /* シェアボタン用スタイル */
-#tweetButton {
+#tweetButton { /* 通常モードのシェアボタン */
   background: #1DA1F2; /* Twitterブルー */
-  font-size: 1em; /* 少し小さめに */
+  font-size: 1em; 
   padding: 0.6em 1.2em;
-  margin-top: 0.8em; /* 結果表示との間隔 */
-  display: block; /* ブロック要素にして中央寄せしやすく */
+  margin-top: 0.8em; 
+  display: block; 
   margin-left: auto;
   margin-right: auto;
-  width: fit-content; /* 中身に合わせた幅 */
+  width: fit-content; 
 }
 #tweetButton:hover {
   background-color: #0c85d0;
 }
+
+/* 逆算モードのシェアボタンのスタイル (既存の .share-button, .twitter-share-button を流用する想定) */
+/* もし #share-twitter-reverse に特有のスタイルが必要ならここに追加 */
+#share-twitter-reverse { /* 逆算モードのシェアボタン */
+    background: #1DA1F2; /* Twitterブルー */
+    font-size: 1em;
+    padding: 0.6em 1.2em;
+    margin-top: 0.8em;
+    display: block; /* or inline-flex if you prefer */
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    /* アイコンとテキストの配置調整 (もしFontAwesomeのiタグを使うなら) */
+    /* display: inline-flex; */
+    /* align-items: center; */
+}
+#share-twitter-reverse i { /* FontAwesomeアイコン用のマージン */
+    margin-right: 0.5em;
+}
+#share-twitter-reverse:hover {
+  background-color: #0c85d0;
+}
+
 
 /* 非表示用クラス */
 .hidden {
@@ -478,9 +501,10 @@ button:disabled {
             <button id="reverseCalculateButton">ポイントを計算</button>
             <div class="result" id="reverseResult"></div>
         </div>
-        <button id="share-twitter-reverse" class="share-button twitter-share-button" style="display: none;">
-                        <i class="fab fa-twitter"></i> Xでシェアする
-                    </button>
+        <!-- 逆算モードのシェアボタン (HTMLは既に修正済みと仮定) -->
+        <button id="share-twitter-reverse" class="share-button twitter-share-button hidden"> <!-- hiddenクラスを追加 -->
+            <i class="fab fa-twitter"></i> Xでシェアする
+        </button>
     </div>
 
     <script>
@@ -494,7 +518,7 @@ button:disabled {
     const CLASS_HIDDEN = 'hidden';
     const SELECTOR_INFO_BTN = '.info-btn';
     const SELECTOR_TOOLTIP_BOX = '.tooltip-box';
-    const SELECTOR_RESULT_ERROR = 'span[style*="color: red"]';
+    const SELECTOR_RESULT_ERROR = 'span[style*="color: red"]'; // 既存のエラーセレクタ
 
     // 目標ステータスと必要ポイント
     const statusThresholds = { "シルバー": 250, "ゴールド": 1000, "プラチナ": 3000, "ダイヤモンド": 15000 };
@@ -508,7 +532,8 @@ button:disabled {
     let mainModeDiv, reverseModeDiv, tabButtons,
         currentStatusSelect, baseRateInput, targetStatusSelect, neededPointsInput, multiplierInput, calculateButton, resultDiv, copyButton, tweetButton,
         amountYenInput, reverseStatusSelect, reverseBaseRateInput, reverseMultiplierInput, reverseCalculateButton, reverseResultDiv,
-        infoButtons;
+        infoButtons,
+        shareTwitterReverseButton; // ★ 逆算モードのシェアボタンの変数を追加
 
     // --- 関数定義 ---
 
@@ -574,6 +599,10 @@ button:disabled {
         targetElement.removeAttribute('data-required-yen');
         targetElement.removeAttribute('data-target-status-label');
         if (tweetButton && targetElement === resultDiv) tweetButton.classList.add(CLASS_HIDDEN);
+        // ★ 逆算モードのシェアボタンもエラー時に隠す
+        if (shareTwitterReverseButton && targetElement === reverseResultDiv) {
+            shareTwitterReverseButton.classList.add(CLASS_HIDDEN);
+        }
      }
 
      function clearResult(targetElement) {
@@ -583,8 +612,16 @@ button:disabled {
          // 結果クリア時もデータ属性削除 & シェアボタン非表示
          targetElement.removeAttribute('data-required-yen');
          targetElement.removeAttribute('data-target-status-label');
-         if (tweetButton && targetElement === resultDiv) { // 通常モードの結果クリア時のみ
+         // ★ 逆算モード用のデータ属性もクリア
+         targetElement.removeAttribute('data-earned-points');
+         targetElement.removeAttribute('data-amount-yen');
+
+         if (tweetButton && targetElement === resultDiv) {
              tweetButton.classList.add(CLASS_HIDDEN);
+         }
+         // ★ 逆算モードのシェアボタンも結果クリア時に隠す
+         if (shareTwitterReverseButton && targetElement === reverseResultDiv) {
+             shareTwitterReverseButton.classList.add(CLASS_HIDDEN);
          }
      }
 
@@ -613,7 +650,7 @@ button:disabled {
      */
     function calculate() {
         if (!resultDiv || !targetStatusSelect) return;
-        clearResult(resultDiv);
+        clearResult(resultDiv); // clearResult は tweetButton を隠す処理を含む
 
         try {
             const neededPoints = getValidNumberInput(neededPointsInput, 0.01);
@@ -644,7 +681,6 @@ button:disabled {
             `;
             resultDiv.classList.add(CLASS_HAS_RESULT);
 
-            // 計算成功時にデータ属性を設定 & シェアボタン表示
             resultDiv.dataset.requiredYen = totalYenNeeded;
             resultDiv.dataset.targetStatusLabel = targetStatusLabel;
             if (tweetButton) tweetButton.classList.remove(CLASS_HIDDEN);
@@ -658,20 +694,29 @@ button:disabled {
     /**
      * 逆算モードでの獲得ポイントを計算
      */
-    function reverseCalculate() {
+    function reverseCalculate() { // ★ この関数を修正
         if (!reverseResultDiv) return;
-        clearResult(reverseResultDiv);
+        // clearResult(reverseResultDiv); // datasetもクリアするので、ここでは手動で初期化
+        reverseResultDiv.innerHTML = "";
+        reverseResultDiv.classList.remove(CLASS_HAS_RESULT);
+        if (shareTwitterReverseButton) { // ★ shareTwitterReverseButton はグローバルスコープで宣言済み
+            shareTwitterReverseButton.classList.add(CLASS_HIDDEN);
+        }
 
         try {
             const amountYen = getValidNumberInput(amountYenInput, 0);
             const finalRate = getFinalRate(reverseBaseRateInput, reverseStatusSelect, reverseMultiplierInput);
 
             if (amountYen === null || finalRate === null) {
-                displayError(reverseResultDiv, "有効な数値を入力してください");
+                // displayError(reverseResultDiv, "有効な数値を入力してください"); // displayErrorはdatasetをクリアするので直接書く
+                reverseResultDiv.innerHTML = `<span style="color: red;">有効な数値を入力してください</span>`;
+                reverseResultDiv.classList.add(CLASS_HAS_RESULT);
                 return;
             }
              if (finalRate < 0) {
-                 displayError(reverseResultDiv, "計算に使用する還元率が負数です");
+                 // displayError(reverseResultDiv, "計算に使用する還元率が負数です");
+                 reverseResultDiv.innerHTML = `<span style="color: red;">計算に使用する還元率が負数です</span>`;
+                 reverseResultDiv.classList.add(CLASS_HAS_RESULT);
                  return;
              }
 
@@ -683,9 +728,19 @@ button:disabled {
                  `;
             reverseResultDiv.classList.add(CLASS_HAS_RESULT);
 
+            // シェア用にデータをdatasetに保存
+            reverseResultDiv.dataset.earnedPoints = earnedPoints.toFixed(2);
+            reverseResultDiv.dataset.amountYen = amountYen;
+
+            if (shareTwitterReverseButton) {
+                shareTwitterReverseButton.classList.remove(CLASS_HIDDEN);
+            }
+
         } catch (error) {
             console.error("計算エラー (逆算):", error);
-            displayError(reverseResultDiv, "計算中にエラーが発生しました");
+            // displayError(reverseResultDiv, "計算中にエラーが発生しました");
+            reverseResultDiv.innerHTML = `<span style="color: red;">計算中にエラーが発生しました</span>`;
+            reverseResultDiv.classList.add(CLASS_HAS_RESULT);
         }
     }
 
@@ -700,7 +755,6 @@ button:disabled {
             textToCopy = Array.from(mainResultLines)
                              .map(b => {
                                  const labelNode = b.previousSibling;
-                                 // previousSiblingがテキストノードの場合と要素ノードの場合があるため、textContentで取得
                                  const labelText = labelNode ? labelNode.textContent.trim().split(':')[0] : '';
                                  return labelText ? `${labelText}: ${b.innerText}` : b.innerText;
                              })
@@ -758,8 +812,8 @@ button:disabled {
             if (button.dataset.mode === mode) { button.classList.add(CLASS_ACTIVE); }
             else { button.classList.remove(CLASS_ACTIVE); }
         });
-        // モード切替時に通常モードの結果表示エリアをクリア
         if (resultDiv) clearResult(resultDiv);
+        if (reverseResultDiv) clearResult(reverseResultDiv); // ★ 逆算モードの結果もクリア
     }
 
     /**
@@ -815,6 +869,7 @@ button:disabled {
     function shareOnTwitter() {
         if (!resultDiv || !resultDiv.classList.contains(CLASS_HAS_RESULT)) {
             console.warn("シェアする計算結果がありません。");
+            alert("シェアできる有効な計算結果がありません。"); // ★ ユーザー向けアラート追加
             return;
         }
         const requiredYenRaw = resultDiv.dataset.requiredYen;
@@ -832,9 +887,9 @@ button:disabled {
                 throw new Error("金額データが無効です。");
             }
             const formattedYen = requiredYen.toLocaleString('ja-JP');
-            const siteUrl = "https://katakata0522.github.io/PlayPoint/playpoints.html"; // サイトURL
+            const siteUrl = "https://playpoint-sim.com/"; // ★ サイトURL修正
 
-            const tweetText = `【Play ポイント試算結果】\n${targetStatusLabel}ステータス到達まで\n${formattedYen}円課金が必要です。\n\n#Playポイント計算してみた\n#GooglePlay\n\n${siteUrl}`;
+            const tweetText = `【Play ポイント試算結果】\n${targetStatusLabel}ステータス到達まで\n${formattedYen}円課金が必要です。\n\n#Playポイント計算してみた\n#GooglePlayポイント\n\n${siteUrl}`; // ★ ハッシュタグ調整
 
             const encodedText = encodeURIComponent(tweetText);
             const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
@@ -845,6 +900,53 @@ button:disabled {
             alert("ツイートの準備中にエラーが発生しました。");
         }
     }
+
+    // ▼▼▼ ここから新しい関数を追加 ▼▼▼
+    /**
+     * 逆算結果をXでシェアする関数
+     */
+    function shareOnTwitterReverse() {
+        if (!reverseResultDiv || !reverseResultDiv.classList.contains(CLASS_HAS_RESULT)) {
+            console.warn("シェアする逆算結果がありません (クラスなし)。");
+            alert("シェアできる有効な計算結果がありません。");
+            return;
+        }
+
+        const earnedPointsRaw = reverseResultDiv.dataset.earnedPoints;
+        const amountYenRaw = reverseResultDiv.dataset.amountYen;
+
+        if (reverseResultDiv.querySelector(SELECTOR_RESULT_ERROR) || !earnedPointsRaw || !amountYenRaw) {
+            console.warn("シェアに必要な情報がないか、結果がエラーです。");
+            alert("シェアできる有効な計算結果がありません。");
+            return;
+        }
+
+        try {
+            const earnedPoints = parseFloat(earnedPointsRaw);
+            const amountYen = parseFloat(amountYenRaw);
+
+            if (isNaN(earnedPoints) || isNaN(amountYen)) {
+                throw new Error("ポイントまたは金額データが無効です。");
+            }
+
+            const formattedPoints = earnedPoints.toLocaleString('ja-JP', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+            const formattedYen = amountYen.toLocaleString('ja-JP');
+            
+            const siteUrl = "https://playpoint-sim.com/";
+            const hashtags = "#Playポイント計算してみた\n#GooglePlayポイント";
+
+            const tweetText = `${formattedYen}円使うと、約 ${formattedPoints}ポイント 獲得できます！\n\n${hashtags}\n\n${siteUrl}`;
+
+            const encodedText = encodeURIComponent(tweetText);
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodedText}`;
+            window.open(twitterUrl, '_blank');
+
+        } catch (error) {
+            console.error("逆算結果のツイート準備中にエラー:", error);
+            alert("ツイートの準備中にエラーが発生しました。");
+        }
+    }
+    // ▲▲▲ ここまで新しい関数を追加 ▲▲▲
 
 
     // --- 初期化処理 ---
@@ -869,6 +971,7 @@ button:disabled {
         reverseMultiplierInput = document.getElementById("reverseMultiplier");
         reverseCalculateButton = document.getElementById("reverseCalculateButton");
         reverseResultDiv = document.getElementById("reverseResult");
+        shareTwitterReverseButton = document.getElementById('share-twitter-reverse'); // ★ DOM要素取得を追加
 
         // --- イベントリスナー設定 ---
         if (currentStatusSelect) currentStatusSelect.addEventListener('change', updateBaseRateAndTarget);
@@ -883,6 +986,14 @@ button:disabled {
         else console.warn("初期化: #reverseStatus not found.");
         if (reverseCalculateButton) reverseCalculateButton.addEventListener('click', reverseCalculate);
         else console.warn("初期化: #reverseCalculateButton not found.");
+        
+        // ★ 逆算モードのシェアボタンのイベントリスナーを追加
+        if (shareTwitterReverseButton) {
+            shareTwitterReverseButton.addEventListener('click', shareOnTwitterReverse);
+        } else {
+            console.warn("初期化: #share-twitter-reverse button not found.");
+        }
+
         if (tabButtons.length > 0) {
             tabButtons.forEach(button => {
                 if (button.dataset.mode) {
@@ -911,7 +1022,8 @@ button:disabled {
             if (currentStatusSelect && baseRateInput && targetStatusSelect) updateBaseRateAndTarget();
             if (reverseStatusSelect && reverseBaseRateInput) updateReverseBaseRate();
             if (mainModeDiv && reverseModeDiv && tabButtons) switchMode('main');
-            if (tweetButton) tweetButton.classList.add(CLASS_HIDDEN); // 初期は非表示
+            if (tweetButton) tweetButton.classList.add(CLASS_HIDDEN);
+            if (shareTwitterReverseButton) shareTwitterReverseButton.classList.add(CLASS_HIDDEN); // ★ 初期は非表示
         } catch (error) {
             console.error("初期化処理中にエラーが発生しました:", error);
             const body = document.querySelector('body');
@@ -922,10 +1034,10 @@ button:disabled {
                 body.insertBefore(errorP, body.firstChild);
             }
         }
-        console.log("ポイント計算機 初期化完了 (SNSシェア/紹介文付き)"); // メッセージ更新
-    }); // DOMContentLoaded リスナーここまで
+        console.log("ポイント計算機 初期化完了 (SNSシェア/紹介文付き)");
+    });
 
-})(); // IIFE 即時実行 ここまで
+})();
     </script>
 
    <!-- フッター -->
