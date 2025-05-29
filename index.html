@@ -31,11 +31,21 @@ body {
   text-align: right;
   margin-bottom: 0.5em;
   font-size: 0.8em;
+  overflow: hidden; /* To contain the floated element */
 }
 .header-links a {
   color: #555;
   text-decoration: none;
   margin-left: 1em; /* リンク間のスペース */
+}
+.header-links a.international-link {
+  float: left;
+  margin-left: 0; /* Remove margin for the floated link */
+  margin-right: 1em; /* Optional: add some space if other elements were to its right */
+}
+.header-links a:not(.international-link):first-child {
+  /* This selector might need adjustment if the international link is not the absolute first child */
+  /* margin-left: 0; */ /* No longer needed if international link is floated */
 }
 .header-links a:hover {
   text-decoration: underline;
@@ -328,6 +338,7 @@ button:disabled {
 
     <!-- ヘッダーリンク -->
     <div class="header-links">
+        <a href="international_info.html" class="international-link">🌍 For International Users</a> | 
         <a href="privacy.html" target="_blank">プライバシーポリシー</a> |
         <a href="terms.html" target="_blank">利用規約</a>
     </div>
