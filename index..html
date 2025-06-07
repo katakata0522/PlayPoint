@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED6D0FR4L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-HED6D0FR4L');
+    </script>
+    <meta charset="UTF-8">
+    <title>Playポイント計算機</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+     crossorigin="anonymous"></script>
+    
+    <!-- CSSファイルをここで読み込む -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ヘッダーリンク -->
+    <div class="header-links">
+        <a href="privacy.html" target="_blank">プライバシーポリシー</a> |
+        <a href="terms.html" target="_blank">利用規約</a>
+    </div>
+
+    <h1>Playポイント計算機</h1>
+    <p class="site-description">現在のステータスから目標達成までの必要課金額の計算ができます！<br>
+        さらに課金額から獲得できるポイントも計算できます！</p>
+
+    <div class="tab-switch">
+        <button data-mode="main">通常計算</button>
+        <button data-mode="reverse">逆算モード</button>
+    </div>
+
+    <!-- 通常計算モード -->
+    <div id="mainMode">
+        <div class="section">
+            <h2>ステータス入力</h2>
+
+            <label for="currentStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 現在のステータスの確認方法:<br>
+                    1 Google Play ストアを開く<br>
+                    2 右上のプロフィールアイコンをタップ<br>
+                    3 「Play ポイント」を選択<br>
+                    → あなたのステータス（例：ゴールド）が表示されます<br>
+                    <br>
+                    ※ ステータスにより基本還元率が自動入力されます
+                </div>
+                <select id="currentStatus">
+                    <!-- JavaScriptによって動的に生成されます -->
+                </select>
+            </label>
+
+            <label for="targetStatus">目標ステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ステータスの条件目安:<br>
+                    ・シルバー： 250pt以上<br>
+                    ・ゴールド： 1,000pt以上<br>
+                    ・プラチナ： 3,000pt以上<br>
+                    ・ダイヤモンド： 15,000pt以上
+                </div>
+                <select id="targetStatus"></select>
+            </label>
+
+            <label for="neededPoints">目標までの必要ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 必要ポイントの確認方法:<br>
+                    1 Google Play ストアを開く<br>
+                    2 プロフィールアイコン → Play ポイント<br>
+                    → 「次のステータスまで◯◯pt」と表示されます<br>
+                    → その数値をここに入力してください
+                </div>
+                <input type="number" id="neededPoints" placeholder="例：1728">
+            </label>
+        </div>
+
+        <div class="section">
+            <h2>還元設定</h2>
+
+            <label for="baseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 還元ポイントの入力:<br>
+                    ステータスに応じて自動入力されます<br>
+                    アプリ固有のポイント増量がある場合など<br>
+                    直接編集して最終的な還元率を入力します<br>
+                    <br>
+                    ※ 下の倍率キャンペーンと自動比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="baseRate" value="1.5" step="0.01" min="0.1" max="100">
+            </label>
+
+            <label for="multiplier">キャンペーン倍率（例：3倍）
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ポイント倍率とは<br>
+                    ステータスに応じた還元ポイントが<br>
+                    期間中に増加するキャンペーンの倍率です<br>
+                    (例: ゴールド1.5pt × 3倍 = 4.5pt)<br>
+                    <br>
+                    ※ 上記の基本還元ポイント入力値と比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10">
+            </label>
+
+            <div class="warning">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+        </div>
+
+        <div class="section">
+            <button id="calculateButton">課金額を計算</button>
+            <div class="result" id="result"></div> <!-- 結果表示エリア -->
+            <button id="copyButton">コピーする</button>
+            <!-- シェアボタン (初期非表示) -->
+            <button id="tweetButton" class="hidden">結果をXでシェア</button>
+        </div>
+    </div>
+
+    <!-- 逆算モード -->
+    <div id="reverseMode" style="display:none;">
+        <div class="section">
+            <h2>逆算モード</h2>
+
+            <label for="amountYen">課金額（円）
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ 使った金額からポイント計算:<br>
+                    課金額を入力すると<br>
+                    獲得できるポイント数を予測します
+                </div>
+                <input type="number" id="amountYen" placeholder="例：5000">
+            </label>
+
+            <label for="reverseStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ステータスごとの還元率目安:<br>
+                    ・ブロンズ： 1.0pt / 100円<br>
+                    ・シルバー： 1.25pt / 100円<br>
+                    ・ゴールド： 1.5pt / 100円<br>
+                    ・プラチナ： 1.75pt / 100円<br>
+                    ・ダイヤモンド： 2.0pt / 100円<br>
+                    <br>
+                    ※ ステータス選択で基本還元率が自動入力され<br>
+                       倍率キャンペーン適用の比較に使われます
+                </div>
+                <select id="reverseStatus">
+                    <!-- JavaScriptによって動的に生成されます -->
+                </select>
+            </label>
+
+            <label for="reverseBaseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                     ■ 還元ポイントの入力:<br>
+                     上のステータスに応じて自動入力されます<br>
+                     アプリ固有のポイント増量がある場合など<br>
+                     直接編集して最終的な還元率を入力します<br>
+                    <br>
+                    ※ 下の倍率キャンペーンと自動比較され<br>
+                       有利な方が計算に適用されます
+                </div>
+                <input type="number" id="reverseBaseRate" value="1.5" step="0.01" min="0.1" max="100">
+            </label>
+
+            <label for="reverseMultiplier">キャンペーン倍率
+                <span class="info-btn" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">?</span>
+                <div class="tooltip-box">
+                    ■ ポイント倍率とは<br>
+                    ステータスに応じた還元ポイントが<br>
+                    期間中に増加するキャンペーンの倍率です<br>
+                    (例: ゴールド1.5pt × 3倍 = 4.5pt)<br>
+                    <br>
+                    ※ 上記の基本還元ポイント入力値と比較され<br>
+                       有利な方が計算に適用されま
+                </div>
+                <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10">
+            </label>
+
+            <div class="warning">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+
+
+            <button id="reverseCalculateButton">ポイントを計算</button>
+            <div class="result" id="reverseResult"></div>
+        </div>
+        <!-- 逆算モードのシェアボタン -->
+        <button id="share-twitter-reverse" class="share-button twitter-share-button hidden">
+            <i class="fab fa-twitter"></i> Xでシェアする
+        </button>
+    </div>
+
+   <!-- フッター -->
+   <footer class="page-footer">
+    <p>
+      <a href="info.html">あとがき・Q&A</a> |
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">ご意見・ご感想</a> |
+      <a href="about-playpoints.html">Playポイントとは？</a>
+    </p>
+    <p class="copyright">
+      © 2025 PlayPoint Simulation Tool
+    </p>
+  </footer>
+
+    <!-- JavaScriptファイルをここで読み込む (defer属性付き) -->
+    <script src="script.js" defer></script>
+</body>
+</html>
