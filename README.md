@@ -54,3 +54,8 @@ Google Playのポイント制度に対応した、
 [📨 フィードバックフォームはこちら](https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform)
 
 開発・運営：[@katakata0522](https://github.com/katakata0522)
+
+---
+
+Last updated: 2025-07-21
+
