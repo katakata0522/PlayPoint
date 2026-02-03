@@ -1,12 +1,31 @@
 (function() {
     'use strict';
 
+    // SVG Icons
+    const ICON_SUN = '<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>';
+    const ICON_MOON = '<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>';
+
+    // トースト通知を表示する関数
+    function showToast(message, type = 'normal') {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        
+        toast.textContent = message;
+        toast.className = 'toast show'; // リセット
+        if (type === 'error') {
+            toast.classList.add('error');
+        }
+
+        setTimeout(() => {
+            toast.className = 'toast'; // 非表示
+        }, 3000);
+    }
+
     // グローバルエラーハンドラー
     window.onerror = function(message, source, lineno, colno, error) {
         console.error("予期せぬエラーが発生しました:", { message, source, lineno, colno, error });
-        // ユーザーへの通知（簡素なアラート）
-        alert("予期せぬエラーが発生しました。ページをリロードしてやり直してください。");
-        return true; // デフォルトのエラー処理を抑制
+        showToast("予期せぬエラーが発生しました。ページをリロードしてみてください。", 'error');
+        return true; 
     };
 
     const MODE_MAIN = 'main';
@@ -186,7 +205,7 @@
             return data ? JSON.parse(data) : {};
         } catch (e) {
             console.error("日記データの読み込みに失敗しました:", e);
-            alert("日記データの読み込みに失敗しました。");
+            showToast("日記データの読み込みに失敗しました。", 'error');
             return {};
         }
     }
@@ -196,7 +215,7 @@
             localStorage.setItem(DIARY_DATA_KEY, JSON.stringify(data));
         } catch (e) {
             console.error("日記データの保存に失敗しました:", e);
-            alert("日記データの保存に失敗しました。");
+            showToast("日記データの保存に失敗しました。", 'error');
         }
     }
 
@@ -333,7 +352,7 @@
             localStorage.setItem(STORAGE_REGION_KEY, newRegion);
         } catch (e) {
             console.error("地域設定の保存に失敗しました:", e);
-            alert("地域設定の保存に失敗しました。");
+            showToast("地域設定の保存に失敗しました。", 'error');
         }
         updateUIForRegion();
     }
@@ -463,7 +482,6 @@
 
     function copyResult() {
         if (!dom.copyButton) return;
-        const originalText = dom.copyButton.textContent;
         const requiredYen = dom.result.dataset.requiredYen;
         const targetStatusLabel = dom.result.dataset.targetStatusLabel;
         if (!dom.result.classList.contains(CLASS_HAS_RESULT) || !requiredYen || !targetStatusLabel) return;
@@ -471,8 +489,8 @@
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
         const textToCopy = `▼Playポイント計算結果▼\n目標ステータス： ${targetStatusLabel}\n必要な課金額の目安： 約${formattedYen}${config.currencySymbol}\n\n計算元：Playポイント計算機 ( https://www.playpoint-sim.com/ )`;
         navigator.clipboard.writeText(textToCopy)
-            .then(() => { dom.copyButton.textContent = "コピーしました！"; setTimeout(() => { dom.copyButton.textContent = originalText; }, 2000); })
-            .catch(() => { dom.copyButton.textContent = "コピー失敗"; setTimeout(() => { dom.copyButton.textContent = originalText; }, 2000); });
+            .then(() => { showToast("クリップボードにコピーしました！"); })
+            .catch(() => { showToast("コピーに失敗しました。", 'error'); });
     }
 
     function handleTweet() {
@@ -608,12 +626,16 @@
             storedTheme = "light"; // フォールバック
         }
 
+        const updateIcon = (theme) => {
+             if (themeToggle) {
+                 themeToggle.innerHTML = theme === 'dark' ? ICON_SUN : ICON_MOON;
+                 themeToggle.setAttribute('aria-label', theme === 'dark' ? 'ライトモードに切り替え' : 'ダークモードに切り替え');
+             }
+        };
 
         if (storedTheme) {
             document.documentElement.setAttribute('data-theme', storedTheme);
-            if (themeToggle) {
-                themeToggle.textContent = storedTheme === 'dark' ? '☀️' : '🌙';
-            }
+            updateIcon(storedTheme);
         }
 
         if (themeToggle) {
@@ -623,10 +645,10 @@
                     let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                     document.documentElement.setAttribute('data-theme', newTheme);
                     localStorage.setItem('theme', newTheme);
-                    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+                    updateIcon(newTheme);
                 } catch (e) {
                     console.error("テーマ設定の保存に失敗しました:", e);
-                    alert("テーマ設定の保存に失敗しました。");
+                    showToast("テーマ設定の保存に失敗しました。", 'error');
                 }
             });
         }

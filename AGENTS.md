@@ -5,10 +5,10 @@ This repository is an experimental project by **katakata0522**.
 The goal is to create **high-quality, robust, and monetizeable** applications.
 
 ## 2. Critical Rules (Strictly Prohibited)
-*   **NEVER change the text content:**
-    *   Do NOT change, summarize, or omit any text, labels, messages, or article content.
+*   **Text content changes are prohibited unless explicitly instructed by the user:**
+    *   Do NOT change, summarize, or omit any text, labels, messages, or article content without explicit user instructions.
     *   The nuance of the Japanese text is critical.
-    *   Even during refactoring, keep the text exactly as it is.
+    *   Even during refactoring, keep the text exactly as it is unless the user requests changes.
 *   **Safety First:**
     *   Prioritize **robustness** and **error prevention**.
     *   Always implement proper error handling.
