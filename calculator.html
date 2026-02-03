@@ -24,12 +24,27 @@
     <meta name="twitter:card" content="summary_large_image">
 
     <link rel="stylesheet" href="style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Playポイント計算機",
+      "operatingSystem": "Web",
+      "applicationCategory": "UtilitiesApplication",
+      "description": "Google Playポイントの現在のステータスから目標ランク（ダイヤモンド・プラチナ）までの必要課金額を計算するツールです。",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    }
+    </script>
 </head>
 <body>
 
 <main class="calculator-wrapper">
    <div class="top-bar">
-        <button id="theme-toggle">☀️</button>
+        <button id="theme-toggle" aria-label="テーマ切り替え"></button>
         <div class="region-switch">
             <button data-region="JP" class="active">日本語</button>
             <button data-region="US">English</button>
@@ -184,6 +199,8 @@
           © <span id="copyright-year"></span> PlayPoint Simulation Tool
         </p>
     </footer>
+    
+    <div id="toast" class="toast"></div>
 </main>
 
 <script src="script.js"></script>

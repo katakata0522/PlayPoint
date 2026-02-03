@@ -146,6 +146,27 @@
         text-decoration: underline;
       }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "月平均の「○ヶ月」って何ですか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。"
+        }
+      }, {
+        "@type": "Question",
+        "name": "還元設定の計算はどうなっていますか？",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を比較し、より獲得ポイント数が多くなる方の還元率を自動的に適用して計算しています。"
+        }
+      }]
+    }
+    </script>
 </head>
 <body>
 
@@ -186,6 +207,15 @@
       </dl>
     </div>
 
+    <div class="section info-section" id="update-section">
+      <h2>アップデート情報 (Update Log)</h2>
+      <ul>
+        <li><strong>2026/02/03 (v2.0.0)</strong>: 構造化データの追加によるSEO最適化、更新履歴セクションの設置。</li>
+        <li><strong>2025/05/13 (v1.9.2)</strong>: 計算ロジックの微調整とバグ修正。</li>
+        <li><strong>2025/05/10 (v1.9.0)</strong>: 大規模アップデート。多言語対応（英語）、ダークモード機能、ほくほくリワード日記機能を追加。</li>
+      </ul>
+    </div>
+
     <div class="section info-section" id="about-section">
       <h2>あとがき・開発経緯</h2>
       <p>
@@ -198,7 +228,7 @@
         開発者: かたかた
       </p>
       <p>
-        最終更新日: 2025年5月13日 (v1.9.2)
+        最終更新日: 2026年2月3日 (v2.0.0)
       </p>
     </div>
 
