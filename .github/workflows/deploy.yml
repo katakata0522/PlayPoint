@@ -21,4 +21,4 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          rsync -avz -e "ssh -p 10022 -i ~/.ssh/id_ed25519" ./ hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/katakatalab.com/public_html/ --exclude '.git*' --exclude '.github*' --exclude 'README.md' --exclude 'AGENTS.md'
+          rsync -avz -e "ssh -p 10022 -i ~/.ssh/id_ed25519" ./ hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/ --exclude '.git*' --exclude '.github*' --exclude 'README.md' --exclude 'AGENTS.md'
