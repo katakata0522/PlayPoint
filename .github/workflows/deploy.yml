@@ -15,10 +15,7 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          if ! grep -q "END OPENSSH PRIVATE KEY" ~/.ssh/id_ed25519; then
-            echo "" >> ~/.ssh/id_ed25519
-          fi
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p 10022 -H hajikkoroom.xsrv.jp >> ~/.ssh/known_hosts
 
