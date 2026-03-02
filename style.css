@@ -605,6 +605,12 @@ button:active {
   contain-intrinsic-size: 1200px;
 }
 
+@media(min-width:1024px){
+  .calculator-wrapper {
+    max-width: 600px;
+  }
+}
+
 @media(max-width:480px){
   .week-row {
     grid-template-columns: 1fr 1fr;
