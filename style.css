@@ -514,6 +514,11 @@ button:active {
   margin-bottom: 0.5em;
 }
 
+.meta-line {
+  font-size: 0.82em;
+  color: var(--link-color);
+}
+
 
 .region-switch {
   display: inline-flex;
@@ -653,6 +658,12 @@ button:active {
   padding: 1em;
   border-radius: 8px;
   line-height: 1.6;
+}
+
+/* 初期表示の描画負荷を下げるため、日記領域は遅延描画 */
+#diaryMode {
+  content-visibility: auto;
+  contain-intrinsic-size: 1200px;
 }
 
 @media(max-width:480px){

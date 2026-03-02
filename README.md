@@ -41,6 +41,12 @@ Google Playのポイント制度に対応した、
 
 ---
 
+## 📊 SEO運用
+
+- [Search Console監視ガイド](docs/SEARCH_CONSOLE_MONITORING.md)
+
+---
+
 ## ⚠️ 注意事項
 
 - 本ツールは**個人開発による非公式ファンツール**です。Google社とは一切関係ありません。
@@ -58,4 +64,3 @@ Google Playのポイント制度に対応した、
 ---
 
 Last updated: 2025-07-21
-
