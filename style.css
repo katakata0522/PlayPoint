@@ -48,10 +48,10 @@ input, select, textarea {
 .top-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45em 0.8em;
+  gap: 0.6em 1em;
   justify-content: space-between;
   align-items: center;
-  margin: 0.8em auto;
+  margin: 0.95em auto 0.85em;
 }
 
 /* トースト通知のスタイル */
@@ -182,12 +182,12 @@ button:disabled {
 }
 
 .page-footer a {
-  color: var(--link-color);
-  border-bottom: 1px dotted var(--link-color);
+  color: #0b57d0;
+  border-bottom: 1px dotted #0b57d0;
 }
 .page-footer a:hover {
-  color: var(--link-hover-color);
-  border-bottom: 1px solid var(--link-hover-color);
+  color: #0842a0;
+  border-bottom: 1px solid #0842a0;
 }
 .copyright {
   color: #aaa;
@@ -272,11 +272,11 @@ button:disabled {
 }
 
 .header-links {
-  font-size: 0.8em;
+  font-size: 0.86em;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.15em 0.6em;
+  gap: 0.22em 0.7em;
 }
 
 h1 {
@@ -286,7 +286,7 @@ h1 {
 }
 
 .site-description {
-  font-size: 0.95em;
+  font-size: 0.98em;
   margin: 0.5em auto 1.2em auto;
   max-width: 500px;
   line-height: 1.6;
@@ -354,14 +354,14 @@ button:active {
 .error-text { color: #dc3545; }
 
 .tab-switch {
-  margin-top: 0.8em;
-  margin-bottom: 1em;
+  margin-top: 0.9em;
+  margin-bottom: 1.1em;
   text-align: center;
 }
 .tab-switch button {
-  margin: 0 0.2em;
-  font-size: 0.95em;
-  padding: 0.5em 1em;
+  margin: 0 0.24em;
+  font-size: 0.98em;
+  padding: 0.55em 1.05em;
   font-weight: normal;
   box-shadow: none;
 }
@@ -370,10 +370,10 @@ button:active {
   background: #aaa;
   color: white;
   border-radius: 50%;
-  width: 1.5em;
-  height: 1.5em;
-  line-height: 1.5em;
-  font-size: 0.8em;
+  width: 1.9em;
+  height: 1.9em;
+  line-height: 1.85em;
+  font-size: 0.92em;
   font-weight: bold;
   text-align: center;
   display: inline-block;
@@ -448,15 +448,30 @@ button:active {
   margin-top: 2em;
   padding-top: 1em;
   text-align: center;
-  font-size: 0.85em;
+  font-size: 0.92em;
   padding-bottom: 2em;
 }
 .page-footer p {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.65em;
+}
+.page-footer p:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5em;
+}
+.page-footer p:first-child a {
+  border: 1px solid #84aef3;
+  border-radius: 999px;
+  padding: 0.34em 0.78em;
+  border-bottom-style: solid;
+  font-weight: 700;
+  color: #0b57d0;
+  background: #f4f8ff;
 }
 
 .meta-line {
-  font-size: 0.82em;
+  font-size: 0.86em;
   color: var(--link-color);
 }
 
@@ -470,7 +485,7 @@ button:active {
   padding: .4em 1em;
   border-radius: 0;
   cursor: pointer;
-  font-size: .85em;
+  font-size: .92em;
   font-weight: normal;
   margin-top: 0;
   box-shadow: none;
@@ -609,7 +624,7 @@ button:active {
 
 @media(min-width:1024px){
   .calculator-wrapper {
-    max-width: 600px;
+    max-width: 660px;
   }
 }
 
