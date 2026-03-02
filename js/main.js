@@ -49,6 +49,7 @@ function init() {
     if (PP_STATE.dom.reverseCalculateButton) PP_STATE.dom.reverseCalculateButton.addEventListener('click', reverseCalculate);
     if (PP_STATE.dom.shareTwitterReverse) PP_STATE.dom.shareTwitterReverse.addEventListener('click', handleTweetReverse);
     if (PP_STATE.dom.currentStatus) PP_STATE.dom.currentStatus.addEventListener('change', updateBaseRateAndTarget);
+    if (PP_STATE.dom.targetStatus) PP_STATE.dom.targetStatus.addEventListener('change', updateNeededPointsConstraint);
     if (PP_STATE.dom.reverseStatus) PP_STATE.dom.reverseStatus.addEventListener('change', updateReverseBaseRate);
 
     [PP_STATE.dom.neededPoints, PP_STATE.dom.baseRate, PP_STATE.dom.multiplier].forEach(el => {

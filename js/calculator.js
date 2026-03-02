@@ -36,6 +36,7 @@ function updateBaseRateAndTarget() {
         option.disabled = true;
         PP_STATE.dom.targetStatus.add(option);
     }
+    updateNeededPointsConstraint();
 }
 
 function updateReverseBaseRate() {
@@ -43,6 +44,42 @@ function updateReverseBaseRate() {
     const config = PP_REGION_CONFIGS[PP_STATE.currentRegion];
     const selectedStatusValue = parseFloat(PP_STATE.dom.reverseStatus.value);
     PP_STATE.dom.reverseBaseRate.value = (config.statusRates[selectedStatusValue] || 1.0).toFixed(2);
+}
+
+function getCurrentStatusFloorPoints(config, currentStatusValue) {
+    const statusLabels = Object.keys(config.statuses);
+    const currentStatusLabel = statusLabels.find(label => config.statuses[label] === currentStatusValue);
+    if (!currentStatusLabel) return null;
+
+    const currentIndex = statusLabels.indexOf(currentStatusLabel);
+    if (currentIndex <= 0) return 0;
+
+    const floorPoints = config.thresholds[currentStatusLabel];
+    return Number.isFinite(floorPoints) ? floorPoints : null;
+}
+
+function getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold) {
+    if (!Number.isFinite(targetThreshold)) return null;
+    const currentFloorPoints = getCurrentStatusFloorPoints(config, currentStatusValue);
+    if (currentFloorPoints === null) return null;
+    const maxNeededPoints = targetThreshold - currentFloorPoints;
+    return maxNeededPoints > 0 ? maxNeededPoints : null;
+}
+
+function updateNeededPointsConstraint() {
+    if (!PP_STATE.dom.currentStatus || !PP_STATE.dom.targetStatus || !PP_STATE.dom.neededPoints) return;
+    const config = PP_REGION_CONFIGS[PP_STATE.currentRegion];
+    const currentStatusValue = parseFloat(PP_STATE.dom.currentStatus.value);
+    const selectedTargetOption = PP_STATE.dom.targetStatus.options[PP_STATE.dom.targetStatus.selectedIndex];
+    const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
+    const maxNeededPoints = getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
+
+    if (maxNeededPoints === null) {
+        PP_STATE.dom.neededPoints.removeAttribute('max');
+        return;
+    }
+
+    PP_STATE.dom.neededPoints.max = String(maxNeededPoints);
 }
 
 const getRemainingMonths = () => 12 - new Date().getMonth();
@@ -68,10 +105,14 @@ function calculate() {
     const texts = config.uiText;
     const neededPoints = getValidNumberInput(PP_STATE.dom.neededPoints, 0.01);
     const finalRate = getFinalRate(PP_STATE.dom.baseRate, PP_STATE.dom.currentStatus, PP_STATE.dom.multiplier);
+    const currentStatusValue = parseFloat(PP_STATE.dom.currentStatus.value);
     const selectedTargetOption = PP_STATE.dom.targetStatus.options[PP_STATE.dom.targetStatus.selectedIndex];
     const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
+    const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
+    const maxNeededPoints = getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
     
     if (neededPoints === null || finalRate === null || !targetStatusLabel) return displayResult(PP_STATE.dom.result, texts.errorInput, true);
+    if (maxNeededPoints === null || neededPoints > maxNeededPoints) return displayResult(PP_STATE.dom.result, texts.errorTargetConsistency, true);
     if (finalRate <= 0) return displayResult(PP_STATE.dom.result, texts.errorRate, true);
     
     const remainingMonths = getRemainingMonths();
@@ -95,15 +136,17 @@ function reverseCalculate() {
     const finalRate = getFinalRate(PP_STATE.dom.reverseBaseRate, PP_STATE.dom.reverseStatus, PP_STATE.dom.reverseMultiplier);
     
     if (amountYen === null || finalRate === null) return displayResult(PP_STATE.dom.reverseResult, texts.errorInputReverse, true);
-    if (finalRate < 0) return displayResult(PP_STATE.dom.reverseResult, texts.errorRateReverse, true);
+    if (finalRate <= 0) return displayResult(PP_STATE.dom.reverseResult, texts.errorRateReverse, true);
     
     const spendUnit = (PP_STATE.currentRegion === 'JP') ? 100 : 1;
-    const earnedPoints = (amountYen / spendUnit) * finalRate;
+    const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
+    const earnedPoints = Math.round(earnedPointsRaw);
     
-    const resultContent = `<dl><dt>${texts.resultLabelEarnedPoints}</dt><dd><b>${earnedPoints.toLocaleString(config.lang, {minimumFractionDigits: 0, maximumFractionDigits: 2})} pt</b></dd></dl><span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>`;
+    const resultContent = `<dl><dt>${texts.resultLabelEarnedPoints}</dt><dd><b>${earnedPoints.toLocaleString(config.lang)} pt</b></dd></dl><span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>`;
     
     displayResult(PP_STATE.dom.reverseResult, resultContent);
-    PP_STATE.dom.reverseResult.dataset.earnedPoints = earnedPoints.toFixed(2);
+    PP_STATE.dom.reverseResult.dataset.earnedPoints = String(earnedPoints);
+    PP_STATE.dom.reverseResult.dataset.earnedPointsRaw = earnedPointsRaw.toFixed(2);
     PP_STATE.dom.reverseResult.dataset.amountYen = amountYen;
 }
 
@@ -155,7 +198,7 @@ function handleTweetReverse() {
     if (!earnedPoints || !amountYen) return;
     
     const config = PP_REGION_CONFIGS[PP_STATE.currentRegion];
-    const formattedPoints = parseFloat(earnedPoints).toLocaleString(config.lang, { maximumFractionDigits: 2 });
+    const formattedPoints = parseFloat(earnedPoints).toLocaleString(config.lang);
     const formattedYen = parseFloat(amountYen).toLocaleString(config.lang);
     const text = `【Playポイント計算機で試算】
 ${formattedYen}${config.currencySymbol}使うと、約 ${formattedPoints}ポイント 獲得できるみたい！✨`;
