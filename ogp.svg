@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="100%" stop-color="#1f6feb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1020" cy="120" r="160" fill="#10b981" opacity="0.2"/>
+  <circle cx="160" cy="560" r="220" fill="#60a5fa" opacity="0.18"/>
+  <text x="80" y="250" fill="#ffffff" font-size="72" font-family="Arial, sans-serif" font-weight="700">
+    Play Point Calculator
+  </text>
+  <text x="80" y="340" fill="#dbeafe" font-size="42" font-family="Arial, sans-serif">
+    Estimate spend and points in seconds
+  </text>
+  <text x="80" y="430" fill="#a5f3fc" font-size="34" font-family="Arial, sans-serif">
+    playpoint-sim.com
+  </text>
+</svg>
+

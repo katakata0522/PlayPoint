@@ -36,7 +36,7 @@ const PP_REGION_CONFIGS = {
             'tooltip-reverse-status': `<strong>【ステータスごとの基本還元率】</strong><ul><li><strong>ブロンズ:</strong> 1.0 pt / 100円</li><li><strong>シルバー:</strong> 1.25 pt / 100円</li><li><strong>ゴールド:</strong> 1.5 pt / 100円</li><li><strong>プラチナ:</strong> 1.75 pt / 100円</li><li><strong>ダイヤモンド:</strong> 2.0 pt / 100円</li></ul>`
         },
         uiText: {
-            title: "Playポイント計算機", mainTitle: "Playポイント計算機",
+            title: "Playポイント計算機 | あといくらでレベルアップ？", mainTitle: "Playポイント計算機",
             siteDescription: "現在のステータスから目標達成までの必要課金額の計算ができます！<br>さらに課金額から獲得できるポイントも計算できます！",
             tabMain: "通常計算", tabReverse: "逆算モード", tabDiary: "ほくほくリワード日記",
             sectionTitleStatus: "ステータス入力", labelCurrentStatus: "現在のステータス",
@@ -85,7 +85,7 @@ const PP_REGION_CONFIGS = {
             'tooltip-reverse-status': `<strong>Base points rate per status:</strong><ul><li><strong>Bronze:</strong> 1.0 pt / $1</li><li><strong>Silver:</strong> 1.1 pts / $1</li><li><strong>Gold:</strong> 1.2 pts / $1</li><li><strong>Platinum:</strong> 1.4 pts / $1</li><li><strong>Diamond:</strong> 1.6 pts / $1</li></ul>`
         },
         uiText: {
-            title: "Play Points Calculator", mainTitle: "Play Points Calculator",
+            title: "Play Points Calculator | How much to level up?", mainTitle: "Play Points Calculator",
             siteDescription: "Calculate how much you need to spend to reach your goal status!<br>Also, calculate how many points you can earn from your spending!",
             tabMain: "Standard", tabReverse: "Reverse", tabDiary: "Weekly Awards Diary",
             sectionTitleStatus: "Status Input", labelCurrentStatus: "Current Status",

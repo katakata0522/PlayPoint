@@ -108,7 +108,7 @@ function reverseCalculate() {
 }
 
 function shareOnTwitter(text) {
-    const siteUrl = "https://www.playpoint-sim.com/";
+    const siteUrl = "https://playpoint-sim.com/";
     const fullText = `${text}
 
 #Playポイント計算してみた
@@ -130,7 +130,7 @@ function copyResult() {
 目標ステータス： ${targetStatusLabel}
 必要な課金額の目安： 約${formattedYen}${config.currencySymbol}
 
-計算元：Playポイント計算機 ( https://www.playpoint-sim.com/ )`;
+計算元：Playポイント計算機 ( https://playpoint-sim.com/ )`;
     
     navigator.clipboard.writeText(textToCopy)
         .then(() => { showToast("クリップボードにコピーしました！"); })

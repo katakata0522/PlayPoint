@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED6D0FR4L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HED6D0FR4L');
+    </script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Playポイント計算機 | あといくらでレベルアップ？</title>
+    <meta name="description" content="Google Playポイントの計算ツール。現在のステータスから、次のランク（ダイヤモンド・プラチナ）までの必要課金額を一瞬で計算！お得なキャンペーン時のポイント獲得シミュレーションや、ポイント履歴の日記機能も搭載。">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://playpoint-sim.com/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:title" content="Playポイント計算機 | あといくらでレベルアップ？">
+    <meta property="og:description" content="あといくら課金すればレベルアップできる？目標までの金額を即座に計算！">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playpoint-sim.com/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta property="og:site_name" content="Playポイント計算機">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Playポイント計算機 | あといくらでレベルアップ？">
+    <meta name="twitter:description" content="Google Playポイントの課金額と獲得ポイントをかんたんに試算できる無料計算機。">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+
+    <link rel="stylesheet" href="style.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Playポイント計算機",
+      "operatingSystem": "Web",
+      "applicationCategory": "UtilitiesApplication",
+      "description": "Google Playポイントの現在のステータスから目標ランク（ダイヤモンド・プラチナ）までの必要課金額を計算するツールです。",
+      "url": "https://playpoint-sim.com/",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    }
+    </script>
+</head>
+<body>
+
+<main class="calculator-wrapper">
+   <div class="top-bar">
+        <button id="theme-toggle" aria-label="テーマ切り替え"></button>
+        <div class="region-switch">
+            <button data-region="JP" class="active">日本語</button>
+            <button data-region="US">English</button>
+        </div>
+        <div class="header-links">
+            <a href="attention.html" target="_blank" style="color: #dc3545; font-weight: bold;">⚠️ Country Diff</a>
+            <span style="color: #ccc; margin: 0 5px;">|</span>
+            <a href="privacy.html" target="_blank" data-lang-key="linkPrivacy">プライバシーポリシー</a>
+            <a href="terms.html" target="_blank" data-lang-key="linkTerms">利用規約</a>
+        </div>
+    </div>
+
+    <h1 id="main-title" data-lang-key="mainTitle">Playポイント計算機</h1>
+    <p id="site-description" data-lang-key="siteDescription">現在のステータスから目標達成までの必要課金額の計算ができます！<br>さらに課金額から獲得できるポイントも計算できます！</p>
+
+    <div class="tab-switch">
+        <button id="tab-main" data-mode="main" class="active" data-lang-key="tabMain">通常計算</button>
+        <button id="tab-reverse" data-mode="reverse" data-lang-key="tabReverse">逆算モード</button>
+        <button id="tab-diary" data-mode="diary" data-lang-key="tabDiary">ほくほくリワード日記</button>
+    </div>
+
+    <div id="mainMode">
+        <div class="section">
+            <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
+            <label for="currentStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-current-status"></div>
+            </label>
+            <select id="currentStatus"></select>
+            
+            <label for="targetStatus" class="label-with-tooltip" data-lang-key="labelTargetStatus">目標ステータス
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-target-status"></div>
+            </label>
+            <select id="targetStatus"></select>
+            
+            <label for="neededPoints" class="label-with-tooltip" data-lang-key="labelNeededPoints">目標までの必要ポイント
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-needed-points"></div>
+            </label>
+            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric">
+        </div>
+        <div class="section">
+            <h2 data-lang-key="sectionTitleRate">還元設定</h2>
+            <label for="baseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-base-rate"></div>
+            </label>
+            <input type="number" id="baseRate" value="1.5" step="0.01" min="0.1" max="100" inputmode="decimal">
+
+            <label for="multiplier" class="label-with-tooltip" data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-multiplier"></div>
+            </label>
+            <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
+
+            <div class="warning" data-lang-key="warningRate">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+        </div>
+        <div class="section">
+            <button id="calculateButton" data-lang-key="calculateButton">課金額を計算</button>
+            <div class="result" id="result" aria-live="polite"></div>
+            <button id="copyButton" class="hidden" data-lang-key="copyButton">コピーする</button>
+            <button id="tweetButton" class="hidden" data-lang-key="tweetButton">結果をXでシェア</button>
+        </div>
+    </div>
+
+    <div id="reverseMode" class="hidden">
+        <div class="section">
+            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
+            <label for="amountYen" class="label-with-tooltip" data-lang-key="labelAmountYen">課金額（円）
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-amount-yen"></div>
+            </label>
+            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric">
+
+            <label for="reverseStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">現在のステータス
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-status"></div>
+            </label>
+            <select id="reverseStatus"></select>
+
+            <label for="reverseBaseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">100円あたりの基本還元ポイント
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
+            </label>
+            <input type="number" id="reverseBaseRate" value="1.5" step="0.01" min="0.1" max="100" inputmode="decimal">
+            
+            <label for="reverseMultiplier" class="label-with-tooltip" data-lang-key="labelMultiplierReverse">キャンペーン倍率
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
+            </label>
+            <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
+
+            <div class="warning" data-lang-key="warningRate">
+                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
+            </div>
+        </div>
+         <div class="section">
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
+            <div class="result" id="reverseResult" aria-live="polite"></div>
+            <button id="share-twitter-reverse" class="hidden">
+                <span data-lang-key="tweetButton">結果をXでシェア</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="diaryMode" class="hidden">
+        <div class="diary-header">
+            <button id="prevYearBtn" aria-label="前の年へ"><</button>
+            <h2 id="currentYear">2025</h2>
+            <button id="nextYearBtn" aria-label="次の年へ">></button>
+        </div>
+        <div id="monthSelector" class="month-selector"></div>
+        <div class="diary-input-area">
+            <h3 id="selectedMonth">１月</h3>
+            <div id="weekInputs" class="week-inputs"></div>
+        </div>
+        <div class="diary-summary" aria-live="polite">
+            <div class="summary-box">
+                <h4 data-lang-key="monthlySummaryTitle">月間集計</h4>
+                <dl>
+                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dd><span id="monthlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
+                    <dt data-lang-key="averageLabel">平均:</dt>
+                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                </dl>
+            </div>
+            <div class="summary-box">
+                <h4 data-lang-key="yearlySummaryTitle">年間集計</h4>
+                <dl>
+                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dd><span id="yearlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
+                    <dt data-lang-key="averageLabel">平均:</dt>
+                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                </dl>
+            </div>
+        </div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
+            【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <p>
+          <a href="info.html" data-lang-key="linkQA">Q&A・あとがき</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
+          <a href="about-playpoints.html" data-lang-key="linkAbout">Playポイントとは？</a>
+        </p>
+        <p class="copyright">
+          © <span id="copyright-year"></span> PlayPoint Simulation Tool
+        </p>
+    </footer>
+    
+    <div id="toast" class="toast"></div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/diary.js"></script>
+<script src="js/calculator.js"></script>
+<script src="js/main.js"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455" crossorigin="anonymous"></script>
+
+</body>
+</html>
