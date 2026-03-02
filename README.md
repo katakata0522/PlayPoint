@@ -44,6 +44,8 @@ Google Playのポイント制度に対応した、
 ## 📊 SEO運用
 
 - [Search Console監視ガイド](docs/SEARCH_CONSOLE_MONITORING.md)
+- 毎週自動チェック: `.github/workflows/seo-healthcheck.yml`
+- 人間向けサイトマップ: `https://playpoint-sim.com/sitemap.html`
 
 ---
 

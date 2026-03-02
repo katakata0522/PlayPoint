@@ -1,0 +1,53 @@
+name: SEO Health Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 20 * * 0"
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check technical SEO basics
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          urls=(
+            "https://playpoint-sim.com/"
+            "https://playpoint-sim.com/about-playpoints.html"
+            "https://playpoint-sim.com/info.html"
+            "https://playpoint-sim.com/privacy.html"
+            "https://playpoint-sim.com/terms.html"
+            "https://playpoint-sim.com/attention.html"
+            "https://playpoint-sim.com/sitemap.html"
+          )
+
+          fail=0
+          for url in "${urls[@]}"; do
+            echo "=== ${url} ==="
+            code=$(curl -L -s -o /tmp/seo_page.html -w "%{http_code}" "${url}")
+            if [[ "${code}" != "200" ]]; then
+              echo "HTTP status NG: ${code}"
+              fail=1
+              continue
+            fi
+
+            grep -qi '<title>' /tmp/seo_page.html || { echo "title missing"; fail=1; }
+            grep -qi 'meta name="description"' /tmp/seo_page.html || { echo "description missing"; fail=1; }
+            grep -qi 'rel="canonical"' /tmp/seo_page.html || { echo "canonical missing"; fail=1; }
+            grep -qi 'meta name="robots"' /tmp/seo_page.html || { echo "robots missing"; fail=1; }
+            grep -qi 'application/ld+json' /tmp/seo_page.html || { echo "structured data missing"; fail=1; }
+          done
+
+          echo "=== robots/sitemap ==="
+          curl -fsSL "https://playpoint-sim.com/robots.txt" | grep -q "Sitemap:" || { echo "robots sitemap missing"; fail=1; }
+          curl -fsSL "https://playpoint-sim.com/sitemap.xml" | grep -q "<urlset" || { echo "sitemap invalid"; fail=1; }
+
+          if [[ "${fail}" -ne 0 ]]; then
+            echo "SEO health check failed"
+            exit 1
+          fi
+
+          echo "SEO health check passed"
