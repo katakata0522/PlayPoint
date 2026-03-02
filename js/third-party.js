@@ -6,6 +6,7 @@
 
     let gaLoaded = false;
     let adsLoaded = false;
+    let interactionHandled = false;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -56,34 +57,31 @@
         }
     }
 
-    function onFirstInteraction() {
-        // ユーザー操作後に広告系を読み込んで初期表示を高速化
-        loadAdsense();
-        window.removeEventListener('pointerdown', onFirstInteraction);
-        window.removeEventListener('keydown', onFirstInteraction);
-        window.removeEventListener('touchstart', onFirstInteraction);
-        window.removeEventListener('scroll', onFirstInteraction);
-    }
+    function loadThirdPartyAfterInteraction() {
+        if (interactionHandled) return;
+        interactionHandled = true;
 
-    // 計測は軽量なのでアイドル時に先行ロード
-    if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(() => {
-            loadAnalytics();
-        }, { timeout: 3000 });
-    } else {
+        // 初回操作後に第三者スクリプトを段階的に読み込み、初期描画への影響を抑える
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+                loadAnalytics();
+            }, { timeout: 1500 });
+            window.requestIdleCallback(() => {
+                loadAdsense();
+            }, { timeout: 3000 });
+            return;
+        }
+
         setTimeout(() => {
             loadAnalytics();
-        }, 3000);
+        }, 800);
+        setTimeout(() => {
+            loadAdsense();
+        }, 1800);
     }
 
-    // 広告は操作後ロード。無操作でも一定時間後に遅延ロード。
-    window.addEventListener('pointerdown', onFirstInteraction, { once: true, passive: true });
-    window.addEventListener('keydown', onFirstInteraction, { once: true, passive: true });
-    window.addEventListener('touchstart', onFirstInteraction, { once: true, passive: true });
-    window.addEventListener('scroll', onFirstInteraction, { once: true, passive: true });
-
-    setTimeout(() => {
-        if (!adsLoaded) loadAdsense();
-    }, 15000);
+    // 初回操作の発生までは第三者スクリプトを読み込まない
+    window.addEventListener('pointerdown', loadThirdPartyAfterInteraction, { once: true, passive: true });
+    window.addEventListener('keydown', loadThirdPartyAfterInteraction, { once: true, passive: true });
+    window.addEventListener('touchstart', loadThirdPartyAfterInteraction, { once: true, passive: true });
 })();
-

@@ -3,6 +3,7 @@
   --text-color: #333;
   --link-color: #555;
   --link-hover-color: #007bff;
+  --alert-link-color: #b4232c;
   --section-bg-color: #fff;
   --section-shadow: 0 3px 12px rgba(0,0,0,0.08);
   --input-bg-color: #fafafa;
@@ -10,6 +11,7 @@
   --input-focus-border-color: #007bff;
   --button-bg-color: #28a745;
   --button-hover-bg-color: #218838;
+  --button-text-color: #fff;
   --button-disabled-bg-color: #aaa;
   --result-bg-color: #f8f9fa;
   --result-border-color: #28a745;
@@ -24,20 +26,22 @@
   --text-color: #e0e0e0;
   --link-color: #bbb;
   --link-hover-color: #8ab4f8;
+  --alert-link-color: #ff8f8f;
   --section-bg-color: #1e1e1e;
   --section-shadow: 0 3px 12px rgba(0,0,0,0.3);
   --input-bg-color: #2e2e2e;
   --input-border-color: #555;
   --input-focus-border-color: #8ab4f8;
-  --button-bg-color: #3a86ff;
-  --button-hover-bg-color: #0056d9;
+  --button-bg-color: #1f5fbd;
+  --button-hover-bg-color: #174d99;
+  --button-text-color: #f8fbff;
   --button-disabled-bg-color: #555;
   --result-bg-color: #2e2e2e;
-  --result-border-color: #3a86ff;
+  --result-border-color: #1f5fbd;
   --tab-inactive-bg-color: #444;
-  --warning-bg-color: #5d3a3a;
+  --warning-bg-color: #4a2a2a;
   --warning-border-color: #a94442;
-  --warning-text-color: #ff8a80;
+  --warning-text-color: #ffd2cc;
 }
 
 
@@ -203,7 +207,7 @@ input:focus, select:focus {
 
 button {
   background: var(--button-bg-color);
-  color: white;
+  color: var(--button-text-color);
   transition: background-color 0.2s ease;
   box-shadow: 0 2px 0 #1e7e34;
 }
@@ -254,7 +258,7 @@ button:disabled {
   color: #aaa;
 }
 [data-theme="dark"] .copyright {
-    color: #555;
+    color: #c3c8cf;
 }
 
 
@@ -266,7 +270,7 @@ button:disabled {
 }
 .region-switch button.active {
   background: var(--button-bg-color);
-  color: #fff;
+  color: var(--button-text-color);
   border-color: var(--button-bg-color);
 }
 
@@ -296,8 +300,13 @@ button:disabled {
 }
 .month-selector button.active {
     background: var(--button-bg-color);
-    color: #fff;
+    color: var(--button-text-color);
     border-color: var(--button-bg-color);
+}
+
+.header-links .alert-link {
+  color: var(--alert-link-color);
+  font-weight: 700;
 }
 
 .diary-input-area {
