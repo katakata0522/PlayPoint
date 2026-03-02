@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【ギフトカード】Google Playギフトカードでポイントは貯まる？チャージ時と使用時の違い</title>
+    <meta name="description" content="Google Playギフトカードをチャージしてもポイントは貯まらない？ギフトカードとPlay Pointsの関係、ポイントが付与されるタイミングを解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-gift-card.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="ギフトカードでポイントは貯まる？チャージと使用の違い" />
+    <meta property="og:description" content="ギフトカードチャージ時はポイント対象外。使用時に貯まる仕組みを解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-gift-card.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/gift-card.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #14b8a6;
+            --accent-light: #ccfbf1;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #0d9488;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #0d9488;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #0d9488;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #92400e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-info h3 {
+            color: #0d9488;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #0d9488;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #0d9488;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <div class="hero">
+            <span class="hero-badge">🎁 ギフトカード</span>
+            <h1>Google Playギフトカードで<br>ポイントは貯まる？</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 3分</p>
+        </div>
+
+        <article class="content">
+            <div class="intro">
+                <strong>結論：チャージ時は貯まらない</strong><br>
+                ギフトカードで追加した残高を「使った時」にポイントが貯まります
+            </div>
+
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ul>
+                    <li>ギフトカードチャージ時のポイント</li>
+                    <li>残高使用時のポイント付与</li>
+                    <li>よくある勘違いと注意点</li>
+                </ul>
+            </div>
+
+            <section class="section">
+                <h2>❌ チャージ時はポイントが貯まらない</h2>
+                <p>Google Playギフトカードをアカウントに追加（チャージ）しても、<strong>その時点ではポイントは貯まりません</strong>。</p>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ よくある勘違い</h3>
+                    <p>「1万円分チャージしたから100ポイント貯まる」と思いがちですが、<strong>チャージ自体は購入ではない</strong>ため、ポイント対象外です。</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>✅ 残高を使った時にポイントが貯まる</h2>
+                <p>ギフトカードで追加した<strong>Google Play残高を使って購入した時</strong>に、ポイントが付与されます。</p>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>タイミング</th>
+                            <th>ポイント付与</th>
+                        </tr>
+                        <tr>
+                            <td>ギフトカードをチャージした時</td>
+                            <td><strong>❌ 貯まらない</strong></td>
+                        </tr>
+                        <tr>
+                            <td>残高でアプリ/課金を購入した時</td>
+                            <td><strong>✅ 貯まる</strong></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="callout callout-success">
+                    <h3>✅ つまり</h3>
+                    <p>ギフトカードで追加した残高も、<strong>使えばちゃんとポイントが貯まります</strong>。チャージ時ではなく「使用時」に貯まる、という仕組みです。</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>💡 ギフトカードを使う時のポイント</h2>
+                <ul>
+                    <li>チャージ後、アプリやゲームで課金すればポイントが貯まる</li>
+                    <li>映画・書籍など他のコンテンツ購入でもOK</li>
+                    <li>ランクに応じた獲得レートが適用される</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. コンビニでギフトカードを買った時にポイントはつく？</h3>
+                    <p>A. いいえ。コンビニでの購入はGoogle Playの購入ではないため、<strong>Play Pointsは貯まりません</strong>（コンビニ側のポイントカードは別）。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. セールでギフトカードを安く買ったら、その分お得？</h3>
+                    <p>A. はい！例えば1万円分のカードを9,000円で買えれば、<strong>実質的に還元率が上がる</strong>計算になります。使用時にポイントも貯まります。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 残高とクレジットカードを併用した場合は？</h3>
+                    <p>A. 購入金額に対してポイントが貯まります。残高で払った分も、クレジットで払った分も、<strong>購入全体に対してポイントが付与</strong>されます。</p>
+                </div>
+            </section>
+
+            <div class="cta-box">
+                <h3>🔢 残高でどれくらいポイントが貯まる？</h3>
+                <p>購入予定額を入力してシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="callout callout-info">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li>ギフトカードのチャージ時は<strong>ポイント対象外</strong></li>
+                    <li>残高を<strong>使った時</strong>にポイントが貯まる</li>
+                    <li>セールで安く買えれば実質還元率UP</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Google Playギフトカードでポイントは貯まる？",
+        "description": "ギフトカードチャージ時はポイント対象外。残高を使った時にポイントが貯まる仕組みを解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "コンビニでギフトカードを買った時にポイントはつく？",
+                "acceptedAnswer": { "@type": "Answer", "text": "いいえ。コンビニでの購入はGoogle Playの購入ではないため、Play Pointsは貯まりません。" }
+            },
+            {
+                "@type": "Question",
+                "name": "セールでギフトカードを安く買ったらお得？",
+                "acceptedAnswer": { "@type": "Answer", "text": "はい。例えば1万円分のカードを9,000円で買えれば、実質的に還元率が上がる計算になります。" }
+            }
+        ]
+    }
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

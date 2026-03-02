@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【返金】キャンセル・返金したらポイントはどうなる？Play Pointsの減算ルール</title>
+    <meta name="description" content="Google Playで返金したらポイントは減る？購入キャンセル時のPlay Pointsの扱い、減算されるタイミング、注意点を解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-refund.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="返金したらポイントはどうなる？減算ルールを解説" />
+    <meta property="og:description" content="購入キャンセル時のPlay Pointsの扱いと注意点を解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-refund.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/refund.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #ea580c;
+            --accent-light: #ffedd5;
+            --warning: #dc2626;
+            --warning-light: #fee2e2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #c2410c;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #c2410c;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #c2410c;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #991b1b;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-info h3 {
+            color: #c2410c;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #c2410c;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #c2410c;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <div class="hero">
+            <span class="hero-badge">💸 返金・キャンセル</span>
+            <h1>返金したらポイントはどうなる？<br>減算ルールを解説</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 3分</p>
+        </div>
+
+        <article class="content">
+            <div class="intro">
+                <strong>結論：返金されるとポイントも減算される</strong><br>
+                購入がキャンセルされた場合、付与されたポイントも差し引かれます
+            </div>
+
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ul>
+                    <li>返金時のポイント減算ルール</li>
+                    <li>ポイントをすでに使っていた場合</li>
+                    <li>ランクへの影響</li>
+                </ul>
+            </div>
+
+            <section class="section">
+                <h2>📋 基本ルール：返金=ポイント減算</h2>
+                <p>Google Playで購入をキャンセル・返金した場合、<strong>その購入で付与されたポイントは差し引かれます</strong>。</p>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ 重要</h3>
+                    <p>これはPlay Pointsの仕組み上、当然のルールです。「買ってポイントをもらって返金」という手法は<strong>成立しません</strong>。</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>❓ ポイントをすでに使っていた場合は？</h2>
+                <p>返金対象の購入で得たポイントをすでに使ってしまっていた場合、<strong>ポイント残高がマイナスになる可能性</strong>があります。</p>
+
+                <div class="callout callout-info">
+                    <h3>💡 例えば</h3>
+                    <ul>
+                        <li>1,000円の購入で10ポイント獲得</li>
+                        <li>その10ポイントを使用</li>
+                        <li>購入を返金 → <strong>ポイント残高が-10になる可能性</strong></li>
+                    </ul>
+                </div>
+
+                <p class="small">※マイナス残高の詳細な処理はGoogle側の判断によります。</p>
+            </section>
+
+            <section class="section">
+                <h2>🏆 ランクへの影響は？</h2>
+                <p>ランクは<strong>年間の獲得ポイント</strong>で決まります。返金によってポイントが減算されると、<strong>ランク判定にも影響する可能性</strong>があります。</p>
+
+                <ul>
+                    <li>年末ギリギリで返金すると、ランク維持に届かなくなる可能性</li>
+                    <li>大きな金額の返金は累計ポイントに大きく影響</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2>✅ 正しい使い方</h2>
+                <div class="callout callout-success">
+                    <h3>✅ ポイント目的の返金はNG</h3>
+                    <p>Play Pointsは「正当な購入」に対して付与されるものです。返金を前提にした購入は、ポイントプログラムの不正利用とみなされる可能性があります。</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. 返金したらポイントはいつ減る？</h3>
+                    <p>A. 返金処理が完了した後に減算されます。タイミングは返金の種類や処理状況により異なります。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 間違って購入したものを返金したらどうなる？</h3>
+                    <p>A. 通常通りポイントは減算されます。間違い購入でも、返金されればポイントも返還されます。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 定期購入をキャンセルした場合は？</h3>
+                    <p>A. 将来の支払いがキャンセルされるだけなので、<strong>すでに支払った分のポイントはそのまま</strong>です。返金を伴う場合は減算対象。</p>
+                </div>
+            </section>
+
+            <div class="cta-box">
+                <h3>🔢 現在のポイント状況を確認</h3>
+                <p>ランクアップまでの距離をシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="callout callout-info">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li>返金するとポイントも<strong>減算される</strong></li>
+                    <li>使用済みポイントは<strong>マイナスになる可能性</strong></li>
+                    <li>ランク判定にも<strong>影響あり</strong></li>
+                    <li>ポイント目的の返金は<strong>NG</strong></li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "返金したらポイントはどうなる？Play Pointsの減算ルール",
+        "description": "Google Playで返金したらポイントは減る？購入キャンセル時のPlay Pointsの扱いと注意点を解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "返金したらポイントはいつ減る？",
+                "acceptedAnswer": { "@type": "Answer", "text": "返金処理が完了した後に減算されます。タイミングは返金の種類や処理状況により異なります。" }
+            },
+            {
+                "@type": "Question",
+                "name": "定期購入をキャンセルした場合は？",
+                "acceptedAnswer": { "@type": "Answer", "text": "将来の支払いがキャンセルされるだけなので、すでに支払った分のポイントはそのままです。返金を伴う場合は減算対象。" }
+            }
+        ]
+    }
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

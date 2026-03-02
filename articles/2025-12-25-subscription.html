@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【サブスク】YouTube Premium・Google Oneでポイントは貯まる？定期購入とPlay Pointsの関係</title>
+    <meta name="description"
+        content="YouTube PremiumやGoogle Oneなどのサブスク（定期購入）でGoogle Play Pointsは貯まる？定期購入がポイント対象になる条件と注意点を解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-subscription.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="サブスクでポイントは貯まる？定期購入とPlay Points" />
+    <meta property="og:description" content="YouTube PremiumやGoogle Oneなどの定期購入がポイント対象になる条件と注意点を解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-subscription.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/subscription.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #ef4444;
+            --accent-light: #fef2f2;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --info: #3b82f6;
+            --info-light: #dbeafe;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #b91c1c;
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #15803d;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #b91c1c;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #92400e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--info-light);
+            border-left: 4px solid var(--info);
+        }
+
+        .callout-info h3 {
+            color: #1d4ed8;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ========== Table ========== */
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== FAQ ========== */
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #b91c1c;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #b91c1c;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">📱 サブスク</span>
+            <h1>YouTube Premium・Google Oneで<br>ポイントは貯まる？</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 4分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>定期購入（サブスク）でもポイントは貯まる？</strong><br>
+                条件と注意点を解説します。
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 結論（先出し）</h2>
+                <ul>
+                    <li><strong>Google Play経由の定期購入</strong>はポイント対象になり得る</li>
+                    <li>ただし<strong>支払い方法や契約経路</strong>によっては対象外の場合も</li>
+                    <li>ポイント履歴で<strong>実際に貯まっているか確認</strong>するのが確実</li>
+                </ul>
+            </div>
+
+            <!-- Section: 基本ルール -->
+            <section class="section">
+                <h2>📋 基本ルール：ポイント対象になる定期購入</h2>
+                <p>Google Play Pointsでは、<strong>Google Playストア経由で購入した定期購入</strong>がポイント対象になり得ます。</p>
+
+                <h3>対象になり得る例</h3>
+                <ul>
+                    <li><strong>YouTube Premium</strong>（Google Play経由で契約した場合）</li>
+                    <li><strong>Google One</strong></li>
+                    <li><strong>アプリ内の定期購入</strong>（ゲームの月額プラン、音楽アプリのサブスクなど）</li>
+                </ul>
+
+                <div class="callout callout-success">
+                    <h3>✅ ポイント</h3>
+                    <p>重要なのは<strong>「Google Playを通じて支払っているか」</strong>です。同じサービスでも、契約経路が違うとポイント対象外になることがあります。</p>
+                </div>
+            </section>
+
+            <!-- Section: 対象外の例 -->
+            <section class="section">
+                <h2>❌ ポイント対象外になる可能性があるケース</h2>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ 注意が必要なケース</h3>
+                    <ul>
+                        <li>YouTube公式サイトやiOS経由で契約したYouTube Premium</li>
+                        <li>キャリア決済やクレジットカード直接払いで契約したサービス</li>
+                        <li>Google Play以外のプラットフォームで購入した定期購入</li>
+                        <li>一部の特別プラン（ファミリープランなど）</li>
+                    </ul>
+                </div>
+
+                <p class="small">※対象・対象外の判定はサービスや時期によって変わる可能性があります。</p>
+            </section>
+
+            <!-- Section: 確認方法 -->
+            <section class="section">
+                <h2>🔍 ポイントが貯まっているか確認する方法</h2>
+                <p>実際にポイントが付与されているかは、<strong>ポイント履歴</strong>で確認できます。</p>
+
+                <ol>
+                    <li>Google Playストアを開く</li>
+                    <li>プロフィール → <strong>Play Points</strong></li>
+                    <li><strong>「履歴」または「ポイント履歴」</strong>をタップ</li>
+                    <li>定期購入の支払いにポイントが付与されているかチェック</li>
+                </ol>
+
+                <div class="callout callout-info">
+                    <h3>💡 ヒント</h3>
+                    <p>ポイントの付与は購入直後ではなく、<strong>数日かかる場合</strong>もあります。すぐに表示されなくても、しばらく待ってから再確認してみてください。</p>
+                </div>
+            </section>
+
+            <!-- Section: サービス別 -->
+            <section class="section">
+                <h2>📺 主なサービス別の考え方</h2>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>サービス</th>
+                            <th>ポイント対象になる条件</th>
+                        </tr>
+                        <tr>
+                            <td><strong>YouTube Premium</strong></td>
+                            <td>Google Play経由で契約＆支払いしている場合</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Google One</strong></td>
+                            <td>通常は対象（Google Play経由のため）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ゲームアプリの月額プラン</strong></td>
+                            <td>Google Play内で購入した場合</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Spotify, Netflix等</strong></td>
+                            <td>Google Play経由で契約している場合のみ</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="small">※上記は一般的な考え方です。実際の対象可否はポイント履歴で確認してください。</p>
+            </section>
+
+            <!-- Section: FAQ -->
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. YouTube Premiumでポイントを貯めたいけど、今の契約を変えられる？</h3>
+                    <p>A. 現在の契約を解約し、Google Playストア経由で再契約することで対象になる可能性があります。ただし、無料トライアル期間や特典が失効する場合があるので注意。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 毎月のサブスク料金でどれくらいポイントが貯まる？</h3>
+                    <p>A. ランクによります。例えばブロンズで月額1,180円のサービスなら、約11ポイント/月が目安です。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ファミリープランはポイント対象？</h3>
+                    <p>A. ファミリープランの種類やサービスによって異なります。ポイント履歴で実際に確認するのが確実です。</p>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 サブスクでどれくらい貯まる？</h3>
+                <p>月額料金を入力してポイント獲得数をシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- まとめ -->
+            <div class="callout callout-success">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li><strong>Google Play経由の定期購入</strong>はポイント対象になり得る</li>
+                    <li>契約経路によっては<strong>対象外</strong>の場合も</li>
+                    <li>確実なのは<strong>ポイント履歴で確認</strong></li>
+                    <li>毎月の支払いで<strong>コツコツ貯まる</strong></li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "【サブスク】YouTube Premium・Google Oneでポイントは貯まる？",
+        "description": "YouTube PremiumやGoogle Oneなどのサブスク（定期購入）でGoogle Play Pointsは貯まる？定期購入がポイント対象になる条件と注意点を解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "YouTube Premiumでポイントを貯めたいけど契約を変えられる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "現在の契約を解約し、Google Playストア経由で再契約することで対象になる可能性があります。ただし、無料トライアル期間や特典が失効する場合があるので注意。" }
+            },
+            {
+                "@type": "Question",
+                "name": "毎月のサブスク料金でどれくらいポイントが貯まる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "ランクによります。例えばブロンズで月額1,180円のサービスなら、約11ポイント/月が目安です。" }
+            },
+            {
+                "@type": "Question",
+                "name": "ファミリープランはポイント対象？",
+                "acceptedAnswer": { "@type": "Answer", "text": "ファミリープランの種類やサービスによって異なります。ポイント履歴で実際に確認するのが確実です。" }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AdSense Auto Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

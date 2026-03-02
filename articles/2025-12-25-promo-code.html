@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【プロモコード】プロモーション・割引時にPlay Pointsは貯まる？</title>
+    <meta name="description" content="プロモコードや割引を使った購入でもGoogle Play Pointsは貯まる？割引適用後の金額でポイント計算される仕組みを解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-promo-code.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="プロモコードでもポイントは貯まる？" />
+    <meta property="og:description" content="割引適用後の金額でポイントが計算される仕組みを解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-promo-code.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/promo-code.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --warning: #dc2626;
+            --warning-light: #fee2e2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --info: #3b82f6;
+            --info-light: #dbeafe;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #b45309;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #b45309;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #b45309;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #991b1b;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--info-light);
+            border-left: 4px solid var(--info);
+        }
+
+        .callout-info h3 {
+            color: #1d4ed8;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .example-box {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .example-box h3 {
+            color: var(--accent);
+            margin: 0 0 1rem;
+        }
+
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #b45309;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #b45309;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <div class="hero">
+            <span class="hero-badge">🏷️ プロモコード</span>
+            <h1>プロモ・割引でも<br>ポイントは貯まる？</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 3分</p>
+        </div>
+
+        <article class="content">
+            <div class="intro">
+                <strong>結論：貯まる！一般的に実際の支払い額が計算対象</strong><br>
+                プロモコードを使っても、支払いがあればポイント対象です
+            </div>
+
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ul>
+                    <li>プロモコード使用時のポイント計算</li>
+                    <li>割引後の金額で計算される仕組み</li>
+                    <li>注意点と例外</li>
+                </ul>
+            </div>
+
+            <section class="section">
+                <h2>✅ プロモコードでもポイントは貯まる</h2>
+                <p>プロモーションコードやクーポンを使った購入でも、<strong>Play Pointsは貯まります</strong>。</p>
+                <p>ただし、ポイントの計算は<strong>「実際に支払った金額」</strong>がベースになります。</p>
+            </section>
+
+            <section class="section">
+                <h2>💰 一般的に実際の支払い額で計算</h2>
+                <p>Play Pointsは購入金額に応じて付与されるため、<strong>割引後の実際に支払った金額</strong>がポイント計算の対象になると考えられます。</p>
+                <p>例えば1,000円のアプリを500円割引のプロモコードを使って購入した場合：</p>
+
+                <div class="example-box">
+                    <h3>📝 計算例</h3>
+                    <ul>
+                        <li>アプリ価格：1,000円</li>
+                        <li>プロモコード割引：-500円</li>
+                        <li>実際の支払い：<strong>500円</strong></li>
+                        <li>ポイント計算対象：<strong>500円</strong>（割引後）</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-info">
+                    <h3>💡 つまり</h3>
+                    <p>プロモコードで安く買えた分、ポイントも少なくなる可能性があります。詳細は<strong>購入後のポイント履歴</strong>で確認してください。</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2">⚠️ 注意点</h2>
+
+                    <div class="callout callout-warning">
+                        <h3>⚠️ 完全無料の場合はポイント対象外</h3>
+                        <p>100%オフのプロモーションで<strong>支払いが0円</strong>の場合、ポイントは付与されません。支払いがなければポイントもなし、という仕組みです。</p>
+                    </div>
+
+                    <ul>
+                        <li>一部のプロモーションは対象外の場合あり</li>
+                        <li>プロモコードの種類によってはルールが異なる可能性</li>
+                        <li>詳細は購入後のポイント履歴で確認</li>
+                    </ul>
+            </section>
+
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. セールで安くなった時もポイントは貯まる？</h3>
+                    <p>A. はい、貯まります。セール価格（割引後の価格）に対してポイントが計算されます。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. Play Pointsで交換したクーポンを使った場合は？</h3>
+                    <p>A. クーポンで割引された後の<strong>実際の支払い額</strong>に対してポイントが付与されます。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. プロモコードとキャンペーン倍率は併用できる？</h3>
+                    <p>A. キャンペーンによってはルールが異なります。「他の特典と併用不可」と書かれている場合は注意が必要です。</p>
+                </div>
+            </section>
+
+            <div class="cta-box">
+                <h3>🔢 割引後でいくらポイントが貯まる？</h3>
+                <p>支払い予定額を入力してシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="callout callout-success">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li>プロモコードでもポイントは<strong>貯まる</strong></li>
+                    <li>計算は<strong>割引後の支払い額</strong>ベース</li>
+                    <li>0円購入は<strong>ポイント対象外</strong></li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+        </footer>
+    </main>
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "プロモコード・割引でもPlay Pointsは貯まる？",
+        "description": "プロモコードや割引を使った購入でもGoogle Play Pointsは貯まる？割引適用後の金額でポイント計算される仕組みを解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "セールで安くなった時もポイントは貯まる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "はい、貯まります。セール価格（割引後の価格）に対してポイントが計算されます。" }
+            },
+            {
+                "@type": "Question",
+                "name": "プロモコードとキャンペーン倍率は併用できる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "キャンペーンによってはルールが異なります。「他の特典と併用不可」と書かれている場合は注意が必要です。" }
+            }
+        ]
+    }
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【徹底検証】Google Play Points「ダイヤモンド」は本当にお得？必要ポイントと維持費をシミュレーション</title>
+    <meta name="description"
+        content="Google Play Pointsのダイヤモンドとプラチナを、必要ポイント数と通常時の獲得ポイント（100円ごと）に基づいてシミュレーション。目安の維持費や差を整理します。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="【徹底検証】ダイヤモンドは本当にお得？維持費をシミュレーション" />
+    <meta property="og:description" content="ダイヤモンドとプラチナの差を数字で検証。必要ポイント・維持費・どっちがコスパ良いかを解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/diamond-worth-it.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #667eea;
+            --accent-light: #f0f4ff;
+            --warning: #ff6b6b;
+            --success: #51cf66;
+            --gold: #ffd43b;
+            --diamond: #b9f2ff;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: var(--accent);
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #e3f9e5 0%, #d0f4de 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: var(--warning);
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, #e3f9e5 0%, #d0f4de 100%);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .small a {
+            color: var(--accent);
+        }
+
+        /* ========== Table ========== */
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== Highlight Box ========== */
+        .highlight-box {
+            background: linear-gradient(135deg, #ffd43b33 0%, #ff922b33 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--gold);
+        }
+
+        .diamond-box {
+            background: linear-gradient(135deg, #b9f2ff33 0%, #667eea33 100%);
+            border-left: 4px solid #667eea;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #333;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .article-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .cta-box {
+                padding: 1.5rem;
+            }
+
+            .cta-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">💎 徹底検証</span>
+            <h1>ダイヤモンドは本当にお得？<br>必要ポイントと維持費をシミュレーション</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 5分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>結論：多くの人は「プラチナがコスパ良」</strong><br>
+                ダイヤは"使い方がハマる人向け"の特別なステータスです
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ul>
+                    <li>ダイヤモンドとプラチナの<strong>公式データ比較</strong></li>
+                    <li>翌年も維持するための<strong>目安購入額シミュレーション</strong></li>
+                    <li><strong>どっちが自分に合っているか</strong>の判断基準</li>
+                </ul>
+            </div>
+
+            <!-- Warning -->
+            <div class="callout callout-warning">
+                <h3>⚠️ この試算は「通常時（プロモなし）」の目安です</h3>
+                <p>実際の獲得ポイントは、購入内容・時期・キャンペーン等で変動します。最新の条件はPlayストアの表示と公式ヘルプをご確認ください。</p>
+            </div>
+
+            <!-- Section: 公式データ -->
+            <section class="section">
+                <h2>📊 公式データ：プラチナとダイヤモンドの違い（日本）</h2>
+                <p>Google Play ヘルプ（日本）では、ステータスごとに「必要ポイント数」「100円ごとの獲得ポイント」「特典の種類」が示されています。</p>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>項目</th>
+                            <th>プラチナ</th>
+                            <th>ダイヤモンド</th>
+                        </tr>
+                        <tr>
+                            <td><strong>必要ポイント数（暦年）</strong></td>
+                            <td>4,000〜14,999 pt</td>
+                            <td><strong>15,000 pt以上</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>通常時：100円ごとに貯まるポイント</strong></td>
+                            <td>1.75 pt</td>
+                            <td><strong>2.0 pt</strong></td>
+                        </tr>
+                        <tr>
+                            <td>ウィークリーリワード</td>
+                            <td>あり</td>
+                            <td>あり</td>
+                        </tr>
+                        <tr>
+                            <td>プレミアムサポート</td>
+                            <td>あり</td>
+                            <td>あり</td>
+                        </tr>
+                    </table>
+                </div>
+                <p class="small">※数値・特典の種類は Google Play ヘルプ（日本）の記載に基づきます。</p>
+            </section>
+
+            <!-- Section: シミュレーション -->
+            <section class="section">
+                <h2>🔢 シミュレーション：翌年も維持する場合の"目安購入額"</h2>
+                <p>計算はシンプル：<strong>「必要ポイント ÷（100円ごとの獲得ポイント）× 100」</strong></p>
+
+                <div class="highlight-box">
+                    <h3>👑 プラチナ（4,000pt）の場合</h3>
+                    <p>4,000 ÷ 1.75 × 100円 ≒ <strong>約22.9万円</strong></p>
+                </div>
+
+                <div class="highlight-box diamond-box">
+                    <h3>💎 ダイヤモンド（15,000pt）の場合</h3>
+                    <p>15,000 ÷ 2.0 × 100円 = <strong>75万円</strong></p>
+                </div>
+
+                <p>つまり、通常時の獲得ポイントだけで見ると、ダイヤモンドを狙うのはプラチナより<strong>約3倍以上の支出</strong>が必要になります。</p>
+            </section>
+
+            <!-- Section: 差はどれくらい？ -->
+            <section class="section">
+                <h2>⚖️ 「差」はどれくらい？100円あたり 0.25pt</h2>
+                <p>プラチナ（1.75pt/100円）とダイヤ（2.0pt/100円）の差は、<strong>100円あたり 0.25pt</strong>です。</p>
+                <p>たとえば 10,000円 の購入でも、通常時の差は 25pt 程度。「通常時のポイント効率」だけを見ると、差は意外と大きくありません。</p>
+            </section>
+
+            <!-- Section: どっちが向いている？ -->
+            <section class="section">
+                <h2>🎯 ダイヤモンドが"刺さる人"／プラチナが"安定な人"</h2>
+
+                <div class="callout callout-info">
+                    <h3>💎 ダイヤモンドが向く人</h3>
+                    <ul>
+                        <li>暦年で 15,000pt 以上に現実的に到達する（購入規模が大きい）</li>
+                        <li>ウィークリーリワードやサポートなど、上位特典を「使い切れる」</li>
+                        <li>最上位ステータス自体に価値を感じる</li>
+                    </ul>
+                </div>
+
+                <div class="callout callout-success">
+                    <h3>👑 プラチナが向く人（多くの人）</h3>
+                    <ul>
+                        <li>到達の現実性と特典のバランスを重視したい</li>
+                        <li>ウィークリーリワード＋プレミアムサポートがあれば十分</li>
+                        <li>コスパ重視で無理なく継続したい</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section: 判定ルール -->
+            <section class="section">
+                <h2>📋 ステータスの判定ルール（誤解が多いポイント）</h2>
+                <ul>
+                    <li>ステータスは<strong>1年間（暦年）に貯まったポイント</strong>で判定されます</li>
+                    <li>新しいステータスに達すると、<strong>翌年の年末まで</strong>維持されます</li>
+                </ul>
+                <p class="small">※判定ルールや特典の詳細は、Playストア内のPlay Points表示・公式ヘルプを参照してください。</p>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 「あといくら？」をサクッと計算</h3>
+                <p>今のポイント数から、目標ランクまであといくらくらい？</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機で調べる →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- Section: 免責 -->
+            <section class="section">
+                <h2>📝 免責（大事）</h2>
+                <p class="small">
+                    本記事は Google Play の公式ヘルプに記載された「必要ポイント数」「100円ごとの獲得ポイント」「特典の種類」を根拠に、通常時の目安購入額を試算しています。<br>
+                    実際のポイント獲得は、購入内容・時期・プロモーション等で変動する可能性があります。最新情報は Google Play ストア内の Play Points 表示および公式ヘルプをご確認ください。
+                </p>
+            </section>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points（日本）」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "【徹底検証】Google Play Points「ダイヤモンド」は本当にお得？必要ポイントと維持費をシミュレーション",
+        "description": "Google Play Pointsのダイヤモンドとプラチナを、必要ポイント数と通常時の獲得ポイント（100円ごと）に基づいてシミュレーション。目安の維持費や差を整理します。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Organization", "name": "Playポイント計算機" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <!-- AdSense Auto Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

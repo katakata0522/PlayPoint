@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【年末必見】ランクが下がる？Google Play Pointsの「ランク維持期間」ルールを完全解説</title>
+    <meta name="description"
+        content="Google Play Pointsのランクは「暦年（1/1〜12/31）」で集計され、年初に前年の獲得ポイントに応じて見直されます。維持の考え方、落ちやすいパターン、年末にやるべき確認を分かりやすく解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-playpoints-rank-maintenance.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="【年末必見】ランクが下がる？Play Pointsの「ランク維持期間」ルールを完全解説" />
+    <meta property="og:description" content="ランクは暦年で集計→年初に前年の獲得ポイントで見直し。年末に確認すべきポイントを整理。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-playpoints-rank-maintenance.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/playpoints-rank-maintenance.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #667eea;
+            --accent-light: #f0f4ff;
+            --warning: #ff6b6b;
+            --success: #51cf66;
+            --gold: #ffd43b;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: var(--accent);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #ffd43b 0%, #ff922b 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: var(--warning);
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #e3f9e5 0%, #d0f4de 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-box ol {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: var(--warning);
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ========== Table ========== */
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #333;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== FAQ ========== */
+        .faq {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .faq h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: none;
+            padding: 0;
+        }
+
+        .faq-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .article-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.3rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .cta-box {
+                padding: 1.5rem;
+            }
+
+            .cta-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">⚠️ 年末年始特集</span>
+            <h1>【年末必見】ランクが下がる！？<br>「ランク維持期間」を完全解説</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 3分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>「あと数日で、あなたのランクが下がるかも」</strong><br>
+                年末に焦る前に、仕組みを一回だけ整理しておこう！
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ol>
+                    <li>ランク判定は<strong>1月1日〜12月31日</strong>（暦年）で集計</li>
+                    <li>年が変わると、<strong>前年に獲得したポイント</strong>でランクが見直される</li>
+                    <li>「落ちやすい人」のパターンと、年末にやるべきチェック</li>
+                </ol>
+            </div>
+
+            <!-- Section 1 -->
+            <section class="section">
+                <h2>📅 ルールは「1月1日〜12月31日」の1年間</h2>
+                <p>Play Pointsのランクは、年度（4月〜）ではなく<strong>カレンダー通り</strong>で考えるのが基本です。</p>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>項目</th>
+                            <th>考え方</th>
+                        </tr>
+                        <tr>
+                            <td><strong>集計期間</strong></td>
+                            <td>1月1日〜12月31日（暦年）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>何で決まる？</strong></td>
+                            <td>その年に獲得したポイント数</td>
+                        </tr>
+                        <tr>
+                            <td><strong>いつ見直し？</strong></td>
+                            <td>年が変わるタイミング</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="section">
+                <h2>⭐ 超重要：ランクは「翌年末まで」維持されやすい</h2>
+                <p>多くの人は「今のランク＝今年頑張った結果」と思いがち。でも実際は<strong>前年の実績で"今年の待遇"を受けている</strong>ケースが多いんです。</p>
+
+                <h3>例：2024年にプラチナ到達 → 2025年はプラチナ待遇</h3>
+                <p>2025年の途中は前年の実績でプラチナ待遇を受けていても、<strong>2025年の獲得ポイントが足りない</strong>と、年が変わるタイミングでランクが見直されます。</p>
+
+                <div class="callout callout-warning">
+                    <h3>😱 危険パターン（あるある）</h3>
+                    <ul>
+                        <li>去年は課金が多くて上位ランクになった</li>
+                        <li>今年はあまり課金してない（or 無課金気味）</li>
+                        <li>でも「今年ずっと上位待遇だった」ので油断する</li>
+                    </ul>
+                    <p class="small">→ 年末に「あ、今年の実績が足りてない…」となりがち。</p>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="section">
+                <h2>💡 「ポイント残高」と「ランク進捗」は別！</h2>
+                <p>ここ、めちゃくちゃ大事。</p>
+
+                <div class="callout callout-info">
+                    <ul>
+                        <li>ポイントを<strong>使っても</strong>、"今年どれだけ獲得したか"の実績は消えない</li>
+                        <li>年末に確認すべきは残高より<strong>「今年の獲得ポイント」</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section class="section">
+                <h2>✅ 年末にやること3ステップ</h2>
+                <ol>
+                    <li>今年の獲得ポイント（進捗）を確認する</li>
+                    <li>来年維持したい目標ランクを決める</li>
+                    <li>足りない分を「あといくら？」で逆算する</li>
+                </ol>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>⚠️ 年末は計算ミスが一番もったいない</h3>
+                <p>「目標ステータス」を選ぶだけで、維持に必要な金額がすぐ分かります</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">🔢 今すぐ計算する →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- FAQ -->
+            <div class="faq">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. 集計期間は「年度」？「暦年」？</h3>
+                    <p>A. 基本は<strong>暦年（1/1〜12/31）</strong>で考えるのが安全です。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 12/31の何時までに達成すればいい？</h3>
+                    <p>A. 余裕をもって<strong>年末前に</strong>達成しておくのが安全です（反映のタイムラグもゼロではありません）。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ポイントを使うと、ランク維持に不利？</h3>
+                    <p>A. 使って減るのは残高で、ランク維持で重要なのは<strong>年間の獲得実績</strong>です。</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                ※本記事は一般的な仕組みの解説です。最新の条件はGoogle Play公式ヘルプをご確認ください。
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "【12/31まで】ランクが下がる！？Google Play Pointsの「ランク維持期間」の仕組みを完全解説",
+    "description": "Google Play Pointsのランクは暦年（1/1〜12/31）で集計され、年初に前年の獲得ポイントに応じて見直されます。",
+    "inLanguage": "ja",
+    "datePublished": "2025-12-25",
+    "dateModified": "2025-12-25",
+    "author": { "@type": "Organization", "name": "Playポイント計算機" },
+    "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+  }
+  </script>
+
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "ランクの集計期間は「年度」？それとも「暦年」？",
+        "acceptedAnswer": { "@type": "Answer", "text": "基本は暦年（1/1〜12/31）で考えるのが安全です。" }
+      },
+      {
+        "@type": "Question",
+        "name": "12/31の何時までに達成すればいい？",
+        "acceptedAnswer": { "@type": "Answer", "text": "余裕をもって年末前に達成しておくのが安全です。" }
+      },
+      {
+        "@type": "Question",
+        "name": "ポイントを交換して使うと、ランク維持に不利？",
+        "acceptedAnswer": { "@type": "Answer", "text": "使って減るのは残高で、ランク維持で重要なのは年間の獲得実績です。" }
+      }
+    ]
+  }
+  </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

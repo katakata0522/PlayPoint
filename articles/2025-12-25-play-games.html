@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【Play Games】Google Play GamesとPlay Pointsの関係は？</title>
+    <meta name="description"
+        content="Google Play GamesとGoogle Play Pointsは別のサービス。それぞれの役割と関係性を整理。ゲームで遊んで両方を活用する方法を解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-play-games.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Play GamesとPlay Pointsの関係は？" />
+    <meta property="og:description" content="それぞれの役割と関係性を整理。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-play-games.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/play-games.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #059669;
+            --accent-light: #d1fae5;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #047857;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #047857;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-info h3 {
+            color: #047857;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .compare-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 600px) {
+            .compare-box {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .compare-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .compare-card h3 {
+            font-size: 1rem;
+            margin: 0 0 0.5rem;
+        }
+
+        .compare-card.games h3 {
+            color: #059669;
+        }
+
+        .compare-card.points h3 {
+            color: #3b82f6;
+        }
+
+        .compare-card ul {
+            padding-left: 1.2rem;
+            margin: 0;
+        }
+
+        .compare-card li {
+            margin-bottom: 0.3rem;
+            font-size: 0.9rem;
+        }
+
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #047857;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #047857;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <div class="hero">
+            <span class="hero-badge">🎮 Play Games</span>
+            <h1>Play GamesとPlay Points<br>何が違う？関係は？</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 3分</p>
+        </div>
+
+        <article class="content">
+            <div class="intro">
+                <strong>結論：別のサービスだけど、両方活用できる</strong><br>
+                Play Gamesは実績、Play Pointsはポイント還元
+            </div>
+
+            <section class="section">
+                <h2">🔄 Play GamesとPlay Pointsは別物</h2>
+                    <p>名前が似ているので混同しがちですが、<strong>Google Play GamesとGoogle Play Pointsは別のサービス</strong>です。</p>
+
+                    <div class="compare-box">
+                        <div class="compare-card games">
+                            <h3>🎮 Google Play Games</h3>
+                            <ul>
+                                <li>ゲームの<strong>実績・トロフィー</strong>を管理</li>
+                                <li>プレイヤープロフィール</li>
+                                <li>セーブデータのクラウド同期</li>
+                                <li>ゲームの発見・おすすめ</li>
+                            </ul>
+                        </div>
+                        <div class="compare-card points">
+                            <h3>💰 Google Play Points</h3>
+                            <ul>
+                                <li>購入で<strong>ポイント還元</strong></li>
+                                <li>ランク制度（ブロンズ〜ダイヤ）</li>
+                                <li>ポイントで特典交換</li>
+                                <li>ウィークリーリワード</li>
+                            </ul>
+                        </div>
+                    </div>
+            </section>
+
+            <section class="section">
+                <h2">🤝 両方を活用する</h2>
+                    <p>ゲームをプレイするなら、<strong>両方のサービスを活用</strong>するのがおすすめです。</p>
+
+                    <div class="callout callout-info">
+                        <h3>💡 こんな使い方</h3>
+                        <ul>
+                            <li><strong>Play Games</strong>：実績を集めて達成感を味わう</li>
+                            <li><strong>Play Points</strong>：課金してポイントを貯める</li>
+                            <li>両方を楽しみながらゲームライフを充実させる</li>
+                        </ul>
+                    </div>
+            </section>
+
+            <section class="section">
+                <h2">❓ よくある質問</h2>
+
+                    <div class="faq-item">
+                        <h3>Q. Play Gamesで遊ぶだけでポイントは貯まる？</h3>
+                        <p>A. いいえ、<strong>遊ぶだけではポイントは貯まりません</strong>。ポイントは「購入・課金」に対して付与されます。</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. Play Gamesの実績でポイントがもらえる？</h3>
+                        <p>A. 通常はありません。Play Gamesの実績とPlay Pointsは<strong>別の仕組み</strong>です。</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3>Q. Play Gamesに登録しないとPlay Pointsは使えない？</h3>
+                        <p>A. いいえ、<strong>別々のサービス</strong>なので、片方だけでも利用できます。</p>
+                    </div>
+            </section>
+
+            <div class="cta-box">
+                <h3>🔢 課金でどれくらいポイントが貯まる？</h3>
+                <p>ゲーム課金額を入力してシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="callout callout-success">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li>Play Games = 実績・セーブデータ管理</li>
+                    <li>Play Points = ポイント還元プログラム</li>
+                    <li><strong>別のサービス</strong>だが両方活用可能</li>
+                    <li>遊ぶだけではポイントは貯まらない</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+        </footer>
+    </main>
+
+
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Play GamesとPlay Pointsの関係は？",
+        "description": "Google Play GamesとGoogle Play Pointsは別のサービス。それぞれの役割と関係性を整理。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Play Gamesで遊ぶだけでポイントは貯まる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "いいえ、遊ぶだけではポイントは貯まりません。ポイントは購入・課金に対して付与されます。" }
+            },
+            {
+                "@type": "Question",
+                "name": "Play Gamesに登録しないとPlay Pointsは使えない？",
+                "acceptedAnswer": { "@type": "Answer", "text": "いいえ、別々のサービスなので、片方だけでも利用できます。" }
+            }
+        ]
+    }
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

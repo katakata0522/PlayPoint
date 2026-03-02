@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>課金したのにGoogle Play Pointsがつかない？反映されない原因と対処法</title>
+    <meta name="description"
+        content="課金したのにGoogle Play Pointsが反映されない時の原因と対処法。ポイント履歴・保留中・アカウント違い・登録状況の確認から、再起動やPlayストア更新まで、公式手順に沿って解説します。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-playpoints-not-reflected.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="課金したのにPlayポイントがつかない？反映されない原因と対処法" />
+    <meta property="og:description" content="ポイント履歴・保留中・アカウント違いなど、よくある原因を公式手順でチェック。再起動やPlayストア更新の対処も解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-playpoints-not-reflected.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/playpoints-not-reflected.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #667eea;
+            --accent-light: #f0f4ff;
+            --warning: #ff6b6b;
+            --success: #51cf66;
+            --gold: #ffd43b;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: var(--accent);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: var(--success);
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #e3f9e5 0%, #d0f4de 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ol {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: var(--warning);
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-success {
+            background: linear-gradient(135deg, #e3f9e5 0%, #d0f4de 100%);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .small a {
+            color: var(--accent);
+        }
+
+        /* ========== Quote ========== */
+        blockquote {
+            background: #fafafa;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--muted);
+        }
+
+        blockquote p {
+            margin: 0;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #333;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== FAQ ========== */
+        .faq {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .faq h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: none;
+            padding: 0;
+        }
+
+        .faq-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .article-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+
+            .cta-box {
+                padding: 1.5rem;
+            }
+
+            .cta-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">😱 トラブル対処</span>
+            <h1>課金したのにポイントがつかない！<br>反映されない時の「3つの対処法」</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 4分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>多くのケースは設定や表示の問題で解決できます。</strong><br>
+                焦って問い合わせる前に、まずはこの記事でチェック！
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>✅ やることリスト（先に結論）</h2>
+                <ol>
+                    <li><strong>ポイント履歴</strong>と<strong>保留中（Pending）</strong>を確認</li>
+                    <li><strong>Play Points登録</strong>＆<strong>購入アカウント</strong>が一致しているか確認</li>
+                    <li>表示が怪しければ<strong>再起動・Playストア更新・日付時刻チェック</strong></li>
+                </ol>
+            </div>
+
+            <!-- Section 0 -->
+            <section class="section">
+                <h2>🔍 まず最初に：ポイント履歴と「保留中」を確認</h2>
+                <p>「増えてない！」の大半は、<strong>ポイント履歴を見ると状況が分かる</strong>パターンです。</p>
+
+                <div class="callout callout-info">
+                    <ul>
+                        <li>ポイント履歴に反映されているか</li>
+                        <li>「保留中」「Pending」になっていないか</li>
+                        <li>保留中の場合、利用可能日が表示されていないか</li>
+                    </ul>
+                </div>
+
+                <p class="small">
+                    📎 公式ヘルプ：
+                    <a href="https://support.google.com/googleplay/answer/9077302" target="_blank" rel="noopener">Points
+                        not added（英語）</a> ／
+                    <a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener">Play
+                        Points ヘルプ（日本語）</a>
+                </p>
+            </section>
+
+            <!-- Section 1 -->
+            <section class="section">
+                <h2>① Play Pointsに「登録済み」か確認する</h2>
+                <p>いちばん基本で、見落としがちなポイント。</p>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ 注意</h3>
+                    <p><strong>Play Pointsに登録していないと、購入ポイントは獲得できません。</strong></p>
+                    <p class="small">アカウント切替や端末変更で、ログイン状態がズレていることも。</p>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="section">
+                <h2>② 購入したGoogleアカウントが「同じ」か確認</h2>
+                <p>これが<strong>地味に多い</strong>パターンです。</p>
+
+                <ul>
+                    <li>サブアカで課金してしまった</li>
+                    <li>端末側のログインが切り替わっていた</li>
+                    <li>家族/共有端末で別アカが選ばれていた</li>
+                </ul>
+
+                <p><strong>Play Pointsに登録しているアカウント</strong>と、<strong>実際に課金したアカウント</strong>が一致しているかチェック！</p>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="section">
+                <h2>③ 表示が怪しい時は「再起動・更新・日付チェック」</h2>
+                <p>ポイント自体は付与されていても、アプリ側の表示が追いつかないことがあります。</p>
+
+                <ol>
+                    <li>アプリ/ゲームを<strong>強制停止</strong>して再起動</li>
+                    <li>端末を<strong>再起動</strong></li>
+                    <li><strong>Playストアを最新に更新</strong></li>
+                    <li>端末の<strong>日付と時刻</strong>が正しいか確認</li>
+                </ol>
+
+                <blockquote>
+                    <p>「待てば直る」ケースもありますが、まずは<strong>ポイント履歴の確認</strong>が最優先です。</p>
+                </blockquote>
+            </section>
+
+            <!-- Section: Rank -->
+            <section class="section">
+                <h2>💎 ランクが反映されない時は？</h2>
+                <p>「ポイントは増えたけど、ランク表示が変わらない」場合も、表示の反映に時間差が出ることがあります。</p>
+                <p>その間にできることは、<strong>自分の計算が合っているか</strong>を事前に確認しておくこと。</p>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 正しい獲得ポイントを確認する</h3>
+                <p>「今回の課金で何ポイント付く？」を先に計算しておくと、ズレに気づきやすい！</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を開く →</a>
+            </div>
+
+            <!-- Section: Contact -->
+            <section class="section">
+                <h2>📞 それでも解決しない時：問い合わせ前に用意するもの</h2>
+                <p>ここまで確認しても改善しないなら、購入履歴などを用意してサポートに相談が確実です。</p>
+
+                <div class="callout callout-success">
+                    <ul>
+                        <li>購入日時 / 購入したコンテンツ</li>
+                        <li>注文番号（メール・購入履歴）</li>
+                        <li>課金したGoogleアカウント</li>
+                        <li>ポイント履歴の状態（保留中の有無など）</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- FAQ -->
+            <div class="faq">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. 反映されない時、まず何を見ればいい？</h3>
+                    <p>A. まずは<strong>ポイント履歴</strong>と<strong>保留中</strong>の表示を確認してください。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 「登録してるのに付かない」ことはある？</h3>
+                    <p>A. あります。よくあるのは<strong>購入アカウント違い</strong>や、<strong>保留中</strong>になっているパターンです。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 再起動やキャッシュ削除は効果ある？</h3>
+                    <p>A. 表示が怪しい時には有効なことがあります。公式でも案内されている手順です。</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                ※本記事は一般的な確認手順のまとめです。正確な条件はGoogle Play公式ヘルプをご確認ください。
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "課金したのにPlayポイントがつかない！反映されない時の原因と対処法",
+        "description": "課金したのにGoogle Play Pointsが反映されない時の原因と対処法。ポイント履歴・保留中・アカウント違い・登録状況の確認から、再起動やPlayストア更新まで公式手順に沿って解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Organization", "name": "Playポイント計算機" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "反映されない時、まず何を見ればいい？",
+                "acceptedAnswer": { "@type": "Answer", "text": "まずはポイント履歴と保留中（Pending）の表示を確認してください。" }
+            },
+            {
+                "@type": "Question",
+                "name": "登録しているのに付かないことはある？",
+                "acceptedAnswer": { "@type": "Answer", "text": "あります。購入アカウント違い、保留中になっているなどが代表例です。" }
+            },
+            {
+                "@type": "Question",
+                "name": "再起動や更新は効果がある？",
+                "acceptedAnswer": { "@type": "Answer", "text": "表示が怪しい場合に有効なことがあります。公式でも案内されている手順です。" }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

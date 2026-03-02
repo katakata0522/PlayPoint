@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【初心者向け】Google Play Pointsの始め方｜登録から最初にやることまで完全ガイド</title>
+    <meta name="description" content="Google Play Pointsとは？始め方・登録方法・最初にやるべきことを初心者向けに解説。ポイントの貯め方・使い方・ランク制度の基本まで。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-getting-started.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="【初心者向け】Play Pointsの始め方・完全ガイド" />
+    <meta property="og:description" content="登録から最初にやることまで。ポイントの貯め方・使い方・ランク制度の基本を解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-getting-started.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/getting-started.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #22c55e;
+            --accent-light: #dcfce7;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --info: #3b82f6;
+            --info-light: #dbeafe;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #15803d;
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #15803d;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #15803d;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #92400e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--info-light);
+            border-left: 4px solid var(--info);
+        }
+
+        .callout-info h3 {
+            color: #1d4ed8;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-success h3 {
+            color: #15803d;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ========== Steps ========== */
+        .steps {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .steps ol {
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+
+        .steps li {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .steps strong {
+            color: var(--accent);
+        }
+
+        /* ========== Table ========== */
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== FAQ ========== */
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #15803d;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #15803d;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">🔰 初心者向け</span>
+            <h1>Google Play Pointsの始め方<br>登録から最初にやることまで</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 5分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>Play Pointsとは？</strong><br>
+                Google Playストアでの購入でポイントが貯まる、Google公式のポイントプログラムです
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 この記事で分かること</h2>
+                <ul>
+                    <li>Play Pointsとは何か</li>
+                    <li><strong>登録・有効化の手順</strong></li>
+                    <li>ポイントの<strong>貯め方と使い方</strong></li>
+                    <li><strong>ランク制度</strong>の基本</li>
+                </ul>
+            </div>
+
+            <!-- Section: Play Pointsとは -->
+            <section class="section">
+                <h2>🎮 Google Play Pointsとは？</h2>
+                <p>Google Play Pointsは、Google Playストアでの<strong>アプリ購入・ゲーム課金・映画/書籍購入</strong>などでポイントが貯まるプログラムです。</p>
+                <p>貯まったポイントは、<strong>Google Playクレジット・ゲーム内アイテム・クーポン</strong>などに交換できます。</p>
+
+                <div class="callout callout-success">
+                    <h3>✅ 参加は無料！</h3>
+                    <p>Play Pointsへの参加は<strong>完全無料</strong>。登録するだけで、今後の購入からポイントが貯まり始めます。</p>
+                </div>
+            </section>
+
+            <!-- Section: 登録方法 -->
+            <section class="section">
+                <h2>📝 登録・有効化の手順（3ステップ）</h2>
+                <div class="steps">
+                    <ol>
+                        <li><strong>Google Playストア</strong>アプリを開く</li>
+                        <li>右上の<strong>プロフィールアイコン</strong>をタップ → <strong>「Play Points」</strong>を選択</li>
+                        <li>画面の案内に従って<strong>「有効にする」または「参加する」</strong>をタップ</li>
+                    </ol>
+                </div>
+
+                <div class="callout callout-info">
+                    <h3>💡 ポイント</h3>
+                    <p>すでに有効化済みの場合は、Play Points画面が開きます。そこで現在のポイント数やランクを確認できます。</p>
+                </div>
+            </section>
+
+            <!-- Section: 貯め方 -->
+            <section class="section">
+                <h2>💰 ポイントの貯め方</h2>
+                <p>以下の購入でポイントが貯まります：</p>
+                <ul>
+                    <li><strong>アプリ・ゲームの購入</strong>（有料アプリ、ゲーム内課金）</li>
+                    <li><strong>映画・書籍・音楽</strong>の購入</li>
+                    <li><strong>定期購入</strong>（YouTube Premium、Google Oneなど）</li>
+                </ul>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ 注意</h3>
+                    <p>ギフトカードでのチャージや、一部の購入はポイント対象外の場合があります。詳細はPlay Points画面で確認してください。</p>
+                </div>
+
+                <h3>基本の獲得レート（日本）</h3>
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>ランク</th>
+                            <th>100円あたりの獲得ポイント</th>
+                        </tr>
+                        <tr>
+                            <td>ブロンズ</td>
+                            <td>1 pt</td>
+                        </tr>
+                        <tr>
+                            <td>シルバー</td>
+                            <td>1.25 pt</td>
+                        </tr>
+                        <tr>
+                            <td>ゴールド</td>
+                            <td>1.5 pt</td>
+                        </tr>
+                        <tr>
+                            <td>プラチナ</td>
+                            <td>1.75 pt</td>
+                        </tr>
+                        <tr>
+                            <td>ダイヤモンド</td>
+                            <td>2.0 pt</td>
+                        </tr>
+                    </table>
+                </div>
+                <p class="small">※Google Play ヘルプ（日本）の情報に基づく。キャンペーン時は獲得レートが上がることも。</p>
+            </section>
+
+            <!-- Section: 使い方 -->
+            <section class="section">
+                <h2>🎁 ポイントの使い方</h2>
+                <p>貯まったポイントは「使う」タブから交換できます：</p>
+                <ul>
+                    <li><strong>Google Playクレジット</strong>：アプリ・映画・書籍など何でも使える</li>
+                    <li><strong>ゲーム内アイテム</strong>：対象ゲームのアイテムと直接交換</li>
+                    <li><strong>クーポン</strong>：特定タイトル向けの割引クーポン</li>
+                </ul>
+
+                <div class="callout callout-info">
+                    <h3>💡 おすすめ</h3>
+                    <p>迷ったら<strong>Google Playクレジット</strong>が万能。ただし、自分のゲームのクーポンが出ていればそちらの方がお得な場合も！</p>
+                </div>
+            </section>
+
+            <!-- Section: ランク制度 -->
+            <section class="section">
+                <h2>🏆 ランク制度の基本</h2>
+                <p>Play Pointsには5つのランクがあり、<strong>1年間（暦年：1/1〜12/31）に獲得したポイント</strong>に応じてランクが決まります。</p>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>ランク</th>
+                            <th>必要ポイント（年間）</th>
+                        </tr>
+                        <tr>
+                            <td>ブロンズ</td>
+                            <td>初期ランク</td>
+                        </tr>
+                        <tr>
+                            <td>シルバー</td>
+                            <td>250 pt</td>
+                        </tr>
+                        <tr>
+                            <td>ゴールド</td>
+                            <td>1,000 pt</td>
+                        </tr>
+                        <tr>
+                            <td>プラチナ</td>
+                            <td>4,000 pt</td>
+                        </tr>
+                        <tr>
+                            <td>ダイヤモンド</td>
+                            <td>15,000 pt</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="callout callout-success">
+                    <h3>✅ ランクアップのメリット</h3>
+                    <ul>
+                        <li>獲得レートがアップ</li>
+                        <li>ウィークリーリワードの上限アップ</li>
+                        <li>プラチナ以上はプレミアムサポートあり</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section: 最初にやること -->
+            <section class="section">
+                <h2>🚀 登録したら最初にやること</h2>
+                <ol>
+                    <li><strong>ウィークリーリワード</strong>を受け取る（毎週更新）</li>
+                    <li>「使う」タブで<strong>交換できるもの</strong>をチェック</li>
+                    <li><strong>現在のランク</strong>と次のランクまでの距離を確認</li>
+                </ol>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 次のランクまであといくら？</h3>
+                <p>目標ランクまでの必要金額をサクッとシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- FAQ -->
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. Play Pointsは無料で使える？</h3>
+                    <p>A. はい、参加・登録は完全無料です。Google Playストアで購入するだけでポイントが貯まります。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ポイントに有効期限はある？</h3>
+                    <p>A. あります。「最後にポイントを獲得・利用した日」から原則1年で失効します。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ランクは一度上がったら下がらない？</h3>
+                    <p>A. ランクは翌年の年末まで維持されますが、その後は前年の獲得ポイントで再判定されます。</p>
+                </div>
+            </section>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "【初心者向け】Google Play Pointsの始め方｜登録から最初にやることまで完全ガイド",
+        "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを初心者向けに解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Play Pointsは無料で使える？",
+                "acceptedAnswer": { "@type": "Answer", "text": "はい、参加・登録は完全無料です。Google Playストアで購入するだけでポイントが貯まります。" }
+            },
+            {
+                "@type": "Question",
+                "name": "ポイントに有効期限はある？",
+                "acceptedAnswer": { "@type": "Answer", "text": "あります。最後にポイントを獲得・利用した日から原則1年で失効します。" }
+            },
+            {
+                "@type": "Question",
+                "name": "ランクは一度上がったら下がらない？",
+                "acceptedAnswer": { "@type": "Answer", "text": "ランクは翌年の年末まで維持されますが、その後は前年の獲得ポイントで再判定されます。" }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AdSense Auto Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

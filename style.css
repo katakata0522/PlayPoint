@@ -47,6 +47,8 @@ input, select, textarea {
 /* 上部バーのスタイル */
 .top-bar {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em 0.8em;
   justify-content: space-between;
   align-items: center;
   margin: 0.8em auto;
@@ -86,16 +88,12 @@ input, select, textarea {
 .header-links a {
   color: var(--link-color);
   text-decoration: none;
-  margin-left: 0.5em;
+  margin-left: 0;
+  white-space: nowrap;
 }
 .header-links a:hover {
   text-decoration: underline;
   color: var(--link-hover-color);
-}
-.header-links a + a::before {
-  content: "|";
-  margin-right: 0.5em;
-  color: var(--link-color);
 }
 
 h1, h2, h3, h4 {
@@ -275,6 +273,10 @@ button:disabled {
 
 .header-links {
   font-size: 0.8em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.15em 0.6em;
 }
 
 h1 {
@@ -612,6 +614,12 @@ button:active {
 }
 
 @media(max-width:480px){
+  .top-bar {
+    justify-content: center;
+  }
+  .header-links {
+    justify-content: center;
+  }
   .week-row {
     grid-template-columns: 1fr 1fr;
     grid-template-areas:

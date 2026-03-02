@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katakata Blog | Playポイント計算機</title>
+    <meta name="description" content="Playポイントの攻略情報、アップデート履歴、日々の開発日記などを更新中。">
+    <link rel="canonical" href="https://playpoint-sim.com/blog/">
+
+    <!-- OGP (Open Graph Protocol) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Katakata Blog | Playポイント計算機">
+    <meta property="og:description" content="Playポイントの攻略情報、アップデート履歴、日々の開発日記などを更新中。">
+    <meta property="og:url" content="https://playpoint-sim.com/blog/">
+    <meta property="og:image" content="https://placehold.co/1200x630/007bff/ffffff?text=Katakata+Blog">
+    <meta property="og:site_name" content="PlayPoint Lab.">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://placehold.co/32x32/007bff/ffffff?text=P">
+
+    <!-- Font Preloading for Performance -->
+    <link rel="preload"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@500;800&display=swap"
+        as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Outfit:wght@500;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <!-- Inherit generic styles if needed or use isolated blog styles -->
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "PlayPoint Lab.",
+      "url": "https://playpoint-sim.com/blog/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://playpoint-sim.com/blog/?search={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://playpoint-sim.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事一覧",
+          "item": "https://playpoint-sim.com/blog/"
+        }
+      ]
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="blog-header glass-panel">
+        <a href="index.html" class="brand">
+            <span style="font-family: 'Outfit', sans-serif;">P</span> PlayPoint Lab.
+        </a>
+        <div class="header-right">
+            <button id="theme-toggle" class="theme-toggle" aria-label="テーマ切替" title="テーマ切替">☀️</button>
+            <a href="../index.html" class="back-link">← 計算機</a>
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="メニューを開く">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>ナビゲーション</h2>
+            <button id="sidebar-close" class="sidebar-close" aria-label="メニューを閉じる">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section">
+                <h3>カテゴリー</h3>
+                <ul id="sidebar-categories">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>最新記事</h3>
+                <ul id="sidebar-recent">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3>人気タグ</h3>
+                <div id="tag-cloud" class="tag-cloud">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <a href="../index.html" class="sidebar-link-main">🔢 Playポイント計算機</a>
+            </div>
+        </nav>
+    </aside>
+
+    <main>
+        <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" aria-label="パンくずリスト">
+            <a href="../index.html">🏠 ホーム</a>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-current">📝 記事一覧</span>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Katakata's Update Log</h1>
+            <p class="hero-text">Playポイント計算機の更新情報や、日々のポイ活に役立つコラムをお届けします。<br>ユーザーの皆様と一緒に作り上げる「実験場」です。</p>
+        </section>
+
+        <!-- Filters -->
+        <div id="category-filter" class="filter-bar">
+            <!-- Categories injected by JS -->
+        </div>
+        <div class="search-sort-row">
+            <div class="search-container">
+                <input type="search" id="search-input" placeholder="キーワードで記事を検索..." aria-label="記事を検索">
+            </div>
+            <div class="sort-container">
+                <button id="sort-toggle" class="sort-btn" aria-label="並び替え">
+                    <span class="sort-icon">↓</span> 新しい順
+                </button>
+            </div>
+        </div>
+
+        <!-- CTA Banner -->
+        <div class="cta-banner">
+            <div class="cta-banner-content">
+                <span class="cta-banner-icon">🔢</span>
+                <div class="cta-banner-text">
+                    <strong>Playポイント計算機を試す</strong>
+                    <span>課金額からポイント獲得数をシミュレーション</span>
+                </div>
+                <a href="../index.html" class="cta-banner-btn">計算する →</a>
+            </div>
+        </div>
+
+        <!-- Article Grid -->
+        <div id="article-grid" class="grid-container">
+            <!-- Loading State -->
+            <div id="loading-spinner" class="loading-state">
+                <div class="spinner"></div>
+                <p>記事を読み込み中...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-message" class="hidden loading-state">
+                <p style="color: #dc3545;">⚠️ 記事の読み込みに失敗しました。</p>
+                <p><button class="reset-btn" onclick="location.reload()">再読み込み</button></p>
+            </div>
+        </div>
+
+        <!-- AdSense: playpoint_horizontal -->
+        <div style="max-width: 800px; margin: 2rem auto; padding: 0 1rem;">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination">
+            <!-- Populated by JS -->
+        </div>
+
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="トップへ戻る" title="トップへ戻る">↑</button>
+
+    <footer class="blog-footer">
+        <p style="margin-bottom: 0.5rem; font-size: 0.8rem;">
+            <a href="../privacy.html" style="color: var(--text-muted);">プライバシーポリシー</a> ｜
+            <a href="../terms.html" style="color: var(--text-muted);">利用規約</a>
+        </p>
+        <p>&copy; <span class="copyright-year">2024-2025</span> PlayPoint Simulation Tool / KatakataLab</p>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script src="script.js"></script>
+
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

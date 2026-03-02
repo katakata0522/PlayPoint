@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>【ファミリー共有】家族でPlay Pointsは共有できる？ファミリーライブラリとの関係</title>
+    <meta name="description" content="Google Play Pointsは家族で共有できる？ファミリーライブラリとPlay Pointsの関係、ポイントの貯まり方、注意点を解説。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-family-sharing.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="家族でPlay Pointsは共有できる？ファミリーライブラリとの関係" />
+    <meta property="og:description" content="ファミリーライブラリとPlay Pointsの関係、ポイントの貯まり方、注意点を解説。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-family-sharing.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/family-sharing.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #0891b2;
+            --accent-light: #ecfeff;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --info: #3b82f6;
+            --info-light: #dbeafe;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #0e7490;
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: #0e7490;
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #0e7490;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #92400e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-info h3 {
+            color: #0e7490;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ========== FAQ ========== */
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #0e7490;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #0e7490;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">👨‍👩‍👧‍👦 ファミリー</span>
+            <h1>家族でPlay Pointsは共有できる？<br>ファミリーライブラリとの関係</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 4分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>「家族のポイントをまとめて使えたらいいのに…」</strong><br>
+                ファミリー共有とPlay Pointsの関係を整理します。
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 結論（先出し）</h2>
+                <ul>
+                    <li>Play Pointsは<strong>各アカウントごとに独立</strong></li>
+                    <li>家族間で<strong>ポイント自体の共有・合算はできない</strong></li>
+                    <li>ファミリーライブラリとは<strong>別の仕組み</strong></li>
+                    <li>ただし間接的に恩恵を受ける方法はある</li>
+                </ul>
+            </div>
+
+            <!-- Section: 基本 -->
+            <section class="section">
+                <h2>📋 Play Pointsは「アカウントごと」に独立</h2>
+                <p>Play Pointsは、<strong>Googleアカウントごとに管理</strong>されています。</p>
+                <ul>
+                    <li>獲得したポイントは<strong>そのアカウントのもの</strong></li>
+                    <li>ランクも<strong>アカウントごと</strong>に決まる</li>
+                    <li>他のアカウントにポイントを<strong>譲渡することはできない</strong></li>
+                </ul>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ つまり</h3>
+                    <p>家族4人がそれぞれPlay Pointsを使っていても、<strong>ポイントの合算や共有は仕組み上できません</strong>。</p>
+                </div>
+            </section>
+
+            <!-- Section: ファミリーライブラリとの違い -->
+            <section class="section">
+                <h2>📚 ファミリーライブラリとPlay Pointsは別物</h2>
+                <p>Google Playには「ファミリーライブラリ」という機能があり、<strong>購入したアプリや映画を家族で共有</strong>できます。</p>
+                <p>しかし、これは<strong>コンテンツの共有</strong>であり、<strong>Play Pointsとは別の仕組み</strong>です。</p>
+
+                <div class="callout callout-info">
+                    <h3>💡 整理</h3>
+                    <ul>
+                        <li><strong>ファミリーライブラリ</strong>：購入したアプリ・映画などを家族で共有</li>
+                        <li><strong>Play Points</strong>：各アカウントが独立でポイントを獲得・管理</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section: 間接的な恩恵 -->
+            <section class="section">
+                <h2>🎁 間接的に家族で恩恵を受ける方法</h2>
+                <p>ポイント自体の共有はできませんが、以下のような形で家族に恩恵を渡すことは可能です。</p>
+
+                <h3>1. ポイントで交換したクレジットでギフトを購入</h3>
+                <p>Play Pointsで交換したGoogle
+                    Playクレジットを使って、<strong>家族が欲しいアプリや映画を購入してあげる</strong>ことは可能です（同一デバイスまたはファミリーライブラリ経由）。</p>
+
+                <h3>2. Google Play ギフトカードを渡す</h3>
+                <p>ポイントとは別ですが、Google Playギフトカードを購入して渡せば、家族の残高を直接増やせます。</p>
+
+                <div class="callout callout-success">
+                    <h3>✅ 現実的な方法</h3>
+                    <p>「ポイントを直接渡す」のは無理でも、<strong>「ポイントで得たものを使って家族のためにコンテンツを買う」</strong>という形なら可能です。</p>
+                </div>
+            </section>
+
+            <!-- Section: よくある質問 -->
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. 家族のアカウントにポイントを移せる？</h3>
+                    <p>A. いいえ、<strong>ポイントの譲渡・移行はできません</strong>。各アカウントで独立して管理されます。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 子どものアカウントでもPlay Pointsは使える？</h3>
+                    <p>A. 13歳未満のGoogle アカウント（ファミリーリンクで管理）では、Play Pointsの利用に制限がある場合があります。詳細はGoogle Playヘルプをご確認ください。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ファミリーの支払い方法を使った場合、誰にポイントが貯まる？</h3>
+                    <p>A. <strong>購入を行ったアカウント</strong>にポイントが貯まります。支払い方法の所有者ではなく、購入者のアカウントが基準です。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 家族プラン（YouTube Family等）でもポイントは貯まる？</h3>
+                    <p>A. ファミリープランの管理者が支払いを行っている場合、<strong>ポイントは管理者のアカウントに貯まる</strong>のが一般的です。詳細はポイント履歴で確認してください。</p>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 自分のポイント状況を確認</h3>
+                <p>ランクアップまでの距離をシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を使う →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- まとめ -->
+            <div class="callout callout-info">
+                <h3>📝 まとめ</h3>
+                <ul>
+                    <li>Play Pointsは<strong>アカウントごとに独立</strong></li>
+                    <li><strong>ポイントの共有・譲渡は不可</strong></li>
+                    <li>ファミリーライブラリとは<strong>別の仕組み</strong></li>
+                    <li>間接的に恩恵を渡す方法は存在する</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                参照：Google Play ヘルプ「Google Play Points」「ファミリー ライブラリ」
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "【ファミリー共有】家族でPlay Pointsは共有できる？",
+        "description": "Google Play Pointsは家族で共有できる？ファミリーライブラリとPlay Pointsの関係、ポイントの貯まり方、注意点を解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "家族のアカウントにポイントを移せる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "いいえ、ポイントの譲渡・移行はできません。各アカウントで独立して管理されます。" }
+            },
+            {
+                "@type": "Question",
+                "name": "子どものアカウントでもPlay Pointsは使える？",
+                "acceptedAnswer": { "@type": "Answer", "text": "13歳未満のGoogleアカウント（ファミリーリンクで管理）では、Play Pointsの利用に制限がある場合があります。" }
+            },
+            {
+                "@type": "Question",
+                "name": "ファミリーの支払い方法を使った場合、誰にポイントが貯まる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "購入を行ったアカウントにポイントが貯まります。支払い方法の所有者ではなく、購入者のアカウントが基準です。" }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AdSense Auto Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>

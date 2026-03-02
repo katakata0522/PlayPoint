@@ -1,0 +1,285 @@
+[
+  {
+    "id": "multiple-accounts",
+    "title": "【複数アカウント】ポイントは合算できる？管理の注意点",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "複数アカウント",
+      "管理",
+      "注意点"
+    ],
+    "description": "複数のGoogleアカウントでPlay Pointsを使う時の注意点。ポイントは合算できない。",
+    "file": "../articles/2025-12-25-multiple-accounts.html",
+    "thumbnail": "../articles/ogp/multiple-accounts.png"
+  },
+  {
+    "id": "play-games",
+    "title": "【Play Games】Play GamesとPlay Pointsの違いは？",
+    "date": "2025-12-25",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "Play Games",
+      "違い",
+      "関係"
+    ],
+    "description": "Play GamesとPlay Pointsは別のサービス。それぞれの役割と関係性を整理。",
+    "file": "../articles/2025-12-25-play-games.html",
+    "thumbnail": "../articles/ogp/play-games.png"
+  },
+  {
+    "id": "movies-books",
+    "title": "【コンテンツ】映画・書籍・音楽でもポイントは貯まる？",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "映画",
+      "書籍",
+      "音楽"
+    ],
+    "description": "ゲーム課金以外の映画・書籍・音楽でもポイントは貯まる。対象コンテンツを解説。",
+    "file": "../articles/2025-12-25-movies-books.html",
+    "thumbnail": "../articles/ogp/movies-books.png"
+  },
+  {
+    "id": "expiration",
+    "title": "【有効期限】ポイントはいつ失効する？期限切れを防ぐ方法",
+    "date": "2025-12-25",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "有効期限",
+      "失効",
+      "期限切れ"
+    ],
+    "description": "ポイントの有効期限は最後の活動から1年。失効を防ぐ方法を解説。",
+    "file": "../articles/2025-12-25-expiration.html",
+    "thumbnail": "../articles/ogp/expiration.png"
+  },
+  {
+    "id": "promo-code",
+    "title": "【プロモコード】割引でもポイントは貯まる？計算の仕組み",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "プロモコード",
+      "割引",
+      "セール"
+    ],
+    "description": "プロモコードや割引使用時もポイントは貯まる。割引後の金額で計算される仕組みを解説。",
+    "file": "../articles/2025-12-25-promo-code.html",
+    "thumbnail": "../articles/ogp/promo-code.png"
+  },
+  {
+    "id": "check-balance",
+    "title": "【確認方法】ポイント残高・履歴をチェックする3ステップ",
+    "date": "2025-12-25",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "残高",
+      "履歴",
+      "確認方法"
+    ],
+    "description": "現在のポイント残高、獲得履歴、ランク状況を確認する方法を解説。",
+    "file": "../articles/2025-12-25-check-balance.html",
+    "thumbnail": "../articles/ogp/check-balance.png"
+  },
+  {
+    "id": "refund",
+    "title": "【返金】キャンセルしたらポイントはどうなる？減算ルール解説",
+    "date": "2025-12-25",
+    "category": "トラブル対処",
+    "tags": [
+      "Play Points",
+      "返金",
+      "キャンセル",
+      "減算"
+    ],
+    "description": "返金するとポイントも減算される？購入キャンセル時のPlay Pointsの扱いと注意点を解説。",
+    "file": "../articles/2025-12-25-refund.html",
+    "thumbnail": "../articles/ogp/refund.png"
+  },
+  {
+    "id": "gift-card",
+    "title": "【ギフトカード】チャージでポイントは貯まる？使用時との違い",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "ギフトカード",
+      "チャージ",
+      "残高"
+    ],
+    "description": "ギフトカードチャージ時はポイント対象外。残高を使った時にポイントが貯まる仕組みを解説。",
+    "file": "../articles/2025-12-25-gift-card.html",
+    "thumbnail": "../articles/ogp/gift-card.png"
+  },
+  {
+    "id": "family-sharing",
+    "title": "【ファミリー共有】家族でPlay Pointsは共有できる？",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "ファミリー",
+      "共有",
+      "ファミリーライブラリ"
+    ],
+    "description": "Play Pointsは家族で共有できる？ファミリーライブラリとの関係と注意点を解説。",
+    "file": "../articles/2025-12-25-family-sharing.html",
+    "thumbnail": "../articles/ogp/family-sharing.png"
+  },
+  {
+    "id": "subscription",
+    "title": "【サブスク】YouTube Premium・Google Oneでポイントは貯まる？",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "サブスク",
+      "YouTube Premium",
+      "Google One"
+    ],
+    "description": "定期購入でポイントが貯まる条件と注意点を解説。契約経路によって対象・対象外が変わる。",
+    "file": "../articles/2025-12-25-subscription.html",
+    "thumbnail": "../articles/ogp/subscription.png"
+  },
+  {
+    "id": "weekly-reward",
+    "title": "【毎週チェック】ウィークリーリワードの受け取り方と仕組み",
+    "date": "2025-12-25",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "ウィークリーリワード",
+      "無料",
+      "毎週"
+    ],
+    "description": "毎週無料でポイントがもらえるウィークリーリワード。受け取り方とランクごとの上限を解説。",
+    "file": "../articles/2025-12-25-weekly-reward.html",
+    "thumbnail": "../articles/ogp/weekly-reward.png"
+  },
+  {
+    "id": "getting-started",
+    "title": "【初心者向け】Play Pointsの始め方｜登録から最初にやることまで",
+    "date": "2025-12-25",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "初心者",
+      "登録",
+      "始め方"
+    ],
+    "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
+    "file": "../articles/2025-12-25-getting-started.html",
+    "thumbnail": "../articles/ogp/getting-started.png"
+  },
+  {
+    "id": "new-year-campaign",
+    "title": "【2026年正月】年末年始キャンペーンはいつ？過去傾向から予測",
+    "date": "2025-12-25",
+    "category": "攻略",
+    "tags": [
+      "Play Points",
+      "年末年始",
+      "キャンペーン",
+      "予測"
+    ],
+    "description": "過去の開始日データをもとに2025→2026シーズンを現実的に予測。失敗しない立ち回りも解説。",
+    "file": "../articles/2025-12-25-new-year-campaign.html",
+    "thumbnail": "../articles/ogp/new-year-campaign.png"
+  },
+  {
+    "id": "diamond-vip",
+    "title": "【反論】「プラチナで十分」は本当？ダイヤモンドの体験価値を考える",
+    "date": "2025-12-25",
+    "category": "検証",
+    "tags": [
+      "Play Points",
+      "ダイヤモンド",
+      "イベント",
+      "体験価値"
+    ],
+    "description": "イベント特典・サポート・週次リワードの見方。還元率以外の価値を整理。",
+    "file": "../articles/2025-12-25-diamond-vip.html",
+    "thumbnail": "../articles/ogp/diamond-vip.png"
+  },
+  {
+    "id": "campaign",
+    "title": "課金はキャンペーン待ちが得？ポイント増量の仕組みと確認手順",
+    "date": "2025-12-25",
+    "category": "攻略",
+    "tags": [
+      "Play Points",
+      "キャンペーン",
+      "増量",
+      "倍率"
+    ],
+    "description": "ポイント増量の確認方法、重複しないルール（高い獲得レートが適用）、シミュレーションまでまとめ。",
+    "file": "../articles/2025-12-25-campaign.html",
+    "thumbnail": "../articles/ogp/campaign.png"
+  },
+  {
+    "id": "best-use",
+    "title": "Playポイントの使い道ランキング｜クレジット交換は損？賢い使い方まとめ",
+    "date": "2025-12-25",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "クーポン",
+      "クレジット",
+      "使い道"
+    ],
+    "description": "クーポン/アイテム/クレジットの違いと、価値が上がる見分け方、期限（失効対策）まで整理。",
+    "file": "../articles/2025-12-25-best-use.html",
+    "thumbnail": "../articles/ogp/best-use.png"
+  },
+  {
+    "id": "diamond-worth-it",
+    "title": "【徹底検証】ダイヤモンドは本当にお得？必要ポイントと維持費をシミュレーション",
+    "date": "2025-12-25",
+    "category": "検証",
+    "tags": [
+      "Play Points",
+      "ダイヤモンド",
+      "プラチナ",
+      "シミュレーション"
+    ],
+    "description": "ダイヤモンドとプラチナの差を数字で検証。必要ポイント・維持費・どっちがコスパ良いかを解説。",
+    "file": "../articles/2025-12-25-diamond-worth-it.html",
+    "thumbnail": "../articles/ogp/diamond-worth-it.png"
+  },
+  {
+    "id": "playpoints-rank-maintenance",
+    "title": "【年末必見】ランクが下がる！？Google Play Points「ランク維持期間」を完全解説",
+    "date": "2025-12-25",
+    "category": "攻略",
+    "tags": [
+      "Play Points",
+      "年末年始",
+      "ランク維持"
+    ],
+    "description": "Google Play Pointsのランクは暦年（1/1〜12/31）で集計され、年初に前年の獲得ポイントに応じて見直されます。落ちやすいパターンと年末にやるべき確認を解説。",
+    "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
+    "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png"
+  },
+  {
+    "id": "playpoints-not-reflected",
+    "title": "課金したのにポイントがつかない！反映されない時の「3つの対処法」",
+    "date": "2025-12-25",
+    "category": "トラブル対処",
+    "tags": [
+      "Play Points",
+      "反映されない",
+      "対処法"
+    ],
+    "description": "ポイント履歴・保留中・アカウント違いなど、よくある原因を公式手順でチェック。再起動やPlayストア更新の対処も解説。",
+    "file": "../articles/2025-12-25-playpoints-not-reflected.html",
+    "thumbnail": "../articles/ogp/playpoints-not-reflected.png"
+  }
+]

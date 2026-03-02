@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- SEO -->
+    <title>課金はキャンペーン待ちが得？Google Play Points「ポイント増量」の仕組みと注意点</title>
+    <meta name="description"
+        content="Google Play Pointsのポイント増量（プロモーション）で還元が上がる仕組みを解説。開催タイミング、確認場所、「倍率は重複しない（最も高い獲得レートが適用）」の注意点まで。" />
+    <link rel="canonical" href="https://playpoint-sim.com/articles/2025-12-25-campaign.html" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="課金はキャンペーン待ちが得？ポイント増量の仕組み" />
+    <meta property="og:description" content="ポイント増量の確認方法、重複しないルール（高い獲得レートが適用）、シミュレーションまでまとめ。" />
+    <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-campaign.html" />
+    <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/campaign.png" />
+    <meta property="og:site_name" content="Playポイント計算機" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #f59e0b;
+            --accent-light: #fef3c7;
+            --warning: #ef4444;
+            --warning-light: #fee2e2;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --gold: #fbbf24;
+            --radius: 20px;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== Header ========== */
+        .header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav a:hover {
+            opacity: 0.7;
+        }
+
+        /* ========== Main Card ========== */
+        .main-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* ========== Hero ========== */
+        .hero {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        /* ========== Content ========== */
+        .content {
+            padding: 2rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+
+        .intro strong {
+            color: #92400e;
+        }
+
+        /* ========== Summary Box ========== */
+        .summary-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: var(--radius);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .summary-box h2 {
+            font-size: 1rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .summary-box ul {
+            padding-left: 1.5rem;
+        }
+
+        .summary-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Sections ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            color: #92400e;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+
+        .section h3 {
+            font-size: 1.05rem;
+            margin: 1.5rem 0 0.8rem;
+            color: var(--text);
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+        }
+
+        .section ul,
+        .section ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* ========== Callout Boxes ========== */
+        .callout {
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .callout-warning {
+            background: var(--warning-light);
+            border-left: 4px solid var(--warning);
+        }
+
+        .callout-warning h3 {
+            color: #b91c1c;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-info {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-info h3 {
+            color: #92400e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout-success {
+            background: var(--success-light);
+            border-left: 4px solid var(--success);
+        }
+
+        .callout-success h3 {
+            color: #065f46;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+
+        .callout ul,
+        .callout ol {
+            padding-left: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        .callout li {
+            margin-bottom: 0.3rem;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        /* ========== Table ========== */
+        .table-card {
+            background: #fafafa;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+
+        th,
+        td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ========== Steps ========== */
+        .steps {
+            background: #fafafa;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .steps ol {
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+
+        .steps li {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .steps strong {
+            color: var(--accent);
+        }
+
+        /* ========== FAQ ========== */
+        .faq-item {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-item h3 {
+            font-size: 0.95rem;
+            color: #92400e;
+            margin: 0 0 0.5rem;
+        }
+
+        .faq-item p {
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        /* ========== CTA ========== */
+        .cta-box {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+
+        .cta-box h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #fff;
+            color: #92400e;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ========== Footer ========== */
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .article-footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .site-footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .site-footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .main-card {
+                margin: 1rem;
+                border-radius: 16px;
+            }
+
+            .hero {
+                padding: 2rem 1.5rem;
+            }
+
+            .hero h1 {
+                font-size: 1.25rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <main class="main-card">
+        <!-- Hero -->
+        <div class="hero">
+            <span class="hero-badge">🔥 キャンペーン攻略</span>
+            <h1>課金はキャンペーン待ちが得？<br>ポイント増量の仕組みと確認手順</h1>
+            <p class="hero-meta">📅 2025/12/25 更新 ・ ⏱ 読了 5分</p>
+        </div>
+
+        <article class="content">
+            <!-- Intro -->
+            <div class="intro">
+                <strong>結論：増量が出ていれば得になりやすい</strong><br>
+                ただし「いつ出るか」の断言より、<strong>課金前に毎回確認</strong>が最強の戦術！
+            </div>
+
+            <!-- Summary -->
+            <div class="summary-box">
+                <h2>📌 この記事のまとめ（超短縮）</h2>
+                <ul>
+                    <li>ポイント増量は「出ていれば得」になりやすい</li>
+                    <li>開催タイミングの断言より、<strong>課金前の確認</strong>が最強</li>
+                    <li>倍率は重複せず、<strong>高い獲得レートが適用</strong>される</li>
+                </ul>
+            </div>
+
+            <!-- Section: ポイント増量とは -->
+            <section class="section">
+                <h2>🎁 ポイント増量キャンペーンとは？</h2>
+                <p>Google Play Pointsでは、購入内容（タイトルなど）によって<strong>通常より高い獲得レート</strong>が提示されることがあります（プロモーション/オファー）。</p>
+                <p>たとえば通常のブロンズ会員は<strong>100円あたり1ポイント</strong>ですが、特別オファーで<strong>100円あたり3ポイント</strong>のように、上のレートが表示される例があります。
+                </p>
+
+                <div class="callout callout-success">
+                    <h3>💡 覚え方</h3>
+                    <p>「倍率が何倍か」を覚えるより、<strong>"今画面に表示されている獲得レート（pt/100円）"</strong>を信じるのが一番安全です。</p>
+                </div>
+            </section>
+
+            <!-- Section: 開催タイミング -->
+            <section class="section">
+                <h2>📅 開催タイミングの考え方（週末説の扱い）</h2>
+                <p>「金曜〜日曜に多い」と言われがちですが、これは<strong>断言できません</strong>。</p>
+                <p>実際には、数日だけの短期開催で出ることがあり、その結果として<strong>週末にかかる</strong>こともあります。</p>
+
+                <div class="callout callout-info">
+                    <h3>🎯 最強の戦術</h3>
+                    <p>課金の前に1回だけ、PlayストアのPlay Points画面を見て、<strong>増量表示が出ているか確認</strong>する。</p>
+                    <p>「出ていれば狙う / 出ていなければ無理に待たない」でもOK（自分のプレイスタイル次第）。</p>
+                </div>
+            </section>
+
+            <!-- Section: 確認手順 -->
+            <section class="section">
+                <h2>✅ 課金前に確認する手順</h2>
+                <div class="steps">
+                    <ol>
+                        <li>Playストアを開く</li>
+                        <li>プロフィール → <strong>Play Points</strong> を開く</li>
+                        <li><strong>「貯める」</strong>（またはオファーが見えるタブ）で、対象タイトルに増量表示があるか確認</li>
+                    </ol>
+                </div>
+
+                <div class="callout callout-warning">
+                    <h3>⚠️ 注意</h3>
+                    <p>増量オファーは<strong>対象タイトル限定</strong>や<strong>条件付き</strong>の場合があります。</p>
+                    <p>「自分が課金するタイトルが対象か」を必ず確認してください。</p>
+                </div>
+            </section>
+
+            <!-- Section: 重複しない -->
+            <section class="section">
+                <h2>❌ 【超重要】倍率は重複しない！</h2>
+                <p>ここが一番の落とし穴です。Play Pointsでは、一定期間において<strong>利用可能な中で最も高い獲得レートが適用</strong>されます。</p>
+                <p>さらに、<strong>複数のプロモーションは1回の購入に合算できない</strong>とされています。</p>
+
+                <div class="table-card">
+                    <table>
+                        <tr>
+                            <th>状況</th>
+                            <th>誤解（やりがち）</th>
+                            <th>正しい考え方</th>
+                        </tr>
+                        <tr>
+                            <td>ランク特典と増量が同時にある</td>
+                            <td>「ランク＋オファー」で足し算</td>
+                            <td><strong>高い方が適用</strong></td>
+                        </tr>
+                        <tr>
+                            <td>オファーが複数ある</td>
+                            <td>全部盛りで増える</td>
+                            <td><strong>1回の購入で合算されない</strong></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="callout callout-info">
+                    <h3>💡 いちばん簡単な結論</h3>
+                    <p>"倍率"を計算で積み上げるのではなく、<strong>購入画面やオファー画面に出ている「pt/100円」表示</strong>を基準にするのが確実です。</p>
+                </div>
+            </section>
+
+            <!-- CTA -->
+            <div class="cta-box">
+                <h3>🔢 キャンペーン時の獲得ポイントを計算</h3>
+                <p>「増量中に課金したら何ポイント？」をサクッとシミュレーション</p>
+                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank">計算機を開く →</a>
+            </div>
+
+            <!-- AdSense: playpoint_horizontal -->
+            <div style="margin: 2rem 0; text-align: center;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
+                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <!-- FAQ -->
+            <section class="section">
+                <h2>❓ よくある質問</h2>
+
+                <div class="faq-item">
+                    <h3>Q. ポイント増量は週末に多いの？</h3>
+                    <p>A. 「週末に多い」と断言はできません。短期開催で週末にかかることがある程度。課金前にPlay Points画面で確認が確実です。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. ランク特典と増量は足し算される？</h3>
+                    <p>A. 原則として足し算されません。利用可能な中で最も高い獲得レートが適用されます。</p>
+                </div>
+
+                <div class="faq-item">
+                    <h3>Q. 結局、何を見ればいい？</h3>
+                    <p>A. "倍率"を暗記するより、Playストアで表示されている「pt/100円」や、対象タイトルの増量表示を確認するのが確実です。</p>
+                </div>
+            </section>
+        </article>
+
+        <!-- Previous / Next Article Navigation -->
+        <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+        <footer class="article-footer">
+            <p>
+                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
+                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
+            </p>
+            <p class="small" style="margin-top: 1rem;">
+                免責：本記事は一般情報であり、Google Play Pointsの仕様・増量オファーの有無・条件・表示レートは国/時期/アカウント/対象タイトルで変動する場合があります。
+            </p>
+        </footer>
+    </main>
+
+
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "課金はキャンペーン待ちが得？Google Play Points「ポイント増量」の仕組みと注意点",
+        "description": "Google Play Pointsのポイント増量（プロモーション）の仕組み、確認方法、重複ルール（最も高い獲得レートが適用）を解説。",
+        "inLanguage": "ja",
+        "datePublished": "2025-12-25",
+        "dateModified": "2025-12-25",
+        "author": { "@type": "Person", "name": "かたかた" },
+        "publisher": { "@type": "Organization", "name": "Playポイント計算機" }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "ポイント増量キャンペーンは週末に多いの？",
+                "acceptedAnswer": { "@type": "Answer", "text": "「週末に多い」と断言はできません。短期開催で週末にかかることがある程度。課金前にPlay Points画面で確認が確実です。" }
+            },
+            {
+                "@type": "Question",
+                "name": "ランク特典とキャンペーン倍率は足し算される？",
+                "acceptedAnswer": { "@type": "Answer", "text": "原則として足し算されません。利用可能な中で最も高い獲得レートが適用されます。" }
+            },
+            {
+                "@type": "Question",
+                "name": "どこでポイント増量を確認できる？",
+                "acceptedAnswer": { "@type": "Answer", "text": "PlayストアのPlay Points画面（「貯める」や「使う」）で、対象のオファーや表示を確認できます。" }
+            }
+        ]
+    }
+    </script>
+
+    <!-- AdSense Auto Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455"
+        crossorigin="anonymous"></script>
+    <script src="../blog/article.js"></script>
+    <script src="../blog/components.js"></script>
+</body>
+
+</html>
