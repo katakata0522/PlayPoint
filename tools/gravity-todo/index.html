@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0a0a0c">
+  <link rel="manifest" href="manifest.json">
+  <title>Gravity-Todo | タスク爆破アプリ</title>
+  <meta name="description" content="重力に従って積み上がるタスクを、粉々に爆破して完了する爽快なTodoアプリ。登録不要・完全無料。">
+  <meta name="robots" content="index,follow">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://playpoint-sim.com/tools/gravity-todo/">
+
+  <!-- Consent Mode デフォルト設定（同意前はGA/AdSense無効） -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      ad_storage: 'denied',
+      analytics_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      wait_for_update: 500
+    });
+  </script>
+
+  <meta property="og:title" content="Gravity-Todo | タスクを爆破する爽快Todoアプリ">
+  <meta property="og:description" content="タスクが重力で積み上がる→完了したら粉砕！物理演算で動くタスク管理ツール。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://playpoint-sim.com/tools/gravity-todo/">
+  <meta property="og:image" content="https://playpoint-sim.com/tools/gravity-todo/og-image.png">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:site_name" content="かたかたラボ">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Gravity-Todo",
+    "description": "重力に従って積み上がるタスクを爆破して完了する爽快なTodoアプリ。",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "inLanguage": "ja"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"
+    integrity="sha256-vfaOKX1sTshbjdaTuHgdmdsAkEScmjummUju3gjJJ1o=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="bg-particles"></div>
+  <div class="noise-overlay"></div>
+  <div id="canvas-container"></div>
+
+  <!-- ヒントバー: hiddenなしで最初から表示 -->
+  <div id="hint-bar" class="hint-bar" role="status" aria-live="polite">
+    <span class="hint-icon">💡</span>
+    <span class="hint-text">下の一覧で <strong>詳細</strong> <strong>完了</strong> <strong>削除</strong>。ブロックはドラッグ、ダブルクリックで詳細、長押しで爆破。</span>
+    <button id="hint-close" class="hint-close" aria-label="閉じる">✕</button>
+  </div>
+
+  <main id="ui-layer">
+    <header class="header">
+      <div class="header-shell">
+        <div class="header-top">
+          <div class="brand-block">
+            <h1>GRAVITY TODO</h1>
+          </div>
+          <div class="header-controls">
+            <button id="rearrange-btn" class="icon-btn" aria-label="タスクを整列" title="上から降らせて再配置">🔄</button>
+            <button id="bgm-btn" class="icon-btn" aria-label="BGM ON/OFF" title="BGM ON/OFF">🎵</button>
+            <button id="settings-btn" class="icon-btn" aria-label="カラー設定" aria-expanded="false" aria-controls="settings-panel">⚙</button>
+            <button id="nuke-btn" class="hidden">全爆破</button>
+          </div>
+        </div>
+
+        <div class="status-bar" aria-label="タスク状況">
+          <span class="status-label">TASKS</span>
+          <div class="status-meter" aria-hidden="true"><span id="task-meter-fill"></span></div>
+          <strong id="task-count">0</strong>
+        </div>
+
+        <div id="settings-panel" class="settings-panel hidden" role="dialog" aria-label="カラー設定">
+          <p class="settings-heading">ブロックカラー</p>
+          <div id="preset-list" class="preset-list" role="radiogroup" aria-label="カラープリセット"></div>
+          <div class="custom-colors">
+            <label class="color-label"><span>ブロック色</span><input type="color" id="custom-block-color" value="#1a1a2e"></label>
+            <label class="color-label"><span>枠線色</span><input type="color" id="custom-block-border" value="#ff3366"></label>
+          </div>
+          <p class="settings-note">色を変更すると全ブロックに即時反映されます</p>
+          <hr class="settings-divider">
+          <div class="settings-toggle-row">
+            <div class="settings-toggle-info">
+              <span class="settings-toggle-label">📱 ジャイロ重力</span>
+              <span class="settings-toggle-desc">端末を傾けて動かす</span>
+              <button id="gyro-calibrate-btn" class="settings-text-btn hidden">現在の角度を基準にする</button>
+            </div>
+            <button id="gyro-toggle" class="toggle-switch" role="switch" aria-checked="false" aria-label="ジャイロ重力 ON/OFF">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="task-console" aria-label="Todo操作パネル">
+      <div class="task-console-header">
+        <div>
+          <p class="task-console-kicker">TODAY'S DROP</p>
+          <h2 class="task-console-title">落として、片づける</h2>
+        </div>
+        <span id="task-summary" class="task-summary">0件</span>
+      </div>
+
+      <p class="task-guide">ブロックで遊びながら、下の一覧から普通のTodoとして操作できます。</p>
+
+      <div id="task-list" class="task-list hidden" aria-label="タスク一覧"></div>
+      <p id="task-empty-state" class="task-empty-state">まず1件DROP。タスクは重力ブロックになり、一覧から詳細・完了・削除できます。</p>
+
+      <div class="input-container">
+        <form id="task-form">
+          <input type="text" id="task-input" placeholder="タスクを入力…" autocomplete="off" maxlength="20" required>
+          <button type="submit" class="add-btn">DROP</button>
+        </form>
+        <div class="input-meta" aria-hidden="true">
+          <span class="input-cap">MAX 20文字</span>
+          <span id="char-count">0/20</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <nav aria-label="法的情報">
+        <a href="https://katakatalab.com/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>
+        <span class="footer-sep">|</span>
+        <a href="https://katakatalab.com/terms.html" target="_blank" rel="noopener">利用規約</a>
+        <span class="footer-sep">|</span>
+        <button id="cm-settings-btn" type="button" class="footer-btn">広告・計測設定</button>
+        <span class="footer-sep">|</span>
+        <a href="https://katakatalab.com/" target="_blank" rel="noopener">KatakataLab</a>
+      </nav>
+    </footer>
+
+    <!-- AdSense用予約スペース（UIの最下部） -->
+    <div class="ad-placeholder" aria-hidden="true"></div>
+  </main>
+
+  <noscript>
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0a0c;color:#f4f4f5;font-family:sans-serif;padding:2rem;text-align:center;">
+      <p>Gravity-Todoを利用するにはJavaScriptを有効にしてください。</p>
+    </div>
+  </noscript>
+
+  <!-- タスク詳細パネル（サブタスクチェックリスト） -->
+  <div id="detail-overlay" class="detail-overlay hidden" aria-hidden="true"></div>
+  <div id="task-detail-panel" class="task-detail-panel hidden" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="detail-header">
+      <h2 id="detail-title" class="detail-title"></h2>
+      <div class="detail-header-actions">
+        <span id="detail-progress" class="detail-progress"></span>
+        <button id="detail-explode-btn" class="detail-explode-btn" aria-label="爆破">💥 爆破</button>
+        <button id="detail-close-btn" class="detail-close-btn" aria-label="閉じる">✕</button>
+      </div>
+    </div>
+    <ul id="detail-list" class="detail-list"></ul>
+    <!-- ブロック個別カラー -->
+    <div class="detail-colors">
+      <span class="detail-colors-label">ブロックカラー</span>
+      <label class="detail-color-label" title="背景色">
+        <span>背景</span>
+        <input type="color" id="detail-block-color" value="#1a1a2e">
+      </label>
+      <label class="detail-color-label" title="枠線色">
+        <span>枠線</span>
+        <input type="color" id="detail-block-border" value="#ff3366">
+      </label>
+    </div>
+    <form id="detail-add-form" class="detail-add-form">
+      <input type="text" id="detail-input" class="detail-input" placeholder="サブタスクを追加…" maxlength="40" autocomplete="off">
+      <button type="submit" class="detail-add-btn">追加</button>
+    </form>
+  </div>
+
+  <!-- Undo（元に戻す）スナックバー -->
+  <div id="undo-snackbar" class="undo-snackbar hidden" role="alert">
+    <span>タスクを削除しました</span>
+    <button id="undo-btn" class="undo-btn">元に戻す</button>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+  <script src="src/consent-manager.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof ConsentManager === 'undefined') {
+        console.warn('[CM] ConsentManagerがブロックされています。広告ブロッカーを無効にしてください。');
+        return;
+      }
+      var cm = new ConsentManager({
+        banner: document.getElementById('cm-banner'),
+        acceptBtn: document.getElementById('cm-accept-btn'),
+        rejectBtn: document.getElementById('cm-reject-btn'),
+        settingsBtn: document.getElementById('cm-settings-btn')
+      });
+      cm.init();
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+    }
+  </script>
+
+  <!-- 同意バナー UI -->
+  <div id="cm-banner" class="cm-banner cm-banner--hidden" role="dialog" aria-modal="true" aria-labelledby="cm-title" aria-describedby="cm-desc">
+    <div class="cm-banner-content">
+      <div class="cm-banner-text">
+        <strong id="cm-title" class="cm-banner-title">クッキーとデータ利用について</strong>
+        <p id="cm-desc" class="cm-banner-desc">
+          当サイトでは、サービスの向上および収益化のためにGoogle AdSense等を利用しています。
+          「同意する」をクリックすると、これらの目的でクッキーやデータが使用されることに同意したとみなされます。
+        </p>
+      </div>
+      <div class="cm-banner-actions">
+        <button id="cm-reject-btn" class="cm-btn cm-btn--secondary">必要な通信のみ</button>
+        <button id="cm-accept-btn" class="cm-btn cm-btn--primary">同意する</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
