@@ -315,6 +315,7 @@ h1 {
   box-shadow: var(--shadow-strong);
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+  overflow: hidden;
 }
 .task-console-header {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
@@ -365,6 +366,7 @@ h1 {
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 8px;
   background: rgba(255,255,255,.055);
+  min-width: 0;
 }
 .task-list-main {
   min-width: 0;
@@ -383,9 +385,11 @@ h1 {
 }
 .task-list-actions {
   display: flex; align-items: center; gap: 0.35rem;
+  min-width: 0;
 }
 .task-action {
   min-height: 34px;
+  min-width: 0;
   border: 1px solid rgba(255,255,255,.14);
   border-radius: 6px;
   background: rgba(255,255,255,.08);
@@ -526,9 +530,13 @@ h1 {
   .task-guide { display: none; }
   .task-list { max-height: 21vh; }
   .task-list-item { grid-template-columns: 1fr; align-items: stretch; }
-  .task-list-actions { justify-content: stretch; }
+  .task-list-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 38px;
+  }
   .task-action--detail,
   .task-action--complete { flex: 1; }
+  .task-action--destroy { width: 38px; }
   .input-container { width: 100%; padding: 0.7rem 0.7rem 0.55rem; }
   #task-form { grid-template-columns: 1fr; }
   .add-btn   { width: 100%; }
