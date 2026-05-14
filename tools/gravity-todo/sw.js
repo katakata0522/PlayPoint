@@ -1,5 +1,5 @@
-const APP_SHELL_CACHE = 'gravity-todo-app-v17';
-const RUNTIME_CACHE = 'gravity-todo-runtime-v17';
+const APP_SHELL_CACHE = 'gravity-todo-app-v18';
+const RUNTIME_CACHE = 'gravity-todo-runtime-v18';
 const APP_SHELL_URLS = [
   './',
   './index.html',

@@ -10,6 +10,8 @@ export class TaskDetailPanel {
     this.closeBtn = document.getElementById('detail-close-btn');
     this.explodeBtn = document.getElementById('detail-explode-btn');
     this.progressEl = document.getElementById('detail-progress');
+    this.subtitleEl = document.getElementById('detail-subtitle');
+    this.progressFillEl = document.getElementById('detail-progress-fill');
     this.blockColorInput = document.getElementById('detail-block-color');
     this.borderColorInput = document.getElementById('detail-block-border');
 
@@ -58,6 +60,7 @@ export class TaskDetailPanel {
     if (!body) return;
     this.currentBody = body;
     if (!Array.isArray(body.subTasks)) body.subTasks = [];
+    if (this.subtitleEl) this.subtitleEl.textContent = 'MISSION DETAIL';
     if (this.titleEl) this.titleEl.textContent = body.taskText;
 
     // 現在のブロック色をピッカーに反映
@@ -127,13 +130,15 @@ export class TaskDetailPanel {
     const subs = this.currentBody.subTasks ?? [];
 
     // 進捗表示
+    const total = subs.length;
+    const done = subs.filter(s => s.done).length;
+    const percent = total === 0 ? 0 : Math.round((done / total) * 100);
     if (this.progressEl) {
-      if (subs.length === 0) {
-        this.progressEl.textContent = '';
-      } else {
-        const done = subs.filter(s => s.done).length;
-        this.progressEl.textContent = `${done} / ${subs.length} 完了`;
-      }
+      this.progressEl.textContent = `${percent}%`;
+      this.progressEl.setAttribute('aria-label', total === 0 ? '進捗 0%' : `${done}/${total} 完了`);
+    }
+    if (this.progressFillEl) {
+      this.progressFillEl.style.width = `${percent}%`;
     }
 
     // リスト再描画
@@ -141,7 +146,7 @@ export class TaskDetailPanel {
     if (subs.length === 0) {
       const p = document.createElement('p');
       p.className = 'subtask-empty';
-      p.textContent = 'サブタスクを追加してみよう';
+      p.textContent = '細かく分けると、完了した瞬間のブロックが軽くなります。まず1つ追加してみよう。';
       this.listEl.appendChild(p);
       return;
     }

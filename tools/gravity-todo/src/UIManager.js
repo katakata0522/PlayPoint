@@ -2,6 +2,7 @@ export class UIManager {
   constructor() {
     this.nukeBtn = document.getElementById('nuke-btn');
     this.body = document.body;
+    this.rearrangeBtn = document.getElementById('rearrange-btn');
     this.taskCount = document.getElementById('task-count');
     this.taskMeterFill = document.getElementById('task-meter-fill');
     this.taskSummary = document.getElementById('task-summary');
@@ -11,12 +12,21 @@ export class UIManager {
 
   updateNukeButtonVisibility(taskCount) {
     this.updateTaskStatus(taskCount);
+    this.updateRearrangeButtonState(taskCount);
     if (!this.nukeBtn) return;
     if (taskCount >= 5) {
       this.nukeBtn.classList.remove('hidden');
     } else {
       this.nukeBtn.classList.add('hidden');
     }
+  }
+
+  updateRearrangeButtonState(taskCount) {
+    if (!this.rearrangeBtn) return;
+    const disabled = taskCount === 0;
+    this.rearrangeBtn.disabled = disabled;
+    this.rearrangeBtn.setAttribute('aria-disabled', String(disabled));
+    this.rearrangeBtn.classList.toggle('is-disabled', disabled);
   }
 
   updateTaskStatus(taskCount, maxTasks = 100) {

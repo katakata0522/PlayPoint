@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ======== タスク整列 ========
   const rearrangeBtn = document.getElementById('rearrange-btn');
   rearrangeBtn?.addEventListener('click', () => {
+    if (rearrangeBtn.disabled) return;
     engine.rearrangeTasks();
   });
 

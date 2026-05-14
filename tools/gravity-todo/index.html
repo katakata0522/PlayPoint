@@ -74,7 +74,7 @@
             <h1>GRAVITY TODO</h1>
           </div>
           <div class="header-controls">
-            <button id="rearrange-btn" class="icon-btn" aria-label="タスクを整列" title="上から降らせて再配置">🔄</button>
+            <button id="rearrange-btn" class="icon-btn" aria-label="ブロックを落として整列" title="ブロックを落として整列" disabled aria-disabled="true">↧</button>
             <button id="bgm-btn" class="icon-btn" aria-label="BGM ON/OFF" title="BGM ON/OFF">🎵</button>
             <button id="settings-btn" class="icon-btn" aria-label="カラー設定" aria-expanded="false" aria-controls="settings-panel">⚙</button>
             <button id="nuke-btn" class="hidden">全爆破</button>
@@ -162,9 +162,15 @@
   <div id="detail-overlay" class="detail-overlay hidden" aria-hidden="true"></div>
   <div id="task-detail-panel" class="task-detail-panel hidden" role="dialog" aria-modal="true" aria-labelledby="detail-title">
     <div class="detail-header">
-      <h2 id="detail-title" class="detail-title"></h2>
+      <div class="detail-title-block">
+        <p id="detail-subtitle" class="detail-subtitle"></p>
+        <h2 id="detail-title" class="detail-title"></h2>
+      </div>
       <div class="detail-header-actions">
-        <span id="detail-progress" class="detail-progress"></span>
+        <div class="detail-progress-wrap" aria-hidden="false">
+          <span id="detail-progress" class="detail-progress">0%</span>
+          <span class="detail-progress-track"><span id="detail-progress-fill"></span></span>
+        </div>
         <button id="detail-explode-btn" class="detail-explode-btn" aria-label="爆破">💥 爆破</button>
         <button id="detail-close-btn" class="detail-close-btn" aria-label="閉じる">✕</button>
       </div>
