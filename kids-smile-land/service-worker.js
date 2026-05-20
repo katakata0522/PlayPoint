@@ -1,4 +1,4 @@
-const CACHE_NAME = 'smile-land-v1';
+const CACHE_NAME = 'smile-land-v2-20260520';
 const ASSETS = [
   './',
   './index.html',
@@ -33,11 +33,21 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// キャッシュ優先でリクエストを返す
+// ネットワーク優先、失敗時にキャッシュにフォールバック
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then(response => {
+        // ネットワーク成功時：キャッシュも更新
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+        return response;
+      })
+      .catch(() => {
+        // オフライン時：キャッシュから返す
+        return caches.match(event.request);
+      })
   );
 });

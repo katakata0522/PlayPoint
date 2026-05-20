@@ -1929,8 +1929,36 @@
         });
     }
 
-    function resetStats() {
-        if (confirm("がんばりレポートの記録をリセットしますか？")) {
+    // --- カスタム確認ダイアログ (ブラウザのconfirmを置き換え) ---
+    let confirmResolve = null;
+
+    function showConfirm(title, body) {
+        return new Promise((resolve) => {
+            confirmResolve = resolve;
+            const modal = document.getElementById('modal-confirm');
+            const titleEl = document.getElementById('confirm-title');
+            const bodyEl = document.getElementById('confirm-body');
+            if (titleEl) titleEl.textContent = title;
+            if (bodyEl) bodyEl.textContent = body;
+            if (modal) modal.classList.remove('hidden');
+        });
+    }
+
+    function handleConfirmResult(result) {
+        const modal = document.getElementById('modal-confirm');
+        if (modal) modal.classList.add('hidden');
+        if (confirmResolve) {
+            confirmResolve(result);
+            confirmResolve = null;
+        }
+    }
+
+    async function resetStats() {
+        const confirmed = await showConfirm(
+            'きろくをリセットしますか？',
+            'がんばりレポートの記録がすべて消えます。この操作は元に戻せません。'
+        );
+        if (confirmed) {
             smileStats = {
                 plays: { draw: 0, hiragana: 0, quiz: 0, count: 0, match: 0, xylophone: 0, sticker: 0 },
                 correct_answers: 0,
@@ -1941,12 +1969,25 @@
         }
     }
 
-    function resetAppAll() {
-        if (confirm("本当にシールや設定をすべて消して最初からにしますか？")) {
+    async function resetAppAll() {
+        const confirmed = await showConfirm(
+            'アプリを初期化しますか？',
+            'シールや設定がすべて消えて最初からになります。この操作は元に戻せません。'
+        );
+        if (confirmed) {
             try {
-                localStorage.clear();
+                // 同一ドメインの他アプリデータを保護するため、
+                // smile_ プレフィックスが付いたキーのみを個別削除
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('smile_')) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
             } catch (e) {
-                console.error("Failed to clear localStorage:", e);
+                console.error("Failed to clear app localStorage:", e);
             }
             myStickers = [];
             placedStickers = [];
@@ -2191,6 +2232,16 @@
         const btnCloseParentSettingsBottom = document.getElementById('btn-close-parent-settings-bottom');
         if (btnCloseParentSettingsBottom) {
             btnCloseParentSettingsBottom.addEventListener('click', closeParentSettings);
+        }
+
+        // 34. カスタム確認ダイアログ
+        const btnConfirmCancel = document.getElementById('btn-confirm-cancel');
+        if (btnConfirmCancel) {
+            btnConfirmCancel.addEventListener('click', () => handleConfirmResult(false));
+        }
+        const btnConfirmOk = document.getElementById('btn-confirm-ok');
+        if (btnConfirmOk) {
+            btnConfirmOk.addEventListener('click', () => handleConfirmResult(true));
         }
     }
 

@@ -4,6 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キッズ・スマイル・ランド DX</title>
+    <meta name="description" content="ひらがな読み上げ・お絵かき・もっきん・なきごえクイズなど7つの知育ゲームが完全無料＆オフラインで遊べる、2〜6歳向けのあんしん知育PWAアプリです。">
+    <meta name="keywords" content="知育,幼児,ゲーム,ひらがな,お絵かき,PWA,オフライン,無料,2歳,3歳,4歳,5歳,6歳">
+    <!-- OGP -->
+    <meta property="og:title" content="キッズ・スマイル・ランド DX — あんしん知育アプリ">
+    <meta property="og:description" content="ひらがな・もっきん・お絵かき・なきごえクイズなど7つの知育ゲームが完全無料＆オフライン対応。保護者ロック・あんしんタイマー搭載。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playpoint-sim.com/kids-smile-land/">
+    <meta property="og:image" content="https://playpoint-sim.com/kids-smile-land/icon-512.png">
+    <meta property="og:locale" content="ja_JP">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="キッズ・スマイル・ランド DX — あんしん知育アプリ">
+    <meta name="twitter:description" content="完全無料＆オフライン対応の知育PWA。ひらがな・もっきん・お絵かきなど7種の遊びが楽しめます。">
+    <meta name="twitter:image" content="https://playpoint-sim.com/kids-smile-land/icon-512.png">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <link rel="canonical" href="https://playpoint-sim.com/kids-smile-land/">
     <!-- PWAマニフェストとテーマカラー -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff5e7e">
@@ -39,7 +57,7 @@
                     ✨ <span id="sticker-count">0</span> こ 🌟
                 </button>
                 <!-- おとなロック設定 -->
-                <button id="btn-open-parent-modal" class="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 rounded-full transition-colors text-slate-500 border border-slate-200">
+                <button id="btn-open-parent-modal" aria-label="保護者設定を開く" class="w-10 h-10 flex items-center justify-center bg-slate-100 hover:bg-slate-200 rounded-full transition-colors text-slate-500 border border-slate-200">
                     <!-- ギアSVGアイコン -->
                     <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -139,7 +157,7 @@
 
                 <!-- キャンバス -->
                 <div class="relative w-full flex-grow bg-slate-50 border-4 border-dashed border-slate-200 rounded-2xl overflow-hidden min-h-[300px]">
-                    <canvas id="paint-canvas" class="absolute top-0 left-0 w-full h-full cursor-crosshair touch-none"></canvas>
+                    <canvas id="paint-canvas" aria-label="お絵かきキャンバス" class="absolute top-0 left-0 w-full h-full cursor-crosshair touch-none"></canvas>
                 </div>
             </div>
 
@@ -148,7 +166,7 @@
                 <h3 class="text-lg font-bold text-slate-700 mb-6">なきごえを よくきいて、どのどうぶつか あててみてね！</h3>
 
                 <!-- スピーカーボタン -->
-                <button id="btn-play-quiz-voice" class="btn-puni shadow-blue-200 bg-blue-500 hover:bg-blue-600 text-white w-28 h-28 rounded-full flex items-center justify-center shadow-md mb-8 relative group border-4 border-white">
+                <button id="btn-play-quiz-voice" aria-label="なきごえを聞く" class="btn-puni shadow-blue-200 bg-blue-500 hover:bg-blue-600 text-white w-28 h-28 rounded-full flex items-center justify-center shadow-md mb-8 relative group border-4 border-white">
                     <!-- スピーカーSVG -->
                     <svg class="w-12 h-12 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
@@ -294,43 +312,43 @@
 
     <!-- フッターナビゲーション（押しやすい大型タブ：レスポンシブ最適化済） -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t-4 border-orange-100 shadow-2xl z-40 px-3 py-2">
-        <div class="max-w-4xl mx-auto flex justify-around items-center gap-1.5">
+        <div role="tablist" aria-label="ゲーム選択" class="max-w-4xl mx-auto flex justify-around items-center gap-1.5">
             <!-- おえかき -->
-            <button id="nav-draw" data-tab-target="draw" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
+            <button id="nav-draw" role="tab" data-tab-target="draw" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
                 <span class="text-2xl">🎨</span>
                 <span class="scale-90 md:scale-100 truncate w-full">おえかき</span>
             </button>
             <!-- おしゃべり -->
-            <button id="nav-hiragana" data-tab-target="hiragana" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent bg-blue-50 border-blue-200 shadow-inner">
+            <button id="nav-hiragana" role="tab" data-tab-target="hiragana" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent bg-blue-50 border-blue-200 shadow-inner">
                 <span class="text-2xl">🍎</span>
                 <span class="scale-90 md:scale-100 truncate w-full">おしゃべり</span>
             </button>
             <!-- なきごえ -->
-            <button id="nav-quiz" data-tab-target="quiz" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
+            <button id="nav-quiz" role="tab" data-tab-target="quiz" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
                 <span class="text-2xl">🦁</span>
                 <span class="scale-90 md:scale-100 truncate w-full">なきごえ</span>
             </button>
             <!-- かずかぞえ -->
-            <button id="nav-count" data-tab-target="count" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
+            <button id="nav-count" role="tab" data-tab-target="count" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
                 <span class="text-2xl">🔢</span>
                 <span class="scale-90 md:scale-100 truncate w-full">かずかぞえ</span>
             </button>
             <!-- えあわせ -->
-            <button id="nav-match" data-tab-target="match" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
+            <button id="nav-match" role="tab" data-tab-target="match" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
                 <span class="text-2xl">🃏</span>
                 <span class="scale-90 md:scale-100 truncate w-full">えあわせ</span>
             </button>
             <!-- もっきん -->
-            <button id="nav-xylophone" data-tab-target="xylophone" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
+            <button id="nav-xylophone" role="tab" data-tab-target="xylophone" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent">
                 <span class="text-2xl">🎵</span>
                 <span class="scale-90 md:scale-100 truncate w-full">もっきん</span>
             </button>
             <!-- シール -->
-            <button id="nav-sticker" data-tab-target="sticker" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent relative">
+            <button id="nav-sticker" role="tab" data-tab-target="sticker" class="flex-1 flex flex-col items-center justify-center p-2 rounded-2xl hover:bg-slate-50 transition-all text-blue-500 font-bold text-xs gap-1 border-2 border-transparent relative">
                 <span class="text-2xl">🌟</span>
                 <span class="scale-90 md:scale-100 truncate w-full">シールデコ</span>
                 <!-- シールバッジ -->
-                <span id="badge-new" class="absolute top-1 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border border-white hidden"></span>
+                <span id="badge-new" aria-hidden="true" class="absolute top-1 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border border-white hidden"></span>
             </button>
         </div>
     </nav>
@@ -562,6 +580,19 @@
                 <button id="btn-close-parent-settings-bottom" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs transition-all">
                     とじる
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル: カスタム確認ダイアログ (confirm置き換え) -->
+    <div id="modal-confirm" class="fixed inset-0 bg-slate-900/70 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 text-center max-w-sm w-full shadow-2xl border-4 border-orange-200">
+            <div class="text-5xl mb-4">🤔</div>
+            <h4 id="confirm-title" class="text-lg font-bold text-slate-700 mb-2">ほんとうに いいですか？</h4>
+            <p id="confirm-body" class="text-sm text-slate-500 mb-6 font-bold"></p>
+            <div class="flex gap-2">
+                <button id="btn-confirm-cancel" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm">やめる</button>
+                <button id="btn-confirm-ok" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-sm">はい</button>
             </div>
         </div>
     </div>
