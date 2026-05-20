@@ -448,8 +448,23 @@
     }
 
 
+    // --- ホーム画面のなかまたちおしゃべりシステム ---
+    function speakHomeCharacter(charKey) {
+        const config = charVoices[charKey];
+        if (!config) return;
+        let text = '';
+        if (charKey === 'momo') {
+            text = "わたしは ももちゃん！ いっしょに たのしく あそぼうね！ どのアトラクションにする？";
+        } else if (charKey === 'leo') {
+            text = "オレは レオくんだぞ！ クイズで シールを いっぱい あつめてみてくれよな！ ガオーン！";
+        } else if (charKey === 'pan') {
+            text = "ぼくは パンちゃん。 シールデコで ぺたぺた はるのが だいすきなんだ〜。 いっしょにやろう〜。";
+        }
+        speakText(text, config.pitch, config.rate);
+    }
+
     // --- タブ切り替えシステム ---
-    let currentTab = 'hiragana';
+    let currentTab = 'home';
 
     function switchTab(tabId) {
         initAudio();
@@ -467,11 +482,25 @@
 
         currentTab = tabId;
 
+        // おうちボタンと案内エリアの動的表示制御
+        const btnBackHome = document.getElementById('btn-back-home');
+        const navigatorArea = document.getElementById('navigator-area');
+
+        if (tabId === 'home') {
+            if (btnBackHome) btnBackHome.classList.add('hidden');
+            if (navigatorArea) navigatorArea.classList.add('hidden');
+        } else {
+            if (btnBackHome) btnBackHome.classList.remove('hidden');
+            if (navigatorArea) navigatorArea.classList.remove('hidden');
+        }
+
         // アチーブメント判定用
         checkAndTriggerMissions();
 
         // 各種タブごとの初期化 ＆ がんばりレポート記録
-        if (tabId === 'hiragana') {
+        if (tabId === 'home') {
+            speakText("キッズ・スマイル・ランドへ ようこそ！ なにして あそぶ？");
+        } else if (tabId === 'hiragana') {
             updateNavigator('momo', "ひらがなを タップして、おしゃべり してみてね！");
             recordPlay('hiragana');
         } else if (tabId === 'count') {
@@ -2052,6 +2081,34 @@
 
     // --- 🌐 動的イベントリスナー紐付けシステム ---
     function bindUIEvents() {
+        // おうちにもどるボタン
+        const btnBackHome = document.getElementById('btn-back-home');
+        if (btnBackHome) {
+            btnBackHome.addEventListener('click', () => {
+                switchTab('home');
+            });
+        }
+
+        // ホーム画面のなかまたちおしゃべり
+        const homeCharMomo = document.getElementById('home-char-momo');
+        if (homeCharMomo) {
+            homeCharMomo.addEventListener('click', () => {
+                speakHomeCharacter('momo');
+            });
+        }
+        const homeCharLeo = document.getElementById('home-char-leo');
+        if (homeCharLeo) {
+            homeCharLeo.addEventListener('click', () => {
+                speakHomeCharacter('leo');
+            });
+        }
+        const homeCharPan = document.getElementById('home-char-pan');
+        if (homeCharPan) {
+            homeCharPan.addEventListener('click', () => {
+                speakHomeCharacter('pan');
+            });
+        }
+
         // 1. タブ切り替え・下部ナビゲーション
         document.querySelectorAll('[data-tab-target]').forEach(elem => {
             elem.addEventListener('click', (e) => {
@@ -2307,6 +2364,9 @@
             if (window.speechSynthesis) {
                 loadSpeechVoices();
             }
+
+            // 最後にホーム画面を表示
+            switchTab('home');
 
             // iOS対応タッチインターフェースオーディオ有効化
             document.body.addEventListener('click', function() {

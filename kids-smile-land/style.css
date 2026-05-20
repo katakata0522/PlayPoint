@@ -76,3 +76,55 @@ body {
         padding-right: 4px !important;
     }
 }
+
+/* アトラクションカードのポップホバー効果 */
+.card-attraction {
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-bottom-width: 8px !important;
+}
+.card-attraction:hover {
+    transform: scale(1.04) translateY(-6px);
+}
+.card-attraction:active {
+    transform: scale(0.96) translateY(4px);
+    border-bottom-width: 4px !important;
+}
+
+/* キャラクターおしゃべり吹き出しの三角デザイン */
+.bubble-bottom-tip::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 24px;
+    border-width: 12px 8px 0;
+    border-style: solid;
+    border-color: #ffffff transparent;
+    display: block;
+    width: 0;
+}
+
+.bubble-bottom-tip-center::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 12px 8px 0;
+    border-style: solid;
+    border-color: #ffffff transparent;
+    display: block;
+    width: 0;
+}
+
+.bubble-bottom-tip-right::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    right: 24px;
+    border-width: 12px 8px 0;
+    border-style: solid;
+    border-color: #ffffff transparent;
+    display: block;
+    width: 0;
+}
+
