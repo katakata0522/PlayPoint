@@ -3,14 +3,16 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('./kiwimaru-400.ttf') format('truetype');
+  src: url('./kiwimaru-400.woff2') format('woff2'),
+       url('./kiwimaru-400.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Kiwi Maru';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('./kiwimaru-500.ttf') format('truetype');
+  src: url('./kiwimaru-500.woff2') format('woff2'),
+       url('./kiwimaru-500.ttf') format('truetype');
 }
 
 body {

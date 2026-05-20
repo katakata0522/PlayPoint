@@ -1,5 +1,30 @@
 (function() {
+    // --- トースト通知（エラー・情報をユーザーにUI表示する汎用関数）---
+    function showToast(message, type = 'error', duration = 4000) {
+        const existing = document.getElementById('app-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'app-toast';
+        const bgColor = type === 'error' ? '#ef4444' : type === 'success' ? '#10b981' : '#3b82f6';
+        toast.style.cssText = [
+            'position:fixed', 'bottom:90px', 'left:50%', 'transform:translateX(-50%)',
+            'background:' + bgColor, 'color:#fff', 'padding:10px 20px',
+            'border-radius:999px', 'font-size:13px', 'font-weight:bold',
+            'box-shadow:0 4px 16px rgba(0,0,0,0.2)', 'z-index:9999',
+            'max-width:90vw', 'text-align:center', 'pointer-events:none',
+            'transition:opacity 0.4s'
+        ].join(';');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 400);
+        }, duration);
+    }
+
     // --- DATA STORE 安全ロード (LocalStorage 破損時のクラッシュを完全ガード) ---
+
     function safeLoadJSON(key, defaultValue) {
         try {
             const item = localStorage.getItem(key);
@@ -47,18 +72,23 @@
 
     // Web Audio API 初期化
     let audioCtx;
+    let audioNotSupported = false;
     function initAudio() {
+        if (audioNotSupported) return;
         if (!audioCtx) {
             try {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             } catch (e) {
+                audioNotSupported = true;
                 console.error("Web Audio API is not supported on this device/browser.", e);
+                showToast("このブラウザは音声合成に対応していません。最新のChromeをお試しください。");
             }
         }
         if (audioCtx && audioCtx.state === 'suspended') {
             audioCtx.resume().catch(e => console.error("Failed to resume AudioContext:", e));
         }
     }
+
 
     // --- 日本語TTS音声読み上げシステム (ブラウザ内蔵の最高品質ボイス選定) ---
     let voicesList = [];
@@ -110,6 +140,9 @@
     if (window.speechSynthesis) {
         window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
         loadSpeechVoices();
+    } else {
+        // 音声合成非対応ブラウザへの通知
+        showToast('このブラウザは日本語読み上げに対応していません。ChromeまたはSafariをお試しください。', 'info', 6000);
     }
 
     function changeVoiceSetting() {
