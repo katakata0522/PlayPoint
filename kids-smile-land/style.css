@@ -1,0 +1,76 @@
+@font-face {
+  font-family: 'Kiwi Maru';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./kiwimaru-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Kiwi Maru';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('./kiwimaru-500.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Kiwi Maru', system-ui, -apple-system, sans-serif;
+    background-color: #FFFDF4; /* 優しい温かみのあるクリーム背景 */
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+/* ぷにぷに3Dボタンのアニメーション */
+.btn-puni {
+    transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 0px var(--tw-shadow-color);
+}
+.btn-puni:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0px var(--tw-shadow-color);
+}
+
+/* ふわふわ浮かぶアニメーション */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(2deg); }
+}
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+
+/* もっきん鍵盤の光るエフェクト */
+@keyframes pulse-light {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.95); }
+}
+.guide-active {
+    animation: pulse-light 1s infinite;
+    border: 5px solid #ffffff !important;
+    box-shadow: 0 0 25px #fffa85 !important;
+}
+
+/* スクロールバー非表示 */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* iPhone SE（極狭モバイル端末）適応スタイル：文字潰れを完全に防止 */
+@media (max-width: 375px) {
+    nav button span.text-2xl {
+        font-size: 1.25rem !important;
+    }
+    nav button span:not(.text-2xl) {
+        font-size: 8px !important;
+        letter-spacing: -0.05em;
+    }
+    nav {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+}
