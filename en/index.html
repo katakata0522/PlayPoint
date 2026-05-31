@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Play Points Calculator | How much to level up?</title>
+    <meta name="description" content="Google Play Points level-up calculator. Calculate how much you need to spend to reach Bronze, Silver, Gold, Platinum, or Diamond, including campaign boosts and weekly reward logs.">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="かたかた">
+    <meta name="last-modified" content="2026-03-08">
+    <meta property="article:modified_time" content="2026-03-08T00:00:00+09:00">
+    <link rel="canonical" href="https://playpoint-sim.com/en/">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+
+    <meta property="og:title" content="Play Points Calculator | How much to level up?">
+    <meta property="og:description" content="Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playpoint-sim.com/en/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta property="og:site_name" content="Play Points Calculator">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Play Points Calculator | How much to level up?">
+    <meta name="twitter:description" content="Calculate Google Play Points requirements and earnings easily with weekend multipliers.">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="../style.css?v=20260308a">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Play Points Calculator",
+      "operatingSystem": "Web",
+      "applicationCategory": "UtilitiesApplication",
+      "description": "A simulation tool to calculate required spending to reach Google Play Points goals (Diamond, Platinum, etc.) based on your current status.",
+      "url": "https://playpoint-sim.com/en/",
+      "author": {
+        "@type": "Person",
+        "name": "かたかた"
+      },
+      "dateModified": "2026-03-08",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Play Points Calculator",
+      "url": "https://playpoint-sim.com/en/",
+      "inLanguage": ["ja", "en"],
+      "publisher": {
+        "@type": "Person",
+        "name": "かたかた"
+      }
+    }
+    </script>
+</head>
+<body>
+
+<main class="calculator-wrapper">
+   <div class="top-bar">
+        <div class="region-switch">
+            <button data-region="JP" onclick="window.location.href='../'">日本語</button>
+            <button data-region="US" class="active">English</button>
+        </div>
+        <div class="header-links">
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link">⚠️ Country Diff</a>
+            <a href="/blog/" data-lang-key="linkArticles">📝 Articles</a>
+            <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" data-lang-key="linkKatakata">🧪 KatakataLab</a>
+        </div>
+    </div>
+
+    <!-- 金曜日リマインダーバー -->
+    <div id="friday-reminder" class="friday-reminder hidden">
+        <span class="reminder-text" data-lang-key="fridayReminderText">It's Friday! Let's claim your Weekly Reward and record it in your diary! 🎰</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="Close">×</button>
+    </div>
+
+    <h1 id="main-title" data-lang-key="mainTitle">Play Points Calculator</h1>
+    <p id="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach your goal status!<br>Also, calculate how many points you can earn from your spending!</p>
+
+    <div class="tab-switch">
+        <button id="tab-main" data-mode="main" class="active" data-lang-key="tabMain">Standard</button>
+        <button id="tab-reverse" data-mode="reverse" data-lang-key="tabReverse">Reverse</button>
+        <button id="tab-diary" data-mode="diary" data-lang-key="tabDiary">Weekly Awards Diary</button>
+    </div>
+
+    <div id="mainMode">
+        <div class="section">
+            <h2 data-lang-key="sectionTitleStatus">Status Input</h2>
+            <label for="currentStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">Current Status
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-current-status"></div>
+            </label>
+            <select id="currentStatus"></select>
+            
+            <label for="targetStatus" class="label-with-tooltip" data-lang-key="labelTargetStatus">Target Status
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-target-status"></div>
+            </label>
+            <select id="targetStatus"></select>
+            
+            <label for="neededPoints" class="label-with-tooltip" data-lang-key="labelNeededPoints">Points to Next Level
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-needed-points"></div>
+            </label>
+            <input type="number" id="neededPoints" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+        </div>
+        <div class="section">
+            <h2 data-lang-key="sectionTitleRate">Points Rate Setting</h2>
+            <label for="baseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">Base points per $1
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-base-rate"></div>
+            </label>
+            <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
+
+            <label for="multiplier" class="label-with-tooltip" data-lang-key="labelMultiplier">Campaign Multiplier (e.g., 3x)
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-multiplier"></div>
+            </label>
+            <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
+
+            <div class="warning" data-lang-key="warningRate">
+                *Note: The higher of the input value or (Status x Multiplier) will be automatically applied.
+            </div>
+        </div>
+        <div class="section">
+            <button id="calculateButton" data-lang-key="calculateButton">Calculate Amount</button>
+            <div class="result" id="result" aria-live="polite"></div>
+            <button id="copyButton" class="hidden" data-lang-key="copyButton">Copy</button>
+            <button id="tweetButton" class="hidden" data-lang-key="tweetButton">Share on X</button>
+        </div>
+    </div>
+
+    <div id="reverseMode" class="hidden">
+        <div class="section">
+            <h2 data-lang-key="sectionTitleReverse">Reverse Mode</h2>
+            <label for="amountYen" class="label-with-tooltip" data-lang-key="labelAmountYen">Amount Spent (USD)
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-amount-yen"></div>
+            </label>
+            <input type="number" id="amountYen" placeholder="e.g., 50" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
+
+            <label for="reverseStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">Current Status
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-status"></div>
+            </label>
+            <select id="reverseStatus"></select>
+
+            <label for="reverseBaseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">Base points per $1
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
+            </label>
+            <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
+            
+            <label for="reverseMultiplier" class="label-with-tooltip" data-lang-key="labelMultiplierReverse">Campaign Multiplier
+                <span class="info-btn" role="button" tabindex="0">?</span>
+                <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
+            </label>
+            <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
+
+            <div class="warning" data-lang-key="warningRate">
+                *Note: The higher of the input value or (Status x Multiplier) will be automatically applied.
+            </div>
+        </div>
+         <div class="section">
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">Calculate Points</button>
+            <div class="result" id="reverseResult" aria-live="polite"></div>
+            <button id="share-twitter-reverse" class="hidden">
+                <span data-lang-key="tweetButton">Share on X</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="diaryMode" class="hidden">
+        <div class="diary-header">
+            <button id="prevYearBtn" aria-label="Previous Year"><</button>
+            <h2 id="currentYear">2025</h2>
+            <button id="nextYearBtn" aria-label="Next Year">></button>
+        </div>
+        <div id="monthSelector" class="month-selector"></div>
+        <div class="diary-input-area">
+            <h3 id="selectedMonth">Jan</h3>
+            <div id="weekInputs" class="week-inputs"></div>
+        </div>
+        <div class="diary-summary" aria-live="polite">
+            <div class="summary-box">
+                <h4 data-lang-key="monthlySummaryTitle">Monthly Summary</h4>
+                <dl>
+                    <dt data-lang-key="totalLabel">Total:</dt>
+                    <dd><span id="monthlyTotal">0</span> <span data-lang-key="pointsUnit">pts</span></dd>
+                    <dt data-lang-key="averageLabel">Average:</dt>
+                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pts/week</span></dd>
+                </dl>
+            </div>
+            <div class="summary-box">
+                <h4 data-lang-key="yearlySummaryTitle">Yearly Summary</h4>
+                <dl>
+                    <dt data-lang-key="totalLabel">Total:</dt>
+                    <dd><span id="yearlyTotal">0</span> <span data-lang-key="pointsUnit">pts</span></dd>
+                    <dt data-lang-key="averageLabel">Average:</dt>
+                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pts/week</span></dd>
+                </dl>
+            </div>
+        </div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
+            [!] Right now, your diary records are saved only in this browser. If you clear cache or browsing data, the records may be lost. In the future, we are considering a member feature to store data on the server — please look forward to it!
+        </div>
+        <div class="diary-backup-section">
+            <h4 data-lang-key="backupTitle">Backup & Restore Data</h4>
+            <div class="backup-btn-group">
+                <button id="exportDiaryBtn" data-lang-key="exportBtn">Export Data (Copy)</button>
+                <button id="importDiaryBtn" data-lang-key="importBtn">Import Data (Restore)</button>
+            </div>
+            <div id="backup-input-wrapper" class="hidden">
+                <textarea id="diaryBackupData" placeholder="Paste your exported data here" data-lang-placeholder="backupPlaceholder"></textarea>
+                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">Execute Restore</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        <h2>What you can do with Play Points Calculator</h2>
+        <p>On this page, you can check **how much you need to spend to level up** in Google Play Points, **how many points you can earn with your current spending**, and **how much advantage you can get during campaigns**.</p>
+        <p>This is especially helpful when you are wondering if you can reach Platinum or Diamond, or if you should wait for point boost campaigns.</p>
+        <ul>
+            <li>Estimate required spending to Gold, Platinum, and Diamond</li>
+            <li>Simulate points earned with campaign multipliers</li>
+            <li>Manage your weekly rewards easily with the Weekly Awards Diary</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>Find articles by your concerns</h2>
+        <p>We have summarized details on **expiration dates**, **rank maintenance**, **campaigns**, **refunds**, and **how to use points** in our guides (Note: Guides are in Japanese).</p>
+        <details class="article-drawer">
+            <head></head>
+            <summary>
+                <span class="article-drawer-copy">
+                    <span class="article-drawer-title">Open Guides by Concern</span>
+                    <span class="article-drawer-subtitle">Keep it closed at first, and check them when you need.</span>
+                </span>
+                <span class="article-drawer-meta">
+                    <span class="article-count">6 Guides</span>
+                    <span class="article-drawer-icon" aria-hidden="true">▾</span>
+                </span>
+            </summary>
+            <div class="article-drawer-body">
+                <ul class="article-link-list">
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-play-points-reflection-timing.html">
+                            <span class="article-link-tag">Reflection</span>
+                            <span class="article-link-title">When are Play Points reflected? Guidelines for waiting times</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-play-points-rank-list.html">
+                            <span class="article-link-tag">Ranks</span>
+                            <span class="article-link-title">Play Points Rank List | Bronze to Diamond benefits comparison</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-playpoint-calculator-guide.html">
+                            <span class="article-link-tag">Guides</span>
+                            <span class="article-link-title">How to use Play Points Calculator | Clear estimation guides</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-play-points-no-regret.html">
+                            <span class="article-link-tag">Mindset</span>
+                            <span class="article-link-title">How to enjoy Play Points without regrets | Simple smart budget tips</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-google-one-play-points.html">
+                            <span class="article-link-tag">Google One</span>
+                            <span class="article-link-title">Does Google One grant Play Points? Conditions and check guides</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="../articles/2026-03-10-play-points-who-is-it-for.html">
+                            <span class="article-link-tag">Suitability</span>
+                            <span class="article-link-title">Is Google Play Points suitable for you? Ranks check guides</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="article-drawer-note">For detailed specifications and Q&amp;A, see <a href="../info.html">Q&A / Afterword</a>.</p>
+            </div>
+        </details>
+    </section>
+
+    <footer class="page-footer">
+        <p>
+          <a href="../info.html" data-lang-key="linkQA">Q&A & Afterword</a>
+          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">Privacy Policy</a>
+          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">Terms of Service</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">Feedback</a>
+          <a href="../about-playpoints.html" data-lang-key="linkAbout">What are Play Points?</a>
+          <a href="../sitemap.html">Sitemap</a>
+        </p>
+        <p class="meta-line">Operator: かたかた / Last Modified: 2026-03-08</p>
+        <p class="copyright">
+          © <span id="copyright-year"></span> PlayPoint Simulation Tool
+        </p>
+    </footer>
+    
+    <div id="toast" class="toast"></div>
+</main>
+
+<script src="../js/config.js"></script>
+<script src="../js/ui.js"></script>
+<script src="../js/diary.js"></script>
+<script src="../js/calculator.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/third-party.js?v=20260308a"></script>
+
+</body>
+</html>

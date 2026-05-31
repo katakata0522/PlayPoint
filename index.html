@@ -6,29 +6,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Playポイント計算機 | あといくらでレベルアップ？</title>
-    <meta name="description" content="Google Playポイントの計算ツール。現在のステータスから、次のランク（ダイヤモンド・プラチナ）までの必要課金額を一瞬で計算！お得なキャンペーン時のポイント獲得シミュレーションや、ポイント履歴の日記機能も搭載。">
+    <meta name="description" content="Google Play Points のランクアップ計算機。プラチナ・ダイヤモンドまであといくら必要か、キャンペーン時の獲得ポイント、逆算、ランク維持の目安までまとめて確認できます。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-03-02">
-    <meta property="article:modified_time" content="2026-03-02T00:00:00+09:00">
+    <meta name="last-modified" content="2026-03-08">
+    <meta property="article:modified_time" content="2026-03-08T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
-    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/manifest.json">
 
     <meta property="og:title" content="Playポイント計算機 | あといくらでレベルアップ？">
-    <meta property="og:description" content="あといくら課金すればレベルアップできる？目標までの金額を即座に計算！">
+    <meta property="og:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料でシミュレーション。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
     <meta property="og:site_name" content="Playポイント計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Playポイント計算機 | あといくらでレベルアップ？">
-    <meta name="twitter:description" content="Google Playポイントの課金額と獲得ポイントをかんたんに試算できる無料計算機。">
+    <meta name="twitter:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料で試算できる計算機。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
 
-    <link rel="stylesheet" href="style.css?v=20260302g">
+    <link rel="stylesheet" href="style.css?v=20260308a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -42,7 +43,7 @@
         "@type": "Person",
         "name": "かたかた"
       },
-      "dateModified": "2026-03-02",
+      "dateModified": "2026-03-08",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -79,6 +80,12 @@
         </div>
     </div>
 
+    <!-- 金曜日リマインダーバー -->
+    <div id="friday-reminder" class="friday-reminder hidden">
+        <span class="reminder-text" data-lang-key="fridayReminderText">今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！🎰</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
+    </div>
+
     <h1 id="main-title" data-lang-key="mainTitle">Playポイント計算機</h1>
     <p id="site-description" data-lang-key="siteDescription">現在のステータスから目標達成までの必要課金額の計算ができます！<br>さらに課金額から獲得できるポイントも計算できます！</p>
 
@@ -107,7 +114,7 @@
                 <span class="info-btn" role="button" tabindex="0">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
-            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric">
+            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
         </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleRate">還元設定</h2>
@@ -142,7 +149,7 @@
                 <span class="info-btn" role="button" tabindex="0">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
-            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric">
+            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">現在のステータス
                 <span class="info-btn" role="button" tabindex="0">?</span>
@@ -209,7 +216,87 @@
         <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
             【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
         </div>
+        <div class="diary-backup-section">
+            <h4 data-lang-key="backupTitle">データのバックアップ・復元</h4>
+            <div class="backup-btn-group">
+                <button id="exportDiaryBtn" data-lang-key="exportBtn">データを書き出す (コピー)</button>
+                <button id="importDiaryBtn" data-lang-key="importBtn">データを読み込む (復元)</button>
+            </div>
+            <div id="backup-input-wrapper" class="hidden">
+                <textarea id="diaryBackupData" placeholder="ここに書き出したデータを貼り付けてください" data-lang-placeholder="backupPlaceholder"></textarea>
+                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">復元を実行</button>
+            </div>
+        </div>
     </div>
+
+    <section class="section">
+        <h2>Play Points 計算機でできること</h2>
+        <p>このページでは、Google Play Points の<strong>ランクアップまであといくら必要か</strong>、<strong>今の課金額で何ポイント獲得できるか</strong>、<strong>キャンペーン時にどれだけ有利になるか</strong>をまとめて確認できます。</p>
+        <p>とくに「プラチナまであと少し」「ダイヤモンドに届くか知りたい」「ポイント増量キャンペーンを待つべきか迷っている」という場面で、感覚ではなく数字で判断しやすくなります。</p>
+        <ul>
+            <li>プラチナ・ダイヤモンドまでの必要金額を試算</li>
+            <li>通常還元とキャンペーン倍率を比較しながら逆算</li>
+            <li>ほくほくリワード日記で、毎週の獲得ポイントを手元で管理</li>
+        </ul>
+    </section>
+
+    <section class="section">
+        <h2>よくある悩みから記事を探す</h2>
+        <p>計算だけでなく、Google Play Points の<strong>有効期限</strong>、<strong>ランク維持</strong>、<strong>キャンペーン</strong>、<strong>返金</strong>、<strong>使い道</strong>も記事で整理しています。</p>
+        <details class="article-drawer">
+            <summary>
+                <span class="article-drawer-copy">
+                    <span class="article-drawer-title">悩み別の記事を開く</span>
+                    <span class="article-drawer-subtitle">最初は閉じておいて、必要な時だけまとめて見られます。</span>
+                </span>
+                <span class="article-drawer-meta">
+                    <span class="article-count">6記事</span>
+                    <span class="article-drawer-icon" aria-hidden="true">▾</span>
+                </span>
+            </summary>
+            <div class="article-drawer-body">
+                <ul class="article-link-list">
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-play-points-reflection-timing.html">
+                            <span class="article-link-tag">反映</span>
+                            <span class="article-link-title">Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-play-points-rank-list.html">
+                            <span class="article-link-tag">ランク</span>
+                            <span class="article-link-title">Google Play Pointsのランク一覧｜ブロンズからダイヤモンドまで違いをやさしく比較</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-playpoint-calculator-guide.html">
+                            <span class="article-link-tag">使い方</span>
+                            <span class="article-link-title">Playポイント計算機の使い方｜あといくら必要か迷いにくくなる見方</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-play-points-no-regret.html">
+                            <span class="article-link-tag">考え方</span>
+                            <span class="article-link-title">Play Pointsで損したくない時に｜無理なく使うための考え方</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-google-one-play-points.html">
+                            <span class="article-link-tag">Google One</span>
+                            <span class="article-link-title">Google OneはPlay Pointsの対象？ポイントが付く条件と確認方法</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="article-link-card" href="articles/2026-03-10-play-points-who-is-it-for.html">
+                            <span class="article-link-tag">相性</span>
+                            <span class="article-link-title">Google Play Pointsはどんな人に向いてる？向かない？使い方の相性が分かる</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="article-drawer-note">細かい仕様やQ&amp;Aは <a href="info.html">あとがき・Q&amp;A</a> にまとめています。</p>
+            </div>
+        </details>
+    </section>
 
     <footer class="page-footer">
         <p>
@@ -220,7 +307,7 @@
           <a href="about-playpoints.html" data-lang-key="linkAbout">Playポイントとは？</a>
           <a href="sitemap.html">サイトマップ</a>
         </p>
-        <p class="meta-line">運営者: かたかた / 最終更新: 2026-03-02</p>
+        <p class="meta-line">運営者: かたかた / 最終更新: 2026-03-08</p>
         <p class="copyright">
           © <span id="copyright-year"></span> PlayPoint Simulation Tool
         </p>
@@ -234,7 +321,7 @@
 <script src="js/diary.js"></script>
 <script src="js/calculator.js"></script>
 <script src="js/main.js"></script>
-<script src="js/third-party.js?v=20260302b"></script>
+<script src="js/third-party.js?v=20260308a"></script>
 
 </body>
 </html>

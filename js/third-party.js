@@ -7,6 +7,7 @@
     let gaLoaded = false;
     let adsLoaded = false;
     let interactionHandled = false;
+    let analyticsScheduled = false;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -57,6 +58,22 @@
         }
     }
 
+    function scheduleAnalyticsLoad() {
+        if (analyticsScheduled || gaLoaded) return;
+        analyticsScheduled = true;
+
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+                loadAnalytics();
+            }, { timeout: 2500 });
+            return;
+        }
+
+        setTimeout(() => {
+            loadAnalytics();
+        }, 1500);
+    }
+
     function loadThirdPartyAfterInteraction() {
         if (interactionHandled) return;
         interactionHandled = true;
@@ -80,8 +97,18 @@
         }, 1800);
     }
 
-    // 初回操作の発生までは第三者スクリプトを読み込まない
+    // Analytics は離脱前の取りこぼしを減らすため、待機時にも読み込む
+    scheduleAnalyticsLoad();
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+            loadAnalytics();
+        }
+    }, { once: true });
+
+    // AdSense は操作が見えてから読み込む
     window.addEventListener('pointerdown', loadThirdPartyAfterInteraction, { once: true, passive: true });
     window.addEventListener('keydown', loadThirdPartyAfterInteraction, { once: true, passive: true });
     window.addEventListener('touchstart', loadThirdPartyAfterInteraction, { once: true, passive: true });
+    window.addEventListener('wheel', loadThirdPartyAfterInteraction, { once: true, passive: true });
+    window.addEventListener('scroll', loadThirdPartyAfterInteraction, { once: true, passive: true });
 })();

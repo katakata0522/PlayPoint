@@ -1,6 +1,9 @@
 'use strict';
 
-const PP_CONSTANTS = {
+// グローバル名前空間の定義
+window.PP_APP = window.PP_APP || {};
+
+PP_APP.CONSTANTS = {
     MODE_MAIN: 'main',
     MODE_REVERSE: 'reverse',
     MODE_DIARY: 'diary',
@@ -15,7 +18,7 @@ const PP_CONSTANTS = {
     STORAGE_REGION_KEY: 'playpointPreferredRegion'
 };
 
-const PP_REGION_CONFIGS = {
+PP_APP.CONFIGS = {
     'JP': {
         lang: "ja",
         statuses: { "ブロンズ": 1.0, "シルバー": 1.25, "ゴールド": 1.5, "プラチナ": 1.75, "ダイヤモンド": 2.0 },
@@ -26,8 +29,8 @@ const PP_REGION_CONFIGS = {
         rateUnit: "100円",
         tooltips: {
             'tooltip-current-status': `<strong>【現在のステータスの確認方法】</strong><ol><li>Google Play ストアを開きます。</li><li>右上のプロフィールアイコンをタップします。</li><li>「Play ポイント」を選択します。</li></ol><hr><p>※ステータスに応じて、基本還元率は自動で入力されます。</p>`,
-            'tooltip-target-status': `<strong>【各ステータスの達成条件】</strong><ul><li><strong>シルバー:</strong> 250 pt 以上</li><li><strong>ゴールド:</strong> 1,000 pt 以上</li><li><strong>プラチナ:</strong> 4,000 pt 以上</li><li><strong>ダイヤモンド:</strong> 15,000 pt 以上</li></ul>`,
-            'tooltip-needed-points': `<strong>【必要ポイントの確認方法】</strong><ol><li>Google Play ストアの「Play ポイント」画面を開きます。</li><li>画面に表示される「次のステータスまであと◯◯ pt」という部分の数字を、そのまま入力してください。</li></ol>`,
+            'tooltip-target-status': `<strong>【各ステータスの達成条件】</strong><ul><li><strong>シルバー:</strong> 250 pt 以上</li><li><strong>ゴールド:</strong> 1,000 pt 以上</li><li><strong>プラチナ:</strong> 4,000 pt 以上</li><li><strong>ダイヤモンド:</strong> 15,000 pt 以上</li></ul><hr><p>※ポイントは毎年1月1日〜12月31日の1年間で累積され、目標ポイントに達した時点で即座にランクアップします（有効期限は翌年末まで）。</p>`,
+            'tooltip-needed-points': `<strong>【必要ポイントの確認方法】</strong><ol><li>Google Play ストアの「Play ポイント」画面を開きます。</li><li>画面に表示される「次のステータスまであと◯◯ pt」という部分の数字を、そのまま入力してください。</li></ol><hr><p>※Playポイントのランク判定期間は毎年12月31日までです。そのため、計算結果の「月平均」は12月末までの残り月数で均等に割り出した目安となります。</p>`,
             'tooltip-base-rate': `<strong>【基本還元ポイントについて】</strong><p>現在のステータスに応じた、基本の還元率が自動で入力されます。</p><p><strong>特定のアプリ限定のポイント増量キャンペーン</strong>などを利用する場合は、こちらの数値を直接編集してください。</p><hr><p><strong>※ご注意</strong><br>この値と「キャンペーン倍率」で計算した値を比較し、<strong>よりお得な方</strong>が計算に自動で適用されます。</p>`,
             'tooltip-multiplier': `<strong>【キャンペーン倍率について】</strong><p>週末などに開催される、ポイント増量キャンペーンの倍率を入力します。</p><p>例：ゴールド(1.5pt) × <strong>3倍</strong> = 4.5pt</p><hr><p><strong>※ご注意</strong><br>この倍率で計算した値と「基本還元ポイント」の入力値を比較し、<strong>よりお得な方</strong>が計算に自動で適用されます。</p>`,
             'tooltip-amount-yen': `<strong>【獲得ポイントを計算】</strong><p>入力した金額で、どれくらいのポイントが獲得できるかをシミュレーションします。</p>`,
@@ -46,11 +49,11 @@ const PP_REGION_CONFIGS = {
             sectionTitleReverse: "逆算モード", labelAmountYen: "課金額（円）",
             amountYenPlaceholder: "例：5000", reverseCalculateButton: "ポイントを計算",
             nextTargetNone: "次の目標はありません", errorInput: "有効な数値を入力し、目標ステータスを選択してください",
-            errorRate: "計算に使用する還元率が0以下です", errorMonth: "残り月数計算エラー",
+            errorRate: "計算に使用する還元率が0以下です", errorMonth: "年内の残り期間の計算に失敗しました（現在12月、またはシステム時刻をご確認ください）",
             errorInputReverse: "有効な数値を入力してください", errorRateReverse: "計算に使用する還元率が0以下です",
             errorTargetConsistency: "入力した必要ポイントが、選択した目標ステータスに対して不正です。値を確認してください。",
             resultLabelNeededPoints: "目標までの必要ポイント", resultLabelTotalYen: "合計の必要課金額目安",
-            resultLabelMonthlyYen: "月平均", resultLabelMonths: "ヶ月",
+            resultLabelMonthlyYen: "月平均目安", resultLabelMonths: "ヶ月",
             resultLabelRate: "適用還元率", resultLabelEarnedPoints: "獲得ポイント予測",
             yearSuffix: "年", monthNames: ["１月", "２月", "３月", "４月", "５月", "６月", "７月", "８月", "９月", "１0月", "１１月", "１２月"],
             weekLabel: "第", weekSuffix: "週", pointsPlaceholder: "ポイント", saveButton: "保存",
@@ -59,6 +62,15 @@ const PP_REGION_CONFIGS = {
             guestNotice: "【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！",
             prizeOptions: ["景品なし", "マウス", "イヤホン", "その他"],
             noWeeksMessage: "この月には対象となる週がありません。",
+            backupTitle: "データのバックアップ・復元",
+            exportBtn: "データを書き出す (コピー)",
+            importBtn: "データを読み込む (復元)",
+            confirmImportBtn: "復元を実行",
+            backupPlaceholder: "ここに書き出したデータを貼り付けてください",
+            exportSuccess: "日記データをクリップボードにコピーしました！安全な場所に保存してください。",
+            importSuccess: "日記データを復元しました！",
+            importError: "データのインポートに失敗しました。正しいデータ形式か確認してください。",
+            fridayReminderText: "今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！🎰",
             linkArticles: { text: "📝 記事一覧", href: "/blog/" },
             linkKatakata: { text: "🧪 KatakataLab", href: "https://katakatalab.com/" },
             linkPrivacy: { text: "プライバシーポリシー", href: "privacy.html" },
@@ -78,8 +90,8 @@ const PP_REGION_CONFIGS = {
         rateUnit: "$1",
         tooltips: {
             'tooltip-current-status': `<strong>How to check your current status:</strong><ol><li>Open the Google Play Store.</li><li>Tap your profile icon in the top right.</li><li>Select "Play Points".</li></ol><hr><p>Note: The base points rate is automatically filled based on your status.</p>`,
-            'tooltip-target-status': `<strong>Level-up requirements:</strong><ul><li><strong>Silver:</strong> 150+ pts</li><li><strong>Gold:</strong> 600+ pts</li><li><strong>Platinum:</strong> 3,000+ pts</li><li><strong>Diamond:</strong> 10,000+ pts</li></ul>`,
-            'tooltip-needed-points': `<strong>How to check points needed:</strong><ol><li>Go to the "Play Points" screen in the Google Play Store.</li><li>Enter the number shown in "XX pts to next level".</li></ol>`,
+            'tooltip-target-status': `<strong>Level-up requirements:</strong><ul><li><strong>Silver:</strong> 150+ pts</li><li><strong>Gold:</strong> 600+ pts</li><li><strong>Platinum:</strong> 3,000+ pts</li><li><strong>Diamond:</strong> 10,000+ pts</li></ul><hr><p>※Points accumulate from Jan 1st to Dec 31st. Once you reach the threshold, you level up immediately (valid until the end of the next year).</p>`,
+            'tooltip-needed-points': `<strong>How to check points needed:</strong><ol><li>Go to the "Play Points" screen in the Google Play Store.</li><li>Enter the number shown in "XX pts to next level".</li></ol><hr><p>※The Play Points annual cycle ends on Dec 31st. Therefore, the "monthly average" is calculated based on the remaining months until the end of December.</p>`,
             'tooltip-base-rate': `<strong>About base points rate:</strong><p>The base rate according to your current status is automatically entered.</p><p>If you are using an app-specific point boost campaign, please edit this value directly.</p><hr><p><strong>Note:</strong><br>The calculator will automatically use whichever is higher: this value or the rate calculated from the "Campaign Multiplier".</p>`,
             'tooltip-multiplier': `<strong>About campaign multiplier:</strong><p>Enter the multiplier for point boost campaigns, such as those held on weekends.</p><p>Example: Gold (1.2 pts) × <strong>3x</strong> = 3.6 pts</p><hr><p><strong>Note:</strong><br>The calculator will automatically use whichever is higher: the rate calculated with this multiplier or the "Base points rate" value.</p>`,
             'tooltip-amount-yen': `<strong>Calculate points earned:</strong><p>Simulate how many points you can earn from the amount you spend.</p>`,
@@ -98,7 +110,7 @@ const PP_REGION_CONFIGS = {
             sectionTitleReverse: "Reverse Mode", labelAmountYen: "Amount Spent (USD)",
             amountYenPlaceholder: "e.g., 50", reverseCalculateButton: "Calculate Points",
             nextTargetNone: "No further levels", errorInput: "Please enter valid numbers and select a target status.",
-            errorRate: "The effective rate for calculation is zero or less.", errorMonth: "Error calculating remaining months.",
+            errorRate: "The effective rate for calculation is zero or less.", errorMonth: "Failed to calculate remaining months in this year.",
             errorInputReverse: "Please enter a valid number.", errorRateReverse: "The effective rate for calculation is zero or less.",
             errorTargetConsistency: "The points-to-goal value is not valid for the selected target status.",
             resultLabelNeededPoints: "Points to goal", resultLabelTotalYen: "Estimated total spending",
@@ -111,6 +123,15 @@ const PP_REGION_CONFIGS = {
             guestNotice: "[!] Right now, your diary records are saved only in this browser. If you clear cache or browsing data, the records may be lost. In the future, we are considering a member feature to store data on the server — please look forward to it!",
             prizeOptions: ["No Prize", "Mouse", "Earbuds", "Other"],
             noWeeksMessage: "No applicable weeks in this month.",
+            backupTitle: "Backup & Restore Data",
+            exportBtn: "Export Data (Copy)",
+            importBtn: "Import Data (Restore)",
+            confirmImportBtn: "Execute Restore",
+            backupPlaceholder: "Paste your exported data here",
+            exportSuccess: "Copied diary data to clipboard! Please save it in a safe place.",
+            importSuccess: "Diary data restored successfully!",
+            importError: "Failed to import data. Please check if the data format is correct.",
+            fridayReminderText: "It's Friday! Let's claim your Weekly Reward and record it in your diary! 🎰",
             linkArticles: { text: "📝 Articles", href: "/blog/" },
             linkKatakata: { text: "🧪 KatakataLab", href: "https://katakatalab.com/" },
             linkPrivacy: { text: "Privacy Policy", href: "privacy.html" },
@@ -122,12 +143,12 @@ const PP_REGION_CONFIGS = {
     }
 };
 
-PP_REGION_CONFIGS.JP.tooltips['tooltip-reverse-base-rate'] = PP_REGION_CONFIGS.JP.tooltips['tooltip-base-rate'];
-PP_REGION_CONFIGS.JP.tooltips['tooltip-reverse-multiplier'] = PP_REGION_CONFIGS.JP.tooltips['tooltip-multiplier'];
-PP_REGION_CONFIGS.US.tooltips['tooltip-reverse-base-rate'] = PP_REGION_CONFIGS.US.tooltips['tooltip-base-rate'];
-PP_REGION_CONFIGS.US.tooltips['tooltip-reverse-multiplier'] = PP_REGION_CONFIGS.US.tooltips['tooltip-multiplier'];
+PP_APP.CONFIGS.JP.tooltips['tooltip-reverse-base-rate'] = PP_APP.CONFIGS.JP.tooltips['tooltip-base-rate'];
+PP_APP.CONFIGS.JP.tooltips['tooltip-reverse-multiplier'] = PP_APP.CONFIGS.JP.tooltips['tooltip-multiplier'];
+PP_APP.CONFIGS.US.tooltips['tooltip-reverse-base-rate'] = PP_APP.CONFIGS.US.tooltips['tooltip-base-rate'];
+PP_APP.CONFIGS.US.tooltips['tooltip-reverse-multiplier'] = PP_APP.CONFIGS.US.tooltips['tooltip-multiplier'];
 
-const PP_STATE = {
+PP_APP.STATE = {
     currentRegion: 'JP',
     dom: {},
     diaryState: {
