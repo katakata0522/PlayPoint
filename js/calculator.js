@@ -13,7 +13,7 @@ PP_APP.CALC = {
                     select.add(new Option(name, value));
                 }
                 const currentKey = Object.keys(statuses).find(k => statuses[k] == currentValue);
-                select.value = currentKey ? currentValue : config.statuses[Object.keys(statuses)[2]];
+                select.value = currentKey ? currentValue : String(config.statuses[Object.keys(statuses)[0]]);
             }
         });
     },
@@ -25,7 +25,7 @@ PP_APP.CALC = {
         const currentStatusValue = parseFloat(PP_APP.STATE.dom.currentStatus.value);
         PP_APP.STATE.dom.baseRate.value = (config.statusRates[currentStatusValue] || 1.0).toFixed(2);
         PP_APP.STATE.dom.targetStatus.innerHTML = "";
-        const availableTargets = config.statusPointsMapping[currentStatusValue] || [];
+        const availableTargets = (config.statusPointsMapping[currentStatusValue] || []).slice(0, 1);
         availableTargets.forEach(targetLabel => {
             const points = config.thresholds[targetLabel];
             if (points) {
@@ -89,9 +89,14 @@ PP_APP.CALC = {
         PP_APP.STATE.dom.neededPoints.max = String(maxNeededPoints);
     },
 
-    // 今年の残り月数を取得するメソッド
-    getRemainingMonths() {
-        return 12 - new Date().getMonth();
+    // 年末までの残日数から月平均の分母を算出
+    getRemainingMonths(baseDate = new Date()) {
+        const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+        if (date.getMonth() === 11 && date.getDate() === 31) return 0;
+
+        const nextYearStart = new Date(date.getFullYear() + 1, 0, 1);
+        const remainingDays = Math.max(0, Math.ceil((nextYearStart - date) / (1000 * 60 * 60 * 24)));
+        return Math.ceil(remainingDays / (365 / 12));
     },
 
     // 入力値バリデーション
@@ -129,11 +134,15 @@ PP_APP.CALC = {
         if (finalRate <= 0) return PP_APP.UI.displayResult(PP_APP.STATE.dom.result, texts.errorRate, true);
         
         const remainingMonths = this.getRemainingMonths();
-        if (remainingMonths <= 0) return PP_APP.UI.displayResult(PP_APP.STATE.dom.result, texts.errorMonth, true);
         
         const spendUnit = (PP_APP.STATE.currentRegion === 'JP') ? 100 : 1;
         const totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
-        const monthlyAmountNeeded = Math.ceil(totalAmountNeeded / remainingMonths);
+        const monthlyResultContent = remainingMonths > 0
+            ? `
+                <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
+                <dd><b>約 <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}/月</b></dd>
+            `
+            : '';
         
         // アニメーション用に count-target クラスを付与
         const resultContent = `
@@ -142,8 +151,7 @@ PP_APP.CALC = {
                 <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
                 <dt>${texts.resultLabelTotalYen}</dt>
                 <dd><b>約 <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
-                <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
-                <dd><b>約 <span class="count-target" data-value="${monthlyAmountNeeded}">0</span> ${config.currencySymbol}/月</b></dd>
+                ${monthlyResultContent}
             </dl>
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
             <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">

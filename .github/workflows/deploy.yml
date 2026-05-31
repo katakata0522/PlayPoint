@@ -12,6 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Run regression tests
+        run: node tests/playpoint-regression.test.cjs
+
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -21,4 +24,4 @@ jobs:
 
       - name: Deploy via rsync
         run: |
-          rsync -avz -e "ssh -p 10022 -i ~/.ssh/id_ed25519" ./ hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/ --exclude '.git*' --exclude '.github*' --exclude 'README.md' --exclude 'AGENTS.md'
+          rsync -avz --delete -e "ssh -p 10022 -i ~/.ssh/id_ed25519" ./ hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/ --exclude '.git*' --exclude '.github*' --exclude 'README.md' --exclude 'AGENTS.md' --exclude 'tests*'

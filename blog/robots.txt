@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://katakatalab.example.com/blog/sitemap.xml
+Sitemap: https://playpoint-sim.com/blog/sitemap.xml

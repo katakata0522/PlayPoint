@@ -30,6 +30,34 @@
         return window.BlogUtils || fallbackUtils;
     }
 
+    function sanitizeArticleFile(value) {
+        if (typeof value !== 'string') return '#';
+        if (!value.startsWith('../articles/')) return '#';
+        if (!value.endsWith('.html')) return '#';
+        if (/[<>"']/.test(value)) return '#';
+        return value.replace('../articles/', './');
+    }
+
+    function sanitizeArticleThumbnail(value) {
+        if (typeof value !== 'string') return CONFIG.placeholderImage;
+        if (!value.startsWith('../articles/ogp/')) return CONFIG.placeholderImage;
+        if (!value.endsWith('.png')) return CONFIG.placeholderImage;
+        if (/[<>"']/.test(value)) return CONFIG.placeholderImage;
+        return value.replace('../articles/', './');
+    }
+
+    // 記事JSONの値を描画前に正規化する
+    function normalizeArticle(article) {
+        article = article && typeof article === 'object' ? article : {};
+        return {
+            title: typeof article.title === 'string' ? article.title : '',
+            date: typeof article.date === 'string' ? article.date : '',
+            category: typeof article.category === 'string' ? article.category : '',
+            file: sanitizeArticleFile(article.file),
+            thumbnail: sanitizeArticleThumbnail(article.thumbnail)
+        };
+    }
+
     // Get current article's category from meta tag or data attribute
     function getCurrentCategory() {
         const metaCategory = document.querySelector('meta[name="article:category"]');
@@ -74,7 +102,8 @@
         try {
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles for recommendation');
-            const allArticles = await response.json();
+            const articles = await response.json();
+            const allArticles = Array.isArray(articles) ? articles.map(normalizeArticle) : [];
 
             // Get current article info
             const currentPath = window.location.pathname;
@@ -114,12 +143,11 @@
                 const formattedDate = utils.formatDate(article.date);
 
                 const card = document.createElement('a');
-                // Fix path: articles are in /articles/, link from current article
-                card.href = article.file.replace('../articles/', './');
+                card.href = article.file;
                 card.className = 'related-card';
                 card.innerHTML = `
                     <div class="related-card-thumb">
-                        <img src="${article.thumbnail}" alt="${safeTitle}" loading="lazy" onerror="this.onerror=null;this.src='${CONFIG.placeholderImage}'">
+                        <img src="${article.thumbnail}" alt="${safeTitle}" loading="lazy">
                         <span class="related-card-category">${safeCategory}</span>
                     </div>
                     <div class="related-card-content">
@@ -127,6 +155,12 @@
                         <h4>${safeTitle}</h4>
                     </div>
                 `;
+                const img = card.querySelector('img');
+                if (img) {
+                    img.addEventListener('error', () => {
+                        img.src = CONFIG.placeholderImage;
+                    }, { once: true });
+                }
                 container.appendChild(card);
             });
 

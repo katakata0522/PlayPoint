@@ -186,6 +186,39 @@
         return diffDays <= CONFIG.newThresholdDays;
     }
 
+    function sanitizeArticleFile(value) {
+        if (typeof value !== 'string') return '#';
+        if (!value.startsWith('../articles/')) return '#';
+        if (!value.endsWith('.html')) return '#';
+        if (/[<>"']/.test(value)) return '#';
+        return value;
+    }
+
+    function sanitizeArticleThumbnail(value) {
+        if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
+        if (!value.startsWith('../articles/ogp/')) return BlogUtils.getPlaceholderImage();
+        if (!value.endsWith('.png')) return BlogUtils.getPlaceholderImage();
+        if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
+        return value;
+    }
+
+    // 記事JSONの値を描画前に正規化する
+    function normalizeArticle(article) {
+        article = article && typeof article === 'object' ? article : {};
+        const tags = Array.isArray(article.tags) ? article.tags : [];
+
+        return {
+            id: typeof article.id === 'string' ? article.id : '',
+            title: typeof article.title === 'string' ? article.title : '',
+            date: typeof article.date === 'string' ? article.date : '',
+            category: typeof article.category === 'string' ? article.category : '',
+            tags: tags.filter(tag => typeof tag === 'string'),
+            description: typeof article.description === 'string' ? article.description : '',
+            file: sanitizeArticleFile(article.file),
+            thumbnail: sanitizeArticleThumbnail(article.thumbnail)
+        };
+    }
+
     // Create AdSense ad element
     function createAdElement() {
         const adContainer = document.createElement('div');
@@ -424,7 +457,8 @@
         try {
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles');
-            allArticles = await response.json();
+            const articles = await response.json();
+            allArticles = Array.isArray(articles) ? articles.map(normalizeArticle) : [];
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories
@@ -519,7 +553,7 @@
                             🔄 再試行する
                         </button>
                     ` : `
-                        <button class="reset-btn" onclick="location.reload()">
+                        <button class="reset-btn reload-btn">
                             🔄 ページを再読み込み
                         </button>
                     `}
@@ -530,6 +564,12 @@
                 retryBtn.addEventListener('click', () => {
                     showSkeletonLoading();
                     loadArticles();
+                });
+            }
+            const reloadBtn = dom.grid.querySelector('.reload-btn');
+            if (reloadBtn) {
+                reloadBtn.addEventListener('click', () => {
+                    location.reload();
                 });
             }
         }
@@ -788,15 +828,17 @@
             const safeTitle = BlogUtils.escapeHtml(article.title);
             const safeDesc = BlogUtils.escapeHtml(article.description);
             const safeCategory = BlogUtils.escapeHtml(article.category);
+            const safeFile = BlogUtils.escapeHtml(article.file);
+            const safeThumbnail = BlogUtils.escapeHtml(article.thumbnail);
             const categoryColor = getCategoryColor(article.category);
             const isNew = isNewArticle(article.date);
             const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
 
-            card.href = article.file;
+            card.href = safeFile;
             card.className = 'article-card fade-in-up';
             card.innerHTML = `
                 <div class="card-thumb">
-                    <img src="${article.thumbnail}" alt="${safeTitle}" loading="lazy">
+                    <img src="${safeThumbnail}" alt="${safeTitle}" loading="lazy">
                     <span class="card-category badge" style="background: ${categoryColor};">${safeCategory}</span>
                     ${newBadge}
                 </div>
@@ -935,10 +977,20 @@
         }
     }
 
+    function setupStaticReloadButton() {
+        const reloadBtn = document.getElementById('error-reload');
+        if (reloadBtn) {
+            reloadBtn.addEventListener('click', () => {
+                location.reload();
+            });
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         init();
         setupBackToTop();
         setupThemeToggle();
+        setupStaticReloadButton();
     });
 
 })();

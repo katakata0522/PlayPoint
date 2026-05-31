@@ -1,5 +1,4 @@
 const APP_SHELL_CACHE = 'gravity-todo-app-v18';
-const RUNTIME_CACHE = 'gravity-todo-runtime-v18';
 const APP_SHELL_URLS = [
   './',
   './index.html',
@@ -34,7 +33,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => Promise.all(
       cacheNames
-        .filter((cacheName) => ![APP_SHELL_CACHE, RUNTIME_CACHE].includes(cacheName))
+        .filter((cacheName) => cacheName !== APP_SHELL_CACHE)
         .map((cacheName) => caches.delete(cacheName))
     )).then(() => self.clients.claim())
   );
@@ -46,6 +45,9 @@ self.addEventListener('fetch', (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
 
   if (event.request.mode === 'navigate') {
     event.respondWith(
@@ -79,20 +81,4 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-
-  // 外部オリジン: stale-while-revalidate (Runtime Cache)
-  event.respondWith(
-    caches.open(RUNTIME_CACHE).then((cache) => {
-      return cache.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
-          if (networkResponse.ok) {
-            cache.put(event.request, networkResponse.clone());
-          }
-          return networkResponse;
-        }).catch(() => cachedResponse);
-
-        return cachedResponse || fetchPromise;
-      });
-    })
-  );
 });

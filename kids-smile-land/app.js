@@ -42,18 +42,53 @@
         }
     }
 
+    function readStoredOption(key, allowedValues, defaultValue) {
+        try {
+            const value = localStorage.getItem(key);
+            return allowedValues.includes(value) ? value : defaultValue;
+        } catch (e) {
+            console.error(`LocalStorage option read error for key "${key}":`, e);
+            return defaultValue;
+        }
+    }
+
+    function readStoredNumber(key, defaultValue, minValue, maxValue, allowedValues) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (raw === null) return defaultValue;
+            const value = Number(raw);
+            if (!Number.isFinite(value)) return defaultValue;
+            if (Array.isArray(allowedValues) && !allowedValues.includes(value)) return defaultValue;
+            return Math.min(maxValue, Math.max(minValue, value));
+        } catch (e) {
+            console.error(`LocalStorage number read error for key "${key}":`, e);
+            return defaultValue;
+        }
+    }
+
+    function readStoredText(key, defaultValue, maxLength) {
+        try {
+            const value = localStorage.getItem(key);
+            if (typeof value !== 'string' || value.trim() === '') return defaultValue;
+            return value.slice(0, maxLength);
+        } catch (e) {
+            console.error(`LocalStorage text read error for key "${key}":`, e);
+            return defaultValue;
+        }
+    }
+
     // データの復元
     let myStickers = safeLoadJSON('smile_stickers', []);
     let placedStickers = safeLoadJSON('smile_placed_stickers', []);
-    let selectedBg = localStorage.getItem('smile_selected_bg') || 'grass';
+    let selectedBg = readStoredOption('smile_selected_bg', ['grass', 'space', 'sea'], 'grass');
 
     // みまもり設定
-    let smileLevel = localStorage.getItem('smile_level') || 'normal'; // easy, normal, hard
-    let smileTimerLimit = parseInt(localStorage.getItem('smile_timer_limit')) || 0; // 0=無制限, 5, 15, 30, 45分
-    let smileVoiceVolume = localStorage.getItem('smile_voice_volume') !== null ? parseFloat(localStorage.getItem('smile_voice_volume')) : 1.0;
-    let smileSynthVolume = localStorage.getItem('smile_synth_volume') !== null ? parseFloat(localStorage.getItem('smile_synth_volume')) : 1.0;
-    let smileSleepReason = localStorage.getItem('smile_sleep_reason') || 'eye'; // eye, meal, sleep
-    let smileKidsName = localStorage.getItem('smile_kids_name') || 'がんばったおともだち';
+    let smileLevel = readStoredOption('smile_level', ['easy', 'normal', 'hard'], 'normal'); // easy, normal, hard
+    let smileTimerLimit = readStoredNumber('smile_timer_limit', 0, 0, 45, [0, 5, 15, 30, 45]); // 0=無制限, 5, 15, 30, 45分
+    let smileVoiceVolume = readStoredNumber('smile_voice_volume', 1.0, 0, 1);
+    let smileSynthVolume = readStoredNumber('smile_synth_volume', 1.0, 0, 1);
+    let smileSleepReason = readStoredOption('smile_sleep_reason', ['eye', 'meal', 'sleep'], 'eye'); // eye, meal, sleep
+    let smileKidsName = readStoredText('smile_kids_name', 'がんばったおともだち', 30);
 
     // がんばり統計
     let smileStats = safeLoadJSON('smile_stats', {

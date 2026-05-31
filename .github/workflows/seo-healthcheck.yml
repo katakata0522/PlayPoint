@@ -43,7 +43,29 @@ jobs:
 
           echo "=== robots/sitemap ==="
           curl -fsSL "https://playpoint-sim.com/robots.txt" | grep -q "Sitemap:" || { echo "robots sitemap missing"; fail=1; }
-          curl -fsSL "https://playpoint-sim.com/sitemap.xml" | grep -q "<urlset" || { echo "sitemap invalid"; fail=1; }
+          curl -fsSL "https://playpoint-sim.com/sitemap.xml" -o /tmp/sitemap.xml
+          grep -q "<urlset" /tmp/sitemap.xml || { echo "sitemap invalid"; fail=1; }
+
+          mapfile -t article_urls < <(grep -o 'https://playpoint-sim.com/articles/[^<]*\.html' /tmp/sitemap.xml | sort -u)
+          if [[ "${#article_urls[@]}" -eq 0 ]]; then
+            echo "article urls missing from sitemap"
+            fail=1
+          fi
+
+          for url in "${article_urls[@]}"; do
+            echo "=== article ${url} ==="
+            code=$(curl -L -s -o /tmp/seo_article.html -w "%{http_code}" "${url}")
+            if [[ "${code}" != "200" ]]; then
+              echo "Article HTTP status NG: ${code}"
+              fail=1
+              continue
+            fi
+
+            grep -qi '<title>' /tmp/seo_article.html || { echo "article title missing"; fail=1; }
+            grep -qi 'meta name="description"' /tmp/seo_article.html || { echo "article description missing"; fail=1; }
+            grep -qi 'rel="canonical"' /tmp/seo_article.html || { echo "article canonical missing"; fail=1; }
+            grep -qi 'data-ad-client' /tmp/seo_article.html || { echo "article ad client missing"; fail=1; }
+          done
 
           if [[ "${fail}" -ne 0 ]]; then
             echo "SEO health check failed"
