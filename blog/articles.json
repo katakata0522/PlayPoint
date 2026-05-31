@@ -1,5 +1,20 @@
 [
   {
+    "id": "play-points-reflection-timing",
+    "title": "Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安",
+    "date": "2026-03-10",
+    "category": "トラブル対処",
+    "tags": [
+      "Play Points",
+      "反映タイミング",
+      "保留",
+      "確認方法"
+    ],
+    "description": "Play Pointsの反映タイミングが気になる時に役立つ記事です。すぐ付く時と遅れる時の違い、保留の見分け方、確認ポイント、待つ目安を分かりやすくまとめています。",
+    "file": "../articles/2026-03-10-play-points-reflection-timing.html",
+    "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png"
+  },
+  {
     "id": "multiple-accounts",
     "title": "【複数アカウント】ポイントは合算できる？管理の注意点",
     "date": "2025-12-25",

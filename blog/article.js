@@ -95,10 +95,6 @@
             });
         }
 
-        // Related Articles
-        const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');
-        if (!container) return;
-
         try {
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles for recommendation');
@@ -109,6 +105,12 @@
             const currentPath = window.location.pathname;
             const currentFilename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
             const currentCategory = getCurrentCategory();
+
+            setupPrevNextNav(allArticles);
+
+            // Related Articles
+            const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');
+            if (!container) return;
 
             // Filter out current article
             const others = allArticles.filter(a => !a.file.includes(currentFilename));
@@ -131,12 +133,11 @@
                 recommended = shuffled.slice(0, CONFIG.recommendedCount);
             }
 
-            if (recommended.length === 0) return;
+            if (container && recommended.length > 0) {
+                // Clear loading state
+                container.innerHTML = '';
 
-            // Clear loading state
-            container.innerHTML = '';
-
-            recommended.forEach(article => {
+                recommended.forEach(article => {
                 const utils = getUtils();
                 const safeTitle = utils.escapeHtml(article.title);
                 const safeCategory = utils.escapeHtml(article.category);
@@ -162,10 +163,8 @@
                     }, { once: true });
                 }
                 container.appendChild(card);
-            });
-
-            // Setup prev/next navigation
-            setupPrevNextNav(allArticles);
+                });
+            }
 
         } catch (e) {
             console.error('Related Articles Error:', e);

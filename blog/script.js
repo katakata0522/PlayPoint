@@ -836,6 +836,9 @@
 
             card.href = safeFile;
             card.className = 'article-card fade-in-up';
+            card.addEventListener('click', () => {
+                Analytics.trackArticleClick(article.title, article.category);
+            });
             card.innerHTML = `
                 <div class="card-thumb">
                     <img src="${safeThumbnail}" alt="${safeTitle}" loading="lazy">
