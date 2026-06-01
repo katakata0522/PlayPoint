@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          persist-credentials: false
 
       - name: Run regression tests
         run: node tests/playpoint-regression.test.cjs
@@ -40,8 +42,8 @@ jobs:
       - name: Deploy via rsync
         run: |
           set -euo pipefail
-          rsync -avz --delete \
-            -e "ssh -p 10022 -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts" \
+          rsync -avz --delete-after --delay-updates \
+            -e "ssh -p 10022 -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -o LogLevel=ERROR" \
             ./ hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/ \
             --exclude '.git*' \
             --exclude '.github*' \
