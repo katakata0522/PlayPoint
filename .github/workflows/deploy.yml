@@ -25,6 +25,9 @@ jobs:
       - name: Run regression tests
         run: node tests/playpoint-regression.test.cjs
 
+      - name: Verify ads.txt
+        run: node .github/scripts/check-ads-txt.cjs
+
       - name: Setup SSH
         run: |
           set -euo pipefail
