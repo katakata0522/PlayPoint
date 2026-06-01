@@ -415,6 +415,51 @@ test('blog SearchActionは実装と同じqパラメータを使う', () => {
   assert.ok(!html.includes('https://playpoint-sim.com/blog/?search={search_term_string}'));
 });
 
+test('blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
+
+  for (const article of articles) {
+    assert.ok(
+      html.includes(`href="${article.file}"`),
+      `${article.file} is missing from static blog HTML`
+    );
+  }
+});
+
+test('blogトップは自前のOGP画像とfaviconを使う', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+
+  assert.ok(html.includes('content="https://playpoint-sim.com/ogp.svg"'));
+  assert.ok(html.includes('href="../favicon.svg"'));
+  assert.ok(!html.includes('placehold.co'));
+});
+
+test('blogトップの説明文は検索結果向けの長さを確保する', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+  const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
+
+  assert.ok(description.length >= 70, `description is too short: ${description.length}`);
+  assert.ok(description.includes('Play Points') || description.includes('Playポイント'));
+});
+
+test('blogの正規URLはindex.htmlを露出しない', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+  const components = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+  const htaccess = fs.readFileSync(path.join(root, '.htaccess'), 'utf8');
+
+  assert.ok(!html.includes('href="index.html"'));
+  assert.ok(!components.includes('blog/index.html'));
+  assert.ok(htaccess.includes('RewriteRule ^blog/index\\.html$ /blog/ [R=301,L,NE]'));
+});
+
+test('blogトップはGoogle Fonts CSSをpreloadしない', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+
+  assert.ok(!html.includes('rel="preload"'));
+  assert.ok(html.includes('fonts.googleapis.com'));
+});
+
 test('記事ページの前後ナビは関連記事コンテナが無くても描画される', () => {
   const script = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
   const navIndex = script.indexOf('setupPrevNextNav(allArticles);');

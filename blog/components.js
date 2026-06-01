@@ -147,7 +147,7 @@
             <div class="header-inner">
                 <a class="logo" href="${rootPath}index.html">🎮 Playポイント計算機</a>
                 <nav class="nav">
-                    <a href="${rootPath}blog/index.html">📝 記事一覧</a>
+                    <a href="${rootPath}blog/">📝 記事一覧</a>
                     <a href="https://katakatalab.com/">🧪 KatakataLab</a>
                 </nav>
             </div>
