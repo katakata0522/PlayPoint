@@ -182,9 +182,9 @@
     // Common Header & Footer
     // ===========================================
     function renderCommonComponents() {
-        // Find existing header/footer to ensure we don't duplicate or to verify placement
-        const existingHeader = document.querySelector('header.header');
-        const existingFooter = document.querySelector('footer.site-footer');
+        // ページ固有のヘッダー・フッターがあれば、そのデザインを優先して重複生成しない
+        const existingHeader = document.querySelector('header');
+        const existingFooter = document.querySelector('footer');
 
         // Allow relative path adjustment if needed (default to absolute/root-relative for now based on file analysis)
         // Since files are in /articles/, links need to go up one level or use absolute URLs
