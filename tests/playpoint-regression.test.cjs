@@ -476,3 +476,210 @@ test('blog記事カードクリックをAnalyticsへ送る', () => {
 
   assert.ok(script.includes('Analytics.trackArticleClick(article.title, article.category)'));
 });
+
+test('主要な操作要素は44px以上のタップ領域を持つ', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+
+  assert.ok(css.includes('min-height: 44px'));
+  assert.match(css, /\.header-links a\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(css, /\.tab-switch button\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(css, /\.region-switch button\s*\{[^}]*min-height:\s*44px/s);
+});
+
+test('狭い画面でも日記タブの文字を省略しない', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const mobileBlock = css.slice(css.indexOf('@media(max-width:480px)'));
+
+  assert.ok(mobileBlock.includes('grid-template-columns: repeat(2, minmax(0, 1fr))'));
+  assert.ok(mobileBlock.includes('#tab-diary'));
+  assert.ok(!mobileBlock.includes('text-overflow: ellipsis'));
+});
+
+test('計算と日記保存の完了を個人情報なしでAnalyticsへ送る', () => {
+  const config = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
+  const calculator = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
+  const diary = fs.readFileSync(path.join(root, 'js', 'diary.js'), 'utf8');
+
+  assert.ok(config.includes('PP_APP.ANALYTICS'));
+  assert.ok(calculator.includes("track('calculation_completed'"));
+  assert.ok(calculator.includes("track('reverse_calculation_completed'"));
+  assert.ok(diary.includes("track('diary_entry_saved'"));
+  assert.ok(!calculator.includes('required_yen:'));
+  assert.ok(!diary.includes('points_value:'));
+});
+
+test('AdSenseは主機能より先に読み込まず利用開始後に読み込む', () => {
+  const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+  assert.ok(script.includes("addEventListener('playpoint:engaged'"));
+  assert.ok(script.includes("addEventListener('scroll'"));
+  assert.ok(script.includes('scheduleAdsenseLoad'));
+  assert.ok(!script.includes("requestIdleCallback(() => {\n                loadAdsense();"));
+});
+
+test('ブログのH1はPlay Points攻略記事の検索意図と一致する', () => {
+  const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+
+  assert.ok(html.includes('<h1 class="hero-title">Google Play Points 攻略・使い方記事</h1>'));
+  assert.ok(!html.includes("Katakata's Update Log"));
+});
+
+test('全記事から有効なGoogle公式ヘルプを確認できる', () => {
+  const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
+  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
+    .filter(file => file.endsWith('.html'));
+
+  assert.ok(articleScript.includes('https://support.google.com/googleplay/answer/9077312'));
+  assert.ok(articleScript.includes('official-source-note'));
+  for (const file of articleFiles) {
+    const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+    assert.ok(html.includes('../blog/article.js'), `${file} does not load the common article script`);
+    assert.ok(!html.includes('/answer/9077302'), `${file} contains a broken Google Help URL`);
+  }
+});
+
+test('トップページの記事リンクはローカルに存在する公開記事だけを指す', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const refs = [...html.matchAll(/href="(articles\/[^"#?]+\.html)"/g)]
+    .map(match => match[1]);
+
+  assert.ok(refs.length >= 6);
+  for (const ref of refs) {
+    assert.ok(fs.existsSync(path.join(root, ref)), `トップページに存在しない記事リンクがあります: ${ref}`);
+  }
+});
+
+test('計算条件を共有URLへ保存し再訪時に復元できる', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
+  const shareScript = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
+  const calculator = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+
+  assert.ok(html.includes('js/share.js'));
+  assert.ok(englishHtml.includes('../js/share.js'));
+  assert.ok(shareScript.includes('buildMainShareUrl'));
+  assert.ok(shareScript.includes('applyFromUrl'));
+  assert.ok(shareScript.includes('URLSearchParams'));
+  assert.ok(calculator.includes('dataset.shareUrl'));
+  assert.ok(main.includes('this.SHARE.applyFromUrl()'));
+});
+
+test('記事から計算機への導線は内部流入を識別できる', () => {
+  const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
+
+  assert.ok(articleScript.includes("utm_source', 'article'"));
+  assert.ok(articleScript.includes("utm_medium', 'internal'"));
+  assert.ok(articleScript.includes('article_to_calculator_clicked'));
+});
+
+test('外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる', () => {
+  const guide = fs.readFileSync(path.join(root, 'embed.html'), 'utf8');
+  const widget = fs.readFileSync(path.join(root, 'embed', 'playpoint-widget.js'), 'utf8');
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+
+  assert.ok(guide.includes('data-playpoint-widget'));
+  assert.ok(guide.includes('embed/playpoint-widget.js'));
+  assert.ok(widget.includes('customElements.define'));
+  assert.ok(widget.includes('attachShadow'));
+  assert.ok(widget.includes('Number.isFinite'));
+  assert.ok(widget.includes('playpoint-sim.com/?utm_source=embedded_widget'));
+  assert.ok(sitemap.includes('https://playpoint-sim.com/embed.html'));
+});
+
+test('Analyticsのイベント設計と検証手順が文書化されている', () => {
+  const docs = fs.readFileSync(path.join(root, 'docs', 'ANALYTICS.md'), 'utf8');
+
+  for (const eventName of [
+    'calculation_completed',
+    'reverse_calculation_completed',
+    'diary_entry_saved',
+    'article_to_calculator_clicked'
+  ]) {
+    assert.ok(docs.includes(eventName), `${eventName} is missing from analytics docs`);
+  }
+  assert.ok(docs.includes('DebugView'));
+  assert.ok(docs.includes('個人情報'));
+});
+
+test('Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする', () => {
+  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+
+  assert.ok(sw.includes("'./js/share.js'"));
+  assert.ok(sw.includes('playpoint-calc-v20260618'));
+  assert.ok(sw.includes("'./style.css?v=20260618a'"));
+});
+
+test('トップページの更新日は実装更新日と一致する', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+
+  assert.ok(html.includes('2026-06-18'));
+  assert.ok(englishHtml.includes('2026-06-18'));
+  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-18<\/lastmod>/);
+});
+
+test('反映タイミング記事は結論と確認手順を見出しで整理する', () => {
+  const html = fs.readFileSync(path.join(root, 'articles', '2026-03-10-play-points-reflection-timing.html'), 'utf8');
+
+  assert.ok(html.includes('<h2>最初に確認する3つ</h2>'));
+  assert.ok(html.includes('<h2>状況別の判断目安</h2>'));
+  assert.ok(html.includes('<h2>問い合わせ前に残しておく情報</h2>'));
+  assert.ok(!html.includes('検索から来た人にもちゃんと残りやすくなります'));
+  assert.ok(html.includes('2026/06/18 更新'));
+});
+
+test('広告のスクロール監視は閾値到達まで解除しない', () => {
+  const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+  assert.ok(script.includes('function handleAdsenseScroll()'));
+  assert.ok(script.includes("removeEventListener('scroll', handleAdsenseScroll)"));
+  assert.ok(!script.includes("}, { passive: true, once: true });"));
+});
+
+test('共有URLは実在するステータス値だけを復元する', () => {
+  const script = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
+
+  assert.ok(script.includes('isAllowedStatusValue'));
+  assert.ok(script.includes('params.has(name)'));
+});
+
+test('日記保存イベントはストレージ保存成功時だけ送る', () => {
+  const script = fs.readFileSync(path.join(root, 'js', 'diary.js'), 'utf8');
+
+  assert.ok(script.includes('return true;'));
+  assert.ok(script.includes('return false;'));
+  assert.ok(script.includes('if (!this.saveDiaryData(data)) return;'));
+});
+
+test('記事のAdSenseは本文スクロール後に共通スクリプトから読み込む', () => {
+  const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
+  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
+    .filter(file => file.endsWith('.html'));
+
+  assert.ok(articleScript.includes('function loadArticleAdsense()'));
+  assert.ok(articleScript.includes('window.scrollY < 600'));
+  for (const file of articleFiles) {
+    const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+    assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} loads AdSense before article engagement`);
+  }
+});
+
+test('ブログと記事は共通コンポーネントからGA4本体を読み込む', () => {
+  const components = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+  const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
+    .filter(file => file.endsWith('.html'));
+
+  assert.ok(components.includes("const GA_MEASUREMENT_ID = 'G-HED6D0FR4L'"));
+  assert.ok(components.includes('googletagmanager.com/gtag/js'));
+  assert.ok(components.includes("window.gtag('config', GA_MEASUREMENT_ID)"));
+  assert.ok(blogHtml.includes('components.js'));
+  assert.ok(!blogHtml.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'));
+  assert.ok(components.includes('function loadBlogAdsense()'));
+  for (const file of articleFiles) {
+    const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+    assert.ok(html.includes('../blog/components.js'), `${file} does not load common analytics components`);
+  }
+});

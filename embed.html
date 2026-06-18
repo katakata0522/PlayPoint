@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playポイント計算機をサイトに埋め込む｜無料ウィジェット</title>
+  <meta name="description" content="Google Play Pointsの簡易計算機をブログや攻略サイトへ無料で設置できる埋め込みウィジェットです。依存ライブラリなしで利用できます。">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://playpoint-sim.com/embed.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    body { margin: 0; padding: 24px; color: #263238; background: #eef3ff; font-family: "Yu Gothic", "YuGothic", Meiryo, sans-serif; line-height: 1.7; }
+    main { max-width: 760px; margin: auto; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); }
+    h1 { line-height: 1.35; }
+    code, pre { font-family: Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border-radius: 10px; background: #172033; color: #f8fafc; }
+    a { color: #0b57d0; }
+    .demo { margin: 24px 0; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Playポイント計算機をサイトに埋め込む</h1>
+  <p>ブログや攻略サイトへ、課金額から獲得ポイントを計算できる無料ウィジェットを設置できます。入力内容は外部へ送信されません。</p>
+  <section class="demo">
+    <h2>表示例</h2>
+    <div data-playpoint-widget></div>
+  </section>
+  <section>
+    <h2>設置コード</h2>
+    <p>表示したい場所へ、次の2行を追加してください。</p>
+    <pre><code>&lt;div data-playpoint-widget&gt;&lt;/div&gt;
+&lt;script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer&gt;&lt;/script&gt;</code></pre>
+  </section>
+  <p><a href="/">Playポイント計算機へ戻る</a></p>
+</main>
+<script src="embed/playpoint-widget.js" defer></script>
+</body>
+</html>

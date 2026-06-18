@@ -90,6 +90,9 @@ input, select, textarea {
   text-decoration: none;
   margin-left: 0;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .header-links a:hover {
   text-decoration: underline;
@@ -513,6 +516,7 @@ button:active {
   margin: 0 0.24em;
   font-size: 0.98em;
   padding: 0.55em 1.05em;
+  min-height: 44px;
   font-weight: normal;
   box-shadow: none;
 }
@@ -634,6 +638,7 @@ button:active {
 }
 .region-switch button {
   padding: .4em 1em;
+  min-height: 44px;
   border-radius: 0;
   cursor: pointer;
   font-size: .92em;
@@ -945,22 +950,23 @@ button:active {
   .week-row button { grid-area: save; width: 100%; }
   .diary-summary { grid-template-columns: 1fr; }
   .tab-switch {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2px;
     background: rgba(0, 0, 0, 0.05);
     padding: 2px;
     border-radius: 8px;
     margin: 0.8em auto 1.2em auto;
   }
   .tab-switch button {
-    flex: 1;
     margin: 0;
-    font-size: 0.82em;
+    font-size: 0.88em;
     padding: 0.6em 0.3em;
     border-radius: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+  }
+  .tab-switch #tab-diary {
+    grid-column: 1 / -1;
   }
   .backup-btn-group {
     flex-direction: column;

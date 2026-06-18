@@ -1,6 +1,61 @@
 (function () {
     'use strict';
 
+    const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
+    const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
+    let blogAdsenseLoaded = false;
+
+    // ブログと記事のイベントキューをGA4へ送れるよう、初期描画後に一度だけ読み込む
+    function loadCommonAnalytics() {
+        if (window.__playpointGaConfigured) return;
+        window.__playpointGaConfigured = true;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function gtag() {
+            window.dataLayer.push(arguments);
+        };
+        window.gtag('js', new Date());
+        window.gtag('config', GA_MEASUREMENT_ID);
+
+        if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        script.onerror = () => console.error('Analytics load failed');
+        document.head.appendChild(script);
+    }
+
+    function scheduleCommonAnalytics() {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadCommonAnalytics, { timeout: 2500 });
+            return;
+        }
+        window.setTimeout(loadCommonAnalytics, 1500);
+    }
+
+    function loadBlogAdsense() {
+        if (blogAdsenseLoaded) return;
+        blogAdsenseLoaded = true;
+        window.removeEventListener('scroll', handleBlogAdsenseScroll);
+        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
+        script.crossOrigin = 'anonymous';
+        script.onerror = () => console.error('AdSense load failed');
+        document.head.appendChild(script);
+    }
+
+    function handleBlogAdsenseScroll() {
+        if (window.scrollY < 600) return;
+        loadBlogAdsense();
+    }
+
+    function setupBlogAdsense() {
+        if (!window.location.pathname.includes('/blog')) return;
+        window.addEventListener('scroll', handleBlogAdsenseScroll, { passive: true });
+    }
+
     // ===========================================
     // Common Styles Injection
     // ===========================================
@@ -249,6 +304,8 @@
 
     // Execute functions
     document.addEventListener('DOMContentLoaded', () => {
+        scheduleCommonAnalytics();
+        setupBlogAdsense();
         injectStyles();
         renderCommonComponents();
         generateTableOfContents();

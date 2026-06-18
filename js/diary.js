@@ -17,9 +17,11 @@ PP_APP.DIARY = {
     saveDiaryData(data) {
         try {
             localStorage.setItem(PP_APP.CONSTANTS.DIARY_DATA_KEY, JSON.stringify(data));
+            return true;
         } catch (e) {
             console.error("日記データの保存に失敗しました:", e);
             PP_APP.UI.showToast("日記データの保存に失敗しました。", 'error');
+            return false;
         }
     },
 
@@ -130,7 +132,12 @@ PP_APP.DIARY = {
             if (!data[PP_APP.STATE.diaryState.currentYear]) data[PP_APP.STATE.diaryState.currentYear] = {};
             if (!data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth]) data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth] = {};
             data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth][weekNum] = { points: pointsInput.value, prize: prizeSelect.value };
-            this.saveDiaryData(data);
+            if (!this.saveDiaryData(data)) return;
+            PP_APP.ANALYTICS.track('diary_entry_saved', {
+                region: PP_APP.STATE.currentRegion,
+                entry_type: 'weekly_reward'
+            });
+            PP_APP.ANALYTICS.markEngaged();
             const originalText = PP_APP.CONFIGS[PP_APP.STATE.currentRegion].uiText.saveButton;
             e.target.textContent = 'OK!';
             e.target.disabled = true;
@@ -235,7 +242,7 @@ PP_APP.DIARY = {
                 }
             }
             
-            this.saveDiaryData(validatedData);
+            if (!this.saveDiaryData(validatedData)) return;
             this.renderDiary();
             if (PP_APP.STATE.dom.backupInputWrapper) {
                 PP_APP.STATE.dom.backupInputWrapper.classList.add(PP_APP.CONSTANTS.CLASS_HIDDEN);

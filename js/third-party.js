@@ -7,6 +7,7 @@
     let gaLoaded = false;
     let adsLoaded = false;
     let thirdPartyScheduled = false;
+    let adsenseScheduled = false;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -57,6 +58,24 @@
         }
     }
 
+    // 主機能より先に自動広告を挿入しない。利用開始または十分なスクロール後に一度だけ読み込む。
+    function scheduleAdsenseLoad() {
+        if (adsenseScheduled) return;
+        adsenseScheduled = true;
+        window.removeEventListener('scroll', handleAdsenseScroll);
+        loadAdsense();
+    }
+
+    function handleAdsenseScroll() {
+        if (window.scrollY < 600) return;
+        scheduleAdsenseLoad();
+    }
+
+    function setupAdsenseTriggers() {
+        window.addEventListener('playpoint:engaged', scheduleAdsenseLoad, { once: true });
+        window.addEventListener('scroll', handleAdsenseScroll, { passive: true });
+    }
+
     function scheduleThirdPartyLoad() {
         if (thirdPartyScheduled) return;
         thirdPartyScheduled = true;
@@ -65,19 +84,15 @@
             window.requestIdleCallback(() => {
                 loadAnalytics();
             }, { timeout: 2500 });
-            window.requestIdleCallback(() => {
-                loadAdsense();
-            }, { timeout: 3500 });
             return;
         }
 
         setTimeout(() => {
             loadAnalytics();
         }, 1500);
-        setTimeout(() => {
-            loadAdsense();
-        }, 2500);
     }
+
+    setupAdsenseTriggers();
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', scheduleThirdPartyLoad, { once: true });

@@ -5,11 +5,13 @@
     const CONFIG = {
         articlesUrl: '../blog/articles.json',
         recommendedCount: 3,
-        placeholderImage: 'https://placehold.co/300x200/e0e0e0/999999?text=No+Image'
+        placeholderImage: 'https://placehold.co/300x200/e0e0e0/999999?text=No+Image',
+        officialHelpUrl: 'https://support.google.com/googleplay/answer/9077312'
     };
 
     // Flags
     let scrollListenerAdded = false;
+    let articleAdsenseLoaded = false;
 
     // Local fallback utilities (in case BlogUtils is not loaded)
     const fallbackUtils = {
@@ -28,6 +30,80 @@
     // Use BlogUtils if available, otherwise fallback
     function getUtils() {
         return window.BlogUtils || fallbackUtils;
+    }
+
+    // 全記事に共通の公式情報導線を追加し、制度変更時の確認先を明確にする
+    function setupOfficialSourceNotice() {
+        if (document.querySelector('.official-source-note')) return;
+        const article = document.querySelector('article');
+        if (!article) return;
+
+        if (!document.querySelector('link[data-article-source-style]')) {
+            const stylesheet = document.createElement('link');
+            stylesheet.rel = 'stylesheet';
+            stylesheet.href = '../articles/source-notice.css';
+            stylesheet.dataset.articleSourceStyle = 'true';
+            document.head.appendChild(stylesheet);
+        }
+
+        const notice = document.createElement('aside');
+        notice.className = 'official-source-note';
+        notice.setAttribute('aria-label', '公式情報の確認先');
+        notice.innerHTML = `
+            <strong>公式情報の確認先</strong>
+            <p>Play Pointsの条件や特典は、地域や時期によって変更される場合があります。最新情報はGoogle Play公式ヘルプをご確認ください。</p>
+            <a href="${CONFIG.officialHelpUrl}" target="_blank" rel="noopener noreferrer">Google Play公式ヘルプを確認する</a>
+        `;
+        article.appendChild(notice);
+    }
+
+    // 記事が計算機の利用につながったかだけを計測し、入力値は送信しない
+    function setupCalculatorLinkTracking() {
+        document.addEventListener('click', (event) => {
+            const link = event.target && typeof event.target.closest === 'function'
+                ? event.target.closest('a[href]')
+                : null;
+            if (!link) return;
+            const url = new URL(link.href, window.location.href);
+            if (url.origin !== window.location.origin || url.pathname !== '/') return;
+
+            url.searchParams.set('mode', 'main');
+            url.searchParams.set('utm_source', 'article');
+            url.searchParams.set('utm_medium', 'internal');
+            url.searchParams.set('utm_campaign', 'article_cta');
+            link.href = url.toString();
+
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function gtag() {
+                window.dataLayer.push(arguments);
+            };
+            window.gtag('event', 'article_to_calculator_clicked', {
+                source_path: window.location.pathname
+            });
+        });
+    }
+
+    // 記事本文を読み始める前に自動広告を挿入せず、十分なスクロール後に一度だけ読み込む
+    function loadArticleAdsense() {
+        if (articleAdsenseLoaded) return;
+        articleAdsenseLoaded = true;
+        window.removeEventListener('scroll', handleArticleAdsenseScroll);
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455';
+        script.crossOrigin = 'anonymous';
+        script.onerror = () => console.error('AdSense load failed');
+        document.head.appendChild(script);
+    }
+
+    function handleArticleAdsenseScroll() {
+        if (window.scrollY < 600) return;
+        loadArticleAdsense();
+    }
+
+    function setupArticleAdsense() {
+        window.addEventListener('scroll', handleArticleAdsenseScroll, { passive: true });
     }
 
     function sanitizeArticleFile(value) {
@@ -74,6 +150,9 @@
     }
 
     async function init() {
+        setupOfficialSourceNotice();
+        setupCalculatorLinkTracking();
+        setupArticleAdsense();
         if (window.BlogUtils) {
             BlogUtils.updateFooterYear();
             BlogUtils.setupShareButton();

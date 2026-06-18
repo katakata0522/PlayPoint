@@ -162,6 +162,13 @@ PP_APP.CALC = {
         PP_APP.UI.displayResult(PP_APP.STATE.dom.result, resultContent);
         PP_APP.STATE.dom.result.dataset.requiredYen = totalAmountNeeded;
         PP_APP.STATE.dom.result.dataset.targetStatusLabel = targetStatusLabel;
+        PP_APP.STATE.dom.result.dataset.shareUrl = PP_APP.SHARE ? PP_APP.SHARE.buildMainShareUrl() : '';
+        PP_APP.ANALYTICS.track('calculation_completed', {
+            calculation_mode: 'rank_up',
+            region: PP_APP.STATE.currentRegion,
+            target_status: targetStatusLabel
+        });
+        PP_APP.ANALYTICS.markEngaged();
     },
 
     // 課金額からの逆算シミュレーション計算の実行
@@ -190,17 +197,22 @@ PP_APP.CALC = {
         PP_APP.STATE.dom.reverseResult.dataset.earnedPoints = String(earnedPoints);
         PP_APP.STATE.dom.reverseResult.dataset.earnedPointsRaw = earnedPointsRaw.toFixed(2);
         PP_APP.STATE.dom.reverseResult.dataset.amountYen = amountYen;
+        PP_APP.STATE.dom.reverseResult.dataset.shareUrl = PP_APP.SHARE ? PP_APP.SHARE.buildReverseShareUrl() : '';
+        PP_APP.ANALYTICS.track('reverse_calculation_completed', {
+            calculation_mode: 'spend_to_points',
+            region: PP_APP.STATE.currentRegion
+        });
+        PP_APP.ANALYTICS.markEngaged();
     },
 
     // X (Twitter) シェア
-    shareOnTwitter(text) {
-        const siteUrl = "https://playpoint-sim.com/";
+    shareOnTwitter(text, shareUrl = "https://playpoint-sim.com/") {
         const fullText = `${text}
 
 #Playポイント計算してみた
 #GooglePlayポイント
 
-${siteUrl}`;
+${shareUrl}`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}`, '_blank');
     },
 
@@ -217,7 +229,7 @@ ${siteUrl}`;
 目標ステータス： ${targetStatusLabel}
 必要な課金額の目安： 約${formattedYen}${config.currencySymbol}
 
-計算元：Playポイント計算機 ( https://playpoint-sim.com/ )`;
+計算元：Playポイント計算機 ( ${PP_APP.STATE.dom.result.dataset.shareUrl || 'https://playpoint-sim.com/'} )`;
         
         navigator.clipboard.writeText(textToCopy)
             .then(() => { PP_APP.UI.showToast("クリップボードにコピーしました！"); })
@@ -234,7 +246,7 @@ ${siteUrl}`;
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
         const text = `【Playポイント計算機で試算】
 私の目標「${targetStatusLabel}」まで、あと【${formattedYen}${config.currencySymbol}】必要みたい！💰`;
-        this.shareOnTwitter(text);
+        this.shareOnTwitter(text, PP_APP.STATE.dom.result.dataset.shareUrl);
     },
 
     // Xへの逆算シェアイベントハンドラ
@@ -248,6 +260,6 @@ ${siteUrl}`;
         const formattedYen = parseFloat(amountYen).toLocaleString(config.lang);
         const text = `【Playポイント計算機で試算】
 ${formattedYen}${config.currencySymbol}使うと、約 ${formattedPoints}ポイント 獲得できるみたい！✨`;
-        this.shareOnTwitter(text);
+        this.shareOnTwitter(text, PP_APP.STATE.dom.reverseResult.dataset.shareUrl);
     }
 };

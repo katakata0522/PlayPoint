@@ -128,6 +128,7 @@ PP_APP.init = function() {
 
     this.UI.switchMode(this.CONSTANTS.MODE_MAIN);
     this.updateUIForRegion();
+    this.SHARE.applyFromUrl();
     this.checkFridayReminder();
 
     // PWAサービスワーカーの登録

@@ -3,6 +3,23 @@
 // グローバル名前空間の定義
 window.PP_APP = window.PP_APP || {};
 
+// GA4本体の読み込み前でも、意味のある完了イベントだけを安全にキューへ積む
+PP_APP.ANALYTICS = {
+    track(eventName, params = {}) {
+        if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function gtag() {
+            window.dataLayer.push(arguments);
+        };
+        window.gtag('event', eventName, params);
+    },
+    markEngaged() {
+        if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
+            window.dispatchEvent(new CustomEvent('playpoint:engaged'));
+        }
+    }
+};
+
 PP_APP.CONSTANTS = {
     MODE_MAIN: 'main',
     MODE_REVERSE: 'reverse',
