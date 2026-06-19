@@ -115,6 +115,38 @@ body[data-blog-theme="dark"] .main-card {
     pointer-events: none;
 }
 
+/* 記事の責任主体と検証方針を本文直後に明示する。 */
+.author-box {
+    margin: 2rem 0 0;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid #dbe2ea;
+    border-left: 4px solid var(--article-accent);
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #334155;
+}
+
+.author-box-label {
+    margin: 0 0 0.25rem;
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.author-box-name {
+    margin: 0;
+    font-weight: 800;
+}
+
+.author-box p {
+    margin: 0.35rem 0 0;
+}
+
+.author-box a {
+    color: var(--article-accent-dark);
+    font-weight: 700;
+}
+
 /* 小さなテキストリンクもタッチ操作可能な高さを確保する。 */
 .content a,
 .cta-button,
@@ -149,6 +181,10 @@ button:focus-visible {
 
     .article-nav-link.next {
         text-align: left;
+    }
+
+    .author-box {
+        padding: 1rem;
     }
 }
 

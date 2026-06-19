@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260619';
+const CACHE_NAME = 'playpoint-calc-v20260619b';
 const ASSETS = [
   './',
   './index.html',
@@ -16,7 +16,7 @@ const ASSETS = [
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260619a',
   './blog/script.js?v=20260619a',
-  './articles/article-shared.css?v=20260619a',
+  './articles/article-shared.css?v=20260619b',
   './en/',
   './en/index.html'
 ];
