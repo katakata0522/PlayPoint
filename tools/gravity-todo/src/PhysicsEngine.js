@@ -75,6 +75,7 @@ export class PhysicsEngine {
       (body) => this.taskDetailPanel.open(body)
     );
     this.syncTaskList();
+    this.uiManager.updateDestroyCount(StorageManager.getDestroyCount());
 
     // レンダリング開始
     this.Render.run(this.render);
@@ -171,33 +172,56 @@ export class PhysicsEngine {
     this.Composite.add(this.world, [this.ground, this.leftWall, this.rightWall]);
   }
 
+  // --- ブロックプロパティの計算ヘルパー ---
+  _calculateBlockDimensions(safeText) {
+    let w = Math.max(120, safeText.length * 18 + 40);
+    let h = 48;
+    const isImportant = safeText.includes('!') || safeText.includes('！');
+    if (isImportant) {
+      w *= 1.4;
+      h *= 1.4;
+    }
+    return { w, h, isImportant };
+  }
+
+  _calculateBlockPhysics(blockColor, isImportant, safeText) {
+    const isPinned = safeText.startsWith('@') || safeText.startsWith('＠');
+    let restitution = 0.4;
+    let density = 0.05;
+
+    if (blockColor === '#b71c1c') {
+      restitution = 0.9;
+      density = 0.04;
+    } else if (blockColor === '#0f3460') {
+      restitution = 0.1;
+      density = 0.15;
+    }
+    if (isImportant) density *= 2.0;
+
+    return { restitution, density, isStatic: isPinned };
+  }
+
   addTask(text, x = null, y = null, angle = 0, options = {}) {
-    const { persist = true } = options;
-    // 二重防御: ここでもHTMLメタ文字を除去
-    const sanitized = String(text).replace(/[<>&"'`]/g, '');
-    const safeText = sanitized.length > 20 ? sanitized.substring(0, 19) + '\u2026' : sanitized;
-    if (safeText.length === 0) return;
+    const safeText = text.replace(/[<>"'`]/g, '').substring(0, 20);
+    if (!safeText) return;
 
-    this.ctx.font = "700 18px 'Noto Sans JP'";
-    const textWidth = this.ctx.measureText(safeText).width;
-    const w = Math.max(textWidth + 44, 100);
-    const h = 52;
+    const { w, h, isImportant } = this._calculateBlockDimensions(safeText);
 
-    // X範囲: 画面幅の10%〜90%
-    const margin = this.width * 0.1;
-    const spawnX = x !== null ? x : margin + Math.random() * (this.width - margin * 2);
-    const spawnY = y !== null ? y : -80;
+    const startX = x !== null ? x : this.width / 2 + (Math.random() * 40 - 20);
+    const startY = y !== null ? y : -50;
 
-    // 個別色 > グローバル設定の優先順位
     const blockColor  = options.blockColor  || SettingsManager.getBlockColor();
     const blockBorder = options.blockBorder || SettingsManager.getBlockBorder();
 
-    const block = this.Bodies.rectangle(spawnX, spawnY, w, h, {
+    const physics = this._calculateBlockPhysics(blockColor, isImportant, safeText);
+
+    const block = this.Bodies.rectangle(startX, startY, w, h, {
       label: 'task',
       angle: angle,
-      restitution: 0.35,
+      restitution: physics.restitution,
       friction: 0.8,
-      density: 0.05,
+      density: physics.density,
+      isStatic: physics.isStatic,
       chamfer: { radius: 8 },
       render: {
         fillStyle:   blockColor,
@@ -208,9 +232,10 @@ export class PhysicsEngine {
 
     block.taskText = safeText;
     block.subTasks = Array.isArray(options.subTasks) ? options.subTasks : [];
+    block.isImportant = isImportant;
     this.Composite.add(this.world, block);
 
-    if (persist) void this.persistTasks();
+    if (options.persist !== false) void this.persistTasks();
     this.uiManager.updateNukeButtonVisibility(this.getTaskCount());
     this.syncTaskList();
   }
@@ -228,8 +253,25 @@ export class PhysicsEngine {
   async restoreTasks() {
     const { hasSavedState, tasks } = await StorageManager.loadState();
     if (!hasSavedState) {
-      setTimeout(() => this.addTask('企画書作成'), 300);
-      setTimeout(() => this.addTask('メール返信'), 700);
+      const cx = this.width / 2;
+      const floor = this.getFloorY();
+
+      // 1. ピン留め（青色・空中固定）
+      setTimeout(() => this.addTask('@📌 1. 空中にピン留め!', cx - 150, 150, 0.1, {
+        blockColor: '#0f3460', blockBorder: '#4a90e2', persist: false
+      }), 400);
+
+      // 2. ドラッグ（緑色・標準・やや高めから落下）
+      setTimeout(() => this.addTask('👆 2. ドラッグで掴めるよ', cx + 150, floor - 400, -0.1, {
+        blockColor: '#1b5e20', blockBorder: '#4caf50', persist: false
+      }), 1200);
+
+      // 3. 爆破（赤色・巨大・ボヨンボヨン跳ねる）
+      // 「!」が含まれるため自動的に1.4倍の巨大サイズになり、赤色指定でバウンドする
+      setTimeout(() => this.addTask('🔥 3. 長押しで爆破!! 💥!', cx, floor - 800, 0, {
+        blockColor: '#b71c1c', blockBorder: '#ff5252', persist: false
+      }), 2200);
+
       document.dispatchEvent(new CustomEvent('gravity:firstVisit'));
     } else {
       tasks.forEach(t => {
@@ -272,11 +314,19 @@ export class PhysicsEngine {
       return;
     }
 
-    void this.soundManager.playExplosion(1);
+    void this.soundManager.playExplosion(0.5); // 元の爆発音を少し抑えめに
+    void this.soundManager.playCracker(1.2);   // クラッカー音を派手に追加
     const c = body.render.strokeStyle || '#ff3366';
     this.particleSystem.explode(body.position.x, body.position.y, c);
     this.spawnDebris(body.position.x, body.position.y, body.render.fillStyle, c); // 破片生成
     this.uiManager.triggerShake();
+
+    // 破壊スコアの更新
+    if (!skipUndo && !this.isNukingAll) {
+      const newScore = StorageManager.incrementDestroyCount();
+      this.uiManager.updateDestroyCount(newScore);
+    }
+
     void this.persistTasks();
     this.uiManager.updateNukeButtonVisibility(this.getTaskCount());
     this.syncTaskList();

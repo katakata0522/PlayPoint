@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260619b';
+const CACHE_NAME = 'playpoint-calc-v20260619c';
 const ASSETS = [
   './',
   './index.html',
@@ -12,9 +12,10 @@ const ASSETS = [
   './js/calculator.js',
   './js/share.js',
   './js/main.js',
-  './js/third-party.js?v=20260618a',
+  './js/consent.js?v=20260619a',
+  './js/third-party.js?v=20260619c',
   './blog/style.css?v=20260619a',
-  './blog/components.js?v=20260619a',
+  './blog/components.js?v=20260619c',
   './blog/script.js?v=20260619a',
   './articles/article-shared.css?v=20260619b',
   './en/',
@@ -51,19 +52,35 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// フェッチ時にキャッシュがあれば返し、裏でネットワークから最新版を取得して更新する (Stale-While-Revalidate)
+const CACHEABLE_DESTINATIONS = new Set(['document', 'style', 'script', 'image', 'font', 'manifest']);
+
+function isCacheableRequest(request) {
+  if (request.method !== 'GET') return false;
+  const url = new URL(request.url);
+  return url.origin === self.location.origin && CACHEABLE_DESTINATIONS.has(request.destination);
+}
+
+// 共有・計測用クエリをキャッシュキーから除き、静的アセットの版番号だけを保持する
+function getCacheKey(request) {
+  const url = new URL(request.url);
+  const version = request.destination === 'document' ? null : url.searchParams.get('v');
+  url.search = version ? `?v=${encodeURIComponent(version)}` : '';
+  url.hash = '';
+  return url.toString();
+}
+
+// 静的コンテンツだけをStale-While-Revalidateで更新する
 self.addEventListener('fetch', (event) => {
-  // 外部アフィリエイトやAnalyticsなどのリクエストはキャッシュから除外
-  if (!event.request.url.startsWith(self.location.origin)) {
-    return;
-  }
+  if (event.request.method !== 'GET' || !isCacheableRequest(event.request)) return;
+
+  const cacheKey = getCacheKey(event.request);
 
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request).then((cachedResponse) => {
+      return cache.match(cacheKey).then((cachedResponse) => {
         const fetchedResponse = fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            cache.put(event.request, networkResponse.clone());
+          if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+            void cache.put(cacheKey, networkResponse.clone());
           }
           return networkResponse;
         }).catch(() => {

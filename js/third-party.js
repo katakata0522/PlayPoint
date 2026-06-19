@@ -8,6 +8,7 @@
     let adsLoaded = false;
     let thirdPartyScheduled = false;
     let adsenseScheduled = false;
+    let consentManagerPromise = null;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -58,12 +59,27 @@
         }
     }
 
+    function ensureConsentManager() {
+        if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
+        if (!consentManagerPromise) {
+            consentManagerPromise = loadScript('/js/consent.js?v=20260619a')
+                .then(() => window.PlayPointConsent);
+        }
+        return consentManagerPromise;
+    }
+
+    function runAfterConsent(callback) {
+        return ensureConsentManager()
+            .then(() => window.PlayPointConsent.whenGranted(callback))
+            .catch((error) => console.error('Consent manager load failed:', error));
+    }
+
     // 主機能より先に自動広告を挿入しない。利用開始または十分なスクロール後に一度だけ読み込む。
     function scheduleAdsenseLoad() {
         if (adsenseScheduled) return;
         adsenseScheduled = true;
         window.removeEventListener('scroll', handleAdsenseScroll);
-        loadAdsense();
+        void runAfterConsent(loadAdsense);
     }
 
     function handleAdsenseScroll() {
@@ -82,13 +98,13 @@
 
         if ('requestIdleCallback' in window) {
             window.requestIdleCallback(() => {
-                loadAnalytics();
+                void runAfterConsent(loadAnalytics);
             }, { timeout: 2500 });
             return;
         }
 
         setTimeout(() => {
-            loadAnalytics();
+            void runAfterConsent(loadAnalytics);
         }, 1500);
     }
 

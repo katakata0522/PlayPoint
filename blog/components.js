@@ -4,6 +4,34 @@
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     let blogAdsenseLoaded = false;
+    let consentManagerPromise = null;
+
+    function ensureConsentManager() {
+        if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
+        if (consentManagerPromise) return consentManagerPromise;
+
+        consentManagerPromise = new Promise((resolve, reject) => {
+            const existing = document.querySelector('script[src*="/js/consent.js"]');
+            if (existing) {
+                existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
+                existing.addEventListener('error', reject, { once: true });
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = '/js/consent.js?v=20260619a';
+            script.async = true;
+            script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
+            script.addEventListener('error', reject, { once: true });
+            document.head.appendChild(script);
+        });
+        return consentManagerPromise;
+    }
+
+    function runAfterConsent(callback) {
+        return ensureConsentManager()
+            .then(() => window.PlayPointConsent.whenGranted(callback))
+            .catch((error) => console.error('Consent manager load failed:', error));
+    }
 
     // 記事ページにもブログで選んだテーマとカテゴリー配色を引き継ぐ
     function applyArticlePresentationSettings() {
@@ -46,10 +74,10 @@
 
     function scheduleCommonAnalytics() {
         if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(loadCommonAnalytics, { timeout: 2500 });
+            window.requestIdleCallback(() => void runAfterConsent(loadCommonAnalytics), { timeout: 2500 });
             return;
         }
-        window.setTimeout(loadCommonAnalytics, 1500);
+        window.setTimeout(() => void runAfterConsent(loadCommonAnalytics), 1500);
     }
 
     function loadBlogAdsense() {
@@ -68,7 +96,7 @@
 
     function handleBlogAdsenseScroll() {
         if (window.scrollY < 600) return;
-        loadBlogAdsense();
+        void runAfterConsent(loadBlogAdsense);
     }
 
     function setupBlogAdsense() {

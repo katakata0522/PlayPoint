@@ -74,6 +74,7 @@
             <h1>GRAVITY TODO</h1>
           </div>
           <div class="header-controls">
+            <button id="install-btn" class="icon-btn hidden" aria-label="アプリをインストール" title="アプリをインストール">📱</button>
             <button id="rearrange-btn" class="icon-btn" aria-label="ブロックを落として整列" title="ブロックを落として整列" disabled aria-disabled="true">↧</button>
             <button id="bgm-btn" class="icon-btn" aria-label="BGM ON/OFF" title="BGM ON/OFF">🎵</button>
             <button id="settings-btn" class="icon-btn" aria-label="カラー設定" aria-expanded="false" aria-controls="settings-panel">⚙</button>
@@ -85,6 +86,9 @@
           <span class="status-label">TASKS</span>
           <div class="status-meter" aria-hidden="true"><span id="task-meter-fill"></span></div>
           <strong id="task-count">0</strong>
+          <span class="status-label" style="margin-left:0.8rem; color:var(--text-dim);">DESTROYED TODAY</span>
+          <strong id="destroy-count" style="color:var(--accent-color);">0</strong>
+          <button id="share-btn" class="icon-btn" aria-label="Xでシェア" title="破壊スコアをXでシェア" style="margin-left:auto; font-family:sans-serif; font-size:1.1rem; padding: 0 4px;">𝕏</button>
         </div>
 
         <div id="settings-panel" class="settings-panel hidden" role="dialog" aria-label="カラー設定">
@@ -125,8 +129,28 @@
       <p id="task-empty-state" class="task-empty-state">まず1件DROP。タスクは重力ブロックになり、一覧から詳細・完了・削除できます。</p>
 
       <div class="input-container">
+        <!-- 追加: カラーラベル選択 -->
+        <div class="task-color-picker" role="radiogroup" aria-label="タスクの色">
+          <label class="color-radio" title="通常">
+            <input type="radio" name="drop-color" value="default" checked>
+            <span class="color-swatch swatch-default"></span>
+          </label>
+          <label class="color-radio" title="仕事 (青)">
+            <input type="radio" name="drop-color" value="work">
+            <span class="color-swatch swatch-work"></span>
+          </label>
+          <label class="color-radio" title="プライベート (緑)">
+            <input type="radio" name="drop-color" value="private">
+            <span class="color-swatch swatch-private"></span>
+          </label>
+          <label class="color-radio" title="急ぎ (赤)">
+            <input type="radio" name="drop-color" value="urgent">
+            <span class="color-swatch swatch-urgent"></span>
+          </label>
+        </div>
+
         <form id="task-form">
-          <input type="text" id="task-input" placeholder="タスクを入力…" autocomplete="off" maxlength="20" required>
+          <input type="text" id="task-input" placeholder="タスク入力 (!で巨大化, @でピン留め)" autocomplete="off" maxlength="20" required>
           <button type="submit" class="add-btn">DROP</button>
         </form>
         <div class="input-meta" aria-hidden="true">

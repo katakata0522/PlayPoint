@@ -39,6 +39,27 @@ export class ParticleSystem {
       decay: 0.04,
       color
     });
+
+    // --- 追加：プチ爽快な紙吹雪エフェクト ---
+    const confettiCount = 15 + (Math.random() * 10) | 0;
+    const confettiColors = ['#ffcc00', '#00e5ff', '#ff3366', '#ffffff', '#00e676'];
+    for (let i = 0; i < confettiCount; i++) {
+      const cColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+      this.particles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 20,
+        vy: (Math.random() - 0.5) * 20 - 5,
+        sizeX: Math.random() * 8 + 4, // 細長い形
+        sizeY: Math.random() * 4 + 2, // 細長い形
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.8, // 回転
+        life: 1.0,
+        decay: Math.random() * 0.01 + 0.01, // 少し長く舞う
+        color: cColor,
+        isConfetti: true // フラグ
+      });
+    }
   }
 
   updateAndDraw() {
@@ -59,10 +80,21 @@ export class ParticleSystem {
 
       if (p.life <= 0) continue;
 
-      ctx.globalAlpha = p.life;
-      ctx.fillStyle = p.color;
-      // arc()→fillRect()に変更（arc+beginPath+fillは描画コスト高い）
-      ctx.fillRect(p.x - p.size * 0.5, p.y - p.size * 0.5, p.size, p.size);
+      if (p.isConfetti) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        p.angle += p.spin;
+        ctx.rotate(p.angle);
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.sizeX * 0.5, -p.sizeY * 0.5, p.sizeX, p.sizeY);
+        ctx.restore();
+      } else {
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        // arc()→fillRect()に変更（arc+beginPath+fillは描画コスト高い）
+        ctx.fillRect(p.x - p.size * 0.5, p.y - p.size * 0.5, p.size, p.size);
+      }
 
       particles[writeIdx++] = p;
     }

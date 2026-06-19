@@ -54,4 +54,64 @@ export class SoundManager {
       console.warn('Failed to play explosion sound:', error);
     }
   }
+
+  // クラッカーの「パァン！」という音を合成
+  async playCracker(intensity = 1) {
+    try {
+      const audioContext = await this.getAudioContext();
+      if (!audioContext) return;
+
+      const safeIntensity = Math.min(Math.max(intensity, 0.2), 1.5);
+      const now = audioContext.currentTime;
+      const duration = 0.3;
+
+      // 1. ノイズ生成（破裂の「バッ」という音）
+      const bufferSize = audioContext.sampleRate * duration;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1; // ホワイトノイズ
+      }
+
+      const noiseSource = audioContext.createBufferSource();
+      noiseSource.buffer = buffer;
+
+      // ノイズ用フィルター
+      const filter = audioContext.createBiquadFilter();
+      filter.type = 'highpass';
+      filter.frequency.value = 800;
+
+      // ノイズ用エンベロープ
+      const noiseGain = audioContext.createGain();
+      noiseGain.gain.setValueAtTime(0, now);
+      noiseGain.gain.linearRampToValueAtTime(0.4 * safeIntensity, now + 0.01);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      noiseGain.gain.linearRampToValueAtTime(0, now + duration);
+
+      noiseSource.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(audioContext.destination);
+
+      // 2. 芯のあるアタック音（「パッ」という音）
+      const osc = audioContext.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+
+      const oscGain = audioContext.createGain();
+      oscGain.gain.setValueAtTime(0, now);
+      oscGain.gain.linearRampToValueAtTime(0.2 * safeIntensity, now + 0.01);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+      osc.connect(oscGain);
+      oscGain.connect(audioContext.destination);
+
+      // 同時再生
+      noiseSource.start(now);
+      osc.start(now);
+      osc.stop(now + duration);
+    } catch (error) {
+      console.warn('Failed to play cracker sound:', error);
+    }
+  }
 }

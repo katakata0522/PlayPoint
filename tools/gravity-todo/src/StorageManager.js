@@ -29,7 +29,9 @@ export class StorageManager {
             x: Number.isFinite(item.x) ? item.x : 0,
             y: Number.isFinite(item.y) ? item.y : 0,
             angle: Number.isFinite(item.angle) ? item.angle : 0,
-            subTasks: Array.isArray(item.subTasks) ? item.subTasks : []
+            subTasks: Array.isArray(item.subTasks) ? item.subTasks : [],
+            blockColor: typeof item.blockColor === 'string' ? item.blockColor : null,
+            blockBorder: typeof item.blockBorder === 'string' ? item.blockBorder : null
           };
 
           if (item.id !== undefined && item.id !== null) {
@@ -199,5 +201,37 @@ export class StorageManager {
       request.onerror = () => reject(request.error ?? new Error('Failed to delete IndexedDB.'));
       request.onblocked = () => reject(new Error('IndexedDB deletion was blocked.'));
     });
+  }
+
+  // 今日の破壊スコアキーを取得
+  static getTodayKey() {
+    const d = new Date();
+    return `destroy_count_${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`;
+  }
+
+  // 今日の破壊スコアを取得
+  static getDestroyCount() {
+    try {
+      const raw = localStorage.getItem(this.getTodayKey());
+      const value = Number.parseInt(raw || '0', 10);
+      return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+    } catch (error) {
+      console.warn('破壊スコアを読み込めませんでした。', error);
+      return 0;
+    }
+  }
+
+  // 今日の破壊スコアを加算
+  static incrementDestroyCount() {
+    const key = this.getTodayKey();
+    const current = this.getDestroyCount();
+    const next = Math.min(current + 1, Number.MAX_SAFE_INTEGER);
+    try {
+      localStorage.setItem(key, String(next));
+    } catch (error) {
+      // 保存できない環境でもタスク破壊自体は継続する
+      console.warn('破壊スコアを保存できませんでした。', error);
+    }
+    return next;
   }
 }

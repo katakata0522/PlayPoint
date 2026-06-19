@@ -922,3 +922,47 @@ body.detail-open #ui-layer { pointer-events: none; }
   transition: background 0.2s; text-transform: uppercase; letter-spacing: 0.05em;
 }
 .undo-btn:hover { background: rgba(255,122,69,.15); }
+
+/* --- タスクカラーピッカー --- */
+.task-color-picker {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 0.2rem;
+  scrollbar-width: none;
+}
+.task-color-picker::-webkit-scrollbar {
+  display: none;
+}
+.color-radio {
+  cursor: pointer;
+  display: inline-flex;
+  position: relative;
+}
+.color-radio input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  display: inline-block;
+}
+.color-radio input:checked + .color-swatch {
+  transform: scale(1.35);
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+.swatch-default { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+.swatch-work { background: #0f3460; border-color: #4a90e2; }
+.swatch-private { background: #1b5e20; border-color: #4caf50; }
+.swatch-urgent { background: #b71c1c; border-color: #ff5252; }

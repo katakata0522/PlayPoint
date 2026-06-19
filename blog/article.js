@@ -12,6 +12,7 @@
     // Flags
     let scrollListenerAdded = false;
     let articleAdsenseLoaded = false;
+    let articleAdsenseScheduled = false;
 
     // Local fallback utilities (in case BlogUtils is not loaded)
     const fallbackUtils = {
@@ -87,7 +88,6 @@
     function loadArticleAdsense() {
         if (articleAdsenseLoaded) return;
         articleAdsenseLoaded = true;
-        window.removeEventListener('scroll', handleArticleAdsenseScroll);
 
         const script = document.createElement('script');
         script.async = true;
@@ -98,12 +98,16 @@
     }
 
     function handleArticleAdsenseScroll() {
-        if (window.scrollY < 600) return;
-        loadArticleAdsense();
+        if (window.scrollY < 600 || articleAdsenseScheduled || !window.PlayPointConsent) return;
+        articleAdsenseScheduled = true;
+        window.removeEventListener('scroll', handleArticleAdsenseScroll);
+        document.removeEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
+        window.PlayPointConsent.whenGranted(loadArticleAdsense);
     }
 
     function setupArticleAdsense() {
         window.addEventListener('scroll', handleArticleAdsenseScroll, { passive: true });
+        document.addEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
     }
 
     function sanitizeArticleFile(value) {

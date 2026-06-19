@@ -28,30 +28,53 @@ export class TaskRenderer {
       blurAmount = 6;  // 弱発光
     }
 
+    // フォントステート変更を最小限にするためのキャッシュ
+    let currentFont = '';
+    const setFont = (isImportant) => {
+      const targetFont = isImportant ? "700 24px 'Noto Sans JP'" : "700 18px 'Noto Sans JP'";
+      if (currentFont !== targetFont) {
+        ctx.font = targetFont;
+        currentFont = targetFont;
+      }
+    };
+
     for (let i = 0; i < bodies.length; i++) {
       const body = bodies[i];
       if (body.label !== 'task' || !body.taskText) continue;
 
       ctx.save();
-      ctx.translate(body.position.x, body.position.y);
-      ctx.rotate(body.angle);
-      
-      // ブロックの枠線色を発光色として使用
-      const strokeColor = body.render.strokeStyle || '#ffffff';
 
-      // ネオングロウ効果（テキストとブロック縁）
+      let bx = body.position.x;
+      let by = body.position.y;
+
+      // 長押し中（爆発寸前）のエフェクト
+      if (body.isPressing) {
+        const elapsed = Date.now() - (body.pressStartTime || Date.now());
+        const intensity = Math.min(elapsed / 700, 1.0);
+        bx += (Math.random() - 0.5) * 12 * intensity;
+        by += (Math.random() - 0.5) * 12 * intensity;
+        ctx.globalCompositeOperation = 'lighter';
+        blurAmount = Math.max(blurAmount, 15 * intensity);
+      }
+
+      ctx.translate(bx, by);
+      ctx.rotate(body.angle);
+
+      const strokeColor = body.render.strokeStyle || '#ffffff';
       if (blurAmount > 0) {
         ctx.shadowColor = strokeColor;
         ctx.shadowBlur = blurAmount;
       }
 
+      setFont(body.isImportant);
+
       ctx.strokeStyle = 'rgba(0,0,0,0.8)';
       ctx.strokeText(body.taskText, 0, 0);
-      
+
       // テキスト自体も少し発光させる
       ctx.fillStyle = this.textColor;
       ctx.fillText(body.taskText, 0, 0);
-      
+
       ctx.restore();
     }
   }

@@ -8,6 +8,7 @@ export class UIManager {
     this.taskSummary = document.getElementById('task-summary');
     this.taskList = document.getElementById('task-list');
     this.taskEmptyState = document.getElementById('task-empty-state');
+    this.destroyCount = document.getElementById('destroy-count');
   }
 
   updateNukeButtonVisibility(taskCount) {
@@ -40,6 +41,17 @@ export class UIManager {
     }
   }
 
+  updateDestroyCount(count) {
+    if (this.destroyCount) {
+      this.destroyCount.textContent = String(count);
+      // ちょっとしたアニメーション
+      this.destroyCount.style.transform = 'scale(1.3)';
+      setTimeout(() => {
+        this.destroyCount.style.transform = 'scale(1)';
+      }, 150);
+    }
+  }
+
   renderTaskList(tasks = [], actions = {}) {
     const taskItems = Array.isArray(tasks) ? tasks.filter(task => task?.taskText) : [];
     const total = taskItems.length;
@@ -54,6 +66,8 @@ export class UIManager {
     this.taskList.innerHTML = '';
     this.taskList.classList.toggle('hidden', total === 0);
     this.taskEmptyState.classList.toggle('hidden', total > 0);
+
+    const fragment = document.createDocumentFragment();
 
     taskItems.forEach((task) => {
       const item = document.createElement('article');
@@ -81,8 +95,10 @@ export class UIManager {
 
       controls.append(detailBtn, completeBtn, destroyBtn);
       item.append(main, controls);
-      this.taskList.appendChild(item);
+      fragment.appendChild(item);
     });
+
+    this.taskList.appendChild(fragment);
   }
 
   calculateOverallProgress(tasks) {
@@ -126,7 +142,7 @@ export class UIManager {
 
     // 既存のタイマーをクリア
     if (this.undoTimerId) clearTimeout(this.undoTimerId);
-    
+
     // イベントリスナーの重複登録を防ぐため、古いボタンをクローンして置き換える
     const newBtn = undoBtn.cloneNode(true);
     undoBtn.parentNode.replaceChild(newBtn, undoBtn);

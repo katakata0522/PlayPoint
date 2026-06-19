@@ -188,7 +188,30 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('空間の限界です。タスクを爆破して減らしてください。');
         return;
       }
-      engine.addTask(text);
+
+      // カラー判定
+      const colorRadio = document.querySelector('input[name="drop-color"]:checked');
+      const colorType = colorRadio ? colorRadio.value : 'default';
+
+      let blockColor = null;
+      let blockBorder = null;
+
+      switch(colorType) {
+        case 'work':
+          blockColor = '#0f3460'; blockBorder = '#4a90e2';
+          break;
+        case 'private':
+          blockColor = '#1b5e20'; blockBorder = '#4caf50';
+          break;
+        case 'urgent':
+          blockColor = '#b71c1c'; blockBorder = '#ff5252';
+          break;
+      }
+
+      engine.addTask(text, undefined, undefined, undefined, {
+        blockColor,
+        blockBorder
+      });
       input.value = '';
       syncInputState();
       hideHint();
@@ -210,4 +233,62 @@ document.addEventListener('DOMContentLoaded', () => {
   requestAnimationFrame(() => document.body.classList.add('app-ready'));
   syncInputState();
   input.focus();
+  // ======== Xシェア機能 ========
+  const shareBtn = document.getElementById('share-btn');
+  shareBtn?.addEventListener('click', () => {
+    const destroyCount = parseInt(document.getElementById('destroy-count')?.textContent || '0', 10);
+    const text = `今日はタスクを ${destroyCount} 個、物理的に爆破しました！💥\n\nGravity-Todo（タスク爆破アプリ）\n#GravityTodo #かたかたラボ`;
+    const url = `https://playpoint-sim.com/tools/gravity-todo/`;
+    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(shareUrl, '_blank', 'noopener,noreferrer');
+  });
+
+  // オフライン時のシェアボタン制御
+  const updateShareBtnState = () => {
+    if (!shareBtn) return;
+    if (navigator.onLine) {
+      shareBtn.style.opacity = '1';
+      shareBtn.style.pointerEvents = 'auto';
+      shareBtn.title = '破壊スコアをXでシェア';
+    } else {
+      shareBtn.style.opacity = '0.3';
+      shareBtn.style.pointerEvents = 'none';
+      shareBtn.title = 'オフライン時はシェアできません';
+    }
+  };
+  window.addEventListener('online', updateShareBtnState);
+  window.addEventListener('offline', updateShareBtnState);
+  updateShareBtnState();
+
+  // ======== PWAインストール ========
+  let deferredPrompt;
+  const installBtn = document.getElementById('install-btn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // デフォルトのミニインフォバーを表示させない
+    e.preventDefault();
+    deferredPrompt = e;
+    // インストールボタンを表示
+    if (installBtn) installBtn.classList.remove('hidden');
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    const promptEvent = deferredPrompt;
+    deferredPrompt = null;
+    try {
+      await promptEvent.prompt();
+      await promptEvent.userChoice;
+    } catch (error) {
+      console.warn('インストール案内を表示できませんでした。', error);
+    } finally {
+      installBtn.classList.add('hidden');
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    installBtn?.classList.add('hidden');
+  });
+
 });

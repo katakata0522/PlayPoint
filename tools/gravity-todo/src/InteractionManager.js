@@ -12,6 +12,7 @@ export class InteractionManager {
     // 長押し用（爆破）
     this.longPressTimer = null;
     this.longPressTriggered = false;
+    this.longPressBody = null;
     this.LONG_PRESS_MS = 700;
 
     // ダブルクリック用（詳細パネル）
@@ -68,6 +69,9 @@ export class InteractionManager {
 
       // 長押し検知 → 爆破
       if (taskBody) {
+        taskBody.isPressing = true;
+        taskBody.pressStartTime = Date.now();
+        this.longPressBody = taskBody;
         this.longPressTimer = setTimeout(() => {
           this.longPressTriggered = true;
           this.onDestroyTask(taskBody);
@@ -123,6 +127,9 @@ export class InteractionManager {
 
         // 長押し検知 → 爆破
         if (body) {
+          body.isPressing = true;
+          body.pressStartTime = Date.now();
+          this.longPressBody = body;
           this.longPressTimer = setTimeout(() => {
             this.longPressTriggered = true;
             this.onDestroyTask(body);
@@ -183,6 +190,11 @@ export class InteractionManager {
   }
 
   _cancelLongPress() {
+    if (this.longPressBody) {
+      this.longPressBody.isPressing = false;
+      this.longPressBody.pressStartTime = null;
+      this.longPressBody = null;
+    }
     if (this.longPressTimer) {
       clearTimeout(this.longPressTimer);
       this.longPressTimer = null;

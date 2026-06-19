@@ -100,10 +100,15 @@ PP_APP.CALC = {
     },
 
     // 入力値バリデーション
-    getValidNumberInput(element, min = -Infinity) {
+    getValidNumberInput(element, min = -Infinity, max = Infinity) {
         if (!element) return null;
-        const value = parseFloat(element.value);
-        return (isNaN(value) || value < min) ? null : value;
+        const value = Number(element.value);
+        const elementMin = element.min === undefined || element.min === '' ? min : Number(element.min);
+        const elementMax = element.max === undefined || element.max === '' ? max : Number(element.max);
+        const effectiveMin = Number.isFinite(elementMin) ? Math.max(min, elementMin) : min;
+        const effectiveMax = Number.isFinite(elementMax) ? Math.min(max, elementMax) : max;
+
+        return (!Number.isFinite(value) || value < effectiveMin || value > effectiveMax) ? null : value;
     },
 
     // 倍率や補正などを適用した最終還元ポイントレートを計算
