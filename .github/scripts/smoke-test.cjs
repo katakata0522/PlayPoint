@@ -1,7 +1,7 @@
 const targets = [
   { url: 'https://playpoint-sim.com/', contains: 'Playポイント計算機' },
   { url: 'https://playpoint-sim.com/blog/', contains: 'Google Play Points' },
-  { url: 'https://playpoint-sim.com/author/katakata.html', contains: 'Katakata' },
+  { url: 'https://playpoint-sim.com/author/katakata.html', contains: 'かたかた' },
   { url: 'https://playpoint-sim.com/js/calculator.js', contains: 'Number.isFinite(value)' },
   { url: 'https://playpoint-sim.com/ogp.png', contentType: 'image/png', minimumBytes: 10000 }
 ];

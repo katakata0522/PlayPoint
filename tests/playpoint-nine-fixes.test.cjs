@@ -100,6 +100,20 @@ test('Xserver同期後に本番スモークテストを実行する', () => {
   assert.ok(fs.existsSync(path.join(root, '.github/scripts/smoke-test.cjs')));
 });
 
+test('本番スモークテストの期待文字列は配信元ファイルに存在する', () => {
+  const smokeTest = read('.github/scripts/smoke-test.cjs');
+  const targets = [...smokeTest.matchAll(/\{ url: '([^']+)', contains: '([^']+)' \}/g)];
+  assert.ok(targets.length > 0);
+
+  for (const [, urlValue, expected] of targets) {
+    const url = new URL(urlValue);
+    let relativePath = url.pathname.replace(/^\//, '');
+    if (!relativePath || relativePath.endsWith('/')) relativePath += 'index.html';
+    const source = read(relativePath);
+    assert.ok(source.includes(expected), `${url.pathname}に期待文字列「${expected}」がありません`);
+  }
+});
+
 test('初回ピン留めデモは文頭の固定記号で始まる', () => {
   const source = read('tools/gravity-todo/src/PhysicsEngine.js');
   assert.ok(source.includes("this.addTask('@📌 1. 空中にピン留め!"));
