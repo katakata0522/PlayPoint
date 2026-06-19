@@ -5,14 +5,24 @@ on:
   schedule:
     - cron: "0 20 * * 0"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-healthcheck-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   healthcheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check technical SEO basics
         shell: bash
         run: |
           set -euo pipefail
+
+          curl_common=(-L -sS --connect-timeout 10 --max-time 30)
 
           urls=(
             "https://playpoint-sim.com/"
@@ -27,7 +37,7 @@ jobs:
           fail=0
           for url in "${urls[@]}"; do
             echo "=== ${url} ==="
-            code=$(curl -L -s -o /tmp/seo_page.html -w "%{http_code}" "${url}")
+            code=$(curl "${curl_common[@]}" -o /tmp/seo_page.html -w "%{http_code}" "${url}")
             if [[ "${code}" != "200" ]]; then
               echo "HTTP status NG: ${code}"
               fail=1
@@ -42,8 +52,8 @@ jobs:
           done
 
           echo "=== robots/sitemap ==="
-          curl -fsSL "https://playpoint-sim.com/robots.txt" | grep -q "Sitemap:" || { echo "robots sitemap missing"; fail=1; }
-          curl -fsSL "https://playpoint-sim.com/sitemap.xml" -o /tmp/sitemap.xml
+          curl -fsSL --connect-timeout 10 --max-time 30 "https://playpoint-sim.com/robots.txt" | grep -q "Sitemap:" || { echo "robots sitemap missing"; fail=1; }
+          curl -fsSL --connect-timeout 10 --max-time 30 "https://playpoint-sim.com/sitemap.xml" -o /tmp/sitemap.xml
           grep -q "<urlset" /tmp/sitemap.xml || { echo "sitemap invalid"; fail=1; }
 
           mapfile -t article_urls < <(grep -o 'https://playpoint-sim.com/articles/[^<]*\.html' /tmp/sitemap.xml | sort -u)
@@ -54,7 +64,7 @@ jobs:
 
           for url in "${article_urls[@]}"; do
             echo "=== article ${url} ==="
-            code=$(curl -L -s -o /tmp/seo_article.html -w "%{http_code}" "${url}")
+            code=$(curl "${curl_common[@]}" -o /tmp/seo_article.html -w "%{http_code}" "${url}")
             if [[ "${code}" != "200" ]]; then
               echo "Article HTTP status NG: ${code}"
               fail=1
