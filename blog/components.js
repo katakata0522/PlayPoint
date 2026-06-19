@@ -5,6 +5,26 @@
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     let blogAdsenseLoaded = false;
 
+    // 記事ページにもブログで選んだテーマとカテゴリー配色を引き継ぐ
+    function applyArticlePresentationSettings() {
+        if (!window.location.pathname.includes('/articles/')) return;
+
+        let theme = 'dark';
+        try {
+            const savedSettings = JSON.parse(localStorage.getItem('katakata_blog_settings') || '{}');
+            if (savedSettings.theme === 'light' || savedSettings.theme === 'dark') {
+                theme = savedSettings.theme;
+            }
+        } catch (error) {
+            console.warn('ブログ設定を読み込めませんでした。既定テーマを使用します。', error);
+        }
+
+        const allowedCategories = ['入門', '攻略', '活用術', '検証', 'トラブル対処'];
+        const category = document.querySelector('meta[name="article:category"]')?.content;
+        document.body.dataset.blogTheme = theme;
+        document.body.dataset.articleCategory = allowedCategories.includes(category) ? category : '入門';
+    }
+
     // ブログと記事のイベントキューをGA4へ送れるよう、初期描画後に一度だけ読み込む
     function loadCommonAnalytics() {
         if (window.__playpointGaConfigured) return;
@@ -66,8 +86,11 @@
         const css = `
             /* Header */
             .header {
-                background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-                padding: 1rem 1.5rem;
+                background: rgba(13, 17, 23, 0.94);
+                border-bottom: 1px solid rgba(139, 148, 158, 0.28);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
+                padding: 0.65rem 1.5rem;
                 position: sticky;
                 top: 0;
                 z-index: 100;
@@ -88,13 +111,27 @@
                 display: flex;
                 align-items: center;
                 gap: 0.5rem;
+                min-height: 44px;
+                padding: 0 0.25rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+            .nav {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
             }
             .nav a {
                 color: rgba(255, 255, 255, 0.9);
                 text-decoration: none;
-                margin-left: 1rem;
+                margin-left: 0;
                 font-size: 0.9rem;
                 transition: opacity 0.2s;
+                display: inline-flex;
+                align-items: center;
+                min-height: 44px;
+                padding: 0 0.25rem;
+                white-space: nowrap;
             }
             .nav a:hover {
                 opacity: 0.7;
@@ -113,9 +150,19 @@
                 color: #666;
                 text-decoration: none;
                 transition: color 0.2s;
+                display: inline-flex;
+                align-items: center;
+                min-height: 44px;
             }
             .site-footer a:hover {
                 color: #22c55e;
+            }
+            .logo:focus-visible,
+            .nav a:focus-visible,
+            .site-footer a:focus-visible {
+                outline: 3px solid #58a6ff;
+                outline-offset: 2px;
+                border-radius: 6px;
             }
 
             /* Table of Contents (TOC) */
@@ -166,9 +213,11 @@
             }
 
             @media (max-width: 600px) {
-                .header { padding: 0.8rem 1rem; }
-                .header-inner { flex-direction: column; gap: 0.5rem; }
-                .nav { margin-top: 0.2rem; }
+                .header { padding: 0.35rem 0.75rem; }
+                .header-inner { gap: 0.35rem; }
+                .logo { font-size: 1rem; }
+                .nav { gap: 0.2rem; min-width: 0; }
+                .nav a { font-size: 0.7rem; padding: 0 0.15rem; }
             }
         `;
 
@@ -301,6 +350,8 @@
             }
         }
     }
+
+    applyArticlePresentationSettings();
 
     // Execute functions
     document.addEventListener('DOMContentLoaded', () => {

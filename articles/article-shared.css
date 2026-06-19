@@ -1,0 +1,159 @@
+/* 記事共通の外観。本文の白い読み物面は維持し、サイト全体との連続性を整える。 */
+:root {
+    --article-accent: #3b82f6;
+    --article-accent-dark: #2563eb;
+    --article-accent-soft: #eff6ff;
+}
+
+body[data-blog-theme="dark"] {
+    background: #0d1117;
+}
+
+body[data-blog-theme="light"] {
+    background: #f6f8fa;
+}
+
+body[data-article-category="入門"] {
+    --article-accent: #22c55e;
+    --article-accent-dark: #15803d;
+    --article-accent-soft: #ecfdf5;
+}
+
+body[data-article-category="攻略"] {
+    --article-accent: #f59e0b;
+    --article-accent-dark: #b45309;
+    --article-accent-soft: #fffbeb;
+}
+
+body[data-article-category="活用術"] {
+    --article-accent: #3b82f6;
+    --article-accent-dark: #1d4ed8;
+    --article-accent-soft: #eff6ff;
+}
+
+body[data-article-category="検証"] {
+    --article-accent: #8b5cf6;
+    --article-accent-dark: #6d28d9;
+    --article-accent-soft: #f5f3ff;
+}
+
+body[data-article-category="トラブル対処"] {
+    --article-accent: #ef4444;
+    --article-accent-dark: #b91c1c;
+    --article-accent-soft: #fef2f2;
+}
+
+body[data-article-category] {
+    --accent: var(--article-accent);
+    --accent-light: var(--article-accent-soft);
+}
+
+body[data-article-category] .hero,
+body[data-article-category] .article-hero {
+    background: linear-gradient(135deg, var(--article-accent-dark), var(--article-accent));
+}
+
+body[data-blog-theme="dark"] .main-card {
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+}
+
+/* 前後記事ナビは全記事で同じカードUIにする。 */
+.article-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.article-nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    min-height: 72px;
+    padding: 0.9rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #1f2937;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.article-nav-link:hover {
+    border-color: var(--article-accent);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.1);
+    transform: translateY(-1px);
+}
+
+.article-nav-link.next {
+    text-align: right;
+}
+
+.article-nav-label {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.article-nav-title {
+    color: var(--article-accent-dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.article-nav-link.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* 小さなテキストリンクもタッチ操作可能な高さを確保する。 */
+.content a,
+.cta-button,
+.back-to-top,
+.site-footer a {
+    min-height: 44px;
+}
+
+.content a:not(.article-nav-link),
+.site-footer a {
+    display: inline-flex;
+    align-items: center;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--article-accent);
+    outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .main-card {
+        margin: 0.75rem;
+        border-radius: 14px;
+    }
+
+    .article-nav {
+        flex-direction: column;
+        margin-top: 2rem;
+        padding-top: 1.25rem;
+    }
+
+    .article-nav-link.next {
+        text-align: left;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .article-nav-link {
+        transition: none;
+    }
+}
