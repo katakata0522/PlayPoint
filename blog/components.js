@@ -6,6 +6,9 @@
     let blogAdsenseLoaded = false;
     let consentManagerPromise = null;
 
+    const isArticlePageTop = window.location.pathname.includes('/articles/');
+    const rootPath = isArticlePageTop ? '../' : './';
+
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (consentManagerPromise) return consentManagerPromise;
@@ -18,7 +21,7 @@
                 return;
             }
             const script = document.createElement('script');
-            script.src = '/js/consent.js?v=20260619a';
+            script.src = rootPath + 'js/consent.js?v=20260619a';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -269,9 +272,6 @@
         // OR use relative paths if running locally. Let's stick to the existing absolute URLs as seen in the file, 
         // BUT for local development, it might be better to handle relative paths. 
         // Let's use relative paths for better local preview support, based on where the script is running.
-
-        const isArticlePage = window.location.pathname.includes('/articles/');
-        const rootPath = isArticlePage ? '../' : './';
 
         // --- Header Rendering ---
         if (!existingHeader) {

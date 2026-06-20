@@ -121,29 +121,29 @@
     <h1 id="main-title" data-lang-key="mainTitle">Play Points Calculator</h1>
     <p id="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach your goal status!<br>Also, calculate how many points you can earn from your spending!</p>
 
-    <div class="tab-switch">
-        <button id="tab-main" data-mode="main" class="active" data-lang-key="tabMain">Standard</button>
-        <button id="tab-reverse" data-mode="reverse" data-lang-key="tabReverse">Reverse</button>
-        <button id="tab-diary" data-mode="diary" data-lang-key="tabDiary">Weekly Awards Diary</button>
+    <div class="tab-switch" role="tablist">
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">Standard</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" data-lang-key="tabReverse">Reverse</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">Weekly Awards Diary</button>
     </div>
 
-    <div id="mainMode">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">Status Input</h2>
             <label for="currentStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">Current Status
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
             <label for="targetStatus" class="label-with-tooltip" data-lang-key="labelTargetStatus">Target Status
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
             <label for="neededPoints" class="label-with-tooltip" data-lang-key="labelNeededPoints">Points to Next Level
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
             <input type="number" id="neededPoints" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
@@ -151,13 +151,13 @@
         <div class="section">
             <h2 data-lang-key="sectionTitleRate">Points Rate Setting</h2>
             <label for="baseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">Base points per $1
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip" data-lang-key="labelMultiplier">Campaign Multiplier (e.g., 3x)
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
@@ -174,29 +174,29 @@
         </div>
     </div>
 
-    <div id="reverseMode" class="hidden">
+    <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">Reverse Mode</h2>
             <label for="amountYen" class="label-with-tooltip" data-lang-key="labelAmountYen">Amount Spent (USD)
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
             <input type="number" id="amountYen" placeholder="e.g., 50" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">Current Status
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">Base points per $1
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
             <label for="reverseMultiplier" class="label-with-tooltip" data-lang-key="labelMultiplierReverse">Campaign Multiplier
-                <span class="info-btn" role="button" tabindex="0">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show description" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
@@ -214,7 +214,7 @@
         </div>
     </div>
 
-    <div id="diaryMode" class="hidden">
+    <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
         <div class="diary-hint-card" id="diary-hint-card">
             <span><strong>Every Friday is Weekly Reward Day!</strong> Claim points in Google Play Store and log it here.</span>
         </div>
@@ -279,7 +279,6 @@
         <h2>Find articles by your concerns</h2>
         <p>We have summarized details on **expiration dates**, **rank maintenance**, **campaigns**, **refunds**, and **how to use points** in our guides (Note: Guides are in Japanese).</p>
         <details class="article-drawer">
-            <head></head>
             <summary>
                 <span class="article-drawer-copy">
                     <span class="article-drawer-title">Open Guides by Concern</span>

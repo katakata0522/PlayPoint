@@ -156,7 +156,12 @@ export const DIARY = {
     exportDiary() {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        const data = localStorage.getItem(CONSTANTS.DIARY_DATA_KEY);
+        let data = null;
+        try {
+            data = localStorage.getItem(CONSTANTS.DIARY_DATA_KEY);
+        } catch (e) {
+            console.error("日記データの読み込みに失敗しました:", e);
+        }
         const exportString = data ? data : "{}";
         
         navigator.clipboard.writeText(exportString)

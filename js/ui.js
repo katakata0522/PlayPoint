@@ -59,7 +59,11 @@ export const UI = {
             if (el.tagName === 'A' && typeof texts[key] === 'object' && texts[key].text) {
                 el.textContent = texts[key].text;
                 if (texts[key].href) {
-                    el.href = texts[key].href;
+                    const isEn = window.location.pathname.includes('/en/');
+                    const prefix = isEn ? '../' : './';
+                    const rawHref = texts[key].href;
+                    const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
+                    el.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
                 }
                 return;
             }
@@ -133,7 +137,9 @@ export const UI = {
         STATE.dom.reverseMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_REVERSE);
         if (STATE.dom.diaryMode) STATE.dom.diaryMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_DIARY);
         document.querySelectorAll(".tab-switch button").forEach(button => {
-            button.classList.toggle(CONSTANTS.CLASS_ACTIVE, button.dataset.mode === mode);
+            const isActive = button.dataset.mode === mode;
+            button.classList.toggle(CONSTANTS.CLASS_ACTIVE, isActive);
+            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
         if (STATE.dom.result) this.clearResult(STATE.dom.result);
         if (STATE.dom.reverseResult) this.clearResult(STATE.dom.reverseResult);
