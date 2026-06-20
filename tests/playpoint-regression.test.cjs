@@ -445,7 +445,7 @@ test('blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ'
 test('blogトップは自前のOGP画像とfaviconを使う', () => {
   const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
 
-  assert.ok(html.includes('content="https://playpoint-sim.com/ogp.svg"'));
+  assert.ok(html.includes('content="https://playpoint-sim.com/ogp.png"'));
   assert.ok(html.includes('href="../favicon.svg"'));
   assert.ok(!html.includes('placehold.co'));
 });

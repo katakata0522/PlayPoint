@@ -62,7 +62,8 @@
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
-            consentManagerPromise = loadScript('/js/consent.js?v=20260619a')
+            const prefix = window.location.pathname.includes('/en/') ? '../' : './';
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260619a`)
                 .then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;
