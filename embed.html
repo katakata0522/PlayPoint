@@ -3,37 +3,469 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Playポイント計算機をサイトに埋め込む｜無料ウィジェット</title>
-  <meta name="description" content="Google Play Pointsの簡易計算機をブログや攻略サイトへ無料で設置できる埋め込みウィジェットです。依存ライブラリなしで利用できます。">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <title>Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター</title>
+  <meta name="description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。テーマやサイズをリアルタイムにカスタマイズして、コードを1クリックでコピーできます。">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://playpoint-sim.com/embed.html">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  
+  <!-- Noto Sans JP フォントの読み込み -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+  
   <style>
-    body { margin: 0; padding: 24px; color: #263238; background: #eef3ff; font-family: "Yu Gothic", "YuGothic", Meiryo, sans-serif; line-height: 1.7; }
-    main { max-width: 760px; margin: auto; padding: 24px; border-radius: 16px; background: #fff; box-shadow: 0 10px 30px rgba(15, 23, 42, .08); }
-    h1 { line-height: 1.35; }
-    code, pre { font-family: Consolas, monospace; }
-    pre { overflow-x: auto; padding: 16px; border-radius: 10px; background: #172033; color: #f8fafc; }
-    a { color: #0b57d0; }
-    .demo { margin: 24px 0; }
+    :root {
+      --primary-color: #0b57d0;
+      --primary-hover: #0842a0;
+      --bg-gradient: linear-gradient(135deg, #f0f4f9 0%, #e8f0fe 100%);
+      --card-bg: #ffffff;
+      --border-color: #cbd5e1;
+      --text-main: #1e293b;
+      --text-sub: #64748b;
+    }
+    
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 0 12px;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+    
+    header p {
+      font-size: 1rem;
+      color: var(--text-sub);
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    
+    .panel {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-sizing: border-box;
+    }
+    
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0 0 20px;
+      border-left: 4px solid var(--primary-color);
+      padding-left: 10px;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+    
+    .control-group {
+      margin-bottom: 22px;
+    }
+    
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    
+    select, input[type="range"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    select {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #fff;
+      color: var(--text-main);
+      outline: none;
+      transition: border-color 0.15s ease-in-out;
+    }
+    
+    select:focus {
+      border-color: var(--primary-color);
+    }
+    
+    input[type="range"] {
+      height: 6px;
+      -webkit-appearance: none;
+      background: #cbd5e1;
+      border-radius: 3px;
+      outline: none;
+      margin: 10px 0;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      cursor: pointer;
+      transition: background-color 0.15s ease-in-out;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:hover {
+      background: var(--primary-hover);
+    }
+    
+    .range-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+    }
+    
+    /* プレビューエリア */
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      min-height: 380px;
+      position: relative;
+      box-sizing: border-box;
+    }
+    
+    .preview-label {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #94a3b8;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+    }
+    
+    /* 埋め込みコードの表示エリア */
+    .code-box {
+      margin-top: 24px;
+    }
+    
+    pre {
+      margin: 8px 0 0;
+      padding: 16px;
+      border-radius: 10px;
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: "Fira Code", Consolas, Monaco, monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+      box-sizing: border-box;
+    }
+    
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary-color);
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+      width: 100%;
+      transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+    }
+    
+    .copy-btn:hover {
+      background: var(--primary-hover);
+    }
+    
+    .copy-btn:active {
+      transform: scale(0.98);
+    }
+    
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: auto;
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      border-top: 1px solid rgba(226, 232, 240, 0.6);
+      background-color: rgba(255, 255, 255, 0.4);
+    }
+    
+    footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    footer a:hover {
+      text-decoration: underline;
+    }
+    
+    /* トースト通知 */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    /* レスポンシブデザインの最適化 */
+    @media (max-width: 768px) {
+      .container {
+        padding: 24px 16px;
+      }
+      header {
+        margin-bottom: 28px;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      header p {
+        font-size: 0.9rem;
+      }
+      .main-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .panel {
+        padding: 20px;
+      }
+      .preview-container {
+        padding: 20px;
+        min-height: 340px;
+      }
+    }
   </style>
 </head>
 <body>
-<main>
-  <h1>Playポイント計算機をサイトに埋め込む</h1>
-  <p>ブログや攻略サイトへ、課金額から獲得ポイントを計算できる無料ウィジェットを設置できます。入力内容は外部へ送信されません。</p>
-  <section class="demo">
-    <h2>表示例</h2>
-    <div data-playpoint-widget></div>
-  </section>
-  <section>
-    <h2>設置コード</h2>
-    <p>表示したい場所へ、次の2行を追加してください。</p>
-    <pre><code>&lt;div data-playpoint-widget&gt;&lt;/div&gt;
+
+<div class="container">
+  <header>
+    <h1>Playポイント計算機 ウィジェットジェネレーター</h1>
+    <p>あなたのブログやゲーム攻略サイトに、無料のPlayポイント計算機を簡単に設置できます。</p>
+  </header>
+  
+  <div class="main-grid">
+    <!-- 設定パネル -->
+    <div class="panel">
+      <h2>ウィジェットのカスタマイズ</h2>
+      
+      <div class="control-group">
+        <label for="select-theme">カラーテーマ</label>
+        <select id="select-theme">
+          <option value="light">ライトテーマ（白ベース）</option>
+          <option value="dark">ダークテーマ（黒ベース）</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="select-lang">表示言語</label>
+        <select id="select-lang">
+          <option value="auto">自動判定（埋め込み先サイトに合わせる）</option>
+          <option value="ja">日本語固定</option>
+          <option value="en">英語固定 (English)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="select-mode">初期表示モード</label>
+        <select id="select-mode">
+          <option value="main">目標課金（通常計算）</option>
+          <option value="reverse">ポイント逆算</option>
+        </select>
+      </div>
+      
+      <div class="control-group">
+        <label for="input-width">最大幅 (Width)</label>
+        <input type="range" id="input-width" min="280" max="480" value="380" step="10">
+        <div class="range-info">
+          <span>280px</span>
+          <span id="width-val" style="font-weight: 700; color: var(--primary-color);">380px</span>
+          <span>480px</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- プレビュー & コード -->
+    <div class="panel">
+      <h2>プレビュー ＆ コード</h2>
+      
+      <div class="preview-container" id="preview-box">
+        <span class="preview-label">Live Preview</span>
+        <div id="widget-preview-wrapper" style="width: 380px; max-width: 100%;">
+          <div data-playpoint-widget id="preview-widget-element"></div>
+        </div>
+      </div>
+      
+      <div class="code-box">
+        <label>埋め込みコード</label>
+        <pre><code id="code-output">&lt;div data-playpoint-widget&gt;&lt;/div&gt;
 &lt;script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer&gt;&lt;/script&gt;</code></pre>
-  </section>
-  <p><a href="/">Playポイント計算機へ戻る</a></p>
-</main>
+        <button class="copy-btn" id="btn-copy">コードをコピーする</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <a href="/">PlayPoint Simulation Tool</a> | <a href="/blog/">攻略ブログ</a></p>
+</footer>
+
+<div id="toast" class="toast">クリップボードにコピーしました！</div>
+
 <script src="embed/playpoint-widget.js" defer></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const selectTheme = document.getElementById('select-theme');
+    const selectLang = document.getElementById('select-lang');
+    const selectMode = document.getElementById('select-mode');
+    const inputWidth = document.getElementById('input-width');
+    const widthVal = document.getElementById('width-val');
+    const previewWrapper = document.getElementById('widget-preview-wrapper');
+    const codeOutput = document.getElementById('code-output');
+    const btnCopy = document.getElementById('btn-copy');
+    const toast = document.getElementById('toast');
+
+    function updateWidget() {
+      const theme = selectTheme.value;
+      const lang = selectLang.value;
+      const mode = selectMode.value;
+      const width = inputWidth.value;
+
+      // 幅のリアルタイム反映
+      widthVal.textContent = `${width}px`;
+      previewWrapper.style.width = `${width}px`;
+
+      // プレビュー対象のウィジェット属性を更新
+      const widget = previewWrapper.querySelector('playpoint-widget');
+      if (widget) {
+        if (theme === 'dark') {
+          widget.setAttribute('theme', 'dark');
+        } else {
+          widget.removeAttribute('theme');
+        }
+
+        if (lang !== 'auto') {
+          widget.setAttribute('lang', lang);
+        } else {
+          widget.removeAttribute('lang');
+        }
+
+        widget.setAttribute('mode', mode);
+      }
+
+      // 埋め込み用タグコードを動的生成
+      let attrs = '';
+      if (theme === 'dark') attrs += ' data-theme="dark"';
+      if (lang !== 'auto') attrs += ` data-lang="${lang}"`;
+      if (mode !== 'main') attrs += ` data-mode="${mode}"`;
+      if (width !== '380') attrs += ` style="max-width: ${width}px; width: 100%;"`;
+
+      const codeString = `<div data-playpoint-widget${attrs}></div>\n<script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer><\/script>`;
+      codeOutput.textContent = codeString;
+    }
+
+    selectTheme.addEventListener('change', updateWidget);
+    selectLang.addEventListener('change', updateWidget);
+    selectMode.addEventListener('change', updateWidget);
+    
+    // ドラッグ中のリアルタイム幅プレビュー反映
+    inputWidth.addEventListener('input', () => {
+      widthVal.textContent = `${inputWidth.value}px`;
+      previewWrapper.style.width = `${inputWidth.value}px`;
+    });
+    inputWidth.addEventListener('change', updateWidget);
+
+    // 1クリックコピー機能
+    let toastTimer = null;
+    btnCopy.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeOutput.textContent)
+        .then(() => {
+          toast.classList.add('show');
+          btnCopy.textContent = 'コピー完了！';
+          btnCopy.style.backgroundColor = '#10b981';
+
+          if (toastTimer) clearTimeout(toastTimer);
+          toastTimer = setTimeout(() => {
+            toast.classList.remove('show');
+            btnCopy.textContent = 'コードをコピーする';
+            btnCopy.style.backgroundColor = '';
+          }, 2000);
+        })
+        .catch(err => {
+          console.error('Failed to copy: ', err);
+          alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
+        });
+    });
+
+    // WebコンポーネントがDOM追加されるまで少々待って初期化
+    setTimeout(updateWidget, 150);
+  });
+</script>
 </body>
 </html>

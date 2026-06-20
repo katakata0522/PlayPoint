@@ -1,10 +1,7 @@
 'use strict';
 
-// グローバル名前空間の定義
-window.PP_APP = window.PP_APP || {};
-
 // GA4本体の読み込み前でも、意味のある完了イベントだけを安全にキューへ積む
-PP_APP.ANALYTICS = {
+export const ANALYTICS = {
     track(eventName, params = {}) {
         if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
         window.dataLayer = window.dataLayer || [];
@@ -20,7 +17,7 @@ PP_APP.ANALYTICS = {
     }
 };
 
-PP_APP.CONSTANTS = {
+export const CONSTANTS = {
     MODE_MAIN: 'main',
     MODE_REVERSE: 'reverse',
     MODE_DIARY: 'diary',
@@ -35,7 +32,7 @@ PP_APP.CONSTANTS = {
     STORAGE_REGION_KEY: 'playpointPreferredRegion'
 };
 
-PP_APP.CONFIGS = {
+export const CONFIGS = {
     'JP': {
         lang: "ja",
         statuses: { "ブロンズ": 1.0, "シルバー": 1.25, "ゴールド": 1.5, "プラチナ": 1.75, "ダイヤモンド": 2.0 },
@@ -160,12 +157,12 @@ PP_APP.CONFIGS = {
     }
 };
 
-PP_APP.CONFIGS.JP.tooltips['tooltip-reverse-base-rate'] = PP_APP.CONFIGS.JP.tooltips['tooltip-base-rate'];
-PP_APP.CONFIGS.JP.tooltips['tooltip-reverse-multiplier'] = PP_APP.CONFIGS.JP.tooltips['tooltip-multiplier'];
-PP_APP.CONFIGS.US.tooltips['tooltip-reverse-base-rate'] = PP_APP.CONFIGS.US.tooltips['tooltip-base-rate'];
-PP_APP.CONFIGS.US.tooltips['tooltip-reverse-multiplier'] = PP_APP.CONFIGS.US.tooltips['tooltip-multiplier'];
+CONFIGS.JP.tooltips['tooltip-reverse-base-rate'] = CONFIGS.JP.tooltips['tooltip-base-rate'];
+CONFIGS.JP.tooltips['tooltip-reverse-multiplier'] = CONFIGS.JP.tooltips['tooltip-multiplier'];
+CONFIGS.US.tooltips['tooltip-reverse-base-rate'] = CONFIGS.US.tooltips['tooltip-base-rate'];
+CONFIGS.US.tooltips['tooltip-reverse-multiplier'] = CONFIGS.US.tooltips['tooltip-multiplier'];
 
-PP_APP.STATE = {
+export const STATE = {
     currentRegion: 'JP',
     dom: {},
     diaryState: {
@@ -173,3 +170,12 @@ PP_APP.STATE = {
         currentMonth: new Date().getMonth() + 1,
     }
 };
+
+// 互換性マウント
+if (typeof window !== 'undefined') {
+    window.PP_APP = window.PP_APP || {};
+    window.PP_APP.ANALYTICS = ANALYTICS;
+    window.PP_APP.CONSTANTS = CONSTANTS;
+    window.PP_APP.CONFIGS = CONFIGS;
+    window.PP_APP.STATE = STATE;
+}

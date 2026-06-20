@@ -35,6 +35,9 @@ jobs:
       - name: Verify ads.txt
         run: node .github/scripts/check-ads-txt.cjs
 
+      - name: Minify assets
+        run: node .github/scripts/minify.cjs
+
       - name: Setup SSH
         run: |
           set -euo pipefail

@@ -1,6 +1,8 @@
 'use strict';
 
-PP_APP.UI = {
+import { CONFIGS, STATE, CONSTANTS } from './config.js';
+
+export const UI = {
     toastTimerId: null,
     
     // トースト通知を表示するメソッド
@@ -45,7 +47,7 @@ PP_APP.UI = {
 
     // UIテキストを現在の言語設定でアップデートするメソッド
     updateUIText() {
-        const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+        const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         document.documentElement.lang = config.lang;
         document.title = texts.title;
@@ -88,12 +90,12 @@ PP_APP.UI = {
     displayResult(targetElement, content, isError = false) {
         if (!targetElement) return;
         targetElement.innerHTML = isError ? `<span class="error-text">${content}</span>` : content;
-        targetElement.classList.add(PP_APP.CONSTANTS.CLASS_HAS_RESULT);
+        targetElement.classList.add(CONSTANTS.CLASS_HAS_RESULT);
         
         // 正常な計算結果表示時のアニメーション処理
         if (!isError) {
             const targets = targetElement.querySelectorAll('.count-target');
-            const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+            const config = CONFIGS[STATE.currentRegion];
             targets.forEach(el => {
                 const endValue = parseFloat(el.dataset.value);
                 if (!isNaN(endValue)) {
@@ -104,11 +106,11 @@ PP_APP.UI = {
 
         const showShareButtons = !isError;
 
-        if (targetElement === PP_APP.STATE.dom.result) {
-            if (PP_APP.STATE.dom.tweetButton) PP_APP.STATE.dom.tweetButton.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-            if (PP_APP.STATE.dom.copyButton) PP_APP.STATE.dom.copyButton.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-        } else if (targetElement === PP_APP.STATE.dom.reverseResult) {
-            if(PP_APP.STATE.dom.shareTwitterReverse) PP_APP.STATE.dom.shareTwitterReverse.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, !showShareButtons);
+        if (targetElement === STATE.dom.result) {
+            if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
+            if (STATE.dom.copyButton) STATE.dom.copyButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
+        } else if (targetElement === STATE.dom.reverseResult) {
+            if (STATE.dom.shareTwitterReverse) STATE.dom.shareTwitterReverse.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
         }
     },
 
@@ -116,33 +118,35 @@ PP_APP.UI = {
     clearResult(targetElement) {
         if (!targetElement) return;
         targetElement.innerHTML = "";
-        targetElement.classList.remove(PP_APP.CONSTANTS.CLASS_HAS_RESULT);
-        if (targetElement === PP_APP.STATE.dom.result) {
-            if(PP_APP.STATE.dom.tweetButton) PP_APP.STATE.dom.tweetButton.classList.add(PP_APP.CONSTANTS.CLASS_HIDDEN);
-            if(PP_APP.STATE.dom.copyButton) PP_APP.STATE.dom.copyButton.classList.add(PP_APP.CONSTANTS.CLASS_HIDDEN);
-        } else if (targetElement === PP_APP.STATE.dom.reverseResult) {
-            if(PP_APP.STATE.dom.shareTwitterReverse) PP_APP.STATE.dom.shareTwitterReverse.classList.add(PP_APP.CONSTANTS.CLASS_HIDDEN);
+        targetElement.classList.remove(CONSTANTS.CLASS_HAS_RESULT);
+        if (targetElement === STATE.dom.result) {
+            if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.add(CONSTANTS.CLASS_HIDDEN);
+            if (STATE.dom.copyButton) STATE.dom.copyButton.classList.add(CONSTANTS.CLASS_HIDDEN);
+        } else if (targetElement === STATE.dom.reverseResult) {
+            if (STATE.dom.shareTwitterReverse) STATE.dom.shareTwitterReverse.classList.add(CONSTANTS.CLASS_HIDDEN);
         }
     },
 
     // モード（タブ）の切替メソッド
     switchMode(mode) {
-        PP_APP.STATE.dom.mainMode.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, mode !== PP_APP.CONSTANTS.MODE_MAIN);
-        PP_APP.STATE.dom.reverseMode.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, mode !== PP_APP.CONSTANTS.MODE_REVERSE);
-        if (PP_APP.STATE.dom.diaryMode) PP_APP.STATE.dom.diaryMode.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, mode !== PP_APP.CONSTANTS.MODE_DIARY);
+        STATE.dom.mainMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_MAIN);
+        STATE.dom.reverseMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_REVERSE);
+        if (STATE.dom.diaryMode) STATE.dom.diaryMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_DIARY);
         document.querySelectorAll(".tab-switch button").forEach(button => {
-            button.classList.toggle(PP_APP.CONSTANTS.CLASS_ACTIVE, button.dataset.mode === mode);
+            button.classList.toggle(CONSTANTS.CLASS_ACTIVE, button.dataset.mode === mode);
         });
-        if(PP_APP.STATE.dom.result) this.clearResult(PP_APP.STATE.dom.result);
-        if(PP_APP.STATE.dom.reverseResult) this.clearResult(PP_APP.STATE.dom.reverseResult);
-        if (mode === PP_APP.CONSTANTS.MODE_DIARY && typeof PP_APP.DIARY.renderDiary === 'function') PP_APP.DIARY.renderDiary();
+        if (STATE.dom.result) this.clearResult(STATE.dom.result);
+        if (STATE.dom.reverseResult) this.clearResult(STATE.dom.reverseResult);
+        if (mode === CONSTANTS.MODE_DIARY && typeof window.PP_APP?.DIARY?.renderDiary === 'function') {
+            window.PP_APP.DIARY.renderDiary();
+        }
     },
 
     // ツールチップを閉じるメソッド
     closeAllTooltips() {
-        document.querySelectorAll(`${PP_APP.CONSTANTS.SELECTOR_TOOLTIP_BOX}.${PP_APP.CONSTANTS.CLASS_VISIBLE}`).forEach(box => {
-            box.classList.remove(PP_APP.CONSTANTS.CLASS_VISIBLE);
-            const btn = box.parentElement.querySelector(PP_APP.CONSTANTS.SELECTOR_INFO_BTN);
+        document.querySelectorAll(`${CONSTANTS.SELECTOR_TOOLTIP_BOX}.${CONSTANTS.CLASS_VISIBLE}`).forEach(box => {
+            box.classList.remove(CONSTANTS.CLASS_VISIBLE);
+            const btn = box.parentElement.querySelector(CONSTANTS.SELECTOR_INFO_BTN);
             if (btn) btn.setAttribute('aria-expanded', 'false');
         });
     },
@@ -152,12 +156,12 @@ PP_APP.UI = {
         event.preventDefault();
         event.stopPropagation();
         const btn = event.currentTarget;
-        const tooltip = btn.parentElement.querySelector(PP_APP.CONSTANTS.SELECTOR_TOOLTIP_BOX);
+        const tooltip = btn.parentElement.querySelector(CONSTANTS.SELECTOR_TOOLTIP_BOX);
         if (!tooltip) return;
-        const isVisible = tooltip.classList.contains(PP_APP.CONSTANTS.CLASS_VISIBLE);
-        PP_APP.UI.closeAllTooltips();
+        const isVisible = tooltip.classList.contains(CONSTANTS.CLASS_VISIBLE);
+        this.closeAllTooltips();
         if (!isVisible) {
-            tooltip.classList.add(PP_APP.CONSTANTS.CLASS_VISIBLE);
+            tooltip.classList.add(CONSTANTS.CLASS_VISIBLE);
             btn.setAttribute('aria-expanded', 'true');
         }
     }
@@ -166,8 +170,13 @@ PP_APP.UI = {
 // グローバルエラーハンドラ
 window.onerror = function(message, source, lineno, colno, error) {
     console.error("予期せぬエラーが発生しました:", { message, source, lineno, colno, error });
-    if (PP_APP.UI && typeof PP_APP.UI.showToast === 'function') {
-        PP_APP.UI.showToast("予期せぬエラーが発生しました。ページをリロードしてみてください。", 'error');
+    if (UI && typeof UI.showToast === 'function') {
+        UI.showToast("予期せぬエラーが発生しました。ページをリロードしてみてください。", 'error');
     }
     return true; 
 };
+
+if (typeof window !== 'undefined') {
+    window.PP_APP = window.PP_APP || {};
+    window.PP_APP.UI = UI;
+}

@@ -49,6 +49,20 @@ function createInput(value = '') {
   };
 }
 
+function preprocessESM(code) {
+  return code
+    .replace(/import\s*\{\s*([^}]+)\s*\}\s*from\s*'[^']+'\s*;/g, (match, imports) => {
+      const names = imports.split(',').map(s => s.trim());
+      const needed = names.filter(name => name === 'UI' || name === 'SHARE' || name === 'CALC' || name === 'DIARY');
+      if (needed.length === 0) return '';
+      if (needed.length === 1) {
+        return `var ${needed[0]} = PP_APP.${needed[0]};`;
+      }
+      return `var { ${needed.join(', ')} } = PP_APP;`;
+    })
+    .replace(/^export\s+/gm, '');
+}
+
 function loadCalculatorContext(dateClass = Date) {
   const renderedResults = [];
   const context = {
@@ -66,13 +80,13 @@ function loadCalculatorContext(dateClass = Date) {
   context.window = context;
   vm.createContext(context);
   const code = [
-    fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8'),
+    preprocessESM(fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8')),
     `
       PP_APP.UI = {
         displayResult
       };
     `,
-    fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8'),
+    preprocessESM(fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8')),
     `
       globalThis.__pp = {
         PP_REGION_CONFIGS: PP_APP.CONFIGS,
@@ -556,13 +570,13 @@ test('計算条件を共有URLへ保存し再訪時に復元できる', () => {
   const calculator = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
   const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
 
-  assert.ok(html.includes('js/share.js'));
-  assert.ok(englishHtml.includes('../js/share.js'));
+  assert.ok(html.includes('js/main.js'));
+  assert.ok(englishHtml.includes('../js/main.js'));
   assert.ok(shareScript.includes('buildMainShareUrl'));
   assert.ok(shareScript.includes('applyFromUrl'));
   assert.ok(shareScript.includes('URLSearchParams'));
   assert.ok(calculator.includes('dataset.shareUrl'));
-  assert.ok(main.includes('this.SHARE.applyFromUrl()'));
+  assert.ok(main.includes('SHARE.applyFromUrl()'));
 });
 
 test('記事から計算機への導線は内部流入を識別できる', () => {

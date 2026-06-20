@@ -17,6 +17,9 @@
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
 
     <meta property="og:title" content="Playポイント計算機 | あといくらでレベルアップ？">
     <meta property="og:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料でシミュレーション。">
@@ -64,6 +67,38 @@
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "課金目標の計算はどのように行われますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "逆算モードとは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ほくほくリワード日記のデータは保存されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "入力されたデータはブラウザのローカルストレージにのみ保存されます。キャッシュ削除に備え、JSONファイルとしての書き出し（エクスポート）や復元が可能です。"
+          }
+        }
+      ]
     }
     </script>
 </head>
@@ -300,6 +335,22 @@
         </details>
     </section>
 
+    <section class="section">
+        <h2>❓ よくある質問 (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Q. 課金目標の計算はどのように行われますか？</h3>
+            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 逆算モードとは何ですか？</h3>
+            <p>A. 課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. ほくほくリワード日記のデータは保存されますか？</h3>
+            <p>A. 入力されたデータはブラウザのローカルストレージにのみ保存されます。キャッシュ削除に備え、JSONファイルとしての書き出し（エクスポート）や復元が可能です。</p>
+        </div>
+    </section>
+
     <footer class="page-footer">
         <p>
           <a href="info.html" data-lang-key="linkQA">Q&A・あとがき</a>
@@ -319,12 +370,7 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script src="js/config.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/diary.js"></script>
-<script src="js/calculator.js"></script>
-<script src="js/share.js"></script>
-<script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 <script src="js/third-party.js?v=20260619c"></script>
 
 </body>

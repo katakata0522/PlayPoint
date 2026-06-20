@@ -1,14 +1,17 @@
 'use strict';
 
-PP_APP.DIARY = {
+import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
+import { UI } from './ui.js';
+
+export const DIARY = {
     // ローカルストレージから日記データを取得するメソッド
     loadDiaryData() {
         try {
-            const data = localStorage.getItem(PP_APP.CONSTANTS.DIARY_DATA_KEY);
+            const data = localStorage.getItem(CONSTANTS.DIARY_DATA_KEY);
             return data ? JSON.parse(data) : {};
         } catch (e) {
             console.error("日記データの読み込みに失敗しました:", e);
-            PP_APP.UI.showToast("日記データの読み込みに失敗しました。", 'error');
+            UI.showToast("日記データの読み込みに失敗しました。", 'error');
             return {};
         }
     },
@@ -16,11 +19,11 @@ PP_APP.DIARY = {
     // ローカルストレージへ日記データを保存するメソッド
     saveDiaryData(data) {
         try {
-            localStorage.setItem(PP_APP.CONSTANTS.DIARY_DATA_KEY, JSON.stringify(data));
+            localStorage.setItem(CONSTANTS.DIARY_DATA_KEY, JSON.stringify(data));
             return true;
         } catch (e) {
             console.error("日記データの保存に失敗しました:", e);
-            PP_APP.UI.showToast("日記データの保存に失敗しました。", 'error');
+            UI.showToast("日記データの保存に失敗しました。", 'error');
             return false;
         }
     },
@@ -38,10 +41,10 @@ PP_APP.DIARY = {
 
     // 日記（アワード）画面のレンダリング
     renderDiary() {
-        if (!PP_APP.STATE.dom.diaryMode) return;
-        const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+        if (!STATE.dom.diaryMode) return;
+        const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        PP_APP.STATE.dom.currentYear.textContent = `${PP_APP.STATE.diaryState.currentYear}${texts.yearSuffix || ''}`;
+        STATE.dom.currentYear.textContent = `${STATE.diaryState.currentYear}${texts.yearSuffix || ''}`;
         this.renderMonthSelector();
         this.renderWeekInputs();
         this.updateSummary();
@@ -49,35 +52,35 @@ PP_APP.DIARY = {
 
     // 月選択ボタンのレンダリング
     renderMonthSelector() {
-        if (!PP_APP.STATE.dom.monthSelector) return;
-        const texts = PP_APP.CONFIGS[PP_APP.STATE.currentRegion].uiText;
-        PP_APP.STATE.dom.monthSelector.innerHTML = '';
+        if (!STATE.dom.monthSelector) return;
+        const texts = CONFIGS[STATE.currentRegion].uiText;
+        STATE.dom.monthSelector.innerHTML = '';
         texts.monthNames.forEach((name, index) => {
             const monthNum = index + 1;
             const button = document.createElement('button');
             button.textContent = name;
             button.dataset.month = monthNum;
-            if (monthNum === PP_APP.STATE.diaryState.currentMonth) button.classList.add(PP_APP.CONSTANTS.CLASS_ACTIVE);
+            if (monthNum === STATE.diaryState.currentMonth) button.classList.add(CONSTANTS.CLASS_ACTIVE);
             button.addEventListener('click', () => {
-                PP_APP.STATE.diaryState.currentMonth = monthNum;
+                STATE.diaryState.currentMonth = monthNum;
                 this.renderDiary();
             });
-            PP_APP.STATE.dom.monthSelector.appendChild(button);
+            STATE.dom.monthSelector.appendChild(button);
         });
     },
 
     // 選択された月の各週の入力行のレンダリング
     renderWeekInputs() {
-        if (!PP_APP.STATE.dom.weekInputs || !PP_APP.STATE.dom.selectedMonth) return;
-        const texts = PP_APP.CONFIGS[PP_APP.STATE.currentRegion].uiText;
-        PP_APP.STATE.dom.weekInputs.innerHTML = '';
-        PP_APP.STATE.dom.selectedMonth.textContent = texts.monthNames[PP_APP.STATE.diaryState.currentMonth - 1];
-        const fridays = this.getFridays(PP_APP.STATE.diaryState.currentYear, PP_APP.STATE.diaryState.currentMonth);
+        if (!STATE.dom.weekInputs || !STATE.dom.selectedMonth) return;
+        const texts = CONFIGS[STATE.currentRegion].uiText;
+        STATE.dom.weekInputs.innerHTML = '';
+        STATE.dom.selectedMonth.textContent = texts.monthNames[STATE.diaryState.currentMonth - 1];
+        const fridays = this.getFridays(STATE.diaryState.currentYear, STATE.diaryState.currentMonth);
         const data = this.loadDiaryData();
-        const yearData = data[PP_APP.STATE.diaryState.currentYear] || {};
-        const monthData = yearData[PP_APP.STATE.diaryState.currentMonth] || {};
+        const yearData = data[STATE.diaryState.currentYear] || {};
+        const monthData = yearData[STATE.diaryState.currentMonth] || {};
         if (fridays.length === 0) {
-            PP_APP.STATE.dom.weekInputs.innerHTML = `<p>${texts.noWeeksMessage}</p>`;
+            STATE.dom.weekInputs.innerHTML = `<p>${texts.noWeeksMessage}</p>`;
             return;
         }
         fridays.forEach((friday, index) => {
@@ -93,24 +96,24 @@ PP_APP.DIARY = {
                 <select id="week${weekNum}_prize">${prizeOptionsHTML}</select>
                 <button data-week="${weekNum}">${texts.saveButton}</button>
             `;
-            PP_APP.STATE.dom.weekInputs.appendChild(row);
+            STATE.dom.weekInputs.appendChild(row);
         });
     },
 
     // 月間・年間の合計・平均ポイントの集計表示
     updateSummary() {
-        if (!PP_APP.STATE.dom.monthlyTotal || !PP_APP.STATE.dom.yearlyTotal) return;
-        const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+        if (!STATE.dom.monthlyTotal || !STATE.dom.yearlyTotal) return;
+        const config = CONFIGS[STATE.currentRegion];
         const data = this.loadDiaryData();
-        const yearData = data[PP_APP.STATE.diaryState.currentYear] || {};
-        const monthData = yearData[PP_APP.STATE.diaryState.currentMonth] || {};
+        const yearData = data[STATE.diaryState.currentYear] || {};
+        const monthData = yearData[STATE.diaryState.currentMonth] || {};
         let monthlyTotal = 0, monthlyWeeksWithPoints = 0;
         Object.values(monthData).forEach(week => {
             const points = parseInt(week.points, 10);
             if (!isNaN(points)) { monthlyTotal += points; monthlyWeeksWithPoints++; }
         });
-        PP_APP.STATE.dom.monthlyTotal.textContent = monthlyTotal.toLocaleString(config.lang);
-        PP_APP.STATE.dom.monthlyAverage.textContent = (monthlyWeeksWithPoints > 0 ? (monthlyTotal / monthlyWeeksWithPoints).toFixed(1) : '0.0');
+        STATE.dom.monthlyTotal.textContent = monthlyTotal.toLocaleString(config.lang);
+        STATE.dom.monthlyAverage.textContent = (monthlyWeeksWithPoints > 0 ? (monthlyTotal / monthlyWeeksWithPoints).toFixed(1) : '0.0');
         let yearlyTotal = 0, yearlyWeeksWithPoints = 0;
         Object.values(yearData).forEach(month => {
             Object.values(month).forEach(week => {
@@ -118,62 +121,62 @@ PP_APP.DIARY = {
                 if (!isNaN(points)) { yearlyTotal += points; yearlyWeeksWithPoints++; }
             });
         });
-        PP_APP.STATE.dom.yearlyTotal.textContent = yearlyTotal.toLocaleString(config.lang);
-        PP_APP.STATE.dom.yearlyAverage.textContent = (yearlyWeeksWithPoints > 0 ? (yearlyTotal / yearlyWeeksWithPoints).toFixed(1) : '0.0');
+        STATE.dom.yearlyTotal.textContent = yearlyTotal.toLocaleString(config.lang);
+        STATE.dom.yearlyAverage.textContent = (yearlyWeeksWithPoints > 0 ? (yearlyTotal / yearlyWeeksWithPoints).toFixed(1) : '0.0');
     },
 
     // 週ごとの入力データ保存処理
     handleDiarySave(e) {
         if (e.target.tagName === 'BUTTON' && e.target.dataset.week) {
             const weekNum = e.target.dataset.week;
-            const pointsInput = PP_APP.STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);
-            const prizeSelect = PP_APP.STATE.dom.weekInputs.querySelector(`#week${weekNum}_prize`);
+            const pointsInput = STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);
+            const prizeSelect = STATE.dom.weekInputs.querySelector(`#week${weekNum}_prize`);
             const data = this.loadDiaryData();
-            if (!data[PP_APP.STATE.diaryState.currentYear]) data[PP_APP.STATE.diaryState.currentYear] = {};
-            if (!data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth]) data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth] = {};
-            data[PP_APP.STATE.diaryState.currentYear][PP_APP.STATE.diaryState.currentMonth][weekNum] = { points: pointsInput.value, prize: prizeSelect.value };
+            if (!data[STATE.diaryState.currentYear]) data[STATE.diaryState.currentYear] = {};
+            if (!data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth]) data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth] = {};
+            data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth][weekNum] = { points: pointsInput.value, prize: prizeSelect.value };
             if (!this.saveDiaryData(data)) return;
-            PP_APP.ANALYTICS.track('diary_entry_saved', {
-                region: PP_APP.STATE.currentRegion,
+            ANALYTICS.track('diary_entry_saved', {
+                region: STATE.currentRegion,
                 entry_type: 'weekly_reward'
             });
-            PP_APP.ANALYTICS.markEngaged();
-            const originalText = PP_APP.CONFIGS[PP_APP.STATE.currentRegion].uiText.saveButton;
+            ANALYTICS.markEngaged();
+            const originalText = CONFIGS[STATE.currentRegion].uiText.saveButton;
             e.target.textContent = 'OK!';
             e.target.disabled = true;
             setTimeout(() => {
                 e.target.textContent = originalText;
                 e.target.disabled = false;
-            }, PP_APP.CONSTANTS.SAVE_CONFIRMATION_DURATION);
+            }, CONSTANTS.SAVE_CONFIRMATION_DURATION);
             this.updateSummary();
         }
     },
 
     // 日記データをJSONテキストとしてエクスポート
     exportDiary() {
-        const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+        const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        const data = localStorage.getItem(PP_APP.CONSTANTS.DIARY_DATA_KEY);
+        const data = localStorage.getItem(CONSTANTS.DIARY_DATA_KEY);
         const exportString = data ? data : "{}";
         
         navigator.clipboard.writeText(exportString)
             .then(() => {
-                PP_APP.UI.showToast(texts.exportSuccess);
+                UI.showToast(texts.exportSuccess);
             })
             .catch(err => {
                 console.error("データの書き出しに失敗しました:", err);
-                PP_APP.UI.showToast("コピーに失敗しました。", 'error');
+                UI.showToast("コピーに失敗しました。", 'error');
             });
     },
 
     // 復元用テキストエリアの表示/非表示切り替え
     toggleImportArea() {
-        if (!PP_APP.STATE.dom.backupInputWrapper) return;
-        const isHidden = PP_APP.STATE.dom.backupInputWrapper.classList.contains(PP_APP.CONSTANTS.CLASS_HIDDEN);
-        PP_APP.STATE.dom.backupInputWrapper.classList.toggle(PP_APP.CONSTANTS.CLASS_HIDDEN, !isHidden);
-        if (isHidden && PP_APP.STATE.dom.diaryBackupData) {
-            PP_APP.STATE.dom.diaryBackupData.value = "";
-            PP_APP.STATE.dom.diaryBackupData.focus();
+        if (!STATE.dom.backupInputWrapper) return;
+        const isHidden = STATE.dom.backupInputWrapper.classList.contains(CONSTANTS.CLASS_HIDDEN);
+        STATE.dom.backupInputWrapper.classList.toggle(CONSTANTS.CLASS_HIDDEN, !isHidden);
+        if (isHidden && STATE.dom.diaryBackupData) {
+            STATE.dom.diaryBackupData.value = "";
+            STATE.dom.diaryBackupData.focus();
         }
     },
 
@@ -191,13 +194,13 @@ PP_APP.DIARY = {
 
     // JSONテキストから日記データをインポート（厳格なバリデーション）
     executeImport() {
-        if (!PP_APP.STATE.dom.diaryBackupData) return;
-        const config = PP_APP.CONFIGS[PP_APP.STATE.currentRegion];
+        if (!STATE.dom.diaryBackupData) return;
+        const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        const rawData = PP_APP.STATE.dom.diaryBackupData.value.trim();
+        const rawData = STATE.dom.diaryBackupData.value.trim();
         
         if (!rawData) {
-            PP_APP.UI.showToast(texts.errorInputReverse, 'error');
+            UI.showToast(texts.errorInputReverse, 'error');
             return;
         }
         
@@ -244,14 +247,19 @@ PP_APP.DIARY = {
             
             if (!this.saveDiaryData(validatedData)) return;
             this.renderDiary();
-            if (PP_APP.STATE.dom.backupInputWrapper) {
-                PP_APP.STATE.dom.backupInputWrapper.classList.add(PP_APP.CONSTANTS.CLASS_HIDDEN);
+            if (STATE.dom.backupInputWrapper) {
+                STATE.dom.backupInputWrapper.classList.add(CONSTANTS.CLASS_HIDDEN);
             }
-            PP_APP.STATE.dom.diaryBackupData.value = "";
-            PP_APP.UI.showToast(texts.importSuccess);
+            STATE.dom.diaryBackupData.value = "";
+            UI.showToast(texts.importSuccess);
         } catch (e) {
             console.error("データの読み込みに失敗しました:", e);
-            PP_APP.UI.showToast(texts.importError, 'error');
+            UI.showToast(texts.importError, 'error');
         }
     }
 };
+
+if (typeof window !== 'undefined') {
+    window.PP_APP = window.PP_APP || {};
+    window.PP_APP.DIARY = DIARY;
+}

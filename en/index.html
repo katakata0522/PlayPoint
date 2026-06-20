@@ -64,6 +64,38 @@
       }
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How is the required spending calculated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By entering your current status and the points needed to reach your goal status, the tool calculates the required spending based on your base points rate and campaign multiplier."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is Reverse Mode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By entering the amount you plan to spend (USD), the tool simulates the estimated points you can earn based on your current status and campaign settings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the diary data saved?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, but it is stored only in your browser's local storage. To prevent data loss, you can export your diary data as a JSON file or copy it, and restore it later."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 
@@ -260,43 +292,59 @@
                     <li>
                         <a class="article-link-card" href="../articles/2026-03-10-play-points-reflection-timing.html">
                             <span class="article-link-tag">Reflection</span>
-                            <span class="article-link-title">When are Play Points reflected? Guidelines for waiting times</span>
+                            <span class="article-link-title">When are Play Points reflected? Guidelines for waiting times (Japanese)</span>
                         </a>
                     </li>
                     <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-play-points-rank-list.html">
+                        <a class="article-link-card" href="../articles/2025-12-25-playpoints-rank-maintenance.html">
                             <span class="article-link-tag">Ranks</span>
-                            <span class="article-link-title">Play Points Rank List | Bronze to Diamond benefits comparison</span>
+                            <span class="article-link-title">Play Points Rank Maintenance | When does it reset? (Japanese)</span>
                         </a>
                     </li>
                     <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-playpoint-calculator-guide.html">
+                        <a class="article-link-card" href="../articles/2025-12-25-campaign.html">
                             <span class="article-link-tag">Guides</span>
-                            <span class="article-link-title">How to use Play Points Calculator | Clear estimation guides</span>
+                            <span class="article-link-title">Points Campaign Multipliers | Is it better to wait? (Japanese)</span>
                         </a>
                     </li>
                     <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-play-points-no-regret.html">
+                        <a class="article-link-card" href="../articles/2025-12-25-best-use.html">
                             <span class="article-link-tag">Mindset</span>
-                            <span class="article-link-title">How to enjoy Play Points without regrets | Simple smart budget tips</span>
+                            <span class="article-link-title">Best Ways to Use Points | Credit exchange guidelines (Japanese)</span>
                         </a>
                     </li>
                     <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-google-one-play-points.html">
+                        <a class="article-link-card" href="../articles/2025-12-25-weekly-reward.html">
                             <span class="article-link-tag">Google One</span>
-                            <span class="article-link-title">Does Google One grant Play Points? Conditions and check guides</span>
+                            <span class="article-link-title">Weekly Rewards Claim Guide | Free weekly points (Japanese)</span>
                         </a>
                     </li>
                     <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-play-points-who-is-it-for.html">
+                        <a class="article-link-card" href="../articles/2025-12-25-getting-started.html">
                             <span class="article-link-tag">Suitability</span>
-                            <span class="article-link-title">Is Google Play Points suitable for you? Ranks check guides</span>
+                            <span class="article-link-title">Google Play Points Getting Started | Ranks check guides (Japanese)</span>
                         </a>
                     </li>
                 </ul>
                 <p class="article-drawer-note">For detailed specifications and Q&amp;A, see <a href="../info.html">Q&A / Afterword</a>.</p>
             </div>
         </details>
+    </section>
+
+    <section class="section">
+        <h2>❓ Frequently Asked Questions (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Q. How is the required spending calculated?</h3>
+            <p>A. By entering your current status and the points needed to reach your goal status, the tool calculates the required spending based on your base points rate and campaign multiplier.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. What is Reverse Mode?</h3>
+            <p>A. By entering the amount you plan to spend (USD), the tool simulates the estimated points you can earn based on your current status and campaign settings.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. Is the diary data saved?</h3>
+            <p>A. Yes, but it is stored only in your browser's local storage. To prevent data loss, you can export your diary data as a JSON file or copy it, and restore it later.</p>
+        </div>
     </section>
 
     <footer class="page-footer">
@@ -317,12 +365,7 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script src="../js/config.js"></script>
-<script src="../js/ui.js"></script>
-<script src="../js/diary.js"></script>
-<script src="../js/calculator.js"></script>
-<script src="../js/share.js"></script>
-<script src="../js/main.js"></script>
+<script type="module" src="../js/main.js"></script>
 <script src="../js/third-party.js?v=20260619c"></script>
 
 </body>
