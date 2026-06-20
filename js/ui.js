@@ -88,6 +88,18 @@ export const UI = {
                 box.innerHTML = config.tooltips[box.id];
             }
         });
+
+        const gcalBtn = document.getElementById('register-google-cal-btn');
+        if (gcalBtn) {
+            const isEn = STATE.currentRegion === 'US';
+            const text = isEn ? '【GooglePlay】Weekly Reward Day!' : '【GooglePlay】ウィークリーリワードの日！';
+            const details = isEn
+                ? 'Claim your Google Play Points Weekly Reward and log it!\nhttps://playpoint-sim.com/en/'
+                : 'Playポイントのウィークリーリワードを引いて、計算機の日記に記録しましょう！\nhttps://playpoint-sim.com/';
+            const dates = isEn ? '20260626T140000Z/20260626T150000Z' : '20260626T010000Z/20260626T020000Z';
+            const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${dates}&recur=RRULE:FREQ=WEEKLY;BYDAY=FR&details=${encodeURIComponent(details)}`;
+            gcalBtn.href = gcalUrl;
+        }
     },
 
     // 結果表示メソッド（カウントアップアニメーション発火）

@@ -104,6 +104,12 @@
 </head>
 <body>
 
+<div id="language-suggestion-banner" class="language-suggestion-banner hidden">
+    <span>English version is available!</span>
+    <button id="switch-to-en-btn">Switch to English</button>
+    <button id="close-lang-banner-btn" aria-label="Close">×</button>
+</div>
+
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch">
@@ -256,6 +262,14 @@
         <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
             【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
         </div>
+        <div class="diary-reminder-section">
+            <h4 data-lang-key="reminderTitle">金曜リワード通知（カレンダー登録）</h4>
+            <p data-lang-key="reminderDesc">毎週金曜日にウィークリーリワードを通知するリマインダーを登録できます。リワードの引き忘れを防いで、日記への記録を習慣化しましょう！</p>
+            <div class="reminder-btn-group">
+                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Google カレンダーに登録</a>
+                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">カレンダーアプリ（iCal）登録</button>
+            </div>
+        </div>
         <div class="diary-backup-section">
             <h4 data-lang-key="backupTitle">データのバックアップ・復元</h4>
             <div class="backup-btn-group">
@@ -290,12 +304,18 @@
                     <span class="article-drawer-subtitle">最初は閉じておいて、必要な時だけまとめて見られます。</span>
                 </span>
                 <span class="article-drawer-meta">
-                    <span class="article-count">6記事</span>
+                    <span class="article-count">7記事</span>
                     <span class="article-drawer-icon" aria-hidden="true">▾</span>
                 </span>
             </summary>
             <div class="article-drawer-body">
                 <ul class="article-link-list">
+                    <li>
+                        <a class="article-link-card" href="articles/2026-06-20-discount-gift-cards.html">
+                            <span class="article-link-tag">お得課金</span>
+                            <span class="article-link-title">【課金効率化】Google Play ギフトコードを常に割引・ポイント還元付きでお得に購入する裏ワザ</span>
+                        </a>
+                    </li>
                     <li>
                         <a class="article-link-card" href="articles/2026-03-10-play-points-reflection-timing.html">
                             <span class="article-link-tag">反映</span>

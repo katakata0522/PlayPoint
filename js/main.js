@@ -54,7 +54,9 @@ export function init() {
         'monthSelector', 'selectedMonth', 'weekInputs', 'monthlyTotal', 'monthlyAverage',
         'yearlyTotal', 'yearlyAverage', 'diary-guest-notice',
         'exportDiaryBtn', 'importDiaryBtn', 'backup-input-wrapper', 'diaryBackupData', 'confirmImportBtn',
-        'friday-reminder', 'close-reminder-btn'
+        'friday-reminder', 'close-reminder-btn',
+        'language-suggestion-banner', 'switch-to-en-btn', 'close-lang-banner-btn',
+        'register-google-cal-btn', 'download-ical-btn'
     ];
     
     ids.forEach(id => {
@@ -75,6 +77,18 @@ export function init() {
     if (STATE.dom.exportDiaryBtn) STATE.dom.exportDiaryBtn.addEventListener('click', () => DIARY.exportDiary());
     if (STATE.dom.importDiaryBtn) STATE.dom.importDiaryBtn.addEventListener('click', () => DIARY.toggleImportArea());
     if (STATE.dom.confirmImportBtn) STATE.dom.confirmImportBtn.addEventListener('click', () => DIARY.executeImport());
+    if (STATE.dom.switchToEnBtn) STATE.dom.switchToEnBtn.addEventListener('click', () => switchRegion('US'));
+    if (STATE.dom.closeLangBannerBtn) STATE.dom.closeLangBannerBtn.addEventListener('click', () => {
+        if (STATE.dom.languageSuggestionBanner) {
+            STATE.dom.languageSuggestionBanner.classList.add(CONSTANTS.CLASS_HIDDEN);
+        }
+        try {
+            sessionStorage.setItem('playpointLangBannerClosed', 'true');
+        } catch (e) {
+            console.error("セッションストレージの書き込みに失敗しました:", e);
+        }
+    });
+    if (STATE.dom.downloadIcalBtn) STATE.dom.downloadIcalBtn.addEventListener('click', () => downloadICS());
 
     // Enterキー押下での計算実行
     [STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier].forEach(el => {
@@ -151,6 +165,7 @@ export function init() {
     updateUIForRegion();
     SHARE.applyFromUrl();
     checkFridayReminder();
+    checkLanguageSuggestion();
 
     // PWAサービスワーカーの登録
     if ('serviceWorker' in navigator) {
@@ -161,6 +176,72 @@ export function init() {
                 .catch(err => console.error('ServiceWorker registration failed:', err));
         });
     }
+}
+
+// 金曜日リマインダーバーの表示ロジック
+export function checkLanguageSuggestion() {
+    if (!STATE.dom.languageSuggestionBanner) return;
+
+    let isClosed = false;
+    try {
+        isClosed = sessionStorage.getItem('playpointLangBannerClosed') === 'true';
+    } catch (e) {
+        console.error("セッションストレージの読み込みに失敗しました:", e);
+    }
+    if (isClosed) return;
+
+    let preferredRegion = null;
+    try {
+        preferredRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);
+    } catch (e) {
+        console.error("ローカルストレージの読み込みに失敗しました:", e);
+    }
+
+    const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    const isEnglishUser = browserLang.startsWith('en');
+
+    if (isEnglishUser && !preferredRegion && !isEnglishPath()) {
+        STATE.dom.languageSuggestionBanner.classList.remove(CONSTANTS.CLASS_HIDDEN);
+    }
+}
+
+// ICSファイルのダウンロードロジック
+export function downloadICS() {
+    const isEn = isEnglishPath();
+    const summary = isEn ? '【GooglePlay】Weekly Reward Day!' : '【GooglePlay】ウィークリーリワード獲得＆記録';
+    const description = isEn
+        ? 'Claim your Google Play Points Weekly Reward and log it!\\nhttps://playpoint-sim.com/en/'
+        : 'Playポイントのウィークリーリワードを引いて、日記に記録しましょう！\\nhttps://playpoint-sim.com/';
+    
+    const dtstart = isEn ? '20260626T140000Z' : '20260626T010000Z';
+    const dtend = isEn ? '20260626T150000Z' : '20260626T020000Z';
+    
+    const icsLines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//PlayPoint//NONSGML Calendar//EN',
+        'BEGIN:VEVENT',
+        `SUMMARY:${summary}`,
+        `DESCRIPTION:${description}`,
+        `DTSTART:${dtstart}`,
+        `DTEND:${dtend}`,
+        'RRULE:FREQ=WEEKLY;BYDAY=FR',
+        'SEQUENCE:0',
+        'STATUS:CONFIRMED',
+        'TRANSP:TRANSPARENT',
+        'END:VEVENT',
+        'END:VCALENDAR'
+    ];
+    const icsString = icsLines.join('\r\n');
+    const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = isEn ? 'google-play-reward-reminder.ics' : 'play-point-reward-reminder.ics';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // 金曜日リマインダーバーの表示ロジック
@@ -222,4 +303,6 @@ if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP.init = init;
     window.PP_APP.checkFridayReminder = checkFridayReminder;
     window.PP_APP.closeFridayReminder = closeFridayReminder;
+    window.PP_APP.checkLanguageSuggestion = checkLanguageSuggestion;
+    window.PP_APP.downloadICS = downloadICS;
 }
