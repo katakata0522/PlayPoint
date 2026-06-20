@@ -342,11 +342,12 @@ button:disabled {
 
 .page-footer a {
   color: #0b57d0;
-  border-bottom: 1px dotted #0b57d0;
+  text-decoration: none;
+  transition: color 0.16s ease;
 }
 .page-footer a:hover {
   color: #0842a0;
-  border-bottom: 1px solid #0842a0;
+  text-decoration: underline;
 }
 .copyright {
   color: #aaa;
@@ -608,20 +609,37 @@ button:active {
 .page-footer p {
   margin-bottom: 0.65em;
 }
-.page-footer p:first-child {
+.footer-nav-links {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.5em;
+  align-items: center;
+  gap: 0.4em 0.8em;
+  margin-top: 0.5em;
+  margin-bottom: 0.8em;
 }
-.page-footer p:first-child a {
-  border: 1px solid #84aef3;
-  border-radius: 999px;
-  padding: 0.34em 0.78em;
-  border-bottom-style: solid;
-  font-weight: 700;
+.footer-nav-links a {
+  font-weight: 600;
   color: #0b57d0;
-  background: #f4f8ff;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.1em;
+}
+.footer-separator {
+  color: #84aef3;
+  opacity: 0.5;
+  user-select: none;
+  font-size: 0.85em;
+}
+
+@media (max-width: 480px) {
+  .footer-separator {
+    display: none;
+  }
+  .footer-nav-links {
+    gap: 0.2em 1.2em;
+  }
 }
 
 .meta-line {
