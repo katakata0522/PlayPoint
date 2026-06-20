@@ -85,7 +85,15 @@ export function init() {
     });
 
     // タブ切り替え
-    document.querySelectorAll(".tab-switch button").forEach(button => button.addEventListener('click', () => UI.switchMode(button.dataset.mode)));
+    document.querySelectorAll(".tab-switch button").forEach(button => {
+        button.addEventListener('click', () => {
+            const mode = button.dataset.mode;
+            UI.switchMode(mode);
+            if (mode === CONSTANTS.MODE_DIARY) {
+                DIARY.renderDiary();
+            }
+        });
+    });
     
     // ヘルプツールチップ
     document.querySelectorAll(CONSTANTS.SELECTOR_INFO_BTN).forEach(button => {
@@ -106,6 +114,16 @@ export function init() {
     if (STATE.dom.weekInputs) STATE.dom.weekInputs.addEventListener('click', (e) => DIARY.handleDiarySave(e));
 
     if (STATE.dom.copyrightYear) STATE.dom.copyrightYear.textContent = new Date().getFullYear();
+
+    // 記事数の動的カウントと反映
+    const countEl = document.querySelector('.article-count');
+    const listEl = document.querySelector('.article-link-list');
+    if (countEl && listEl) {
+        const count = listEl.querySelectorAll('li').length;
+        const isEn = isEnglishPath();
+        countEl.textContent = isEn ? `${count} Guides` : `${count}記事`;
+    }
+
 
     try {
         if (isEnglishPath()) {
@@ -146,8 +164,15 @@ export function init() {
 
 // 金曜日リマインダーバーの表示ロジック
 export function checkFridayReminder() {
-    if (!STATE.dom.fridayReminder) return;
     const isFriday = new Date().getDay() === 5;
+    
+    // 日記タブ最上部のヒントカードを金曜日のときだけ強調
+    const hintCard = document.getElementById('diary-hint-card');
+    if (hintCard) {
+        hintCard.classList.toggle('is-friday', isFriday);
+    }
+
+    if (!STATE.dom.fridayReminder) return;
     const isClosed = sessionStorage.getItem('playpointFridayReminderClosed') === 'true';
     
     if (isFriday && !isClosed) {
@@ -188,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 });
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.isEnglishPath = isEnglishPath;
     window.PP_APP.updateUIForRegion = updateUIForRegion;

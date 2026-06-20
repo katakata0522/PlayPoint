@@ -356,7 +356,7 @@
       <h2>プレビュー ＆ コード</h2>
       
       <div class="preview-container" id="preview-box">
-        <span class="preview-label">Live Preview</span>
+        <span class="preview-label">ライブプレビュー</span>
         <div id="widget-preview-wrapper" style="width: 380px; max-width: 100%;">
           <div data-playpoint-widget id="preview-widget-element"></div>
         </div>
@@ -364,7 +364,7 @@
       
       <div class="code-box">
         <label>埋め込みコード</label>
-        <pre><code id="code-output">&lt;div data-playpoint-widget&gt;&lt;/div&gt;
+        <pre><code id="code-output">&lt;div data-playpoint-widget data-mode="main"&gt;&lt;/div&gt;
 &lt;script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer&gt;&lt;/script&gt;</code></pre>
         <button class="copy-btn" id="btn-copy">コードをコピーする</button>
       </div>
@@ -423,7 +423,7 @@
       let attrs = '';
       if (theme === 'dark') attrs += ' data-theme="dark"';
       if (lang !== 'auto') attrs += ` data-lang="${lang}"`;
-      if (mode !== 'main') attrs += ` data-mode="${mode}"`;
+      attrs += ` data-mode="${mode}"`;
       if (width !== '380') attrs += ` style="max-width: ${width}px; width: 100%;"`;
 
       const codeString = `<div data-playpoint-widget${attrs}></div>\n<script src="https://playpoint-sim.com/embed/playpoint-widget.js" defer><\/script>`;
@@ -434,12 +434,12 @@
     selectLang.addEventListener('change', updateWidget);
     selectMode.addEventListener('change', updateWidget);
     
-    // ドラッグ中のリアルタイム幅プレビュー反映
+    // ドラッグ中のリアルタイム幅プレビュー＆コード生成同期
     inputWidth.addEventListener('input', () => {
       widthVal.textContent = `${inputWidth.value}px`;
       previewWrapper.style.width = `${inputWidth.value}px`;
+      updateWidget();
     });
-    inputWidth.addEventListener('change', updateWidget);
 
     // 1クリックコピー機能
     let toastTimer = null;

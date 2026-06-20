@@ -137,9 +137,6 @@ export const UI = {
         });
         if (STATE.dom.result) this.clearResult(STATE.dom.result);
         if (STATE.dom.reverseResult) this.clearResult(STATE.dom.reverseResult);
-        if (mode === CONSTANTS.MODE_DIARY && typeof window.PP_APP?.DIARY?.renderDiary === 'function') {
-            window.PP_APP.DIARY.renderDiary();
-        }
     },
 
     // ツールチップを閉じるメソッド

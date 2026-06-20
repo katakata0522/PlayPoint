@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Playポイントとは？</title>
-  <meta name="description" content="Playポイントの仕組み、ランク条件、還元率、特典の概要をわかりやすく解説します。">
+  <title>Playポイントとは？ | 仕組み・還元率・ランク解説</title>
+  <meta name="description" content="Google Playポイントの仕組み、ランク条件、還元率、特典の概要をわかりやすく解説します。">
   <meta name="robots" content="index,follow">
   <meta name="author" content="かたかた">
-  <meta name="last-modified" content="2026-03-02">
-  <meta property="article:modified_time" content="2026-03-02T00:00:00+09:00">
+  <meta name="last-modified" content="2026-06-20">
+  <meta property="article:modified_time" content="2026-06-20T00:00:00+09:00">
   <link rel="canonical" href="https://playpoint-sim.com/about-playpoints.html">
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/about-playpoints.html">
   <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/about-playpoints.html">
@@ -16,13 +16,20 @@
   <meta property="og:description" content="Playポイントの仕組み、ランク条件、還元率、特典をまとめて確認できます。">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://playpoint-sim.com/about-playpoints.html">
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
   <meta property="og:site_name" content="Playポイント計算機">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Playポイントとは？ | Playポイント計算機">
   <meta name="twitter:description" content="Playポイントの仕組み、ランク条件、還元率、特典をまとめて確認できます。">
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  
+  <!-- 共通スタイルシートと Google Fonts の読み込み -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260620a">
+  
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -30,7 +37,7 @@
     "name": "Playポイントとは？",
     "url": "https://playpoint-sim.com/about-playpoints.html",
     "inLanguage": "ja",
-    "dateModified": "2026-03-02",
+    "dateModified": "2026-06-20",
     "author": {
       "@type": "Person",
       "name": "かたかた"
@@ -54,115 +61,16 @@
     }
   }
   </script>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", "YuGothic", Verdana, Meiryo, sans-serif;
-      background: #eef;
-      padding: 1em;
-      margin: 0;
-      line-height: 1.7;
-      font-size: 16px;
-      color: #333;
-      text-align: center;
-    }
-    .header-links {
-      text-align: right;
-      margin: 0.5em 1em 0 0;
-      font-size: 0.8em;
-    }
-    .header-links a {
-      color: #555;
-      text-decoration: none;
-      margin-left: 1em;
-    }
-    .header-links a:hover {
-      text-decoration: underline;
-    }
-    h1, h2 {
-      color: #222;
-      margin-top: 1.5em;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1em 0;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.7em;
-      text-align: center;
-    }
-    th {
-      background-color: #e0efff;
-    }
-    ul {
-      padding-left: 1.2em;
-      text-align: left;
-    }
-    ul li {
-      margin-bottom: 0.5em;
-    }
-    a {
-      color: #0b57d0;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .section {
-      background-color: #fff;
-      border: 1px solid #cce0ff;
-      border-radius: 10px;
-      padding: 1.5em;
-      margin: 1.5em auto;
-      max-width: 700px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-      text-align: left;
-    }
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 2em;
-      margin-bottom: 1.5em;
-    }
-    .back-link a {
-      display: inline-block;
-      padding: 0.6em 1.5em;
-      background-color: #6c757d;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 1em;
-      transition: background-color 0.2s ease;
-    }
-    .back-link a:hover {
-      background-color: #5a6268;
-      text-decoration: none;
-    }
-    .page-footer {
-      text-align: center;
-      margin-top: 2em;
-      padding-top: 1em;
-      border-top: 1px solid #ddd;
-      font-size: 0.9em;
-      color: #666;
-    }
-    .page-footer a {
-      color: #007bff;
-      text-decoration: none;
-      margin: 0 0.5em;
-    }
-    .page-footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
 
+<main class="calculator-wrapper">
   <!-- ヘッダーリンク -->
-  <div class="header-links">
-    <a href="privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a> |
-    <a href="terms.html" target="_blank" rel="noopener noreferrer">利用規約</a>
+  <div class="top-bar">
+    <div class="header-links" style="width: 100%; justify-content: flex-end;">
+      <a href="privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+      <a href="terms.html" target="_blank" rel="noopener noreferrer" style="margin-left: 1em;">利用規約</a>
+    </div>
   </div>
 
   <div class="section">
@@ -183,53 +91,57 @@
     <h2>💎 ステータス制度</h2>
     <p>1年間の獲得ポイントに応じて、5つのランクに分かれます。</p>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ランク</th>
-          <th>条件例（年間獲得pt）</th>
-          <th>主な特典</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>ブロンズ</td>
-          <td>初期ランク</td>
-          <td>通常ポイント付与</td>
-        </tr>
-        <tr>
-          <td>シルバー</td>
-          <td>250pt~</td>
-          <td>ポイント還元率up</td>
-        </tr>
-        <tr>
-          <td>ゴールド</td>
-          <td>1,000pt〜</td>
-          <td>ポイント還元倍率さらにUP</td>
-        </tr>
-        <tr>
-          <td>プラチナ</td>
-          <td>4,000pt〜</td>
-          <td>ポイント還元率さらにさらにup、限定キャンペーン参加、特別抽選</td>
-        </tr>
-        <tr>
-          <td>ダイヤモンド</td>
-          <td>15,000pt〜</td>
-          <td>還元率最大＋超レア特典</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ランク</th>
+            <th>条件例（年間獲得pt）</th>
+            <th>主な特典</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>ブロンズ</b></td>
+            <td>初期ランク</td>
+            <td>通常ポイント付与 (1.0pt / 100円)</td>
+          </tr>
+          <tr>
+            <td><b>シルバー</b></td>
+            <td>250pt〜</td>
+            <td>ポイント還元率UP (1.25pt / 100円)</td>
+          </tr>
+          <tr>
+            <td><b>ゴールド</b></td>
+            <td>1,000pt〜</td>
+            <td>ポイント還元倍率さらにUP (1.5pt / 100円)</td>
+          </tr>
+          <tr>
+            <td><b>プラチナ</b></td>
+            <td>4,000pt〜</td>
+            <td>ポイント還元率さらにさらにUP (1.75pt / 100円)、限定キャンペーン参加、特別抽選</td>
+          </tr>
+          <tr>
+            <td><b>ダイヤモンド</b></td>
+            <td>15,000pt〜</td>
+            <td>還元率最大 (2.0pt / 100円) ＋超レア特典</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <h2>🎁 さらに…プラチナ・ダイヤモンド会員になると？</h2>
     <ul>
-      <li>🕵️‍♂️ 専任のサポートエージェントがあなたを完全サポート！？</li>
-      <li>🎪 ニコニコ超会議のGoogle Playブースで会員限定プレゼントに出会えるチャンスも！</li>
-      <li>🎉 ポイントアップウィークの「倍率」がゴールドとは段違い！</li>
-      <li>👑 限定イベント・先行体験・抽選で特製グッズなど、VIP感たっぷりの特典もあり！</li>
-      ※今までの事例や傾向からの特典であり、毎年や常時それらのものが提供されるとは限りません。ご了承ください。
+      <li>🕵️‍♂️ 専任のサポートエージェントが優先対応してくれます。</li>
+      <li>🎪 ニコニコ超会議のGoogle Playブースで会員限定プレゼントをもらえるチャンスがあるなど、リアルイベントでの優遇もあります。</li>
+      <li>🎉 ポイントアップウィークの「倍率」がゴールド以下とは段違いにお得になります。</li>
+      <li>👑 限定イベント・先行体験・抽選で特製グッズなど、VIP感たっぷりの特典が用意されています。</li>
     </ul>
+    <div class="warning" style="font-size: 0.82em; margin-top: 1.2em; padding: 0.8em 1em;">
+      ※上記の特典は過去の事例や実績からの傾向であり、毎年または常時それらが提供されるとは限りません。詳細はGoogle公式 of 規約をご確認ください。
+    </div>
 
-    <h2>🔗 公式情報もチェック！</h2>
+    <h2 style="margin-top: 1.5em;">🔗 公式情報もチェック！</h2>
     <p>
       👉 <a href="https://play.google.com/about/playpoints/" target="_blank" rel="noopener noreferrer">
          Google公式であなたのPlayポイントやお得なキャンペーンをチェックしよう🔍</a>
@@ -237,21 +149,30 @@
   </div>
 
   <!-- 計算ツールへ戻るリンク -->
-  <div class="back-link">
-    <a href="/">← 計算ツールに戻る</a>
+  <div class="back-link-wrapper">
+    <a href="/" class="btn-back-home">← 計算ツールに戻る</a>
   </div>
 
   <!-- フッターリンク -->
   <footer class="page-footer">
     <p>
-      <a href="info.html">あとがき・Q&A</a> |
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer">ご意見・ご感想</a> |
-      <a href="about-playpoints.html">Playポイントとは？</a> |
-      <a href="sitemap.html">サイトマップ</a>
+      <a href="info.html">あとがき・Q&A</a>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">ご意見・ご感想</a>
+      <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントとは？</a>
+      <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
     </p>
-    <p>運営者: かたかた / 最終更新: 2026-03-02</p>
-    <p>© 2025 PlayPoint Simulation Tool</p>
+    <p class="meta-line">運営者: かたかた / 最終更新: 2026-06-20</p>
+    <p class="copyright">
+      © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
+    </p>
   </footer>
+</main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const yearEl = document.getElementById('copyright-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+</script>
 </body>
 </html>

@@ -9,8 +9,8 @@
     <meta name="description" content="Google Play Points level-up calculator. Calculate how much you need to spend to reach Bronze, Silver, Gold, Platinum, or Diamond, including campaign boosts and weekly reward logs.">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-06-18">
-    <meta property="article:modified_time" content="2026-06-18T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-20">
+    <meta property="article:modified_time" content="2026-06-20T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/en/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -21,12 +21,12 @@
     <meta property="og:description" content="Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/en/">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta property="og:site_name" content="Play Points Calculator">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Play Points Calculator | How much to level up?">
     <meta name="twitter:description" content="Calculate Google Play Points requirements and earnings easily with weekend multipliers.">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
     <link rel="manifest" href="/manifest.json">
     <link rel="stylesheet" href="../style.css?v=20260618a">
@@ -43,7 +43,7 @@
         "@type": "Person",
         "name": "かたかた"
       },
-      "dateModified": "2026-06-18",
+      "dateModified": "2026-06-20",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -114,7 +114,7 @@
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">It's Friday! Let's claim your Weekly Reward and record it in your diary! 🎰</span>
+        <span class="reminder-text" data-lang-key="fridayReminderText">It's Friday! Let's claim your Weekly Reward and record it in your diary!</span>
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="Close">×</button>
     </div>
 
@@ -215,6 +215,9 @@
     </div>
 
     <div id="diaryMode" class="hidden">
+        <div class="diary-hint-card" id="diary-hint-card">
+            <span><strong>Every Friday is Weekly Reward Day!</strong> Claim points in Google Play Store and log it here.</span>
+        </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="Previous Year"><</button>
             <h2 id="currentYear">2025</h2>
@@ -358,7 +361,7 @@
         </p>
         <p class="meta-line">Operator: かたかた / Last Modified: 2026-06-18</p>
         <p class="copyright">
-          © <span id="copyright-year"></span> PlayPoint Simulation Tool
+          © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>
     </footer>
     

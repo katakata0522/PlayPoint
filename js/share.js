@@ -81,7 +81,7 @@ export const SHARE = {
     }
 };
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.SHARE = SHARE;
 }

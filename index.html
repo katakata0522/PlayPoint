@@ -9,8 +9,8 @@
     <meta name="description" content="Google Play Points のランクアップ計算機。プラチナ・ダイヤモンドまであといくら必要か、キャンペーン時の獲得ポイント、逆算、ランク維持の目安までまとめて確認できます。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-06-18">
-    <meta property="article:modified_time" content="2026-06-18T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-20">
+    <meta property="article:modified_time" content="2026-06-20T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -25,12 +25,12 @@
     <meta property="og:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料でシミュレーション。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta property="og:site_name" content="Playポイント計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Playポイント計算機 | あといくらでレベルアップ？">
     <meta name="twitter:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料で試算できる計算機。">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
     <link rel="stylesheet" href="style.css?v=20260618a">
     <script type="application/ld+json">
@@ -47,7 +47,7 @@
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-06-19",
+      "dateModified": "2026-06-20",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -119,7 +119,7 @@
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！🎰</span>
+        <span class="reminder-text" data-lang-key="fridayReminderText">今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！</span>
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
     </div>
 
@@ -220,6 +220,9 @@
     </div>
 
     <div id="diaryMode" class="hidden">
+        <div class="diary-hint-card" id="diary-hint-card">
+            <span><strong>毎週金曜日はウィークリーリワードの日！</strong> Google Play ストアでリワードを獲得して、今週の日記に記録しましょう。</span>
+        </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="前の年へ"><</button>
             <h2 id="currentYear">2025</h2>
@@ -363,7 +366,7 @@
         </p>
         <p class="meta-line">運営者: <a href="author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-06-19</p>
         <p class="copyright">
-          © <span id="copyright-year"></span> PlayPoint Simulation Tool
+          © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>
     </footer>
     

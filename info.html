@@ -7,8 +7,8 @@
     <meta name="description" content="Playポイント計算機のQ&A、更新履歴、開発経緯をまとめたページです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-03-02">
-    <meta property="article:modified_time" content="2026-03-02T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-20">
+    <meta property="article:modified_time" content="2026-06-20T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/info.html">
@@ -16,155 +16,20 @@
     <meta property="og:description" content="Playポイント計算機のQ&A、更新履歴、開発経緯をまとめたページです。">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://playpoint-sim.com/info.html">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta property="og:site_name" content="Playポイント計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="あとがき・Q&A | Playポイント計算機">
     <meta name="twitter:description" content="Playポイント計算機のQ&A、更新履歴、開発経緯をまとめたページです。">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.svg">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <style>
-      body {
-        margin: 0;
-        padding: 0.8em;
-        background: #eef;
-        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", "YuGothic", Verdana, Meiryo, sans-serif;
-        text-align: center;
-        font-size: 15px;
-      }
-
-      .header-links {
-        text-align: right;
-        font-size: 0.85em;
-        margin-bottom: 0.5em;
-      }
-      .header-links a {
-        color: #555;
-        text-decoration: none;
-        margin-left: 1em;
-      }
-      .header-links a:hover {
-        text-decoration: underline;
-      }
-
-      h1 {
-        color: #333;
-        font-size: 1.6em;
-        margin-bottom: 1em;
-        text-align: center;
-      }
-
-      .section.info-section {
-        background-color: #fff;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        padding: 1.5em;
-        margin: 1.5em auto;
-        max-width: 600px;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-        text-align: left;
-        font-size: 0.95em;
-        line-height: 1.7;
-      }
-
-      .info-section h2 {
-        font-size: 1.3em;
-        color: #333;
-        border-bottom: 2px solid #4a90e2;
-        padding-bottom: 0.4em;
-        margin-bottom: 1em;
-      }
-
-      #qa-section dl {
-        margin-left: 0;
-        padding-left: 0;
-      }
-
-      #qa-section dt {
-        font-weight: bold;
-        color: #4a90e2;
-        margin-top: 1.5em;
-        margin-bottom: 0.3em;
-        position: relative;
-        padding-left: 2em;
-      }
-      #qa-section dt::before {
-          content: "Q.";
-          position: absolute;
-          left: 0;
-          top: 0;
-          color: #4a90e2;
-          font-weight: bold;
-      }
-
-      #qa-section dd {
-        margin-left: 2em;
-        padding-left: 2em;
-        margin-bottom: 1em;
-        color: #555;
-        position: relative;
-      }
-      #qa-section dd::before {
-          content: "A.";
-          position: absolute;
-          left: 0;
-          top: 0;
-          color: #555;
-          font-weight: bold;
-      }
-
-      #thanks-section p,
-      #about-section p {
-        margin-bottom: 1em;
-        color: #444;
-      }
-
-      .info-section a {
-        color: #0b57d0;
-        text-decoration: none;
-      }
-      .info-section a:hover {
-        text-decoration: underline;
-      }
-
-      .back-link {
-        display: block;
-        text-align: center;
-        margin-top: 2em;
-        margin-bottom: 1.5em;
-      }
-      .back-link a {
-        display: inline-block;
-        padding: 0.6em 1.5em;
-        background-color: #6c757d;
-        color: white;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 1em;
-        transition: background-color 0.2s ease;
-      }
-      .back-link a:hover {
-        background-color: #5a6268;
-        text-decoration: none;
-      }
-
-      .page-footer {
-        text-align: center;
-        margin-top: 2em;
-        padding-top: 1em;
-        border-top: 1px solid #ddd;
-        font-size: 0.9em;
-        color: #666;
-      }
-      .page-footer a {
-        color: #0b57d0;
-        text-decoration: none;
-        margin: 0 0.5em;
-      }
-      .page-footer a:hover {
-        text-decoration: underline;
-      }
-    </style>
+    
+    <!-- 共通スタイルシートと Google Fonts の読み込み -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=20260620a">
+    
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -200,7 +65,7 @@
       "name": "あとがき・Q&A",
       "url": "https://playpoint-sim.com/info.html",
       "inLanguage": "ja",
-      "dateModified": "2026-03-02",
+      "dateModified": "2026-06-20",
       "author": {
         "@type": "Person",
         "name": "かたかた"
@@ -227,14 +92,17 @@
 </head>
 <body>
 
-    <div class="header-links">
-      <a href="privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
-      <a href="terms.html" target="_blank" rel="noopener noreferrer">利用規約</a>
+<main class="calculator-wrapper">
+    <div class="top-bar">
+        <div class="header-links" style="width: 100%; justify-content: flex-end;">
+            <a href="privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+            <a href="terms.html" target="_blank" rel="noopener noreferrer" style="margin-left: 1em;">利用規約</a>
+        </div>
     </div>
 
     <h1>あとがき・Q&A</h1>
 
-    <div class="section info-section" id="thanks-section">
+    <div class="section" id="thanks-section">
       <h2>ご利用ありがとうございます！</h2>
       <p>
         この度は「Playポイント計算機」をご利用いただき、誠にありがとうございます！<br>
@@ -250,23 +118,24 @@
       </p>
     </div>
 
-    <div class="section info-section" id="qa-section">
+    <div class="section" id="qa-section">
       <h2>よくある質問 (Q&A)</h2>
-      <dl>
-        <dt>Q. 月平均の「○ヶ月」って何ですか？</dt>
-        <dd>A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。</dd>
+      <dl id="qa-section-dl" style="margin-left: 0; padding-left: 0;">
+        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 月平均の「○ヶ月」って何ですか？</dt>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。</dd>
 
-        <dt>Q. 例題の「1728」って何ですか？</dt>
-        <dd>A. あとがきに書いてあるので暇につぶされそうなら是非お読みになってください。</dd>
+        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 例題の「1728」って何ですか？</dt>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 開発者がプラチナに達するまでに必要だったポイントの例です。開発の経緯や詳細は、このページの下部にある <a href="#about-section"><b>あとがき・開発経緯</b></a> をぜひお読みになってください。</dd>
 
-        <dt>Q. 還元設定の計算はどうなっていますか？</dt>
-        <dd>A. 「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を内部で比較し、より獲得ポイント数が多くなる方（有利な方）の還元率を自動的に適用して計算しています。<br>これは実際のGoogle Play ストアの仕様と同様で、両方の特典が同時に適用されることはありません。</dd>
+        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 還元設定の計算はどうなっていますか？</dt>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を内部で比較し、より獲得ポイント数が多くなる方（有利な方）の還元率を自動的に適用して計算しています。<br>これは実際のGoogle Play ストアの仕様と同様で、両方の特典が同時に適用されることはありません。</dd>
       </dl>
     </div>
 
-    <div class="section info-section" id="update-section">
+    <div class="section" id="update-section">
       <h2>アップデート情報 (Update Log)</h2>
       <ul>
+        <li><strong>2026/06/20 (v2.2.0)</strong>: 各サブページのデザインシステムを統一。OGP画像のPNG形式への修正、不要ファイルのクリーンアップによる高速化。</li>
         <li><strong>2026/03/02 (v2.1.0)</strong>: 正規URL統一、メタ情報の強化、robots/sitemap追加、表示高速化のための外部スクリプト遅延読み込みを実施。</li>
         <li><strong>2026/02/03 (v2.0.0)</strong>: 構造化データの追加によるSEO最適化、更新履歴セクションの設置。</li>
         <li><strong>2025/05/13 (v1.9.2)</strong>: 計算ロジックの微調整とバグ修正。</li>
@@ -274,7 +143,7 @@
       </ul>
     </div>
 
-    <div class="section info-section" id="about-section">
+    <div class="section" id="about-section">
       <h2>あとがき・開発経緯</h2>
       <p>
         これを作ろうと思ったきっかけはニコニコ超会議でした。<br>ニコ超にはGoogle Playブースというものがあり、プラチナ会員になるとそこで2000プレイポイントがもらえます。<br>一般入場が3800円なので半分返ってくる計算です。（WAO!クレイジー!）<br>
@@ -282,32 +151,37 @@
         例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>キャンペーンなしだとおおよそ85,000円です。(WAO!ファンタスティック!)<br>
         そんなノリと勢いでできたこのサイトが、あなたの生活をほんの少し豊かにすることを願っています。<br>ここまでお読みいただきありがとうございました！
       </p>
-      <p>
+      <p style="margin-top: 1.5em; font-weight: bold; color: var(--text-color);">
         開発者: かたかた
       </p>
-      <p>
-        最終更新日: 2026年3月2日 (v2.1.0)
+      <p style="font-size: 0.86em; color: var(--link-color);">
+        最終更新日: 2026年6月20日 (v2.2.0)
       </p>
     </div>
 
-    <div class="back-link">
-        <a href="/">← 計算ツールに戻る</a>
+    <div class="back-link-wrapper">
+        <a href="/" class="btn-back-home">← 計算ツールに戻る</a>
     </div>
 
     <footer class="page-footer">
       <p>
-        <a href="info.html">あとがき・Q&A</a> |
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform" target="_blank" rel="noopener noreferrer">ご意見・ご感想</a> |
-        <a href="about-playpoints.html">Playポイントって何？</a> |
-        <a href="sitemap.html">サイトマップ</a>
+        <a href="info.html">あとがき・Q&A</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">ご意見・ご感想</a>
+        <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
+        <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
       </p>
-      <p>
-        運営者: かたかた / 最終更新: 2026-03-02
-      </p>
-      <p>
-        © 2025 PlayPoint Simulation Tool
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-06-20</p>
+      <p class="copyright">
+        © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
       </p>
     </footer>
+</main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const yearEl = document.getElementById('copyright-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+</script>
 </body>
 </html>

@@ -63,13 +63,17 @@ export const CONFIGS = {
             sectionTitleReverse: "逆算モード", labelAmountYen: "課金額（円）",
             amountYenPlaceholder: "例：5000", reverseCalculateButton: "ポイントを計算",
             nextTargetNone: "次の目標はありません", errorInput: "有効な数値を入力し、目標ステータスを選択してください",
+            errorNeededPoints: "目標までの必要ポイントに有効な数値を入力してください",
+            errorTargetStatus: "目標ステータスを選択してください",
             errorRate: "計算に使用する還元率が0以下です", errorMonth: "年内の残り期間の計算に失敗しました（現在12月、またはシステム時刻をご確認ください）",
             errorInputReverse: "有効な数値を入力してください", errorRateReverse: "計算に使用する還元率が0以下です",
             errorTargetConsistency: "入力した必要ポイントが、選択した目標ステータスに対して不正です。値を確認してください。",
             resultLabelNeededPoints: "目標までの必要ポイント", resultLabelTotalYen: "合計の必要課金額目安",
             resultLabelMonthlyYen: "月平均目安", resultLabelMonths: "ヶ月",
             resultLabelRate: "適用還元率", resultLabelEarnedPoints: "獲得ポイント予測",
-            yearSuffix: "年", monthNames: ["１月", "２月", "３月", "４月", "５月", "６月", "７月", "８月", "９月", "１0月", "１１月", "１２月"],
+            perMonth: "/月",
+            calculationNote: "※Google Playポイントのランク集計期間（毎年12月31日）までの残り <b>{months}ヶ月</b> で均等に割り出した目標課金額の目安です。",
+            yearSuffix: "年", monthNames: ["１月", "２月", "３月", "４月", "５月", "６月", "７月", "８月", "９月", "１０月", "１１月", "１２月"],
             weekLabel: "第", weekSuffix: "週", pointsPlaceholder: "ポイント", saveButton: "保存",
             monthlySummaryTitle: "月間集計", yearlySummaryTitle: "年間集計",
             totalLabel: "合計:", averageLabel: "平均:", pointsUnit: "pt", perWeekUnit: "pt/週",
@@ -84,7 +88,7 @@ export const CONFIGS = {
             exportSuccess: "日記データをクリップボードにコピーしました！安全な場所に保存してください。",
             importSuccess: "日記データを復元しました！",
             importError: "データのインポートに失敗しました。正しいデータ形式か確認してください。",
-            fridayReminderText: "今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！🎰",
+            fridayReminderText: "今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！",
             linkArticles: { text: "📝 記事一覧", href: "/blog/" },
             linkKatakata: { text: "🧪 KatakataLab", href: "https://katakatalab.com/" },
             linkPrivacy: { text: "プライバシーポリシー", href: "privacy.html" },
@@ -124,12 +128,16 @@ export const CONFIGS = {
             sectionTitleReverse: "Reverse Mode", labelAmountYen: "Amount Spent (USD)",
             amountYenPlaceholder: "e.g., 50", reverseCalculateButton: "Calculate Points",
             nextTargetNone: "No further levels", errorInput: "Please enter valid numbers and select a target status.",
+            errorNeededPoints: "Please enter a valid number for points to next level.",
+            errorTargetStatus: "Please select a target status.",
             errorRate: "The effective rate for calculation is zero or less.", errorMonth: "Failed to calculate remaining months in this year.",
             errorInputReverse: "Please enter a valid number.", errorRateReverse: "The effective rate for calculation is zero or less.",
             errorTargetConsistency: "The points-to-goal value is not valid for the selected target status.",
             resultLabelNeededPoints: "Points to goal", resultLabelTotalYen: "Estimated total spending",
             resultLabelMonthlyYen: "Monthly average", resultLabelMonths: "months",
             resultLabelRate: "Effective rate", resultLabelEarnedPoints: "Estimated points earned",
+            perMonth: "/month",
+            calculationNote: "*Estimated target spending evenly split by the remaining <b>{months} months</b> until the Google Play Points rank calculation period ends (December 31st each year).",
             yearSuffix: "", monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
             weekLabel: "Week", weekSuffix: "", pointsPlaceholder: "Points", saveButton: "Save",
             monthlySummaryTitle: "Monthly Summary", yearlySummaryTitle: "Yearly Summary",
@@ -145,7 +153,7 @@ export const CONFIGS = {
             exportSuccess: "Copied diary data to clipboard! Please save it in a safe place.",
             importSuccess: "Diary data restored successfully!",
             importError: "Failed to import data. Please check if the data format is correct.",
-            fridayReminderText: "It's Friday! Let's claim your Weekly Reward and record it in your diary! 🎰",
+            fridayReminderText: "It's Friday! Let's claim your Weekly Reward and record it in your diary!",
             linkArticles: { text: "📝 Articles", href: "/blog/" },
             linkKatakata: { text: "🧪 KatakataLab", href: "https://katakatalab.com/" },
             linkPrivacy: { text: "Privacy Policy", href: "privacy.html" },
@@ -172,7 +180,7 @@ export const STATE = {
 };
 
 // 互換性マウント
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.ANALYTICS = ANALYTICS;
     window.PP_APP.CONSTANTS = CONSTANTS;
