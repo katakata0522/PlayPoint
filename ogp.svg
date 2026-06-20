@@ -19,23 +19,19 @@
   <circle cx="1020" cy="120" r="160" fill="#10b981" opacity="0.15"/>
   <circle cx="160" cy="560" r="220" fill="#60a5fa" opacity="0.12"/>
   
-  <!-- テキスト情報 -->
-  <text x="100" y="250" fill="#ffffff" font-size="76" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="800">
+  <!-- テキスト情報 (位置とフォントサイズを調整して重なりを解消) -->
+  <text x="80" y="240" fill="#ffffff" font-size="60" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="800">
     Play Point Calculator
   </text>
-  <text x="100" y="340" fill="#dbeafe" font-size="40" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="600">
-    課金効率化と獲得ポイント予測を1秒で。
+  <text x="80" y="330" fill="#dbeafe" font-size="26" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="600">
+    次のランクまであといくら？獲得ポイントを簡単計算
   </text>
-  <text x="100" y="440" fill="#a5f3fc" font-size="32" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="700" letter-spacing="1">
+  <text x="80" y="420" fill="#a5f3fc" font-size="28" font-family="'Noto Sans JP', Arial, sans-serif" font-weight="700" letter-spacing="1">
     playpoint-sim.com
   </text>
   
-  <!-- アプリアイコングループ (中心 X=940, Y=315, サイズ 320x320) -->
-  <!-- 移動と拡大を適用：元の64x64を5倍にして320x320にする。X=940-160=780, Y=315-160=155 -->
-  <g transform="translate(780, 155) scale(5)" filter="url(#shadow)">
-    <!-- 白い角丸カード背景 -->
-    <rect x="2" y="2" width="60" height="60" rx="12" fill="#ffffff" />
-    
+  <!-- アプリアイコングループ (縮小して右端に寄せる: サイズ 256x256, X=850, Y=187) -->
+  <g transform="translate(850, 187) scale(4)" filter="url(#shadow)">
     <!-- 電卓のダークグレー外枠 -->
     <rect x="14" y="10" width="36" height="44" rx="6" fill="#323e48" />
     

@@ -1,7 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- 白い角丸カード背景 -->
-  <rect x="2" y="2" width="60" height="60" rx="14" fill="#ffffff" />
-  
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="12 8 40 48">
   <!-- 電卓のダークグレー外枠 -->
   <rect x="14" y="10" width="36" height="44" rx="6" fill="#323e48" />
   
