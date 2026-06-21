@@ -623,7 +623,7 @@ test('Service Workerは共有URL機能を含む最新版アセットを事前キ
 
   assert.ok(sw.includes("'./js/share.js'"));
   assert.ok(/playpoint-calc-v2026\d{4}/.test(sw));
-  assert.ok(sw.includes("'./style.css?v=20260618a'"));
+  assert.ok(sw.includes("'./style.css?v=20260621a'"));
 });
 
 test('トップページの更新日は実装更新日と一致する', () => {
@@ -631,9 +631,9 @@ test('トップページの更新日は実装更新日と一致する', () => {
   const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 
-  assert.ok(html.includes('2026-06-20'));
-  assert.ok(englishHtml.includes('2026-06-20'));
-  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-20<\/lastmod>/);
+  assert.ok(html.includes('2026-06-21'));
+  assert.ok(englishHtml.includes('2026-06-21'));
+  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-21<\/lastmod>/);
 });
 
 test('反映タイミング記事は結論と確認手順を見出しで整理する', () => {

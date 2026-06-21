@@ -148,18 +148,9 @@ export function init() {
     const listEl = document.querySelector('.article-link-list');
     if (countEl && listEl) {
         const count = listEl.querySelectorAll('li').length;
-        const isEn = isEnglishPath();
-        const isKo = isKoreanPath();
-        const isTw = isTaiwanPath();
-        if (isEn) {
-            countEl.textContent = `${count} Guides`;
-        } else if (isKo) {
-            countEl.textContent = `${count}개 가이드`;
-        } else if (isTw) {
-            countEl.textContent = `${count}篇指南`;
-        } else {
-            countEl.textContent = `${count}記事`;
-        }
+        const config = CONFIGS[STATE.currentRegion];
+        const template = config.uiText.articleCount || '{count}記事';
+        countEl.textContent = template.replace('{count}', count);
     }
 
 

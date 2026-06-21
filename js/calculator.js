@@ -248,7 +248,7 @@ export const CALC = {
             const monthlyResultContent = remainingMonths > 0
                 ? `
                     <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
-                    <dd><b>約 <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
+                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
                 `
                 : '';
             
@@ -259,7 +259,7 @@ export const CALC = {
                     ${rewardsSubtractedContent}
                     ${packResultContent}
                     <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>約 <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
+                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
                     ${monthlyResultContent}
                 </dl>
                 <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
@@ -298,7 +298,7 @@ export const CALC = {
         const resultContent = `
             <dl>
                 <dt>${texts.resultLabelEarnedPoints}</dt>
-                <dd><b>約 <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
+                <dd><b>${texts.approxLabel} <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
             </dl>
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
         `;
@@ -317,12 +317,9 @@ export const CALC = {
 
     // X (Twitter) シェア
     shareOnTwitter(text, shareUrl = "https://playpoint-sim.com/") {
-        const fullText = `${text}
-
-#Playポイント計算してみた
-#GooglePlayポイント
-
-${shareUrl}`;
+        const config = CONFIGS[STATE.currentRegion];
+        const hashtags = config.uiText.tweetHashtags || "#Playポイント計算してみた\n#GooglePlayポイント";
+        const fullText = `${text}\n\n${hashtags}\n\n${shareUrl}`;
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}`, '_blank');
     },
 

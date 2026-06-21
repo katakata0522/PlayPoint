@@ -551,7 +551,7 @@ button:active {
   transform: scale(1.08);
 }
 .info-btn:focus {
-  outline: none;
+  outline: 3px solid transparent;
   background: #0b57d0;
   color: white;
   border-color: #0b57d0;
