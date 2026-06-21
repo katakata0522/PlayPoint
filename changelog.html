@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>アップデートの歴史（開発の軌跡） - Playポイント計算ツール</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Playポイント計算機のこれまでのアップデート履歴と開発の軌跡をタイムライン形式でまとめたページです。">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="かたかた">
+    <meta name="last-modified" content="2026-06-21">
+    <meta property="article:modified_time" content="2026-06-21T00:00:00+09:00">
+    <link rel="canonical" href="https://playpoint-sim.com/changelog.html">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/changelog.html">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/changelog.html">
+    <meta property="og:title" content="アップデートの歴史（開発の軌跡） | Playポイント計算機">
+    <meta property="og:description" content="Playポイント計算機のこれまでのアップデート履歴と開発の軌跡をタイムライン形式でまとめたページです。">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://playpoint-sim.com/changelog.html">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:site_name" content="Playポイント計算機">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="アップデートの歴史（開発の軌跡） | Playポイント計算機">
+    <meta name="twitter:description" content="Playポイント計算機のこれまでのアップデート履歴と開発の軌跡をタイムライン形式でまとめたページです。">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    
+    <!-- 共通スタイルシートと Google Fonts の読み込み -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=20260618a">
+    
+    <style>
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--input-border-color, #cbd5e1);
+            top: 0;
+            bottom: 0;
+            left: 30px;
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+        .timeline-item {
+            padding: 10px 10px 30px 60px;
+            position: relative;
+            background-color: inherit;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 30px;
+            top: 24px;
+            margin-left: -8px;
+            background-color: var(--card-bg-color, #ffffff);
+            border: 4px solid var(--button-bg-color, #28a745);
+            border-radius: 50%;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        .timeline-item.latest::after {
+            background-color: var(--card-bg-color, #ffffff);
+            border: 4px solid #ffc107;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.6);
+        }
+        .timeline-content {
+            padding: 1.5em;
+            background-color: var(--section-bg-color, #ffffff);
+            position: relative;
+            border-radius: 8px;
+            box-shadow: var(--section-shadow, 0 4px 6px rgba(0, 0, 0, 0.05));
+            border-left: 4px solid var(--button-bg-color, #28a745);
+        }
+        .timeline-item.latest .timeline-content {
+            border-left: 4px solid #ffc107;
+            background: linear-gradient(to right, var(--section-bg-color, #ffffff) 95%, rgba(255, 193, 7, 0.03));
+        }
+        .timeline-version {
+            font-size: 1.25em;
+            font-weight: 800;
+            margin: 0 0 0.2em 0;
+            color: var(--text-color, #1e293b);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .timeline-badge {
+            font-size: 0.65em;
+            padding: 2px 8px;
+            border-radius: 99px;
+            background-color: #ffc107;
+            color: #664d03;
+            font-weight: bold;
+        }
+        .timeline-date {
+            font-size: 0.85em;
+            color: var(--link-color, #64748b);
+            margin-bottom: 1em;
+            font-weight: 600;
+        }
+        .timeline-body ul {
+            margin: 0;
+            padding-left: 1.2rem;
+            color: var(--text-color, #334155);
+            line-height: 1.7;
+        }
+        .timeline-body li {
+            margin-bottom: 0.5em;
+        }
+        .timeline-body li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "アップデートの歴史（開発の軌跡）",
+      "url": "https://playpoint-sim.com/changelog.html",
+      "inLanguage": "ja",
+      "dateModified": "2026-06-21",
+      "author": {
+        "@type": "Person",
+        "name": "かたかた"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Playポイント計算機",
+            "item": "https://playpoint-sim.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "あとがき・Q&A",
+            "item": "https://playpoint-sim.com/info.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "アップデートの歴史",
+            "item": "https://playpoint-sim.com/changelog.html"
+          }
+        ]
+      }
+    }
+    </script>
+</head>
+<body>
+
+<main class="calculator-wrapper">
+    <div class="top-bar">
+        <div class="header-links" style="width: 100%; justify-content: flex-end;">
+            <a href="info.html">← あとがき・Q&Aに戻る</a>
+            <a href="index.html" style="margin-left: 1em;">計算機トップ</a>
+        </div>
+    </div>
+
+    <h1>アップデートの歴史 (Update History)</h1>
+    <p style="text-align: center; color: var(--link-color); max-width: 600px; margin: 0.5rem auto 1.5rem auto; font-size: 0.95em; line-height: 1.6;">
+        「Playポイント計算機」の最初期リリースから現在までの開発の軌跡です。おかげさまで、多くの機能改善やSEO・多言語対応を実現してきました。
+    </p>
+
+    <div class="timeline">
+        <!-- v2.3.0 -->
+        <div class="timeline-item latest">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v2.3.0 <span class="timeline-badge">Latest</span></h2>
+                <div class="timeline-date">2026年6月21日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li><strong>多言語版の404エラー修正</strong>: 韓国語（/ko/）および台湾語（/tw/）ページにて、フッターリンクが正しく親ディレクトリ（../）を参照するように修正し、リンク切れを完全に解消。</li>
+                        <li><strong>アセット自動同期ビルダーの導入</strong>: HTMLビルド実行時に、サブページ（about-playpoints.html, info.html, attention.html 等）を含む全HTML内のCSS/JSバージョンクエリ（v=...）を一括同期し、オフライン（PWA）時の表示崩れやキャッシュミスのリスクを解消。</li>
+                        <li><strong>遅延ロードJSの自動同期</strong>: third-party.jsにハードコードされていたconsent.jsのバージョンパラメータを、ビルドスクリプトと連動して自動更新する仕組みを構築。</li>
+                        <li><strong>コピペ・SNS・トーストの多言語化</strong>: 計算結果コピー用テンプレート、X（旧Twitter）シェア文面、トーストメッセージを、UI言語（日・英・韓・台）に応じて動的に切り替えるようにローカライズを徹底。</li>
+                        <li><strong>カレンダー登録機能の多言語対応</strong>: GoogleカレンダーやiCal의 登録件名や詳細説明文、ファイル名を多言語化。</li>
+                        <li><strong>Cookie同意バナーのフォーカストラップ</strong>: バナー表示時に Tab キーフォーカスが外側の要素に逃げないアクセシビリティ処理（WAI-ARIA準拠）を実装。</li>
+                        <li><strong>共有URL復元時の自動計算</strong>: 共有リンクを踏んでアクセスした際、入力値の復元と同時に自動で計算を実行し、最初から結果のアニメーションを表示するように改善。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v2.2.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v2.2.0</h2>
+                <div class="timeline-date">2026年6月20日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>各サブページのデザインシステムを統合・統一。</li>
+                        <li>OGP画像の最適化・PNG形式への修正による転送量の削減。</li>
+                        <li>不要ファイルのクリーンアップによる高速化の実施。</li>
+                        <li>多言語版での日本語限定ブログドロワーの自動除去。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v2.1.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v2.1.0</h2>
+                <div class="timeline-date">2026年3月2日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>正規URL（canonicalタグ）の統一。</li>
+                        <li>メタタグおよび構造化データのさらなる強化。</li>
+                        <li>Googleクローラー向け robots.txt と sitemap.xml の追加・最適化。</li>
+                        <li>LCP/CLS改善のため、サードパーティ製計測コード（Google AdSense/Analytics）の非同期・遅延読み込みロジックを統合。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v2.0.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v2.0.0</h2>
+                <div class="timeline-date">2026年2月3日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>SoftwareApplication および WebSite 構造化データの追加によるSEO最適化。</li>
+                        <li>あとがき・Q&Aページに更新履歴セクションを追加。</li>
+                        <li>フォームのタップ領域（44px以上）を確保し、モバイルアクセシビリティを強化。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v1.9.2 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v1.9.2</h2>
+                <div class="timeline-date">2025年5月13日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>年末までの残り月数割り出しロジックの修正。</li>
+                        <li>軽微な表示バグおよび入力値の矛盾防止バリデーションの改善。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v1.9.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v1.9.0</h2>
+                <div class="timeline-date">2025年5月10日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>大規模アップデート。多言語対応（英語/グローバルモード）の搭載。</li>
+                        <li>Google Play ウィークリーアワードで獲得したポイントを記録・管理できる「ほくほくリワード日記」機能を新規追加。</li>
+                        <li>ユーザー設定の地域判定に応じた自動リダイレクト機能の搭載。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- v1.0.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v1.0.0</h2>
+                <div class="timeline-date">2025年4月20日</div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>「Playポイント計算機」の初期リリース。</li>
+                        <li>現在のステータス・ポイント・目標ステータスを入力して、目標ランクまでの必要課金額を瞬時にシミュレーションする基本機能を搭載。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link-wrapper" style="margin-top: 2rem;">
+        <a href="info.html" class="btn-back-home">← あとがきに戻る</a>
+    </div>
+
+    <footer class="page-footer">
+      <p>
+        <a href="info.html">あとがき・Q&A</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">ご意見・ご感想</a>
+        <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
+        <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
+      </p>
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-06-21</p>
+      <p class="copyright">
+        © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
+      </p>
+    </footer>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const yearEl = document.getElementById('copyright-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+    });
+</script>
+</body>
+</html>

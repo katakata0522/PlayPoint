@@ -404,6 +404,7 @@ if (fs.existsSync(thirdPartyJsPath) && consentVersion) {
 const htmlFiles = [
     'about-playpoints.html',
     'info.html',
+    'changelog.html',
     'attention.html',
     'privacy.html',
     'terms.html',
