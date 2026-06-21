@@ -189,7 +189,7 @@ window.onerror = function(message, source, lineno, colno, error) {
     return true; 
 };
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.UI = UI;
 }
