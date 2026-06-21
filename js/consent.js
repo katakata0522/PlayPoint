@@ -85,20 +85,41 @@
 
     function mountUi() {
         if (document.getElementById('playpoint-consent-banner')) return;
-        const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
-        const copy = isEnglish ? {
-            settings: 'Privacy settings',
-            title: 'Analytics and advertising settings',
-            body: 'With your permission, we use Google Analytics and AdSense to improve this site and display ads. You can change this choice later.',
-            reject: 'Reject',
-            accept: 'Allow'
-        } : {
-            settings: 'プライバシー設定',
-            title: 'アクセス解析・広告の設定',
-            body: 'サイト改善と広告表示のため、同意いただいた場合のみGoogle AnalyticsとAdSenseを使用します。選択は後から変更できます。',
-            reject: '拒否する',
-            accept: '同意する'
-        };
+        const lang = document.documentElement.lang.toLowerCase();
+        let copy;
+        if (lang.startsWith('en')) {
+            copy = {
+                settings: 'Privacy settings',
+                title: 'Analytics and advertising settings',
+                body: 'With your permission, we use Google Analytics and AdSense to improve this site and display ads. You can change this choice later.',
+                reject: 'Reject',
+                accept: 'Allow'
+            };
+        } else if (lang.startsWith('ko')) {
+            copy = {
+                settings: '개인정보 설정',
+                title: '액세스 분석 및 광고 설정',
+                body: '사이트 개선과 광고 표시를 위해, 동의하신 경우에만 Google Analytics와 AdSense를 사용합니다. 선택은 나중에 변경할 수 있습니다.',
+                reject: '거부',
+                accept: '동의'
+            };
+        } else if (lang.startsWith('zh-tw') || lang.startsWith('zh-hk')) {
+            copy = {
+                settings: '隱私權設定',
+                title: '流量分析與廣告設定',
+                body: '為了改善網站與顯示廣告，僅在您同意的情況下使用 Google Analytics 和 AdSense。您可以在日後隨時更改此選擇。',
+                reject: '拒絕',
+                accept: '同意'
+            };
+        } else {
+            copy = {
+                settings: 'プライバシー設定',
+                title: 'アクセス解析・広告の設定',
+                body: 'サイト改善と広告表示のため、同意いただいた場合のみGoogle AnalyticsとAdSenseを使用します。選択は後から変更できます。',
+                reject: '拒否する',
+                accept: '同意する'
+            };
+        }
 
         const style = document.createElement('style');
         style.textContent = `

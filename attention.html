@@ -207,6 +207,25 @@
         document.addEventListener('DOMContentLoaded', () => {
             const yearEl = document.getElementById('copyright-year');
             if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+            // 遷移元の言語ディレクトリに基づいて、戻るボタンのパスと文言を最適化する
+            const ref = document.referrer;
+            const btn = document.querySelector('.btn-back-home');
+            if (btn && ref) {
+                if (ref.includes('/ko/')) {
+                    btn.href = 'ko/';
+                    btn.textContent = '계산기로 돌아가기';
+                } else if (ref.includes('/tw/')) {
+                    btn.href = 'tw/';
+                    btn.textContent = '返回計算機';
+                } else if (ref.includes('/en/')) {
+                    btn.href = 'en/';
+                    btn.textContent = 'Go Back to Calculator';
+                } else {
+                    btn.href = './';
+                    btn.textContent = '計算機に戻る';
+                }
+            }
         });
     </script>
     <script src="js/third-party.js?v=20260619c"></script>

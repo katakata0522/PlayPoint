@@ -1293,4 +1293,14 @@ button:active {
   }
 }
 
+/* 日本語限定リンク */
+.ja-only {
+  display: inline-block;
+}
+
+/* 多言語版 HTML では lang 属性が "ja" 以外になるため、"ja-only" を非表示にする */
+html:not([lang="ja"]) .ja-only {
+  display: none !important;
+}
+
 
