@@ -868,9 +868,9 @@ test('sw.js と各言語版 index.html の style.css バージョンクエリが
 
 test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
   const targets = {
-    'en': { lang: 'en', title: 'Play Point Calculator' },
-    'ko': { lang: 'ko', title: '구글 플레이 포인트 계산기' },
-    'tw': { lang: 'tw', title: 'Google Play 點數計算器' }
+    'en': { lang: 'en',    title: 'Play Point Calculator',      ogUrl: 'https://playpoint-sim.com/en/' },
+    'ko': { lang: 'ko',    title: '구글 플레이 포인트 계산기',           ogUrl: 'https://playpoint-sim.com/ko/' },
+    'tw': { lang: 'zh-TW', title: 'Google Play 點數計算器',         ogUrl: 'https://playpoint-sim.com/tw/' }
   };
 
   for (const [dir, config] of Object.entries(targets)) {
@@ -879,8 +879,8 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
 
     const html = fs.readFileSync(filePath, 'utf8');
 
-    // lang 属性検証
-    assert.ok(html.includes(`<html lang="${dir}">`), `${dir}/index.html の lang 属性が正しくありません`);
+    // lang 属性検証（BCP47準拠の正しい言語コードを期待）
+    assert.ok(html.includes(`<html lang="${config.lang}">`), `${dir}/index.html の lang 属性が正しくありません。期待: lang="${config.lang}"`);
 
     // タイトル検証
     assert.ok(html.includes(`<title>${config.title}`), `${dir}/index.html のタイトルが正しくありません`);
@@ -888,7 +888,13 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
     // canonical 検証
     assert.ok(html.includes(`<link rel="canonical" href="https://playpoint-sim.com/${dir}/">`), `${dir}/index.html の canonical リンクが正しくありません`);
 
-    // hreflang 検証 (日本語版に記述された hreflang 定義がすべて含まれていること)
+    // og:url 検証（SNSシェア正確性のため必須）
+    assert.ok(
+      html.includes(`<meta property="og:url" content="${config.ogUrl}">`),
+      `${dir}/index.html の og:url が正しくありません。期待: ${config.ogUrl}`
+    );
+
+    // hreflang 検証 (5言語分全て)
     const hreflangs = [
       'hreflang="ja" href="https://playpoint-sim.com/"',
       'hreflang="en" href="https://playpoint-sim.com/en/"',

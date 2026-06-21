@@ -9,6 +9,8 @@ const indexHtml = fs.readFileSync(sourcePath, 'utf8');
 const locales = {
     'en': {
         region: 'US',
+        langCode: 'en',           // BCP47 言語コード（lang属性・inLanguageに使用）
+        inLanguage: 'en',
         title: 'Play Point Calculator - Google Play Points | How much to level up?',
         description: 'Google Play Points level-up calculator. Calculate how much you need to spend to reach Bronze, Silver, Gold, Platinum, or Diamond, including campaign boosts and weekly reward logs.',
         ogTitle: 'Play Point Calculator - Google Play Points | How much to level up?',
@@ -19,6 +21,8 @@ const locales = {
     },
     'ko': {
         region: 'KR',
+        langCode: 'ko',           // BCP47 言語コード
+        inLanguage: 'ko',
         title: '구글 플레이 포인트 계산기 - Play Point Calculator | 등급 업까지 얼마 남았지?',
         description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 환율과 보너스 이벤트에 맞춰 시뮬레이션합니다.',
         ogTitle: '구글 플레이 포인트 계산기 - Play Point Calculator | 등급 업까지 얼마 남았지?',
@@ -29,6 +33,8 @@ const locales = {
     },
     'tw': {
         region: 'TW',
+        langCode: 'zh-TW',        // BCP47 言語コード（"tw" は非標準のため必ず zh-TW を使用）
+        inLanguage: 'zh-TW',
         title: 'Google Play 點數計算器 - Play Point Calculator | 距離升級還差多少？',
         description: 'Google Play 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援倍率活動與每週獎勵紀錄。',
         ogTitle: 'Google Play 點數計算器 - Play Point Calculator | 距離升級還差多少？',
@@ -47,19 +53,24 @@ Object.entries(locales).forEach(([langDir, config]) => {
 
     let output = indexHtml;
 
-    // 1. html lang 置換
-    output = output.replace('<html lang="ja">', `<html lang="${langDir}">`);
+    // 1. html lang 置換（BCP47準拠: dirではなくlangCodeを使用）
+    output = output.replace(/<html lang="[^"]+">/, `<html lang="${config.langCode}">`);
 
     // 2. タイトル & description 置換
     output = output.replace(/<title>[^<]+<\/title>/, `<title>${config.title}</title>`);
-    output = output.replace(/<meta name="description" content="[^"]+">/, `<meta name="description" content="${config.description}">`);
+    output = output.replace(/<meta name="description" content="[^"]+">/g, `<meta name="description" content="${config.description}">`);
 
     // 3. OGP & Twitter tags 置換
-    output = output.replace(/<meta property="og:title" content="[^"]+">/, `<meta property="og:title" content="${config.ogTitle}">`);
-    output = output.replace(/<meta property="og:description" content="[^"]+">/, `<meta property="og:description" content="${config.ogDescription}">`);
-    output = output.replace(/<meta name="twitter:title" content="[^"]+">/, `<meta name="twitter:title" content="${config.ogTitle}">`);
-    output = output.replace(/<meta name="twitter:description" content="[^"]+">/, `<meta name="twitter:description" content="${config.ogDescription}">`);
-    output = output.replace(/<meta property="og:site_name" content="[^"]+">/, `<meta property="og:site_name" content="${config.appName}">`);
+    output = output.replace(/(<meta property="og:title" content=")[^"]+(">)/, `<meta property="og:title" content="${config.ogTitle}">`);
+    output = output.replace(/(<meta property="og:description" content=")[^"]+(">)/, `<meta property="og:description" content="${config.ogDescription}">`);
+    output = output.replace(/(<meta name="twitter:title" content=")[^"]+(">)/, `<meta name="twitter:title" content="${config.ogTitle}">`);
+    output = output.replace(/(<meta name="twitter:description" content=")[^"]+(">)/, `<meta name="twitter:description" content="${config.ogDescription}">`);
+    output = output.replace(/(<meta property="og:site_name" content=")[^"]+(">)/, `<meta property="og:site_name" content="${config.appName}">`);
+    // og:url は各言語版の実URLに置換（SNSシェア・OGP正確性のため必須）
+    output = output.replace(
+        /(<meta property="og:url" content=")[^"]+(">)/,
+        `<meta property="og:url" content="https://playpoint-sim.com/${langDir}/">`
+    );
 
     // 4. canonical & alternate の en/ パス置換
     output = output.replace('<link rel="canonical" href="https://playpoint-sim.com/">', `<link rel="canonical" href="https://playpoint-sim.com/${langDir}/">`);
@@ -89,10 +100,13 @@ Object.entries(locales).forEach(([langDir, config]) => {
     // 6. JSON-LD の置換
     // SoftwareApplication
     output = output.replace(/"name": "Playポイント計算機"/g, `"name": "${config.appName}"`);
-    output = output.replace(/"description": "[^"]+"/, `"description": "${config.appDesc}"`);
+    // gフラグ付きで全descriptionを置換（SoftwareApplicationのdescriptionが対象）
+    output = output.replace(/"description": "[^"]+"/g, `"description": "${config.appDesc}"`);
     output = output.replace(/"priceCurrency": "JPY"/, `"priceCurrency": "${config.currency}"`);
     output = output.replace(/"url": "https:\/\/playpoint-sim\.com\/"/g, `"url": "https://playpoint-sim.com/${langDir}/"`);
-    
+    // JSON-LD の inLanguage を各言語版の BCP47 コードに置換
+    output = output.replace(/"inLanguage":\s*\[[^\]]+\]/, `"inLanguage": "${config.inLanguage}"`);
+
     // WebSite
     output = output.replace(/"name": "Play\+?ポイント計算機"/g, `"name": "${config.appName}"`);
 
