@@ -837,13 +837,11 @@ test('サイトマップとSearch Console運用は著者ページと記事群を
   assert.ok(monitoring.includes('記事から計算完了'));
 });
 
-test('sw.js と index.html の style.css バージョンクエリが一致していること', () => {
+test('sw.js と各言語版 index.html の style.css バージョンクエリが一致していること', () => {
   const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const enHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
   const swJs = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 
   const indexMatch = indexHtml.match(/href="style\.css\?v=([^"]+)"/);
-  const enMatch = enHtml.match(/href="\.\.\/style\.css\?v=([^"]+)"/) || enHtml.match(/href="style\.css\?v=([^"]+)"/);
   const swMatch = swJs.match(/\.\/style\.css\?v=([^']+)'/);
 
   assert.ok(indexMatch, 'index.html 内に style.css のバージョン指定が見つかりません');
@@ -854,9 +852,59 @@ test('sw.js と index.html の style.css バージョンクエリが一致して
 
   assert.strictEqual(indexVer, swVer, `index.html (${indexVer}) と sw.js (${swVer}) の style.css バージョンが一致しません`);
 
-  if (enMatch) {
-    const enVer = enMatch[1];
-    assert.strictEqual(enVer, swVer, `en/index.html (${enVer}) と sw.js (${swVer}) の style.css バージョンが一致しません`);
+  // 各他言語版HTMLとの比較
+  const targets = ['en', 'ko', 'tw'];
+  for (const lang of targets) {
+    const filePath = path.join(root, lang, 'index.html');
+    if (fs.existsSync(filePath)) {
+      const html = fs.readFileSync(filePath, 'utf8');
+      const match = html.match(/href="\.\.\/style\.css\?v=([^"]+)"/);
+      assert.ok(match, `${lang}/index.html 内に style.css のバージョン指定が見つかりません`);
+      const ver = match[1];
+      assert.strictEqual(ver, swVer, `${lang}/index.html (${ver}) と sw.js (${swVer}) の style.css バージョンが一致しません`);
+    }
   }
 });
+
+test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
+  const targets = {
+    'en': { lang: 'en', title: 'Play Point Calculator' },
+    'ko': { lang: 'ko', title: '구글 플레이 포인트 계산기' },
+    'tw': { lang: 'tw', title: 'Google Play 點數計算器' }
+  };
+
+  for (const [dir, config] of Object.entries(targets)) {
+    const filePath = path.join(root, dir, 'index.html');
+    assert.ok(fs.existsSync(filePath), `${dir}/index.html が存在しません。ビルドスクリプトを実行してください。`);
+
+    const html = fs.readFileSync(filePath, 'utf8');
+
+    // lang 属性検証
+    assert.ok(html.includes(`<html lang="${dir}">`), `${dir}/index.html の lang 属性が正しくありません`);
+
+    // タイトル検証
+    assert.ok(html.includes(`<title>${config.title}`), `${dir}/index.html のタイトルが正しくありません`);
+
+    // canonical 検証
+    assert.ok(html.includes(`<link rel="canonical" href="https://playpoint-sim.com/${dir}/">`), `${dir}/index.html の canonical リンクが正しくありません`);
+
+    // hreflang 検証 (日本語版に記述された hreflang 定義がすべて含まれていること)
+    const hreflangs = [
+      'hreflang="ja" href="https://playpoint-sim.com/"',
+      'hreflang="en" href="https://playpoint-sim.com/en/"',
+      'hreflang="ko" href="https://playpoint-sim.com/ko/"',
+      'hreflang="zh-TW" href="https://playpoint-sim.com/tw/"',
+      'hreflang="x-default" href="https://playpoint-sim.com/"'
+    ];
+
+    for (const hf of hreflangs) {
+      assert.ok(html.includes(hf), `${dir}/index.html に hreflang (${hf}) が見つかりません`);
+    }
+
+    // 相対アセットパスが ../ になっているか検証
+    assert.ok(html.includes('href="../style.css'), `${dir}/index.html の style.css パスが相対化されていません`);
+    assert.ok(html.includes('src="../js/'), `${dir}/index.html の JSパスが相対化されていません`);
+  }
+});
+
 

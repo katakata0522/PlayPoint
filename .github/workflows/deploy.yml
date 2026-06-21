@@ -29,6 +29,7 @@ jobs:
 
       - name: Run regression tests
         run: |
+          node scripts/build-html.js
           node tests/playpoint-regression.test.cjs
           node tests/playpoint-nine-fixes.test.cjs
 

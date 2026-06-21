@@ -7,6 +7,8 @@ import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
 
 export const isEnglishPath = () => window.location.pathname.includes('/en/');
+export const isKoreanPath = () => window.location.pathname.includes('/ko/');
+export const isTaiwanPath = () => window.location.pathname.includes('/tw/');
 
 export function updateUIForRegion() {
     UI.updateUIText();
@@ -30,10 +32,23 @@ export function switchRegion(newRegion) {
     
     // URLのディレクトリ構成に基づいて静的ページ間を相互遷移させる
     const isEn = isEnglishPath();
-    if (newRegion === 'US' && !isEn) {
-        window.location.href = './en/';
-    } else if (newRegion === 'JP' && isEn) {
-        window.location.href = '../';
+    const isKo = isKoreanPath();
+    const isTw = isTaiwanPath();
+    const prefix = (isEn || isKo || isTw) ? '../' : './';
+    
+    let nextUrl = '';
+    if (newRegion === 'JP') {
+        nextUrl = (isEn || isKo || isTw) ? '../' : './';
+    } else if (newRegion === 'US') {
+        nextUrl = prefix + 'en/';
+    } else if (newRegion === 'KR') {
+        nextUrl = prefix + 'ko/';
+    } else if (newRegion === 'TW') {
+        nextUrl = prefix + 'tw/';
+    }
+    
+    if (nextUrl) {
+        window.location.href = nextUrl;
     } else {
         document.querySelectorAll(".region-switch button").forEach(button => {
             button.classList.toggle(CONSTANTS.CLASS_ACTIVE, button.dataset.region === newRegion);
@@ -141,16 +156,40 @@ export function init() {
 
     try {
         if (isEnglishPath()) {
-            // en/ ディレクトリ配下では強制的に英語（US）を設定
             STATE.currentRegion = 'US';
             localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'US');
+        } else if (isKoreanPath()) {
+            STATE.currentRegion = 'KR';
+            localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'KR');
+        } else if (isTaiwanPath()) {
+            STATE.currentRegion = 'TW';
+            localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'TW');
         } else {
             // 通常ルートでは保存された地域を読み込み（初期値はJP）
             const savedRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);
             if (savedRegion && CONFIGS[savedRegion]) {
                 STATE.currentRegion = savedRegion;
             } else {
-                STATE.currentRegion = 'JP';
+                // 初回アクセス時はブラウザ言語設定に従い自動的にリダイレクト
+                const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                if (browserLang.startsWith('ko')) {
+                    STATE.currentRegion = 'KR';
+                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'KR');
+                    window.location.href = './ko/';
+                    return;
+                } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                    STATE.currentRegion = 'TW';
+                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'TW');
+                    window.location.href = './tw/';
+                    return;
+                } else if (browserLang.startsWith('en')) {
+                    STATE.currentRegion = 'US';
+                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'US');
+                    window.location.href = './en/';
+                    return;
+                } else {
+                    STATE.currentRegion = 'JP';
+                }
             }
         }
     } catch (e) {
@@ -170,7 +209,7 @@ export function init() {
     // PWAサービスワーカーの登録
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            const swPath = isEnglishPath() ? '../sw.js' : './sw.js';
+            const swPath = (isEnglishPath() || isKoreanPath() || isTaiwanPath()) ? '../sw.js' : './sw.js';
             navigator.serviceWorker.register(swPath)
                 .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))
                 .catch(err => console.error('ServiceWorker registration failed:', err));
