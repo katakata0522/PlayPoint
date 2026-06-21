@@ -169,7 +169,7 @@
     </div>
 
     <div class="back-link-wrapper">
-        <a href="index.html" class="btn-back-home">← 計算ツールに戻る</a>
+        <a href="index.html" class="btn-back-home" id="btn-back-home">← 計算ツールに戻る</a>
     </div>
 
     <footer class="page-footer">
@@ -190,6 +190,58 @@
     document.addEventListener('DOMContentLoaded', () => {
         const yearEl = document.getElementById('copyright-year');
         if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        const btn = document.getElementById('btn-back-home');
+        if (btn) {
+            let preferredRegion = null;
+            try {
+                preferredRegion = localStorage.getItem('playpointPreferredRegion');
+            } catch (e) {
+                console.error("ローカルストレージの読み込みに失敗しました:", e);
+            }
+
+            if (!preferredRegion) {
+                const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                if (browserLang.startsWith('ko')) {
+                    preferredRegion = 'KR';
+                } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                    preferredRegion = 'TW';
+                } else if (browserLang.startsWith('en')) {
+                    preferredRegion = 'US';
+                } else {
+                    preferredRegion = 'JP';
+                }
+            }
+
+            const ref = document.referrer;
+            let targetRegion = preferredRegion;
+
+            if (ref) {
+                if (ref.includes('/ko/')) {
+                    targetRegion = 'KR';
+                } else if (ref.includes('/tw/')) {
+                    targetRegion = 'TW';
+                } else if (ref.includes('/en/')) {
+                    targetRegion = 'US';
+                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+                    targetRegion = 'JP';
+                }
+            }
+
+            if (targetRegion === 'KR') {
+                btn.href = 'ko/';
+                btn.textContent = '← 계산기로 돌아가기';
+            } else if (targetRegion === 'TW') {
+                btn.href = 'tw/';
+                btn.textContent = '← 返回計算機';
+            } else if (targetRegion === 'US') {
+                btn.href = 'en/';
+                btn.textContent = '← Go Back to Calculator';
+            } else {
+                btn.href = './';
+                btn.textContent = '← 計算ツールに戻る';
+            }
+        }
     });
 </script>
 </body>

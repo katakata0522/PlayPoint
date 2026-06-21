@@ -143,8 +143,64 @@
       </ul>
     </section>
 
-    <p class="back"><a href="index.html">← 計算ツールに戻る</a></p>
+    <p class="back"><a href="index.html" id="btn-back-home">← 計算ツールに戻る</a></p>
     <p class="meta">運営者: かたかた / 最終更新: 2026-06-21</p>
   </main>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const btn = document.getElementById('btn-back-home');
+          if (btn) {
+              let preferredRegion = null;
+              try {
+                  preferredRegion = localStorage.getItem('playpointPreferredRegion');
+              } catch (e) {
+                  console.error("ローカルストレージの読み込みに失敗しました:", e);
+              }
+
+              if (!preferredRegion) {
+                  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                  if (browserLang.startsWith('ko')) {
+                      preferredRegion = 'KR';
+                  } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                      preferredRegion = 'TW';
+                  } else if (browserLang.startsWith('en')) {
+                      preferredRegion = 'US';
+                  } else {
+                      preferredRegion = 'JP';
+                  }
+              }
+
+              const ref = document.referrer;
+              let targetRegion = preferredRegion;
+
+              if (ref) {
+                  if (ref.includes('/ko/')) {
+                      targetRegion = 'KR';
+                  } else if (ref.includes('/tw/')) {
+                      targetRegion = 'TW';
+                  } else if (ref.includes('/en/')) {
+                      targetRegion = 'US';
+                  } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+                      targetRegion = 'JP';
+                  }
+              }
+
+              if (targetRegion === 'KR') {
+                  btn.href = 'ko/';
+                  btn.textContent = '← 계산기로 돌아가기';
+              } else if (targetRegion === 'TW') {
+                  btn.href = 'tw/';
+                  btn.textContent = '← 返回計算機';
+              } else if (targetRegion === 'US') {
+                  btn.href = 'en/';
+                  btn.textContent = '← Go Back to Calculator';
+              } else {
+                  btn.href = './';
+                  btn.textContent = '← 計算ツールに戻る';
+              }
+          }
+      });
+  </script>
 </body>
 </html>

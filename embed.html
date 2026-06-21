@@ -375,7 +375,7 @@
 </div>
 
 <footer>
-  <p>© 2026 <a href="index.html">PlayPoint Simulation Tool</a> | <a href="blog/">攻略ブログ</a></p>
+  <p>© 2026 <a href="index.html" id="footer-calculator-link">PlayPoint Simulation Tool</a> | <a href="blog/">攻略ブログ</a></p>
 </footer>
 
 <div id="toast" class="toast">クリップボードにコピーしました！</div>
@@ -383,6 +383,54 @@
 <script src="embed/playpoint-widget.js" defer></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const footerLink = document.getElementById('footer-calculator-link');
+    if (footerLink) {
+        let preferredRegion = null;
+        try {
+            preferredRegion = localStorage.getItem('playpointPreferredRegion');
+        } catch (e) {
+            console.error("ローカルストレージの読み込みに失敗しました:", e);
+        }
+
+        if (!preferredRegion) {
+            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+            if (browserLang.startsWith('ko')) {
+                preferredRegion = 'KR';
+            } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                preferredRegion = 'TW';
+            } else if (browserLang.startsWith('en')) {
+                preferredRegion = 'US';
+            } else {
+                preferredRegion = 'JP';
+            }
+        }
+
+        const ref = document.referrer;
+        let targetRegion = preferredRegion;
+
+        if (ref) {
+            if (ref.includes('/ko/')) {
+                targetRegion = 'KR';
+            } else if (ref.includes('/tw/')) {
+                targetRegion = 'TW';
+            } else if (ref.includes('/en/')) {
+                targetRegion = 'US';
+            } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+                targetRegion = 'JP';
+            }
+        }
+
+        if (targetRegion === 'KR') {
+            footerLink.href = 'ko/';
+        } else if (targetRegion === 'TW') {
+            footerLink.href = 'tw/';
+        } else if (targetRegion === 'US') {
+            footerLink.href = 'en/';
+        } else {
+            footerLink.href = './';
+        }
+    }
+
     const selectTheme = document.getElementById('select-theme');
     const selectLang = document.getElementById('select-lang');
     const selectMode = document.getElementById('select-mode');

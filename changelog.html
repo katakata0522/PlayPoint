@@ -288,7 +288,7 @@
     </div>
 
     <div class="back-link-wrapper" style="margin-top: 2rem;">
-        <a href="info.html" class="btn-back-home">← あとがきに戻る</a>
+        <a href="info.html" class="btn-back-home" id="btn-back-home">← あとがきに戻る</a>
     </div>
 
     <footer class="page-footer">
@@ -309,6 +309,58 @@
     document.addEventListener('DOMContentLoaded', () => {
         const yearEl = document.getElementById('copyright-year');
         if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        const btn = document.getElementById('btn-back-home');
+        if (btn) {
+            let preferredRegion = null;
+            try {
+                preferredRegion = localStorage.getItem('playpointPreferredRegion');
+            } catch (e) {
+                console.error("ローカルストレージの読み込みに失敗しました:", e);
+            }
+
+            if (!preferredRegion) {
+                const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                if (browserLang.startsWith('ko')) {
+                    preferredRegion = 'KR';
+                } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                    preferredRegion = 'TW';
+                } else if (browserLang.startsWith('en')) {
+                    preferredRegion = 'US';
+                } else {
+                    preferredRegion = 'JP';
+                }
+            }
+
+            const ref = document.referrer;
+            let targetRegion = preferredRegion;
+
+            if (ref) {
+                if (ref.includes('/ko/')) {
+                    targetRegion = 'KR';
+                } else if (ref.includes('/tw/')) {
+                    targetRegion = 'TW';
+                } else if (ref.includes('/en/')) {
+                    targetRegion = 'US';
+                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+                    targetRegion = 'JP';
+                }
+            }
+
+            if (targetRegion === 'KR') {
+                btn.href = 'info.html';
+                btn.textContent = '← Q&A로 돌아가기';
+            } else if (targetRegion === 'TW') {
+                btn.href = 'info.html';
+                btn.textContent = '← 返回問與答';
+            } else if (targetRegion === 'US') {
+                btn.href = 'info.html';
+                btn.textContent = '← Go Back to Q&A';
+            } else {
+                btn.href = 'info.html';
+                btn.textContent = '← あとがきに戻る';
+            }
+        }
     });
 </script>
 </body>
