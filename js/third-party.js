@@ -70,6 +70,13 @@
                 if (idx !== -1) {
                     prefix = src.substring(0, idx);
                 }
+            } else {
+                // Fallback for cases where document.currentScript is null
+                if (/\/en(\/|$)/.test(window.location.pathname) || 
+                    /\/ko(\/|$)/.test(window.location.pathname) || 
+                    /\/tw(\/|$)/.test(window.location.pathname)) {
+                    prefix = '../';
+                }
             }
             consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260619a`)
                 .then(() => window.PlayPointConsent);
