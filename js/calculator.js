@@ -29,15 +29,41 @@ export const CALC = {
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
         STATE.dom.baseRate.value = (config.statusRates[currentStatusValue] || 1.0).toFixed(2);
         STATE.dom.targetStatus.innerHTML = "";
-        const availableTargets = (config.statusPointsMapping[currentStatusValue] || []).slice(0, 1);
-        availableTargets.forEach(targetLabel => {
+
+        const availableTargets = [];
+        const statusLabels = Object.keys(config.statuses);
+        const currentStatusLabel = statusLabels.find(label => config.statuses[label] === currentStatusValue);
+
+        // 1. 同ランクの「維持」を追加（ブロンズ以外のステータス）
+        if (currentStatusLabel && currentStatusValue > 1.0) {
+            availableTargets.push({
+                label: `${currentStatusLabel} (${config.uiText.statusKeep || '維持'})`,
+                value: config.thresholds[currentStatusLabel],
+                statusLabel: currentStatusLabel
+            });
+        }
+
+        // 2. 次のランクの「昇格」を追加
+        const nextTargets = (config.statusPointsMapping[currentStatusValue] || []).slice(0, 1);
+        nextTargets.forEach(targetLabel => {
             const points = config.thresholds[targetLabel];
             if (points) {
-                const option = new Option(`${targetLabel} (${points.toLocaleString(config.lang)}pt)`, points);
-                option.dataset.statusLabel = targetLabel;
-                STATE.dom.targetStatus.add(option);
+                availableTargets.push({
+                    label: `${targetLabel} (${config.uiText.statusUp || '昇格'})`,
+                    value: points,
+                    statusLabel: targetLabel
+                });
             }
         });
+
+        // DOMに追加
+        availableTargets.forEach(target => {
+            const pointsStr = target.value.toLocaleString(config.lang);
+            const option = new Option(`${target.label} (${pointsStr}pt)`, target.value);
+            option.dataset.statusLabel = target.statusLabel;
+            STATE.dom.targetStatus.add(option);
+        });
+
         if (availableTargets.length === 0) {
             const option = new Option(config.uiText.nextTargetNone, "");
             option.disabled = true;
@@ -72,6 +98,13 @@ export const CALC = {
         if (!Number.isFinite(targetThreshold)) return null;
         const currentFloorPoints = this.getCurrentStatusFloorPoints(config, currentStatusValue);
         if (currentFloorPoints === null) return null;
+
+        // 維持（目標の閾値と現在の閾値が同じ）の場合は、最大必要ポイントは目標の閾値そのもの
+        if (targetThreshold === currentFloorPoints) {
+            return targetThreshold > 0 ? targetThreshold : null;
+        }
+
+        // 昇格の場合は差分
         const maxNeededPoints = targetThreshold - currentFloorPoints;
         return maxNeededPoints > 0 ? maxNeededPoints : null;
     },

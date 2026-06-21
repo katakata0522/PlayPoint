@@ -913,4 +913,39 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
   }
 });
 
+test('ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される', () => {
+  const { PP_STATE, updateBaseRateAndTarget } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  
+  // 1. ゴールド（1.5）の場合
+  PP_STATE.dom.currentStatus.value = '1.5';
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput();
+
+  updateBaseRateAndTarget();
+
+  // ゴールド(維持) と プラチナ(昇格) の2つが選択肢に入るはず
+  assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 2);
+  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ゴールド');
+  assert.strictEqual(PP_STATE.dom.targetStatus.options[1].dataset.statusLabel, 'プラチナ');
+
+  // ゴールド（維持）選択時の neededPoints.max は 1000 に制限されること
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, '1000');
+
+  // 2. ダイヤモンド（2.0）の場合
+  PP_STATE.dom.currentStatus.value = '2';
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput();
+
+  updateBaseRateAndTarget();
+
+  // ダイヤモンドは最高ランクなので、ダイヤモンド(維持) の1つだけが選択肢に入るはず
+  assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 1);
+  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ダイヤモンド');
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, '15000');
+});
+
 
