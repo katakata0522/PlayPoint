@@ -36,7 +36,11 @@ const ASSETS = [
   './ko/',
   './ko/index.html',
   './tw/',
-  './tw/index.html'
+  './tw/index.html',
+  './articles/2026-06-20-discount-gift-cards.html',
+  './en/articles/2026-06-20-discount-gift-cards.html',
+  './ko/articles/2026-06-20-discount-gift-cards.html',
+  './tw/articles/2026-06-20-discount-gift-cards.html'
 ];
 
 // インストール時に静的アセットをキャッシュ
