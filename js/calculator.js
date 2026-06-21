@@ -235,16 +235,19 @@ ${shareUrl}`;
         if (!STATE.dom.result.classList.contains(CONSTANTS.CLASS_HAS_RESULT) || !requiredYen || !targetStatusLabel) return;
         
         const config = CONFIGS[STATE.currentRegion];
+        const texts = config.uiText;
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
-        const textToCopy = `▼Playポイント計算結果▼
-目標ステータス： ${targetStatusLabel}
-必要な課金額の目安： 約${formattedYen}${config.currencySymbol}
-
-計算元：Playポイント計算機 ( ${STATE.dom.result.dataset.shareUrl || 'https://playpoint-sim.com/'} )`;
+        const shareUrl = STATE.dom.result.dataset.shareUrl || 'https://playpoint-sim.com/';
+        
+        const textToCopy = texts.copyResultTemplate
+            .replace('{status}', targetStatusLabel)
+            .replace('{yen}', formattedYen)
+            .replace('{symbol}', config.currencySymbol)
+            .replace('{url}', shareUrl);
         
         navigator.clipboard.writeText(textToCopy)
-            .then(() => { UI.showToast("クリップボードにコピーしました！"); })
-            .catch(() => { UI.showToast("コピーに失敗しました。", 'error'); });
+            .then(() => { UI.showToast(texts.toastCopySuccess); })
+            .catch(() => { UI.showToast(texts.toastCopyError, 'error'); });
     },
 
     // Xへの通常計算シェアイベントハンドラ
@@ -254,9 +257,12 @@ ${shareUrl}`;
         if (!requiredYen || !targetStatusLabel) return;
         
         const config = CONFIGS[STATE.currentRegion];
+        const texts = config.uiText;
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
-        const text = `【Playポイント計算機で試算】
-私の目標「${targetStatusLabel}」まで、あと【${formattedYen}${config.currencySymbol}】必要みたい！💰`;
+        const text = texts.tweetTextMain
+            .replace('{status}', targetStatusLabel)
+            .replace('{yen}', formattedYen)
+            .replace('{symbol}', config.currencySymbol);
         this.shareOnTwitter(text, STATE.dom.result.dataset.shareUrl);
     },
 
@@ -267,10 +273,13 @@ ${shareUrl}`;
         if (!earnedPoints || !amountYen) return;
         
         const config = CONFIGS[STATE.currentRegion];
+        const texts = config.uiText;
         const formattedPoints = parseFloat(earnedPoints).toLocaleString(config.lang);
         const formattedYen = parseFloat(amountYen).toLocaleString(config.lang);
-        const text = `【Playポイント計算機で試算】
-${formattedYen}${config.currencySymbol}使うと、約 ${formattedPoints}ポイント 獲得できるみたい！✨`;
+        const text = texts.tweetTextReverse
+            .replace('{yen}', formattedYen)
+            .replace('{symbol}', config.currencySymbol)
+            .replace('{points}', formattedPoints);
         this.shareOnTwitter(text, STATE.dom.reverseResult.dataset.shareUrl);
     }
 };

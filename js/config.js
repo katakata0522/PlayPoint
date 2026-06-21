@@ -102,7 +102,12 @@ export const CONFIGS = {
             linkAbout: { text: "Playポイントとは？", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 お得に課金する", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" },
-            linkAttention: { text: "⚠️ 国別差異", href: "attention.html" }
+            linkAttention: { text: "⚠️ 国別差異", href: "attention.html" },
+            toastCopySuccess: "クリップボードにコピーしました！",
+            toastCopyError: "コピーに失敗しました。",
+            copyResultTemplate: "▼Playポイント計算結果▼\n目標ステータス： {status}\n必要な課金額の目安： 約{yen}{symbol}\n\n計算元：Playポイント計算機 ( {url} )",
+            tweetTextMain: "【Playポイント計算機で試算】\n私の目標「{status}」まで、あと【{yen}{symbol}】必要みたい！💰",
+            tweetTextReverse: "【Playポイント計算機で試算】\n{yen}{symbol}使うと、約 {points}ポイント 獲得できるみたい！✨"
         }
     },
     'US': {
@@ -174,7 +179,12 @@ export const CONFIGS = {
             linkAbout: { text: "What are Play Points?", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 Discount Guide", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "Operator & Policy", href: "author/katakata.html" },
-            linkAttention: { text: "⚠️ Country Diff", href: "attention.html" }
+            linkAttention: { text: "⚠️ Country Diff", href: "attention.html" },
+            toastCopySuccess: "Copied to clipboard!",
+            toastCopyError: "Failed to copy.",
+            copyResultTemplate: "▼Play Points Calculation Result▼\nTarget Status: {status}\nEstimated Spending: Approx. {yen} {symbol}\n\nSource: Play Points Calculator ( {url} )",
+            tweetTextMain: "[Play Points Calculator]\nI need approx. {yen} {symbol} to reach my goal \"{status}\"! 💰",
+            tweetTextReverse: "[Play Points Calculator]\nIf I spend {yen} {symbol}, I can earn approx. {points} points! ✨"
         }
     },
     'KR': {
@@ -246,7 +256,12 @@ export const CONFIGS = {
             linkAbout: { text: "Play 포인트란?", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 할인 가이드", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "운영자 및 정책", href: "author/katakata.html" },
-            linkAttention: { text: "⚠️ 국가별 차이", href: "attention.html" }
+            linkAttention: { text: "⚠️ 국가별 차이", href: "attention.html" },
+            toastCopySuccess: "클립보드에 복사되었습니다!",
+            toastCopyError: "복사에 실패했습니다.",
+            copyResultTemplate: "▼Play 포인트 계산 결과▼\n목표 등급: {status}\n예상 결제 금액: 약 {yen}{symbol}\n\n출처: 플레이 포인트 계산기 ( {url} )",
+            tweetTextMain: "【구글 플레이 포인트 계산기】\n내 목표 「{status}」 등급까지 약 【{yen}{symbol}】 더 필요하네요! 💰",
+            tweetTextReverse: "【구글 플레이 포인트 계산기】\n{yen}{symbol} 결제하면 약 {points}포인트 적립되네요! ✨"
         }
     },
     'TW': {
@@ -318,7 +333,12 @@ export const CONFIGS = {
             linkAbout: { text: "什麼是 Play Points？", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 折扣指南", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "營運者與政策", href: "author/katakata.html" },
-            linkAttention: { text: "⚠️ 國家別差異", href: "attention.html" }
+            linkAttention: { text: "⚠️ 國家別差異", href: "attention.html" },
+            toastCopySuccess: "已複製至剪貼簿！",
+            toastCopyError: "複製失敗。",
+            copyResultTemplate: "▼Play Points 計算結果▼\n目標等級： {status}\n預估消費金額： 約{yen}{symbol}\n\n計算來源：Play Points 計算器 ( {url} )",
+            tweetTextMain: "【Google Play 點數計算器】\n距離我的目標「{status}」還需要【{yen}{symbol}】！💰",
+            tweetTextReverse: "【Google Play 點數計算器】\n消費 {yen}{symbol} 大約可以獲得 {points} 點！✨"
         }
     }
 };

@@ -4,7 +4,27 @@ const fs = require('fs');
 const path = require('path');
 
 const sourcePath = path.join(__dirname, '../index.html');
-const indexHtml = fs.readFileSync(sourcePath, 'utf8');
+let indexHtml = fs.readFileSync(sourcePath, 'utf8');
+
+// 現在の日本時間 (JST) の日付を取得して index.html の日付メタデータを自動同期
+const now = new Date();
+const jstOffset = 9 * 60 * 60 * 1000;
+const jstDate = new Date(now.getTime() + jstOffset);
+const yyyy = jstDate.getUTCFullYear();
+const mm = String(jstDate.getUTCMonth() + 1).padStart(2, '0');
+const dd = String(jstDate.getUTCDate()).padStart(2, '0');
+const hh = String(jstDate.getUTCHours()).padStart(2, '0');
+const min = String(jstDate.getUTCMinutes()).padStart(2, '0');
+const todayStr = `${yyyy}-${mm}-${dd}`;
+
+indexHtml = indexHtml.replace(/<meta name="last-modified" content="[^"]+">/, `<meta name="last-modified" content="${todayStr}">`);
+indexHtml = indexHtml.replace(/<meta property="article:modified_time" content="[^"]+">/, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
+indexHtml = indexHtml.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
+indexHtml = indexHtml.replace(/最終更新: \d{4}-\d{2}-\d{2}/, `最終更新: ${todayStr}`);
+
+// 置換後の HTML を上書き保存
+fs.writeFileSync(sourcePath, indexHtml, 'utf8');
+console.log(`Synchronized dates in index.html to ${todayStr}`);
 
 const locales = {
     'en': {
@@ -231,6 +251,7 @@ Object.entries(locales).forEach(([langDir, config]) => {
     // 5. アセットや相対リンクの前に ../ を付与
     const relativeAttrs = [
         'href="favicon.svg"',
+        'href="icon-192.png"',
         'href="manifest.json"',
         'href="style.css',
         'href="attention.html"',
@@ -281,3 +302,91 @@ Object.entries(locales).forEach(([langDir, config]) => {
     fs.writeFileSync(targetFile, output, 'utf8');
     console.log(`Generated ${targetFile} successfully.`);
 });
+
+// ==========================================
+// 10. sw.js (Service Worker) のキャッシュ自動更新・同期処理
+// ==========================================
+const swPath = path.join(__dirname, '../sw.js');
+if (fs.existsSync(swPath)) {
+    let swContent = fs.readFileSync(swPath, 'utf8');
+
+    // index.html から CSS や JS のバージョンクエリ（例: style.css?v=XXXX）を抽出
+    const cssQueryMatch = indexHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
+    const cssVersion = cssQueryMatch ? cssQueryMatch[1] : '';
+
+    const consentQueryMatch = indexHtml.match(/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
+    const consentVersion = consentQueryMatch ? consentQueryMatch[1] : '';
+
+    const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
+    const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
+
+    // blog/index.html からクエリを抽出
+    const blogIndexPath = path.join(__dirname, '../blog/index.html');
+    let blogCssVersion = '';
+    let blogScriptVersion = '';
+    let blogComponentsVersion = '';
+    if (fs.existsSync(blogIndexPath)) {
+        const blogHtml = fs.readFileSync(blogIndexPath, 'utf8');
+        const blogCssMatch = blogHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
+        if (blogCssMatch) blogCssVersion = blogCssMatch[1];
+        const blogScriptMatch = blogHtml.match(/script\.js\?v=([a-zA-Z0-9_-]+)/);
+        if (blogScriptMatch) blogScriptVersion = blogScriptMatch[1];
+        const blogComponentsMatch = blogHtml.match(/components\.js\?v=([a-zA-Z0-9_-]+)/);
+        if (blogComponentsMatch) blogComponentsVersion = blogComponentsMatch[1];
+    }
+
+    // 代表的な記事ファイルから article-shared.css のクエリを抽出
+    const articlePath = path.join(__dirname, '../articles/2026-06-20-discount-gift-cards.html');
+    let articleSharedCssVersion = '';
+    if (fs.existsSync(articlePath)) {
+        const articleHtml = fs.readFileSync(articlePath, 'utf8');
+        const articleSharedCssMatch = articleHtml.match(/article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
+        if (articleSharedCssMatch) articleSharedCssVersion = articleSharedCssMatch[1];
+    }
+
+    // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
+    const newCacheName = `playpoint-calc-v${yyyy}${mm}${dd}_${hh}${min}`;
+    swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
+
+    // ASSETS 内のバージョンパラメータを index.html と自動同期
+    if (cssVersion) {
+        swContent = swContent.replace(/\.\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./style.css?v=${cssVersion}`);
+    }
+    if (consentVersion) {
+        swContent = swContent.replace(/\.\/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `./js/consent.js?v=${consentVersion}`);
+    }
+    if (thirdPartyVersion) {
+        swContent = swContent.replace(/\.\/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `./js/third-party.js?v=${thirdPartyVersion}`);
+    }
+    if (blogCssVersion) {
+        swContent = swContent.replace(/\.\/blog\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./blog/style.css?v=${blogCssVersion}`);
+    }
+    if (blogScriptVersion) {
+        swContent = swContent.replace(/\.\/blog\/script\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/script.js?v=${blogScriptVersion}`);
+    }
+    if (blogComponentsVersion) {
+        swContent = swContent.replace(/\.\/blog\/components\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/components.js?v=${blogComponentsVersion}`);
+    }
+    if (articleSharedCssVersion) {
+        swContent = swContent.replace(/\.\/articles\/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `./articles/article-shared.css?v=${articleSharedCssVersion}`);
+    }
+
+    fs.writeFileSync(swPath, swContent, 'utf8');
+    console.log(`Successfully synchronized sw.js cache. CACHE_NAME=${newCacheName}`);
+}
+
+// ==========================================
+// 11. sitemap.xml の改行コード LF 統一処理
+// ==========================================
+const sitemapPath = path.join(__dirname, '../sitemap.xml');
+if (fs.existsSync(sitemapPath)) {
+    let sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+    // CRLF を LF に統一
+    sitemapContent = sitemapContent.replace(/\r\n/g, '\n');
+    // 最終行が改行で終わっていない場合は改行を追加
+    if (!sitemapContent.endsWith('\n')) {
+        sitemapContent += '\n';
+    }
+    fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
+    console.log('Successfully unified sitemap.xml line endings to LF.');
+}
