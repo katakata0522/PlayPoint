@@ -4,6 +4,10 @@
 export const ANALYTICS = {
     track(eventName, params = {}) {
         if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
+        // 同意（オプトイン）していない場合はイベントデータの収集・送信を行わない
+        if (typeof window !== 'undefined' && window.PlayPointConsent && window.PlayPointConsent.getStatus() !== 'granted') {
+            return;
+        }
         window.dataLayer = window.dataLayer || [];
         window.gtag = window.gtag || function gtag() {
             window.dataLayer.push(arguments);
@@ -64,7 +68,7 @@ export const CONFIGS = {
             calculateButton: "課金額を計算", copyButton: "コピーする", tweetButton: "結果をXでシェア",
             sectionTitleReverse: "逆算モード", labelAmountYen: "課金額（円）",
             amountYenPlaceholder: "例：5000", reverseCalculateButton: "ポイントを計算",
-            nextTargetNone: "次の目標はありません", statusKeep: "維持", statusUp: "昇格", subtractRewardsLabel: "年末までのウィークリーリワード獲得予想（自動加算）を差し引く", packAmountLabel: "1回あたりの平均課金パック額 (オプション)", resultLabelFinalNeededPoints: "実質必要ポイント", resultLabelRequiredPacks: "必要購入パック数", resultLabelFreeClear: "課金不要（リワードのみで達成可能）", errorInput: "有効な数値を入力し、目標ステータスを選択してください",
+            nextTargetNone: "次の目標はありません", statusKeep: "維持", statusUp: "昇格", subtractRewardsLabel: "年末までのウィークリーリワード獲得予想（自動加算）を差し引く", packAmountLabel: "1回あたりの平均課金パック額 (オプション)", packUnit: "パック", resultLabelFinalNeededPoints: "実質必要ポイント", resultLabelRequiredPacks: "必要購入パック数", resultLabelFreeClear: "課金不要（リワードのみで達成可能）", errorInput: "有効な数値を入力し、目標ステータスを選択してください",
             errorNeededPoints: "目標までの必要ポイントに有効な数値を入力してください",
             errorTargetStatus: "目標ステータスを選択してください",
             errorRate: "計算に使用する還元率が0以下です", errorMonth: "年内の残り期間の計算に失敗しました（現在12月、またはシステム時刻をご確認ください）",
@@ -147,7 +151,7 @@ export const CONFIGS = {
             calculateButton: "Calculate Amount", copyButton: "Copy", tweetButton: "Share on X",
             sectionTitleReverse: "Reverse Mode", labelAmountYen: "Amount Spent (USD)",
             amountYenPlaceholder: "e.g., 50", reverseCalculateButton: "Calculate Points",
-            nextTargetNone: "No further levels", statusKeep: "Keep", statusUp: "Level Up", subtractRewardsLabel: "Subtract estimated weekly rewards until end of year", packAmountLabel: "Average pack spending per transaction (Optional)", resultLabelFinalNeededPoints: "Net points needed", resultLabelRequiredPacks: "Packs needed", resultLabelFreeClear: "No spending needed (Achievable via rewards alone)", errorInput: "Please enter valid numbers and select a target status.",
+            nextTargetNone: "No further levels", statusKeep: "Keep", statusUp: "Level Up", subtractRewardsLabel: "Subtract estimated weekly rewards until end of year", packAmountLabel: "Average pack spending per transaction (Optional)", packUnit: "packs", resultLabelFinalNeededPoints: "Net points needed", resultLabelRequiredPacks: "Packs needed", resultLabelFreeClear: "No spending needed (Achievable via rewards alone)", errorInput: "Please enter valid numbers and select a target status.",
             errorNeededPoints: "Please enter a valid number for points to next level.",
             errorTargetStatus: "Please select a target status.",
             errorRate: "The effective rate for calculation is zero or less.", errorMonth: "Failed to calculate remaining months in this year.",
@@ -230,7 +234,7 @@ export const CONFIGS = {
             calculateButton: "결제 금액 계산", copyButton: "복사하기", tweetButton: "결과를 X에 공유",
             sectionTitleReverse: "역산 모드", labelAmountYen: "결제 금액 (₩)",
             amountYenPlaceholder: "예: 50000", reverseCalculateButton: "포인트 계산",
-            nextTargetNone: "다음 목표 등급이 없습니다", statusKeep: "유지", statusUp: "승급", subtractRewardsLabel: "연말까지의 주간 리워드 예상 획득 포인트 차감", packAmountLabel: "1회당 평균 결제 팩 금액 (선택 사항)", resultLabelFinalNeededPoints: "실질 필요 포인트", resultLabelRequiredPacks: "필요 구매 팩 수", resultLabelFreeClear: "결제 불필요 (리워드만으로 달성 가능)", errorInput: "올바른 숫자를 입력하고 목표 등급을 선택해 주세요",
+            nextTargetNone: "다음 목표 등급이 없습니다", statusKeep: "유지", statusUp: "승급", subtractRewardsLabel: "연말까지의 주간 리워드 예상 획득 포인트 차감", packAmountLabel: "1회당 평균 결제 팩 금액 (선택 사항)", packUnit: "팩", resultLabelFinalNeededPoints: "실질 필요 포인트", resultLabelRequiredPacks: "필요 구매 팩 수", resultLabelFreeClear: "결제 불필요 (리워드만으로 달성 가능)", errorInput: "올바른 숫자를 입력하고 목표 등급을 선택해 주세요",
             errorNeededPoints: "목표까지 필요한 포인트에 올바른 숫자를 입력해 주세요",
             errorTargetStatus: "목표 등급을 선택해 주세요",
             errorRate: "계산에 사용되는 적립률이 0 이하입니다", errorMonth: "올해 남은 기간 계산에 실패했습니다",
@@ -313,7 +317,7 @@ export const CONFIGS = {
             calculateButton: "計算消費金額", copyButton: "複製", tweetButton: "分享至 X",
             sectionTitleReverse: "逆算模式", labelAmountYen: "消費金額 (NT$)",
             amountYenPlaceholder: "例如：1500", reverseCalculateButton: "計算點數",
-            nextTargetNone: "無下一目標等級", statusKeep: "維持", statusUp: "升級", subtractRewardsLabel: "扣除至年底前的每週獎勵預估點數", packAmountLabel: "單筆平均購買禮包金額 (選填)", resultLabelFinalNeededPoints: "實質所需點數", resultLabelRequiredPacks: "所需購買禮包數", resultLabelFreeClear: "無需消費 (僅靠每週獎勵即可達成)", errorInput: "請輸入有效數值並選擇目標等級",
+            nextTargetNone: "無下一目標等級", statusKeep: "維持", statusUp: "升級", subtractRewardsLabel: "扣除至年底前的每週獎勵預估點數", packAmountLabel: "單筆平均購買禮包金額 (選填)", packUnit: "包", resultLabelFinalNeededPoints: "實質所需點數", resultLabelRequiredPacks: "所需購買禮包數", resultLabelFreeClear: "無需消費 (僅靠每週獎勵即可達成)", errorInput: "請輸入有效數值並選擇目標等級",
             errorNeededPoints: "請在距離目標所需點數中輸入有效數值",
             errorTargetStatus: "請選擇目標等級",
             errorRate: "用於計算的回饋率必須大於0", errorMonth: "計算今年剩餘月份失敗",

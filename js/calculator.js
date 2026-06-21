@@ -214,7 +214,7 @@ export const CALC = {
             } else {
                 const packsNeeded = Math.ceil(finalNeededPoints / pointsPerPack);
                 totalAmountNeeded = packsNeeded * packAmount;
-                const packStr = (STATE.currentRegion === 'JP') ? 'パック' : ((STATE.currentRegion === 'KR') ? '팩' : 'packs');
+                const packStr = texts.packUnit || 'packs';
                 packResultContent = `
                     <dt>${texts.resultLabelRequiredPacks || '必要購入パック数'}</dt>
                     <dd><b><span class="count-target" data-value="${packsNeeded}">0</span> ${packStr}</b> <span style="font-size:0.8em; color:var(--link-color);">(${packAmount.toLocaleString(config.lang)}${config.currencySymbol}/${packStr})</span></dd>
