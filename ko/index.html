@@ -167,6 +167,18 @@
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
             <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            
+            <!-- オプション設定（リワード差し引き ＆ 平均パック額） -->
+            <div class="option-settings" style="margin-top: 1.2em; padding: 1em; background: rgba(11, 87, 208, 0.05); border-radius: 8px; border: 1px solid var(--input-border-color);">
+                <div style="display: flex; align-items: center; margin-bottom: 0.8em;">
+                    <input type="checkbox" id="subtract-rewards" style="width: 18px; height: 18px; margin: 0 8px 0 0; cursor: pointer;">
+                    <label for="subtract-rewards" style="font-size: 0.9em; font-weight: bold; cursor: pointer; color: var(--text-color);" data-lang-key="subtractRewardsLabel">年末までのウィークリーリワード獲得予想（自動加算）を差し引く</label>
+                </div>
+                <div>
+                    <label for="pack-amount" style="font-size: 0.9em; font-weight: bold; color: var(--text-color); display: block; margin-bottom: 0.3em;" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
+                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
+                </div>
+            </div>
         </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleRate">還元設定</h2>

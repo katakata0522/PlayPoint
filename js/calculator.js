@@ -163,6 +163,10 @@ export const CALC = {
     calculate() {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
+        const now = new Date();
+        const nextYearStart = new Date(now.getFullYear() + 1, 0, 1);
+        const remainingDays = Math.max(0, Math.ceil((nextYearStart - now) / (1000 * 60 * 60 * 24)));
+        const remainingWeeks = Math.ceil(remainingDays / 7);
         const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
         const finalRate = this.getFinalRate(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
@@ -178,30 +182,86 @@ export const CALC = {
         
         const remainingMonths = this.getRemainingMonths();
         
-        const spendUnit = (STATE.currentRegion === 'JP') ? 100 : 1;
-        const totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
-        const monthlyResultContent = remainingMonths > 0
-            ? `
-                <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
-                <dd><b>約 <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
-            `
-            : '';
-        
-        // アニメーション用に count-target クラスを付与
+        let finalNeededPoints = neededPoints;
+        let rewardsSubtractedContent = '';
+
+        if (STATE.dom.subtractRewards && STATE.dom.subtractRewards.checked) {
+            const weeklyEst = config.weeklyRewardEstimates ? (config.weeklyRewardEstimates[currentStatusValue] || 0) : 0;
+            const estimatedRewards = weeklyEst * remainingWeeks;
+            finalNeededPoints = Math.max(0, neededPoints - estimatedRewards);
+
+            rewardsSubtractedContent = `
+                <dt>${texts.resultLabelFinalNeededPoints || '実質必要ポイント'}</dt>
+                <dd><b><span class="count-target" data-value="${finalNeededPoints}">0</span> pt</b> <span style="font-size:0.8em; color:var(--link-color);">(${texts.tabDiary || '日記'}予想 -${estimatedRewards}pt)</span></dd>
+            `;
+        }
+
+        const spendUnit = config.spendUnit || 100;
+        let totalAmountNeeded = 0;
+        let packResultContent = '';
+
+        // パック額が入力されているか検証
+        const packAmount = STATE.dom.packAmount ? this.getValidNumberInput(STATE.dom.packAmount, 0) : null;
+
+        if (finalNeededPoints <= 0) {
+            totalAmountNeeded = 0;
+        } else if (packAmount !== null && packAmount > 0) {
+            // 1パックあたりの獲得ポイント ＝ 1回決済ごとの切り捨て処理 (整数値)
+            const pointsPerPack = Math.floor(Math.floor(packAmount / spendUnit) * finalRate);
+            
+            if (pointsPerPack <= 0) {
+                totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
+            } else {
+                const packsNeeded = Math.ceil(finalNeededPoints / pointsPerPack);
+                totalAmountNeeded = packsNeeded * packAmount;
+                const packStr = (STATE.currentRegion === 'JP') ? 'パック' : ((STATE.currentRegion === 'KR') ? '팩' : 'packs');
+                packResultContent = `
+                    <dt>${texts.resultLabelRequiredPacks || '必要購入パック数'}</dt>
+                    <dd><b><span class="count-target" data-value="${packsNeeded}">0</span> ${packStr}</b> <span style="font-size:0.8em; color:var(--link-color);">(${packAmount.toLocaleString(config.lang)}${config.currencySymbol}/${packStr})</span></dd>
+                `;
+            }
+        } else {
+            totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
+        }
+
         const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
-        const resultContent = `
-            <dl>
-                <dt>${texts.resultLabelNeededPoints}</dt>
-                <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
-                <dt>${texts.resultLabelTotalYen}</dt>
-                <dd><b>約 <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
-                ${monthlyResultContent}
-            </dl>
-            <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
-            <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
-                ${calculationNoteText}
-            </div>
-        `;
+        let resultContent = '';
+
+        if (finalNeededPoints <= 0) {
+            resultContent = `
+                <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
+                    🎉 ${texts.resultLabelFreeClear || '課金不要（リワードのみで達成可能）'}
+                </div>
+                <dl>
+                    <dt>${texts.resultLabelNeededPoints}</dt>
+                    <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
+                    ${rewardsSubtractedContent}
+                </dl>
+            `;
+        } else {
+            const monthlyResultContent = remainingMonths > 0
+                ? `
+                    <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
+                    <dd><b>約 <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
+                `
+                : '';
+            
+            resultContent = `
+                <dl>
+                    <dt>${texts.resultLabelNeededPoints}</dt>
+                    <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
+                    ${rewardsSubtractedContent}
+                    ${packResultContent}
+                    <dt>${texts.resultLabelTotalYen}</dt>
+                    <dd><b>約 <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
+                    ${monthlyResultContent}
+                </dl>
+                <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
+                <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
+                    ${calculationNoteText}
+                </div>
+            `;
+        }
         
         UI.displayResult(STATE.dom.result, resultContent);
         STATE.dom.result.dataset.requiredYen = totalAmountNeeded;
@@ -225,7 +285,7 @@ export const CALC = {
         if (amountYen === null || finalRate === null) return UI.displayResult(STATE.dom.reverseResult, texts.errorInputReverse, true);
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
         
-        const spendUnit = (STATE.currentRegion === 'JP') ? 100 : 1;
+        const spendUnit = config.spendUnit || 100;
         const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
         const earnedPoints = Math.round(earnedPointsRaw);
         

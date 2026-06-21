@@ -96,6 +96,7 @@ function loadCalculatorContext(dateClass = Date) {
         updateBaseRateAndTarget: PP_APP.CALC.updateBaseRateAndTarget.bind(PP_APP.CALC),
         getRemainingMonths: PP_APP.CALC.getRemainingMonths.bind(PP_APP.CALC),
         calculate: PP_APP.CALC.calculate.bind(PP_APP.CALC),
+        reverseCalculate: PP_APP.CALC.reverseCalculate.bind(PP_APP.CALC),
         renderedResults
       };
     `,
@@ -947,5 +948,92 @@ test('ブロンズ以外のステータスでは、同ランク維持と次の�
   assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ダイヤモンド');
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '15000');
 });
+
+test('韓国（KR）リージョンの spendUnit 正確性検証', () => {
+  const { PP_STATE, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'KR';
+  
+  // 逆算テスト (10,000ウォン課金)
+  PP_STATE.dom.amountYen = createInput('10000');
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.reverseStatus.value = '1'; // ブロンズ
+  PP_STATE.dom.reverseBaseRate = createInput('1.0');
+  PP_STATE.dom.reverseMultiplier = createInput('1');
+  PP_STATE.dom.reverseResult = { dataset: {}, innerHTML: '', isError: false };
+
+  reverseCalculate();
+
+  // 10000 / 1000 * 1.0 = 10pt であるべき
+  assert.ok(renderedResults[0].content.includes('data-value="10"'), `Expected 10pt for 10000 KRW, got: ${renderedResults[0].content}`);
+});
+
+test('リワードポイント差し引き計算の検証', () => {
+  class FakeDate extends Date {
+    constructor(...args) {
+      if (args.length === 0) return new Date(2026, 9, 2); // 10月2日 (年末までぴったり13週)
+      return new Date(...args);
+    }
+  }
+  FakeDate.UTC = Date.UTC;
+  FakeDate.parse = Date.parse;
+  FakeDate.now = () => new Date(2026, 9, 1).getTime();
+
+  const { PP_STATE, calculate, renderedResults } = loadCalculatorContext(FakeDate);
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.currentStatus.value = '1.5'; // ゴールド (週平均5pt)
+  PP_STATE.dom.baseRate = createInput('1.5');
+  PP_STATE.dom.targetStatus = createSelect();
+  const option1 = createOption('プラチナ', 4000);
+  option1.dataset.statusLabel = 'プラチナ';
+  PP_STATE.dom.targetStatus.add(option1);
+  PP_STATE.dom.neededPoints = createInput('100'); // あと100pt必要
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+  
+  // リワード差し引きON
+  PP_STATE.dom.subtractRewards = { checked: true };
+
+  // 10月1日〜12月31日は91日間 ➔ 13週間
+  // 13週 × 5pt = 65pt 差し引き
+  // 実質必要ポイント = 100 - 65 = 35pt
+  // 必要な課金額 = 35 / 1.5 * 100 = 2334円
+  calculate();
+
+  assert.ok(renderedResults[0].content.includes('data-value="35"'), '実質必要ポイントが35ptに減算されること');
+  assert.ok(renderedResults[0].content.includes('data-value="2334"'), '必要額が2334円に減額されること');
+
+  // リワードだけでクリアできるケースのテスト
+  PP_STATE.dom.neededPoints.value = '50'; // あと50pt必要 (リワード65pt > 必要50pt)
+  renderedResults.length = 0; // 結果クリア
+  calculate();
+
+  assert.ok(renderedResults[0].content.includes('課金不要'), 'リワードが上回る場合、課金不要と表示されること');
+});
+
+test('平均パック課金額（端数切り捨て）シミュレーションの検証', () => {
+  const { PP_STATE, calculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.currentStatus.value = '1.5'; // ゴールド (還元率1.5pt/100円)
+  PP_STATE.dom.baseRate = createInput('1.5');
+  PP_STATE.dom.targetStatus = createSelect();
+  const option2 = createOption('プラチナ', 4000);
+  option2.dataset.statusLabel = 'プラチナ';
+  PP_STATE.dom.targetStatus.add(option2);
+  PP_STATE.dom.neededPoints = createInput('300'); // あと300pt必要
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+  
+  // パック額 = 9800円 (9800円 / 100 = 98回。 98 * 1.5 = 147pt獲得)
+  // 300pt ➔ 147pt × 3パック = 441pt ➔ 29400円必要
+  PP_STATE.dom.packAmount = createInput('9800');
+
+  calculate();
+
+  assert.ok(renderedResults[0].content.includes('data-value="3"'), '必要購入パック数が3パックとなること');
+  assert.ok(renderedResults[0].content.includes('data-value="29400"'), '合計課金額が29,400円になること');
+});
+
 
 
