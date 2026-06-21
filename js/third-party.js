@@ -62,7 +62,15 @@
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
-            const prefix = window.location.pathname.includes('/en/') ? '../' : './';
+            const currentScript = document.currentScript;
+            let prefix = './';
+            if (currentScript && currentScript.src) {
+                const src = currentScript.getAttribute('src') || '';
+                const idx = src.indexOf('js/third-party.js');
+                if (idx !== -1) {
+                    prefix = src.substring(0, idx);
+                }
+            }
             consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260619a`)
                 .then(() => window.PlayPointConsent);
         }

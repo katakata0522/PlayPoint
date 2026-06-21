@@ -6,9 +6,9 @@ import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
 
-export const isEnglishPath = () => window.location.pathname.includes('/en/');
-export const isKoreanPath = () => window.location.pathname.includes('/ko/');
-export const isTaiwanPath = () => window.location.pathname.includes('/tw/');
+export const isEnglishPath = () => /\/en(\/|$)/.test(window.location.pathname);
+export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
+export const isTaiwanPath = () => /\/tw(\/|$)/.test(window.location.pathname);
 
 export function updateUIForRegion() {
     UI.updateUIText();
