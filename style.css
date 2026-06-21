@@ -1346,4 +1346,19 @@ html:not([lang="ja"]) .ja-only {
   display: none !important;
 }
 
+/* モバイル表示時の上部バー最適化（誤タップ防止と中央配置） */
+@media (max-width: 480px) {
+  .top-bar {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8em;
+    margin-top: 0.5em;
+  }
+  .header-links {
+    justify-content: center !important;
+    gap: 0.6em 1.2em !important;
+  }
+}
+
 
