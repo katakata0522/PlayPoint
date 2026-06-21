@@ -88,7 +88,22 @@ const locales = {
             <p>A. The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance.</p>
         </div>
     </section>
-    <!-- FAQ_SECTION_END -->`
+    <!-- FAQ_SECTION_END -->`,
+        descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
+    <section class="section">
+        <h2>What You Can Do with Play Points Calculator</h2>
+        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how advantageous it will be during multiplier campaigns</strong>.</p>
+        <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
+        <ul>
+            <li>Estimate the required spending to reach Platinum or Diamond status.</li>
+            <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
+            <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
+        </ul>
+    </section>
+    <!-- DESCRIPTION_SECTION_END -->`,
+        metaLine: `        <!-- META_LINE_START -->
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${todayStr}</p>
+        <!-- META_LINE_END -->`
     },
     'ko': {
         region: 'KR',
@@ -151,7 +166,22 @@ const locales = {
             <p>A. 입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다.</p>
         </div>
     </section>
-    <!-- FAQ_SECTION_END -->`
+    <!-- FAQ_SECTION_END -->`,
+        descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
+    <section class="section">
+        <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
+        <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>이벤트 시 얼마나 더 이득인지</strong>를 한눈에 확인할 수 있습니다.</p>
+        <p>특히 '플래티넘까지 조금 남았을 때', '다이아몬드 달성 가능 여부를 알고 싶을 때', '포인트 증량 이벤트를 기다려야 할지 고민될 때' 감이 아닌 숫자로 쉽게 판단할 수 있도록 도와줍니다.</p>
+        <ul>
+            <li>플래티넘, 다이아몬드 등급 달성에 필요한 결제 금액 시뮬레이션</li>
+            <li>기본 적립률과 이벤트 배율을 비교하면서 획득 포인트 역산</li>
+            <li>주간 리워드 일기로 매주 획득한 포인트를 편리하게 관리</li>
+        </ul>
+    </section>
+    <!-- DESCRIPTION_SECTION_END -->`,
+        metaLine: `        <!-- META_LINE_START -->
+        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${todayStr}</p>
+        <!-- META_LINE_END -->`
     },
     'tw': {
         region: 'TW',
@@ -214,7 +244,22 @@ const locales = {
             <p>A. 您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。</p>
         </div>
     </section>
-    <!-- FAQ_SECTION_END -->`
+    <!-- FAQ_SECTION_END -->`,
+        descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
+    <section class="section">
+        <h2>Google Play 點數計算器可以做什麼？</h2>
+        <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>在點數加倍活動期間能多獲得多少點數</strong>。</p>
+        <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
+        <ul>
+            <li>估算達到白金級、鑽石級所需的消費金額。</li>
+            <li>比較基本回饋與活動加倍倍率，進行點數逆算。</li>
+            <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
+        </ul>
+    </section>
+    <!-- DESCRIPTION_SECTION_END -->`,
+        metaLine: `        <!-- META_LINE_START -->
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${todayStr}</p>
+        <!-- META_LINE_END -->`
     }
 };
 
@@ -297,6 +342,12 @@ Object.entries(locales).forEach(([langDir, config]) => {
 
     // 9. 多言語版では日本語記事ドロワーを削除
     output = output.replace(/<!-- ARTICLE_DRAWER_START -->[\s\S]*?<!-- ARTICLE_DRAWER_END -->/, '');
+
+    // 10. 「できること」セクションの置換
+    output = output.replace(/<!-- DESCRIPTION_SECTION_START -->[\s\S]*?<!-- DESCRIPTION_SECTION_END -->/, config.descriptionSection);
+
+    // 11. フッター meta-line の置換
+    output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);
 
     const targetFile = path.join(targetDir, 'index.html');
     fs.writeFileSync(targetFile, output, 'utf8');

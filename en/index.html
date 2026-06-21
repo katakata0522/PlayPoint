@@ -126,9 +126,9 @@
         </div>
         <div class="header-links">
             <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 国別差異</a>
-            <a href="../articles/2026-06-20-discount-gift-cards.html" data-lang-key="linkDiscount" class="ja-only">💡 お得に課金する</a>
-            <a href="../blog/" data-lang-key="linkArticles" class="ja-only">📝 記事一覧</a>
-            <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" data-lang-key="linkKatakata" class="ja-only">🧪 KatakataLab</a>
+            <a href="../articles/2026-06-20-discount-gift-cards.html" data-lang-key="linkDiscount">💡 お得に課金する</a>
+            <a href="../blog/" data-lang-key="linkArticles">📝 記事一覧</a>
+            <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" data-lang-key="linkKatakata">🧪 KatakataLab</a>
         </div>
     </div>
 
@@ -150,19 +150,22 @@
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
-            <label for="currentStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">現在のステータス
+            <label for="currentStatus" class="label-with-tooltip">
+                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
-            <label for="targetStatus" class="label-with-tooltip" data-lang-key="labelTargetStatus">目標ステータス
+            <label for="targetStatus" class="label-with-tooltip">
+                <span data-lang-key="labelTargetStatus">目標ステータス</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
-            <label for="neededPoints" class="label-with-tooltip" data-lang-key="labelNeededPoints">目標までの必要ポイント
+            <label for="neededPoints" class="label-with-tooltip">
+                <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
@@ -182,13 +185,15 @@
         </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleRate">還元設定</h2>
-            <label for="baseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">100円あたりの基本還元ポイント
+            <label for="baseRate" class="label-with-tooltip">
+                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
-            <label for="multiplier" class="label-with-tooltip" data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）
+            <label for="multiplier" class="label-with-tooltip">
+                <span data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
@@ -209,25 +214,29 @@
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
-            <label for="amountYen" class="label-with-tooltip" data-lang-key="labelAmountYen">課金額（円）
+            <label for="amountYen" class="label-with-tooltip">
+                <span data-lang-key="labelAmountYen">課金額（円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
             <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
-            <label for="reverseStatus" class="label-with-tooltip" data-lang-key="labelCurrentStatus">現在のステータス
+            <label for="reverseStatus" class="label-with-tooltip">
+                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
-            <label for="reverseBaseRate" class="label-with-tooltip" data-lang-key="labelBaseRate">100円あたりの基本還元ポイント
+            <label for="reverseBaseRate" class="label-with-tooltip">
+                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
-            <label for="reverseMultiplier" class="label-with-tooltip" data-lang-key="labelMultiplierReverse">キャンペーン倍率
+            <label for="reverseMultiplier" class="label-with-tooltip">
+                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
@@ -304,16 +313,18 @@
         </div>
     </div>
 
+        <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
-        <h2>Play Points 計算機でできること</h2>
-        <p>このページでは、Google Play Points の<strong>ランクアップまであといくら必要か</strong>、<strong>今の課金額で何ポイント獲得できるか</strong>、<strong>キャンペーン時にどれだけ有利になるか</strong>をまとめて確認できます。</p>
-        <p>とくに「プラチナまであと少し」「ダイヤモンドに届くか知りたい」「ポイント増量キャンペーンを待つべきか迷っている」という場面で、感覚ではなく数字で判断しやすくなります。</p>
+        <h2>What You Can Do with Play Points Calculator</h2>
+        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how advantageous it will be during multiplier campaigns</strong>.</p>
+        <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
         <ul>
-            <li>プラチナ・ダイヤモンドまでの必要金額を試算</li>
-            <li>通常還元とキャンペーン倍率を比較しながら逆算</li>
-            <li>ほくほくリワード日記で、毎週の獲得ポイントを手元で管理</li>
+            <li>Estimate the required spending to reach Platinum or Diamond status.</li>
+            <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
+            <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
     </section>
+    <!-- DESCRIPTION_SECTION_END -->
 
     
 
@@ -337,17 +348,19 @@
 
     <footer class="page-footer">
         <p class="footer-nav-links">
-          <a href="../info.html" data-lang-key="linkQA" class="ja-only">Q&A・あとがき</a>
-          <span class="footer-separator ja-only">|</span>
-          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor" class="ja-only">運営者・検証方針</a>
-          <span class="footer-separator ja-only">|</span>
+          <a href="../info.html" data-lang-key="linkQA">Q&A・あとがき</a>
+          <span class="footer-separator">|</span>
+          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">運営者・検証方針</a>
+          <span class="footer-separator">|</span>
           <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">プライバシーポリシー</a>
           <span class="footer-separator">|</span>
           <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">利用規約</a>
-          <span class="footer-separator ja-only">|</span>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback" class="ja-only">ご意見・ご感想</a>
+          <span class="footer-separator">|</span>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
         </p>
-        <p class="meta-line">運営者: <a href="../author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-06-21</p>
+                <!-- META_LINE_START -->
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: 2026-06-21</p>
+        <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>

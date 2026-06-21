@@ -522,54 +522,97 @@ button:active {
 }
 
 .info-btn {
-  background: #aaa;
-  color: white;
+  background: rgba(11, 87, 208, 0.08);
+  color: #0b57d0;
   border-radius: 50%;
-  width: 1.9em;
-  height: 1.9em;
-  line-height: 1.85em;
-  font-size: 0.92em;
+  width: 1.45em;
+  height: 1.45em;
+  line-height: 1.45em;
+  font-size: 0.82em;
   font-weight: bold;
   text-align: center;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  margin-left: 0.4em;
+  margin-left: 0.35em;
   position: relative;
   vertical-align: middle;
+  margin-top: -0.12em;
   user-select: none;
-  border: 2px solid transparent;
+  border: 1.2px solid rgba(11, 87, 208, 0.2);
   flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.info-btn:hover {
+  background: #0b57d0;
+  color: white;
+  border-color: #0b57d0;
+  transform: scale(1.08);
 }
 .info-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  background: #0b57d0;
+  color: white;
+  border-color: #0b57d0;
+  box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.25);
+  transform: scale(1.08);
+}
+/* スマホ向けの 44px × 44px の透明タップターゲット拡張（アクセシビリティAA準拠） */
+.info-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
 }
 
 .tooltip-box {
   display: none;
   position: absolute;
-  background: rgba(51, 51, 51, 0.95);
-  color: white;
-  padding: 0.9em;
-  border-radius: 8px;
-  font-size: 0.9em;
+  background: rgba(30, 41, 59, 0.96); /* 深みのあるネイビーダークグレー */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  padding: 1em 1.2em;
+  border-radius: 12px;
+  font-size: 0.88em;
   white-space: normal;
-  width: 280px;
-  top: 2.5em;
+  width: 290px;
+  top: 2.6em;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(4px);
   z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   text-align: left;
   font-weight: normal;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .tooltip-box.visible {
   display: block;
+  animation: tooltipFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
-.tooltip-box strong, .tooltip-box b { font-weight: bold; }
-.tooltip-box ol, .tooltip-box ul { padding-left: 20px; margin: 0.5em 0; }
-.tooltip-box hr { border: 0; border-top: 1px solid #666; margin: 0.5em 0; }
-.tooltip-box p { margin: 0.5em 0; }
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+.tooltip-box strong, .tooltip-box b { font-weight: bold; color: #60a5fa; } /* 強調部分は明るいブルーで読みやすく */
+.tooltip-box ol, .tooltip-box ul { padding-left: 20px; margin: 0.6em 0; }
+.tooltip-box li { margin-bottom: 0.4em; line-height: 1.5; }
+.tooltip-box hr { border: 0; border-top: 1px solid rgba(255, 255, 255, 0.15); margin: 0.8em 0; }
+.tooltip-box p { margin: 0.6em 0; line-height: 1.5; }
 
 
 #copyButton {
