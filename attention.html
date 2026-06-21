@@ -198,7 +198,7 @@
 
         <footer class="page-footer">
             <p>
-                <a href="en/">Calculator</a>
+                <a href="en/" id="footer-calculator-link">Calculator</a>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">Feedback</a>
                 <a href="privacy.html" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">Privacy Policy</a>
                 <a href="terms.html" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">Terms of Service</a>
@@ -215,23 +215,72 @@
             const yearEl = document.getElementById('copyright-year');
             if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+            const btn = document.querySelector('.btn-back-home');
+            const footerLink = document.getElementById('footer-calculator-link');
+
+            // 優先地域の検出（ローカルストレージ -> ブラウザ言語）
+            let preferredRegion = null;
+            try {
+                preferredRegion = localStorage.getItem('playpointPreferredRegion');
+            } catch (e) {
+                console.error("ローカルストレージの読み込みに失敗しました:", e);
+            }
+
+            if (!preferredRegion) {
+                const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+                if (browserLang.startsWith('ko')) {
+                    preferredRegion = 'KR';
+                } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+                    preferredRegion = 'TW';
+                } else if (browserLang.startsWith('en')) {
+                    preferredRegion = 'US';
+                } else {
+                    preferredRegion = 'JP';
+                }
+            }
+
             // 遷移元の言語ディレクトリに基づいて、戻るボタンのパスと文言を最適化する
             const ref = document.referrer;
-            const btn = document.querySelector('.btn-back-home');
-            if (btn && ref) {
+            let targetRegion = preferredRegion;
+
+            if (ref) {
                 if (ref.includes('/ko/')) {
-                    btn.href = 'ko/';
-                    btn.textContent = '계산기로 돌아가기';
+                    targetRegion = 'KR';
                 } else if (ref.includes('/tw/')) {
-                    btn.href = 'tw/';
-                    btn.textContent = '返回計算機';
+                    targetRegion = 'TW';
                 } else if (ref.includes('/en/')) {
-                    btn.href = 'en/';
-                    btn.textContent = 'Go Back to Calculator';
-                } else {
-                    btn.href = './';
-                    btn.textContent = '計算機に戻る';
+                    targetRegion = 'US';
+                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+                    targetRegion = 'JP';
                 }
+            }
+
+            // 対象地域に応じたパスと文言の決定
+            let targetHref = './';
+            let targetText = '計算機に戻る';
+            let footerText = '計算機';
+
+            if (targetRegion === 'KR') {
+                targetHref = 'ko/';
+                targetText = '계산기로 돌아가기';
+                footerText = '계산기';
+            } else if (targetRegion === 'TW') {
+                targetHref = 'tw/';
+                targetText = '返回計算機';
+                footerText = '計算機';
+            } else if (targetRegion === 'US') {
+                targetHref = 'en/';
+                targetText = 'Go Back to Calculator';
+                footerText = 'Calculator';
+            }
+
+            if (btn) {
+                btn.href = targetHref;
+                btn.textContent = targetText;
+            }
+            if (footerLink) {
+                footerLink.href = targetHref;
+                footerLink.textContent = footerText;
             }
         });
     </script>

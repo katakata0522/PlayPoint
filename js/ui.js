@@ -60,15 +60,16 @@ export const UI = {
                 el.textContent = texts[key].text;
                 if (texts[key].href) {
                     const isSubDir = ['/en/', '/ko/', '/tw/'].some(p => window.location.pathname.includes(p));
-                    const prefix = isSubDir ? '../' : './';
                     const rawHref = texts[key].href;
                     const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
+                    const isLocalizedFile = rawHref.startsWith('articles/');
+                    const prefix = (isSubDir && !isLocalizedFile) ? '../' : './';
                     el.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
                 }
                 return;
             }
 
-            const allowHtmlKeys = ['siteDescription', 'warningRate', 'guestNotice'];
+            const allowHtmlKeys = ['siteDescription', 'warningRate', 'guestNotice', 'diaryHintCard'];
             if (allowHtmlKeys.includes(key)) {
                 el.innerHTML = texts[key];
             } else {
