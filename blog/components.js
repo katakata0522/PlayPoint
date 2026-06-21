@@ -7,7 +7,8 @@
     let consentManagerPromise = null;
 
     const isArticlePageTop = window.location.pathname.includes('/articles/');
-    const rootPath = isArticlePageTop ? '../' : './';
+    const isBlogPage = window.location.pathname.includes('/blog');
+    const rootPath = (isArticlePageTop || isBlogPage) ? '../' : './';
 
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
