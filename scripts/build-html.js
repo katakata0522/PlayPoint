@@ -381,6 +381,9 @@ if (!consentVersion) {
     consentVersion = consentQueryMatch ? consentQueryMatch[1] : '';
 }
 
+const mainQueryMatch = indexHtml.match(/js\/main\.js\?v=([a-zA-Z0-9_-]+)/);
+const mainVersion = mainQueryMatch ? mainQueryMatch[1] : '';
+
 const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
 const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
 
@@ -440,6 +443,9 @@ if (fs.existsSync(swPath)) {
     }
     if (articleSharedCssVersion) {
         swContent = swContent.replace(/\.\/articles\/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `./articles/article-shared.css?v=${articleSharedCssVersion}`);
+    }
+    if (mainVersion) {
+        swContent = swContent.replace(/\.\/js\/main\.js\?v=[a-zA-Z0-9_-]+/g, `./js/main.js?v=${mainVersion}`);
     }
 
     fs.writeFileSync(swPath, swContent, 'utf8');
