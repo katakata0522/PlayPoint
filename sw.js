@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260620b';
+const CACHE_NAME = 'playpoint-calc-v20260621a';
 const ASSETS = [
   './',
   './index.html',
@@ -30,7 +30,11 @@ const ASSETS = [
   './blog/script.js?v=20260619a',
   './articles/article-shared.css?v=20260619b',
   './en/',
-  './en/index.html'
+  './en/index.html',
+  './ko/',
+  './ko/index.html',
+  './tw/',
+  './tw/index.html'
 ];
 
 // インストール時に静的アセットをキャッシュ
@@ -39,6 +43,9 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME)
       .then((cache) => {
         return cache.addAll(ASSETS);
+      })
+      .catch((err) => {
+        console.error('Service Worker install cache failure:', err);
       })
       .then(() => {
         return self.skipWaiting();

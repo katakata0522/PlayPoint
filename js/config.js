@@ -72,7 +72,7 @@ export const CONFIGS = {
             resultLabelMonthlyYen: "月平均目安", resultLabelMonths: "ヶ月",
             resultLabelRate: "適用還元率", resultLabelEarnedPoints: "獲得ポイント予測",
             perMonth: "/月",
-            calculationNote: "※Google Playポイントのランク集計期間（毎年12月31日）までの残り <b>{months}ヶ月</b> で均等に割り出した目標課金額의目安です。",
+            calculationNote: "※Google Playポイントのランク集計期間（毎年12月31日）までの残り <b>{months}ヶ月</b> で均等に割り出した目標課金額の目安です。",
             yearSuffix: "年", monthNames: ["１月", "２月", "３月", "４月", "５月", "６月", "７月", "８月", "９月", "１０月", "１１月", "１２月"],
             weekLabel: "第", weekSuffix: "週", pointsPlaceholder: "ポイント", saveButton: "保存",
             monthlySummaryTitle: "月間集計", yearlySummaryTitle: "年間集計",
@@ -101,7 +101,8 @@ export const CONFIGS = {
             linkFeedback: { text: "ご意見・ご感想", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "Playポイントとは？", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 お得に課金する", href: "articles/2026-06-20-discount-gift-cards.html" },
-            linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" }
+            linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" },
+            linkAttention: { text: "⚠️ 国別差異", href: "attention.html" }
         }
     },
     'US': {
@@ -172,7 +173,8 @@ export const CONFIGS = {
             linkFeedback: { text: "Feedback", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "What are Play Points?", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 Discount Guide", href: "articles/2026-06-20-discount-gift-cards.html" },
-            linkAuthor: { text: "Operator & Policy", href: "author/katakata.html" }
+            linkAuthor: { text: "Operator & Policy", href: "author/katakata.html" },
+            linkAttention: { text: "⚠️ Country Diff", href: "attention.html" }
         }
     },
     'KR': {
@@ -243,7 +245,8 @@ export const CONFIGS = {
             linkFeedback: { text: "의견 제안", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "Play 포인트란?", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 할인 가이드", href: "articles/2026-06-20-discount-gift-cards.html" },
-            linkAuthor: { text: "운영자 및 정책", href: "author/katakata.html" }
+            linkAuthor: { text: "운영자 및 정책", href: "author/katakata.html" },
+            linkAttention: { text: "⚠️ 국가별 차이", href: "attention.html" }
         }
     },
     'TW': {
@@ -314,7 +317,8 @@ export const CONFIGS = {
             linkFeedback: { text: "意見回饋", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "什麼是 Play Points？", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 折扣指南", href: "articles/2026-06-20-discount-gift-cards.html" },
-            linkAuthor: { text: "營運者與政策", href: "author/katakata.html" }
+            linkAuthor: { text: "營運者與政策", href: "author/katakata.html" },
+            linkAttention: { text: "⚠️ 國家別差異", href: "attention.html" }
         }
     }
 };

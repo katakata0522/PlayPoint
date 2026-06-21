@@ -34,6 +34,7 @@
     <meta name="twitter:description" content="Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
+    <link rel="preload" href="../js/main.js" as="script">
     <link rel="stylesheet" href="../style.css?v=20260618a">
     <script type="application/ld+json">
     {
@@ -71,6 +72,7 @@
       }
     }
     </script>
+        <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -78,31 +80,32 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "課金目標の計算はどのように行われますか？",
+          "name": "How is the spending goal calculated?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。"
+            "text": "By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns."
           }
         },
         {
           "@type": "Question",
-          "name": "逆算モードとは何ですか？",
+          "name": "What is the reverse calculation mode?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。"
+            "text": "By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings."
           }
         },
         {
           "@type": "Question",
-          "name": "ほくほくリワード日記のデータは保存されますか？",
+          "name": "Is my weekly reward diary data saved?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "入力されたデータはブラウザのローカルストレージにのみ保存されます。キャッシュ削除に備え、JSONファイルとしての書き出し（エクスポート）や復元が可能です。"
+            "text": "The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance."
           }
         }
       ]
     }
     </script>
+    <!-- FAQ_JSON_LD_END -->
 </head>
 <body>
 
@@ -121,7 +124,7 @@
             <button data-region="TW">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link">⚠️ Country Diff</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 国別差異</a>
             <a href="../articles/2026-06-20-discount-gift-cards.html" data-lang-key="linkDiscount">💡 お得に課金する</a>
             <a href="../blog/" data-lang-key="linkArticles">📝 記事一覧</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" data-lang-key="linkKatakata">🧪 KatakataLab</a>
@@ -299,85 +302,25 @@
         </ul>
     </section>
 
-    <section class="section">
-        <h2>よくある悩みから記事を探す</h2>
-        <p>計算だけでなく、Google Play Points の<strong>有効期限</strong>、<strong>ランク維持</strong>、<strong>キャンペーン</strong>、<strong>返金</strong>、<strong>使い道</strong>も記事で整理しています。</p>
-        <details class="article-drawer">
-            <summary>
-                <span class="article-drawer-copy">
-                    <span class="article-drawer-title">悩み別の記事を開く</span>
-                    <span class="article-drawer-subtitle">最初は閉じておいて、必要な時だけまとめて見られます。</span>
-                </span>
-                <span class="article-drawer-meta">
-                    <span class="article-count">7記事</span>
-                    <span class="article-drawer-icon" aria-hidden="true">▾</span>
-                </span>
-            </summary>
-            <div class="article-drawer-body">
-                <ul class="article-link-list">
-                    <li>
-                        <a class="article-link-card" href="../articles/2026-06-20-discount-gift-cards.html">
-                            <span class="article-link-tag">お得課金</span>
-                            <span class="article-link-title">【課金効率化】Google Play ギフトコードを常に割引・ポイント還元付きでお得に購入する裏ワザ</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2026-03-10-play-points-reflection-timing.html">
-                            <span class="article-link-tag">反映</span>
-                            <span class="article-link-title">Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2025-12-25-playpoints-rank-maintenance.html">
-                            <span class="article-link-tag">ランク</span>
-                            <span class="article-link-title">【年末必見】ランクが下がる！？Google Play Points「ランク維持期間」を完全解説</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2025-12-25-campaign.html">
-                            <span class="article-link-tag">キャンペーン</span>
-                            <span class="article-link-title">課金はキャンペーン待ちが得？ポイント増量の仕組みと確認手順</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2025-12-25-best-use.html">
-                            <span class="article-link-tag">使い道</span>
-                            <span class="article-link-title">Playポイントの使い道ランキング｜クレジット交換は損？賢い使い方まとめ</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2025-12-25-weekly-reward.html">
-                            <span class="article-link-tag">毎週</span>
-                            <span class="article-link-title">【毎週チェック】ウィークリーリワードの受け取り方と仕組み</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="article-link-card" href="../articles/2025-12-25-getting-started.html">
-                            <span class="article-link-tag">初心者</span>
-                            <span class="article-link-title">【初心者向け】Play Pointsの始め方｜登録から最初にやることまで</span>
-                        </a>
-                    </li>
-                </ul>
-                <p class="article-drawer-note">細かい仕様やQ&amp;Aは <a href="../info.html">あとがき・Q&amp;A</a> にまとめています。</p>
-            </div>
-        </details>
-    </section>
+    
 
+        <!-- FAQ_SECTION_START -->
     <section class="section">
-        <h2>❓ よくある質問 (FAQ)</h2>
+        <h2>❓ Frequently Asked Questions (FAQ)</h2>
         <div class="faq-item">
-            <h3>Q. 課金目標の計算はどのように行われますか？</h3>
-            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。</p>
+            <h3>Q. How is the spending goal calculated?</h3>
+            <p>A. By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns.</p>
         </div>
         <div class="faq-item">
-            <h3>Q. 逆算モードとは何ですか？</h3>
-            <p>A. 課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。</p>
+            <h3>Q. What is the reverse calculation mode?</h3>
+            <p>A. By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings.</p>
         </div>
         <div class="faq-item">
-            <h3>Q. ほくほくリワード日記のデータは保存されますか？</h3>
-            <p>A. 入力されたデータはブラウザのローカルストレージにのみ保存されます。キャッシュ削除に備え、JSONファイルとしての書き出し（エクスポート）や復元が可能です。</p>
+            <h3>Q. Is my weekly reward diary data saved?</h3>
+            <p>A. The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance.</p>
         </div>
     </section>
+    <!-- FAQ_SECTION_END -->
 
     <footer class="page-footer">
         <p class="footer-nav-links">

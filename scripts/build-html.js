@@ -17,7 +17,58 @@ const locales = {
         ogDescription: 'Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.',
         currency: 'USD',
         appName: 'Play Points Calculator',
-        appDesc: 'A simulation tool to calculate required spending to reach Google Play Points goals (Diamond, Platinum, etc.) based on your current status.'
+        appDesc: 'A simulation tool to calculate required spending to reach Google Play Points goals (Diamond, Platinum, etc.) based on your current status.',
+        faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How is the spending goal calculated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the reverse calculation mode?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my weekly reward diary data saved?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- FAQ_JSON_LD_END -->`,
+        faqSection: `    <!-- FAQ_SECTION_START -->
+    <section class="section">
+        <h2>❓ Frequently Asked Questions (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Q. How is the spending goal calculated?</h3>
+            <p>A. By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. What is the reverse calculation mode?</h3>
+            <p>A. By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. Is my weekly reward diary data saved?</h3>
+            <p>A. The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance.</p>
+        </div>
+    </section>
+    <!-- FAQ_SECTION_END -->`
     },
     'ko': {
         region: 'KR',
@@ -29,7 +80,58 @@ const locales = {
         ogDescription: '구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.',
         currency: 'KRW',
         appName: '구글 플레이 포인트 계산기',
-        appDesc: '구글 플레이 포인트의 현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있는 도구입니다.'
+        appDesc: '구글 플레이 포인트의 현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있는 도구입니다.',
+        faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "등급 달성 계산은 어떻게 진행되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률 및 보너스 이벤트 배율에 따라 필요한 결제 금액을 산출합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "역산 모드는 무엇인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "주간 리워드 일지 데이터는 저장되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다."
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- FAQ_JSON_LD_END -->`,
+        faqSection: `    <!-- FAQ_SECTION_START -->
+    <section class="section">
+        <h2>❓ 자주 묻는 질문 (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Q. 등급 달성 계산은 어떻게 진행되나요?</h3>
+            <p>A. 현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률 및 보너스 이벤트 배율에 따라 필요한 결제 금액을 산출합니다.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 역산 모드는 무엇인가요?</h3>
+            <p>A. 결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
+            <p>A. 입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다.</p>
+        </div>
+    </section>
+    <!-- FAQ_SECTION_END -->`
     },
     'tw': {
         region: 'TW',
@@ -41,7 +143,58 @@ const locales = {
         ogDescription: '免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。',
         currency: 'TWD',
         appName: 'Google Play 點數計算器',
-        appDesc: '本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。'
+        appDesc: '本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。',
+        faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "升級目標的消費金額是如何計算的？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "輸入目前的點數與目標等級所需的點數後，系統會根據您目前的基本回饋率及加倍活動倍率，計算出所需的消費金額。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "什麼是逆算模式？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "每週獎勵紀錄的資料會被儲存嗎？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。"
+          }
+        }
+      ]
+    }
+    </script>
+    <!-- FAQ_JSON_LD_END -->`,
+        faqSection: `    <!-- FAQ_SECTION_START -->
+    <section class="section">
+        <h2>❓ 常見問題 (FAQ)</h2>
+        <div class="faq-item">
+            <h3>Q. 升級目標的消費金額是如何計算的？</h3>
+            <p>A. 輸入目前的點數與目標等級所需的點數後，系統會根據您目前的基本回饋率及加倍活動倍率，計算出所需的消費金額。</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 什麼是逆算模式？</h3>
+            <p>A. 輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
+            <p>A. 您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。</p>
+        </div>
+    </section>
+    <!-- FAQ_SECTION_END -->`
     }
 };
 
@@ -88,7 +241,8 @@ Object.entries(locales).forEach(([langDir, config]) => {
         'href="info.html"',
         'href="about-playpoints.html"',
         'href="author/',
-        'src="js/'
+        'src="js/',
+        'href="js/'
     ];
 
     relativeAttrs.forEach(attr => {
@@ -115,6 +269,13 @@ Object.entries(locales).forEach(([langDir, config]) => {
     const activeBtnTarget = `<button data-region="${config.region}">`;
     const activeBtnReplacement = `<button data-region="${config.region}" class="active">`;
     output = output.replace(activeBtnTarget, activeBtnReplacement);
+
+    // 8. FAQ の JSON-LD & HTML 置換
+    output = output.replace(/<!-- FAQ_JSON_LD_START -->[\s\S]*?<!-- FAQ_JSON_LD_END -->/, config.faqJsonLd);
+    output = output.replace(/<!-- FAQ_SECTION_START -->[\s\S]*?<!-- FAQ_SECTION_END -->/, config.faqSection);
+
+    // 9. 多言語版では日本語記事ドロワーを削除
+    output = output.replace(/<!-- ARTICLE_DRAWER_START -->[\s\S]*?<!-- ARTICLE_DRAWER_END -->/, '');
 
     const targetFile = path.join(targetDir, 'index.html');
     fs.writeFileSync(targetFile, output, 'utf8');

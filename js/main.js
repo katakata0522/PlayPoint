@@ -150,7 +150,17 @@ export function init() {
     if (countEl && listEl) {
         const count = listEl.querySelectorAll('li').length;
         const isEn = isEnglishPath();
-        countEl.textContent = isEn ? `${count} Guides` : `${count}記事`;
+        const isKo = isKoreanPath();
+        const isTw = isTaiwanPath();
+        if (isEn) {
+            countEl.textContent = `${count} Guides`;
+        } else if (isKo) {
+            countEl.textContent = `${count}개 가이드`;
+        } else if (isTw) {
+            countEl.textContent = `${count}篇指南`;
+        } else {
+            countEl.textContent = `${count}記事`;
+        }
     }
 
 

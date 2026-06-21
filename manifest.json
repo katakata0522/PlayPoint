@@ -7,6 +7,15 @@
   "background_color": "#eef",
   "theme_color": "#28a745",
   "orientation": "portrait-primary",
+  "categories": ["utilities", "finance"],
+  "screenshots": [
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "form_factor": "narrow"
+    }
+  ],
   "icons": [
     {
       "src": "favicon.svg",

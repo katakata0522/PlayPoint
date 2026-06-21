@@ -34,6 +34,7 @@
     <meta name="twitter:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料で試算できる計算機。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
+    <link rel="preload" href="js/main.js" as="script">
     <link rel="stylesheet" href="style.css?v=20260618a">
     <script type="application/ld+json">
     {
@@ -63,7 +64,7 @@
       "@type": "WebSite",
       "name": "Playポイント計算機",
       "url": "https://playpoint-sim.com/",
-      "inLanguage": ["ja", "en"],
+      "inLanguage": ["ja", "en", "ko", "zh-TW"],
       "publisher": {
         "@type": "Person",
         "name": "かたかた",
@@ -71,6 +72,7 @@
       }
     }
     </script>
+    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -103,6 +105,7 @@
       ]
     }
     </script>
+    <!-- FAQ_JSON_LD_END -->
 </head>
 <body>
 
@@ -121,7 +124,7 @@
             <button data-region="TW">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="attention.html" target="_blank" rel="noopener noreferrer" class="alert-link">⚠️ Country Diff</a>
+            <a href="attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 国別差異</a>
             <a href="articles/2026-06-20-discount-gift-cards.html" data-lang-key="linkDiscount">💡 お得に課金する</a>
             <a href="blog/" data-lang-key="linkArticles">📝 記事一覧</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" data-lang-key="linkKatakata">🧪 KatakataLab</a>
@@ -299,6 +302,7 @@
         </ul>
     </section>
 
+    <!-- ARTICLE_DRAWER_START -->
     <section class="section">
         <h2>よくある悩みから記事を探す</h2>
         <p>計算だけでなく、Google Play Points の<strong>有効期限</strong>、<strong>ランク維持</strong>、<strong>キャンペーン</strong>、<strong>返金</strong>、<strong>使い道</strong>も記事で整理しています。</p>
@@ -362,7 +366,9 @@
             </div>
         </details>
     </section>
+    <!-- ARTICLE_DRAWER_END -->
 
+    <!-- FAQ_SECTION_START -->
     <section class="section">
         <h2>❓ よくある質問 (FAQ)</h2>
         <div class="faq-item">
@@ -378,6 +384,7 @@
             <p>A. 入力されたデータはブラウザのローカルストレージにのみ保存されます。キャッシュ削除に備え、JSONファイルとしての書き出し（エクスポート）や復元が可能です。</p>
         </div>
     </section>
+    <!-- FAQ_SECTION_END -->
 
     <footer class="page-footer">
         <p class="footer-nav-links">
