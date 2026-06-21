@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    // 日本語・英語の多言語翻訳辞書（通常計算と逆算の両方の文言を含む）
+    // 日本語・英語・韓国語・繁体字中国語の多言語翻訳辞書（通常計算と逆算の両方の文言を含む）
     const I18N = {
         ja: {
             tabMain: '目標課金',
@@ -31,6 +31,7 @@
             linkText: '詳しい計算機を開く',
             currency: '円',
             nextTargetNone: '次の目標はありません',
+            unit: 100,
             statuses: {
                 '1.0': 'ブロンズ',
                 '1.25': 'シルバー',
@@ -82,6 +83,7 @@
             linkText: 'Open Full Calculator',
             currency: 'USD',
             nextTargetNone: 'No further levels',
+            unit: 1,
             statuses: {
                 '1.0': 'Bronze',
                 '1.1': 'Silver',
@@ -103,6 +105,110 @@
                 4: '4x',
                 5: '5x',
                 10: '10x'
+            }
+        },
+        ko: {
+            tabMain: '목표 결제',
+            tabReverse: '포인트 역산',
+            title: 'Play 포인트 간편 계산',
+            desc: '목표 등급 달성 결제액 또는 결제 시 획득 포인트를 계산합니다.',
+            amountLabel: '결제 금액',
+            amountPlaceholder: '예: 50000',
+            currentStatusLabel: '현재 등급',
+            targetStatusLabel: '목표 등급',
+            neededPointsLabel: '목표까지 필요한 포인트',
+            neededPointsPlaceholder: '예: 120',
+            rateLabel: '1,000₩당 기본 포인트',
+            multiplierLabel: '이벤트 배율',
+            calcBtnMain: '결제 금액 계산',
+            calcBtnReverse: '포인트 계산',
+            initOutputMain: '필요 포인트를 입력해 주세요.',
+            initOutputReverse: '금액을 입력해 주세요.',
+            resultTotalPrefix: '예상 결제 금액: 약 ',
+            resultMonthlyPrefix: '월 평균 기준: 약 ',
+            resultMonthlySuffix: '/월',
+            resultMonthsSuffix: '개월',
+            resultPointsPrefix: '예상 적립 포인트: 약 ',
+            resultPointsSuffix: ' pt',
+            errorMsgInput: '올바른 숫자를 입력해 주세요.',
+            errorMsgTarget: '필요 포인트가 올바르지 않거나 다음 목표가 없습니다.',
+            linkText: '상세 계산기 열기',
+            currency: '₩',
+            nextTargetNone: '다음 목표 등급이 없습니다',
+            unit: 1000,
+            statuses: {
+                '1.0': '브론즈',
+                '1.1': '실버',
+                '1.3': '골드',
+                '1.6': '플래티넘',
+                '2.0': '다이아몬드'
+            },
+            targets: {
+                '1.0': { label: '실버', val: 150 },
+                '1.1': { label: '골드', val: 600 },
+                '1.3': { label: '플래티넘', val: 2400 },
+                '1.6': { label: '다이아몬드', val: 15000 },
+                '2.0': { label: '없음', val: 0 }
+            },
+            multipliers: {
+                1: '일반 (1배)',
+                2: '2배',
+                3: '3배',
+                4: '4배',
+                5: '5배',
+                10: '10배'
+            }
+        },
+        zh: {
+            tabMain: '目標消費',
+            tabReverse: '點數逆算',
+            title: 'Play 點數簡易試算',
+            desc: '計算達到目標等級的消費金額，或消費可獲得的點數。',
+            amountLabel: '消費金額',
+            amountPlaceholder: '例：5000',
+            currentStatusLabel: '目前等級',
+            targetStatusLabel: '目標等級',
+            neededPointsLabel: '距離下一等級所需點數',
+            neededPointsPlaceholder: '例：150',
+            rateLabel: '每 30元 基本點數',
+            multiplierLabel: '加倍活動倍率',
+            calcBtnMain: '計算消費金額',
+            calcBtnReverse: '計算點數',
+            initOutputMain: '請輸入距離下一等級所需的點數。',
+            initOutputReverse: '請輸入消費金額。',
+            resultTotalPrefix: '消費金額目安：約 ',
+            resultMonthlyPrefix: '月平均目安：約 ',
+            resultMonthlySuffix: '/月',
+            resultMonthsSuffix: '個月',
+            resultPointsPrefix: '預期獲得點數：約 ',
+            resultPointsSuffix: ' pt',
+            errorMsgInput: '請輸入有效的數值。',
+            errorMsgTarget: '點數不正確或已達最高等級。',
+            linkText: '開啟詳細計算器',
+            currency: 'NT$',
+            nextTargetNone: '已達最高等級',
+            unit: 30,
+            statuses: {
+                '1.0': '銅級',
+                '1.25': '銀級',
+                '1.5': '金級',
+                '1.75': '白金級',
+                '2.0': '鑽石級'
+            },
+            targets: {
+                '1.0': { label: '銀級', val: 250 },
+                '1.25': { label: '金級', val: 1000 },
+                '1.5': { label: '白金級', val: 4000 },
+                '1.75': { label: '鑽石級', val: 15000 },
+                '2.0': { label: '無', val: 0 }
+            },
+            multipliers: {
+                1: '一般 (1倍)',
+                2: '2倍',
+                3: '3倍',
+                4: '4倍',
+                5: '5倍',
+                10: '10倍'
             }
         }
     };
@@ -251,9 +357,13 @@
                 return `<option value="${val}">${label}</option>`;
             }).join('');
 
-            const shareUrl = lang === 'en' 
-                ? 'https://playpoint-sim.com/en/?utm_source=embedded_widget&utm_medium=referral&utm_campaign=widget' 
-                : 'https://playpoint-sim.com/?utm_source=embedded_widget&utm_medium=referral&utm_campaign=widget';
+            const shareUrl = (lang === 'en' 
+                ? 'https://playpoint-sim.com/en/?utm_source=embedded_widget' 
+                : lang === 'ko'
+                ? 'https://playpoint-sim.com/ko/?utm_source=embedded_widget'
+                : lang === 'zh'
+                ? 'https://playpoint-sim.com/tw/?utm_source=embedded_widget'
+                : 'https://playpoint-sim.com/?utm_source=embedded_widget') + '&utm_medium=referral&utm_campaign=widget';
 
             this.shadowRoot.innerHTML = `
                 <style>
@@ -544,15 +654,16 @@
             }
 
             const finalRate = rate * multiplier;
-            const unit = lang === 'en' ? 1 : 100;
+            const unit = t.unit || (lang === 'en' ? 1 : 100);
             const totalAmountNeeded = Math.ceil((neededPoints / finalRate) * unit);
 
+            const localeCode = lang === 'en' ? 'en-US' : lang === 'ko' ? 'ko-KR' : lang === 'zh' ? 'zh-TW' : 'ja-JP';
             const remainingMonths = this.getRemainingMonths();
             const monthlyResultContent = remainingMonths > 0
-                ? `, ${t.resultMonthlyPrefix}${Math.ceil(totalAmountNeeded / remainingMonths).toLocaleString(lang === 'en' ? 'en-US' : 'ja-JP')}${t.currency}${t.resultMonthlySuffix} (${remainingMonths}${t.resultMonthsSuffix})`
+                ? `, ${t.resultMonthlyPrefix}${Math.ceil(totalAmountNeeded / remainingMonths).toLocaleString(localeCode)}${t.currency}${t.resultMonthlySuffix} (${remainingMonths}${t.resultMonthsSuffix})`
                 : '';
 
-            result.textContent = `${t.resultTotalPrefix}${totalAmountNeeded.toLocaleString(lang === 'en' ? 'en-US' : 'ja-JP')}${t.currency}${monthlyResultContent}`;
+            result.textContent = `${t.resultTotalPrefix}${totalAmountNeeded.toLocaleString(localeCode)}${t.currency}${monthlyResultContent}`;
             result.classList.remove('error');
         }
 
@@ -575,10 +686,11 @@
                 return;
             }
 
-            const unit = lang === 'en' ? 1 : 100;
+            const unit = t.unit || (lang === 'en' ? 1 : 100);
             const points = Math.round((amount / unit) * rate * multiplier);
 
-            result.textContent = `${t.resultPointsPrefix}${points.toLocaleString(lang === 'en' ? 'en-US' : 'ja-JP')}${t.resultPointsSuffix}`;
+            const localeCode = lang === 'en' ? 'en-US' : lang === 'ko' ? 'ko-KR' : lang === 'zh' ? 'zh-TW' : 'ja-JP';
+            result.textContent = `${t.resultPointsPrefix}${points.toLocaleString(localeCode)}${t.resultPointsSuffix}`;
             result.classList.remove('error');
         }
     }

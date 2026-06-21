@@ -124,6 +124,12 @@ export const CALC = {
         }
 
         STATE.dom.neededPoints.max = String(maxNeededPoints);
+
+        // すでに入力されている値が新しい最大値を超えている場合、自動的に最大値にクランプする
+        const currentVal = parseFloat(STATE.dom.neededPoints.value);
+        if (Number.isFinite(currentVal) && currentVal > maxNeededPoints) {
+            STATE.dom.neededPoints.value = String(maxNeededPoints);
+        }
     },
 
     // 年末までの残日数から月平均の分母を算出
