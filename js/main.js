@@ -92,7 +92,6 @@ export function init() {
     if (STATE.dom.exportDiaryBtn) STATE.dom.exportDiaryBtn.addEventListener('click', () => DIARY.exportDiary());
     if (STATE.dom.importDiaryBtn) STATE.dom.importDiaryBtn.addEventListener('click', () => DIARY.toggleImportArea());
     if (STATE.dom.confirmImportBtn) STATE.dom.confirmImportBtn.addEventListener('click', () => DIARY.executeImport());
-    if (STATE.dom.switchToEnBtn) STATE.dom.switchToEnBtn.addEventListener('click', () => switchRegion('US'));
     if (STATE.dom.closeLangBannerBtn) STATE.dom.closeLangBannerBtn.addEventListener('click', () => {
         if (STATE.dom.languageSuggestionBanner) {
             STATE.dom.languageSuggestionBanner.classList.add(CONSTANTS.CLASS_HIDDEN);
@@ -227,7 +226,7 @@ export function init() {
     }
 }
 
-// 金曜日リマインダーバーの表示ロジック
+// 言語提案バナーの表示ロジック
 export function checkLanguageSuggestion() {
     if (!STATE.dom.languageSuggestionBanner) return;
 
@@ -246,10 +245,47 @@ export function checkLanguageSuggestion() {
         console.error("ローカルストレージの読み込みに失敗しました:", e);
     }
 
-    const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-    const isEnglishUser = browserLang.startsWith('en');
+    if (preferredRegion) return;
 
-    if (isEnglishUser && !preferredRegion && !isEnglishPath()) {
+    const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    
+    let targetRegion = null;
+    let messageText = '';
+    let buttonText = '';
+    let isCurrentMatch = false;
+
+    if (browserLang.startsWith('ko')) {
+        targetRegion = 'KR';
+        messageText = '한국어 버전이 있습니다!';
+        buttonText = '한국어로 전환';
+        isCurrentMatch = isKoreanPath();
+    } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+        targetRegion = 'TW';
+        messageText = '提供繁體中文版本！';
+        buttonText = '切換至繁體中文';
+        isCurrentMatch = isTaiwanPath();
+    } else if (browserLang.startsWith('en')) {
+        targetRegion = 'US';
+        messageText = 'English version is available!';
+        buttonText = 'Switch to English';
+        isCurrentMatch = isEnglishPath();
+    }
+
+    if (targetRegion && !isCurrentMatch) {
+        const spanEl = STATE.dom.languageSuggestionBanner.querySelector('span');
+        const btnEl = STATE.dom.switchToEnBtn;
+        if (spanEl && btnEl) {
+            spanEl.textContent = messageText;
+            btnEl.textContent = buttonText;
+            
+            const newBtn = btnEl.cloneNode(true);
+            btnEl.parentNode.replaceChild(newBtn, btnEl);
+            STATE.dom.switchToEnBtn = newBtn;
+            
+            newBtn.addEventListener('click', () => {
+                switchRegion(targetRegion);
+            });
+        }
         STATE.dom.languageSuggestionBanner.classList.remove(CONSTANTS.CLASS_HIDDEN);
     }
 }

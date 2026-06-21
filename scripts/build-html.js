@@ -103,7 +103,8 @@ const locales = {
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${todayStr}</p>
-        <!-- META_LINE_END -->`
+        <!-- META_LINE_END -->`,
+        authorName: 'katakata'
     },
     'ko': {
         region: 'KR',
@@ -181,7 +182,8 @@ const locales = {
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${todayStr}</p>
-        <!-- META_LINE_END -->`
+        <!-- META_LINE_END -->`,
+        authorName: 'katakata'
     },
     'tw': {
         region: 'TW',
@@ -259,7 +261,8 @@ const locales = {
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${todayStr}</p>
-        <!-- META_LINE_END -->`
+        <!-- META_LINE_END -->`,
+        authorName: 'katakata'
     }
 };
 
@@ -273,6 +276,11 @@ Object.entries(locales).forEach(([langDir, config]) => {
 
     // 1. html lang 置換（BCP47準拠: dirではなくlangCodeを使用）
     output = output.replace(/<html lang="[^"]+">/, `<html lang="${config.langCode}">`);
+
+    // 著者メタタグの置換
+    output = output.replace(/<meta name="author" content="かたかた">/, `<meta name="author" content="${config.authorName}">`);
+    // JSON-LD 内の "name": "かたかた" の置換（著者名・パブリッシャー名）
+    output = output.replace(/"name": "かたかた"/g, `"name": "${config.authorName}"`);
 
     // 2. タイトル & description 置換
     output = output.replace(/<title>[^<]+<\/title>/, `<title>${config.title}</title>`);
