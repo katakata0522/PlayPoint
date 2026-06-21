@@ -65,6 +65,9 @@ export const SHARE = {
             if (amount !== null && dom.amountYen) dom.amountYen.value = String(amount);
             if (multiplier !== null && dom.reverseMultiplier) dom.reverseMultiplier.value = String(multiplier);
             UI.switchMode(CONSTANTS.MODE_REVERSE);
+            
+            // 共有URLからの復元時に自動計算を実行
+            CALC.reverseCalculate();
             return;
         }
 
@@ -78,6 +81,9 @@ export const SHARE = {
         }
         if (multiplier !== null && dom.multiplier) dom.multiplier.value = String(multiplier);
         UI.switchMode(CONSTANTS.MODE_MAIN);
+        
+        // 共有URLからの復元時に自動計算を実行
+        CALC.calculate();
     }
 };
 

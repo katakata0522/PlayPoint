@@ -141,6 +141,7 @@ export const DIARY = {
                 entry_type: 'weekly_reward'
             });
             ANALYTICS.markEngaged();
+            UI.showToast(CONFIGS[STATE.currentRegion].uiText.toastDiarySaveSuccess);
             const originalText = CONFIGS[STATE.currentRegion].uiText.saveButton;
             e.target.textContent = 'OK!';
             e.target.disabled = true;
@@ -257,6 +258,9 @@ export const DIARY = {
             }
             STATE.dom.diaryBackupData.value = "";
             UI.showToast(texts.importSuccess);
+            if (STATE.dom.importDiaryBtn) {
+                STATE.dom.importDiaryBtn.focus();
+            }
         } catch (e) {
             console.error("データの読み込みに失敗しました:", e);
             UI.showToast(texts.importError, 'error');

@@ -151,6 +151,22 @@
         banner.querySelector('[data-consent-accept]').addEventListener('click', () => choose('granted'));
         banner.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') choose('denied');
+            if (event.key === 'Tab') {
+                const focusables = banner.querySelectorAll('button');
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (event.shiftKey) {
+                    if (document.activeElement === first) {
+                        last.focus();
+                        event.preventDefault();
+                    }
+                } else {
+                    if (document.activeElement === last) {
+                        first.focus();
+                        event.preventDefault();
+                    }
+                }
+            }
         });
 
         document.body.append(settingsButton, banner);

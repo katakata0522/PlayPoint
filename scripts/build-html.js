@@ -304,45 +304,57 @@ Object.entries(locales).forEach(([langDir, config]) => {
 });
 
 // ==========================================
-// 10. sw.js (Service Worker) のキャッシュ自動更新・同期処理
+// 10. アセットバージョンの抽出処理
+// ==========================================
+// index.html から CSS や JS のバージョンクエリ（例: style.css?v=XXXX）を抽出
+const cssQueryMatch = indexHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
+const cssVersion = cssQueryMatch ? cssQueryMatch[1] : '';
+
+let consentVersion = '';
+const tempSwPath = path.join(__dirname, '../sw.js');
+if (fs.existsSync(tempSwPath)) {
+    const tempSwContent = fs.readFileSync(tempSwPath, 'utf8');
+    const swConsentMatch = tempSwContent.match(/\.\/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
+    if (swConsentMatch) consentVersion = swConsentMatch[1];
+}
+if (!consentVersion) {
+    const consentQueryMatch = indexHtml.match(/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
+    consentVersion = consentQueryMatch ? consentQueryMatch[1] : '';
+}
+
+const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
+const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
+
+// blog/index.html からクエリを抽出
+const blogIndexPath = path.join(__dirname, '../blog/index.html');
+let blogCssVersion = '';
+let blogScriptVersion = '';
+let blogComponentsVersion = '';
+if (fs.existsSync(blogIndexPath)) {
+    const blogHtml = fs.readFileSync(blogIndexPath, 'utf8');
+    const blogCssMatch = blogHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
+    if (blogCssMatch) blogCssVersion = blogCssMatch[1];
+    const blogScriptMatch = blogHtml.match(/script\.js\?v=([a-zA-Z0-9_-]+)/);
+    if (blogScriptMatch) blogScriptVersion = blogScriptMatch[1];
+    const blogComponentsMatch = blogHtml.match(/components\.js\?v=([a-zA-Z0-9_-]+)/);
+    if (blogComponentsMatch) blogComponentsVersion = blogComponentsMatch[1];
+}
+
+// 代表的な記事ファイルから article-shared.css のクエリを抽出
+const articlePath = path.join(__dirname, '../articles/2026-06-20-discount-gift-cards.html');
+let articleSharedCssVersion = '';
+if (fs.existsSync(articlePath)) {
+    const articleHtml = fs.readFileSync(articlePath, 'utf8');
+    const articleSharedCssMatch = articleHtml.match(/article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
+    if (articleSharedCssMatch) articleSharedCssVersion = articleSharedCssMatch[1];
+}
+
+// ==========================================
+// 10.1 sw.js (Service Worker) のキャッシュ自動更新・同期処理
 // ==========================================
 const swPath = path.join(__dirname, '../sw.js');
 if (fs.existsSync(swPath)) {
     let swContent = fs.readFileSync(swPath, 'utf8');
-
-    // index.html から CSS や JS のバージョンクエリ（例: style.css?v=XXXX）を抽出
-    const cssQueryMatch = indexHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
-    const cssVersion = cssQueryMatch ? cssQueryMatch[1] : '';
-
-    const consentQueryMatch = indexHtml.match(/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
-    const consentVersion = consentQueryMatch ? consentQueryMatch[1] : '';
-
-    const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
-    const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
-
-    // blog/index.html からクエリを抽出
-    const blogIndexPath = path.join(__dirname, '../blog/index.html');
-    let blogCssVersion = '';
-    let blogScriptVersion = '';
-    let blogComponentsVersion = '';
-    if (fs.existsSync(blogIndexPath)) {
-        const blogHtml = fs.readFileSync(blogIndexPath, 'utf8');
-        const blogCssMatch = blogHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
-        if (blogCssMatch) blogCssVersion = blogCssMatch[1];
-        const blogScriptMatch = blogHtml.match(/script\.js\?v=([a-zA-Z0-9_-]+)/);
-        if (blogScriptMatch) blogScriptVersion = blogScriptMatch[1];
-        const blogComponentsMatch = blogHtml.match(/components\.js\?v=([a-zA-Z0-9_-]+)/);
-        if (blogComponentsMatch) blogComponentsVersion = blogComponentsMatch[1];
-    }
-
-    // 代表的な記事ファイルから article-shared.css のクエリを抽出
-    const articlePath = path.join(__dirname, '../articles/2026-06-20-discount-gift-cards.html');
-    let articleSharedCssVersion = '';
-    if (fs.existsSync(articlePath)) {
-        const articleHtml = fs.readFileSync(articlePath, 'utf8');
-        const articleSharedCssMatch = articleHtml.match(/article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
-        if (articleSharedCssMatch) articleSharedCssVersion = articleSharedCssMatch[1];
-    }
 
     // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
     const newCacheName = `playpoint-calc-v${yyyy}${mm}${dd}_${hh}${min}`;
@@ -374,6 +386,56 @@ if (fs.existsSync(swPath)) {
     fs.writeFileSync(swPath, swContent, 'utf8');
     console.log(`Successfully synchronized sw.js cache. CACHE_NAME=${newCacheName}`);
 }
+
+// ==========================================
+// 10.5. third-party.js 内の consent.js バージョン自動同期処理
+// ==========================================
+const thirdPartyJsPath = path.join(__dirname, '../js/third-party.js');
+if (fs.existsSync(thirdPartyJsPath) && consentVersion) {
+    let tpContent = fs.readFileSync(thirdPartyJsPath, 'utf8');
+    tpContent = tpContent.replace(/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `js/consent.js?v=${consentVersion}`);
+    fs.writeFileSync(thirdPartyJsPath, tpContent, 'utf8');
+    console.log(`Successfully synchronized consent.js version in third-party.js to v=${consentVersion}`);
+}
+
+// ==========================================
+// 10.7. 他の全HTMLファイルのアセットバージョン・日付情報の自動同期処理
+// ==========================================
+const htmlFiles = [
+    'about-playpoints.html',
+    'info.html',
+    'attention.html',
+    'privacy.html',
+    'terms.html',
+    'sitemap.html',
+    'embed.html'
+];
+
+htmlFiles.forEach(file => {
+    const filePath = path.join(__dirname, '../', file);
+    if (fs.existsSync(filePath)) {
+        let content = fs.readFileSync(filePath, 'utf8');
+        
+        // style.css?v=... の同期
+        if (cssVersion) {
+            content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${cssVersion}`);
+        }
+        // third-party.js?v=... の同期
+        if (thirdPartyVersion) {
+            content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${thirdPartyVersion}`);
+        }
+        
+        // 日付メタデータ・最終更新日の同期
+        content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
+        content = content.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
+        content = content.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${todayStr}"`);
+        content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
+        content = content.replace(/Last Modified: \d{4}-\d{2}-\d{2}/g, `Last Modified: ${todayStr}`);
+        
+        fs.writeFileSync(filePath, content, 'utf8');
+        console.log(`Successfully synchronized asset versions and dates in ${file}`);
+    }
+});
 
 // ==========================================
 // 11. sitemap.xml の改行コード LF 統一処理

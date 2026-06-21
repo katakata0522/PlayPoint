@@ -59,8 +59,8 @@ export const UI = {
             if (el.tagName === 'A' && typeof texts[key] === 'object' && texts[key].text) {
                 el.textContent = texts[key].text;
                 if (texts[key].href) {
-                    const isEn = window.location.pathname.includes('/en/');
-                    const prefix = isEn ? '../' : './';
+                    const isSubDir = ['/en/', '/ko/', '/tw/'].some(p => window.location.pathname.includes(p));
+                    const prefix = isSubDir ? '../' : './';
                     const rawHref = texts[key].href;
                     const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
                     el.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
@@ -91,12 +91,10 @@ export const UI = {
 
         const gcalBtn = document.getElementById('register-google-cal-btn');
         if (gcalBtn) {
-            const isEn = STATE.currentRegion === 'US';
-            const text = isEn ? '【GooglePlay】Weekly Reward Day!' : '【GooglePlay】ウィークリーリワードの日！';
-            const details = isEn
-                ? 'Claim your Google Play Points Weekly Reward and log it!\nhttps://playpoint-sim.com/en/'
-                : 'Playポイントのウィークリーリワードを引いて、計算機の日記に記録しましょう！\nhttps://playpoint-sim.com/';
-            const dates = isEn ? '20260626T140000Z/20260626T150000Z' : '20260626T010000Z/20260626T020000Z';
+            const text = texts.calSubject;
+            const details = texts.calDetails;
+            const isGlobalTime = STATE.currentRegion === 'US';
+            const dates = isGlobalTime ? '20260626T140000Z/20260626T150000Z' : '20260626T010000Z/20260626T020000Z';
             const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${dates}&recur=RRULE:FREQ=WEEKLY;BYDAY=FR&details=${encodeURIComponent(details)}`;
             gcalBtn.href = gcalUrl;
         }

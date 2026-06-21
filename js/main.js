@@ -256,14 +256,14 @@ export function checkLanguageSuggestion() {
 
 // ICSファイルのダウンロードロジック
 export function downloadICS() {
-    const isEn = isEnglishPath();
-    const summary = isEn ? '【GooglePlay】Weekly Reward Day!' : '【GooglePlay】ウィークリーリワード獲得＆記録';
-    const description = isEn
-        ? 'Claim your Google Play Points Weekly Reward and log it!\\nhttps://playpoint-sim.com/en/'
-        : 'Playポイントのウィークリーリワードを引いて、日記に記録しましょう！\\nhttps://playpoint-sim.com/';
+    const config = CONFIGS[STATE.currentRegion];
+    const texts = config.uiText;
+    const summary = texts.calSubject;
+    const description = texts.calDetails.replace(/\n/g, '\\n');
     
-    const dtstart = isEn ? '20260626T140000Z' : '20260626T010000Z';
-    const dtend = isEn ? '20260626T150000Z' : '20260626T020000Z';
+    const isGlobalTime = STATE.currentRegion === 'US';
+    const dtstart = isGlobalTime ? '20260626T140000Z' : '20260626T010000Z';
+    const dtend = isGlobalTime ? '20260626T150000Z' : '20260626T020000Z';
     
     const icsLines = [
         'BEGIN:VCALENDAR',
@@ -286,7 +286,7 @@ export function downloadICS() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = isEn ? 'google-play-reward-reminder.ics' : 'play-point-reward-reminder.ics';
+    a.download = texts.icsFilename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

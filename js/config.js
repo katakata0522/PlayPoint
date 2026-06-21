@@ -107,7 +107,11 @@ export const CONFIGS = {
             toastCopyError: "コピーに失敗しました。",
             copyResultTemplate: "▼Playポイント計算結果▼\n目標ステータス： {status}\n必要な課金額の目安： 約{yen}{symbol}\n\n計算元：Playポイント計算機 ( {url} )",
             tweetTextMain: "【Playポイント計算機で試算】\n私の目標「{status}」まで、あと【{yen}{symbol}】必要みたい！💰",
-            tweetTextReverse: "【Playポイント計算機で試算】\n{yen}{symbol}使うと、約 {points}ポイント 獲得できるみたい！✨"
+            tweetTextReverse: "【Playポイント計算機で試算】\n{yen}{symbol}使うと、約 {points}ポイント 獲得できるみたい！✨",
+            calSubject: "【GooglePlay】ウィークリーリワードの日！",
+            calDetails: "Playポイントのウィークリーリワードを引いて、計算機の日記に記録しましょう！\nhttps://playpoint-sim.com/",
+            icsFilename: "play-point-reward-reminder.ics",
+            toastDiarySaveSuccess: "日記を保存しました！"
         }
     },
     'US': {
@@ -184,7 +188,11 @@ export const CONFIGS = {
             toastCopyError: "Failed to copy.",
             copyResultTemplate: "▼Play Points Calculation Result▼\nTarget Status: {status}\nEstimated Spending: Approx. {yen} {symbol}\n\nSource: Play Points Calculator ( {url} )",
             tweetTextMain: "[Play Points Calculator]\nI need approx. {yen} {symbol} to reach my goal \"{status}\"! 💰",
-            tweetTextReverse: "[Play Points Calculator]\nIf I spend {yen} {symbol}, I can earn approx. {points} points! ✨"
+            tweetTextReverse: "[Play Points Calculator]\nIf I spend {yen} {symbol}, I can earn approx. {points} points! ✨",
+            calSubject: "[GooglePlay] Weekly Reward Day!",
+            calDetails: "Claim your Google Play Points Weekly Reward and log it!\nhttps://playpoint-sim.com/en/",
+            icsFilename: "google-play-reward-reminder.ics",
+            toastDiarySaveSuccess: "Diary entry saved!"
         }
     },
     'KR': {
@@ -261,7 +269,11 @@ export const CONFIGS = {
             toastCopyError: "복사에 실패했습니다.",
             copyResultTemplate: "▼Play 포인트 계산 결과▼\n목표 등급: {status}\n예상 결제 금액: 약 {yen}{symbol}\n\n출처: 플레이 포인트 계산기 ( {url} )",
             tweetTextMain: "【구글 플레이 포인트 계산기】\n내 목표 「{status}」 등급까지 약 【{yen}{symbol}】 더 필요하네요! 💰",
-            tweetTextReverse: "【구글 플레이 포인트 계산기】\n{yen}{symbol} 결제하면 약 {points}포인트 적립되네요! ✨"
+            tweetTextReverse: "【구글 플레이 포인트 계산기】\n{yen}{symbol} 결제하면 약 {points}포인트 적립되네요! ✨",
+            calSubject: "【GooglePlay】주간 리워드 확인하는 날!",
+            calDetails: "구글 플레이 포인트 주간 리워드를 받고, 계산기 일지에 기록하세요!\nhttps://playpoint-sim.com/ko/",
+            icsFilename: "play-point-reward-reminder-ko.ics",
+            toastDiarySaveSuccess: "일지를 저장했습니다!"
         }
     },
     'TW': {
@@ -338,7 +350,11 @@ export const CONFIGS = {
             toastCopyError: "複製失敗。",
             copyResultTemplate: "▼Play Points 計算結果▼\n目標等級： {status}\n預估消費金額： 約{yen}{symbol}\n\n計算來源：Play Points 計算器 ( {url} )",
             tweetTextMain: "【Google Play 點數計算器】\n距離我的目標「{status}」還需要【{yen}{symbol}】！💰",
-            tweetTextReverse: "【Google Play 點數計算器】\n消費 {yen}{symbol} 大約可以獲得 {points} 點！✨"
+            tweetTextReverse: "【Google Play 點數計算器】\n消費 {yen}{symbol} 大約可以獲得 {points} 點！✨",
+            calSubject: "【GooglePlay】領取每週獎勵的日子！",
+            calDetails: "領取您的 Google Play Points 每週獎勵並記錄在日記中！\nhttps://playpoint-sim.com/tw/",
+            icsFilename: "play-point-reward-reminder-tw.ics",
+            toastDiarySaveSuccess: "日記已儲存！"
         }
     }
 };
