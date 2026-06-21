@@ -468,7 +468,10 @@ const htmlFiles = [
     'privacy.html',
     'terms.html',
     'sitemap.html',
-    'embed.html'
+    'embed.html',
+    'en/articles/2026-06-20-discount-gift-cards.html',
+    'ko/articles/2026-06-20-discount-gift-cards.html',
+    'tw/articles/2026-06-20-discount-gift-cards.html'
 ];
 
 htmlFiles.forEach(file => {
@@ -484,6 +487,10 @@ htmlFiles.forEach(file => {
         if (thirdPartyVersion) {
             content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${thirdPartyVersion}`);
         }
+        // article-shared.css?v=... の同期
+        if (articleSharedCssVersion) {
+            content = content.replace(/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `article-shared.css?v=${articleSharedCssVersion}`);
+        }
         
         // 日付メタデータ・最終更新日の同期
         content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
@@ -491,6 +498,7 @@ htmlFiles.forEach(file => {
         content = content.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${todayStr}"`);
         content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
         content = content.replace(/Last Modified: \d{4}-\d{2}-\d{2}/g, `Last Modified: ${todayStr}`);
+        content = content.replace(/最後更新: \d{4}-\d{2}-\d{2}/g, `最後更新: ${todayStr}`);
         
         fs.writeFileSync(filePath, content, 'utf8');
         console.log(`Successfully synchronized asset versions and dates in ${file}`);
