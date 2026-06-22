@@ -1,10 +1,9 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260622_2319';
+const CACHE_NAME = 'playpoint-calc-v20260623_0854';
 const ASSETS = [
   './',
-  './index.html',
-  './style.css?v=20260622_2319a',
+  './style.css?v=20260623_0854a',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -24,19 +23,16 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260622_2319a',
+  './js/main.js?v=20260623_0854a',
   './js/consent.js?v=20260619a',
-  './js/third-party.js?v=20260622_2319a',
+  './js/third-party.js?v=20260623_0854a',
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260619a',
   './articles/article-shared.css?v=20260619b',
   './en/',
-  './en/index.html',
   './ko/',
-  './ko/index.html',
   './tw/',
-  './tw/index.html',
   './articles/2026-06-20-discount-gift-cards.html',
   './en/articles/2026-06-20-discount-gift-cards.html',
   './ko/articles/2026-06-20-discount-gift-cards.html',

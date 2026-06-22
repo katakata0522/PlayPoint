@@ -104,7 +104,16 @@ export const UI = {
     // 結果表示メソッド（カウントアップアニメーション発火）
     displayResult(targetElement, content, isError = false) {
         if (!targetElement) return;
-        targetElement.innerHTML = isError ? `<span class="error-text">${content}</span>` : content;
+        if (isError) {
+            // エラーは安全にDOM要素で生成（innerHTML 不使用）
+            targetElement.innerHTML = '';
+            const span = document.createElement('span');
+            span.className = 'error-text';
+            span.textContent = content;
+            targetElement.appendChild(span);
+        } else {
+            targetElement.innerHTML = content;
+        }
         targetElement.classList.add(CONSTANTS.CLASS_HAS_RESULT);
         
         // 正常な計算結果表示時のアニメーション処理

@@ -4,6 +4,73 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE } from './share.js';
 
+/**
+ * CALC_PURE: DOM非依存の純粋計算関数群
+ * - ブラウザ環境なしでUnit Testが書ける
+ * - 将来的に CALC.calculate() はこちらに計算を委譲する設計
+ */
+export const CALC_PURE = {
+    /**
+     * 年末までの残り月数を算出（カレンダー基準）
+     * @param {Date} baseDate
+     * @returns {number} 残り月数（1〜12）
+     */
+    getRemainingMonths(baseDate = new Date()) {
+        const month = baseDate.getMonth();
+        const day = baseDate.getDate();
+        if (month === 11 && day === 31) return 0;
+        return 12 - month;
+    },
+
+    /**
+     * 課金シミュレーション計算（純粋関数）
+     * @param {object} params - 計算に必要なパラメータ
+     * @param {number} params.neededPoints - 必要ポイント数
+     * @param {number} params.finalRate - 最終還元率
+     * @param {number} params.packAmount - パック額（0の場合は非パック計算）
+     * @param {number} params.spendUnit - 計算単位（例: 100円）
+     * @param {Date}   params.baseDate - 基準日（デフォルト: 今日）
+     * @returns {{ totalAmountNeeded: number, packsNeeded: number|null, remainingMonths: number }}
+     */
+    computeMainResult({ neededPoints, finalRate, packAmount = 0, spendUnit = 100, baseDate = new Date() }) {
+        const remainingMonths = this.getRemainingMonths(baseDate);
+        let totalAmountNeeded = 0;
+        let packsNeeded = null;
+
+        if (neededPoints <= 0) {
+            return { totalAmountNeeded: 0, packsNeeded: null, remainingMonths };
+        }
+
+        if (packAmount > 0) {
+            const pointsPerPack = Math.floor(Math.floor(packAmount / spendUnit) * finalRate);
+            if (pointsPerPack <= 0) {
+                totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
+            } else {
+                packsNeeded = Math.ceil(neededPoints / pointsPerPack);
+                totalAmountNeeded = packsNeeded * packAmount;
+            }
+        } else {
+            totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
+        }
+
+        return { totalAmountNeeded, packsNeeded, remainingMonths };
+    },
+
+    /**
+     * 逆算シミュレーション計算（純粋関数）
+     * @param {object} params
+     * @param {number} params.amountYen - 課金額
+     * @param {number} params.finalRate - 最終還元率
+     * @param {number} params.spendUnit - 計算単位
+     * @returns {{ earnedPoints: number, earnedPointsRaw: number }}
+     */
+    computeReverseResult({ amountYen, finalRate, spendUnit = 100 }) {
+        const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
+        const earnedPoints = Math.round(earnedPointsRaw);
+        return { earnedPoints, earnedPointsRaw };
+    }
+};
+
 export const CALC = {
     // ステータスセレクトボックスの選択肢を初期化
     populateStatusSelects() {
@@ -132,14 +199,15 @@ export const CALC = {
         }
     },
 
-    // 年末までの残日数から月平均の分母を算出
+    // 年末までの残り月数を算出（カレンダー基準）
+    // 例: 12月1日 → 残り1ヶ月、11月1日 → 残り2ヶ月
     getRemainingMonths(baseDate = new Date()) {
-        const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
-        if (date.getMonth() === 11 && date.getDate() === 31) return 0;
-
-        const nextYearStart = new Date(date.getFullYear() + 1, 0, 1);
-        const remainingDays = Math.max(0, Math.ceil((nextYearStart - date) / (1000 * 60 * 60 * 24)));
-        return Math.ceil(remainingDays / (365 / 12));
+        const month = baseDate.getMonth(); // 0-indexed (0=1月, 11=12月)
+        const day = baseDate.getDate();
+        // 12月31日のみ0を返す（年末最終日は月割り計算不要）
+        if (month === 11 && day === 31) return 0;
+        // 当月を含む残り月数 = 12(月) - 現在の月インデックス
+        return 12 - month;
     },
 
     // 入力値バリデーション
@@ -383,4 +451,5 @@ export const CALC = {
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.CALC = CALC;
+    window.PP_APP.CALC_PURE = CALC_PURE;
 }

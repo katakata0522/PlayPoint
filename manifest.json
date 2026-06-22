@@ -10,10 +10,11 @@
   "categories": ["utilities", "finance"],
   "screenshots": [
     {
-      "src": "icon-512.png",
+      "src": "ogp.png",
       "type": "image/png",
-      "sizes": "512x512",
-      "form_factor": "narrow"
+      "sizes": "1200x630",
+      "form_factor": "wide",
+      "label": "Playポイント計算機 — PC版プレビュー"
     }
   ],
   "icons": [

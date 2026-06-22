@@ -521,7 +521,7 @@ htmlFiles.forEach(file => {
 });
 
 // ==========================================
-// 11. sitemap.xml の改行コード LF 統一処理
+// 11. sitemap.xml の改行コード LF 統一処理 + トップページ lastmod 自動更新
 // ==========================================
 const sitemapPath = path.join(__dirname, '../sitemap.xml');
 if (fs.existsSync(sitemapPath)) {
@@ -532,6 +532,19 @@ if (fs.existsSync(sitemapPath)) {
     if (!sitemapContent.endsWith('\n')) {
         sitemapContent += '\n';
     }
+    // トップページ・各言語版トップの lastmod を今日の日付に自動更新
+    const topPageUrls = [
+        'https://playpoint-sim.com/',
+        'https://playpoint-sim.com/en/',
+        'https://playpoint-sim.com/ko/',
+        'https://playpoint-sim.com/tw/',
+    ];
+    topPageUrls.forEach(url => {
+        // URLの直後に続くlastmodタグだけを置換（他の記事のlastmodを誤更新しない）
+        const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const pattern = new RegExp(`(<loc>${escapedUrl}</loc>\\s*<lastmod>)\\d{4}-\\d{2}-\\d{2}(</lastmod>)`);
+        sitemapContent = sitemapContent.replace(pattern, `$1${todayStr}$2`);
+    });
     fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
-    console.log('Successfully unified sitemap.xml line endings to LF.');
+    console.log(`Successfully unified sitemap.xml line endings to LF and updated top-page lastmod to ${todayStr}.`);
 }

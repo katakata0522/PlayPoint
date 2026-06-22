@@ -631,9 +631,9 @@ test('トップページの更新日は実装更新日と一致する', () => {
   const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 
-  assert.ok(html.includes('2026-06-22'));
-  assert.ok(englishHtml.includes('2026-06-22'));
-  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-22<\/lastmod>/);
+  assert.ok(html.includes('2026-06-23'));
+  assert.ok(englishHtml.includes('2026-06-23'));
+  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-23<\/lastmod>/);
 });
 
 test('反映タイミング記事は結論と確認手順を見出しで整理する', () => {
