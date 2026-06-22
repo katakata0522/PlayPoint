@@ -92,7 +92,7 @@ export const CONFIGS = {
             monthlySummaryTitle: "月間集計", yearlySummaryTitle: "年間集計",
             totalLabel: "合計:", averageLabel: "平均:", pointsUnit: "pt", perWeekUnit: "pt/週",
             guestNotice: "【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！",
-            prizeOptions: ["景品なし", "マウス", "イヤホン", "その他"],
+            prizeOptions: ["（景品なし）", "マウス", "イヤホン", "その他"],
             noWeeksMessage: "この月には対象となる週がありません。",
             backupTitle: "データのバックアップ・復元",
             exportBtn: "データを書き出す (コピー)",
@@ -125,7 +125,11 @@ export const CONFIGS = {
             calSubject: "【GooglePlay】ウィークリーリワードの日！",
             calDetails: "Playポイントのウィークリーリワードを引いて、計算機の日記に記録しましょう！\nhttps://playpoint-sim.com/",
             icsFilename: "play-point-reward-reminder.ics",
-            toastDiarySaveSuccess: "日記を保存しました！"
+            toastDiarySaveSuccess: "日記を保存しました！",
+            toastDiaryLoadError: "日記データの読み込みに失敗しました。",
+            toastDiarySaveError: "日記データの保存に失敗しました。",
+            toastCopyError: "コピーに失敗しました。",
+            errorEmptyBackup: "復元するデータが空です。"
         }
     },
     'US': {
@@ -216,7 +220,11 @@ export const CONFIGS = {
             calSubject: "[GooglePlay] Weekly Reward Day!",
             calDetails: "Claim your Google Play Points Weekly Reward and log it!\nhttps://playpoint-sim.com/en/",
             icsFilename: "google-play-reward-reminder.ics",
-            toastDiarySaveSuccess: "Diary entry saved!"
+            toastDiarySaveSuccess: "Diary entry saved!",
+            toastDiaryLoadError: "Failed to load diary data.",
+            toastDiarySaveError: "Failed to save diary data.",
+            toastCopyError: "Failed to copy.",
+            errorEmptyBackup: "Backup data is empty."
         }
     },
     'KR': {
@@ -307,7 +315,11 @@ export const CONFIGS = {
             calSubject: "【GooglePlay】주간 리워드 확인하는 날!",
             calDetails: "구글 플레이 포인트 주간 리워드를 받고, 계산기 일지에 기록하세요!\nhttps://playpoint-sim.com/ko/",
             icsFilename: "play-point-reward-reminder-ko.ics",
-            toastDiarySaveSuccess: "일지를 저장했습니다!"
+            toastDiarySaveSuccess: "일지를 저장했습니다!",
+            toastDiaryLoadError: "일기 데이터를 불러오지 못했습니다.",
+            toastDiarySaveError: "일기 데이터를 저장하지 못했습니다.",
+            toastCopyError: "복사에 실패했습니다.",
+            errorEmptyBackup: "복원할 데이터가 비어 있습니다."
         }
     },
     'TW': {
@@ -398,7 +410,11 @@ export const CONFIGS = {
             calSubject: "【GooglePlay】領取每週獎勵的日子！",
             calDetails: "領取您的 Google Play Points 每週獎勵並記錄在日記中！\nhttps://playpoint-sim.com/tw/",
             icsFilename: "play-point-reward-reminder-tw.ics",
-            toastDiarySaveSuccess: "日記已儲存！"
+            toastDiarySaveSuccess: "日記已儲存！",
+            toastDiaryLoadError: "無法載入日記資料。",
+            toastDiarySaveError: "無法儲存日記資料。",
+            toastCopyError: "複製失敗。",
+            errorEmptyBackup: "還原資料為空。"
         }
     }
 };

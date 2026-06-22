@@ -623,7 +623,7 @@ test('Service Workerは共有URL機能を含む最新版アセットを事前キ
 
   assert.ok(sw.includes("'./js/share.js'"));
   assert.ok(/playpoint-calc-v2026\d{4}/.test(sw));
-  assert.ok(sw.includes("'./style.css?v=20260621a'"));
+  assert.ok(/\.\/style\.css\?v=[a-zA-Z0-9_-]+/.test(sw));
 });
 
 test('トップページの更新日は実装更新日と一致する', () => {

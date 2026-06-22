@@ -11,7 +11,8 @@ export const DIARY = {
             return data ? JSON.parse(data) : {};
         } catch (e) {
             console.error("日記データの読み込みに失敗しました:", e);
-            UI.showToast("日記データの読み込みに失敗しました。", 'error');
+            const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+            UI.showToast(texts.toastDiaryLoadError || "日記データの読み込みに失敗しました。", 'error');
             return {};
         }
     },
@@ -23,7 +24,8 @@ export const DIARY = {
             return true;
         } catch (e) {
             console.error("日記データの保存に失敗しました:", e);
-            UI.showToast("日記データの保存に失敗しました。", 'error');
+            const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+            UI.showToast(texts.toastDiarySaveError || "日記データの保存に失敗しました。", 'error');
             return false;
         }
     },
@@ -96,6 +98,19 @@ export const DIARY = {
                 <select id="week${weekNum}_prize">${prizeOptionsHTML}</select>
                 <button data-week="${weekNum}">${texts.saveButton}</button>
             `;
+            
+            // オートセーブ用のイベントハンドラを登録
+            const pointsInput = row.querySelector(`#week${weekNum}_points`);
+            const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
+            const saveBtn = row.querySelector(`button[data-week="${weekNum}"]`);
+            
+            const triggerAutoSave = () => {
+                this.handleDiarySave({ target: saveBtn }, true); // サイレント保存
+            };
+            
+            pointsInput.addEventListener('blur', triggerAutoSave);
+            prizeSelect.addEventListener('change', triggerAutoSave);
+            
             STATE.dom.weekInputs.appendChild(row);
         });
     },
@@ -126,7 +141,7 @@ export const DIARY = {
     },
 
     // 週ごとの入力データ保存処理
-    handleDiarySave(e) {
+    handleDiarySave(e, isSilent = false) {
         if (e.target.tagName === 'BUTTON' && e.target.dataset.week) {
             const weekNum = e.target.dataset.week;
             const pointsInput = STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);
@@ -141,7 +156,9 @@ export const DIARY = {
                 entry_type: 'weekly_reward'
             });
             ANALYTICS.markEngaged();
-            UI.showToast(CONFIGS[STATE.currentRegion].uiText.toastDiarySaveSuccess);
+            if (!isSilent) {
+                UI.showToast(CONFIGS[STATE.currentRegion].uiText.toastDiarySaveSuccess);
+            }
             const originalText = CONFIGS[STATE.currentRegion].uiText.saveButton;
             e.target.textContent = 'OK!';
             e.target.disabled = true;
@@ -171,7 +188,7 @@ export const DIARY = {
             })
             .catch(err => {
                 console.error("データの書き出しに失敗しました:", err);
-                UI.showToast("コピーに失敗しました。", 'error');
+                UI.showToast(texts.toastCopyError || "コピーに失敗しました。", 'error');
             });
     },
 
@@ -206,7 +223,7 @@ export const DIARY = {
         const rawData = STATE.dom.diaryBackupData.value.trim();
         
         if (!rawData) {
-            UI.showToast(texts.errorInputReverse, 'error');
+            UI.showToast(texts.errorEmptyBackup || "復元するデータが空です。", 'error');
             return;
         }
         

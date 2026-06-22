@@ -1,10 +1,10 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260622_1051';
+const CACHE_NAME = 'playpoint-calc-v20260622_2319';
 const ASSETS = [
   './',
   './index.html',
-  './style.css?v=20260621a',
+  './style.css?v=20260622_2319a',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -24,9 +24,9 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260621a',
+  './js/main.js?v=20260622_2319a',
   './js/consent.js?v=20260619a',
-  './js/third-party.js?v=20260621a',
+  './js/third-party.js?v=20260622_2319a',
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260619a',
@@ -48,7 +48,9 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(ASSETS);
+        // キャッシュインストール時にHTTPキャッシュをバイパスし、必ずサーバーから最新版を取得
+        const bypassRequests = ASSETS.map(url => new Request(url, { cache: 'reload' }));
+        return cache.addAll(bypassRequests);
       })
       .catch((err) => {
         console.error('Service Worker install cache failure:', err);

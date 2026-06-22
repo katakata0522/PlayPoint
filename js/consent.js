@@ -123,7 +123,7 @@
 
         const style = document.createElement('style');
         style.textContent = `
-            .pp-consent-settings{position:fixed;left:12px;bottom:12px;z-index:9998;border:1px solid #64748b;border-radius:999px;padding:8px 12px;background:#111827;color:#f8fafc;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.24)}
+            .pp-consent-settings{position:fixed;right:12px;bottom:12px;z-index:9998;border:1px solid #64748b;border-radius:999px;padding:8px 12px;background:#111827;color:#f8fafc;font:600 12px/1.2 system-ui,sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.24)}
             .pp-consent{position:fixed;inset:auto 12px 12px;z-index:9999;max-width:680px;margin:auto;padding:18px;border:1px solid #64748b;border-radius:14px;background:#111827;color:#f8fafc;box-shadow:0 12px 40px rgba(0,0,0,.45);font:14px/1.6 system-ui,sans-serif}
             .pp-consent[hidden]{display:none}.pp-consent h2{color:#f8fafc;margin:0 0 6px;font-size:17px}.pp-consent p{margin:0;color:#cbd5e1}.pp-consent__actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}.pp-consent button{min-height:44px;border-radius:9px;padding:8px 16px;font:700 14px/1 system-ui,sans-serif;cursor:pointer}.pp-consent__reject{border:1px solid #94a3b8;background:transparent;color:#f8fafc}.pp-consent__accept{border:1px solid #60a5fa;background:#2563eb;color:#fff}
             @media(max-width:480px){.pp-consent{inset:auto 8px 8px;padding:16px}.pp-consent__actions{display:grid;grid-template-columns:1fr 1fr}.pp-consent button{width:100%}}

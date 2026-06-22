@@ -22,9 +22,18 @@ indexHtml = indexHtml.replace(/<meta property="article:modified_time" content="[
 indexHtml = indexHtml.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
 indexHtml = indexHtml.replace(/最終更新: \d{4}-\d{2}-\d{2}/, `最終更新: ${todayStr}`);
 
+// 現在の日本時間 (JST) に基づくアセットバージョンを生成 (例: 20260622_2300)
+const assetVersion = `${yyyy}${mm}${dd}_${hh}${min}`;
+
+// index.html のアセットバージョンクエリを自動更新 (バンプ)
+indexHtml = indexHtml.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
+indexHtml = indexHtml.replace(/js\/main\.js\?v=[a-zA-Z0-9_-]+/g, `js/main.js?v=${assetVersion}a`);
+indexHtml = indexHtml.replace(/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `js/third-party.js?v=${assetVersion}a`);
+indexHtml = indexHtml.replace(/blog\/components\.js\?v=[a-zA-Z0-9_-]+/g, `blog/components.js?v=${assetVersion}a`);
+
 // 置換後の HTML を上書き保存
 fs.writeFileSync(sourcePath, indexHtml, 'utf8');
-console.log(`Synchronized dates in index.html to ${todayStr}`);
+console.log(`Synchronized dates and asset versions (v=${assetVersion}a) in index.html`);
 
 const locales = {
     'en': {
