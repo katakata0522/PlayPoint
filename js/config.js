@@ -116,7 +116,7 @@ export const CONFIGS = {
             linkAbout: { text: "Playポイントとは？", href: "about-playpoints.html" },
             linkDiscount: { text: "💡 お得に課金する", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" },
-            linkAttention: { text: "⚠️ 国別差異", href: "attention.html" },
+            linkAttention: { text: "⚠️ 海外の方へ", href: "attention.html" },
             toastCopySuccess: "クリップボードにコピーしました！",
             toastCopyError: "コピーに失敗しました。",
             copyResultTemplate: "▼Playポイント計算結果▼\n目標ステータス： {status}\n必要な課金額の目安： 約{yen}{symbol}\n\n計算元：Playポイント計算機 ( {url} )",
