@@ -2,17 +2,49 @@
 
 // GA4本体の読み込み前でも、意味のある完了イベントだけを安全にキューへ積む
 export const ANALYTICS = {
-    track(eventName, params = {}) {
-        if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
-        // 同意（オプトイン）していない場合はイベントデータの収集・送信を行わない
-        if (typeof window !== 'undefined' && window.PlayPointConsent && window.PlayPointConsent.getStatus() !== 'granted') {
-            return;
-        }
+    pendingEvents: [],
+    maxPendingEvents: 20,
+    hasConsent() {
+        return typeof window !== 'undefined'
+            && window.PlayPointConsent
+            && window.PlayPointConsent.getStatus() === 'granted';
+    },
+    queue(eventName, params) {
+        if (this.pendingEvents.length >= this.maxPendingEvents) this.pendingEvents.shift();
+        this.pendingEvents.push({ eventName, params });
+    },
+    send(eventName, params) {
         window.dataLayer = window.dataLayer || [];
         window.gtag = window.gtag || function gtag() {
             window.dataLayer.push(arguments);
         };
         window.gtag('event', eventName, params);
+    },
+    track(eventName, params = {}) {
+        if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
+        if (typeof window === 'undefined') return;
+
+        if (!window.PlayPointConsent) {
+            this.queue(eventName, params);
+            return;
+        }
+        if (!this.hasConsent()) {
+            this.pendingEvents = [];
+            return;
+        }
+
+        this.send(eventName, params);
+    },
+    flushPending() {
+        if (typeof window === 'undefined' || !window.PlayPointConsent) return;
+        if (!this.hasConsent()) {
+            this.pendingEvents = [];
+            return;
+        }
+        while (this.pendingEvents.length) {
+            const { eventName, params } = this.pendingEvents.shift();
+            this.send(eventName, params);
+        }
     },
     markEngaged() {
         if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
@@ -438,10 +470,12 @@ export const STATE = {
 };
 
 // 互換性マウント
-if (typeof window !== 'undefined' && window.__TEST_ENV__) {
+if (typeof window !== 'undefined') {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.ANALYTICS = ANALYTICS;
-    window.PP_APP.CONSTANTS = CONSTANTS;
-    window.PP_APP.CONFIGS = CONFIGS;
-    window.PP_APP.STATE = STATE;
+    if (window.__TEST_ENV__) {
+        window.PP_APP.CONSTANTS = CONSTANTS;
+        window.PP_APP.CONFIGS = CONFIGS;
+        window.PP_APP.STATE = STATE;
+    }
 }

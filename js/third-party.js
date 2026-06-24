@@ -40,6 +40,9 @@
             };
             window.gtag('js', new Date());
             window.gtag('config', GA_MEASUREMENT_ID);
+            if (window.PP_APP && window.PP_APP.ANALYTICS) {
+                window.PP_APP.ANALYTICS.flushPending();
+            }
             gaLoaded = true;
         } catch (error) {
             console.error('Analytics load failed:', error);

@@ -1,3 +1,4 @@
+const APP_SHELL_CACHE_PREFIX = 'gravity-todo-app-v';
 const APP_SHELL_CACHE = 'gravity-todo-app-v18';
 const APP_SHELL_URLS = [
   './',
@@ -33,7 +34,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => Promise.all(
       cacheNames
-        .filter((cacheName) => cacheName !== APP_SHELL_CACHE)
+        .filter((cacheName) => cacheName.startsWith(APP_SHELL_CACHE_PREFIX) && cacheName !== APP_SHELL_CACHE)
         .map((cacheName) => caches.delete(cacheName))
     )).then(() => self.clients.claim())
   );

@@ -1,9 +1,10 @@
 'use strict';
 
-const CACHE_NAME = 'playpoint-calc-v20260623_0854';
+const CACHE_PREFIX = 'playpoint-calc-v';
+const CACHE_NAME = 'playpoint-calc-v20260623_1111';
 const ASSETS = [
   './',
-  './style.css?v=20260623_0854a',
+  './style.css?v=20260623_1111a',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -23,9 +24,9 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260623_0854a',
+  './js/main.js?v=20260623_1111a',
   './js/consent.js?v=20260619a',
-  './js/third-party.js?v=20260623_0854a',
+  './js/third-party.js?v=20260623_1111a',
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260619a',
@@ -46,13 +47,7 @@ self.addEventListener('install', (event) => {
       .then((cache) => {
         // キャッシュインストール時にHTTPキャッシュをバイパスし、必ずサーバーから最新版を取得
         const bypassRequests = ASSETS.map(url => new Request(url, { cache: 'reload' }));
-        return cache.addAll(bypassRequests);
-      })
-      .catch((err) => {
-        console.error('Service Worker install cache failure:', err);
-      })
-      .then(() => {
-        return self.skipWaiting();
+        return cache.addAll(bypassRequests).then(() => self.skipWaiting());
       })
   );
 });
@@ -63,7 +58,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
+          if (cache.startsWith(CACHE_PREFIX) && cache !== CACHE_NAME) {
             return caches.delete(cache);
           }
         })

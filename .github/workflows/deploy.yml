@@ -8,7 +8,6 @@ on:
       - '**.md'
       - '.gitignore'
       - '.gitattributes'
-      - '.github/**'
 
 permissions:
   contents: read
@@ -49,6 +48,12 @@ jobs:
       - name: Minify assets
         run: node .github/scripts/minify.cjs
 
+      - name: Verify minified assets
+        run: |
+          node .github/scripts/verify-js-syntax.cjs
+          node tests/playpoint-regression.test.cjs
+          node tests/playpoint-nine-fixes.test.cjs
+
       - name: Setup SSH
         run: |
           set -euo pipefail
@@ -78,7 +83,11 @@ jobs:
               --exclude '.github*' \
               --exclude 'README.md' \
               --exclude 'AGENTS.md' \
-              --exclude 'tests*'; then
+              --exclude 'tests*' \
+              --exclude 'docs*' \
+              --exclude 'scripts*' \
+              --exclude 'みんな用URL.txt' \
+              --exclude 'CNAME'; then
               SUCCESS=true
               echo "Deployment succeeded!"
             else

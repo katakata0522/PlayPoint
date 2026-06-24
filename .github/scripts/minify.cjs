@@ -12,12 +12,12 @@ function minifyCSS(content) {
 }
 
 function minifyJS(content) {
-  // 安全なコメント・空白・改行の削除
+  // JSは正規表現でコメントを削ると文字列や正規表現リテラルを壊すため、保守的に空白だけ整える。
   return content
-    .replace(/\/\*[\s\S]*?\*\//g, '') // ブロックコメント削除
-    .replace(/(^|\s)\/\/.*$/gm, '$1') // 空白または行頭に続く行コメントを削除（https://等のURLスキームを除外）
-    .replace(/\r?\n\s*/g, '\n') // 改行とインデントを詰める
-    .replace(/\n+/g, '\n') // 連続する改行を1つに
+    .split(/\r?\n/)
+    .map(line => line.replace(/[ \t]+$/g, ''))
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
     .trim();
 }
 
@@ -39,20 +39,28 @@ const jsFiles = [
   path.join(root, 'sw.js')
 ];
 
-for (const file of cssFiles) {
-  if (fs.existsSync(file)) {
-    const raw = fs.readFileSync(file, 'utf8');
-    const min = minifyCSS(raw);
-    fs.writeFileSync(file, min, 'utf8');
-    console.log(`Minified CSS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
+function main() {
+  for (const file of cssFiles) {
+    if (fs.existsSync(file)) {
+      const raw = fs.readFileSync(file, 'utf8');
+      const min = minifyCSS(raw);
+      fs.writeFileSync(file, min, 'utf8');
+      console.log(`Minified CSS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
+    }
+  }
+
+  for (const file of jsFiles) {
+    if (fs.existsSync(file)) {
+      const raw = fs.readFileSync(file, 'utf8');
+      const min = minifyJS(raw);
+      fs.writeFileSync(file, min, 'utf8');
+      console.log(`Minified JS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
+    }
   }
 }
 
-for (const file of jsFiles) {
-  if (fs.existsSync(file)) {
-    const raw = fs.readFileSync(file, 'utf8');
-    const min = minifyJS(raw);
-    fs.writeFileSync(file, min, 'utf8');
-    console.log(`Minified JS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
-  }
+if (require.main === module) {
+  main();
 }
+
+module.exports = { minifyCSS, minifyJS };

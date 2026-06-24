@@ -6,6 +6,16 @@ const path = require('path');
 const sourcePath = path.join(__dirname, '../index.html');
 let indexHtml = fs.readFileSync(sourcePath, 'utf8');
 
+function replaceStaticLanguageText(html, staticText) {
+    return html.replace(
+        /(<(h1|p|button)\b[^>]*\bdata-lang-key="([^"]+)"[^>]*>)([\s\S]*?)(<\/\2>)/g,
+        (match, openTag, _tagName, key, _content, closeTag) => {
+            if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
+            return `${openTag}${staticText[key]}${closeTag}`;
+        }
+    );
+}
+
 // 現在の日本時間 (JST) の日付を取得して index.html の日付メタデータを自動同期
 const now = new Date();
 const jstOffset = 9 * 60 * 60 * 1000;
@@ -47,6 +57,13 @@ const locales = {
         currency: 'USD',
         appName: 'Play Points Calculator',
         appDesc: 'A simulation tool to calculate required spending to reach Google Play Points goals (Diamond, Platinum, etc.) based on your current status.',
+        staticText: {
+            mainTitle: 'Play Points Calculator',
+            siteDescription: 'Calculate how much you need to spend to reach your goal status!<br>Also, calculate how many points you can earn from your spending!',
+            tabMain: 'Standard',
+            tabReverse: 'Reverse',
+            tabDiary: 'Weekly Awards Diary'
+        },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
     {
@@ -126,6 +143,13 @@ const locales = {
         currency: 'KRW',
         appName: '구글 플레이 포인트 계산기',
         appDesc: '구글 플레이 포인트의 현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있는 도구입니다.',
+        staticText: {
+            mainTitle: '구글 플레이 포인트 계산기',
+            siteDescription: '현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!',
+            tabMain: '일반 계산',
+            tabReverse: '역산 모드',
+            tabDiary: '주간 리워드 일기'
+        },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
     {
@@ -205,6 +229,13 @@ const locales = {
         currency: 'TWD',
         appName: 'Google Play 點數計算器',
         appDesc: '本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。',
+        staticText: {
+            mainTitle: 'Google Play 點數計算器',
+            siteDescription: '可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！',
+            tabMain: '一般計算',
+            tabReverse: '逆算模式',
+            tabDiary: '每週獎勵日記'
+        },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
     {
@@ -363,7 +394,10 @@ Object.entries(locales).forEach(([langDir, config]) => {
     // 10. 「できること」セクションの置換
     output = output.replace(/<!-- DESCRIPTION_SECTION_START -->[\s\S]*?<!-- DESCRIPTION_SECTION_END -->/, config.descriptionSection);
 
-    // 11. フッター meta-line の置換
+    // 11. ファーストビューの静的文言をHTML生成時点で翻訳
+    output = replaceStaticLanguageText(output, config.staticText);
+
+    // 12. フッター meta-line の置換
     output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);
 
     const targetFile = path.join(targetDir, 'index.html');

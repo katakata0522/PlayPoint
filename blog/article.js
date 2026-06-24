@@ -60,6 +60,7 @@
 
     // 記事が計算機の利用につながったかだけを計測し、入力値は送信しない
     function setupCalculatorLinkTracking() {
+        const eventCommand = 'event';
         document.addEventListener('click', (event) => {
             const link = event.target && typeof event.target.closest === 'function'
                 ? event.target.closest('a[href]')
@@ -74,13 +75,11 @@
             url.searchParams.set('utm_campaign', 'article_cta');
             link.href = url.toString();
 
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = window.gtag || function gtag() {
-                window.dataLayer.push(arguments);
-            };
-            window.gtag('event', 'article_to_calculator_clicked', {
-                source_path: window.location.pathname
-            });
+            if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
+                window.gtag(eventCommand, 'article_to_calculator_clicked', {
+                    source_path: window.location.pathname
+                });
+            }
         });
     }
 
