@@ -25,9 +25,8 @@ const APP_SHELL_URLS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(APP_SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_URLS))
+    caches.open(APP_SHELL_CACHE).then((cache) => cache.addAll(APP_SHELL_URLS).then(() => self.skipWaiting()))
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

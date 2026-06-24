@@ -20,9 +20,11 @@ function replaceStaticLanguageText(html, staticText) {
 const now = new Date();
 const jstOffset = 9 * 60 * 60 * 1000;
 const jstDate = new Date(now.getTime() + jstOffset);
-const yyyy = jstDate.getUTCFullYear();
-const mm = String(jstDate.getUTCMonth() + 1).padStart(2, '0');
-const dd = String(jstDate.getUTCDate()).padStart(2, '0');
+const forcedModifiedDate = process.env.PLAYPOINT_MODIFIED_DATE || '';
+const forcedAssetVersion = process.env.PLAYPOINT_ASSET_VERSION || '';
+const yyyy = forcedModifiedDate ? Number(forcedModifiedDate.slice(0, 4)) : jstDate.getUTCFullYear();
+const mm = forcedModifiedDate ? forcedModifiedDate.slice(5, 7) : String(jstDate.getUTCMonth() + 1).padStart(2, '0');
+const dd = forcedModifiedDate ? forcedModifiedDate.slice(8, 10) : String(jstDate.getUTCDate()).padStart(2, '0');
 const hh = String(jstDate.getUTCHours()).padStart(2, '0');
 const min = String(jstDate.getUTCMinutes()).padStart(2, '0');
 const todayStr = `${yyyy}-${mm}-${dd}`;
@@ -33,7 +35,7 @@ indexHtml = indexHtml.replace(/"dateModified": "[^"]+"/, `"dateModified": "${tod
 indexHtml = indexHtml.replace(/最終更新: \d{4}-\d{2}-\d{2}/, `最終更新: ${todayStr}`);
 
 // 現在の日本時間 (JST) に基づくアセットバージョンを生成 (例: 20260622_2300)
-const assetVersion = `${yyyy}${mm}${dd}_${hh}${min}`;
+const assetVersion = forcedAssetVersion || `${yyyy}${mm}${dd}_${hh}${min}`;
 
 // index.html のアセットバージョンクエリを自動更新 (バンプ)
 indexHtml = indexHtml.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
@@ -462,7 +464,7 @@ if (fs.existsSync(swPath)) {
     let swContent = fs.readFileSync(swPath, 'utf8');
 
     // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
-    const newCacheName = `playpoint-calc-v${yyyy}${mm}${dd}_${hh}${min}`;
+    const newCacheName = `playpoint-calc-v${assetVersion}`;
     swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
 
     // ASSETS 内のバージョンパラメータを index.html と自動同期

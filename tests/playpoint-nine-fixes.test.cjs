@@ -197,6 +197,39 @@ test('デプロイ前検証はミニファイ後JSの構文を確認する', () 
   assert.ok(workflow.includes('node .github/scripts/verify-js-syntax.cjs'), 'ワークフローでJS構文検証を実行していません');
 });
 
+test('CIデプロイはコミット済み成果物だけを公開する', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+  const verifier = read('.github/scripts/verify-build-output.cjs');
+  const deployIndex = workflow.indexOf('Deploy via rsync');
+  assert.ok(deployIndex >= 0, 'rsyncデプロイ処理がありません');
+  const beforeDeploy = workflow.slice(0, deployIndex);
+
+  assert.ok(!beforeDeploy.includes('node scripts/build-html.js'), 'CI上で未コミット生成物を作ってから本番公開しています');
+  assert.ok(beforeDeploy.includes('node .github/scripts/verify-build-output.cjs'), '生成物の整合性検証をデプロイ前に実行していません');
+  assert.ok(verifier.includes("'git', ['diff', '--exit-code', '--', ...generatedFiles]"), '生成物の未コミット差分を対象ファイル単位で検出していません');
+});
+
+test('デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする', () => {
+  const verifier = read('.github/scripts/verify-js-syntax.cjs');
+
+  assert.ok(!verifier.includes("'.github'"), '.github/scripts配下の検証スクリプトが構文チェック対象外です');
+  assert.ok(verifier.includes("'.github/workflows'"), 'workflow定義はJS構文チェックから除外してください');
+  assert.ok(verifier.includes("'.github/scripts/verify-js-syntax.cjs'"), '構文検証スクリプト自身を明示的に検証していません');
+  assert.ok(verifier.includes("'.github/scripts/smoke-test.cjs'"), '本番スモークスクリプトをrsync前に構文検証していません');
+});
+
+test('サブアプリService Workerはprecache成功時だけ有効化する', () => {
+  const kidsSw = read('kids-smile-land/service-worker.js');
+  const gravitySw = read('tools/gravity-todo/sw.js');
+  const kidsInstall = kidsSw.slice(kidsSw.indexOf("addEventListener('install'"), kidsSw.indexOf("addEventListener('activate'"));
+  const gravityInstall = gravitySw.slice(gravitySw.indexOf("addEventListener('install'"), gravitySw.indexOf("addEventListener('activate'"));
+
+  assert.ok(kidsInstall.includes('cache.addAll(ASSETS).then(() => self.skipWaiting())'), 'Kids SWがprecache成功前にskipWaitingしています');
+  assert.ok(!kidsInstall.includes('self.skipWaiting();'), 'Kids SWのskipWaitingがprecache Promise外にあります');
+  assert.ok(gravityInstall.includes('cache.addAll(APP_SHELL_URLS).then(() => self.skipWaiting())'), 'Gravity Todo SWがprecache成功前にskipWaitingしています');
+  assert.ok(!gravityInstall.includes('self.skipWaiting();'), 'Gravity Todo SWのskipWaitingがprecache Promise外にあります');
+});
+
 test('多言語トップはJS実行前の主要文言も翻訳済みにする', () => {
   const en = read('en/index.html');
   const ko = read('ko/index.html');

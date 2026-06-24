@@ -16,10 +16,9 @@ const ASSETS = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS).then(() => self.skipWaiting());
     })
   );
-  self.skipWaiting();
 });
 
 // アクティベート時に古いキャッシュをクリア
