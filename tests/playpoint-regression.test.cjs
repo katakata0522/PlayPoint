@@ -630,10 +630,13 @@ test('トップページの更新日は実装更新日と一致する', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const modifiedDate = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/);
 
-  assert.ok(html.includes('2026-06-23'));
-  assert.ok(englishHtml.includes('2026-06-23'));
-  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/<\/loc>\s*<lastmod>2026-06-23<\/lastmod>/);
+  assert.ok(modifiedDate, 'トップページのlast-modifiedがありません');
+  assert.ok(html.includes(`"dateModified": "${modifiedDate[1]}"`));
+  assert.ok(html.includes(`最終更新: ${modifiedDate[1]}`));
+  assert.ok(englishHtml.includes(`<meta name="last-modified" content="${modifiedDate[1]}">`));
+  assert.match(sitemap, new RegExp(`<loc>https://playpoint-sim\\.com/</loc>\\s*<lastmod>${modifiedDate[1]}</lastmod>`));
 });
 
 test('反映タイミング記事は結論と確認手順を見出しで整理する', () => {
