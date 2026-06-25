@@ -1,10 +1,10 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260625_2007';
+const CACHE_NAME = 'playpoint-calc-v20260625_2019';
 const ASSETS = [
   './',
-  './style.css?v=20260625_2007a',
+  './style.css?v=20260625_2019a',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -24,9 +24,9 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260625_2007a',
+  './js/main.js?v=20260625_2019a',
   './js/consent.js?v=20260619a',
-  './js/third-party.js?v=20260625_2007a',
+  './js/third-party.js?v=20260625_2019a',
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260619a',
@@ -37,10 +37,7 @@ const ASSETS = [
   './articles/2026-06-20-discount-gift-cards.html',
   './en/articles/2026-06-20-discount-gift-cards.html',
   './ko/articles/2026-06-20-discount-gift-cards.html',
-  './tw/articles/2026-06-20-discount-gift-cards.html',
-  './kindle-tracker/',
-  './kindle-tracker/style.css',
-  './kindle-tracker/app.js'
+  './tw/articles/2026-06-20-discount-gift-cards.html'
 ];
 
 // インストール時に静的アセットをキャッシュ

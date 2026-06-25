@@ -7,6 +7,7 @@ const targets = [
   { url: 'https://playpoint-sim.com/author/katakata.html', contains: 'かたかた' },
   { url: 'https://playpoint-sim.com/kids-smile-land/', contains: 'キッズ・スマイル・ランド' },
   { url: 'https://playpoint-sim.com/tools/gravity-todo/', contains: 'Gravity-Todo' },
+  { url: 'https://playpoint-sim.com/kindle-tracker/', contains: 'Kindle Unlimited お得度メーター' },
   { url: 'https://playpoint-sim.com/js/calculator.js', contains: 'Number.isFinite(value)' },
   { url: 'https://playpoint-sim.com/ogp.png', contentType: 'image/png', minimumBytes: 10000 }
 ];
