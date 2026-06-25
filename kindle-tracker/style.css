@@ -245,11 +245,12 @@ input[type="number"],
 input[type="date"],
 select,
 textarea {
-    background: #FFFFFF;
-    border: 1px solid #C2BBB0; /* コントラストを高めたベージュグレーのボーダー */
-    border-radius: var(--radius-sm);
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #bda793;
+    border-radius: 0;
     color: var(--text-main);
-    padding: 10px 12px;
+    padding: 10px 4px;
     font-size: 0.95rem;
     transition: var(--transition-smooth);
     width: 100%;
@@ -276,8 +277,10 @@ input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--primary-glow);
+    border-bottom: 2px solid var(--accent);
+    background: rgba(185, 148, 74, 0.03);
+    box-shadow: 0 6px 12px rgba(131, 117, 104, 0.05);
+    transform: translateY(-2px);
 }
 
 .input-group {
@@ -353,15 +356,31 @@ textarea:focus {
     font-size: 1.75rem;
     color: #E2E8F0;
     cursor: pointer;
-    transition: var(--transition-smooth);
-    padding: 0 2px;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+    padding: 0 3px;
+    display: inline-block;
 }
 
-/* ホバー＆チェック時の星の着色（右から左へ兄弟セレクタで伝播） */
+/* ホバー＆チェック時の星の着色と拡大 */
 .rating-stars label:hover,
 .rating-stars label:hover ~ label,
 .rating-stars input:checked ~ label {
     color: #EAB308; /* 上品なアンバーゴールド */
+}
+
+.rating-stars label:hover {
+    transform: scale(1.3) rotate(-8deg);
+}
+
+/* ラジオボタン選択時に星を一瞬弾けさせるポップアニメーション用のスタイル */
+.rating-stars input:checked + label {
+    animation: starPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.5) forwards;
+}
+
+@keyframes starPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4) rotate(15deg); }
+    100% { transform: scale(1) rotate(0); }
 }
 
 /* フォーカス時のアウトライン表示（キーボード操作用） */
@@ -1087,35 +1106,60 @@ textarea {
 .shelf-book {
     width: var(--book-width, 16px);
     height: var(--book-height, 75px);
-    background: var(--book-color, #1A5F7A);
-    border-left: 2.5px solid rgba(255, 255, 255, 0.2);
-    border-right: 2.5px solid rgba(0, 0, 0, 0.25);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 2px 2px 0 0;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+    /* 3D風の巻き込みグラデーションを背景色の上に重ねて表現 */
+    background: linear-gradient(90deg, 
+        rgba(0, 0, 0, 0.35) 0%, 
+        rgba(0, 0, 0, 0.1) 8%, 
+        var(--book-color, #1A5F7A) 18%, 
+        var(--book-color, #1A5F7A) 82%, 
+        rgba(255, 255, 255, 0.25) 90%, 
+        rgba(0, 0, 0, 0.3) 100%);
+    border-radius: 3px 3px 0 0;
+    box-shadow: 
+        -2px 0 6px rgba(0, 0, 0, 0.45),
+        inset 1px 1px 0 rgba(255, 255, 255, 0.2),
+        inset -1px 0 0 rgba(0, 0, 0, 0.3);
     cursor: pointer;
-    transition: transform 0.2s ease, filter 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease, box-shadow 0.2s ease;
     transform-origin: bottom center;
     position: relative;
     animation: bookPlace 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .shelf-book:hover {
-    transform: scale(1.06) translateY(-4px) rotate(1deg);
-    filter: brightness(1.15);
+    transform: scale(1.08) translateY(-6px) rotate(1.5deg);
+    filter: brightness(1.12);
+    box-shadow: 
+        -4px 4px 12px rgba(0, 0, 0, 0.5),
+        0 12px 20px rgba(0, 0, 0, 0.3);
     z-index: 10;
 }
 
+/* 本の背表紙の装飾ライン（上部の帯や金箔エンボス） */
 .shelf-book::before {
     content: '';
     position: absolute;
-    top: 6px;
-    bottom: 6px;
+    top: 10%;
+    bottom: 12%;
     left: 2px;
     right: 2px;
-    border-top: 2px solid rgba(255, 255, 255, 0.25);
-    border-bottom: 2px solid rgba(255, 255, 255, 0.25);
-    opacity: 0.55;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* 本の縦溝（本のヒンジ）表現 */
+.shelf-book::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 12%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1);
+    pointer-events: none;
 }
 
 @keyframes bookPlace {
@@ -1288,35 +1332,59 @@ textarea {
 .profile-links {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .profile-btn {
-    font-size: 0.8rem;
-    padding: 10px 16px;
+    font-size: 0.85rem;
+    padding: 12px 18px;
     border-radius: var(--radius-sm);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    font-weight: 700;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
 }
 
 .profile-btn.btn-outline {
     background: #FFFFFF;
-    border-color: #D2CBC0;
+    border: 1.5px solid #D2CBC0;
+    color: var(--text-main);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
 .profile-btn.btn-outline:hover {
     border-color: var(--text-muted);
     background: #FAF8F5;
+    transform: translateY(-1px);
 }
 
+/* ブログボタンを「料理店の看板・暖簾」を思わせる温かく訴求力の高デザインに */
 .profile-btn.btn-primary {
-    background: var(--primary);
+    background: linear-gradient(135deg, #B9944A 0%, #A37E36 100%); /* 真鍮ブロンズゴールド */
+    border: 1.5px solid #8C6A28;
     color: #FFFFFF;
+    box-shadow: 0 4px 10px rgba(185, 148, 74, 0.25);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    padding-right: 90px; /* 右側の追加テキスト用にパディングを広げる */
 }
 
 .profile-btn.btn-primary:hover {
-    background: #006C9E;
+    background: linear-gradient(135deg, #A37E36 0%, #8C6A28 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(185, 148, 74, 0.35);
+}
+
+.profile-btn.btn-primary::after {
+    content: '好評試食中！ ≫';
+    position: absolute;
+    right: 12px;
+    font-size: 0.65rem;
+    opacity: 0.85;
+    font-weight: 500;
+    letter-spacing: 0.05em;
 }
 
