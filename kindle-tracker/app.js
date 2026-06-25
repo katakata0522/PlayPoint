@@ -345,8 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateBookshelfUI() {
         const bookshelfContainer = document.querySelector('.bookshelf-wrapper');
-        const booksRow = document.getElementById('bookshelf-row-1');
-        if (!bookshelfContainer || !booksRow) return;
+        const bookshelf = document.getElementById('bookshelf');
+        if (!bookshelfContainer || !bookshelf) return;
 
         // Toggle wood glow effect on target achieved
         const percent = state.calculated.percent;
@@ -356,56 +356,71 @@ document.addEventListener('DOMContentLoaded', () => {
             bookshelfContainer.classList.remove('achieved');
         }
 
-        // Clear shelf
-        booksRow.textContent = '';
+        // Clear bookshelf
+        bookshelf.textContent = '';
 
-        // Render books on the shelf (limit to 18 to fit visually on single row)
-        const displayLimit = 18;
-        const booksToRender = [...state.books].slice(0, displayLimit);
+        const books = [...state.books];
+        const booksPerShelf = 8; // 1段あたり8冊配置
+        const maxShelves = 5; // 最大5段（40冊）まで本棚を描画
+        const shelfCount = Math.max(1, Math.min(maxShelves, Math.ceil(books.length / booksPerShelf)));
 
-        booksToRender.forEach((book, idx) => {
-            const bookDiv = document.createElement('div');
-            bookDiv.className = 'shelf-book';
-            
-            // Resolve style configurations
-            const styleCfg = categoryBookStyles[book.category || 'other'];
-            
-            // Deterministic heights/widths using book ID as seed to avoid shift on redraw
-            const seed = book.id || idx;
-            const heightRange = styleCfg.maxHeight - styleCfg.minHeight;
-            const widthRange = styleCfg.maxWidth - styleCfg.minWidth;
-            const resolvedHeight = styleCfg.minHeight + (seed % 13) * (heightRange / 12);
-            const resolvedWidth = styleCfg.minWidth + (seed % 7) * (widthRange / 6);
-            
-            bookDiv.style.setProperty('--book-height', `${resolvedHeight}px`);
-            bookDiv.style.setProperty('--book-width', `${resolvedWidth}px`);
-            bookDiv.style.setProperty('--book-color', styleCfg.color);
-            
-            // Tooltip on hover
-            bookDiv.title = `${book.title} (${book.price.toLocaleString()}円)`;
-            
-            // Interaction: scroll to log item
-            bookDiv.addEventListener('click', () => {
-                const logElements = logsContainer.querySelectorAll('.book-item');
-                const targetLog = Array.from(logElements).find(el => {
-                    const titleSpan = el.querySelector('.book-title');
-                    return titleSpan && titleSpan.textContent === book.title;
-                });
+        for (let i = 0; i < shelfCount; i++) {
+            const shelfRow = document.createElement('div');
+            shelfRow.className = 'shelf-row';
+
+            const booksRow = document.createElement('div');
+            booksRow.className = 'books-row';
+            booksRow.id = `bookshelf-row-${i + 1}`;
+
+            const shelfPlank = document.createElement('div');
+            shelfPlank.className = 'shelf-plank';
+
+            // その段に配置する本をスライスしてレンダリング
+            const startIndex = i * booksPerShelf;
+            const endIndex = Math.min(startIndex + booksPerShelf, books.length);
+            const booksToRender = books.slice(startIndex, endIndex);
+
+            booksToRender.forEach((book, idx) => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'shelf-book';
                 
-                if (targetLog) {
-                    targetLog.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Highlight effect temporarily
-                    targetLog.style.outline = '2px dashed var(--accent)';
-                    targetLog.style.outlineOffset = '2px';
-                    setTimeout(() => {
-                        targetLog.style.outline = '';
-                        targetLog.style.outlineOffset = '';
-                    }, 1500);
-                }
+                const styleCfg = categoryBookStyles[book.category || 'other'];
+                const seed = book.id || (startIndex + idx);
+                const heightRange = styleCfg.maxHeight - styleCfg.minHeight;
+                const widthRange = styleCfg.maxWidth - styleCfg.minWidth;
+                const resolvedHeight = styleCfg.minHeight + (seed % 13) * (heightRange / 12);
+                const resolvedWidth = styleCfg.minWidth + (seed % 7) * (widthRange / 6);
+                
+                bookDiv.style.setProperty('--book-height', `${resolvedHeight}px`);
+                bookDiv.style.setProperty('--book-width', `${resolvedWidth}px`);
+                bookDiv.style.setProperty('--book-color', styleCfg.color);
+                bookDiv.title = `${book.title} (${book.price.toLocaleString()}円)`;
+                
+                bookDiv.addEventListener('click', () => {
+                    const logElements = logsContainer.querySelectorAll('.book-item');
+                    const targetLog = Array.from(logElements).find(el => {
+                        const titleSpan = el.querySelector('.book-title');
+                        return titleSpan && titleSpan.textContent === book.title;
+                    });
+                    
+                    if (targetLog) {
+                        targetLog.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetLog.style.outline = '2px dashed var(--accent)';
+                        targetLog.style.outlineOffset = '2px';
+                        setTimeout(() => {
+                            targetLog.style.outline = '';
+                            targetLog.style.outlineOffset = '';
+                        }, 1500);
+                    }
+                });
+
+                booksRow.appendChild(bookDiv);
             });
 
-            booksRow.appendChild(bookDiv);
-        });
+            shelfRow.appendChild(booksRow);
+            shelfRow.appendChild(shelfPlank);
+            bookshelf.appendChild(shelfRow);
+        }
     }
 
     function updateProgressBar(percent) {

@@ -1388,3 +1388,103 @@ textarea {
     letter-spacing: 0.05em;
 }
 
+/* ==========================================================================
+   Notepad & Scrapbook Theme Collage Upgrades
+   ========================================================================== */
+
+/* マスキングテープ（マステ）風のコラージュ装飾 */
+.card::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 15%;
+    width: 90px;
+    height: 22px;
+    background-color: rgba(185, 148, 74, 0.22); /* セピアゴールド系マステ */
+    background-image: repeating-linear-gradient(45deg, 
+        rgba(255,255,255,0.2) 0px, rgba(255,255,255,0.2) 4px, 
+        transparent 4px, transparent 8px);
+    transform: rotate(-1.5deg);
+    opacity: 0.85;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border-left: 1.5px dashed rgba(0,0,0,0.1);
+    border-right: 1.5px dashed rgba(0,0,0,0.1);
+    z-index: 5;
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+/* カードごとにマステの色・配置をバラつかせて本物の手帳感を演出 */
+.settings-card::before {
+    left: 25%;
+    background-color: rgba(26, 95, 122, 0.15); /* ブルー系マステ */
+    transform: rotate(2deg);
+    width: 105px;
+}
+
+.backup-card::before {
+    left: 50%;
+    background-color: rgba(63, 94, 77, 0.16); /* セージグリーン系マステ */
+    transform: rotate(-2.5deg);
+    width: 85px;
+}
+
+.author-profile-card::before {
+    left: 20%;
+    background-color: rgba(162, 72, 56, 0.13); /* アンティークレッド系マステ */
+    transform: rotate(1deg);
+    width: 95px;
+}
+
+/* 既にデザイン装飾のある主要な左側カードはマステを非表示にしてスッキリさせる */
+.record-form-card::before,
+.intro-card::before,
+.dashboard-card::before,
+.logs-card::before {
+    display: none;
+}
+
+/* バックアップ注意書きのレトロスタンプ風デザイン */
+.backup-desc {
+    font-size: 0.82rem;
+    color: #6d5b4e;
+    background: #FAF6F0;
+    border: 2px double #D2CBC0;
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    position: relative;
+    line-height: 1.45;
+}
+
+.backup-desc::before {
+    content: 'LOCAL SECURITY ONLY';
+    position: absolute;
+    bottom: -6px;
+    right: 8px;
+    font-size: 0.55rem;
+    font-weight: 900;
+    color: rgba(162, 72, 56, 0.7); /* 消印スタンプ風の赤 */
+    border: 1px solid rgba(162, 72, 56, 0.7);
+    padding: 0 4px;
+    transform: rotate(-3deg);
+    background: #FAF6F0;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+/* 複数段本棚の縦間隔調整 */
+.bookshelf {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 125px;
+    height: auto;
+    justify-content: flex-end;
+}
+
+.shelf-row {
+    margin-bottom: 2px;
+}
+
