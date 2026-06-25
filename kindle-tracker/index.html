@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260626_0027a">
+    <link rel="stylesheet" href="style.css?v=20260626_0055a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -85,7 +85,7 @@
         <div class="header-container">
             <div class="header-title-area">
                 <span class="badge">ツール</span>
-                <h1>Kindle Unlimited お得度メーター</h1>
+                <h1 id="app-title">Kindle Unlimited お得度メーター</h1>
             </div>
             <nav class="header-nav" aria-label="ページ内ナビゲーション">
                 <a href="#book-form" class="header-nav-link">記録する</a>
@@ -98,8 +98,8 @@
         <!-- イントロダクション -->
         <section class="intro-card card">
             <div class="intro-content">
-                <h2>📚 読んだ本の定価を記録して、サブスクの「お得度」を見える化しよう！</h2>
-                <p>月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する読書管理ツールです。</p>
+                <h2 id="intro-title">📚 読んだ本の定価を記録して、サブスクの「お得度」を見える化しよう！</h2>
+                <p id="intro-desc">月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する読書管理ツールです。</p>
             </div>
         </section>
 
@@ -115,7 +115,7 @@
                     <!-- 木製本棚 ＆ 進捗バーコンテナ -->
                     <div class="meter-container">
                         <div class="bookshelf-wrapper">
-                            <div class="bookshelf-wood-header">📚 あなたの本棚</div>
+                            <div class="bookshelf-wood-header" id="bookshelf-title">📚 あなたの本棚</div>
                             <div id="bookshelf" class="bookshelf">
                                 <div class="shelf-row">
                                     <div id="bookshelf-row-1" class="books-row"></div>
@@ -195,10 +195,10 @@
 
                 <!-- 記録フォーム -->
                 <section class="record-form-card card">
-                    <h3 class="card-title">✍️ 読んだ本を記録する</h3>
+                    <h3 class="card-title" id="form-card-title">✍️ 読んだ本を記録する</h3>
                     <form id="book-form" autocomplete="off">
                         <div class="input-group">
-                            <label for="book-title">本のタイトル <span class="required">*</span></label>
+                            <label for="book-title" id="label-book-title">本のタイトル <span class="required">*</span></label>
                             <input type="text" id="book-title" placeholder="例: 限りある時間の使い方" maxlength="100" required aria-required="true">
                         </div>
                         <div class="form-row-2">
@@ -213,7 +213,7 @@
                                 </select>
                             </div>
                             <div class="input-group">
-                                <label for="book-price">定価・元値 (円) <span class="required">*</span></label>
+                                <label for="book-price" id="label-book-price">定価・元値 (円) <span class="required">*</span></label>
                                 <input type="number" id="book-price" placeholder="例: 1,500" min="1" max="100000" required aria-required="true">
                             </div>
                         </div>
@@ -250,14 +250,14 @@
                             <textarea id="book-notes" placeholder="例: 読んで気づいたこと、名言、感想など…" maxlength="500" rows="2"></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-submit-primary btn-block">📖 本のログを追加する</button>
+                        <button type="submit" class="btn btn-submit-primary btn-block" id="btn-submit-book">📖 本のログを追加する</button>
                     </form>
                 </section>
 
                 <!-- 読書ログ一覧 -->
                 <section class="logs-card card">
                     <div class="logs-header">
-                        <h3 class="card-title">📖 読書ログ履歴</h3>
+                        <h3 class="card-title" id="logs-card-title">📖 読書ログ履歴</h3>
                         <div class="logs-actions">
                             <!-- ソート選択 -->
                             <label for="sort-select" class="sort-label">並び順：</label>
@@ -269,6 +269,14 @@
                                 <option value="rating-desc">評価（高い順）</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- 期間別フィルタタブ -->
+                    <div class="period-tabs" role="tablist" aria-label="期間別フィルター">
+                        <button class="period-tab active" data-period="all" role="tab" aria-selected="true">📅 全期間</button>
+                        <button class="period-tab" data-period="month-current" role="tab" aria-selected="false">📅 今月</button>
+                        <button class="period-tab" data-period="month-prev" role="tab" aria-selected="false">📅 先月</button>
+                        <button class="period-tab" data-period="three-months" role="tab" aria-selected="false">📅 直近3ヶ月</button>
                     </div>
 
                     <!-- カテゴリ別フィルタタブ -->
@@ -297,6 +305,20 @@
                     <h3 class="card-title">⚙️ サブスク設定</h3>
                     <div class="settings-grid">
                         <div class="input-group">
+                            <label for="subscription-type">サブスクの種類</label>
+                            <select id="subscription-type" aria-label="サブスクの種類">
+                                <option value="kindle" selected>Kindle Unlimited</option>
+                                <option value="prime">Amazon Prime</option>
+                                <option value="youtube">YouTube Premium</option>
+                                <option value="netflix">Netflix</option>
+                                <option value="custom">カスタム設定</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="subscription-name">サブスク名</label>
+                            <input type="text" id="subscription-name" value="Kindle Unlimited" placeholder="例: Amazon Prime" maxlength="50">
+                        </div>
+                        <div class="input-group">
                             <label for="monthly-fee">月額料金 (円)</label>
                             <input type="number" id="monthly-fee" value="980" min="0" max="100000" placeholder="980" aria-required="true">
                         </div>
@@ -307,21 +329,22 @@
                     </div>
                     <div class="target-info">
                         目標（元取りライン）: <span id="target-cost-display">2,940</span>円分
+                        <div class="target-info-explain">※「月額料金 × 加入期間」が元を取るための目標金額になります。</div>
                     </div>
                 </section>
 
                 <!-- データバックアップ・復元 -->
                 <section class="backup-card card">
-                    <h3 class="card-title">💾 データの保存・移行</h3>
+                    <h3 class="card-title">💾 データの保存・復元</h3>
                     <p class="backup-desc">
-                        データはブラウザに自動保存されます。他端末への移行やバックアップ用にファイルへの保存・復元が可能です。
+                        データはブラウザに自動保存されます。他端末への移行やバックアップ用にデータの保存・復元が可能です。
                     </p>
                     <div class="backup-buttons">
-                        <button id="btn-export" class="btn btn-outline btn-block">📥 バックアップファイルを保存 (JSON)</button>
+                        <button id="btn-export" class="btn btn-outline btn-block">📥 バックアップデータをファイルに保存</button>
                     </div>
                     <div id="drop-zone" class="drop-zone">
-                        <span class="drop-zone-text">📤 バックアップファイルをここにドラッグ＆ドロップするか、クリックして復元</span>
-                        <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="インポートするJSONファイル">
+                        <span class="drop-zone-text">📤 バックアップファイルをここにドロップするか、クリックしてデータを復元</span>
+                        <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="インポートするバックアップファイル">
                     </div>
                 </section>
 
@@ -331,7 +354,7 @@
                     <div class="ads-placeholder">
                         <div class="ads-placeholder-inner">
                             <p class="ads-placeholder-title">📰 広告掲載中</p>
-                            <p class="ads-placeholder-text">あなたの読書ライフをさらに豊かにするサービスをご紹介予定です。</p>
+                            <p class="ads-placeholder-text" id="ads-text">あなたの読書ライフをさらに豊かにするサービスをご紹介予定です。</p>
                         </div>
                     </div>
                 </section>
@@ -365,7 +388,7 @@
                 <a href="../privacy.html" class="footer-link" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
                 <a href="https://twitter.com/katakata0522" class="footer-link" target="_blank" rel="noopener noreferrer">開発者X</a>
             </div>
-            <p class="footer-note">Kindle Unlimited お得度メーターは、あなたの読書ライフとサブスクライフを応援する個人開発のツールです。</p>
+            <p class="footer-note" id="footer-note">Kindle Unlimited お得度メーターは、あなたの読書ライフとサブスクライフを応援する個人開発のツールです。</p>
             <p class="footer-copyright">&copy; 2026 かたかた. All Rights Reserved.</p>
         </div>
     </footer>
@@ -396,12 +419,12 @@
             <div class="stamp-container">
                 <div id="celebration-stamp" class="achieved-stamp">元取り達成</div>
             </div>
-            <p class="celebration-message">
+            <p class="celebration-message" id="celebration-message">
                 おめでとうございます！<br>
-                Kindle Unlimitedの目標金額をクリアし、<br>
+                <span id="celebration-sub-name">Kindle Unlimited</span>の目標金額をクリアし、<br>
                 <strong>実質 <span id="celebration-savings" class="number">0</span> 円</strong> のお得を生み出しました！
             </p>
-            <p class="celebration-sub">
+            <p class="celebration-sub" id="celebration-sub">
                 これからの読書はすべて「純粋な利益」になります。この喜びをみんなに共有しましょう！
             </p>
             <div class="modal-buttons">
@@ -413,6 +436,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260626_0027a"></script>
+    <script src="app.js?v=20260626_0055a"></script>
 </body>
 </html>

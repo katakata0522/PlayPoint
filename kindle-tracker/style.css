@@ -1129,6 +1129,20 @@ textarea {
     .ads-placeholder {
         min-height: 180px !important;
     }
+
+    /* モバイルでのグラフ切り替えトグルボタンのタップ領域拡張（44px以上） */
+    .chart-toggle {
+        padding: 4px !important;
+    }
+    .btn-chart-toggle {
+        padding: 12px 18px !important;
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 /* ==========================================================================
@@ -1955,6 +1969,48 @@ textarea {
     color: var(--text-muted);
     font-weight: 500;
     text-align: right;
+}
+
+/* Period Filter Tabs (Notebook Index Design) */
+.period-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #E8DFD5;
+    padding-bottom: 2px;
+}
+
+.period-tab {
+    background: #FAF6F0;
+    border: 1px solid #D2CBC0;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    top: 2px;
+}
+
+.period-tab:hover {
+    color: var(--text-main);
+    background: #FAF6F0;
+    transform: translateY(-1px);
+}
+
+.period-tab.active {
+    color: var(--text-main);
+    background: #FCFAF7;
+    border-color: #E8DFD5;
+    border-bottom: 2px solid #FCFAF7;
+    z-index: 2;
+    transform: translateY(-2px);
+    box-shadow: 0 -2px 4px rgba(42, 36, 33, 0.04);
+    border-top: 3px solid var(--accent);
 }
 
 /* Category Filter Tabs (Notebook Index Design) */
