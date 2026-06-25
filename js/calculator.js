@@ -72,6 +72,69 @@ export const CALC_PURE = {
 };
 
 export const CALC = {
+    relatedArticleGroups: {
+        platinum: [
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
+            { href: 'articles/2025-12-25-weekly-reward.html', title: 'ウィークリーリワードの受け取り方' },
+            { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' },
+            { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
+        ],
+        diamond: [
+            { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドは本当にお得？' },
+            { href: 'articles/2025-12-25-diamond-vip.html', title: 'ダイヤモンドの体験価値' },
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
+            { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' }
+        ],
+        campaign: [
+            { href: 'articles/2025-12-25-campaign.html', title: 'ポイント増量キャンペーンの仕組み' },
+            { href: 'articles/2025-12-25-new-year-campaign.html', title: '年末年始キャンペーンの傾向' },
+            { href: 'articles/2025-12-25-gift-card.html', title: 'ギフトカードとポイント付与の関係' },
+            { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' }
+        ],
+        default: [
+            { href: 'articles/2025-12-25-getting-started.html', title: 'Google Play Pointsの始め方' },
+            { href: 'articles/2025-12-25-check-balance.html', title: 'ポイント残高・履歴の確認方法' },
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
+            { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
+        ]
+    },
+
+    getRelatedArticles(targetStatusLabel, multiplier) {
+        const target = String(targetStatusLabel || '').toLowerCase();
+        const candidates = [];
+        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
+            candidates.push(...this.relatedArticleGroups.diamond.slice(0, 2));
+        } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
+            candidates.push(...this.relatedArticleGroups.platinum.slice(0, 2));
+        }
+        if (multiplier > 1) candidates.push(...this.relatedArticleGroups.campaign.slice(0, 2));
+        candidates.push(...this.relatedArticleGroups.default);
+
+        const seen = new Set();
+        return candidates.filter(article => {
+            if (seen.has(article.href)) return false;
+            seen.add(article.href);
+            return true;
+        }).slice(0, 4);
+    },
+
+    renderRelatedArticles(targetStatusLabel, multiplier) {
+        const texts = CONFIGS[STATE.currentRegion].uiText;
+        const articles = this.getRelatedArticles(targetStatusLabel, multiplier);
+        if (!articles.length) return '';
+
+        const items = articles
+            .map(article => `<li><a href="${article.href}">${article.title}</a></li>`)
+            .join('');
+
+        return `
+            <div class="result-related-links">
+                <h3>${texts.resultRelatedTitle || '関連記事'}</h3>
+                <ul>${items}</ul>
+            </div>
+        `;
+    },
+
     // ステータスセレクトボックスの選択肢を初期化
     populateStatusSelects() {
         const config = CONFIGS[STATE.currentRegion];
@@ -242,6 +305,7 @@ export const CALC = {
         const remainingDays = Math.max(0, Math.ceil((nextYearStart - now) / (1000 * 60 * 60 * 24)));
         const remainingWeeks = Math.ceil(remainingDays / 7);
         const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
+        const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
         const finalRate = this.getFinalRate(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
@@ -301,6 +365,8 @@ export const CALC = {
         const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
         let resultContent = '';
 
+        const relatedArticlesContent = this.renderRelatedArticles(targetStatusLabel, multiplier);
+
         if (finalNeededPoints <= 0) {
             resultContent = `
                 <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
@@ -311,12 +377,31 @@ export const CALC = {
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
                     ${rewardsSubtractedContent}
                 </dl>
+                ${relatedArticlesContent}
             `;
         } else {
             const monthlyResultContent = remainingMonths > 0
                 ? `
                     <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
+                `
+                : '';
+            const paceResultContent = remainingDays > 0
+                ? `
+                    <div class="result-summary-grid" aria-label="${texts.resultLabelPaceSummary || '達成ペース目安'}">
+                        <div>
+                            <span>${texts.resultLabelWeeklyYen || '週平均目安'}</span>
+                            <b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingWeeks)}">0</span> ${config.currencySymbol}${texts.perWeek || '/週'}</b>
+                        </div>
+                        <div>
+                            <span>${texts.resultLabelDailyYen || '1日あたり目安'}</span>
+                            <b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingDays)}">0</span> ${config.currencySymbol}${texts.perDay || '/日'}</b>
+                        </div>
+                        <div>
+                            <span>${texts.resultLabelRemainingDays || '年末までの残り日数'}</span>
+                            <b><span class="count-target" data-value="${remainingDays}">0</span> ${texts.daysUnit || '日'}</b>
+                        </div>
+                    </div>
                 `
                 : '';
             
@@ -330,10 +415,12 @@ export const CALC = {
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
                     ${monthlyResultContent}
                 </dl>
+                ${paceResultContent}
                 <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
                 <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
                     ${calculationNoteText}
                 </div>
+                ${relatedArticlesContent}
             `;
         }
         

@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bookCount: 0,
             percent: 0,
             targetCost: 2940
-        }
+        },
+        chartMode: 'count'
     };
 
     // --- DOM Elements ---
@@ -58,7 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const analyticsContainer = document.querySelector('.analytics-container');
     const statsChart = document.getElementById('stats-chart');
     const chartCenterVal = document.getElementById('chart-center-val');
+    const chartCenterLabel = document.querySelector('.chart-center-label');
     const chartLegend = document.getElementById('chart-legend');
+    const btnChartToggleCount = document.getElementById('btn-chart-toggle-count');
+    const btnChartTogglePrice = document.getElementById('btn-chart-toggle-price');
 
     const progressBarFill = document.getElementById('progress-bar-fill');
     const confettiCanvas = document.getElementById('confetti-canvas');
@@ -101,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         toastContainer.appendChild(toast);
 
-        // Slide out and remove toast after 3 seconds
+        // Slide out and remove toast after 5 seconds
         setTimeout(() => {
             toast.style.opacity = '0';
             toast.style.transform = 'translateY(-10px)';
@@ -110,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     toastContainer.removeChild(toast);
                 }
             }, 300);
-        }, 3000);
+        }, 5000);
     }
 
     // --- Custom Modal Dialog (confirm fallback) ---
@@ -524,6 +528,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookDiv.style.setProperty('--book-color', styleCfg.color);
                 bookDiv.title = `${book.title} (${book.price.toLocaleString()}円)`;
                 
+                // カテゴリシンボル絵文字を追加
+                const categorySymbols = {
+                    business: '💼',
+                    novel: '📕',
+                    comic: '🎨',
+                    magazine: '📖',
+                    other: '📚'
+                };
+                const symbolSpan = document.createElement('span');
+                symbolSpan.className = 'shelf-book-symbol';
+                symbolSpan.textContent = categorySymbols[book.category || 'other'] || '📚';
+                bookDiv.appendChild(symbolSpan);
+                
                 bookDiv.addEventListener('click', () => {
                     const logElements = logsContainer.querySelectorAll('.book-item');
                     const targetLog = Array.from(logElements).find(el => {
@@ -606,14 +623,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 総冊数テキスト更新
-        if (chartCenterVal) {
-            chartCenterVal.textContent = totalBooks;
-        }
-
         // 2. SVGドーナツグラフ（パイチャート）の描画
         statsChart.textContent = ''; // SVGをクリア
         
+        const isPriceMode = state.chartMode === 'price';
+        const totalValue = state.books.reduce((sum, b) => sum + b.price, 0);
+        const totalForChart = isPriceMode ? totalValue : totalBooks;
+
+        // 総冊数・金額テキスト更新とフォントサイズの動的調整
+        if (chartCenterVal) {
+            if (isPriceMode) {
+                const valStr = totalValue.toLocaleString();
+                chartCenterVal.textContent = valStr;
+                chartCenterVal.style.fontSize = valStr.length > 6 ? '0.95rem' : (valStr.length > 4 ? '1.2rem' : '1.5rem');
+                if (chartCenterLabel) chartCenterLabel.textContent = '円';
+            } else {
+                chartCenterVal.textContent = totalBooks;
+                chartCenterVal.style.fontSize = '';
+                if (chartCenterLabel) chartCenterLabel.textContent = '冊';
+            }
+        }
+
         const radius = 35;
         const circumference = 2 * Math.PI * radius; // 219.9
         let accumulatedPercent = 0;
@@ -622,8 +652,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = categoryData[cat];
             if (data.count === 0) return;
 
-            const ratio = data.count / totalBooks;
+            const ratio = isPriceMode ? (totalForChart > 0 ? data.price / totalForChart : 0) : data.count / totalBooks;
             const sliceLength = ratio * circumference;
+            const percentText = (ratio * 100).toFixed(1);
 
             // ドーナツの円弧 (スライス) を生成
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -635,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
             circle.setAttribute('stroke-dasharray', `${sliceLength} ${circumference}`);
             circle.setAttribute('stroke-dashoffset', '0');
             circle.setAttribute('transform', `rotate(${accumulatedPercent * 360 - 90} 50 50)`);
-            circle.setAttribute('title', `${data.label}: ${data.count}冊 (${data.price.toLocaleString()}円)`);
+            circle.setAttribute('title', `${data.label}: ${data.count}冊 (${data.price.toLocaleString()}円) - ${percentText}%`);
             
             // 初回描画時にクルリとアニメーションさせるための設定
             circle.style.strokeDashoffset = sliceLength.toString();
@@ -684,9 +715,16 @@ document.addEventListener('DOMContentLoaded', () => {
             labelGroup.appendChild(dot);
             labelGroup.appendChild(label);
 
+            const ratio = isPriceMode ? (totalForChart > 0 ? data.price / totalForChart : 0) : data.count / totalBooks;
+            const percentText = (ratio * 100).toFixed(1);
+
             const valGroup = document.createElement('div');
             valGroup.className = 'legend-val-group';
-            valGroup.textContent = `${data.count}冊 (${data.price.toLocaleString()}円)`;
+            if (isPriceMode) {
+                valGroup.textContent = `${data.price.toLocaleString()}円 (${percentText}%)`;
+            } else {
+                valGroup.textContent = `${data.count}冊 (${data.price.toLocaleString()}円)`;
+            }
 
             legendItem.appendChild(labelGroup);
             legendItem.appendChild(valGroup);
@@ -1185,6 +1223,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('読んだ本を記録して、元取りメーターを達成しましょう！📚', 'info');
             }
         });
+    }
+
+    if (btnChartToggleCount && btnChartTogglePrice) {
+        const toggleChartMode = (mode) => {
+            if (state.chartMode === mode) return;
+            state.chartMode = mode;
+            
+            if (mode === 'count') {
+                btnChartToggleCount.classList.add('active');
+                btnChartToggleCount.setAttribute('aria-checked', 'true');
+                btnChartTogglePrice.classList.remove('active');
+                btnChartTogglePrice.setAttribute('aria-checked', 'false');
+            } else {
+                btnChartTogglePrice.classList.add('active');
+                btnChartTogglePrice.setAttribute('aria-checked', 'true');
+                btnChartToggleCount.classList.remove('active');
+                btnChartToggleCount.setAttribute('aria-checked', 'false');
+            }
+            updateAnalyticsChart();
+        };
+
+        btnChartToggleCount.addEventListener('click', () => toggleChartMode('count'));
+        btnChartTogglePrice.addEventListener('click', () => toggleChartMode('price'));
     }
 
     btnExport.addEventListener('click', () => {

@@ -181,6 +181,87 @@ test('12月31日でも通常計算は合計必要額を表示する', () => {
   assert.ok(!renderedResults[0].content.includes('/月'));
 });
 
+test('通常計算の結果は週平均と1日あたりの目安も表示する', () => {
+  class FakeDate extends Date {
+    constructor(...args) {
+      if (args.length === 0) return new Date(2026, 0, 1);
+      return new Date(...args);
+    }
+  }
+  FakeDate.UTC = Date.UTC;
+  FakeDate.parse = Date.parse;
+  FakeDate.now = () => new Date(2026, 0, 1).getTime();
+
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext(FakeDate);
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput('250');
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+
+  populateStatusSelects();
+  updateBaseRateAndTarget();
+  calculate();
+
+  assert.strictEqual(renderedResults[0].isError, false);
+  assert.ok(renderedResults[0].content.includes('週平均目安'));
+  assert.ok(renderedResults[0].content.includes('1日あたり目安'));
+  assert.ok(renderedResults[0].content.includes('年末までの残り日数'));
+  assert.ok(renderedResults[0].content.includes('data-value="472"'));
+  assert.ok(renderedResults[0].content.includes('data-value="69"'));
+  assert.ok(renderedResults[0].content.includes('data-value="365"'));
+});
+
+test('通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput('3000');
+  PP_STATE.dom.multiplier = createInput('3');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+
+  populateStatusSelects();
+  PP_STATE.dom.currentStatus.value = '1.75';
+  updateBaseRateAndTarget();
+  calculate();
+
+  const content = renderedResults[0].content;
+  const links = [...content.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
+
+  assert.strictEqual(renderedResults[0].isError, false);
+  assert.ok(content.indexOf('関連記事') > content.indexOf('合計の必要課金額目安'));
+  assert.ok(content.includes('result-related-links'));
+  assert.ok(links.length > 0 && links.length <= 4);
+  assert.ok(links.includes('articles/2025-12-25-campaign.html'));
+  assert.ok(links.includes('articles/2025-12-25-diamond-worth-it.html'));
+  links.forEach((href) => {
+    assert.ok(fs.existsSync(path.join(root, href)), `関連記事リンクが存在しません: ${href}`);
+  });
+});
+
+test('共有ボタンは結果アクション行にまとめて表示状態を切り替える', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const ui = fs.readFileSync(path.join(root, 'js', 'ui.js'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+
+  assert.ok(html.includes('id="result-actions"'));
+  assert.ok(html.includes('class="result-actions hidden"'));
+  assert.ok(html.indexOf('id="result-actions"') > html.indexOf('id="result"'));
+  assert.ok(html.indexOf('id="copyButton"') > html.indexOf('id="result-actions"'));
+  assert.ok(html.indexOf('id="tweetButton"') > html.indexOf('id="result-actions"'));
+  assert.ok(main.includes("'result-actions'"));
+  assert.ok(ui.includes('STATE.dom.resultActions'));
+  assert.ok(css.includes('.result-actions'));
+  assert.ok(!html.includes('LINE'));
+});
+
 test('ステータス選択の再生成でoptionが重複しない', () => {
   const { PP_STATE, populateStatusSelects } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';

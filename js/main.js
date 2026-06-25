@@ -61,7 +61,7 @@ export function switchRegion(newRegion) {
 export function init() {
     const ids = [
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
-        'neededPoints', 'subtract-rewards', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'copyButton',
+        'neededPoints', 'subtract-rewards', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'result-actions', 'copyButton',
         'tweetButton', 'amountYen', 'reverseStatus', 'reverseBaseRate',
         'reverseMultiplier', 'reverseCalculateButton', 'reverseResult', 'share-twitter-reverse',
         'copyright-year',

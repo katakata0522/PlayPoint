@@ -504,6 +504,68 @@ button:active {
 .result dl { margin: 0; }
 .result dt { font-weight: normal; font-size: 0.9em; color: var(--link-color); }
 .result dd { margin-left: 0; margin-bottom: 0.5em; }
+.result-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5em;
+  margin: 0.75em 0;
+}
+.result-summary-grid div {
+  min-width: 0;
+  padding: 0.55em;
+  border: 1px solid rgba(40, 167, 69, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.65);
+}
+.result-summary-grid span {
+  display: block;
+  color: var(--link-color);
+  font-size: 0.78em;
+  font-weight: 400;
+  line-height: 1.35;
+}
+.result-summary-grid b {
+  display: block;
+  margin-top: 0.15em;
+  font-size: 0.94em;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.result-related-links {
+  margin-top: 0.9em;
+  padding-top: 0.75em;
+  border-top: 1px solid rgba(40, 167, 69, 0.18);
+}
+.result-related-links h3 {
+  margin: 0 0 0.45em;
+  border: 0;
+  color: var(--text-color);
+  font-size: 0.94em;
+}
+.result-related-links ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.result-related-links a {
+  display: block;
+  min-height: 44px;
+  padding: 0.55em 0.65em;
+  border: 1px solid rgba(11, 87, 208, 0.16);
+  border-radius: 6px;
+  background: rgba(11, 87, 208, 0.04);
+  color: var(--link-hover-color);
+  font-size: 0.86em;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.result-related-links a:hover {
+  background: rgba(11, 87, 208, 0.1);
+  text-decoration: underline;
+}
 .rate-info { font-size: 0.8em; color: #666; }
 .error-text { color: #dc3545; }
 
@@ -618,7 +680,7 @@ button:active {
 #copyButton {
   background: #007bff;
   font-size: 0.9em;
-  margin-left: 0.5em;
+  margin-left: 0;
   box-shadow: none;
 }
 #copyButton:hover {
@@ -636,6 +698,18 @@ button:active {
 }
 #tweetButton:hover, #share-twitter-reverse:hover {
   opacity: 0.8;
+}
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55em;
+  align-items: center;
+  margin-top: 0.7em;
+}
+.result-actions button {
+  min-height: 44px;
+  margin-top: 0;
+  margin-left: 0;
 }
 
 .hidden {
@@ -677,6 +751,19 @@ button:active {
 }
 
 @media (max-width: 480px) {
+  .result-summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .result-related-links ul {
+    grid-template-columns: 1fr;
+  }
+  .result-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .result-actions button {
+    width: 100%;
+  }
   .footer-separator {
     display: none;
   }

@@ -131,6 +131,7 @@ export const UI = {
         const showShareButtons = !isError;
 
         if (targetElement === STATE.dom.result) {
+            if (STATE.dom.resultActions) STATE.dom.resultActions.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
             if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
             if (STATE.dom.copyButton) STATE.dom.copyButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
         } else if (targetElement === STATE.dom.reverseResult) {
@@ -144,6 +145,7 @@ export const UI = {
         targetElement.innerHTML = "";
         targetElement.classList.remove(CONSTANTS.CLASS_HAS_RESULT);
         if (targetElement === STATE.dom.result) {
+            if (STATE.dom.resultActions) STATE.dom.resultActions.classList.add(CONSTANTS.CLASS_HIDDEN);
             if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.add(CONSTANTS.CLASS_HIDDEN);
             if (STATE.dom.copyButton) STATE.dom.copyButton.classList.add(CONSTANTS.CLASS_HIDDEN);
         } else if (targetElement === STATE.dom.reverseResult) {

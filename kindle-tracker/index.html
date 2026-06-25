@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260626_0006a">
+    <link rel="stylesheet" href="style.css?v=20260626_0027a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -136,6 +136,13 @@
                     </div>
 
                     <!-- 読書統計アナリティクス（ドーナツグラフ） -->
+                    <div class="analytics-header">
+                        <span class="analytics-title">📊 カテゴリ別分析</span>
+                        <div class="chart-toggle" role="radiogroup" aria-label="グラフ表示切り替え">
+                            <button type="button" class="btn-chart-toggle active" id="btn-chart-toggle-count" data-mode="count" role="radio" aria-checked="true">冊数</button>
+                            <button type="button" class="btn-chart-toggle" id="btn-chart-toggle-price" data-mode="price" role="radio" aria-checked="false">金額</button>
+                        </div>
+                    </div>
                     <div class="analytics-container">
                         <div class="chart-wrapper">
                             <svg id="stats-chart" viewBox="0 0 100 100" class="stats-chart">
@@ -406,6 +413,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260626_0006a"></script>
+    <script src="app.js?v=20260626_0027a"></script>
 </body>
 </html>
