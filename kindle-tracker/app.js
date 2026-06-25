@@ -1181,6 +1181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         statusBadge.addEventListener('click', () => {
             if (state.calculated.percent >= 100) {
                 showCelebrationModal(state.calculated.netSavings);
+            } else {
+                showToast('読んだ本を記録して、元取りメーターを達成しましょう！📚', 'info');
             }
         });
     }

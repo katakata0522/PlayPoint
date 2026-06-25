@@ -264,6 +264,18 @@ test('Xserver同期後に本番スモークテストを実行する', () => {
   assert.ok(fs.existsSync(path.join(root, '.github/scripts/smoke-test.cjs')));
 });
 
+test('Xserver同期後に本番SEOヘルスチェックを実行する', () => {
+  const deployWorkflow = read('.github/workflows/deploy.yml');
+  const seoWorkflow = read('.github/workflows/seo-healthcheck.yml');
+  const smokeIndex = deployWorkflow.indexOf('node .github/scripts/smoke-test.cjs');
+  const deployIndex = deployWorkflow.indexOf('node .github/scripts/seo-health-check.cjs');
+
+  assert.ok(fs.existsSync(path.join(root, '.github/scripts/seo-health-check.cjs')), 'SEOヘルスチェックスクリプトがありません');
+  assert.ok(smokeIndex >= 0, '本番スモークテストがありません');
+  assert.ok(deployIndex > smokeIndex, '本番SEOヘルスチェックがrsync後のスモーク確認後に実行されていません');
+  assert.ok(seoWorkflow.includes('node .github/scripts/seo-health-check.cjs'), '週次SEO Health Checkとデプロイ後SEO確認が別実装になっています');
+});
+
 test('デプロイ検証の変更でもワークフローを実行する', () => {
   const workflow = read('.github/workflows/deploy.yml');
   assert.ok(!workflow.includes("- '.github/**'"), '.github配下の検証変更がデプロイワークフローから除外されています');

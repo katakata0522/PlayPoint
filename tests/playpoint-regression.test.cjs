@@ -243,9 +243,11 @@ test('テストファイルは本番へ同期しない', () => {
 
 test('SEO監視はサイトマップ掲載記事も確認する', () => {
   const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'seo-healthcheck.yml'), 'utf8');
+  const script = fs.readFileSync(path.join(root, '.github', 'scripts', 'seo-health-check.cjs'), 'utf8');
 
-  assert.ok(workflow.includes('article_urls'));
-  assert.ok(workflow.includes('data-ad-client'));
+  assert.ok(workflow.includes('node .github/scripts/seo-health-check.cjs'));
+  assert.ok(script.includes('articleUrls'));
+  assert.ok(script.includes('data-ad-client'));
 });
 
 test('公開canonical URLはXMLサイトマップに含める', () => {

@@ -105,3 +105,6 @@ jobs:
 
       - name: Verify production deployment
         run: node .github/scripts/smoke-test.cjs
+
+      - name: Verify production SEO health
+        run: node .github/scripts/seo-health-check.cjs
