@@ -609,6 +609,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Handlers ---
     
+    // カテゴリ選択時の自動価格補完（手入力値を優先するガード付き）
+    const categoryDefaultPrices = {
+        business: 1500,
+        novel: 1000,
+        comic: 500,
+        magazine: 800,
+        other: 1200
+    };
+
+    bookCategorySelect.addEventListener('change', () => {
+        const selectedCategory = bookCategorySelect.value;
+        const currentPrice = bookPriceInput.value.trim();
+
+        // 現在の入力値が空、または既存のデフォルト価格リストのいずれかの値と一致している場合のみ自動補完する
+        // これにより、ユーザーが完全手動でカスタム価格を入れている場合の意図しない上書きを防ぐ
+        const isCurrentValEmpty = currentPrice === '';
+        const isCurrentValDefault = Object.values(categoryDefaultPrices).some(val => val.toString() === currentPrice);
+
+        if (isCurrentValEmpty || isCurrentValDefault) {
+            const defaultPrice = categoryDefaultPrices[selectedCategory || 'other'];
+            bookPriceInput.value = defaultPrice;
+        }
+    });
+
     // Quick price selection
     quickPriceButtons.forEach(btn => {
         btn.addEventListener('click', () => {

@@ -110,26 +110,8 @@
         <!-- メイングリッドレイアウト -->
         <div class="main-grid">
             
-            <!-- 左側：ダッシュボードと設定 -->
-            <div class="grid-left">
-                <!-- 設定カード -->
-                <section class="settings-card card">
-                    <h3 class="card-title">⚙️ サブスク設定</h3>
-                    <div class="settings-grid">
-                        <div class="input-group">
-                            <label for="monthly-fee">月額料金 (円)</label>
-                            <input type="number" id="monthly-fee" value="980" min="0" max="100000" placeholder="980" aria-required="true">
-                        </div>
-                        <div class="input-group">
-                            <label for="duration">加入期間 (ヶ月)</label>
-                            <input type="number" id="duration" value="3" min="1" max="120" placeholder="3" aria-required="true">
-                        </div>
-                    </div>
-                    <div class="target-info">
-                        目標（元取りライン）: <span id="target-cost-display">2,940</span>円分
-                    </div>
-                </section>
-
+            <!-- 左〜中央：メインコンテンツエリア -->
+            <div class="main-content">
                 <!-- メーターダッシュボード -->
                 <section class="dashboard-card card">
                     <h3 class="card-title">📊 現在のお得ステータス</h3>
@@ -191,10 +173,7 @@
                         </button>
                     </div>
                 </section>
-            </div>
 
-            <!-- 右側：記録フォームと本の一覧 -->
-            <div class="grid-right">
                 <!-- 記録フォーム -->
                 <section class="record-form-card card">
                     <h3 class="card-title">✍️ 読んだ本を記録する</h3>
@@ -279,6 +258,35 @@
                         </div>
                     </div>
                 </section>
+            </div>
+
+            <!-- 右側：サイドバーエリア -->
+            <aside class="sidebar-content">
+                <!-- 広告枠カード -->
+                <section class="ads-card card">
+                    <span class="ads-label">スポンサーリンク</span>
+                    <div class="ads-placeholder">
+                        <p class="ads-placeholder-text">Google AdSense Space</p>
+                    </div>
+                </section>
+
+                <!-- 設定カード -->
+                <section class="settings-card card">
+                    <h3 class="card-title">⚙️ サブスク設定</h3>
+                    <div class="settings-grid">
+                        <div class="input-group">
+                            <label for="monthly-fee">月額料金 (円)</label>
+                            <input type="number" id="monthly-fee" value="980" min="0" max="100000" placeholder="980" aria-required="true">
+                        </div>
+                        <div class="input-group">
+                            <label for="duration">加入期間 (ヶ月)</label>
+                            <input type="number" id="duration" value="3" min="1" max="120" placeholder="3" aria-required="true">
+                        </div>
+                    </div>
+                    <div class="target-info">
+                        目標（元取りライン）: <span id="target-cost-display">2,940</span>円分
+                    </div>
+                </section>
 
                 <!-- データバックアップ・復元 -->
                 <section class="backup-card card">
@@ -292,7 +300,25 @@
                         <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="インポートするJSONファイル">
                     </div>
                 </section>
-            </div>
+
+                <!-- 開発者プロフィール ＆ 運営サイト導線 -->
+                <section class="author-profile-card card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">📚</div>
+                        <div class="profile-title-area">
+                            <h4>かたかた</h4>
+                            <span class="profile-subtext">個人開発者 / ブロガー</span>
+                        </div>
+                    </div>
+                    <p class="profile-bio">
+                        IT用語を「料理店」などに例えてサクッと解説するブログなどを運営中。のちにKindle化して不労所得化するロードマップを驀進しています！
+                    </p>
+                    <div class="profile-links">
+                        <a href="../author/katakata.html" class="btn btn-outline btn-block profile-btn" target="_blank" rel="noopener noreferrer">👤 プロフィール詳細</a>
+                        <a href="https://katakatalab.com/manner/" class="btn btn-primary btn-block profile-btn" target="_blank" rel="noopener noreferrer">🏠 ブログ「かたかたの遊び場」</a>
+                    </div>
+                </section>
+            </aside>
 
         </div>
     </main>

@@ -198,15 +198,23 @@ body.modal-open {
 /* Main Grid */
 .main-grid {
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: minmax(0, 1fr) 340px;
     gap: 24px;
     align-items: start;
 }
 
-/* Left Column */
-.grid-left {
+/* Main Content Area */
+.main-content {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+}
+
+/* Sidebar Content Area */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 /* Settings Card */
@@ -368,38 +376,41 @@ textarea {
     resize: vertical;
 }
 
-/* Flat Progress Bar Styles */
-.meter-container {
-    margin: 15px 0 25px;
-}
-
-.progress-bar-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-}
-
 .progress-bar-wrapper {
-    background-color: #EAE6DF;
-    border-radius: 10px;
-    height: 16px;
+    background: linear-gradient(to bottom, #2E2925 0%, #463F3A 100%); /* 金属管の溝を模した暗い背景 */
+    border: 2px solid #362F2B;
+    border-radius: 20px;
+    height: 22px;
     width: 100%;
-    overflow: hidden;
     position: relative;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+    padding: 2px;
 }
 
 .progress-bar-fill {
     height: 100%;
     width: 0%;
-    border-radius: 10px;
-    background: linear-gradient(90deg, var(--primary) 0%, #009AD8 100%);
-    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+    border-radius: 20px;
+    /* 鈍い光沢を放つゴールド真鍮管を再現したグラデーション */
+    background: linear-gradient(to bottom, 
+        #D4AF37 0%, 
+        #F3E5AB 30%, 
+        #AA7C11 70%, 
+        #8B6508 100%);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: width;
+    position: relative;
 }
 
 .progress-bar-fill.target-achieved {
-    background: linear-gradient(90deg, var(--accent) 0%, #F59E0B 100%);
+    /* 達成時はさらにゴールドの光輝 */
+    background: linear-gradient(to bottom, 
+        #FFD700 0%, 
+        #FFF8DC 30%, 
+        #D4AF37 70%, 
+        #B8860B 100%);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.5);
 }
 
 .progress-bar-labels {
@@ -949,7 +960,7 @@ textarea {
 /* ==========================================================================
    Responsive Breakpoints
    ========================================================================== */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .main-grid {
         grid-template-columns: 1fr;
     }
@@ -1139,3 +1150,173 @@ textarea {
 .app-header h1, .bookshelf-wood-header, .modal-content h3 {
     font-family: 'Playfair Display', 'Noto Sans JP', serif;
 }
+
+/* ==========================================================================
+   Redesign Upgrades (Notepad backgrounds, tabs/index visual enhancements)
+   ========================================================================== */
+
+/* 記録フォームを手帳風方眼紙（方眼グリッド）デザインに */
+.record-form-card {
+    background-color: #FFFFFF;
+    background-image: 
+        linear-gradient(to right, rgba(131, 117, 104, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(131, 117, 104, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px; /* 20px幅の方眼 */
+    border-left: 5px solid var(--accent); /* 背表紙風の金色の縁取り */
+}
+
+/* クイック価格入力ボタンを「本に挟むインデックス付箋」風に美化 */
+.quick-prices {
+    margin-top: -6px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-quick-price {
+    background: #FAF6F0;
+    border: 1px solid #D2CBC0;
+    border-top: 3px solid var(--primary); /* インデックスのタブ感を表現 */
+    color: var(--text-main);
+    padding: 6px 14px;
+    border-radius: 0 0 6px 6px; /* 下部のみ角丸にすることでインデックス札を表現 */
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(42, 36, 33, 0.04);
+    transition: var(--transition-smooth);
+}
+
+.btn-quick-price:hover {
+    background: var(--primary-glow);
+    border-color: var(--primary);
+    transform: translateY(2px); /* 押し込むようなインタラクション */
+    box-shadow: none;
+}
+
+.btn-quick-price[data-price="490"] { border-top-color: #A24838; }
+.btn-quick-price[data-price="780"] { border-top-color: #D99E32; }
+.btn-quick-price[data-price="980"] { border-top-color: #5C7A5C; }
+.btn-quick-price[data-price="1500"] { border-top-color: #1A5F7A; }
+.btn-quick-price[data-price="2000"] { border-top-color: #837568; }
+
+/* 広告プレースホルダーカードの美化 */
+.ads-card {
+    padding: 16px;
+    text-align: center;
+    border: 1px dashed var(--card-border);
+    background: #FAF8F5;
+}
+
+.ads-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.ads-placeholder {
+    height: 250px;
+    border: 1px solid #EAE6DF;
+    background: #FFFFFF;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.ads-placeholder-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #C2BBB0;
+    letter-spacing: 0.05em;
+    border: 2px dashed #FAF8F5;
+    padding: 12px 24px;
+    border-radius: 4px;
+}
+
+/* 開発者プロフィールカード */
+.author-profile-card {
+    border-top: 4px solid var(--primary);
+    background: linear-gradient(to bottom, #FFFFFF 0%, #FAF9F6 100%);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.profile-avatar {
+    font-size: 2.2rem;
+    line-height: 1;
+    background: var(--primary-glow);
+    padding: 8px;
+    border-radius: 50%;
+    border: 1px solid rgba(26, 95, 122, 0.1);
+}
+
+.profile-title-area h4 {
+    font-family: 'Playfair Display', 'Noto Sans JP', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.profile-subtext {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+}
+
+.profile-bio {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 18px;
+    border-left: 2px solid var(--card-border);
+    padding-left: 10px;
+}
+
+.profile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-btn {
+    font-size: 0.8rem;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-btn.btn-outline {
+    background: #FFFFFF;
+    border-color: #D2CBC0;
+}
+
+.profile-btn.btn-outline:hover {
+    border-color: var(--text-muted);
+    background: #FAF8F5;
+}
+
+.profile-btn.btn-primary {
+    background: var(--primary);
+    color: #FFFFFF;
+}
+
+.profile-btn.btn-primary:hover {
+    background: #006C9E;
+}
+
