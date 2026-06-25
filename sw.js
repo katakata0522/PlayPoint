@@ -1,10 +1,10 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260625_2019';
+const CACHE_NAME = 'playpoint-calc-v20260625_2023';
 const ASSETS = [
   './',
-  './style.css?v=20260625_2019a',
+  './style.css?v=20260625_2023a',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -24,9 +24,9 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260625_2019a',
+  './js/main.js?v=20260625_2023a',
   './js/consent.js?v=20260619a',
-  './js/third-party.js?v=20260625_2019a',
+  './js/third-party.js?v=20260625_2023a',
   './blog/style.css?v=20260619a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260619a',
@@ -74,6 +74,12 @@ const CACHEABLE_DESTINATIONS = new Set(['document', 'style', 'script', 'image', 
 function isCacheableRequest(request) {
   if (request.method !== 'GET') return false;
   const url = new URL(request.url);
+
+  // サービスワーカー自身やサブアプリのSWスクリプトはキャッシュしない
+  if (url.pathname.endsWith('sw.js') || url.pathname.endsWith('service-worker.js')) {
+    return false;
+  }
+
   return url.origin === self.location.origin && CACHEABLE_DESTINATIONS.has(request.destination);
 }
 
