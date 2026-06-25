@@ -423,11 +423,30 @@ document.addEventListener('DOMContentLoaded', () => {
         bookCountText.textContent = bookCount.toLocaleString();
         
         // Net savings display with +/- classes
-        netSavingsText.textContent = (netSavings >= 0 ? '+' : '') + netSavings.toLocaleString();
-        if (netSavings >= 0) {
-            netSavingsText.className = 'stat-value number savings-plus';
+        if (bookCount === 0) {
+            netSavingsText.textContent = '1冊目を記録しよう！';
+            netSavingsText.className = 'stat-value number savings-zero';
+            const unit = netSavingsText.nextElementSibling;
+            if (unit && unit.classList.contains('stat-unit')) {
+                unit.style.display = 'none';
+            }
         } else {
-            netSavingsText.className = 'stat-value number savings-minus';
+            netSavingsText.textContent = (netSavings >= 0 ? '+' : '') + netSavings.toLocaleString();
+            if (netSavings >= 0) {
+                netSavingsText.className = 'stat-value number savings-plus';
+            } else {
+                netSavingsText.className = 'stat-value number savings-minus';
+            }
+            const unit = netSavingsText.nextElementSibling;
+            if (unit && unit.classList.contains('stat-unit')) {
+                unit.style.display = '';
+            }
+        }
+
+        // Toggle X share actions based on books count
+        const shareActions = document.querySelector('.share-actions');
+        if (shareActions) {
+            shareActions.style.display = bookCount === 0 ? 'none' : '';
         }
 
         // Update progress bar
@@ -460,6 +479,15 @@ document.addEventListener('DOMContentLoaded', () => {
         bookshelf.textContent = '';
 
         const books = [...state.books];
+
+        if (books.length === 0) {
+            const emptyGuide = document.createElement('div');
+            emptyGuide.className = 'bookshelf-empty-guide';
+            emptyGuide.innerHTML = '<p>まず1冊登録すると、<br>ここに本が並びます 📚</p>';
+            bookshelf.appendChild(emptyGuide);
+            return;
+        }
+
         const booksPerShelf = 8; // 1段あたり8冊配置
         const maxShelves = 5; // 最大5段（40冊）まで本棚を描画
         const shelfCount = Math.max(1, Math.min(maxShelves, Math.ceil(books.length / booksPerShelf)));
@@ -528,9 +556,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const totalBooks = state.books.length;
 
-        // 1冊もない場合は非表示にし、処理を中断
+        // グラフコンテナは常に表示
+        analyticsContainer.style.display = 'flex';
+
         if (totalBooks === 0) {
-            analyticsContainer.style.display = 'none';
+            if (chartCenterVal) {
+                chartCenterVal.textContent = '0';
+            }
+            statsChart.textContent = '';
+            
+            // グレーのプレースホルダー円を描画
+            const radius = 35;
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', '50');
+            circle.setAttribute('cy', '50');
+            circle.setAttribute('r', radius.toString());
+            circle.setAttribute('stroke', '#EAE6DF');
+            circle.setAttribute('stroke-dasharray', `${2 * Math.PI * radius}`);
+            circle.setAttribute('stroke-dashoffset', '0');
+            circle.setAttribute('fill', 'none');
+            circle.setAttribute('stroke-width', '14');
+            circle.style.opacity = '0.5';
+            statsChart.appendChild(circle);
+
+            chartLegend.textContent = '';
+            const emptyLegend = document.createElement('div');
+            emptyLegend.className = 'chart-empty-legend';
+            emptyLegend.textContent = '本を登録すると、カテゴリ別の読書割合グラフが表示されます。';
+            chartLegend.appendChild(emptyLegend);
             return;
         }
 
@@ -758,6 +811,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Clear container securely
         logsContainer.textContent = '';
+
+        const logsActions = document.querySelector('.logs-actions');
+        if (logsActions) {
+            logsActions.style.display = sortedBooks.length === 0 ? 'none' : '';
+        }
 
         if (sortedBooks.length === 0) {
             const emptyState = document.createElement('div');
