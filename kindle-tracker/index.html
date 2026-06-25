@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Kindle Unlimited お得度メーター | 読書記録＆元取り計算ツール</title>
+    <meta name="description" content="Kindle Unlimitedで読んだ本の価格を記録し、月額料金やキャンペーンに対してどれだけ得したか（元を取れたか）をリアルタイムに可視化する無料Webツールです。">
+    <meta name="robots" content="index,follow">
+    <meta name="author" content="かたかた">
+    <meta name="last-modified" content="2026-06-25">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+09:00">
+    <link rel="canonical" href="https://playpoint-sim.com/kindle-tracker/">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    
+    <!-- OGP Settings -->
+    <meta property="og:title" content="Kindle Unlimited お得度メーター | 読書記録＆元取り計算ツール">
+    <meta property="og:description" content="読んだ本を記録して、サブスクの元を取れたかリアルタイムに計算＆可視化するツール！SNSシェア機能付き。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://playpoint-sim.com/kindle-tracker/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:site_name" content="Kindle Unlimited お得度メーター">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kindle Unlimited お得度メーター">
+    <meta name="twitter:description" content="読んだ本を記録して、サブスクの元を取れたかリアルタイムに計算＆可視化するツール！">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- SEO structured data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Kindle Unlimited お得度メーター",
+      "operatingSystem": "Web",
+      "applicationCategory": "UtilitiesApplication",
+      "description": "Kindle Unlimitedで読んだ本の定価を記録し、月額料金やキャンペーンに対してどれだけ得したか（元を取れたか）を計算・可視化するWebツールです。",
+      "url": "https://playpoint-sim.com/kindle-tracker/",
+      "author": {
+        "@type": "Person",
+        "name": "かたかた",
+        "url": "https://playpoint-sim.com/author/katakata.html"
+      },
+      "dateModified": "2026-06-25",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Kindle Unlimitedの元を取るには何冊読む必要がありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "月額料金980円に対して、定価1,000円〜2,000円程度のビジネス書なら月1冊、500円前後のマンガや文庫本なら月2冊以上読めば元が取れます。本ツールに価格を記録していくことで、正確な累計お得額を確認できます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "登録した読書データは外部に送信されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ、入力されたデータはブラウザのローカルストレージにのみ保存され、外部サーバーに送信されることはありません。必要に応じてJSONファイルとしてエクスポート・インポート（保存・復元）できます。"
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <a href="../" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Playポイント計算機に戻る
+            </a>
+            <div class="header-title-area">
+                <span class="badge">ツール</span>
+                <h1>Kindle Unlimited お得度メーター</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- イントロダクション -->
+        <section class="intro-card card">
+            <div class="intro-content">
+                <h2>📚 読んだ本を記録して、お得感を見える化しよう！</h2>
+                <p>
+                    Kindle Unlimitedの無料キャンペーンや月額サブスクリプション。お得なのは分かっていても、
+                    <strong>「実際にいくら分得したのか」「本当に元は取れているのか」</strong>を実感したことはありますか？<br>
+                    このツールは、読んだ本の価格を記録し、あなたの「お得度」をリアルタイムで視覚化・計算します。
+                </p>
+            </div>
+        </section>
+
+        <!-- メイングリッドレイアウト -->
+        <div class="main-grid">
+            
+            <!-- 左側：ダッシュボードと設定 -->
+            <div class="grid-left">
+                <!-- 設定カード -->
+                <section class="settings-card card">
+                    <h3 class="card-title">⚙️ サブスク設定</h3>
+                    <div class="settings-grid">
+                        <div class="input-group">
+                            <label for="monthly-fee">月額料金 (円)</label>
+                            <input type="number" id="monthly-fee" value="980" min="0" max="100000" placeholder="980" aria-required="true">
+                        </div>
+                        <div class="input-group">
+                            <label for="duration">加入期間 (ヶ月)</label>
+                            <input type="number" id="duration" value="3" min="1" max="120" placeholder="3" aria-required="true">
+                        </div>
+                    </div>
+                    <div class="target-info">
+                        目標（元取りライン）: <span id="target-cost-display">2,940</span>円分
+                    </div>
+                </section>
+
+                <!-- メーターダッシュボード -->
+                <section class="dashboard-card card">
+                    <h3 class="card-title">📊 現在のお得ステータス</h3>
+                    
+                    <!-- 木製本棚 ＆ 進捗バーコンテナ -->
+                    <div class="meter-container">
+                        <div class="bookshelf-wrapper">
+                            <div class="bookshelf-wood-header">KU BOOKSHELF</div>
+                            <div id="bookshelf" class="bookshelf">
+                                <div class="shelf-row">
+                                    <div id="bookshelf-row-1" class="books-row"></div>
+                                    <div class="shelf-plank"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-wrapper">
+                                <div id="progress-bar-fill" class="progress-bar-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+                            </div>
+                            <div class="progress-bar-labels">
+                                <span class="progress-bar-percent"><span id="progress-percent" class="number">0</span>% 達成</span>
+                                <span class="progress-bar-target">目標: <span id="target-cost-val">2,940</span>円</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">読んだ総額 (定価)</span>
+                            <div class="stat-val-container">
+                                <span id="total-value" class="stat-value number">0</span><span class="stat-unit">円</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">実質お得額</span>
+                            <div class="stat-val-container">
+                                <span id="net-savings" class="stat-value number savings-plus">0</span><span class="stat-unit">円</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">読了冊数</span>
+                            <div class="stat-val-container">
+                                <span id="book-count" class="stat-value number">0</span><span class="stat-unit">冊</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="status-badge-container" class="status-badge-container">
+                        <!-- 動的にステータスコメントを表示 -->
+                        <span id="status-badge" class="status-badge badge-gray">読書を始めましょう！</span>
+                    </div>
+
+                    <!-- SNSシェアエリア -->
+                    <div class="share-actions">
+                        <button id="btn-share-x" class="btn btn-primary btn-share">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            結果をXでポストする
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右側：記録フォームと本の一覧 -->
+            <div class="grid-right">
+                <!-- 記録フォーム -->
+                <section class="record-form-card card">
+                    <h3 class="card-title">✍️ 読んだ本を記録する</h3>
+                    <form id="book-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="book-title">本のタイトル <span class="required">*</span></label>
+                            <input type="text" id="book-title" placeholder="例: カタカタのIT入門 料理店編" maxlength="100" required aria-required="true">
+                        </div>
+                        <div class="form-row-2">
+                            <div class="input-group">
+                                <label for="book-category">カテゴリ・ジャンル</label>
+                                <select id="book-category" aria-label="本のカテゴリ">
+                                    <option value="business">💼 ビジネス・自己啓発</option>
+                                    <option value="novel">📕 小説・ライトノベル</option>
+                                    <option value="comic">🎨 マンガ・コミック</option>
+                                    <option value="magazine">📖 雑誌・実用書</option>
+                                    <option value="other" selected>📚 その他・一般</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="book-price">定価・元値 (円) <span class="required">*</span></label>
+                                <input type="number" id="book-price" placeholder="例: 1,500" min="1" max="100000" required aria-required="true">
+                            </div>
+                        </div>
+
+                        <!-- クイック価格入力ボタン -->
+                        <div class="quick-prices">
+                            <button type="button" class="btn-quick-price" data-price="490">490円</button>
+                            <button type="button" class="btn-quick-price" data-price="780">780円</button>
+                            <button type="button" class="btn-quick-price" data-price="980">980円</button>
+                            <button type="button" class="btn-quick-price" data-price="1500">1,500円</button>
+                            <button type="button" class="btn-quick-price" data-price="2000">2,000円</button>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="input-group">
+                                <label for="read-date">読了日</label>
+                                <input type="date" id="read-date">
+                            </div>
+                            <div class="input-group">
+                                <label for="book-rating">評価</label>
+                                <!-- アクセント及びタブフォーカス順（1->5）を修正した星評価 -->
+                                <div class="rating-stars" role="radiogroup" aria-label="本の評価">
+                                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="合わなかった">★</label>
+                                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="いまいち">★</label>
+                                    <input type="radio" id="star3" name="rating" value="3" checked><label for="star3" title="普通">★</label>
+                                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="とても良い">★</label>
+                                    <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="最高！">★</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="book-notes">一言メモ・学び（任意）</label>
+                            <textarea id="book-notes" placeholder="例: ITの基本用語が料理店に例えて解説されていてスッキリ理解できた！Kindle本の構成案にも役立ちそう。" maxlength="500" rows="2"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-accent btn-block">本のログを追加する</button>
+                    </form>
+                </section>
+
+                <!-- 読書ログ一覧 -->
+                <section class="logs-card card">
+                    <div class="logs-header">
+                        <h3 class="card-title">📖 読書ログ履歴</h3>
+                        <div class="logs-actions">
+                            <!-- ソート選択 -->
+                            <select id="sort-select" class="select-field" aria-label="並び替え順">
+                                <option value="date-desc">読了日 (新しい順)</option>
+                                <option value="date-asc">読了日 (古い順)</option>
+                                <option value="price-desc">価格 (高い順)</option>
+                                <option value="price-asc">価格 (低い順)</option>
+                                <option value="rating-desc">評価 (高い順)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="logs-container" class="logs-container" aria-live="polite">
+                        <!-- JSで動的に追加される -->
+                        <div class="empty-state">
+                            <p>登録された読書ログがありません。<br>上のフォームから読んだ本を登録してみましょう！</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- データバックアップ・復元 -->
+                <section class="backup-card card">
+                    <h3 class="card-title">💾 データの保存・移行</h3>
+                    <p class="backup-desc">
+                        データはブラウザに自動保存されますが、キャッシュ削除に備えたり、PCとスマホ間で移行するためにエクスポート・インポートが可能です。
+                    </p>
+                    <div class="backup-buttons">
+                        <button id="btn-export" class="btn btn-outline">📥 データを保存する (JSON)</button>
+                        <button id="btn-import-trigger" class="btn btn-outline">📤 データを復元する (JSON)</button>
+                        <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="インポートするJSONファイル">
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <div class="footer-container">
+            <p>&copy; 2026 かたかた. All Rights Reserved. | <a href="../privacy.html" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a></p>
+        </div>
+    </footer>
+
+    <!-- クラッカー効果（元を取った際のお祝いエフェクト用キャンバス） -->
+    <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+    <!-- 自作トースト通知用コンテナ -->
+    <div id="toast-container" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- 自作の洗練された確認用カスタムモーダル -->
+    <div id="custom-modal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modal-title">確認</h3>
+            <p id="modal-message">メッセージがここに入ります。</p>
+            <div class="modal-buttons">
+                <button id="modal-btn-cancel" class="btn btn-outline">キャンセル</button>
+                <button id="modal-btn-confirm" class="btn btn-primary">実行する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

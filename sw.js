@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260624_1752';
+const CACHE_NAME = 'playpoint-calc-v20260625_1350';
 const ASSETS = [
   './',
   './style.css?v=20260624_1752a',
@@ -37,7 +37,10 @@ const ASSETS = [
   './articles/2026-06-20-discount-gift-cards.html',
   './en/articles/2026-06-20-discount-gift-cards.html',
   './ko/articles/2026-06-20-discount-gift-cards.html',
-  './tw/articles/2026-06-20-discount-gift-cards.html'
+  './tw/articles/2026-06-20-discount-gift-cards.html',
+  './kindle-tracker/',
+  './kindle-tracker/style.css',
+  './kindle-tracker/app.js'
 ];
 
 // インストール時に静的アセットをキャッシュ
