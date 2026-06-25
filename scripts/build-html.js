@@ -498,6 +498,43 @@ if (fs.existsSync(swPath)) {
 }
 
 // ==========================================
+// 10.2 kindle-tracker/sw.js のキャッシュ自動更新・同期処理
+// ==========================================
+const kindleSwPath = path.join(__dirname, '../kindle-tracker/sw.js');
+if (fs.existsSync(kindleSwPath)) {
+    let swContent = fs.readFileSync(kindleSwPath, 'utf8');
+
+    // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
+    const newKindleCacheName = `kindle-tracker-v${assetVersion}`;
+    swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newKindleCacheName}';`);
+
+    fs.writeFileSync(kindleSwPath, swContent, 'utf8');
+    console.log(`Successfully synchronized kindle-tracker/sw.js cache. CACHE_NAME=${newKindleCacheName}`);
+}
+
+// ==========================================
+// 10.3 kindle-tracker/index.html のアセットバージョン・日付自動同期処理
+// ==========================================
+const kindleIndexPath = path.join(__dirname, '../kindle-tracker/index.html');
+if (fs.existsSync(kindleIndexPath)) {
+    let content = fs.readFileSync(kindleIndexPath, 'utf8');
+
+    // style.css?v=... の同期
+    content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
+    // app.js?v=... の同期
+    content = content.replace(/app\.js\?v=[a-zA-Z0-9_-]+/g, `app.js?v=${assetVersion}a`);
+
+    // 日付メタデータ・最終更新日の同期
+    content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
+    content = content.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
+    content = content.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
+    content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
+
+    fs.writeFileSync(kindleIndexPath, content, 'utf8');
+    console.log(`Successfully synchronized asset versions and dates in kindle-tracker/index.html`);
+}
+
+// ==========================================
 // 10.5. third-party.js 内の consent.js バージョン自動同期処理
 // ==========================================
 const thirdPartyJsPath = path.join(__dirname, '../js/third-party.js');
