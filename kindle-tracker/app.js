@@ -372,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCalculations();
         renderLogs();
         setupCanvasSize();
+        handleResponsiveAds(); // 初期配置を画面サイズに合わせて決定
     }
 
     // --- Core Calculations ---
@@ -991,6 +992,30 @@ document.addEventListener('DOMContentLoaded', () => {
         confettiCanvas.height = window.innerHeight;
     }
 
+    // --- Responsive Ad Inserter (CLS Prevention & Mobile Monetization optimization) ---
+    function handleResponsiveAds() {
+        const adsCard = document.querySelector('.ads-card');
+        const sidebar = document.querySelector('.sidebar-content');
+        const mainContent = document.querySelector('.main-content');
+        const logsCard = document.querySelector('.logs-card');
+
+        if (!adsCard || !sidebar || !mainContent || !logsCard) return;
+
+        const isMobile = window.innerWidth <= 1024;
+
+        if (isMobile) {
+            // モバイル時: 「記録フォーム」と「読書ログ履歴」の間に動的インサート
+            if (adsCard.parentNode !== mainContent || adsCard.nextSibling !== logsCard) {
+                mainContent.insertBefore(adsCard, logsCard);
+            }
+        } else {
+            // デスクトップ時: 右サイドバーの最上部にインサート
+            if (adsCard.parentNode !== sidebar || adsCard !== sidebar.firstChild) {
+                sidebar.insertBefore(adsCard, sidebar.firstChild);
+            }
+        }
+    }
+
     // Debounced window resize event listener (Performance optimization)
     window.addEventListener('resize', () => {
         if (resizeTimeout) {
@@ -998,6 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         resizeTimeout = setTimeout(() => {
             setupCanvasSize();
+            handleResponsiveAds(); // 画面リサイズ時に広告配置を動的最適化
             resizeTimeout = null;
         }, 150);
     });

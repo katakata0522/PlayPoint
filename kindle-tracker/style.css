@@ -1807,5 +1807,63 @@ textarea {
     display: none !important;
 }
 
+/* Ads Card (Antiquarian Book Ad Style & CLS Prevention) */
+.ads-card {
+    min-height: 280px; /* デスクトップ・モバイル共に高さを固定してCLSを防止 */
+    display: flex;
+    flex-direction: column;
+    background: #FCFAF7; /* 古い紙・新聞紙の風合い */
+    border: 3px double #C4B5A5; /* レトロな二重枠線 */
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+}
+
+.ads-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #A24838; /* 消印風の赤 */
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid #A24838;
+    padding: 2px 6px;
+    width: fit-content;
+    margin: 0 auto 12px;
+    transform: rotate(-1.5deg);
+    display: block;
+    background: #FCFAF7;
+    box-shadow: 0 0 1px rgba(162, 72, 56, 0.1);
+}
+
+.ads-placeholder {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(196, 181, 165, 0.6);
+    background: rgba(196, 181, 165, 0.04);
+    border-radius: 2px;
+    padding: 10px;
+    min-height: 200px;
+}
+
+.ads-placeholder-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+/* モバイル挿入時のマージン調整 */
+.main-content > .ads-card {
+    margin-top: 10px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
 
 
