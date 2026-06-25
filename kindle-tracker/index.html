@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260625_2130a">
+    <link rel="stylesheet" href="style.css?v=20260625_2134a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -292,11 +292,13 @@
                 <section class="backup-card card">
                     <h3 class="card-title">💾 データの保存・移行</h3>
                     <p class="backup-desc">
-                        データはブラウザに自動保存されますが、キャッシュ削除に備えたり、PCとスマホ間で移行するためにエクスポート・インポートが可能です。
+                        データはブラウザに自動保存されます。他端末への移行やバックアップ用にファイルへの保存・復元が可能です。
                     </p>
                     <div class="backup-buttons">
-                        <button id="btn-export" class="btn btn-outline">📥 データを保存する (JSON)</button>
-                        <button id="btn-import-trigger" class="btn btn-outline">📤 データを復元する (JSON)</button>
+                        <button id="btn-export" class="btn btn-outline btn-block">📥 バックアップファイルを保存 (JSON)</button>
+                    </div>
+                    <div id="drop-zone" class="drop-zone">
+                        <span class="drop-zone-text">📤 バックアップファイルをここにドラッグ＆ドロップするか、クリックして復元</span>
                         <input type="file" id="input-import" accept=".json" style="display: none;" aria-label="インポートするJSONファイル">
                     </div>
                 </section>
@@ -347,6 +349,31 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260625_2130a"></script>
+    <!-- 元取り達成お祝いモーダル -->
+    <div id="celebration-modal" class="custom-modal celebration-modal" role="dialog" aria-modal="true" aria-labelledby="celebration-title" style="display: none;">
+        <div class="modal-content celebration-content">
+            <button id="celebration-close" class="celebration-close" aria-label="閉じる">&times;</button>
+            <h3 id="celebration-title">🎉 CONGRATULATIONS!</h3>
+            <div class="stamp-container">
+                <div id="celebration-stamp" class="achieved-stamp">元取り達成</div>
+            </div>
+            <p class="celebration-message">
+                おめでとうございます！<br>
+                Kindle Unlimitedの目標金額をクリアし、<br>
+                <strong>実質 <span id="celebration-savings" class="number">0</span> 円</strong> のお得を生み出しました！
+            </p>
+            <p class="celebration-sub">
+                これからの読書はすべて「純粋な利益」になります。この喜びをみんなに共有しましょう！
+            </p>
+            <div class="modal-buttons">
+                <button id="btn-celebration-share-x" class="btn btn-accent btn-block btn-share">
+                   <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                   Xで元取りを報告する
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=20260625_2134a"></script>
 </body>
 </html>

@@ -44,9 +44,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const btnShareX = document.getElementById('btn-share-x');
     const btnExport = document.getElementById('btn-export');
-    const btnImportTrigger = document.getElementById('btn-import-trigger');
+    const dropZone = document.getElementById('drop-zone');
     const inputImport = document.getElementById('input-import');
     
+    // Celebration Modal Elements
+    const celebrationModal = document.getElementById('celebration-modal');
+    const celebrationClose = document.getElementById('celebration-close');
+    const celebrationSavings = document.getElementById('celebration-savings');
+    const btnCelebrationShareX = document.getElementById('btn-celebration-share-x');
+
     const progressBarFill = document.getElementById('progress-bar-fill');
     const confettiCanvas = document.getElementById('confetti-canvas');
     const ctx = confettiCanvas.getContext('2d');
@@ -197,6 +203,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalBtnCancel.addEventListener('click', () => closeConfirmModal(false));
     modalBtnConfirm.addEventListener('click', () => closeConfirmModal(true));
+
+    // --- Celebration Modal Logic ---
+    function showCelebrationModal(netSavings) {
+        if (!celebrationModal) return;
+
+        if (celebrationSavings) {
+            celebrationSavings.textContent = netSavings.toLocaleString();
+        }
+
+        celebrationModal.style.display = 'flex';
+        celebrationModal.style.opacity = '0';
+        requestAnimationFrame(() => {
+            celebrationModal.style.opacity = '1';
+        });
+
+        const mainElements = document.querySelectorAll('header, main, footer');
+        mainElements.forEach(el => el.setAttribute('inert', ''));
+
+        const scrollbarWidth = getScrollbarWidth();
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+        document.body.classList.add('modal-open');
+
+        setTimeout(() => {
+            celebrationClose.focus();
+        }, 50);
+
+        const celebrationKeydownHandler = (e) => {
+            if (e.key === 'Escape') {
+                closeCelebrationModal();
+            }
+            if (e.key === 'Tab') {
+                const focusableElements = [celebrationClose, btnCelebrationShareX];
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey) {
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        e.preventDefault();
+                    }
+                } else {
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('keydown', celebrationKeydownHandler);
+        celebrationModal.activeKeydownHandler = celebrationKeydownHandler;
+    }
+
+    function closeCelebrationModal() {
+        if (!celebrationModal) return;
+
+        celebrationModal.style.opacity = '0';
+        setTimeout(() => {
+            celebrationModal.style.display = 'none';
+        }, 200);
+
+        const mainElements = document.querySelectorAll('header, main, footer');
+        mainElements.forEach(el => el.removeAttribute('inert'));
+        
+        document.body.style.paddingRight = '';
+        document.body.classList.remove('modal-open');
+
+        if (celebrationModal.activeKeydownHandler) {
+            window.removeEventListener('keydown', celebrationModal.activeKeydownHandler);
+            celebrationModal.activeKeydownHandler = null;
+        }
+    }
+
+    if (celebrationClose) {
+        celebrationClose.addEventListener('click', closeCelebrationModal);
+    }
+    if (celebrationModal) {
+        celebrationModal.addEventListener('click', (e) => {
+            if (e.target === celebrationModal) {
+                closeCelebrationModal();
+            }
+        });
+    }
 
     // --- Helper to Check and Wrap LocalStorage (Resolves Private Browsing/Storage Block Crashes) ---
     let isStorageAvailable = null;
@@ -481,9 +570,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const isCompleted = percent >= 100 && targetCost > 0;
         
-        // Confetti trigger condition: target newly reached
+        // Confetti & Celebration trigger condition: target newly reached
         if (isCompleted && !lastCompletedState && state.books.length > 0) {
             startConfetti();
+            const netSavings = totalValue - targetCost;
+            showCelebrationModal(netSavings);
         }
         lastCompletedState = isCompleted;
 
@@ -800,39 +891,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- SNS Share Logic (X/Twitter) (DRY principles applied, reads from state) ---
-    btnShareX.addEventListener('click', () => {
+    function shareOnX() {
         const targetCost = state.calculated.targetCost;
         const totalValue = state.calculated.totalValue;
         const netSavings = state.calculated.netSavings;
         const bookCount = state.calculated.bookCount;
         const percent = state.calculated.percent;
 
-        // Create share text
-        let shareText = '';
-        if (percent >= 100) {
-            shareText = `📖 Kindle Unlimited お得度メーター 📖\n` +
-                        `元値目標 ${targetCost.toLocaleString()}円 に対し、\n` +
-                        `累計 ${totalValue.toLocaleString()}円 分の本を読みました！\n` +
-                        `【元取り達成率: ${percent}% 🎉 (+${netSavings.toLocaleString()}円のお得！)】\n\n` +
-                        `読了数: ${bookCount}冊\n`;
-        } else {
-            shareText = `📖 Kindle Unlimited お得度メーター 📖\n` +
-                        `元値目標 ${targetCost.toLocaleString()}円 に対し、\n` +
-                        `累計 ${totalValue.toLocaleString()}円 分の本を読みました！\n` +
-                        `【元取り達成率: ${percent}% (元取りまであと ${(targetCost - totalValue).toLocaleString()}円)】\n\n` +
-                        `読了数: ${bookCount}冊\n`;
+        let shareText = "📖 Kindle Unlimited お得度メーター 📖\n" +
+            "元値目標 " + targetCost.toLocaleString() + "円 に対し、\n" +
+            "累計 " + totalValue.toLocaleString() + "円 分の本を読みました！\n" +
+            "【元取り達成率: " + percent + "% 🎉 (+" + netSavings.toLocaleString() + "円のお得！)】\n\n" +
+            "読了数: " + bookCount + "冊\n";
+
+        if (percent < 100) {
+            shareText = "📖 Kindle Unlimited お得度メーター 📖\n" +
+                "元値目標 " + targetCost.toLocaleString() + "円 に対し、\n" +
+                "累計 " + totalValue.toLocaleString() + "円 分の本を読みました！\n" +
+                "【元取り達成率: " + percent + "% (元取りまであと " + (targetCost - totalValue).toLocaleString() + "円)】\n\n" +
+                "読了数: " + bookCount + "冊\n";
         }
 
-        shareText += `#KindleUnlimitedお得度計算機 #読書記録 #playpoint\n`;
-        
-        const shareUrl = 'https://playpoint-sim.com/kindle-tracker/';
-        
-        const twitterUrl = `https://x.com/intent/post?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-        window.open(twitterUrl, '_blank');
-    });
+        shareText += "#KindleUnlimitedお得度計算機 #読書記録 #playpoint\n";
+        const shareUrl = "https://playpoint-sim.com/kindle-tracker/";
+        const twitterUrl = "https://x.com/intent/post?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(shareUrl);
+        window.open(twitterUrl, "_blank");
+    }
 
-    // --- Export / Import (Secure schema validation) ---
+    btnShareX.addEventListener('click', shareOnX);
+    if (btnCelebrationShareX) {
+        btnCelebrationShareX.addEventListener('click', shareOnX);
+    }
+
+    if (statusBadge) {
+        statusBadge.style.cursor = 'pointer';
+        statusBadge.addEventListener('click', () => {
+            if (state.calculated.percent >= 100) {
+                showCelebrationModal(state.calculated.netSavings);
+            }
+        });
+    }
+
     btnExport.addEventListener('click', () => {
         if (state.books.length === 0) {
             showToast('エクスポートする読書ログがありません。', 'warning');
@@ -864,12 +963,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('データをファイルとして保存しました！');
     });
 
-    btnImportTrigger.addEventListener('click', () => {
-        inputImport.click();
-    });
-
-    inputImport.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+    // --- Data Import Logic ---
+    function handleImportFile(file) {
         if (!file) return;
 
         // Cache old state before starting import for rollback fallback
@@ -965,9 +1060,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         reader.readAsText(file);
-    });
+    }
 
-    // Run Initialization
+    if (inputImport) {
+        inputImport.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleImportFile(file);
+        });
+    }
+
+    if (dropZone) {
+        dropZone.addEventListener('click', () => {
+            if (inputImport) inputImport.click();
+        });
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) handleImportFile(file);
+        });
+    }
+
     init();
 
     // --- PWA Service Worker Registration ---
