@@ -4,13 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Play Points プラチナはいくら必要？到達目安と計算リンク</title>
-    <meta name="description" content="Google Play Pointsのプラチナ到達に必要なポイントと課金額の目安を、ゴールド現在からすぐ計算できる入口です。維持やリワードの記事にも進めます。">
+    <meta name="description" content="Google Play Pointsのプラチナ到達に必要な残りポイント、課金額、年末までのペースを整理し、ゴールド現在からすぐ計算できるページです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
     <meta name="last-modified" content="2026-06-26">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Playポイント計算機">
+    <meta property="og:title" content="Google Play Points プラチナはいくら必要？">
+    <meta property="og:description" content="ゴールド現在からプラチナ到達までの残りポイントと必要額を確認できます。">
+    <meta property="og:url" content="https://playpoint-sim.com/status/platinum/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Google Play Points プラチナはいくら必要？">
+    <meta name="twitter:description" content="プラチナ到達に必要な課金額と年末までのペースをすぐ計算できます。">
+    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
     <link rel="canonical" href="https://playpoint-sim.com/status/platinum/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/style.css?v=20260626_0055a">
+    <link rel="stylesheet" href="/style.css?v=20260626_0129a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -19,7 +29,41 @@
       "description": "Google Play Pointsのプラチナ到達に必要な課金額を計算するための入口ページです。",
       "url": "https://playpoint-sim.com/status/platinum/",
       "dateModified": "2026-06-26",
+      "author": { "@type": "Person", "name": "かたかた", "url": "https://playpoint-sim.com/author/katakata.html" },
       "isPartOf": { "@type": "WebSite", "name": "Playポイント計算機", "url": "https://playpoint-sim.com/" }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Playポイント計算機", "item": "https://playpoint-sim.com/" },
+        { "@type": "ListItem", "position": 2, "name": "プラチナ到達計算", "item": "https://playpoint-sim.com/status/platinum/" }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "プラチナ到達には何を入力すればいいですか？",
+          "acceptedAnswer": { "@type": "Answer", "text": "現在ステータスをゴールド、目標をプラチナにし、プラチナまでの残りポイントとキャンペーン倍率を入力します。" }
+        },
+        {
+          "@type": "Question",
+          "name": "プラチナ到達と維持は別に考えるべきですか？",
+          "acceptedAnswer": { "@type": "Answer", "text": "到達に必要な額と翌年維持に必要なペースは別の判断です。到達後も使い続ける予定があるか確認すると判断しやすくなります。" }
+        },
+        {
+          "@type": "Question",
+          "name": "週次リワードは計算に入れられますか？",
+          "acceptedAnswer": { "@type": "Answer", "text": "計算機では週次リワードを差し引く設定も使えます。見込みに頼りすぎず、通常計算と比較するのがおすすめです。" }
+        }
+      ]
     }
     </script>
 </head>
@@ -32,7 +76,8 @@
     <section class="lp-hero">
         <p class="lp-eyebrow">プラチナ到達を先に計算</p>
         <h1>Google Play Points プラチナはいくら必要？</h1>
-        <p class="lp-lead">プラチナは還元率、週次リワード、上位特典のバランスを見やすい目標です。ゴールド現在からプラチナ昇格を選んだ状態で計算できます。</p>
+        <p class="lp-lead">プラチナは還元率、週次リワード、上位特典のバランスを見やすい目標です。ゴールド現在からプラチナ昇格を選んだ状態で計算機へ移動し、残りポイントと倍率を入れるだけで必要額の目安を確認できます。</p>
+        <p class="lp-note">プラチナは「もう少しで届く」人が多い一方、年末までの残り期間によって必要なペースが大きく変わります。到達額だけでなく、月平均、週平均、1日あたりも一緒に見てください。</p>
         <div class="lp-action-row">
             <a class="lp-primary-link" href="/?mode=main&amp;status=1.5&amp;target=platinum&amp;points=1000&amp;multiplier=1&amp;utm_source=lp&amp;utm_medium=internal&amp;utm_campaign=status_platinum">プラチナ到達を計算する</a>
             <a class="lp-secondary-link" href="/maintenance/platinum/">プラチナ維持も確認する</a>
@@ -41,10 +86,57 @@
     <section class="section">
         <h2>プラチナ到達で確認すること</h2>
         <div class="lp-mini-grid">
-            <div><h3>残りポイント</h3><p>年末までの月平均、週平均、1日あたりの目安まで見られます。</p></div>
-            <div><h3>倍率の影響</h3><p>キャンペーン倍率を入れると、通常時よりどのくらい楽になるか比較できます。</p></div>
-            <div><h3>到達後の維持</h3><p>プラチナは到達だけでなく翌年維持の見通しも一緒に確認した方が安全です。</p></div>
+            <div><h3>残りポイント</h3><p>年末までに足りないポイントを入れると、月平均、週平均、1日あたりの課金ペースまで見られます。</p></div>
+            <div><h3>倍率の影響</h3><p>キャンペーン倍率を入れると、通常時よりどのくらい負担が下がるかを比較できます。</p></div>
+            <div><h3>到達後の維持</h3><p>プラチナは到達だけでなく、翌年維持の見通しも一緒に確認した方が安全です。</p></div>
         </div>
+    </section>
+    <section class="section">
+        <h2>計算機に入れる条件</h2>
+        <p>プラチナ到達の検索で一番多い迷いは、総課金額ではなく「あと何ポイントを、いつまでに、どの倍率で取るか」です。計算機では次の条件をそろえると判断しやすくなります。</p>
+        <ol class="lp-step-list">
+            <li><strong>現在ステータス:</strong> ゴールドを選びます。このページのボタンから開くと、ゴールドからプラチナへの条件で計算しやすい状態になります。</li>
+            <li><strong>目標ステータス:</strong> プラチナを選びます。維持ではなく昇格の目安を見たい場合は、目標がプラチナになっているか確認してください。</li>
+            <li><strong>あと何ポイント必要か:</strong> Google Play側の進捗を見て、プラチナ到達までの不足分を入力します。初期値は1000ポイントにしています。</li>
+            <li><strong>倍率:</strong> 通常時は1倍、ポイント増量キャンペーン中は倍率を入れます。キャンペーンが読めない場合は1倍を基準にしておくと保守的です。</li>
+        </ol>
+        <p class="lp-note">この計算は目安です。実際の付与対象、税込み金額の扱い、反映タイミング、国ごとの条件はGoogle Play側の表示を優先してください。</p>
+    </section>
+    <section class="section">
+        <h2>到達判断の見方</h2>
+        <div class="lp-detail-grid">
+            <div class="lp-detail-box">
+                <h3>普段の利用額に近い場合</h3>
+                <p>月平均や週平均が普段の利用額に近いなら、無理なく届く可能性があります。課金予定がすでにあるなら、倍率の高い時期に寄せるだけで負担を抑えられることがあります。</p>
+            </div>
+            <div class="lp-detail-box">
+                <h3>必要額が大きく出る場合</h3>
+                <p>特典目的だけで追加課金を増やすと、還元より支出の方が大きくなりやすいです。プラチナのためだけに買うものを増やすのではなく、予定済みの支払いで届くかを見るのが現実的です。</p>
+            </div>
+            <div class="lp-detail-box">
+                <h3>週次リワードを見る場合</h3>
+                <p>週次リワードは積み上げの助けになりますが、毎週確実に同じポイントが得られるとは限りません。差し引き設定を使う場合も、差し引かない結果と比較してください。</p>
+            </div>
+            <div class="lp-detail-box">
+                <h3>年末が近い場合</h3>
+                <p>残り日数が少ないほど、同じ不足ポイントでも必要ペースは急になります。反映が遅れる支払いは、締め直前の調整に向きません。</p>
+            </div>
+        </div>
+    </section>
+    <section class="section lp-faq">
+        <h2>よくある疑問</h2>
+        <details>
+            <summary>ゴールドではない場合もこのページを使える？</summary>
+            <p>使えます。計算機へ移動したあとに現在ステータスを変更してください。ブロンズやシルバーから見る場合は、プラチナまでの不足ポイントが大きくなるため、まずは現在の進捗を確認するのが先です。</p>
+        </details>
+        <details>
+            <summary>プラチナに届くならすぐ課金した方がいい？</summary>
+            <p>年末まで余裕があるなら、倍率キャンペーンや割引ギフトコードを待つ選択肢があります。反対に年末が近い場合は、反映タイミングも含めて早めに確認した方が安全です。</p>
+        </details>
+        <details>
+            <summary>到達後に何を確認すべき？</summary>
+            <p>プラチナ維持の必要ポイント、週次リワードの受け取り、ポイントの使い道を確認してください。到達だけで満足して使い道がないと、支出に見合わない可能性があります。</p>
+        </details>
     </section>
     <section class="section">
         <h2>一緒に確認したい記事</h2>
@@ -54,6 +146,10 @@
             <li><a href="/articles/2025-12-25-campaign.html">ポイント増量キャンペーンの仕組み</a></li>
             <li><a href="/articles/2026-03-10-play-points-reflection-timing.html">Play Pointsの反映タイミング</a></li>
         </ul>
+    </section>
+    <section class="section">
+        <h2>運営と確認方針</h2>
+        <p class="lp-author-note">このページは、Playポイント計算機の運営者が、計算前の検索意図に合わせて必要条件を整理したものです。更新方針や検証方針は<a href="/author/katakata.html">運営者プロフィール</a>にまとめています。</p>
     </section>
 </main>
 </body>

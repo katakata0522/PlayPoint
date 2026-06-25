@@ -732,6 +732,11 @@ button:active {
   font-size: 1.06em;
   line-height: 1.8;
 }
+.lp-note {
+  margin: 0.9em 0 0;
+  color: var(--link-color);
+  font-size: 0.94em;
+}
 .lp-action-row {
   display: flex;
   flex-wrap: wrap;
@@ -778,6 +783,57 @@ button:active {
   border: 0;
   color: var(--text-color);
   font-size: 1em;
+}
+.lp-step-list,
+.lp-check-list {
+  margin: 0.9em 0 0;
+  padding-left: 1.25em;
+}
+.lp-step-list li,
+.lp-check-list li {
+  margin-bottom: 0.65em;
+}
+.lp-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75em;
+}
+.lp-detail-box {
+  min-width: 0;
+  padding: 0.9em;
+  border: 1px solid rgba(40, 167, 69, 0.16);
+  border-radius: 6px;
+  background: rgba(40, 167, 69, 0.045);
+}
+.lp-detail-box h3 {
+  margin: 0 0 0.45em;
+  border: 0;
+  font-size: 1em;
+}
+.lp-faq {
+  display: grid;
+  gap: 0.75em;
+}
+.lp-faq details {
+  border: 1px solid var(--input-border-color);
+  border-radius: 6px;
+  background: #fafcff;
+  padding: 0.85em 1em;
+}
+.lp-faq summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.lp-faq p {
+  margin: 0.65em 0 0;
+}
+.lp-author-note {
+  border-left: 4px solid #0b57d0;
+  padding: 0.75em 0 0.75em 1em;
+  color: var(--link-color);
+}
+.lp-author-note a {
+  font-weight: 700;
 }
 .lp-related-list {
   display: grid;
@@ -845,6 +901,7 @@ button:active {
     width: 100%;
   }
   .lp-mini-grid,
+  .lp-detail-grid,
   .lp-related-list {
     grid-template-columns: 1fr;
   }
