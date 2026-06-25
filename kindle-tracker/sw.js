@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'kindle-tracker-v';
-const CACHE_NAME = 'kindle-tracker-v20260626_0129';
+const CACHE_NAME = 'kindle-tracker-v20260626_0136';
 const ASSETS = [
   './',
   './index.html',
@@ -38,7 +38,7 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(event.request).then((cachedResponse) => {
+      return cache.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.ok) {
             cache.put(event.request, networkResponse.clone());

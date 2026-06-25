@@ -419,6 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateSubscriptionContext();
                 updateCalculations();
                 renderLogs();
+                // サブスクの種類変更に伴い、カテゴリの初期デフォルト価格を即座に連動反映させる
+                if (bookCategorySelect) {
+                    bookCategorySelect.dispatchEvent(new Event('change'));
+                }
             });
         }
 
@@ -1047,12 +1051,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastCompletedState = isCompleted;
 
+        const type = state.settings.subscriptionType || 'kindle';
+        const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
+
         if (state.books.length === 0) {
             statusBadge.className = 'status-badge badge-gray';
-            statusBadge.textContent = '読書を始めましょう！';
+            statusBadge.textContent = isVideo ? '視聴を始めましょう！' : '読書を始めましょう！';
         } else if (percent < 50) {
             statusBadge.className = 'status-badge badge-info';
-            statusBadge.textContent = 'お得への第一歩！元取りを目指して読み進めましょう。';
+            statusBadge.textContent = isVideo
+                ? 'お得への第一歩！元取りを目指して視聴を進めましょう。'
+                : 'お得への第一歩！元取りを目指して読み進めましょう。';
         } else if (percent < 100) {
             statusBadge.className = 'status-badge badge-info';
             statusBadge.textContent = `元取りまであと少し！現在 ${percent}% 達成！`;
@@ -1249,7 +1258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Handlers ---
     
     // カテゴリ選択時の自動価格補完（手入力値を優先するガード付き）
-    const categoryDefaultPrices = {
+    const categoryDefaultPricesBooks = {
         business: 1500,
         novel: 1000,
         comic: 500,
@@ -1257,14 +1266,30 @@ document.addEventListener('DOMContentLoaded', () => {
         other: 1200
     };
 
+    const categoryDefaultPricesVideos = {
+        business: 400,   // 教養/ドキュメンタリー
+        novel: 500,      // 映画/ドラマ
+        comic: 250,      // アニメ
+        magazine: 300,   // 番組/バラエティ
+        other: 400       // その他
+    };
+
     bookCategorySelect.addEventListener('change', () => {
         const selectedCategory = bookCategorySelect.value;
         const currentPrice = bookPriceInput.value.trim();
+        
+        const type = state.settings.subscriptionType || 'kindle';
+        const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
+        const categoryDefaultPrices = isVideo ? categoryDefaultPricesVideos : categoryDefaultPricesBooks;
 
-        // 現在の入力値が空、または既存のデフォルト価格リストのいずれかの値と一致している場合のみ自動補完する
+        // 現在の入力値が空、または「書籍デフォルト」「動画デフォルト」のいずれかの値と一致している場合のみ自動補完する
         // これにより、ユーザーが完全手動でカスタム価格を入れている場合の意図しない上書きを防ぐ
         const isCurrentValEmpty = currentPrice === '';
-        const isCurrentValDefault = Object.values(categoryDefaultPrices).some(val => val.toString() === currentPrice);
+        const allDefaults = [
+            ...Object.values(categoryDefaultPricesBooks),
+            ...Object.values(categoryDefaultPricesVideos)
+        ];
+        const isCurrentValDefault = allDefaults.some(val => val.toString() === currentPrice);
 
         if (isCurrentValEmpty || isCurrentValDefault) {
             const defaultPrice = categoryDefaultPrices[selectedCategory || 'other'];
@@ -1496,7 +1521,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (state.calculated.percent >= 100) {
                 showCelebrationModal(state.calculated.netSavings);
             } else {
-                showToast('読んだ本を記録して、元取りメーターを達成しましょう！📚', 'info');
+                const type = state.settings.subscriptionType || 'kindle';
+                const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
+                const hintMsg = isVideo 
+                    ? '視聴した作品を記録して、元取りメーターを達成しましょう！🎬'
+                    : '読んだ本を記録して、元取りメーターを達成しましょう！📚';
+                showToast(hintMsg, 'info');
             }
         });
     }
@@ -1525,8 +1555,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     btnExport.addEventListener('click', () => {
+        const type = state.settings.subscriptionType || 'kindle';
+        const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
         if (state.books.length === 0) {
-            showToast('エクスポートする読書ログがありません。', 'warning');
+            showToast(isVideo ? 'エクスポートする視聴ログがありません。' : 'エクスポートする読書ログがありません。', 'warning');
             return;
         }
 
@@ -1544,9 +1576,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const offset = now.getTimezoneOffset() * 60000;
         const localDateStr = (new Date(now - offset)).toISOString().split('T')[0];
 
+        const name = state.settings.subscriptionName || 'Kindle Unlimited';
+        const safeName = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'subscription';
+
         const link = document.createElement('a');
         link.href = url;
-        link.download = `kindle_unlimited_savings_backup_${localDateStr}.json`;
+        link.download = `${safeName}_savings_backup_${localDateStr}.json`;
         document.body.appendChild(link);
         link.click();
         
