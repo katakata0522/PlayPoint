@@ -1647,5 +1647,165 @@ textarea {
     }
 }
 
+/* Analytics & Pie Chart Styles */
+.analytics-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 15px;
+    background: #FCFAF7; /* 古い日記紙 */
+    border: 1px solid #E8DFD5;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.01);
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+}
+
+.stats-chart {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg); /* 12時の位置から描画開始するため */
+}
+
+/* ドーナツスライスの基本スタイル */
+.chart-slice {
+    fill: none;
+    stroke-width: 14; /* ドーナツの太さ */
+    transition: stroke-dashoffset 0.6s ease-in-out, stroke 0.3s;
+    cursor: pointer;
+}
+
+.chart-slice:hover {
+    stroke-width: 17; /* ホバー時に太くする */
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+}
+
+#chart-center-val {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--text-main);
+    display: block;
+    line-height: 1;
+}
+
+.chart-center-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.chart-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 6px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.legend-item:hover {
+    background-color: #F3EBE1;
+}
+
+.legend-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.legend-label-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.legend-val-group {
+    color: var(--text-muted);
+    font-weight: 500;
+    text-align: right;
+}
+
+/* Category Filter Tabs (Notebook Index Design) */
+.filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #E8DFD5;
+    padding-bottom: 2px;
+}
+
+.filter-tab {
+    background: #F3EBE1;
+    border: 1px solid #D2CBC0;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    color: var(--text-muted);
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    top: 2px; /* ボーダーに重ねる */
+}
+
+.filter-tab:hover {
+    color: var(--text-main);
+    background: #FAF6F0;
+    transform: translateY(-1px);
+}
+
+.filter-tab.active {
+    color: var(--text-main);
+    background: #FCFAF7;
+    border-color: #E8DFD5;
+    border-bottom: 2px solid #FCFAF7; /* 親のボーダーを打ち消す */
+    z-index: 2;
+    transform: translateY(-2px);
+    box-shadow: 0 -2px 4px rgba(42, 36, 33, 0.04);
+}
+
+/* カテゴリごとの付箋アクセントカラー */
+.filter-tab[data-category="business"].active { border-top: 3px solid #1A5F7A; color: #1A5F7A; }
+.filter-tab[data-category="novel"].active    { border-top: 3px solid #A24838; color: #A24838; }
+.filter-tab[data-category="comic"].active    { border-top: 3px solid #D99E32; color: #D99E32; }
+.filter-tab[data-category="magazine"].active { border-top: 3px solid #5C7A5C; color: #5C7A5C; }
+.filter-tab[data-category="other"].active    { border-top: 3px solid #837568; color: #837568; }
+
+/* フィルタ時のアニメーションフェード効果 */
+.book-item.filtered-out {
+    display: none !important;
+}
+
 
 

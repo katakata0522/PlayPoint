@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260625_2134a">
+    <link rel="stylesheet" href="style.css?v=20260625_2137a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -136,6 +136,22 @@
                                 <span class="progress-bar-percent"><span id="progress-percent" class="number">0</span>% 達成</span>
                                 <span class="progress-bar-target">目標: <span id="target-cost-val">2,940</span>円</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- 読書統計アナリティクス（ドーナツグラフ） -->
+                    <div class="analytics-container">
+                        <div class="chart-wrapper">
+                            <svg id="stats-chart" viewBox="0 0 100 100" class="stats-chart">
+                                <!-- JSで動的にスライスが生成されます -->
+                            </svg>
+                            <div class="chart-center-text">
+                                <span id="chart-center-val" class="number">0</span>
+                                <span class="chart-center-label">冊</span>
+                            </div>
+                        </div>
+                        <div id="chart-legend" class="chart-legend">
+                            <!-- JSで動的に凡例が生成されます -->
                         </div>
                     </div>
 
@@ -249,6 +265,16 @@
                                 <option value="rating-desc">評価 (高い順)</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- カテゴリ別フィルタタブ -->
+                    <div class="filter-tabs" role="tablist" aria-label="カテゴリ別フィルター">
+                        <button class="filter-tab active" data-category="all" role="tab" aria-selected="true">📋 すべて</button>
+                        <button class="filter-tab" data-category="business" role="tab" aria-selected="false">💼 ビジネス</button>
+                        <button class="filter-tab" data-category="novel" role="tab" aria-selected="false">📕 小説・ラノベ</button>
+                        <button class="filter-tab" data-category="comic" role="tab" aria-selected="false">🎨 マンガ</button>
+                        <button class="filter-tab" data-category="magazine" role="tab" aria-selected="false">📖 雑誌</button>
+                        <button class="filter-tab" data-category="other" role="tab" aria-selected="false">📚 その他</button>
                     </div>
 
                     <div id="logs-container" class="logs-container" aria-live="polite">
@@ -374,6 +400,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260625_2134a"></script>
+    <script src="app.js?v=20260625_2137a"></script>
 </body>
 </html>

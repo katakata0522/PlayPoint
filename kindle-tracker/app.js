@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State Management (Single Source of Truth) ---
     const state = {
         books: [],
+        activeFilter: 'all',
         settings: {
             monthlyFee: 980,
             duration: 3
@@ -52,6 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const celebrationClose = document.getElementById('celebration-close');
     const celebrationSavings = document.getElementById('celebration-savings');
     const btnCelebrationShareX = document.getElementById('btn-celebration-share-x');
+
+    // Analytics Chart Elements
+    const analyticsContainer = document.querySelector('.analytics-container');
+    const statsChart = document.getElementById('stats-chart');
+    const chartCenterVal = document.getElementById('chart-center-val');
+    const chartLegend = document.getElementById('chart-legend');
 
     const progressBarFill = document.getElementById('progress-bar-fill');
     const confettiCanvas = document.getElementById('confetti-canvas');
@@ -430,6 +437,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update wooden bookshelf visualization
         updateBookshelfUI();
+
+        // Update analytics pie chart visualization
+        updateAnalyticsChart();
     }
 
     function updateBookshelfUI() {
@@ -510,6 +520,131 @@ document.addEventListener('DOMContentLoaded', () => {
             shelfRow.appendChild(shelfPlank);
             bookshelf.appendChild(shelfRow);
         }
+    }
+
+    function updateAnalyticsChart() {
+        if (!analyticsContainer || !statsChart || !chartLegend) return;
+
+        const totalBooks = state.books.length;
+
+        // 1冊もない場合は非表示にし、処理を中断
+        if (totalBooks === 0) {
+            analyticsContainer.style.display = 'none';
+            return;
+        }
+
+        analyticsContainer.style.display = 'flex';
+
+        // 1. 各カテゴリの統計（冊数・金額）を計算
+        const categoryData = {
+            business: { count: 0, price: 0, label: 'ビジネス', color: '#1A5F7A' },
+            novel:    { count: 0, price: 0, label: '小説/ラノベ', color: '#A24838' },
+            comic:    { count: 0, price: 0, label: 'マンガ', color: '#D99E32' },
+            magazine: { count: 0, price: 0, label: '雑誌', color: '#5C7A5C' },
+            other:    { count: 0, price: 0, label: 'その他', color: '#837568' }
+        };
+
+        state.books.forEach(book => {
+            const cat = book.category || 'other';
+            if (categoryData[cat]) {
+                categoryData[cat].count++;
+                categoryData[cat].price += book.price;
+            }
+        });
+
+        // 総冊数テキスト更新
+        if (chartCenterVal) {
+            chartCenterVal.textContent = totalBooks;
+        }
+
+        // 2. SVGドーナツグラフ（パイチャート）の描画
+        statsChart.textContent = ''; // SVGをクリア
+        
+        const radius = 35;
+        const circumference = 2 * Math.PI * radius; // 219.9
+        let accumulatedPercent = 0;
+
+        Object.keys(categoryData).forEach(cat => {
+            const data = categoryData[cat];
+            if (data.count === 0) return;
+
+            const ratio = data.count / totalBooks;
+            const sliceLength = ratio * circumference;
+
+            // ドーナツの円弧 (スライス) を生成
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('class', 'chart-slice');
+            circle.setAttribute('cx', '50');
+            circle.setAttribute('cy', '50');
+            circle.setAttribute('r', radius.toString());
+            circle.setAttribute('stroke', data.color);
+            circle.setAttribute('stroke-dasharray', `${sliceLength} ${circumference}`);
+            circle.setAttribute('stroke-dashoffset', '0');
+            circle.setAttribute('transform', `rotate(${accumulatedPercent * 360 - 90} 50 50)`);
+            circle.setAttribute('title', `${data.label}: ${data.count}冊 (${data.price.toLocaleString()}円)`);
+            
+            // 初回描画時にクルリとアニメーションさせるための設定
+            circle.style.strokeDashoffset = sliceLength.toString();
+            circle.style.strokeDasharray = `${sliceLength} ${circumference}`;
+            
+            statsChart.appendChild(circle);
+
+            // アニメーション発火 (少し遅らせて stroke-dashoffset を 0 にして円弧を描く)
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = '0';
+                }, 50);
+            });
+
+            // 累積比率を更新
+            accumulatedPercent += ratio;
+
+            // グラフスライスをクリックするとそのカテゴリでフィルタリング
+            circle.style.cursor = 'pointer';
+            circle.addEventListener('click', () => {
+                const tab = document.querySelector(`.filter-tab[data-category="${cat}"]`);
+                if (tab) tab.click();
+            });
+        });
+
+        // 3. 凡例（Legend）の生成
+        chartLegend.textContent = '';
+        Object.keys(categoryData).forEach(cat => {
+            const data = categoryData[cat];
+            if (data.count === 0) return;
+
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+            legendItem.setAttribute('data-category', cat);
+
+            const labelGroup = document.createElement('div');
+            labelGroup.className = 'legend-label-group';
+
+            const dot = document.createElement('span');
+            dot.className = 'legend-color-dot';
+            dot.style.backgroundColor = data.color;
+
+            const label = document.createElement('span');
+            label.textContent = data.label;
+
+            labelGroup.appendChild(dot);
+            labelGroup.appendChild(label);
+
+            const valGroup = document.createElement('div');
+            valGroup.className = 'legend-val-group';
+            valGroup.textContent = `${data.count}冊 (${data.price.toLocaleString()}円)`;
+
+            legendItem.appendChild(labelGroup);
+            legendItem.appendChild(valGroup);
+
+            // 凡例をクリックした時もフィルタリング
+            legendItem.addEventListener('click', () => {
+                const tab = document.querySelector(`.filter-tab[data-category="${cat}"]`);
+                if (tab) tab.click();
+            });
+
+            chartLegend.appendChild(legendItem);
+        });
     }
 
     function updateProgressBar(percent) {
@@ -695,6 +830,40 @@ document.addEventListener('DOMContentLoaded', () => {
             
             logsContainer.appendChild(item);
         });
+
+        // 描画完了後に現在のフィルターを適用
+        applyFilter();
+    }
+
+    function applyFilter() {
+        const filter = state.activeFilter || 'all';
+        const items = logsContainer.querySelectorAll('.book-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const isMatch = filter === 'all' || item.classList.contains(`book-item-${filter}`);
+            if (isMatch) {
+                item.classList.remove('filtered-out');
+                visibleCount++;
+            } else {
+                item.classList.add('filtered-out');
+            }
+        });
+
+        // フィルターした結果、該当する本がない場合はプレースホルダーを表示
+        const existingEmpty = logsContainer.querySelector('.filter-empty-state');
+        if (existingEmpty) {
+            existingEmpty.remove();
+        }
+
+        if (visibleCount === 0 && items.length > 0) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-state filter-empty-state';
+            const p = document.createElement('p');
+            p.textContent = '選択されたカテゴリに該当する読書ログがありません。';
+            emptyDiv.appendChild(p);
+            logsContainer.appendChild(emptyDiv);
+        }
     }
 
     async function deleteBook(id) {
@@ -1090,6 +1259,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (file) handleImportFile(file);
         });
     }
+
+    // Filter Tabs Interaction
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            filterTabs.forEach(t => {
+                t.classList.remove('active');
+                t.setAttribute('aria-selected', 'false');
+            });
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+            state.activeFilter = tab.getAttribute('data-category') || 'all';
+            
+            applyFilter();
+        });
+    });
 
     init();
 
