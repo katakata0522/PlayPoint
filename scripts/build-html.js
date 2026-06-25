@@ -557,6 +557,9 @@ const htmlFiles = [
     'terms.html',
     'sitemap.html',
     'embed.html',
+    'status/diamond/index.html',
+    'status/platinum/index.html',
+    'maintenance/platinum/index.html',
     'en/articles/2026-06-20-discount-gift-cards.html',
     'ko/articles/2026-06-20-discount-gift-cards.html',
     'tw/articles/2026-06-20-discount-gift-cards.html'

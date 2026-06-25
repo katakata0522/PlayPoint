@@ -8,7 +8,10 @@ const pageUrls = [
   `${BASE_URL}/privacy.html`,
   `${BASE_URL}/terms.html`,
   `${BASE_URL}/attention.html`,
-  `${BASE_URL}/sitemap.html`
+  `${BASE_URL}/sitemap.html`,
+  `${BASE_URL}/status/diamond/`,
+  `${BASE_URL}/status/platinum/`,
+  `${BASE_URL}/maintenance/platinum/`
 ];
 
 function withCacheBuster(url) {

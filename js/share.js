@@ -32,9 +32,31 @@ export const SHARE = {
         const url = this.buildBaseUrl();
         url.searchParams.set('mode', 'main');
         url.searchParams.set('status', dom.currentStatus.value);
+        const selectedTarget = dom.targetStatus && dom.targetStatus.options[dom.targetStatus.selectedIndex];
+        if (selectedTarget && selectedTarget.dataset.statusLabel) {
+            url.searchParams.set('target', this.normalizeTarget(selectedTarget.dataset.statusLabel));
+        }
         url.searchParams.set('points', String(neededPoints));
         url.searchParams.set('multiplier', String(multiplier));
         return url.toString();
+    },
+
+    normalizeTarget(value) {
+        const label = String(value || '').toLowerCase();
+        if (/diamond|ダイヤ|다이아|鑽石/i.test(label)) return 'diamond';
+        if (/platinum|プラチナ|플래티넘|白金/i.test(label)) return 'platinum';
+        if (/gold|ゴールド|골드|黃金/i.test(label)) return 'gold';
+        if (/silver|シルバー|실버|白銀/i.test(label)) return 'silver';
+        return '';
+    },
+
+    setTargetFromParam(select, target) {
+        const normalized = this.normalizeTarget(target);
+        if (!select || !normalized) return;
+        const optionIndex = Array.from(select.options).findIndex(option => {
+            return this.normalizeTarget(option.dataset.statusLabel) === normalized;
+        });
+        if (optionIndex >= 0) select.selectedIndex = optionIndex;
     },
 
     buildReverseShareUrl() {
@@ -55,6 +77,7 @@ export const SHARE = {
         const params = new URLSearchParams(window.location.search);
         const mode = params.get('mode');
         const status = this.getNumber(params, 'status', 1, 2);
+        const target = params.get('target');
         const multiplier = this.getNumber(params, 'multiplier', 1, 10);
         const dom = STATE.dom;
 
@@ -74,6 +97,8 @@ export const SHARE = {
         if (mode !== 'main') return;
         if (this.isAllowedStatusValue(dom.currentStatus, status)) dom.currentStatus.value = String(status);
         CALC.updateBaseRateAndTarget();
+        this.setTargetFromParam(dom.targetStatus, target);
+        CALC.updateNeededPointsConstraint();
         const points = this.getNumber(params, 'points', 0.01, 1000000);
         const maxPoints = Number(dom.neededPoints && dom.neededPoints.max);
         if (points !== null && dom.neededPoints && (!Number.isFinite(maxPoints) || points <= maxPoints)) {
