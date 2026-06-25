@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260625_2142a">
+    <link rel="stylesheet" href="style.css?v=20260625_2246a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -91,6 +91,10 @@
                 <span class="badge">ツール</span>
                 <h1>Kindle Unlimited お得度メーター</h1>
             </div>
+            <nav class="header-nav" aria-label="ページ内ナビゲーション">
+                <a href="#book-form" class="header-nav-link">📝 記録する</a>
+                <a href="#logs-container" class="header-nav-link">📖 ログ一覧</a>
+            </nav>
         </div>
     </header>
 
@@ -244,10 +248,10 @@
 
                         <div class="input-group">
                             <label for="book-notes">一言メモ・学び（任意）</label>
-                            <textarea id="book-notes" placeholder="例: ITの基本用語が料理店に例えて解説されていてスッキリ理解できた！Kindle本の構成案にも役立ちそう。" maxlength="500" rows="2"></textarea>
+                            <textarea id="book-notes" placeholder="例: 読んで気づいたこと、名言、感想など…" maxlength="500" rows="2"></textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-accent btn-block">本のログを追加する</button>
+                        <button type="submit" class="btn btn-submit-primary btn-block">📖 本のログを追加する</button>
                     </form>
                 </section>
 
@@ -257,12 +261,13 @@
                         <h3 class="card-title">📖 読書ログ履歴</h3>
                         <div class="logs-actions">
                             <!-- ソート選択 -->
+                            <label for="sort-select" class="sort-label">並び順：</label>
                             <select id="sort-select" class="select-field" aria-label="並び替え順">
-                                <option value="date-desc">読了日 (新しい順)</option>
-                                <option value="date-asc">読了日 (古い順)</option>
-                                <option value="price-desc">価格 (高い順)</option>
-                                <option value="price-asc">価格 (低い順)</option>
-                                <option value="rating-desc">評価 (高い順)</option>
+                                <option value="date-desc">読了日（新しい順）</option>
+                                <option value="date-asc">読了日（古い順）</option>
+                                <option value="price-desc">価格（高い順）</option>
+                                <option value="price-asc">価格（低い順）</option>
+                                <option value="rating-desc">評価（高い順）</option>
                             </select>
                         </div>
                     </div>
@@ -292,7 +297,12 @@
                 <section class="ads-card card">
                     <span class="ads-label">スポンサーリンク</span>
                     <div class="ads-placeholder">
-                        <p class="ads-placeholder-text">Google AdSense Space</p>
+                        <div class="ads-placeholder-inner">
+                            <p class="ads-placeholder-title">📰 広告掲載中</p>
+                            <p class="ads-placeholder-text">あなたの読書ライフを
+さらに豊かにするサービスを
+ご紹介予定です。</p>
+                        </div>
                     </div>
                 </section>
 
@@ -400,6 +410,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260625_2142a"></script>
+    <script src="app.js?v=20260625_2246a"></script>
 </body>
 </html>

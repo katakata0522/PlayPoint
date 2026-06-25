@@ -135,6 +135,33 @@ body.modal-open {
     letter-spacing: -0.02em;
 }
 
+/* Header In-Page Navigation */
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.header-nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+    transition: var(--transition-smooth);
+    white-space: nowrap;
+}
+
+.header-nav-link:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--primary-glow);
+    transform: translateY(-1px);
+}
+
 /* Main Layout */
 .app-main {
     max-width: 1200px;
@@ -612,6 +639,49 @@ textarea {
     border-color: var(--text-muted);
 }
 
+/* プレミアム送信ボタン - フォームの主なアクションに使用 */
+.btn-submit-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, #C28A35 100%);
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 24px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 16px rgba(185, 148, 74, 0.35),
+                0 2px 4px rgba(185, 148, 74, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-submit-primary:hover {
+    background: linear-gradient(135deg, #C8A050 0%, #A87228 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(185, 148, 74, 0.45),
+                0 2px 6px rgba(185, 148, 74, 0.25);
+}
+
+.btn-submit-primary:hover::before {
+    left: 100%;
+}
+
+.btn-submit-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(185, 148, 74, 0.3);
+}
+
 .share-actions {
     display: flex;
     flex-direction: column;
@@ -638,6 +708,13 @@ textarea {
     margin-bottom: 0;
     border-bottom: none;
     padding-bottom: 0;
+}
+
+.sort-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
 }
 
 .select-field {
@@ -1282,6 +1359,31 @@ textarea {
     border: 2px dashed #FAF8F5;
     padding: 12px 24px;
     border-radius: 4px;
+}
+
+/* 広告プレースホルダー内部（日本語内容） */
+.ads-placeholder-inner {
+    text-align: center;
+}
+
+.ads-placeholder-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #B4A695;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+}
+
+.ads-placeholder-inner .ads-placeholder-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    color: #C8C0B6;
+    line-height: 1.7;
+    white-space: normal;
+    border: none;
+    padding: 0;
+    letter-spacing: 0.02em;
 }
 
 /* 開発者プロフィールカード */
