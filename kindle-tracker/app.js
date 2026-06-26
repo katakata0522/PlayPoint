@@ -280,6 +280,9 @@ document.addEventListener('DOMContentLoaded', () => {
             celebrationModal.style.display = 'none';
         }, 200);
 
+        // モーダルを閉じたと同時に紙吹雪アニメーションを停止・クリーンアップ
+        stopConfetti();
+
         const mainElements = document.querySelectorAll('header, main, footer');
         mainElements.forEach(el => el.removeAttribute('inert'));
         
@@ -1422,8 +1425,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cancelAnimationFrame(animationFrameId);
         }
         
+        // canvasを表示状態に戻す（前回のアニメ終了時に非表示にしたため）
+        confettiCanvas.style.display = 'block';
+        
         confettiParticles = [];
-        const colors = ['#007EB9', '#009AD8', '#D97706', '#F59E0B', '#15803D', '#FFFFFF'];
+        const colors = ['#B9944A', '#D4AF6A', '#8C6A28', '#F5E6C8', '#3F5E4D', '#1A5F7A'];
         
         // Generate particles
         const particleCount = 100;
@@ -1470,8 +1476,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (alive) {
             animationFrameId = requestAnimationFrame(animateConfetti);
         } else {
+            // アニメーション終了後は canvas を完全にクリアして非表示にする
             ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiCanvas.style.display = 'none';
+            animationFrameId = null;
         }
+    }
+
+    // 紙吹雪を即座に停止してクリーンアップする関数（モーダルクローズ時などに呼び出す）
+    function stopConfetti() {
+        if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        confettiParticles = [];
+        confettiCanvas.style.display = 'none';
     }
 
     function shareOnX() {

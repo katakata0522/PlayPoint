@@ -119,6 +119,10 @@ body.modal-open {
     font-size: 1.15rem;
     font-weight: 700;
     letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60vw;
 }
 
 /* Header In-Page Navigation */
@@ -897,6 +901,7 @@ textarea {
     height: 100%;
     pointer-events: none;
     z-index: 999;
+    display: none; /* 初期状態は非表示。startConfetti()で表示される */
 }
 
 /* Footer styling */
@@ -1087,9 +1092,24 @@ textarea {
     }
     
     .header-container {
-        padding: 12px 16px;
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 10px 12px;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .header-title-area h1 {
+        font-size: 0.9rem;
+        max-width: 45vw;
+    }
+
+    .header-nav {
+        gap: 6px;
+    }
+
+    .header-nav-link {
+        font-size: 0.72rem;
+        padding: 4px 8px;
+        white-space: nowrap;
     }
     
     .book-item {
@@ -1103,10 +1123,15 @@ textarea {
         padding: 4px 6px;
     }
 
-    /* モバイルでの統計カード縦並び化 */
+    /* モバイルでの統計カード: 2列グリッドに変更して省スペース化 */
     .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    /* 「実質お得額」は全幅で強調表示 */
+    .stats-grid .stat-item:nth-child(2) {
+        grid-column: 1 / -1;
     }
 
     /* モバイルでのクイック価格ボタンの均等化と1行化 */
@@ -1122,12 +1147,12 @@ textarea {
         text-align: center;
     }
 
-    /* モバイルでの広告コンテナの圧迫感軽減 */
+    /* モバイルでの広告コンテナ: 広告なし時は小さく */
     .ads-card {
-        min-height: 250px !important;
+        min-height: 80px !important;
     }
     .ads-placeholder {
-        min-height: 180px !important;
+        min-height: 40px !important;
     }
 
     /* モバイルでのグラフ切り替えトグルボタンのタップ領域拡張（44px以上） */
@@ -1963,12 +1988,18 @@ textarea {
     align-items: center;
     gap: 6px;
     font-weight: 600;
+    white-space: nowrap;   /* 凸例ラベルの折り返しを禁止 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;          /* flex子要素のシュリンク有効化 */
 }
 
 .legend-val-group {
     color: var(--text-muted);
     font-weight: 500;
     text-align: right;
+    white-space: nowrap;   /* 数値の折り返しを禁止 */
+    flex-shrink: 0;
 }
 
 /* Period Filter Tabs (Notebook Index Design) */
@@ -2068,7 +2099,7 @@ textarea {
 
 /* Ads Card (Antiquarian Book Ad Style & CLS Prevention) */
 .ads-card {
-    min-height: 280px; /* デスクトップ・モバイル共に高さを固定してCLSを防止 */
+    min-height: 120px; /* 広告なし時の過度な空白を抑制 */
     display: flex;
     flex-direction: column;
     background: #FCFAF7; /* 古い紙・新聞紙の風合い */
@@ -2077,6 +2108,11 @@ textarea {
     position: relative;
     overflow: hidden;
     transition: var(--transition-smooth);
+}
+
+/* 広告が実際に入った場合はmin-heightをCLS防止のため確保 */
+.ads-card.has-ad {
+    min-height: 280px;
 }
 
 .ads-label {
@@ -2101,11 +2137,11 @@ textarea {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px dashed rgba(196, 181, 165, 0.6);
-    background: rgba(196, 181, 165, 0.04);
+    border: 1px dashed rgba(196, 181, 165, 0.4);
+    background: rgba(196, 181, 165, 0.02);
     border-radius: 2px;
     padding: 10px;
-    min-height: 200px;
+    min-height: 60px;  /* 広告なし時は最小限の高さに抑える */
 }
 
 .ads-placeholder-text {
