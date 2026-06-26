@@ -262,18 +262,28 @@ input[type="number"],
 input[type="date"],
 select,
 textarea {
-    background: transparent;
-    border: none;
+    background: rgba(185, 148, 74, 0.01); /* うっすらとした背景色で入力欄であることを示す */
+    border: 1px solid transparent;
     border-bottom: 2px dashed #bda793;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     color: var(--text-main);
-    padding: 10px 4px;
+    padding: 10px 8px; /* パディングを左右に少し広げて入力感を出す */
     font-size: 0.95rem;
     transition: var(--transition-smooth);
     width: 100%;
     -webkit-appearance: none; /* iOS Safari用リセット */
     -moz-appearance: none;
     appearance: none;
+}
+
+/* ホバー時に枠線と背景をうっすら表示して「編集可能」なフィードバックを返す */
+input[type="text"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+select:hover,
+textarea:hover {
+    background: rgba(185, 148, 74, 0.03);
+    border-bottom-color: var(--accent);
 }
 
 /* Placeholder Contrast Enhancement */
@@ -822,25 +832,33 @@ textarea {
     align-items: center;
     gap: 8px;
     margin-bottom: 4px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* モバイル等でも折り返さないようにする */
+    min-width: 0;
+    width: 100%;
 }
 
 .book-title {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text-main);
-    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
 }
 
 .book-date {
     font-size: 0.75rem;
     color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 .book-rating-stars {
     color: #EAB308;
     font-size: 0.75rem;
     letter-spacing: -1px;
+    flex-shrink: 0;
 }
 
 .book-notes {
@@ -1092,18 +1110,27 @@ textarea {
     }
     
     .header-container {
-        padding: 10px 12px;
+        padding: 10px 16px 10px 12px; /* 右端の余白を少し増やす */
         flex-wrap: nowrap;
         gap: 8px;
+    }
+
+    .header-title-area {
+        flex-wrap: nowrap !important;
+        min-width: 0;
+        flex: 1;
     }
 
     .header-title-area h1 {
         font-size: 0.9rem;
         max-width: 45vw;
+        min-width: 0;
+        flex: 1;
     }
 
     .header-nav {
         gap: 6px;
+        padding-right: 4px; /* スクロールバー領域と重なるのを防止 */
     }
 
     .header-nav-link {
@@ -1129,9 +1156,10 @@ textarea {
         gap: 8px;
     }
 
-    /* 「実質お得額」は全幅で強調表示 */
+    /* 「実質お得額」は全幅で強調表示、かつ一番上に配置して縦積みを解消 */
     .stats-grid .stat-item:nth-child(2) {
         grid-column: 1 / -1;
+        order: -1; /* 実質お得額を最上部に配置 */
     }
 
     /* モバイルでのクイック価格ボタンの均等化と1行化 */
@@ -1153,6 +1181,17 @@ textarea {
     }
     .ads-placeholder {
         min-height: 40px !important;
+    }
+
+    /* モバイルでの凡例数値見切れ防止: 縦並びにして全幅確保 */
+    .analytics-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 12px;
+    }
+    .chart-legend {
+        width: 100%;
     }
 
     /* モバイルでのグラフ切り替えトグルボタンのタップ領域拡張（44px以上） */
@@ -1958,6 +1997,7 @@ textarea {
     gap: 8px;
     font-size: 0.8rem;
     color: var(--text-main);
+    min-width: 190px; /* デスクトップでの凡例数値クリッピング防止 */
 }
 
 .legend-item {
@@ -1992,6 +2032,7 @@ textarea {
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;          /* flex子要素のシュリンク有効化 */
+    flex: 1;               /* 親フレックス内で伸縮可能にし、数値を右側に押し出さないようにする */
 }
 
 .legend-val-group {

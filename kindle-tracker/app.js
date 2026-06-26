@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logsCardTitle) logsCardTitle.textContent = `🎬 視聴ログ履歴`;
             if (bookTitleInput) bookTitleInput.placeholder = `例: インターステラー`;
             if (introTitle) introTitle.textContent = `🎬 視聴した作品の価値を記録して、サブスクの「お得度」を見える化しよう！`;
-            if (introDesc) introDesc.textContent = `月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する視聴管理ツールです。`;
+            if (introDesc) introDesc.textContent = `NetflixやAmazonプライム等の月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する視聴管理ツールです。お得度を見える化し、賢く楽しく使いこなしましょう！`;
             if (celebrationSubName) celebrationSubName.textContent = name;
             if (celebrationSub) celebrationSub.textContent = `これからの視聴はすべて「純粋な利益」になります。この喜びをみんなに共有しましょう！`;
             if (adsText) adsText.textContent = `あなたのエンタメライフをさらに豊かにするサービスをご紹介予定です。`;
@@ -553,7 +553,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logsCardTitle) logsCardTitle.textContent = `📖 読書ログ履歴`;
             if (bookTitleInput) bookTitleInput.placeholder = `例: 限りある時間の使い方`;
             if (introTitle) introTitle.textContent = `📚 読んだ本の定価を記録して、サブスクの「お得度」を見える化しよう！`;
-            if (introDesc) introDesc.textContent = `月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する読書管理ツールです。`;
+            if (introDesc) introDesc.textContent = `Kindle Unlimitedなどの月額料金に対してどれだけ元を取れたかをリアルタイムで計算・可視化する読書管理ツールです。お得度を見える化し、賢く楽しく使いこなしましょう！`;
             if (celebrationSubName) celebrationSubName.textContent = name;
             if (celebrationSub) celebrationSub.textContent = `これからの読書はすべて「純粋な利益」になります。この喜びをみんなに共有しましょう！`;
             if (adsText) adsText.textContent = `あなたの読書ライフをさらに豊かにするサービスをご紹介予定です。`;
@@ -1107,11 +1107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clear container securely
         logsContainer.textContent = '';
 
-        const logsActions = document.querySelector('.logs-actions');
-        if (logsActions) {
-            // 全体の登録数が0件なら非表示にする
-            logsActions.style.display = state.books.length === 0 ? 'none' : '';
-        }
+        // 並び替えドロップダウンは常に表示させて一貫性を保ちます
 
         const type = state.settings.subscriptionType || 'kindle';
         const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
