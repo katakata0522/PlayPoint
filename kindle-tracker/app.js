@@ -544,8 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
 
-        const statLabels = document.querySelectorAll('.stat-label');
-        const statUnits = document.querySelectorAll('.stat-unit');
+        const statLabelTotal = document.getElementById('stat-label-total');
+        const statLabelCount = document.getElementById('stat-label-count');
+        const statUnitCount = document.getElementById('stat-unit-count');
 
         if (isVideo) {
             if (bookshelfTitle) bookshelfTitle.textContent = `🎬 あなたの視聴コレクション棚`;
@@ -570,9 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookCategorySelect.options[4].text = '📚 その他';
             }
 
-            if (statLabels[0]) statLabels[0].textContent = `🎬 累計視聴価値`;
-            if (statLabels[2]) statLabels[2].textContent = `🎬 視聴数`;
-            if (statUnits[2]) statUnits[2].textContent = `作品`;
+            if (statLabelTotal) statLabelTotal.textContent = `🎬 累計視聴価値`;
+            if (statLabelCount) statLabelCount.textContent = `🎬 視聴数`;
+            if (statUnitCount) statUnitCount.textContent = `作品`;
+
+            // 検索窓のプレースホルダーを動画用に動的変更 (表記ブレ防止)
+            if (logSearchInput) {
+                logSearchInput.placeholder = '作品名や一言メモから検索...';
+            }
         } else {
             if (bookshelfTitle) bookshelfTitle.textContent = `📚 あなたの本棚`;
             if (formCardTitle) formCardTitle.textContent = `✍️ 読んだ本を記録する`;
@@ -596,9 +602,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 bookCategorySelect.options[4].text = '📚 その他';
             }
 
-            if (statLabels[0]) statLabels[0].textContent = `📚 累計本棚価値`;
-            if (statLabels[2]) statLabels[2].textContent = `📖 読了数`;
-            if (statUnits[2]) statUnits[2].textContent = `冊`;
+            if (statLabelTotal) statLabelTotal.textContent = `📚 累計本棚価値`;
+            if (statLabelCount) statLabelCount.textContent = `📖 読了数`;
+            if (statUnitCount) statUnitCount.textContent = `冊`;
+
+            // 検索窓のプレースホルダーを書籍用に動的変更
+            if (logSearchInput) {
+                logSearchInput.placeholder = '本のタイトルや一言メモから検索...';
+            }
         }
     }
 
@@ -1445,6 +1456,11 @@ document.addEventListener('DOMContentLoaded', () => {
             bookNotesInput.value = '';
             const defaultStar = document.getElementById('star3_0');
             if (defaultStar) defaultStar.checked = true; // reset to 3.0 stars
+
+            // 本の追加成功時に検索窓をクリアし、表示をリセットする (UXトゲ解消)
+            if (logSearchInput) {
+                logSearchInput.value = '';
+            }
             updateQuickPriceActiveState();
 
             // Refocus on title input for fast entry

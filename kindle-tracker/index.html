@@ -9,8 +9,8 @@
     <meta name="description" content="Kindle Unlimitedで読んだ本の価格を記録し、月額料金やキャンペーンに対してどれだけ得したか（元を取れたか）をリアルタイムに可視化する無料Webツールです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-06-26">
-    <meta property="article:modified_time" content="2026-06-26T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-27">
+    <meta property="article:modified_time" content="2026-06-27T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/kindle-tracker/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260626_2343a">
+    <link rel="stylesheet" href="style.css?v=20260627_0035a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -47,7 +47,7 @@
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-06-26",
+      "dateModified": "2026-06-27",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -160,21 +160,21 @@
 
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <span class="stat-label">読んだ総額 (定価)</span>
+                            <span class="stat-label" id="stat-label-total">読んだ総額 (定価)</span>
                             <div class="stat-val-container">
-                                <span id="total-value" class="stat-value number">0</span><span class="stat-unit">円</span>
+                                <span id="total-value" class="stat-value number">0</span><span class="stat-unit" id="stat-unit-total">円</span>
                             </div>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">実質お得額</span>
+                            <span class="stat-label" id="stat-label-savings">実質お得額</span>
                             <div class="stat-val-container">
-                                <span id="net-savings" class="stat-value number savings-plus">0</span><span class="stat-unit">円</span>
+                                <span id="net-savings" class="stat-value number savings-plus">0</span><span class="stat-unit" id="stat-unit-savings">円</span>
                             </div>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-label">読了冊数</span>
+                            <span class="stat-label" id="stat-label-count">読了冊数</span>
                             <div class="stat-val-container">
-                                <span id="book-count" class="stat-value number">0</span><span class="stat-unit">冊</span>
+                                <span id="book-count" class="stat-value number">0</span><span class="stat-unit" id="stat-unit-count">冊</span>
                             </div>
                         </div>
                     </div>
@@ -449,6 +449,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260626_2343a"></script>
+    <script src="app.js?v=20260627_0035a"></script>
 </body>
 </html>

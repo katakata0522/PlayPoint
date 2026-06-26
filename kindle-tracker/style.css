@@ -1329,6 +1329,9 @@ textarea {
         border-bottom: 2px solid #E8DFD5 !important;
         margin-bottom: 14px !important;
         scrollbar-width: none; /* Firefox用 */
+        /* 右端にグラデーションフェードを適用して、スクロール可能であることを示す (切り切れ問題対策) */
+        mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
     }
     .period-tabs::-webkit-scrollbar,
     .filter-tabs::-webkit-scrollbar {
