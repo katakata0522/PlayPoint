@@ -454,7 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCalculations();
         renderLogs();
         setupCanvasSize();
-        handleResponsiveAds(); // 初期配置を画面サイズに合わせて決定
+        handleResponsiveLayout(); // 初期配置を画面サイズに合わせて決定
+        updateQuickPriceActiveState(); // 初期価格に対するクイック価格ボタンのアクティブ連動
     }
 
     // --- 期間別フィルタリングされた本リストを返すヘルパー ---
@@ -811,21 +812,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalBooks === 0) {
             if (chartCenterVal) {
                 chartCenterVal.textContent = '0';
+                chartCenterVal.style.fontSize = '';
+            }
+            if (chartCenterLabel) {
+                chartCenterLabel.textContent = isVideo ? '作品' : '冊';
             }
             statsChart.textContent = '';
             
-            // グレーのプレースホルダー円を描画
+            // セピア調の破線（ダッシュ）プレースホルダー円を描画
             const radius = 35;
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', '50');
             circle.setAttribute('cy', '50');
             circle.setAttribute('r', radius.toString());
-            circle.setAttribute('stroke', '#EAE6DF');
-            circle.setAttribute('stroke-dasharray', `${2 * Math.PI * radius}`);
-            circle.setAttribute('stroke-dashoffset', '0');
+            circle.setAttribute('stroke', '#D3C8BA'); // セピア調の境界線色
+            circle.setAttribute('stroke-dasharray', '4, 3'); // 破線（ダッシュ）
             circle.setAttribute('fill', 'none');
-            circle.setAttribute('stroke-width', '14');
-            circle.style.opacity = '0.5';
+            circle.setAttribute('stroke-width', '10');
+            circle.style.opacity = '0.6';
             statsChart.appendChild(circle);
 
             chartLegend.textContent = '';
@@ -1293,13 +1297,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const defaultPrice = categoryDefaultPrices[selectedCategory || 'other'];
             bookPriceInput.value = defaultPrice;
         }
+        updateQuickPriceActiveState();
     });
+
+    // --- Quick Price Button Active State Manager ---
+    function updateQuickPriceActiveState() {
+        const currentPrice = bookPriceInput.value.trim();
+        quickPriceButtons.forEach(btn => {
+            const price = btn.getAttribute('data-price');
+            if (currentPrice !== '' && price === currentPrice) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    // Monitor manual price inputs for active quick price alignment
+    bookPriceInput.addEventListener('input', updateQuickPriceActiveState);
 
     // Quick price selection
     quickPriceButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const price = btn.getAttribute('data-price');
             bookPriceInput.value = price;
+            updateQuickPriceActiveState();
         });
     });
 
@@ -1358,6 +1380,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bookPriceInput.value = '';
             bookNotesInput.value = '';
             document.getElementById('star3').checked = true; // reset to 3 stars
+            updateQuickPriceActiveState();
 
             // Refocus on title input for fast entry
             bookTitleInput.focus();
@@ -1378,26 +1401,39 @@ document.addEventListener('DOMContentLoaded', () => {
         confettiCanvas.height = window.innerHeight;
     }
 
-    // --- Responsive Ad Inserter (CLS Prevention & Mobile Monetization optimization) ---
-    function handleResponsiveAds() {
+    // --- Responsive Layout Inserter (Ads and settings position adjustment on mobile) ---
+    function handleResponsiveLayout() {
         const adsCard = document.querySelector('.ads-card');
+        const settingsCard = document.querySelector('.settings-card');
         const sidebar = document.querySelector('.sidebar-content');
         const mainContent = document.querySelector('.main-content');
         const logsCard = document.querySelector('.logs-card');
+        const recordFormCard = document.querySelector('.record-form-card');
 
-        if (!adsCard || !sidebar || !mainContent || !logsCard) return;
+        if (!sidebar || !mainContent) return;
 
         const isMobile = window.innerWidth <= 1024;
 
         if (isMobile) {
             // モバイル時: 「記録フォーム」と「読書ログ履歴」の間に動的インサート
-            if (adsCard.parentNode !== mainContent || adsCard.nextSibling !== logsCard) {
+            if (adsCard && logsCard && (adsCard.parentNode !== mainContent || adsCard.nextSibling !== logsCard)) {
                 mainContent.insertBefore(adsCard, logsCard);
             }
+            // モバイル時: 「サブスク設定」を「読んだ本を記録する（フォーム）」の直前に動的インサート
+            if (settingsCard && recordFormCard && (settingsCard.parentNode !== mainContent || settingsCard.nextSibling !== recordFormCard)) {
+                mainContent.insertBefore(settingsCard, recordFormCard);
+            }
         } else {
-            // デスクトップ時: 右サイドバーの最上部にインサート
-            if (adsCard.parentNode !== sidebar || adsCard !== sidebar.firstChild) {
+            // デスクトップ時: 右サイドバーの最上部に広告
+            if (adsCard && (adsCard.parentNode !== sidebar || adsCard !== sidebar.firstChild)) {
                 sidebar.insertBefore(adsCard, sidebar.firstChild);
+            }
+            // デスクトップ時: 広告の直後にサブスク設定（サイドバーの2番目）
+            if (settingsCard) {
+                const insertTarget = adsCard ? adsCard.nextSibling : sidebar.firstChild;
+                if (settingsCard.parentNode !== sidebar || settingsCard.nextSibling !== insertTarget) {
+                    sidebar.insertBefore(settingsCard, insertTarget);
+                }
             }
         }
     }
@@ -1409,7 +1445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         resizeTimeout = setTimeout(() => {
             setupCanvasSize();
-            handleResponsiveAds(); // 画面リサイズ時に広告配置を動的最適化
+            handleResponsiveLayout(); // 画面リサイズ時に広告・設定の配置を動的最適化
             resizeTimeout = null;
         }, 150);
     });

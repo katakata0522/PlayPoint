@@ -366,8 +366,8 @@ textarea:focus {
 /* Accessibility Star Rating (JS-controlled style) */
 .rating-stars {
     display: flex;
-    justify-content: flex-end;
-    flex-direction: row-reverse; /* 右から左へ並べてCSSホバー/チェックを活用するが、HTML上の順序は星1〜星5 */
+    justify-content: flex-start; /* 通常の左寄せ */
+    flex-direction: row; /* 左から右の順序 */
     align-items: center;
     height: 42px;
     width: fit-content;
@@ -395,11 +395,16 @@ textarea:focus {
     display: inline-block;
 }
 
-/* ホバー＆チェック時の星の着色と拡大 */
-.rating-stars label:hover,
-.rating-stars label:hover ~ label,
-.rating-stars input:checked ~ label {
+/* 1. チェックされた星およびそれより左側（前）の星を着色 */
+.rating-stars input:checked + label,
+.rating-stars label:has(~ input:checked) {
     color: #EAB308; /* 上品なアンバーゴールド */
+}
+
+/* 2. ホバーされた星およびそれより左側（前）の星を着色 */
+.rating-stars label:hover,
+.rating-stars label:has(~ label:hover) {
+    color: #EAB308 !important; /* ホバー時はチェック状態より優先 */
 }
 
 .rating-stars label:hover {
@@ -1189,7 +1194,7 @@ textarea {
 
     /* 2. 評価星の左寄せ */
     .rating-stars {
-        justify-content: flex-end !important; /* row-reverseなのでflex-endが左寄せ */
+        justify-content: flex-start !important; /* 通常の左寄せ */
         align-self: flex-start;
         width: fit-content;
     }
@@ -1256,6 +1261,31 @@ textarea {
         display: inline-flex;
         align-items: center;
         justify-content: center;
+    }
+
+    /* 期間・カテゴリフィルタータブのモバイル1行横スクロール化 */
+    .period-tabs,
+    .filter-tabs {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        gap: 6px !important;
+        padding-bottom: 6px !important; /* 横スクロールバーの回避領域 */
+        border-bottom: 2px solid #E8DFD5 !important;
+        margin-bottom: 14px !important;
+        scrollbar-width: none; /* Firefox用 */
+    }
+    .period-tabs::-webkit-scrollbar,
+    .filter-tabs::-webkit-scrollbar {
+        display: none; /* Chrome, Safari用 */
+    }
+    .period-tab,
+    .filter-tab {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+        top: 0 !important;
+        margin-bottom: 0 !important;
     }
 }
 
@@ -1458,6 +1488,14 @@ textarea {
     border-color: var(--primary);
     transform: translateY(2px); /* 押し込むようなインタラクション */
     box-shadow: none;
+}
+
+.btn-quick-price.active {
+    background: var(--primary-glow);
+    border-color: var(--primary);
+    transform: translateY(2px);
+    box-shadow: none;
+    font-weight: 700;
 }
 
 .btn-quick-price[data-price="490"] { border-top-color: #A24838; }
@@ -2275,9 +2313,12 @@ textarea {
 }
 
 .chart-empty-legend {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     text-align: center;
     padding: 10px;
-    line-height: 1.5;
+    line-height: 1.6;
+    font-family: 'Playfair Display', 'Noto Sans JP', serif;
+    font-style: italic;
+    font-weight: 500;
 }
