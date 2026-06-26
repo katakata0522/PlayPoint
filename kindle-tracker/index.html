@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260626_2318a">
+    <link rel="stylesheet" href="style.css?v=20260626_2343a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -191,6 +191,8 @@
                             結果をXでポストする
                         </button>
                     </div>
+                    <!-- 称号消印スタンプコンテナ -->
+                    <div id="achievement-stamp-container" class="achievement-stamp-container" aria-hidden="true"></div>
                 </section>
 
                 <!-- 記録フォーム -->
@@ -274,6 +276,12 @@
                                 <option value="rating-desc">評価（高い順）</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- しおり紐・フセン風検索窓 -->
+                    <div class="search-bar-container">
+                        <div class="search-bookmark-tab">🔖</div>
+                        <input type="text" id="log-search-input" placeholder="本のタイトルや一言メモから検索..." aria-label="読書ログの検索">
                     </div>
 
                     <!-- 期間別フィルタタブ -->
@@ -441,6 +449,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260626_2318a"></script>
+    <script src="app.js?v=20260626_2343a"></script>
 </body>
 </html>

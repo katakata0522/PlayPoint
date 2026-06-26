@@ -2376,3 +2376,269 @@ textarea {
     font-style: italic;
     font-weight: 500;
 }
+
+/* --- プレミアム機能：しおり風検索窓 --- */
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    background: var(--bg-paper);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 2px 8px;
+    margin: 12px 0 16px 0;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-bar-container:focus-within {
+    border-color: var(--primary);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 0 0 3px var(--primary-glow);
+}
+
+.search-bookmark-tab {
+    font-size: 1.1rem;
+    margin-right: 6px;
+    transform: rotate(-10deg);
+    user-select: none;
+}
+
+#log-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 4px;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    font-family: inherit;
+}
+
+#log-search-input:focus {
+    outline: none;
+}
+
+#log-search-input::placeholder {
+    font-style: italic;
+    font-family: 'Playfair Display', 'Noto Sans JP', serif;
+    color: var(--text-muted);
+}
+
+/* --- プレミアム機能：背表紙の装幀バリエーション --- */
+/* ストライプ装幀 */
+.shelf-book.spine-decor-stripes {
+    background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.06) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.06) 50%,
+        rgba(255, 255, 255, 0.06) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 12px 12px;
+}
+
+/* 金箔ライン装幀 */
+.shelf-book.spine-decor-gold::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 10px;
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37 0%, #FFDF73 50%, #AA7C11 100%);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+}
+
+.shelf-book.spine-decor-gold::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37 0%, #FFDF73 50%, #AA7C11 100%);
+    box-shadow: 0 -1px 1px rgba(0,0,0,0.2);
+}
+
+/* 中央ラベル装幀 */
+.shelf-book.spine-decor-label {
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.shelf-book.spine-decor-label::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 25%;
+    bottom: 25%;
+    background: rgba(250, 246, 240, 0.95);
+    border: 1px solid rgba(139, 92, 26, 0.4);
+    border-radius: 1px;
+    z-index: 1;
+}
+
+/* --- プレミアム機能：消印風アンティーク称号スタンプ --- */
+.dashboard-card {
+    position: relative; /* スタンプ絶対配置用 */
+}
+
+.achievement-stamp-container {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 20;
+    user-select: none;
+}
+
+.achievement-stamp {
+    width: 100%;
+    height: 100%;
+    border: 2px double rgba(196, 77, 86, 0.7); /* かすれ赤 */
+    border-radius: 50%;
+    color: rgba(196, 77, 86, 0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    transform: rotate(-14deg);
+    background: radial-gradient(circle, rgba(253, 251, 247, 0.9) 60%, transparent 60%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    animation: stampAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    pointer-events: auto; /* ホバーできるように */
+    cursor: help;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.5);
+}
+
+.achievement-stamp:hover {
+    transform: rotate(-8deg) scale(1.15);
+}
+
+.achievement-stamp-title {
+    font-size: 0.52rem;
+    letter-spacing: 0.5px;
+    border-bottom: 1px dashed rgba(196, 77, 86, 0.4);
+    padding-bottom: 1px;
+    margin-bottom: 1px;
+}
+
+.achievement-stamp-rank {
+    font-size: 0.68rem;
+    line-height: 1.1;
+    font-family: 'Playfair Display', 'Noto Sans JP', serif;
+    font-style: italic;
+}
+
+/* スタンプが青インクになるバリエーション */
+.achievement-stamp.stamp-blue {
+    border-color: rgba(26, 95, 122, 0.7);
+    color: rgba(26, 95, 122, 0.75);
+}
+
+.achievement-stamp.stamp-blue .achievement-stamp-title {
+    border-bottom-color: rgba(26, 95, 122, 0.4);
+}
+
+@keyframes stampAppear {
+    0% {
+        opacity: 0;
+        transform: rotate(-30deg) scale(2);
+    }
+    100% {
+        opacity: 1;
+        transform: rotate(-14deg) scale(1);
+    }
+}
+
+/* --- プレミアム機能：黄色いマステ付きバックアップ推奨ふせん --- */
+.backup-card {
+    position: relative; /* ふせん絶対配置用 */
+}
+
+.backup-reminder-sticky {
+    position: absolute;
+    top: -24px;
+    left: -16px;
+    right: 16px;
+    background: #FEF08A; /* 柔らかなイエローフセン色 */
+    color: #451a03;
+    padding: 12px 14px 10px 14px;
+    border-radius: 2px;
+    box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.08);
+    font-size: 0.78rem;
+    line-height: 1.4;
+    z-index: 30;
+    transform: rotate(-2deg);
+    border-left: 2px solid #FACC15;
+    animation: stickyAppear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* マスキングテープ装飾 */
+.backup-reminder-sticky::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 30%;
+    width: 60px;
+    height: 16px;
+    background: rgba(250, 204, 21, 0.55); /* 半透明ゴールドのテープ */
+    transform: rotate(-4deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.backup-reminder-text {
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.backup-reminder-btn-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.btn-sticky-action {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    color: #451a03;
+    transition: background 0.2s;
+}
+
+.btn-sticky-action:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-sticky-action.primary {
+    background: #451a03;
+    color: #FEF08A;
+    border-color: #451a03;
+}
+
+.btn-sticky-action.primary:hover {
+    background: #78350f;
+}
+
+@keyframes stickyAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) rotate(-5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotate(-2deg);
+    }
+}

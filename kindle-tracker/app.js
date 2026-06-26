@@ -88,6 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Modal Promise Resolver
     let modalResolver = null;
     
+    // --- 決定論的ハッシュ値生成ヘルパー ---
+    function getStringHash(str) {
+        let hash = 0;
+        if (str.length === 0) return hash;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash |= 0; // 32bit整数に変換
+        }
+        return Math.abs(hash);
+    }
+
     // --- Bookshelf Spine Styles Configurations by Category ---
     const categoryBookStyles = {
         business: { color: '#1A5F7A', minHeight: 76, maxHeight: 84, minWidth: 18, maxWidth: 22 },
@@ -458,32 +470,48 @@ document.addEventListener('DOMContentLoaded', () => {
         updateQuickPriceActiveState(); // 初期価格に対するクイック価格ボタンのアクティブ連動
     }
 
-    // --- 期間別フィルタリングされた本リストを返すヘルパー ---
+    // --- 期間別 ＆ 検索キーワードでフィルタリングされた本リストを返すヘルパー ---
     function getFilteredBooksByPeriod() {
         const period = state.activePeriodFilter || 'all';
-        if (period === 'all') return [...state.books];
+        let filtered = [...state.books];
         
-        const now = new Date();
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth(); // 0-indexed
-        
-        return state.books.filter(book => {
-            if (!book.readDate) return false;
-            const bookDateObj = new Date(book.readDate + 'T00:00:00');
-            const bookYear = bookDateObj.getFullYear();
-            const bookMonth = bookDateObj.getMonth();
+        // 1. 期間フィルターの適用
+        if (period !== 'all') {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth(); // 0-indexed
             
-            if (period === 'month-current') {
-                return bookYear === currentYear && bookMonth === currentMonth;
-            } else if (period === 'month-prev') {
-                const prevMonthDate = new Date(currentYear, currentMonth - 1, 1);
-                return bookYear === prevMonthDate.getFullYear() && bookMonth === prevMonthDate.getMonth();
-            } else if (period === 'three-months') {
-                const threeMonthsAgoLimit = new Date(currentYear, currentMonth - 2, 1);
-                return bookDateObj >= threeMonthsAgoLimit && bookDateObj <= new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
-            }
-            return true;
-        });
+            filtered = filtered.filter(book => {
+                if (!book.readDate) return false;
+                const bookDateObj = new Date(book.readDate + 'T00:00:00');
+                const bookYear = bookDateObj.getFullYear();
+                const bookMonth = bookDateObj.getMonth();
+                
+                if (period === 'month-current') {
+                    return bookYear === currentYear && bookMonth === currentMonth;
+                } else if (period === 'month-prev') {
+                    const prevMonthDate = new Date(currentYear, currentMonth - 1, 1);
+                    return bookYear === prevMonthDate.getFullYear() && bookMonth === prevMonthDate.getMonth();
+                } else if (period === 'three-months') {
+                    const threeMonthsAgoLimit = new Date(currentYear, currentMonth - 2, 1);
+                    return bookDateObj >= threeMonthsAgoLimit && bookDateObj <= new Date(currentYear, currentMonth + 1, 0, 23, 59, 59);
+                }
+                return true;
+            });
+        }
+        
+        // 2. キーワード検索フィルターの適用
+        const searchInput = document.getElementById('log-search-input');
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        if (query) {
+            filtered = filtered.filter(book => {
+                const titleMatch = (book.title || '').toLowerCase().includes(query);
+                const notesMatch = (book.notes || '').toLowerCase().includes(query);
+                return titleMatch || notesMatch;
+            });
+        }
+        
+        return filtered;
     }
 
     // --- サブスク設定に基づく画面全体のテキスト切り替え ---
@@ -676,6 +704,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update analytics pie chart visualization
         updateAnalyticsChart();
+
+        // プレミアム機能：称号スタンプとバックアップ推奨ふせんの更新
+        updateAchievementStamp(netSavings, bookCount);
+        updateBackupReminder();
     }
 
     function updateBookshelfUI() {
@@ -732,15 +764,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             booksToRender.forEach((book, idx) => {
                 const bookDiv = document.createElement('div');
-                bookDiv.className = 'shelf-book';
                 
                 const styleCfg = categoryBookStyles[book.category || 'other'];
-                const seed = book.id || (startIndex + idx);
+                // タイトルと定価からハッシュ値を算出し、決定論的なランダムシードとして活用
+                const hashSeed = getStringHash(book.title + (book.price || 0));
+                
                 const heightRange = styleCfg.maxHeight - styleCfg.minHeight;
                 const widthRange = styleCfg.maxWidth - styleCfg.minWidth;
-                const resolvedHeight = styleCfg.minHeight + (seed % 13) * (heightRange / 12);
-                const resolvedWidth = styleCfg.minWidth + (seed % 7) * (widthRange / 6);
                 
+                // でこぼこな本棚を再現する高さ・太さの計算
+                const resolvedHeight = styleCfg.minHeight + (hashSeed % 13) * (heightRange / 12);
+                const resolvedWidth = styleCfg.minWidth + (hashSeed % 7) * (widthRange / 6);
+                
+                // 装幀デコレーションパターンの決定論的適用 (0: ストライプ, 1: 金箔, 2: 中央ラベル)
+                const decorClasses = ['spine-decor-stripes', 'spine-decor-gold', 'spine-decor-label'];
+                const chosenDecor = decorClasses[hashSeed % decorClasses.length];
+                
+                bookDiv.className = `shelf-book ${chosenDecor}`;
                 bookDiv.style.setProperty('--book-height', `${resolvedHeight}px`);
                 bookDiv.style.setProperty('--book-width', `${resolvedWidth}px`);
                 bookDiv.style.setProperty('--book-color', styleCfg.color);
@@ -1211,10 +1251,23 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFilter() {
         const filter = state.activeFilter || 'all';
         const items = logsContainer.querySelectorAll('.book-item');
+        
+        // 検索クエリをリアルタイム取得
+        const searchInput = document.getElementById('log-search-input');
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        
         let visibleCount = 0;
 
         items.forEach(item => {
-            const isMatch = filter === 'all' || item.classList.contains(`book-item-${filter}`);
+            const isCatMatch = filter === 'all' || item.classList.contains(`book-item-${filter}`);
+            
+            // DOMからタイトルとメモを取得し部分一致を判定
+            const titleText = item.querySelector('.book-title')?.textContent.toLowerCase() || '';
+            const notesText = item.querySelector('.book-notes')?.textContent.toLowerCase() || '';
+            const isSearchMatch = !query || titleText.includes(query) || notesText.includes(query);
+            
+            const isMatch = isCatMatch && isSearchMatch;
+            
             if (isMatch) {
                 item.classList.remove('filtered-out');
                 visibleCount++;
@@ -1802,6 +1855,101 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilter();
         });
     });
+
+    // しおり風検索窓のインプット入力監視とリアルタイム連動
+    const logSearchInput = document.getElementById('log-search-input');
+    if (logSearchInput) {
+        logSearchInput.addEventListener('input', () => {
+            // 検索クエリに基づき再計算 ＆ 本棚・円グラフ・統計を自動同期
+            updateCalculations();
+            // 履歴ログのDOMを再生成
+            renderLogs();
+        });
+    }
+
+    // プレミアム機能：消印風アンティーク称号スタンプの動的更新
+    function updateAchievementStamp(netSavings, bookCount) {
+        const container = document.getElementById('achievement-stamp-container');
+        if (!container) return;
+        
+        if (bookCount === 0) {
+            container.innerHTML = '';
+            return;
+        }
+        
+        let rank = '見習い';
+        let subtitle = 'Novice';
+        let isBlue = false;
+        
+        const type = state.settings.subscriptionType || 'kindle';
+        const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
+        
+        if (netSavings < 980) {
+            rank = isVideo ? '視聴見習い' : '読書見習い';
+            subtitle = 'BRONZE';
+        } else if (netSavings < 2940) {
+            rank = '元取り修行';
+            subtitle = 'SILVER';
+            isBlue = true; // シルバー・ブルーインク
+        } else if (netSavings < 6000) {
+            rank = '元取り達人';
+            subtitle = 'GOLD';
+        } else {
+            rank = isVideo ? 'サブスク神' : '読書の支配者';
+            subtitle = 'LEGEND';
+        }
+        
+        container.innerHTML = `
+            <div class="achievement-stamp ${isBlue ? 'stamp-blue' : ''}" title="現在の達成称号: ${rank}">
+                <div class="achievement-stamp-title">${subtitle}</div>
+                <div class="achievement-stamp-rank">${rank}</div>
+            </div>
+        `;
+    }
+
+    // プレミアム機能：ふせん風バックアップ保存推奨リマインダー
+    function updateBackupReminder() {
+        const backupCard = document.querySelector('.backup-card');
+        if (!backupCard) return;
+        
+        const dismissedCount = parseInt(localStorage.getItem('dismissed_backup_reminder_count') || '0');
+        const currentCount = state.books.length;
+        
+        const existingSticky = backupCard.querySelector('.backup-reminder-sticky');
+        if (existingSticky) {
+            existingSticky.remove();
+        }
+        
+        const triggerCounts = [5, 10, 20];
+        if (triggerCounts.includes(currentCount) && dismissedCount !== currentCount) {
+            const sticky = document.createElement('div');
+            sticky.className = 'backup-reminder-sticky';
+            sticky.innerHTML = `
+                <div class="backup-reminder-text">📝 ログが${currentCount}件貯まりました！消えてしまう前にデータをファイルに保存しておきましょう 💾</div>
+                <div class="backup-reminder-btn-group">
+                    <button class="btn-sticky-action" id="btn-sticky-dismiss">閉じる</button>
+                    <button class="btn-sticky-action primary" id="btn-sticky-backup">今すぐ保存</button>
+                </div>
+            `;
+            
+            backupCard.appendChild(sticky);
+            
+            const dismissBtn = sticky.querySelector('#btn-sticky-dismiss');
+            const backupBtn = sticky.querySelector('#btn-sticky-backup');
+            
+            dismissBtn.addEventListener('click', () => {
+                localStorage.setItem('dismissed_backup_reminder_count', currentCount.toString());
+                sticky.remove();
+            });
+            
+            backupBtn.addEventListener('click', () => {
+                localStorage.setItem('dismissed_backup_reminder_count', currentCount.toString());
+                const exportBtn = document.getElementById('btn-export');
+                if (exportBtn) exportBtn.click();
+                sticky.remove();
+            });
+        }
+    }
 
     init();
 
