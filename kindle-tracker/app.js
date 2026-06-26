@@ -1142,37 +1142,31 @@ document.addEventListener('DOMContentLoaded', () => {
             priceBadge.className = 'book-badge-price';
             priceBadge.textContent = `${book.price.toLocaleString()}円`;
             
-            // Book Info Container
-            const bookInfo = document.createElement('div');
-            bookInfo.className = 'book-info';
-            
-            // Meta Row (Title, Stars, Date)
-            const metaRow = document.createElement('div');
-            metaRow.className = 'book-meta-row';
+            // Title Container (for CSS Grid placement)
+            const titleContainer = document.createElement('div');
+            titleContainer.className = 'book-title-container';
             
             const titleSpan = document.createElement('span');
             titleSpan.className = 'book-title';
             titleSpan.textContent = book.title;
+            titleContainer.appendChild(titleSpan);
             
+            // Rating Stars
             const starsSpan = document.createElement('span');
             starsSpan.className = 'book-rating-stars';
             starsSpan.textContent = '★'.repeat(book.rating) + '☆'.repeat(5 - book.rating);
             
+            // Read Date
             const dateSpan = document.createElement('span');
             dateSpan.className = 'book-date';
             dateSpan.textContent = book.readDate ? book.readDate.replace(/-/g, '/') : '';
             
-            metaRow.appendChild(titleSpan);
-            metaRow.appendChild(starsSpan);
-            metaRow.appendChild(dateSpan);
-            bookInfo.appendChild(metaRow);
-            
             // Optional Notes
+            let notesDiv = null;
             if (book.notes && book.notes.trim()) {
-                const notesDiv = document.createElement('div');
+                notesDiv = document.createElement('div');
                 notesDiv.className = 'book-notes';
                 notesDiv.textContent = book.notes;
-                bookInfo.appendChild(notesDiv);
             }
             
             // Delete Button
@@ -1184,8 +1178,13 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteBtn.addEventListener('click', () => deleteBook(book.id));
             
             item.appendChild(priceBadge);
-            item.appendChild(bookInfo);
+            item.appendChild(titleContainer);
+            item.appendChild(starsSpan);
+            item.appendChild(dateSpan);
             item.appendChild(deleteBtn);
+            if (notesDiv) {
+                item.appendChild(notesDiv);
+            }
             
             logsContainer.appendChild(item);
         });

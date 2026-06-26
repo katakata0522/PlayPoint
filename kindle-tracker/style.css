@@ -256,6 +256,13 @@ body.modal-open {
     margin: 0 2px;
 }
 
+.target-info-explain {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-align: right;
+}
+
 /* Inputs & Form Elements (with mobile resets & placeholder contrast) */
 input[type="text"],
 input[type="number"],
@@ -781,9 +788,13 @@ textarea {
     border: 1px dashed var(--card-border); /* 図書カードの点線 */
     border-radius: var(--radius-sm);
     padding: 14px 16px;
-    display: flex;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto auto;
+    grid-template-areas:
+        "price title stars date delete"
+        "price notes notes notes notes";
     align-items: center;
+    gap: 8px 15px;
     transition: var(--transition-smooth);
     box-shadow: 0 2px 4px rgba(42, 36, 33, 0.02);
 }
@@ -811,6 +822,7 @@ textarea {
 }
 
 .book-badge-price {
+    grid-area: price;
     background: var(--primary-glow);
     color: var(--primary);
     border: 1px solid rgba(0, 126, 185, 0.15);
@@ -820,20 +832,14 @@ textarea {
     font-size: 0.95rem;
     min-width: 80px;
     text-align: center;
+    align-self: center;
 }
 
-.book-info {
-    flex: 1;
-    min-width: 0; /* Prevents overflow */
-}
-
-.book-meta-row {
+.book-title-container {
+    grid-area: title;
+    min-width: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-    flex-wrap: nowrap; /* モバイル等でも折り返さないようにする */
-    min-width: 0;
     width: 100%;
 }
 
@@ -844,17 +850,18 @@ textarea {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1;
-    min-width: 0;
+    width: 100%;
 }
 
 .book-date {
+    grid-area: date;
     font-size: 0.75rem;
     color: var(--text-muted);
     flex-shrink: 0;
 }
 
 .book-rating-stars {
+    grid-area: stars;
     color: #EAB308;
     font-size: 0.75rem;
     letter-spacing: -1px;
@@ -862,19 +869,21 @@ textarea {
 }
 
 .book-notes {
+    grid-area: notes;
     font-size: 0.8rem;
     color: var(--text-muted);
     background: repeating-linear-gradient(#FAF6F0, #FAF6F0 19px, #E8DFD5 20px);
     line-height: 20px;
     padding: 4px 10px;
     border-radius: 2px;
-    margin-top: 6px;
+    margin-top: 4px;
     border: 1px solid #E8DFD5;
     border-left: 2px solid #C4B5A5;
     word-break: break-all;
 }
 
 .btn-delete {
+    grid-area: delete;
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -937,6 +946,11 @@ textarea {
     color: var(--primary);
     text-decoration: none;
     transition: var(--transition-smooth);
+}
+
+.footer-link {
+    margin: 0 12px;
+    display: inline-block;
 }
 
 .app-footer a:hover {
@@ -1139,15 +1153,45 @@ textarea {
         white-space: nowrap;
     }
     
+    /* 1. モバイルログ履歴の2行構成化 */
     .book-item {
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-areas:
+            "title title title title"
+            "price stars date delete"
+            "notes notes notes notes";
+        gap: 8px 10px;
         padding: 10px;
-        gap: 10px;
     }
     
     .book-badge-price {
         font-size: 0.85rem;
         min-width: 65px;
         padding: 4px 6px;
+    }
+
+    .book-title-container {
+        width: 100%;
+    }
+
+    .book-rating-stars {
+        justify-self: start;
+    }
+
+    .book-date {
+        justify-self: start;
+    }
+
+    .btn-delete {
+        justify-self: end;
+        padding: 4px;
+    }
+
+    /* 2. 評価星の左寄せ */
+    .rating-stars {
+        justify-content: flex-end !important; /* row-reverseなのでflex-endが左寄せ */
+        align-self: flex-start;
+        width: fit-content;
     }
 
     /* モバイルでの統計カード: 2列グリッドに変更して省スペース化 */
@@ -1162,17 +1206,18 @@ textarea {
         order: -1; /* 実質お得額を最上部に配置 */
     }
 
-    /* モバイルでのクイック価格ボタンの均等化と1行化 */
+    /* モバイルでのクイック価格ボタンの均等化と1行化、および隙間の確保 */
     .quick-prices {
         gap: 6px !important;
         justify-content: space-between;
         margin-bottom: 16px !important;
     }
     .btn-quick-price {
-        padding: 6px 8px !important;
+        padding: 6px 6px !important;
         font-size: 0.72rem !important;
         flex: 1;
         text-align: center;
+        margin: 0 1px; /* 個別のめくれ札の境界がはっきり見えるように極小のマージンを設定 */
     }
 
     /* モバイルでの広告コンテナ: 広告なし時は小さく */
@@ -1190,7 +1235,12 @@ textarea {
         gap: 20px;
         padding: 20px 12px;
     }
+
+    /* 4. ドーナツグラフ凡例の横2列配置化による縦幅圧縮 */
     .chart-legend {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 12px;
         width: 100%;
     }
 
