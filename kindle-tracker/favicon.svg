@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+    <style>
+        .cover {
+            transition: stroke 0.3s ease;
+        }
+        @media (prefers-color-scheme: dark) {
+            .cover {
+                stroke: #B9944A; /* ダークモード時は真鍮ゴールドの輪郭線にして黒背景での視認性を確保 */
+                stroke-width: 2.5;
+            }
+        }
+    </style>
+    <!-- 手帳のカバー（ディープセピアブラウン） -->
+    <rect class="cover" x="10" y="8" width="44" height="48" rx="4" fill="#4E3629" stroke="#3B281E" stroke-width="2"/>
+    <!-- 本のページ紙束（温かいクラフト生成り色） -->
+    <rect x="16" y="12" width="34" height="40" rx="1" fill="#FAF6F0"/>
+    <!-- 背表紙の真鍮金具（アンティークゴールド） -->
+    <rect x="10" y="8" width="6" height="48" fill="#B9944A" rx="1"/>
+    <line x1="13" y1="12" x2="13" y2="52" stroke="#8C6A28" stroke-width="1"/>
+    <!-- 計器メーターの円盤 -->
+    <circle cx="33" cy="32" r="13" fill="#FFFFFF" stroke="#D3C8BA" stroke-width="1.5"/>
+    <!-- メーターのレトロ目盛り -->
+    <path d="M33 19v2 M25 24l1.5 1.5 M41 24l-1.5 1.5 M20 32h2 M46 32h-2" stroke="#837568" stroke-width="1" stroke-linecap="round"/>
+    <!-- お得を指す計器の指針（ロイヤルブックブルー） -->
+    <line x1="33" y1="32" x2="39" y2="23" stroke="#1A5F7A" stroke-width="2" stroke-linecap="round"/>
+    <!-- 針の中心軸（真鍮ゴールド） -->
+    <circle cx="33" cy="32" r="2.5" fill="#B9944A"/>
+</svg>

@@ -386,13 +386,42 @@ textarea:focus {
     opacity: 0;
 }
 
-.rating-stars label {
+/* ハーフ星全体の共通レイアウト */
+.rating-stars label.half {
+    position: relative;
+    height: 42px;
+    width: 0.875rem; /* 星1.75remのちょうど半分 */
     font-size: 1.75rem;
-    color: #E2E8F0;
+    line-height: 42px;
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
-    padding: 0 3px;
+    overflow: hidden;
+    color: #E2E8F0;
+    transition: color 0.2s ease, transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: inline-block;
+}
+
+/* 左半分（x.5）：星文字をそのまま配置して左半分を露出 */
+.rating-stars label.left {
+    transform-origin: 100% 50%; /* 拡大時に右端を固定し分裂を防止 */
+}
+.rating-stars label.left::before {
+    content: '★';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.75rem;
+}
+
+/* 右半分（x.0）：星文字を左に半分ずらして右半分を露出 */
+.rating-stars label.right {
+    transform-origin: 0% 50%; /* 拡大時に左端を固定し分裂を防止 */
+}
+.rating-stars label.right::before {
+    content: '★';
+    position: absolute;
+    left: -0.875rem;
+    top: 0;
+    width: 1.75rem;
 }
 
 /* 1. チェックされた星およびそれより左側（前）の星を着色 */
@@ -407,8 +436,16 @@ textarea:focus {
     color: #EAB308 !important; /* ホバー時はチェック状態より優先 */
 }
 
-.rating-stars label:hover {
-    transform: scale(1.3) rotate(-8deg);
+/* ホバー時の星拡大エフェクト（★1つ分としてペアで拡大） */
+.rating-stars label.left:hover,
+.rating-stars label.left:hover + label.right {
+    transform: scale(1.18) rotate(-3deg);
+    z-index: 10;
+}
+.rating-stars label.right:hover,
+.rating-stars label.left:has(+ label.right:hover) {
+    transform: scale(1.18) rotate(-3deg);
+    z-index: 10;
 }
 
 /* ラジオボタン選択時に星を一瞬弾けさせるポップアニメーション用のスタイル */
@@ -418,7 +455,7 @@ textarea:focus {
 
 @keyframes starPop {
     0% { transform: scale(1); }
-    50% { transform: scale(1.4) rotate(15deg); }
+    50% { transform: scale(1.3) rotate(10deg); }
     100% { transform: scale(1) rotate(0); }
 }
 
@@ -428,6 +465,23 @@ textarea:focus {
     outline-offset: 1px;
     background-color: var(--primary-glow);
     border-radius: 4px;
+}
+
+/* 表示用ログ履歴の半星グラデーション */
+.book-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    letter-spacing: -1px;
+    line-height: 1;
+}
+
+.book-rating-stars .star-half {
+    background: linear-gradient(90deg, #EAB308 50%, #E2E8F0 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    vertical-align: middle; /* 通常の星文字と高さを完璧に合わせる */
 }
 
 textarea {

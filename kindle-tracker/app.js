@@ -1158,7 +1158,18 @@ document.addEventListener('DOMContentLoaded', () => {
             // Rating Stars
             const starsSpan = document.createElement('span');
             starsSpan.className = 'book-rating-stars';
-            starsSpan.textContent = '★'.repeat(book.rating) + '☆'.repeat(5 - book.rating);
+            
+            const rating = parseFloat(book.rating) || 0;
+            const fullStars = Math.floor(rating);
+            const hasHalf = rating % 1 !== 0;
+            const emptyStars = Math.max(0, 5 - fullStars - (hasHalf ? 1 : 0));
+            
+            let starsHtml = '★'.repeat(fullStars);
+            if (hasHalf) {
+                starsHtml += '<span class="star-half">★</span>';
+            }
+            starsHtml += '☆'.repeat(emptyStars);
+            starsSpan.innerHTML = starsHtml;
             
             // Read Date
             const dateSpan = document.createElement('span');
@@ -1337,7 +1348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Find checked rating radio
         const checkedRating = document.querySelector('input[name="rating"]:checked');
-        const rating = checkedRating ? parseInt(checkedRating.value) : 3;
+        const rating = checkedRating ? parseFloat(checkedRating.value) : 3.0;
 
         // Extreme bounds and empty values protection
         if (!title || title.length > 100) {
@@ -1379,7 +1390,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bookTitleInput.value = '';
             bookPriceInput.value = '';
             bookNotesInput.value = '';
-            document.getElementById('star3').checked = true; // reset to 3 stars
+            const defaultStar = document.getElementById('star3_0');
+            if (defaultStar) defaultStar.checked = true; // reset to 3.0 stars
             updateQuickPriceActiveState();
 
             // Refocus on title input for fast entry

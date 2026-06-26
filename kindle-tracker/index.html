@@ -12,7 +12,7 @@
     <meta name="last-modified" content="2026-06-26">
     <meta property="article:modified_time" content="2026-06-26T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/kindle-tracker/">
-    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
     <!-- OGP Settings -->
     <meta property="og:title" content="Kindle Unlimited お得度メーター | 読書記録＆元取り計算ツール">
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260626_2255a">
+    <link rel="stylesheet" href="style.css?v=20260626_2318a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -236,11 +236,16 @@
                                 <label for="book-rating">評価</label>
                                 <!-- アクセント及び見た目の星連動が一致する評価星 -->
                                 <div class="rating-stars" role="radiogroup" aria-label="本の評価">
-                                    <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="合わなかった">★</label>
-                                    <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="いまいち">★</label>
-                                    <input type="radio" id="star3" name="rating" value="3" checked><label for="star3" title="普通">★</label>
-                                    <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="とても良い">★</label>
-                                    <input type="radio" id="star5" name="rating" value="5"><label for="star5" title="最高！">★</label>
+                                    <input type="radio" id="star0_5" name="rating" value="0.5" aria-label="評価 0.5"><label for="star0_5" class="half left" title="0.5">★</label>
+                                    <input type="radio" id="star1_0" name="rating" value="1.0" aria-label="評価 1.0"><label for="star1_0" class="half right" title="1.0">★</label>
+                                    <input type="radio" id="star1_5" name="rating" value="1.5" aria-label="評価 1.5"><label for="star1_5" class="half left" title="1.5">★</label>
+                                    <input type="radio" id="star2_0" name="rating" value="2.0" aria-label="評価 2.0"><label for="star2_0" class="half right" title="2.0">★</label>
+                                    <input type="radio" id="star2_5" name="rating" value="2.5" aria-label="評価 2.5"><label for="star2_5" class="half left" title="2.5">★</label>
+                                    <input type="radio" id="star3_0" name="rating" value="3.0" aria-label="評価 3.0" checked><label for="star3_0" class="half right" title="3.0">★</label>
+                                    <input type="radio" id="star3_5" name="rating" value="3.5" aria-label="評価 3.5"><label for="star3_5" class="half left" title="3.5">★</label>
+                                    <input type="radio" id="star4_0" name="rating" value="4.0" aria-label="評価 4.0"><label for="star4_0" class="half right" title="4.0">★</label>
+                                    <input type="radio" id="star4_5" name="rating" value="4.5" aria-label="評価 4.5"><label for="star4_5" class="half left" title="4.5">★</label>
+                                    <input type="radio" id="star5_0" name="rating" value="5.0" aria-label="評価 5.0"><label for="star5_0" class="half right" title="5.0">★</label>
                                 </div>
                             </div>
                         </div>
@@ -436,6 +441,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260626_2255a"></script>
+    <script src="app.js?v=20260626_2318a"></script>
 </body>
 </html>
