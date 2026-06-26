@@ -273,24 +273,45 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
     {
       file: path.join(root, 'status', 'diamond', 'index.html'),
       canonical: 'https://playpoint-sim.com/status/diamond/',
-      target: 'target=diamond'
+      mode: 'main',
+      requiredQuery: 'target=diamond'
     },
     {
       file: path.join(root, 'status', 'platinum', 'index.html'),
       canonical: 'https://playpoint-sim.com/status/platinum/',
-      target: 'target=platinum'
+      mode: 'main',
+      requiredQuery: 'target=platinum'
     },
     {
       file: path.join(root, 'maintenance', 'platinum', 'index.html'),
       canonical: 'https://playpoint-sim.com/maintenance/platinum/',
-      target: 'target=platinum'
+      mode: 'main',
+      requiredQuery: 'target=platinum'
+    },
+    {
+      file: path.join(root, 'campaign', '2x', 'index.html'),
+      canonical: 'https://playpoint-sim.com/campaign/2x/',
+      mode: 'main',
+      requiredQuery: 'multiplier=2'
+    },
+    {
+      file: path.join(root, 'campaign', '3x', 'index.html'),
+      canonical: 'https://playpoint-sim.com/campaign/3x/',
+      mode: 'main',
+      requiredQuery: 'multiplier=3'
+    },
+    {
+      file: path.join(root, 'amount', '10000', 'index.html'),
+      canonical: 'https://playpoint-sim.com/amount/10000/',
+      mode: 'reverse',
+      requiredQuery: 'amount=10000'
     }
   ];
 
   assert.ok(shareScript.includes("params.get('target')"));
   assert.ok(shareScript.includes('setTargetFromParam'));
 
-  pages.forEach(({ file, canonical, target }) => {
+  pages.forEach(({ file, canonical, mode, requiredQuery }) => {
     assert.ok(fs.existsSync(file), `${path.relative(root, file)} がありません`);
     const html = fs.readFileSync(file, 'utf8');
     const schemas = parseJsonLd(html);
@@ -304,14 +325,21 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
     assert.ok(schemas.some(data => data['@type'] === 'WebPage'), `${canonical} のWebPage構造化データがありません`);
     assert.ok(schemas.some(data => data['@type'] === 'BreadcrumbList'), `${canonical} のパンくず構造化データがありません`);
     assert.ok(schemas.some(data => data['@type'] === 'FAQPage'), `${canonical} のFAQ構造化データがありません`);
-    assert.ok(html.includes(`href="/?mode=main`), `${canonical} から計算機への導線がありません`);
-    assert.ok(html.includes(target), `${canonical} の条件付き目標がありません`);
+    assert.ok(html.includes(`href="/?mode=${mode}`), `${canonical} から計算機への導線がありません`);
+    assert.ok(html.includes(requiredQuery), `${canonical} の条件付き計算パラメータがありません`);
     assert.ok(html.includes('utm_source=lp'), `${canonical} の内部流入識別がありません`);
     assert.ok(html.includes('計算機に入れる条件'), `${canonical} の入力条件説明がありません`);
     assert.ok(html.includes('/author/katakata.html'), `${canonical} の運営者導線がありません`);
     assert.ok(/class="[^"]*\blp-faq\b[^"]*"/.test(html), `${canonical} のFAQ表示がありません`);
     assert.ok(h2Count >= 4, `${canonical} の本文セクションが薄すぎます`);
     assert.ok(html.length >= 5000, `${canonical} の本文量が薄すぎます`);
+    const localLinks = [...html.matchAll(/<a\b[^>]*href="(\/[^"#?]*)(?:[?#][^"]*)?"/g)]
+      .map(match => match[1]);
+    localLinks.forEach((href) => {
+      let relativePath = href.replace(/^\//, '');
+      if (!relativePath || relativePath.endsWith('/')) relativePath += 'index.html';
+      assert.ok(fs.existsSync(path.join(root, relativePath)), `${canonical} のリンク先が存在しません: ${href}`);
+    });
     assert.ok(sitemap.includes(`<loc>${canonical}</loc>`), `${canonical} がsitemap.xmlにありません`);
   });
 });
@@ -383,6 +411,13 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
   assert.ok(workflow.includes('node .github/scripts/seo-health-check.cjs'));
   assert.ok(script.includes('articleUrls'));
   assert.ok(script.includes('data-ad-client'));
+  for (const pathValue of [
+    '/campaign/2x/',
+    '/campaign/3x/',
+    '/amount/10000/'
+  ]) {
+    assert.ok(script.includes(pathValue), `SEO監視対象が不足しています: ${pathValue}`);
+  }
 });
 
 test('公開canonical URLはXMLサイトマップに含める', () => {

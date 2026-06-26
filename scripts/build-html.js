@@ -560,6 +560,9 @@ const htmlFiles = [
     'status/diamond/index.html',
     'status/platinum/index.html',
     'maintenance/platinum/index.html',
+    'campaign/2x/index.html',
+    'campaign/3x/index.html',
+    'amount/10000/index.html',
     'en/articles/2026-06-20-discount-gift-cards.html',
     'ko/articles/2026-06-20-discount-gift-cards.html',
     'tw/articles/2026-06-20-discount-gift-cards.html'

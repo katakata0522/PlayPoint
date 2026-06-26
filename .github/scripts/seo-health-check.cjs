@@ -11,7 +11,10 @@ const pageUrls = [
   `${BASE_URL}/sitemap.html`,
   `${BASE_URL}/status/diamond/`,
   `${BASE_URL}/status/platinum/`,
-  `${BASE_URL}/maintenance/platinum/`
+  `${BASE_URL}/maintenance/platinum/`,
+  `${BASE_URL}/campaign/2x/`,
+  `${BASE_URL}/campaign/3x/`,
+  `${BASE_URL}/amount/10000/`
 ];
 
 function withCacheBuster(url) {
