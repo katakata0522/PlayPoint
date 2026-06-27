@@ -9,8 +9,8 @@
   --input-bg-color: #fafafa;
   --input-border-color: #ccc;
   --input-focus-border-color: #007bff;
-  --button-bg-color: #28a745;
-  --button-hover-bg-color: #218838;
+  --button-bg-color: #1f7a35;
+  --button-hover-bg-color: #17652b;
   --button-text-color: #fff;
   --button-disabled-bg-color: #aaa;
   --result-bg-color: #f8f9fa;
@@ -18,7 +18,7 @@
   --tab-inactive-bg-color: #6c757d;
   --warning-bg-color: #f8d7da;
   --warning-border-color: #f5c6cb;
-  --warning-text-color: #dc3545;
+  --warning-text-color: #9f1d28;
 }
 
 /* 基本スタイル */
@@ -26,7 +26,7 @@ body {
   margin: 0;
   padding: 0.8em;
   background: var(--bg-color);
-  font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", "YuGothic", Verdana, Meiryo, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", "Yu Gothic", "YuGothic", Meiryo, sans-serif;
   text-align: center;
   font-size: 15px;
   color: var(--text-color);
@@ -350,7 +350,7 @@ button:disabled {
   text-decoration: underline;
 }
 .copyright {
-  color: #aaa;
+  color: #5f6673;
 }
 
 
@@ -587,9 +587,11 @@ button:active {
   background: rgba(11, 87, 208, 0.08);
   color: #0b57d0;
   border-radius: 50%;
-  width: 1.45em;
-  height: 1.45em;
-  line-height: 1.45em;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  line-height: 1;
   font-size: 0.82em;
   font-weight: bold;
   text-align: center;
@@ -597,10 +599,10 @@ button:active {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-left: 0.35em;
+  margin-left: 0.45em;
   position: relative;
   vertical-align: middle;
-  margin-top: -0.12em;
+  margin-top: -0.18em;
   user-select: none;
   border: 1.2px solid rgba(11, 87, 208, 0.2);
   flex-shrink: 0;
@@ -620,17 +622,17 @@ button:active {
   box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.25);
   transform: scale(1.08);
 }
-/* スマホ向けの 44px × 44px の透明タップターゲット拡張（アクセシビリティAA準拠） */
+/* 実寸の44pxターゲットに加え、近接タップの取りこぼしを抑える */
 .info-btn::after {
   content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
   cursor: pointer;
 }
 
