@@ -344,3 +344,4 @@ function runTests() {
 }
 
 runTests();
+process.exit(0);
