@@ -1212,25 +1212,27 @@ textarea {
         white-space: nowrap;
     }
     
-    /* 1. モバイルログ履歴の2行構成化 */
+    /* 1. モバイルログ履歴のすっきり配置（3列グリッド） */
     .book-item {
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-columns: auto 1fr auto;
         grid-template-areas:
-            "title title title title"
-            "price stars date delete"
-            "notes notes notes notes";
+            "title title date"
+            "price stars delete"
+            "notes notes notes";
         gap: 8px 10px;
         padding: 10px;
     }
     
     .book-badge-price {
         font-size: 0.85rem;
-        min-width: 65px;
+        min-width: 60px;
         padding: 4px 6px;
+        text-align: center;
     }
 
     .book-title-container {
         width: 100%;
+        min-width: 0;
     }
 
     .book-rating-stars {
@@ -1238,7 +1240,9 @@ textarea {
     }
 
     .book-date {
-        justify-self: start;
+        justify-self: end;
+        font-size: 0.72rem;
+        color: #8C8275;
     }
 
     .btn-delete {

@@ -515,6 +515,15 @@ document.addEventListener('DOMContentLoaded', () => {
         return filtered;
     }
 
+    function getFilteredBooks() {
+        let books = getFilteredBooksByPeriod();
+        const filter = state.activeFilter || 'all';
+        if (filter !== 'all') {
+            books = books.filter(book => book.category === filter);
+        }
+        return books;
+    }
+
     // --- サブスク設定に基づく画面全体のテキスト切り替え ---
     function updateSubscriptionContext() {
         const type = state.settings.subscriptionType || 'kindle';
@@ -648,8 +657,8 @@ document.addEventListener('DOMContentLoaded', () => {
             targetCostVal.textContent = targetCost.toLocaleString();
         }
 
-        // 期間別で絞り込んだ本のみを計算に使う
-        const periodBooks = getFilteredBooksByPeriod();
+        // 期間別・カテゴリ別で絞り込んだ本のみを計算に使う
+        const periodBooks = getFilteredBooks();
 
         const totalValue = periodBooks.reduce((sum, book) => sum + (book.price || 0), 0);
         const netSavings = totalValue - targetCost;
@@ -738,8 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clear bookshelf
         bookshelf.textContent = '';
 
-        // 期間絞り込みを適用
-        const books = getFilteredBooksByPeriod();
+        // 期間別・カテゴリ別絞り込みを適用
+        const books = getFilteredBooks();
         const type = state.settings.subscriptionType || 'kindle';
         const isVideo = ['prime', 'netflix', 'youtube'].includes(type);
 
@@ -1307,6 +1316,10 @@ document.addEventListener('DOMContentLoaded', () => {
             emptyDiv.appendChild(p);
             logsContainer.appendChild(emptyDiv);
         }
+
+        if (sortSelect) {
+            sortSelect.disabled = (visibleCount === 0);
+        }
     }
 
     async function deleteBook(id) {
@@ -1869,7 +1882,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tab.setAttribute('aria-selected', 'true');
             state.activeFilter = tab.getAttribute('data-category') || 'all';
             
-            applyFilter();
+            updateCalculations();
+            renderLogs();
         });
     });
 
