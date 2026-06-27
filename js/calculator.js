@@ -124,7 +124,7 @@ export const CALC = {
         if (!articles.length) return '';
 
         const items = articles
-            .map(article => `<li><a href="${article.href}">${article.title}</a></li>`)
+            .map((article, index) => `<li><a href="${article.href}" data-result-related-link data-link-position="${index + 1}">${article.title}</a></li>`)
             .join('');
 
         return `
@@ -431,7 +431,8 @@ export const CALC = {
         ANALYTICS.track('calculation_completed', {
             calculation_mode: 'rank_up',
             region: STATE.currentRegion,
-            target_status: targetStatusLabel
+            target_status: targetStatusLabel,
+            ...ANALYTICS.getEntryContext()
         });
         ANALYTICS.markEngaged();
     },
@@ -465,7 +466,8 @@ export const CALC = {
         STATE.dom.reverseResult.dataset.shareUrl = SHARE ? SHARE.buildReverseShareUrl() : '';
         ANALYTICS.track('reverse_calculation_completed', {
             calculation_mode: 'spend_to_points',
-            region: STATE.currentRegion
+            region: STATE.currentRegion,
+            ...ANALYTICS.getEntryContext()
         });
         ANALYTICS.markEngaged();
     },
@@ -497,7 +499,14 @@ export const CALC = {
             .replace('{url}', shareUrl);
         
         navigator.clipboard.writeText(textToCopy)
-            .then(() => { UI.showToast(texts.toastCopySuccess); })
+            .then(() => {
+                ANALYTICS.track('share_url_copied', {
+                    calculation_mode: 'rank_up',
+                    region: STATE.currentRegion,
+                    target_status: targetStatusLabel
+                });
+                UI.showToast(texts.toastCopySuccess);
+            })
             .catch(() => { UI.showToast(texts.toastCopyError, 'error'); });
     },
 
@@ -515,6 +524,11 @@ export const CALC = {
             .replace('{yen}', formattedYen)
             .replace('{symbol}', config.currencySymbol);
         this.shareOnTwitter(text, STATE.dom.result.dataset.shareUrl);
+        ANALYTICS.track('share_x_clicked', {
+            calculation_mode: 'rank_up',
+            region: STATE.currentRegion,
+            target_status: targetStatusLabel
+        });
     },
 
     // Xへの逆算シェアイベントハンドラ
@@ -532,6 +546,10 @@ export const CALC = {
             .replace('{symbol}', config.currencySymbol)
             .replace('{points}', formattedPoints);
         this.shareOnTwitter(text, STATE.dom.reverseResult.dataset.shareUrl);
+        ANALYTICS.track('share_x_clicked', {
+            calculation_mode: 'spend_to_points',
+            region: STATE.currentRegion
+        });
     }
 };
 

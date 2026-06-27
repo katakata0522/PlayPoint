@@ -77,7 +77,9 @@
 
             if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
                 window.gtag(eventCommand, 'article_to_calculator_clicked', {
-                    source_path: window.location.pathname
+                    source_path: window.location.pathname,
+                    link_context: link.closest('.cta-box, .cta-banner') ? 'article_cta' : 'article_link',
+                    destination_path: url.pathname
                 });
             }
         });

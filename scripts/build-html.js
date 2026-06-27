@@ -431,6 +431,7 @@ const mainVersion = mainQueryMatch ? mainQueryMatch[1] : '';
 
 const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
 const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
+const intentTrackingVersion = thirdPartyVersion || mainVersion || cssVersion;
 
 // blog/index.html からクエリを抽出
 const blogIndexPath = path.join(__dirname, '../blog/index.html');
@@ -476,6 +477,9 @@ if (fs.existsSync(swPath)) {
     }
     if (thirdPartyVersion) {
         swContent = swContent.replace(/\.\/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `./js/third-party.js?v=${thirdPartyVersion}`);
+    }
+    if (intentTrackingVersion) {
+        swContent = swContent.replace(/\.\/js\/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `./js/intent-tracking.js?v=${intentTrackingVersion}`);
     }
     if (blogCssVersion) {
         swContent = swContent.replace(/\.\/blog\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./blog/style.css?v=${blogCssVersion}`);
@@ -580,6 +584,10 @@ htmlFiles.forEach(file => {
         // third-party.js?v=... の同期
         if (thirdPartyVersion) {
             content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${thirdPartyVersion}`);
+        }
+        // intent-tracking.js?v=... の同期
+        if (intentTrackingVersion) {
+            content = content.replace(/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `intent-tracking.js?v=${intentTrackingVersion}`);
         }
         // article-shared.css?v=... の同期
         if (articleSharedCssVersion) {

@@ -782,6 +782,55 @@ test('記事から計算機への導線は内部流入を識別できる', () =>
   assert.ok(articleScript.includes("utm_source', 'article'"));
   assert.ok(articleScript.includes("utm_medium', 'internal'"));
   assert.ok(articleScript.includes('article_to_calculator_clicked'));
+  assert.ok(articleScript.includes('link_context'));
+  assert.ok(articleScript.includes('destination_path'));
+});
+
+test('流入施策はLPと結果画面の主要導線を個人情報なしで計測する', () => {
+  const config = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
+  const calculator = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const intent = fs.readFileSync(path.join(root, 'js', 'intent-tracking.js'), 'utf8');
+  const docs = fs.readFileSync(path.join(root, 'docs', 'ANALYTICS.md'), 'utf8');
+  const lpFiles = [
+    path.join(root, 'status', 'platinum', 'index.html'),
+    path.join(root, 'status', 'diamond', 'index.html'),
+    path.join(root, 'maintenance', 'platinum', 'index.html'),
+    path.join(root, 'campaign', '2x', 'index.html'),
+    path.join(root, 'campaign', '3x', 'index.html'),
+    path.join(root, 'amount', '10000', 'index.html')
+  ];
+
+  for (const eventName of [
+    'lp_to_calculator_clicked',
+    'lp_related_link_clicked',
+    'result_related_article_clicked',
+    'share_url_copied',
+    'share_x_clicked'
+  ]) {
+    assert.ok(config.includes(eventName), `${eventName} is missing from analytics allowlist`);
+    assert.ok(docs.includes(eventName), `${eventName} is missing from analytics docs`);
+  }
+
+  for (const forbiddenParam of ['required_yen', 'needed_points', 'amount_yen', 'earned_points']) {
+    assert.ok(!config.includes(forbiddenParam), `${forbiddenParam} must not be allowlisted`);
+  }
+
+  assert.ok(config.includes('sanitizeParams'));
+  assert.ok(calculator.includes('getEntryContext()'));
+  assert.ok(calculator.includes("track('share_url_copied'"));
+  assert.ok(calculator.includes("track('share_x_clicked'"));
+  assert.ok(calculator.includes('data-result-related-link'));
+  assert.ok(main.includes("track('result_related_article_clicked'"));
+  assert.ok(intent.includes("track('lp_to_calculator_clicked'"));
+  assert.ok(intent.includes("track('lp_related_link_clicked'"));
+
+  lpFiles.forEach((file) => {
+    const html = fs.readFileSync(file, 'utf8');
+    const relative = path.relative(root, file);
+    assert.ok(html.includes('/js/intent-tracking.js'), `${relative} にLP計測スクリプトがありません`);
+    assert.ok(html.includes('/js/third-party.js'), `${relative} に同意/GA読み込みスクリプトがありません`);
+  });
 });
 
 test('外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる', () => {

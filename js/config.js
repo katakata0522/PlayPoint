@@ -4,10 +4,57 @@
 export const ANALYTICS = {
     pendingEvents: [],
     maxPendingEvents: 20,
+    allowedParams: {
+        calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign'],
+        reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign'],
+        diary_entry_saved: ['region', 'entry_type'],
+        article_to_calculator_clicked: ['source_path', 'link_context', 'destination_path'],
+        lp_to_calculator_clicked: ['source_path', 'entry_campaign', 'link_context'],
+        lp_related_link_clicked: ['source_path', 'target_path', 'link_context'],
+        result_related_article_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
+        share_url_copied: ['calculation_mode', 'region', 'target_status'],
+        share_x_clicked: ['calculation_mode', 'region', 'target_status']
+    },
     hasConsent() {
         return typeof window !== 'undefined'
             && window.PlayPointConsent
             && window.PlayPointConsent.getStatus() === 'granted';
+    },
+    sanitizeValue(key, value) {
+        if (value === undefined || value === null || value === '') return null;
+        if (key === 'link_position') {
+            const numberValue = Number(value);
+            return Number.isInteger(numberValue) && numberValue >= 1 && numberValue <= 10 ? numberValue : null;
+        }
+        let text = String(value).trim();
+        if (!text) return null;
+        if (key.endsWith('_path')) {
+            try {
+                text = new URL(text, window.location.origin).pathname;
+            } catch (error) {
+                return null;
+            }
+        }
+        return text.replace(/[<>"']/g, '').slice(0, 120);
+    },
+    sanitizeParams(eventName, params = {}) {
+        const allowed = this.allowedParams[eventName];
+        if (!allowed) return null;
+        return allowed.reduce((clean, key) => {
+            const value = this.sanitizeValue(key, params[key]);
+            if (value !== null) clean[key] = value;
+            return clean;
+        }, {});
+    },
+    getEntryContext() {
+        if (typeof window === 'undefined') return {};
+        if (typeof URLSearchParams === 'undefined' || !window.location) return {};
+        const params = new URLSearchParams(window.location.search);
+        return {
+            entry_source: params.get('utm_source') || undefined,
+            entry_medium: params.get('utm_medium') || undefined,
+            entry_campaign: params.get('utm_campaign') || undefined
+        };
     },
     queue(eventName, params) {
         if (this.pendingEvents.length >= this.maxPendingEvents) this.pendingEvents.shift();
@@ -23,9 +70,11 @@ export const ANALYTICS = {
     track(eventName, params = {}) {
         if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
         if (typeof window === 'undefined') return;
+        const cleanParams = this.sanitizeParams(eventName, params);
+        if (!cleanParams) return;
 
         if (!window.PlayPointConsent) {
-            this.queue(eventName, params);
+            this.queue(eventName, cleanParams);
             return;
         }
         if (!this.hasConsent()) {
@@ -33,7 +82,7 @@ export const ANALYTICS = {
             return;
         }
 
-        this.send(eventName, params);
+        this.send(eventName, cleanParams);
     },
     flushPending() {
         if (typeof window === 'undefined' || !window.PlayPointConsent) return;
