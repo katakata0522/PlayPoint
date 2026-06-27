@@ -7,8 +7,9 @@ const targets = [
   { url: 'https://playpoint-sim.com/campaign/3x/', contains: '3倍キャンペーン' },
   { url: 'https://playpoint-sim.com/amount/10000/', contains: '1万円課金' },
   { url: 'https://playpoint-sim.com/blog/', contains: 'Google Play Points' },
-  { url: 'https://playpoint-sim.com/feed.xml', contains: '<rss version="2.0"' },
-  { url: 'https://playpoint-sim.com/atom.xml', contains: '<feed xmlns="http://www.w3.org/2005/Atom">' },
+  { url: 'https://playpoint-sim.com/feed.xml', contains: '<rss version="2.0"', contentType: 'application/rss+xml', cacheControlIncludes: 'max-age=1800' },
+  { url: 'https://playpoint-sim.com/atom.xml', contains: '<feed xmlns="http://www.w3.org/2005/Atom">', contentType: 'application/atom+xml', cacheControlIncludes: 'max-age=1800' },
+  { url: 'https://playpoint-sim.com/manifest.json', contains: '"name":', contentType: 'application/manifest+json', cacheControlIncludes: 'max-age=86400' },
   { url: 'https://playpoint-sim.com/author/katakata.html', contains: 'かたかた' },
   { url: 'https://playpoint-sim.com/kids-smile-land/', contains: 'キッズ・スマイル・ランド' },
   { url: 'https://playpoint-sim.com/tools/gravity-todo/', contains: 'Gravity-Todo' },
@@ -29,6 +30,12 @@ async function verifyTarget(target) {
   const contentType = response.headers.get('content-type') || '';
   if (target.contentType && !contentType.includes(target.contentType)) {
     throw new Error(`${target.url}: content-type ${contentType}`);
+  }
+  if (target.cacheControlIncludes) {
+    const cacheControl = response.headers.get('cache-control') || '';
+    if (!cacheControl.includes(target.cacheControlIncludes)) {
+      throw new Error(`${target.url}: cache-control ${cacheControl}`);
+    }
   }
 
   const body = Buffer.from(await response.arrayBuffer());

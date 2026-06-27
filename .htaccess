@@ -43,8 +43,29 @@ Options -Indexes
   ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 
+<Files "feed.xml">
+  ForceType application/rss+xml
+</Files>
+
+<Files "atom.xml">
+  ForceType application/atom+xml
+</Files>
+
+<Files "manifest.json">
+  ForceType application/manifest+json
+</Files>
+
 <IfModule mod_headers.c>
   Header append Vary Accept-Encoding
+  <Files "feed.xml">
+    Header set Cache-Control "public, max-age=1800"
+  </Files>
+  <Files "atom.xml">
+    Header set Cache-Control "public, max-age=1800"
+  </Files>
+  <Files "manifest.json">
+    Header set Cache-Control "public, max-age=86400"
+  </Files>
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
