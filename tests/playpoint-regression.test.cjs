@@ -507,6 +507,53 @@ test('多言語生成設定は更新日を受け取って各言語のメタ行�
   assert.ok(locales.tw.metaLine.includes('最後更新: 2026-06-28'));
 });
 
+test('多言語HTML生成は言語別メタ情報と相対パスを同期する', () => {
+  const { buildLocalizedHtml } = require(path.join(root, 'scripts', 'language-page-builder.cjs'));
+  const { createLocales } = require(path.join(root, 'scripts', 'locale-config.cjs'));
+  const html = [
+    '<html lang="ja">',
+    '<head>',
+    '<title>旧タイトル</title>',
+    '<meta name="author" content="かたかた">',
+    '<meta name="description" content="旧説明">',
+    '<meta property="og:title" content="旧OG">',
+    '<meta property="og:description" content="旧OG説明">',
+    '<meta name="twitter:title" content="旧Twitter">',
+    '<meta name="twitter:description" content="旧Twitter説明">',
+    '<meta property="og:site_name" content="旧サイト">',
+    '<meta property="og:url" content="https://playpoint-sim.com/">',
+    '<link rel="canonical" href="https://playpoint-sim.com/">',
+    '<link href="style.css?v=old">',
+    '<script src="js/main.js?v=old"></script>',
+    '<script>{"name": "Playポイント計算機", "description": "旧アプリ説明", "priceCurrency": "JPY", "url": "https://playpoint-sim.com/", "inLanguage": ["ja"]}</script>',
+    '</head>',
+    '<body>',
+    '<button data-region="JP" class="active">日本語</button><button data-region="US">English</button>',
+    '<h1 data-lang-key="mainTitle">旧見出し</h1>',
+    '<p data-lang-key="siteDescription">旧説明文</p>',
+    '<!-- FAQ_JSON_LD_START -->old<!-- FAQ_JSON_LD_END -->',
+    '<!-- FAQ_SECTION_START -->old<!-- FAQ_SECTION_END -->',
+    '<!-- ARTICLE_DRAWER_START -->remove me<!-- ARTICLE_DRAWER_END -->',
+    '<!-- DESCRIPTION_SECTION_START -->old<!-- DESCRIPTION_SECTION_END -->',
+    '<!-- META_LINE_START -->old<!-- META_LINE_END -->',
+    '</body></html>'
+  ].join('\n');
+
+  const output = buildLocalizedHtml(html, 'en', createLocales('2026-06-28').en);
+
+  assert.ok(output.includes('<html lang="en">'));
+  assert.ok(output.includes('<title>Play Point Calculator - Google Play Points | How much to level up?</title>'));
+  assert.ok(output.includes('<meta name="author" content="katakata">'));
+  assert.ok(output.includes('<meta property="og:url" content="https://playpoint-sim.com/en/">'));
+  assert.ok(output.includes('<link rel="canonical" href="https://playpoint-sim.com/en/">'));
+  assert.ok(output.includes('href="../style.css?v=old"'));
+  assert.ok(output.includes('src="../js/main.js?v=old"'));
+  assert.ok(output.includes('<button data-region="US" class="active">English</button>'));
+  assert.ok(output.includes('<h1 data-lang-key="mainTitle">Play Points Calculator</h1>'));
+  assert.ok(output.includes('Last Updated: 2026-06-28'));
+  assert.ok(!output.includes('remove me'));
+});
+
 test('ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る', () => {
   const html = fs.readFileSync(path.join(root, 'maintenance', 'diamond', 'index.html'), 'utf8');
 
