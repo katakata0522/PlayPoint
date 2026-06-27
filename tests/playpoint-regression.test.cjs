@@ -289,6 +289,12 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
       requiredQuery: 'target=platinum'
     },
     {
+      file: path.join(root, 'maintenance', 'diamond', 'index.html'),
+      canonical: 'https://playpoint-sim.com/maintenance/diamond/',
+      mode: 'main',
+      requiredQuery: 'target=diamond'
+    },
+    {
       file: path.join(root, 'campaign', '2x', 'index.html'),
       canonical: 'https://playpoint-sim.com/campaign/2x/',
       mode: 'main',
@@ -342,6 +348,35 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
     });
     assert.ok(sitemap.includes(`<loc>${canonical}</loc>`), `${canonical} がsitemap.xmlにありません`);
   });
+});
+
+test('ブログRSSとAtomフィードは発見可能で最新記事を含む', () => {
+  const rssPath = path.join(root, 'feed.xml');
+  const atomPath = path.join(root, 'atom.xml');
+  const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
+  const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
+
+  assert.ok(fs.existsSync(rssPath), 'feed.xml がありません');
+  assert.ok(fs.existsSync(atomPath), 'atom.xml がありません');
+
+  const rss = fs.readFileSync(rssPath, 'utf8');
+  const atom = fs.readFileSync(atomPath, 'utf8');
+
+  assert.ok(rss.includes('<rss version="2.0"'), 'RSSのルート要素がありません');
+  assert.ok(rss.includes('<channel>'), 'RSS channel がありません');
+  assert.ok(rss.includes('<item>'), 'RSS item がありません');
+  assert.ok(rss.includes('https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html'), 'RSSに最新記事がありません');
+  assert.ok(atom.includes('<feed xmlns="http://www.w3.org/2005/Atom">'), 'Atom feed ルートがありません');
+  assert.ok(atom.includes('<entry>'), 'Atom entry がありません');
+  assert.ok(atom.includes('href="https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html"'), 'Atomに最新記事がありません');
+
+  for (const html of [blogHtml, indexHtml]) {
+    assert.ok(html.includes('rel="alternate" type="application/rss+xml"'), 'RSS alternate link がありません');
+    assert.ok(html.includes('rel="alternate" type="application/atom+xml"'), 'Atom alternate link がありません');
+  }
+  assert.ok(sitemapHtml.includes('feed.xml'), 'HTMLサイトマップにRSS導線がありません');
+  assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
 test('キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ', () => {
@@ -434,7 +469,8 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
   for (const pathValue of [
     '/campaign/2x/',
     '/campaign/3x/',
-    '/amount/10000/'
+    '/amount/10000/',
+    '/maintenance/diamond/'
   ]) {
     assert.ok(script.includes(pathValue), `SEO監視対象が不足しています: ${pathValue}`);
   }

@@ -12,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
             monthlyFee: 980,
             duration: 3,
             subscriptionType: 'kindle',
-            subscriptionName: 'Kindle Unlimited'
+            subscriptionName: 'Kindle Unlimited',
+            customMonthlyFee: 980,
+            customDuration: 3,
+            customSubscriptionName: 'カスタムサブスク'
         },
         calculated: {
             totalValue: 0,
@@ -396,21 +399,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const localISOTime = (new Date(now - offset)).toISOString().split('T')[0];
         readDateInput.value = localISOTime;
 
+        // キーボードによるタブ操作（WAI-ARIA）対応用ヘルパー
+        function setupKeyboardTabNavigation(tabs, onSelect) {
+            if (!tabs || tabs.length === 0) return;
+            tabs.forEach(tab => {
+                const isActive = tab.classList.contains('active');
+                tab.setAttribute('tabindex', isActive ? '0' : '-1');
+            });
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                        t.setAttribute('aria-selected', 'false');
+                        t.setAttribute('tabindex', '-1');
+                    });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-selected', 'true');
+                    tab.setAttribute('tabindex', '0');
+                    onSelect(tab);
+                });
+                tab.addEventListener('keydown', (e) => {
+                    let targetIndex = -1;
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        targetIndex = (index + 1) % tabs.length;
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        targetIndex = (index - 1 + tabs.length) % tabs.length;
+                    } else if (e.key === 'Home') {
+                        targetIndex = 0;
+                    } else if (e.key === 'End') {
+                        targetIndex = tabs.length - 1;
+                    }
+                    if (targetIndex !== -1) {
+                        e.preventDefault();
+                        tabs[targetIndex].focus();
+                        tabs[targetIndex].click();
+                    }
+                });
+            });
+        }
+
         // 期間フィルタータブイベントリスナーの登録
         const periodTabs = document.querySelectorAll('.period-tab');
-        periodTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                periodTabs.forEach(t => {
-                    t.classList.remove('active');
-                    t.setAttribute('aria-selected', 'false');
-                });
-                tab.classList.add('active');
-                tab.setAttribute('aria-selected', 'true');
-                state.activePeriodFilter = tab.getAttribute('data-period') || 'all';
-                
-                updateCalculations();
-                renderLogs();
-            });
+        setupKeyboardTabNavigation(periodTabs, (tab) => {
+            state.activePeriodFilter = tab.getAttribute('data-period') || 'all';
+            updateCalculations();
+            renderLogs();
         });
 
         // サブスク設定変更イベントの登録
@@ -431,6 +464,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     if (subscriptionNameInput) subscriptionNameInput.value = subPresets[type].name;
                     monthlyFeeInput.value = subPresets[type].fee;
+                } else if (type === 'custom') {
+                    // カスタムに切り替えた場合は、退避しておいたカスタム設定値を復元 (第5セット)
+                    state.settings.subscriptionName = state.settings.customSubscriptionName || 'カスタムサブスク';
+                    state.settings.monthlyFee = state.settings.customMonthlyFee || 980;
+                    state.settings.duration = state.settings.customDuration || 3;
+
+                    if (subscriptionNameInput) subscriptionNameInput.value = state.settings.subscriptionName;
+                    monthlyFeeInput.value = state.settings.monthlyFee;
+                    durationInput.value = state.settings.duration;
                 }
                 updateSubscriptionContext();
                 updateCalculations();
@@ -650,6 +692,14 @@ document.addEventListener('DOMContentLoaded', () => {
         state.settings.duration = duration;
         state.settings.subscriptionType = subscriptionTypeSelect ? subscriptionTypeSelect.value : 'kindle';
         state.settings.subscriptionName = subscriptionNameInput ? subscriptionNameInput.value.trim() : 'Kindle Unlimited';
+        
+        // もしタイプが custom であれば、カスタム値として退避保存 (第5セット)
+        if (state.settings.subscriptionType === 'custom') {
+            state.settings.customMonthlyFee = monthlyFee;
+            state.settings.customDuration = duration;
+            state.settings.customSubscriptionName = state.settings.subscriptionName;
+        }
+
         safeSave('ku_tracker_settings', JSON.stringify(state.settings));
 
         targetCostDisplay.textContent = targetCost.toLocaleString();
@@ -1405,6 +1455,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Monitor manual price inputs for active quick price alignment
     bookPriceInput.addEventListener('input', updateQuickPriceActiveState);
 
+    // 一言メモの自動高さ調節 ＆ 文字数カウンター連動 (第2セット)
+    if (bookNotesInput) {
+        bookNotesInput.addEventListener('input', () => {
+            const charCounter = document.getElementById('notes-char-counter');
+            const len = bookNotesInput.value.length;
+            
+            if (charCounter) {
+                charCounter.textContent = `${len} / 500`;
+                if (len >= 450) {
+                    charCounter.classList.add('warning');
+                } else {
+                    charCounter.classList.remove('warning');
+                }
+            }
+
+            bookNotesInput.style.height = 'auto';
+            bookNotesInput.style.height = `${bookNotesInput.scrollHeight}px`;
+        });
+    }
+
     // Quick price selection
     quickPriceButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1468,6 +1538,12 @@ document.addEventListener('DOMContentLoaded', () => {
             bookTitleInput.value = '';
             bookPriceInput.value = '';
             bookNotesInput.value = '';
+            bookNotesInput.style.height = ''; // 高さを初期状態にリセット
+            const charCounter = document.getElementById('notes-char-counter');
+            if (charCounter) {
+                charCounter.textContent = '0 / 500';
+                charCounter.classList.remove('warning');
+            }
             const defaultStar = document.getElementById('star3_0');
             if (defaultStar) defaultStar.checked = true; // reset to 3.0 stars
 
@@ -1872,20 +1948,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter Tabs Interaction
     const filterTabs = document.querySelectorAll('.filter-tab');
-    filterTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            filterTabs.forEach(t => {
-                t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
-            });
-            tab.classList.add('active');
-            tab.setAttribute('aria-selected', 'true');
+    if (typeof setupKeyboardTabNavigation === 'function') {
+        setupKeyboardTabNavigation(filterTabs, (tab) => {
             state.activeFilter = tab.getAttribute('data-category') || 'all';
-            
             updateCalculations();
             renderLogs();
         });
-    });
+    } else {
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                filterTabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('active');
+                tab.setAttribute('aria-selected', 'true');
+                state.activeFilter = tab.getAttribute('data-category') || 'all';
+                
+                updateCalculations();
+                renderLogs();
+            });
+        });
+    }
 
     // しおり風検索窓のインプット入力監視とリアルタイム連動
     if (logSearchInput) {

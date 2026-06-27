@@ -2649,3 +2649,51 @@ textarea {
         transform: translateY(0) rotate(-2deg);
     }
 }
+
+/* --- Keyboard Focus Accessibility (A11y) --- */
+.period-tab:focus-visible,
+.filter-tab:focus-visible,
+.btn:focus-visible,
+.btn-quick-price:focus-visible,
+.drop-zone:focus-visible,
+.select-field:focus-visible,
+.chart-toggle button:focus-visible,
+#subscription-type:focus-visible,
+#book-category:focus-visible,
+#sort-select:focus-visible {
+    outline: 2px dashed var(--accent) !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 4px rgba(185, 148, 74, 0.15) !important;
+}
+
+/* --- Auto-resizing Notes Textarea & Character Counter --- */
+.textarea-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+#book-notes {
+    resize: none;
+    overflow-y: hidden;
+    min-height: 60px;
+    padding-bottom: 24px; /* カウンターと被らないように下部に余白を確保 */
+    transition: height 0.15s ease-out, border-bottom 0.15s, background 0.15s;
+}
+
+.char-counter {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: color 0.15s ease;
+    font-family: 'Outfit', sans-serif;
+    opacity: 0.7;
+}
+
+.char-counter.warning {
+    color: #B91C1C;
+    font-weight: 700;
+    opacity: 1;
+}

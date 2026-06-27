@@ -44,6 +44,7 @@ const generatedFiles = [
   'status/diamond/index.html',
   'status/platinum/index.html',
   'maintenance/platinum/index.html',
+  'maintenance/diamond/index.html',
   'campaign/2x/index.html',
   'campaign/3x/index.html',
   'amount/10000/index.html',

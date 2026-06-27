@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260627_1655a">
+    <link rel="stylesheet" href="style.css?v=20260627_2033a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -252,9 +252,12 @@
                             </div>
                         </div>
 
-                        <div class="input-group">
+                        <div class="input-group notes-group">
                             <label for="book-notes">一言メモ・学び（任意）</label>
-                            <textarea id="book-notes" placeholder="例: 読んで気づいたこと、名言、感想など…" maxlength="500" rows="2"></textarea>
+                            <div class="textarea-wrapper">
+                                <textarea id="book-notes" placeholder="例: 読んで気づいたこと、名言、感想など…" maxlength="500" rows="2"></textarea>
+                                <span id="notes-char-counter" class="char-counter">0 / 500</span>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-submit-primary btn-block" id="btn-submit-book">📖 本のログを追加する</button>
@@ -449,6 +452,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260627_1655a"></script>
+    <script src="app.js?v=20260627_2033a"></script>
 </body>
 </html>
