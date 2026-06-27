@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { syncedHtmlFiles } = require('./build-targets.cjs');
 
 const sourcePath = path.join(__dirname, '../index.html');
 let indexHtml = fs.readFileSync(sourcePath, 'utf8');
@@ -640,28 +641,7 @@ if (fs.existsSync(thirdPartyJsPath) && consentVersion) {
 // ==========================================
 // 10.7. 他の全HTMLファイルのアセットバージョン・日付情報の自動同期処理
 // ==========================================
-const htmlFiles = [
-    'about-playpoints.html',
-    'info.html',
-    'changelog.html',
-    'attention.html',
-    'privacy.html',
-    'terms.html',
-    'sitemap.html',
-    'embed.html',
-    'status/diamond/index.html',
-    'status/platinum/index.html',
-    'maintenance/platinum/index.html',
-    'maintenance/diamond/index.html',
-    'campaign/2x/index.html',
-    'campaign/3x/index.html',
-    'amount/10000/index.html',
-    'en/articles/2026-06-20-discount-gift-cards.html',
-    'ko/articles/2026-06-20-discount-gift-cards.html',
-    'tw/articles/2026-06-20-discount-gift-cards.html'
-];
-
-htmlFiles.forEach(file => {
+syncedHtmlFiles.forEach(file => {
     const filePath = path.join(__dirname, '../', file);
     if (fs.existsSync(filePath)) {
         let content = fs.readFileSync(filePath, 'utf8');

@@ -21,26 +21,62 @@ function minifyJS(content) {
     .trim();
 }
 
-// ターゲットファイル
-const cssFiles = [
-  path.join(root, 'style.css'),
-  path.join(root, 'articles/article-common.css'),
-  path.join(root, 'articles/article-shared.css'),
-  path.join(root, 'articles/source-notice.css')
+const cssTargets = [
+  'style.css',
+  'articles/article-common.css',
+  'articles/article-shared.css',
+  'articles/source-notice.css',
+  'blog/style.css',
+  'kindle-tracker/style.css',
+  'kids-smile-land/style.css',
+  'kids-smile-land/tailwind-built.css',
+  'tools/gravity-todo/style.css'
 ];
 
-const jsFiles = [
-  path.join(root, 'js/main.js'),
-  path.join(root, 'js/calculator.js'),
-  path.join(root, 'js/ui.js'),
-  path.join(root, 'js/diary.js'),
-  path.join(root, 'js/share.js'),
-  path.join(root, 'js/config.js'),
-  path.join(root, 'sw.js')
+const jsTargets = [
+  'sw.js',
+  'js/main.js',
+  'js/calculator.js',
+  'js/ui.js',
+  'js/diary.js',
+  'js/share.js',
+  'js/config.js',
+  'js/consent.js',
+  'js/intent-tracking.js',
+  'js/third-party.js',
+  'blog/article.js',
+  'blog/components.js',
+  'blog/script.js',
+  'blog/utils.js',
+  'embed/playpoint-widget.js',
+  'kindle-tracker/app.js',
+  'kindle-tracker/sw.js',
+  'kids-smile-land/app.js',
+  'kids-smile-land/service-worker.js',
+  'tools/gravity-todo/sw.js',
+  'tools/gravity-todo/src/BGMManager.js',
+  'tools/gravity-todo/src/GyroManager.js',
+  'tools/gravity-todo/src/InteractionManager.js',
+  'tools/gravity-todo/src/ParticleSystem.js',
+  'tools/gravity-todo/src/PhysicsEngine.js',
+  'tools/gravity-todo/src/SettingsManager.js',
+  'tools/gravity-todo/src/SoundManager.js',
+  'tools/gravity-todo/src/StorageManager.js',
+  'tools/gravity-todo/src/TaskDetailPanel.js',
+  'tools/gravity-todo/src/TaskRenderer.js',
+  'tools/gravity-todo/src/TimeTheme.js',
+  'tools/gravity-todo/src/UIManager.js',
+  'tools/gravity-todo/src/consent-manager.js',
+  'tools/gravity-todo/src/main.js',
+  'tools/gravity-todo/src/taskText.js'
 ];
+
+function resolveTargets(targets) {
+  return targets.map((target) => path.join(root, target));
+}
 
 function main() {
-  for (const file of cssFiles) {
+  for (const file of resolveTargets(cssTargets)) {
     if (fs.existsSync(file)) {
       const raw = fs.readFileSync(file, 'utf8');
       const min = minifyCSS(raw);
@@ -49,7 +85,7 @@ function main() {
     }
   }
 
-  for (const file of jsFiles) {
+  for (const file of resolveTargets(jsTargets)) {
     if (fs.existsSync(file)) {
       const raw = fs.readFileSync(file, 'utf8');
       const min = minifyJS(raw);
@@ -63,4 +99,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { minifyCSS, minifyJS };
+module.exports = { cssTargets, jsTargets, minifyCSS, minifyJS };

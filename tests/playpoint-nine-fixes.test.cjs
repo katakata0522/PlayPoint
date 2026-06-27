@@ -192,6 +192,29 @@ test('JSミニファイは文字列中のスラッシュコメント風テキス
   new Function(minified);
 });
 
+test('デプロイ時ミニファイは公開サブアプリとブログの主要CSS/JSも対象にする', () => {
+  const minifierSource = read('.github/scripts/minify.cjs');
+
+  for (const file of [
+    'blog/style.css',
+    'blog/script.js',
+    'blog/components.js',
+    'blog/article.js',
+    'blog/utils.js',
+    'kindle-tracker/style.css',
+    'kindle-tracker/app.js',
+    'kindle-tracker/sw.js',
+    'kids-smile-land/style.css',
+    'kids-smile-land/app.js',
+    'kids-smile-land/service-worker.js',
+    'tools/gravity-todo/style.css',
+    'tools/gravity-todo/sw.js',
+    'tools/gravity-todo/src/main.js'
+  ]) {
+    assert.ok(minifierSource.includes(file), `ミニファイ対象が不足しています: ${file}`);
+  }
+});
+
 test('デプロイ前検証はミニファイ後JSの構文を確認する', () => {
   const workflow = read('.github/workflows/deploy.yml');
 
@@ -346,12 +369,15 @@ test('Kindle TrackerのHTMLとsw.jsはアセットバージョン同期対象に
   const html = read('kindle-tracker/index.html');
   const sw = read('kindle-tracker/sw.js');
   const buildScript = read('scripts/build-html.js');
+  const buildTargets = read('scripts/build-targets.cjs');
 
   assert.ok(html.includes('style.css?v='), 'style.cssにバージョンクエリがありません');
   assert.ok(html.includes('app.js?v='), 'app.jsにバージョンクエリがありません');
   assert.ok(sw.includes('const CACHE_NAME = \'kindle-tracker-v'), 'sw.jsにCACHE_NAME定義がありません');
   assert.ok(buildScript.includes('kindle-tracker/sw.js'), 'ビルドスクリプトにkindle sw.jsの同期がありません');
   assert.ok(buildScript.includes('kindle-tracker/index.html'), 'ビルドスクリプトにkindle index.htmlの同期がありません');
+  assert.ok(buildTargets.includes("'kindle-tracker/index.html'"), 'kindle index.htmlが生成物検証対象ではありません');
+  assert.ok(buildTargets.includes("'kindle-tracker/sw.js'"), 'kindle sw.jsが生成物検証対象ではありません');
 });
 
 

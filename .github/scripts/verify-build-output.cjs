@@ -1,6 +1,7 @@
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { generatedFiles } = require('../../scripts/build-targets.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
@@ -25,36 +26,6 @@ const build = spawnSync(process.execPath, ['scripts/build-html.js'], {
 if (build.status !== 0) {
   process.exit(build.status || 1);
 }
-
-const generatedFiles = [
-  'index.html',
-  'en/index.html',
-  'ko/index.html',
-  'tw/index.html',
-  'feed.xml',
-  'atom.xml',
-  'sw.js',
-  'js/third-party.js',
-  'about-playpoints.html',
-  'info.html',
-  'changelog.html',
-  'attention.html',
-  'privacy.html',
-  'terms.html',
-  'sitemap.html',
-  'embed.html',
-  'status/diamond/index.html',
-  'status/platinum/index.html',
-  'maintenance/platinum/index.html',
-  'maintenance/diamond/index.html',
-  'campaign/2x/index.html',
-  'campaign/3x/index.html',
-  'amount/10000/index.html',
-  'en/articles/2026-06-20-discount-gift-cards.html',
-  'ko/articles/2026-06-20-discount-gift-cards.html',
-  'tw/articles/2026-06-20-discount-gift-cards.html',
-  'sitemap.xml'
-];
 
 const diff = spawnSync('git', ['diff', '--exit-code', '--', ...generatedFiles], {
   cwd: root,
