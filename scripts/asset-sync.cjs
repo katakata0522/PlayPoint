@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 
 function readTextIfExists(filePath) {
   if (!fs.existsSync(filePath)) return '';
@@ -93,12 +94,9 @@ function syncKindleIndex(rootDir, assetVersion, todayStr) {
   if (!fs.existsSync(kindleIndexPath)) return;
 
   let content = fs.readFileSync(kindleIndexPath, 'utf8');
-  content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
-  content = content.replace(/app\.js\?v=[a-zA-Z0-9_-]+/g, `app.js?v=${assetVersion}a`);
-  content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
-  content = content.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
-  content = content.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
-  content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
+  content = replaceAssetVersion(content, 'style.css', `${assetVersion}a`);
+  content = replaceAssetVersion(content, 'app.js', `${assetVersion}a`);
+  content = replaceDateMetadata(content, todayStr);
 
   fs.writeFileSync(kindleIndexPath, content, 'utf8');
   console.log('Successfully synchronized asset versions and dates in kindle-tracker/index.html');
