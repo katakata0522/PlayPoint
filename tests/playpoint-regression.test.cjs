@@ -833,6 +833,43 @@ test('流入施策はLPと結果画面の主要導線を個人情報なしで計
   });
 });
 
+test('記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ', () => {
+  const articleLinks = [
+    {
+      file: '2025-12-25-campaign.html',
+      targets: ['/campaign/2x/', '/campaign/3x/']
+    },
+    {
+      file: '2025-12-25-new-year-campaign.html',
+      targets: ['/campaign/2x/', '/campaign/3x/']
+    },
+    {
+      file: '2026-06-20-discount-gift-cards.html',
+      targets: ['/amount/10000/', '/campaign/2x/']
+    },
+    {
+      file: '2025-12-25-diamond-worth-it.html',
+      targets: ['/status/diamond/', '/campaign/3x/']
+    },
+    {
+      file: '2025-12-25-playpoints-rank-maintenance.html',
+      targets: ['/maintenance/platinum/', '/status/platinum/']
+    }
+  ];
+  const monitoring = fs.readFileSync(path.join(root, 'docs', 'SEARCH_CONSOLE_MONITORING.md'), 'utf8');
+
+  articleLinks.forEach(({ file, targets }) => {
+    const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+    targets.forEach((target) => {
+      assert.ok(html.includes(`https://playpoint-sim.com${target}`), `${file} から ${target} への内部リンクがありません`);
+    });
+  });
+
+  for (const query of ['2倍キャンペーン', 'play points 1万円', 'ダイヤモンド 必要額', 'プラチナ 維持']) {
+    assert.ok(monitoring.includes(query), `Search Console監視メモに対象クエリがありません: ${query}`);
+  }
+});
+
 test('外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる', () => {
   const guide = fs.readFileSync(path.join(root, 'embed.html'), 'utf8');
   const widget = fs.readFileSync(path.join(root, 'embed', 'playpoint-widget.js'), 'utf8');

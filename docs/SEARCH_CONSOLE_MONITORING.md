@@ -43,6 +43,23 @@
 5. 主要ページの内容更新（FAQ追記、注意点更新）
 6. sitemap `lastmod` の妥当性を点検
 
+## 成長施策の観察クエリ
+
+LPや記事導線を追加したら、最低28日後にSearch ConsoleとGA4を照合する。Search Consoleでは表示回数、CTR、掲載順位、対象ページを見て、GA4では該当LPからの `lp_to_calculator_clicked` と `calculation_completed` / `reverse_calculation_completed` を確認する。
+
+| 観察クエリ | 主対象URL | 補助導線 | 確認日 |
+| --- | --- | --- | --- |
+| 2倍キャンペーン | `/campaign/2x/` | `articles/2025-12-25-campaign.html`, `articles/2025-12-25-new-year-campaign.html` | 2026-07-25 |
+| play points 1万円 | `/amount/10000/` | `articles/2026-06-20-discount-gift-cards.html` | 2026-07-25 |
+| ダイヤモンド 必要額 | `/status/diamond/` | `articles/2025-12-25-diamond-worth-it.html` | 2026-07-25 |
+| プラチナ 維持 | `/maintenance/platinum/` | `articles/2025-12-25-playpoints-rank-maintenance.html` | 2026-07-25 |
+
+判断基準:
+
+- 表示回数があるのにCTRが低い場合は、title / description / ファーストビュー文言を優先して改善する。
+- 記事からLPクリックはあるが計算完了が少ない場合は、LPの初期条件やCTA文言を見直す。
+- LP表示は少ないが記事流入がある場合は、記事内リンクの位置やアンカーテキストを見直す。
+
 ## 異常時の対応フロー
 
 1. 影響範囲の確認（全体か特定ページか）
