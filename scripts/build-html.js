@@ -3,14 +3,13 @@
 const fs = require('fs');
 const path = require('path');
 const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
+const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
-const sourcePath = path.join(rootDir, 'index.html');
-let indexHtml = fs.readFileSync(sourcePath, 'utf8');
 
 function replaceStaticLanguageText(html, staticText) {
     return html.replace(
@@ -22,36 +21,7 @@ function replaceStaticLanguageText(html, staticText) {
     );
 }
 
-// 現在の日本時間 (JST) の日付を取得して index.html の日付メタデータを自動同期
-const now = new Date();
-const jstOffset = 9 * 60 * 60 * 1000;
-const jstDate = new Date(now.getTime() + jstOffset);
-const forcedModifiedDate = process.env.PLAYPOINT_MODIFIED_DATE || '';
-const forcedAssetVersion = process.env.PLAYPOINT_ASSET_VERSION || '';
-const yyyy = forcedModifiedDate ? Number(forcedModifiedDate.slice(0, 4)) : jstDate.getUTCFullYear();
-const mm = forcedModifiedDate ? forcedModifiedDate.slice(5, 7) : String(jstDate.getUTCMonth() + 1).padStart(2, '0');
-const dd = forcedModifiedDate ? forcedModifiedDate.slice(8, 10) : String(jstDate.getUTCDate()).padStart(2, '0');
-const hh = String(jstDate.getUTCHours()).padStart(2, '0');
-const min = String(jstDate.getUTCMinutes()).padStart(2, '0');
-const todayStr = `${yyyy}-${mm}-${dd}`;
-
-indexHtml = indexHtml.replace(/<meta name="last-modified" content="[^"]+">/, `<meta name="last-modified" content="${todayStr}">`);
-indexHtml = indexHtml.replace(/<meta property="article:modified_time" content="[^"]+">/, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
-indexHtml = indexHtml.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
-indexHtml = indexHtml.replace(/最終更新: \d{4}-\d{2}-\d{2}/, `最終更新: ${todayStr}`);
-
-// 現在の日本時間 (JST) に基づくアセットバージョンを生成 (例: 20260622_2300)
-const assetVersion = forcedAssetVersion || `${yyyy}${mm}${dd}_${hh}${min}`;
-
-// index.html のアセットバージョンクエリを自動更新 (バンプ)
-indexHtml = indexHtml.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
-indexHtml = indexHtml.replace(/js\/main\.js\?v=[a-zA-Z0-9_-]+/g, `js/main.js?v=${assetVersion}a`);
-indexHtml = indexHtml.replace(/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `js/third-party.js?v=${assetVersion}a`);
-indexHtml = indexHtml.replace(/blog\/components\.js\?v=[a-zA-Z0-9_-]+/g, `blog/components.js?v=${assetVersion}a`);
-
-// 置換後の HTML を上書き保存
-fs.writeFileSync(sourcePath, indexHtml, 'utf8');
-console.log(`Synchronized dates and asset versions (v=${assetVersion}a) in index.html`);
+const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
 
 const locales = {
     'en': {
