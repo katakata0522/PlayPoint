@@ -5,6 +5,7 @@ const path = require('path');
 const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
+const { syncHtmlFiles } = require('./html-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 const sourcePath = path.join(rootDir, 'index.html');
@@ -413,43 +414,7 @@ Object.entries(locales).forEach(([langDir, config]) => {
 
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
-// ==========================================
-// 10.7. 他の全HTMLファイルのアセットバージョン・日付情報の自動同期処理
-// ==========================================
-syncedHtmlFiles.forEach(file => {
-    const filePath = path.join(__dirname, '../', file);
-    if (fs.existsSync(filePath)) {
-        let content = fs.readFileSync(filePath, 'utf8');
-        
-        // style.css?v=... の同期
-        if (assetVersions.cssVersion) {
-            content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersions.cssVersion}`);
-        }
-        // third-party.js?v=... の同期
-        if (assetVersions.thirdPartyVersion) {
-            content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${assetVersions.thirdPartyVersion}`);
-        }
-        // intent-tracking.js?v=... の同期
-        if (assetVersions.intentTrackingVersion) {
-            content = content.replace(/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `intent-tracking.js?v=${assetVersions.intentTrackingVersion}`);
-        }
-        // article-shared.css?v=... の同期
-        if (assetVersions.articleSharedCssVersion) {
-            content = content.replace(/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `article-shared.css?v=${assetVersions.articleSharedCssVersion}`);
-        }
-        
-        // 日付メタデータ・最終更新日の同期
-        content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
-        content = content.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
-        content = content.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${todayStr}"`);
-        content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
-        content = content.replace(/Last Modified: \d{4}-\d{2}-\d{2}/g, `Last Modified: ${todayStr}`);
-        content = content.replace(/最後更新: \d{4}-\d{2}-\d{2}/g, `最後更新: ${todayStr}`);
-        
-        fs.writeFileSync(filePath, content, 'utf8');
-        console.log(`Successfully synchronized asset versions and dates in ${file}`);
-    }
-});
+syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
 
 // ==========================================
 // 11. sitemap.xml の改行コード LF 統一処理 + トップページ lastmod 自動更新

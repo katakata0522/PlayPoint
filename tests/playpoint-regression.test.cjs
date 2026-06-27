@@ -1,5 +1,6 @@
 const assert = require('assert');
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const vm = require('vm');
 
@@ -413,6 +414,50 @@ test('ブログフィード生成は単体でURL正規化・日付順・XMLエ�
   assert.ok(feeds.atom.indexOf('https://playpoint-sim.com/articles/newer.html') < feeds.atom.indexOf('https://playpoint-sim.com/articles/older.html'));
   assert.ok(feeds.rss.includes('新しい &amp; &lt;記事&gt;'));
   assert.ok(feeds.atom.includes('&quot;説明&quot; と &apos;引用&apos;'));
+});
+
+test('HTML同期はアセットバージョンと日付表記を単体で更新する', () => {
+  const { syncHtmlFile } = require(path.join(root, 'scripts', 'html-sync.cjs'));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-html-sync-'));
+  const file = 'sample.html';
+  const filePath = path.join(tempRoot, file);
+
+  try {
+    fs.writeFileSync(filePath, [
+      '<meta name="last-modified" content="2025-01-01">',
+      '<meta property="article:modified_time" content="2025-01-01T00:00:00+09:00">',
+      '<script>{"dateModified": "2025-01-01"}</script>',
+      '<link href="style.css?v=old">',
+      '<script src="third-party.js?v=old"></script>',
+      '<script src="intent-tracking.js?v=old"></script>',
+      '<link href="article-shared.css?v=old">',
+      '<p>最終更新: 2025-01-01</p>',
+      '<p>Last Modified: 2025-01-01</p>',
+      '<p>最後更新: 2025-01-01</p>'
+    ].join('\n'), 'utf8');
+
+    const updated = syncHtmlFile(tempRoot, file, {
+      articleSharedCssVersion: 'article-v',
+      cssVersion: 'css-v',
+      intentTrackingVersion: 'intent-v',
+      thirdPartyVersion: 'third-v'
+    }, '2026-06-28');
+
+    const html = fs.readFileSync(filePath, 'utf8');
+    assert.strictEqual(updated, true);
+    assert.ok(html.includes('style.css?v=css-v'));
+    assert.ok(html.includes('third-party.js?v=third-v'));
+    assert.ok(html.includes('intent-tracking.js?v=intent-v'));
+    assert.ok(html.includes('article-shared.css?v=article-v'));
+    assert.ok(html.includes('<meta name="last-modified" content="2026-06-28">'));
+    assert.ok(html.includes('<meta property="article:modified_time" content="2026-06-28T00:00:00+09:00">'));
+    assert.ok(html.includes('"dateModified": "2026-06-28"'));
+    assert.ok(html.includes('最終更新: 2026-06-28'));
+    assert.ok(html.includes('Last Modified: 2026-06-28'));
+    assert.ok(html.includes('最後更新: 2026-06-28'));
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
 });
 
 test('ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る', () => {
