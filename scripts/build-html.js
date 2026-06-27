@@ -2,10 +2,12 @@
 
 const fs = require('fs');
 const path = require('path');
+const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 
-const sourcePath = path.join(__dirname, '../index.html');
+const rootDir = path.join(__dirname, '..');
+const sourcePath = path.join(rootDir, 'index.html');
 let indexHtml = fs.readFileSync(sourcePath, 'utf8');
 
 function replaceStaticLanguageText(html, staticText) {
@@ -409,147 +411,7 @@ Object.entries(locales).forEach(([langDir, config]) => {
     console.log(`Generated ${targetFile} successfully.`);
 });
 
-// ==========================================
-// 10. アセットバージョンの抽出処理
-// ==========================================
-// index.html から CSS や JS のバージョンクエリ（例: style.css?v=XXXX）を抽出
-const cssQueryMatch = indexHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
-const cssVersion = cssQueryMatch ? cssQueryMatch[1] : '';
-
-let consentVersion = '';
-const tempSwPath = path.join(__dirname, '../sw.js');
-if (fs.existsSync(tempSwPath)) {
-    const tempSwContent = fs.readFileSync(tempSwPath, 'utf8');
-    const swConsentMatch = tempSwContent.match(/\.\/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
-    if (swConsentMatch) consentVersion = swConsentMatch[1];
-}
-if (!consentVersion) {
-    const consentQueryMatch = indexHtml.match(/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
-    consentVersion = consentQueryMatch ? consentQueryMatch[1] : '';
-}
-
-const mainQueryMatch = indexHtml.match(/js\/main\.js\?v=([a-zA-Z0-9_-]+)/);
-const mainVersion = mainQueryMatch ? mainQueryMatch[1] : '';
-
-const thirdPartyQueryMatch = indexHtml.match(/js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
-const thirdPartyVersion = thirdPartyQueryMatch ? thirdPartyQueryMatch[1] : '';
-const intentTrackingVersion = thirdPartyVersion || mainVersion || cssVersion;
-
-// blog/index.html からクエリを抽出
-const blogIndexPath = path.join(__dirname, '../blog/index.html');
-let blogCssVersion = '';
-let blogScriptVersion = '';
-let blogComponentsVersion = '';
-if (fs.existsSync(blogIndexPath)) {
-    const blogHtml = fs.readFileSync(blogIndexPath, 'utf8');
-    const blogCssMatch = blogHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)/);
-    if (blogCssMatch) blogCssVersion = blogCssMatch[1];
-    const blogScriptMatch = blogHtml.match(/script\.js\?v=([a-zA-Z0-9_-]+)/);
-    if (blogScriptMatch) blogScriptVersion = blogScriptMatch[1];
-    const blogComponentsMatch = blogHtml.match(/components\.js\?v=([a-zA-Z0-9_-]+)/);
-    if (blogComponentsMatch) blogComponentsVersion = blogComponentsMatch[1];
-}
-
-// 代表的な記事ファイルから article-shared.css のクエリを抽出
-const articlePath = path.join(__dirname, '../articles/2026-06-20-discount-gift-cards.html');
-let articleSharedCssVersion = '';
-if (fs.existsSync(articlePath)) {
-    const articleHtml = fs.readFileSync(articlePath, 'utf8');
-    const articleSharedCssMatch = articleHtml.match(/article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
-    if (articleSharedCssMatch) articleSharedCssVersion = articleSharedCssMatch[1];
-}
-
-// ==========================================
-// 10.1 sw.js (Service Worker) のキャッシュ自動更新・同期処理
-// ==========================================
-const swPath = path.join(__dirname, '../sw.js');
-if (fs.existsSync(swPath)) {
-    let swContent = fs.readFileSync(swPath, 'utf8');
-
-    // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
-    const newCacheName = `playpoint-calc-v${assetVersion}`;
-    swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
-
-    // ASSETS 内のバージョンパラメータを index.html と自動同期
-    if (cssVersion) {
-        swContent = swContent.replace(/\.\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./style.css?v=${cssVersion}`);
-    }
-    if (consentVersion) {
-        swContent = swContent.replace(/\.\/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `./js/consent.js?v=${consentVersion}`);
-    }
-    if (thirdPartyVersion) {
-        swContent = swContent.replace(/\.\/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `./js/third-party.js?v=${thirdPartyVersion}`);
-    }
-    if (intentTrackingVersion) {
-        swContent = swContent.replace(/\.\/js\/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `./js/intent-tracking.js?v=${intentTrackingVersion}`);
-    }
-    if (blogCssVersion) {
-        swContent = swContent.replace(/\.\/blog\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./blog/style.css?v=${blogCssVersion}`);
-    }
-    if (blogScriptVersion) {
-        swContent = swContent.replace(/\.\/blog\/script\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/script.js?v=${blogScriptVersion}`);
-    }
-    if (blogComponentsVersion) {
-        swContent = swContent.replace(/\.\/blog\/components\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/components.js?v=${blogComponentsVersion}`);
-    }
-    if (articleSharedCssVersion) {
-        swContent = swContent.replace(/\.\/articles\/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `./articles/article-shared.css?v=${articleSharedCssVersion}`);
-    }
-    if (mainVersion) {
-        swContent = swContent.replace(/\.\/js\/main\.js\?v=[a-zA-Z0-9_-]+/g, `./js/main.js?v=${mainVersion}`);
-    }
-
-    fs.writeFileSync(swPath, swContent, 'utf8');
-    console.log(`Successfully synchronized sw.js cache. CACHE_NAME=${newCacheName}`);
-}
-
-// ==========================================
-// 10.2 kindle-tracker/sw.js のキャッシュ自動更新・同期処理
-// ==========================================
-const kindleSwPath = path.join(__dirname, '../kindle-tracker/sw.js');
-if (fs.existsSync(kindleSwPath)) {
-    let swContent = fs.readFileSync(kindleSwPath, 'utf8');
-
-    // CACHE_NAME をビルド時の日付・時間に基づいて一意に更新
-    const newKindleCacheName = `kindle-tracker-v${assetVersion}`;
-    swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newKindleCacheName}';`);
-
-    fs.writeFileSync(kindleSwPath, swContent, 'utf8');
-    console.log(`Successfully synchronized kindle-tracker/sw.js cache. CACHE_NAME=${newKindleCacheName}`);
-}
-
-// ==========================================
-// 10.3 kindle-tracker/index.html のアセットバージョン・日付自動同期処理
-// ==========================================
-const kindleIndexPath = path.join(__dirname, '../kindle-tracker/index.html');
-if (fs.existsSync(kindleIndexPath)) {
-    let content = fs.readFileSync(kindleIndexPath, 'utf8');
-
-    // style.css?v=... の同期
-    content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersion}a`);
-    // app.js?v=... の同期
-    content = content.replace(/app\.js\?v=[a-zA-Z0-9_-]+/g, `app.js?v=${assetVersion}a`);
-
-    // 日付メタデータ・最終更新日の同期
-    content = content.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
-    content = content.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
-    content = content.replace(/"dateModified": "[^"]+"/, `"dateModified": "${todayStr}"`);
-    content = content.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
-
-    fs.writeFileSync(kindleIndexPath, content, 'utf8');
-    console.log(`Successfully synchronized asset versions and dates in kindle-tracker/index.html`);
-}
-
-// ==========================================
-// 10.5. third-party.js 内の consent.js バージョン自動同期処理
-// ==========================================
-const thirdPartyJsPath = path.join(__dirname, '../js/third-party.js');
-if (fs.existsSync(thirdPartyJsPath) && consentVersion) {
-    let tpContent = fs.readFileSync(thirdPartyJsPath, 'utf8');
-    tpContent = tpContent.replace(/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `js/consent.js?v=${consentVersion}`);
-    fs.writeFileSync(thirdPartyJsPath, tpContent, 'utf8');
-    console.log(`Successfully synchronized consent.js version in third-party.js to v=${consentVersion}`);
-}
+const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
 // ==========================================
 // 10.7. 他の全HTMLファイルのアセットバージョン・日付情報の自動同期処理
@@ -560,20 +422,20 @@ syncedHtmlFiles.forEach(file => {
         let content = fs.readFileSync(filePath, 'utf8');
         
         // style.css?v=... の同期
-        if (cssVersion) {
-            content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${cssVersion}`);
+        if (assetVersions.cssVersion) {
+            content = content.replace(/style\.css\?v=[a-zA-Z0-9_-]+/g, `style.css?v=${assetVersions.cssVersion}`);
         }
         // third-party.js?v=... の同期
-        if (thirdPartyVersion) {
-            content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${thirdPartyVersion}`);
+        if (assetVersions.thirdPartyVersion) {
+            content = content.replace(/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `third-party.js?v=${assetVersions.thirdPartyVersion}`);
         }
         // intent-tracking.js?v=... の同期
-        if (intentTrackingVersion) {
-            content = content.replace(/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `intent-tracking.js?v=${intentTrackingVersion}`);
+        if (assetVersions.intentTrackingVersion) {
+            content = content.replace(/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `intent-tracking.js?v=${assetVersions.intentTrackingVersion}`);
         }
         // article-shared.css?v=... の同期
-        if (articleSharedCssVersion) {
-            content = content.replace(/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `article-shared.css?v=${articleSharedCssVersion}`);
+        if (assetVersions.articleSharedCssVersion) {
+            content = content.replace(/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `article-shared.css?v=${assetVersions.articleSharedCssVersion}`);
         }
         
         // 日付メタデータ・最終更新日の同期
@@ -618,4 +480,4 @@ if (fs.existsSync(sitemapPath)) {
     console.log(`Successfully unified sitemap.xml line endings to LF and updated top-page lastmod to ${todayStr}.`);
 }
 
-generateBlogFeeds(path.join(__dirname, '..'));
+generateBlogFeeds(rootDir);

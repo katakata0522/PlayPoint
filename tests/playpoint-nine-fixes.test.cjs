@@ -369,13 +369,15 @@ test('Kindle TrackerのHTMLとsw.jsはアセットバージョン同期対象に
   const html = read('kindle-tracker/index.html');
   const sw = read('kindle-tracker/sw.js');
   const buildScript = read('scripts/build-html.js');
+  const assetSync = read('scripts/asset-sync.cjs');
   const buildTargets = read('scripts/build-targets.cjs');
 
   assert.ok(html.includes('style.css?v='), 'style.cssにバージョンクエリがありません');
   assert.ok(html.includes('app.js?v='), 'app.jsにバージョンクエリがありません');
   assert.ok(sw.includes('const CACHE_NAME = \'kindle-tracker-v'), 'sw.jsにCACHE_NAME定義がありません');
-  assert.ok(buildScript.includes('kindle-tracker/sw.js'), 'ビルドスクリプトにkindle sw.jsの同期がありません');
-  assert.ok(buildScript.includes('kindle-tracker/index.html'), 'ビルドスクリプトにkindle index.htmlの同期がありません');
+  assert.ok(buildScript.includes('syncServiceWorkerAssets'), 'ビルドスクリプトからアセット同期を呼び出していません');
+  assert.ok(assetSync.includes('kindle-tracker/sw.js'), 'アセット同期モジュールにkindle sw.jsの同期がありません');
+  assert.ok(assetSync.includes('kindle-tracker/index.html'), 'アセット同期モジュールにkindle index.htmlの同期がありません');
   assert.ok(buildTargets.includes("'kindle-tracker/index.html'"), 'kindle index.htmlが生成物検証対象ではありません');
   assert.ok(buildTargets.includes("'kindle-tracker/sw.js'"), 'kindle sw.jsが生成物検証対象ではありません');
 });
