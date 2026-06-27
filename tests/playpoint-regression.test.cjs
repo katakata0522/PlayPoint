@@ -385,6 +385,36 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
+test('ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う', () => {
+  const { buildBlogFeeds } = require(path.join(root, 'scripts', 'blog-feeds.cjs'));
+  const feeds = buildBlogFeeds([
+    {
+      file: '../articles/older.html',
+      title: '古い記事',
+      date: '2026-01-01',
+      description: 'old'
+    },
+    {
+      file: '../articles/newer.html',
+      title: '新しい & <記事>',
+      date: '2026-02-01',
+      description: '"説明" と \'引用\''
+    },
+    {
+      file: '',
+      title: '除外',
+      date: '2026-03-01'
+    }
+  ]);
+
+  assert.ok(feeds, 'フィードが生成されていません');
+  assert.strictEqual(feeds.articleCount, 2);
+  assert.ok(feeds.rss.indexOf('https://playpoint-sim.com/articles/newer.html') < feeds.rss.indexOf('https://playpoint-sim.com/articles/older.html'));
+  assert.ok(feeds.atom.indexOf('https://playpoint-sim.com/articles/newer.html') < feeds.atom.indexOf('https://playpoint-sim.com/articles/older.html'));
+  assert.ok(feeds.rss.includes('新しい &amp; &lt;記事&gt;'));
+  assert.ok(feeds.atom.includes('&quot;説明&quot; と &apos;引用&apos;'));
+});
+
 test('ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る', () => {
   const html = fs.readFileSync(path.join(root, 'maintenance', 'diamond', 'index.html'), 'utf8');
 
