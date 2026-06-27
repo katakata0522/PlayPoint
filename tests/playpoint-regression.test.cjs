@@ -1070,6 +1070,25 @@ test('トップページの更新日は実装更新日と一致する', () => {
   assert.match(sitemap, new RegExp(`<loc>https://playpoint-sim\\.com/</loc>\\s*<lastmod>${modifiedDate[1]}</lastmod>`));
 });
 
+test('サイトマップ同期はトップページ群のlastmodだけを更新する', () => {
+  const { syncSitemapContent } = require(path.join(root, 'scripts', 'sitemap-sync.cjs'));
+  const before = [
+    '<urlset>',
+    '<url><loc>https://playpoint-sim.com/</loc><lastmod>2026-01-01</lastmod></url>',
+    '<url><loc>https://playpoint-sim.com/en/</loc><lastmod>2026-01-01</lastmod></url>',
+    '<url><loc>https://playpoint-sim.com/articles/sample.html</loc><lastmod>2026-02-02</lastmod></url>',
+    '</urlset>'
+  ].join('\r\n');
+
+  const after = syncSitemapContent(before, '2026-06-27');
+
+  assert.ok(!after.includes('\r\n'));
+  assert.ok(after.endsWith('\n'));
+  assert.ok(after.includes('<loc>https://playpoint-sim.com/</loc><lastmod>2026-06-27</lastmod>'));
+  assert.ok(after.includes('<loc>https://playpoint-sim.com/en/</loc><lastmod>2026-06-27</lastmod>'));
+  assert.ok(after.includes('<loc>https://playpoint-sim.com/articles/sample.html</loc><lastmod>2026-02-02</lastmod>'));
+});
+
 test('反映タイミング記事は結論と確認手順を見出しで整理する', () => {
   const html = fs.readFileSync(path.join(root, 'articles', '2026-03-10-play-points-reflection-timing.html'), 'utf8');
 
