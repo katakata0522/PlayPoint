@@ -31,6 +31,8 @@ const generatedFiles = [
   'en/index.html',
   'ko/index.html',
   'tw/index.html',
+  'feed.xml',
+  'atom.xml',
   'sw.js',
   'js/third-party.js',
   'about-playpoints.html',

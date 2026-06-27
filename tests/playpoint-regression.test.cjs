@@ -356,6 +356,7 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
   const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
 
   assert.ok(fs.existsSync(rssPath), 'feed.xml がありません');
   assert.ok(fs.existsSync(atomPath), 'atom.xml がありません');
@@ -370,6 +371,11 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(atom.includes('<feed xmlns="http://www.w3.org/2005/Atom">'), 'Atom feed ルートがありません');
   assert.ok(atom.includes('<entry>'), 'Atom entry がありません');
   assert.ok(atom.includes('href="https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html"'), 'Atomに最新記事がありません');
+  for (const article of articles) {
+    const absoluteUrl = `https://playpoint-sim.com/${article.file.replace(/^\.\.\//, '')}`;
+    assert.ok(rss.includes(absoluteUrl), `RSSに記事がありません: ${absoluteUrl}`);
+    assert.ok(atom.includes(absoluteUrl), `Atomに記事がありません: ${absoluteUrl}`);
+  }
 
   for (const html of [blogHtml, indexHtml]) {
     assert.ok(html.includes('rel="alternate" type="application/rss+xml"'), 'RSS alternate link がありません');
@@ -558,6 +564,15 @@ test('CSPのscript-srcはhttps全体を許可しない', () => {
   assert.ok(!scriptSrcMatch[1].split(/\s+/).includes('https:'));
   assert.ok(htaccess.includes('https://*.googlesyndication.com'));
   assert.ok(htaccess.includes('https://cdnjs.cloudflare.com'));
+});
+
+test('静的配信設定はフィードとローカルフォントを効率よく配信する', () => {
+  const htaccess = fs.readFileSync(path.join(root, '.htaccess'), 'utf8');
+
+  assert.ok(htaccess.includes('application/rss+xml'), 'RSSが圧縮対象に入っていません');
+  assert.ok(htaccess.includes('application/atom+xml'), 'Atomが圧縮対象に入っていません');
+  assert.ok(htaccess.includes('application/manifest+json'), 'manifestが圧縮対象に入っていません');
+  assert.ok(htaccess.includes('ExpiresByType font/woff2 "access plus 1 year"'), 'ローカルwoff2フォントが長期キャッシュ対象ではありません');
 });
 
 test('Gravity Todoのサービスワーカーは外部オリジンをキャッシュしない', () => {

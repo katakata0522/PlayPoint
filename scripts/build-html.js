@@ -16,6 +16,94 @@ function replaceStaticLanguageText(html, staticText) {
     );
 }
 
+function escapeXml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
+}
+
+function toArticleUrl(file) {
+    return `https://playpoint-sim.com/${String(file || '').replace(/^\.\.\//, '')}`;
+}
+
+function toRssDate(date) {
+    return new Date(`${date}T12:00:00+09:00`).toUTCString();
+}
+
+function toAtomDate(date) {
+    return `${date}T12:00:00+09:00`;
+}
+
+function generateBlogFeeds() {
+    const articlesPath = path.join(__dirname, '../blog/articles.json');
+    if (!fs.existsSync(articlesPath)) return;
+
+    const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'))
+        .filter(article => article && article.file && article.title && article.date)
+        .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    if (articles.length === 0) return;
+
+    const feedTitle = 'Google Play Points攻略・使い方ブログ | Playポイント計算機';
+    const feedDescription = 'Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。';
+    const latestDate = articles[0].date;
+    const rssItems = articles.map(article => {
+        const url = toArticleUrl(article.file);
+        return `    <item>
+      <title>${escapeXml(article.title)}</title>
+      <link>${escapeXml(url)}</link>
+      <guid isPermaLink="true">${escapeXml(url)}</guid>
+      <pubDate>${toRssDate(article.date)}</pubDate>
+      <description>${escapeXml(article.description || '')}</description>
+    </item>`;
+    }).join('\n');
+    const atomEntries = articles.map(article => {
+        const url = toArticleUrl(article.file);
+        return `  <entry>
+    <title>${escapeXml(article.title)}</title>
+    <link href="${escapeXml(url)}" rel="alternate" type="text/html" />
+    <id>${escapeXml(url)}</id>
+    <updated>${toAtomDate(article.date)}</updated>
+    <summary>${escapeXml(article.description || '')}</summary>
+  </entry>`;
+    }).join('\n');
+
+    const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>${escapeXml(feedTitle)}</title>
+    <link>https://playpoint-sim.com/blog/</link>
+    <description>${escapeXml(feedDescription)}</description>
+    <language>ja</language>
+    <lastBuildDate>${toRssDate(latestDate)}</lastBuildDate>
+    <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
+${rssItems}
+  </channel>
+</rss>
+`;
+    const atom = `<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>${escapeXml(feedTitle)}</title>
+  <subtitle>${escapeXml(feedDescription)}</subtitle>
+  <link href="https://playpoint-sim.com/blog/" rel="alternate" type="text/html" />
+  <link href="https://playpoint-sim.com/atom.xml" rel="self" type="application/atom+xml" />
+  <id>https://playpoint-sim.com/blog/</id>
+  <updated>${toAtomDate(latestDate)}</updated>
+  <author>
+    <name>かたかた</name>
+    <uri>https://playpoint-sim.com/author/katakata.html</uri>
+  </author>
+${atomEntries}
+</feed>
+`;
+
+    fs.writeFileSync(path.join(__dirname, '../feed.xml'), rss, 'utf8');
+    fs.writeFileSync(path.join(__dirname, '../atom.xml'), atom, 'utf8');
+    console.log(`Generated blog feeds (${articles.length} articles).`);
+}
+
 // 現在の日本時間 (JST) の日付を取得して index.html の日付メタデータを自動同期
 const now = new Date();
 const jstOffset = 9 * 60 * 60 * 1000;
@@ -636,3 +724,5 @@ if (fs.existsSync(sitemapPath)) {
     fs.writeFileSync(sitemapPath, sitemapContent, 'utf8');
     console.log(`Successfully unified sitemap.xml line endings to LF and updated top-page lastmod to ${todayStr}.`);
 }
+
+generateBlogFeeds();

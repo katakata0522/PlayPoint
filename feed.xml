@@ -1,18 +1,158 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Google Play Points攻略・使い方ブログ | Playポイント計算機</title>
     <link>https://playpoint-sim.com/blog/</link>
     <description>Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。</description>
     <language>ja</language>
-    <lastBuildDate>Sat, 20 Jun 2026 12:00:00 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 20 Jun 2026 03:00:00 GMT</lastBuildDate>
     <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Google Playギフトカードを割引・還元キャンペーンで安く買う方法まとめ</title>
+      <title>【課金効率化】Google Play ギフトコードを常に割引・ポイント還元付きでお得に購入する裏ワザ</title>
       <link>https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html</link>
-      <guid>https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html</guid>
-      <pubDate>Sat, 20 Jun 2026 12:00:00 +0900</pubDate>
-      <description>Google Playギフトカードを割引・増量・ポイント還元キャンペーンで常にお得に、安く購入する方法をわかりやすくまとめました。主要コンビニやクレジットカード決済でのキャンペーン情報を網羅。</description>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html</guid>
+      <pubDate>Sat, 20 Jun 2026 03:00:00 GMT</pubDate>
+      <description>Google Play ギフトコードを普通に買うのはもったいない！楽天市場でのポイント還元やコンビニのキャンペーンなど、常に数％〜十数％お得に課金するための裏ワザを徹底解説します。</description>
+    </item>
+    <item>
+      <title>Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</title>
+      <link>https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html</guid>
+      <pubDate>Tue, 10 Mar 2026 03:00:00 GMT</pubDate>
+      <description>Play Pointsの反映タイミングが気になる時に役立つ記事です。すぐ付く時と遅れる時の違い、保留の見分け方、確認ポイント、待つ目安を分かりやすくまとめています。</description>
+    </item>
+    <item>
+      <title>【複数アカウント】ポイントは合算できる？管理の注意点</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-multiple-accounts.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>複数のGoogleアカウントでPlay Pointsを使う時の注意点。ポイントは合算できない。</description>
+    </item>
+    <item>
+      <title>【Play Games】Play GamesとPlay Pointsの違いは？</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-play-games.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-play-games.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Play GamesとPlay Pointsは別のサービス。それぞれの役割と関係性を整理。</description>
+    </item>
+    <item>
+      <title>【コンテンツ】映画・書籍・音楽でもポイントは貯まる？</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-movies-books.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-movies-books.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ゲーム課金以外の映画・書籍・音楽でもポイントは貯まる。対象コンテンツを解説。</description>
+    </item>
+    <item>
+      <title>【有効期限】ポイントはいつ失効する？期限切れを防ぐ方法</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-expiration.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-expiration.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ポイントの有効期限は最後の活動から1年。失効を防ぐ方法を解説。</description>
+    </item>
+    <item>
+      <title>【プロモコード】割引でもポイントは貯まる？計算の仕組み</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-promo-code.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-promo-code.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>プロモコードや割引使用時もポイントは貯まる。割引後の金額で計算される仕組みを解説。</description>
+    </item>
+    <item>
+      <title>【確認方法】ポイント残高・履歴をチェックする3ステップ</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-check-balance.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-check-balance.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>現在のポイント残高、獲得履歴、ランク状況を確認する方法を解説。</description>
+    </item>
+    <item>
+      <title>【返金】キャンセルしたらポイントはどうなる？減算ルール解説</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-refund.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-refund.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>返金するとポイントも減算される？購入キャンセル時のPlay Pointsの扱いと注意点を解説。</description>
+    </item>
+    <item>
+      <title>【ギフトカード】チャージでポイントは貯まる？使用時との違い</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-gift-card.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-gift-card.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ギフトカードチャージ時はポイント対象外。残高を使った時にポイントが貯まる仕組みを解説。</description>
+    </item>
+    <item>
+      <title>【ファミリー共有】家族でPlay Pointsは共有できる？</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-family-sharing.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-family-sharing.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Play Pointsは家族で共有できる？ファミリーライブラリとの関係と注意点を解説。</description>
+    </item>
+    <item>
+      <title>【サブスク】YouTube Premium・Google Oneでポイントは貯まる？</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-subscription.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-subscription.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>定期購入でポイントが貯まる条件と注意点を解説。契約経路によって対象・対象外が変わる。</description>
+    </item>
+    <item>
+      <title>【毎週チェック】ウィークリーリワードの受け取り方と仕組み</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>毎週無料でポイントがもらえるウィークリーリワード。受け取り方とランクごとの上限を解説。</description>
+    </item>
+    <item>
+      <title>【初心者向け】Play Pointsの始め方｜登録から最初にやることまで</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-getting-started.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-getting-started.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsとは？始め方・登録方法・最初にやるべきことを解説。ポイントの貯め方・使い方・ランク制度の基本まで。</description>
+    </item>
+    <item>
+      <title>【2026年正月】年末年始キャンペーンはいつ？過去傾向から予測</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-new-year-campaign.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-new-year-campaign.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>過去の開始日データをもとに2025→2026シーズンを現実的に予測。失敗しない立ち回りも解説。</description>
+    </item>
+    <item>
+      <title>【反論】「プラチナで十分」は本当？ダイヤモンドの体験価値を考える</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-diamond-vip.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-diamond-vip.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>イベント特典・サポート・週次リワードの見方。還元率以外の価値を整理。</description>
+    </item>
+    <item>
+      <title>課金はキャンペーン待ちが得？ポイント増量の仕組みと確認手順</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-campaign.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-campaign.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ポイント増量の確認方法、重複しないルール（高い獲得レートが適用）、シミュレーションまでまとめ。</description>
+    </item>
+    <item>
+      <title>Playポイントの使い道ランキング｜クレジット交換は損？賢い使い方まとめ</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-best-use.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-best-use.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>クーポン/アイテム/クレジットの違いと、価値が上がる見分け方、期限（失効対策）まで整理。</description>
+    </item>
+    <item>
+      <title>【徹底検証】ダイヤモンドは本当にお得？必要ポイントと維持費をシミュレーション</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ダイヤモンドとプラチナの差を数字で検証。必要ポイント・維持費・どっちがコスパ良いかを解説。</description>
+    </item>
+    <item>
+      <title>【年末必見】ランクが下がる！？Google Play Points「ランク維持期間」を完全解説</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-playpoints-rank-maintenance.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-playpoints-rank-maintenance.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>Google Play Pointsのランクは暦年（1/1〜12/31）で集計され、年初に前年の獲得ポイントに応じて見直されます。落ちやすいパターンと年末にやるべき確認を解説。</description>
+    </item>
+    <item>
+      <title>課金したのにポイントがつかない！反映されない時の「3つの対処法」</title>
+      <link>https://playpoint-sim.com/articles/2025-12-25-playpoints-not-reflected.html</link>
+      <guid isPermaLink="true">https://playpoint-sim.com/articles/2025-12-25-playpoints-not-reflected.html</guid>
+      <pubDate>Thu, 25 Dec 2025 03:00:00 GMT</pubDate>
+      <description>ポイント履歴・保留中・アカウント違いなど、よくある原因を公式手順でチェック。再起動やPlayストア更新の対処も解説。</description>
     </item>
   </channel>
 </rss>
