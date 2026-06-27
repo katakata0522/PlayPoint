@@ -4,6 +4,18 @@ const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 
+const ROOT_SERVICE_WORKER_ASSETS = [
+  { versionKey: 'cssVersion', assetPath: './style.css' },
+  { versionKey: 'consentVersion', assetPath: './js/consent.js' },
+  { versionKey: 'thirdPartyVersion', assetPath: './js/third-party.js' },
+  { versionKey: 'intentTrackingVersion', assetPath: './js/intent-tracking.js' },
+  { versionKey: 'blogCssVersion', assetPath: './blog/style.css' },
+  { versionKey: 'blogScriptVersion', assetPath: './blog/script.js' },
+  { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },
+  { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
+  { versionKey: 'mainVersion', assetPath: './js/main.js' }
+];
+
 function readTextIfExists(filePath) {
   if (!fs.existsSync(filePath)) return '';
   return fs.readFileSync(filePath, 'utf8');
@@ -47,6 +59,16 @@ function collectAssetVersions(rootDir, indexHtml) {
   };
 }
 
+function syncServiceWorkerAssetVersions(swContent, versions, assets = ROOT_SERVICE_WORKER_ASSETS) {
+  let content = swContent;
+
+  for (const { versionKey, assetPath } of assets) {
+    content = replaceAssetVersion(content, assetPath, versions[versionKey]);
+  }
+
+  return content;
+}
+
 function syncRootServiceWorker(rootDir, assetVersion, versions) {
   const swPath = path.join(rootDir, 'sw.js');
   if (!fs.existsSync(swPath)) return;
@@ -54,24 +76,7 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
   let swContent = fs.readFileSync(swPath, 'utf8');
   const newCacheName = `playpoint-calc-v${assetVersion}`;
   swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
-
-  const replacements = [
-    [versions.cssVersion, /\.\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./style.css?v=${versions.cssVersion}`],
-    [versions.consentVersion, /\.\/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `./js/consent.js?v=${versions.consentVersion}`],
-    [versions.thirdPartyVersion, /\.\/js\/third-party\.js\?v=[a-zA-Z0-9_-]+/g, `./js/third-party.js?v=${versions.thirdPartyVersion}`],
-    [versions.intentTrackingVersion, /\.\/js\/intent-tracking\.js\?v=[a-zA-Z0-9_-]+/g, `./js/intent-tracking.js?v=${versions.intentTrackingVersion}`],
-    [versions.blogCssVersion, /\.\/blog\/style\.css\?v=[a-zA-Z0-9_-]+/g, `./blog/style.css?v=${versions.blogCssVersion}`],
-    [versions.blogScriptVersion, /\.\/blog\/script\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/script.js?v=${versions.blogScriptVersion}`],
-    [versions.blogComponentsVersion, /\.\/blog\/components\.js\?v=[a-zA-Z0-9_-]+/g, `./blog/components.js?v=${versions.blogComponentsVersion}`],
-    [versions.articleSharedCssVersion, /\.\/articles\/article-shared\.css\?v=[a-zA-Z0-9_-]+/g, `./articles/article-shared.css?v=${versions.articleSharedCssVersion}`],
-    [versions.mainVersion, /\.\/js\/main\.js\?v=[a-zA-Z0-9_-]+/g, `./js/main.js?v=${versions.mainVersion}`]
-  ];
-
-  for (const [version, pattern, replacement] of replacements) {
-    if (version) {
-      swContent = swContent.replace(pattern, replacement);
-    }
-  }
+  swContent = syncServiceWorkerAssetVersions(swContent, versions);
 
   fs.writeFileSync(swPath, swContent, 'utf8');
   console.log(`Successfully synchronized sw.js cache. CACHE_NAME=${newCacheName}`);
@@ -123,11 +128,13 @@ function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
 }
 
 module.exports = {
+  ROOT_SERVICE_WORKER_ASSETS,
   collectAssetVersions,
   extractVersion,
   syncKindleIndex,
   syncKindleServiceWorker,
   syncRootServiceWorker,
+  syncServiceWorkerAssetVersions,
   syncServiceWorkerAssets,
   syncThirdPartyConsentVersion
 };
