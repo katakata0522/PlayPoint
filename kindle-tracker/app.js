@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const sortSelect = document.getElementById('sort-select');
     const logsContainer = document.getElementById('logs-container');
+    const logSearchInput = document.getElementById('log-search-input');
     
     const btnShareX = document.getElementById('btn-share-x');
     const btnExport = document.getElementById('btn-export');
@@ -1747,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', () => {
                            typeof b.title === 'string' && b.title.trim().length > 0 && b.title.length <= 100 &&
                            typeof b.price === 'number' && b.price >= 1 && b.price <= 100000 &&
                            (typeof b.readDate === 'string' || !b.readDate) &&
-                           typeof b.rating === 'number' && b.rating >= 1 && b.rating <= 5 &&
+                           typeof b.rating === 'number' && b.rating >= 0.5 && b.rating <= 5 &&
                            (typeof b.notes === 'string' || !b.notes || b.notes.length <= 500) &&
                            (!b.category || (typeof b.category === 'string' && ['business', 'novel', 'comic', 'magazine', 'other'].includes(b.category)));
                     
@@ -1873,7 +1874,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // しおり風検索窓のインプット入力監視とリアルタイム連動
-    const logSearchInput = document.getElementById('log-search-input');
     if (logSearchInput) {
         logSearchInput.addEventListener('input', () => {
             // 検索クエリに基づき再計算 ＆ 本棚・円グラフ・統計を自動同期
