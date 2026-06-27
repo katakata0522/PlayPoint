@@ -32,6 +32,7 @@ jobs:
           node .github/scripts/verify-build-output.cjs
           node tests/playpoint-regression.test.cjs
           node tests/playpoint-nine-fixes.test.cjs
+          node tests/kindle-tracker-logic.test.cjs
 
       - name: Verify build outputs
         run: |
@@ -54,6 +55,7 @@ jobs:
           node .github/scripts/verify-js-syntax.cjs
           node tests/playpoint-regression.test.cjs
           node tests/playpoint-nine-fixes.test.cjs
+          node tests/kindle-tracker-logic.test.cjs
 
       - name: Setup SSH
         run: |
