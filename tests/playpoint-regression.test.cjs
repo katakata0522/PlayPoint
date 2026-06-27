@@ -344,6 +344,26 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
   });
 });
 
+test('キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ', () => {
+  const pages = [
+    path.join(root, 'campaign', '2x', 'index.html'),
+    path.join(root, 'campaign', '3x', 'index.html'),
+    path.join(root, 'amount', '10000', 'index.html')
+  ];
+
+  pages.forEach((file) => {
+    const html = fs.readFileSync(file, 'utf8');
+    const relative = path.relative(root, file);
+
+    assert.ok(html.includes('class="lp-trust-line"'), `${relative} の更新日/運営者表示がありません`);
+    assert.ok(html.includes('class="lp-hero-panel"'), `${relative} のファーストビュー要約枠がありません`);
+    assert.ok(html.includes('class="lp-jp-summary"'), `${relative} の要約ボックスがありません`);
+    assert.ok(html.includes('class="lp-comparison-table"'), `${relative} の比較表がありません`);
+    assert.ok(html.includes('class="lp-warning-box"'), `${relative} の注意枠がありません`);
+    assert.ok(html.includes('class="lp-mid-cta"'), `${relative} の中間CTAがありません`);
+  });
+});
+
 test('ステータス選択の再生成でoptionが重複しない', () => {
   const { PP_STATE, populateStatusSelects } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
