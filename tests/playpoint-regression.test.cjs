@@ -379,6 +379,17 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
+test('ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る', () => {
+  const html = fs.readFileSync(path.join(root, 'maintenance', 'diamond', 'index.html'), 'utf8');
+
+  assert.ok(html.includes('status=2'), '現在ステータスがダイヤモンドになっていません');
+  assert.ok(html.includes('target=diamond'), '目標ステータスがダイヤモンドになっていません');
+  assert.ok(html.includes('points=15000'), 'ダイヤモンド維持の初期不足ポイントが15000になっていません');
+  assert.ok(html.includes('ダイヤモンドの体験価値'), 'ダイヤモンド文脈の記事導線がありません');
+  assert.ok(!html.includes('ランク維持期間 of ルール'), '不自然な混入文言があります');
+  assert.ok(!html.includes('初期値は4000ポイント'), 'プラチナ維持由来の初期値が混入しています');
+});
+
 test('キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ', () => {
   const pages = [
     path.join(root, 'campaign', '2x', 'index.html'),
