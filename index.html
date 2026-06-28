@@ -9,8 +9,8 @@
     <meta name="description" content="Google Play Points のランクアップ計算機。プラチナ・ダイヤモンドまであといくら必要か、キャンペーン時の獲得ポイント、逆算、ランク維持の目安までまとめて確認できます。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-06-27">
-    <meta property="article:modified_time" content="2026-06-27T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-28">
+    <meta property="article:modified_time" content="2026-06-28T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -33,8 +33,8 @@
     <meta name="twitter:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料で試算できる計算機。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=20260628_0001a">
-    <link rel="stylesheet" href="style.css?v=20260628_0001a">
+    <link rel="modulepreload" href="js/main.js?v=20260628_1052a">
+    <link rel="stylesheet" href="style.css?v=20260628_1052a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -49,7 +49,7 @@
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-06-27",
+      "dateModified": "2026-06-28",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -132,12 +132,12 @@
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">今日は金曜日！今週のウィークリーリワードを引いて日記に記録しましょう！</span>
+        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Playポイント計算機</h1>
-    <p id="site-description" data-lang-key="siteDescription">現在のステータスから目標達成までの必要課金額の計算ができます！<br>さらに課金額から獲得できるポイントも計算できます！</p>
+    <p id="site-description" data-lang-key="siteDescription">まずは現在のステータス、目標ステータス、あと必要なポイントを入力してください。<br>ランク達成までの課金額や、課金額から得られるポイントを目安として計算できます。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">通常計算</button>
@@ -146,6 +146,14 @@
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
+        <div class="first-step-guide" aria-label="最初に入力する項目">
+            <p class="first-step-guide__title" data-lang-key="firstStepTitle">まずは3つだけ入力</p>
+            <ol>
+                <li data-lang-key="firstStepCurrent">現在のステータス</li>
+                <li data-lang-key="firstStepTarget">目標ステータス</li>
+                <li data-lang-key="firstStepNeeded">目標までの必要ポイント</li>
+            </ol>
+        </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -261,7 +269,7 @@
         </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear">2025</h2>
+            <h2 id="currentYear">現在の年</h2>
             <button id="nextYearBtn" aria-label="次の年へ">></button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
@@ -346,7 +354,7 @@
                     <li>
                         <a class="article-link-card" href="articles/2026-06-20-discount-gift-cards.html">
                             <span class="article-link-tag">お得課金</span>
-                            <span class="article-link-title">【課金効率化】Google Play ギフトコードを常に割引・ポイント還元付きでお得に購入する裏ワザ</span>
+                            <span class="article-link-title">【課金効率化】Google Play ギフトコードを条件付きでお得に購入する方法</span>
                         </a>
                     </li>
                     <li>
@@ -423,7 +431,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
         </p>
         <!-- META_LINE_START -->
-        <p class="meta-line">運営者: <a href="author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-06-27</p>
+        <p class="meta-line">運営者: <a href="author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-06-28</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
@@ -433,8 +441,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=20260628_0001a"></script>
-<script src="js/third-party.js?v=20260628_0001a" defer></script>
+<script type="module" src="js/main.js?v=20260628_1052a"></script>
+<script src="js/third-party.js?v=20260628_1052a" defer></script>
 
 </body>
 </html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>楽天お買い物マラソン ポイント上限シミュレーター | 買いすぎ損・上限オーバー防止ツール</title>
+    <meta name="description" content="楽天お買い物マラソン（またはスーパーSALE）での買い回り店舗数やSPU倍率から、獲得ポイントが上限（7,000pt/5,000pt等）をオーバーしないかをリアルタイムに判定する無料シミュレーターです。">
+    <link rel="canonical" href="https://playpoint-sim.com/tools/rakuten-sim/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #0b0f19;
+            --color-bg-card: #111827;
+            --color-bg-card-nested: #1f2937;
+            --color-border: #374151;
+            --color-text-main: #f9fafb;
+            --color-text-muted: #9ca3af;
+            --color-accent: #b9944a; /* 真鍮ゴールド */
+            --color-accent-hover: #d4af37;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 4px;
+            --font-main: 'Noto Sans JP', sans-serif;
+            --font-num: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .badge-premium {
+            display: inline-block;
+            background: linear-gradient(135deg, #aa7c11, #f3e5ab, #d4af37);
+            color: #451a03;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9fafb, #b9944a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .back-link {
+            position: absolute;
+            left: 0;
+            top: 25px;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--color-accent-hover);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 3fr 2fr;
+            }
+        }
+
+        .card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--color-accent);
+            padding-left: 10px;
+            color: var(--color-accent);
+        }
+
+        /* フォームグループ */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 480px) {
+            .form-row.three-cols {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+        }
+
+        .select-field, .input-field {
+            height: 40px;
+            border-radius: var(--radius-md);
+            background-color: var(--color-bg-card-nested);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-main);
+            padding: 0 12px;
+            font-family: var(--font-main);
+            font-size: 0.9rem;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+
+        .select-field:focus, .input-field:focus {
+            border-color: var(--color-accent);
+        }
+
+        /* 商品登録リスト */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+
+        .items-table th, .items-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .items-table th {
+            color: var(--color-text-muted);
+            font-weight: 600;
+        }
+
+        .items-table td.num {
+            font-family: var(--font-num);
+            font-weight: 600;
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--color-error);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0 4px;
+        }
+
+        .add-item-form {
+            display: grid;
+            grid-template-columns: 2fr 1.2fr auto;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed var(--color-border);
+        }
+
+        /* 結果ダッシュボード */
+        .result-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .status-badge.safe { background-color: rgba(16, 185, 129, 0.2); color: var(--color-success); border: 1px solid var(--color-success); }
+        .status-badge.warning { background-color: rgba(245, 158, 11, 0.2); color: var(--color-warning); border: 1px solid var(--color-warning); }
+        .status-badge.danger { background-color: rgba(239, 68, 68, 0.2); color: var(--color-error); border: 1px solid var(--color-error); }
+
+        .stat-group {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .stat-label-large {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+
+        .stat-value-large {
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: var(--font-num);
+            line-height: 1.1;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .breakdown-row.total {
+            border-top: 1px solid var(--color-border);
+            padding-top: 8px;
+            margin-top: 8px;
+            color: var(--color-text-main);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-accent { background-color: var(--color-accent); color: #fff; }
+        .btn-accent:hover { background-color: var(--color-accent-hover); }
+        .btn-secondary { background-color: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: var(--color-text-main); }
+        .btn-secondary:hover { background-color: var(--color-border); }
+
+        .btn-twitter {
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid var(--color-border);
+            margin-top: 16px;
+        }
+        .btn-twitter:hover { background-color: #111111; }
+
+        .promo-card {
+            background: linear-gradient(135deg, rgba(185, 148, 74, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(185, 148, 74, 0.2);
+        }
+
+        .promo-list {
+            margin-top: 12px;
+            padding-left: 18px;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .promo-link {
+            color: var(--color-accent);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .promo-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../../sitemap.html" class="back-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>一覧へ戻る</span>
+            </a>
+            <span class="badge-premium">PREMIUM TOOL</span>
+            <h1>楽天お買い物マラソン 上限シミュレーター</h1>
+            <p class="subtitle">買い回り店舗数やSPUから、獲得予定ポイントの上限オーバーを防ぎます</p>
+        </header>
+
+        <div class="grid-layout">
+            <!-- 左カラム：設定と入力 -->
+            <div class="main-column">
+                <!-- 基本設定 -->
+                <section class="card">
+                    <h2 class="card-title">⚙️ キャンペーン基本設定</h2>
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="spu-select">あなたのSPU倍率</label>
+                            <select id="spu-select" class="select-field" onchange="calculate()">
+                                <option value="1">1.0 倍 (通常会員)</option>
+                                <option value="2">2.0 倍</option>
+                                <option value="3">3.0 倍</option>
+                                <option value="4">4.0 倍</option>
+                                <option value="5" selected>5.0 倍</option>
+                                <option value="6">6.0 倍</option>
+                                <option value="8">8.0 倍</option>
+                                <option value="10">10.0 倍</option>
+                                <option value="12">12.0 倍</option>
+                                <option value="15">15.0 倍</option>
+                                <option value="16.5">16.5 倍 (上限)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="shop-count-select">買い回り店舗数</label>
+                            <select id="shop-count-select" class="select-field" onchange="calculate()">
+                                <option value="1">1 店舗 (通常)</option>
+                                <option value="2">2 店舗 (+1%)</option>
+                                <option value="3">3 店舗 (+2%)</option>
+                                <option value="4">4 店舗 (+3%)</option>
+                                <option value="5" selected>5 店舗 (+4%)</option>
+                                <option value="6">6 店舗 (+5%)</option>
+                                <option value="7">7 店舗 (+6%)</option>
+                                <option value="8">8 店舗 (+7%)</option>
+                                <option value="9">9 店舗 (+8%)</option>
+                                <option value="10">10 店舗以上 (+9%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="limit-select">キャンペーンポイント上限</label>
+                            <select id="limit-select" class="select-field" onchange="calculate()">
+                                <option value="7000" selected>7,000 pt (通常マラソン)</option>
+                                <option value="5000">5,000 pt (一部のミニマラソン)</option>
+                                <option value="10000">10,000 pt (スーパーSALE等)</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 購入予定リスト -->
+                <section class="card">
+                    <h2 class="card-title">🛍️ 購入予定商品リスト</h2>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>商品名</th>
+                                    <th>価格 (税込)</th>
+                                    <th style="width: 60px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-list-body">
+                                <!-- JSで動的に追加されます -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 追加フォーム -->
+                    <div class="add-item-form">
+                        <div class="form-group">
+                            <input type="text" id="new-item-name" class="input-field" placeholder="例: 炭酸水 24本ケース">
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="new-item-price" class="input-field" placeholder="価格 (円)" min="1">
+                        </div>
+                        <button type="button" class="btn btn-accent" style="height: 40px; padding: 0 16px;" onclick="addItem()">追加</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 右カラム：結果診断 -->
+            <div class="side-column">
+                <div class="result-panel">
+                    <section class="card">
+                        <h2 class="card-title">📊 獲得ポイント予測</h2>
+                        <div id="status-badge" class="status-badge safe">安全 (上限まで余裕あり)</div>
+                        
+                        <div class="stat-group">
+                            <div class="stat-label-large">合計獲得予定ポイント</div>
+                            <div id="total-points-val" class="stat-value-large value-saving">0 pt</div>
+                        </div>
+
+                        <div class="sub-breakdown" style="border-top: none; padding-top: 0;">
+                            <div class="breakdown-row">
+                                <span>合計購入金額 (税込)</span>
+                                <span id="summary-total-price" class="num">¥ 0</span>
+                            </div>
+                            <div class="breakdown-row">
+                                <span>通常・SPU獲得ポイント</span>
+                                <span id="summary-spu-points" class="num">0 pt</span>
+                            </div>
+                            <div class="breakdown-row">
+                                <span>買い回り獲得ポイント</span>
+                                <span id="summary-marathon-points" class="num">0 pt</span>
+                            </div>
+                            <div class="breakdown-row total">
+                                <span>買い回り上限残枠</span>
+                                <span id="summary-remaining-limit" class="num">7,000 pt</span>
+                            </div>
+                        </div>
+
+                        <a id="btn-share-x" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-twitter">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            診断結果をXで報告する
+                        </a>
+                    </section>
+
+                    <!-- おすすめ買い回り商品コラム -->
+                    <section class="card promo-card">
+                        <h3 class="card-title" style="border-left-color: var(--color-success); color: var(--color-success);">💡 買い回り店舗数アップのおすすめ</h3>
+                        <p class="promo-text" style="font-size: 0.8rem;">
+                            買い回りは「1店舗あたり1,000円以上」がカウント条件です。あと1店舗増やすだけで全体の還元率が+1%バンプし、獲得ポイントが購入価格以上増える「実質タダ買い」が発生することがあります。
+                        </p>
+                        <div class="promo-text" style="font-size: 0.8rem; font-weight: 700; margin-top: 8px;">
+                            定番の「1,000円ポッキリ送料無料」買い回りアイテム：
+                        </div>
+                        <ul class="promo-list">
+                            <li><a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="promo-link">讃岐うどん 9食セット (送料無料1,000円)</a></li>
+                            <li><a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="promo-link">強炭酸水 500ml×24本 (送料無料)</a></li>
+                            <li><a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="promo-link">割れチョコ スイートブレンド (送料無料1,000円)</a></li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // デフォルトアイテム
+        const state = {
+            items: [
+                { id: 1, name: '炭酸水 24本ケース', price: 1580 },
+                { id: 2, name: 'お掃除ロボット (ルンバ)', price: 49800 }
+            ],
+            nextId: 3
+        };
+
+        function init() {
+            renderItems();
+            calculate();
+        }
+
+        function renderItems() {
+            const tbody = document.getElementById('items-list-body');
+            tbody.innerHTML = '';
+            
+            state.items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.name}</td>
+                    <td class="num">¥ ${item.price.toLocaleString()}</td>
+                    <td>
+                        <button type="button" class="btn-delete" onclick="removeItem(${item.id})" aria-label="削除">&times;</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.addItem = function() {
+            const nameEl = document.getElementById('new-item-name');
+            const priceEl = document.getElementById('new-item-price');
+            
+            const name = nameEl.value.trim() || `商品 ${state.nextId}`;
+            const price = parseInt(priceEl.value);
+            
+            if (isNaN(price) || price <= 0) {
+                alert('有効な価格を入力してください');
+                return;
+            }
+            
+            state.items.push({
+                id: state.nextId++,
+                name: name,
+                price: price
+            });
+            
+            nameEl.value = '';
+            priceEl.value = '';
+            
+            renderItems();
+            calculate();
+        };
+
+        window.removeItem = function(id) {
+            state.items = state.items.filter(item => item.id !== id);
+            renderItems();
+            calculate();
+        };
+
+        window.calculate = function() {
+            const spu = parseFloat(document.getElementById('spu-select').value);
+            const shopCount = parseInt(document.getElementById('shop-count-select').value);
+            const limit = parseInt(document.getElementById('limit-select').value);
+            
+            // 1. 合計金額の算出 (楽天市場の仕様上、税抜価格に対してポイントが乗りますが、ここでは概算として税込ベースで計算)
+            const totalPrice = state.items.reduce((sum, item) => sum + item.price, 0);
+            
+            // SPUポイント (SPU倍率 * 合計金額 / 100)
+            const spuPoints = Math.floor(totalPrice * (spu / 100));
+            
+            // 買い回り倍率
+            // 2店舗で+1%, 3店舗で+2%... 10店舗以上で+9%
+            const marathonRate = Math.min(shopCount - 1, 9);
+            
+            // 買い回り獲得予定ポイント
+            let rawMarathonPoints = Math.floor(totalPrice * (marathonRate / 100));
+            
+            // 上限判定
+            let isOverLimit = false;
+            let marathonPoints = rawMarathonPoints;
+            let remainingLimit = limit - rawMarathonPoints;
+            
+            if (rawMarathonPoints >= limit) {
+                isOverLimit = true;
+                marathonPoints = limit;
+                remainingLimit = 0;
+            }
+            
+            const totalPoints = spuPoints + marathonPoints;
+            
+            // UI更新
+            document.getElementById('summary-total-price').textContent = `¥ ${totalPrice.toLocaleString()}`;
+            document.getElementById('summary-spu-points').textContent = `${spuPoints.toLocaleString()} pt`;
+            document.getElementById('summary-marathon-points').textContent = `${marathonPoints.toLocaleString()} pt`;
+            document.getElementById('summary-remaining-limit').textContent = `${Math.max(0, remainingLimit).toLocaleString()} pt`;
+            document.getElementById('total-points-val').textContent = `${totalPoints.toLocaleString()} pt`;
+            
+            const badge = document.getElementById('status-badge');
+            
+            if (marathonPoints === 0) {
+                badge.className = 'status-badge safe';
+                badge.textContent = '買い回りなし (安全)';
+            } else if (isOverLimit) {
+                badge.className = 'status-badge danger';
+                badge.textContent = '警告: ポイント上限超過 (買いすぎ損)';
+            } else if (remainingLimit < 1000) {
+                badge.className = 'status-badge warning';
+                badge.textContent = '注意: 上限まもなく到達';
+            } else {
+                badge.className = 'status-badge safe';
+                badge.textContent = '安全 (上限まで余裕あり)';
+            }
+            
+            // Xシェア
+            const twitterBtn = document.getElementById('btn-share-x');
+            const shareText = `【楽天お買い物マラソン上限チェッカー】での私の結果：\n購入総額: ¥${totalPrice.toLocaleString()} (店舗数: ${shopCount}店舗)\n獲得予定: ${totalPoints.toLocaleString()} pt (上限残枠: ${Math.max(0, remainingLimit).toLocaleString()} pt)\n買いすぎロスを防ぐポイント上限シミュレーターはこちら➔ https://playpoint-sim.com/tools/rakuten-sim/ #楽天マラソン #お買い物マラソン`;
+            twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>サブスク健康診断シミュレーター | 元取り判定＆ムダ撲滅ツール</title>
+    <meta name="description" content="あなたが契約しているサブスク（Netflix, U-NEXT, Kindle Unlimited, YouTube Premium等）の利用頻度から、本当に元が取れているか（黒字か赤字か）を一発判定する無料Webツールです。">
+    <link rel="canonical" href="https://playpoint-sim.com/tools/sub-health/">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #0b0f19;
+            --color-bg-card: #111827;
+            --color-bg-card-nested: #1f2937;
+            --color-border: #374151;
+            --color-text-main: #f9fafb;
+            --color-text-muted: #9ca3af;
+            --color-accent: #b9944a; /* 真鍮ゴールド */
+            --color-accent-hover: #d4af37;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --radius-sm: 4px;
+            --font-main: 'Noto Sans JP', sans-serif;
+            --font-num: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .badge-premium {
+            display: inline-block;
+            background: linear-gradient(135deg, #aa7c11, #f3e5ab, #d4af37);
+            color: #451a03;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f9fafb, #b9944a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .back-link {
+            position: absolute;
+            left: 0;
+            top: 25px;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--color-accent-hover);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-layout {
+                grid-template-columns: 3fr 2fr;
+            }
+        }
+
+        .card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--color-accent);
+            padding-left: 10px;
+            color: var(--color-accent);
+        }
+
+        .sub-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .sub-item {
+            background-color: var(--color-bg-card-nested);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .sub-item.active {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 10px rgba(185, 148, 74, 0.1);
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .sub-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sub-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--color-accent);
+        }
+
+        .sub-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .sub-fee {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            font-family: var(--font-num);
+        }
+
+        .sub-control-panel {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--color-border);
+            display: none;
+        }
+
+        .sub-item.active .sub-control-panel {
+            display: block;
+        }
+
+        .control-label {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-val-highlight {
+            color: var(--color-accent);
+            font-weight: 700;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-range {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--color-border);
+            outline: none;
+            accent-color: var(--color-accent);
+            cursor: pointer;
+        }
+
+        .slider-val-box {
+            font-family: var(--font-num);
+            font-weight: 700;
+            font-size: 1.1rem;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .slider-unit {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-left: 2px;
+        }
+
+        .result-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .status-badge.bronze { background-color: var(--color-border); color: var(--color-text-main); }
+        .status-badge.silver { background-color: var(--color-border); color: #c0c0c0; border: 1px solid #c0c0c0; }
+        .status-badge.gold { background-color: rgba(185, 148, 74, 0.2); color: var(--color-accent); border: 1px solid var(--color-accent); }
+        .status-badge.legend { background: linear-gradient(135deg, #aa7c11, #d4af37); color: #451a03; }
+
+        .stat-group {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .stat-label-large {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 6px;
+        }
+
+        .stat-value-large {
+            font-size: 2.2rem;
+            font-weight: 900;
+            font-family: var(--font-num);
+            line-height: 1.1;
+        }
+
+        .value-saving { color: var(--color-success); }
+        .value-deficit { color: var(--color-error); }
+
+        .sub-breakdown {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            color: var(--color-text-muted);
+        }
+
+        .breakdown-row.total-row {
+            color: var(--color-text-main);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            height: 44px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s, transform 0.1s;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .btn-accent {
+            background-color: var(--color-accent);
+            color: #ffffff;
+        }
+
+        .btn-accent:hover {
+            background-color: var(--color-accent-hover);
+        }
+
+        .btn-twitter {
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-twitter:hover {
+            background-color: #111111;
+        }
+
+        .promo-card {
+            margin-top: 20px;
+            background: linear-gradient(135deg, rgba(185, 148, 74, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(185, 148, 74, 0.2);
+        }
+
+        .promo-text {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-bottom: 12px;
+        }
+
+        .promo-link {
+            color: var(--color-accent);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .promo-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../../sitemap.html" class="back-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>一覧へ戻る</span>
+            </a>
+            <span class="badge-premium">PREMIUM TOOL</span>
+            <h1>サブスク健康診断シミュレーター</h1>
+            <p class="subtitle">契約中のサブスクの元を取れているか、利用頻度からリアルタイムに診断します</p>
+        </header>
+
+        <div class="grid-layout">
+            <div class="main-column">
+                <section class="card">
+                    <h2 class="card-title">🔌 契約中サブスクの利用頻度設定</h2>
+                    <div class="sub-list" id="sub-list-container"></div>
+                </section>
+            </div>
+
+            <div class="side-column">
+                <div class="result-panel">
+                    <section class="card">
+                        <h2 class="card-title">📝 総合診断結果</h2>
+                        <div id="status-badge" class="status-badge bronze">利用データなし</div>
+                        <div class="stat-group">
+                            <div class="stat-label-large">年間予想損益</div>
+                            <div id="annual-savings-val" class="stat-value-large value-saving">¥ 0</div>
+                        </div>
+
+                        <div class="sub-breakdown">
+                            <div class="breakdown-row">
+                                <span>選択中のサブスク</span>
+                                <span id="active-subs-count">0 個</span>
+                            </div>
+                            <div class="breakdown-row">
+                                <span>合計月額料金</span>
+                                <span id="total-monthly-fee">¥ 0 / 月</span>
+                            </div>
+                            <div class="breakdown-row">
+                                <span>推定年間価値</span>
+                                <span id="total-annual-value">¥ 0 / 年</span>
+                            </div>
+                            <div class="breakdown-row total-row">
+                                <span>差し引き年間お得額</span>
+                                <span id="net-annual-savings">¥ 0</span>
+                            </div>
+                        </div>
+
+                        <a id="btn-share-x" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-twitter">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            診断結果をXで報告する
+                        </a>
+                    </section>
+
+                    <section class="card promo-card">
+                        <h3 class="card-title" style="border-left-color: var(--color-success); color: var(--color-success);">💡 オトク最大化のアドバイス</h3>
+                        <div class="promo-text" id="promo-dynamic-text">
+                            サブスクを上手に活用すれば、年間で数万円以上の節約になります。例えば、読書がお好きな方には「Kindle Unlimited」、動画をたくさん観る方には「U-NEXT」が圧倒的にお勧めです。
+                        </div>
+                        <p class="promo-text">
+                            U-NEXTは毎月1,200ポイントが付与されるため、映画館のチケット割引や電子書籍の購入に充てることで、月額以上の価値を簡単に回収できます。<br>
+                            <a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="promo-link">➔ U-NEXTの31日間無料体験はこちら</a>
+                        </p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUB_PRESETS = [
+            {
+                id: 'kindle',
+                name: 'Kindle Unlimited',
+                fee: 980,
+                unit: '冊',
+                min: 0,
+                max: 15,
+                defaultVal: 3,
+                label: '月に読む平均冊数',
+                valMultiplier: 1000,
+                desc: '定価約1,000円のビジネス書やマンガを元に価値を算定します。'
+            },
+            {
+                id: 'youtube',
+                name: 'YouTube Premium',
+                fee: 1280,
+                unit: '時間',
+                min: 0,
+                max: 100,
+                defaultVal: 20,
+                label: '月に視聴する動画時間',
+                valMultiplier: 100,
+                desc: '広告非表示による快適性（時間節約）とYouTube Musicの価値を算定します。'
+            },
+            {
+                id: 'unext',
+                name: 'U-NEXT',
+                fee: 2189,
+                unit: '本',
+                min: 0,
+                max: 30,
+                defaultVal: 5,
+                label: '月にする見放題視聴本数 (※別途1200pt付与)',
+                valMultiplier: 400,
+                desc: '毎月付与される1,200円分のポイントに加え、見放題本数（1本400円換算）で算定します。',
+                extraVal: 1200
+            },
+            {
+                id: 'netflix',
+                name: 'Netflix',
+                fee: 1490,
+                unit: '時間',
+                min: 0,
+                max: 80,
+                defaultVal: 15,
+                label: '月に視聴する動画時間',
+                valMultiplier: 150,
+                desc: 'オリジナル作品や独占配信映画のクオリティを考慮して算定します。'
+            },
+            {
+                id: 'spotify',
+                name: 'Spotify Premium',
+                fee: 1080,
+                unit: '時間',
+                min: 0,
+                max: 120,
+                defaultVal: 30,
+                label: '月に聴く音楽時間',
+                valMultiplier: 50,
+                desc: '広告なし・オフライン再生機能を含めた快適性と楽曲アクセスで算定します。'
+            },
+            {
+                id: 'prime',
+                name: 'Amazon Prime',
+                fee: 600,
+                unit: '回',
+                min: 0,
+                max: 20,
+                defaultVal: 4,
+                label: '月に利用する送料無料配送回数',
+                valMultiplier: 410,
+                desc: 'Prime VideoやMusicに加え、通常配送無料特典（1回410円換算）で算定します。',
+                extraVal: 300
+            }
+        ];
+
+        const state = {
+            activeSubs: new Set()
+        };
+
+        function init() {
+            const container = document.getElementById('sub-list-container');
+            container.innerHTML = '';
+            
+            SUB_PRESETS.forEach(sub => {
+                const subItem = document.createElement('div');
+                subItem.className = 'sub-item';
+                subItem.id = `sub-item-${sub.id}`;
+                
+                subItem.innerHTML = `
+                    <div class="sub-header" onclick="toggleSub('${sub.id}')">
+                        <div class="sub-info-left">
+                            <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
+                            <span class="sub-name">${sub.name}</span>
+                        </div>
+                        <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
+                    </div>
+                    <div class="sub-control-panel">
+                        <div class="control-label">
+                            <span>${sub.label}</span>
+                            <span class="control-val-highlight"><span id="val-display-${sub.id}">${sub.defaultVal}</span> ${sub.unit}</span>
+                        </div>
+                        <div class="slider-wrapper">
+                            <input type="range" class="input-range" id="slider-${sub.id}" min="${sub.min}" max="${sub.max}" value="${sub.defaultVal}" oninput="updateSliderVal('${sub.id}')">
+                            <div class="slider-val-box">
+                                <span id="val-box-${sub.id}">${sub.defaultVal}</span><span class="slider-unit">${sub.unit}</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">ℹ️ ${sub.desc}</p>
+                    </div>
+                `;
+                
+                container.appendChild(subItem);
+            });
+
+            calculate();
+        }
+
+        window.toggleSub = function(id) {
+            const chk = document.getElementById(`chk-${id}`);
+            chk.checked = !chk.checked;
+            handleSubState(id, chk.checked);
+        };
+
+        window.handleCheckboxChange = function(e, id) {
+            handleSubState(id, e.target.checked);
+        };
+
+        function handleSubState(id, isActive) {
+            const item = document.getElementById(`sub-item-${id}`);
+            const chk = document.getElementById(`chk-${id}`);
+            
+            if (isActive) {
+                state.activeSubs.add(id);
+                item.classList.add('active');
+                chk.checked = true;
+            } else {
+                state.activeSubs.delete(id);
+                item.classList.remove('active');
+                chk.checked = false;
+            }
+            calculate();
+        }
+
+        window.updateSliderVal = function(id) {
+            const slider = document.getElementById(`slider-${id}`);
+            const valDisplay = document.getElementById(`val-display-${id}`);
+            const valBox = document.getElementById(`val-box-${id}`);
+            
+            valDisplay.textContent = slider.value;
+            valBox.textContent = slider.value;
+            
+            calculate();
+        };
+
+        function calculate() {
+            let totalMonthlyFee = 0;
+            let totalAnnualValue = 0;
+            
+            state.activeSubs.forEach(id => {
+                const sub = SUB_PRESETS.find(s => s.id === id);
+                if (!sub) return;
+                
+                const slider = document.getElementById(`slider-${id}`);
+                const usageVal = parseInt(slider.value);
+                
+                totalMonthlyFee += sub.fee;
+                const monthlyValue = (usageVal * sub.valMultiplier) + (sub.extraVal || 0);
+                totalAnnualValue += (monthlyValue * 12);
+            });
+            
+            const totalAnnualCost = totalMonthlyFee * 12;
+            const netAnnualSavings = totalAnnualValue - totalAnnualCost;
+            
+            document.getElementById('active-subs-count').textContent = `${state.activeSubs.size} 個`;
+            document.getElementById('total-monthly-fee').textContent = `¥ ${totalMonthlyFee.toLocaleString()} / 月`;
+            document.getElementById('total-annual-value').textContent = `¥ ${totalAnnualValue.toLocaleString()} / 年`;
+            
+            const netSavingsEl = document.getElementById('net-annual-savings');
+            const annualSavingsValEl = document.getElementById('annual-savings-val');
+            
+            const formattedNet = (netAnnualSavings >= 0 ? '+' : '') + netAnnualSavings.toLocaleString() + ' 円';
+            netSavingsEl.textContent = formattedNet;
+            annualSavingsValEl.textContent = `¥ ${netAnnualSavings.toLocaleString()}`;
+            
+            if (netAnnualSavings >= 0) {
+                netSavingsEl.className = 'value-saving';
+                annualSavingsValEl.className = 'stat-value-large value-saving';
+            } else {
+                netSavingsEl.className = 'value-deficit';
+                annualSavingsValEl.className = 'stat-value-large value-deficit';
+            }
+            
+            const badge = document.getElementById('status-badge');
+            const promoText = document.getElementById('promo-dynamic-text');
+            
+            if (state.activeSubs.size === 0) {
+                badge.className = 'status-badge bronze';
+                badge.textContent = '利用データなし';
+                promoText.textContent = 'サブスクを契約している場合、まずはリストから選択して健康診断を行ってみましょう！';
+            } else if (netAnnualSavings < -12000) {
+                badge.className = 'status-badge bronze';
+                badge.textContent = '警告: サブスク肥満警報 (赤字)';
+                promoText.textContent = '契約しているサブスクの利用頻度が低く、年間で大きな無駄遣いが発生しています。利用頻度が低いサービス（特に動画や書籍サブスク）は、一旦解約するか別の定額プランへの見直しを強く推奨します。';
+            } else if (netAnnualSavings < 0) {
+                badge.className = 'status-badge silver';
+                badge.textContent = '注意: やや元取り不足 (トントン〜微赤字)';
+                promoText.textContent = '月によっては元が取れているかもしれませんが、平均するとわずかにコストが上回っています。あと少し意識してアプリを利用するか、使う月だけ再契約する「オンオフ契約」に切り替えるとよりお得になります。';
+            } else if (netAnnualSavings < 24000) {
+                badge.className = 'status-badge gold';
+                badge.textContent = '健全: 優良サブスクオーナー (黒字)';
+                promoText.textContent = '素晴らしい！サブスクの基本料金以上の価値を上手に引き出せています。今後もお得度メーターなどを活用しながら、この調子で楽しくコンテンツを消費していきましょう！';
+            } else {
+                badge.className = 'status-badge legend';
+                badge.textContent = '極限: サブスクの支配者 (大黒字)';
+                promoText.textContent = '驚異的な回収率です！サブスクの月額費用を完全に凌駕する価値を毎月回収しています。これ以上ない最強のマネーハックが成立しています。ぜひこの成果をSNSでシェアしましょう！';
+            }
+            
+            const twitterBtn = document.getElementById('btn-share-x');
+            const subCount = state.activeSubs.size;
+            let shareText = '';
+            if (subCount === 0) {
+                shareText = `あなたの契約サブスクは本当に元が取れていますか？「サブスク健康診断シミュレーター」で無駄を見直してみよう！➔ https://playpoint-sim.com/tools/sub-health/`;
+            } else {
+                shareText = `私のサブスク健康診断結果は【年間 ${netAnnualSavings >= 0 ? '+' : ''}${netAnnualSavings.toLocaleString()}円のお得】でした！(診断結果: ${badge.textContent})。あなたも契約中のサブスクに無駄がないか診断してみる？➔ https://playpoint-sim.com/tools/sub-health/ #サブスク健康診断`;
+            }
+            twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

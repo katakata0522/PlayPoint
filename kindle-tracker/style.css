@@ -2697,3 +2697,55 @@ textarea {
     font-weight: 700;
     opacity: 1;
 }
+
+/* --- Share Action & Canvas Modal --- */
+.card-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.card-header-with-action .card-title {
+    margin-bottom: 0;
+}
+
+.btn-share-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+}
+
+.icon-share {
+    flex-shrink: 0;
+}
+
+.share-modal-content {
+    max-width: 550px !important;
+}
+
+.share-modal-body {
+    padding-top: 8px;
+}
+
+.share-desc {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.canvas-preview-wrapper {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.share-image-preview {
+    transition: transform 0.2s ease;
+}
+
+.share-image-preview:hover {
+    transform: scale(1.01);
+}

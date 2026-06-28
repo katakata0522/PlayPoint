@@ -511,6 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupCanvasSize();
         handleResponsiveLayout(); // 初期配置を画面サイズに合わせて決定
         updateQuickPriceActiveState(); // 初期価格に対するクイック価格ボタンのアクティブ連動
+        setupShareFeature(); // シェア機能のバインド
     }
 
     // --- 期間別 ＆ 検索キーワードでフィルタリングされた本リストを返すヘルパー ---
@@ -2062,6 +2063,191 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (exportBtn) exportBtn.click();
                 sticky.remove();
             });
+        }
+    }
+
+    // --- Canvas Share Card Generator ---
+    function setupShareFeature() {
+        const openBtn = document.getElementById('btn-open-share');
+        const modal = document.getElementById('share-modal');
+        const closeBtn = document.getElementById('share-modal-close');
+        
+        if (!openBtn || !modal || !closeBtn) return;
+        
+        openBtn.addEventListener('click', () => {
+            generateShareCard();
+            modal.style.display = 'flex';
+            modal.setAttribute('aria-hidden', 'false');
+        });
+        
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+            }
+        });
+    }
+
+    function generateShareCard() {
+        const canvas = document.getElementById('share-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        const isVideo = state.settings.subscriptionType === 'prime' || state.settings.subscriptionType === 'youtube';
+        const subName = state.settings.subscriptionName || (isVideo ? 'YouTube Premium' : 'Kindle Unlimited');
+        const bookCount = state.books.length;
+        const totalValue = state.books.reduce((sum, b) => sum + b.price, 0);
+        const monthlyFee = state.settings.monthlyFee;
+        const duration = state.settings.duration;
+        const totalCost = monthlyFee * duration;
+        const netSavings = totalValue - totalCost;
+        const recoveryRate = totalCost > 0 ? Math.round((totalValue / totalCost) * 100) : 0;
+        
+        const bgGrad = ctx.createLinearGradient(0, 0, 800, 500);
+        bgGrad.addColorStop(0, '#0f172a');
+        bgGrad.addColorStop(1, '#020617');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, 800, 500);
+        
+        const glowGrad = ctx.createRadialGradient(400, 250, 50, 400, 250, 350);
+        glowGrad.addColorStop(0, 'rgba(185, 148, 74, 0.1)');
+        glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = glowGrad;
+        ctx.fillRect(0, 0, 800, 500);
+        
+        ctx.strokeStyle = '#B9944A';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(15, 15, 770, 470);
+        
+        ctx.strokeStyle = 'rgba(185, 148, 74, 0.3)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(20, 20, 760, 460);
+        
+        ctx.strokeStyle = '#B9944A';
+        ctx.lineWidth = 3;
+        const offset = 25;
+        const len = 20;
+        ctx.beginPath(); ctx.moveTo(offset, offset + len); ctx.lineTo(offset, offset); ctx.lineTo(offset + len, offset); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(800 - offset, offset + len); ctx.lineTo(800 - offset, offset); ctx.lineTo(800 - offset - len, offset); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(offset, 500 - offset - len); ctx.lineTo(offset, 500 - offset); ctx.lineTo(offset + len, 500 - offset); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(800 - offset, 500 - offset - len); ctx.lineTo(800 - offset, 500 - offset); ctx.lineTo(800 - offset - len, 500 - offset); ctx.stroke();
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        
+        ctx.font = 'bold 24px sans-serif';
+        ctx.fillStyle = '#B9944A';
+        ctx.fillText(subName.toUpperCase(), 400, 45);
+        
+        ctx.font = '500 16px sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('サブスク元取り・回収成果レポート', 400, 80);
+        
+        ctx.font = '700 14px sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText('累 計 お 得 額', 400, 125);
+        
+        ctx.font = 'bold 72px sans-serif';
+        ctx.fillStyle = netSavings >= 0 ? '#FFFFFF' : '#ef4444';
+        
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 2;
+        ctx.shadowOffsetY = 4;
+        
+        const formattedSavings = (netSavings >= 0 ? '+' : '') + netSavings.toLocaleString() + ' 円';
+        ctx.fillText(formattedSavings, 400, 150);
+        
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        
+        let rank = '';
+        let badgeColor = '#D4AF37';
+        if (netSavings < 980) {
+            rank = isVideo ? '視聴見習い' : '読書見習い';
+            badgeColor = '#cd7f32';
+        } else if (netSavings < 2940) {
+            rank = '元取り修行';
+            badgeColor = '#c0c0c0';
+        } else if (netSavings < 6000) {
+            rank = '元取り達人';
+            badgeColor = '#D4AF37';
+        } else {
+            rank = isVideo ? 'サブスク神' : '読書の支配者';
+            badgeColor = '#a855f7';
+        }
+        
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillStyle = badgeColor;
+        ctx.fillText(`【 称号: ${rank} 】`, 400, 240);
+        
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+        ctx.strokeStyle = 'rgba(185, 148, 74, 0.2)';
+        ctx.lineWidth = 1;
+        
+        const cardX = 150;
+        const cardY = 275;
+        const cardW = 500;
+        const cardH = 130;
+        const r = 8;
+        ctx.beginPath();
+        ctx.moveTo(cardX + r, cardY);
+        ctx.lineTo(cardX + cardW - r, cardY);
+        ctx.quadraticCurveTo(cardX + cardW, cardY, cardX + cardW, cardY + r);
+        ctx.lineTo(cardX + cardW, cardY + cardH - r);
+        ctx.quadraticCurveTo(cardX + cardW, cardY + cardH, cardX + cardW - r, cardY + cardH);
+        ctx.lineTo(cardX + r, cardY + cardH);
+        ctx.quadraticCurveTo(cardX, cardY + cardH, cardX, cardY + cardH - r);
+        ctx.lineTo(cardX, cardY + r);
+        ctx.quadraticCurveTo(cardX, cardY, cardX + r, cardY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.textAlign = 'left';
+        ctx.font = '500 15px sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        
+        ctx.fillText(`消費コンテンツ :`, 180, 305);
+        ctx.fillText(`定価合計金額   :`, 180, 335);
+        ctx.fillText(`合計利用コスト :`, 180, 365);
+        
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 16px sans-serif';
+        
+        ctx.fillText(`${bookCount} 冊`, 620, 305);
+        ctx.fillText(`¥ ${totalValue.toLocaleString()}`, 620, 335);
+        ctx.fillText(`¥ ${totalCost.toLocaleString()} (${duration}ヶ月分)`, 620, 365);
+        
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillStyle = '#B9944A';
+        ctx.fillText(`回収率: ${recoveryRate}%`, 400, 420);
+        
+        ctx.font = '11px sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText('元を取れているか今すぐチェック！ ➔ playpoint-sim.com/kindle-tracker/', 400, 455);
+        
+        const imgPreview = document.getElementById('share-image-preview');
+        const downloadBtn = document.getElementById('btn-download-image');
+        const twitterBtn = document.getElementById('btn-twitter-share');
+        
+        if (imgPreview && downloadBtn && twitterBtn) {
+            const dataUrl = canvas.toDataURL('image/png');
+            imgPreview.src = dataUrl;
+            downloadBtn.href = dataUrl;
+            
+            const shareText = `今月は${subName}で定価${totalValue.toLocaleString()}円分の本を読み、月額${monthlyFee.toLocaleString()}円に対して【${netSavings.toLocaleString()}円】お得になりました！回収率は${recoveryRate}%！🎉\nあなたもサブスクの元を取れているかチェック➔ https://playpoint-sim.com/kindle-tracker/ #お得度メーター #KindleUnlimited`;
+            twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
         }
     }
 

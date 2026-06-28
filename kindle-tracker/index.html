@@ -9,8 +9,8 @@
     <meta name="description" content="Kindle Unlimitedで読んだ本の価格を記録し、月額料金やキャンペーンに対してどれだけ得したか（元を取れたか）をリアルタイムに可視化する無料Webツールです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-06-27">
-    <meta property="article:modified_time" content="2026-06-27T00:00:00+09:00">
+    <meta name="last-modified" content="2026-06-28">
+    <meta property="article:modified_time" content="2026-06-28T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/kindle-tracker/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260628_0001a">
+    <link rel="stylesheet" href="style.css?v=20260628_1052a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -47,7 +47,7 @@
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-06-27",
+      "dateModified": "2026-06-28",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -110,7 +110,13 @@
             <div class="main-content">
                 <!-- メーターダッシュボード -->
                 <section class="dashboard-card card">
-                    <h3 class="card-title">📊 現在のお得ステータス</h3>
+                    <div class="card-header-with-action">
+                        <h3 class="card-title">📊 現在のお得ステータス</h3>
+                        <button type="button" class="btn btn-outline btn-share-action" id="btn-open-share">
+                            <svg class="icon-share" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+                            <span id="btn-share-label">オトクをシェア</span>
+                        </button>
+                    </div>
                     
                     <!-- 木製本棚 ＆ 進捗バーコンテナ -->
                     <div class="meter-container">
@@ -452,6 +458,32 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260628_0001a"></script>
+    <!-- 自作の洗練されたシェアカード生成用モーダル -->
+    <div id="share-modal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="share-modal-title" style="display: none;">
+        <div class="modal-content celebration-content share-modal-content">
+            <button id="share-modal-close" class="celebration-close" aria-label="閉じる">&times;</button>
+            <h3 id="share-modal-title" style="margin-bottom: 8px;">✨ オトク成果カード</h3>
+            <p class="share-desc" style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 16px;">
+                画像を長押しまたは保存してSNSに投稿しましょう！
+            </p>
+            <div class="canvas-preview-wrapper" style="margin-bottom: 20px; text-align: center; border-radius: 8px; overflow: hidden; background: var(--color-bg-card-nested); border: 1px solid var(--color-border-card);">
+                <!-- 生成された画像プレビュー -->
+                <img id="share-image-preview" alt="オトク成果カード" class="share-image-preview" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;" />
+                <!-- 非表示のCanvas -->
+                <canvas id="share-canvas" width="800" height="500" style="display: none;"></canvas>
+            </div>
+            <div class="modal-buttons" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a id="btn-download-image" href="#" class="btn btn-primary" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;" download="my-otoku-card.png">
+                    <span>📥 画像を保存</span>
+                </a>
+                <a id="btn-twitter-share" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-accent" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #000; color: #fff;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span>Xで自慢する</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=20260628_1052a"></script>
 </body>
 </html>

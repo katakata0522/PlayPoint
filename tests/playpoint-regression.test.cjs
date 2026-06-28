@@ -386,6 +386,26 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
+test('新規ツール（サブスク健康診断、楽天ポイント上限シミュレーター）の実存とサイトマップ導線', () => {
+  const subHealthPath = path.join(root, 'tools', 'sub-health', 'index.html');
+  const rakutenSimPath = path.join(root, 'tools', 'rakuten-sim', 'index.html');
+  const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
+
+  assert.ok(fs.existsSync(subHealthPath), 'sub-health/index.html がありません');
+  assert.ok(fs.existsSync(rakutenSimPath), 'rakuten-sim/index.html がありません');
+
+  const subHealthHtml = fs.readFileSync(subHealthPath, 'utf8');
+  const rakutenSimHtml = fs.readFileSync(rakutenSimPath, 'utf8');
+
+  assert.ok(subHealthHtml.includes('<title>サブスク健康診断シミュレーター'), 'サブスク健康診断のタイトルが不正です');
+  assert.ok(subHealthHtml.includes('Noto Sans JP'), 'サブスク健康診断のフォント設定に Noto Sans JP がありません');
+  assert.ok(rakutenSimHtml.includes('<title>楽天お買い物マラソン ポイント上限シミュレーター'), '楽天シミュレーターのタイトルが不正です');
+  assert.ok(rakutenSimHtml.includes('Noto Sans JP'), '楽天シミュレーターのフォント設定に Noto Sans JP がありません');
+
+  assert.ok(sitemapHtml.includes('tools/sub-health/index.html'), 'サイトマップにサブスク健康診断のリンクがありません');
+  assert.ok(sitemapHtml.includes('tools/rakuten-sim/index.html'), 'サイトマップに楽天シミュレーターのリンクがありません');
+});
+
 test('ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う', () => {
   const { buildBlogFeeds } = require(path.join(root, 'scripts', 'blog-feeds.cjs'));
   const feeds = buildBlogFeeds([

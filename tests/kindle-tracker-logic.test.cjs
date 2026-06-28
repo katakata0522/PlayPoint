@@ -78,6 +78,7 @@ function setupMockEnvironment() {
         }
 
         focus() {}
+        toDataURL(type) { return 'data:image/png;base64,dummy'; }
         remove() {}
         appendChild(child) { return child; }
         removeChild(child) { return child; }
@@ -221,7 +222,8 @@ function setupMockEnvironment() {
                     stroke: () => {},
                     fillText: () => {},
                     measureText: () => ({ width: 10 })
-                })
+                }),
+                toDataURL: (type) => 'data:image/png;base64,dummy'
             };
         }
         return new MockElement('created-' + tag);
