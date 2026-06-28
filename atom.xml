@@ -5,11 +5,18 @@
   <link href="https://playpoint-sim.com/blog/" rel="alternate" type="text/html" />
   <link href="https://playpoint-sim.com/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://playpoint-sim.com/blog/</id>
-  <updated>2026-06-20T12:00:00+09:00</updated>
+  <updated>2026-06-29T12:00:00+09:00</updated>
   <author>
     <name>かたかた</name>
     <uri>https://playpoint-sim.com/author/katakata.html</uri>
   </author>
+  <entry>
+    <title>【家計ハック】無理のないお得化をゲームにする！Side FIRE（月10万円セーブ）への第一歩</title>
+    <link href="https://playpoint-sim.com/articles/2026-06-29-savings-game-fire.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-06-29-savings-game-fire.html</id>
+    <updated>2026-06-29T12:00:00+09:00</updated>
+    <summary>サブスクの見直しや楽天市場のポイント上限、Kindleの読書ログを組み合わせ、無理のない節約・お得化をゲームのように楽しむロードマップを解説します。</summary>
+  </entry>
   <entry>
     <title>【課金効率化】Google Play ギフトコードを条件付きでお得に購入する方法</title>
     <link href="https://playpoint-sim.com/articles/2026-06-20-discount-gift-cards.html" rel="alternate" type="text/html" />

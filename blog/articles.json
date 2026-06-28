@@ -1,5 +1,20 @@
 [
   {
+    "id": "savings-game-fire",
+    "title": "【家計ハック】無理のないお得化をゲームにする！Side FIRE（月10万円セーブ）への第一歩",
+    "date": "2026-06-29",
+    "category": "お得化",
+    "tags": [
+      "節約",
+      "家計管理",
+      "ライフハック",
+      "Side FIRE"
+    ],
+    "description": "サブスクの見直しや楽天市場のポイント上限、Kindleの読書ログを組み合わせ、無理のない節約・お得化をゲームのように楽しむロードマップを解説します。",
+    "file": "../articles/2026-06-29-savings-game-fire.html",
+    "thumbnail": "../articles/ogp/savings-game-fire.png"
+  },
+  {
     "id": "discount-gift-cards",
     "title": "【課金効率化】Google Play ギフトコードを条件付きでお得に購入する方法",
     "date": "2026-06-20",
@@ -41,6 +56,7 @@
       "注意点"
     ],
     "description": "複数のGoogleアカウントでPlay Pointsを使う時の注意点。ポイントは合算できない。",
+    "file": "../2025-12-25-multiple-accounts.html",
     "file": "../articles/2025-12-25-multiple-accounts.html",
     "thumbnail": "../articles/ogp/multiple-accounts.png"
   },
