@@ -387,14 +387,29 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <header style="position: relative;">
             <a href="../../sitemap.html" class="back-link">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 <span>一覧へ戻る</span>
             </a>
+            <button id="btn-affiliate-config" style="position: absolute; right: 0; top: 25px; background: none; border: none; color: var(--color-text-muted); cursor: pointer; font-size: 1.2rem; padding: 5px; transition: color 0.2s;" aria-label="アフィリエイトID設定" onclick="toggleAffConfig()">
+                ⚙️
+            </button>
             <span class="badge-premium">PREMIUM TOOL</span>
             <h1>楽天お買い物マラソン 上限シミュレーター</h1>
             <p class="subtitle">買い回り店舗数やSPUから、獲得予定ポイントの上限オーバーを防ぎます</p>
+            
+            <!-- アフィリエイトID設定パネル -->
+            <div id="affiliate-config-panel" style="display: none; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 15px; text-align: left; margin-top: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 10;">
+                <h3 style="font-size: 0.85rem; color: var(--color-accent); margin-bottom: 8px; border-bottom: 1px solid var(--color-border); padding-bottom: 4px;">🔧 アフィリエイト収益化設定</h3>
+                <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 10px;">
+                    あなたのアフィリエイトIDを保存すると、このページの調整商品リンクが自動的にあなた専用の収益化リンクに置き換わります。
+                </p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="affiliate-id-input" placeholder="例: YOUR_AFFILIATE_ID" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; border-radius: var(--radius-sm); padding: 6px 10px; font-size: 0.75rem; flex: 1;">
+                    <button type="button" class="btn btn-accent" style="height: 32px; font-size: 0.75rem; padding: 0 15px; width: auto;" onclick="saveAffiliateId()">保存</button>
+                </div>
+            </div>
         </header>
 
         <div class="grid-layout">
@@ -419,6 +434,20 @@
                                 <option value="15">15.0 倍</option>
                                 <option value="16.5">16.5 倍 (上限)</option>
                             </select>
+                            
+                            <!-- SPU内訳計算機アコーディオン -->
+                            <details style="margin-top: 8px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: rgba(0,0,0,0.15);">
+                                <summary style="font-size: 0.7rem; color: var(--color-accent); cursor: pointer; padding: 4px 8px; font-weight: 700; user-select: none;">🔢 SPU内訳をチェックして計算</summary>
+                                <div id="spu-checker-list" style="padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 0.7rem; color: var(--color-text-muted); border-top: 1px solid var(--color-border);">
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="2" data-name="楽天カード" onchange="updateSpuFromChecks()"> 楽天カード利用 (+2%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="4" data-name="楽天モバイル" onchange="updateSpuFromChecks()"> 楽天モバイル契約 (+4%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="0.5" data-name="楽天銀行" onchange="updateSpuFromChecks()"> 楽天銀行+楽天カード (+0.5%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="0.5" data-name="楽天証券" onchange="updateSpuFromChecks()"> 楽天証券 投信/米国株 (+0.5%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="0.5" data-name="楽天モバイルキャリア決済" onchange="updateSpuFromChecks()"> モバイルキャリア決済 (+0.5%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="0.5" data-name="楽天市場アプリ" onchange="updateSpuFromChecks()"> 楽天市場アプリでの購入 (+0.5%)</label>
+                                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; user-select: none;"><input type="checkbox" class="spu-chk" value="0.5" data-name="楽天ブックス/Kobo" onchange="updateSpuFromChecks()"> 楽天ブックス/Kobo (+0.5%)</label>
+                                </div>
+                            </details>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="shop-count-select">買い回り店舗数</label>
@@ -818,23 +847,27 @@
                                 
                                 let itemTitle = '';
                                 let itemPrice = 0;
-                                let affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                let rawAffiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
                                 
                                 if (additionalCostCurrent < 1500) {
-                                    itemTitle = '讃岐うどん 9食セット (ゆうパケット送料無料)';
+                                    itemTitle = '讃岐うどん 9食セット (送料無料)';
                                     itemPrice = 1000;
+                                    rawAffiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
                                 } else if (additionalCostCurrent < 3000) {
                                     itemTitle = '強炭酸水 500ml 24本 (送料無料・買い回り定番)';
                                     itemPrice = 1590;
                                 } else if (additionalCostCurrent < 8000) {
-                                    itemTitle = '宮崎県都城市産 本格焼酎・黒霧島EXセット (ふるさと納税・送料無料)';
+                                    itemTitle = '宮崎県都城市産 本格焼酎・黒霧島EXセット (ふるさと納税)';
                                     itemPrice = 5000;
-                                    affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                    rawAffiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
                                 } else {
-                                    itemTitle = '山形県産米 はえぬき 10kg (ふるさと納税・送料無料)';
+                                    itemTitle = '山形県産米 はえぬき 10kg (ふるさと納税)';
                                     itemPrice = 10000;
-                                    affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                    rawAffiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
                                 }
+                                
+                                const userAffId = localStorage.getItem('rakuten_affiliate_id') || 'YOUR_AFFILIATE_ID';
+                                const finalAffiliateUrl = rawAffiliateUrl.replace('YOUR_AFFILIATE_ID', userAffId);
                                 
                                 const nextShopCount = Math.min(10, shopCount + 1);
                                 const nextRate = Math.min(nextShopCount - 1, 9);
@@ -845,16 +878,27 @@
                                 const pointGain = nextTotalPoints - totalPoints;
                                 const realBurden = Math.max(0, itemPrice - pointGain);
                                 
+                                const isTada = realBurden < 100;
+                                const tadaBadge = isTada ? `<span style="background:var(--color-accent); color:#000; font-size:0.6rem; font-weight:800; padding:2px 6px; border-radius:4px; margin-left:8px; vertical-align:middle;">実質ほぼタダ！</span>` : '';
+                                
                                 matchedItemHtml = `
-                                    <p style="font-weight:700; color: var(--color-accent); margin-bottom: 6px;">💡 残り枠調整のおすすめアイテム：</p>
-                                    <div style="background: rgba(0,0,0,0.15); padding: 8px; border-radius: var(--radius-sm); border: 1px dashed rgba(185, 148, 74, 0.3);">
-                                        <a href="${affiliateUrl}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight:700; display:block; margin-bottom:4px;">
-                                            ${itemTitle} (¥${itemPrice.toLocaleString()})
-                                        </a>
-                                        <p style="font-size: 0.7rem; color: var(--color-text-muted);">
-                                            この商品（¥${itemPrice.toLocaleString()}）を追加すると、店舗数と還元率がアップしてポイントが <span style="color: var(--color-success); font-weight:700;">+${pointGain.toLocaleString()} pt</span> 増えるため、<br>
-                                            <span style="color: #fff; font-weight:700;">➔ 実質負担額はわずか <span style="color:var(--color-success); font-size:0.85rem;">¥ ${realBurden.toLocaleString()}</span> です！</span>
+                                    <p style="font-weight:700; color: var(--color-accent); margin-bottom: 8px;">💡 残り枠調整のおすすめアイテム：</p>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border); box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                                        <div style="font-weight:700; color:#fff; font-size:0.8rem; margin-bottom:6px; display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+                                            <span>${itemTitle} (¥${itemPrice.toLocaleString()})</span>
+                                            ${tadaBadge}
+                                        </div>
+                                        <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 10px; line-height: 1.5;">
+                                            この商品を追加すると、店舗数と還元率がアップしてポイントが <span style="color: var(--color-success); font-weight:700;">+${pointGain.toLocaleString()} pt</span> 増えます。
                                         </p>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                                            <span style="color: #fff; font-size:0.75rem; font-weight:700;">
+                                                実質負担額: <span style="color:var(--color-success); font-size:0.95rem; font-family:var(--font-num); font-weight:900;">¥ ${realBurden.toLocaleString()}</span>
+                                            </span>
+                                            <a href="${finalAffiliateUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-accent" style="height: 32px; font-size: 0.75rem; width: auto; padding: 0 12px; display:inline-flex; align-items:center; margin: 0; min-height: 44px; min-width: 44px;">
+                                                楽天市場で見る ➔
+                                            </a>
+                                        </div>
                                     </div>
                                 `;
                                 itemMatchEl.innerHTML = matchedItemHtml;
@@ -877,6 +921,73 @@
                 totalPrice: totalPrice
             }));
         }
+
+        // --- アフィリエイト収益化設定の制御 ---
+        window.toggleAffConfig = function() {
+            const panel = document.getElementById('affiliate-config-panel');
+            if (panel) {
+                panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            }
+        };
+
+        window.saveAffiliateId = function() {
+            const input = document.getElementById('affiliate-id-input');
+            if (input) {
+                const id = input.value.trim();
+                localStorage.setItem('rakuten_affiliate_id', id);
+                alert('アフィリエイトIDを保存しました！お買い物調整リンクに自動反映されます。');
+                calculate();
+            }
+        };
+
+        // --- SPUチェックリストからSPU倍率を自動更新 ---
+        window.updateSpuFromChecks = function() {
+            const checks = document.querySelectorAll('.spu-chk');
+            let sum = 1.0; // 基本の通常購入分 (+1%)
+            checks.forEach(chk => {
+                if (chk.checked) {
+                    sum += parseFloat(chk.value);
+                }
+            });
+            
+            const spuSelect = document.getElementById('spu-select');
+            if (spuSelect) {
+                let hasOption = false;
+                for (let i = 0; i < spuSelect.options.length; i++) {
+                    if (parseFloat(spuSelect.options[i].value) === sum) {
+                        spuSelect.selectedIndex = i;
+                        hasOption = true;
+                        break;
+                    }
+                }
+                if (!hasOption) {
+                    const opt = document.createElement('option');
+                    opt.value = sum;
+                    opt.textContent = `${sum.toFixed(1)} 倍 (カスタム)`;
+                    spuSelect.appendChild(opt);
+                    spuSelect.value = sum;
+                }
+            }
+            calculate();
+        };
+
+        // --- 初期ロード処理の拡張 ---
+        const originalInit = init;
+        init = function() {
+            originalInit();
+            
+            const savedId = localStorage.getItem('rakuten_affiliate_id') || '';
+            const input = document.getElementById('affiliate-id-input');
+            if (input) {
+                input.value = savedId;
+            }
+            
+            const spuVal = parseFloat(document.getElementById('spu-select').value);
+            if (spuVal === 5.0) {
+                const cardChk = document.querySelector('.spu-chk[data-name="楽天カード"]');
+                if (cardChk) cardChk.checked = true;
+            }
+        };
 
         window.addEventListener('DOMContentLoaded', init);
     </script>

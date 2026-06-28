@@ -219,12 +219,32 @@
 
         .input-range {
             flex: 1;
-            height: 6px;
-            border-radius: 3px;
+            height: 8px;
+            border-radius: 4px;
             background: var(--color-border);
             outline: none;
             accent-color: var(--color-accent);
             cursor: pointer;
+            min-height: 44px; /* タップ領域確保 */
+        }
+        
+        .input-range::-webkit-slider-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            -webkit-appearance: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+        .input-range::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }
 
         .slider-val-box {
@@ -393,13 +413,24 @@
                             <input type="number" id="custom-sub-fee" placeholder="例: 550" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
                         </div>
                     </div>
-                    <div style="margin-bottom: 16px;">
-                        <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">月の利用頻度・回収満足度</label>
-                        <select id="custom-sub-sat" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
-                            <option value="high">😆 毎日使っていて元は完全にとっている (回収率150%)</option>
-                            <option value="mid" selected>🙂 週2〜3日使っており満足している (回収率90%)</option>
-                            <option value="low">😟 ほぼ使っておらず無駄になっている (回収率20%)</option>
-                        </select>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">ジャンルカテゴリ</label>
+                            <select id="custom-sub-cat" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
+                                <option value="video" selected>🎬 動画配信 (DMM TV, Hulu等)</option>
+                                <option value="music">🎵 音楽配信 (Apple Music等)</option>
+                                <option value="book">📚 電子書籍・ニュース (雑誌等)</option>
+                                <option value="other">📦 その他・総合 (買い回り・ツール等)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">利用頻度・回収満足度</label>
+                            <select id="custom-sub-sat" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
+                                <option value="high">😆 毎日使う (回収率150%)</option>
+                                <option value="mid" selected>🙂 週2〜3日 (回収率90%)</option>
+                                <option value="low">😟 ほぼ使わない (回収率20%)</option>
+                            </select>
+                        </div>
                     </div>
                     <button type="button" onclick="addCustomSub()" style="width: 100%; height: 36px; background: var(--color-accent); border: none; border-radius: var(--radius-sm); color: #451a03; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: background 0.2s;">サブスクをリストへ追加</button>
                 </div>
@@ -443,6 +474,16 @@
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             診断結果をXで報告する
                         </a>
+                    </section>
+
+                    <!-- サブスク家計内訳（割合グラフ） -->
+                    <section class="card" id="subscription-chart-card" style="margin-top: 20px; display: none;">
+                        <h3 class="card-title" style="font-size: 0.95rem; border-left-color: var(--color-success); color: var(--color-success);">📊 サブスク家計割合（ジャンル別）</h3>
+                        <div style="display: flex; align-items: center; justify-content: space-around; gap: 15px; flex-wrap: wrap;">
+                            <svg id="donut-chart-svg" width="130" height="130" viewBox="0 0 42 42" style="transform: rotate(-90deg); filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));"></svg>
+                            <div id="chart-legend" style="font-size: 0.75rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 6px;"></div>
+                        </div>
+                        <div id="category-diagnose-text" style="font-size: 0.75rem; line-height: 1.5; color: var(--color-text-muted); margin-top: 12px; border-top: 1px dashed var(--color-border); padding-top: 8px;"></div>
                     </section>
 
                     <section class="card promo-card">
@@ -497,6 +538,7 @@
                 defaultVal: 3,
                 label: '月に読む平均冊数',
                 valMultiplier: 1000,
+                category: 'book',
                 desc: '定価約1,000円のビジネス書やマンガを元に価値を算定します。'
             },
             {
@@ -509,6 +551,7 @@
                 defaultVal: 20,
                 label: '月に視聴する動画時間',
                 valMultiplier: 100,
+                category: 'video',
                 desc: '広告非表示による快適性（時間節約）とYouTube Musicの価値を算定します。'
             },
             {
@@ -521,6 +564,7 @@
                 defaultVal: 5,
                 label: '月にする見放題視聴本数 (※別途1200pt付与)',
                 valMultiplier: 400,
+                category: 'video',
                 desc: '毎月付与される1,200円分のポイントに加え、見放題本数（1本400円換算）で算定します。',
                 extraVal: 1200
             },
@@ -534,6 +578,7 @@
                 defaultVal: 15,
                 label: '月に視聴する動画時間',
                 valMultiplier: 150,
+                category: 'video',
                 desc: 'オリジナル作品や独占配信映画のクオリティを考慮して算定します。'
             },
             {
@@ -546,6 +591,7 @@
                 defaultVal: 30,
                 label: '月に聴く音楽時間',
                 valMultiplier: 50,
+                category: 'music',
                 desc: '広告なし・オフライン再生機能を含めた快適性と楽曲アクセスで算定します。'
             },
             {
@@ -557,6 +603,7 @@
                 max: 20,
                 defaultVal: 4,
                 label: '月に利用する送料無料配送回数',
+                category: 'other',
                 valMultiplier: 410,
                 desc: 'Prime VideoやMusicに加え、通常配送無料特典（1回410円換算）で算定します。',
                 extraVal: 300
@@ -629,6 +676,7 @@
                     </div>
                 `;
                 container.appendChild(subItem);
+                updateSliderColor(sub.id);
             });
 
             // 2. カスタムサブスクの描画
@@ -674,10 +722,12 @@
             const nameEl = document.getElementById('custom-sub-name');
             const feeEl = document.getElementById('custom-sub-fee');
             const satEl = document.getElementById('custom-sub-sat');
+            const catEl = document.getElementById('custom-sub-cat');
             
             const name = nameEl.value.trim();
             const fee = parseInt(feeEl.value);
             const sat = satEl.value;
+            const category = catEl ? catEl.value : 'other';
             
             if (!name || isNaN(fee) || fee <= 0) {
                 alert('サービス名と正しい月額料金を入力してください');
@@ -695,6 +745,7 @@
                 name: name,
                 fee: fee,
                 sat: sat,
+                category: category,
                 isCustom: true
             };
             
@@ -703,6 +754,7 @@
             nameEl.value = '';
             feeEl.value = '';
             satEl.value = 'mid';
+            if (catEl) catEl.value = 'video';
             
             state.activeSubs.add(customId);
             renderSubList();
@@ -749,8 +801,27 @@
             valDisplay.textContent = slider.value;
             valBox.textContent = slider.value;
             
+            updateSliderColor(id);
             calculate();
         };
+
+        function updateSliderColor(id) {
+            const slider = document.getElementById(`slider-${id}`);
+            if (!slider) return;
+            
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 100;
+            const val = parseFloat(slider.value) || 0;
+            
+            const percent = (val - min) / (max - min);
+            
+            const r = Math.round(239 - (239 - 34) * percent);
+            const g = Math.round(68 + (197 - 68) * percent);
+            const b = Math.round(68 + (94 - 68) * percent);
+            const activeColor = `rgb(${r}, ${g}, ${b})`;
+            
+            slider.style.background = `linear-gradient(to right, ${activeColor} 0%, ${activeColor} ${percent * 100}%, var(--color-border) ${percent * 100}%, var(--color-border) 100%)`;
+        }
 
         function getSubTip(id, val) {
             const tips = {
@@ -887,10 +958,13 @@
                     }
                     
                     let html = `<p style="margin-bottom: 12px; font-weight:700; color: #fff;">年間で合計 <span style="color: var(--color-error); font-weight:900;">¥${deficits.reduce((sum, d) => sum + d.deficit, 0).toLocaleString()}</span> 相当の元取り不足（無駄）が検出されました。以下の見直しを推奨します：</p>`;
-                    html += '<ol style="padding-left: 18px; line-height: 1.8;">';
+                    html += '<ol style="padding-left: 18px; line-height: 1.8; margin-top: 10px;">';
                     deficits.forEach(d => {
-                        html += `<li style="margin-bottom: 8px;">
-                            <strong style="color: #fff;">${d.name}</strong> (年間 ¥${Math.round(d.deficit).toLocaleString()} の赤字):<br>
+                        html += `<li style="margin-bottom: 12px; position: relative; padding-right: 75px;">
+                            <strong style="color: #fff;">${d.name}</strong> (年間 ¥${Math.round(d.deficit).toLocaleString()} の赤字):
+                            <button type="button" class="btn btn-secondary" style="position: absolute; right: 0; top: 0; width: auto; height: 26px; font-size: 0.65rem; padding: 0 8px; border: 1px solid var(--color-accent); color: var(--color-accent); font-weight:700; background:none; min-height:26px; min-width:44px;" onclick="triggerDirectReminder('${d.name}')">
+                                📅 登録
+                            </button>
                             <span style="color: var(--color-text-muted); font-size: 0.75rem; display:block; margin-top:2px;">💡 ${d.tip}</span>
                         </li>`;
                     });
@@ -922,6 +996,9 @@
                     if (reminderBox) reminderBox.style.display = 'none';
                 }
             }
+
+            // --- Donut Chart Update ---
+            updateDonutChart();
 
             // --- Save state for Dashboard ---
             const sliderValues = {};
@@ -989,6 +1066,125 @@
             
             alert(`📅 「${subName}」の解約お忘れ防止アラートファイル (.ics) をダウンロードしました。\nファイルを開いてカレンダーに登録してください。`);
         };
+
+        window.triggerDirectReminder = function(subName) {
+            const reminderBox = document.getElementById('calendar-reminder-box');
+            const subSelect = document.getElementById('reminder-sub-select');
+            
+            if (reminderBox && subSelect) {
+                reminderBox.style.display = 'block';
+                subSelect.value = subName;
+                
+                reminderBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                const dateInput = document.getElementById('reminder-date');
+                if (dateInput) {
+                    setTimeout(() => dateInput.focus(), 800);
+                }
+            }
+        };
+
+        function updateDonutChart() {
+            const svg = document.getElementById('donut-chart-svg');
+            const legend = document.getElementById('chart-legend');
+            const diagnose = document.getElementById('category-diagnose-text');
+            const chartCard = document.getElementById('subscription-chart-card');
+            
+            if (!svg || !legend || !diagnose || !chartCard) return;
+            
+            if (state.activeSubs.size === 0) {
+                chartCard.style.display = 'none';
+                return;
+            }
+            
+            chartCard.style.display = 'block';
+            
+            const categories = {
+                video: { label: '🎬 動画', fee: 0, color: '#f87171' },
+                music: { label: '🎵 音楽', fee: 0, color: '#60a5fa' },
+                book: { label: '📚 書籍', fee: 0, color: '#34d399' },
+                other: { label: '📦 その他', fee: 0, color: '#fbbf24' }
+            };
+            
+            let totalFee = 0;
+            
+            SUB_PRESETS.forEach(sub => {
+                if (state.activeSubs.has(sub.id)) {
+                    const cat = sub.category || 'other';
+                    categories[cat].fee += sub.fee;
+                    totalFee += sub.fee;
+                }
+            });
+            
+            state.customSubs.forEach(sub => {
+                if (state.activeSubs.has(sub.id)) {
+                    const cat = sub.category || 'other';
+                    if (categories[cat]) {
+                        categories[cat].fee += sub.fee;
+                        totalFee += sub.fee;
+                    }
+                }
+            });
+            
+            if (totalFee === 0) {
+                chartCard.style.display = 'none';
+                return;
+            }
+            
+            svg.innerHTML = '';
+            let cumulativePercent = 0;
+            let legendHtml = '';
+            
+            svg.innerHTML += `<circle cx="21" cy="21" r="15.91549430918954" fill="#0b0f19"></circle>`;
+            
+            Object.keys(categories).forEach(key => {
+                const cat = categories[key];
+                if (cat.fee > 0) {
+                    const percent = (cat.fee / totalFee) * 100;
+                    const strokeDash = `${percent} ${100 - percent}`;
+                    const strokeOffset = 100 - cumulativePercent;
+                    
+                    svg.innerHTML += `
+                        <circle cx="21" cy="21" r="15.91549430918954" 
+                                fill="transparent" stroke="${cat.color}" stroke-width="5.5" 
+                                stroke-dasharray="${strokeDash}" stroke-dashoffset="${strokeOffset}">
+                        </circle>
+                    `;
+                    
+                    cumulativePercent += percent;
+                    
+                    legendHtml += `
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <span style="width:10px; height:10px; border-radius:50%; background:${cat.color}; display:inline-block;"></span>
+                            <span style="color:#fff; font-weight:700;">${cat.label}</span>
+                            <span>¥${cat.fee.toLocaleString()} (${Math.round(percent)}%)</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            legend.innerHTML = legendHtml;
+            
+            let maxCatKey = 'other';
+            let maxCatFee = 0;
+            Object.keys(categories).forEach(key => {
+                if (categories[key].fee > maxCatFee) {
+                    maxCatFee = categories[key].fee;
+                    maxCatKey = key;
+                }
+            });
+            
+            const catNames = { video: '動画配信', music: '音楽配信', book: '電子書籍', other: 'その他・総合' };
+            let diagnoseMsg = `📊 あなたのサブスク家計は **${catNames[maxCatKey]}** の割合が最も高くなっています（月額料金の ${Math.round((maxCatFee / totalFee) * 100)}%）。`;
+            if (maxCatKey === 'video' && maxCatFee > 3000) {
+                diagnoseMsg += `動画配信に月3,000円以上支出しています。複数の動画配信を契約している場合、同時に利用していない期間がないか見直し、使う月だけ契約する「オンオフ契約」が効果的です。`;
+            } else if (maxCatKey === 'book') {
+                diagnoseMsg += `読書への投資割合が高く素晴らしいです！「Kindle Unlimitedお得度メーター」などを併用し、常に回収率を黒字に保つ習慣をつけましょう。`;
+            } else {
+                diagnoseMsg += `全体的によく整理されています。利用していない休眠サブスクがないかを定期的に確認し、お得率を最大化しましょう。`;
+            }
+            diagnose.innerHTML = diagnoseMsg;
+        }
 
         window.addEventListener('DOMContentLoaded', init);
     </script>
