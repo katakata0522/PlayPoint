@@ -12,6 +12,7 @@ const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'blogCssVersion', assetPath: './blog/style.css' },
   { versionKey: 'blogScriptVersion', assetPath: './blog/script.js' },
   { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },
+  { versionKey: 'articleScriptVersion', assetPath: './blog/article.js' },
   { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' }
 ];
@@ -45,8 +46,10 @@ function collectAssetVersions(rootDir, indexHtml) {
 
   const articleHtml = readTextIfExists(path.join(rootDir, 'articles/2026-06-20-discount-gift-cards.html'));
   const articleSharedCssVersion = extractVersion(articleHtml, /article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
+  const articleScriptVersion = extractVersion(articleHtml, /article\.js\?v=([a-zA-Z0-9_-]+)/);
 
   return {
+    articleScriptVersion,
     articleSharedCssVersion,
     blogComponentsVersion,
     blogCssVersion,

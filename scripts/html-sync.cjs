@@ -14,6 +14,7 @@ function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
   content = replaceAssetVersion(content, 'third-party.js', assetVersions.thirdPartyVersion);
   content = replaceAssetVersion(content, 'intent-tracking.js', assetVersions.intentTrackingVersion);
   content = replaceAssetVersion(content, 'article-shared.css', assetVersions.articleSharedCssVersion);
+  content = replaceAssetVersion(content, 'article.js', assetVersions.articleScriptVersion);
   content = replaceDateMetadata(content, todayStr, {
     includeEnglish: true,
     includeTraditionalChinese: true
