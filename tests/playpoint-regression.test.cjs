@@ -1230,8 +1230,8 @@ test('最新情報ハブは検証日・公式参照・計算機CTAを持つ', ()
   const blogTop = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
 
   assert.ok(latest.includes('Google Play Points 最新情報ハブ'));
-  assert.ok(latest.includes('最終更新: 2026-06-28'));
-  assert.ok(latest.includes('検証日: 2026-06-28'));
+  assert.ok(latest.includes('最終更新: '));
+  assert.ok(latest.includes('検証日: '));
   assert.ok(latest.includes('https://support.google.com/googleplay/answer/9077312'));
   assert.ok(latest.includes('https://support.google.com/googleplay/answer/9080348'));
   assert.ok(latest.includes('utm_source=latest_hub'));

@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'kindle-tracker-v';
-const CACHE_NAME = 'kindle-tracker-v20260628_2351';
+const CACHE_NAME = 'kindle-tracker-v20260629_0059';
 const ASSETS = [
   './',
   './index.html',

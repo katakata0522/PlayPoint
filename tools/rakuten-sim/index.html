@@ -451,18 +451,22 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="shop-count-select">買い回り店舗数</label>
-                            <select id="shop-count-select" class="select-field" onchange="calculate()">
-                                <option value="1">1 店舗 (通常)</option>
-                                <option value="2">2 店舗 (+1%)</option>
-                                <option value="3">3 店舗 (+2%)</option>
-                                <option value="4">4 店舗 (+3%)</option>
-                                <option value="5" selected>5 店舗 (+4%)</option>
-                                <option value="6">6 店舗 (+5%)</option>
-                                <option value="7">7 店舗 (+6%)</option>
-                                <option value="8">8 店舗 (+7%)</option>
-                                <option value="9">9 店舗 (+8%)</option>
-                                <option value="10">10 店舗以上 (+9%)</option>
-                            </select>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <button type="button" class="btn btn-secondary" style="width: 36px; height: 36px; padding: 0; min-height: 44px; min-width: 44px; font-weight: bold; border-radius: 50%; font-size: 1.1rem; line-height: 1;" onclick="adjustShopCount(-1)">－</button>
+                                <select id="shop-count-select" class="select-field" onchange="calculate()" style="flex: 1; text-align: center;">
+                                    <option value="1">1 店舗 (通常)</option>
+                                    <option value="2">2 店舗 (+1%)</option>
+                                    <option value="3">3 店舗 (+2%)</option>
+                                    <option value="4">4 店舗 (+3%)</option>
+                                    <option value="5" selected>5 店舗 (+4%)</option>
+                                    <option value="6">6 店舗 (+5%)</option>
+                                    <option value="7">7 店舗 (+6%)</option>
+                                    <option value="8">8 店舗 (+7%)</option>
+                                    <option value="9">9 店舗 (+8%)</option>
+                                    <option value="10">10 店舗以上 (+9%)</option>
+                                </select>
+                                <button type="button" class="btn btn-secondary" style="width: 36px; height: 36px; padding: 0; min-height: 44px; min-width: 44px; font-weight: bold; border-radius: 50%; font-size: 1.1rem; line-height: 1;" onclick="adjustShopCount(1)">＋</button>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="limit-select">キャンペーンポイント上限</label>
@@ -503,6 +507,16 @@
                             <input type="number" id="new-item-price" class="input-field" placeholder="価格 (円)" min="1">
                         </div>
                         <button type="button" class="btn btn-accent" style="height: 40px; padding: 0 16px;" onclick="addItem()">追加</button>
+                    </div>
+                    
+                    <!-- クイックお買い物タグ -->
+                    <div style="margin-top: 12px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; justify-content: flex-start;">
+                        <span style="font-size: 0.7rem; color: var(--color-text-muted); user-select: none;">クイック入力:</span>
+                        <button type="button" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; cursor: pointer; min-height: 26px;" onclick="quickInputItem('強炭酸水 24本', 1590)">🥤 炭酸水</button>
+                        <button type="button" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; cursor: pointer; min-height: 26px;" onclick="quickInputItem('讃岐うどん 9食', 1000)">🍜 うどん</button>
+                        <button type="button" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; cursor: pointer; min-height: 26px;" onclick="quickInputItem('ふるさと納税 お米 10kg', 10000)">🌾 ふるさと納税 米</button>
+                        <button type="button" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; cursor: pointer; min-height: 26px;" onclick="quickInputItem('ふるさと納税 黒霧島EX', 5000)">🍶 ふるさと納税 焼酎</button>
+                        <button type="button" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; cursor: pointer; min-height: 26px;" onclick="quickInputItem('日用品 詰め合わせ', 2500)">🧼 日用品</button>
                     </div>
                 </section>
             </div>
@@ -944,11 +958,15 @@
         window.updateSpuFromChecks = function() {
             const checks = document.querySelectorAll('.spu-chk');
             let sum = 1.0; // 基本の通常購入分 (+1%)
+            const checkStates = {};
             checks.forEach(chk => {
+                const name = chk.getAttribute('data-name');
+                checkStates[name] = chk.checked;
                 if (chk.checked) {
                     sum += parseFloat(chk.value);
                 }
             });
+            localStorage.setItem('rakuten_spu_checks', JSON.stringify(checkStates));
             
             const spuSelect = document.getElementById('spu-select');
             if (spuSelect) {
@@ -971,6 +989,26 @@
             calculate();
         };
 
+        window.adjustShopCount = function(amount) {
+            const select = document.getElementById('shop-count-select');
+            if (select) {
+                let newVal = parseInt(select.value) + amount;
+                newVal = Math.max(1, Math.min(10, newVal));
+                select.value = newVal;
+                calculate();
+            }
+        };
+
+        window.quickInputItem = function(name, price) {
+            const nameInput = document.getElementById('new-item-name');
+            const priceInput = document.getElementById('new-item-price');
+            if (nameInput && priceInput) {
+                nameInput.value = name;
+                priceInput.value = price;
+                addItem();
+            }
+        };
+
         // --- 初期ロード処理の拡張 ---
         const originalInit = init;
         init = function() {
@@ -982,11 +1020,26 @@
                 input.value = savedId;
             }
             
-            const spuVal = parseFloat(document.getElementById('spu-select').value);
-            if (spuVal === 5.0) {
-                const cardChk = document.querySelector('.spu-chk[data-name="楽天カード"]');
-                if (cardChk) cardChk.checked = true;
-            }
+            try {
+                const spuChecks = JSON.parse(localStorage.getItem('rakuten_spu_checks') || 'null');
+                if (spuChecks) {
+                    const checks = document.querySelectorAll('.spu-chk');
+                    checks.forEach(chk => {
+                        const name = chk.getAttribute('data-name');
+                        if (spuChecks[name] !== undefined) {
+                            chk.checked = spuChecks[name];
+                        }
+                    });
+                    updateSpuFromChecks();
+                } else {
+                    const spuVal = parseFloat(document.getElementById('spu-select').value);
+                    if (spuVal === 5.0) {
+                        const cardChk = document.querySelector('.spu-chk[data-name="楽天カード"]');
+                        if (cardChk) cardChk.checked = true;
+                        updateSpuFromChecks();
+                    }
+                }
+            } catch(e) {}
         };
 
         window.addEventListener('DOMContentLoaded', init);

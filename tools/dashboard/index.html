@@ -434,7 +434,7 @@
         <section class="card">
             <div class="meter-section">
                 <!-- SVG円形メーター -->
-                <div class="gauge-wrapper">
+                <div class="gauge-wrapper" onclick="showMeterDetail()" style="cursor: pointer; user-select: none;" title="タップして詳細な達成ロードマップを確認">
                     <svg class="svg-gauge" viewBox="0 0 200 200">
                         <defs>
                             <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -449,7 +449,7 @@
                     <div class="gauge-text-wrap">
                         <div class="gauge-num" id="fire-percent">0</div>
                         <div class="gauge-unit">%</div>
-                        <div class="gauge-label">Side FIRE達成度</div>
+                        <div class="gauge-label" style="text-decoration: underline; text-underline-offset: 4px; color: var(--color-accent); font-size: 0.65rem;">Side FIRE達成度 (詳細 ➔)</div>
                     </div>
                 </div>
 
@@ -522,7 +522,48 @@
 
         <!-- ツール別グリッド -->
         <section style="margin-bottom: 24px;">
-            <h2 style="font-size: 1.1rem; margin-bottom: 16px; border-left: 3px solid var(--color-accent); padding-left: 10px; color: var(--color-accent);">🎮 各計算機・シミュレーターの同期ステータス</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; border-left: 3px solid var(--color-accent); padding-left: 10px;">
+                <h2 style="font-size: 1.1rem; margin: 0; color: var(--color-accent); border: none; padding: 0;">🎮 各計算機・シミュレーターの同期ステータス</h2>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.75rem; background: rgba(255,255,255,0.02); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); min-height: 44px;">
+                    <span style="color: var(--color-text-muted);">同期LED:</span>
+                    <span id="led-play" style="width: 10px; height: 10px; border-radius: 50%; background: #4b5563; display: inline-block; box-shadow: 0 0 6px #4b5563;" title="Playポイント同期"></span>
+                    <span id="led-kindle" style="width: 10px; height: 10px; border-radius: 50%; background: #4b5563; display: inline-block; box-shadow: 0 0 6px #4b5563;" title="Kindleメーター同期"></span>
+                    <span id="led-sub" style="width: 10px; height: 10px; border-radius: 50%; background: #4b5563; display: inline-block; box-shadow: 0 0 6px #4b5563;" title="サブスク健康診断同期"></span>
+                    <span id="led-rakuten" style="width: 10px; height: 10px; border-radius: 50%; background: #4b5563; display: inline-block; box-shadow: 0 0 6px #4b5563;" title="楽天シミュレーター同期"></span>
+                    
+                    <span style="color: var(--color-border); margin: 0 4px;">|</span>
+                    
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="override-sync-toggle" onchange="toggleSyncOverride()" style="accent-color: var(--color-accent); cursor: pointer; width: 16px; height: 16px;">
+                        <span>手動シミュレート</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 手動上書きコントロールパネル -->
+            <div id="sync-override-panel" style="display: none; background: rgba(255,255,255,0.02); border: 1px dashed var(--color-accent); border-radius: var(--radius-md); padding: 15px; margin-bottom: 20px;">
+                <h4 style="color: var(--color-accent); font-size: 0.8rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; user-select:none;">⚙️ 手動数値上書きモード（一時的なシミュレーション用）</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px;">
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">Playポイント (年換算)</label>
+                        <input type="number" id="val-override-play" class="input-field" value="0" min="0" oninput="overrideValueChange()" style="height: 32px; font-size: 0.75rem; padding: 0 8px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">Kindleメーター (年換算)</label>
+                        <input type="number" id="val-override-kindle" class="input-field" value="0" min="0" oninput="overrideValueChange()" style="height: 32px; font-size: 0.75rem; padding: 0 8px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">サブスク健康診断 (年予想)</label>
+                        <input type="number" id="val-override-sub" class="input-field" value="0" oninput="overrideValueChange()" style="height: 32px; font-size: 0.75rem; padding: 0 8px;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.7rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">楽天シミュレーター (年換算)</label>
+                        <input type="number" id="val-override-rakuten" class="input-field" value="0" min="0" oninput="overrideValueChange()" style="height: 32px; font-size: 0.75rem; padding: 0 8px;">
+                    </div>
+                </div>
+                <p style="font-size: 0.65rem; color: var(--color-warning); margin-top: 10px; text-align: right; user-select:none;">※手動上書きモード中は、他の計算ツールからの自動同期が一時的に停止します。</p>
+            </div>
+
             <div class="tools-grid">
                 <!-- Playポイント -->
                 <div class="tool-card">
@@ -631,8 +672,9 @@
     </div>
 
     <script>
+        window.rawSyncValues = { play: 0, kindle: 0, sub: 0, rakuten: 0 };
+
         function init() {
-            // 各セーブデータの取得
             let kuState = null;
             let subState = null;
             let rakutenState = null;
@@ -646,28 +688,68 @@
             try { rakutenState = JSON.parse(localStorage.getItem('rakuten_sim_state') || 'null'); } catch(e) {}
             try { diaryData = JSON.parse(localStorage.getItem('hokuhokuDiaryData') || '[]'); } catch(e) {}
 
+            let actualPlayVal = 0;
+            if (diaryData && diaryData.length > 0) {
+                diaryData.forEach(entry => { actualPlayVal += parseInt(entry.point || 0); });
+            }
+            let actualKindleVal = 0;
+            if (kuState && kuState.length > 0) {
+                const totalValue = kuState.reduce((sum, b) => sum + (b.price || 0), 0);
+                const monthlyFee = kuSettings ? (kuSettings.monthlyFee || 980) : 980;
+                const duration = kuSettings ? (kuSettings.duration || 3) : 3;
+                const totalCost = monthlyFee * duration;
+                const netSavings = totalValue - totalCost;
+                actualKindleVal = duration > 0 ? Math.round((netSavings / duration) * 12) : 0;
+            }
+            let actualSubVal = subState ? (subState.netAnnualSavings || 0) : 0;
+            let actualRakutenVal = rakutenState ? (rakutenState.totalPoints || 0) * 6 : 0;
+
+            window.rawSyncValues = {
+                play: actualPlayVal,
+                kindle: actualKindleVal,
+                sub: actualSubVal,
+                rakuten: actualRakutenVal
+            };
+
+            const isOverride = document.getElementById('override-sync-toggle')?.checked;
+            
             let totalAnnualSavings = 0;
+            let playValNum = 0;
+            let kindleValNum = 0;
+            let subValNum = 0;
+            let rakutenValNum = 0;
+
+            const ledStates = { play: false, kindle: false, sub: false, rakuten: false };
 
             // 1. Playポイント計算機
             const playStatus = document.getElementById('play-status');
             const playVal = document.getElementById('play-val');
             const playSub = document.getElementById('play-sub');
             
-            let totalPointsEarned = 0;
-            if (diaryData && diaryData.length > 0) {
-                // 日記からポイントの累計を合算 (※日記のアイテムは earnedPoints または類似プロパティを持っている)
-                diaryData.forEach(entry => {
-                    totalPointsEarned += parseInt(entry.point || 0);
-                });
+            if (isOverride) {
+                playValNum = parseInt(document.getElementById('val-override-play').value) || 0;
+                playStatus.className = 'tool-badge';
+                playStatus.style.backgroundColor = '#fbbf24';
+                playStatus.style.color = '#000';
+                playStatus.textContent = '手動上書き中';
+                playVal.textContent = `${playValNum.toLocaleString()} pt`;
+                playSub.textContent = `手動シミュレーション値`;
+                totalAnnualSavings += playValNum;
+                ledStates.play = true;
+            } else if (diaryData && diaryData.length > 0) {
+                playValNum = actualPlayVal;
                 playStatus.className = 'tool-badge active';
+                playStatus.style.backgroundColor = '';
+                playStatus.style.color = '';
                 playStatus.textContent = '同期中';
-                playVal.textContent = `${totalPointsEarned.toLocaleString()} pt`;
-                playSub.textContent = `¥${totalPointsEarned.toLocaleString()} 相当のお得`;
-                
-                // Playポイントは一回限りの獲得価値ですが、年間お得に換算して加算 (ここでは累計額をそのまま年間価値に加味)
-                totalAnnualSavings += totalPointsEarned;
+                playVal.textContent = `${playValNum.toLocaleString()} pt`;
+                playSub.textContent = `¥${playValNum.toLocaleString()} 相当のお得`;
+                totalAnnualSavings += playValNum;
+                ledStates.play = true;
             } else {
                 playStatus.className = 'tool-badge inactive';
+                playStatus.style.backgroundColor = '';
+                playStatus.style.color = '';
                 playStatus.textContent = 'データなし';
                 playVal.textContent = '0 pt';
                 playSub.textContent = '日記が未保存です';
@@ -678,26 +760,30 @@
             const kindleVal = document.getElementById('kindle-val');
             const kindleSub = document.getElementById('kindle-sub');
             
-            if (kuState && kuState.length > 0) {
-                const totalValue = kuState.reduce((sum, b) => sum + (b.price || 0), 0);
-                const monthlyFee = kuSettings ? (kuSettings.monthlyFee || 980) : 980;
-                const duration = kuSettings ? (kuSettings.duration || 3) : 3;
-                const totalCost = monthlyFee * duration;
-                const netSavings = totalValue - totalCost;
-                
-                // 年間換算 = (netSavings / duration) * 12
-                const annualKindleSavings = duration > 0 ? Math.round((netSavings / duration) * 12) : 0;
-                
+            if (isOverride) {
+                kindleValNum = parseInt(document.getElementById('val-override-kindle').value) || 0;
+                kindleStatus.className = 'tool-badge';
+                kindleStatus.style.backgroundColor = '#fbbf24';
+                kindleStatus.style.color = '#000';
+                kindleStatus.textContent = '手動上書き中';
+                kindleVal.textContent = `¥ ${kindleValNum.toLocaleString()} / 年`;
+                kindleSub.textContent = `手動シミュレーション値`;
+                if (kindleValNum > 0) totalAnnualSavings += kindleValNum;
+                ledStates.kindle = true;
+            } else if (kuState && kuState.length > 0) {
+                kindleValNum = actualKindleVal;
                 kindleStatus.className = 'tool-badge active';
+                kindleStatus.style.backgroundColor = '';
+                kindleStatus.style.color = '';
                 kindleStatus.textContent = '同期中';
-                kindleVal.textContent = `¥ ${annualKindleSavings.toLocaleString()} / 年`;
-                kindleSub.textContent = `読書数: ${kuState.length} 冊 (今期 ¥${netSavings.toLocaleString()}お得)`;
-                
-                if (annualKindleSavings > 0) {
-                    totalAnnualSavings += annualKindleSavings;
-                }
+                kindleVal.textContent = `¥ ${kindleValNum.toLocaleString()} / 年`;
+                kindleSub.textContent = `読書数: ${kuState.length} 冊 (今期 ¥${(kuState.reduce((sum, b) => sum + (b.price || 0), 0) - (kuSettings ? (kuSettings.monthlyFee || 980) : 980) * (kuSettings ? (kuSettings.duration || 3) : 3)).toLocaleString()}お得)`;
+                if (kindleValNum > 0) totalAnnualSavings += kindleValNum;
+                ledStates.kindle = true;
             } else {
                 kindleStatus.className = 'tool-badge inactive';
+                kindleStatus.style.backgroundColor = '';
+                kindleStatus.style.color = '';
                 kindleStatus.textContent = 'データなし';
                 kindleVal.textContent = '¥ 0';
                 kindleSub.textContent = '読書ログが空です';
@@ -708,23 +794,42 @@
             const subVal = document.getElementById('sub-val');
             const subSub = document.getElementById('sub-sub');
             
-            if (subState) {
-                const netAnnualSavings = subState.netAnnualSavings || 0;
-                subStatus.className = 'tool-badge active';
-                subStatus.textContent = '同期中';
-                
-                if (netAnnualSavings >= 0) {
+            if (isOverride) {
+                subValNum = parseInt(document.getElementById('val-override-sub').value) || 0;
+                subStatus.className = 'tool-badge';
+                subStatus.style.backgroundColor = '#fbbf24';
+                subStatus.style.color = '#000';
+                subStatus.textContent = '手動上書き中';
+                if (subValNum >= 0) {
                     subVal.className = 'tool-desc-val';
-                    subVal.textContent = `+¥ ${netAnnualSavings.toLocaleString()} / 年`;
+                    subVal.textContent = `+¥ ${subValNum.toLocaleString()} / 年`;
                 } else {
                     subVal.className = 'tool-desc-val deficit';
-                    subVal.textContent = `-¥ ${Math.abs(netAnnualSavings).toLocaleString()} / 年`;
+                    subVal.textContent = `-¥ ${Math.abs(subValNum).toLocaleString()} / 年`;
                 }
-                
+                subSub.textContent = `手動シミュレーション値`;
+                totalAnnualSavings += subValNum;
+                ledStates.sub = true;
+            } else if (subState) {
+                subValNum = actualSubVal;
+                subStatus.className = 'tool-badge active';
+                subStatus.style.backgroundColor = '';
+                subStatus.style.color = '';
+                subStatus.textContent = '同期中';
+                if (subValNum >= 0) {
+                    subVal.className = 'tool-desc-val';
+                    subVal.textContent = `+¥ ${subValNum.toLocaleString()} / 年`;
+                } else {
+                    subVal.className = 'tool-desc-val deficit';
+                    subVal.textContent = `-¥ ${Math.abs(subValNum).toLocaleString()} / 年`;
+                }
                 subSub.textContent = `契約サブスク: ${subState.activeSubs ? subState.activeSubs.length : 0} 個`;
-                totalAnnualSavings += netAnnualSavings;
+                totalAnnualSavings += subValNum;
+                ledStates.sub = true;
             } else {
                 subStatus.className = 'tool-badge inactive';
+                subStatus.style.backgroundColor = '';
+                subStatus.style.color = '';
                 subStatus.textContent = '未診断';
                 subVal.textContent = '¥ 0';
                 subSub.textContent = '健康診断が未実行です';
@@ -735,25 +840,37 @@
             const rakutenVal = document.getElementById('rakuten-val');
             const rakutenSub = document.getElementById('rakuten-sub');
             
-            if (rakutenState) {
-                const totalPoints = rakutenState.totalPoints || 0;
-                // 年間に平均6回お買い物マラソンをすると仮定し、年間お得額を概算
-                const annualRakutenSavings = totalPoints * 6;
-                
+            if (isOverride) {
+                rakutenValNum = parseInt(document.getElementById('val-override-rakuten').value) || 0;
+                rakutenStatus.className = 'tool-badge';
+                rakutenStatus.style.backgroundColor = '#fbbf24';
+                rakutenStatus.style.color = '#000';
+                rakutenStatus.textContent = '手動上書き中';
+                rakutenVal.textContent = `¥ ${rakutenValNum.toLocaleString()} / 年`;
+                rakutenSub.textContent = `手動シミュレーション値`;
+                totalAnnualSavings += rakutenValNum;
+                ledStates.rakuten = true;
+            } else if (rakutenState) {
+                rakutenValNum = actualRakutenVal;
                 rakutenStatus.className = 'tool-badge active';
+                rakutenStatus.style.backgroundColor = '';
+                rakutenStatus.style.color = '';
                 rakutenStatus.textContent = '同期中';
-                rakutenVal.textContent = `¥ ${annualRakutenSavings.toLocaleString()} / 年`;
-                rakutenSub.textContent = `今回獲得: ${totalPoints.toLocaleString()} pt (リスト: ${rakutenState.items ? rakutenState.items.length : 0}件)`;
-                
-                totalAnnualSavings += annualRakutenSavings;
+                rakutenVal.textContent = `¥ ${rakutenValNum.toLocaleString()} / 年`;
+                rakutenSub.textContent = `今回獲得: ${(rakutenState.totalPoints || 0).toLocaleString()} pt`;
+                totalAnnualSavings += rakutenValNum;
+                ledStates.rakuten = true;
             } else {
                 rakutenStatus.className = 'tool-badge inactive';
+                rakutenStatus.style.backgroundColor = '';
+                rakutenStatus.style.color = '';
                 rakutenStatus.textContent = '未シミュ';
                 rakutenVal.textContent = '¥ 0';
                 rakutenSub.textContent = '上限計算が未実行です';
             }
 
-            // 最終集計とメーター描画
+            updateSyncLeds(ledStates, isOverride);
+
             totalAnnualSavings = Math.max(0, totalAnnualSavings);
             const totalMonthlySavings = Math.round(totalAnnualSavings / 12);
             
@@ -1101,8 +1218,123 @@
             xpBar.style.width = `${state.xp}%`;
         }
 
+        function updateSyncLeds(states, isOverride) {
+            const leds = {
+                play: document.getElementById('led-play'),
+                kindle: document.getElementById('led-kindle'),
+                sub: document.getElementById('led-sub'),
+                rakuten: document.getElementById('led-rakuten')
+            };
+            Object.keys(leds).forEach(key => {
+                const el = leds[key];
+                if (el) {
+                    if (isOverride) {
+                        el.style.backgroundColor = '#fbbf24';
+                        el.style.boxShadow = '0 0 10px #fbbf24';
+                    } else if (states[key]) {
+                        el.style.backgroundColor = '#10b981';
+                        el.style.boxShadow = '0 0 10px #10b981';
+                    } else {
+                        el.style.backgroundColor = '#4b5563';
+                        el.style.boxShadow = '0 0 6px #4b5563';
+                    }
+                }
+            });
+        }
+
+        window.toggleSyncOverride = function() {
+            const toggle = document.getElementById('override-sync-toggle');
+            const panel = document.getElementById('sync-override-panel');
+            
+            if (toggle && panel) {
+                if (toggle.checked) {
+                    panel.style.display = 'block';
+                    document.getElementById('val-override-play').value = window.rawSyncValues.play;
+                    document.getElementById('val-override-kindle').value = window.rawSyncValues.kindle;
+                    document.getElementById('val-override-sub').value = window.rawSyncValues.sub;
+                    document.getElementById('val-override-rakuten').value = window.rawSyncValues.rakuten;
+                } else {
+                    panel.style.display = 'none';
+                }
+                init();
+            }
+        };
+
+        window.overrideValueChange = function() {
+            init();
+        };
+
+        window.showMeterDetail = function() {
+            const modal = document.getElementById('meter-modal');
+            const content = document.getElementById('meter-detail-content');
+            
+            if (!modal || !content) return;
+            
+            const total = window.currentAnnualSavings || 0;
+            const target = 1200000;
+            const percent = Math.min(100, Math.round((total / target) * 100));
+            const needed = Math.max(0, target - total);
+            const monthlyNeeded = Math.round(needed / 12);
+            
+            let html = `
+                <div style="text-align:center; margin-bottom:20px;">
+                    <div style="font-size:3.5rem; font-weight:900; color:var(--color-accent); font-family:var(--font-num); line-height:1;">${percent}%</div>
+                    <div style="font-size:0.75rem; color:var(--color-text-muted); margin-top:4px;">Side FIRE目標達成率</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:var(--radius-sm); border:1px solid var(--color-border); margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span>現在のハック総額:</span>
+                        <strong style="color:#fff;">¥ ${total.toLocaleString()} / 年</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span>Side FIRE目標額:</span>
+                        <span style="color:var(--color-text-muted);">¥ 1,200,000 / 年</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; border-top:1px dashed rgba(255,255,255,0.1); padding-top:6px; margin-top:6px;">
+                        <span>目標までの不足額:</span>
+                        <strong style="color:var(--color-error);">¥ ${needed.toLocaleString()} / 年</strong>
+                    </div>
+                </div>
+                <p style="margin-bottom:8px; font-weight:700; color:var(--color-accent);">🚀 Side FIRE（月10万円お得化）への歩み:</p>
+            `;
+            
+            if (percent === 0) {
+                html += `<p style="font-size:0.8rem; color:var(--color-text-muted);">まずは、各種計算ツール（楽天、サブスク、Kindleメーター）のセーブデータを作成してみましょう。自動同期によってこのダッシュボードにお得実績が積み上がります！</p>`;
+            } else if (percent < 30) {
+                html += `<p style="font-size:0.8rem; color:var(--color-text-muted);">現在、初級ハッカーレベルです。あと月額換算で **¥ ${monthlyNeeded.toLocaleString()}** の削減または追加お得化で目標に到達します。まずは固定費である「サブスク健康診断」で見端せる無駄を排除するのが最短ルートです！</p>`;
+            } else if (percent < 70) {
+                html += `<p style="font-size:0.8rem; color:var(--color-text-muted);">順調にお得化が進んでいます！目標達成まであと一息。年間で **¥ ${needed.toLocaleString()}** の改善が必要です。楽天市場でのお買い物時に、ポイント上限ぴったりを狙うだけで年数万円の価値を上乗せできます！</p>`;
+            } else if (percent < 100) {
+                html += `<p style="font-size:0.8rem; color:var(--color-text-muted);">目標である月10万円お得（Side FIRE）まであとわずか！最後の仕上げとして、投資複利シミュレータにハックしたお得額を投入し、全世界株式などの積立に回して資産の爆発的成長をシミュレートしてみましょう！</p>`;
+            } else {
+                html += `<p style="font-size:0.8rem; color:var(--color-text-muted);">🎉 おめでとうございます！月10万円（年120万）のSide FIREロードマップを完全にクリアしました！このまま節約・ハックした余剰資金を投資に回すことで、本物のFIREも夢ではありません！</p>`;
+            }
+            
+            content.innerHTML = html;
+            modal.style.display = 'flex';
+        };
+
+        window.closeMeterModal = function() {
+            const modal = document.getElementById('meter-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
         window.addEventListener('DOMContentLoaded', init);
         window.addEventListener('resize', calculateCompound);
     </script>
+
+    <!-- 詳細進捗モーダル -->
+    <div id="meter-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(15,23,42,0.85); backdrop-filter:blur(4px); z-index:10000; align-items:center; justify-content:center; padding:20px;" onclick="closeMeterModal()">
+        <div style="background:linear-gradient(135deg, #111827, #0b0f19); border:2px solid var(--color-accent); border-radius:var(--radius-md); max-width:480px; width:100%; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.5); position:relative;" onclick="event.stopPropagation()">
+            <button type="button" style="position:absolute; right:15px; top:15px; background:none; border:none; color:var(--color-text-muted); font-size:1.5rem; cursor:pointer; width:30px; height:30px;" onclick="closeMeterModal()">&times;</button>
+            <h3 style="color:var(--color-accent); font-size:1.1rem; margin-bottom:16px; border-left:3px solid var(--color-accent); padding-left:10px;">🎯 Side FIRE ロードマップ進捗</h3>
+            
+            <div id="meter-detail-content" style="font-size:0.85rem; line-height:1.7; color:#fff;">
+                <!-- 動的に生成 -->
+            </div>
+            
+            <button type="button" class="btn btn-accent" style="width:100%; margin-top:20px; height:44px;" onclick="closeMeterModal()">閉じる</button>
+        </div>
+    </div>
 </body>
 </html>

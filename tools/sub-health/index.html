@@ -436,7 +436,14 @@
                 </div>
 
                 <section class="card">
-                    <h2 class="card-title">🔌 契約中サブスクの利用頻度設定</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; border-left: 3px solid var(--color-accent); padding-left: 10px;">
+                        <h2 class="card-title" style="margin-bottom:0; border-left:none; padding-left:0; line-height:1.2;">🔌 利用頻度設定</h2>
+                        <div style="display:flex; gap:10px; font-size:0.75rem;">
+                            <button type="button" style="background:none; border:none; color:var(--color-accent); cursor:pointer; font-weight:700; padding:10px 5px; min-height:44px;" onclick="toggleAllSubs(true)">全選択</button>
+                            <span style="color:var(--color-border); align-self:center;">|</span>
+                            <button type="button" style="background:none; border:none; color:var(--color-text-muted); cursor:pointer; font-weight:700; padding:10px 5px; min-height:44px;" onclick="toggleAllSubs(false)">全解除</button>
+                        </div>
+                    </div>
                     <div class="sub-list" id="sub-list-container"></div>
                 </section>
             </div>
@@ -445,7 +452,10 @@
                 <div class="result-panel">
                     <section class="card">
                         <h2 class="card-title">📝 総合診断結果</h2>
-                        <div id="status-badge" class="status-badge bronze">利用データなし</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                            <div id="status-badge" class="status-badge bronze" style="margin-bottom:0;">利用データなし</div>
+                            <div id="recovery-rate-badge" class="status-badge" style="margin-bottom:0; font-weight:800; display:none; background:var(--color-bg-card-nested); border:1px solid var(--color-border); color:#fff;">回収率: 0%</div>
+                        </div>
                         <div class="stat-group">
                             <div class="stat-label-large">年間予想損益</div>
                             <div id="annual-savings-val" class="stat-value-large value-saving">¥ 0</div>
@@ -637,15 +647,53 @@
             renderSubList();
         }
 
+        window.toggleAllSubs = function(active) {
+            if (active) {
+                SUB_PRESETS.forEach(sub => state.activeSubs.add(sub.id));
+                state.customSubs.forEach(sub => state.activeSubs.add(sub.id));
+            } else {
+                state.activeSubs.clear();
+            }
+            
+            SUB_PRESETS.forEach(sub => {
+                const chk = document.getElementById(`chk-${sub.id}`);
+                const item = document.getElementById(`sub-item-${sub.id}`);
+                if (chk) chk.checked = active;
+                if (item) {
+                    if (active) item.classList.add('active');
+                    else item.classList.remove('active');
+                }
+            });
+            state.customSubs.forEach(sub => {
+                const chk = document.getElementById(`chk-${sub.id}`);
+                const item = document.getElementById(`sub-item-${sub.id}`);
+                if (chk) chk.checked = active;
+                if (item) {
+                    if (active) item.classList.add('active');
+                    else item.classList.remove('active');
+                }
+            });
+            
+            calculate();
+        };
+
+        function getSubIcon(cat) {
+            const icons = {
+                video: '🎬',
+                music: '🎵',
+                book: '📚',
+                other: '📦'
+            };
+            return icons[cat] || '📦';
+        }
+
         function renderSubList() {
             const container = document.getElementById('sub-list-container');
             container.innerHTML = '';
             
-            // 1. プリセットサブスクの描画
             SUB_PRESETS.forEach(sub => {
                 const isChecked = state.activeSubs.has(sub.id);
                 
-                // DOMが存在する場合は現在の値を引き継ぐ。無ければ初期値
                 const slider = document.getElementById(`slider-${sub.id}`);
                 const currentVal = slider ? parseInt(slider.value) : (state.sliderValues && state.sliderValues[sub.id] !== undefined ? state.sliderValues[sub.id] : sub.defaultVal);
                 
@@ -653,11 +701,13 @@
                 subItem.className = 'sub-item' + (isChecked ? ' active' : '');
                 subItem.id = `sub-item-${sub.id}`;
                 
+                const icon = getSubIcon(sub.category || 'other');
+                
                 subItem.innerHTML = `
                     <div class="sub-header" onclick="toggleSub('${sub.id}')">
                         <div class="sub-info-left">
                             <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
-                            <span class="sub-name">${sub.name}</span>
+                            <span class="sub-name">${icon} ${sub.name}</span>
                         </div>
                         <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
                     </div>
@@ -679,7 +729,6 @@
                 updateSliderColor(sub.id);
             });
 
-            // 2. カスタムサブスクの描画
             if (state.customSubs && state.customSubs.length > 0) {
                 state.customSubs.forEach(sub => {
                     const isChecked = state.activeSubs.has(sub.id);
@@ -693,11 +742,13 @@
                         low: '😟 ほぼ使わない (回収率20%)'
                     };
                     
+                    const icon = getSubIcon(sub.category || 'other');
+                    
                     subItem.innerHTML = `
                         <div class="sub-header" onclick="toggleSub('${sub.id}')">
                             <div class="sub-info-left">
                                 <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
-                                <span class="sub-name" style="color: var(--color-accent);">${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
+                                <span class="sub-name" style="color: var(--color-accent);">${icon} ${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
                             </div>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
@@ -905,6 +956,27 @@
             } else {
                 netSavingsEl.className = 'value-deficit';
                 annualSavingsValEl.className = 'stat-value-large value-deficit';
+            }
+
+            const totalCost = totalMonthlyFee * 12;
+            const rateBadge = document.getElementById('recovery-rate-badge');
+            if (rateBadge) {
+                if (state.activeSubs.size === 0) {
+                    rateBadge.style.display = 'none';
+                } else {
+                    rateBadge.style.display = 'inline-block';
+                    const recoveryPercent = totalCost > 0 ? (totalAnnualValue / totalCost) * 100 : 0;
+                    rateBadge.textContent = `回収率: ${Math.round(recoveryPercent)}%`;
+                    if (recoveryPercent >= 100) {
+                        rateBadge.style.backgroundColor = 'var(--color-success)';
+                        rateBadge.style.borderColor = 'var(--color-success)';
+                        rateBadge.style.color = '#0b0f19';
+                    } else {
+                        rateBadge.style.backgroundColor = 'var(--color-error)';
+                        rateBadge.style.borderColor = 'var(--color-error)';
+                        rateBadge.style.color = '#fff';
+                    }
+                }
             }
             
             const badge = document.getElementById('status-badge');
