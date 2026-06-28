@@ -5,7 +5,7 @@
     // Configuration Constants
     // ===========================================
     const CONFIG = {
-        articlesUrl: 'articles.json',
+        articlesUrl: 'articles.json?v=20260628_1053a',
         itemsPerPage: 6,
         adInterval: 3,
         newThresholdDays: 7,
@@ -242,8 +242,8 @@
         categoryFilter: document.getElementById('category-filter'),
         searchInput: document.getElementById('search-input'),
         sortToggle: document.getElementById('sort-toggle'),
-        loading: document.getElementById('loading-spinner'),
-        error: document.getElementById('error-message'),
+        loading: null,
+        error: null,
         // Sidebar elements
         sidebarToggle: document.getElementById('sidebar-toggle'),
         sidebar: document.getElementById('sidebar'),
