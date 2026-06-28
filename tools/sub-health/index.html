@@ -380,6 +380,30 @@
 
         <div class="grid-layout">
             <div class="main-column">
+                <!-- リストにないサブスクを手動追加するフォーム -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <h3 class="card-title" style="color: var(--color-accent); font-size: 0.95rem;">➕ リストにないサブスクを追加</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">サービス名</label>
+                            <input type="text" id="custom-sub-name" placeholder="例: DMM TV" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">月額料金 (円)</label>
+                            <input type="number" id="custom-sub-fee" placeholder="例: 550" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="font-size: 0.75rem; color: var(--color-text-muted); display: block; margin-bottom: 4px;">月の利用頻度・回収満足度</label>
+                        <select id="custom-sub-sat" style="width: 100%; height: 36px; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: #fff; padding: 0 10px; font-size: 0.8rem;">
+                            <option value="high">😆 毎日使っていて元は完全にとっている (回収率150%)</option>
+                            <option value="mid" selected>🙂 週2〜3日使っており満足している (回収率90%)</option>
+                            <option value="low">😟 ほぼ使っておらず無駄になっている (回収率20%)</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="addCustomSub()" style="width: 100%; height: 36px; background: var(--color-accent); border: none; border-radius: var(--radius-sm); color: #451a03; font-weight: 700; font-size: 0.8rem; cursor: pointer; transition: background 0.2s;">サブスクをリストへ追加</button>
+                </div>
+
                 <section class="card">
                     <h2 class="card-title">🔌 契約中サブスクの利用頻度設定</h2>
                     <div class="sub-list" id="sub-list-container"></div>
@@ -430,6 +454,14 @@
                             U-NEXTは毎月1,200ポイントが付与されるため、映画館のチケット割引や電子書籍の購入に充てることで、月額以上の価値を簡単に回収できます。<br>
                             <a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" class="promo-link">➔ U-NEXTの31日間無料体験はこちら</a>
                         </p>
+                    </section>
+
+                    <!-- あなた専用のサブスク改善手順書 -->
+                    <section class="card" id="prescription-card" style="margin-top: 20px; border-left: 4px solid var(--color-warning); display: none;">
+                        <h3 class="card-title" style="color: var(--color-warning); font-size: 0.95rem; border-left: none; padding-left: 0;">🩺 あなた専用のサブスク改善手順書</h3>
+                        <div id="prescription-content" style="font-size: 0.8rem; line-height: 1.6; color: var(--color-text-muted);">
+                            <!-- JSで動的に改善アドバイスが挿入されます -->
+                        </div>
                     </section>
                 </div>
             </div>
@@ -515,13 +547,12 @@
         ];
 
         const state = {
-            activeSubs: new Set()
+            activeSubs: new Set(),
+            customSubs: [],
+            sliderValues: {}
         };
 
         function init() {
-            const container = document.getElementById('sub-list-container');
-            container.innerHTML = '';
-            
             let savedState = null;
             try {
                 savedState = JSON.parse(localStorage.getItem('sub_health_state') || 'null');
@@ -529,14 +560,30 @@
                 console.error('Failed to load sub_health_state', e);
             }
             
+            state.customSubs = savedState ? (savedState.customSubs || []) : [];
+            state.sliderValues = savedState ? (savedState.sliderValues || {}) : {};
+            
+            if (savedState && savedState.activeSubs) {
+                savedState.activeSubs.forEach(id => state.activeSubs.add(id));
+            } else {
+                state.activeSubs.add('kindle');
+                state.activeSubs.add('prime');
+            }
+            
+            renderSubList();
+        }
+
+        function renderSubList() {
+            const container = document.getElementById('sub-list-container');
+            container.innerHTML = '';
+            
+            // 1. プリセットサブスクの描画
             SUB_PRESETS.forEach(sub => {
-                let isChecked = false;
-                let currentVal = sub.defaultVal;
+                const isChecked = state.activeSubs.has(sub.id);
                 
-                if (savedState && savedState.sliderValues && savedState.sliderValues[sub.id] !== undefined) {
-                    currentVal = savedState.sliderValues[sub.id];
-                    isChecked = savedState.activeSubs.includes(sub.id);
-                }
+                // DOMが存在する場合は現在の値を引き継ぐ。無ければ初期値
+                const slider = document.getElementById(`slider-${sub.id}`);
+                const currentVal = slider ? parseInt(slider.value) : (state.sliderValues && state.sliderValues[sub.id] !== undefined ? state.sliderValues[sub.id] : sub.defaultVal);
                 
                 const subItem = document.createElement('div');
                 subItem.className = 'sub-item' + (isChecked ? ' active' : '');
@@ -564,16 +611,92 @@
                         <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">ℹ️ ${sub.desc}</p>
                     </div>
                 `;
-                
                 container.appendChild(subItem);
-                
-                if (isChecked) {
-                    state.activeSubs.add(sub.id);
-                }
             });
 
+            // 2. カスタムサブスクの描画
+            if (state.customSubs && state.customSubs.length > 0) {
+                state.customSubs.forEach(sub => {
+                    const isChecked = state.activeSubs.has(sub.id);
+                    const subItem = document.createElement('div');
+                    subItem.className = 'sub-item custom-sub-item' + (isChecked ? ' active' : '');
+                    subItem.id = `sub-item-${sub.id}`;
+                    
+                    const satLabels = {
+                        high: '😆 毎日使う (回収率150%)',
+                        mid: '🙂 週2〜3日 (回収率90%)',
+                        low: '😟 ほぼ使わない (回収率20%)'
+                    };
+                    
+                    subItem.innerHTML = `
+                        <div class="sub-header" onclick="toggleSub('${sub.id}')">
+                            <div class="sub-info-left">
+                                <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
+                                <span class="sub-name" style="color: var(--color-accent);">${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
+                                <button type="button" onclick="removeCustomSub(event, '${sub.id}')" style="background:none; border:none; color:var(--color-error); font-size:1.1rem; cursor:pointer; padding: 0 4px;" title="削除">&times;</button>
+                            </div>
+                        </div>
+                        <div class="sub-control-panel">
+                            <div style="font-size: 0.8rem; display:flex; justify-content:space-between;">
+                                <span style="color: var(--color-text-muted);">回収満足度:</span>
+                                <span style="font-weight:700; color: #fff;">${satLabels[sub.sat]}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(subItem);
+                });
+            }
+            
             calculate();
         }
+
+        window.addCustomSub = function() {
+            const nameEl = document.getElementById('custom-sub-name');
+            const feeEl = document.getElementById('custom-sub-fee');
+            const satEl = document.getElementById('custom-sub-sat');
+            
+            const name = nameEl.value.trim();
+            const fee = parseInt(feeEl.value);
+            const sat = satEl.value;
+            
+            if (!name || isNaN(fee) || fee <= 0) {
+                alert('サービス名と正しい月額料金を入力してください');
+                return;
+            }
+            
+            if (SUB_PRESETS.some(s => s.name === name) || (state.customSubs && state.customSubs.some(s => s.name === name))) {
+                alert('そのサブスクはすでに登録されています');
+                return;
+            }
+            
+            const customId = 'custom_' + Date.now();
+            const newSub = {
+                id: customId,
+                name: name,
+                fee: fee,
+                sat: sat,
+                isCustom: true
+            };
+            
+            state.customSubs.push(newSub);
+            
+            nameEl.value = '';
+            feeEl.value = '';
+            satEl.value = 'mid';
+            
+            state.activeSubs.add(customId);
+            renderSubList();
+        };
+
+        window.removeCustomSub = function(e, id) {
+            e.stopPropagation();
+            state.customSubs = state.customSubs.filter(sub => sub.id !== id);
+            state.activeSubs.delete(id);
+            renderSubList();
+        };
 
         window.toggleSub = function(id) {
             const chk = document.getElementById(`chk-${id}`);
@@ -612,21 +735,67 @@
             calculate();
         };
 
+        function getSubTip(id, val) {
+            const tips = {
+                kindle: `現在の読書ペースは月 ${val} 冊です。Kindle Unlimited（月980円）は月2冊以上読まないと元が取れません。読む時間が確保できない月は一時解約し、読みたい本が溜まった月だけ再契約するのが効果的です。`,
+                youtube: `月の動画視聴時間は ${val} 時間です。広告非表示による時間節約価値（1時間100円換算）が月額費用に届いていません。YouTubeを見る頻度が下がっているなら、一時解約を検討しましょう。`,
+                unext: `月の動画視聴は ${val} 本です。毎月付与される1,200ポイントを使い切れていないか、あるいは月5本以上視聴しないと基本料金を回収できません。ポイントの期限に注意し、余るようならプラン見直しをおすすめします。`,
+                netflix: `月の動画視聴時間は ${val} 時間です。月額1,490円に対して利用頻度が低すぎます。観たい独占作品がある月だけ契約し、見終わったら解約する「オンオフ契約」に切り替えるのがおすすめです。`,
+                spotify: `音楽の試聴時間は月 ${val} 時間です。無料プラン（シャッフル・広告あり）で十分代替可能かもしれません。家族で使う場合は「ファミリープラン」にまとめることで、1人あたりの費用を劇的に削減できます。`,
+                prime: `送料無料の配送回数は月 ${val} 回です。送料無料特典（1回410円換算）だけで月額費用を回収できていません。急がない買い物はまとめて注文するか、Prime Video等のデジタル特典を意識して使いましょう。`
+            };
+            return tips[id] || '利用頻度が低いため、プランや契約自体の見直しを推奨します。';
+        }
+
         function calculate() {
             let totalMonthlyFee = 0;
             let totalAnnualValue = 0;
+            const deficits = []; // 赤字（元取り不足）のサブスクリスト
             
+            // 1. プリセットサブスクの計算
             state.activeSubs.forEach(id => {
                 const sub = SUB_PRESETS.find(s => s.id === id);
                 if (!sub) return;
                 
                 const slider = document.getElementById(`slider-${id}`);
-                const usageVal = parseInt(slider.value);
+                const usageVal = slider ? parseInt(slider.value) : sub.defaultVal;
                 
                 totalMonthlyFee += sub.fee;
                 const monthlyValue = (usageVal * sub.valMultiplier) + (sub.extraVal || 0);
                 totalAnnualValue += (monthlyValue * 12);
+                
+                const netMonthly = monthlyValue - sub.fee;
+                if (netMonthly < 0) {
+                    deficits.push({
+                        name: sub.name,
+                        deficit: Math.abs(netMonthly * 12),
+                        tip: getSubTip(id, usageVal)
+                    });
+                }
             });
+
+            // 2. カスタムサブスクの計算
+            if (state.customSubs && state.customSubs.length > 0) {
+                state.customSubs.forEach(sub => {
+                    if (state.activeSubs.has(sub.id)) {
+                        totalMonthlyFee += sub.fee;
+                        
+                        const satMultipliers = { high: 1.5, mid: 0.9, low: 0.2 };
+                        const multi = satMultipliers[sub.sat] || 0.9;
+                        const monthlyValue = sub.fee * multi;
+                        totalAnnualValue += (monthlyValue * 12);
+                        
+                        const netMonthly = monthlyValue - sub.fee;
+                        if (netMonthly < 0) {
+                            deficits.push({
+                                name: sub.name,
+                                deficit: Math.abs(netMonthly * 12),
+                                tip: `利用満足度（頻度）が低く、年間で約 ¥${Math.round(Math.abs(netMonthly * 12)).toLocaleString()} の無駄（赤字）が発生しています。不要であれば解約し、必要な月だけ都度契約しましょう。`
+                            });
+                        }
+                    }
+                });
+            }
             
             const totalAnnualCost = totalMonthlyFee * 12;
             const netAnnualSavings = totalAnnualValue - totalAnnualCost;
@@ -685,6 +854,44 @@
             }
             twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
 
+            // --- 改善手順書 (Prescription) の動的出力 ---
+            const prescCard = document.getElementById('prescription-card');
+            const prescContent = document.getElementById('prescription-content');
+            
+            if (prescCard && prescContent) {
+                if (deficits.length > 0) {
+                    prescCard.style.display = 'block';
+                    prescCard.style.borderColor = 'var(--color-warning)';
+                    const h3 = prescCard.querySelector('h3');
+                    if (h3) {
+                        h3.style.color = 'var(--color-warning)';
+                        h3.textContent = '🩺 あなた専用のサブスク改善手順書';
+                    }
+                    
+                    let html = `<p style="margin-bottom: 12px; font-weight:700; color: #fff;">年間で合計 <span style="color: var(--color-error); font-weight:900;">¥${deficits.reduce((sum, d) => sum + d.deficit, 0).toLocaleString()}</span> 相当の元取り不足（無駄）が検出されました。以下の見直しを推奨します：</p>`;
+                    html += '<ol style="padding-left: 18px; line-height: 1.8;">';
+                    deficits.forEach(d => {
+                        html += `<li style="margin-bottom: 8px;">
+                            <strong style="color: #fff;">${d.name}</strong> (年間 ¥${Math.round(d.deficit).toLocaleString()} の赤字):<br>
+                            <span style="color: var(--color-text-muted); font-size: 0.75rem; display:block; margin-top:2px;">💡 ${d.tip}</span>
+                        </li>`;
+                    });
+                    html += '</ol>';
+                    prescContent.innerHTML = html;
+                } else if (state.activeSubs.size === 0) {
+                    prescCard.style.display = 'none';
+                } else {
+                    prescCard.style.display = 'block';
+                    prescCard.style.borderColor = 'var(--color-success)';
+                    const h3 = prescCard.querySelector('h3');
+                    if (h3) {
+                        h3.style.color = 'var(--color-success)';
+                        h3.textContent = '🩺 サブスク診断：健全な家計です！';
+                    }
+                    prescContent.innerHTML = '<p style="color: var(--color-success); font-weight:700; font-size:0.85rem;">🎉 素晴らしい！現在選択しているすべてのサブスクで、支払った基本料金以上の価値を賢く回収できています。見直すべき赤字サブスクはありません。</p>';
+                }
+            }
+
             // --- Save state for Dashboard ---
             const sliderValues = {};
             SUB_PRESETS.forEach(sub => {
@@ -696,7 +903,8 @@
             localStorage.setItem('sub_health_state', JSON.stringify({
                 activeSubs: Array.from(state.activeSubs),
                 sliderValues: sliderValues,
-                netAnnualSavings: netAnnualSavings
+                netAnnualSavings: netAnnualSavings,
+                customSubs: state.customSubs || []
             }));
         }
 

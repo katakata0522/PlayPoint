@@ -493,6 +493,14 @@
                         <!-- スマートレコメンド表示エリア -->
                         <div id="smart-recommend-container"></div>
 
+                        <!-- 上限ぴったり逆算シミュレーター -->
+                        <div id="limit-target-calculator-container" style="background: rgba(255,255,255,0.02); border: 1px solid var(--color-border); border-left: 4px solid var(--color-accent); border-radius: var(--radius-md); padding: 15px; margin-top: 15px; display: none;">
+                            <h4 style="color: var(--color-accent); font-size: 0.85rem; margin-bottom: 8px;">🎯 ポイント上限ぴったり逆算器</h4>
+                            <div id="target-calc-content" style="font-size: 0.75rem; line-height: 1.6; color: var(--color-text-muted);">
+                                <!-- 動的な逆算結果を表示 -->
+                            </div>
+                        </div>
+
                         <div class="sub-breakdown" style="border-top: none; padding-top: 0;">
                             <div class="breakdown-row">
                                 <span>合計購入金額 (税込)</span>
@@ -742,6 +750,58 @@
                                 <p style="color: var(--color-error);">これ以上買い回りを増やしても、キャンペーンポイントは増えません（買いすぎ損状態）。高額な買い物は次回のイベントに回すことをお勧めします。</p>
                             </div>
                         `;
+                    }
+                }
+            }
+
+            // --- 上限ぴったり逆算器の動的計算 ---
+            const targetCalcEl = document.getElementById('limit-target-calculator-container');
+            const targetContentEl = document.getElementById('target-calc-content');
+            
+            if (targetCalcEl && targetContentEl) {
+                if (totalPrice === 0) {
+                    targetCalcEl.style.display = 'none';
+                } else {
+                    targetCalcEl.style.display = 'block';
+                    
+                    const remainingPoints = limit - marathonPoints;
+                    
+                    if (remainingPoints <= 0) {
+                        targetContentEl.innerHTML = `
+                            <p style="color: var(--color-error); font-weight: 700;">すでに買い回りポイント上限（${limit.toLocaleString()} pt）に達しています！</p>
+                            <p style="margin-top: 4px;">これ以上購入しても追加ポイントは獲得できません（買いすぎ損状態）。高額商品は次回のイベントまで待つことをおすすめします。</p>
+                        `;
+                    } else {
+                        let html = '';
+                        
+                        // パターン1: 現在の店舗数（倍率）のまま買い物をする場合
+                        if (marathonRate > 0) {
+                            const additionalCostCurrent = Math.ceil((remainingPoints * 100) / marathonRate);
+                            html += `<p style="margin-bottom: 6px;">現在の <span style="font-weight:700; color:#fff;">${shopCount} 店舗 (${marathonRate}%還元)</span> のまま買い物をする場合：</p>`;
+                            html += `<p style="font-weight:700; color:#fff; margin-bottom: 12px; font-size:0.85rem;">➔ あと <span style="color:var(--color-accent); font-size:1rem;">¥ ${additionalCostCurrent.toLocaleString()}</span> の購入で上限に達します。</p>`;
+                        } else {
+                            html += `<p style="margin-bottom: 12px; color: var(--color-warning);">※現在1店舗のみのため、買い回りポイントが発生していません。2店舗以上（各1,000円以上）買い物すると逆算器が有効になります。</p>`;
+                        }
+                        
+                        // パターン2: 最大10店舗（最大9%還元）まで買い回る場合
+                        if (shopCount < 10) {
+                            const targetRate = 9; // 10店舗時の還元率
+                            const targetRemainingPoints = limit - Math.floor(totalPrice * (targetRate / 100));
+                            
+                            if (targetRemainingPoints > 0) {
+                                // 10店舗時点で上限に達する追加購入額を計算
+                                // 式: (totalPrice + X) * 0.09 = limit => X = (limit / 0.09) - totalPrice
+                                const totalRequiredAtMax = Math.ceil(limit / 0.09);
+                                const additionalCostMax = Math.max(0, totalRequiredAtMax - totalPrice);
+                                
+                                html += `<p style="margin-bottom: 6px; border-top: 1px dashed var(--color-border); padding-top: 8px;">今後 <span style="font-weight:700; color:#fff;">10 店舗 (最大9%還元)</span> まで買い進める場合：</p>`;
+                                html += `<p style="font-weight:700; color:#fff; font-size:0.85rem;">➔ あと <span style="color:var(--color-success); font-size:1rem;">¥ ${additionalCostMax.toLocaleString()}</span> の購入で上限に達します。</p>`;
+                            } else {
+                                html += `<p style="margin-bottom: 6px; border-top: 1px dashed var(--color-border); padding-top: 8px; color: var(--color-warning);">※10店舗まで買い進めると、現在の購入額（¥${totalPrice.toLocaleString()}）だけで上限ポイントを超えてしまいます。</p>`;
+                            }
+                        }
+                        
+                        targetContentEl.innerHTML = html;
                     }
                 }
             }

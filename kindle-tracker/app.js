@@ -2250,18 +2250,16 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath(); ctx.moveTo(665, 410); ctx.lineTo(765, 410); ctx.stroke(); // 右棚
         
         const maxDrawBooks = Math.min(bookCount, 8);
-        const bookColors = [
-            ['#1e3a8a', '#3b82f6'],
-            ['#312e81', '#4f46e5'],
-            ['#065f46', '#10b981'],
-            ['#78350f', '#d97706'],
-            ['#581c87', '#8b5cf6'],
-            ['#881337', '#e11d48'],
-            ['#1f2937', '#4b5563'],
-            ['#0f172a', '#b9944a']
-        ];
+        const categoryColors = {
+            business: ['#7c2d12', '#ea580c'], // 温かみのある赤・テラコッタ
+            novel: ['#064e3b', '#10b981'],    // 知的な緑・フォレスト
+            comic: ['#1e3a8a', '#3b82f6'],    // ポップな青・ロイヤルブルー
+            magazine: ['#581c87', '#a855f7'], // クリエイティブな紫・バイオレット
+            other: ['#4b5563', '#9ca3af']     // シックな灰色・チャコール
+        };
 
         for (let i = 0; i < maxDrawBooks; i++) {
+            const book = state.books[i];
             const isLeft = i < 4;
             const shelfX = isLeft ? 35 : 665;
             const idxOnShelf = isLeft ? i : i - 4;
@@ -2272,7 +2270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const bookY = 410 - bookH;
             
             const bookGrad = ctx.createLinearGradient(bookX, bookY, bookX + bookW, bookY);
-            const colors = bookColors[i % bookColors.length];
+            const colors = categoryColors[book.category || 'other'] || categoryColors.other;
             bookGrad.addColorStop(0, colors[0]);
             bookGrad.addColorStop(1, colors[1]);
             ctx.fillStyle = bookGrad;
@@ -2286,16 +2284,32 @@ document.addEventListener('DOMContentLoaded', () => {
             
             ctx.fillRect(bookX, bookY, bookW, bookH);
             
+            // ゴールドの帯（本の上下飾り）
             ctx.fillStyle = 'rgba(185, 148, 74, 0.6)';
             ctx.fillRect(bookX, bookY + 10, bookW, 4);
             ctx.fillRect(bookX, bookY + bookH - 15, bookW, 4);
             
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            // 背表紙の縦ライン
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(bookX + bookW/2, bookY + 20);
             ctx.lineTo(bookX + bookW/2, bookY + bookH - 25);
             ctx.stroke();
+
+            // 読了星スタンプ (評価に応じたシールの配置)
+            if (book.rating && book.rating > 0) {
+                const sealY = bookY + 32;
+                // シールの背景真円
+                ctx.fillStyle = book.rating >= 4.0 ? 'rgba(212, 175, 55, 0.9)' : 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(bookX + bookW/2, sealY, 5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // ミニ星マークの描画
+                ctx.fillStyle = book.rating >= 4.0 ? '#451a03' : '#1e293b';
+                drawStar(ctx, bookX + bookW/2, sealY, 5, 3.5, 1.5);
+            }
             
             ctx.restore();
         }
