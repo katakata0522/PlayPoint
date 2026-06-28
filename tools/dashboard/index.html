@@ -415,6 +415,52 @@
             </div>
         </section>
 
+        <!-- 複利の魔法インデックス投資シミュレーター -->
+        <section class="card" style="background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(11, 15, 25, 0.98));">
+            <h2 class="roadmap-title" style="color: var(--color-accent); font-size: 1.1rem; border-left-color: var(--color-accent); margin-bottom: 12px;">📈 複利の魔法インデックス投資シミュレーター</h2>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 20px;">
+                ハックしたお得総額を毎年積立投資（全世界株式等の年利5%想定）に回したと仮定した際の、将来の資産形成シミュレーションです。
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; margin-bottom: 10px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                            <span>積立期間 (年)</span>
+                            <span style="font-family:var(--font-num); font-weight:700; color:var(--color-accent);"><span id="inv-years-val">20</span>年</span>
+                        </div>
+                        <input type="range" id="inv-years" min="5" max="30" value="20" style="width:100%; accent-color:var(--color-accent);" oninput="calculateCompound()">
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                            <span>想定利回り (年利)</span>
+                            <span style="font-family:var(--font-num); font-weight:700; color:var(--color-accent);"><span id="inv-rate-val">5.0</span>%</span>
+                        </div>
+                        <input type="range" id="inv-rate" min="3" max="8" step="0.5" value="5.0" style="width:100%; accent-color:var(--color-accent);" oninput="calculateCompound()">
+                    </div>
+                    <div style="background:rgba(255,255,255,0.02); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--color-border); margin-top:8px;">
+                        <div style="font-size: 0.75rem; color: var(--color-text-muted);">将来のハック総資産額</div>
+                        <div style="font-family:var(--font-num); font-size:1.6rem; font-weight:900; color:#fff;" id="inv-result-val">¥ 0</div>
+                        <div style="font-size:0.7rem; color:var(--color-success); margin-top:2px;">(うち投資利益分: <span id="inv-interest-val">¥ 0</span>)</div>
+                    </div>
+                </div>
+                <!-- 複利推移グラフ (SVGによる動的折れ線) -->
+                <div style="background:rgba(0,0,0,0.2); border:1px solid var(--color-border); border-radius:var(--radius-md); padding:15px; height:180px; position:relative;">
+                    <svg id="compound-chart" style="width:100%; height:100%; overflow:visible;">
+                        <!-- グリッド背景線 -->
+                        <line x1="0" y1="140" x2="100%" y2="140" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <line x1="0" y1="70" x2="100%" y2="70" stroke="rgba(255,255,255,0.05)" stroke-width="1" />
+                        <!-- 曲線用のパス -->
+                        <path id="chart-path-principal" fill="none" stroke="#4b5563" stroke-width="2" stroke-dasharray="3,3" />
+                        <path id="chart-path-total" fill="none" stroke="url(#goldGrad)" stroke-width="3" />
+                        <!-- マーカー -->
+                        <circle id="chart-marker" r="5" fill="#f3e5ab" style="display:none;" />
+                    </svg>
+                    <div style="position:absolute; bottom:5px; left:15px; font-size:0.6rem; color:var(--color-text-muted);">0年</div>
+                    <div style="position:absolute; bottom:5px; right:15px; font-size:0.6rem; color:var(--color-text-muted);"><span id="chart-end-year">20</span>年後</div>
+                </div>
+            </div>
+        </section>
+
         <!-- ツール別グリッド -->
         <section style="margin-bottom: 24px;">
             <h2 style="font-size: 1.1rem; margin-bottom: 16px; border-left: 3px solid var(--color-accent); padding-left: 10px; color: var(--color-accent);">🎮 各計算機・シミュレーターの同期ステータス</h2>
@@ -486,6 +532,26 @@
                     </div>
                     <a href="../rakuten-sim/index.html" class="tool-btn">シミュレーターを開く ➔</a>
                 </div>
+            </div>
+        </section>
+
+        <!-- 🎮 デイリー・オトククエスト（ゲームシステム） -->
+        <section class="card" style="border: 1px solid rgba(16, 185, 129, 0.2); background: linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(17, 24, 39, 0.95) 100%);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+                <h2 class="roadmap-title" style="color: var(--color-success); border-left-color: var(--color-success); font-size: 1.1rem; margin-bottom:0; padding-left:10px;">🎮 本日のデイリー・オトククエスト</h2>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span id="hacker-level-badge" style="background:var(--color-success); color:#000; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:4px;">LV.1 新米ハッカー</span>
+                    <span style="font-size:0.7rem; color:var(--color-text-muted);"><span id="hacker-xp-val" style="font-family:var(--font-num); font-weight:700; color:#fff;">0</span> / 100 XP</span>
+                </div>
+            </div>
+            
+            <!-- XPプログレスバー -->
+            <div style="width:100%; height:6px; background:rgba(255,255,255,0.05); border-radius:3px; margin-bottom:20px; overflow:hidden;">
+                <div id="hacker-xp-bar" style="width:0%; height:100%; background:var(--color-success); transition:width 0.5s ease-out; border-radius:3px;"></div>
+            </div>
+
+            <div id="quest-list-container" style="display:flex; flex-direction:column; gap:12px;">
+                <!-- JSで動的に3つのデイリークエストが挿入されます -->
             </div>
         </section>
 
@@ -668,13 +734,197 @@
             } else if (percent < 60) {
                 levelTitle.textContent = '現在のロードマップ: 達人お得ハッカー級 (達成度 ' + percent + '%)';
                 levelDesc.textContent = 'もの凄い成果です！年間数十万円のお得化に成功しており、目標である月10万円不労所得（Side FIRE）の折り返し地点が見えてきました。このサイトに集約されたお得ハックツールを駆使し、楽天お買い物マラソンなどを賢くフル活用してください。';
-            } else {
-                levelTitle.textContent = '現在のロードマップ: Side FIRE マスター級 (達成度 ' + percent + '%)';
-                levelDesc.textContent = '驚異的です！月間10万円相当のお得ライフハックがほぼ成立しています。これは不労所得による自由なライフスタイル「Side FIRE」に向けた最強の基盤です。この調子で浮いた資金をインデックス投資等に回し、10年以内のリタイア目標を確実に達成しましょう！';
             }
+
+            // 複利計算用に年間お得額をグローバルに退避
+            window.currentAnnualSavings = totalAnnualSavings;
+            calculateCompound();
+            
+            // デイリークエストのロード
+            loadDailyQuests();
+        }
+
+        // --- 複利の魔法インデックス投資シミュレーター計算・描画 ---
+        window.calculateCompound = function() {
+            const yearsInput = document.getElementById('inv-years');
+            const rateInput = document.getElementById('inv-rate');
+            
+            if (!yearsInput || !rateInput) return;
+            
+            const years = parseInt(yearsInput.value);
+            const rate = parseFloat(rateInput.value) / 100;
+            
+            document.getElementById('inv-years-val').textContent = years;
+            document.getElementById('inv-rate-val').textContent = (rate * 100).toFixed(1);
+            document.getElementById('chart-end-year').textContent = years;
+            
+            const P = window.currentAnnualSavings || 0; // 毎年の積立額
+            
+            let total = 0;
+            let principal = 0;
+            const pointsTotal = [];
+            const pointsPrincipal = [];
+            
+            for (let i = 1; i <= years; i++) {
+                total = (total + P) * (1 + rate);
+                principal += P;
+                pointsTotal.push(total);
+                pointsPrincipal.push(principal);
+            }
+            
+            const interest = Math.max(0, total - principal);
+            
+            document.getElementById('inv-result-val').textContent = `¥ ${Math.round(total).toLocaleString()}`;
+            document.getElementById('inv-interest-val').textContent = `¥ ${Math.round(interest).toLocaleString()}`;
+            
+            // SVGチャートの描画
+            drawCompoundChart(years, pointsTotal, pointsPrincipal);
+        };
+
+        function drawCompoundChart(years, dataTotal, dataPrincipal) {
+            const svg = document.getElementById('compound-chart');
+            const pathTotal = document.getElementById('chart-path-total');
+            const pathPrincipal = document.getElementById('chart-path-principal');
+            const marker = document.getElementById('chart-marker');
+            
+            if (!svg || !pathTotal || !pathPrincipal) return;
+            
+            // 親コンテナの横幅を動的に取得
+            const width = svg.clientWidth || 300;
+            const height = svg.clientHeight || 180;
+            
+            const maxVal = Math.max(10000, dataTotal[dataTotal.length - 1] || 10000);
+            
+            const margin = { top: 20, right: 10, bottom: 20, left: 10 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            
+            let dTotal = `M ${margin.left} ${margin.top + chartHeight}`;
+            let dPrincipal = `M ${margin.left} ${margin.top + chartHeight}`;
+            
+            const pointsCount = dataTotal.length;
+            for (let i = 0; i < pointsCount; i++) {
+                const x = margin.left + (i / (pointsCount - 1)) * chartWidth;
+                const yTotal = margin.top + chartHeight - (dataTotal[i] / maxVal) * chartHeight;
+                const yPrincipal = margin.top + chartHeight - (dataPrincipal[i] / maxVal) * chartHeight;
+                
+                dTotal += ` L ${x} ${yTotal}`;
+                dPrincipal += ` L ${x} ${yPrincipal}`;
+                
+                if (i === pointsCount - 1 && marker) {
+                    marker.setAttribute('cx', x);
+                    marker.setAttribute('cy', yTotal);
+                    marker.style.display = 'block';
+                }
+            }
+            
+            pathTotal.setAttribute('d', dTotal);
+            pathPrincipal.setAttribute('d', dPrincipal);
+        }
+
+        // --- デイリークエスト（ゲームシステム） ---
+        const ALL_QUESTS = [
+            { id: 'q_play', text: 'Playポイント計算機で最新の日記を確認する' },
+            { id: 'q_kindle', text: 'お得度メーターに今週読んだ本を1冊以上記録する' },
+            { id: 'q_sub', text: 'サブスク健康診断で無駄がないか点検する' },
+            { id: 'q_rakuten', text: '楽天シミュレーターで残りの上限枠を計算する' },
+            { id: 'q_blog', text: 'かたかたラボ（お役立ちブログ）の記事を1つ読む' },
+            { id: 'q_check', text: '統合オトクダッシュボードを開いて成果を確認する' },
+            { id: 'q_save', text: '今月節約できたお金を貯金・投資口座へ移動する' }
+        ];
+
+        function loadDailyQuests() {
+            let questState = null;
+            try {
+                questState = JSON.parse(localStorage.getItem('dashboard_quest_state') || 'null');
+            } catch(e) {}
+            
+            const todayStr = new Date().toDateString();
+            
+            if (!questState || questState.date !== todayStr) {
+                // クエストのリセットとランダム抽選
+                const shuffled = [...ALL_QUESTS].sort(() => 0.5 - Math.random());
+                const selected = shuffled.slice(0, 3).map(q => ({
+                    id: q.id,
+                    text: q.text,
+                    done: false
+                }));
+                
+                questState = {
+                    date: todayStr,
+                    quests: selected,
+                    xp: questState ? questState.xp : 0,
+                    level: questState ? questState.level : 1
+                };
+                localStorage.setItem('dashboard_quest_state', JSON.stringify(questState));
+            }
+            
+            renderQuests(questState);
+            renderHackerLevel(questState);
+        }
+
+        function renderQuests(state) {
+            const container = document.getElementById('quest-list-container');
+            if (!container) return;
+            
+            let html = '';
+            state.quests.forEach((q, idx) => {
+                html += `
+                    <label style="display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,0.02); border:1px solid var(--color-border); border-radius:var(--radius-sm); cursor:pointer; font-size:0.8rem; line-height:1.4; transition:background 0.2s;">
+                        <input type="checkbox" id="chk-q-${idx}" ${q.done ? 'checked' : ''} onchange="toggleQuest(${idx})" style="accent-color:var(--color-success); width:16px; height:16px;">
+                        <span style="${q.done ? 'text-decoration:line-through; color:var(--color-text-muted);' : 'color:#fff;'}">${q.text}</span>
+                        <span style="margin-left:auto; color:var(--color-success); font-family:var(--font-num); font-weight:700; font-size:0.7rem;">+10 XP</span>
+                    </label>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        window.toggleQuest = function(index) {
+            const questState = JSON.parse(localStorage.getItem('dashboard_quest_state'));
+            if (!questState) return;
+            
+            const isChecked = document.getElementById(`chk-q-${index}`).checked;
+            questState.quests[index].done = isChecked;
+            
+            if (isChecked) {
+                questState.xp += 10;
+                if (questState.xp >= 100) {
+                    questState.xp -= 100;
+                    questState.level += 1;
+                    alert(`🎉 レベルアップ！ LV.${questState.level} に到達しました！`);
+                }
+            } else {
+                questState.xp = Math.max(0, questState.xp - 10);
+            }
+            
+            localStorage.setItem('dashboard_quest_state', JSON.stringify(questState));
+            renderQuests(questState);
+            renderHackerLevel(questState);
+        };
+
+        function renderHackerLevel(state) {
+            const lvlBadge = document.getElementById('hacker-level-badge');
+            const xpVal = document.getElementById('hacker-xp-val');
+            const xpBar = document.getElementById('hacker-xp-bar');
+            
+            if (!lvlBadge || !xpVal || !xpBar) return;
+            
+            const titles = [
+                '見習いハッカー', '新米ハッカー', '堅実なセーバー', 
+                '節約マスター', '資産ハッカー', 'Side FIRE 達人', 
+                '伝説のFIREマスター'
+            ];
+            const titleIndex = Math.min(titles.length - 1, Math.floor((state.level - 1) / 2));
+            const title = titles[titleIndex];
+            
+            lvlBadge.textContent = `LV.${state.level} ${title}`;
+            xpVal.textContent = state.xp;
+            xpBar.style.width = `${state.xp}%`;
         }
 
         window.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('resize', calculateCompound);
     </script>
 </body>
 </html>

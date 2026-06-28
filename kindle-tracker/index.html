@@ -30,7 +30,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260628_1313a">
+    <link rel="stylesheet" href="style.css?v=20260628_1738a">
 
     <!-- SEO structured data (JSON-LD) -->
     <script type="application/ld+json">
@@ -191,10 +191,13 @@
                     </div>
 
                     <!-- SNSシェアエリア -->
-                    <div class="share-actions">
-                        <button id="btn-share-x" class="btn btn-primary btn-share">
+                    <div class="share-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="btn-share-x" class="btn btn-primary btn-share" style="flex: 1; min-width: 150px;">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             結果をXでポストする
+                        </button>
+                        <button id="btn-show-award" class="btn btn-secondary" style="flex: 1; min-width: 150px; background: linear-gradient(135deg, #aa7c11, #d4af37); color: #000; border: none; font-weight: 800; display: none;" onclick="openAwardModal()">
+                            👑 読書アワード感謝状を発行する
                         </button>
                     </div>
                     <!-- 称号消印スタンプコンテナ -->
@@ -484,6 +487,32 @@
         </div>
     </div>
 
-    <script src="app.js?v=20260628_1313a"></script>
+    <!-- アワード感謝状表示用モーダル -->
+    <div id="award-modal" class="custom-modal" role="dialog" aria-modal="true" aria-labelledby="award-modal-title" style="display: none;">
+        <div class="modal-content celebration-content share-modal-content" style="max-width: 600px; background: #0c111e; border: 1px solid rgba(185,148,74,0.3);">
+            <button id="award-modal-close" class="celebration-close" aria-label="閉じる" onclick="closeAwardModal()">&times;</button>
+            <h3 id="award-modal-title" style="margin-bottom: 8px; color: var(--color-accent);">👑 読書回収アワード感謝状</h3>
+            <p class="share-desc" style="font-size: 13px; color: var(--color-text-muted); margin-bottom: 16px;">
+                あなたがKindle Unlimitedでハックした読書オトク成果を称える公式表彰状です！
+            </p>
+            <div class="canvas-preview-wrapper" style="margin-bottom: 20px; text-align: center; border-radius: 8px; overflow: hidden; background: #080b13; border: 1px solid rgba(185,148,74,0.15);">
+                <!-- 生成された画像プレビュー -->
+                <img id="award-image-preview" alt="読書回収アワード感謝状" class="share-image-preview" style="max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 8px;" />
+                <!-- 非表示のCanvas -->
+                <canvas id="award-canvas" width="800" height="500" style="display: none;"></canvas>
+            </div>
+            <div class="modal-buttons" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a id="btn-download-award" href="#" class="btn btn-primary" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;" download="read-harvest-award.png">
+                    <span>📥 画像を保存</span>
+                </a>
+                <a id="btn-award-twitter-share" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-accent" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #000; color: #fff;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span>Xで自慢する</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=20260628_1738a"></script>
 </body>
 </html>

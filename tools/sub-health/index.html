@@ -462,6 +462,23 @@
                         <div id="prescription-content" style="font-size: 0.8rem; line-height: 1.6; color: var(--color-text-muted);">
                             <!-- JSで動的に改善アドバイスが挿入されます -->
                         </div>
+                        
+                        <!-- カレンダーリマインダー設定フォーム -->
+                        <div id="calendar-reminder-box" style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--color-border); display: none;">
+                            <h4 style="font-size: 0.8rem; color: #fff; margin-bottom: 8px;">📅 カレンダー連携：解約お忘れ防止アラート</h4>
+                            <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 10px;">
+                                見直し（解約）対象サブスクの「解約予定日」をカレンダー（GoogleカレンダーやiPhone等）に一発登録できます。
+                            </p>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <select id="reminder-sub-select" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; border-radius: var(--radius-sm); padding: 5px 10px; font-size: 0.75rem; flex: 1; min-width: 120px;">
+                                    <!-- 動的に赤字サブスクが挿入されます -->
+                                </select>
+                                <input type="date" id="reminder-date" style="background: var(--color-bg-card-nested); border: 1px solid var(--color-border); color: #fff; border-radius: var(--radius-sm); padding: 5px 10px; font-size: 0.75rem; flex: 1; min-width: 120px;">
+                                <button type="button" class="btn btn-secondary" style="font-size: 0.75rem; padding: 5px 12px; background: var(--color-accent); color: #000; border: none; font-weight:700;" onclick="downloadCalendarReminder()">
+                                    アラートを登録 (.ics)
+                                </button>
+                            </div>
+                        </div>
                     </section>
                 </div>
             </div>
@@ -857,6 +874,7 @@
             // --- 改善手順書 (Prescription) の動的出力 ---
             const prescCard = document.getElementById('prescription-card');
             const prescContent = document.getElementById('prescription-content');
+            const reminderBox = document.getElementById('calendar-reminder-box');
             
             if (prescCard && prescContent) {
                 if (deficits.length > 0) {
@@ -878,8 +896,20 @@
                     });
                     html += '</ol>';
                     prescContent.innerHTML = html;
+
+                    // カレンダー連携エリアの更新
+                    const reminderSelect = document.getElementById('reminder-sub-select');
+                    if (reminderBox && reminderSelect) {
+                        reminderBox.style.display = 'block';
+                        let selectHtml = '';
+                        deficits.forEach(d => {
+                            selectHtml += `<option value="${d.name}">${d.name}</option>`;
+                        });
+                        reminderSelect.innerHTML = selectHtml;
+                    }
                 } else if (state.activeSubs.size === 0) {
                     prescCard.style.display = 'none';
+                    if (reminderBox) reminderBox.style.display = 'none';
                 } else {
                     prescCard.style.display = 'block';
                     prescCard.style.borderColor = 'var(--color-success)';
@@ -889,6 +919,7 @@
                         h3.textContent = '🩺 サブスク診断：健全な家計です！';
                     }
                     prescContent.innerHTML = '<p style="color: var(--color-success); font-weight:700; font-size:0.85rem;">🎉 素晴らしい！現在選択しているすべてのサブスクで、支払った基本料金以上の価値を賢く回収できています。見直すべき赤字サブスクはありません。</p>';
+                    if (reminderBox) reminderBox.style.display = 'none';
                 }
             }
 
@@ -907,6 +938,57 @@
                 customSubs: state.customSubs || []
             }));
         }
+
+        window.downloadCalendarReminder = function() {
+            const subSelect = document.getElementById('reminder-sub-select');
+            const dateInput = document.getElementById('reminder-date');
+            
+            if (!subSelect || !dateInput) return;
+            
+            const subName = subSelect.value;
+            const targetDateStr = dateInput.value;
+            
+            if (!subName) {
+                alert('見直し対象のサブスクを選択してください');
+                return;
+            }
+            if (!targetDateStr) {
+                alert('解約予定日を選択してください');
+                return;
+            }
+            
+            const dateObj = new Date(targetDateStr);
+            const yyyy = dateObj.getFullYear();
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const dd = String(dateObj.getDate()).padStart(2, '0');
+            const eventDate = `${yyyy}${mm}${dd}`;
+            
+            const icsContent = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//PlayPoint//SubHealthReminder//JP',
+                'BEGIN:VEVENT',
+                `DTSTART;VALUE=DATE:${eventDate}`,
+                `DTEND;VALUE=DATE:${eventDate}`,
+                `SUMMARY:サブスク解約アラーム：${subName}`,
+                `DESCRIPTION:${subName} の次回更新・課金を防ぐための解約締め切り予定日です。サブスク健康診断のアドバイスに従って解約手続きを行ってください。\\n➔ https://playpoint-sim.com/tools/sub-health/`,
+                'STATUS:CONFIRMED',
+                'SEQUENCE:0',
+                'TRANSP:TRANSPARENT',
+                'END:VEVENT',
+                'END:VCALENDAR'
+            ].join('\r\n');
+            
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${subName}_cancel_reminder.ics`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`📅 「${subName}」の解約お忘れ防止アラートファイル (.ics) をダウンロードしました。\nファイルを開いてカレンダーに登録してください。`);
+        };
 
         window.addEventListener('DOMContentLoaded', init);
     </script>

@@ -760,9 +760,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Toggle X share actions based on books count
         const shareActions = document.querySelector('.share-actions');
+        const showAwardBtn = document.getElementById('btn-show-award');
         if (shareActions) {
             // 全体の登録数が0件なら非表示にする
-            shareActions.style.display = state.books.length === 0 ? 'none' : '';
+            shareActions.style.display = state.books.length === 0 ? 'none' : 'flex';
+        }
+        if (showAwardBtn) {
+            showAwardBtn.style.display = state.books.length === 0 ? 'none' : 'inline-block';
         }
 
         // Update progress bar
@@ -2422,6 +2426,167 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.beginPath();
         ctx.arc(cx, cy, r, Math.PI * 0.2, Math.PI * 0.8, true);
         ctx.stroke();
+    }
+
+    // --- 読書アワード感謝状モーダルの制御とCanvas描画 ---
+    window.openAwardModal = function() {
+        const modal = document.getElementById('award-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            generateAwardCanvas();
+        }
+    };
+
+    window.closeAwardModal = function() {
+        const modal = document.getElementById('award-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    function generateAwardCanvas() {
+        const canvas = document.getElementById('award-canvas');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        
+        // 1. 背景の描画 (深みのあるダークネイビー)
+        const gradBg = ctx.createLinearGradient(0, 0, 800, 500);
+        gradBg.addColorStop(0, '#0a0f1d');
+        gradBg.addColorStop(1, '#0e172a');
+        ctx.fillStyle = gradBg;
+        ctx.fillRect(0, 0, 800, 500);
+        
+        // 2. ゴールドの額縁フレーム枠の描画
+        ctx.strokeStyle = '#b9944a';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(20, 20, 760, 460);
+        
+        ctx.strokeStyle = 'rgba(185, 148, 74, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(26, 26, 748, 448);
+        
+        // 四隅のコーナー装飾
+        const corners = [
+            [20, 20, 1, 1],
+            [780, 20, -1, 1],
+            [20, 480, 1, -1],
+            [780, 480, -1, -1]
+        ];
+        ctx.fillStyle = '#b9944a';
+        corners.forEach(([cx, cy, dx, dy]) => {
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + dx * 25, cy);
+            ctx.lineTo(cx + dx * 25, cy + dy * 4);
+            ctx.lineTo(cx + dx * 4, cy + dy * 4);
+            ctx.lineTo(cx + dx * 4, cy + dy * 25);
+            ctx.lineTo(cx, cy + dy * 25);
+            ctx.closePath();
+            ctx.fill();
+        });
+        
+        // 3. テキスト描画 (ヘッダー)
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        ctx.font = '900 24px "Outfit", sans-serif';
+        ctx.fillStyle = '#b9944a';
+        ctx.fillText('CERTIFICATE OF READ-HARVEST', 400, 75);
+        
+        ctx.font = 'bold 28px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('読 書 回 収 ア ワ ー ド 感謝状', 400, 130);
+        
+        // データ収集
+        const totalValue = state.books.reduce((sum, b) => sum + (b.price || 0), 0);
+        const monthlyFee = state.settings.monthlyFee || 980;
+        const duration = state.settings.duration || 3;
+        const totalCost = monthlyFee * duration;
+        const netSavings = totalValue - totalCost;
+        
+        // 4. 本文の描画
+        ctx.font = '500 16px sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText('あなた殿', 400, 200);
+        
+        ctx.font = 'normal 15px sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        const lines = [
+            `貴殿は、Kindle Unlimitedを駆使した読書ライフハックにおいて、`,
+            `今期累計 【 ${state.books.length} 冊 】 の書籍を読破し、定価総額にして`,
+            `【 ¥ ${totalValue.toLocaleString()} 】 相当の価値を見事に回収されました。`,
+            `実質お得額 【 ¥ ${netSavings.toLocaleString()} 】 をハックした優れた知性と元取り力は、`,
+            `家計の健全化と自己投資の両立を示す輝かしい模範であります。`
+        ];
+        lines.forEach((line, index) => {
+            ctx.fillText(line, 400, 245 + index * 26);
+        });
+        
+        ctx.fillText('よってここにその功績を讃え、感謝の意を表します。', 400, 390);
+        
+        // 5. 授与日の描画
+        const today = new Date();
+        const dateStr = `${today.getFullYear()}年 ${today.getMonth() + 1}月 ${today.getDate()}日`;
+        ctx.textAlign = 'left';
+        ctx.font = 'normal 13px sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.fillText(`授与日: ${dateStr}`, 60, 440);
+        
+        // 6. 授与元の描画
+        ctx.textAlign = 'right';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText('サークル：はじっこぐらし', 740, 430);
+        ctx.font = '900 15px sans-serif';
+        ctx.fillStyle = '#b9944a';
+        ctx.fillText('代表  かたかた', 740, 452);
+        
+        // 7. 真鍮ゴールドの印章（エンブレムスタンプ）を左下付近に描画
+        const sx = 200;
+        const sy = 420;
+        ctx.strokeStyle = 'rgba(185, 148, 74, 0.7)';
+        ctx.lineWidth = 1.5;
+        
+        // ギザギザ円の描画
+        ctx.beginPath();
+        for (let i = 0; i < 40; i++) {
+            const angle = (i / 40) * Math.PI * 2;
+            const r = (i % 2 === 0) ? 28 : 25;
+            const px = sx + Math.cos(angle) * r;
+            const py = sy + Math.sin(angle) * r;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+        
+        // 内円
+        ctx.beginPath();
+        ctx.arc(sx, sy, 22, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // 中心の文字
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '900 9px "Outfit", sans-serif';
+        ctx.fillStyle = 'rgba(185, 148, 74, 0.9)';
+        ctx.fillText('OFFICIAL', sx, sy - 5);
+        ctx.fillText('SEAL', sx, sy + 5);
+        
+        // 8. プレビュー画像とシェアリンクの同期
+        const imgPreview = document.getElementById('award-image-preview');
+        const downloadBtn = document.getElementById('btn-download-award');
+        const twitterBtn = document.getElementById('btn-award-twitter-share');
+        
+        if (imgPreview && downloadBtn && twitterBtn) {
+            const dataUrl = canvas.toDataURL('image/png');
+            imgPreview.src = dataUrl;
+            downloadBtn.href = dataUrl;
+            
+            const shareText = `【読書回収アワード感謝状】Kindle Unlimitedで本を${state.books.length}冊ハックし、累計¥${totalValue.toLocaleString()}相当を回収しました！実質¥${netSavings.toLocaleString()}お得！証書を受け取りました。🏆\nあなたも読書お得額を証明➔ https://playpoint-sim.com/kindle-tracker/ #お得度メーター #KindleUnlimited`;
+            twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+        }
     }
 
     init();

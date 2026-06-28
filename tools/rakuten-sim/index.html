@@ -499,6 +499,10 @@
                             <div id="target-calc-content" style="font-size: 0.75rem; line-height: 1.6; color: var(--color-text-muted);">
                                 <!-- 動的な逆算結果を表示 -->
                             </div>
+                            <!-- 差額調整おすすめアイテム表示用エリア -->
+                            <div id="target-matching-item" style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--color-border); display: none;">
+                                <!-- ここにアフィリエイトリンクと実質負担額が表示される -->
+                            </div>
                         </div>
 
                         <div class="sub-breakdown" style="border-top: none; padding-top: 0;">
@@ -802,6 +806,63 @@
                         }
                         
                         targetContentEl.innerHTML = html;
+
+                        // --- 差額調整おすすめアイテムのマッチング ---
+                        const itemMatchEl = document.getElementById('target-matching-item');
+                        if (itemMatchEl) {
+                            const currentRate = marathonRate;
+                            let matchedItemHtml = '';
+                            
+                            if (currentRate > 0) {
+                                const additionalCostCurrent = Math.ceil((remainingPoints * 100) / currentRate);
+                                
+                                let itemTitle = '';
+                                let itemPrice = 0;
+                                let affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                
+                                if (additionalCostCurrent < 1500) {
+                                    itemTitle = '讃岐うどん 9食セット (ゆうパケット送料無料)';
+                                    itemPrice = 1000;
+                                } else if (additionalCostCurrent < 3000) {
+                                    itemTitle = '強炭酸水 500ml 24本 (送料無料・買い回り定番)';
+                                    itemPrice = 1590;
+                                } else if (additionalCostCurrent < 8000) {
+                                    itemTitle = '宮崎県都城市産 本格焼酎・黒霧島EXセット (ふるさと納税・送料無料)';
+                                    itemPrice = 5000;
+                                    affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                } else {
+                                    itemTitle = '山形県産米 はえぬき 10kg (ふるさと納税・送料無料)';
+                                    itemPrice = 10000;
+                                    affiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+                                }
+                                
+                                const nextShopCount = Math.min(10, shopCount + 1);
+                                const nextRate = Math.min(nextShopCount - 1, 9);
+                                const nextTotalPrice = totalPrice + itemPrice;
+                                const nextRawPoints = Math.min(limit, Math.floor(nextTotalPrice * (nextRate / 100)));
+                                const nextTotalPoints = Math.floor(nextTotalPrice * (spu / 100)) + nextRawPoints;
+                                
+                                const pointGain = nextTotalPoints - totalPoints;
+                                const realBurden = Math.max(0, itemPrice - pointGain);
+                                
+                                matchedItemHtml = `
+                                    <p style="font-weight:700; color: var(--color-accent); margin-bottom: 6px;">💡 残り枠調整のおすすめアイテム：</p>
+                                    <div style="background: rgba(0,0,0,0.15); padding: 8px; border-radius: var(--radius-sm); border: 1px dashed rgba(185, 148, 74, 0.3);">
+                                        <a href="${affiliateUrl}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight:700; display:block; margin-bottom:4px;">
+                                            ${itemTitle} (¥${itemPrice.toLocaleString()})
+                                        </a>
+                                        <p style="font-size: 0.7rem; color: var(--color-text-muted);">
+                                            この商品（¥${itemPrice.toLocaleString()}）を追加すると、店舗数と還元率がアップしてポイントが <span style="color: var(--color-success); font-weight:700;">+${pointGain.toLocaleString()} pt</span> 増えるため、<br>
+                                            <span style="color: #fff; font-weight:700;">➔ 実質負担額はわずか <span style="color:var(--color-success); font-size:0.85rem;">¥ ${realBurden.toLocaleString()}</span> です！</span>
+                                        </p>
+                                    </div>
+                                `;
+                                itemMatchEl.innerHTML = matchedItemHtml;
+                                itemMatchEl.style.display = 'block';
+                            } else {
+                                itemMatchEl.style.display = 'none';
+                            }
+                        }
                     }
                 }
             }
