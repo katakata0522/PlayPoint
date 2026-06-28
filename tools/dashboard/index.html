@@ -711,7 +711,29 @@
                 rakuten: actualRakutenVal
             };
 
-            const isOverride = document.getElementById('override-sync-toggle')?.checked;
+            if (!window.dashboardState) {
+                window.dashboardState = {
+                    isOverride: false,
+                    values: { play: 0, kindle: 0, sub: 0, rakuten: 0 }
+                };
+            }
+
+            const toggle = document.getElementById('override-sync-toggle');
+            window.dashboardState.isOverride = toggle ? toggle.checked : false;
+
+            if (window.dashboardState.isOverride) {
+                window.dashboardState.values.play = parseInt(document.getElementById('val-override-play').value) || 0;
+                window.dashboardState.values.kindle = parseInt(document.getElementById('val-override-kindle').value) || 0;
+                window.dashboardState.values.sub = parseInt(document.getElementById('val-override-sub').value) || 0;
+                window.dashboardState.values.rakuten = parseInt(document.getElementById('val-override-rakuten').value) || 0;
+            } else {
+                window.dashboardState.values = {
+                    play: actualPlayVal,
+                    kindle: actualKindleVal,
+                    sub: actualSubVal,
+                    rakuten: actualRakutenVal
+                };
+            }
             
             let totalAnnualSavings = 0;
             let playValNum = 0;
@@ -1128,15 +1150,14 @@
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             
-            const x = clientX - rect.left - 15;
-            
             const margin = { top: 20, right: 10, bottom: 25, left: 10 };
             const chartWidth = svg.clientWidth - margin.left - margin.right;
             const pointsCount = window.compoundDataTotal.length;
             
             if (chartWidth <= 0 || pointsCount === 0) return;
             
-            let index = Math.round((x / chartWidth) * (pointsCount - 1));
+            const relativeX = clientX - rect.left - margin.left;
+            let index = Math.round((relativeX / chartWidth) * (pointsCount - 1));
             index = Math.max(0, Math.min(pointsCount - 1, index));
             
             const total = window.compoundDataTotal[index];
@@ -1247,12 +1268,21 @@
             const panel = document.getElementById('sync-override-panel');
             
             if (toggle && panel) {
-                if (toggle.checked) {
+                const isChecked = toggle.checked;
+                window.dashboardState.isOverride = isChecked;
+                if (isChecked) {
                     panel.style.display = 'block';
                     document.getElementById('val-override-play').value = window.rawSyncValues.play;
                     document.getElementById('val-override-kindle').value = window.rawSyncValues.kindle;
                     document.getElementById('val-override-sub').value = window.rawSyncValues.sub;
                     document.getElementById('val-override-rakuten').value = window.rawSyncValues.rakuten;
+                    
+                    window.dashboardState.values = {
+                        play: window.rawSyncValues.play,
+                        kindle: window.rawSyncValues.kindle,
+                        sub: window.rawSyncValues.sub,
+                        rakuten: window.rawSyncValues.rakuten
+                    };
                 } else {
                     panel.style.display = 'none';
                 }
@@ -1261,6 +1291,12 @@
         };
 
         window.overrideValueChange = function() {
+            if (window.dashboardState.isOverride) {
+                window.dashboardState.values.play = parseInt(document.getElementById('val-override-play').value) || 0;
+                window.dashboardState.values.kindle = parseInt(document.getElementById('val-override-kindle').value) || 0;
+                window.dashboardState.values.sub = parseInt(document.getElementById('val-override-sub').value) || 0;
+                window.dashboardState.values.rakuten = parseInt(document.getElementById('val-override-rakuten').value) || 0;
+            }
             init();
         };
 

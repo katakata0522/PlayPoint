@@ -645,29 +645,34 @@
             });
         }
 
-        window.addItem = function() {
-            const nameEl = document.getElementById('new-item-name');
-            const priceEl = document.getElementById('new-item-price');
-            
-            const name = nameEl.value.trim() || `商品 ${state.nextId}`;
-            const price = parseInt(priceEl.value);
-            
+        function processAddItem(name, price) {
             if (isNaN(price) || price <= 0) {
                 alert('有効な価格を入力してください');
-                return;
+                return false;
             }
             
             state.items.push({
                 id: state.nextId++,
-                name: name,
+                name: name || `商品 ${state.nextId}`,
                 price: price
             });
             
-            nameEl.value = '';
-            priceEl.value = '';
-            
             renderItems();
             calculate();
+            return true;
+        }
+
+        window.addItem = function() {
+            const nameEl = document.getElementById('new-item-name');
+            const priceEl = document.getElementById('new-item-price');
+            
+            const name = nameEl.value.trim();
+            const price = parseInt(priceEl.value);
+            
+            if (processAddItem(name, price)) {
+                nameEl.value = '';
+                priceEl.value = '';
+            }
         };
 
         window.removeItem = function(id) {
@@ -1000,13 +1005,7 @@
         };
 
         window.quickInputItem = function(name, price) {
-            const nameInput = document.getElementById('new-item-name');
-            const priceInput = document.getElementById('new-item-price');
-            if (nameInput && priceInput) {
-                nameInput.value = name;
-                priceInput.value = price;
-                addItem();
-            }
+            processAddItem(name, price);
         };
 
         // --- 初期ロード処理の拡張 ---

@@ -687,21 +687,17 @@
             return icons[cat] || '📦';
         }
 
-        function renderSubList() {
-            const container = document.getElementById('sub-list-container');
-            container.innerHTML = '';
+        function createSubItemElement(sub, isCustom) {
+            const isChecked = state.activeSubs.has(sub.id);
+            const subItem = document.createElement('div');
+            subItem.className = 'sub-item' + (isCustom ? ' custom-sub-item' : '') + (isChecked ? ' active' : '');
+            subItem.id = `sub-item-${sub.id}`;
             
-            SUB_PRESETS.forEach(sub => {
-                const isChecked = state.activeSubs.has(sub.id);
-                
+            const icon = getSubIcon(sub.category || 'other');
+            
+            if (!isCustom) {
                 const slider = document.getElementById(`slider-${sub.id}`);
                 const currentVal = slider ? parseInt(slider.value) : (state.sliderValues && state.sliderValues[sub.id] !== undefined ? state.sliderValues[sub.id] : sub.defaultVal);
-                
-                const subItem = document.createElement('div');
-                subItem.className = 'sub-item' + (isChecked ? ' active' : '');
-                subItem.id = `sub-item-${sub.id}`;
-                
-                const icon = getSubIcon(sub.category || 'other');
                 
                 subItem.innerHTML = `
                     <div class="sub-header" onclick="toggleSub('${sub.id}')">
@@ -725,46 +721,58 @@
                         <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">ℹ️ ${sub.desc}</p>
                     </div>
                 `;
-                container.appendChild(subItem);
-                updateSliderColor(sub.id);
+            } else {
+                const satLabels = {
+                    high: '😆 毎日使う (回収率150%)',
+                    mid: '🙂 週2〜3日 (回収率90%)',
+                    low: '😟 ほぼ使わない (回収率20%)'
+                };
+                
+                subItem.innerHTML = `
+                    <div class="sub-header" onclick="toggleSub('${sub.id}')">
+                        <div class="sub-info-left">
+                            <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
+                            <span class="sub-name" style="color: var(--color-accent);">${icon} ${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
+                            <button type="button" onclick="removeCustomSub(event, '${sub.id}')" style="background:none; border:none; color:var(--color-error); font-size:1.1rem; cursor:pointer; padding: 0 4px;" title="削除">&times;</button>
+                        </div>
+                    </div>
+                    <div class="sub-control-panel">
+                        <div style="font-size: 0.8rem; display:flex; justify-content:space-between;">
+                            <span style="color: var(--color-text-muted);">回収満足度:</span>
+                            <span style="font-weight:700; color: #fff;">${satLabels[sub.sat]}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            return subItem;
+        }
+
+        function renderSubList() {
+            const container = document.getElementById('sub-list-container');
+            container.innerHTML = '';
+            
+            const fragment = document.createDocumentFragment();
+            
+            SUB_PRESETS.forEach(sub => {
+                const subItem = createSubItemElement(sub, false);
+                fragment.appendChild(subItem);
             });
 
             if (state.customSubs && state.customSubs.length > 0) {
                 state.customSubs.forEach(sub => {
-                    const isChecked = state.activeSubs.has(sub.id);
-                    const subItem = document.createElement('div');
-                    subItem.className = 'sub-item custom-sub-item' + (isChecked ? ' active' : '');
-                    subItem.id = `sub-item-${sub.id}`;
-                    
-                    const satLabels = {
-                        high: '😆 毎日使う (回収率150%)',
-                        mid: '🙂 週2〜3日 (回収率90%)',
-                        low: '😟 ほぼ使わない (回収率20%)'
-                    };
-                    
-                    const icon = getSubIcon(sub.category || 'other');
-                    
-                    subItem.innerHTML = `
-                        <div class="sub-header" onclick="toggleSub('${sub.id}')">
-                            <div class="sub-info-left">
-                                <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
-                                <span class="sub-name" style="color: var(--color-accent);">${icon} ${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
-                            </div>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
-                                <button type="button" onclick="removeCustomSub(event, '${sub.id}')" style="background:none; border:none; color:var(--color-error); font-size:1.1rem; cursor:pointer; padding: 0 4px;" title="削除">&times;</button>
-                            </div>
-                        </div>
-                        <div class="sub-control-panel">
-                            <div style="font-size: 0.8rem; display:flex; justify-content:space-between;">
-                                <span style="color: var(--color-text-muted);">回収満足度:</span>
-                                <span style="font-weight:700; color: #fff;">${satLabels[sub.sat]}</span>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(subItem);
+                    const subItem = createSubItemElement(sub, true);
+                    fragment.appendChild(subItem);
                 });
             }
+            
+            container.appendChild(fragment);
+            
+            SUB_PRESETS.forEach(sub => {
+                updateSliderColor(sub.id);
+            });
             
             calculate();
         }
@@ -1203,11 +1211,9 @@
                 return;
             }
             
-            svg.innerHTML = '';
+            const svgElements = ['<circle cx="21" cy="21" r="15.91549430918954" fill="#0b0f19"></circle>'];
             let cumulativePercent = 0;
             let legendHtml = '';
-            
-            svg.innerHTML += `<circle cx="21" cy="21" r="15.91549430918954" fill="#0b0f19"></circle>`;
             
             Object.keys(categories).forEach(key => {
                 const cat = categories[key];
@@ -1216,12 +1222,12 @@
                     const strokeDash = `${percent} ${100 - percent}`;
                     const strokeOffset = 100 - cumulativePercent;
                     
-                    svg.innerHTML += `
+                    svgElements.push(`
                         <circle cx="21" cy="21" r="15.91549430918954" 
                                 fill="transparent" stroke="${cat.color}" stroke-width="5.5" 
                                 stroke-dasharray="${strokeDash}" stroke-dashoffset="${strokeOffset}">
                         </circle>
-                    `;
+                    `);
                     
                     cumulativePercent += percent;
                     
@@ -1234,6 +1240,8 @@
                     `;
                 }
             });
+            
+            svg.innerHTML = svgElements.join('');
             
             legend.innerHTML = legendHtml;
             
