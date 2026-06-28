@@ -549,6 +549,26 @@
         };
 
         function init() {
+            let savedState = null;
+            try {
+                savedState = JSON.parse(localStorage.getItem('rakuten_sim_state') || 'null');
+            } catch (e) {
+                console.error('Failed to load rakuten_sim_state', e);
+            }
+            
+            if (savedState) {
+                state.items = savedState.items || [];
+                state.nextId = (state.items.length > 0 ? Math.max(...state.items.map(item => item.id)) : 0) + 1;
+                
+                const spuSelect = document.getElementById('spu-select');
+                const shopSelect = document.getElementById('shop-count-select');
+                const limitSelect = document.getElementById('limit-select');
+                
+                if (spuSelect && savedState.spu !== undefined) spuSelect.value = savedState.spu;
+                if (shopSelect && savedState.shopCount !== undefined) shopSelect.value = savedState.shopCount;
+                if (limitSelect && savedState.limit !== undefined) limitSelect.value = savedState.limit;
+            }
+
             renderItems();
             calculate();
         }
@@ -725,6 +745,16 @@
                     }
                 }
             }
+
+            // --- Save state for Dashboard ---
+            localStorage.setItem('rakuten_sim_state', JSON.stringify({
+                items: state.items,
+                spu: spu,
+                shopCount: shopCount,
+                limit: limit,
+                totalPoints: totalPoints,
+                totalPrice: totalPrice
+            }));
         }
 
         window.addEventListener('DOMContentLoaded', init);

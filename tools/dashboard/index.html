@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <title>統合オトクダッシュボード | Side FIRE達成度シミュレーター</title>
+    <meta name="description" content="Playポイント計算機、Kindleお得度メーター、サブスク健康診断、楽天シミュレーターのデータを一元集計し、月10万円のSide FIRE目標に対する現在の達成度を可視化する統合ハブです。">
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+    
+    <!-- Fonts & CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #0b0f19;
+            --color-bg-card: #111827;
+            --color-bg-card-nested: #1f2937;
+            --color-border: #374151;
+            --color-text-main: #f9fafb;
+            --color-text-muted: #9ca3af;
+            --color-accent: #b9944a; /* 真鍮ゴールド */
+            --color-accent-hover: #d4af37;
+            --color-success: #10b981;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+            --font-main: 'Noto Sans JP', sans-serif;
+            --font-num: 'Outfit', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--color-border);
+            position: relative;
+        }
+
+        .badge-premium {
+            display: inline-block;
+            background: linear-gradient(135deg, #aa7c11, #f3e5ab, #d4af37);
+            color: #451a03;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f9fafb, #b9944a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .back-link {
+            position: absolute;
+            left: 0;
+            top: 25px;
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--color-accent-hover);
+        }
+
+        /* ダッシュボードカード */
+        .card {
+            background-color: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 統合メーターセクション */
+        .meter-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .meter-section {
+                grid-template-columns: 1fr 1.5fr;
+            }
+        }
+
+        .gauge-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .svg-gauge {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: var(--color-bg-card-nested);
+            stroke-width: 14;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: url(#goldGrad);
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke-dasharray: 565.48; /* 2 * PI * 90 */
+            stroke-dashoffset: 565.48;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gauge-text-wrap {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gauge-num {
+            font-family: var(--font-num);
+            font-size: 2.5rem;
+            font-weight: 900;
+            line-height: 1;
+            color: #ffffff;
+        }
+
+        .gauge-unit {
+            font-size: 0.9rem;
+            color: var(--color-accent);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .gauge-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 4px;
+        }
+
+        /* 統合ステータス数値 */
+        .stats-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+
+        .summary-val {
+            font-family: var(--font-num);
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .summary-val.highlight {
+            color: var(--color-accent);
+            font-size: 1.8rem;
+        }
+
+        /* ツール別グリッド */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 640px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tool-card {
+            background-color: var(--color-bg-card-nested);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--color-accent);
+            box-shadow: 0 8px 24px rgba(185, 148, 74, 0.1);
+        }
+
+        .tool-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .tool-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-icon {
+            font-size: 1.4rem;
+        }
+
+        .tool-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--color-text-main);
+        }
+
+        .tool-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .tool-badge.active { background-color: rgba(16, 185, 129, 0.15); color: var(--color-success); }
+        .tool-badge.inactive { background-color: rgba(156, 163, 175, 0.1); color: var(--color-text-muted); }
+
+        .tool-body {
+            flex-grow: 1;
+            margin-bottom: 16px;
+        }
+
+        .tool-desc-val {
+            font-family: var(--font-num);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 4px;
+        }
+
+        .tool-desc-val.deficit {
+            color: var(--color-error);
+        }
+
+        .tool-desc-sub {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 2px;
+        }
+
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--color-border);
+            background-color: rgba(11, 15, 25, 0.3);
+            color: var(--color-accent);
+            text-decoration: none;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .tool-btn:hover {
+            background-color: rgba(185, 148, 74, 0.08);
+            border-color: var(--color-accent);
+        }
+
+        /* ロードマップ・アドバイス */
+        .roadmap-card {
+            background: linear-gradient(135deg, rgba(185, 148, 74, 0.05) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(185, 148, 74, 0.2);
+        }
+
+        .roadmap-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--color-accent);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 10px;
+        }
+
+        .roadmap-text {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .roadmap-highlight {
+            font-weight: 700;
+            color: var(--color-text-main);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../../sitemap.html" class="back-link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>サイトマップへ</span>
+            </a>
+            <span class="badge-premium">Side FIRE シミュレーター</span>
+            <h1>統合オトクダッシュボード</h1>
+            <p class="subtitle">各計算ツールからセーブデータを自動集計し、月10万円（年間120万円）のお得化ロードマップを追跡します</p>
+        </header>
+
+        <!-- 統合ステータスカード -->
+        <section class="card">
+            <div class="meter-section">
+                <!-- SVG円形メーター -->
+                <div class="gauge-wrapper">
+                    <svg class="svg-gauge" viewBox="0 0 200 200">
+                        <defs>
+                            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#aa7c11" />
+                                <stop offset="50%" stop-color="#f3e5ab" />
+                                <stop offset="100%" stop-color="#d4af37" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="gauge-bg" cx="100" cy="100" r="90" />
+                        <circle id="gauge-fill-el" class="gauge-fill" cx="100" cy="100" r="90" />
+                    </svg>
+                    <div class="gauge-text-wrap">
+                        <div class="gauge-num" id="fire-percent">0</div>
+                        <div class="gauge-unit">%</div>
+                        <div class="gauge-label">Side FIRE達成度</div>
+                    </div>
+                </div>
+
+                <!-- 数値概要 -->
+                <div class="stats-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">現在の年間オトク総額</span>
+                        <span class="summary-val highlight" id="sum-annual-savings">¥ 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">月額換算お得価値</span>
+                        <span class="summary-val" id="sum-monthly-savings">¥ 0 / 月</span>
+                    </div>
+                    <div class="summary-row" style="border-bottom: none; padding-bottom: 0;">
+                        <span class="summary-label">Side FIRE 目標金額</span>
+                        <span class="summary-val" style="color: var(--color-text-muted);">¥ 1,200,000 / 年</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ツール別グリッド -->
+        <section style="margin-bottom: 24px;">
+            <h2 style="font-size: 1.1rem; margin-bottom: 16px; border-left: 3px solid var(--color-accent); padding-left: 10px; color: var(--color-accent);">🎮 各計算機・シミュレーターの同期ステータス</h2>
+            <div class="tools-grid">
+                <!-- Playポイント -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon-title">
+                            <span class="tool-icon">💰</span>
+                            <span class="tool-title">Playポイント計算機</span>
+                        </div>
+                        <span class="tool-badge active" id="play-status">同期中</span>
+                    </div>
+                    <div class="tool-body">
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">日記保存ポイント累計</p>
+                        <div class="tool-desc-val" id="play-val">0 pt</div>
+                        <div class="tool-desc-sub" id="play-sub">¥0 相当のお得</div>
+                    </div>
+                    <a href="../../index.html" class="tool-btn">計算機を開く ➔</a>
+                </div>
+
+                <!-- Kindle Unlimited -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon-title">
+                            <span class="tool-icon">📚</span>
+                            <span class="tool-title">お得度メーター</span>
+                        </div>
+                        <span class="tool-badge" id="kindle-status">同期中</span>
+                    </div>
+                    <div class="tool-body">
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">今期回収お得額 (年間換算)</p>
+                        <div class="tool-desc-val" id="kindle-val">¥ 0</div>
+                        <div class="tool-desc-sub" id="kindle-sub">読書数: 0 冊</div>
+                    </div>
+                    <a href="../../kindle-tracker/index.html" class="tool-btn">メーターを開く ➔</a>
+                </div>
+
+                <!-- サブスク健康診断 -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon-title">
+                            <span class="tool-icon">🔌</span>
+                            <span class="tool-title">サブスク健康診断</span>
+                        </div>
+                        <span class="tool-badge" id="sub-status">未同期</span>
+                    </div>
+                    <div class="tool-body">
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">契約サブスクの年間予想損益</p>
+                        <div class="tool-desc-val" id="sub-val">¥ 0</div>
+                        <div class="tool-desc-sub" id="sub-sub">未診断</div>
+                    </div>
+                    <a href="../sub-health/index.html" class="tool-btn">健康診断を開く ➔</a>
+                </div>
+
+                <!-- 楽天お買い物マラソン -->
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon-title">
+                            <span class="tool-icon">🛍️</span>
+                            <span class="tool-title">楽天マラソン上限シミュ</span>
+                        </div>
+                        <span class="tool-badge" id="rakuten-status">未同期</span>
+                    </div>
+                    <div class="tool-body">
+                        <p style="font-size: 0.75rem; color: var(--color-text-muted);">今回獲得ポイント (年間予想換算)</p>
+                        <div class="tool-desc-val" id="rakuten-val">¥ 0</div>
+                        <div class="tool-desc-sub" id="rakuten-sub">購入リスト: 0件</div>
+                    </div>
+                    <a href="../rakuten-sim/index.html" class="tool-btn">シミュレーターを開く ➔</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Side FIRE ロードマップ・アドバイスコラム -->
+        <section class="card roadmap-card">
+            <h2 class="roadmap-title">🎯 Side FIRE お得化ロードマップ</h2>
+            <div class="roadmap-text" id="roadmap-level-title" style="font-size: 1rem; font-weight: 700; color: #ffffff; margin-bottom: 8px;">
+                ロードマップレベル: 不得ハッカー（診断開始前）
+            </div>
+            <p class="roadmap-text" id="roadmap-level-desc">
+                まずはそれぞれのツール（Kindleお得度メーター、サブスク健康診断、楽天シミュレーターなど）を使ってシミュレーションを行ってみましょう！各ツールに入力されたお得価値や削減できた金額が自動でこのダッシュボードに反映され、あなたの「Side FIRE（月10万円お得化）達成度」が上昇していきます。
+            </p>
+            <p class="roadmap-text" style="margin-top: 16px; border-top: 1px dashed var(--color-border); padding-top: 12px; font-size: 0.8rem; color: var(--color-text-muted);">
+                💡 <span class="roadmap-highlight">Side FIREのヒント</span>: 
+                お得になる行動（サブスクの最適化、還元ポイントの最大化、不要固定費のカット）は、実質的に「非課税の不労所得」を得ていることと等価です。月10万円の支出削減は、年利5%で2,400万円を資産運用した時の配当額に匹敵します。
+            </p>
+        </section>
+    </div>
+
+    <script>
+        function init() {
+            // 各セーブデータの取得
+            let kuState = null;
+            let subState = null;
+            let rakutenState = null;
+            let diaryData = null;
+
+            try { kuState = JSON.parse(localStorage.getItem('ku_tracker_books') || '[]'); } catch(e) {}
+            let kuSettings = null;
+            try { kuSettings = JSON.parse(localStorage.getItem('ku_tracker_settings') || 'null'); } catch(e) {}
+            
+            try { subState = JSON.parse(localStorage.getItem('sub_health_state') || 'null'); } catch(e) {}
+            try { rakutenState = JSON.parse(localStorage.getItem('rakuten_sim_state') || 'null'); } catch(e) {}
+            try { diaryData = JSON.parse(localStorage.getItem('hokuhokuDiaryData') || '[]'); } catch(e) {}
+
+            let totalAnnualSavings = 0;
+
+            // 1. Playポイント計算機
+            const playStatus = document.getElementById('play-status');
+            const playVal = document.getElementById('play-val');
+            const playSub = document.getElementById('play-sub');
+            
+            let totalPointsEarned = 0;
+            if (diaryData && diaryData.length > 0) {
+                // 日記からポイントの累計を合算 (※日記のアイテムは earnedPoints または類似プロパティを持っている)
+                diaryData.forEach(entry => {
+                    totalPointsEarned += parseInt(entry.point || 0);
+                });
+                playStatus.className = 'tool-badge active';
+                playStatus.textContent = '同期中';
+                playVal.textContent = `${totalPointsEarned.toLocaleString()} pt`;
+                playSub.textContent = `¥${totalPointsEarned.toLocaleString()} 相当のお得`;
+                
+                // Playポイントは一回限りの獲得価値ですが、年間お得に換算して加算 (ここでは累計額をそのまま年間価値に加味)
+                totalAnnualSavings += totalPointsEarned;
+            } else {
+                playStatus.className = 'tool-badge inactive';
+                playStatus.textContent = 'データなし';
+                playVal.textContent = '0 pt';
+                playSub.textContent = '日記が未保存です';
+            }
+
+            // 2. Kindle Unlimited
+            const kindleStatus = document.getElementById('kindle-status');
+            const kindleVal = document.getElementById('kindle-val');
+            const kindleSub = document.getElementById('kindle-sub');
+            
+            if (kuState && kuState.length > 0) {
+                const totalValue = kuState.reduce((sum, b) => sum + (b.price || 0), 0);
+                const monthlyFee = kuSettings ? (kuSettings.monthlyFee || 980) : 980;
+                const duration = kuSettings ? (kuSettings.duration || 3) : 3;
+                const totalCost = monthlyFee * duration;
+                const netSavings = totalValue - totalCost;
+                
+                // 年間換算 = (netSavings / duration) * 12
+                const annualKindleSavings = duration > 0 ? Math.round((netSavings / duration) * 12) : 0;
+                
+                kindleStatus.className = 'tool-badge active';
+                kindleStatus.textContent = '同期中';
+                kindleVal.textContent = `¥ ${annualKindleSavings.toLocaleString()} / 年`;
+                kindleSub.textContent = `読書数: ${kuState.length} 冊 (今期 ¥${netSavings.toLocaleString()}お得)`;
+                
+                if (annualKindleSavings > 0) {
+                    totalAnnualSavings += annualKindleSavings;
+                }
+            } else {
+                kindleStatus.className = 'tool-badge inactive';
+                kindleStatus.textContent = 'データなし';
+                kindleVal.textContent = '¥ 0';
+                kindleSub.textContent = '読書ログが空です';
+            }
+
+            // 3. サブスク健康診断
+            const subStatus = document.getElementById('sub-status');
+            const subVal = document.getElementById('sub-val');
+            const subSub = document.getElementById('sub-sub');
+            
+            if (subState) {
+                const netAnnualSavings = subState.netAnnualSavings || 0;
+                subStatus.className = 'tool-badge active';
+                subStatus.textContent = '同期中';
+                
+                if (netAnnualSavings >= 0) {
+                    subVal.className = 'tool-desc-val';
+                    subVal.textContent = `+¥ ${netAnnualSavings.toLocaleString()} / 年`;
+                } else {
+                    subVal.className = 'tool-desc-val deficit';
+                    subVal.textContent = `-¥ ${Math.abs(netAnnualSavings).toLocaleString()} / 年`;
+                }
+                
+                subSub.textContent = `契約サブスク: ${subState.activeSubs ? subState.activeSubs.length : 0} 個`;
+                totalAnnualSavings += netAnnualSavings;
+            } else {
+                subStatus.className = 'tool-badge inactive';
+                subStatus.textContent = '未診断';
+                subVal.textContent = '¥ 0';
+                subSub.textContent = '健康診断が未実行です';
+            }
+
+            // 4. 楽天お買い物マラソン
+            const rakutenStatus = document.getElementById('rakuten-status');
+            const rakutenVal = document.getElementById('rakuten-val');
+            const rakutenSub = document.getElementById('rakuten-sub');
+            
+            if (rakutenState) {
+                const totalPoints = rakutenState.totalPoints || 0;
+                // 年間に平均6回お買い物マラソンをすると仮定し、年間お得額を概算
+                const annualRakutenSavings = totalPoints * 6;
+                
+                rakutenStatus.className = 'tool-badge active';
+                rakutenStatus.textContent = '同期中';
+                rakutenVal.textContent = `¥ ${annualRakutenSavings.toLocaleString()} / 年`;
+                rakutenSub.textContent = `今回獲得: ${totalPoints.toLocaleString()} pt (リスト: ${rakutenState.items ? rakutenState.items.length : 0}件)`;
+                
+                totalAnnualSavings += annualRakutenSavings;
+            } else {
+                rakutenStatus.className = 'tool-badge inactive';
+                rakutenStatus.textContent = '未シミュ';
+                rakutenVal.textContent = '¥ 0';
+                rakutenSub.textContent = '上限計算が未実行です';
+            }
+
+            // 最終集計とメーター描画
+            totalAnnualSavings = Math.max(0, totalAnnualSavings);
+            const totalMonthlySavings = Math.round(totalAnnualSavings / 12);
+            
+            document.getElementById('sum-annual-savings').textContent = `¥ ${totalAnnualSavings.toLocaleString()}`;
+            document.getElementById('sum-monthly-savings').textContent = `¥ ${totalMonthlySavings.toLocaleString()} / 月`;
+            
+            // Side FIRE目標 (年間120万円 = 月10万円お得)
+            const targetAnnual = 1200000;
+            const percent = Math.min(100, Math.round((totalAnnualSavings / targetAnnual) * 100));
+            document.getElementById('fire-percent').textContent = percent;
+            
+            // SVGゲージアニメーション
+            const circle = document.getElementById('gauge-fill-el');
+            if (circle) {
+                const r = 90;
+                const circumference = 2 * Math.PI * r; // 565.48
+                const offset = circumference - (percent / 100) * circumference;
+                // アニメーション実行のためにsetTimeoutで適用
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = offset;
+                }, 100);
+            }
+
+            // ロードマップアドバイスの動的変更
+            const levelTitle = document.getElementById('roadmap-level-title');
+            const levelDesc = document.getElementById('roadmap-level-desc');
+            
+            if (totalAnnualSavings === 0) {
+                levelTitle.textContent = '現在のロードマップ: お得ハッカー見習い (達成度 0%)';
+                levelDesc.textContent = 'まずはそれぞれの計算ツールを使ってみましょう！Kindleの読書ログを付けたり、サブスクの最適化診断、楽天お買い物予定の登録などを行うことで、年間の「お得価値」がダッシュボードに加算されていきます。';
+            } else if (percent < 10) {
+                levelTitle.textContent = '現在のロードマップ: 新米お得ハッカー級 (達成度 ' + percent + '%)';
+                levelDesc.textContent = 'お得化への第一歩を踏み出しました！年間数万円の節約でも、10年間継続すれば大きな資産になります。サブスク健康診断で不要な課金がないか点検し、楽天マラソンではポイント上限をしっかり見極めましょう。';
+            } else if (percent < 30) {
+                levelTitle.textContent = '現在のロードマップ: 堅実な資産ハッカー級 (達成度 ' + percent + '%)';
+                levelDesc.textContent = '素晴らしいペースです！月額約1〜2万円相当のお得（節約・追加価値）をハックしています。これは200万円〜500万円の投資信託の配当に匹敵します。この調子で固定費を削減しつつ、回収できるものはしっかり回収しましょう。';
+            } else if (percent < 60) {
+                levelTitle.textContent = '現在のロードマップ: 達人お得ハッカー級 (達成度 ' + percent + '%)';
+                levelDesc.textContent = 'もの凄い成果です！年間数十万円のお得化に成功しており、目標である月10万円不労所得（Side FIRE）の折り返し地点が見えてきました。このサイトに集約されたお得ハックツールを駆使し、楽天お買い物マラソンなどを賢くフル活用してください。';
+            } else {
+                levelTitle.textContent = '現在のロードマップ: Side FIRE マスター級 (達成度 ' + percent + '%)';
+                levelDesc.textContent = '驚異的です！月間10万円相当のお得ライフハックがほぼ成立しています。これは不労所得による自由なライフスタイル「Side FIRE」に向けた最強の基盤です。この調子で浮いた資金をインデックス投資等に回し、10年以内のリタイア目標を確実に達成しましょう！';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

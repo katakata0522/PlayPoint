@@ -62,6 +62,7 @@
         if (document.querySelector('.article-calculator-prompt')) return;
         const content = document.querySelector('.content');
         if (!content) return;
+        if (content.querySelector('.cta-box, .cta-banner')) return;
 
         const prompt = document.createElement('aside');
         prompt.className = 'article-calculator-prompt cta-box';

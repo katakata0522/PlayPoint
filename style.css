@@ -1115,10 +1115,13 @@ button:active {
   }
   .result-actions {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .result-actions button {
     width: 100%;
+    font-size: 0.88em;
+    padding-left: 0.65em;
+    padding-right: 0.65em;
   }
   .lp-mini-grid,
   .lp-jp-summary,
@@ -1827,6 +1830,9 @@ html:not([lang="ja"]) .ja-only {
     gap: 0.6em 0.8em !important;
     padding: 0 10px;
     width: 100%;
+  }
+  .header-link-secondary {
+    display: none !important;
   }
   .header-links a {
     min-height: 44px;

@@ -522,15 +522,30 @@
             const container = document.getElementById('sub-list-container');
             container.innerHTML = '';
             
+            let savedState = null;
+            try {
+                savedState = JSON.parse(localStorage.getItem('sub_health_state') || 'null');
+            } catch (e) {
+                console.error('Failed to load sub_health_state', e);
+            }
+            
             SUB_PRESETS.forEach(sub => {
+                let isChecked = false;
+                let currentVal = sub.defaultVal;
+                
+                if (savedState && savedState.sliderValues && savedState.sliderValues[sub.id] !== undefined) {
+                    currentVal = savedState.sliderValues[sub.id];
+                    isChecked = savedState.activeSubs.includes(sub.id);
+                }
+                
                 const subItem = document.createElement('div');
-                subItem.className = 'sub-item';
+                subItem.className = 'sub-item' + (isChecked ? ' active' : '');
                 subItem.id = `sub-item-${sub.id}`;
                 
                 subItem.innerHTML = `
                     <div class="sub-header" onclick="toggleSub('${sub.id}')">
                         <div class="sub-info-left">
-                            <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
                             <span class="sub-name">${sub.name}</span>
                         </div>
                         <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
@@ -538,12 +553,12 @@
                     <div class="sub-control-panel">
                         <div class="control-label">
                             <span>${sub.label}</span>
-                            <span class="control-val-highlight"><span id="val-display-${sub.id}">${sub.defaultVal}</span> ${sub.unit}</span>
+                            <span class="control-val-highlight"><span id="val-display-${sub.id}">${currentVal}</span> ${sub.unit}</span>
                         </div>
                         <div class="slider-wrapper">
-                            <input type="range" class="input-range" id="slider-${sub.id}" min="${sub.min}" max="${sub.max}" value="${sub.defaultVal}" oninput="updateSliderVal('${sub.id}')">
+                            <input type="range" class="input-range" id="slider-${sub.id}" min="${sub.min}" max="${sub.max}" value="${currentVal}" oninput="updateSliderVal('${sub.id}')">
                             <div class="slider-val-box">
-                                <span id="val-box-${sub.id}">${sub.defaultVal}</span><span class="slider-unit">${sub.unit}</span>
+                                <span id="val-box-${sub.id}">${currentVal}</span><span class="slider-unit">${sub.unit}</span>
                             </div>
                         </div>
                         <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-top: 8px;">ℹ️ ${sub.desc}</p>
@@ -551,6 +566,10 @@
                 `;
                 
                 container.appendChild(subItem);
+                
+                if (isChecked) {
+                    state.activeSubs.add(sub.id);
+                }
             });
 
             calculate();
@@ -665,6 +684,20 @@
                 shareText = `私のサブスク健康診断結果は【年間 ${netAnnualSavings >= 0 ? '+' : ''}${netAnnualSavings.toLocaleString()}円のお得】でした！(診断結果: ${badge.textContent})。あなたも契約中のサブスクに無駄がないか診断してみる？➔ https://playpoint-sim.com/tools/sub-health/ #サブスク健康診断`;
             }
             twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+            // --- Save state for Dashboard ---
+            const sliderValues = {};
+            SUB_PRESETS.forEach(sub => {
+                const slider = document.getElementById(`slider-${sub.id}`);
+                if (slider) {
+                    sliderValues[sub.id] = parseInt(slider.value);
+                }
+            });
+            localStorage.setItem('sub_health_state', JSON.stringify({
+                activeSubs: Array.from(state.activeSubs),
+                sliderValues: sliderValues,
+                netAnnualSavings: netAnnualSavings
+            }));
         }
 
         window.addEventListener('DOMContentLoaded', init);
