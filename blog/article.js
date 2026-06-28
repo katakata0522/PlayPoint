@@ -58,6 +58,31 @@
         article.appendChild(notice);
     }
 
+    function setupCalculatorPrompt() {
+        if (document.querySelector('.article-calculator-prompt')) return;
+        const content = document.querySelector('.content');
+        if (!content) return;
+
+        const prompt = document.createElement('aside');
+        prompt.className = 'article-calculator-prompt cta-box';
+        prompt.setAttribute('aria-label', 'あなたの場合の必要額を計算');
+        prompt.innerHTML = `
+            <p class="article-calculator-prompt__label">読んだあとに確認</p>
+            <h2>あなたの場合はいくら必要？</h2>
+            <p>現在のステータス、目標ランク、あと必要なポイントを入れると、ランク達成までの課金目安をすぐ確認できます。</p>
+            <a class="article-calculator-prompt__button" href="../?utm_source=article&amp;utm_medium=internal&amp;utm_campaign=article_cta_prompt">計算機で自分の必要額を見る</a>
+        `;
+
+        const toc = content.querySelector('.toc-box');
+        const summary = content.querySelector('.summary-box');
+        const anchor = toc || summary;
+        if (anchor && anchor.nextSibling) {
+            anchor.parentNode.insertBefore(prompt, anchor.nextSibling);
+            return;
+        }
+        content.insertBefore(prompt, content.firstChild);
+    }
+
     // 記事が計算機の利用につながったかだけを計測し、入力値は送信しない
     function setupCalculatorLinkTracking() {
         const eventCommand = 'event';
@@ -78,7 +103,7 @@
             if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
                 window.gtag(eventCommand, 'article_to_calculator_clicked', {
                     source_path: window.location.pathname,
-                    link_context: link.closest('.cta-box, .cta-banner') ? 'article_cta' : 'article_link',
+                    link_context: link.closest('.article-calculator-prompt') ? 'article_calculator_prompt' : (link.closest('.cta-box, .cta-banner') ? 'article_cta' : 'article_link'),
                     destination_path: url.pathname
                 });
             }
@@ -155,6 +180,7 @@
     }
 
     async function init() {
+        setupCalculatorPrompt();
         setupOfficialSourceNotice();
         setupCalculatorLinkTracking();
         setupArticleAdsense();

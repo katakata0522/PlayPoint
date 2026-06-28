@@ -2185,18 +2185,129 @@ document.addEventListener('DOMContentLoaded', () => {
             badgeColor = '#a855f7';
         }
         
+        // 称号エンブレムバッジの描画 (x: 400, y: 236)
+        const badgeX = 400;
+        const badgeY = 236;
+        
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        
+        const badgeGrad = ctx.createRadialGradient(badgeX, badgeY, 3, badgeX, badgeY, 18);
+        if (netSavings < 980) {
+            badgeGrad.addColorStop(0, '#f97316');
+            badgeGrad.addColorStop(1, '#7c2d12');
+        } else if (netSavings < 2940) {
+            badgeGrad.addColorStop(0, '#f3f4f6');
+            badgeGrad.addColorStop(1, '#6b7280');
+        } else if (netSavings < 6000) {
+            badgeGrad.addColorStop(0, '#fef08a');
+            badgeGrad.addColorStop(1, '#a16207');
+        } else {
+            badgeGrad.addColorStop(0, '#e879f9');
+            badgeGrad.addColorStop(1, '#581c87');
+        }
+        ctx.fillStyle = badgeGrad;
+        
+        ctx.beginPath();
+        ctx.arc(badgeX, badgeY, 18, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.strokeStyle = '#B9944A';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        if (netSavings < 980) {
+            drawStar(ctx, badgeX, badgeY, 5, 8, 4);
+        } else if (netSavings < 2940) {
+            drawStar(ctx, badgeX, badgeY - 1, 5, 8, 4);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            drawStar(ctx, badgeX - 7, badgeY + 2, 5, 5, 2.5);
+            drawStar(ctx, badgeX + 7, badgeY + 2, 5, 5, 2.5);
+        } else if (netSavings < 6000) {
+            drawCrown(ctx, badgeX, badgeY, 14, 10);
+        } else {
+            drawLaurel(ctx, badgeX, badgeY, 12);
+            ctx.fillStyle = '#fef08a';
+            drawCrown(ctx, badgeX, badgeY + 1, 10, 8);
+        }
+        ctx.restore();
+        
         ctx.font = 'bold 13px sans-serif';
         ctx.fillStyle = badgeColor;
-        ctx.fillText(`【 称号: ${rank} 】`, 400, 240);
+        ctx.fillText(`【 称号: ${rank} 】`, 400, 260); // 称号名をエンブレムの下に
+        
+        // 左右の飾りミニ本棚の描画
+        ctx.strokeStyle = '#B9944A';
+        ctx.lineWidth = 4;
+        
+        ctx.beginPath(); ctx.moveTo(35, 410); ctx.lineTo(135, 410); ctx.stroke(); // 左棚
+        ctx.beginPath(); ctx.moveTo(665, 410); ctx.lineTo(765, 410); ctx.stroke(); // 右棚
+        
+        const maxDrawBooks = Math.min(bookCount, 8);
+        const bookColors = [
+            ['#1e3a8a', '#3b82f6'],
+            ['#312e81', '#4f46e5'],
+            ['#065f46', '#10b981'],
+            ['#78350f', '#d97706'],
+            ['#581c87', '#8b5cf6'],
+            ['#881337', '#e11d48'],
+            ['#1f2937', '#4b5563'],
+            ['#0f172a', '#b9944a']
+        ];
+
+        for (let i = 0; i < maxDrawBooks; i++) {
+            const isLeft = i < 4;
+            const shelfX = isLeft ? 35 : 665;
+            const idxOnShelf = isLeft ? i : i - 4;
+            
+            const bookW = 18;
+            const bookH = 80 + (i * 3) % 20;
+            const bookX = shelfX + 10 + (idxOnShelf * 20);
+            const bookY = 410 - bookH;
+            
+            const bookGrad = ctx.createLinearGradient(bookX, bookY, bookX + bookW, bookY);
+            const colors = bookColors[i % bookColors.length];
+            bookGrad.addColorStop(0, colors[0]);
+            bookGrad.addColorStop(1, colors[1]);
+            ctx.fillStyle = bookGrad;
+            
+            ctx.save();
+            if (i === 3 || i === 7) {
+                ctx.translate(bookX + bookW/2, 410);
+                ctx.rotate(0.12);
+                ctx.translate(-(bookX + bookW/2), -410);
+            }
+            
+            ctx.fillRect(bookX, bookY, bookW, bookH);
+            
+            ctx.fillStyle = 'rgba(185, 148, 74, 0.6)';
+            ctx.fillRect(bookX, bookY + 10, bookW, 4);
+            ctx.fillRect(bookX, bookY + bookH - 15, bookW, 4);
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(bookX + bookW/2, bookY + 20);
+            ctx.lineTo(bookX + bookW/2, bookY + bookH - 25);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
         
         ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
         ctx.strokeStyle = 'rgba(185, 148, 74, 0.2)';
         ctx.lineWidth = 1;
         
         const cardX = 150;
-        const cardY = 275;
+        const cardY = 285; // 少し下へシフトし、エンブレムに重ならないように調整
         const cardW = 500;
-        const cardH = 130;
+        const cardH = 125;
         const r = 8;
         ctx.beginPath();
         ctx.moveTo(cardX + r, cardY);
@@ -2216,26 +2327,26 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.font = '500 15px sans-serif';
         ctx.fillStyle = '#94a3b8';
         
-        ctx.fillText(`消費コンテンツ :`, 180, 305);
-        ctx.fillText(`定価合計金額   :`, 180, 335);
-        ctx.fillText(`合計利用コスト :`, 180, 365);
+        ctx.fillText(`消費コンテンツ :`, 180, 310);
+        ctx.fillText(`定価合計金額   :`, 180, 338);
+        ctx.fillText(`合計利用コスト :`, 180, 366);
         
         ctx.textAlign = 'right';
         ctx.fillStyle = '#f8fafc';
         ctx.font = 'bold 16px sans-serif';
         
-        ctx.fillText(`${bookCount} 冊`, 620, 305);
-        ctx.fillText(`¥ ${totalValue.toLocaleString()}`, 620, 335);
-        ctx.fillText(`¥ ${totalCost.toLocaleString()} (${duration}ヶ月分)`, 620, 365);
+        ctx.fillText(`${bookCount} 冊`, 620, 310);
+        ctx.fillText(`¥ ${totalValue.toLocaleString()}`, 620, 338);
+        ctx.fillText(`¥ ${totalCost.toLocaleString()} (${duration}ヶ月分)`, 620, 366);
         
         ctx.textAlign = 'center';
         ctx.font = 'bold 14px sans-serif';
         ctx.fillStyle = '#B9944A';
-        ctx.fillText(`回収率: ${recoveryRate}%`, 400, 420);
+        ctx.fillText(`回収率: ${recoveryRate}%`, 400, 425);
         
         ctx.font = '11px sans-serif';
         ctx.fillStyle = '#64748b';
-        ctx.fillText('元を取れているか今すぐチェック！ ➔ playpoint-sim.com/kindle-tracker/', 400, 455);
+        ctx.fillText('元を取れているか今すぐチェック！ ➔ playpoint-sim.com/kindle-tracker/', 400, 458);
         
         const imgPreview = document.getElementById('share-image-preview');
         const downloadBtn = document.getElementById('btn-download-image');
@@ -2249,6 +2360,54 @@ document.addEventListener('DOMContentLoaded', () => {
             const shareText = `今月は${subName}で定価${totalValue.toLocaleString()}円分の本を読み、月額${monthlyFee.toLocaleString()}円に対して【${netSavings.toLocaleString()}円】お得になりました！回収率は${recoveryRate}%！🎉\nあなたもサブスクの元を取れているかチェック➔ https://playpoint-sim.com/kindle-tracker/ #お得度メーター #KindleUnlimited`;
             twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
         }
+    }
+
+    // --- Share Canvas Vector Draw Helpers ---
+    function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+        let rot = Math.PI / 2 * 3;
+        let x = cx;
+        let y = cy;
+        const step = Math.PI / spikes;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - outerRadius);
+        for (let i = 0; i < spikes; i++) {
+            x = cx + Math.cos(rot) * outerRadius;
+            y = cy + Math.sin(rot) * outerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+
+            x = cx + Math.cos(rot) * innerRadius;
+            y = cy + Math.sin(rot) * innerRadius;
+            ctx.lineTo(x, y);
+            rot += step;
+        }
+        ctx.lineTo(cx, cy - outerRadius);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function drawCrown(ctx, cx, cy, w, h) {
+        ctx.beginPath();
+        const x = cx - w / 2;
+        const y = cy - h / 2 + 1;
+        ctx.moveTo(x, y + h);
+        ctx.lineTo(x + w, y + h);
+        ctx.lineTo(x + w * 0.9, y + h * 0.3);
+        ctx.lineTo(x + w * 0.7, y + h * 0.7);
+        ctx.lineTo(x + w * 0.5, y);
+        ctx.lineTo(x + w * 0.3, y + h * 0.7);
+        ctx.lineTo(x + w * 0.1, y + h * 0.3);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function drawLaurel(ctx, cx, cy, r) {
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, Math.PI * 0.2, Math.PI * 0.8, true);
+        ctx.stroke();
     }
 
     init();

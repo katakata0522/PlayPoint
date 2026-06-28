@@ -10,6 +10,14 @@ export const isEnglishPath = () => /\/en(\/|$)/.test(window.location.pathname);
 export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
 export const isTaiwanPath = () => /\/tw(\/|$)/.test(window.location.pathname);
 
+function runWhenIdle(callback, timeout = 2000) {
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(callback, { timeout });
+        return;
+    }
+    window.setTimeout(callback, Math.min(timeout, 1200));
+}
+
 export function updateUIForRegion() {
     UI.updateUIText();
     CALC.populateStatusSelects();
@@ -224,10 +232,12 @@ export function init() {
     // PWAサービスワーカーの登録
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            const swPath = (isEnglishPath() || isKoreanPath() || isTaiwanPath()) ? '../sw.js' : './sw.js';
-            navigator.serviceWorker.register(swPath)
-                .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))
-                .catch(err => console.error('ServiceWorker registration failed:', err));
+            runWhenIdle(() => {
+                const swPath = (isEnglishPath() || isKoreanPath() || isTaiwanPath()) ? '../sw.js' : './sw.js';
+                navigator.serviceWorker.register(swPath)
+                    .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))
+                    .catch(err => console.error('ServiceWorker registration failed:', err));
+            });
         });
     }
 }

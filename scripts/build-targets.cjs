@@ -15,6 +15,7 @@ const syncedHtmlFiles = [
   'terms.html',
   'sitemap.html',
   'embed.html',
+  'latest/index.html',
   'status/diamond/index.html',
   'status/platinum/index.html',
   'maintenance/platinum/index.html',

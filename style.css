@@ -252,6 +252,8 @@ h2 {
 
 .article-drawer-body {
   padding: 0.9em 1em 1em;
+  content-visibility: auto;
+  contain-intrinsic-size: 520px;
 }
 
 .article-link-list {
@@ -316,6 +318,8 @@ h2 {
   padding: 0.9em 1em;
   margin-top: 0.8em;
   background: #fafcff;
+  content-visibility: auto;
+  contain-intrinsic-size: 160px;
 }
 
 .faq-item h3 {
@@ -1016,6 +1020,54 @@ button:active {
   background: rgba(255, 255, 255, 0.75);
 }
 
+.latest-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8em;
+}
+.latest-status-grid article,
+.latest-log-list article {
+  min-width: 0;
+  padding: 0.9em;
+  border: 1px solid rgba(11, 87, 208, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  content-visibility: auto;
+  contain-intrinsic-size: 180px;
+}
+.latest-status-grid h3,
+.latest-log-list h3 {
+  margin: 0.35em 0 0.4em;
+  border: 0;
+  font-size: 1em;
+}
+.latest-status-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0.12em 0.55em;
+  border-radius: 999px;
+  background: rgba(11, 87, 208, 0.08);
+  color: #0b57d0;
+  font-size: 0.76em;
+  font-weight: 800;
+}
+.latest-source-list a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+}
+.latest-log-list {
+  display: grid;
+  gap: 0.8em;
+}
+.latest-log-list time {
+  color: var(--link-color);
+  font-size: 0.86em;
+  font-weight: 700;
+}
+
 .page-footer {
   margin-top: 2em;
   padding-top: 1em;
@@ -1071,6 +1123,7 @@ button:active {
   .lp-mini-grid,
   .lp-jp-summary,
   .lp-detail-grid,
+  .latest-status-grid,
   .lp-related-list {
     grid-template-columns: 1fr;
   }
@@ -1244,6 +1297,11 @@ button:active {
 #diaryMode {
   content-visibility: auto;
   contain-intrinsic-size: 1200px;
+}
+
+#reverseMode {
+  content-visibility: auto;
+  contain-intrinsic-size: 540px;
 }
 
 .diary-backup-section {

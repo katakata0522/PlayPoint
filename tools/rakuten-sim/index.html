@@ -332,6 +332,57 @@
         }
 
         .promo-link:hover { text-decoration: underline; }
+
+        /* スマートレコメンド専用スタイル */
+        .recommend-box {
+            margin-top: 15px;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            line-height: 1.5;
+            background-color: var(--color-bg-card-nested);
+            border: 1px solid var(--color-border);
+            text-align: left;
+        }
+
+        .recommend-box.free-pass {
+            background: linear-gradient(135deg, rgba(185, 148, 74, 0.12) 0%, rgba(17, 24, 39, 0.95) 100%);
+            border: 1px solid var(--color-accent);
+            box-shadow: 0 0 10px rgba(185, 148, 74, 0.15);
+        }
+
+        .recommend-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .recommend-badge.gold {
+            background-color: var(--color-accent);
+            color: #0b0f19;
+        }
+
+        .recommend-badge.info {
+            background-color: var(--color-border);
+            color: var(--color-text-main);
+        }
+
+        .recommend-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: var(--color-text-main);
+        }
+
+        .recommend-value-highlight {
+            color: var(--color-accent);
+            font-weight: 800;
+            font-size: 0.95rem;
+            font-family: var(--font-num);
+        }
     </style>
 </head>
 <body>
@@ -438,6 +489,9 @@
                             <div class="stat-label-large">合計獲得予定ポイント</div>
                             <div id="total-points-val" class="stat-value-large value-saving">0 pt</div>
                         </div>
+
+                        <!-- スマートレコメンド表示エリア -->
+                        <div id="smart-recommend-container"></div>
 
                         <div class="sub-breakdown" style="border-top: none; padding-top: 0;">
                             <div class="breakdown-row">
@@ -601,10 +655,76 @@
                 badge.textContent = '安全 (上限まで余裕あり)';
             }
             
+            
             // Xシェア
             const twitterBtn = document.getElementById('btn-share-x');
             const shareText = `【楽天お買い物マラソン上限チェッカー】での私の結果：\n購入総額: ¥${totalPrice.toLocaleString()} (店舗数: ${shopCount}店舗)\n獲得予定: ${totalPoints.toLocaleString()} pt (上限残枠: ${Math.max(0, remainingLimit).toLocaleString()} pt)\n買いすぎロスを防ぐポイント上限シミュレーターはこちら➔ https://playpoint-sim.com/tools/rakuten-sim/ #楽天マラソン #お買い物マラソン`;
             twitterBtn.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+
+            // スマートレコメンドの動的判定
+            const recoContainer = document.getElementById('smart-recommend-container');
+            if (recoContainer) {
+                if (shopCount >= 10) {
+                    recoContainer.innerHTML = `
+                        <div class="recommend-box">
+                            <span class="recommend-badge info">最大倍率到達</span>
+                            <div class="recommend-title">すでに最大10店舗に到達しています！</div>
+                            <p style="color: var(--color-text-muted);">これ以上の買い回りは還元倍率は増えませんが、必要なものがあれば上限枠（残: ${Math.max(0, remainingLimit).toLocaleString()} pt）を意識しつつお買い物をお楽しみください。</p>
+                        </div>
+                    `;
+                } else if (totalPrice === 0) {
+                    recoContainer.innerHTML = '';
+                } else {
+                    const nextShopCount = shopCount + 1;
+                    const nextMarathonRate = Math.min(nextShopCount - 1, 9);
+                    const nextTotalPrice = totalPrice + 1000;
+                    
+                    const nextRawMarathonPoints = Math.floor(nextTotalPrice * (nextMarathonRate / 100));
+                    const nextMarathonPoints = Math.min(nextRawMarathonPoints, limit);
+                    
+                    const diffPoints = nextMarathonPoints - marathonPoints;
+                    
+                    if (diffPoints >= 1000) {
+                        const profit = diffPoints - 1000;
+                        const profitText = profit > 0 ? `さらに ${profit.toLocaleString()} pt の黒字！` : '実質負担 0 円！';
+                        
+                        recoContainer.innerHTML = `
+                            <div class="recommend-box free-pass">
+                                <span class="recommend-badge gold">実質タダ以上！</span>
+                                <div class="recommend-title">あと1店舗（1,000円商品）追加すると…</div>
+                                <p style="margin-bottom: 8px;">全体の還元率がアップし、獲得ポイントが <span class="recommend-value-highlight">+${diffPoints.toLocaleString()} pt</span> 増えます！</p>
+                                <p style="font-weight: 700; color: var(--color-success);">➔ 1,000円使ってもお釣りが来るため、実質タダ（${profitText}）で商品を追加できます！</p>
+                                <div style="margin-top: 10px; font-size: 0.75rem;">
+                                    <span style="color: var(--color-accent); font-weight: 700;">おすすめアイテム: </span>
+                                    <a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: 700;">讃岐うどん 9食セット (1,000円・送料無料)</a>
+                                </div>
+                            </div>
+                        `;
+                    } else if (diffPoints > 0) {
+                        const realCost = 1000 - diffPoints;
+                        recoContainer.innerHTML = `
+                            <div class="recommend-box">
+                                <span class="recommend-badge info">オトク情報</span>
+                                <div class="recommend-title">あと1店舗（1,000円商品）追加すると…</div>
+                                <p style="margin-bottom: 6px;">獲得ポイントが <span class="recommend-value-highlight">+${diffPoints.toLocaleString()} pt</span> 増えるため、</p>
+                                <p style="font-weight: 700;">➔ 1,000円の商品を実質 <span class="recommend-value-highlight">¥ ${realCost.toLocaleString()}</span> で買い回り店舗に追加できます！</p>
+                                <div style="margin-top: 8px; font-size: 0.75rem;">
+                                    <span style="color: var(--color-accent); font-weight: 700;">おすすめアイテム: </span>
+                                    <a href="https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: 700;">強炭酸水 24本セット (送料無料)</a>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        recoContainer.innerHTML = `
+                            <div class="recommend-box">
+                                <span class="recommend-badge info">上限到達警告</span>
+                                <div class="recommend-title">すでにポイント上限に達しています</div>
+                                <p style="color: var(--color-error);">これ以上買い回りを増やしても、キャンペーンポイントは増えません（買いすぎ損状態）。高額な買い物は次回のイベントに回すことをお勧めします。</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
         }
 
         window.addEventListener('DOMContentLoaded', init);
