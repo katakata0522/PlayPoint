@@ -727,25 +727,69 @@
                     mid: '🙂 週2〜3日 (回収率90%)',
                     low: '😟 ほぼ使わない (回収率20%)'
                 };
-                
-                subItem.innerHTML = `
-                    <div class="sub-header" onclick="toggleSub('${sub.id}')">
-                        <div class="sub-info-left">
-                            <input type="checkbox" id="chk-${sub.id}" class="sub-checkbox" ${isChecked ? 'checked' : ''} onchange="handleCheckboxChange(event, '${sub.id}')" onclick="event.stopPropagation()">
-                            <span class="sub-name" style="color: var(--color-accent);">${icon} ${sub.name} <small style="font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;">(カスタム)</small></span>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <span class="sub-fee">¥ ${sub.fee.toLocaleString()} / 月</span>
-                            <button type="button" onclick="removeCustomSub(event, '${sub.id}')" style="background:none; border:none; color:var(--color-error); font-size:1.1rem; cursor:pointer; padding: 0 4px;" title="削除">&times;</button>
-                        </div>
-                    </div>
-                    <div class="sub-control-panel">
-                        <div style="font-size: 0.8rem; display:flex; justify-content:space-between;">
-                            <span style="color: var(--color-text-muted);">回収満足度:</span>
-                            <span style="font-weight:700; color: #fff;">${satLabels[sub.sat]}</span>
-                        </div>
-                    </div>
-                `;
+
+                const header = document.createElement('div');
+                header.className = 'sub-header';
+                header.addEventListener('click', () => toggleSub(sub.id));
+
+                const left = document.createElement('div');
+                left.className = 'sub-info-left';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `chk-${sub.id}`;
+                checkbox.className = 'sub-checkbox';
+                checkbox.checked = isChecked;
+                checkbox.addEventListener('change', event => handleCheckboxChange(event, sub.id));
+                checkbox.addEventListener('click', event => event.stopPropagation());
+
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'sub-name';
+                nameSpan.style.color = 'var(--color-accent)';
+                nameSpan.appendChild(document.createTextNode(`${icon} ${sub.name} `));
+                const customLabel = document.createElement('small');
+                customLabel.style.cssText = 'font-size:0.7rem; color:var(--color-text-muted); font-weight:normal;';
+                customLabel.textContent = '(カスタム)';
+                nameSpan.appendChild(customLabel);
+
+                left.appendChild(checkbox);
+                left.appendChild(nameSpan);
+
+                const right = document.createElement('div');
+                right.style.cssText = 'display:flex; align-items:center; gap:8px;';
+
+                const feeSpan = document.createElement('span');
+                feeSpan.className = 'sub-fee';
+                feeSpan.textContent = `¥ ${sub.fee.toLocaleString()} / 月`;
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.style.cssText = 'background:none; border:none; color:var(--color-error); font-size:1.1rem; cursor:pointer; padding: 0 4px;';
+                removeButton.title = '削除';
+                removeButton.textContent = '×';
+                removeButton.addEventListener('click', event => removeCustomSub(event, sub.id));
+
+                right.appendChild(feeSpan);
+                right.appendChild(removeButton);
+                header.appendChild(left);
+                header.appendChild(right);
+
+                const panel = document.createElement('div');
+                panel.className = 'sub-control-panel';
+                const satisfaction = document.createElement('div');
+                satisfaction.style.cssText = 'font-size: 0.8rem; display:flex; justify-content:space-between;';
+                const label = document.createElement('span');
+                label.style.color = 'var(--color-text-muted)';
+                label.textContent = '回収満足度:';
+                const value = document.createElement('span');
+                value.style.cssText = 'font-weight:700; color: #fff;';
+                value.textContent = satLabels[sub.sat];
+                satisfaction.appendChild(label);
+                satisfaction.appendChild(value);
+                panel.appendChild(satisfaction);
+
+                subItem.appendChild(header);
+                subItem.appendChild(panel);
             }
             return subItem;
         }
@@ -1037,29 +1081,55 @@
                         h3.textContent = '🩺 あなた専用のサブスク改善手順書';
                     }
                     
-                    let html = `<p style="margin-bottom: 12px; font-weight:700; color: #fff;">年間で合計 <span style="color: var(--color-error); font-weight:900;">¥${deficits.reduce((sum, d) => sum + d.deficit, 0).toLocaleString()}</span> 相当の元取り不足（無駄）が検出されました。以下の見直しを推奨します：</p>`;
-                    html += '<ol style="padding-left: 18px; line-height: 1.8; margin-top: 10px;">';
+                    prescContent.textContent = '';
+
+                    const summary = document.createElement('p');
+                    summary.style.cssText = 'margin-bottom: 12px; font-weight:700; color: #fff;';
+                    summary.appendChild(document.createTextNode('年間で合計 '));
+                    const totalDeficit = document.createElement('span');
+                    totalDeficit.style.cssText = 'color: var(--color-error); font-weight:900;';
+                    totalDeficit.textContent = `¥${deficits.reduce((sum, d) => sum + d.deficit, 0).toLocaleString()}`;
+                    summary.appendChild(totalDeficit);
+                    summary.appendChild(document.createTextNode(' 相当の元取り不足（無駄）が検出されました。以下の見直しを推奨します：'));
+
+                    const orderedList = document.createElement('ol');
+                    orderedList.style.cssText = 'padding-left: 18px; line-height: 1.8; margin-top: 10px;';
                     deficits.forEach(d => {
-                        html += `<li style="margin-bottom: 12px; position: relative; padding-right: 75px;">
-                            <strong style="color: #fff;">${d.name}</strong> (年間 ¥${Math.round(d.deficit).toLocaleString()} の赤字):
-                            <button type="button" class="btn btn-secondary" style="position: absolute; right: 0; top: 0; width: auto; height: 26px; font-size: 0.65rem; padding: 0 8px; border: 1px solid var(--color-accent); color: var(--color-accent); font-weight:700; background:none; min-height:26px; min-width:44px;" onclick="triggerDirectReminder('${d.name}')">
-                                📅 登録
-                            </button>
-                            <span style="color: var(--color-text-muted); font-size: 0.75rem; display:block; margin-top:2px;">💡 ${d.tip}</span>
-                        </li>`;
+                        const item = document.createElement('li');
+                        item.style.cssText = 'margin-bottom: 12px; position: relative; padding-right: 75px;';
+
+                        const strong = document.createElement('strong');
+                        strong.style.color = '#fff';
+                        strong.textContent = d.name;
+                        item.appendChild(strong);
+                        item.appendChild(document.createTextNode(` (年間 ¥${Math.round(d.deficit).toLocaleString()} の赤字):`));
+
+                        const reminderButton = document.createElement('button');
+                        reminderButton.type = 'button';
+                        reminderButton.className = 'btn btn-secondary';
+                        reminderButton.style.cssText = 'position: absolute; right: 0; top: 0; width: auto; height: 26px; font-size: 0.65rem; padding: 0 8px; border: 1px solid var(--color-accent); color: var(--color-accent); font-weight:700; background:none; min-height:26px; min-width:44px;';
+                        reminderButton.textContent = '📅 登録';
+                        reminderButton.addEventListener('click', () => triggerDirectReminder(d.name));
+                        item.appendChild(reminderButton);
+
+                        const tip = document.createElement('span');
+                        tip.style.cssText = 'color: var(--color-text-muted); font-size: 0.75rem; display:block; margin-top:2px;';
+                        tip.textContent = `💡 ${d.tip}`;
+                        item.appendChild(tip);
+                        orderedList.appendChild(item);
                     });
-                    html += '</ol>';
-                    prescContent.innerHTML = html;
+
+                    prescContent.appendChild(summary);
+                    prescContent.appendChild(orderedList);
 
                     // カレンダー連携エリアの更新
                     const reminderSelect = document.getElementById('reminder-sub-select');
                     if (reminderBox && reminderSelect) {
                         reminderBox.style.display = 'block';
-                        let selectHtml = '';
+                        reminderSelect.textContent = '';
                         deficits.forEach(d => {
-                            selectHtml += `<option value="${d.name}">${d.name}</option>`;
+                            reminderSelect.appendChild(new Option(d.name, d.name));
                         });
-                        reminderSelect.innerHTML = selectHtml;
                     }
                 } else if (state.activeSubs.size === 0) {
                     prescCard.style.display = 'none';

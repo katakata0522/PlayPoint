@@ -71,6 +71,37 @@ test('計算機は有限値とHTMLの上下限を検証する', () => {
   assert.ok(source.includes('element.min'), 'min属性の検証がありません');
 });
 
+test('楽天シミュレーターは保存入力をHTMLとして描画しない', () => {
+  const source = read('tools/rakuten-sim/index.html');
+  assert.ok(source.includes('normalizeRakutenAffiliateId'), 'アフィリエイトIDの正規化がありません');
+  assert.ok(source.includes('nameCell.textContent = item.name'), '商品名をtextContentで描画していません');
+  assert.ok(source.includes('link.href = finalAffiliateUrl'), 'アフィリエイトURLをDOMプロパティで設定していません');
+  assert.ok(!source.includes('<td>${item.name}</td>'), '商品名がinnerHTMLテンプレートへ残っています');
+  assert.ok(!source.includes('href="${finalAffiliateUrl}"'), 'アフィリエイトURLがHTML属性テンプレートへ残っています');
+});
+
+test('サブスク健康診断はカスタム名をHTMLとして描画しない', () => {
+  const source = read('tools/sub-health/index.html');
+  assert.ok(source.includes('nameSpan.appendChild(document.createTextNode'), 'カスタムサブスク名をテキストノードで描画していません');
+  assert.ok(source.includes('strong.textContent = d.name'), '改善手順のサブスク名をtextContentで描画していません');
+  assert.ok(source.includes('new Option(d.name, d.name)'), 'リマインダー選択肢をOption APIで作っていません');
+  assert.ok(!source.includes('${icon} ${sub.name} <small'), 'カスタムサブスク名がinnerHTMLテンプレートへ残っています');
+  assert.ok(!source.includes('value="${d.name}">${d.name}</option>'), 'サブスク名がoptionテンプレートへ残っています');
+});
+
+test('統合ダッシュボードは保存クエスト文を固定カタログから復元する', () => {
+  const source = read('tools/dashboard/index.html');
+  assert.ok(source.includes('normalizeQuestState'), '保存クエスト状態の正規化がありません');
+  assert.ok(source.includes('textSpan.textContent = q.text'), 'クエスト文をtextContentで描画していません');
+  assert.ok(source.includes('const questCatalog = new Map'), 'クエストIDを固定カタログへ照合していません');
+  assert.ok(!source.includes('${q.text}</span>'), 'クエスト文がinnerHTMLテンプレートへ残っています');
+});
+
+test('統合ダッシュボードは同期上書き状態を初期化内で明示参照する', () => {
+  const source = read('tools/dashboard/index.html');
+  assert.ok(source.includes('const isOverride = window.dashboardState.isOverride;'), 'isOverrideが未定義参照になり得ます');
+});
+
 test('Gravity Todoの保存正規化は個別色を保持する', () => {
   const StorageManager = loadStorageManager({ getItem: () => null, setItem() {} });
   const [task] = StorageManager.normalizeTasks([{

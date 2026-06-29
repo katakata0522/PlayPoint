@@ -603,6 +603,24 @@
             nextId: 3
         };
 
+        function normalizeRakutenAffiliateId(value) {
+            const id = String(value || '').trim();
+            return /^[A-Za-z0-9_-]{1,80}$/.test(id) ? id : 'YOUR_AFFILIATE_ID';
+        }
+
+        function getSafeRakutenAffiliateUrl(rawAffiliateUrl) {
+            const fallbackUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
+            try {
+                const url = new URL(rawAffiliateUrl);
+                if (url.origin !== 'https://px.a8.net') return fallbackUrl;
+                const userAffId = normalizeRakutenAffiliateId(localStorage.getItem('rakuten_affiliate_id'));
+                return rawAffiliateUrl.replace('YOUR_AFFILIATE_ID', encodeURIComponent(userAffId));
+            } catch (e) {
+                console.error('Failed to build affiliate URL', e);
+                return fallbackUrl;
+            }
+        }
+
         function init() {
             let savedState = null;
             try {
@@ -634,13 +652,25 @@
             
             state.items.forEach(item => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${item.name}</td>
-                    <td class="num">¥ ${item.price.toLocaleString()}</td>
-                    <td>
-                        <button type="button" class="btn-delete" onclick="removeItem(${item.id})" aria-label="削除">&times;</button>
-                    </td>
-                `;
+                const nameCell = document.createElement('td');
+                nameCell.textContent = item.name;
+
+                const priceCell = document.createElement('td');
+                priceCell.className = 'num';
+                priceCell.textContent = `¥ ${item.price.toLocaleString()}`;
+
+                const actionCell = document.createElement('td');
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'btn-delete';
+                deleteButton.setAttribute('aria-label', '削除');
+                deleteButton.textContent = '×';
+                deleteButton.addEventListener('click', () => removeItem(item.id));
+                actionCell.appendChild(deleteButton);
+
+                tr.appendChild(nameCell);
+                tr.appendChild(priceCell);
+                tr.appendChild(actionCell);
                 tbody.appendChild(tr);
             });
         }
@@ -885,8 +915,7 @@
                                     rawAffiliateUrl = 'https://px.a8.net/svt/ejp?a8mat=YOUR_AFFILIATE_ID';
                                 }
                                 
-                                const userAffId = localStorage.getItem('rakuten_affiliate_id') || 'YOUR_AFFILIATE_ID';
-                                const finalAffiliateUrl = rawAffiliateUrl.replace('YOUR_AFFILIATE_ID', userAffId);
+                                const finalAffiliateUrl = getSafeRakutenAffiliateUrl(rawAffiliateUrl);
                                 
                                 const nextShopCount = Math.min(10, shopCount + 1);
                                 const nextRate = Math.min(nextShopCount - 1, 9);
@@ -897,30 +926,63 @@
                                 const pointGain = nextTotalPoints - totalPoints;
                                 const realBurden = Math.max(0, itemPrice - pointGain);
                                 
-                                const isTada = realBurden < 100;
-                                const tadaBadge = isTada ? `<span style="background:var(--color-accent); color:#000; font-size:0.6rem; font-weight:800; padding:2px 6px; border-radius:4px; margin-left:8px; vertical-align:middle;">実質ほぼタダ！</span>` : '';
-                                
-                                matchedItemHtml = `
-                                    <p style="font-weight:700; color: var(--color-accent); margin-bottom: 8px;">💡 残り枠調整のおすすめアイテム：</p>
-                                    <div style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border); box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
-                                        <div style="font-weight:700; color:#fff; font-size:0.8rem; margin-bottom:6px; display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
-                                            <span>${itemTitle} (¥${itemPrice.toLocaleString()})</span>
-                                            ${tadaBadge}
-                                        </div>
-                                        <p style="font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 10px; line-height: 1.5;">
-                                            この商品を追加すると、店舗数と還元率がアップしてポイントが <span style="color: var(--color-success); font-weight:700;">+${pointGain.toLocaleString()} pt</span> 増えます。
-                                        </p>
-                                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                                            <span style="color: #fff; font-size:0.75rem; font-weight:700;">
-                                                実質負担額: <span style="color:var(--color-success); font-size:0.95rem; font-family:var(--font-num); font-weight:900;">¥ ${realBurden.toLocaleString()}</span>
-                                            </span>
-                                            <a href="${finalAffiliateUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-accent" style="height: 32px; font-size: 0.75rem; width: auto; padding: 0 12px; display:inline-flex; align-items:center; margin: 0; min-height: 44px; min-width: 44px;">
-                                                楽天市場で見る ➔
-                                            </a>
-                                        </div>
-                                    </div>
-                                `;
-                                itemMatchEl.innerHTML = matchedItemHtml;
+                                itemMatchEl.textContent = '';
+
+                                const lead = document.createElement('p');
+                                lead.style.cssText = 'font-weight:700; color: var(--color-accent); margin-bottom: 8px;';
+                                lead.textContent = '💡 残り枠調整のおすすめアイテム：';
+
+                                const card = document.createElement('div');
+                                card.style.cssText = 'background: rgba(255,255,255,0.02); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border); box-shadow: 0 4px 10px rgba(0,0,0,0.15);';
+
+                                const titleRow = document.createElement('div');
+                                titleRow.style.cssText = 'font-weight:700; color:#fff; font-size:0.8rem; margin-bottom:6px; display:flex; align-items:center; flex-wrap:wrap; gap:4px;';
+                                const titleText = document.createElement('span');
+                                titleText.textContent = `${itemTitle} (¥${itemPrice.toLocaleString()})`;
+                                titleRow.appendChild(titleText);
+
+                                if (realBurden < 100) {
+                                    const tadaBadge = document.createElement('span');
+                                    tadaBadge.style.cssText = 'background:var(--color-accent); color:#000; font-size:0.6rem; font-weight:800; padding:2px 6px; border-radius:4px; margin-left:8px; vertical-align:middle;';
+                                    tadaBadge.textContent = '実質ほぼタダ！';
+                                    titleRow.appendChild(tadaBadge);
+                                }
+
+                                const pointText = document.createElement('p');
+                                pointText.style.cssText = 'font-size: 0.7rem; color: var(--color-text-muted); margin-bottom: 10px; line-height: 1.5;';
+                                pointText.appendChild(document.createTextNode('この商品を追加すると、店舗数と還元率がアップしてポイントが '));
+                                const pointValue = document.createElement('span');
+                                pointValue.style.cssText = 'color: var(--color-success); font-weight:700;';
+                                pointValue.textContent = `+${pointGain.toLocaleString()} pt`;
+                                pointText.appendChild(pointValue);
+                                pointText.appendChild(document.createTextNode(' 増えます。'));
+
+                                const actionRow = document.createElement('div');
+                                actionRow.style.cssText = 'display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;';
+
+                                const burden = document.createElement('span');
+                                burden.style.cssText = 'color: #fff; font-size:0.75rem; font-weight:700;';
+                                burden.appendChild(document.createTextNode('実質負担額: '));
+                                const burdenValue = document.createElement('span');
+                                burdenValue.style.cssText = 'color:var(--color-success); font-size:0.95rem; font-family:var(--font-num); font-weight:900;';
+                                burdenValue.textContent = `¥ ${realBurden.toLocaleString()}`;
+                                burden.appendChild(burdenValue);
+
+                                const link = document.createElement('a');
+                                link.href = finalAffiliateUrl;
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
+                                link.className = 'btn btn-accent';
+                                link.style.cssText = 'height: 32px; font-size: 0.75rem; width: auto; padding: 0 12px; display:inline-flex; align-items:center; margin: 0; min-height: 44px; min-width: 44px;';
+                                link.textContent = '楽天市場で見る ➔';
+
+                                actionRow.appendChild(burden);
+                                actionRow.appendChild(link);
+                                card.appendChild(titleRow);
+                                card.appendChild(pointText);
+                                card.appendChild(actionRow);
+                                itemMatchEl.appendChild(lead);
+                                itemMatchEl.appendChild(card);
                                 itemMatchEl.style.display = 'block';
                             } else {
                                 itemMatchEl.style.display = 'none';
@@ -952,8 +1014,8 @@
         window.saveAffiliateId = function() {
             const input = document.getElementById('affiliate-id-input');
             if (input) {
-                const id = input.value.trim();
-                localStorage.setItem('rakuten_affiliate_id', id);
+                const id = normalizeRakutenAffiliateId(input.value);
+                localStorage.setItem('rakuten_affiliate_id', id === 'YOUR_AFFILIATE_ID' ? '' : id);
                 alert('アフィリエイトIDを保存しました！お買い物調整リンクに自動反映されます。');
                 calculate();
             }

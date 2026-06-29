@@ -720,6 +720,7 @@
 
             const toggle = document.getElementById('override-sync-toggle');
             window.dashboardState.isOverride = toggle ? toggle.checked : false;
+            const isOverride = window.dashboardState.isOverride;
 
             if (window.dashboardState.isOverride) {
                 window.dashboardState.values.play = parseInt(document.getElementById('val-override-play').value) || 0;
@@ -1034,6 +1035,37 @@
             { id: 'q_save', text: '今月節約できたお金を貯金・投資口座へ移動する' }
         ];
 
+        function normalizeQuestState(questState, todayStr) {
+            if (!questState || questState.date !== todayStr || !Array.isArray(questState.quests)) {
+                return null;
+            }
+
+            const questCatalog = new Map(ALL_QUESTS.map(q => [q.id, q]));
+            const quests = questState.quests
+                .map(q => {
+                    const catalogQuest = q && questCatalog.get(q.id);
+                    if (!catalogQuest) return null;
+                    return {
+                        id: catalogQuest.id,
+                        text: catalogQuest.text,
+                        done: q.done === true
+                    };
+                })
+                .filter(Boolean)
+                .slice(0, 3);
+
+            if (quests.length === 0) return null;
+
+            const xp = Number(questState.xp);
+            const level = Number(questState.level);
+            return {
+                date: todayStr,
+                quests,
+                xp: Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0,
+                level: Number.isFinite(level) ? Math.max(1, Math.floor(level)) : 1
+            };
+        }
+
         function loadDailyQuests() {
             let questState = null;
             try {
@@ -1041,8 +1073,9 @@
             } catch(e) {}
             
             const todayStr = new Date().toDateString();
+            questState = normalizeQuestState(questState, todayStr);
             
-            if (!questState || questState.date !== todayStr) {
+            if (!questState) {
                 // クエストのリセットとランダム抽選
                 const shuffled = [...ALL_QUESTS].sort(() => 0.5 - Math.random());
                 const selected = shuffled.slice(0, 3).map(q => ({
@@ -1058,6 +1091,8 @@
                     level: questState ? questState.level : 1
                 };
                 localStorage.setItem('dashboard_quest_state', JSON.stringify(questState));
+            } else {
+                localStorage.setItem('dashboard_quest_state', JSON.stringify(questState));
             }
             
             renderQuests(questState);
@@ -1068,24 +1103,49 @@
             const container = document.getElementById('quest-list-container');
             if (!container) return;
             
-            let html = '';
+            container.textContent = '';
             state.quests.forEach((q, idx) => {
-                html += `
-                    <label style="display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,0.02); border:1px solid var(--color-border); border-radius:var(--radius-sm); cursor:pointer; font-size:0.8rem; line-height:1.4; transition:background 0.2s;">
-                        <input type="checkbox" id="chk-q-${idx}" class="quest-checkbox" ${q.done ? 'checked' : ''} onchange="toggleQuest(event, ${idx})" style="accent-color:var(--color-success); width:18px; height:18px; cursor:pointer;">
-                        <span style="${q.done ? 'text-decoration:line-through; color:var(--color-text-muted);' : 'color:#fff;'}">${q.text}</span>
-                        <span style="margin-left:auto; color:var(--color-success); font-family:var(--font-num); font-weight:700; font-size:0.7rem;">+10 XP</span>
-                    </label>
-                `;
+                const label = document.createElement('label');
+                label.style.cssText = 'display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,0.02); border:1px solid var(--color-border); border-radius:var(--radius-sm); cursor:pointer; font-size:0.8rem; line-height:1.4; transition:background 0.2s;';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `chk-q-${idx}`;
+                checkbox.className = 'quest-checkbox';
+                checkbox.checked = q.done === true;
+                checkbox.style.cssText = 'accent-color:var(--color-success); width:18px; height:18px; cursor:pointer;';
+                checkbox.addEventListener('change', event => toggleQuest(event, idx));
+
+                const textSpan = document.createElement('span');
+                textSpan.style.cssText = q.done ? 'text-decoration:line-through; color:var(--color-text-muted);' : 'color:#fff;';
+                textSpan.textContent = q.text;
+
+                const xpSpan = document.createElement('span');
+                xpSpan.style.cssText = 'margin-left:auto; color:var(--color-success); font-family:var(--font-num); font-weight:700; font-size:0.7rem;';
+                xpSpan.textContent = '+10 XP';
+
+                label.appendChild(checkbox);
+                label.appendChild(textSpan);
+                label.appendChild(xpSpan);
+                container.appendChild(label);
             });
-            container.innerHTML = html;
         }
 
         window.toggleQuest = function(e, index) {
-            const questState = JSON.parse(localStorage.getItem('dashboard_quest_state'));
-            if (!questState) return;
+            let questState = null;
+            try {
+                questState = JSON.parse(localStorage.getItem('dashboard_quest_state') || 'null');
+            } catch (error) {
+                console.error('Failed to load dashboard_quest_state', error);
+                return;
+            }
+
+            questState = normalizeQuestState(questState, new Date().toDateString());
+            if (!questState || !questState.quests[index]) return;
             
-            const isChecked = document.getElementById(`chk-q-${index}`).checked;
+            const checkbox = document.getElementById(`chk-q-${index}`);
+            if (!checkbox) return;
+            const isChecked = checkbox.checked;
             questState.quests[index].done = isChecked;
             
             if (isChecked) {
