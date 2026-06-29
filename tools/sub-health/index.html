@@ -633,12 +633,14 @@
             } catch (e) {
                 console.error('Failed to load sub_health_state', e);
             }
+
+            const normalizedState = normalizeSubHealthState(savedState);
+            state.customSubs = normalizedState.customSubs;
+            state.sliderValues = normalizedState.sliderValues;
+            state.activeSubs.clear();
             
-            state.customSubs = savedState ? (savedState.customSubs || []) : [];
-            state.sliderValues = savedState ? (savedState.sliderValues || {}) : {};
-            
-            if (savedState && savedState.activeSubs) {
-                savedState.activeSubs.forEach(id => state.activeSubs.add(id));
+            if (normalizedState.activeSubs.length > 0) {
+                normalizedState.activeSubs.forEach(id => state.activeSubs.add(id));
             } else {
                 state.activeSubs.add('kindle');
                 state.activeSubs.add('prime');
@@ -687,6 +689,65 @@
             return icons[cat] || '📦';
         }
 
+        function normalizePresetSliderValue(sub, value) {
+            const parsed = parseInt(value);
+            if (!Number.isFinite(parsed)) return sub.defaultVal;
+            return Math.max(sub.min, Math.min(sub.max, parsed));
+        }
+
+        function normalizeCustomSub(rawSub, index) {
+            if (!rawSub || typeof rawSub !== 'object') return null;
+
+            const name = String(rawSub.name || '').trim().slice(0, 80);
+            const fee = parseInt(rawSub.fee);
+            if (!name || !Number.isFinite(fee) || fee <= 0) return null;
+
+            const allowedSats = new Set(['high', 'mid', 'low']);
+            const allowedCategories = new Set(['video', 'music', 'book', 'other']);
+            const rawId = String(rawSub.id || `custom_${index}`);
+            const safeId = rawId.replace(/[^A-Za-z0-9_-]/g, '_').slice(0, 80) || `custom_${index}`;
+
+            return {
+                id: safeId,
+                name,
+                fee,
+                sat: allowedSats.has(rawSub.sat) ? rawSub.sat : 'mid',
+                category: allowedCategories.has(rawSub.category) ? rawSub.category : 'other',
+                isCustom: true
+            };
+        }
+
+        function normalizeSubHealthState(savedState) {
+            const normalized = {
+                activeSubs: [],
+                customSubs: [],
+                sliderValues: {}
+            };
+
+            if (!savedState || typeof savedState !== 'object') return normalized;
+
+            normalized.customSubs = Array.isArray(savedState.customSubs)
+                ? savedState.customSubs.map(normalizeCustomSub).filter(Boolean)
+                : [];
+
+            SUB_PRESETS.forEach(sub => {
+                const savedValue = savedState.sliderValues ? savedState.sliderValues[sub.id] : undefined;
+                normalized.sliderValues[sub.id] = normalizePresetSliderValue(sub, savedValue);
+            });
+
+            const allowedActiveIds = new Set([
+                ...SUB_PRESETS.map(sub => sub.id),
+                ...normalized.customSubs.map(sub => sub.id)
+            ]);
+            normalized.activeSubs = Array.isArray(savedState.activeSubs)
+                ? savedState.activeSubs
+                    .map(id => String(id))
+                    .filter(id => allowedActiveIds.has(id))
+                : [];
+
+            return normalized;
+        }
+
         function createSubItemElement(sub, isCustom) {
             const isChecked = state.activeSubs.has(sub.id);
             const subItem = document.createElement('div');
@@ -697,7 +758,10 @@
             
             if (!isCustom) {
                 const slider = document.getElementById(`slider-${sub.id}`);
-                const currentVal = slider ? parseInt(slider.value) : (state.sliderValues && state.sliderValues[sub.id] !== undefined ? state.sliderValues[sub.id] : sub.defaultVal);
+                const currentVal = normalizePresetSliderValue(
+                    sub,
+                    slider ? slider.value : (state.sliderValues && state.sliderValues[sub.id] !== undefined ? state.sliderValues[sub.id] : sub.defaultVal)
+                );
                 
                 subItem.innerHTML = `
                     <div class="sub-header" onclick="toggleSub('${sub.id}')">
@@ -829,8 +893,8 @@
             
             const name = nameEl.value.trim();
             const fee = parseInt(feeEl.value);
-            const sat = satEl.value;
-            const category = catEl ? catEl.value : 'other';
+            const sat = ['high', 'mid', 'low'].includes(satEl.value) ? satEl.value : 'mid';
+            const category = catEl && ['video', 'music', 'book', 'other'].includes(catEl.value) ? catEl.value : 'other';
             
             if (!name || isNaN(fee) || fee <= 0) {
                 alert('サービス名と正しい月額料金を入力してください');
@@ -1270,8 +1334,11 @@
                 if (state.activeSubs.has(sub.id)) {
                     const cat = sub.category || 'other';
                     if (categories[cat]) {
-                        categories[cat].fee += sub.fee;
-                        totalFee += sub.fee;
+                        const fee = parseInt(sub.fee);
+                        if (Number.isFinite(fee) && fee > 0) {
+                            categories[cat].fee += fee;
+                            totalFee += fee;
+                        }
                     }
                 }
             });
@@ -1283,7 +1350,7 @@
             
             const svgElements = ['<circle cx="21" cy="21" r="15.91549430918954" fill="#0b0f19"></circle>'];
             let cumulativePercent = 0;
-            let legendHtml = '';
+            legend.textContent = '';
             
             Object.keys(categories).forEach(key => {
                 const cat = categories[key];
@@ -1300,20 +1367,28 @@
                     `);
                     
                     cumulativePercent += percent;
-                    
-                    legendHtml += `
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            <span style="width:10px; height:10px; border-radius:50%; background:${cat.color}; display:inline-block;"></span>
-                            <span style="color:#fff; font-weight:700;">${cat.label}</span>
-                            <span>¥${cat.fee.toLocaleString()} (${Math.round(percent)}%)</span>
-                        </div>
-                    `;
+
+                    const row = document.createElement('div');
+                    row.style.cssText = 'display:flex; align-items:center; gap:6px;';
+
+                    const swatch = document.createElement('span');
+                    swatch.style.cssText = `width:10px; height:10px; border-radius:50%; background:${cat.color}; display:inline-block;`;
+
+                    const label = document.createElement('span');
+                    label.style.cssText = 'color:#fff; font-weight:700;';
+                    label.textContent = cat.label;
+
+                    const amount = document.createElement('span');
+                    amount.textContent = `¥${cat.fee.toLocaleString()} (${Math.round(percent)}%)`;
+
+                    row.appendChild(swatch);
+                    row.appendChild(label);
+                    row.appendChild(amount);
+                    legend.appendChild(row);
                 }
             });
             
             svg.innerHTML = svgElements.join('');
-            
-            legend.innerHTML = legendHtml;
             
             let maxCatKey = 'other';
             let maxCatFee = 0;
@@ -1333,7 +1408,7 @@
             } else {
                 diagnoseMsg += `全体的によく整理されています。利用していない休眠サブスクがないかを定期的に確認し、お得率を最大化しましょう。`;
             }
-            diagnose.innerHTML = diagnoseMsg;
+            diagnose.textContent = diagnoseMsg;
         }
 
         window.addEventListener('DOMContentLoaded', init);

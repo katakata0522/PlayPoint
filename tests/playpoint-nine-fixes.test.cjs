@@ -89,6 +89,15 @@ test('サブスク健康診断はカスタム名をHTMLとして描画しない'
   assert.ok(!source.includes('value="${d.name}">${d.name}</option>'), 'サブスク名がoptionテンプレートへ残っています');
 });
 
+test('サブスク健康診断は保存済み数値とカテゴリを正規化してから描画する', () => {
+  const source = read('tools/sub-health/index.html');
+  assert.ok(source.includes('normalizeSubHealthState'), '保存済みサブスク状態の正規化がありません');
+  assert.ok(source.includes('normalizePresetSliderValue'), '保存済みスライダー値の正規化がありません');
+  assert.ok(source.includes('legend.appendChild'), 'カテゴリ凡例をDOM APIで描画していません');
+  assert.ok(source.includes('diagnose.textContent = diagnoseMsg'), '診断メッセージをtextContentで描画していません');
+  assert.ok(!source.includes('legend.innerHTML = legendHtml'), 'カテゴリ凡例がinnerHTML描画のままです');
+});
+
 test('統合ダッシュボードは保存クエスト文を固定カタログから復元する', () => {
   const source = read('tools/dashboard/index.html');
   assert.ok(source.includes('normalizeQuestState'), '保存クエスト状態の正規化がありません');
