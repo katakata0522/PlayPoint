@@ -43,8 +43,8 @@ const LOCALES = {
     estimateBody: '계산 결과는 바로 결제를 늘리기 위한 숫자가 아니라 판단을 돕는 기준입니다. 평소 예정된 결제와 가깝다면 Google Play 앱의 공식 조건과 캠페인 기간을 확인하세요. 평소 소비보다 크다면 기다리거나 현재 등급을 유지하는 선택이 더 나을 수 있습니다.',
     disclaimer: '이 페이지는 계획용 예상치입니다. Google Play Points 조건, 대상 결제, 캠페인, 반영 시점은 국가와 계정에 따라 달라질 수 있으므로 결제 전 Google Play 앱에서 확인하세요.',
     articles: [
-      ['/en/articles/google-play-points-reflection-timing.html', 'Play Points 반영 시점 확인'],
-      ['/en/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
+      ['/ko/articles/google-play-points-not-showing.html', 'Play Points가 표시되지 않을 때'],
+      ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
       ['/en/articles/google-play-points-gift-cards.html', '기프트카드와 포인트 조건']
     ]
   },
@@ -64,8 +64,8 @@ const LOCALES = {
     estimateBody: '計算結果是用來協助判斷，而不是讓你立刻增加消費。如果金額接近原本計畫的購買，可以再確認 Google Play App 內的官方條件與活動期間；如果遠高於平常消費，等待活動或維持目前等級可能更適合。',
     disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動倍率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
     articles: [
-      ['/en/articles/google-play-points-reflection-timing.html', 'Play Points 回饋時間確認'],
-      ['/en/articles/google-play-points-levels.html', 'Play Points 等級說明'],
+      ['/tw/articles/google-play-points-not-showing.html', 'Play Points 沒有顯示時'],
+      ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
       ['/en/articles/google-play-points-gift-cards.html', '禮物卡與點數條件']
     ]
   }
@@ -392,6 +392,263 @@ const EN_ARTICLES = [
   }
 ];
 
+const ADDITIONAL_EN_ARTICLES = [
+  {
+    file: 'en/articles/google-play-points-country-differences.html',
+    title: 'Google Play Points country differences: what changes by region',
+    description: 'A practical country-difference guide for Google Play Points users comparing availability, promotions, rewards, currencies, and local account rules.',
+    h1: 'Google Play Points country differences: what changes by region',
+    badge: 'Country differences',
+    lead: 'Google Play Points can look similar across countries, but the details that affect a real purchase can change by region. Use this guide to compare the structure without assuming every country has the same offers.',
+    intro: 'Many users search in English because they want a simple answer: are Play Points the same in Japan, the US, Korea, Taiwan, or another country? The safest answer is that the checking method can be shared, but the final rule should come from the local Google Play app. This page explains what can differ, what usually stays comparable, and how to use PlayPoint pages without turning a regional guide into a promise.',
+    sections: [
+      ['What can differ by country', ['Availability, status names, reward catalogs, campaign timing, bonus caps, eligible payment methods, and display language can all differ by country or account. Even when two users see the same 2x or 3x headline, the small conditions below that headline may not match.', 'Do not treat a screenshot from another region as a rule for your own account. It can be useful for learning what to check, but the purchase decision should wait until your local app shows the offer clearly.']],
+      ['Use the local app screen as the final rule', ['The calculator can estimate a cost or point result, but it cannot read your account country or campaign eligibility. Before spending, open Google Play, check the Play Points page, and read the offer details from the account that will make the purchase.', 'This is especially important after moving countries, changing payment profiles, or using multiple accounts. A regional mismatch can make a normal purchase feel like a points problem when the real issue is account setup.']],
+      ['Compare estimates without assuming the same currency', ['A yen-based shortcut can still teach the calculation pattern, but it should not be copied as a local price. Currency, tax handling, exchange rates, and eligible amount rules can change the actual result.', 'When you use an international page, focus on the relationship between missing points, status rate, and multiplier. Then translate the decision back to your local currency and official screen.']],
+      ['When another country guide is still useful', ['A guide from another country is useful when it explains the order of checks: account, purchase record, eligibility, campaign terms, and timing. That process is often more portable than the exact reward value.', 'Use overseas examples to avoid mistakes, not to force a specific outcome. If a reward is not shown in your country, the guide cannot make it available.']],
+      ['How to use PlayPoint pages together', ['Start with the English overview if you want the broad structure, then use Korean or Traditional Chinese pages when they match your reading language. For numbers, open the calculator with the closest preset and adjust status, missing points, and multiplier yourself.', 'This keeps internal links helpful without overselling. The site should guide users toward a cleaner decision, not push them into extra spending because one region has an attractive-looking promotion.']]
+    ],
+    faq: [
+      ['Are Play Points rules identical worldwide?', 'No. Availability, offers, rewards, and eligibility can differ by country and account.'],
+      ['Can I use a Japanese yen estimate overseas?', 'Use it as a pattern reference only. Local currency and official eligibility should decide the final action.'],
+      ['Why do my rewards differ from another country?', 'Reward catalogs and campaigns are often regional. The Google Play app for your account is the source of truth.']
+    ]
+  },
+  {
+    file: 'en/articles/google-play-points-promotion-not-applied.html',
+    title: 'Google Play Points promotion not applied: what to check',
+    description: 'A step-by-step checklist for Google Play Points bonuses that did not apply, including activation, dates, app eligibility, caps, and normal point comparison.',
+    h1: 'Google Play Points promotion not applied: what to check',
+    badge: 'Promotion check',
+    lead: 'When a Play Points promotion does not appear, the problem is often the bonus condition rather than the whole purchase. Check activation, timing, eligibility, and caps before assuming the account is broken.',
+    intro: 'A 2x or 3x campaign looks simple in a banner, but the real rule can include small conditions that matter at checkout. This guide is written for the moment after purchase, when the normal balance or bonus result does not match your expectation. The goal is to separate a missing promotion from a missing purchase, so your next step is based on evidence instead of refreshes and guesswork.',
+    sections: [
+      ['Confirm whether the offer had to be activated', ['Some promotions are automatic, while others require tapping an activation button before the purchase. If the offer needed activation and the purchase happened first, the bonus may not apply even though the app and payment looked eligible.', 'Check the Play Points activity page and the campaign screen if it is still visible. If you are preparing a support request, mention whether you activated the offer and when the purchase was made.']],
+      ['Check dates, time zones, and purchase completion', ['Campaign windows can depend on local dates, store time zones, or the moment a transaction completes. A pending payment near the beginning or end of a campaign can be harder to judge from memory.', 'Use the purchase receipt time and campaign details together. If the order was later cancelled, refunded, or adjusted, the bonus may also change or disappear.']],
+      ['Review app, item, and payment eligibility', ['A campaign may apply only to selected apps, games, subscriptions, in-app items, or payment methods. It may also exclude trials, promotional credit, refunded purchases, or some gift-card flows.', 'Do not rely only on the banner headline. The smaller conditions are often where the answer is. If normal points appear but bonus points do not, eligibility is one of the strongest places to check.']],
+      ['Look for caps and partial bonuses', ['Some campaigns have maximum bonus points or only apply to part of the purchase. That can make the result look incomplete even when the promotion worked correctly.', 'Compare the expected normal points first, then estimate the bonus separately. A partial result is easier to understand when you know whether the base earning matched.']],
+      ['Use the calculator to make the support story cleaner', ['Run the same amount at 1x, then run it with the campaign multiplier. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
+    ],
+    faq: [
+      ['Does a campaign banner mean every purchase qualifies?', 'No. Check the offer details for eligible apps, payment methods, dates, and caps.'],
+      ['Can normal points appear while bonus points are missing?', 'Yes. The normal earning and campaign bonus can have different conditions or timing.'],
+      ['Should I make another purchase to test the promotion?', 'No. Confirm the existing purchase and campaign rule first. Do not create extra spending just to test a bonus.']
+    ]
+  },
+  {
+    file: 'en/articles/google-play-points-subscriptions.html',
+    title: 'Do subscriptions earn Google Play Points?',
+    description: 'Understand how Google Play Points can apply to subscriptions, renewals, trials, refunds, and campaigns before estimating recurring spend.',
+    h1: 'Do subscriptions earn Google Play Points?',
+    badge: 'Subscription planning',
+    lead: 'Subscriptions can be part of Play Points planning, but renewals, trials, refunds, and campaign rules need separate checks. Estimate recurring spend only after confirming what your local account treats as eligible.',
+    intro: 'Subscription spending is different from a one-time app purchase because it repeats. That makes it useful for planning, but also risky if you assume every renewal will behave the same way forever. This guide explains the practical checks before you include subscriptions in a Platinum or Diamond plan, with a focus on avoiding extra spend and keeping the calculator honest.',
+    sections: [
+      ['Separate the first charge from renewals', ['A subscription may have an initial charge, trial conversion, introductory price, or recurring renewal. Each stage can feel like the same subscription to the user, but Google Play may show and process them differently.', 'When estimating Play Points, note which payment you are planning around. If you only care about the next month, use the next renewal amount instead of the annual total you have not committed to paying yet.']],
+      ['Check trials, discounts, and cancellations', ['Free trials, discounted first months, cancellations, refunds, and grace periods can all change the point result. A subscription that looks active in the app may not mean a full eligible charge has settled.', 'Do not include points from a trial unless the local rule and activity screen support that assumption. The safer approach is to estimate only completed, eligible charges.']],
+      ['Campaigns may not cover every renewal', ['A 2x or 3x promotion can be tied to selected apps, new purchases, first payments, or limited dates. A renewal outside that window may earn differently from the first charge.', 'If a campaign is involved, calculate the subscription at 1x first. Then compare the promotional result only for the charge that clearly falls inside the campaign conditions.']],
+      ['Use recurring spend as a pace check', ['Subscriptions can make a status target easier to understand because they are predictable. Add the monthly eligible amount and compare it with the missing points and remaining time in the status period.', 'If the required extra amount is still large after normal subscriptions, that is a signal not to chase status through unplanned purchases. The best estimate is the one that respects spending you already intended.']],
+      ['Keep official account screens in the loop', ['Subscription rules, reward availability, and campaign eligibility can differ by country or account. The calculator is a planning layer, not an account statement.', 'Before changing or adding a subscription for Play Points, check Google Play subscription details, Play Points activity, and campaign terms from the same account. That prevents a clean estimate from being attached to the wrong payment profile.']]
+    ],
+    faq: [
+      ['Do all subscription renewals earn Play Points?', 'Not necessarily. Eligibility depends on the local rule, account, purchase type, and any campaign terms.'],
+      ['Should I annualize a monthly subscription?', 'Only if you are truly planning that full spend. For near-term decisions, estimate the next renewal or remaining period.'],
+      ['Can a trial earn points?', 'Do not assume so. Check whether there is an actual eligible charge and how your local Play Points activity records it.']
+    ]
+  }
+];
+
+const ARTICLE_LABELS = {
+  en: {
+    toc: 'Table of contents',
+    updatedPrefix: 'Updated',
+    guideSuffix: 'Play Points guide',
+    ctaTitle: 'Check the numbers without forcing a purchase',
+    ctaBody: 'Use the calculator as a planning estimate, then confirm the official rule in your local Google Play app.',
+    ctaLabel: 'Open the calculator',
+    faq: 'FAQ',
+    nextStep: 'Next step',
+    authorAria: 'Article author',
+    authorLabel: 'Article author',
+    authorNameSuffix: 'Play Points Calculator editor',
+    authorBody: 'This guide is written as a practical planning note. Google Play terms, rewards, campaigns, and eligibility can change by country or account, so official Google Play screens should decide the final action.',
+    backToGuides: 'Back to guides',
+    calculatorTop: 'Calculator top',
+    footerNote: 'This page is a general guide and calculator entry point. Check Google Play official help and the Google Play app for exact current rules.'
+  },
+  ko: {
+    toc: '목차',
+    updatedPrefix: '업데이트',
+    guideSuffix: 'Play Points 가이드',
+    ctaTitle: '무리한 결제 없이 숫자부터 확인하기',
+    ctaBody: '계산기는 계획을 돕는 예상치로 사용하고, 최종 조건은 본인 계정의 Google Play 앱에서 확인하세요.',
+    ctaLabel: '계산기 열기',
+    faq: 'FAQ',
+    nextStep: '다음 단계',
+    authorAria: '글쓴이',
+    authorLabel: '글쓴이',
+    authorNameSuffix: 'Play Points 계산기 편집자',
+    authorBody: '이 글은 실제 결제 판단을 돕기 위한 실용 가이드입니다. Google Play 조건, 리워드, 캠페인, 대상 결제는 국가와 계정에 따라 달라질 수 있으므로 공식 화면을 최종 기준으로 보세요.',
+    backToGuides: '가이드 목록',
+    calculatorTop: '계산기 홈',
+    footerNote: '이 페이지는 일반 가이드와 계산기 진입점입니다. 정확한 최신 조건은 Google Play 공식 도움말과 앱 화면을 확인하세요.'
+  },
+  tw: {
+    toc: '目錄',
+    updatedPrefix: '更新',
+    guideSuffix: 'Play Points 指南',
+    ctaTitle: '先確認數字，不為點數硬買',
+    ctaBody: '請把計算機當作規劃用估算，最後仍以你所在地區 Google Play App 內的官方條件為準。',
+    ctaLabel: '開啟計算機',
+    faq: 'FAQ',
+    nextStep: '下一步',
+    authorAria: '文章作者',
+    authorLabel: '文章作者',
+    authorNameSuffix: 'Play Points 計算機編輯',
+    authorBody: '這篇文章是為了協助實際判斷而寫的規劃筆記。Google Play 條款、回饋、活動與適用資格可能因國家、地區或帳號而不同，最終仍以官方畫面為準。',
+    backToGuides: '返回指南',
+    calculatorTop: '計算機首頁',
+    footerNote: '本頁是一般指南與計算機入口。請在 Google Play 官方說明與 App 畫面確認最新精確規則。'
+  }
+};
+
+const KO_ARTICLES = [
+  {
+    file: 'ko/articles/google-play-points-not-showing.html',
+    lang: 'ko',
+    siteName: 'Play Points 계산기',
+    labels: ARTICLE_LABELS.ko,
+    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    nextLinks: [
+      ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
+      ['/ko/campaign/2x/', '2배 캠페인 계산'],
+      ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
+      ['/author/katakata.html', '운영 및 검증 방침']
+    ],
+    title: 'Google Play Points가 표시되지 않을 때 확인할 것',
+    description: 'Google Play Points가 보이지 않을 때 계정, 결제 내역, 대상 결제, 캠페인, 환불, 국가별 조건을 순서대로 확인하는 한국어 체크리스트입니다.',
+    h1: 'Google Play Points가 표시되지 않을 때 확인할 것',
+    badge: '문제 확인',
+    lead: '포인트가 보이지 않을 때는 잔액만 보지 말고 계정, 구매 내역, 대상 조건, 캠페인, 국가별 차이를 차례대로 확인하는 편이 안전합니다.',
+    intro: 'Play Points가 안 보이면 바로 오류처럼 느껴지지만, 실제로는 작은 조건 하나가 어긋난 경우가 많습니다. 다른 Google 계정으로 결제했거나, 구매가 아직 완료되지 않았거나, 캠페인 보너스만 늦게 반영되는 식입니다. 이 글은 같은 화면을 계속 새로고침하기보다 무엇을 먼저 확인해야 하는지 정리한 한국어 가이드입니다.',
+    sections: [
+      ['1. 결제한 Google 계정부터 확인하기', ['Google Play 앱 오른쪽 위의 계정 아이콘을 먼저 확인하세요. Play Points는 계정별로 관리되므로, 가족 기기나 예전 휴대폰에서 다른 Gmail 계정으로 결제했다면 현재 보는 잔액에는 나타나지 않습니다.', '영수증이 도착한 계정과 Play Points 화면의 계정이 같은지 확인하는 것만으로도 많은 혼란을 줄일 수 있습니다. 계산기 숫자를 계속 바꾸기 전에 계정 일치 여부를 먼저 정리하세요.']],
+      ['2. 구매가 포인트 대상인지 보기', ['모든 결제가 사용자가 기대하는 방식으로 포인트 대상이 되는 것은 아닙니다. 체험 기간, 일부 구독 전환, 프로모션 크레딧, 기프트카드 사용, 환불, 부분 취소는 별도로 확인해야 합니다.', '구매 내역에서 주문 상태가 완료인지, 환불이나 취소가 없는지 확인하세요. 결제 자체가 대상이 아니라면 계산 결과가 맞아도 실제 포인트는 생기지 않습니다.']],
+      ['3. 일반 포인트와 캠페인 보너스를 나누기', ['2배나 3배 캠페인은 문구가 단순해 보여도 대상 앱, 결제수단, 기간, 활성화 여부, 보너스 상한이 붙을 수 있습니다. 일반 포인트는 보이는데 보너스만 안 보인다면 전체 누락이 아니라 캠페인 조건 문제일 수 있습니다.', '먼저 1배 기준으로 예상치를 보고, 실제로 적용된다고 생각한 배율을 따로 비교하세요. 두 숫자의 차이가 무엇이 부족한지 설명하는 데 도움이 됩니다.']],
+      ['4. 국가와 계정 조건을 최종 기준으로 보기', ['한국어로 검색하더라도 일부 정보는 일본, 미국, 대만 기준으로 작성되어 있을 수 있습니다. 확인 순서는 참고할 수 있지만 최종 조건은 본인 계정의 Google Play 앱에 표시된 내용을 기준으로 해야 합니다.', '국가 설정, 결제 프로필, 앱의 제공 국가가 다르면 같은 구매처럼 보여도 포인트 조건이 달라질 수 있습니다. 다른 지역의 스크린샷만 보고 판단하지 않는 것이 좋습니다.']],
+      ['5. 문의 전에 필요한 정보를 짧게 모으기', ['계정, 구매일, 주문 상태, 상품명, 캠페인 이름, 예상한 포인트와 실제 표시된 포인트를 정리하세요. 주문번호나 결제 정보는 공개 글에 올리지 말고 공식 문의에만 사용하세요.', '정리된 정보가 있으면 지원 문의도 짧아집니다. “포인트가 안 들어왔어요”보다 어떤 조건까지 확인했는지를 적는 편이 해결 가능성을 높입니다.']]
+    ],
+    faq: [
+      ['포인트를 다른 계정으로 옮길 수 있나요?', '일반적으로 Play Points는 계정 단위로 관리되므로 다른 계정으로 합치거나 옮긴다고 가정하면 안 됩니다.'],
+      ['일반 포인트는 있는데 보너스만 없을 수 있나요?', '가능합니다. 캠페인 보너스는 일반 적립과 조건이나 반영 시점이 다를 수 있습니다.'],
+      ['다시 결제해서 테스트해도 되나요?', '권하지 않습니다. 추가 결제 전에 기존 구매와 캠페인 조건을 먼저 확인하세요.']
+    ]
+  },
+  {
+    file: 'ko/articles/google-play-points-levels.html',
+    lang: 'ko',
+    siteName: 'Play Points 계산기',
+    labels: ARTICLE_LABELS.ko,
+    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    nextLinks: [
+      ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
+      ['/ko/amount/10000/', '10,000엔 포인트 계산'],
+      ['/ko/articles/google-play-points-not-showing.html', '포인트가 보이지 않을 때'],
+      ['/author/katakata.html', '운영 및 검증 방침']
+    ],
+    title: 'Google Play Points 등급 구조 이해',
+    description: 'Google Play Points 브론즈, 실버, 골드, 플래티넘, 다이아몬드 등급을 무리한 소비 없이 판단하는 한국어 가이드입니다.',
+    h1: 'Google Play Points 등급 구조 이해',
+    badge: '등급 계획',
+    lead: 'Play Points 등급은 리워드를 실제로 사용할 때 의미가 있습니다. 플래티넘이나 다이아몬드를 목표로 하기 전에 남은 포인트, 평소 결제액, 캠페인 조건을 함께 비교하세요.',
+    intro: '등급 이름은 게임처럼 보이지만 실제 판단은 단순해야 합니다. 다음 등급이 내 소비 습관과 맞는지, 필요한 금액이 평소 계획을 넘지 않는지, 리워드를 실제로 사용할 수 있는지가 더 중요합니다. 이 글은 등급을 쫓기 위한 글이 아니라 무리한 결제를 피하면서 숫자를 읽는 방법을 정리합니다.',
+    sections: [
+      ['등급은 목표가 아니라 비교 기준입니다', ['브론즈, 실버, 골드, 플래티넘, 다이아몬드는 적립률과 혜택을 비교하기 위한 틀입니다. 하지만 등급이 높다고 항상 이득인 것은 아닙니다.', '국가와 계정에 따라 리워드, 캠페인, 표시 방식이 달라질 수 있으므로 등급명보다 실제로 받을 수 있는 혜택을 먼저 보세요.']],
+      ['누적 포인트보다 남은 포인트가 중요합니다', ['계획을 세울 때는 목표 등급까지 남은 포인트를 입력해야 합니다. 현재 보유 포인트, 이미 사용한 포인트, 누적 포인트를 섞으면 필요한 금액이 쉽게 틀어집니다.', '계산기는 남은 포인트를 기준으로 보는 도구입니다. 현재 등급, 목표까지 부족한 포인트, 적용할 배율을 차례로 넣고 비교하세요.']],
+      ['평소 결제 리듬과 맞는지 확인하기', ['한 번에 필요한 총액만 보면 판단이 흐려질 수 있습니다. 남은 기간을 주 단위나 월 단위로 나누면 실제 생활에서 감당 가능한 금액인지 더 잘 보입니다.', '월별 금액이 평소보다 크다면 그것도 중요한 결과입니다. 등급을 올리는 것보다 현재 등급을 유지하거나 예정된 결제만 하는 편이 나을 수 있습니다.']],
+      ['캠페인은 기회를 줄 뿐 결정을 대신하지 않습니다', ['2배나 3배 캠페인은 도움이 될 수 있지만 대상 결제일 때만 의미가 있습니다. 캠페인은 이미 예정된 결제를 좋은 시점으로 옮기는 데 쓰는 것이 좋습니다.', '먼저 1배 기준을 보고, 캠페인 조건이 분명할 때만 배율을 바꿔 비교하세요. 캠페인 없이는 말이 안 되는 계획이라면 조건을 더 엄격하게 확인해야 합니다.']],
+      ['해외 정보는 구조만 참고하기', ['한국어 페이지라도 일본 엔 기준 계산이나 영어 가이드를 함께 볼 수 있습니다. 이런 페이지는 확인 순서를 배우는 데 유용하지만, 최종 조건은 한국 계정의 Google Play 앱에서 확인해야 합니다.', 'PlayPoint의 내부 링크는 관련 주제를 이어 보기 위한 장치입니다. 더 많이 쓰게 만들기보다, 숫자를 차분히 확인하고 불필요한 결제를 피하게 하는 것이 목적입니다.']]
+    ],
+    faq: [
+      ['다이아몬드가 플래티넘보다 항상 좋은가요?', '항상 그렇지는 않습니다. 추가 혜택을 실제로 사용할 수 있고 무리 없이 유지할 수 있을 때만 의미가 있습니다.'],
+      ['한국과 일본의 조건이 같나요?', '같다고 가정하면 안 됩니다. 국가별 캠페인과 리워드는 달라질 수 있습니다.'],
+      ['무엇부터 계산해야 하나요?', '가장 가까운 다음 등급부터 계산하세요. 그 금액이 이미 부담스럽다면 더 높은 등급은 현실적이지 않을 수 있습니다.']
+    ]
+  }
+];
+
+const TW_ARTICLES = [
+  {
+    file: 'tw/articles/google-play-points-not-showing.html',
+    lang: 'zh-TW',
+    siteName: 'Play Points 計算機',
+    labels: ARTICLE_LABELS.tw,
+    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    nextLinks: [
+      ['/tw/status/diamond/', '鑽石等級需要多少'],
+      ['/tw/campaign/2x/', '2 倍活動計算'],
+      ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
+      ['/author/katakata.html', '營運與驗證方針']
+    ],
+    title: 'Google Play Points 沒有顯示時要確認什麼',
+    description: '當 Google Play Points 沒有顯示時，依序確認帳號、購買紀錄、適用資格、活動條件、退款與地區差異的繁體中文指南。',
+    h1: 'Google Play Points 沒有顯示時要確認什麼',
+    badge: '問題確認',
+    lead: '如果 Play Points 沒有顯示，不要只看最後餘額。先依序確認帳號、購買紀錄、適用資格、活動條件與地區差異。',
+    intro: '點數沒有出現時，很容易直覺認為系統壞了。但實際上常見原因是帳號不同、付款尚未完成、購買不符合資格，或只有活動加碼尚未反映。這篇指南的目的不是催你再買一次，而是幫你把檢查順序整理清楚，避免一直刷新同一個畫面卻忽略真正原因。',
+    sections: [
+      ['1. 先確認付款使用的 Google 帳號', ['打開 Google Play 後，先看右上角帳號圖示。Play Points 是依帳號管理，如果購買發生在另一個 Gmail 帳號，目前帳號的點數餘額就不會變動。', '家人共用裝置、舊手機、工作設定檔都可能造成帳號混淆。請先比對收據帳號與 Play Points 畫面，再判斷是否真的少了點數。']],
+      ['2. 查看購買是否符合點數資格', ['不是每一種付款流程都會照直覺累積點數。試用期、訂閱轉換、促銷餘額、禮物卡付款、退款或部分取消，都需要分開確認。', '先看訂單狀態是否完成。如果購買本身不符合資格，計算機估算再漂亮，也不會讓實際點數出現。']],
+      ['3. 把一般點數和活動加碼分開看', ['2 倍或 3 倍活動可能有限定 App、付款方式、期間、啟用步驟或加碼上限。一般點數有出現但加碼沒有出現時，問題可能是活動條件，而不是整筆購買沒有被追蹤。', '可以先用 1 倍估算基準，再用你認為適用的倍率比較。兩個結果之間的差距，能幫你更清楚說明少的是哪一部分。']],
+      ['4. 地區與帳號規則要以官方畫面為準', ['繁體中文使用者可能會看到日本、韓國或英文頁面的資訊。這些內容可以參考檢查方法，但最終條件仍要以自己帳號所在的 Google Play App 顯示為準。', '付款地區、Google Play 國家設定、活動提供地區不同，都可能讓同樣的購買看起來有不同結果。不要只靠其他地區的截圖做決定。']],
+      ['5. 詢問支援前先整理短資料', ['如果帳號、訂單、活動條件都確認過，仍然沒有看到預期點數，再整理購買日期、商品名稱、活動名稱、預期點數與實際顯示結果。', '訂單編號和付款資訊不要放在公開貼文中。把資訊保留給官方支援，並用簡短清楚的方式說明你已經確認過哪些項目。']]
+    ],
+    faq: [
+      ['點數可以轉到另一個帳號嗎？', '不要這樣假設。Play Points 通常依帳號管理，應先確認購買帳號是否正確。'],
+      ['一般點數有出現，但活動加碼沒有出現正常嗎？', '有可能。活動加碼可能有不同條件或處理時間。'],
+      ['可以再買一次測試嗎？', '不建議。先確認既有購買與活動條件，不要為了測試而增加不必要消費。']
+    ]
+  },
+  {
+    file: 'tw/articles/google-play-points-levels.html',
+    lang: 'zh-TW',
+    siteName: 'Play Points 計算機',
+    labels: ARTICLE_LABELS.tw,
+    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    nextLinks: [
+      ['/tw/status/diamond/', '鑽石等級需要多少'],
+      ['/tw/amount/10000/', '10,000 日圓點數估算'],
+      ['/tw/articles/google-play-points-not-showing.html', '點數沒有顯示時'],
+      ['/author/katakata.html', '營運與驗證方針']
+    ],
+    title: 'Google Play Points 等級說明',
+    description: '了解 Google Play Points 銅、銀、金、白金、鑽石等級，並用不過度消費的方式評估升級或維持等級。',
+    h1: 'Google Play Points 等級說明',
+    badge: '等級規劃',
+    lead: 'Play Points 等級只有在回饋符合你的實際使用時才有意義。追白金或鑽石前，先比較剩餘點數、平常消費與活動條件。',
+    intro: '等級名稱看起來像目標，但真正需要判斷的是下一級是否值得。你是否真的會用到回饋？需要的金額是否高於原本消費？活動條件是否確定適用？這篇文章把等級當作規劃工具，而不是鼓勵為了徽章硬買。',
+    sections: [
+      ['等級是比較框架，不是必買目標', ['銅、銀、金、白金、鑽石可以幫你理解回饋率與福利，但等級越高不代表一定更划算。實際價值取決於你是否會使用那些回饋。', '不同國家、地區或帳號看到的活動與獎勵可能不同。請把等級當作下一步比較的標籤，而不是今天一定要達成的目標。']],
+      ['規劃時看剩餘點數，而不是累積總數', ['想估算升級成本時，最重要的是距離目標還差多少點。若把目前餘額、已使用點數或累積總數混在一起，估算很容易偏離。', '使用計算機時，請輸入還需要的點數，再調整目前等級與活動倍率。這樣比較接近實際決策。']],
+      ['把總金額拆成每週或每月節奏', ['一個很大的總額會讓人判斷失真。把它除以剩餘週數或月份後，就能看出是否符合平常的 App、遊戲、訂閱或書籍消費。', '如果每月需要增加的金額明顯高於平常，這本身就是答案。維持目前等級或等待原本就要買的項目，可能比追等級更合理。']],
+      ['活動倍率可以改變時機，但不能替你決定', ['2 倍或 3 倍活動可能很有幫助，但只有符合資格的購買才適合拿來估算。活動適合調整原本就要買的時間，不適合創造新的不必要消費。', '先看 1 倍基準，再看活動倍率。如果計畫只有在狹窄活動條件下才勉強成立，購買前就要更保守。']],
+      ['海外資料只拿來參考結構', ['PlayPoint 有日文、英文、韓文與繁體中文頁面，但官方條件仍由你所在地區的 Google Play App 決定。跨語言內容可以幫你理解檢查順序，不能取代官方畫面。', '內部連結的目的，是讓你從等級、活動、缺點數問題之間順著查下去，而不是讓頁面變成強烈推銷。最好的結果是少一點衝動，多一點確定性。']]
+    ],
+    faq: [
+      ['鑽石一定比白金值得嗎？', '不一定。要看你是否真的使用額外回饋，以及是否能在不過度消費的情況下維持。'],
+      ['台灣、日本、韓國條件都一樣嗎？', '不能這樣假設。活動、獎勵與適用條件可能因地區不同。'],
+      ['應該先計算哪個目標？', '先算最近的下一個等級。如果最近目標已經太吃力，更高等級通常更不實際。']
+    ]
+  }
+];
+
+const INTL_ARTICLES = [
+  ...EN_ARTICLES,
+  ...ADDITIONAL_EN_ARTICLES,
+  ...KO_ARTICLES,
+  ...TW_ARTICLES
+];
+
 const INTL_ARTICLE_CSS = `* { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
     --bg: #f5f5f5;
@@ -565,8 +822,9 @@ function articleSectionId(index) {
 }
 
 function renderArticleToc(article) {
-  return `<nav class="intl-article-toc" aria-label="Table of contents">
-            <h2>Table of contents</h2>
+  const labels = article.labels || ARTICLE_LABELS.en;
+  return `<nav class="intl-article-toc" aria-label="${escapeHtml(labels.toc)}">
+            <h2>${escapeHtml(labels.toc)}</h2>
             <ol>
                 ${article.sections.map(([heading], index) => `<li><a href="#${articleSectionId(index)}">${escapeHtml(heading)}</a></li>`).join('\n                ')}
             </ol>
@@ -704,29 +962,40 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
 function renderArticle(article, assetVersions, todayStr) {
   const canonical = `https://playpoint-sim.com/${article.file}`;
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
+  const lang = article.lang || 'en';
+  const labels = article.labels || ARTICLE_LABELS.en;
+  const authorName = article.author || 'Katakata';
+  const siteName = article.siteName || 'Play Points Calculator';
+  const ctaHref = article.ctaHref || '/en/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta';
+  const nextLinks = article.nextLinks || [
+    ['/en/status/diamond/', 'Diamond cost calculator'],
+    ['/en/campaign/2x/', '2x promotion calculator'],
+    ['/en/amount/10000/', '10,000 yen reverse estimate'],
+    ['/author/katakata.html', 'Editorial policy']
+  ];
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
     description: article.description,
     url: canonical,
-    inLanguage: 'en',
+    inLanguage: lang,
     datePublished: todayStr,
     dateModified: todayStr,
     image: 'https://playpoint-sim.com/ogp.png',
-    author: { '@type': 'Person', name: 'Katakata', url: 'https://playpoint-sim.com/author/katakata.html' },
-    publisher: { '@type': 'Organization', name: 'Play Points Calculator', url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
+    author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
+    publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${escapeHtml(lang)}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${escapeHtml(article.title)} | Play Points Calculator</title>
+    <title>${escapeHtml(article.title)} | ${escapeHtml(siteName)}</title>
     <meta name="description" content="${escapeHtml(article.description)}">
     <meta name="robots" content="index,follow">
-    <meta name="author" content="Katakata">
+    <meta name="author" content="${escapeHtml(authorName)}">
     <meta name="last-modified" content="${todayStr}">
     <link rel="canonical" href="${canonical}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -736,7 +1005,7 @@ function renderArticle(article, assetVersions, todayStr) {
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
     <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="article">
-    <meta property="og:site_name" content="Play Points Calculator">
+    <meta property="og:site_name" content="${escapeHtml(siteName)}">
     <meta property="og:title" content="${escapeHtml(article.title)}">
     <meta property="og:description" content="${escapeHtml(article.description)}">
     <meta property="og:url" content="${canonical}">
@@ -751,7 +1020,7 @@ ${jsonLd(schema)}
     <div class="hero">
         <span class="hero-badge">${escapeHtml(article.badge || 'International guide')}</span>
         <h1>${escapeHtml(article.h1)}</h1>
-        <p class="hero-meta">Updated ${todayStr} ・ Play Points guide</p>
+        <p class="hero-meta">${escapeHtml(labels.updatedPrefix)} ${todayStr} ・ ${escapeHtml(labels.guideSuffix)}</p>
     </div>
 
     <article class="content">
@@ -767,37 +1036,34 @@ ${jsonLd(schema)}
         </section>`).join('\n        ')}
 
         <div class="cta-box">
-            <h3>Check the numbers without forcing a purchase</h3>
-            <p>Use the calculator as a planning estimate, then confirm the official rule in your local Google Play app.</p>
-            <a class="cta-btn" href="/en/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta">Open the calculator</a>
+            <h3>${escapeHtml(labels.ctaTitle)}</h3>
+            <p>${escapeHtml(labels.ctaBody)}</p>
+            <a class="cta-btn" href="${escapeHtml(ctaHref)}">${escapeHtml(labels.ctaLabel)}</a>
         </div>
 
         <section class="section">
-            <h2>FAQ</h2>
+            <h2>${escapeHtml(labels.faq)}</h2>
             ${article.faq.map(([question, answer]) => `<h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p>`).join('\n            ')}
         </section>
 
         <section class="section related-links-section">
-            <h2>Next step</h2>
+            <h2>${escapeHtml(labels.nextStep)}</h2>
             <ul>
-                <li><a href="/en/status/diamond/">Diamond cost calculator</a></li>
-                <li><a href="/en/campaign/2x/">2x promotion calculator</a></li>
-                <li><a href="/en/amount/10000/">10,000 yen reverse estimate</a></li>
-                <li><a href="/author/katakata.html">Editorial policy</a></li>
+                ${nextLinks.map(([href, text]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(text)}</a></li>`).join('\n                ')}
             </ul>
         </section>
     </article>
 
-    <aside class="author-box" aria-label="Article author">
-        <p class="author-box-label">Article author</p>
-        <p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> - Play Points Calculator editor</p>
-        <p>This guide is written as a practical planning note. Google Play terms, rewards, campaigns, and eligibility can change by country or account, so official Google Play screens should decide the final action.</p>
+    <aside class="author-box" aria-label="${escapeHtml(labels.authorAria)}">
+        <p class="author-box-label">${escapeHtml(labels.authorLabel)}</p>
+        <p class="author-box-name"><a href="/author/katakata.html" rel="author">${escapeHtml(authorName)}</a> - ${escapeHtml(labels.authorNameSuffix)}</p>
+        <p>${escapeHtml(labels.authorBody)}</p>
     </aside>
 
     <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
     <footer class="article-footer">
-        <p><a href="/blog/">Back to guides</a> | <a href="/en/">Calculator top</a></p>
-        <p class="small" style="margin-top: 1rem;">This page is a general guide and calculator entry point. Check Google Play official help and the Google Play app for exact current rules.</p>
+        <p><a href="/blog/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
+        <p class="small" style="margin-top: 1rem;">${escapeHtml(labels.footerNote)}</p>
     </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
@@ -826,7 +1092,7 @@ function getIntlSeoFiles() {
   }
   return [
     ...pages,
-    ...EN_ARTICLES.map(article => article.file)
+    ...INTL_ARTICLES.map(article => article.file)
   ];
 }
 
@@ -838,7 +1104,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
     }
   }
   writeFile(rootDir, 'en/articles/intl-article.css', INTL_ARTICLE_CSS);
-  for (const article of EN_ARTICLES) {
+  for (const article of INTL_ARTICLES) {
     writeFile(rootDir, article.file, renderArticle(article, assetVersions, todayStr));
   }
   console.log(`Generated international SEO pages (${getIntlSeoFiles().length} files).`);

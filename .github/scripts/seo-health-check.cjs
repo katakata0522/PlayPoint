@@ -71,7 +71,7 @@ async function checkSitemap() {
   if (!sitemap.response.ok) throw new Error(`${BASE_URL}/sitemap.xml: HTTP ${sitemap.response.status}`);
   assertIncludes(sitemap.body, '<urlset', 'sitemap.xml: urlset missing');
 
-  const articleUrls = [...sitemap.body.matchAll(/https:\/\/playpoint-sim\.com\/(?:en\/)?articles\/[^<]+\.html/g)]
+  const articleUrls = [...sitemap.body.matchAll(/https:\/\/playpoint-sim\.com\/(?:(?:en|ko|tw)\/)?articles\/[^<]+\.html/g)]
     .map((match) => match[0])
     .filter((url, index, urls) => urls.indexOf(url) === index);
 
