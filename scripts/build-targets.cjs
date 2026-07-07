@@ -34,6 +34,7 @@ const generatedFiles = [
   'index.html',
   ...generatedLocaleFiles,
   ...getIntlSeoFiles(),
+  'en/articles/intl-article.css',
   'feed.xml',
   'atom.xml',
   'sw.js',

@@ -13,6 +13,9 @@ const LOCALES = {
     siteName: 'Play Points Calculator',
     relatedTitle: 'Related guides',
     regionNoteTitle: 'Regional note',
+    lastUpdatedLabel: 'Last updated',
+    referenceLabel: 'Japanese reference page',
+    policyLabel: 'Editorial policy',
     estimateTitle: 'How to read this estimate',
     estimateBody: 'Use the result as a decision helper, not as a reason to spend more immediately. If the number is close to your normal plan, compare the official Google Play conditions and the campaign period. If it is far above your usual spending, waiting or staying at the current level may be the better choice.',
     disclaimer: 'This page provides a planning estimate. Google Play Points terms, eligibility, promotions, and timing can differ by country or account, so check the Google Play app before purchasing.',
@@ -33,6 +36,9 @@ const LOCALES = {
     siteName: 'Play Points 계산기',
     relatedTitle: '함께 확인할 가이드',
     regionNoteTitle: '국가별 확인',
+    lastUpdatedLabel: '업데이트',
+    referenceLabel: '일본어 참고 페이지',
+    policyLabel: '운영 및 검증 방침',
     estimateTitle: '예상치를 읽는 방법',
     estimateBody: '계산 결과는 바로 결제를 늘리기 위한 숫자가 아니라 판단을 돕는 기준입니다. 평소 예정된 결제와 가깝다면 Google Play 앱의 공식 조건과 캠페인 기간을 확인하세요. 평소 소비보다 크다면 기다리거나 현재 등급을 유지하는 선택이 더 나을 수 있습니다.',
     disclaimer: '이 페이지는 계획용 예상치입니다. Google Play Points 조건, 대상 결제, 캠페인, 반영 시점은 국가와 계정에 따라 달라질 수 있으므로 결제 전 Google Play 앱에서 확인하세요.',
@@ -51,6 +57,9 @@ const LOCALES = {
     siteName: 'Play Points 計算機',
     relatedTitle: '相關指南',
     regionNoteTitle: '地區確認',
+    lastUpdatedLabel: '更新日期',
+    referenceLabel: '日文參考頁',
+    policyLabel: '營運與驗證方針',
     estimateTitle: '如何閱讀這個估算',
     estimateBody: '計算結果是用來協助判斷，而不是讓你立刻增加消費。如果金額接近原本計畫的購買，可以再確認 Google Play App 內的官方條件與活動期間；如果遠高於平常消費，等待活動或維持目前等級可能更適合。',
     disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動倍率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
@@ -383,6 +392,157 @@ const EN_ARTICLES = [
   }
 ];
 
+const INTL_ARTICLE_CSS = `* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    --bg: #f5f5f5;
+    --card: #fff;
+    --text: #333;
+    --muted: #666;
+    --accent: #667eea;
+    --accent-light: #f0f4ff;
+    --gold: #ffd43b;
+    --radius: 20px;
+    --hero: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+}
+body {
+    font-family: "Noto Sans", system-ui, sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    color: var(--text);
+    line-height: 1.85;
+}
+.main-card {
+    max-width: 820px;
+    margin: 2rem auto;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+}
+.hero {
+    background: var(--hero);
+    padding: 2.6rem 2rem;
+    text-align: center;
+}
+.hero-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.24);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+.hero h1 {
+    color: #fff;
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.45;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+}
+.hero-meta {
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.9rem;
+}
+.content { padding: 2rem; }
+.intro {
+    font-size: 1.05rem;
+    text-align: center;
+    padding: 1.4rem;
+    background: var(--accent-light);
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+}
+.intl-article-toc {
+    margin: 0 0 2rem;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+.intl-article-toc h2 {
+    margin: 0 0 0.7rem;
+    border: 0;
+    color: #111827;
+    font-size: 1rem;
+}
+.intl-article-toc ol {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+}
+.intl-article-toc li {
+    margin: 0.35rem 0;
+}
+.intl-article-toc a {
+    display: inline;
+    min-height: 0;
+    line-height: 1.55;
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: none;
+}
+.section { margin-bottom: 2.3rem; }
+.section h2 {
+    font-size: 1.2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--accent-light);
+}
+.section p { margin-bottom: 1rem; }
+.section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
+.section li { margin-bottom: 0.4rem; }
+.cta-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: #fff;
+    margin: 2rem 0;
+}
+.cta-box h3 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+.cta-box p { opacity: 0.92; margin-bottom: 1.4rem; }
+.cta-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: #333;
+    padding: 1rem 2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 800;
+}
+.author-box {
+    margin: 0 2rem 1.5rem;
+    padding: 1.3rem 1.5rem;
+    background: #f8f9fa;
+    border-radius: 16px;
+    color: var(--muted);
+}
+.author-box-label { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
+.author-box-name { color: var(--text); font-weight: 700; margin: 0.25rem 0; }
+.article-footer {
+    padding: 1.5rem 2rem;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+    font-size: 0.88rem;
+    color: var(--muted);
+}
+.article-footer a,
+.author-box a,
+.related-links-section a { color: var(--accent); text-decoration: none; }
+.small { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 600px) {
+    .main-card { margin: 1rem; border-radius: 16px; }
+    .hero { padding: 2rem 1.4rem; }
+    .hero h1 { font-size: 1.35rem; }
+    .content { padding: 1.5rem; }
+    .author-box { margin: 0 1.5rem 1.5rem; }
+}
+`;
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -400,6 +560,19 @@ function renderParagraphs(body) {
   return paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('\n');
 }
 
+function articleSectionId(index) {
+  return `section-${index + 1}`;
+}
+
+function renderArticleToc(article) {
+  return `<nav class="intl-article-toc" aria-label="Table of contents">
+            <h2>Table of contents</h2>
+            <ol>
+                ${article.sections.map(([heading], index) => `<li><a href="#${articleSectionId(index)}">${escapeHtml(heading)}</a></li>`).join('\n                ')}
+            </ol>
+        </nav>`;
+}
+
 function pageUrl(locale, slug) {
   return `https://playpoint-sim.com/${locale}/${slug}/`;
 }
@@ -411,9 +584,9 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
   const canonical = pageUrl(localeKey, page.slug);
   const calcHref = `/${localeKey}/?mode=${page.mode}&${page.query}&utm_source=intl_lp&utm_medium=internal&utm_campaign=${page.campaign}`;
   const related = [
-    [page.jaPath, 'Japanese reference page'],
+    [page.jaPath, locale.referenceLabel],
     ...locale.articles,
-    ['/author/katakata.html', 'Editorial policy']
+    ['/author/katakata.html', locale.policyLabel]
   ];
   const schemas = [
     {
@@ -487,7 +660,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
         <h1>${escapeHtml(content.h1)}</h1>
         <p class="lp-lead">${escapeHtml(content.lead)}</p>
         <div class="lp-trust-line">
-            <span>Last updated: ${todayStr}</span>
+            <span>${escapeHtml(locale.lastUpdatedLabel)}: ${todayStr}</span>
             <span>${escapeHtml(locale.siteName)}</span>
             <span>${escapeHtml(locale.author)}</span>
         </div>
@@ -560,129 +733,8 @@ function renderArticle(article, assetVersions, todayStr) {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --bg: #f5f5f5;
-            --card: #fff;
-            --text: #333;
-            --muted: #666;
-            --accent: #667eea;
-            --accent-light: #f0f4ff;
-            --gold: #ffd43b;
-            --radius: 20px;
-            --hero: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-        }
-        body {
-            font-family: "Noto Sans", system-ui, sans-serif;
-            background: var(--bg);
-            min-height: 100vh;
-            color: var(--text);
-            line-height: 1.85;
-        }
-        .main-card {
-            max-width: 820px;
-            margin: 2rem auto;
-            background: var(--card);
-            border-radius: var(--radius);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
-            overflow: hidden;
-        }
-        .hero {
-            background: var(--hero);
-            padding: 2.6rem 2rem;
-            text-align: center;
-        }
-        .hero-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.24);
-            color: #fff;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-        .hero h1 {
-            color: #fff;
-            font-size: 1.7rem;
-            font-weight: 800;
-            line-height: 1.45;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
-        }
-        .hero-meta {
-            margin-top: 1rem;
-            color: rgba(255, 255, 255, 0.92);
-            font-size: 0.9rem;
-        }
-        .content { padding: 2rem; }
-        .intro {
-            font-size: 1.05rem;
-            text-align: center;
-            padding: 1.4rem;
-            background: var(--accent-light);
-            border-radius: var(--radius);
-            margin-bottom: 2rem;
-        }
-        .section { margin-bottom: 2.3rem; }
-        .section h2 {
-            font-size: 1.2rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--accent-light);
-        }
-        .section p { margin-bottom: 1rem; }
-        .section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
-        .section li { margin-bottom: 0.4rem; }
-        .cta-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: var(--radius);
-            padding: 2rem;
-            text-align: center;
-            color: #fff;
-            margin: 2rem 0;
-        }
-        .cta-box h3 { font-size: 1.2rem; margin-bottom: 0.6rem; }
-        .cta-box p { opacity: 0.92; margin-bottom: 1.4rem; }
-        .cta-btn {
-            display: inline-block;
-            background: var(--gold);
-            color: #333;
-            padding: 1rem 2rem;
-            border-radius: 999px;
-            text-decoration: none;
-            font-weight: 800;
-        }
-        .author-box {
-            margin: 0 2rem 1.5rem;
-            padding: 1.3rem 1.5rem;
-            background: #f8f9fa;
-            border-radius: 16px;
-            color: var(--muted);
-        }
-        .author-box-label { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
-        .author-box-name { color: var(--text); font-weight: 700; margin: 0.25rem 0; }
-        .article-footer {
-            padding: 1.5rem 2rem;
-            background: #f8f9fa;
-            border-top: 1px solid #eee;
-            font-size: 0.88rem;
-            color: var(--muted);
-        }
-        .article-footer a,
-        .author-box a,
-        .related-links-section a { color: var(--accent); text-decoration: none; }
-        .small { font-size: 0.85rem; color: var(--muted); }
-        @media (max-width: 600px) {
-            .main-card { margin: 1rem; border-radius: 16px; }
-            .hero { padding: 2rem 1.4rem; }
-            .hero h1 { font-size: 1.35rem; }
-            .content { padding: 1.5rem; }
-            .author-box { margin: 0 1.5rem 1.5rem; }
-        }
-    </style>
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
+    <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Play Points Calculator">
     <meta property="og:title" content="${escapeHtml(article.title)}">
@@ -707,8 +759,10 @@ ${jsonLd(schema)}
             ${escapeHtml(article.intro || article.lead)}
         </div>
 
-        ${article.sections.map(([heading, body]) => `<section class="section">
-            <h2>${escapeHtml(heading)}</h2>
+        ${renderArticleToc(article)}
+
+        ${article.sections.map(([heading, body], index) => `<section class="section">
+            <h2 id="${articleSectionId(index)}">${escapeHtml(heading)}</h2>
             ${renderParagraphs(body)}
         </section>`).join('\n        ')}
 
@@ -783,6 +837,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
       writeFile(rootDir, file, renderSeoPage(localeKey, pageKey, assetVersions, todayStr));
     }
   }
+  writeFile(rootDir, 'en/articles/intl-article.css', INTL_ARTICLE_CSS);
   for (const article of EN_ARTICLES) {
     writeFile(rootDir, article.file, renderArticle(article, assetVersions, todayStr));
   }
