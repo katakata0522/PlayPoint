@@ -13,6 +13,8 @@ const LOCALES = {
     siteName: 'Play Points Calculator',
     relatedTitle: 'Related guides',
     regionNoteTitle: 'Regional note',
+    estimateTitle: 'How to read this estimate',
+    estimateBody: 'Use the result as a decision helper, not as a reason to spend more immediately. If the number is close to your normal plan, compare the official Google Play conditions and the campaign period. If it is far above your usual spending, waiting or staying at the current level may be the better choice.',
     disclaimer: 'This page provides a planning estimate. Google Play Points terms, eligibility, promotions, and timing can differ by country or account, so check the Google Play app before purchasing.',
     articles: [
       ['/en/articles/google-play-points-reflection-timing.html', 'When do Google Play Points appear?'],
@@ -31,11 +33,13 @@ const LOCALES = {
     siteName: 'Play Points 계산기',
     relatedTitle: '함께 확인할 가이드',
     regionNoteTitle: '국가별 확인',
+    estimateTitle: '예상치를 읽는 방법',
+    estimateBody: '계산 결과는 바로 결제를 늘리기 위한 숫자가 아니라 판단을 돕는 기준입니다. 평소 예정된 결제와 가깝다면 Google Play 앱의 공식 조건과 캠페인 기간을 확인하세요. 평소 소비보다 크다면 기다리거나 현재 등급을 유지하는 선택이 더 나을 수 있습니다.',
     disclaimer: '이 페이지는 계획용 예상치입니다. Google Play Points 조건, 대상 결제, 캠페인, 반영 시점은 국가와 계정에 따라 달라질 수 있으므로 결제 전 Google Play 앱에서 확인하세요.',
     articles: [
-      ['/en/articles/google-play-points-reflection-timing.html', 'When do Google Play Points appear?'],
-      ['/en/articles/google-play-points-levels.html', 'Google Play Points levels explained'],
-      ['/en/articles/google-play-points-gift-cards.html', 'Do gift cards earn Play Points?']
+      ['/en/articles/google-play-points-reflection-timing.html', 'Play Points 반영 시점 확인'],
+      ['/en/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
+      ['/en/articles/google-play-points-gift-cards.html', '기프트카드와 포인트 조건']
     ]
   },
   tw: {
@@ -47,11 +51,13 @@ const LOCALES = {
     siteName: 'Play Points 計算機',
     relatedTitle: '相關指南',
     regionNoteTitle: '地區確認',
+    estimateTitle: '如何閱讀這個估算',
+    estimateBody: '計算結果是用來協助判斷，而不是讓你立刻增加消費。如果金額接近原本計畫的購買，可以再確認 Google Play App 內的官方條件與活動期間；如果遠高於平常消費，等待活動或維持目前等級可能更適合。',
     disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動倍率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
     articles: [
-      ['/en/articles/google-play-points-reflection-timing.html', 'When do Google Play Points appear?'],
-      ['/en/articles/google-play-points-levels.html', 'Google Play Points levels explained'],
-      ['/en/articles/google-play-points-gift-cards.html', 'Do gift cards earn Play Points?']
+      ['/en/articles/google-play-points-reflection-timing.html', 'Play Points 回饋時間確認'],
+      ['/en/articles/google-play-points-levels.html', 'Play Points 等級說明'],
+      ['/en/articles/google-play-points-gift-cards.html', '禮物卡與點數條件']
     ]
   }
 };
@@ -275,16 +281,20 @@ const EN_ARTICLES = [
     title: 'When do Google Play Points appear?',
     description: 'A practical guide to Google Play Points reflection timing, pending points, and what to check before assuming points are missing.',
     h1: 'When do Google Play Points appear?',
-    lead: 'Most Play Points confusion starts with timing. Points may appear quickly for some purchases, while campaigns, subscriptions, refunds, account differences, and regional rules can add delay.',
+    badge: 'Timing check',
+    lead: 'Most Play Points confusion starts with timing. A balance can look wrong simply because the purchase, campaign bonus, or account history has not settled in the way you expected.',
+    intro: 'If you paid in Google Play and the point balance did not move, it is easy to feel that something broke. In many cases, the calmer first step is to separate three things: the purchase record, the Play Points activity view, and the Google account that made the purchase. This guide keeps the decision practical so you can tell whether you should wait, check another screen, or prepare details for support.',
     sections: [
-      ['Start with the purchase record', 'Check the Google Play purchase history and confirm that the purchase was made on the same Google account where you expect Play Points to appear. If you use multiple accounts, this is the most common source of mismatch.'],
-      ['Campaign timing can differ', 'Bonus points from promotions may not follow the same timing as regular earning. Read the campaign page carefully, especially for caps, eligible apps, and delayed reward delivery.'],
-      ['Refunds and pending payments', 'If a payment is pending, cancelled, refunded, or changed by the store, the points result can change later. Do not treat an early estimate as final until the transaction is complete.'],
-      ['Country and account differences', 'Availability and timing can vary by country. Japan, the US, Korea, and Taiwan may not expose identical campaigns or reward options at the same time.']
+      ['Start with the purchase record', ['Open the Google Play purchase history first. Confirm that the order is completed, not pending, cancelled, refunded, or attached to a different Google account. This sounds basic, but it prevents the most frustrating mistake: looking at the right Play Points screen for the wrong purchase account.', 'If you use a work profile, family device, or more than one Gmail account, check the account icon before judging the balance. Play Points are account-based, so a purchase on one account will not quietly move to another one.']],
+      ['Check regular points and bonus points separately', ['Regular earning and campaign bonus points can feel like one result, but they may not be shown or processed in the same way. When a campaign is involved, compare the normal point estimate first, then review the campaign details for app eligibility, dates, payment method, and any cap.', 'This is also where the calculator helps. A 1x estimate gives you a calm baseline. If the 2x or 3x result is very different, you know that the missing part may be the bonus condition rather than the whole purchase.']],
+      ['Do not rush if the transaction is still changing', ['A pending payment, refund, subscription update, or store adjustment can change the point result later. If the order itself is not final, the point balance is not a reliable final answer yet.', 'Before contacting support, take a screenshot only if it hides private information such as email address, payment details, or order numbers. Keep those details for the official support form, not for public posts.']],
+      ['Country and account differences matter', ['Play Points availability, campaigns, rewards, and timing can differ by country or account. A guide written for Japan or a US-style English page can explain the checking method, but the local Google Play app should decide the final rule.', 'For that reason, this page avoids promising an exact waiting time. The practical goal is to help you narrow the cause without buying more, switching accounts repeatedly, or assuming a campaign applied when it did not.']],
+      ['When to move from waiting to action', ['If the purchase is completed, the account is correct, the campaign conditions clearly match, and the activity view still does not show the expected result after a reasonable wait, collect the order date, item name, account, and campaign name. That gives support a cleaner trail than a message that only says the points are missing.']]
     ],
     faq: [
       ['Should I contact support immediately?', 'Wait until the normal purchase and campaign conditions are clear. If the account, purchase, and eligibility all match but points still do not appear, use Google Play support.'],
-      ['Can the calculator force points to appear?', 'No. The calculator only estimates points from your inputs. It cannot read or change your Google account.']
+      ['Can the calculator force points to appear?', 'No. The calculator only estimates points from your inputs. It cannot read or change your Google account.'],
+      ['Why does a friend see points faster than I do?', 'The purchase type, account, country, and campaign can differ. Compare your own purchase history rather than another person\'s timing.']
     ]
   },
   {
@@ -292,16 +302,20 @@ const EN_ARTICLES = [
     title: 'Google Play Points not showing up: what to check',
     description: 'Checklist for Google Play Points not showing up, including account mismatch, eligible purchases, campaign rules, refunds, and regional differences.',
     h1: 'Google Play Points not showing up: what to check',
-    lead: 'If Play Points do not show up, avoid guessing from the final balance only. Work through account, purchase, eligibility, timing, and region in that order.',
+    badge: 'Troubleshooting',
+    lead: 'If Play Points do not show up, avoid judging only from the final balance. Work through account, purchase, eligibility, timing, and region in that order.',
+    intro: 'When points seem missing, the problem is often not one big mystery. It is usually a small mismatch somewhere in the route from purchase to point history. This checklist keeps the order simple, so you do not spend time refreshing the same screen while the real issue is a second account, a campaign condition, or a purchase that was never eligible.',
     sections: [
-      ['1. Confirm the Google account', 'Open Google Play with the same account used for the purchase. Points are not combined across accounts, and family or secondary accounts can make the balance look wrong.'],
-      ['2. Check whether the purchase was eligible', 'Not every payment pattern is guaranteed to earn points in the way users expect. Promotional credit, gift-card flows, subscriptions, and refunds need extra care.'],
-      ['3. Read the campaign details', 'If you expected bonus points, confirm that the app, period, country, payment method, and cap matched the campaign. A headline multiplier is not the full rule.'],
-      ['4. Compare with a simple estimate', 'Use the calculator to estimate what should happen under 1x and under the campaign multiplier, then compare that with the official Google Play activity view.']
+      ['1. Confirm the Google account', ['Open Google Play and check the account icon before anything else. Points are not pooled across accounts, so a family device, old phone, or secondary Gmail account can make the balance look wrong even when the purchase itself succeeded.', 'If the purchase receipt is in another account, do not keep changing calculator settings to make the number match. The right next step is to review that account\'s Play Points activity.']],
+      ['2. Check whether the purchase was eligible', ['Not every payment pattern behaves the way users expect. Promotional credit, subscriptions, gift-card-funded purchases, trial conversions, refunds, and partial cancellations all deserve a closer look.', 'Read the purchase details and the local Play Points terms together. If the transaction is not eligible, a perfect estimate still will not create points.']],
+      ['3. Separate normal points from campaign points', ['A campaign headline such as 2x or 3x is only the front door. The actual rule can include selected apps, a date range, country availability, payment method restrictions, maximum bonus points, or a requirement to activate the offer first.', 'If normal points appear but the bonus does not, the issue may be the campaign condition rather than a full tracking failure. That distinction makes your next action much clearer.']],
+      ['4. Compare with a simple estimate', ['Use the calculator at 1x first, then run the same amount with the campaign multiplier that you believe applied. The gap between those two results helps you explain the situation without relying on memory.', 'The calculator is not an official account checker. Its job is to turn your assumptions into a number, then let you compare that number with Google Play\'s activity screen.']],
+      ['5. Prepare support details only after narrowing the cause', ['If everything still looks correct, collect the purchase date, order status, account, item name, and campaign name. Avoid posting order numbers or payment details publicly. A short, organized support message is more useful than a long explanation built from guesses.']]
     ],
     faq: [
       ['Can points be transferred from another account?', 'No. Play Points are account-based.'],
-      ['Does a missing bonus mean the normal points are wrong?', 'Not necessarily. Bonus timing and regular points can be handled differently.']
+      ['Does a missing bonus mean the normal points are wrong?', 'Not necessarily. Bonus timing and regular points can be handled differently.'],
+      ['Should I buy again to test it?', 'No. Do not create another purchase just to test point reflection. Confirm the existing purchase and campaign conditions first.']
     ]
   },
   {
@@ -309,16 +323,20 @@ const EN_ARTICLES = [
     title: 'Google Play Points levels explained',
     description: 'Understand Google Play Points levels, what to compare before chasing Platinum or Diamond, and how country differences affect planning.',
     h1: 'Google Play Points levels explained',
+    badge: 'Level planning',
     lead: 'Google Play Points levels are useful only when the rewards match your real usage. Before aiming for Platinum or Diamond, compare the missing points, expected spending, and reward value.',
+    intro: 'Status can make Play Points feel like a game, but the useful question is more ordinary: will the next level actually help the way you spend? This page explains the levels as a planning tool, not as a reason to force extra purchases. Keep your current balance, missing points, and normal spending pace in view while you compare.',
     sections: [
-      ['Levels are planning categories', 'Bronze, Silver, Gold, Platinum, and Diamond help frame earning rates and benefits, but the exact experience can vary by region and account.'],
-      ['Do not chase status blindly', 'If the spending needed for the next level is much higher than your normal purchases, the reward may not justify the extra cost.'],
-      ['Use missing points, not total points', 'For planning, the key number is how many points remain until the target level. The calculator is designed around that missing-point approach.'],
-      ['International users should verify local rules', 'The site supports Japan, US-style English guidance, Korean, and Traditional Chinese pages, but official Play terms in your local app should decide the final action.']
+      ['Levels are planning categories', ['Bronze, Silver, Gold, Platinum, and Diamond help frame earning rates and benefits. They are useful labels, but they are not the same as guaranteed value. Rewards, campaigns, and visibility can differ by country or account.', 'Think of each level as a planning category. It tells you what to compare next, not what you must buy today.']],
+      ['Use missing points, not lifetime points', ['For planning, the key number is how many points remain until the target level. Lifetime points, current balance, and points already spent can make the screen feel confusing if you copy the wrong number into a calculator.', 'The PlayPoint calculator is built around the missing-point approach. Enter the points you still need, then compare the amount under your current status and multiplier.']],
+      ['Check whether the next level fits your spending rhythm', ['A level can be attractive on paper and still be a poor target if the required spending is far above your normal pace. Weekly and monthly views are helpful because they turn one large number into a habit-sized number.', 'If the monthly amount feels uncomfortable, that is useful information. It may mean waiting for a planned purchase or accepting the current level is better than chasing a badge.']],
+      ['Campaigns can change the timing, not the principle', ['A 2x or 3x campaign can make a target easier, but only when the purchase is already useful and eligible. A campaign should move planned spending into a better window, not invent spending that you would not otherwise make.', 'Always compare the 1x estimate first. If the target makes no sense at 1x and only barely works under a narrow campaign, read the campaign details carefully before deciding.']],
+      ['International users should verify local rules', ['The site provides Japanese pages, English guidance, Korean pages, and Traditional Chinese pages, but the official Google Play app in your country remains the source of truth. Use this guide for structure and the app for the final rule.', 'That balance keeps the page useful overseas without pretending that every country has exactly the same rewards, campaigns, or status experience.']]
     ],
     faq: [
       ['Is Diamond better than Platinum?', 'It can be, but only if you actually use the added rewards and can maintain the level without forced spending.'],
-      ['Can the same plan work in every country?', 'No. Country-specific offers and reward availability can differ.']
+      ['Can the same plan work in every country?', 'No. Country-specific offers and reward availability can differ.'],
+      ['What should I calculate first?', 'Calculate the nearer level first. If that already requires too much spending, a higher level is unlikely to be practical.']
     ]
   },
   {
@@ -326,16 +344,20 @@ const EN_ARTICLES = [
     title: 'How much to reach Platinum or Diamond?',
     description: 'Estimate the spending needed to reach Google Play Points Platinum or Diamond and decide whether waiting for a promotion makes sense.',
     h1: 'How much to reach Platinum or Diamond?',
+    badge: 'Cost estimate',
     lead: 'The cost to reach Platinum or Diamond depends on current status, missing points, multiplier, and whether purchases are eligible. A single global number is usually misleading.',
+    intro: 'Platinum and Diamond sound like clear goals, but the cost changes quickly once you add status rate, remaining points, campaign multipliers, and local rules. Instead of looking for one universal amount, build the estimate in layers. That makes it easier to see whether a promotion helps or whether the target is simply outside your normal spending.',
     sections: [
-      ['Define the target', 'Platinum and Diamond planning should start with one target at a time. Mixing status progress, campaign bonuses, and gift-card discounts can make the decision harder.'],
-      ['Estimate at 1x first', 'A 1x estimate gives you the baseline. Then test 2x or 3x to see whether waiting for a campaign changes the decision.'],
-      ['Check the spending rhythm', 'Monthly and weekly estimates matter. If the required pace is far from your normal usage, the level is probably not worth forcing.'],
-      ['Use country-aware caution', 'The same calculation pattern works globally, but official earning rates and promotion rules may differ by country.']
+      ['Define one target at a time', ['Start with either Platinum or Diamond, not both. If you mix status progress, campaign bonuses, gift-card discounts, and reward value in one step, the decision becomes noisy before the estimate is even useful.', 'A clean target is simple: current status, missing points, normal earning rate, and the multiplier you can honestly use.']],
+      ['Estimate at 1x before checking campaigns', ['A 1x estimate gives you the baseline cost. It may look higher than you hoped, but it is the number that tells you whether the goal is close in normal conditions.', 'After that, test 2x or 3x only if a real campaign applies to the purchase you already planned. This prevents the common mistake of treating a campaign headline as a universal discount.']],
+      ['Translate the result into weekly or monthly pace', ['A total amount can feel abstract. Break it into the remaining weeks or months of the status period and ask whether that pace matches your actual use of apps, games, subscriptions, or in-app purchases.', 'If the pace is much higher than usual, the level may not be worth forcing. Keeping money for purchases you genuinely want can be better than buying only to reach a status label.']],
+      ['Gift-card discounts and Play Points are separate checks', ['A discounted gift card can reduce your effective cost, but it does not automatically prove that points or campaign bonuses apply in the way you expect. Treat savings and point eligibility as two separate columns.', 'This is especially important for international users because gift-card rules, payment flows, and campaign terms can vary by country.']],
+      ['Use country-aware caution before deciding', ['The calculation pattern works globally, but official earning rates, reward availability, and promotion rules may differ by country or account. The calculator helps with planning; the Google Play app decides the final rule.', 'If the estimate only works under a narrow campaign or uncertain gift-card flow, wait until the official conditions are clear before spending.']]
     ],
     faq: [
       ['Should I aim for Platinum first?', 'Usually yes. Estimate the nearer level first, then decide whether Diamond still makes sense.'],
-      ['Can gift-card discounts change the result?', 'They can change your effective cost, but Play Points eligibility still depends on the local rule.']
+      ['Can gift-card discounts change the result?', 'They can change your effective cost, but Play Points eligibility still depends on the local rule.'],
+      ['Is there one official global cost for Diamond?', 'No. The useful estimate depends on your account, country, missing points, status, and eligible purchases.']
     ]
   },
   {
@@ -343,16 +365,20 @@ const EN_ARTICLES = [
     title: 'Do gift cards earn Google Play Points?',
     description: 'Understand how Google Play gift cards can affect Play Points planning, why purchase and redemption timing matter, and what to verify by country.',
     h1: 'Do gift cards earn Google Play Points?',
+    badge: 'Gift-card planning',
     lead: 'Gift cards are often used to reduce the effective cost of app purchases, but Play Points eligibility can depend on how and when value is used. Treat gift-card savings and points earning as separate checks.',
+    intro: 'Gift cards are attractive because the saving is easy to understand: buy value at a discount, then use it later. Play Points are less simple. The point question depends on the local rule, the purchase flow, and whether a campaign treats that payment method as eligible. This guide keeps the two ideas separate so a cheap card does not turn into an unnecessary purchase.',
     sections: [
-      ['Separate discount from points', 'Buying a discounted gift card may lower your real cost. That does not automatically mean points are earned at the card purchase moment.'],
-      ['Check redemption and purchase flow', 'Some users expect points when buying the card, while others expect points when spending the balance. The local Google Play rule decides what happens.'],
-      ['Campaign combinations need care', 'A 2x or 3x campaign may have conditions that do not match every gift-card-funded purchase. Read the campaign details before assuming the multiplier applies.'],
-      ['Compare effective cost safely', 'Use the calculator for points, and separately note any gift-card discount. Avoid increasing spending only because a card looks cheaper.']
+      ['Separate discount from points', ['A discounted gift card can lower your real cost, but that does not automatically mean Play Points are earned when the card is purchased. The saving and the point earning are two different questions.', 'Keep a simple note: card discount on one side, Play Points estimate on the other. If either side is uncertain, do not combine them into one optimistic result.']],
+      ['Check redemption and purchase flow', ['Some users expect points when buying the card. Others expect points when spending the balance inside Google Play. The local Google Play rule and the actual payment flow decide what happens.', 'Look at the activity screen after an eligible purchase rather than assuming the card itself created points. This is especially important if the card was bought outside Google Play.']],
+      ['Campaign combinations need care', ['A 2x or 3x campaign may include conditions that do not match every gift-card-funded purchase. It can depend on app, date, country, payment method, activation, or a bonus cap.', 'Before you treat a gift card as part of a status strategy, read the campaign details and compare the result at 1x. If the plan only works because of a bonus that may not apply, the risk is too high.']],
+      ['Compare effective cost safely', ['Use the calculator for the Play Points side, then separately note the gift-card discount as a cost-saving side note. This keeps the math honest and makes it easier to explain later.', 'For example, a discounted card may still be useful even if it does not improve status progress. The reverse can also be true: a point campaign may be useful without making a gift card the best payment choice.']],
+      ['Avoid buying value you do not plan to use', ['The safest gift-card plan starts with a purchase you already wanted. If you buy a larger card only because it looks cheaper or might help a status goal, you may lock money into a balance that does not create enough value.', 'For international users, also check whether the card region, account region, and Google Play country settings match. Region mismatch can create practical problems that a calculator cannot solve.']]
     ],
     faq: [
       ['Are gift cards always better?', 'No. They are useful only when the discount, eligibility, and your planned purchase all align.'],
-      ['Can I use gift cards with promotions?', 'Sometimes, but campaign conditions vary. Check the local Google Play campaign page.']
+      ['Can I use gift cards with promotions?', 'Sometimes, but campaign conditions vary. Check the local Google Play campaign page.'],
+      ['Should I count gift-card savings as Play Points?', 'No. Treat the discount as cost savings and Play Points as a separate earning estimate.']
     ]
   }
 ];
@@ -367,6 +393,11 @@ function escapeHtml(value) {
 
 function jsonLd(data) {
   return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
+}
+
+function renderParagraphs(body) {
+  const paragraphs = Array.isArray(body) ? body : [body];
+  return paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join('\n');
 }
 
 function pageUrl(locale, slug) {
@@ -471,11 +502,13 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
             </div>
         </div>
     </section>
+    ${content.sections.map(([heading, body]) => `<section class="section">
+        <h2>${escapeHtml(heading)}</h2>
+        ${renderParagraphs(body)}
+    </section>`).join('\n    ')}
     <section class="section">
-        <h2>${escapeHtml(locale.regionNoteTitle)}</h2>
-        <div class="lp-mini-grid">
-            ${content.sections.map(([heading, body]) => `<div><h3>${escapeHtml(heading)}</h3><p>${escapeHtml(body)}</p></div>`).join('\n            ')}
-        </div>
+        <h2>${escapeHtml(locale.estimateTitle)}</h2>
+        <p>${escapeHtml(locale.estimateBody)}</p>
     </section>
     <section class="section">
         <h2>${escapeHtml(locale.relatedTitle)}</h2>
@@ -497,6 +530,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
 
 function renderArticle(article, assetVersions, todayStr) {
   const canonical = `https://playpoint-sim.com/${article.file}`;
+  const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -506,8 +540,9 @@ function renderArticle(article, assetVersions, todayStr) {
     inLanguage: 'en',
     datePublished: todayStr,
     dateModified: todayStr,
+    image: 'https://playpoint-sim.com/ogp.png',
     author: { '@type': 'Person', name: 'Katakata', url: 'https://playpoint-sim.com/author/katakata.html' },
-    publisher: { '@type': 'Organization', name: 'Play Points Calculator', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/ogp.png' } }
+    publisher: { '@type': 'Organization', name: 'Play Points Calculator', url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
 
   return `<!DOCTYPE html>
@@ -522,7 +557,132 @@ function renderArticle(article, assetVersions, todayStr) {
     <meta name="last-modified" content="${todayStr}">
     <link rel="canonical" href="${canonical}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/style.css?v=${assetVersions.cssVersion}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f5f5f5;
+            --card: #fff;
+            --text: #333;
+            --muted: #666;
+            --accent: #667eea;
+            --accent-light: #f0f4ff;
+            --gold: #ffd43b;
+            --radius: 20px;
+            --hero: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+        }
+        body {
+            font-family: "Noto Sans", system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.85;
+        }
+        .main-card {
+            max-width: 820px;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+            overflow: hidden;
+        }
+        .hero {
+            background: var(--hero);
+            padding: 2.6rem 2rem;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.24);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .hero h1 {
+            color: #fff;
+            font-size: 1.7rem;
+            font-weight: 800;
+            line-height: 1.45;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+        }
+        .hero-meta {
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 0.9rem;
+        }
+        .content { padding: 2rem; }
+        .intro {
+            font-size: 1.05rem;
+            text-align: center;
+            padding: 1.4rem;
+            background: var(--accent-light);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+        }
+        .section { margin-bottom: 2.3rem; }
+        .section h2 {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent-light);
+        }
+        .section p { margin-bottom: 1rem; }
+        .section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.4rem; }
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            margin: 2rem 0;
+        }
+        .cta-box h3 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+        .cta-box p { opacity: 0.92; margin-bottom: 1.4rem; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: #333;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 800;
+        }
+        .author-box {
+            margin: 0 2rem 1.5rem;
+            padding: 1.3rem 1.5rem;
+            background: #f8f9fa;
+            border-radius: 16px;
+            color: var(--muted);
+        }
+        .author-box-label { font-size: 0.82rem; font-weight: 700; color: var(--accent); }
+        .author-box-name { color: var(--text); font-weight: 700; margin: 0.25rem 0; }
+        .article-footer {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+        .article-footer a,
+        .author-box a,
+        .related-links-section a { color: var(--accent); text-decoration: none; }
+        .small { font-size: 0.85rem; color: var(--muted); }
+        @media (max-width: 600px) {
+            .main-card { margin: 1rem; border-radius: 16px; }
+            .hero { padding: 2rem 1.4rem; }
+            .hero h1 { font-size: 1.35rem; }
+            .content { padding: 1.5rem; }
+            .author-box { margin: 0 1.5rem 1.5rem; }
+        }
+    </style>
+    <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Play Points Calculator">
     <meta property="og:title" content="${escapeHtml(article.title)}">
@@ -535,28 +695,37 @@ ${jsonLd(schema)}
     </script>
 </head>
 <body>
-<main class="calculator-wrapper lp-wrapper">
-    <nav class="top-bar" aria-label="Site links">
-        <a href="/en/">Calculator</a>
-        <a href="/blog/">Guides</a>
-    </nav>
-    <article class="section">
-        <p class="lp-eyebrow">International Play Points guide</p>
+<main class="main-card">
+    <div class="hero">
+        <span class="hero-badge">${escapeHtml(article.badge || 'International guide')}</span>
         <h1>${escapeHtml(article.h1)}</h1>
-        <p class="lp-lead">${escapeHtml(article.lead)}</p>
-        <div class="lp-trust-line">
-            <span>Last updated: ${todayStr}</span>
-            <span>Country-aware planning</span>
-            <span>Author: Katakata</span>
+        <p class="hero-meta">Updated ${todayStr} ・ Play Points guide</p>
+    </div>
+
+    <article class="content">
+        <div class="intro">
+            ${escapeHtml(article.intro || article.lead)}
         </div>
-        ${article.sections.map(([heading, body]) => `<section class="section"><h2>${escapeHtml(heading)}</h2><p>${escapeHtml(body)}</p></section>`).join('\n        ')}
-        <section class="section lp-faq">
-            <h2>FAQ</h2>
-            ${article.faq.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('\n            ')}
-        </section>
+
+        ${article.sections.map(([heading, body]) => `<section class="section">
+            <h2>${escapeHtml(heading)}</h2>
+            ${renderParagraphs(body)}
+        </section>`).join('\n        ')}
+
+        <div class="cta-box">
+            <h3>Check the numbers without forcing a purchase</h3>
+            <p>Use the calculator as a planning estimate, then confirm the official rule in your local Google Play app.</p>
+            <a class="cta-btn" href="/en/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta">Open the calculator</a>
+        </div>
+
         <section class="section">
+            <h2>FAQ</h2>
+            ${article.faq.map(([question, answer]) => `<h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p>`).join('\n            ')}
+        </section>
+
+        <section class="section related-links-section">
             <h2>Next step</h2>
-            <ul class="lp-related-list">
+            <ul>
                 <li><a href="/en/status/diamond/">Diamond cost calculator</a></li>
                 <li><a href="/en/campaign/2x/">2x promotion calculator</a></li>
                 <li><a href="/en/amount/10000/">10,000 yen reverse estimate</a></li>
@@ -564,6 +733,18 @@ ${jsonLd(schema)}
             </ul>
         </section>
     </article>
+
+    <aside class="author-box" aria-label="Article author">
+        <p class="author-box-label">Article author</p>
+        <p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> - Play Points Calculator editor</p>
+        <p>This guide is written as a practical planning note. Google Play terms, rewards, campaigns, and eligibility can change by country or account, so official Google Play screens should decide the final action.</p>
+    </aside>
+
+    <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+    <footer class="article-footer">
+        <p><a href="/blog/">Back to guides</a> | <a href="/en/">Calculator top</a></p>
+        <p class="small" style="margin-top: 1rem;">This page is a general guide and calculator entry point. Check Google Play official help and the Google Play app for exact current rules.</p>
+    </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
 <script src="/js/third-party.js?v=${assetVersions.thirdPartyVersion}"></script>
