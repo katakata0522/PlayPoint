@@ -1701,6 +1701,40 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
   }
 });
 
+test('海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ', () => {
+  const { getIntlSeoFiles } = require(path.join(root, 'scripts', 'intl-seo-pages.cjs'));
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
+  const files = getIntlSeoFiles();
+
+  assert.strictEqual(files.length, 14);
+  for (const file of files) {
+    const filePath = path.join(root, file);
+    const canonical = `https://playpoint-sim.com/${file.replace(/index\.html$/, '')}`;
+
+    assert.ok(fs.existsSync(filePath), `${file} が生成されていません`);
+    const html = fs.readFileSync(filePath, 'utf8');
+    assert.ok(html.includes('<meta name="robots" content="index,follow">'), `${file} のrobotsがありません`);
+    assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), `${file} のcanonicalが不正です`);
+    assert.ok(html.includes('<meta name="description" content="'), `${file} のdescriptionがありません`);
+    assert.ok(html.includes('application/ld+json'), `${file} の構造化データがありません`);
+    assert.ok(html.includes('/js/intent-tracking.js?v='), `${file} の計測導線がありません`);
+    assert.ok(html.length >= 4000, `${file} の本文量が薄すぎます`);
+    assert.ok(sitemap.includes(`<loc>${canonical}</loc>`), `${file} がsitemap.xmlにありません`);
+
+    const localLinks = [...html.matchAll(/<a\b[^>]*href="(\/[^"#?]*)(?:[?#][^"]*)?"/g)]
+      .map(match => match[1]);
+    for (const href of localLinks) {
+      let relativePath = href.replace(/^\//, '');
+      if (!relativePath || relativePath.endsWith('/')) relativePath += 'index.html';
+      assert.ok(fs.existsSync(path.join(root, relativePath)), `${file} のリンク先が存在しません: ${href}`);
+    }
+  }
+
+  assert.ok(sitemapHtml.includes('International shortcuts'));
+  assert.ok(sitemapHtml.includes('English Play Points guides'));
+});
+
 test('ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される', () => {
   const { PP_STATE, updateBaseRateAndTarget } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';

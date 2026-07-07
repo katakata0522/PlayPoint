@@ -1,5 +1,7 @@
 'use strict';
 
+const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
+
 const generatedLocaleFiles = [
   'en/index.html',
   'ko/index.html',
@@ -31,6 +33,7 @@ const syncedHtmlFiles = [
 const generatedFiles = [
   'index.html',
   ...generatedLocaleFiles,
+  ...getIntlSeoFiles(),
   'feed.xml',
   'atom.xml',
   'sw.js',

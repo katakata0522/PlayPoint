@@ -15,7 +15,16 @@ const pageUrls = [
   `${BASE_URL}/maintenance/diamond/`,
   `${BASE_URL}/campaign/2x/`,
   `${BASE_URL}/campaign/3x/`,
-  `${BASE_URL}/amount/10000/`
+  `${BASE_URL}/amount/10000/`,
+  `${BASE_URL}/en/status/diamond/`,
+  `${BASE_URL}/en/campaign/2x/`,
+  `${BASE_URL}/en/amount/10000/`,
+  `${BASE_URL}/ko/status/diamond/`,
+  `${BASE_URL}/ko/campaign/2x/`,
+  `${BASE_URL}/ko/amount/10000/`,
+  `${BASE_URL}/tw/status/diamond/`,
+  `${BASE_URL}/tw/campaign/2x/`,
+  `${BASE_URL}/tw/amount/10000/`
 ];
 
 function withCacheBuster(url) {
@@ -62,7 +71,7 @@ async function checkSitemap() {
   if (!sitemap.response.ok) throw new Error(`${BASE_URL}/sitemap.xml: HTTP ${sitemap.response.status}`);
   assertIncludes(sitemap.body, '<urlset', 'sitemap.xml: urlset missing');
 
-  const articleUrls = [...sitemap.body.matchAll(/https:\/\/playpoint-sim\.com\/articles\/[^<]+\.html/g)]
+  const articleUrls = [...sitemap.body.matchAll(/https:\/\/playpoint-sim\.com\/(?:en\/)?articles\/[^<]+\.html/g)]
     .map((match) => match[0])
     .filter((url, index, urls) => urls.indexOf(url) === index);
 
@@ -77,7 +86,10 @@ async function checkArticle(url) {
   assertIncludes(body, /<title>[\s\S]*?<\/title>/i, `${url}: article title missing`);
   assertIncludes(body, /<meta\s+name="description"\s+content="[^"]+"/i, `${url}: article description missing`);
   assertIncludes(body, /<link\s+rel="canonical"\s+href="[^"]+"/i, `${url}: article canonical missing`);
-  assertIncludes(body, 'data-ad-client', `${url}: article ad client missing`);
+  assertIncludes(body, /<script\s+type="application\/ld\+json">/i, `${url}: article structured data missing`);
+  if (url.includes(`${BASE_URL}/articles/`)) {
+    assertIncludes(body, 'data-ad-client', `${url}: article ad client missing`);
+  }
 }
 
 async function main() {
