@@ -193,6 +193,55 @@ body[data-blog-theme="dark"] .main-card {
     filter: brightness(0.95);
 }
 
+/* 既存記事のCTAは導線を残しつつ、広告枠ではなく確認メモに近い見た目へ寄せる。 */
+.content .cta-box {
+    margin: 2rem 0;
+    padding: 1.2rem 1.25rem;
+    border: 1px solid #dbe2ea;
+    border-left: 4px solid var(--article-accent);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--article-accent-soft), #ffffff);
+    color: #1f2937;
+    text-align: left;
+}
+
+.content .cta-box h3 {
+    margin: 0 0 0.5rem;
+    color: #111827;
+    font-size: 1.08rem;
+}
+
+.content .cta-box p {
+    margin: 0.45rem 0 0;
+    color: #334155;
+    opacity: 1;
+}
+
+.content .cta-box .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 0.85rem;
+    padding: 0 1rem;
+    border-radius: 8px;
+    background: var(--article-accent-dark);
+    color: #ffffff !important;
+    font-weight: 800;
+    text-decoration: none !important;
+    box-shadow: none;
+}
+
+.content .cta-box .cta-btn:hover {
+    filter: brightness(0.95);
+    transform: none;
+}
+
+.content .cta-box .small a {
+    color: var(--article-accent-dark);
+    font-weight: 700;
+}
+
 /* 小さなテキストリンクもタッチ操作可能な高さを確保する。 */
 .content a,
 .cta-button,
