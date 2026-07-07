@@ -1252,7 +1252,7 @@ test('記事共通CTAは計算機への自然導線と計測文脈を持つ', ()
   assert.ok(articleScript.includes('article_calculator_prompt'));
   assert.ok(articleCss.includes('.article-calculator-prompt'));
   assert.ok(articleCss.includes('.content .cta-box'));
-  assert.ok(articleCss.includes('広告枠ではなく確認メモ'));
+  assert.ok(articleCss.includes('border-left: 4px solid var(--article-accent)') || articleCss.includes('border-left:4px solid var(--article-accent)'));
   assert.ok(articleCss.includes('transform: none;'));
 });
 
