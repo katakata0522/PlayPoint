@@ -1,6 +1,7 @@
 name: Deploy to Xserver
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
