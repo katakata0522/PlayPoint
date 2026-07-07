@@ -536,6 +536,89 @@ body {
     box-shadow: 0 4px 14px var(--accent-glow);
 }
 
+.search-pathways {
+    max-width: 980px;
+    margin: 0 auto 2rem;
+    padding: 0 1.5rem;
+}
+
+.search-pathways-inner {
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+}
+
+.search-pathways-header {
+    margin-bottom: 1rem;
+}
+
+.search-pathways-header h2 {
+    margin: 0 0 0.35rem;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.search-pathways-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.search-pathways-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.search-pathway-card {
+    padding: 1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.search-pathway-card h3 {
+    margin: 0 0 0.45rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.search-pathway-card p {
+    margin: 0 0 0.8rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.7;
+}
+
+.search-pathway-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.search-pathway-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0.45rem 0.7rem;
+    color: var(--accent);
+    background: rgba(88, 166, 255, 0.08);
+    border: 1px solid rgba(88, 166, 255, 0.22);
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+.search-pathway-links a:hover {
+    background: rgba(88, 166, 255, 0.14);
+    border-color: var(--accent);
+}
+
 @media (max-width: 600px) {
     .search-sort-row {
         flex-direction: column;
@@ -565,6 +648,14 @@ body {
         order: 2;
         width: 100%;
         text-align: center;
+    }
+
+    .search-pathways {
+        padding: 0 1rem;
+    }
+
+    .search-pathways-grid {
+        grid-template-columns: 1fr;
     }
 }
 
