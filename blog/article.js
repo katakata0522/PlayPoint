@@ -84,6 +84,82 @@
         content.insertBefore(prompt, content.firstChild);
     }
 
+    function getArticleNextStepCta() {
+        const path = window.location.pathname;
+        if (path.includes('2025-12-25-campaign') || path.includes('2025-12-25-new-year-campaign')) {
+            return {
+                label: 'キャンペーン判断',
+                title: '今課金するか、待つかを比較する',
+                body: '通常時・2倍・3倍で必要額を比べて、キャンペーンを待つ価値があるか確認できます。',
+                links: [
+                    { href: '../campaign/wait/', text: 'キャンペーン待ちを判断' },
+                    { href: '../campaign/2x/', text: '2倍で計算' },
+                    { href: '../campaign/3x/', text: '3倍で計算' }
+                ]
+            };
+        }
+        if (path.includes('2026-06-20-discount-gift-cards.html') || path.includes('2025-12-25-gift-card')) {
+            return {
+                label: '購入前チェック',
+                title: '買う前に必要額と還元上限を確認する',
+                body: 'ギフトコードやキャンペーンを使う前に、目標ランクまでの不足額と買いすぎのリスクを確認できます。',
+                links: [
+                    { href: '../amount/10000/', text: '1万円で何ポイント？' },
+                    { href: '../status/gold/', text: 'ゴールド到達を見る' },
+                    { href: '../campaign/wait/', text: 'キャンペーン待ちを見る' }
+                ]
+            };
+        }
+        if (path.includes('playpoints-not-reflected') || path.includes('reflection-timing')) {
+            return {
+                label: '反映後の次アクション',
+                title: '反映後に不足ポイントを再計算する',
+                body: 'ポイント履歴を確認したら、あと何ポイント必要かを入れて次の判断に進めます。',
+                links: [
+                    { href: '../?utm_source=article_next_step&utm_medium=internal&utm_campaign=not_reflected', text: '計算機で不足分を見る' },
+                    { href: '../status/silver/', text: 'シルバー到達を見る' },
+                    { href: '../status/gold/', text: 'ゴールド到達を見る' }
+                ]
+            };
+        }
+        return {
+            label: '次に確認',
+            title: 'あなたの条件で必要額を確認する',
+            body: '記事の内容を読んだら、現在ステータスと不足ポイントで実際の目安を確認できます。',
+            links: [
+                { href: '../?utm_source=article_next_step&utm_medium=internal&utm_campaign=generic', text: '計算機で見る' },
+                { href: '../status/silver/', text: 'シルバー到達' },
+                { href: '../status/gold/', text: 'ゴールド到達' }
+            ]
+        };
+    }
+
+    function setupArticleNextStepCta() {
+        if (document.querySelector('.article-next-step-cta')) return;
+        const content = document.querySelector('.content');
+        if (!content) return;
+
+        const cta = getArticleNextStepCta();
+        const box = document.createElement('aside');
+        box.className = 'article-next-step-cta';
+        box.setAttribute('aria-label', '記事を読んだ後の次アクション');
+        box.innerHTML = `
+            <p class="article-next-step-cta__label">${fallbackUtils.escapeHtml(cta.label)}</p>
+            <h2>${fallbackUtils.escapeHtml(cta.title)}</h2>
+            <p>${fallbackUtils.escapeHtml(cta.body)}</p>
+            <div class="article-next-step-cta__links">
+                ${cta.links.map(link => `<a href="${fallbackUtils.escapeHtml(link.href)}">${fallbackUtils.escapeHtml(link.text)}</a>`).join('')}
+            </div>
+        `;
+
+        const authorBox = content.querySelector('.author-box');
+        if (authorBox) {
+            content.insertBefore(box, authorBox);
+            return;
+        }
+        content.appendChild(box);
+    }
+
     // 記事が計算機の利用につながったかだけを計測し、入力値は送信しない
     function setupCalculatorLinkTracking() {
         const eventCommand = 'event';
@@ -182,6 +258,7 @@
 
     async function init() {
         setupCalculatorPrompt();
+        setupArticleNextStepCta();
         setupOfficialSourceNotice();
         setupCalculatorLinkTracking();
         setupArticleAdsense();

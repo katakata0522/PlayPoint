@@ -140,6 +140,61 @@ export const CALC = {
         `;
     },
 
+    getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
+        const target = String(targetStatusLabel || '').toLowerCase();
+        const links = [];
+
+        if (totalAmountNeeded >= 50000 && multiplier < 2) {
+            links.push({ href: 'campaign/3x/', title: '高い場合は3倍キャンペーンで比較する', note: '通常時との差を先に確認' });
+        } else if (multiplier > 1) {
+            links.push({ href: 'articles/2025-12-25-campaign.html', title: 'キャンペーン対象外条件を確認する', note: '倍率が本当に適用されるか確認' });
+        }
+
+        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
+            links.push({ href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' });
+        } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
+            links.push({ href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' });
+        }
+
+        if (remainingDays <= 45) {
+            links.push({ href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' });
+        } else {
+            links.push({ href: 'articles/2025-12-25-playpoints-not-reflected.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' });
+        }
+
+        links.push({ href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' });
+
+        const seen = new Set();
+        return links.filter(link => {
+            if (seen.has(link.href)) return false;
+            seen.add(link.href);
+            return true;
+        }).slice(0, 4);
+    },
+
+    renderDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
+        const links = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+        if (!links.length) return '';
+
+        const items = links
+            .map((link, index) => `
+                <li>
+                    <a href="${link.href}" data-result-decision-link data-link-position="${index + 1}">
+                        <span>${link.title}</span>
+                        <small>${link.note}</small>
+                    </a>
+                </li>
+            `)
+            .join('');
+
+        return `
+            <div class="result-decision-links">
+                <h3>次に確認すること</h3>
+                <ul>${items}</ul>
+            </div>
+        `;
+    },
+
     // ステータスセレクトボックスの選択肢を初期化
     populateStatusSelects() {
         const config = CONFIGS[STATE.currentRegion];
@@ -371,6 +426,7 @@ export const CALC = {
         let resultContent = '';
 
         const relatedArticlesContent = this.renderRelatedArticles(targetStatusLabel, multiplier);
+        const decisionLinksContent = this.renderDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
 
         if (finalNeededPoints <= 0) {
             resultContent = `
@@ -383,6 +439,7 @@ export const CALC = {
                     ${rewardsSubtractedContent}
                 </dl>
                 ${relatedArticlesContent}
+                ${decisionLinksContent}
             `;
         } else {
             const monthlyResultContent = remainingMonths > 0
@@ -426,6 +483,7 @@ export const CALC = {
                     ${calculationNoteText}
                 </div>
                 ${relatedArticlesContent}
+                ${decisionLinksContent}
             `;
         }
         

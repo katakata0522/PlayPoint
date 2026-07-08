@@ -15,6 +15,7 @@
 | `lp_to_calculator_clicked` | 検索意図別LPから計算機へ移動した時 | `source_path`, `entry_campaign`, `link_context` | どのLPとCTAが計算開始につながるか判断する |
 | `lp_related_link_clicked` | LP内の関連記事/関連ページ導線を押した時 | `source_path`, `target_path`, `link_context` | LP内の回遊導線を残すか改善するか判断する |
 | `result_related_article_clicked` | 計算結果下の関連記事を押した時 | `source_path`, `target_path`, `target_status`, `calculation_mode`, `link_position` | 計算完了後に次の読了/理解へ進めているか判断する |
+| `result_decision_link_clicked` | 計算結果下の判断導線を押した時 | `source_path`, `target_path`, `target_status`, `calculation_mode`, `link_position` | 計算後にキャンペーン比較・反映確認・購入前チェックへ進めているか判断する |
 | `share_url_copied` | 計算結果URLのコピーに成功した時 | `calculation_mode`, `region`, `target_status` | 共有URLが実際に使われる導線か判断する |
 | `share_x_clicked` | X共有ボタンを押した時 | `calculation_mode`, `region`, `target_status` | SNS共有の需要を判断する |
 
@@ -29,7 +30,7 @@
 1. GA4 DebugViewを開く。
 2. 通常計算、逆算、日記保存、記事から計算機への移動を各1回実行する。
 3. `/campaign/2x/`, `/campaign/3x/`, `/amount/10000/` から計算機CTAと関連記事リンクを各1回クリックする。
-4. 計算結果のコピー、X共有、関連記事クリックを各1回実行する。
+4. 計算結果のコピー、X共有、関連記事クリック、判断導線クリックを各1回実行する。
 5. イベントが各1回だけ表示されることを確認する。
 6. 課金額、必要ポイント、獲得ポイント、日記の入力値がパラメータへ含まれないことを確認する。
 7. スマホ幅とPC幅、同意状態ごとに重複送信がないことを確認する。

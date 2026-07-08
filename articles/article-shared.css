@@ -193,6 +193,66 @@ body[data-blog-theme="dark"] .main-card {
     filter: brightness(0.95);
 }
 
+.article-next-step-cta {
+    margin: 2rem 0 0;
+    padding: 1.2rem 1.25rem;
+    border: 1px solid #dbe2ea;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #1f2937;
+}
+
+.article-next-step-cta__label {
+    margin: 0 0 0.35rem;
+    color: var(--article-accent-dark);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.article-next-step-cta h2 {
+    margin: 0 0 0.45rem;
+    border: 0;
+    color: #111827;
+    font-size: 1.1rem;
+}
+
+.article-next-step-cta p {
+    margin: 0.45rem 0 0;
+    color: #334155;
+}
+
+.article-next-step-cta__links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.65rem;
+    margin-top: 0.9rem;
+}
+
+.article-next-step-cta__links a {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.2rem 0.8rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--article-accent-dark);
+    font-weight: 800;
+    text-align: center;
+    text-decoration: none !important;
+}
+
+.article-next-step-cta__links a:first-child {
+    border-color: var(--article-accent-dark);
+    background: var(--article-accent-dark);
+    color: #ffffff;
+}
+
+.article-next-step-cta__links a:hover {
+    filter: brightness(0.97);
+}
+
 /* 既存記事のCTAは導線を残しつつ、広告枠ではなく確認メモに近い見た目へ寄せる。 */
 .content .cta-box {
     margin: 2rem 0;
@@ -279,6 +339,10 @@ button:focus-visible {
     }
 
     .author-box {
+        padding: 1rem;
+    }
+
+    .article-next-step-cta {
         padding: 1rem;
     }
 }

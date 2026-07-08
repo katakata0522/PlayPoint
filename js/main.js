@@ -154,6 +154,21 @@ export function init() {
             link_position: link.dataset.linkPosition
         });
     });
+
+    document.addEventListener('click', (event) => {
+        const link = event.target && typeof event.target.closest === 'function'
+            ? event.target.closest('[data-result-decision-link]')
+            : null;
+        if (!link) return;
+        const targetUrl = new URL(link.href, window.location.href);
+        ANALYTICS.track('result_decision_link_clicked', {
+            source_path: window.location.pathname,
+            target_path: targetUrl.pathname,
+            target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
+            calculation_mode: 'rank_up',
+            link_position: link.dataset.linkPosition
+        });
+    });
     
     // ツールチップを閉じるグローバルリスナー
     document.addEventListener('click', (e) => { if (!e.target.closest(CONSTANTS.SELECTOR_INFO_BTN) && !e.target.closest(CONSTANTS.SELECTOR_TOOLTIP_BOX)) UI.closeAllTooltips(); });

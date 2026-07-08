@@ -12,6 +12,7 @@ export const ANALYTICS = {
         lp_to_calculator_clicked: ['source_path', 'entry_campaign', 'link_context'],
         lp_related_link_clicked: ['source_path', 'target_path', 'link_context'],
         result_related_article_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
+        result_decision_link_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
         share_url_copied: ['calculation_mode', 'region', 'target_status'],
         share_x_clicked: ['calculation_mode', 'region', 'target_status']
     },
