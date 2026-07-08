@@ -128,6 +128,22 @@ const btnCloseModalEl = document.getElementById('btn-close-modal');
 const modalPreviewImageEl = document.getElementById('modal-preview-image');
 const btnDownloadFallbackEl = document.getElementById('btn-download-fallback');
 
+// DOM elements cache (optimization)
+const dynamicAffiliateBoxEl = document.getElementById('dynamic-affiliate-box');
+
+// Global Application State (removes calculation discrepancy risks)
+const appState = {
+    totalExpenses: 0,
+    unitCost: 0,
+    breakevenSales: 0,
+    isPossibleBreakeven: false,
+    safeVal: 0,
+    standardVal: 0,
+    aggressiveVal: 0,
+    netProfit: 0,
+    salesCount: 0
+};
+
 // アフィリエイト商品データベース (かたかた個人のアソシエイトIDを想定したリンク。価格直書きは規約遵守のため非表示)
 const AFFILIATE_PRODUCTS = {
     copybook: {
@@ -188,8 +204,7 @@ const AFFILIATE_PRODUCTS = {
 
 // 入力状態に応じてアフィリエイトエリアを書き換える関数
 function updateAffiliateBox() {
-    const affiliateBox = document.getElementById('dynamic-affiliate-box');
-    if (!affiliateBox) return;
+    if (!dynamicAffiliateBoxEl) return;
 
     const printType = printTypeEl.value;
     const isEvent = (eventScaleEl.value === 'large' || eventScaleEl.value === 'medium');
@@ -224,7 +239,7 @@ function updateAffiliateBox() {
     });
     
     html += `</div>`;
-    affiliateBox.innerHTML = html;
+    dynamicAffiliateBoxEl.innerHTML = html;
 }
 
 // 線形補間関数 (1次元)
@@ -451,6 +466,17 @@ function calculateAll() {
             profitAdviceTextEl.textContent = `あと ${remaining} 部の頒布で黒字に達します。価格を少し上げるか、お品書きのデザインを工夫してアピールしてみましょう！`;
         }
     }
+
+    // アプリケーション状態(appState)の更新 (最適化)
+    appState.totalExpenses = totalExpenses;
+    appState.unitCost = unitCost;
+    appState.breakevenSales = breakevenSales;
+    appState.isPossibleBreakeven = isPossibleBreakeven;
+    appState.safeVal = safeVal;
+    appState.standardVal = standardVal;
+    appState.aggressiveVal = aggressiveVal;
+    appState.netProfit = netProfit;
+    appState.salesCount = salesCount;
     
     // アフィリエイト情報の動的更新
     updateAffiliateBox();
@@ -466,14 +492,16 @@ function debounce(func, wait) {
 }
 const debouncedCalculateAll = debounce(calculateAll, 120);
 
-// 印刷費の手動変更監視 (デバウンス処理)
-printCostEl.addEventListener('input', debounce(() => {
+// 印刷費の手動変更イベントハンドラー
+const handlePrintCostManualInput = debounce(() => {
     isAutoCostEnabled = false;
     costAutoBadgeEl.className = 'cost-badge manual';
     costAutoBadgeEl.textContent = '手動編集';
     btnResetCostEl.style.display = 'inline-block';
     calculateAll();
-}, 120));
+}, 120);
+
+printCostEl.addEventListener('input', handlePrintCostManualInput);
 
 // リセットボタン登録
 btnResetCostEl.addEventListener('click', resetToAutoPrintCost);
@@ -665,8 +693,9 @@ function exportSummaryImage() {
     ctx.fillText(`頒布価格: ${price} 円 / 1冊`, 80, 320);
     
     // 損益分岐点 (少し目立つ枠で囲む)
-    const totalExpenses = Math.max(0, parseInt(printCostEl.value) || 0) + (Math.max(0, parseInt(eventFeeEl.value) || 0)) + (Math.max(0, parseInt(otherExpensesEl.value) || 0));
-    const breakeven = price > 0 ? Math.ceil(totalExpenses / price) : 0;
+    const totalExpenses = appState.totalExpenses;
+    const breakeven = appState.breakevenSales;
+    const isPossibleBreakeven = appState.isPossibleBreakeven;
     
     ctx.fillStyle = 'rgba(239, 68, 68, 0.05)';
     ctx.strokeStyle = 'rgba(239, 68, 68, 0.3)';
@@ -675,10 +704,12 @@ function exportSummaryImage() {
     
     ctx.fillStyle = '#b91c1c';
     ctx.font = 'bold 14px "Noto Sans JP", sans-serif';
-    if (price > 0) {
-        ctx.fillText(`⚠️ 損益分岐点: ${breakeven} 部 の頒布で黒字化`, 85, 371);
-    } else {
+    if (price === 0) {
         ctx.fillText(`⚠️ 損益分岐点: 達成不可 (無料配布本です)`, 85, 371);
+    } else if (!isPossibleBreakeven) {
+        ctx.fillText(`⚠️ 損益分岐点: 達成不可 (設定価格が低すぎます)`, 85, 371);
+    } else {
+        ctx.fillText(`⚠️ 損益分岐点: ${breakeven} 部 の頒布で黒字化`, 85, 371);
     }
     
     // 右側：推奨部数
@@ -691,21 +722,21 @@ function exportSummaryImage() {
     ctx.fillRect(440, 195, 10, 15);
     ctx.fillStyle = '#1f2937';
     ctx.font = '15px "Noto Sans JP", sans-serif';
-    ctx.fillText(`手堅い部数: ${predSafeValueEl.textContent} 部`, 460, 210);
+    ctx.fillText(`手堅い部数: ${appState.safeVal.toLocaleString()} 部`, 460, 210);
     
     // 標準
     ctx.fillStyle = '#8b5cf6';
     ctx.fillRect(440, 245, 10, 15);
     ctx.fillStyle = '#1f2937';
     ctx.font = 'bold 16px "Noto Sans JP", sans-serif';
-    ctx.fillText(`おすすめ標準部数: ${predStandardValueEl.textContent} 部`, 460, 260);
+    ctx.fillText(`おすすめ標準部数: ${appState.standardVal.toLocaleString()} 部`, 460, 260);
     
     // 強気
     ctx.fillStyle = '#f59e0b';
     ctx.fillRect(440, 295, 10, 15);
     ctx.fillStyle = '#1f2937';
     ctx.font = '15px "Noto Sans JP", sans-serif';
-    ctx.fillText(`強気な部数: ${predAggressiveValueEl.textContent} 部`, 460, 310);
+    ctx.fillText(`強気な部数: ${appState.aggressiveVal.toLocaleString()} 部`, 460, 310);
     
     // 収支概要ボックス
     ctx.fillStyle = '#f8fafc';
