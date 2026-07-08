@@ -145,6 +145,17 @@ const statTotalExpensesEl = document.getElementById('stat-total-expenses');
 const btnExportDataEl = document.getElementById('btn-export-data');
 const inputImportFileEl = document.getElementById('input-import-file');
 
+// 作品情報フォーム追加フィールド
+const customEventNameEl = document.getElementById('custom-event-name');
+const customEventDateEl = document.getElementById('custom-event-date');
+const saveValidationMsgEl = document.getElementById('save-validation-msg');
+
+// カスタムダイアログ (confirm() 廃止)
+const customDialogEl = document.getElementById('custom-dialog');
+const dialogMessageEl = document.getElementById('dialog-message');
+const dialogBtnCancelEl = document.getElementById('dialog-btn-cancel');
+const dialogBtnConfirmEl = document.getElementById('dialog-btn-confirm');
+
 // LocalStorage キー
 const LS_KEY = 'doujin_saved_books_v1';
 
@@ -880,7 +891,7 @@ function exportSummaryImage() {
         openModal(dataUrl, dataUrl);
     } catch (err) {
         console.error('画像生成に失敗しました: ', err);
-        alert('画像の書き出しに失敗しました。お使いのブラウザがCanvas機能に対応しているかご確認ください。');
+        showToast('❌ 画像の書き出しに失敗しました。ブラウザのCanvas機能をご確認ください。');
     }
 }
 
@@ -964,6 +975,18 @@ function showToast(message, emoji = '') {
 // ============================================================
 if (btnSaveBookEl) {
     btnSaveBookEl.addEventListener('click', () => {
+        // タイトル必須バリデーション
+        const title = customTitleEl.value.trim();
+        if (!title) {
+            saveValidationMsgEl.style.display = 'block';
+            customTitleEl.focus();
+            customTitleEl.style.borderColor = 'var(--danger)';
+            return;
+        }
+        // バリデーション解除
+        saveValidationMsgEl.style.display = 'none';
+        customTitleEl.style.borderColor = '';
+
         // 現在のappStateから計算値を取得
         const {
             totalExpenses, netProfit, breakevenSales, isPossibleBreakeven,
@@ -977,14 +1000,17 @@ if (btnSaveBookEl) {
         const revenueRate = isConsignment ? 0.7 : 1.0;
         const salesRevenue = Math.round(salesCount * sellingPrice * revenueRate);
 
-        const title = customTitleEl.value.trim() || `新刊 (${new Date().toLocaleDateString('ja-JP')})`;
         const circle = customCircleEl.value.trim() || '（サークル名未設定）';
+        const eventName = customEventNameEl ? customEventNameEl.value.trim() : '';
+        const eventDate = customEventDateEl ? customEventDateEl.value : '';
 
         const newBook = {
             id: Date.now().toString(),
             savedAt: new Date().toISOString(),
             title,
             circle,
+            eventName,
+            eventDate,
             // 本の仕様
             bookSize: bookSizeEl.value,
             printType: printTypeEl.value,
@@ -1014,6 +1040,43 @@ if (btnSaveBookEl) {
         if (dashTabBtn) dashTabBtn.click();
     });
 }
+
+// ============================================================
+// カスタムダイアログ（confirm() 廃止）
+// ============================================================
+let dialogResolve = null;
+
+/** カスタム確認ダイアログを表示する（confirm()の代替）
+ * @returns {Promise<boolean>}
+ */
+function showDialog(message) {
+    return new Promise(resolve => {
+        dialogResolve = resolve;
+        dialogMessageEl.textContent = message;
+        customDialogEl.style.display = 'flex';
+        dialogBtnConfirmEl.focus();
+    });
+}
+
+if (dialogBtnCancelEl) {
+    dialogBtnCancelEl.addEventListener('click', () => {
+        customDialogEl.style.display = 'none';
+        if (dialogResolve) { dialogResolve(false); dialogResolve = null; }
+    });
+}
+if (dialogBtnConfirmEl) {
+    dialogBtnConfirmEl.addEventListener('click', () => {
+        customDialogEl.style.display = 'none';
+        if (dialogResolve) { dialogResolve(true); dialogResolve = null; }
+    });
+}
+// Escapeキーでキャンセル
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && customDialogEl && customDialogEl.style.display !== 'none') {
+        customDialogEl.style.display = 'none';
+        if (dialogResolve) { dialogResolve(false); dialogResolve = null; }
+    }
+});
 
 // ============================================================
 // ダッシュボード：描画ロジック
@@ -1079,6 +1142,11 @@ function renderBookCards(books) {
                 </div>
                 <span class="book-card-badge ${isGain ? 'gain' : 'loss'}">${isGain ? '✅ 黒字' : '🔴 赤字'}</span>
             </div>
+            ${book.eventName || book.eventDate ? `
+            <div class="book-card-event">
+                ${book.eventName ? `<span>🎪 ${escapeHtml(book.eventName)}</span>` : ''}
+                ${book.eventDate ? `<span>📅 ${new Date(book.eventDate).toLocaleDateString('ja-JP', {year:'numeric',month:'short',day:'numeric'})}</span>` : ''}
+            </div>` : ''}
             <div class="book-card-meta">
                 <div class="book-card-meta-item">
                     <span>印刷部数</span>
@@ -1166,13 +1234,14 @@ function applyBookToSimulator(bookId) {
     if (simTabBtn) simTabBtn.click();
 }
 
-/** 作品データを削除する */
-function deleteBook(bookId) {
+/** 作品データを削除する（カスタムダイアログ使用） */
+async function deleteBook(bookId) {
     const books = getBooks();
     const book = books.find(b => b.id === bookId);
     if (!book) return;
     
-    if (!confirm(`「${book.title}」の記録を削除してよろしいですか？`)) return;
+    const confirmed = await showDialog(`「${book.title}」の記録を削除してよろしいですか？\nこの操作は元に戻せません。`);
+    if (!confirmed) return;
     
     const filtered = books.filter(b => b.id !== bookId);
     setBooks(filtered);
