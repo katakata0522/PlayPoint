@@ -1010,9 +1010,13 @@ select:focus, input[type="number"]:focus {
 
 /* Monetization wrapper */
 .support-section {
-    margin-top: 25px;
+    margin-top: 35px;
     border-top: 2px dashed var(--border-color);
     padding-top: 25px;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr; /* Slightly wider space for affiliate description */
+    gap: 25px;
+    margin-bottom: 25px;
 }
 
 /* Tip / Coffee box */
@@ -1024,8 +1028,9 @@ select:focus, input[type="number"]:focus {
     border: 1px solid #e9d5ff;
     border-radius: var(--radius-sm);
     padding: 16px;
-    margin-bottom: 20px;
     transition: transform 0.2s ease;
+    margin-bottom: 0;
+    align-self: start;
 }
 
 .support-coffee-card:hover {
@@ -1075,7 +1080,7 @@ select:focus, input[type="number"]:focus {
 
 /* Dynamic Affiliate Box */
 .affiliate-box {
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 .affiliate-title {
@@ -1205,6 +1210,13 @@ select:focus, input[type="number"]:focus {
 }
 
 /* Responsive adjustment for small screens */
+@media (max-width: 850px) {
+    .support-section {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+}
+
 @media (max-width: 550px) {
     .support-coffee-card {
         flex-direction: column;

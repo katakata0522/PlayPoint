@@ -128,7 +128,7 @@ const btnCloseModalEl = document.getElementById('btn-close-modal');
 const modalPreviewImageEl = document.getElementById('modal-preview-image');
 const btnDownloadFallbackEl = document.getElementById('btn-download-fallback');
 
-// アフィリエイト商品データベース (かたかた個人のアソシエイトIDを想定したリンク)
+// アフィリエイト商品データベース (かたかた個人のアソシエイトIDを想定したリンク。価格直書きは規約遵守のため非表示)
 const AFFILIATE_PRODUCTS = {
     copybook: {
         title: "📚 コピー本づくりのおすすめ製本グッズ",
@@ -138,14 +138,12 @@ const AFFILIATE_PRODUCTS = {
                 name: "マックス 中とじホッチキス ホッチくる",
                 url: "https://www.amazon.co.jp/dp/B000FHPDFQ?tag=katakata-22",
                 icon: "📌",
-                price: "参考価格: 約800円",
                 reason: "ヘッドが90度回転し、A4用紙の中央に簡単にホッチキスが打てるコピー本作家の必須装備です。"
             },
             {
                 name: "コクヨ 上質紙 特厚口 A4 50枚",
                 url: "https://www.amazon.co.jp/dp/B000FL7GZ2?tag=katakata-22",
                 icon: "📄",
-                price: "参考価格: 約600円",
                 reason: "コピー本の表紙や、少しリッチな本文用紙に最適なコシのある特厚口の上質紙です。"
             }
         ]
@@ -158,14 +156,12 @@ const AFFILIATE_PRODUCTS = {
                 name: "折りたたみ式ポスタースタンド（卓上）",
                 url: "https://www.amazon.co.jp/dp/B0BD4XYQ6D?tag=katakata-22",
                 icon: "🚩",
-                price: "参考価格: 約2,500円",
                 reason: "A4やA3のお品書き・ポスターを机の上に自立させてアピール力を激変させる軽量スタンド。"
             },
             {
                 name: "ヘッズ クリップ式 値札ホルダー 5個",
                 url: "https://www.amazon.co.jp/dp/B07BLVNDN9?tag=katakata-22",
                 icon: "🏷️",
-                price: "参考価格: 約700円",
                 reason: "新刊の前に値札を挟んで立たせるための透明で見えやすいポップスタンドです。"
             }
         ]
@@ -178,14 +174,12 @@ const AFFILIATE_PRODUCTS = {
                 name: "OPP袋 B5用 テープ付 100枚",
                 url: "https://www.amazon.co.jp/dp/B004GBA9AS?tag=katakata-22",
                 icon: "✉️",
-                price: "参考価格: 約900円",
                 reason: "雨濡れを防ぐための透明OPP袋です。本を美しく包装し、傷から守ります。"
             },
             {
                 name: "クッション封筒 B5対応 25枚",
                 url: "https://www.amazon.co.jp/dp/B08CSCW7FF?tag=katakata-22",
                 icon: "📦",
-                price: "参考価格: 約1,200円",
                 reason: "内側にぷちぷちが入っており、封筒に入れるだけでそのまま発送可能な衝撃吸収封筒。"
             }
         ]
@@ -222,9 +216,8 @@ function updateAffiliateBox() {
                 <div class="affiliate-card-img-placeholder">${item.icon}</div>
                 <div class="affiliate-card-info">
                     <span class="affiliate-card-name">${item.name}</span>
-                    <span class="affiliate-card-price">${item.price}</span>
                     <p class="affiliate-card-reason">${item.reason}</p>
-                    <span class="affiliate-card-btn">Amazonで見る ➔</span>
+                    <span class="affiliate-card-btn">Amazonで詳細を見る ➔</span>
                 </div>
             </a>
         `;
