@@ -4,13 +4,18 @@ const fs = require('fs');
 const path = require('path');
 
 function replaceStaticLanguageText(html, staticText) {
-  return html.replace(
-    /(<(h1|p|button)\b[^>]*\bdata-lang-key="([^"]+)"[^>]*>)([\s\S]*?)(<\/\2>)/g,
-    (match, openTag, _tagName, key, _content, closeTag) => {
+  return html
+    .replace(
+      /(<([a-z][a-z0-9-]*)\b[^>]*\bdata-lang-key="([^"]+)"[^>]*>)([\s\S]*?)(<\/\2>)/gi,
+      (match, openTag, _tagName, key, _content, closeTag) => {
+        if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
+        return `${openTag}${staticText[key]}${closeTag}`;
+      }
+    )
+    .replace(/(<[^>]*\bplaceholder=")[^"]*("[^>]*\bdata-lang-placeholder="([^"]+)"[^>]*>)/g, (match, before, after, key) => {
       if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
-      return `${openTag}${staticText[key]}${closeTag}`;
-    }
-  );
+      return `${before}${staticText[key]}${after}`;
+    });
 }
 
 function buildLocalizedHtml(indexHtml, langDir, config) {
@@ -69,7 +74,8 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
 
   // 6. JSON-LD の置換
   // SoftwareApplication
-  output = output.replace(/"name": "Playポイント計算機"/g, `"name": "${config.appName}"`);
+  output = output.replace(/"name": "(?:Playポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);
+  output = output.replace(/"alternateName": "Playポイント計算機"/g, `"alternateName": "${config.alternateName || config.appName}"`);
   // gフラグ付きで全descriptionを置換（SoftwareApplicationのdescriptionが対象）
   output = output.replace(/"description": "[^"]+"/g, `"description": "${config.appDesc}"`);
   output = output.replace(/"priceCurrency": "JPY"/, `"priceCurrency": "${config.currency}"`);
@@ -78,7 +84,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/"inLanguage":\s*\[[^\]]+\]/, `"inLanguage": "${config.inLanguage}"`);
 
   // WebSite
-  output = output.replace(/"name": "Play\+?ポイント計算機"/g, `"name": "${config.appName}"`);
+  output = output.replace(/"name": "(?:Play\+?ポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);
 
   // 7. 言語スイッチのアクティブ状態切り替え
   output = output.replace('<button data-region="JP" class="active">日本語</button>', '<button data-region="JP">日本語</button>');

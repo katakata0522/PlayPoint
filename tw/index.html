@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Google Play 點數計算器 - Play Point Calculator | 距離升級還差多少？</title>
+    <title>Google Play Points 計算器｜距離升級還差多少？</title>
     <meta name="description" content="Google Play 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援倍率活動與每週獎勵紀錄。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="katakata">
-    <meta name="last-modified" content="2026-07-07">
-    <meta property="article:modified_time" content="2026-07-07T00:00:00+09:00">
+    <meta name="last-modified" content="2026-07-08">
+    <meta property="article:modified_time" content="2026-07-08T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/tw/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -22,24 +22,25 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="../icon-192.png">
     <link rel="manifest" href="../manifest.json">
-    <meta property="og:title" content="Google Play 點數計算器 - Play Point Calculator | 距離升級還差多少？">
+    <meta property="og:title" content="Google Play Points 計算器｜距離升級還差多少？">
     <meta property="og:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/tw/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
-    <meta property="og:site_name" content="Google Play 點數計算器">
+    <meta property="og:site_name" content="Google Play Points 計算器">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Google Play 點數計算器 - Play Point Calculator | 距離升級還差多少？">
+    <meta name="twitter:title" content="Google Play Points 計算器｜距離升級還差多少？">
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260707_2345a">
-    <link rel="stylesheet" href="../style.css?v=20260707_2345a">
+    <link rel="modulepreload" href="../js/main.js?v=20260708_2338a">
+    <link rel="stylesheet" href="../style.css?v=20260708_2338a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Google Play 點數計算器",
+      "name": "Google Play Points 計算器",
+      "alternateName": "Google Play 點數計算器",
       "operatingSystem": "Web",
       "applicationCategory": "UtilitiesApplication",
       "description": "本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。",
@@ -49,7 +50,7 @@
         "name": "katakata",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-07-07",
+      "dateModified": "2026-07-08",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -61,7 +62,8 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Google Play 點數計算器",
+      "name": "Google Play Points 計算器",
+      "alternateName": "Google Play 點數計算器",
       "url": "https://playpoint-sim.com/tw/",
       "inLanguage": "zh-TW",
       "publisher": {
@@ -136,7 +138,8 @@
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
     </div>
 
-    <h1 id="main-title" data-lang-key="mainTitle">Google Play 點數計算器</h1>
+    <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
+    <p class="site-alias" data-lang-key="siteAlias">別稱: Google Play 點數計算器 / 非官方工具</p>
     <p id="site-description" data-lang-key="siteDescription">可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！</p>
 
     <div class="tab-switch" role="tablist">
@@ -185,7 +188,7 @@
                 </div>
                 <div>
                     <label for="pack-amount" style="font-size: 0.9em; font-weight: bold; color: var(--text-color); display: block; margin-bottom: 0.3em;" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
+                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
                 </div>
             </div>
         </div>
@@ -269,12 +272,12 @@
         </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear">現在の年</h2>
+            <h2 id="currentYear" data-lang-key="currentYearLabel">現在の年</h2>
             <button id="nextYearBtn" aria-label="次の年へ">></button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
-            <h3 id="selectedMonth">１月</h3>
+                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">１月</h3>
             <div id="weekInputs" class="week-inputs"></div>
         </div>
         <div class="diary-summary" aria-live="polite">
@@ -367,7 +370,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-07-07</p>
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-07-08</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
@@ -377,8 +380,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260707_2345a"></script>
-<script src="../js/third-party.js?v=20260707_2345a" defer></script>
+<script type="module" src="../js/main.js?v=20260708_2338a"></script>
+<script src="../js/third-party.js?v=20260708_2338a" defer></script>
 
 </body>
 </html>

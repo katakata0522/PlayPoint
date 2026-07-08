@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Playポイント計算機 - Play Point Calculator | あといくらでレベルアップ？</title>
-    <meta name="description" content="Google Play Points のランクアップ計算機。プラチナ・ダイヤモンドまであといくら必要か、キャンペーン時の獲得ポイント、逆算、ランク維持の目安までまとめて確認できます。">
+    <title>Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算</title>
+    <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やキャンペーン倍率を目安で逆算できます。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-07-07">
-    <meta property="article:modified_time" content="2026-07-07T00:00:00+09:00">
+    <meta name="last-modified" content="2026-07-08">
+    <meta property="article:modified_time" content="2026-07-08T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -22,34 +22,35 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
-    <meta property="og:title" content="Playポイント計算機 | あといくらでレベルアップ？">
-    <meta property="og:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料でシミュレーション。">
+    <meta property="og:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
+    <meta property="og:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
-    <meta property="og:site_name" content="Playポイント計算機">
+    <meta property="og:site_name" content="Google Play Points 計算機">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Playポイント計算機 | あといくらでレベルアップ？">
-    <meta name="twitter:description" content="Google Play Points のランクアップ、逆算、キャンペーン時の獲得ポイントを無料で試算できる計算機。">
+    <meta name="twitter:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
+    <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=20260707_2345a">
-    <link rel="stylesheet" href="style.css?v=20260707_2345a">
+    <link rel="modulepreload" href="js/main.js?v=20260708_2338a">
+    <link rel="stylesheet" href="style.css?v=20260708_2338a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Playポイント計算機",
+      "name": "Google Play Points 計算機",
+      "alternateName": "Playポイント計算機",
       "operatingSystem": "Web",
       "applicationCategory": "UtilitiesApplication",
-      "description": "Google Playポイントの現在のステータスから目標ランク（ダイヤモンド・プラチナ）までの必要課金額を計算するツールです。",
+      "description": "Google Play Points の現在ステータスから目標ランクまでの必要課金額を計算する非公式ツールです。",
       "url": "https://playpoint-sim.com/",
       "author": {
         "@type": "Person",
         "name": "かたかた",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-07-07",
+      "dateModified": "2026-07-08",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -61,7 +62,8 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Playポイント計算機",
+      "name": "Google Play Points 計算機",
+      "alternateName": "Playポイント計算機",
       "url": "https://playpoint-sim.com/",
       "inLanguage": ["ja", "en", "ko", "zh-TW"],
       "publisher": {
@@ -136,8 +138,9 @@
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
     </div>
 
-    <h1 id="main-title" data-lang-key="mainTitle">Playポイント計算機</h1>
-    <p id="site-description" data-lang-key="siteDescription">まずは現在のステータス、目標ステータス、あと必要なポイントを入力してください。<br>ランク達成までの課金額や、課金額から得られるポイントを目安として計算できます。</p>
+    <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算機</h1>
+    <p class="site-alias" data-lang-key="siteAlias">通称: Playポイント計算機 / 非公式ツール</p>
+    <p id="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス、目標ステータス、必要ポイントを入力すると、必要な課金額やキャンペーン倍率込みの目安を確認できます。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">通常計算</button>
@@ -185,7 +188,7 @@
                 </div>
                 <div>
                     <label for="pack-amount" style="font-size: 0.9em; font-weight: bold; color: var(--text-color); display: block; margin-bottom: 0.3em;" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
+                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
                 </div>
             </div>
         </div>
@@ -269,12 +272,12 @@
         </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear">現在の年</h2>
+            <h2 id="currentYear" data-lang-key="currentYearLabel">現在の年</h2>
             <button id="nextYearBtn" aria-label="次の年へ">></button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
-            <h3 id="selectedMonth">１月</h3>
+                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">１月</h3>
             <div id="weekInputs" class="week-inputs"></div>
         </div>
         <div class="diary-summary" aria-live="polite">
@@ -437,7 +440,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
         </p>
         <!-- META_LINE_START -->
-        <p class="meta-line">運営者: <a href="author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-07-07</p>
+        <p class="meta-line">運営者: <a href="author/katakata.html" rel="author">かたかた</a> / 最終更新: 2026-07-08</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
@@ -447,8 +450,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=20260707_2345a"></script>
-<script src="js/third-party.js?v=20260707_2345a" defer></script>
+<script type="module" src="js/main.js?v=20260708_2338a"></script>
+<script src="js/third-party.js?v=20260708_2338a" defer></script>
 
 </body>
 </html>

@@ -5,14 +5,18 @@ PlayPoint's international SEO pages are grouped by language and intent. This not
 ## URL groups
 
 - `/en/`: English calculator shortcuts and English Play Points guides.
+- `/en/status/platinum/`: English Platinum status estimate for queries such as `Google Play Points Platinum cost` and `Google Play Points calculator US`.
 - `/ko/`: Korean calculator shortcuts and Korean Play Points guides.
+- `/ko/status/platinum/`: Korean Platinum status estimate for queries such as `Google Play Points Korea` and local Platinum planning.
 - `/tw/`: Traditional Chinese calculator shortcuts and Traditional Chinese Play Points guides.
+- `/tw/status/platinum/`: Traditional Chinese Platinum status estimate for queries such as `Google Play Points Taiwan` and local Platinum planning.
 
 ## Weekly Search Console checks
 
 - Performance: filter by `page` prefix, then compare clicks, impressions, CTR, and average position for `/en/`, `/ko/`, and `/tw/`.
 - Country: check whether impressions are coming from expected regions, then compare outliers before changing page copy.
 - Query: group queries by intent such as missing points, levels, promotions, subscriptions, gift cards, and country differences.
+- Query clusters to pin weekly: `Google Play Points Platinum cost`, `Google Play Points calculator US`, `Google Play Points Korea`, and `Google Play Points Taiwan`.
 - Index coverage: confirm new international articles are indexed and no `noindex`, canonical, redirect, or duplicate warnings remain.
 
 ## Decision rules

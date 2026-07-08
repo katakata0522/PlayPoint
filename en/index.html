@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Play Point Calculator - Google Play Points | How much to level up?</title>
-    <meta name="description" content="Google Play Points level-up calculator. Calculate how much you need to spend to reach Bronze, Silver, Gold, Platinum, or Diamond, including campaign boosts and weekly reward logs.">
+    <title>Google Play Points Calculator | How much to reach the next level?</title>
+    <meta name="description" content="Google Play Points calculator. Estimate how much you need to spend to reach Silver, Gold, Platinum, or Diamond with campaign multipliers and weekly reward notes.">
     <meta name="robots" content="index,follow">
     <meta name="author" content="katakata">
-    <meta name="last-modified" content="2026-07-07">
-    <meta property="article:modified_time" content="2026-07-07T00:00:00+09:00">
+    <meta name="last-modified" content="2026-07-08">
+    <meta property="article:modified_time" content="2026-07-08T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/en/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -22,34 +22,35 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="../icon-192.png">
     <link rel="manifest" href="../manifest.json">
-    <meta property="og:title" content="Play Point Calculator - Google Play Points | How much to level up?">
-    <meta property="og:description" content="Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.">
+    <meta property="og:title" content="Google Play Points Calculator | How much to reach the next level?">
+    <meta property="og:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/en/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
-    <meta property="og:site_name" content="Play Points Calculator">
+    <meta property="og:site_name" content="Google Play Points Calculator">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Play Point Calculator - Google Play Points | How much to level up?">
-    <meta name="twitter:description" content="Calculate Play Points level-up requirements, reverse calculations, and point boost campaigns for free.">
+    <meta name="twitter:title" content="Google Play Points Calculator | How much to reach the next level?">
+    <meta name="twitter:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260707_2345a">
-    <link rel="stylesheet" href="../style.css?v=20260707_2345a">
+    <link rel="modulepreload" href="../js/main.js?v=20260708_2338a">
+    <link rel="stylesheet" href="../style.css?v=20260708_2338a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Play Points Calculator",
+      "name": "Google Play Points Calculator",
+      "alternateName": "Play Points Calculator",
       "operatingSystem": "Web",
       "applicationCategory": "UtilitiesApplication",
-      "description": "A simulation tool to calculate required spending to reach Google Play Points goals (Diamond, Platinum, etc.) based on your current status.",
+      "description": "An unofficial simulation tool to calculate required spending to reach Google Play Points goals based on your current status.",
       "url": "https://playpoint-sim.com/en/",
       "author": {
         "@type": "Person",
         "name": "katakata",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-07-07",
+      "dateModified": "2026-07-08",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -61,7 +62,8 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Play Points Calculator",
+      "name": "Google Play Points Calculator",
+      "alternateName": "Play Points Calculator",
       "url": "https://playpoint-sim.com/en/",
       "inLanguage": "en",
       "publisher": {
@@ -123,21 +125,22 @@
             <button data-region="TW">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 海外の方へ</a>
-            <a href="latest/" data-lang-key="linkLatest">🆕 最新情報</a>
-            <a href="../blog/" data-lang-key="linkArticles">📝 記事一覧</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ Country notes</a>
+            <a href="latest/" data-lang-key="linkLatest">🆕 Latest Hub</a>
+            <a href="../blog/" data-lang-key="linkArticles">📝 Articles</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
         </div>
     </div>
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
+        <span class="reminder-text" data-lang-key="fridayReminderText">After claiming your Weekly Reward, record it in your diary.</span>
         <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
     </div>
 
-    <h1 id="main-title" data-lang-key="mainTitle">Play Points Calculator</h1>
-    <p id="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach your goal status!<br>Also, calculate how many points you can earn from your spending!</p>
+    <h1 id="main-title" data-lang-key="mainTitle">Google Play Points Calculator</h1>
+    <p class="site-alias" data-lang-key="siteAlias">Also known as Play Points Calculator / unofficial tool</p>
+    <p id="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">Standard</button>
@@ -147,183 +150,177 @@
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
         <div class="first-step-guide" aria-label="最初に入力する項目">
-            <p class="first-step-guide__title" data-lang-key="firstStepTitle">まずは3つだけ入力</p>
+            <p class="first-step-guide__title" data-lang-key="firstStepTitle">Enter just 3 items first</p>
             <ol>
-                <li data-lang-key="firstStepCurrent">現在のステータス</li>
-                <li data-lang-key="firstStepTarget">目標ステータス</li>
-                <li data-lang-key="firstStepNeeded">目標までの必要ポイント</li>
+                <li data-lang-key="firstStepCurrent">Current status</li>
+                <li data-lang-key="firstStepTarget">Target status</li>
+                <li data-lang-key="firstStepNeeded">Points needed</li>
             </ol>
         </div>
         <div class="section">
-            <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
+            <h2 data-lang-key="sectionTitleStatus">Status input</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
+                <span data-lang-key="labelCurrentStatus">Current status</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">目標ステータス</span>
+                <span data-lang-key="labelTargetStatus">Target status</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
+                <span data-lang-key="labelNeededPoints">Points needed</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
-            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <input type="number" id="neededPoints" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
             <!-- オプション設定（リワード差し引き ＆ 平均パック額） -->
             <div class="option-settings" style="margin-top: 1.2em; padding: 1em; background: rgba(11, 87, 208, 0.05); border-radius: 8px; border: 1px solid var(--input-border-color);">
                 <div style="display: flex; align-items: center; margin-bottom: 0.8em;">
                     <input type="checkbox" id="subtract-rewards" style="width: 18px; height: 18px; margin: 0 8px 0 0; cursor: pointer;">
-                    <label for="subtract-rewards" style="font-size: 0.9em; font-weight: bold; cursor: pointer; color: var(--text-color);" data-lang-key="subtractRewardsLabel">年末までのウィークリーリワード獲得予想（自動加算）を差し引く</label>
+                    <label for="subtract-rewards" style="font-size: 0.9em; font-weight: bold; cursor: pointer; color: var(--text-color);" data-lang-key="subtractRewardsLabel">Subtract estimated weekly rewards until end of year</label>
                 </div>
                 <div>
-                    <label for="pack-amount" style="font-size: 0.9em; font-weight: bold; color: var(--text-color); display: block; margin-bottom: 0.3em;" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
+                    <label for="pack-amount" style="font-size: 0.9em; font-weight: bold; color: var(--text-color); display: block; margin-bottom: 0.3em;" data-lang-key="packAmountLabel">Average pack spending per transaction (optional)</label>
+                    <input type="number" id="pack-amount" placeholder="e.g., 98" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid var(--input-border-color); border-radius: 4px; background: var(--input-bg-color); color: var(--text-color);">
                 </div>
             </div>
         </div>
         <div class="section">
-            <h2 data-lang-key="sectionTitleRate">還元設定</h2>
+            <h2 data-lang-key="sectionTitleRate">Points rate settings</h2>
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
+                <span data-lang-key="labelBaseRate">Base points per $1</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）</span>
+                <span data-lang-key="labelMultiplier">Campaign multiplier (e.g., 3x)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">* The calculator uses whichever is better: your input value or status rate x campaign multiplier.</div>
         </div>
         <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">課金額を計算</button>
+            <button id="calculateButton" data-lang-key="calculateButton">Calculate amount</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" aria-label="計算結果の共有">
-                <button id="copyButton" class="hidden" data-lang-key="copyButton">コピーする</button>
-                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">結果をXでシェア</button>
+                <button id="copyButton" class="hidden" data-lang-key="copyButton">Copy</button>
+                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">Share on X</button>
             </div>
         </div>
     </div>
 
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
+            <h2 data-lang-key="sectionTitleReverse">Reverse mode</h2>
             <label for="amountYen" class="label-with-tooltip">
-                <span data-lang-key="labelAmountYen">課金額（円）</span>
+                <span data-lang-key="labelAmountYen">Amount spent (USD)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
-            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" placeholder="e.g., 50" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
+                <span data-lang-key="labelCurrentStatus">Current status</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
+                <span data-lang-key="labelBaseRate">Base points per $1</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率</span>
+                <span data-lang-key="labelMultiplierReverse">Campaign multiplier</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">* The calculator uses whichever is better: your input value or status rate x campaign multiplier.</div>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">Calculate points</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden">
-                <span data-lang-key="tweetButton">結果をXでシェア</span>
+                <span data-lang-key="tweetButton">Share on X</span>
             </button>
         </div>
     </div>
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
         <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>毎週金曜日はウィークリーリワードの日！</strong> Google Play ストアでリワードを獲得して、今週の日記に記録しましょう。</span>
+            <span data-lang-key="diaryHintCard"><strong>Every Friday is Weekly Reward Day!</strong> Get your rewards from the Google Play Store and record them in your diary.</span>
         </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear">現在の年</h2>
+            <h2 id="currentYear" data-lang-key="currentYearLabel">Current year</h2>
             <button id="nextYearBtn" aria-label="次の年へ">></button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
-            <h3 id="selectedMonth">１月</h3>
+                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">January</h3>
             <div id="weekInputs" class="week-inputs"></div>
         </div>
         <div class="diary-summary" aria-live="polite">
             <div class="summary-box">
-                <h4 data-lang-key="monthlySummaryTitle">月間集計</h4>
+                <h4 data-lang-key="monthlySummaryTitle">Monthly Summary</h4>
                 <dl>
-                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dt data-lang-key="totalLabel">Total:</dt>
                     <dd><span id="monthlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
-                    <dt data-lang-key="averageLabel">平均:</dt>
-                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                    <dt data-lang-key="averageLabel">Average:</dt>
+                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pts/week</span></dd>
                 </dl>
             </div>
             <div class="summary-box">
-                <h4 data-lang-key="yearlySummaryTitle">年間集計</h4>
+                <h4 data-lang-key="yearlySummaryTitle">Yearly Summary</h4>
                 <dl>
-                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dt data-lang-key="totalLabel">Total:</dt>
                     <dd><span id="yearlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
-                    <dt data-lang-key="averageLabel">平均:</dt>
-                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                    <dt data-lang-key="averageLabel">Average:</dt>
+                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pts/week</span></dd>
                 </dl>
             </div>
         </div>
-        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
-            【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
-        </div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] Right now, your diary records are saved only in this browser. If you clear cache or browsing data, the records may be lost.</div>
         <div class="diary-reminder-section">
-            <h4 data-lang-key="reminderTitle">金曜リワード通知（カレンダー登録）</h4>
-            <p data-lang-key="reminderDesc">毎週金曜日にウィークリーリワードを通知するリマインダーを登録できます。リワードの引き忘れを防いで、日記への記録を習慣化しましょう！</p>
+            <h4 data-lang-key="reminderTitle">Friday Reward Notification (Calendar)</h4>
+            <p data-lang-key="reminderDesc">Set up a weekly recurring reminder for the Weekly Reward and make logging a habit.</p>
             <div class="reminder-btn-group">
-                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Google カレンダーに登録</a>
-                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">カレンダーアプリ（iCal）登録</button>
+                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Add to Google Calendar</a>
+                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">Add to Calendar App (iCal)</button>
             </div>
         </div>
         <div class="diary-backup-section">
-            <h4 data-lang-key="backupTitle">データのバックアップ・復元</h4>
+            <h4 data-lang-key="backupTitle">Backup & Restore Data</h4>
             <div class="backup-btn-group">
-                <button id="exportDiaryBtn" data-lang-key="exportBtn">データを書き出す (コピー)</button>
-                <button id="importDiaryBtn" data-lang-key="importBtn">データを読み込む (復元)</button>
+                <button id="exportDiaryBtn" data-lang-key="exportBtn">Export Data (Copy)</button>
+                <button id="importDiaryBtn" data-lang-key="importBtn">Import Data (Restore)</button>
             </div>
             <div id="backup-input-wrapper" class="hidden">
-                <textarea id="diaryBackupData" placeholder="ここに書き出したデータを貼り付けてください" data-lang-placeholder="backupPlaceholder"></textarea>
-                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">復元を実行</button>
+                <textarea id="diaryBackupData" placeholder="Paste your exported data here" data-lang-placeholder="backupPlaceholder"></textarea>
+                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">Execute Restore</button>
             </div>
         </div>
     </div>
 
         <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
-        <h2>What You Can Do with Play Points Calculator</h2>
+        <h2>What You Can Do with Google Play Points Calculator</h2>
         <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how advantageous it will be during multiplier campaigns</strong>.</p>
         <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
         <ul>
@@ -356,18 +353,18 @@
 
     <footer class="page-footer">
         <p class="footer-nav-links">
-          <a href="../info.html" data-lang-key="linkQA">Q&A・あとがき</a>
+          <a href="../info.html" data-lang-key="linkQA">Q&A & Afterword</a>
           <span class="footer-separator">|</span>
-          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">運営者・検証方針</a>
+          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">Operator & Policy</a>
           <span class="footer-separator">|</span>
-          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">プライバシーポリシー</a>
+          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">Privacy Policy</a>
           <span class="footer-separator">|</span>
-          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">利用規約</a>
+          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">Terms of Service</a>
           <span class="footer-separator">|</span>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">Feedback</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: 2026-07-07</p>
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: 2026-07-08</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
@@ -377,8 +374,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260707_2345a"></script>
-<script src="../js/third-party.js?v=20260707_2345a" defer></script>
+<script type="module" src="../js/main.js?v=20260708_2338a"></script>
+<script src="../js/third-party.js?v=20260708_2338a" defer></script>
 
 </body>
 </html>

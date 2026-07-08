@@ -10,7 +10,7 @@ const LOCALES = {
     blog: 'Guides',
     back: 'Back to calculator',
     author: 'Katakata',
-    siteName: 'Play Points Calculator',
+    siteName: 'Google Play Points Calculator',
     relatedTitle: 'Related guides',
     regionNoteTitle: 'Regional note',
     lastUpdatedLabel: 'Last updated',
@@ -33,7 +33,7 @@ const LOCALES = {
     blog: '가이드',
     back: '계산기로 돌아가기',
     author: 'Katakata',
-    siteName: 'Play Points 계산기',
+    siteName: 'Google Play Points 계산기',
     relatedTitle: '함께 확인할 가이드',
     regionNoteTitle: '국가별 확인',
     lastUpdatedLabel: '업데이트',
@@ -54,7 +54,7 @@ const LOCALES = {
     blog: '指南',
     back: '返回計算機',
     author: 'Katakata',
-    siteName: 'Play Points 計算機',
+    siteName: 'Google Play Points 計算器',
     relatedTitle: '相關指南',
     regionNoteTitle: '地區確認',
     lastUpdatedLabel: '更新日期',
@@ -139,6 +139,79 @@ const PAGE_TYPES = {
         ['這能保證官方鑽石條件嗎？', '不能。這是依輸入值估算，官方進度仍以 Google Play App 顯示為準。'],
         ['可以輸入活動倍率嗎？', '可以，但只有實際符合活動資格的消費才適合使用倍率估算。'],
         ['鑽石等級一定值得嗎？', '不一定，取決於你是否真的會使用相關回饋。']
+      ]
+    }
+  },
+  platinum: {
+    slug: 'status/platinum',
+    mode: 'main',
+    query: 'status=1.2&target=platinum&points=1000&multiplier=1',
+    campaign: 'intl_status_platinum',
+    jaPath: '/status/platinum/',
+    en: {
+      title: 'Google Play Points Platinum cost calculator',
+      description: 'Estimate how much spending may be needed to reach Google Play Points Platinum, with US, Korea, Taiwan, and Japan region notes.',
+      eyebrow: 'Platinum status planning',
+      h1: 'How much does it take to reach Google Play Points Platinum?',
+      lead: 'Platinum is one of the most common Play Points goals because it can feel close enough to plan around. The useful estimate starts with missing points, then checks status rate, promotion multiplier, and country-specific eligibility.',
+      cta: 'Calculate Platinum progress',
+      secondary: 'Compare Diamond status',
+      secondaryHref: '/en/status/diamond/',
+      summary: ['Preset: Gold to Platinum', 'Best for: users planning the next realistic tier', 'Check: missing points, status rate, and local rules'],
+      sections: [
+        ['Start from missing points', 'Use the remaining points shown in Google Play, not the total points you have earned so far. This keeps the estimate tied to the next status target.'],
+        ['Use your local status rate', 'Google Play Points status benefits and point rates can differ by country or account. For US, Korea, Taiwan, and Japan users, the calculator should be treated as a planning aid until the Google Play app confirms the official progress.'],
+        ['Compare normal earning with campaigns', 'Run the estimate at 1x first, then compare 2x or 3x only when the purchase is actually eligible. A promotion that does not apply should not change the decision.'],
+        ['Check whether Platinum is worth the extra spend', 'If the missing amount is close to a purchase you already planned, Platinum may be a reasonable goal. If it requires new spending only for status, compare the reward value before buying.']
+      ],
+      faq: [
+        ['Is this a US Google Play Points Platinum calculator?', 'It is written for international users, including the US, but it does not replace the official Google Play progress shown in your account.'],
+        ['Can I use this for Korea or Taiwan?', 'Yes, as an estimate. Confirm the local status rate, campaign terms, and eligible purchase amount in the Google Play app.'],
+        ['Should I wait for a promotion before trying for Platinum?', 'If the purchase can wait and the promotion clearly applies, comparing 1x and 2x or 3x can show whether waiting changes the result.']
+      ]
+    },
+    ko: {
+      title: 'Google Play Points 플래티넘 필요 금액 계산',
+      description: 'Google Play Points 플래티넘까지 남은 포인트와 필요 금액을 계산하고 한국, 미국, 대만, 일본의 조건 차이를 확인합니다.',
+      eyebrow: '플래티넘 등급 계획',
+      h1: 'Google Play Points 플래티넘은 얼마가 필요할까요?',
+      lead: '플래티넘은 현실적인 목표로 검색되는 경우가 많습니다. 남은 포인트, 현재 등급 적립률, 캠페인 배율, 국가별 대상 조건을 함께 확인해야 과소비를 피할 수 있습니다.',
+      cta: '플래티넘까지 계산하기',
+      secondary: '다이아몬드 계산 보기',
+      secondaryHref: '/ko/status/diamond/',
+      summary: ['초기 조건: 골드에서 플래티넘', '추천: 다음 등급을 계획하는 사용자', '확인: 남은 포인트, 배율, 지역 조건'],
+      sections: [
+        ['남은 포인트부터 입력', '누적 포인트가 아니라 Google Play 앱에 표시된 목표까지 남은 포인트를 기준으로 입력하세요.'],
+        ['한국 조건을 앱에서 확인', 'Google Play Points 적립률, 혜택, 캠페인은 국가나 계정에 따라 다를 수 있습니다. 계산기는 계획용으로 쓰고 최종 조건은 앱에서 확인하세요.'],
+        ['캠페인 배율 비교', '먼저 1배 기준으로 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하는 편이 안전합니다.'],
+        ['등급 가치 판단', '예정된 결제와 가까운 금액이면 플래티넘 목표가 의미 있을 수 있지만, 등급만을 위한 추가 결제라면 혜택 가치와 비교해야 합니다.']
+      ],
+      faq: [
+        ['한국 Google Play Points 플래티넘 계산에 쓸 수 있나요?', '예상치로 사용할 수 있습니다. 단, 공식 진행 상황과 대상 조건은 Google Play 앱 기준입니다.'],
+        ['미국이나 대만 조건도 같나요?', '국가와 계정에 따라 다를 수 있으므로 같은 숫자를 그대로 적용하지 말고 앱에서 확인하세요.'],
+        ['캠페인을 기다리는 것이 좋나요?', '예정된 결제가 있고 캠페인 대상이 확실하다면 1배와 2배 또는 3배를 비교해 볼 가치가 있습니다.']
+      ]
+    },
+    tw: {
+      title: 'Google Play Points 白金等級需要多少？',
+      description: '估算 Google Play Points 白金等級所需點數與金額，並確認台灣、美國、韓國、日本的地區差異。',
+      eyebrow: '白金等級規劃',
+      h1: 'Google Play Points 白金等級需要多少？',
+      lead: '白金是許多使用者會先規劃的等級。請先確認還差多少點，再比較目前等級回饋、活動倍率與所在地區的適用條件。',
+      cta: '計算白金等級進度',
+      secondary: '比較鑽石等級',
+      secondaryHref: '/tw/status/diamond/',
+      summary: ['預設: 金級到白金', '適合: 規劃下一個等級', '確認: 剩餘點數、倍率、地區條件'],
+      sections: [
+        ['從剩餘點數開始', '請輸入 Google Play App 顯示的目標剩餘點數，而不是累積總點數。'],
+        ['確認台灣適用條件', 'Google Play Points 的回饋率、優惠與活動可能因國家或帳號不同。計算結果應作為規劃參考，最終仍以 App 為準。'],
+        ['比較一般與活動倍率', '先以 1 倍建立基準，只有在該筆消費確定符合活動時，才用 2 倍或 3 倍估算。'],
+        ['判斷白金是否值得', '如果金額接近原本計畫的消費，白金可能值得考慮；如果只是為了等級而新增支出，應先比較回饋價值。']
+      ],
+      faq: [
+        ['這能用來估算台灣 Google Play Points 白金嗎？', '可以作為估算，但官方進度與適用條件仍以 Google Play App 顯示為準。'],
+        ['美國或韓國也能參考嗎？', '可以參考計算方式，但國家與帳號條件可能不同，請不要直接套用同一數字。'],
+        ['應該等活動再衝白金嗎？', '如果原本就有計畫消費，且活動資格明確，比較 1 倍與 2 倍或 3 倍會更好判斷。']
       ]
     }
   },
@@ -470,7 +543,7 @@ const ARTICLE_LABELS = {
     nextStep: 'Next step',
     authorAria: 'Article author',
     authorLabel: 'Article author',
-    authorNameSuffix: 'Play Points Calculator editor',
+    authorNameSuffix: 'Google Play Points Calculator editor',
     authorBody: 'This guide is written as a practical planning note. Google Play terms, rewards, campaigns, and eligibility can change by country or account, so official Google Play screens should decide the final action.',
     backToGuides: 'Back to guides',
     calculatorTop: 'Calculator top',
@@ -487,7 +560,7 @@ const ARTICLE_LABELS = {
     nextStep: '다음 단계',
     authorAria: '글쓴이',
     authorLabel: '글쓴이',
-    authorNameSuffix: 'Play Points 계산기 편집자',
+    authorNameSuffix: 'Google Play Points 계산기 편집자',
     authorBody: '이 글은 실제 결제 판단을 돕기 위한 실용 가이드입니다. Google Play 조건, 리워드, 캠페인, 대상 결제는 국가와 계정에 따라 달라질 수 있으므로 공식 화면을 최종 기준으로 보세요.',
     backToGuides: '가이드 목록',
     calculatorTop: '계산기 홈',
@@ -504,7 +577,7 @@ const ARTICLE_LABELS = {
     nextStep: '下一步',
     authorAria: '文章作者',
     authorLabel: '文章作者',
-    authorNameSuffix: 'Play Points 計算機編輯',
+    authorNameSuffix: 'Google Play Points 計算器編輯',
     authorBody: '這篇文章是為了協助實際判斷而寫的規劃筆記。Google Play 條款、回饋、活動與適用資格可能因國家、地區或帳號而不同，最終仍以官方畫面為準。',
     backToGuides: '返回指南',
     calculatorTop: '計算機首頁',
@@ -516,10 +589,11 @@ const KO_ARTICLES = [
   {
     file: 'ko/articles/google-play-points-not-showing.html',
     lang: 'ko',
-    siteName: 'Play Points 계산기',
+    siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
     ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
     nextLinks: [
+      ['/ko/status/platinum/', '플래티넘 필요 금액 계산'],
       ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
       ['/ko/campaign/2x/', '2배 캠페인 계산'],
       ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
@@ -547,10 +621,11 @@ const KO_ARTICLES = [
   {
     file: 'ko/articles/google-play-points-levels.html',
     lang: 'ko',
-    siteName: 'Play Points 계산기',
+    siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
     ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
     nextLinks: [
+      ['/ko/status/platinum/', '플래티넘 필요 금액 계산'],
       ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
       ['/ko/amount/10000/', '10,000엔 포인트 계산'],
       ['/ko/articles/google-play-points-not-showing.html', '포인트가 보이지 않을 때'],
@@ -581,10 +656,11 @@ const TW_ARTICLES = [
   {
     file: 'tw/articles/google-play-points-not-showing.html',
     lang: 'zh-TW',
-    siteName: 'Play Points 計算機',
+    siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
     ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
     nextLinks: [
+      ['/tw/status/platinum/', '白金等級需要多少'],
       ['/tw/status/diamond/', '鑽石等級需要多少'],
       ['/tw/campaign/2x/', '2 倍活動計算'],
       ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
@@ -612,10 +688,11 @@ const TW_ARTICLES = [
   {
     file: 'tw/articles/google-play-points-levels.html',
     lang: 'zh-TW',
-    siteName: 'Play Points 計算機',
+    siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
     ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
     nextLinks: [
+      ['/tw/status/platinum/', '白金等級需要多少'],
       ['/tw/status/diamond/', '鑽石等級需要多少'],
       ['/tw/amount/10000/', '10,000 日圓點數估算'],
       ['/tw/articles/google-play-points-not-showing.html', '點數沒有顯示時'],
@@ -965,7 +1042,7 @@ function renderArticle(article, assetVersions, todayStr) {
   const lang = article.lang || 'en';
   const labels = article.labels || ARTICLE_LABELS.en;
   const authorName = article.author || 'Katakata';
-  const siteName = article.siteName || 'Play Points Calculator';
+  const siteName = article.siteName || 'Google Play Points Calculator';
   const ctaHref = article.ctaHref || '/en/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta';
   const nextLinks = article.nextLinks || [
     ['/en/status/diamond/', 'Diamond cost calculator'],

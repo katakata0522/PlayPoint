@@ -74,12 +74,17 @@ export const CALC_PURE = {
 export const CALC = {
     relatedArticleGroups: {
         platinum: [
+            { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
+            { href: 'status/platinum/', title: 'プラチナ到達はいくら必要？' },
+            { href: 'status/diamond/', title: 'ダイヤモンド到達はいくら必要？' },
             { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
             { href: 'articles/2025-12-25-weekly-reward.html', title: 'ウィークリーリワードの受け取り方' },
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' },
             { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
         ],
         diamond: [
+            { href: 'status/diamond/', title: 'ダイヤモンド到達はいくら必要？' },
+            { href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' },
             { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドは本当にお得？' },
             { href: 'articles/2025-12-25-diamond-vip.html', title: 'ダイヤモンドの体験価値' },
             { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
@@ -103,9 +108,9 @@ export const CALC = {
         const target = String(targetStatusLabel || '').toLowerCase();
         const candidates = [];
         if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
-            candidates.push(...this.relatedArticleGroups.diamond.slice(0, 2));
+            candidates.push(...this.relatedArticleGroups.diamond.slice(0, 3));
         } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
-            candidates.push(...this.relatedArticleGroups.platinum.slice(0, 2));
+            candidates.push(...this.relatedArticleGroups.platinum.slice(0, 3));
         }
         if (multiplier > 1) candidates.push(...this.relatedArticleGroups.campaign.slice(0, 2));
         candidates.push(...this.relatedArticleGroups.default);
