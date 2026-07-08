@@ -124,6 +124,13 @@
                     <!-- STEP 2: 経費と頒布価格 -->
                     <div class="form-group-wrapper">
                         <h3 class="form-step-title"><span class="step-num">2</span>経費と頒布価格を設定</h3>
+                        <div class="distribution-style-selector">
+                            <span class="selector-label">頒布スタイル:</span>
+                            <div class="chip-group">
+                                <button type="button" id="btn-dist-event" class="btn-chip active">🎪 イベント参加</button>
+                                <button type="button" id="btn-dist-online" class="btn-chip">📦 通販・委託のみ</button>
+                            </div>
+                        </div>
                         <div class="form-row col-2">
                             <div class="form-group">
                                 <label for="event-fee">イベント参加費・スペース代</label>
@@ -249,6 +256,10 @@
                             <div class="status-header">
                                 <span id="profit-status-text" class="status-badge">赤字ゾーン</span>
                                 <span id="profit-amount-display" class="status-amount font-outfit" aria-live="polite">-10,000円</span>
+                            </div>
+                            <div class="status-sellout-row">
+                                <span id="sellout-profit-label">完売（--部）時の想定収支：</span>
+                                <strong id="sellout-profit-display" class="font-outfit">--</strong>
                             </div>
                             <div class="progress-bar-container">
                                 <div id="profit-progress-bar" class="progress-bar" style="width: 50%;"></div>

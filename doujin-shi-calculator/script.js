@@ -167,6 +167,8 @@ const useConsignmentEl = $('use-consignment');
 const btnQuick500El    = $('btn-quick-500');
 const btnQuick1000El   = $('btn-quick-1000');
 const btnQuickAutoEl   = $('btn-quick-auto');
+const btnDistEventEl   = $('btn-dist-event');
+const btnDistOnlineEl  = $('btn-dist-online');
 
 const customCircleEl      = $('custom-circle');
 const customTitleEl       = $('custom-title');
@@ -184,6 +186,8 @@ const snsWarningBoxEl        = $('sns-warning-box');
 
 const totalExpensesDisplayEl = $('total-expenses-display');
 const unitCostDisplayEl      = $('unit-cost-display');
+const selloutProfitLabelEl   = $('sellout-profit-label');
+const selloutProfitDisplayEl = $('sellout-profit-display');
 
 const salesSliderEl          = $('sales-slider');
 const salesCountInputEl      = $('sales-count-input');
@@ -439,6 +443,9 @@ function _calcProfit({ printCost, eventFee, otherExp, volume, sellingPrice, sale
     const salesRevenue  = Math.round(salesCount * sellingPrice * revenueRate);
     const netProfit     = salesRevenue - totalExpenses;
 
+    const selloutRevenue = Math.round(volume * sellingPrice * revenueRate);
+    const selloutProfit  = selloutRevenue - totalExpenses;
+
     let breakevenSales      = 0;
     let isPossibleBreakeven = false;
     if (sellingPrice > 0) {
@@ -446,14 +453,14 @@ function _calcProfit({ printCost, eventFee, otherExp, volume, sellingPrice, sale
         isPossibleBreakeven = breakevenSales <= volume;
     }
 
-    return { totalExpenses, unitCost, salesRevenue, netProfit, breakevenSales, isPossibleBreakeven };
+    return { totalExpenses, unitCost, salesRevenue, netProfit, breakevenSales, isPossibleBreakeven, selloutProfit };
 }
 
 /** 計算結果を画面に描画する */
 function _renderCalcResults(inputs, preds, profit) {
     const { volume, salesCount, sellingPrice } = inputs;
     const { safeVal, standardVal, aggressiveVal } = preds;
-    const { totalExpenses, unitCost, netProfit, breakevenSales, isPossibleBreakeven } = profit;
+    const { totalExpenses, unitCost, netProfit, breakevenSales, isPossibleBreakeven, selloutProfit } = profit;
 
     // 推奨部数
     predSafeValueEl.textContent       = safeVal.toLocaleString('ja-JP');
@@ -481,6 +488,14 @@ function _renderCalcResults(inputs, preds, profit) {
         breakevenLineEl.style.display = 'block';
     } else {
         breakevenLineEl.style.display = 'none';
+    }
+
+    // 完売時想定収支の描画
+    if (selloutProfitDisplayEl && selloutProfitLabelEl) {
+        selloutProfitLabelEl.textContent = `完売（${volume.toLocaleString('ja-JP')}部）時の想定収支：`;
+        const prefix = selloutProfit >= 0 ? '+' : '-';
+        selloutProfitDisplayEl.textContent = `${prefix}${yen(Math.abs(selloutProfit))}`;
+        selloutProfitDisplayEl.className = selloutProfit >= 0 ? 'gain-text' : 'loss-text';
     }
 
     // プログレスバー
@@ -1138,7 +1153,7 @@ btnResetAllEl?.addEventListener('click', () => {
     pixivBookmarksEl.value   = '';
     eventScaleEl.value       = 'medium';
     pastSalesEl.value        = '';
-    eventFeeEl.value         = '8000';
+    eventFeeEl.value         = '7000';
     otherExpensesEl.value    = '5000';
     sellingPriceEl.value     = '500';
     useConsignmentEl.checked = false;
@@ -1148,6 +1163,10 @@ btnResetAllEl?.addEventListener('click', () => {
     if (customEventDateEl) customEventDateEl.value = '';
     salesSliderEl.value      = '50';
     salesCountInputEl.value  = '50';
+
+    // 頒布スタイルチップのリセット
+    btnDistEventEl?.classList.add('active');
+    btnDistOnlineEl?.classList.remove('active');
 
     // アコーディオンもリセット
     if (accordionSnsPredictEl) {
@@ -1163,6 +1182,41 @@ btnResetAllEl?.addEventListener('click', () => {
     isAutoCostEnabled = true;
     updateAutoPrintCost();
     calculateAll();
+});
+
+// --- 頒布スタイル切り替えトグル ---
+btnDistEventEl?.addEventListener('click', () => {
+    btnDistEventEl.classList.add('active');
+    btnDistOnlineEl?.classList.remove('active');
+    
+    eventFeeEl.value = '7000';
+    otherExpensesEl.value = '5000';
+    useConsignmentEl.checked = false;
+    
+    calculateAll();
+});
+
+btnDistOnlineEl?.addEventListener('click', () => {
+    btnDistEventEl?.classList.remove('active');
+    btnDistOnlineEl.classList.add('active');
+    
+    eventFeeEl.value = '0';
+    otherExpensesEl.value = '0';
+    useConsignmentEl.checked = true;
+    
+    calculateAll();
+});
+
+// 手動で経費が編集された場合はチップのアクティブ状態を消す
+[eventFeeEl, otherExpensesEl, useConsignmentEl].forEach(el => {
+    el?.addEventListener('input', () => {
+        btnDistEventEl?.classList.remove('active');
+        btnDistOnlineEl?.classList.remove('active');
+    });
+    el?.addEventListener('change', () => {
+        btnDistEventEl?.classList.remove('active');
+        btnDistOnlineEl?.classList.remove('active');
+    });
 });
 
 // --- アコーディオンの開閉監視 ---

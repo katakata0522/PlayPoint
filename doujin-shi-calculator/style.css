@@ -1932,3 +1932,82 @@ input[type="date"]:focus {
     transform: translateY(0);
 }
 
+/* ============================================================
+   頒布スタイル切替（チップボタン）
+   ============================================================ */
+.distribution-style-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+.selector-label {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.chip-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-chip {
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border: 1.5px solid var(--primary-light);
+    border-radius: 30px;
+    background-color: transparent;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-chip:hover {
+    background-color: var(--primary-bg);
+}
+
+.btn-chip.active {
+    background-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.25);
+}
+
+/* ============================================================
+   損益カード内：完売時収支行
+   ============================================================ */
+.status-sellout-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    margin-top: -6px;
+    margin-bottom: 14px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+#sellout-profit-label {
+    color: var(--text-muted);
+}
+
+#sellout-profit-display {
+    font-size: 0.95rem;
+}
+
+#sellout-profit-display.gain-text {
+    color: var(--primary);
+}
+
+#sellout-profit-display.loss-text {
+    color: var(--danger);
+}
+
+
