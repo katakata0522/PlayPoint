@@ -33,8 +33,8 @@
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260709_0440a">
-    <link rel="stylesheet" href="../style.css?v=20260709_0440a">
+    <link rel="modulepreload" href="../js/main.js?v=20260709_0512a">
+    <link rel="stylesheet" href="../style.css?v=20260709_0512a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -97,6 +97,14 @@
         },
         {
           "@type": "Question",
+          "name": "這是官方內容嗎？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "不是。本站不是 Google 官方營運的頁面，而是個人製作的非官方試算工具。計算結果請作為參考，最新等級條件與優惠內容請以 Google Play 官方畫面為準。"
+          }
+        },
+        {
+          "@type": "Question",
           "name": "每週獎勵紀錄的資料會被儲存嗎？",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -139,8 +147,8 @@
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
-    <p class="site-alias" data-lang-key="siteAlias">別稱: Google Play 點數計算器 / 非官方工具</p>
     <p id="site-description" class="site-description" data-lang-key="siteDescription">可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！</p>
+    <p class="legacy-search-name" data-lang-key="legacySearchName">如果你是搜尋 Google Play 點數計算器來的，也可以在這個頁面完成同樣的試算。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">一般計算</button>
@@ -149,14 +157,6 @@
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
-        <div class="first-step-guide" aria-label="最初に入力する項目">
-            <p class="first-step-guide__title" data-lang-key="firstStepTitle">まずは3つだけ入力</p>
-            <ol>
-                <li data-lang-key="firstStepCurrent">現在のステータス</li>
-                <li data-lang-key="firstStepTarget">目標ステータス</li>
-                <li data-lang-key="firstStepNeeded">目標までの必要ポイント</li>
-            </ol>
-        </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -180,12 +180,8 @@
             </label>
             <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
-            <!-- オプション設定（リワード差し引き ＆ 平均パック額） -->
+            <!-- オプション設定（平均パック額） -->
             <div class="option-settings">
-                <div class="option-toggle-row">
-                    <input type="checkbox" id="subtract-rewards">
-                    <label for="subtract-rewards" data-lang-key="subtractRewardsLabel">年末までのウィークリーリワード獲得予想（自動加算）を差し引く</label>
-                </div>
                 <div>
                     <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
                     <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
@@ -351,6 +347,10 @@
             <p>A. 輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。</p>
         </div>
         <div class="faq-item">
+            <h3>Q. 這是官方內容嗎？</h3>
+            <p>A. 不是。本站不是 Google 官方營運的頁面，而是個人製作的非官方試算工具。計算結果請作為參考，最新等級條件與優惠內容請以 Google Play 官方畫面為準。</p>
+        </div>
+        <div class="faq-item">
             <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
             <p>A. 您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。</p>
         </div>
@@ -380,8 +380,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260709_0440a"></script>
-<script src="../js/third-party.js?v=20260709_0440a" defer></script>
+<script type="module" src="../js/main.js?v=20260709_0512a"></script>
+<script src="../js/third-party.js?v=20260709_0512a" defer></script>
 
 </body>
 </html>

@@ -33,8 +33,8 @@
     <meta name="twitter:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260709_0440a">
-    <link rel="stylesheet" href="../style.css?v=20260709_0440a">
+    <link rel="modulepreload" href="../js/main.js?v=20260709_0512a">
+    <link rel="stylesheet" href="../style.css?v=20260709_0512a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -97,6 +97,14 @@
         },
         {
           "@type": "Question",
+          "name": "이 콘텐츠는 공식 페이지인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 이 사이트는 Google이 운영하는 공식 페이지가 아니라 개인이 운영하는 비공식 계산 도구입니다. 계산 결과는 참고용으로만 사용하고, 최신 등급 조건과 혜택은 Google Play 공식 화면에서 확인해 주세요."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "주간 리워드 일지 데이터는 저장되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -139,8 +147,8 @@
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 계산기</h1>
-    <p class="site-alias" data-lang-key="siteAlias">별칭: 구글 플레이 포인트 계산기 / 비공식 도구</p>
     <p id="site-description" class="site-description" data-lang-key="siteDescription">현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!</p>
+    <p class="legacy-search-name" data-lang-key="legacySearchName">구글 플레이 포인트 계산기를 찾으셨다면 이 페이지에서 같은 계산을 할 수 있습니다.</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">일반 계산</button>
@@ -149,14 +157,6 @@
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
-        <div class="first-step-guide" aria-label="最初に入力する項目">
-            <p class="first-step-guide__title" data-lang-key="firstStepTitle">まずは3つだけ入力</p>
-            <ol>
-                <li data-lang-key="firstStepCurrent">現在のステータス</li>
-                <li data-lang-key="firstStepTarget">目標ステータス</li>
-                <li data-lang-key="firstStepNeeded">目標までの必要ポイント</li>
-            </ol>
-        </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -180,12 +180,8 @@
             </label>
             <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
-            <!-- オプション設定（リワード差し引き ＆ 平均パック額） -->
+            <!-- オプション設定（平均パック額） -->
             <div class="option-settings">
-                <div class="option-toggle-row">
-                    <input type="checkbox" id="subtract-rewards">
-                    <label for="subtract-rewards" data-lang-key="subtractRewardsLabel">年末までのウィークリーリワード獲得予想（自動加算）を差し引く</label>
-                </div>
                 <div>
                     <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
                     <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
@@ -351,6 +347,10 @@
             <p>A. 결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다.</p>
         </div>
         <div class="faq-item">
+            <h3>Q. 이 콘텐츠는 공식 페이지인가요?</h3>
+            <p>A. 아니요. 이 사이트는 Google이 운영하는 공식 페이지가 아니라 개인이 운영하는 비공식 계산 도구입니다. 계산 결과는 참고용으로만 사용하고, 최신 등급 조건과 혜택은 Google Play 공식 화면에서 확인해 주세요.</p>
+        </div>
+        <div class="faq-item">
             <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
             <p>A. 입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다.</p>
         </div>
@@ -380,8 +380,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260709_0440a"></script>
-<script src="../js/third-party.js?v=20260709_0440a" defer></script>
+<script type="module" src="../js/main.js?v=20260709_0512a"></script>
+<script src="../js/third-party.js?v=20260709_0512a" defer></script>
 
 </body>
 </html>

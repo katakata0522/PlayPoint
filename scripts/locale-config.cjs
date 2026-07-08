@@ -18,6 +18,7 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points Calculator',
             siteAlias: 'Also known as Play Points Calculator / unofficial tool',
             siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.',
+            legacySearchName: 'If you searched for Play Points Calculator, this is the same calculator page.',
             linkAttention: '⚠️ Country notes',
             linkLatest: '🆕 Latest Hub',
             linkArticles: '📝 Articles',
@@ -101,6 +102,14 @@ function createLocales(todayStr) {
         },
         {
           "@type": "Question",
+          "name": "Is this an official Google page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This site is an unofficial personal tool and is not operated by Google. Use the calculation result as an estimate, and check the official Google Play screen for the latest status conditions and benefits."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Is my weekly reward diary data saved?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -121,6 +130,10 @@ function createLocales(todayStr) {
         <div class="faq-item">
             <h3>Q. What is the reverse calculation mode?</h3>
             <p>A. By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. Is this an official Google page?</h3>
+            <p>A. No. This site is an unofficial personal tool and is not operated by Google. Use the calculation result as an estimate, and check the official Google Play screen for the latest status conditions and benefits.</p>
         </div>
         <div class="faq-item">
             <h3>Q. Is my weekly reward diary data saved?</h3>
@@ -161,6 +174,7 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points 계산기',
             siteAlias: '별칭: 구글 플레이 포인트 계산기 / 비공식 도구',
             siteDescription: '현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!',
+            legacySearchName: '구글 플레이 포인트 계산기를 찾으셨다면 이 페이지에서 같은 계산을 할 수 있습니다.',
             tabMain: '일반 계산',
             tabReverse: '역산 모드',
             tabDiary: '주간 리워드 일기'
@@ -189,6 +203,14 @@ function createLocales(todayStr) {
         },
         {
           "@type": "Question",
+          "name": "이 콘텐츠는 공식 페이지인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 이 사이트는 Google이 운영하는 공식 페이지가 아니라 개인이 운영하는 비공식 계산 도구입니다. 계산 결과는 참고용으로만 사용하고, 최신 등급 조건과 혜택은 Google Play 공식 화면에서 확인해 주세요."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "주간 리워드 일지 데이터는 저장되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -209,6 +231,10 @@ function createLocales(todayStr) {
         <div class="faq-item">
             <h3>Q. 역산 모드는 무엇인가요?</h3>
             <p>A. 결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다.</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 이 콘텐츠는 공식 페이지인가요?</h3>
+            <p>A. 아니요. 이 사이트는 Google이 운영하는 공식 페이지가 아니라 개인이 운영하는 비공식 계산 도구입니다. 계산 결과는 참고용으로만 사용하고, 최신 등급 조건과 혜택은 Google Play 공식 화면에서 확인해 주세요.</p>
         </div>
         <div class="faq-item">
             <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
@@ -249,6 +275,7 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points 計算器',
             siteAlias: '別稱: Google Play 點數計算器 / 非官方工具',
             siteDescription: '可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！',
+            legacySearchName: '如果你是搜尋 Google Play 點數計算器來的，也可以在這個頁面完成同樣的試算。',
             tabMain: '一般計算',
             tabReverse: '逆算模式',
             tabDiary: '每週獎勵日記'
@@ -277,6 +304,14 @@ function createLocales(todayStr) {
         },
         {
           "@type": "Question",
+          "name": "這是官方內容嗎？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "不是。本站不是 Google 官方營運的頁面，而是個人製作的非官方試算工具。計算結果請作為參考，最新等級條件與優惠內容請以 Google Play 官方畫面為準。"
+          }
+        },
+        {
+          "@type": "Question",
           "name": "每週獎勵紀錄的資料會被儲存嗎？",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -297,6 +332,10 @@ function createLocales(todayStr) {
         <div class="faq-item">
             <h3>Q. 什麼是逆算模式？</h3>
             <p>A. 輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。</p>
+        </div>
+        <div class="faq-item">
+            <h3>Q. 這是官方內容嗎？</h3>
+            <p>A. 不是。本站不是 Google 官方營運的頁面，而是個人製作的非官方試算工具。計算結果請作為參考，最新等級條件與優惠內容請以 Google Play 官方畫面為準。</p>
         </div>
         <div class="faq-item">
             <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
