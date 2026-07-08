@@ -106,7 +106,7 @@ const totalExpensesDisplayEl = document.getElementById('total-expenses-display')
 const unitCostDisplayEl = document.getElementById('unit-cost-display');
 
 const salesSliderEl = document.getElementById('sales-slider');
-const sliderValDisplayEl = document.getElementById('slider-val-display');
+const salesCountInputEl = document.getElementById('sales-count-input');
 const sliderHalfTickEl = document.getElementById('slider-half-tick');
 const sliderMaxTickEl = document.getElementById('slider-max-tick');
 
@@ -118,6 +118,7 @@ const breakevenLineEl = document.getElementById('breakeven-line');
 const breakevenSalesDisplayEl = document.getElementById('breakeven-sales-display');
 const profitAdviceTextEl = document.getElementById('profit-advice-text');
 
+const btnResetAllEl = document.getElementById('btn-reset-all');
 const btnExportEl = document.getElementById('btn-export');
 const exportCanvasEl = document.getElementById('export-canvas');
 
@@ -382,12 +383,12 @@ function calculateAll() {
     let standardVal = Math.round((basePredict * 1.0 + 15) * scaleFactor);
     let aggressiveVal = Math.round((basePredict * 1.4 + 25) * scaleFactor);
     
-    // 丸め処理 (5部単位)
+    // 丸め処理 (5部単位、ただし予測値が完全に0の場合は0にする)
     const roundTo5 = (val) => Math.max(10, Math.round(val / 5) * 5);
     
-    safeVal = roundTo5(safeVal);
-    standardVal = roundTo5(standardVal);
-    aggressiveVal = roundTo5(aggressiveVal);
+    safeVal = basePredict > 0 ? roundTo5(safeVal) : 0;
+    standardVal = basePredict > 0 ? roundTo5(standardVal) : 0;
+    aggressiveVal = basePredict > 0 ? roundTo5(aggressiveVal) : 0;
     
     // 推奨値の画面表示
     predSafeValueEl.textContent = safeVal.toLocaleString();
@@ -416,7 +417,11 @@ function calculateAll() {
     
     const salesCount = Math.max(0, parseInt(salesSliderEl.value) || 0);
     salesSliderEl.setAttribute('aria-valuenow', salesCount.toString());
-    sliderValDisplayEl.textContent = salesCount;
+    
+    // 双方向入力インプットの同期 (フォーカスしていない側を更新)
+    if (document.activeElement !== salesCountInputEl) {
+        salesCountInputEl.value = salesCount;
+    }
     
     // 収支計算
     const isConsignment = useConsignmentEl.checked;
@@ -515,16 +520,26 @@ immediateInputs.forEach(el => {
     }
 });
 
+// クイック価格ボタンのアクティブクラス更新関数
+function updateQuickPriceActiveBadge(activeButton) {
+    [btnQuick500El, btnQuick1000El, btnQuickAutoEl].forEach(btn => {
+        if (btn) btn.classList.remove('active');
+    });
+    if (activeButton) activeButton.classList.add('active');
+}
+
 // クイック価格ボタンイベント
 if (btnQuick500El) {
     btnQuick500El.addEventListener('click', () => {
         sellingPriceEl.value = 500;
+        updateQuickPriceActiveBadge(btnQuick500El);
         calculateAll();
     });
 }
 if (btnQuick1000El) {
     btnQuick1000El.addEventListener('click', () => {
         sellingPriceEl.value = 1000;
+        updateQuickPriceActiveBadge(btnQuick1000El);
         calculateAll();
     });
 }
@@ -541,6 +556,7 @@ if (btnQuickAutoEl) {
         let recommendedPrice = Math.ceil((rawUnit * 1.5) / 50) * 50;
         recommendedPrice = Math.max(100, recommendedPrice);
         sellingPriceEl.value = recommendedPrice;
+        updateQuickPriceActiveBadge(btnQuickAutoEl);
         calculateAll();
     });
 }
@@ -553,6 +569,67 @@ const debouncedInputs = [
 debouncedInputs.forEach(el => {
     el.addEventListener('input', debouncedCalculateAll);
 });
+
+// 販売価格の手動編集時、アクティブバッジを解除
+sellingPriceEl.addEventListener('input', () => {
+    updateQuickPriceActiveBadge(null);
+});
+
+// シミュレーション部数入力とスライダーの双方向同期
+salesCountInputEl.addEventListener('input', () => {
+    const maxVal = parseInt(salesSliderEl.max) || 100;
+    let inputVal = parseInt(salesCountInputEl.value) || 0;
+    
+    // 入力制限（上限クランプ）
+    if (inputVal > maxVal) {
+        inputVal = maxVal;
+        salesCountInputEl.value = maxVal;
+    }
+    if (inputVal < 0) {
+        inputVal = 0;
+        salesCountInputEl.value = 0;
+    }
+    
+    salesSliderEl.value = inputVal;
+    calculateAll();
+});
+
+// 全てリセットボタンの処理
+if (btnResetAllEl) {
+    btnResetAllEl.addEventListener('click', () => {
+        // フォーム初期化 (デフォルト設定)
+        bookSizeEl.value = 'A5';
+        printTypeEl.value = 'monochrome';
+        bookPagesEl.value = '32';
+        printVolumeEl.value = '100';
+        
+        snsFollowersEl.value = '';
+        snsLikesEl.value = '';
+        pixivBookmarksEl.value = '';
+        eventScaleEl.value = 'medium';
+        pastSalesEl.value = '';
+        
+        eventFeeEl.value = '8000';
+        otherExpensesEl.value = '5000';
+        sellingPriceEl.value = '500';
+        useConsignmentEl.checked = false;
+        
+        customCircleEl.value = '';
+        customTitleEl.value = '';
+        
+        // クイックバッジ初期化
+        updateQuickPriceActiveBadge(null);
+        
+        // スライダーの初期値
+        salesSliderEl.value = '50';
+        salesCountInputEl.value = '50';
+        
+        // 計算状態初期化
+        isAutoCostEnabled = true;
+        updateAutoPrintCost();
+        calculateAll();
+    });
+}
 
 // モーダル制御関数
 function openModal(imgSrc, fallbackUrl) {
