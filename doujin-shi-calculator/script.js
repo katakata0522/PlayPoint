@@ -119,6 +119,7 @@ const breakevenSalesDisplayEl = document.getElementById('breakeven-sales-display
 const profitAdviceTextEl = document.getElementById('profit-advice-text');
 
 const btnResetAllEl = document.getElementById('btn-reset-all');
+const btnSaveBookEl = document.getElementById('btn-save-book');
 const btnExportEl = document.getElementById('btn-export');
 const exportCanvasEl = document.getElementById('export-canvas');
 
@@ -132,6 +133,21 @@ const btnDownloadFallbackEl = document.getElementById('btn-download-fallback');
 // DOM elements cache (optimization)
 const dynamicAffiliateBoxEl = document.getElementById('dynamic-affiliate-box');
 
+// ダッシュボードのDOM要素
+const tabButtons = document.querySelectorAll('.tab-button');
+const tabPanes = document.querySelectorAll('.tab-pane');
+const savedBooksGridEl = document.getElementById('saved-books-grid');
+const emptyStateEl = document.getElementById('empty-state');
+const statTotalProfitEl = document.getElementById('stat-total-profit');
+const statBookCountEl = document.getElementById('stat-book-count');
+const statTotalRevenueEl = document.getElementById('stat-total-revenue');
+const statTotalExpensesEl = document.getElementById('stat-total-expenses');
+const btnExportDataEl = document.getElementById('btn-export-data');
+const inputImportFileEl = document.getElementById('input-import-file');
+
+// LocalStorage キー
+const LS_KEY = 'doujin_saved_books_v1';
+
 // Global Application State (removes calculation discrepancy risks)
 const appState = {
     totalExpenses: 0,
@@ -142,6 +158,7 @@ const appState = {
     standardVal: 0,
     aggressiveVal: 0,
     netProfit: 0,
+    salesRevenue: 0,
     salesCount: 0
 };
 
@@ -481,6 +498,7 @@ function calculateAll() {
     appState.standardVal = standardVal;
     appState.aggressiveVal = aggressiveVal;
     appState.netProfit = netProfit;
+    appState.salesRevenue = salesRevenue;
     appState.salesCount = salesCount;
     
     // アフィリエイト情報の動的更新
@@ -869,5 +887,371 @@ function exportSummaryImage() {
 // イベント設定
 btnExportEl.addEventListener('click', exportSummaryImage);
 
+// ============================================================
+// ダッシュボード：タブ切り替え
+// ============================================================
+tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('aria-controls');
+        
+        tabButtons.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+        
+        tabPanes.forEach(pane => {
+            pane.classList.remove('active');
+            pane.style.display = 'none';
+        });
+        
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) {
+            targetPane.style.display = 'block';
+            targetPane.classList.add('active');
+        }
+        
+        // ダッシュボードタブを開いた際に最新状態へ更新
+        if (targetId === 'pane-dashboard') {
+            renderDashboard();
+        }
+    });
+});
+
+// ============================================================
+// ダッシュボード：LocalStorage CRUD ユーティリティ
+// ============================================================
+
+/** LocalStorageから全作品データを取得する */
+function getBooks() {
+    try {
+        const raw = localStorage.getItem(LS_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch(e) {
+        console.error('LocalStorage読み込みエラー:', e);
+        return [];
+    }
+}
+
+/** 全作品データをLocalStorageに保存する */
+function setBooks(books) {
+    try {
+        localStorage.setItem(LS_KEY, JSON.stringify(books));
+    } catch(e) {
+        console.error('LocalStorage書き込みエラー:', e);
+        showToast('❌ データの保存に失敗しました。ストレージ容量をご確認ください。');
+    }
+}
+
+/** トースト通知を表示する（ポップアップメッセージ） */
+function showToast(message, emoji = '') {
+    const existing = document.querySelector('.toast-message');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // アニメーション終了後に自動削除
+    setTimeout(() => toast.remove(), 2700);
+}
+
+// ============================================================
+// ダッシュボード：保存ボタンのロジック
+// ============================================================
+if (btnSaveBookEl) {
+    btnSaveBookEl.addEventListener('click', () => {
+        // 現在のappStateから計算値を取得
+        const {
+            totalExpenses, netProfit, breakevenSales, isPossibleBreakeven,
+            safeVal, standardVal, aggressiveVal
+        } = appState;
+
+        const salesCount = Math.max(0, parseInt(salesSliderEl.value) || 0);
+        const sellingPrice = Math.max(0, parseInt(sellingPriceEl.value) || 0);
+        const volume = Math.max(1, parseInt(printVolumeEl.value) || 1);
+        const isConsignment = useConsignmentEl.checked;
+        const revenueRate = isConsignment ? 0.7 : 1.0;
+        const salesRevenue = Math.round(salesCount * sellingPrice * revenueRate);
+
+        const title = customTitleEl.value.trim() || `新刊 (${new Date().toLocaleDateString('ja-JP')})`;
+        const circle = customCircleEl.value.trim() || '（サークル名未設定）';
+
+        const newBook = {
+            id: Date.now().toString(),
+            savedAt: new Date().toISOString(),
+            title,
+            circle,
+            // 本の仕様
+            bookSize: bookSizeEl.value,
+            printType: printTypeEl.value,
+            bookPages: parseInt(bookPagesEl.value) || 0,
+            printVolume: volume,
+            sellingPrice,
+            // 収支
+            totalExpenses,
+            salesCount,
+            salesRevenue,
+            netProfit,
+            // 予測
+            breakevenSales: isPossibleBreakeven ? breakevenSales : null,
+            predSafe: safeVal,
+            predStandard: standardVal,
+            predAggressive: aggressiveVal,
+        };
+
+        const books = getBooks();
+        books.unshift(newBook); // 最新が先頭
+        setBooks(books);
+
+        showToast(`💾「${title}」を作品リストに保存しました！`);
+        
+        // ダッシュボードタブへ自動で切り替える
+        const dashTabBtn = document.getElementById('tab-dashboard');
+        if (dashTabBtn) dashTabBtn.click();
+    });
+}
+
+// ============================================================
+// ダッシュボード：描画ロジック
+// ============================================================
+
+/** ダッシュボード全体を再描画する */
+function renderDashboard() {
+    const books = getBooks();
+    renderStats(books);
+    renderBookCards(books);
+}
+
+/** 累計サマリーを更新する */
+function renderStats(books) {
+    let totalRevenue = 0;
+    let totalExpenses = 0;
+    
+    books.forEach(b => {
+        totalRevenue += (b.salesRevenue || 0);
+        totalExpenses += (b.totalExpenses || 0);
+    });
+    
+    const totalProfit = totalRevenue - totalExpenses;
+    
+    statBookCountEl.textContent = `${books.length} 作品`;
+    statTotalRevenueEl.textContent = `¥${totalRevenue.toLocaleString()}`;
+    statTotalExpensesEl.textContent = `¥${totalExpenses.toLocaleString()}`;
+    
+    statTotalProfitEl.textContent = `¥${Math.abs(totalProfit).toLocaleString()}`;
+    statTotalProfitEl.className = 'stats-value font-outfit' + (totalProfit >= 0 ? ' positive' : ' negative');
+    if (totalProfit > 0) statTotalProfitEl.textContent = `+¥${totalProfit.toLocaleString()}`;
+    else if (totalProfit < 0) statTotalProfitEl.textContent = `-¥${Math.abs(totalProfit).toLocaleString()}`;
+}
+
+/** 作品カードを描画する */
+function renderBookCards(books) {
+    // 既存カードをクリア（empty-stateを除いて）
+    const existing = savedBooksGridEl.querySelectorAll('.book-card');
+    existing.forEach(el => el.remove());
+    
+    if (books.length === 0) {
+        emptyStateEl.style.display = 'block';
+        return;
+    }
+    
+    emptyStateEl.style.display = 'none';
+    
+    books.forEach(book => {
+        const isGain = book.netProfit >= 0;
+        const savedDate = new Date(book.savedAt).toLocaleDateString('ja-JP', {
+            year: 'numeric', month: 'short', day: 'numeric'
+        });
+        
+        const card = document.createElement('div');
+        card.className = `book-card ${isGain ? 'profit-positive' : 'profit-negative'}`;
+        card.dataset.bookId = book.id;
+        
+        card.innerHTML = `
+            <div class="book-card-header">
+                <div>
+                    <div class="book-card-title">📖 ${escapeHtml(book.title)}</div>
+                    <div class="book-card-circle">${escapeHtml(book.circle)}</div>
+                </div>
+                <span class="book-card-badge ${isGain ? 'gain' : 'loss'}">${isGain ? '✅ 黒字' : '🔴 赤字'}</span>
+            </div>
+            <div class="book-card-meta">
+                <div class="book-card-meta-item">
+                    <span>印刷部数</span>
+                    <strong class="font-outfit">${book.printVolume.toLocaleString()} 部</strong>
+                </div>
+                <div class="book-card-meta-item">
+                    <span>頒布数</span>
+                    <strong class="font-outfit">${book.salesCount.toLocaleString()} 部</strong>
+                </div>
+                <div class="book-card-meta-item">
+                    <span>頒布価格</span>
+                    <strong class="font-outfit">¥${book.sellingPrice.toLocaleString()}</strong>
+                </div>
+                <div class="book-card-meta-item">
+                    <span>総経費</span>
+                    <strong class="font-outfit">¥${book.totalExpenses.toLocaleString()}</strong>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:3px;">実績収支</div>
+                <span class="book-profit-amount ${isGain ? 'gain' : 'loss'}">
+                    ${isGain ? '+' : '-'}¥${Math.abs(book.netProfit).toLocaleString()}
+                </span>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);">保存日：${savedDate}</div>
+            <div class="book-card-actions">
+                <button type="button" class="btn-card-action btn-card-reload" data-id="${book.id}" title="この仕様をシミュレーターに読み込む">🔁 再シミュレーション</button>
+                <button type="button" class="btn-card-action btn-card-delete" data-id="${book.id}" title="この記録を削除する">🗑️ 削除</button>
+            </div>
+        `;
+        
+        savedBooksGridEl.appendChild(card);
+    });
+    
+    // ボタンにイベントを追加
+    savedBooksGridEl.querySelectorAll('.btn-card-reload').forEach(btn => {
+        btn.addEventListener('click', () => applyBookToSimulator(btn.dataset.id));
+    });
+    savedBooksGridEl.querySelectorAll('.btn-card-delete').forEach(btn => {
+        btn.addEventListener('click', () => deleteBook(btn.dataset.id));
+    });
+}
+
+/** HTMLエスケープ（XSS対策） */
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+/** 保存データをシミュレーターに反映する */
+function applyBookToSimulator(bookId) {
+    const books = getBooks();
+    const book = books.find(b => b.id === bookId);
+    if (!book) return;
+    
+    // フォームに値を設定
+    if (bookSizeEl && book.bookSize) bookSizeEl.value = book.bookSize;
+    if (printTypeEl && book.printType) printTypeEl.value = book.printType;
+    if (bookPagesEl && book.bookPages) bookPagesEl.value = book.bookPages;
+    if (printVolumeEl && book.printVolume) printVolumeEl.value = book.printVolume;
+    if (sellingPriceEl && book.sellingPrice) sellingPriceEl.value = book.sellingPrice;
+    if (customCircleEl && book.circle) customCircleEl.value = book.circle !== '（サークル名未設定）' ? book.circle : '';
+    if (customTitleEl && book.title) customTitleEl.value = book.title;
+    
+    // スライダーを頒布数に合わせる
+    if (salesSliderEl && book.salesCount !== undefined) {
+        salesSliderEl.max = book.printVolume;
+        salesSliderEl.value = book.salesCount;
+        if (salesCountInputEl) salesCountInputEl.value = book.salesCount;
+    }
+    
+    // 印刷コストの自動計算を有効化
+    isAutoCostEnabled = true;
+    updateAutoPrintCost();
+    
+    calculateAll();
+    updateQuickPriceActiveBadge(null);
+    showToast(`🔁「${book.title}」の条件をシミュレーターに読み込みました`);
+    
+    // シミュレータータブへ切り替え
+    const simTabBtn = document.getElementById('tab-calculator');
+    if (simTabBtn) simTabBtn.click();
+}
+
+/** 作品データを削除する */
+function deleteBook(bookId) {
+    const books = getBooks();
+    const book = books.find(b => b.id === bookId);
+    if (!book) return;
+    
+    if (!confirm(`「${book.title}」の記録を削除してよろしいですか？`)) return;
+    
+    const filtered = books.filter(b => b.id !== bookId);
+    setBooks(filtered);
+    renderDashboard();
+    showToast(`🗑️「${book.title}」を削除しました`);
+}
+
+// ============================================================
+// データのJSON出力・インポート
+// ============================================================
+
+/** 全データをJSONファイルとして書き出す */
+if (btnExportDataEl) {
+    btnExportDataEl.addEventListener('click', () => {
+        const books = getBooks();
+        if (books.length === 0) {
+            showToast('⚠️ 保存されたデータがありません');
+            return;
+        }
+        
+        const exportData = {
+            version: '1.0',
+            exportedAt: new Date().toISOString(),
+            tool: '同人誌の発行部数＆黒字化シミュレーター',
+            books
+        };
+        
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `doujin_data_backup_${new Date().toISOString().slice(0,10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        
+        showToast(`💾 ${books.length}件のデータをバックアップ保存しました`);
+    });
+}
+
+/** JSONファイルからデータを復元する */
+if (inputImportFileEl) {
+    inputImportFileEl.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const parsed = JSON.parse(event.target.result);
+                
+                // データ形式の検証
+                if (!parsed.books || !Array.isArray(parsed.books)) {
+                    throw new Error('無効なデータ形式です');
+                }
+                
+                const existing = getBooks();
+                // 重複ID排除してマージ
+                const existingIds = new Set(existing.map(b => b.id));
+                const newBooks = parsed.books.filter(b => !existingIds.has(b.id));
+                const merged = [...newBooks, ...existing];
+                
+                setBooks(merged);
+                renderDashboard();
+                
+                showToast(`✅ ${newBooks.length}件の新規データを復元しました（重複 ${parsed.books.length - newBooks.length}件はスキップ）`);
+            } catch(err) {
+                showToast('❌ データの読み込みに失敗しました。ファイル形式をご確認ください。');
+                console.error('インポートエラー:', err);
+            }
+            
+            // ファイル選択をリセット（同じファイルの再選択を許可するため）
+            inputImportFileEl.value = '';
+        };
+        reader.readAsText(file);
+    });
+}
+
 // 初期計算の実行
 calculateAll();
+
+// ダッシュボードデータの初期ロード
+renderDashboard();

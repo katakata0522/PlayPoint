@@ -68,7 +68,13 @@
                 <p class="lead-text">「何部刷ればいい？」「1冊いくらで売れば赤字にならない？」を、SNSの反応から予測して視覚化します。</p>
             </header>
 
-            <div class="tool-grid">
+            <nav class="tab-navigation" role="tablist">
+                <button type="button" class="tab-button active" id="tab-calculator" role="tab" aria-selected="true" aria-controls="pane-calculator">📊 収支予測シミュレーター</button>
+                <button type="button" class="tab-button" id="tab-dashboard" role="tab" aria-selected="false" aria-controls="pane-dashboard">📚 既刊・売上管理室</button>
+            </nav>
+
+            <div class="tab-pane active" id="pane-calculator" role="tabpanel">
+                <div class="tool-grid">
                 <!-- ================= 左カラム：入力フォーム ================= -->
                 <section class="card form-section" aria-labelledby="form-title">
                     <div class="form-card-header">
@@ -328,8 +334,11 @@
                             </div>
                         </div>
 
-                        <!-- シェア画像作成ボタン -->
+                        <!-- アクションボタンエリア -->
                         <div class="action-btn-area">
+                            <button type="button" id="btn-save-book" class="btn btn-primary">
+                                💾 この仕様を作品リストに保存する
+                            </button>
                             <button type="button" id="btn-export" class="btn btn-secondary">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16" aria-hidden="true">
                                   <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 1 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
@@ -388,6 +397,57 @@
                         </a>
                     </div>
                 </div>
+            </div>
+
+            </div> <!-- #pane-calculator END -->
+
+            <!-- ================= タブ2：既刊・売上管理室 ================= -->
+            <div class="tab-pane" id="pane-dashboard" role="tabpanel" style="display: none;">
+                <!-- 累計収支ダッシュボード -->
+                <section class="card dashboard-stats-card">
+                    <div class="dashboard-header-row">
+                        <h2 class="section-title">📊 累計活動ステータス</h2>
+                        <p class="section-desc">※これまでに保存された全作品の合算値です。</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stats-item">
+                            <span class="stats-label">累計収支</span>
+                            <span id="stat-total-profit" class="stats-value font-outfit">¥0</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">登録作品数</span>
+                            <span id="stat-book-count" class="stats-value font-outfit">0 作品</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">累計売上</span>
+                            <span id="stat-total-revenue" class="stats-value font-outfit">¥0</span>
+                        </div>
+                        <div class="stats-item">
+                            <span class="stats-label">累計経費</span>
+                            <span id="stat-total-expenses" class="stats-value font-outfit">¥0</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 既刊・保存作品一覧 -->
+                <section class="card saved-list-card">
+                    <div class="list-header-row">
+                        <h2 class="section-title">📚 保存された作品リスト</h2>
+                        <div class="backup-actions">
+                            <button type="button" id="btn-export-data" class="btn-mini">💾 バックアップ保存 (JSON)</button>
+                            <label for="input-import-file" class="btn-mini btn-import-label">
+                                🔄 データ復元
+                                <input type="file" id="input-import-file" accept=".json" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+                    <div id="saved-books-grid" class="saved-books-grid">
+                        <!-- 作品データがない場合のプレースホルダー -->
+                        <div class="empty-state" id="empty-state">
+                            <p>保存された作品データがありません。<br>「シミュレーター」で計算し、右側の結果にある「この仕様を保存する」ボタンを押して作品を記録しましょう！</p>
+                        </div>
+                    </div>
+                </section>
             </div>
 
             <!-- ================= 下部：SEO・解説コラム ================= -->
