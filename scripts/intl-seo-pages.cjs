@@ -215,6 +215,152 @@ const PAGE_TYPES = {
       ]
     }
   },
+  gold: {
+    slug: 'status/gold',
+    mode: 'main',
+    query: 'status=1.2&target=gold&points=600&multiplier=1',
+    campaign: 'intl_status_gold',
+    jaPath: '/status/gold/',
+    en: {
+      title: 'Google Play Points Gold cost calculator',
+      description: 'Estimate how much spending may be needed to reach Google Play Points Gold, with country and promotion notes.',
+      eyebrow: 'Gold status planning',
+      h1: 'How much does it take to reach Google Play Points Gold?',
+      lead: 'Gold is often the first status goal that feels reachable. Use the missing points from Google Play, compare normal earning with promotions, and keep local eligibility in view.',
+      cta: 'Calculate Gold progress',
+      secondary: 'Compare Platinum status',
+      secondaryHref: '/en/status/platinum/',
+      summary: ['Preset: Silver to Gold', 'Best for: first realistic status goal', 'Check: missing points and local rules'],
+      sections: [
+        ['Start with the next reachable tier', 'Gold can be a practical target when the missing points are close to spending you already planned. Enter only the points still needed for the next status.'],
+        ['Compare before waiting for a campaign', 'Run a 1x estimate first, then compare 2x or 3x only when the purchase is eligible and useful.'],
+        ['Use local Google Play conditions', 'Rewards, point rates, and campaign details may differ by country or account, so the Google Play app should decide the final rule.'],
+        ['Avoid making Gold a spending excuse', 'If the estimate is far above normal purchases, staying at the current level may be the better decision.']
+      ],
+      faq: [
+        ['Is Gold a good first target?', 'Often, yes. It is easier to evaluate than Platinum or Diamond because the missing amount is usually smaller.'],
+        ['Can I use a promotion multiplier?', 'Yes, but only if the exact purchase qualifies for that promotion.'],
+        ['Does this replace the official Google Play progress?', 'No. It is a planning estimate, not an account checker.']
+      ]
+    },
+    ko: {
+      title: 'Google Play Points 골드 필요 금액 계산',
+      description: 'Google Play Points 골드까지 남은 포인트와 필요 금액을 계산하고 캠페인 및 국가별 조건을 확인합니다.',
+      eyebrow: '골드 등급 계획',
+      h1: 'Google Play Points 골드는 얼마가 필요할까요?',
+      lead: '골드는 처음으로 현실적인 목표가 되기 쉬운 등급입니다. 남은 포인트와 일반 적립, 캠페인 배율, 지역 조건을 함께 확인하세요.',
+      cta: '골드까지 계산하기',
+      secondary: '플래티넘 계산 보기',
+      secondaryHref: '/ko/status/platinum/',
+      summary: ['초기 조건: 실버에서 골드', '추천: 첫 등급 목표', '확인: 남은 포인트와 지역 조건'],
+      sections: [
+        ['가까운 목표부터 보기', '골드는 예정된 결제와 가까운 금액일 때 의미가 있습니다. 누적 포인트가 아니라 목표까지 남은 포인트를 입력하세요.'],
+        ['캠페인 전후 비교', '먼저 1배 기준을 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하세요.'],
+        ['한국 계정 조건 확인', '리워드, 적립률, 캠페인은 국가와 계정에 따라 달라질 수 있으므로 Google Play 앱을 최종 기준으로 보세요.'],
+        ['무리한 결제 방지', '평소 소비보다 필요한 금액이 크다면 현재 등급을 유지하는 선택도 합리적입니다.']
+      ],
+      faq: [
+        ['골드는 첫 목표로 괜찮나요?', '대체로 판단하기 좋은 목표입니다. 플래티넘이나 다이아몬드보다 필요한 금액을 현실적으로 비교하기 쉽습니다.'],
+        ['캠페인 배율을 넣어도 되나요?', '해당 결제가 실제 캠페인 대상일 때만 넣어 비교하세요.'],
+        ['공식 진행 상황을 대신하나요?', '아니요. 공식 기준은 Google Play 앱의 진행 상황입니다.']
+      ]
+    },
+    tw: {
+      title: 'Google Play Points 金級需要多少？',
+      description: '估算 Google Play Points 金級所需點數與金額，並確認活動倍率與所在地區條件。',
+      eyebrow: '金級規劃',
+      h1: 'Google Play Points 金級需要多少？',
+      lead: '金級通常是第一個比較容易規劃的目標。請輸入還差多少點，再比較一般回饋、活動倍率與地區條件。',
+      cta: '計算金級進度',
+      secondary: '比較白金等級',
+      secondaryHref: '/tw/status/platinum/',
+      summary: ['預設: 銀級到金級', '適合: 第一個實際目標', '確認: 剩餘點數與地區條件'],
+      sections: [
+        ['先看最近的等級', '金級適合用來判斷下一步是否值得。請輸入目標還差的點數，而不是累積總點數。'],
+        ['比較活動前後', '先以 1 倍建立基準，只有在消費確定符合活動時，才用 2 倍或 3 倍估算。'],
+        ['以所在地區 App 為準', '回饋、活動與資格可能依地區或帳號不同，最終仍要確認 Google Play App。'],
+        ['避免為等級硬買', '如果估算金額高於平常消費，維持目前等級可能更合理。']
+      ],
+      faq: [
+        ['金級適合作為第一個目標嗎？', '通常適合，因為比白金或鑽石更容易用平常消費來比較。'],
+        ['可以輸入活動倍率嗎？', '可以，但必須是實際符合活動資格的消費。'],
+        ['這能取代官方進度嗎？', '不能。官方進度仍以 Google Play App 顯示為準。']
+      ]
+    }
+  },
+  silver: {
+    slug: 'status/silver',
+    mode: 'main',
+    query: 'status=1&target=silver&points=250&multiplier=1',
+    campaign: 'intl_status_silver',
+    jaPath: '/status/silver/',
+    en: {
+      title: 'Google Play Points Silver cost calculator',
+      description: 'Estimate how much spending may be needed to reach Google Play Points Silver and check whether a small planned purchase is enough.',
+      eyebrow: 'Silver status planning',
+      h1: 'How much does it take to reach Google Play Points Silver?',
+      lead: 'Silver is the entry-level goal for many users. A small missing-point estimate can help you decide whether your planned purchase is enough without forcing extra spending.',
+      cta: 'Calculate Silver progress',
+      secondary: 'Compare Gold status',
+      secondaryHref: '/en/status/gold/',
+      summary: ['Preset: Bronze to Silver', 'Best for: first level-up check', 'Check: missing points and purchase eligibility'],
+      sections: [
+        ['Use Silver as a baseline', 'If you are new to Play Points, Silver is a useful way to learn how missing points, status rate, and multipliers interact.'],
+        ['Check a normal purchase first', 'Use 1x before adding a campaign. If a purchase you already planned gets close to Silver, the decision is clearer.'],
+        ['Do not overfit the estimate', 'Small point differences can be affected by eligibility, currency, tax handling, and local rules.'],
+        ['Move to Gold only if Silver is realistic', 'If Silver already requires uncomfortable spending, a higher tier is unlikely to be a good target now.']
+      ],
+      faq: [
+        ['Is Silver worth calculating?', 'Yes. It helps new users understand the cost pattern before looking at higher tiers.'],
+        ['Should I aim for Gold immediately?', 'Only if Silver is already close under normal purchases.'],
+        ['Can country rules change the result?', 'Yes. Confirm the local Google Play app before purchasing.']
+      ]
+    },
+    ko: {
+      title: 'Google Play Points 실버 필요 금액 계산',
+      description: 'Google Play Points 실버까지 남은 포인트와 필요 금액을 계산하고 첫 등급 업그레이드 가능성을 확인합니다.',
+      eyebrow: '실버 등급 계획',
+      h1: 'Google Play Points 실버는 얼마가 필요할까요?',
+      lead: '실버는 처음 등급 업을 확인하기 좋은 목표입니다. 예정된 결제가 충분한지 보고, 추가 결제를 무리하게 만들지 않는 것이 중요합니다.',
+      cta: '실버까지 계산하기',
+      secondary: '골드 계산 보기',
+      secondaryHref: '/ko/status/gold/',
+      summary: ['초기 조건: 브론즈에서 실버', '추천: 첫 등급 업 확인', '확인: 남은 포인트와 대상 결제'],
+      sections: [
+        ['기준 등급으로 사용', 'Play Points를 처음 계획한다면 실버로 남은 포인트, 적립률, 배율의 관계를 이해하기 좋습니다.'],
+        ['일반 결제부터 확인', '캠페인을 넣기 전 1배 기준으로 보고, 원래 예정된 결제가 충분한지 확인하세요.'],
+        ['작은 차이에 과신하지 않기', '통화, 세금, 대상 결제, 국가별 조건에 따라 실제 결과가 달라질 수 있습니다.'],
+        ['실버가 현실적일 때 골드 보기', '실버부터 부담스럽다면 지금 골드 이상을 목표로 삼는 것은 보수적으로 봐야 합니다.']
+      ],
+      faq: [
+        ['실버도 계산할 가치가 있나요?', '있습니다. 높은 등급을 보기 전 기본 구조를 이해하기 좋습니다.'],
+        ['바로 골드를 목표로 해도 되나요?', '실버가 평소 결제로 충분히 가까울 때만 비교하세요.'],
+        ['국가별 조건이 영향을 주나요?', '네. 최종 조건은 Google Play 앱에서 확인해야 합니다.']
+      ]
+    },
+    tw: {
+      title: 'Google Play Points 銀級需要多少？',
+      description: '估算 Google Play Points 銀級所需點數與金額，確認一般購買是否足夠升級。',
+      eyebrow: '銀級規劃',
+      h1: 'Google Play Points 銀級需要多少？',
+      lead: '銀級是許多使用者的第一個升級目標。先看原本計畫的消費是否足夠，不要為了等級增加不必要支出。',
+      cta: '計算銀級進度',
+      secondary: '比較金級',
+      secondaryHref: '/tw/status/gold/',
+      summary: ['預設: 銅級到銀級', '適合: 第一次升級檢查', '確認: 剩餘點數與適用消費'],
+      sections: [
+        ['把銀級當作基準', '如果剛開始使用 Play Points，銀級能幫你理解剩餘點數、回饋率與倍率的關係。'],
+        ['先看一般消費', '加入活動倍率前，先用 1 倍估算，確認原本就要買的項目是否足夠。'],
+        ['不要過度相信小差距', '幣別、稅金、適用付款與地區條件都可能影響實際結果。'],
+        ['銀級接近時再看金級', '如果銀級已經很吃力，現在追更高等級通常不適合。']
+      ],
+      faq: [
+        ['銀級值得計算嗎？', '值得。它能幫你在看高等級前理解基本成本。'],
+        ['可以直接衝金級嗎？', '只有在銀級已經很接近時才值得比較。'],
+        ['地區規則會影響嗎？', '會。請以 Google Play App 的官方畫面為準。']
+      ]
+    }
+  },
   campaign2x: {
     slug: 'campaign/2x',
     mode: 'main',
@@ -282,6 +428,152 @@ const PAGE_TYPES = {
         ['2 倍會讓成本剛好減半嗎？', '不一定，會受到基本回饋、等級、上限與適用金額影響。'],
         ['禮物卡也算嗎？', '可能與直覺不同，請確認所在地區的規則。'],
         ['2 倍足夠升白金或鑽石嗎？', '取決於剩餘點數，請搭配 Google Play App 的進度查看。']
+      ]
+    }
+  },
+  campaign3x: {
+    slug: 'campaign/3x',
+    mode: 'main',
+    query: 'status=1.5&target=platinum&points=1000&multiplier=3',
+    campaign: 'intl_campaign_3x',
+    jaPath: '/campaign/3x/',
+    en: {
+      title: 'Google Play Points 3x promotion calculator',
+      description: 'Compare regular Google Play Points earning with a 3x promotion and estimate whether waiting changes the required spending.',
+      eyebrow: '3x promotion estimate',
+      h1: 'How much does a Google Play Points 3x promotion help?',
+      lead: 'A 3x promotion can change a status plan more than a small discount, but only when the purchase qualifies. Compare 1x, 2x, and 3x before deciding.',
+      cta: 'Calculate with 3x',
+      secondary: 'Should I wait for a campaign?',
+      secondaryHref: '/en/campaign/wait/',
+      summary: ['Preset: 3x multiplier', 'Best for: larger planned purchases', 'Check: caps, activation, and eligible apps'],
+      sections: [
+        ['Use 3x only when it is real', 'A 3x headline does not always apply to every app, item, payment method, or account. Confirm the offer before treating the result as likely.'],
+        ['Compare against 1x and 2x', 'The useful question is not whether 3x looks attractive. It is whether the difference is large enough to change a purchase you already planned.'],
+        ['Watch bonus caps', 'A maximum bonus can make the final result smaller than the headline suggests.'],
+        ['Do not chase status with new spending', 'If the purchase exists only because of the campaign, compare the reward value with the extra cost first.']
+      ],
+      faq: [
+        ['Does 3x cut the cost to one third?', 'Not necessarily. Base rate, caps, and eligibility can change the final result.'],
+        ['Is 3x better than a gift-card discount?', 'They answer different questions. Compare point eligibility and cost savings separately.'],
+        ['Should I wait for 3x?', 'Only when the purchase can wait and the offer clearly applies.']
+      ]
+    },
+    ko: {
+      title: 'Google Play Points 3배 캠페인 계산',
+      description: '3배 캠페인에서 필요한 결제 금액이 얼마나 줄어드는지 비교하고 기다릴 가치가 있는지 확인합니다.',
+      eyebrow: '3배 캠페인 예상',
+      h1: 'Google Play Points 3배 캠페인은 얼마나 도움이 될까요?',
+      lead: '3배 캠페인은 등급 계획을 크게 바꿀 수 있지만, 대상 결제일 때만 의미가 있습니다. 1배, 2배, 3배를 비교한 뒤 판단하세요.',
+      cta: '3배로 계산하기',
+      secondary: '캠페인을 기다릴지 보기',
+      secondaryHref: '/ko/campaign/wait/',
+      summary: ['초기 조건: 3배 배율', '추천: 큰 예정 결제', '확인: 상한, 활성화, 대상 앱'],
+      sections: [
+        ['실제 대상일 때만 사용', '3배 문구가 모든 앱, 상품, 결제수단, 계정에 적용된다고 가정하면 안 됩니다.'],
+        ['1배와 2배도 함께 비교', '중요한 것은 3배가 좋아 보이는지가 아니라, 원래 예정된 결제의 시점을 바꿀 만큼 차이가 있는지입니다.'],
+        ['보너스 상한 확인', '상한이 있으면 문구보다 실제 결과가 작을 수 있습니다.'],
+        ['등급만을 위한 새 지출 피하기', '캠페인 때문에 생긴 지출이라면 혜택 가치와 추가 비용을 먼저 비교하세요.']
+      ],
+      faq: [
+        ['3배면 비용이 3분의 1인가요?', '항상 그렇지는 않습니다. 기본 적립률, 상한, 대상 조건이 영향을 줍니다.'],
+        ['기프트카드 할인보다 낫나요?', '포인트 대상 여부와 비용 절감은 별도 문제로 비교해야 합니다.'],
+        ['3배 캠페인을 기다려야 하나요?', '결제를 기다릴 수 있고 조건이 확실할 때만 고려하세요.']
+      ]
+    },
+    tw: {
+      title: 'Google Play Points 3 倍活動計算',
+      description: '比較一般回饋與 3 倍活動，估算是否值得等待活動再消費。',
+      eyebrow: '3 倍活動估算',
+      h1: 'Google Play Points 3 倍活動能省多少？',
+      lead: '3 倍活動可能大幅改變等級計畫，但前提是該筆消費符合資格。請先比較 1 倍、2 倍與 3 倍。',
+      cta: '用 3 倍計算',
+      secondary: '判斷是否等待活動',
+      secondaryHref: '/tw/campaign/wait/',
+      summary: ['預設: 3 倍倍率', '適合: 較大的計畫消費', '確認: 上限、啟用、適用 App'],
+      sections: [
+        ['只有符合資格才使用', '3 倍標題不代表所有 App、商品、付款方式或帳號都適用。'],
+        ['同時比較 1 倍與 2 倍', '重點不是 3 倍看起來多好，而是差距是否足以改變原本計畫的購買時機。'],
+        ['注意加碼上限', '若有上限，實際結果可能低於標題直覺。'],
+        ['不要為等級新增消費', '如果這筆消費只是為了活動產生，請先比較回饋價值與額外成本。']
+      ],
+      faq: [
+        ['3 倍會讓成本變成三分之一嗎？', '不一定，基本回饋率、上限與資格都會影響結果。'],
+        ['比禮物卡折扣更好嗎？', '點數資格與成本折扣要分開比較。'],
+        ['應該等 3 倍活動嗎？', '只有在原本消費可以等待且資格明確時才值得考慮。']
+      ]
+    }
+  },
+  campaignWait: {
+    slug: 'campaign/wait',
+    mode: 'main',
+    query: 'status=1.5&target=platinum&points=1000&multiplier=2',
+    campaign: 'intl_campaign_wait',
+    jaPath: '/campaign/wait/',
+    en: {
+      title: 'Should you wait for a Google Play Points promotion?',
+      description: 'Compare regular, 2x, and 3x Google Play Points earning to decide whether waiting for a promotion is worth it.',
+      eyebrow: 'Promotion wait decision',
+      h1: 'Should you wait for a Google Play Points promotion?',
+      lead: 'Waiting can help when a purchase is planned and the promotion applies. It can also create unnecessary spending if the target is only attractive under uncertain conditions.',
+      cta: 'Compare promotion timing',
+      secondary: 'Calculate with 3x',
+      secondaryHref: '/en/campaign/3x/',
+      summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: 1x, 2x, 3x and eligibility'],
+      sections: [
+        ['Start with the 1x baseline', 'If the target is already reasonable at 1x, a promotion is a timing bonus rather than a requirement.'],
+        ['Use 2x or 3x only for eligible purchases', 'A multiplier should be entered only when the offer clearly applies to the planned purchase.'],
+        ['Waiting is useful when the purchase can move', 'If you already planned to buy soon and the campaign window is clear, waiting can improve the result without increasing spending.'],
+        ['Do not wait forever for a vague offer', 'If the campaign is uncertain or the purchase is not needed, waiting can turn into a spending trap.']
+      ],
+      faq: [
+        ['When is waiting worth it?', 'When the purchase is already planned, can wait, and the campaign terms clearly apply.'],
+        ['Should I buy more during a promotion?', 'Not unless the purchase itself has value outside the status goal.'],
+        ['What should I compare first?', 'Compare 1x, then 2x, then 3x with the same missing-point target.']
+      ]
+    },
+    ko: {
+      title: 'Google Play Points 캠페인을 기다려야 할까요?',
+      description: '일반 적립, 2배, 3배 조건을 비교해 Google Play Points 캠페인을 기다릴 가치가 있는지 판단합니다.',
+      eyebrow: '캠페인 대기 판단',
+      h1: 'Google Play Points 캠페인을 기다려야 할까요?',
+      lead: '예정된 결제가 있고 캠페인 대상이 확실하다면 기다리는 것이 도움이 될 수 있습니다. 하지만 불확실한 조건 때문에 새 지출을 만들면 위험합니다.',
+      cta: '캠페인 시점 비교',
+      secondary: '3배 계산 보기',
+      secondaryHref: '/ko/campaign/3x/',
+      summary: ['초기 조건: 캠페인 대기 비교', '추천: 예정된 결제', '확인: 1배, 2배, 3배와 대상 조건'],
+      sections: [
+        ['1배 기준부터 보기', '1배에서도 목표가 현실적이라면 캠페인은 필수가 아니라 시점 조정입니다.'],
+        ['대상 결제일 때만 배율 사용', '캠페인 조건이 명확한 예정 결제에만 2배나 3배를 넣어 비교하세요.'],
+        ['결제를 미룰 수 있을 때 유용', '원래 살 예정이고 기간이 분명하다면 기다리는 것이 지출을 늘리지 않고 결과를 개선할 수 있습니다.'],
+        ['막연한 캠페인을 기다리지 않기', '조건이 불확실하거나 필요 없는 구매라면 기다림 자체가 과소비의 시작이 될 수 있습니다.']
+      ],
+      faq: [
+        ['언제 기다릴 가치가 있나요?', '원래 예정된 결제가 있고, 기다릴 수 있으며, 캠페인 조건이 확실할 때입니다.'],
+        ['캠페인 때 더 사도 되나요?', '등급 외에도 그 구매 자체의 가치가 있을 때만 고려하세요.'],
+        ['무엇부터 비교하나요?', '같은 부족 포인트로 1배, 2배, 3배를 차례로 비교하세요.']
+      ]
+    },
+    tw: {
+      title: 'Google Play Points 活動值得等嗎？',
+      description: '比較一般回饋、2 倍與 3 倍活動，判斷是否值得等待 Google Play Points 活動。',
+      eyebrow: '活動等待判斷',
+      h1: 'Google Play Points 活動值得等嗎？',
+      lead: '如果原本就有計畫消費，且活動資格明確，等待可能有幫助。但若只因不確定活動而新增消費，就需要保守。',
+      cta: '比較活動時機',
+      secondary: '用 3 倍計算',
+      secondaryHref: '/tw/campaign/3x/',
+      summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認: 1 倍、2 倍、3 倍與資格'],
+      sections: [
+        ['先看 1 倍基準', '如果 1 倍時目標已經合理，活動只是時機優化，不是必要條件。'],
+        ['只有符合資格才輸入倍率', '只有在該筆計畫消費明確符合活動時，才用 2 倍或 3 倍比較。'],
+        ['能移動購買時間時才有用', '如果本來就要買且活動期間明確，等待可以在不增加支出的情況下改善結果。'],
+        ['不要無限等待模糊活動', '若活動不確定或購買本身不需要，等待可能變成過度消費的入口。']
+      ],
+      faq: [
+        ['什麼時候值得等？', '原本有計畫消費、可以等待，且活動條件明確時。'],
+        ['活動期間應該多買嗎？', '只有該購買本身有價值，而不是單純為了等級時才考慮。'],
+        ['先比較什麼？', '用同一個剩餘點數目標，依序比較 1 倍、2 倍、3 倍。']
       ]
     }
   },

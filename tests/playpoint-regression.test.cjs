@@ -1925,7 +1925,7 @@ test('海外向けSEOページは主要検索意図ごとに公開可能な構�
   const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
   const files = getIntlSeoFiles();
 
-  assert.strictEqual(files.length, 24);
+  assert.strictEqual(files.length, 36);
   for (const file of files) {
     const filePath = path.join(root, file);
     const canonical = `https://playpoint-sim.com/${file.replace(/index\.html$/, '')}`;
@@ -1959,15 +1959,27 @@ test('海外向けSEOページは既存記事の読み物感と各言語の自�
   const intlFiles = [
     'en/status/diamond/index.html',
     'en/status/platinum/index.html',
+    'en/status/gold/index.html',
+    'en/status/silver/index.html',
     'en/campaign/2x/index.html',
+    'en/campaign/3x/index.html',
+    'en/campaign/wait/index.html',
     'en/amount/10000/index.html',
     'ko/status/diamond/index.html',
     'ko/status/platinum/index.html',
+    'ko/status/gold/index.html',
+    'ko/status/silver/index.html',
     'ko/campaign/2x/index.html',
+    'ko/campaign/3x/index.html',
+    'ko/campaign/wait/index.html',
     'ko/amount/10000/index.html',
     'tw/status/diamond/index.html',
     'tw/status/platinum/index.html',
+    'tw/status/gold/index.html',
+    'tw/status/silver/index.html',
     'tw/campaign/2x/index.html',
+    'tw/campaign/3x/index.html',
+    'tw/campaign/wait/index.html',
     'tw/amount/10000/index.html'
   ];
   for (const file of intlFiles) {
@@ -2009,7 +2021,11 @@ test('海外LPは相互hreflangで対応言語とx-defaultを明示する', () =
   const slugs = [
     'status/diamond',
     'status/platinum',
+    'status/gold',
+    'status/silver',
     'campaign/2x',
+    'campaign/3x',
+    'campaign/wait',
     'amount/10000'
   ];
   const locales = [
@@ -2061,10 +2077,18 @@ test('海外向け英語記事は目次と外部化CSSで読みやすさと保�
 test('海外LPの補助ラベルは各言語に合わせる', () => {
   const localizedFiles = [
     'ko/status/diamond/index.html',
+    'ko/status/gold/index.html',
+    'ko/status/silver/index.html',
     'ko/campaign/2x/index.html',
+    'ko/campaign/3x/index.html',
+    'ko/campaign/wait/index.html',
     'ko/amount/10000/index.html',
     'tw/status/diamond/index.html',
+    'tw/status/gold/index.html',
+    'tw/status/silver/index.html',
     'tw/campaign/2x/index.html',
+    'tw/campaign/3x/index.html',
+    'tw/campaign/wait/index.html',
     'tw/amount/10000/index.html'
   ];
   for (const file of localizedFiles) {
