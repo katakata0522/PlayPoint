@@ -1225,6 +1225,21 @@ test('主要な操作要素は44px以上のタップ領域を持つ', () => {
   assert.match(css, /\.region-switch button\s*\{[^}]*min-height:\s*44px/s);
 });
 
+test('トップの入力導線は説明を残しつつフォームを圧迫しない', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+
+  assert.ok(html.includes('id="site-description" class="site-description"'));
+  assert.ok(html.includes('class="option-settings"'));
+  assert.ok(html.includes('class="option-toggle-row"'));
+  assert.ok(!html.includes('class="option-settings" style='));
+  assert.ok(!html.includes('id="subtract-rewards" style='));
+  assert.match(css, /\.first-step-guide\s*\{[^}]*border-radius:\s*999px/s);
+  assert.match(css, /\.info-btn\s*\{[^}]*width:\s*24px/s);
+  assert.match(css, /\.info-btn::after\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(css, /\.option-toggle-row\s*\{/);
+});
+
 test('狭い画面でも日記タブの文字を省略しない', () => {
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   const mobileBlock = css.slice(css.indexOf('@media(max-width:480px)'));
