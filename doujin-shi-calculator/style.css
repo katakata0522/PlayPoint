@@ -1847,3 +1847,88 @@ input[type="date"]:focus {
     align-items: center;
     gap: 3px;
 }
+
+/* ============================================================
+   SNS予測アコーディオン（折りたたみ）
+   ============================================================ */
+.details-accordion {
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-card);
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.details-accordion[open] {
+    border-color: var(--primary-light);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+}
+
+.accordion-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    list-style: none; /* デフォルトの矢印を消す */
+    user-select: none;
+}
+
+.accordion-summary::-webkit-details-marker {
+    display: none; /* Safari用のデフォルト矢印消去 */
+}
+
+.accordion-summary .form-step-title {
+    margin-bottom: 0; /* マージンを打ち消し */
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.accordion-arrow {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid var(--text-muted);
+    border-bottom: 2px solid var(--text-muted);
+    transform: rotate(45deg);
+    margin-right: 8px;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.details-accordion[open] .accordion-arrow {
+    transform: rotate(-135deg);
+    border-color: var(--primary);
+}
+
+.accordion-content {
+    padding: 0 20px 20px 20px;
+    animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   推奨発行部数目安カードのふわっと表示トランジション
+   ============================================================ */
+#prediction-card-section {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), display 0.3s ease allow-discrete;
+}
+
+#prediction-card-section.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
