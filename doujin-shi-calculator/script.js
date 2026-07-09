@@ -419,11 +419,10 @@ function _readInputs() {
 /** ページ数の倍数チェック警告を表示する */
 function _updateWarnings({ pages, printType }) {
     if (pagesWarningEl) {
-        const isCopy = printType === 'copybook';
-        const required = isCopy ? 8 : 4;
+        const required = 4; // コピー本・オフセットともに物理的最小単位である4の倍数を基準にする
         if (pages > 0 && pages % required !== 0) {
             pagesWarningEl.textContent =
-                `⚠️ ${pages}ページは${required}の倍数ではありません。印刷所に発注する際は${required}の倍数（例：${Math.round(pages / required) * required}ページ）で発注してください。`;
+                `⚠️ ${pages}ページは${required}の倍数ではありません。製本する際は${required}の倍数（例：${Math.round(pages / required) * required}ページ）で調整してください。`;
             pagesWarningEl.style.display = 'block';
         } else {
             pagesWarningEl.style.display = 'none';
@@ -533,6 +532,9 @@ function _renderCalcResults(inputs, profit) {
         if (sellingPrice === 0) {
             profitAdviceTextEl.textContent =
                 '警告：本の頒布価格が「0円（無料配布）」になっています。印刷経費を回収することはできません。';
+        } else if (volume < 30 && printType !== 'copybook') {
+            profitAdviceTextEl.innerHTML =
+                `⚠️ <strong>部数が少なすぎるため、1冊あたりの印刷費が高騰しています。</strong>少部数のオフセット印刷では完売しても黒字化が困難です。予定部数を増やすか、印刷仕様を「コピー本」に変更することをお勧めします。`;
         } else if (!isPossibleBreakeven) {
             const revenueRate = isConsignment ? CONFIG.CONSIGNMENT_REVENUE_RATE : 1.0;
             const minSellingPrice = Math.ceil(totalExpenses / (volume * revenueRate));
@@ -622,7 +624,7 @@ function updateAffiliateBox() {
 
     const itemsHtml = db.items.map(item => `
         <a href="${item.url}" target="_blank" rel="noopener" class="affiliate-card">
-            <div class="affiliate-card-img-placeholder">${item.icon}</div>
+            <div class="affiliate-card-img-placeholder"><span>${item.icon}</span></div>
             <div class="affiliate-card-info">
                 <span class="affiliate-card-name">${item.name}</span>
                 <p class="affiliate-card-reason">${item.reason}</p>
@@ -687,7 +689,17 @@ btnQuickAutoEl?.addEventListener('click', () => {
               + (parseInt(eventFeeEl.value)       || 0)
               + (parseInt(otherExpensesEl.value)  || 0);
     const vol = Math.max(1, parseInt(printVolumeEl.value) || 1);
-    sellingPriceEl.value = Math.max(100, Math.ceil((exp / vol * 1.5) / 50) * 50);
+    
+    // 基本計算（原価の1.5倍で50円単位切り上げ）
+    let recommended = Math.ceil((exp / vol * 1.5) / 50) * 50;
+    
+    // 同人誌の現実的な価格の上限キャップを1,500円にする
+    const maxCap = 1500;
+    if (recommended > maxCap) {
+        recommended = maxCap;
+    }
+
+    sellingPriceEl.value = Math.max(100, recommended);
     updateQuickPriceActiveBadge(btnQuickAutoEl);
     calculateAll();
 });
@@ -761,8 +773,8 @@ btnCostRestoreEl?.addEventListener('click', () => {
 bookPagesEl?.addEventListener('blur', () => {
     let val = parseInt(bookPagesEl.value) || 40;
     val = clamp(val, 4, 500);
-    // 4の倍数（コピー本は8の倍数）に補正
-    const required = printTypeEl.value === 'copybook' ? 8 : 4;
+    // 物理的な中とじ製本可能単位である4の倍数に補正
+    const required = 4;
     val = Math.round(val / required) * required;
     bookPagesEl.value = val;
     calculateAll();

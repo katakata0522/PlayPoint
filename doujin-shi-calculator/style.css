@@ -1343,12 +1343,32 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
 .affiliate-card-img-placeholder {
     width: 80px;
     min-width: 80px;
-    background-color: var(--primary-bg);
+    background: linear-gradient(135deg, var(--primary-bg), rgba(139, 92, 246, 0.08));
     border-right: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 白いサークルバッジを背景に配して絵文字のチープ感を払拭 */
+.affiliate-card-img-placeholder::after {
+    content: '';
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    z-index: 1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.affiliate-card-img-placeholder span {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.08));
 }
 
 .affiliate-card-info {
