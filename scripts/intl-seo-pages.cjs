@@ -1150,12 +1150,56 @@ const TW_ARTICLES = [
   }
 ];
 
+const INTL_ARTICLE_DATES = {
+  'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' }
+};
+
 const INTL_ARTICLES = [
   ...EN_ARTICLES,
   ...ADDITIONAL_EN_ARTICLES,
   ...KO_ARTICLES,
   ...TW_ARTICLES
-];
+].map((article) => {
+  const dates = INTL_ARTICLE_DATES[article.file];
+  if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
+  return { ...article, ...dates };
+});
+
+const ARTICLE_HUB_CONTENT = {
+  en: {
+    title: 'Google Play Points guides',
+    description: 'Browse Google Play Points guides about levels, point timing, promotions, gift cards, and country-specific checks.',
+    eyebrow: 'Guide library',
+    intro: 'Choose a guide that matches the issue you are checking. Rules, promotions, and eligibility can vary by country or account, so use these pages to organize what to verify in Google Play.'
+  },
+  ko: {
+    title: 'Google Play Points 가이드',
+    description: '등급, 점수 반영, 캠페인, 기프트카드와 국가별 확인 사항을 다루는 Google Play Points 가이드 모음입니다.',
+    eyebrow: '가이드 모음',
+    intro: '확인하려는 상황에 맞는 가이드를 선택하세요. 조건, 캠페인, 대상 결제는 국가나 계정에 따라 다를 수 있으므로 Google Play 앱에서 확인할 항목을 정리하는 용도로 사용하세요.'
+  },
+  tw: {
+    title: 'Google Play Points 指南',
+    description: '瀏覽 Google Play Points 的等級、點數反映、活動、禮物卡與地區確認指南。',
+    eyebrow: '指南庫',
+    intro: '請依照你想確認的情況選擇指南。條款、活動與適用付款可能因國家或帳號而不同，這些文章可協助整理在 Google Play App 中應確認的項目。'
+  }
+};
 
 const INTL_ARTICLE_CSS = `* { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -1477,19 +1521,30 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
 `;
 }
 
-const INTL_ARTICLE_DATES = {
-  'ko/articles/google-play-points-gift-cards.html': '2026-07-10',
-  'ko/articles/google-play-points-promotion-not-applied.html': '2026-07-10',
-  'tw/articles/google-play-points-gift-cards.html': '2026-07-10',
-  'tw/articles/google-play-points-promotion-not-applied.html': '2026-07-10'
-};
+function localeKeyForArticle(article) {
+  if (article.lang === 'ko') return 'ko';
+  if (article.lang === 'zh-TW') return 'tw';
+  return 'en';
+}
+
+function getArticleAlternates(article) {
+  const slug = path.posix.basename(article.file);
+  return INTL_ARTICLES
+    .filter(candidate => path.posix.basename(candidate.file) === slug)
+    .map(candidate => ({
+      localeKey: localeKeyForArticle(candidate),
+      lang: candidate.lang || 'en',
+      url: `https://playpoint-sim.com/${candidate.file}`
+    }));
+}
 
 function renderArticle(article, assetVersions) {
   const canonical = `https://playpoint-sim.com/${article.file}`;
-  const publishedAt = INTL_ARTICLE_DATES[article.file] || '2026-07-07';
-  const modifiedAt = '2026-07-10';
+  const publishedAt = article.publishedAt;
+  const modifiedAt = article.modifiedAt;
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
   const lang = article.lang || 'en';
+  const localeKey = localeKeyForArticle(article);
   const labels = article.labels || ARTICLE_LABELS.en;
   const authorName = article.author || 'Katakata';
   const siteName = article.siteName || 'Google Play Points Calculator';
@@ -1513,6 +1568,8 @@ function renderArticle(article, assetVersions) {
     author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
     publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
+  const alternateLinks = getArticleAlternates(article);
+  const defaultAlternate = alternateLinks.find(alternate => alternate.localeKey === 'en') || alternateLinks[0];
 
   return `<!DOCTYPE html>
 <html lang="${escapeHtml(lang)}">
@@ -1525,6 +1582,8 @@ function renderArticle(article, assetVersions) {
     <meta name="author" content="${escapeHtml(authorName)}">
     <meta name="last-modified" content="${modifiedAt}">
     <link rel="canonical" href="${canonical}">
+    ${alternateLinks.map(alternate => `<link rel="alternate" hreflang="${alternate.lang}" href="${alternate.url}">`).join('\n    ')}
+    <link rel="alternate" hreflang="x-default" href="${defaultAlternate.url}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1595,8 +1654,82 @@ ${jsonLd(schema)}
 
     <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
     <footer class="article-footer">
-        <p><a href="/blog/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
+        <p><a href="/${localeKey}/articles/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
         <p class="small" style="margin-top: 1rem;">${escapeHtml(labels.footerNote)}</p>
+    </footer>
+</main>
+<script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
+<script src="/js/third-party.js?v=${assetVersions.thirdPartyVersion}"></script>
+</body>
+</html>
+`;
+}
+
+function renderArticleHub(localeKey, assetVersions) {
+  const locale = LOCALES[localeKey];
+  const content = ARTICLE_HUB_CONTENT[localeKey];
+  const articles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
+  const canonical = `https://playpoint-sim.com/${localeKey}/articles/`;
+  const modifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
+  const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: content.title,
+    description: content.description,
+    url: canonical,
+    inLanguage: locale.lang
+  };
+
+  return `<!DOCTYPE html>
+<html lang="${locale.lang}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(content.title)} | ${escapeHtml(locale.siteName)}</title>
+    <meta name="description" content="${escapeHtml(content.description)}">
+    <meta name="robots" content="index,follow">
+    <meta name="last-modified" content="${modifiedAt}">
+    <link rel="canonical" href="${canonical}">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
+    <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="${escapeHtml(locale.siteName)}">
+    <meta property="og:title" content="${escapeHtml(content.title)}">
+    <meta property="og:description" content="${escapeHtml(content.description)}">
+    <meta property="og:url" content="${canonical}">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+${jsonLd(schema)}
+    </script>
+</head>
+<body>
+<main class="main-card">
+    <div class="hero">
+        <span class="hero-badge">${escapeHtml(content.eyebrow)}</span>
+        <h1>${escapeHtml(content.title)}</h1>
+        <p class="hero-meta">${escapeHtml(locale.lastUpdatedLabel)} ${modifiedAt}</p>
+    </div>
+    <article class="content">
+        <div class="intro">${escapeHtml(content.intro)}</div>
+        <section class="section related-links-section">
+            <ul>
+                ${articles.map(article => `<li><a href="/${escapeHtml(article.file)}">${escapeHtml(article.title)}</a></li>`).join('\n                ')}
+            </ul>
+        </section>
+    </article>
+    <aside class="official-source-note">
+        <h2>${escapeHtml(locale.officialSourceTitle)}</h2>
+        <p>${escapeHtml(locale.officialSourceBody)}</p>
+        <a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(locale.officialSourceLink)}</a>
+    </aside>
+    <footer class="article-footer">
+        <p><a href="/${localeKey}/">${escapeHtml(locale.back)}</a></p>
     </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
@@ -1625,8 +1758,27 @@ function getIntlSeoFiles() {
   }
   return [
     ...pages,
+    ...Object.keys(LOCALES).map(localeKey => `${localeKey}/articles/index.html`),
     ...INTL_ARTICLES.map(article => article.file)
   ];
+}
+
+function getIntlSitemapEntries(todayStr) {
+  const entries = [];
+  for (const localeKey of Object.keys(LOCALES)) {
+    for (const pageKey of Object.keys(PAGE_TYPES)) {
+      entries.push({ url: pageUrl(localeKey, PAGE_TYPES[pageKey].slug), lastmod: todayStr });
+    }
+    const hubArticles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
+    entries.push({
+      url: `https://playpoint-sim.com/${localeKey}/articles/`,
+      lastmod: hubArticles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, todayStr)
+    });
+  }
+  for (const article of INTL_ARTICLES) {
+    entries.push({ url: `https://playpoint-sim.com/${article.file}`, lastmod: article.modifiedAt });
+  }
+  return entries;
 }
 
 function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
@@ -1637,6 +1789,9 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
     }
   }
   writeFile(rootDir, 'en/articles/intl-article.css', INTL_ARTICLE_CSS);
+  for (const localeKey of Object.keys(LOCALES)) {
+    writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
+  }
   for (const article of INTL_ARTICLES) {
     writeFile(rootDir, article.file, renderArticle(article, assetVersions));
   }
@@ -1645,5 +1800,6 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
 
 module.exports = {
   getIntlSeoFiles,
+  getIntlSitemapEntries,
   writeIntlSeoPages
 };

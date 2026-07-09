@@ -35,7 +35,6 @@ function createLocales(todayStr) {
             labelTargetStatus: 'Target status',
             labelNeededPoints: 'Points needed',
             neededPointsPlaceholder: 'e.g., 125',
-            subtractRewardsLabel: 'Subtract estimated weekly rewards until end of year',
             packAmountLabel: 'Average pack spending per transaction (optional)',
             packAmountPlaceholder: 'e.g., 98',
             sectionTitleRate: 'Points rate settings',

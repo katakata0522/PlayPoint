@@ -10,6 +10,11 @@ import { SHARE } from './share.js';
  * - 将来的に CALC.calculate() はこちらに計算を委譲する設計
  */
 export const CALC_PURE = {
+    // 購入ごとのポイントは購入金額全体に還元率を掛けてから丸める。
+    getPointsForPurchase(amount, finalRate, spendUnit = 100) {
+        return Math.round((amount / spendUnit) * finalRate);
+    },
+
     /**
      * 年末までの残り月数を算出（カレンダー基準）
      * @param {Date} baseDate
@@ -42,7 +47,7 @@ export const CALC_PURE = {
         }
 
         if (packAmount > 0) {
-            const pointsPerPack = Math.round(Math.floor(packAmount / spendUnit) * finalRate);
+            const pointsPerPack = this.getPointsForPurchase(packAmount, finalRate, spendUnit);
             if (pointsPerPack <= 0) {
                 totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
             } else {
@@ -447,19 +452,7 @@ export const CALC = {
         
         const remainingMonths = this.getRemainingMonths();
         
-        let finalNeededPoints = neededPoints;
-        let rewardsSubtractedContent = '';
-
-        if (STATE.dom.subtractRewards && STATE.dom.subtractRewards.checked) {
-            const weeklyEst = config.weeklyRewardEstimates ? (config.weeklyRewardEstimates[currentStatusValue] || 0) : 0;
-            const estimatedRewards = weeklyEst * remainingWeeks;
-            finalNeededPoints = Math.max(0, neededPoints - estimatedRewards);
-
-            rewardsSubtractedContent = `
-                <dt>${texts.resultLabelFinalNeededPoints || '実質必要ポイント'}</dt>
-                <dd><b><span class="count-target" data-value="${finalNeededPoints}">0</span> pt</b> <span style="font-size:0.8em; color:var(--link-color);">(${texts.tabDiary || '日記'}予想 -${estimatedRewards}pt)</span></dd>
-            `;
-        }
+        const finalNeededPoints = neededPoints;
 
         const spendUnit = config.spendUnit || 100;
         let totalAmountNeeded = 0;
@@ -471,8 +464,7 @@ export const CALC = {
         if (finalNeededPoints <= 0) {
             totalAmountNeeded = 0;
         } else if (packAmount !== null && packAmount > 0) {
-            // 1パックあたりの獲得ポイントは購入ごとに最も近い整数へ丸める。
-            const pointsPerPack = Math.round(Math.floor(packAmount / spendUnit) * finalRate);
+            const pointsPerPack = CALC_PURE.getPointsForPurchase(packAmount, finalRate, spendUnit);
             
             if (pointsPerPack <= 0) {
                 totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
@@ -498,12 +490,11 @@ export const CALC = {
         if (finalNeededPoints <= 0) {
             resultContent = `
                 <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
-                    🎉 ${texts.resultLabelFreeClear || '課金不要（リワードのみで達成可能）'}
+                    🎉 ${texts.resultLabelFreeClear || '課金不要'}
                 </div>
                 <dl>
                     <dt>${texts.resultLabelNeededPoints}</dt>
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
-                    ${rewardsSubtractedContent}
                 </dl>
                 ${relatedArticlesContent}
                 ${decisionLinksContent}
@@ -538,7 +529,6 @@ export const CALC = {
                 <dl>
                     <dt>${texts.resultLabelNeededPoints}</dt>
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
-                    ${rewardsSubtractedContent}
                     ${packResultContent}
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
