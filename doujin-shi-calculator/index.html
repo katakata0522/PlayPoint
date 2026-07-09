@@ -28,7 +28,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@600;800&display=swap" rel="stylesheet"></noscript>
+    <noscript>
+        <div style="background-color: #fef2f2; color: #ef4444; padding: 16px; text-align: center; font-weight: bold; border-bottom: 3px solid #ef4444; font-family: sans-serif; font-size: 0.95rem;">
+            ⚠️ 当ツールはJavaScriptを使用して計算を行います。ブラウザの設定でJavaScriptを有効にしてご利用ください。
+        </div>
+    </noscript>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -45,7 +49,7 @@
         <header class="tool-title-area">
             <span class="category-badge">Webツール（ローカル完結・安全設計）</span>
             <h1>同人誌の発行部数＆黒字化シミュレーター</h1>
-            <p class="lead-text">「何部刷ればいい？」「1冊いくらで売れば赤字にならない？」を、SNSの反応から予測して視覚化します。</p>
+            <p class="lead-text">数値を入れるだけで収支がリアルタイムに変わります。まずデフォルト値のまま、右の結果を動かしてみてください。</p>
         </header>
 
         <nav class="tab-navigation" role="tablist">
@@ -83,40 +87,39 @@
                             <div class="form-group">
                                 <label for="print-type">本文の印刷仕様</label>
                                 <select id="print-type">
-                                    <option value="monochrome" selected>モノクロ（漫画・小説・通常同人誌）</option>
-                                    <option value="color">フルカラー（イラスト集・絵本等）</option>
-                                    <option value="copybook">コピー本（自宅・コンビニ印刷）</option>
+                                    <option value="monochrome" selected>表紙カラー/本文モノクロ（標準仕様の同人誌）</option>
+                                    <option value="color">表紙カラー/本文フルカラー（イラスト集など）</option>
+                                    <option value="copybook">コピー本（自宅・コンビニ印刷での製本）</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="book-pages">総ページ数（表紙含む）</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="book-pages" value="40" min="4" step="4">
+                                    <input type="number" id="book-pages" value="40" min="4" step="4" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">ページ</span>
                                 </div>
+                                <p class="input-helper">※<strong>4の倍数推奨</strong>（印刷所の製本上の必須条件）。コピー本は8の倍数推奨。</p>
+                                <p id="pages-warning" class="input-helper pages-warning-text" style="display:none;"></p>
                             </div>
                         </div>
                         <div class="form-row col-2">
                             <div class="form-group">
                                 <label for="print-volume">予定部数（シミュレーション用）</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="print-volume" value="100" min="5" step="5">
+                                    <input type="number" id="print-volume" value="100" min="5" step="5" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">部</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="print-cost" class="label-with-badge">
                                     <span>予測印刷費</span>
-                                    <span id="cost-auto-badge" class="cost-badge auto">自動計算中</span>
+                                    <button type="button" id="cost-auto-badge" class="cost-badge-btn auto" title="クリックすると自動計算モードに戻します">自動計算中</button>
                                 </label>
-                                <div class="input-with-button">
-                                    <div class="input-with-unit">
-                                        <input type="number" id="print-cost" value="20000" min="0">
-                                        <span class="unit">円</span>
-                                    </div>
-                                    <button type="button" id="btn-reset-cost" class="btn-mini" style="display: none;">自動に戻す</button>
+                                <div class="input-with-unit">
+                                    <input type="number" id="print-cost" value="20000" min="0" inputmode="numeric" pattern="[0-9]*">
+                                    <span class="unit">円</span>
                                 </div>
-                                <p class="input-helper">※仕様から平均相場を自動計算しています（変更可能）</p>
+                                <p class="input-helper">※印刷所の平均相場に基づく推定値です。直接入力して上書き可。手動変更後は<strong>「自動計算中」バッジをクリック</strong>で元に戻せます。</p>
                             </div>
                         </div>
                     </div>
@@ -135,14 +138,14 @@
                             <div class="form-group">
                                 <label for="event-fee">イベント参加費・スペース代</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="event-fee" value="7000" min="0">
+                                    <input type="number" id="event-fee" value="7000" min="0" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="other-expenses">その他経費（交通費・ポスター等）</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="other-expenses" value="5000" min="0">
+                                    <input type="number" id="other-expenses" value="5000" min="0" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>
                                 </div>
                             </div>
@@ -151,75 +154,28 @@
                             <div class="form-group">
                                 <label for="selling-price">本の頒布価格（1冊あたりの売値）</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="selling-price" value="500" min="100" step="50">
+                                    <input type="number" id="selling-price" value="500" min="100" step="50" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>
                                 </div>
-                                <div class="quick-buttons">
-                                    <button type="button" id="btn-quick-500" class="btn-mini-quick">500円</button>
-                                    <button type="button" id="btn-quick-1000" class="btn-mini-quick">1000円</button>
-                                    <button type="button" id="btn-quick-auto" class="btn-mini-quick">自動</button>
+                                <div class="quick-buttons" role="group" aria-label="頒布価格のクイック設定">
+                                    <button type="button" id="btn-quick-500" class="btn-mini-quick" aria-pressed="false">500円</button>
+                                    <button type="button" id="btn-quick-1000" class="btn-mini-quick" aria-pressed="false">1000円</button>
+                                    <button type="button" id="btn-quick-auto" class="btn-mini-quick" aria-pressed="false">自動</button>
                                 </div>
                             </div>
                             <div class="form-group checkbox-group-container">
-                                <label class="checkbox-label" for="use-consignment">
-                                    <input type="checkbox" id="use-consignment">
-                                    <span>書店委託を利用する (手数料30%引きを想定)</span>
-                                </label>
+                                <div>
+                                    <label class="checkbox-label" for="use-consignment">
+                                        <input type="checkbox" id="use-consignment">
+                                        <span>書店委託・通販を利用する</span>
+                                    </label>
+                                    <p class="input-helper consignment-note">※委託先によって手数料は異なります（BOOTH約40%・とらのあな/メロン約25〜35%等）。ここでは概算として<strong>30%引き</strong>で計算します。</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- オプション: SNS予測アコーディオン -->
-                    <details id="accordion-sns-predict" class="form-group-wrapper details-accordion">
-                        <summary class="accordion-summary">
-                            <h3 class="form-step-title"><span class="step-num">💡</span>SNSの反応からおすすめ部数を予測する（オプション）</h3>
-                            <span class="accordion-arrow"></span>
-                        </summary>
-                        <div class="accordion-content">
-                            <p class="step-helper-desc">告知サンプルの反応（いいね・ブクマ）やフォロワー数から、推奨発行部数を自動計算します。未投稿の場合は折りたたんだままで構いません。</p>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="sns-followers">X（Twitter）フォロワー数</label>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="sns-followers" value="300" min="0">
-                                        <span class="unit">人</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="sns-likes">告知サンプルの「いいね」数</label>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="sns-likes" value="30" min="0">
-                                        <span class="unit">いいね</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="pixiv-bookmarks">pixivサンプルのブックマーク数</label>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="pixiv-bookmarks" value="50" min="0">
-                                        <span class="unit">ユーザー</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="event-scale">参加イベントの規模</label>
-                                    <select id="event-scale">
-                                        <option value="medium">中〜小規模イベント（地方・オンリー）</option>
-                                        <option value="large" selected>大規模イベント（コミケ・スパコミ等）</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="past-sales">過去の同様の本 of 販売実績（あれば）</label>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="past-sales" value="0" min="0" placeholder="なし">
-                                        <span class="unit">部</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
+
                 </section>
 
                 <!-- 右カラム：リアルタイム計算結果 -->
@@ -227,136 +183,27 @@
                     <!-- 黒字化シミュレーターカード（メインなので上へ配置） -->
                     <section class="card result-card" aria-labelledby="profit-title">
                         <h2 id="profit-title" class="section-title">黒字化シミュレーター</h2>
-                        <div class="summary-box">
+                        <div class="summary-box three-cols">
                             <div class="summary-item">
-                                <span class="sum-label">総経費（印刷費＋経費）</span>
+                                <span class="sum-label">総経費（印刷＋経費）</span>
                                 <span id="total-expenses-display" class="sum-value font-outfit" aria-live="polite">--</span>
                             </div>
                             <div class="summary-item">
                                 <span class="sum-label">1冊あたりの原価</span>
                                 <span id="unit-cost-display" class="sum-value font-outfit" aria-live="polite">--</span>
                             </div>
-                        </div>
-                        <div class="interactive-slider-wrapper">
-                            <div class="slider-label-group">
-                                <span>もしイベントで売れた部数が：</span>
-                                <div class="slider-input-container">
-                                    <input type="number" id="sales-count-input" class="sales-input-field font-outfit" min="0" value="50" aria-label="シミュレーション頒布部数">
-                                    <span class="unit-text">部だったら</span>
-                                </div>
-                            </div>
-                            <input type="range" id="sales-slider" min="0" max="100" value="50" class="custom-slider" aria-label="シミュレーション部数スライダー">
-                            <div class="slider-ticks">
-                                <span>0部</span>
-                                <span id="slider-half-tick">50部</span>
-                                <span id="slider-max-tick">100部</span>
-                            </div>
-                        </div>
-                        <div id="profit-status-card" class="profit-status-card loss">
-                            <div class="status-header">
-                                <span id="profit-status-text" class="status-badge">赤字ゾーン</span>
-                                <span id="profit-amount-display" class="status-amount font-outfit" aria-live="polite">-10,000円</span>
-                            </div>
-                            <div class="status-sellout-row">
-                                <span id="sellout-profit-label">完売（--部）時の想定収支：</span>
-                                <strong id="sellout-profit-display" class="font-outfit">--</strong>
-                            </div>
-                            <div class="progress-bar-container">
-                                <div id="profit-progress-bar" class="progress-bar" style="width: 50%;"></div>
-                                <div id="breakeven-line" class="breakeven-marker" style="left: 70%;">
-                                    <span class="marker-label">損益分岐点: <strong id="breakeven-sales-display">--</strong>部</span>
-                                </div>
-                            </div>
-                            <p id="profit-advice-text" class="status-advice">あと少しで損益分岐点に達します！頒布価格を上げるか、部数の調整を検討してみましょう。</p>
-                        </div>
-
-                        <!-- 作品情報入力（保存＆画像出力共用） -->
-                        <div class="custom-image-text-area">
-                            <h3 class="custom-text-title">✏️ 作品情報（保存・画像出力に使用）</h3>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="custom-circle">サークル名</label>
-                                    <input type="text" id="custom-circle" placeholder="サークル名を入力" maxlength="15">
-                                </div>
-                                <div class="form-group">
-                                    <label for="custom-title">新刊タイトル <span class="required-mark">※</span></label>
-                                    <input type="text" id="custom-title" placeholder="新刊タイトルを入力（必須）" maxlength="30" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="custom-event-name">イベント名</label>
-                                    <input type="text" id="custom-event-name" placeholder="例: コミックマーケット105" maxlength="30">
-                                </div>
-                                <div class="form-group">
-                                    <label for="custom-event-date">開催日</label>
-                                    <input type="date" id="custom-event-date">
-                                </div>
-                            </div>
-                            <p id="save-validation-msg" class="save-validation-msg" role="alert" style="display:none;">⚠️ 「新刊タイトル」を入力してから保存してください。</p>
-                        </div>
-
-                        <div class="action-btn-area">
-                            <button type="button" id="btn-save-book" class="btn btn-primary">
-                                💾 この仕様を作品リストに保存する
-                            </button>
-                            <button type="button" id="btn-export" class="btn btn-secondary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                  <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 1 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
-                                </svg>
-                                収支まとめ画像を保存する
-                            </button>
-                        </div>
-                    </section>
-
-                    <!-- 推奨発行部数の目安カード（ID prediction-card-section 付与、デフォルト非表示） -->
-                    <section id="prediction-card-section" class="card result-card" aria-labelledby="prediction-title" style="display: none; transition: opacity 0.3s ease;">
-                        <h2 id="prediction-title" class="section-title">推奨発行部数の目安</h2>
-                        <p class="section-desc">※入力されたSNSの反応から統計的に予測したおすすめ部数です。</p>
-                        <div id="sns-warning-box" class="warning-box" style="display: none;" aria-live="polite"></div>
-                        <div class="prediction-cards-container">
-                            <div class="pred-card safe">
-                                <span class="pred-label">手堅い部数（赤字回避）</span>
-                                <div class="pred-value-area">
-                                    <span id="pred-safe-value" class="pred-value" aria-live="polite" aria-atomic="true">--</span><span class="unit">部</span>
-                                </div>
-                                <p class="pred-desc">在庫を残したくない、または初めてで不安な場合の安全な部数です。</p>
-                            </div>
-                            <div class="pred-card standard active">
-                                <span class="pred-label">おすすめ標準部数</span>
-                                <div class="pred-value-area">
-                                    <span id="pred-standard-value" class="pred-value" aria-live="polite" aria-atomic="true">--</span><span class="unit">部</span>
-                                </div>
-                                <p class="pred-desc">一番可能性が高い、イベントと通販を合わせた想定頒布数です。</p>
-                            </div>
-                            <div class="pred-card aggressive">
-                                <span class="pred-label">強気の部数（完売防止）</span>
-                                <div class="pred-value-area">
-                                    <span id="pred-aggressive-value" class="pred-value" aria-live="polite" aria-atomic="true">--</span><span class="unit">部</span>
-                                </div>
-                                <p class="pred-desc">イベント後半まで売り切れを防ぎ、多くの人に届けたい場合の部数です。</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="card result-card" aria-labelledby="profit-title">
-                        <h2 id="profit-title" class="section-title">黒字化シミュレーター</h2>
-                        <div class="summary-box">
-                            <div class="summary-item">
-                                <span class="sum-label">総経費（印刷費＋経費）</span>
-                                <span id="total-expenses-display" class="sum-value font-outfit" aria-live="polite">--</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="sum-label">1冊あたりの原価</span>
-                                <span id="unit-cost-display" class="sum-value font-outfit" aria-live="polite">--</span>
+                            <div class="summary-item highlight">
+                                <span id="sellout-profit-label" class="sum-label">完売時想定収支</span>
+                                <span id="sellout-profit-display" class="sum-value font-outfit" aria-live="polite">--</span>
                             </div>
                         </div>
                         <div class="interactive-slider-wrapper">
+                            <p class="slider-interactive-hint">↕ 動かして収支を試算（リアルタイムで変わります）</p>
                             <div class="slider-label-group">
-                                <span>もしイベントで売れた部数が：</span>
+                                <span>売れた部数：</span>
                                 <div class="slider-input-container">
-                                    <input type="number" id="sales-count-input" class="sales-input-field font-outfit" min="0" value="50" aria-label="シミュレーション頒布部数">
-                                    <span class="unit-text">部だったら</span>
+                                    <input type="number" id="sales-count-input" class="sales-input-field font-outfit" min="0" value="50" aria-label="シミュレーション頒布部数" inputmode="numeric" pattern="[0-9]*">
+                                    <span class="unit-text">部売れたら？</span>
                                 </div>
                             </div>
                             <input type="range" id="sales-slider" min="0" max="100" value="50" class="custom-slider" aria-label="シミュレーション部数スライダー">
@@ -380,32 +227,7 @@
                             <p id="profit-advice-text" class="status-advice">あと少しで損益分岐点に達します！頒布価格を上げるか、部数の調整を検討してみましょう。</p>
                         </div>
 
-                        <!-- 作品情報入力（保存＆画像出力共用） -->
-                        <div class="custom-image-text-area">
-                            <h3 class="custom-text-title">✏️ 作品情報（保存・画像出力に使用）</h3>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="custom-circle">サークル名</label>
-                                    <input type="text" id="custom-circle" placeholder="サークル名を入力" maxlength="15">
-                                </div>
-                                <div class="form-group">
-                                    <label for="custom-title">新刊タイトル <span class="required-mark">※</span></label>
-                                    <input type="text" id="custom-title" placeholder="新刊タイトルを入力（必須）" maxlength="30" aria-required="true">
-                                </div>
-                            </div>
-                            <div class="form-row col-2">
-                                <div class="form-group">
-                                    <label for="custom-event-name">イベント名</label>
-                                    <input type="text" id="custom-event-name" placeholder="例: コミックマーケット105" maxlength="30">
-                                </div>
-                                <div class="form-group">
-                                    <label for="custom-event-date">開催日</label>
-                                    <input type="date" id="custom-event-date">
-                                </div>
-                            </div>
-                            <p id="save-validation-msg" class="save-validation-msg" role="alert" style="display:none;">⚠️ 「新刊タイトル」を入力してから保存してください。</p>
-                        </div>
-
+                        <!-- 保存・出力ボタン（常時表示） -->
                         <div class="action-btn-area">
                             <button type="button" id="btn-save-book" class="btn btn-primary">
                                 💾 この仕様を作品リストに保存する
@@ -417,7 +239,38 @@
                                 収支まとめ画像を保存する
                             </button>
                         </div>
+
+                        <!-- 作品情報（保存用メタデータ：デフォルト折り畳み） -->
+                        <details id="accordion-save-meta" class="save-meta-accordion">
+                            <summary class="save-meta-summary">✏️ 保存する作品の情報を入力する</summary>
+                            <div class="save-meta-content">
+                                <div class="form-row col-2">
+                                    <div class="form-group">
+                                        <label for="custom-circle">サークル名</label>
+                                        <input type="text" id="custom-circle" placeholder="サークル名を入力" maxlength="15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="custom-title">新刊タイトル <span class="required-mark">※</span></label>
+                                        <input type="text" id="custom-title" placeholder="新刊タイトルを入力（必須）" maxlength="30" aria-required="true">
+                                    </div>
+                                </div>
+                                <div class="form-row col-2">
+                                    <div class="form-group">
+                                        <label for="custom-event-name">イベント名</label>
+                                        <input type="text" id="custom-event-name" placeholder="例: コミックマーケット105" maxlength="30">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="custom-event-date">開催日</label>
+                                        <input type="date" id="custom-event-date">
+                                    </div>
+                                </div>
+                                <p id="save-validation-msg" class="save-validation-msg" role="alert" style="display:none;">⚠️ 「新刊タイトル」を入力してから保存してください。</p>
+                            </div>
+                        </details>
                     </section>
+
+
+
                 </div>
             </div><!-- /.tool-grid -->
 
@@ -519,7 +372,7 @@
 <div id="export-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-content">
-        <button type="button" class="modal-close" id="btn-close-modal" aria-label="モーダルを閉じる">&times;</button>
+        <button type="button" class="modal-close" id="btn-close-modal" aria-label="モーダルを閉じる"><span aria-hidden="true">&times;</span></button>
         <h3 id="modal-title">収支まとめ画像の保存</h3>
         <p class="modal-desc">下の画像を<strong>長押し（PCは右クリック）</strong>して「画像を保存」してください。</p>
         <div class="modal-body">
@@ -547,7 +400,7 @@
 
 <footer class="main-footer">
     <div class="footer-container">
-        <p>&copy; 2026 かたかた / かたかたの語り場. All Rights Reserved.</p>
+        <p>&copy; 2026 かたかた / かたかたの語り場. All Rights Reserved. <span class="version-tag">v2.0.0</span></p>
         <p class="footer-note">当ツールは完全ローカル完結型です。入力された個人データや数字が外部サーバーに送信されることは一切ありませんのでご安心ください。</p>
     </div>
 </footer>

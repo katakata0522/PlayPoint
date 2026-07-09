@@ -1,5 +1,5 @@
 /* ==========================================================================
-   同人誌の発行部数&黒字化シミュレーター | script.js  v2.0
+   同人誌の発行部数&黒字化シミュレーター | script.js  v2.0.0
    Architecture: constants / DOM / state / helpers / calc / UI / storage / events
    ========================================================================== */
 
@@ -15,63 +15,63 @@ const PRINT_PRICE_DB = {
         pages:   [24, 32, 40, 48, 64, 80, 100],
         volumes: [20, 50, 100, 200, 300],
         prices: {
-            24:  [3500,  6000,  9500, 15000, 20000],
-            32:  [4000,  7000, 11000, 17500, 23000],
-            40:  [4500,  8000, 12500, 20000, 26000],
-            48:  [5000,  9000, 14000, 22500, 29000],
-            64:  [6000, 11000, 17000, 27500, 35000],
-            80:  [7000, 13000, 20000, 32500, 41000],
-            100: [8500, 15500, 24000, 38500, 48000],
+            24:  [7500, 13000, 21000, 33000, 44000],
+            32:  [9000, 15500, 24000, 38500, 50500],
+            40:  [10000, 17500, 27500, 44000, 57000],
+            48:  [11000, 20000, 31000, 49500, 64000],
+            64:  [13000, 24000, 37500, 60500, 77000],
+            80:  [15500, 28500, 44000, 71500, 90000],
+            100: [18500, 34000, 53000, 84500, 105500],
         },
     },
     B5: {
         pages:   [24, 32, 40, 48, 64, 80, 100],
         volumes: [20, 50, 100, 200, 300],
         prices: {
-            24:  [4500,  8000, 12000, 18500, 25000],
-            32:  [5200,  9200, 14000, 21500, 29000],
-            40:  [6000, 10500, 16000, 24500, 33000],
-            48:  [6800, 11800, 18000, 27500, 37000],
-            64:  [8200, 14200, 22000, 33500, 45000],
-            80:  [9600, 16600, 26000, 39500, 53000],
-            100: [11500,19500, 31000, 47000, 63000],
+            24:  [10000, 17500, 26500, 40500, 55000],
+            32:  [11500, 20000, 31000, 47500, 64000],
+            40:  [13000, 23000, 35000, 54000, 72500],
+            48:  [15000, 26000, 39500, 60500, 81500],
+            64:  [18000, 31000, 48500, 73500, 99000],
+            80:  [21000, 36500, 57000, 87000, 116500],
+            100: [25500, 43000, 68000, 103500, 138500],
         },
     },
     B6: {
         pages:   [24, 32, 40, 48, 64, 80, 100],
         volumes: [20, 50, 100, 200, 300],
         prices: {
-            24:  [3200,  5500,  8500, 13500, 18000],
-            32:  [3700,  6400, 10000, 15500, 21000],
-            40:  [4200,  7300, 11500, 18000, 24000],
-            48:  [4700,  8200, 13000, 20500, 27000],
-            64:  [5600, 10000, 15500, 25000, 32000],
-            80:  [6500, 11800, 18500, 29500, 37500],
-            100: [7800, 14000, 22000, 35000, 44000],
+            24:  [7000, 12000, 18500, 29500, 39500],
+            32:  [8000, 14000, 22000, 34000, 46000],
+            40:  [9000, 16000, 25500, 39500, 53000],
+            48:  [10500, 18000, 28500, 45000, 59500],
+            64:  [12500, 22000, 34000, 55000, 70500],
+            80:  [14500, 26000, 40500, 65000, 82500],
+            100: [17000, 31000, 48500, 77000, 97000],
         },
     },
     A6: {
         pages:   [40, 64, 80, 100, 150, 200],
         volumes: [20, 50, 100, 200, 300],
         prices: {
-            40:  [3200,  5500,  8000, 12500, 17000],
-            64:  [4000,  7000, 10500, 16500, 22000],
-            80:  [4600,  8000, 12000, 19000, 25000],
-            100: [5200,  9200, 14000, 22000, 29500],
-            150: [7000, 12000, 18500, 29500, 39500],
-            200: [8800, 15000, 23000, 37000, 49500],
+            40:  [7000, 12000, 17500, 27500, 37500],
+            64:  [9000, 15500, 23000, 36500, 48500],
+            80:  [10000, 17500, 26500, 42000, 55000],
+            100: [11500, 20000, 31000, 48500, 65000],
+            150: [15500, 26500, 40500, 65000, 87000],
+            200: [19500, 33000, 50500, 81500, 109000],
         },
     },
     shinsho: {
         pages:   [40, 64, 80, 100, 150, 200],
         volumes: [20, 50, 100, 200, 300],
         prices: {
-            40:  [3500,  6000,  8800, 14000, 19000],
-            64:  [4400,  7700, 11500, 18000, 24500],
-            80:  [5000,  8800, 13200, 21000, 28000],
-            100: [5700, 10000, 15500, 24000, 32500],
-            150: [7700, 13200, 20500, 32500, 43500],
-            200: [9700, 16500, 25500, 41000, 54500],
+            40:  [7500, 13000, 19500, 31000, 42000],
+            64:  [9500, 17000, 25500, 39500, 54000],
+            80:  [11000, 19500, 29000, 46000, 61500],
+            100: [12500, 22000, 34000, 53000, 71500],
+            150: [17000, 29000, 45000, 71500, 95500],
+            200: [21500, 36500, 56000, 90000, 120000],
         },
     },
 };
@@ -84,7 +84,7 @@ const AFFILIATE_PRODUCTS = {
         items: [
             {
                 name:   'マックス 中とじホッチキス ホッチくる',
-                url:    'https://www.amazon.co.jp/dp/B000FHPDFQ?tag=katakata-22',
+                url:    'https://www.amazon.co.jp/dp/B001PMH76W?tag=katakata-22',
                 icon:   '📌',
                 reason: 'ヘッドが90度回転し、A4用紙の中央に簡単にホッチキスが打てるコピー本作家の必須装備です。',
             },
@@ -137,6 +137,14 @@ const AFFILIATE_PRODUCTS = {
 /** LocalStorage キー */
 const LS_KEY = 'doujin_saved_books_v1';
 
+/** 各種計算パラメータ設定 */
+const CONFIG = {
+    CONSIGNMENT_REVENUE_RATE: 0.7, // 書店委託時の料率 (手数料30%引き)
+    COLOR_COST_MULTIPLIER: 1.6,    // フルカラー印刷時のコスト倍率 (1.6倍)
+    COPYBOOK_PAGE_UNIT_COST: 6.0,  // コピー本の1ページ・1部あたりコスト
+    DEBOUNCE_WAIT_MS: 120,          // 入力時のデバウンス待ち時間 (ms)
+};
+
 /* ================================================================
    1. DOM キャッシュ（一度だけ取得）
 ================================================================ */
@@ -152,12 +160,6 @@ const printVolumeEl    = $('print-volume');
 const printCostEl      = $('print-cost');
 const costAutoBadgeEl  = $('cost-auto-badge');
 const btnResetCostEl   = $('btn-reset-cost');
-
-const snsFollowersEl   = $('sns-followers');
-const snsLikesEl       = $('sns-likes');
-const pixivBookmarksEl = $('pixiv-bookmarks');
-const eventScaleEl     = $('event-scale');
-const pastSalesEl      = $('past-sales');
 
 const eventFeeEl       = $('event-fee');
 const otherExpensesEl  = $('other-expenses');
@@ -175,14 +177,8 @@ const customTitleEl       = $('custom-title');
 const customEventNameEl   = $('custom-event-name');
 const customEventDateEl   = $('custom-event-date');
 const saveValidationMsgEl = $('save-validation-msg');
-const accordionSnsPredictEl = $('accordion-sns-predict');
 
 // --- 出力エリア ---
-const predictionCardSectionEl = $('prediction-card-section');
-const predSafeValueEl        = $('pred-safe-value');
-const predStandardValueEl    = $('pred-standard-value');
-const predAggressiveValueEl  = $('pred-aggressive-value');
-const snsWarningBoxEl        = $('sns-warning-box');
 
 const totalExpensesDisplayEl = $('total-expenses-display');
 const unitCostDisplayEl      = $('unit-cost-display');
@@ -232,6 +228,12 @@ const statTotalExpensesEl = $('stat-total-expenses');
 const btnExportDataEl     = $('btn-export-data');
 const inputImportFileEl   = $('input-import-file');
 
+// --- 保存メタデータアコーディオン ---
+const accordionSaveMetaEl = $('accordion-save-meta');
+
+// --- ページ数警告 ---
+const pagesWarningEl      = $('pages-warning');
+
 // --- カスタムダイアログ ---
 const customDialogEl     = $('custom-dialog');
 const dialogMessageEl    = $('dialog-message');
@@ -248,9 +250,6 @@ const appState = {
     unitCost:            0,
     breakevenSales:      0,
     isPossibleBreakeven: false,
-    safeVal:             0,
-    standardVal:         0,
-    aggressiveVal:       0,
     netProfit:           0,
     salesRevenue:        0,
     salesCount:          0,
@@ -320,31 +319,67 @@ const yen = (val) => `\uffe5${Math.round(val).toLocaleString('ja-JP')}`;
    4. 印刷費推定ロジック
 ================================================================ */
 
-/** 線形補間（1次元） */
+/** 線形補間および線形補外（1次元） - 超堅牢フェイルセーフ仕様 */
 function interpolate1D(x, xArr, yArr) {
-    if (x <= xArr[0])                return yArr[0];
-    if (x >= xArr[xArr.length - 1]) return yArr[yArr.length - 1];
-    for (let i = 0; i < xArr.length - 1; i++) {
+    if (!Array.isArray(xArr) || !Array.isArray(yArr) || xArr.length === 0 || yArr.length === 0) {
+        return 0;
+    }
+    const len = Math.min(xArr.length, yArr.length);
+    if (len < 2) return Number(yArr[0]) || 0;
+    if (typeof x !== 'number' || isNaN(x)) return Number(yArr[0]) || 0;
+
+    // 最小値未満の補外（基本料金を考慮し、最小価格の60%を下限とする）
+    if (x < xArr[0]) {
+        const dx = xArr[1] - xArr[0];
+        if (dx === 0) return Number(yArr[0]) || 0;
+        const slope = (yArr[1] - yArr[0]) / dx;
+        if (isNaN(slope) || !isFinite(slope)) return Number(yArr[0]) || 0;
+        const result = yArr[0] - slope * (xArr[0] - x);
+        return Math.max(Math.round(yArr[0] * 0.6), Math.round(result));
+    }
+
+    // 最大値超の補外
+    if (x > xArr[len - 1]) {
+        const dx = xArr[len - 1] - xArr[len - 2];
+        if (dx === 0) return Number(yArr[len - 1]) || 0;
+        const slope = (yArr[len - 1] - yArr[len - 2]) / dx;
+        if (isNaN(slope) || !isFinite(slope)) return Number(yArr[len - 1]) || 0;
+        const result = yArr[len - 1] + slope * (x - xArr[len - 1]);
+        return Math.max(yArr[len - 1], Math.round(result));
+    }
+
+    // 範囲内の線形補間
+    for (let i = 0; i < len - 1; i++) {
         if (x >= xArr[i] && x <= xArr[i + 1]) {
-            const t = (x - xArr[i]) / (xArr[i + 1] - xArr[i]);
-            return yArr[i] + t * (yArr[i + 1] - yArr[i]);
+            const dx = xArr[i + 1] - xArr[i];
+            if (dx === 0) return Number(yArr[i]) || 0;
+            const t = (x - xArr[i]) / dx;
+            return Math.round(yArr[i] + t * (yArr[i + 1] - yArr[i]));
         }
     }
-    return yArr[0];
+    return Number(yArr[0]) || 0;
 }
 
-/** ページ数・部数を 2次元補間して印刷費を推定する */
+/** ページ数・部数を 2次元的に補間・補外して印刷費を推定する（大部数・多ページ対応） - 超堅牢フェイルセーフ仕様 */
 function estimatePrintCost(size, pageCount, volume) {
     const db = PRINT_PRICE_DB[size];
-    if (!db) return 0;
+    if (!db || typeof db !== 'object') return 0;
+    if (!Array.isArray(db.pages) || !Array.isArray(db.volumes) || !db.prices) return 0;
 
-    const safePage = clamp(pageCount, db.pages[0],   db.pages[db.pages.length - 1]);
-    const safeVol  = clamp(volume,    db.volumes[0],  db.volumes[db.volumes.length - 1]);
+    // 各ページ階層において、指定部数に対する価格を部数方向に補間・補外
+    const pricesAtVol = [];
+    for (const p of db.pages) {
+        const row = db.prices[p];
+        if (!Array.isArray(row)) {
+            continue; // 破損行はスキップ
+        }
+        pricesAtVol.push(interpolate1D(volume, db.volumes, row));
+    }
 
-    // 各ページ行で「部数」方向に補間した価格列を作る
-    const pricesAtVol = db.pages.map(p => interpolate1D(safeVol, db.volumes, db.prices[p]));
+    if (pricesAtVol.length === 0) return 0;
 
-    return Math.round(interpolate1D(safePage, db.pages, pricesAtVol));
+    // 得られた価格列から、指定ページ数に対する価格をページ方向に補間・補外
+    return Math.max(0, interpolate1D(pageCount, db.pages.slice(0, pricesAtVol.length), pricesAtVol));
 }
 
 /** 自動印刷費を計算して入力欄を更新する */
@@ -353,21 +388,23 @@ function updateAutoPrintCost() {
 
     const size      = bookSizeEl.value;
     const printType = printTypeEl.value;
-    const pages     = clamp(parseInt(bookPagesEl.value)   || 1, 1,  500);
+    const pages     = clamp(parseInt(bookPagesEl.value)   || 1, 1,  1000); // 1000ページまで対応
     const volume    = clamp(parseInt(printVolumeEl.value)  || 1, 1, 50000);
 
     let cost;
     if (printType === 'copybook') {
-        cost = Math.round(6 * pages * volume);
+        cost = Math.round(CONFIG.COPYBOOK_PAGE_UNIT_COST * pages * volume);
     } else {
         cost = estimatePrintCost(size, pages, volume);
-        if (printType === 'color') cost = Math.round(cost * 2.5);
+        if (printType === 'color') cost = Math.round(cost * CONFIG.COLOR_COST_MULTIPLIER);
     }
 
-    printCostEl.value           = cost;
-    costAutoBadgeEl.className   = 'cost-badge auto';
-    costAutoBadgeEl.textContent = '自動計算中';
-    btnResetCostEl.style.display = 'none';
+    printCostEl.value = cost;
+    if (costAutoBadgeEl) {
+        costAutoBadgeEl.className   = 'cost-badge-btn auto';
+        costAutoBadgeEl.textContent = '自動計算中';
+        costAutoBadgeEl.disabled    = true; // 自動計算中はクリック不可（手動編集されたら有効化）
+    }
 }
 
 /** 印刷費を自動計算モードに戻す */
@@ -388,58 +425,35 @@ function _readInputs() {
         pages:         safeInt(bookPagesEl,      4,       500),
         volume:        safeInt(printVolumeEl,    1,     50000),
         printCost:     safeInt(printCostEl,      0,   5000000),
-        followers:     safeInt(snsFollowersEl,   0,  1000000),
-        likes:         safeInt(snsLikesEl,       0,   100000),
-        bookmarks:     safeInt(pixivBookmarksEl, 0,   100000),
-        pastSales:     safeInt(pastSalesEl,      0,    50000),
         eventFee:      safeInt(eventFeeEl,       0,  1000000),
         otherExp:      safeInt(otherExpensesEl,  0,  1000000),
         sellingPrice:  safeInt(sellingPriceEl,   0,   100000),
-        scale:         eventScaleEl.value,
+        printType:     printTypeEl.value,
         isConsignment: useConsignmentEl.checked,
         salesCount:    clamp(parseInt(salesSliderEl.value) || 0, 0, salesMax),
     };
 }
 
-/** SNS数値の矛盾を検出して警告を表示する */
-function _updateWarnings({ likes, followers, bookmarks }) {
-    const msgs = [];
-    if (likes > followers && followers > 0)
-        msgs.push('⚠️ いいね数がフォロワー数を上回っています。');
-    if (bookmarks > followers * 10 && followers > 0)
-        msgs.push('⚠️ pixivブクマ数がフォロワー数に対して極端に高密度です。');
-
-    if (msgs.length) {
-        snsWarningBoxEl.innerHTML =
-            msgs.join('<br>') +
-            '<br><small>※SNSの反応値のバランスが不自然なため、予測部数がぶれる可能性があります。</small>';
-        snsWarningBoxEl.style.display = 'block';
-    } else {
-        snsWarningBoxEl.style.display = 'none';
+/** ページ数の倍数チェック警告を表示する */
+function _updateWarnings({ pages, printType }) {
+    if (pagesWarningEl) {
+        const isCopy = printType === 'copybook';
+        const required = isCopy ? 8 : 4;
+        if (pages > 0 && pages % required !== 0) {
+            pagesWarningEl.textContent =
+                `⚠️ ${pages}ページは${required}の倍数ではありません。印刷所に発注する際は${required}の倍数（例：${Math.round(pages / required) * required}ページ）で発注してください。`;
+            pagesWarningEl.style.display = 'block';
+        } else {
+            pagesWarningEl.style.display = 'none';
+        }
     }
-}
-
-/** SNS・過去実績から推奨発行部数を計算する */
-function _calcPredictions({ followers, likes, bookmarks, scale, pastSales }) {
-    const scaleFactor = scale === 'large' ? 1.25 : 0.85;
-    let base = (bookmarks * 0.15) + (likes * 0.08) + (followers * 0.008);
-    if (pastSales > 0) base = base * 0.3 + pastSales * 0.7;
-
-    const roundTo5 = (v) => Math.max(10, Math.round(v / 5) * 5);
-    const wrap     = (v) => base > 0 ? roundTo5(v * scaleFactor) : 0;
-
-    return {
-        safeVal:       wrap(base * 0.7  +  8),
-        standardVal:   wrap(base * 1.0  + 15),
-        aggressiveVal: wrap(base * 1.4  + 25),
-    };
 }
 
 /** 収支・損益分岐点を計算する */
 function _calcProfit({ printCost, eventFee, otherExp, volume, sellingPrice, salesCount, isConsignment }) {
     const totalExpenses = printCost + eventFee + otherExp;
     const unitCost      = Math.round(totalExpenses / volume);
-    const revenueRate   = isConsignment ? 0.7 : 1.0;
+    const revenueRate   = isConsignment ? CONFIG.CONSIGNMENT_REVENUE_RATE : 1.0;
     const salesRevenue  = Math.round(salesCount * sellingPrice * revenueRate);
     const netProfit     = salesRevenue - totalExpenses;
 
@@ -457,15 +471,9 @@ function _calcProfit({ printCost, eventFee, otherExp, volume, sellingPrice, sale
 }
 
 /** 計算結果を画面に描画する */
-function _renderCalcResults(inputs, preds, profit) {
+function _renderCalcResults(inputs, profit) {
     const { volume, salesCount, sellingPrice } = inputs;
-    const { safeVal, standardVal, aggressiveVal } = preds;
     const { totalExpenses, unitCost, netProfit, breakevenSales, isPossibleBreakeven, selloutProfit } = profit;
-
-    // 推奨部数
-    predSafeValueEl.textContent       = safeVal.toLocaleString('ja-JP');
-    predStandardValueEl.textContent   = standardVal.toLocaleString('ja-JP');
-    predAggressiveValueEl.textContent = aggressiveVal.toLocaleString('ja-JP');
 
     // 経費
     totalExpensesDisplayEl.textContent = yen(totalExpenses);
@@ -518,9 +526,12 @@ function _renderCalcResults(inputs, preds, profit) {
             profitAdviceTextEl.textContent =
                 '警告：本の頒布価格が「0円（無料配布）」になっています。印刷経費を回収することはできません。';
         } else if (!isPossibleBreakeven) {
+            const revenueRate = isConsignment ? CONFIG.CONSIGNMENT_REVENUE_RATE : 1.0;
+            const minSellingPrice = Math.ceil(totalExpenses / (volume * revenueRate));
+            const consignmentNote = isConsignment ? '（書店委託手数料30%を考慮）' : '';
             profitAdviceTextEl.textContent =
                 `警告：本の価格設定（${sellingPrice}円）が低すぎるか、経費が高すぎます。` +
-                `完売しても黒字になりません。1冊あたり最低でも ${Math.ceil(totalExpenses / volume)} 円以上に設定することをお勧めします。`;
+                `完売しても黒字になりません。1冊あたり最低でも ${minSellingPrice} 円以上${consignmentNote}に設定することをお勧めします。`;
         } else {
             profitAdviceTextEl.textContent =
                 `あと ${breakevenSales - salesCount} 部の頒布で黒字に達します。` +
@@ -536,10 +547,9 @@ function calculateAll() {
     const inputs = _readInputs();
     _updateWarnings(inputs);
 
-    const preds  = _calcPredictions(inputs);
     const profit = _calcProfit(inputs);
 
-    _renderCalcResults(inputs, preds, profit);
+    _renderCalcResults(inputs, profit);
 
     // appState を最新値で更新（保存処理で使用）
     Object.assign(appState, {
@@ -547,9 +557,6 @@ function calculateAll() {
         unitCost:            profit.unitCost,
         breakevenSales:      profit.breakevenSales,
         isPossibleBreakeven: profit.isPossibleBreakeven,
-        safeVal:             preds.safeVal,
-        standardVal:         preds.standardVal,
-        aggressiveVal:       preds.aggressiveVal,
         netProfit:           profit.netProfit,
         salesRevenue:        profit.salesRevenue,
         salesCount:          inputs.salesCount,
@@ -558,7 +565,7 @@ function calculateAll() {
     updateAffiliateBox();
 }
 
-const debouncedCalculateAll = debounce(calculateAll, 120);
+const debouncedCalculateAll = debounce(calculateAll, CONFIG.DEBOUNCE_WAIT_MS);
 
 /* ================================================================
    6. クイック価格ボタン
@@ -566,8 +573,15 @@ const debouncedCalculateAll = debounce(calculateAll, 120);
 
 /** クイック価格ボタンのアクティブクラスを更新する */
 function updateQuickPriceActiveBadge(activeBtn) {
-    [btnQuick500El, btnQuick1000El, btnQuickAutoEl].forEach(b => b?.classList.remove('active'));
-    activeBtn?.classList.add('active');
+    [btnQuick500El, btnQuick1000El, btnQuickAutoEl].forEach(b => {
+        if (!b) return;
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+    });
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-pressed', 'true');
+    }
 }
 
 /* ================================================================
@@ -618,7 +632,17 @@ function closeModal() {
 /* ================================================================
    9. Canvas 画像出力
 ================================================================ */
-function exportSummaryImage() {
+async function exportSummaryImage() {
+    // 描画前にWebフォントの読み込み完了を保証
+    try {
+        if (document.fonts) {
+            await document.fonts.load('bold 24px "Noto Sans JP"');
+            await document.fonts.load('bold 22px "Outfit"');
+        }
+    } catch (e) {
+        console.warn('フォントロード失敗、システムフォントで代替します:', e);
+    }
+
     const ctx = exportCanvasEl.getContext('2d');
     if (!ctx) return;
 
@@ -679,10 +703,10 @@ function exportSummaryImage() {
         ctx.textAlign = 'right';
         ctx.fillStyle = '#6d28d9';
         ctx.font      = 'bold 12px "Noto Sans JP", sans-serif';
-        ctx.fillText(customCircle || 'サークル名未設定', 720, 74);
+        ctx.fillText(customCircle || 'サークル名未設定', 720, 74, 260);
         ctx.fillStyle = '#1f2937';
         ctx.font      = 'bold 15px "Noto Sans JP", sans-serif';
-        ctx.fillText(`\uD83D\uDCD6 ${customTitle || '新刊計画'}`, 720, 96);
+        ctx.fillText(`📖 ${customTitle || '新刊計画'}`, 720, 96, 260);
         ctx.textAlign = 'left';
     }
 
@@ -695,21 +719,21 @@ function exportSummaryImage() {
     ctx.strokeStyle = lineGrad; ctx.lineWidth = 2; ctx.stroke();
 
     // 左カラム：仕様
-    const sizeLabel = bookSizeEl.options[bookSizeEl.selectedIndex].text.split('\uff08')[0];
-    const typeLabel = printTypeEl.options[printTypeEl.selectedIndex].text.split('\uff08')[0];
+    const sizeLabel = bookSizeEl.options[bookSizeEl.selectedIndex].text.split('（')[0];
+    const typeLabel = printTypeEl.options[printTypeEl.selectedIndex].text.split('（')[0];
 
     ctx.fillStyle = '#4b5563';
     ctx.font      = 'bold 16px "Noto Sans JP", sans-serif';
-    ctx.fillText('\uD83D\uDCD6 本の仕様と価格設定', 60, 170);
+    ctx.fillText('📖 本の仕様と価格設定', 60, 170);
 
     ctx.font      = '14px "Noto Sans JP", sans-serif';
     ctx.fillStyle = '#1f2937';
     [
-        `\u30B5\u30A4\u30BA: ${sizeLabel}`,
-        `\u5370\u5237\u4ED5\u69D8: ${typeLabel}`,
-        `\u7DCF\u30DA\u30FC\u30B8\u6570: ${bookPagesEl.value} \u30DA\u30FC\u30B8`,
-        `\u767A\u884C\u90E8\u6570: ${printVolumeEl.value} \u90E8`,
-        `\u9811\u5E03\u4FA1\u683C: ${sellingPriceEl.value} \u5186 / 1\u518A`,
+        `サイズ: ${sizeLabel}`,
+        `印刷仕様: ${typeLabel}`,
+        `総ページ数: ${bookPagesEl.value} ページ`,
+        `発行部数: ${printVolumeEl.value} 部`,
+        `頒布価格: ${sellingPriceEl.value} 円 / 1冊`,
     ].forEach((text, i) => ctx.fillText(text, 80, 200 + i * 30));
 
     // 損益分岐点ボックス
@@ -722,19 +746,23 @@ function exportSummaryImage() {
     ctx.font      = 'bold 14px "Noto Sans JP", sans-serif';
     ctx.fillText(
         isPossibleBreakeven
-            ? `\u26A0\uFE0F \u640D\u76CA\u5206\u5C90\u70B9: ${breakevenSales} \u90E8 \u306E\u9811\u5E03\u3067\u9ED2\u5B57\u5316`
-            : `\u26A0\uFE0F \u640D\u76CA\u5206\u5C90\u70B9: \u9054\u6210\u4E0D\u53EF`,
+            ? `⚠️ 損益分岐点: ${breakevenSales} 部の頒布で黒字化`
+            : `⚠️ 損益分岐点: 達成不可`,
         85, 371);
 
-    // 右カラム：推奨部数
+    // 右カラム：試算結果
     ctx.fillStyle = '#4b5563';
     ctx.font      = 'bold 16px "Noto Sans JP", sans-serif';
-    ctx.fillText('\uD83D\uDCC8 \u63A8\u5968\u767A\u884C\u90E8\u6570', 440, 170);
+    ctx.fillText('📊 試算結果（シミュレーション）', 440, 170);
+
+    const profitVal = appState.netProfit;
+    const profitPrefix = profitVal >= 0 ? '+' : '';
+    const profitColor = profitVal >= 0 ? '#10b981' : '#dc2626';
 
     [
-        { color: '#10b981', label: `\u624B\u5805\u3044\u90E8\u6570: ${appState.safeVal.toLocaleString('ja-JP')} \u90E8`,       bold: false },
-        { color: '#8b5cf6', label: `\u304A\u3059\u3059\u3081\u6A19\u6E96\u90E8\u6570: ${appState.standardVal.toLocaleString('ja-JP')} \u90E8`, bold: true },
-        { color: '#f59e0b', label: `\u5F37\u6C17\u306A\u90E8\u6570: ${appState.aggressiveVal.toLocaleString('ja-JP')} \u90E8`,   bold: false },
+        { color: '#8b5cf6', label: `シミュレーション部数: ${appState.salesCount.toLocaleString('ja-JP')} 部`, bold: false },
+        { color: '#ec4899', label: `想定売上高: ${yen(appState.salesRevenue)}`, bold: false },
+        { color: profitColor, label: `想定収支: ${profitPrefix}${yen(profitVal)}`, bold: true },
     ].forEach(({ color, label, bold }, i) => {
         const y = 195 + i * 50;
         ctx.fillStyle = color; ctx.fillRect(440, y, 10, 15);
@@ -750,7 +778,7 @@ function exportSummaryImage() {
     roundRect(440, 345, 300, 80, 8);
     ctx.fillStyle = '#4b5563';
     ctx.font      = '12px "Noto Sans JP", sans-serif';
-    ctx.fillText('\u7DCF\u7D4C\u8CBB (\u5370\u5237\u8CBB\uff0B\u30A4\u30D9\u30F3\u30C8\u7D4C\u8CBB)', 458, 375);
+    ctx.fillText('総経費 (印刷費＋イベント経費)', 458, 375);
     ctx.fillStyle = '#1f2937';
     ctx.font      = 'bold 22px "Outfit", sans-serif';
     ctx.fillText(yen(totalExpenses), 458, 405);
@@ -763,22 +791,22 @@ function exportSummaryImage() {
     roundRect(sx, sy, 190, 28, 4);
     ctx.fillStyle = '#9ca3af';
     ctx.font      = '11px "Noto Sans JP", sans-serif';
-    ctx.fillText('\u304B\u305F\u304B\u305F\u306E\u540C\u4EBA\u30C4\u30FC\u30EB', sx + 10, sy + 18);
+    ctx.fillText('かたかたの同人ツール', sx + 10, sy + 18);
     ctx.fillStyle = '#8b5cf6'; ctx.fillRect(sx + 150, sy + 1, 39, 26);
     ctx.fillStyle = '#ffffff';
     ctx.font      = 'bold 10px "Noto Sans JP", sans-serif';
-    ctx.fillText('\u691C\u7D22', sx + 158, sy + 17);
+    ctx.fillText('検索', sx + 158, sy + 17);
 
     // フッター
     ctx.fillStyle = '#9ca3af';
     ctx.font      = '11px "Noto Sans JP", sans-serif';
-    ctx.fillText('Designed by \u304B\u305F\u304B\u305F (katakatalab.com)', 60, 452);
+    ctx.fillText('Designed by かたかた (katakatalab.com)', 60, 452);
 
     try {
         openModal(exportCanvasEl.toDataURL('image/png'), exportCanvasEl.toDataURL('image/png'));
     } catch (err) {
-        console.error('\u753B\u50CF\u751F\u6210\u30A8\u30E9\u30FC:', err);
-        showToast('\u274C \u753B\u50CF\u306E\u66F8\u304D\u51FA\u3057\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u30D6\u30E9\u30A6\u30B6\u306ECanvas\u6A5F\u80FD\u3092\u3054\u78BA\u8A8D\u304F\u3060\u3055\u3044\u3002');
+        console.error('画像生成エラー:', err);
+        showToast('❌ 画像の書き出しに失敗しました。ブラウザのCanvas機能をご確認ください。');
     }
 }
 
@@ -786,12 +814,20 @@ function exportSummaryImage() {
    10. トースト通知
 ================================================================ */
 function showToast(message) {
-    document.querySelector('.toast-message')?.remove();
+    const existing = document.querySelector('.toast-message');
+    if (existing) {
+        existing.remove();
+    }
     const toast       = document.createElement('div');
     toast.className   = 'toast-message';
     toast.textContent = message;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2700);
+    
+    // フェードアウトさせてから削除
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+    }, 2400);
 }
 
 /* ================================================================
@@ -840,7 +876,7 @@ function setBooks(books) {
     try {
         localStorage.setItem(LS_KEY, JSON.stringify(books));
     } catch {
-        showToast('\u274C \u30C7\u30FC\u30BF\u306E\u4FDD\u5B58\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u30B9\u30C8\u30EC\u30FC\u30B8\u5BB9\u91CF\u3092\u3054\u78BA\u8A8D\u304F\u3060\u3055\u3044\u3002');
+        showToast('❌ データの保存に失敗しました。ストレージ容量をご確認ください。');
     }
 }
 
@@ -856,7 +892,7 @@ function renderStats(books) {
     );
     const profit = rev - exp;
 
-    statBookCountEl.textContent     = `${books.length} \u4F5C\u54C1`;
+    statBookCountEl.textContent     = `${books.length} 作品`;
     statTotalRevenueEl.textContent  = yen(rev);
     statTotalExpensesEl.textContent = yen(exp);
 
@@ -887,9 +923,9 @@ function renderBookCards(books) {
         let eventHtml = '';
         if (book.eventName || book.eventDate) {
             const evName = book.eventName
-                ? `<span>\uD83C\uDFAA ${escapeHtml(book.eventName)}</span>` : '';
+                ? `<span>🎪 ${escapeHtml(book.eventName)}</span>` : '';
             const evDate = book.eventDate
-                ? `<span>\uD83D\uDCC5 ${new Date(book.eventDate).toLocaleDateString('ja-JP', {
+                ? `<span>📅 ${new Date(book.eventDate).toLocaleDateString('ja-JP', {
                       year: 'numeric', month: 'short', day: 'numeric',
                   })}</span>` : '';
             eventHtml = `<div class="book-card-event">${evName}${evDate}</div>`;
@@ -902,42 +938,42 @@ function renderBookCards(books) {
         card.innerHTML = `
             <div class="book-card-header">
                 <div>
-                    <div class="book-card-title">\uD83D\uDCD6 ${escapeHtml(book.title)}</div>
+                    <div class="book-card-title">📖 ${escapeHtml(book.title)}</div>
                     <div class="book-card-circle">${escapeHtml(book.circle)}</div>
                 </div>
-                <span class="book-card-badge ${isGain ? 'gain' : 'loss'}">${isGain ? '\u2705 \u9ED2\u5B57' : '\uD83D\uDD34 \u8D64\u5B57'}</span>
+                <span class="book-card-badge ${isGain ? 'gain' : 'loss'}">${isGain ? '✅ 黒字' : '🔴 赤字'}</span>
             </div>
             ${eventHtml}
             <div class="book-card-meta">
                 <div class="book-card-meta-item">
-                    <span>\u5370\u5237\u90E8\u6570</span>
-                    <strong class="font-outfit">${book.printVolume.toLocaleString('ja-JP')} \u90E8</strong>
+                    <span>印刷部数</span>
+                    <strong class="font-outfit">${book.printVolume.toLocaleString('ja-JP')} 部</strong>
                 </div>
                 <div class="book-card-meta-item">
-                    <span>\u9811\u5E03\u6570</span>
-                    <strong class="font-outfit">${book.salesCount.toLocaleString('ja-JP')} \u90E8</strong>
+                    <span>頒布数</span>
+                    <strong class="font-outfit">${book.salesCount.toLocaleString('ja-JP')} 部</strong>
                 </div>
                 <div class="book-card-meta-item">
-                    <span>\u9811\u5E03\u4FA1\u683C</span>
+                    <span>頒布価格</span>
                     <strong class="font-outfit">${yen(book.sellingPrice)}</strong>
                 </div>
                 <div class="book-card-meta-item">
-                    <span>\u7DCF\u7D4C\u8CBB</span>
+                    <span>総経費</span>
                     <strong class="font-outfit">${yen(book.totalExpenses)}</strong>
                 </div>
             </div>
             <div class="book-card-profit-row">
-                <span class="book-card-profit-label">\u5B9F\u7E3E\u53CE\u652F</span>
+                <span class="book-card-profit-label">実績収支</span>
                 <span class="book-profit-amount ${isGain ? 'gain' : 'loss'}">
                     ${isGain ? '+' : '-'}${yen(Math.abs(book.netProfit))}
                 </span>
             </div>
-            <div class="book-card-saved-date">\u4FDD\u5B58\u65E5\uFF1A${savedDate}</div>
+            <div class="book-card-saved-date">保存日：${savedDate}</div>
             <div class="book-card-actions">
                 <button type="button" class="btn-card-action btn-card-reload"
-                    data-id="${book.id}" title="\u3053\u306E\u4ED5\u69D8\u3092\u30B7\u30DF\u30E5\u30EC\u30FC\u30BF\u30FC\u306B\u8AAD\u307F\u8FBC\u3080">\uD83D\uDD01 \u518D\u30B7\u30DF\u30E5\u30EC\u30FC\u30B7\u30E7\u30F3</button>
+                    data-id="${book.id}" title="この仕様をシミュレーターに読み込む">🔄 再シミュレーション</button>
                 <button type="button" class="btn-card-action btn-card-delete"
-                    data-id="${book.id}" title="\u3053\u306E\u8A18\u9332\u3092\u524A\u9664\u3059\u308B">\uD83D\uDDD1\uFE0F \u524A\u9664</button>
+                    data-id="${book.id}" title="この記録を削除する">🗑️ 削除</button>
             </div>`;
 
         fragment.appendChild(card);
@@ -960,34 +996,72 @@ function applyBookToSimulator(bookId) {
     const book = getBooks().find(b => b.id === bookId);
     if (!book) return;
 
+    // 基本情報
     if (book.bookSize)    bookSizeEl.value     = book.bookSize;
     if (book.printType)   printTypeEl.value    = book.printType;
     if (book.bookPages)   bookPagesEl.value    = book.bookPages;
     if (book.printVolume) printVolumeEl.value  = book.printVolume;
     if (book.sellingPrice)sellingPriceEl.value = book.sellingPrice;
 
-    customCircleEl.value   = (book.circle && book.circle !== '\uff08\u30B5\u30FC\u30AF\u30EB\u540D\u672A\u8A2D\u5B9A\uff09') ? book.circle : '';
+    // サークル・イベント情報
+    customCircleEl.value   = (book.circle && book.circle !== '（サークル名未設定）') ? book.circle : '';
     customTitleEl.value    = book.title    ?? '';
     if (customEventNameEl) customEventNameEl.value = book.eventName ?? '';
     if (customEventDateEl) customEventDateEl.value = book.eventDate ?? '';
 
+    // 経費情報 (拡張)
+    if (book.eventFee !== undefined)      eventFeeEl.value      = book.eventFee;
+    if (book.otherExpenses !== undefined) otherExpensesEl.value = book.otherExpenses;
+    if (book.useConsignment !== undefined) {
+        useConsignmentEl.checked = book.useConsignment;
+    }
+
+    // 印刷費手動/自動状態 (拡張)
+    if (book.isAutoCost !== undefined) {
+        isAutoCostEnabled = book.isAutoCost;
+        if (!isAutoCostEnabled && book.printCost !== undefined) {
+            printCostEl.value = book.printCost;
+            costAutoBadgeEl.className = 'cost-badge manual';
+            costAutoBadgeEl.textContent = '手動編集';
+            if (btnResetCostEl) btnResetCostEl.style.display = 'inline-block';
+        } else {
+            if (btnResetCostEl) btnResetCostEl.style.display = 'none';
+        }
+    } else {
+        // 過去の保存データ互換用 (以前は自動計算前提)
+        isAutoCostEnabled = true;
+        if (btnResetCostEl) btnResetCostEl.style.display = 'none';
+    }
+
+    // 頒布スタイルチップの表示同期
+    const fee = parseInt(eventFeeEl.value) || 0;
+    const isCons = useConsignmentEl.checked;
+    if (fee === 0 && isCons) {
+        btnDistEventEl?.classList.remove('active');
+        btnDistOnlineEl?.classList.add('active');
+    } else if (fee > 0 && !isCons) {
+        btnDistEventEl?.classList.add('active');
+        btnDistOnlineEl?.classList.remove('active');
+    } else {
+        btnDistEventEl?.classList.remove('active');
+        btnDistOnlineEl?.classList.remove('active');
+    }
+
+    // 頒布数スライダー同期
     salesSliderEl.max   = book.printVolume;
     salesSliderEl.value = book.salesCount ?? 0;
     if (salesCountInputEl) salesCountInputEl.value = book.salesCount ?? 0;
 
-    // 予測値が保存されている場合はアコーディオンを展開、そうでなければ折りたたむ
-    const hasPrediction = (book.predSafe > 0 || book.predStandard > 0 || book.predAggressive > 0);
-    if (accordionSnsPredictEl) {
-        accordionSnsPredictEl.open = hasPrediction;
-        togglePredictionCard(hasPrediction);
-    }
+    // 保存用アコーディオンを開いてタイトルフォールドを表示
+    if (accordionSaveMetaEl) accordionSaveMetaEl.open = true;
 
-    isAutoCostEnabled = true;
-    updateAutoPrintCost();
+    if (isAutoCostEnabled) {
+        updateAutoPrintCost();
+    }
     calculateAll();
     updateQuickPriceActiveBadge(null);
 
-    showToast(`\uD83D\uDD01\u300C${book.title}\u300D\u306E\u6761\u4EF6\u3092\u30B7\u30DF\u30E5\u30EC\u30FC\u30BF\u30FC\u306B\u8AAD\u307F\u8FBC\u307F\u307E\u3057\u305F`);
+    showToast(`🔄「${book.title}」の条件をシミュレーターに読み込みました`);
     $('tab-calculator')?.click();
 }
 
@@ -998,12 +1072,12 @@ async function deleteBook(bookId) {
     const book = getBooks().find(b => b.id === bookId);
     if (!book) return;
 
-    const ok = await showDialog(`\u300C${book.title}\u300D\u306E\u8A18\u9332\u3092\u524A\u9664\u3057\u3066\u3088\u308D\u3057\u3044\u3067\u3059\u304B\uFF1F\n\u3053\u306E\u64CD\u4F5C\u306F\u5143\u306B\u623B\u305B\u307E\u305B\u3093\u3002`);
+    const ok = await showDialog(`「${book.title}」の記録を削除してよろしいですか？\nこの操作は元に戻せません。`);
     if (!ok) return;
 
     setBooks(getBooks().filter(b => b.id !== bookId));
     renderDashboard();
-    showToast(`\uD83D\uDDD1\uFE0F\u300C${book.title}\u300D\u3092\u524A\u9664\u3057\u307E\u3057\u305F`);
+    showToast(`🗑️「${book.title}」を削除しました`);
 }
 
 /* ================================================================
@@ -1013,12 +1087,12 @@ async function deleteBook(bookId) {
 /** 全データを JSON ファイルとしてダウンロードする */
 function exportBooksJson() {
     const books = getBooks();
-    if (!books.length) { showToast('\u26A0\uFE0F \u4FDD\u5B58\u3055\u308C\u305F\u30C7\u30FC\u30BF\u304C\u3042\u308A\u307E\u305B\u3093'); return; }
+    if (!books.length) { showToast('⚠️ 保存されたデータがありません'); return; }
 
     const payload = {
         version:    '1.0',
         exportedAt: new Date().toISOString(),
-        tool:       '\u540C\u4EBA\u8A8C\u306E\u767A\u884C\u90E8\u6570\uFF06\u9ED2\u5B57\u5316\u30B7\u30DF\u30E5\u30EC\u30FC\u30BF\u30FC',
+        tool:       '同人誌の発行部数＆黒字化シミュレーター',
         books,
     };
     const url  = URL.createObjectURL(
@@ -1030,7 +1104,28 @@ function exportBooksJson() {
     });
     link.click();
     URL.revokeObjectURL(url);
-    showToast(`\uD83D\uDCBE ${books.length}\u4EF6\u306E\u30C7\u30FC\u30BF\u3092\u30D0\u30C3\u30AF\u30A2\u30C3\u30D7\u4FDD\u5B58\u3057\u307E\u3057\u305F`);
+    showToast(`💾 ${books.length}件のデータをバックアップ保存しました`);
+}
+
+/** 作品オブジェクトのバリデーションチェック */
+function isValidBook(book) {
+    if (!book || typeof book !== 'object') return false;
+    const requiredKeys = ['id', 'savedAt', 'title', 'printVolume', 'sellingPrice', 'totalExpenses', 'salesCount', 'netProfit'];
+    for (const key of requiredKeys) {
+        if (!(key in book)) return false;
+    }
+    if (typeof book.id !== 'string' || book.id.trim() === '') return false;
+    if (typeof book.title !== 'string' || book.title.trim() === '') return false;
+    if (typeof book.printVolume !== 'number' || isNaN(book.printVolume) || book.printVolume < 0) return false;
+    if (typeof book.sellingPrice !== 'number' || isNaN(book.sellingPrice) || book.sellingPrice < 0) return false;
+    if (typeof book.totalExpenses !== 'number' || isNaN(book.totalExpenses) || book.totalExpenses < 0) return false;
+    if (typeof book.salesCount !== 'number' || isNaN(book.salesCount) || book.salesCount < 0) return false;
+    if (typeof book.netProfit !== 'number' || isNaN(book.netProfit)) return false;
+
+    // 日付の妥当性検証
+    if (isNaN(Date.parse(book.savedAt))) return false;
+
+    return true;
 }
 
 /** JSON ファイルからデータを復元する */
@@ -1040,17 +1135,37 @@ function importBooksJson(file) {
     reader.onload = ({ target }) => {
         try {
             const parsed = JSON.parse(target.result);
+            if (!parsed || typeof parsed !== 'object') throw new Error('invalid format');
             if (!Array.isArray(parsed.books)) throw new Error('invalid format');
+
+            // データバージョンに応じたスキーママイグレーション
+            const dataVersion = parsed.version || '1.0';
+            let booksToImport = parsed.books;
+
+            if (dataVersion === '1.0') {
+                // v1.0 データの補正（もし以前のバージョンで保存されていた場合はデフォルト値を補完）
+                booksToImport = booksToImport.map(b => {
+                    if (b.isAutoCost === undefined) b.isAutoCost = true;
+                    return b;
+                });
+            }
+
+            // インポートデータのバリデーション
+            const validBooks = booksToImport.filter(isValidBook);
+            if (validBooks.length === 0 && parsed.books.length > 0) {
+                throw new Error('no valid books');
+            }
 
             const existing    = getBooks();
             const existingIds = new Set(existing.map(b => b.id));
-            const newBooks    = parsed.books.filter(b => !existingIds.has(b.id));
+            const newBooks    = validBooks.filter(b => !existingIds.has(b.id));
 
             setBooks([...newBooks, ...existing]);
             renderDashboard();
-            showToast(`\u2705 ${newBooks.length}\u4EF6\u3092\u5FA9\u5143\u3057\u307E\u3057\u305F\uff08\u91CD\u8907 ${parsed.books.length - newBooks.length}\u4EF6\u306F\u30B9\u30AD\u30C3\u30D7\uff09`);
-        } catch {
-            showToast('\u274C \u30D5\u30A1\u30A4\u30EB\u306E\u8AAD\u307F\u8FBC\u307F\u306B\u5931\u6557\u3057\u307E\u3057\u305F\u3002\u30D5\u30A9\u30FC\u30DE\u30C3\u30C8\u3092\u3054\u78BA\u8A8D\u304F\u3060\u3055\u3044\u3002');
+            showToast(`✅ ${newBooks.length}件を復元しました（重複 ${validBooks.length - newBooks.length}件はスキップ）`);
+        } catch (err) {
+            console.error('インポートエラー:', err);
+            showToast('❌ ファイルの読み込みに失敗しました。正しいバックアップJSONファイルを選択してください。');
         } finally {
             if (inputImportFileEl) inputImportFileEl.value = '';
         }
@@ -1066,21 +1181,20 @@ function importBooksJson(file) {
 printCostEl.addEventListener('input', debounce(() => {
     isAutoCostEnabled           = false;
     costAutoBadgeEl.className   = 'cost-badge manual';
-    costAutoBadgeEl.textContent = '\u624B\u52D5\u7DE8\u96C6';
+    costAutoBadgeEl.textContent = '手動編集';
     btnResetCostEl.style.display = 'inline-block';
     calculateAll();
-}, 120));
+}, CONFIG.DEBOUNCE_WAIT_MS));
 btnResetCostEl.addEventListener('click', resetToAutoPrintCost);
 
 // --- 即時反映（select / range / checkbox） ---
-[bookSizeEl, printTypeEl, eventScaleEl, salesSliderEl, useConsignmentEl].forEach(el => {
+[bookSizeEl, printTypeEl, salesSliderEl, useConsignmentEl].forEach(el => {
     el?.addEventListener('change', calculateAll);
     el?.addEventListener('input',  calculateAll);
 });
 
 // --- デバウンス（数値テキスト入力） ---
-[bookPagesEl, printVolumeEl, snsFollowersEl, snsLikesEl, pixivBookmarksEl,
- pastSalesEl, eventFeeEl, otherExpensesEl, sellingPriceEl].forEach(el => {
+[bookPagesEl, printVolumeEl, eventFeeEl, otherExpensesEl, sellingPriceEl].forEach(el => {
     el?.addEventListener('input', debouncedCalculateAll);
 });
 
@@ -1117,30 +1231,7 @@ btnQuickAutoEl?.addEventListener('click', () => {
     calculateAll();
 });
 
-// --- 全表示/非表示制御関数 (アコーディオン連動) ---
-function togglePredictionCard(isOpen) {
-    if (!predictionCardSectionEl) return;
-    if (isOpen) {
-        predictionCardSectionEl.style.display = 'block';
-        requestAnimationFrame(() => {
-            predictionCardSectionEl.classList.add('show');
-        });
-    } else {
-        predictionCardSectionEl.classList.remove('show');
-        const handleTransitionEnd = (e) => {
-            if (e.propertyName === 'opacity') {
-                predictionCardSectionEl.style.display = 'none';
-                predictionCardSectionEl.removeEventListener('transitionend', handleTransitionEnd);
-            }
-        };
-        predictionCardSectionEl.addEventListener('transitionend', handleTransitionEnd);
-        setTimeout(() => {
-            if (!predictionCardSectionEl.classList.contains('show')) {
-                predictionCardSectionEl.style.display = 'none';
-            }
-        }, 350);
-    }
-}
+// --- 保存ボタンのクリック時にオープン保存アコーディオン (save-meta) ---
 
 // --- 全リセット ---
 btnResetAllEl?.addEventListener('click', () => {
@@ -1148,11 +1239,6 @@ btnResetAllEl?.addEventListener('click', () => {
     printTypeEl.value        = 'monochrome';
     bookPagesEl.value        = '32';
     printVolumeEl.value      = '100';
-    snsFollowersEl.value     = '';
-    snsLikesEl.value         = '';
-    pixivBookmarksEl.value   = '';
-    eventScaleEl.value       = 'medium';
-    pastSalesEl.value        = '';
     eventFeeEl.value         = '7000';
     otherExpensesEl.value    = '5000';
     sellingPriceEl.value     = '500';
@@ -1168,11 +1254,8 @@ btnResetAllEl?.addEventListener('click', () => {
     btnDistEventEl?.classList.add('active');
     btnDistOnlineEl?.classList.remove('active');
 
-    // アコーディオンもリセット
-    if (accordionSnsPredictEl) {
-        accordionSnsPredictEl.open = false;
-        togglePredictionCard(false);
-    }
+    // アコーディオンもリセット（保存メタは閉じる）
+    if (accordionSaveMetaEl)  accordionSaveMetaEl.open  = false; // 保存メタは閉じる
 
     // バリデーション状態のリセット
     if (saveValidationMsgEl) saveValidationMsgEl.style.display = 'none';
@@ -1219,11 +1302,6 @@ btnDistOnlineEl?.addEventListener('click', () => {
     });
 });
 
-// --- アコーディオンの開閉監視 ---
-accordionSnsPredictEl?.addEventListener('toggle', () => {
-    togglePredictionCard(accordionSnsPredictEl.open);
-});
-
 // --- モーダル ---
 btnCloseModalEl.addEventListener('click', closeModal);
 modalOverlayEl.addEventListener('click',  closeModal);
@@ -1234,30 +1312,35 @@ btnExportEl.addEventListener('click', exportSummaryImage);
 
 // --- 作品保存 ---
 btnSaveBookEl?.addEventListener('click', () => {
+    // タイトル未入力の場合→アコーディオンを自動展開してフォーカス
     const title = customTitleEl.value.trim();
     if (!title) {
+        if (accordionSaveMetaEl) accordionSaveMetaEl.open = true;
         if (saveValidationMsgEl) saveValidationMsgEl.style.display = 'block';
-        customTitleEl.focus();
-        customTitleEl.style.borderColor = 'var(--danger)';
+        // 展開アニメの完了を待ってからフォーカス
+        setTimeout(() => {
+            customTitleEl.focus();
+            customTitleEl.style.borderColor = 'var(--danger)';
+            customTitleEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 80);
         return;
     }
     if (saveValidationMsgEl) saveValidationMsgEl.style.display = 'none';
     customTitleEl.style.borderColor = '';
 
-    const { totalExpenses, netProfit, breakevenSales, isPossibleBreakeven,
-            safeVal, standardVal, aggressiveVal } = appState;
+    const { totalExpenses, netProfit, breakevenSales, isPossibleBreakeven } = appState;
 
     const volume       = Math.max(1, parseInt(printVolumeEl.value)   || 1);
     const sellingPrice = Math.max(0, parseInt(sellingPriceEl.value)  || 0);
     const salesCount   = Math.max(0, parseInt(salesSliderEl.value)   || 0);
-    const revenueRate  = useConsignmentEl.checked ? 0.7 : 1.0;
+    const revenueRate  = useConsignmentEl.checked ? CONFIG.CONSIGNMENT_REVENUE_RATE : 1.0;
     const salesRevenue = Math.round(salesCount * sellingPrice * revenueRate);
 
     const newBook = {
         id:           Date.now().toString(),
         savedAt:      new Date().toISOString(),
         title,
-        circle:       customCircleEl.value.trim() || '\uff08\u30B5\u30FC\u30AF\u30EB\u540D\u672A\u8A2D\u5B9A\uff09',
+        circle:       customCircleEl.value.trim() || '（サークル名未設定）',
         eventName:    customEventNameEl?.value.trim()  ?? '',
         eventDate:    customEventDateEl?.value         ?? '',
         bookSize:     bookSizeEl.value,
@@ -1270,15 +1353,19 @@ btnSaveBookEl?.addEventListener('click', () => {
         salesRevenue,
         netProfit,
         breakevenSales: isPossibleBreakeven ? breakevenSales : null,
-        predSafe:        safeVal,
-        predStandard:    standardVal,
-        predAggressive:  aggressiveVal,
+
+        // 経費パラメータの完全保存 (再ロード時の完全再現用)
+        eventFee:       parseInt(eventFeeEl.value)       || 0,
+        otherExpenses:  parseInt(otherExpensesEl.value)  || 0,
+        useConsignment: useConsignmentEl.checked,
+        isAutoCost:     isAutoCostEnabled,
+        printCost:      parseInt(printCostEl.value)      || 0,
     };
 
     const books = getBooks();
     books.unshift(newBook);
     setBooks(books);
-    showToast(`\uD83D\uDCBE\u300C${title}\u300D\u3092\u4F5C\u54C1\u30EA\u30B9\u30C8\u306B\u4FDD\u5B58\u3057\u307E\u3057\u305F\uFF01`);
+    showToast(`💾「${title}」を作品リストに保存しました！`);
     $('tab-dashboard')?.click();
 });
 
@@ -1333,9 +1420,6 @@ document.addEventListener('keydown', e => {
 ================================================================ */
 calculateAll();
 renderDashboard();
-
-// 初期状態のアコーディオン開閉状態を右側カードへ適用
-if (accordionSnsPredictEl) {
-    togglePredictionCard(accordionSnsPredictEl.open);
-}
+// SNSアコーディオンは HTML属性 open で常時展開、保存メタは閉じた状態で起動。
+if (accordionSaveMetaEl) accordionSaveMetaEl.open = false;
 

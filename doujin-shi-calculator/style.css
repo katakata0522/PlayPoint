@@ -216,6 +216,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    margin-top: 20px;
 }
 
 /* プライマリボタン（保存ボタン） */
@@ -476,6 +477,12 @@ body {
     z-index: 1000;
     animation: toastIn 0.3s ease, toastOut 0.4s ease 2.2s forwards;
     pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast-message.fade-out {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
 }
 
 @keyframes toastIn {
@@ -488,6 +495,16 @@ body {
     to   { opacity: 0; }
 }
 
+.version-tag {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    margin-left: 8px;
+    background-color: #374151;
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
+}
 
 /* Sticky Right Column */
 .result-sticky-wrapper {
@@ -687,87 +704,6 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
     margin-bottom: 20px;
 }
 
-/* Prediction Card Container */
-.prediction-cards-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.pred-card {
-    border: 1.5px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: 16px 20px;
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 10px;
-    align-items: center;
-    position: relative;
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-}
-
-.pred-label {
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    display: block;
-}
-
-.pred-value-area {
-    text-align: right;
-    color: var(--text-main);
-    font-weight: 700;
-}
-
-.pred-value {
-    font-family: var(--font-outfit);
-    font-size: 1.8rem;
-    line-height: 1;
-}
-
-.pred-desc {
-    grid-column: span 2;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    line-height: 1.4;
-    margin-top: 4px;
-}
-
-/* Safe / Standard / Aggressive Styles */
-.pred-card.safe {
-    border-left: 5px solid var(--success);
-}
-.pred-card.safe .pred-value { color: var(--success); }
-
-.pred-card.standard {
-    border-left: 5px solid var(--primary);
-    background-color: var(--primary-bg);
-}
-.pred-card.standard .pred-value { color: var(--primary); }
-
-.pred-card.standard.active {
-    border-color: var(--primary-light);
-    box-shadow: var(--shadow-md);
-}
-
-.pred-card.standard::after {
-    content: "おすすめ";
-    position: absolute;
-    top: -10px;
-    right: 15px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 8px;
-}
-
-.pred-card.aggressive {
-    border-left: 5px solid var(--warning);
-}
-.pred-card.aggressive .pred-value { color: var(--warning); }
-
 
 /* Summary Box */
 .summary-box {
@@ -959,9 +895,6 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
 }
 
 /* Buttons */
-.action-btn-area {
-    margin-top: 20px;
-}
 
 .btn {
     display: inline-flex;
@@ -1234,54 +1167,8 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
         font-size: 0.9rem;
     }
     
-    .pred-card {
-        padding: 12px 14px;
-    }
-    
-    .pred-value {
-        font-size: 1.5rem;
-    }
 }
 
-/* Warning Box for inputs validation */
-.warning-box {
-    background-color: #fffbeb;
-    border: 1px solid #fef3c7;
-    border-left: 4px solid var(--warning);
-    border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    font-size: 0.8rem;
-    color: #78350f; /* Amber 900 for contrast ratio > 7.5:1 */
-    margin-bottom: 20px;
-    line-height: 1.4;
-}
-
-/* Quick fill price buttons */
-.quick-buttons {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.btn-mini-quick {
-    font-family: inherit;
-    font-size: 0.7rem;
-    font-weight: 700;
-    background-color: #f1f5f9;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 6px 10px;
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-    transition: background-color 0.2s, border-color 0.2s;
-}
-
-.btn-mini-quick:hover {
-    background-color: #e2e8f0;
-    border-color: #94a3b8;
-}
 
 /* Consignment checkbox */
 .checkbox-group-container {
@@ -2009,5 +1896,217 @@ input[type="date"]:focus {
 #sellout-profit-display.loss-text {
     color: var(--danger);
 }
+
+/* ============================================================
+   3カラム統計枠（.summary-box.three-cols）
+   ============================================================ */
+.summary-box.three-cols {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.summary-item.highlight {
+    background-color: var(--primary-bg);
+    border: 1px solid var(--primary-light);
+    border-radius: var(--radius-sm);
+}
+
+.summary-item.highlight #sellout-profit-display.gain-text {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.summary-item.highlight #sellout-profit-display.loss-text {
+    color: var(--danger);
+    font-weight: 800;
+}
+
+@media (max-width: 640px) {
+    .summary-box.three-cols {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .summary-box.three-cols .summary-item.highlight {
+        grid-column: span 2;
+        text-align: center;
+    }
+}
+
+/* ============================================================
+   保存用メタデータ アコーディオン
+   ============================================================ */
+.save-meta-accordion {
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: #f8fafc;
+    overflow: hidden;
+}
+
+.save-meta-summary {
+    padding: 11px 16px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+    transition: background-color 0.18s ease;
+}
+
+.save-meta-summary:hover {
+    background-color: #f1f5f9;
+    color: var(--primary);
+}
+
+.save-meta-summary::-webkit-details-marker,
+.save-meta-summary::marker {
+    display: none;
+}
+
+.save-meta-summary::after {
+    content: '▾';
+    margin-left: auto;
+    font-size: 1rem;
+    transition: transform 0.2s ease;
+    color: var(--text-muted);
+}
+
+.save-meta-accordion[open] .save-meta-summary::after {
+    transform: rotate(-180deg);
+}
+
+.save-meta-content {
+    padding: 14px 16px 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* スライダー説明ヒント */
+.slider-interactive-hint {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+}
+
+/* Quick fill price buttons */
+.quick-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-mini-quick {
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-mini-quick:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.btn-mini-quick.active {
+    background-color: var(--primary-bg);
+    border-color: var(--primary-light);
+    color: var(--primary);
+    font-weight: 800;
+}
+
+
+/* ============================================================
+   予測印刷費バッジのボタン化（自動に戻すトグル）
+   ============================================================ */
+.cost-badge-btn {
+    font-family: inherit;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.cost-badge-btn.auto {
+    background-color: var(--success-bg);
+    color: var(--success);
+}
+
+.cost-badge-btn.manual {
+    background-color: var(--danger-bg);
+    color: var(--danger);
+    animation: pulseBadge 2s infinite;
+}
+
+.cost-badge-btn.manual::after {
+    content: " 🔁";
+}
+
+.cost-badge-btn:hover {
+    transform: translateY(-0.5px);
+    filter: brightness(0.92);
+}
+
+@keyframes pulseBadge {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+    70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* ============================================================
+   無効化された入力フォーム（過去実績入力時）
+   ============================================================ */
+.form-group.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.form-group.disabled input {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+}
+/* ============================================================
+   フォームヘルパーテキスト（各種注記）
+   ============================================================ */
+
+/* ページ数倍数警告（赤色） */
+.pages-warning-text {
+    color: #dc2626 !important;
+    font-weight: 700;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-top: 4px;
+}
+
+/* 委託手数料注記 */
+.consignment-note {
+    margin-top: 4px;
+    margin-left: 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
 
 
