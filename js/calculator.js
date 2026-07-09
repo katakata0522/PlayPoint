@@ -15,6 +15,11 @@ export const CALC_PURE = {
         return Math.round((amount / spendUnit) * finalRate);
     },
 
+    // 小数通貨のパック合計に浮動小数点誤差を表示・共有しない。
+    roundCurrencyAmount(amount) {
+        return Math.round((amount + Number.EPSILON) * 100) / 100;
+    },
+
     /**
      * 年末までの残り月数を算出（カレンダー基準）
      * @param {Date} baseDate
@@ -52,7 +57,7 @@ export const CALC_PURE = {
                 totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
             } else {
                 packsNeeded = Math.ceil(neededPoints / pointsPerPack);
-                totalAmountNeeded = packsNeeded * packAmount;
+                totalAmountNeeded = this.roundCurrencyAmount(packsNeeded * packAmount);
             }
         } else {
             totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
@@ -470,7 +475,7 @@ export const CALC = {
                 totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
             } else {
                 const packsNeeded = Math.ceil(finalNeededPoints / pointsPerPack);
-                totalAmountNeeded = packsNeeded * packAmount;
+                totalAmountNeeded = CALC_PURE.roundCurrencyAmount(packsNeeded * packAmount);
                 const packStr = texts.packUnit || 'packs';
                 packResultContent = `
                     <dt>${texts.resultLabelRequiredPacks || '必要購入パック数'}</dt>
