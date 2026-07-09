@@ -262,7 +262,7 @@ function createLocales(todayStr) {
         langCode: 'zh-TW',        // BCP47 言語コード（"tw" は非標準のため必ず zh-TW を使用）
         inLanguage: 'zh-TW',
         title: 'Google Play Points 計算器｜距離升級還差多少？',
-        description: 'Google Play 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援倍率活動與每週獎勵紀錄。',
+        description: 'Google Play Points 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援活動倍率、剩餘點數與每週獎勵紀錄。',
         ogTitle: 'Google Play Points 計算器｜距離升級還差多少？',
         ogDescription: '免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。',
         currency: 'TWD',

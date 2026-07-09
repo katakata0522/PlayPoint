@@ -8,15 +8,19 @@ PlayPoint's international SEO pages are grouped by language and intent. This not
 - `/en/status/platinum/`: English Platinum status estimate for queries such as `Google Play Points Platinum cost` and `Google Play Points calculator US`.
 - `/ko/`: Korean calculator shortcuts and Korean Play Points guides.
 - `/ko/status/platinum/`: Korean Platinum status estimate for queries such as `Google Play Points Korea` and local Platinum planning.
+- `/ko/articles/google-play-points-gift-cards.html`: Korean gift-card and Play Points eligibility guide.
+- `/ko/articles/google-play-points-promotion-not-applied.html`: Korean campaign bonus troubleshooting guide.
 - `/tw/`: Traditional Chinese calculator shortcuts and Traditional Chinese Play Points guides.
 - `/tw/status/platinum/`: Traditional Chinese Platinum status estimate for queries such as `Google Play Points Taiwan` and local Platinum planning.
+- `/tw/articles/google-play-points-gift-cards.html`: Traditional Chinese gift-card and Play Points eligibility guide.
+- `/tw/articles/google-play-points-promotion-not-applied.html`: Traditional Chinese campaign bonus troubleshooting guide.
 
 ## Weekly Search Console checks
 
 - Performance: filter by `page` prefix, then compare clicks, impressions, CTR, and average position for `/en/`, `/ko/`, and `/tw/`.
 - Country: check whether impressions are coming from expected regions, then compare outliers before changing page copy.
 - Query: group queries by intent such as missing points, levels, promotions, subscriptions, gift cards, and country differences.
-- Query clusters to pin weekly: `Google Play Points Platinum cost`, `Google Play Points calculator US`, `Google Play Points Korea`, and `Google Play Points Taiwan`.
+- Query clusters to pin weekly: `Google Play Points Platinum cost`, `Google Play Points calculator US`, `Google Play Points Korea`, `Google Play Points Taiwan`, `Google Play Points gift card`, and `Google Play Points promotion not applied`.
 - Index coverage: confirm new international articles are indexed and no `noindex`, canonical, redirect, or duplicate warnings remain.
 
 ## Decision rules
