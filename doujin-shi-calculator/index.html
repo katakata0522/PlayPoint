@@ -104,7 +104,10 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="print-cost">予測印刷費</label>
+                                <label for="print-cost" class="label-with-badge">
+                                    <span>予測印刷費</span>
+                                    <button type="button" id="btn-cost-restore" class="cost-restore-btn" style="display:none;" title="自動計算に戻す">🔄 自動に戻す</button>
+                                </label>
                                 <div class="input-with-unit">
                                     <input type="number" id="print-cost" value="20000" min="0" placeholder="自動計算" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>

@@ -160,6 +160,7 @@ const printVolumeEl    = $('print-volume');
 const printCostEl      = $('print-cost');
 const autoCostFieldsContainerEl = $('auto-cost-fields-container');
 const eventExpensesRowEl        = $('event-expenses-row');
+const btnCostRestoreEl          = $('btn-cost-restore');
 
 const eventFeeEl       = $('event-fee');
 const otherExpensesEl  = $('other-expenses');
@@ -358,11 +359,13 @@ function _updateAutoCostFieldsState() {
         autoCostFieldsContainerEl.querySelectorAll('select, input').forEach(el => {
             el.disabled = false;
         });
+        if (btnCostRestoreEl) btnCostRestoreEl.style.display = 'none';
     } else {
         autoCostFieldsContainerEl.classList.add('disabled');
         autoCostFieldsContainerEl.querySelectorAll('select, input').forEach(el => {
             el.disabled = true;
         });
+        if (btnCostRestoreEl) btnCostRestoreEl.style.display = 'inline-block';
     }
 }
 
@@ -605,8 +608,16 @@ function updateAffiliateBox() {
     if (!dynamicAffiliateBoxEl) return;
 
     const printType = printTypeEl.value;
-    const key       = printType === 'copybook' ? 'copybook' : 'event';
-    const db        = AFFILIATE_PRODUCTS[key];
+    const isOnline = btnDistOnlineEl && btnDistOnlineEl.classList.contains('active');
+
+    let key = 'event';
+    if (printType === 'copybook') {
+        key = 'copybook';
+    } else if (isOnline) {
+        key = 'shipping';
+    }
+
+    const db = AFFILIATE_PRODUCTS[key];
     if (!db) return;
 
     const itemsHtml = db.items.map(item => `
@@ -737,6 +748,59 @@ btnDistOnlineEl?.addEventListener('click', () => {
         btnDistEventEl?.classList.remove('active');
         btnDistOnlineEl?.classList.remove('active');
     });
+});
+
+   // --- 印刷費「自動に戻す」ボタン ---
+btnCostRestoreEl?.addEventListener('click', () => {
+    isAutoCostEnabled = true;
+    updateAutoPrintCost();
+    calculateAll();
+});
+
+// --- フォーカスアウト時の自動入力値補正 (堅牢性・頑健性の担保) ---
+bookPagesEl?.addEventListener('blur', () => {
+    let val = parseInt(bookPagesEl.value) || 40;
+    val = clamp(val, 4, 500);
+    // 4の倍数（コピー本は8の倍数）に補正
+    const required = printTypeEl.value === 'copybook' ? 8 : 4;
+    val = Math.round(val / required) * required;
+    bookPagesEl.value = val;
+    calculateAll();
+});
+
+printVolumeEl?.addEventListener('blur', () => {
+    let val = parseInt(printVolumeEl.value) || 100;
+    printVolumeEl.value = clamp(val, 5, 50000);
+    calculateAll();
+});
+
+printCostEl?.addEventListener('blur', () => {
+    let val = parseInt(printCostEl.value);
+    if (!isNaN(val)) {
+        printCostEl.value = clamp(val, 0, 5000000);
+    }
+    calculateAll();
+});
+
+sellingPriceEl?.addEventListener('blur', () => {
+    let val = parseInt(sellingPriceEl.value);
+    if (isNaN(val)) val = 500;
+    sellingPriceEl.value = clamp(val, 0, 100000);
+    calculateAll();
+});
+
+eventFeeEl?.addEventListener('blur', () => {
+    let val = parseInt(eventFeeEl.value);
+    if (isNaN(val)) val = 0;
+    eventFeeEl.value = clamp(val, 0, 1000000);
+    calculateAll();
+});
+
+otherExpensesEl?.addEventListener('blur', () => {
+    let val = parseInt(otherExpensesEl.value);
+    if (isNaN(val)) val = 0;
+    otherExpensesEl.value = clamp(val, 0, 1000000);
+    calculateAll();
 });
 
 /* ================================================================
