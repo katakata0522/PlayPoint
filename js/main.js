@@ -208,26 +208,9 @@ export function init() {
             if (savedRegion && CONFIGS[savedRegion]) {
                 STATE.currentRegion = savedRegion;
             } else {
-                // 初回アクセス時はブラウザ言語設定に従い自動的にリダイレクト
-                const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-                if (browserLang.startsWith('ko')) {
-                    STATE.currentRegion = 'KR';
-                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'KR');
-                    window.location.href = './ko/';
-                    return;
-                } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
-                    STATE.currentRegion = 'TW';
-                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'TW');
-                    window.location.href = './tw/';
-                    return;
-                } else if (browserLang.startsWith('en')) {
-                    STATE.currentRegion = 'US';
-                    localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'US');
-                    window.location.href = './en/';
-                    return;
-                } else {
-                    STATE.currentRegion = 'JP';
-                }
+                // 初回アクセスでは自動遷移せず、日本語トップを表示する。
+                // 海外向けページは下部の言語提案バナーから任意で移動できる。
+                STATE.currentRegion = 'JP';
             }
         }
     } catch (e) {
