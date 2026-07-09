@@ -234,10 +234,6 @@ const accordionSaveMetaEl = $('accordion-save-meta');
 // --- ページ数警告 ---
 const pagesWarningEl      = $('pages-warning');
 
-// --- 計画診断パネル ---
-const diagnosticStarsEl      = $('diagnostic-stars');
-const diagnosticStatusNameEl = $('diagnostic-status-name');
-const diagnosticDetailTextEl = $('diagnostic-detail-text');
 
 // --- カスタムダイアログ ---
 const customDialogEl     = $('custom-dialog');
@@ -541,34 +537,6 @@ function _renderCalcResults(inputs, profit) {
             profitAdviceTextEl.textContent =
                 `あと ${breakevenSales - salesCount} 部の頒布で黒字に達します。` +
                 `価格を少し上げるか、お品書きのデザインを工夫してアピールしてみましょう！`;
-        }
-    }
-
-    // 計画の収支診断判定
-    if (diagnosticStarsEl && diagnosticStatusNameEl && diagnosticDetailTextEl) {
-        if (sellingPrice === 0 || (!isPossibleBreakeven && selloutProfit < 0)) {
-            diagnosticStarsEl.textContent = '★☆☆☆☆';
-            diagnosticStarsEl.className = 'diagnostic-stars loss';
-            diagnosticStatusNameEl.textContent = '赤字確定プラン';
-            diagnosticDetailTextEl.textContent = '完売しても印刷費などの経費を回収できません。頒布価格を見直すか、部数調整、または印刷所の仕様を変更して印刷費を抑えることを検討しましょう。';
-        } else {
-            const breakevenRatio = volume > 0 ? (breakevenSales / volume) : 0;
-            if (breakevenRatio <= 0.35) {
-                diagnosticStarsEl.textContent = '★★★★★';
-                diagnosticStarsEl.className = 'diagnostic-stars gain';
-                diagnosticStatusNameEl.textContent = '超健全プラン（低リスク）';
-                diagnosticDetailTextEl.textContent = '非常に手堅く安全な計画です！発行部数の3分の1ほど売れれば赤字を回避できます。安心して本づくりに専念してください。';
-            } else if (breakevenRatio <= 0.70) {
-                diagnosticStarsEl.textContent = '★★★★☆';
-                diagnosticStarsEl.className = 'diagnostic-stars safe-gain';
-                diagnosticStatusNameEl.textContent = '定番プラン（バランス良）';
-                diagnosticDetailTextEl.textContent = '同人活動における標準的でバランスの良い設計です。半分程度売れれば経費を無事回収でき、残りは純利益になります。';
-            } else {
-                diagnosticStarsEl.textContent = '★★★☆☆';
-                diagnosticStarsEl.className = 'diagnostic-stars warning-gain';
-                diagnosticStatusNameEl.textContent = '強気プラン（リスクあり）';
-                diagnosticDetailTextEl.textContent = '完売近く（全体の7割以上）売れないと黒字になりません。価格を50〜100円上げるか、部数を少し抑えると、ぐっと赤字リスクを減らせます。';
-            }
         }
     }
 }
@@ -1300,116 +1268,7 @@ btnResetAllEl?.addEventListener('click', () => {
     calculateAll();
 });
 
-// --- ＋/ー ボタンによる数値増減コントロール ---
-document.querySelectorAll('.btn-adjust').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const targetId = btn.getAttribute('data-target');
-        const step = parseInt(btn.getAttribute('data-step')) || 1;
-        const inputEl = $(targetId);
-        if (!inputEl) return;
 
-        let val = parseInt(inputEl.value) || 0;
-        const min = parseInt(inputEl.getAttribute('min')) ?? 0;
-        const max = parseInt(inputEl.getAttribute('max')) ?? 999999;
-
-        if (btn.classList.contains('plus')) {
-            val += step;
-        } else {
-            val -= step;
-        }
-        inputEl.value = clamp(val, min, max);
-
-        if (targetId === 'selling-price') {
-            updateQuickPriceActiveBadge(null);
-        }
-        calculateAll();
-    });
-});
-
-// --- クイックチップ選択ハンドラー ---
-document.querySelectorAll('.quick-chips').forEach(container => {
-    const targetId = container.getAttribute('data-target');
-    const inputEl = $(targetId);
-    if (!inputEl) return;
-
-    container.addEventListener('click', e => {
-        const chip = e.target.closest('.chip-val');
-        if (!chip) return;
-        
-        inputEl.value = chip.getAttribute('data-val');
-        if (targetId === 'selling-price') {
-            updateQuickPriceActiveBadge(null);
-        }
-        calculateAll();
-    });
-});
-
-// --- 新刊プリセット選択ハンドラー ---
-document.querySelectorAll('.btn-preset').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const presetType = btn.getAttribute('data-preset');
-        
-        // プリセットのアクティブクラス切り替え
-        document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        if (presetType === 'copy') {
-            bookSizeEl.value = 'A5';
-            printTypeEl.value = 'copybook';
-            bookPagesEl.value = '16';
-            printVolumeEl.value = '30';
-            sellingPriceEl.value = '300';
-            eventFeeEl.value = '0';
-            otherExpensesEl.value = '0';
-            useConsignmentEl.checked = false;
-        } else if (presetType === 'manga') {
-            bookSizeEl.value = 'A5';
-            printTypeEl.value = 'monochrome';
-            bookPagesEl.value = '32';
-            printVolumeEl.value = '100';
-            sellingPriceEl.value = '500';
-            eventFeeEl.value = '7000';
-            otherExpensesEl.value = '5000';
-            useConsignmentEl.checked = false;
-        } else if (presetType === 'novel') {
-            bookSizeEl.value = 'A6';
-            printTypeEl.value = 'monochrome';
-            bookPagesEl.value = '100';
-            printVolumeEl.value = '50';
-            sellingPriceEl.value = '800';
-            eventFeeEl.value = '7000';
-            otherExpensesEl.value = '5000';
-            useConsignmentEl.checked = false;
-        } else if (presetType === 'color') {
-            bookSizeEl.value = 'B5';
-            printTypeEl.value = 'color';
-            bookPagesEl.value = '24';
-            printVolumeEl.value = '100';
-            sellingPriceEl.value = '1000';
-            eventFeeEl.value = '7000';
-            otherExpensesEl.value = '5000';
-            useConsignmentEl.checked = false;
-        }
-
-        // 印刷費は自動計算フラグを有効にして強制再計算
-        isAutoCostEnabled = true;
-        updateAutoPrintCost();
-
-        // 頒布スタイルチップの表示同期
-        const fee = parseInt(eventFeeEl.value) || 0;
-        if (fee === 0) {
-            btnDistEventEl?.classList.remove('active');
-            btnDistOnlineEl?.classList.add('active');
-        } else {
-            btnDistEventEl?.classList.add('active');
-            btnDistOnlineEl?.classList.remove('active');
-        }
-
-        calculateAll();
-        updateQuickPriceActiveBadge(null);
-        showToast(`📋 プリセット「${btn.textContent.trim()}」を適用しました`);
-    });
-});
 
 // --- 頒布スタイル切り替えトグル ---
 btnDistEventEl?.addEventListener('click', () => {

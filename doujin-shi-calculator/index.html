@@ -68,16 +68,7 @@
                         <button type="button" id="btn-reset-all" class="btn-reset-link" aria-label="すべての入力値を初期状態に戻す">🔄 全てリセット</button>
                     </div>
 
-                    <!-- クイック新刊プリセット -->
-                    <div class="preset-section">
-                        <span class="preset-label">📝 ワンタップ新刊プリセット:</span>
-                        <div class="preset-buttons">
-                            <button type="button" class="btn-preset" data-preset="copy">📎 コピー本 (16P)</button>
-                            <button type="button" class="btn-preset" data-preset="manga">📖 定番漫画 (32P)</button>
-                            <button type="button" class="btn-preset" data-preset="novel">📚 小説文庫 (100P)</button>
-                            <button type="button" class="btn-preset" data-preset="color">🎨 カラー画集 (24P)</button>
-                        </div>
-                    </div>
+
 
                     <!-- STEP 1 -->
                     <div class="form-group-wrapper">
@@ -103,45 +94,22 @@
                                     <option value="copybook">コピー本（自宅・コンビニ印刷での製本）</option>
                                 </select>
                             </div>
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label for="book-pages">総ページ数（表紙含む）</label>
-                                <div class="input-adjust-group">
-                                    <button type="button" class="btn-adjust minus" data-target="book-pages" data-step="4" aria-label="4ページ減らす">−</button>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="book-pages" value="40" min="4" step="4" inputmode="numeric" pattern="[0-9]*">
-                                        <span class="unit">ページ</span>
-                                    </div>
-                                    <button type="button" class="btn-adjust plus" data-target="book-pages" data-step="4" aria-label="4ページ増やす">+</button>
-                                </div>
-                                <div class="quick-chips" data-target="book-pages">
-                                    <button type="button" class="chip-val" data-val="12">12P</button>
-                                    <button type="button" class="chip-val" data-val="16">16P</button>
-                                    <button type="button" class="chip-val" data-val="24">24P</button>
-                                    <button type="button" class="chip-val" data-val="32">32P</button>
-                                    <button type="button" class="chip-val" data-val="40">40P</button>
-                                    <button type="button" class="chip-val" data-val="48">48P</button>
+                                <div class="input-with-unit">
+                                    <input type="number" id="book-pages" value="40" min="4" step="4" inputmode="numeric" pattern="[0-9]*">
+                                    <span class="unit">ページ</span>
                                 </div>
                                 <p class="input-helper">※<strong>4の倍数推奨</strong>（印刷所の製本上の必須条件）。コピー本は8の倍数推奨。</p>
                                 <p id="pages-warning" class="input-helper pages-warning-text" style="display:none;"></p>
                             </div>
                         </div>
                         <div class="form-row col-2">
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label for="print-volume">予定部数（シミュレーション用）</label>
-                                <div class="input-adjust-group">
-                                    <button type="button" class="btn-adjust minus" data-target="print-volume" data-step="10" aria-label="10部減らす">−</button>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="print-volume" value="100" min="5" step="5" inputmode="numeric" pattern="[0-9]*">
-                                        <span class="unit">部</span>
-                                    </div>
-                                    <button type="button" class="btn-adjust plus" data-target="print-volume" data-step="10" aria-label="10部増やす">+</button>
-                                </div>
-                                <div class="quick-chips" data-target="print-volume">
-                                    <button type="button" class="chip-val" data-val="30">30部</button>
-                                    <button type="button" class="chip-val" data-val="50">50部</button>
-                                    <button type="button" class="chip-val" data-val="100">100部</button>
-                                    <button type="button" class="chip-val" data-val="200">200部</button>
-                                    <button type="button" class="chip-val" data-val="300">300部</button>
+                                <div class="input-with-unit">
+                                    <input type="number" id="print-volume" value="100" min="5" step="5" inputmode="numeric" pattern="[0-9]*">
+                                    <span class="unit">部</span>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -185,21 +153,11 @@
                             </div>
                         </div>
                         <div class="form-row col-2">
-                             <div class="form-group">
+                            <div class="form-group">
                                 <label for="selling-price">本の頒布価格（1冊あたりの売値）</label>
-                                <div class="input-adjust-group">
-                                    <button type="button" class="btn-adjust minus" data-target="selling-price" data-step="100" aria-label="100円下げる">−</button>
-                                    <div class="input-with-unit">
-                                        <input type="number" id="selling-price" value="500" min="100" step="50" inputmode="numeric" pattern="[0-9]*">
-                                        <span class="unit">円</span>
-                                    </div>
-                                    <button type="button" class="btn-adjust plus" data-target="selling-price" data-step="100" aria-label="100円上げる">+</button>
-                                </div>
-                                <div class="quick-chips" data-target="selling-price">
-                                    <button type="button" class="chip-val" data-val="300">300円</button>
-                                    <button type="button" class="chip-val" data-val="500">500円</button>
-                                    <button type="button" class="chip-val" data-val="800">800円</button>
-                                    <button type="button" class="chip-val" data-val="1000">1000円</button>
+                                <div class="input-with-unit">
+                                    <input type="number" id="selling-price" value="500" min="100" step="50" inputmode="numeric" pattern="[0-9]*">
+                                    <span class="unit">円</span>
                                 </div>
                                 <div class="quick-buttons" role="group" aria-label="頒布価格のクイック設定">
                                     <button type="button" id="btn-quick-500" class="btn-mini-quick" aria-pressed="false">500円</button>
@@ -271,15 +229,7 @@
                             <p id="profit-advice-text" class="status-advice">あと少しで損益分岐点に達します！頒布価格を上げるか、部数の調整を検討してみましょう。</p>
                         </div>
 
-                        <!-- 新刊計画診断チェッカーパネル -->
-                        <div id="diagnostic-panel" class="diagnostic-panel">
-                            <div class="diagnostic-header">
-                                <span class="diagnostic-badge-title">📋 計画の収支診断結果:</span>
-                                <div id="diagnostic-stars" class="diagnostic-stars">--</div>
-                            </div>
-                            <div id="diagnostic-status-name" class="diagnostic-status-name">診断中...</div>
-                            <p id="diagnostic-detail-text" class="diagnostic-detail-text">データを入力すると自動で診断が開始されます。</p>
-                        </div>
+
 
                         <!-- 保存・出力ボタン（常時表示） -->
                         <div class="action-btn-area">
