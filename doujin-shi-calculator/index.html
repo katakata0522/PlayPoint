@@ -52,13 +52,8 @@
             <p class="lead-text">数値を入れるだけで収支がリアルタイムに変わります。まずデフォルト値のまま、右の結果を動かしてみてください。</p>
         </header>
 
-        <nav class="tab-navigation" role="tablist">
-            <button type="button" class="tab-button active" id="tab-calculator" role="tab" aria-selected="true" aria-controls="pane-calculator">📊 収支予測シミュレーター</button>
-            <button type="button" class="tab-button" id="tab-dashboard" role="tab" aria-selected="false" aria-controls="pane-dashboard">📚 既刊・売上管理室</button>
-        </nav>
-
-        <!-- ======= タブ1：シミュレーター ======= -->
-        <div class="tab-pane active" id="pane-calculator" role="tabpanel">
+        <!-- ======= 計算シミュレーター ======= -->
+        <div>
 
             <div class="tool-grid">
                 <!-- 左カラム：入力フォーム -->
@@ -175,7 +170,6 @@
                         </div>
                     </div>
 
-
                 </section>
 
                 <!-- 右カラム：リアルタイム計算結果 -->
@@ -183,6 +177,15 @@
                     <!-- 黒字化シミュレーターカード（メインなので上へ配置） -->
                     <section class="card result-card" aria-labelledby="profit-title">
                         <h2 id="profit-title" class="section-title">黒字化シミュレーター</h2>
+                        
+                        <!-- 損益分岐点（トントンライン）の主役化 -->
+                        <div class="breakeven-hero-panel">
+                            <span class="breakeven-hero-label">💸 トントン（損益分岐）ライン:</span>
+                            <div class="breakeven-hero-value" aria-live="polite">
+                                <span id="hero-breakeven-value">--</span><span class="hero-unit">部</span>
+                            </div>
+                            <p id="hero-breakeven-desc" class="breakeven-hero-desc">計算中...</p>
+                        </div>
                         <div class="summary-box three-cols">
                             <div class="summary-item">
                                 <span class="sum-label">総経費（印刷＋経費）</span>
@@ -226,53 +229,8 @@
                             </div>
                             <p id="profit-advice-text" class="status-advice">あと少しで損益分岐点に達します！頒布価格を上げるか、部数の調整を検討してみましょう。</p>
                         </div>
-
-
-
-                        <!-- 保存・出力ボタン（常時表示） -->
-                        <div class="action-btn-area">
-                            <button type="button" id="btn-save-book" class="btn btn-primary">
-                                💾 この仕様を作品リストに保存する
-                            </button>
-                            <button type="button" id="btn-export" class="btn btn-secondary">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                                  <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 1 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/>
-                                </svg>
-                                収支まとめ画像を保存する
-                            </button>
                         </div>
-
-                        <!-- 作品情報（保存用メタデータ：デフォルト折り畳み） -->
-                        <details id="accordion-save-meta" class="save-meta-accordion">
-                            <summary class="save-meta-summary">✏️ 保存する作品の情報を入力する</summary>
-                            <div class="save-meta-content">
-                                <div class="form-row col-2">
-                                    <div class="form-group">
-                                        <label for="custom-circle">サークル名</label>
-                                        <input type="text" id="custom-circle" placeholder="サークル名を入力" maxlength="15">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="custom-title">新刊タイトル <span class="required-mark">※</span></label>
-                                        <input type="text" id="custom-title" placeholder="新刊タイトルを入力（必須）" maxlength="30" aria-required="true">
-                                    </div>
-                                </div>
-                                <div class="form-row col-2">
-                                    <div class="form-group">
-                                        <label for="custom-event-name">イベント名</label>
-                                        <input type="text" id="custom-event-name" placeholder="例: コミックマーケット105" maxlength="30">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="custom-event-date">開催日</label>
-                                        <input type="date" id="custom-event-date">
-                                    </div>
-                                </div>
-                                <p id="save-validation-msg" class="save-validation-msg" role="alert" style="display:none;">⚠️ 「新刊タイトル」を入力してから保存してください。</p>
-                            </div>
-                        </details>
                     </section>
-
-
-
                 </div>
             </div><!-- /.tool-grid -->
 
@@ -296,7 +254,7 @@
                 <h2 id="column-title" class="column-section-title">同人誌の部数の決め方＆黒字化のための初心者ガイド</h2>
                 <div class="column-grid">
                     <div class="column-item">
-                        <h3>1. 同人誌の「発行部数」はどう決めるべき？</h3>
+                        <h3>1. 同人誌 hometown の「発行部数」はどう決めるべき？</h3>
                         <p>初めて本を出す際、最も難しいのが部数決定です。SNS（Xやpixiv）の反応は非常に参考になりますが、<strong>「いいねやブクマをしてくれた人全員が買うわけではない」</strong>という点に注意が必要です。</p>
                         <p>一般的には、<strong>「pixivのサンプルブックマーク数の10%〜15%」</strong>、または<strong>「X（Twitter）サンプルのいいね数の5%〜10%」</strong>がイベント会場での実際の頒布数の目安と言われています。</p>
                     </div>
@@ -304,8 +262,9 @@
                         <h3>2. 損益分岐点（黒字化）の考え方と価格設定</h3>
                         <p>同人活動は「赤字が当たり前」と言われることもありますが、長く活動を続けるためには、大赤字を避ける設計が重要です。</p>
                         <ul>
-                            <li><strong>総経費を書き出す</strong>：印刷費だけでなく、スペース代・交通費・設営費も合算します。</li>
-                            <li><strong>目標頒布率を7割にする</strong>：<strong>「7割売れた時点でトントン」</strong>になるように価格を設定するのが安全な設計です。</li>
+                             <li><strong>総経費を書き出す</strong>：印刷費だけでなく、スペース代・交通費・設営費も合算します。</li>
+                             <li><strong>目標頒布率を7割にする</strong>：<strong>「7割売れた時点でトントン」</strong>になるように価格を設定するのが安全な設計です。</li>
+                             <li><strong>実際の現場でどう使われるか</strong>：印刷代＋その他経費に対して、自分がどれくらい本を頒布すれば活動を健全に持続できるか把握するための目安になります。</li>
                         </ul>
                     </div>
                     <div class="column-item">
@@ -316,86 +275,20 @@
                 </div>
             </section>
 
-        </div><!-- /#pane-calculator -->
-
-        <!-- ======= タブ2：既刊・売上管理室 ======= -->
-        <div class="tab-pane" id="pane-dashboard" role="tabpanel" style="display: none;">
-            <section class="card dashboard-stats-card">
-                <div class="dashboard-header-row">
-                    <h2 class="section-title">📊 累計活動ステータス</h2>
-                    <p class="section-desc">※これまでに保存された全作品の合算値です。</p>
-                </div>
-                <div class="stats-grid">
-                    <div class="stats-item">
-                        <span class="stats-label">累計収支</span>
-                        <span id="stat-total-profit" class="stats-value font-outfit">¥0</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-label">登録作品数</span>
-                        <span id="stat-book-count" class="stats-value font-outfit">0 作品</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-label">累計売上</span>
-                        <span id="stat-total-revenue" class="stats-value font-outfit">¥0</span>
-                    </div>
-                    <div class="stats-item">
-                        <span class="stats-label">累計経費</span>
-                        <span id="stat-total-expenses" class="stats-value font-outfit">¥0</span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="card saved-list-card">
-                <div class="list-header-row">
-                    <h2 class="section-title">📚 保存された作品リスト</h2>
-                    <div class="backup-actions">
-                        <button type="button" id="btn-export-data" class="btn-mini">💾 バックアップ保存 (JSON)</button>
-                        <label for="input-import-file" class="btn-mini btn-import-label">
-                            🔄 データ復元
-                            <input type="file" id="input-import-file" accept=".json" style="display: none;">
-                        </label>
-                    </div>
-                </div>
-                <div id="saved-books-grid" class="saved-books-grid">
-                    <div class="empty-state" id="empty-state">
-                        <p>保存された作品データがありません。<br>「シミュレーター」で計算し、右側の結果にある「この仕様を保存する」ボタンを押して作品を記録しましょう！</p>
-                    </div>
-                </div>
-            </section>
-        </div><!-- /#pane-dashboard -->
-
+        </div>
     </article>
 </main>
 
-<!-- キャンバス (非表示) -->
-<canvas id="export-canvas" width="800" height="500" style="display: none;"></canvas>
-
-<!-- 画像出力モーダル -->
-<div id="export-modal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modal-title">
-    <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="modal-content">
-        <button type="button" class="modal-close" id="btn-close-modal" aria-label="モーダルを閉じる"><span aria-hidden="true">&times;</span></button>
-        <h3 id="modal-title">収支まとめ画像の保存</h3>
-        <p class="modal-desc">下の画像を<strong>長押し（PCは右クリック）</strong>して「画像を保存」してください。</p>
-        <div class="modal-body">
-            <img id="modal-preview-image" src="" alt="収支シミュレーション結果">
+<!-- スマホ用フローティング結果バー（900px以下で表示） -->
+<div id="mobile-floating-bar" class="mobile-floating-bar" aria-live="polite">
+    <div class="floating-bar-content">
+        <div class="floating-item">
+            <span class="floating-label">トントンライン:</span>
+            <span class="floating-value"><strong id="mobile-breakeven-display">--</strong>部</span>
         </div>
-        <div class="modal-footer">
-            <a id="btn-download-fallback" class="btn btn-secondary" href="#" download="doujin_shishi_plan.png">
-                直接ダウンロードを試す
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- カスタム削除確認ダイアログ（confirm() 廃止） -->
-<div id="custom-dialog" class="custom-dialog-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-    <div class="custom-dialog-box">
-        <h3 id="dialog-title" class="custom-dialog-title">本当に削除しますか？</h3>
-        <p id="dialog-message" class="custom-dialog-message"></p>
-        <div class="custom-dialog-actions">
-            <button type="button" id="dialog-btn-cancel" class="btn-dialog-cancel">キャンセル</button>
-            <button type="button" id="dialog-btn-confirm" class="btn-dialog-confirm">削除する</button>
+        <div class="floating-item border-left">
+            <span class="floating-label">現在:</span>
+            <span id="mobile-current-profit" class="floating-value gain-text">--円</span>
         </div>
     </div>
 </div>

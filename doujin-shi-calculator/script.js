@@ -158,8 +158,6 @@ const printTypeEl      = $('print-type');
 const bookPagesEl      = $('book-pages');
 const printVolumeEl    = $('print-volume');
 const printCostEl      = $('print-cost');
-const costAutoBadgeEl  = $('cost-auto-badge');
-const btnResetCostEl   = $('btn-reset-cost');
 
 const eventFeeEl       = $('event-fee');
 const otherExpensesEl  = $('other-expenses');
@@ -171,12 +169,6 @@ const btnQuick1000El   = $('btn-quick-1000');
 const btnQuickAutoEl   = $('btn-quick-auto');
 const btnDistEventEl   = $('btn-dist-event');
 const btnDistOnlineEl  = $('btn-dist-online');
-
-const customCircleEl      = $('custom-circle');
-const customTitleEl       = $('custom-title');
-const customEventNameEl   = $('custom-event-name');
-const customEventDateEl   = $('custom-event-date');
-const saveValidationMsgEl = $('save-validation-msg');
 
 // --- 出力エリア ---
 
@@ -198,48 +190,21 @@ const breakevenLineEl         = $('breakeven-line');
 const breakevenSalesDisplayEl = $('breakeven-sales-display');
 const profitAdviceTextEl      = $('profit-advice-text');
 
-// --- ボタン・Canvas ---
-const btnResetAllEl       = $('btn-reset-all');
-const btnSaveBookEl       = $('btn-save-book');
-const btnExportEl         = $('btn-export');
-const exportCanvasEl      = $('export-canvas');
+// --- 損益分岐点（トントンライン）の主役化・スマホフローティング ---
+const heroBreakevenValueEl     = $('hero-breakeven-value');
+const heroBreakevenDescEl      = $('hero-breakeven-desc');
+const mobileBreakevenDisplayEl = $('mobile-breakeven-display');
+const mobileCurrentProfitEl    = $('mobile-current-profit');
 
-// --- モーダル ---
-const exportModalEl         = $('export-modal');
-const modalOverlayEl        = $('modal-overlay');
-const btnCloseModalEl       = $('btn-close-modal');
-const modalPreviewImageEl   = $('modal-preview-image');
-const btnDownloadFallbackEl = $('btn-download-fallback');
+// --- ボタン ---
+const btnResetAllEl       = $('btn-reset-all');
 
 // --- アフィリエイト ---
 const dynamicAffiliateBoxEl = $('dynamic-affiliate-box');
 
-// --- タブ ---
-const tabButtons = document.querySelectorAll('.tab-button');
-const tabPanes   = document.querySelectorAll('.tab-pane');
-
-// --- ダッシュボード ---
-const savedBooksGridEl    = $('saved-books-grid');
-const emptyStateEl        = $('empty-state');
-const statTotalProfitEl   = $('stat-total-profit');
-const statBookCountEl     = $('stat-book-count');
-const statTotalRevenueEl  = $('stat-total-revenue');
-const statTotalExpensesEl = $('stat-total-expenses');
-const btnExportDataEl     = $('btn-export-data');
-const inputImportFileEl   = $('input-import-file');
-
-// --- 保存メタデータアコーディオン ---
-const accordionSaveMetaEl = $('accordion-save-meta');
-
 // --- ページ数警告 ---
 const pagesWarningEl      = $('pages-warning');
 
-
-// --- カスタムダイアログ ---
-const customDialogEl     = $('custom-dialog');
-const dialogMessageEl    = $('dialog-message');
-const dialogBtnCancelEl  = $('dialog-btn-cancel');
-const dialogBtnConfirmEl = $('dialog-btn-confirm');
 
 /* ================================================================
    2. アプリケーション状態
@@ -401,18 +366,6 @@ function updateAutoPrintCost() {
     }
 
     printCostEl.value = cost;
-    if (costAutoBadgeEl) {
-        costAutoBadgeEl.className   = 'cost-badge-btn auto';
-        costAutoBadgeEl.textContent = '自動計算中';
-        costAutoBadgeEl.disabled    = true; // 自動計算中はクリック不可（手動編集されたら有効化）
-    }
-}
-
-/** 印刷費を自動計算モードに戻す */
-function resetToAutoPrintCost() {
-    isAutoCostEnabled = true;
-    updateAutoPrintCost();
-    calculateAll();
 }
 
 /* ================================================================
@@ -490,13 +443,39 @@ function _renderCalcResults(inputs, profit) {
     if (parseInt(salesSliderEl.value) > volume) salesSliderEl.value = volume;
     if (document.activeElement !== salesCountInputEl) salesCountInputEl.value = salesCount;
 
-    // 損益分岐点
-    breakevenSalesDisplayEl.textContent = isPossibleBreakeven ? String(breakevenSales) : '達成不可';
-    if (isPossibleBreakeven && volume > 0) {
+    // 損益分岐点（巨大ヒーロー表示 & 標準表示）
+    if (isPossibleBreakeven) {
+        breakevenSalesDisplayEl.textContent = String(breakevenSales);
         breakevenLineEl.style.left    = `${(breakevenSales / volume) * 100}%`;
         breakevenLineEl.style.display = 'block';
+
+        if (heroBreakevenValueEl) heroBreakevenValueEl.textContent = String(breakevenSales);
+        if (heroBreakevenDescEl) {
+            const percent = volume > 0 ? Math.round((breakevenSales / volume) * 100) : 0;
+            heroBreakevenDescEl.textContent = `予定部数 ${volume}部 のうち、${breakevenSales}部（全体の ${percent}%）が売れれば黒字に達します。`;
+        }
     } else {
+        breakevenSalesDisplayEl.textContent = '達成不可';
         breakevenLineEl.style.display = 'none';
+
+        if (heroBreakevenValueEl) heroBreakevenValueEl.textContent = '達成不可';
+        if (heroBreakevenDescEl) {
+            if (sellingPrice === 0) {
+                heroBreakevenDescEl.textContent = '頒布価格が「0円（無料配布）」のため、経費を回収できません。';
+            } else {
+                heroBreakevenDescEl.textContent = '完売しても黒字になりません。価格を見直すか、部数・経費を調整してください。';
+            }
+        }
+    }
+
+    // スマホ用フローティングバー同期
+    if (mobileBreakevenDisplayEl) {
+        mobileBreakevenDisplayEl.textContent = isPossibleBreakeven ? `${breakevenSales}` : '達成不可';
+    }
+    if (mobileCurrentProfitEl) {
+        const prefix = netProfit >= 0 ? '+' : '-';
+        mobileCurrentProfitEl.textContent = `${prefix}${yen(Math.abs(netProfit))}円`;
+        mobileCurrentProfitEl.className = netProfit >= 0 ? 'floating-value gain-text' : 'floating-value loss-text';
     }
 
     // 完売時想定収支の描画

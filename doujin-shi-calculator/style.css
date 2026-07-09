@@ -2028,50 +2028,6 @@ input[type="date"]:focus {
 
 
 /* ============================================================
-   予測印刷費バッジのボタン化（自動に戻すトグル）
-   ============================================================ */
-.cost-badge-btn {
-    font-family: inherit;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    outline: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-}
-
-.cost-badge-btn.auto {
-    background-color: var(--success-bg);
-    color: var(--success);
-}
-
-.cost-badge-btn.manual {
-    background-color: var(--danger-bg);
-    color: var(--danger);
-    animation: pulseBadge 2s infinite;
-}
-
-.cost-badge-btn.manual::after {
-    content: " 🔁";
-}
-
-.cost-badge-btn:hover {
-    transform: translateY(-0.5px);
-    filter: brightness(0.92);
-}
-
-@keyframes pulseBadge {
-    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
-    70% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-
-/* ============================================================
    無効化された入力フォーム（過去実績入力時）
    ============================================================ */
 .form-group.disabled {
@@ -2107,4 +2063,121 @@ input[type="date"]:focus {
     font-size: 0.75rem;
     line-height: 1.5;
 }
+
+/* ============================================================
+   損益分岐点（トントンライン）巨大ヒーローパネル
+   ============================================================ */
+.breakeven-hero-panel {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    margin-bottom: 25px;
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.breakeven-hero-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.breakeven-hero-value {
+    font-family: var(--font-outfit);
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1;
+    margin: 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.hero-unit {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-left: 2px;
+}
+
+.breakeven-hero-desc {
+    font-size: 0.82rem;
+    color: #475569;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ============================================================
+   スマホ用フローティングバー (900px以下で固定表示)
+   ============================================================ */
+.mobile-floating-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    padding: 12px 16px;
+}
+
+.floating-bar-content {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.floating-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: 2px;
+}
+
+.floating-item.border-left {
+    border-left: 1.5px solid #e2e8f0;
+}
+
+.floating-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.floating-value {
+    font-family: var(--font-outfit);
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.floating-value strong {
+    font-size: 1.4rem;
+    color: var(--primary);
+}
+
+/* スマホ表示時の余白調整 */
+@media (max-width: 900px) {
+    .mobile-floating-bar {
+        display: block;
+    }
+    
+    body {
+        padding-bottom: 80px !important;
+    }
+}
+
 
