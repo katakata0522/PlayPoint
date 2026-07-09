@@ -18,7 +18,6 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points Calculator',
             siteAlias: 'Also known as Play Points Calculator / unofficial tool',
             siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.',
-            legacySearchName: 'If you searched for Play Points Calculator, this is the same calculator page.',
             linkAttention: '⚠️ Country notes',
             linkLatest: '🆕 Latest Hub',
             linkArticles: '📝 Articles',
@@ -174,7 +173,6 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points 계산기',
             siteAlias: '별칭: 구글 플레이 포인트 계산기 / 비공식 도구',
             siteDescription: '현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!',
-            legacySearchName: '구글 플레이 포인트 계산기를 찾으셨다면 이 페이지에서 같은 계산을 할 수 있습니다.',
             tabMain: '일반 계산',
             tabReverse: '역산 모드',
             tabDiary: '주간 리워드 일기'
@@ -275,7 +273,6 @@ function createLocales(todayStr) {
             mainTitle: 'Google Play Points 計算器',
             siteAlias: '別稱: Google Play 點數計算器 / 非官方工具',
             siteDescription: '可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！',
-            legacySearchName: '如果你是搜尋 Google Play 點數計算器來的，也可以在這個頁面完成同樣的試算。',
             tabMain: '一般計算',
             tabReverse: '逆算模式',
             tabDiary: '每週獎勵日記'
