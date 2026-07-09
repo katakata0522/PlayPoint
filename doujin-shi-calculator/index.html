@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>同人誌の発行部数＆黒字化シミュレーター | 初心者向け同人誌印刷費・頒布価格計算ツール</title>
-    <meta name="description" content="初めての同人誌制作で「何部刷ればいいか分からない」を解決！X（旧Twitter）のいいね数やpixivのブックマーク数からおすすめ部数を自動予測し、印刷費やイベント経費から損益分岐点を直感的なグラフで可視化する完全無料・ローカル完結ツールです。">
+    <meta name="description" content="初めての同人誌制作で「損益分岐点がわからない」を即解決！本の仕様や予定部数、頒布価格を入力するだけで,何部売れれば黒字（トントン）になるかをリアルタイムに可視化する,同人作家のための完全無料・ローカル完結シミュレーターです。">
     <meta name="keywords" content="同人誌,部数,決め方,印刷費,計算,シミュレーター,損益分岐,黒字化,同人,初心者">
     <meta property="og:title" content="同人誌の発行部数＆黒字化シミュレーター | かたかた">
-    <meta property="og:description" content="SNSの反応からおすすめ部数を自動予測！印刷費や経費から何部で黒字になるかをグラフで可視化する、同人作家のための完全無料シミュレーター。">
+    <meta property="og:description" content="予定部数と頒布価格から,何部売れれば黒字（トントン）になるかを1秒で可視化する,同人作家のための完全無料シミュレーター。">
     <meta property="og:image" content="https://playpoint-sim.com/doujin-shi-calculator/ogp.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/doujin-shi-calculator/">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link class="icon" href="favicon.svg" type="image/svg+xml">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -106,15 +106,12 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="print-cost" class="label-with-badge">
-                                    <span>予測印刷費</span>
-                                    <button type="button" id="cost-auto-badge" class="cost-badge-btn auto" title="クリックすると自動計算モードに戻します">自動計算中</button>
-                                </label>
+                                <label for="print-cost">予測印刷費</label>
                                 <div class="input-with-unit">
                                     <input type="number" id="print-cost" value="20000" min="0" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>
                                 </div>
-                                <p class="input-helper">※印刷所の平均相場に基づく推定値です。直接入力して上書き可。手動変更後は<strong>「自動計算中」バッジをクリック</strong>で元に戻せます。</p>
+                                <p class="input-helper">※印刷所の平均相場に基づく推定値です。直接入力して上書き可（手動で上書きした後は自動補正されなくなります）。</p>
                             </div>
                         </div>
                     </div>
@@ -229,7 +226,6 @@
                             </div>
                             <p id="profit-advice-text" class="status-advice">あと少しで損益分岐点に達します！頒布価格を上げるか、部数の調整を検討してみましょう。</p>
                         </div>
-                        </div>
                     </section>
                 </div>
             </div><!-- /.tool-grid -->
@@ -254,7 +250,7 @@
                 <h2 id="column-title" class="column-section-title">同人誌の部数の決め方＆黒字化のための初心者ガイド</h2>
                 <div class="column-grid">
                     <div class="column-item">
-                        <h3>1. 同人誌 hometown の「発行部数」はどう決めるべき？</h3>
+                        <h3>1. 同人誌の「発行部数」はどう決めるべき？</h3>
                         <p>初めて本を出す際、最も難しいのが部数決定です。SNS（Xやpixiv）の反応は非常に参考になりますが、<strong>「いいねやブクマをしてくれた人全員が買うわけではない」</strong>という点に注意が必要です。</p>
                         <p>一般的には、<strong>「pixivのサンプルブックマーク数の10%〜15%」</strong>、または<strong>「X（Twitter）サンプルのいいね数の5%〜10%」</strong>がイベント会場での実際の頒布数の目安と言われています。</p>
                     </div>
@@ -264,7 +260,7 @@
                         <ul>
                              <li><strong>総経費を書き出す</strong>：印刷費だけでなく、スペース代・交通費・設営費も合算します。</li>
                              <li><strong>目標頒布率を7割にする</strong>：<strong>「7割売れた時点でトントン」</strong>になるように価格を設定するのが安全な設計です。</li>
-                             <li><strong>実際の現場でどう使われるか</strong>：印刷代＋その他経費に対して、自分がどれくらい本を頒布すれば活動を健全に持続できるか把握するための目安になります。</li>
+                             <li><strong>持続可能な目標にする</strong>：印刷費＋その他経費に対して、どれくらい頒布すれば活動費を回収できるか把握し、無理のない計画を立てましょう。</li>
                         </ul>
                     </div>
                     <div class="column-item">
