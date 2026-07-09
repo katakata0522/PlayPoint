@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>同人誌の発行部数＆黒字化シミュレーター | 初心者向け同人誌印刷費・頒布価格計算ツール</title>
-    <meta name="description" content="初めての同人誌制作で「損益分岐点がわからない」を即解決！本の仕様や予定部数、頒布価格を入力するだけで,何部売れれば黒字（トントン）になるかをリアルタイムに可視化する,同人作家のための完全無料・ローカル完結シミュレーターです。">
+    <meta name="description" content="初めての同人誌制作で「損益分岐点がわからない」を即解決！本の仕様や予定部数、頒布価格を入力するだけで、何部売れれば黒字（トントン）になるかをリアルタイムに可視化する、同人作家のための完全無料・ローカル完結シミュレーターです。">
     <meta name="keywords" content="同人誌,部数,決め方,印刷費,計算,シミュレーター,損益分岐,黒字化,同人,初心者">
     <meta property="og:title" content="同人誌の発行部数＆黒字化シミュレーター | かたかた">
-    <meta property="og:description" content="予定部数と頒布価格から,何部売れれば黒字（トントン）になるかを1秒で可視化する,同人作家のための完全無料シミュレーター。">
+    <meta property="og:description" content="予定部数と頒布価格から、何部売れれば黒字（トントン）になるかを1秒で可視化する、同人作家のための完全無料シミュレーター。">
     <meta property="og:image" content="https://playpoint-sim.com/doujin-shi-calculator/ogp.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/doujin-shi-calculator/">
-    <link class="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -37,14 +37,7 @@
 </head>
 <body>
 
-<header class="main-header">
-    <div class="header-container">
-        <a href="../index.html" class="logo-link">かたかたの語り場</a>
-        <span class="nav-tag">同人ツール</span>
-    </div>
-</header>
-
-<main class="container">
+<main class="container" style="margin-top: 40px;">
     <article>
         <header class="tool-title-area">
             <span class="category-badge">Webツール（ローカル完結・安全設計）</span>
@@ -66,37 +59,42 @@
                     <!-- STEP 1 -->
                     <div class="form-group-wrapper">
                         <h3 class="form-step-title"><span class="step-num">1</span>本の仕様を設定</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="book-size">本のサイズ</label>
-                                <select id="book-size">
-                                    <option value="A5">A5サイズ（一般的な漫画・小説）</option>
-                                    <option value="B5">B5サイズ（大きめの漫画・画集）</option>
-                                    <option value="B6">B6サイズ（漫画・中厚本・小説）</option>
-                                    <option value="A6">文庫/A6サイズ（一般的な小説）</option>
-                                    <option value="shinsho">新書サイズ（ノベルス・小説）</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-row col-2">
-                            <div class="form-group">
-                                <label for="print-type">本文の印刷仕様</label>
-                                <select id="print-type">
-                                    <option value="monochrome" selected>表紙カラー/本文モノクロ（標準仕様の同人誌）</option>
-                                    <option value="color">表紙カラー/本文フルカラー（イラスト集など）</option>
-                                    <option value="copybook">コピー本（自宅・コンビニ印刷での製本）</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="book-pages">総ページ数（表紙含む）</label>
-                                <div class="input-with-unit">
-                                    <input type="number" id="book-pages" value="40" min="4" step="4" inputmode="numeric" pattern="[0-9]*">
-                                    <span class="unit">ページ</span>
+                        
+                        <!-- 自動計算用パラメータコンテナ (手動印刷費入力時にグレーアウト) -->
+                        <div id="auto-cost-fields-container">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="book-size">本のサイズ</label>
+                                    <select id="book-size">
+                                        <option value="A5">A5サイズ（一般的な漫画・小説）</option>
+                                        <option value="B5">B5サイズ（大きめの漫画・画集）</option>
+                                        <option value="B6">B6サイズ（漫画・中厚本・小説）</option>
+                                        <option value="A6">文庫/A6サイズ（一般的な小説）</option>
+                                        <option value="shinsho">新書サイズ（ノベルス・小説）</option>
+                                    </select>
                                 </div>
-                                <p class="input-helper">※<strong>4の倍数推奨</strong>（印刷所の製本上の必須条件）。コピー本は8の倍数推奨。</p>
-                                <p id="pages-warning" class="input-helper pages-warning-text" style="display:none;"></p>
+                            </div>
+                            <div class="form-row col-2">
+                                <div class="form-group">
+                                    <label for="print-type">本文の印刷仕様</label>
+                                    <select id="print-type">
+                                        <option value="monochrome" selected>表紙カラー/本文モノクロ（標準仕様の同人誌）</option>
+                                        <option value="color">表紙カラー/本文フルカラー（イラスト集など）</option>
+                                        <option value="copybook">コピー本（自宅・コンビニ印刷での製本）</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="book-pages">総ページ数（表紙含む）</label>
+                                    <div class="input-with-unit">
+                                        <input type="number" id="book-pages" value="40" min="4" step="4" inputmode="numeric" pattern="[0-9]*">
+                                        <span class="unit">ページ</span>
+                                    </div>
+                                    <p class="input-helper">※<strong>4の倍数推奨</strong>（印刷所の製本上の必須条件）。コピー本は8の倍数推奨。</p>
+                                    <p id="pages-warning" class="input-helper pages-warning-text" style="display:none;"></p>
+                                </div>
                             </div>
                         </div>
+
                         <div class="form-row col-2">
                             <div class="form-group">
                                 <label for="print-volume">予定部数（シミュレーション用）</label>
@@ -108,10 +106,10 @@
                             <div class="form-group">
                                 <label for="print-cost">予測印刷費</label>
                                 <div class="input-with-unit">
-                                    <input type="number" id="print-cost" value="20000" min="0" inputmode="numeric" pattern="[0-9]*">
+                                    <input type="number" id="print-cost" value="20000" min="0" placeholder="自動計算" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit">円</span>
                                 </div>
-                                <p class="input-helper">※印刷所の平均相場に基づく推定値です。直接入力して上書き可（手動で上書きした後は自動補正されなくなります）。</p>
+                                <p class="input-helper">※直接入力して上書き可（手動入力後はサイズやページ数の変更が無視されます。入力値を空にすると自動計算に戻ります）。</p>
                             </div>
                         </div>
                     </div>
@@ -126,7 +124,9 @@
                                 <button type="button" id="btn-dist-online" class="btn-chip">📦 通販・委託のみ</button>
                             </div>
                         </div>
-                        <div class="form-row col-2">
+                        
+                        <!-- イベント経費行 (通販・委託のみの時はJSで非表示) -->
+                        <div class="form-row col-2" id="event-expenses-row">
                             <div class="form-group">
                                 <label for="event-fee">イベント参加費・スペース代</label>
                                 <div class="input-with-unit">
@@ -142,6 +142,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="form-row col-2">
                             <div class="form-group">
                                 <label for="selling-price">本の頒布価格（1冊あたりの売値）</label>
@@ -235,11 +236,11 @@
                 <div class="support-coffee-card">
                     <div class="support-icon">☕</div>
                     <div class="support-text">
-                        <h3 class="support-title">開発者「かたかた」を応援する</h3>
-                        <p class="support-desc">このツールがお役に立ちましたら、開発維持のために「コーヒー代（差し入れ）」を送っていただけるととても励みになります！</p>
+                        <h3 class="support-title">ツールを応援する</h3>
+                        <p class="support-desc">このツールがお役に立ちましたら、開発・維持のためにコーヒー代（差し入れ）を送っていただけると大変励みになります。</p>
                     </div>
                     <div class="support-actions">
-                        <a href="https://ofuse.me/katakata" target="_blank" rel="noopener" class="btn-support">応援を送る (外部サイト)</a>
+                        <a href="https://ofuse.me/katakata" target="_blank" rel="noopener" class="btn-support">差し入れを送る (外部サイト)</a>
                     </div>
                 </div>
                 <div id="dynamic-affiliate-box" class="affiliate-box"></div>
@@ -292,7 +293,7 @@
 
 <footer class="main-footer">
     <div class="footer-container">
-        <p>&copy; 2026 かたかた / かたかたの語り場. All Rights Reserved. <span class="version-tag">v2.0.0</span></p>
+        <p>&copy; 2026 かたかた. All Rights Reserved.</p>
         <p class="footer-note">当ツールは完全ローカル完結型です。入力された個人データや数字が外部サーバーに送信されることは一切ありませんのでご安心ください。</p>
     </div>
 </footer>

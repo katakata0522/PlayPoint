@@ -1237,21 +1237,23 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
     display: flex;
     align-items: center;
     gap: 15px;
-    background: linear-gradient(135deg, #faf5ff, #f3e8ff);
-    border: 1px solid #e9d5ff;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     padding: 16px;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s;
     margin-bottom: 0;
     align-self: start;
+    box-shadow: var(--shadow-sm);
 }
 
 .support-coffee-card:hover {
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .support-icon {
-    font-size: 2.2rem;
+    font-size: 2rem;
     line-height: 1;
 }
 
@@ -1262,33 +1264,34 @@ select:focus, input[type="number"]:focus, input[type="text"]:focus {
 .support-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #5b21b6;
+    color: var(--text-main);
     margin-bottom: 4px;
 }
 
 .support-desc {
     font-size: 0.8rem;
-    color: #4b5563;
+    color: var(--text-muted);
     line-height: 1.4;
 }
 
 .btn-support {
     display: inline-block;
-    background-color: var(--primary);
-    color: white;
+    background-color: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--primary-light);
     font-size: 0.8rem;
     font-weight: 700;
     text-decoration: none;
-    padding: 10px 14px;
-    border-radius: 20px;
+    padding: 8px 16px;
+    border-radius: 30px;
     white-space: nowrap;
-    transition: background-color 0.2s, transform 0.2s;
-    box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+    transition: all 0.2s ease;
 }
 
 .btn-support:hover {
-    background-color: #7c3aed;
-    transform: scale(1.03);
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
 }
 
 /* Dynamic Affiliate Box */
@@ -2176,6 +2179,16 @@ input[type="date"]:focus {
     body {
         padding-bottom: 80px !important;
     }
+}
+
+/* 手動印刷費上書き時の自動計算パラメータ無効化表示 */
+#auto-cost-fields-container {
+    transition: opacity 0.25s ease;
+}
+
+#auto-cost-fields-container.disabled {
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 

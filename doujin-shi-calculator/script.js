@@ -158,6 +158,8 @@ const printTypeEl      = $('print-type');
 const bookPagesEl      = $('book-pages');
 const printVolumeEl    = $('print-volume');
 const printCostEl      = $('print-cost');
+const autoCostFieldsContainerEl = $('auto-cost-fields-container');
+const eventExpensesRowEl        = $('event-expenses-row');
 
 const eventFeeEl       = $('event-fee');
 const otherExpensesEl  = $('other-expenses');
@@ -348,8 +350,31 @@ function estimatePrintCost(size, pageCount, volume) {
     return Math.max(0, interpolate1D(pageCount, db.pages.slice(0, pricesAtVol.length), pricesAtVol));
 }
 
+/** 自動計算用項目の有効・無効状態をUIへ同期する */
+function _updateAutoCostFieldsState() {
+    if (!autoCostFieldsContainerEl) return;
+    if (isAutoCostEnabled) {
+        autoCostFieldsContainerEl.classList.remove('disabled');
+        autoCostFieldsContainerEl.querySelectorAll('select, input').forEach(el => {
+            el.disabled = false;
+        });
+    } else {
+        autoCostFieldsContainerEl.classList.add('disabled');
+        autoCostFieldsContainerEl.querySelectorAll('select, input').forEach(el => {
+            el.disabled = true;
+        });
+    }
+}
+
 /** 自動印刷費を計算して入力欄を更新する */
 function updateAutoPrintCost() {
+    // 入力が空になったら自動計算モードに復帰する
+    if (printCostEl && printCostEl.value.trim() === '') {
+        isAutoCostEnabled = true;
+    }
+
+    _updateAutoCostFieldsState();
+
     if (!isAutoCostEnabled) return;
 
     const size      = bookSizeEl.value;
@@ -524,6 +549,15 @@ function _renderCalcResults(inputs, profit) {
 function calculateAll() {
     updateAutoPrintCost();
 
+    // 通販・委託のみが選択されているときはイベント経費の入力欄を非表示にする
+    if (eventExpensesRowEl) {
+        if (btnDistOnlineEl && btnDistOnlineEl.classList.contains('active')) {
+            eventExpensesRowEl.style.display = 'none';
+        } else {
+            eventExpensesRowEl.style.display = 'flex';
+        }
+    }
+
     const inputs = _readInputs();
     _updateWarnings(inputs);
 
@@ -591,204 +625,7 @@ function updateAffiliateBox() {
         <div class="affiliate-items-grid">${itemsHtml}</div>`;
 }
 
-/* ================================================================
-   8. モーダル制御
-================================================================ */
 
-function openModal(imgSrc, fallbackUrl) {
-    modalPreviewImageEl.src    = imgSrc;
-    btnDownloadFallbackEl.href = fallbackUrl;
-    exportModalEl.classList.add('open');
-    exportModalEl.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeModal() {
-    exportModalEl.classList.remove('open');
-    exportModalEl.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-}
-
-/* ================================================================
-   9. Canvas 画像出力
-================================================================ */
-async function exportSummaryImage() {
-    // 描画前にWebフォントの読み込み完了を保証
-    try {
-        if (document.fonts) {
-            await document.fonts.load('bold 24px "Noto Sans JP"');
-            await document.fonts.load('bold 22px "Outfit"');
-        }
-    } catch (e) {
-        console.warn('フォントロード失敗、システムフォントで代替します:', e);
-    }
-
-    const ctx = exportCanvasEl.getContext('2d');
-    if (!ctx) return;
-
-    // 背景グラデーション
-    const grad = ctx.createLinearGradient(0, 0, 800, 500);
-    grad.addColorStop(0, '#f5f3ff');
-    grad.addColorStop(1, '#fad0c4');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 800, 500);
-
-    // ドット柄
-    ctx.fillStyle = 'rgba(139,92,246,0.05)';
-    for (let x = 10; x < 800; x += 25)
-        for (let y = 10; y < 500; y += 25) {
-            ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill();
-        }
-
-    /** 角丸矩形描画ヘルパー */
-    function roundRect(x, y, w, h, r, fill = true, stroke = true) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y,     x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x,     y + h, r);
-        ctx.arcTo(x,     y + h, x,     y,     r);
-        ctx.arcTo(x,     y,     x + w, y,     r);
-        ctx.closePath();
-        if (fill)   ctx.fill();
-        if (stroke) ctx.stroke();
-    }
-
-    // カード背景
-    ctx.fillStyle   = 'rgba(255,255,255,0.96)';
-    ctx.strokeStyle = 'rgba(139,92,246,0.25)';
-    ctx.lineWidth   = 2;
-    roundRect(30, 30, 740, 440, 16);
-
-    // タイトル装飾
-    ctx.fillStyle = '#8b5cf6'; ctx.fillRect(60, 62, 6, 26);
-    ctx.fillStyle = '#ec4899'; ctx.fillRect(70, 62, 3, 26);
-
-    ctx.fillStyle = '#1f2937';
-    ctx.font      = 'bold 24px "Noto Sans JP", sans-serif';
-    ctx.fillText('同人誌 収支&部数計画シート', 85, 82);
-
-    ctx.fillStyle = '#6b7280';
-    ctx.font      = '13px "Noto Sans JP", sans-serif';
-    const dateStr = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' });
-    ctx.fillText(`作成日: ${dateStr} | 創作支援シミュレーター`, 85, 107);
-
-    // サークル・タイトルタグ
-    const customCircle = customCircleEl.value.trim();
-    const customTitle  = customTitleEl.value.trim();
-    if (customCircle || customTitle) {
-        ctx.fillStyle   = 'rgba(139,92,246,0.06)';
-        ctx.strokeStyle = 'rgba(139,92,246,0.2)';
-        ctx.lineWidth   = 1;
-        roundRect(460, 52, 280, 58, 8);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#6d28d9';
-        ctx.font      = 'bold 12px "Noto Sans JP", sans-serif';
-        ctx.fillText(customCircle || 'サークル名未設定', 720, 74, 260);
-        ctx.fillStyle = '#1f2937';
-        ctx.font      = 'bold 15px "Noto Sans JP", sans-serif';
-        ctx.fillText(`📖 ${customTitle || '新刊計画'}`, 720, 96, 260);
-        ctx.textAlign = 'left';
-    }
-
-    // 区切り線（グラデーション）
-    const lineGrad = ctx.createLinearGradient(60, 0, 740, 0);
-    lineGrad.addColorStop(0, '#8b5cf6');
-    lineGrad.addColorStop(0.5, '#ec4899');
-    lineGrad.addColorStop(1, 'rgba(226,232,240,0.5)');
-    ctx.beginPath(); ctx.moveTo(60, 125); ctx.lineTo(740, 125);
-    ctx.strokeStyle = lineGrad; ctx.lineWidth = 2; ctx.stroke();
-
-    // 左カラム：仕様
-    const sizeLabel = bookSizeEl.options[bookSizeEl.selectedIndex].text.split('（')[0];
-    const typeLabel = printTypeEl.options[printTypeEl.selectedIndex].text.split('（')[0];
-
-    ctx.fillStyle = '#4b5563';
-    ctx.font      = 'bold 16px "Noto Sans JP", sans-serif';
-    ctx.fillText('📖 本の仕様と価格設定', 60, 170);
-
-    ctx.font      = '14px "Noto Sans JP", sans-serif';
-    ctx.fillStyle = '#1f2937';
-    [
-        `サイズ: ${sizeLabel}`,
-        `印刷仕様: ${typeLabel}`,
-        `総ページ数: ${bookPagesEl.value} ページ`,
-        `発行部数: ${printVolumeEl.value} 部`,
-        `頒布価格: ${sellingPriceEl.value} 円 / 1冊`,
-    ].forEach((text, i) => ctx.fillText(text, 80, 200 + i * 30));
-
-    // 損益分岐点ボックス
-    const { totalExpenses, breakevenSales, isPossibleBreakeven } = appState;
-    ctx.fillStyle   = 'rgba(239,68,68,0.05)';
-    ctx.strokeStyle = 'rgba(239,68,68,0.3)';
-    ctx.lineWidth   = 1;
-    roundRect(70, 345, 300, 42, 6);
-    ctx.fillStyle = '#b91c1c';
-    ctx.font      = 'bold 14px "Noto Sans JP", sans-serif';
-    ctx.fillText(
-        isPossibleBreakeven
-            ? `⚠️ 損益分岐点: ${breakevenSales} 部の頒布で黒字化`
-            : `⚠️ 損益分岐点: 達成不可`,
-        85, 371);
-
-    // 右カラム：試算結果
-    ctx.fillStyle = '#4b5563';
-    ctx.font      = 'bold 16px "Noto Sans JP", sans-serif';
-    ctx.fillText('📊 試算結果（シミュレーション）', 440, 170);
-
-    const profitVal = appState.netProfit;
-    const profitPrefix = profitVal >= 0 ? '+' : '';
-    const profitColor = profitVal >= 0 ? '#10b981' : '#dc2626';
-
-    [
-        { color: '#8b5cf6', label: `シミュレーション部数: ${appState.salesCount.toLocaleString('ja-JP')} 部`, bold: false },
-        { color: '#ec4899', label: `想定売上高: ${yen(appState.salesRevenue)}`, bold: false },
-        { color: profitColor, label: `想定収支: ${profitPrefix}${yen(profitVal)}`, bold: true },
-    ].forEach(({ color, label, bold }, i) => {
-        const y = 195 + i * 50;
-        ctx.fillStyle = color; ctx.fillRect(440, y, 10, 15);
-        ctx.fillStyle = '#1f2937';
-        ctx.font      = (bold ? 'bold ' : '') + `${bold ? 16 : 15}px "Noto Sans JP", sans-serif`;
-        ctx.fillText(label, 460, y + 15);
-    });
-
-    // 総経費ボックス
-    ctx.fillStyle   = '#f8fafc';
-    ctx.strokeStyle = '#cbd5e1';
-    ctx.lineWidth   = 1;
-    roundRect(440, 345, 300, 80, 8);
-    ctx.fillStyle = '#4b5563';
-    ctx.font      = '12px "Noto Sans JP", sans-serif';
-    ctx.fillText('総経費 (印刷費＋イベント経費)', 458, 375);
-    ctx.fillStyle = '#1f2937';
-    ctx.font      = 'bold 22px "Outfit", sans-serif';
-    ctx.fillText(yen(totalExpenses), 458, 405);
-
-    // 検索窓グラフィック
-    const sx = 65, sy = 405;
-    ctx.fillStyle   = '#ffffff';
-    ctx.strokeStyle = '#8b5cf6';
-    ctx.lineWidth   = 1.5;
-    roundRect(sx, sy, 190, 28, 4);
-    ctx.fillStyle = '#9ca3af';
-    ctx.font      = '11px "Noto Sans JP", sans-serif';
-    ctx.fillText('かたかたの同人ツール', sx + 10, sy + 18);
-    ctx.fillStyle = '#8b5cf6'; ctx.fillRect(sx + 150, sy + 1, 39, 26);
-    ctx.fillStyle = '#ffffff';
-    ctx.font      = 'bold 10px "Noto Sans JP", sans-serif';
-    ctx.fillText('検索', sx + 158, sy + 17);
-
-    // フッター
-    ctx.fillStyle = '#9ca3af';
-    ctx.font      = '11px "Noto Sans JP", sans-serif';
-    ctx.fillText('Designed by かたかた (katakatalab.com)', 60, 452);
-
-    try {
-        openModal(exportCanvasEl.toDataURL('image/png'), exportCanvasEl.toDataURL('image/png'));
-    } catch (err) {
-        console.error('画像生成エラー:', err);
-        showToast('❌ 画像の書き出しに失敗しました。ブラウザのCanvas機能をご確認ください。');
-    }
-}
 
 /* ================================================================
    17. イベントリスナー登録
