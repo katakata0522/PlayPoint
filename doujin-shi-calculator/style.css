@@ -506,10 +506,8 @@ body {
     vertical-align: middle;
 }
 
-/* Sticky Right Column */
+/* Sticky Right Column (Disabled sticky to prevent header-like scrolling artifacts) */
 .result-sticky-wrapper {
-    position: sticky;
-    top: 90px;
     display: flex;
     flex-direction: column;
     gap: 30px;
