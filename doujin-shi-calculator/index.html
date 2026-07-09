@@ -52,7 +52,7 @@
                 <!-- 左カラム：入力フォーム -->
                 <section class="card form-section" aria-labelledby="form-title">
                     <div class="form-card-header">
-                        <h2 id="form-title" class="form-card-title">⚙️ 条件入力フォーム</h2>
+                        <h2 id="form-title" class="form-card-title">⚙️ 条件入力フォーム <span class="tax-note">（すべて税込）</span></h2>
                         <button type="button" id="btn-reset-all" class="btn-reset-link" aria-label="すべての入力値を初期状態に戻す">🔄 全てリセット</button>
                     </div>
 
@@ -208,6 +208,7 @@
                                 <div class="slider-input-container">
                                     <input type="number" id="sales-count-input" class="sales-input-field font-outfit" min="0" value="50" aria-label="シミュレーション頒布部数" inputmode="numeric" pattern="[0-9]*">
                                     <span class="unit-text">部売れたら？</span>
+                                    <span id="sales-ratio-display" class="sales-ratio-text">（完売率 50%）</span>
                                 </div>
                             </div>
                             <input type="range" id="sales-slider" min="0" max="100" value="50" class="custom-slider" aria-label="シミュレーション部数スライダー">

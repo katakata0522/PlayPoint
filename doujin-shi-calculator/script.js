@@ -184,6 +184,7 @@ const salesSliderEl          = $('sales-slider');
 const salesCountInputEl      = $('sales-count-input');
 const sliderHalfTickEl       = $('slider-half-tick');
 const sliderMaxTickEl        = $('slider-max-tick');
+const salesRatioDisplayEl    = $('sales-ratio-display');
 
 const profitStatusCardEl      = $('profit-status-card');
 const profitStatusTextEl      = $('profit-status-text');
@@ -469,6 +470,12 @@ function _renderCalcResults(inputs, profit) {
     sliderMaxTickEl.textContent  = `${volume}部`;
     if (parseInt(salesSliderEl.value) > volume) salesSliderEl.value = volume;
     if (document.activeElement !== salesCountInputEl) salesCountInputEl.value = salesCount;
+
+    // 完売率の動的同期表示
+    if (salesRatioDisplayEl) {
+        const ratio = volume > 0 ? Math.round((salesCount / volume) * 100) : 0;
+        salesRatioDisplayEl.textContent = `（完売率 ${ratio}%）`;
+    }
 
     // 損益分岐点（巨大ヒーロー表示 & 標準表示）
     if (isPossibleBreakeven) {
