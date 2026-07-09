@@ -1477,8 +1477,17 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
 `;
 }
 
-function renderArticle(article, assetVersions, todayStr) {
+const INTL_ARTICLE_DATES = {
+  'ko/articles/google-play-points-gift-cards.html': '2026-07-10',
+  'ko/articles/google-play-points-promotion-not-applied.html': '2026-07-10',
+  'tw/articles/google-play-points-gift-cards.html': '2026-07-10',
+  'tw/articles/google-play-points-promotion-not-applied.html': '2026-07-10'
+};
+
+function renderArticle(article, assetVersions) {
   const canonical = `https://playpoint-sim.com/${article.file}`;
+  const publishedAt = INTL_ARTICLE_DATES[article.file] || '2026-07-07';
+  const modifiedAt = '2026-07-10';
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
   const lang = article.lang || 'en';
   const labels = article.labels || ARTICLE_LABELS.en;
@@ -1498,8 +1507,8 @@ function renderArticle(article, assetVersions, todayStr) {
     description: article.description,
     url: canonical,
     inLanguage: lang,
-    datePublished: todayStr,
-    dateModified: todayStr,
+    datePublished: publishedAt,
+    dateModified: modifiedAt,
     image: 'https://playpoint-sim.com/ogp.png',
     author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
     publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
@@ -1514,7 +1523,7 @@ function renderArticle(article, assetVersions, todayStr) {
     <meta name="description" content="${escapeHtml(article.description)}">
     <meta name="robots" content="index,follow">
     <meta name="author" content="${escapeHtml(authorName)}">
-    <meta name="last-modified" content="${todayStr}">
+    <meta name="last-modified" content="${modifiedAt}">
     <link rel="canonical" href="${canonical}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1538,7 +1547,7 @@ ${jsonLd(schema)}
     <div class="hero">
         <span class="hero-badge">${escapeHtml(article.badge || 'International guide')}</span>
         <h1>${escapeHtml(article.h1)}</h1>
-        <p class="hero-meta">${escapeHtml(labels.updatedPrefix)} ${todayStr} ・ ${escapeHtml(labels.guideSuffix)}</p>
+        <p class="hero-meta">${escapeHtml(labels.updatedPrefix)} ${modifiedAt} ・ ${escapeHtml(labels.guideSuffix)}</p>
     </div>
 
     <article class="content">
@@ -1629,7 +1638,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
   }
   writeFile(rootDir, 'en/articles/intl-article.css', INTL_ARTICLE_CSS);
   for (const article of INTL_ARTICLES) {
-    writeFile(rootDir, article.file, renderArticle(article, assetVersions, todayStr));
+    writeFile(rootDir, article.file, renderArticle(article, assetVersions));
   }
   console.log(`Generated international SEO pages (${getIntlSeoFiles().length} files).`);
 }

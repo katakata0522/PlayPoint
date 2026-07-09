@@ -1,6 +1,6 @@
 'use strict';
 
-import { CONFIGS, STATE, CONSTANTS } from './config.js';
+import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config.js';
 
 export const UI = {
     toastTimerId: null,
@@ -94,8 +94,8 @@ export const UI = {
         if (gcalBtn) {
             const text = texts.calSubject;
             const details = texts.calDetails;
-            const isGlobalTime = STATE.currentRegion === 'US';
-            const dates = isGlobalTime ? '20260626T140000Z/20260626T150000Z' : '20260626T010000Z/20260626T020000Z';
+            const calendarWindow = getNextFridayCalendarWindow(STATE.currentRegion === 'US');
+            const dates = `${calendarWindow.start}/${calendarWindow.end}`;
             const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${dates}&recur=RRULE:FREQ=WEEKLY;BYDAY=FR&details=${encodeURIComponent(details)}`;
             gcalBtn.href = gcalUrl;
         }

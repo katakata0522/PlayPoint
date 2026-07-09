@@ -42,7 +42,7 @@ export const CALC_PURE = {
         }
 
         if (packAmount > 0) {
-            const pointsPerPack = Math.floor(Math.floor(packAmount / spendUnit) * finalRate);
+            const pointsPerPack = Math.round(Math.floor(packAmount / spendUnit) * finalRate);
             if (pointsPerPack <= 0) {
                 totalAmountNeeded = Math.ceil((neededPoints / finalRate) * spendUnit);
             } else {
@@ -104,16 +104,82 @@ export const CALC = {
         ]
     },
 
+    getResultNavigation() {
+        const localized = {
+            US: {
+                relatedArticleGroups: {
+                    platinum: [{ href: 'status/platinum/', title: 'Platinum cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
+                    diamond: [{ href: 'status/diamond/', title: 'Diamond cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
+                    campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: 'Promotion not applied: what to check' }, { href: 'articles/google-play-points-gift-cards.html', title: 'Gift card conditions' }],
+                    default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }, { href: 'articles/google-play-points-reflection-timing.html', title: 'When points appear' }, { href: 'articles/google-play-points-not-showing.html', title: 'Points not showing: what to check' }]
+                },
+                decisionTitle: 'What to check next',
+                highSpend: { href: 'campaign/3x/', title: 'Compare a 3x promotion', note: 'Check the difference before buying' },
+                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: 'Check promotion conditions', note: 'Confirm the bonus applies to this purchase' },
+                diamond: { href: 'status/diamond/', title: 'Check the Diamond target', note: 'Review the points and spending estimate' },
+                platinum: { href: 'status/platinum/', title: 'Check the Platinum target', note: 'Review the points and spending estimate' },
+                nearYearEnd: { href: 'articles/google-play-points-reflection-timing.html', title: 'Check point reflection timing', note: 'Avoid a delay near year-end' },
+                notShowing: { href: 'articles/google-play-points-not-showing.html', title: 'Check missing points', note: 'Review purchase history and pending items' },
+                giftCards: { href: 'articles/google-play-points-gift-cards.html', title: 'Check gift card conditions', note: 'Confirm eligibility before buying' }
+            },
+            KR: {
+                relatedArticleGroups: {
+                    platinum: [{ href: 'status/platinum/', title: '플래티넘 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
+                    diamond: [{ href: 'status/diamond/', title: '다이아몬드 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
+                    campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 미적용 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
+                    default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-not-showing.html', title: '포인트 미반영 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }]
+                },
+                decisionTitle: '다음으로 확인할 사항',
+                highSpend: { href: 'campaign/3x/', title: '3배 캠페인과 비교', note: '구매 전 차이를 확인하세요' },
+                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 조건 확인', note: '이번 구매에 적용되는지 확인하세요' },
+                diamond: { href: 'status/diamond/', title: '다이아몬드 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
+                platinum: { href: 'status/platinum/', title: '플래티넘 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
+                nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '포인트 반영 상태 확인', note: '연말 전 반영 상태를 확인하세요' },
+                notShowing: { href: 'articles/google-play-points-not-showing.html', title: '포인트 미반영 확인', note: '구매 내역과 보류 항목을 확인하세요' },
+                giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인', note: '구매 전 대상 여부를 확인하세요' }
+            },
+            TW: {
+                relatedArticleGroups: {
+                    platinum: [{ href: 'status/platinum/', title: '白金級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
+                    diamond: [{ href: 'status/diamond/', title: '鑽石級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
+                    campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '活動未套用確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
+                    default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-not-showing.html', title: '點數未顯示確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }]
+                },
+                decisionTitle: '接下來請確認',
+                highSpend: { href: 'campaign/3x/', title: '比較 3 倍活動', note: '購買前先確認差異' },
+                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '確認活動條件', note: '確認本次購買是否適用' },
+                diamond: { href: 'status/diamond/', title: '確認鑽石級目標', note: '確認所需點數與預估金額' },
+                platinum: { href: 'status/platinum/', title: '確認白金級目標', note: '確認所需點數與預估金額' },
+                nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '確認點數入帳狀態', note: '年底前確認入帳狀態' },
+                notShowing: { href: 'articles/google-play-points-not-showing.html', title: '確認點數未顯示', note: '確認購買紀錄與處理中項目' },
+                giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '確認禮物卡條件', note: '購買前確認是否符合資格' }
+            }
+        };
+
+        return localized[STATE.currentRegion] || {
+            relatedArticleGroups: this.relatedArticleGroups,
+            decisionTitle: '次に確認すること',
+            highSpend: { href: 'campaign/3x/', title: '高い場合は3倍キャンペーンで比較する', note: '通常時との差を先に確認' },
+            campaign: { href: 'articles/2025-12-25-campaign.html', title: 'キャンペーン対象外条件を確認する', note: '倍率が本当に適用されるか確認' },
+            diamond: { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' },
+            platinum: { href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' },
+            nearYearEnd: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' },
+            notShowing: { href: 'articles/2025-12-25-playpoints-not-reflected.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' },
+            giftCards: { href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' }
+        };
+    },
+
     getRelatedArticles(targetStatusLabel, multiplier) {
         const target = String(targetStatusLabel || '').toLowerCase();
+        const groups = this.getResultNavigation().relatedArticleGroups;
         const candidates = [];
         if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
-            candidates.push(...this.relatedArticleGroups.diamond.slice(0, 3));
+            candidates.push(...groups.diamond.slice(0, 3));
         } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
-            candidates.push(...this.relatedArticleGroups.platinum.slice(0, 3));
+            candidates.push(...groups.platinum.slice(0, 3));
         }
-        if (multiplier > 1) candidates.push(...this.relatedArticleGroups.campaign.slice(0, 2));
-        candidates.push(...this.relatedArticleGroups.default);
+        if (multiplier > 1) candidates.push(...groups.campaign.slice(0, 2));
+        candidates.push(...groups.default);
 
         const seen = new Set();
         return candidates.filter(article => {
@@ -143,26 +209,27 @@ export const CALC = {
     getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
         const target = String(targetStatusLabel || '').toLowerCase();
         const links = [];
+        const navigation = this.getResultNavigation();
 
         if (totalAmountNeeded >= 50000 && multiplier < 2) {
-            links.push({ href: 'campaign/3x/', title: '高い場合は3倍キャンペーンで比較する', note: '通常時との差を先に確認' });
+            links.push(navigation.highSpend);
         } else if (multiplier > 1) {
-            links.push({ href: 'articles/2025-12-25-campaign.html', title: 'キャンペーン対象外条件を確認する', note: '倍率が本当に適用されるか確認' });
+            links.push(navigation.campaign);
         }
 
         if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
-            links.push({ href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' });
+            links.push(navigation.diamond);
         } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
-            links.push({ href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' });
+            links.push(navigation.platinum);
         }
 
         if (remainingDays <= 45) {
-            links.push({ href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' });
+            links.push(navigation.nearYearEnd);
         } else {
-            links.push({ href: 'articles/2025-12-25-playpoints-not-reflected.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' });
+            links.push(navigation.notShowing);
         }
 
-        links.push({ href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' });
+        links.push(navigation.giftCards);
 
         const seen = new Set();
         return links.filter(link => {
@@ -189,7 +256,7 @@ export const CALC = {
 
         return `
             <div class="result-decision-links">
-                <h3>次に確認すること</h3>
+                <h3>${this.getResultNavigation().decisionTitle}</h3>
                 <ul>${items}</ul>
             </div>
         `;
@@ -404,8 +471,8 @@ export const CALC = {
         if (finalNeededPoints <= 0) {
             totalAmountNeeded = 0;
         } else if (packAmount !== null && packAmount > 0) {
-            // 1パックあたりの獲得ポイント ＝ 1回決済ごとの切り捨て処理 (整数値)
-            const pointsPerPack = Math.floor(Math.floor(packAmount / spendUnit) * finalRate);
+            // 1パックあたりの獲得ポイントは購入ごとに最も近い整数へ丸める。
+            const pointsPerPack = Math.round(Math.floor(packAmount / spendUnit) * finalRate);
             
             if (pointsPerPack <= 0) {
                 totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);

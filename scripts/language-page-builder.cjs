@@ -54,6 +54,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
     'href="icon-192.png"',
     'href="manifest.json"',
     'href="style.css',
+    'href="latest/"',
     'href="attention.html"',
     'href="articles/',
     'href="blog/"',

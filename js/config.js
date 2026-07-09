@@ -118,6 +118,25 @@ export const CONSTANTS = {
     STORAGE_REGION_KEY: 'playpointPreferredRegion'
 };
 
+function formatCalendarTimestamp(date, hourUtc) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}${month}${day}T${String(hourUtc).padStart(2, '0')}0000Z`;
+}
+
+export function getNextFridayCalendarWindow(isGlobalTime, baseDate = new Date()) {
+    const nextFriday = new Date(baseDate);
+    const daysUntilFriday = (5 - baseDate.getDay() + 7) % 7;
+    nextFriday.setDate(baseDate.getDate() + daysUntilFriday);
+
+    const startHourUtc = isGlobalTime ? 14 : 1;
+    return {
+        start: formatCalendarTimestamp(nextFriday, startHourUtc),
+        end: formatCalendarTimestamp(nextFriday, startHourUtc + 1)
+    };
+}
+
 export const CONFIGS = {
     'JP': {
         lang: "ja",

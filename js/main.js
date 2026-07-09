@@ -1,6 +1,6 @@
 'use strict';
 
-import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
+import { CONFIGS, STATE, CONSTANTS, ANALYTICS, getNextFridayCalendarWindow } from './config.js';
 import { UI } from './ui.js';
 import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
@@ -203,15 +203,8 @@ export function init() {
             STATE.currentRegion = 'TW';
             localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, 'TW');
         } else {
-            // 通常ルートでは保存された地域を読み込み（初期値はJP）
-            const savedRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);
-            if (savedRegion && CONFIGS[savedRegion]) {
-                STATE.currentRegion = savedRegion;
-            } else {
-                // 初回アクセスでは自動遷移せず、日本語トップを表示する。
-                // 海外向けページは下部の言語提案バナーから任意で移動できる。
-                STATE.currentRegion = 'JP';
-            }
+            // URLと表示言語を一致させるため、ルートは常に日本語として扱う。
+            STATE.currentRegion = 'JP';
         }
     } catch (e) {
         console.error("地域設定の読み込みに失敗しました:", e);
@@ -311,9 +304,7 @@ export function downloadICS() {
     const summary = texts.calSubject;
     const description = texts.calDetails.replace(/\n/g, '\\n');
     
-    const isGlobalTime = STATE.currentRegion === 'US';
-    const dtstart = isGlobalTime ? '20260626T140000Z' : '20260626T010000Z';
-    const dtend = isGlobalTime ? '20260626T150000Z' : '20260626T020000Z';
+    const calendarWindow = getNextFridayCalendarWindow(STATE.currentRegion === 'US');
     
     const icsLines = [
         'BEGIN:VCALENDAR',
@@ -322,8 +313,8 @@ export function downloadICS() {
         'BEGIN:VEVENT',
         `SUMMARY:${summary}`,
         `DESCRIPTION:${description}`,
-        `DTSTART:${dtstart}`,
-        `DTEND:${dtend}`,
+        `DTSTART:${calendarWindow.start}`,
+        `DTEND:${calendarWindow.end}`,
         'RRULE:FREQ=WEEKLY;BYDAY=FR',
         'SEQUENCE:0',
         'STATUS:CONFIRMED',
