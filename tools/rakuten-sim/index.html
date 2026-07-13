@@ -629,8 +629,15 @@
                 console.error('Failed to load rakuten_sim_state', e);
             }
             
-            if (savedState) {
-                state.items = savedState.items || [];
+            if (savedState && typeof savedState === 'object') {
+                const restoredItems = Array.isArray(savedState.items) ? savedState.items : [];
+                state.items = restoredItems
+                    .filter(item => item && Number.isFinite(Number(item.price)))
+                    .map((item, index) => ({
+                        id: Number.isInteger(Number(item.id)) ? Number(item.id) : index + 1,
+                        name: typeof item.name === 'string' ? item.name : `商品 ${index + 1}`,
+                        price: Number(item.price)
+                    }));
                 state.nextId = (state.items.length > 0 ? Math.max(...state.items.map(item => item.id)) : 0) + 1;
                 
                 const spuSelect = document.getElementById('spu-select');

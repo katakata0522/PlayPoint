@@ -413,6 +413,8 @@ export const CALC = {
     // 入力値バリデーション
     getValidNumberInput(element, min = -Infinity, max = Infinity) {
         if (!element) return null;
+        // HTML側のstep・min・max制約にも違反している値は計算へ渡さない
+        if (element.validity && element.validity.valid === false) return null;
         const value = Number(element.value);
         const elementMin = element.min === undefined || element.min === '' ? min : Number(element.min);
         const elementMax = element.max === undefined || element.max === '' ? max : Number(element.max);

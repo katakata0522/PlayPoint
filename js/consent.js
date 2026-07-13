@@ -80,7 +80,10 @@
         if (!banner) return;
         previousFocus = document.activeElement;
         banner.hidden = false;
-        banner.querySelector('[data-consent-accept]')?.focus();
+        // 表示直後の同期focusによる強制レイアウトを避け、次の描画フレームで移動する
+        requestAnimationFrame(() => {
+            banner.querySelector('[data-consent-accept]')?.focus();
+        });
     }
 
     function mountUi() {

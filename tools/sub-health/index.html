@@ -625,6 +625,7 @@
             customSubs: [],
             sliderValues: {}
         };
+        const MAX_CUSTOM_SUBS = 100;
 
         function init() {
             let savedState = null;
@@ -727,7 +728,7 @@
             if (!savedState || typeof savedState !== 'object') return normalized;
 
             normalized.customSubs = Array.isArray(savedState.customSubs)
-                ? savedState.customSubs.map(normalizeCustomSub).filter(Boolean)
+                ? savedState.customSubs.slice(0, MAX_CUSTOM_SUBS).map(normalizeCustomSub).filter(Boolean)
                 : [];
 
             SUB_PRESETS.forEach(sub => {
@@ -903,6 +904,11 @@
             
             if (SUB_PRESETS.some(s => s.name === name) || (state.customSubs && state.customSubs.some(s => s.name === name))) {
                 alert('そのサブスクはすでに登録されています');
+                return;
+            }
+
+            if (state.customSubs.length >= MAX_CUSTOM_SUBS) {
+                alert('カスタムサブスクは100件まで登録できます');
                 return;
             }
             

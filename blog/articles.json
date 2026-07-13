@@ -76,16 +76,16 @@
   },
   {
     "id": "movies-books",
-    "title": "【コンテンツ】映画・書籍・音楽でもポイントは貯まる？",
+    "title": "【ゲーム以外】書籍・アプリ・定期購入でもポイントは貯まる？",
     "date": "2025-12-25",
     "category": "活用術",
     "tags": [
       "Play Points",
-      "映画",
       "書籍",
-      "音楽"
+      "アプリ",
+      "定期購入"
     ],
-    "description": "ゲーム課金以外の映画・書籍・音楽でもポイントは貯まる。対象コンテンツを解説。",
+    "description": "日本向け公式ヘルプに記載された、ゲーム以外のPlay Points獲得対象を解説。",
     "file": "../articles/2025-12-25-movies-books.html",
     "thumbnail": "../articles/ogp/movies-books.png"
   },
@@ -181,14 +181,14 @@
   },
   {
     "id": "subscription",
-    "title": "【サブスク】YouTube Premium・Google Oneでポイントは貯まる？",
+    "title": "【サブスク】Google One・アプリ内定期購入でポイントは貯まる？",
     "date": "2025-12-25",
     "category": "活用術",
     "tags": [
       "Play Points",
       "サブスク",
-      "YouTube Premium",
-      "Google One"
+      "Google One",
+      "アプリ内定期購入"
     ],
     "description": "定期購入でポイントが貯まる条件と注意点を解説。契約経路によって対象・対象外が変わる。",
     "file": "../articles/2025-12-25-subscription.html",
@@ -205,7 +205,7 @@
       "無料",
       "毎週"
     ],
-    "description": "毎週無料でポイントがもらえるウィークリーリワード。受け取り方とランクごとの上限を解説。",
+    "description": "通常のウィークリーリワードと、Play Passなどの週次特典の違い、受け取り方と更新タイミングを解説。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
@@ -226,7 +226,7 @@
   },
   {
     "id": "new-year-campaign",
-    "title": "【2026年正月】年末年始キャンペーンはいつ？過去傾向から予測",
+    "title": "【過去予測の記録】2026年正月の年末年始キャンペーン",
     "date": "2025-12-25",
     "category": "攻略",
     "tags": [
@@ -235,7 +235,7 @@
       "キャンペーン",
       "予測"
     ],
-    "description": "過去の開始日データをもとに2025→2026シーズンを現実的に予測。失敗しない立ち回りも解説。",
+    "description": "2025年末に公開した2026年正月シーズン予測の記録。予測期間は終了済みです。",
     "file": "../articles/2025-12-25-new-year-campaign.html",
     "thumbnail": "../articles/ogp/new-year-campaign.png"
   },

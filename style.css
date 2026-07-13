@@ -1169,6 +1169,12 @@ button:active {
   color: var(--link-color);
 }
 
+/* 運営者リンクは色だけに頼らず、本文との差を下線でも示す */
+.meta-line a {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 
 .region-switch {
   display: inline-flex;
@@ -1886,6 +1892,7 @@ html:not([lang="ja"]) .ja-only {
     gap: 0.6em 0.8em !important;
     padding: 0 10px;
     width: 100%;
+    box-sizing: border-box;
   }
   .header-link-secondary {
     display: none !important;

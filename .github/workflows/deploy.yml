@@ -19,6 +19,8 @@ concurrency:
 
 jobs:
   deploy:
+    # 本番反映はmainの内容だけを対象にする
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

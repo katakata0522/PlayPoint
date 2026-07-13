@@ -156,6 +156,8 @@ test('GAとAdSenseは明示同意後だけ読み込む', () => {
   assert.ok(privacy.includes('js/consent.js?v=20260619a'));
   assert.ok(!privacy.includes('許可を与えたものとみなします'));
   assert.ok(consent.includes('.pp-consent h2{color:#f8fafc'), '同意見出しの色がページCSSに上書きされます');
+  assert.match(consent, /requestAnimationFrame\(\(\) => \{\s*banner\.querySelector\('\[data-consent-accept\]'\)\?\.focus\(\);/s,
+    '同意バナー表示直後の同期focusで強制レイアウトが発生します');
 });
 
 test('計測イベントは同意済みラッパー経由だけで送信する', () => {

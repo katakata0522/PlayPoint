@@ -18,6 +18,18 @@ function runWhenIdle(callback, timeout = 2000) {
     window.setTimeout(callback, Math.min(timeout, 1200));
 }
 
+// 言語テキスト更新後に、記事一覧の実件数をテンプレートへ反映する
+function updateArticleCount() {
+    const countEl = document.querySelector('.article-count');
+    const listEl = document.querySelector('.article-link-list');
+    if (!countEl || !listEl) return;
+
+    const count = listEl.querySelectorAll('li').length;
+    const config = CONFIGS[STATE.currentRegion];
+    const template = config.uiText.articleCount || '{count}記事';
+    countEl.textContent = template.replace('{count}', count);
+}
+
 export function updateUIForRegion() {
     UI.updateUIText();
     CALC.populateStatusSelects();
@@ -181,17 +193,6 @@ export function init() {
 
     if (STATE.dom.copyrightYear) STATE.dom.copyrightYear.textContent = new Date().getFullYear();
 
-    // 記事数の動的カウントと反映
-    const countEl = document.querySelector('.article-count');
-    const listEl = document.querySelector('.article-link-list');
-    if (countEl && listEl) {
-        const count = listEl.querySelectorAll('li').length;
-        const config = CONFIGS[STATE.currentRegion];
-        const template = config.uiText.articleCount || '{count}記事';
-        countEl.textContent = template.replace('{count}', count);
-    }
-
-
     try {
         if (isEnglishPath()) {
             STATE.currentRegion = 'US';
@@ -216,6 +217,7 @@ export function init() {
 
     UI.switchMode(CONSTANTS.MODE_MAIN);
     updateUIForRegion();
+    updateArticleCount();
     SHARE.applyFromUrl();
     checkFridayReminder();
     checkLanguageSuggestion();

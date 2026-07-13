@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnExport = document.getElementById('btn-export');
     const dropZone = document.getElementById('drop-zone');
     const inputImport = document.getElementById('input-import');
+    const MAX_IMPORT_FILE_BYTES = 5 * 1024 * 1024;
+    const MAX_IMPORTED_BOOKS = 1000;
     
     // Celebration Modal Elements
     const celebrationModal = document.getElementById('celebration-modal');
@@ -1821,6 +1823,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleImportFile(file) {
         if (!file) return;
 
+        if (file.size > MAX_IMPORT_FILE_BYTES) {
+            showToast('バックアップファイルが大きすぎます（5MB以内）。', 'warning');
+            if (inputImport) inputImport.value = '';
+            return;
+        }
+
         // Cache old state before starting import for rollback fallback
         const oldBooks = [...state.books];
         const oldSettings = { ...state.settings };
@@ -1835,8 +1843,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('無効なファイル形式です（読書ログのデータが見つかりません）。');
                 }
 
+                const books = importedData.books;
+                if (books.length > MAX_IMPORTED_BOOKS) {
+                    throw new Error('読書ログが多すぎます（1,000件以内）。');
+                }
+
                 // 2. Strict item property & data type schema validation
-                const validatedBooks = importedData.books.filter(b => {
+                const validatedBooks = books.filter(b => {
                     const isValid = b &&
                            typeof b.id === 'number' &&
                            typeof b.title === 'string' && b.title.trim().length > 0 && b.title.length <= 100 &&
@@ -1856,8 +1869,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error('復元可能な有効な読書ログが含まれていません。');
                 }
 
-                const warningMsg = validatedBooks.length !== importedData.books.length 
-                    ? `\n※一部の破損・上限オーバーのデータ（${importedData.books.length - validatedBooks.length}件）は除外されます。` 
+                const warningMsg = validatedBooks.length !== books.length
+                    ? `\n※一部の破損・上限オーバーのデータ（${books.length - validatedBooks.length}件）は除外されます。`
                     : '';
 
                 // Custom confirm modal

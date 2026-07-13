@@ -90,6 +90,16 @@
     let smileSleepReason = readStoredOption('smile_sleep_reason', ['eye', 'meal', 'sleep'], 'eye'); // eye, meal, sleep
     let smileKidsName = readStoredText('smile_kids_name', 'がんばったおともだち', 30);
 
+    // SVGテキストへ安全に埋め込むためXMLの特殊文字をエスケープする
+    function escapeXml(value = '') {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
     // がんばり統計
     let smileStats = safeLoadJSON('smile_stats', {
         plays: { draw: 0, hiragana: 0, quiz: 0, count: 0, match: 0, xylophone: 0, sticker: 0 },
@@ -1735,7 +1745,8 @@
     function exportCertificateSVG() {
         try {
             initAudio();
-            const kidsName = smileKidsName || 'がんばったおともだち';
+            const kidsName = escapeXml(smileKidsName);
+            const rawKidsName = String(smileKidsName || 'がんばったおともだち').slice(0, 30);
             const correctCount = smileStats.correct_answers;
             const stickersCount = smileStats.total_stickers;
 
@@ -1773,7 +1784,7 @@
             
             const link = document.createElement('a');
             link.href = url;
-            link.download = `がんばりしょうじょう_${kidsName}.svg`;
+            link.download = `がんばりしょうじょう_${rawKidsName.replace(/[\\/:*?"<>|]/g, '_')}.svg`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1789,7 +1800,7 @@
     function saveKidsName() {
         const input = document.getElementById('parent-kids-name');
         if (input) {
-            smileKidsName = input.value || 'がんばったおともだち';
+            smileKidsName = (input.value || 'がんばったおともだち').slice(0, 30);
             saveSettings();
         }
     }

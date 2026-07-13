@@ -10,6 +10,8 @@ import { BGMManager } from './BGMManager.js';
 import { GyroManager } from './GyroManager.js';
 import { TimeTheme } from './TimeTheme.js';
 
+const MAX_RESTORED_TASKS = 100;
+
 export class PhysicsEngine {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
@@ -274,7 +276,7 @@ export class PhysicsEngine {
 
       document.dispatchEvent(new CustomEvent('gravity:firstVisit'));
     } else {
-      tasks.forEach(t => {
+      tasks.slice(0, MAX_RESTORED_TASKS).forEach(t => {
         const safeX = (t.x < 0 || t.x > this.width) ? this.width / 2 : t.x;
         const safeY = t.y > this.getFloorY() ? this.getFloorY() - 100 : t.y;
         this.addTask(t.text, safeX, safeY, t.angle, {

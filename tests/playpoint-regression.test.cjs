@@ -43,7 +43,10 @@ function createSelect() {
 function createInput(value = '') {
   return {
     value: String(value),
+    min: undefined,
     max: undefined,
+    step: undefined,
+    validity: { valid: true },
     removeAttribute(name) {
       delete this[name];
     },
@@ -183,6 +186,45 @@ test('12月31日でも通常計算は合計必要額を表示する', () => {
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(renderedResults[0].content.includes('data-value="25000"'));
   assert.ok(!renderedResults[0].content.includes('/月'));
+});
+
+test('必要ポイントはHTMLの整数制約に違反する小数を拒否する', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput('1.5');
+  PP_STATE.dom.neededPoints.step = '1';
+  PP_STATE.dom.neededPoints.validity = { valid: false, stepMismatch: true };
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+
+  populateStatusSelects();
+  updateBaseRateAndTarget();
+  calculate();
+
+  assert.strictEqual(renderedResults[0].isError, true);
+  assert.ok(renderedResults[0].content.includes('有効な数値'));
+});
+
+test('記事件数は言語UI更新後に実際の件数で再描画する', () => {
+  const source = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  assert.ok(source.includes('function updateArticleCount()'), '記事件数の更新処理が独立していません');
+  const uiUpdateIndex = source.indexOf('updateUIForRegion();');
+  const countUpdateIndex = source.indexOf('updateArticleCount();', uiUpdateIndex);
+  assert.ok(uiUpdateIndex >= 0 && countUpdateIndex > uiUpdateIndex, '言語UI更新後に記事件数を再描画していません');
+});
+
+test('フッターの運営者リンクは色だけに頼らず下線で区別する', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  assert.match(css, /\.meta-line\s+a\s*\{[^}]*text-decoration:\s*underline/s);
+});
+
+test('モバイルのヘッダーリンクは内側余白を含めて画面幅に収める', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  assert.match(css, /\.header-links\s*\{[^}]*padding:\s*0\s+10px;[^}]*width:\s*100%;[^}]*box-sizing:\s*border-box/s);
 });
 
 test('通常計算の結果は週平均と1日あたりの目安も表示する', () => {
