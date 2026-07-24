@@ -65,4 +65,4 @@ Google Playのポイント制度に対応した、
 
 ---
 
-Last updated: 2025-07-21
+Last updated: 2026-07-24
