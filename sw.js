@@ -32,7 +32,7 @@ const ASSETS = [
   './blog/style.css?v=20260707_1600a',
   './blog/components.js?v=20260621a',
   './blog/script.js?v=20260628_1053a',
-  './blog/article.js?v=20260628_1140a',
+  './blog/article.js?v=20260724_1005a',
   './articles/article-shared.css?v=20260707_1401a',
   './en/',
   './ko/',
