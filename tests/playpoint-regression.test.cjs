@@ -2818,7 +2818,8 @@ test('100ポイント多言語記事は国別公式レートと相互hreflangを
   for (const [file, rate, source] of cases) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     assert.ok(html.includes(rate), file + ' の国別レートがありません');
-    assert.ok(html.includes(source), file + ' の公式出典がありません');
+    assert.ok(html.includes(source), file + ' の地域別公式出典がありません');
+    assert.ok(html.includes('support.google.com/googleplay/answer/9077312'), file + ' の参加・提供地域公式導線がありません');
     assert.ok(html.includes('hreflang="ja"'), file + ' の日本語hreflangがありません');
     assert.ok(html.includes('hreflang="x-default"'), file + ' のx-defaultがありません');
   }
