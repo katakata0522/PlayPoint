@@ -12,7 +12,7 @@
     ],
     "description": "Google Play Pointsは現金化やPayPay・銀行口座への送金ができるのかを公式情報で整理。Playクレジット、クーポン、アプリ内アイテムとの違いと注意点を解説します。",
     "file": "../articles/2026-07-24-play-points-cash-conversion.html",
-    "thumbnail": "../ogp.png"
+    "thumbnail": "../articles/ogp/getting-started.png"
   },
   {
     "id": "points-value-1",
@@ -427,4 +427,4 @@
     "thumbnail": "../articles/ogp/playpoints-not-reflected.png",
     "modified": "2026-07-24"
   }
-]
+]\n
