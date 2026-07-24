@@ -1,4 +1,10 @@
+const expectedDeployRevision = process.env.EXPECTED_DEPLOY_REVISION;
+
 const targets = [
+  ...(expectedDeployRevision ? [{
+    url: 'https://playpoint-sim.com/status/deploy-revision.txt',
+    equals: expectedDeployRevision
+  }] : []),
   { url: 'https://playpoint-sim.com/', contains: 'Playポイント計算機' },
   { url: 'https://playpoint-sim.com/en/', contains: 'Google Play Points Calculator' },
   { url: 'https://playpoint-sim.com/ko/', contains: '구글 플레이 포인트 계산기' },
@@ -69,7 +75,11 @@ async function verifyTarget(target) {
   if (target.minimumBytes && body.length < target.minimumBytes) {
     throw new Error(`${target.url}: ${body.length} bytes`);
   }
-  if (target.contains && !body.toString('utf8').includes(target.contains)) {
+  const text = body.toString('utf8');
+  if (target.equals && text.trim() !== target.equals) {
+    throw new Error(`${target.url}: expected exact content not found`);
+  }
+  if (target.contains && !text.includes(target.contains)) {
     throw new Error(`${target.url}: expected content not found`);
   }
 }

@@ -32,6 +32,11 @@ jobs:
       - name: Run complete preflight and prepare deploy assets
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
+      - name: Create deployment revision marker
+        run: |
+          mkdir -p status
+          printf '%s\n' "$GITHUB_SHA" > status/deploy-revision.txt
+
       - name: Setup SSH
         run: |
           set -euo pipefail
@@ -81,6 +86,8 @@ jobs:
           done
 
       - name: Verify production deployment
+        env:
+          EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
         run: node .github/scripts/smoke-test.cjs
 
       - name: Verify production SEO health
