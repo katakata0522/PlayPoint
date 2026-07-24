@@ -1443,6 +1443,10 @@ const POINT_VALUE_100_ARTICLES = [
     "title": "Google Play Points 100 點要花多少？"
   }
 ];
+POINT_VALUE_100_ARTICLES.forEach((article) => {
+  if (article.lang === 'ko') article.labels = ARTICLE_LABELS.ko;
+  if (article.lang === 'zh-TW') article.labels = ARTICLE_LABELS.tw;
+});
 
 const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
