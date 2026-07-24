@@ -1150,6 +1150,300 @@ const TW_ARTICLES = [
   }
 ];
 
+const POINT_VALUE_100_ARTICLES = [
+  {
+    "badge": "US 100-point guide",
+    "ctaHref": "/en/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_en",
+    "description": "Estimate US spending needed for 100 Google Play Points by level, then check why redemption value varies by reward, country, and account.",
+    "faq": [
+      [
+        "Are 100 Google Play Points always worth $1?",
+        "No. The reward catalog is not one universal cash exchange rate."
+      ],
+      [
+        "How much do I spend for 100 points in the US?",
+        "About $100 at Bronze before promotions and excluding tax. Higher levels need less eligible spend."
+      ],
+      [
+        "Can I buy or cash out Play Points?",
+        "No. Google says points cannot be purchased or converted to cash."
+      ],
+      [
+        "Do taxes earn points?",
+        "No. Google excludes taxes from the point calculation."
+      ]
+    ],
+    "file": "en/articles/google-play-points-100-value.html",
+    "h1": "How much are 100 Google Play Points worth?",
+    "intro": "There are two questions behind “How much are 100 Google Play Points worth?” One is how much eligible spending can earn 100 points. The other is what those points can unlock. Country-specific earning rates and account-specific rewards make it important to keep earning cost and redemption value separate.",
+    "jaAlternate": "/articles/2026-07-24-play-points-100-value.html",
+    "lang": "en",
+    "lead": "In the US, Bronze earns 1 point per $1 on eligible purchases, so 100 points usually means about $100 of eligible spend before promotions. Redemption value is a separate question.",
+    "modifiedAt": "2026-07-24",
+    "nextLinks": [
+      [
+        "/en/articles/google-play-points-levels.html",
+        "Understand Play Points levels"
+      ],
+      [
+        "/en/articles/google-play-points-not-showing.html",
+        "Points not showing up"
+      ],
+      [
+        "/en/campaign/2x/",
+        "Compare a 2x promotion"
+      ],
+      [
+        "/articles/2026-07-24-play-points-100-value.html",
+        "Japanese 100-point guide"
+      ],
+      [
+        "/author/katakata.html",
+        "Editorial policy"
+      ]
+    ],
+    "officialSourceBody": "Google confirms one point per $1 at Bronze in the US, item-level rounding, tax exclusion, and country-specific availability.",
+    "officialSourceHref": "https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DUS&hl=en",
+    "officialProgramLink": "Program availability and joining",
+    "officialSourceLink": "Google Play Help: Earn Play Points in the US",
+    "officialSourceTitle": "Official US earning rules",
+    "publishedAt": "2026-07-24",
+    "sections": [
+      [
+        "Short answer for US accounts",
+        [
+          "At the US Bronze base rate of 1 point per $1, earning 100 points takes about $100 of eligible pre-tax spending. A promotion or higher status can reduce that estimate.",
+          "100 points are not cash and cannot be converted to cash. Their use value depends on the rewards actually shown in your Google Play account."
+        ]
+      ],
+      [
+        "Spending needed at each US level",
+        [
+          "Using current US base rates, the rough spend for 100 points is: Bronze $100 at 1 point per $1; Silver about $90.91 at 1.1; Gold about $83.34 at 1.2; Platinum about $71.43 at 1.4; Diamond $62.50 at 1.6.",
+          "Google calculates points for each item and rounds to the nearest whole point. Taxes are excluded, so several small purchases can differ from a simple total-spend division."
+        ]
+      ],
+      [
+        "Why the redemption value is not fixed",
+        [
+          "Play Points can be used for in-app items, coupons, Play credit, or partner offers when available. The catalog and exchange requirements can differ by country and account.",
+          "Open Google Play, choose Play Points, then Use. Check expiry dates, minimum purchases, and app restrictions before treating a reward as savings."
+        ]
+      ],
+      [
+        "How promotions change the estimate",
+        [
+          "At Bronze, an eligible 2x offer can reduce the rough spend for 100 points from $100 to $50, and a 3x offer to about $33.34. This only works when the offer applies to that item and account.",
+          "Run the calculator at 1x first. Then read the activation step, cap, and end date instead of buying only to reach a round point balance."
+        ]
+      ],
+      [
+        "Checks before relying on the number",
+        [
+          "Confirm that the purchase is made after joining Play Points, on the enrolled account, and is eligible in the US. The purchase screen and points history are more authoritative than an estimate.",
+          "If your billing country is not the US, use the local rate shown in Google Play rather than the dollar examples on this page."
+        ]
+      ]
+    ],
+    "siteName": "Google Play Points Calculator",
+    "title": "How much are 100 Google Play Points worth?"
+  },
+  {
+    "badge": "한국 100포인트 가이드",
+    "ctaHref": "/ko/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_ko",
+    "description": "한국에서 Google Play Points 100포인트를 모으는 데 필요한 결제액을 등급별로 계산하고, 100포인트의 사용 가치가 고정 현금가가 아닌 이유를 설명합니다.",
+    "faq": [
+      [
+        "100포인트는 항상 1,000원 가치인가요?",
+        "그렇게 고정하면 안 됩니다. 리워드와 조건이 계정마다 다를 수 있습니다."
+      ],
+      [
+        "한국에서 100포인트를 모으려면 얼마가 필요한가요?",
+        "브론즈 기준 약 100,000원입니다."
+      ],
+      [
+        "포인트를 현금으로 바꿀 수 있나요?",
+        "아니요."
+      ],
+      [
+        "세금도 계산에 포함되나요?",
+        "아니요. 세금은 제외됩니다."
+      ]
+    ],
+    "file": "ko/articles/google-play-points-100-value.html",
+    "h1": "Google Play Points 100포인트는 얼마일까요?",
+    "intro": "“100포인트는 얼마인가요?”에는 두 가지 뜻이 섞여 있습니다. 모으는 데 필요한 결제액과 어떤 리워드로 바꿀 수 있는지는 다른 문제입니다. 한국 공식 적립률로 결제액을 계산하고, 사용 가치는 내 계정 화면에서 따로 확인합니다.",
+    "jaAlternate": "/articles/2026-07-24-play-points-100-value.html",
+    "lang": "ko",
+    "lead": "한국 브론즈 기본 적립률은 1,000원당 1포인트이므로 100포인트는 약 100,000원의 대상 결제가 기준입니다. 사용하는 가치는 별도로 확인해야 합니다.",
+    "modifiedAt": "2026-07-24",
+    "nextLinks": [
+      [
+        "/ko/articles/google-play-points-levels.html",
+        "Play Points 등급 구조"
+      ],
+      [
+        "/ko/articles/google-play-points-not-showing.html",
+        "포인트가 보이지 않을 때"
+      ],
+      [
+        "/ko/campaign/2x/",
+        "2배 캠페인 비교"
+      ],
+      [
+        "/articles/2026-07-24-play-points-100-value.html",
+        "일본어 100포인트 가이드"
+      ],
+      [
+        "/author/katakata.html",
+        "운영 및 검증 방침"
+      ]
+    ],
+    "officialSourceBody": "Google 공식 안내에서 한국의 등급별 1,000원당 적립률을 확인할 수 있습니다.",
+    "officialSourceHref": "https://play.google.com/intl/ko_ALL/about/playpoints/notifications/how-to-earn-points/",
+    "officialProgramLink": "가입 및 제공 국가 확인",
+    "officialSourceLink": "Google Play 공식: 포인트 적립 방법",
+    "officialSourceTitle": "한국 공식 적립률",
+    "publishedAt": "2026-07-24",
+    "sections": [
+      [
+        "한국 계정 기준 짧은 답",
+        [
+          "브론즈는 대상 결제 1,000원당 1포인트이므로 100포인트의 기준은 약 100,000원입니다. 상위 등급이나 대상 프로모션이 있으면 예상 금액은 내려갑니다.",
+          "100포인트는 현금이 아니며 현금으로 바꿀 수 없습니다. 실제 교환처에 따라 사용 가치가 달라집니다."
+        ]
+      ],
+      [
+        "등급별 100포인트 필요 금액",
+        [
+          "한국의 기본 적립률을 적용하면 브론즈 약 100,000원, 실버 약 90,910원, 골드 약 76,924원, 플래티넘 62,500원, 다이아몬드 50,000원입니다.",
+          "기준 적립률은 1,000원당 브론즈 1, 실버 1.1, 골드 1.3, 플래티넘 1.6, 다이아몬드 2포인트입니다. 상품별 반올림과 세금 제외에 주의하세요."
+        ]
+      ],
+      [
+        "100포인트의 사용 가치 확인",
+        [
+          "Google Play 앱에서 프로필, Play Points, 사용 순서로 이동해 내 계정에 표시되는 리워드와 필요한 포인트를 확인하세요.",
+          "쿠폰은 최소 결제 금액과 대상 앱을, 크레딧은 교환 조건과 유효기간을 확인하세요."
+        ]
+      ],
+      [
+        "2배·3배 캠페인일 때",
+        [
+          "브론즈에서 대상 2배 적립이면 약 50,000원, 3배라면 약 33,334원이 단순 기준입니다. 캠페인은 대상 앱, 기간, 참여 버튼, 상한을 가질 수 있습니다.",
+          "먼저 1배 기준을 계산하고 내 계정에 표시된 적립률을 비교하세요. 예정에 없던 결제는 권하지 않습니다."
+        ]
+      ],
+      [
+        "숫자를 믿기 전 확인할 것",
+        [
+          "가입 이후 구매인지, 가입 계정으로 결제했는지, 한국 계정의 대상 상품인지 확인하세요. 결제 직전 예상 포인트와 구매 후 내역을 우선합니다.",
+          "한국 외 결제 프로필이라면 이 원화 예시 대신 해당 국가 앱의 적립률을 사용하세요."
+        ]
+      ]
+    ],
+    "siteName": "Google Play Points 계산기",
+    "title": "Google Play Points 100포인트는 얼마일까요?"
+  },
+  {
+    "badge": "台灣 100 點指南",
+    "ctaHref": "/tw/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_tw",
+    "description": "依台灣各等級積點率計算 Google Play Points 100 點所需消費，並說明 100 點沒有固定現金價值、兌換前應確認哪些條件。",
+    "faq": [
+      [
+        "100 點一定等於 NT$30 嗎？",
+        "不一定。點數不是固定現金匯率。"
+      ],
+      [
+        "台灣累積 100 點要花多少？",
+        "銅級約需 NT$3,000。"
+      ],
+      [
+        "Play Points 可以換現金嗎？",
+        "不可以。"
+      ],
+      [
+        "稅金會累積點數嗎？",
+        "不會，稅金不列入計算。"
+      ]
+    ],
+    "file": "tw/articles/google-play-points-100-value.html",
+    "h1": "Google Play Points 100 點要花多少？",
+    "intro": "「100 點是多少？」可能是在問累積成本，也可能是在問兌換價值。台灣 Play Points 以每 NT$30 的等級積點率計算，但可兌換內容會依帳號顯示而不同。這篇文章把兩個問題拆開，避免把點數直接當現金。",
+    "jaAlternate": "/articles/2026-07-24-play-points-100-value.html",
+    "lang": "zh-TW",
+    "lead": "台灣銅級基本積點率是每消費 NT$30 得 1 點，因此累積 100 點約需 NT$3,000 的適用消費；兌換價值則要分開查看。",
+    "modifiedAt": "2026-07-24",
+    "nextLinks": [
+      [
+        "/tw/articles/google-play-points-levels.html",
+        "Play Points 等級說明"
+      ],
+      [
+        "/tw/articles/google-play-points-not-showing.html",
+        "點數沒有顯示時"
+      ],
+      [
+        "/tw/campaign/2x/",
+        "比較 2 倍活動"
+      ],
+      [
+        "/articles/2026-07-24-play-points-100-value.html",
+        "日文 100 點指南"
+      ],
+      [
+        "/author/katakata.html",
+        "營運與驗證方針"
+      ]
+    ],
+    "officialSourceBody": "Google 官方說明列出台灣每 NT$30 的等級積點率、逐項四捨五入與稅金排除規則。",
+    "officialSourceHref": "https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DTW&hl=zh-Hant",
+    "officialProgramLink": "加入方式與適用地區",
+    "officialSourceLink": "Google Play 說明：台灣等級與福利",
+    "officialSourceTitle": "台灣官方積點率",
+    "publishedAt": "2026-07-24",
+    "sections": [
+      [
+        "台灣帳號的簡短答案",
+        [
+          "銅級每消費 NT$30 可得 1 點，所以 100 點的基本消費估算約為 NT$3,000。較高等級或符合資格的活動可以降低估算。",
+          "100 點不是現金，也不能兌換成現金。實際使用價值取決於帳號中顯示的獎勵。"
+        ]
+      ],
+      [
+        "各等級累積 100 點的估算",
+        [
+          "依台灣基本積點率，100 點約需：銅級 NT$3,000、銀級 NT$2,400、金級 NT$2,000、白金級約 NT$1,715、鑽石級 NT$1,500。",
+          "每 NT$30 的積點率是銅級 1、銀級 1.25、金級 1.5、白金級 1.75、鑽石級 2 點。商品會逐項四捨五入，稅金不列入。"
+        ]
+      ],
+      [
+        "如何確認兌換價值",
+        [
+          "開啟 Google Play，依序進入個人資料、Play Points、使用，查看目前可以兌換什麼。",
+          "折價券要確認適用 App、最低消費與期限；不同帳號的兌換目錄可能不同。"
+        ]
+      ],
+      [
+        "遇到 2 倍或 3 倍活動",
+        [
+          "銅級若有符合資格的 2 倍積點，100 點約需 NT$1,500；3 倍約需 NT$1,000。",
+          "購買前先看是否需要啟用、限定 App、活動期間與上限。不要為了湊點增加不必要消費。"
+        ]
+      ],
+      [
+        "採用估算前的檢查",
+        [
+          "確認已加入 Play Points、使用正確帳號，且購買符合台灣區規則。結帳前預計點數與購買後記錄應優先於估算。",
+          "若付款國家不是台灣，請改用該地區 App 顯示的積點率。"
+        ]
+      ]
+    ],
+    "siteName": "Google Play Points 計算器",
+    "title": "Google Play Points 100 點要花多少？"
+  }
+];
+
 const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
@@ -1166,14 +1460,18 @@ const INTL_ARTICLE_DATES = {
   'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' }
+  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'tw/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' }
 };
 
 const INTL_ARTICLES = [
   ...EN_ARTICLES,
   ...ADDITIONAL_EN_ARTICLES,
   ...KO_ARTICLES,
-  ...TW_ARTICLES
+  ...TW_ARTICLES,
+  ...POINT_VALUE_100_ARTICLES
 ].map((article) => {
   const dates = INTL_ARTICLE_DATES[article.file];
   if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
@@ -1529,13 +1827,17 @@ function localeKeyForArticle(article) {
 
 function getArticleAlternates(article) {
   const slug = path.posix.basename(article.file);
-  return INTL_ARTICLES
+  const alternates = INTL_ARTICLES
     .filter(candidate => path.posix.basename(candidate.file) === slug)
     .map(candidate => ({
       localeKey: localeKeyForArticle(candidate),
       lang: candidate.lang || 'en',
       url: `https://playpoint-sim.com/${candidate.file}`
     }));
+  if (article.jaAlternate) {
+    alternates.unshift({ localeKey: 'ja', lang: 'ja', url: `https://playpoint-sim.com${article.jaAlternate}` });
+  }
+  return alternates;
 }
 
 function renderArticle(article, assetVersions) {
@@ -1630,7 +1932,7 @@ ${jsonLd(schema)}
         <aside class="official-source-note">
             <h2>${escapeHtml(article.officialSourceTitle || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceTitle)}</h2>
             <p>${escapeHtml(article.officialSourceBody || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceBody)}</p>
-            <a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>
+            <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>${article.officialProgramLink ? `\n            <p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
         </aside>
 
         <section class="section">

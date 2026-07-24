@@ -1,0 +1,159 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><meta name="robots" content="index,follow,max-image-preview:large" /><meta name="author" content="かたかた" /><link rel="icon" href="../favicon.svg" type="image/svg+xml" /><title>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</title><meta name="description" content="Google Play Pointsの1ポイントは何円で貯まるかを、日本のステータス別獲得率と商品ごとの丸め方から解説。1ポイントの使う価値との違いも整理します。" /><link rel="canonical" href="https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html" /><meta name="article:category" content="入門" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2026-07-24T00:00:00+09:00" /><meta property="article:modified_time" content="2026-07-24T00:00:00+09:00" /><meta property="og:title" content="Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか" /><meta property="og:description" content="Google Play Pointsの1ポイントは何円で貯まるかを、日本のステータス別獲得率と商品ごとの丸め方から解説。1ポイントの使う価値との違いも整理します。" /><meta property="og:url" content="https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html" /><meta property="og:image" content="https://playpoint-sim.com/articles/ogp/getting-started.png" /><meta property="og:site_name" content="Playポイント計算機" /><meta name="twitter:card" content="summary_large_image" /><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;800&display=swap" rel="stylesheet"><style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f3f6fb;
+            --card: #fff;
+            --text: #172033;
+            --muted: #596579;
+            --brand: #124ea4;
+            --brand-dark: #0b3474;
+            --brand-soft: #eaf2ff;
+            --interaction: #0f7a46;
+            --interaction-hover: #0b6238;
+            --warning: #a85f00;
+            --warning-soft: #fff6e5;
+            --border: #d8e1ee;
+            --radius: 16px;
+        }
+        body {
+            font-family: 'Noto Sans JP', system-ui, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.8;
+        }
+        .main-card {
+            max-width: 860px;
+            margin: 2rem auto;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 18px 50px rgba(18, 42, 75, 0.09);
+            overflow: hidden;
+        }
+        .hero {
+            background: var(--brand-dark);
+            padding: 2.7rem 2.2rem;
+            text-align: left;
+        }
+        .hero-badge {
+            display: inline-block;
+            color: #dceaff;
+            font-size: 0.86rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.75rem;
+        }
+        .hero h1 {
+            color: #fff;
+            font-size: clamp(1.55rem, 4vw, 2.15rem);
+            font-weight: 800;
+            line-height: 1.45;
+            max-width: 720px;
+        }
+        .hero-meta { margin-top: 1rem; color: #dce7f7; font-size: 0.9rem; }
+        .content { padding: 2.2rem; }
+        .answer-box {
+            padding: 1.5rem;
+            background: var(--brand-soft);
+            border-left: 5px solid var(--brand);
+            border-radius: 10px;
+            margin-bottom: 2.2rem;
+        }
+        .answer-box h2 { font-size: 1.2rem; margin-bottom: 0.7rem; color: var(--brand-dark); }
+        .answer-box p + p { margin-top: 0.6rem; }
+        .section { margin-bottom: 2.5rem; }
+        .section h2 {
+            font-size: 1.3rem;
+            color: var(--brand-dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.55rem;
+            border-bottom: 2px solid var(--border);
+        }
+        .section h3 { font-size: 1.05rem; margin: 1.4rem 0 0.55rem; }
+        .section p { margin-bottom: 1rem; }
+        .section ul, .section ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+        .section li { margin-bottom: 0.5rem; }
+        .formula {
+            background: #f7f9fc;
+            border: 1px solid var(--border);
+            padding: 1rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        .table-wrap { overflow-x: auto; margin: 1rem 0 1.2rem; }
+        table { width: 100%; border-collapse: collapse; min-width: 590px; }
+        th, td { border: 1px solid var(--border); padding: 0.75rem; text-align: left; }
+        th { background: var(--brand-soft); color: var(--brand-dark); }
+        .note {
+            background: var(--warning-soft);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            padding: 1rem 1.1rem;
+            color: #693c00;
+        }
+        .cta-box {
+            background: var(--brand-dark);
+            border-radius: 14px;
+            padding: 1.8rem;
+            text-align: center;
+            color: #fff;
+            margin: 2.2rem 0;
+        }
+        .cta-box h2 { color: #fff; border: 0; padding: 0; margin-bottom: 0.55rem; }
+        .cta-box p { color: #e1ebf8; margin-bottom: 1.1rem; }
+        .cta-btn {
+            display: inline-block;
+            background: var(--interaction);
+            color: #fff;
+            padding: 0.9rem 1.45rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 800;
+            min-height: 48px;
+        }
+        .cta-btn:hover { background: var(--interaction-hover); }
+        .related-links-section a, .article-footer a, .source-list a { color: var(--brand); }
+        .article-footer {
+            padding: 1.5rem 2.2rem;
+            background: #f7f9fc;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+        .small { font-size: 0.88rem; color: var(--muted); }
+        @media (max-width: 600px) {
+            .main-card { margin: 0; border: 0; border-radius: 0; }
+            .hero { padding: 2rem 1.3rem; }
+            .content { padding: 1.4rem; }
+            .article-footer { padding: 1.4rem; }
+        }
+    </style><link rel="stylesheet" href="./article-shared.css?v=20260707_1401a" /></head><body><main class="main-card"><header class="hero"><span class="hero-badge">PLAY POINTS 1ポイント計算</span><h1>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</h1><p class="hero-meta">2026/07/24 更新 ・ 読了 5分</p></header><article class="content"><section class="answer-box" aria-labelledby="quick-answer"><h2 id="quick-answer">結論：ブロンズなら100円で約1ポイント</h2><p>日本のブロンズ会員は通常、対象商品の<strong>税抜100円ごとに1ポイント</strong>が基準です。上位ステータスは100円ごとの獲得率が上がります。</p><p>ただし、<strong>1ポイントが常に1円分という意味ではありません</strong>。獲得に必要な金額と、交換時に使える価値は別々に確認します。</p></section><section class="section"><h2>100円で何ポイント貯まる？</h2><div class="table-wrap"><table><thead><tr><th>ステータス</th><th>通常獲得率</th><th>100円の単純計算</th></tr></thead><tbody><tr><td>ブロンズ</td><td>100円ごとに1ポイント</td><td>1ポイント</td></tr><tr><td>シルバー</td><td>100円ごとに1.25ポイント</td><td>1.25ポイント</td></tr><tr><td>ゴールド</td><td>100円ごとに1.5ポイント</td><td>1.5ポイント</td></tr><tr><td>プラチナ</td><td>100円ごとに1.75ポイント</td><td>1.75ポイント</td></tr><tr><td>ダイヤモンド</td><td>100円ごとに2ポイント</td><td>2ポイント</td></tr></tbody></table></div><p class="note">実際は商品ごとに最も近い整数へ丸められ、税金は対象外です。合計額だけで計算した結果と数ポイントずれる場合があります。</p></section><section class="section"><h2>1ポイントを貯める最低金額は単純に決められない</h2><p>「ブロンズなら100円」は分かりやすい目安ですが、Googleは商品ごとに計算して整数へ丸めます。購入価格やステータスによっては100円未満の商品でも1ポイントになる場合があり、対象外の支払いなら金額があっても付与されません。</p><div class="formula">概算ポイント ＝ 対象商品の税抜価格 ÷ 100 × ステータス獲得率</div><p>最低金額を狙うより、購入直前に表示される獲得予定ポイントを確認する方が正確です。</p></section><section class="section"><h2>1ポイントの使う価値は交換先で変わる</h2><p>Play Pointsは現金ではなく、ゲーム内アイテム、クーポン、Google Playクレジットなどに交換できます。すべての交換先に共通する「1ポイント＝○円」はありません。</p><ol><li>Google Playストアでプロフィール画像を開く</li><li>Play Pointsを選ぶ</li><li>「使う」で必要ポイントと条件を見る</li></ol><p>表示金額だけでなく、対象アプリ、最低購入額、期限、本当に使う特典かを確認してください。</p></section><section class="section"><h2>Googleストアポイントとは別の制度</h2><p>検索時に混同しやすい「Googleストアポイント」は、端末などを扱うGoogle Store側の特典です。Google Play Pointsとは獲得場所・残高・利用先が異なるため、Playストア内のPlay Points画面を基準にしてください。</p></section><section class="section"><h2>1ポイント計算でよくある誤差</h2><ul><li>税込価格をそのまま100で割っている</li><li>複数商品を合計してから丸めている</li><li>表示中のキャンペーンが自分の購入にも適用されると思い込む</li><li>別のGoogleアカウントで購入している</li></ul><p>計算機は目安作りに使い、最終的な付与数は購入画面とポイント履歴で確認してください。</p></section><section class="cta-box" aria-labelledby="calculator-cta"><h2 id="calculator-cta">自分の金額で獲得ポイントを逆算する</h2><p>購入額、現在ステータス、キャンペーン倍率を入れて概算できます。</p><a class="cta-btn" href="../?mode=reverse&amp;utm_source=article_1_point&amp;utm_medium=internal&amp;utm_campaign=cta">Playポイント計算機を開く</a></section><section class="section source-list"><h2>公式情報</h2><ul><li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play Pointsを獲得・確認する方法（Google公式）</a></li><li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">日本の等級と獲得率（Google公式）</a></li></ul><p class="small">制度や表示される特典は変更される場合があります。最終確認日は2026年7月24日です。</p></section><section class="section related-links-section"><h2>あわせて読みたい</h2><ul><li><a href="./2026-07-24-play-points-100-value.html">100ポイントの必要額と使う価値</a></li><li><a href="./2026-07-24-play-points-500-1000-value.html">500・1,000ポイントの必要額早見表</a></li><li><a href="./2025-12-25-best-use.html">Play Pointsの使い道を比較</a></li></ul></section></article><aside class="author-box" aria-label="この記事の著者"><p class="author-box-label">この記事を書いた人</p><p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p><p>Google Play公式情報と実際の計算条件を照合し、前提と例外を分けて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p></aside><nav id="article-nav" class="article-nav" style="margin:0 2rem;"></nav><footer class="article-footer"><p><a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ <a href="https://playpoint-sim.com/">計算機トップへ</a></p><p class="small" style="margin-top:.8rem;">※本記事は購入を勧めるものではありません。最新条件はGoogle Playの画面と公式ヘルプでご確認ください。</p></footer></main><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html"
+  },
+  "headline": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
+  "description": "Google Play Pointsの1ポイントは何円で貯まるかを、日本のステータス別獲得率と商品ごとの丸め方から解説。1ポイントの使う価値との違いも整理します。",
+  "inLanguage": "ja",
+  "datePublished": "2026-07-24",
+  "dateModified": "2026-07-24",
+  "image": "https://playpoint-sim.com/articles/ogp/getting-started.png",
+  "author": {
+    "@type": "Person",
+    "name": "かたかた",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Playポイント計算機",
+    "url": "https://playpoint-sim.com/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://playpoint-sim.com/favicon.svg"
+    }
+  }
+}</script><script src="../blog/article.js?v=20260724_1005a"></script><script src="../blog/components.js?v=20260621a"></script></body></html>
