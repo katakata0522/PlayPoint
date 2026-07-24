@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Points 所需消費計算器｜100、500、1,000 點</title>
+    <meta name="description" content="依台灣 Google Play Points 等級與活動倍率，估算累積 100、500 或 1,000 點所需的消費金額。">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://playpoint-sim.com/tw/points-cost/">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/points-cost/">
+    <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/points-cost/">
+    <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/points-cost/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/points-cost/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/points-cost.css?v=20260724a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Google Play Points 所需消費計算器｜100、500、1,000 點">
+    <meta property="og:description" content="依台灣 Google Play Points 等級與活動倍率，估算累積 100、500 或 1,000 點所需的消費金額。">
+    <meta property="og:url" content="https://playpoint-sim.com/tw/points-cost/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Google Play Points 所需消費計算器",
+  "url": "https://playpoint-sim.com/tw/points-cost/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "zh-TW",
+  "isAccessibleForFree": true,
+  "dateModified": "2026-07-24",
+  "author": {
+    "@type": "Person",
+    "name": "Katakata",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "1 點一定等於 NT$1 嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不是。本頁計算的是累積點數所需的消費，兌換價值依帳號中顯示的獎勵而定。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "什麼時候可以輸入活動倍率？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "只有目標 App、商品、期間、啟用條件與上限都明確適用時才輸入。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "實際點數會和結果完全相同嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不一定。每筆購買的四捨五入、稅金與不適用交易都可能造成差異。"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="points-cost-page" data-region="TW">
+<header class="points-cost-header">
+  <div class="points-cost-shell">
+    <nav aria-label="Language and site navigation">
+      <a href="/points-cost/">日本語</a>
+      <a href="/en/points-cost/">English</a>
+      <a href="/ko/points-cost/">한국어</a>
+      <a href="/tw/points-cost/">繁體中文</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="points-cost-hero">
+    <div class="points-cost-shell">
+      <div class="points-cost-kicker">點數 → 所需消費</div>
+      <h1>計算累積 100、500、1,000 點所需金額</h1>
+      <p>輸入目標點數、目前等級與已確認的活動倍率，即可估算台灣帳號所需的適用消費金額，不必先設定升級目標。</p>
+    </div>
+  </section>
+  <div class="points-cost-shell">
+    <div class="points-cost-grid">
+      <section class="points-cost-card" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">從目標點數估算消費</h2>
+        <form id="points-cost-form" class="points-cost-form">
+          <label for="points-target">想累積的點數</label>
+          <input id="points-target" name="points" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" required>
+          <div class="points-cost-presets" aria-label="常用目標">
+            <button type="button" data-points-preset="100">100 pt</button>
+            <button type="button" data-points-preset="500">500 pt</button>
+            <button type="button" data-points-preset="1000">1,000 pt</button>
+          </div>
+          <label for="points-status">目前等級</label>
+          <select id="points-status" name="status"></select>
+          <label for="points-multiplier">活動倍率</label>
+          <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
+          <button class="points-cost-submit" type="submit">計算預估消費</button>
+        </form>
+        <div id="points-cost-result" class="points-cost-result" aria-live="polite"></div>
+        <button id="copy-points-cost-link" class="points-cost-copy" type="button" data-default-label="複製本次計算連結" hidden>複製本次計算連結</button>
+      </section>
+      <section class="points-cost-card" aria-labelledby="quick-table-title">
+        <h2 id="quick-table-title">100 點所需金額速查</h2>
+        <table class="points-cost-table">
+          <thead><tr><th>等級</th><th>基本積點率</th><th>預估所需金額</th></tr></thead>
+          <tbody>
+              <tr><td>銅級</td><td>1 pt / NT$30</td><td>NT$3,000</td></tr>
+              <tr><td>銀級</td><td>1.25 pt / NT$30</td><td>NT$2,400</td></tr>
+              <tr><td>黃金級</td><td>1.5 pt / NT$30</td><td>約 NT$2,000</td></tr>
+              <tr><td>白金級</td><td>1.75 pt / NT$30</td><td>約 NT$1,715</td></tr>
+              <tr><td>鑽石級</td><td>2 pt / NT$30</td><td>NT$1,500</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+    <article class="points-cost-card points-cost-content">
+      <section>
+        <h2>這個計算器可以回答</h2>
+        <ul>
+            <li>累積 100、500、1,000 點或任意點數所需的適用消費</li>
+            <li>銅級到鑽石級之間的基本積點率差異</li>
+            <li>僅在明確符合資格時比較 2 倍、3 倍活動</li>
+        </ul>
+      </section>
+      <section class="points-cost-note">
+        <h2>採用估算前請確認</h2>
+        <p>Google Play 會依每筆商品價格計算並將點數四捨五入為整數，稅金不列入積點。此處把目標視為合計估算，實際結果仍可能因商品價格與適用資格而不同。</p>
+      </section>
+      <section>
+        <h2>常見問題</h2>
+          <h3>1 點一定等於 NT$1 嗎？</h3>
+          <p>不是。本頁計算的是累積點數所需的消費，兌換價值依帳號中顯示的獎勵而定。</p>
+          <h3>什麼時候可以輸入活動倍率？</h3>
+          <p>只有目標 App、商品、期間、啟用條件與上限都明確適用時才輸入。</p>
+          <h3>實際點數會和結果完全相同嗎？</h3>
+          <p>不一定。每筆購買的四捨五入、稅金與不適用交易都可能造成差異。</p>
+      </section>
+      <div class="points-cost-links">
+        <a href="/">升級金額計算器</a>
+        <a class="secondary" href="/tw/articles/">繁體中文指南</a>
+        <a class="secondary" href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DTW&hl=zh-Hant" target="_blank" rel="noopener noreferrer">Google Play 官方等級與積點率</a>
+      </div>
+    </article>
+  </div>
+</main>
+<footer class="points-cost-footer">
+  <div class="points-cost-shell">
+    <p>本頁為非官方估算工具。購買前請以 Google Play 官方畫面為準。</p>
+    <p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/author/katakata.html">Author</a></p>
+  </div>
+</footer>
+<script type="module" src="/js/points-cost.js?v=20260724a"></script>
+<script src="/js/third-party.js?v=20260713_0747a" defer></script>
+</body>
+</html>

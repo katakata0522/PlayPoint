@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Points Cost Calculator | 100, 500 or 1,000 Points</title>
+    <meta name="description" content="Estimate the eligible spend needed to earn 100, 500 or 1,000 Google Play Points in the US by level and promotion multiplier.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://playpoint-sim.com/en/points-cost/">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/points-cost/">
+    <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/points-cost/">
+    <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/points-cost/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/points-cost/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/points-cost.css?v=20260724a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Google Play Points Cost Calculator | 100, 500 or 1,000 Points">
+    <meta property="og:description" content="Estimate the eligible spend needed to earn 100, 500 or 1,000 Google Play Points in the US by level and promotion multiplier.">
+    <meta property="og:url" content="https://playpoint-sim.com/en/points-cost/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Google Play Points Cost Calculator",
+  "url": "https://playpoint-sim.com/en/points-cost/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "dateModified": "2026-07-24",
+  "author": {
+    "@type": "Person",
+    "name": "Katakata",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is one Play Point always worth $1?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. This page estimates spending needed to earn points. Redemption value depends on the reward shown in your account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "When should I enter a promotion multiplier?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only when the app, item, dates, activation requirement and bonus cap clearly cover the planned purchase."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will I receive the exact result?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not necessarily. Per-item rounding, taxes and ineligible transactions can change the total."
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="points-cost-page" data-region="US">
+<header class="points-cost-header">
+  <div class="points-cost-shell">
+    <nav aria-label="Language and site navigation">
+      <a href="/points-cost/">日本語</a>
+      <a href="/en/points-cost/">English</a>
+      <a href="/ko/points-cost/">한국어</a>
+      <a href="/tw/points-cost/">繁體中文</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="points-cost-hero">
+    <div class="points-cost-shell">
+      <div class="points-cost-kicker">Points → eligible spend</div>
+      <h1>Calculate the spend needed for 100, 500 or 1,000 Play Points</h1>
+      <p>Enter a point target, your current level, and a confirmed promotion multiplier. This calculator estimates eligible US spending without requiring a level-up target.</p>
+    </div>
+  </section>
+  <div class="points-cost-shell">
+    <div class="points-cost-grid">
+      <section class="points-cost-card" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">Estimate spend from a point target</h2>
+        <form id="points-cost-form" class="points-cost-form">
+          <label for="points-target">Points you want to earn</label>
+          <input id="points-target" name="points" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" required>
+          <div class="points-cost-presets" aria-label="Common targets">
+            <button type="button" data-points-preset="100">100 pt</button>
+            <button type="button" data-points-preset="500">500 pt</button>
+            <button type="button" data-points-preset="1000">1,000 pt</button>
+          </div>
+          <label for="points-status">Current level</label>
+          <select id="points-status" name="status"></select>
+          <label for="points-multiplier">Promotion multiplier</label>
+          <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
+          <button class="points-cost-submit" type="submit">Calculate estimated spend</button>
+        </form>
+        <div id="points-cost-result" class="points-cost-result" aria-live="polite"></div>
+        <button id="copy-points-cost-link" class="points-cost-copy" type="button" data-default-label="Copy this calculation link" hidden>Copy this calculation link</button>
+      </section>
+      <section class="points-cost-card" aria-labelledby="quick-table-title">
+        <h2 id="quick-table-title">Estimated spend for 100 points</h2>
+        <table class="points-cost-table">
+          <thead><tr><th>Level</th><th>Base rate</th><th>Estimated spend</th></tr></thead>
+          <tbody>
+              <tr><td>Bronze</td><td>1 pt / $1</td><td>$100.00</td></tr>
+              <tr><td>Silver</td><td>1.1 pt / $1</td><td>$90.91</td></tr>
+              <tr><td>Gold</td><td>1.2 pt / $1</td><td>$83.34</td></tr>
+              <tr><td>Platinum</td><td>1.4 pt / $1</td><td>$71.43</td></tr>
+              <tr><td>Diamond</td><td>1.6 pt / $1</td><td>$62.50</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+    <article class="points-cost-card points-cost-content">
+      <section>
+        <h2>What this calculator answers</h2>
+        <ul>
+            <li>Eligible spend for any point target, including 100, 500 and 1,000 points</li>
+            <li>The difference between Bronze, Silver, Gold, Platinum and Diamond earn rates</li>
+            <li>A 2x or 3x comparison only when a purchase clearly qualifies</li>
+        </ul>
+      </section>
+      <section class="points-cost-note">
+        <h2>Check before using the estimate</h2>
+        <p>Google says points are calculated from the item price and rounded to the nearest whole point for each item. Taxes do not earn points. Because the estimate treats the target as one total, actual points can differ with item prices and eligibility.</p>
+      </section>
+      <section>
+        <h2>FAQ</h2>
+          <h3>Is one Play Point always worth $1?</h3>
+          <p>No. This page estimates spending needed to earn points. Redemption value depends on the reward shown in your account.</p>
+          <h3>When should I enter a promotion multiplier?</h3>
+          <p>Only when the app, item, dates, activation requirement and bonus cap clearly cover the planned purchase.</p>
+          <h3>Will I receive the exact result?</h3>
+          <p>Not necessarily. Per-item rounding, taxes and ineligible transactions can change the total.</p>
+      </section>
+      <div class="points-cost-links">
+        <a href="/">Level-up calculator</a>
+        <a class="secondary" href="/en/articles/">English guides</a>
+        <a class="secondary" href="https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DUS&hl=en" target="_blank" rel="noopener noreferrer">Official Google Play earning rules</a>
+      </div>
+    </article>
+  </div>
+</main>
+<footer class="points-cost-footer">
+  <div class="points-cost-shell">
+    <p>Unofficial planning estimate. Confirm current rules in Google Play before purchasing.</p>
+    <p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/author/katakata.html">Author</a></p>
+  </div>
+</footer>
+<script type="module" src="/js/points-cost.js?v=20260724a"></script>
+<script src="/js/third-party.js?v=20260713_0747a" defer></script>
+</body>
+</html>

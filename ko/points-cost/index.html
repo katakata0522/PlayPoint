@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Points 필요 금액 계산기 | 100·500·1,000포인트</title>
+    <meta name="description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 캠페인 배율로 계산합니다.">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://playpoint-sim.com/ko/points-cost/">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/points-cost/">
+    <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/points-cost/">
+    <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/points-cost/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/points-cost/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/points-cost.css?v=20260724a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Google Play Points 필요 금액 계산기 | 100·500·1,000포인트">
+    <meta property="og:description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 캠페인 배율로 계산합니다.">
+    <meta property="og:url" content="https://playpoint-sim.com/ko/points-cost/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Google Play Points 필요 금액 계산기",
+  "url": "https://playpoint-sim.com/ko/points-cost/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ko",
+  "isAccessibleForFree": true,
+  "dateModified": "2026-07-24",
+  "author": {
+    "@type": "Person",
+    "name": "Katakata",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "1포인트는 항상 1원인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아닙니다. 이 페이지는 포인트 적립에 필요한 결제액을 계산합니다. 사용 가치는 계정에 표시되는 리워드에 따라 다릅니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "캠페인 배율은 언제 입력하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "대상 앱, 기간, 활성화 조건, 적립 상한이 계획한 결제에 적용되는 경우에만 입력하세요."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "계산 결과와 실제 적립이 같나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "구매 건별 반올림, 세금, 대상 제외 결제로 인해 달라질 수 있습니다."
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="points-cost-page" data-region="KR">
+<header class="points-cost-header">
+  <div class="points-cost-shell">
+    <nav aria-label="Language and site navigation">
+      <a href="/points-cost/">日本語</a>
+      <a href="/en/points-cost/">English</a>
+      <a href="/ko/points-cost/">한국어</a>
+      <a href="/tw/points-cost/">繁體中文</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="points-cost-hero">
+    <div class="points-cost-shell">
+      <div class="points-cost-kicker">포인트 → 필요 결제액</div>
+      <h1>100·500·1,000포인트 적립에 필요한 금액 계산</h1>
+      <p>원하는 포인트, 현재 등급, 확인된 캠페인 배율을 입력하세요. 등급 달성 목표가 없어도 한국 기준 적립 예상액을 바로 계산할 수 있습니다.</p>
+    </div>
+  </section>
+  <div class="points-cost-shell">
+    <div class="points-cost-grid">
+      <section class="points-cost-card" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">목표 포인트로 필요 금액 계산</h2>
+        <form id="points-cost-form" class="points-cost-form">
+          <label for="points-target">적립하고 싶은 포인트</label>
+          <input id="points-target" name="points" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" required>
+          <div class="points-cost-presets" aria-label="자주 쓰는 목표">
+            <button type="button" data-points-preset="100">100 pt</button>
+            <button type="button" data-points-preset="500">500 pt</button>
+            <button type="button" data-points-preset="1000">1,000 pt</button>
+          </div>
+          <label for="points-status">현재 등급</label>
+          <select id="points-status" name="status"></select>
+          <label for="points-multiplier">캠페인 배율</label>
+          <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
+          <button class="points-cost-submit" type="submit">예상 필요 금액 계산</button>
+        </form>
+        <div id="points-cost-result" class="points-cost-result" aria-live="polite"></div>
+        <button id="copy-points-cost-link" class="points-cost-copy" type="button" data-default-label="이 계산 링크 복사" hidden>이 계산 링크 복사</button>
+      </section>
+      <section class="points-cost-card" aria-labelledby="quick-table-title">
+        <h2 id="quick-table-title">100포인트 필요 금액 빠른 표</h2>
+        <table class="points-cost-table">
+          <thead><tr><th>등급</th><th>기본 적립률</th><th>예상 필요 금액</th></tr></thead>
+          <tbody>
+              <tr><td>브론즈</td><td>1 pt / 1,000원</td><td>100,000원</td></tr>
+              <tr><td>실버</td><td>1.1 pt / 1,000원</td><td>약 90,910원</td></tr>
+              <tr><td>골드</td><td>1.3 pt / 1,000원</td><td>약 76,924원</td></tr>
+              <tr><td>플래티넘</td><td>1.6 pt / 1,000원</td><td>62,500원</td></tr>
+              <tr><td>다이아몬드</td><td>2 pt / 1,000원</td><td>50,000원</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+    <article class="points-cost-card points-cost-content">
+      <section>
+        <h2>이 계산으로 확인할 수 있는 것</h2>
+        <ul>
+            <li>100·500·1,000포인트 등 원하는 포인트에 필요한 대상 결제액</li>
+            <li>브론즈부터 다이아몬드까지 등급별 기본 적립률 차이</li>
+            <li>대상 조건이 명확한 경우의 2배·3배 캠페인 비교</li>
+        </ul>
+      </section>
+      <section class="points-cost-note">
+        <h2>계산 전 확인</h2>
+        <p>Google Play는 상품 가격에 적립률을 적용한 뒤 구매 건별로 포인트를 반올림합니다. 세금과 적립 대상이 아닌 결제는 포함되지 않습니다. 이 결과는 합산 이론값이므로 최종 결제 화면과 포인트 내역을 확인하세요.</p>
+      </section>
+      <section>
+        <h2>자주 묻는 질문</h2>
+          <h3>1포인트는 항상 1원인가요?</h3>
+          <p>아닙니다. 이 페이지는 포인트 적립에 필요한 결제액을 계산합니다. 사용 가치는 계정에 표시되는 리워드에 따라 다릅니다.</p>
+          <h3>캠페인 배율은 언제 입력하나요?</h3>
+          <p>대상 앱, 기간, 활성화 조건, 적립 상한이 계획한 결제에 적용되는 경우에만 입력하세요.</p>
+          <h3>계산 결과와 실제 적립이 같나요?</h3>
+          <p>구매 건별 반올림, 세금, 대상 제외 결제로 인해 달라질 수 있습니다.</p>
+      </section>
+      <div class="points-cost-links">
+        <a href="/">등급 달성 계산기</a>
+        <a class="secondary" href="/ko/articles/">한국어 가이드</a>
+        <a class="secondary" href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&hl=ko" target="_blank" rel="noopener noreferrer">Google Play 공식 등급 및 적립률</a>
+      </div>
+    </article>
+  </div>
+</main>
+<footer class="points-cost-footer">
+  <div class="points-cost-shell">
+    <p>비공식 예상 계산기입니다. 결제 전 Google Play 공식 화면에서 최신 조건을 확인하세요.</p>
+    <p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/author/katakata.html">Author</a></p>
+  </div>
+</footer>
+<script type="module" src="/js/points-cost.js?v=20260724a"></script>
+<script src="/js/third-party.js?v=20260713_0747a" defer></script>
+</body>
+</html>
