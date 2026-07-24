@@ -106,7 +106,7 @@ async function checkArticle(url) {
   assertIncludes(body, /<link\s+rel="canonical"\s+href="[^"]+"/i, `${url}: article canonical missing`);
   assertIncludes(body, /<script\s+type="application\/ld\+json">/i, `${url}: article structured data missing`);
   if (url.includes(`${BASE_URL}/articles/`)) {
-    assertIncludes(body, 'data-ad-client', `${url}: article ad client missing`);
+    assertIncludes(body, /<script\s+src="\.\.\/blog\/article\.js\?v=[^"]+"><\/script>/i, `${url}: shared article script missing`);
   }
 }
 
