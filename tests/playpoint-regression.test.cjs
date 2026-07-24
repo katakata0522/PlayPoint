@@ -98,7 +98,9 @@ function loadCalculatorContext(dateClass = Date) {
         PP_STATE: PP_APP.STATE,
         populateStatusSelects: PP_APP.CALC.populateStatusSelects.bind(PP_APP.CALC),
         updateBaseRateAndTarget: PP_APP.CALC.updateBaseRateAndTarget.bind(PP_APP.CALC),
+        getMaxNeededPointsForTarget: PP_APP.CALC.getMaxNeededPointsForTarget.bind(PP_APP.CALC),
         getRemainingMonths: PP_APP.CALC.getRemainingMonths.bind(PP_APP.CALC),
+        getNextFridayCalendarWindow,
         getRelatedArticles: PP_APP.CALC.getRelatedArticles.bind(PP_APP.CALC),
         getDecisionLinks: PP_APP.CALC.getDecisionLinks.bind(PP_APP.CALC),
         computeMainResult: PP_APP.CALC_PURE.computeMainResult.bind(PP_APP.CALC_PURE),
@@ -148,6 +150,32 @@ test('通常計算では現在ステータスから次のランクだけを目�
   assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 1);
   assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'シルバー');
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '250');
+});
+
+test('前年からランクを引き継いだ場合も目標閾値全体を入力できる', () => {
+  const { PP_REGION_CONFIGS, getMaxNeededPointsForTarget } = loadCalculatorContext();
+  const config = PP_REGION_CONFIGS.JP;
+
+  assert.strictEqual(getMaxNeededPointsForTarget(config, 1.5, 4000), 4000);
+  assert.strictEqual(getMaxNeededPointsForTarget(config, 1.75, 15000), 15000);
+  assert.strictEqual(getMaxNeededPointsForTarget(config, 1.5, 1000), 1000);
+});
+
+test('金曜の開始時刻を過ぎたカレンダー登録は翌週を使う', () => {
+  const { getNextFridayCalendarWindow } = loadCalculatorContext();
+
+  assert.strictEqual(
+    getNextFridayCalendarWindow(false, new Date('2026-07-24T00:30:00Z')).start,
+    '20260724T010000Z'
+  );
+  assert.strictEqual(
+    getNextFridayCalendarWindow(false, new Date('2026-07-24T01:30:00Z')).start,
+    '20260731T010000Z'
+  );
+  assert.strictEqual(
+    getNextFridayCalendarWindow(true, new Date('2026-07-24T14:30:00Z')).start,
+    '20260731T140000Z'
+  );
 });
 
 test('月平均の分母は年末までの残日数から切り上げ月数で計算する', () => {
