@@ -1,4 +1,11 @@
+'use strict';
+
+const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
+
 const expectedDeployRevision = process.env.EXPECTED_DEPLOY_REVISION;
+const HTTP_CONCURRENCY = 4;
+const MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 1500;
 
 const targets = [
   ...(expectedDeployRevision ? [{
@@ -51,8 +58,6 @@ const targets = [
   { url: 'https://playpoint-sim.com/ogp.png', contentType: 'image/png', minimumBytes: 10000 }
 ];
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 async function verifyTarget(target) {
   const response = await fetch(`${target.url}?smoke=${Date.now()}`, {
     headers: { 'cache-control': 'no-cache' },
@@ -84,20 +89,38 @@ async function verifyTarget(target) {
   }
 }
 
-async function main() {
-  let lastError;
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
-    try {
-      for (const target of targets) await verifyTarget(target);
-      console.log(`Production smoke test passed (${targets.length} targets).`);
-      return;
-    } catch (error) {
-      lastError = error;
-      console.warn(`Smoke test attempt ${attempt}/5 failed: ${error.message}`);
-      if (attempt < 5) await wait(5000);
+async function verifyTargetWithRetry(target) {
+  return retry(() => verifyTarget(target), {
+    attempts: MAX_ATTEMPTS,
+    delayMs: RETRY_DELAY_MS,
+    onRetry: (error, attempt, attempts) => {
+      console.warn(`Retry ${attempt + 1}/${attempts} - ${error.message}`);
     }
+  });
+}
+
+async function main() {
+  const revisionTargets = expectedDeployRevision ? targets.slice(0, 1) : [];
+  const contentTargets = expectedDeployRevision ? targets.slice(1) : targets;
+
+  for (const target of revisionTargets) {
+    await verifyTargetWithRetry(target);
+    console.log(`ok - ${target.url}`);
   }
-  throw lastError;
+
+  const results = await mapWithConcurrency(
+    contentTargets,
+    HTTP_CONCURRENCY,
+    verifyTargetWithRetry
+  );
+  const failures = results.filter(result => result.status === 'rejected');
+
+  if (failures.length > 0) {
+    failures.forEach(({ item, reason }) => console.error(`not ok - ${item.url}: ${reason.message}`));
+    throw new Error(`Production smoke test failed (${failures.length}/${targets.length} targets).`);
+  }
+
+  console.log(`Production smoke test passed (${targets.length} targets, concurrency ${HTTP_CONCURRENCY}).`);
 }
 
 main().catch((error) => {
