@@ -1,5 +1,53 @@
 [
   {
+    "id": "points-value-1",
+    "title": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
+    "date": "2026-07-24",
+    "modified": "2026-07-24",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "1ポイント",
+      "獲得率",
+      "必要金額"
+    ],
+    "description": "Google Play Pointsの1ポイントは何円で貯まるかを、日本のステータス別獲得率と商品ごとの丸め方から解説。1ポイントの使う価値との違いも整理します。",
+    "file": "../articles/2026-07-24-play-points-1-value.html",
+    "thumbnail": "../articles/ogp/getting-started.png"
+  },
+  {
+    "id": "points-value-500-1000",
+    "title": "Google Play Points 500・1,000ポイントはいくら？必要額早見表",
+    "date": "2026-07-24",
+    "modified": "2026-07-24",
+    "category": "攻略",
+    "tags": [
+      "Play Points",
+      "500ポイント",
+      "1000ポイント",
+      "必要金額"
+    ],
+    "description": "Google Play Pointsの500・1,000ポイントを貯めるのに必要な金額を、日本のブロンズからダイヤモンドまで一覧比較。2倍・3倍時の見方も解説します。",
+    "file": "../articles/2026-07-24-play-points-500-1000-value.html",
+    "thumbnail": "../articles/ogp/diamond-worth-it.png"
+  },
+  {
+    "id": "earn-play-points-free",
+    "title": "Google Play Pointsを無料で貯める方法｜正規の特典と注意点",
+    "date": "2026-07-24",
+    "modified": "2026-07-24",
+    "category": "活用術",
+    "tags": [
+      "Play Points",
+      "無料",
+      "ウィークリーリワード",
+      "キャンペーン"
+    ],
+    "description": "Google Play Pointsを無料または追加購入なしで貯める正規の方法を整理。ウィークリーリワード、対象アプリ特典、キャンペーンの確認手順と危険な情報の見分け方を解説します。",
+    "file": "../articles/2026-07-24-earn-play-points-free.html",
+    "thumbnail": "../articles/ogp/weekly-reward.png"
+  },
+  {
     "id": "points-value-100",
     "title": "Google Play Points 100ポイントはいくら？何円で貯まるか計算",
     "date": "2026-07-24",
