@@ -22,43 +22,15 @@ jobs:
     # 本番反映はmainの内容だけを対象にする
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           persist-credentials: false
 
-      - name: Run regression tests
-        run: |
-          node .github/scripts/verify-js-syntax.cjs
-          node .github/scripts/verify-build-output.cjs
-          node tests/playpoint-regression.test.cjs
-          node tests/playpoint-nine-fixes.test.cjs
-          node tests/kindle-tracker-logic.test.cjs
-
-      - name: Verify build outputs
-        run: |
-          for dir in en ko tw; do
-            if [ ! -f "${dir}/index.html" ]; then
-              echo "ERROR: ${dir}/index.html が生成されていません。ビルドが失敗した可能性があります。"
-              exit 1
-            fi
-            echo "OK: ${dir}/index.html が存在します"
-          done
-
-      - name: Verify ads.txt
-        run: node .github/scripts/check-ads-txt.cjs
-
-      - name: Minify assets
-        run: node .github/scripts/minify.cjs
-
-      - name: Verify minified assets
-        run: |
-          node .github/scripts/verify-js-syntax.cjs
-          node tests/playpoint-regression.test.cjs
-          node tests/playpoint-nine-fixes.test.cjs
-          node tests/kindle-tracker-logic.test.cjs
+      - name: Run complete preflight and prepare deploy assets
+        run: node .github/scripts/preflight.cjs --prepare-deploy
 
       - name: Setup SSH
         run: |
