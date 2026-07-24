@@ -27,7 +27,8 @@
     ],
     "description": "Google Playギフトコードを楽天市場・コンビニ・決済還元で購入する前に、還元上限、対象外条件、期限、必要額を確認する方法を解説します。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
-    "thumbnail": "../articles/ogp/discount-gift-cards.png"
+    "thumbnail": "../articles/ogp/discount-gift-cards.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "play-points-reflection-timing",
@@ -42,7 +43,8 @@
     ],
     "description": "Play Pointsが反映されない時は、購入状態・ポイント履歴・購入アカウント・参加時期を順に確認。端末による遅れや問い合わせ前に残す情報も解説します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
-    "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png"
+    "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "multiple-accounts",
@@ -57,7 +59,8 @@
     ],
     "description": "Google Play Pointsは複数のGoogleアカウント間で合算・移動できません。購入アカウントの確認方法、ポイント分散がランクへ与える影響を解説します。",
     "file": "../articles/2025-12-25-multiple-accounts.html",
-    "thumbnail": "../articles/ogp/multiple-accounts.png"
+    "thumbnail": "../articles/ogp/multiple-accounts.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "play-games",
@@ -72,7 +75,8 @@
     ],
     "description": "Google Play GamesとPlay Pointsの役割の違い、PC版を含む連携、遊ぶだけでポイントが貯まる例外条件をGoogle公式情報に沿って解説します。",
     "file": "../articles/2025-12-25-play-games.html",
-    "thumbnail": "../articles/ogp/play-games.png"
+    "thumbnail": "../articles/ogp/play-games.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "movies-books",
@@ -87,7 +91,8 @@
     ],
     "description": "書籍、有料アプリ、アプリ内定期購入、Androidから契約したGoogle OneでPlay Pointsが貯まる条件と購入前後の確認方法を解説します。",
     "file": "../articles/2025-12-25-movies-books.html",
-    "thumbnail": "../articles/ogp/movies-books.png"
+    "thumbnail": "../articles/ogp/movies-books.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "expiration",
@@ -102,7 +107,8 @@
     ],
     "description": "Google Play Pointsは最後の獲得・使用から1年で失効します。期限の確認方法、ランク進捗や交換後クレジットとの違い、失効対策を解説します。",
     "file": "../articles/2025-12-25-expiration.html",
-    "thumbnail": "../articles/ogp/expiration.png"
+    "thumbnail": "../articles/ogp/expiration.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "promo-code",
@@ -117,7 +123,8 @@
     ],
     "description": "プロモコードや割引利用時のPlay Pointsは特典条件で異なります。決済前の支払い額、併用条件、購入後のポイント履歴を確認する手順を解説します。",
     "file": "../articles/2025-12-25-promo-code.html",
-    "thumbnail": "../articles/ogp/promo-code.png"
+    "thumbnail": "../articles/ogp/promo-code.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "check-balance",
@@ -132,7 +139,8 @@
     ],
     "description": "Google Play Pointsの残高、ポイント履歴、有効期限、年間のレベル進捗を確認する手順と、計算機へ入力する数字の違いを解説します。",
     "file": "../articles/2025-12-25-check-balance.html",
-    "thumbnail": "../articles/ogp/check-balance.png"
+    "thumbnail": "../articles/ogp/check-balance.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "refund",
@@ -147,7 +155,8 @@
     ],
     "description": "Google Playの返金後は獲得ポイントが残高とレベル進捗から減算されます。マイナス残高、ランク低下、定期購入キャンセルとの違いを解説します。",
     "file": "../articles/2025-12-25-refund.html",
-    "thumbnail": "../articles/ogp/refund.png"
+    "thumbnail": "../articles/ogp/refund.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "gift-card",
@@ -162,7 +171,8 @@
     ],
     "description": "Google Playギフトカードの購入、残高へのチャージ、対象コンテンツ購入を分け、Play Pointsが貯まるタイミングと対象外条件を解説します。",
     "file": "../articles/2025-12-25-gift-card.html",
-    "thumbnail": "../articles/ogp/gift-card.png"
+    "thumbnail": "../articles/ogp/gift-card.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "family-sharing",
@@ -177,7 +187,8 @@
     ],
     "description": "Google Play Pointsは家族間でも合算・移動できません。ファミリーライブラリで共有できる範囲、購入アカウント、ギフトカードの注意点を解説します。",
     "file": "../articles/2025-12-25-family-sharing.html",
-    "thumbnail": "../articles/ogp/family-sharing.png"
+    "thumbnail": "../articles/ogp/family-sharing.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "subscription",
@@ -192,7 +203,8 @@
     ],
     "description": "Google Oneやアプリ内定期購入でPlay Pointsが貯まる条件を解説。支払い方法ではなくGoogle Play経由の請求かを確認する手順を紹介します。",
     "file": "../articles/2025-12-25-subscription.html",
-    "thumbnail": "../articles/ogp/subscription.png"
+    "thumbnail": "../articles/ogp/subscription.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "weekly-reward",
@@ -207,7 +219,8 @@
     ],
     "description": "通常のPlay PointsウィークリーリワードとPlay Pass週次特典の違い、対象ランク、受け取り方、日本での金曜・木曜更新を解説します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
-    "thumbnail": "../articles/ogp/weekly-reward.png"
+    "thumbnail": "../articles/ogp/weekly-reward.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "getting-started",
@@ -222,7 +235,8 @@
     ],
     "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを初心者向けに解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
     "file": "../articles/2025-12-25-getting-started.html",
-    "thumbnail": "../articles/ogp/getting-started.png"
+    "thumbnail": "../articles/ogp/getting-started.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "new-year-campaign",
@@ -237,7 +251,8 @@
     ],
     "description": "Google Play Pointsの年末年始キャンペーンを過去日程だけで断定せず、自分のアカウントで開催期間・獲得率・有効化条件を確認する方法を解説します。",
     "file": "../articles/2025-12-25-new-year-campaign.html",
-    "thumbnail": "../articles/ogp/new-year-campaign.png"
+    "thumbnail": "../articles/ogp/new-year-campaign.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "diamond-vip",
@@ -252,7 +267,8 @@
     ],
     "description": "ダイヤモンドとプラチナの獲得率、週次リワード、プレミアムサポート、イベント特典を比較。ダイヤ固有の価値と共通特典を分けて解説します。",
     "file": "../articles/2025-12-25-diamond-vip.html",
-    "thumbnail": "../articles/ogp/diamond-vip.png"
+    "thumbnail": "../articles/ogp/diamond-vip.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "campaign",
@@ -267,7 +283,8 @@
     ],
     "description": "Google Play Pointsの増量キャンペーンを待つべきか、対象アカウント、開始操作、最高獲得率、期限を確認し、通常時との必要額を比較する方法を解説します。",
     "file": "../articles/2025-12-25-campaign.html",
-    "thumbnail": "../articles/ogp/campaign.png"
+    "thumbnail": "../articles/ogp/campaign.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "best-use",
@@ -282,7 +299,8 @@
     ],
     "description": "Google Play Pointsのクーポン、ゲーム内アイテム、Playクレジットを実用価値・最低購入額・期限で比較し、自分に合う交換先を選ぶ方法を解説します。",
     "file": "../articles/2025-12-25-best-use.html",
-    "thumbnail": "../articles/ogp/best-use.png"
+    "thumbnail": "../articles/ogp/best-use.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "diamond-worth-it",
@@ -297,7 +315,8 @@
     ],
     "description": "Google Play Pointsのダイヤモンドとプラチナを、必要ポイント数と通常時の獲得ポイント（100円ごと）に基づいてシミュレーション。目安の維持費や差を整理します。",
     "file": "../articles/2025-12-25-diamond-worth-it.html",
-    "thumbnail": "../articles/ogp/diamond-worth-it.png"
+    "thumbnail": "../articles/ogp/diamond-worth-it.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "playpoints-rank-maintenance",
@@ -311,7 +330,8 @@
     ],
     "description": "Google Play Pointsのランクは到達後、翌年末まで維持されます。暦年の獲得ポイント、翌年の再判定、残高との違い、年末の確認手順を具体例で解説。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
-    "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png"
+    "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png",
+    "modified": "2026-07-24"
   },
   {
     "id": "playpoints-not-reflected",
@@ -325,6 +345,7 @@
     ],
     "description": "課金したのにGoogle Play Pointsが反映されない時の原因と対処法。ポイント履歴・保留中・アカウント違い・登録状況の確認から、再起動やPlayストア更新まで、公式手順に沿って解説します。",
     "file": "../articles/2025-12-25-playpoints-not-reflected.html",
-    "thumbnail": "../articles/ogp/playpoints-not-reflected.png"
+    "thumbnail": "../articles/ogp/playpoints-not-reflected.png",
+    "modified": "2026-07-24"
   }
 ]
