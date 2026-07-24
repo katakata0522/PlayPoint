@@ -1430,7 +1430,7 @@ test('全記事から有効なGoogle公式ヘルプを確認できる', () => {
   const articleFiles = fs.readdirSync(path.join(root, 'articles'))
     .filter(file => file.endsWith('.html'));
 
-  assert.ok(articleScript.includes('https://support.google.com/googleplay/answer/9077312'));
+  assert.ok(articleScript.includes('https://support.google.com/googleplay/answer/9077192'));
   assert.ok(articleScript.includes('official-source-note'));
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
