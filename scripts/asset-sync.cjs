@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 
+const ROOT_SERVICE_WORKER_CACHE_REVISION = 'r2';
+
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
   { versionKey: 'consentVersion', assetPath: './js/consent.js' },
@@ -77,7 +79,7 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
   if (!fs.existsSync(swPath)) return;
 
   let swContent = fs.readFileSync(swPath, 'utf8');
-  const newCacheName = `playpoint-calc-v${assetVersion}`;
+  const newCacheName = `playpoint-calc-v${assetVersion}-${ROOT_SERVICE_WORKER_CACHE_REVISION}`;
   swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
   swContent = syncServiceWorkerAssetVersions(swContent, versions);
 
