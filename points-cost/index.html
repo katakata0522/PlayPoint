@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Play Points 必要額計算｜100・500・1,000ポイントはいくら？</title>
+    <meta name="description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、キャンペーン倍率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://playpoint-sim.com/points-cost/">
+    <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/points-cost/">
+    <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/points-cost/">
+    <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/points-cost/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/points-cost/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/points-cost.css?v=20260724a">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Google Play Points 必要額計算｜100・500・1,000ポイントはいくら？">
+    <meta property="og:description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、キャンペーン倍率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
+    <meta property="og:url" content="https://playpoint-sim.com/points-cost/">
+    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Google Play Points 必要額計算",
+  "url": "https://playpoint-sim.com/points-cost/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ja",
+  "isAccessibleForFree": true,
+  "dateModified": "2026-07-24",
+  "author": {
+    "@type": "Person",
+    "name": "Katakata",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+    </script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "1ポイントは必ず1円ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "いいえ。このページはポイントを貯めるための購入額を計算します。交換価値は特典やアプリによって異なります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "キャンペーン倍率はいつ入力しますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "対象アプリ、期間、エントリー条件などが確認できた購入だけに入力してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "結果どおりのポイントになりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "購入ごとの四捨五入、税金、対象外取引により前後します。目安として使ってください。"
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body class="points-cost-page" data-region="JP">
+<header class="points-cost-header">
+  <div class="points-cost-shell">
+    <nav aria-label="Language and site navigation">
+      <a href="/points-cost/">日本語</a>
+      <a href="/en/points-cost/">English</a>
+      <a href="/ko/points-cost/">한국어</a>
+      <a href="/tw/points-cost/">繁體中文</a>
+    </nav>
+  </div>
+</header>
+<main>
+  <section class="points-cost-hero">
+    <div class="points-cost-shell">
+      <div class="points-cost-kicker">ポイント数 → 必要額</div>
+      <h1>100・500・1,000ポイントに必要な購入額を計算</h1>
+      <p>欲しいポイント数を入力すると、現在のステータスとキャンペーン倍率に合わせて必要な購入額の目安を計算します。ランクアップ目的でなくても使えるシンプルな計算ページです。</p>
+    </div>
+  </section>
+  <div class="points-cost-shell">
+    <div class="points-cost-grid">
+      <section class="points-cost-card" aria-labelledby="calculator-title">
+        <h2 id="calculator-title">ポイント数から必要額を出す</h2>
+        <form id="points-cost-form" class="points-cost-form">
+          <label for="points-target">欲しいポイント数</label>
+          <input id="points-target" name="points" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" required>
+          <div class="points-cost-presets" aria-label="よく使う値">
+            <button type="button" data-points-preset="100">100 pt</button>
+            <button type="button" data-points-preset="500">500 pt</button>
+            <button type="button" data-points-preset="1000">1,000 pt</button>
+          </div>
+          <label for="points-status">現在のステータス</label>
+          <select id="points-status" name="status"></select>
+          <label for="points-multiplier">キャンペーン倍率</label>
+          <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
+          <button class="points-cost-submit" type="submit">必要額を計算</button>
+        </form>
+        <div id="points-cost-result" class="points-cost-result" aria-live="polite"></div>
+        <button id="copy-points-cost-link" class="points-cost-copy" type="button" data-default-label="この条件のURLをコピー" hidden>この条件のURLをコピー</button>
+      </section>
+      <section class="points-cost-card" aria-labelledby="quick-table-title">
+        <h2 id="quick-table-title">100ポイントの必要額早見表</h2>
+        <table class="points-cost-table">
+          <thead><tr><th>ステータス</th><th>基本レート</th><th>必要額の目安</th></tr></thead>
+          <tbody>
+              <tr><td>ブロンズ</td><td>1 pt / 100円</td><td>10,000円</td></tr>
+              <tr><td>シルバー</td><td>1.25 pt / 100円</td><td>8,000円</td></tr>
+              <tr><td>ゴールド</td><td>1.5 pt / 100円</td><td>約6,667円</td></tr>
+              <tr><td>プラチナ</td><td>1.75 pt / 100円</td><td>約5,715円</td></tr>
+              <tr><td>ダイヤモンド</td><td>2 pt / 100円</td><td>5,000円</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+    <article class="points-cost-card points-cost-content">
+      <section>
+        <h2>この計算で分かること</h2>
+        <ul>
+            <li>100・500・1,000ポイントなど任意のポイント数に必要な対象購入額</li>
+            <li>ブロンズからダイヤモンドまで、ステータス別の基本レート差</li>
+            <li>2倍・3倍など、対象キャンペーンが明確な場合の比較</li>
+        </ul>
+      </section>
+      <section class="points-cost-note">
+        <h2>計算前に確認してください</h2>
+        <p>Google Play公式では、ポイントは商品の価格にレートを掛け、購入ごとに整数へ四捨五入されます。税金はポイント計算の対象外です。計算結果はまとめ買いの理論値なので、実際の購入画面とPlay Points履歴を最終確認してください。</p>
+      </section>
+      <section>
+        <h2>よくある質問</h2>
+          <h3>1ポイントは必ず1円ですか？</h3>
+          <p>いいえ。このページはポイントを貯めるための購入額を計算します。交換価値は特典やアプリによって異なります。</p>
+          <h3>キャンペーン倍率はいつ入力しますか？</h3>
+          <p>対象アプリ、期間、エントリー条件などが確認できた購入だけに入力してください。</p>
+          <h3>結果どおりのポイントになりますか？</h3>
+          <p>購入ごとの四捨五入、税金、対象外取引により前後します。目安として使ってください。</p>
+      </section>
+      <div class="points-cost-links">
+        <a href="/">ランクアップ計算機</a>
+        <a class="secondary" href="/blog/">記事一覧</a>
+        <a class="secondary" href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&hl=ja" target="_blank" rel="noopener noreferrer">Google Play公式のステータス・レート</a>
+      </div>
+    </article>
+  </div>
+</main>
+<footer class="points-cost-footer">
+  <div class="points-cost-shell">
+    <p>非公式の目安計算ツールです。正確な条件はGoogle Play公式画面をご確認ください。</p>
+    <p><a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/author/katakata.html">Author</a></p>
+  </div>
+</footer>
+<script type="module" src="/js/points-cost.js?v=20260724a"></script>
+<script src="/js/third-party.js?v=20260713_0747a" defer></script>
+</body>
+</html>
