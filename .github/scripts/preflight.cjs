@@ -13,6 +13,7 @@ const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .sort()
   .map(file => path.join('tests', file));
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
+const requiredPublicFiles = ['en/index.html', 'ko/index.html', 'tw/index.html'];
 const snapshots = new Map();
 const failures = [];
 
@@ -51,11 +52,25 @@ function runPhase(name, command, args) {
   }
 }
 
+function verifyRequiredPublicFiles() {
+  console.log('\n=== 公開必須ファイル検証 ===');
+  const missingFiles = requiredPublicFiles.filter(relativePath => !fs.existsSync(path.join(root, relativePath)));
+
+  if (missingFiles.length > 0) {
+    missingFiles.forEach(relativePath => console.error('公開必須ファイルがありません: ' + relativePath));
+    failures.push('公開必須ファイル検証');
+    return;
+  }
+
+  console.log('公開必須ファイルが揃っています。');
+}
+
 snapshotMutableFiles();
 
 try {
   runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
+  verifyRequiredPublicFiles();
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
