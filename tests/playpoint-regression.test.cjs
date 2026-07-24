@@ -2645,6 +2645,6 @@ test('記事共通UIは文脈リンク・主要見出し目次・安定表示を
   assert.ok(!articleScript.includes('0.5 - Math.random()'), '関連記事が閲覧ごとにランダム化されています');
   assert.ok(componentScript.includes("querySelectorAll('.section > h2')"), '目次が主要セクションに限定されていません');
   assert.ok(componentScript.includes("setAttribute('aria-label', 'この記事の目次')"), '目次のアクセシブルな名前がありません');
-  assert.ok(sharedCss.includes('.table-card {\n    max-width: 100%;\n    overflow-x: auto;'), 'モバイル表の横スクロール対策がありません');
+  assert.match(sharedCss, /\.table-card\s*\{[^}]*max-width:\s*100%;[^}]*overflow-x:\s*auto;/, 'モバイル表の横スクロール対策がありません');
   assert.ok(sharedCss.includes('.content p a,'), '本文内リンクの読みやすさ調整がありません');
 });
