@@ -40,7 +40,8 @@ test('ルートService Workerは画面遷移をネットワーク優先で更新
 
   assert.ok(serviceWorker.includes("event.request.mode === 'navigate'"));
   assert.ok(serviceWorker.includes('handleNavigationRequest'));
-  assert.ok(serviceWorker.includes('return fetch(request)'));
+  assert.ok(serviceWorker.includes('await fetch(request)'));
+  assert.ok(serviceWorker.includes('return networkResponse'));
   assert.ok(serviceWorker.includes('return cachedResponse || cache.match'));
 });
 
