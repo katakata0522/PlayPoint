@@ -2557,3 +2557,37 @@ test('国際記事一覧とギフトカード記事は相互hreflangを持つ', 
   }
 });
 
+test('主要記事のtitleとh1は煽り表現に依存しない', () => {
+  const articleFiles = [
+    'best-use', 'campaign', 'check-balance', 'diamond-vip', 'diamond-worth-it',
+    'expiration', 'family-sharing', 'getting-started', 'gift-card', 'movies-books',
+    'multiple-accounts', 'new-year-campaign', 'play-games', 'playpoints-not-reflected',
+    'playpoints-rank-maintenance', 'promo-code', 'refund', 'subscription', 'weekly-reward'
+  ].map(name => `articles/2025-12-25-${name}.html`).concat([
+    'articles/2026-03-10-play-points-reflection-timing.html'
+  ]);
+  const sensational = /完全|徹底|必見|ヤバい|最強|無料でポイントをゲット/;
+
+  for (const file of articleFiles) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '';
+    const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1].replace(/<[^>]+>/g, ' ') || '';
+    assert.ok(!sensational.test(`${title} ${h1}`), `${file} のtitleまたはh1に煽り表現が残っています`);
+  }
+});
+
+test('修正した記事の一覧タイトルとページtitleは一致する', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
+  for (const id of [
+    'best-use', 'diamond-worth-it', 'getting-started',
+    'playpoints-not-reflected', 'playpoints-rank-maintenance', 'weekly-reward'
+  ]) {
+    const article = articles.find(item => item.id === id);
+    assert.ok(article, `${id} が記事一覧にありません`);
+    const file = article.file.replace(/^\.\.\//, '');
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '';
+    assert.strictEqual(title, article.title, `${id} の一覧タイトルとページtitleが一致しません`);
+  }
+});
+
