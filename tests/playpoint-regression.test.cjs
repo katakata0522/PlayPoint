@@ -1016,7 +1016,7 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
 
   assert.ok(workflow.includes('node .github/scripts/seo-health-check.cjs'));
   assert.ok(script.includes('articleUrls'));
-  assert.ok(script.includes('data-ad-client'));
+  assert.ok(script.includes('shared article script missing'));
   for (const pathValue of [
     '/campaign/2x/',
     '/campaign/3x/',
