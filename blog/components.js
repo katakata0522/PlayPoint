@@ -214,7 +214,7 @@
                 gap: 0.5rem;
             }
             .toc-list {
-                list-style: none;
+                padding-left: 1.25rem;
                 padding: 0;
                 margin: 0;
             }
@@ -227,21 +227,14 @@
                 color: #555;
                 transition: color 0.2s;
                 font-size: 0.95rem;
-                display: block;
-                padding: 0.2rem 0;
+                display: inline-flex;
+                align-items: center;
+                min-height: 40px;
+                padding: 0.15rem 0;
             }
             .toc-item a:hover {
                 color: #22c55e;
                 text-decoration: underline;
-            }
-            .toc-h3 {
-                padding-left: 1.5rem;
-                font-size: 0.9rem;
-            }
-            .toc-h3::before {
-                content: "└";
-                margin-right: 0.5rem;
-                color: #ccc;
             }
 
             @media (max-width: 600px) {
@@ -312,72 +305,48 @@
     // ===========================================
     function generateTableOfContents() {
         const content = document.querySelector('.content');
-        if (!content) return;
+        if (!content || content.querySelector('.toc-box')) return;
 
-        // Find headings
-        const headings = content.querySelectorAll('h2, h3');
-        if (headings.length < 2) return; // Don't show TOC for very short articles
+        // 主題となるセクションだけに絞り、CTAや補足見出しで目次を膨らませない
+        const headings = Array.from(content.querySelectorAll('.section > h2'))
+            .filter(heading => !heading.closest('.faq, .cta-box, .article-next-step-cta, .article-calculator-prompt'));
+        if (headings.length < 3) return;
 
-        // Create TOC Container
-        const tocContainer = document.createElement('div');
+        const tocContainer = document.createElement('nav');
         tocContainer.className = 'toc-box';
-        tocContainer.innerHTML = '<div class="toc-title">📖 目次</div>';
+        tocContainer.setAttribute('aria-label', 'この記事の目次');
 
-        const tocList = document.createElement('ul');
+        const tocTitle = document.createElement('p');
+        tocTitle.className = 'toc-title';
+        tocTitle.textContent = 'この記事の内容';
+
+        const tocList = document.createElement('ol');
         tocList.className = 'toc-list';
 
-        let currentId = 0;
+        headings.forEach((heading, index) => {
+            if (!heading.id) heading.id = `section-${index + 1}`;
 
-        headings.forEach(heading => {
-            // Skip "Using this article" or similar non-content headings if any
-            if (heading.closest('.summary-box') || heading.closest('.callout') || heading.closest('.faq-item')) return;
-
-            // Assign ID if not present
-            if (!heading.id) {
-                heading.id = `toc-${currentId++}`;
-            }
-
-            const li = document.createElement('li');
-            li.className = `toc-item toc-${heading.tagName.toLowerCase()}`;
+            const item = document.createElement('li');
+            item.className = 'toc-item';
 
             const link = document.createElement('a');
             link.href = `#${heading.id}`;
-            link.textContent = heading.textContent;
+            link.textContent = heading.textContent.replace(/^[^\p{L}\p{N}]+/u, '').trim();
 
-            // Smooth scroll
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = document.getElementById(heading.id);
-                if (target) {
-                    const headerOffset = 80; // Buffer for sticky header
-                    const elementPosition = target.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-
-            li.appendChild(link);
-            tocList.appendChild(li);
+            item.appendChild(link);
+            tocList.appendChild(item);
         });
 
-        tocContainer.appendChild(tocList);
+        tocContainer.append(tocTitle, tocList);
 
-        // Insert TOC: After the summary-box, or before the first h2 if no summary
         const summaryBox = content.querySelector('.summary-box');
-        if (summaryBox) {
-            summaryBox.parentNode.insertBefore(tocContainer, summaryBox.nextSibling);
-        } else {
-            const firstHeading = content.querySelector('h2');
-            if (firstHeading) {
-                firstHeading.parentNode.insertBefore(tocContainer, firstHeading);
-            } else {
-                content.insertBefore(tocContainer, content.firstChild);
-            }
+        const intro = content.querySelector('.intro');
+        const anchor = summaryBox || intro;
+        if (anchor) {
+            anchor.insertAdjacentElement('afterend', tocContainer);
+            return;
         }
+        headings[0].insertAdjacentElement('beforebegin', tocContainer);
     }
 
     applyArticlePresentationSettings();
