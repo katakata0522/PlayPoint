@@ -1,10 +1,10 @@
 'use strict';
 
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 
-const ROOT_SERVICE_WORKER_CACHE_REVISION = 'r3';
 
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
@@ -18,6 +18,14 @@ const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' }
 ];
+
+function createRootServiceWorkerCacheRevision(versions, assets = ROOT_SERVICE_WORKER_ASSETS) {
+  const fingerprint = assets
+    .map(({ versionKey, assetPath }) => assetPath + ':' + (versions[versionKey] || 'unversioned'))
+    .join('|');
+
+  return crypto.createHash('sha256').update(fingerprint).digest('hex').slice(0, 8);
+}
 
 function readTextIfExists(filePath) {
   if (!fs.existsSync(filePath)) return '';
@@ -79,7 +87,8 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
   if (!fs.existsSync(swPath)) return;
 
   let swContent = fs.readFileSync(swPath, 'utf8');
-  const newCacheName = `playpoint-calc-v${assetVersion}-${ROOT_SERVICE_WORKER_CACHE_REVISION}`;
+  const cacheRevision = createRootServiceWorkerCacheRevision(versions);
+  const newCacheName = `playpoint-calc-v${assetVersion}-${cacheRevision}`;
   swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
   swContent = syncServiceWorkerAssetVersions(swContent, versions);
 
@@ -134,6 +143,7 @@ function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
 
 module.exports = {
   ROOT_SERVICE_WORKER_ASSETS,
+  createRootServiceWorkerCacheRevision,
   collectAssetVersions,
   extractVersion,
   syncKindleIndex,
