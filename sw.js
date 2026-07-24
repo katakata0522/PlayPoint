@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260713_0747-r3';
+const CACHE_NAME = 'playpoint-calc-v20260713_0747-203790d6';
 const ASSETS = [
   './',
   './style.css?v=20260713_0747a',
@@ -95,27 +95,47 @@ function getCacheKey(request) {
   return url.toString();
 }
 
-// 静的コンテンツだけをStale-While-Revalidateで更新する
+// HTMLはネットワーク優先で更新し、オフライン時だけキャッシュへ戻す
+const OFFLINE_FALLBACK_URL = new URL('./', self.registration.scope).toString();
+
+async function handleNavigationRequest(request, cacheKey) {
+  const cache = await caches.open(CACHE_NAME);
+
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+      await cache.put(cacheKey, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch {
+    const cachedResponse = await cache.match(cacheKey);
+    return cachedResponse || cache.match(OFFLINE_FALLBACK_URL);
+  }
+}
+
+// 版番号付きのCSS・JS・画像はStale-While-Revalidateで更新する
+async function handleStaticRequest(request, cacheKey) {
+  const cache = await caches.open(CACHE_NAME);
+  const cachedResponse = await cache.match(cacheKey);
+  const fetchedResponse = fetch(request).then((networkResponse) => {
+    if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
+      void cache.put(cacheKey, networkResponse.clone());
+    }
+    return networkResponse;
+  }).catch(() => cachedResponse);
+
+  return cachedResponse || fetchedResponse;
+}
+
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || !isCacheableRequest(event.request)) return;
 
   const cacheKey = getCacheKey(event.request);
+  const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
 
   event.respondWith(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.match(cacheKey).then((cachedResponse) => {
-        const fetchedResponse = fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
-            void cache.put(cacheKey, networkResponse.clone());
-          }
-          return networkResponse;
-        }).catch(() => {
-          // ネットワークエラー時はキャッシュの有無に関わらずフェールセーフ
-          return cachedResponse;
-        });
-
-        return cachedResponse || fetchedResponse;
-      });
-    })
+    isNavigation
+      ? handleNavigationRequest(event.request, cacheKey)
+      : handleStaticRequest(event.request, cacheKey)
   );
 });
