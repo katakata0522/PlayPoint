@@ -40,7 +40,7 @@
       "保留",
       "確認方法"
     ],
-    "description": "Play Pointsが反映されない時に、購入状態・履歴・アカウント・参加時期を順に確認する方法と問い合わせ前の準備を解説します。",
+    "description": "Play Pointsが反映されない時は、購入状態・ポイント履歴・購入アカウント・参加時期を順に確認。端末による遅れや問い合わせ前に残す情報も解説します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png"
   },
@@ -220,7 +220,7 @@
       "登録",
       "始め方"
     ],
-    "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
+    "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを初心者向けに解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
     "file": "../articles/2025-12-25-getting-started.html",
     "thumbnail": "../articles/ogp/getting-started.png"
   },
@@ -295,7 +295,7 @@
       "プラチナ",
       "シミュレーション"
     ],
-    "description": "ダイヤモンドとプラチナの差を数字で検証。必要ポイント・維持費・どっちがコスパ良いかを解説。",
+    "description": "Google Play Pointsのダイヤモンドとプラチナを、必要ポイント数と通常時の獲得ポイント（100円ごと）に基づいてシミュレーション。目安の維持費や差を整理します。",
     "file": "../articles/2025-12-25-diamond-worth-it.html",
     "thumbnail": "../articles/ogp/diamond-worth-it.png"
   },
@@ -309,7 +309,7 @@
       "年末年始",
       "ランク維持"
     ],
-    "description": "ランクは到達後、翌年末まで維持。暦年のレベル進捗、翌年の再判定、残高との違いを具体例で解説します。",
+    "description": "Google Play Pointsのランクは到達後、翌年末まで維持されます。暦年の獲得ポイント、翌年の再判定、残高との違い、年末の確認手順を具体例で解説。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
     "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png"
   },
@@ -323,7 +323,7 @@
       "反映されない",
       "対処法"
     ],
-    "description": "ポイント履歴・保留中・アカウント違いなど、よくある原因を公式手順でチェック。再起動やPlayストア更新の対処も解説。",
+    "description": "課金したのにGoogle Play Pointsが反映されない時の原因と対処法。ポイント履歴・保留中・アカウント違い・登録状況の確認から、再起動やPlayストア更新まで、公式手順に沿って解説します。",
     "file": "../articles/2025-12-25-playpoints-not-reflected.html",
     "thumbnail": "../articles/ogp/playpoints-not-reflected.png"
   }
