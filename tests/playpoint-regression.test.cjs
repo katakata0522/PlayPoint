@@ -2596,7 +2596,7 @@ test('修正した記事の一覧タイトルとページtitleは一致する', 
 test('日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する', () => {
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
     .filter(article => article.id !== 'savings-game-fire');
-  const parseJsonLd = html => [...html.matchAll(/<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g)]
+  const parseJsonLd = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
 
   for (const article of articles) {
