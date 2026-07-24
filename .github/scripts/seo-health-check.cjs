@@ -1,5 +1,12 @@
+'use strict';
+
+const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
+
 const BASE_URL = 'https://playpoint-sim.com';
-const FETCH_TIMEOUT_MS = 30000;
+const FETCH_TIMEOUT_MS = 12000;
+const HTTP_CONCURRENCY = 4;
+const MAX_ATTEMPTS = 2;
+const RETRY_DELAY_MS = 1500;
 
 const pageUrls = [
   `${BASE_URL}/`,
@@ -81,11 +88,14 @@ async function checkPage(url) {
 }
 
 async function checkSitemap() {
-  const robots = await fetchText(`${BASE_URL}/robots.txt`);
+  const [robots, sitemap] = await Promise.all([
+    fetchText(`${BASE_URL}/robots.txt`),
+    fetchText(`${BASE_URL}/sitemap.xml`)
+  ]);
+
   if (!robots.response.ok) throw new Error(`${BASE_URL}/robots.txt: HTTP ${robots.response.status}`);
   assertIncludes(robots.body, 'Sitemap:', 'robots.txt: sitemap directive missing');
 
-  const sitemap = await fetchText(`${BASE_URL}/sitemap.xml`);
   if (!sitemap.response.ok) throw new Error(`${BASE_URL}/sitemap.xml: HTTP ${sitemap.response.status}`);
   assertIncludes(sitemap.body, '<urlset', 'sitemap.xml: urlset missing');
 
@@ -110,37 +120,49 @@ async function checkArticle(url) {
   }
 }
 
-async function main() {
-  const failures = [];
+async function runChecks(urls, check, label) {
+  const results = await mapWithConcurrency(urls, HTTP_CONCURRENCY, async (url) => {
+    await retry(() => check(url), {
+      attempts: MAX_ATTEMPTS,
+      delayMs: RETRY_DELAY_MS,
+      onRetry: (error, attempt, attempts) => {
+        console.warn(`Retry ${attempt + 1}/${attempts} - ${error.message}`);
+      }
+    });
+    return url;
+  });
 
-  for (const url of pageUrls) {
-    try {
-      await checkPage(url);
-      console.log(`ok - ${url}`);
-    } catch (error) {
-      failures.push(error);
-      console.error(`not ok - ${error.message}`);
+  const failures = [];
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      console.log(`ok - ${label} ${result.item}`);
+    } else {
+      failures.push(result.reason);
+      console.error(`not ok - ${result.reason.message}`);
     }
   }
+  return failures;
+}
+
+async function main() {
+  const failures = await runChecks(pageUrls, checkPage, 'page');
 
   let articleUrls = [];
   try {
-    articleUrls = await checkSitemap();
+    articleUrls = await retry(checkSitemap, {
+      attempts: MAX_ATTEMPTS,
+      delayMs: RETRY_DELAY_MS,
+      onRetry: (error, attempt, attempts) => {
+        console.warn(`Retry ${attempt + 1}/${attempts} - ${error.message}`);
+      }
+    });
     console.log(`ok - sitemap articles (${articleUrls.length})`);
   } catch (error) {
     failures.push(error);
     console.error(`not ok - ${error.message}`);
   }
 
-  for (const url of articleUrls) {
-    try {
-      await checkArticle(url);
-      console.log(`ok - article ${url}`);
-    } catch (error) {
-      failures.push(error);
-      console.error(`not ok - ${error.message}`);
-    }
-  }
+  failures.push(...await runChecks(articleUrls, checkArticle, 'article'));
 
   if (failures.length > 0) {
     console.error(`SEO health check failed (${failures.length} failures).`);
@@ -148,7 +170,7 @@ async function main() {
     return;
   }
 
-  console.log('SEO health check passed.');
+  console.log(`SEO health check passed (concurrency ${HTTP_CONCURRENCY}).`);
 }
 
 main().catch((error) => {

@@ -65,12 +65,47 @@ function verifyRequiredPublicFiles() {
   console.log('公開必須ファイルが揃っています。');
 }
 
+function serviceWorkerAssetToLocalPath(assetUrl) {
+  const pathWithoutQuery = assetUrl.split(/[?#]/, 1)[0].replace(/^\.\//, '');
+  return pathWithoutQuery === '' || pathWithoutQuery.endsWith('/')
+    ? path.join(pathWithoutQuery, 'index.html')
+    : pathWithoutQuery;
+}
+
+function verifyServiceWorkerPrecacheAssets() {
+  console.log('\n=== Service Worker先読み対象検証 ===');
+  const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+  const assetsBlock = serviceWorker.match(/const ASSETS = \[([\s\S]*?)\];/);
+
+  if (!assetsBlock) {
+    console.error('sw.jsのASSETS定義を解析できません。');
+    failures.push('Service Worker先読み対象検証');
+    return;
+  }
+
+  const assetUrls = [...assetsBlock[1].matchAll(/['"]([^'"]+)['"]/g)].map(match => match[1]);
+  const missingAssets = assetUrls
+    .map(assetUrl => ({ assetUrl, localPath: serviceWorkerAssetToLocalPath(assetUrl) }))
+    .filter(({ localPath }) => !fs.existsSync(path.join(root, localPath)));
+
+  if (missingAssets.length > 0) {
+    missingAssets.forEach(({ assetUrl, localPath }) => {
+      console.error(`Service Worker先読み対象がありません: ${assetUrl} -> ${localPath}`);
+    });
+    failures.push('Service Worker先読み対象検証');
+    return;
+  }
+
+  console.log(`Service Worker先読み対象が揃っています（${assetUrls.length}件）。`);
+}
+
 snapshotMutableFiles();
 
 try {
   runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   verifyRequiredPublicFiles();
+  verifyServiceWorkerPrecacheAssets();
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
