@@ -26,3 +26,18 @@
     color: #0b57d0;
     font-weight: 700;
 }
+
+
+.official-source-note ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.official-source-note li + li {
+    margin-top: 0.35rem;
+}
+
+.official-source-note a {
+    min-height: auto;
+    text-underline-offset: 0.18em;
+}
