@@ -28,10 +28,14 @@ function toAtomDate(date) {
   return `${date}T12:00:00+09:00`;
 }
 
+function getArticleUpdatedDate(article) {
+  return article.modified || article.date;
+}
+
 function normalizeFeedArticles(articles) {
   return articles
     .filter(article => article && article.file && article.title && article.date)
-    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    .sort((a, b) => String(getArticleUpdatedDate(b)).localeCompare(String(getArticleUpdatedDate(a))));
 }
 
 function buildBlogFeeds(articles) {
@@ -40,7 +44,7 @@ function buildBlogFeeds(articles) {
     return null;
   }
 
-  const latestDate = normalizedArticles[0].date;
+  const latestDate = getArticleUpdatedDate(normalizedArticles[0]);
   const rssItems = normalizedArticles.map(article => {
     const url = toArticleUrl(article.file);
     return `    <item>
@@ -57,7 +61,7 @@ function buildBlogFeeds(articles) {
     <title>${escapeXml(article.title)}</title>
     <link href="${escapeXml(url)}" rel="alternate" type="text/html" />
     <id>${escapeXml(url)}</id>
-    <updated>${toAtomDate(article.date)}</updated>
+    <updated>${toAtomDate(getArticleUpdatedDate(article))}</updated>
     <summary>${escapeXml(article.description || '')}</summary>
   </entry>`;
   }).join('\n');
@@ -114,6 +118,7 @@ module.exports = {
   buildBlogFeeds,
   escapeXml,
   generateBlogFeeds,
+  getArticleUpdatedDate,
   normalizeFeedArticles,
   toArticleUrl,
   toAtomDate,

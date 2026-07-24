@@ -101,9 +101,18 @@ export const UI = {
         }
     },
 
+    // 結果要素に残った前回計算の共有用データを破棄
+    clearResultData(targetElement) {
+        if (!targetElement) return;
+        for (const key of Object.keys(targetElement.dataset)) {
+            delete targetElement.dataset[key];
+        }
+    },
+
     // 結果表示メソッド（カウントアップアニメーション発火）
     displayResult(targetElement, content, isError = false) {
         if (!targetElement) return;
+        this.clearResultData(targetElement);
         if (isError) {
             // エラーは安全にDOM要素で生成（innerHTML 不使用）
             targetElement.innerHTML = '';
@@ -142,6 +151,7 @@ export const UI = {
     // 結果のクリアメソッド
     clearResult(targetElement) {
         if (!targetElement) return;
+        this.clearResultData(targetElement);
         targetElement.innerHTML = "";
         targetElement.classList.remove(CONSTANTS.CLASS_HAS_RESULT);
         if (targetElement === STATE.dom.result) {
