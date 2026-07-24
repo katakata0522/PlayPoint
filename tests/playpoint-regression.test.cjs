@@ -2621,6 +2621,90 @@ test('日本語Play Points記事は一覧・OGP・構造化データ・著者メ
   }
 });
 
+test('更新した記事は一覧・表示・メタデータ・フィード用更新日を一致させる', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
+    .filter(article => article.modified);
+  const parseJsonLd = html => [...html.matchAll(/<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g)]
+    .map(match => JSON.parse(match[1]));
+
+  assert.strictEqual(articles.length, 21, '今回更新した記事数が一致しません');
+  for (const article of articles) {
+    const file = article.file.replace(/^\\.\\.\\//, '');
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const visible = html.match(/class="hero-meta"[^>]*>[^<]*?(\\d{4})\\/(\\d{2})\\/(\\d{2}) 更新/)?.slice(1).join('-');
+    const meta = html.match(/article:modified_time" content="(\\d{4}-\\d{2}-\\d{2})T/)?.[1];
+    const schema = parseJsonLd(html).find(data => data['@type'] === 'Article');
+
+    assert.strictEqual(visible, article.modified, `${file} の表示更新日が一致しません`);
+    assert.strictEqual(meta, article.modified, `${file} のarticle:modified_timeが一致しません`);
+    assert.strictEqual(schema?.dateModified, article.modified, `${file} のdateModifiedが一致しません`);
+  }
+});
+
+test('フィードは公開日を保ったまま記事の更新日を反映する', () => {
+  const { buildBlogFeeds } = require('../scripts/blog-feeds.cjs');
+  const feeds = buildBlogFeeds([
+    { file: '../articles/old.html', title: '更新記事', date: '2025-01-01', modified: '2026-07-24' },
+    { file: '../articles/new.html', title: '新規記事', date: '2026-07-01' }
+  ]);
+
+  assert.match(feeds.rss, /<lastBuildDate>Fri, 24 Jul 2026 03:00:00 GMT<\\/lastBuildDate>/);
+  assert.match(feeds.rss, /<title>更新記事<\\/title>[\\s\\S]*?<pubDate>Wed, 01 Jan 2025 03:00:00 GMT<\\/pubDate>/);
+  assert.match(feeds.atom, /<title>更新記事<\\/title>[\\s\\S]*?<updated>2026-07-24T12:00:00\\+09:00<\\/updated>/);
+  assert.ok(feeds.atom.indexOf('<title>更新記事</title>') < feeds.atom.indexOf('<title>新規記事</title>'));
+});
+
+test('計算結果のエラー表示とクリアは前回の共有用データを破棄する', () => {
+  let source = fs.readFileSync(path.join(root, 'js', 'ui.js'), 'utf8')
+    .replace(/^import .*;\\s*$/m, '')
+    .replace('export const UI =', 'const UI =');
+  const windowMock = { __TEST_ENV__: true };
+  const classNames = new Set();
+  const target = {
+    appendChild(child) { this.children.push(child); },
+    children: [],
+    classList: {
+      add(name) { classNames.add(name); },
+      remove(name) { classNames.delete(name); }
+    },
+    dataset: { earnedPoints: '50', requiredYen: '1000' },
+    innerHTML: '<strong>old</strong>',
+    querySelectorAll() { return []; }
+  };
+  const context = {
+    CONFIGS: { JP: { lang: 'ja' } },
+    CONSTANTS: { CLASS_HAS_RESULT: 'has-result', CLASS_HIDDEN: 'hidden' },
+    STATE: { currentRegion: 'JP', dom: {} },
+    clearTimeout,
+    console,
+    document: {
+      createElement() {
+        return { className: '', textContent: '' };
+      }
+    },
+    getNextFridayCalendarWindow() { return { start: '', end: '' }; },
+    setTimeout,
+    window: windowMock
+  };
+
+  vm.runInNewContext(source, context);
+  const UI = windowMock.PP_APP.UI;
+  UI.displayResult(target, '入力内容を確認してください', true);
+  assert.deepStrictEqual(Object.keys(target.dataset), []);
+  assert.strictEqual(target.children[0].textContent, '入力内容を確認してください');
+
+  target.dataset.earnedPoints = '80';
+  UI.clearResult(target);
+  assert.deepStrictEqual(Object.keys(target.dataset), []);
+  assert.ok(!classNames.has('has-result'));
+});
+
+test('トップの更新日はサイト更新であることを明示する', () => {
+  const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  assert.match(index, /サイト更新: \\d{4}-\\d{2}-\\d{2}/);
+  assert.ok(!index.includes(' / 最終更新:'));
+});
+
 test('重要記事は2026年時点の公式仕様と判断上の注意を保持する', () => {
   const read = name => fs.readFileSync(path.join(root, 'articles', name), 'utf8');
   const playGames = read('2025-12-25-play-games.html');
