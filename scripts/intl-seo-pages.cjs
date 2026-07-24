@@ -1154,7 +1154,7 @@ const POINT_VALUE_100_ARTICLES = [
   {
     "badge": "US 100-point guide",
     "ctaHref": "/en/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_en",
-    "description": "See how much spending is needed to earn 100 Google Play Points in the US at each level, why 100 points do not have one universal cash value, and what to verify before redeeming.",
+    "description": "Estimate US spending needed for 100 Google Play Points by level, then check why redemption value varies by reward, country, and account.",
     "faq": [
       [
         "Are 100 Google Play Points always worth $1?",
@@ -1932,8 +1932,7 @@ ${jsonLd(schema)}
         <aside class="official-source-note">
             <h2>${escapeHtml(article.officialSourceTitle || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceTitle)}</h2>
             <p>${escapeHtml(article.officialSourceBody || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceBody)}</p>
-            <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>
-            ${article.officialProgramLink ? `<p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
+            <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>${article.officialProgramLink ? `\n            <p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
         </aside>
 
         <section class="section">
