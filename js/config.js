@@ -118,22 +118,33 @@ export const CONSTANTS = {
     STORAGE_REGION_KEY: 'playpointPreferredRegion'
 };
 
-function formatCalendarTimestamp(date, hourUtc) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}${month}${day}T${String(hourUtc).padStart(2, '0')}0000Z`;
+function formatCalendarTimestamp(date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hour = String(date.getUTCHours()).padStart(2, '0');
+    return `${year}${month}${day}T${hour}0000Z`;
 }
 
 export function getNextFridayCalendarWindow(isGlobalTime, baseDate = new Date()) {
-    const nextFriday = new Date(baseDate);
-    const daysUntilFriday = (5 - baseDate.getDay() + 7) % 7;
-    nextFriday.setDate(baseDate.getDate() + daysUntilFriday);
-
     const startHourUtc = isGlobalTime ? 14 : 1;
+    const daysUntilFriday = (5 - baseDate.getUTCDay() + 7) % 7;
+    const nextStart = new Date(Date.UTC(
+        baseDate.getUTCFullYear(),
+        baseDate.getUTCMonth(),
+        baseDate.getUTCDate() + daysUntilFriday,
+        startHourUtc
+    ));
+
+    // 金曜の開始時刻を過ぎている場合は、同日ではなく翌週を登録する。
+    if (nextStart.getTime() <= baseDate.getTime()) {
+        nextStart.setUTCDate(nextStart.getUTCDate() + 7);
+    }
+
+    const nextEnd = new Date(nextStart.getTime() + 60 * 60 * 1000);
     return {
-        start: formatCalendarTimestamp(nextFriday, startHourUtc),
-        end: formatCalendarTimestamp(nextFriday, startHourUtc + 1)
+        start: formatCalendarTimestamp(nextStart),
+        end: formatCalendarTimestamp(nextEnd)
     };
 }
 
