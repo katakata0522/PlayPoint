@@ -6,7 +6,39 @@
         articlesUrl: '../blog/articles.json',
         recommendedCount: 3,
         placeholderImage: 'https://placehold.co/300x200/e0e0e0/999999?text=No+Image',
-        officialHelpUrl: 'https://support.google.com/googleplay/answer/9077312'
+        officialSources: {
+            default: [
+                { label: 'Play Pointsを貯める・管理する（Google公式）', url: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' }
+            ],
+            'play-games': [
+                { label: 'Google PlayとPlay Gamesの最新機能（Google公式ブログ）', url: 'https://blog.google/intl/ja-jp/products/android-chrome-play/google-play-curation-update-september-2025/' },
+                { label: 'Play Pointsを貯める・管理する（Google公式）', url: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' }
+            ],
+            weekly: [
+                { label: '通常のウィークリーリワード（Google公式）', url: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' },
+                { label: 'Play Pass加入者向け週次特典（Google公式）', url: 'https://support.google.com/googleplay/answer/16507543?hl=ja' }
+            ],
+            family: [
+                { label: 'Play Pointsのアカウント間移動について（Google公式）', url: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' },
+                { label: 'ファミリーライブラリの対象と設定（Google公式）', url: 'https://support.google.com/googleplay/answer/7007852?hl=ja' }
+            ],
+            rank: [
+                { label: 'ステータス・獲得率・特典（Google公式）', url: 'https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&hl=ja' }
+            ],
+            refund: [
+                { label: '返金時のPlay Pointsの扱い（Google公式）', url: 'https://support.google.com/googleplay/answer/15576539?hl=ja' }
+            ],
+            gift: [
+                { label: 'Google Playギフトカードの仕組み（Google公式）', url: 'https://support.google.com/googleplay/answer/3422734?hl=ja' },
+                { label: 'Play Pointsの獲得対象（Google公式）', url: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' }
+            ],
+            trouble: [
+                { label: 'Play Pointsの問題を解決する（Google公式）', url: 'https://support.google.com/googleplay/answer/9077247?hl=ja' }
+            ],
+            use: [
+                { label: 'ポイントの交換先・期限・払い戻し（Google公式）', url: 'https://support.google.com/googleplay/answer/9079840?co=GENIE.Platform%3DAndroid&hl=ja' }
+            ]
+        }
     };
 
     // Flags
@@ -33,7 +65,20 @@
         return window.BlogUtils || fallbackUtils;
     }
 
-    // 全記事に共通の公式情報導線を追加し、制度変更時の確認先を明確にする
+    function getOfficialSources() {
+        const path = window.location.pathname;
+        if (path.includes('play-games')) return CONFIG.officialSources['play-games'];
+        if (path.includes('weekly-reward')) return CONFIG.officialSources.weekly;
+        if (path.includes('family-sharing') || path.includes('multiple-accounts')) return CONFIG.officialSources.family;
+        if (path.includes('diamond') || path.includes('rank-maintenance')) return CONFIG.officialSources.rank;
+        if (path.includes('refund')) return CONFIG.officialSources.refund;
+        if (path.includes('best-use')) return CONFIG.officialSources.use;
+        if (path.includes('gift-card')) return CONFIG.officialSources.gift;
+        if (path.includes('not-reflected') || path.includes('reflection-timing')) return CONFIG.officialSources.trouble;
+        return CONFIG.officialSources.default;
+    }
+
+    // 記事のテーマに対応する一次情報を示し、読者が根拠を確認できるようにする
     function setupOfficialSourceNotice() {
         if (document.querySelector('.official-source-note')) return;
         const article = document.querySelector('article');
@@ -50,10 +95,13 @@
         const notice = document.createElement('aside');
         notice.className = 'official-source-note';
         notice.setAttribute('aria-label', '公式情報の確認先');
+        const sources = getOfficialSources();
         notice.innerHTML = `
-            <strong>公式情報の確認先</strong>
-            <p>Play Pointsの条件や特典は、地域や時期によって変更される場合があります。最新情報はGoogle Play公式ヘルプをご確認ください。</p>
-            <a href="${CONFIG.officialHelpUrl}" target="_blank" rel="noopener noreferrer">Google Play公式ヘルプを確認する</a>
+            <strong>この記事の確認に使った公式情報</strong>
+            <p>Play Pointsの条件や特典は、国・時期・アカウントによって変わることがあります。購入や交換の直前は、Playストアに表示された条件を優先してください。</p>
+            <ul>
+                ${sources.map(source => `<li><a href="${fallbackUtils.escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${fallbackUtils.escapeHtml(source.label)}</a></li>`).join('')}
+            </ul>
         `;
         article.appendChild(notice);
     }
@@ -82,6 +130,77 @@
             return;
         }
         content.insertBefore(prompt, content.firstChild);
+    }
+
+
+    function getContextualGuides() {
+        const path = window.location.pathname;
+        const groups = {
+            start: [
+                { href: './2025-12-25-check-balance.html', text: '残高・履歴・有効期限の確認方法' },
+                { href: './2025-12-25-playpoints-not-reflected.html', text: 'ポイントが反映されない時の確認手順' },
+                { href: './2025-12-25-expiration.html', text: 'Play Pointsの有効期限と失効対策' }
+            ],
+            earn: [
+                { href: './2025-12-25-movies-books.html', text: '本・アプリ・定期購入の獲得条件' },
+                { href: './2025-12-25-campaign.html', text: 'ポイント増量キャンペーンの確認方法' },
+                { href: './2025-12-25-gift-card.html', text: 'ギフトカードのチャージと付与タイミング' }
+            ],
+            rank: [
+                { href: './2025-12-25-playpoints-rank-maintenance.html', text: 'ランク維持期間と翌年の再判定' },
+                { href: './2025-12-25-weekly-reward.html', text: 'ウィークリーリワードの受け取り方' },
+                { href: './2025-12-25-diamond-worth-it.html', text: 'ダイヤモンドとプラチナの費用比較' }
+            ],
+            use: [
+                { href: './2025-12-25-best-use.html', text: 'クーポン・アイテム・クレジットの選び方' },
+                { href: './2025-12-25-expiration.html', text: '交換前に確認したい有効期限' },
+                { href: './2025-12-25-refund.html', text: '返金時の残高・ランクへの影響' }
+            ]
+        };
+        let selected = groups.start;
+        if (/movies-books|subscription|campaign|promo-code|gift-card|discount-gift-cards/.test(path)) selected = groups.earn;
+        if (/rank-maintenance|weekly-reward|diamond/.test(path)) selected = groups.rank;
+        if (/best-use|expiration|refund|family-sharing/.test(path)) selected = groups.use;
+
+        const currentFile = path.substring(path.lastIndexOf('/') + 1);
+        return selected.filter(item => !item.href.endsWith(currentFile)).slice(0, 3);
+    }
+
+    function setupContextualGuideLinks() {
+        if (document.querySelector('.contextual-guide-links')) return;
+        const content = document.querySelector('.content');
+        if (!content) return;
+        const guides = getContextualGuides();
+        if (!guides.length) return;
+
+        const box = document.createElement('aside');
+        box.className = 'contextual-guide-links';
+        box.setAttribute('aria-label', '次に確認したい関連記事');
+        box.innerHTML = `
+            <h2>次に確認したいこと</h2>
+            <ul>
+                ${guides.map(guide => `<li><a href="${fallbackUtils.escapeHtml(guide.href)}">${fallbackUtils.escapeHtml(guide.text)}</a></li>`).join('')}
+            </ul>
+        `;
+        content.appendChild(box);
+    }
+
+    function setupBreadcrumbStructuredData() {
+        if (document.querySelector('script[data-article-breadcrumbs]')) return;
+        const title = document.querySelector('h1')?.textContent.replace(/\s+/g, ' ').trim() || document.title;
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.dataset.articleBreadcrumbs = 'true';
+        script.textContent = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Playポイント計算機', item: 'https://playpoint-sim.com/' },
+                { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://playpoint-sim.com/blog/' },
+                { '@type': 'ListItem', position: 3, name: title, item: window.location.origin + window.location.pathname }
+            ]
+        });
+        document.head.appendChild(script);
     }
 
     function getArticleNextStepCta() {
@@ -258,8 +377,10 @@
 
     async function init() {
         setupCalculatorPrompt();
+        setupContextualGuideLinks();
         setupArticleNextStepCta();
         setupOfficialSourceNotice();
+        setupBreadcrumbStructuredData();
         setupCalculatorLinkTracking();
         setupArticleAdsense();
         if (window.BlogUtils) {
@@ -309,16 +430,16 @@
                 const sameCategory = others.filter(a => a.category === currentCategory);
                 const differentCategory = others.filter(a => a.category !== currentCategory);
 
-                // Shuffle both arrays
-                sameCategory.sort(() => 0.5 - Math.random());
-                differentCategory.sort(() => 0.5 - Math.random());
+                const byNewest = (a, b) => new Date(b.date) - new Date(a.date) || a.title.localeCompare(b.title, 'ja');
+                sameCategory.sort(byNewest);
+                differentCategory.sort(byNewest);
 
-                // Take from same category first, then fill with others
+                // 同じカテゴリーを優先し、毎回同じ関連リンクを表示する
                 recommended = [...sameCategory, ...differentCategory].slice(0, CONFIG.recommendedCount);
             } else {
-                // Random if no category info
-                const shuffled = others.sort(() => 0.5 - Math.random());
-                recommended = shuffled.slice(0, CONFIG.recommendedCount);
+                recommended = others
+                    .sort((a, b) => new Date(b.date) - new Date(a.date) || a.title.localeCompare(b.title, 'ja'))
+                    .slice(0, CONFIG.recommendedCount);
             }
 
             if (container && recommended.length > 0) {

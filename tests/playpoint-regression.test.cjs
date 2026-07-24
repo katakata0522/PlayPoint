@@ -2591,3 +2591,58 @@ test('修正した記事の一覧タイトルとページtitleは一致する', 
   }
 });
 
+
+
+test('日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
+    .filter(article => article.id !== 'savings-game-fire');
+
+  for (const article of articles) {
+    const file = article.file.replace(/^\.\.\//, '');
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '';
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i)?.[1] || '';
+    const ogTitle = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i)?.[1] || '';
+    const articleSchema = parseJsonLd(html).find(data => data['@type'] === 'Article');
+
+    assert.strictEqual(article.title, title, `${file} の一覧タイトルとtitleが一致しません`);
+    assert.strictEqual(article.description, description, `${file} の一覧説明とdescriptionが一致しません`);
+    assert.strictEqual(ogTitle, title, `${file} のOGPタイトルが一致しません`);
+    assert.strictEqual(articleSchema?.headline, title, `${file} のArticle headlineが一致しません`);
+    assert.ok(html.includes('<meta name="robots" content="index,follow,max-image-preview:large"'), `${file} の画像プレビュー設定がありません`);
+    assert.ok(html.includes('<meta name="author" content="かたかた"'), `${file} の著者メタがありません`);
+    assert.ok(html.includes('<meta property="article:published_time"'), `${file} の公開日時メタがありません`);
+    assert.ok(html.includes('<meta property="article:modified_time"'), `${file} の更新日時メタがありません`);
+  }
+});
+
+test('重要記事は2026年時点の公式仕様と判断上の注意を保持する', () => {
+  const read = name => fs.readFileSync(path.join(root, 'articles', name), 'utf8');
+  const playGames = read('2025-12-25-play-games.html');
+  const weekly = read('2025-12-25-weekly-reward.html');
+  const diamond = read('2025-12-25-diamond-vip.html');
+  const family = read('2025-12-25-family-sharing.html');
+  const promotion = read('2025-12-25-promo-code.html');
+
+  assert.ok(playGames.includes('Google Play Games Leagues'), 'Play GamesとPlay Pointsの連携施策がありません');
+  assert.ok(playGames.includes('通常は貯まりません'), '通常プレイだけでは貯まらない注意がありません');
+  assert.ok(weekly.includes('通常リワードは金曜日'), '通常ウィークリーリワードの更新曜日がありません');
+  assert.ok(weekly.includes('Play Passのボーナス・ブースターは木曜日'), 'Play Pass週次特典との区別がありません');
+  assert.ok(diamond.includes('プレミアムサポートはプラチナと共通'), 'プラチナとダイヤの共通特典が区別されていません');
+  assert.ok(family.includes('その残高やポイントを別アカウントへ渡すことはできません'), '家族間の残高移動を誤認させます');
+  assert.ok(promotion.includes('一律に判断しない'), 'プロモコードの個別条件がまとめで失われています');
+});
+
+test('記事共通UIは文脈リンク・主要見出し目次・安定表示を使う', () => {
+  const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
+  const componentScript = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+  const sharedCss = fs.readFileSync(path.join(root, 'articles', 'article-shared.css'), 'utf8');
+
+  assert.ok(articleScript.includes('setupContextualGuideLinks'), '文脈に沿った関連記事導線がありません');
+  assert.ok(articleScript.includes('BreadcrumbList'), '記事パンくず構造化データがありません');
+  assert.ok(!articleScript.includes('0.5 - Math.random()'), '関連記事が閲覧ごとにランダム化されています');
+  assert.ok(componentScript.includes("querySelectorAll('.section > h2')"), '目次が主要セクションに限定されていません');
+  assert.ok(componentScript.includes("setAttribute('aria-label', 'この記事の目次')"), '目次のアクセシブルな名前がありません');
+  assert.ok(sharedCss.includes('.table-card {\n    max-width: 100%;\n    overflow-x: auto;'), 'モバイル表の横スクロール対策がありません');
+  assert.ok(sharedCss.includes('.content p a,'), '本文内リンクの読みやすさ調整がありません');
+});
