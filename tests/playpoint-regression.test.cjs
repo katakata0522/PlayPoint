@@ -2237,7 +2237,11 @@ test('海外向け韓国語・繁体字記事は公式名寄せのサイト名�
     ['tw/articles/google-play-points-not-showing.html', 'Google Play Points 計算器', '/tw/status/platinum/'],
     ['tw/articles/google-play-points-levels.html', 'Google Play Points 計算器', '/tw/status/platinum/'],
     ['tw/articles/google-play-points-gift-cards.html', 'Google Play Points 計算器', '/tw/amount/10000/'],
-    ['tw/articles/google-play-points-promotion-not-applied.html', 'Google Play Points 計算器', '/tw/campaign/2x/']
+    ['tw/articles/google-play-points-promotion-not-applied.html', 'Google Play Points 計算器', '/tw/campaign/2x/'],
+    ['ko/articles/google-play-points-country-differences.html', 'Google Play Points 계산기', '/ko/status/platinum/'],
+    ['ko/articles/google-play-points-subscriptions.html', 'Google Play Points 계산기', '/ko/campaign/2x/'],
+    ['tw/articles/google-play-points-country-differences.html', 'Google Play Points 計算器', '/tw/status/platinum/'],
+    ['tw/articles/google-play-points-subscriptions.html', 'Google Play Points 計算器', '/tw/campaign/2x/']
   ];
 
   for (const [file, siteName, platinumHref] of localizedArticles) {
@@ -2262,7 +2266,11 @@ test('海外向けSEOは計測対象と追加記事クラスタを持つ', () =>
     'tw/articles/google-play-points-not-showing.html',
     'tw/articles/google-play-points-levels.html',
     'tw/articles/google-play-points-gift-cards.html',
-    'tw/articles/google-play-points-promotion-not-applied.html'
+    'tw/articles/google-play-points-promotion-not-applied.html',
+    'ko/articles/google-play-points-country-differences.html',
+    'ko/articles/google-play-points-subscriptions.html',
+    'tw/articles/google-play-points-country-differences.html',
+    'tw/articles/google-play-points-subscriptions.html'
   ];
 
   for (const file of expectedArticles) {
@@ -2296,6 +2304,40 @@ test('海外向けSEOは計測対象と追加記事クラスタを持つ', () =>
 
   const seoHealthCheck = fs.readFileSync(path.join(root, '.github', 'scripts', 'seo-health-check.cjs'), 'utf8');
   assert.ok(seoHealthCheck.includes('(?:en|ko|tw)'), 'SEOヘルスチェックが多言語記事を拾いません');
+});
+
+test('国変更・定期購入クラスタは韓国語と繁体字で公式根拠・FAQ・相互hreflangを持つ', () => {
+  const pages = [
+    ['ko/articles/google-play-points-country-differences.html', '7431675', 'ko'],
+    ['ko/articles/google-play-points-subscriptions.html', '9077192', 'ko'],
+    ['tw/articles/google-play-points-country-differences.html', '7431675', 'zh-TW'],
+    ['tw/articles/google-play-points-subscriptions.html', '9077192', 'zh-TW']
+  ];
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
+
+  for (const [file, officialAnswer, lang] of pages) {
+    const page = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.ok(page.includes(`<html lang="${lang}">`), `${file} の言語指定が不正です`);
+    assert.ok(page.includes(`support.google.com/googleplay/answer/${officialAnswer}`), `${file} の公式根拠が不足しています`);
+    assert.ok(page.includes('"@type": "FAQPage"'), `${file} にFAQ構造化データがありません`);
+    for (const hreflang of ['en', 'ko', 'zh-TW', 'x-default']) {
+      assert.ok(page.includes(`hreflang="${hreflang}"`), `${file} に ${hreflang} の相互hreflangがありません`);
+    }
+    assert.ok(sitemap.includes(`<loc>https://playpoint-sim.com/${file}</loc>`), `${file} がXMLサイトマップにありません`);
+    assert.ok(sitemapHtml.includes(`href="${file}"`), `${file} が人向けサイトマップにありません`);
+  }
+
+  for (const file of [
+    'ko/articles/google-play-points-not-showing.html',
+    'ko/articles/google-play-points-promotion-not-applied.html',
+    'tw/articles/google-play-points-not-showing.html',
+    'tw/articles/google-play-points-promotion-not-applied.html'
+  ]) {
+    const page = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.ok(page.includes('"@type": "FAQPage"'), `${file} にFAQ構造化データがありません`);
+    assert.ok(page.includes('<meta name="last-modified" content="2026-07-24">'), `${file} の更新日が反映されていません`);
+  }
 });
 
 test('ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される', () => {
