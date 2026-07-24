@@ -2813,7 +2813,7 @@ test('100ポイント多言語記事は国別公式レートと相互hreflangを
   const cases = [
     ['en/articles/google-play-points-100-value.html', '1 point per $1', 'CountryCode%3DUS'],
     ['ko/articles/google-play-points-100-value.html', '1,000원당 1포인트', 'ko_ALL'],
-    ['tw/articles/google-play-points-100-value.html', '每消費 NT$30 得 1 點', 'CountryCode%3DTW']
+    ['tw/articles/google-play-points-100-value.html', '每消費 NT$30 可得 1 點', 'CountryCode%3DTW']
   ];
   for (const [file, rate, source] of cases) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
