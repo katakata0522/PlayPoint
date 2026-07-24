@@ -34,6 +34,9 @@
             ],
             trouble: [
                 { label: 'Play Pointsの問題を解決する（Google公式）', url: 'https://support.google.com/googleplay/answer/9077247?hl=ja' }
+            ],
+            use: [
+                { label: 'ポイントの交換先・期限・払い戻し（Google公式）', url: 'https://support.google.com/googleplay/answer/9079840?co=GENIE.Platform%3DAndroid&hl=ja' }
             ]
         }
     };
@@ -69,6 +72,7 @@
         if (path.includes('family-sharing') || path.includes('multiple-accounts')) return CONFIG.officialSources.family;
         if (path.includes('diamond') || path.includes('rank-maintenance')) return CONFIG.officialSources.rank;
         if (path.includes('refund')) return CONFIG.officialSources.refund;
+        if (path.includes('best-use')) return CONFIG.officialSources.use;
         if (path.includes('gift-card')) return CONFIG.officialSources.gift;
         if (path.includes('not-reflected') || path.includes('reflection-timing')) return CONFIG.officialSources.trouble;
         return CONFIG.officialSources.default;
@@ -193,7 +197,7 @@
             itemListElement: [
                 { '@type': 'ListItem', position: 1, name: 'Playポイント計算機', item: 'https://playpoint-sim.com/' },
                 { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://playpoint-sim.com/blog/' },
-                { '@type': 'ListItem', position: 3, name: title, item: window.location.href.split('#')[0] }
+                { '@type': 'ListItem', position: 3, name: title, item: window.location.origin + window.location.pathname }
             ]
         });
         document.head.appendChild(script);
