@@ -27,8 +27,7 @@ const LOCALES = {
       ['/en/articles/google-play-points-not-showing.html', 'Google Play Points not showing up'],
       ['/en/articles/google-play-points-levels.html', 'Google Play Points levels explained'],
       ['/en/articles/google-play-points-platinum-diamond-cost.html', 'How much to reach Platinum or Diamond'],
-      ['/en/articles/google-play-points-gift-cards.html', 'Do gift cards earn Play Points?'],
-      ['/en/articles/google-play-points-100-value.html', 'How much are 100 Play Points worth?']
+      ['/en/articles/google-play-points-gift-cards.html', 'Do gift cards earn Play Points?']
     ]
   },
   ko: {
@@ -53,8 +52,7 @@ const LOCALES = {
       ['/ko/articles/google-play-points-not-showing.html', 'Play Points가 표시되지 않을 때'],
       ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
       ['/ko/articles/google-play-points-gift-cards.html', '기프트카드와 포인트 조건'],
-      ['/ko/articles/google-play-points-promotion-not-applied.html', '캠페인 보너스가 적용되지 않을 때'],
-      ['/ko/articles/google-play-points-100-value.html', '100포인트는 얼마일까요?']
+      ['/ko/articles/google-play-points-promotion-not-applied.html', '캠페인 보너스가 적용되지 않을 때']
     ]
   },
   tw: {
@@ -79,8 +77,7 @@ const LOCALES = {
       ['/tw/articles/google-play-points-not-showing.html', 'Play Points 沒有顯示時'],
       ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
       ['/tw/articles/google-play-points-gift-cards.html', '禮物卡與點數條件'],
-      ['/tw/articles/google-play-points-promotion-not-applied.html', '活動加碼沒有套用時'],
-      ['/tw/articles/google-play-points-100-value.html', '100 點要花多少？']
+      ['/tw/articles/google-play-points-promotion-not-applied.html', '活動加碼沒有套用時']
     ]
   }
 };
@@ -1207,6 +1204,7 @@ const POINT_VALUE_100_ARTICLES = [
     ],
     "officialSourceBody": "Google confirms one point per $1 at Bronze in the US, item-level rounding, tax exclusion, and country-specific availability.",
     "officialSourceHref": "https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DUS&hl=en",
+    "officialProgramLink": "Program availability and joining",
     "officialSourceLink": "Google Play Help: Earn Play Points in the US",
     "officialSourceTitle": "Official US earning rules",
     "publishedAt": "2026-07-24",
@@ -1303,6 +1301,7 @@ const POINT_VALUE_100_ARTICLES = [
     ],
     "officialSourceBody": "Google 공식 안내에서 한국의 등급별 1,000원당 적립률을 확인할 수 있습니다.",
     "officialSourceHref": "https://play.google.com/intl/ko_ALL/about/playpoints/notifications/how-to-earn-points/",
+    "officialProgramLink": "가입 및 제공 국가 확인",
     "officialSourceLink": "Google Play 공식: 포인트 적립 방법",
     "officialSourceTitle": "한국 공식 적립률",
     "publishedAt": "2026-07-24",
@@ -1399,6 +1398,7 @@ const POINT_VALUE_100_ARTICLES = [
     ],
     "officialSourceBody": "Google 官方說明列出台灣每 NT$30 的等級積點率、逐項四捨五入與稅金排除規則。",
     "officialSourceHref": "https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DTW&hl=zh-Hant",
+    "officialProgramLink": "加入方式與適用地區",
     "officialSourceLink": "Google Play 說明：台灣等級與福利",
     "officialSourceTitle": "台灣官方積點率",
     "publishedAt": "2026-07-24",
@@ -1933,6 +1933,7 @@ ${jsonLd(schema)}
             <h2>${escapeHtml(article.officialSourceTitle || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceTitle)}</h2>
             <p>${escapeHtml(article.officialSourceBody || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceBody)}</p>
             <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>
+            ${article.officialProgramLink ? `<p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
         </aside>
 
         <section class="section">
