@@ -1487,19 +1487,37 @@ const ARTICLE_HUB_CONTENT = {
     title: 'Google Play Points guides',
     description: 'Browse Google Play Points guides about levels, point timing, promotions, gift cards, and country-specific checks.',
     eyebrow: 'Guide library',
-    intro: 'Choose a guide that matches the issue you are checking. Rules, promotions, and eligibility can vary by country or account, so use these pages to organize what to verify in Google Play.'
+    intro: 'Choose the rule that matches your situation. Each guide gives the answer first, then shows what to verify in Google Play.',
+    priorityArticles: [
+      ['/en/articles/google-play-points-cash-conversion.html', 'Can you cash out Google Play Points?'],
+      ['/en/articles/google-play-points-expiration.html', 'When do Google Play Points expire?'],
+      ['/en/articles/google-play-points-refund.html', 'What happens to Play Points after a refund?'],
+      ['/en/articles/google-play-points-family-sharing.html', 'Can Play Points be shared with family?']
+    ]
   },
   ko: {
     title: 'Google Play Points 가이드',
     description: '등급, 점수 반영, 캠페인, 기프트카드와 국가별 확인 사항을 다루는 Google Play Points 가이드 모음입니다.',
     eyebrow: '가이드 모음',
-    intro: '확인하려는 상황에 맞는 가이드를 선택하세요. 조건, 캠페인, 대상 결제는 국가나 계정에 따라 다를 수 있으므로 Google Play 앱에서 확인할 항목을 정리하는 용도로 사용하세요.'
+    intro: '지금 궁금한 규칙부터 선택하세요. 각 가이드는 결론을 먼저 제시하고 Google Play에서 확인할 항목을 안내합니다.',
+    priorityArticles: [
+      ['/ko/articles/google-play-points-cash-conversion.html', 'Play Points 현금화 가능할까?'],
+      ['/ko/articles/google-play-points-expiration.html', 'Play Points 유효기간은 언제까지일까?'],
+      ['/ko/articles/google-play-points-refund.html', '환불 후 Play Points는 어떻게 될까?'],
+      ['/ko/articles/google-play-points-family-sharing.html', 'Play Points를 가족과 공유할 수 있을까?']
+    ]
   },
   tw: {
     title: 'Google Play Points 指南',
     description: '瀏覽 Google Play Points 的等級、點數反映、活動、禮物卡與地區確認指南。',
     eyebrow: '指南庫',
-    intro: '請依照你想確認的情況選擇指南。條款、活動與適用付款可能因國家或帳號而不同，這些文章可協助整理在 Google Play App 中應確認的項目。'
+    intro: '先選擇最符合目前問題的規則。每篇指南先提供結論，再列出應在 Google Play 確認的項目。',
+    priorityArticles: [
+      ['/tw/articles/google-play-points-cash-conversion.html', 'Play Points 可以換現金嗎？'],
+      ['/tw/articles/google-play-points-expiration.html', 'Play Points 有效期限多久？'],
+      ['/tw/articles/google-play-points-refund.html', '退款後 Play Points 怎麼辦？'],
+      ['/tw/articles/google-play-points-family-sharing.html', 'Play Points 可以和家人共享嗎？']
+    ]
   }
 };
 
@@ -1975,6 +1993,10 @@ function renderArticleHub(localeKey, assetVersions) {
   const locale = LOCALES[localeKey];
   const content = ARTICLE_HUB_CONTENT[localeKey];
   const articles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
+  const hubLinks = [
+    ...(content.priorityArticles || []),
+    ...articles.map(article => [`/${article.file}`, article.title])
+  ];
   const canonical = `https://playpoint-sim.com/${localeKey}/articles/`;
   const modifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
@@ -2029,7 +2051,7 @@ ${jsonLd(schema)}
         <div class="intro">${escapeHtml(content.intro)}</div>
         <section class="section related-links-section">
             <ul>
-                ${articles.map(article => `<li><a href="/${escapeHtml(article.file)}">${escapeHtml(article.title)}</a></li>`).join('\n                ')}
+                ${hubLinks.map(([href, title]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></li>`).join('\n                ')}
             </ul>
         </section>
     </article>
