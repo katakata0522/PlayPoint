@@ -360,20 +360,16 @@ export const CALC = {
         return Number.isFinite(floorPoints) ? floorPoints : null;
     },
 
-    // 目標ランクに対する最大必要ポイントを取得
+    // Play ストアに表示される「目標までの残りポイント」の入力上限を取得
     getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold) {
-        if (!Number.isFinite(targetThreshold)) return null;
+        if (!Number.isFinite(targetThreshold) || targetThreshold <= 0) return null;
         const currentFloorPoints = this.getCurrentStatusFloorPoints(config, currentStatusValue);
         if (currentFloorPoints === null) return null;
 
-        // 維持（目標の閾値と現在の閾値が同じ）の場合は、最大必要ポイントは目標の閾値そのもの
-        if (targetThreshold === currentFloorPoints) {
-            return targetThreshold > 0 ? targetThreshold : null;
-        }
-
-        // 昇格の場合は差分
-        const maxNeededPoints = targetThreshold - currentFloorPoints;
-        return maxNeededPoints > 0 ? maxNeededPoints : null;
+        // 前年に獲得したランクは翌年末まで引き継がれる。
+        // そのため現在ランクの最低ポイントを今年すでに獲得済みとは限らず、
+        // 昇格時も目標ランクの閾値全体を入力できる必要がある。
+        return targetThreshold;
     },
 
     // 必要ポイント入力エリアの最大値を自動制御（矛盾防止）
