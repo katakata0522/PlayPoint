@@ -2596,8 +2596,70 @@ test('修正した記事の一覧タイトルとページtitleは一致する', 
 test('日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する', () => {
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
     .filter(article => article.id !== 'savings-game-fire');
-  const parseJsonLd = html => [...html.matchAll(/<script type="application\\/ld\\+json">([\\s\\S]*?)<\\/script>/g)]
+  const parseJsonLd = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
+  const pages = [
+    {
+      file: path.join(root, 'status', 'diamond', 'index.html'),
+      canonical: 'https://playpoint-sim.com/status/diamond/',
+      mode: 'main',
+      requiredQuery: 'target=diamond'
+    },
+    {
+      file: path.join(root, 'status', 'platinum', 'index.html'),
+      canonical: 'https://playpoint-sim.com/status/platinum/',
+      mode: 'main',
+      requiredQuery: 'target=platinum'
+    },
+    {
+      file: path.join(root, 'status', 'gold', 'index.html'),
+      canonical: 'https://playpoint-sim.com/status/gold/',
+      mode: 'main',
+      requiredQuery: 'target=gold'
+    },
+    {
+      file: path.join(root, 'status', 'silver', 'index.html'),
+      canonical: 'https://playpoint-sim.com/status/silver/',
+      mode: 'main',
+      requiredQuery: 'target=silver'
+    },
+    {
+      file: path.join(root, 'maintenance', 'platinum', 'index.html'),
+      canonical: 'https://playpoint-sim.com/maintenance/platinum/',
+      mode: 'main',
+      requiredQuery: 'target=platinum'
+    },
+    {
+      file: path.join(root, 'maintenance', 'diamond', 'index.html'),
+      canonical: 'https://playpoint-sim.com/maintenance/diamond/',
+      mode: 'main',
+      requiredQuery: 'target=diamond'
+    },
+    {
+      file: path.join(root, 'campaign', '2x', 'index.html'),
+      canonical: 'https://playpoint-sim.com/campaign/2x/',
+      mode: 'main',
+      requiredQuery: 'multiplier=2'
+    },
+    {
+      file: path.join(root, 'campaign', '3x', 'index.html'),
+      canonical: 'https://playpoint-sim.com/campaign/3x/',
+      mode: 'main',
+      requiredQuery: 'multiplier=3'
+    },
+    {
+      file: path.join(root, 'campaign', 'wait', 'index.html'),
+      canonical: 'https://playpoint-sim.com/campaign/wait/',
+      mode: 'main',
+      requiredQuery: 'utm_campaign=campaign_wait'
+    },
+    {
+      file: path.join(root, 'amount', '10000', 'index.html'),
+      canonical: 'https://playpoint-sim.com/amount/10000/',
+      mode: 'reverse',
+      requiredQuery: 'amount=10000'
+    }
+  ];
 
   for (const article of articles) {
     const file = article.file.replace(/^\.\.\//, '');
