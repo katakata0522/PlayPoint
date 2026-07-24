@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 
-const ROOT_SERVICE_WORKER_CACHE_REVISION = 'r2';
+const ROOT_SERVICE_WORKER_CACHE_REVISION = 'r3';
 
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
