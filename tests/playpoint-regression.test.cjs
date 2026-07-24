@@ -2479,5 +2479,81 @@ test('国際記事はビルド日を公開日として上書きしない', () =>
   assert.match(newArticle, /"datePublished":\s*"2026-07-10"/, '新規の国際記事の公開日が保持されていません');
 });
 
+test('主要な日本語Play Points記事は検索意図へ答える本文量を保つ', () => {
+  const articleFiles = [
+    'best-use', 'campaign', 'check-balance', 'diamond-vip', 'diamond-worth-it',
+    'expiration', 'family-sharing', 'getting-started', 'gift-card', 'movies-books',
+    'multiple-accounts', 'new-year-campaign', 'play-games', 'playpoints-not-reflected',
+    'playpoints-rank-maintenance', 'promo-code', 'refund', 'subscription', 'weekly-reward'
+  ].map(name => `articles/2025-12-25-${name}.html`).concat([
+    'articles/2026-03-10-play-points-reflection-timing.html'
+  ]);
 
+  for (const file of articleFiles) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const article = html.match(/<article\b[\s\S]*?<\/article>/i)?.[0] || '';
+    const text = article
+      .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&[^;]+;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i)?.[1] || '';
+
+    assert.ok(text.length >= 1100, `${file} の本文が薄すぎます: ${text.length}文字`);
+    assert.ok((article.match(/<h2\b/gi) || []).length >= 3, `${file} の説明構造が不足しています`);
+    assert.ok(description.length >= 45, `${file} のSEO説明が短すぎます`);
+  }
+});
+
+test('断定を避けるべき記事と公式仕様の記事は重要な注意点を保持する', () => {
+  const promotion = fs.readFileSync(path.join(root, 'articles/2025-12-25-promo-code.html'), 'utf8');
+  const refund = fs.readFileSync(path.join(root, 'articles/2025-12-25-refund.html'), 'utf8');
+  const maintenance = fs.readFileSync(path.join(root, 'articles/2025-12-25-playpoints-rank-maintenance.html'), 'utf8');
+
+  assert.ok(promotion.includes('一律には判断できません'), 'プロモコード記事が個別条件を無視して断定しています');
+  assert.ok(promotion.includes('その特典固有の条件'), 'プロモーション固有条件の案内がありません');
+  assert.ok(refund.includes('ポイント残高がマイナスになります'), '返金後のマイナス残高を明示していません');
+  assert.ok(refund.includes('レベル進捗からも減算'), '返金がランク進捗へ与える影響を明示していません');
+  assert.ok(maintenance.includes('プラチナまでの残りは4,000ポイント'), 'ランク引き継ぎ時の具体例がありません');
+  assert.ok(maintenance.includes('4,000 − ゴールド1,000 = 3,000'), '誤った差分計算への注意がありません');
+});
+
+test('サイトマップ掲載HTMLは検索結果タイトルと基本SEO要素を保つ', () => {
+  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const urls = [...sitemap.matchAll(/<loc>(https:\/\/playpoint-sim\.com\/[^<]*)<\/loc>/g)].map(match => new URL(match[1]));
+
+  for (const url of urls) {
+    let file = url.pathname.replace(/^\//, '');
+    if (!file || file.endsWith('/')) file += 'index.html';
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1].replace(/\s+/g, ' ').trim() || '';
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i)?.[1] || '';
+
+    assert.ok(title.length > 0 && title.length <= 65, `${file} のtitle長が不適切です: ${title.length}`);
+    assert.ok(description.length >= 45 && description.length <= 170, `${file} のdescription長が不適切です: ${description.length}`);
+    assert.strictEqual((html.match(/<link\s+rel="canonical"/gi) || []).length, 1, `${file} のcanonicalが不正です`);
+    assert.strictEqual((html.match(/<h1\b/gi) || []).length, 1, `${file} のh1数が不正です`);
+  }
+});
+
+test('国際記事一覧とギフトカード記事は相互hreflangを持つ', () => {
+  for (const file of ['en/articles/index.html', 'ko/articles/index.html', 'tw/articles/index.html']) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    for (const lang of ['en', 'ko', 'zh-TW', 'x-default']) {
+      assert.ok(html.includes(`hreflang="${lang}"`), `${file} に ${lang} のhreflangがありません`);
+    }
+  }
+
+  for (const file of [
+    'en/articles/2026-06-20-discount-gift-cards.html',
+    'ko/articles/2026-06-20-discount-gift-cards.html',
+    'tw/articles/2026-06-20-discount-gift-cards.html'
+  ]) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    for (const lang of ['ja', 'en', 'ko', 'zh-Hant', 'x-default']) {
+      assert.ok(html.includes(`hreflang="${lang}"`), `${file} に ${lang} のhreflangがありません`);
+    }
+  }
+});
 
