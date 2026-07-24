@@ -895,6 +895,12 @@ const KO_ARTICLES = [
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
     ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Play Points 문제 해결 공식 안내',
+    officialSourceBody: '결제 계정, 포인트 활동 내역, 가족 결제, 국가 변경 영향을 Google 공식 문제 해결 도움말에서 확인하세요.',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/9077247?hl=ko',
+    officialSourceLink: 'Google Play Points 문제 해결 도움말 보기',
+    officialProgramLink: 'Google Play Points 프로그램 공식 안내',
     nextLinks: [
       ['/ko/status/platinum/', '플래티넘 필요 금액 계산'],
       ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
@@ -991,6 +997,12 @@ const KO_ARTICLES = [
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
     ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Google Play 프로모션 공식 안내',
+    officialSourceBody: '프로모션 제공 여부와 자격은 계정 활동, 설정, 국가와 개별 약관에 따라 달라질 수 있습니다. 공식 안내를 확인하세요.',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/15698521?hl=ko',
+    officialSourceLink: 'Google Play 프로모션 도움말 보기',
+    officialProgramLink: 'Google Play Points 프로그램 공식 안내',
     nextLinks: [
       ['/ko/campaign/2x/', '2배 캠페인 계산'],
       ['/ko/campaign/3x/', '3배 캠페인 계산'],
@@ -1016,7 +1028,83 @@ const KO_ARTICLES = [
       ['캠페인 버튼을 누르지 않았으면 적용되지 않나요?', '캠페인마다 다릅니다. 활성화가 필요한 경우도 있으므로 상세 조건을 확인하세요.'],
       ['보너스가 없으면 바로 환불해야 하나요?', '바로 판단하지 말고 조건과 활동 내역을 확인한 뒤 결정하세요. 환불은 포인트에도 영향을 줄 수 있습니다.']
     ]
-  }
+  },
+  {
+    file: 'ko/articles/google-play-points-country-differences.html',
+    lang: 'ko',
+    siteName: 'Google Play Points 계산기',
+    labels: ARTICLE_LABELS.ko,
+    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Google Play 국가 변경 공식 안내',
+    officialSourceBody: '국가 변경 가능 조건, Play 잔액, Play Points, 정기 결제에 미치는 영향은 Google 공식 도움말의 최신 안내를 확인하세요.',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/7431675?hl=ko',
+    officialSourceLink: 'Google Play 국가 변경 도움말 보기',
+    officialProgramLink: 'Google Play Points 프로그램 공식 안내',
+    nextLinks: [
+      ['/ko/articles/google-play-points-subscriptions.html', '국가 변경과 정기 결제 확인'],
+      ['/ko/articles/google-play-points-not-showing.html', '포인트가 보이지 않을 때'],
+      ['/ko/articles/google-play-points-levels.html', 'Play Points 등급 구조 이해'],
+      ['/ko/status/platinum/', '플래티넘 필요 금액 계산'],
+      ['/author/katakata.html', '운영 및 검증 방침']
+    ],
+    title: 'Google Play 국가 변경 시 Play Points는 어떻게 될까?',
+    description: 'Google Play 국가를 변경할 때 Play Points, 등급, Play 잔액, 정기 결제에 생기는 변화를 공식 안내 기준으로 정리한 한국어 가이드입니다.',
+    h1: 'Google Play 국가 변경 시 Play Points는 어떻게 될까?',
+    badge: '국가 변경',
+    lead: 'Google Play 국가를 바꾸면 기존 Play Points와 등급이 새 국가로 따라오지 않습니다. 이동 전에 잔액, 정기 결제, 가족 그룹까지 먼저 확인하세요.',
+    intro: '국가 변경은 표시 통화만 바꾸는 설정이 아닙니다. Google 공식 안내에 따르면 변경 조건이 있고, 기존 Play Points와 등급, Play 잔액, 정기 결제가 서로 다른 방식으로 처리됩니다. 이 글은 이동 직전에 확인해야 할 항목을 결론부터 정리합니다.',
+    sections: [
+      ['결론: 포인트와 등급은 새 국가로 이전되지 않습니다', ['Google 공식 도움말은 Play 국가를 변경하면 기존 Play Points가 사라지고 등급도 새 국가로 이어지지 않는다고 안내합니다. 등급 달성을 위해 추가 결제를 계획하고 있다면 국가 변경 전에 멈추고 현재 계정 화면을 먼저 확인하세요.', '포인트로 교환한 일부 인앱 상품은 유지될 수 있지만, 쿠폰 등 일부 혜택은 사라질 수 있습니다. 포인트 잔액, 등급, 교환한 항목을 같은 것으로 취급하지 않는 것이 중요합니다.']],
+      ['국가 변경 조건부터 확인하세요', ['공식 안내상 국가 변경 사이에는 최소 90일이 필요하며, 새 국가에 실제로 있어야 하고 그 국가에서 사용할 수 있는 결제수단이 필요합니다. Google 가족 그룹 구성원은 국가를 변경할 수 없습니다.', '조건을 충족해도 새 결제 프로필이 앱에 반영되기까지 최대 48시간 걸릴 수 있습니다. 급하게 재결제하기보다 현재 Play 국가와 결제 프로필이 바뀌었는지 먼저 확인하세요.']],
+      ['기존 Play 잔액은 새 국가에서 사용할 수 없습니다', ['이전 국가의 Google Play 잔액은 새 국가에서 사용할 수 없지만 기존 국가와 연결된 상태로 남습니다. 국가를 다시 바꾸기 위해 결제하거나 잔액을 억지로 소진할 필요는 없습니다.', '통화, 기프트카드, 프로모션 잔액은 지역 조건이 강합니다. 다른 국가의 잔액을 새 국가의 구매 예산처럼 계산기에 넣지 마세요.']],
+      ['정기 결제는 자동으로 새 프로필로 이동하지 않습니다', ['기존 정기 결제는 취소하지 않는 한 이전 결제 프로필에서 계속될 수 있습니다. 새 국가에서 제공되지 않는 앱이나 콘텐츠라면 이용 가능 여부가 달라질 수도 있습니다.', '각 구독의 다음 결제일, 결제수단, 제공 국가를 따로 확인하세요. 새 국가에서 다시 가입하기 전에는 기존 구독이 중복으로 살아 있지 않은지 확인하는 것이 안전합니다.']],
+      ['변경 전 체크리스트', ['Play Points 잔액과 등급, 교환하지 않은 쿠폰, Play 잔액, 활성 정기 결제, 가족 그룹 가입 여부를 한 화면씩 기록하세요. 중요한 화면은 개인 보관용으로만 캡처하고 주문번호는 공개하지 마세요.', '변경 후 포인트가 보이지 않는다면 같은 계정인지, 국가 변경이 완료되었는지, 구매가 어느 결제 프로필에서 처리되었는지 순서대로 확인하세요. 계산기는 예상 비교용이며 계정의 실제 이전 상태를 확인할 수 없습니다.']]
+    ],
+    faq: [
+      ['국가를 바꾸면 Play Points를 유지할 수 있나요?', '공식 안내상 기존 포인트는 사라지고 등급도 새 국가로 이전되지 않습니다. 변경 전 최신 안내를 다시 확인하세요.'],
+      ['기존 정기 결제는 자동으로 새 국가로 옮겨지나요?', '아니요. 취소하지 않으면 이전 결제 프로필에서 계속될 수 있으므로 각 구독을 따로 확인해야 합니다.'],
+      ['국가 변경 직후 화면이 바뀌지 않으면 어떻게 하나요?', '반영에 최대 48시간 걸릴 수 있습니다. 현재 국가와 결제 프로필을 확인하고 중복 결제는 피하세요.']
+    ]
+  },
+  {
+    file: 'ko/articles/google-play-points-subscriptions.html',
+    lang: 'ko',
+    siteName: 'Google Play Points 계산기',
+    labels: ARTICLE_LABELS.ko,
+    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: '정기 결제 Play Points 공식 안내',
+    officialSourceBody: '정기 결제 적립과 일회성 보너스는 국가, 계정, 프로모션 조건에 따라 달라질 수 있으므로 Google 공식 도움말을 함께 확인하세요.',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DKR&hl=ko',
+    officialSourceLink: 'Google Play Points 적립 공식 안내 보기',
+    officialProgramLink: 'Google Play Points 프로그램 공식 안내',
+    nextLinks: [
+      ['/ko/articles/google-play-points-country-differences.html', '국가 변경 시 포인트와 구독'],
+      ['/ko/articles/google-play-points-promotion-not-applied.html', '캠페인 보너스가 적용되지 않을 때'],
+      ['/ko/articles/google-play-points-not-showing.html', '포인트가 보이지 않을 때'],
+      ['/ko/campaign/2x/', '2배 캠페인 계산'],
+      ['/author/katakata.html', '운영 및 검증 방침']
+    ],
+    title: 'Google Play 정기 결제도 Play Points가 적립될까?',
+    description: 'Google Play 정기 결제의 Play Points 적립, 첫 구독 보너스, 갱신, 계정과 국가 변경 조건을 확인하는 한국어 가이드입니다.',
+    h1: 'Google Play 정기 결제도 Play Points가 적립될까?',
+    badge: '정기 결제',
+    lead: 'Google Play를 통해 처리되는 대상 정기 결제는 일반 등급 적립률로 포인트가 쌓일 수 있습니다. 첫 구독 보너스와 매월 갱신 적립은 따로 확인하세요.',
+    intro: '정기 결제는 한 번의 구매와 달리 자동 갱신, 체험 전환, 첫 가입 보너스, 국가 변경이 겹칠 수 있습니다. 따라서 “구독이면 모두 몇 배”라고 계산하기보다 결제 계정, Google Play 주문 기록, 프로모션 조건을 나누어 보는 것이 안전합니다.',
+    sections: [
+      ['결론: 대상 정기 결제는 일반 적립 대상이 될 수 있습니다', ['Google 공식 도움말은 앱을 통해 이루어진 정기 결제가 일반 등급 적립률로 포인트를 받을 수 있다고 안내합니다. 단, 결제가 Google Play에서 처리되었는지와 해당 국가·계정에서 적립 대상인지가 먼저입니다.', '앱 회사 웹사이트나 다른 결제 서비스에서 가입한 구독은 Google Play 주문과 다를 수 있습니다. 이메일 영수증과 Play 구매 내역에서 실제 결제 경로를 확인하세요.']],
+      ['첫 정기 결제 보너스는 반복 적립이 아닙니다', ['첫 정기 결제에 추가 포인트가 표시되는 프로모션은 일반적으로 최초 한 번만 적용되는 조건을 가질 수 있습니다. 매월 같은 보너스가 반복된다고 가정하면 예상치가 크게 부풀어집니다.', '기본 적립과 첫 가입 보너스를 두 줄로 분리하세요. 계산기에서는 먼저 1배 기준을 보고, 공식 화면에 명확한 배율이 있을 때만 캠페인 값을 비교하세요.']],
+      ['체험 종료와 자동 갱신 시점을 확인하세요', ['무료 체험 시작일과 실제 유료 결제일은 다를 수 있습니다. 포인트를 확인할 때는 체험을 시작한 날보다 Google Play 주문이 실제로 완료된 날을 기준으로 보는 편이 정확합니다.', '갱신이 보류, 실패, 취소 또는 환불된 경우 포인트 결과도 달라질 수 있습니다. 잔액만 보지 말고 Play Points 활동과 주문 상태를 함께 확인하세요.']],
+      ['계정과 국가를 바꾸면 구독 흐름이 복잡해집니다', ['포인트는 결제한 계정 기준으로 확인해야 합니다. 여러 Google 계정을 쓰는 기기라면 구독 관리 화면, 영수증 계정, Play Points 화면의 계정이 같은지 먼저 맞추세요.', 'Play 국가를 변경해도 기존 구독은 이전 결제 프로필에서 계속될 수 있습니다. 새 국가에서 다시 가입하기 전에 기존 구독과 다음 결제일을 확인해 중복 결제를 피하세요.']],
+      ['월 지출 계획은 포인트보다 먼저 정하세요', ['정기 결제는 자동으로 반복되기 때문에 등급 달성을 위해 새 구독을 추가하면 작은 금액이 계속 쌓일 수 있습니다. 원래 사용할 서비스인지, 해지 예정일을 기억할 수 있는지, 연간 비용이 감당 가능한지부터 확인하세요.', 'Play Points는 부가 혜택입니다. 포인트 가치가 사용하지 않는 구독료를 상쇄한다고 가정하지 말고, 이미 필요한 구독의 결제 시점과 조건을 정리하는 데 계산기를 사용하세요.']]
+    ],
+    faq: [
+      ['모든 정기 결제가 Play Points 대상인가요?', '그렇게 단정할 수 없습니다. Google Play 처리 여부와 국가·계정의 공식 적립 조건을 확인하세요.'],
+      ['첫 구독 보너스가 매월 반복되나요?', '대개 최초 한 번 조건일 수 있습니다. 일반 적립과 프로모션 보너스를 분리해 확인하세요.'],
+      ['국가를 바꾸면 기존 구독은 자동으로 이동하나요?', '아니요. 이전 결제 프로필에서 계속될 수 있으므로 중복 가입 전에 구독 상태를 확인하세요.']
+    ]
+  },
 ];
 
 const TW_ARTICLES = [
@@ -1026,6 +1114,12 @@ const TW_ARTICLES = [
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
     ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Play Points 問題排解官方說明',
+    officialSourceBody: '請在 Google 官方問題排解說明確認付款帳號、點數活動、家庭付款與國家/地區變更的影響。',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/9077247?hl=zh-Hant',
+    officialSourceLink: '查看 Play Points 問題排解說明',
+    officialProgramLink: 'Google Play Points 方案官方說明',
     nextLinks: [
       ['/tw/status/platinum/', '白金等級需要多少'],
       ['/tw/status/diamond/', '鑽石等級需要多少'],
@@ -1122,6 +1216,12 @@ const TW_ARTICLES = [
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
     ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Google Play 促銷活動官方說明',
+    officialSourceBody: '促銷活動提供與資格可能因帳號活動、設定、國家/地區與個別條款不同，請確認官方說明。',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/15698521?hl=zh-Hant',
+    officialSourceLink: '查看 Google Play 促銷活動說明',
+    officialProgramLink: 'Google Play Points 方案官方說明',
     nextLinks: [
       ['/tw/campaign/2x/', '2 倍活動計算'],
       ['/tw/campaign/3x/', '3 倍活動計算'],
@@ -1147,7 +1247,83 @@ const TW_ARTICLES = [
       ['沒有先啟用活動就購買，還會套用嗎？', '活動規則不同，不能保證。請以 Google Play App 內的條件為準。'],
       ['活動沒套用應該立刻退款嗎？', '不要只因短時間沒有看到加碼就立刻判斷。先確認條件與活動紀錄，退款也可能影響點數。']
     ]
-  }
+  },
+  {
+    file: 'tw/articles/google-play-points-country-differences.html',
+    lang: 'zh-TW',
+    siteName: 'Google Play Points 計算器',
+    labels: ARTICLE_LABELS.tw,
+    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: 'Google Play 國家/地區變更官方說明',
+    officialSourceBody: '變更條件、Play 餘額、Play Points 與訂閱受到的影響，請以 Google 官方說明的最新內容為準。',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/7431675?hl=zh-Hant',
+    officialSourceLink: '查看 Google Play 國家/地區變更說明',
+    officialProgramLink: 'Google Play Points 方案官方說明',
+    nextLinks: [
+      ['/tw/articles/google-play-points-subscriptions.html', '國家/地區變更與訂閱'],
+      ['/tw/articles/google-play-points-not-showing.html', '點數沒有顯示時'],
+      ['/tw/articles/google-play-points-levels.html', 'Play Points 等級說明'],
+      ['/tw/status/platinum/', '白金等級需要多少'],
+      ['/author/katakata.html', '營運與驗證方針']
+    ],
+    title: '變更 Google Play 國家/地區後，Play Points 會怎樣？',
+    description: '依 Google 官方說明整理變更 Play 國家/地區時，Play Points、等級、Play 餘額與訂閱會發生的變化。',
+    h1: '變更 Google Play 國家/地區後，Play Points 會怎樣？',
+    badge: '國家/地區變更',
+    lead: '變更 Google Play 國家/地區後，既有 Play Points 與等級不會移到新地區。操作前請先確認餘額、訂閱與家庭群組。',
+    intro: '變更國家/地區不只是切換顯示幣別。Google 官方說明列出變更資格，而且 Play Points、等級、Play 餘額與訂閱會用不同方式處理。這篇指南先講結果，再提供操作前的檢查順序。',
+    sections: [
+      ['結論：點數與等級不會移到新地區', ['Google 官方說明指出，變更 Play 國家/地區後，既有 Play Points 會失去，等級也不會帶到新地區。如果你正為了升級而增加消費，請先停下來確認目前帳號畫面。', '已用點數兌換的部分 App 內項目可能保留，但某些優惠券可能失效。不要把點數餘額、等級與已兌換內容當成同一種資產。']],
+      ['先確認是否符合變更資格', ['官方說明表示，兩次變更之間至少要相隔 90 天，你必須位於新地區並擁有當地可用的付款方式。Google 家庭群組成員無法直接變更 Play 國家/地區。', '符合條件後，新付款資料可能需要最長 48 小時才會反映。畫面沒有立即更新時，先確認目前國家與付款資料，不要急著重複購買。']],
+      ['舊地區的 Play 餘額無法在新地區使用', ['舊地區的 Google Play 餘額不能在新地區使用，但會繼續連結在舊地區。不要把這筆餘額直接換算成新地區可用的購買預算。', '禮物卡、促銷餘額與幣別都有明顯地區限制。為了清空餘額而臨時消費，也不一定比保留更划算。']],
+      ['既有訂閱不會自動轉到新付款資料', ['未取消的既有訂閱可能繼續使用舊付款資料扣款。若內容在新地區沒有提供，使用方式也可能改變。', '請逐一查看下一次扣款日、付款方式與服務提供地區。在新地區重新訂閱前，先避免舊訂閱仍在運作造成重複付款。']],
+      ['變更前檢查清單', ['記錄 Play Points 餘額與等級、尚未使用的優惠券、Play 餘額、有效訂閱，以及是否加入家庭群組。畫面截圖只供自己保存，不要公開訂單編號。', '變更後若點數沒有顯示，依序確認 Google 帳號、國家/地區是否已更新，以及購買使用哪個付款資料。計算器只能協助比較，無法讀取帳號的實際移轉狀態。']]
+    ],
+    faq: [
+      ['變更國家/地區後可以保留 Play Points 嗎？', '依官方說明，既有點數會失去，等級也不會移轉。操作前請再次確認最新規則。'],
+      ['原本的訂閱會自動移到新地區嗎？', '不會。訂閱可能繼續使用舊付款資料，請逐項確認。'],
+      ['變更後畫面沒有立刻更新怎麼辦？', '付款資料可能需要最長 48 小時反映。先確認設定並避免重複付款。']
+    ]
+  },
+  {
+    file: 'tw/articles/google-play-points-subscriptions.html',
+    lang: 'zh-TW',
+    siteName: 'Google Play Points 計算器',
+    labels: ARTICLE_LABELS.tw,
+    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    faqStructuredData: true,
+    officialSourceTitle: '訂閱 Play Points 官方說明',
+    officialSourceBody: '訂閱累積與首次訂閱加碼可能因地區、帳號與活動條件不同，請一併確認 Google 官方說明。',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DTW&hl=zh-Hant',
+    officialSourceLink: '查看 Play Points 累積官方說明',
+    officialProgramLink: 'Google Play Points 方案官方說明',
+    nextLinks: [
+      ['/tw/articles/google-play-points-country-differences.html', '國家/地區變更時的點數與訂閱'],
+      ['/tw/articles/google-play-points-promotion-not-applied.html', '活動加碼沒有套用時'],
+      ['/tw/articles/google-play-points-not-showing.html', '點數沒有顯示時'],
+      ['/tw/campaign/2x/', '2 倍活動計算'],
+      ['/author/katakata.html', '營運與驗證方針']
+    ],
+    title: 'Google Play 訂閱也會累積 Play Points 嗎？',
+    description: '整理 Google Play 訂閱的 Play Points 累積、首次訂閱加碼、續訂、帳號與國家/地區變更條件。',
+    h1: 'Google Play 訂閱也會累積 Play Points 嗎？',
+    badge: '訂閱',
+    lead: '透過 Google Play 處理且符合資格的訂閱，可依一般等級回饋率累積點數。首次訂閱加碼與每月續訂要分開確認。',
+    intro: '訂閱會遇到自動續訂、試用轉付費、首次加入加碼與國家/地區變更，因此不能只用「訂閱都是幾倍」來估算。請分開檢查付款帳號、Google Play 訂單與活動條件。',
+    sections: [
+      ['結論：符合資格的訂閱可按一般回饋率累積', ['Google 官方說明提到，透過 App 進行的訂閱可依一般等級回饋率取得點數。前提是付款由 Google Play 處理，而且該地區與帳號符合累積資格。', '如果是在服務商網站或其他付款平台訂閱，可能不會成為 Google Play 訂單。請比對電子收據與 Play 購買紀錄。']],
+      ['首次訂閱加碼不是每月重複加碼', ['畫面若顯示首次訂閱額外點數，通常可能有僅限首次一次的條件。把這項加碼套用到每個月，會讓預估結果明顯偏高。', '請把一般回饋與首次加碼分成兩列。計算時先看 1 倍基準，只有官方畫面明確顯示倍率時才加入活動比較。']],
+      ['確認試用結束與實際扣款時間', ['免費試用開始日不一定是點數產生的日期。檢查時應以 Google Play 訂單實際完成的付費日期為準。', '續訂若處於保留、付款失敗、取消或退款狀態，點數也可能受到影響。不要只看總餘額，請一起查看 Play Points 活動與訂單狀態。']],
+      ['帳號與國家/地區變更會讓流程更複雜', ['點數要在實際付款的 Google 帳號查看。使用多個帳號時，請確認訂閱管理、收據與 Play Points 畫面都是同一個帳號。', '變更 Play 國家/地區後，舊訂閱可能繼續使用原付款資料。重新加入前，先查看舊訂閱與下次扣款日，避免重複付款。']],
+      ['先決定月支出，再考慮點數', ['訂閱會自動重複扣款。為了升級而新增用不到的服務，可能讓小額支出長期累積，遠高於獲得的點數價值。', 'Play Points 應是附加回饋。計算器適合整理原本就需要的訂閱，不適合用來合理化不會使用的月費。']]
+    ],
+    faq: [
+      ['所有訂閱都會累積 Play Points 嗎？', '不能一概而論。請確認是否由 Google Play 處理，以及所在地區與帳號的官方資格。'],
+      ['首次訂閱加碼會每月重複嗎？', '可能僅限首次一次。一般回饋與活動加碼要分開確認。'],
+      ['變更國家/地區後，舊訂閱會自動移轉嗎？', '不會。舊訂閱可能繼續使用原付款資料，重新加入前要先確認。']
+    ]
+  },
 ];
 
 const POINT_VALUE_100_ARTICLES = [
@@ -1457,14 +1633,18 @@ const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-24' },
   'ko/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'ko/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
+  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-24' },
   'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'tw/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'tw/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
   'en/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
   'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
   'tw/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' }
@@ -1892,6 +2072,15 @@ function renderArticle(article, assetVersions) {
     author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
     publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
+  const faqSchema = article.faqStructuredData ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: article.faq.map(([question, answer]) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer }
+    }))
+  } : null;
   const alternateLinks = getArticleAlternates(article);
   const defaultAlternate = alternateLinks.find(alternate => alternate.localeKey === 'en') || alternateLinks[0];
 
@@ -1923,7 +2112,10 @@ function renderArticle(article, assetVersions) {
     <meta name="twitter:card" content="summary_large_image">
     <script type="application/ld+json">
 ${jsonLd(schema)}
-    </script>
+    </script>${faqSchema ? `
+    <script type="application/ld+json">
+${jsonLd(faqSchema)}
+    </script>` : ""}
 </head>
 <body>
 <main class="main-card">
