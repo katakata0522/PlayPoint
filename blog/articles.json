@@ -1,5 +1,21 @@
 [
   {
+    "id": "points-value-100",
+    "title": "Google Play Points 100ポイントはいくら？何円で貯まるか計算",
+    "date": "2026-07-24",
+    "modified": "2026-07-24",
+    "category": "入門",
+    "tags": [
+      "Play Points",
+      "100ポイント",
+      "価値",
+      "必要金額"
+    ],
+    "description": "Google Play Pointsの100ポイントは何円分か、何円使えば貯まるかを分けて解説。日本のステータス別獲得率、キャンペーン時の目安、交換前の確認方法をまとめます。",
+    "file": "../articles/2026-07-24-play-points-100-value.html",
+    "thumbnail": "../ogp.png"
+  },
+  {
     "id": "savings-game-fire",
     "title": "【家計ハック】無理のないお得化をゲームにする！Side FIRE（月10万円セーブ）への第一歩",
     "date": "2026-06-29",
