@@ -1576,7 +1576,7 @@ function renderArticle(article, assetVersions) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${escapeHtml(article.title)} | ${escapeHtml(siteName)}</title>
+    <title>${escapeHtml(localeKey === 'en' ? article.title : `${article.title} | ${siteName}`)}</title>
     <meta name="description" content="${escapeHtml(article.description)}">
     <meta name="robots" content="index,follow">
     <meta name="author" content="${escapeHtml(authorName)}">
@@ -1691,6 +1691,10 @@ function renderArticleHub(localeKey, assetVersions) {
     <meta name="robots" content="index,follow">
     <meta name="last-modified" content="${modifiedAt}">
     <link rel="canonical" href="${canonical}">
+    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/">
+    <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/">
+    <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/">
+    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
