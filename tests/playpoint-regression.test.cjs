@@ -1706,15 +1706,17 @@ test('Service Workerは共有URL機能を含む最新版アセットを事前キ
   assert.ok(/\.\/style\.css\?v=[a-zA-Z0-9_-]+/.test(sw));
 });
 
-test('トップページの更新日は実装更新日と一致する', () => {
+test('トップページの更新日メタとサイト更新日を用途別に保持する', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
   const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
   const modifiedDate = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/);
+  const siteUpdatedDate = html.match(/サイト更新: (\d{4}-\d{2}-\d{2})/);
 
   assert.ok(modifiedDate, 'トップページのlast-modifiedがありません');
+  assert.ok(siteUpdatedDate, 'トップページのサイト更新日がありません');
+  assert.ok(siteUpdatedDate[1] >= modifiedDate[1], 'サイト更新日がページメタの更新日より古くなっています');
   assert.ok(html.includes(`"dateModified": "${modifiedDate[1]}"`));
-  assert.ok(html.includes(`最終更新: ${modifiedDate[1]}`));
   assert.ok(englishHtml.includes(`<meta name="last-modified" content="${modifiedDate[1]}">`));
   assert.match(sitemap, new RegExp(`<loc>https://playpoint-sim\\.com/</loc>\\s*<lastmod>${modifiedDate[1]}</lastmod>`));
 });
