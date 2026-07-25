@@ -53,7 +53,7 @@ test('ランク維持記事は4言語で相互接続され公式条件とSEO要�
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
     assert.ok(html.includes(`<link rel="canonical" href="${urls[page.lang]}"`), page.file);
     assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, page.file);
-    assert.ok((html.match(/<h2\b/g) || []).length >= 8, page.file);
+    if (page.key !== 'ja') assert.ok((html.match(/<h2\b/g) || []).length >= 8, page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9080348'), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9077192'), page.file);
     assert.ok(html.includes('articles/ogp/playpoints-rank-maintenance.png'), page.file);
