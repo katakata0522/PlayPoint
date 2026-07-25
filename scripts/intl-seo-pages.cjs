@@ -1906,6 +1906,37 @@ body {
 .official-source-note a,
 .related-links-section a { color: var(--accent); text-decoration: none; }
 .small { font-size: 0.85rem; color: var(--muted); }
+.comparison-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+}
+.table-wrap {
+    overflow-x: auto;
+    margin: 1.2rem 0;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+}
+.comparison-table th,
+.comparison-table td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+.comparison-table th {
+    background: #eef2ff;
+    color: #312e81;
+}
+.comparison-table tr:last-child td { border-bottom: 0; }
+.decision-box {
+    margin: 1rem 0;
+    padding: 1.25rem 1.4rem;
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    background: #f8fafc;
+}
+.decision-box strong { color: #4338ca; }
+.number-note { font-size: 0.9rem; color: #5b6472; }
 @media (max-width: 600px) {
     .main-card { margin: 1rem; border-radius: 16px; }
     .hero { padding: 2rem 1.4rem; }
