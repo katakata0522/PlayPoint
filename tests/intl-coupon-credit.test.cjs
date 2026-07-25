@@ -74,7 +74,9 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
       assert.ok(html.includes('utm_campaign=intl_article_cta'));
       assert.ok(html.includes('/author/katakata.html'));
-      assert.ok(html.includes(topic.peer));
+      const peerTopic = topics.find(candidate => candidate.slug === topic.peer);
+      const peerPath = fileFor(peerTopic, locale);
+      assert.ok(html.includes(path.basename(peerPath)), `${relativePath}: peer ${peerPath}`);
 
       for (const hreflang of ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
         assert.ok(html.includes(`hreflang="${hreflang}"`), `${relativePath}: ${hreflang}`);
