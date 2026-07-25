@@ -1681,7 +1681,8 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-use-coupons.html', 'How to use points and coupons'],
       ['/en/articles/google-play-points-join-eligibility.html', 'Eligibility and missing Join button'],
       ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
-      ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used']
+      ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used'],
+      ['/en/articles/google-play-points-level-maintenance-reset.html', 'Level maintenance and yearly reset']
     ]
   },
   ko: {
@@ -1702,7 +1703,8 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-use-coupons.html', '포인트와 쿠폰 사용 방법'],
       ['/ko/articles/google-play-points-join-eligibility.html', '가입 조건과 가입 버튼이 없을 때'],
       ['/ko/articles/google-play-points-coupon-not-applied.html', '쿠폰이 자동 적용되지 않을 때'],
-      ['/ko/articles/google-play-points-play-credit-not-working.html', 'Play 크레딧을 교환하거나 사용할 수 없을 때']
+      ['/ko/articles/google-play-points-play-credit-not-working.html', 'Play 크레딧을 교환하거나 사용할 수 없을 때'],
+      ['/ko/articles/google-play-points-level-maintenance-reset.html', '등급 유지와 연초 재산정']
     ]
   },
   tw: {
@@ -1723,7 +1725,8 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-use-coupons.html', '點數與折價券使用方法'],
       ['/tw/articles/google-play-points-join-eligibility.html', '加入資格與找不到加入按鈕'],
       ['/tw/articles/google-play-points-coupon-not-applied.html', '折價券沒有自動套用時'],
-      ['/tw/articles/google-play-points-play-credit-not-working.html', 'Play 抵用金無法兌換或使用時']
+      ['/tw/articles/google-play-points-play-credit-not-working.html', 'Play 抵用金無法兌換或使用時'],
+      ['/tw/articles/google-play-points-level-maintenance-reset.html', '等級維持與年初重新判定']
     ]
   }
 };
