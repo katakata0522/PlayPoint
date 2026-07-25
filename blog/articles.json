@@ -424,10 +424,10 @@
       "プラチナ",
       "シミュレーション"
     ],
-    "description": "Google Play Pointsのダイヤモンドとプラチナを、必要ポイント数と通常時の獲得ポイント（100円ごと）に基づいてシミュレーション。目安の維持費や差を整理します。",
+    "description": "日本のGoogle公式情報をもとに、Play Pointsのプラチナとダイヤモンドを必要ポイント、基本獲得率、共通特典、通常獲得率だけで維持する場合の参考額で比較します。",
     "file": "../articles/2025-12-25-diamond-worth-it.html",
     "thumbnail": "../articles/ogp/diamond-worth-it.png",
-    "modified": "2026-07-24"
+    "modified": "2026-07-25"
   },
   {
     "id": "playpoints-rank-maintenance",
