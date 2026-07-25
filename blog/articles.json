@@ -1,5 +1,37 @@
 [
   {
+    "id": "play-points-coupon-not-applied",
+    "title": "Google Play Pointsクーポンが自動適用されない原因",
+    "date": "2026-07-25",
+    "modified": "2026-07-25",
+    "category": "トラブル対処",
+    "tags": [
+      "Play Points",
+      "クーポン",
+      "自動適用",
+      "対処法"
+    ],
+    "description": "Google Play Pointsのクーポンが自動適用されないときに、対象アプリ、購入額、他の割引、アカウント、国・通貨を順番に確認する方法を解説します。",
+    "file": "../articles/2026-07-25-play-points-coupon-not-applied.html",
+    "thumbnail": "../articles/ogp/best-use.png"
+  },
+  {
+    "id": "play-credit-not-working",
+    "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
+    "date": "2026-07-25",
+    "modified": "2026-07-25",
+    "category": "トラブル対処",
+    "tags": [
+      "Play Points",
+      "Playクレジット",
+      "交換",
+      "使えない"
+    ],
+    "description": "Google Play PointsをPlayクレジットへ交換できない、または交換後に使えないときのポイント数、期限、アカウント、国・通貨、対象購入の確認方法です。",
+    "file": "../articles/2026-07-25-play-credit-not-working.html",
+    "thumbnail": "../articles/ogp/best-use.png"
+  },
+  {
     "id": "play-points-cash-conversion",
     "title": "Google Play Pointsは現金化できる？PayPay・銀行振込との違い",
     "date": "2026-07-24",

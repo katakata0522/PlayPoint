@@ -2829,10 +2829,15 @@ test('サイトマップ生成は記事一覧のmodifiedを自動反映する', 
   const entries = getBlogSitemapEntries(root);
   const sitemap = renderBlogSitemap(entries);
   const valueArticle = entries.find(entry => entry.url.endsWith('/2026-07-24-play-points-100-value.html'));
+  const latestDate = entries.reduce(
+    (latest, entry) => String(entry.lastmod) > latest ? String(entry.lastmod) : latest,
+    '2024-01-01'
+  );
 
   assert.strictEqual(valueArticle?.lastmod, '2026-07-24');
   assert.ok(sitemap.includes('<loc>https://playpoint-sim.com/blog/</loc>'));
-  assert.match(sitemap, /<loc>https:\/\/playpoint-sim\.com\/blog\/<\/loc>\s*<lastmod>2026-07-24<\/lastmod>/);
+  assert.ok(sitemap.includes(`<loc>https://playpoint-sim.com/blog/</loc>
+    <lastmod>${latestDate}</lastmod>`));
 });
 
 test('100ポイント記事は貯める金額と使う価値を分けて案内する', () => {
