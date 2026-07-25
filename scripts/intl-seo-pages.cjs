@@ -1198,6 +1198,7 @@ const TW_ARTICLES = [
     officialSourceBody: '官方清單目前未列出台灣。禮物卡只能在購買時的國家與幣別使用，帳戶國家也必須相符。',
     officialSourceHref: 'https://support.google.com/googleplay/answer/3422734?hl=zh-Hant',
     officialSourceLink: '查看 Google Play 禮物卡官方清單',
+    officialProgramLink: 'Google Play Points 方案官方說明',
     nextLinks: [
       ['/tw/amount/10000/', '10,000 日圓點數估算'],
       ['/tw/campaign/wait/', '活動等待判斷'],
