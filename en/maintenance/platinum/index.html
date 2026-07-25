@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Play Points Platinum maintenance calculator | PlayPoint</title>
+  <meta name="description" content="Calculate the points and eligible spend still needed to maintain Google Play Points Platinum in the United States, with base-rate and year-end pace estimates.">
+  <meta name="robots" content="index,follow">
+  <meta name="author" content="Katakata">
+  <meta name="last-modified" content="2026-07-25">
+  <link rel="canonical" href="https://playpoint-sim.com/en/maintenance/platinum/">
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/maintenance/platinum/">
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/maintenance/platinum/">
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/maintenance/platinum/">
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/maintenance/platinum/">
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/maintenance/platinum/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/maintenance/intl-maintenance.css?v=20260725_1">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PlayPoint">
+  <meta property="og:title" content="Google Play Points Platinum maintenance calculator">
+  <meta property="og:description" content="Calculate the points and eligible spend still needed to maintain Google Play Points Platinum in the United States, with base-rate and year-end pace estimates.">
+  <meta property="og:url" content="https://playpoint-sim.com/en/maintenance/platinum/">
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Google Play Points Platinum maintenance calculator","description":"Calculate the points and eligible spend still needed to maintain Google Play Points Platinum in the United States, with base-rate and year-end pace estimates.","url":"https://playpoint-sim.com/en/maintenance/platinum/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"en","datePublished":"2026-07-25","dateModified":"2026-07-25","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Calculator","item":"https://playpoint-sim.com/en/"},{"@type":"ListItem","position":2,"name":"Google Play Points Platinum maintenance calculator","item":"https://playpoint-sim.com/en/maintenance/platinum/"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is this the cost to reach the level from Bronze?","acceptedAnswer":{"@type":"Answer","text":"No. It is a maintenance reference for someone already at this level. Reaching it from a lower level uses the earn rate that applies before each upgrade."}},{"@type":"Question","name":"Should I subtract my current Play Points balance?","acceptedAnswer":{"@type":"Answer","text":"No. Use calendar-year level progress or the remaining points Google shows. Spendable balance and level progress are different."}},{"@type":"Question","name":"Does the 2x figure always apply?","acceptedAnswer":{"@type":"Answer","text":"No. Offers can require activation, limit eligible products, or apply a fixed special earn rate. Use it only after checking the offer shown on your account."}}]}</script>
+</head>
+<body>
+<main class="maintenance-shell" data-maintenance-calculator data-target="3000" data-rate="1.4" data-spend-unit="1" data-locale="en-US" data-currency="USD" data-completion-text="The entered progress meets this maintenance line. Confirm the final status in Google Play." data-invalid-text="Enter zero or a positive number.">
+  <nav class="maintenance-topbar" aria-label="Navigation">
+    <div class="maintenance-topbar__links"><a href="/en/">Calculator</a><a href="/en/articles/">Guides</a></div>
+    <div class="maintenance-language-links" aria-label="Language">
+      <a href="/maintenance/platinum/" hreflang="ja">日本語</a>
+      <a href="/en/maintenance/platinum/" hreflang="en" aria-current="page">English</a>
+      <a href="/ko/maintenance/platinum/" hreflang="ko">한국어</a>
+      <a href="/tw/maintenance/platinum/" hreflang="zh-TW">繁體中文</a>
+    </div>
+  </nav>
+
+  <header class="maintenance-hero">
+    <p class="maintenance-eyebrow">Year-end maintenance check</p>
+    <h1>Platinum maintenance calculator</h1>
+    <p class="maintenance-hero__lead">Enter your calendar-year level progress. The calculator shows the maintenance gap first, then the base-rate spend estimate and the pace needed before year-end.</p>
+    <ul class="maintenance-hero__facts">
+      <li>Platinum: 3,000 points</li>
+      <li>1.4 points per $1</li>
+      <li>0 progress reference: about $2,143</li>
+    </ul>
+  </header>
+
+  <div class="maintenance-workspace">
+    <section class="maintenance-input-panel" aria-labelledby="maintenance-input-title">
+      <span class="maintenance-section-label">Official maintenance line for <span data-output="year"></span></span>
+      <h2 id="maintenance-input-title">Start with the number Google Play shows</h2>
+      <p>This page subtracts your calendar-year progress from the official maintenance line. It does not try to reconstruct every purchase.</p>
+      <form data-maintenance-form novalidate>
+        <label class="maintenance-label" for="level-progress">
+          Calendar-year level progress
+          <span class="maintenance-label__hint">Enter the level-progress points shown in Google Play, not your spendable points balance.</span>
+        </label>
+        <input class="maintenance-number-input" id="level-progress" data-progress-input type="number" min="0" max="999999" step="1" value="0" inputmode="numeric" required>
+        <p class="maintenance-error" data-input-error role="alert" hidden></p>
+        <button class="maintenance-button" type="submit">Update estimate</button>
+      </form>
+      <p class="maintenance-input-note">The base-rate estimate assumes you start the year at the level being maintained and eligible purchases earn at that level’s normal rate.</p>
+    </section>
+
+    <section class="maintenance-results" data-results aria-live="polite">
+      <div class="maintenance-primary-result">
+        <p class="maintenance-result-kicker">Points still needed</p>
+        <p class="maintenance-gap"><span data-output="remaining">0</span><small>points</small></p>
+        <p class="maintenance-base-spend">Estimated eligible spend at the base rate<strong data-output="base">—</strong></p>
+        <p class="maintenance-state" data-complete-state hidden></p>
+      </div>
+      <h3 class="maintenance-subheading">Pace from today to December 31（<span data-output="days">—</span> days remaining）</h3>
+      <div class="maintenance-pace-grid">
+        <div class="maintenance-metric"><span>Per month</span><strong data-output="monthly">—</strong></div>
+        <div class="maintenance-metric"><span>Per week</span><strong data-output="weekly">—</strong></div>
+        <div class="maintenance-metric"><span>Per day</span><strong data-output="daily">—</strong></div>
+      </div>
+      <h3 class="maintenance-subheading">If an eligible promotion really changes the earn rate</h3>
+      <div class="maintenance-multiplier-grid">
+        <div class="maintenance-multiplier-card"><span>2x reference</span><strong data-output="double">—</strong></div>
+        <div class="maintenance-multiplier-card"><span>3x reference</span><strong data-output="triple">—</strong></div>
+      </div>
+      <p class="maintenance-calc-note">Promotion terms can use a fixed special earn rate rather than multiplying your base rate. Confirm the exact offer before relying on these figures.</p>
+    </section>
+  </div>
+
+  <section class="maintenance-content">
+    <span class="maintenance-section-label">Check</span>
+    <h2>What this calculator assumes</h2>
+    <div class="maintenance-check-grid">
+      <article class="maintenance-check-card"><h3>Already at this level</h3><p>The base-rate estimate assumes you start the year at the level being maintained and eligible purchases earn at that level’s normal rate.</p></article>
+      <article class="maintenance-check-card"><h3>Level progress, not balance</h3><p>Redeeming points lowers the spendable balance, but it does not normally subtract those points from calendar-year level progress.</p></article>
+      <article class="maintenance-check-card"><h3>Purchase-by-purchase rounding</h3><p>Google calculates and rounds points by item. Tax is excluded, so one total-spend estimate may not match the activity history exactly.</p></article>
+    </div>
+  </section>
+
+  <section class="maintenance-content">
+    <div class="maintenance-warning-box"><h2>A large gap is a decision signal</h2><p>If the required pace is far above purchases you already planned, maintaining the badge may cost more than the benefits are worth. This page is meant to make stopping easier, not to push extra spending.</p></div>
+  </section>
+
+  <section class="maintenance-content">
+    <div class="maintenance-official">
+      <h2>Official conditions used</h2>
+      <p>The maintenance line and base earn rate come from the United States Google Play Help page. Google also states that country rules differ, tax is excluded, points are rounded per purchase, and returns can reduce level progress.</p>
+      <ul>
+        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DUS&amp;hl=en" target="_blank" rel="noopener noreferrer">US level requirements and benefits</a></li>
+        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DUS&amp;hl=en" target="_blank" rel="noopener noreferrer">How points and level progress are calculated</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="maintenance-content maintenance-faq">
+    <h2>Questions before spending</h2>
+    <details><summary>Is this the cost to reach the level from Bronze?</summary><p>No. It is a maintenance reference for someone already at this level. Reaching it from a lower level uses the earn rate that applies before each upgrade.</p></details>
+    <details><summary>Should I subtract my current Play Points balance?</summary><p>No. Use calendar-year level progress or the remaining points Google shows. Spendable balance and level progress are different.</p></details>
+    <details><summary>Does the 2x figure always apply?</summary><p>No. Offers can require activation, limit eligible products, or apply a fixed special earn rate. Use it only after checking the offer shown on your account.</p></details>
+  </section>
+
+  <section class="maintenance-content maintenance-related">
+    <h2>Continue from the estimate</h2>
+    <ul>
+      <li><a href="/en/articles/google-play-points-level-maintenance-reset.html">Read the yearly reset and maintenance rule</a></li>
+      <li><a href="/en/articles/google-play-points-platinum-diamond-cost.html">Compare Platinum and Diamond</a></li>
+      <li><a href="/en/articles/google-play-points-reflection-timing.html">Check delayed points before year-end</a></li>
+      <li><a href="/en/">Open the main calculator</a></li>
+    </ul>
+  </section>
+  <footer class="maintenance-footer"><p>Unofficial planning tool. Google Play and Google Play Points are trademarks of Google LLC.</p><p><a href="/author/katakata.html" rel="author">Katakata</a> · 2026-07-25</p></footer>
+</main>
+<script src="/maintenance/intl-maintenance.js?v=20260725_1"></script>
+<script src="/js/intent-tracking.js?v=20260713_0747a"></script>
+<script src="/js/third-party.js?v=20260713_0747a"></script>
+</body>
+</html>
