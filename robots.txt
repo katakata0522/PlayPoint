@@ -3,3 +3,4 @@ Allow: /
 
 Sitemap: https://playpoint-sim.com/sitemap.xml
 Sitemap: https://playpoint-sim.com/sitemap-intl-guides.xml
+Sitemap: https://playpoint-sim.com/sitemap-intl-use-eligibility.xml
