@@ -2604,7 +2604,7 @@ test('国際記事一覧とギフトカード記事は相互hreflangを持つ', 
     'tw/articles/2026-06-20-discount-gift-cards.html'
   ]) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
-    for (const lang of ['ja', 'en', 'ko', 'zh-Hant', 'x-default']) {
+    for (const lang of ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
       assert.ok(html.includes(`hreflang="${lang}"`), `${file} に ${lang} のhreflangがありません`);
     }
   }
