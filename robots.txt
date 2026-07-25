@@ -6,3 +6,4 @@ Sitemap: https://playpoint-sim.com/sitemap-intl-guides.xml
 Sitemap: https://playpoint-sim.com/sitemap-intl-use-eligibility.xml
 
 Sitemap: https://playpoint-sim.com/sitemap-intl-coupon-credit.xml
+Sitemap: https://playpoint-sim.com/sitemap-intl-rank-maintenance.xml

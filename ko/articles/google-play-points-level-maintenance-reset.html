@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Play Points 등급은 언제 초기화될까? 유지와 연초 재산정</title>
+  <meta name="description" content="Google Play Points 등급 유지 기간, 다음 해 말까지 유지되는 규칙, 전년도 적립 포인트에 따른 연초 재산정, 잔액과 등급 진행 상황의 차이를 설명합니다.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="Katakata">
+  <meta name="last-modified" content="2026-07-25">
+  <meta property="article:published_time" content="2026-07-25T00:00:00+09:00">
+  <meta property="article:modified_time" content="2026-07-25T00:00:00+09:00">
+  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html">
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/articles/2025-12-25-playpoints-rank-maintenance.html">
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-level-maintenance-reset.html">
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html">
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-level-maintenance-reset.html">
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-level-maintenance-reset.html">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/articles/article-shared.css?v=20260707_1401a">
+  <link rel="stylesheet" href="/en/articles/intl-article.css?v=20260713_0747a">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Google Play Points 계산기">
+  <meta property="og:title" content="Google Play Points 등급은 언제 초기화될까? 유지와 연초 재산정">
+  <meta property="og:description" content="Google Play Points 등급 유지 기간, 다음 해 말까지 유지되는 규칙, 전년도 적립 포인트에 따른 연초 재산정, 잔액과 등급 진행 상황의 차이를 설명합니다.">
+  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html">
+  <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/playpoints-rank-maintenance.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html"},"headline":"Google Play Points 등급은 언제 초기화될까? 유지와 연초 재산정","description":"Google Play Points 등급 유지 기간, 다음 해 말까지 유지되는 규칙, 전년도 적립 포인트에 따른 연초 재산정, 잔액과 등급 진행 상황의 차이를 설명합니다.","url":"https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html","inLanguage":"ko","datePublished":"2026-07-25","dateModified":"2026-07-25","image":"https://playpoint-sim.com/articles/ogp/playpoints-rank-maintenance.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/","logo":{"@type":"ImageObject","url":"https://playpoint-sim.com/favicon.svg"}}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Google Play Points 등급은 매년 12월 31일에 모두 초기화되나요?","acceptedAnswer":{"@type":"Answer","text":"단순히 모두 초기화되는 방식은 아닙니다. 새로 도달한 등급은 다음 해 말까지 유지되며, 연초에는 전년도 적립 포인트에 따라 등급이 바뀔 수 있습니다."}},{"@type":"Question","name":"포인트를 사용하면 등급이 내려가나요?","acceptedAnswer":{"@type":"Answer","text":"포인트 사용은 잔액을 줄이지만 이미 적립한 등급 진행 상황을 줄이지 않습니다. 다만 구매 환불이나 취소는 두 항목 모두에서 차감될 수 있습니다."}},{"@type":"Question","name":"계산기에는 어떤 포인트를 입력해야 하나요?","acceptedAnswer":{"@type":"Answer","text":"사용 가능한 잔액이 아니라 Google Play 등급 화면에 표시된 목표까지 남은 포인트를 입력하세요."}}]}</script>
+</head>
+<body>
+<main class="main-card">
+  <div class="hero">
+    <span class="hero-badge">등급 유지</span>
+    <h1>Google Play Points 등급은 언제 초기화될까요?</h1>
+    <p class="hero-meta">2026-07-25 게시 ・ 등급 유지 가이드</p>
+  </div>
+  <article class="content">
+    <div class="intro"><strong>12월 31일에 모든 등급이 곧바로 사라지는 것은 아닙니다.</strong> Google 안내에 따르면 새 등급에 도달하면 다음 해 말까지 유지됩니다. 다만 매년 초에는 전년도에 적립한 포인트를 기준으로 등급이 바뀔 수 있습니다. 결제 판단 전에는 사용 가능한 포인트 잔액과 올해 등급 진행 상황을 분리해서 확인해야 합니다.</div>
+    <nav class="intl-article-toc" aria-label="목차">
+      <h2>목차</h2>
+      <ol>
+        <li><a href="#section-1">결론: 새 등급은 다음 해 말까지 유지됩니다</a></li>
+        <li><a href="#section-2">포인트 잔액과 연간 등급 진행 상황은 다릅니다</a></li>
+        <li><a href="#section-3">포인트를 사용해도 등급 진행 상황은 줄지 않습니다</a></li>
+        <li><a href="#section-4">연초에는 전년도 적립 포인트로 등급을 다시 산정합니다</a></li>
+        <li><a href="#section-5">연말 전에 Google Play에서 확인할 화면</a></li>
+        <li><a href="#section-6">등급 유지를 위해 추가 결제할지 판단하는 순서</a></li>
+      </ol>
+    </nav>
+    <section class="section">
+      <h2 id="section-1">결론: 새 등급은 다음 해 말까지 유지됩니다</h2>
+      <p>올해 어느 시점에 새 등급에 도달하면 그 등급은 다음 해 12월 31일까지 유지됩니다. 1월에 달성한 경우와 12월에 달성한 경우 실제 유지 기간은 다르지만, 종료 기준은 모두 다음 해의 마지막 날입니다.</p>
+      <p>정확한 유지 기한은 자신의 Google Play 등급별 혜택 화면에서 확인하세요. Play Points 제공 여부, 등급 기준, 혜택과 적립률은 국가 및 계정에 따라 달라질 수 있습니다.</p>
+    </section>
+    <section class="section">
+      <h2 id="section-2">포인트 잔액과 연간 등급 진행 상황은 다릅니다</h2>
+      <p>포인트 잔액은 앱 아이템, 쿠폰, Play 크레딧 등 제공되는 리워드로 교환할 때 사용하는 포인트입니다. 등급 진행 상황은 해당 연도에 적립한 포인트가 다음 등급과 연초 재산정에 얼마나 반영되는지를 보여주는 별도 기준입니다.</p>
+      <p>잔액이 많다고 올해 등급 유지 조건을 충족했다는 뜻은 아닙니다. 반대로 리워드 교환으로 잔액이 적어도, 이미 적립한 연간 진행 상황은 그대로 남아 있을 수 있습니다.</p>
+    </section>
+    <section class="section">
+      <h2 id="section-3">포인트를 사용해도 등급 진행 상황은 줄지 않습니다</h2>
+      <p>Google은 포인트 사용 또는 교환 시 포인트 잔액에서는 차감되지만 등급 산정 포인트에서는 차감되지 않는다고 안내합니다. 등급 유지만을 위해 사용할 포인트를 잔액에 남겨 둘 필요는 없습니다.</p>
+      <p><strong>예외를 확인하세요.</strong> 포인트가 적립된 구매를 환불하거나 취소하면 해당 포인트가 잔액과 등급 진행 상황 모두에서 차감될 수 있습니다. 환불 이후에는 이전 화면이 아니라 포인트 내역을 다시 확인해야 합니다.</p>
+    </section>
+    <section class="section">
+      <h2 id="section-4">연초에는 전년도 적립 포인트로 등급을 다시 산정합니다</h2>
+      <p>새해가 시작되면 전년도 1월 1일부터 12월 31일까지 적립한 포인트를 기준으로 등급이 바뀔 수 있습니다. 그 합계가 현재 등급의 지역별 기준을 충족하면 같은 등급으로 시작할 수 있고, 부족하면 실제 합계가 충족하는 등급으로 바뀔 수 있습니다.</p>
+      <p>전년도에서 이어진 등급의 최저 기준을 직접 빼서 남은 포인트를 계산하지 마세요. Google Play에 표시된 다음 등급 또는 유지에 필요한 남은 포인트를 기준으로 입력하는 편이 안전합니다.</p>
+    </section>
+    <section class="section">
+      <h2 id="section-5">연말 전에 Google Play에서 확인할 화면</h2>
+      <p>Play 스토어에서 프로필 아이콘을 누르고 Play Points, 더보기, 등급별 혜택 순서로 이동합니다. 이 화면에서 현재 등급, 혜택, 기본 적립률, 다음 등급까지 필요한 포인트와 유지 기간을 확인할 수 있습니다.</p>
+      <p>최근 결제, 프로모션, 취소 또는 환불이 있었다면 포인트 내역도 함께 확인하세요. 계산기에 입력하기 전 화면에 표시된 남은 포인트와 확인 날짜를 기록하면 혼동을 줄일 수 있습니다.</p>
+    </section>
+    <section class="section">
+      <h2 id="section-6">등급 유지를 위해 추가 결제할지 판단하는 순서</h2>
+      <p>먼저 부족 포인트를 원래 예정한 결제와 비교합니다. 다음으로 일반 적립률을 기준으로 계산하고, 실제 대상인 프로모션이 있을 때만 2배나 3배 결과를 따로 비교하세요.</p>
+      <p>평소 계획보다 훨씬 큰 결제가 필요하다면 현재 등급을 억지로 유지하지 않는 것도 합리적인 결과입니다. 주간 리워드, 지원 혜택과 기타 보상의 실제 가치는 보장되지 않으므로 등급 이름만으로 결제를 결정하지 마세요.</p>
+    </section>
+    <div class="cta-box">
+      <h3>추가 결제 전에 부족 포인트부터 확인하세요</h3>
+      <p>Google Play에 표시된 남은 포인트를 입력하고 일반 적립률부터 비교하세요. 계산 결과는 목표가 아니라 지출 상한을 정하는 참고값으로 사용합니다.</p>
+      <a class="cta-btn" href="/ko/?utm_source=article&amp;utm_medium=internal&amp;utm_campaign=intl_article_cta">계산기 열기</a>
+    </div>
+    <aside class="official-source-note">
+      <h2>Google 공식 정보</h2>
+      <p>계정별 유지 날짜와 한국 기준은 Google Play 앱을 최종 기준으로 확인하세요. 아래 링크는 대한민국 및 한국어 조건을 지정한 공식 도움말입니다.</p>
+      <ul><li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">Play Points 등급, 혜택과 연초 재산정 확인</a></li><li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">포인트 잔액과 등급 진행 상황 확인</a></li></ul>
+    </aside>
+    <section class="section">
+      <h2>자주 묻는 질문</h2>
+      <h3>Google Play Points 등급은 매년 12월 31일에 모두 초기화되나요?</h3><p>단순히 모두 초기화되는 방식은 아닙니다. 새로 도달한 등급은 다음 해 말까지 유지되며, 연초에는 전년도 적립 포인트에 따라 등급이 바뀔 수 있습니다.</p>
+      <h3>포인트를 사용하면 등급이 내려가나요?</h3><p>포인트 사용은 잔액을 줄이지만 이미 적립한 등급 진행 상황을 줄이지 않습니다. 다만 구매 환불이나 취소는 두 항목 모두에서 차감될 수 있습니다.</p>
+      <h3>계산기에는 어떤 포인트를 입력해야 하나요?</h3><p>사용 가능한 잔액이 아니라 Google Play 등급 화면에 표시된 목표까지 남은 포인트를 입력하세요.</p>
+    </section>
+    <section class="section related-links-section">
+      <h2>함께 확인할 가이드</h2>
+      <ul><li><a href="/ko/articles/google-play-points-levels.html">Google Play Points 등급 구조</a></li><li><a href="/ko/status/platinum/">플래티넘 필요 금액 계산</a></li><li><a href="/ko/status/diamond/">다이아몬드 필요 금액 계산</a></li><li><a href="/ko/articles/google-play-points-expiration.html">Play Points 유효기간</a></li><li><a href="/ko/articles/google-play-points-refund.html">환불 후 포인트 변화</a></li><li><a href="/author/katakata.html">운영 및 검증 방침</a></li></ul>
+    </section>
+  </article>
+  <aside class="author-box" aria-label="글쓴이">
+    <p class="author-box-label">글쓴이</p>
+    <p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> - Google Play Points 계산기</p>
+    <p>공식 규칙과 계산용 예상치를 나누어 정리했습니다. 실제 유지 날짜, 등급 기준과 적용 여부는 본인의 Google Play 화면을 최종 기준으로 확인합니다.</p>
+  </aside>
+  <nav id="article-nav" class="article-nav" style="margin:0 2rem;"></nav>
+  <footer class="article-footer">
+    <p><a href="/ko/articles/">가이드로 돌아가기</a> | <a href="/ko/">계산기</a></p>
+    <p class="small">Google과 제휴하지 않은 독립 가이드입니다. 결제 전 Google Play 공식 도움말과 본인 계정 화면을 확인하세요.</p>
+  </footer>
+</main>
+<script src="/js/intent-tracking.js?v=20260713_0747a"></script>
+<script src="/js/third-party.js?v=20260713_0747a"></script>
+</body>
+</html>
