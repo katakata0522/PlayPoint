@@ -1673,6 +1673,15 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-expiration.html', 'When do Google Play Points expire?'],
       ['/en/articles/google-play-points-refund.html', 'What happens to Play Points after a refund?'],
       ['/en/articles/google-play-points-family-sharing.html', 'Can Play Points be shared with family?']
+    ],
+    extraModifiedAt: '2026-07-25',
+    extraArticles: [
+      ['/en/articles/google-play-points-weekly-reward.html', 'Weekly Play Points rewards'],
+      ['/en/articles/google-play-points-multiple-accounts.html', 'Play Points with multiple accounts'],
+      ['/en/articles/google-play-points-use-coupons.html', 'How to use points and coupons'],
+      ['/en/articles/google-play-points-join-eligibility.html', 'Eligibility and missing Join button'],
+      ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
+      ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used']
     ]
   },
   ko: {
@@ -1685,6 +1694,15 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-expiration.html', 'Play Points 유효기간은 언제까지일까?'],
       ['/ko/articles/google-play-points-refund.html', '환불 후 Play Points는 어떻게 될까?'],
       ['/ko/articles/google-play-points-family-sharing.html', 'Play Points를 가족과 공유할 수 있을까?']
+    ],
+    extraModifiedAt: '2026-07-25',
+    extraArticles: [
+      ['/ko/articles/google-play-points-weekly-reward.html', '주간 Play Points 리워드'],
+      ['/ko/articles/google-play-points-multiple-accounts.html', '여러 Google 계정에서 Play Points 확인'],
+      ['/ko/articles/google-play-points-use-coupons.html', '포인트와 쿠폰 사용 방법'],
+      ['/ko/articles/google-play-points-join-eligibility.html', '가입 조건과 가입 버튼이 없을 때'],
+      ['/ko/articles/google-play-points-coupon-not-applied.html', '쿠폰이 자동 적용되지 않을 때'],
+      ['/ko/articles/google-play-points-play-credit-not-working.html', 'Play 크레딧을 교환하거나 사용할 수 없을 때']
     ]
   },
   tw: {
@@ -1697,6 +1715,15 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-expiration.html', 'Play Points 有效期限多久？'],
       ['/tw/articles/google-play-points-refund.html', '退款後 Play Points 怎麼辦？'],
       ['/tw/articles/google-play-points-family-sharing.html', 'Play Points 可以和家人共享嗎？']
+    ],
+    extraModifiedAt: '2026-07-25',
+    extraArticles: [
+      ['/tw/articles/google-play-points-weekly-reward.html', '每週 Play Points 獎勵'],
+      ['/tw/articles/google-play-points-multiple-accounts.html', '多個 Google 帳號的 Play Points'],
+      ['/tw/articles/google-play-points-use-coupons.html', '點數與折價券使用方法'],
+      ['/tw/articles/google-play-points-join-eligibility.html', '加入資格與找不到加入按鈕'],
+      ['/tw/articles/google-play-points-coupon-not-applied.html', '折價券沒有自動套用時'],
+      ['/tw/articles/google-play-points-play-credit-not-working.html', 'Play 抵用金無法兌換或使用時']
     ]
   }
 };
@@ -2187,10 +2214,12 @@ function renderArticleHub(localeKey, assetVersions) {
   const articles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
   const hubLinks = [
     ...(content.priorityArticles || []),
-    ...articles.map(article => [`/${article.file}`, article.title])
+    ...articles.map(article => [`/${article.file}`, article.title]),
+    ...(content.extraArticles || [])
   ];
   const canonical = `https://playpoint-sim.com/${localeKey}/articles/`;
-  const modifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
+  const generatedModifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
+  const modifiedAt = content.extraModifiedAt > generatedModifiedAt ? content.extraModifiedAt : generatedModifiedAt;
   const articleCssVersion = assetVersions.articleSharedCssVersion || assetVersions.cssVersion;
   const schema = {
     '@context': 'https://schema.org',
