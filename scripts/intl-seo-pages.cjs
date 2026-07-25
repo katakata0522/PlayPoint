@@ -1670,6 +1670,15 @@ const MANUAL_COMPARISON_ARTICLES = [
   }
 ];
 
+const MANUAL_MAINTENANCE_PAGES = [
+  { file: 'en/maintenance/platinum/index.html', modifiedAt: '2026-07-25' },
+  { file: 'en/maintenance/diamond/index.html', modifiedAt: '2026-07-25' },
+  { file: 'ko/maintenance/platinum/index.html', modifiedAt: '2026-07-25' },
+  { file: 'ko/maintenance/diamond/index.html', modifiedAt: '2026-07-25' },
+  { file: 'tw/maintenance/platinum/index.html', modifiedAt: '2026-07-25' },
+  { file: 'tw/maintenance/diamond/index.html', modifiedAt: '2026-07-25' }
+];
+
 const INTL_ARTICLES = [
   ...[
     ...EN_ARTICLES,
@@ -1705,7 +1714,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-join-eligibility.html', 'Eligibility and missing Join button'],
       ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
       ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used'],
-      ['/en/articles/google-play-points-level-maintenance-reset.html', 'Level maintenance and yearly reset']
+      ['/en/articles/google-play-points-level-maintenance-reset.html', 'Level maintenance and yearly reset'],
+      ['/en/maintenance/platinum/', 'Platinum maintenance calculator'],
+      ['/en/maintenance/diamond/', 'Diamond maintenance calculator']
     ]
   },
   ko: {
@@ -1727,7 +1738,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-join-eligibility.html', '가입 조건과 가입 버튼이 없을 때'],
       ['/ko/articles/google-play-points-coupon-not-applied.html', '쿠폰이 자동 적용되지 않을 때'],
       ['/ko/articles/google-play-points-play-credit-not-working.html', 'Play 크레딧을 교환하거나 사용할 수 없을 때'],
-      ['/ko/articles/google-play-points-level-maintenance-reset.html', '등급 유지와 연초 재산정']
+      ['/ko/articles/google-play-points-level-maintenance-reset.html', '등급 유지와 연초 재산정'],
+      ['/ko/maintenance/platinum/', '플래티넘 유지 계산기'],
+      ['/ko/maintenance/diamond/', '다이아몬드 유지 계산기']
     ]
   },
   tw: {
@@ -1749,7 +1762,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-join-eligibility.html', '加入資格與找不到加入按鈕'],
       ['/tw/articles/google-play-points-coupon-not-applied.html', '折價券沒有自動套用時'],
       ['/tw/articles/google-play-points-play-credit-not-working.html', 'Play 抵用金無法兌換或使用時'],
-      ['/tw/articles/google-play-points-level-maintenance-reset.html', '等級維持與年初重新判定']
+      ['/tw/articles/google-play-points-level-maintenance-reset.html', '等級維持與年初重新判定'],
+      ['/tw/maintenance/platinum/', '白金級維持計算器'],
+      ['/tw/maintenance/diamond/', '鑽石級維持計算器']
     ]
   }
 };
@@ -2369,7 +2384,8 @@ function getIntlSeoFiles() {
   return [
     ...pages,
     ...Object.keys(LOCALES).map(localeKey => `${localeKey}/articles/index.html`),
-    ...INTL_ARTICLES.map(article => article.file)
+    ...INTL_ARTICLES.map(article => article.file),
+    ...MANUAL_MAINTENANCE_PAGES.map(page => page.file)
   ];
 }
 
@@ -2387,6 +2403,12 @@ function getIntlSitemapEntries(todayStr) {
   }
   for (const article of INTL_ARTICLES) {
     entries.push({ url: `https://playpoint-sim.com/${article.file}`, lastmod: article.modifiedAt });
+  }
+  for (const page of MANUAL_MAINTENANCE_PAGES) {
+    entries.push({
+      url: `https://playpoint-sim.com/${page.file.replace(/index\\.html$/, '')}`,
+      lastmod: page.modifiedAt
+    });
   }
   return entries;
 }
