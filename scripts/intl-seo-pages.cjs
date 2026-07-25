@@ -726,6 +726,7 @@ const EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-platinum-diamond-cost.html',
+    manual: true,
     title: 'How much to reach Platinum or Diamond?',
     description: 'Estimate the spending needed to reach Google Play Points Platinum or Diamond and decide whether waiting for a promotion makes sense.',
     h1: 'How much to reach Platinum or Diamond?',
@@ -1628,7 +1629,7 @@ const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-25' },
   'en/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
@@ -1650,17 +1651,39 @@ const INTL_ARTICLE_DATES = {
   'tw/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' }
 };
 
+const MANUAL_COMPARISON_ARTICLES = [
+  {
+    file: 'ko/articles/google-play-points-platinum-diamond-cost.html',
+    lang: 'ko',
+    title: 'Google Play Points 플래티넘과 다이아몬드 비교 | 필요 포인트·유지 금액',
+    publishedAt: '2026-07-25',
+    modifiedAt: '2026-07-25',
+    manual: true
+  },
+  {
+    file: 'tw/articles/google-play-points-platinum-diamond-cost.html',
+    lang: 'zh-TW',
+    title: 'Google Play Points 白金與鑽石比較｜點數、維持金額與福利',
+    publishedAt: '2026-07-25',
+    modifiedAt: '2026-07-25',
+    manual: true
+  }
+];
+
 const INTL_ARTICLES = [
-  ...EN_ARTICLES,
-  ...ADDITIONAL_EN_ARTICLES,
-  ...KO_ARTICLES,
-  ...TW_ARTICLES,
-  ...POINT_VALUE_100_ARTICLES
-].map((article) => {
-  const dates = INTL_ARTICLE_DATES[article.file];
-  if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
-  return { ...article, ...dates };
-});
+  ...[
+    ...EN_ARTICLES,
+    ...ADDITIONAL_EN_ARTICLES,
+    ...KO_ARTICLES,
+    ...TW_ARTICLES,
+    ...POINT_VALUE_100_ARTICLES
+  ].map((article) => {
+    const dates = INTL_ARTICLE_DATES[article.file];
+    if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
+    return { ...article, ...dates };
+  }),
+  ...MANUAL_COMPARISON_ARTICLES
+];
 
 const ARTICLE_HUB_CONTENT = {
   en: {
@@ -2349,6 +2372,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
     writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
   }
   for (const article of INTL_ARTICLES) {
+    if (article.manual) continue;
     writeFile(rootDir, article.file, renderArticle(article, assetVersions));
   }
   console.log(`Generated international SEO pages (${getIntlSeoFiles().length} files).`);
