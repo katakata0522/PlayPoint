@@ -278,7 +278,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -416,7 +416,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/en/articles/google-play-points-platinum-diamond-cost.html</loc>
-    <lastmod>2026-07-10</lastmod>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -634,6 +634,18 @@
   <url>
     <loc>https://playpoint-sim.com/tw/articles/google-play-points-100-value.html</loc>
     <lastmod>2026-07-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/ko/articles/google-play-points-platinum-diamond-cost.html</loc>
+    <lastmod>2026-07-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/tw/articles/google-play-points-platinum-diamond-cost.html</loc>
+    <lastmod>2026-07-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
