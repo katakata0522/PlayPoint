@@ -2406,7 +2406,7 @@ function getIntlSitemapEntries(todayStr) {
   }
   for (const page of MANUAL_MAINTENANCE_PAGES) {
     entries.push({
-      url: `https://playpoint-sim.com/${page.file.replace(/index\\.html$/, '')}`,
+      url: `https://playpoint-sim.com/${page.file.replace(/index\.html$/, '')}`,
       lastmod: page.modifiedAt
     });
   }
