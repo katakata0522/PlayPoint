@@ -663,6 +663,7 @@ const PAGE_TYPES = {
 const EN_ARTICLES = [
   {
     file: 'en/articles/google-play-points-reflection-timing.html',
+    jaAlternate: '/articles/2026-03-10-play-points-reflection-timing.html',
     title: 'When do Google Play Points appear?',
     description: 'A practical guide to Google Play Points reflection timing, pending points, and what to check before assuming points are missing.',
     h1: 'When do Google Play Points appear?',
@@ -684,6 +685,7 @@ const EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-not-showing.html',
+    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
     title: 'Google Play Points not showing up: what to check',
     description: 'Checklist for Google Play Points not showing up, including account mismatch, eligible purchases, campaign rules, refunds, and regional differences.',
     h1: 'Google Play Points not showing up: what to check',
@@ -748,6 +750,7 @@ const EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-gift-cards.html',
+    jaAlternate: '/articles/2025-12-25-gift-card.html',
     title: 'Do gift cards earn Google Play Points?',
     description: 'Understand how Google Play gift cards can affect Play Points planning, why purchase and redemption timing matter, and what to verify by country.',
     h1: 'Do gift cards earn Google Play Points?',
@@ -814,6 +817,7 @@ const ADDITIONAL_EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-subscriptions.html',
+    jaAlternate: '/articles/2025-12-25-subscription.html',
     title: 'Do subscriptions earn Google Play Points?',
     description: 'Understand how Google Play Points can apply to subscriptions, renewals, trials, refunds, and campaigns before estimating recurring spend.',
     h1: 'Do subscriptions earn Google Play Points?',
@@ -892,6 +896,7 @@ const ARTICLE_LABELS = {
 const KO_ARTICLES = [
   {
     file: 'ko/articles/google-play-points-not-showing.html',
+    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
@@ -962,6 +967,7 @@ const KO_ARTICLES = [
   },
   {
     file: 'ko/articles/google-play-points-gift-cards.html',
+    jaAlternate: '/articles/2025-12-25-gift-card.html',
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
@@ -1070,6 +1076,7 @@ const KO_ARTICLES = [
   },
   {
     file: 'ko/articles/google-play-points-subscriptions.html',
+    jaAlternate: '/articles/2025-12-25-subscription.html',
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
@@ -1111,6 +1118,7 @@ const KO_ARTICLES = [
 const TW_ARTICLES = [
   {
     file: 'tw/articles/google-play-points-not-showing.html',
+    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
@@ -1181,10 +1189,15 @@ const TW_ARTICLES = [
   },
   {
     file: 'tw/articles/google-play-points-gift-cards.html',
+    jaAlternate: '/articles/2025-12-25-gift-card.html',
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
     ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    officialSourceTitle: 'Google Play 禮物卡提供國家與限制',
+    officialSourceBody: '官方清單目前未列出台灣。禮物卡只能在購買時的國家與幣別使用，帳戶國家也必須相符。',
+    officialSourceHref: 'https://support.google.com/googleplay/answer/3422734?hl=zh-Hant',
+    officialSourceLink: '查看 Google Play 禮物卡官方清單',
     nextLinks: [
       ['/tw/amount/10000/', '10,000 日圓點數估算'],
       ['/tw/campaign/wait/', '活動等待判斷'],
@@ -1193,20 +1206,20 @@ const TW_ARTICLES = [
       ['/author/katakata.html', '營運與驗證方針']
     ],
     title: 'Google Play Points 禮物卡條件',
-    description: '整理 Google Play 禮物卡與 Google Play Points 一起使用時，應確認的購買時點、兌換時點、活動條件與地區差異。',
+    description: 'Google 官方禮物卡提供國家清單目前未列出台灣。說明台灣帳戶在購買序號前應確認的國家、幣別與 Play Points 條件。',
     h1: 'Google Play Points 禮物卡條件',
     badge: '禮物卡確認',
-    lead: '禮物卡可能降低實際支出，但 Play Points 是否累積、活動是否套用，需要分開確認。',
-    intro: 'Google Play 禮物卡常被拿來搭配折扣或回饋活動，但「買到便宜禮物卡」和「可以累積 Google Play Points」不是同一件事。這篇繁體中文指南把購買時點、兌換後消費、活動倍率與地區限制分開說明，避免把不同優惠混在一起高估收益。',
+    lead: 'Google 官方提供國家清單目前未列出台灣。先確認序號是否適用帳戶國家，再分開判斷 Play Points。',
+    intro: '截至本次更新，Google 官方的禮物卡提供國家清單未列出台灣。不要因網路商店出現序號，就假設台灣帳戶可以兌換；先確認官方提供狀態、發行國家與幣別，再判斷 Play Points。',
     sections: [
       ['先把折扣和點數分成兩欄', ['禮物卡折扣是降低實際成本，Play Points 則取決於 Google Play 內的消費是否符合條件。若把兩者直接加總，容易得到過度樂觀的結果。', '建議先記錄禮物卡折扣，再用計算機估算該筆 Google Play 消費可能獲得的點數。這樣可以知道哪一部分是省錢，哪一部分是等級進度。']],
       ['購買禮物卡和使用餘額不是同一時點', ['有些人以為買禮物卡時就會拿到 Play Points，也有人以為使用餘額時才會累積。實際規則可能依地區、帳號與付款流程而不同。', '如果禮物卡是在 Google Play 以外的商店購買，請更小心區分商店給的回饋與 Google Play App 內的點數紀錄。']],
       ['搭配活動倍率時要看細則', ['2 倍或 3 倍活動可能限定特定 App、日期、付款方式、啟用步驟或加碼上限。使用禮物卡餘額不代表所有活動都會自動套用。', '請先用 1 倍估算基準，再確認活動是否明確適用該筆購買。只有條件確定時，才用活動倍率比較。']],
-      ['確認地區、帳號與幣別是否一致', ['Google Play 禮物卡常有地區與幣別限制。帳號國家、付款資料與禮物卡地區不一致時，可能無法兌換或無法照預期使用。', '台灣使用者應以自己 Google Play App 內的顯示為準。日文或英文頁面可以幫助理解計算方式，但不能保證台灣帳號的實際條件。']],
+      ['台灣帳戶先確認官方提供狀態', ['Google 官方清單目前未將台灣列為 Google Play 禮物卡提供國家。其他國家購買的序號受發行國家與幣別限制，帳戶國家也必須相符。', '日文或英文頁面可以幫助理解限制，但不能證明外國序號可用於台灣帳戶。請以官方清單和自己帳戶的 Google Play App 顯示為準。']],
       ['不要為了折扣買超過需要的金額', ['禮物卡折扣看起來划算，但如果買了短期內用不到的餘額，資金被鎖住就不一定是好事。為了等級而多買，也可能讓實際回饋不如預期。', '最安全的做法是從原本就打算購買的 App、遊戲或訂閱開始，再檢查禮物卡與活動是否剛好適用。']]
     ],
     faq: [
-      ['買禮物卡一定會獲得 Play Points 嗎？', '不能這樣假設。禮物卡購買回饋與 Google Play 內的點數累積要分開確認。'],
+      ['台灣帳戶可以使用其他國家的禮物卡嗎？', '不要這樣假設。禮物卡只能在購買時的國家與幣別使用，帳戶國家也必須相符；官方提供國家清單目前未列出台灣。'],
       ['禮物卡可以搭配 2 倍活動嗎？', '可能可以，也可能不行。請看活動是否限制付款方式或適用項目。'],
       ['折扣要怎麼放進計算機？', '計算機用來估點數；折扣則建議另外記錄成實際成本，兩者分開比較。']
     ]
@@ -1289,6 +1302,7 @@ const TW_ARTICLES = [
   },
   {
     file: 'tw/articles/google-play-points-subscriptions.html',
+    jaAlternate: '/articles/2025-12-25-subscription.html',
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
@@ -1640,7 +1654,7 @@ const INTL_ARTICLE_DATES = {
   'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
   'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-24' },
   'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
+  'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-25' },
   'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
   'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
   'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
@@ -2171,7 +2185,7 @@ function renderArticle(article, assetVersions) {
     author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
     publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
-  const faqSchema = article.faqStructuredData ? {
+  const faqSchema = article.faqStructuredData !== false && Array.isArray(article.faq) && article.faq.length ? {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: article.faq.map(([question, answer]) => ({
