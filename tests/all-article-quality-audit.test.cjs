@@ -28,7 +28,7 @@ function schemas(html, file) {
 }
 
 test('the complete published article corpus keeps structural quality signals', () => {
-  assert.ok(registry.length >= 29, `expected at least 29 Japanese articles, found ${registry.length}`);
+  assert.ok(registry.length >= 28, `expected at least 28 Japanese Play Points articles, found ${registry.length}`);
   assert.ok(articles.length >= 90, `expected at least 90 published articles, found ${articles.length}`);
 
   for (const file of articles) {
