@@ -108,7 +108,7 @@
           "name": "每週獎勵紀錄的資料會被儲存嗎？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。"
+            "text": "日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。"
           }
         }
       ]
@@ -133,21 +133,21 @@
             <button data-region="TW" class="active">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 海外の方へ</a>
-            <a href="../latest/" data-lang-key="linkLatest">🆕 最新情報</a>
-            <a href="./articles/" data-lang-key="linkArticles">📝 記事一覧</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 地區注意事項</a>
+            <a href="../latest/" data-lang-key="linkLatest">🆕 最新資訊</a>
+            <a href="./articles/" data-lang-key="linkArticles">📝 指南</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
         </div>
     </div>
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
+        <span class="reminder-text" data-lang-key="fridayReminderText">領取每週獎勵後，請記錄到日記中。</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="關閉" data-lang-aria="closeAria">×</button>
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
-    <p id="site-description" class="site-description" data-lang-key="siteDescription">可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！</p>
+    <p id="site-description" class="site-description" data-lang-key="siteDescription">請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">一般計算</button>
@@ -157,127 +157,123 @@
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
         <div class="section">
-            <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
+            <h2 data-lang-key="sectionTitleStatus">輸入等級</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
+                <span data-lang-key="labelCurrentStatus">目前等級</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">目標ステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
+                <span data-lang-key="labelTargetStatus">目標等級</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
+                <span data-lang-key="labelNeededPoints">距離目標所需點數</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
-            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
             <!-- オプション設定（平均パック額） -->
             <div class="option-settings">
                 <div>
-                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
+                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">單筆平均購買禮包金額 (選填)</label>
+                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="例：300" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
                 </div>
             </div>
         </div>
         <div class="section">
-            <h2 data-lang-key="sectionTitleRate">還元設定</h2>
+            <h2 data-lang-key="sectionTitleRate">回饋設定</h2>
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">每 NT$30 回饋率（直接輸入）</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
+                <span data-lang-key="labelMultiplier">活動倍率（另一種輸入方式）</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">計算器會使用直接輸入回饋率與等級基本回饋率×倍率中較高的估算值。兩者是不同輸入方式；實際資格、啟用與上限請查看官方活動畫面。</div>
         </div>
         <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">課金額を計算</button>
+            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div class="result" id="result" aria-live="polite"></div>
-            <div id="result-actions" class="result-actions hidden" aria-label="計算結果の共有">
-                <button id="copyButton" class="hidden" data-lang-key="copyButton">コピーする</button>
-                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">結果をXでシェア</button>
+            <div id="result-actions" class="result-actions hidden" aria-label="分享計算結果" data-lang-aria="shareResultAria">
+                <button id="copyButton" class="hidden" data-lang-key="copyButton">複製</button>
+                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">分享至 X</button>
             </div>
         </div>
     </div>
 
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
+            <h2 data-lang-key="sectionTitleReverse">逆算模式</h2>
             <label for="amountYen" class="label-with-tooltip">
-                <span data-lang-key="labelAmountYen">課金額（円）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
+                <span data-lang-key="labelAmountYen">消費金額 (NT$)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
-            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例如：1500" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
+                <span data-lang-key="labelCurrentStatus">目前等級</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">每 NT$30 回饋率（直接輸入）</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
+                <span data-lang-key="labelMultiplierReverse">活動倍率（另一種輸入方式）</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">計算器會使用直接輸入回饋率與等級基本回饋率×倍率中較高的估算值。兩者是不同輸入方式；實際資格、啟用與上限請查看官方活動畫面。</div>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden">
-                <span data-lang-key="tweetButton">結果をXでシェア</span>
+                <span data-lang-key="tweetButton">分享至 X</span>
             </button>
         </div>
     </div>
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
         <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>毎週金曜日はウィークリーリワードの日！</strong> Google Play ストアでリワードを獲得して、今週の日記に記録しましょう。</span>
+            <span data-lang-key="diaryHintCard"><strong>一般每週獎勵適用於銀級以上。</strong> 獎勵會在你的 Play 國家/地區於週五更新。若帳號符合資格，可將領取結果記錄在日記中。</span>
         </div>
         <div class="diary-header">
-            <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear" data-lang-key="currentYearLabel">現在の年</h2>
-            <button id="nextYearBtn" aria-label="次の年へ">></button>
+            <button id="prevYearBtn" aria-label="上一年" data-lang-aria="prevYearAria">&lt;</button>
+            <h2 id="currentYear" data-lang-key="currentYearLabel">目前年份</h2>
+            <button id="nextYearBtn" aria-label="下一年" data-lang-aria="nextYearAria">&gt;</button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
-                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">１月</h3>
+                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">1月</h3>
             <div id="weekInputs" class="week-inputs"></div>
         </div>
         <div class="diary-summary" aria-live="polite">
             <div class="summary-box">
-                <h4 data-lang-key="monthlySummaryTitle">月間集計</h4>
+                <h4 data-lang-key="monthlySummaryTitle">月度統計</h4>
                 <dl>
                     <dt data-lang-key="totalLabel">合計:</dt>
                     <dd><span id="monthlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
@@ -286,7 +282,7 @@
                 </dl>
             </div>
             <div class="summary-box">
-                <h4 data-lang-key="yearlySummaryTitle">年間集計</h4>
+                <h4 data-lang-key="yearlySummaryTitle">年度統計</h4>
                 <dl>
                     <dt data-lang-key="totalLabel">合計:</dt>
                     <dd><span id="yearlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
@@ -295,26 +291,24 @@
                 </dl>
             </div>
         </div>
-        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
-            【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
-        </div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] 日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。</div>
         <div class="diary-reminder-section">
-            <h4 data-lang-key="reminderTitle">金曜リワード通知（カレンダー登録）</h4>
-            <p data-lang-key="reminderDesc">毎週金曜日にウィークリーリワードを通知するリマインダーを登録できます。リワードの引き忘れを防いで、日記への記録を習慣化しましょう！</p>
+            <h4 data-lang-key="reminderTitle">週五獎勵提醒 (日曆)</h4>
+            <p data-lang-key="reminderDesc">若帳號顯示一般每週獎勵，可設定每週五檢查獎勵頁面的提醒。</p>
             <div class="reminder-btn-group">
-                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Google カレンダーに登録</a>
-                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">カレンダーアプリ（iCal）登録</button>
+                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">新增至 Google 日曆</a>
+                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">新增至日曆 App (iCal)</button>
             </div>
         </div>
         <div class="diary-backup-section">
-            <h4 data-lang-key="backupTitle">データのバックアップ・復元</h4>
+            <h4 data-lang-key="backupTitle">資料備份與還原</h4>
             <div class="backup-btn-group">
-                <button id="exportDiaryBtn" data-lang-key="exportBtn">データを書き出す (コピー)</button>
-                <button id="importDiaryBtn" data-lang-key="importBtn">データを読み込む (復元)</button>
+                <button id="exportDiaryBtn" data-lang-key="exportBtn">匯出資料 (複製)</button>
+                <button id="importDiaryBtn" data-lang-key="importBtn">匯入資料 (還原)</button>
             </div>
             <div id="backup-input-wrapper" class="hidden">
-                <textarea id="diaryBackupData" placeholder="ここに書き出したデータを貼り付けてください" data-lang-placeholder="backupPlaceholder"></textarea>
-                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">復元を実行</button>
+                <textarea id="diaryBackupData" placeholder="請將匯出的資料貼至此處" data-lang-placeholder="backupPlaceholder"></textarea>
+                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">執行還原</button>
             </div>
         </div>
     </div>
@@ -351,25 +345,25 @@
         </div>
         <div class="faq-item">
             <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
-            <p>A. 您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。</p>
+            <p>A. 日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->
 
     <footer class="page-footer">
         <p class="footer-nav-links">
-          <a href="../info.html" data-lang-key="linkQA">Q&A・あとがき</a>
+          <a href="../info.html" data-lang-key="linkQA">Q&A 與後記 (日文)</a>
           <span class="footer-separator">|</span>
-          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">運営者・検証方針</a>
+          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">營運者與政策 (日文)</a>
           <span class="footer-separator">|</span>
-          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">プライバシーポリシー</a>
+          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">隱私權政策 (日文)</a>
           <span class="footer-separator">|</span>
-          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">利用規約</a>
+          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">服務條款 (日文)</a>
           <span class="footer-separator">|</span>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">意見回饋</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-07-13</p>
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-07-26</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
