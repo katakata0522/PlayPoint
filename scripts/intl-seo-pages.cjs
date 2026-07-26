@@ -1721,8 +1721,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-refund.html', 'What happens to Play Points after a refund?'],
       ['/en/articles/google-play-points-family-sharing.html', 'Can Play Points be shared with family?']
     ],
-    extraModifiedAt: '2026-07-25',
+    extraModifiedAt: '2026-07-26',
     extraArticles: [
+      ['/en/articles/2026-06-20-discount-gift-cards.html', 'Gift card discounts: checks before buying'],
       ['/en/articles/google-play-points-weekly-reward.html', 'Weekly Play Points rewards'],
       ['/en/articles/google-play-points-multiple-accounts.html', 'Play Points with multiple accounts'],
       ['/en/articles/google-play-points-use-coupons.html', 'How to use points and coupons'],
@@ -1745,8 +1746,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-refund.html', '환불 후 Play Points는 어떻게 될까?'],
       ['/ko/articles/google-play-points-family-sharing.html', 'Play Points를 가족과 공유할 수 있을까?']
     ],
-    extraModifiedAt: '2026-07-25',
+    extraModifiedAt: '2026-07-26',
     extraArticles: [
+      ['/ko/articles/2026-06-20-discount-gift-cards.html', 'Google Play 기프트카드 할인 구매 전 확인'],
       ['/ko/articles/google-play-points-weekly-reward.html', '주간 Play Points 리워드'],
       ['/ko/articles/google-play-points-multiple-accounts.html', '여러 Google 계정에서 Play Points 확인'],
       ['/ko/articles/google-play-points-use-coupons.html', '포인트와 쿠폰 사용 방법'],
@@ -1769,8 +1771,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-refund.html', '退款後 Play Points 怎麼辦？'],
       ['/tw/articles/google-play-points-family-sharing.html', 'Play Points 可以和家人共享嗎？']
     ],
-    extraModifiedAt: '2026-07-25',
+    extraModifiedAt: '2026-07-26',
     extraArticles: [
+      ['/tw/articles/2026-06-20-discount-gift-cards.html', 'Google Play 禮物卡折扣購買前檢查'],
       ['/tw/articles/google-play-points-weekly-reward.html', '每週 Play Points 獎勵'],
       ['/tw/articles/google-play-points-multiple-accounts.html', '多個 Google 帳號的 Play Points'],
       ['/tw/articles/google-play-points-use-coupons.html', '點數與折價券使用方法'],
