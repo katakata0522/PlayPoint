@@ -17,7 +17,7 @@ test('最新情報ハブは確認範囲・公式参照・確認日を明示す�
   assert.equal(result.verificationDate, '2026-07-26');
   assert.ok(html.includes('<meta name="last-modified" content="2026-07-26">'));
   assert.ok(html.includes('"dateModified": "2026-07-26"'));
-  assert.ok(html.includes('ページ更新: <time datetime="2026-07-26">2026-07-26</time>'));
+  assert.ok(html.includes('最終更新: <time datetime="2026-07-26">2026-07-26</time>'));
   assert.ok(html.includes('次回確認目安: 2026-08-02頃'));
 });
 
