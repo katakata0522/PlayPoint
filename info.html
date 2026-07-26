@@ -7,8 +7,8 @@
   <meta name="description" content="Playポイント計算機のQ&A、更新履歴、開発経緯、非公式ツールとしての使い方をまとめたページです。計算結果の見方や確認時の注意点も整理しています。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-07-13">
-    <meta property="article:modified_time" content="2026-07-13T00:00:00+09:00">
+    <meta name="last-modified" content="2026-07-26">
+    <meta property="article:modified_time" content="2026-07-26T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/info.html">
@@ -39,7 +39,7 @@
         "name": "月平均の「○ヶ月」って何ですか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。"
+          "text": "今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。この表示は、今年のステータス進捗を12月31日までの残り期間で均等に見るための目安です。到達したステータスは翌年末まで維持され、毎年初めに前年の獲得ポイントで再判定されます。"
         }
       }, {
         "@type": "Question",
@@ -53,7 +53,7 @@
         "name": "還元設定の計算はどうなっていますか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を比較し、より獲得ポイント数が多くなる方の還元率を自動的に適用して計算しています。"
+          "text": "獲得率を直接入力する方法とキャンペーン倍率を入力する方法を用意し、両方が入力された場合は高い方を試算に使います。キャンペーンの併用可否や対象判定を保証するものではないため、公式画面の条件を確認してください。"
         }
       }]
     }
@@ -65,7 +65,7 @@
       "name": "あとがき・Q&A",
       "url": "https://playpoint-sim.com/info.html",
       "inLanguage": "ja",
-      "dateModified": "2026-07-13",
+      "dateModified": "2026-07-26",
       "author": {
         "@type": "Person",
         "name": "かたかた"
@@ -130,19 +130,23 @@
       <h2>よくある質問 (Q&A)</h2>
       <dl id="qa-section-dl" style="margin-left: 0; padding-left: 0;">
         <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 月平均の「○ヶ月」って何ですか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>ステータスの更新は毎年12月31日に行われるため、そこを基準にしています。</dd>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>この表示は、今年のステータス進捗を12月31日までの残り期間で均等に見るための目安です。到達したステータスは翌年末まで維持され、毎年初めに前年の獲得ポイントで再判定されます。</dd>
 
         <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 例題の「1728」って何ですか？</dt>
         <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 開発者がプラチナに達するまでに必要だったポイントの例です。開発の経緯や詳細は、このページの下部にある <a href="#about-section"><b>あとがき・開発経緯</b></a> をぜひお読みになってください。</dd>
 
         <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 還元設定の計算はどうなっていますか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 「100円あたりの基本還元ポイント」に入力された値と、「現在のステータスに応じたポイント × キャンペーン倍率」を内部で比較し、より獲得ポイント数が多くなる方（有利な方）の還元率を自動的に適用して計算しています。<br>これは実際のGoogle Play ストアの仕様と同様で、両方の特典が同時に適用されることはありません。</dd>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 獲得率が「3ポイント/100円」のように表示される場合は獲得率欄へ直接入力し、「3倍」のように表示される場合は倍率欄を使います。両方を入力した場合、計算機は「直接入力した獲得率」と「ステータスの基本獲得率×倍率」を比較し、高い方を試算に使います。これは入力方法を選べるようにするための計算であり、キャンペーンの併用可否や対象判定を保証するものではありません。購入前に対象アプリ、期間、上限、有効化の有無を公式画面で確認してください。</dd>
+        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 現在のポイント残高と年間のステータス進捗は同じですか？</dt>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 同じではありません。現在の残高は使えるポイント数、年間の進捗はその暦年にステータス判定へ加算されたポイントです。ポイントを使っただけで年間進捗が同じ分だけ減るわけではありませんが、対象購入の返金・キャンセルでは残高とステータス判定ポイントから差し引かれる場合があります。</dd>
       </dl>
+      <p style="font-size: 0.9em; color: #555;">公式確認：<a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">ステータスの判定</a> ／ <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">ポイントの獲得・管理</a></p>
     </div>
 
     <div class="section" id="update-section">
       <h2>アップデート情報 (Update Log)</h2>
       <ul>
+        <li><strong>2026/07/26 (v2.4.0)</strong>: 共通ページと計算入力の説明を公式条件に合わせ、年末再判定・ウィークリーリワード・ローカル保存・キャンペーン入力の注意点を整理。</li>
         <li><strong>2026/06/21 (v2.3.0)</strong>: アップデートの歴史をビジュアル化した専用タイムラインページ「changelog.html」を新設。</li>
         <li><strong>2026/06/20 (v2.2.0)</strong>: 各サブページのデザインシステムを統一。OGP画像のPNG形式への修正、不要ファイルのクリーンアップによる高速化。</li>
         <li><strong>2026/03/02 (v2.1.0)</strong>: 正規URL統一、メタ情報の強化、robots/sitemap追加、表示高速化のための外部スクリプト遅延読み込みを実施。</li>
@@ -155,16 +159,16 @@
     <div class="section" id="about-section">
       <h2>あとがき・開発経緯</h2>
       <p>
-        これを作ろうと思ったきっかけはニコニコ超会議でした。<br>ニコ超にはGoogle Playブースというものがあり、プラチナ会員になるとそこで2000プレイポイントがもらえます。<br>一般入場が3800円なので半分返ってくる計算です。（WAO!クレイジー!）<br>
+        これを作ろうと思ったきっかけは、ニコニコ超会議のGoogle PlayブースでPlay Pointsのステータスを意識したことでした。以下は当時の開発経緯であり、現在のイベント特典や開催条件を案内するものではありません。<br>
         私はゴールドステータスだったのでどれくらい課金すればプラチナになれるか計算ツールを調べましたが全く出てこず...<br>それならば作ってしまえとできたのがこのサイト（アプリ）。<br>
-        例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>キャンペーンなしだとおおよそ85,000円です。(WAO!ファンタスティック!)<br>
+        例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>必要額は地域、現在のステータス、公式画面に表示される不足ポイント、対象キャンペーンによって変わります。現在の条件を入力して目安を確認できるようにしたのが、この計算機です。<br>
         そんなノリと勢いでできたこのサイトが、あなたの生活をほんの少し豊かにすることを願っています。<br>ここまでお読みいただきありがとうございました！
       </p>
       <p style="margin-top: 1.5em; font-weight: bold; color: var(--text-color);">
         開発者: かたかた
       </p>
       <p style="font-size: 0.86em; color: var(--link-color);">
-        最終更新日: 2026年6月21日 (v2.3.0)
+        最終更新日: 2026年7月26日 (v2.4.0)
       </p>
     </div>
 
@@ -179,7 +183,7 @@
         <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
         <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
       </p>
-      <p class="meta-line">運営者: かたかた / 最終更新: 2026-07-13</p>
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-07-26</p>
       <p class="copyright">
         © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
       </p>

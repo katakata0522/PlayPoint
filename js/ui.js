@@ -77,6 +77,13 @@ export const UI = {
             }
         });
 
+        document.querySelectorAll('[data-lang-aria]').forEach(el => {
+            const key = el.dataset.langAria;
+            if (texts[key]) {
+                el.setAttribute('aria-label', texts[key]);
+            }
+        });
+
         document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
             const key = el.dataset.langPlaceholder;
             if (texts[key]) {

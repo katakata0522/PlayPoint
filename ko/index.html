@@ -108,7 +108,7 @@
           "name": "주간 리워드 일지 데이터는 저장되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다."
+            "text": "일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기나 브라우저로 이동할 때는 자동으로 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요."
           }
         }
       ]
@@ -133,21 +133,21 @@
             <button data-region="TW">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 海外の方へ</a>
-            <a href="../latest/" data-lang-key="linkLatest">🆕 最新情報</a>
-            <a href="./articles/" data-lang-key="linkArticles">📝 記事一覧</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 국가별 안내</a>
+            <a href="../latest/" data-lang-key="linkLatest">🆕 최신 정보</a>
+            <a href="./articles/" data-lang-key="linkArticles">📝 가이드</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
         </div>
     </div>
 
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
+        <span class="reminder-text" data-lang-key="fridayReminderText">주간 리워드를 받은 뒤 일기에 기록해 두세요.</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="닫기" data-lang-aria="closeAria">×</button>
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 계산기</h1>
-    <p id="site-description" class="site-description" data-lang-key="siteDescription">현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!</p>
+    <p id="site-description" class="site-description" data-lang-key="siteDescription">먼저 현재 등급, 목표 등급, 목표까지 필요한 포인트를 입력하세요.<br>등급 달성에 필요한 결제 금액과 결제 금액으로 받을 수 있는 포인트를 계산합니다.</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">일반 계산</button>
@@ -157,164 +157,158 @@
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
         <div class="section">
-            <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
+            <h2 data-lang-key="sectionTitleStatus">등급 입력</h2>
             <label for="currentStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
+                <span data-lang-key="labelCurrentStatus">현재 등급</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
             <label for="targetStatus" class="label-with-tooltip">
-                <span data-lang-key="labelTargetStatus">目標ステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
+                <span data-lang-key="labelTargetStatus">목표 등급</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
             <label for="neededPoints" class="label-with-tooltip">
-                <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
+                <span data-lang-key="labelNeededPoints">목표까지 필요한 포인트</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
-            <input type="number" id="neededPoints" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <input type="number" id="neededPoints" min="1" step="1" placeholder="예: 120" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
             <!-- オプション設定（平均パック額） -->
             <div class="option-settings">
                 <div>
-                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
+                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1회당 평균 결제 팩 금액 (선택 사항)</label>
+                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="예: 10000" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
                 </div>
             </div>
         </div>
         <div class="section">
-            <h2 data-lang-key="sectionTitleRate">還元設定</h2>
+            <h2 data-lang-key="sectionTitleRate">적립 설정</h2>
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">1,000원당 적립률(직접 입력)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">キャンペーン倍率（例：3倍）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
+                <span data-lang-key="labelMultiplier">이벤트 배율(다른 입력 방식)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.</div>
         </div>
         <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">課金額を計算</button>
+            <button id="calculateButton" data-lang-key="calculateButton">결제 금액 계산</button>
             <div class="result" id="result" aria-live="polite"></div>
-            <div id="result-actions" class="result-actions hidden" aria-label="計算結果の共有">
-                <button id="copyButton" class="hidden" data-lang-key="copyButton">コピーする</button>
-                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">結果をXでシェア</button>
+            <div id="result-actions" class="result-actions hidden" aria-label="계산 결과 공유" data-lang-aria="shareResultAria">
+                <button id="copyButton" class="hidden" data-lang-key="copyButton">복사하기</button>
+                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">결과를 X에 공유</button>
             </div>
         </div>
     </div>
 
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
+            <h2 data-lang-key="sectionTitleReverse">역산 모드</h2>
             <label for="amountYen" class="label-with-tooltip">
-                <span data-lang-key="labelAmountYen">課金額（円）</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
+                <span data-lang-key="labelAmountYen">결제 금액 (₩)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
-            <input type="number" id="amountYen" placeholder="例：5000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="예: 50000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
-                <span data-lang-key="labelCurrentStatus">現在のステータス</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
+                <span data-lang-key="labelCurrentStatus">현재 등급</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの基本還元ポイント</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">1,000원당 적립률(직접 입력)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
+                <span data-lang-key="labelMultiplierReverse">이벤트 배율(다른 입력 방식)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">
-                ※ ポイント増量/倍率について:<br>計算時、入力値と(ステータス×倍率)を比較し、より有利な方が自動適用されます (併用不可)
-            </div>
+            <div class="warning" data-lang-key="warningRate">직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.</div>
         </div>
          <div class="section">
-            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">ポイントを計算</button>
+            <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
             <button id="share-twitter-reverse" class="hidden">
-                <span data-lang-key="tweetButton">結果をXでシェア</span>
+                <span data-lang-key="tweetButton">결과를 X에 공유</span>
             </button>
         </div>
     </div>
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
         <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>毎週金曜日はウィークリーリワードの日！</strong> Google Play ストアでリワードを獲得して、今週の日記に記録しましょう。</span>
+            <span data-lang-key="diaryHintCard"><strong>일반 주간 리워드는 실버 이상 등급이 대상입니다.</strong> Play 국가/지역의 금요일에 갱신됩니다. 대상 계정이라면 수령 결과를 일지에 기록할 수 있습니다.</span>
         </div>
         <div class="diary-header">
-            <button id="prevYearBtn" aria-label="前の年へ"><</button>
-            <h2 id="currentYear" data-lang-key="currentYearLabel">現在の年</h2>
-            <button id="nextYearBtn" aria-label="次の年へ">></button>
+            <button id="prevYearBtn" aria-label="이전 연도" data-lang-aria="prevYearAria">&lt;</button>
+            <h2 id="currentYear" data-lang-key="currentYearLabel">현재 연도</h2>
+            <button id="nextYearBtn" aria-label="다음 연도" data-lang-aria="nextYearAria">&gt;</button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
-                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">１月</h3>
+                <h3 id="selectedMonth" data-lang-key="initialMonthLabel">1월</h3>
             <div id="weekInputs" class="week-inputs"></div>
         </div>
         <div class="diary-summary" aria-live="polite">
             <div class="summary-box">
-                <h4 data-lang-key="monthlySummaryTitle">月間集計</h4>
+                <h4 data-lang-key="monthlySummaryTitle">월간 합계</h4>
                 <dl>
-                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dt data-lang-key="totalLabel">합계:</dt>
                     <dd><span id="monthlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
-                    <dt data-lang-key="averageLabel">平均:</dt>
-                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                    <dt data-lang-key="averageLabel">평균:</dt>
+                    <dd><span id="monthlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/주</span></dd>
                 </dl>
             </div>
             <div class="summary-box">
-                <h4 data-lang-key="yearlySummaryTitle">年間集計</h4>
+                <h4 data-lang-key="yearlySummaryTitle">연간 합계</h4>
                 <dl>
-                    <dt data-lang-key="totalLabel">合計:</dt>
+                    <dt data-lang-key="totalLabel">합계:</dt>
                     <dd><span id="yearlyTotal">0</span> <span data-lang-key="pointsUnit">pt</span></dd>
-                    <dt data-lang-key="averageLabel">平均:</dt>
-                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/週</span></dd>
+                    <dt data-lang-key="averageLabel">평균:</dt>
+                    <dd><span id="yearlyAverage">0.0</span> <span data-lang-key="perWeekUnit">pt/주</span></dd>
                 </dl>
             </div>
         </div>
-        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
-            【！】現在、この日記の記録はブラウザ内にのみ保存されます。ブラウザのキャッシュ削除や閲覧データ削除で記録が消えてしまうのでご注意ください。※将来的にサーバー側に記録を保存できる会員機能も検討中です！ご期待ください！
-        </div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] 일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기·브라우저로 이동할 때는 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요.</div>
         <div class="diary-reminder-section">
-            <h4 data-lang-key="reminderTitle">金曜リワード通知（カレンダー登録）</h4>
-            <p data-lang-key="reminderDesc">毎週金曜日にウィークリーリワードを通知するリマインダーを登録できます。リワードの引き忘れを防いで、日記への記録を習慣化しましょう！</p>
+            <h4 data-lang-key="reminderTitle">금요 리워드 알림 (캘린더)</h4>
+            <p data-lang-key="reminderDesc">일반 주간 리워드가 표시되는 대상 계정이라면 매주 금요일 확인 알림을 등록할 수 있습니다.</p>
             <div class="reminder-btn-group">
-                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Google カレンダーに登録</a>
-                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">カレンダーアプリ（iCal）登録</button>
+                <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Google 캘린더 등록</a>
+                <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">캘린더 앱 (iCal) 등록</button>
             </div>
         </div>
         <div class="diary-backup-section">
-            <h4 data-lang-key="backupTitle">データのバックアップ・復元</h4>
+            <h4 data-lang-key="backupTitle">데이터 백업 및 복원</h4>
             <div class="backup-btn-group">
-                <button id="exportDiaryBtn" data-lang-key="exportBtn">データを書き出す (コピー)</button>
-                <button id="importDiaryBtn" data-lang-key="importBtn">データを読み込む (復元)</button>
+                <button id="exportDiaryBtn" data-lang-key="exportBtn">데이터 내보내기 (복사)</button>
+                <button id="importDiaryBtn" data-lang-key="importBtn">데이터 가져오기 (복원)</button>
             </div>
             <div id="backup-input-wrapper" class="hidden">
-                <textarea id="diaryBackupData" placeholder="ここに書き出したデータを貼り付けてください" data-lang-placeholder="backupPlaceholder"></textarea>
-                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">復元を実行</button>
+                <textarea id="diaryBackupData" placeholder="내보낸 데이터를 여기에 붙여넣어 주세요" data-lang-placeholder="backupPlaceholder"></textarea>
+                <button id="confirmImportBtn" data-lang-key="confirmImportBtn">복원 실행</button>
             </div>
         </div>
     </div>
@@ -351,25 +345,25 @@
         </div>
         <div class="faq-item">
             <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
-            <p>A. 입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다.</p>
+            <p>A. 일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기나 브라우저로 이동할 때는 자동으로 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요.</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->
 
     <footer class="page-footer">
         <p class="footer-nav-links">
-          <a href="../info.html" data-lang-key="linkQA">Q&A・あとがき</a>
+          <a href="../info.html" data-lang-key="linkQA">Q&A 및 후기 (일본어)</a>
           <span class="footer-separator">|</span>
-          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">運営者・検証方針</a>
+          <a href="../author/katakata.html" rel="author" data-lang-key="linkAuthor">운영자 및 정책 (일본어)</a>
           <span class="footer-separator">|</span>
-          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">プライバシーポリシー</a>
+          <a href="../privacy.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkPrivacy">개인정보처리방침 (일본어)</a>
           <span class="footer-separator">|</span>
-          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">利用規約</a>
+          <a href="../terms.html" target="_blank" rel="noopener noreferrer" data-lang-key="linkTerms">이용약관 (일본어)</a>
           <span class="footer-separator">|</span>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">ご意見・ご感想</a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">의견 제안</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: 2026-07-13</p>
+        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: 2026-07-26</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool

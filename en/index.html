@@ -108,7 +108,7 @@
           "name": "Is my weekly reward diary data saved?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance."
+            "text": "Diary data is stored only in this browser's local storage. It does not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed."
           }
         }
       ]
@@ -143,7 +143,7 @@
     <!-- 金曜日リマインダーバー -->
     <div id="friday-reminder" class="friday-reminder hidden">
         <span class="reminder-text" data-lang-key="fridayReminderText">After claiming your Weekly Reward, record it in your diary.</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる">×</button>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="Close" data-lang-aria="closeAria">×</button>
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points Calculator</h1>
@@ -160,55 +160,55 @@
             <h2 data-lang-key="sectionTitleStatus">Status input</h2>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">Current status</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
             
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">Target status</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
             
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">Points needed</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
-            <input type="number" id="neededPoints" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <input type="number" id="neededPoints" min="1" step="1" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
             
             <!-- オプション設定（平均パック額） -->
             <div class="option-settings">
                 <div>
                     <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">Average pack spending per transaction (optional)</label>
-                    <input type="number" id="pack-amount" placeholder="e.g., 98" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
+                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="e.g., 98" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
                 </div>
             </div>
         </div>
         <div class="section">
             <h2 data-lang-key="sectionTitleRate">Points rate settings</h2>
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">Base points per $1</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">Earn rate per $1 (direct entry)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">Campaign multiplier (e.g., 3x)</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
+                <span data-lang-key="labelMultiplier">Campaign multiplier (alternative input)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">* The calculator uses whichever is better: your input value or status rate x campaign multiplier.</div>
+            <div class="warning" data-lang-key="warningRate">The calculator uses the higher estimate from direct rate entry or level rate × multiplier. These are alternative inputs. Confirm eligibility, activation, and caps in the official offer.</div>
         </div>
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">Calculate amount</button>
             <div class="result" id="result" aria-live="polite"></div>
-            <div id="result-actions" class="result-actions hidden" aria-label="計算結果の共有">
+            <div id="result-actions" class="result-actions hidden" aria-label="Share calculation result" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" data-lang-key="copyButton">Copy</button>
                 <button id="tweetButton" class="hidden" data-lang-key="tweetButton">Share on X</button>
             </div>
@@ -220,33 +220,33 @@
             <h2 data-lang-key="sectionTitleReverse">Reverse mode</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">Amount spent (USD)</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen"></div>
             </label>
-            <input type="number" id="amountYen" placeholder="e.g., 50" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="e.g., 50" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">Current status</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-status"></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">Base points per $1</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
+                <span data-lang-key="labelBaseRate">Earn rate per $1 (direct entry)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
             
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">Campaign multiplier</span>
-                <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
+                <span data-lang-key="labelMultiplierReverse">Campaign multiplier (alternative input)</span>
+                <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">* The calculator uses whichever is better: your input value or status rate x campaign multiplier.</div>
+            <div class="warning" data-lang-key="warningRate">The calculator uses the higher estimate from direct rate entry or level rate × multiplier. These are alternative inputs. Confirm eligibility, activation, and caps in the official offer.</div>
         </div>
          <div class="section">
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">Calculate points</button>
@@ -259,12 +259,12 @@
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
         <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>Every Friday is Weekly Reward Day!</strong> Get your rewards from the Google Play Store and record them in your diary.</span>
+            <span data-lang-key="diaryHintCard"><strong>Regular weekly prizes are for Silver level and above.</strong> They reset on Friday in your Play country. If your account is eligible, record the claimed result here.</span>
         </div>
         <div class="diary-header">
-            <button id="prevYearBtn" aria-label="前の年へ"><</button>
+            <button id="prevYearBtn" aria-label="Previous year" data-lang-aria="prevYearAria">&lt;</button>
             <h2 id="currentYear" data-lang-key="currentYearLabel">Current year</h2>
-            <button id="nextYearBtn" aria-label="次の年へ">></button>
+            <button id="nextYearBtn" aria-label="Next year" data-lang-aria="nextYearAria">&gt;</button>
         </div>
         <div id="monthSelector" class="month-selector"></div>
         <div class="diary-input-area">
@@ -291,10 +291,10 @@
                 </dl>
             </div>
         </div>
-        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] Right now, your diary records are saved only in this browser. If you clear cache or browsing data, the records may be lost.</div>
+        <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] Diary data is stored only in this browser’s local storage. It will not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.</div>
         <div class="diary-reminder-section">
             <h4 data-lang-key="reminderTitle">Friday Reward Notification (Calendar)</h4>
-            <p data-lang-key="reminderDesc">Set up a weekly recurring reminder for the Weekly Reward and make logging a habit.</p>
+            <p data-lang-key="reminderDesc">For eligible accounts with regular weekly prizes, set a Friday reminder to check the Perks screen.</p>
             <div class="reminder-btn-group">
                 <a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">Add to Google Calendar</a>
                 <button id="download-ical-btn" class="calendar-btn ical" data-lang-key="btnICal">Add to Calendar App (iCal)</button>
@@ -345,7 +345,7 @@
         </div>
         <div class="faq-item">
             <h3>Q. Is my weekly reward diary data saved?</h3>
-            <p>A. The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance.</p>
+            <p>A. Diary data is stored only in this browser's local storage. It does not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->
@@ -363,7 +363,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">Feedback</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: 2026-07-13</p>
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: 2026-07-26</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool

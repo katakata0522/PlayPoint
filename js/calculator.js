@@ -420,15 +420,41 @@ export const CALC = {
         return (!Number.isFinite(value) || value < effectiveMin || value > effectiveMax) ? null : value;
     },
 
-    // 倍率や補正などを適用した最終還元ポイントレートを計算
-    getFinalRate(baseRateElement, statusSelectElement, multiplierElement) {
+    // 直接入力と倍率入力を別の入力方法として比較し、採用理由も返す
+    getRateDetails(baseRateElement, statusSelectElement, multiplierElement) {
         const config = CONFIGS[STATE.currentRegion];
-        const editedBaseRate = this.getValidNumberInput(baseRateElement, 0.01);
+        const directRate = this.getValidNumberInput(baseRateElement, 0.01);
         const multiplier = this.getValidNumberInput(multiplierElement, 1);
         const statusValue = parseFloat(statusSelectElement.value);
         const statusRate = config.statusRates[statusValue];
-        if (editedBaseRate === null || multiplier === null || !statusRate) return null;
-        return Math.max(editedBaseRate, statusRate * multiplier);
+        if (directRate === null || multiplier === null || !statusRate) return null;
+
+        const multipliedRate = statusRate * multiplier;
+        const difference = directRate - multipliedRate;
+        const source = Math.abs(difference) < 1e-9
+            ? 'same'
+            : (difference > 0 ? 'direct' : 'multiplier');
+
+        return {
+            directRate,
+            multiplier,
+            multipliedRate,
+            finalRate: Math.max(directRate, multipliedRate),
+            source
+        };
+    },
+
+    // 既存の呼び出し・テスト向けに数値だけを返す
+    getFinalRate(baseRateElement, statusSelectElement, multiplierElement) {
+        const details = this.getRateDetails(baseRateElement, statusSelectElement, multiplierElement);
+        return details ? details.finalRate : null;
+    },
+
+    getRateSourceLabel(details, texts) {
+        if (!details) return '';
+        if (details.source === 'direct') return texts.resultRateSourceDirect || '';
+        if (details.source === 'multiplier') return texts.resultRateSourceMultiplier || '';
+        return texts.resultRateSourceSame || '';
     },
 
     // 課金シミュレーション計算の実行
@@ -441,7 +467,9 @@ export const CALC = {
         const remainingWeeks = Math.ceil(remainingDays / 7);
         const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
         const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
-        const finalRate = this.getFinalRate(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
+        const rateDetails = this.getRateDetails(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
+        const finalRate = rateDetails ? rateDetails.finalRate : null;
+        const rateSourceLabel = this.getRateSourceLabel(rateDetails, texts);
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
         const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
@@ -538,7 +566,7 @@ export const CALC = {
                     ${monthlyResultContent}
                 </dl>
                 ${paceResultContent}
-                <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
+                <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
                 <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
                     ${calculationNoteText}
                 </div>
@@ -564,8 +592,10 @@ export const CALC = {
     reverseCalculate() {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
-        const amountYen = this.getValidNumberInput(STATE.dom.amountYen, 0);
-        const finalRate = this.getFinalRate(STATE.dom.reverseBaseRate, STATE.dom.reverseStatus, STATE.dom.reverseMultiplier);
+        const amountYen = this.getValidNumberInput(STATE.dom.amountYen, 0.01);
+        const rateDetails = this.getRateDetails(STATE.dom.reverseBaseRate, STATE.dom.reverseStatus, STATE.dom.reverseMultiplier);
+        const finalRate = rateDetails ? rateDetails.finalRate : null;
+        const rateSourceLabel = this.getRateSourceLabel(rateDetails, texts);
         
         if (amountYen === null || finalRate === null) return UI.displayResult(STATE.dom.reverseResult, texts.errorInputReverse, true);
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
@@ -579,7 +609,7 @@ export const CALC = {
                 <dt>${texts.resultLabelEarnedPoints}</dt>
                 <dd><b>${texts.approxLabel} <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
             </dl>
-            <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit})</span>
+            <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
         `;
         
         UI.displayResult(STATE.dom.reverseResult, resultContent);

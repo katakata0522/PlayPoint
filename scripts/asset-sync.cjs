@@ -16,7 +16,16 @@ const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },
   { versionKey: 'articleScriptVersion', assetPath: './blog/article.js' },
   { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
-  { versionKey: 'mainVersion', assetPath: './js/main.js' }
+  { versionKey: 'mainVersion', assetPath: './js/main.js' },
+  { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }
+];
+
+const APP_MODULE_FILES = [
+  'js/config.js',
+  'js/ui.js',
+  'js/diary.js',
+  'js/calculator.js',
+  'js/share.js'
 ];
 
 function createRootServiceWorkerCacheRevision(versions, assets = ROOT_SERVICE_WORKER_ASSETS) {
@@ -30,6 +39,13 @@ function createRootServiceWorkerCacheRevision(versions, assets = ROOT_SERVICE_WO
 function readTextIfExists(filePath) {
   if (!fs.existsSync(filePath)) return '';
   return fs.readFileSync(filePath, 'utf8');
+}
+
+function createAppModuleRevision(rootDir, files = APP_MODULE_FILES) {
+  const fingerprint = files
+    .map(relativePath => relativePath + ':' + readTextIfExists(path.join(rootDir, relativePath)))
+    .join('|');
+  return crypto.createHash('sha256').update(fingerprint).digest('hex').slice(0, 8);
 }
 
 function extractVersion(content, pattern) {
@@ -68,7 +84,8 @@ function collectAssetVersions(rootDir, indexHtml) {
     cssVersion,
     intentTrackingVersion,
     mainVersion,
-    thirdPartyVersion
+    thirdPartyVersion,
+    appModuleRevision: createAppModuleRevision(rootDir)
   };
 }
 
@@ -143,6 +160,7 @@ function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
 
 module.exports = {
   ROOT_SERVICE_WORKER_ASSETS,
+  createAppModuleRevision,
   createRootServiceWorkerCacheRevision,
   collectAssetVersions,
   extractVersion,
