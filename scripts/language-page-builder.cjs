@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { replaceDateMetadata } = require('./html-replacements.cjs');
 
 function replaceStaticLanguageText(html, staticText) {
   return html
@@ -24,6 +25,13 @@ function replaceStaticLanguageText(html, staticText) {
 
 function buildLocalizedHtml(indexHtml, langDir, config) {
   let output = indexHtml;
+
+  if (config.modifiedAt) {
+    output = replaceDateMetadata(output, config.modifiedAt, {
+      includeEnglish: true,
+      includeTraditionalChinese: true
+    });
+  }
 
   // 1. html lang 置換（BCP47準拠: dirではなくlangCodeを使用）
   output = output.replace(/<html lang="[^"]+">/, `<html lang="${config.langCode}">`);
