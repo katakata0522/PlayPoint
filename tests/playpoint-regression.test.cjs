@@ -1208,23 +1208,22 @@ test('Kids Smile LandはlocalStorage設定値を許可値と範囲で復元す�
   assert.ok(app.includes('[0, 5, 15, 30, 45]'));
 });
 
-test('blog articles.jsonは公開記事HTMLをすべて含む', () => {
+test('blog articles.jsonは実在するPlay Points記事だけを含む', () => {
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
   const jsonFiles = articles.map(article => path.basename(article.file || ''));
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
 
-  for (const file of articleFiles) {
-    assert.ok(jsonFiles.includes(file), `${file} is missing from blog/articles.json`);
+  for (const file of jsonFiles) {
+    assert.ok(fs.existsSync(path.join(root, 'articles', file)), `${file} is missing`);
   }
+  assert.ok(!jsonFiles.includes('2026-06-29-savings-game-fire.html'));
 });
 
-test('blog sitemapは公開記事HTMLをすべて含む', () => {
+test('blog sitemapは登録済みPlay Points記事をすべて含む', () => {
   const sitemap = fs.readFileSync(path.join(root, 'blog', 'sitemap.xml'), 'utf8');
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
 
-  for (const file of articleFiles) {
+  for (const article of articles) {
+    const file = path.basename(article.file || '');
     assert.ok(
       sitemap.includes(`https://playpoint-sim.com/articles/${file}`),
       `${file} is missing from blog/sitemap.xml`
