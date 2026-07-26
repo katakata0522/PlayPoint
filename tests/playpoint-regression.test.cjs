@@ -1061,8 +1061,12 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
   }
 });
 
-test('公開canonical URLはXMLサイトマップに含める', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+test('Play Pointsの公開canonical URLは送信XMLサイトマップに含める', () => {
+  const sitemaps = readSubmittedSitemaps();
+  const excludedCanonicalUrls = new Set([
+    'https://playpoint-sim.com/kids-smile-land/',
+    'https://playpoint-sim.com/tools/gravity-todo/'
+  ]);
   const htmlFiles = [
     ...fs.readdirSync(root).filter(file => file.endsWith('.html')).map(file => path.join(root, file)),
     path.join(root, 'kids-smile-land', 'index.html'),
@@ -1076,9 +1080,13 @@ test('公開canonical URLはXMLサイトマップに含める', () => {
     const canonicalMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/);
     if (!canonicalMatch || !canonicalMatch[1].startsWith('https://playpoint-sim.com/')) continue;
 
+    if (excludedCanonicalUrls.has(canonicalMatch[1])) {
+      assert.ok(!sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`));
+      continue;
+    }
     assert.ok(
-      sitemap.includes(`<loc>${canonicalMatch[1]}</loc>`),
-      `${path.relative(root, file)} canonical is missing from sitemap.xml`
+      sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`),
+      `${path.relative(root, file)} canonical is missing from submitted sitemaps`
     );
   }
 });
