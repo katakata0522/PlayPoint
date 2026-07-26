@@ -939,7 +939,7 @@ test('多言語HTML生成は言語別メタ情報と相対パスを同期する'
   assert.ok(output.includes('src="../js/main.js?v=old"'));
   assert.ok(output.includes('<button data-region="US" class="active">English</button>'));
   assert.ok(output.includes('<h1 data-lang-key="mainTitle">Google Play Points Calculator</h1>'));
-  assert.ok(output.includes('Last Updated: 2026-06-28'));
+  assert.ok(output.includes('Last Updated: 2026-07-26'));
   assert.ok(!output.includes('remove me'));
 });
 
