@@ -1,6 +1,7 @@
 'use strict';
 
 const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
+const { validateLatestHub } = require('../../scripts/latest-hub-audit.cjs');
 
 const BASE_URL = 'https://playpoint-sim.com';
 const FETCH_TIMEOUT_MS = 12000;
@@ -16,6 +17,7 @@ const pageUrls = [
   `${BASE_URL}/terms.html`,
   `${BASE_URL}/attention.html`,
   `${BASE_URL}/sitemap.html`,
+  `${BASE_URL}/latest/`,
   `${BASE_URL}/status/diamond/`,
   `${BASE_URL}/status/platinum/`,
   `${BASE_URL}/status/gold/`,
@@ -87,6 +89,17 @@ async function checkPage(url) {
   assertIncludes(body, /<script\s+type="application\/ld\+json">/i, `${url}: structured data missing`);
 }
 
+async function checkLatestHub() {
+  const url = `${BASE_URL}/latest/`;
+  const { response, body } = await fetchText(url);
+  if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
+
+  return validateLatestHub(body, {
+    enforceFreshness: true,
+    maxAgeDays: 14
+  });
+}
+
 async function checkSitemap() {
   const [robots, sitemap] = await Promise.all([
     fetchText(`${BASE_URL}/robots.txt`),
@@ -146,6 +159,20 @@ async function runChecks(urls, check, label) {
 
 async function main() {
   const failures = await runChecks(pageUrls, checkPage, 'page');
+
+  try {
+    const result = await retry(checkLatestHub, {
+      attempts: MAX_ATTEMPTS,
+      delayMs: RETRY_DELAY_MS,
+      onRetry: (error, attempt, attempts) => {
+        console.warn(`Retry ${attempt + 1}/${attempts} - ${error.message}`);
+      }
+    });
+    console.log(`ok - latest hub verified ${result.verificationDate}`);
+  } catch (error) {
+    failures.push(error);
+    console.error(`not ok - ${error.message}`);
+  }
 
   let articleUrls = [];
   try {
