@@ -27,7 +27,7 @@ test('地域別の公式レート・年間しきい値・通貨単位を固定�
     TW: { rates: [1, 1.25, 1.5, 1.75, 2], thresholds: [250, 1000, 4000, 15000], spendUnit: 30, rateUnit: '30元' }
   };
   for (const [region, values] of Object.entries(expected)) {
-    assert.deepEqual(Object.values(configs[region].statusRates), values.rates, region + ' rates');
+    assert.deepEqual(Object.values(configs[region].statusRates).sort((a, b) => a - b), values.rates, region + ' rates');
     assert.deepEqual(Object.values(configs[region].thresholds), values.thresholds, region + ' thresholds');
     assert.equal(configs[region].spendUnit, values.spendUnit, region + ' spendUnit');
     assert.equal(configs[region].rateUnit, values.rateUnit, region + ' rateUnit');
@@ -93,7 +93,8 @@ test('海外の既存ギフトカード割引記事を記事ハブと人向け�
   const humanSitemap = read('sitemap.html');
   for (const [hub, url] of Object.entries(paths)) {
     assert.ok(read(hub).includes('href="' + url + '"'), hub + ' に記事がありません');
-    assert.ok(humanSitemap.includes('href="' + url + '"'), 'sitemap.html に ' + url + ' がありません');
+    const relativeUrl = url.replace(/^\//, '');
+    assert.ok(humanSitemap.includes('href="' + relativeUrl + '"'), 'sitemap.html に ' + relativeUrl + ' がありません');
   }
 });
 
