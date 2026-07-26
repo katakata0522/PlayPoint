@@ -994,16 +994,16 @@ test('ステータス選択の再生成でoptionが重複しない', () => {
   assert.strictEqual(PP_STATE.dom.reverseStatus.options.length, 5);
 });
 
-test('XMLサイトマップに公開記事がすべて含まれている', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
+test('送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている', () => {
+  const sitemaps = readSubmittedSitemaps();
+  const articleFiles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
+    .map(article => article.file.replace(/^\.\.\//, ''));
 
   assert.ok(articleFiles.length > 0);
   for (const file of articleFiles) {
     assert.ok(
-      sitemap.includes(`https://playpoint-sim.com/articles/${file}`),
-      `${file} is missing from sitemap.xml`
+      sitemaps.includes(`https://playpoint-sim.com/${file}`),
+      `${file} is missing from submitted sitemaps`
     );
   }
 });
