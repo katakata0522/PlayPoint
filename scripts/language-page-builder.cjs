@@ -15,6 +15,10 @@ function replaceStaticLanguageText(html, staticText) {
     .replace(/(<[^>]*\bplaceholder=")[^"]*("[^>]*\bdata-lang-placeholder="([^"]+)"[^>]*>)/g, (match, before, after, key) => {
       if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
       return `${before}${staticText[key]}${after}`;
+    })
+    .replace(/(<[^>]*\baria-label=")[^"]*("[^>]*\bdata-lang-aria="([^"]+)"[^>]*>)/g, (match, before, after, key) => {
+      if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
+      return `${before}${staticText[key]}${after}`;
     });
 }
 
