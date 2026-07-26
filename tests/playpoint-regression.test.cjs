@@ -6,6 +6,13 @@ const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
 
+function readSubmittedSitemaps() {
+  const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
+  const files = [...robots.matchAll(/^Sitemap:\s+https:\/\/playpoint-sim\.com\/([^\s]+)$/gm)]
+    .map(match => match[1]);
+  return files.map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
+}
+
 function createOption(text, value) {
   return {
     text,
@@ -525,7 +532,7 @@ test('共有ボタンは結果アクション行にまとめて表示状態を�
 });
 
 test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemap = readSubmittedSitemaps();
   const shareScript = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
   const parseJsonLd = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
@@ -663,7 +670,7 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
-test('新規ツール（サブスク健康診断、楽天ポイント上限シミュレーター、統合ダッシュボード）の実存とサイトマップ導線', () => {
+test('別用途ツールは実存を保ちPlay Pointsサイトマップから分離する', () => {
   const subHealthPath = path.join(root, 'tools', 'sub-health', 'index.html');
   const rakutenSimPath = path.join(root, 'tools', 'rakuten-sim', 'index.html');
   const dashboardPath = path.join(root, 'tools', 'dashboard', 'index.html');
@@ -684,9 +691,9 @@ test('新規ツール（サブスク健康診断、楽天ポイント上限シ�
   assert.ok(dashboardHtml.includes('<title>統合オトクダッシュボード'), '統合ダッシュボードのタイトルが不正です');
   assert.ok(dashboardHtml.includes('Noto Sans JP'), '統合ダッシュボードのフォント設定に Noto Sans JP がありません');
 
-  assert.ok(sitemapHtml.includes('tools/sub-health/index.html'), 'サイトマップにサブスク健康診断のリンクがありません');
-  assert.ok(sitemapHtml.includes('tools/rakuten-sim/index.html'), 'サイトマップに楽天シミュレーターのリンクがありません');
-  assert.ok(sitemapHtml.includes('tools/dashboard/index.html'), 'サイトマップに統合ダッシュボードのリンクがありません');
+  assert.ok(!sitemapHtml.includes('tools/sub-health/index.html'), 'Play Pointsサイトマップにサブスク健康診断が混在しています');
+  assert.ok(!sitemapHtml.includes('tools/rakuten-sim/index.html'), 'Play Pointsサイトマップに楽天シミュレーターが混在しています');
+  assert.ok(!sitemapHtml.includes('tools/dashboard/index.html'), 'Play Pointsサイトマップに統合ダッシュボードが混在しています');
 });
 
 test('ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う', () => {
@@ -987,16 +994,16 @@ test('ステータス選択の再生成でoptionが重複しない', () => {
   assert.strictEqual(PP_STATE.dom.reverseStatus.options.length, 5);
 });
 
-test('XMLサイトマップに公開記事がすべて含まれている', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
+test('送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている', () => {
+  const sitemaps = readSubmittedSitemaps();
+  const articleFiles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
+    .map(article => article.file.replace(/^\.\.\//, ''));
 
   assert.ok(articleFiles.length > 0);
   for (const file of articleFiles) {
     assert.ok(
-      sitemap.includes(`https://playpoint-sim.com/articles/${file}`),
-      `${file} is missing from sitemap.xml`
+      sitemaps.includes(`https://playpoint-sim.com/${file}`),
+      `${file} is missing from submitted sitemaps`
     );
   }
 });
@@ -1054,8 +1061,12 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
   }
 });
 
-test('公開canonical URLはXMLサイトマップに含める', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+test('Play Pointsの公開canonical URLは送信XMLサイトマップに含める', () => {
+  const sitemaps = readSubmittedSitemaps();
+  const excludedCanonicalUrls = new Set([
+    'https://playpoint-sim.com/kids-smile-land/',
+    'https://playpoint-sim.com/tools/gravity-todo/'
+  ]);
   const htmlFiles = [
     ...fs.readdirSync(root).filter(file => file.endsWith('.html')).map(file => path.join(root, file)),
     path.join(root, 'kids-smile-land', 'index.html'),
@@ -1069,9 +1080,13 @@ test('公開canonical URLはXMLサイトマップに含める', () => {
     const canonicalMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/);
     if (!canonicalMatch || !canonicalMatch[1].startsWith('https://playpoint-sim.com/')) continue;
 
+    if (excludedCanonicalUrls.has(canonicalMatch[1])) {
+      assert.ok(!sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`));
+      continue;
+    }
     assert.ok(
-      sitemap.includes(`<loc>${canonicalMatch[1]}</loc>`),
-      `${path.relative(root, file)} canonical is missing from sitemap.xml`
+      sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`),
+      `${path.relative(root, file)} canonical is missing from submitted sitemaps`
     );
   }
 });
@@ -1193,23 +1208,22 @@ test('Kids Smile LandはlocalStorage設定値を許可値と範囲で復元す�
   assert.ok(app.includes('[0, 5, 15, 30, 45]'));
 });
 
-test('blog articles.jsonは公開記事HTMLをすべて含む', () => {
+test('blog articles.jsonは実在するPlay Points記事だけを含む', () => {
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
   const jsonFiles = articles.map(article => path.basename(article.file || ''));
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
 
-  for (const file of articleFiles) {
-    assert.ok(jsonFiles.includes(file), `${file} is missing from blog/articles.json`);
+  for (const file of jsonFiles) {
+    assert.ok(fs.existsSync(path.join(root, 'articles', file)), `${file} is missing`);
   }
+  assert.ok(!jsonFiles.includes('2026-06-29-savings-game-fire.html'));
 });
 
-test('blog sitemapは公開記事HTMLをすべて含む', () => {
+test('blog sitemapは登録済みPlay Points記事をすべて含む', () => {
   const sitemap = fs.readFileSync(path.join(root, 'blog', 'sitemap.xml'), 'utf8');
-  const articleFiles = fs.readdirSync(path.join(root, 'articles'))
-    .filter(file => file.endsWith('.html'));
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
 
-  for (const file of articleFiles) {
+  for (const article of articles) {
+    const file = path.basename(article.file || '');
     assert.ok(
       sitemap.includes(`https://playpoint-sim.com/articles/${file}`),
       `${file} is missing from blog/sitemap.xml`
@@ -2063,7 +2077,7 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
 
 test('海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ', () => {
   const { getIntlSeoFiles } = require(path.join(root, 'scripts', 'intl-seo-pages.cjs'));
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemap = readSubmittedSitemaps();
   const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
   const files = getIntlSeoFiles();
 
@@ -2834,7 +2848,7 @@ test('トップの記事ドロワーは表示件数とリンク件数を一致�
 });
 
 test('記事サイトマップのlastmodは記事一覧の更新日と一致する', () => {
-  const rootSitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const submittedSitemaps = readSubmittedSitemaps();
   const blogSitemap = fs.readFileSync(path.join(root, 'blog', 'sitemap.xml'), 'utf8');
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
 
@@ -2843,7 +2857,7 @@ test('記事サイトマップのlastmodは記事一覧の更新日と一致す�
     const expectedDate = article.modified || article.date;
     const entry = `<loc>${url}</loc>\n    <lastmod>${expectedDate}</lastmod>`;
 
-    assert.ok(rootSitemap.includes(entry), `${article.id} のルートサイトマップ更新日が不正です`);
+    assert.ok(submittedSitemaps.includes(entry), `${article.id} の送信サイトマップ更新日が不正です`);
     assert.ok(blogSitemap.includes(entry), `${article.id} のブログサイトマップ更新日が不正です`);
   }
 });

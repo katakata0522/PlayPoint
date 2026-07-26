@@ -145,8 +145,8 @@ test('専用サイトマップ・robots・一覧から地域別維持計算を�
     for (const url of urls) {
       assert.ok(locs.includes(url));
       assert.ok(sitemap.includes('href="' + url + '"'));
+      assert.ok(!mainSitemap.includes('<loc>' + url + '</loc>'));
       if (!url.includes('playpoint-sim.com/maintenance/')) {
-        assert.ok(mainSitemap.includes('<loc>' + url + '</loc>'));
         assert.ok(humanSitemap.includes(url.replace('https://playpoint-sim.com/', '')));
       }
     }

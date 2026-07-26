@@ -163,7 +163,8 @@ function createLocales(todayStr) {
         langCode: 'ko',           // BCP47 言語コード
         inLanguage: 'ko',
         title: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
-        description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 환율과 보너스 이벤트에 맞춰 시뮬레이션합니다.',
+        description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 등급별 기본 적립률과 이벤트 배율로 계산합니다.',
+        modifiedAt: '2026-07-26',
         ogTitle: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
         ogDescription: '구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.',
         currency: 'KRW',

@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
+const { createLocales } = require('./locale-config.cjs');
+const { CONTENT_DATE_OVERRIDES } = require('./html-sync.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const TOP_PAGE_URLS = [
@@ -11,9 +13,61 @@ const TOP_PAGE_URLS = [
   `${SITE_ORIGIN}/ko/`,
   `${SITE_ORIGIN}/tw/`
 ];
+const NON_PLAYPOINT_URLS = new Set([
+  `${SITE_ORIGIN}/tools/gravity-todo/`,
+  `${SITE_ORIGIN}/kids-smile-land/`,
+  `${SITE_ORIGIN}/articles/2026-06-29-savings-game-fire.html`,
+  `${SITE_ORIGIN}/doujin-shi-calculator/`
+]);
+const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
 
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function toPublicUrl(file) {
+  const normalized = String(file).replace(/\\/g, '/');
+  const publicPath = normalized.endsWith('/index.html')
+    ? normalized.slice(0, -'index.html'.length)
+    : normalized;
+  return `${SITE_ORIGIN}/${publicPath}`;
+}
+
+function getContentDateEntries(todayStr) {
+  const localeEntries = Object.entries(createLocales(todayStr))
+    .filter(([, config]) => config.modifiedAt)
+    .map(([locale, config]) => ({
+      url: `${SITE_ORIGIN}/${locale}/`,
+      lastmod: config.modifiedAt
+    }));
+  const htmlEntries = Object.entries(CONTENT_DATE_OVERRIDES).map(([file, lastmod]) => ({
+    url: toPublicUrl(file),
+    lastmod
+  }));
+  return [...htmlEntries, ...localeEntries];
+}
+
+function getDedicatedSitemapUrls(rootDir) {
+  const urls = new Set();
+  for (const file of fs.readdirSync(rootDir).filter(name => DEDICATED_SITEMAP_PATTERN.test(name))) {
+    const content = fs.readFileSync(path.join(rootDir, file), 'utf8');
+    for (const match of content.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+      urls.add(match[1]);
+    }
+  }
+  return urls;
+}
+
+function removeSitemapEntries(sitemapContent, urls) {
+  return sitemapContent.replace(/\s*<url>\s*<loc>([^<]+)<\/loc>[\s\S]*?<\/url>/g, (entry, url) => (
+    urls.has(url) ? '' : entry
+  ));
+}
+
+function removeIgnoredSitemapHints(sitemapContent) {
+  return sitemapContent
+    .replace(/^[ \t]*<changefreq>[^<]*<\/changefreq>[ \t]*\n/gm, '')
+    .replace(/^[ \t]*<priority>[^<]*<\/priority>[ \t]*\n/gm, '');
 }
 
 function syncSitemapContent(sitemapContent, todayStr, urls = TOP_PAGE_URLS) {
@@ -41,7 +95,7 @@ function syncSitemapEntries(sitemapContent, entries) {
       continue;
     }
 
-    const entry = `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    const entry = `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>\n`;
     content = content.replace('</urlset>', `${entry}</urlset>`);
   }
 
@@ -68,22 +122,16 @@ function renderBlogSitemap(entries) {
   const articleEntries = entries.map(({ url, lastmod }) => `  <url>
     <loc>${url}</loc>
     <lastmod>${lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>`).join('\n');
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>${SITE_ORIGIN}/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
   </url>
   <url>
     <loc>${SITE_ORIGIN}/blog/</loc>
     <lastmod>${latestDate}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
   </url>
 ${articleEntries}
 </urlset>
@@ -106,10 +154,17 @@ function syncSitemap(rootDir, todayStr) {
     ...blogEntries
   ];
   const topPageSynced = syncSitemapContent(fs.readFileSync(sitemapPath, 'utf8'), todayStr);
-  const content = syncSitemapEntries(topPageSynced, [
+  let content = syncSitemapEntries(topPageSynced, [
     ...getIntlSitemapEntries(todayStr),
-    ...discoverableBlogEntries
+    ...discoverableBlogEntries,
+    ...getContentDateEntries(todayStr)
   ]);
+  const excludedUrls = new Set([
+    ...NON_PLAYPOINT_URLS,
+    ...getDedicatedSitemapUrls(rootDir)
+  ]);
+  content = removeSitemapEntries(content, excludedUrls);
+  content = removeIgnoredSitemapHints(content);
 
   fs.writeFileSync(sitemapPath, content, 'utf8');
   fs.writeFileSync(path.join(rootDir, 'blog', 'sitemap.xml'), renderBlogSitemap(blogEntries), 'utf8');
@@ -120,10 +175,16 @@ function syncSitemap(rootDir, todayStr) {
 module.exports = {
   SITE_ORIGIN,
   TOP_PAGE_URLS,
+  NON_PLAYPOINT_URLS,
   escapeRegExp,
   getBlogSitemapEntries,
+  getContentDateEntries,
+  getDedicatedSitemapUrls,
+  removeIgnoredSitemapHints,
+  removeSitemapEntries,
   renderBlogSitemap,
   syncSitemap,
   syncSitemapContent,
-  syncSitemapEntries
+  syncSitemapEntries,
+  toPublicUrl
 };
