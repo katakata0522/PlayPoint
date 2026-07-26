@@ -670,7 +670,7 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
 });
 
-test('新規ツール（サブスク健康診断、楽天ポイント上限シミュレーター、統合ダッシュボード）の実存とサイトマップ導線', () => {
+test('別用途ツールは実存を保ちPlay Pointsサイトマップから分離する', () => {
   const subHealthPath = path.join(root, 'tools', 'sub-health', 'index.html');
   const rakutenSimPath = path.join(root, 'tools', 'rakuten-sim', 'index.html');
   const dashboardPath = path.join(root, 'tools', 'dashboard', 'index.html');
@@ -691,9 +691,9 @@ test('新規ツール（サブスク健康診断、楽天ポイント上限シ�
   assert.ok(dashboardHtml.includes('<title>統合オトクダッシュボード'), '統合ダッシュボードのタイトルが不正です');
   assert.ok(dashboardHtml.includes('Noto Sans JP'), '統合ダッシュボードのフォント設定に Noto Sans JP がありません');
 
-  assert.ok(sitemapHtml.includes('tools/sub-health/index.html'), 'サイトマップにサブスク健康診断のリンクがありません');
-  assert.ok(sitemapHtml.includes('tools/rakuten-sim/index.html'), 'サイトマップに楽天シミュレーターのリンクがありません');
-  assert.ok(sitemapHtml.includes('tools/dashboard/index.html'), 'サイトマップに統合ダッシュボードのリンクがありません');
+  assert.ok(!sitemapHtml.includes('tools/sub-health/index.html'), 'Play Pointsサイトマップにサブスク健康診断が混在しています');
+  assert.ok(!sitemapHtml.includes('tools/rakuten-sim/index.html'), 'Play Pointsサイトマップに楽天シミュレーターが混在しています');
+  assert.ok(!sitemapHtml.includes('tools/dashboard/index.html'), 'Play Pointsサイトマップに統合ダッシュボードが混在しています');
 });
 
 test('ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う', () => {
