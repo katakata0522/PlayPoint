@@ -6,6 +6,13 @@ const vm = require('vm');
 
 const root = path.resolve(__dirname, '..');
 
+function readSubmittedSitemaps() {
+  const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
+  const files = [...robots.matchAll(/^Sitemap:\s+https:\/\/playpoint-sim\.com\/([^\s]+)$/gm)]
+    .map(match => match[1]);
+  return files.map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
+}
+
 function createOption(text, value) {
   return {
     text,
@@ -525,7 +532,7 @@ test('共有ボタンは結果アクション行にまとめて表示状態を�
 });
 
 test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ', () => {
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemap = readSubmittedSitemaps();
   const shareScript = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
   const parseJsonLd = html => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
@@ -2063,7 +2070,7 @@ test('多言語HTMLビルド出力の整合性とhreflangの検証', () => {
 
 test('海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ', () => {
   const { getIntlSeoFiles } = require(path.join(root, 'scripts', 'intl-seo-pages.cjs'));
-  const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const sitemap = readSubmittedSitemaps();
   const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
   const files = getIntlSeoFiles();
 
@@ -2834,7 +2841,7 @@ test('トップの記事ドロワーは表示件数とリンク件数を一致�
 });
 
 test('記事サイトマップのlastmodは記事一覧の更新日と一致する', () => {
-  const rootSitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+  const submittedSitemaps = readSubmittedSitemaps();
   const blogSitemap = fs.readFileSync(path.join(root, 'blog', 'sitemap.xml'), 'utf8');
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
 
@@ -2843,7 +2850,7 @@ test('記事サイトマップのlastmodは記事一覧の更新日と一致す�
     const expectedDate = article.modified || article.date;
     const entry = `<loc>${url}</loc>\n    <lastmod>${expectedDate}</lastmod>`;
 
-    assert.ok(rootSitemap.includes(entry), `${article.id} のルートサイトマップ更新日が不正です`);
+    assert.ok(submittedSitemaps.includes(entry), `${article.id} の送信サイトマップ更新日が不正です`);
     assert.ok(blogSitemap.includes(entry), `${article.id} のブログサイトマップ更新日が不正です`);
   }
 });
