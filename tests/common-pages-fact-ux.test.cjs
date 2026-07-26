@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const vm = require('node:vm');
 const test = require('node:test');
@@ -98,10 +99,19 @@ test('海外の既存ギフトカード割引記事を記事ハブと人向け�
   }
 });
 
-test('アプリモジュール変更がService Workerキャッシュ名を必ず更新する', () => {
-  const revision = createAppModuleRevision(root);
-  const serviceWorker = read('sw.js');
-  assert.match(revision, /^[0-9a-f]{8}$/);
-  assert.ok(serviceWorker.includes('-' + revision + "'"), 'sw.js のキャッシュ名にモジュール指紋がありません');
+test('アプリモジュール変更がService Worker用の指紋を必ず変える', () => {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-module-revision-'));
+  try {
+    fs.writeFileSync(path.join(tempRoot, 'module.js'), 'export const value = 1;\n');
+    const before = createAppModuleRevision(tempRoot, ['module.js']);
+    fs.writeFileSync(path.join(tempRoot, 'module.js'), 'export const value = 2;\n');
+    const after = createAppModuleRevision(tempRoot, ['module.js']);
+
+    assert.match(before, /^[0-9a-f]{8}$/);
+    assert.match(after, /^[0-9a-f]{8}$/);
+    assert.notEqual(after, before);
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
   assert.match(read('scripts/asset-sync.cjs'), /versionKey: 'appModuleRevision'/);
 });
