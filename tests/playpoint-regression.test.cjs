@@ -99,6 +99,7 @@ function loadCalculatorContext(dateClass = Date) {
         populateStatusSelects: PP_APP.CALC.populateStatusSelects.bind(PP_APP.CALC),
         updateBaseRateAndTarget: PP_APP.CALC.updateBaseRateAndTarget.bind(PP_APP.CALC),
         getMaxNeededPointsForTarget: PP_APP.CALC.getMaxNeededPointsForTarget.bind(PP_APP.CALC),
+        getRateDetails: PP_APP.CALC.getRateDetails.bind(PP_APP.CALC),
         getRemainingMonths: PP_APP.CALC.getRemainingMonths.bind(PP_APP.CALC),
         getNextFridayCalendarWindow,
         getRelatedArticles: PP_APP.CALC.getRelatedArticles.bind(PP_APP.CALC),
@@ -159,6 +160,19 @@ test('前年からランクを引き継いだ場合も目標閾値全体を入�
   assert.strictEqual(getMaxNeededPointsForTarget(config, 1.5, 4000), 4000);
   assert.strictEqual(getMaxNeededPointsForTarget(config, 1.75, 15000), 15000);
   assert.strictEqual(getMaxNeededPointsForTarget(config, 1.5, 1000), 1000);
+});
+
+test('直接レートと倍率は代替入力として高い方と採用理由を返す', () => {
+  const { PP_STATE, getRateDetails } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  const status = createInput('1.5');
+
+  assert.deepStrictEqual(
+    JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
+    { directRate: 4, multiplier: 2, multipliedRate: 3, finalRate: 4, source: 'direct' }
+  );
+  assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'multiplier');
+  assert.strictEqual(getRateDetails(createInput('3'), status, createInput('2')).source, 'same');
 });
 
 test('金曜の開始時刻を過ぎたカレンダー登録は翌週を使う', () => {
@@ -417,7 +431,8 @@ test('英語トップの日記エリアはJS実行前でも英語で読める', 
     assert.ok(!diary.includes(phrase), `en/index.html の日記エリアに日本語が残っています: ${phrase}`);
   }
 
-  assert.ok(diary.includes('Every Friday is Weekly Reward Day'));
+  assert.ok(diary.includes('Regular weekly prizes are for Silver level and above'));
+  assert.ok(diary.includes('Friday in your Play country'));
   assert.ok(diary.includes('Monthly Summary'));
   assert.ok(diary.includes('Backup & Restore Data'));
 });
