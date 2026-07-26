@@ -1,6 +1,7 @@
 'use strict';
 
 function createLocales(todayStr) {
+  const siteUpdatedAt = todayStr < '2026-07-26' ? '2026-07-26' : todayStr;
   return {
     'en': {
         region: 'US',
@@ -15,6 +16,7 @@ function createLocales(todayStr) {
         alternateName: 'Play Points Calculator',
         appDesc: 'An unofficial simulation tool to calculate required spending to reach Google Play Points goals based on your current status.',
         staticText: {
+            closeAria: 'Close', showHelpAria: 'Show explanation', shareResultAria: 'Share calculation result', prevYearAria: 'Previous year', nextYearAria: 'Next year',
             mainTitle: 'Google Play Points Calculator',
             siteAlias: 'Also known as Play Points Calculator / unofficial tool',
             siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.',
@@ -38,19 +40,19 @@ function createLocales(todayStr) {
             packAmountLabel: 'Average pack spending per transaction (optional)',
             packAmountPlaceholder: 'e.g., 98',
             sectionTitleRate: 'Points rate settings',
-            labelBaseRate: 'Base points per $1',
-            labelMultiplier: 'Campaign multiplier (e.g., 3x)',
-            warningRate: '* The calculator uses whichever is better: your input value or status rate x campaign multiplier.',
+            labelBaseRate: 'Earn rate per $1 (direct entry)',
+            labelMultiplier: 'Campaign multiplier (alternative input)',
+            warningRate: 'The calculator uses the higher estimate from direct rate entry or level rate × multiplier. These are alternative inputs. Confirm eligibility, activation, and caps in the official offer.',
             calculateButton: 'Calculate amount',
             copyButton: 'Copy',
             tweetButton: 'Share on X',
             sectionTitleReverse: 'Reverse mode',
             labelAmountYen: 'Amount spent (USD)',
             amountYenPlaceholder: 'e.g., 50',
-            labelMultiplierReverse: 'Campaign multiplier',
+            labelMultiplierReverse: 'Campaign multiplier (alternative input)',
             reverseCalculateButton: 'Calculate points',
             sectionTitleDiary: 'Weekly Awards Diary',
-            diaryHintCard: '<strong>Every Friday is Weekly Reward Day!</strong> Get your rewards from the Google Play Store and record them in your diary.',
+            diaryHintCard: '<strong>Regular weekly prizes are for Silver level and above.</strong> They reset on Friday in your Play country. If your account is eligible, record the claimed result here.',
             currentYearLabel: 'Current year',
             initialMonthLabel: 'January',
             monthlySummaryTitle: 'Monthly Summary',
@@ -58,9 +60,9 @@ function createLocales(todayStr) {
             totalLabel: 'Total:',
             averageLabel: 'Average:',
             perWeekUnit: 'pts/week',
-            guestNotice: '[!] Right now, your diary records are saved only in this browser. If you clear cache or browsing data, the records may be lost.',
+            guestNotice: '[!] Diary data is stored only in this browser’s local storage. It will not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.',
             reminderTitle: 'Friday Reward Notification (Calendar)',
-            reminderDesc: 'Set up a weekly recurring reminder for the Weekly Reward and make logging a habit.',
+            reminderDesc: 'For eligible accounts with regular weekly prizes, set a Friday reminder to check the Perks screen.',
             btnGoogleCal: 'Add to Google Calendar',
             btnICal: 'Add to Calendar App (iCal)',
             backupTitle: 'Backup & Restore Data',
@@ -111,7 +113,7 @@ function createLocales(todayStr) {
           "name": "Is my weekly reward diary data saved?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance."
+            "text": "Diary data is stored only in this browser's local storage. It does not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed."
           }
         }
       ]
@@ -135,7 +137,7 @@ function createLocales(todayStr) {
         </div>
         <div class="faq-item">
             <h3>Q. Is my weekly reward diary data saved?</h3>
-            <p>A. The data you enter is only saved in your browser's local storage. You can export it as a JSON file or restore it to prevent data loss due to cache clearance.</p>
+            <p>A. Diary data is stored only in this browser's local storage. It does not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->`,
@@ -152,7 +154,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${todayStr}</p>
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${siteUpdatedAt}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     },
@@ -169,12 +171,63 @@ function createLocales(todayStr) {
         alternateName: '구글 플레이 포인트 계산기',
         appDesc: '구글 플레이 포인트의 현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있는 도구입니다.',
         staticText: {
+            closeAria: '닫기', showHelpAria: '설명 보기', shareResultAria: '계산 결과 공유', prevYearAria: '이전 연도', nextYearAria: '다음 연도',
             mainTitle: 'Google Play Points 계산기',
             siteAlias: '별칭: 구글 플레이 포인트 계산기 / 비공식 도구',
-            siteDescription: '현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있습니다!<br>결제 금액으로 획득할 수 있는 포인트도 계산 가능합니다!',
+            siteDescription: '먼저 현재 등급, 목표 등급, 목표까지 필요한 포인트를 입력하세요.<br>등급 달성에 필요한 결제 금액과 결제 금액으로 받을 수 있는 포인트를 계산합니다.',
+            linkAttention: '⚠️ 국가별 안내',
+            linkLatest: '🆕 최신 정보',
+            linkArticles: '📝 가이드',
+            linkKatakata: '🧪 KatakataLab',
+            fridayReminderText: '주간 리워드를 받은 뒤 일기에 기록해 두세요.',
             tabMain: '일반 계산',
             tabReverse: '역산 모드',
-            tabDiary: '주간 리워드 일기'
+            tabDiary: '주간 리워드 일기',
+            sectionTitleStatus: '등급 입력',
+            labelCurrentStatus: '현재 등급',
+            labelTargetStatus: '목표 등급',
+            labelNeededPoints: '목표까지 필요한 포인트',
+            neededPointsPlaceholder: '예: 120',
+            packAmountLabel: '1회당 평균 결제 팩 금액 (선택 사항)',
+            packAmountPlaceholder: '예: 10000',
+            sectionTitleRate: '적립 설정',
+            labelBaseRate: '1,000원당 적립률(직접 입력)',
+            labelMultiplier: '이벤트 배율(다른 입력 방식)',
+            warningRate: '직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.',
+            calculateButton: '결제 금액 계산',
+            copyButton: '복사하기',
+            tweetButton: '결과를 X에 공유',
+            sectionTitleReverse: '역산 모드',
+            labelAmountYen: '결제 금액 (₩)',
+            amountYenPlaceholder: '예: 50000',
+            labelMultiplierReverse: '이벤트 배율(다른 입력 방식)',
+            reverseCalculateButton: '포인트 계산',
+            sectionTitleDiary: '주간 리워드 일기',
+            diaryHintCard: '<strong>일반 주간 리워드는 실버 이상 등급이 대상입니다.</strong> Play 국가/지역의 금요일에 갱신됩니다. 대상 계정이라면 수령 결과를 일지에 기록할 수 있습니다.',
+            currentYearLabel: '현재 연도',
+            initialMonthLabel: '1월',
+            monthlySummaryTitle: '월간 합계',
+            yearlySummaryTitle: '연간 합계',
+            totalLabel: '합계:',
+            averageLabel: '평균:',
+            perWeekUnit: 'pt/주',
+            guestNotice: '[!] 일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기·브라우저로 이동할 때는 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요.',
+            reminderTitle: '금요 리워드 알림 (캘린더)',
+            reminderDesc: '일반 주간 리워드가 표시되는 대상 계정이라면 매주 금요일 확인 알림을 등록할 수 있습니다.',
+            btnGoogleCal: 'Google 캘린더 등록',
+            btnICal: '캘린더 앱 (iCal) 등록',
+            backupTitle: '데이터 백업 및 복원',
+            exportBtn: '데이터 내보내기 (복사)',
+            importBtn: '데이터 가져오기 (복원)',
+            confirmImportBtn: '복원 실행',
+            backupPlaceholder: '내보낸 데이터를 여기에 붙여넣어 주세요',
+            linkPrivacy: '개인정보처리방침 (일본어)',
+            linkTerms: '이용약관 (일본어)',
+            linkQA: 'Q&A 및 후기 (일본어)',
+            linkFeedback: '의견 제안',
+            linkAbout: 'Play 포인트란?',
+            linkDiscount: '💡 할인 구매 가이드',
+            linkAuthor: '운영자 및 정책 (일본어)'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
@@ -211,7 +264,7 @@ function createLocales(todayStr) {
           "name": "주간 리워드 일지 데이터는 저장되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다."
+            "text": "일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기나 브라우저로 이동할 때는 자동으로 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요."
           }
         }
       ]
@@ -235,7 +288,7 @@ function createLocales(todayStr) {
         </div>
         <div class="faq-item">
             <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
-            <p>A. 입력하신 데이터는 브라우저의 로컬 스토리지에만 저장됩니다. 캐시 삭제에 대비해 JSON 파일로 내보내기(백업) 및 복원이 가능합니다.</p>
+            <p>A. 일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기나 브라우저로 이동할 때는 자동으로 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요.</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->`,
@@ -252,7 +305,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${todayStr}</p>
+        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${siteUpdatedAt}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     },
@@ -269,12 +322,63 @@ function createLocales(todayStr) {
         alternateName: 'Google Play 點數計算器',
         appDesc: '本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。',
         staticText: {
+            closeAria: '關閉', showHelpAria: '顯示說明', shareResultAria: '分享計算結果', prevYearAria: '上一年', nextYearAria: '下一年',
             mainTitle: 'Google Play Points 計算器',
             siteAlias: '別稱: Google Play 點數計算器 / 非官方工具',
-            siteDescription: '可以計算從目前等級達到目標等級所需的消費金額！<br>還能計算消費金額可獲得的預估點數！',
+            siteDescription: '請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。',
+            linkAttention: '⚠️ 地區注意事項',
+            linkLatest: '🆕 最新資訊',
+            linkArticles: '📝 指南',
+            linkKatakata: '🧪 KatakataLab',
+            fridayReminderText: '領取每週獎勵後，請記錄到日記中。',
             tabMain: '一般計算',
             tabReverse: '逆算模式',
-            tabDiary: '每週獎勵日記'
+            tabDiary: '每週獎勵日記',
+            sectionTitleStatus: '輸入等級',
+            labelCurrentStatus: '目前等級',
+            labelTargetStatus: '目標等級',
+            labelNeededPoints: '距離目標所需點數',
+            neededPointsPlaceholder: '例如：125',
+            packAmountLabel: '單筆平均購買禮包金額 (選填)',
+            packAmountPlaceholder: '例：300',
+            sectionTitleRate: '回饋設定',
+            labelBaseRate: '每 NT$30 回饋率（直接輸入）',
+            labelMultiplier: '活動倍率（另一種輸入方式）',
+            warningRate: '計算器會使用直接輸入回饋率與等級基本回饋率×倍率中較高的估算值。兩者是不同輸入方式；實際資格、啟用與上限請查看官方活動畫面。',
+            calculateButton: '計算消費金額',
+            copyButton: '複製',
+            tweetButton: '分享至 X',
+            sectionTitleReverse: '逆算模式',
+            labelAmountYen: '消費金額 (NT$)',
+            amountYenPlaceholder: '例如：1500',
+            labelMultiplierReverse: '活動倍率（另一種輸入方式）',
+            reverseCalculateButton: '計算點數',
+            sectionTitleDiary: '每週獎勵日記',
+            diaryHintCard: '<strong>一般每週獎勵適用於銀級以上。</strong> 獎勵會在你的 Play 國家/地區於週五更新。若帳號符合資格，可將領取結果記錄在日記中。',
+            currentYearLabel: '目前年份',
+            initialMonthLabel: '1月',
+            monthlySummaryTitle: '月度統計',
+            yearlySummaryTitle: '年度統計',
+            totalLabel: '合計:',
+            averageLabel: '平均:',
+            perWeekUnit: 'pt/週',
+            guestNotice: '[!] 日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。',
+            reminderTitle: '週五獎勵提醒 (日曆)',
+            reminderDesc: '若帳號顯示一般每週獎勵，可設定每週五檢查獎勵頁面的提醒。',
+            btnGoogleCal: '新增至 Google 日曆',
+            btnICal: '新增至日曆 App (iCal)',
+            backupTitle: '資料備份與還原',
+            exportBtn: '匯出資料 (複製)',
+            importBtn: '匯入資料 (還原)',
+            confirmImportBtn: '執行還原',
+            backupPlaceholder: '請將匯出的資料貼至此處',
+            linkPrivacy: '隱私權政策 (日文)',
+            linkTerms: '服務條款 (日文)',
+            linkQA: 'Q&A 與後記 (日文)',
+            linkFeedback: '意見回饋',
+            linkAbout: '什麼是 Play Points？',
+            linkDiscount: '💡 優惠儲值指南',
+            linkAuthor: '營運者與政策 (日文)'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
@@ -311,7 +415,7 @@ function createLocales(todayStr) {
           "name": "每週獎勵紀錄的資料會被儲存嗎？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。"
+            "text": "日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。"
           }
         }
       ]
@@ -335,7 +439,7 @@ function createLocales(todayStr) {
         </div>
         <div class="faq-item">
             <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
-            <p>A. 您輸入的資料僅會儲存在瀏覽器的本機儲存空間（Local Storage）中。為了防止因清除快取而遺失資料，您可以將資料匯出為 JSON 檔案或進行還原。</p>
+            <p>A. 日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。</p>
         </div>
     </section>
     <!-- FAQ_SECTION_END -->`,
@@ -352,7 +456,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${todayStr}</p>
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${siteUpdatedAt}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     }
