@@ -820,7 +820,13 @@ test('Service Workerアセット同期は定義済みパスをバージョンキ
     thirdPartyVersion: 'third-v'
   });
 
-  assert.strictEqual(ROOT_SERVICE_WORKER_ASSETS.length, 10);
+  assert.strictEqual(
+    ROOT_SERVICE_WORKER_ASSETS.filter(({ assetPath }) => assetPath !== './js/app-modules').length,
+    10
+  );
+  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(
+    ({ versionKey, assetPath }) => versionKey === 'appModuleRevision' && assetPath === './js/app-modules'
+  ));
   for (const expected of [
     './style.css?v=css-v',
     './js/consent.js?v=consent-v',
