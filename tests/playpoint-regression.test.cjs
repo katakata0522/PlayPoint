@@ -877,7 +877,7 @@ test('トップページの更新メタデータ同期は日付と主要アセ�
   assert.ok(updated.includes('最終更新: 2026-06-28'));
 });
 
-test('多言語生成設定は更新日を受け取って各言語のメタ行を作る', () => {
+test('多言語生成設定は共通内容の更新日を下回らないメタ行を作る', () => {
   const { createLocales } = require(path.join(root, 'scripts', 'locale-config.cjs'));
   const locales = createLocales('2026-06-28');
 
@@ -885,9 +885,12 @@ test('多言語生成設定は更新日を受け取って各言語のメタ行�
   assert.strictEqual(locales.en.langCode, 'en');
   assert.strictEqual(locales.ko.langCode, 'ko');
   assert.strictEqual(locales.tw.langCode, 'zh-TW');
-  assert.ok(locales.en.metaLine.includes('Last Updated: 2026-06-28'));
-  assert.ok(locales.ko.metaLine.includes('최종 업데이트: 2026-06-28'));
-  assert.ok(locales.tw.metaLine.includes('最後更新: 2026-06-28'));
+  assert.ok(locales.en.metaLine.includes('Last Updated: 2026-07-26'));
+  assert.ok(locales.ko.metaLine.includes('최종 업데이트: 2026-07-26'));
+  assert.ok(locales.tw.metaLine.includes('最後更新: 2026-07-26'));
+
+  const laterLocales = createLocales('2026-07-27');
+  assert.ok(laterLocales.en.metaLine.includes('Last Updated: 2026-07-27'));
 });
 
 test('多言語HTML生成は言語別メタ情報と相対パスを同期する', () => {
