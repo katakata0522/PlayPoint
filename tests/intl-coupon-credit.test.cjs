@@ -72,7 +72,8 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(html.includes('utm_campaign=intl_article_cta'));
+      assert.ok(html.includes('class="cta-btn"'));
+      assert.ok(!html.includes('utm_medium=internal'));
       assert.ok(html.includes('/author/katakata.html'));
       const peerTopic = topics.find(candidate => candidate.slug === topic.peer);
       const peerPath = fileFor(peerTopic, locale);

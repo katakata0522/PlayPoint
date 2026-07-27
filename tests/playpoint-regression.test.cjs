@@ -589,7 +589,7 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
       file: path.join(root, 'campaign', 'wait', 'index.html'),
       canonical: 'https://playpoint-sim.com/campaign/wait/',
       mode: 'main',
-      requiredQuery: 'utm_campaign=campaign_wait'
+      requiredQuery: 'multiplier=2'
     },
     {
       file: path.join(root, 'amount', '10000', 'index.html'),
@@ -618,7 +618,7 @@ test('検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
     assert.ok(schemas.some(data => data['@type'] === 'FAQPage'), `${canonical} のFAQ構造化データがありません`);
     assert.ok(html.includes(`href="/?mode=${mode}`), `${canonical} から計算機への導線がありません`);
     assert.ok(html.includes(requiredQuery), `${canonical} の条件付き計算パラメータがありません`);
-    assert.ok(html.includes('utm_source=lp'), `${canonical} の内部流入識別がありません`);
+    assert.ok(!html.includes('utm_medium=internal'), `${canonical} にサイト内UTMが残っています`);
     assert.ok(html.includes('計算機に入れる条件'), `${canonical} の入力条件説明がありません`);
     assert.ok(html.includes('/author/katakata.html'), `${canonical} の運営者導線がありません`);
     assert.ok(/class="[^"]*\blp-faq\b[^"]*"/.test(html), `${canonical} のFAQ表示がありません`);
@@ -668,32 +668,6 @@ test('ブログRSSとAtomフィードは発見可能で最新記事を含む', (
   }
   assert.ok(sitemapHtml.includes('feed.xml'), 'HTMLサイトマップにRSS導線がありません');
   assert.ok(sitemapHtml.includes('atom.xml'), 'HTMLサイトマップにAtom導線がありません');
-});
-
-test('別用途ツールは実存を保ちPlay Pointsサイトマップから分離する', () => {
-  const subHealthPath = path.join(root, 'tools', 'sub-health', 'index.html');
-  const rakutenSimPath = path.join(root, 'tools', 'rakuten-sim', 'index.html');
-  const dashboardPath = path.join(root, 'tools', 'dashboard', 'index.html');
-  const sitemapHtml = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
-
-  assert.ok(fs.existsSync(subHealthPath), 'sub-health/index.html がありません');
-  assert.ok(fs.existsSync(rakutenSimPath), 'rakuten-sim/index.html がありません');
-  assert.ok(fs.existsSync(dashboardPath), 'dashboard/index.html がありません');
-
-  const subHealthHtml = fs.readFileSync(subHealthPath, 'utf8');
-  const rakutenSimHtml = fs.readFileSync(rakutenSimPath, 'utf8');
-  const dashboardHtml = fs.readFileSync(dashboardPath, 'utf8');
-
-  assert.ok(subHealthHtml.includes('<title>サブスク健康診断シミュレーター'), 'サブスク健康診断のタイトルが不正です');
-  assert.ok(subHealthHtml.includes('Noto Sans JP'), 'サブスク健康診断のフォント設定に Noto Sans JP がありません');
-  assert.ok(rakutenSimHtml.includes('<title>楽天お買い物マラソン ポイント上限シミュレーター'), '楽天シミュレーターのタイトルが不正です');
-  assert.ok(rakutenSimHtml.includes('Noto Sans JP'), '楽天シミュレーターのフォント設定に Noto Sans JP がありません');
-  assert.ok(dashboardHtml.includes('<title>統合オトクダッシュボード'), '統合ダッシュボードのタイトルが不正です');
-  assert.ok(dashboardHtml.includes('Noto Sans JP'), '統合ダッシュボードのフォント設定に Noto Sans JP がありません');
-
-  assert.ok(!sitemapHtml.includes('tools/sub-health/index.html'), 'Play Pointsサイトマップにサブスク健康診断が混在しています');
-  assert.ok(!sitemapHtml.includes('tools/rakuten-sim/index.html'), 'Play Pointsサイトマップに楽天シミュレーターが混在しています');
-  assert.ok(!sitemapHtml.includes('tools/dashboard/index.html'), 'Play Pointsサイトマップに統合ダッシュボードが混在しています');
 });
 
 test('ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う', () => {
@@ -1063,15 +1037,9 @@ test('SEO監視はサイトマップ掲載記事も確認する', () => {
 
 test('Play Pointsの公開canonical URLは送信XMLサイトマップに含める', () => {
   const sitemaps = readSubmittedSitemaps();
-  const excludedCanonicalUrls = new Set([
-    'https://playpoint-sim.com/kids-smile-land/',
-    'https://playpoint-sim.com/tools/gravity-todo/'
-  ]);
-  const htmlFiles = [
-    ...fs.readdirSync(root).filter(file => file.endsWith('.html')).map(file => path.join(root, file)),
-    path.join(root, 'kids-smile-land', 'index.html'),
-    path.join(root, 'tools', 'gravity-todo', 'index.html')
-  ];
+  const htmlFiles = fs.readdirSync(root)
+    .filter(file => file.endsWith('.html'))
+    .map(file => path.join(root, file));
 
   for (const file of htmlFiles) {
     const html = fs.readFileSync(file, 'utf8');
@@ -1080,10 +1048,6 @@ test('Play Pointsの公開canonical URLは送信XMLサイトマップに含め�
     const canonicalMatch = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/);
     if (!canonicalMatch || !canonicalMatch[1].startsWith('https://playpoint-sim.com/')) continue;
 
-    if (excludedCanonicalUrls.has(canonicalMatch[1])) {
-      assert.ok(!sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`));
-      continue;
-    }
     assert.ok(
       sitemaps.includes(`<loc>${canonicalMatch[1]}</loc>`),
       `${path.relative(root, file)} canonical is missing from submitted sitemaps`
@@ -1096,13 +1060,6 @@ test('blog robots.txtは本番ドメインのサイトマップを指す', () =>
 
   assert.ok(robots.includes('Sitemap: https://playpoint-sim.com/blog/sitemap.xml'));
   assert.ok(!robots.includes('katakatalab.example.com'));
-});
-
-test('kids-smile-landのサービスワーカーはGETかつ同一オリジンだけをキャッシュ更新する', () => {
-  const serviceWorker = fs.readFileSync(path.join(root, 'kids-smile-land', 'service-worker.js'), 'utf8');
-
-  assert.ok(serviceWorker.includes("event.request.method !== 'GET'"));
-  assert.ok(serviceWorker.includes('requestUrl.origin !== self.location.origin'));
 });
 
 test('ブログ一覧は記事JSONを正規化してから描画する', () => {
@@ -1164,13 +1121,6 @@ test('静的配信設定はフィードとローカルフォントを効率よ�
   assert.ok(htaccess.includes('Header set Cache-Control "public, max-age=86400"'), 'manifestのCache-Controlが明示されていません');
 });
 
-test('Gravity Todoのサービスワーカーは外部オリジンをキャッシュしない', () => {
-  const serviceWorker = fs.readFileSync(path.join(root, 'tools', 'gravity-todo', 'sw.js'), 'utf8');
-
-  assert.ok(serviceWorker.includes('requestUrl.origin !== self.location.origin'));
-  assert.ok(!serviceWorker.includes('RUNTIME_CACHE'));
-});
-
 test('target blankリンクにはnoopener noreferrerを付ける', () => {
   const htmlFiles = fs.readdirSync(path.join(root, 'articles'))
     .filter(file => file.endsWith('.html'))
@@ -1196,16 +1146,6 @@ test('blogの再読み込みボタンはインラインonclickを使わない', 
   assert.ok(!blogIndex.includes('onclick="location.reload()"'));
   assert.ok(!blogScript.includes('onclick="location.reload()"'));
   assert.ok(blogScript.includes("addEventListener('click'"));
-});
-
-test('Kids Smile LandはlocalStorage設定値を許可値と範囲で復元する', () => {
-  const app = fs.readFileSync(path.join(root, 'kids-smile-land', 'app.js'), 'utf8');
-
-  assert.ok(app.includes('readStoredOption'));
-  assert.ok(app.includes('readStoredNumber'));
-  assert.ok(app.includes('readStoredText'));
-  assert.ok(app.includes("['easy', 'normal', 'hard']"));
-  assert.ok(app.includes('[0, 5, 15, 30, 45]'));
 });
 
 test('blog articles.jsonは実在するPlay Points記事だけを含む', () => {
@@ -1384,13 +1324,13 @@ test('計算と日記保存の完了を個人情報なしでAnalyticsへ送る',
   assert.ok(!diary.includes('points_value:'));
 });
 
-test('AdSenseは主機能より先に読み込まず利用開始後に読み込む', () => {
+test('AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する', () => {
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-  assert.ok(script.includes("addEventListener('playpoint:engaged'"));
-  assert.ok(script.includes("addEventListener('scroll'"));
-  assert.ok(script.includes('scheduleAdsenseLoad'));
-  assert.ok(!script.includes("requestIdleCallback(() => {\n                loadAdsense();"));
+  assert.ok(script.includes('loadConsentAndAdsense'));
+  assert.ok(script.includes('ensureConsentManager()'));
+  assert.ok(script.includes('.then(loadAdsense)'));
+  assert.ok(script.indexOf('ensureConsentManager()') < script.indexOf('.then(loadAdsense)'));
 });
 
 test('トップページはブラウザ言語だけでクライアントサイドリダイレクトしない', () => {
@@ -1534,11 +1474,10 @@ test('計算条件を共有URLへ保存し再訪時に復元できる', () => {
   assert.ok(main.includes('SHARE.applyFromUrl()'));
 });
 
-test('記事から計算機への導線は内部流入を識別できる', () => {
+test('記事から計算機への導線はセッション参照元を上書きせず計測できる', () => {
   const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
 
-  assert.ok(articleScript.includes("utm_source', 'article'"));
-  assert.ok(articleScript.includes("utm_medium', 'internal'"));
+  assert.ok(!articleScript.includes("utm_medium', 'internal'"));
   assert.ok(articleScript.includes('article_to_calculator_clicked'));
   assert.ok(articleScript.includes('link_context'));
   assert.ok(articleScript.includes('destination_path'));
@@ -1606,7 +1545,8 @@ test('最新情報ハブは検証日・公式参照・計算機CTAを持つ', ()
   assert.ok(latest.includes('検証日: '));
   assert.ok(latest.includes('https://support.google.com/googleplay/answer/9077312'));
   assert.ok(latest.includes('https://support.google.com/googleplay/answer/9080348'));
-  assert.ok(latest.includes('utm_source=latest_hub'));
+  assert.ok(latest.includes('href="../"'));
+  assert.ok(!latest.includes('utm_medium=internal'));
   assert.ok(sitemap.includes('<loc>https://playpoint-sim.com/latest/</loc>'));
   assert.ok(sitemapHtml.includes('href="latest/"'));
   assert.ok(top.includes('href="latest/"'));
@@ -1620,7 +1560,8 @@ test('記事共通CTAは計算機への自然導線と計測文脈を持つ', ()
   assert.ok(articleScript.includes('setupCalculatorPrompt'));
   assert.ok(articleScript.includes("content.querySelector('.cta-box, .cta-banner')"));
   assert.ok(articleScript.includes('あなたの場合はいくら必要？'));
-  assert.ok(articleScript.includes('utm_campaign=article_cta_prompt'));
+  assert.ok(articleScript.includes('article-calculator-prompt__button" href="../"'));
+  assert.ok(!articleScript.includes('utm_medium=internal'));
   assert.ok(articleScript.includes('article_calculator_prompt'));
   assert.ok(articleCss.includes('.article-calculator-prompt'));
   assert.ok(articleCss.includes('.content .cta-box'));
@@ -1707,7 +1648,8 @@ test('ポイント未反映記事は検索意図の即答と計算後導線を�
   assert.ok(html.includes('購入アカウント'));
   assert.ok(html.includes('キャンペーン分だけ'));
   assert.ok(html.includes('反映後に、あと何ポイント必要か計算する'));
-  assert.ok(html.includes('https://playpoint-sim.com/?utm_source=not_reflected_article'));
+  assert.ok(html.includes('https://playpoint-sim.com/'));
+  assert.ok(!html.includes('utm_medium=internal'));
 });
 
 test('外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる', () => {
@@ -1720,8 +1662,8 @@ test('外部サイト向け埋め込みウィジェットは依存なしで安�
   assert.ok(widget.includes('customElements.define'));
   assert.ok(widget.includes('attachShadow'));
   assert.ok(widget.includes('Number.isFinite'));
-  assert.ok(widget.includes('playpoint-sim.com/?utm_source=embedded_widget'));
-  assert.ok(!sitemap.includes('https://playpoint-sim.com/embed.html'));
+  assert.ok(widget.includes('playpoint-sim.com/?entry=widget'));
+  assert.ok(sitemap.includes('https://playpoint-sim.com/embed.html'));
 });
 
 test('Analyticsのイベント設計と検証手順が文書化されている', () => {
@@ -1794,12 +1736,12 @@ test('反映タイミング記事は結論と確認手順を見出しで整理�
   assert.ok(html.includes(`${article.modified.replace(/-/g, '/')} 更新`));
 });
 
-test('広告のスクロール監視は閾値到達まで解除しない', () => {
+test('CMP起動用のAdSenseタグは二重読み込みしない', () => {
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-  assert.ok(script.includes('function handleAdsenseScroll()'));
-  assert.ok(script.includes("removeEventListener('scroll', handleAdsenseScroll)"));
-  assert.ok(!script.includes("}, { passive: true, once: true });"));
+  assert.ok(script.includes('if (adsLoaded) return'));
+  assert.ok(script.includes('const existing = document.querySelector'));
+  assert.ok(script.includes('loadConsentAndAdsense'));
 });
 
 test('共有URLは実在するステータス値だけを復元する', () => {
@@ -2317,7 +2259,8 @@ test('海外向けSEOは計測対象と追加記事クラスタを持つ', () =>
     assert.ok(html.includes('<meta name="robots" content="index,follow">'), `${file} のrobotsがありません`);
     assert.ok(html.includes('class="intl-article-toc"'), `${file} に目次がありません`);
     assert.ok(html.includes('application/ld+json'), `${file} のArticle構造化データがありません`);
-    assert.ok(html.includes('utm_campaign=intl_article_cta'), `${file} の計算機CTA計測がありません`);
+    assert.ok(html.includes('class="cta-btn"'), `${file} の計算機CTAがありません`);
+    assert.ok(!html.includes('utm_medium=internal'), `${file} にサイト内UTMが残っています`);
   }
 
   const monitoring = fs.readFileSync(path.join(root, 'docs', 'international-seo-monitoring.md'), 'utf8');
@@ -2855,10 +2798,10 @@ test('記事サイトマップのlastmodは記事一覧の更新日と一致す�
   for (const article of articles) {
     const url = `https://playpoint-sim.com/${article.file.replace(/^\.\.\//, '')}`;
     const expectedDate = article.modified || article.date;
-    const entry = `<loc>${url}</loc>\n    <lastmod>${expectedDate}</lastmod>`;
+    const entryPattern = new RegExp(`<loc>${url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</loc>\\r?\\n\\s*<lastmod>${expectedDate}</lastmod>`);
 
-    assert.ok(submittedSitemaps.includes(entry), `${article.id} の送信サイトマップ更新日が不正です`);
-    assert.ok(blogSitemap.includes(entry), `${article.id} のブログサイトマップ更新日が不正です`);
+    assert.match(submittedSitemaps, entryPattern, `${article.id} の送信サイトマップ更新日が不正です`);
+    assert.match(blogSitemap, entryPattern, `${article.id} のブログサイトマップ更新日が不正です`);
   }
 });
 
@@ -3044,7 +2987,8 @@ test('期限・返金・家族共有ガイドは4言語の相互参照と公式�
       assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), file + ' のcanonicalがありません');
       assert.ok(html.includes('hreflang="ja"') && html.includes('hreflang="en"') && html.includes('hreflang="ko"') && html.includes('hreflang="zh-TW"'), file + ' のhreflangが不足しています');
       assert.ok(html.includes('"@type":"FAQPage"'), file + ' のFAQ構造化データがありません');
-      assert.ok(html.includes(`/${locale}/points-cost/?utm_source=${topic}_article`), file + ' の計算導線がありません');
+      assert.ok(html.includes(`/${locale}/points-cost/`), file + ' の計算導線がありません');
+      assert.ok(!html.includes('utm_medium=internal'), file + ' にサイト内UTMが残っています');
       if (topic !== 'refund') assert.ok(html.includes(country), file + ' の国別公式リンクがありません');
       assert.ok(sitemap.includes(`<loc>${canonical}</loc>`), canonical + ' がsitemap.xmlにありません');
     }

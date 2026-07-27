@@ -1914,3 +1914,35 @@ html:not([lang="ja"]) .ja-only {
 }
 
 
+.pwa-install-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+}
+
+.pwa-install-card strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.pwa-install-card p {
+    margin: 0;
+}
+
+.pwa-install-card button {
+    min-height: 44px;
+    flex: 0 0 auto;
+}
+
+@media (max-width: 560px) {
+    .pwa-install-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

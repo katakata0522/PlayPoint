@@ -74,6 +74,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
     'href="terms.html"',
     'href="info.html"',
     'href="about-playpoints.html"',
+    'href="embed.html"',
     'href="author/',
     'src="js/',
     'href="js/'

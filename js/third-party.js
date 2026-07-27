@@ -7,7 +7,6 @@
     let gaLoaded = false;
     let adsLoaded = false;
     let thirdPartyScheduled = false;
-    let adsenseScheduled = false;
     let consentManagerPromise = null;
 
     function loadScript(src, attrs = {}) {
@@ -81,7 +80,7 @@
                     prefix = '../';
                 }
             }
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260619a`)
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260727a`)
                 .then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;
@@ -93,22 +92,11 @@
             .catch((error) => console.error('Consent manager load failed:', error));
     }
 
-    // 主機能より先に自動広告を挿入しない。利用開始または十分なスクロール後に一度だけ読み込む。
-    function scheduleAdsenseLoad() {
-        if (adsenseScheduled) return;
-        adsenseScheduled = true;
-        window.removeEventListener('scroll', handleAdsenseScroll);
-        void runAfterConsent(loadAdsense);
-    }
-
-    function handleAdsenseScroll() {
-        if (window.scrollY < 600) return;
-        scheduleAdsenseLoad();
-    }
-
-    function setupAdsenseTriggers() {
-        window.addEventListener('playpoint:engaged', scheduleAdsenseLoad, { once: true });
-        window.addEventListener('scroll', handleAdsenseScroll, { passive: true });
+    // AdSenseタグはGoogle認定CMPの表示にも使われるため、同意モード設定後に読み込む。
+    function loadConsentAndAdsense() {
+        ensureConsentManager()
+            .then(loadAdsense)
+            .catch((error) => console.error('Consent manager load failed:', error));
     }
 
     function scheduleThirdPartyLoad() {
@@ -127,11 +115,13 @@
         }, 1500);
     }
 
-    setupAdsenseTriggers();
-
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', scheduleThirdPartyLoad, { once: true });
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConsentAndAdsense();
+            scheduleThirdPartyLoad();
+        }, { once: true });
     } else {
+        loadConsentAndAdsense();
         scheduleThirdPartyLoad();
     }
 })();

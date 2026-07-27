@@ -61,7 +61,8 @@ test('週次特典と複数アカウント記事は3言語で公開要件を満�
       assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'), `${relativePath} の更新日が不正です`);
       assert.ok(schemas.some(schema => schema['@type'] === 'Article'), `${relativePath} にArticle構造化データがありません`);
       assert.ok(schemas.some(schema => schema['@type'] === 'FAQPage'), `${relativePath} にFAQ構造化データがありません`);
-      assert.ok(html.includes('utm_campaign=intl_article_cta'), `${relativePath} に計測付きCTAがありません`);
+      assert.ok(html.includes('class="cta-btn"'), `${relativePath} にCTAがありません`);
+      assert.ok(!html.includes('utm_medium=internal'), `${relativePath} にサイト内UTMが残っています`);
       assert.ok(html.includes('/author/katakata.html'), `${relativePath} に著者導線がありません`);
       assert.ok(html.includes(`/${locale.dir}/articles/`), `${relativePath} が言語別記事一覧へ戻りません`);
 

@@ -3,7 +3,7 @@
 (() => {
     const eventCommand = 'event';
     const allowedParams = {
-        lp_to_calculator_clicked: ['source_path', 'entry_campaign', 'link_context'],
+        lp_to_calculator_clicked: ['source_path', 'source_surface', 'link_context'],
         lp_related_link_clicked: ['source_path', 'target_path', 'link_context']
     };
 
@@ -39,12 +39,20 @@
         window.gtag(eventCommand, eventName, cleanParams);
     }
 
-    function getLinkContext(link, url) {
-        const campaign = url.searchParams.get('utm_campaign') || '';
-        if (campaign.endsWith('_mid')) return 'mid_cta';
+    function getLinkContext(link) {
+        if (link.closest('.lp-mid-cta')) return 'mid_cta';
         if (link.closest('.lp-action-row')) return 'hero_cta';
         if (link.closest('.lp-related-list')) return 'related_link';
         return 'inline_link';
+    }
+
+    function getSourceSurface() {
+        const segments = window.location.pathname.split('/').filter(Boolean);
+        return segments.slice(-2).join('_') || 'home';
+    }
+
+    function isCalculatorDestination(url) {
+        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);
     }
 
     document.addEventListener('click', (event) => {
@@ -56,11 +64,11 @@
         const url = new URL(link.href, window.location.href);
         if (url.origin !== window.location.origin) return;
 
-        const linkContext = getLinkContext(link, url);
-        if (url.pathname === '/' && url.searchParams.get('utm_source') === 'lp') {
+        const linkContext = getLinkContext(link);
+        if (isCalculatorDestination(url) && linkContext !== 'related_link') {
             track('lp_to_calculator_clicked', {
                 source_path: window.location.pathname,
-                entry_campaign: url.searchParams.get('utm_campaign') || '',
+                source_surface: getSourceSurface(),
                 link_context: linkContext
             });
             return;

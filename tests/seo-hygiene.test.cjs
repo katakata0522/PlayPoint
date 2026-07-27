@@ -52,8 +52,8 @@ test('ルートサイトマップはPlay Pointsの公開導線だけを扱う', 
   assert.ok(!sitemap.includes('<priority>'));
   assert.ok(!read('blog/sitemap.xml').includes('<changefreq>'));
   assert.ok(!read('blog/sitemap.xml').includes('<priority>'));
-  assert.ok(sitemap.includes(`<loc>${origin}/latest/</loc>\n    <lastmod>2026-07-26</lastmod>`));
-  assert.ok(sitemap.includes(`<loc>${origin}/ko/</loc>\n    <lastmod>2026-07-26</lastmod>`));
+  assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>2026-07-26</lastmod>`));
+  assert.match(sitemap, new RegExp(`<loc>${origin}/ko/</loc>\\r?\\n\\s*<lastmod>2026-07-26</lastmod>`));
 });
 
 test('専用XMLサイトマップへ移したURLをルートへ重ねない', () => {
@@ -74,7 +74,8 @@ test('Play Pointsブログとフィードに家計記事を混在させない', 
   for (const file of ['blog/index.html', 'feed.xml', 'atom.xml', 'blog/sitemap.xml']) {
     assert.ok(!read(file).includes('2026-06-29-savings-game-fire.html'), file);
   }
-  assert.ok(fs.existsSync(path.join(root, 'articles', '2026-06-29-savings-game-fire.html')));
+  assert.ok(!fs.existsSync(path.join(root, 'articles', '2026-06-29-savings-game-fire.html')));
+  assert.ok(read('.htaccess').includes('https://katakatalab.com/lab-tools/savings-game-fire/'));
 });
 
 test('人向けサイトマップはPlay Pointsの案内に集中する', () => {

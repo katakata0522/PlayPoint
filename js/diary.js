@@ -158,6 +158,9 @@ export const DIARY = {
             ANALYTICS.markEngaged();
             if (!isSilent) {
                 UI.showToast(CONFIGS[STATE.currentRegion].uiText.toastDiarySaveSuccess);
+                document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {
+                    detail: { region: STATE.currentRegion }
+                }));
             }
             const originalText = CONFIGS[STATE.currentRegion].uiText.saveButton;
             e.target.textContent = 'OK!';

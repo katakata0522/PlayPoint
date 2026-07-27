@@ -900,7 +900,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     faqStructuredData: true,
     officialSourceTitle: 'Play Points 문제 해결 공식 안내',
     officialSourceBody: '결제 계정, 포인트 활동 내역, 가족 결제, 국가 변경 영향을 Google 공식 문제 해결 도움말에서 확인하세요.',
@@ -938,7 +938,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     nextLinks: [
       ['/ko/status/platinum/', '플래티넘 필요 금액 계산'],
       ['/ko/status/diamond/', '다이아몬드 필요 금액 계산'],
@@ -971,7 +971,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     nextLinks: [
       ['/ko/amount/10000/', '10,000엔 포인트 계산'],
       ['/ko/campaign/wait/', '캠페인 대기 판단'],
@@ -1003,7 +1003,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     faqStructuredData: true,
     officialSourceTitle: 'Google Play 프로모션 공식 안내',
     officialSourceBody: '프로모션 제공 여부와 자격은 계정 활동, 설정, 국가와 개별 약관에 따라 달라질 수 있습니다. 공식 안내를 확인하세요.',
@@ -1041,7 +1041,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     faqStructuredData: true,
     officialSourceTitle: 'Google Play 국가 변경 공식 안내',
     officialSourceBody: '국가 변경 가능 조건, Play 잔액, Play Points, 정기 결제에 미치는 영향은 Google 공식 도움말의 최신 안내를 확인하세요.',
@@ -1080,7 +1080,7 @@ const KO_ARTICLES = [
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
-    ctaHref: '/ko/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/ko/',
     faqStructuredData: true,
     officialSourceTitle: '정기 결제 Play Points 공식 안내',
     officialSourceBody: '정기 결제 적립과 일회성 보너스는 국가, 계정, 프로모션 조건에 따라 달라질 수 있으므로 Google 공식 도움말을 함께 확인하세요.',
@@ -1122,7 +1122,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     faqStructuredData: true,
     officialSourceTitle: 'Play Points 問題排解官方說明',
     officialSourceBody: '請在 Google 官方問題排解說明確認付款帳號、點數活動、家庭付款與國家/地區變更的影響。',
@@ -1160,7 +1160,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     nextLinks: [
       ['/tw/status/platinum/', '白金等級需要多少'],
       ['/tw/status/diamond/', '鑽石等級需要多少'],
@@ -1193,7 +1193,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     officialSourceTitle: 'Google Play 禮物卡提供國家與限制',
     officialSourceBody: '官方清單目前未列出台灣。禮物卡只能在購買時的國家與幣別使用，帳戶國家也必須相符。',
     officialSourceHref: 'https://support.google.com/googleplay/answer/3422734?hl=zh-Hant',
@@ -1230,7 +1230,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     faqStructuredData: true,
     officialSourceTitle: 'Google Play 促銷活動官方說明',
     officialSourceBody: '促銷活動提供與資格可能因帳號活動、設定、國家/地區與個別條款不同，請確認官方說明。',
@@ -1268,7 +1268,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     faqStructuredData: true,
     officialSourceTitle: 'Google Play 國家/地區變更官方說明',
     officialSourceBody: '變更條件、Play 餘額、Play Points 與訂閱受到的影響，請以 Google 官方說明的最新內容為準。',
@@ -1307,7 +1307,7 @@ const TW_ARTICLES = [
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
-    ctaHref: '/tw/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta',
+    ctaHref: '/tw/',
     faqStructuredData: true,
     officialSourceTitle: '訂閱 Play Points 官方說明',
     officialSourceBody: '訂閱累積與首次訂閱加碼可能因地區、帳號與活動條件不同，請一併確認 Google 官方說明。',
@@ -1345,7 +1345,7 @@ const TW_ARTICLES = [
 const POINT_VALUE_100_ARTICLES = [
   {
     "badge": "US 100-point guide",
-    "ctaHref": "/en/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_en",
+    "ctaHref": "/en/?points=100",
     "description": "Estimate US spending needed for 100 Google Play Points by level, then check why redemption value varies by reward, country, and account.",
     "faq": [
       [
@@ -1442,7 +1442,7 @@ const POINT_VALUE_100_ARTICLES = [
   },
   {
     "badge": "한국 100포인트 가이드",
-    "ctaHref": "/ko/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_ko",
+    "ctaHref": "/ko/?points=100",
     "description": "한국에서 Google Play Points 100포인트를 모으는 데 필요한 결제액을 등급별로 계산하고, 100포인트의 사용 가치가 고정 현금가가 아닌 이유를 설명합니다.",
     "faq": [
       [
@@ -1539,7 +1539,7 @@ const POINT_VALUE_100_ARTICLES = [
   },
   {
     "badge": "台灣 100 點指南",
-    "ctaHref": "/tw/?points=100&utm_source=article&utm_medium=internal&utm_campaign=100_points_tw",
+    "ctaHref": "/tw/?points=100",
     "description": "依台灣各等級積點率計算 Google Play Points 100 點所需消費，並說明 100 點沒有固定現金價值、兌換前應確認哪些條件。",
     "faq": [
       [
@@ -2019,7 +2019,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
   const page = PAGE_TYPES[pageKey];
   const content = page[localeKey];
   const canonical = pageUrl(localeKey, page.slug);
-  const calcHref = `/${localeKey}/?mode=${page.mode}&${page.query}&utm_source=intl_lp&utm_medium=internal&utm_campaign=${page.campaign}`;
+  const calcHref = `/${localeKey}/?mode=${page.mode}&${page.query}`;
   const related = [
     [page.jaPath, locale.referenceLabel],
     ...locale.articles,
@@ -2169,7 +2169,7 @@ function renderArticle(article, assetVersions) {
   const labels = article.labels || ARTICLE_LABELS.en;
   const authorName = article.author || 'Katakata';
   const siteName = article.siteName || 'Google Play Points Calculator';
-  const ctaHref = article.ctaHref || '/en/?utm_source=article&utm_medium=internal&utm_campaign=intl_article_cta';
+  const ctaHref = article.ctaHref || '/en/';
   const nextLinks = article.nextLinks || [
     ['/en/status/diamond/', 'Diamond cost calculator'],
     ['/en/campaign/2x/', '2x promotion calculator'],

@@ -22,7 +22,7 @@
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=20260619a';
+            script.src = rootPath + 'js/consent.js?v=20260727a';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });

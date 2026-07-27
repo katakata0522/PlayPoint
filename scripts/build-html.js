@@ -9,6 +9,7 @@ const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
+const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
@@ -27,3 +28,6 @@ syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
 syncSitemap(rootDir, todayStr);
 
 generateBlogFeeds(rootDir);
+
+const sanitizedInternalLinkFiles = sanitizeInternalLinks(rootDir);
+console.log(`[build-html] sanitized internal attribution links: ${sanitizedInternalLinkFiles}`);

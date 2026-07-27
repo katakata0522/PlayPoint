@@ -42,8 +42,6 @@ const generatedFiles = [
   'atom.xml',
   'sw.js',
   'js/third-party.js',
-  'kindle-tracker/index.html',
-  'kindle-tracker/sw.js',
   ...syncedHtmlFiles,
   'sitemap.xml'
 ];

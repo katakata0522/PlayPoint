@@ -7,7 +7,7 @@
   
   <title>Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター</title>
   <meta name="description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。テーマやサイズをリアルタイムにカスタマイズして、コードを1クリックでコピーできます。">
-  <meta name="robots" content="noindex,follow">
+  <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://playpoint-sim.com/embed.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   
@@ -72,6 +72,11 @@
       gap: 32px;
       align-items: start;
     }
+
+    .main-grid > *,
+    .panel {
+      min-width: 0;
+    }
     
     .panel {
       background: var(--card-bg);
@@ -98,6 +103,16 @@
     
     .control-group:last-child {
       margin-bottom: 0;
+    }
+
+    .usage-note {
+      margin: 22px 0 0;
+      padding: 14px;
+      border-radius: 10px;
+      background: #eff6ff;
+      color: #334155;
+      font-size: 0.84rem;
+      line-height: 1.65;
     }
     
     label {
@@ -195,6 +210,8 @@
     pre {
       margin: 8px 0 0;
       padding: 16px;
+      max-width: 100%;
+      min-width: 0;
       border-radius: 10px;
       background: #0f172a;
       color: #f8fafc;
@@ -322,6 +339,8 @@
           <option value="dark">ダークテーマ（黒ベース）</option>
         </select>
       </div>
+
+      <p class="usage-note">個人・法人を問わず無料で利用できます。コードを改変せず、計算結果を公式情報と誤認させない形で設置してください。計算結果は目安です。</p>
       
       <div class="control-group">
         <label for="select-lang">表示言語</label>
@@ -375,12 +394,13 @@
 </div>
 
 <footer>
-  <p>© 2026 <a href="index.html" id="footer-calculator-link">PlayPoint Simulation Tool</a> | <a href="blog/">攻略ブログ</a></p>
+  <p>© 2026 <a href="index.html" id="footer-calculator-link">PlayPoint Simulation Tool</a> | <a href="blog/">攻略ブログ</a> | <a href="privacy.html">プライバシー</a> | <a href="terms.html">利用規約</a></p>
 </footer>
 
 <div id="toast" class="toast">クリップボードにコピーしました！</div>
 
 <script src="embed/playpoint-widget.js" defer></script>
+<script src="js/third-party.js?v=20260727_0925a" defer></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const footerLink = document.getElementById('footer-calculator-link');
@@ -441,6 +461,16 @@
     const btnCopy = document.getElementById('btn-copy');
     const toast = document.getElementById('toast');
 
+    function trackWidgetCodeCopied() {
+      if (!window.PlayPointConsent || window.PlayPointConsent.getStatus() !== 'granted') return;
+      if (typeof window.gtag !== 'function') return;
+      window.gtag('event', 'widget_code_copied', {
+        theme: selectTheme.value,
+        language: selectLang.value,
+        mode: selectMode.value
+      });
+    }
+
     function updateWidget() {
       const theme = selectTheme.value;
       const lang = selectLang.value;
@@ -496,6 +526,7 @@
     btnCopy.addEventListener('click', () => {
       navigator.clipboard.writeText(codeOutput.textContent)
         .then(() => {
+          trackWidgetCodeCopied();
           toast.classList.add('show');
           btnCopy.textContent = 'コピー完了！';
           btnCopy.style.backgroundColor = '#10b981';

@@ -26,11 +26,7 @@ const cssTargets = [
   'articles/article-common.css',
   'articles/article-shared.css',
   'articles/source-notice.css',
-  'blog/style.css',
-  'kindle-tracker/style.css',
-  'kids-smile-land/style.css',
-  'kids-smile-land/tailwind-built.css',
-  'tools/gravity-todo/style.css'
+  'blog/style.css'
 ];
 
 const jsTargets = [
@@ -48,27 +44,7 @@ const jsTargets = [
   'blog/components.js',
   'blog/script.js',
   'blog/utils.js',
-  'embed/playpoint-widget.js',
-  'kindle-tracker/app.js',
-  'kindle-tracker/sw.js',
-  'kids-smile-land/app.js',
-  'kids-smile-land/service-worker.js',
-  'tools/gravity-todo/sw.js',
-  'tools/gravity-todo/src/BGMManager.js',
-  'tools/gravity-todo/src/GyroManager.js',
-  'tools/gravity-todo/src/InteractionManager.js',
-  'tools/gravity-todo/src/ParticleSystem.js',
-  'tools/gravity-todo/src/PhysicsEngine.js',
-  'tools/gravity-todo/src/SettingsManager.js',
-  'tools/gravity-todo/src/SoundManager.js',
-  'tools/gravity-todo/src/StorageManager.js',
-  'tools/gravity-todo/src/TaskDetailPanel.js',
-  'tools/gravity-todo/src/TaskRenderer.js',
-  'tools/gravity-todo/src/TimeTheme.js',
-  'tools/gravity-todo/src/UIManager.js',
-  'tools/gravity-todo/src/consent-manager.js',
-  'tools/gravity-todo/src/main.js',
-  'tools/gravity-todo/src/taskText.js'
+  'embed/playpoint-widget.js'
 ];
 
 function resolveTargets(targets) {

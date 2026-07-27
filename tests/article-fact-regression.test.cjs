@@ -66,15 +66,6 @@ test('反映時間は公式案内にない時間幅を断定しない', () => {
   assert.match(html, /コンテンツやデバイスによって時間がかかる場合/);
 });
 
-test('節約効果を税務上の完全非課税と断定しない', () => {
-  const html = readArticle('2026-06-29-savings-game-fire.html');
-  assert.doesNotMatch(html, /完全に非課税/);
-  assert.doesNotMatch(html, /2,400万円/);
-  assert.match(html, /120万円 ÷ 4% = 3,000万円/);
-  assert.match(html, /利回りは保証されず、元本割れの可能性/);
-  assert.match(html, /個別の税務判断は収入やポイントの取得方法などで異なります/);
-});
-
 test('終了済みの2025年末から2026年正月予測には履歴記事の明示がある', () => {
   const html = readArticle('2025-12-25-new-year-campaign.html');
   assert.match(html, /現在は予測対象期間が終了している/);

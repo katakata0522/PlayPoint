@@ -357,13 +357,13 @@
                 return `<option value="${val}">${label}</option>`;
             }).join('');
 
-            const shareUrl = (lang === 'en' 
-                ? 'https://playpoint-sim.com/en/?utm_source=embedded_widget' 
+            const shareUrl = lang === 'en'
+                ? 'https://playpoint-sim.com/en/?entry=widget'
                 : lang === 'ko'
-                ? 'https://playpoint-sim.com/ko/?utm_source=embedded_widget'
+                ? 'https://playpoint-sim.com/ko/?entry=widget'
                 : lang === 'zh'
-                ? 'https://playpoint-sim.com/tw/?utm_source=embedded_widget'
-                : 'https://playpoint-sim.com/?utm_source=embedded_widget') + '&utm_medium=referral&utm_campaign=widget';
+                ? 'https://playpoint-sim.com/tw/?entry=widget'
+                : 'https://playpoint-sim.com/?entry=widget';
 
             this.shadowRoot.innerHTML = `
                 <style>

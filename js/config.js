@@ -14,7 +14,11 @@ export const ANALYTICS = {
         result_related_article_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
         result_decision_link_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
         share_url_copied: ['calculation_mode', 'region', 'target_status'],
-        share_x_clicked: ['calculation_mode', 'region', 'target_status']
+        share_x_clicked: ['calculation_mode', 'region', 'target_status'],
+        calendar_reminder_added: ['region', 'calendar_type'],
+        pwa_install_accepted: ['region', 'install_surface'],
+        widget_referral_landed: ['region', 'entry_surface'],
+        widget_code_copied: ['theme', 'language', 'mode']
     },
     hasConsent() {
         return typeof window !== 'undefined'
@@ -229,6 +233,7 @@ export const CONFIGS = {
             linkQA: { text: "Q&A・あとがき", href: "info.html" },
             linkFeedback: { text: "ご意見・ご感想", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "Playポイントとは？", href: "about-playpoints.html" },
+            linkWidget: { text: "無料ウィジェット", href: "embed.html" },
             linkDiscount: { text: "💡 お得に課金する", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "運営者・検証方針", href: "author/katakata.html" },
             linkAttention: { text: "⚠️ 海外の方へ", href: "attention.html" },
@@ -327,6 +332,7 @@ export const CONFIGS = {
             linkQA: { text: "Q&A & Afterword (Japanese)", href: "info.html" },
             linkFeedback: { text: "Feedback", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "What are Play Points?", href: "about-playpoints.html" },
+            linkWidget: { text: "Free widget", href: "embed.html" },
             linkDiscount: { text: "💡 Discount Guide", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "Operator & Policy (Japanese)", href: "author/katakata.html" },
             linkAttention: { text: "⚠️ Country Diff", href: "attention.html" },
@@ -425,6 +431,7 @@ export const CONFIGS = {
             linkQA: { text: "Q&A 및 후기 (일본어)", href: "info.html" },
             linkFeedback: { text: "의견 제안", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "Play 포인트란?", href: "about-playpoints.html" },
+            linkWidget: { text: "무료 위젯", href: "embed.html" },
             linkDiscount: { text: "💡 할인 구매 가이드", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "운영자 및 정책 (일본어)", href: "author/katakata.html" },
             linkAttention: { text: "⚠️ 국가별 차이", href: "attention.html" },
@@ -523,6 +530,7 @@ export const CONFIGS = {
             linkQA: { text: "Q&A 與後記 (日文)", href: "info.html" },
             linkFeedback: { text: "意見回饋", href: "https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" },
             linkAbout: { text: "什麼是 Play Points？", href: "about-playpoints.html" },
+            linkWidget: { text: "免費小工具", href: "embed.html" },
             linkDiscount: { text: "💡 優惠儲值指南", href: "articles/2026-06-20-discount-gift-cards.html" },
             linkAuthor: { text: "營運者與政策 (日文)", href: "author/katakata.html" },
             linkAttention: { text: "⚠️ 國家別差異", href: "attention.html" },

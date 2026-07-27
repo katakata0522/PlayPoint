@@ -12,6 +12,16 @@ Options -Indexes
   RewriteCond %{THE_REQUEST} \s/+calculator\.html[\s?] [NC]
   RewriteRule ^calculator\.html$ / [R=301,L,NE]
 
+  # PlayPointと無関係な実験ツールはKatakataLabへ恒久移設
+  RewriteRule ^tools/dashboard(?:/(.*))?$ https://katakatalab.com/lab-tools/side-fire-dashboard/$1 [R=301,L,NE]
+  RewriteRule ^tools/gravity-todo(?:/(.*))?$ https://katakatalab.com/lab-tools/gravity-todo/$1 [R=301,L,NE]
+  RewriteRule ^tools/rakuten-sim(?:/(.*))?$ https://katakatalab.com/lab-tools/rakuten-sim/$1 [R=301,L,NE]
+  RewriteRule ^tools/sub-health(?:/(.*))?$ https://katakatalab.com/lab-tools/sub-health/$1 [R=301,L,NE]
+  RewriteRule ^kindle-tracker(?:/(.*))?$ https://katakatalab.com/lab-tools/kindle-tracker/$1 [R=301,L,NE]
+  RewriteRule ^kids-smile-land(?:/(.*))?$ https://katakatalab.com/lab-tools/kids-smile-land/$1 [R=301,L,NE]
+  RewriteRule ^doujin-shi-calculator(?:/(.*))?$ https://katakatalab.com/lab-tools/doujin-shi-calculator/$1 [R=301,L,NE]
+  RewriteRule ^articles/2026-06-29-savings-game-fire\.html$ https://katakatalab.com/lab-tools/savings-game-fire/ [R=301,L,NE]
+
   # 旧GitHub Pages URLが検索に残る場合はSearch Console側で正規URLを優先する
   # このサーバーでは playpoint-sim.com 配下の正規化だけを担当する
 

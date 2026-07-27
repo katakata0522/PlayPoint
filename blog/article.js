@@ -119,7 +119,7 @@
             <p class="article-calculator-prompt__label">読んだあとに確認</p>
             <h2>あなたの場合はいくら必要？</h2>
             <p>現在のステータス、目標ランク、あと必要なポイントを入れると、ランク達成までの課金目安をすぐ確認できます。</p>
-            <a class="article-calculator-prompt__button" href="../?utm_source=article&amp;utm_medium=internal&amp;utm_campaign=article_cta_prompt">計算機で自分の必要額を見る</a>
+            <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
         `;
 
         const toc = content.querySelector('.toc-box');
@@ -235,7 +235,7 @@
                 title: '反映後に不足ポイントを再計算する',
                 body: 'ポイント履歴を確認したら、あと何ポイント必要かを入れて次の判断に進めます。',
                 links: [
-                    { href: '../?utm_source=article_next_step&utm_medium=internal&utm_campaign=not_reflected', text: '計算機で不足分を見る' },
+                    { href: '../', text: '計算機で不足分を見る' },
                     { href: '../status/silver/', text: 'シルバー到達を見る' },
                     { href: '../status/gold/', text: 'ゴールド到達を見る' }
                 ]
@@ -246,7 +246,7 @@
             title: 'あなたの条件で必要額を確認する',
             body: '記事の内容を読んだら、現在ステータスと不足ポイントで実際の目安を確認できます。',
             links: [
-                { href: '../?utm_source=article_next_step&utm_medium=internal&utm_campaign=generic', text: '計算機で見る' },
+                { href: '../', text: '計算機で見る' },
                 { href: '../status/silver/', text: 'シルバー到達' },
                 { href: '../status/gold/', text: 'ゴールド到達' }
             ]
@@ -289,12 +289,6 @@
             if (!link) return;
             const url = new URL(link.href, window.location.href);
             if (url.origin !== window.location.origin || url.pathname !== '/') return;
-
-            url.searchParams.set('mode', 'main');
-            url.searchParams.set('utm_source', 'article');
-            url.searchParams.set('utm_medium', 'internal');
-            url.searchParams.set('utm_campaign', 'article_cta');
-            link.href = url.toString();
 
             if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
                 window.gtag(eventCommand, 'article_to_calculator_clicked', {

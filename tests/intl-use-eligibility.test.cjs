@@ -63,7 +63,8 @@ test('ポイント利用・参加条件記事は3言語でSEO公開要件を満�
       assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(html.includes('utm_campaign=intl_article_cta'));
+      assert.ok(html.includes('class="cta-btn"'));
+      assert.ok(!html.includes('utm_medium=internal'));
       assert.ok(html.includes('/author/katakata.html'));
       assert.ok(html.includes(`/${locale.dir}/articles/${topic.peer}`));
 

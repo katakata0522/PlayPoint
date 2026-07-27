@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
-const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8');
+const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8').replace(/\r\n/g, '\n');
 
 test('PRでは秘密情報を使わず一つのジョブで全事前検証を実行する', () => {
   const workflow = read('.github', 'workflows', 'quality-check.yml');

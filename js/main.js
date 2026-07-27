@@ -6,6 +6,8 @@ import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
 
+let deferredInstallPrompt = null;
+
 export const isEnglishPath = () => /\/en(\/|$)/.test(window.location.pathname);
 export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
 export const isTaiwanPath = () => /\/tw(\/|$)/.test(window.location.pathname);
@@ -123,6 +125,14 @@ export function init() {
         }
     });
     if (STATE.dom.downloadIcalBtn) STATE.dom.downloadIcalBtn.addEventListener('click', () => downloadICS());
+    if (STATE.dom.registerGoogleCalBtn) {
+        STATE.dom.registerGoogleCalBtn.addEventListener('click', () => {
+            ANALYTICS.track('calendar_reminder_added', {
+                region: STATE.currentRegion,
+                calendar_type: 'google'
+            });
+        });
+    }
 
     // Enterキー押下での計算実行
     [STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier].forEach(el => {
@@ -221,6 +231,7 @@ export function init() {
     SHARE.applyFromUrl();
     checkFridayReminder();
     checkLanguageSuggestion();
+    trackWidgetReferral();
 
     // PWAサービスワーカーの登録
     if ('serviceWorker' in navigator) {
@@ -234,6 +245,90 @@ export function init() {
         });
     }
 }
+
+function getInstallCopy() {
+    const copy = {
+        JP: {
+            title: '次回もすぐ日記を開けます',
+            body: 'この端末のホーム画面に追加すると、金曜の記録をすぐ始められます。',
+            button: 'ホーム画面に追加'
+        },
+        US: {
+            title: 'Open your diary faster next time',
+            body: 'Add this tool to your device for quicker weekly entries.',
+            button: 'Install app'
+        },
+        KR: {
+            title: '다음 일지를 더 빠르게 열 수 있어요',
+            body: '이 도구를 기기에 추가하면 매주 기록을 빠르게 시작할 수 있습니다.',
+            button: '앱 설치'
+        },
+        TW: {
+            title: '下次更快開啟日記',
+            body: '將此工具加到裝置，即可更快開始每週記錄。',
+            button: '安裝應用程式'
+        }
+    };
+    return copy[STATE.currentRegion] || copy.JP;
+}
+
+function showInstallPromptAfterDiarySave() {
+    if (!deferredInstallPrompt || !STATE.dom.diaryMode) return;
+    if (document.getElementById('pwa-install-card')) return;
+
+    const copy = getInstallCopy();
+    const card = document.createElement('aside');
+    card.id = 'pwa-install-card';
+    card.className = 'pwa-install-card';
+
+    const text = document.createElement('div');
+    const title = document.createElement('strong');
+    const body = document.createElement('p');
+    const button = document.createElement('button');
+    title.textContent = copy.title;
+    body.textContent = copy.body;
+    button.type = 'button';
+    button.textContent = copy.button;
+    text.append(title, body);
+    card.append(text, button);
+    STATE.dom.diaryMode.appendChild(card);
+
+    button.addEventListener('click', async () => {
+        const promptEvent = deferredInstallPrompt;
+        deferredInstallPrompt = null;
+        card.remove();
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
+        if (choice.outcome === 'accepted') {
+            ANALYTICS.track('pwa_install_accepted', {
+                region: STATE.currentRegion,
+                install_surface: 'after_diary_save'
+            });
+        }
+    }, { once: true });
+}
+
+function trackWidgetReferral() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('entry') !== 'widget') return;
+    try {
+        if (sessionStorage.getItem('playpoint:widget-referral-tracked') === 'true') return;
+        sessionStorage.setItem('playpoint:widget-referral-tracked', 'true');
+    } catch (error) {
+        console.warn('ウィジェット流入の重複防止設定を保存できませんでした。', error);
+    }
+    ANALYTICS.track('widget_referral_landed', {
+        region: STATE.currentRegion,
+        entry_surface: 'embedded_widget'
+    });
+}
+
+window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+});
+
+document.addEventListener('playpoint:diary-saved', showInstallPromptAfterDiarySave);
 
 // 言語提案バナーの表示ロジック
 export function checkLanguageSuggestion() {
@@ -334,6 +429,10 @@ export function downloadICS() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    ANALYTICS.track('calendar_reminder_added', {
+        region: STATE.currentRegion,
+        calendar_type: 'ical'
+    });
 }
 
 // 金曜日リマインダーバーの表示ロジック

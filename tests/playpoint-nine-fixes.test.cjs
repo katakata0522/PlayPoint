@@ -21,18 +21,6 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function loadStorageManager(localStorage) {
-  const quietConsole = { log() {}, warn() {}, error() {} };
-  const context = { console: quietConsole, localStorage, Date };
-  context.globalThis = context;
-  vm.createContext(context);
-  const source = read('tools/gravity-todo/src/StorageManager.js')
-    .replace('export class StorageManager', 'class StorageManager')
-    .concat('\nglobalThis.StorageManager = StorageManager;');
-  vm.runInContext(source, context, { filename: 'StorageManager.js' });
-  return context.StorageManager;
-}
-
 function loadMinifierForTest() {
   const source = read('.github/scripts/minify.cjs');
   const context = {
@@ -71,68 +59,6 @@ test('計算機は有限値とHTMLの上下限を検証する', () => {
   assert.ok(source.includes('element.min'), 'min属性の検証がありません');
 });
 
-test('楽天シミュレーターは保存入力をHTMLとして描画しない', () => {
-  const source = read('tools/rakuten-sim/index.html');
-  assert.ok(source.includes('normalizeRakutenAffiliateId'), 'アフィリエイトIDの正規化がありません');
-  assert.ok(source.includes('nameCell.textContent = item.name'), '商品名をtextContentで描画していません');
-  assert.ok(source.includes('link.href = finalAffiliateUrl'), 'アフィリエイトURLをDOMプロパティで設定していません');
-  assert.ok(!source.includes('<td>${item.name}</td>'), '商品名がinnerHTMLテンプレートへ残っています');
-  assert.ok(!source.includes('href="${finalAffiliateUrl}"'), 'アフィリエイトURLがHTML属性テンプレートへ残っています');
-});
-
-test('サブスク健康診断はカスタム名をHTMLとして描画しない', () => {
-  const source = read('tools/sub-health/index.html');
-  assert.ok(source.includes('nameSpan.appendChild(document.createTextNode'), 'カスタムサブスク名をテキストノードで描画していません');
-  assert.ok(source.includes('strong.textContent = d.name'), '改善手順のサブスク名をtextContentで描画していません');
-  assert.ok(source.includes('new Option(d.name, d.name)'), 'リマインダー選択肢をOption APIで作っていません');
-  assert.ok(!source.includes('${icon} ${sub.name} <small'), 'カスタムサブスク名がinnerHTMLテンプレートへ残っています');
-  assert.ok(!source.includes('value="${d.name}">${d.name}</option>'), 'サブスク名がoptionテンプレートへ残っています');
-});
-
-test('サブスク健康診断は保存済み数値とカテゴリを正規化してから描画する', () => {
-  const source = read('tools/sub-health/index.html');
-  assert.ok(source.includes('normalizeSubHealthState'), '保存済みサブスク状態の正規化がありません');
-  assert.ok(source.includes('normalizePresetSliderValue'), '保存済みスライダー値の正規化がありません');
-  assert.ok(source.includes('legend.appendChild'), 'カテゴリ凡例をDOM APIで描画していません');
-  assert.ok(source.includes('diagnose.textContent = diagnoseMsg'), '診断メッセージをtextContentで描画していません');
-  assert.ok(!source.includes('legend.innerHTML = legendHtml'), 'カテゴリ凡例がinnerHTML描画のままです');
-});
-
-test('統合ダッシュボードは保存クエスト文を固定カタログから復元する', () => {
-  const source = read('tools/dashboard/index.html');
-  assert.ok(source.includes('normalizeQuestState'), '保存クエスト状態の正規化がありません');
-  assert.ok(source.includes('textSpan.textContent = q.text'), 'クエスト文をtextContentで描画していません');
-  assert.ok(source.includes('const questCatalog = new Map'), 'クエストIDを固定カタログへ照合していません');
-  assert.ok(!source.includes('${q.text}</span>'), 'クエスト文がinnerHTMLテンプレートへ残っています');
-});
-
-test('統合ダッシュボードは同期上書き状態を初期化内で明示参照する', () => {
-  const source = read('tools/dashboard/index.html');
-  assert.ok(source.includes('const isOverride = window.dashboardState.isOverride;'), 'isOverrideが未定義参照になり得ます');
-});
-
-test('Gravity Todoの保存正規化は個別色を保持する', () => {
-  const StorageManager = loadStorageManager({ getItem: () => null, setItem() {} });
-  const [task] = StorageManager.normalizeTasks([{
-    text: '仕事', x: 1, y: 2, angle: 0, subTasks: [],
-    blockColor: '#0f3460', blockBorder: '#4a90e2'
-  }]);
-  assert.strictEqual(task.blockColor, '#0f3460');
-  assert.strictEqual(task.blockBorder, '#4a90e2');
-});
-
-test('破壊スコアはストレージ拒否と破損値でも安全に動作する', () => {
-  const denied = loadStorageManager({
-    getItem() { throw new Error('denied'); },
-    setItem() { throw new Error('denied'); }
-  });
-  assert.strictEqual(denied.getDestroyCount(), 0);
-  assert.strictEqual(denied.incrementDestroyCount(), 1);
-
-  const corrupted = loadStorageManager({ getItem: () => 'NaN', setItem() {} });
-  assert.strictEqual(corrupted.getDestroyCount(), 0);
-});
-
 test('ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする', () => {
   const source = read('sw.js');
   assert.ok(source.includes("event.request.method !== 'GET'"), 'GET制限がありません');
@@ -140,7 +66,7 @@ test('ルートService WorkerはGETの許可対象だけを安定したキーで
   assert.ok(source.includes('getCacheKey'), 'クエリを正規化するキャッシュキーがありません');
 });
 
-test('GAとAdSenseは明示同意後だけ読み込む', () => {
+test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
   const consent = read('js/consent.js');
   const main = read('js/third-party.js');
   const blog = read('blog/components.js');
@@ -149,15 +75,16 @@ test('GAとAdSenseは明示同意後だけ読み込む', () => {
   assert.ok(consent.includes("analytics_storage: 'denied'"));
   assert.ok(consent.includes("ad_storage: 'denied'"));
   assert.ok(consent.includes('whenGranted'));
-  assert.ok(main.includes('PlayPointConsent.whenGranted'));
+  assert.ok(main.includes('ensureConsentManager'));
+  assert.ok(main.includes('loadConsentAndAdsense'));
   assert.ok(blog.includes('PlayPointConsent.whenGranted'));
   assert.ok(article.includes('PlayPointConsent.whenGranted'));
   assert.ok(privacy.includes('プライバシー設定'));
-  assert.ok(privacy.includes('js/consent.js?v=20260619a'));
+  assert.ok(privacy.includes('js/consent.js?v=20260727a'));
   assert.ok(!privacy.includes('許可を与えたものとみなします'));
-  assert.ok(consent.includes('.pp-consent h2{color:#f8fafc'), '同意見出しの色がページCSSに上書きされます');
-  assert.match(consent, /requestAnimationFrame\(\(\) => \{\s*banner\.querySelector\('\[data-consent-accept\]'\)\?\.focus\(\);/s,
-    '同意バナー表示直後の同期focusで強制レイアウトが発生します');
+  assert.ok(consent.includes('__tcfapi'), 'TCF APIとの連携がありません');
+  assert.ok(consent.includes('showRevocationMessage'), 'Google CMPの設定変更導線がありません');
+  assert.ok(!consent.includes('data-consent-accept'), '廃止した独自同意UIが残っています');
 });
 
 test('計測イベントは同意済みラッパー経由だけで送信する', () => {
@@ -173,32 +100,10 @@ test('計測イベントは同意済みラッパー経由だけで送信する',
   assert.ok(blog.includes('PlayPointConsent.getStatus()'), 'ブログ一覧の計測が同意状態を確認していません');
 });
 
-test('Kids Smile Landのprecache対象は実在する配信ファイルだけを指す', () => {
-  const source = read('kids-smile-land/service-worker.js');
-  const urlsMatch = source.match(/const ASSETS = \[([\s\S]*?)\];/);
-  assert.ok(urlsMatch, 'ASSETS配列がありません');
-  const urls = [...urlsMatch[1].matchAll(/'([^']+)'/g)].map((match) => match[1]);
-  assert.ok(urls.includes('./tailwind-built.css'), '実際に読み込むCSSをprecacheしていません');
-  assert.ok(urls.includes('./kiwimaru-400.woff2'), '実在する400 weightフォントをprecacheしていません');
-  assert.ok(urls.includes('./kiwimaru-500.woff2'), '実在する500 weightフォントをprecacheしていません');
-
-  for (const url of urls) {
-    if (url === './') continue;
-    const relativePath = url.replace(/^\.\//, 'kids-smile-land/');
-    assert.ok(fs.existsSync(path.join(root, relativePath)), `precache対象が存在しません: ${url}`);
-  }
-});
-
-test('各Service Workerは自分のキャッシュだけを削除対象にする', () => {
+test('ルートService Workerは自分のキャッシュだけを削除対象にする', () => {
   const rootSw = read('sw.js');
-  const kidsSw = read('kids-smile-land/service-worker.js');
-  const gravitySw = read('tools/gravity-todo/sw.js');
-  const kindleSw = read('kindle-tracker/sw.js');
 
   assert.ok(rootSw.includes('cache.startsWith(CACHE_PREFIX)'), 'ルートSWが他アプリのキャッシュを削除し得ます');
-  assert.ok(kidsSw.includes('key.startsWith(CACHE_PREFIX)'), 'Kids Smile Land SWが他アプリのキャッシュを削除し得ます');
-  assert.ok(gravitySw.includes('cacheName.startsWith(APP_SHELL_CACHE_PREFIX)'), 'Gravity Todo SWが他アプリのキャッシュを削除し得ます');
-  assert.ok(kindleSw.includes('name.startsWith(CACHE_PREFIX)'), 'Kindle Tracker SWが他アプリのキャッシュを削除し得ます');
 });
 
 test('ルートService Workerはprecache失敗時に壊れたまま有効化しない', () => {
@@ -234,7 +139,7 @@ test('JSミニファイは文字列中のスラッシュコメント風テキス
   new Function(minified);
 });
 
-test('デプロイ時ミニファイは公開サブアプリとブログの主要CSS/JSも対象にする', () => {
+test('デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジェットを対象にする', () => {
   const minifierSource = read('.github/scripts/minify.cjs');
 
   for (const file of [
@@ -243,15 +148,7 @@ test('デプロイ時ミニファイは公開サブアプリとブログの主�
     'blog/components.js',
     'blog/article.js',
     'blog/utils.js',
-    'kindle-tracker/style.css',
-    'kindle-tracker/app.js',
-    'kindle-tracker/sw.js',
-    'kids-smile-land/style.css',
-    'kids-smile-land/app.js',
-    'kids-smile-land/service-worker.js',
-    'tools/gravity-todo/style.css',
-    'tools/gravity-todo/sw.js',
-    'tools/gravity-todo/src/main.js'
+    'embed/playpoint-widget.js'
   ]) {
     assert.ok(minifierSource.includes(file), `ミニファイ対象が不足しています: ${file}`);
   }
@@ -289,22 +186,6 @@ test('デプロイ前JS構文検証はGitHub Actions用スクリプトも対象�
   assert.ok(verifier.includes("'.github/workflows'"), 'workflow定義はJS構文チェックから除外してください');
   assert.ok(verifier.includes("'.github/scripts/verify-js-syntax.cjs'"), '構文検証スクリプト自身を明示的に検証していません');
   assert.ok(verifier.includes("'.github/scripts/smoke-test.cjs'"), '本番スモークスクリプトをrsync前に構文検証していません');
-});
-
-test('サブアプリService Workerはprecache成功時だけ有効化する', () => {
-  const kidsSw = read('kids-smile-land/service-worker.js');
-  const gravitySw = read('tools/gravity-todo/sw.js');
-  const kindleSw = read('kindle-tracker/sw.js');
-  const kidsInstall = kidsSw.slice(kidsSw.indexOf("addEventListener('install'"), kidsSw.indexOf("addEventListener('activate'"));
-  const gravityInstall = gravitySw.slice(gravitySw.indexOf("addEventListener('install'"), gravitySw.indexOf("addEventListener('activate'"));
-  const kindleInstall = kindleSw.slice(kindleSw.indexOf("addEventListener('install'"), kindleSw.indexOf("addEventListener('activate'"));
-
-  assert.ok(kidsInstall.includes('cache.addAll(ASSETS).then(() => self.skipWaiting())'), 'Kids SWがprecache成功前にskipWaitingしています');
-  assert.ok(!kidsInstall.includes('self.skipWaiting();'), 'Kids SWのskipWaitingがprecache Promise外にあります');
-  assert.ok(gravityInstall.includes('cache.addAll(APP_SHELL_URLS).then(() => self.skipWaiting())'), 'Gravity Todo SWがprecache成功前にskipWaitingしています');
-  assert.ok(!gravityInstall.includes('self.skipWaiting();'), 'Gravity Todo SWのskipWaitingがprecache Promise外にあります');
-  assert.ok(kindleInstall.includes('cache.addAll(bypassRequests).then(() => self.skipWaiting())'), 'Kindle Tracker SWがprecache成功前にskipWaitingしています');
-  assert.ok(!kindleInstall.includes('self.skipWaiting();'), 'Kindle Tracker SWのskipWaitingがprecache Promise外にあります');
 });
 
 test('多言語トップはJS実行前の主要文言も翻訳済みにする', () => {
@@ -375,7 +256,7 @@ test('本番スモークテストの期待文字列は配信元ファイルに�
   }
 });
 
-test('本番スモークテストは主要サブアプリと言語トップも確認する', () => {
+test('本番スモークテストは主要PlayPointページと言語トップを確認する', () => {
   const smokeTest = read('.github/scripts/smoke-test.cjs');
   const requiredUrls = [
     'https://playpoint-sim.com/en/',
@@ -388,52 +269,13 @@ test('本番スモークテストは主要サブアプリと言語トップも�
     'https://playpoint-sim.com/en/status/platinum/',
     'https://playpoint-sim.com/ko/status/platinum/',
     'https://playpoint-sim.com/tw/status/platinum/',
-    'https://playpoint-sim.com/kids-smile-land/',
-    'https://playpoint-sim.com/tools/gravity-todo/',
-    'https://playpoint-sim.com/kindle-tracker/'
+    'https://playpoint-sim.com/embed.html'
   ];
 
   for (const url of requiredUrls) {
     assert.ok(smokeTest.includes(`url: '${url}'`), `本番スモーク対象が不足しています: ${url}`);
   }
 });
-
-test('初回ピン留めデモは文頭の固定記号で始まる', () => {
-  const source = read('tools/gravity-todo/src/PhysicsEngine.js');
-  assert.ok(source.includes("this.addTask('@📌 1. 空中にピン留め!"));
-});
-
-test('PWAインストール操作後は結果にかかわらずボタンを隠す', () => {
-  const source = read('tools/gravity-todo/src/main.js');
-  const handler = source.slice(source.indexOf("installBtn?.addEventListener('click'"));
-  assert.ok(handler.includes("installBtn.classList.add('hidden');"));
-  assert.ok(!handler.includes("if (outcome === 'accepted')"));
-});
-
-test('Kindle TrackerのJSはカテゴリごとのデフォルト価格定義とchangeイベント監視を含む', () => {
-  const source = read('kindle-tracker/app.js');
-  assert.ok(source.includes('categoryDefaultPrices'), 'categoryDefaultPricesの定義がありません');
-  assert.ok(source.includes("bookCategorySelect.addEventListener('change'"), 'changeイベントリスナーがありません');
-  assert.ok(source.includes('isCurrentValEmpty'), '手入力値ガードロジックがありません');
-});
-
-test('Kindle TrackerのHTMLとsw.jsはアセットバージョン同期対象になっている', () => {
-  const html = read('kindle-tracker/index.html');
-  const sw = read('kindle-tracker/sw.js');
-  const buildScript = read('scripts/build-html.js');
-  const assetSync = read('scripts/asset-sync.cjs');
-  const buildTargets = read('scripts/build-targets.cjs');
-
-  assert.ok(html.includes('style.css?v='), 'style.cssにバージョンクエリがありません');
-  assert.ok(html.includes('app.js?v='), 'app.jsにバージョンクエリがありません');
-  assert.ok(sw.includes('const CACHE_NAME = \'kindle-tracker-v'), 'sw.jsにCACHE_NAME定義がありません');
-  assert.ok(buildScript.includes('syncServiceWorkerAssets'), 'ビルドスクリプトからアセット同期を呼び出していません');
-  assert.ok(assetSync.includes('kindle-tracker/sw.js'), 'アセット同期モジュールにkindle sw.jsの同期がありません');
-  assert.ok(assetSync.includes('kindle-tracker/index.html'), 'アセット同期モジュールにkindle index.htmlの同期がありません');
-  assert.ok(buildTargets.includes("'kindle-tracker/index.html'"), 'kindle index.htmlが生成物検証対象ではありません');
-  assert.ok(buildTargets.includes("'kindle-tracker/sw.js'"), 'kindle sw.jsが生成物検証対象ではありません');
-});
-
 
 if (failures > 0) {
   console.error(`\n${failures}件の修正が未実装です。`);

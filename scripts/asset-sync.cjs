@@ -113,31 +113,6 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
   console.log(`Successfully synchronized sw.js cache. CACHE_NAME=${newCacheName}`);
 }
 
-function syncKindleServiceWorker(rootDir, assetVersion) {
-  const kindleSwPath = path.join(rootDir, 'kindle-tracker/sw.js');
-  if (!fs.existsSync(kindleSwPath)) return;
-
-  let swContent = fs.readFileSync(kindleSwPath, 'utf8');
-  const newKindleCacheName = `kindle-tracker-v${assetVersion}`;
-  swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newKindleCacheName}';`);
-
-  fs.writeFileSync(kindleSwPath, swContent, 'utf8');
-  console.log(`Successfully synchronized kindle-tracker/sw.js cache. CACHE_NAME=${newKindleCacheName}`);
-}
-
-function syncKindleIndex(rootDir, assetVersion, todayStr) {
-  const kindleIndexPath = path.join(rootDir, 'kindle-tracker/index.html');
-  if (!fs.existsSync(kindleIndexPath)) return;
-
-  let content = fs.readFileSync(kindleIndexPath, 'utf8');
-  content = replaceAssetVersion(content, 'style.css', `${assetVersion}a`);
-  content = replaceAssetVersion(content, 'app.js', `${assetVersion}a`);
-  content = replaceDateMetadata(content, todayStr);
-
-  fs.writeFileSync(kindleIndexPath, content, 'utf8');
-  console.log('Successfully synchronized asset versions and dates in kindle-tracker/index.html');
-}
-
 function syncThirdPartyConsentVersion(rootDir, consentVersion) {
   const thirdPartyJsPath = path.join(rootDir, 'js/third-party.js');
   if (!fs.existsSync(thirdPartyJsPath) || !consentVersion) return;
@@ -152,8 +127,6 @@ function syncThirdPartyConsentVersion(rootDir, consentVersion) {
 function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
   const versions = collectAssetVersions(rootDir, indexHtml);
   syncRootServiceWorker(rootDir, assetVersion, versions);
-  syncKindleServiceWorker(rootDir, assetVersion);
-  syncKindleIndex(rootDir, assetVersion, todayStr);
   syncThirdPartyConsentVersion(rootDir, versions.consentVersion);
   return versions;
 }
@@ -164,8 +137,6 @@ module.exports = {
   createRootServiceWorkerCacheRevision,
   collectAssetVersions,
   extractVersion,
-  syncKindleIndex,
-  syncKindleServiceWorker,
   syncRootServiceWorker,
   syncServiceWorkerAssetVersions,
   syncServiceWorkerAssets,

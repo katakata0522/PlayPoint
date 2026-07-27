@@ -78,7 +78,8 @@ test('ランク維持記事は4言語で相互接続され公式条件とSEO要�
       assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'), page.file);
       assert.ok(html.includes('article:published_time'), page.file);
       assert.ok(html.includes('article:modified_time'), page.file);
-      assert.ok(html.includes('utm_campaign=intl_article_cta'), page.file);
+      assert.ok(html.includes('class="cta-btn"'), page.file);
+      assert.ok(!html.includes('utm_medium=internal'), page.file);
     }
   }
 });
