@@ -1,7 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { createAppModuleRevision } = require('../scripts/asset-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8').replace(/\r\n/g, '\n');
@@ -68,6 +70,32 @@ test('ルートキャッシュ世代は全共有アセット版から自動生�
   assert.ok(assetSync.includes('createRootServiceWorkerCacheRevision'));
   assert.ok(assetSync.includes("createHash('sha256')"));
   assert.ok(!assetSync.includes('ROOT_SERVICE_WORKER_CACHE_REVISION'));
+});
+
+test('アプリモジュールのキャッシュ世代は改行コードが違っても一致する', t => {
+  const lfRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-lf-'));
+  const crlfRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-crlf-'));
+  const moduleFiles = ['config.js', 'ui.js', 'diary.js', 'calculator.js', 'share.js'];
+
+  t.after(() => {
+    fs.rmSync(lfRoot, { recursive: true, force: true });
+    fs.rmSync(crlfRoot, { recursive: true, force: true });
+  });
+
+  for (const targetRoot of [lfRoot, crlfRoot]) {
+    fs.mkdirSync(path.join(targetRoot, 'js'), { recursive: true });
+  }
+
+  for (const [index, file] of moduleFiles.entries()) {
+    const source = `'use strict';\nconst value = ${index};\n`;
+    fs.writeFileSync(path.join(lfRoot, 'js', file), source);
+    fs.writeFileSync(path.join(crlfRoot, 'js', file), source.replace(/\n/g, '\r\n'));
+  }
+
+  assert.strictEqual(
+    createAppModuleRevision(lfRoot),
+    createAppModuleRevision(crlfRoot)
+  );
 });
 
 test('本番確認は配信されたコミットSHAを完全一致で検証する', () => {

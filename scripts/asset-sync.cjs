@@ -43,7 +43,7 @@ function readTextIfExists(filePath) {
 
 function createAppModuleRevision(rootDir, files = APP_MODULE_FILES) {
   const fingerprint = files
-    .map(relativePath => relativePath + ':' + readTextIfExists(path.join(rootDir, relativePath)))
+    .map(relativePath => relativePath + ':' + readTextIfExists(path.join(rootDir, relativePath)).replace(/\r\n/g, '\n'))
     .join('|');
   return crypto.createHash('sha256').update(fingerprint).digest('hex').slice(0, 8);
 }
