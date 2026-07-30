@@ -684,6 +684,16 @@ body {
     margin-bottom: 0.75rem;
 }
 
+.static-topic-group + .static-topic-group {
+    margin-top: 1.25rem;
+}
+
+.static-topic-group h3 {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    margin-bottom: 0.55rem;
+}
+
 .static-article-links ul {
     display: grid;
     gap: 0.6rem;

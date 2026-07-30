@@ -69,7 +69,8 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.ok((html.match(/<h2\b/g) || []).length >= 8);
       assert.ok(html.length >= 7000, `${relativePath}: thin content ${html.length}`);
       assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'));
+      const expectedModified = locale.key === 'ja' ? '2026-07-30' : '2026-07-25';
+      assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}">`));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
       assert.ok(html.includes('class="cta-btn"'));

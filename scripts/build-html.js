@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const { applyEditorialStructure } = require('./article-editorial-structure.cjs');
 const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { createLocales } = require('./locale-config.cjs');
@@ -17,6 +18,9 @@ const rootDir = path.join(__dirname, '..');
 
 const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
 const locales = createLocales(todayStr);
+
+const editorialArticleCount = applyEditorialStructure(rootDir, todayStr);
+console.log(`[build-html] synchronized editorial structure: ${editorialArticleCount}`);
 
 writeLocalizedPages(rootDir, indexHtml, locales);
 

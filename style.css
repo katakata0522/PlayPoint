@@ -21,6 +21,99 @@
   --warning-text-color: #9f1d28;
 }
 
+/* 引用時も表の意味と前提が同じURLで伝わる、獲得率比較ページ。 */
+.comparison-reference-page {
+    max-width: 980px;
+}
+
+.comparison-reference-hero,
+.comparison-reference-answer,
+.comparison-reference-section {
+    margin-top: 1.25rem;
+    padding: 1.4rem;
+    border: 1px solid var(--input-border-color);
+    border-radius: 14px;
+    background: var(--section-bg-color);
+}
+
+.comparison-reference-hero h1 {
+    margin: 0.45rem 0 0.7rem;
+    line-height: 1.35;
+}
+
+.comparison-reference-meta,
+.comparison-reference-note {
+    color: var(--link-color);
+    font-size: 0.9rem;
+}
+
+.comparison-reference-answer {
+    border-left: 4px solid var(--input-focus-border-color);
+    background: linear-gradient(180deg, #eff6ff, var(--section-bg-color));
+}
+
+.comparison-reference-answer h2,
+.comparison-reference-section h2,
+.comparison-reference-section h3 {
+    margin-top: 0;
+}
+
+.comparison-reference-boundary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.comparison-reference-boundary > div {
+    padding: 1rem;
+    border-radius: 10px;
+    background: var(--result-bg-color);
+}
+
+.comparison-reference-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.comparison-reference-heading a {
+    flex: 0 0 auto;
+    font-size: 0.9rem;
+}
+
+.comparison-reference-table-wrap {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.comparison-reference-table-wrap table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+}
+
+.comparison-reference-table-wrap th,
+.comparison-reference-table-wrap td {
+    padding: 0.8rem;
+    border: 1px solid var(--input-border-color);
+    text-align: left;
+}
+
+.comparison-reference-table-wrap thead th {
+    background: var(--result-bg-color);
+}
+
+@media (max-width: 700px) {
+    .comparison-reference-boundary {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-reference-heading {
+        display: block;
+    }
+}
+
 /* 基本スタイル */
 body {
   margin: 0;

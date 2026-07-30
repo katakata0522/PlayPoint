@@ -23,11 +23,10 @@
 
     // Category Configuration (consolidated: order + color)
     const CATEGORIES = {
-        '入門': { order: 1, color: '#22c55e' },
-        '攻略': { order: 2, color: '#f59e0b' },
-        '活用術': { order: 3, color: '#3b82f6' },
-        '検証': { order: 4, color: '#8b5cf6' },
-        'トラブル対処': { order: 5, color: '#ef4444' }
+        'ランク': { order: 1, color: '#8b5cf6' },
+        'トラブル': { order: 2, color: '#ef4444' },
+        '使い方': { order: 3, color: '#3b82f6' },
+        'キャンペーン': { order: 4, color: '#f59e0b' }
     };
 
     // ===========================================

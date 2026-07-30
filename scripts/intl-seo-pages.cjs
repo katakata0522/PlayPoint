@@ -23,7 +23,6 @@ const LOCALES = {
     officialSourceBody: 'Play Points availability, levels, rewards, and campaign terms can differ by country or account. Confirm the latest rule in Google Play Help and the Google Play app before purchasing.',
     officialSourceLink: 'Google Play Points official help',
     articles: [
-      ['/en/articles/google-play-points-reflection-timing.html', 'When do Google Play Points appear?'],
       ['/en/articles/google-play-points-not-showing.html', 'Google Play Points not showing up'],
       ['/en/articles/google-play-points-levels.html', 'Google Play Points levels explained'],
       ['/en/articles/google-play-points-platinum-diamond-cost.html', 'How much to reach Platinum or Diamond'],
@@ -663,6 +662,7 @@ const PAGE_TYPES = {
 const EN_ARTICLES = [
   {
     file: 'en/articles/google-play-points-reflection-timing.html',
+    retired: true,
     jaAlternate: '/articles/2026-03-10-play-points-reflection-timing.html',
     title: 'When do Google Play Points appear?',
     description: 'A practical guide to Google Play Points reflection timing, pending points, and what to check before assuming points are missing.',
@@ -685,7 +685,7 @@ const EN_ARTICLES = [
   },
   {
     file: 'en/articles/google-play-points-not-showing.html',
-    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
+    jaAlternate: '/articles/2026-03-10-play-points-reflection-timing.html',
     title: 'Google Play Points not showing up: what to check',
     description: 'Checklist for Google Play Points not showing up, including account mismatch, eligible purchases, campaign rules, refunds, and regional differences.',
     h1: 'Google Play Points not showing up: what to check',
@@ -896,7 +896,7 @@ const ARTICLE_LABELS = {
 const KO_ARTICLES = [
   {
     file: 'ko/articles/google-play-points-not-showing.html',
-    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
+    jaAlternate: '/articles/2026-03-10-play-points-reflection-timing.html',
     lang: 'ko',
     siteName: 'Google Play Points 계산기',
     labels: ARTICLE_LABELS.ko,
@@ -1118,7 +1118,7 @@ const KO_ARTICLES = [
 const TW_ARTICLES = [
   {
     file: 'tw/articles/google-play-points-not-showing.html',
-    jaAlternate: '/articles/2025-12-25-playpoints-not-reflected.html',
+    jaAlternate: '/articles/2026-03-10-play-points-reflection-timing.html',
     lang: 'zh-TW',
     siteName: 'Google Play Points 計算器',
     labels: ARTICLE_LABELS.tw,
@@ -2144,9 +2144,13 @@ function localeKeyForArticle(article) {
   return 'en';
 }
 
+function getPublishedIntlArticles() {
+  return INTL_ARTICLES.filter(article => !article.retired);
+}
+
 function getArticleAlternates(article) {
   const slug = path.posix.basename(article.file);
-  const alternates = INTL_ARTICLES
+  const alternates = getPublishedIntlArticles()
     .filter(candidate => path.posix.basename(candidate.file) === slug)
     .map(candidate => ({
       localeKey: localeKeyForArticle(candidate),
@@ -2298,7 +2302,7 @@ ${jsonLd(faqSchema)}
 function renderArticleHub(localeKey, assetVersions) {
   const locale = LOCALES[localeKey];
   const content = ARTICLE_HUB_CONTENT[localeKey];
-  const articles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
+  const articles = getPublishedIntlArticles().filter(article => localeKeyForArticle(article) === localeKey);
   const hubLinks = [
     ...(content.priorityArticles || []),
     ...articles.map(article => [`/${article.file}`, article.title]),
@@ -2396,7 +2400,7 @@ function getIntlSeoFiles() {
   return [
     ...pages,
     ...Object.keys(LOCALES).map(localeKey => `${localeKey}/articles/index.html`),
-    ...INTL_ARTICLES.map(article => article.file),
+    ...getPublishedIntlArticles().map(article => article.file),
     ...MANUAL_MAINTENANCE_PAGES.map(page => page.file)
   ];
 }
@@ -2407,13 +2411,13 @@ function getIntlSitemapEntries(todayStr) {
     for (const pageKey of Object.keys(PAGE_TYPES)) {
       entries.push({ url: pageUrl(localeKey, PAGE_TYPES[pageKey].slug), lastmod: todayStr });
     }
-    const hubArticles = INTL_ARTICLES.filter(article => localeKeyForArticle(article) === localeKey);
+    const hubArticles = getPublishedIntlArticles().filter(article => localeKeyForArticle(article) === localeKey);
     entries.push({
       url: `https://playpoint-sim.com/${localeKey}/articles/`,
       lastmod: hubArticles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, todayStr)
     });
   }
-  for (const article of INTL_ARTICLES) {
+  for (const article of getPublishedIntlArticles()) {
     entries.push({ url: `https://playpoint-sim.com/${article.file}`, lastmod: article.modifiedAt });
   }
   for (const page of MANUAL_MAINTENANCE_PAGES) {
@@ -2436,7 +2440,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
   for (const localeKey of Object.keys(LOCALES)) {
     writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
   }
-  for (const article of INTL_ARTICLES) {
+  for (const article of getPublishedIntlArticles()) {
     if (article.manual) continue;
     writeFile(rootDir, article.file, renderArticle(article, assetVersions));
   }
@@ -2444,6 +2448,7 @@ function writeIntlSeoPages(rootDir, assetVersions, todayStr) {
 }
 
 module.exports = {
+  getPublishedIntlArticles,
   getIntlSeoFiles,
   getIntlSitemapEntries,
   writeIntlSeoPages

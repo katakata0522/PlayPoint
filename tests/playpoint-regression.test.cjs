@@ -388,7 +388,7 @@ test('計算結果の下には金額や条件に応じた次の判断導線が�
   assert.ok(content.includes('result-decision-links'), '判断導線のコンテナがありません');
   assert.ok(content.includes('次に確認すること'), '判断導線の見出しがありません');
   assert.ok(content.includes('campaign/3x/'), '高額時の3倍キャンペーン導線がありません');
-  assert.ok(content.includes('articles/2025-12-25-playpoints-not-reflected.html'), '反映トラブル導線がありません');
+  assert.ok(content.includes('articles/2026-03-10-play-points-reflection-timing.html'), '反映トラブル導線がありません');
   assert.ok(content.includes('articles/2026-06-20-discount-gift-cards.html'), '購入前チェック導線がありません');
   assert.ok(content.indexOf('result-decision-links') > content.indexOf('result-related-links'), '判断導線は関連記事の後に出してください');
 });
@@ -1371,7 +1371,7 @@ test('ブログ一覧の静的HTMLは読み込み失敗表示を常時露出し�
 
   assert.ok(html.includes('static-article-links'));
   assert.ok(html.includes('id="search-pathways-title"'));
-  assert.ok(html.includes('悩みから記事を選ぶ'));
+  assert.ok(html.includes('4つの目的から記事を選ぶ'));
   assert.ok(html.includes('../articles/2026-03-10-play-points-reflection-timing.html'));
   assert.ok(html.includes('../maintenance/platinum/'));
   assert.ok(html.includes('../amount/10000/'));
@@ -1561,7 +1561,8 @@ test('記事共通CTAは計算機への自然導線と計測文脈を持つ', ()
   const articleCss = fs.readFileSync(path.join(root, 'articles', 'article-shared.css'), 'utf8');
 
   assert.ok(articleScript.includes('setupCalculatorPrompt'));
-  assert.ok(articleScript.includes("content.querySelector('.cta-box, .cta-banner')"));
+  assert.ok(articleScript.includes("content.querySelector('.answer-box, .summary-box, .intro')"));
+  assert.ok(articleScript.includes('記事の条件を自分の数字で確認'));
   assert.ok(articleScript.includes('あなたの場合はいくら必要？'));
   assert.ok(articleScript.includes('article-calculator-prompt__button" href="../"'));
   assert.ok(!articleScript.includes('utm_medium=internal'));
@@ -1645,12 +1646,12 @@ test('記事クラスタは検索意図別LPへ文脈に合う内部リンクを
 });
 
 test('ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ', () => {
-  const html = fs.readFileSync(path.join(root, 'articles', '2025-12-25-playpoints-not-reflected.html'), 'utf8');
-  assert.ok(html.includes('Google Play Pointsがつかない時の即答'));
+  const html = fs.readFileSync(path.join(root, 'articles', '2026-03-10-play-points-reflection-timing.html'), 'utf8');
+  assert.ok(html.includes('id="quick-answer"'));
   assert.ok(html.includes('ポイント履歴'));
-  assert.ok(html.includes('購入アカウント'));
+  assert.ok(html.includes('購入したGoogleアカウント'));
   assert.ok(html.includes('キャンペーン分だけ'));
-  assert.ok(html.includes('反映後に、あと何ポイント必要か計算する'));
+  assert.ok(html.includes('端末側で最後に試すこと'));
   assert.ok(html.includes('https://playpoint-sim.com/'));
   assert.ok(!html.includes('utm_medium=internal'));
 });
@@ -1844,7 +1845,7 @@ test('記事共通デザインは前後ナビと操作領域とカテゴリー�
 
   assert.ok(css.includes('.article-nav-link'));
   assert.ok(css.includes('min-height: 44px'));
-  for (const category of ['入門', '攻略', '活用術', '検証', 'トラブル対処']) {
+  for (const category of ['ランク', 'トラブル', '使い方', 'キャンペーン']) {
     assert.ok(css.includes(`data-article-category="${category}"`), `${category} category color is missing`);
   }
   assert.ok(components.includes('katakata_blog_settings'));
@@ -2108,7 +2109,6 @@ test('海外向けSEOページは既存記事の読み物感と各言語の自�
   }
 
   const articleFiles = [
-    'en/articles/google-play-points-reflection-timing.html',
     'en/articles/google-play-points-not-showing.html',
     'en/articles/google-play-points-levels.html',
     'en/articles/google-play-points-platinum-diamond-cost.html',
@@ -2170,7 +2170,6 @@ test('海外向け英語記事は目次と外部化CSSで読みやすさと保�
   assert.ok(css.includes('.main-card'), '専用CSSに既存記事カード構造のスタイルがありません');
 
   const articleFiles = [
-    'en/articles/google-play-points-reflection-timing.html',
     'en/articles/google-play-points-not-showing.html',
     'en/articles/google-play-points-levels.html',
     'en/articles/google-play-points-platinum-diamond-cost.html',
@@ -2546,7 +2545,7 @@ test('主要な日本語Play Points記事は検索意図へ答える本文量を
   const articleFiles = [
     'best-use', 'campaign', 'check-balance', 'diamond-vip', 'diamond-worth-it',
     'expiration', 'family-sharing', 'getting-started', 'gift-card', 'movies-books',
-    'multiple-accounts', 'new-year-campaign', 'play-games', 'playpoints-not-reflected',
+    'multiple-accounts', 'new-year-campaign', 'play-games',
     'playpoints-rank-maintenance', 'promo-code', 'refund', 'subscription', 'weekly-reward'
   ].map(name => `articles/2025-12-25-${name}.html`).concat([
     'articles/2026-03-10-play-points-reflection-timing.html'
@@ -2624,7 +2623,7 @@ test('主要記事のtitleとh1は煽り表現に依存しない', () => {
   const articleFiles = [
     'best-use', 'campaign', 'check-balance', 'diamond-vip', 'diamond-worth-it',
     'expiration', 'family-sharing', 'getting-started', 'gift-card', 'movies-books',
-    'multiple-accounts', 'new-year-campaign', 'play-games', 'playpoints-not-reflected',
+    'multiple-accounts', 'new-year-campaign', 'play-games',
     'playpoints-rank-maintenance', 'promo-code', 'refund', 'subscription', 'weekly-reward'
   ].map(name => `articles/2025-12-25-${name}.html`).concat([
     'articles/2026-03-10-play-points-reflection-timing.html'
@@ -2643,7 +2642,7 @@ test('修正した記事の一覧タイトルとページtitleは一致する', 
   const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
   for (const id of [
     'best-use', 'diamond-worth-it', 'getting-started',
-    'playpoints-not-reflected', 'playpoints-rank-maintenance', 'weekly-reward'
+    'play-points-reflection-timing', 'playpoints-rank-maintenance', 'weekly-reward'
   ]) {
     const article = articles.find(item => item.id === id);
     assert.ok(article, `${id} が記事一覧にありません`);
@@ -2844,7 +2843,7 @@ test('サイトマップ生成は記事一覧のmodifiedを自動反映する', 
     '2024-01-01'
   );
 
-  assert.strictEqual(valueArticle?.lastmod, '2026-07-24');
+  assert.strictEqual(valueArticle?.lastmod, '2026-07-30');
   assert.ok(sitemap.includes('<loc>https://playpoint-sim.com/blog/</loc>'));
   assert.ok(sitemap.includes(`<loc>https://playpoint-sim.com/blog/</loc>
     <lastmod>${latestDate}</lastmod>`));
@@ -2894,7 +2893,7 @@ test('日本語検索クラスターは意図を分けて公式条件を明示�
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     required.forEach(text => assert.ok(html.includes(text), file + ' に ' + text + ' がありません'));
     assert.ok(html.includes('support.google.com/googleplay/answer/9077192'));
-    assert.ok(html.includes('"dateModified": "2026-07-24"'));
+    assert.ok(html.includes('"dateModified": "2026-07-30"'));
   }
 });
 

@@ -19,6 +19,10 @@ const NON_PLAYPOINT_URLS = new Set([
   `${SITE_ORIGIN}/articles/2026-06-29-savings-game-fire.html`,
   `${SITE_ORIGIN}/doujin-shi-calculator/`
 ]);
+const RETIRED_CONTENT_URLS = new Set([
+  `${SITE_ORIGIN}/articles/2025-12-25-playpoints-not-reflected.html`,
+  `${SITE_ORIGIN}/en/articles/google-play-points-reflection-timing.html`
+]);
 const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
 
 function escapeRegExp(value) {
@@ -56,6 +60,16 @@ function getDedicatedSitemapUrls(rootDir) {
     }
   }
   return urls;
+}
+
+function syncDedicatedSitemapDates(rootDir, entries) {
+  for (const file of fs.readdirSync(rootDir).filter(name => DEDICATED_SITEMAP_PATTERN.test(name))) {
+    const filePath = path.join(rootDir, file);
+    const content = fs.readFileSync(filePath, 'utf8');
+    const relevantEntries = entries.filter(entry => content.includes(`<loc>${entry.url}</loc>`));
+    if (!relevantEntries.length) continue;
+    fs.writeFileSync(filePath, syncSitemapEntries(content, relevantEntries).replace(/\r\n/g, '\n'), 'utf8');
+  }
 }
 
 function removeSitemapEntries(sitemapContent, urls) {
@@ -145,6 +159,7 @@ function syncSitemap(rootDir, todayStr) {
   }
 
   const blogEntries = getBlogSitemapEntries(rootDir);
+  syncDedicatedSitemapDates(rootDir, blogEntries);
   const latestBlogDate = blogEntries.reduce(
     (latest, entry) => String(entry.lastmod) > latest ? String(entry.lastmod) : latest,
     todayStr
@@ -161,6 +176,7 @@ function syncSitemap(rootDir, todayStr) {
   ]);
   const excludedUrls = new Set([
     ...NON_PLAYPOINT_URLS,
+    ...RETIRED_CONTENT_URLS,
     ...getDedicatedSitemapUrls(rootDir)
   ]);
   content = removeSitemapEntries(content, excludedUrls);
@@ -176,8 +192,10 @@ module.exports = {
   SITE_ORIGIN,
   TOP_PAGE_URLS,
   NON_PLAYPOINT_URLS,
+  RETIRED_CONTENT_URLS,
   escapeRegExp,
   getBlogSitemapEntries,
+  syncDedicatedSitemapDates,
   getContentDateEntries,
   getDedicatedSitemapUrls,
   removeIgnoredSitemapHints,

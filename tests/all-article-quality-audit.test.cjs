@@ -28,8 +28,8 @@ function schemas(html, file) {
 }
 
 test('the complete published article corpus keeps structural quality signals', () => {
-  assert.ok(registry.length >= 28, `expected at least 28 Japanese Play Points articles, found ${registry.length}`);
-  assert.ok(articles.length >= 89, `expected at least 89 published Play Points articles, found ${articles.length}`);
+  assert.ok(registry.length >= 27, `expected at least 27 Japanese Play Points articles, found ${registry.length}`);
+  assert.ok(articles.length >= 87, `expected at least 87 published Play Points articles, found ${articles.length}`);
 
   for (const file of articles) {
     const html = read(file);

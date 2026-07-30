@@ -89,10 +89,10 @@ test('日本語の既存記事と記事データは同じ更新日を持つ', ()
   const articles = JSON.parse(read('blog/articles.json'));
   const article = articles.find(item => item.id === 'playpoints-rank-maintenance');
 
-  assert.ok(html.includes('<meta name="last-modified" content="2026-07-25"'));
-  assert.ok(html.includes('"dateModified": "2026-07-25"'));
+  assert.ok(html.includes('<meta name="last-modified" content="2026-07-30"'));
+  assert.ok(html.includes('"dateModified": "2026-07-30"'));
   assert.ok(article);
-  assert.strictEqual(article.modified, '2026-07-25');
+  assert.strictEqual(article.modified, '2026-07-30');
 });
 
 test('専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる', () => {

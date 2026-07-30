@@ -3,8 +3,8 @@
     "id": "play-points-coupon-not-applied",
     "title": "Google Play Pointsクーポンが自動適用されない原因",
     "date": "2026-07-25",
-    "modified": "2026-07-25",
-    "category": "トラブル対処",
+    "modified": "2026-07-30",
+    "category": "トラブル",
     "tags": [
       "Play Points",
       "クーポン",
@@ -19,8 +19,8 @@
     "id": "play-credit-not-working",
     "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
     "date": "2026-07-25",
-    "modified": "2026-07-25",
-    "category": "トラブル対処",
+    "modified": "2026-07-30",
+    "category": "トラブル",
     "tags": [
       "Play Points",
       "Playクレジット",
@@ -35,8 +35,8 @@
     "id": "play-points-cash-conversion",
     "title": "Google Play Pointsは現金化できる？PayPay・銀行振込との違い",
     "date": "2026-07-24",
-    "modified": "2026-07-24",
-    "category": "入門",
+    "modified": "2026-07-30",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "現金化",
@@ -50,8 +50,8 @@
     "id": "points-value-1",
     "title": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
     "date": "2026-07-24",
-    "modified": "2026-07-24",
-    "category": "入門",
+    "modified": "2026-07-30",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "1ポイント",
@@ -66,8 +66,8 @@
     "id": "points-value-500-1000",
     "title": "Google Play Points 500・1,000ポイントはいくら？必要額早見表",
     "date": "2026-07-24",
-    "modified": "2026-07-24",
-    "category": "攻略",
+    "modified": "2026-07-30",
+    "category": "ランク",
     "tags": [
       "Play Points",
       "500ポイント",
@@ -82,8 +82,8 @@
     "id": "earn-play-points-free",
     "title": "Google Play Pointsを無料で貯める方法｜正規の特典と注意点",
     "date": "2026-07-24",
-    "modified": "2026-07-24",
-    "category": "活用術",
+    "modified": "2026-07-30",
+    "category": "キャンペーン",
     "tags": [
       "Play Points",
       "無料",
@@ -98,8 +98,8 @@
     "id": "points-value-100",
     "title": "Google Play Points 100ポイントはいくら？何円で貯まるか計算",
     "date": "2026-07-24",
-    "modified": "2026-07-24",
-    "category": "入門",
+    "modified": "2026-07-30",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "100ポイント",
@@ -114,7 +114,7 @@
     "id": "discount-gift-cards",
     "title": "Google Playギフトコードをお得に買う方法｜還元条件と注意点",
     "date": "2026-06-20",
-    "category": "攻略",
+    "category": "キャンペーン",
     "tags": [
       "ギフトカード",
       "課金",
@@ -130,7 +130,7 @@
     "id": "play-points-reflection-timing",
     "title": "Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安",
     "date": "2026-03-10",
-    "category": "トラブル対処",
+    "category": "トラブル",
     "tags": [
       "Play Points",
       "反映タイミング",
@@ -140,13 +140,13 @@
     "description": "Play Pointsが反映されない時は、購入状態・ポイント履歴・購入アカウント・参加時期を順に確認。端末による遅れや問い合わせ前に残す情報も解説します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
-    "modified": "2026-07-24"
+    "modified": "2026-07-30"
   },
   {
     "id": "multiple-accounts",
     "title": "Google Play Pointsは複数アカウントで合算できる？管理の注意点",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "複数アカウント",
@@ -162,7 +162,7 @@
     "id": "play-games",
     "title": "Google Play GamesとPlay Pointsの違い｜連携・ポイント獲得条件",
     "date": "2025-12-25",
-    "category": "入門",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "Play Games",
@@ -178,7 +178,7 @@
     "id": "movies-books",
     "title": "Google Play Pointsは本・アプリ・サブスクでも貯まる？対象条件",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "書籍",
@@ -194,7 +194,7 @@
     "id": "expiration",
     "title": "Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策",
     "date": "2025-12-25",
-    "category": "入門",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "有効期限",
@@ -210,7 +210,7 @@
     "id": "promo-code",
     "title": "プロモコード・割引時もGoogle Play Pointsは貯まる？確認方法",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "キャンペーン",
     "tags": [
       "Play Points",
       "プロモコード",
@@ -226,7 +226,7 @@
     "id": "check-balance",
     "title": "Google Play Pointsの残高・履歴・有効期限を確認する方法",
     "date": "2025-12-25",
-    "category": "入門",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "残高",
@@ -242,7 +242,7 @@
     "id": "refund",
     "title": "Google Play Pointsは返金でどうなる？残高・ランクへの影響",
     "date": "2025-12-25",
-    "category": "トラブル対処",
+    "category": "トラブル",
     "tags": [
       "Play Points",
       "返金",
@@ -258,7 +258,7 @@
     "id": "gift-card",
     "title": "Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "キャンペーン",
     "tags": [
       "Play Points",
       "ギフトカード",
@@ -274,7 +274,7 @@
     "id": "family-sharing",
     "title": "Google Play Pointsは家族と共有できる？ファミリー利用の注意点",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "ファミリー",
@@ -290,7 +290,7 @@
     "id": "subscription",
     "title": "Google One・アプリ内サブスクでPlay Pointsは貯まる？対象条件",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "サブスク",
@@ -306,7 +306,7 @@
     "id": "weekly-reward",
     "title": "Google Play Pointsのウィークリーリワード｜受け取り方・更新日・対象ランク",
     "date": "2025-12-25",
-    "category": "入門",
+    "category": "ランク",
     "tags": [
       "Play Points",
       "ウィークリーリワード",
@@ -322,7 +322,7 @@
     "id": "getting-started",
     "title": "Google Play Pointsの始め方｜登録方法と最初に確認すること",
     "date": "2025-12-25",
-    "category": "入門",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "初心者",
@@ -338,7 +338,7 @@
     "id": "new-year-campaign",
     "title": "Google Play Pointsの年末年始キャンペーン｜開催確認と課金判断",
     "date": "2025-12-25",
-    "category": "攻略",
+    "category": "キャンペーン",
     "tags": [
       "Play Points",
       "年末年始",
@@ -354,7 +354,7 @@
     "id": "diamond-vip",
     "title": "Google Play Pointsのダイヤモンド特典｜プラチナとの違いを検証",
     "date": "2025-12-25",
-    "category": "検証",
+    "category": "ランク",
     "tags": [
       "Play Points",
       "ダイヤモンド",
@@ -370,7 +370,7 @@
     "id": "campaign",
     "title": "Google Play Pointsのキャンペーンは待つべき？増量率の確認と課金判断",
     "date": "2025-12-25",
-    "category": "攻略",
+    "category": "キャンペーン",
     "tags": [
       "Play Points",
       "キャンペーン",
@@ -380,13 +380,13 @@
     "description": "Google Play Pointsの増量キャンペーンを待つべきか、対象アカウント、開始操作、最高獲得率、期限を確認し、通常時との必要額を比較する方法を解説します。",
     "file": "../articles/2025-12-25-campaign.html",
     "thumbnail": "../articles/ogp/campaign.png",
-    "modified": "2026-07-24"
+    "modified": "2026-07-30"
   },
   {
     "id": "best-use",
     "title": "Google Play Pointsの使い道を比較｜クーポン・アイテム・Playクレジットの選び方",
     "date": "2025-12-25",
-    "category": "活用術",
+    "category": "使い方",
     "tags": [
       "Play Points",
       "クーポン",
@@ -402,7 +402,7 @@
     "id": "diamond-worth-it",
     "title": "Google Play Pointsのダイヤモンドは得？必要ポイント・購入額・特典を比較",
     "date": "2025-12-25",
-    "category": "検証",
+    "category": "ランク",
     "tags": [
       "Play Points",
       "ダイヤモンド",
@@ -418,7 +418,7 @@
     "id": "playpoints-rank-maintenance",
     "title": "Google Play Pointsのランク維持期間｜翌年末までの仕組みと年末の確認方法",
     "date": "2025-12-25",
-    "category": "攻略",
+    "category": "ランク",
     "tags": [
       "Play Points",
       "年末年始",
@@ -427,21 +427,6 @@
     "description": "Google Play Pointsのランクは到達後、翌年末まで維持されます。暦年の獲得ポイント、翌年の再判定、残高との違い、年末の確認手順を具体例で解説。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
     "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png",
-    "modified": "2026-07-25"
-  },
-  {
-    "id": "playpoints-not-reflected",
-    "title": "Google Play Pointsが反映されない原因と確認手順",
-    "date": "2025-12-25",
-    "category": "トラブル対処",
-    "tags": [
-      "Play Points",
-      "反映されない",
-      "対処法"
-    ],
-    "description": "課金したのにGoogle Play Pointsが反映されない時の原因と対処法。ポイント履歴・保留中・アカウント違い・登録状況の確認から、再起動やPlayストア更新まで、公式手順に沿って解説します。",
-    "file": "../articles/2025-12-25-playpoints-not-reflected.html",
-    "thumbnail": "../articles/ogp/playpoints-not-reflected.png",
-    "modified": "2026-07-25"
+    "modified": "2026-07-30"
   }
 ]

@@ -8,6 +8,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'info.html': '2026-07-26',
   'latest/index.html': '2026-07-26',
   'embed.html': '2026-07-27',
+  'compare/earning-rates/index.html': '2026-07-30',
   'en/articles/2026-06-20-discount-gift-cards.html': '2026-07-25',
   'ko/articles/2026-06-20-discount-gift-cards.html': '2026-07-25',
   'tw/articles/2026-06-20-discount-gift-cards.html': '2026-07-25'

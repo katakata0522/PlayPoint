@@ -81,13 +81,13 @@ LPや記事導線を追加したら、最低28日後にSearch ConsoleとGA4を�
 | ダイヤモンド 必要額 | `/status/diamond/` | `articles/2025-12-25-diamond-worth-it.html` | 2026-07-25 |
 | プラチナ 維持 | `/maintenance/platinum/` | `articles/2025-12-25-playpoints-rank-maintenance.html` | 2026-07-25 |
 | ダイヤモンド 維持 | `/maintenance/diamond/` | `articles/2025-12-25-diamond-worth-it.html`, `articles/2025-12-25-diamond-vip.html` | 2026-07-25 |
-| Play Points いつ反映 | `articles/2026-03-10-play-points-reflection-timing.html` | `articles/2025-12-25-playpoints-not-reflected.html` | 2026-08-04 |
-| Play Points 反映されない | `articles/2025-12-25-playpoints-not-reflected.html` | `articles/2026-03-10-play-points-reflection-timing.html` | 2026-08-04 |
+| Play Points いつ反映 | `articles/2026-03-10-play-points-reflection-timing.html` | 統合済み旧URLから301転送 | 2026-08-04 |
+| Play Points 反映されない | `articles/2026-03-10-play-points-reflection-timing.html` | 統合済み旧URLから301転送 | 2026-08-04 |
 | Play Points 有効期限 | `articles/2025-12-25-expiration.html` | `articles/2025-12-25-check-balance.html` | 2026-08-04 |
 | Play Points ギフトカード ポイント | `articles/2026-06-20-discount-gift-cards.html` | `articles/2025-12-25-gift-card.html`, `/amount/10000/` | 2026-08-04 |
 | Google Play Points Diamond cost | `/en/status/diamond/` | `/en/articles/google-play-points-platinum-diamond-cost.html` | 2026-08-04 |
 | Google Play Points 2x promotion | `/en/campaign/2x/` | `/en/articles/google-play-points-levels.html` | 2026-08-04 |
-| Google Play Points not showing up | `/en/articles/google-play-points-not-showing.html` | `/en/articles/google-play-points-reflection-timing.html` | 2026-08-04 |
+| Google Play Points not showing up | `/en/articles/google-play-points-not-showing.html` | 英語旧記事から301転送 | 2026-08-04 |
 | Google Play Points gift cards | `/en/articles/google-play-points-gift-cards.html` | `/en/amount/10000/` | 2026-08-04 |
 
 ## 国別チェック

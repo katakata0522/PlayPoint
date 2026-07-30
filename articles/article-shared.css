@@ -13,34 +13,28 @@ body[data-blog-theme="light"] {
     background: #f6f8fa;
 }
 
-body[data-article-category="入門"] {
-    --article-accent: #22c55e;
-    --article-accent-dark: #15803d;
-    --article-accent-soft: #ecfdf5;
-}
-
-body[data-article-category="攻略"] {
-    --article-accent: #f59e0b;
-    --article-accent-dark: #b45309;
-    --article-accent-soft: #fffbeb;
-}
-
-body[data-article-category="活用術"] {
-    --article-accent: #3b82f6;
-    --article-accent-dark: #1d4ed8;
-    --article-accent-soft: #eff6ff;
-}
-
-body[data-article-category="検証"] {
+body[data-article-category="ランク"] {
     --article-accent: #8b5cf6;
     --article-accent-dark: #6d28d9;
     --article-accent-soft: #f5f3ff;
 }
 
-body[data-article-category="トラブル対処"] {
+body[data-article-category="トラブル"] {
     --article-accent: #ef4444;
     --article-accent-dark: #b91c1c;
     --article-accent-soft: #fef2f2;
+}
+
+body[data-article-category="使い方"] {
+    --article-accent: #3b82f6;
+    --article-accent-dark: #1d4ed8;
+    --article-accent-soft: #eff6ff;
+}
+
+body[data-article-category="キャンペーン"] {
+    --article-accent: #f59e0b;
+    --article-accent-dark: #b45309;
+    --article-accent-soft: #fffbeb;
 }
 
 body[data-article-category] {
@@ -51,6 +45,66 @@ body[data-article-category] {
 body[data-article-category] .hero,
 body[data-article-category] .article-hero {
     background: linear-gradient(135deg, var(--article-accent-dark), var(--article-accent));
+}
+
+.editorial-answer,
+.knowledge-boundary {
+    margin: 0 0 1.5rem;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid #dbe2ea;
+    border-left: 4px solid var(--article-accent);
+    border-radius: 12px;
+    background: linear-gradient(180deg, var(--article-accent-soft), #ffffff);
+    color: #1f2937;
+}
+
+.editorial-answer h2,
+.knowledge-boundary h2 {
+    margin: 0 0 0.65rem;
+    border: 0;
+    color: #111827;
+    font-size: 1.15rem;
+}
+
+.editorial-answer p,
+.knowledge-boundary p {
+    margin: 0;
+}
+
+.knowledge-boundary__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.knowledge-boundary__grid > div {
+    padding: 0.9rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.knowledge-boundary__grid h3 {
+    margin: 0 0 0.55rem;
+    color: var(--article-accent-dark);
+    font-size: 1rem;
+}
+
+.knowledge-boundary__grid ul {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.knowledge-boundary__grid li + li {
+    margin-top: 0.35rem;
+}
+
+.knowledge-boundary__source {
+    margin-top: 0.9rem !important;
+}
+
+.knowledge-boundary__source a {
+    color: var(--article-accent-dark);
+    font-weight: 800;
 }
 
 body[data-blog-theme="dark"] .main-card {
@@ -323,6 +377,10 @@ button:focus-visible {
 }
 
 @media (max-width: 600px) {
+    .knowledge-boundary__grid {
+        grid-template-columns: 1fr;
+    }
+
     .main-card {
         margin: 0.75rem;
         border-radius: 14px;

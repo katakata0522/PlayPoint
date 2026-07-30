@@ -106,6 +106,7 @@ try {
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   verifyRequiredPublicFiles();
   verifyServiceWorkerPrecacheAssets();
+  runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);

@@ -51,10 +51,10 @@
             console.warn('ブログ設定を読み込めませんでした。既定テーマを使用します。', error);
         }
 
-        const allowedCategories = ['入門', '攻略', '活用術', '検証', 'トラブル対処'];
+        const allowedCategories = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
         const category = document.querySelector('meta[name="article:category"]')?.content;
         document.body.dataset.blogTheme = theme;
-        document.body.dataset.articleCategory = allowedCategories.includes(category) ? category : '入門';
+        document.body.dataset.articleCategory = allowedCategories.includes(category) ? category : '使い方';
     }
 
     // ブログと記事のイベントキューをGA4へ送れるよう、初期描画後に一度だけ読み込む

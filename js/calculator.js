@@ -151,14 +151,14 @@ export const CALC = {
                     platinum: [{ href: 'status/platinum/', title: 'Platinum cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
                     diamond: [{ href: 'status/diamond/', title: 'Diamond cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
                     campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: 'Promotion not applied: what to check' }, { href: 'articles/google-play-points-gift-cards.html', title: 'Gift card conditions' }],
-                    default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }, { href: 'articles/google-play-points-reflection-timing.html', title: 'When points appear' }, { href: 'articles/google-play-points-not-showing.html', title: 'Points not showing: what to check' }]
+                    default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }, { href: 'articles/google-play-points-not-showing.html', title: 'Points not showing: what to check' }]
                 },
                 decisionTitle: 'What to check next',
                 highSpend: { href: 'campaign/3x/', title: 'Compare a 3x promotion', note: 'Check the difference before buying' },
                 campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: 'Check promotion conditions', note: 'Confirm the bonus applies to this purchase' },
                 diamond: { href: 'status/diamond/', title: 'Check the Diamond target', note: 'Review the points and spending estimate' },
                 platinum: { href: 'status/platinum/', title: 'Check the Platinum target', note: 'Review the points and spending estimate' },
-                nearYearEnd: { href: 'articles/google-play-points-reflection-timing.html', title: 'Check point reflection timing', note: 'Avoid a delay near year-end' },
+                nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: 'Check point reflection timing', note: 'Avoid a delay near year-end' },
                 notShowing: { href: 'articles/google-play-points-not-showing.html', title: 'Check missing points', note: 'Review purchase history and pending items' },
                 giftCards: { href: 'articles/google-play-points-gift-cards.html', title: 'Check gift card conditions', note: 'Confirm eligibility before buying' }
             },
@@ -204,7 +204,7 @@ export const CALC = {
             diamond: { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' },
             platinum: { href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' },
             nearYearEnd: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' },
-            notShowing: { href: 'articles/2025-12-25-playpoints-not-reflected.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' },
+            notShowing: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' },
             giftCards: { href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' }
         };
     },

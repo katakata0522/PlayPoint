@@ -110,21 +110,18 @@
         if (document.querySelector('.article-calculator-prompt')) return;
         const content = document.querySelector('.content');
         if (!content) return;
-        if (content.querySelector('.cta-box, .cta-banner')) return;
 
         const prompt = document.createElement('aside');
         prompt.className = 'article-calculator-prompt cta-box';
         prompt.setAttribute('aria-label', 'あなたの場合の必要額を計算');
         prompt.innerHTML = `
-            <p class="article-calculator-prompt__label">読んだあとに確認</p>
+            <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
             <h2>あなたの場合はいくら必要？</h2>
-            <p>現在のステータス、目標ランク、あと必要なポイントを入れると、ランク達成までの課金目安をすぐ確認できます。</p>
+            <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
             <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
         `;
 
-        const toc = content.querySelector('.toc-box');
-        const summary = content.querySelector('.summary-box');
-        const anchor = toc || summary;
+        const anchor = content.querySelector('.answer-box, .summary-box, .intro');
         if (anchor && anchor.nextSibling) {
             anchor.parentNode.insertBefore(prompt, anchor.nextSibling);
             return;
@@ -138,7 +135,7 @@
         const groups = {
             start: [
                 { href: './2025-12-25-check-balance.html', text: '残高・履歴・有効期限の確認方法' },
-                { href: './2025-12-25-playpoints-not-reflected.html', text: 'ポイントが反映されない時の確認手順' },
+                { href: './2026-03-10-play-points-reflection-timing.html', text: 'ポイントが反映されない時の確認手順' },
                 { href: './2025-12-25-expiration.html', text: 'Play Pointsの有効期限と失効対策' }
             ],
             earn: [
@@ -362,8 +359,8 @@
         const categoryBadge = document.querySelector('.badge, .hero-badge');
         if (categoryBadge) {
             const text = categoryBadge.textContent.trim();
-            // Extract category from badge text (e.g., "🏷️ 入門" -> "入門")
-            const match = text.match(/入門|攻略|活用術|検証|トラブル対処/);
+            // カテゴリーの表示名が含まれる場合だけ抽出する。
+            const match = text.match(/ランク|トラブル|使い方|キャンペーン/);
             if (match) return match[0];
         }
         return null;

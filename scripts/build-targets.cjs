@@ -1,6 +1,7 @@
 'use strict';
 
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
+const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 
 const generatedLocaleFiles = [
   'en/index.html',
@@ -28,6 +29,7 @@ const syncedHtmlFiles = [
   'campaign/3x/index.html',
   'campaign/wait/index.html',
   'amount/10000/index.html',
+  'compare/earning-rates/index.html',
   'en/articles/2026-06-20-discount-gift-cards.html',
   'ko/articles/2026-06-20-discount-gift-cards.html',
   'tw/articles/2026-06-20-discount-gift-cards.html'
@@ -42,6 +44,8 @@ const generatedFiles = [
   'atom.xml',
   'sw.js',
   'js/third-party.js',
+  'blog/articles.json',
+  ...Object.keys(EDITORIAL_TARGETS),
   ...syncedHtmlFiles,
   'sitemap.xml'
 ];

@@ -22,6 +22,10 @@ Options -Indexes
   RewriteRule ^doujin-shi-calculator(?:/(.*))?$ https://katakatalab.com/lab-tools/doujin-shi-calculator/$1 [R=301,L,NE]
   RewriteRule ^articles/2026-06-29-savings-game-fire\.html$ https://katakatalab.com/lab-tools/savings-game-fire/ [R=301,L,NE]
 
+  # 検索意図が重複した反映トラブル記事は包括記事へ統合
+  RewriteRule ^articles/2025-12-25-playpoints-not-reflected\.html$ /articles/2026-03-10-play-points-reflection-timing.html [R=301,L,NE]
+  RewriteRule ^en/articles/google-play-points-reflection-timing\.html$ /en/articles/google-play-points-not-showing.html [R=301,L,NE]
+
   # 旧GitHub Pages URLが検索に残る場合はSearch Console側で正規URLを優先する
   # このサーバーでは playpoint-sim.com 配下の正規化だけを担当する
 
