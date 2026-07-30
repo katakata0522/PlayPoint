@@ -112,6 +112,7 @@ function loadCalculatorContext(dateClass = Date) {
         getRelatedArticles: PP_APP.CALC.getRelatedArticles.bind(PP_APP.CALC),
         getDecisionLinks: PP_APP.CALC.getDecisionLinks.bind(PP_APP.CALC),
         computeMainResult: PP_APP.CALC_PURE.computeMainResult.bind(PP_APP.CALC_PURE),
+        computeRateComparison: PP_APP.CALC_PURE.computeRateComparison.bind(PP_APP.CALC_PURE),
         calculate: PP_APP.CALC.calculate.bind(PP_APP.CALC),
         reverseCalculate: PP_APP.CALC.reverseCalculate.bind(PP_APP.CALC),
         renderedResults
@@ -1251,11 +1252,12 @@ test('blogの正規URLはindex.htmlを露出しない', () => {
   assert.ok(htaccess.includes('RewriteRule ^blog/index\\.html$ /blog/ [R=301,L,NE]'));
 });
 
-test('blogトップはGoogle Fonts CSSをpreloadしない', () => {
+test('blogトップは外部Google Fontsへ接続しない', () => {
   const html = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
 
   assert.ok(!html.includes('rel="preload"'));
-  assert.ok(html.includes('fonts.googleapis.com'));
+  assert.ok(!html.includes('fonts.googleapis.com'));
+  assert.ok(!html.includes('fonts.gstatic.com'));
 });
 
 test('記事ページの前後ナビは関連記事コンテナが無くても描画される', () => {
@@ -2408,6 +2410,32 @@ test('平均パック課金額シミュレーションの検証', () => {
 
   assert.ok(renderedResults[0].content.includes('data-value="3"'), '必要購入パック数が3パックとなること');
   assert.ok(renderedResults[0].content.includes('data-value="29400"'), '合計課金額が29,400円になること');
+});
+
+test('通常還元とキャンペーン還元の差額は既存の購入単位で比較する', () => {
+  const { computeRateComparison } = loadCalculatorContext();
+  const samePack = computeRateComparison({
+    neededPoints: 50,
+    selectedRate: 2,
+    baseRate: 1,
+    packAmount: 9800,
+    spendUnit: 100
+  });
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(samePack)),
+    { baseAmount: 9800, selectedAmount: 9800, savedAmount: 0 }
+  );
+
+  const withoutPack = computeRateComparison({
+    neededPoints: 100,
+    selectedRate: 2,
+    baseRate: 1,
+    spendUnit: 100
+  });
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(withoutPack)),
+    { baseAmount: 10000, selectedAmount: 5000, savedAmount: 5000 }
+  );
 });
 
 test('米国のパック計算は購入ごとのポイントを最も近い整数へ丸める', () => {

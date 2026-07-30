@@ -67,6 +67,36 @@ export const CALC_PURE = {
     },
 
     /**
+     * 通常還元と選択中の還元条件を、同じ購入単位で比較する。
+     * 表示用の比較であり、既存の計算結果そのものは変更しない。
+     */
+    computeRateComparison({ neededPoints, selectedRate, baseRate, packAmount = 0, spendUnit = 100 }) {
+        const values = [neededPoints, selectedRate, baseRate, packAmount, spendUnit];
+        if (!values.every(Number.isFinite) || neededPoints <= 0 || selectedRate <= 0 || baseRate <= 0 || spendUnit <= 0 || packAmount < 0) {
+            return null;
+        }
+
+        const baseResult = this.computeMainResult({
+            neededPoints,
+            finalRate: baseRate,
+            packAmount,
+            spendUnit
+        });
+        const selectedResult = this.computeMainResult({
+            neededPoints,
+            finalRate: selectedRate,
+            packAmount,
+            spendUnit
+        });
+
+        return {
+            baseAmount: baseResult.totalAmountNeeded,
+            selectedAmount: selectedResult.totalAmountNeeded,
+            savedAmount: this.roundCurrencyAmount(Math.max(0, baseResult.totalAmountNeeded - selectedResult.totalAmountNeeded))
+        };
+    },
+
+    /**
      * 逆算シミュレーション計算（純粋関数）
      * @param {object} params
      * @param {number} params.amountYen - 課金額
@@ -471,6 +501,7 @@ export const CALC = {
         const finalRate = rateDetails ? rateDetails.finalRate : null;
         const rateSourceLabel = this.getRateSourceLabel(rateDetails, texts);
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
+        const normalRate = config.statusRates[currentStatusValue];
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
         const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
@@ -555,6 +586,31 @@ export const CALC = {
                     </div>
                 `
                 : '';
+            const comparison = Number.isFinite(normalRate) && finalRate > normalRate
+                ? CALC_PURE.computeRateComparison({
+                    neededPoints: finalNeededPoints,
+                    selectedRate: finalRate,
+                    baseRate: normalRate,
+                    packAmount: packAmount || 0,
+                    spendUnit
+                })
+                : null;
+            const comparisonContent = comparison
+                ? `
+                    <aside class="result-rate-comparison" aria-label="${texts.resultComparisonTitle || '通常時との比較'}">
+                        <strong>${texts.resultComparisonTitle || '通常時との比較'}</strong>
+                        <dl>
+                            <dt>${texts.resultComparisonBase || '通常還元の場合'}</dt>
+                            <dd>${texts.approxLabel} <span class="count-target" data-value="${comparison.baseAmount}">0</span> ${config.currencySymbol}</dd>
+                            <dt>${texts.resultComparisonSelected || '現在の還元条件'}</dt>
+                            <dd>${texts.approxLabel} <span class="count-target" data-value="${comparison.selectedAmount}">0</span> ${config.currencySymbol}</dd>
+                            <dt>${texts.resultComparisonSaved || '差額'}</dt>
+                            <dd><b><span class="count-target" data-value="${comparison.savedAmount}">0</span> ${config.currencySymbol}</b></dd>
+                        </dl>
+                        ${comparison.savedAmount === 0 ? `<p>${texts.resultComparisonSamePack || 'この購入単位では必要パック数が同じため、差額はありません。'}</p>` : ''}
+                    </aside>
+                `
+                : '';
             
             resultContent = `
                 <dl>
@@ -566,6 +622,7 @@ export const CALC = {
                     ${monthlyResultContent}
                 </dl>
                 ${paceResultContent}
+                ${comparisonContent}
                 <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
                 <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
                     ${calculationNoteText}

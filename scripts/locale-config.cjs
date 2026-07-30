@@ -57,6 +57,8 @@ function createLocales(todayStr) {
             initialMonthLabel: 'January',
             monthlySummaryTitle: 'Monthly Summary',
             yearlySummaryTitle: 'Yearly Summary',
+            yearlyChartTitle: 'Yearly record chart',
+            yearlyChartDescription: 'Compare monthly recorded points only on this device.',
             totalLabel: 'Total:',
             averageLabel: 'Average:',
             perWeekUnit: 'pts/week',
@@ -151,6 +153,10 @@ function createLocales(todayStr) {
             <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
             <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
+        <figure class="calculation-flow-figure">
+            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
+            <figcaption>Three steps from the points gap and reward condition to an estimated spending amount. The 1,728-point figure is an input example.</figcaption>
+        </figure>
         <p class="calculation-method-note"><strong>Calculation and verification:</strong> Inputs are calculated in this browser and are not sent externally. The estimate uses the required points and selected reward condition; when a pack amount is entered, the total is rounded up by purchase unit. See the <a href="../author/katakata.html" rel="author">operator and verification policy</a> for sourcing, updates, and corrections.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -210,6 +216,8 @@ function createLocales(todayStr) {
             initialMonthLabel: '1월',
             monthlySummaryTitle: '월간 합계',
             yearlySummaryTitle: '연간 합계',
+            yearlyChartTitle: '연간 기록 그래프',
+            yearlyChartDescription: '월별 기록 포인트를 이 기기 안에서만 비교합니다.',
             totalLabel: '합계:',
             averageLabel: '평균:',
             perWeekUnit: 'pt/주',
@@ -304,6 +312,10 @@ function createLocales(todayStr) {
             <li>기본 적립률과 이벤트 배율을 비교하면서 획득 포인트 역산</li>
             <li>주간 리워드 일기로 매주 획득한 포인트를 편리하게 관리</li>
         </ul>
+        <figure class="calculation-flow-figure">
+            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="필요 포인트와 적립 조건에서 예상 결제 금액까지 이어지는 3단계 계산 흐름">
+            <figcaption>필요 포인트와 적립 조건으로 예상 결제 금액을 구하는 3단계입니다. 그림의 1,728pt는 입력 예시입니다.</figcaption>
+        </figure>
         <p class="calculation-method-note"><strong>계산 및 검증:</strong> 입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다. 필요한 포인트와 선택된 적립 조건으로 금액을 추정하며, 패키지 금액을 입력한 경우 구매 단위로 올림합니다. 출처, 업데이트 및 정정 기준은 <a href="../author/katakata.html" rel="author">운영자 및 검증 방침</a>에서 확인할 수 있습니다.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -362,6 +374,8 @@ function createLocales(todayStr) {
             initialMonthLabel: '1月',
             monthlySummaryTitle: '月度統計',
             yearlySummaryTitle: '年度統計',
+            yearlyChartTitle: '年度記錄圖表',
+            yearlyChartDescription: '只在此裝置上比較每月記錄的點數。',
             totalLabel: '合計:',
             averageLabel: '平均:',
             perWeekUnit: 'pt/週',
@@ -456,6 +470,10 @@ function createLocales(todayStr) {
             <li>比較基本回饋與活動加倍倍率，進行點數逆算。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
+        <figure class="calculation-flow-figure">
+            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="從所需點數與回饋條件到預估消費金額的三步驟計算流程">
+            <figcaption>從點數差距與回饋條件算出預估消費金額的三個步驟。圖中的1,728pt是輸入範例。</figcaption>
+        </figure>
         <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="../author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,

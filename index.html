@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=20260730_2141a">
+    <link rel="modulepreload" href="js/main.js?v=20260730_2227a">
     <link rel="modulepreload" href="js/config.js">
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/diary.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=20260730_2141a">
+    <link rel="stylesheet" href="style.css?v=20260730_2227a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -303,6 +303,11 @@
                 </dl>
             </div>
         </div>
+        <section class="diary-year-chart-section">
+            <h4 data-lang-key="yearlyChartTitle">年間の記録グラフ</h4>
+            <p data-lang-key="yearlyChartDescription">月ごとの記録ポイントを、この端末内だけで比較します。</p>
+            <div id="diary-year-chart" class="diary-year-chart" role="img" aria-label="月ごとの記録ポイント"></div>
+        </section>
         <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">
             【！】日記はこのブラウザのローカルストレージにだけ保存されます。サイトデータの削除、プライベートブラウズ、別の端末・ブラウザへの移動では引き継がれません。必要に応じて書き出しデータを保管してください。
         </div>
@@ -337,6 +342,10 @@
             <li>通常還元とキャンペーン倍率を比較しながら逆算</li>
             <li>ほくほくリワード日記で、毎週の獲得ポイントを手元で管理</li>
         </ul>
+        <figure class="calculation-flow-figure">
+            <img src="images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="不足ポイント、還元条件、必要課金額目安を順番に確認する計算の流れ">
+            <figcaption>不足ポイントと還元条件から、必要課金額の目安を出す3ステップ。図中の1,728ptは入力例です。</figcaption>
+        </figure>
         <p class="calculation-method-note"><strong>計算と検証について:</strong> 入力値は外部へ送信せず、このブラウザ上で計算します。必要ポイントと採用した還元条件から金額を試算し、パック額を指定した場合は購入単位で切り上げます。情報源・更新・訂正の方針は <a href="author/katakata.html" rel="author">運営者・検証方針</a> で確認できます。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
@@ -466,8 +475,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=20260730_2141a"></script>
-<script src="js/third-party.js?v=20260730_2141a" defer></script>
+<script type="module" src="js/main.js?v=20260730_2227a"></script>
+<script src="js/third-party.js?v=20260730_2227a" defer></script>
 
 </body>
 </html>

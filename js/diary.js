@@ -3,6 +3,32 @@
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 
+export const DIARY_PURE = {
+    summarizeYear(yearData = {}) {
+        const monthlyTotals = Array.from({ length: 12 }, () => 0);
+        let total = 0;
+        let recordedWeeks = 0;
+
+        for (let month = 1; month <= 12; month++) {
+            const monthData = yearData[month] || {};
+            for (const week of Object.values(monthData)) {
+                const points = Number.parseInt(week?.points, 10);
+                if (!Number.isFinite(points) || points < 0) continue;
+                monthlyTotals[month - 1] += points;
+                total += points;
+                recordedWeeks++;
+            }
+        }
+
+        return {
+            monthlyTotals,
+            total,
+            recordedWeeks,
+            average: recordedWeeks > 0 ? total / recordedWeeks : 0
+        };
+    }
+};
+
 export const DIARY = {
     // ローカルストレージから日記データを取得するメソッド
     loadDiaryData() {
@@ -129,15 +155,43 @@ export const DIARY = {
         });
         STATE.dom.monthlyTotal.textContent = monthlyTotal.toLocaleString(config.lang);
         STATE.dom.monthlyAverage.textContent = (monthlyWeeksWithPoints > 0 ? (monthlyTotal / monthlyWeeksWithPoints).toFixed(1) : '0.0');
-        let yearlyTotal = 0, yearlyWeeksWithPoints = 0;
-        Object.values(yearData).forEach(month => {
-            Object.values(month).forEach(week => {
-                const points = parseInt(week.points, 10);
-                if (!isNaN(points)) { yearlyTotal += points; yearlyWeeksWithPoints++; }
-            });
+        const yearlySummary = DIARY_PURE.summarizeYear(yearData);
+        STATE.dom.yearlyTotal.textContent = yearlySummary.total.toLocaleString(config.lang);
+        STATE.dom.yearlyAverage.textContent = yearlySummary.average.toFixed(1);
+        this.renderYearChart(yearlySummary.monthlyTotals);
+    },
+
+    // 保存済みデータだけを使い、月ごとの比較をDOMでアクセシブルに描画する。
+    renderYearChart(monthlyTotals) {
+        if (!STATE.dom.diaryYearChart) return;
+        const config = CONFIGS[STATE.currentRegion];
+        const texts = config.uiText;
+        const maxValue = Math.max(1, ...monthlyTotals);
+        STATE.dom.diaryYearChart.innerHTML = '';
+        STATE.dom.diaryYearChart.setAttribute('aria-label', texts.yearlyChartDescription || '');
+
+        monthlyTotals.forEach((total, index) => {
+            const item = document.createElement('div');
+            item.className = 'diary-chart-item';
+            item.setAttribute('aria-label', `${texts.monthNames[index]}: ${total.toLocaleString(config.lang)} ${texts.pointsUnit}`);
+
+            const value = document.createElement('span');
+            value.className = 'diary-chart-value';
+            value.textContent = total.toLocaleString(config.lang);
+
+            const track = document.createElement('span');
+            track.className = 'diary-chart-track';
+            const bar = document.createElement('span');
+            bar.className = 'diary-chart-bar';
+            bar.style.setProperty('--bar-height', `${Math.round((total / maxValue) * 100)}%`);
+            track.appendChild(bar);
+
+            const label = document.createElement('span');
+            label.className = 'diary-chart-label';
+            label.textContent = texts.monthNames[index];
+            item.append(value, track, label);
+            STATE.dom.diaryYearChart.appendChild(item);
         });
-        STATE.dom.yearlyTotal.textContent = yearlyTotal.toLocaleString(config.lang);
-        STATE.dom.yearlyAverage.textContent = (yearlyWeeksWithPoints > 0 ? (yearlyTotal / yearlyWeeksWithPoints).toFixed(1) : '0.0');
     },
 
     // 週ごとの入力データ保存処理
@@ -291,4 +345,5 @@ export const DIARY = {
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
     window.PP_APP.DIARY = DIARY;
+    window.PP_APP.DIARY_PURE = DIARY_PURE;
 }

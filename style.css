@@ -468,6 +468,21 @@ h1 {
   font-size: 0.9em;
   line-height: 1.7;
 }
+.calculation-flow-figure {
+  margin: 1.25em 0;
+}
+.calculation-flow-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+}
+.calculation-flow-figure figcaption {
+  margin-top: 0.55em;
+  color: var(--link-color);
+  font-size: 0.86em;
+  text-align: center;
+}
 
 
 label {
@@ -565,6 +580,31 @@ button:active {
   font-size: 0.94em;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+.result-rate-comparison {
+  margin: 0.8em 0;
+  padding: 0.8em;
+  border: 1px solid rgba(88, 166, 255, 0.32);
+  border-radius: 8px;
+  background: rgba(88, 166, 255, 0.08);
+}
+.result-rate-comparison > strong {
+  display: block;
+  margin-bottom: 0.45em;
+}
+.result-rate-comparison dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25em 0.8em;
+}
+.result-rate-comparison dd {
+  text-align: right;
+}
+.result-rate-comparison p {
+  margin: 0.45em 0 0;
+  font-size: 0.78em;
+  font-weight: normal;
+  color: var(--link-color);
 }
 .result-related-links {
   margin-top: 0.9em;
@@ -1319,6 +1359,61 @@ button:active {
   margin: 0;
   font-weight: bold;
   font-size: 1.4em;
+}
+.diary-year-chart-section {
+  margin: 1em 0 2em;
+  padding: 1.25em;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.diary-year-chart-section h4,
+.diary-year-chart-section p {
+  margin: 0;
+}
+.diary-year-chart-section p {
+  margin-top: 0.25em;
+  color: var(--link-color);
+  font-size: 0.88em;
+}
+.diary-year-chart {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(28px, 1fr));
+  gap: 0.35em;
+  min-height: 190px;
+  margin-top: 1em;
+  overflow-x: auto;
+}
+.diary-chart-item {
+  display: grid;
+  grid-template-rows: 1.5em 130px auto;
+  min-width: 28px;
+  text-align: center;
+}
+.diary-chart-value {
+  font-size: 0.68em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.diary-chart-track {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  border-radius: 5px;
+  background: rgba(88, 166, 255, 0.08);
+  overflow: hidden;
+}
+.diary-chart-bar {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--bar-height);
+  min-height: 2px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(180deg, #58a6ff, #3fb950);
+}
+.diary-chart-label {
+  margin-top: 0.35em;
+  font-size: 0.68em;
+  white-space: nowrap;
 }
 .guest-notice {
   font-size: .9em;

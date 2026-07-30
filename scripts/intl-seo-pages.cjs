@@ -2215,9 +2215,6 @@ function renderArticle(article, assetVersions) {
     ${alternateLinks.map(alternate => `<link rel="alternate" hreflang="${alternate.lang}" href="${alternate.url}">`).join('\n    ')}
     <link rel="alternate" hreflang="x-default" href="${defaultAlternate.url}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
     <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="article">
@@ -2335,9 +2332,6 @@ function renderArticleHub(localeKey, assetVersions) {
     <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
     <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="website">

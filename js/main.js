@@ -5,8 +5,12 @@ import { UI } from './ui.js';
 import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
+import { initWebVitalsMonitoring } from './web-vitals.js';
 
 let deferredInstallPrompt = null;
+
+// 早い段階から観測し、送信は既存の同意管理と匿名区分に限定する。
+initWebVitalsMonitoring();
 
 export const isEnglishPath = () => /\/en(\/|$)/.test(window.location.pathname);
 export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
@@ -89,7 +93,7 @@ export function init() {
         'copyright-year',
         'tab-diary', 'diaryMode', 'prevYearBtn', 'currentYear', 'nextYearBtn',
         'monthSelector', 'selectedMonth', 'weekInputs', 'monthlyTotal', 'monthlyAverage',
-        'yearlyTotal', 'yearlyAverage', 'diary-guest-notice',
+        'yearlyTotal', 'yearlyAverage', 'diary-year-chart', 'diary-guest-notice',
         'exportDiaryBtn', 'importDiaryBtn', 'backup-input-wrapper', 'diaryBackupData', 'confirmImportBtn',
         'friday-reminder', 'close-reminder-btn',
         'language-suggestion-banner', 'switch-to-en-btn', 'close-lang-banner-btn',

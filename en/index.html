@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260730_2141a">
+    <link rel="modulepreload" href="../js/main.js?v=20260730_2227a">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/diary.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=20260730_2141a">
+    <link rel="stylesheet" href="../style.css?v=20260730_2227a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -299,6 +299,11 @@
                 </dl>
             </div>
         </div>
+        <section class="diary-year-chart-section">
+            <h4 data-lang-key="yearlyChartTitle">Yearly record chart</h4>
+            <p data-lang-key="yearlyChartDescription">Compare monthly recorded points only on this device.</p>
+            <div id="diary-year-chart" class="diary-year-chart" role="img" aria-label="月ごとの記録ポイント"></div>
+        </section>
         <div id="diary-guest-notice" class="guest-notice" data-lang-key="guestNotice">[!] Diary data is stored only in this browser’s local storage. It will not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.</div>
         <div class="diary-reminder-section">
             <h4 data-lang-key="reminderTitle">Friday Reward Notification (Calendar)</h4>
@@ -331,6 +336,10 @@
             <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
             <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
+        <figure class="calculation-flow-figure">
+            <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
+            <figcaption>Three steps from the points gap and reward condition to an estimated spending amount. The 1,728-point figure is an input example.</figcaption>
+        </figure>
         <p class="calculation-method-note"><strong>Calculation and verification:</strong> Inputs are calculated in this browser and are not sent externally. The estimate uses the required points and selected reward condition; when a pack amount is entered, the total is rounded up by purchase unit. See the <a href="../author/katakata.html" rel="author">operator and verification policy</a> for sourcing, updates, and corrections.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
@@ -384,8 +393,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260730_2141a"></script>
-<script src="../js/third-party.js?v=20260730_2141a" defer></script>
+<script type="module" src="../js/main.js?v=20260730_2227a"></script>
+<script src="../js/third-party.js?v=20260730_2227a" defer></script>
 
 </body>
 </html>

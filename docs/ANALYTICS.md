@@ -22,12 +22,21 @@
 | `pwa_install_accepted` | 日記保存後のインストール案内を承諾した時 | `region`, `install_surface` | 日記利用者の再訪手段としてPWAが有効か判断する |
 | `widget_code_copied` | ウィジェットコードのコピーに成功した時 | `theme`, `language`, `mode` | 配布機能の需要と利用構成を判断する |
 | `widget_referral_landed` | 埋め込みウィジェットから計算機へ到着した時 | `region`, `entry_surface` | 配布ウィジェットが本体利用へつながるか判断する |
+| `web_vital` | ページを離れる時にLCP/INP/CLSを観測できた場合 | `metric_name`, `metric_rating`, `metric_value_bucket`, `page_group`, `release_version` | 実際の利用環境で速度悪化したページ群とリリースを特定する |
 
 `calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。
 
 ## Conversion
 
 `calculation_completed`と`reverse_calculation_completed`を主要イベント候補とする。GA4管理画面ではセッション単位で確認し、繰り返し計算による水増しと区別する。
+
+### GA4管理画面での設定
+
+1. 「管理」→「データの表示」→「イベント」を開く。
+2. `calculation_completed` をキーイベントとしてマークする。
+3. 逆算利用も主要成果として追う場合のみ `reverse_calculation_completed` もキーイベントにする。
+4. 公開後7日間は「レポート」→「エンゲージメント」→「イベント」で、計算完了数とユーザー数を併記する。
+5. 同じ利用者の再計算があるため、イベント数だけを訪問者数として扱わない。
 
 ## 検証
 
@@ -39,6 +48,15 @@
 6. イベントが各1回だけ表示されることを確認する。
 7. 課金額、必要ポイント、獲得ポイント、日記の入力値がパラメータへ含まれないことを確認する。
 8. スマホ幅とPC幅、同意状態ごとに重複送信がないことを確認する。
+9. ページを操作して別タブへ移動し、`web_vital` に値そのものではなく `metric_rating` と `metric_value_bucket` だけが入ることを確認する。
+
+### DebugViewの完了条件
+
+- 同意前・拒否後はイベントが送られない。
+- 同意後は通常計算1回につき `calculation_completed` が1回だけ届く。
+- `neededPoints`、課金額、獲得ポイント、日記の入力内容がパラメータに存在しない。
+- `web_vital` は `LCP`、`INP`、`CLS` のうちブラウザで観測できた指標だけが届く。
+- 上記を本番と同じGA測定IDで確認した日付を、この文書の末尾に追記する。
 
 ## Measurement Readiness
 
