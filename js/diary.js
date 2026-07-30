@@ -95,7 +95,7 @@ export const DIARY = {
             row.innerHTML = `
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
                 <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${weekData.points || ''}" inputmode="numeric">
-                <select id="week${weekNum}_prize">${prizeOptionsHTML}</select>
+                <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
                 <button data-week="${weekNum}">${texts.saveButton}</button>
             `;
             

@@ -1866,7 +1866,7 @@ test('記事はfaviconを指定しAdSenseが必要とする接続先をCSPで許
     .filter(file => file.endsWith('.html'));
 
   assert.ok(htaccess.includes('https://fundingchoicesmessages.google.com'));
-  assert.ok(htaccess.includes('https://ep1.adtrafficquality.google'));
+  assert.ok(htaccess.includes('https://*.adtrafficquality.google'));
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
     assert.ok(html.includes('rel="icon" href="../favicon.svg"'), `${file} does not declare the site favicon`);

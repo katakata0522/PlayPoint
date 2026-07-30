@@ -542,7 +542,7 @@ button:active {
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.65);
 }
-.result-summary-grid span {
+.result-summary-grid > div > span {
   display: block;
   color: var(--link-color);
   font-size: 0.78em;
