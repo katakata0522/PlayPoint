@@ -3,6 +3,8 @@
 (() => {
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
+    const ANALYTICS_DELAY_MS = 1200;
+    const ADSENSE_DELAY_MS = 3000;
 
     let gaLoaded = false;
     let adsLoaded = false;
@@ -32,7 +34,10 @@
     async function loadAnalytics() {
         if (gaLoaded) return;
         try {
-            await loadScript(`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`);
+            await loadScript(
+                `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+                { fetchpriority: 'low' }
+            );
             window.dataLayer = window.dataLayer || [];
             window.gtag = window.gtag || function gtag() {
                 window.dataLayer.push(arguments);
@@ -53,7 +58,7 @@
         try {
             await loadScript(
                 `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`,
-                { crossorigin: 'anonymous' }
+                { crossorigin: 'anonymous', fetchpriority: 'low' }
             );
             adsLoaded = true;
         } catch (error) {
@@ -92,36 +97,48 @@
             .catch((error) => console.error('Consent manager load failed:', error));
     }
 
-    // AdSenseタグはGoogle認定CMPの表示にも使われるため、同意モード設定後に読み込む。
-    function loadConsentAndAdsense() {
-        ensureConsentManager()
-            .then(loadAdsense)
-            .catch((error) => console.error('Consent manager load failed:', error));
+    function runWhenIdle(callback, timeout = 2000) {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(callback, { timeout });
+            return;
+        }
+        window.setTimeout(callback, Math.min(timeout, 1200));
     }
 
     function scheduleThirdPartyLoad() {
         if (thirdPartyScheduled) return;
         thirdPartyScheduled = true;
 
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => {
-                void runAfterConsent(loadAnalytics);
-            }, { timeout: 2500 });
-            return;
-        }
+        const scheduleAfterLoad = () => {
+            // 初期表示と最初の操作を優先し、計測と広告は別々に遅延する。
+            window.setTimeout(() => {
+                runWhenIdle(() => {
+                    void runAfterConsent(loadAnalytics);
+                });
+            }, ANALYTICS_DELAY_MS);
 
-        setTimeout(() => {
-            void runAfterConsent(loadAnalytics);
-        }, 1500);
+            // AdSenseタグはGoogle認定CMPにも使われるため読み込み自体は維持する。
+            window.setTimeout(() => {
+                runWhenIdle(() => {
+                    void loadAdsense();
+                });
+            }, ADSENSE_DELAY_MS);
+        };
+
+        if (document.readyState === 'complete') {
+            scheduleAfterLoad();
+        } else {
+            window.addEventListener('load', scheduleAfterLoad, { once: true });
+        }
     }
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
-            loadConsentAndAdsense();
+            void ensureConsentManager();
             scheduleThirdPartyLoad();
         }, { once: true });
     } else {
-        loadConsentAndAdsense();
+        void ensureConsentManager();
         scheduleThirdPartyLoad();
     }
 })();

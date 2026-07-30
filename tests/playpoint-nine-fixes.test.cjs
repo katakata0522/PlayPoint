@@ -76,7 +76,9 @@ test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
   assert.ok(consent.includes("ad_storage: 'denied'"));
   assert.ok(consent.includes('whenGranted'));
   assert.ok(main.includes('ensureConsentManager'));
-  assert.ok(main.includes('loadConsentAndAdsense'));
+  assert.ok(main.includes('scheduleThirdPartyLoad'));
+  assert.ok(main.includes('void loadAdsense()'));
+  assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
   assert.ok(blog.includes('PlayPointConsent.whenGranted'));
   assert.ok(article.includes('PlayPointConsent.whenGranted'));
   assert.ok(privacy.includes('プライバシー設定'));

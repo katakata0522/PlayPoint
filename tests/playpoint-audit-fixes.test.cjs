@@ -79,3 +79,61 @@ test('日記の景品選択には全言語で読み上げ可能な名前があ�
   }
   assert.match(read('js/diary.js'), /<select id="week\$\{weekNum\}_prize" aria-label="\$\{texts\.prizeLabel\}">/);
 });
+
+test('トップページは大きな画像プレビューとOGP画像サイズを明示する', () => {
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    const html = read(file);
+    assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large">/, file);
+    assert.match(html, /<meta property="og:image:width" content="1200">/, file);
+    assert.match(html, /<meta property="og:image:height" content="630">/, file);
+    assert.match(html, /<meta property="og:image:type" content="image\/png">/, file);
+  }
+});
+
+test('初期操作に必要なアプリモジュールは依存解析前から取得を開始する', () => {
+  const expectedModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
+  for (const [file, prefix] of [['index.html', ''], ['en/index.html', '../'], ['ko/index.html', '../'], ['tw/index.html', '../']]) {
+    const html = read(file);
+    for (const moduleName of expectedModules) {
+      assert.match(
+        html,
+        new RegExp(`<link rel="modulepreload" href="${prefix}js/${moduleName}">`),
+        `${file}: ${moduleName}`
+      );
+    }
+  }
+});
+
+test('金曜日リマインダーはファーストビューを押し下げない位置に置く', () => {
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    const html = read(file);
+    const mainModeIndex = html.indexOf('id="mainMode"');
+    const reminderIndex = html.indexOf('id="friday-reminder"');
+    const reverseModeIndex = html.indexOf('id="reverseMode"');
+    assert.ok(mainModeIndex !== -1 && reminderIndex > mainModeIndex, `${file}: リマインダーが通常計算より上にあります`);
+    assert.ok(reverseModeIndex !== -1 && reminderIndex < reverseModeIndex, `${file}: リマインダーの配置が想定外です`);
+  }
+});
+
+test('計算方法と検証方針を全言語で本文から確認できる', () => {
+  const expected = {
+    'index.html': /入力値は外部へ送信せず、このブラウザ上で計算します/,
+    'en/index.html': /Inputs are calculated in this browser and are not sent externally/,
+    'ko/index.html': /입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다/,
+    'tw/index.html': /輸入內容不會傳送到外部，而是在此瀏覽器中完成計算/
+  };
+  for (const [file, pattern] of Object.entries(expected)) {
+    const html = read(file);
+    assert.match(html, pattern, file);
+    assert.match(html, /href="\.\.\/author\/katakata\.html"|href="author\/katakata\.html"/, file);
+  }
+});
+
+test('広告と計測は初期表示後に低優先度で読み込む', () => {
+  const source = read('js/third-party.js');
+  assert.match(source, /window\.addEventListener\('load', scheduleAfterLoad, \{ once: true \}\)/);
+  assert.match(source, /ANALYTICS_DELAY_MS\s*=\s*1200/);
+  assert.match(source, /ADSENSE_DELAY_MS\s*=\s*3000/);
+  assert.match(source, /fetchpriority:\s*'low'/);
+  assert.ok(source.indexOf('ensureConsentManager();') < source.indexOf('scheduleThirdPartyLoad();'));
+});

@@ -7,7 +7,7 @@
 
     <title>Google Play Points 計算器｜距離升級還差多少？</title>
     <meta name="description" content="Google Play Points 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援活動倍率、剩餘點數與每週獎勵紀錄。">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="katakata">
     <meta name="last-modified" content="2026-07-30">
     <meta property="article:modified_time" content="2026-07-30T00:00:00+09:00">
@@ -27,14 +27,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/tw/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算器｜距離升級還差多少？">
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260730_2030a">
-    <link rel="stylesheet" href="../style.css?v=20260730_2030a">
+    <link rel="modulepreload" href="../js/main.js?v=20260730_2141a">
+    <link rel="modulepreload" href="../js/config.js">
+    <link rel="modulepreload" href="../js/ui.js">
+    <link rel="modulepreload" href="../js/diary.js">
+    <link rel="modulepreload" href="../js/share.js">
+    <link rel="modulepreload" href="../js/calculator.js">
+    <link rel="stylesheet" href="../style.css?v=20260730_2141a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -140,12 +148,6 @@
         </div>
     </div>
 
-    <!-- 金曜日リマインダーバー -->
-    <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">領取每週獎勵後，請記錄到日記中。</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="關閉" data-lang-aria="closeAria">×</button>
-    </div>
-
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>
     <p id="site-description" class="site-description" data-lang-key="siteDescription">請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。</p>
 
@@ -213,6 +215,12 @@
                 <button id="tweetButton" class="hidden" data-lang-key="tweetButton">分享至 X</button>
             </div>
         </div>
+    </div>
+
+    <!-- 金曜日リマインダーバー。初期表示後の出現でフォームを押し下げないよう通常計算の後に置く -->
+    <div id="friday-reminder" class="friday-reminder hidden">
+        <span class="reminder-text" data-lang-key="fridayReminderText">領取每週獎勵後，請記錄到日記中。</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="關閉" data-lang-aria="closeAria">×</button>
     </div>
 
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
@@ -323,6 +331,7 @@
             <li>比較基本回饋與活動加倍倍率，進行點數逆算。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
+        <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="../author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
 
@@ -375,8 +384,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=20260730_2030a"></script>
-<script src="../js/third-party.js?v=20260730_2030a" defer></script>
+<script type="module" src="../js/main.js?v=20260730_2141a"></script>
+<script src="../js/third-party.js?v=20260730_2141a" defer></script>
 
 </body>
 </html>

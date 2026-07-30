@@ -1327,10 +1327,11 @@ test('計算と日記保存の完了を個人情報なしでAnalyticsへ送る',
 test('AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する', () => {
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-  assert.ok(script.includes('loadConsentAndAdsense'));
   assert.ok(script.includes('ensureConsentManager()'));
-  assert.ok(script.includes('.then(loadAdsense)'));
-  assert.ok(script.indexOf('ensureConsentManager()') < script.indexOf('.then(loadAdsense)'));
+  assert.ok(script.includes('void loadAdsense()'));
+  assert.ok(script.includes('scheduleThirdPartyLoad'));
+  assert.ok(script.indexOf('void ensureConsentManager();') < script.indexOf('scheduleThirdPartyLoad();'));
+  assert.ok(script.indexOf('ADSENSE_DELAY_MS') < script.indexOf('void loadAdsense()'));
 });
 
 test('トップページはブラウザ言語だけでクライアントサイドリダイレクトしない', () => {
@@ -1741,7 +1742,7 @@ test('CMP起動用のAdSenseタグは二重読み込みしない', () => {
 
   assert.ok(script.includes('if (adsLoaded) return'));
   assert.ok(script.includes('const existing = document.querySelector'));
-  assert.ok(script.includes('loadConsentAndAdsense'));
+  assert.ok(script.includes('void loadAdsense()'));
 });
 
 test('共有URLは実在するステータス値だけを復元する', () => {

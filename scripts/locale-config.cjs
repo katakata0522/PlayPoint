@@ -151,6 +151,7 @@ function createLocales(todayStr) {
             <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
             <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
+        <p class="calculation-method-note"><strong>Calculation and verification:</strong> Inputs are calculated in this browser and are not sent externally. The estimate uses the required points and selected reward condition; when a pack amount is entered, the total is rounded up by purchase unit. See the <a href="../author/katakata.html" rel="author">operator and verification policy</a> for sourcing, updates, and corrections.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
@@ -303,6 +304,7 @@ function createLocales(todayStr) {
             <li>기본 적립률과 이벤트 배율을 비교하면서 획득 포인트 역산</li>
             <li>주간 리워드 일기로 매주 획득한 포인트를 편리하게 관리</li>
         </ul>
+        <p class="calculation-method-note"><strong>계산 및 검증:</strong> 입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다. 필요한 포인트와 선택된 적립 조건으로 금액을 추정하며, 패키지 금액을 입력한 경우 구매 단위로 올림합니다. 출처, 업데이트 및 정정 기준은 <a href="../author/katakata.html" rel="author">운영자 및 검증 방침</a>에서 확인할 수 있습니다.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
@@ -454,6 +456,7 @@ function createLocales(todayStr) {
             <li>比較基本回饋與活動加倍倍率，進行點數逆算。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
+        <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="../author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->

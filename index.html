@@ -7,7 +7,7 @@
 
     <title>Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算</title>
     <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やキャンペーン倍率を目安で逆算できます。">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="かたかた">
     <meta name="last-modified" content="2026-07-30">
     <meta property="article:modified_time" content="2026-07-30T00:00:00+09:00">
@@ -27,14 +27,22 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/png">
     <meta property="og:site_name" content="Google Play Points 計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=20260730_2030a">
-    <link rel="stylesheet" href="style.css?v=20260730_2030a">
+    <link rel="modulepreload" href="js/main.js?v=20260730_2141a">
+    <link rel="modulepreload" href="js/config.js">
+    <link rel="modulepreload" href="js/ui.js">
+    <link rel="modulepreload" href="js/diary.js">
+    <link rel="modulepreload" href="js/share.js">
+    <link rel="modulepreload" href="js/calculator.js">
+    <link rel="stylesheet" href="style.css?v=20260730_2141a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -140,12 +148,6 @@
         </div>
     </div>
 
-    <!-- 金曜日リマインダーバー -->
-    <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる" data-lang-aria="closeAria">×</button>
-    </div>
-
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算機</h1>
     <p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やキャンペーン倍率込みの目安を確認できます。</p>
 
@@ -215,6 +217,12 @@
                 <button id="tweetButton" class="hidden" data-lang-key="tweetButton">結果をXでシェア</button>
             </div>
         </div>
+    </div>
+
+    <!-- 金曜日リマインダーバー。初期表示後の出現でフォームを押し下げないよう通常計算の後に置く -->
+    <div id="friday-reminder" class="friday-reminder hidden">
+        <span class="reminder-text" data-lang-key="fridayReminderText">ウィークリーリワードを受け取ったら、日記に記録しましょう。</span>
+        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="閉じる" data-lang-aria="closeAria">×</button>
     </div>
 
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
@@ -329,6 +337,7 @@
             <li>通常還元とキャンペーン倍率を比較しながら逆算</li>
             <li>ほくほくリワード日記で、毎週の獲得ポイントを手元で管理</li>
         </ul>
+        <p class="calculation-method-note"><strong>計算と検証について:</strong> 入力値は外部へ送信せず、このブラウザ上で計算します。必要ポイントと採用した還元条件から金額を試算し、パック額を指定した場合は購入単位で切り上げます。情報源・更新・訂正の方針は <a href="author/katakata.html" rel="author">運営者・検証方針</a> で確認できます。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
 
@@ -457,8 +466,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=20260730_2030a"></script>
-<script src="js/third-party.js?v=20260730_2030a" defer></script>
+<script type="module" src="js/main.js?v=20260730_2141a"></script>
+<script src="js/third-party.js?v=20260730_2141a" defer></script>
 
 </body>
 </html>
