@@ -41,6 +41,10 @@ jobs:
             fs.writeFileSync(file, after, 'utf8');
           }
 
+          function escapeRegExp(value) {
+            return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          }
+
           update('tests/article-fact-regression.test.cjs', source => source
             .replace(
               'assert.match(html, /Androidから購入したGoogle One/);',
@@ -102,6 +106,16 @@ jobs:
               article.description = description;
             }
             return `${JSON.stringify(articles, null, 2)}\n`;
+          });
+
+          update('blog/index.html', html => {
+            const articles = JSON.parse(fs.readFileSync('blog/articles.json', 'utf8'));
+            let next = html;
+            for (const article of articles) {
+              const pattern = new RegExp(`(<a href="${escapeRegExp(article.file)}">)[^<]*(</a>)`, 'g');
+              next = next.replace(pattern, `$1${article.title}$2`);
+            }
+            return next;
           });
           NODE
 
