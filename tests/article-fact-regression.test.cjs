@@ -21,7 +21,7 @@ test('通常のウィークリーリワードと例外的な週次特典を区�
 
 test('入門記事の獲得対象は現在の日本向け公式案内に合わせる', () => {
   const html = readArticle('2025-12-25-getting-started.html');
-  assert.match(html, /Androidから購入したGoogle One/);
+  assert.match(html, /Androidから(?:購入したGoogle One|のGoogle One定期購入|Google Oneを定期購入)/);
   assert.doesNotMatch(html, /映画・書籍・音楽/);
   assert.doesNotMatch(html, /YouTube Premium、Google One/);
   assert.doesNotMatch(html, /ウィークリーリワードの上限アップ/);
@@ -39,7 +39,7 @@ test('週次特典を使う補足記事にもシルバー以上の条件を明�
 
 test('ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない', () => {
   const html = readArticle('2025-12-25-movies-books.html');
-  assert.match(html, /対象は国や時期、アカウントによって変わる/);
+  assert.match(html, /対象コンテンツは国によって異なります|対象は国や時期、アカウントによって変わる/);
   assert.doesNotMatch(html, /購入・レンタルした映画/);
   assert.doesNotMatch(html, /購入した楽曲やアルバム/);
   assert.doesNotMatch(html, /映画・書籍・音楽・有料アプリ、<strong>すべて対象/);
