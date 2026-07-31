@@ -1458,6 +1458,17 @@ test('トップ上部は商業色の強い課金導線を前面に出しすぎ�
   assert.ok(html.includes(giftCardArticle.title));
 });
 
+test('最新情報リンクはヘッダーから外しフッターで維持する', () => {
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    const headerMatch = html.match(/<div class="header-links">([\s\S]*?)<\/div>/);
+
+    assert.ok(headerMatch, `${file} に header-links がありません`);
+    assert.ok(!headerMatch[1].includes('data-lang-key="linkLatest"'), `${file} のヘッダーに最新情報リンクが残っています`);
+    assert.match(html, /<p class="footer-nav-links">[\s\S]*?data-lang-key="linkLatest"/, `${file} のフッターに最新情報リンクがありません`);
+  }
+});
+
 test('計算条件を共有URLへ保存し再訪時に復元できる', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
