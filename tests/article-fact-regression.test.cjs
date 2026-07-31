@@ -47,10 +47,10 @@ test('ゲーム以外の記事は終了・未確認サービスを獲得対象�
 
 test('サブスク記事は現行の公式確認項目だけを例示する', () => {
   const html = readArticle('2025-12-25-subscription.html');
-  assert.match(html, /Androidから購入したGoogle One/);
+  assert.match(html, /Androidから(?:購入したGoogle One|のGoogle One定期購入|Google Oneを定期購入)/);
   assert.doesNotMatch(html, /YouTube Premium/);
   assert.doesNotMatch(html, /Spotify, Netflix/);
-  assert.match(html, /Play Pointsの履歴/);
+  assert.match(html, /Play Pointsの(?:ポイント)?履歴/);
 });
 
 test('ダイヤモンド記事は未公表の週次上限を事実扱いしない', () => {

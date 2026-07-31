@@ -27,7 +27,7 @@
       "Play Points",
       "達成条件"
     ],
-    "description": "Google Playのクエストについて、表示場所、個別の達成条件、購入扱い、Play Gamesログイン、返金時の扱いをGoogle公式情報から解説します。",
+    "description": "Google Playのクエストについて、表示場所、対象者ごとに異なる達成条件、購入として数えられる取引、Play Gamesログインやパーソナライズ設定、返金時の扱いをGoogle公式情報から解説します。",
     "file": "../articles/2026-07-31-google-play-quests.html",
     "thumbnail": "../articles/ogp/campaign.png"
   },
@@ -122,7 +122,7 @@
       "ウィークリーリワード",
       "クエスト"
     ],
-    "description": "Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパー週次特典、クエスト、Play Pass特典と危険な情報の見分け方を解説します。",
+    "description": "Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパーウィークリーリワード、クエスト、アプリ体験オファー、Play Pass特典と危険な情報の見分け方を解説します。",
     "file": "../articles/2026-07-24-earn-play-points-free.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
@@ -201,7 +201,7 @@
       "クエスト",
       "連携"
     ],
-    "description": "Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合を解説します。",
+    "description": "Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合、PC版を含む購入・獲得条件を解説します。",
     "file": "../articles/2025-12-25-play-games.html",
     "thumbnail": "../articles/ogp/play-games.png",
     "modified": "2026-07-31"
@@ -217,7 +217,7 @@
       "有料アプリ",
       "買い切り"
     ],
-    "description": "電子書籍、有料アプリ、ゲーム本体などの買い切り購入でPlay Pointsが貯まる条件を、購入アカウント、Google Play経由、対象国・商品から解説します。",
+    "description": "Google Play Pointsが電子書籍、有料アプリ、ゲーム本体などの買い切り購入で貯まる条件を解説。購入前のPlay Points参加、Google Play経由、対象国・アカウント、端末とポイント履歴の確認方法を整理します。",
     "file": "../articles/2025-12-25-movies-books.html",
     "thumbnail": "../articles/ogp/movies-books.png",
     "modified": "2026-07-31"
@@ -329,7 +329,7 @@
       "Google One",
       "アプリ内定期購入"
     ],
-    "description": "Google Oneやアプリ内定期購入でPlay Pointsが貯まる条件を解説。Google Play経由の請求、初回ボーナス、更新時の付与、外部決済との違いを整理します。",
+    "description": "Google Oneやアプリ・ゲーム内の定期購入でGoogle Play Pointsが貯まる条件を解説。AndroidからのGoogle One契約、Google Play経由の請求、初回ボーナス、更新時の付与、外部決済との違いを整理します。",
     "file": "../articles/2025-12-25-subscription.html",
     "thumbnail": "../articles/ogp/subscription.png",
     "modified": "2026-07-31"
@@ -345,7 +345,7 @@
       "スーパーウィークリーリワード",
       "Play Pass"
     ],
-    "description": "通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、更新日、受け取り方を解説します。",
+    "description": "Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、表示されない時の確認順を解説します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
     "modified": "2026-07-31"
