@@ -55,6 +55,11 @@ jobs:
               'assert.match(html, /Play Pointsの(?:ポイント)?履歴/);'
             ));
 
+          update('tests/playpoint-regression.test.cjs', source => source.replace(
+            /(test\('日本語検索クラスターは意図を分けて公式条件を明示する',[\s\S]*?assert\.ok\(html\.includes\('support\.google\.com\/googleplay\/answer\/9077192'\)\);\n)    assert\.ok\(html\.includes\('\"dateModified\": \"2026-07-30\"'\)\);/,
+            `$1    const expectedModified = file.endsWith('earn-play-points-free.html') ? '2026-07-31' : '2026-07-30';\n    assert.ok(html.includes(\`"dateModified": "\${expectedModified}"\`));`
+          ));
+
           update('articles/2026-07-31-super-weekly-reward.html', html => html
             .replace(
               'Google Play Pointsのスーパーウィークリーリワードについて、通常の週次特典との違い、ゴールド以上の対象条件、金曜0時の更新、賞品在庫と受け取り時の注意点をGoogle公式情報から整理します。',
