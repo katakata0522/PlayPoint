@@ -65,9 +65,11 @@ jobs:
             const articles = JSON.parse(source);
             const quest = articles.find(article => article.id === 'google-play-quests');
             const free = articles.find(article => article.id === 'earn-play-points-free');
-            if (!quest || !free) throw new Error('required article entries were not found');
+            const playGames = articles.find(article => article.id === 'play-games');
+            if (!quest || !free || !playGames) throw new Error('required article entries were not found');
             quest.description = 'Google Playのクエストについて、表示場所、対象者ごとに異なる達成条件、購入として数えられる取引、Play Gamesログインやパーソナライズ設定、返金時の扱いをGoogle公式情報から解説します。';
             free.description = 'Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパーウィークリーリワード、クエスト、アプリ体験オファー、Play Pass特典と危険な情報の見分け方を解説します。';
+            playGames.description = 'Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合、PC版を含む購入・獲得条件を解説します。';
             return `${JSON.stringify(articles, null, 2)}\n`;
           });
           NODE
