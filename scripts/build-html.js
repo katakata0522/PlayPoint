@@ -2,6 +2,10 @@
 
 const path = require('path');
 const { applyEditorialStructure } = require('./article-editorial-structure.cjs');
+const {
+  syncPublicAssetVersions,
+  syncDynamicArticleStylesheetVersion
+} = require('./article-asset-versioning.cjs');
 const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { createLocales } = require('./locale-config.cjs');
@@ -24,11 +28,13 @@ console.log(`[build-html] synchronized editorial structure: ${editorialArticleCo
 
 writeLocalizedPages(rootDir, indexHtml, locales);
 
+syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
 writeIntlSeoPages(rootDir, assetVersions, todayStr);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
+syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir, todayStr);
 

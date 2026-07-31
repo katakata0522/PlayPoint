@@ -5,8 +5,9 @@ const { generatedFiles } = require('../../scripts/build-targets.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 const modifiedDate = indexHtml.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
-const assetVersion = indexHtml.match(/style\.css\?v=([a-zA-Z0-9_-]+)a/)?.[1];
+const assetVersion = serviceWorker.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
 
 if (!modifiedDate || !assetVersion) {
   console.error('Could not extract committed modified date or asset version from index.html.');

@@ -1,0 +1,53 @@
+name: Low-end Android performance
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 毎週月曜 05:30 JST
+    - cron: '30 20 * * 0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: low-end-android-performance
+  cancel-in-progress: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Audit calculator with low-end Android settings
+        run: >-
+          npx --yes lighthouse@13.3.0 https://playpoint-sim.com/
+          --only-categories=performance
+          --form-factor=mobile
+          --throttling.cpuSlowdownMultiplier=6
+          --output=json
+          --output-path=home-performance.json
+          --chrome-flags="--headless --no-sandbox --disable-gpu"
+          --quiet
+
+      - name: Audit representative article
+        run: >-
+          npx --yes lighthouse@13.3.0
+          https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html
+          --only-categories=performance
+          --form-factor=mobile
+          --throttling.cpuSlowdownMultiplier=6
+          --output=json
+          --output-path=article-performance.json
+          --chrome-flags="--headless --no-sandbox --disable-gpu"
+          --quiet
+
+      - name: Enforce mobile performance budget
+        run: >-
+          node .github/scripts/mobile-performance-budget.cjs
+          home-performance.json
+          article-performance.json

@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const EDITORIAL_MARKER_PATTERN = /\n?\s*<!-- editorial-summary:start -->[\s\S]*?<!-- editorial-summary:end -->\n?/;
+const EDITORIAL_MODIFIED_DATE = '2026-07-30';
 
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
@@ -203,7 +204,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       );
     }
 
-    html = updateDateMetadata(html, modifiedDate)
+    html = updateDateMetadata(html, EDITORIAL_MODIFIED_DATE)
       .replace(/\r\n/g, '\n')
       .replace(/[ \t]+$/gm, '');
     fs.writeFileSync(absolutePath, html, 'utf8');
@@ -214,7 +215,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
   const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
   const targetFiles = new Set(Object.keys(EDITORIAL_TARGETS).map(file => `../${file}`));
   for (const article of articles) {
-    if (targetFiles.has(article.file)) article.modified = modifiedDate;
+    if (targetFiles.has(article.file)) article.modified = EDITORIAL_MODIFIED_DATE;
   }
   fs.writeFileSync(articlesPath, `${JSON.stringify(articles, null, 2)}\n`, 'utf8');
 
@@ -223,6 +224,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
 
 module.exports = {
   EDITORIAL_TARGETS,
+  EDITORIAL_MODIFIED_DATE,
   applyEditorialStructure,
   escapeHtml,
   renderAnswer,

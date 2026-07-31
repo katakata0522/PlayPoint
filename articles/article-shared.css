@@ -116,7 +116,7 @@ body[data-blog-theme="dark"] .main-card {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 3rem;
+    margin: 3rem 2rem 1rem;
     padding-top: 2rem;
     border-top: 1px solid #e5e7eb;
 }
@@ -178,6 +178,35 @@ body[data-blog-theme="dark"] .main-card {
     border-radius: 12px;
     background: #f8fafc;
     color: #334155;
+}
+
+.author-box--outer {
+    margin: 0 2rem 2rem;
+}
+
+.article-note-spacing {
+    margin-top: 1rem;
+}
+
+.article-note-spacing--compact {
+    margin-top: 0.8rem;
+}
+
+.article-ad-slot {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.article-centered-note {
+    margin: 1rem 0;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .author-box-label {
@@ -408,6 +437,28 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
     .article-nav-link {
         transition: none;
+    }
+}
+
+/*
+ * 長い記事の画面外セクションだけ描画を遅延する。
+ * 即答欄、目次、計算機導線は初期描画に残し、印刷時は必ず全内容を描画する。
+ */
+@supports (content-visibility: auto) {
+    .content > .section:nth-of-type(n + 3),
+    .content > .related-links-section,
+    .content > .recommended-section {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 480px;
+    }
+}
+
+@media print {
+    .content > .section,
+    .content > .related-links-section,
+    .content > .recommended-section {
+        content-visibility: visible;
+        contain-intrinsic-size: none;
     }
 }
 

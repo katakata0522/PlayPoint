@@ -2286,10 +2286,10 @@ ${jsonLd(faqSchema)}
         <p>${escapeHtml(labels.authorBody)}</p>
     </aside>
 
-    <nav id="article-nav" class="article-nav" style="margin: 0 2rem;"></nav>
+    <nav id="article-nav" class="article-nav"></nav>
     <footer class="article-footer">
         <p><a href="/${localeKey}/articles/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
-        <p class="small" style="margin-top: 1rem;">${escapeHtml(labels.footerNote)}</p>
+        <p class="small article-note-spacing">${escapeHtml(labels.footerNote)}</p>
     </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>

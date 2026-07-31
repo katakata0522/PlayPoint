@@ -1818,7 +1818,8 @@ test('公開されている全記事HTMLが必要なSEOタグと共通AdSense読
 });
 
 test('ブログと記事の変更アセットはバージョン付きURLで配信する', () => {
-  const componentsVersion = '20260621a';
+  const { createFileRevision } = require(path.join(root, 'scripts', 'asset-sync.cjs'));
+  const componentsVersion = createFileRevision(root, 'blog/components.js');
   const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
   const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
   const articleFiles = fs.readdirSync(path.join(root, 'articles'))

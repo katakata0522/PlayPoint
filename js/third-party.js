@@ -79,7 +79,7 @@
                     prefix = src.substring(0, idx);
                 }
             }
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=20260727a`)
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=55813d3bcb`)
                 .then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;

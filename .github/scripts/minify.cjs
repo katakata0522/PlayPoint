@@ -23,10 +23,19 @@ function minifyJS(content) {
 
 const cssTargets = [
   'style.css',
-  'articles/article-common.css',
+  'articles/article-gift-card.css',
+  'articles/article-legacy.css',
+  'articles/article-modern.css',
   'articles/article-shared.css',
   'articles/source-notice.css',
-  'blog/style.css'
+  'blog/style.css',
+  'en/articles/intl-article.css',
+  ...fs.existsSync(path.join(root, 'articles', 'styles'))
+    ? fs.readdirSync(path.join(root, 'articles', 'styles'))
+      .filter(file => file.endsWith('.css'))
+      .sort()
+      .map(file => path.join('articles', 'styles', file))
+    : []
 ];
 
 const jsTargets = [
@@ -52,6 +61,16 @@ function resolveTargets(targets) {
 }
 
 function main() {
+  const {
+    collectAssetVersions,
+    syncRootServiceWorker,
+    syncThirdPartyConsentVersion
+  } = require('../../scripts/asset-sync.cjs');
+  const {
+    syncDynamicArticleStylesheetVersion,
+    syncPublicAssetVersions
+  } = require('../../scripts/article-asset-versioning.cjs');
+
   for (const file of resolveTargets(cssTargets)) {
     if (fs.existsSync(file)) {
       const raw = fs.readFileSync(file, 'utf8');
@@ -69,6 +88,18 @@ function main() {
       console.log(`Minified JS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
     }
   }
+
+  syncDynamicArticleStylesheetVersion(root);
+  const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  let versions = collectAssetVersions(root, indexHtml);
+  syncThirdPartyConsentVersion(root, versions.consentVersion);
+  versions = collectAssetVersions(root, indexHtml);
+
+  const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+  const assetVersion = serviceWorker.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
+  if (!assetVersion) throw new Error('Service Workerのビルド識別子を取得できません。');
+  syncRootServiceWorker(root, assetVersion, versions);
+  syncPublicAssetVersions(root);
 }
 
 if (require.main === module) {

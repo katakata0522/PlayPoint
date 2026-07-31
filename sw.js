@@ -1,10 +1,10 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260730_2327-2929b562';
+const CACHE_NAME = 'playpoint-calc-v20260731_0938-3b125e63';
 const ASSETS = [
   './',
-  './style.css?v=20260730_2327a',
+  './style.css?v=9167e69cdb',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -25,15 +25,15 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main.js?v=20260730_2327a',
-  './js/intent-tracking.js?v=20260730_2327a',
-  './js/consent.js?v=20260727a',
-  './js/third-party.js?v=20260730_2327a',
-  './blog/style.css?v=20260707_1600a',
-  './blog/components.js?v=20260621a',
-  './blog/script.js?v=20260628_1053a',
-  './blog/article.js?v=20260724_1005a',
-  './articles/article-shared.css?v=20260707_1401a',
+  './js/main.js?v=2b4bede099',
+  './js/intent-tracking.js?v=5cdd51c178',
+  './js/consent.js?v=55813d3bcb',
+  './js/third-party.js?v=14419fdfd9',
+  './blog/style.css?v=73cb119703',
+  './blog/components.js?v=784e955c93',
+  './blog/script.js?v=2ef88e99ae',
+  './blog/article.js?v=2cac3022ad',
+  './articles/article-shared.css?v=309339d951',
   './en/',
   './ko/',
   './tw/',

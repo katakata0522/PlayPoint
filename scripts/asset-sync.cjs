@@ -48,31 +48,33 @@ function createAppModuleRevision(rootDir, files = APP_MODULE_FILES) {
   return crypto.createHash('sha256').update(fingerprint).digest('hex').slice(0, 8);
 }
 
+function createFileRevision(rootDir, relativePath) {
+  const content = readTextIfExists(path.join(rootDir, relativePath)).replace(/\r\n/g, '\n');
+  return content
+    ? crypto.createHash('sha256').update(content).digest('hex').slice(0, 10)
+    : '';
+}
+
 function extractVersion(content, pattern) {
   const match = content.match(pattern);
   return match ? match[1] : '';
 }
 
 function collectAssetVersions(rootDir, indexHtml) {
-  const cssVersion = extractVersion(indexHtml, /style\.css\?v=([a-zA-Z0-9_-]+)/);
+  const cssVersion = createFileRevision(rootDir, 'style.css');
 
-  const swContent = readTextIfExists(path.join(rootDir, 'sw.js'));
-  const swConsentVersion = extractVersion(swContent, /\.\/js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
-  const indexConsentVersion = extractVersion(indexHtml, /js\/consent\.js\?v=([a-zA-Z0-9_-]+)/);
-  const consentVersion = swConsentVersion || indexConsentVersion;
+  const consentVersion = createFileRevision(rootDir, 'js/consent.js');
 
-  const mainVersion = extractVersion(indexHtml, /js\/main\.js\?v=([a-zA-Z0-9_-]+)/);
-  const thirdPartyVersion = extractVersion(indexHtml, /js\/third-party\.js\?v=([a-zA-Z0-9_-]+)/);
-  const intentTrackingVersion = thirdPartyVersion || mainVersion || cssVersion;
+  const mainVersion = createFileRevision(rootDir, 'js/main.js');
+  const thirdPartyVersion = createFileRevision(rootDir, 'js/third-party.js');
+  const intentTrackingVersion = createFileRevision(rootDir, 'js/intent-tracking.js');
 
-  const blogHtml = readTextIfExists(path.join(rootDir, 'blog/index.html'));
-  const blogCssVersion = extractVersion(blogHtml, /style\.css\?v=([a-zA-Z0-9_-]+)/);
-  const blogScriptVersion = extractVersion(blogHtml, /script\.js\?v=([a-zA-Z0-9_-]+)/);
-  const blogComponentsVersion = extractVersion(blogHtml, /components\.js\?v=([a-zA-Z0-9_-]+)/);
+  const blogCssVersion = createFileRevision(rootDir, 'blog/style.css');
+  const blogScriptVersion = createFileRevision(rootDir, 'blog/script.js');
+  const blogComponentsVersion = createFileRevision(rootDir, 'blog/components.js');
 
-  const articleHtml = readTextIfExists(path.join(rootDir, 'articles/2026-06-20-discount-gift-cards.html'));
-  const articleSharedCssVersion = extractVersion(articleHtml, /article-shared\.css\?v=([a-zA-Z0-9_-]+)/);
-  const articleScriptVersion = extractVersion(articleHtml, /article\.js\?v=([a-zA-Z0-9_-]+)/);
+  const articleSharedCssVersion = createFileRevision(rootDir, 'articles/article-shared.css');
+  const articleScriptVersion = createFileRevision(rootDir, 'blog/article.js');
 
   return {
     articleScriptVersion,
@@ -134,6 +136,7 @@ function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
 module.exports = {
   ROOT_SERVICE_WORKER_ASSETS,
   createAppModuleRevision,
+  createFileRevision,
   createRootServiceWorkerCacheRevision,
   collectAssetVersions,
   extractVersion,
