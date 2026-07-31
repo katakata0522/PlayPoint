@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260731_0938a">
+    <link rel="modulepreload" href="../js/main.js?v=20260731_1010a">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/diary.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=9167e69cdb">
+    <link rel="stylesheet" href="../style.css?v=0ab69a3fd9">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -141,7 +141,7 @@
             <button data-region="TW">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 국가별 안내</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ 국가별 안내</a>
             <a href="../latest/" data-lang-key="linkLatest">🆕 최신 정보</a>
             <a href="./articles/" data-lang-key="linkArticles">📝 가이드</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
@@ -217,12 +217,6 @@
         </div>
     </div>
 
-    <!-- 金曜日リマインダーバー。初期表示後の出現でフォームを押し下げないよう通常計算の後に置く -->
-    <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">주간 리워드를 받은 뒤 일기에 기록해 두세요.</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="닫기" data-lang-aria="closeAria">×</button>
-    </div>
-
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">역산 모드</h2>
@@ -266,9 +260,6 @@
     </div>
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
-        <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>일반 주간 리워드는 실버 이상 등급이 대상입니다.</strong> Play 국가/지역의 금요일에 갱신됩니다. 대상 계정이라면 수령 결과를 일지에 기록할 수 있습니다.</span>
-        </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="이전 연도" data-lang-aria="prevYearAria">&lt;</button>
             <h2 id="currentYear" data-lang-key="currentYearLabel">현재 연도</h2>
@@ -393,7 +384,7 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=2b4bede099"></script>
+<script type="module" src="../js/main.js?v=c36897d2fb"></script>
 <script src="../js/third-party.js?v=14419fdfd9" defer></script>
 
 </body>

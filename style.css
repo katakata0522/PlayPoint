@@ -1,21 +1,21 @@
 :root {
   --bg-color: #eef;
-  --text-color: #333;
-  --link-color: #555;
-  --link-hover-color: #007bff;
+  --text-color: #1f2937;
+  --link-color: #374151;
+  --link-hover-color: #005fcc;
   --alert-link-color: #b4232c;
   --section-bg-color: #fff;
   --section-shadow: 0 3px 12px rgba(0,0,0,0.08);
   --input-bg-color: #fafafa;
-  --input-border-color: #ccc;
-  --input-focus-border-color: #007bff;
+  --input-border-color: #9ca3af;
+  --input-focus-border-color: #005fcc;
   --button-bg-color: #1f7a35;
   --button-hover-bg-color: #17652b;
   --button-text-color: #fff;
-  --button-disabled-bg-color: #aaa;
+  --button-disabled-bg-color: #6b7280;
   --result-bg-color: #f8f9fa;
   --result-border-color: #28a745;
-  --tab-inactive-bg-color: #6c757d;
+  --tab-inactive-bg-color: #4b5563;
   --warning-bg-color: #f8d7da;
   --warning-border-color: #f5c6cb;
   --warning-text-color: #9f1d28;
@@ -781,7 +781,7 @@ button:active {
   font-size: 0.76em;
   font-weight: 400;
 }
-.rate-info { font-size: 0.8em; color: #666; }
+.rate-info { font-size: 0.8em; color: var(--link-color); }
 .error-text { color: #dc3545; }
 
 .tab-switch {
@@ -895,7 +895,7 @@ button:active {
 
 
 #copyButton {
-  background: #007bff;
+  background: var(--link-hover-color);
   font-size: 0.9em;
   margin-left: 0;
   box-shadow: none;
@@ -1595,64 +1595,8 @@ button:active {
   background-color: #c82333;
 }
 
-/* 金曜日リマインダーバーのスタイル */
-.friday-reminder {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-  border: 1px solid #ffeeba;
-  border-radius: 8px;
-  padding: 0.8em 1.2em;
-  margin: 0.6em auto 1.2em auto;
-  max-width: 480px;
-  box-shadow: 0 4px 12px rgba(222, 170, 12, 0.1);
-  animation: slideDown 0.4s ease-out;
-  text-align: left;
-}
-.reminder-text {
-  font-size: 0.9em;
-  color: #856404;
-  font-weight: bold;
-  line-height: 1.4;
-  flex: 1;
-  cursor: pointer;
-}
-.reminder-text:hover {
-  text-decoration: underline;
-}
-.close-reminder-btn {
-  background: none !important;
-  border: none !important;
-  color: #856404 !important;
-  font-size: 1.4em !important;
-  line-height: 1 !important;
-  padding: 0 0 0 0.5em !important;
-  margin: 0 !important;
-  cursor: pointer;
-  opacity: 0.6;
-  transition: opacity 0.2s;
-  box-shadow: none !important;
-}
-.close-reminder-btn:hover {
-  opacity: 1;
-}
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @media(min-width:1024px){
   .calculator-wrapper {
-    max-width: 660px;
-  }
-  .friday-reminder {
     max-width: 660px;
   }
 }
@@ -1829,68 +1773,6 @@ button:active {
 .btn-back-home:active {
   transform: translateY(1px);
   box-shadow: 0 2px 6px rgba(11, 87, 208, 0.2);
-}
-
-/* ▼▼▼ 金曜日リマインダー＆日記ヒント用スタイル ▼▼▼ */
-@keyframes wiggle {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-8deg); }
-  75% { transform: rotate(8deg); }
-}
-.friday-reminder {
-  position: relative;
-}
-.friday-reminder .reminder-text {
-  display: flex;
-  align-items: center;
-}
-.friday-reminder .reminder-text::before {
-  content: "🎰";
-  display: inline-block;
-  margin-right: 0.6em;
-  font-size: 1.3em;
-  animation: wiggle 1.2s infinite ease-in-out;
-  flex-shrink: 0;
-}
-
-.diary-hint-card {
-  background: #f4f8ff;
-  border: 1px solid rgba(11, 87, 208, 0.15);
-  border-radius: 8px;
-  padding: 0.9em 1.1em;
-  margin: 0.5em auto 1.5em auto;
-  text-align: left;
-  font-size: 0.88em;
-  line-height: 1.5;
-  color: var(--text-color);
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6em;
-  max-width: 480px;
-  box-sizing: border-box;
-}
-@media(min-width:1024px){
-  .diary-hint-card {
-    max-width: 660px;
-  }
-}
-.diary-hint-card::before {
-  content: "💡";
-  font-size: 1.15em;
-  flex-shrink: 0;
-}
-.diary-hint-card strong {
-  font-weight: bold;
-  color: #0b57d0;
-}
-/* 金曜日の時だけヒントカードを強調するクラス */
-.diary-hint-card.is-friday {
-  background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
-  border-color: #ffeeba;
-  color: #856404;
-}
-.diary-hint-card.is-friday strong {
-  color: #856404;
 }
 
 /* ▼▼▼ attention.html 用追加ナビゲーションスタイル ▼▼▼ */

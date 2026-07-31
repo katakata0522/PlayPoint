@@ -439,8 +439,8 @@ test('英語トップの日記エリアはJS実行前でも英語で読める', 
     assert.ok(!diary.includes(phrase), `en/index.html の日記エリアに日本語が残っています: ${phrase}`);
   }
 
-  assert.ok(diary.includes('Regular weekly prizes are for Silver level and above'));
-  assert.ok(diary.includes('Friday in your Play country'));
+  assert.ok(!diary.includes('Regular weekly prizes are for Silver level and above'));
+  assert.ok(!diary.includes('Friday in your Play country'));
   assert.ok(diary.includes('Monthly Summary'));
   assert.ok(diary.includes('Backup & Restore Data'));
 });

@@ -69,7 +69,7 @@ export const UI = {
                 return;
             }
 
-            const allowHtmlKeys = ['siteDescription', 'warningRate', 'guestNotice', 'diaryHintCard'];
+            const allowHtmlKeys = ['siteDescription', 'warningRate', 'guestNotice'];
             if (allowHtmlKeys.includes(key)) {
                 el.innerHTML = texts[key];
             } else {

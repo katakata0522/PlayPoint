@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260731_0938a">
+    <link rel="modulepreload" href="../js/main.js?v=20260731_1010a">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/diary.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=9167e69cdb">
+    <link rel="stylesheet" href="../style.css?v=0ab69a3fd9">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -141,7 +141,7 @@
             <button data-region="TW" class="active">繁體中文</button>
         </div>
         <div class="header-links">
-            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-lang-key="linkAttention">⚠️ 地區注意事項</a>
+            <a href="../attention.html" target="_blank" rel="noopener noreferrer" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ 地區注意事項</a>
             <a href="../latest/" data-lang-key="linkLatest">🆕 最新資訊</a>
             <a href="./articles/" data-lang-key="linkArticles">📝 指南</a>
             <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
@@ -217,12 +217,6 @@
         </div>
     </div>
 
-    <!-- 金曜日リマインダーバー。初期表示後の出現でフォームを押し下げないよう通常計算の後に置く -->
-    <div id="friday-reminder" class="friday-reminder hidden">
-        <span class="reminder-text" data-lang-key="fridayReminderText">領取每週獎勵後，請記錄到日記中。</span>
-        <button id="close-reminder-btn" class="close-reminder-btn" aria-label="關閉" data-lang-aria="closeAria">×</button>
-    </div>
-
     <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">逆算模式</h2>
@@ -266,9 +260,6 @@
     </div>
 
     <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
-        <div class="diary-hint-card" id="diary-hint-card">
-            <span data-lang-key="diaryHintCard"><strong>一般每週獎勵適用於銀級以上。</strong> 獎勵會在你的 Play 國家/地區於週五更新。若帳號符合資格，可將領取結果記錄在日記中。</span>
-        </div>
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="上一年" data-lang-aria="prevYearAria">&lt;</button>
             <h2 id="currentYear" data-lang-key="currentYearLabel">目前年份</h2>
@@ -393,7 +384,7 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=2b4bede099"></script>
+<script type="module" src="../js/main.js?v=c36897d2fb"></script>
 <script src="../js/third-party.js?v=14419fdfd9" defer></script>
 
 </body>

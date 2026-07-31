@@ -95,7 +95,6 @@ export function init() {
         'monthSelector', 'selectedMonth', 'weekInputs', 'monthlyTotal', 'monthlyAverage',
         'yearlyTotal', 'yearlyAverage', 'diary-year-chart', 'diary-guest-notice',
         'exportDiaryBtn', 'importDiaryBtn', 'backup-input-wrapper', 'diaryBackupData', 'confirmImportBtn',
-        'friday-reminder', 'close-reminder-btn',
         'language-suggestion-banner', 'switch-to-en-btn', 'close-lang-banner-btn',
         'register-google-cal-btn', 'download-ical-btn'
     ];
@@ -233,7 +232,6 @@ export function init() {
     updateUIForRegion();
     updateArticleCount();
     SHARE.applyFromUrl();
-    checkFridayReminder();
     checkLanguageSuggestion();
     trackWidgetReferral();
 
@@ -439,52 +437,6 @@ export function downloadICS() {
     });
 }
 
-// 金曜日リマインダーバーの表示ロジック
-export function checkFridayReminder() {
-    const isFriday = new Date().getDay() === 5;
-    
-    // 日記タブ最上部のヒントカードを金曜日のときだけ強調
-    const hintCard = document.getElementById('diary-hint-card');
-    if (hintCard) {
-        hintCard.classList.toggle('is-friday', isFriday);
-    }
-
-    if (!STATE.dom.fridayReminder) return;
-    const isClosed = sessionStorage.getItem('playpointFridayReminderClosed') === 'true';
-    
-    if (isFriday && !isClosed) {
-        STATE.dom.fridayReminder.classList.remove(CONSTANTS.CLASS_HIDDEN);
-        if (STATE.dom.closeReminderBtn) {
-            STATE.dom.closeReminderBtn.addEventListener('click', (e) => closeFridayReminder(e));
-        }
-        const textEl = STATE.dom.fridayReminder.querySelector('.reminder-text');
-        if (textEl) {
-            textEl.addEventListener('click', () => {
-                UI.switchMode(CONSTANTS.MODE_DIARY);
-                if (STATE.dom.diaryMode) {
-                    STATE.dom.diaryMode.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        }
-    }
-}
-
-// リマインダーを閉じる処理
-export function closeFridayReminder(e) {
-    if (e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    if (STATE.dom.fridayReminder) {
-        STATE.dom.fridayReminder.classList.add(CONSTANTS.CLASS_HIDDEN);
-    }
-    try {
-        sessionStorage.setItem('playpointFridayReminderClosed', 'true');
-    } catch (err) {
-        console.error("セッションストレージの書き込みに失敗しました:", err);
-    }
-}
-
 // 初期ロード完了時の発火
 document.addEventListener('DOMContentLoaded', () => {
     init();
@@ -496,8 +448,6 @@ if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP.updateUIForRegion = updateUIForRegion;
     window.PP_APP.switchRegion = switchRegion;
     window.PP_APP.init = init;
-    window.PP_APP.checkFridayReminder = checkFridayReminder;
-    window.PP_APP.closeFridayReminder = closeFridayReminder;
     window.PP_APP.checkLanguageSuggestion = checkLanguageSuggestion;
     window.PP_APP.downloadICS = downloadICS;
 }

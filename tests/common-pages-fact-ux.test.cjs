@@ -65,14 +65,16 @@ test('トップは倍率と直接レートを代替入力として説明し、�
 
 test('4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する', () => {
   const pages = {
-    'index.html': ['通常のウィークリーリワードはシルバー以上', 'Playの国・地域の金曜日', 'このブラウザのローカルストレージ', 'aria-label="前の年へ"'],
-    'en/index.html': ['Regular weekly prizes are for Silver level and above', 'Friday in your Play country', "this browser's local storage", 'aria-label="Previous year"'],
-    'ko/index.html': ['일반 주간 리워드는 실버 이상 등급', 'Play 국가/지역의 금요일', '이 브라우저의 로컬 저장소', 'aria-label="이전 연도"'],
-    'tw/index.html': ['一般每週獎勵適用於銀級以上', 'Play 國家/地區於週五', '此瀏覽器的本機儲存空間', 'aria-label="上一年"']
+    'index.html': ['このブラウザのローカルストレージ', 'aria-label="前の年へ"'],
+    'en/index.html': ["this browser's local storage", 'aria-label="Previous year"'],
+    'ko/index.html': ['이 브라우저의 로컬 저장소', 'aria-label="이전 연도"'],
+    'tw/index.html': ['此瀏覽器的本機儲存空間', 'aria-label="上一年"']
   };
   for (const [relativePath, required] of Object.entries(pages)) {
     const html = read(relativePath);
     for (const phrase of required) assert.ok(html.includes(phrase), relativePath + ': ' + phrase);
+    assert.ok(!html.includes('diary-hint-card'), relativePath + ': 重複した日記ヒントが残っています');
+    assert.ok(!html.includes('friday-reminder'), relativePath + ': 重複した金曜日通知が残っています');
     assert.match(html, /data-lang-aria="showHelpAria"/);
   }
   for (const relativePath of ['en/index.html', 'ko/index.html', 'tw/index.html']) {

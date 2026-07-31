@@ -104,14 +104,20 @@ test('初期操作に必要なアプリモジュールは依存解析前から�
   }
 });
 
-test('金曜日リマインダーはファーストビューを押し下げない位置に置く', () => {
+test('日記の重複通知を表示せず、カレンダー登録は残す', () => {
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
     const html = read(file);
-    const mainModeIndex = html.indexOf('id="mainMode"');
-    const reminderIndex = html.indexOf('id="friday-reminder"');
-    const reverseModeIndex = html.indexOf('id="reverseMode"');
-    assert.ok(mainModeIndex !== -1 && reminderIndex > mainModeIndex, `${file}: リマインダーが通常計算より上にあります`);
-    assert.ok(reverseModeIndex !== -1 && reminderIndex < reverseModeIndex, `${file}: リマインダーの配置が想定外です`);
+    assert.ok(!html.includes('id="friday-reminder"'), `${file}: 重複する金曜日通知が残っています`);
+    assert.ok(!html.includes('id="diary-hint-card"'), `${file}: 重複する日記ヒントが残っています`);
+    assert.ok(html.includes('id="diaryMode"'), `${file}: 日記本体が消えています`);
+    assert.ok(html.includes('id="register-google-cal-btn"'), `${file}: カレンダー登録が消えています`);
+  }
+});
+
+test('地域差案内は日本語トップでは隠し、海外版では表示する', () => {
+  assert.match(read('index.html'), /data-country-notes-link hidden/);
+  for (const file of ['en/index.html', 'ko/index.html', 'tw/index.html']) {
+    assert.match(read(file), /data-country-notes-link(?! hidden)/);
   }
 });
 
