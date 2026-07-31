@@ -64,8 +64,10 @@ jobs:
           update('blog/articles.json', source => {
             const articles = JSON.parse(source);
             const quest = articles.find(article => article.id === 'google-play-quests');
-            if (!quest) throw new Error('google-play-quests article entry was not found');
+            const free = articles.find(article => article.id === 'earn-play-points-free');
+            if (!quest || !free) throw new Error('required article entries were not found');
             quest.description = 'Google Playのクエストについて、表示場所、対象者ごとに異なる達成条件、購入として数えられる取引、Play Gamesログインやパーソナライズ設定、返金時の扱いをGoogle公式情報から解説します。';
+            free.description = 'Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパーウィークリーリワード、クエスト、アプリ体験オファー、Play Pass特典と危険な情報の見分け方を解説します。';
             return `${JSON.stringify(articles, null, 2)}\n`;
           });
           NODE
@@ -114,7 +116,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "fix: 残存不整合と生成物を完全同期"
+          git commit -m "fix: 記事台帳と生成物を完全同期"
 
       - name: Verify complete preflight
         run: node .github/scripts/preflight.cjs
