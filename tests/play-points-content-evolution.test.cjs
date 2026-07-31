@@ -31,7 +31,14 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
   assert.ok(html.includes('今週あなたに表示される賞品と残数は確認できません'));
   assert.ok(html.includes('play.google.com/store/apps/editorial'));
   assert.ok(html.includes('./2025-12-25-weekly-reward.html'));
-  assert.doesNotMatch(html, /必ず当たる|絶対に当たる/);
+
+  const misleadingGuarantees = html
+    .replace(/<[^>]*>/g, ' ')
+    .split(/[。！？\n]/)
+    .filter(sentence => /必ず当たる|絶対に当たる/.test(sentence))
+    .filter(sentence => !/ではなく|ではない|とは限ら|保証(?:され)?(?:ない|ません)/.test(sentence));
+
+  assert.deepEqual(misleadingGuarantees, []);
 });
 
 test('クエスト記事は対象・購入・ログイン・返金条件を案内する', () => {
