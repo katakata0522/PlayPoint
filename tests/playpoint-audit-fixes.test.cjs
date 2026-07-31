@@ -114,8 +114,8 @@ test('日記の重複通知を表示せず、カレンダー登録は残す', ()
   }
 });
 
-test('地域差案内は日本語トップでは隠し、海外版では表示する', () => {
-  assert.match(read('index.html'), /data-country-notes-link hidden/);
+test('地域差案内は日本語トップでも英語の注意導線として表示する', () => {
+  assert.match(read('index.html'), /data-country-notes-link[^>]*>⚠️ For users outside Japan<\/a>/);
   for (const file of ['en/index.html', 'ko/index.html', 'tw/index.html']) {
     assert.match(read(file), /data-country-notes-link(?! hidden)/);
   }

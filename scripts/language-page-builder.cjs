@@ -109,9 +109,6 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   const activeBtnReplacement = `<button data-region="${config.region}" class="active">`;
   output = output.replace(activeBtnTarget, activeBtnReplacement);
 
-  // 日本語トップでは地域差案内を主導線にせず、海外版だけ各言語の案内を表示する。
-  output = output.replace(' data-country-notes-link hidden', ' data-country-notes-link');
-
   // 8. FAQ の JSON-LD & HTML 置換
   output = output.replace(/<!-- FAQ_JSON_LD_START -->[\s\S]*?<!-- FAQ_JSON_LD_END -->/, config.faqJsonLd);
   output = output.replace(/<!-- FAQ_SECTION_START -->[\s\S]*?<!-- FAQ_SECTION_END -->/, config.faqSection);
