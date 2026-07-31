@@ -142,7 +142,7 @@ input, select, textarea {
 .top-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6em 1em;
+  gap: 0.6em 0;
   justify-content: space-between;
   align-items: center;
   margin: 0.95em auto 0.85em;

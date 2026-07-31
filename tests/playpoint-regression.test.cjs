@@ -277,6 +277,11 @@ test('モバイルのヘッダーリンクは内側余白を含めて画面幅�
   assert.match(css, /\.header-links\s*\{[^}]*padding:\s*0\s+10px;[^}]*width:\s*100%;[^}]*box-sizing:\s*border-box/s);
 });
 
+test('デスクトップのトップバーは言語切替と補助リンクを同じ段に収める', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  assert.match(css, /\.top-bar\s*\{[^}]*flex-wrap:\s*wrap;[^}]*gap:\s*0\.6em\s+0;/s);
+});
+
 test('通常計算の結果は週平均と1日あたりの目安も表示する', () => {
   class FakeDate extends Date {
     constructor(...args) {

@@ -1,10 +1,10 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260731_1059-5caa09c6';
+const CACHE_NAME = 'playpoint-calc-v20260731_1108-b6e3678f';
 const ASSETS = [
   './',
-  './style.css?v=0ab69a3fd9',
+  './style.css?v=08116211ba',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
