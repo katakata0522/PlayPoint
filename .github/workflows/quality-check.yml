@@ -76,6 +76,11 @@ jobs:
               '        <li><a href="https://support.google.com/googleplay/answer/16561562?hl=ja" target="_blank" rel="noopener noreferrer">Play Games リーグに参加する（Google公式）</a></li>\n        <li><a href="https://support.google.com/googleplay/answer/11534416?hl=ja" target="_blank" rel="noopener noreferrer">Google Play のクエスト（Google公式）</a></li>'
             ));
 
+          update('articles/2025-12-25-weekly-reward.html', html => html.replace(
+            '<p>日本では通常とスーパーは金曜日、Play Pass加入者向けのPlay Points特典は木曜日に更新されます。対象者と確認場所が異なるため、探している制度を先に分けると迷いにくくなります。</p>',
+            '<p>日本では、<strong>通常リワードは金曜日</strong>に更新され、スーパーウィークリーリワードも金曜日に新しい賞品へ切り替わります。<strong>Play Passのボーナス・ブースターは木曜日</strong>に更新されます。対象者と確認場所が異なるため、探している制度を先に分けると迷いにくくなります。</p>'
+          ));
+
           update('scripts/article-editorial-structure.cjs', source => source.replace(
             /\n  'articles\/2026-07-24-earn-play-points-free\.html': \{[\s\S]*?\n  \},\n  'articles\/2026-07-25-play-credit-not-working\.html': \{/,
             "\n  'articles/2026-07-25-play-credit-not-working.html': {"
