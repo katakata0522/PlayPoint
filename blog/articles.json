@@ -1,5 +1,37 @@
 [
   {
+    "id": "super-weekly-reward",
+    "title": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク・受け取り方",
+    "date": "2026-07-31",
+    "modified": "2026-07-31",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "スーパーウィークリーリワード",
+      "ゴールド",
+      "毎週"
+    ],
+    "description": "通常のウィークリーリワードとの違い、ゴールド以上の対象条件、金曜0時の更新、賞品在庫と受け取り時の注意点をGoogle公式情報から整理します。",
+    "file": "../articles/2026-07-31-super-weekly-reward.html",
+    "thumbnail": "../articles/ogp/weekly-reward.png"
+  },
+  {
+    "id": "google-play-quests",
+    "title": "Google Playのクエストとは？表示されない・達成されない時の確認方法",
+    "date": "2026-07-31",
+    "modified": "2026-07-31",
+    "category": "キャンペーン",
+    "tags": [
+      "Google Play",
+      "クエスト",
+      "Play Points",
+      "達成条件"
+    ],
+    "description": "Google Playのクエストについて、表示場所、個別の達成条件、購入扱い、Play Gamesログイン、返金時の扱いをGoogle公式情報から解説します。",
+    "file": "../articles/2026-07-31-google-play-quests.html",
+    "thumbnail": "../articles/ogp/campaign.png"
+  },
+  {
     "id": "play-points-coupon-not-applied",
     "title": "Google Play Pointsクーポンが自動適用されない原因",
     "date": "2026-07-25",
@@ -80,17 +112,17 @@
   },
   {
     "id": "earn-play-points-free",
-    "title": "Google Play Pointsを無料で貯める方法｜正規の特典と注意点",
+    "title": "Google Play Pointsを無料で貯める方法｜正規特典・クエスト・注意点",
     "date": "2026-07-24",
-    "modified": "2026-07-30",
+    "modified": "2026-07-31",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
       "無料",
       "ウィークリーリワード",
-      "キャンペーン"
+      "クエスト"
     ],
-    "description": "Google Play Pointsを無料または追加購入なしで貯める正規の方法を整理。ウィークリーリワード、対象アプリ特典、キャンペーンの確認手順と危険な情報の見分け方を解説します。",
+    "description": "Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパー週次特典、クエスト、Play Pass特典と危険な情報の見分け方を解説します。",
     "file": "../articles/2026-07-24-earn-play-points-free.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
@@ -160,35 +192,35 @@
   },
   {
     "id": "play-games",
-    "title": "Google Play GamesとPlay Pointsの違い｜連携・ポイント獲得条件",
+    "title": "Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件",
     "date": "2025-12-25",
     "category": "使い方",
     "tags": [
       "Play Points",
       "Play Games",
-      "違い",
-      "関係"
+      "クエスト",
+      "連携"
     ],
-    "description": "Google Play GamesとPlay Pointsの役割の違い、PC版を含む連携、遊ぶだけでポイントが貯まる例外条件をGoogle公式情報に沿って解説します。",
+    "description": "Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合を解説します。",
     "file": "../articles/2025-12-25-play-games.html",
     "thumbnail": "../articles/ogp/play-games.png",
-    "modified": "2026-07-25"
+    "modified": "2026-07-31"
   },
   {
     "id": "movies-books",
-    "title": "Google Play Pointsは本・アプリ・サブスクでも貯まる？対象条件",
+    "title": "Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件",
     "date": "2025-12-25",
     "category": "使い方",
     "tags": [
       "Play Points",
       "書籍",
-      "アプリ",
-      "定期購入"
+      "有料アプリ",
+      "買い切り"
     ],
-    "description": "書籍、有料アプリ、アプリ内定期購入、Androidから契約したGoogle OneでPlay Pointsが貯まる条件と購入前後の確認方法を解説します。",
+    "description": "電子書籍、有料アプリ、ゲーム本体などの買い切り購入でPlay Pointsが貯まる条件を、購入アカウント、Google Play経由、対象国・商品から解説します。",
     "file": "../articles/2025-12-25-movies-books.html",
     "thumbnail": "../articles/ogp/movies-books.png",
-    "modified": "2026-07-24"
+    "modified": "2026-07-31"
   },
   {
     "id": "expiration",
@@ -288,7 +320,7 @@
   },
   {
     "id": "subscription",
-    "title": "Google One・アプリ内サブスクでPlay Pointsは貯まる？対象条件",
+    "title": "Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法",
     "date": "2025-12-25",
     "category": "使い方",
     "tags": [
@@ -297,26 +329,26 @@
       "Google One",
       "アプリ内定期購入"
     ],
-    "description": "Google Oneやアプリ内定期購入でPlay Pointsが貯まる条件を解説。支払い方法ではなくGoogle Play経由の請求かを確認する手順を紹介します。",
+    "description": "Google Oneやアプリ内定期購入でPlay Pointsが貯まる条件を解説。Google Play経由の請求、初回ボーナス、更新時の付与、外部決済との違いを整理します。",
     "file": "../articles/2025-12-25-subscription.html",
     "thumbnail": "../articles/ogp/subscription.png",
-    "modified": "2026-07-24"
+    "modified": "2026-07-31"
   },
   {
     "id": "weekly-reward",
-    "title": "Google Play Pointsのウィークリーリワード｜受け取り方・更新日・対象ランク",
+    "title": "Google Play Pointsのウィークリーリワード｜3種類の違い・更新日・受け取り方",
     "date": "2025-12-25",
     "category": "ランク",
     "tags": [
       "Play Points",
       "ウィークリーリワード",
-      "無料",
-      "毎週"
+      "スーパーウィークリーリワード",
+      "Play Pass"
     ],
-    "description": "通常のPlay PointsウィークリーリワードとPlay Pass週次特典の違い、対象ランク、受け取り方、日本での金曜・木曜更新を解説します。",
+    "description": "通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、更新日、受け取り方を解説します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
-    "modified": "2026-07-25"
+    "modified": "2026-07-31"
   },
   {
     "id": "getting-started",
