@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -20,88 +20,12 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 7
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: agent/play-points-content-evolution
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Recover and apply verified repair script
-        run: |
-          node <<'EXTRACT'
-          'use strict';
-          const fs = require('node:fs');
-          const { execFileSync } = require('node:child_process');
-          const previous = execFileSync(
-            'git',
-            ['show', 'HEAD^:.github/workflows/quality-check.yml'],
-            { encoding: 'utf8' }
-          );
-          const startMarker = "          node <<'NODE'\n";
-          const endMarker = '\n          NODE\n';
-          const start = previous.indexOf(startMarker);
-          const end = previous.indexOf(endMarker, start + startMarker.length);
-          if (start < 0 || end < 0) {
-            throw new Error('Verified repair script could not be recovered from the parent commit.');
-          }
-          const script = previous
-            .slice(start + startMarker.length, end)
-            .replace(/^ {10}/gm, '');
-          fs.writeFileSync('/tmp/pr42-repair.cjs', `${script}\n`, 'utf8');
-          EXTRACT
-          node /tmp/pr42-repair.cjs
-
-      - name: Regenerate every committed build output
-        run: node scripts/build-html.js
-
-      - name: Commit synchronized content without workflow
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git reset .github/workflows/quality-check.yml
-          git commit -m "fix: 改稿記事と生成物を完全同期"
-
-      - name: Restore permanent workflow for verification
-        run: |
-          cat > .github/workflows/quality-check.yml <<'YAML'
-          name: Pull request quality check
-
-          on:
-            workflow_dispatch:
-            pull_request:
-              branches:
-                - main
-              paths-ignore:
-                - '**.md'
-                - '.gitignore'
-                - '.gitattributes'
-
-          permissions:
-            contents: read
-
-          concurrency:
-            group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-            cancel-in-progress: true
-
-          jobs:
-            quality:
-              runs-on: ubuntu-latest
-              timeout-minutes: 7
-              steps:
-                - name: Checkout code
-                  uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-                  with:
-                    persist-credentials: false
-
-                - name: Run complete preflight
-                  run: node .github/scripts/preflight.cjs
-          YAML
-
-      - name: Verify complete preflight
+      - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
-
-      - name: Push verified content commit
-        run: git push origin HEAD:agent/play-points-content-evolution
