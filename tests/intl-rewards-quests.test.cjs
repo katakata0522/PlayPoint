@@ -82,15 +82,17 @@ test('new international guides are substantial, sourced and usable instead of th
 test('Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes', () => {
   for (const file of Object.values(clusters.reward)) {
     const html = read(file);
+    const text = visibleText(html);
+    const headline = visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '');
     assert.match(html, /Super Ticket|슈퍼 티켓|超級票券/, `${file}: Super Ticket explanation missing`);
     assert.match(html, /previous reward|以前の特典|이전 리워드|原本的獎勵|先前獎勵/, `${file}: previous-reward trade-off missing`);
     assert.match(html, /limited|限り|한정|數量有限|庫存/, `${file}: limited stock explanation missing`);
-
-    const misleading = visibleText(html)
-      .split(/[.!?。！？]/)
-      .filter(sentence => /guaranteed premium|必ず.*高額|프리미엄.*보장|一定.*高價/.test(sentence))
-      .filter(sentence => !/not|ない|아니|不/.test(sentence));
-    assert.deepEqual(misleading, [], `${file}: premium prize is presented as guaranteed`);
+    assert.doesNotMatch(headline, /guaranteed|必ず|보장|一定/, `${file}: headline overpromises a premium prize`);
+    assert.match(
+      text,
+      /not a promise|not guaranteed|必ず当たる仕組みでは|보장하지|不保證|不代表/,
+      `${file}: explicit premium-prize uncertainty is missing`
+    );
   }
 });
 
