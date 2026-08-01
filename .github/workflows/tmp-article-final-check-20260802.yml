@@ -1,0 +1,52 @@
+name: Temporary article final check
+
+on:
+  push:
+    branches:
+      - content/global-quests-rewards-audit-20260801
+
+permissions:
+  contents: write
+
+jobs:
+  article-final-check:
+    runs-on: ubuntu-24.04
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout article branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: content/global-quests-rewards-audit-20260801
+          fetch-depth: 0
+
+      - name: Apply verified facts and final-check dates
+        run: node .github/scripts/tmp-article-finalize-20260802.cjs
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Render all changed articles at mobile and desktop widths
+        run: node .github/scripts/tmp-article-layout-check-20260802.cjs
+
+      - name: Upload rendered review evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: article-layout-review-20260802
+          path: .tmp-article-layout/
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Commit verified article changes and remove temporary tooling
+        run: |
+          rm -f .github/scripts/tmp-article-finalize-20260802.cjs
+          rm -f .github/scripts/tmp-article-layout-check-20260802.cjs
+          rm -f .github/workflows/tmp-article-final-check-20260802.yml
+          rm -rf .tmp-article-layout
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "記事の事実確認日と多言語表現を最終更新"
+          git push origin HEAD:content/global-quests-rewards-audit-20260801
