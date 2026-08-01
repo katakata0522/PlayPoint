@@ -55,7 +55,7 @@ test('the complete published article corpus keeps structural quality signals', (
     assert.ok(/rel="author"/.test(html), `${file}: visible author link is missing`);
     assert.doesNotMatch(html, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, `${file}: placeholder copy remains`);
 
-    const description = html.match(/<meta name="description" content="([^"]+)"/);
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
     assert.ok(description && visibleText(description[1]).length >= 35, `${file}: meta description is missing or too vague`);
 
     const body = articleBody(html, file);
