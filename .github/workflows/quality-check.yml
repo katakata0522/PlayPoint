@@ -72,5 +72,6 @@ jobs:
           path: |
             .tmp-article-layout/
             .tmp-final-files/
-          if-no-files-found: warn
+          include-hidden-files: true
+          if-no-files-found: error
           retention-days: 3
