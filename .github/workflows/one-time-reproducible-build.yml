@@ -1,0 +1,40 @@
+name: One-time reproducible build
+
+on:
+  push:
+    branches:
+      - content/global-quests-rewards-audit-20260801
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-time-reproducible-build
+  cancel-in-progress: true
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: content/global-quests-rewards-audit-20260801
+
+      - name: Rebuild with repository metadata
+        run: PLAYPOINT_MODIFIED_DATE=2026-07-31 PLAYPOINT_ASSET_VERSION=20260731_2149 node scripts/build-html.js
+
+      - name: Commit normalized output and remove this workflow
+        run: |
+          rm .github/workflows/one-time-reproducible-build.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No normalized changes were needed."
+            exit 0
+          fi
+          git commit -m "Normalize generated output to repository build metadata"
+          git push origin HEAD:content/global-quests-rewards-audit-20260801
