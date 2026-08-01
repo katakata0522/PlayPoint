@@ -31,7 +31,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply verified article facts and dates
-        run: node .github/scripts/tmp-article-finalize-20260802.cjs
+        run: |
+          node .github/scripts/tmp-article-finalize-20260802.cjs
+          node .github/scripts/tmp-super-weekly-table-layout-20260802.cjs
 
       - name: Synchronize generated output
         run: node scripts/build-html.js
@@ -60,6 +62,12 @@ jobs:
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
+
+      - name: Install CJK fonts for visual review
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-cache -f
 
       - name: Render all changed articles at mobile and desktop widths
         run: node .github/scripts/tmp-article-layout-check-20260802.cjs
