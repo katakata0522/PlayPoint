@@ -16,6 +16,14 @@ function escapeXml(value) {
     .replace(/'/g, '&apos;');
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 function toArticleUrl(file) {
   return `${SITE_ORIGIN}/${String(file || '').replace(/^\.\.\//, '')}`;
 }
@@ -36,6 +44,32 @@ function normalizeFeedArticles(articles) {
   return articles
     .filter(article => article && article.file && article.title && article.date)
     .sort((a, b) => String(getArticleUpdatedDate(b)).localeCompare(String(getArticleUpdatedDate(a))));
+}
+
+function syncBlogStaticArticleTitles(rootDir, articles) {
+  const blogIndexPath = path.join(rootDir, 'blog', 'index.html');
+  if (!fs.existsSync(blogIndexPath)) return 0;
+
+  const articleTitles = new Map(
+    articles
+      .filter(article => article && article.file && article.title)
+      .map(article => [String(article.file), String(article.title)])
+  );
+  let updatedCount = 0;
+  const html = fs.readFileSync(blogIndexPath, 'utf8');
+  const synchronized = html.replace(
+    /<a href="(\.\.\/articles\/[^"]+\.html)">[\s\S]*?<\/a>/g,
+    (match, href) => {
+      const title = articleTitles.get(href);
+      if (!title) return match;
+      const replacement = `<a href="${href}">${escapeHtml(title)}</a>`;
+      if (replacement !== match) updatedCount += 1;
+      return replacement;
+    }
+  );
+
+  if (synchronized !== html) fs.writeFileSync(blogIndexPath, synchronized, 'utf8');
+  return updatedCount;
 }
 
 function buildBlogFeeds(articles) {
@@ -106,20 +140,25 @@ function generateBlogFeeds(rootDir) {
   const articlesPath = path.join(rootDir, 'blog/articles.json');
   if (!fs.existsSync(articlesPath)) return;
 
-  const feeds = buildBlogFeeds(JSON.parse(fs.readFileSync(articlesPath, 'utf8')));
+  const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
+  const feeds = buildBlogFeeds(articles);
   if (!feeds) return;
 
   fs.writeFileSync(path.join(rootDir, 'feed.xml'), feeds.rss, 'utf8');
   fs.writeFileSync(path.join(rootDir, 'atom.xml'), feeds.atom, 'utf8');
+  const synchronizedTitles = syncBlogStaticArticleTitles(rootDir, articles);
   console.log(`Generated blog feeds (${feeds.articleCount} articles).`);
+  console.log(`[blog-index] synchronized static article titles: ${synchronizedTitles}`);
 }
 
 module.exports = {
   buildBlogFeeds,
+  escapeHtml,
   escapeXml,
   generateBlogFeeds,
   getArticleUpdatedDate,
   normalizeFeedArticles,
+  syncBlogStaticArticleTitles,
   toArticleUrl,
   toAtomDate,
   toRssDate
