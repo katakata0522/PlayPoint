@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -20,58 +20,12 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    timeout-minutes: 7
     steps:
-      - name: Checkout article branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: content/global-quests-rewards-audit-20260801
-          fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
-      - name: Apply verified article facts and dates
-        run: |
-          node .github/scripts/tmp-article-finalize-20260802.cjs
-          node .github/scripts/tmp-super-weekly-table-layout-20260802.cjs
-
-      - name: Synchronize generated output
-        run: node scripts/build-html.js
-
-      - name: Commit production output locally
-        shell: bash
-        run: |
-          printf '.tmp-article-layout/\n' >> .git/info/exclude
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          rm -f .git/index.lock
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No finalized article changes were produced." >&2
-            exit 1
-          fi
-          git commit -m "記事のファクトチェックと表示確認を最終反映"
-
-      - name: Install CJK fonts for visual review
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
-          fc-cache -f
-
-      - name: Render all changed articles at mobile and desktop widths
-        run: node .github/scripts/tmp-article-layout-check-20260802.cjs
-
-      - name: Upload article review evidence
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: article-final-review-20260802
-          path: .tmp-article-layout/
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 3
-
-      - name: Push finalized production output
-        if: success()
-        run: git push origin HEAD:content/global-quests-rewards-audit-20260801
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
