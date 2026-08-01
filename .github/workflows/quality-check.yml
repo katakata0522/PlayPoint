@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -24,11 +24,12 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: Checkout code
+      - name: Checkout article branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: content/global-quests-rewards-audit-20260801
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Apply verified article facts and dates
         run: |
@@ -38,27 +39,23 @@ jobs:
       - name: Synchronize generated output
         run: node scripts/build-html.js
 
-      - name: Collect finalized files
+      - name: Commit production output locally
         shell: bash
         run: |
-          printf '.tmp-final-files/\n.tmp-article-layout/\n' >> .git/info/exclude
-          mkdir -p .tmp-final-files
-          git diff --name-only -z | while IFS= read -r -d '' file; do
-            case "$file" in
-              .github/*|.tmp-article-layout/*|.tmp-final-files/*) continue ;;
-            esac
-            mkdir -p ".tmp-final-files/$(dirname "$file")"
-            cp "$file" ".tmp-final-files/$file"
-          done
-          git diff --name-only > .tmp-final-files/manifest.txt
-
-      - name: Create clean local verification commit
-        shell: bash
-        run: |
+          printf '.tmp-article-layout/\n' >> .git/info/exclude
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "temporary finalized article state for verification"
+          git diff --name-only -z | while IFS= read -r -d '' file; do
+            case "$file" in
+              .github/*|.tmp-article-layout/*) continue ;;
+            esac
+            git add -- "$file"
+          done
+          if git diff --cached --quiet; then
+            echo "No finalized article changes were produced." >&2
+            exit 1
+          fi
+          git commit -m "記事のファクトチェックと表示確認を最終反映"
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
@@ -77,9 +74,11 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: article-final-review-20260802
-          path: |
-            .tmp-article-layout/
-            .tmp-final-files/
+          path: .tmp-article-layout/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 3
+
+      - name: Push finalized production output
+        if: success()
+        run: git push origin HEAD:content/global-quests-rewards-audit-20260801
