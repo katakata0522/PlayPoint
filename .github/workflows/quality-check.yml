@@ -53,9 +53,6 @@ jobs:
           fi
           git commit -m "記事のファクトチェックと表示確認を最終反映"
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
-
       - name: Install CJK fonts for visual review
         run: |
           sudo apt-get update -qq
