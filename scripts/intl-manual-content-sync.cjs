@@ -5,10 +5,10 @@ const path = require('node:path');
 
 const HUB_CONTENT = {
   en: {
-    modifiedAt: '2026-08-01',
+    modifiedAt: '2026-08-02',
     description: 'Browse Google Play Points guides about levels, point timing, promotions, quests, weekly rewards, gift cards, and country-specific checks.',
     links: [
-      ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Reward eligibility, prize stock and Super Tickets'],
+      ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize eligibility, prize stock and Super Tickets'],
       ['/en/articles/google-play-quests.html', 'Google Play quests not appearing or completing']
     ]
   },

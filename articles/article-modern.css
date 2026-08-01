@@ -128,3 +128,71 @@
             .content { padding: 1.4rem; }
             .article-footer { padding: 1.4rem; }
         }
+
+
+/* Responsive weekly-benefit comparison. */
+.reward-comparison-mobile {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .reward-comparison {
+        overflow: visible;
+        margin: 1rem 0 1.25rem;
+        border: 0;
+        background: transparent;
+    }
+
+    .reward-comparison > table {
+        display: none;
+    }
+
+    .reward-comparison-mobile {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .reward-option {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+    }
+
+    .reward-option h3 {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        background: var(--brand-soft);
+        color: var(--brand-dark);
+        font-size: 1rem;
+        line-height: 1.55;
+    }
+
+    .reward-option dl {
+        margin: 0;
+    }
+
+    .reward-option dl > div {
+        display: grid;
+        grid-template-columns: minmax(6.8rem, 38%) minmax(0, 1fr);
+        gap: 0.75rem;
+        align-items: start;
+        padding: 0.75rem 0.9rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .reward-option dt {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 800;
+        line-height: 1.6;
+    }
+
+    .reward-option dd {
+        min-width: 0;
+        margin: 0;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+    }
+}
