@@ -1,5 +1,6 @@
 name: Temporary article final check
 
+# Triggered after the workflow was registered on the branch.
 on:
   push:
     branches:
