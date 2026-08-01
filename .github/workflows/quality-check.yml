@@ -45,12 +45,8 @@ jobs:
           printf '.tmp-article-layout/\n' >> .git/info/exclude
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git diff --name-only -z | while IFS= read -r -d '' file; do
-            case "$file" in
-              .github/*|.tmp-article-layout/*) continue ;;
-            esac
-            git add -- "$file"
-          done
+          rm -f .git/index.lock
+          git add -A
           if git diff --cached --quiet; then
             echo "No finalized article changes were produced." >&2
             exit 1
