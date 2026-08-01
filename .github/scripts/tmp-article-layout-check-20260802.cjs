@@ -135,6 +135,22 @@ frame.addEventListener('load', () => setTimeout(() => {
   fs.writeFileSync(path.join(outputDir, 'probe.html'), probe, 'utf8');
 }
 
+function browserArgs(width, height, file, url, budget = 2500) {
+  return [
+    '--headless=new',
+    '--no-sandbox',
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-background-networking',
+    '--hide-scrollbars',
+    '--run-all-compositor-stages-before-draw',
+    `--virtual-time-budget=${budget}`,
+    `--window-size=${width},${height}`,
+    `--screenshot=${file}`,
+    url
+  ];
+}
+
 function inspect(browser, articlePath, viewport) {
   const probeUrl = `${origin}/.tmp-article-layout/probe.html?path=${encodeURIComponent(articlePath)}&width=${viewport.width}&height=${viewport.height}`;
   const html = execFileSync(browser, [
@@ -157,18 +173,12 @@ function inspect(browser, articlePath, viewport) {
 
 function capture(browser, articlePath, viewport) {
   const file = path.join(outputDir, `${slug(articlePath)}-${viewport.name}.png`);
-  execFileSync(browser, [
-    '--headless=new',
-    '--no-sandbox',
-    '--disable-gpu',
-    '--disable-dev-shm-usage',
-    '--disable-background-networking',
-    '--run-all-compositor-stages-before-draw',
-    '--virtual-time-budget=2500',
-    `--window-size=${viewport.width},${viewport.height}`,
-    `--screenshot=${file}`,
-    `${origin}${articlePath}`
-  ], { stdio: 'pipe', timeout: 30000 });
+  execFileSync(browser, browserArgs(viewport.width, viewport.height, file, `${origin}${articlePath}`), { stdio: 'pipe', timeout: 30000 });
+
+  if (articlePath === '/articles/2026-07-31-super-weekly-reward.html' && viewport.name === 'mobile') {
+    const longFile = path.join(outputDir, `${slug(articlePath)}-mobile-long.png`);
+    execFileSync(browser, browserArgs(390, 5000, longFile, `${origin}${articlePath}`, 3500), { stdio: 'pipe', timeout: 30000 });
+  }
 }
 
 function validate(report, viewport) {
