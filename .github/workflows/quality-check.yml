@@ -20,12 +20,45 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 12
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
+      - name: Apply verified article facts and dates
+        run: node .github/scripts/tmp-article-finalize-20260802.cjs
+
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
+
+      - name: Render all changed articles at mobile and desktop widths
+        run: node .github/scripts/tmp-article-layout-check-20260802.cjs
+
+      - name: Collect finalized files
+        if: success()
+        shell: bash
+        run: |
+          mkdir -p .tmp-final-files
+          git diff --name-only -z | while IFS= read -r -d '' file; do
+            case "$file" in
+              .github/*|.tmp-article-layout/*) continue ;;
+            esac
+            mkdir -p ".tmp-final-files/$(dirname "$file")"
+            cp "$file" ".tmp-final-files/$file"
+          done
+          git diff --name-only > .tmp-final-files/manifest.txt
+
+      - name: Upload article review evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: article-final-review-20260802
+          path: |
+            .tmp-article-layout/
+            .tmp-final-files/
+          if-no-files-found: warn
+          retention-days: 3
