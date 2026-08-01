@@ -63,7 +63,11 @@ test('the complete published article corpus keeps structural quality signals', (
     assert.ok(bodyText.length >= 500, `${file}: article body is too thin (${bodyText.length} visible characters)`);
     assert.ok((body.match(/<h2\b/g) || []).length >= 3, `${file}: needs at least three h2 sections`);
     assert.ok((body.match(/<p\b/g) || []).length >= 5, `${file}: needs at least five explanatory paragraphs`);
-    assert.match(html, /official-source-note|source-list/, `${file}: visible official source section is missing`);
+    assert.match(
+      html,
+      /support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial/,
+      `${file}: a visible Google official source link is missing`
+    );
     assert.match(html, /related-links-section/, `${file}: related reading section is missing`);
 
     const paragraphs = [...body.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
