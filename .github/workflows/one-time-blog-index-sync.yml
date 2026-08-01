@@ -1,0 +1,41 @@
+name: One-time blog index synchronization
+
+on:
+  push:
+    branches:
+      - content/global-quests-rewards-audit-20260801
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-time-blog-index-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: content/global-quests-rewards-audit-20260801
+
+      - name: Regenerate deterministic public files
+        run: PLAYPOINT_MODIFIED_DATE=2026-07-31 PLAYPOINT_ASSET_VERSION=20260731_2149 node scripts/build-html.js
+
+      - name: Commit synchronized output and remove temporary diagnostics
+        run: |
+          rm .github/workflows/one-time-blog-index-sync.yml
+          rm -f ci-diagnostic.log
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No synchronized changes were needed."
+            exit 0
+          fi
+          git commit -m "Synchronize blog index titles and remove diagnostics"
+          git push origin HEAD:content/global-quests-rewards-audit-20260801
