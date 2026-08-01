@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260731_2149-b6e3678f';
+const CACHE_NAME = 'playpoint-calc-v20260801_2257-b6e3678f';
 const ASSETS = [
   './',
   './style.css?v=08116211ba',
