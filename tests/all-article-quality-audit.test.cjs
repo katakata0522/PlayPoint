@@ -68,7 +68,11 @@ test('the complete published article corpus keeps structural quality signals', (
       /support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial/,
       `${file}: a visible Google official source link is missing`
     );
-    assert.match(html, /related-links-section/, `${file}: related reading section is missing`);
+    assert.match(
+      html,
+      /related-links-section|class="article-nav"/,
+      `${file}: curated related links or dynamic previous/next navigation is missing`
+    );
 
     const paragraphs = [...body.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
       .map(match => visibleText(match[1]))
