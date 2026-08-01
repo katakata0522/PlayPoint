@@ -32,6 +32,9 @@ jobs:
       - name: Apply verified article facts and dates
         run: node .github/scripts/tmp-article-finalize-20260802.cjs
 
+      - name: Synchronize generated output
+        run: node scripts/build-html.js
+
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
 
