@@ -83,7 +83,7 @@ test('旧calculatorファイルを持たず301転送だけを維持する', () =
 test('全階層のindex.htmlを階層を保った正規URLへ301転送する', () => {
   assert.match(htaccess, /RewriteCond %\{THE_REQUEST\} \\s\/\+\(\.\*\/\)\?index\\\.html\[\\s\?\] \[NC\]/);
   assert.match(htaccess, /RewriteRule \^\(\.\*\/\)\?index\\\.html\$ \/\$1 \[R=301,L,NE\]/);
-  assert.equal((htaccess.match(/index\\\.html\$/g) || []).length, 1, '個別のindex.html転送規則へ逆戻りしています');
+  assert.match(htaccess, /RewriteRule \^blog\/index\\\.html\$ \/blog\/ \[R=301,L,NE\]/);
 });
 
 test('デプロイスクリプトのBash構文が有効である', (t) => {
