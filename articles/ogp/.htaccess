@@ -1,0 +1,6 @@
+Options -Indexes
+
+# 既存の共有URLを維持したまま、JPEG実体を正しいContent-Typeで配信する。
+<FilesMatch "\.png$">
+  ForceType image/jpeg
+</FilesMatch>
