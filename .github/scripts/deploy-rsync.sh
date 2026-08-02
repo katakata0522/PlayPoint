@@ -81,8 +81,14 @@ stale_paths=(
   "kindle-tracker"
   "kids-smile-land"
   "doujin-shi-calculator"
+  "calculator.html"
   "articles/2026-06-29-savings-game-fire.html"
   "articles/2025-12-25-playpoints-not-reflected.html"
+  "articles/ogp/playpoints-not-reflected.png"
+  "articles/styles/2025-12-25-movies-books.css"
+  "articles/styles/2025-12-25-play-games.css"
+  "articles/styles/2025-12-25-subscription.css"
+  "articles/styles/2025-12-25-weekly-reward.css"
   "en/articles/google-play-points-reflection-timing.html"
 )
 

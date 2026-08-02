@@ -8,6 +8,7 @@ const FETCH_TIMEOUT_MS = 12000;
 const HTTP_CONCURRENCY = 4;
 const MAX_ATTEMPTS = 2;
 const RETRY_DELAY_MS = 1500;
+const REPRESENTATIVE_OGP_URL = `${BASE_URL}/articles/ogp/weekly-reward.png`;
 
 const pageUrls = [
   `${BASE_URL}/`,
@@ -133,6 +134,21 @@ async function checkArticle(url) {
   }
 }
 
+async function checkOgpMime() {
+  const response = await fetch(withCacheBuster(REPRESENTATIVE_OGP_URL), {
+    headers: {
+      'cache-control': 'no-cache',
+      pragma: 'no-cache'
+    },
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS)
+  });
+  if (!response.ok) throw new Error(`${REPRESENTATIVE_OGP_URL}: HTTP ${response.status}`);
+  const contentType = response.headers.get('content-type') || '';
+  if (!/^image\/jpeg(?:;|$)/i.test(contentType)) {
+    throw new Error(`${REPRESENTATIVE_OGP_URL}: expected image/jpeg, got ${contentType || 'missing content-type'}`);
+  }
+}
+
 async function runChecks(urls, check, label) {
   const results = await mapWithConcurrency(urls, HTTP_CONCURRENCY, async (url) => {
     await retry(() => check(url), {
@@ -184,6 +200,20 @@ async function main() {
       }
     });
     console.log(`ok - sitemap articles (${articleUrls.length})`);
+  } catch (error) {
+    failures.push(error);
+    console.error(`not ok - ${error.message}`);
+  }
+
+  try {
+    await retry(checkOgpMime, {
+      attempts: MAX_ATTEMPTS,
+      delayMs: RETRY_DELAY_MS,
+      onRetry: (error, attempt, attempts) => {
+        console.warn(`Retry ${attempt + 1}/${attempts} - ${error.message}`);
+      }
+    });
+    console.log(`ok - OGP MIME ${REPRESENTATIVE_OGP_URL} image/jpeg`);
   } catch (error) {
     failures.push(error);
     console.error(`not ok - ${error.message}`);
