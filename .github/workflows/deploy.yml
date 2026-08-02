@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 # 実行中の本番反映は中断せず、待機中は最新の1件だけを残す
 concurrency:
@@ -22,8 +23,54 @@ jobs:
     # 本番反映はmainの内容だけを対象にする
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
+      - name: Mark Xserver deployment as pending
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_COMMIT_STATE: pending
+          DEPLOY_COMMIT_DESCRIPTION: Xserver deployment is running
+        run: |
+          node <<'NODE'
+          const state = process.env.DEPLOY_COMMIT_STATE;
+          const payload = {
+            state,
+            context: 'xserver/deploy',
+            description: process.env.DEPLOY_COMMIT_DESCRIPTION,
+            target_url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+          };
+          const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/statuses/${process.env.GITHUB_SHA}`;
+
+          async function postStatus() {
+            let lastError;
+            for (let attempt = 1; attempt <= 3; attempt += 1) {
+              try {
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    accept: 'application/vnd.github+json',
+                    authorization: `Bearer ${process.env.GH_TOKEN}`,
+                    'content-type': 'application/json',
+                    'x-github-api-version': '2022-11-28'
+                  },
+                  body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`GitHub status API: HTTP ${response.status} ${await response.text()}`);
+                return;
+              } catch (error) {
+                lastError = error;
+                if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+              }
+            }
+            throw lastError;
+          }
+
+          postStatus().catch(error => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          NODE
+
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -32,10 +79,13 @@ jobs:
       - name: Run complete preflight and prepare deploy assets
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
-      - name: Create deployment revision marker
+      - name: Create deploying status marker
         run: |
-          mkdir -p status
-          printf '%s\n' "$GITHUB_SHA" > status/deploy-revision.txt
+          DEPLOY_STARTED_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          echo "DEPLOY_STARTED_AT=$DEPLOY_STARTED_AT" >> "$GITHUB_ENV"
+          DEPLOY_PUBLIC_STATUS=deploying \
+          DEPLOY_STARTED_AT="$DEPLOY_STARTED_AT" \
+          node .github/scripts/deploy-status.cjs
 
       - name: Setup SSH
         run: |
@@ -88,7 +138,81 @@ jobs:
       - name: Verify production deployment
         env:
           EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
-        run: node .github/scripts/smoke-test.cjs
+          EXPECTED_DEPLOY_STATUS: deploying
+        run: |
+          node .github/scripts/smoke-test.cjs
+          node .github/scripts/verify-deploy-status.cjs
 
       - name: Verify production SEO health
         run: node .github/scripts/seo-health-check.cjs
+
+      - name: Publish verified deployment status
+        env:
+          EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
+          EXPECTED_DEPLOY_STATUS: verified
+        run: |
+          set -euo pipefail
+          DEPLOY_VERIFIED_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          DEPLOY_PUBLIC_STATUS=verified \
+          DEPLOY_STARTED_AT="$DEPLOY_STARTED_AT" \
+          DEPLOY_VERIFIED_AT="$DEPLOY_VERIFIED_AT" \
+          node .github/scripts/deploy-status.cjs
+
+          rsync -avz --delay-updates \
+            -e "ssh -p 10022 -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15" \
+            status/deploy-revision.txt status/deploy-status.json \
+            hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/status/
+
+          node .github/scripts/verify-deploy-status.cjs
+
+      - name: Report Xserver deployment result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOY_JOB_STATUS: ${{ job.status }}
+        run: |
+          node <<'NODE'
+          const jobStatus = process.env.DEPLOY_JOB_STATUS;
+          const state = jobStatus === 'success' ? 'success' : jobStatus === 'cancelled' ? 'error' : 'failure';
+          const description = state === 'success'
+            ? 'Xserver deployment and production checks passed'
+            : state === 'error'
+              ? 'Xserver deployment was cancelled'
+              : 'Xserver deployment or production checks failed';
+          const payload = {
+            state,
+            context: 'xserver/deploy',
+            description,
+            target_url: `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`
+          };
+          const url = `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/statuses/${process.env.GITHUB_SHA}`;
+
+          async function postStatus() {
+            let lastError;
+            for (let attempt = 1; attempt <= 3; attempt += 1) {
+              try {
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    accept: 'application/vnd.github+json',
+                    authorization: `Bearer ${process.env.GH_TOKEN}`,
+                    'content-type': 'application/json',
+                    'x-github-api-version': '2022-11-28'
+                  },
+                  body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`GitHub status API: HTTP ${response.status} ${await response.text()}`);
+                return;
+              } catch (error) {
+                lastError = error;
+                if (attempt < 3) await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+              }
+            }
+            throw lastError;
+          }
+
+          postStatus().catch(error => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          NODE

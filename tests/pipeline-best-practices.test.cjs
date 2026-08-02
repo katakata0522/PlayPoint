@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { createAppModuleRevision } = require('../scripts/asset-sync.cjs');
+const { buildDeployStatus, validateDeployStatus } = require('../.github/scripts/deploy-status.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (...parts) => fs.readFileSync(path.join(root, ...parts), 'utf8').replace(/\r\n/g, '\n');
@@ -98,14 +99,70 @@ test('アプリモジュールのキャッシュ世代は改行コードが違�
   );
 });
 
-test('本番確認は配信されたコミットSHAを完全一致で検証する', () => {
+test('本番確認はコミット状態と公開JSONの両方で完全一致を検証する', () => {
   const workflow = read('.github', 'workflows', 'deploy.yml');
   const smokeTest = read('.github', 'scripts', 'smoke-test.cjs');
+  const deployStatus = read('.github', 'scripts', 'deploy-status.cjs');
+  const verifier = read('.github', 'scripts', 'verify-deploy-status.cjs');
+  const htaccess = read('.htaccess');
 
-  assert.ok(workflow.includes("printf '%s\\n' \"$GITHUB_SHA\" > status/deploy-revision.txt"));
+  assert.match(workflow, /permissions:\s*\n\s*contents:\s*read\s*\n\s*statuses:\s*write/);
+  assert.ok((workflow.match(/context: 'xserver\/deploy'/g) || []).length >= 2);
+  assert.ok(workflow.includes('DEPLOY_PUBLIC_STATUS=deploying'));
+  assert.ok(workflow.includes('DEPLOY_PUBLIC_STATUS=verified'));
+  assert.ok(workflow.includes('node .github/scripts/verify-deploy-status.cjs'));
   assert.ok(workflow.includes('EXPECTED_DEPLOY_REVISION: ${{ github.sha }}'));
+  assert.ok(workflow.includes('EXPECTED_DEPLOY_STATUS: verified'));
   assert.ok(smokeTest.includes('status/deploy-revision.txt'));
   assert.ok(smokeTest.includes("text.trim() !== target.equals"));
+  assert.ok(deployStatus.includes("deploy-status.json"));
+  assert.ok(verifier.includes('validateDeployStatus'));
+  assert.match(htaccess, /deploy-\(status\\\.json\|revision\\\.txt\)/);
+  assert.ok(htaccess.includes('no-store, no-cache, must-revalidate, max-age=0'));
+  assert.ok(htaccess.includes('X-Robots-Tag "noindex, nofollow, noarchive"'));
+});
+
+test('公開デプロイ状態は検証完了前と完了後を区別する', () => {
+  const base = {
+    commit: '0123456789abcdef0123456789abcdef01234567',
+    branch: 'main',
+    deployedAt: '2026-08-02T12:00:00Z',
+    repository: 'katakata0522/PlayPoint',
+    runId: '123456789',
+    runNumber: '211'
+  };
+
+  const deploying = buildDeployStatus({ status: 'deploying', ...base });
+  assert.equal(deploying.status, 'deploying');
+  assert.equal(deploying.verifiedAt, null);
+  assert.deepEqual(deploying.checks, {
+    preflight: 'passed',
+    smokeTest: 'pending',
+    seoHealth: 'pending'
+  });
+
+  const verified = buildDeployStatus({
+    status: 'verified',
+    verifiedAt: '2026-08-02T12:03:00Z',
+    ...base
+  });
+  assert.equal(verified.status, 'verified');
+  assert.deepEqual(verified.checks, {
+    preflight: 'passed',
+    smokeTest: 'passed',
+    seoHealth: 'passed'
+  });
+  assert.equal(
+    validateDeployStatus(verified, { expectedCommit: base.commit, expectedStatus: 'verified' }),
+    verified
+  );
+  assert.throws(
+    () => validateDeployStatus(verified, {
+      expectedCommit: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      expectedStatus: 'verified'
+    }),
+    /commit mismatch/
+  );
 });
 
 test('本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す', () => {
