@@ -10,6 +10,7 @@ const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
+const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
@@ -32,6 +33,7 @@ syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
 writeIntlSeoPages(rootDir, assetVersions, todayStr);
+syncIntlManualContent(rootDir);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
 syncPublicAssetVersions(rootDir);

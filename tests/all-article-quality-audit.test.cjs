@@ -27,9 +27,25 @@ function schemas(html, file) {
   });
 }
 
+function visibleText(html) {
+  return html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&(?:nbsp|amp|quot|#39);/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function articleBody(html, file) {
+  const match = html.match(/<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>([\s\S]*?)<\/article>/i);
+  assert.ok(match, `${file}: article.content is missing`);
+  return match[1];
+}
+
 test('the complete published article corpus keeps structural quality signals', () => {
   assert.ok(registry.length >= 27, `expected at least 27 Japanese Play Points articles, found ${registry.length}`);
-  assert.ok(articles.length >= 87, `expected at least 87 published Play Points articles, found ${articles.length}`);
+  assert.ok(articles.length >= 93, `expected at least 93 published Play Points articles, found ${articles.length}`);
 
   for (const file of articles) {
     const html = read(file);
@@ -38,6 +54,32 @@ test('the complete published article corpus keeps structural quality signals', (
     assert.equal((html.match(/<h1\b/g) || []).length, 1, `${file}: expected exactly one h1`);
     assert.ok(/rel="author"/.test(html), `${file}: visible author link is missing`);
     assert.doesNotMatch(html, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, `${file}: placeholder copy remains`);
+
+    const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+    assert.ok(description && visibleText(description[1]).length >= 35, `${file}: meta description is missing or too vague`);
+
+    const body = articleBody(html, file);
+    const bodyText = visibleText(body);
+    assert.ok(bodyText.length >= 500, `${file}: article body is too thin (${bodyText.length} visible characters)`);
+    assert.ok((body.match(/<h2\b/g) || []).length >= 3, `${file}: needs at least three h2 sections`);
+    assert.ok((body.match(/<p\b/g) || []).length >= 5, `${file}: needs at least five explanatory paragraphs`);
+    assert.match(
+      html,
+      /support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial/,
+      `${file}: a visible Google official source link is missing`
+    );
+    assert.match(
+      html,
+      /related-links-section|class="article-nav"/,
+      `${file}: curated related links or dynamic previous/next navigation is missing`
+    );
+
+    const paragraphs = [...body.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)]
+      .map(match => visibleText(match[1]))
+      .filter(text => text.length >= 30);
+    for (let index = 1; index < paragraphs.length; index += 1) {
+      assert.notEqual(paragraphs[index], paragraphs[index - 1], `${file}: duplicated consecutive paragraph`);
+    }
 
     const data = schemas(html, file);
     const articleSchemas = data.filter(item => item['@type'] === 'Article');

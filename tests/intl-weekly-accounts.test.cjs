@@ -104,7 +104,10 @@ test('国際ガイド専用サイトマップをrobots.txtから発見できる'
       assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${url} が専用サイトマップにありません`);
     }
   }
-  assert.strictEqual((sitemap.match(/<url>/g) || []).length, 6, '専用サイトマップの記事数が不正です');
+
+  const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  assert.ok(sitemapUrls.length >= 6, '専用サイトマップの記事数が少なすぎます');
+  assert.strictEqual(new Set(sitemapUrls).size, sitemapUrls.length, '専用サイトマップに重複URLがあります');
 });
 
 test('新規国際記事のローカルリンク先はすべて存在する', () => {
