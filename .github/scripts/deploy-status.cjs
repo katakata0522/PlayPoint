@@ -5,12 +5,24 @@ const path = require('node:path');
 
 const VALID_STATUSES = new Set(['deploying', 'verified']);
 const COMMIT_PATTERN = /^[0-9a-f]{40}$/i;
+const INTEGER_PATTERN = /^\d+$/;
 
 function requireValue(value, name) {
   if (typeof value !== 'string' || value.trim() === '') {
     throw new Error(`${name} is required.`);
   }
   return value.trim();
+}
+
+function requireIdentifier(value, name) {
+  if (value === undefined || value === null) {
+    throw new Error(`${name} is required.`);
+  }
+  const normalized = String(value).trim();
+  if (!INTEGER_PATTERN.test(normalized)) {
+    throw new Error(`${name} must be a positive integer identifier.`);
+  }
+  return normalized;
 }
 
 function requireIsoTimestamp(value, name) {
@@ -29,6 +41,12 @@ function requireCommit(value) {
   return commit.toLowerCase();
 }
 
+function expectedChecksForStatus(status) {
+  return status === 'verified'
+    ? { preflight: 'passed', smokeTest: 'passed', seoHealth: 'passed' }
+    : { preflight: 'passed', smokeTest: 'pending', seoHealth: 'pending' };
+}
+
 function buildDeployStatus({
   status,
   commit,
@@ -44,13 +62,13 @@ function buildDeployStatus({
     throw new Error(`Unsupported deploy status: ${normalizedStatus}`);
   }
 
+  const normalizedDeployedAt = requireIsoTimestamp(deployedAt, 'deployedAt');
   const normalizedVerifiedAt = normalizedStatus === 'verified'
     ? requireIsoTimestamp(verifiedAt, 'verifiedAt')
     : null;
-
-  const checks = normalizedStatus === 'verified'
-    ? { preflight: 'passed', smokeTest: 'passed', seoHealth: 'passed' }
-    : { preflight: 'passed', smokeTest: 'pending', seoHealth: 'pending' };
+  if (normalizedVerifiedAt && Date.parse(normalizedVerifiedAt) < Date.parse(normalizedDeployedAt)) {
+    throw new Error('verifiedAt must not be earlier than deployedAt.');
+  }
 
   return {
     schemaVersion: 1,
@@ -58,13 +76,13 @@ function buildDeployStatus({
     environment: 'production',
     commit: requireCommit(commit),
     branch: requireValue(branch, 'branch'),
-    deployedAt: requireIsoTimestamp(deployedAt, 'deployedAt'),
+    deployedAt: normalizedDeployedAt,
     verifiedAt: normalizedVerifiedAt,
-    checks,
+    checks: expectedChecksForStatus(normalizedStatus),
     workflow: {
       repository: requireValue(repository, 'repository'),
-      runId: requireValue(String(runId), 'runId'),
-      runNumber: requireValue(String(runNumber), 'runNumber')
+      runId: requireIdentifier(runId, 'runId'),
+      runNumber: requireIdentifier(runNumber, 'runNumber')
     }
   };
 }
@@ -75,6 +93,9 @@ function validateDeployStatus(payload, { expectedCommit, expectedStatus }) {
   }
   if (payload.schemaVersion !== 1) {
     throw new Error(`Unsupported schemaVersion: ${payload.schemaVersion}`);
+  }
+  if (payload.environment !== 'production') {
+    throw new Error(`Unexpected deployment environment: ${payload.environment}`);
   }
 
   const commit = requireCommit(payload.commit);
@@ -89,14 +110,26 @@ function validateDeployStatus(payload, { expectedCommit, expectedStatus }) {
     throw new Error(`Deployment status mismatch: expected ${expectedStatus}, got ${status}`);
   }
 
-  requireIsoTimestamp(payload.deployedAt, 'deployedAt');
-  if (status === 'verified') {
-    requireIsoTimestamp(payload.verifiedAt, 'verifiedAt');
-    for (const key of ['preflight', 'smokeTest', 'seoHealth']) {
-      if (payload.checks?.[key] !== 'passed') {
-        throw new Error(`Verified deployment has incomplete check: ${key}`);
-      }
+  requireValue(payload.branch, 'branch');
+  const deployedAt = requireIsoTimestamp(payload.deployedAt, 'deployedAt');
+  requireValue(payload.workflow?.repository, 'workflow.repository');
+  requireIdentifier(payload.workflow?.runId, 'workflow.runId');
+  requireIdentifier(payload.workflow?.runNumber, 'workflow.runNumber');
+
+  const expectedChecks = expectedChecksForStatus(status);
+  for (const [key, expectedValue] of Object.entries(expectedChecks)) {
+    if (payload.checks?.[key] !== expectedValue) {
+      throw new Error(`${status} deployment has unexpected check state: ${key}`);
     }
+  }
+
+  if (status === 'verified') {
+    const verifiedAt = requireIsoTimestamp(payload.verifiedAt, 'verifiedAt');
+    if (Date.parse(verifiedAt) < Date.parse(deployedAt)) {
+      throw new Error('verifiedAt must not be earlier than deployedAt.');
+    }
+  } else if (payload.verifiedAt !== null) {
+    throw new Error('deploying status must not include verifiedAt.');
   }
 
   return payload;
