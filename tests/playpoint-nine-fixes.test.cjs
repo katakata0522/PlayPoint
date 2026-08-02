@@ -117,16 +117,24 @@ test('ルートService Workerはprecache失敗時に壊れたまま有効化し�
   assert.ok(!installBlock.includes('.catch('), 'install失敗を握りつぶしています');
 });
 
-test('デプロイ同期は公開不要な運用ファイルを除外する', () => {
+test('デプロイ同期は公開不要な運用ファイルをルート限定で除外する', () => {
   const workflow = read('.github/workflows/deploy.yml');
+  const deployScript = read('.github/scripts/deploy-rsync.sh');
 
+  assert.ok(workflow.includes('bash .github/scripts/deploy-rsync.sh'), '専用デプロイスクリプトを実行していません');
   for (const pattern of [
-    "--exclude 'docs*'",
-    "--exclude 'scripts*'",
-    "--exclude 'みんな用URL.txt'",
-    "--exclude 'CNAME'"
+    "--exclude '/docs/***'",
+    "--exclude '/scripts/***'",
+    "--exclude '/みんな用URL.txt'",
+    "--exclude '/CNAME'"
   ]) {
-    assert.ok(workflow.includes(pattern), `rsync除外が不足しています: ${pattern}`);
+    assert.ok(deployScript.includes(pattern), `rsync除外が不足しています: ${pattern}`);
+  }
+  for (const unsafePattern of [
+    "--exclude 'docs*'",
+    "--exclude 'scripts*'"
+  ]) {
+    assert.ok(!deployScript.includes(unsafePattern), `全階層へ広がる除外が残っています: ${unsafePattern}`);
   }
 });
 
@@ -170,14 +178,16 @@ test('デプロイ前検証はミニファイ後JSの構文を確認する', () 
 
 test('CIデプロイはコミット済み成果物だけを公開する', () => {
   const workflow = read('.github/workflows/deploy.yml');
+  const deployScript = read('.github/scripts/deploy-rsync.sh');
   const preflight = read('.github/scripts/preflight.cjs');
   const verifier = read('.github/scripts/verify-build-output.cjs');
-  const deployIndex = workflow.indexOf('Deploy via rsync');
+  const deployIndex = workflow.indexOf('Deploy strict public mirror via rsync');
   assert.ok(deployIndex >= 0, 'rsyncデプロイ処理がありません');
   const beforeDeploy = workflow.slice(0, deployIndex);
 
   assert.ok(!beforeDeploy.includes('node scripts/build-html.js'), 'CI上で未コミット生成物を作ってから本番公開しています');
   assert.ok(beforeDeploy.includes('node .github/scripts/preflight.cjs --prepare-deploy'), '一括検証を通さずにデプロイしています');
+  assert.ok(deployScript.includes('rsync -avz --delete-after --delete-excluded'), '厳密ミラーのrsync処理がありません');
   assert.ok(preflight.includes("runPhase('生成物の再現性検証'"), '一括検証に生成物の整合性検証がありません');
   assert.ok(verifier.includes("'git', ['diff', '--exit-code', '--', ...generatedFiles]"), '生成物の未コミット差分を対象ファイル単位で検出していません');
 });

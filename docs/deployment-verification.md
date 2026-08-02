@@ -28,6 +28,18 @@ PlayPointの本番反映は、GitHub Actionsの画面だけに依存せず、次
 
 `https://playpoint-sim.com/status/deploy-revision.txt`
 
+## 厳密ミラーと旧データ清掃
+
+本番同期は、リポジトリの公開対象だけをXserverへ残す厳密ミラーとして実行する。
+
+- `tests`、`docs`、`scripts`、`.github`などはルート直下だけを除外する
+- `--delete-excluded`により、過去に本番へ置かれた除外対象も削除する
+- 除外パターンを全階層へ広げないことで、旧ツール内の`tests`や`scripts`が削除を妨げないようにする
+- 他サイトへ移設済みの`tools`、`kindle-tracker`、旧記事ファイルなどが物理的に残っていないことをSSHで直接検査する
+- 旧URLの301転送は維持するが、転送できることだけで物理ファイル削除済みとは判定しない
+
+この清掃検査に失敗した場合も、`xserver/deploy`は`failure`となり、本番反映完了とは扱わない。
+
 ## 自動検証
 
 デプロイワークフローは、全ファイルをrsyncした直後に`deploying`状態を検証し、スモークテストとSEO検査を通過した後だけ`verified`へ更新する。その後、公開JSONを再取得してコミットSHAと検査状態を完全一致で検証する。
