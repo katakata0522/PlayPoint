@@ -1,8 +1,9 @@
 {
   "name": "Playポイント計算機",
   "short_name": "PlayPoint",
-  "description": "Google Play Points の課金額シミュレーター & アワード記録日記",
-  "start_url": ".",
+  "description": "Google Play Points の課金額シミュレーター & ウィークリーリワード記録日記",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#eef",
   "theme_color": "#28a745",
