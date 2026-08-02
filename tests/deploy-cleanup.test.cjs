@@ -7,8 +7,10 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const workflowPath = path.join(root, '.github', 'workflows', 'deploy.yml');
 const scriptPath = path.join(root, '.github', 'scripts', 'deploy-rsync.sh');
+const htaccessPath = path.join(root, '.htaccess');
 const workflow = fs.readFileSync(workflowPath, 'utf8');
 const script = fs.readFileSync(scriptPath, 'utf8');
+const htaccess = fs.readFileSync(htaccessPath, 'utf8');
 
 test('デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する', () => {
   assert.match(workflow, /run:\s+bash \.github\/scripts\/deploy-rsync\.sh/);
@@ -41,7 +43,7 @@ test('デプロイは公開物だけを厳密にミラーし、除外物も本�
   }
 });
 
-test('移設済み・非公開の旧パスをXserver上の実体で検査する', () => {
+test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', () => {
   assert.match(script, /Refusing to inspect unexpected deployment root/);
   assert.match(script, /\/home\/hajikkoroom\/playpoint-sim\.com\/public_html/);
 
@@ -56,8 +58,14 @@ test('移設済み・非公開の旧パスをXserver上の実体で検査する'
     'kindle-tracker',
     'kids-smile-land',
     'doujin-shi-calculator',
+    'calculator.html',
     'articles/2026-06-29-savings-game-fire.html',
     'articles/2025-12-25-playpoints-not-reflected.html',
+    'articles/ogp/playpoints-not-reflected.png',
+    'articles/styles/2025-12-25-movies-books.css',
+    'articles/styles/2025-12-25-play-games.css',
+    'articles/styles/2025-12-25-subscription.css',
+    'articles/styles/2025-12-25-weekly-reward.css',
     'en/articles/google-play-points-reflection-timing.html',
   ]) {
     assert.ok(script.includes(`"${stalePath}"`), `旧パスの実体検査がありません: ${stalePath}`);
@@ -65,6 +73,17 @@ test('移設済み・非公開の旧パスをXserver上の実体で検査する'
 
   assert.match(script, /\[ -e "\$target" \] \|\| \[ -L "\$target" \]/);
   assert.match(script, /Legacy and non-public server artifacts are absent\./);
+});
+
+test('旧calculatorファイルを持たず301転送だけを維持する', () => {
+  assert.equal(fs.existsSync(path.join(root, 'calculator.html')), false);
+  assert.match(htaccess, /RewriteRule \^calculator\\\.html\$ \/ \[R=301,L,NE\]/);
+});
+
+test('全階層のindex.htmlを階層を保った正規URLへ301転送する', () => {
+  assert.match(htaccess, /RewriteCond %\{THE_REQUEST\} \\s\/\+\(\.\*\/\)\?index\\\.html\[\\s\?\] \[NC\]/);
+  assert.match(htaccess, /RewriteRule \^\(\.\*\/\)\?index\\\.html\$ \/\$1 \[R=301,L,NE\]/);
+  assert.equal((htaccess.match(/index\\\.html\$/g) || []).length, 1, '個別のindex.html転送規則へ逆戻りしています');
 });
 
 test('デプロイスクリプトのBash構文が有効である', (t) => {
