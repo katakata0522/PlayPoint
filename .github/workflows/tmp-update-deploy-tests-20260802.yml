@@ -1,0 +1,35 @@
+name: Temporary deploy test migration
+
+on:
+  push:
+    branches:
+      - infra/purge-legacy-server-artifacts-20260802
+    paths:
+      - '.github/scripts/tmp-update-deploy-tests-20260802.cjs'
+      - '.github/workflows/tmp-update-deploy-tests-20260802.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: infra/purge-legacy-server-artifacts-20260802
+
+      - name: Update legacy deployment assertions
+        run: node .github/scripts/tmp-update-deploy-tests-20260802.cjs
+
+      - name: Commit migrated tests
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add tests/playpoint-regression.test.cjs tests/playpoint-nine-fixes.test.cjs
+          git diff --cached --check
+          git commit -m "test: update deploy assertions for strict mirror"
+          git push origin HEAD:infra/purge-legacy-server-artifacts-20260802
