@@ -1,0 +1,43 @@
+# 本番デプロイ確認手順
+
+PlayPointの本番反映は、GitHub Actionsの画面だけに依存せず、次の2経路で確認する。
+
+## 1. GitHubコミットステータス
+
+`main`へpushされたコミットには、`xserver/deploy`というコンテキストで状態が付く。
+
+- `pending`: Xserverへの反映または本番検査を実行中
+- `success`: Xserver反映、主要ページのスモークテスト、SEOヘルスチェック、公開ステータス検証がすべて成功
+- `failure`: いずれかの処理が失敗
+- `error`: 実行がキャンセルされた
+
+## 2. 本番の公開ステータス
+
+以下のJSONはキャッシュ禁止・検索登録禁止で公開される。
+
+`https://playpoint-sim.com/status/deploy-status.json`
+
+確認条件は次のとおり。
+
+1. `status`が`verified`
+2. `commit`が確認対象の40文字SHAと完全一致
+3. `checks.preflight`、`checks.smokeTest`、`checks.seoHealth`がすべて`passed`
+4. `verifiedAt`が有効なISO-8601日時
+
+旧来の簡易確認用SHAも残す。
+
+`https://playpoint-sim.com/status/deploy-revision.txt`
+
+## 自動検証
+
+デプロイワークフローは、全ファイルをrsyncした直後に`deploying`状態を検証し、スモークテストとSEO検査を通過した後だけ`verified`へ更新する。その後、公開JSONを再取得してコミットSHAと検査状態を完全一致で検証する。
+
+ローカルまたはActionsから公開JSONだけを検証する場合は、次の環境変数を指定する。
+
+```bash
+EXPECTED_DEPLOY_REVISION=<40文字のコミットSHA> \
+EXPECTED_DEPLOY_STATUS=verified \
+node .github/scripts/verify-deploy-status.cjs
+```
+
+「マージ完了」と「本番反映完了」は分けて扱い、`xserver/deploy=success`と公開JSONの一致を確認できるまでは本番反映完了としない。
