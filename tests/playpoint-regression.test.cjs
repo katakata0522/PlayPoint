@@ -1012,16 +1012,19 @@ test('デプロイ前に全回帰テストを実行する', () => {
   assert.ok(preflight.includes("['--test', ...testFiles]"));
 });
 
-test('デプロイ同期は削除済みファイルを本番からも消す', () => {
+test('デプロイ同期は削除済み・除外済みファイルを本番からも消す', () => {
   const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8');
+  const deployScript = fs.readFileSync(path.join(root, '.github', 'scripts', 'deploy-rsync.sh'), 'utf8');
 
-  assert.ok(workflow.includes('rsync -avz --delete'));
+  assert.ok(workflow.includes('bash .github/scripts/deploy-rsync.sh'));
+  assert.ok(deployScript.includes('--delete-after --delete-excluded --delay-updates'));
 });
 
-test('テストファイルは本番へ同期しない', () => {
-  const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8');
+test('テストファイルはルート限定の除外で本番へ同期しない', () => {
+  const deployScript = fs.readFileSync(path.join(root, '.github', 'scripts', 'deploy-rsync.sh'), 'utf8');
 
-  assert.ok(workflow.includes("--exclude 'tests*'"));
+  assert.ok(deployScript.includes("--exclude '/tests/***'"));
+  assert.ok(!deployScript.includes("--exclude 'tests*'"));
 });
 
 test('SEO監視はサイトマップ掲載記事も確認する', () => {
