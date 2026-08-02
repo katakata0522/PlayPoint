@@ -29,6 +29,10 @@ Options -Indexes
   # 旧GitHub Pages URLが検索に残る場合はSearch Console側で正規URLを優先する
   # このサーバーでは playpoint-sim.com 配下の正規化だけを担当する
 
+  # 既存の明示的なブログ転送を保ちつつ、全階層のindex.htmlも一般化して処理する
+  RewriteCond %{THE_REQUEST} \s/+blog/index\.html[\s?] [NC]
+  RewriteRule ^blog/index\.html$ /blog/ [R=301,L,NE]
+
   # すべての /index.html を階層を保ったディレクトリURLへ統一
   RewriteCond %{THE_REQUEST} \s/+(.*/)?index\.html[\s?] [NC]
   RewriteRule ^(.*/)?index\.html$ /$1 [R=301,L,NE]
