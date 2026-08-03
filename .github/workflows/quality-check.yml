@@ -2,11 +2,6 @@ name: Pull request quality check
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - content/rounding-guide-evolution-20260803
-    paths:
-      - .github/workflows/quality-check.yml
   pull_request:
     branches:
       - main
@@ -24,13 +19,14 @@ concurrency:
 
 jobs:
   apply-rounding-guide:
-    if: github.event_name == 'push'
+    if: github.event_name == 'pull_request' && github.head_ref == 'content/rounding-guide-evolution-20260803'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout branch
+      - name: Checkout feature branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Apply content and test changes
@@ -65,7 +61,7 @@ jobs:
           git push origin HEAD
 
   quality:
-    if: github.event_name != 'push'
+    if: github.event_name != 'pull_request' || github.head_ref != 'content/rounding-guide-evolution-20260803'
     permissions:
       contents: read
     runs-on: ubuntu-latest
