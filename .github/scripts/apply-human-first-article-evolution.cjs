@@ -55,7 +55,16 @@ write(devicePath, device);
 
 const weeklyPath = 'articles/2025-12-25-weekly-reward.html';
 let weekly = read(weeklyPath);
+const weeklyDescription = 'Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、新端末で特典が最長15日ほど遅れる場合の確認順を解説します。';
 weekly = weekly
+  .replace(
+    /<meta name="description" content="[^"]*" \/>/,
+    `<meta name="description" content="${weeklyDescription}" />`
+  )
+  .replace(
+    /<meta property="og:description" content="[^"]*" \/>/,
+    `<meta property="og:description" content="${weeklyDescription}" />`
+  )
   .replace(
     '<meta property="article:modified_time" content="2026-07-31T00:00:00+09:00" />',
     '<meta property="article:modified_time" content="2026-08-03T00:00:00+09:00" />'
@@ -64,7 +73,8 @@ weekly = weekly
     '<p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>',
     '<p class="hero-meta">2026/08/03 更新 ・ 読了 7分</p>'
   )
-  .replace(/"dateModified":"2026-07-31"/g, '"dateModified":"2026-08-03"');
+  .replace(/"dateModified":"2026-07-31"/g, '"dateModified":"2026-08-03"')
+  .replace(/"description":"Google Play Pointsの通常ウィークリーリワード[^\"]*"/g, `"description":"${weeklyDescription}"`);
 
 const weeklyMarker = `    <section class="section">\n      <h2>表示されない時の確認順</h2>`;
 const weeklyDeviceSection = `    <section class="section">\n      <h2>新しい端末ではPlay Pass特典の表示に時間がかかる場合がある</h2>\n      <p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンスの確認により、Play Pointsの週次リワードやその他のプロモーション特典が表示されるまでに<strong>最長15日ほどかかることがある</strong>と案内しています。</p>\n      <p>これは通常のポイント残高が消えるという意味ではありません。新端末で同じGoogleアカウントを選び、残高・履歴とPlay Passの週次特典を分けて確認してください。</p>\n      <p><a href="./2026-08-03-play-points-device-change.html">機種変更後の引き継ぎと、特典が表示されない時の確認順</a></p>\n    </section>\n\n`;
@@ -116,7 +126,7 @@ updateEntry('check-balance', {
 });
 updateEntry('weekly-reward', {
   modified: '2026-08-03',
-  description: 'Google Play Pointsの通常・スーパー・Play Pass週次特典を比較。対象者、木曜・金曜の更新、受け取り方、新端末でPlay Pass特典が最長15日ほど遅れる場合の確認順を解説します。'
+  description: weeklyDescription
 });
 updateEntry('play-points-cash-conversion', {
   title: 'Google Play Pointsは現金化できる？交換先・使い道を比較',
@@ -129,4 +139,4 @@ updateEntry('play-points-cash-conversion', {
 write(articlesPath, JSON.stringify(updatedArticles, null, 2) + '\n');
 fs.rmSync(resolvePath('articles/styles/2025-12-25-check-balance.css'), { force: true });
 
-console.log('人間向けの記事統合、静的導線、一次情報、残滓削除を適用しました。');
+console.log('人間向けの記事統合、静的導線、一次情報、メタデータ同期、残滓削除を適用しました。');
