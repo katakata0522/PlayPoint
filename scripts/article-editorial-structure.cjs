@@ -19,13 +19,14 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-24-play-points-1-value.html': {
+    modifiedDate: '2026-08-03',
     known: [
-      '日本の通常獲得率と、商品単位で最も近い整数へ丸める計算方法は公式案内で確認できます。',
-      '獲得に必要な金額と、交換時の価値は別の計算です。'
+      'ポイントの対象は税金を除いたアイテム価格で、最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
+      '日本のステータス別通常獲得率は100円あたり1～2ポイントです。'
     ],
     unknown: [
-      '個別アカウントに表示される交換先やキャンペーンはこのサイトから確認できません。',
-      '購入前に表示される獲得予定ポイントを超える確約はできません。'
+      '税込の表示価格だけから、個別取引の税抜対象価格を常に正確に逆算できるとは限りません。',
+      '対象可否、キャンペーン適用、実際の付与数は購入画面とポイント履歴が最終判断です。'
     ],
     comparisonHref: '/compare/earning-rates/#status-rates',
     comparisonLabel: 'ステータス別獲得率の引用用比較表を見る'
@@ -173,6 +174,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       throw new Error(`編集対象の記事がありません: ${relativePath}`);
     }
 
+    const targetModifiedDate = config.modifiedDate || EDITORIAL_MODIFIED_DATE;
     let html = fs.readFileSync(absolutePath, 'utf8').replace(EDITORIAL_MARKER_PATTERN, '\n');
     const knowledge = renderKnowledgeBoundary(config);
     let editorialHtml;
@@ -194,7 +196,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       );
     }
 
-    html = updateDateMetadata(html, EDITORIAL_MODIFIED_DATE)
+    html = updateDateMetadata(html, targetModifiedDate)
       .replace(/\r\n/g, '\n')
       .replace(/[ \t]+$/gm, '');
     fs.writeFileSync(absolutePath, html, 'utf8');
@@ -203,9 +205,12 @@ function applyEditorialStructure(rootDir, modifiedDate) {
 
   const articlesPath = path.join(rootDir, 'blog', 'articles.json');
   const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
-  const targetFiles = new Set(Object.keys(EDITORIAL_TARGETS).map(file => `../${file}`));
+  const targetDates = new Map(Object.entries(EDITORIAL_TARGETS).map(([file, config]) => [
+    `../${file}`,
+    config.modifiedDate || EDITORIAL_MODIFIED_DATE
+  ]));
   for (const article of articles) {
-    if (targetFiles.has(article.file)) article.modified = EDITORIAL_MODIFIED_DATE;
+    if (targetDates.has(article.file)) article.modified = targetDates.get(article.file);
   }
   fs.writeFileSync(articlesPath, `${JSON.stringify(articles, null, 2)}\n`, 'utf8');
 

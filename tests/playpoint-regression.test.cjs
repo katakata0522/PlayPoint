@@ -2921,7 +2921,11 @@ test('日本語検索クラスターは意図を分けて公式条件を明示�
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     required.forEach(text => assert.ok(html.includes(text), file + ' に ' + text + ' がありません'));
     assert.ok(html.includes('support.google.com/googleplay/answer/9077192'));
-    const expectedModified = file.endsWith('earn-play-points-free.html') ? '2026-07-31' : '2026-07-30';
+    const expectedModified = file.endsWith('play-points-1-value.html')
+      ? '2026-08-03'
+      : file.endsWith('earn-play-points-free.html')
+        ? '2026-07-31'
+        : '2026-07-30';
     assert.ok(
       html.includes(`"dateModified": "${expectedModified}"`) ||
       html.includes(`"dateModified":"${expectedModified}"`)
