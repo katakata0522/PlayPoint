@@ -11,95 +11,21 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  migrate-date-source:
-    if: github.actor != 'github-actions[bot]'
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
-      - name: Checkout feature branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.head_ref }}
-          persist-credentials: true
+          persist-credentials: false
 
-      - name: Make canonical HTML the date source of truth
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          def replace_once(path_string, old, new):
-              path = Path(path_string)
-              content = path.read_text(encoding='utf-8')
-              if new in content:
-                  print(f'{path}: migration already applied')
-                  return False
-              count = content.count(old)
-              if count != 1:
-                  raise SystemExit(f'{path}: expected exactly one legacy block, found {count}')
-              path.write_text(content.replace(old, new), encoding='utf-8')
-              return True
-
-          replace_once(
-              'scripts/intl-seo-pages.cjs',
-              """const fs = require('fs');
-          const path = require('path');
-
-          const LOCALES = {""",
-              """const fs = require('fs');
-          const path = require('path');
-          const { readManualIntlArticleDates } = require('./manual-intl-articles.cjs');
-
-          const projectRoot = path.resolve(__dirname, '..');
-
-          const LOCALES = {"""
-          )
-
-          replace_once(
-              'scripts/intl-seo-pages.cjs',
-              """  ].map((article) => {
-              const dates = INTL_ARTICLE_DATES[article.file];
-              if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
-              return { ...article, ...dates };
-            }),""",
-              """  ].map((article) => {
-              const configuredDates = INTL_ARTICLE_DATES[article.file];
-              if (!configuredDates) throw new Error(`Missing dates for international article: ${article.file}`);
-              const manualDates = readManualIntlArticleDates(projectRoot, article.file);
-              return { ...article, ...configuredDates, ...(manualDates || {}) };
-            }),"""
-          )
-
-          replace_once(
-              'tests/playpoint-regression.test.cjs',
-              """  assert.match(existingArticle, /\"datePublished\":\\s*\"2026-07-07\"/, '既存の国際記事の公開日が保持されていません');
-            assert.match(existingArticle, /\"dateModified\":\\s*\"2026-07-10\"/, '既存の国際記事の実更新日が設定されていません');
-            assert.match(newArticle, /\"datePublished\":\\s*\"2026-07-10\"/, '新規の国際記事の公開日が保持されていません');""",
-              """  const publishedAt = existingArticle.match(/\"datePublished\":\\s*\"(\\d{4}-\\d{2}-\\d{2})\"/)?.[1];
-            const modifiedAt = existingArticle.match(/\"dateModified\":\\s*\"(\\d{4}-\\d{2}-\\d{2})\"/)?.[1];
-            const metaModifiedAt = existingArticle.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/)?.[1];
-
-            assert.equal(publishedAt, '2026-07-07', '既存の国際記事の公開日が保持されていません');
-            assert.equal(modifiedAt, metaModifiedAt, '既存の国際記事の更新日とメタデータが一致しません');
-            assert.match(newArticle, /\"datePublished\":\\s*\"2026-07-10\"/, '新規の国際記事の公開日が保持されていません');"""
-          )
-          PY
-
-      - name: Commit focused source-of-truth migration
-        run: |
-          if git diff --quiet -- scripts/intl-seo-pages.cjs tests/playpoint-regression.test.cjs; then
-            echo 'No migration commit is needed.'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/intl-seo-pages.cjs tests/playpoint-regression.test.cjs
-          git diff --cached --check
-          git commit -m 'build: synchronize manual article dates from canonical HTML'
-          git push origin HEAD:${{ github.head_ref }}
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
