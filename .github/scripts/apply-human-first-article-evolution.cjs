@@ -103,7 +103,6 @@ const newArticle = {
   id: 'device-change',
   title: '機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認',
   date: '2026-08-03',
-  modified: '2026-08-03',
   category: 'トラブル',
   tags: ['Play Points', '機種変更', '引き継ぎ', '新端末'],
   description: '機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。',
