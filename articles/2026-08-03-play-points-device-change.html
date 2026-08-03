@@ -43,8 +43,10 @@
     "@type":"FAQPage",
     "mainEntity":[
       {"@type":"Question","name":"機種変更するとGoogle Play Pointsは消えますか？","acceptedAnswer":{"@type":"Answer","text":"同じPlay Points加入済みGoogleアカウントを新端末で使用する場合、通常は残高・ランク・履歴を確認できます。端末間でポイントを移す操作は不要です。"}},
+      {"@type":"Question","name":"旧端末を初期化・返却済みでも確認できますか？","acceptedAnswer":{"@type":"Answer","text":"はい。旧端末の操作は前提ではありません。新端末で同じ加入済みGoogleアカウントを選び、Play Points画面の残高・ステータス・履歴を確認してください。"}},
       {"@type":"Question","name":"新端末でPlay Passの週次特典が出ないのはなぜですか？","acceptedAnswer":{"@type":"Answer","text":"Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンス確認により週次Play Points特典などの表示に最長15日ほどかかる場合があると案内しています。"}},
-      {"@type":"Question","name":"別のGoogleアカウントへポイントを移せますか？","acceptedAnswer":{"@type":"Answer","text":"移せません。Play Pointsは別アカウントや家族へ移行・合算できません。"}}
+      {"@type":"Question","name":"iPhoneへ変更してもポイントは残りますか？","acceptedAnswer":{"@type":"Answer","text":"ポイントは加入済みGoogleアカウントで管理されます。確認や利用は、Googleが案内しているAndroid端末またはパソコンのGoogle Playから行ってください。"}},
+      {"@type":"Question","name":"ゲームのセーブデータもPlay Pointsと一緒に移りますか？","acceptedAnswer":{"@type":"Answer","text":"移りません。ゲームデータはPlay Pointsとは別で、Google Play Games、ゲーム独自アカウント、引き継ぎコードなど各アプリの方法を確認する必要があります。"}}
     ]
   }
   </script>
@@ -61,7 +63,25 @@
     <section class="answer-box" aria-labelledby="quick-answer">
       <h2 id="quick-answer">結論：同じGoogleアカウントなら、端末間の移行操作は不要</h2>
       <p>Google Play Pointsは、Play Pointsへ登録している<strong>Googleアカウントで管理</strong>されます。同じアカウントを新しい端末のGoogle Playストアで選べば、通常はポイント残高、ステータス、ポイント履歴を確認できます。</p>
+      <p><strong>旧端末の操作は前提ではありません。</strong>すでに初期化・返却済みでも、新端末で同じGoogleアカウントを選び、残高・ステータス・履歴を確認できます。</p>
       <p>ただし、<strong>別のGoogleアカウントを開いている</strong>、<strong>Google Playの国を変更した</strong>、または<strong>Play Passの週次特典が新端末へ反映されるまでの確認期間中</strong>である場合は、残高や特典が見つからないことがあります。</p>
+    </section>
+
+    <section class="section" id="symptom-guide">
+      <h2>症状から確認先を選ぶ</h2>
+      <p>「何も表示されない」のか、「一部だけ見つからない」のかで確認先が変わります。最初に近い症状を選ぶと、不要な手順を飛ばせます。</p>
+      <div class="table-card">
+        <table>
+          <caption>機種変更後に見つからないもの別の確認先</caption>
+          <thead><tr><th>見つからないもの</th><th>最初に確認すること</th><th>読む場所</th></tr></thead>
+          <tbody>
+            <tr><td>Play Pointsのメニュー自体</td><td>参加済みアカウント、Google Playの国、対応端末</td><td><a href="#new-device">新端末での確認順</a></td></tr>
+            <tr><td>残高・ランク・履歴が以前と違う</td><td>旧端末と同じGoogleアカウントか</td><td><a href="#account-country">別アカウント・国変更</a></td></tr>
+            <tr><td>Play Passの週次特典だけ</td><td>新端末へアカウントを追加してからの日数</td><td><a href="#play-pass">最長15日の注意</a></td></tr>
+            <tr><td>購入で得るはずのポイントだけ</td><td>注文状態、購入アカウント、ポイント履歴</td><td><a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の記事</a></td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <section class="knowledge-boundary" aria-labelledby="known-unknown">
@@ -89,7 +109,7 @@
     <nav class="intl-article-toc" aria-label="目次">
       <h2>目次</h2>
       <ol>
-        <li><a href="#before">旧端末で先に確認すること</a></li>
+        <li><a href="#before">旧端末が使える場合に確認すること</a></li>
         <li><a href="#new-device">新端末での確認順</a></li>
         <li><a href="#play-pass">Play Pass特典は最長15日かかる場合がある</a></li>
         <li><a href="#account-country">別アカウントと国変更は機種変更とは別問題</a></li>
@@ -98,8 +118,8 @@
     </nav>
 
     <section class="section" id="before">
-      <h2>旧端末で先に確認すること</h2>
-      <p>機種変更前に、スクリーンショットやメモで次の情報を残しておくと、新端末で同じアカウントを開けているか判断しやすくなります。</p>
+      <h2>旧端末が使える場合に確認すること</h2>
+      <p>旧端末が手元になくても引き継ぎ確認はできます。まだ操作できる場合だけ、スクリーンショットやメモで次の情報を残しておくと、新端末で同じアカウントを開けているか判断しやすくなります。</p>
       <ul>
         <li>Play Pointsに参加しているGoogleアカウント</li>
         <li>現在のポイント残高</li>
@@ -138,12 +158,13 @@
       <h2>別アカウント・国変更は、機種変更とは別の問題</h2>
       <div class="table-card">
         <table>
+          <caption>端末変更・アカウント変更・国変更の違い</caption>
           <thead><tr><th>状況</th><th>扱い</th><th>確認先</th></tr></thead>
           <tbody>
             <tr><td>同じGoogleアカウントで新端末を使う</td><td>通常は残高・ランク・履歴を確認可能</td><td>Play Points画面</td></tr>
             <tr><td>別のGoogleアカウントを選んでいる</td><td>元のアカウントのポイントは表示されない</td><td>プロフィール画像から切り替え</td></tr>
             <tr><td>別アカウントへポイントを移したい</td><td>移行・合算不可</td><td>元のアカウントで利用</td></tr>
-            <tr><td>Google Playの請求先国を変更した</td><td>旧国のポイントは失効し、ステータスも引き継がれない</td><td>Playの国とプロフィール</td></tr>
+            <tr><td>Google Playの請求先国を変更した</td><td>旧国のポイントは失われ、ステータスも引き継がれない</td><td>Playの国とプロフィール</td></tr>
           </tbody>
         </table>
       </div>
@@ -154,7 +175,7 @@
       <h2>それでもポイントや特典が見つからない時</h2>
       <ol>
         <li>Play Points参加済みのアカウントか確認する</li>
-        <li>旧端末のポイント履歴と新端末の履歴を比較する</li>
+        <li>旧端末が使える場合は、ポイント履歴を新端末と比較する</li>
         <li>Playストアを閉じて開き直し、アプリ更新も確認する</li>
         <li>Play Pass特典だけがない場合は、新端末追加からの日数を確認する</li>
         <li>購入ポイントだけがない場合は、注文状態と購入アカウントを確認する</li>
@@ -165,9 +186,11 @@
 
     <section class="section">
       <h2>よくある質問</h2>
-      <div class="faq-item"><h3>旧端末を初期化するとポイントも消えますか？</h3><p>同じ加入済みGoogleアカウントで管理されるPlay Points自体は、旧端末の初期化だけを理由に別アカウントへ移るものではありません。ただし、初期化前にアカウントと履歴を確認しておくと安全です。</p></div>
-      <div class="faq-item"><h3>iPhoneへ変更してもポイントは残りますか？</h3><p>ポイントは加入済みGoogleアカウントで管理されますが、Play Pointsの確認・利用に使える画面や対応端末はAndroidやパソコンを中心に案内されています。Android端末またはplay.google.comで確認してください。</p></div>
-      <div class="faq-item"><h3>ゲームのセーブデータもPlay Pointsと一緒に移りますか？</h3><p>別です。ゲームデータの引き継ぎ方法は、Google Play Games、ゲーム独自アカウント、引き継ぎコードなど、各アプリの案内を確認してください。</p></div>
+      <div class="faq-item"><h3>機種変更するとGoogle Play Pointsは消えますか？</h3><p>同じPlay Points加入済みGoogleアカウントを新端末で使用する場合、通常は残高・ランク・履歴を確認できます。端末間でポイントを移す操作は不要です。</p></div>
+      <div class="faq-item"><h3>旧端末を初期化・返却済みでも確認できますか？</h3><p>はい。旧端末の操作は前提ではありません。新端末で同じ加入済みGoogleアカウントを選び、Play Points画面の残高・ステータス・履歴を確認してください。</p></div>
+      <div class="faq-item"><h3>新端末でPlay Passの週次特典が出ないのはなぜですか？</h3><p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンス確認により週次Play Points特典などの表示に最長15日ほどかかる場合があると案内しています。</p></div>
+      <div class="faq-item"><h3>iPhoneへ変更してもポイントは残りますか？</h3><p>ポイントは加入済みGoogleアカウントで管理されます。確認や利用は、Googleが案内しているAndroid端末またはパソコンのGoogle Playから行ってください。</p></div>
+      <div class="faq-item"><h3>ゲームのセーブデータもPlay Pointsと一緒に移りますか？</h3><p>移りません。ゲームデータはPlay Pointsとは別で、Google Play Games、ゲーム独自アカウント、引き継ぎコードなど各アプリの方法を確認する必要があります。</p></div>
     </section>
 
     <aside class="official-source-note">
