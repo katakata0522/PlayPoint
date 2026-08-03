@@ -20,13 +20,16 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2026-07-24-play-points-1-value.html': {
     modifiedDate: '2026-08-03',
+    boundaryHeading: '公式で確認できること／Google Play画面で確認すること',
+    knownHeading: '公式で確認できること',
+    unknownHeading: 'Google Play画面で確認すること',
     known: [
-      'ポイントの対象は税金を除いたアイテム価格で、最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
+      'ポイント対象は税金を除いたアイテム価格で、商品ごとに最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
       '日本のステータス別通常獲得率は100円あたり1～2ポイントです。'
     ],
     unknown: [
-      '税込の表示価格だけから、個別取引の税抜対象価格を常に正確に逆算できるとは限りません。',
-      '対象可否、キャンペーン適用、実際の付与数は購入画面とポイント履歴が最終判断です。'
+      'その購入が対象か、キャンペーンが適用されるか。',
+      '購入前の獲得予定ポイントと、購入後の実際の付与数。'
     ],
     comparisonHref: '/compare/earning-rates/#status-rates',
     comparisonLabel: 'ステータス別獲得率の引用用比較表を見る'
@@ -128,15 +131,18 @@ function renderKnowledgeBoundary(config) {
   const comparison = config.comparisonHref
     ? `<p class="knowledge-boundary__source"><a href="${escapeHtml(config.comparisonHref)}">${escapeHtml(config.comparisonLabel)}</a></p>`
     : '';
+  const boundaryHeading = config.boundaryHeading || '判明していること／このサイトからは不明なこと';
+  const knownHeading = config.knownHeading || '判明していること';
+  const unknownHeading = config.unknownHeading || 'このサイトからは不明なこと';
   return `<section class="knowledge-boundary" aria-labelledby="known-unknown">
-                <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+                <h2 id="known-unknown">${escapeHtml(boundaryHeading)}</h2>
                 <div class="knowledge-boundary__grid">
                     <div>
-                        <h3>判明していること</h3>
+                        <h3>${escapeHtml(knownHeading)}</h3>
                         <ul>${config.known.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
                     </div>
                     <div>
-                        <h3>このサイトからは不明なこと</h3>
+                        <h3>${escapeHtml(unknownHeading)}</h3>
                         <ul>${config.unknown.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
                     </div>
                 </div>
