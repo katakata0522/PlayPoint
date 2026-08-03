@@ -1,6 +1,6 @@
 'use strict';
 
-// フィード日付の失敗メッセージをソースから特定するための一時マーカー。
+// フィード日付失敗の正確なアサーションを探索するための一時マーカー。
 const fs = require('node:fs');
 const path = require('node:path');
 
