@@ -1,6 +1,6 @@
 'use strict';
 
-// RSS時差判定の実装箇所を診断するための一時マーカー。
+// フィード日付の失敗メッセージをソースから特定するための一時マーカー。
 const fs = require('node:fs');
 const path = require('node:path');
 
