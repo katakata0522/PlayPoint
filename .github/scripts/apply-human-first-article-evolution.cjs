@@ -1,5 +1,6 @@
 'use strict';
 
+// 診断ワークフローをPR更新で再実行するための一時マーカー。
 const fs = require('node:fs');
 const path = require('node:path');
 
