@@ -123,7 +123,7 @@ updateEntry('play-points-cash-conversion', {
   modified: '2026-08-03',
   category: '使い方',
   tags: ['Play Points', '現金化', '交換先', '使い道'],
-  description: 'Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を期限・払い戻し条件で比較します。'
+  description: 'Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を、自由度・期限・払い戻し・確認場所で比較します。'
 });
 
 write(articlesPath, JSON.stringify(updatedArticles, null, 2) + '\n');
