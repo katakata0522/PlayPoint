@@ -33,17 +33,12 @@ jobs:
         run: node scripts/apply-rounding-guide-evolution.cjs
 
       - name: Regenerate public output
-        run: |
-          set -euo pipefail
-          ASSET_VERSION="$(node -e "const fs=require('fs');const m=fs.readFileSync('sw.js','utf8').match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
-          PLAYPOINT_MODIFIED_DATE=2026-08-03 \
-          PLAYPOINT_ASSET_VERSION="$ASSET_VERSION" \
-          node scripts/build-html.js
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-03'
+          PLAYPOINT_ASSET_VERSION: '20260803_2217'
+        run: node scripts/build-html.js
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
-
-      - name: Commit verified result
+      - name: Commit generated baseline locally
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -58,7 +53,15 @@ jobs:
             exit 1
           fi
           git commit -m "記事の丸め計算を検証可能にする"
-          git push origin HEAD
+
+      - name: Run complete preflight from clean baseline
+        run: node .github/scripts/preflight.cjs
+
+      - name: Confirm preflight left the tree clean
+        run: test -z "$(git status --porcelain)"
+
+      - name: Push verified result
+        run: git push origin HEAD
 
   quality:
     if: github.event_name != 'pull_request' || github.head_ref != 'content/rounding-guide-evolution-20260803'
