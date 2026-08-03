@@ -7,9 +7,11 @@ const path = require('node:path');
 const test = require('node:test');
 const {
   MANUAL_INTL_ARTICLE_FILES,
+  readManualIntlArticleDates,
   restoreManualIntlArticles,
   snapshotManualIntlArticles
 } = require('../scripts/manual-intl-articles.cjs');
+const { getPublishedIntlArticles } = require('../scripts/intl-seo-pages.cjs');
 
 const root = path.resolve(__dirname, '..');
 const expectedFiles = [
@@ -27,11 +29,40 @@ const expectedFiles = [
   'tw/articles/google-play-points-levels.html',
   'tw/articles/google-play-points-super-weekly-reward.html'
 ];
+const manualFilesOutsideIntlRegistry = [
+  'ko/articles/google-play-points-super-weekly-reward.html',
+  'tw/articles/google-play-points-super-weekly-reward.html'
+];
 
 test('地域別に手動確認した記事の正本一覧を固定する', () => {
   assert.deepEqual([...MANUAL_INTL_ARTICLE_FILES], expectedFiles);
   for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
     assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath}: 正本HTMLがありません`);
+  }
+});
+
+test('手動正本の公開日・更新日・last-modifiedを一致させる', () => {
+  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
+    const dates = readManualIntlArticleDates(root, relativePath);
+    assert.match(dates.publishedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(dates.modifiedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(dates.publishedAt <= dates.modifiedAt, `${relativePath}: 公開日が更新日より後です`);
+  }
+});
+
+test('国際記事台帳は手動正本の日付を自動採用する', () => {
+  const registry = new Map(getPublishedIntlArticles().map(article => [article.file, article]));
+  const outsideRegistry = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => !registry.has(relativePath));
+  assert.deepEqual(outsideRegistry, manualFilesOutsideIntlRegistry);
+
+  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
+    const article = registry.get(relativePath);
+    if (!article) continue;
+    assert.deepEqual(
+      { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt },
+      readManualIntlArticleDates(root, relativePath),
+      `${relativePath}: 記事台帳と正本HTMLの日付が一致しません`
+    );
   }
 });
 
