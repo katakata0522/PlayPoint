@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -25,65 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.head_ref }}
-          persist-credentials: true
+          persist-credentials: false
 
-      - name: Apply focused regression-test migrations
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          path = Path('tests/playpoint-regression.test.cjs')
-          content = path.read_text(encoding='utf-8')
-          replacements = [
-              (
-                  "      assert.ok(html.includes('https://support.google.com/googleplay/answer/9077312'), `${file} に公式ヘルプ導線がありません`);",
-                  """      assert.match(
-                html,
-                /https:\\/\\/support\\.google\\.com\\/googleplay\\/answer\\/\\d+/,
-                `${file} に有効なGoogle Play公式ヘルプ導線がありません`
-              );"""
-              ),
-              (
-                  "    assert.ok(html.includes(`\"name\": \"${siteName}\"`), `${file} の構造化データsiteNameが公式名寄せではありません`);",
-                  "    assert.match(html, new RegExp(`\\\"name\\\"\\\\s*:\\\\s*\\\"${siteName}\\\"`), `${file} の構造化データsiteNameが公式名寄せではありません`);"
-              ),
-              (
-                  "    ['ko/articles/google-play-points-gift-cards.html', 'Google Play Points 계산기', '/ko/amount/10000/'],",
-                  "    ['ko/articles/google-play-points-gift-cards.html', 'Google Play Points 계산기', '/ko/points-cost/'],"
-              ),
-              (
-                  "    ['tw/articles/google-play-points-gift-cards.html', 'Google Play Points 計算器', '/tw/amount/10000/'],",
-                  "    ['tw/articles/google-play-points-gift-cards.html', 'Google Play Points 計算器', '/tw/points-cost/'],"
-              )
-          ]
-
-          changed = False
-          for old, new in replacements:
-              if new in content:
-                  continue
-              count = content.count(old)
-              if count != 1:
-                  raise SystemExit(f'Expected exactly one legacy assertion, found {count}: {old[:80]}')
-              content = content.replace(old, new)
-              changed = True
-
-          if changed:
-              path.write_text(content, encoding='utf-8')
-          else:
-              print('All focused migrations are already applied.')
-          PY
-
-      - name: Commit focused migrations
-        if: github.event_name == 'pull_request'
-        run: |
-          if git diff --quiet -- tests/playpoint-regression.test.cjs; then
-            echo 'No migration commit is needed.'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tests/playpoint-regression.test.cjs
-          git diff --cached --check
-          git commit -m 'test: align international assertions with verified content'
-          git push origin HEAD:${{ github.head_ref }}
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
