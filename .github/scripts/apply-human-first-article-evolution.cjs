@@ -73,6 +73,20 @@ if (!weekly.includes('2026-08-03-play-points-device-change.html')) {
 }
 write(weeklyPath, weekly);
 
+const blogIndexPath = 'blog/index.html';
+let blogIndex = read(blogIndexPath);
+const staticNewArticleLink = '                    <li><a href="../articles/2026-08-03-play-points-device-change.html">機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</a></li>';
+const staticNewArticleMarker = '                <ul>\n                    <li><a href="../articles/2026-07-31-super-weekly-reward.html">Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの注意点</a></li>';
+if (!blogIndex.includes('../articles/2026-08-03-play-points-device-change.html')) {
+  blogIndex = replaceRequired(
+    blogIndex,
+    staticNewArticleMarker,
+    `                <ul>\n${staticNewArticleLink}\n                    <li><a href="../articles/2026-07-31-super-weekly-reward.html">Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの注意点</a></li>`,
+    'JavaScript無効時の新着記事リンク'
+  );
+}
+write(blogIndexPath, blogIndex);
+
 const articlesPath = 'blog/articles.json';
 const articles = JSON.parse(read(articlesPath));
 const newArticle = {
@@ -115,4 +129,4 @@ updateEntry('play-points-cash-conversion', {
 write(articlesPath, JSON.stringify(updatedArticles, null, 2) + '\n');
 fs.rmSync(resolvePath('articles/styles/2025-12-25-check-balance.css'), { force: true });
 
-console.log('人間向けの記事統合、一次情報導線、残滓削除を適用しました。');
+console.log('人間向けの記事統合、静的導線、一次情報、残滓削除を適用しました。');
