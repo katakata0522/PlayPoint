@@ -13,6 +13,10 @@ const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
+const {
+  restoreManualIntlArticles,
+  snapshotManualIntlArticles
+} = require('./manual-intl-articles.cjs');
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
@@ -32,7 +36,12 @@ writeLocalizedPages(rootDir, indexHtml, locales);
 syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
-writeIntlSeoPages(rootDir, assetVersions, todayStr);
+const manualIntlSnapshots = snapshotManualIntlArticles(rootDir);
+try {
+  writeIntlSeoPages(rootDir, assetVersions, todayStr);
+} finally {
+  restoreManualIntlArticles(rootDir, manualIntlSnapshots);
+}
 syncIntlManualContent(rootDir);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);

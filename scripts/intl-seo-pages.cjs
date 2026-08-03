@@ -2,6 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { readManualIntlArticleDates } = require('./manual-intl-articles.cjs');
+
+const projectRoot = path.resolve(__dirname, '..');
 
 const LOCALES = {
   en: {
@@ -1702,9 +1705,10 @@ const INTL_ARTICLES = [
     ...TW_ARTICLES,
     ...POINT_VALUE_100_ARTICLES
   ].map((article) => {
-    const dates = INTL_ARTICLE_DATES[article.file];
-    if (!dates) throw new Error(`Missing dates for international article: ${article.file}`);
-    return { ...article, ...dates };
+    const configuredDates = INTL_ARTICLE_DATES[article.file];
+    if (!configuredDates) throw new Error(`Missing dates for international article: ${article.file}`);
+    const manualDates = readManualIntlArticleDates(projectRoot, article.file);
+    return { ...article, ...configuredDates, ...(manualDates || {}) };
   }),
   ...MANUAL_COMPARISON_ARTICLES
 ];
