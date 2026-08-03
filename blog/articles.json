@@ -1,5 +1,20 @@
 [
   {
+    "id": "device-change",
+    "title": "機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認",
+    "date": "2026-08-03",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "機種変更",
+      "引き継ぎ",
+      "新端末"
+    ],
+    "description": "機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。",
+    "file": "../articles/2026-08-03-play-points-device-change.html",
+    "thumbnail": "../articles/ogp/multiple-accounts.png"
+  },
+  {
     "id": "super-weekly-reward",
     "title": "Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの注意点",
     "date": "2026-07-31",
@@ -65,16 +80,17 @@
   },
   {
     "id": "play-points-cash-conversion",
-    "title": "Google Play Pointsは現金化できる？PayPay・銀行振込との違い",
+    "title": "Google Play Pointsは現金化できる？交換先・使い道を比較",
     "date": "2026-07-24",
     "modified": "2026-07-30",
     "category": "使い方",
     "tags": [
       "Play Points",
       "現金化",
+      "交換先",
       "使い道"
     ],
-    "description": "Google Play Pointsは現金化やPayPay・銀行口座への送金ができるのかを公式情報で整理。Playクレジット、クーポン、アプリ内アイテムとの違いと注意点を解説します。",
+    "description": "Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を、自由度・期限・払い戻し・確認場所で比較します。",
     "file": "../articles/2026-07-24-play-points-cash-conversion.html",
     "thumbnail": "../articles/ogp/getting-started.png"
   },
@@ -265,10 +281,10 @@
       "履歴",
       "確認方法"
     ],
-    "description": "Google Play Pointsの残高、ポイント履歴、有効期限、年間のレベル進捗を確認する手順と、計算機へ入力する数字の違いを解説します。",
+    "description": "Google Play Pointsの残高、ポイント履歴、有効期限、年間のレベル進捗を確認する手順を解説。購入・週次特典・交換・返金の履歴の見分け方と、表示されない時の確認順も整理します。",
     "file": "../articles/2025-12-25-check-balance.html",
     "thumbnail": "../articles/ogp/check-balance.png",
-    "modified": "2026-07-24"
+    "modified": "2026-08-03"
   },
   {
     "id": "refund",
@@ -345,10 +361,10 @@
       "スーパーウィークリーリワード",
       "Play Pass"
     ],
-    "description": "Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、表示されない時の確認順を解説します。",
+    "description": "Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、新端末で特典が最長15日ほど遅れる場合の確認順を解説します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
-    "modified": "2026-07-31"
+    "modified": "2026-08-03"
   },
   {
     "id": "getting-started",
