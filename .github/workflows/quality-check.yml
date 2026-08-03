@@ -1,4 +1,4 @@
-name: Diagnose article discoverability test
+name: Diagnose generated article discoverability test
 
 on:
   pull_request:
@@ -23,5 +23,29 @@ jobs:
           ref: content/human-first-article-evolution-20260803
           persist-credentials: false
 
-      - name: Print discoverability test excerpt
+      - name: Apply article migration
         run: node .github/scripts/apply-human-first-article-evolution.cjs
+
+      - name: Build generated files
+        shell: bash
+        run: |
+          set -euo pipefail
+          modified_date="$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          asset_version="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+
+      - name: Print generated discoverability test excerpt
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const files = fs.readdirSync('tests').filter(file => file.endsWith('.test.cjs')).sort();
+          console.log('test files:', files.join(', '));
+          const target = files.find(file => file.includes('discoverability'));
+          if (!target) throw new Error('discoverability test was not generated');
+          const lines = fs.readFileSync(path.join('tests', target), 'utf8').split('\n');
+          console.log('target:', target);
+          console.log(lines.slice(75, 150).map((line, index) => `${index + 76}: ${line}`).join('\n'));
+          NODE
