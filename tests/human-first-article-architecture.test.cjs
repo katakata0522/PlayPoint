@@ -33,6 +33,8 @@ test('新規記事は機種変更の独立した検索意図だけを担当す�
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9077192/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/16507543/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9077247/);
+  assert.match(html, /support\.google\.com\/googleplay\/answer\/7431675/);
+  assert.match(html, /support\.google\.com\/googleplay\/answer\/15776077/);
 });
 
 test('履歴の検索意図は既存の残高・履歴記事へ集約する', () => {
@@ -42,6 +44,9 @@ test('履歴の検索意図は既存の残高・履歴記事へ集約する', ()
   assert.match(html, /購入による獲得/);
   assert.match(html, /週次特典・キャンペーン/);
   assert.match(html, /返金・キャンセル/);
+  assert.match(html, /コンテンツやデバイスによって時間がかかる場合/);
+  assert.match(html, /2025-12-25-playpoints-rank-maintenance\.html/);
+  assert.doesNotMatch(html, /2025-12-25-rank-maintenance-reset\.html/);
   assert.match(html, /2026-08-03-play-points-device-change\.html/);
 
   const historyTitles = articles.filter(article => /履歴/.test(article.title));
