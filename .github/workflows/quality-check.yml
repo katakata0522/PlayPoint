@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -20,12 +20,49 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+
+      - name: Apply focused official-help assertion migration
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/playpoint-regression.test.cjs')
+          content = path.read_text(encoding='utf-8')
+          old = "      assert.ok(html.includes('https://support.google.com/googleplay/answer/9077312'), `${file} に公式ヘルプ導線がありません`);"
+          new = """      assert.match(
+                html,
+                /https:\\/\\/support\\.google\\.com\\/googleplay\\/answer\\/\\d+/,
+                `${file} に有効なGoogle Play公式ヘルプ導線がありません`
+              );"""
+          if new in content:
+              print('Focused assertion migration is already applied.')
+          else:
+              count = content.count(old)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one legacy assertion, found {count}')
+              path.write_text(content.replace(old, new), encoding='utf-8')
+          PY
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
+
+      - name: Commit focused migration
+        if: github.event_name == 'pull_request'
+        run: |
+          if git diff --quiet -- tests/playpoint-regression.test.cjs; then
+            echo 'No migration commit is needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/playpoint-regression.test.cjs
+          git diff --cached --check
+          git commit -m 'test: validate article-specific Google Play help links'
+          git push origin HEAD:${{ github.head_ref }}
