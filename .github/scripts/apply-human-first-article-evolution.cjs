@@ -1,6 +1,6 @@
 'use strict';
 
-// 診断ワークフローをPR更新で再実行するための一時マーカー。
+// ビルド後に生成される記事発見性テストを診断するための一時マーカー。
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -86,15 +86,4 @@ updateEntry('play-points-cash-conversion', {
 });
 
 write(articlesPath, JSON.stringify(withoutDevice, null, 2) + '\n');
-
-const testsDir = path.join(root, 'tests');
-const discoverabilityFile = fs.readdirSync(testsDir).find(file => file.includes('discoverability'));
-console.log('discoverability test file:', discoverabilityFile || '(not found)');
-if (discoverabilityFile) {
-  const source = fs.readFileSync(path.join(testsDir, discoverabilityFile), 'utf8').split('\n');
-  console.log('--- discoverability lines 80-150 ---');
-  console.log(source.slice(79, 150).map((line, index) => `${index + 80}: ${line}`).join('\n'));
-  console.log('--- end discoverability excerpt ---');
-}
-
 console.log('人間向けの記事構成と台帳を更新しました。');
