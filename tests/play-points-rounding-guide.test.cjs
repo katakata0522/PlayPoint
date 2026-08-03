@@ -100,6 +100,14 @@ test('シミュレーターは初期条件と試算結果を明示する', () =>
   assert.match(js, /rounding-result-title">試算結果/);
 });
 
+test('記事別の検証カード文言は生成元でも保持する', () => {
+  const html = fs.readFileSync(articlePath, 'utf8');
+  const generator = read('scripts/article-editorial-structure.cjs');
+  assert.match(html, /公式で確認できること／Google Play画面で確認すること/);
+  assert.match(generator, /boundaryHeading: '公式で確認できること／Google Play画面で確認すること'/);
+  assert.match(generator, /商品ごとに最も近い整数へ丸める計算方法/);
+});
+
 test('画面のFAQとFAQPage構造化データが一致する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
   const scripts = [...html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
