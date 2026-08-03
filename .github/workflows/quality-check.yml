@@ -28,6 +28,23 @@ jobs:
       - name: Apply reviewed article integration
         run: node .github/scripts/apply-human-first-article-evolution.cjs
 
+      - name: Preserve cash guide canonical compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'articles/2026-07-24-play-points-cash-conversion.html';
+          const canonical = 'https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html';
+          const selfClosing = `<link rel="canonical" href="${canonical}" />`;
+          const htmlStyle = `<link rel="canonical" href="${canonical}">`;
+          const html = fs.readFileSync(file, 'utf8');
+          if (!html.includes(selfClosing) && !html.includes(htmlStyle)) {
+            throw new Error('現金化ガイドのcanonicalが見つかりません');
+          }
+          fs.writeFileSync(file, html.replace(selfClosing, htmlStyle), 'utf8');
+          NODE
+
       - name: Rebuild generated public files deterministically
         shell: bash
         run: |
