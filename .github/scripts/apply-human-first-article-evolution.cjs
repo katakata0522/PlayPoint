@@ -1,6 +1,6 @@
 'use strict';
 
-// ビルド後に生成される記事発見性テストを診断するための一時マーカー。
+// RSS時差判定の実装箇所を診断するための一時マーカー。
 const fs = require('node:fs');
 const path = require('node:path');
 
