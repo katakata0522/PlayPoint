@@ -29,17 +29,38 @@ jobs:
           ref: ${{ github.head_ref }}
           persist-credentials: true
 
-      - name: Regenerate canonical outputs
-        run: node scripts/build-html.js
+      - name: Regenerate with committed build metadata
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+
+          const indexHtml = fs.readFileSync('index.html', 'utf8');
+          const serviceWorker = fs.readFileSync('sw.js', 'utf8');
+          const modifiedDate = indexHtml.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
+          const assetVersion = serviceWorker.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
+          if (!modifiedDate || !assetVersion) throw new Error('Could not extract committed build metadata.');
+
+          const result = spawnSync(process.execPath, ['scripts/build-html.js'], {
+            stdio: 'inherit',
+            env: {
+              ...process.env,
+              PLAYPOINT_MODIFIED_DATE: modifiedDate,
+              PLAYPOINT_ASSET_VERSION: assetVersion
+            }
+          });
+          if (result.status !== 0) process.exit(result.status || 1);
+          NODE
 
       - name: Verify focused generated diff and SEO lengths
         run: |
           python - <<'PY'
           from pathlib import Path
           import re
+          import subprocess
           from urllib.parse import urlparse
 
-          changed = [line for line in __import__('subprocess').check_output(['git', 'diff', '--name-only'], text=True).splitlines() if line]
+          changed = [line for line in subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines() if line]
           if changed != ['sitemap.xml']:
               raise SystemExit(f'Unexpected generated files changed: {changed}')
 
