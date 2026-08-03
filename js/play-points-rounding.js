@@ -58,7 +58,7 @@
         ? '購入ごとの丸めが ' + result.difference + 'ポイント多い試算'
         : '合計後の丸めが ' + Math.abs(result.difference) + 'ポイント多い試算';
 
-    resultElement.innerHTML = '<dl>'
+    resultElement.innerHTML = '<h3 class="rounding-result-title">試算結果</h3><dl>'
       + '<dt>1回の丸め前</dt><dd>' + formatDecimal(result.perPurchaseRaw) + 'ポイント</dd>'
       + '<dt>1回の丸め後</dt><dd>' + result.perPurchaseRounded.toLocaleString('ja-JP') + 'ポイント</dd>'
       + '<dt>購入ごとに丸めた合計</dt><dd><strong>' + result.separateTotal.toLocaleString('ja-JP') + 'ポイント</strong></dd>'
