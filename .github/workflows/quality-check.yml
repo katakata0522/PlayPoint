@@ -1,176 +1,31 @@
-name: Finalize human-first article content
+name: Pull request quality check
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: finalize-article-content-${{ github.head_ref || github.ref }}
-  cancel-in-progress: false
+  group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  finalize:
-    if: github.head_ref == 'content/human-first-article-evolution-20260803' && github.actor != 'github-actions[bot]'
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 7
     steps:
-      - name: Checkout article branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: content/human-first-article-evolution-20260803
-          fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
-      - name: Apply reviewed article integration
-        run: node .github/scripts/apply-human-first-article-evolution.cjs
-
-      - name: Complete cash guide compatibility and visible FAQ
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const fs = require('node:fs');
-          const file = 'articles/2026-07-24-play-points-cash-conversion.html';
-          const canonical = 'https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html';
-          const selfClosing = `<link rel="canonical" href="${canonical}" />`;
-          const htmlStyle = `<link rel="canonical" href="${canonical}">`;
-          let html = fs.readFileSync(file, 'utf8');
-          if (!html.includes(selfClosing) && !html.includes(htmlStyle)) {
-            throw new Error('現金化ガイドのcanonicalが見つかりません');
-          }
-          html = html.replace(selfClosing, htmlStyle);
-
-          const faqSchema = `  <script type="application/ld+json">
-          {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Google Play Pointsは現金化できますか？","acceptedAnswer":{"@type":"Answer","text":"できません。Google Play Pointsを現金、PayPay残高、銀行口座へ移す公式機能はありません。"}},{"@type":"Question","name":"交換先はどれを選ぶのが最適ですか？","acceptedAnswer":{"@type":"Answer","text":"全員に共通する最適解はありません。現在のアカウントに表示される交換先から、期限内に実際に使う予定と払い戻し条件を確認して選びます。"}},{"@type":"Question","name":"交換後に取り消しや払い戻しはできますか？","acceptedAnswer":{"@type":"Answer","text":"交換先によって異なります。アプリ内・ゲーム内アイテムや寄付は払い戻し不可で、クーポンや購入時のポイント利用は取引状況により返却条件が異なります。"}}]}
-          </script>
-          `;
-          if (!html.includes('"@type":"FAQPage"')) {
-            html = html.replace('</head>', `${faqSchema}</head>`);
-          }
-
-          const faqSection = `    <section class="section" id="faq">
-            <h2>よくある質問</h2>
-            <h3>Google Play Pointsは現金やPayPayへ換えられますか？</h3>
-            <p>換えられません。現金、PayPay残高、銀行口座へ移す公式機能はなく、Google Play内に表示される正規の交換先から選びます。</p>
-            <h3>どの交換先がいちばん得ですか？</h3>
-            <p>全員に共通する最適解はありません。期限内に実際に使う予定があり、対象商品や最低購入額を満たせる交換先を優先してください。</p>
-            <h3>交換後に取り消せますか？</h3>
-            <p>交換先によって異なります。アプリ内・ゲーム内アイテムや寄付は払い戻し不可です。クーポンや購入時のポイント利用は、取引の状態と公式の返却条件を確認してください。</p>
-          </section>
-
-          `;
-          const ctaMarker = '    <div class="cta-box">';
-          if (!html.includes('<section class="section" id="faq">')) {
-            if (!html.includes(ctaMarker)) throw new Error('FAQの挿入位置が見つかりません');
-            html = html.replace(ctaMarker, faqSection + ctaMarker);
-          }
-
-          fs.writeFileSync(file, html, 'utf8');
-          NODE
-
-      - name: Rebuild generated public files deterministically
-        shell: bash
-        run: |
-          set -euo pipefail
-          modified_date="$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
-          asset_version="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
-          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
-
-      - name: Verify generated change scope
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const { execFileSync } = require('node:child_process');
-          const allowed = new Set([
-            'articles/2025-12-25-check-balance.html',
-            'articles/2025-12-25-weekly-reward.html',
-            'articles/2026-07-24-play-points-cash-conversion.html',
-            'articles/2026-08-03-play-points-device-change.html',
-            'articles/styles/2025-12-25-check-balance.css',
-            'blog/articles.json',
-            'blog/index.html',
-            'blog/sitemap.xml',
-            'feed.xml',
-            'atom.xml',
-            'sitemap.xml',
-            'tests/human-first-article-architecture.test.cjs'
-          ]);
-          const changed = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
-            .trim().split('\n').filter(Boolean);
-          const unexpected = changed.filter(file => !allowed.has(file));
-          if (unexpected.length) {
-            console.error('Unexpected generated changes:\n' + unexpected.join('\n'));
-            process.exit(1);
-          }
-          console.log('Generated changes are within the approved article scope:\n' + changed.join('\n'));
-          NODE
-
-      - name: Commit verified public content only
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- \
-            articles/2025-12-25-check-balance.html \
-            articles/2025-12-25-weekly-reward.html \
-            articles/2026-07-24-play-points-cash-conversion.html \
-            articles/2026-08-03-play-points-device-change.html \
-            articles/styles/2025-12-25-check-balance.css \
-            blog/articles.json \
-            blog/index.html \
-            blog/sitemap.xml \
-            feed.xml \
-            atom.xml \
-            sitemap.xml \
-            tests/human-first-article-architecture.test.cjs
-          git commit -m "記事統合の公開内容を確定"
-
-      - name: Validate with permanent read-only workflow semantics
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat > .github/workflows/quality-check.yml <<'YAML'
-          name: Pull request quality check
-
-          on:
-            workflow_dispatch:
-            pull_request:
-              branches:
-                - main
-              paths-ignore:
-                - '**.md'
-                - '.gitignore'
-                - '.gitattributes'
-
-          permissions:
-            contents: read
-
-          concurrency:
-            group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-            cancel-in-progress: true
-
-          jobs:
-            quality:
-              runs-on: ubuntu-latest
-              timeout-minutes: 7
-              steps:
-                - name: Checkout code
-                  uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-                  with:
-                    persist-credentials: false
-
-                - name: Run complete preflight
-                  run: node .github/scripts/preflight.cjs
-          YAML
-          node .github/scripts/preflight.cjs
-          git checkout -- .github/workflows/quality-check.yml
-          test -z "$(git status --porcelain)"
-
-      - name: Push verified content commit
-        run: git push origin HEAD:content/human-first-article-evolution-20260803
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
