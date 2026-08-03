@@ -1,4 +1,4 @@
-name: Locate feed date assertion text
+name: Finalize human-first article evolution
 
 on:
   pull_request:
@@ -6,50 +6,138 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: diagnose-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: finalize-article-evolution-${{ github.head_ref || github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  diagnose:
+  finalize:
+    if: github.head_ref == 'content/human-first-article-evolution-20260803'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
-      - name: Checkout branch
+      - name: Checkout article branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: content/human-first-article-evolution-20260803
-          persist-credentials: false
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Search exact failure fragments
+      - name: Apply reviewed article integration
+        run: node .github/scripts/apply-human-first-article-evolution.cjs
+
+      - name: Rebuild generated public files deterministically
+        shell: bash
+        run: |
+          set -euo pipefail
+          modified_date="$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          asset_version="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+
+      - name: Restore permanent read-only CI and remove migration script
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/scripts/apply-human-first-article-evolution.cjs
+          cat > .github/workflows/quality-check.yml <<'YAML'
+          name: Pull request quality check
+
+          on:
+            workflow_dispatch:
+            pull_request:
+              branches:
+                - main
+              paths-ignore:
+                - '**.md'
+                - '.gitignore'
+                - '.gitattributes'
+
+          permissions:
+            contents: read
+
+          concurrency:
+            group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+            cancel-in-progress: true
+
+          jobs:
+            quality:
+              runs-on: ubuntu-latest
+              timeout-minutes: 7
+              steps:
+                - name: Checkout code
+                  uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+                  with:
+                    persist-credentials: false
+
+                - name: Run complete preflight
+                  run: node .github/scripts/preflight.cjs
+          YAML
+
+      - name: Verify generated change scope
         shell: bash
         run: |
           set -euo pipefail
           node <<'NODE'
-          const fs = require('node:fs');
-          const path = require('node:path');
-          const roots = ['tests', 'scripts', '.github'];
-          const patterns = [/先頭日付/, /最新記事と一致/, /掲載範囲と更新日/, /strictEqual\([^\n]*latest/];
-          let found = 0;
-          function walk(dir) {
-            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-              const full = path.join(dir, entry.name);
-              if (entry.isDirectory()) walk(full);
-              else if (/\.(?:c?js|mjs)$/.test(entry.name)) {
-                const lines = fs.readFileSync(full, 'utf8').split('\n');
-                lines.forEach((line, index) => {
-                  if (!patterns.some(pattern => pattern.test(line))) return;
-                  found += 1;
-                  const start = Math.max(0, index - 15);
-                  const end = Math.min(lines.length, index + 20);
-                  console.log(`--- ${full}:${index + 1} ---`);
-                  console.log(lines.slice(start, end).map((value, offset) => `${start + offset + 1}: ${value}`).join('\n'));
-                });
-              }
-            }
+          const { execFileSync } = require('node:child_process');
+          const allowed = new Set([
+            '.github/scripts/apply-human-first-article-evolution.cjs',
+            '.github/workflows/quality-check.yml',
+            'articles/2025-12-25-check-balance.html',
+            'articles/2025-12-25-weekly-reward.html',
+            'articles/2026-07-24-play-points-cash-conversion.html',
+            'articles/2026-08-03-play-points-device-change.html',
+            'articles/styles/2025-12-25-check-balance.css',
+            'blog/articles.json',
+            'blog/index.html',
+            'blog/sitemap.xml',
+            'feed.xml',
+            'atom.xml',
+            'sitemap.xml',
+            'tests/human-first-article-architecture.test.cjs'
+          ]);
+          const changed = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
+            .trim().split('\n').filter(Boolean);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) {
+            console.error('Unexpected generated changes:\n' + unexpected.join('\n'));
+            process.exit(1);
           }
-          roots.filter(fs.existsSync).forEach(walk);
-          if (!found) throw new Error('exact failure fragments were not found');
+          console.log('Generated changes are within the approved article scope:\n' + changed.join('\n'));
           NODE
+
+      - name: Commit finalized article set
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            .github/scripts/apply-human-first-article-evolution.cjs \
+            .github/workflows/quality-check.yml \
+            articles/2025-12-25-check-balance.html \
+            articles/2025-12-25-weekly-reward.html \
+            articles/2026-07-24-play-points-cash-conversion.html \
+            articles/2026-08-03-play-points-device-change.html \
+            articles/styles/2025-12-25-check-balance.css \
+            blog/articles.json \
+            blog/index.html \
+            blog/sitemap.xml \
+            feed.xml \
+            atom.xml \
+            sitemap.xml \
+            tests/human-first-article-architecture.test.cjs
+          git commit -m "人間向けの記事統合を完成"
+
+      - name: Run complete preflight on finalized commit
+        run: node .github/scripts/preflight.cjs
+
+      - name: Ensure finalized commit is reproducible
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+
+      - name: Push verified commit
+        run: git push origin HEAD:content/human-first-article-evolution-20260803
