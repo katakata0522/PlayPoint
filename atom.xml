@@ -5,11 +5,32 @@
   <link href="https://playpoint-sim.com/blog/" rel="alternate" type="text/html" />
   <link href="https://playpoint-sim.com/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://playpoint-sim.com/blog/</id>
-  <updated>2026-08-02T12:00:00+09:00</updated>
+  <updated>2026-08-03T12:00:00+09:00</updated>
   <author>
     <name>かたかた</name>
     <uri>https://playpoint-sim.com/author/katakata.html</uri>
   </author>
+  <entry>
+    <title>機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-03-play-points-device-change.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-03-play-points-device-change.html</id>
+    <updated>2026-08-03T12:00:00+09:00</updated>
+    <summary>機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。</summary>
+  </entry>
+  <entry>
+    <title>Google Play Pointsの残高・履歴・有効期限を確認する方法</title>
+    <link href="https://playpoint-sim.com/articles/2025-12-25-check-balance.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2025-12-25-check-balance.html</id>
+    <updated>2026-08-03T12:00:00+09:00</updated>
+    <summary>Google Play Pointsの残高、ポイント履歴、有効期限、年間のレベル進捗を確認する手順を解説。購入・週次特典・交換・返金の履歴の見分け方と、表示されない時の確認順も整理します。</summary>
+  </entry>
+  <entry>
+    <title>Google Play Pointsのウィークリーリワード｜3種類の違い・更新日・受け取り方</title>
+    <link href="https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html</id>
+    <updated>2026-08-03T12:00:00+09:00</updated>
+    <summary>Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、新端末で特典が最長15日ほど遅れる場合の確認順を解説します。</summary>
+  </entry>
   <entry>
     <title>Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの注意点</title>
     <link href="https://playpoint-sim.com/articles/2026-07-31-super-weekly-reward.html" rel="alternate" type="text/html" />
@@ -53,13 +74,6 @@
     <summary>Google Oneやアプリ・ゲーム内の定期購入でGoogle Play Pointsが貯まる条件を解説。AndroidからのGoogle One契約、Google Play経由の請求、初回ボーナス、更新時の付与、外部決済との違いを整理します。</summary>
   </entry>
   <entry>
-    <title>Google Play Pointsのウィークリーリワード｜3種類の違い・更新日・受け取り方</title>
-    <link href="https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html" rel="alternate" type="text/html" />
-    <id>https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html</id>
-    <updated>2026-07-31T12:00:00+09:00</updated>
-    <summary>Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、表示されない時の確認順を解説します。</summary>
-  </entry>
-  <entry>
     <title>Google Play Pointsクーポンが自動適用されない原因</title>
     <link href="https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html" rel="alternate" type="text/html" />
     <id>https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html</id>
@@ -74,11 +88,11 @@
     <summary>Google Play PointsをPlayクレジットへ交換できない、または交換後に使えないときのポイント数、期限、アカウント、国・通貨、対象購入の確認方法です。</summary>
   </entry>
   <entry>
-    <title>Google Play Pointsは現金化できる？PayPay・銀行振込との違い</title>
+    <title>Google Play Pointsは現金化できる？交換先・使い道を比較</title>
     <link href="https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html" rel="alternate" type="text/html" />
     <id>https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html</id>
     <updated>2026-07-30T12:00:00+09:00</updated>
-    <summary>Google Play Pointsは現金化やPayPay・銀行口座への送金ができるのかを公式情報で整理。Playクレジット、クーポン、アプリ内アイテムとの違いと注意点を解説します。</summary>
+    <summary>Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を、自由度・期限・払い戻し・確認場所で比較します。</summary>
   </entry>
   <entry>
     <title>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</title>
@@ -184,13 +198,6 @@
     <id>https://playpoint-sim.com/articles/2025-12-25-promo-code.html</id>
     <updated>2026-07-24T12:00:00+09:00</updated>
     <summary>プロモコードや割引利用時のPlay Pointsは特典条件で異なります。決済前の支払い額、併用条件、購入後のポイント履歴を確認する手順を解説します。</summary>
-  </entry>
-  <entry>
-    <title>Google Play Pointsの残高・履歴・有効期限を確認する方法</title>
-    <link href="https://playpoint-sim.com/articles/2025-12-25-check-balance.html" rel="alternate" type="text/html" />
-    <id>https://playpoint-sim.com/articles/2025-12-25-check-balance.html</id>
-    <updated>2026-07-24T12:00:00+09:00</updated>
-    <summary>Google Play Pointsの残高、ポイント履歴、有効期限、年間のレベル進捗を確認する手順と、計算機へ入力する数字の違いを解説します。</summary>
   </entry>
   <entry>
     <title>Google Play Pointsは返金でどうなる？残高・ランクへの影響</title>
