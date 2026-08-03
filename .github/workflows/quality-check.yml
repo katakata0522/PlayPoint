@@ -30,13 +30,23 @@ jobs:
           fetch-depth: 0
 
       - name: Apply content and test changes
-        run: node scripts/apply-rounding-guide-evolution.cjs
+        run: |
+          node scripts/apply-rounding-guide-evolution.cjs
+          node scripts/finalize-rounding-guide-evolution.cjs
 
       - name: Regenerate public output
         env:
           PLAYPOINT_MODIFIED_DATE: '2026-08-03'
           PLAYPOINT_ASSET_VERSION: '20260803_2217'
         run: node scripts/build-html.js
+
+      - name: Remove one-time migration files and restore normal CI
+        run: |
+          set -euo pipefail
+          git checkout origin/main -- .github/workflows/quality-check.yml
+          rm -f .github/workflows/apply-rounding-guide-evolution.yml
+          rm -f scripts/apply-rounding-guide-evolution.cjs
+          rm -f scripts/finalize-rounding-guide-evolution.cjs
 
       - name: Commit generated baseline locally
         run: |
