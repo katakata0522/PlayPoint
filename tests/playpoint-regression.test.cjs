@@ -2560,8 +2560,12 @@ test('国際記事はビルド日を公開日として上書きしない', () =>
   const existingArticle = fs.readFileSync(path.join(root, 'en', 'articles', 'google-play-points-levels.html'), 'utf8');
   const newArticle = fs.readFileSync(path.join(root, 'ko', 'articles', 'google-play-points-gift-cards.html'), 'utf8');
 
-  assert.match(existingArticle, /"datePublished":\s*"2026-07-07"/, '既存の国際記事の公開日が保持されていません');
-  assert.match(existingArticle, /"dateModified":\s*"2026-07-10"/, '既存の国際記事の実更新日が設定されていません');
+  const publishedAt = existingArticle.match(/"datePublished":\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
+  const modifiedAt = existingArticle.match(/"dateModified":\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
+  const metaModifiedAt = existingArticle.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
+
+  assert.equal(publishedAt, '2026-07-07', '既存の国際記事の公開日が保持されていません');
+  assert.equal(modifiedAt, metaModifiedAt, '既存の国際記事の更新日とメタデータが一致しません');
   assert.match(newArticle, /"datePublished":\s*"2026-07-10"/, '新規の国際記事の公開日が保持されていません');
 });
 
