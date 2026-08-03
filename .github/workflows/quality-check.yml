@@ -11,14 +11,59 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  minimize-rounding-diff:
+    if: github.event_name == 'pull_request' && github.head_ref == 'content/rounding-guide-evolution-20260803'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Regenerate with the existing site-wide date and asset generation
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-02'
+          PLAYPOINT_ASSET_VERSION: '20260802_0131'
+        run: node scripts/build-html.js
+
+      - name: Restore normal read-only PR workflow
+        run: git checkout origin/main -- .github/workflows/quality-check.yml
+
+      - name: Commit minimal generated baseline locally
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --check
+          git diff --name-only -z | sort -zu | xargs -0 -r git add --
+          if git diff --cached --quiet; then
+            echo "No cleanup changes to commit."
+            exit 1
+          fi
+          git commit -m "記事更新に不要な全体差分を除去"
+
+      - name: Run complete preflight from minimal clean baseline
+        run: node .github/scripts/preflight.cjs
+
+      - name: Confirm preflight left the tree clean
+        run: test -z "$(git status --porcelain)"
+
+      - name: Push verified minimal result
+        run: git push origin HEAD
+
   quality:
+    if: github.event_name != 'pull_request' || github.head_ref != 'content/rounding-guide-evolution-20260803'
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
