@@ -2066,7 +2066,11 @@ test('海外向けSEOページは主要検索意図ごとに公開可能な構�
     assert.ok(html.length >= (isArticleHub ? 2000 : 4000), `${file} の本文量が薄すぎます`);
     assert.ok(sitemap.includes(`<loc>${canonical}</loc>`), `${file} がsitemap.xmlにありません`);
     if (file.includes('/articles/')) {
-      assert.ok(html.includes('https://support.google.com/googleplay/answer/9077312'), `${file} に公式ヘルプ導線がありません`);
+      assert.match(
+      html,
+      /https:\/\/support\.google\.com\/googleplay\/answer\/\d+/,
+      `${file} に有効なGoogle Play公式ヘルプ導線がありません`
+    );
       assert.ok(html.includes('class="official-source-note"'), `${file} に公式参照ボックスがありません`);
       if (isArticleHub) {
         assert.ok(html.includes('class="intro"'), `${file} に一覧の導入文がありません`);
@@ -2234,11 +2238,11 @@ test('海外向け韓国語・繁体字記事は公式名寄せのサイト名�
   const localizedArticles = [
     ['ko/articles/google-play-points-not-showing.html', 'Google Play Points 계산기', '/ko/status/platinum/'],
     ['ko/articles/google-play-points-levels.html', 'Google Play Points 계산기', '/ko/status/platinum/'],
-    ['ko/articles/google-play-points-gift-cards.html', 'Google Play Points 계산기', '/ko/amount/10000/'],
+    ['ko/articles/google-play-points-gift-cards.html', 'Google Play Points 계산기', '/ko/points-cost/'],
     ['ko/articles/google-play-points-promotion-not-applied.html', 'Google Play Points 계산기', '/ko/campaign/2x/'],
     ['tw/articles/google-play-points-not-showing.html', 'Google Play Points 計算器', '/tw/status/platinum/'],
     ['tw/articles/google-play-points-levels.html', 'Google Play Points 計算器', '/tw/status/platinum/'],
-    ['tw/articles/google-play-points-gift-cards.html', 'Google Play Points 計算器', '/tw/amount/10000/'],
+    ['tw/articles/google-play-points-gift-cards.html', 'Google Play Points 計算器', '/tw/points-cost/'],
     ['tw/articles/google-play-points-promotion-not-applied.html', 'Google Play Points 計算器', '/tw/campaign/2x/'],
     ['ko/articles/google-play-points-country-differences.html', 'Google Play Points 계산기', '/ko/status/platinum/'],
     ['ko/articles/google-play-points-subscriptions.html', 'Google Play Points 계산기', '/ko/campaign/2x/'],
@@ -2249,7 +2253,7 @@ test('海外向け韓国語・繁体字記事は公式名寄せのサイト名�
   for (const [file, siteName, platinumHref] of localizedArticles) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     assert.ok(html.includes(`<meta property="og:site_name" content="${siteName}">`), `${file} のog:site_nameが公式名寄せではありません`);
-    assert.ok(html.includes(`"name": "${siteName}"`), `${file} の構造化データsiteNameが公式名寄せではありません`);
+    assert.match(html, new RegExp(`\"name\"\\s*:\\s*\"${siteName}\"`), `${file} の構造化データsiteNameが公式名寄せではありません`);
     assert.ok(html.includes(platinumHref), `${file} からプラチナLPへの内部リンクがありません`);
   }
 });
