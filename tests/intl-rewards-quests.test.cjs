@@ -85,7 +85,7 @@ test('Super Weekly Reward articles explain stock and the Super Ticket trade-off 
     const text = visibleText(html);
     const headline = visibleText(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || '');
     assert.match(html, /Super Ticket|슈퍼 티켓|超級票券/, `${file}: Super Ticket explanation missing`);
-    assert.match(html, /previous reward|以前の特典|이전 리워드|原本的獎勵|先前獎勵/, `${file}: previous-reward trade-off missing`);
+    assert.match(html, /previous reward|以前の特典|이전 리워드|原本的獎勵|原本獎勵|先前獎勵/, `${file}: previous-reward trade-off missing`);
     assert.match(html, /limited|限り|한정|數量有限|庫存/, `${file}: limited stock explanation missing`);
     assert.doesNotMatch(headline, /guaranteed|必ず|보장|一定/, `${file}: headline overpromises a premium prize`);
     assert.match(
