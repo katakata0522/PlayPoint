@@ -1,4 +1,4 @@
-name: Diagnose article feed date assertion
+name: Diagnose feed date assertion source
 
 on:
   pull_request:
@@ -23,21 +23,28 @@ jobs:
           ref: content/human-first-article-evolution-20260803
           persist-credentials: false
 
-      - name: Find and print feed date assertion
+      - name: Search feed assertions in test sources
         shell: bash
         run: |
           set -euo pipefail
           node <<'NODE'
           const fs = require('node:fs');
           const path = require('node:path');
-          const phrase = '記事一覧・フィード・サイトマップの掲載範囲と更新日を同期する';
           const files = fs.readdirSync('tests').filter(file => file.endsWith('.test.cjs')).sort();
-          const target = files.find(file => fs.readFileSync(path.join('tests', file), 'utf8').includes(phrase));
-          if (!target) throw new Error('target assertion was not found');
-          const lines = fs.readFileSync(path.join('tests', target), 'utf8').split('\n');
-          const index = lines.findIndex(line => line.includes(phrase));
-          console.log('target:', target, 'line:', index + 1);
-          console.log(lines.slice(Math.max(0, index - 35), index + 85)
-            .map((line, offset) => `${Math.max(0, index - 35) + offset + 1}: ${line}`)
-            .join('\n'));
+          let found = 0;
+          for (const file of files) {
+            const lines = fs.readFileSync(path.join('tests', file), 'utf8').split('\n');
+            const matches = lines
+              .map((line, index) => ({ line, index }))
+              .filter(({ line }) => /blogフィード|フィード|feed\.xml|atom\.xml/.test(line));
+            if (!matches.length) continue;
+            found += matches.length;
+            console.log(`--- ${file} ---`);
+            for (const { index } of matches) {
+              const start = Math.max(0, index - 12);
+              const end = Math.min(lines.length, index + 18);
+              console.log(lines.slice(start, end).map((line, offset) => `${start + offset + 1}: ${line}`).join('\n'));
+            }
+          }
+          if (!found) throw new Error('feed-related assertions were not found');
           NODE
