@@ -1,4 +1,4 @@
-name: Finalize human-first article evolution
+name: Finalize human-first article content
 
 on:
   pull_request:
@@ -9,12 +9,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: finalize-article-evolution-${{ github.head_ref || github.ref }}
+  group: finalize-article-content-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
 
 jobs:
   finalize:
-    if: github.head_ref == 'content/human-first-article-evolution-20260803'
+    if: github.head_ref == 'content/human-first-article-evolution-20260803' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -80,11 +80,61 @@ jobs:
           asset_version="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
           PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
 
-      - name: Restore permanent read-only CI and remove migration script
+      - name: Verify generated change scope
         shell: bash
         run: |
           set -euo pipefail
-          rm -f .github/scripts/apply-human-first-article-evolution.cjs
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const allowed = new Set([
+            'articles/2025-12-25-check-balance.html',
+            'articles/2025-12-25-weekly-reward.html',
+            'articles/2026-07-24-play-points-cash-conversion.html',
+            'articles/2026-08-03-play-points-device-change.html',
+            'articles/styles/2025-12-25-check-balance.css',
+            'blog/articles.json',
+            'blog/index.html',
+            'blog/sitemap.xml',
+            'feed.xml',
+            'atom.xml',
+            'sitemap.xml',
+            'tests/human-first-article-architecture.test.cjs'
+          ]);
+          const changed = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
+            .trim().split('\n').filter(Boolean);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) {
+            console.error('Unexpected generated changes:\n' + unexpected.join('\n'));
+            process.exit(1);
+          }
+          console.log('Generated changes are within the approved article scope:\n' + changed.join('\n'));
+          NODE
+
+      - name: Commit verified public content only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            articles/2025-12-25-check-balance.html \
+            articles/2025-12-25-weekly-reward.html \
+            articles/2026-07-24-play-points-cash-conversion.html \
+            articles/2026-08-03-play-points-device-change.html \
+            articles/styles/2025-12-25-check-balance.css \
+            blog/articles.json \
+            blog/index.html \
+            blog/sitemap.xml \
+            feed.xml \
+            atom.xml \
+            sitemap.xml \
+            tests/human-first-article-architecture.test.cjs
+          git commit -m "記事統合の公開内容を確定"
+
+      - name: Validate with permanent read-only workflow semantics
+        shell: bash
+        run: |
+          set -euo pipefail
           cat > .github/workflows/quality-check.yml <<'YAML'
           name: Pull request quality check
 
@@ -118,70 +168,9 @@ jobs:
                 - name: Run complete preflight
                   run: node .github/scripts/preflight.cjs
           YAML
-
-      - name: Verify generated change scope
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const { execFileSync } = require('node:child_process');
-          const allowed = new Set([
-            '.github/scripts/apply-human-first-article-evolution.cjs',
-            '.github/workflows/quality-check.yml',
-            'articles/2025-12-25-check-balance.html',
-            'articles/2025-12-25-weekly-reward.html',
-            'articles/2026-07-24-play-points-cash-conversion.html',
-            'articles/2026-08-03-play-points-device-change.html',
-            'articles/styles/2025-12-25-check-balance.css',
-            'blog/articles.json',
-            'blog/index.html',
-            'blog/sitemap.xml',
-            'feed.xml',
-            'atom.xml',
-            'sitemap.xml',
-            'tests/human-first-article-architecture.test.cjs'
-          ]);
-          const changed = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
-            .trim().split('\n').filter(Boolean);
-          const unexpected = changed.filter(file => !allowed.has(file));
-          if (unexpected.length) {
-            console.error('Unexpected generated changes:\n' + unexpected.join('\n'));
-            process.exit(1);
-          }
-          console.log('Generated changes are within the approved article scope:\n' + changed.join('\n'));
-          NODE
-
-      - name: Commit finalized article set
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- \
-            .github/scripts/apply-human-first-article-evolution.cjs \
-            .github/workflows/quality-check.yml \
-            articles/2025-12-25-check-balance.html \
-            articles/2025-12-25-weekly-reward.html \
-            articles/2026-07-24-play-points-cash-conversion.html \
-            articles/2026-08-03-play-points-device-change.html \
-            articles/styles/2025-12-25-check-balance.css \
-            blog/articles.json \
-            blog/index.html \
-            blog/sitemap.xml \
-            feed.xml \
-            atom.xml \
-            sitemap.xml \
-            tests/human-first-article-architecture.test.cjs
-          git commit -m "人間向けの記事統合を完成"
-
-      - name: Run complete preflight on finalized commit
-        run: node .github/scripts/preflight.cjs
-
-      - name: Ensure finalized commit is reproducible
-        shell: bash
-        run: |
-          set -euo pipefail
+          node .github/scripts/preflight.cjs
+          git checkout -- .github/workflows/quality-check.yml
           test -z "$(git status --porcelain)"
 
-      - name: Push verified commit
+      - name: Push verified content commit
         run: git push origin HEAD:content/human-first-article-evolution-20260803
