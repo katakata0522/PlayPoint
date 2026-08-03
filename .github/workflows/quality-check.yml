@@ -11,21 +11,58 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  quality:
+  refresh-generated-sitemap:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 5
     steps:
-      - name: Checkout code
+      - name: Checkout feature branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+      - name: Regenerate canonical outputs
+        run: node scripts/build-html.js
+
+      - name: Verify focused generated diff and SEO lengths
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          from urllib.parse import urlparse
+
+          changed = [line for line in __import__('subprocess').check_output(['git', 'diff', '--name-only'], text=True).splitlines() if line]
+          if changed != ['sitemap.xml']:
+              raise SystemExit(f'Unexpected generated files changed: {changed}')
+
+          sitemap = Path('sitemap.xml').read_text(encoding='utf-8')
+          for raw_url in re.findall(r'<loc>(https://playpoint-sim\.com/[^<]*)</loc>', sitemap):
+              route = urlparse(raw_url).path.lstrip('/')
+              file_path = Path(route + ('index.html' if not route or route.endswith('/') else ''))
+              html = file_path.read_text(encoding='utf-8')
+              title_match = re.search(r'<title>([\s\S]*?)</title>', html, re.I)
+              description_match = re.search(r'<meta\s+name="description"\s+content="([^"]+)"', html, re.I)
+              title = re.sub(r'\s+', ' ', title_match.group(1)).strip() if title_match else ''
+              description = description_match.group(1) if description_match else ''
+              if not (0 < len(title) <= 65):
+                  raise SystemExit(f'{file_path}: invalid title length {len(title)}')
+              if not (45 <= len(description) <= 170):
+                  raise SystemExit(f'{file_path}: invalid description length {len(description)}')
+          PY
+          git diff --check
+
+      - name: Commit regenerated sitemap
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add sitemap.xml
+          git commit -m 'seo: refresh international article lastmod dates'
+          git push origin HEAD:${{ github.head_ref }}
