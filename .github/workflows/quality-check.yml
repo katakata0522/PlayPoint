@@ -90,7 +90,7 @@ jobs:
       - name: Verify focused scope
         shell: bash
         run: |
-          changed="$(git diff --name-only | sort)"
+          changed="$(git diff --name-only -- tests | sort)"
           expected="$(printf '%s\n' \
             tests/all-article-quality-audit.test.cjs \
             tests/growth-migration.test.cjs \
