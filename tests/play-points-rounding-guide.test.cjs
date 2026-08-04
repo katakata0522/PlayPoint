@@ -45,21 +45,22 @@ test('不正な購入回数と獲得率を拒否する', () => {
   assert.throws(() => calculatePurchasePoints({ price: 100, count: 1, rate: 0 }), /0より大きい/);
 });
 
-test('記事は税抜・商品ごとの丸め・限界を明示する', () => {
+test('記事は税抜・四捨五入・機能の限界を明示する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
   assert.match(html, /税金を除いた対象価格/);
-  assert.match(html, /購入ごとに最も近い整数へ丸める（四捨五入する）/);
+  assert.match(html, /その結果を<strong>最も近い整数へ丸める（四捨五入する）<\/strong>/);
   assert.match(html, /分割購入と合計計算で差が出る理由/);
-  assert.match(html, /税額や対象可否を判定する機能ではありません/);
+  assert.match(html, /税額や対象可否を判定せず/);
   assert.match(html, /play-points-rounding\.js/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9077192/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9080348/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/2850368/);
 });
 
-test('記事冒頭は貯める金額と使う価値を分けて即答する', () => {
+test('記事冒頭は通常獲得率と交換価値を分けて即答する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
-  assert.match(html, /結論：ブロンズは100円で約1ポイント/);
+  assert.match(html, /結論：通常のブロンズは対象価格100円で1ポイント/);
+  assert.match(html, /税金を除いた対象アイテム価格100円あたり1ポイント/);
   assert.match(html, /1ポイントを貯めるために必要な金額/);
   assert.match(html, /1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません/);
 });
@@ -70,6 +71,7 @@ test('記事固有の導線だけを1つずつ表示し、自動導線の重複�
   assert.equal((html.match(/class="article-next-step-cta"/g) || []).length, 1);
   assert.equal((html.match(/class="contextual-guide-links related-links-section"/g) || []).length, 1);
   assert.match(html, /href="#rounding-simulator-section"/);
+  assert.match(html, /差が出る例を見る/);
   assert.doesNotMatch(html, /<section class="cta-box"/);
 });
 
@@ -91,12 +93,17 @@ test('FAQと補助導線は主要目次へ混入しない構造にする', () =>
   assert.doesNotMatch(html, /<section class="section related-links-section"/);
 });
 
-test('シミュレーターは初期条件と試算結果を明示する', () => {
+test('シミュレーターは差が見える初期例と利用限界を明示する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
   const js = read('js/play-points-rounding.js');
-  assert.match(html, /<option value="1" selected>ブロンズ：1<\/option>/);
-  assert.match(html, /初期値は、記事冒頭の基準に合わせて/);
-  assert.match(html, /role="status" aria-live="polite" aria-atomic="true"/);
+  assert.match(html, /id="rounding-price"[^>]*value="40"/);
+  assert.match(html, /<option value="1\.5" selected>ゴールド：1\.5<\/option>/);
+  assert.match(html, /丸め方の差が見える架空例/);
+  assert.match(html, /実際の付与予測には使わないでください/);
+  assert.match(html, /id="rounding-result" aria-live="off" aria-atomic="true"/);
+  assert.doesNotMatch(html, /id="rounding-result"[^>]*role="status"/);
+  assert.match(js, /setAttribute\('role', 'status'\)/);
+  assert.match(js, /calculateAndRender\(false\)/);
   assert.match(js, /rounding-result-title">試算結果/);
 });
 
@@ -105,7 +112,8 @@ test('記事別の検証カード文言は生成元でも保持する', () => {
   const generator = read('scripts/article-editorial-structure.cjs');
   assert.match(html, /公式で確認できること／Google Play画面で確認すること/);
   assert.match(generator, /boundaryHeading: '公式で確認できること／Google Play画面で確認すること'/);
-  assert.match(generator, /商品ごとに最も近い整数へ丸める計算方法/);
+  assert.match(generator, /獲得ポイントを最も近い整数へ丸める計算方法/);
+  assert.doesNotMatch(generator, /商品ごとに最も近い整数へ丸める計算方法/);
 });
 
 test('画面のFAQとFAQPage構造化データが一致する', () => {
