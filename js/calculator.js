@@ -518,6 +518,19 @@ export const CALC = {
         // 購入単位が分かる場合だけ、購入1回ごとのポイント丸めを適用する。
         // 未入力時は購入回数と価格構成が分からないため、丸めを仮定しない概算にする。
         const packAmount = STATE.dom.packAmount ? this.getValidNumberInput(STATE.dom.packAmount, 0) : null;
+        const hasPackAmount = packAmount !== null && packAmount > 0;
+        const pointsPerPurchase = hasPackAmount
+            ? CALC_PURE.getPointsForPurchase(packAmount, finalRate, spendUnit)
+            : null;
+
+        if (hasPackAmount && pointsPerPurchase <= 0) {
+            return UI.displayResult(
+                STATE.dom.result,
+                texts.errorZeroPointPurchase || texts.errorInput,
+                true
+            );
+        }
+
         const mainResult = CALC_PURE.computeMainResult({
             neededPoints: finalNeededPoints,
             finalRate,
@@ -617,7 +630,7 @@ export const CALC = {
                 ${paceResultContent}
                 ${comparisonContent}
                 <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-                <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${packsNeeded !== null ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
+                <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${hasPackAmount ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
                 <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
                     ${calculationNoteText}
                 </div>
@@ -652,8 +665,11 @@ export const CALC = {
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
         
         const spendUnit = config.spendUnit || 100;
-        const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
-        const earnedPoints = Math.round(earnedPointsRaw);
+        const { earnedPoints, earnedPointsRaw } = CALC_PURE.computeReverseResult({
+            amountYen,
+            finalRate,
+            spendUnit
+        });
         
         const resultContent = `
             <dl>

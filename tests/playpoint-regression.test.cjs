@@ -230,6 +230,28 @@ test('パック額入力時は購入ごとの四捨五入で必要回数と合�
   assert.ok(content.includes('Points are rounded for each entered purchase amount'));
 });
 
+test('1回0ポイントになる購入額は概算へフォールバックせずエラーにする', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'US';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput('6');
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.packAmount = createInput('0.01');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+
+  populateStatusSelects();
+  PP_STATE.dom.currentStatus.value = '1.1';
+  updateBaseRateAndTarget();
+  calculate();
+
+  assert.strictEqual(renderedResults[0].isError, true);
+  assert.ok(renderedResults[0].content.includes('each purchase rounds to 0 points'));
+  assert.ok(!renderedResults[0].content.includes('data-value="6"'));
+});
+
 test('逆算モードは入力額を1回の購入として丸める前提を表示する', () => {
   const { PP_STATE, reverseCalculate, renderedResults } = loadCalculatorContext();
   PP_STATE.currentRegion = 'US';
