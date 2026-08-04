@@ -44,6 +44,7 @@ jobs:
         run: |
           rm -f scripts/apply-test-suite-cleanup.py
           rm -f .github/workflows/apply-test-suite-cleanup.yml
+          rm -f .test-cleanup-trigger
           git checkout origin/main -- .github/workflows/quality-check.yml
 
       - name: Verify focused scope
