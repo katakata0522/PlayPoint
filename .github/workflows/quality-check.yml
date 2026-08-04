@@ -57,4 +57,5 @@ jobs:
 
           git diff --cached --check
           git commit -m 'fix: clarify purchase rounding assumptions'
+          echo "SOURCE_COMMIT_SHA=$(git rev-parse HEAD)"
           git push origin HEAD:fix/rounding-assumption-clarity
