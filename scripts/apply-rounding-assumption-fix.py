@@ -8,50 +8,20 @@ def replace_once(text: str, old: str, new: str, label: str) -> str:
     return text.replace(old, new, 1)
 
 
+config_path = Path('js/config.js')
+config = config_path.read_text(encoding='utf-8')
+translation_updates = {
+    'resultLabelRate: "適用獲得率",': 'resultLabelRate: "適用獲得率", roundingNoteWithoutPack: "購入金額の内訳が不明なため、購入ごとのポイント四捨五入を含めない概算です。1回あたりの平均課金額を入力すると、より実際に近い試算になります。", roundingNoteWithPack: "入力した1回あたりの課金額ごとにポイントを四捨五入し、必要な購入回数を計算しています。", roundingNoteReverse: "入力した金額を1回の購入として四捨五入しています。複数回の購入合計を入力した場合、実際のポイントと異なることがあります。",',
+    'resultLabelRate: "Applied earn rate",': 'resultLabelRate: "Applied earn rate", roundingNoteWithoutPack: "Because the purchase breakdown is unknown, this estimate does not apply purchase-by-purchase point rounding. Enter an average amount per purchase for a closer estimate.", roundingNoteWithPack: "Points are rounded for each entered purchase amount before the required number of purchases is calculated.", roundingNoteReverse: "The entered amount is rounded as one purchase. If it is the total of multiple purchases, the actual points may differ.",',
+    'resultLabelRate: "적용 적립률",': 'resultLabelRate: "적용 적립률", roundingNoteWithoutPack: "구매별 금액 구성이 없으므로 구매 건별 포인트 반올림을 적용하지 않은 예상치입니다. 1회 평균 결제 금액을 입력하면 실제에 더 가까운 결과를 확인할 수 있습니다.", roundingNoteWithPack: "입력한 1회 결제 금액마다 포인트를 반올림한 뒤 필요한 구매 횟수를 계산합니다.", roundingNoteReverse: "입력한 금액을 한 번의 구매로 보고 포인트를 반올림합니다. 여러 구매의 합계 금액이면 실제 포인트와 다를 수 있습니다.",',
+    'resultLabelRate: "套用回饋率",': 'resultLabelRate: "套用回饋率", roundingNoteWithoutPack: "由於未提供每筆購買金額，本結果是不套用逐筆點數四捨五入的估算。輸入平均單筆消費金額，可得到更接近實際情況的試算。", roundingNoteWithPack: "系統會先針對每筆輸入的消費金額四捨五入點數，再計算所需購買次數。", roundingNoteReverse: "系統會將輸入金額視為單筆購買並四捨五入點數。若輸入的是多筆購買總額，實際點數可能不同。",'
+}
+for old, new in translation_updates.items():
+    config = replace_once(config, old, new, f'add translation after {old}')
+config_path.write_text(config, encoding='utf-8')
+
 calculator_path = Path('js/calculator.js')
 calculator = calculator_path.read_text(encoding='utf-8')
-
-calculator = replace_once(
-    calculator,
-    """    },
-
-    // ステータスセレクトボックスの選択肢を初期化
-""",
-    """    },
-
-    getRoundingAssumptionNote(mode, hasPackAmount = false) {
-        const notes = {
-            JP: {
-                withoutPack: '購入金額の内訳が不明なため、購入ごとのポイント四捨五入は含めない概算です。平均的な1回の課金額を入力すると、より実際に近い試算になります。',
-                withPack: '入力した1回あたりの課金額ごとにポイントを四捨五入し、必要な購入回数を計算しています。',
-                reverse: '入力した金額を1回の購入として四捨五入しています。複数回の購入合計を入力した場合、実際のポイントと異なることがあります。'
-            },
-            US: {
-                withoutPack: 'Because the purchase breakdown is unknown, this estimate does not apply purchase-by-purchase point rounding. Enter an average amount per purchase for a closer estimate.',
-                withPack: 'Points are rounded for each entered purchase amount before the required number of purchases is calculated.',
-                reverse: 'The entered amount is rounded as one purchase. If it is the total of multiple purchases, the actual points may differ.'
-            },
-            KR: {
-                withoutPack: '구매별 금액 구성이 없으므로 구매 건별 포인트 반올림을 적용하지 않은 예상치입니다. 1회 평균 결제 금액을 입력하면 실제에 더 가까운 결과를 확인할 수 있습니다.',
-                withPack: '입력한 1회 결제 금액마다 포인트를 반올림한 뒤 필요한 구매 횟수를 계산합니다.',
-                reverse: '입력한 금액을 한 번의 구매로 보고 포인트를 반올림합니다. 여러 구매의 합계 금액이면 실제 포인트와 다를 수 있습니다.'
-            },
-            TW: {
-                withoutPack: '由於未提供每筆購買金額，本結果是不套用逐筆點數四捨五入的估算。輸入平均單筆消費金額，可得到更接近實際情況的試算。',
-                withPack: '系統會先針對每筆輸入的消費金額四捨五入點數，再計算所需購買次數。',
-                reverse: '系統會將輸入金額視為單筆購買並四捨五入點數。若輸入的是多筆購買總額，實際點數可能不同。'
-            }
-        };
-        const localized = notes[STATE.currentRegion] || notes.JP;
-        if (mode === 'reverse') return localized.reverse;
-        return hasPackAmount ? localized.withPack : localized.withoutPack;
-    },
-
-    // ステータスセレクトボックスの選択肢を初期化
-""",
-    'insert localized rounding-assumption helper'
-)
-
 calculator = replace_once(
     calculator,
     """        const remainingMonths = this.getRemainingMonths();
@@ -88,8 +58,8 @@ calculator = replace_once(
     """        const finalNeededPoints = neededPoints;
         const spendUnit = config.spendUnit || 100;
 
-        // パック額がある場合だけ、購入1回ごとの公式なポイント丸めを適用する。
-        // 未入力時は購入回数・価格構成が分からないため、丸めを仮定しない概算を維持する。
+        // 購入単位が分かる場合だけ、購入1回ごとのポイント丸めを適用する。
+        // 未入力時は購入回数と価格構成が分からないため、丸めを仮定しない概算にする。
         const packAmount = STATE.dom.packAmount ? this.getValidNumberInput(STATE.dom.packAmount, 0) : null;
         const mainResult = CALC_PURE.computeMainResult({
             neededPoints: finalNeededPoints,
@@ -111,31 +81,28 @@ calculator = replace_once(
 """,
     'delegate UI calculation to pure function'
 )
-
 calculator = replace_once(
     calculator,
     """                <span class=\"rate-info\">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
                 <div style=\"font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;\">
 """,
     """                <span class=\"rate-info\">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-                <p class=\"rounding-assumption-note\" style=\"font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;\">${this.getRoundingAssumptionNote('main', packsNeeded !== null)}</p>
+                <p class=\"rounding-assumption-note\" style=\"font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;\">${packsNeeded !== null ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
                 <div style=\"font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;\">
 """,
     'show main-mode rounding assumption'
 )
-
 calculator = replace_once(
     calculator,
     """            <span class=\"rate-info\">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
         `;
 """,
     """            <span class=\"rate-info\">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-            <p class=\"rounding-assumption-note\" style=\"font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;\">${this.getRoundingAssumptionNote('reverse')}</p>
+            <p class=\"rounding-assumption-note\" style=\"font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;\">${texts.roundingNoteReverse}</p>
         `;
 """,
     'show reverse-mode rounding assumption'
 )
-
 calculator_path.write_text(calculator, encoding='utf-8')
 
 tests_path = Path('tests/playpoint-regression.test.cjs')
