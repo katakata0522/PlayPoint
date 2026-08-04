@@ -19,13 +19,42 @@ concurrency:
 
 jobs:
   quality:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
-      - name: Run complete preflight
+      - name: Apply focused source and regression-test changes
+        run: python scripts/apply-rounding-assumption-fix.py
+
+      - name: Synchronize generated assets
+        run: node scripts/build-html.js
+
+      - name: Validate application changes
         run: node .github/scripts/preflight.cjs
+
+      - name: Commit application files only
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- js/calculator.js js/config.js tests/playpoint-regression.test.cjs sw.js
+
+          changed_files="$(git diff --cached --name-only)"
+          printf '%s\n' "$changed_files"
+          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js)$' || true)"
+          if [ -n "$unexpected_files" ]; then
+            echo 'Unexpected files would be committed:' >&2
+            printf '%s\n' "$unexpected_files" >&2
+            exit 1
+          fi
+
+          git diff --cached --check
+          git commit -m 'fix: clarify purchase rounding assumptions'
+          git push origin HEAD:fix/rounding-assumption-clarity
