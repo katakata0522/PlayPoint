@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { CONTENT_DATE_OVERRIDES } = require('../scripts/html-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'attention.html'), 'utf8');
@@ -28,4 +29,10 @@ test('国をブラウザ言語だけで推測せず公式確認導線を残す',
   assert.doesNotMatch(html, /browserLang|navigator\.language|navigator\.userLanguage/);
   assert.match(html, /support\.google\.com\/googleplay\/answer\/9080348\?hl=en/);
   assert.match(html, /Checked against the official country tables on <time datetime="2026-08-04">August 4, 2026<\/time>/);
+});
+
+test('注意ページの確認日をサイト全体の更新日で巻き戻さない', () => {
+  assert.equal(CONTENT_DATE_OVERRIDES['attention.html'], '2026-08-04');
+  assert.match(html, /<meta name="last-modified" content="2026-08-04">/);
+  assert.match(html, /"dateModified": "2026-08-04"/);
 });
