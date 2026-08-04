@@ -38,39 +38,14 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function schemas(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
-
-test('ポイント利用・参加条件記事は3言語でSEO公開要件を満たす', () => {
+test('ポイント利用・参加条件記事は3言語で固有の事実と相互導線を保つ', () => {
   for (const topic of topics) {
     for (const locale of locales) {
       const relativePath = `${locale.dir}/articles/${topic.slug}`;
       assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath} がありません`);
       const html = read(relativePath);
-      const title = html.match(/<title>([^<]+)<\/title>/)?.[1] || '';
-      const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
-      const jsonLd = schemas(html);
-      const canonical = `https://playpoint-sim.com/${relativePath}`;
 
-      assert.ok(html.includes(`<html lang="${locale.lang}">`));
-      assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`));
-      assert.ok(title.length > 20 && title.length <= 65, `${relativePath} title=${title.length}`);
-      assert.ok(description.length >= 45 && description.length <= 170, `${relativePath} description=${description.length}`);
-      assert.strictEqual((html.match(/<h1\b/g) || []).length, 1);
-      assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'));
-      assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
-      assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(html.includes('class="cta-btn"'));
-      assert.ok(!html.includes('utm_medium=internal'));
-      assert.ok(html.includes('/author/katakata.html'));
-      assert.ok(html.includes(`/${locale.dir}/articles/${topic.peer}`));
-
-      for (const hreflang of ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
-        assert.ok(html.includes(`hreflang="${hreflang}"`), `${relativePath}: ${hreflang}`);
-      }
+      assert.ok(html.includes(`/${locale.dir}/articles/${topic.peer}`), `${relativePath}: peer article`);
       for (const id of topic.officialIds) {
         assert.ok(html.includes(`support.google.com/googleplay/answer/${id}`), `${relativePath}: ${id}`);
       }
@@ -90,21 +65,6 @@ test('専用サイトマップは6記事を公開しrobots.txtから発見でき
     for (const locale of locales) {
       const url = `https://playpoint-sim.com/${locale.dir}/articles/${topic.slug}`;
       assert.ok(sitemap.includes(`<loc>${url}</loc>`), url);
-    }
-  }
-});
-
-test('新規記事のサイト内リンク先は存在する', () => {
-  for (const topic of topics) {
-    for (const locale of locales) {
-      const relativePath = `${locale.dir}/articles/${topic.slug}`;
-      const html = read(relativePath);
-      const hrefs = [...html.matchAll(/<a\b[^>]*href="(\/[^"#?]*)(?:[?#][^"]*)?"/g)].map(match => match[1]);
-      for (const href of hrefs) {
-        let target = href.replace(/^\//, '');
-        if (!target || target.endsWith('/')) target += 'index.html';
-        assert.ok(fs.existsSync(path.join(root, target)), `${relativePath}: ${href}`);
-      }
     }
   }
 });

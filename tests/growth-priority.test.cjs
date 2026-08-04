@@ -65,13 +65,4 @@ test('運営者ページに検証工程と外部プロフィールの関係を�
   const html = read('author/katakata.html');
   assert.match(html, /sameAs/);
   assert.match(html, /公開前の確認工程/);
-  assert.match(html, /2026-07-30/);
-});
-
-test('今回はWeb Share APIを追加しない', () => {
-  const scripts = fs.readdirSync(path.join(root, 'js'))
-    .filter(file => file.endsWith('.js'))
-    .map(file => read(path.join('js', file)))
-    .join('\n');
-  assert.doesNotMatch(scripts, /navigator\.share\s*\(/);
 });

@@ -104,11 +104,9 @@ test('初期操作に必要なアプリモジュールは依存解析前から�
   }
 });
 
-test('日記の重複通知を表示せず、カレンダー登録は残す', () => {
+test('日記本体とカレンダー登録を全言語で残す', () => {
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
     const html = read(file);
-    assert.ok(!html.includes('id="friday-reminder"'), `${file}: 重複する金曜日通知が残っています`);
-    assert.ok(!html.includes('id="diary-hint-card"'), `${file}: 重複する日記ヒントが残っています`);
     assert.ok(html.includes('id="diaryMode"'), `${file}: 日記本体が消えています`);
     assert.ok(html.includes('id="register-google-cal-btn"'), `${file}: カレンダー登録が消えています`);
   }

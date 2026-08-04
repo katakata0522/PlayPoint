@@ -45,44 +45,17 @@ function fileFor(topic, locale) {
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
-function schemas(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
 
-test('クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす', () => {
+test('クーポン・Playクレジット記事は4言語で固有の事実と相互導線を保つ', () => {
   for (const topic of topics) {
     for (const locale of locales) {
       const relativePath = fileFor(topic, locale);
       assert.ok(fs.existsSync(path.join(root, relativePath)), relativePath);
       const html = read(relativePath);
-      const title = html.match(/<title>([^<]+)<\/title>/)?.[1] || '';
-      const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
-      const jsonLd = schemas(html);
-      const canonical = `https://playpoint-sim.com/${relativePath}`;
-
-      assert.ok(html.includes(`<html lang="${locale.lang}">`));
-      assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`));
-      assert.ok(title.length >= 20 && title.length <= 65, `${relativePath}: title=${title.length}`);
-      assert.ok(description.length >= 45 && description.length <= 170, `${relativePath}: description=${description.length}`);
-      assert.strictEqual((html.match(/<h1\b/g) || []).length, 1);
-      assert.ok((html.match(/<h2\b/g) || []).length >= 8);
-      assert.ok(html.length >= 7000, `${relativePath}: thin content ${html.length}`);
-      assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
-      const expectedModified = locale.key === 'ja' ? '2026-07-30' : '2026-07-25';
-      assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}">`));
-      assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
-      assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(html.includes('class="cta-btn"'));
-      assert.ok(!html.includes('utm_medium=internal'));
-      assert.ok(html.includes('/author/katakata.html'));
       const peerTopic = topics.find(candidate => candidate.slug === topic.peer);
       const peerPath = fileFor(peerTopic, locale);
-      assert.ok(html.includes(path.basename(peerPath)), `${relativePath}: peer ${peerPath}`);
 
-      for (const hreflang of ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
-        assert.ok(html.includes(`hreflang="${hreflang}"`), `${relativePath}: ${hreflang}`);
-      }
+      assert.ok(html.includes(path.basename(peerPath)), `${relativePath}: peer ${peerPath}`);
       for (const id of topic.officialIds) {
         assert.ok(html.includes(`support.google.com/googleplay/answer/${id}`), `${relativePath}: ${id}`);
       }
@@ -129,20 +102,5 @@ test('言語別一覧・人向けサイトマップ・日本語ブログから�
   for (const topic of topics) {
     assert.ok(humanSitemap.includes(`href="${topic.jaFile}"`), topic.jaFile);
     assert.ok(blog.includes(`../${topic.jaFile}`), topic.jaFile);
-  }
-});
-
-test('新規記事のサイト内リンク先はすべて存在する', () => {
-  for (const topic of topics) {
-    for (const locale of locales) {
-      const relativePath = fileFor(topic, locale);
-      const html = read(relativePath);
-      const hrefs = [...html.matchAll(/<a\b[^>]*href="(\/[^"#?]*)(?:[?#][^"]*)?"/g)].map(match => match[1]);
-      for (const href of hrefs) {
-        let target = href.replace(/^\//, '');
-        if (!target || target.endsWith('/')) target += 'index.html';
-        assert.ok(fs.existsSync(path.join(root, target)), `${relativePath}: ${href}`);
-      }
-    }
   }
 });

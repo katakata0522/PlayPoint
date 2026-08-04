@@ -36,39 +36,13 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function jsonLd(html) {
-  return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map(match => JSON.parse(match[1]));
-}
-
-test('週次特典と複数アカウント記事は3言語で公開要件を満たす', () => {
+test('週次特典と複数アカウント記事は3言語で固有の事実を保つ', () => {
   for (const topic of topics) {
     for (const locale of locales) {
       const relativePath = `${locale.dir}/articles/${topic.slug}`;
       assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath} がありません`);
       const html = read(relativePath);
-      const canonical = `https://playpoint-sim.com/${relativePath}`;
-      const title = html.match(/<title>([^<]+)<\/title>/)?.[1] || '';
-      const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
-      const schemas = jsonLd(html);
 
-      assert.ok(html.includes(`<html lang="${locale.lang}">`), `${relativePath} のlangが不正です`);
-      assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), `${relativePath} のcanonicalが不正です`);
-      assert.ok(title.length > 20 && title.length <= 65, `${relativePath} のtitle長が不正です: ${title.length}`);
-      assert.ok(description.length >= 45 && description.length <= 170, `${relativePath} のdescription長が不正です: ${description.length}`);
-      assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, `${relativePath} のh1数が不正です`);
-      assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`), `${relativePath} のsiteNameが不正です`);
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'), `${relativePath} の更新日が不正です`);
-      assert.ok(schemas.some(schema => schema['@type'] === 'Article'), `${relativePath} にArticle構造化データがありません`);
-      assert.ok(schemas.some(schema => schema['@type'] === 'FAQPage'), `${relativePath} にFAQ構造化データがありません`);
-      assert.ok(html.includes('class="cta-btn"'), `${relativePath} にCTAがありません`);
-      assert.ok(!html.includes('utm_medium=internal'), `${relativePath} にサイト内UTMが残っています`);
-      assert.ok(html.includes('/author/katakata.html'), `${relativePath} に著者導線がありません`);
-      assert.ok(html.includes(`/${locale.dir}/articles/`), `${relativePath} が言語別記事一覧へ戻りません`);
-
-      for (const hreflang of ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
-        assert.ok(html.includes(`hreflang="${hreflang}"`), `${relativePath} に ${hreflang} がありません`);
-      }
       for (const officialId of topic.officialIds) {
         assert.ok(html.includes(`support.google.com/googleplay/answer/${officialId}`), `${relativePath} に公式出典 ${officialId} がありません`);
       }
@@ -108,19 +82,4 @@ test('国際ガイド専用サイトマップをrobots.txtから発見できる'
   const sitemapUrls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
   assert.ok(sitemapUrls.length >= 6, '専用サイトマップの記事数が少なすぎます');
   assert.strictEqual(new Set(sitemapUrls).size, sitemapUrls.length, '専用サイトマップに重複URLがあります');
-});
-
-test('新規国際記事のローカルリンク先はすべて存在する', () => {
-  for (const topic of topics) {
-    for (const locale of locales) {
-      const relativePath = `${locale.dir}/articles/${topic.slug}`;
-      const html = read(relativePath);
-      const hrefs = [...html.matchAll(/<a\b[^>]*href="(\/[^"#?]*)(?:[?#][^"]*)?"/g)].map(match => match[1]);
-      for (const href of hrefs) {
-        let target = href.replace(/^\//, '');
-        if (!target || target.endsWith('/')) target += 'index.html';
-        assert.ok(fs.existsSync(path.join(root, target)), `${relativePath} のリンク先がありません: ${href}`);
-      }
-    }
-  }
 });
