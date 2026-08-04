@@ -100,9 +100,9 @@ jobs:
             tests/intl-use-eligibility.test.cjs \
             tests/intl-weekly-accounts.test.cjs \
             tests/playpoint-audit-fixes.test.cjs | sort)"
-          if test -n "$changed"; then
-            test "$changed" = "$expected"
-          fi
+          printf 'Changed test files:\n%s\n' "$changed"
+          printf 'Expected test files:\n%s\n' "$expected"
+          test "$changed" = "$expected"
           git diff --check
 
       - name: Run complete preflight on final tree
