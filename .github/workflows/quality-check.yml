@@ -19,75 +19,13 @@ concurrency:
 
 jobs:
   quality:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      PLAYPOINT_MODIFIED_DATE: '2026-08-02'
-      PLAYPOINT_ASSET_VERSION: '20260802_0131'
+    timeout-minutes: 7
     steps:
-      - name: Checkout branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Apply zero-point rounding guard
-        run: python scripts/apply-zero-point-rounding-guard.py
-
-      - name: Synchronize generated assets without unrelated date churn
-        run: node scripts/build-html.js
-
-      - name: Validate focused application changes
-        shell: bash
-        run: |
-          node --check js/calculator.js
-          node --check js/config.js
-          node --test tests/playpoint-regression.test.cjs
-          git diff --check
-
-          changed_files="$(git diff --name-only)"
-          if [ -z "$changed_files" ]; then
-            echo 'Application change is already committed.'
-            exit 0
-          fi
-
-          printf '%s\n' "$changed_files"
-          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js)$' || true)"
-          if [ -n "$unexpected_files" ]; then
-            echo 'Unexpected generated or source files changed:' >&2
-            printf '%s\n' "$unexpected_files" >&2
-            exit 1
-          fi
-
-          expected_count="$(printf '%s\n' "$changed_files" | sed '/^$/d' | wc -l)"
-          if [ "$expected_count" -ne 4 ]; then
-            echo "Expected exactly 4 changed application files, found $expected_count" >&2
-            exit 1
-          fi
-
-      - name: Commit application files only
-        shell: bash
-        run: |
-          git add -- js/calculator.js js/config.js tests/playpoint-regression.test.cjs sw.js
-          if git diff --cached --quiet; then
-            echo 'No application files need committing.'
-            exit 0
-          fi
-
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-          changed_files="$(git diff --cached --name-only)"
-          printf '%s\n' "$changed_files"
-          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js)$' || true)"
-          if [ -n "$unexpected_files" ]; then
-            echo 'Unexpected files would be committed:' >&2
-            printf '%s\n' "$unexpected_files" >&2
-            exit 1
-          fi
-
-          git diff --cached --check
-          git commit -m 'fix: reject zero-point purchase units'
-          git push origin HEAD:fix/rounding-assumption-clarity
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
