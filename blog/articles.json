@@ -98,15 +98,17 @@
     "id": "points-value-1",
     "title": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
     "date": "2026-07-24",
-    "modified": "2026-07-30",
+    "modified": "2026-08-03",
     "category": "使い方",
     "tags": [
       "Play Points",
       "1ポイント",
       "獲得率",
-      "必要金額"
+      "必要金額",
+      "丸め",
+      "税抜"
     ],
-    "description": "Google Play Pointsの1ポイントは何円で貯まるかを、日本のステータス別獲得率と商品ごとの丸め方から解説。1ポイントの使う価値との違いも整理します。",
+    "description": "Google Play Pointsの計算を、税抜の対象価格、商品ごとの四捨五入、分割購入と合計計算の差から解説。日本のステータス別獲得率を使える比較シミュレーター付きです。",
     "file": "../articles/2026-07-24-play-points-1-value.html",
     "thumbnail": "../articles/ogp/getting-started.png"
   },

@@ -19,13 +19,17 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-24-play-points-1-value.html': {
+    modifiedDate: '2026-08-03',
+    boundaryHeading: '公式で確認できること／Google Play画面で確認すること',
+    knownHeading: '公式で確認できること',
+    unknownHeading: 'Google Play画面で確認すること',
     known: [
-      '日本の通常獲得率と、商品単位で最も近い整数へ丸める計算方法は公式案内で確認できます。',
-      '獲得に必要な金額と、交換時の価値は別の計算です。'
+      'ポイント対象は税金を除いたアイテム価格で、獲得ポイントを最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
+      '日本のステータス別通常獲得率は100円あたり1～2ポイントです。'
     ],
     unknown: [
-      '個別アカウントに表示される交換先やキャンペーンはこのサイトから確認できません。',
-      '購入前に表示される獲得予定ポイントを超える確約はできません。'
+      'その購入が対象か、キャンペーンが適用されるか。',
+      '購入前の獲得予定ポイントと、購入後の実際の付与数。'
     ],
     comparisonHref: '/compare/earning-rates/#status-rates',
     comparisonLabel: 'ステータス別獲得率の引用用比較表を見る'
@@ -127,15 +131,18 @@ function renderKnowledgeBoundary(config) {
   const comparison = config.comparisonHref
     ? `<p class="knowledge-boundary__source"><a href="${escapeHtml(config.comparisonHref)}">${escapeHtml(config.comparisonLabel)}</a></p>`
     : '';
+  const boundaryHeading = config.boundaryHeading || '判明していること／このサイトからは不明なこと';
+  const knownHeading = config.knownHeading || '判明していること';
+  const unknownHeading = config.unknownHeading || 'このサイトからは不明なこと';
   return `<section class="knowledge-boundary" aria-labelledby="known-unknown">
-                <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+                <h2 id="known-unknown">${escapeHtml(boundaryHeading)}</h2>
                 <div class="knowledge-boundary__grid">
                     <div>
-                        <h3>判明していること</h3>
+                        <h3>${escapeHtml(knownHeading)}</h3>
                         <ul>${config.known.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
                     </div>
                     <div>
-                        <h3>このサイトからは不明なこと</h3>
+                        <h3>${escapeHtml(unknownHeading)}</h3>
                         <ul>${config.unknown.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
                     </div>
                 </div>
@@ -173,6 +180,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       throw new Error(`編集対象の記事がありません: ${relativePath}`);
     }
 
+    const targetModifiedDate = config.modifiedDate || EDITORIAL_MODIFIED_DATE;
     let html = fs.readFileSync(absolutePath, 'utf8').replace(EDITORIAL_MARKER_PATTERN, '\n');
     const knowledge = renderKnowledgeBoundary(config);
     let editorialHtml;
@@ -194,7 +202,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       );
     }
 
-    html = updateDateMetadata(html, EDITORIAL_MODIFIED_DATE)
+    html = updateDateMetadata(html, targetModifiedDate)
       .replace(/\r\n/g, '\n')
       .replace(/[ \t]+$/gm, '');
     fs.writeFileSync(absolutePath, html, 'utf8');
@@ -203,9 +211,12 @@ function applyEditorialStructure(rootDir, modifiedDate) {
 
   const articlesPath = path.join(rootDir, 'blog', 'articles.json');
   const articles = JSON.parse(fs.readFileSync(articlesPath, 'utf8'));
-  const targetFiles = new Set(Object.keys(EDITORIAL_TARGETS).map(file => `../${file}`));
+  const targetDates = new Map(Object.entries(EDITORIAL_TARGETS).map(([file, config]) => [
+    `../${file}`,
+    config.modifiedDate || EDITORIAL_MODIFIED_DATE
+  ]));
   for (const article of articles) {
-    if (targetFiles.has(article.file)) article.modified = EDITORIAL_MODIFIED_DATE;
+    if (targetDates.has(article.file)) article.modified = targetDates.get(article.file);
   }
   fs.writeFileSync(articlesPath, `${JSON.stringify(articles, null, 2)}\n`, 'utf8');
 
