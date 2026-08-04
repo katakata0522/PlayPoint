@@ -1,0 +1,3467 @@
+
+=== JavaScript構文検証 ===
+JS syntax check passed (51 files).
+
+=== 生成物の再現性検証 ===
+Synchronized dates and asset versions (v=20260802_0131a) in index.html
+[build-html] synchronized editorial structure: 9
+Generated /home/runner/work/PlayPoint/PlayPoint/en/index.html successfully.
+Generated /home/runner/work/PlayPoint/PlayPoint/ko/index.html successfully.
+Generated /home/runner/work/PlayPoint/PlayPoint/tw/index.html successfully.
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260802_0131-8b7853ca
+Successfully synchronized consent.js version in third-party.js to v=55813d3bcb
+Generated international SEO pages (57 files).
+[manual-intl] restored canonical article content: 13
+[intl-content-expansion] published 27 locale articles
+Successfully synchronized asset versions and dates in about-playpoints.html
+Successfully synchronized asset versions and dates in info.html
+Successfully synchronized asset versions and dates in changelog.html
+Successfully synchronized asset versions and dates in attention.html
+Successfully synchronized asset versions and dates in privacy.html
+Successfully synchronized asset versions and dates in terms.html
+Successfully synchronized asset versions and dates in sitemap.html
+Successfully synchronized asset versions and dates in embed.html
+Successfully synchronized asset versions and dates in latest/index.html
+Successfully synchronized asset versions and dates in status/diamond/index.html
+Successfully synchronized asset versions and dates in status/platinum/index.html
+Successfully synchronized asset versions and dates in status/gold/index.html
+Successfully synchronized asset versions and dates in status/silver/index.html
+Successfully synchronized asset versions and dates in maintenance/platinum/index.html
+Successfully synchronized asset versions and dates in maintenance/diamond/index.html
+Successfully synchronized asset versions and dates in campaign/2x/index.html
+Successfully synchronized asset versions and dates in campaign/3x/index.html
+Successfully synchronized asset versions and dates in campaign/wait/index.html
+Successfully synchronized asset versions and dates in amount/10000/index.html
+Successfully synchronized asset versions and dates in compare/earning-rates/index.html
+Successfully synchronized asset versions and dates in en/articles/2026-06-20-discount-gift-cards.html
+Successfully synchronized asset versions and dates in ko/articles/2026-06-20-discount-gift-cards.html
+Successfully synchronized asset versions and dates in tw/articles/2026-06-20-discount-gift-cards.html
+[public-assets] synchronized content hashes: 17 files
+Updated sitemap.xml and blog/sitemap.xml with current article dates (30 articles).
+Generated blog feeds (30 articles).
+[blog-index] synchronized static article titles: 0
+[build-html] stripped external Google Fonts: 0
+[build-html] sanitized internal attribution links: 0
+diff --git a/en/articles/index.html b/en/articles/index.html
+index b9014a9..984ae1f 100644
+--- a/en/articles/index.html
++++ b/en/articles/index.html
+@@ -47,6 +47,12 @@
+                 <li><a href="/en/articles/google-play-balance-combine-payment.html">Can you combine Google Play balance with another payment method?</a></li>
+                 <li><a href="/en/articles/google-play-points-device-change.html">Play Points after changing phones or devices</a></li>
+                 <li><a href="/en/articles/google-play-points-rounding-tax.html">How Play Points handle tax, rounding and split purchases</a></li>
++                <li><a href="/en/articles/google-play-points-balance-history-progress.html">Where to check Play Points balance, history and level progress</a></li>
++                <li><a href="/en/articles/google-play-points-apps-books-purchases.html">Do paid apps, games and books earn Play Points?</a></li>
++                <li><a href="/en/articles/google-play-games-vs-play-points.html">Google Play Games vs Play Points: XP, achievements and rewards</a></li>
++                <li><a href="/en/articles/google-play-points-earn-free.html">Legitimate ways to earn Play Points without extra spending</a></li>
++                <li><a href="/en/articles/google-play-points-500-1000-cost.html">How much spending for 500 or 1,000 Play Points?</a></li>
++                <li><a href="/en/articles/google-play-points-discounts-promo-codes.html">Do discounts and promo codes still earn Play Points?</a></li>
+                 <li><a href="/en/articles/google-play-points-super-weekly-reward.html">Super Weekly Prize eligibility, prize stock and Super Tickets</a></li>
+                 <li><a href="/en/articles/google-play-quests.html">Google Play quests not appearing or completing</a></li>
+                 <li><a href="/en/articles/google-play-points-cash-conversion.html">Can you cash out Google Play Points?</a></li>
+diff --git a/ko/articles/google-play-games-vs-play-points.html b/ko/articles/google-play-games-vs-play-points.html
+new file mode 100644
+index 0000000..1e1bba9
+--- /dev/null
++++ b/ko/articles/google-play-games-vs-play-points.html
+@@ -0,0 +1,101 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>Google Play Games와 Play Points 차이｜경험치·업적·포인트</title>
++  <meta name="description" content="Play Games 프로필의 경험치와 업적, Google Play Points의 적립 포인트와 등급을 구분하고 퀘스트·PC 결제·계정 불일치까지 설명합니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="Google Play Games와 Play Points 차이｜경험치·업적·포인트">
++  <meta property="og:description" content="Play Games 경험치와 실제로 사용할 수 있는 Play Points의 차이를 정리합니다.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html"},"headline":"Google Play Games와 Play Points 차이｜경험치·업적·포인트","description":"Play Games 프로필의 경험치와 업적, Google Play Points의 적립 포인트와 등급을 구분하고 퀘스트·PC 결제·계정 불일치까지 설명합니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Play Games 경험치를 Play Points로 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. Play Games 경험치와 업적은 게임 프로필 정보이며 Play Points로 전환되지 않습니다."}},{"@type":"Question","name":"게임을 플레이하면 Play Points가 적립되나요?","acceptedAnswer":{"@type":"Answer","text":"계정에 표시된 퀘스트나 설치 프로모션이 해당 활동을 요구하고 조건을 완료한 경우에만 적립될 수 있습니다."}},{"@type":"Question","name":"PC용 Google Play Games 구매도 포인트가 적립되나요?","acceptedAnswer":{"@type":"Answer","text":"대상 Google Play 구매는 PC에서도 적립될 수 있지만 퀘스트와 일부 프로모션은 모바일에서 확인해야 합니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">Play Games 프로필 · 경험치 · Play Points</span>
++    <h1>Google Play Games 경험치는 Google Play Points가 아닙니다</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: Play Games는 게임 기록, Play Points는 구매와 프로모션 리워드입니다</h2>
++      <p>Play Games 프로필은 게이머 이름, 업적, 플레이 통계, 진행 상황과 경험치를 관리합니다. Play Points는 Google Play의 대상 구매와 프로모션으로 적립되는 별도의 리워드 프로그램입니다.</p>
++      <p>게임을 플레이하거나 업적을 달성해 Play Games 경험치가 올라가도 Play Points 잔액이 자동으로 늘어나지는 않습니다.</p>
++    </section>
++    <section class="section">
++      <h2>Play Games 프로필의 역할</h2>
++      <p>Play Games 프로필은 지원 게임에서 자동 로그인, 업적, 통계, 저장 진행도와 커뮤니티 기능을 연결합니다. Android와 PC용 Google Play Games에서 같은 게임 프로필을 사용할 수 있습니다.</p>
++      <p>프로필 경험치나 레벨은 게임 활동을 보여주는 값이며 Play 크레딧으로 교환할 수 있는 포인트가 아닙니다.</p>
++    </section>
++    <section class="section">
++      <h2>Play Points의 역할</h2>
++      <p>Play Points는 Google Play를 통한 대상 구매, 주간 리워드, 퀘스트와 설치 프로모션 등에서 적립됩니다. 사용할 수 있는 잔액과 연간 등급 진행도가 따로 존재합니다.</p>
++      <p>대한민국 브론즈 기본 적립은 1,000원당 1포인트이며 Play Games 경험치와 계산 방식이 완전히 다릅니다.</p>
++    </section>
++    <section class="section">
++      <h2>게임 플레이가 포인트와 연결되는 경우</h2>
++      <p>계정에 표시된 퀘스트가 Play Games 로그인, 게임 설치, 플레이 또는 구매를 요구할 수 있습니다. 퀘스트 페이지에 적힌 단계를 완료하면 정해진 리워드를 받을 수 있습니다.</p>
++      <p>포인트를 주는 것은 일반적인 플레이 시간이 아니라 해당 <strong>프로모션 조건</strong>입니다. 퀘스트가 표시되지 않았다면 같은 행동을 해도 포인트가 보장되지 않습니다.</p>
++    </section>
++    <section class="section">
++      <h2>PC용 Google Play Games와 포인트</h2>
++      <p>Google은 PC에서도 대상 Google Play 구매로 Play Points를 적립할 수 있다고 안내합니다. PC용 Google Play Games는 게임 진행도를 동기화하고 대상 구매를 지원할 수 있습니다.</p>
++      <p>다만 퀘스트와 스탬프 카드는 현재 모바일에서만 제공된다는 안내가 있으므로, PC에서 보이지 않는 프로모션은 휴대전화 Play 스토어를 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>계정이 달라지는 문제</h2>
++      <p>게임은 한 Play Games 프로필로 로그인했지만 결제는 다른 Google 계정으로 진행될 수 있습니다. 그러면 게임 진행도, 영수증, 포인트 내역이 서로 다른 계정에 나뉩니다.</p>
++      <p>Play Games 프로필, 결제창, Play Points 화면의 계정을 모두 비교하세요. 포인트는 계정 간 이전할 수 없습니다.</p>
++    </section>
++    <section class="section">
++      <h2>질문에 맞는 화면 선택</h2>
++      <ul>
++        <li>업적·게임 진행도·경험치: Play Games 프로필</li>
++        <li>구매 적립·사용 기록: Play Points와 포인트 내역</li>
++        <li>퀘스트 단계: 모바일 Play 스토어의 퀘스트 화면</li>
++        <li>결제 상태와 계정: Google Play 결제 및 정기 결제</li>
++      </ul>
++      <p>화면을 구분하면 Play Games 레벨을 Play Points 등급으로 착각하는 일을 막을 수 있습니다.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/3129346?hl=ko" target="_blank" rel="noopener noreferrer">Play Games 프로필 개인정보 및 설정</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/2954594?hl=ko" target="_blank" rel="noopener noreferrer">Play Games 프로필 만들기 및 변경</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/11534416?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 퀘스트</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/11358071?hl=ko" target="_blank" rel="noopener noreferrer">PC용 Google Play Games 요구사항</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/articles/google-play-quests.html">Google Play 퀘스트가 표시되지 않을 때</a></li>
++        <li><a href="/ko/articles/google-play-points-apps-books-purchases.html">앱·게임·도서 적립 조건</a></li>
++        <li><a href="/ko/articles/google-play-points-multiple-accounts.html">여러 Google 계정에서 Play Points 확인</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/google-play-points-500-1000-cost.html b/ko/articles/google-play-points-500-1000-cost.html
+new file mode 100644
+index 0000000..f0c879e
+--- /dev/null
++++ b/ko/articles/google-play-points-500-1000-cost.html
+@@ -0,0 +1,112 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>Google Play Points 500·1,000포인트 필요 금액｜대한민국 표</title>
++  <meta name="description" content="대한민국 Play Points 등급별 1,000원 단위를 사용해 500포인트와 1,000포인트를 모으는 데 필요한 세전 대상 결제 금액을 계산합니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="Google Play Points 500·1,000포인트 필요 금액｜대한민국 표">
++  <meta property="og:description" content="대한민국 등급별 500·1,000 Play Points 필요 금액 표.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html"},"headline":"Google Play Points 500·1,000포인트 필요 금액｜대한민국 표","description":"대한민국 Play Points 등급별 1,000원 단위를 사용해 500포인트와 1,000포인트를 모으는 데 필요한 세전 대상 결제 금액을 계산합니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"대한민국 브론즈에서 500포인트는 얼마가 필요한가요?","acceptedAnswer":{"@type":"Answer","text":"기본 1,000원당 1포인트 기준으로 세전 대상 결제 약 50만원입니다."}},{"@type":"Question","name":"다이아몬드에서 1,000포인트는 얼마인가요?","acceptedAnswer":{"@type":"Answer","text":"1,000원당 2포인트 기준으로 약 50만원입니다."}},{"@type":"Question","name":"표의 금액이 정확한가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 세금, 구매별 반올림, 대상 제외 거래와 캠페인에 따라 실제 포인트가 달라집니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">대한민국 적립률 · 500포인트 · 1,000포인트</span>
++    <h1>Google Play Points 500포인트와 1,000포인트는 얼마가 필요할까요?</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: 브론즈 기준 500포인트는 약 50만원, 1,000포인트는 약 100만원입니다</h2>
++      <p>대한민국 브론즈 기본 적립률은 1,000원당 1포인트입니다. 골드 이상은 미국과 적립률이 다르며, 다이아몬드는 1,000원당 2포인트이므로 500포인트 약 25만원, 1,000포인트 약 50만원으로 계산됩니다.</p>
++      <p>세금을 제외한 대상 가격과 구매별 반올림을 고려하지 않은 계획용 연속값입니다.</p>
++    </section>
++    <section class="section">
++      <h2>대한민국 등급별 필요 금액</h2>
++      <div class="table-wrapper">
++        <table>
++          <thead><tr><th>등급</th><th>기본 적립률</th><th>500포인트 필요 금액</th><th>1,000포인트 필요 금액</th></tr></thead>
++          <tbody>
++          <tr><td>브론즈</td><td>1포인트 / ₩1,000</td><td>₩500,000</td><td>₩1,000,000</td></tr>
++          <tr><td>실버</td><td>1.1포인트 / ₩1,000</td><td>₩454,546</td><td>₩909,091</td></tr>
++          <tr><td>골드</td><td>1.3포인트 / ₩1,000</td><td>₩384,616</td><td>₩769,231</td></tr>
++          <tr><td>플래티넘</td><td>1.6포인트 / ₩1,000</td><td>₩312,500</td><td>₩625,000</td></tr>
++          <tr><td>다이아몬드</td><td>2포인트 / ₩1,000</td><td>₩250,000</td><td>₩500,000</td></tr>
++          </tbody>
++        </table>
++      </div>
++      <p>표는 목표 포인트를 대한민국 공식 등급별 적립률로 나눈 뒤 원 단위로 올림한 값입니다. 실제 결제는 구매별 반올림과 대상 여부에 따라 달라질 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>정확한 결제 총액이 아닌 이유</h2>
++      <p>Google은 대상 상품 가격에 적립률을 곱한 뒤 구매별로 가장 가까운 정수 포인트로 반올림합니다. 구매 금액의 구성이 없으면 하나의 정확한 총액을 정할 수 없습니다.</p>
++      <p>평균 1회 결제 금액을 알고 있다면 계산기에 입력해 구매 횟수까지 함께 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>잔액 500포인트와 등급 진행도 500포인트</h2>
++      <p>사용할 수 있는 포인트를 500까지 모으려는지, 다음 등급까지 500포인트가 남았는지 구분해야 합니다. 포인트를 사용하면 잔액은 줄지만 해당 연도 등급 진행도는 줄지 않습니다.</p>
++      <p>Google Play 앱에 표시된 ‘다음 등급까지 남은 포인트’를 그대로 사용하는 것이 안전합니다.</p>
++    </section>
++    <section class="section">
++      <h2>캠페인 배율을 적용할 때</h2>
++      <p>2배나 3배 캠페인이 실제 구매에 적용되면 필요한 금액은 줄어듭니다. 하지만 대상 앱, 활성화 여부, 기간, 계정 조건을 충족해야 합니다.</p>
++      <p>먼저 기본 적립률로 계산하고, 이미 계획한 구매가 캠페인 대상일 때만 추가 배율을 비교하세요.</p>
++    </section>
++    <section class="section">
++      <h2>다른 국가 표를 사용하면 안 되는 이유</h2>
++      <p>대한민국은 골드 1.3, 플래티넘 1.6, 다이아몬드 2.0포인트/1,000원입니다. 미국은 골드 1.2, 플래티넘 1.4, 다이아몬드 1.6이므로 원화 금액에 미국 표를 대입하면 틀립니다.</p>
++      <p>일본·대만과도 적립 단위와 등급 구간이 다릅니다.</p>
++    </section>
++    <section class="section">
++      <h2>더 가까운 예상치를 만드는 순서</h2>
++      <ol>
++        <li>Google Play에서 실제로 남은 포인트를 확인합니다.</li>
++        <li>대한민국 현재 등급과 확정된 캠페인을 선택합니다.</li>
++        <li>알고 있다면 1회 평균 결제 금액을 입력합니다.</li>
++        <li>수동 계산에서는 세금을 제외합니다.</li>
++        <li>결제 후 포인트 내역으로 확인합니다.</li>
++      </ol>
++      <p>등급만을 위해 불필요한 결제를 늘리지 않는 것이 가장 중요합니다.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국 Play Points 등급 및 적립률</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국에서 Google Play 포인트 적립하기</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/15776969?hl=ko" target="_blank" rel="noopener noreferrer">포인트 잔액과 진행도 확인</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/points-cost/">대한민국 필요 금액 계산기</a></li>
++        <li><a href="/ko/articles/google-play-points-rounding-tax.html">세금·반올림·분할 결제 계산</a></li>
++        <li><a href="/ko/articles/google-play-points-balance-history-progress.html">잔액·내역·등급 진행도 확인</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/google-play-points-apps-books-purchases.html b/ko/articles/google-play-points-apps-books-purchases.html
+new file mode 100644
+index 0000000..1b56d2e
+--- /dev/null
++++ b/ko/articles/google-play-points-apps-books-purchases.html
+@@ -0,0 +1,101 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>유료 앱·게임·도서 구매도 Google Play Points가 적립될까?</title>
++  <meta name="description" content="대한민국에서 유료 앱과 게임, 인앱 결제, 정기 결제, Google Play 도서 구매가 Play Points 적립 대상이 되는 조건과 세금·계정 확인 방법을 정리합니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="유료 앱·게임·도서 구매도 Google Play Points가 적립될까?">
++  <meta property="og:description" content="대한민국 계정에서 앱, 게임, 정기 결제와 도서 구매의 Play Points 적립 조건을 확인합니다.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html"},"headline":"유료 앱·게임·도서 구매도 Google Play Points가 적립될까?","description":"대한민국에서 유료 앱과 게임, 인앱 결제, 정기 결제, Google Play 도서 구매가 Play Points 적립 대상이 되는 조건과 세금·계정 확인 방법을 정리합니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"유료 앱을 구매하면 포인트가 적립되나요?","acceptedAnswer":{"@type":"Answer","text":"Google Play에서 가입 계정으로 구매한 대상 유료 앱이나 게임은 Play Points가 적립될 수 있습니다."}},{"@type":"Question","name":"대한민국에서 Google Play 도서도 적립되나요?","acceptedAnswer":{"@type":"Answer","text":"공식 적립 방법에 도서 구매가 포함되어 있지만, 추가 배율이나 개별 대상 여부는 앱에 표시된 조건을 확인해야 합니다."}},{"@type":"Question","name":"무료 게임 설치만으로 항상 포인트를 받나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 계정에 설치 프로모션이나 퀘스트가 표시되고 해당 조건을 완료한 경우에만 받을 수 있습니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">앱 · 게임 · 정기 결제 · 도서</span>
++    <h1>유료 앱과 도서도 Play Points가 적립될 수 있지만 결제 경로를 확인해야 합니다</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: Google Play를 통한 대상 구매는 적립될 수 있습니다</h2>
++      <p>대한민국 공식 안내에는 Google Play의 앱·게임 구매, 인앱·인게임 결제와 정기 결제, 도서 구매가 적립 방법으로 안내됩니다. Play Points에 가입한 Google 계정으로 Google Play 결제를 완료해야 합니다.</p>
++      <p>무료 앱을 그냥 설치하거나 외부 사이트에서 결제하는 것은 같은 조건이 아닙니다. 결제 화면과 포인트 내역을 최종 기준으로 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>유료 앱과 게임 구매</h2>
++      <p>Google Play 스토어에서 판매하는 유료 앱이나 게임을 가입 계정으로 구매하면 대상 거래에서 포인트가 적립될 수 있습니다. 다른 Google 계정으로 결제하면 현재 확인 중인 계정에는 적립되지 않습니다.</p>
++      <p>무료 앱은 별도의 설치 프로모션이나 퀘스트가 표시된 경우에만 조건을 완료해 포인트를 받을 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>인앱 결제와 정기 결제</h2>
++      <p>Google Play 결제창을 통해 처리되는 인앱·인게임 구매와 정기 결제는 적립 대상이 될 수 있습니다. 앱 개발사의 웹사이트나 외부 결제수단으로 직접 결제한 거래는 Google Play 구매와 구분해야 합니다.</p>
++      <p>결제 전에 결제 계정, Google Play 결제 여부, 캠페인 활성화 필요 여부를 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>대한민국에서 도서 구매</h2>
++      <p>대한민국 공식 적립 안내에는 Google Play 도서 구매가 포함되어 있습니다. 다만 미국이나 대만 표에 보이는 도서 배율 혜택을 대한민국 계정에도 항상 적용된다고 가정하면 안 됩니다.</p>
++      <p>도서 관련 추가 적립이 실제로 제공되는지는 Play Points의 적립 탭과 해당 도서 결제 화면에서 확인하는 것이 안전합니다.</p>
++    </section>
++    <section class="section">
++      <h2>세금, 할인, 반올림</h2>
++      <p>포인트는 세금을 제외한 대상 상품 가격을 기준으로 계산되며, 등급별 적립률을 곱한 뒤 가장 가까운 정수 포인트로 반올림됩니다. 할인된 거래는 정가를 그대로 곱한 예상과 다를 수 있습니다.</p>
++      <p>작은 금액을 여러 번 결제하면 구매별 반올림 때문에 총액 기준 단순 계산과 포인트 내역이 달라질 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>모바일·PC·TV에서의 구매</h2>
++      <p>Google은 Android 기기, 컴퓨터, 스마트 TV의 Google Play 구매에서 포인트를 적립할 수 있다고 안내합니다. PC용 Google Play Games에서도 대상 결제를 할 수 있지만 같은 계정과 Google Play 결제 경로가 중요합니다.</p>
++      <p>게임 플레이 기록이나 Play Games 경험치는 Play Points와 별도입니다.</p>
++    </section>
++    <section class="section">
++      <h2>구매 전 확인 목록</h2>
++      <ul>
++        <li>Play Points 가입 계정으로 결제하는지 확인합니다.</li>
++        <li>Google Play 결제창을 사용하는 거래인지 확인합니다.</li>
++        <li>캠페인과 설치 프로모션의 대상 조건을 읽습니다.</li>
++        <li>수동 계산에서 세금을 포함하지 않습니다.</li>
++        <li>결제 화면의 예상 포인트와 완료 후 포인트 내역을 확인합니다.</li>
++      </ul>
++      <p>대상 구매인데도 적립되지 않았다면 가입 시점, 주문 완료 여부, 구매 계정을 먼저 점검하세요.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국에서 Google Play 포인트 적립하기</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국 Play Points 등급과 혜택</a></li>
++        <li><a href="https://support.google.com/googleplay/android-developer/answer/16517110?hl=ko" target="_blank" rel="noopener noreferrer">Google Play Points 프로그램 개요</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/articles/google-play-games-vs-play-points.html">Play Games와 Play Points 차이</a></li>
++        <li><a href="/ko/articles/google-play-points-rounding-tax.html">세금·반올림·분할 결제 계산</a></li>
++        <li><a href="/ko/articles/google-play-points-subscriptions.html">Google Play 정기 결제 적립 조건</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/google-play-points-balance-history-progress.html b/ko/articles/google-play-points-balance-history-progress.html
+new file mode 100644
+index 0000000..540d4a3
+--- /dev/null
++++ b/ko/articles/google-play-points-balance-history-progress.html
+@@ -0,0 +1,111 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>Google Play Points 잔액·내역·등급 진행도 확인 방법</title>
++  <meta name="description" content="사용 가능한 포인트 잔액, 포인트 내역, 연간 등급 진행도의 차이를 대한민국 기준으로 구분하고 확인 메뉴와 환불 시 변화를 정리합니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="Google Play Points 잔액·내역·등급 진행도 확인 방법">
++  <meta property="og:description" content="포인트 잔액과 연간 등급 진행도를 구분하고 대한민국 계정의 확인 순서를 안내합니다.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html"},"headline":"Google Play Points 잔액·내역·등급 진행도 확인 방법","description":"사용 가능한 포인트 잔액, 포인트 내역, 연간 등급 진행도의 차이를 대한민국 기준으로 구분하고 확인 메뉴와 환불 시 변화를 정리합니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"등급 진행도가 잔액보다 큰 이유는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"포인트를 사용하면 잔액은 줄지만 해당 연도 등급 진행도에 이미 반영된 적립 포인트는 줄지 않기 때문입니다."}},{"@type":"Question","name":"구매 한 건에서 적립된 포인트는 어디서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"Google Play 스토어의 Play Points에서 더보기 메뉴를 열고 포인트 내역을 확인하세요."}},{"@type":"Question","name":"환불하면 등급 진행도도 줄어드나요?","acceptedAnswer":{"@type":"Answer","text":"환불 또는 취소된 구매에서 적립한 포인트는 잔액과 등급 진행도에서 차감될 수 있습니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">잔액 · 포인트 내역 · 등급 진행도</span>
++    <h1>Google Play Points 잔액과 등급 진행도는 같은 숫자가 아닙니다</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: 잔액, 포인트 내역, 등급 진행도를 각각 확인하세요</h2>
++      <p><strong>포인트 잔액</strong>은 지금 사용할 수 있는 포인트이고, <strong>포인트 내역</strong>은 적립·사용·취소 기록입니다. <strong>등급 진행도</strong>는 해당 연도에 적립한 포인트를 합산한 값이라 포인트를 사용해도 줄어들지 않습니다.</p>
++      <p>숫자가 맞지 않아 보일 때는 계산부터 다시 하기보다 어떤 숫자를 서로 비교했는지 먼저 확인하는 편이 빠릅니다.</p>
++    </section>
++    <section class="section">
++      <h2>세 숫자의 역할</h2>
++      <dl>
++        <dt><strong>포인트 잔액</strong></dt><dd>Play 크레딧, 쿠폰, 참여 앱 아이템 등에 사용할 수 있는 포인트입니다. 사용하면 잔액이 줄어듭니다.</dd>
++        <dt><strong>포인트 내역</strong></dt><dd>구매 적립, 주간 리워드, 사용, 환불에 따른 차감 등을 확인하는 거래 기록입니다.</dd>
++        <dt><strong>등급 진행도</strong></dt><dd>해당 연도에 적립한 포인트가 다음 등급까지 얼마나 쌓였는지 보여줍니다. 포인트 사용으로 차감되지 않습니다.</dd>
++      </dl>
++      <p>따라서 포인트를 많이 사용한 사람은 잔액이 적어도 등급 진행도는 높게 남아 있을 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>Google Play 스토어에서 확인하는 순서</h2>
++      <ol>
++        <li>Play Points에 가입한 Google 계정으로 Google Play 스토어를 엽니다.</li>
++        <li>오른쪽 위 프로필 아이콘에서 <strong>Play Points</strong>를 선택합니다.</li>
++        <li><strong>사용</strong> 탭에서 현재 잔액과 만료 정보를 확인합니다.</li>
++        <li>더보기 메뉴의 <strong>포인트 내역</strong>에서 구매별 적립과 사용 기록을 확인합니다.</li>
++        <li>등급별 혜택 또는 진행도 화면에서 현재 등급, 기본 적립률, 다음 등급까지 필요한 포인트를 확인합니다.</li>
++      </ol>
++      <p>기기에 여러 Google 계정이 등록되어 있다면 구매 영수증의 계정과 Play Points 화면의 계정이 같은지 먼저 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>대한민국 등급 기준</h2>
++      <p>대한민국 계정은 1,000원당 브론즈 1포인트가 기본입니다. 공식 기준은 실버 150포인트, 골드 600포인트, 플래티넘 2,400포인트, 다이아몬드 15,000포인트입니다.</p>
++      <p>미국이나 일본의 표를 그대로 사용하면 플래티넘·다이아몬드 구간과 적립률이 달라집니다. 대한민국 계정은 대한민국 표와 앱에 표시된 진행도를 기준으로 보세요.</p>
++    </section>
++    <section class="section">
++      <h2>환불과 취소가 두 숫자에 미치는 영향</h2>
++      <p>포인트가 적립된 구매를 환불하거나 취소하면 관련 포인트가 잔액과 등급 진행도에서 차감될 수 있습니다. 갑자기 숫자가 줄었다면 포인트 내역에서 환불 주문과 연결된 차감 기록을 확인하세요.</p>
++      <p>결제가 보류 중이거나 다른 계정으로 결제된 경우에는 적립 기록이 예상한 계정에 나타나지 않을 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>포인트 만료와 등급 유지 기간은 다릅니다</h2>
++      <p>사용 가능한 포인트는 마지막 적립 또는 사용 시점을 기준으로 만료가 계산됩니다. 등급 진행도는 1월 1일부터 12월 31일까지의 적립 포인트를 기준으로 판단합니다.</p>
++      <p>한 번 도달한 등급은 일반적으로 다음 해 말까지 유지되므로, 잔액 만료일과 등급이 바뀌는 시점은 서로 같지 않을 수 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>숫자가 다를 때 확인할 체크리스트</h2>
++      <ul>
++        <li>구매 계정과 Play Points 가입 계정이 같은지 확인합니다.</li>
++        <li>완료된 주문과 포인트 내역의 항목을 직접 비교합니다.</li>
++        <li>사용 가능한 잔액과 연간 등급 진행도를 구분합니다.</li>
++        <li>포인트 사용, 만료, 환불 차감 여부를 확인합니다.</li>
++        <li>대한민국의 1,000원 단위와 등급 기준을 사용합니다.</li>
++      </ul>
++      <p>완료된 주문인데 포인트 내역 자체가 없다면 주문 번호를 준비해 Google Play 고객센터에 문의하는 것이 안전합니다.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/15776969?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 포인트 추적하기</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국 Play Points 등급 및 혜택</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국에서 Google Play 포인트 적립하기</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/articles/google-play-points-not-showing.html">Play Points가 표시되지 않을 때</a></li>
++        <li><a href="/ko/articles/google-play-points-level-maintenance-reset.html">등급 유지와 연초 재산정</a></li>
++        <li><a href="/ko/articles/google-play-points-multiple-accounts.html">여러 Google 계정에서 Play Points 확인</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/google-play-points-discounts-promo-codes.html b/ko/articles/google-play-points-discounts-promo-codes.html
+new file mode 100644
+index 0000000..695a606
+--- /dev/null
++++ b/ko/articles/google-play-points-discounts-promo-codes.html
+@@ -0,0 +1,107 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>할인·프로모션 코드 사용 시 Google Play Points 적립 기준</title>
++  <meta name="description" content="대한민국에서 스토어 할인, 프로모션 코드, Play Points 쿠폰, 추가 적립 캠페인을 구분하고 결제 금액·세금·계정·원화 조건을 확인하는 방법입니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="할인·프로모션 코드 사용 시 Google Play Points 적립 기준">
++  <meta property="og:description" content="할인과 프로모션 코드 사용 시 대한민국 Play Points 예상 방법.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html"},"headline":"할인·프로모션 코드 사용 시 Google Play Points 적립 기준","description":"대한민국에서 스토어 할인, 프로모션 코드, Play Points 쿠폰, 추가 적립 캠페인을 구분하고 결제 금액·세금·계정·원화 조건을 확인하는 방법입니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"할인 전 정가 기준으로 포인트가 적립되나요?","acceptedAnswer":{"@type":"Answer","text":"그렇게 가정하면 안 됩니다. 세금을 제외한 대상 상품 가격과 결제창의 예상 포인트를 확인하세요."}},{"@type":"Question","name":"Play Points 쿠폰은 모든 앱에서 사용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 특정 앱, 최소 구매 금액, 계정, 원화와 국가 조건이 있습니다."}},{"@type":"Question","name":"추가 적립 캠페인과 할인은 같은 혜택인가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 추가 적립은 적립률을 바꾸고 할인은 결제 금액을 바꿉니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">프로모션 코드 · 할인 · 쿠폰</span>
++    <h1>할인과 프로모션 코드는 Play Points 예상치를 바꿀 수 있습니다</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: 정가가 아니라 할인이 적용된 대상 결제 화면을 확인하세요</h2>
++      <p>Google은 세금을 제외한 대상 상품 가격을 기준으로 포인트를 계산합니다. 할인이나 쿠폰으로 실제 대상 가격이 내려가면 정가를 사용한 예상치와 다를 수 있습니다.</p>
++      <p>프로모션은 계정, 원화, 국가, 앱, 기간 조건이 있으므로 결제 직전 예상 포인트와 완료 후 포인트 내역이 최종 확인 기준입니다.</p>
++    </section>
++    <section class="section">
++      <h2>서로 다른 네 가지 프로모션</h2>
++      <dl>
++        <dt><strong>스토어 할인</strong></dt><dd>상품 판매 가격 자체가 낮아집니다.</dd>
++        <dt><strong>Google Play 프로모션 코드</strong></dt><dd>코드를 등록해 혜택이나 할인 금액을 받습니다.</dd>
++        <dt><strong>Play Points 쿠폰</strong></dt><dd>포인트를 특정 앱의 할인 쿠폰으로 교환합니다.</dd>
++        <dt><strong>추가 적립 캠페인</strong></dt><dd>가격은 같아도 1,000원당 적립 포인트가 높아집니다.</dd>
++      </dl>
++      <p>결제 금액을 낮추는 혜택과 적립률을 높이는 혜택은 계산 방식이 다릅니다.</p>
++    </section>
++    <section class="section">
++      <h2>세금과 할인 후 상품 가격</h2>
++      <p>포인트는 세금을 제외한 대상 상품 가격을 기준으로 합니다. 할인 후 결제에서 원래 정가를 곱하면 예상 포인트를 과대 계산할 수 있습니다.</p>
++      <p>할인을 적용한 뒤 Google Play 결제창에 표시되는 예상 포인트를 확인하는 것이 가장 안전합니다.</p>
++    </section>
++    <section class="section">
++      <h2>Play Points 쿠폰의 조건</h2>
++      <p>포인트로 교환한 쿠폰은 조건을 충족하는 특정 앱의 인앱 구매에 자동 적용됩니다. 구매 금액이 쿠폰 요구 금액 이상이어야 하며 계정, 앱, 원화, 국가 조건이 연결됩니다.</p>
++      <p>다른 Google 계정이나 다른 Play 국가의 구매에 대한민국 원화 쿠폰을 사용할 수 있다고 가정하면 안 됩니다.</p>
++    </section>
++    <section class="section">
++      <h2>프로모션 코드와 혜택 탭</h2>
++      <p>프로모션 코드는 유효기간 안에 등록하고 사용해야 하며, 일부 혜택은 즉시 사용하거나 혜택 탭에 저장할 수 있습니다. 계정 활동과 맞춤 설정에 따라 보이는 제안도 달라질 수 있습니다.</p>
++      <p>온라인에서 공유된 코드가 대한민국 계정과 원화 결제에 적용되는지는 등록 화면의 조건을 확인하세요.</p>
++    </section>
++    <section class="section">
++      <h2>추가 적립률은 가격 할인이 아닙니다</h2>
++      <p>5포인트/1,000원 캠페인은 적립률을 높이지만 상품 가격을 낮추지 않습니다. 반대로 5,000원 할인은 결제 금액을 낮추지만 기본 적립률이 자동으로 높아지는 것은 아닙니다.</p>
++      <p>두 혜택이 동시에 표시되더라도 중복 가능 여부는 각 약관을 확인해야 합니다.</p>
++    </section>
++    <section class="section">
++      <h2>결제 전후 체크리스트</h2>
++      <ol>
++        <li>결제 계정과 대한민국 Play 국가를 확인합니다.</li>
++        <li>코드나 쿠폰을 적용한 최종 상품 가격을 확인합니다.</li>
++        <li>수동 계산에서는 세금을 제외합니다.</li>
++        <li>추가 적립 캠페인의 대상 앱과 활성화 여부를 확인합니다.</li>
++        <li>결제 후 영수증과 포인트 내역을 비교합니다.</li>
++      </ol>
++      <p>할인은 적용됐지만 포인트가 다르면 결제 혜택 문제와 포인트 적립 문제를 분리해 확인하세요.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국에서 Google Play 포인트 적립하기</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/11548602?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 혜택 사용</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/15698521?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 프로모션</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/15776916?hl=ko" target="_blank" rel="noopener noreferrer">Play Points 쿠폰 사용</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/articles/google-play-points-promotion-not-applied.html">캠페인 보너스가 적용되지 않을 때</a></li>
++        <li><a href="/ko/articles/google-play-points-coupon-not-applied.html">쿠폰이 자동 적용되지 않을 때</a></li>
++        <li><a href="/ko/articles/google-play-points-rounding-tax.html">세금·반올림·분할 결제 계산</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/google-play-points-earn-free.html b/ko/articles/google-play-points-earn-free.html
+new file mode 100644
+index 0000000..79612de
+--- /dev/null
++++ b/ko/articles/google-play-points-earn-free.html
+@@ -0,0 +1,103 @@
++<!DOCTYPE html>
++<html lang="ko">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <meta name="robots" content="index,follow,max-image-preview:large">
++  <meta name="author" content="Katakata">
++  <meta name="last-modified" content="2026-08-04">
++  <title>Google Play Points 무료로 모으는 방법｜공식 리워드와 주의점</title>
++  <meta name="description" content="대한민국 계정에서 추가 결제 없이 받을 수 있는 주간 리워드, 퀘스트, 추천 앱 설치, Play Pass 보너스의 조건과 가짜 포인트 생성기 위험을 정리합니다.">
++  <link rel="canonical" href="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html">
++  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html">
++  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html">
++  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html">
++  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html">
++  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
++  <link rel="stylesheet" href="/articles/article-shared.css?v=309339d951">
++  <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
++  <meta property="og:type" content="article">
++  <meta property="og:site_name" content="Google Play Points 계산기">
++  <meta property="og:title" content="Google Play Points 무료로 모으는 방법｜공식 리워드와 주의점">
++  <meta property="og:description" content="대한민국 Play Points의 공식 무료 적립 기회와 한계를 확인합니다.">
++  <meta property="og:url" content="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html">
++  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
++  <meta name="twitter:card" content="summary_large_image">
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html"},"headline":"Google Play Points 무료로 모으는 방법｜공식 리워드와 주의점","description":"대한민국 계정에서 추가 결제 없이 받을 수 있는 주간 리워드, 퀘스트, 추천 앱 설치, Play Pass 보너스의 조건과 가짜 포인트 생성기 위험을 정리합니다.","inLanguage":"ko","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
++  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"결제하지 않고 Play Points를 받을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"계정에 표시된 주간 리워드, 일부 설치 프로모션이나 구매가 필요 없는 퀘스트를 통해 받을 수 있지만 항상 제공되는 것은 아닙니다."}},{"@type":"Question","name":"무료 앱을 설치하면 모두 포인트를 주나요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 특정 추천 설치 프로모션이 표시되고 조건을 완료한 경우에만 포인트를 받을 수 있습니다."}},{"@type":"Question","name":"포인트 생성기 사이트는 안전한가요?","acceptedAnswer":{"@type":"Answer","text":"아닙니다. 계정 정보나 결제를 요구하는 외부 포인트 생성기는 피해야 합니다."}}]}</script>
++</head>
++<body>
++<main class="main-card">
++  <header class="hero">
++    <span class="hero-badge">주간 리워드 · 퀘스트 · 추천 설치</span>
++    <h1>무료 Play Points는 계정에 표시된 공식 리워드로만 받을 수 있습니다</h1>
++    <p class="hero-meta">2026년 8월 4일 공개 · 약 8분</p>
++  </header>
++  <article class="content">
++    <section class="answer-box">
++      <h2>결론: 주간 리워드와 퀘스트를 확인하고 포인트 생성기는 피하세요</h2>
++      <p>무제한으로 포인트를 만드는 공식 방법은 없습니다. 추가 결제 없이 받을 수 있는 기회로는 실버 이상 주간 리워드, 계정별 퀘스트, 추천 무료 앱 설치 프로모션, Play Pass 주간 보너스가 있습니다.</p>
++      <p>제공 여부는 계정, 등급, 활동, 국가에 따라 달라지므로 Play Points의 <strong>적립</strong>과 <strong>혜택</strong> 탭을 직접 확인해야 합니다.</p>
++    </section>
++    <section class="section">
++      <h2>실버 이상 주간 리워드</h2>
++      <p>대한민국 공식 등급표에는 실버 최대 50포인트, 골드 최대 100포인트, 플래티넘 최대 500포인트, 다이아몬드 최대 1,000포인트의 주간 리워드가 안내됩니다.</p>
++      <p>이는 매주 최대치가 보장된다는 뜻이 아닙니다. 실제 지급 내용은 계정에서 리워드를 열어 확인해야 하며 금요일 갱신 전에 수령하는 편이 안전합니다.</p>
++    </section>
++    <section class="section">
++      <h2>퀘스트와 구매 조건</h2>
++      <p>퀘스트는 계정에 표시된 여러 단계를 완료하면 리워드를 주는 방식입니다. 설치, 플레이, Play Games 로그인, 인앱 구매 등이 조건이 될 수 있고 사용자마다 단계가 다를 수 있습니다.</p>
++      <p>구매가 필요한 퀘스트는 추가 결제 없는 무료 적립으로 보지 않는 것이 맞습니다. 이미 계획한 구매인지 먼저 판단하세요.</p>
++    </section>
++    <section class="section">
++      <h2>추천 무료 앱·게임 설치</h2>
++      <p>Google은 특정 무료 앱이나 게임을 처음 설치하는 프로모션을 제공할 수 있습니다. 모든 무료 앱 다운로드가 포인트를 주는 것은 아닙니다.</p>
++      <p>이전 설치 기록과 개인 맞춤 설정에 따라 제안이 달라질 수 있으므로, 프로모션이 표시되지 않은 상태에서 설치해도 포인트가 보장되지 않습니다.</p>
++    </section>
++    <section class="section">
++      <h2>Play Pass 주간 보너스와 부스터</h2>
++      <p>대한민국은 Play Pass 구독자용 주간 Play Points 보너스와 부스터 대상 지역에 포함됩니다. 일반 주간 리워드와 별개의 혜택이며 목요일에 갱신됩니다.</p>
++      <p>구독자와 조건을 충족하는 가족 그룹 구성원에게 제공될 수 있지만 매주 내용은 달라집니다. 구독료를 단순히 포인트 가치만으로 회수할 수 있다고 가정하지 마세요.</p>
++    </section>
++    <section class="section">
++      <h2>무료라는 말 때문에 지출하지 않기</h2>
++      <p>작은 포인트를 받기 위해 필요하지 않은 구매를 하면 실질적으로 손해입니다. 퀘스트의 보상과 요구 금액, 사용하려던 콘텐츠인지 함께 비교하세요.</p>
++      <p>추가 적립률도 원래 계획한 결제에 적용될 때만 절약 효과가 있습니다.</p>
++    </section>
++    <section class="section">
++      <h2>사기와 계정 보호</h2>
++      <ul>
++        <li>포인트 생성기 사이트에 Google 비밀번호를 입력하지 않습니다.</li>
++        <li>무제한 포인트를 약속하는 APK나 확장 프로그램을 설치하지 않습니다.</li>
++        <li>Google Play 앱에 표시된 혜택만 이용합니다.</li>
++        <li>시작 전에 기간과 완료 조건을 확인합니다.</li>
++        <li>수령 후 포인트 내역을 확인합니다.</li>
++      </ul>
++      <p>외부 업체가 정상적인 방법으로 Google 계정에 Play Points를 직접 추가할 수는 없습니다.</p>
++    </section>
++    <section class="section source-list">
++      <h2>공식 정보</h2>
++      <ul>
++        <li><a href="https://support.google.com/googleplay/answer/15776969?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 포인트 추적 및 주간 리워드</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/11534416?hl=ko" target="_blank" rel="noopener noreferrer">Google Play 퀘스트</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/16507543?hl=ko" target="_blank" rel="noopener noreferrer">Play Pass 구독자 주간 Play Points 리워드</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/9077247?hl=ko" target="_blank" rel="noopener noreferrer">Google Play Points 문제 해결</a></li>
++        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">대한민국 등급별 주간 리워드</a></li>
++      </ul>
++    </section>
++    <section class="section related-links-section">
++      <h2>함께 확인할 가이드</h2>
++      <ul>
++        <li><a href="/ko/articles/google-play-quests.html">Google Play 퀘스트가 표시되지 않을 때</a></li>
++        <li><a href="/ko/articles/google-play-points-weekly-reward.html">주간 Play Points 리워드</a></li>
++        <li><a href="/ko/articles/google-play-points-promotion-not-applied.html">캠페인 보너스가 적용되지 않을 때</a></li>
++      </ul>
++    </section>
++  </article>
++  <aside class="author-box"><p class="author-box-label">작성</p><p class="author-box-name"><a href="/author/katakata.html" rel="author">Katakata</a> — Google Play Points 계산기</p><p>다른 국가의 단위나 혜택을 그대로 가져오지 않고 대한민국 계정에 표시되는 조건을 기준으로 정리합니다.</p></aside>
++  <footer class="article-footer"><p><a href="/ko/articles/">한국어 가이드 전체 보기</a> · <a href="/ko/">계산기 열기</a></p></footer>
++</main>
++<script src="/js/intent-tracking.js?v=5cdd51c178"></script>
++<script src="/js/third-party.js?v=14419fdfd9"></script>
++</body>
++</html>
+diff --git a/ko/articles/index.html b/ko/articles/index.html
+index c0dc0b0..6b8d670 100644
+--- a/ko/articles/index.html
++++ b/ko/articles/index.html
+@@ -47,6 +47,12 @@
+                 <li><a href="/ko/articles/google-play-balance-combine-payment.html">Google Play 잔액과 다른 결제 수단을 함께 사용할 수 있나요?</a></li>
+                 <li><a href="/ko/articles/google-play-points-device-change.html">휴대전화 변경 후 Play Points가 보이지 않을 때</a></li>
+                 <li><a href="/ko/articles/google-play-points-rounding-tax.html">Play Points 세금·반올림·분할 결제 계산</a></li>
++                <li><a href="/ko/articles/google-play-points-balance-history-progress.html">Play Points 잔액·내역·등급 진행도 확인 방법</a></li>
++                <li><a href="/ko/articles/google-play-points-apps-books-purchases.html">유료 앱·게임·도서 구매의 Play Points 적립 조건</a></li>
++                <li><a href="/ko/articles/google-play-games-vs-play-points.html">Google Play Games와 Play Points 차이</a></li>
++                <li><a href="/ko/articles/google-play-points-earn-free.html">추가 결제 없이 Play Points를 모으는 공식 방법</a></li>
++                <li><a href="/ko/articles/google-play-points-500-1000-cost.html">Play Points 500·1,000포인트 필요 금액</a></li>
++                <li><a href="/ko/articles/google-play-points-discounts-promo-codes.html">할인·프로모션 코드 사용 시 Play Points 적립 기준</a></li>
+                 <li><a href="/ko/articles/google-play-points-super-weekly-reward.html">슈퍼 위클리 리워드 대상·재고·슈퍼 티켓</a></li>
+                 <li><a href="/ko/articles/google-play-quests.html">Google Play 퀘스트가 표시되거나 완료되지 않을 때</a></li>
+                 <li><a href="/ko/articles/google-play-points-cash-conversion.html">Play Points 현금화 가능할까?</a></li>
+diff --git a/sitemap-intl-content-expansion.xml b/sitemap-intl-content-expansion.xml
+index b83f532..caa8fb3 100644
+--- a/sitemap-intl-content-expansion.xml
++++ b/sitemap-intl-content-expansion.xml
+@@ -72,4 +72,148 @@
+     <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-rounding-tax.html" />
+     <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-rounding-tax.html" />
+   </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-points-earn-free.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-earn-free.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++  </url>
++  <url>
++    <loc>https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html</loc>
++    <lastmod>2026-08-04</lastmod>
++    <xhtml:link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html" />
++    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html" />
++  </url>
+ </urlset>
+diff --git a/tw/articles/index.html b/tw/articles/index.html
+index b4aec30..6a779cb 100644
+--- a/tw/articles/index.html
++++ b/tw/articles/index.html
+@@ -47,6 +47,12 @@
+                 <li><a href="/tw/articles/google-play-balance-combine-payment.html">Google Play 餘額可以和其他付款方式一起使用嗎？</a></li>
+                 <li><a href="/tw/articles/google-play-points-device-change.html">換手機後 Play Points 沒有顯示時</a></li>
+                 <li><a href="/tw/articles/google-play-points-rounding-tax.html">Play Points 稅金、四捨五入與分開購買計算</a></li>
++                <li><a href="/tw/articles/google-play-points-balance-history-progress.html">Play Points 餘額、記錄與等級進度怎麼看</a></li>
++                <li><a href="/tw/articles/google-play-points-apps-books-purchases.html">付費 App、遊戲與電子書的 Play Points 累積條件</a></li>
++                <li><a href="/tw/articles/google-play-games-vs-play-points.html">Google Play Games 與 Play Points 的差別</a></li>
++                <li><a href="/tw/articles/google-play-points-earn-free.html">不增加額外消費取得 Play Points 的官方方法</a></li>
++                <li><a href="/tw/articles/google-play-points-500-1000-cost.html">Play Points 500、1,000 點需要多少金額</a></li>
++                <li><a href="/tw/articles/google-play-points-discounts-promo-codes.html">折扣、促銷代碼的 Play Points 累積規則</a></li>
+                 <li><a href="/tw/articles/google-play-points-super-weekly-reward.html">超級每週獎勵資格、庫存與超級票券</a></li>
+                 <li><a href="/tw/articles/google-play-quests.html">Google Play 任務沒有顯示或無法完成</a></li>
+                 <li><a href="/tw/articles/google-play-points-cash-conversion.html">Play Points 可以換現金嗎？</a></li>
+Generated files are out of sync. Run `node scripts/build-html.js`, review the diff, and commit the generated output.
+
+=== 公開必須ファイル検証 ===
+公開必須ファイルが揃っています。
+
+=== Service Worker先読み対象検証 ===
+Service Worker先読み対象が揃っています（38件）。
+
+=== 公開記事の3クリック以内検証 ===
+公開記事のクリック深度: 123件、最大3クリック
+
+=== 全回帰テスト ===
+TAP version 13
+# Subtest: the complete published article corpus keeps structural quality signals
+ok 1 - the complete published article corpus keeps structural quality signals
+  ---
+  duration_ms: 62.033515
+  type: 'test'
+  ...
+# Subtest: article hreflang links are reciprocal and use the Taiwan locale code
+ok 2 - article hreflang links are reciprocal and use the Taiwan locale code
+  ---
+  duration_ms: 45.605543
+  type: 'test'
+  ...
+# Subtest: rewritten gift-card guides contain verifiable checks, not permanent discount claims
+ok 3 - rewritten gift-card guides contain verifiable checks, not permanent discount claims
+  ---
+  duration_ms: 0.66423
+  type: 'test'
+  ...
+# Subtest: known overstatements do not return to published copy
+ok 4 - known overstatements do not return to published copy
+  ---
+  duration_ms: 8.461591
+  type: 'test'
+  ...
+# Subtest: 通常のウィークリーリワードと例外的な週次特典を区別して案内する
+ok 5 - 通常のウィークリーリワードと例外的な週次特典を区別して案内する
+  ---
+  duration_ms: 1.521189
+  type: 'test'
+  ...
+# Subtest: 入門記事の獲得対象は現在の日本向け公式案内に合わせる
+ok 6 - 入門記事の獲得対象は現在の日本向け公式案内に合わせる
+  ---
+  duration_ms: 0.492745
+  type: 'test'
+  ...
+# Subtest: 週次特典を使う補足記事にもシルバー以上の条件を明記する
+ok 7 - 週次特典を使う補足記事にもシルバー以上の条件を明記する
+  ---
+  duration_ms: 0.50956
+  type: 'test'
+  ...
+# Subtest: ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
+ok 8 - ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
+  ---
+  duration_ms: 1.750581
+  type: 'test'
+  ...
+# Subtest: サブスク記事は現行の公式確認項目だけを例示する
+ok 9 - サブスク記事は現行の公式確認項目だけを例示する
+  ---
+  duration_ms: 0.519775
+  type: 'test'
+  ...
+# Subtest: ダイヤモンド記事は未公表の週次上限を事実扱いしない
+ok 10 - ダイヤモンド記事は未公表の週次上限を事実扱いしない
+  ---
+  duration_ms: 0.417333
+  type: 'test'
+  ...
+# Subtest: 反映時間は公式案内にない時間幅を断定しない
+ok 11 - 反映時間は公式案内にない時間幅を断定しない
+  ---
+  duration_ms: 0.407488
+  type: 'test'
+  ...
+# Subtest: 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
+ok 12 - 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
+  ---
+  duration_ms: 0.321209
+  type: 'test'
+  ...
+# Subtest: 注意ページは既存モードをそのまま使える国を正確に分類する
+ok 13 - 注意ページは既存モードをそのまま使える国を正確に分類する
+  ---
+  duration_ms: 0.817379
+  type: 'test'
+  ...
+# Subtest: 似ているだけの国を完全一致として案内しない
+ok 14 - 似ているだけの国を完全一致として案内しない
+  ---
+  duration_ms: 0.224936
+  type: 'test'
+  ...
+# Subtest: 国をブラウザ言語だけで推測せず公式確認導線を残す
+ok 15 - 国をブラウザ言語だけで推測せず公式確認導線を残す
+  ---
+  duration_ms: 0.211635
+  type: 'test'
+  ...
+# Subtest: 注意ページの確認日をサイト全体の更新日で巻き戻さない
+ok 16 - 注意ページの確認日をサイト全体の更新日で巻き戻さない
+  ---
+  duration_ms: 0.518763
+  type: 'test'
+  ...
+# Subtest: static blog article links follow article registry titles and remain idempotent
+ok 17 - static blog article links follow article registry titles and remain idempotent
+  ---
+  duration_ms: 84.954678
+  type: 'test'
+  ...
+# Subtest: 地域別の公式レート・年間しきい値・通貨単位を固定する
+ok 18 - 地域別の公式レート・年間しきい値・通貨単位を固定する
+  ---
+  duration_ms: 97.628241
+  type: 'test'
+  ...
+# Subtest: 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
+ok 19 - 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
+  ---
+  duration_ms: 0.64407
+  type: 'test'
+  ...
+# Subtest: トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
+ok 20 - トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
+  ---
+  duration_ms: 0.859522
+  type: 'test'
+  ...
+# Subtest: 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
+ok 21 - 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
+  ---
+  duration_ms: 1.95769
+  type: 'test'
+  ...
+# Subtest: 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
+ok 22 - 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
+  ---
+  duration_ms: 0.755407
+  type: 'test'
+  ...
+# Subtest: アプリモジュール変更がService Worker用の指紋を必ず変える
+ok 23 - アプリモジュール変更がService Worker用の指紋を必ず変える
+  ---
+  duration_ms: 2.747058
+  type: 'test'
+  ...
+# Subtest: 記事一覧は4つの検索意図カテゴリだけを使う
+ok 24 - 記事一覧は4つの検索意図カテゴリだけを使う
+  ---
+  duration_ms: 1.568289
+  type: 'test'
+  ...
+# Subtest: 反映トラブルの重複記事は新しい包括記事へ恒久統合する
+ok 25 - 反映トラブルの重複記事は新しい包括記事へ恒久統合する
+  ---
+  duration_ms: 1.42116
+  type: 'test'
+  ...
+# Subtest: 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
+ok 26 - 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
+  ---
+  duration_ms: 1.177296
+  type: 'test'
+  ...
+# Subtest: 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
+ok 27 - 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
+  ---
+  duration_ms: 0.277003
+  type: 'test'
+  ...
+# Subtest: 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
+ok 28 - 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
+  ---
+  duration_ms: 0.700675
+  type: 'test'
+  ...
+# Subtest: 公開記事はトップから3クリック以内で到達できる
+ok 29 - 公開記事はトップから3クリック以内で到達できる
+  ---
+  duration_ms: 55.381714
+  type: 'test'
+  ...
+# Subtest: 深いURLでも同意管理スクリプトをサイトルートから読み込む
+ok 30 - 深いURLでも同意管理スクリプトをサイトルートから読み込む
+  ---
+  duration_ms: 0.18774
+  type: 'test'
+  ...
+# Subtest: デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
+ok 31 - デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
+  ---
+  duration_ms: 1.09918
+  type: 'test'
+  ...
+# Subtest: 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
+ok 32 - 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
+  ---
+  duration_ms: 0.251705
+  type: 'test'
+  ...
+# Subtest: 旧calculatorファイルを持たず301転送だけを維持する
+ok 33 - 旧calculatorファイルを持たず301転送だけを維持する
+  ---
+  duration_ms: 0.311535
+  type: 'test'
+  ...
+# Subtest: 全階層のindex.htmlを階層を保った正規URLへ301転送する
+ok 34 - 全階層のindex.htmlを階層を保った正規URLへ301転送する
+  ---
+  duration_ms: 0.199608
+  type: 'test'
+  ...
+# Subtest: デプロイスクリプトのBash構文が有効である
+ok 35 - デプロイスクリプトのBash構文が有効である
+  ---
+  duration_ms: 5.69901
+  type: 'test'
+  ...
+# Subtest: PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
+ok 36 - PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
+  ---
+  duration_ms: 1.526827
+  type: 'test'
+  ...
+# Subtest: 公開HTMLと生成元にサイト内遷移用UTMを残さない
+ok 37 - 公開HTMLと生成元にサイト内遷移用UTMを残さない
+  ---
+  duration_ms: 33.55581
+  type: 'test'
+  ...
+# Subtest: プライバシー文書はWeb版と認定CMPの運用に一致する
+ok 38 - プライバシー文書はWeb版と認定CMPの運用に一致する
+  ---
+  duration_ms: 0.730429
+  type: 'test'
+  ...
+# Subtest: 再訪と配布の主要イベントだけを許可する
+ok 39 - 再訪と配布の主要イベントだけを許可する
+  ---
+  duration_ms: 1.075995
+  type: 'test'
+  ...
+# Subtest: ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
+ok 40 - ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
+  ---
+  duration_ms: 0.58992
+  type: 'test'
+  ...
+# ok - 実ユーザー速度は同意後に匿名区分だけを計測する
+# ok - トップページに年間グラフと独自計算図がある
+# ok - ビルド後HTMLは外部Google Fontsへ接続しない
+# ok - Search ConsoleとGA4の運用手順が実行可能な粒度で残る
+# ok - 運営者ページに検証工程と外部プロフィールの関係を明示する
+# ok - 今回はWeb Share APIを追加しない
+# Subtest: tests/growth-priority.test.cjs
+ok 9 - tests/growth-priority.test.cjs
+  ---
+  duration_ms: 80.21951
+  type: 'test'
+  ...
+# Subtest: mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
+ok 42 - mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
+  ---
+  duration_ms: 17.512266
+  type: 'test'
+  ...
+# Subtest: mapWithConcurrencyは一件の失敗後も残りを検査する
+ok 43 - mapWithConcurrencyは一件の失敗後も残りを検査する
+  ---
+  duration_ms: 0.486766
+  type: 'test'
+  ...
+# Subtest: retryは失敗対象だけを指定回数まで再試行する
+ok 44 - retryは失敗対象だけを指定回数まで再試行する
+  ---
+  duration_ms: 4.020767
+  type: 'test'
+  ...
+# Subtest: 機種変更記事は独立した検索意図と症状別の確認導線を持つ
+ok 45 - 機種変更記事は独立した検索意図と症状別の確認導線を持つ
+  ---
+  duration_ms: 1.197436
+  type: 'test'
+  ...
+# Subtest: 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
+ok 46 - 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
+  ---
+  duration_ms: 1.613026
+  type: 'test'
+  ...
+# Subtest: 機種変更記事のFAQ本文とFAQPage構造化データは一致する
+ok 47 - 機種変更記事のFAQ本文とFAQPage構造化データは一致する
+  ---
+  duration_ms: 1.718213
+  type: 'test'
+  ...
+# Subtest: 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
+ok 48 - 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
+  ---
+  duration_ms: 0.953993
+  type: 'test'
+  ...
+# Subtest: 国・地域別の実用記事を3言語で十分な本文として公開する
+ok 49 - 国・地域別の実用記事を3言語で十分な本文として公開する
+  ---
+  duration_ms: 13.078377
+  type: 'test'
+  ...
+# Subtest: 言語別記事一覧と専用サイトマップから27ページを発見できる
+ok 50 - 言語別記事一覧と専用サイトマップから27ページを発見できる
+  ---
+  duration_ms: 0.984298
+  type: 'test'
+  ...
+# Subtest: 国際記事内のローカルリンク先が存在する
+ok 51 - 国際記事内のローカルリンク先が存在する
+  ---
+  duration_ms: 4.097962
+  type: 'test'
+  ...
+# Subtest: 日本語では重複する残高併用記事を追加しない
+ok 52 - 日本語では重複する残高併用記事を追加しない
+  ---
+  duration_ms: 0.9716
+  type: 'test'
+  ...
+# Subtest: クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
+ok 53 - クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
+  ---
+  duration_ms: 6.51342
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
+ok 54 - 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
+  ---
+  duration_ms: 0.428389
+  type: 'test'
+  ...
+# Subtest: 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
+ok 55 - 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
+  ---
+  duration_ms: 0.731201
+  type: 'test'
+  ...
+# Subtest: 新規記事のサイト内リンク先はすべて存在する
+ok 56 - 新規記事のサイト内リンク先はすべて存在する
+  ---
+  duration_ms: 6.688567
+  type: 'test'
+  ...
+# Subtest: 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
+ok 57 - 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
+  ---
+  duration_ms: 6.18846
+  type: 'test'
+  ...
+# Subtest: 地域外の維持門檻や通貨を流用していない
+ok 58 - 地域外の維持門檻や通貨を流用していない
+  ---
+  duration_ms: 0.919692
+  type: 'test'
+  ...
+# Subtest: 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
+ok 59 - 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
+  ---
+  duration_ms: 0.289351
+  type: 'test'
+  ...
+# Subtest: 日本語既存ページと海外6ページは完全なhreflangで相互接続する
+ok 60 - 日本語既存ページと海外6ページは完全なhreflangで相互接続する
+  ---
+  duration_ms: 1.879464
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
+ok 61 - 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
+  ---
+  duration_ms: 0.865961
+  type: 'test'
+  ...
+# Subtest: 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
+ok 62 - 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
+  ---
+  duration_ms: 9.424127
+  type: 'test'
+  ...
+# Subtest: 維持解説・比較記事から同一地域の計算ページへ進める
+ok 63 - 維持解説・比較記事から同一地域の計算ページへ進める
+  ---
+  duration_ms: 0.84489
+  type: 'test'
+  ...
+# Subtest: manual multilingual guide links survive regeneration exactly once
+ok 64 - manual multilingual guide links survive regeneration exactly once
+  ---
+  duration_ms: 6.94601
+  type: 'test'
+  ...
+# Subtest: プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
+ok 65 - プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
+  ---
+  duration_ms: 2.46742
+  type: 'test'
+  ...
+# Subtest: 地域の通貨とランク条件を他地域から流用していない
+ok 66 - 地域の通貨とランク条件を他地域から流用していない
+  ---
+  duration_ms: 1.610902
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップと記事一覧から4言語ページを発見できる
+ok 67 - 専用サイトマップと記事一覧から4言語ページを発見できる
+  ---
+  duration_ms: 0.794225
+  type: 'test'
+  ...
+# Subtest: 日本語記事データと配信ファイルの更新日・説明が一致する
+ok 68 - 日本語記事データと配信ファイルの更新日・説明が一致する
+  ---
+  duration_ms: 0.849878
+  type: 'test'
+  ...
+# Subtest: 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
+ok 69 - 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
+  ---
+  duration_ms: 1.999272
+  type: 'test'
+  ...
+# Subtest: ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
+ok 70 - ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
+  ---
+  duration_ms: 1.849779
+  type: 'test'
+  ...
+# Subtest: 日本語の既存記事と記事データは同じ更新日を持つ
+ok 71 - 日本語の既存記事と記事データは同じ更新日を持つ
+  ---
+  duration_ms: 1.415261
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
+ok 72 - 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
+  ---
+  duration_ms: 0.273538
+  type: 'test'
+  ...
+# Subtest: 言語別一覧と人向けサイトマップから新しい記事へ移動できる
+ok 73 - 言語別一覧と人向けサイトマップから新しい記事へ移動できる
+  ---
+  duration_ms: 0.460707
+  type: 'test'
+  ...
+# Subtest: 新しい多言語記事のサイト内リンク先は存在する
+ok 74 - 新しい多言語記事のサイト内リンク先は存在する
+  ---
+  duration_ms: 1.592395
+  type: 'test'
+  ...
+# Subtest: 海外向け記事から日本円固定ページへ誘導しない
+ok 75 - 海外向け記事から日本円固定ページへ誘導しない
+  ---
+  duration_ms: 14.693636
+  type: 'test'
+  ...
+# Subtest: ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
+ok 76 - ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
+  ---
+  duration_ms: 0.541378
+  type: 'test'
+  ...
+# Subtest: 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
+ok 77 - 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
+  ---
+  duration_ms: 0.2748
+  type: 'test'
+  ...
+# Subtest: Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
+ok 78 - Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
+  ---
+  duration_ms: 0.574067
+  type: 'test'
+  ...
+# Subtest: 영문 수치 기사는 미국 기준임을 명시한다
+ok 79 - 영문 수치 기사는 미국 기준임을 명시한다
+  ---
+  duration_ms: 0.351234
+  type: 'test'
+  ...
+# Subtest: reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
+ok 80 - reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
+  ---
+  duration_ms: 4.142208
+  type: 'test'
+  ...
+# Subtest: new international guides are substantial, sourced and usable instead of thin translations
+ok 81 - new international guides are substantial, sourced and usable instead of thin translations
+  ---
+  duration_ms: 3.724415
+  type: 'test'
+  ...
+# Subtest: Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
+ok 82 - Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
+  ---
+  duration_ms: 1.428421
+  type: 'test'
+  ...
+# Subtest: quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
+ok 83 - quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
+  ---
+  duration_ms: 1.396032
+  type: 'test'
+  ...
+# Subtest: locale indexes and the dedicated sitemap expose all six new international guides
+ok 84 - locale indexes and the dedicated sitemap expose all six new international guides
+  ---
+  duration_ms: 0.382531
+  type: 'test'
+  ...
+# Subtest: ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
+ok 85 - ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
+  ---
+  duration_ms: 3.217699
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは6記事を公開しrobots.txtから発見できる
+ok 86 - 専用サイトマップは6記事を公開しrobots.txtから発見できる
+  ---
+  duration_ms: 1.719815
+  type: 'test'
+  ...
+# Subtest: 新規記事のサイト内リンク先は存在する
+ok 87 - 新規記事のサイト内リンク先は存在する
+  ---
+  duration_ms: 5.542066
+  type: 'test'
+  ...
+# Subtest: 週次特典と複数アカウント記事は3言語で公開要件を満たす
+ok 88 - 週次特典と複数アカウント記事は3言語で公開要件を満たす
+  ---
+  duration_ms: 3.264589
+  type: 'test'
+  ...
+# Subtest: 新規記事は同一言語内で相互に接続される
+ok 89 - 新規記事は同一言語内で相互に接続される
+  ---
+  duration_ms: 0.98532
+  type: 'test'
+  ...
+# Subtest: 国際ガイド専用サイトマップをrobots.txtから発見できる
+ok 90 - 国際ガイド専用サイトマップをrobots.txtから発見できる
+  ---
+  duration_ms: 0.509801
+  type: 'test'
+  ...
+# Subtest: 新規国際記事のローカルリンク先はすべて存在する
+ok 91 - 新規国際記事のローカルリンク先はすべて存在する
+  ---
+  duration_ms: 2.58085
+  type: 'test'
+  ...
+# Subtest: 最新情報ハブは確認範囲・公式参照・確認日を明示する
+ok 92 - 最新情報ハブは確認範囲・公式参照・確認日を明示する
+  ---
+  duration_ms: 1.678724
+  type: 'test'
+  ...
+# Subtest: 最新情報ハブは週次3制度とクエストを別項目として扱う
+ok 93 - 最新情報ハブは週次3制度とクエストを別項目として扱う
+  ---
+  duration_ms: 0.412395
+  type: 'test'
+  ...
+# Subtest: 生成処理は確認していない日に最新情報ハブの日付を進めない
+ok 94 - 生成処理は確認していない日に最新情報ハブの日付を進めない
+  ---
+  duration_ms: 0.151916
+  type: 'test'
+  ...
+# Subtest: 鮮度検査は14日を超えた確認日を検出する
+ok 95 - 鮮度検査は14日を超えた確認日を検出する
+  ---
+  duration_ms: 1.580438
+  type: 'test'
+  ...
+# Subtest: 運用手順は日付だけの更新と個別オファーの一般化を禁止する
+ok 96 - 運用手順は日付だけの更新と個別オファーの一般化を禁止する
+  ---
+  duration_ms: 0.22803
+  type: 'test'
+  ...
+# [manual-intl] restored canonical article content: 13
+# Subtest: 地域別に手動確認した記事の正本一覧を固定する
+ok 97 - 地域別に手動確認した記事の正本一覧を固定する
+  ---
+  duration_ms: 3.143949
+  type: 'test'
+  ...
+# Subtest: 手動正本の公開日・更新日・last-modifiedを一致させる
+ok 98 - 手動正本の公開日・更新日・last-modifiedを一致させる
+  ---
+  duration_ms: 1.848577
+  type: 'test'
+  ...
+# Subtest: 国際記事台帳は手動正本の日付を自動採用する
+ok 99 - 国際記事台帳は手動正本の日付を自動採用する
+  ---
+  duration_ms: 1.938561
+  type: 'test'
+  ...
+# Subtest: ビルドは国際記事生成の直前に退避し直後に復元する
+ok 100 - ビルドは国際記事生成の直前に退避し直後に復元する
+  ---
+  duration_ms: 0.262381
+  type: 'test'
+  ...
+# Subtest: 生成処理で上書きされても手動記事を完全に復元できる
+ok 101 - 生成処理で上書きされても手動記事を完全に復元できる
+  ---
+  duration_ms: 5.72522
+  type: 'test'
+  ...
+# Subtest: JPEG実体の既存OGP URLをimage/jpegとして配信する
+ok 102 - JPEG実体の既存OGP URLをimage/jpegとして配信する
+  ---
+  duration_ms: 1.417955
+  type: 'test'
+  ...
+# Subtest: デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
+ok 103 - デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
+  ---
+  duration_ms: 0.226127
+  type: 'test'
+  ...
+# Subtest: 記事CSSは外部化され、AdSense以外のinline styleを残さない
+ok 104 - 記事CSSは外部化され、AdSense以外のinline styleを残さない
+  ---
+  duration_ms: 32.376251
+  type: 'test'
+  ...
+# Subtest: 記事のローカルCSSは内容ハッシュ付きURLで参照する
+ok 105 - 記事のローカルCSSは内容ハッシュ付きURLで参照する
+  ---
+  duration_ms: 19.445143
+  type: 'test'
+  ...
+# Subtest: 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
+ok 106 - 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
+  ---
+  duration_ms: 15.793151
+  type: 'test'
+  ...
+# Subtest: 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
+ok 107 - 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
+  ---
+  duration_ms: 75.118557
+  type: 'test'
+  ...
+# Subtest: 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
+ok 108 - 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
+  ---
+  duration_ms: 0.462911
+  type: 'test'
+  ...
+# Subtest: バージョン付き資産だけを1年間immutableでキャッシュする
+ok 109 - バージョン付き資産だけを1年間immutableでキャッシュする
+  ---
+  duration_ms: 0.278335
+  type: 'test'
+  ...
+# Subtest: 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
+ok 110 - 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
+  ---
+  duration_ms: 0.238105
+  type: 'test'
+  ...
+# Subtest: 未参照だった旧共通CSSを公開物に残さない
+ok 111 - 未参照だった旧共通CSSを公開物に残さない
+  ---
+  duration_ms: 0.129103
+  type: 'test'
+  ...
+# Subtest: PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
+ok 112 - PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
+  ---
+  duration_ms: 1.853555
+  type: 'test'
+  ...
+# Subtest: 事前検証は全テストを自動収集し失敗工程を最後にまとめる
+ok 113 - 事前検証は全テストを自動収集し失敗工程を最後にまとめる
+  ---
+  duration_ms: 0.322882
+  type: 'test'
+  ...
+# Subtest: 事前検証は多言語の公開必須ファイル欠損を検出する
+ok 114 - 事前検証は多言語の公開必須ファイル欠損を検出する
+  ---
+  duration_ms: 0.358014
+  type: 'test'
+  ...
+# Subtest: Service Workerの全先読み対象をデプロイ前に検証する
+ok 115 - Service Workerの全先読み対象をデプロイ前に検証する
+  ---
+  duration_ms: 0.278937
+  type: 'test'
+  ...
+# Subtest: 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
+ok 116 - 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
+  ---
+  duration_ms: 0.361219
+  type: 'test'
+  ...
+# Subtest: ルートService Workerは画面遷移をネットワーク優先で更新する
+ok 117 - ルートService Workerは画面遷移をネットワーク優先で更新する
+  ---
+  duration_ms: 0.258476
+  type: 'test'
+  ...
+# Subtest: ルートキャッシュ世代は全共有アセット版から自動生成する
+ok 118 - ルートキャッシュ世代は全共有アセット版から自動生成する
+  ---
+  duration_ms: 0.316833
+  type: 'test'
+  ...
+# Subtest: アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+ok 119 - アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+  ---
+  duration_ms: 4.671287
+  type: 'test'
+  ...
+# Subtest: 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
+ok 120 - 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
+  ---
+  duration_ms: 1.820566
+  type: 'test'
+  ...
+# Subtest: 公開デプロイ状態は検証完了前と完了後を区別する
+ok 121 - 公開デプロイ状態は検証完了前と完了後を区別する
+  ---
+  duration_ms: 2.120813
+  type: 'test'
+  ...
+# Subtest: 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
+ok 122 - 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
+  ---
+  duration_ms: 0.592244
+  type: 'test'
+  ...
+# Subtest: HTTP検査は同時接続数を制限し失敗対象だけを再試行する
+ok 123 - HTTP検査は同時接続数を制限し失敗対象だけを再試行する
+  ---
+  duration_ms: 0.265386
+  type: 'test'
+  ...
+# Subtest: 外部Actionは固定SHAで実行しDependabotで月次更新する
+ok 124 - 外部Actionは固定SHAで実行しDependabotで月次更新する
+  ---
+  duration_ms: 0.572564
+  type: 'test'
+  ...
+# Subtest: 新規記事は記事台帳へ一意に登録される
+ok 125 - 新規記事は記事台帳へ一意に登録される
+  ---
+  duration_ms: 1.159509
+  type: 'test'
+  ...
+# Subtest: スーパーウィークリー記事は一般条件と個別条件を分離する
+ok 126 - スーパーウィークリー記事は一般条件と個別条件を分離する
+  ---
+  duration_ms: 1.955146
+  type: 'test'
+  ...
+# Subtest: クエスト記事は対象・購入・ログイン・返金条件を案内する
+ok 127 - クエスト記事は対象・購入・ログイン・返金条件を案内する
+  ---
+  duration_ms: 0.272126
+  type: 'test'
+  ...
+# Subtest: 週次親記事は3制度を比較し日記を主要導線にする
+ok 128 - 週次親記事は3制度を比較し日記を主要導線にする
+  ---
+  duration_ms: 0.26834
+  type: 'test'
+  ...
+# Subtest: 無料獲得記事は無料・追加購入なし・有料条件を混同しない
+ok 129 - 無料獲得記事は無料・追加購入なし・有料条件を混同しない
+  ---
+  duration_ms: 0.276813
+  type: 'test'
+  ...
+# Subtest: 買い切り購入と継続課金の記事は役割を相互案内する
+ok 130 - 買い切り購入と継続課金の記事は役割を相互案内する
+  ---
+  duration_ms: 0.334169
+  type: 'test'
+  ...
+# Subtest: 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
+ok 131 - 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
+  ---
+  duration_ms: 0.883087
+  type: 'test'
+  ...
+# Subtest: 公式例のシルバー500円は6ポイントへ丸める
+ok 132 - 公式例のシルバー500円は6ポイントへ丸める
+  ---
+  duration_ms: 1.395311
+  type: 'test'
+  ...
+# Subtest: 購入ごとの丸めと総額への一度だけの丸めを分ける
+ok 133 - 購入ごとの丸めと総額への一度だけの丸めを分ける
+  ---
+  duration_ms: 0.271805
+  type: 'test'
+  ...
+# Subtest: 丸め関数は非負のポイントを最も近い整数へ丸める
+ok 134 - 丸め関数は非負のポイントを最も近い整数へ丸める
+  ---
+  duration_ms: 0.53623
+  type: 'test'
+  ...
+# Subtest: 不正な購入回数と獲得率を拒否する
+ok 135 - 不正な購入回数と獲得率を拒否する
+  ---
+  duration_ms: 0.274549
+  type: 'test'
+  ...
+# Subtest: 記事は税抜・四捨五入・機能の限界を明示する
+ok 136 - 記事は税抜・四捨五入・機能の限界を明示する
+  ---
+  duration_ms: 1.457624
+  type: 'test'
+  ...
+# Subtest: 記事冒頭は通常獲得率と交換価値を分けて即答する
+ok 137 - 記事冒頭は通常獲得率と交換価値を分けて即答する
+  ---
+  duration_ms: 0.491963
+  type: 'test'
+  ...
+# Subtest: 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
+ok 138 - 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
+  ---
+  duration_ms: 0.480016
+  type: 'test'
+  ...
+# Subtest: スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
+ok 139 - スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
+  ---
+  duration_ms: 0.631893
+  type: 'test'
+  ...
+# Subtest: FAQと補助導線は主要目次へ混入しない構造にする
+ok 140 - FAQと補助導線は主要目次へ混入しない構造にする
+  ---
+  duration_ms: 0.682839
+  type: 'test'
+  ...
+# Subtest: シミュレーターは差が見える初期例と利用限界を明示する
+ok 141 - シミュレーターは差が見える初期例と利用限界を明示する
+  ---
+  duration_ms: 0.917368
+  type: 'test'
+  ...
+# Subtest: 記事別の検証カード文言は生成元でも保持する
+ok 142 - 記事別の検証カード文言は生成元でも保持する
+  ---
+  duration_ms: 0.593125
+  type: 'test'
+  ...
+# Subtest: 画面のFAQとFAQPage構造化データが一致する
+ok 143 - 画面のFAQとFAQPage構造化データが一致する
+  ---
+  duration_ms: 1.577453
+  type: 'test'
+  ...
+# Subtest: 記事台帳は既存記事の役割を維持して更新日と説明を同期する
+ok 144 - 記事台帳は既存記事の役割を維持して更新日と説明を同期する
+  ---
+  duration_ms: 1.592395
+  type: 'test'
+  ...
+# Subtest: 海外向け案内は英語を全世界共通レートとして案内しない
+ok 145 - 海外向け案内は英語を全世界共通レートとして案内しない
+  ---
+  duration_ms: 1.804221
+  type: 'test'
+  ...
+# Subtest: 多言語トップの実行時記事リンクは各言語の記事一覧を指す
+ok 146 - 多言語トップの実行時記事リンクは各言語の記事一覧を指す
+  ---
+  duration_ms: 5.224352
+  type: 'test'
+  ...
+# Subtest: 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+ok 147 - 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+  ---
+  duration_ms: 3.861549
+  type: 'test'
+  ...
+# Subtest: 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+ok 148 - 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+  ---
+  duration_ms: 0.660385
+  type: 'test'
+  ...
+# Subtest: CSPは計測と広告品質確認で実際に使う接続先を許可する
+ok 149 - CSPは計測と広告品質確認で実際に使う接続先を許可する
+  ---
+  duration_ms: 0.640235
+  type: 'test'
+  ...
+# Subtest: 日記の景品選択には全言語で読み上げ可能な名前がある
+ok 150 - 日記の景品選択には全言語で読み上げ可能な名前がある
+  ---
+  duration_ms: 3.034786
+  type: 'test'
+  ...
+# Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
+ok 151 - トップページは大きな画像プレビューとOGP画像サイズを明示する
+  ---
+  duration_ms: 0.700354
+  type: 'test'
+  ...
+# Subtest: 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+ok 152 - 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+  ---
+  duration_ms: 1.230145
+  type: 'test'
+  ...
+# Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
+ok 153 - 日記の重複通知を表示せず、カレンダー登録は残す
+  ---
+  duration_ms: 1.540187
+  type: 'test'
+  ...
+# Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
+ok 154 - 地域差案内は日本語トップでも英語の注意導線として表示する
+  ---
+  duration_ms: 1.33406
+  type: 'test'
+  ...
+# Subtest: 計算方法と検証方針を全言語で本文から確認できる
+ok 155 - 計算方法と検証方針を全言語で本文から確認できる
+  ---
+  duration_ms: 1.140221
+  type: 'test'
+  ...
+# Subtest: 広告と計測は初期表示後に低優先度で読み込む
+ok 156 - 広告と計測は初期表示後に低優先度で読み込む
+  ---
+  duration_ms: 0.327519
+  type: 'test'
+  ...
+# ok - 著者ページのOGP画像は実在する
+# ok - 計算機は有限値とHTMLの上下限を検証する
+# ok - ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする
+# ok - GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う
+# ok - 計測イベントは同意済みラッパー経由だけで送信する
+# ok - ルートService Workerは自分のキャッシュだけを削除対象にする
+# ok - ルートService Workerはprecache失敗時に壊れたまま有効化しない
+# ok - デプロイ同期は公開不要な運用ファイルをルート限定で除外する
+# ok - JSミニファイは文字列中のスラッシュコメント風テキストを壊さない
+# ok - デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジェットを対象にする
+# ok - デプロイ前検証はミニファイ後JSの構文を確認する
+# ok - CIデプロイはコミット済み成果物だけを公開する
+# ok - デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする
+# ok - 多言語トップはJS実行前の主要文言も翻訳済みにする
+# ok - 同意済み計測はGA本体ロード前のイベントを短期キューへ保持する
+# ok - Xserver同期後に本番スモークテストを実行する
+# ok - Xserver同期後に本番SEOヘルスチェックを実行する
+# ok - デプロイ検証の変更でもワークフローを実行する
+# ok - デプロイ前検証は全テストをミニファイ前後に実行する
+# ok - 本番スモークテストの期待文字列は配信元ファイルに存在する
+# ok - 本番スモークテストは主要PlayPointページと言語トップを確認する
+# Subtest: tests/playpoint-nine-fixes.test.cjs
+ok 30 - tests/playpoint-nine-fixes.test.cjs
+  ---
+  duration_ms: 65.276593
+  type: 'test'
+  ...
+# ok - ステータス選択の初期値はブロンズになる
+# ok - 通常計算では現在ステータスから次のランクだけを目標にする
+# ok - 前年からランクを引き継いだ場合も目標閾値全体を入力できる
+# ok - 直接レートと倍率は代替入力として高い方と採用理由を返す
+# ok - パック額未入力では購入ごとの丸めを仮定しない概算として表示する
+# ok - パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する
+# ok - 1回0ポイントになる購入額は概算へフォールバックせずエラーにする
+# ok - 逆算モードは入力額を1回の購入として丸める前提を表示する
+# ok - 金曜の開始時刻を過ぎたカレンダー登録は翌週を使う
+# ok - 月平均の分母は年末までの残日数から切り上げ月数で計算する
+# ok - 12月31日でも通常計算は合計必要額を表示する
+# ok - 必要ポイントはHTMLの整数制約に違反する小数を拒否する
+# ok - 記事件数は言語UI更新後に実際の件数で再描画する
+# ok - フッターの運営者リンクは色だけに頼らず下線で区別する
+# ok - モバイルのヘッダーリンクは内側余白を含めて画面幅に収める
+# ok - デスクトップのトップバーは言語切替と補助リンクを同じ段に収める
+# ok - 通常計算の結果は週平均と1日あたりの目安も表示する
+# ok - 通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する
+# ok - 計算結果の関連記事は検索意図別LPを優先する
+# ok - 計算結果の下には金額や条件に応じた次の判断導線が出る
+# ok - 英語トップはJS実行前のファーストビューに日本語の主要文言を残さない
+# ok - 英語トップの日記エリアはJS実行前でも英語で読める
+# ok - トップのSEO名はGoogle Play Points計算機を主名にし旧名を別名として残す
+# ok - 多言語トップの英語名はGoogle Play Points Calculatorを先頭にする
+# ok - 検索LPの上部には通常時と倍率別の即答表がある
+# ok - READMEと正規化設定は公式URLだけを一次導線にする
+# ok - 共有ボタンは結果アクション行にまとめて表示状態を切り替える
+# ok - 検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
+# ok - ブログRSSとAtomフィードは発見可能で最新記事を含む
+# ok - ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う
+# Successfully synchronized asset versions and dates in sample.html
+# ok - HTML同期はアセットバージョンと日付表記を単体で更新する
+# ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
+# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
+# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
+# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
+# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
+# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
+# ok - ステータス選択の再生成でoptionが重複しない
+# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
+# ok - トップページは同一URLの英語hreflangを出さない
+# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
+# ok - デプロイ前に全回帰テストを実行する
+# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
+# ok - テストファイルはルート限定の除外で本番へ同期しない
+# ok - SEO監視はサイトマップ掲載記事も確認する
+# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
+# ok - blog robots.txtは本番ドメインのサイトマップを指す
+# ok - ブログ一覧は記事JSONを正規化してから描画する
+# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
+# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
+# ok - CSPのscript-srcはhttps全体を許可しない
+# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
+# ok - target blankリンクにはnoopener noreferrerを付ける
+# ok - blogの再読み込みボタンはインラインonclickを使わない
+# ok - blog articles.jsonは実在するPlay Points記事だけを含む
+# ok - blog sitemapは登録済みPlay Points記事をすべて含む
+# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
+# ok - 記事ページのOGP画像は実ファイルが存在する
+# ok - blog SearchActionは実装と同じqパラメータを使う
+# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
+# ok - blogトップは自前のOGP画像とfaviconを使う
+# ok - blogトップの説明文は検索結果向けの長さを確保する
+# ok - blogの正規URLはindex.htmlを露出しない
+# ok - blogトップは外部Google Fontsへ接続しない
+# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
+# ok - blog記事カードクリックをAnalyticsへ送る
+# ok - 主要な操作要素は44px以上のタップ領域を持つ
+# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
+# ok - 狭い画面でも日記タブの文字を省略しない
+# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
+# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
+# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
+# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
+# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
+# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
+# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
+# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
+# ok - 全記事から有効なGoogle公式ヘルプを確認できる
+# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
+# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
+# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
+# ok - 最新情報リンクはヘッダーから外しフッターで維持する
+# ok - 計算条件を共有URLへ保存し再訪時に復元できる
+# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
+# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
+# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
+# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
+# ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
+# ok - モバイルの補助リンクと共有ボタンは縦に増えすぎない
+# ok - モバイル初期表示外の重い領域は遅延描画される
+# ok - 記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ
+# ok - ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ
+# ok - 外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる
+# ok - Analyticsのイベント設計と検証手順が文書化されている
+# ok - Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする
+# ok - トップページの更新日メタとサイト更新日を用途別に保持する
+# ok - サイトマップ同期はトップページ群のlastmodだけを更新する
+# ok - 反映タイミング記事は結論と確認手順を見出しで整理する
+# ok - CMP起動用のAdSenseタグは二重読み込みしない
+# ok - 共有URLは実在するステータス値だけを復元する
+# ok - 日記保存イベントはストレージ保存成功時だけ送る
+# ok - 記事のAdSenseは本文スクロール後に共通スクリプトから読み込む
+# ok - ブログと記事は共通コンポーネントからGA4本体を読み込む
+# ok - 共通コンポーネントは既存のヘッダーとフッターを重複生成しない
+# ok - 公開されている全記事HTMLが必要なSEOタグと共通AdSense読込を含んでいること
+# ok - ブログと記事の変更アセットはバージョン付きURLで配信する
+# ok - 記事共通デザインは前後ナビと操作領域とカテゴリー配色を統一する
+# ok - ブログのライトテーマとモバイル導線は読みやすさを維持する
+# ok - 記事はfaviconを指定しAdSenseが必要とする接続先をCSPで許可する
+# ok - 運営者プロフィールは検索可能な独立ページとして公開する
+# ok - 全記事は著者ページへリンクしArticle構造化データの著者と発行者を統一する
+# ok - ブログ検索タイトルと内部リンクは運営者の専門性を明示する
+# ok - サイトマップとSearch Console運用は著者ページと記事群を監視対象にする
+# ok - sw.js と各言語版 index.html の style.css バージョンクエリが一致していること
+# ok - 多言語HTMLビルド出力の整合性とhreflangの検証
+# ok - 海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ
+# ok - 海外向けSEOページは既存記事の読み物感と各言語の自然な導線を保つ
+# ok - 海外LPは相互hreflangで対応言語とx-defaultを明示する
+# ok - 海外向け英語記事は目次と外部化CSSで読みやすさと保守性を保つ
+# ok - 海外LPの補助ラベルは各言語に合わせる
+# ok - 海外向け韓国語・繁体字記事は公式名寄せのサイト名とプラチナ導線を持つ
+# ok - 海外向けSEOは計測対象と追加記事クラスタを持つ
+# ok - 国変更・定期購入クラスタは韓国語と繁体字で公式根拠・FAQ・相互hreflangを持つ
+# ok - ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される
+# ok - 韓国（KR）リージョンの spendUnit 正確性検証
+# ok - 削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない
+# ok - 平均パック課金額シミュレーションの検証
+# ok - 通常還元とキャンペーン還元の差額は既存の購入単位で比較する
+# ok - 米国のパック計算は購入ごとのポイントを最も近い整数へ丸める
+# ok - 米国の小数パック額は金額全体に還元率を掛けてから購入ごとに丸める
+# ok - 海外記事は言語別の記事一覧へ戻り、対応する翻訳版をhreflangで示す
+# ok - 国際記事の公開日と更新日は記事データに保持し、生成日で上書きしない
+# ok - 海外版の計算結果導線は各言語の実在ページだけを使う
+# ok - 海外版トップはJavaScriptなしでも実在する最新情報ハブへリンクする
+# ok - 言語トップはURLと異なる保存済み地域設定で表示を上書きしない
+# ok - カレンダー登録は固定済みの過去日時を使わない
+# ok - 国際記事はビルド日を公開日として上書きしない
+# ok - 主要な日本語Play Points記事は検索意図へ答える本文量を保つ
+# ok - 断定を避けるべき記事と公式仕様の記事は重要な注意点を保持する
+# ok - サイトマップ掲載HTMLは検索結果タイトルと基本SEO要素を保つ
+# ok - 国際記事一覧とギフトカード記事は相互hreflangを持つ
+# ok - 主要記事のtitleとh1は煽り表現に依存しない
+# ok - 修正した記事の一覧タイトルとページtitleは一致する
+# ok - 日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する
+# ok - 更新した記事は一覧・表示・メタデータ・フィード用更新日を一致させる
+# ok - フィードは公開日を保ったまま記事の更新日を反映する
+# ok - 計算結果のエラー表示とクリアは前回の共有用データを破棄する
+# ok - トップの更新日はサイト更新であることを明示する
+# ok - 重要記事は2026年時点の公式仕様と判断上の注意を保持する
+# ok - 記事共通UIは文脈リンク・主要見出し目次・安定表示を使う
+# ok - 記事一覧の静的リンクはarticles.jsonのタイトルと一致する
+# ok - トップの記事ドロワーは表示件数とリンク件数を一致させる
+# ok - 記事サイトマップのlastmodは記事一覧の更新日と一致する
+# ok - サイトマップ生成は記事一覧のmodifiedを自動反映する
+# ok - 100ポイント記事は貯める金額と使う価値を分けて案内する
+# ok - 100ポイント多言語記事は国別公式レートと相互hreflangを持つ
+# ok - 日本語検索クラスターは意図を分けて公式条件を明示する
+# ok - 記事ハブとフィードは新しい日本語・多言語記事を発見できる
+# ok - ポイント数から必要額を出す計算ツールは4地域で公開可能な構造を持つ
+# ok - 現金化ガイドは4言語で公式根拠・相互参照・計算導線を持つ
+# ok - 期限・返金・家族共有ガイドは4言語の相互参照と公式根拠を持つ
+# Subtest: tests/playpoint-regression.test.cjs
+ok 31 - tests/playpoint-regression.test.cjs
+  ---
+  duration_ms: 545.611323
+  type: 'test'
+  ...
+# [repository-integrity] tracked=362 deployable=275 resolved=262
+# Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+ok 159 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+  ---
+  duration_ms: 1.95761
+  type: 'test'
+  ...
+# Subtest: 移設・統合・共通化済みの実体を残さない
+ok 160 - 移設・統合・共通化済みの実体を残さない
+  ---
+  duration_ms: 0.136484
+  type: 'test'
+  ...
+# Subtest: 公開ファイルの内部参照とアンカーは実在する
+ok 161 - 公開ファイルの内部参照とアンカーは実在する
+  ---
+  duration_ms: 0.106619
+  type: 'test'
+  ...
+# Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
+ok 162 - 全公開HTMLのcanonicalは自己一致し重複しない
+  ---
+  duration_ms: 1.492827
+  type: 'test'
+  ...
+# Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
+ok 163 - 公開コードは旧パス・開発URL・旧ホストを参照しない
+  ---
+  duration_ms: 14.132599
+  type: 'test'
+  ...
+# Subtest: 公開画像の実形式とHTTP配信形式を一致させる
+ok 164 - 公開画像の実形式とHTTP配信形式を一致させる
+  ---
+  duration_ms: 8.256184
+  type: 'test'
+  ...
+# Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
+ok 165 - 未参照アセットと内容が完全重複する公開ファイルを残さない
+  ---
+  duration_ms: 29.577937
+  type: 'test'
+  ...
+# Subtest: READMEとPWAメタデータは現行機能を説明する
+ok 166 - READMEとPWAメタデータは現行機能を説明する
+  ---
+  duration_ms: 0.38936
+  type: 'test'
+  ...
+# Subtest: 送信するXMLサイトマップ間でURLを重複させない
+ok 167 - 送信するXMLサイトマップ間でURLを重複させない
+  ---
+  duration_ms: 3.187985
+  type: 'test'
+  ...
+# Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
+ok 168 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
+  ---
+  duration_ms: 0.529239
+  type: 'test'
+  ...
+# Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
+ok 169 - 専用XMLサイトマップへ移したURLをルートへ重ねない
+  ---
+  duration_ms: 0.752122
+  type: 'test'
+  ...
+# Subtest: Play Pointsブログとフィードに家計記事を混在させない
+ok 170 - Play Pointsブログとフィードに家計記事を混在させない
+  ---
+  duration_ms: 1.488791
+  type: 'test'
+  ...
+# Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
+ok 171 - 人向けサイトマップはPlay Pointsの案内に集中する
+  ---
+  duration_ms: 0.366347
+  type: 'test'
+  ...
+# Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+ok 172 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+  ---
+  duration_ms: 0.277134
+  type: 'test'
+  ...
+# Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
+ok 173 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
+  ---
+  duration_ms: 0.270663
+  type: 'test'
+  ...
+1..173
+# tests 173
+# suites 0
+# pass 173
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1444.173284
+
+=== ads.txt検証 ===
+ads.txt is present and matches the AdSense publisher record.
+
+=== 公開アセット圧縮 ===
+Minified CSS: style.css (40803 -> 37071 bytes)
+Minified CSS: article-gift-card.css (3758 -> 2501 bytes)
+Minified CSS: article-legacy.css (1970 -> 1247 bytes)
+Minified CSS: article-modern.css (6066 -> 4306 bytes)
+Minified CSS: article-shared.css (11120 -> 9426 bytes)
+Minified CSS: source-notice.css (751 -> 655 bytes)
+Minified CSS: style.css (42356 -> 31804 bytes)
+Minified CSS: intl-article.css (4688 -> 4211 bytes)
+Minified CSS: 2025-12-25-best-use.css (6344 -> 4134 bytes)
+Minified CSS: 2025-12-25-campaign.css (6233 -> 3999 bytes)
+Minified CSS: 2025-12-25-diamond-vip.css (5888 -> 3786 bytes)
+Minified CSS: 2025-12-25-diamond-worth-it.css (6069 -> 3965 bytes)
+Minified CSS: 2025-12-25-expiration.css (5132 -> 3303 bytes)
+Minified CSS: 2025-12-25-family-sharing.css (5242 -> 3385 bytes)
+Minified CSS: 2025-12-25-getting-started.css (6183 -> 3961 bytes)
+Minified CSS: 2025-12-25-gift-card.css (5369 -> 3430 bytes)
+Minified CSS: 2025-12-25-multiple-accounts.css (4714 -> 3020 bytes)
+Minified CSS: 2025-12-25-new-year-campaign.css (6266 -> 4020 bytes)
+Minified CSS: 2025-12-25-playpoints-rank-maintenance.css (5825 -> 3704 bytes)
+Minified CSS: 2025-12-25-promo-code.css (5045 -> 3237 bytes)
+Minified CSS: 2025-12-25-refund.css (4732 -> 3038 bytes)
+Minified CSS: 2026-03-10-play-points-reflection-timing.css (3915 -> 2594 bytes)
+Minified CSS: 2026-06-20-discount-gift-cards.css (4422 -> 2913 bytes)
+Minified CSS: 2026-07-24-play-points-1-value.css (3950 -> 3535 bytes)
+Minified JS: sw.js (4308 -> 4307 bytes)
+Minified JS: main.js (18002 -> 17937 bytes)
+Minified JS: calculator.js (40399 -> 40290 bytes)
+Minified JS: ui.js (9199 -> 9177 bytes)
+Minified JS: diary.js (15045 -> 14767 bytes)
+Minified JS: share.js (4923 -> 4902 bytes)
+Minified JS: config.js (46047 -> 46046 bytes)
+Minified JS: consent.js (3803 -> 3802 bytes)
+Minified JS: intent-tracking.js (2983 -> 2982 bytes)
+Minified JS: third-party.js (4732 -> 4731 bytes)
+Minified JS: article.js (23654 -> 23652 bytes)
+Minified JS: components.js (13764 -> 13761 bytes)
+Minified JS: script.js (36623 -> 36621 bytes)
+Minified JS: utils.js (2466 -> 2462 bytes)
+Minified JS: playpoint-widget.js (29958 -> 29853 bytes)
+[article-assets] synchronized source-notice.css: v=3c2ec22615
+Successfully synchronized consent.js version in third-party.js to v=dc975a5e38
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260802_0131-f5d45553
+[public-assets] synchronized content hashes: 183 files
+
+=== 圧縮後JavaScript構文検証 ===
+JS syntax check passed (51 files).
+
+=== 圧縮後の全回帰テスト ===
+TAP version 13
+# Subtest: the complete published article corpus keeps structural quality signals
+ok 1 - the complete published article corpus keeps structural quality signals
+  ---
+  duration_ms: 55.973443
+  type: 'test'
+  ...
+# Subtest: article hreflang links are reciprocal and use the Taiwan locale code
+ok 2 - article hreflang links are reciprocal and use the Taiwan locale code
+  ---
+  duration_ms: 44.434379
+  type: 'test'
+  ...
+# Subtest: rewritten gift-card guides contain verifiable checks, not permanent discount claims
+ok 3 - rewritten gift-card guides contain verifiable checks, not permanent discount claims
+  ---
+  duration_ms: 0.920192
+  type: 'test'
+  ...
+# Subtest: known overstatements do not return to published copy
+ok 4 - known overstatements do not return to published copy
+  ---
+  duration_ms: 13.594274
+  type: 'test'
+  ...
+# Subtest: 通常のウィークリーリワードと例外的な週次特典を区別して案内する
+ok 5 - 通常のウィークリーリワードと例外的な週次特典を区別して案内する
+  ---
+  duration_ms: 1.172338
+  type: 'test'
+  ...
+# Subtest: 入門記事の獲得対象は現在の日本向け公式案内に合わせる
+ok 6 - 入門記事の獲得対象は現在の日本向け公式案内に合わせる
+  ---
+  duration_ms: 0.371294
+  type: 'test'
+  ...
+# Subtest: 週次特典を使う補足記事にもシルバー以上の条件を明記する
+ok 7 - 週次特典を使う補足記事にもシルバー以上の条件を明記する
+  ---
+  duration_ms: 0.366647
+  type: 'test'
+  ...
+# Subtest: ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
+ok 8 - ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
+  ---
+  duration_ms: 1.132459
+  type: 'test'
+  ...
+# Subtest: サブスク記事は現行の公式確認項目だけを例示する
+ok 9 - サブスク記事は現行の公式確認項目だけを例示する
+  ---
+  duration_ms: 0.375109
+  type: 'test'
+  ...
+# Subtest: ダイヤモンド記事は未公表の週次上限を事実扱いしない
+ok 10 - ダイヤモンド記事は未公表の週次上限を事実扱いしない
+  ---
+  duration_ms: 0.297384
+  type: 'test'
+  ...
+# Subtest: 反映時間は公式案内にない時間幅を断定しない
+ok 11 - 反映時間は公式案内にない時間幅を断定しない
+  ---
+  duration_ms: 0.282181
+  type: 'test'
+  ...
+# Subtest: 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
+ok 12 - 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
+  ---
+  duration_ms: 0.215722
+  type: 'test'
+  ...
+# Subtest: 注意ページは既存モードをそのまま使える国を正確に分類する
+ok 13 - 注意ページは既存モードをそのまま使える国を正確に分類する
+  ---
+  duration_ms: 1.132559
+  type: 'test'
+  ...
+# Subtest: 似ているだけの国を完全一致として案内しない
+ok 14 - 似ているだけの国を完全一致として案内しない
+  ---
+  duration_ms: 0.306006
+  type: 'test'
+  ...
+# Subtest: 国をブラウザ言語だけで推測せず公式確認導線を残す
+ok 15 - 国をブラウザ言語だけで推測せず公式確認導線を残す
+  ---
+  duration_ms: 0.306337
+  type: 'test'
+  ...
+# Subtest: 注意ページの確認日をサイト全体の更新日で巻き戻さない
+ok 16 - 注意ページの確認日をサイト全体の更新日で巻き戻さない
+  ---
+  duration_ms: 0.225186
+  type: 'test'
+  ...
+# Subtest: static blog article links follow article registry titles and remain idempotent
+ok 17 - static blog article links follow article registry titles and remain idempotent
+  ---
+  duration_ms: 3.482093
+  type: 'test'
+  ...
+# Subtest: 地域別の公式レート・年間しきい値・通貨単位を固定する
+ok 18 - 地域別の公式レート・年間しきい値・通貨単位を固定する
+  ---
+  duration_ms: 5.402147
+  type: 'test'
+  ...
+# Subtest: 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
+ok 19 - 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
+  ---
+  duration_ms: 0.443161
+  type: 'test'
+  ...
+# Subtest: トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
+ok 20 - トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
+  ---
+  duration_ms: 0.605032
+  type: 'test'
+  ...
+# Subtest: 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
+ok 21 - 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
+  ---
+  duration_ms: 1.384194
+  type: 'test'
+  ...
+# Subtest: 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
+ok 22 - 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
+  ---
+  duration_ms: 0.687405
+  type: 'test'
+  ...
+# Subtest: アプリモジュール変更がService Worker用の指紋を必ず変える
+ok 23 - アプリモジュール変更がService Worker用の指紋を必ず変える
+  ---
+  duration_ms: 2.101975
+  type: 'test'
+  ...
+# Subtest: 記事一覧は4つの検索意図カテゴリだけを使う
+ok 24 - 記事一覧は4つの検索意図カテゴリだけを使う
+  ---
+  duration_ms: 2.439177
+  type: 'test'
+  ...
+# Subtest: 反映トラブルの重複記事は新しい包括記事へ恒久統合する
+ok 25 - 反映トラブルの重複記事は新しい包括記事へ恒久統合する
+  ---
+  duration_ms: 1.690031
+  type: 'test'
+  ...
+# Subtest: 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
+ok 26 - 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
+  ---
+  duration_ms: 1.872563
+  type: 'test'
+  ...
+# Subtest: 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
+ok 27 - 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
+  ---
+  duration_ms: 0.437062
+  type: 'test'
+  ...
+# Subtest: 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
+ok 28 - 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
+  ---
+  duration_ms: 1.916689
+  type: 'test'
+  ...
+# Subtest: 公開記事はトップから3クリック以内で到達できる
+ok 29 - 公開記事はトップから3クリック以内で到達できる
+  ---
+  duration_ms: 48.592624
+  type: 'test'
+  ...
+# Subtest: 深いURLでも同意管理スクリプトをサイトルートから読み込む
+ok 30 - 深いURLでも同意管理スクリプトをサイトルートから読み込む
+  ---
+  duration_ms: 0.280308
+  type: 'test'
+  ...
+# Subtest: デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
+ok 31 - デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
+  ---
+  duration_ms: 1.451615
+  type: 'test'
+  ...
+# Subtest: 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
+ok 32 - 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
+  ---
+  duration_ms: 0.287368
+  type: 'test'
+  ...
+# Subtest: 旧calculatorファイルを持たず301転送だけを維持する
+ok 33 - 旧calculatorファイルを持たず301転送だけを維持する
+  ---
+  duration_ms: 0.346497
+  type: 'test'
+  ...
+# Subtest: 全階層のindex.htmlを階層を保った正規URLへ301転送する
+ok 34 - 全階層のindex.htmlを階層を保った正規URLへ301転送する
+  ---
+  duration_ms: 0.239647
+  type: 'test'
+  ...
+# Subtest: デプロイスクリプトのBash構文が有効である
+ok 35 - デプロイスクリプトのBash構文が有効である
+  ---
+  duration_ms: 6.751219
+  type: 'test'
+  ...
+# Subtest: PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
+ok 36 - PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
+  ---
+  duration_ms: 1.511194
+  type: 'test'
+  ...
+# Subtest: 公開HTMLと生成元にサイト内遷移用UTMを残さない
+ok 37 - 公開HTMLと生成元にサイト内遷移用UTMを残さない
+  ---
+  duration_ms: 36.308431
+  type: 'test'
+  ...
+# Subtest: プライバシー文書はWeb版と認定CMPの運用に一致する
+ok 38 - プライバシー文書はWeb版と認定CMPの運用に一致する
+  ---
+  duration_ms: 0.676479
+  type: 'test'
+  ...
+# Subtest: 再訪と配布の主要イベントだけを許可する
+ok 39 - 再訪と配布の主要イベントだけを許可する
+  ---
+  duration_ms: 0.990388
+  type: 'test'
+  ...
+# Subtest: ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
+ok 40 - ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
+  ---
+  duration_ms: 0.406947
+  type: 'test'
+  ...
+# ok - 実ユーザー速度は同意後に匿名区分だけを計測する
+# ok - トップページに年間グラフと独自計算図がある
+# ok - ビルド後HTMLは外部Google Fontsへ接続しない
+# ok - Search ConsoleとGA4の運用手順が実行可能な粒度で残る
+# ok - 運営者ページに検証工程と外部プロフィールの関係を明示する
+# ok - 今回はWeb Share APIを追加しない
+# Subtest: tests/growth-priority.test.cjs
+ok 9 - tests/growth-priority.test.cjs
+  ---
+  duration_ms: 73.161665
+  type: 'test'
+  ...
+# Subtest: mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
+ok 42 - mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
+  ---
+  duration_ms: 17.590467
+  type: 'test'
+  ...
+# Subtest: mapWithConcurrencyは一件の失敗後も残りを検査する
+ok 43 - mapWithConcurrencyは一件の失敗後も残りを検査する
+  ---
+  duration_ms: 0.404494
+  type: 'test'
+  ...
+# Subtest: retryは失敗対象だけを指定回数まで再試行する
+ok 44 - retryは失敗対象だけを指定回数まで再試行する
+  ---
+  duration_ms: 4.27103
+  type: 'test'
+  ...
+# Subtest: 機種変更記事は独立した検索意図と症状別の確認導線を持つ
+ok 45 - 機種変更記事は独立した検索意図と症状別の確認導線を持つ
+  ---
+  duration_ms: 1.647226
+  type: 'test'
+  ...
+# Subtest: 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
+ok 46 - 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
+  ---
+  duration_ms: 1.923218
+  type: 'test'
+  ...
+# Subtest: 機種変更記事のFAQ本文とFAQPage構造化データは一致する
+ok 47 - 機種変更記事のFAQ本文とFAQPage構造化データは一致する
+  ---
+  duration_ms: 2.536613
+  type: 'test'
+  ...
+# Subtest: 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
+ok 48 - 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
+  ---
+  duration_ms: 1.370193
+  type: 'test'
+  ...
+# Subtest: 国・地域別の実用記事を3言語で十分な本文として公開する
+ok 49 - 国・地域別の実用記事を3言語で十分な本文として公開する
+  ---
+  duration_ms: 9.005993
+  type: 'test'
+  ...
+# Subtest: 言語別記事一覧と専用サイトマップから27ページを発見できる
+ok 50 - 言語別記事一覧と専用サイトマップから27ページを発見できる
+  ---
+  duration_ms: 1.701788
+  type: 'test'
+  ...
+# Subtest: 国際記事内のローカルリンク先が存在する
+ok 51 - 国際記事内のローカルリンク先が存在する
+  ---
+  duration_ms: 4.00267
+  type: 'test'
+  ...
+# Subtest: 日本語では重複する残高併用記事を追加しない
+ok 52 - 日本語では重複する残高併用記事を追加しない
+  ---
+  duration_ms: 0.903347
+  type: 'test'
+  ...
+# Subtest: クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
+ok 53 - クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
+  ---
+  duration_ms: 5.033788
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
+ok 54 - 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
+  ---
+  duration_ms: 0.43581
+  type: 'test'
+  ...
+# Subtest: 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
+ok 55 - 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
+  ---
+  duration_ms: 0.89841
+  type: 'test'
+  ...
+# Subtest: 新規記事のサイト内リンク先はすべて存在する
+ok 56 - 新規記事のサイト内リンク先はすべて存在する
+  ---
+  duration_ms: 2.794048
+  type: 'test'
+  ...
+# Subtest: 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
+ok 57 - 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
+  ---
+  duration_ms: 6.584811
+  type: 'test'
+  ...
+# Subtest: 地域外の維持門檻や通貨を流用していない
+ok 58 - 地域外の維持門檻や通貨を流用していない
+  ---
+  duration_ms: 1.010137
+  type: 'test'
+  ...
+# Subtest: 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
+ok 59 - 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
+  ---
+  duration_ms: 0.333808
+  type: 'test'
+  ...
+# Subtest: 日本語既存ページと海外6ページは完全なhreflangで相互接続する
+ok 60 - 日本語既存ページと海外6ページは完全なhreflangで相互接続する
+  ---
+  duration_ms: 1.908256
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
+ok 61 - 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
+  ---
+  duration_ms: 0.886733
+  type: 'test'
+  ...
+# Subtest: 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
+ok 62 - 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
+  ---
+  duration_ms: 10.181106
+  type: 'test'
+  ...
+# Subtest: 維持解説・比較記事から同一地域の計算ページへ進める
+ok 63 - 維持解説・比較記事から同一地域の計算ページへ進める
+  ---
+  duration_ms: 0.921434
+  type: 'test'
+  ...
+# Subtest: manual multilingual guide links survive regeneration exactly once
+ok 64 - manual multilingual guide links survive regeneration exactly once
+  ---
+  duration_ms: 9.618377
+  type: 'test'
+  ...
+# Subtest: プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
+ok 65 - プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
+  ---
+  duration_ms: 1.800185
+  type: 'test'
+  ...
+# Subtest: 地域の通貨とランク条件を他地域から流用していない
+ok 66 - 地域の通貨とランク条件を他地域から流用していない
+  ---
+  duration_ms: 1.304206
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップと記事一覧から4言語ページを発見できる
+ok 67 - 専用サイトマップと記事一覧から4言語ページを発見できる
+  ---
+  duration_ms: 0.535499
+  type: 'test'
+  ...
+# Subtest: 日本語記事データと配信ファイルの更新日・説明が一致する
+ok 68 - 日本語記事データと配信ファイルの更新日・説明が一致する
+  ---
+  duration_ms: 0.604532
+  type: 'test'
+  ...
+# Subtest: 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
+ok 69 - 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
+  ---
+  duration_ms: 1.359268
+  type: 'test'
+  ...
+# Subtest: ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
+ok 70 - ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
+  ---
+  duration_ms: 2.563884
+  type: 'test'
+  ...
+# Subtest: 日本語の既存記事と記事データは同じ更新日を持つ
+ok 71 - 日本語の既存記事と記事データは同じ更新日を持つ
+  ---
+  duration_ms: 2.221653
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
+ok 72 - 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
+  ---
+  duration_ms: 0.358795
+  type: 'test'
+  ...
+# Subtest: 言語別一覧と人向けサイトマップから新しい記事へ移動できる
+ok 73 - 言語別一覧と人向けサイトマップから新しい記事へ移動できる
+  ---
+  duration_ms: 0.721927
+  type: 'test'
+  ...
+# Subtest: 新しい多言語記事のサイト内リンク先は存在する
+ok 74 - 新しい多言語記事のサイト内リンク先は存在する
+  ---
+  duration_ms: 3.927648
+  type: 'test'
+  ...
+# Subtest: 海外向け記事から日本円固定ページへ誘導しない
+ok 75 - 海外向け記事から日本円固定ページへ誘導しない
+  ---
+  duration_ms: 12.492323
+  type: 'test'
+  ...
+# Subtest: ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
+ok 76 - ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
+  ---
+  duration_ms: 0.55681
+  type: 'test'
+  ...
+# Subtest: 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
+ok 77 - 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
+  ---
+  duration_ms: 0.217935
+  type: 'test'
+  ...
+# Subtest: Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
+ok 78 - Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
+  ---
+  duration_ms: 0.37531
+  type: 'test'
+  ...
+# Subtest: 영문 수치 기사는 미국 기준임을 명시한다
+ok 79 - 영문 수치 기사는 미국 기준임을 명시한다
+  ---
+  duration_ms: 0.194079
+  type: 'test'
+  ...
+# Subtest: reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
+ok 80 - reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
+  ---
+  duration_ms: 4.146054
+  type: 'test'
+  ...
+# Subtest: new international guides are substantial, sourced and usable instead of thin translations
+ok 81 - new international guides are substantial, sourced and usable instead of thin translations
+  ---
+  duration_ms: 4.225462
+  type: 'test'
+  ...
+# Subtest: Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
+ok 82 - Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
+  ---
+  duration_ms: 1.73645
+  type: 'test'
+  ...
+# Subtest: quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
+ok 83 - quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
+  ---
+  duration_ms: 1.204126
+  type: 'test'
+  ...
+# Subtest: locale indexes and the dedicated sitemap expose all six new international guides
+ok 84 - locale indexes and the dedicated sitemap expose all six new international guides
+  ---
+  duration_ms: 0.561207
+  type: 'test'
+  ...
+# Subtest: ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
+ok 85 - ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
+  ---
+  duration_ms: 2.412819
+  type: 'test'
+  ...
+# Subtest: 専用サイトマップは6記事を公開しrobots.txtから発見できる
+ok 86 - 専用サイトマップは6記事を公開しrobots.txtから発見できる
+  ---
+  duration_ms: 0.982987
+  type: 'test'
+  ...
+# Subtest: 新規記事のサイト内リンク先は存在する
+ok 87 - 新規記事のサイト内リンク先は存在する
+  ---
+  duration_ms: 1.961936
+  type: 'test'
+  ...
+# Subtest: 週次特典と複数アカウント記事は3言語で公開要件を満たす
+ok 88 - 週次特典と複数アカウント記事は3言語で公開要件を満たす
+  ---
+  duration_ms: 3.065202
+  type: 'test'
+  ...
+# Subtest: 新規記事は同一言語内で相互に接続される
+ok 89 - 新規記事は同一言語内で相互に接続される
+  ---
+  duration_ms: 0.8046
+  type: 'test'
+  ...
+# Subtest: 国際ガイド専用サイトマップをrobots.txtから発見できる
+ok 90 - 国際ガイド専用サイトマップをrobots.txtから発見できる
+  ---
+  duration_ms: 0.521908
+  type: 'test'
+  ...
+# Subtest: 新規国際記事のローカルリンク先はすべて存在する
+ok 91 - 新規国際記事のローカルリンク先はすべて存在する
+  ---
+  duration_ms: 4.932137
+  type: 'test'
+  ...
+# Subtest: 最新情報ハブは確認範囲・公式参照・確認日を明示する
+ok 92 - 最新情報ハブは確認範囲・公式参照・確認日を明示する
+  ---
+  duration_ms: 1.68274
+  type: 'test'
+  ...
+# Subtest: 最新情報ハブは週次3制度とクエストを別項目として扱う
+ok 93 - 最新情報ハブは週次3制度とクエストを別項目として扱う
+  ---
+  duration_ms: 0.403532
+  type: 'test'
+  ...
+# Subtest: 生成処理は確認していない日に最新情報ハブの日付を進めない
+ok 94 - 生成処理は確認していない日に最新情報ハブの日付を進めない
+  ---
+  duration_ms: 0.154921
+  type: 'test'
+  ...
+# Subtest: 鮮度検査は14日を超えた確認日を検出する
+ok 95 - 鮮度検査は14日を超えた確認日を検出する
+  ---
+  duration_ms: 1.654068
+  type: 'test'
+  ...
+# Subtest: 運用手順は日付だけの更新と個別オファーの一般化を禁止する
+ok 96 - 運用手順は日付だけの更新と個別オファーの一般化を禁止する
+  ---
+  duration_ms: 0.287058
+  type: 'test'
+  ...
+# [manual-intl] restored canonical article content: 13
+# Subtest: 地域別に手動確認した記事の正本一覧を固定する
+ok 97 - 地域別に手動確認した記事の正本一覧を固定する
+  ---
+  duration_ms: 3.361565
+  type: 'test'
+  ...
+# Subtest: 手動正本の公開日・更新日・last-modifiedを一致させる
+ok 98 - 手動正本の公開日・更新日・last-modifiedを一致させる
+  ---
+  duration_ms: 2.032752
+  type: 'test'
+  ...
+# Subtest: 国際記事台帳は手動正本の日付を自動採用する
+ok 99 - 国際記事台帳は手動正本の日付を自動採用する
+  ---
+  duration_ms: 2.494861
+  type: 'test'
+  ...
+# Subtest: ビルドは国際記事生成の直前に退避し直後に復元する
+ok 100 - ビルドは国際記事生成の直前に退避し直後に復元する
+  ---
+  duration_ms: 0.323292
+  type: 'test'
+  ...
+# Subtest: 生成処理で上書きされても手動記事を完全に復元できる
+ok 101 - 生成処理で上書きされても手動記事を完全に復元できる
+  ---
+  duration_ms: 6.7517
+  type: 'test'
+  ...
+# Subtest: JPEG実体の既存OGP URLをimage/jpegとして配信する
+ok 102 - JPEG実体の既存OGP URLをimage/jpegとして配信する
+  ---
+  duration_ms: 1.118098
+  type: 'test'
+  ...
+# Subtest: デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
+ok 103 - デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
+  ---
+  duration_ms: 0.191565
+  type: 'test'
+  ...
+# Subtest: 記事CSSは外部化され、AdSense以外のinline styleを残さない
+ok 104 - 記事CSSは外部化され、AdSense以外のinline styleを残さない
+  ---
+  duration_ms: 17.262487
+  type: 'test'
+  ...
+# Subtest: 記事のローカルCSSは内容ハッシュ付きURLで参照する
+ok 105 - 記事のローカルCSSは内容ハッシュ付きURLで参照する
+  ---
+  duration_ms: 11.391171
+  type: 'test'
+  ...
+# Subtest: 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
+ok 106 - 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
+  ---
+  duration_ms: 11.757086
+  type: 'test'
+  ...
+# Subtest: 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
+ok 107 - 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
+  ---
+  duration_ms: 61.795
+  type: 'test'
+  ...
+# Subtest: 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
+ok 108 - 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
+  ---
+  duration_ms: 0.379135
+  type: 'test'
+  ...
+# Subtest: バージョン付き資産だけを1年間immutableでキャッシュする
+ok 109 - バージョン付き資産だけを1年間immutableでキャッシュする
+  ---
+  duration_ms: 0.240568
+  type: 'test'
+  ...
+# Subtest: 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
+ok 110 - 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
+  ---
+  duration_ms: 0.260458
+  type: 'test'
+  ...
+# Subtest: 未参照だった旧共通CSSを公開物に残さない
+ok 111 - 未参照だった旧共通CSSを公開物に残さない
+  ---
+  duration_ms: 0.114741
+  type: 'test'
+  ...
+# Subtest: PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
+ok 112 - PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
+  ---
+  duration_ms: 1.826565
+  type: 'test'
+  ...
+# Subtest: 事前検証は全テストを自動収集し失敗工程を最後にまとめる
+ok 113 - 事前検証は全テストを自動収集し失敗工程を最後にまとめる
+  ---
+  duration_ms: 0.376191
+  type: 'test'
+  ...
+# Subtest: 事前検証は多言語の公開必須ファイル欠損を検出する
+ok 114 - 事前検証は多言語の公開必須ファイル欠損を検出する
+  ---
+  duration_ms: 0.34202
+  type: 'test'
+  ...
+# Subtest: Service Workerの全先読み対象をデプロイ前に検証する
+ok 115 - Service Workerの全先読み対象をデプロイ前に検証する
+  ---
+  duration_ms: 0.2816
+  type: 'test'
+  ...
+# Subtest: 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
+ok 116 - 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
+  ---
+  duration_ms: 0.376872
+  type: 'test'
+  ...
+# Subtest: ルートService Workerは画面遷移をネットワーク優先で更新する
+ok 117 - ルートService Workerは画面遷移をネットワーク優先で更新する
+  ---
+  duration_ms: 0.275481
+  type: 'test'
+  ...
+# Subtest: ルートキャッシュ世代は全共有アセット版から自動生成する
+ok 118 - ルートキャッシュ世代は全共有アセット版から自動生成する
+  ---
+  duration_ms: 0.333938
+  type: 'test'
+  ...
+# Subtest: アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+ok 119 - アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+  ---
+  duration_ms: 4.674142
+  type: 'test'
+  ...
+# Subtest: 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
+ok 120 - 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
+  ---
+  duration_ms: 1.935487
+  type: 'test'
+  ...
+# Subtest: 公開デプロイ状態は検証完了前と完了後を区別する
+ok 121 - 公開デプロイ状態は検証完了前と完了後を区別する
+  ---
+  duration_ms: 2.173101
+  type: 'test'
+  ...
+# Subtest: 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
+ok 122 - 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
+  ---
+  duration_ms: 0.572945
+  type: 'test'
+  ...
+# Subtest: HTTP検査は同時接続数を制限し失敗対象だけを再試行する
+ok 123 - HTTP検査は同時接続数を制限し失敗対象だけを再試行する
+  ---
+  duration_ms: 0.317904
+  type: 'test'
+  ...
+# Subtest: 外部Actionは固定SHAで実行しDependabotで月次更新する
+ok 124 - 外部Actionは固定SHAで実行しDependabotで月次更新する
+  ---
+  duration_ms: 0.533596
+  type: 'test'
+  ...
+# Subtest: 新規記事は記事台帳へ一意に登録される
+ok 125 - 新規記事は記事台帳へ一意に登録される
+  ---
+  duration_ms: 1.784041
+  type: 'test'
+  ...
+# Subtest: スーパーウィークリー記事は一般条件と個別条件を分離する
+ok 126 - スーパーウィークリー記事は一般条件と個別条件を分離する
+  ---
+  duration_ms: 2.680779
+  type: 'test'
+  ...
+# Subtest: クエスト記事は対象・購入・ログイン・返金条件を案内する
+ok 127 - クエスト記事は対象・購入・ログイン・返金条件を案内する
+  ---
+  duration_ms: 0.410151
+  type: 'test'
+  ...
+# Subtest: 週次親記事は3制度を比較し日記を主要導線にする
+ok 128 - 週次親記事は3制度を比較し日記を主要導線にする
+  ---
+  duration_ms: 0.435299
+  type: 'test'
+  ...
+# Subtest: 無料獲得記事は無料・追加購入なし・有料条件を混同しない
+ok 129 - 無料獲得記事は無料・追加購入なし・有料条件を混同しない
+  ---
+  duration_ms: 0.416431
+  type: 'test'
+  ...
+# Subtest: 買い切り購入と継続課金の記事は役割を相互案内する
+ok 130 - 買い切り購入と継続課金の記事は役割を相互案内する
+  ---
+  duration_ms: 0.711401
+  type: 'test'
+  ...
+# Subtest: 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
+ok 131 - 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
+  ---
+  duration_ms: 1.417665
+  type: 'test'
+  ...
+# Subtest: 公式例のシルバー500円は6ポイントへ丸める
+ok 132 - 公式例のシルバー500円は6ポイントへ丸める
+  ---
+  duration_ms: 2.347001
+  type: 'test'
+  ...
+# Subtest: 購入ごとの丸めと総額への一度だけの丸めを分ける
+ok 133 - 購入ごとの丸めと総額への一度だけの丸めを分ける
+  ---
+  duration_ms: 0.267139
+  type: 'test'
+  ...
+# Subtest: 丸め関数は非負のポイントを最も近い整数へ丸める
+ok 134 - 丸め関数は非負のポイントを最も近い整数へ丸める
+  ---
+  duration_ms: 0.578764
+  type: 'test'
+  ...
+# Subtest: 不正な購入回数と獲得率を拒否する
+ok 135 - 不正な購入回数と獲得率を拒否する
+  ---
+  duration_ms: 0.293128
+  type: 'test'
+  ...
+# Subtest: 記事は税抜・四捨五入・機能の限界を明示する
+ok 136 - 記事は税抜・四捨五入・機能の限界を明示する
+  ---
+  duration_ms: 1.983218
+  type: 'test'
+  ...
+# Subtest: 記事冒頭は通常獲得率と交換価値を分けて即答する
+ok 137 - 記事冒頭は通常獲得率と交換価値を分けて即答する
+  ---
+  duration_ms: 0.504162
+  type: 'test'
+  ...
+# Subtest: 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
+ok 138 - 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
+  ---
+  duration_ms: 0.521568
+  type: 'test'
+  ...
+# Subtest: スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
+ok 139 - スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
+  ---
+  duration_ms: 0.644821
+  type: 'test'
+  ...
+# Subtest: FAQと補助導線は主要目次へ混入しない構造にする
+ok 140 - FAQと補助導線は主要目次へ混入しない構造にする
+  ---
+  duration_ms: 0.774446
+  type: 'test'
+  ...
+# Subtest: シミュレーターは差が見える初期例と利用限界を明示する
+ok 141 - シミュレーターは差が見える初期例と利用限界を明示する
+  ---
+  duration_ms: 0.980383
+  type: 'test'
+  ...
+# Subtest: 記事別の検証カード文言は生成元でも保持する
+ok 142 - 記事別の検証カード文言は生成元でも保持する
+  ---
+  duration_ms: 0.635007
+  type: 'test'
+  ...
+# Subtest: 画面のFAQとFAQPage構造化データが一致する
+ok 143 - 画面のFAQとFAQPage構造化データが一致する
+  ---
+  duration_ms: 1.674908
+  type: 'test'
+  ...
+# Subtest: 記事台帳は既存記事の役割を維持して更新日と説明を同期する
+ok 144 - 記事台帳は既存記事の役割を維持して更新日と説明を同期する
+  ---
+  duration_ms: 1.966793
+  type: 'test'
+  ...
+# Subtest: 海外向け案内は英語を全世界共通レートとして案内しない
+ok 145 - 海外向け案内は英語を全世界共通レートとして案内しない
+  ---
+  duration_ms: 1.894476
+  type: 'test'
+  ...
+# Subtest: 多言語トップの実行時記事リンクは各言語の記事一覧を指す
+ok 146 - 多言語トップの実行時記事リンクは各言語の記事一覧を指す
+  ---
+  duration_ms: 6.943677
+  type: 'test'
+  ...
+# Subtest: 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+ok 147 - 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+  ---
+  duration_ms: 9.706608
+  type: 'test'
+  ...
+# Subtest: 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+ok 148 - 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+  ---
+  duration_ms: 0.551743
+  type: 'test'
+  ...
+# Subtest: CSPは計測と広告品質確認で実際に使う接続先を許可する
+ok 149 - CSPは計測と広告品質確認で実際に使う接続先を許可する
+  ---
+  duration_ms: 0.695758
+  type: 'test'
+  ...
+# Subtest: 日記の景品選択には全言語で読み上げ可能な名前がある
+ok 150 - 日記の景品選択には全言語で読み上げ可能な名前がある
+  ---
+  duration_ms: 3.668702
+  type: 'test'
+  ...
+# Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
+ok 151 - トップページは大きな画像プレビューとOGP画像サイズを明示する
+  ---
+  duration_ms: 1.019842
+  type: 'test'
+  ...
+# Subtest: 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+ok 152 - 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+  ---
+  duration_ms: 1.335663
+  type: 'test'
+  ...
+# Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
+ok 153 - 日記の重複通知を表示せず、カレンダー登録は残す
+  ---
+  duration_ms: 1.457604
+  type: 'test'
+  ...
+# Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
+ok 154 - 地域差案内は日本語トップでも英語の注意導線として表示する
+  ---
+  duration_ms: 1.45528
+  type: 'test'
+  ...
+# Subtest: 計算方法と検証方針を全言語で本文から確認できる
+ok 155 - 計算方法と検証方針を全言語で本文から確認できる
+  ---
+  duration_ms: 1.302814
+  type: 'test'
+  ...
+# Subtest: 広告と計測は初期表示後に低優先度で読み込む
+ok 156 - 広告と計測は初期表示後に低優先度で読み込む
+  ---
+  duration_ms: 0.36177
+  type: 'test'
+  ...
+# ok - 著者ページのOGP画像は実在する
+# ok - 計算機は有限値とHTMLの上下限を検証する
+# ok - ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする
+# ok - GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う
+# ok - 計測イベントは同意済みラッパー経由だけで送信する
+# ok - ルートService Workerは自分のキャッシュだけを削除対象にする
+# ok - ルートService Workerはprecache失敗時に壊れたまま有効化しない
+# ok - デプロイ同期は公開不要な運用ファイルをルート限定で除外する
+# ok - JSミニファイは文字列中のスラッシュコメント風テキストを壊さない
+# ok - デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジェットを対象にする
+# ok - デプロイ前検証はミニファイ後JSの構文を確認する
+# ok - CIデプロイはコミット済み成果物だけを公開する
+# ok - デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする
+# ok - 多言語トップはJS実行前の主要文言も翻訳済みにする
+# ok - 同意済み計測はGA本体ロード前のイベントを短期キューへ保持する
+# ok - Xserver同期後に本番スモークテストを実行する
+# ok - Xserver同期後に本番SEOヘルスチェックを実行する
+# ok - デプロイ検証の変更でもワークフローを実行する
+# ok - デプロイ前検証は全テストをミニファイ前後に実行する
+# ok - 本番スモークテストの期待文字列は配信元ファイルに存在する
+# ok - 本番スモークテストは主要PlayPointページと言語トップを確認する
+# Subtest: tests/playpoint-nine-fixes.test.cjs
+ok 30 - tests/playpoint-nine-fixes.test.cjs
+  ---
+  duration_ms: 53.915747
+  type: 'test'
+  ...
+# ok - ステータス選択の初期値はブロンズになる
+# ok - 通常計算では現在ステータスから次のランクだけを目標にする
+# ok - 前年からランクを引き継いだ場合も目標閾値全体を入力できる
+# ok - 直接レートと倍率は代替入力として高い方と採用理由を返す
+# ok - パック額未入力では購入ごとの丸めを仮定しない概算として表示する
+# ok - パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する
+# ok - 1回0ポイントになる購入額は概算へフォールバックせずエラーにする
+# ok - 逆算モードは入力額を1回の購入として丸める前提を表示する
+# ok - 金曜の開始時刻を過ぎたカレンダー登録は翌週を使う
+# ok - 月平均の分母は年末までの残日数から切り上げ月数で計算する
+# ok - 12月31日でも通常計算は合計必要額を表示する
+# ok - 必要ポイントはHTMLの整数制約に違反する小数を拒否する
+# ok - 記事件数は言語UI更新後に実際の件数で再描画する
+# ok - フッターの運営者リンクは色だけに頼らず下線で区別する
+# ok - モバイルのヘッダーリンクは内側余白を含めて画面幅に収める
+# ok - デスクトップのトップバーは言語切替と補助リンクを同じ段に収める
+# ok - 通常計算の結果は週平均と1日あたりの目安も表示する
+# ok - 通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する
+# ok - 計算結果の関連記事は検索意図別LPを優先する
+# ok - 計算結果の下には金額や条件に応じた次の判断導線が出る
+# ok - 英語トップはJS実行前のファーストビューに日本語の主要文言を残さない
+# ok - 英語トップの日記エリアはJS実行前でも英語で読める
+# ok - トップのSEO名はGoogle Play Points計算機を主名にし旧名を別名として残す
+# ok - 多言語トップの英語名はGoogle Play Points Calculatorを先頭にする
+# ok - 検索LPの上部には通常時と倍率別の即答表がある
+# ok - READMEと正規化設定は公式URLだけを一次導線にする
+# ok - 共有ボタンは結果アクション行にまとめて表示状態を切り替える
+# ok - 検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
+# ok - ブログRSSとAtomフィードは発見可能で最新記事を含む
+# ok - ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う
+# Successfully synchronized asset versions and dates in sample.html
+# ok - HTML同期はアセットバージョンと日付表記を単体で更新する
+# ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
+# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
+# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
+# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
+# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
+# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
+# ok - ステータス選択の再生成でoptionが重複しない
+# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
+# ok - トップページは同一URLの英語hreflangを出さない
+# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
+# ok - デプロイ前に全回帰テストを実行する
+# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
+# ok - テストファイルはルート限定の除外で本番へ同期しない
+# ok - SEO監視はサイトマップ掲載記事も確認する
+# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
+# ok - blog robots.txtは本番ドメインのサイトマップを指す
+# ok - ブログ一覧は記事JSONを正規化してから描画する
+# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
+# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
+# ok - CSPのscript-srcはhttps全体を許可しない
+# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
+# ok - target blankリンクにはnoopener noreferrerを付ける
+# ok - blogの再読み込みボタンはインラインonclickを使わない
+# ok - blog articles.jsonは実在するPlay Points記事だけを含む
+# ok - blog sitemapは登録済みPlay Points記事をすべて含む
+# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
+# ok - 記事ページのOGP画像は実ファイルが存在する
+# ok - blog SearchActionは実装と同じqパラメータを使う
+# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
+# ok - blogトップは自前のOGP画像とfaviconを使う
+# ok - blogトップの説明文は検索結果向けの長さを確保する
+# ok - blogの正規URLはindex.htmlを露出しない
+# ok - blogトップは外部Google Fontsへ接続しない
+# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
+# ok - blog記事カードクリックをAnalyticsへ送る
+# ok - 主要な操作要素は44px以上のタップ領域を持つ
+# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
+# ok - 狭い画面でも日記タブの文字を省略しない
+# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
+# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
+# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
+# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
+# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
+# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
+# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
+# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
+# ok - 全記事から有効なGoogle公式ヘルプを確認できる
+# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
+# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
+# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
+# ok - 最新情報リンクはヘッダーから外しフッターで維持する
+# ok - 計算条件を共有URLへ保存し再訪時に復元できる
+# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
+# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
+# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
+# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
+# ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
+# ok - モバイルの補助リンクと共有ボタンは縦に増えすぎない
+# ok - モバイル初期表示外の重い領域は遅延描画される
+# ok - 記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ
+# ok - ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ
+# ok - 外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる
+# ok - Analyticsのイベント設計と検証手順が文書化されている
+# ok - Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする
+# ok - トップページの更新日メタとサイト更新日を用途別に保持する
+# ok - サイトマップ同期はトップページ群のlastmodだけを更新する
+# ok - 反映タイミング記事は結論と確認手順を見出しで整理する
+# ok - CMP起動用のAdSenseタグは二重読み込みしない
+# ok - 共有URLは実在するステータス値だけを復元する
+# ok - 日記保存イベントはストレージ保存成功時だけ送る
+# ok - 記事のAdSenseは本文スクロール後に共通スクリプトから読み込む
+# ok - ブログと記事は共通コンポーネントからGA4本体を読み込む
+# ok - 共通コンポーネントは既存のヘッダーとフッターを重複生成しない
+# ok - 公開されている全記事HTMLが必要なSEOタグと共通AdSense読込を含んでいること
+# ok - ブログと記事の変更アセットはバージョン付きURLで配信する
+# ok - 記事共通デザインは前後ナビと操作領域とカテゴリー配色を統一する
+# ok - ブログのライトテーマとモバイル導線は読みやすさを維持する
+# ok - 記事はfaviconを指定しAdSenseが必要とする接続先をCSPで許可する
+# ok - 運営者プロフィールは検索可能な独立ページとして公開する
+# ok - 全記事は著者ページへリンクしArticle構造化データの著者と発行者を統一する
+# ok - ブログ検索タイトルと内部リンクは運営者の専門性を明示する
+# ok - サイトマップとSearch Console運用は著者ページと記事群を監視対象にする
+# ok - sw.js と各言語版 index.html の style.css バージョンクエリが一致していること
+# ok - 多言語HTMLビルド出力の整合性とhreflangの検証
+# ok - 海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ
+# ok - 海外向けSEOページは既存記事の読み物感と各言語の自然な導線を保つ
+# ok - 海外LPは相互hreflangで対応言語とx-defaultを明示する
+# ok - 海外向け英語記事は目次と外部化CSSで読みやすさと保守性を保つ
+# ok - 海外LPの補助ラベルは各言語に合わせる
+# ok - 海外向け韓国語・繁体字記事は公式名寄せのサイト名とプラチナ導線を持つ
+# ok - 海外向けSEOは計測対象と追加記事クラスタを持つ
+# ok - 国変更・定期購入クラスタは韓国語と繁体字で公式根拠・FAQ・相互hreflangを持つ
+# ok - ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される
+# ok - 韓国（KR）リージョンの spendUnit 正確性検証
+# ok - 削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない
+# ok - 平均パック課金額シミュレーションの検証
+# ok - 通常還元とキャンペーン還元の差額は既存の購入単位で比較する
+# ok - 米国のパック計算は購入ごとのポイントを最も近い整数へ丸める
+# ok - 米国の小数パック額は金額全体に還元率を掛けてから購入ごとに丸める
+# ok - 海外記事は言語別の記事一覧へ戻り、対応する翻訳版をhreflangで示す
+# ok - 国際記事の公開日と更新日は記事データに保持し、生成日で上書きしない
+# ok - 海外版の計算結果導線は各言語の実在ページだけを使う
+# ok - 海外版トップはJavaScriptなしでも実在する最新情報ハブへリンクする
+# ok - 言語トップはURLと異なる保存済み地域設定で表示を上書きしない
+# ok - カレンダー登録は固定済みの過去日時を使わない
+# ok - 国際記事はビルド日を公開日として上書きしない
+# ok - 主要な日本語Play Points記事は検索意図へ答える本文量を保つ
+# ok - 断定を避けるべき記事と公式仕様の記事は重要な注意点を保持する
+# ok - サイトマップ掲載HTMLは検索結果タイトルと基本SEO要素を保つ
+# ok - 国際記事一覧とギフトカード記事は相互hreflangを持つ
+# ok - 主要記事のtitleとh1は煽り表現に依存しない
+# ok - 修正した記事の一覧タイトルとページtitleは一致する
+# ok - 日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する
+# ok - 更新した記事は一覧・表示・メタデータ・フィード用更新日を一致させる
+# ok - フィードは公開日を保ったまま記事の更新日を反映する
+# ok - 計算結果のエラー表示とクリアは前回の共有用データを破棄する
+# ok - トップの更新日はサイト更新であることを明示する
+# ok - 重要記事は2026年時点の公式仕様と判断上の注意を保持する
+# ok - 記事共通UIは文脈リンク・主要見出し目次・安定表示を使う
+# ok - 記事一覧の静的リンクはarticles.jsonのタイトルと一致する
+# ok - トップの記事ドロワーは表示件数とリンク件数を一致させる
+# ok - 記事サイトマップのlastmodは記事一覧の更新日と一致する
+# ok - サイトマップ生成は記事一覧のmodifiedを自動反映する
+# ok - 100ポイント記事は貯める金額と使う価値を分けて案内する
+# ok - 100ポイント多言語記事は国別公式レートと相互hreflangを持つ
+# ok - 日本語検索クラスターは意図を分けて公式条件を明示する
+# ok - 記事ハブとフィードは新しい日本語・多言語記事を発見できる
+# ok - ポイント数から必要額を出す計算ツールは4地域で公開可能な構造を持つ
+# ok - 現金化ガイドは4言語で公式根拠・相互参照・計算導線を持つ
+# ok - 期限・返金・家族共有ガイドは4言語の相互参照と公式根拠を持つ
+# Subtest: tests/playpoint-regression.test.cjs
+ok 31 - tests/playpoint-regression.test.cjs
+  ---
+  duration_ms: 277.06917
+  type: 'test'
+  ...
+# [repository-integrity] tracked=362 deployable=275 resolved=262
+# Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+ok 159 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+  ---
+  duration_ms: 1.983519
+  type: 'test'
+  ...
+# Subtest: 移設・統合・共通化済みの実体を残さない
+ok 160 - 移設・統合・共通化済みの実体を残さない
+  ---
+  duration_ms: 0.143184
+  type: 'test'
+  ...
+# Subtest: 公開ファイルの内部参照とアンカーは実在する
+ok 161 - 公開ファイルの内部参照とアンカーは実在する
+  ---
+  duration_ms: 0.109904
+  type: 'test'
+  ...
+# Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
+ok 162 - 全公開HTMLのcanonicalは自己一致し重複しない
+  ---
+  duration_ms: 1.432146
+  type: 'test'
+  ...
+# Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
+ok 163 - 公開コードは旧パス・開発URL・旧ホストを参照しない
+  ---
+  duration_ms: 15.033233
+  type: 'test'
+  ...
+# Subtest: 公開画像の実形式とHTTP配信形式を一致させる
+ok 164 - 公開画像の実形式とHTTP配信形式を一致させる
+  ---
+  duration_ms: 9.183017
+  type: 'test'
+  ...
+# Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
+ok 165 - 未参照アセットと内容が完全重複する公開ファイルを残さない
+  ---
+  duration_ms: 31.324742
+  type: 'test'
+  ...
+# Subtest: READMEとPWAメタデータは現行機能を説明する
+ok 166 - READMEとPWAメタデータは現行機能を説明する
+  ---
+  duration_ms: 0.439335
+  type: 'test'
+  ...
+# Subtest: 送信するXMLサイトマップ間でURLを重複させない
+ok 167 - 送信するXMLサイトマップ間でURLを重複させない
+  ---
+  duration_ms: 4.003181
+  type: 'test'
+  ...
+# Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
+ok 168 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
+  ---
+  duration_ms: 1.507424
+  type: 'test'
+  ...
+# Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
+ok 169 - 専用XMLサイトマップへ移したURLをルートへ重ねない
+  ---
+  duration_ms: 1.078819
+  type: 'test'
+  ...
+# Subtest: Play Pointsブログとフィードに家計記事を混在させない
+ok 170 - Play Pointsブログとフィードに家計記事を混在させない
+  ---
+  duration_ms: 1.212718
+  type: 'test'
+  ...
+# Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
+ok 171 - 人向けサイトマップはPlay Pointsの案内に集中する
+  ---
+  duration_ms: 1.455711
+  type: 'test'
+  ...
+# Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+ok 172 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+  ---
+  duration_ms: 0.360908
+  type: 'test'
+  ...
+# Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
+ok 173 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
+  ---
+  duration_ms: 0.44286
+  type: 'test'
+  ...
+1..173
+# tests 173
+# suites 0
+# pass 173
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1103.412122
+
+事前検証で失敗した工程:
+- 生成物の再現性検証
