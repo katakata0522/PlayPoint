@@ -20,44 +20,116 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
-      - name: Apply localized guide payloads
+      - name: Generate final regional guide tree
+        shell: bash
         run: |
+          set -euo pipefail
+
           python scripts/apply-ko-guides.py
           python scripts/apply-tw-guides.py
           python scripts/apply-intl-guide-support.py
 
-          # The repository-integrity suite resolves links from Git's tracked-file
-          # set. Register generated Korean articles before preflight so the check
-          # sees the same paths that the final commit will contain.
-          git add -N -- \
-            ko/articles/google-play-points-balance-history-progress.html \
-            ko/articles/google-play-points-apps-books-purchases.html \
-            ko/articles/google-play-games-vs-play-points.html \
-            ko/articles/google-play-points-earn-free.html \
-            ko/articles/google-play-points-500-1000-cost.html \
-            ko/articles/google-play-points-discounts-promo-codes.html
+          modified_date=$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1]);")
+          asset_version=$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")
+          PLAYPOINT_MODIFIED_DATE="$modified_date" \
+          PLAYPOINT_ASSET_VERSION="$asset_version" \
+            node scripts/build-html.js
 
-          # Emulate the final tree during validation: temporary payload helpers
-          # and the diagnostic log must not be visible as tracked files.
-          git update-index --force-remove \
+          rm -f \
             scripts/apply-ko-guides.py \
             scripts/apply-tw-guides.py \
-            scripts/apply-intl-guide-support.py \
-            preflight-debug.log
-          rm -f preflight-debug.log
-
-          # Validate with the permanent read-only workflow content, without
-          # staging that workflow change into the source commit.
+            scripts/apply-intl-guide-support.py
           git restore --source=origin/main --worktree -- .github/workflows/quality-check.yml
 
-      - name: Run complete preflight
+      - name: Validate and commit only the intended files
+        env:
+          BRANCH: ${{ github.head_ref }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cat > /tmp/allowed-paths.txt <<'EOF'
+          .github/workflows/quality-check.yml
+          scripts/apply-ko-guides.py
+          scripts/apply-tw-guides.py
+          scripts/apply-intl-guide-support.py
+          scripts/intl-content-expansion.cjs
+          tests/intl-content-expansion.test.cjs
+          sitemap-intl-content-expansion.xml
+          robots.txt
+          sitemap.xml
+          sitemap.html
+          sw.js
+          index.html
+          en/index.html
+          ko/index.html
+          tw/index.html
+          en/articles/index.html
+          ko/articles/index.html
+          tw/articles/index.html
+          en/articles/google-play-points-balance-history-progress.html
+          en/articles/google-play-points-apps-books-purchases.html
+          en/articles/google-play-games-vs-play-points.html
+          en/articles/google-play-points-earn-free.html
+          en/articles/google-play-points-500-1000-cost.html
+          en/articles/google-play-points-discounts-promo-codes.html
+          ko/articles/google-play-points-balance-history-progress.html
+          ko/articles/google-play-points-apps-books-purchases.html
+          ko/articles/google-play-games-vs-play-points.html
+          ko/articles/google-play-points-earn-free.html
+          ko/articles/google-play-points-500-1000-cost.html
+          ko/articles/google-play-points-discounts-promo-codes.html
+          tw/articles/google-play-points-balance-history-progress.html
+          tw/articles/google-play-points-apps-books-purchases.html
+          tw/articles/google-play-games-vs-play-points.html
+          tw/articles/google-play-points-earn-free.html
+          tw/articles/google-play-points-500-1000-cost.html
+          tw/articles/google-play-points-discounts-promo-codes.html
+          feed.xml
+          atom.xml
+          blog/articles.json
+          js/third-party.js
+          EOF
+          sed -i 's/^          //' /tmp/allowed-paths.txt
+
+          mapfile -t changed_paths < <(
+            {
+              git diff --name-only
+              git ls-files --others --exclude-standard
+            } | awk 'NF' | sort -u
+          )
+
+          if [ "${#changed_paths[@]}" -eq 0 ]; then
+            echo 'No content changes were generated.'
+            exit 1
+          fi
+
+          unexpected=0
+          for path in "${changed_paths[@]}"; do
+            if ! grep -Fxq -- "$path" /tmp/allowed-paths.txt; then
+              echo "Unexpected generated path: $path" >&2
+              unexpected=1
+            fi
+          done
+          test "$unexpected" -eq 0
+
+          for path in "${changed_paths[@]}"; do
+            git add -- "$path"
+          done
+
+          git diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'content: add practical regional Play Points guides'
+
+      - name: Run complete preflight on committed final tree
         id: preflight
         shell: bash
         run: |
@@ -67,66 +139,19 @@ jobs:
           echo "status=${status}" >> "$GITHUB_OUTPUT"
           exit "$status"
 
-      - name: Publish preflight failure log
-        if: failure() && steps.preflight.outcome == 'failure'
+      - name: Publish final tree or refreshed failure log
+        if: always() && steps.preflight.outcome != 'skipped'
         env:
           BRANCH: ${{ github.head_ref }}
+          PREFLIGHT_STATUS: ${{ steps.preflight.outputs.status }}
+        shell: bash
         run: |
-          git restore --staged .
-          cp /tmp/preflight-debug.log preflight-debug.log
-          git add -f -- preflight-debug.log
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'chore: update international guide preflight failure'
-          git push origin "HEAD:${BRANCH}"
+          set -euo pipefail
 
-      - name: Commit verified guide content
-        if: success()
-        env:
-          BRANCH: ${{ github.head_ref }}
-        run: |
-          test ! -e scripts/apply-ko-guides.py
-          test ! -e scripts/apply-tw-guides.py
-          test ! -e scripts/apply-intl-guide-support.py
-          test ! -e preflight-debug.log
-
-          git add -- \
-            en/articles/google-play-points-balance-history-progress.html \
-            en/articles/google-play-points-apps-books-purchases.html \
-            en/articles/google-play-games-vs-play-points.html \
-            en/articles/google-play-points-earn-free.html \
-            en/articles/google-play-points-500-1000-cost.html \
-            en/articles/google-play-points-discounts-promo-codes.html \
-            ko/articles/google-play-points-balance-history-progress.html \
-            ko/articles/google-play-points-apps-books-purchases.html \
-            ko/articles/google-play-games-vs-play-points.html \
-            ko/articles/google-play-points-earn-free.html \
-            ko/articles/google-play-points-500-1000-cost.html \
-            ko/articles/google-play-points-discounts-promo-codes.html \
-            tw/articles/google-play-points-balance-history-progress.html \
-            tw/articles/google-play-points-apps-books-purchases.html \
-            tw/articles/google-play-games-vs-play-points.html \
-            tw/articles/google-play-points-earn-free.html \
-            tw/articles/google-play-points-500-1000-cost.html \
-            tw/articles/google-play-points-discounts-promo-codes.html \
-            en/articles/index.html \
-            ko/articles/index.html \
-            tw/articles/index.html \
-            scripts/intl-content-expansion.cjs \
-            tests/intl-content-expansion.test.cjs \
-            sitemap-intl-content-expansion.xml \
-            robots.txt \
-            sitemap.xml \
-            sw.js
-
-          git diff --cached --check
-          if git diff --cached --quiet; then
-            echo 'No generated content changes to commit.'
-            exit 0
+          if [ "${PREFLIGHT_STATUS:-1}" != '0' ]; then
+            cp /tmp/preflight-debug.log preflight-debug.log
+            git add -- preflight-debug.log
+            git commit --amend --no-edit
           fi
 
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'content: add practical regional Play Points guides'
-          echo "SOURCE_COMMIT_SHA=$(git rev-parse HEAD)"
           git push origin "HEAD:${BRANCH}"
