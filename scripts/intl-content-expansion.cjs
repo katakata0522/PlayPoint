@@ -7,27 +7,75 @@ const PUBLISHED_AT = '2026-08-04';
 const SITEMAP_FILE = 'sitemap-intl-content-expansion.xml';
 const TOPICS = [
   {
-    slug: 'google-play-balance-combine-payment.html',
+    slug: "google-play-balance-combine-payment.html",
     labels: {
-      en: 'Can you combine Google Play balance with another payment method?',
-      ko: 'Google Play 잔액과 다른 결제 수단을 함께 사용할 수 있나요?',
-      tw: 'Google Play 餘額可以和其他付款方式一起使用嗎？'
+      en: "Can you combine Google Play balance with another payment method?",
+      ko: "Google Play 잔액과 다른 결제 수단을 함께 사용할 수 있나요?",
+      tw: "Google Play 餘額可以和其他付款方式一起使用嗎？"
     }
   },
   {
-    slug: 'google-play-points-device-change.html',
+    slug: "google-play-points-device-change.html",
     labels: {
-      en: 'Play Points after changing phones or devices',
-      ko: '휴대전화 변경 후 Play Points가 보이지 않을 때',
-      tw: '換手機後 Play Points 沒有顯示時'
+      en: "Play Points after changing phones or devices",
+      ko: "휴대전화 변경 후 Play Points가 보이지 않을 때",
+      tw: "換手機後 Play Points 沒有顯示時"
     }
   },
   {
-    slug: 'google-play-points-rounding-tax.html',
+    slug: "google-play-points-rounding-tax.html",
     labels: {
-      en: 'How Play Points handle tax, rounding and split purchases',
-      ko: 'Play Points 세금·반올림·분할 결제 계산',
-      tw: 'Play Points 稅金、四捨五入與分開購買計算'
+      en: "How Play Points handle tax, rounding and split purchases",
+      ko: "Play Points 세금·반올림·분할 결제 계산",
+      tw: "Play Points 稅金、四捨五入與分開購買計算"
+    }
+  },
+  {
+    slug: "google-play-points-balance-history-progress.html",
+    labels: {
+      en: "Where to check Play Points balance, history and level progress",
+      ko: "Play Points 잔액·내역·등급 진행도 확인 방법",
+      tw: "Play Points 餘額、記錄與等級進度怎麼看"
+    }
+  },
+  {
+    slug: "google-play-points-apps-books-purchases.html",
+    labels: {
+      en: "Do paid apps, games and books earn Play Points?",
+      ko: "유료 앱·게임·도서 구매의 Play Points 적립 조건",
+      tw: "付費 App、遊戲與電子書的 Play Points 累積條件"
+    }
+  },
+  {
+    slug: "google-play-games-vs-play-points.html",
+    labels: {
+      en: "Google Play Games vs Play Points: XP, achievements and rewards",
+      ko: "Google Play Games와 Play Points 차이",
+      tw: "Google Play Games 與 Play Points 的差別"
+    }
+  },
+  {
+    slug: "google-play-points-earn-free.html",
+    labels: {
+      en: "Legitimate ways to earn Play Points without extra spending",
+      ko: "추가 결제 없이 Play Points를 모으는 공식 방법",
+      tw: "不增加額外消費取得 Play Points 的官方方法"
+    }
+  },
+  {
+    slug: "google-play-points-500-1000-cost.html",
+    labels: {
+      en: "How much spending for 500 or 1,000 Play Points?",
+      ko: "Play Points 500·1,000포인트 필요 금액",
+      tw: "Play Points 500、1,000 點需要多少金額"
+    }
+  },
+  {
+    slug: "google-play-points-discounts-promo-codes.html",
+    labels: {
+      en: "Do discounts and promo codes still earn Play Points?",
+      ko: "할인·프로모션 코드 사용 시 Play Points 적립 기준",
+      tw: "折扣、促銷代碼的 Play Points 累積規則"
     }
   }
 ];
@@ -45,8 +93,11 @@ function insertIndexLinks(rootDir, locale) {
   const relativePath = `${locale}/articles/index.html`;
   const absolutePath = path.join(rootDir, relativePath);
   let html = fs.readFileSync(absolutePath, 'utf8');
-  const links = TOPICS.map(topic => `                <li><a href="/${articlePath(locale, topic.slug)}">${topic.labels[locale]}</a></li>`).join('\n');
-  if (TOPICS.every(topic => html.includes(`/${articlePath(locale, topic.slug)}`))) return;
+  const missingTopics = TOPICS.filter(topic => !html.includes(`/${articlePath(locale, topic.slug)}`));
+  if (!missingTopics.length) return;
+  const links = missingTopics
+    .map(topic => `                <li><a href="/${articlePath(locale, topic.slug)}">${topic.labels[locale]}</a></li>`)
+    .join('\n');
   const anchor = '            <ul>\n';
   if (!html.includes(anchor)) throw new Error(`Could not find article-list anchor in ${relativePath}`);
   html = html.replace(anchor, `${anchor}${links}\n`);
