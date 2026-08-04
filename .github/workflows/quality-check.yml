@@ -27,5 +27,8 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Report missing official sources
+        run: node .github/scripts/report-missing-official-sources.cjs
+
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
