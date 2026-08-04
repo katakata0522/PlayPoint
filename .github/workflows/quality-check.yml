@@ -35,9 +35,34 @@ jobs:
           git checkout origin/main -- .github/workflows/quality-check.yml
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs 2>&1 | tee preflight-debug.log
+          status=${PIPESTATUS[0]}
+          echo "status=${status}" >> "$GITHUB_OUTPUT"
+          exit "$status"
+
+      - name: Publish preflight failure log once
+        if: failure() && steps.preflight.outcome == 'failure'
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          if git cat-file -e HEAD:preflight-debug.log 2>/dev/null; then
+            echo 'A preflight debug log is already present on the branch.'
+            exit 0
+          fi
+
+          git restore --staged .
+          git add -f -- preflight-debug.log
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore: capture international guide preflight failure'
+          git push origin "HEAD:${BRANCH}"
 
       - name: Commit verified guide content
+        if: success()
         env:
           BRANCH: ${{ github.head_ref }}
         run: |
