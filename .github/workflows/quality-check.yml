@@ -38,36 +38,41 @@ jobs:
           from pathlib import Path
 
           path = Path('scripts/apply-test-suite-cleanup.py')
-          source = path.read_text(encoding='utf-8')
+          lines = path.read_text(encoding='utf-8').splitlines()
 
-          start = source.index('def test_span(')
-          end = source.index('\ndef replace_test', start)
-          source = source[:start] + '''def test_span(source: str, title: str) -> tuple[int, int]:
-              marker = f"test('{title}',"
-              start = source.find(marker)
-              if start < 0:
-                  raise ValueError(f'test not found: {title}')
-              next_test = source.find("\ntest('", start + len(marker))
-              end = len(source) if next_test < 0 else next_test + 1
-              return start, end
-          
-          ''' + source[end + 1:]
+          def replace_definition(start_prefix, end_prefix, replacement):
+              start = next(index for index, line in enumerate(lines) if line.startswith(start_prefix))
+              end = next(index for index, line in enumerate(lines[start + 1:], start + 1) if line.startswith(end_prefix))
+              lines[start:end] = replacement
 
-          start = source.index('def remove_function(')
-          end = source.index('\ndef replace_once', start)
-          source = source[:start] + '''def remove_function(source: str, name: str) -> str:
-              marker = f'function {name}('
-              start = source.find(marker)
-              if start < 0:
-                  raise ValueError(f'function not found: {name}')
-              next_test = source.find("\ntest('", start)
-              if next_test < 0:
-                  raise ValueError(f'test boundary not found after function: {name}')
-              return source[:start].rstrip() + '\\n\\n' + source[next_test + 1:].lstrip('\\n')
-          
-          ''' + source[end + 1:]
+          replace_definition('def test_span(', 'def replace_test(', [
+              'def test_span(source: str, title: str) -> tuple[int, int]:',
+              '    marker = f"test(\'{title}\',"',
+              '    start = source.find(marker)',
+              '    if start < 0:',
+              '        raise ValueError(f"test not found: {title}")',
+              '    next_test = source.find(chr(10) + "test(\'", start + len(marker))',
+              '    end = len(source) if next_test < 0 else next_test + 1',
+              '    return start, end',
+              '',
+              ''
+          ])
 
-          path.write_text(source, encoding='utf-8')
+          replace_definition('def remove_function(', 'def replace_once(', [
+              'def remove_function(source: str, name: str) -> str:',
+              '    marker = f"function {name}("',
+              '    start = source.find(marker)',
+              '    if start < 0:',
+              '        raise ValueError(f"function not found: {name}")',
+              '    next_test = source.find(chr(10) + "test(\'", start)',
+              '    if next_test < 0:',
+              '        raise ValueError(f"test boundary not found after function: {name}")',
+              '    return source[:start].rstrip() + chr(10) * 2 + source[next_test + 1:].lstrip(chr(10))',
+              '',
+              ''
+          ])
+
+          path.write_text(chr(10).join(lines) + chr(10), encoding='utf-8')
           PY
             python scripts/apply-test-suite-cleanup.py
           else
