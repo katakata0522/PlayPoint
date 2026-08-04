@@ -106,6 +106,15 @@ jobs:
           rm -f scripts/apply-test-suite-cleanup.py
           rm -f .github/workflows/apply-test-suite-cleanup.yml
           rm -f .test-cleanup-trigger .test-cleanup-pr-ready .pr-placeholder .do-not-create .really-noop .stop
+          git rm --cached --ignore-unmatch \
+            scripts/apply-test-suite-cleanup.py \
+            .github/workflows/apply-test-suite-cleanup.yml \
+            .test-cleanup-trigger \
+            .test-cleanup-pr-ready \
+            .pr-placeholder \
+            .do-not-create \
+            .really-noop \
+            .stop
           git checkout origin/main -- .github/workflows/quality-check.yml
 
       - name: Verify focused scope
@@ -136,6 +145,16 @@ jobs:
             echo 'No test cleanup changes to commit.'
             exit 0
           fi
+          git reset HEAD -- \
+            scripts/apply-test-suite-cleanup.py \
+            .github/workflows/apply-test-suite-cleanup.yml \
+            .github/workflows/quality-check.yml \
+            .test-cleanup-trigger \
+            .test-cleanup-pr-ready \
+            .pr-placeholder \
+            .do-not-create \
+            .really-noop \
+            .stop || true
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- \
@@ -147,5 +166,6 @@ jobs:
             tests/intl-use-eligibility.test.cjs \
             tests/intl-weekly-accounts.test.cjs \
             tests/playpoint-audit-fixes.test.cjs
+          git diff --cached --check
           git commit -m 'test: remove obsolete and duplicate coverage'
           git push origin HEAD:refactor/test-suite-cleanup
