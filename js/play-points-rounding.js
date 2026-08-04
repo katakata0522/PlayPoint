@@ -67,6 +67,16 @@
       + '</dl><p class="small">税額・対象可否・キャンペーン条件は計算していません。実際の付与はGoogle Playの表示を確認してください。</p>';
   }
 
+  function setAnnouncementMode(resultElement, announce) {
+    if (announce) {
+      resultElement.setAttribute('role', 'status');
+      resultElement.setAttribute('aria-live', 'polite');
+      return;
+    }
+    resultElement.removeAttribute('role');
+    resultElement.setAttribute('aria-live', 'off');
+  }
+
   function initRoundingSimulator(doc) {
     if (!doc) return false;
     const priceInput = doc.getElementById('rounding-price');
@@ -76,7 +86,8 @@
     const resultElement = doc.getElementById('rounding-result');
     if (!priceInput || !countInput || !rateInput || !button || !resultElement) return false;
 
-    const calculateAndRender = function calculateAndRender() {
+    const calculateAndRender = function calculateAndRender(announce) {
+      setAnnouncementMode(resultElement, announce);
       try {
         renderResult(resultElement, calculatePurchasePoints({
           price: priceInput.value,
@@ -88,8 +99,10 @@
       }
     };
 
-    button.addEventListener('click', calculateAndRender);
-    calculateAndRender();
+    button.addEventListener('click', function onCalculate() {
+      calculateAndRender(true);
+    });
+    calculateAndRender(false);
     return true;
   }
 
