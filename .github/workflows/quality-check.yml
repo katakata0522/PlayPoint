@@ -27,38 +27,5 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: JavaScript syntax
-        continue-on-error: true
-        run: node .github/scripts/verify-js-syntax.cjs
-
-      - name: Reproducible generated output
-        continue-on-error: true
-        run: node .github/scripts/verify-build-output.cjs
-
-      - name: Static public and precache assets
-        continue-on-error: true
-        run: node .github/scripts/check-static-preflight-assets.cjs
-
-      - name: Article click depth
-        continue-on-error: true
-        run: node scripts/site-click-depth.cjs
-
-      - name: Regression tests before minify
-        continue-on-error: true
-        run: node --test tests/*.test.cjs
-
-      - name: ads.txt
-        continue-on-error: true
-        run: node .github/scripts/check-ads-txt.cjs
-
-      - name: Minify public assets
-        continue-on-error: true
-        run: node .github/scripts/minify.cjs
-
-      - name: JavaScript syntax after minify
-        continue-on-error: true
-        run: node .github/scripts/verify-js-syntax.cjs
-
-      - name: Regression tests after minify
-        continue-on-error: true
-        run: node --test tests/*.test.cjs
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
