@@ -79,6 +79,27 @@ jobs:
             echo 'Test cleanup is already applied.'
           fi
 
+      - name: Normalize edited test files
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          files = [
+              'tests/all-article-quality-audit.test.cjs',
+              'tests/growth-migration.test.cjs',
+              'tests/growth-priority.test.cjs',
+              'tests/intl-coupon-credit.test.cjs',
+              'tests/intl-rank-maintenance.test.cjs',
+              'tests/intl-use-eligibility.test.cjs',
+              'tests/intl-weekly-accounts.test.cjs',
+              'tests/playpoint-audit-fixes.test.cjs'
+          ]
+          for relative_path in files:
+              path = Path(relative_path)
+              path.write_text(path.read_text(encoding='utf-8').rstrip() + chr(10), encoding='utf-8')
+          PY
+
       - name: Restore final repository shape before validation
         shell: bash
         run: |
