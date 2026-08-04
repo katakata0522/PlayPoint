@@ -28,25 +28,40 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
       - name: Apply focused rounding fix
-        if: github.head_ref == 'fix/rounding-assumption-clarity'
         run: python scripts/apply-rounding-assumption-fix.py
 
       - name: Synchronize generated assets
-        if: github.head_ref == 'fix/rounding-assumption-clarity'
         run: node scripts/build-html.js
 
-      - name: Run complete preflight
+      - name: Restore final repository shape
+        shell: bash
+        run: |
+          rm -f scripts/apply-rounding-assumption-fix.py
+          rm -f .github/workflows/apply-rounding-assumption-fix.yml
+          git checkout origin/main -- .github/workflows/quality-check.yml
+
+      - name: Run complete preflight on final tree
         run: node .github/scripts/preflight.cjs
 
-      - name: Commit validated source changes
-        if: github.head_ref == 'fix/rounding-assumption-clarity'
+      - name: Commit validated fix
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- js/calculator.js tests/playpoint-regression.test.cjs sw.js
+          git add -A
+
+          changed_files="$(git diff --cached --name-only)"
+          printf '%s\n' "$changed_files"
+          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js|scripts/apply-rounding-assumption-fix\.py|\.github/workflows/apply-rounding-assumption-fix\.yml|\.github/workflows/quality-check\.yml)$' || true)"
+          if [ -n "$unexpected_files" ]; then
+            echo 'Unexpected files would be committed:' >&2
+            printf '%s\n' "$unexpected_files" >&2
+            exit 1
+          fi
+
           git diff --cached --check
           git commit -m 'fix: clarify purchase rounding assumptions'
           git push origin HEAD:fix/rounding-assumption-clarity
