@@ -11,12 +11,12 @@
   <meta property="article:modified_time" content="2026-08-03T00:00:00+09:00" />
   <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
   <title>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</title>
-  <meta name="description" content="Google Play Pointsの計算を、税抜の対象価格、商品ごとの四捨五入、分割購入と合計計算の差から解説。日本のステータス別獲得率を使える比較シミュレーター付きです。" />
+  <meta name="description" content="Google Play Pointsの計算を、税抜の対象価格、アイテム価格ごとの四捨五入、分割購入と合計計算の差から解説。日本のステータス別獲得率を使える比較シミュレーター付きです。" />
   <link rel="canonical" href="https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか" />
-  <meta property="og:description" content="税金を除く対象価格と商品ごとの四捨五入を基準に、分割購入と合計計算で差が出る理由を整理します。" />
+  <meta property="og:description" content="税金を除く対象価格と四捨五入を基準に、分割購入と合計計算で差が出る理由を整理します。" />
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/getting-started.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -29,7 +29,7 @@
     "@type":"Article",
     "mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html"},
     "headline":"Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
-    "description":"Google Play Pointsの税抜対象価格、商品ごとの四捨五入、分割購入と合計計算の差を解説します。",
+    "description":"Google Play Pointsの税抜対象価格、四捨五入、分割購入と合計計算の差を解説します。",
     "inLanguage":"ja",
     "datePublished":"2026-07-24",
     "dateModified":"2026-08-03",
@@ -45,8 +45,8 @@
     "mainEntity":[
       {"@type":"Question","name":"Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？","acceptedAnswer":{"@type":"Answer","text":"Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。"}},
       {"@type":"Question","name":"99円の商品なら必ず1ポイント貯まりますか？","acceptedAnswer":{"@type":"Answer","text":"表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。"}},
-      {"@type":"Question","name":"分割購入とまとめて計算した場合でポイントは変わりますか？","acceptedAnswer":{"@type":"Answer","text":"差が出る場合があります。Google公式はアイテム価格に獲得率を掛け、最も近い整数へ丸めると案内しているため、別々の購入を合計して最後に一度だけ丸める計算は実際の丸めを再現しない場合があります。"}},
-      {"@type":"Question","name":"この記事のシミュレーターは実際の付与を保証しますか？","acceptedAnswer":{"@type":"Answer","text":"保証しません。税金を除いた対象価格と獲得率が分かっている場合の丸め方を比較する試算です。対象商品、税額、キャンペーン適用、購入アカウントはGoogle Playの画面で確認してください。"}}
+      {"@type":"Question","name":"分割購入とまとめて計算した場合でポイントは変わりますか？","acceptedAnswer":{"@type":"Answer","text":"差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。"}},
+      {"@type":"Question","name":"この記事のシミュレーターは実際の付与を保証しますか？","acceptedAnswer":{"@type":"Answer","text":"保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。"}}
     ]
   }
   </script>
@@ -61,10 +61,10 @@
 
   <article class="content">
     <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：ブロンズは100円で約1ポイント</h2>
-      <p>日本のブロンズは通常、100円ごとに1ポイントが基準です。実際は、<strong>税金を除いた対象価格</strong>へ獲得率を掛け、<strong>購入ごとに最も近い整数へ丸める（四捨五入する）</strong>ため、税込表示額を単純に100で割った結果と一致しない場合があります。</p>
+      <h2 id="quick-answer">結論：通常のブロンズは対象価格100円で1ポイント</h2>
+      <p>日本のブロンズは通常、<strong>税金を除いた対象アイテム価格100円あたり1ポイント</strong>です。Google公式は、アイテム価格へ獲得率を掛け、その結果を<strong>最も近い整数へ丸める（四捨五入する）</strong>と案内しています。</p>
       <p>この記事で説明するのは、<strong>1ポイントを貯めるために必要な金額</strong>です。1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません。</p>
-      <p>最終的な付与数は、購入前の獲得予定表示と購入後のポイント履歴で確認してください。</p>
+      <p>税込の表示価格だけでは正確な対象額を判断できない場合があります。最終的な付与数は、購入前の獲得予定表示と購入後のポイント履歴で確認してください。</p>
     </section>
             <!-- editorial-summary:start -->
             <section class="knowledge-boundary" aria-labelledby="known-unknown">
@@ -72,7 +72,7 @@
                 <div class="knowledge-boundary__grid">
                     <div>
                         <h3>公式で確認できること</h3>
-                        <ul><li>ポイント対象は税金を除いたアイテム価格で、商品ごとに最も近い整数へ丸める計算方法はGoogle公式で確認できます。</li><li>日本のステータス別通常獲得率は100円あたり1～2ポイントです。</li></ul>
+                        <ul><li>ポイント対象は税金を除いたアイテム価格で、獲得ポイントを最も近い整数へ丸める計算方法はGoogle公式で確認できます。</li><li>日本のステータス別通常獲得率は100円あたり1～2ポイントです。</li></ul>
                     </div>
                     <div>
                         <h3>Google Play画面で確認すること</h3>
@@ -84,10 +84,10 @@
             <!-- editorial-summary:end -->
 
     <aside class="article-calculator-prompt rounding-jump" aria-labelledby="rounding-jump-title">
-      <p class="article-calculator-prompt__label">この記事内で試算</p>
-      <h2 id="rounding-jump-title">購入ごとの丸めをすぐ比較する</h2>
-      <p>税抜の対象価格と購入回数が分かっている場合は、本文内の比較シミュレーターへ移動できます。</p>
-      <a class="rounding-jump__button" href="#rounding-simulator-section">比較シミュレーターへ</a>
+      <p class="article-calculator-prompt__label">この記事内で仕組みを確認</p>
+      <h2 id="rounding-jump-title">丸め方の差を例で確認する</h2>
+      <p>実際の付与予測ではなく、別々の購入と合計後の計算で差が出る仕組みを確認するための比較です。</p>
+      <a class="rounding-jump__button" href="#rounding-simulator-section">差が出る例を見る</a>
     </aside>
 
     <section class="section">
@@ -121,7 +121,7 @@
 
     <section class="section">
       <h2>分割購入と合計計算で差が出る理由</h2>
-      <p>Google公式は、アイテム価格に獲得率を掛けて整数へ丸めると説明しています。このため、複数の別々の購入を最後に合計して一度だけ丸める計算は、購入ごとの丸めを再現しない場合があります。</p>
+      <p>Google公式は、<strong>アイテムの価格</strong>に獲得率を掛けて整数へ丸めると説明しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p>
       <div class="table-wrap rounding-table-wrap">
         <table class="rounding-table">
           <caption>税抜40円・ゴールド・2回購入の計算例</caption>
@@ -132,17 +132,18 @@
           </tbody>
         </table>
       </div>
-      <p class="small">これは丸め方を理解するための数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
+      <p class="small">これは丸め方を理解するための架空の数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
     </section>
 
     <section class="section" id="rounding-simulator-section">
       <h2>購入ごとの丸めと合計計算を比較する</h2>
-      <p>税金を除いた対象価格が分かっている場合に、購入ごとに丸めた結果と、総額へ一度だけ丸めた結果を比較できます。税額や対象可否を判定する機能ではありません。</p>
+      <p>税金を除いた対象価格が分かっている場合に、購入ごとに丸めた結果と、総額へ一度だけ丸めた結果を比較できます。</p>
+      <p class="note">購入画面に獲得予定ポイントが表示されている場合は、その表示を優先してください。この機能は税額や対象可否を判定せず、丸め方の仕組みを比較するためのものです。</p>
       <div class="rounding-simulator" id="rounding-simulator">
         <div class="rounding-fields">
           <div class="rounding-field">
             <label for="rounding-price">1回の対象価格（税抜・円）</label>
-            <input id="rounding-price" type="number" min="0" step="1" value="500" inputmode="numeric" />
+            <input id="rounding-price" type="number" min="0" step="1" value="40" inputmode="numeric" />
           </div>
           <div class="rounding-field">
             <label for="rounding-count">同じ価格の購入回数</label>
@@ -151,17 +152,17 @@
           <div class="rounding-field">
             <label for="rounding-rate">100円あたりの獲得率</label>
             <select id="rounding-rate">
-              <option value="1" selected>ブロンズ：1</option>
+              <option value="1">ブロンズ：1</option>
               <option value="1.25">シルバー：1.25</option>
-              <option value="1.5">ゴールド：1.5</option>
+              <option value="1.5" selected>ゴールド：1.5</option>
               <option value="1.75">プラチナ：1.75</option>
               <option value="2">ダイヤモンド：2</option>
             </select>
           </div>
         </div>
-        <p class="small rounding-default-note">初期値は、記事冒頭の基準に合わせて「税抜500円を2回・ブロンズ」にしています。</p>
+        <p class="small rounding-default-note">初期値は、丸め方の差が見える架空例「税抜40円を2回・ゴールド」です。表示価格しか分からない場合は、実際の付与予測には使わないでください。</p>
         <button class="rounding-action" id="rounding-calculate" type="button" aria-controls="rounding-result">丸め方を比較する</button>
-        <div class="rounding-result" id="rounding-result" role="status" aria-live="polite" aria-atomic="true"></div>
+        <div class="rounding-result" id="rounding-result" aria-live="off" aria-atomic="true"></div>
       </div>
     </section>
 
@@ -186,8 +187,8 @@
       <h2>よくある質問</h2>
       <div class="faq-item"><h3>Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？</h3><p>Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。</p></div>
       <div class="faq-item"><h3>99円の商品なら必ず1ポイント貯まりますか？</h3><p>表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。</p></div>
-      <div class="faq-item"><h3>分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテム価格に獲得率を掛け、最も近い整数へ丸めると案内しているため、別々の購入を合計して最後に一度だけ丸める計算は実際の丸めを再現しない場合があります。</p></div>
-      <div class="faq-item"><h3>この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合の丸め方を比較する試算です。対象商品、税額、キャンペーン適用、購入アカウントはGoogle Playの画面で確認してください。</p></div>
+      <div class="faq-item"><h3>分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p></div>
+      <div class="faq-item"><h3>この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。</p></div>
     </section>
 
     <aside class="official-source-note source-list">
@@ -229,7 +230,7 @@
   <nav id="article-nav" class="article-nav"></nav>
   <footer class="article-footer"><p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p><p class="small">本記事は購入を勧めるものではありません。実際の付与数はGoogle Playの表示をご確認ください。</p></footer>
 </main>
-<script src="../js/play-points-rounding.js?v=ba272a6285" defer></script>
+<script src="../js/play-points-rounding.js?v=3f07a96fe2" defer></script>
 <script src="../blog/article.js?v=2cac3022ad"></script>
 <script src="../blog/components.js?v=784e955c93"></script>
 </body>
