@@ -23,6 +23,9 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      PLAYPOINT_MODIFIED_DATE: '2026-08-02'
+      PLAYPOINT_ASSET_VERSION: '20260802_0131'
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,7 +36,7 @@ jobs:
       - name: Apply focused source and regression-test changes
         run: python scripts/apply-rounding-assumption-fix.py
 
-      - name: Synchronize generated assets
+      - name: Synchronize generated assets without unrelated date churn
         run: node scripts/build-html.js
 
       - name: Validate application changes
