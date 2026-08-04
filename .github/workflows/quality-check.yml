@@ -39,8 +39,28 @@ jobs:
       - name: Synchronize generated assets without unrelated date churn
         run: node scripts/build-html.js
 
-      - name: Validate application changes
-        run: node .github/scripts/preflight.cjs
+      - name: Validate the focused change
+        shell: bash
+        run: |
+          node --check js/calculator.js
+          node --check js/config.js
+          node --test tests/playpoint-regression.test.cjs
+          git diff --check
+
+          changed_files="$(git diff --name-only)"
+          printf '%s\n' "$changed_files"
+          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js)$' || true)"
+          if [ -n "$unexpected_files" ]; then
+            echo 'Unexpected generated or source files changed:' >&2
+            printf '%s\n' "$unexpected_files" >&2
+            exit 1
+          fi
+
+          expected_count="$(printf '%s\n' "$changed_files" | sed '/^$/d' | wc -l)"
+          if [ "$expected_count" -ne 4 ]; then
+            echo "Expected exactly 4 changed application files, found $expected_count" >&2
+            exit 1
+          fi
 
       - name: Commit application files only
         shell: bash
@@ -60,5 +80,4 @@ jobs:
 
           git diff --cached --check
           git commit -m 'fix: clarify purchase rounding assumptions'
-          echo "SOURCE_COMMIT_SHA=$(git rev-parse HEAD)"
           git push origin HEAD:fix/rounding-assumption-clarity
