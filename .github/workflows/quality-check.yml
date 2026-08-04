@@ -34,6 +34,41 @@ jobs:
         shell: bash
         run: |
           if grep -q '今回はWeb Share APIを追加しない' tests/growth-priority.test.cjs; then
+            python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/apply-test-suite-cleanup.py')
+          source = path.read_text(encoding='utf-8')
+
+          start = source.index('def test_span(')
+          end = source.index('\ndef replace_test', start)
+          source = source[:start] + '''def test_span(source: str, title: str) -> tuple[int, int]:
+              marker = f"test('{title}',"
+              start = source.find(marker)
+              if start < 0:
+                  raise ValueError(f'test not found: {title}')
+              next_test = source.find("\ntest('", start + len(marker))
+              end = len(source) if next_test < 0 else next_test + 1
+              return start, end
+          
+          ''' + source[end + 1:]
+
+          start = source.index('def remove_function(')
+          end = source.index('\ndef replace_once', start)
+          source = source[:start] + '''def remove_function(source: str, name: str) -> str:
+              marker = f'function {name}('
+              start = source.find(marker)
+              if start < 0:
+                  raise ValueError(f'function not found: {name}')
+              next_test = source.find("\ntest('", start)
+              if next_test < 0:
+                  raise ValueError(f'test boundary not found after function: {name}')
+              return source[:start].rstrip() + '\\n\\n' + source[next_test + 1:].lstrip('\\n')
+          
+          ''' + source[end + 1:]
+
+          path.write_text(source, encoding='utf-8')
+          PY
             python scripts/apply-test-suite-cleanup.py
           else
             echo 'Test cleanup is already applied.'
@@ -44,7 +79,7 @@ jobs:
         run: |
           rm -f scripts/apply-test-suite-cleanup.py
           rm -f .github/workflows/apply-test-suite-cleanup.yml
-          rm -f .test-cleanup-trigger
+          rm -f .test-cleanup-trigger .test-cleanup-pr-ready .pr-placeholder .do-not-create .really-noop .stop
           git checkout origin/main -- .github/workflows/quality-check.yml
 
       - name: Verify focused scope
