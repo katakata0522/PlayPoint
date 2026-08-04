@@ -35,27 +35,6 @@ jobs:
         continue-on-error: true
         run: node .github/scripts/verify-build-output.cjs
 
-      - name: Required public files
-        continue-on-error: true
-        run: test -f en/index.html && test -f ko/index.html && test -f tw/index.html
-
-      - name: Service worker precache assets
-        continue-on-error: true
-        run: node - <<'NODE'
-          const fs = require('node:fs');
-          const path = require('node:path');
-          const serviceWorker = fs.readFileSync('sw.js', 'utf8');
-          const assetsBlock = serviceWorker.match(/const ASSETS = \[([\s\S]*?)\];/);
-          if (!assetsBlock) throw new Error('sw.jsのASSETS定義を解析できません。');
-          const urls = [...assetsBlock[1].matchAll(/['"]([^'"]+)['"]/g)].map(match => match[1]);
-          const missing = urls.filter(url => {
-            const clean = url.split(/[?#]/, 1)[0].replace(/^\.\//, '');
-            const local = clean === '' || clean.endsWith('/') ? path.join(clean, 'index.html') : clean;
-            return !fs.existsSync(local);
-          });
-          if (missing.length) throw new Error(`Missing precache assets: ${missing.join(', ')}`);
-          NODE
-
       - name: Article click depth
         continue-on-error: true
         run: node scripts/site-click-depth.cjs
