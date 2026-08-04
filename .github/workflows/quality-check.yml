@@ -35,6 +35,10 @@ jobs:
         continue-on-error: true
         run: node .github/scripts/verify-build-output.cjs
 
+      - name: Static public and precache assets
+        continue-on-error: true
+        run: node .github/scripts/check-static-preflight-assets.cjs
+
       - name: Article click depth
         continue-on-error: true
         run: node scripts/site-click-depth.cjs
