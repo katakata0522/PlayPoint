@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getIntlContentExpansionFiles } = require('./intl-content-expansion.cjs');
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
 const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 
@@ -64,6 +65,7 @@ const generatedFiles = [
   'index.html',
   ...generatedLocaleFiles,
   ...getIntlSeoFiles(),
+  ...getIntlContentExpansionFiles(),
   'en/articles/intl-article.css',
   'feed.xml',
   'atom.xml',

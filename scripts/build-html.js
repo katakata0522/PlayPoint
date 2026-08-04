@@ -10,6 +10,7 @@ const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
+const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
@@ -43,6 +44,7 @@ try {
   restoreManualIntlArticles(rootDir, manualIntlSnapshots);
 }
 syncIntlManualContent(rootDir);
+applyIntlContentExpansion(rootDir);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
 syncPublicAssetVersions(rootDir);
