@@ -24,7 +24,7 @@ const EDITORIAL_TARGETS = Object.freeze({
     knownHeading: '公式で確認できること',
     unknownHeading: 'Google Play画面で確認すること',
     known: [
-      'ポイント対象は税金を除いたアイテム価格で、商品ごとに最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
+      'ポイント対象は税金を除いたアイテム価格で、獲得ポイントを最も近い整数へ丸める計算方法はGoogle公式で確認できます。',
       '日本のステータス別通常獲得率は100円あたり1～2ポイントです。'
     ],
     unknown: [
