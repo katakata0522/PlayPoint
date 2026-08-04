@@ -19,60 +19,13 @@ concurrency:
 
 jobs:
   quality:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 7
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Detect whether the application fix is already applied
-        id: state
-        shell: bash
-        run: |
-          if grep -q 'roundingNoteWithoutPack' js/config.js; then
-            echo 'already_applied=true' >> "$GITHUB_OUTPUT"
-          else
-            echo 'already_applied=false' >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Apply focused source and regression-test changes
-        if: steps.state.outputs.already_applied == 'false'
-        run: python scripts/apply-rounding-assumption-fix.py
-
-      - name: Synchronize generated assets
-        if: steps.state.outputs.already_applied == 'false'
-        run: node scripts/build-html.js
-
-      - name: Validate the final application tree
-        shell: bash
-        run: |
-          rm -f scripts/apply-rounding-assumption-fix.py
-          rm -f .github/workflows/apply-rounding-assumption-fix.yml
-          git checkout origin/main -- .github/workflows/quality-check.yml
-          node .github/scripts/preflight.cjs
-
-      - name: Commit application files only
-        if: steps.state.outputs.already_applied == 'false'
-        shell: bash
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- js/calculator.js js/config.js tests/playpoint-regression.test.cjs sw.js
-
-          changed_files="$(git diff --cached --name-only)"
-          printf '%s\n' "$changed_files"
-          unexpected_files="$(printf '%s\n' "$changed_files" | grep -Ev '^(js/calculator\.js|js/config\.js|tests/playpoint-regression\.test\.cjs|sw\.js)$' || true)"
-          if [ -n "$unexpected_files" ]; then
-            echo 'Unexpected files would be committed:' >&2
-            printf '%s\n' "$unexpected_files" >&2
-            exit 1
-          fi
-
-          git diff --cached --check
-          git commit -m 'fix: clarify purchase rounding assumptions'
-          git push origin HEAD:fix/rounding-assumption-clarity
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
