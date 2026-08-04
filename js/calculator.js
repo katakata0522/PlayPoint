@@ -512,35 +512,41 @@ export const CALC = {
         if (finalRate === null || finalRate <= 0) return UI.displayResult(STATE.dom.result, texts.errorRate, true);
         if (maxNeededPoints === null || neededPoints > maxNeededPoints) return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
         
-        const remainingMonths = this.getRemainingMonths();
-        
         const finalNeededPoints = neededPoints;
-
         const spendUnit = config.spendUnit || 100;
-        let totalAmountNeeded = 0;
+
+        // 購入単位が分かる場合だけ、購入1回ごとのポイント丸めを適用する。
+        // 未入力時は購入回数と価格構成が分からないため、丸めを仮定しない概算にする。
+        const packAmount = STATE.dom.packAmount ? this.getValidNumberInput(STATE.dom.packAmount, 0) : null;
+        const hasPackAmount = packAmount !== null && packAmount > 0;
+        const pointsPerPurchase = hasPackAmount
+            ? CALC_PURE.getPointsForPurchase(packAmount, finalRate, spendUnit)
+            : null;
+
+        if (hasPackAmount && pointsPerPurchase <= 0) {
+            return UI.displayResult(
+                STATE.dom.result,
+                texts.errorZeroPointPurchase || texts.errorInput,
+                true
+            );
+        }
+
+        const mainResult = CALC_PURE.computeMainResult({
+            neededPoints: finalNeededPoints,
+            finalRate,
+            packAmount: packAmount || 0,
+            spendUnit,
+            baseDate: now
+        });
+        const { totalAmountNeeded, packsNeeded, remainingMonths } = mainResult;
         let packResultContent = '';
 
-        // パック額が入力されているか検証
-        const packAmount = STATE.dom.packAmount ? this.getValidNumberInput(STATE.dom.packAmount, 0) : null;
-
-        if (finalNeededPoints <= 0) {
-            totalAmountNeeded = 0;
-        } else if (packAmount !== null && packAmount > 0) {
-            const pointsPerPack = CALC_PURE.getPointsForPurchase(packAmount, finalRate, spendUnit);
-            
-            if (pointsPerPack <= 0) {
-                totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
-            } else {
-                const packsNeeded = Math.ceil(finalNeededPoints / pointsPerPack);
-                totalAmountNeeded = CALC_PURE.roundCurrencyAmount(packsNeeded * packAmount);
-                const packStr = texts.packUnit || 'packs';
-                packResultContent = `
-                    <dt>${texts.resultLabelRequiredPacks || '必要購入パック数'}</dt>
-                    <dd><b><span class="count-target" data-value="${packsNeeded}">0</span> ${packStr}</b> <span style="font-size:0.8em; color:var(--link-color);">(${packAmount.toLocaleString(config.lang)}${config.currencySymbol}/${packStr})</span></dd>
-                `;
-            }
-        } else {
-            totalAmountNeeded = Math.ceil((finalNeededPoints / finalRate) * spendUnit);
+        if (packsNeeded !== null) {
+            const packStr = texts.packUnit || 'packs';
+            packResultContent = `
+                <dt>${texts.resultLabelRequiredPacks || '必要購入パック数'}</dt>
+                <dd><b><span class="count-target" data-value="${packsNeeded}">0</span> ${packStr}</b> <span style="font-size:0.8em; color:var(--link-color);">(${packAmount.toLocaleString(config.lang)}${config.currencySymbol}/${packStr})</span></dd>
+            `;
         }
 
         const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
@@ -624,6 +630,7 @@ export const CALC = {
                 ${paceResultContent}
                 ${comparisonContent}
                 <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
+                <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${hasPackAmount ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
                 <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
                     ${calculationNoteText}
                 </div>
@@ -658,8 +665,11 @@ export const CALC = {
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
         
         const spendUnit = config.spendUnit || 100;
-        const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
-        const earnedPoints = Math.round(earnedPointsRaw);
+        const { earnedPoints, earnedPointsRaw } = CALC_PURE.computeReverseResult({
+            amountYen,
+            finalRate,
+            spendUnit
+        });
         
         const resultContent = `
             <dl>
@@ -667,6 +677,7 @@ export const CALC = {
                 <dd><b>${texts.approxLabel} <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
             </dl>
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
+            <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${texts.roundingNoteReverse}</p>
         `;
         
         UI.displayResult(STATE.dom.reverseResult, resultContent);
