@@ -50,7 +50,7 @@
     "id": "play-points-coupon-not-applied",
     "title": "Google Play Pointsクーポンが自動適用されない原因",
     "date": "2026-07-25",
-    "modified": "2026-07-30",
+    "modified": "2026-08-04",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -82,7 +82,7 @@
     "id": "play-points-cash-conversion",
     "title": "Google Play Pointsは現金化できる？交換先・使い道を比較",
     "date": "2026-07-24",
-    "modified": "2026-07-30",
+    "modified": "2026-08-04",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -190,7 +190,7 @@
     "description": "Play Pointsが反映されない時は、購入状態・ポイント履歴・購入アカウント・参加時期を順に確認。端末による遅れや問い合わせ前に残す情報も解説します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
-    "modified": "2026-07-30"
+    "modified": "2026-08-04"
   },
   {
     "id": "multiple-accounts",
@@ -206,7 +206,7 @@
     "description": "Google Play Pointsは複数のGoogleアカウント間で合算・移動できません。購入アカウントの確認方法、ポイント分散がランクへ与える影響を解説します。",
     "file": "../articles/2025-12-25-multiple-accounts.html",
     "thumbnail": "../articles/ogp/multiple-accounts.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-04"
   },
   {
     "id": "play-games",
@@ -254,7 +254,7 @@
     "description": "Google Play Pointsは最後の獲得・使用から1年で失効します。期限の確認方法、ランク進捗や交換後クレジットとの違い、失効対策を解説します。",
     "file": "../articles/2025-12-25-expiration.html",
     "thumbnail": "../articles/ogp/expiration.png",
-    "modified": "2026-07-24"
+    "modified": "2026-08-04"
   },
   {
     "id": "promo-code",
@@ -270,7 +270,7 @@
     "description": "プロモコードや割引利用時のPlay Pointsは特典条件で異なります。決済前の支払い額、併用条件、購入後のポイント履歴を確認する手順を解説します。",
     "file": "../articles/2025-12-25-promo-code.html",
     "thumbnail": "../articles/ogp/promo-code.png",
-    "modified": "2026-07-24"
+    "modified": "2026-08-04"
   },
   {
     "id": "check-balance",
@@ -302,7 +302,7 @@
     "description": "Google Playの返金後は獲得ポイントが残高とレベル進捗から減算されます。マイナス残高、ランク低下、定期購入キャンセルとの違いを解説します。",
     "file": "../articles/2025-12-25-refund.html",
     "thumbnail": "../articles/ogp/refund.png",
-    "modified": "2026-07-24"
+    "modified": "2026-08-04"
   },
   {
     "id": "gift-card",
@@ -318,7 +318,7 @@
     "description": "Google Playギフトカードの購入、残高へのチャージ、対象コンテンツ購入を分け、Play Pointsが貯まるタイミングと対象外条件を解説します。",
     "file": "../articles/2025-12-25-gift-card.html",
     "thumbnail": "../articles/ogp/gift-card.png",
-    "modified": "2026-07-24"
+    "modified": "2026-08-04"
   },
   {
     "id": "family-sharing",
@@ -379,10 +379,10 @@
       "登録",
       "始め方"
     ],
-    "description": "Google Play Pointsとは？始め方・登録方法・最初にやるべきことを初心者向けに解説。ポイントの貯め方・使い方・ランク制度の基本まで。",
+    "description": "Google Play Pointsの登録方法と、参加後に確認するポイントの貯め方・使い方・ランク制度を初心者向けに解説します。",
     "file": "../articles/2025-12-25-getting-started.html",
     "thumbnail": "../articles/ogp/getting-started.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-04"
   },
   {
     "id": "new-year-campaign",
@@ -398,7 +398,7 @@
     "description": "Google Play Pointsの年末年始キャンペーンを過去日程だけで断定せず、自分のアカウントで開催期間・獲得率・有効化条件を確認する方法を解説します。",
     "file": "../articles/2025-12-25-new-year-campaign.html",
     "thumbnail": "../articles/ogp/new-year-campaign.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-04"
   },
   {
     "id": "diamond-vip",
@@ -430,7 +430,7 @@
     "description": "Google Play Pointsの増量キャンペーンを待つべきか、対象アカウント、開始操作、最高獲得率、期限を確認し、通常時との必要額を比較する方法を解説します。",
     "file": "../articles/2025-12-25-campaign.html",
     "thumbnail": "../articles/ogp/campaign.png",
-    "modified": "2026-07-30"
+    "modified": "2026-08-04"
   },
   {
     "id": "best-use",
@@ -459,10 +459,10 @@
       "プラチナ",
       "シミュレーション"
     ],
-    "description": "日本のGoogle公式情報をもとに、Play Pointsのプラチナとダイヤモンドを必要ポイント、基本獲得率、共通特典、通常獲得率だけで維持する場合の参考額で比較します。",
+    "description": "日本のGoogle公式情報をもとに、Play Pointsのプラチナとダイヤモンドを必要ポイント、通常獲得率、共通特典、翌年も同じステータスを目指す場合の参考額で比較します。",
     "file": "../articles/2025-12-25-diamond-worth-it.html",
     "thumbnail": "../articles/ogp/diamond-worth-it.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-04"
   },
   {
     "id": "playpoints-rank-maintenance",
@@ -477,6 +477,6 @@
     "description": "Google Play Pointsのランクは到達後、翌年末まで維持されます。暦年の獲得ポイント、翌年の再判定、残高との違い、年末の確認手順を具体例で解説。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
     "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png",
-    "modified": "2026-07-30"
+    "modified": "2026-08-04"
   }
 ]
