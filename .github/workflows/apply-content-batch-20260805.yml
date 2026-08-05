@@ -159,8 +159,7 @@ jobs:
             const endMarker = '\n\n        </div>\n\n        <!-- AdSense';
             const end = html.indexOf(endMarker, start);
             if (start < 0 || end < 0) throw new Error('Static blog fallback boundaries were not found');
-            html = `${html.slice(0, start)}${section}${html.slice(end)}`;
-            write(file, html);
+            write(file, `${html.slice(0, start)}${section}${html.slice(end)}`);
           }
 
           fixWeeklyGuide();
@@ -217,7 +216,8 @@ jobs:
           git diff --cached --quiet && { echo "No staged content changes."; exit 1; } || true
 
       - name: Commit article batch
-        run: git commit -m "content: add rank, account, country and multiplier guides"
+        run: |
+          git commit -m "content: add rank, account, country and multiplier guides"
 
       - name: Remove temporary automation
         run: |
