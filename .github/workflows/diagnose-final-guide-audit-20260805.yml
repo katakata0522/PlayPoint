@@ -1,0 +1,83 @@
+name: Diagnose final guide audit
+
+on:
+  push:
+    branches:
+      - content/play-points-guides-2026-08-05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: diagnose-final-guide-audit-20260805
+  cancel-in-progress: false
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Regenerate public output
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-05'
+          PLAYPOINT_ASSET_VERSION: '20260805_1249'
+        run: node scripts/build-html.js
+
+      - name: Extract and apply final corrections
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          source = Path('.github/workflows/finalize-guide-editorial-audit-v2-20260805.yml').read_text()
+          start = "      - name: Apply final factual and editorial corrections\n        run: |\n          python <<'PY'\n"
+          end = "\n          PY\n\n      - name: Validate and commit final corrections"
+          if start not in source or end not in source:
+              raise SystemExit('Could not extract final correction script')
+          body = source.split(start, 1)[1].split(end, 1)[0]
+          lines = [line[10:] if line.startswith('          ') else line for line in body.splitlines()]
+          Path('/tmp/final-corrections.py').write_text('\n'.join(lines) + '\n')
+          PY
+          python -m py_compile /tmp/final-corrections.py
+          python /tmp/final-corrections.py
+
+      - name: Commit corrected tree locally
+        run: |
+          git add -A
+          git diff --cached --check
+          git commit -m "content: finalize guide fact and editorial audit"
+          test -z "$(git status --porcelain)"
+
+      - name: Run complete preflight with diagnostics
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            python <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/preflight.log').read_text(errors='replace').splitlines()
+          markers = ('not ok', 'AssertionError', 'ERR_ASSERTION', 'Error:', 'expected', 'actual')
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line for marker in markers):
+                  selected.extend(lines[max(0, index - 3):min(len(lines), index + 8)])
+          if not selected:
+              selected = lines[-50:]
+          compact = ' | '.join(dict.fromkeys(part.strip() for part in selected if part.strip()))
+          print(f'::error title=Final guide preflight failed::{compact[:7500]}')
+          PY
+            exit "$status"
+          fi
+
+      - name: Push verified corrections
+        run: git push origin HEAD:content/play-points-guides-2026-08-05
