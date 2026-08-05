@@ -57,8 +57,7 @@ jobs:
           git diff --cached --quiet && { echo "No content changes were produced."; exit 1; } || true
 
       - name: Commit article batch
-        run: |
-          git commit -m "content: add rank, account, country and multiplier guides"
+        run: git commit -m "content: add rank, account, country and multiplier guides"
 
       - name: Remove temporary automation
         run: |
@@ -80,15 +79,27 @@ jobs:
           if [ "$status" -ne 0 ]; then
             node <<'NODE'
           const fs = require('node:fs');
-          const text = fs.readFileSync('/tmp/preflight.log', 'utf8');
-          const lines = text.split(/\r?\n/).filter(Boolean).slice(-35);
+          const lines = fs.readFileSync('/tmp/preflight.log', 'utf8').split(/\r?\n/);
+          const pattern = /not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail\s+[1-9]|Error:|失敗|不一致|未登録|見つかりません/;
+          const indexes = lines.flatMap((line, index) => pattern.test(line) ? [index] : []);
+          const selectedIndexes = new Set();
+          for (const index of indexes) {
+            for (let offset = -4; offset <= 5; offset += 1) {
+              if (index + offset >= 0 && index + offset < lines.length) selectedIndexes.add(index + offset);
+            }
+          }
+          const selected = [...selectedIndexes]
+            .sort((a, b) => a - b)
+            .map((index) => lines[index])
+            .filter(Boolean)
+            .slice(0, 120);
+          const fallback = lines.filter(Boolean).slice(-50);
+          const message = (selected.length ? selected : fallback).join('\n');
           const escape = (value) => value
             .replace(/%/g, '%25')
             .replace(/\r/g, '%0D')
             .replace(/\n/g, '%0A');
-          for (const line of lines) {
-            console.log(`::error file=.github/preflight-debug,line=1::${escape(line)}`);
-          }
+          console.log(`::error file=.github/preflight-debug,line=1,title=Preflight failure::${escape(message)}`);
           NODE
             exit "$status"
           fi
