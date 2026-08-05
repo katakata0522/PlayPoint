@@ -33,7 +33,7 @@ jobs:
           sed -i "s|const root = path.resolve(__dirname, '..');|const root = process.cwd();|" /tmp/apply-content-batch-20260805.cjs
           node /tmp/apply-content-batch-20260805.cjs
 
-      - name: Prepare robust quality corrections
+      - name: Prepare reusable quality corrections
         run: |
           cat > /tmp/fix-guide-quality.cjs <<'NODE'
           'use strict';
@@ -41,7 +41,13 @@ jobs:
           const path = require('node:path');
 
           const read = (file) => fs.readFileSync(file, 'utf8');
-          const write = (file, html) => fs.writeFileSync(file, html.replace(/[ \t]+$/gm, ''));
+          const write = (file, content) => fs.writeFileSync(file, content.replace(/[ \t]+$/gm, ''));
+          const escapeHtml = (value) => String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+
           function insertBeforeClosing(html, snippet) {
             for (const closing of ['</article>', '</main>', '</body>']) {
               const index = html.lastIndexOf(closing);
@@ -49,78 +55,118 @@ jobs:
             }
             return `${html}${snippet}`;
           }
+
           function insertAlternate(html, language, url) {
-            const exact = `hreflang="${language}" href="${url}"`;
-            if (html.includes(exact)) return html;
+            if (html.includes(`hreflang="${language}" href="${url}"`)) return html;
             const alternate = `  <link rel="alternate" hreflang="${language}" href="${url}" />\n`;
             return /<\/head>/i.test(html) ? html.replace(/<\/head>/i, `${alternate}</head>`) : `${alternate}${html}`;
           }
 
-          const weeklyFile = 'articles/2025-12-25-weekly-reward.html';
-          let weekly = read(weeklyFile);
-          const weeklyJaUrl = 'https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html';
-          const weeklyEnUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
-          weekly = insertAlternate(weekly, 'ja', weeklyJaUrl);
-          weekly = insertAlternate(weekly, 'en', weeklyEnUrl);
-          weekly = insertAlternate(weekly, 'ko', 'https://playpoint-sim.com/ko/articles/google-play-points-weekly-reward.html');
-          weekly = insertAlternate(weekly, 'zh-TW', 'https://playpoint-sim.com/tw/articles/google-play-points-weekly-reward.html');
-          weekly = insertAlternate(weekly, 'x-default', weeklyEnUrl);
+          function fixWeeklyGuide() {
+            const file = 'articles/2025-12-25-weekly-reward.html';
+            let html = read(file);
+            const jaUrl = 'https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html';
+            const enUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
+            html = insertAlternate(html, 'ja', jaUrl);
+            html = insertAlternate(html, 'en', enUrl);
+            html = insertAlternate(html, 'ko', 'https://playpoint-sim.com/ko/articles/google-play-points-weekly-reward.html');
+            html = insertAlternate(html, 'zh-TW', 'https://playpoint-sim.com/tw/articles/google-play-points-weekly-reward.html');
+            html = insertAlternate(html, 'x-default', enUrl);
 
-          const bronzeGuidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
-          if (/ブロンズは通常リワードの対象外/.test(weekly)) {
-            weekly = weekly.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, bronzeGuidance);
-          } else if (!weekly.includes('ブロンズでも特典タブ')) {
-            const heading = /(<h2[^>]*>通常のウィークリーリワード<\/h2>)/;
-            weekly = heading.test(weekly)
-              ? weekly.replace(heading, `$1\n      ${bronzeGuidance}`)
-              : insertBeforeClosing(weekly, `\n    <section class="section" id="bronze-weekly-check"><h2>ブロンズでもまず特典タブを確認</h2>${bronzeGuidance}</section>\n`);
-          }
-          weekly = weekly.replace(/ブロンズは通常リワードの対象外です。/g, '通常の公式条件はシルバー以上ですが、ブロンズでも特典タブを一度確認してください。');
-          if (!weekly.includes('ほくほくリワード日記')) {
-            const diarySection = `\n    <section class="cta-box" aria-labelledby="diary-cta">\n      <h2 id="diary-cta">今週の結果を「ほくほくリワード日記」へ記録</h2>\n      <p>受け取ったポイントを週ごとに記録し、合計や履歴をこの端末内で確認できます。トップページで「ほくほくリワード日記」タブを選んでください。</p>\n      <a class="cta-btn" href="../">日記を開く</a>\n    </section>\n`;
-            weekly = insertBeforeClosing(weekly, diarySection);
-          }
-          write(weeklyFile, weekly);
+            const guidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
+            if (/ブロンズは通常リワードの対象外/.test(html)) {
+              html = html.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, guidance);
+            } else if (!html.includes('ブロンズでも特典タブ')) {
+              const heading = /(<h2[^>]*>通常のウィークリーリワード<\/h2>)/;
+              html = heading.test(html)
+                ? html.replace(heading, `$1\n      ${guidance}`)
+                : insertBeforeClosing(html, `\n    <section class="section" id="bronze-weekly-check"><h2>ブロンズでもまず特典タブを確認</h2>${guidance}</section>\n`);
+            }
+            html = html.replace(/ブロンズは通常リワードの対象外です。/g, '通常の公式条件はシルバー以上ですが、ブロンズでも特典タブを一度確認してください。');
 
-          const gettingStartedFile = 'articles/2025-12-25-getting-started.html';
-          let gettingStarted = read(gettingStartedFile);
-          if (!gettingStarted.includes('id="account-country-troubleshooting"')) {
-            const section = `\n    <section class="section" id="account-country-troubleshooting">\n      <h2>登録・国設定で困ったとき</h2>\n      <p>Play Pointsが表示されない、参加できない場合は、まずアカウント条件とPlayの国設定を切り分けると解決しやすくなります。</p>\n      <ul>\n        <li><a href="/articles/2026-08-05-play-points-cannot-join.html">Play Pointsに登録できない・表示されない原因を確認する</a></li>\n        <li><a href="/articles/2026-08-05-play-country-change-points.html">Google Playの国変更でポイントやランクがどうなるか確認する</a></li>\n      </ul>\n    </section>\n`;
-            gettingStarted = insertBeforeClosing(gettingStarted, section);
-            write(gettingStartedFile, gettingStarted);
+            if (!html.includes('ほくほくリワード日記')) {
+              html = insertBeforeClosing(html, `\n    <section class="cta-box" aria-labelledby="diary-cta">\n      <h2 id="diary-cta">今週の結果を「ほくほくリワード日記」へ記録</h2>\n      <p>受け取ったポイントを週ごとに記録し、合計や履歴をこの端末内で確認できます。トップページで「ほくほくリワード日記」タブを選んでください。</p>\n      <a class="cta-btn" href="../">日記を開く</a>\n    </section>\n`);
+            }
+            write(file, html);
           }
 
-          const candidateFiles = fs.readdirSync('articles')
-            .filter((name) => /^2026-08-05-.*\.html$/.test(name))
-            .map((name) => path.join('articles', name));
-          const multiplierFile = candidateFiles.find((file) => /multiplier|rate-overlap|campaign-rate/i.test(path.basename(file)))
-            || candidateFiles.find((file) => /倍率/.test(read(file)));
-          if (multiplierFile) {
+          function fixGettingStartedGuide() {
+            const file = 'articles/2025-12-25-getting-started.html';
+            let html = read(file);
+            if (html.includes('id="account-country-troubleshooting"')) return;
+            html = insertBeforeClosing(html, `\n    <section class="section" id="account-country-troubleshooting">\n      <h2>登録・国設定で困ったとき</h2>\n      <p>Play Pointsが表示されない、参加できない場合は、まずアカウント条件とPlayの国設定を切り分けると解決しやすくなります。</p>\n      <ul>\n        <li><a href="/articles/2026-08-05-play-points-cannot-join.html">Play Pointsに登録できない・表示されない原因を確認する</a></li>\n        <li><a href="/articles/2026-08-05-play-country-change-points.html">Google Playの国変更でポイントやランクがどうなるか確認する</a></li>\n      </ul>\n    </section>\n`);
+            write(file, html);
+          }
+
+          function fixNewGuides() {
+            const files = fs.readdirSync('articles')
+              .filter((name) => /^2026-08-05-.*\.html$/.test(name))
+              .map((name) => path.join('articles', name));
+
+            const multiplierFile = files.find((file) => /multiplier|rate-overlap|campaign-rate/i.test(path.basename(file)))
+              || files.find((file) => /倍率/.test(read(file)));
+            if (!multiplierFile) throw new Error('Multiplier guide was not found');
             let multiplier = read(multiplierFile);
             if (!multiplier.includes('足し算しない') || !multiplier.includes('100円あたり3ポイント') || !multiplier.includes('税金を除いた')) {
-              const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。計算の基準は<strong>税金を除いたアイテム価格</strong>です。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
               multiplier = multiplier.replace(/\n\s*<section class="section" id="multiplier-calculation-note">[\s\S]*?<\/section>\n?/, '\n');
-              multiplier = insertBeforeClosing(multiplier, note);
+              multiplier = insertBeforeClosing(multiplier, `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。計算の基準は<strong>税金を除いたアイテム価格</strong>です。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>\n    </section>\n`);
             }
             write(multiplierFile, multiplier);
-            console.log(`Adjusted multiplier guide: ${multiplierFile}`);
-          } else {
-            console.warn(`Multiplier guide was not found. Candidates: ${candidateFiles.join(', ')}`);
-          }
 
-          const silverFile = candidateFiles.find((file) => /silver/i.test(path.basename(file)))
-            || candidateFiles.find((file) => /最速.{0,12}シルバー|シルバー.{0,12}最速/.test(read(file)));
-          if (silverFile) {
+            const silverFile = files.find((file) => /silver/i.test(path.basename(file)))
+              || files.find((file) => /最速.{0,12}シルバー|シルバー.{0,12}最速/.test(read(file)));
+            if (!silverFile) throw new Error('Silver guide was not found');
             let silver = read(silverFile);
             if (!silver.includes('/status/silver/')) {
-              const section = `\n    <section class="section" id="silver-calculator-link">\n      <h2>残り必要額は専用ページで確認</h2>\n      <p><a href="/status/silver/">シルバー到達計算ページ</a>では、現在のポイントと利用できる倍率から、シルバーまでの残り必要額を確認できます。無料で得られるポイントと、もともと予定していた購入を先に反映してから計算してください。</p>\n    </section>\n`;
-              silver = insertBeforeClosing(silver, section);
+              silver = insertBeforeClosing(silver, `\n    <section class="section" id="silver-calculator-link">\n      <h2>残り必要額は専用ページで確認</h2>\n      <p><a href="/status/silver/">シルバー到達計算ページ</a>では、現在のポイントと利用できる倍率から、シルバーまでの残り必要額を確認できます。無料で得られるポイントと、もともと予定していた購入を先に反映してから計算してください。</p>\n    </section>\n`);
             }
             write(silverFile, silver);
-            console.log(`Adjusted silver guide: ${silverFile}`);
-          } else {
-            console.warn(`Silver guide was not found. Candidates: ${candidateFiles.join(', ')}`);
           }
+
+          function syncStaticBlogLinks() {
+            const file = 'blog/index.html';
+            let html = read(file);
+            const articles = JSON.parse(read('blog/articles.json'));
+            const groups = new Map();
+            for (const article of articles) {
+              const category = article.category || 'その他';
+              if (!groups.has(category)) groups.set(category, []);
+              groups.get(category).push(article);
+            }
+            const preferredOrder = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
+            const categories = [...groups.keys()].sort((a, b) => {
+              const ai = preferredOrder.indexOf(a);
+              const bi = preferredOrder.indexOf(b);
+              if (ai === -1 && bi === -1) return a.localeCompare(b, 'ja');
+              if (ai === -1) return 1;
+              if (bi === -1) return -1;
+              return ai - bi;
+            });
+            const section = [
+              '            <section class="static-article-links" aria-label="カテゴリー別記事一覧">',
+              '                <h2>カテゴリー別記事一覧</h2>',
+              ...categories.flatMap((category) => [
+                `                <section class="static-topic-group" data-topic-cluster="${escapeHtml(category)}">`,
+                `                    <h3>${escapeHtml(category)}</h3>`,
+                '                    <ul>',
+                ...groups.get(category).map((article) => `                        <li><a href="${escapeHtml(article.file)}">${escapeHtml(article.title)}</a></li>`),
+                '                    </ul>',
+                '                </section>'
+              ]),
+              '            </section>'
+            ].join('\n');
+            const start = html.indexOf('            <section class="static-article-links"');
+            const endMarker = '\n\n        </div>\n\n        <!-- AdSense';
+            const end = html.indexOf(endMarker, start);
+            if (start < 0 || end < 0) throw new Error('Static blog fallback boundaries were not found');
+            html = `${html.slice(0, start)}${section}${html.slice(end)}`;
+            write(file, html);
+          }
+
+          fixWeeklyGuide();
+          fixGettingStartedGuide();
+          fixNewGuides();
+          syncStaticBlogLinks();
           NODE
           node /tmp/fix-guide-quality.cjs
 
@@ -130,30 +176,30 @@ jobs:
           PLAYPOINT_ASSET_VERSION: '20260805_1249'
         run: node scripts/build-html.js
 
-      - name: Reapply idempotent manual corrections
+      - name: Reapply idempotent corrections after build
         run: node /tmp/fix-guide-quality.cjs
 
-      - name: Validate and stage only actual changes
+      - name: Validate and stage actual changes
         run: |
           node <<'NODE'
           const fs = require('node:fs');
           const { spawnSync } = require('node:child_process');
           const { generatedFiles } = require('./scripts/build-targets.cjs');
-          function git(args) {
+          const run = (args) => {
             const result = spawnSync('git', args, { encoding: 'utf8' });
-            if (result.status !== 0) {
-              const detail = `${result.stdout || ''}${result.stderr || ''}`.trim();
-              console.log(`::error file=.github/staging-debug,line=1,title=Git command failed::${detail || args.join(' ')}`);
-              process.exit(result.status ?? 1);
-            }
+            if (result.status !== 0) throw new Error(`${args.join(' ')}\n${result.stdout || ''}${result.stderr || ''}`);
             return result.stdout;
-          }
-          const tracked = git(['diff', '--name-only', '--diff-filter=ACDMRTUXB']).split(/\r?\n/).filter(Boolean);
-          const untracked = git(['ls-files', '--others', '--exclude-standard']).split(/\r?\n/).filter(Boolean);
-          const changed = [...new Set([...tracked, ...untracked])];
-          const newArticles = fs.readdirSync('articles').filter((name) => /^2026-08-05-.*\.html$/.test(name)).map((name) => `articles/${name}`);
+          };
+          const changed = [...new Set([
+            ...run(['diff', '--name-only', '--diff-filter=ACDMRTUXB']).split(/\r?\n/),
+            ...run(['ls-files', '--others', '--exclude-standard']).split(/\r?\n/)
+          ].filter(Boolean))];
+          const newArticles = fs.readdirSync('articles')
+            .filter((name) => /^2026-08-05-.*\.html$/.test(name))
+            .map((name) => `articles/${name}`);
           const allowed = new Set([
             ...generatedFiles,
+            'blog/index.html',
             'blog/sitemap.xml',
             'articles/2025-12-25-weekly-reward.html',
             'articles/2025-12-25-getting-started.html',
@@ -162,69 +208,27 @@ jobs:
             ...newArticles
           ]);
           const unexpected = changed.filter((file) => !allowed.has(file));
-          if (unexpected.length) {
-            console.log(`::error file=.github/staging-debug,line=1,title=Unexpected paths::${unexpected.join(', ')}`);
-            process.exit(1);
-          }
-          if (!changed.length) {
-            console.log('::error file=.github/staging-debug,line=1,title=No changes::No content changes were produced.');
-            process.exit(1);
-          }
-          console.log(`Staging ${changed.length} validated paths.`);
-          const result = spawnSync('git', ['add', '--', ...changed], { encoding: 'utf8' });
-          if (result.status !== 0) {
-            const detail = `${result.stdout || ''}${result.stderr || ''}`.trim();
-            console.log(`::error file=.github/staging-debug,line=1,title=git add failed::${detail}`);
-            process.exit(result.status ?? 1);
-          }
+          if (unexpected.length) throw new Error(`Unexpected changed paths:\n${unexpected.join('\n')}`);
+          if (!changed.length) throw new Error('No content changes were produced');
+          const staged = spawnSync('git', ['add', '--', ...changed], { stdio: 'inherit' });
+          process.exit(staged.status ?? 1);
           NODE
-
-      - name: Check staged diff formatting
-        run: |
-          set +e
-          output="$(git diff --cached --check 2>&1)"
-          status=$?
-          set -e
-          if [ "$status" -ne 0 ]; then
-            escaped="${output//'%'/'%25'}"
-            escaped="${escaped//$'\r'/'%0D'}"
-            escaped="${escaped//$'\n'/'%0A'}"
-            echo "::error file=.github/diff-check,line=1,title=Staged diff formatting error::$escaped"
-            exit "$status"
-          fi
-          git diff --cached --quiet && { echo "No staged content changes were produced."; exit 1; } || true
+          git diff --cached --check
+          git diff --cached --quiet && { echo "No staged content changes."; exit 1; } || true
 
       - name: Commit article batch
-        run: |
-          git commit -m "content: add rank, account, country and multiplier guides"
+        run: git commit -m "content: add rank, account, country and multiplier guides"
 
       - name: Remove temporary automation
         run: |
           git rm -r -- .github/article-batch-payload .github/workflows/apply-content-batch-20260805.yml
           git commit -m "chore: remove temporary article batch automation"
 
-      - name: Verify clean tree before preflight
-        run: |
-          git status --short
-          test -z "$(git status --porcelain)"
+      - name: Verify clean committed tree
+        run: test -z "$(git status --porcelain)"
 
-      - name: Run full clean-tree preflight
-        run: |
-          set +e
-          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
-          status=$?
-          set -e
-          cat /tmp/preflight.log
-          if [ "$status" -ne 0 ]; then
-            summary="$(grep -E -B 4 -A 6 'not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail [1-9]|Error:|失敗|不一致|未登録|見つかりません' /tmp/preflight.log | head -n 180 || true)"
-            if [ -z "$summary" ]; then summary="$(tail -n 70 /tmp/preflight.log)"; fi
-            summary="${summary//'%'/'%25'}"
-            summary="${summary//$'\r'/'%0D'}"
-            summary="${summary//$'\n'/'%0A'}"
-            echo "::error file=.github/preflight-debug,line=1,title=Preflight failure::$summary"
-            exit "$status"
-          fi
-          test -z "$(git status --porcelain)"
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
 
       - name: Push verified branch
         run: git push origin HEAD:content/play-points-guides-2026-08-05
