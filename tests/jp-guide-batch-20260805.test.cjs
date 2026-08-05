@@ -45,29 +45,36 @@ test('倍率記事が直接レートと倍率入力を足し合わせない', ()
   assert.match(html, /四捨五入/);
 });
 
-test('最速シルバー記事が無料確認と予定購入を先にする', () => {
+test('シルバー記事が購入予定と高い獲得率を組み合わせる', () => {
   const html = read('articles/2026-08-05-fastest-silver.html');
   assert.match(html, /250ポイント/);
   assert.match(html, /25,000円/);
-  assert.match(html, /無料/);
-  assert.match(html, /予定していた購入/);
-  assert.match(html, /不要な購入|予定外の購入/);
+  assert.match(html, /お得/);
+  assert.match(html, /購入予定/);
+  assert.match(html, /高い獲得率|高獲得率/);
+  assert.doesNotMatch(html, /無駄な課金/);
   assert.match(html, /status\/silver/);
 });
 
-test('ウィークリー記事が公式基準とブロンズの確認案内を分離する', () => {
+test('ウィークリー記事が通常リワードとPlay Pass週次特典を分離する', () => {
   const html = read('articles/2025-12-25-weekly-reward.html');
-  assert.match(html, /公式の常設条件はシルバー以上/);
-  assert.match(html, /ブロンズでも「Play Points → 特典」を週1回確認/);
-  assert.match(html, /利用者報告/);
-  assert.match(html, /保証するものではありません/);
+  assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);
+  assert.match(html, /通常のウィークリーリワードはシルバー以上/);
+  assert.match(html, /Play Pass加入中なら木曜日/);
+  assert.doesNotMatch(html, /利用者報告/);
   assert.match(html, /Play Pass/);
   assert.doesNotMatch(html, /ブロンズは通常リワードの対象外です/);
 });
 
-test('既存のシルバー計算入口から最速記事へ移動できる', () => {
+test('シルバー計算入口の上部からお得記事へ移動できる', () => {
   const html = read('status/silver/index.html');
-  assert.match(html, /2026-08-05-fastest-silver\.html/);
+  assert.match(html, /lp-secondary-link[^>]+2026-08-05-fastest-silver\.html/);
+});
+
+test('倍率キャンペーン入口からシルバーのお得記事へ移動できる', () => {
+  for (const file of ['campaign/2x/index.html', 'campaign/3x/index.html']) {
+    assert.match(read(file), /2026-08-05-fastest-silver\.html/);
+  }
 });
 
 test('記事一覧へ新規5本が重複なく登録される', () => {
@@ -82,5 +89,5 @@ test('記事一覧へ新規5本が重複なく登録される', () => {
   for (const id of ids) assert.equal(articles.filter(article => article.id === id).length, 1);
   const weekly = articles.find(article => article.id === 'weekly-reward');
   assert.equal(weekly.modified, '2026-08-05');
-  assert.match(weekly.title, /ブロンズも確認/);
+  assert.match(weekly.title, /対象ランク/);
 });

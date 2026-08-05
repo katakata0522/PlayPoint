@@ -9,14 +9,15 @@ function readArticle(fileName) {
   return fs.readFileSync(path.join(root, 'articles', fileName), 'utf8');
 }
 
-test('通常のウィークリーリワードと例外的な週次特典を区別して案内する', () => {
+test('通常のウィークリーリワードとPlay Pass週次特典を区別して案内する', () => {
   const html = readArticle('2025-12-25-weekly-reward.html');
   assert.match(html, /通常のウィークリーリワード/);
   assert.match(html, /シルバー以上/);
   assert.match(html, /Play Pass/);
-  assert.match(html, /公式の常設条件はシルバー以上/);
-  assert.match(html, /ブロンズでも「Play Points → 特典」を週1回確認/);
-  assert.match(html, /利用者報告/);
+  assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);
+  assert.match(html, /通常のウィークリーリワードはシルバー以上/);
+  assert.match(html, /Play Pass加入中なら木曜日/);
+  assert.doesNotMatch(html, /利用者報告/);
   assert.doesNotMatch(html, /最大\s*(?:3|10|200|500|1,000)\s*pt/);
   assert.doesNotMatch(html, /Play Pointsに登録していれば<strong>無料で毎週もらえます/);
 });
