@@ -49,14 +49,17 @@ jobs:
             }
             return `${html}${snippet}`;
           }
+          function insertAlternate(html, language, url) {
+            const exact = `hreflang="${language}" href="${url}"`;
+            if (html.includes(exact)) return html;
+            const alternate = `  <link rel="alternate" hreflang="${language}" href="${url}" />\n`;
+            return /<\/head>/i.test(html) ? html.replace(/<\/head>/i, `${alternate}</head>`) : `${alternate}${html}`;
+          }
 
           const weeklyFile = 'articles/2025-12-25-weekly-reward.html';
           let weekly = read(weeklyFile);
-          const englishWeeklyUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
-          if (!weekly.includes(`hreflang="en" href="${englishWeeklyUrl}"`)) {
-            const alternate = `  <link rel="alternate" hreflang="en" href="${englishWeeklyUrl}" />\n`;
-            weekly = /<\/head>/i.test(weekly) ? weekly.replace(/<\/head>/i, `${alternate}</head>`) : `${alternate}${weekly}`;
-          }
+          weekly = insertAlternate(weekly, 'ja', 'https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html');
+          weekly = insertAlternate(weekly, 'en', 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html');
           const bronzeGuidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
           if (/ブロンズは通常リワードの対象外/.test(weekly)) {
             weekly = weekly.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, bronzeGuidance);
@@ -83,15 +86,29 @@ jobs:
             || candidateFiles.find((file) => /倍率/.test(read(file)));
           if (multiplierFile) {
             let multiplier = read(multiplierFile);
-            if (!multiplier.includes('足し算しない')) {
-              const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。画面に表示された最終倍率を基準に計算し、複数の特典が同時に見えても、適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
-              write(multiplierFile, insertBeforeClosing(multiplier, note));
-            } else {
-              write(multiplierFile, multiplier);
+            if (!multiplier.includes('足し算しない') || !multiplier.includes('100円あたり3ポイント')) {
+              const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
+              multiplier = multiplier.replace(/\n\s*<section class="section" id="multiplier-calculation-note">[\s\S]*?<\/section>\n?/, '\n');
+              multiplier = insertBeforeClosing(multiplier, note);
             }
+            write(multiplierFile, multiplier);
             console.log(`Adjusted multiplier guide: ${multiplierFile}`);
           } else {
             console.warn(`Multiplier guide was not found. Candidates: ${candidateFiles.join(', ')}`);
+          }
+
+          const silverFile = candidateFiles.find((file) => /silver/i.test(path.basename(file)))
+            || candidateFiles.find((file) => /最速.{0,12}シルバー|シルバー.{0,12}最速/.test(read(file)));
+          if (silverFile) {
+            let silver = read(silverFile);
+            if (!silver.includes('/status/silver/')) {
+              const section = `\n    <section class="section" id="silver-calculator-link">\n      <h2>残り必要額は専用ページで確認</h2>\n      <p><a href="/status/silver/">シルバー到達計算ページ</a>では、現在のポイントと利用できる倍率から、シルバーまでの残り必要額を確認できます。無料で得られるポイントと、もともと予定していた購入を先に反映してから計算してください。</p>\n    </section>\n`;
+              silver = insertBeforeClosing(silver, section);
+            }
+            write(silverFile, silver);
+            console.log(`Adjusted silver guide: ${silverFile}`);
+          } else {
+            console.warn(`Silver guide was not found. Candidates: ${candidateFiles.join(', ')}`);
           }
           NODE
           node /tmp/fix-guide-quality.cjs
@@ -188,8 +205,8 @@ jobs:
           set -e
           cat /tmp/preflight.log
           if [ "$status" -ne 0 ]; then
-            summary="$(grep -E -B 4 -A 6 'not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail [1-9]|Error:|失敗|不一致|未登録|見つかりません' /tmp/preflight.log | head -n 120 || true)"
-            if [ -z "$summary" ]; then summary="$(tail -n 50 /tmp/preflight.log)"; fi
+            summary="$(grep -E -B 4 -A 6 'not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail [1-9]|Error:|失敗|不一致|未登録|見つかりません' /tmp/preflight.log | head -n 160 || true)"
+            if [ -z "$summary" ]; then summary="$(tail -n 60 /tmp/preflight.log)"; fi
             summary="${summary//'%'/'%25'}"
             summary="${summary//$'\r'/'%0D'}"
             summary="${summary//$'\n'/'%0A'}"
