@@ -45,6 +45,12 @@ function assertExcludesAll(html, fragments, label) {
   }
 }
 
+function assertMatchesAll(html, patterns, label) {
+  for (const pattern of patterns) {
+    assert.match(html, pattern, `${label}: missing required meaning ${pattern}`);
+  }
+}
+
 test('all quality-audit P1 article files exist', () => {
   for (const relativePath of ALL_P1) {
     assert.ok(fs.existsSync(path.join(ROOT, relativePath)), `missing P1 article: ${relativePath}`);
@@ -62,8 +68,9 @@ test('all international P1 articles are protected as canonical manual content', 
 test('international P1 articles share a validated audit update date', () => {
   for (const relativePath of INTL_P1) {
     const html = read(relativePath);
-    assert.ok(
-      html.includes(`<meta name="last-modified" content="${UPDATED_AT}">`),
+    assert.match(
+      html,
+      new RegExp(`<meta name="last-modified" content="${UPDATED_AT}"\\s*/?>`),
       `${relativePath}: last-modified is not ${UPDATED_AT}`
     );
     assert.equal(
@@ -78,44 +85,51 @@ test('international P1 articles share a validated audit update date', () => {
 });
 
 test('Super Weekly Prize pages retain the verified ticket and eligibility boundaries', () => {
-  const pages = [
-    'articles/2026-07-31-super-weekly-reward.html',
-    'en/articles/google-play-points-super-weekly-reward.html',
-    'ko/articles/google-play-points-super-weekly-reward.html',
-    'tw/articles/google-play-points-super-weekly-reward.html',
-  ];
-  const patterns = [
-    /30日|30 days|30일|30 天/,
-    /90日|90 days|90일|90 天/,
-    /保持できない|do not keep|유지하지 못|不會保留/,
-    /アカウント|account|계정|帳號/,
-  ];
-  for (const relativePath of pages) {
-    const html = read(relativePath);
-    for (const pattern of patterns) {
-      assert.match(html, pattern, `${relativePath}: missing verified Super Ticket boundary ${pattern}`);
-    }
+  const expectations = new Map([
+    [
+      'articles/2026-07-31-super-weekly-reward.html',
+      [/30日/, /90日/, /保持できない|保持されない|残りません/, /アカウント/],
+    ],
+    [
+      'en/articles/google-play-points-super-weekly-reward.html',
+      [/30 days/i, /90 days/i, /do not keep|did not keep|not kept|does not keep/i, /account/i],
+    ],
+    [
+      'ko/articles/google-play-points-super-weekly-reward.html',
+      [/30일/, /90일/, /유지되지|유지할 수 없|포기/, /계정/],
+    ],
+    [
+      'tw/articles/google-play-points-super-weekly-reward.html',
+      [/30 天/, /90 天/, /不會保留|不能保留|放棄原本/, /帳號/],
+    ],
+  ]);
+
+  for (const [relativePath, patterns] of expectations) {
+    assertMatchesAll(read(relativePath), patterns, relativePath);
   }
 });
 
 test('gift-card discount guides use authorized regional rules instead of a permanent seller ranking', () => {
-  const pages = [
-    'articles/2026-06-20-discount-gift-cards.html',
-    'en/articles/2026-06-20-discount-gift-cards.html',
-    'ko/articles/2026-06-20-discount-gift-cards.html',
-    'tw/articles/2026-06-20-discount-gift-cards.html',
-  ];
-  for (const relativePath of pages) {
-    const html = read(relativePath);
-    assert.match(html, /正規|authorized|공인|授權|官方/, `${relativePath}: authorized source rule is missing`);
-    assert.match(html, /国|country|국가|國家/, `${relativePath}: country rule is missing`);
-    assert.match(html, /通貨|currency|통화|幣別/, `${relativePath}: currency rule is missing`);
+  const expectations = new Map([
+    ['articles/2026-06-20-discount-gift-cards.html', [/正規/, /国/, /通貨/]],
+    ['en/articles/2026-06-20-discount-gift-cards.html', [/authori[sz]ed/i, /country/i, /currency/i]],
+    ['ko/articles/2026-06-20-discount-gift-cards.html', [/공인|공식/, /국가/, /통화/]],
+    ['tw/articles/2026-06-20-discount-gift-cards.html', [/官方|授權/, /國家/, /幣別|貨幣/]],
+  ]);
+
+  for (const [relativePath, patterns] of expectations) {
+    assertMatchesAll(read(relativePath), patterns, relativePath);
   }
-  const jp = read(pages[0]);
+
+  const jp = read('articles/2026-06-20-discount-gift-cards.html');
   const description = jp.match(/<meta name="description" content="([^"]+)"\s*\/?>/);
   assert.ok(description, 'Japanese gift-card meta description is missing');
   assertExcludesAll(description[1], ['楽天市場', 'コンビニ'], 'Japanese gift-card metadata');
-  assertIncludesAll(read(pages[3]), ['台湾', '未列出'], 'Taiwan gift-card availability warning');
+  assertIncludesAll(
+    read('tw/articles/2026-06-20-discount-gift-cards.html'),
+    ['台湾', '未列出'],
+    'Taiwan gift-card availability warning'
+  );
 });
 
 test('free-benefit guides separate no-new-purchase benefits from planned purchases', () => {
