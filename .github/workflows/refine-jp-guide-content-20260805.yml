@@ -119,7 +119,29 @@ jobs:
 
       - name: Run complete preflight
         if: env.NO_CHANGES != 'true'
-        run: node .github/scripts/preflight.cjs
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            python <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/preflight.log').read_text(errors='replace').splitlines()
+          markers = ('not ok', 'AssertionError', 'ERR_ASSERTION', 'Error:', 'expected', 'actual')
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line for marker in markers):
+                  start = max(0, index - 2)
+                  end = min(len(lines), index + 5)
+                  selected.extend(lines[start:end])
+          if not selected:
+              selected = lines[-30:]
+          compact = ' | '.join(dict.fromkeys(part.strip() for part in selected if part.strip()))
+          print(f'::error title=Complete preflight failed::{compact[:7500]}')
+          PY
+            exit "$status"
+          fi
 
       - name: Push verified content commit
         if: env.NO_CHANGES != 'true'
