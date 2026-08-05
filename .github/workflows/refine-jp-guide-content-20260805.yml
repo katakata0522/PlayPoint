@@ -63,6 +63,51 @@ jobs:
       - name: Reapply manual article refinements
         run: python /tmp/refine-guides.py
 
+      - name: Normalize idempotent links and factual assertions
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          for relative in [
+              'articles/2026-08-05-play-points-multiplier-stacking.html',
+              'campaign/2x/index.html',
+              'campaign/3x/index.html',
+          ]:
+              path = Path(relative)
+              lines = path.read_text().splitlines()
+              result = []
+              for line in lines:
+                  if (
+                      result
+                      and '2026-08-05-fastest-silver.html' in line
+                      and line.strip() == result[-1].strip()
+                  ):
+                      continue
+                  result.append(line)
+              path.write_text('\n'.join(result) + '\n')
+
+          weekly = Path('articles/2025-12-25-weekly-reward.html')
+          weekly_text = weekly.read_text()
+          weekly_text = weekly_text.replace(
+              '<p><strong>日本の通常ウィークリーリワードはシルバー以上が公式対象です。</strong>',
+              '<p><strong>通常のウィークリーリワードはシルバー以上が公式対象です。</strong>'
+          )
+          if '利用者報告' in weekly_text:
+              raise SystemExit('Unverified user-report wording remains in weekly article')
+          weekly.write_text(weekly_text)
+
+          for relative in [
+              'tests/jp-guide-batch-20260805.test.cjs',
+              'tests/article-fact-regression.test.cjs',
+          ]:
+              path = Path(relative)
+              text = path.read_text().replace(
+                  'assert.match(html, /公式の常設条件はシルバー以上/);',
+                  'assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);'
+              )
+              path.write_text(text)
+          PY
+
       - name: Validate and stage actual changes
         run: |
           node <<'NODE'
