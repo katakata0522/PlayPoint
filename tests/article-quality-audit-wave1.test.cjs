@@ -127,7 +127,7 @@ test('gift-card discount guides use authorized regional rules instead of a perma
   assertExcludesAll(description[1], ['楽天市場', 'コンビニ'], 'Japanese gift-card metadata');
   assertIncludesAll(
     read('tw/articles/2026-06-20-discount-gift-cards.html'),
-    ['台湾', '未列出'],
+    ['台灣', '未列出'],
     'Taiwan gift-card availability warning'
   );
 });
