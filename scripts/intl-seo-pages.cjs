@@ -1713,7 +1713,10 @@ const INTL_ARTICLES = [
     const manualDates = readManualIntlArticleDates(projectRoot, article.file);
     return { ...article, ...configuredDates, ...(manualDates || {}) };
   }),
-  ...MANUAL_COMPARISON_ARTICLES
+  ...MANUAL_COMPARISON_ARTICLES.map((article) => ({
+    ...article,
+    ...(readManualIntlArticleDates(projectRoot, article.file) || {})
+  }))
 ];
 
 const ARTICLE_HUB_CONTENT = {

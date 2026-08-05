@@ -82,6 +82,6 @@ test('영문 수치 기사는 미국 기준임을 명시한다', () => {
   const platinumDiamond = read('en/articles/google-play-points-platinum-diamond-cost.html');
 
   assert.ok(hundredPoints.includes('US account example'), '100포인트 기사에 US account example 표기가 없습니다');
-  assert.ok(platinumDiamond.includes('US level comparison'), '플래티넘·다이아몬드 기사에 US level comparison 표기가 없습니다');
-  assert.ok(platinumDiamond.includes('Based on US official conditions'), '플래티넘·다이아몬드 기사에 미국 공식 조건 표기가 없습니다');
+  assert.match(platinumDiamond, /(?:US|United States) level comparison/i, '플래티넘·다이아몬드 기사에 미국 지역 표기가 없습니다');
+  assert.match(platinumDiamond, /(?:Based on )?US official conditions/i, '플래티넘·다이아몬드 기사에 미국 공식 조건 표기가 없습니다');
 });

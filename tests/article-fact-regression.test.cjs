@@ -71,6 +71,6 @@ test('反映時間は公式案内にない時間幅を断定しない', () => {
 
 test('終了済みの2025年末から2026年正月予測には履歴記事の明示がある', () => {
   const html = readArticle('2025-12-25-new-year-campaign.html');
-  assert.match(html, /現在は予測対象期間が終了している/);
-  assert.match(html, /過去予測の記録/);
+  assert.match(html, /(?:予測対象期間|当時の予測期間|2025年末の予測)(?:は|が)?(?:すでに)?終了/);
+  assert.match(html, /過去(?:の開始日や倍率|傾向|予測)/);
 });

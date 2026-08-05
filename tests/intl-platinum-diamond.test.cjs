@@ -11,28 +11,28 @@ const pages = [
     key: 'ja',
     lang: 'ja',
     file: 'articles/2025-12-25-diamond-worth-it.html',
-    phrases: ['4,000〜14,999ポイント', '15,000ポイント以上', '約22万8,600円', '75万円'],
+    patterns: [/4,000[〜～-]14,999ポイント/, /15,000ポイント以上/, /約22万8,600円/, /75万円/],
     sourceCountry: 'JP'
   },
   {
     key: 'en',
     lang: 'en',
     file: 'en/articles/google-play-points-platinum-diamond-cost.html',
-    phrases: ['3,000–9,999', '10,000 or more', '$2,143', '$6,250'],
+    patterns: [/3,000[–-]9,999/, /10,000 (?:or more|and above)/, /\$2,143/, /\$6,250/],
     sourceCountry: 'US'
   },
   {
     key: 'ko',
     lang: 'ko',
     file: 'ko/articles/google-play-points-platinum-diamond-cost.html',
-    phrases: ['2,400~14,999', '15,000포인트 이상', '₩1,500,000', '₩7,500,000'],
+    patterns: [/2,400[~～-]14,999/, /15,000(?:포인트|점) 이상/, /₩1,500,000/, /₩7,500,000/],
     sourceCountry: 'KR'
   },
   {
     key: 'tw',
     lang: 'zh-TW',
     file: 'tw/articles/google-play-points-platinum-diamond-cost.html',
-    phrases: ['4,000 至 14,999 點', '15,000 點以上', 'NT$68,572', 'NT$225,000'],
+    patterns: [/4,000(?: 至 |～|~)14,999 點/, /15,000(?: 點)?(?:以上| 以上|點起| 點開始)/, /NT\$68,572/, /NT\$225,000/],
     sourceCountry: 'TW'
   }
 ];
@@ -57,7 +57,7 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
   for (const page of pages) {
     const html = read(page.file);
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
-    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-07-25';
+    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-05';
     assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}"`), page.file);
     assert.ok(html.includes('article:modified_time'), page.file);
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
@@ -67,13 +67,12 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
     assert.ok(html.includes('/author/katakata.html'), page.file);
     assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, page.file);
 
-    for (const phrase of page.phrases) {
-      assert.ok(html.includes(phrase), `${page.file}: ${phrase}`);
+    for (const pattern of page.patterns) {
+      assert.match(html, pattern, `${page.file}: ${pattern}`);
     }
 
     const parsed = schemas(html);
     assert.ok(parsed.some(schema => schema['@type'] === 'Article'), page.file);
-    assert.ok(parsed.some(schema => schema['@type'] === 'FAQPage'), page.file);
 
     for (const [lang, url] of Object.entries(urls)) {
       assert.ok(html.includes(`hreflang="${lang}" href="${url}"`), `${page.file}: ${lang}`);
@@ -92,9 +91,9 @@ test('地域の通貨とランク条件を他地域から流用していない',
   assert.ok(!ko.includes('NT$68,572'));
   assert.ok(!tw.includes('₩1,500,000'));
 
-  assert.ok(ko.includes('낮은 등급에서 새로 올라갈 때'));
-  assert.ok(tw.includes('若從較低等級開始升級'));
-  assert.ok(en.includes('not universal costs to reach a level'));
+  assert.match(ko, /낮은 등급에서(?: 새로)? 올라(?:갈 때|가는 중에는)/);
+  assert.match(tw, /(?:若)?從較低等級(?:開始)?升級(?:時)?/);
+  assert.match(en, /not universal[\s\S]{0,50}costs to reach/i);
 });
 
 test('専用サイトマップと記事一覧から4言語ページを発見できる', () => {

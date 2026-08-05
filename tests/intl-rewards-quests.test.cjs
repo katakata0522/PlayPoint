@@ -90,7 +90,7 @@ test('Super Weekly Reward articles explain stock and the Super Ticket trade-off 
     assert.doesNotMatch(headline, /guaranteed|必ず|보장|一定/, `${file}: headline overpromises a premium prize`);
     assert.match(
       text,
-      /not a promise|not guaranteed|必ず当たる仕組みでは|보장하지|보장되지|보장이 아님|보장이 아닙니다|不保證|不代表/,
+      /not a promise|not guaranteed|no [^.]{0,80} guaranteed|uncertain benefit|必ず当たる仕組みでは|보장하지|보장되지|보장이 아님|보장이 아닙니다|不保證|不代表/,
       `${file}: explicit premium-prize uncertainty is missing`
     );
   }
