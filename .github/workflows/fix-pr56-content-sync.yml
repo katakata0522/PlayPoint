@@ -1,0 +1,173 @@
+name: Repair PR 56 content sync
+
+on:
+  push:
+    branches:
+      - content/japanese-article-quality-audit-2026-08-04
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: content/japanese-article-quality-audit-2026-08-04
+          fetch-depth: 0
+
+      - name: Apply source and regression fixes
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function read(path) { return fs.readFileSync(path, 'utf8'); }
+          function write(path, value) { fs.writeFileSync(path, value, 'utf8'); }
+          function replaceRequired(value, before, after, label) {
+            if (!value.includes(before)) throw new Error(`Replacement target not found: ${label}`);
+            return value.replace(before, after);
+          }
+
+          // Keep the five manually audited editorial structures intact during regeneration.
+          {
+            const path = 'scripts/article-editorial-structure.cjs';
+            let value = read(path);
+            for (const articlePath of [
+              'articles/2026-03-10-play-points-reflection-timing.html',
+              'articles/2026-07-24-play-points-cash-conversion.html',
+              'articles/2026-07-25-play-points-coupon-not-applied.html',
+              'articles/2025-12-25-playpoints-rank-maintenance.html',
+              'articles/2025-12-25-campaign.html'
+            ]) {
+              const before = `  '${articlePath}': {\n`;
+              const after = `${before}    manualStructure: true,\n    modifiedDate: '2026-08-04',\n`;
+              if (!value.includes("manualStructure: true") || !value.includes(after)) {
+                value = replaceRequired(value, before, after, `manual structure ${articlePath}`);
+              }
+            }
+            value = replaceRequired(
+              value,
+              "    let html = fs.readFileSync(absolutePath, 'utf8').replace(EDITORIAL_MARKER_PATTERN, '\\n');\n    const knowledge = renderKnowledgeBoundary(config);",
+              "    let html = fs.readFileSync(absolutePath, 'utf8');\n\n    if (config.manualStructure) {\n      html = updateDateMetadata(html, targetModifiedDate)\n        .replace(/\\r\\n/g, '\\n')\n        .replace(/[ \\t]+$/gm, '');\n      fs.writeFileSync(absolutePath, html, 'utf8');\n      updatedCount += 1;\n      continue;\n    }\n\n    html = html.replace(EDITORIAL_MARKER_PATTERN, '\\n');\n    const knowledge = renderKnowledgeBoundary(config);",
+              'manual structure handling'
+            );
+            write(path, value);
+          }
+
+          // Restore official eligibility nuances and weekly reward conditions.
+          {
+            const path = 'articles/2025-12-25-getting-started.html';
+            let value = read(path);
+            value = replaceRequired(value, '<li>対象となるGoogle Oneの定期購入</li>', '<li>Androidから購入したGoogle Oneの定期購入</li>', 'Google One Android condition');
+            value = replaceRequired(value, '<li>シルバー以上なら、毎週金曜日に更新される通常のウィークリーリワードを確認する</li>', '<li>シルバー以上になったら<strong>通常のウィークリーリワード</strong>を毎週金曜日に確認する</li>', 'weekly reward condition');
+            write(path, value);
+          }
+
+          // Keep visible FAQ and structured data aligned.
+          {
+            const path = 'articles/2025-12-25-multiple-accounts.html';
+            let value = read(path);
+            value = replaceRequired(
+              value,
+              '通常のウィークリーリワードは、シルバー以上の対象アカウントごとにPlay Points画面へ表示されます。Play Pass加入者向けなど別の週次特典は、各アカウントの加入状況と表示条件を確認してください。',
+              '通常のウィークリーリワードは、<strong>シルバー以上の対象アカウント</strong>ごとにPlay Points画面へ表示されます。Play Pass向けなど別の週次特典は、各アカウントの加入状況と表示条件を確認してください。',
+              'visible weekly reward FAQ'
+            );
+            value = replaceRequired(
+              value,
+              '通常のウィークリーリワードは、シルバー以上の対象アカウントごとにPlay Points画面へ表示されます。Play Pass加入者向けなど別の週次特典は、各アカウントの加入状況と表示条件を確認してください。',
+              '通常のウィークリーリワードは、シルバー以上の対象アカウントごとにPlay Points画面へ表示されます。Play Pass向けなど別の週次特典は、各アカウントの加入状況と表示条件を確認してください。',
+              'structured weekly reward FAQ'
+            );
+            write(path, value);
+          }
+
+          // Make the expired forecast unmistakably historical.
+          {
+            const path = 'articles/2025-12-25-new-year-campaign.html';
+            let value = read(path);
+            value = replaceRequired(value, '<h2>2025年末の予測期間は終了しています</h2>', '<h2>2025年末の予測期間は終了しています（過去予測の記録）</h2>', 'historical heading');
+            value = replaceRequired(value, '現在は対象期間が終了しているため、当時の予測を現在開催中のキャンペーン情報として利用しないでください。', '現在は予測対象期間が終了しているため、当時の予測を現在開催中のキャンペーン情報として利用しないでください。', 'historical period wording');
+            write(path, value);
+          }
+
+          // Restore the safety guidance expected from the consolidated reflection article.
+          {
+            const path = 'articles/2026-03-10-play-points-reflection-timing.html';
+            let value = read(path);
+            if (!value.includes('端末側で最後に試すこと')) {
+              const insertion = `            <section class="section">\n                <h2>端末側で最後に試すこと</h2>\n                <p>注文状態・ポイント履歴・購入アカウント・キャンペーン条件を確認した後に、Play ストアや対象アプリの再起動、端末の再起動を試します。反映確認のために<strong>もう一度購入して試さない</strong>でください。重複購入になるおそれがあります。</p>\n            </section>\n\n`;
+              value = replaceRequired(value, '            <div class="cta-box">', insertion + '            <div class="cta-box">', 'reflection safety section');
+            }
+            write(path, value);
+          }
+
+          // Restore the search-intent landing-page link required by the article cluster.
+          {
+            const path = 'articles/2025-12-25-diamond-worth-it.html';
+            let value = read(path);
+            if (!value.includes('/campaign/3x/')) {
+              const insertion = '                <p class="small article-note-spacing--compact">実際に3倍キャンペーンが表示されている場合は、<a href="/campaign/3x/">3倍キャンペーン時の必要額</a>でも比較できます。</p>\n';
+              value = replaceRequired(value, '            <div class="article-ad-slot">', insertion + '            <div class="article-ad-slot">', 'diamond campaign link');
+            }
+            write(path, value);
+          }
+
+          // Update regression contracts to the audited dates and terminology.
+          {
+            const path = 'tests/intl-coupon-credit.test.cjs';
+            let value = read(path);
+            value = replaceRequired(
+              value,
+              "      const expectedModified = locale.key === 'ja' ? '2026-07-30' : '2026-07-25';",
+              "      const expectedModified = locale.key === 'ja'\n        ? (topic.slug === 'google-play-points-coupon-not-applied.html' ? '2026-08-04' : '2026-07-30')\n        : '2026-07-25';",
+              'coupon modified dates'
+            );
+            write(path, value);
+          }
+
+          {
+            const path = 'tests/intl-platinum-diamond.test.cjs';
+            let value = read(path);
+            value = replaceRequired(value, "phrases: ['4,000〜14,999 pt', '15,000 pt以上', '約22.9万円', '75万円']", "phrases: ['4,000〜14,999ポイント', '15,000ポイント以上', '約22万8,600円', '75万円']", 'Japanese diamond phrases');
+            value = replaceRequired(value, "    assert.ok(html.includes('<meta name=\"last-modified\" content=\"2026-07-25\"'), page.file);", "    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-07-25';\n    assert.ok(html.includes(`<meta name=\"last-modified\" content=\"${expectedModified}\"`), page.file);", 'diamond modified dates');
+            value = replaceRequired(value, "  assert.strictEqual(article.modified, '2026-07-25');", "  assert.strictEqual(article.modified, '2026-08-04');", 'diamond registry date');
+            value = replaceRequired(value, "  assert.ok(atom.includes('<updated>2026-07-25T12:00:00+09:00</updated>'));", "  assert.ok(atom.includes('<updated>2026-08-04T12:00:00+09:00</updated>'));", 'diamond feed date');
+            write(path, value);
+          }
+
+          {
+            const path = 'tests/intl-rank-maintenance.test.cjs';
+            let value = read(path);
+            value = replaceRequired(value, "phrases: ['翌年末まで', 'ポイント残高', '今年の獲得ポイント']", "phrases: ['翌年末まで', 'ポイント残高', '今年のレベル進捗']", 'rank terminology');
+            value = value.replaceAll('2026-07-30', '2026-08-04');
+            write(path, value);
+          }
+          NODE
+
+      - name: Regenerate tracked output
+        run: |
+          MODIFIED_DATE=$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');process.stdout.write(s.match(/last-modified\" content=\"(\d{4}-\d{2}-\d{2})/)[1])")
+          ASSET_VERSION=$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');process.stdout.write(s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)[1])")
+          PLAYPOINT_MODIFIED_DATE="$MODIFIED_DATE" PLAYPOINT_ASSET_VERSION="$ASSET_VERSION" node scripts/build-html.js
+
+      - name: Run standard preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Commit repaired branch and dispatch quality check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: content/japanese-article-quality-audit-2026-08-04
+        run: |
+          rm .github/workflows/fix-pr56-content-sync.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: synchronize audited articles with generators and tests"
+          git push origin HEAD:"$BRANCH"
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/actions/workflows/quality-check.yml/dispatches" -f ref="$BRANCH"
