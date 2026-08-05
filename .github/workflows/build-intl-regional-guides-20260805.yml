@@ -29,7 +29,16 @@ jobs:
           python -m py_compile /tmp/generate-intl-regional-guides.py
 
       - name: Generate articles and source configuration
-        run: python /tmp/generate-intl-regional-guides.py
+        run: |
+          set +e
+          python /tmp/generate-intl-regional-guides.py > /tmp/generator.log 2>&1
+          status=$?
+          cat /tmp/generator.log
+          if [ "$status" -ne 0 ]; then
+            message="$(tail -n 30 /tmp/generator.log | tr '\n' ' ')"
+            echo "::error title=Regional guide generator failed::$message"
+            exit "$status"
+          fi
 
       - name: Build site
         env:
@@ -38,7 +47,16 @@ jobs:
         run: node scripts/build-html.js
 
       - name: Finalize and validate regional output
-        run: python /tmp/generate-intl-regional-guides.py --post-build
+        run: |
+          set +e
+          python /tmp/generate-intl-regional-guides.py --post-build > /tmp/post-build.log 2>&1
+          status=$?
+          cat /tmp/post-build.log
+          if [ "$status" -ne 0 ]; then
+            message="$(tail -n 30 /tmp/post-build.log | tr '\n' ' ')"
+            echo "::error title=Regional guide post-build validation failed::$message"
+            exit "$status"
+          fi
 
       - name: Commit verified changes
         run: |
