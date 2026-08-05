@@ -105,8 +105,13 @@ jobs:
           }
 
           patch('tests/intl-coupon-credit.test.cjs', [
-            ["ja: ['クーポン額以上', '1つだけ', '同じアカウント']", "ja: ['クーポン額以上', '1つです', '同じアカウント']", 'coupon Japanese phrase contract'],
+            ["ja: ['クーポン額以上', '1つだけ', '同じアカウント']", "ja: ['クーポン額以上', '1つです', 'アカウントが同じか']", 'coupon Japanese phrase contract'],
             ["      const expectedModified = locale.key === 'ja' ? '2026-07-30' : '2026-07-25';", "      const expectedModified = locale.key === 'ja'\n        ? (topic.slug === 'google-play-points-coupon-not-applied.html' ? '2026-08-04' : '2026-07-30')\n        : '2026-07-25';", 'coupon modified dates']
+          ]);
+
+          patch('tests/playpoint-regression.test.cjs', [
+            ["  assert.ok(html.includes('<h2>最初に確認する3つ</h2>'));", "  assert.ok(html.includes('<h2>最初に確認する4つ</h2>'));", 'reflection first checks heading'],
+            ["  assert.ok(html.includes('<h2>状況別の判断目安</h2>'));", "  assert.ok(html.includes('<h2>状況別の確認方法</h2>'));", 'reflection situation heading']
           ]);
 
           patch('tests/intl-platinum-diamond.test.cjs', [
@@ -152,6 +157,7 @@ jobs:
             'articles/2026-03-10-play-points-reflection-timing.html',
             'articles/2026-07-25-play-points-coupon-not-applied.html',
             'tests/intl-coupon-credit.test.cjs',
+            'tests/playpoint-regression.test.cjs',
             'tests/intl-platinum-diamond.test.cjs',
             'tests/intl-rank-maintenance.test.cjs',
             'blog/sitemap.xml',
