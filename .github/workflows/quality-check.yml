@@ -1,89 +1,30 @@
-name: Pull request quality check
+name: Apply verified PR fixes
 
 on:
   workflow_dispatch:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
-      - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: apply-pr59-verified-fixes
+  cancel-in-progress: false
 
 jobs:
-  quality:
+  apply:
+    if: github.head_ref == 'content/quality-audit-wave1-20260805'
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: content/quality-audit-wave1-20260805
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Run complete preflight
-        shell: bash
-        run: |
-          set +e
-          node .github/scripts/preflight.cjs 2>&1 | tee preflight.log
-          status=${PIPESTATUS[0]}
-
-          if [ "$status" -ne 0 ]; then
-            node <<'NODE'
-          const fs = require('node:fs');
-          const lines = fs.readFileSync('preflight.log', 'utf8').split(/\r?\n/);
-          const escape = value => value
-            .replace(/%/g, '%25')
-            .replace(/\r/g, '%0D')
-            .replace(/\n/g, '%0A');
-          const starts = [];
-          for (let index = 0; index < lines.length; index += 1) {
-            if (/^not ok\s+\d+\s+-\s+/.test(lines[index].trim())) starts.push(index);
-          }
-          const unique = new Set();
-          let emitted = 0;
-          for (const start of starts) {
-            const titleLine = lines[start].trim();
-            if (unique.has(titleLine) || emitted >= 20) continue;
-            unique.add(titleLine);
-            let end = Math.min(lines.length - 1, start + 45);
-            for (let index = start + 1; index <= end; index += 1) {
-              if (lines[index].trim() === '...') {
-                end = index;
-                break;
-              }
-            }
-            const from = Math.max(0, start - 1);
-            const excerpt = lines
-              .slice(from, end + 1)
-              .map((line, offset) => `${from + offset + 1}: ${line}`)
-              .join('\n')
-              .slice(0, 12000);
-            console.log(`::error title=${escape(titleLine.slice(0, 180))}::${escape(excerpt)}`);
-            emitted += 1;
-          }
-          if (emitted === 0) {
-            const excerpt = lines.slice(-180).map((line, offset) => `${Math.max(1, lines.length - 179) + offset}: ${line}`).join('\n').slice(0, 12000);
-            console.log(`::error title=Preflight failure excerpt::${escape(excerpt)}`);
-          }
-          NODE
-          fi
-
-          exit "$status"
-
-      - name: Upload checked-out source for CI diagnosis
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: pr59-source-${{ github.sha }}
-          path: |
-            .
-            !.git/**
-          include-hidden-files: true
-          retention-days: 1
+      - name: Apply verified fixes and run complete preflight
+        run: node .github/scripts/apply-pr59-verified-fixes.cjs
