@@ -62,15 +62,42 @@ jobs:
             exit "$status"
           fi
 
-      - name: Commit verified changes
+      - name: Commit generated tree locally
         run: |
           if git diff --quiet && test -z "$(git ls-files --others --exclude-standard)"; then
             echo "No regional guide changes remain."
+            echo "NO_CHANGES=true" >> "$GITHUB_ENV"
             exit 0
           fi
           git add -A
           git diff --cached --check
           git commit -m "content: add region-checked multilingual Play Points guides"
           test -z "$(git status --porcelain)"
-          node .github/scripts/preflight.cjs
-          git push origin HEAD:content/intl-guides-regional-2026-08-05
+
+      - name: Run complete preflight
+        if: env.NO_CHANGES != 'true'
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            python <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/preflight.log').read_text(errors='replace').splitlines()
+          markers = ('not ok', 'AssertionError', 'ERR_ASSERTION', 'Error:', 'expected', 'actual', 'Generated output differs')
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line for marker in markers):
+                  selected.extend(lines[max(0, index - 3):min(len(lines), index + 10)])
+          if not selected:
+              selected = lines[-60:]
+          compact = ' | '.join(dict.fromkeys(part.strip() for part in selected if part.strip()))
+          print(f'::error title=Regional guide preflight failed::{compact[:7500]}')
+          PY
+            exit "$status"
+          fi
+
+      - name: Push verified content
+        if: env.NO_CHANGES != 'true'
+        run: git push origin HEAD:content/intl-guides-regional-2026-08-05
