@@ -40,14 +40,8 @@ jobs:
           const fs = require('node:fs');
           const path = require('node:path');
 
-          function read(file) {
-            return fs.readFileSync(file, 'utf8');
-          }
-
-          function write(file, html) {
-            fs.writeFileSync(file, html);
-          }
-
+          const read = (file) => fs.readFileSync(file, 'utf8');
+          const write = (file, html) => fs.writeFileSync(file, html);
           function insertBeforeClosing(html, snippet) {
             for (const closing of ['</article>', '</main>', '</body>']) {
               const index = html.lastIndexOf(closing);
@@ -61,11 +55,8 @@ jobs:
           const englishWeeklyUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
           if (!weekly.includes(`hreflang="en" href="${englishWeeklyUrl}"`)) {
             const alternate = `  <link rel="alternate" hreflang="en" href="${englishWeeklyUrl}" />\n`;
-            weekly = /<\/head>/i.test(weekly)
-              ? weekly.replace(/<\/head>/i, `${alternate}</head>`)
-              : `${alternate}${weekly}`;
+            weekly = /<\/head>/i.test(weekly) ? weekly.replace(/<\/head>/i, `${alternate}</head>`) : `${alternate}${weekly}`;
           }
-
           const bronzeGuidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
           if (/ブロンズは通常リワードの対象外/.test(weekly)) {
             weekly = weekly.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, bronzeGuidance);
@@ -94,8 +85,7 @@ jobs:
             let multiplier = read(multiplierFile);
             if (!multiplier.includes('足し算しない')) {
               const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。画面に表示された最終倍率を基準に計算し、複数の特典が同時に見えても、適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
-              multiplier = insertBeforeClosing(multiplier, note);
-              write(multiplierFile, multiplier);
+              write(multiplierFile, insertBeforeClosing(multiplier, note));
             }
             console.log(`Adjusted multiplier guide: ${multiplierFile}`);
           } else {
@@ -119,26 +109,19 @@ jobs:
           const fs = require('node:fs');
           const { spawnSync } = require('node:child_process');
           const { generatedFiles } = require('./scripts/build-targets.cjs');
-
           function git(args) {
             const result = spawnSync('git', args, { encoding: 'utf8' });
             if (result.status !== 0) {
-              process.stderr.write(result.stdout || '');
-              process.stderr.write(result.stderr || '');
+              const detail = `${result.stdout || ''}${result.stderr || ''}`.trim();
+              console.log(`::error file=.github/staging-debug,line=1,title=Git command failed::${detail || args.join(' ')}`);
               process.exit(result.status ?? 1);
             }
             return result.stdout;
           }
-
-          const trackedChanges = git(['diff', '--name-only', '--diff-filter=ACDMRTUXB'])
-            .split(/\r?\n/).filter(Boolean);
-          const untrackedChanges = git(['ls-files', '--others', '--exclude-standard'])
-            .split(/\r?\n/).filter(Boolean);
-          const changedPaths = [...new Set([...trackedChanges, ...untrackedChanges])];
-
-          const newArticles = fs.readdirSync('articles')
-            .filter((name) => /^2026-08-05-.*\.html$/.test(name))
-            .map((name) => `articles/${name}`);
+          const tracked = git(['diff', '--name-only', '--diff-filter=ACDMRTUXB']).split(/\r?\n/).filter(Boolean);
+          const untracked = git(['ls-files', '--others', '--exclude-standard']).split(/\r?\n/).filter(Boolean);
+          const changed = [...new Set([...tracked, ...untracked])];
+          const newArticles = fs.readdirSync('articles').filter((name) => /^2026-08-05-.*\.html$/.test(name)).map((name) => `articles/${name}`);
           const allowed = new Set([
             ...generatedFiles,
             'blog/sitemap.xml',
@@ -148,21 +131,37 @@ jobs:
             'tests/jp-guide-batch-20260805.test.cjs',
             ...newArticles
           ]);
-          const unexpected = changedPaths.filter((file) => !allowed.has(file));
+          const unexpected = changed.filter((file) => !allowed.has(file));
           if (unexpected.length) {
-            console.error(`Unexpected changed paths:\n${unexpected.join('\n')}`);
+            console.log(`::error file=.github/staging-debug,line=1,title=Unexpected paths::${unexpected.join(', ')}`);
             process.exit(1);
           }
-          if (!changedPaths.length) {
-            console.error('No content changes were produced.');
+          if (!changed.length) {
+            console.log('::error file=.github/staging-debug,line=1,title=No changes::No content changes were produced.');
             process.exit(1);
           }
-
-          console.log(`Staging ${changedPaths.length} validated paths.`);
-          const staged = spawnSync('git', ['add', '--', ...changedPaths], { stdio: 'inherit' });
-          process.exit(staged.status ?? 1);
+          console.log(`Staging ${changed.length} validated paths.`);
+          const result = spawnSync('git', ['add', '--', ...changed], { encoding: 'utf8' });
+          if (result.status !== 0) {
+            const detail = `${result.stdout || ''}${result.stderr || ''}`.trim();
+            console.log(`::error file=.github/staging-debug,line=1,title=git add failed::${detail}`);
+            process.exit(result.status ?? 1);
+          }
           NODE
-          git diff --cached --check
+
+      - name: Check staged diff formatting
+        run: |
+          set +e
+          output="$(git diff --cached --check 2>&1)"
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            escaped="${output//'%'/'%25'}"
+            escaped="${escaped//$'\r'/'%0D'}"
+            escaped="${escaped//$'\n'/'%0A'}"
+            echo "::error file=.github/diff-check,line=1,title=Staged diff formatting error::$escaped"
+            exit "$status"
+          fi
           git diff --cached --quiet && { echo "No staged content changes were produced."; exit 1; } || true
 
       - name: Commit article batch
