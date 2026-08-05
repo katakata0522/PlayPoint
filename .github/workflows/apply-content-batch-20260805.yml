@@ -33,6 +33,61 @@ jobs:
           sed -i "s|const root = path.resolve(__dirname, '..');|const root = process.cwd();|" /tmp/apply-content-batch-20260805.cjs
           node /tmp/apply-content-batch-20260805.cjs
 
+      - name: Apply quality and navigation corrections
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+
+          function read(file) {
+            return fs.readFileSync(file, 'utf8');
+          }
+
+          function writeIfChanged(file, before, after) {
+            if (before !== after) fs.writeFileSync(file, after);
+          }
+
+          const weeklyFile = 'articles/2025-12-25-weekly-reward.html';
+          let weekly = read(weeklyFile);
+          const enAlternate = '  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html" />';
+          if (!weekly.includes(enAlternate)) {
+            const jaAlternate = '  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html" />';
+            if (!weekly.includes(jaAlternate)) throw new Error('Japanese weekly reward hreflang anchor was not found');
+            weekly = weekly.replace(jaAlternate, `${jaAlternate}\n${enAlternate}`);
+          }
+          weekly = weekly.replace(
+            /<p><strong>ブロンズは通常リワードの対象外です。<\/strong>[^<]*<\/p>/,
+            '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>'
+          );
+          writeIfChanged(weeklyFile, read(weeklyFile), weekly);
+
+          const gettingStartedFile = 'articles/2025-12-25-getting-started.html';
+          let gettingStarted = read(gettingStartedFile);
+          const navigationMarker = 'id="account-country-troubleshooting"';
+          if (!gettingStarted.includes(navigationMarker)) {
+            const section = `\n    <section class="section" id="account-country-troubleshooting">\n      <h2>登録・国設定で困ったとき</h2>\n      <p>Play Pointsが表示されない、参加できない場合は、まずアカウント条件とPlayの国設定を切り分けると解決しやすくなります。</p>\n      <ul>\n        <li><a href="/articles/2026-08-05-play-points-cannot-join.html">Play Pointsに登録できない・表示されない原因を確認する</a></li>\n        <li><a href="/articles/2026-08-05-play-country-change-points.html">Google Playの国変更でポイントやランクがどうなるか確認する</a></li>\n      </ul>\n    </section>\n`;
+            if (!gettingStarted.includes('</article>')) throw new Error('getting-started article closing tag was not found');
+            gettingStarted = gettingStarted.replace('</article>', `${section}</article>`);
+          }
+          writeIfChanged(gettingStartedFile, read(gettingStartedFile), gettingStarted);
+
+          const candidateFiles = fs.readdirSync('articles')
+            .filter((name) => /^2026-08-05-.*\.html$/.test(name))
+            .map((name) => path.join('articles', name));
+          const multiplierFile = candidateFiles.find((file) => {
+            const html = read(file);
+            return /倍率/.test(html) && /(重複|キャンペーン|ブースト)/.test(html);
+          });
+          if (!multiplierFile) throw new Error('Multiplier guide article was not found');
+          let multiplier = read(multiplierFile);
+          if (!multiplier.includes('足し算しない')) {
+            const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。画面に表示された最終倍率を基準に計算し、複数の特典が同時に見えても、適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
+            if (!multiplier.includes('</article>')) throw new Error('Multiplier guide closing tag was not found');
+            multiplier = multiplier.replace('</article>', `${note}</article>`);
+            fs.writeFileSync(multiplierFile, multiplier);
+          }
+          NODE
+
       - name: Regenerate public output
         env:
           PLAYPOINT_MODIFIED_DATE: '2026-08-05'
@@ -42,12 +97,19 @@ jobs:
       - name: Stage validated content and generated paths
         run: |
           node <<'NODE'
+          const fs = require('node:fs');
           const { spawnSync } = require('node:child_process');
           const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const newArticles = fs.readdirSync('articles')
+            .filter((name) => /^2026-08-05-.*\.html$/.test(name))
+            .map((name) => `articles/${name}`);
           const extra = [
             'blog/sitemap.xml',
+            'articles/2025-12-25-weekly-reward.html',
+            'articles/2025-12-25-getting-started.html',
             'tests/article-fact-regression.test.cjs',
-            'tests/jp-guide-batch-20260805.test.cjs'
+            'tests/jp-guide-batch-20260805.test.cjs',
+            ...newArticles
           ];
           const paths = [...new Set([...generatedFiles, ...extra])];
           const result = spawnSync('git', ['add', '--', ...paths], { stdio: 'inherit' });
