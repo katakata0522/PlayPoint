@@ -1,0 +1,123 @@
+name: Build regional multilingual guides
+
+on:
+  push:
+    branches:
+      - content/intl-guides-regional-2026-08-05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-intl-regional-guides-20260805
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Restore and verify generator
+        run: |
+          cat .github/intl-regional-guides-payload/*.b64 | base64 --decode | gzip --decompress > /tmp/generate-intl-regional-guides.py
+          python -m py_compile /tmp/generate-intl-regional-guides.py
+
+      - name: Generate regional source articles
+        run: python /tmp/generate-intl-regional-guides.py
+
+      - name: Rebuild public output
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-05'
+          PLAYPOINT_ASSET_VERSION: '20260805_1911'
+        run: node scripts/build-html.js
+
+      - name: Finalize reciprocal links and validate built pages
+        run: python /tmp/generate-intl-regional-guides.py --post-build
+
+      - name: Validate and stage expected changes
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const run = (args) => {
+            const result = spawnSync('git', args, { encoding: 'utf8' });
+            if (result.status !== 0) throw new Error(`${args.join(' ')}\n${result.stdout || ''}${result.stderr || ''}`);
+            return result.stdout;
+          };
+          const changed = [...new Set([
+            ...run(['diff', '--name-only', '--diff-filter=ACDMRTUXB']).split(/\r?\n/),
+            ...run(['ls-files', '--others', '--exclude-standard']).split(/\r?\n/)
+          ].filter(Boolean))];
+          if (!changed.length) {
+            fs.appendFileSync(process.env.GITHUB_ENV, 'NO_CHANGES=true\n');
+            console.log('No regional guide changes remain.');
+            process.exit(0);
+          }
+          const locales = ['en', 'ko', 'tw'];
+          const slugs = [
+            'google-play-points-levels.html',
+            'google-play-points-join-eligibility.html',
+            'google-play-points-weekly-reward.html',
+            'google-play-points-country-change.html',
+            'google-play-points-promotion-stacking.html',
+            'google-play-points-fastest-silver.html'
+          ];
+          const allowed = new Set([
+            ...generatedFiles,
+            ...locales.flatMap(locale => slugs.map(slug => `${locale}/articles/${slug}`)),
+            'scripts/manual-intl-articles.cjs',
+            'scripts/intl-content-expansion.cjs',
+            'scripts/intl-manual-content-sync.cjs',
+            'scripts/intl-seo-pages.cjs',
+            'tests/intl-regional-guides-20260805.test.cjs',
+            'articles/2026-08-05-play-points-levels-guide.html',
+            'articles/2026-08-05-play-points-cannot-join.html',
+            'articles/2025-12-25-weekly-reward.html',
+            'articles/2026-08-05-play-country-change-points.html',
+            'articles/2026-08-05-play-points-multiplier-stacking.html',
+            'articles/2026-08-05-fastest-silver.html',
+            'sitemap-intl-content-expansion.xml',
+            'robots.txt',
+            'en/articles/index.html',
+            'ko/articles/index.html',
+            'tw/articles/index.html',
+            'en/status/silver/index.html',
+            'ko/status/silver/index.html',
+            'tw/status/silver/index.html'
+          ]);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) throw new Error(`Unexpected changed paths:\n${unexpected.join('\n')}`);
+          const staged = spawnSync('git', ['add', '--', ...changed], { stdio: 'inherit' });
+          process.exit(staged.status ?? 1);
+          NODE
+          if [ "${NO_CHANGES:-false}" != "true" ]; then
+            git diff --cached --check
+            git diff --cached --quiet && { echo "No staged changes."; exit 1; } || true
+          fi
+
+      - name: Commit regional multilingual guides
+        if: env.NO_CHANGES != 'true'
+        run: git commit -m "content: add region-checked multilingual Play Points guides"
+
+      - name: Verify clean committed tree
+        if: env.NO_CHANGES != 'true'
+        run: test -z "$(git status --porcelain)"
+
+      - name: Run complete preflight
+        if: env.NO_CHANGES != 'true'
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push verified content
+        if: env.NO_CHANGES != 'true'
+        run: git push origin HEAD:content/intl-guides-regional-2026-08-05
