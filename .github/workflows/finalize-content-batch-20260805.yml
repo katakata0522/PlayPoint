@@ -48,11 +48,24 @@ jobs:
       - name: Extract and run audited quality corrections
         if: env.ARTICLE_BATCH_DONE != 'true'
         run: |
-          awk '
-            /cat > \/tmp\/fix-guide-quality.cjs <<'"'"'NODE'"'"'/ { capture=1; next }
-            capture && /^          NODE$/ { exit }
-            capture { sub(/^          /, ""); print }
-          ' .github/workflows/apply-content-batch-20260805.yml > /tmp/fix-guide-quality.cjs
+          python - <<'PY'
+          from pathlib import Path
+
+          source = Path('.github/workflows/apply-content-batch-20260805.yml').read_text()
+          start_marker = "          cat > /tmp/fix-guide-quality.cjs <<'NODE'\n"
+          end_marker = "\n          NODE\n"
+          if start_marker not in source:
+              raise SystemExit('Quality correction start marker was not found')
+          body = source.split(start_marker, 1)[1]
+          if end_marker not in body:
+              raise SystemExit('Quality correction end marker was not found')
+          body = body.split(end_marker, 1)[0]
+          lines = [
+              line[10:] if line.startswith('          ') else line
+              for line in body.splitlines()
+          ]
+          Path('/tmp/fix-guide-quality.cjs').write_text('\n'.join(lines) + '\n')
+          PY
           test -s /tmp/fix-guide-quality.cjs
           node /tmp/fix-guide-quality.cjs
 
