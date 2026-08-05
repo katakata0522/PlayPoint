@@ -60,6 +60,8 @@ jobs:
           target['description'] = description
           path.write_text(json.dumps(articles, ensure_ascii=False, indent=2) + '\n')
           PY
+          PLAYPOINT_MODIFIED_DATE='2026-08-05' PLAYPOINT_ASSET_VERSION='20260805_1249' node scripts/build-html.js
+          python /tmp/final-corrections.py
 
       - name: Commit corrected tree locally
         run: |
