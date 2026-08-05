@@ -33,7 +33,16 @@ jobs:
           python -m py_compile /tmp/refine-guides.py
 
       - name: Apply editorial and factual refinements
-        run: python /tmp/refine-guides.py
+        run: |
+          set +e
+          python /tmp/refine-guides.py > /tmp/refine.log 2>&1
+          status=$?
+          cat /tmp/refine.log
+          if [ "$status" -ne 0 ]; then
+            message="$(tail -n 20 /tmp/refine.log | tr '\n' ' ')"
+            echo "::error title=Guide refinement failed::$message"
+            exit "$status"
+          fi
 
       - name: Regenerate public output
         env:
