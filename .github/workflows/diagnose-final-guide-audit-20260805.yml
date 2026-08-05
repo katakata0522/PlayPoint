@@ -48,6 +48,18 @@ jobs:
           PY
           python -m py_compile /tmp/final-corrections.py
           python /tmp/final-corrections.py
+          python <<'PY'
+          from pathlib import Path
+          import json
+          path = Path('blog/articles.json')
+          articles = json.loads(path.read_text())
+          description = 'Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。'
+          target = next((article for article in articles if article.get('id') == 'play-points-multiplier-stacking'), None)
+          if target is None:
+              raise SystemExit('Multiplier article entry was not found')
+          target['description'] = description
+          path.write_text(json.dumps(articles, ensure_ascii=False, indent=2) + '\n')
+          PY
 
       - name: Commit corrected tree locally
         run: |
