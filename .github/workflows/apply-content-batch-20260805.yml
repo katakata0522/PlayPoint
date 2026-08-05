@@ -77,19 +77,22 @@ jobs:
           status=$?
           set -e
           cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            node <<'NODE'
+          const fs = require('node:fs');
+          const text = fs.readFileSync('/tmp/preflight.log', 'utf8');
+          const lines = text.split(/\r?\n/).filter(Boolean).slice(-35);
+          const escape = (value) => value
+            .replace(/%/g, '%25')
+            .replace(/\r/g, '%0D')
+            .replace(/\n/g, '%0A');
+          for (const line of lines) {
+            console.log(`::error file=.github/preflight-debug,line=1::${escape(line)}`);
+          }
+          NODE
+            exit "$status"
+          fi
           test -z "$(git status --porcelain)"
-          exit "$status"
-
-      - name: Preserve failure diagnostics only
-        if: failure()
-        run: |
-          git reset --hard HEAD
-          cp /tmp/preflight.log .github/preflight-failure.log
-          git add -- .github/preflight-failure.log
-          git diff --cached --check
-          git commit -m "chore: capture article batch preflight failure"
-          git push origin HEAD:content/play-points-guides-2026-08-05
 
       - name: Push verified branch
-        if: success()
         run: git push origin HEAD:content/play-points-guides-2026-08-05
