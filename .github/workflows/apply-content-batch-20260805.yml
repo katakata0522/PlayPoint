@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   apply-and-verify:
-    if: "${{ github.event.head_commit.message == 'chore: add temporary article batch workflow' }}"
+    if: "${{ github.event.head_commit.message == 'chore: add temporary article batch workflow' || github.event.head_commit.message == 'chore: fix article batch working directory' }}"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -31,6 +31,7 @@ jobs:
       - name: Restore and run audited article batch
         run: |
           cat .github/article-batch-payload/*.b64 | base64 --decode | gzip --decompress > /tmp/apply-content-batch-20260805.cjs
+          sed -i "s|const root = path.resolve(__dirname, '..');|const root = process.cwd();|" /tmp/apply-content-batch-20260805.cjs
           node /tmp/apply-content-batch-20260805.cjs
 
       - name: Regenerate public output
