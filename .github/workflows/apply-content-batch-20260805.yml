@@ -58,8 +58,11 @@ jobs:
 
           const weeklyFile = 'articles/2025-12-25-weekly-reward.html';
           let weekly = read(weeklyFile);
-          weekly = insertAlternate(weekly, 'ja', 'https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html');
-          weekly = insertAlternate(weekly, 'en', 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html');
+          const weeklyJaUrl = 'https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html';
+          const weeklyEnUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
+          weekly = insertAlternate(weekly, 'ja', weeklyJaUrl);
+          weekly = insertAlternate(weekly, 'en', weeklyEnUrl);
+          weekly = insertAlternate(weekly, 'x-default', weeklyEnUrl);
           const bronzeGuidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
           if (/ブロンズは通常リワードの対象外/.test(weekly)) {
             weekly = weekly.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, bronzeGuidance);
@@ -86,8 +89,8 @@ jobs:
             || candidateFiles.find((file) => /倍率/.test(read(file)));
           if (multiplierFile) {
             let multiplier = read(multiplierFile);
-            if (!multiplier.includes('足し算しない') || !multiplier.includes('100円あたり3ポイント')) {
-              const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
+            if (!multiplier.includes('足し算しない') || !multiplier.includes('100円あたり3ポイント') || !multiplier.includes('税金を除いた')) {
+              const note = `\n    <section class="section" id="multiplier-calculation-note">\n      <h2>倍率計算で最も多い間違い</h2>\n      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。計算の基準は<strong>税金を除いたアイテム価格</strong>です。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>\n    </section>\n`;
               multiplier = multiplier.replace(/\n\s*<section class="section" id="multiplier-calculation-note">[\s\S]*?<\/section>\n?/, '\n');
               multiplier = insertBeforeClosing(multiplier, note);
             }
