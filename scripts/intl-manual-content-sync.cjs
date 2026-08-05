@@ -5,24 +5,24 @@ const path = require('node:path');
 
 const HUB_CONTENT = {
   en: {
-    modifiedAt: '2026-08-02',
-    description: 'Browse Google Play Points guides about levels, point timing, promotions, quests, weekly rewards, gift cards, and country-specific checks.',
+    modifiedAt: '2026-08-05',
+    description: 'Browse region-checked Google Play Points guides for US levels, eligibility, country changes, promotions, Silver progress, weekly rewards and account issues.',
     links: [
       ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize eligibility, prize stock and Super Tickets'],
       ['/en/articles/google-play-quests.html', 'Google Play quests not appearing or completing']
     ]
   },
   ko: {
-    modifiedAt: '2026-08-01',
-    description: '등급, 점수 반영, 퀘스트, 주간 리워드, 캠페인, 기프트카드와 국가별 확인 사항을 다루는 Google Play Points 가이드 모음입니다.',
+    modifiedAt: '2026-08-05',
+    description: '한국 공식 조건을 확인한 Google Play Points 등급, 가입, 국가 변경, 배율, 실버 달성, 주간 리워드와 계정 문제 가이드입니다.',
     links: [
       ['/ko/articles/google-play-points-super-weekly-reward.html', '슈퍼 위클리 리워드 대상·재고·슈퍼 티켓'],
       ['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때']
     ]
   },
   tw: {
-    modifiedAt: '2026-08-01',
-    description: '瀏覽 Google Play Points 的等級、點數反映、任務、每週獎勵、活動、禮物卡與地區確認指南。',
+    modifiedAt: '2026-08-05',
+    description: '瀏覽依台灣官方條件核對的 Google Play Points 等級、加入、國家變更、活動倍率、銀級攻略、每週獎勵與帳號問題指南。',
     links: [
       ['/tw/articles/google-play-points-super-weekly-reward.html', '超級每週獎勵資格、庫存與超級票券'],
       ['/tw/articles/google-play-quests.html', 'Google Play 任務沒有顯示或無法完成']

@@ -58,7 +58,7 @@ test('週次特典と複数アカウント記事は3言語で公開要件を満�
       assert.ok(description.length >= 45 && description.length <= 170, `${relativePath} のdescription長が不正です: ${description.length}`);
       assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, `${relativePath} のh1数が不正です`);
       assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`), `${relativePath} のsiteNameが不正です`);
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'), `${relativePath} の更新日が不正です`);
+      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">') || html.includes('<meta name="last-modified" content="2026-08-05">'), `${relativePath} の更新日が不正です`);
       assert.ok(schemas.some(schema => schema['@type'] === 'Article'), `${relativePath} にArticle構造化データがありません`);
       assert.ok(schemas.some(schema => schema['@type'] === 'FAQPage'), `${relativePath} にFAQ構造化データがありません`);
       assert.ok(html.includes('class="cta-btn"'), `${relativePath} にCTAがありません`);

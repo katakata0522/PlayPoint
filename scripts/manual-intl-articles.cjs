@@ -5,18 +5,33 @@ const path = require('node:path');
 
 const MANUAL_INTL_ARTICLE_FILES = Object.freeze([
   'en/articles/google-play-points-100-value.html',
+  'en/articles/google-play-points-country-change.html',
   'en/articles/google-play-points-country-differences.html',
+  'en/articles/google-play-points-fastest-silver.html',
   'en/articles/google-play-points-gift-cards.html',
+  'en/articles/google-play-points-join-eligibility.html',
   'en/articles/google-play-points-levels.html',
   'en/articles/google-play-points-not-showing.html',
   'en/articles/google-play-points-promotion-not-applied.html',
+  'en/articles/google-play-points-promotion-stacking.html',
   'en/articles/google-play-points-subscriptions.html',
+  'en/articles/google-play-points-weekly-reward.html',
+  'ko/articles/google-play-points-country-change.html',
+  'ko/articles/google-play-points-fastest-silver.html',
   'ko/articles/google-play-points-gift-cards.html',
+  'ko/articles/google-play-points-join-eligibility.html',
   'ko/articles/google-play-points-levels.html',
+  'ko/articles/google-play-points-promotion-stacking.html',
   'ko/articles/google-play-points-super-weekly-reward.html',
+  'ko/articles/google-play-points-weekly-reward.html',
+  'tw/articles/google-play-points-country-change.html',
+  'tw/articles/google-play-points-fastest-silver.html',
   'tw/articles/google-play-points-gift-cards.html',
+  'tw/articles/google-play-points-join-eligibility.html',
   'tw/articles/google-play-points-levels.html',
-  'tw/articles/google-play-points-super-weekly-reward.html'
+  'tw/articles/google-play-points-promotion-stacking.html',
+  'tw/articles/google-play-points-super-weekly-reward.html',
+  'tw/articles/google-play-points-weekly-reward.html',
 ]);
 const MANUAL_INTL_ARTICLE_FILE_SET = new Set(MANUAL_INTL_ARTICLE_FILES);
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;

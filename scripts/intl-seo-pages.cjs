@@ -20,7 +20,7 @@ const LOCALES = {
     referenceLabel: 'Japanese reference page',
     policyLabel: 'Editorial policy',
     estimateTitle: 'How to read this estimate',
-    estimateBody: 'Use the result as a decision helper, not as a reason to spend more immediately. If the number is close to your normal plan, compare the official Google Play conditions and the campaign period. If it is far above your usual spending, waiting or staying at the current level may be the better choice.',
+    estimateBody: 'Use the result to match planned purchases with the confirmed earning rate available to your account. Check eligible items and the offer period in Google Play, then recalculate the remaining progress after points are credited.',
     disclaimer: 'This page provides a planning estimate. Google Play Points terms, eligibility, promotions, and timing can differ by country or account, so check the Google Play app before purchasing.',
     officialSourceTitle: 'Official source to check',
     officialSourceBody: 'Play Points availability, levels, rewards, and campaign terms can differ by country or account. Confirm the latest rule in Google Play Help and the Google Play app before purchasing.',
@@ -45,7 +45,7 @@ const LOCALES = {
     referenceLabel: '일본어 참고 페이지',
     policyLabel: '운영 및 검증 방침',
     estimateTitle: '예상치를 읽는 방법',
-    estimateBody: '계산 결과는 바로 결제를 늘리기 위한 숫자가 아니라 판단을 돕는 기준입니다. 평소 예정된 결제와 가깝다면 Google Play 앱의 공식 조건과 캠페인 기간을 확인하세요. 평소 소비보다 크다면 기다리거나 현재 등급을 유지하는 선택이 더 나을 수 있습니다.',
+    estimateBody: '계산 결과는 예정된 결제를 계정에 확인된 적립률과 맞추는 기준입니다. Google Play 앱에서 대상 상품과 오퍼 기간을 확인하고, 포인트 반영 후 남은 진행도를 다시 계산하세요.',
     disclaimer: '이 페이지는 계획용 예상치입니다. Google Play Points 조건, 대상 결제, 캠페인, 반영 시점은 국가와 계정에 따라 달라질 수 있으므로 결제 전 Google Play 앱에서 확인하세요.',
     officialSourceTitle: '공식 정보 확인',
     officialSourceBody: 'Play Points 제공 여부, 등급, 리워드, 캠페인 조건은 국가나 계정에 따라 달라질 수 있습니다. 결제 전 Google Play 공식 도움말과 앱 화면에서 최신 조건을 확인하세요.',
@@ -70,7 +70,7 @@ const LOCALES = {
     referenceLabel: '日文參考頁',
     policyLabel: '營運與驗證方針',
     estimateTitle: '如何閱讀這個估算',
-    estimateBody: '計算結果是用來協助判斷，而不是讓你立刻增加消費。如果金額接近原本計畫的購買，可以再確認 Google Play App 內的官方條件與活動期間；如果遠高於平常消費，等待活動或維持目前等級可能更適合。',
+    estimateBody: '計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。',
     disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動倍率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
     officialSourceTitle: '官方資訊確認',
     officialSourceBody: 'Play Points 的提供地區、等級、回饋與活動條件可能因國家、地區或帳號不同。購買前請先確認 Google Play 官方說明與 App 內顯示。',
@@ -304,73 +304,76 @@ const PAGE_TYPES = {
   silver: {
     slug: 'status/silver',
     mode: 'main',
-    query: 'status=1&target=silver&points=250&multiplier=1',
+    query: 'status=1&target=silver&points=150&multiplier=1',
     campaign: 'intl_status_silver',
     jaPath: '/status/silver/',
     en: {
-      title: 'Google Play Points Silver cost calculator',
-      description: 'Estimate how much spending may be needed to reach Google Play Points Silver and check whether a small planned purchase is enough.',
-      eyebrow: 'Silver status planning',
-      h1: 'How much does it take to reach Google Play Points Silver?',
-      lead: 'Silver is the entry-level goal for many users. A small missing-point estimate can help you decide whether your planned purchase is enough without forcing extra spending.',
-      cta: 'Calculate Silver progress',
-      secondary: 'Compare Gold status',
-      secondaryHref: '/en/status/gold/',
-      summary: ['Preset: Bronze to Silver', 'Best for: first level-up check', 'Check: missing points and purchase eligibility'],
+      query: 'status=1&target=silver&points=150&multiplier=1',
+      title: 'Google Play Points Silver cost calculator for the US',
+      description: 'Estimate the United States Silver threshold of 150 points and compare planned purchases with confirmed earning offers.',
+      eyebrow: 'US Silver planning',
+      h1: 'How much does it take to reach Google Play Points Silver in the US?',
+      lead: 'US Silver starts at 150 annual points. Check the exact missing points, then align planned purchases with the highest eligible earning rate shown on your account.',
+      cta: 'Calculate US Silver progress',
+      secondary: 'Read the US Silver strategy',
+      secondaryHref: '/en/articles/google-play-points-fastest-silver.html',
+      summary: ['US threshold: 150 points', 'Bronze base: 1 point per $1', 'Base estimate from zero: $150 before tax'],
       sections: [
-        ['Use Silver as a baseline', 'If you are new to Play Points, Silver is a useful way to learn how missing points, status rate, and multipliers interact.'],
-        ['Check a normal purchase first', 'Use 1x before adding a campaign. If a purchase you already planned gets close to Silver, the decision is clearer.'],
-        ['Do not overfit the estimate', 'Small point differences can be affected by eligibility, currency, tax handling, and local rules.'],
-        ['Move to Gold only if Silver is realistic', 'If Silver already requires uncomfortable spending, a higher tier is unlikely to be a good target now.']
+        ['Use the US threshold', 'The United States uses 150 annual points for Silver. Do not use the Taiwan 250-point threshold or another country’s currency unit.'],
+        ['Enter missing points', 'Use the annual level progress shown in Play Points. Redeemable balance is a separate number.'],
+        ['Compare the highest eligible rate', 'Start with 1 point per $1, then compare only an offer that is active and eligible for the planned purchase. Promotions do not stack.'],
+        ['Verify item-level results', 'Google calculates from item price excluding tax and rounds each item to the nearest whole point.']
       ],
       faq: [
-        ['Is Silver worth calculating?', 'Yes. It helps new users understand the cost pattern before looking at higher tiers.'],
-        ['Should I aim for Gold immediately?', 'Only if Silver is already close under normal purchases.'],
-        ['Can country rules change the result?', 'Yes. Confirm the local Google Play app before purchasing.']
+        ['How many points are needed for US Silver?', '150 annual points.'],
+        ['What is the base zero-to-Silver estimate?', 'About $150 before tax at the Bronze base rate.'],
+        ['Can I add two promotion rates?', 'No. The highest eligible rate applies.']
       ]
     },
     ko: {
-      title: 'Google Play Points 실버 필요 금액 계산',
-      description: 'Google Play Points 실버까지 남은 포인트와 필요 금액을 계산하고, 첫 등급 목표에 필요한 결제 금액과 캠페인 배율을 한국어로 확인합니다.',
-      eyebrow: '실버 등급 계획',
-      h1: 'Google Play Points 실버는 얼마가 필요할까요?',
-      lead: '실버는 처음 등급 업을 확인하기 좋은 목표입니다. 예정된 결제가 충분한지 보고, 추가 결제를 무리하게 만들지 않는 것이 중요합니다.',
-      cta: '실버까지 계산하기',
-      secondary: '골드 계산 보기',
-      secondaryHref: '/ko/status/gold/',
-      summary: ['초기 조건: 브론즈에서 실버', '추천: 첫 등급 업 확인', '확인: 남은 포인트와 대상 결제'],
+      query: 'status=1&target=silver&points=150&multiplier=1',
+      title: '한국 Google Play Points 실버 필요 금액 계산',
+      description: '한국 실버 150포인트까지 남은 포인트와 예정 결제를 계산하고 실제 대상 적립 오퍼를 비교합니다.',
+      eyebrow: '한국 실버 계획',
+      h1: '한국 Google Play Points 실버는 얼마가 필요할까요?',
+      lead: '한국 실버는 연간 150포인트부터입니다. 부족한 포인트를 확인하고 예정된 결제를 계정에 표시된 가장 높은 대상 적립률과 맞춰 보세요.',
+      cta: '한국 실버까지 계산하기',
+      secondary: '한국 실버 달성 전략 보기',
+      secondaryHref: '/ko/articles/google-play-points-fastest-silver.html',
+      summary: ['한국 기준: 150포인트', '브론즈 기본: ₩1,000당 1포인트', '0포인트 기본 추정: 세금 제외 ₩150,000'],
       sections: [
-        ['기준 등급으로 사용', 'Play Points를 처음 계획한다면 실버로 남은 포인트, 적립률, 배율의 관계를 이해하기 좋습니다.'],
-        ['일반 결제부터 확인', '캠페인을 넣기 전 1배 기준으로 보고, 원래 예정된 결제가 충분한지 확인하세요.'],
-        ['작은 차이에 과신하지 않기', '통화, 세금, 대상 결제, 국가별 조건에 따라 실제 결과가 달라질 수 있습니다.'],
-        ['실버가 현실적일 때 골드 보기', '실버부터 부담스럽다면 지금 골드 이상을 목표로 삼는 것은 보수적으로 봐야 합니다.']
+        ['한국 기준 사용', '대한민국은 실버 기준이 연간 150포인트입니다. 대만 250포인트나 일본의 엔화 예시를 사용하지 마세요.'],
+        ['부족한 포인트 입력', 'Play Points 연간 등급 진행도에서 남은 포인트를 입력합니다. 사용 가능한 잔액은 다른 숫자입니다.'],
+        ['가장 높은 대상 적립률 비교', '기본 ₩1,000당 1포인트를 본 뒤 실제 활성화되고 대상인 오퍼만 비교합니다. 프로모션은 중복되지 않습니다.'],
+        ['상품별 결과 확인', '세금을 제외한 상품 가격을 기준으로 상품별 가장 가까운 정수로 반올림합니다.']
       ],
       faq: [
-        ['실버도 계산할 가치가 있나요?', '있습니다. 높은 등급을 보기 전 기본 구조를 이해하기 좋습니다.'],
-        ['바로 골드를 목표로 해도 되나요?', '실버가 평소 결제로 충분히 가까울 때만 비교하세요.'],
-        ['국가별 조건이 영향을 주나요?', '네. 최종 조건은 Google Play 앱에서 확인해야 합니다.']
+        ['한국 실버는 몇 포인트인가요?', '연간 150포인트입니다.'],
+        ['0포인트에서 기본 추정 금액은?', '브론즈 일반 적립 기준 세금 제외 약 ₩150,000입니다.'],
+        ['여러 프로모션을 더해도 되나요?', '아니요. 가장 높은 대상 적립률을 사용합니다.']
       ]
     },
     tw: {
-      title: 'Google Play Points 銀級需要多少？',
-      description: '估算 Google Play Points 銀級所需點數與金額，協助初次規劃等級目標並確認活動倍率是否真的適用。',
-      eyebrow: '銀級規劃',
-      h1: 'Google Play Points 銀級需要多少？',
-      lead: '銀級是許多使用者的第一個升級目標。先看原本計畫的消費是否足夠，不要為了等級增加不必要支出。',
-      cta: '計算銀級進度',
-      secondary: '比較金級',
-      secondaryHref: '/tw/status/gold/',
-      summary: ['預設: 銅級到銀級', '適合: 第一次升級檢查', '確認: 剩餘點數與適用消費'],
+      query: 'status=1&target=silver&points=250&multiplier=1',
+      title: '台灣 Google Play Points 銀級需要多少？',
+      description: '估算台灣 Google Play Points 銀級所需的 250 點與金額，並依 NT$30 累積單位、帳號特典與活動倍率安排購買計畫。',
+      eyebrow: '台灣銀級規劃',
+      h1: '台灣 Google Play Points 銀級需要多少？',
+      lead: '台灣銀級從年度 250 點開始。先確認還差多少點，再把原本規劃的購買安排到帳號顯示的最高適用累積率。',
+      cta: '計算台灣銀級進度',
+      secondary: '查看台灣銀級攻略',
+      secondaryHref: '/tw/articles/google-play-points-fastest-silver.html',
+      summary: ['台灣門檻: 250 點', '銅級基本: 每 NT$30 1 點', '從 0 點基本估算: 未稅 NT$7,500'],
       sections: [
-        ['把銀級當作基準', '如果剛開始使用 Play Points，銀級能幫你理解剩餘點數、回饋率與倍率的關係。'],
-        ['先看一般消費', '加入活動倍率前，先用 1 倍估算，確認原本就要買的項目是否足夠。'],
-        ['不要過度相信小差距', '幣別、稅金、適用付款與地區條件都可能影響實際結果。'],
-        ['銀級接近時再看金級', '如果銀級已經很吃力，現在追更高等級通常不適合。']
+        ['使用台灣門檻', '台灣銀級門檻為年度 250 點。不要使用美國或韓國 150 點門檻。'],
+        ['輸入尚缺點數', '請輸入 Play Points 年度等級進度中還差的點數，可使用餘額是另一個數字。'],
+        ['比較最高適用累積率', '先看每 NT$30 1 點，再比較已啟用且符合原定購買的優惠。多個促銷不會疊加。'],
+        ['確認商品別結果', 'Google 以未稅商品價格計算，每件商品四捨五入到最接近的整數點。']
       ],
       faq: [
-        ['銀級值得計算嗎？', '值得。它能幫你在看高等級前理解基本成本。'],
-        ['可以直接衝金級嗎？', '只有在銀級已經很接近時才值得比較。'],
-        ['地區規則會影響嗎？', '會。請以 Google Play App 的官方畫面為準。']
+        ['台灣銀級需要幾點？', '年度 250 點。'],
+        ['從 0 點的基本估算是多少？', '以銅級一般累積率計算，未稅約 NT$7,500。'],
+        ['可以把多個活動倍率相乘嗎？', '不可以，套用最高的適用累積率。']
       ]
     }
   },
@@ -2023,7 +2026,8 @@ function renderSeoPage(localeKey, pageKey, assetVersions, todayStr) {
   const page = PAGE_TYPES[pageKey];
   const content = page[localeKey];
   const canonical = pageUrl(localeKey, page.slug);
-  const calcHref = `/${localeKey}/?mode=${page.mode}&${page.query}`;
+  const calcQuery = content.query || page.query;
+  const calcHref = `/${localeKey}/?mode=${page.mode}&${calcQuery}`;
   const related = [
     [page.jaPath, locale.referenceLabel],
     ...locale.articles,
