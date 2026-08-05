@@ -112,7 +112,7 @@ test('gift-card discount guides use authorized regional rules instead of a perma
     assert.match(html, /通貨|currency|통화|幣別/, `${relativePath}: currency rule is missing`);
   }
   const jp = read(pages[0]);
-  const description = jp.match(/<meta name="description" content="([^"]+)">/);
+  const description = jp.match(/<meta name="description" content="([^"]+)"\s*\/?>/);
   assert.ok(description, 'Japanese gift-card meta description is missing');
   assertExcludesAll(description[1], ['楽天市場', 'コンビニ'], 'Japanese gift-card metadata');
   assertIncludesAll(read(pages[3]), ['台湾', '未列出'], 'Taiwan gift-card availability warning');
