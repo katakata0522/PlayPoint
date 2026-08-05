@@ -241,7 +241,11 @@ jobs:
             'articles/2026-07-25-play-points-coupon-not-applied.html',
             'tests/intl-coupon-credit.test.cjs',
             'tests/intl-platinum-diamond.test.cjs',
-            'tests/intl-rank-maintenance.test.cjs'
+            'tests/intl-rank-maintenance.test.cjs',
+            'blog/sitemap.xml',
+            'sitemap-intl-coupon-credit.xml',
+            'sitemap-intl-platinum-diamond.xml',
+            'sitemap-intl-rank-maintenance.xml'
           ]);
 
           const unexpected = changed.filter(file => !allowed.has(file));
