@@ -1,0 +1,74 @@
+name: Apply Japanese guide article batch
+
+on:
+  push:
+    branches:
+      - content/play-points-guides-2026-08-05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: article-batch-20260805
+  cancel-in-progress: false
+
+jobs:
+  apply-and-verify:
+    if: "${{ github.event.head_commit.message == 'chore: add temporary article batch workflow' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Restore and run audited article batch
+        run: |
+          cat .github/article-batch-payload/*.b64 | base64 --decode | gzip --decompress > /tmp/apply-content-batch-20260805.cjs
+          node /tmp/apply-content-batch-20260805.cjs
+
+      - name: Regenerate public output
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-05'
+          PLAYPOINT_ASSET_VERSION: '20260805_1249'
+        run: node scripts/build-html.js
+
+      - name: Stage validated content and generated paths
+        run: |
+          node <<'NODE'
+          const { spawnSync } = require('node:child_process');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const extra = [
+            'tests/article-fact-regression.test.cjs',
+            'tests/jp-guide-batch-20260805.test.cjs'
+          ];
+          const paths = [...new Set([...generatedFiles, ...extra])];
+          const result = spawnSync('git', ['add', '--', ...paths], { stdio: 'inherit' });
+          process.exit(result.status ?? 1);
+          NODE
+          git diff --cached --check
+          git diff --cached --quiet && { echo "No content changes were produced."; exit 1; } || true
+
+      - name: Commit article batch
+        run: |
+          git commit -m "content: add rank, account, country and multiplier guides"
+
+      - name: Remove temporary automation
+        run: |
+          git rm -r -- .github/article-batch-payload .github/workflows/apply-content-batch-20260805.yml
+          git commit -m "chore: remove temporary article batch automation"
+
+      - name: Run full clean-tree preflight
+        run: |
+          test -z "$(git status --porcelain)"
+          node .github/scripts/preflight.cjs
+          test -z "$(git status --porcelain)"
+
+      - name: Push verified branch
+        run: git push origin HEAD:content/play-points-guides-2026-08-05
