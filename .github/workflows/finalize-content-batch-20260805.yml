@@ -25,7 +25,8 @@ jobs:
       - name: Detect already finalized branch
         run: |
           if grep -q '2026-08-05-play-points-levels-guide.html' blog/articles.json \
-            && grep -q 'href="../latest/"' blog/index.html; then
+            && grep -q 'href="../latest/"' blog/index.html \
+            && grep -q '通常リワードは金曜日' articles/2025-12-25-weekly-reward.html; then
             echo "ARTICLE_BATCH_DONE=true" >> "$GITHUB_ENV"
             echo "Article batch is already finalized."
           else
@@ -110,6 +111,22 @@ jobs:
               `${heading}\n                <p class="static-latest-link"><a href="../latest/">最新情報・公式更新を見る</a></p>`
             );
             fs.writeFileSync(file, html);
+          }
+          NODE
+
+      - name: Restore weekly update schedule distinction
+        if: env.ARTICLE_BATCH_DONE != 'true'
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'articles/2025-12-25-weekly-reward.html';
+          let html = fs.readFileSync(file, 'utf8');
+          if (!html.includes('通常リワードは金曜日') || !html.includes('Play Passのボーナス・ブースターは木曜日')) {
+            const note = `\n    <section class="section" id="weekly-update-schedule">\n      <h2>更新曜日を混同しない</h2>\n      <p><strong>通常リワードは金曜日</strong>にリセットされます。一方、<strong>Play Passのボーナス・ブースターは木曜日</strong>に更新される別制度です。表示場所と対象条件も異なるため、同じ週次特典として扱わずに確認してください。</p>\n    </section>\n`;
+            const closing = html.lastIndexOf('</article>');
+            if (closing < 0) throw new Error('Weekly reward article closing tag was not found');
+            html = `${html.slice(0, closing)}${note}${html.slice(closing)}`;
+            fs.writeFileSync(file, html.replace(/[ \t]+$/gm, ''));
           }
           NODE
 
