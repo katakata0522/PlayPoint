@@ -1,0 +1,204 @@
+name: Repair regional multilingual guides final v5
+
+on:
+  push:
+    branches:
+      - content/intl-guides-regional-2026-08-05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair-intl-regional-final-v5-20260805
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Restore generator and normalization scripts
+        run: |
+          cat .github/intl-regional-guides-payload/*.b64 | base64 --decode | gzip --decompress > /tmp/generate.py
+          python -m py_compile /tmp/generate.py
+          python <<'PY'
+          from pathlib import Path
+
+          build = Path('.github/workflows/build-intl-regional-guides-20260805.yml').read_text()
+          start = "      - name: Normalize editorial quality and legacy compatibility\n        run: |\n          python <<'PY'\n"
+          end = "\n          PY\n\n      - name: Commit generated tree locally"
+          body = build.split(start, 1)[1].split(end, 1)[0]
+          Path('/tmp/normalize.py').write_text(
+              '\n'.join(line[10:] if line.startswith('          ') else line for line in body.splitlines()) + '\n'
+          )
+
+          v3 = Path('.github/workflows/repair-intl-regional-final-v3-20260805.yml').read_text()
+          start = "      - name: Apply compatibility corrections\n        run: |\n          python <<'PY'\n"
+          end = "\n          PY\n\n          node <<'NODE'"
+          body = v3.split(start, 1)[1].split(end, 1)[0]
+          Path('/tmp/compatibility.py').write_text(
+              '\n'.join(line[10:] if line.startswith('          ') else line for line in body.splitlines()) + '\n'
+          )
+          PY
+          python -m py_compile /tmp/normalize.py /tmp/compatibility.py
+
+      - name: Generate regional sources and remove duplicate sitemap topics
+        run: |
+          set +e
+          python /tmp/generate.py > /tmp/generator.log 2>&1
+          status=$?
+          cat /tmp/generator.log
+          if [ "$status" -ne 0 ] && ! grep -q "Wrong Silver threshold" /tmp/generator.log; then
+            exit "$status"
+          fi
+          set -e
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('scripts/intl-content-expansion.cjs')
+          text = path.read_text(encoding='utf-8')
+          for slug in ('google-play-points-weekly-reward.html', 'google-play-points-join-eligibility.html'):
+              pattern = rf'\n  \{{\n    slug: ["\']{re.escape(slug)}["\'],[\s\S]*?\n  \}},'
+              text, count = re.subn(pattern, '', text, count=1)
+              if count != 1:
+                  raise SystemExit(f'Could not remove duplicate sitemap topic: {slug}')
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Build, normalize, and lengthen Taiwan Silver metadata
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-05'
+          PLAYPOINT_ASSET_VERSION: '20260805_1911'
+        run: |
+          node scripts/build-html.js
+          python /tmp/generate.py --post-build
+          python /tmp/normalize.py
+          python /tmp/compatibility.py
+
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          html_path = Path('tw/status/silver/index.html')
+          html = html_path.read_text(encoding='utf-8')
+          match = re.search(r'<meta name="description" content="([^"]+)">', html)
+          if not match:
+              raise SystemExit('Taiwan Silver description was not found')
+          old = match.group(1)
+          new = '估算台灣 Google Play Points 銀級所需的 250 點與金額，並依 NT$30 累積單位、帳號特典與活動倍率安排購買計畫。'
+          if len(new) < 45 or len(new) > 170:
+              raise SystemExit(f'New Taiwan Silver description has invalid length: {len(new)}')
+          source_path = Path('scripts/intl-seo-pages.cjs')
+          source = source_path.read_text(encoding='utf-8')
+          if old not in source:
+              raise SystemExit(f'Generated Taiwan Silver description was not found in source: {old}')
+          source_path.write_text(source.replace(old, new), encoding='utf-8')
+          PY
+
+          node scripts/build-html.js
+          python /tmp/generate.py --post-build
+          python /tmp/normalize.py
+          python /tmp/compatibility.py
+
+      - name: Preserve publication dates and refresh registry tests
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import re
+
+          dates = {
+              'google-play-points-levels.html': '2026-07-07',
+              'google-play-points-join-eligibility.html': '2026-07-25',
+              'google-play-points-weekly-reward.html': '2026-07-25',
+          }
+          for locale in ('en', 'ko', 'tw'):
+              for slug, published in dates.items():
+                  path = Path(locale) / 'articles' / slug
+                  text = path.read_text(encoding='utf-8')
+                  text, count = re.subn(
+                      r'("datePublished"\s*:\s*")\d{4}-\d{2}-\d{2}("?)',
+                      rf'\g<1>{published}\2',
+                      text,
+                      count=1,
+                  )
+                  if count != 1:
+                      raise SystemExit(f'datePublished not found: {path}')
+                  path.write_text('\n'.join(line.rstrip() for line in text.splitlines()) + '\n', encoding='utf-8')
+          PY
+
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { MANUAL_INTL_ARTICLE_FILES } = require('./scripts/manual-intl-articles.cjs');
+          const { getPublishedIntlArticles } = require('./scripts/intl-seo-pages.cjs');
+          const registry = new Set(getPublishedIntlArticles().map(article => article.file));
+          const outside = MANUAL_INTL_ARTICLE_FILES.filter(file => !registry.has(file));
+          const path = 'tests/manual-intl-articles.test.cjs';
+          let text = fs.readFileSync(path, 'utf8');
+          const block = `const manualFilesOutsideIntlRegistry = [\n${outside.map(file => `  '${file}',`).join('\n')}\n];`;
+          text = text.replace(/const manualFilesOutsideIntlRegistry = \[[\s\S]*?\n\];/, block);
+          fs.writeFileSync(path, text);
+          NODE
+
+          node --check tests/intl-use-eligibility.test.cjs
+          node --check tests/intl-weekly-accounts.test.cjs
+          node --check tests/manual-intl-articles.test.cjs
+
+      - name: Remove temporary implementation files
+        run: |
+          rm -rf .github/intl-regional-guides-payload
+          rm -f \
+            .github/workflows/build-intl-regional-guides-20260805.yml \
+            .github/workflows/finalize-intl-regional-guides-20260805.yml \
+            .github/workflows/repair-intl-regional-final-v2-20260805.yml \
+            .github/workflows/repair-intl-regional-final-v3-20260805.yml \
+            .github/workflows/repair-intl-regional-final-v4-20260805.yml \
+            .github/workflows/repair-intl-regional-final-v5-20260805.yml
+
+      - name: Commit clean regional content locally
+        run: |
+          git add -A
+          git diff --cached --check
+          git diff --cached --quiet && { echo "No clean regional changes."; exit 1; } || true
+          git commit -m "content: add region-checked multilingual Play Points guides"
+          test -z "$(git status --porcelain)"
+
+      - name: Run complete preflight
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            python <<'PY'
+          from pathlib import Path
+
+          lines = Path('/tmp/preflight.log').read_text(errors='replace').splitlines()
+          markers = (
+              'not ok', 'AssertionError', 'ERR_ASSERTION', 'SyntaxError', 'Error:',
+              'expected', 'actual', 'Generated output differs'
+          )
+          selected = []
+          for index, line in enumerate(lines):
+              if any(marker in line for marker in markers):
+                  selected.extend(lines[max(0, index - 3):min(len(lines), index + 14)])
+          if not selected:
+              selected = lines[-100:]
+          compact = ' | '.join(dict.fromkeys(part.strip() for part in selected if part.strip()))
+          print(f'::error title=Regional v5 preflight failed::{compact[:7500]}')
+          PY
+            exit "$status"
+          fi
+
+      - name: Push verified clean content
+        run: git push origin HEAD:content/intl-guides-regional-2026-08-05
