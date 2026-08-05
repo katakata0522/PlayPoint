@@ -14,7 +14,9 @@ test('通常のウィークリーリワードと例外的な週次特典を区�
   assert.match(html, /通常のウィークリーリワード/);
   assert.match(html, /シルバー以上/);
   assert.match(html, /Play Pass/);
-  assert.match(html, /ブロンズは通常リワードの対象外です/);
+  assert.match(html, /公式の常設条件はシルバー以上/);
+  assert.match(html, /ブロンズでも「Play Points → 特典」を週1回確認/);
+  assert.match(html, /利用者報告/);
   assert.doesNotMatch(html, /最大\s*(?:3|10|200|500|1,000)\s*pt/);
   assert.doesNotMatch(html, /Play Pointsに登録していれば<strong>無料で毎週もらえます/);
 });

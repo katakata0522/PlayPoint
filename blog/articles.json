@@ -1,5 +1,80 @@
 [
   {
+    "id": "play-points-levels-guide",
+    "title": "Google Play Pointsのランク一覧｜条件・必要ポイント・必要額・特典を比較",
+    "date": "2026-08-05",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "ランク",
+      "必要ポイント",
+      "必要金額"
+    ],
+    "description": "日本のGoogle Play Pointsをブロンズからダイヤモンドまで一覧比較。必要ポイント、通常獲得率、ウィークリーリワード、ランクアップ時の購入額目安、残高との違いを解説します。",
+    "file": "../articles/2026-08-05-play-points-levels-guide.html",
+    "thumbnail": "../articles/ogp/diamond-worth-it.png"
+  },
+  {
+    "id": "play-points-cannot-join",
+    "title": "Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順",
+    "date": "2026-08-05",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "登録できない",
+      "表示されない",
+      "参加条件"
+    ],
+    "description": "Google Play Pointsのメニューや登録ボタンが表示されない時に、対応国、Googleアカウント、支払い方法、請求先住所、保護者・学校管理、端末を順番に確認する方法を解説します。",
+    "file": "../articles/2026-08-05-play-points-cannot-join.html",
+    "thumbnail": "../articles/ogp/getting-started.png"
+  },
+  {
+    "id": "play-country-change-points",
+    "title": "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点",
+    "date": "2026-08-05",
+    "category": "トラブル",
+    "tags": [
+      "Google Play",
+      "国変更",
+      "Play Points",
+      "ステータス"
+    ],
+    "description": "Google Playの国を変更するとPlay Pointsとステータスは新しい国へ引き継がれません。Play残高、定期購入、ファミリーグループ、90日制限、変更前チェックを整理します。",
+    "file": "../articles/2026-08-05-play-country-change-points.html",
+    "thumbnail": "../articles/ogp/multiple-accounts.png"
+  },
+  {
+    "id": "play-points-multiplier-stacking",
+    "title": "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法",
+    "date": "2026-08-05",
+    "category": "キャンペーン",
+    "tags": [
+      "Play Points",
+      "倍率",
+      "キャンペーン",
+      "計算方法"
+    ],
+    "description": "Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。",
+    "file": "../articles/2026-08-05-play-points-multiplier-stacking.html",
+    "thumbnail": "../articles/ogp/campaign.png"
+  },
+  {
+    "id": "fastest-silver",
+    "title": "Google Play Pointsで最速シルバーを目指す方法｜250ポイントを無駄なく貯める",
+    "date": "2026-08-05",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "シルバー",
+      "最速",
+      "250ポイント"
+    ],
+    "description": "ブロンズからシルバーまでの250ポイントを、無料オファー、クエスト、Play Pass週次特典、倍率キャンペーン、予定していた購入で無駄なく貯める順番と必要額を解説します。",
+    "file": "../articles/2026-08-05-fastest-silver.html",
+    "thumbnail": "../articles/ogp/weekly-reward.png"
+  },
+  {
     "id": "device-change",
     "title": "機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認",
     "date": "2026-08-03",
@@ -354,19 +429,19 @@
   },
   {
     "id": "weekly-reward",
-    "title": "Google Play Pointsのウィークリーリワード｜3種類の違い・更新日・受け取り方",
+    "title": "Google Play Pointsのウィークリーリワード｜ブロンズも確認・3種類の違い",
     "date": "2025-12-25",
     "category": "ランク",
     "tags": [
       "Play Points",
       "ウィークリーリワード",
-      "スーパーウィークリーリワード",
+      "ブロンズ",
       "Play Pass"
     ],
-    "description": "Google Play Pointsの通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナス・ブースターの違いを比較。対象者、金曜・木曜の更新、受け取り方、新端末で特典が最長15日ほど遅れる場合の確認順を解説します。",
+    "description": "通常ウィークリーリワード、スーパーウィークリーリワード、Play Pass週次ボーナスの違いを比較。公式は通常シルバー以上ですが、ブロンズでもまず特典画面を確認すべき理由を解説します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
-    "modified": "2026-08-03"
+    "modified": "2026-08-05"
   },
   {
     "id": "getting-started",
