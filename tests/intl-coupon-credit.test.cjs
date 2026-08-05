@@ -18,7 +18,7 @@ const topics = [
     jaFile: 'articles/2026-07-25-play-points-coupon-not-applied.html',
     officialIds: ['15776916', '9077247', '15698521'],
     phrases: {
-      ja: ['クーポン額以上', '1つだけ', '同じアカウント'],
+      ja: ['クーポン額以上', '1つです', 'アカウントが同じか'],
       en: ['equal to or greater than', 'one credit or promotion', 'same account'],
       ko: ['쿠폰 금액 이상', '하나의 크레딧이나 프로모션', '같은 계정'],
       tw: ['不低於折價券金額', '一項抵用金或促銷活動', '同一個帳號']
@@ -69,7 +69,9 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.ok((html.match(/<h2\b/g) || []).length >= 8);
       assert.ok(html.length >= 7000, `${relativePath}: thin content ${html.length}`);
       assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
-      const expectedModified = locale.key === 'ja' ? '2026-07-30' : '2026-07-25';
+      const expectedModified = locale.key === 'ja'
+        ? (topic.slug === 'google-play-points-coupon-not-applied.html' ? '2026-08-04' : '2026-07-30')
+        : '2026-07-25';
       assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}">`));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));

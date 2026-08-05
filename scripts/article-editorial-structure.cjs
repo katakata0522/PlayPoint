@@ -8,6 +8,8 @@ const EDITORIAL_MODIFIED_DATE = '2026-07-30';
 
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
+    manualStructure: true,
+    modifiedDate: '2026-08-04',
     answer: '購入が完了しているのにポイントが見えない場合は、注文状態、Play Points履歴、購入したGoogleアカウント、キャンペーン条件の順で確認します。待ち時間だけでは原因を切り分けられません。',
     known: [
       '注文が完了・保留・キャンセル・返金のどれかは購入履歴で確認できます。',
@@ -59,6 +61,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: '通常・2倍・3倍の引用用比較表を見る'
   },
   'articles/2026-07-24-play-points-cash-conversion.html': {
+    manualStructure: true,
+    modifiedDate: '2026-08-04',
     answer: 'Google Play Pointsは現金、PayPay残高、銀行口座へ直接送金できません。公式に表示されるクーポン、アプリ内アイテム、Google Playクレジットなどの交換先から選びます。',
     known: [
       'ポイントを購入したり現金へ換えたり、別アカウントへ移したりすることはできません。',
@@ -81,6 +85,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-25-play-points-coupon-not-applied.html': {
+    manualStructure: true,
+    modifiedDate: '2026-08-04',
     answer: 'クーポンが適用されない場合は、対象アプリ、最低購入額、他の割引との併用、交換したアカウント、国・通貨の順で確認します。',
     known: [
       '保存済みクーポンの対象アプリや条件はGoogle Playの画面で確認できます。',
@@ -92,6 +98,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2025-12-25-playpoints-rank-maintenance.html': {
+    manualStructure: true,
+    modifiedDate: '2026-08-04',
     answer: 'その年に到達したステータスは翌年末まで維持され、翌年に貯めたポイント数をもとに次の年初のステータスが再判定されます。',
     known: [
       '日本のステータス条件と通常獲得率はGoogle Play公式案内で確認できます。',
@@ -105,6 +113,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: 'ランク条件と通常獲得率の比較表を見る'
   },
   'articles/2025-12-25-campaign.html': {
+    manualStructure: true,
+    modifiedDate: '2026-08-04',
     answer: 'キャンペーンを待つかは、予定している購入だけを通常・2倍・3倍で比較し、対象アプリ、期間、開始操作、上限を確認して判断します。',
     known: [
       '通常時の獲得率を基準にすると、キャンペーン分の差額を比較できます。',
@@ -181,7 +191,18 @@ function applyEditorialStructure(rootDir, modifiedDate) {
     }
 
     const targetModifiedDate = config.modifiedDate || EDITORIAL_MODIFIED_DATE;
-    let html = fs.readFileSync(absolutePath, 'utf8').replace(EDITORIAL_MARKER_PATTERN, '\n');
+    let html = fs.readFileSync(absolutePath, 'utf8');
+
+    if (config.manualStructure) {
+      html = updateDateMetadata(html, targetModifiedDate)
+        .replace(/\r\n/g, '\n')
+        .replace(/[ \t]+$/gm, '');
+      fs.writeFileSync(absolutePath, html, 'utf8');
+      updatedCount += 1;
+      continue;
+    }
+
+    html = html.replace(EDITORIAL_MARKER_PATTERN, '\n');
     const knowledge = renderKnowledgeBoundary(config);
     let editorialHtml;
 

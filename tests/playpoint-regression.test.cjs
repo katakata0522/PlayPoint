@@ -1837,8 +1837,8 @@ test('反映タイミング記事は結論と確認手順を見出しで整理�
   const article = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'))
     .find(item => item.id === 'play-points-reflection-timing');
 
-  assert.ok(html.includes('<h2>最初に確認する3つ</h2>'));
-  assert.ok(html.includes('<h2>状況別の判断目安</h2>'));
+  assert.ok(html.includes('<h2>最初に確認する4つ</h2>'));
+  assert.ok(html.includes('<h2>状況別の確認方法</h2>'));
   assert.ok(html.includes('<h2>問い合わせ前に残しておく情報</h2>'));
   assert.ok(!html.includes('検索から来た人にもちゃんと残りやすくなります'));
   assert.ok(article?.modified, '反映タイミング記事の更新日が一覧にありません');
@@ -2688,8 +2688,8 @@ test('断定を避けるべき記事と公式仕様の記事は重要な注意�
   const maintenance = fs.readFileSync(path.join(root, 'articles/2025-12-25-playpoints-rank-maintenance.html'), 'utf8');
 
   assert.ok(promotion.includes('一律には判断できません'), 'プロモコード記事が個別条件を無視して断定しています');
-  assert.ok(promotion.includes('その特典固有の条件'), 'プロモーション固有条件の案内がありません');
-  assert.ok(refund.includes('ポイント残高がマイナスになります'), '返金後のマイナス残高を明示していません');
+  assert.ok(promotion.includes('特典固有の条件'), 'プロモーション固有条件の案内がありません');
+  assert.ok(refund.includes('ポイント残高がマイナスになる'), '返金後のマイナス残高を明示していません');
   assert.ok(refund.includes('レベル進捗からも減算'), '返金がランク進捗へ与える影響を明示していません');
   assert.ok(maintenance.includes('プラチナまでの残りは4,000ポイント'), 'ランク引き継ぎ時の具体例がありません');
   assert.ok(maintenance.includes('4,000 − ゴールド1,000 = 3,000'), '誤った差分計算への注意がありません');

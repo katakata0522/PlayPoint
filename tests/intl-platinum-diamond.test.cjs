@@ -11,7 +11,7 @@ const pages = [
     key: 'ja',
     lang: 'ja',
     file: 'articles/2025-12-25-diamond-worth-it.html',
-    phrases: ['4,000〜14,999 pt', '15,000 pt以上', '約22.9万円', '75万円'],
+    phrases: ['4,000〜14,999ポイント', '15,000ポイント以上', '約22万8,600円', '75万円'],
     sourceCountry: 'JP'
   },
   {
@@ -57,7 +57,8 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
   for (const page of pages) {
     const html = read(page.file);
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
-    assert.ok(html.includes('<meta name="last-modified" content="2026-07-25"'), page.file);
+    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-07-25';
+    assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}"`), page.file);
     assert.ok(html.includes('article:modified_time'), page.file);
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9080348'), page.file);
@@ -121,12 +122,12 @@ test('日本語記事データと配信ファイルの更新日・説明が一�
   const articles = JSON.parse(read('blog/articles.json'));
   const article = articles.find(item => item.id === 'diamond-worth-it');
   assert.ok(article);
-  assert.strictEqual(article.modified, '2026-07-25');
+  assert.strictEqual(article.modified, '2026-08-04');
   assert.ok(article.description.includes('日本のGoogle公式情報'));
 
   const atom = read('atom.xml');
   const blogSitemap = read('blog/sitemap.xml');
-  assert.ok(atom.includes('<updated>2026-07-25T12:00:00+09:00</updated>'));
+  assert.ok(atom.includes('<updated>2026-08-04T12:00:00+09:00</updated>'));
   assert.ok(blogSitemap.includes('<loc>https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</loc>'));
 });
 
