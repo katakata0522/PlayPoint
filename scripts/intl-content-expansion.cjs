@@ -77,6 +77,42 @@ const TOPICS = [
       ko: "할인·프로모션 코드 사용 시 Play Points 적립 기준",
       tw: "折扣、促銷代碼的 Play Points 累積規則"
     }
+  },
+  {
+    slug: "google-play-points-levels.html",
+    publishedAt: '2026-08-05',
+    labels: {
+      en: "Google Play Points levels by region",
+      ko: "한국 Google Play Points 등급표",
+      tw: "台灣 Google Play Points 等級表"
+    }
+  },
+  {
+    slug: "google-play-points-country-change.html",
+    publishedAt: '2026-08-05',
+    labels: {
+      en: "What happens after changing Play country",
+      ko: "Play 국가 변경 시 포인트 영향",
+      tw: "變更 Play 國家／地區後的影響"
+    }
+  },
+  {
+    slug: "google-play-points-promotion-stacking.html",
+    publishedAt: '2026-08-05',
+    labels: {
+      en: "Do Play Points promotions stack?",
+      ko: "Play Points 배율 중복 규칙",
+      tw: "Play Points 活動倍率會疊加嗎"
+    }
+  },
+  {
+    slug: "google-play-points-fastest-silver.html",
+    publishedAt: '2026-08-05',
+    labels: {
+      en: "Reach Silver efficiently in the US",
+      ko: "한국 실버 효율적으로 달성",
+      tw: "台灣銀級高效累積攻略"
+    }
   }
 ];
 const LOCALES = [
@@ -112,7 +148,7 @@ function writeSitemap(rootDir) {
       const alternates = LOCALES.map(candidate =>
         `    <xhtml:link rel="alternate" hreflang="${candidate.hreflang}" href="https://playpoint-sim.com/${articlePath(candidate.key, topic.slug)}" />`
       ).join('\n');
-      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${PUBLISHED_AT}</lastmod>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath('en', topic.slug)}" />\n  </url>`);
+      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${topic.publishedAt || PUBLISHED_AT}</lastmod>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath('en', topic.slug)}" />\n  </url>`);
     }
   }
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;

@@ -60,7 +60,7 @@ test('ポイント利用・参加条件記事は3言語でSEO公開要件を満�
       assert.ok(description.length >= 45 && description.length <= 170, `${relativePath} description=${description.length}`);
       assert.strictEqual((html.match(/<h1\b/g) || []).length, 1);
       assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'));
+      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">') || html.includes('<meta name="last-modified" content="2026-08-05">'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
       assert.ok(html.includes('class="cta-btn"'));
