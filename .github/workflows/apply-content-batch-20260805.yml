@@ -62,7 +62,10 @@ jobs:
           const weeklyEnUrl = 'https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html';
           weekly = insertAlternate(weekly, 'ja', weeklyJaUrl);
           weekly = insertAlternate(weekly, 'en', weeklyEnUrl);
+          weekly = insertAlternate(weekly, 'ko', 'https://playpoint-sim.com/ko/articles/google-play-points-weekly-reward.html');
+          weekly = insertAlternate(weekly, 'zh-TW', 'https://playpoint-sim.com/tw/articles/google-play-points-weekly-reward.html');
           weekly = insertAlternate(weekly, 'x-default', weeklyEnUrl);
+
           const bronzeGuidance = '<p><strong>通常の公式条件はシルバー以上です。</strong> ただし、ブロンズでも特典タブに週次形式の表示が出る場合があるため、ランクだけで対象外と決めつけず、まず「Play Points → 特典」を確認してください。表示されたものがPlay Pass系など別制度の週次特典ではないかも合わせて確認しましょう。</p>';
           if (/ブロンズは通常リワードの対象外/.test(weekly)) {
             weekly = weekly.replace(/<p>[^<]*<strong>ブロンズは通常リワードの対象外です。<\/strong>[\s\S]*?<\/p>/, bronzeGuidance);
@@ -71,6 +74,11 @@ jobs:
             weekly = heading.test(weekly)
               ? weekly.replace(heading, `$1\n      ${bronzeGuidance}`)
               : insertBeforeClosing(weekly, `\n    <section class="section" id="bronze-weekly-check"><h2>ブロンズでもまず特典タブを確認</h2>${bronzeGuidance}</section>\n`);
+          }
+          weekly = weekly.replace(/ブロンズは通常リワードの対象外です。/g, '通常の公式条件はシルバー以上ですが、ブロンズでも特典タブを一度確認してください。');
+          if (!weekly.includes('ほくほくリワード日記')) {
+            const diarySection = `\n    <section class="cta-box" aria-labelledby="diary-cta">\n      <h2 id="diary-cta">今週の結果を「ほくほくリワード日記」へ記録</h2>\n      <p>受け取ったポイントを週ごとに記録し、合計や履歴をこの端末内で確認できます。トップページで「ほくほくリワード日記」タブを選んでください。</p>\n      <a class="cta-btn" href="../">日記を開く</a>\n    </section>\n`;
+            weekly = insertBeforeClosing(weekly, diarySection);
           }
           write(weeklyFile, weekly);
 
@@ -208,8 +216,8 @@ jobs:
           set -e
           cat /tmp/preflight.log
           if [ "$status" -ne 0 ]; then
-            summary="$(grep -E -B 4 -A 6 'not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail [1-9]|Error:|失敗|不一致|未登録|見つかりません' /tmp/preflight.log | head -n 160 || true)"
-            if [ -z "$summary" ]; then summary="$(tail -n 60 /tmp/preflight.log)"; fi
+            summary="$(grep -E -B 4 -A 6 'not ok|AssertionError|ERR_ASSERTION|actual:|expected:|operator:|testCodeFailure|# fail [1-9]|Error:|失敗|不一致|未登録|見つかりません' /tmp/preflight.log | head -n 180 || true)"
+            if [ -z "$summary" ]; then summary="$(tail -n 70 /tmp/preflight.log)"; fi
             summary="${summary//'%'/'%25'}"
             summary="${summary//$'\r'/'%0D'}"
             summary="${summary//$'\n'/'%0A'}"
