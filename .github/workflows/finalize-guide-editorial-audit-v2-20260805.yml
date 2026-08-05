@@ -1,0 +1,238 @@
+name: Finalize guide editorial audit v2
+
+on:
+  push:
+    branches:
+      - content/play-points-guides-2026-08-05
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-guide-editorial-audit-v2-20260805
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Regenerate public output
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-05'
+          PLAYPOINT_ASSET_VERSION: '20260805_1249'
+        run: node scripts/build-html.js
+
+      - name: Apply final factual and editorial corrections
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def edit(relative, pairs):
+              path = Path(relative)
+              text = path.read_text()
+              for old, new in pairs:
+                  text = text.replace(old, new)
+              path.write_text(text)
+
+          def dedupe_article_links(relative, article_name):
+              path = Path(relative)
+              result = []
+              for line in path.read_text().splitlines():
+                  if result and article_name in line and line.strip() == result[-1].strip():
+                      continue
+                  result.append(line)
+              path.write_text('\n'.join(result) + '\n')
+
+          weekly = 'articles/2025-12-25-weekly-reward.html'
+          edit(weekly, [
+              ('"text": "Play Pass週次ボーナス・ブースターは通常リワードと別制度で、公式ページにシルバー以上という最低ランク条件はありません。Play Points会員かつ対象の加入者はPlay Pass画面を確認してください。"',
+               '"text": "Play Pass週次ボーナス・ブースターは通常リワードと別制度です。Play Pointsへ登録済みの対象Play Pass加入者と対象ファミリーメンバーは、Play Pass画面を確認してください。"'),
+              ('<p>日本向けGoogle公式ヘルプでは、通常のウィークリーリワードはシルバー以上が対象です。一方、Play Pass加入者向け週次ボーナス・ブースターは別制度で、公式案内にシルバー以上という最低ランク条件はありません。</p>\n      <p>ブロンズは通常のウィークリーリワードの公式対象ではありません。Play Pass加入者向け週次ボーナス・ブースターは別制度なので、対象の加入者はPlay Pass画面で表示内容と期限を確認してください。</p>',
+               '<p>日本向けGoogle公式ヘルプでは、通常のウィークリーリワードはシルバー以上が対象です。Play Pass加入者向け週次ボーナス・ブースターは別制度で、Play Pointsへ登録済みの対象加入者と対象ファミリーメンバーがPlay Pass画面から確認します。</p>'),
+              ('<p><strong>通常のウィークリーリワードはシルバー以上が公式対象です。</strong> ブロンズでは、通常リワードを前提にするのではなく、Play Passへ加入している場合に別制度の週次特典が表示されているかを確認します。</p>      <p>さらに、Play Pass加入者向けの週次Play Pointsボーナス・ブースターは通常リワードと別制度で、公式ページにはシルバー以上という最低ランク条件が書かれていません。ブロンズでもPlay Points会員かつ対象のPlay Pass加入者なら、Play Pass画面を確認する価値があります。</p>',
+               '<p><strong>通常のウィークリーリワードはシルバー以上が公式対象です。</strong> ブロンズでPlay Passへ加入している場合は、通常リワードとは別の週次ボーナス・ブースターをPlay Pass画面で確認してください。</p>'),
+              ('<li>ブロンズでも特典タブを一度確認し、表示の有無を事実として扱う</li>',
+               '<li>通常リワードはシルバー以上、Play Pass週次特典は別制度として切り分ける</li>'),
+              ('<p>ブロンズの人は、特典が表示されるかを一度確認したうえで、通常対象であるシルバーまでの不足ポイントを計算すると次の行動を決めやすくなります。</p>      <p><a href="./2026-08-05-fastest-silver.html">最速でシルバーを目指す方法を見る</a></p>',
+               '<p>ブロンズの人は、Play Pass加入中なら木曜日の週次特典を確認し、通常リワードを利用したい場合はシルバーまでの不足ポイントを計算すると次の行動を決めやすくなります。</p>      <p><a href="./2026-08-05-fastest-silver.html">シルバーをお得に目指す方法を見る</a></p>'),
+              ('<div class="faq-item"><h3>ブロンズでもウィークリーリワードが表示されることはありますか？</h3><p>利用者による表示報告はありますが、日本の常設仕様としてGoogle公式ヘルプには記載されていません。表示されていれば条件を確認し、表示されなくても不具合と断定しないでください。</p></div>',
+               '<div class="faq-item"><h3>ブロンズは通常のウィークリーリワード対象ですか？</h3><p>いいえ。日本向けGoogle公式ヘルプでは通常のウィークリーリワードはシルバー以上が対象です。Play Pass加入者向け週次特典は別制度なので、対象の加入者はPlay Pass画面を確認してください。</p></div>'),
+          ])
+
+          levels = 'articles/2026-08-05-play-points-levels-guide.html'
+          dedupe_article_links(levels, '2026-08-05-fastest-silver.html')
+          edit(levels, [
+              ('"text": "通常の交換や利用で残高が減っても、年間のレベル進捗と同じ動きになるとは限りません。返金による減算は別です。"',
+               '"text": "ポイントを特典へ交換して残高が減っても、年間のレベル進捗は減りません。返金やキャンセルによる減算は別です。"'),
+              ('<div class="faq-item"><h3>ポイントを使うとランクも下がりますか？</h3><p>通常の交換や利用で残高が減っても、年間のレベル進捗と同じ動きになるとは限りません。返金による減算は別です。</p></div>',
+               '<div class="faq-item"><h3>ポイントを使うとランクも下がりますか？</h3><p>いいえ。ポイントを特典へ交換して残高が減っても、年間のレベル進捗は減りません。返金やキャンセルによる減算は別です。</p></div>'),
+              ('<div class="faq-item"><h3>ブロンズではウィークリーリワードを確認しなくてよいですか？</h3><p>公式の通常リワードはシルバー以上ですが、Play Pass系は別制度で、例外的な表示報告もあります。ブロンズでも特典タブを一度確認する価値があります。</p></div>',
+               '<div class="faq-item"><h3>ブロンズは通常のウィークリーリワード対象ですか？</h3><p>通常のウィークリーリワードはシルバー以上が公式対象です。Play Pass加入者向け週次特典は別制度なので、対象の加入者はPlay Pass画面を確認してください。</p></div>'),
+              ('シルバーを最速・無駄なく目指す方法', 'シルバーをお得・効率的に目指す方法'),
+          ])
+
+          multiplier = 'articles/2026-08-05-play-points-multiplier-stacking.html'
+          old_description = 'Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。'
+          new_description = 'Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。'
+          edit(multiplier, [
+              (old_description, new_description),
+              ('"name": "シルバーの1.25倍と3倍キャンペーンは4.25倍になりますか？",',
+               '"name": "シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？",'),
+              ('"text": "なりません。公式例では通常獲得率とスペシャルオファーの高い方が適用されます。3倍の意味は個別規約で確認してください。"',
+               '"text": "なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。"'),
+              ('"text": "併用できると明記されていなければ、6倍と決めつけられません。各キャンペーンの対象条件と併用可否を確認します。"',
+               '"text": "なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。"'),
+              ('"text": "ブロンズでは同じ数値になりますが、シルバー以上では異なります。倍率表記か直接獲得率かを確認してください。"',
+               '"text": "通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。"'),
+              ('"text": "商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。不要な分割購入は勧められません。"',
+               '"text": "商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。"'),
+              ('<p>ただし「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があります。表示単位、対象商品、期間、開始操作、併用条件を確認してから計算してください。</p>',
+               '<p>複数のプロモーションは併用されず、対象購入には利用できる最も高い獲得率が適用されます。「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があるため、表示単位、対象商品、期間、開始操作を確認してから計算してください。</p>'),
+              ('<tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と断定</td><td>両方の対象条件と併用可否を確認</td></tr>',
+               '<tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と計算</td><td>対象となる最も高い獲得率を確認</td></tr>'),
+              ('<li>併用可否、対象者、上限、初回限定などの個別条件を読む</li>\n        <li>同じ購入へ複数適用されると書かれていなければ、足し算・掛け算をしない</li>',
+               '<li>対象者、上限、初回限定などの個別条件を読む</li>\n        <li>複数のプロモーションは足し算・掛け算せず、対象となる最も高い獲得率を使う</li>'),
+              ('<div class="faq-item"><h3>シルバーの1.25倍と3倍キャンペーンは4.25倍になりますか？</h3><p>なりません。公式例では通常獲得率とスペシャルオファーの高い方が適用されます。3倍の意味は個別規約で確認してください。</p></div>',
+               '<div class="faq-item"><h3>シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？</h3><p>なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。</p></div>'),
+              ('<div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>併用できると明記されていなければ、6倍と決めつけられません。各キャンペーンの対象条件と併用可否を確認します。</p></div>',
+               '<div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。</p></div>'),
+              ('<div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>ブロンズでは同じ数値になりますが、シルバー以上では異なります。倍率表記か直接獲得率かを確認してください。</p></div>',
+               '<div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。</p></div>'),
+              ('<div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。不要な分割購入は勧められません。</p></div>',
+               '<div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。</p></div>'),
+              ('シルバーを最速・無駄なく目指す方法', 'シルバーをお得・効率的に目指す方法'),
+          ])
+
+          silver = 'articles/2026-08-05-fastest-silver.html'
+          edit(silver, [
+              ('<p>日本向け公式ヘルプでは、通常のウィークリーリワードはシルバー以上が対象です。その一方で、Play Pass加入者向けの週次Play Pointsボーナス・ブースターは通常リワードと別で、Play Points会員かつ対象のPlay Pass加入者であれば利用できると案内されています。</p>      <p>ブロンズは通常リワードの公式対象外です。Play Pass加入者向けの週次ボーナス・ブースターは別制度で、Play Points登録済みかつ対象の加入者であればPlay Pass画面から確認できます。実際に表示された内容、期限、対象条件を優先してください。</p>',
+               '<p>日本向け公式ヘルプでは、通常のウィークリーリワードはシルバー以上が対象です。Play Pass加入者向け週次ボーナス・ブースターは別制度で、Play Pointsへ登録済みの対象加入者と対象ファミリーメンバーがPlay Pass画面から確認します。</p>'),
+              ('ブロンズの通常獲得率だけなら税抜の対象購入額で約25,000円が単純目安です。無料獲得や高獲得率があれば少なくなります。',
+               'ブロンズの通常獲得率だけなら税抜の対象購入額で約25,000円が単純目安です。アカウントに表示された特典や高い獲得率を利用できる場合は必要額が下がります。'),
+          ])
+
+          author_old = 'Google Play公式情報と実際の画面で確認すべき内容を分け、計算結果だけで不要な購入を促さない方針で掲載しています。'
+          author_new = 'Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。'
+          for relative in [
+              levels,
+              multiplier,
+              'articles/2026-08-05-play-points-cannot-join.html',
+              'articles/2026-08-05-play-country-change-points.html',
+          ]:
+              edit(relative, [(author_old, author_new)])
+
+          country = 'articles/2026-08-05-play-country-change-points.html'
+          edit(country, [
+              ('通常は勧められません。新しい国に居住し、その国の支払い方法を持つことが条件で、ポイントやコンテンツへの影響もあります。',
+               '旅行だけでは国変更の条件を満たしません。新しい国に居住し、その国の支払い方法を持つことが条件で、ポイントやコンテンツへの影響もあります。'),
+          ])
+
+          test_file = Path('tests/jp-guide-batch-20260805.test.cjs')
+          test_text = test_file.read_text()
+          test_text = test_text.replace(
+              '  assert.match(html, /商品ごと/);',
+              '  assert.match(html, /商品ごと/);\n  assert.match(html, /複数のプロモーションは併用されず/);'
+          )
+          test_text = test_text.replace(
+              '  assert.doesNotMatch(html, /無駄な課金/);',
+              '  assert.doesNotMatch(html, /無駄な課金|不要な購入|予定外の支出/);'
+          )
+          test_text = test_text.replace(
+              '  assert.doesNotMatch(html, /利用者報告/);',
+              '  assert.doesNotMatch(html, /利用者.*表示報告|例外的な表示報告/);'
+          )
+          test_text = test_text.replace(
+              '  assert.doesNotMatch(html, /ブロンズは通常リワードの対象外です/);',
+              '  assert.doesNotMatch(html, /ブロンズでも特典タブを一度確認/);'
+          )
+          if "ランク記事からシルバーのお得記事へ重複なく移動できる" not in test_text:
+              marker = "test('シルバー計算入口の上部からお得記事へ移動できる', () => {"
+              addition = "test('ランク記事からシルバーのお得記事へ重複なく移動できる', () => {\n  const levels = read('articles/2026-08-05-play-points-levels-guide.html');\n  assert.equal((levels.match(/2026-08-05-fastest-silver\\.html/g) || []).length, 2);\n});\n\n"
+              test_text = test_text.replace(marker, addition + marker)
+          test_file.write_text(test_text)
+
+          fact_file = Path('tests/article-fact-regression.test.cjs')
+          fact_text = fact_file.read_text().replace(
+              '  assert.doesNotMatch(html, /利用者報告/);',
+              '  assert.doesNotMatch(html, /利用者.*表示報告|例外的な表示報告/);'
+          )
+          fact_file.write_text(fact_text)
+
+          checks = {
+              weekly: [
+                  ('利用者による表示報告', False),
+                  ('例外的な表示報告', False),
+                  ('ブロンズでも特典タブを一度確認', False),
+                  ('ブロンズは通常のウィークリーリワード対象ですか？', True),
+              ],
+              levels: [
+                  ('シルバーを最速・無駄なく目指す方法', False),
+                  ('例外的な表示報告', False),
+                  ('年間のレベル進捗は減りません', True),
+              ],
+              multiplier: [
+                  ('複数のプロモーションは併用されず', True),
+                  ('不要な分割購入は勧められません', False),
+                  ('シルバーを最速・無駄なく目指す方法', False),
+              ],
+              silver: [
+                  ('無駄な課金', False),
+                  ('予定外の支出', False),
+                  ('購入予定', True),
+                  ('高い獲得率', True),
+              ],
+          }
+          for relative, expected in checks.items():
+              text = Path(relative).read_text()
+              for phrase, should_exist in expected:
+                  if (phrase in text) != should_exist:
+                      raise SystemExit(f'Final editorial check failed: {relative}: {phrase}: expected={should_exist}')
+          if Path(levels).read_text().count('2026-08-05-fastest-silver.html') != 2:
+              raise SystemExit('Silver guide link count in levels article is not exactly 2')
+
+          for relative in [
+              weekly,
+              levels,
+              multiplier,
+              silver,
+              country,
+              'articles/2026-08-05-play-points-cannot-join.html',
+              'tests/jp-guide-batch-20260805.test.cjs',
+              'tests/article-fact-regression.test.cjs',
+          ]:
+              path = Path(relative)
+              path.write_text('\n'.join(line.rstrip() for line in path.read_text().splitlines()) + '\n')
+          PY
+
+      - name: Validate and commit final corrections
+        run: |
+          git add -- \
+            articles/2025-12-25-weekly-reward.html \
+            articles/2026-08-05-play-points-levels-guide.html \
+            articles/2026-08-05-play-points-multiplier-stacking.html \
+            articles/2026-08-05-fastest-silver.html \
+            articles/2026-08-05-play-points-cannot-join.html \
+            articles/2026-08-05-play-country-change-points.html \
+            tests/jp-guide-batch-20260805.test.cjs \
+            tests/article-fact-regression.test.cjs
+          git diff --cached --check
+          git diff --cached --quiet && { echo "No final corrections were staged."; exit 1; } || true
+          git commit -m "content: finalize guide fact and editorial audit"
+          test -z "$(git status --porcelain)"
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push verified corrections
+        run: git push origin HEAD:content/play-points-guides-2026-08-05
