@@ -28,4 +28,40 @@ jobs:
           persist-credentials: false
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs 2>&1 | tee preflight.log
+          status=${PIPESTATUS[0]}
+
+          if [ "$status" -ne 0 ]; then
+            node <<'NODE'
+          const fs = require('node:fs');
+          const lines = fs.readFileSync('preflight.log', 'utf8').split(/\r?\n/);
+          const markers = /not ok|AssertionError|ERR_ASSERTION|missing|must not contain|事前検証で失敗した工程|Process exited|Error:/i;
+          const hitIndexes = lines
+            .map((line, index) => markers.test(line) ? index : -1)
+            .filter(index => index >= 0);
+          const selected = new Set();
+          for (const index of hitIndexes) {
+            for (let i = Math.max(0, index - 8); i <= Math.min(lines.length - 1, index + 20); i += 1) {
+              selected.add(i);
+            }
+          }
+          if (selected.size === 0) {
+            for (let i = Math.max(0, lines.length - 180); i < lines.length; i += 1) selected.add(i);
+          }
+          const excerpt = [...selected]
+            .sort((a, b) => a - b)
+            .map(index => `${index + 1}: ${lines[index]}`)
+            .join('\n')
+            .slice(-60000);
+          const escape = value => value
+            .replace(/%/g, '%25')
+            .replace(/\r/g, '%0D')
+            .replace(/\n/g, '%0A');
+          console.log(`::error title=Preflight failure excerpt::${escape(excerpt)}`);
+          NODE
+          fi
+
+          exit "$status"
