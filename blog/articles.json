@@ -55,7 +55,7 @@
       "キャンペーン",
       "計算方法"
     ],
-    "description": "Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。",
+    "description": "Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。",
     "file": "../articles/2026-08-05-play-points-multiplier-stacking.html",
     "thumbnail": "../articles/ogp/campaign.png"
   },

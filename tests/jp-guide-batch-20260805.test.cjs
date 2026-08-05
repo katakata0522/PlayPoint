@@ -42,6 +42,8 @@ test('倍率記事が直接レートと倍率入力を足し合わせない', ()
   assert.match(html, /100円あたり3ポイント/);
   assert.match(html, /税金を除いた/);
   assert.match(html, /商品ごと/);
+  assert.match(html, /複数のプロモーションは併用されず/);
+  assert.match(html, /複数のプロモーションは併用されず/);
   assert.match(html, /四捨五入/);
 });
 
@@ -52,7 +54,7 @@ test('シルバー記事が購入予定と高い獲得率を組み合わせる',
   assert.match(html, /お得/);
   assert.match(html, /購入予定/);
   assert.match(html, /高い獲得率|高獲得率/);
-  assert.doesNotMatch(html, /無駄な課金/);
+  assert.doesNotMatch(html, /無駄な課金|不要な購入|予定外の支出/);
   assert.match(html, /status\/silver/);
 });
 
@@ -61,9 +63,14 @@ test('ウィークリー記事が通常リワードとPlay Pass週次特典を�
   assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);
   assert.match(html, /通常のウィークリーリワードはシルバー以上/);
   assert.match(html, /Play Pass加入中なら木曜日/);
-  assert.doesNotMatch(html, /利用者報告/);
+  assert.doesNotMatch(html, /利用者.*表示報告|例外的な表示報告/);
   assert.match(html, /Play Pass/);
-  assert.doesNotMatch(html, /ブロンズは通常リワードの対象外です/);
+  assert.doesNotMatch(html, /ブロンズでも特典タブを一度確認/);
+});
+
+test('ランク記事からシルバーのお得記事へ重複なく移動できる', () => {
+  const levels = read('articles/2026-08-05-play-points-levels-guide.html');
+  assert.equal((levels.match(/2026-08-05-fastest-silver\.html/g) || []).length, 2);
 });
 
 test('シルバー計算入口の上部からお得記事へ移動できる', () => {

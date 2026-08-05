@@ -11,12 +11,12 @@
   <meta property="article:modified_time" content="2026-08-05T00:00:00+09:00" />
   <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
   <title>Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</title>
-  <meta name="description" content="Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。" />
+  <meta name="description" content="Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。" />
   <link rel="canonical" href="https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法" />
-  <meta property="og:description" content="Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。" />
+  <meta property="og:description" content="Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。" />
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/campaign.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -31,7 +31,7 @@
     "@id": "https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html"
   },
   "headline": "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法",
-  "description": "Play Pointsの通常獲得率と2倍・3倍キャンペーンは足し算や掛け算で重複するとは限りません。最高獲得率、直接レート、税抜価格、商品ごとの四捨五入を例付きで解説します。",
+  "description": "Play Pointsでは複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。直接レート、倍率表記、税抜価格、商品ごとの四捨五入を例付きで解説します。",
   "inLanguage": "ja",
   "datePublished": "2026-08-05",
   "dateModified": "2026-08-05",
@@ -59,10 +59,10 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "シルバーの1.25倍と3倍キャンペーンは4.25倍になりますか？",
+      "name": "シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "なりません。公式例では通常獲得率とスペシャルオファーの高い方が適用されます。3倍の意味は個別規約で確認してください。"
+        "text": "なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。"
       }
     },
     {
@@ -70,7 +70,7 @@
       "name": "2倍と3倍は6倍になりますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "併用できると明記されていなければ、6倍と決めつけられません。各キャンペーンの対象条件と併用可否を確認します。"
+        "text": "なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。"
       }
     },
     {
@@ -78,7 +78,7 @@
       "name": "3倍と100円ごとに3ポイントは同じですか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "ブロンズでは同じ数値になりますが、シルバー以上では異なります。倍率表記か直接獲得率かを確認してください。"
+        "text": "通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。"
       }
     },
     {
@@ -94,7 +94,7 @@
       "name": "購入を分けるとポイントは増えますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。不要な分割購入は勧められません。"
+        "text": "商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。"
       }
     }
   ]
@@ -113,7 +113,7 @@
     <section class="answer-box" aria-labelledby="quick-answer">
       <h2 id="quick-answer">結論：通常率とキャンペーンを勝手に足し算・掛け算しない</h2>
       <p>Google公式の計算例では、ランクの通常獲得率とスペシャルオファーを比べ、より高い獲得率が適用されます。シルバーの1.25ポイント/100円と、3ポイント/100円のオファーが同時にある場合、4.25ポイントではなく3ポイントです。</p>
-      <p>ただし「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があります。表示単位、対象商品、期間、開始操作、併用条件を確認してから計算してください。</p>
+      <p>複数のプロモーションは併用されず、対象購入には利用できる最も高い獲得率が適用されます。「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があるため、表示単位、対象商品、期間、開始操作を確認してから計算してください。</p>
     </section>
 
     <section class="section" id="relationship">
@@ -125,7 +125,7 @@
           <tbody>
             <tr><td>シルバー1.25＋3ポイント/100円オファー</td><td>1.25＋3＝4.25ポイント</td><td>高い方の3ポイント</td></tr>
             <tr><td>「3倍」など倍率表記</td><td>1.25＋3、または1.25×3と自動計算する</td><td>プロモーションに記載された最終獲得率・計算条件を確認</td></tr>
-            <tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と断定</td><td>両方の対象条件と併用可否を確認</td></tr>
+            <tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と計算</td><td>対象となる最も高い獲得率を確認</td></tr>
           </tbody>
         </table>
       </div>      <p><strong>「3倍」と「100円ごとに3ポイント」は同じ意味とは限りません。</strong> 画面に書かれた単位と、プロモーション固有の利用規約を先に確認します。</p>
@@ -167,8 +167,8 @@
       <ol>
         <li>各キャンペーンの対象アプリ、商品、期間、開始操作を確認する</li>
         <li>表示が倍率なのか、100円ごとのポイント数なのかを確認する</li>
-        <li>併用可否、対象者、上限、初回限定などの個別条件を読む</li>
-        <li>同じ購入へ複数適用されると書かれていなければ、足し算・掛け算をしない</li>
+        <li>対象者、上限、初回限定などの個別条件を読む</li>
+        <li>複数のプロモーションは足し算・掛け算せず、対象となる最も高い獲得率を使う</li>
         <li>決済後、ポイント履歴で実際の獲得数を確認する</li>
       </ol>      <p>Google Playのプロモーションは、アカウント設定やアクティビティによって表示や対象条件が異なる場合があります。他の人のスクリーンショットだけで、自分にも同じ倍率が適用されるとは判断できません。</p>
     </section>
@@ -191,11 +191,11 @@
 
     <section class="section">
       <h2>よくある質問</h2>
-      <div class="faq-item"><h3>シルバーの1.25倍と3倍キャンペーンは4.25倍になりますか？</h3><p>なりません。公式例では通常獲得率とスペシャルオファーの高い方が適用されます。3倍の意味は個別規約で確認してください。</p></div>
-      <div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>併用できると明記されていなければ、6倍と決めつけられません。各キャンペーンの対象条件と併用可否を確認します。</p></div>
-      <div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>ブロンズでは同じ数値になりますが、シルバー以上では異なります。倍率表記か直接獲得率かを確認してください。</p></div>
+      <div class="faq-item"><h3>シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？</h3><p>なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。</p></div>
+      <div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。</p></div>
+      <div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。</p></div>
       <div class="faq-item"><h3>税金にもPlay Pointsは付きますか？</h3><p>Google公式は、ポイント対象となるのはアイテム価格で、支払った税金は含まれないと案内しています。</p></div>
-      <div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。不要な分割購入は勧められません。</p></div>
+      <div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。</p></div>
     </section>
 
     <aside class="official-source-note">
@@ -213,7 +213,7 @@
         <li><a href="./2026-07-24-play-points-1-value.html">Google Play Points 1ポイントはいくらか</a></li>
         <li><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか</a></li>
         <li><a href="./2025-12-25-promo-code.html">プロモコード・割引時もポイントが貯まるか</a></li>
-        <li><a href="./2026-08-05-fastest-silver.html">シルバーを最速・無駄なく目指す方法</a></li>
+        <li><a href="./2026-08-05-fastest-silver.html">シルバーをお得・効率的に目指す方法</a></li>
       </ul>
     </section>
 
@@ -226,7 +226,7 @@
   <aside class="author-box" aria-label="この記事の著者">
     <p class="author-box-label">この記事を書いた人</p>
     <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、計算結果だけで不要な購入を促さない方針で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
+    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
   </aside>
 
   <nav id="article-nav" class="article-nav"></nav>

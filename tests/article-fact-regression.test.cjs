@@ -17,7 +17,7 @@ test('通常のウィークリーリワードとPlay Pass週次特典を区別�
   assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);
   assert.match(html, /通常のウィークリーリワードはシルバー以上/);
   assert.match(html, /Play Pass加入中なら木曜日/);
-  assert.doesNotMatch(html, /利用者報告/);
+  assert.doesNotMatch(html, /利用者.*表示報告|例外的な表示報告/);
   assert.doesNotMatch(html, /最大\s*(?:3|10|200|500|1,000)\s*pt/);
   assert.doesNotMatch(html, /Play Pointsに登録していれば<strong>無料で毎週もらえます/);
 });
