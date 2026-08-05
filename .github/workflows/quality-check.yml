@@ -38,29 +38,40 @@ jobs:
             node <<'NODE'
           const fs = require('node:fs');
           const lines = fs.readFileSync('preflight.log', 'utf8').split(/\r?\n/);
-          const markers = /not ok|AssertionError|ERR_ASSERTION|missing|must not contain|事前検証で失敗した工程|Process exited|Error:/i;
-          const hitIndexes = lines
-            .map((line, index) => markers.test(line) ? index : -1)
-            .filter(index => index >= 0);
-          const selected = new Set();
-          for (const index of hitIndexes) {
-            for (let i = Math.max(0, index - 8); i <= Math.min(lines.length - 1, index + 20); i += 1) {
-              selected.add(i);
-            }
-          }
-          if (selected.size === 0) {
-            for (let i = Math.max(0, lines.length - 180); i < lines.length; i += 1) selected.add(i);
-          }
-          const excerpt = [...selected]
-            .sort((a, b) => a - b)
-            .map(index => `${index + 1}: ${lines[index]}`)
-            .join('\n')
-            .slice(-60000);
           const escape = value => value
             .replace(/%/g, '%25')
             .replace(/\r/g, '%0D')
             .replace(/\n/g, '%0A');
-          console.log(`::error title=Preflight failure excerpt::${escape(excerpt)}`);
+          const starts = [];
+          for (let index = 0; index < lines.length; index += 1) {
+            if (/^not ok\s+\d+\s+-\s+/.test(lines[index].trim())) starts.push(index);
+          }
+          const unique = new Set();
+          let emitted = 0;
+          for (const start of starts) {
+            const titleLine = lines[start].trim();
+            if (unique.has(titleLine) || emitted >= 20) continue;
+            unique.add(titleLine);
+            let end = Math.min(lines.length - 1, start + 45);
+            for (let index = start + 1; index <= end; index += 1) {
+              if (lines[index].trim() === '...') {
+                end = index;
+                break;
+              }
+            }
+            const from = Math.max(0, start - 1);
+            const excerpt = lines
+              .slice(from, end + 1)
+              .map((line, offset) => `${from + offset + 1}: ${line}`)
+              .join('\n')
+              .slice(0, 12000);
+            console.log(`::error title=${escape(titleLine.slice(0, 180))}::${escape(excerpt)}`);
+            emitted += 1;
+          }
+          if (emitted === 0) {
+            const excerpt = lines.slice(-180).map((line, offset) => `${Math.max(1, lines.length - 179) + offset}: ${line}`).join('\n').slice(0, 12000);
+            console.log(`::error title=Preflight failure excerpt::${escape(excerpt)}`);
+          }
           NODE
           fi
 
