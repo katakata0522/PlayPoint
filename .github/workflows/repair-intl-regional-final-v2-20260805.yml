@@ -54,6 +54,17 @@ jobs:
             exit "$status"
           fi
           set -e
+          python <<'PY'
+          from pathlib import Path
+          import re
+          path = Path('scripts/intl-content-expansion.cjs')
+          text = path.read_text(encoding='utf-8')
+          pattern = r'\n  \{\n    slug: ["\']google-play-points-weekly-reward\.html["\'],[\s\S]*?\n  \},'
+          text, count = re.subn(pattern, '', text, count=1)
+          if count != 1:
+              raise SystemExit('Could not remove weekly reward from the expansion sitemap registry')
+          path.write_text(text, encoding='utf-8')
+          PY
           node scripts/build-html.js
           python /tmp/generate-intl-regional-guides.py --post-build
           python /tmp/normalize-intl-regional.py
@@ -83,17 +94,31 @@ jobs:
           weekly = Path('tw/articles/google-play-points-weekly-reward.html')
           text = weekly.read_text(encoding='utf-8')
           if '週五' not in text or '週四' not in text:
-              marker = '<div class="intro">'
-              replacement = '<div class="intro">一般每週獎勵於週五更新，Play Pass 的獨立每週福利於週四更新。'
-              text = text.replace(marker, replacement, 1)
+              text = text.replace('<div class="intro">', '<div class="intro">一般每週獎勵於週五更新，Play Pass 的獨立每週福利於週四更新。', 1)
           write(weekly, text)
 
           levels = Path('tw/articles/google-play-points-levels.html')
           text = levels.read_text(encoding='utf-8')
           if 'Google Play Points 等級說明' not in text:
-              marker = '<div class="intro">'
-              text = text.replace(marker, '<div class="intro">這份 Google Play Points 等級說明以台灣官方條件為準。', 1)
+              text = text.replace('<div class="intro">', '<div class="intro">這份 Google Play Points 等級說明以台灣官方條件為準。', 1)
           write(levels, text)
+
+          slugs = (
+              'google-play-points-levels.html',
+              'google-play-points-join-eligibility.html',
+              'google-play-points-weekly-reward.html',
+              'google-play-points-country-change.html',
+              'google-play-points-promotion-stacking.html',
+              'google-play-points-fastest-silver.html',
+          )
+          for locale in ('en', 'ko', 'tw'):
+              for slug in slugs:
+                  path = Path(locale) / 'articles' / slug
+                  text = path.read_text(encoding='utf-8').replace(
+                      '<meta name="robots" content="index,follow,max-image-preview:large">',
+                      '<meta name="robots" content="index,follow">'
+                  )
+                  write(path, text)
 
           test_path = Path('tests/manual-intl-articles.test.cjs')
           test_text = test_path.read_text(encoding='utf-8')
