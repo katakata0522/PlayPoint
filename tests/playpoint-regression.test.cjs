@@ -1494,13 +1494,13 @@ test('課金効率記事は煽り表現より条件と注意を前面に出す',
     assert.ok(!html.includes(phrase), `記事本文に煽り表現が残っています: ${phrase}`);
     assert.ok(!articles.includes(phrase), `記事メタデータに煽り表現が残っています: ${phrase}`);
   }
-  assert.ok(html.includes('条件を満たすと'));
-  assert.ok(html.includes('購入前チェックリスト'));
-  assert.ok(html.includes('必要額を先に決める'));
+  assert.ok(html.includes('正規販売'));
+  assert.ok(html.includes('購入前に確認する5項目'));
+  assert.ok(html.includes('必要額と還元上限を合わせる'));
   assert.ok(html.includes('還元上限'));
-  assert.ok(html.includes('https://playpoint-sim.com/status/gold/'));
-  assert.ok(html.includes('購入前にキャンペーンページの条件を必ず確認'));
-  assert.ok(html.includes('使いすぎを避けましょう'));
+  assert.ok(html.includes('https://playpoint-sim.com/amount/10000/'));
+  assert.ok(html.includes('購入画面に表示される販売元と最新規約まで確認'));
+  assert.ok(html.includes('余分な残高を作らず'));
 });
 
 test('全記事から有効なGoogle公式ヘルプを確認できる', () => {
@@ -2413,7 +2413,7 @@ test('国変更・定期購入クラスタは韓国語と繁体字で公式根�
     const page = fs.readFileSync(path.join(root, file), 'utf8');
     assert.ok(page.includes(`<html lang="${lang}">`), `${file} の言語指定が不正です`);
     assert.ok(page.includes(`support.google.com/googleplay/answer/${officialAnswer}`), `${file} の公式根拠が不足しています`);
-    assert.ok(page.includes('"@type": "FAQPage"'), `${file} にFAQ構造化データがありません`);
+    assert.match(page, /"@type"\s*:\s*"FAQPage"/, `${file} にFAQ構造化データがありません`);
     for (const hreflang of ['en', 'ko', 'zh-TW', 'x-default']) {
       assert.ok(page.includes(`hreflang="${hreflang}"`), `${file} に ${hreflang} の相互hreflangがありません`);
     }
@@ -2428,7 +2428,7 @@ test('国変更・定期購入クラスタは韓国語と繁体字で公式根�
     'tw/articles/google-play-points-promotion-not-applied.html'
   ]) {
     const page = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.ok(page.includes('"@type": "FAQPage"'), `${file} にFAQ構造化データがありません`);
+    assert.match(page, /"@type"\s*:\s*"FAQPage"/, `${file} にFAQ構造化データがありません`);
     assert.ok(page.includes('<meta name="last-modified" content="2026-07-24">'), `${file} の更新日が反映されていません`);
   }
 });
@@ -2999,18 +2999,21 @@ test('100ポイント多言語記事は国別公式レートと相互hreflangを
 
 test('日本語検索クラスターは意図を分けて公式条件を明示する', () => {
   const cases = [
-    ['articles/2026-07-24-play-points-1-value.html', ['100円ごとに1ポイント', '商品ごとに最も近い整数へ丸め']],
-    ['articles/2026-07-24-play-points-500-1000-value.html', ['約50,000円', '約100,000円']],
-    ['articles/2026-07-24-earn-play-points-free.html', ['ウィークリーリワード', '無料ポイント生成']]
+    ['articles/2026-07-24-play-points-1-value.html', ['100円ごとに1ポイント', '商品ごとに最も近い整数へ丸め'], '9077192'],
+    ['articles/2026-07-24-play-points-500-1000-value.html', ['約50,000円', '約100,000円'], '9077192'],
+    ['articles/2026-07-24-earn-play-points-free.html', ['ウィークリーリワード', '無料ポイント', 'ポイント生成'], '15776742']
   ];
-  for (const [file, required] of cases) {
+  for (const [file, required, officialAnswerId] of cases) {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
     required.forEach(text => assert.ok(html.includes(text), file + ' に ' + text + ' がありません'));
-    assert.ok(html.includes('support.google.com/googleplay/answer/9077192'));
+    assert.ok(
+      html.includes(`support.google.com/googleplay/answer/${officialAnswerId}`),
+      `${file} に内容対応のGoogle公式出典がありません`
+    );
     const expectedModified = file.endsWith('play-points-1-value.html')
       ? '2026-08-03'
       : file.endsWith('earn-play-points-free.html')
-        ? '2026-07-31'
+        ? '2026-08-05'
         : '2026-07-30';
     assert.ok(
       html.includes(`"dateModified": "${expectedModified}"`) ||

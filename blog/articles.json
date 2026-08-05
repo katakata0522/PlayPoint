@@ -91,9 +91,9 @@
   },
   {
     "id": "super-weekly-reward",
-    "title": "Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの注意点",
+    "title": "Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの使い方",
     "date": "2026-07-31",
-    "modified": "2026-08-02",
+    "modified": "2026-08-05",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -101,7 +101,7 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "通常のウィークリーリワードとの違い、ゴールド以上の対象条件、金曜0時の更新、賞品在庫、Super Ticketを使うと元の特典を保持できない注意点までGoogle公式情報から整理します。",
+    "description": "自分のアカウントにスーパーウィークリーリワードが表示されるかを入口に、通常週次との違い、在庫、Super Ticketの30日・90日周期と元の特典を手放す条件を整理します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
@@ -205,9 +205,9 @@
   },
   {
     "id": "earn-play-points-free",
-    "title": "Google Play Pointsを無料で貯める方法｜正規特典・クエスト・注意点",
+    "title": "Google Play Pointsを無料で貯める方法｜予定購入以外の正規特典",
     "date": "2026-07-24",
-    "modified": "2026-07-31",
+    "modified": "2026-08-05",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -215,7 +215,7 @@
       "ウィークリーリワード",
       "クエスト"
     ],
-    "description": "Google Play Pointsを追加購入なし、または元から予定していた行動で得られる正規ルートを整理。通常・スーパーウィークリーリワード、クエスト、アプリ体験オファー、Play Pass特典と危険な情報の見分け方を解説します。",
+    "description": "Google Play Pointsを予定購入以外で受け取れる正規特典を、通常週次、スーパー週次、アプリ体験、クエスト、Play Passに分けて選べる入口ガイドです。",
     "file": "../articles/2026-07-24-earn-play-points-free.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
@@ -246,10 +246,10 @@
       "割引",
       "ポイント還元"
     ],
-    "description": "Google Playギフトコードを楽天市場・コンビニ・決済還元で購入する前に、還元上限、対象外条件、期限、必要額を確認する方法を解説します。",
+    "description": "Google Playギフトコードを正規販売店で購入する前に、実質負担、還元上限、利用期限、国・通貨、必要額を確認する方法を解説します。",
     "file": "../articles/2026-06-20-discount-gift-cards.html",
     "thumbnail": "../articles/ogp/discount-gift-cards.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-05"
   },
   {
     "id": "play-points-reflection-timing",
@@ -461,7 +461,7 @@
   },
   {
     "id": "new-year-campaign",
-    "title": "Google Play Pointsの年末年始キャンペーン｜開催確認と課金判断",
+    "title": "Google Play Pointsの年末年始キャンペーン｜予定購入・期限・倍率の確認方法",
     "date": "2025-12-25",
     "category": "キャンペーン",
     "tags": [
@@ -470,14 +470,14 @@
       "キャンペーン",
       "予測"
     ],
-    "description": "Google Play Pointsの年末年始キャンペーンを過去日程だけで断定せず、自分のアカウントで開催期間・獲得率・有効化条件を確認する方法を解説します。",
+    "description": "Google Play Pointsの年末年始キャンペーンを毎年同じ日程と決めつけず、予定購入、購入期限、表示中の倍率、対象条件から待つか購入するかを判断します。",
     "file": "../articles/2025-12-25-new-year-campaign.html",
     "thumbnail": "../articles/ogp/new-year-campaign.png",
-    "modified": "2026-08-04"
+    "modified": "2026-08-05"
   },
   {
     "id": "diamond-vip",
-    "title": "Google Play Pointsのダイヤモンド特典｜プラチナとの違いを検証",
+    "title": "Google Play Pointsのダイヤモンド特典｜固有・共通・アカウント限定を整理",
     "date": "2025-12-25",
     "category": "ランク",
     "tags": [
@@ -486,10 +486,10 @@
       "イベント",
       "体験価値"
     ],
-    "description": "ダイヤモンドとプラチナの獲得率、週次リワード、プレミアムサポート、イベント特典を比較。ダイヤ固有の価値と共通特典を分けて解説します。",
+    "description": "日本のGoogle Play Pointsダイヤモンド特典を、ダイヤ固有、プラチナとの共通、アカウントや企画で変わる特典に分け、向いている利用者を整理します。",
     "file": "../articles/2025-12-25-diamond-vip.html",
     "thumbnail": "../articles/ogp/diamond-vip.png",
-    "modified": "2026-07-25"
+    "modified": "2026-08-05"
   },
   {
     "id": "campaign",

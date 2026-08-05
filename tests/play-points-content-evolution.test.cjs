@@ -28,7 +28,9 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
   assert.ok(html.includes('ゴールド・プラチナ・ダイヤモンド'));
   assert.ok(html.includes('金曜日の午前0時以降'));
   assert.ok(html.includes('賞品数には限り'));
-  assert.ok(html.includes('今週あなたに表示される賞品と残数は確認できません'));
+  assert.ok(html.includes('id="known-unknown"'));
+  assert.ok(html.includes('現在の賞品、残りの賞品数、追加条件'));
+  assert.ok(html.includes('このサイトから個別アカウントの資格や在庫は確認できません'));
   assert.ok(html.includes('play.google.com/store/apps/editorial'));
   assert.ok(html.includes('./2025-12-25-weekly-reward.html'));
 
@@ -36,7 +38,7 @@ test('スーパーウィークリー記事は一般条件と個別条件を分�
     .replace(/<[^>]*>/g, ' ')
     .split(/[。！？\n]/)
     .filter(sentence => /必ず当たる|絶対に当たる/.test(sentence))
-    .filter(sentence => !/ではなく|ではない|とは限ら|保証(?:され)?(?:ない|ません)/.test(sentence));
+    .filter(sentence => !/ではなく|ではない|ではありません|とは限ら|保証(?:され)?(?:ない|ません)/.test(sentence));
 
   assert.deepEqual(misleadingGuarantees, []);
 });
@@ -65,7 +67,7 @@ test('週次親記事は3制度を比較し日記を主要導線にする', () =
 test('無料獲得記事は無料・追加購入なし・有料条件を混同しない', () => {
   const html = read('articles/2026-07-24-earn-play-points-free.html');
 
-  assert.ok(html.includes('完全無料'));
+  assert.match(html, /「無料」|新しい購入をしなくても/);
   assert.ok(html.includes('追加購入なし'));
   assert.ok(html.includes('Play Pass契約が前提'));
   assert.ok(html.includes('購入が必要'));
