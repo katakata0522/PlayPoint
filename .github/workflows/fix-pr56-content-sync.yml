@@ -112,7 +112,8 @@ jobs:
           patch('tests/playpoint-regression.test.cjs', [
             ["  assert.ok(html.includes('<h2>最初に確認する3つ</h2>'));", "  assert.ok(html.includes('<h2>最初に確認する4つ</h2>'));", 'reflection first checks heading'],
             ["  assert.ok(html.includes('<h2>状況別の判断目安</h2>'));", "  assert.ok(html.includes('<h2>状況別の確認方法</h2>'));", 'reflection situation heading'],
-            ["  assert.ok(promotion.includes('その特典固有の条件'), 'プロモーション固有条件の案内がありません');", "  assert.ok(promotion.includes('特典固有の条件'), 'プロモーション固有条件の案内がありません');", 'promotion condition wording']
+            ["  assert.ok(promotion.includes('その特典固有の条件'), 'プロモーション固有条件の案内がありません');", "  assert.ok(promotion.includes('特典固有の条件'), 'プロモーション固有条件の案内がありません');", 'promotion condition wording'],
+            ["  assert.ok(refund.includes('ポイント残高がマイナスになります'), '返金後のマイナス残高を明示していません');", "  assert.ok(refund.includes('ポイント残高がマイナスになる'), '返金後のマイナス残高を明示していません');", 'refund negative balance wording']
           ]);
 
           patch('tests/intl-platinum-diamond.test.cjs', [
