@@ -56,7 +56,8 @@ jobs:
           git diff --cached --quiet && { echo "No content changes were produced."; exit 1; } || true
 
       - name: Commit article batch
-        run: git commit -m "content: add rank, account, country and multiplier guides"
+        run: |
+          git commit -m "content: add rank, account, country and multiplier guides"
 
       - name: Remove temporary automation
         run: |
