@@ -1,0 +1,63 @@
+name: Diagnose main split tests
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: contains(github.event.head_commit.message, '[diagnose-main-split]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Apply split and synchronize output
+        shell: bash
+        run: |
+          node .github/scripts/apply-main-responsibility-split.cjs
+          node .github/scripts/apply-main-split-build-compat.cjs
+          modified_date="$(node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const value=html.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          asset_version="$(node -e "const fs=require('fs'); const sw=fs.readFileSync('sw.js','utf8'); const value=sw.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+
+      - name: Run uncompressed tests
+        continue-on-error: true
+        run: |
+          node --test tests/*.test.cjs > /tmp/uncompressed-tests.log 2>&1
+          echo $? > /tmp/uncompressed-tests.status
+
+      - name: Minify runtime assets
+        run: node .github/scripts/minify.cjs
+
+      - name: Run compressed tests
+        continue-on-error: true
+        run: |
+          node --test tests/*.test.cjs > /tmp/compressed-tests.log 2>&1
+          echo $? > /tmp/compressed-tests.status
+
+      - name: Print failures
+        run: |
+          echo '=== uncompressed status ==='
+          cat /tmp/uncompressed-tests.status
+          grep -n -A18 -B5 '^not ok' /tmp/uncompressed-tests.log || true
+          echo '=== compressed status ==='
+          cat /tmp/compressed-tests.status
+          grep -n -A18 -B5 '^not ok' /tmp/compressed-tests.log || true
+
+      - name: Upload test diagnostics
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: main-split-test-diagnostics
+          path: |
+            /tmp/uncompressed-tests.log
+            /tmp/uncompressed-tests.status
+            /tmp/compressed-tests.log
+            /tmp/compressed-tests.status
+          retention-days: 1
