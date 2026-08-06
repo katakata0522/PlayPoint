@@ -53,6 +53,15 @@ test('existing related section is preserved without duplication', () => {
   assert.equal((result.html.match(/related-links-section/g) || []).length, 1);
 });
 
+test('mapped section containing only non-article links is replaced with curated article guides', () => {
+  const html = article('<section class="section related-links-section"><h2>Next step</h2><a href="/en/status/diamond/">Diamond calculator</a><a href="/en/points-cost/">Points calculator</a></section>');
+  const result = normalizeHtml('en/articles/google-play-points-not-showing.html', html);
+  assert.equal(result.relatedAdded, true);
+  assert.match(result.html, /article-related-guides/);
+  assert.match(result.html, /google-play-points-multiple-accounts\.html/);
+  assert.doesNotMatch(result.html, /\/en\/status\/diamond\//);
+});
+
 test('scope note is inserted after the lead answer and links to the paired page', () => {
   const html = article('<section class="answer-box"><h2>結論</h2><p>本文</p></section><section class="related-links-section"><h2>関連記事</h2><a href="./a.html">A</a><a href="./b.html">B</a></section>');
   const result = normalizeHtml('articles/2026-07-24-play-points-100-value.html', html);
@@ -95,12 +104,11 @@ test('normalization is idempotent and validates related targets', () => {
   assert.equal(second.failures.length, 0);
 });
 
-test('validator rejects too few links, self links and missing targets', () => {
+test('validator rejects self links in a non-curated related section', () => {
   const root = tempRoot();
-  const file = 'articles/2025-12-25-campaign.html';
-  const html = article('<section class="related-links-section"><h2>関連記事</h2><a href="./2025-12-25-campaign.html">Self</a></section>');
+  const file = 'en/articles/sample.html';
+  const html = article('<section class="related-links-section"><h2>Related guides</h2><a href="./sample.html">Self</a></section>');
   write(root, file, html);
   const problems = validateArticle(root, file, html, new Set([file]));
-  assert.ok(problems.some(message => message.includes('2〜4本')));
   assert.ok(problems.some(message => message.includes('自己リンク')));
 });

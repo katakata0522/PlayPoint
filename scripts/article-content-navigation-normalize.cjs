@@ -61,6 +61,22 @@ const RELATED_SECTIONS = {
       ['./2025-12-25-gift-card.html', 'ギフトカード利用時のポイント条件'],
       ['./2026-08-05-play-points-multiplier-stacking.html', '複数倍率が重複するか確認']
     ]
+  },
+  'articles/2026-07-24-play-points-1-value.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2026-07-24-play-points-100-value.html', '100ポイントを貯める金額と使う価値を確認'],
+      ['./2026-07-24-play-points-500-1000-value.html', '500・1,000ポイントの必要額を早見表で比較'],
+      ['./2026-08-05-play-points-levels-guide.html', 'ランク別の獲得率と必要ポイントを確認']
+    ]
+  },
+  'en/articles/google-play-points-not-showing.html': {
+    heading: 'Related troubleshooting guides',
+    links: [
+      ['./google-play-points-multiple-accounts.html', 'Check which Google Account owns the purchase and points'],
+      ['./google-play-points-refund.html', 'See how refunds can remove points and level progress'],
+      ['./google-play-points-country-change.html', 'Check how a Play country change affects points and level']
+    ]
   }
 };
 
@@ -125,7 +141,14 @@ function buildRelatedSection(config) {
   const items = config.links
     .map(([href, text]) => `                    <li><a href="${escapeHtml(href)}">${escapeHtml(text)}</a></li>`)
     .join('\n');
-  return `\n            <section class="section related-links-section article-related-guides" aria-labelledby="related-guides">\n                <h2 id="related-guides">${escapeHtml(config.heading)}</h2>\n                <ul>\n${items}\n                </ul>\n            </section>\n`;
+  return `
+            <section class="section related-links-section article-related-guides" aria-labelledby="related-guides">
+                <h2 id="related-guides">${escapeHtml(config.heading)}</h2>
+                <ul>
+${items}
+                </ul>
+            </section>
+`;
 }
 
 function buildScopeNote(config, language) {
@@ -133,7 +156,9 @@ function buildScopeNote(config, language) {
     ? 'callout callout-info article-scope-note'
     : 'intro article-scope-note';
   const separator = language === 'ja' ? '：' : ':';
-  return `\n            <aside class="${className}" aria-label="${escapeHtml(config.label)}"><strong>${escapeHtml(config.label)}${separator}</strong> ${config.html}</aside>\n`;
+  return `
+            <aside class="${className}" aria-label="${escapeHtml(config.label)}"><strong>${escapeHtml(config.label)}${separator}</strong> ${config.html}</aside>
+`;
 }
 
 function insertAfterLead(html, fragment) {
@@ -150,28 +175,6 @@ function insertBeforeArticleEnd(html, fragment) {
   const index = html.toLowerCase().lastIndexOf('</article>');
   if (index < 0) throw new Error('article closing tag not found');
   return html.slice(0, index) + fragment + html.slice(index);
-}
-
-function normalizeHtml(relativePath, html) {
-  let output = html;
-  let scopeAdded = false;
-  let relatedAdded = false;
-
-  const scope = SCOPE_NOTES[relativePath];
-  if (scope && !/\barticle-scope-note\b/.test(output)) {
-    const language = relativePath.startsWith('articles/') ? 'ja' : 'intl';
-    output = insertAfterLead(output, buildScopeNote(scope, language));
-    scopeAdded = true;
-  }
-
-  const related = RELATED_SECTIONS[relativePath];
-  if (!hasRelatedSection(output)) {
-    if (!related) throw new Error(`関連記事セクションの定義がありません: ${relativePath}`);
-    output = insertBeforeArticleEnd(output, buildRelatedSection(related));
-    relatedAdded = true;
-  }
-
-  return { html: output, changed: output !== html, scopeAdded, relatedAdded };
 }
 
 function normalizeHref(filePath, href) {
@@ -196,18 +199,51 @@ function extractRelatedSection(html) {
   }) || null;
 }
 
+function extractRelatedArticleTargets(relativePath, html) {
+  const relatedSection = extractRelatedSection(html);
+  if (!relatedSection) return [];
+
+  const hrefs = [...relatedSection.matchAll(/<a\b[^>]*href=["']([^"']+)["']/gi)]
+    .map(match => match[1]);
+  return [...new Set(hrefs
+    .map(href => normalizeHref(relativePath, href))
+    .filter(Boolean)
+    .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target)))];
+}
+
+function normalizeHtml(relativePath, html) {
+  let output = html;
+  let scopeAdded = false;
+  let relatedAdded = false;
+
+  const scope = SCOPE_NOTES[relativePath];
+  if (scope && !/\barticle-scope-note\b/.test(output)) {
+    const language = relativePath.startsWith('articles/') ? 'ja' : 'intl';
+    output = insertAfterLead(output, buildScopeNote(scope, language));
+    scopeAdded = true;
+  }
+
+  const related = RELATED_SECTIONS[relativePath];
+  const existingRelatedSection = extractRelatedSection(output);
+  if (!existingRelatedSection) {
+    if (!related) throw new Error(`関連記事セクションの定義がありません: ${relativePath}`);
+    output = insertBeforeArticleEnd(output, buildRelatedSection(related));
+    relatedAdded = true;
+  } else if (related && extractRelatedArticleTargets(relativePath, output).length === 0) {
+    output = output.replace(existingRelatedSection, buildRelatedSection(related).trim());
+    relatedAdded = true;
+  }
+
+  return { html: output, changed: output !== html, scopeAdded, relatedAdded };
+}
+
 function validateArticle(root, relativePath, html, knownFiles) {
   const problems = [];
   const relatedSection = extractRelatedSection(html);
   if (!relatedSection) {
     problems.push('関連記事セクションがありません');
   } else {
-    const hrefs = [...relatedSection.matchAll(/<a\b[^>]*href=["']([^"']+)["']/gi)].map(match => match[1]);
-    const articleTargets = hrefs
-      .map(href => normalizeHref(relativePath, href))
-      .filter(Boolean)
-      .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target));
-    const uniqueTargets = [...new Set(articleTargets)];
+    const uniqueTargets = extractRelatedArticleTargets(relativePath, html);
     const isCurated = Object.hasOwn(RELATED_SECTIONS, relativePath);
     if (isCurated && (uniqueTargets.length < 2 || uniqueTargets.length > 4)) {
       problems.push(`関連記事リンクは2〜4本必要です（現在${uniqueTargets.length}本）`);
