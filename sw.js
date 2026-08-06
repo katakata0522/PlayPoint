@@ -25,6 +25,7 @@ const ASSETS = [
   './js/diary.js',
   './js/calculator.js',
   './js/share.js',
+  './js/main-calculator-ui.js',
   './js/main.js?v=c36897d2fb',
   './js/intent-tracking.js?v=5cdd51c178',
   './js/consent.js?v=55813d3bcb',
