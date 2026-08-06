@@ -28,19 +28,23 @@ jobs:
           PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
 
       - name: Run uncompressed tests
-        continue-on-error: true
         run: |
+          set +e
           node --test tests/*.test.cjs > /tmp/uncompressed-tests.log 2>&1
-          echo $? > /tmp/uncompressed-tests.status
+          status=$?
+          set -e
+          echo "$status" > /tmp/uncompressed-tests.status
 
       - name: Minify runtime assets
         run: node .github/scripts/minify.cjs
 
       - name: Run compressed tests
-        continue-on-error: true
         run: |
+          set +e
           node --test tests/*.test.cjs > /tmp/compressed-tests.log 2>&1
-          echo $? > /tmp/compressed-tests.status
+          status=$?
+          set -e
+          echo "$status" > /tmp/compressed-tests.status
 
       - name: Print failures
         run: |
@@ -54,7 +58,7 @@ jobs:
       - name: Upload test diagnostics
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: main-split-test-diagnostics
+          name: main-split-test-diagnostics-v2
           path: |
             /tmp/uncompressed-tests.log
             /tmp/uncompressed-tests.status
