@@ -1,0 +1,39 @@
+name: Inspect main split output
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    if: contains(github.event.head_commit.message, '[inspect-main-split]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Apply split output
+        run: |
+          node .github/scripts/apply-main-responsibility-split.cjs
+          node .github/scripts/apply-main-split-build-compat.cjs
+
+      - name: Show responsibility markers
+        run: |
+          grep -n "result_related_article_clicked\|result_decision_link_clicked\|showInstallPromptAfterDiarySave\|function trackResultLinkClicks" js/main.js || true
+          grep -n "showInstallPromptAfterDiarySave\|beforeinstallprompt" js/pwa-install.js || true
+
+      - name: Upload generated sources
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: main-split-generated-sources
+          path: |
+            js/main.js
+            js/pwa-install.js
+            tests/playpoint-regression.test.cjs
+            .github/scripts/apply-main-responsibility-split.cjs
+          retention-days: 1
