@@ -41,24 +41,39 @@ function htmlTemplate({ body = '', robots = 'index, follow', jsonLd = '' } = {})
 
 test('可視本文と一致するFAQPageは保持する', () => {
   const html = htmlTemplate({
-    body: '<h2>よくある質問</h2><h3>ポイントは送れますか？</h3><p>別のアカウントには送れません。</p>',
+    body: '<div class="faq-item"><h3>Q. ポイントは送れますか？</h3><p>A. 別のアカウントには送れません。</p></div>',
     jsonLd: `<script type="application/ld+json">${faqJson('ポイントは送れますか？', '別のアカウントには送れません。')}</script>`
   });
 
   const result = normalizeArticleHtml(html);
-  assert.equal(result.removedFaqPage, false);
+  assert.equal(result.removedFaqPageCount, 0);
+  assert.equal(result.synchronizedFaqPageCount, 0);
   assert.match(result.html, /FAQPage/);
   assert.equal(findHiddenFaqItems(result.html).length, 0);
 });
 
-test('本文に表示されていないFAQPageだけを除去しArticleは残す', () => {
+test('本文と文言がずれたFAQPageは可視FAQへ同期する', () => {
+  const html = htmlTemplate({
+    body: '<div class="faq-item"><h3>Q. ポイントは送れますか？</h3><p>A. 別のアカウントには送れません。</p></div>',
+    jsonLd: `<script type="application/ld+json">${faqJson('ポイントを送れる？', '他の人には送れません。')}</script>`
+  });
+
+  const result = normalizeArticleHtml(html);
+  assert.equal(result.synchronizedFaqPageCount, 1);
+  assert.match(result.html, /ポイントは送れますか？/);
+  assert.match(result.html, /別のアカウントには送れません。/);
+  assert.doesNotMatch(result.html, /ポイントを送れる？/);
+  assert.equal(findHiddenFaqItems(result.html).length, 0);
+});
+
+test('可視FAQが無いFAQPageだけを除去しArticleは残す', () => {
   const html = htmlTemplate({
     body: '<article><h1>ポイントの使い方</h1><p>本文です。</p></article>',
     jsonLd: `<script type="application/ld+json">${faqJson('ポイントは送れますか？', '別のアカウントには送れません。')}</script>`
   });
 
   const result = normalizeArticleHtml(html);
-  assert.equal(result.removedFaqPage, true);
+  assert.equal(result.removedFaqPageCount, 1);
   assert.doesNotMatch(result.html, /FAQPage/);
   assert.match(result.html, /"@type": "Article"/);
 });
@@ -95,6 +110,7 @@ test('4言語の記事ディレクトリだけを処理し、checkモードで�
 
   const writeSummary = normalizeArticleFiles(root);
   assert.equal(writeSummary.faqPagesRemoved, 4);
+  assert.equal(writeSummary.faqPagesSynchronized, 0);
   assert.equal(writeSummary.largePreviewUpdated, 4);
   assert.doesNotMatch(fs.readFileSync(path.join(root, 'articles/sample.html'), 'utf8'), /FAQPage/);
   assert.equal(hasLargeImagePreview(fs.readFileSync(path.join(root, 'tw/articles/sample.html'), 'utf8')), true);
