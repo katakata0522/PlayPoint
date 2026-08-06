@@ -36,7 +36,7 @@
     <meta name="twitter:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260806_1552a">
+    <link rel="modulepreload" href="../js/main.js?v=20260806_1748a">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/diary.js">
@@ -156,7 +156,7 @@
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">주간 리워드 일기</button>
     </div>
 
-    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">등급 입력</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -165,47 +165,40 @@
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
-            
+
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">목표 등급</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
-            
+
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">목표까지 필요한 포인트</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="예: 120" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
-            
-            <!-- オプション設定（平均パック額） -->
-            <div class="option-settings">
-                <div>
-                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1회당 평균 결제 팩 금액 (선택 사항)</label>
-                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="예: 10000" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h2 data-lang-key="sectionTitleRate">적립 설정</h2>
+
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">1,000원당 적립률(직접 입력)</span>
+                <span data-simplified-calculator-copy="baseRateLabel">₩1,000당 적립률 (자동 입력·수정 가능)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
+
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">이벤트 배율(다른 입력 방식)</span>
+                <span data-simplified-calculator-copy="multiplierLabel">캠페인 배율 (보통 1배)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
+
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.</div>
         </div>
+
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">결제 금액 계산</button>
             <div class="result" id="result" aria-live="polite"></div>
@@ -239,7 +232,7 @@
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
-            
+
             <label for="reverseMultiplier" class="label-with-tooltip">
                 <span data-lang-key="labelMultiplierReverse">이벤트 배율(다른 입력 방식)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
@@ -381,11 +374,11 @@
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>
     </footer>
-    
+
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=7626325aa0"></script>
+<script type="module" src="../js/main.js?v=5d92f443b7"></script>
 <script src="../js/third-party.js?v=14419fdfd9" defer></script>
 
 </body>

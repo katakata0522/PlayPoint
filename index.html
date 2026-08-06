@@ -36,7 +36,7 @@
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=20260806_1552a">
+    <link rel="modulepreload" href="js/main.js?v=20260806_1748a">
     <link rel="modulepreload" href="js/config.js">
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/diary.js">
@@ -156,7 +156,7 @@
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">ほくほくリワード日記</button>
     </div>
 
-    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -165,49 +165,42 @@
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
-            
+
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">目標ステータス</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
-            
+
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">目標までの必要ポイント</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例：1728" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
-            
-            <!-- オプション設定（平均パック額） -->
-            <div class="option-settings">
-                <div>
-                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">1回あたりの平均課金パック額 (オプション)</label>
-                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="例：9800" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h2 data-lang-key="sectionTitleRate">還元設定</h2>
+
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの獲得率（直接入力）</span>
+                <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
+
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">キャンペーン倍率（もう一つの入力方法）</span>
+                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン倍率（通常は1倍）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
+
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">
                 「獲得率の直接入力」または「ステータス×倍率」の高い方を試算に使います。両方は別の入力方法です。実際の対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
         </div>
+
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">課金額を計算</button>
             <div class="result" id="result" aria-live="polite"></div>
@@ -241,7 +234,7 @@
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
-            
+
             <label for="reverseMultiplier" class="label-with-tooltip">
                 <span data-lang-key="labelMultiplierReverse">キャンペーン倍率（もう一つの入力方法）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
@@ -463,11 +456,11 @@
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>
     </footer>
-    
+
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=7626325aa0"></script>
+<script type="module" src="js/main.js?v=5d92f443b7"></script>
 <script src="js/third-party.js?v=14419fdfd9" defer></script>
 
 </body>

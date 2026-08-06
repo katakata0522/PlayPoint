@@ -877,6 +877,7 @@ test('Service Workerアセット同期は定義済みパスをバージョンキ
     "'./blog/components.js?v=old'",
     "'./blog/article.js?v=old'",
     "'./articles/article-shared.css?v=old'",
+    "'./js/main-calculator-ui.js?v=old'",
     "'./js/main.js?v=old'"
   ].join('\n');
 
@@ -889,13 +890,14 @@ test('Service Workerアセット同期は定義済みパスをバージョンキ
     consentVersion: 'consent-v',
     cssVersion: 'css-v',
     intentTrackingVersion: 'intent-v',
+    mainCalculatorUiVersion: 'main-calculator-ui-v',
     mainVersion: 'main-v',
     thirdPartyVersion: 'third-v'
   });
 
   assert.strictEqual(
     ROOT_SERVICE_WORKER_ASSETS.filter(({ assetPath }) => assetPath !== './js/app-modules').length,
-    10
+    11
   );
   assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(
     ({ versionKey, assetPath }) => versionKey === 'appModuleRevision' && assetPath === './js/app-modules'
@@ -910,6 +912,7 @@ test('Service Workerアセット同期は定義済みパスをバージョンキ
     './blog/components.js?v=blog-components-v',
     './blog/article.js?v=article-script-v',
     './articles/article-shared.css?v=article-v',
+    './js/main-calculator-ui.js?v=main-calculator-ui-v',
     './js/main.js?v=main-v'
   ]) {
     assert.ok(updated.includes(expected), `${expected} was not synchronized`);
@@ -1387,7 +1390,7 @@ test('トップの入力導線は説明を残しつつフォームを圧迫し�
   assert.ok(html.includes('id="site-description" class="site-description"'));
   assert.ok(!html.includes('class="legacy-search-name"'));
   assert.match(css, /\.site-description\s*\{[^}]*font-weight:\s*700/s);
-  assert.ok(html.includes('class="option-settings"'));
+  assert.ok(!html.includes('class="option-settings"'));
   assert.ok(!html.includes('class="first-step-guide"'));
   assert.ok(!html.includes('class="option-toggle-row"'));
   assert.ok(!html.includes('id="subtract-rewards"'));

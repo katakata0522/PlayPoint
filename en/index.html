@@ -36,7 +36,7 @@
     <meta name="twitter:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20260806_1552a">
+    <link rel="modulepreload" href="../js/main.js?v=20260806_1748a">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/diary.js">
@@ -156,7 +156,7 @@
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">Weekly Awards Diary</button>
     </div>
 
-    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">Status input</h2>
             <label for="currentStatus" class="label-with-tooltip">
@@ -165,47 +165,40 @@
                 <div class="tooltip-box" id="tooltip-current-status"></div>
             </label>
             <select id="currentStatus"></select>
-            
+
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">Target status</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
                 <div class="tooltip-box" id="tooltip-target-status"></div>
             </label>
             <select id="targetStatus"></select>
-            
+
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">Points needed</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
                 <div class="tooltip-box" id="tooltip-needed-points"></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="e.g., 125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
-            
-            <!-- オプション設定（平均パック額） -->
-            <div class="option-settings">
-                <div>
-                    <label for="pack-amount" class="option-input-label" data-lang-key="packAmountLabel">Average pack spending per transaction (optional)</label>
-                    <input type="number" id="pack-amount" min="0" step="0.01" placeholder="e.g., 98" inputmode="numeric" data-lang-placeholder="packAmountPlaceholder">
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h2 data-lang-key="sectionTitleRate">Points rate settings</h2>
+
             <label for="baseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">Earn rate per $1 (direct entry)</span>
+                <span data-simplified-calculator-copy="baseRateLabel">Points per $1 (auto-filled, editable)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate"></div>
             </label>
+
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplier">Campaign multiplier (alternative input)</span>
+                <span data-simplified-calculator-copy="multiplierLabel">Campaign multiplier (normally 1×)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier"></div>
             </label>
+
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">The calculator uses the higher estimate from direct rate entry or level rate × multiplier. These are alternative inputs. Confirm eligibility, activation, and caps in the official offer.</div>
         </div>
+
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">Calculate amount</button>
             <div class="result" id="result" aria-live="polite"></div>
@@ -239,7 +232,7 @@
                 <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
-            
+
             <label for="reverseMultiplier" class="label-with-tooltip">
                 <span data-lang-key="labelMultiplierReverse">Campaign multiplier (alternative input)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
@@ -381,11 +374,11 @@
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
         </p>
     </footer>
-    
+
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=7626325aa0"></script>
+<script type="module" src="../js/main.js?v=5d92f443b7"></script>
 <script src="../js/third-party.js?v=14419fdfd9" defer></script>
 
 </body>

@@ -3,8 +3,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
-
+const { replaceAssetVersion } = require('./html-replacements.cjs');
 
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
@@ -16,6 +15,7 @@ const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },
   { versionKey: 'articleScriptVersion', assetPath: './blog/article.js' },
   { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
+  { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' },
   { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }
 ];
@@ -61,19 +61,56 @@ function extractVersion(content, pattern) {
   return match ? match[1] : '';
 }
 
-function collectAssetVersions(rootDir, indexHtml) {
+function replaceOptionalAssetVersion(content, assetPath, version) {
+  if (!version) return content;
+  const escapedAssetPath = assetPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return content.replace(
+    new RegExp(`${escapedAssetPath}(?:\\?v=[a-zA-Z0-9_-]+)?`, 'g'),
+    `${assetPath}?v=${version}`
+  );
+}
+
+function syncMainCalculatorUiImportVersion(rootDir, version) {
+  const mainJsPath = path.join(rootDir, 'js/main.js');
+  if (!fs.existsSync(mainJsPath) || !version) return;
+
+  const currentContent = fs.readFileSync(mainJsPath, 'utf8');
+  const updatedContent = replaceOptionalAssetVersion(currentContent, './main-calculator-ui.js', version);
+  if (updatedContent === currentContent) return;
+
+  fs.writeFileSync(mainJsPath, updatedContent, 'utf8');
+  console.log(`Synchronized main calculator UI import to v=${version}`);
+}
+
+function syncServiceWorkerRegistration(rootDir) {
+  const mainJsPath = path.join(rootDir, 'js/main.js');
+  if (!fs.existsSync(mainJsPath)) return;
+
+  const currentContent = fs.readFileSync(mainJsPath, 'utf8');
+  if (currentContent.includes("updateViaCache: 'none'")) return;
+
+  const oldRegistration = `navigator.serviceWorker.register(swPath)\n                    .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))`;
+  const newRegistration = `navigator.serviceWorker.register(swPath, { updateViaCache: 'none' })\n                    .then((reg) => {\n                        console.log('ServiceWorker registered successfully:', reg.scope);\n                        void reg.update().catch(err => console.warn('ServiceWorker update check failed:', err));\n                    })`;
+  const updatedContent = currentContent.replace(oldRegistration, newRegistration);
+
+  if (updatedContent === currentContent) {
+    throw new Error('Service Worker登録処理を更新できませんでした。');
+  }
+
+  fs.writeFileSync(mainJsPath, updatedContent, 'utf8');
+  console.log('Enabled immediate Service Worker update checks.');
+}
+
+function collectAssetVersions(rootDir) {
   const cssVersion = createFileRevision(rootDir, 'style.css');
-
   const consentVersion = createFileRevision(rootDir, 'js/consent.js');
-
+  const mainCalculatorUiVersion = createFileRevision(rootDir, 'js/main-calculator-ui.js');
   const mainVersion = createFileRevision(rootDir, 'js/main.js');
   const thirdPartyVersion = createFileRevision(rootDir, 'js/third-party.js');
   const intentTrackingVersion = createFileRevision(rootDir, 'js/intent-tracking.js');
-
   const blogCssVersion = createFileRevision(rootDir, 'blog/style.css');
   const blogScriptVersion = createFileRevision(rootDir, 'blog/script.js');
   const blogComponentsVersion = createFileRevision(rootDir, 'blog/components.js');
-
   const articleSharedCssVersion = createFileRevision(rootDir, 'articles/article-shared.css');
   const articleScriptVersion = createFileRevision(rootDir, 'blog/article.js');
 
@@ -86,6 +123,7 @@ function collectAssetVersions(rootDir, indexHtml) {
     consentVersion,
     cssVersion,
     intentTrackingVersion,
+    mainCalculatorUiVersion,
     mainVersion,
     thirdPartyVersion,
     appModuleRevision: createAppModuleRevision(rootDir)
@@ -110,6 +148,11 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
   const cacheRevision = createRootServiceWorkerCacheRevision(versions);
   const newCacheName = `playpoint-calc-v${assetVersion}-${cacheRevision}`;
   swContent = swContent.replace(/const CACHE_NAME = '[^']+';/, `const CACHE_NAME = '${newCacheName}';`);
+  swContent = replaceOptionalAssetVersion(
+    swContent,
+    './js/main-calculator-ui.js',
+    versions.mainCalculatorUiVersion
+  );
   swContent = syncServiceWorkerAssetVersions(swContent, versions);
 
   fs.writeFileSync(swPath, swContent, 'utf8');
@@ -127,22 +170,30 @@ function syncThirdPartyConsentVersion(rootDir, consentVersion) {
   console.log(`Successfully synchronized consent.js version in third-party.js to v=${consentVersion}`);
 }
 
-function syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml) {
-  const versions = collectAssetVersions(rootDir, indexHtml);
+function syncServiceWorkerAssets(rootDir, assetVersion) {
+  const mainCalculatorUiVersion = createFileRevision(rootDir, 'js/main-calculator-ui.js');
+  syncMainCalculatorUiImportVersion(rootDir, mainCalculatorUiVersion);
+  syncServiceWorkerRegistration(rootDir);
+
+  const versions = collectAssetVersions(rootDir);
   syncRootServiceWorker(rootDir, assetVersion, versions);
   syncThirdPartyConsentVersion(rootDir, versions.consentVersion);
   return versions;
 }
 
 module.exports = {
+  APP_MODULE_FILES,
   ROOT_SERVICE_WORKER_ASSETS,
+  collectAssetVersions,
   createAppModuleRevision,
   createFileRevision,
   createRootServiceWorkerCacheRevision,
-  collectAssetVersions,
   extractVersion,
+  replaceOptionalAssetVersion,
+  syncMainCalculatorUiImportVersion,
   syncRootServiceWorker,
   syncServiceWorkerAssetVersions,
   syncServiceWorkerAssets,
+  syncServiceWorkerRegistration,
   syncThirdPartyConsentVersion
 };

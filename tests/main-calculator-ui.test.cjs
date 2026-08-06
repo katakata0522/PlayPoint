@@ -56,7 +56,7 @@ test('4言語に自動入力の獲得率と通常倍率の文言が用意され�
 });
 
 test('初期化前にDOMを組み替え、地域更新時に文言も更新する', () => {
-  assert.match(mainSource, /import \{ simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy \} from '\.\/main-calculator-ui\.js';/);
+  assert.match(mainSource, /import \{ simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy \} from '\.\/main-calculator-ui\.js\?v=[a-f0-9]{10}';/);
   assert.match(mainSource, /export function init\(\) \{\s*simplifyMainCalculatorLayout\(STATE\.currentRegion\);/s);
   assert.match(mainSource, /UI\.updateUIText\(\);\s*updateSimplifiedCalculatorCopy\(STATE\.currentRegion\);/s);
 });
@@ -77,5 +77,5 @@ test('既存の主要入力IDと共有URL仕様を維持する', () => {
 test('UIモジュールを圧縮・版管理・Service Workerの対象に含める', () => {
   assert.match(minifySource, /'js\/main-calculator-ui\.js'/);
   assert.match(assetSyncSource, /'js\/main-calculator-ui\.js'/);
-  assert.match(swSource, /'\.\/js\/main-calculator-ui\.js'/);
+  assert.match(swSource, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
 });
