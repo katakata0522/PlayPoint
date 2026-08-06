@@ -70,6 +70,14 @@ function main() {
     syncDynamicArticleStylesheetVersion,
     syncPublicAssetVersions
   } = require('../../scripts/article-asset-versioning.cjs');
+  const { normalizeArticleFiles } = require('../../scripts/article-seo-normalize.cjs');
+
+  const seoSummary = normalizeArticleFiles(root);
+  console.log(
+    `記事SEO正規化: ${seoSummary.scanned}件確認、` +
+    `${seoSummary.faqPagesRemoved}件の非表示FAQPageを除去、` +
+    `${seoSummary.largePreviewUpdated}件の画像プレビュー指示を更新`
+  );
 
   for (const file of resolveTargets(cssTargets)) {
     if (fs.existsSync(file)) {
