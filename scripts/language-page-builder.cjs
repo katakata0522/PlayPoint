@@ -74,6 +74,16 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/<title>[^<]+<\/title>/, `<title>${config.title}</title>`);
   output = output.replace(/<meta name="description" content="[^"]+">/g, `<meta name="description" content="${config.description}">`);
 
+  // RSS/Atomの代替フィード名も、JavaScript実行前から各言語のサイト名に合わせる。
+  output = output.replace(
+    /(<link rel="alternate" type="application\/rss\+xml" title=")[^"]+(" href="https:\/\/playpoint-sim\.com\/feed\.xml">)/,
+    `$1${config.appName} RSS$2`
+  );
+  output = output.replace(
+    /(<link rel="alternate" type="application\/atom\+xml" title=")[^"]+(" href="https:\/\/playpoint-sim\.com\/atom\.xml">)/,
+    `$1${config.appName} Atom$2`
+  );
+
   // 3. OGP & Twitter tags 置換
   output = output.replace(/(<meta property="og:title" content=")[^"]+(">)/, `<meta property="og:title" content="${config.ogTitle}">`);
   output = output.replace(/(<meta property="og:description" content=")[^"]+(">)/, `<meta property="og:description" content="${config.ogDescription}">`);
