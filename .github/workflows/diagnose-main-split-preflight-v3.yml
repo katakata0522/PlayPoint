@@ -1,0 +1,66 @@
+name: Diagnose main split preflight v3
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: contains(github.event.head_commit.message, '[diagnose-main-split-v3]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Apply final split state
+        shell: bash
+        run: |
+          node .github/scripts/apply-main-responsibility-split.cjs
+          node .github/scripts/apply-main-split-build-compat.cjs
+          node .github/scripts/apply-main-split-test-compat.cjs
+          modified_date="$(node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const value=html.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          asset_version="$(node -e "const fs=require('fs'); const sw=fs.readFileSync('sw.js','utf8'); const value=sw.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+          git add -- \
+            .github/scripts/minify.cjs \
+            scripts/asset-sync.cjs \
+            tests/growth-migration.test.cjs \
+            tests/main-responsibility-split.test.cjs \
+            tests/playpoint-regression.test.cjs \
+            tests/static-calculator-delivery.test.cjs \
+            js/main.js \
+            js/region-navigation.js \
+            js/language-suggestion.js \
+            js/calendar-reminder.js \
+            js/pwa-install.js \
+            js/widget-referral.js \
+            js/service-worker-registration.js \
+            sw.js
+          git add -- $(git diff --name-only | grep -E '\.html$' || true)
+
+      - name: Capture complete preflight
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/main-split-preflight.log 2>&1
+          status=$?
+          set -e
+          echo "$status" > /tmp/main-split-preflight.status
+          cat /tmp/main-split-preflight.log
+
+      - name: Upload preflight diagnostics
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: main-split-preflight-v3
+          path: |
+            /tmp/main-split-preflight.log
+            /tmp/main-split-preflight.status
+          retention-days: 1
