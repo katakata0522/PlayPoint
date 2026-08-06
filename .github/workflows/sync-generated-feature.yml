@@ -1,0 +1,55 @@
+name: Sync generated files for calculator UI
+
+on:
+  push:
+    branches:
+      - feat/simplify-main-calculator-inputs
+    paths:
+      - '.github/workflows/sync-generated-feature.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor == 'katakata0522'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/simplify-main-calculator-inputs
+          fetch-depth: 0
+
+      - name: Generate synchronized public files
+        run: node scripts/build-html.js
+
+      - name: Validate and commit generated outputs only
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          unexpected=0
+          while IFS= read -r file; do
+            case "$file" in
+              *.html|*.xml|sw.js)
+                git add -- "$file"
+                ;;
+              *)
+                echo "Unexpected generated change: $file" >&2
+                unexpected=1
+                ;;
+            esac
+          done < <(git diff --name-only)
+
+          if [ "$unexpected" -ne 0 ]; then
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            echo "Generated outputs are already synchronized."
+            exit 0
+          fi
+          git commit -m "公開HTMLとサイトマップの生成日付を同期"
+          git push origin HEAD:feat/simplify-main-calculator-inputs
