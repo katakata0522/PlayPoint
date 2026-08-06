@@ -2,37 +2,30 @@
 
 import { ANALYTICS } from './config.js';
 
-const THRESHOLDS = {
-    LCP: [2500, 4000],
-    INP: [200, 500],
-    CLS: [0.1, 0.25]
-};
+const METRIC_DEFINITIONS = Object.freeze({
+    LCP: Object.freeze({ thresholds: Object.freeze([2500, 4000]), buckets: Object.freeze(['0_2500', '2501_4000', '4001_plus']) }),
+    INP: Object.freeze({ thresholds: Object.freeze([200, 500]), buckets: Object.freeze(['0_200', '201_500', '501_plus']) }),
+    CLS: Object.freeze({ thresholds: Object.freeze([0.1, 0.25]), buckets: Object.freeze(['0_010', '011_025', '026_plus']) })
+});
+
+function getMetricDefinition(name) {
+    return METRIC_DEFINITIONS[name] || null;
+}
 
 function getRating(name, value) {
-    const thresholds = THRESHOLDS[name];
-    if (!thresholds) return 'unknown';
-    if (value <= thresholds[0]) return 'good';
-    if (value <= thresholds[1]) return 'needs_improvement';
+    const definition = getMetricDefinition(name);
+    if (!definition) return 'unknown';
+    if (value <= definition.thresholds[0]) return 'good';
+    if (value <= definition.thresholds[1]) return 'needs_improvement';
     return 'poor';
 }
 
 function getValueBucket(name, value) {
-    if (name === 'LCP') {
-        if (value <= 2500) return '0_2500';
-        if (value <= 4000) return '2501_4000';
-        return '4001_plus';
-    }
-    if (name === 'INP') {
-        if (value <= 200) return '0_200';
-        if (value <= 500) return '201_500';
-        return '501_plus';
-    }
-    if (name === 'CLS') {
-        if (value <= 0.1) return '0_010';
-        if (value <= 0.25) return '011_025';
-        return '026_plus';
-    }
-    return 'unknown';
+    const definition = getMetricDefinition(name);
+    if (!definition) return 'unknown';
+    if (value <= definition.thresholds[0]) return definition.buckets[0];
+    if (value <= definition.thresholds[1]) return definition.buckets[1];
+    return definition.buckets[2];
 }
 
 function getPageGroup() {
@@ -96,6 +89,8 @@ export function initWebVitalsMonitoring() {
     }, { type: 'event', buffered: true, durationThreshold: 40 });
 
     const send = () => {
+        const pageGroup = getPageGroup();
+        const releaseVersion = getReleaseVersion();
         for (const [name, value] of values) {
             if (sent.has(name)) continue;
             sent.add(name);
@@ -103,8 +98,8 @@ export function initWebVitalsMonitoring() {
                 metric_name: name,
                 metric_rating: getRating(name, value),
                 metric_value_bucket: getValueBucket(name, value),
-                page_group: getPageGroup(),
-                release_version: getReleaseVersion()
+                page_group: pageGroup,
+                release_version: releaseVersion
             });
         }
     };
