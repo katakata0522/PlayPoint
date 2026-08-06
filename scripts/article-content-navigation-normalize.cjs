@@ -208,8 +208,11 @@ function validateArticle(root, relativePath, html, knownFiles) {
       .filter(Boolean)
       .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target));
     const uniqueTargets = [...new Set(articleTargets)];
-    if (uniqueTargets.length < 2 || uniqueTargets.length > 4) {
+    const isCurated = Object.hasOwn(RELATED_SECTIONS, relativePath);
+    if (isCurated && (uniqueTargets.length < 2 || uniqueTargets.length > 4)) {
       problems.push(`関連記事リンクは2〜4本必要です（現在${uniqueTargets.length}本）`);
+    } else if (!isCurated && uniqueTargets.length === 0) {
+      problems.push('関連記事への内部リンクがありません');
     }
     for (const target of uniqueTargets) {
       if (target === relativePath) problems.push('関連記事に自己リンクがあります');
