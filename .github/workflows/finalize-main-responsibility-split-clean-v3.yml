@@ -1,0 +1,57 @@
+name: Package clean main responsibility split
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: write
+
+concurrency:
+  group: package-clean-main-responsibility-split
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    if: contains(github.event.head_commit.message, '[main-split-package]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout diagnostic branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Prepare location-safe finalizer
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          source = Path('.github/scripts/finalize-main-responsibility-split-clean.sh').read_text()
+          old = """node /tmp/apply-main-responsibility-split.cjs
+          node /tmp/apply-main-split-build-compat.cjs
+          node /tmp/apply-main-split-test-compat.cjs
+          """
+          new = """mkdir -p .github/scripts
+          cp /tmp/apply-main-responsibility-split.cjs .github/scripts/apply-main-responsibility-split.cjs
+          cp /tmp/apply-main-split-build-compat.cjs .github/scripts/apply-main-split-build-compat.cjs
+          cp /tmp/apply-main-split-test-compat.cjs .github/scripts/apply-main-split-test-compat.cjs
+          node .github/scripts/apply-main-responsibility-split.cjs
+          node .github/scripts/apply-main-split-build-compat.cjs
+          node .github/scripts/apply-main-split-test-compat.cjs
+          rm .github/scripts/apply-main-responsibility-split.cjs
+          rm .github/scripts/apply-main-split-build-compat.cjs
+          rm .github/scripts/apply-main-split-test-compat.cjs
+          """
+          if old not in source:
+              raise SystemExit('apply block not found')
+          Path('/tmp/finalize-main-responsibility-split-clean.sh').write_text(source.replace(old, new))
+          PY
+
+      - name: Rebuild, verify, commit and push clean branch
+        shell: bash
+        env:
+          EXPECTED_BASE_SHA: a2041d0a0e64488b361e658e8fbc01b74c2bd48e
+          TARGET_BRANCH: refactor/main-responsibility-split-clean-20260806
+        run: bash /tmp/finalize-main-responsibility-split-clean.sh
