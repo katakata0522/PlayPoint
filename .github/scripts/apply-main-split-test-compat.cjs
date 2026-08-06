@@ -49,6 +49,36 @@ update(
 );
 
 update(
+  'tests/playpoint-regression.test.cjs',
+  `test('モバイル初期表示外の重い領域は遅延描画される', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+
+  assert.ok(css.includes('#diaryMode'));
+  assert.ok(css.includes('#reverseMode'));
+  assert.ok(css.includes('content-visibility: auto'));
+  assert.ok(main.includes('requestIdleCallback'));
+  assert.ok(main.includes('navigator.serviceWorker.register'));
+});`,
+  `test('モバイル初期表示外の重い領域は遅延描画される', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const serviceWorkerRegistration = fs.readFileSync(
+    path.join(root, 'js', 'service-worker-registration.js'),
+    'utf8'
+  );
+
+  assert.ok(css.includes('#diaryMode'));
+  assert.ok(css.includes('#reverseMode'));
+  assert.ok(css.includes('content-visibility: auto'));
+  assert.ok(main.includes('registerServiceWorker'));
+  assert.ok(serviceWorkerRegistration.includes('requestIdleCallback'));
+  assert.ok(serviceWorkerRegistration.includes('navigator.serviceWorker.register'));
+});`,
+  'モバイル遅延処理検査をService Worker専用モジュールへ追従'
+);
+
+update(
   'tests/static-calculator-delivery.test.cjs',
   `test('UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する', () => {
   const mainSource = read('js/main.js');
