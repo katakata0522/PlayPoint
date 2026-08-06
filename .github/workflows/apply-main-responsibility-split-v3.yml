@@ -96,7 +96,8 @@ jobs:
             '.github/workflows/apply-main-responsibility-split-v2.yml',
             '.github/workflows/apply-main-responsibility-split-v3.yml',
             '.github/workflows/inspect-main-split-output.yml',
-            '.github/workflows/diagnose-main-split-tests.yml'
+            '.github/workflows/diagnose-main-split-tests.yml',
+            '.github/workflows/diagnose-main-split-preflight-v3.yml'
           ];
           const implementation = [
             '.github/scripts/minify.cjs',
@@ -136,7 +137,8 @@ jobs:
             .github/workflows/apply-main-responsibility-split-v2.yml \
             .github/workflows/apply-main-responsibility-split-v3.yml \
             .github/workflows/inspect-main-split-output.yml \
-            .github/workflows/diagnose-main-split-tests.yml
+            .github/workflows/diagnose-main-split-tests.yml \
+            .github/workflows/diagnose-main-split-preflight-v3.yml
           git add -- \
             .github/scripts/apply-main-responsibility-split.cjs \
             .github/scripts/apply-main-split-build-compat.cjs \
@@ -145,7 +147,8 @@ jobs:
             .github/workflows/apply-main-responsibility-split-v2.yml \
             .github/workflows/apply-main-responsibility-split-v3.yml \
             .github/workflows/inspect-main-split-output.yml \
-            .github/workflows/diagnose-main-split-tests.yml
+            .github/workflows/diagnose-main-split-tests.yml \
+            .github/workflows/diagnose-main-split-preflight-v3.yml
 
       - name: Verify final staged scope
         run: |
