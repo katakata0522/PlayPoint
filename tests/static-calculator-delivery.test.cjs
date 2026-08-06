@@ -100,13 +100,16 @@ test('UIモジュールの旧HTML向けフォールバックと静的HTML向け�
 
 test('UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する', () => {
   const mainSource = read('js/main.js');
+  const serviceWorkerRegistration = read('js/service-worker-registration.js');
   const serviceWorker = read('sw.js');
   const assetSync = read('scripts/asset-sync.cjs');
 
   assert.match(mainSource, /from '\.\/main-calculator-ui\.js\?v=[a-f0-9]{10}';/);
-  assert.match(mainSource, /register\(swPath, \{ updateViaCache: 'none' \}\)/);
-  assert.match(mainSource, /reg\.update\(\)/);
+  assert.match(mainSource, /from '\.\/service-worker-registration\.js';/);
+  assert.match(serviceWorkerRegistration, /register\(swPath, \{ updateViaCache: 'none' \}\)/);
+  assert.match(serviceWorkerRegistration, /reg\.update\(\)/);
   assert.match(serviceWorker, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
+  assert.match(serviceWorker, /'\.\/js\/service-worker-registration\.js'/);
   assert.match(assetSync, /syncMainCalculatorUiImportVersion/);
   assert.match(assetSync, /syncServiceWorkerRegistration/);
   assert.match(assetSync, /mainCalculatorUiVersion/);
