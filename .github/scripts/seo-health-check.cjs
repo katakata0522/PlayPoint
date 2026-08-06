@@ -2,6 +2,7 @@
 
 const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
 const { validateLatestHub } = require('../../scripts/latest-hub-audit.cjs');
+const { findHiddenFaqItems, hasLargeImagePreview } = require('../../scripts/article-seo-normalize.cjs');
 
 const BASE_URL = 'https://playpoint-sim.com';
 const FETCH_TIMEOUT_MS = 12000;
@@ -129,6 +130,13 @@ async function checkArticle(url) {
   assertIncludes(body, /<meta\s+name="description"\s+content="[^"]+"/i, `${url}: article description missing`);
   assertIncludes(body, /<link\s+rel="canonical"\s+href="[^"]+"/i, `${url}: article canonical missing`);
   assertIncludes(body, /<script\s+type="application\/ld\+json">/i, `${url}: article structured data missing`);
+  if (!hasLargeImagePreview(body)) {
+    throw new Error(`${url}: max-image-preview:large missing`);
+  }
+  const hiddenFaqItems = findHiddenFaqItems(body);
+  if (hiddenFaqItems.length > 0) {
+    throw new Error(`${url}: FAQPage contains ${hiddenFaqItems.length} hidden or mismatched Q&A items`);
+  }
   if (url.includes(`${BASE_URL}/articles/`)) {
     assertIncludes(body, /<script\s+src="\.\.\/blog\/article\.js\?v=[^"]+"><\/script>/i, `${url}: shared article script missing`);
   }
