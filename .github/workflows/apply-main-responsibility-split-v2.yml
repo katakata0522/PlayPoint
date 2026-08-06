@@ -1,0 +1,177 @@
+name: Apply main responsibility split v2
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: contains(github.event.head_commit.message, '[apply-main-split-v2]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot normalized public HTML
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = process.cwd();
+          const excluded = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
+          function walk(dir) {
+            return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+              if (entry.isDirectory() && excluded.has(entry.name)) return [];
+              const absolute = path.join(dir, entry.name);
+              if (entry.isDirectory()) return walk(absolute);
+              return entry.isFile() && entry.name.endsWith('.html') ? [absolute] : [];
+            });
+          }
+          const normalize = content => content
+            .replace(/\?v=[a-zA-Z0-9_-]+/g, '?v=ASSET_VERSION')
+            .replace(/\r\n/g, '\n');
+          const snapshot = Object.fromEntries(walk(root).map((file) => [
+            path.relative(root, file).replaceAll('\\', '/'),
+            normalize(fs.readFileSync(file, 'utf8'))
+          ]));
+          fs.writeFileSync('/tmp/playpoint-public-html-before.json', JSON.stringify(snapshot));
+          console.log(`Snapshotted ${Object.keys(snapshot).length} public HTML files.`);
+          NODE
+
+      - name: Split main responsibilities
+        run: node .github/scripts/apply-main-responsibility-split.cjs
+
+      - name: Update build compatibility
+        run: node .github/scripts/apply-main-split-build-compat.cjs
+
+      - name: Synchronize generated asset revisions
+        shell: bash
+        run: |
+          modified_date="$(node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const value=html.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          asset_version="$(node -e "const fs=require('fs'); const sw=fs.readFileSync('sw.js','utf8'); const value=sw.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+
+      - name: Verify public HTML is unchanged except asset revisions
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const root = process.cwd();
+          const before = JSON.parse(fs.readFileSync('/tmp/playpoint-public-html-before.json', 'utf8'));
+          const normalize = content => content
+            .replace(/\?v=[a-zA-Z0-9_-]+/g, '?v=ASSET_VERSION')
+            .replace(/\r\n/g, '\n');
+          const failures = [];
+          for (const [relative, expected] of Object.entries(before)) {
+            const absolute = path.join(root, relative);
+            if (!fs.existsSync(absolute)) {
+              failures.push(`${relative}: removed`);
+              continue;
+            }
+            const actual = normalize(fs.readFileSync(absolute, 'utf8'));
+            if (actual !== expected) failures.push(`${relative}: visible/structural content changed`);
+          }
+          if (failures.length) throw new Error(failures.join('\n'));
+          console.log(`Verified ${Object.keys(before).length} public HTML files are unchanged.`);
+          NODE
+
+      - name: Validate and stage exact implementation scope
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const allowed = new Set([
+            ...generatedFiles,
+            '.github/scripts/apply-main-responsibility-split.cjs',
+            '.github/scripts/apply-main-split-build-compat.cjs',
+            '.github/workflows/apply-main-responsibility-split.yml',
+            '.github/workflows/apply-main-responsibility-split-v2.yml',
+            '.github/scripts/minify.cjs',
+            'scripts/asset-sync.cjs',
+            'tests/growth-migration.test.cjs',
+            'tests/main-responsibility-split.test.cjs',
+            'js/main.js',
+            'js/region-navigation.js',
+            'js/language-suggestion.js',
+            'js/calendar-reminder.js',
+            'js/pwa-install.js',
+            'js/widget-referral.js',
+            'js/service-worker-registration.js'
+          ]);
+          const changed = execFileSync('git', ['diff', '--name-only', '-z'], { encoding: 'utf8' })
+            .split('\0')
+            .filter(Boolean);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) throw new Error(`Unexpected changed paths: ${unexpected.join(', ')}`);
+          for (const file of changed) execFileSync('git', ['add', '--', file], { stdio: 'inherit' });
+          console.log(`Staged ${changed.length} validated paths.`);
+          NODE
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Remove temporary migration files
+        run: |
+          rm .github/scripts/apply-main-responsibility-split.cjs
+          rm .github/scripts/apply-main-split-build-compat.cjs
+          rm .github/workflows/apply-main-responsibility-split.yml
+          rm .github/workflows/apply-main-responsibility-split-v2.yml
+          git add -- \
+            .github/scripts/apply-main-responsibility-split.cjs \
+            .github/scripts/apply-main-split-build-compat.cjs \
+            .github/workflows/apply-main-responsibility-split.yml \
+            .github/workflows/apply-main-responsibility-split-v2.yml
+
+      - name: Verify final staged scope
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const allowed = new Set([
+            ...generatedFiles,
+            '.github/scripts/minify.cjs',
+            'scripts/asset-sync.cjs',
+            'tests/growth-migration.test.cjs',
+            'tests/main-responsibility-split.test.cjs',
+            'js/main.js',
+            'js/region-navigation.js',
+            'js/language-suggestion.js',
+            'js/calendar-reminder.js',
+            'js/pwa-install.js',
+            'js/widget-referral.js',
+            'js/service-worker-registration.js'
+          ]);
+          const changed = execFileSync('git', ['diff', '--cached', '--name-only', '-z'], { encoding: 'utf8' })
+            .split('\0')
+            .filter(Boolean);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) throw new Error(`Unexpected staged paths: ${unexpected.join(', ')}`);
+          for (const required of [
+            'js/main.js',
+            'js/region-navigation.js',
+            'js/language-suggestion.js',
+            'js/calendar-reminder.js',
+            'js/pwa-install.js',
+            'js/widget-referral.js',
+            'js/service-worker-registration.js',
+            'tests/main-responsibility-split.test.cjs'
+          ]) {
+            if (!changed.includes(required)) throw new Error(`Required path is not staged: ${required}`);
+          }
+          console.log(`Final staged scope contains ${changed.length} paths.`);
+          NODE
+
+      - name: Commit split
+        run: |
+          git config user.name "katakata0522"
+          git config user.email "tomokiandyuuki3@gmail.com"
+          git commit -m "main.jsの独立責務を専用モジュールへ分離"
+          git push origin HEAD:refactor/main-responsibility-split-20260806
