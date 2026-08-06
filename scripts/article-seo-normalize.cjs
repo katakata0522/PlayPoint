@@ -12,6 +12,7 @@ const ARTICLE_DIRECTORIES = Object.freeze([
 
 const JSON_LD_SCRIPT_PATTERN = /<script\b([^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*)>([\s\S]*?)<\/script>/gi;
 const ROBOTS_META_PATTERN = /<meta\b([^>]*\bname\s*=\s*["']robots["'][^>]*)>/i;
+const FAQ_ITEM_PATTERN = /<div\b(?=[^>]*\bclass\s*=\s*["'][^"']*\bfaq-item\b[^"']*["'])[^>]*>([\s\S]*?)<\/div>/gi;
 
 function decodeHtmlEntities(value) {
   return String(value)
@@ -29,12 +30,21 @@ function stripHtml(value) {
   return decodeHtmlEntities(String(value).replace(/<[^>]*>/g, ' '));
 }
 
-function normalizeComparableText(value) {
+function cleanVisibleText(value) {
   return stripHtml(value)
     .normalize('NFKC')
     .replace(/\s+/g, ' ')
-    .trim()
-    .toLocaleLowerCase('und');
+    .trim();
+}
+
+function normalizeComparableText(value) {
+  return cleanVisibleText(value).toLowerCase();
+}
+
+function removeFaqLabel(value, label) {
+  return String(value)
+    .replace(new RegExp(`^${label}\\s*[.．:：]\\s*`, 'i'), '')
+    .trim();
 }
 
 function getVisibleText(html) {
@@ -44,6 +54,20 @@ function getVisibleText(html) {
       .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
       .replace(/<!--([\s\S]*?)-->/g, ' ')
   );
+}
+
+function extractVisibleFaqPairs(html) {
+  const pairs = [];
+  for (const match of String(html).matchAll(FAQ_ITEM_PATTERN)) {
+    const questionMatch = match[1].match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i);
+    const answerMatch = match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
+    if (!questionMatch || !answerMatch) continue;
+
+    const question = removeFaqLabel(cleanVisibleText(questionMatch[1]), 'Q');
+    const answer = removeFaqLabel(cleanVisibleText(answerMatch[1]), 'A');
+    if (question && answer) pairs.push({ question, answer });
+  }
+  return pairs;
 }
 
 function hasType(value, expectedType) {
@@ -83,6 +107,14 @@ function getFaqPairs(faqPage) {
     });
 }
 
+function faqPairsMatch(left, right) {
+  if (left.length !== right.length) return false;
+  return left.every((pair, index) =>
+    normalizeComparableText(pair.question) === normalizeComparableText(right[index].question) &&
+    normalizeComparableText(pair.answer) === normalizeComparableText(right[index].answer)
+  );
+}
+
 function findHiddenFaqItems(html) {
   const visibleText = getVisibleText(html);
   const hiddenItems = [];
@@ -113,18 +145,41 @@ function findHiddenFaqItems(html) {
   return hiddenItems;
 }
 
-function removeFaqNodes(value) {
+function buildFaqEntities(pairs) {
+  return pairs.map(pair => ({
+    '@type': 'Question',
+    name: pair.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: pair.answer
+    }
+  }));
+}
+
+function synchronizeFaqNodes(value, visiblePairs, stats) {
   if (Array.isArray(value)) {
     return value
-      .map(removeFaqNodes)
+      .map(item => synchronizeFaqNodes(item, visiblePairs, stats))
       .filter(item => item !== null && item !== undefined);
   }
   if (!value || typeof value !== 'object') return value;
-  if (hasType(value, 'FAQPage')) return null;
+
+  if (hasType(value, 'FAQPage')) {
+    if (visiblePairs.length === 0) {
+      stats.removed += 1;
+      return null;
+    }
+    if (faqPairsMatch(getFaqPairs(value), visiblePairs)) return value;
+    stats.synchronized += 1;
+    return {
+      ...value,
+      mainEntity: buildFaqEntities(visiblePairs)
+    };
+  }
 
   const output = {};
   for (const [key, child] of Object.entries(value)) {
-    const normalizedChild = removeFaqNodes(child);
+    const normalizedChild = synchronizeFaqNodes(child, visiblePairs, stats);
     if (normalizedChild === null || normalizedChild === undefined) continue;
     if (Array.isArray(normalizedChild) && normalizedChild.length === 0) continue;
     output[key] = normalizedChild;
@@ -140,13 +195,10 @@ function isEmptyStructuredData(value) {
   return meaningfulKeys.length === 0;
 }
 
-function removeHiddenFaqStructuredData(html) {
-  const hiddenItems = findHiddenFaqItems(html);
-  if (hiddenItems.length === 0) {
-    return { html, removedFaqPage: false, hiddenItemCount: 0 };
-  }
+function synchronizeFaqStructuredData(html) {
+  const visiblePairs = extractVisibleFaqPairs(html);
+  const stats = { removed: 0, synchronized: 0 };
 
-  let removedFaqPage = false;
   const updatedHtml = String(html).replace(JSON_LD_SCRIPT_PATTERN, (fullMatch, attributes, jsonText) => {
     let data;
     try {
@@ -156,16 +208,18 @@ function removeHiddenFaqStructuredData(html) {
     }
 
     if (collectFaqPages(data).length === 0) return fullMatch;
-    const cleaned = removeFaqNodes(data);
-    removedFaqPage = true;
+    const before = stats.removed + stats.synchronized;
+    const cleaned = synchronizeFaqNodes(data, visiblePairs, stats);
+    if (stats.removed + stats.synchronized === before) return fullMatch;
     if (isEmptyStructuredData(cleaned)) return '';
     return `<script${attributes}>\n${JSON.stringify(cleaned, null, 2)}\n</script>`;
   });
 
   return {
     html: updatedHtml,
-    removedFaqPage,
-    hiddenItemCount: hiddenItems.length
+    changed: stats.removed > 0 || stats.synchronized > 0,
+    removedFaqPageCount: stats.removed,
+    synchronizedFaqPageCount: stats.synchronized
   };
 }
 
@@ -184,9 +238,10 @@ function ensureLargeImagePreview(html) {
   const robotsMatch = source.match(ROBOTS_META_PATTERN);
   if (!robotsMatch) {
     const tag = '    <meta name="robots" content="index, follow, max-image-preview:large">\n';
+    const updatedHtml = source.replace(/<\/head>/i, `${tag}</head>`);
     return {
-      html: source.replace(/<\/head>/i, `${tag}</head>`),
-      changed: true
+      html: updatedHtml,
+      changed: updatedHtml !== source
     };
   }
 
@@ -213,13 +268,13 @@ function hasLargeImagePreview(html) {
 }
 
 function normalizeArticleHtml(html) {
-  const faqResult = removeHiddenFaqStructuredData(html);
+  const faqResult = synchronizeFaqStructuredData(html);
   const robotsResult = ensureLargeImagePreview(faqResult.html);
   return {
     html: robotsResult.html,
-    changed: faqResult.removedFaqPage || robotsResult.changed,
-    removedFaqPage: faqResult.removedFaqPage,
-    hiddenItemCount: faqResult.hiddenItemCount,
+    changed: faqResult.changed || robotsResult.changed,
+    removedFaqPageCount: faqResult.removedFaqPageCount,
+    synchronizedFaqPageCount: faqResult.synchronizedFaqPageCount,
     addedLargeImagePreview: robotsResult.changed
   };
 }
@@ -239,7 +294,7 @@ function normalizeArticleFiles(rootDir, { checkOnly = false } = {}) {
     scanned: 0,
     changed: 0,
     faqPagesRemoved: 0,
-    hiddenFaqItems: 0,
+    faqPagesSynchronized: 0,
     largePreviewUpdated: 0,
     changedFiles: []
   };
@@ -253,8 +308,8 @@ function normalizeArticleFiles(rootDir, { checkOnly = false } = {}) {
 
     summary.changed += 1;
     summary.changedFiles.push(relativePath.replaceAll('\\', '/'));
-    if (result.removedFaqPage) summary.faqPagesRemoved += 1;
-    summary.hiddenFaqItems += result.hiddenItemCount;
+    summary.faqPagesRemoved += result.removedFaqPageCount;
+    summary.faqPagesSynchronized += result.synchronizedFaqPageCount;
     if (result.addedLargeImagePreview) summary.largePreviewUpdated += 1;
     if (!checkOnly) fs.writeFileSync(absolutePath, result.html, 'utf8');
   }
@@ -269,7 +324,8 @@ function main() {
   const summary = normalizeArticleFiles(rootDir, { checkOnly });
 
   console.log(`記事SEO正規化: ${summary.scanned}件確認、${summary.changed}件更新対象`);
-  console.log(`- 非表示FAQPage除去: ${summary.faqPagesRemoved}件（不一致Q&A ${summary.hiddenFaqItems}件）`);
+  console.log(`- FAQPage本文同期: ${summary.faqPagesSynchronized}件`);
+  console.log(`- 可視FAQなしのFAQPage除去: ${summary.faqPagesRemoved}件`);
   console.log(`- max-image-preview:large更新: ${summary.largePreviewUpdated}件`);
 
   if (checkOnly && summary.changed > 0) {
@@ -284,11 +340,12 @@ module.exports = {
   ARTICLE_DIRECTORIES,
   collectFaqPages,
   ensureLargeImagePreview,
+  extractVisibleFaqPairs,
   findHiddenFaqItems,
   getArticleFiles,
   hasLargeImagePreview,
   normalizeArticleFiles,
   normalizeArticleHtml,
   normalizeComparableText,
-  removeHiddenFaqStructuredData
+  synchronizeFaqStructuredData
 };
