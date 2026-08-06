@@ -82,7 +82,11 @@ Options -Indexes
 
 <IfModule mod_headers.c>
   Header append Vary Accept-Encoding
-  # 内容ハッシュ付きのCSS/JSだけを長期保存する。未バージョン資産は上記Expiresの短期設定を維持する。
+  # 未バージョンのJavaScriptは短時間で再検証し、古いモジュールが長期間残るのを防ぐ。
+  <FilesMatch "\.(js|mjs)$">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </FilesMatch>
+  # 内容ハッシュ付きのCSS/JSだけを長期保存する。上の短期設定はv付き資産では上書きされる。
   Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{QUERY_STRING} =~ m#(^|&)v=[a-zA-Z0-9_-]+(&|$)#"
   <Files "feed.xml">
     Header set Cache-Control "public, max-age=1800"

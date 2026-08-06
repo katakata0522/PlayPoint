@@ -5,7 +5,7 @@ import { UI } from './ui.js';
 import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
-import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=fe1ecf8545';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 
 let deferredInstallPrompt = null;
@@ -244,8 +244,11 @@ export function init() {
         window.addEventListener('load', () => {
             runWhenIdle(() => {
                 const swPath = (isEnglishPath() || isKoreanPath() || isTaiwanPath()) ? '../sw.js' : './sw.js';
-                navigator.serviceWorker.register(swPath)
-                    .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))
+                navigator.serviceWorker.register(swPath, { updateViaCache: 'none' })
+                    .then((reg) => {
+                        console.log('ServiceWorker registered successfully:', reg.scope);
+                        void reg.update().catch(err => console.warn('ServiceWorker update check failed:', err));
+                    })
                     .catch(err => console.error('ServiceWorker registration failed:', err));
             });
         });

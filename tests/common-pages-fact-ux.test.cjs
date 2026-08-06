@@ -51,12 +51,12 @@ test('共通説明は年初再判定・残高と年間進捗の違いを公式UR
 test('トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する', () => {
   const html = read('index.html');
   const calculator = read('js/calculator.js');
-  assert.match(html, /獲得率（直接入力）/);
-  assert.match(html, /キャンペーン倍率（もう一つの入力方法）/);
+  assert.match(html, /100円あたりの獲得率（自動入力・編集可）/);
+  assert.match(html, /キャンペーン倍率（通常は1倍）/);
   assert.match(html, /高い方を試算に使います/);
   assert.match(html, /対象・上限・有効化/);
   assert.match(html, /id="neededPoints" min="1" step="1"/);
-  assert.match(html, /id="pack-amount" min="0" step="0\.01"/);
+  assert.doesNotMatch(html, /id="pack-amount"/);
   assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
   assert.match(calculator, /finalRate:\s*Math\.max\(directRate, multipliedRate\)/);
   assert.match(calculator, /resultRateSourceDirect/);

@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
+const { ensureStaticCalculatorLayout } = require('./static-calculator-layout.cjs');
 
 function createBuildMetadata(env = process.env, now = new Date()) {
   const jstDate = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -23,7 +24,10 @@ function createBuildMetadata(env = process.env, now = new Date()) {
 }
 
 function syncIndexMetadataContent(indexHtml, todayStr, assetVersion) {
-  let content = replaceDateMetadata(indexHtml, todayStr);
+  let content = indexHtml.includes('id="mainMode"')
+    ? ensureStaticCalculatorLayout(indexHtml)
+    : indexHtml;
+  content = replaceDateMetadata(content, todayStr);
   const version = `${assetVersion}a`;
 
   content = content.replace(/サイト更新: \d{4}-\d{2}-\d{2}/g, `サイト更新: ${todayStr}`);
@@ -40,7 +44,7 @@ function syncIndexMetadata(rootDir, metadata = createBuildMetadata()) {
   const indexHtml = syncIndexMetadataContent(fs.readFileSync(sourcePath, 'utf8'), metadata.todayStr, metadata.assetVersion);
 
   fs.writeFileSync(sourcePath, indexHtml, 'utf8');
-  console.log(`Synchronized dates and asset versions (v=${metadata.assetVersion}a) in index.html`);
+  console.log(`Synchronized dates, asset versions, and calculator layout (v=${metadata.assetVersion}a) in index.html`);
 
   return {
     ...metadata,

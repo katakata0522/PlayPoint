@@ -4,6 +4,21 @@ const fs = require('fs');
 const path = require('path');
 const { replaceDateMetadata } = require('./html-replacements.cjs');
 
+const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
+  en: {
+    baseRateLabel: 'Points per $1 (auto-filled, editable)',
+    multiplierLabel: 'Campaign multiplier (normally 1×)'
+  },
+  ko: {
+    baseRateLabel: '₩1,000당 적립률 (자동 입력·수정 가능)',
+    multiplierLabel: '캠페인 배율 (보통 1배)'
+  },
+  tw: {
+    baseRateLabel: '每 NT$30 獲得點數（自動帶入，可修改）',
+    multiplierLabel: '活動倍率（通常為 1 倍）'
+  }
+});
+
 function replaceStaticLanguageText(html, staticText) {
   return html
     .replace(
@@ -21,6 +36,20 @@ function replaceStaticLanguageText(html, staticText) {
       if (!Object.prototype.hasOwnProperty.call(staticText, key)) return match;
       return `${before}${staticText[key]}${after}`;
     });
+}
+
+function replaceSimplifiedCalculatorCopy(html, copy) {
+  if (!copy) return html;
+
+  return html
+    .replace(
+      /(<span\b[^>]*\bdata-simplified-calculator-copy="baseRateLabel"[^>]*>)[\s\S]*?(<\/span>)/i,
+      (_match, openTag, closeTag) => `${openTag}${copy.baseRateLabel}${closeTag}`
+    )
+    .replace(
+      /(<span\b[^>]*\bdata-simplified-calculator-copy="multiplierLabel"[^>]*>)[\s\S]*?(<\/span>)/i,
+      (_match, openTag, closeTag) => `${openTag}${copy.multiplierLabel}${closeTag}`
+    );
 }
 
 function buildLocalizedHtml(indexHtml, langDir, config) {
@@ -121,6 +150,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
 
   // 11. ファーストビューの静的文言をHTML生成時点で翻訳
   output = replaceStaticLanguageText(output, config.staticText);
+  output = replaceSimplifiedCalculatorCopy(output, SIMPLIFIED_CALCULATOR_COPY[langDir]);
 
   // 12. フッター meta-line の置換
   output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);
@@ -142,7 +172,9 @@ function writeLocalizedPages(rootDir, indexHtml, locales) {
 }
 
 module.exports = {
+  SIMPLIFIED_CALCULATOR_COPY,
   buildLocalizedHtml,
+  replaceSimplifiedCalculatorCopy,
   replaceStaticLanguageText,
   writeLocalizedPages
 };
