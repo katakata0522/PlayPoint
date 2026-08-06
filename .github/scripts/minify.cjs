@@ -41,6 +41,7 @@ const cssTargets = [
 const jsTargets = [
   'sw.js',
   'js/main.js',
+  'js/main-calculator-ui.js',
   'js/calculator.js',
   'js/ui.js',
   'js/diary.js',
