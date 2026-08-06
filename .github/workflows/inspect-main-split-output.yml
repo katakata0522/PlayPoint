@@ -26,14 +26,15 @@ jobs:
         run: |
           grep -n "result_related_article_clicked\|result_decision_link_clicked\|showInstallPromptAfterDiarySave\|function trackResultLinkClicks" js/main.js || true
           grep -n "showInstallPromptAfterDiarySave\|beforeinstallprompt" js/pwa-install.js || true
+          grep -R -n "showInstallPromptAfterDiarySave\|beforeinstallprompt\|result_related_article_clicked" tests || true
 
       - name: Upload generated sources
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: main-split-generated-sources
+          name: main-split-generated-sources-v2
           path: |
             js/main.js
             js/pwa-install.js
-            tests/playpoint-regression.test.cjs
+            tests
             .github/scripts/apply-main-responsibility-split.cjs
           retention-days: 1
