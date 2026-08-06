@@ -1,0 +1,31 @@
+name: Build clean main responsibility split
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-clean-main-responsibility-split
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    if: contains(github.event.head_commit.message, '[build-main-split-clean]')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout diagnostic branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild, verify, commit and push clean branch
+        shell: bash
+        env:
+          EXPECTED_BASE_SHA: a2041d0a0e64488b361e658e8fbc01b74c2bd48e
+          TARGET_BRANCH: refactor/main-responsibility-split-clean-20260806
+        run: bash .github/scripts/finalize-main-responsibility-split-clean.sh
