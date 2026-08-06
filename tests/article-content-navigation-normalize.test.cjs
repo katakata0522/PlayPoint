@@ -97,8 +97,8 @@ test('normalization is idempotent and validates related targets', () => {
 
 test('validator rejects too few links, self links and missing targets', () => {
   const root = tempRoot();
-  const file = 'en/articles/sample.html';
-  const html = article('<section class="related-links-section"><h2>Related guides</h2><a href="./sample.html">Self</a></section>');
+  const file = 'articles/2025-12-25-campaign.html';
+  const html = article('<section class="related-links-section"><h2>関連記事</h2><a href="./2025-12-25-campaign.html">Self</a></section>');
   write(root, file, html);
   const problems = validateArticle(root, file, html, new Set([file]));
   assert.ok(problems.some(message => message.includes('2〜4本')));
