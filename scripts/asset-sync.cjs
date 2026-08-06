@@ -25,7 +25,8 @@ const APP_MODULE_FILES = [
   'js/ui.js',
   'js/diary.js',
   'js/calculator.js',
-  'js/share.js'
+  'js/share.js',
+  'js/main-calculator-ui.js'
 ];
 
 function createRootServiceWorkerCacheRevision(versions, assets = ROOT_SERVICE_WORKER_ASSETS) {

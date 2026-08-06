@@ -5,6 +5,7 @@ import { UI } from './ui.js';
 import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 
 let deferredInstallPrompt = null;
@@ -38,6 +39,7 @@ function updateArticleCount() {
 
 export function updateUIForRegion() {
     UI.updateUIText();
+    updateSimplifiedCalculatorCopy(STATE.currentRegion);
     CALC.populateStatusSelects();
     CALC.updateBaseRateAndTarget();
     CALC.updateReverseBaseRate();
@@ -85,6 +87,8 @@ export function switchRegion(newRegion) {
 
 // DOM要素のバインドとイベントリスナーの登録（初期化処理）
 export function init() {
+    simplifyMainCalculatorLayout(STATE.currentRegion);
+
     const ids = [
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
         'neededPoints', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'result-actions', 'copyButton',
