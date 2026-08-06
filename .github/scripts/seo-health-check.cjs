@@ -10,6 +10,15 @@ const HTTP_CONCURRENCY = 4;
 const MAX_ATTEMPTS = 2;
 const RETRY_DELAY_MS = 1500;
 const REPRESENTATIVE_OGP_URL = `${BASE_URL}/articles/ogp/weekly-reward.png`;
+const RELATED_HEADING_PATTERN = /(関連記事|あわせて読みたい|次に確認したい|Related guides|Related articles|Read next|관련|함께 읽|相關|延伸閱讀)/i;
+const SCOPE_NOTE_PATHS = new Set([
+  '/articles/2026-07-24-play-points-100-value.html',
+  '/articles/2026-07-24-play-points-500-1000-value.html',
+  '/en/articles/google-play-points-family-sharing.html',
+  '/en/articles/google-play-points-multiple-accounts.html',
+  '/en/articles/google-play-points-gift-cards.html',
+  '/en/articles/google-play-points-subscriptions.html'
+]);
 
 const pageUrls = [
   `${BASE_URL}/`,
@@ -80,6 +89,19 @@ function assertIncludes(body, pattern, message) {
   if (!matched) throw new Error(message);
 }
 
+function stripTags(value) {
+  return value.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function hasStaticRelatedSection(body) {
+  if (/class=["'][^"']*\b(?:related-links-section|contextual-guide-links|article-related-guides)\b[^"']*["']/i.test(body)) {
+    return true;
+  }
+
+  return [...body.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>/gi)]
+    .some((match) => RELATED_HEADING_PATTERN.test(stripTags(match[1])));
+}
+
 async function checkPage(url) {
   const { response, body } = await fetchText(url);
   if (!response.ok) throw new Error(`${url}: HTTP ${response.status}`);
@@ -136,6 +158,12 @@ async function checkArticle(url) {
   const hiddenFaqItems = findHiddenFaqItems(body);
   if (hiddenFaqItems.length > 0) {
     throw new Error(`${url}: FAQPage contains ${hiddenFaqItems.length} hidden or mismatched Q&A items`);
+  }
+  if (!hasStaticRelatedSection(body)) {
+    throw new Error(`${url}: static related-article section missing`);
+  }
+  if (SCOPE_NOTE_PATHS.has(new URL(url).pathname) && !/\barticle-scope-note\b/.test(body)) {
+    throw new Error(`${url}: search-intent scope note missing`);
   }
   if (url.includes(`${BASE_URL}/articles/`)) {
     assertIncludes(body, /<script\s+src="\.\.\/blog\/article\.js\?v=[^"]+"><\/script>/i, `${url}: shared article script missing`);
