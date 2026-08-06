@@ -1,0 +1,97 @@
+name: Browser calculator smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Verification target
+        required: true
+        default: local
+        type: choice
+        options:
+          - local
+          - production
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - '.gitattributes'
+  workflow_run:
+    workflows:
+      - Deploy to Xserver
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: browser-smoke-${{ github.event_name }}-${{ github.event.pull_request.number || github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  local:
+    if: github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.target == 'local')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install browser driver
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify local calculator in Chromium
+        run: node .github/scripts/browser-smoke.cjs
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: browser-smoke-local-${{ github.run_id }}
+          path: browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+  production:
+    if: >-
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_dispatch' && inputs.target == 'production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout deployed revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+
+      - name: Install browser driver
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify production calculator in Chromium
+        env:
+          SMOKE_BASE_URL: https://playpoint-sim.com/
+          SMOKE_EXPECT_REVISION: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || '' }}
+        run: node .github/scripts/browser-smoke.cjs
+
+      - name: Upload failure evidence
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: browser-smoke-production-${{ github.run_id }}
+          path: browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
