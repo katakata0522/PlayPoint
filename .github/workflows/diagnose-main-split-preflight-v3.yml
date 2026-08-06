@@ -64,3 +64,5 @@ jobs:
             /tmp/main-split-preflight.log
             /tmp/main-split-preflight.status
           retention-days: 1
+
+# Temporary trigger file; removed by the final migration workflow.
