@@ -112,6 +112,10 @@ try {
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
   runPhase('圧縮後の全回帰テスト', process.execPath, ['--test', ...testFiles]);
+  if (prepareDeploy) {
+    runPhase('公開記事SEO正規化', process.execPath, ['scripts/article-seo-normalize.cjs']);
+    runPhase('公開記事SEO正規化後検証', process.execPath, ['scripts/article-seo-normalize.cjs', '--check']);
+  }
 } finally {
   if (!prepareDeploy) restoreMutableFiles();
 }
