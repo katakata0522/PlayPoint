@@ -135,3 +135,11 @@ body.blog-index-compact .cta-banner {
         grid-template-columns: 1fr;
     }
 }
+/* BLOG_USABILITY_PASS_START */
+body.blog-index-compact .filter-bar.is-scrollable{mask-image:linear-gradient(to right,#000 calc(100% - 42px),transparent)}
+body.blog-index-compact .filter-scroll-hint,.article-result-status{margin:-.35rem 1.5rem .7rem;color:var(--text-muted);font-size:.78rem;text-align:right}
+body.blog-index-compact .search-pathways-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.search-pathway-card{display:flex;flex-direction:column;gap:.35rem;padding:1rem;color:var(--text-main);text-decoration:none}.search-pathway-card span{color:var(--text-muted);font-size:.82rem}.sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}.pagination{display:flex;align-items:center;justify-content:center;gap:.75rem}.pagination-status{min-width:4rem;text-align:center;color:var(--text-muted)}.empty-state{text-align:center;padding:2rem 1rem}.blog-bottom-ad{min-height:120px;max-width:800px;margin:2rem auto;padding:0 1rem}
+.search-pathways-quick-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;margin-top:.9rem}.search-pathways-quick-links a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.82rem;font-weight:700;text-underline-offset:.18em}
+body.blog-index-compact :where(a,button,input,select,summary,[tabindex]):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(max-width:760px){body.blog-index-compact .search-pathways-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.blog-index-compact .article-card{display:grid;grid-template-columns:92px minmax(0,1fr);min-height:112px}body.blog-index-compact .card-thumb{height:100%;min-height:112px}body.blog-index-compact .card-content{min-width:0;padding:.8rem}.card-content h3,.card-desc{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical}.card-content h3{-webkit-line-clamp:2;font-size:.98rem}.card-desc{-webkit-line-clamp:2;font-size:.8rem}.card-tags,.badge-new{display:none!important}}
+/* BLOG_USABILITY_PASS_END */
