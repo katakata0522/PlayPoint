@@ -1,0 +1,103 @@
+name: Diagnose main split final staging
+
+on:
+  push:
+    branches:
+      - refactor/main-responsibility-split-20260806
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: contains(github.event.head_commit.message, '[diagnose-final-staging]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Apply split and synchronize output
+        shell: bash
+        run: |
+          node .github/scripts/apply-main-responsibility-split.cjs
+          node .github/scripts/apply-main-split-build-compat.cjs
+          node .github/scripts/apply-main-split-test-compat.cjs
+          modified_date="$(node -e "const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const value=html.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          asset_version="$(node -e "const fs=require('fs'); const sw=fs.readFileSync('sw.js','utf8'); const value=sw.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1]; if(!value) process.exit(1); process.stdout.write(value);")"
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+          PLAYPOINT_MODIFIED_DATE="$modified_date" PLAYPOINT_ASSET_VERSION="$asset_version" node scripts/build-html.js
+
+      - name: Stage exactly like final workflow
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { generatedFiles } = require('./scripts/build-targets.cjs');
+          const temporary = [
+            '.github/scripts/apply-main-responsibility-split.cjs',
+            '.github/scripts/apply-main-split-build-compat.cjs',
+            '.github/scripts/apply-main-split-test-compat.cjs',
+            '.github/workflows/apply-main-responsibility-split.yml',
+            '.github/workflows/apply-main-responsibility-split-v2.yml',
+            '.github/workflows/apply-main-responsibility-split-v3.yml',
+            '.github/workflows/inspect-main-split-output.yml',
+            '.github/workflows/diagnose-main-split-tests.yml',
+            '.github/workflows/diagnose-main-split-preflight-v3.yml',
+            '.github/workflows/diagnose-main-split-final-staging.yml'
+          ];
+          const implementation = [
+            '.github/scripts/minify.cjs',
+            'scripts/asset-sync.cjs',
+            'tests/growth-migration.test.cjs',
+            'tests/main-responsibility-split.test.cjs',
+            'tests/playpoint-regression.test.cjs',
+            'tests/static-calculator-delivery.test.cjs',
+            'js/main.js',
+            'js/region-navigation.js',
+            'js/language-suggestion.js',
+            'js/calendar-reminder.js',
+            'js/pwa-install.js',
+            'js/widget-referral.js',
+            'js/service-worker-registration.js'
+          ];
+          const allowed = new Set([...generatedFiles, ...temporary, ...implementation]);
+          const changed = execFileSync('git', ['diff', '--name-only', '-z'], { encoding: 'utf8' })
+            .split('\0')
+            .filter(Boolean);
+          const unexpected = changed.filter(file => !allowed.has(file));
+          if (unexpected.length) throw new Error(`Unexpected changed paths: ${unexpected.join(', ')}`);
+          for (const file of changed) execFileSync('git', ['add', '--', file], { stdio: 'inherit' });
+          console.log(`Staged ${changed.length} validated paths.`);
+          NODE
+
+      - name: Capture preflight with final staging
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/final-staging-preflight.log 2>&1
+          status=$?
+          set -e
+          echo "$status" > /tmp/final-staging-preflight.status
+          tail -n 160 /tmp/final-staging-preflight.log
+
+      - name: Capture staged and working state
+        shell: bash
+        run: |
+          git status --short > /tmp/final-staging-git-status.txt
+          git diff --name-only > /tmp/final-staging-unstaged.txt
+          git diff --cached --name-only > /tmp/final-staging-staged.txt
+          cat /tmp/final-staging-git-status.txt
+
+      - name: Upload diagnostics
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: main-split-final-staging-diagnostics
+          path: |
+            /tmp/final-staging-preflight.log
+            /tmp/final-staging-preflight.status
+            /tmp/final-staging-git-status.txt
+            /tmp/final-staging-unstaged.txt
+            /tmp/final-staging-staged.txt
+          retention-days: 1
