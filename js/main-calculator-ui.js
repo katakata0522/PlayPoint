@@ -2,20 +2,24 @@
 
 const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
     JP: {
+        baseRateLabel: '100円あたりの獲得率（自動入力・編集可）',
         multiplierLabel: 'キャンペーン倍率（通常は1倍）',
-        advancedSummary: '詳細な条件で計算する'
+        advancedSummary: '購入単位まで細かく計算する'
     },
     US: {
+        baseRateLabel: 'Points per $1 (auto-filled, editable)',
         multiplierLabel: 'Campaign multiplier (normally 1×)',
-        advancedSummary: 'Use advanced calculation settings'
+        advancedSummary: 'Use purchase-by-purchase calculation'
     },
     KR: {
+        baseRateLabel: '₩1,000당 적립률 (자동 입력·수정 가능)',
         multiplierLabel: '캠페인 배율 (보통 1배)',
-        advancedSummary: '상세 조건으로 계산하기'
+        advancedSummary: '구매 단위까지 자세히 계산하기'
     },
     TW: {
+        baseRateLabel: '每 NT$30 獲得點數（自動帶入，可修改）',
         multiplierLabel: '活動倍率（通常為 1 倍）',
-        advancedSummary: '使用進階條件計算'
+        advancedSummary: '依每次購買金額精細計算'
     }
 });
 
@@ -49,7 +53,7 @@ function injectSimplifiedCalculatorStyles() {
         }
 
         .advanced-calculation-content .option-settings {
-            margin-top: 12px;
+            margin-top: 0;
         }
     `;
     document.head.appendChild(style);
@@ -57,9 +61,11 @@ function injectSimplifiedCalculatorStyles() {
 
 export function updateSimplifiedCalculatorCopy(region) {
     const copy = SIMPLIFIED_CALCULATOR_COPY[region] || SIMPLIFIED_CALCULATOR_COPY.JP;
+    const baseRateLabel = document.querySelector('[data-simplified-calculator-copy="baseRateLabel"]');
     const multiplierLabel = document.querySelector('[data-simplified-calculator-copy="multiplierLabel"]');
     const advancedSummary = document.querySelector('[data-simplified-calculator-copy="advancedSummary"]');
 
+    if (baseRateLabel) baseRateLabel.textContent = copy.baseRateLabel;
     if (multiplierLabel) multiplierLabel.textContent = copy.multiplierLabel;
     if (advancedSummary) advancedSummary.textContent = copy.advancedSummary;
 }
@@ -82,10 +88,17 @@ export function simplifyMainCalculatorLayout(region = 'JP') {
     const multiplier = document.getElementById('multiplier');
     const baseRateLabel = mainMode.querySelector('label[for="baseRate"]');
     const multiplierLabel = mainMode.querySelector('label[for="multiplier"]');
+    const rateWarning = rateSection && rateSection.querySelector('.warning');
     const packSettings = statusSection && statusSection.querySelector('.option-settings');
 
     if (!statusSection || !rateSection || !actionSection || !baseRate || !multiplier || !baseRateLabel || !multiplierLabel) {
         return;
+    }
+
+    const baseRateText = baseRateLabel.querySelector('[data-lang-key="labelBaseRate"]');
+    if (baseRateText) {
+        baseRateText.removeAttribute('data-lang-key');
+        baseRateText.dataset.simplifiedCalculatorCopy = 'baseRateLabel';
     }
 
     const multiplierText = multiplierLabel.querySelector('[data-lang-key="labelMultiplier"]');
@@ -94,22 +107,25 @@ export function simplifyMainCalculatorLayout(region = 'JP') {
         multiplierText.dataset.simplifiedCalculatorCopy = 'multiplierLabel';
     }
 
-    statusSection.append(multiplierLabel, multiplier);
+    statusSection.append(baseRateLabel, baseRate, multiplierLabel, multiplier);
+    if (rateWarning) statusSection.appendChild(rateWarning);
 
-    const details = document.createElement('details');
-    details.id = 'advanced-calculation-settings';
-    details.className = 'advanced-calculation-settings';
+    if (packSettings) {
+        const details = document.createElement('details');
+        details.id = 'advanced-calculation-settings';
+        details.className = 'advanced-calculation-settings';
 
-    const summary = document.createElement('summary');
-    summary.dataset.simplifiedCalculatorCopy = 'advancedSummary';
+        const summary = document.createElement('summary');
+        summary.dataset.simplifiedCalculatorCopy = 'advancedSummary';
 
-    const content = document.createElement('div');
-    content.className = 'advanced-calculation-content';
-    content.append(baseRateLabel, baseRate);
-    if (packSettings) content.appendChild(packSettings);
+        const content = document.createElement('div');
+        content.className = 'advanced-calculation-content';
+        content.appendChild(packSettings);
 
-    details.append(summary, content);
-    actionSection.appendChild(details);
+        details.append(summary, content);
+        actionSection.appendChild(details);
+    }
+
     rateSection.remove();
 
     injectSimplifiedCalculatorStyles();
