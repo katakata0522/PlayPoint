@@ -5,6 +5,8 @@
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     const ANALYTICS_DELAY_MS = 1200;
     const ADSENSE_DELAY_MS = 3000;
+    const ANALYTICS_SCRIPT_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+    const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
 
     let gaLoaded = false;
     let adsLoaded = false;
@@ -35,7 +37,7 @@
         if (gaLoaded) return;
         try {
             await loadScript(
-                `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+                ANALYTICS_SCRIPT_SRC,
                 { fetchpriority: 'low' }
             );
             window.dataLayer = window.dataLayer || [];
@@ -57,7 +59,7 @@
         if (adsLoaded) return;
         try {
             await loadScript(
-                `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`,
+                ADSENSE_SCRIPT_SRC,
                 { crossorigin: 'anonymous', fetchpriority: 'low' }
             );
             adsLoaded = true;
@@ -66,19 +68,22 @@
         }
     }
 
+    function getCurrentAssetPrefix() {
+        let prefix = '/';
+        const currentScript = document.currentScript ||
+            document.querySelector('script[src*="js/third-party.js"]');
+        if (!currentScript || !currentScript.src) return prefix;
+
+        const src = currentScript.getAttribute('src') || '';
+        const index = src.indexOf('js/third-party.js');
+        if (index !== -1) prefix = src.substring(0, index);
+        return prefix;
+    }
+
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
-            const currentScript = document.currentScript ||
-                document.querySelector('script[src*="js/third-party.js"]');
-            let prefix = '/';
-            if (currentScript && currentScript.src) {
-                const src = currentScript.getAttribute('src') || '';
-                const idx = src.indexOf('js/third-party.js');
-                if (idx !== -1) {
-                    prefix = src.substring(0, idx);
-                }
-            }
+            const prefix = getCurrentAssetPrefix();
             consentManagerPromise = loadScript(`${prefix}js/consent.js?v=55813d3bcb`)
                 .then(() => window.PlayPointConsent);
         }
@@ -99,23 +104,25 @@
         window.setTimeout(callback, Math.min(timeout, 1200));
     }
 
+    function scheduleDelayedIdleTask(callback, delay) {
+        window.setTimeout(() => {
+            runWhenIdle(callback);
+        }, delay);
+    }
+
     function scheduleThirdPartyLoad() {
         if (thirdPartyScheduled) return;
         thirdPartyScheduled = true;
 
         const scheduleAfterLoad = () => {
             // 初期表示と最初の操作を優先し、計測と広告は別々に遅延する。
-            window.setTimeout(() => {
-                runWhenIdle(() => {
-                    void runAfterConsent(loadAnalytics);
-                });
+            scheduleDelayedIdleTask(() => {
+                void runAfterConsent(loadAnalytics);
             }, ANALYTICS_DELAY_MS);
 
             // AdSenseタグはGoogle認定CMPにも使われるため読み込み自体は維持する。
-            window.setTimeout(() => {
-                runWhenIdle(() => {
-                    void loadAdsense();
-                });
+            scheduleDelayedIdleTask(() => {
+                void loadAdsense();
             }, ADSENSE_DELAY_MS);
         };
 

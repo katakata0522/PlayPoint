@@ -17,6 +17,46 @@ export const isEnglishPath = () => /\/en(\/|$)/.test(window.location.pathname);
 export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
 export const isTaiwanPath = () => /\/tw(\/|$)/.test(window.location.pathname);
 
+function bindEvent(element, eventName, listener, options) {
+    if (element) element.addEventListener(eventName, listener, options);
+}
+
+function bindEnterAction(elements, action) {
+    for (const element of elements) {
+        bindEvent(element, 'keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            action();
+        });
+    }
+}
+
+function getResultLinkAnalyticsParams(link) {
+    const targetUrl = new URL(link.href, window.location.href);
+    return {
+        source_path: window.location.pathname,
+        target_path: targetUrl.pathname,
+        target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
+        calculation_mode: 'rank_up',
+        link_position: link.dataset.linkPosition
+    };
+}
+
+function trackResultLinkClicks(event) {
+    const target = event.target;
+    if (!target || typeof target.closest !== 'function') return;
+
+    const relatedLink = target.closest('[data-result-related-link]');
+    if (relatedLink) {
+        ANALYTICS.track('result_related_article_clicked', getResultLinkAnalyticsParams(relatedLink));
+    }
+
+    const decisionLink = target.closest('[data-result-decision-link]');
+    if (decisionLink) {
+        ANALYTICS.track('result_decision_link_clicked', getResultLinkAnalyticsParams(decisionLink));
+    }
+}
+
 function runWhenIdle(callback, timeout = 2000) {
     if ('requestIdleCallback' in window) {
         window.requestIdleCallback(callback, { timeout });
@@ -110,17 +150,17 @@ export function init() {
     });
 
     // アクションボタンのイベントバインド
-    if (STATE.dom.calculateButton) STATE.dom.calculateButton.addEventListener('click', () => CALC.calculate());
-    if (STATE.dom.copyButton) STATE.dom.copyButton.addEventListener('click', () => CALC.copyResult());
-    if (STATE.dom.tweetButton) STATE.dom.tweetButton.addEventListener('click', () => CALC.handleTweet());
-    if (STATE.dom.reverseCalculateButton) STATE.dom.reverseCalculateButton.addEventListener('click', () => CALC.reverseCalculate());
-    if (STATE.dom.shareTwitterReverse) STATE.dom.shareTwitterReverse.addEventListener('click', () => CALC.handleTweetReverse());
-    if (STATE.dom.currentStatus) STATE.dom.currentStatus.addEventListener('change', () => CALC.updateBaseRateAndTarget());
-    if (STATE.dom.targetStatus) STATE.dom.targetStatus.addEventListener('change', () => CALC.updateNeededPointsConstraint());
-    if (STATE.dom.reverseStatus) STATE.dom.reverseStatus.addEventListener('change', () => CALC.updateReverseBaseRate());
-    if (STATE.dom.exportDiaryBtn) STATE.dom.exportDiaryBtn.addEventListener('click', () => DIARY.exportDiary());
-    if (STATE.dom.importDiaryBtn) STATE.dom.importDiaryBtn.addEventListener('click', () => DIARY.toggleImportArea());
-    if (STATE.dom.confirmImportBtn) STATE.dom.confirmImportBtn.addEventListener('click', () => DIARY.executeImport());
+    bindEvent(STATE.dom.calculateButton, 'click', () => CALC.calculate());
+    bindEvent(STATE.dom.copyButton, 'click', () => CALC.copyResult());
+    bindEvent(STATE.dom.tweetButton, 'click', () => CALC.handleTweet());
+    bindEvent(STATE.dom.reverseCalculateButton, 'click', () => CALC.reverseCalculate());
+    bindEvent(STATE.dom.shareTwitterReverse, 'click', () => CALC.handleTweetReverse());
+    bindEvent(STATE.dom.currentStatus, 'change', () => CALC.updateBaseRateAndTarget());
+    bindEvent(STATE.dom.targetStatus, 'change', () => CALC.updateNeededPointsConstraint());
+    bindEvent(STATE.dom.reverseStatus, 'change', () => CALC.updateReverseBaseRate());
+    bindEvent(STATE.dom.exportDiaryBtn, 'click', () => DIARY.exportDiary());
+    bindEvent(STATE.dom.importDiaryBtn, 'click', () => DIARY.toggleImportArea());
+    bindEvent(STATE.dom.confirmImportBtn, 'click', () => DIARY.executeImport());
     if (STATE.dom.closeLangBannerBtn) STATE.dom.closeLangBannerBtn.addEventListener('click', () => {
         if (STATE.dom.languageSuggestionBanner) {
             STATE.dom.languageSuggestionBanner.classList.add(CONSTANTS.CLASS_HIDDEN);
@@ -142,12 +182,8 @@ export function init() {
     }
 
     // Enterキー押下での計算実行
-    [STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier].forEach(el => {
-        if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); CALC.calculate(); } });
-    });
-    [STATE.dom.amountYen, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier].forEach(el => {
-        if (el) el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); CALC.reverseCalculate(); } });
-    });
+    bindEnterAction([STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier], () => CALC.calculate());
+    bindEnterAction([STATE.dom.amountYen, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier], () => CALC.reverseCalculate());
 
     // タブ切り替え
     document.querySelectorAll(".tab-switch button").forEach(button => {
@@ -169,35 +205,7 @@ export function init() {
     // 言語切り替え
     document.querySelectorAll(".region-switch button").forEach(button => button.addEventListener('click', (e) => switchRegion(e.currentTarget.dataset.region)));
 
-    document.addEventListener('click', (event) => {
-        const link = event.target && typeof event.target.closest === 'function'
-            ? event.target.closest('[data-result-related-link]')
-            : null;
-        if (!link) return;
-        const targetUrl = new URL(link.href, window.location.href);
-        ANALYTICS.track('result_related_article_clicked', {
-            source_path: window.location.pathname,
-            target_path: targetUrl.pathname,
-            target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
-            calculation_mode: 'rank_up',
-            link_position: link.dataset.linkPosition
-        });
-    });
-
-    document.addEventListener('click', (event) => {
-        const link = event.target && typeof event.target.closest === 'function'
-            ? event.target.closest('[data-result-decision-link]')
-            : null;
-        if (!link) return;
-        const targetUrl = new URL(link.href, window.location.href);
-        ANALYTICS.track('result_decision_link_clicked', {
-            source_path: window.location.pathname,
-            target_path: targetUrl.pathname,
-            target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
-            calculation_mode: 'rank_up',
-            link_position: link.dataset.linkPosition
-        });
-    });
+    document.addEventListener('click', trackResultLinkClicks);
     
     // ツールチップを閉じるグローバルリスナー
     document.addEventListener('click', (e) => { if (!e.target.closest(CONSTANTS.SELECTOR_INFO_BTN) && !e.target.closest(CONSTANTS.SELECTOR_TOOLTIP_BOX)) UI.closeAllTooltips(); });

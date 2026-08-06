@@ -2,6 +2,38 @@
 
 import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config.js';
 
+const HTML_TEXT_KEYS = new Set(['siteDescription', 'warningRate', 'guestNotice']);
+const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/'];
+
+function isLocalizedSubdirectory(pathname) {
+    return LOCALIZED_PAGE_PREFIXES.some(prefix => pathname.includes(prefix));
+}
+
+function updateLocalizedLink(element, value, isSubDir) {
+    element.textContent = value.text;
+    if (!value.href) return;
+
+    const rawHref = value.href;
+    const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
+    const isLocalizedFile = rawHref.startsWith('articles/');
+    const prefix = (isSubDir && !isLocalizedFile) ? '../' : './';
+    element.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
+}
+
+function setElementVisibility(element, isVisible) {
+    if (element) element.classList.toggle(CONSTANTS.CLASS_HIDDEN, !isVisible);
+}
+
+function setResultActionsVisibility(targetElement, isVisible) {
+    if (targetElement === STATE.dom.result) {
+        setElementVisibility(STATE.dom.resultActions, isVisible);
+        setElementVisibility(STATE.dom.tweetButton, isVisible);
+        setElementVisibility(STATE.dom.copyButton, isVisible);
+    } else if (targetElement === STATE.dom.reverseResult) {
+        setElementVisibility(STATE.dom.shareTwitterReverse, isVisible);
+    }
+}
+
 export const UI = {
     toastTimerId: null,
     
@@ -51,26 +83,18 @@ export const UI = {
         const texts = config.uiText;
         document.documentElement.lang = config.lang;
         document.title = texts.title;
+        const isSubDir = isLocalizedSubdirectory(window.location.pathname);
 
         document.querySelectorAll('[data-lang-key]').forEach(el => {
             const key = el.dataset.langKey;
             if (!texts[key]) return;
 
             if (el.tagName === 'A' && typeof texts[key] === 'object' && texts[key].text) {
-                el.textContent = texts[key].text;
-                if (texts[key].href) {
-                    const isSubDir = ['/en/', '/ko/', '/tw/'].some(p => window.location.pathname.includes(p));
-                    const rawHref = texts[key].href;
-                    const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
-                    const isLocalizedFile = rawHref.startsWith('articles/');
-                    const prefix = (isSubDir && !isLocalizedFile) ? '../' : './';
-                    el.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
-                }
+                updateLocalizedLink(el, texts[key], isSubDir);
                 return;
             }
 
-            const allowHtmlKeys = ['siteDescription', 'warningRate', 'guestNotice'];
-            if (allowHtmlKeys.includes(key)) {
+            if (HTML_TEXT_KEYS.has(key)) {
                 el.innerHTML = texts[key];
             } else {
                 el.textContent = texts[key];
@@ -144,15 +168,7 @@ export const UI = {
             });
         }
 
-        const showShareButtons = !isError;
-
-        if (targetElement === STATE.dom.result) {
-            if (STATE.dom.resultActions) STATE.dom.resultActions.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-            if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-            if (STATE.dom.copyButton) STATE.dom.copyButton.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-        } else if (targetElement === STATE.dom.reverseResult) {
-            if (STATE.dom.shareTwitterReverse) STATE.dom.shareTwitterReverse.classList.toggle(CONSTANTS.CLASS_HIDDEN, !showShareButtons);
-        }
+        setResultActionsVisibility(targetElement, !isError);
     },
 
     // 結果のクリアメソッド
@@ -161,13 +177,7 @@ export const UI = {
         this.clearResultData(targetElement);
         targetElement.innerHTML = "";
         targetElement.classList.remove(CONSTANTS.CLASS_HAS_RESULT);
-        if (targetElement === STATE.dom.result) {
-            if (STATE.dom.resultActions) STATE.dom.resultActions.classList.add(CONSTANTS.CLASS_HIDDEN);
-            if (STATE.dom.tweetButton) STATE.dom.tweetButton.classList.add(CONSTANTS.CLASS_HIDDEN);
-            if (STATE.dom.copyButton) STATE.dom.copyButton.classList.add(CONSTANTS.CLASS_HIDDEN);
-        } else if (targetElement === STATE.dom.reverseResult) {
-            if (STATE.dom.shareTwitterReverse) STATE.dom.shareTwitterReverse.classList.add(CONSTANTS.CLASS_HIDDEN);
-        }
+        setResultActionsVisibility(targetElement, false);
     },
 
     // モード（タブ）の切替メソッド
