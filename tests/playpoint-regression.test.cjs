@@ -1434,13 +1434,18 @@ test('AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起�
 });
 
 test('トップページはブラウザ言語だけでクライアントサイドリダイレクトしない', () => {
-  const script = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const regionNavigation = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
+  const languageSuggestion = fs.readFileSync(path.join(root, 'js', 'language-suggestion.js'), 'utf8');
+  const sources = [main, regionNavigation, languageSuggestion].join('\n');
 
-  assert.ok(!script.includes("window.location.href = './en/'"));
-  assert.ok(!script.includes("window.location.href = './ko/'"));
-  assert.ok(!script.includes("window.location.href = './tw/'"));
-  assert.ok(script.includes("STATE.currentRegion = 'JP';"));
-  assert.ok(script.includes('checkLanguageSuggestion'));
+  assert.ok(!sources.includes("window.location.href = './en/'"));
+  assert.ok(!sources.includes("window.location.href = './ko/'"));
+  assert.ok(!sources.includes("window.location.href = './tw/'"));
+  assert.ok(regionNavigation.includes("STATE.currentRegion = 'JP';"));
+  assert.ok(main.includes('checkLanguageSuggestion'));
+  assert.ok(languageSuggestion.includes('navigator.language'));
+  assert.ok(!languageSuggestion.includes('window.location.href'));
 });
 
 test('ブログのH1はPlay Points攻略記事の検索意図と一致する', () => {
@@ -1708,12 +1713,17 @@ test('モバイルの補助リンクと共有ボタンは縦に増えすぎな�
 test('モバイル初期表示外の重い領域は遅延描画される', () => {
   const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
   const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
+  const serviceWorkerRegistration = fs.readFileSync(
+    path.join(root, 'js', 'service-worker-registration.js'),
+    'utf8'
+  );
 
   assert.ok(css.includes('#diaryMode'));
   assert.ok(css.includes('#reverseMode'));
   assert.ok(css.includes('content-visibility: auto'));
-  assert.ok(main.includes('requestIdleCallback'));
-  assert.ok(main.includes('navigator.serviceWorker.register'));
+  assert.ok(main.includes('registerServiceWorker'));
+  assert.ok(serviceWorkerRegistration.includes('requestIdleCallback'));
+  assert.ok(serviceWorkerRegistration.includes('navigator.serviceWorker.register'));
 });
 
 test('記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ', () => {

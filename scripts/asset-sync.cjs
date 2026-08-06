@@ -22,6 +22,12 @@ const ROOT_SERVICE_WORKER_ASSETS = [
 
 const APP_MODULE_FILES = [
   'js/config.js',
+  'js/region-navigation.js',
+  'js/language-suggestion.js',
+  'js/calendar-reminder.js',
+  'js/pwa-install.js',
+  'js/widget-referral.js',
+  'js/service-worker-registration.js',
   'js/ui.js',
   'js/diary.js',
   'js/calculator.js',
@@ -83,10 +89,19 @@ function syncMainCalculatorUiImportVersion(rootDir, version) {
 }
 
 function syncServiceWorkerRegistration(rootDir) {
-  const mainJsPath = path.join(rootDir, 'js/main.js');
-  if (!fs.existsSync(mainJsPath)) return;
+  const candidatePaths = [
+    'js/service-worker-registration.js',
+    'js/main.js'
+  ];
+  const targetRelativePath = candidatePaths.find((candidate) => {
+    const candidatePath = path.join(rootDir, candidate);
+    return fs.existsSync(candidatePath)
+      && fs.readFileSync(candidatePath, 'utf8').includes('navigator.serviceWorker.register');
+  });
+  if (!targetRelativePath) return;
 
-  const currentContent = fs.readFileSync(mainJsPath, 'utf8');
+  const targetPath = path.join(rootDir, targetRelativePath);
+  const currentContent = fs.readFileSync(targetPath, 'utf8');
   if (currentContent.includes("updateViaCache: 'none'")) return;
 
   const oldRegistration = `navigator.serviceWorker.register(swPath)\n                    .then(reg => console.log('ServiceWorker registered successfully:', reg.scope))`;
@@ -94,11 +109,11 @@ function syncServiceWorkerRegistration(rootDir) {
   const updatedContent = currentContent.replace(oldRegistration, newRegistration);
 
   if (updatedContent === currentContent) {
-    throw new Error('Service Worker登録処理を更新できませんでした。');
+    throw new Error(`Service Worker登録処理を更新できませんでした: ${targetRelativePath}`);
   }
 
-  fs.writeFileSync(mainJsPath, updatedContent, 'utf8');
-  console.log('Enabled immediate Service Worker update checks.');
+  fs.writeFileSync(targetPath, updatedContent, 'utf8');
+  console.log(`Enabled immediate Service Worker update checks in ${targetRelativePath}.`);
 }
 
 function collectAssetVersions(rootDir) {

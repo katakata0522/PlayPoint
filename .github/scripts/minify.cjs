@@ -41,6 +41,12 @@ const cssTargets = [
 const jsTargets = [
   'sw.js',
   'js/main.js',
+  'js/region-navigation.js',
+  'js/language-suggestion.js',
+  'js/calendar-reminder.js',
+  'js/pwa-install.js',
+  'js/widget-referral.js',
+  'js/service-worker-registration.js',
   'js/main-calculator-ui.js',
   'js/calculator.js',
   'js/ui.js',

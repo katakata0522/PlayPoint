@@ -68,7 +68,7 @@ test('プライバシー文書はWeb版と認定CMPの運用に一致する', ()
 
 test('再訪と配布の主要イベントだけを許可する', () => {
   const config = read('js/config.js');
-  const main = read('js/main.js');
+  const pwaInstall = read('js/pwa-install.js');
   const diary = read('js/diary.js');
   const embed = read('embed.html');
 
@@ -80,7 +80,7 @@ test('再訪と配布の主要イベントだけを許可する', () => {
   ]) {
     assert.ok(config.includes(eventName), `${eventName} が許可イベントにありません`);
   }
-  assert.match(main, /beforeinstallprompt/);
+  assert.match(pwaInstall, /beforeinstallprompt/);
   assert.match(diary, /playpoint:diary-saved/);
   assert.match(embed, /<meta name="robots" content="index,follow">/);
   assert.match(embed, /widget_code_copied/);
