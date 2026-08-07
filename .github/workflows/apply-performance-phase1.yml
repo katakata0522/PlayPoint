@@ -76,7 +76,13 @@ jobs:
           node --test tests/mobile-performance-phase1.test.cjs
 
       - name: Run full repository preflight
-        run: node .github/scripts/preflight.cjs
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          tail -n 220 /tmp/preflight.log
+          exit "$status"
 
       - name: Confirm clean verified tree
         shell: bash
