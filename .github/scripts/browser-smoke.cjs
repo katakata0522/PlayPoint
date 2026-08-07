@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const http = require('node:http');
+const https = require('node:https');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
 
@@ -405,20 +406,51 @@ async function verifyBlogPage(browser, baseUrl) {
   }
 }
 
+function requestRevisionText(url) {
+  const client = url.protocol === 'https:' ? https : http;
+  return new Promise((resolve, reject) => {
+    const request = client.get(url, {
+      family: 4,
+      headers: { 'cache-control': 'no-cache' }
+    }, response => {
+      let body = '';
+      response.setEncoding('utf8');
+      response.on('data', chunk => { body += chunk; });
+      response.on('end', () => {
+        resolve({
+          ok: response.statusCode >= 200 && response.statusCode < 300,
+          status: response.statusCode || 0,
+          text: body
+        });
+      });
+    });
+    request.setTimeout(15_000, () => request.destroy(new Error('revision request timeout')));
+    request.on('error', reject);
+  });
+}
+
 async function verifyRevision(baseUrl) {
   if (!EXPECTED_REVISION) return { checked: false };
   const url = new URL('status/deploy-revision.txt', baseUrl);
   let actual = '';
+  let lastError = null;
   for (let attempt = 1; attempt <= 4; attempt += 1) {
-    const response = await fetch(`${url.href}?browser_smoke=${Date.now()}`, {
-      headers: { 'cache-control': 'no-cache' },
-      signal: AbortSignal.timeout(15_000)
-    });
-    if (response.ok) actual = (await response.text()).trim();
-    if (actual === EXPECTED_REVISION) return { checked: true, expected: EXPECTED_REVISION, actual };
+    const requestUrl = new URL(url);
+    requestUrl.searchParams.set('browser_smoke', String(Date.now()));
+    try {
+      const response = await requestRevisionText(requestUrl);
+      if (response.ok) actual = response.text.trim();
+      else lastError = new Error(`revision request returned HTTP ${response.status}`);
+      if (actual === EXPECTED_REVISION) {
+        return { checked: true, expected: EXPECTED_REVISION, actual, attempts: attempt };
+      }
+    } catch (error) {
+      lastError = error;
+    }
     if (attempt < 4) await new Promise(resolve => setTimeout(resolve, attempt * 1_500));
   }
-  throw new Error(`deployed revision mismatch: expected ${EXPECTED_REVISION}, got ${actual}`);
+  const reason = lastError ? `: ${lastError.message}` : '';
+  throw new Error(`deployed revision check failed: expected ${EXPECTED_REVISION}, got ${actual || "no response"}${reason}`);
 }
 
 async function main() {
