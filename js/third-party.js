@@ -4,12 +4,14 @@
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     const ANALYTICS_DELAY_MS = 1200;
+    // 初回広告取得は遅延させない。通信失敗時だけ短い間隔を置いて1回再試行する。
     const ADSENSE_DELAY_MS = 3000;
     const ANALYTICS_SCRIPT_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
 
     let gaLoaded = false;
     let adsLoaded = false;
+    let adsRetryAttempted = false;
     let thirdPartyScheduled = false;
     let consentManagerPromise = null;
 
@@ -33,6 +35,17 @@
         });
     }
 
+    function getDisplayMode() {
+        if (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) {
+            return 'standalone';
+        }
+        // iOSのホーム画面起動もstandaloneとして同じ軸で比較する。
+        if (window.navigator && window.navigator.standalone === true) {
+            return 'standalone';
+        }
+        return 'browser';
+    }
+
     async function loadAnalytics() {
         if (gaLoaded) return;
         try {
@@ -45,6 +58,8 @@
                 window.dataLayer.push(arguments);
             };
             window.gtag('js', new Date());
+            // ページビューと以後のイベントへ技術的な起動形態だけを付与し、入力値は追加しない。
+            window.gtag('set', { app_display_mode: getDisplayMode() });
             window.gtag('config', GA_MEASUREMENT_ID);
             if (window.PP_APP && window.PP_APP.ANALYTICS) {
                 window.PP_APP.ANALYTICS.flushPending();
@@ -60,11 +75,17 @@
         try {
             await loadScript(
                 ADSENSE_SCRIPT_SRC,
-                { crossorigin: 'anonymous', fetchpriority: 'low' }
+                { crossorigin: 'anonymous' }
             );
             adsLoaded = true;
         } catch (error) {
             console.error('AdSense load failed:', error);
+            if (!adsRetryAttempted) {
+                adsRetryAttempted = true;
+                window.setTimeout(() => {
+                    void loadAdsense();
+                }, ADSENSE_DELAY_MS);
+            }
         }
     }
 
@@ -114,16 +135,15 @@
         if (thirdPartyScheduled) return;
         thirdPartyScheduled = true;
 
+        // AdSenseはasyncのまま早期に取得を開始し、短時間利用でも広告機会を失いにくくする。
+        // 計算UIのHTML解析や主処理はブロックしない。
+        void loadAdsense();
+
         const scheduleAfterLoad = () => {
-            // 初期表示と最初の操作を優先し、計測と広告は別々に遅延する。
+            // 分析は初期表示と最初の操作を優先し、既存どおり低優先度で読み込む。
             scheduleDelayedIdleTask(() => {
                 void runAfterConsent(loadAnalytics);
             }, ANALYTICS_DELAY_MS);
-
-            // AdSenseタグはGoogle認定CMPにも使われるため読み込み自体は維持する。
-            scheduleDelayedIdleTask(() => {
-                void loadAdsense();
-            }, ADSENSE_DELAY_MS);
         };
 
         if (document.readyState === 'complete') {
