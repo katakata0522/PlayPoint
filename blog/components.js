@@ -3,18 +3,17 @@
 
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
-    let blogAdsenseLoaded = false;
-    let consentManagerPromise = null;
-    let analyticsCorePromise = null;
-
-    const isArticlePageTop = window.location.pathname.includes('/articles/');
+    const ROOT_PATH = '/';
+    const isArticlePage = window.location.pathname.includes('/articles/');
     const isBlogPage = window.location.pathname.includes('/blog');
-    const rootPath = (isArticlePageTop || isBlogPage) ? '../' : './';
+    let analyticsCorePromise;
+    let consentManagerPromise;
+    let blogAdsenseLoaded = false;
 
     function loadScriptOnce(src) {
         const existing = document.querySelector(`script[src="${src}"]`);
+        if (existing && existing.dataset.loaded === 'true') return Promise.resolve(existing);
         if (existing) {
-            if (existing.dataset.loaded === 'true') return Promise.resolve(existing);
             return new Promise((resolve, reject) => {
                 existing.addEventListener('load', () => resolve(existing), { once: true });
                 existing.addEventListener('error', reject, { once: true });
@@ -44,19 +43,15 @@
 
     function ensureAnalyticsCore() {
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
-        if (!analyticsCorePromise) {
-            analyticsCorePromise = loadScriptOnce(rootPath + 'js/analytics-core.js?v=20260807a')
-                .then(() => window.PlayPointAnalytics);
-        }
+        analyticsCorePromise ||= loadScriptOnce('/js/analytics-core.js?v=20260807a')
+            .then(() => window.PlayPointAnalytics);
         return analyticsCorePromise;
     }
 
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
-        if (!consentManagerPromise) {
-            consentManagerPromise = loadScriptOnce(rootPath + 'js/consent.js?v=20260727a')
-                .then(() => window.PlayPointConsent);
-        }
+        consentManagerPromise ||= loadScriptOnce('/js/consent.js?v=55813d3bcb')
+            .then(() => window.PlayPointConsent);
         return consentManagerPromise;
     }
 
@@ -67,18 +62,18 @@
     }
 
     function applyArticlePresentationSettings() {
-        if (!isArticlePageTop) return;
+        if (!isArticlePage) return;
         let theme = 'dark';
         try {
-            const savedSettings = JSON.parse(localStorage.getItem('katakata_blog_settings') || '{}');
-            if (savedSettings.theme === 'light' || savedSettings.theme === 'dark') theme = savedSettings.theme;
+            const settings = JSON.parse(localStorage.getItem('katakata_blog_settings') || '{}');
+            if (settings.theme === 'light' || settings.theme === 'dark') theme = settings.theme;
         } catch (error) {
             console.warn('ブログ設定を読み込めませんでした。既定テーマを使用します。', error);
         }
-        const allowedCategories = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
+        const categories = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
         const category = document.querySelector('meta[name="article:category"]')?.content;
         document.body.dataset.blogTheme = theme;
-        document.body.dataset.articleCategory = allowedCategories.includes(category) ? category : '使い方';
+        document.body.dataset.articleCategory = categories.includes(category) ? category : '使い方';
     }
 
     function loadCommonAnalytics() {
@@ -97,11 +92,8 @@
 
     function scheduleCommonAnalytics() {
         const callback = () => void runAfterConsent(loadCommonAnalytics);
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(callback, { timeout: 2500 });
-            return;
-        }
-        window.setTimeout(callback, 1500);
+        if ('requestIdleCallback' in window) window.requestIdleCallback(callback, { timeout: 2500 });
+        else window.setTimeout(callback, 1500);
     }
 
     function loadBlogAdsense() {
@@ -118,28 +110,20 @@
     }
 
     function handleBlogAdsenseScroll() {
-        if (window.scrollY < 600) return;
-        void runAfterConsent(loadBlogAdsense);
-    }
-
-    function setupBlogAdsense() {
-        if (!isBlogPage) return;
-        window.addEventListener('scroll', handleBlogAdsenseScroll, { passive: true });
+        if (window.scrollY >= 600) void runAfterConsent(loadBlogAdsense);
     }
 
     function renderCommonComponents() {
-        const existingHeader = document.querySelector('header');
-        const existingFooter = document.querySelector('footer');
-        if (!existingHeader) {
+        if (!document.querySelector('header')) {
             const header = document.createElement('header');
             header.className = 'header';
-            header.innerHTML = `<div class="header-inner"><a class="logo" href="${rootPath}index.html">🎮 Playポイント計算機</a><nav class="nav"><a href="${rootPath}blog/">📝 記事一覧</a><a href="https://katakatalab.com/">🧪 KatakataLab</a></nav></div>`;
+            header.innerHTML = '<div class="header-inner"><a class="logo" href="/">🎮 Playポイント計算機</a><nav class="nav"><a href="/blog/">📝 記事一覧</a><a href="https://katakatalab.com/">🧪 KatakataLab</a></nav></div>';
             document.body.insertBefore(header, document.body.firstChild);
         }
-        if (!existingFooter) {
+        if (!document.querySelector('footer')) {
             const footer = document.createElement('footer');
             footer.className = 'site-footer';
-            footer.innerHTML = `<p style="margin-bottom:0.5rem;font-size:0.8rem;"><a href="${rootPath}privacy.html">プライバシーポリシー</a> ｜ <a href="${rootPath}terms.html">利用規約</a></p><p>© <span class="copyright-year">2024-${new Date().getFullYear()}</span> Playポイント計算機</p>`;
+            footer.innerHTML = `<p style="margin-bottom:0.5rem;font-size:0.8rem;"><a href="/privacy.html">プライバシーポリシー</a> ｜ <a href="/terms.html">利用規約</a></p><p>© <span class="copyright-year">2024-${new Date().getFullYear()}</span> Playポイント計算機</p>`;
             document.body.appendChild(footer);
         }
     }
@@ -150,28 +134,28 @@
         const headings = Array.from(content.querySelectorAll('.section > h2'))
             .filter((heading) => !heading.closest('.faq, .cta-box, .article-next-step-cta, .article-calculator-prompt'));
         if (headings.length < 3) return;
-        const tocContainer = document.createElement('nav');
-        tocContainer.className = 'toc-box';
-        tocContainer.setAttribute('aria-label', 'この記事の目次');
-        const tocTitle = document.createElement('p');
-        tocTitle.className = 'toc-title';
-        tocTitle.textContent = 'この記事の内容';
-        const tocList = document.createElement('ol');
-        tocList.className = 'toc-list';
+        const toc = document.createElement('nav');
+        toc.className = 'toc-box';
+        toc.setAttribute('aria-label', 'この記事の目次');
+        const title = document.createElement('p');
+        title.className = 'toc-title';
+        title.textContent = 'この記事の内容';
+        const list = document.createElement('ol');
+        list.className = 'toc-list';
         headings.forEach((heading, index) => {
-            if (!heading.id) heading.id = `section-${index + 1}`;
+            heading.id ||= `section-${index + 1}`;
             const item = document.createElement('li');
             item.className = 'toc-item';
             const link = document.createElement('a');
             link.href = `#${heading.id}`;
             link.textContent = heading.textContent.replace(/^[^\p{L}\p{N}]+/u, '').trim();
             item.appendChild(link);
-            tocList.appendChild(item);
+            list.appendChild(item);
         });
-        tocContainer.append(tocTitle, tocList);
+        toc.append(title, list);
         const anchor = content.querySelector('.summary-box, .intro');
-        if (anchor) anchor.insertAdjacentElement('afterend', tocContainer);
-        else headings[0].insertAdjacentElement('beforebegin', tocContainer);
+        if (anchor) anchor.insertAdjacentElement('afterend', toc);
+        else headings[0].insertAdjacentElement('beforebegin', toc);
     }
 
     function setupCalculatorEntryContext() {
@@ -189,7 +173,7 @@
     }
 
     function removeRedundantArticleCtas() {
-        if (!isArticlePageTop) return;
+        if (!isArticlePage) return;
         const content = document.querySelector('.content');
         if (!content) return;
         const nativeCalculatorLink = content.querySelector('a[href*="mode=main"], a[href*="mode=reverse"], a[href^="../status/"], a[href^="/status/"], .cta-box:not(.article-calculator-prompt) a');
@@ -201,12 +185,12 @@
     }
 
     applyArticlePresentationSettings();
-    ensureStylesheet(rootPath + 'blog/common-components.css?v=20260807a', 'playpointCommonComponents');
+    ensureStylesheet('/blog/common-components.css?v=20260807a', 'playpointCommonComponents');
 
     document.addEventListener('DOMContentLoaded', () => {
-        void ensureAnalyticsCore().then(() => setupCalculatorEntryContext());
+        void ensureAnalyticsCore().then(setupCalculatorEntryContext);
         scheduleCommonAnalytics();
-        setupBlogAdsense();
+        if (isBlogPage) window.addEventListener('scroll', handleBlogAdsenseScroll, { passive: true });
         renderCommonComponents();
         generateTableOfContents();
         window.setTimeout(removeRedundantArticleCtas, 0);
