@@ -28,6 +28,17 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Normalize temporary version matcher
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/tmp-apply-adsense-best-practice.cjs')
+          source = path.read_text(encoding='utf-8')
+          source = source.replace(r'(\\d{4}-\\d{2}-\\d{2})', '([0-9]{4}-[0-9]{2}-[0-9]{2})')
+          path.write_text(source, encoding='utf-8')
+          PY
+
       - name: Apply focused changes and sync generated output
         run: node scripts/tmp-apply-adsense-best-practice.cjs
 
