@@ -159,7 +159,13 @@ jobs:
           });
           """).rstrip()
           regression = replace_test_prefix(regression, 'AdSenseタグはConsent Mode初期化と並行', consent_test)
-          regression = regression.replace('if (!isBlogPage) return;\\n        loadBlogAdsense();', 'if (!isBlogPage && !isArticlePageTop) return;')
+
+          old_common_assert = '  assert.ok(components.includes("function setupBlogAdsense() {\\n        if (!isBlogPage) return;\\n        loadBlogAdsense();"));'
+          new_common_assert = "  assert.ok(components.includes('if (!isBlogPage && !isArticlePageTop) return;'));\n  assert.ok(components.includes('void ensureConsentManager()'));\n  assert.ok(components.includes('.finally(() => {'));"
+          if old_common_assert in regression:
+              regression = regression.replace(old_common_assert, new_common_assert, 1)
+          elif new_common_assert not in regression:
+              raise SystemExit('common GA/AdSense assertion not found')
           regression_path.write_text(regression, encoding='utf-8')
 
           nine_path = Path('tests/playpoint-nine-fixes.test.cjs')
