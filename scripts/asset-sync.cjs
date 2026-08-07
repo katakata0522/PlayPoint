@@ -167,14 +167,27 @@ function syncRootServiceWorker(rootDir, assetVersion, versions) {
 }
 
 function syncThirdPartyConsentVersion(rootDir, consentVersion) {
-  const thirdPartyJsPath = path.join(rootDir, 'js/third-party.js');
-  if (!fs.existsSync(thirdPartyJsPath) || !consentVersion) return;
+  if (!consentVersion) return;
 
-  let content = fs.readFileSync(thirdPartyJsPath, 'utf8');
-  content = content.replace(/js\/consent\.js\?v=[a-zA-Z0-9_-]+/g, `js/consent.js?v=${consentVersion}`);
+  const targetRelativePaths = [
+    'js/third-party.js',
+    'blog/components.js'
+  ];
 
-  fs.writeFileSync(thirdPartyJsPath, content, 'utf8');
-  console.log(`Successfully synchronized consent.js version in third-party.js to v=${consentVersion}`);
+  for (const relativePath of targetRelativePaths) {
+    const targetPath = path.join(rootDir, relativePath);
+    if (!fs.existsSync(targetPath)) continue;
+
+    const currentContent = fs.readFileSync(targetPath, 'utf8');
+    const updatedContent = currentContent.replace(
+      /js\/consent\.js\?v=[a-zA-Z0-9_-]+/g,
+      `js/consent.js?v=${consentVersion}`
+    );
+    if (updatedContent === currentContent) continue;
+
+    fs.writeFileSync(targetPath, updatedContent, 'utf8');
+    console.log(`Successfully synchronized consent.js version in ${relativePath} to v=${consentVersion}`);
+  }
 }
 
 function syncServiceWorkerAssets(rootDir, assetVersion) {
