@@ -137,8 +137,11 @@
         }
     }
 
-    // AdSenseタグはGoogle認定CMPにも使われるため、同意管理やloadイベントを待たずasyncで準備する。
-    void ensureConsentManager();
-    void loadAdsense();
+    // Consent Modeのデフォルト状態をGoogleタグより先に確定し、広告自体はその直後にasyncで準備する。
+    void ensureConsentManager()
+        .catch((error) => console.error('Consent manager load failed:', error))
+        .finally(() => {
+            void loadAdsense();
+        });
     scheduleAnalyticsLoad();
 })();
