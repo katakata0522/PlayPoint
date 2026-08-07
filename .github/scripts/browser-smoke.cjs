@@ -233,6 +233,13 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
   await blockExternalRequests(context, origin);
   const page = await context.newPage();
   const browserState = observeBrowser(page, origin);
+  const firstPartyRequests = [];
+  page.on('request', request => {
+    try {
+      const url = new URL(request.url());
+      if (url.origin === origin) firstPartyRequests.push(url.pathname);
+    } catch {}
+  });
 
   try {
     await openPage(page, new URL(locale.path, baseUrl).href);
@@ -296,7 +303,9 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     assert(reverseResult.amount === 1000, `${locale.key} reverse amount changed`);
 
     let serviceWorker = { checked: false };
+    let lazyDiary = { checked: false };
     if (locale.key === 'JP') {
+      assert(!firstPartyRequests.some(pathname => pathname.endsWith('/js/diary.js')), 'Diary module loaded before diary tab was used');
       const ready = await page.evaluate(() => Promise.race([
         navigator.serviceWorker?.ready.then(() => true).catch(() => false),
         new Promise(resolve => setTimeout(() => resolve(false), 12_000))
@@ -309,12 +318,36 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       ));
       const controlled = await page.evaluate(() => Boolean(navigator.serviceWorker.controller));
       assert(controlled, 'Service Worker did not control the reloaded page');
-      serviceWorker = { checked: true, ready, controlled };
+      const diaryPrecached = await page.evaluate(async () => {
+        const cacheNames = await caches.keys();
+        for (const cacheName of cacheNames) {
+          const cache = await caches.open(cacheName);
+          const requests = await cache.keys();
+          if (requests.some(request => new URL(request.url).pathname.endsWith('/js/diary.js'))) return true;
+        }
+        return false;
+      });
+      assert(!diaryPrecached, 'Service Worker precached diary.js before diary use');
+
+      await page.locator('#tab-diary').click();
+      await waitForStage(page, 'JP lazy diary render', () => Boolean(document.querySelector('#weekInputs .week-row')));
+      assert(firstPartyRequests.some(pathname => pathname.endsWith('/js/diary.js')), 'Diary module was not fetched on first diary use');
+
+      await context.setOffline(true);
+      await page.reload({ waitUntil: 'commit', timeout: 45_000 });
+      await page.locator('#calculateButton').waitFor({ state: 'attached', timeout: 30_000 });
+      await waitForStage(page, 'JP offline core initialization', () => document.querySelector('#currentStatus')?.options.length >= 2);
+      await page.locator('#tab-diary').click();
+      await waitForStage(page, 'JP offline diary after first use', () => Boolean(document.querySelector('#weekInputs .week-row')));
+      await context.setOffline(false);
+
+      serviceWorker = { checked: true, ready, controlled, offlineCore: true };
+      lazyDiary = { checked: true, deferredUntilUse: true, offlineAfterUse: true };
     }
 
-    await page.waitForTimeout(locale.key === 'JP' ? 3_500 : 700);
+    await page.waitForTimeout(locale.key === 'JP' ? 700 : 700);
     browserState.verify(`${locale.key} hydrated browser errors`);
-    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, errors: browserState.values };
+    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, `${locale.key.toLowerCase()}-hydrated.png`);
     throw error;

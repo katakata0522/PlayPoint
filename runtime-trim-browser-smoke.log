@@ -1,9 +1,0 @@
-not ok - JP: firstPartyRequests is not defined
-ok - US static, main, reverse, Service Worker and browser errors
-ok - KR static, main, reverse, Service Worker and browser errors
-ok - TW static, main, reverse, Service Worker and browser errors
-ok - Blog initial render, search, reset, pagination, category and sidebar
-Error: Browser smoke test failed. See browser-smoke-artifacts/report.json.
-    at assert (/home/runner/work/PlayPoint/PlayPoint/.github/scripts/browser-smoke.cjs:34:21)
-    at main (/home/runner/work/PlayPoint/PlayPoint/.github/scripts/browser-smoke.cjs:546:3)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)

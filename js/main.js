@@ -2,7 +2,6 @@
 
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
-import { DIARY } from './diary.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
 import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=fe1ecf8545';
@@ -19,6 +18,30 @@ import { bindCalendarReminderEvents, downloadICS } from './calendar-reminder.js'
 import { initPwaInstallPrompt } from './pwa-install.js';
 import { trackWidgetReferral } from './widget-referral.js';
 import { registerServiceWorker } from './service-worker-registration.js';
+
+let diaryModulePromise = null;
+
+function loadDiaryModule() {
+    if (!diaryModulePromise) {
+        diaryModulePromise = import('./diary.js').catch((error) => {
+            diaryModulePromise = null;
+            throw error;
+        });
+    }
+    return diaryModulePromise;
+}
+
+function reportDiaryLoadError(error) {
+    console.error('日記機能の読み込みに失敗しました:', error);
+    const message = CONFIGS[STATE.currentRegion]?.uiText?.toastDiaryLoadError || '日記機能の読み込みに失敗しました。';
+    UI.showToast(message, 'error');
+}
+
+function queueDiaryAction(action) {
+    void loadDiaryModule()
+        .then(({ DIARY }) => action(DIARY))
+        .catch(reportDiaryLoadError);
+}
 
 // 早い段階から観測し、送信は既存の同意管理と匿名区分に限定する。
 initWebVitalsMonitoring();
@@ -86,7 +109,9 @@ export function updateUIForRegion() {
     CALC.updateReverseBaseRate();
     if (STATE.dom.result) UI.clearResult(STATE.dom.result);
     if (STATE.dom.reverseResult) UI.clearResult(STATE.dom.reverseResult);
-    if (STATE.dom.diaryMode && !STATE.dom.diaryMode.classList.contains(CONSTANTS.CLASS_HIDDEN)) DIARY.renderDiary();
+    if (STATE.dom.diaryMode && !STATE.dom.diaryMode.classList.contains(CONSTANTS.CLASS_HIDDEN)) {
+        queueDiaryAction((DIARY) => DIARY.renderDiary());
+    }
 }
 
 export function switchRegion(newRegion) {
@@ -126,9 +151,9 @@ export function init() {
     bindEvent(STATE.dom.currentStatus, 'change', () => CALC.updateBaseRateAndTarget());
     bindEvent(STATE.dom.targetStatus, 'change', () => CALC.updateNeededPointsConstraint());
     bindEvent(STATE.dom.reverseStatus, 'change', () => CALC.updateReverseBaseRate());
-    bindEvent(STATE.dom.exportDiaryBtn, 'click', () => DIARY.exportDiary());
-    bindEvent(STATE.dom.importDiaryBtn, 'click', () => DIARY.toggleImportArea());
-    bindEvent(STATE.dom.confirmImportBtn, 'click', () => DIARY.executeImport());
+    bindEvent(STATE.dom.exportDiaryBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.exportDiary()));
+    bindEvent(STATE.dom.importDiaryBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.toggleImportArea()));
+    bindEvent(STATE.dom.confirmImportBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.executeImport()));
     bindLanguageSuggestionDismiss();
     bindCalendarReminderEvents();
 
@@ -142,7 +167,7 @@ export function init() {
             const mode = button.dataset.mode;
             UI.switchMode(mode);
             if (mode === CONSTANTS.MODE_DIARY) {
-                DIARY.renderDiary();
+                queueDiaryAction((DIARY) => DIARY.renderDiary());
             }
         });
     });
@@ -163,9 +188,17 @@ export function init() {
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') UI.closeAllTooltips(); });
 
     // アワード日記の年・週変更
-    if (STATE.dom.prevYearBtn) STATE.dom.prevYearBtn.addEventListener('click', () => { if (STATE.diaryState.currentYear > 2023) { STATE.diaryState.currentYear--; DIARY.renderDiary(); } });
-    if (STATE.dom.nextYearBtn) STATE.dom.nextYearBtn.addEventListener('click', () => { STATE.diaryState.currentYear++; DIARY.renderDiary(); });
-    if (STATE.dom.weekInputs) STATE.dom.weekInputs.addEventListener('click', (e) => DIARY.handleDiarySave(e));
+    if (STATE.dom.prevYearBtn) STATE.dom.prevYearBtn.addEventListener('click', () => {
+        if (STATE.diaryState.currentYear > 2023) {
+            STATE.diaryState.currentYear--;
+            queueDiaryAction((DIARY) => DIARY.renderDiary());
+        }
+    });
+    if (STATE.dom.nextYearBtn) STATE.dom.nextYearBtn.addEventListener('click', () => {
+        STATE.diaryState.currentYear++;
+        queueDiaryAction((DIARY) => DIARY.renderDiary());
+    });
+    if (STATE.dom.weekInputs) STATE.dom.weekInputs.addEventListener('click', (e) => queueDiaryAction((DIARY) => DIARY.handleDiarySave(e)));
 
     if (STATE.dom.copyrightYear) STATE.dom.copyrightYear.textContent = new Date().getFullYear();
 

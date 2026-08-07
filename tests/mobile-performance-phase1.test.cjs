@@ -271,3 +271,33 @@ test('生成済み代表記事は初回HTMLからヘッダーと計算導線を�
   assert.match(html, /<aside class="article-calculator-prompt cta-box"/);
   assert.ok(html.indexOf('article-static-header') < html.indexOf('<main class="main-card">'));
 });
+
+
+test('日記は初期モジュールグラフと先読みから外し、利用時だけ動的読込する', () => {
+  const main = read('js/main.js');
+  assert.doesNotMatch(main, /import\s+\{\s*DIARY\s*\}\s+from\s+['"]\.\/diary\.js['"]/);
+  assert.match(main, /import\(['"]\.\/diary\.js['"]\)/);
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    assert.doesNotMatch(read(file), /modulepreload[^>]+diary\.js/, `${file}: diary.jsを初期先読みしています`);
+  }
+});
+
+test('Service Workerの初回キャッシュは必須シェルだけに絞り、重い任意資産は利用時キャッシュへ回す', () => {
+  const sw = read('sw.js');
+  const assets = (sw.match(/const ASSETS = \[([\s\S]*?)\n\];/) || [])[1] || '';
+  for (const required of [
+    './', './style.css', './manifest.json', './js/main.js', './js/config.js',
+    './js/ui.js', './js/calculator.js', './js/share.js', './js/web-vitals.js',
+    './en/', './ko/', './tw/'
+  ]) {
+    assert.ok(assets.includes(`'${required}'`) || assets.includes(`'${required}?v=`), `必須シェルが初回キャッシュから消えています: ${required}`);
+  }
+  for (const optional of [
+    './ogp.png', './info.html', './changelog.html', './attention.html', './js/diary.js',
+    './js/third-party.js', './blog/script.js', './blog/article.js', './articles/'
+  ]) {
+    assert.ok(!assets.includes(optional), `任意資産を初回キャッシュしています: ${optional}`);
+  }
+  assert.match(sw, /handleStaticRequest/);
+  assert.match(sw, /cache\.put\(cacheKey, networkResponse\.clone\(\)\)/);
+});

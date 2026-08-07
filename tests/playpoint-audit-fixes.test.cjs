@@ -91,7 +91,7 @@ test('トップページは大きな画像プレビューとOGP画像サイズ�
 });
 
 test('初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする', () => {
-  const dependencyModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
+  const dependencyModules = ['config.js', 'ui.js', 'share.js', 'calculator.js'];
   for (const [file, prefix] of [['index.html', ''], ['en/index.html', '../'], ['ko/index.html', '../'], ['tw/index.html', '../']]) {
     const html = read(file);
     for (const moduleName of dependencyModules) {
@@ -106,6 +106,7 @@ test('初期操作に必要なアプリモジュールは実際のimport URLと�
         `${file}: ${moduleName}をimportと異なるURLで先読みしています`
       );
     }
+    assert.doesNotMatch(html, new RegExp(`<link rel="modulepreload" href="${prefix}js/diary\\.js(?:\\?v=[^"]+)?">`), `${file}: diary.jsを初期先読みしています`);
     const preloadMain = html.match(new RegExp(`<link rel="modulepreload" href="${prefix}js/main\\.js\\?v=([a-f0-9]{10})">`));
     const executedMain = html.match(new RegExp(`<script type="module" src="${prefix}js/main\\.js\\?v=([a-f0-9]{10})"></script>`));
     assert.ok(preloadMain && executedMain, `${file}: main.jsの先読みまたは実行タグがありません`);
