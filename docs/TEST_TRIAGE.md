@@ -3,52 +3,76 @@
 最終更新: 2026-08-07  
 対象: `katakata0522/PlayPoint`（本番正本。`cli-auto/PlayPoint` ではない）
 
-## 2026-08-07 整理内容（実施済み）
+## いまの規模
 
-**44本 → 34本**（10本削除）。明らかにメタ／日付バッチ／移行完了後の固定／他と被るものを外した。
-
-### 削除したものと理由
-
-| 削除ファイル | 理由 |
-|--------------|------|
-| `pipeline-best-practices.test.cjs` | CI/preflight の**書き方そのもの**を検査。自己言及が強い |
-| `growth-priority.test.cjs` | プロダクト方針・docs文言の固定。方針変更の足かせ |
-| `growth-migration.test.cjs` | 移設完了済み。旧パス検査は `deploy-cleanup` が担当 |
-| `http-check-utils.test.cjs` | 汎用ユーティリティ単体。壊れにくくコストに見合わない |
-| `main-responsibility-split.test.cjs` | 一度きりの責務分割の残骸検査。import構成の固定が強い |
-| `jp-guide-batch-20260805.test.cjs` | 日付付きバッチ。記事事実は `article-fact` / `content-structure` 側でカバー |
-| `intl-regional-guides-20260805.test.cjs` | 同上。hreflang・地域数値は `all-article-quality` / 各 intl-* / `intl-regional-accuracy` |
-| `article-quality-audit-wave1.test.cjs` | P1限定ウェーブ。全体監査 `all-article-quality-audit` と重複 |
-| `human-first-article-architecture.test.cjs` | 特定記事のスナップショット過多。構造は content / fact 系へ |
-| `mobile-performance-phase1.test.cjs` | Lighthouse ワークフロー実装のメタテスト。本番挙動ではない |
-
-### 残したもの（意図）
-
-- **計算コア:** `playpoint-regression`, `main-calculator-ui`, `static-calculator-delivery`, `play-points-rounding-guide`
-- **事実・誤情報防止:** `common-pages-fact-ux`, `article-fact-regression`, `attention-country-classification`
-- **SEO / 公開衛生:** `seo-hygiene`, `all-article-quality-audit`, `repository-integrity-audit`, `performance-hardening`
-- **デプロイ安全:** `deploy-cleanup`, `ogp-mime-deployment`
-- **多言語コンテンツ:** 各 `intl-*`, `manual-intl-articles`, `top-page-language-integrity`
-- **ビルドスクリプト:** `article-seo-normalize`, `article-content-navigation-normalize`
-- **個別回帰:** `playpoint-nine-fixes`, `playpoint-audit-fixes`（Consent/SW 等。将来さらに統合可）
+| 時点 | 本数 | メモ |
+|------|------|------|
+| 整理前 | 44 | メタ検査・日付バッチ・方針固定が混在 |
+| 第1弾 | 34 | 明らかに不要な10本を削除 |
+| **第2弾（現在）** | **33** | regression ダイエット / nine+audit 統合 / intl 共通化 / 重要ガード復元 |
 
 ---
 
-## まだ厚いが今回触っていないもの
+## 第1弾で消したものの再点検（重要要素は残っているか）
 
-次の候補（必要なら別PR）:
-
-1. `playpoint-regression` の中身ダイエット（CALC_PURE中心に）
-2. `playpoint-nine-fixes` + `playpoint-audit-fixes` の統合
-3. 多数の `intl-*.test.cjs` を共通ヘルパ＋1〜2本へ
-4. preflight の「全テスト×2回（minify前後）」を計算系以外は1回に
+| 削除ファイル | 再点検結果 |
+|--------------|------------|
+| pipeline-best-practices | **SWネットワーク優先・改行差のないキャッシュ世代**は `runtime-module-guards` に復元。CI自己検査は不要のまま削除 |
+| growth-priority | **外部Google Fonts禁止**は `runtime-module-guards` に復元。docs文言固定は不要のまま |
+| growth-migration | 旧パス実体は `deploy-cleanup`。**主要計測イベント名**は `runtime-module-guards` に復元 |
+| http-check-utils | 汎用 util。本番ロジックではない → 削除維持で問題なし |
+| main-responsibility-split | **分離モジュールが minify/asset-sync/sw に含まれる**は `runtime-module-guards` に復元 |
+| jp-guide-batch-20260805 | ランク段階・倍率の足し合わせ禁止・参加条件は **`article-fact-regression` に要点だけ復元** |
+| intl-regional-guides-20260805 | hreflang・地域数値は `all-article-quality` / `intl-regional-accuracy` / `manual-intl-articles` が担当 |
+| article-quality-audit-wave1 | 全体監査 `all-article-quality-audit` と重複 → 削除維持 |
+| human-first-article-architecture | 構造・台帳は content / fact / all-article 側。特定記事全文スナップショットは過剰 |
+| mobile-performance-phase1 | Lighthouse WFのメタ検査。製品挙動は performance-hardening / audit 系 |
 
 ---
 
-## 触る場所の再確認
+## 第2弾でやったこと
+
+### 1. `playpoint-regression` ダイエット
+
+- **162ケース / 約3180行 → 29ケース / 約716行**
+- 残す: `loadCalculatorContext` / `CALC_PURE` 系（計算・パック丸め・共有URL・地域 spendUnit 等）
+- 外した: blog/SEO/記事HTML/デプロイ文字列など、**他ファイルに既にある静的検査**
+
+### 2. nine-fixes + audit-fixes 統合
+
+- `playpoint-nine-fixes.test.cjs` + `playpoint-audit-fixes.test.cjs`
+  → **`playpoint-product-guards.test.cjs` 1本**（Consent / SW / デプロイ / トップ文言 / AdSense 等）
+
+### 3. intl 共通化
+
+- 共通ヘルパ: `tests/helpers/intl-check.cjs`
+- 類似クラスタ統合: `intl-use-eligibility` + `intl-weekly-accounts`
+  → **`intl-topic-pages.test.cjs`**
+- 固有条件が強いものは分離維持:
+  - `intl-coupon-credit` / `intl-rank-maintenance` / `intl-platinum-diamond`
+  - `intl-maintenance-calculators` / `intl-content-expansion` / `intl-rewards-quests`
+  - `intl-regional-accuracy` / `intl-manual-content-sync`
+
+### 復元ガード
+
+- `runtime-module-guards.test.cjs`（削除しすぎ防止）
+
+---
+
+## 残しているコア
+
+- 計算: `playpoint-regression`, `main-calculator-ui`, `static-calculator-delivery`, `play-points-rounding-guide`
+- 事実: `common-pages-fact-ux`, `article-fact-regression`, `attention-country-classification`
+- SEO/整合: `seo-hygiene`, `all-article-quality-audit`, `repository-integrity-audit`
+- デプロイ: `deploy-cleanup`, `ogp-mime-deployment`, product-guards 内デプロイ検査
+- 多言語: `intl-*` + `intl-topic-pages` + `manual-intl-articles` + `top-page-language-integrity`
+
+---
+
+## 触る場所
 
 | 用途 | 場所 |
 |------|------|
-| 本番コード・テスト | `C:\Users\tomok\PlayPoint` / `katakata0522/PlayPoint` |
-| 公開サイト | https://playpoint-sim.com/ |
-| 使わない | `C:\Users\tomok\cli-auto\PlayPoint`（レガシー） |
+| 本番 | `C:\Users\tomok\PlayPoint` / `katakata0522/PlayPoint` |
+| 公開 | https://playpoint-sim.com/ |
+| 使わない | `cli-auto/PlayPoint`（レガシー） |
