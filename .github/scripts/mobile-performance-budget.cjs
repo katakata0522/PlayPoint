@@ -110,35 +110,41 @@ function evaluateReport(reportPath) {
   return { failures, targetWarnings };
 }
 
-const reportPaths = process.argv.slice(2);
-if (reportPaths.length === 0) {
-  console.error('検証するLighthouse JSONを指定してください。');
-  process.exit(1);
+function main(reportPaths = process.argv.slice(2)) {
+  if (reportPaths.length === 0) {
+    console.error('検証するLighthouse JSONを指定してください。');
+    return 1;
+  }
+
+  const evaluations = reportPaths.map(reportPath => ({
+    reportPath,
+    ...evaluateReport(reportPath)
+  }));
+  const failures = evaluations.flatMap(({ reportPath, failures: reportFailures }) =>
+    reportFailures.map(failure => `${reportPath}: ${failure}`)
+  );
+  const warnings = evaluations.flatMap(({ reportPath, targetWarnings }) =>
+    targetWarnings.map(warning => `${reportPath}: ${warning}`)
+  );
+
+  if (warnings.length > 0) {
+    console.warn('次段階の快適性目標には未到達の項目があります。');
+    warnings.forEach(warning => console.warn(`- ${warning}`));
+  }
+
+  if (failures.length > 0) {
+    console.error('低性能Android相当の性能予算を超過しました。');
+    failures.forEach(failure => console.error(`- ${failure}`));
+    return 1;
+  }
+
+  console.log(`低性能Android相当の強化済み性能予算内です（${reportPaths.length}ページ）。`);
+  return 0;
 }
 
-const evaluations = reportPaths.map(reportPath => ({
-  reportPath,
-  ...evaluateReport(reportPath)
-}));
-const failures = evaluations.flatMap(({ reportPath, failures: reportFailures }) =>
-  reportFailures.map(failure => `${reportPath}: ${failure}`)
-);
-const warnings = evaluations.flatMap(({ reportPath, targetWarnings }) =>
-  targetWarnings.map(warning => `${reportPath}: ${warning}`)
-);
-
-if (warnings.length > 0) {
-  console.warn('次段階の快適性目標には未到達の項目があります。');
-  warnings.forEach(warning => console.warn(`- ${warning}`));
+if (require.main === module) {
+  process.exitCode = main();
 }
-
-if (failures.length > 0) {
-  console.error('低性能Android相当の性能予算を超過しました。');
-  failures.forEach(failure => console.error(`- ${failure}`));
-  process.exit(1);
-}
-
-console.log(`低性能Android相当の強化済み性能予算内です（${reportPaths.length}ページ）。`);
 
 module.exports = {
   BUDGETS: HARD_BUDGETS.default,
@@ -146,5 +152,6 @@ module.exports = {
   TARGETS,
   evaluateReport,
   getProfile,
+  main,
   readReport
 };
