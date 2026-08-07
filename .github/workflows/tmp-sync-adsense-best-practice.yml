@@ -42,7 +42,7 @@ jobs:
       - name: Apply focused changes and sync generated output
         run: node scripts/tmp-apply-adsense-best-practice.cjs
 
-      - name: Align third-party regression with split loading roles
+      - name: Align AdSense regressions with split loading roles
         shell: bash
         run: |
           python3 - <<'PY'
@@ -51,33 +51,66 @@ jobs:
 
           path = Path('tests/playpoint-regression.test.cjs')
           source = path.read_text(encoding='utf-8')
-          old = dedent("""\
-          test('第三者スクリプトは初回操作待ちではなく初期描画後に読み込む', () => {
-            const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-            assert.ok(script.includes('DOMContentLoaded'));
-            assert.ok(!script.includes("window.addEventListener('pointerdown'"));
-            assert.ok(!script.includes("window.addEventListener('keydown'"));
-            assert.ok(!script.includes("window.addEventListener('touchstart'"));
-          });
-          """)
-          new = dedent("""\
-          test('第三者スクリプトは広告を早期準備し計測だけを初期表示後に遅延する', () => {
-            const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+          replacements = [
+              (
+                  dedent("""\
+                  test('第三者スクリプトは初回操作待ちではなく初期描画後に読み込む', () => {
+                    const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-            assert.ok(script.includes('void loadAdsense();'));
-            assert.ok(script.includes("window.addEventListener('load', scheduleAfterLoad, { once: true })"));
-            assert.ok(script.includes('scheduleAnalyticsLoad();'));
-            assert.ok(!script.includes('ADSENSE_DELAY_MS'));
-            assert.ok(!script.includes("window.addEventListener('pointerdown'"));
-            assert.ok(!script.includes("window.addEventListener('keydown'"));
-            assert.ok(!script.includes("window.addEventListener('touchstart'"));
-          });
-          """)
-          if old in source:
-              source = source.replace(old, new)
-          elif new not in source:
-              raise SystemExit('third-party regression test target not found')
+                    assert.ok(script.includes('DOMContentLoaded'));
+                    assert.ok(!script.includes("window.addEventListener('pointerdown'"));
+                    assert.ok(!script.includes("window.addEventListener('keydown'"));
+                    assert.ok(!script.includes("window.addEventListener('touchstart'"));
+                  });
+                  """),
+                  dedent("""\
+                  test('第三者スクリプトは広告を早期準備し計測だけを初期表示後に遅延する', () => {
+                    const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+                    assert.ok(script.includes('void loadAdsense();'));
+                    assert.ok(script.includes("window.addEventListener('load', scheduleAfterLoad, { once: true })"));
+                    assert.ok(script.includes('scheduleAnalyticsLoad();'));
+                    assert.ok(!script.includes('ADSENSE_DELAY_MS'));
+                    assert.ok(!script.includes("window.addEventListener('pointerdown'"));
+                    assert.ok(!script.includes("window.addEventListener('keydown'"));
+                    assert.ok(!script.includes("window.addEventListener('touchstart'"));
+                  });
+                  """)
+              ),
+              (
+                  dedent("""\
+                  test('AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する', () => {
+                    const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+                    assert.ok(script.includes('ensureConsentManager()'));
+                    assert.ok(script.includes('void loadAdsense()'));
+                    assert.ok(script.includes('scheduleThirdPartyLoad'));
+                    assert.ok(script.indexOf('void ensureConsentManager();') < script.indexOf('scheduleThirdPartyLoad();'));
+                    assert.ok(script.indexOf('ADSENSE_DELAY_MS') < script.indexOf('void loadAdsense()'));
+                  });
+                  """),
+                  dedent("""\
+                  test('AdSenseタグはConsent Mode初期化と並行して非同期で早期準備する', () => {
+                    const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+                    assert.ok(script.includes('ensureConsentManager()'));
+                    assert.ok(script.includes('void ensureConsentManager();'));
+                    assert.ok(script.includes('void loadAdsense();'));
+                    assert.ok(script.includes("{ crossorigin: 'anonymous' }"));
+                    assert.ok(!script.includes('ADSENSE_DELAY_MS'));
+                    assert.ok(script.indexOf('void ensureConsentManager();') < script.indexOf('void loadAdsense();'));
+                  });
+                  """)
+              )
+          ]
+
+          for old, new in replacements:
+              if old in source:
+                  source = source.replace(old, new)
+              elif new not in source:
+                  raise SystemExit('AdSense regression test target not found')
+
           path.write_text(source, encoding='utf-8')
           PY
 
