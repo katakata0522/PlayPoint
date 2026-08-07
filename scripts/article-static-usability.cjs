@@ -5,6 +5,8 @@ const path = require('node:path');
 
 const HEADER_MARKER = 'article-static-header';
 const PROMPT_MARKER = 'article-calculator-prompt';
+const EDITORIAL_END_MARKER = '<!-- editorial-summary:end -->';
+const PROMPT_PATTERN = /\s*<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 
 const HEADER_HTML = `    <header class="header article-static-header">
         <div class="header-inner">
@@ -36,29 +38,59 @@ function japaneseArticlePaths(rootDir) {
 }
 
 function insertStaticHeader(html) {
-  if (html.includes(HEADER_MARKER) || /<header\b/i.test(html)) return html;
+  if (html.includes(HEADER_MARKER)) return html;
   const mainIndex = html.search(/<main\b/i);
   if (mainIndex < 0) return html;
   return `${html.slice(0, mainIndex)}${HEADER_HTML}${html.slice(mainIndex)}`;
+}
+
+function findSectionEnd(html, pattern, startIndex, articleEnd) {
+  pattern.lastIndex = startIndex;
+  const sectionMatch = pattern.exec(html);
+  if (!sectionMatch || sectionMatch.index >= articleEnd) return -1;
+  const sectionEnd = html.indexOf('</section>', sectionMatch.index + sectionMatch[0].length);
+  if (sectionEnd < 0 || sectionEnd >= articleEnd) return -1;
+  return sectionEnd + '</section>'.length;
 }
 
 function findPromptAnchorEnd(html) {
   const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(html);
   if (!articleMatch) return -1;
   const articleStart = articleMatch.index + articleMatch[0].length;
-  const sectionPattern = /<section\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi;
-  sectionPattern.lastIndex = articleStart;
-  const sectionMatch = sectionPattern.exec(html);
-  if (!sectionMatch) return articleStart;
-  const sectionEnd = html.indexOf('</section>', sectionMatch.index + sectionMatch[0].length);
-  return sectionEnd < 0 ? articleStart : sectionEnd + '</section>'.length;
+  const articleEnd = html.indexOf('</article>', articleStart);
+  const boundedArticleEnd = articleEnd < 0 ? html.length : articleEnd;
+
+  const editorialEnd = html.indexOf(EDITORIAL_END_MARKER, articleStart);
+  if (editorialEnd >= articleStart && editorialEnd < boundedArticleEnd) {
+    return editorialEnd + EDITORIAL_END_MARKER.length;
+  }
+
+  const knowledgeBoundaryEnd = findSectionEnd(
+    html,
+    /<section\b[^>]*class=["'][^"']*\bknowledge-boundary\b[^"']*["'][^>]*>/gi,
+    articleStart,
+    boundedArticleEnd
+  );
+  if (knowledgeBoundaryEnd >= 0) return knowledgeBoundaryEnd;
+
+  const introductorySectionEnd = findSectionEnd(
+    html,
+    /<section\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi,
+    articleStart,
+    boundedArticleEnd
+  );
+  return introductorySectionEnd >= 0 ? introductorySectionEnd : articleStart;
+}
+
+function removeStaticPrompt(html) {
+  return html.replace(PROMPT_PATTERN, '');
 }
 
 function insertStaticPrompt(html) {
-  if (html.includes(PROMPT_MARKER)) return html;
-  const anchorEnd = findPromptAnchorEnd(html);
+  const withoutPrompt = removeStaticPrompt(html);
+  const anchorEnd = findPromptAnchorEnd(withoutPrompt);
   if (anchorEnd < 0) return html;
-  return `${html.slice(0, anchorEnd)}${PROMPT_HTML}${html.slice(anchorEnd)}`;
+  return `${withoutPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutPrompt.slice(anchorEnd)}`;
 }
 
 function synchronizeArticleStaticUsability(rootDir) {
@@ -82,11 +114,14 @@ if (require.main === module) {
 }
 
 module.exports = {
+  EDITORIAL_END_MARKER,
   HEADER_HTML,
   PROMPT_HTML,
+  PROMPT_PATTERN,
   findPromptAnchorEnd,
   insertStaticHeader,
   insertStaticPrompt,
   japaneseArticlePaths,
+  removeStaticPrompt,
   synchronizeArticleStaticUsability
 };
