@@ -11,6 +11,7 @@ on:
       - scripts/correct-growth-flow-foundation-3.cjs
       - scripts/correct-growth-flow-foundation-4.cjs
       - scripts/correct-growth-flow-foundation-5.cjs
+      - scripts/correct-growth-flow-foundation-6.cjs
       - .github/workflows/apply-growth-flow-foundation.yml
 
 permissions:
@@ -39,6 +40,7 @@ jobs:
           node scripts/correct-growth-flow-foundation-3.cjs
           node scripts/correct-growth-flow-foundation-4.cjs
           node scripts/correct-growth-flow-foundation-5.cjs
+          node scripts/correct-growth-flow-foundation-6.cjs
           git add -A
 
       - name: Run complete preflight
@@ -55,7 +57,7 @@ jobs:
         if: steps.preflight.outputs.status != '0'
         shell: bash
         run: |
-          tail -n 440 preflight-failure.log > preflight-summary.log
+          tail -n 480 preflight-failure.log > preflight-summary.log
           git reset --mixed HEAD
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -74,6 +76,7 @@ jobs:
           rm -f scripts/correct-growth-flow-foundation-3.cjs
           rm -f scripts/correct-growth-flow-foundation-4.cjs
           rm -f scripts/correct-growth-flow-foundation-5.cjs
+          rm -f scripts/correct-growth-flow-foundation-6.cjs
           rm -f .github/workflows/apply-growth-flow-foundation.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
