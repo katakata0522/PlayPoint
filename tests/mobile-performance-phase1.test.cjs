@@ -39,10 +39,12 @@ test('低性能Androidのハード予算が旧基準より厳しく、ページ�
   assert.equal(getProfile('representative-article.json'), 'representativeArticle');
 
   assert.ok(HARD_BUDGETS.calculatorHome.performanceScore >= 0.65);
+  assert.ok(HARD_BUDGETS.calculatorHome.largestContentfulPaintMs <= 3600);
   assert.ok(HARD_BUDGETS.articleHub.totalBlockingTimeMs <= 1200);
   assert.ok(HARD_BUDGETS.representativeArticle.totalBlockingTimeMs <= 800);
   assert.ok(HARD_BUDGETS.representativeArticle.cumulativeLayoutShift <= 0.15);
   assert.ok(HARD_BUDGETS.default.totalByteWeight <= 350 * 1024);
+  assert.equal(TARGETS.largestContentfulPaintMs, 2500);
   assert.equal(TARGETS.cumulativeLayoutShift, 0.10);
 });
 
