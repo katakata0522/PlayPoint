@@ -36,6 +36,19 @@ function listPublicHtmlFiles(rootDir, currentDir = rootDir) {
   return files;
 }
 
+function modulePreloadHref(rootDir, htmlFile, href) {
+  const script = resolveLocalAsset(rootDir, htmlFile, href, '.js');
+  if (!script) return null;
+
+  // main.jsはHTMLの実行タグも同じ内容ハッシュURLを使う。
+  // 依存モジュールはmain.js内の相対import（クエリなし）と完全一致させ、
+  // preloadとimportが別URL扱いになって二重取得されるのを防ぐ。
+  if (path.basename(script) === 'main.js') {
+    return `${href}?v=${createRevision(script)}`;
+  }
+  return href;
+}
+
 function syncPublicAssetVersions(rootDir) {
   let updatedFiles = 0;
 
@@ -44,9 +57,8 @@ function syncPublicAssetVersions(rootDir) {
       let updated = original.replace(
         /(<link\b[^>]*\brel=["']modulepreload["'][^>]*\bhref=["'])([^"']+\.js)(?:\?v=[a-zA-Z0-9_-]+)?(["'][^>]*>)/gi,
         (match, prefix, href, suffix) => {
-          const script = resolveLocalAsset(rootDir, htmlFile, href, '.js');
-          if (!script) return match;
-          return `${prefix}${href}?v=${createRevision(script)}${suffix}`;
+          const synchronizedHref = modulePreloadHref(rootDir, htmlFile, href);
+          return synchronizedHref ? `${prefix}${synchronizedHref}${suffix}` : match;
         }
       );
       updated = updated.replace(
@@ -98,6 +110,7 @@ module.exports = {
   EXCLUDED_DIRECTORIES,
   createRevision,
   listPublicHtmlFiles,
+  modulePreloadHref,
   resolveLocalAsset,
   syncPublicAssetVersions,
   syncDynamicArticleStylesheetVersion
