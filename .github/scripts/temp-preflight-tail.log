@@ -1,0 +1,400 @@
+  duration_ms: 0.690514
+  type: 'test'
+  ...
+# Subtest: 計算方法と検証方針を全言語で本文から確認できる
+ok 222 - 計算方法と検証方針を全言語で本文から確認できる
+  ---
+  duration_ms: 0.620928
+  type: 'test'
+  ...
+# Subtest: AdSenseは早期async取得し分析だけを初期表示後に低優先度で読み込む
+ok 223 - AdSenseは早期async取得し分析だけを初期表示後に低優先度で読み込む
+  ---
+  duration_ms: 0.389338
+  type: 'test'
+  ...
+# ok - 著者ページのOGP画像は実在する
+# ok - 計算機は有限値とHTMLの上下限を検証する
+# ok - ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする
+# ok - GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う
+# ok - 計測イベントは同意済みラッパー経由だけで送信する
+# ok - ルートService Workerは自分のキャッシュだけを削除対象にする
+# ok - ルートService Workerはprecache失敗時に壊れたまま有効化しない
+# ok - デプロイ同期は公開不要な運用ファイルをルート限定で除外する
+# ok - JSミニファイは文字列中のスラッシュコメント風テキストを壊さない
+# ok - デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジェットを対象にする
+# ok - デプロイ前検証はミニファイ後JSの構文を確認する
+# ok - CIデプロイはコミット済み成果物だけを公開する
+# ok - デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする
+# ok - 多言語トップはJS実行前の主要文言も翻訳済みにする
+# ok - 同意済み計測はGA本体ロード前のイベントを短期キューへ保持する
+# ok - Xserver同期後に本番スモークテストを実行する
+# ok - Xserver同期後に本番SEOヘルスチェックを実行する
+# ok - デプロイ検証の変更でもワークフローを実行する
+# ok - デプロイ前検証は全テストをミニファイ前後に実行する
+# ok - 本番スモークテストの期待文字列は配信元ファイルに存在する
+# ok - 本番スモークテストは主要PlayPointページと言語トップを確認する
+# Subtest: tests/playpoint-nine-fixes.test.cjs
+ok 39 - tests/playpoint-nine-fixes.test.cjs
+  ---
+  duration_ms: 45.444253
+  type: 'test'
+  ...
+# ok - ステータス選択の初期値はブロンズになる
+# ok - 通常計算では現在ステータスから次のランクだけを目標にする
+# ok - 前年からランクを引き継いだ場合も目標閾値全体を入力できる
+# ok - 直接レートと倍率は代替入力として高い方と採用理由を返す
+# ok - パック額未入力では購入ごとの丸めを仮定しない概算として表示する
+# ok - パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する
+# ok - 1回0ポイントになる購入額は概算へフォールバックせずエラーにする
+# ok - 逆算モードは入力額を1回の購入として丸める前提を表示する
+# ok - 金曜の開始時刻を過ぎたカレンダー登録は翌週を使う
+# ok - 月平均の分母は年末までの残日数から切り上げ月数で計算する
+# ok - 12月31日でも通常計算は合計必要額を表示する
+# ok - 必要ポイントはHTMLの整数制約に違反する小数を拒否する
+# ok - 記事件数は言語UI更新後に実際の件数で再描画する
+# ok - フッターの運営者リンクは色だけに頼らず下線で区別する
+# ok - モバイルのヘッダーリンクは内側余白を含めて画面幅に収める
+# ok - デスクトップのトップバーは言語切替と補助リンクを同じ段に収める
+# ok - 通常計算の結果は週平均と1日あたりの目安も表示する
+# ok - 通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する
+# ok - 計算結果の関連記事は検索意図別LPを優先する
+# ok - 計算結果の下には金額や条件に応じた次の判断導線が出る
+# ok - 英語トップはJS実行前のファーストビューに日本語の主要文言を残さない
+# ok - 英語トップの日記エリアはJS実行前でも英語で読める
+# ok - トップのSEO名はGoogle Play Points計算機を主名にし旧名を別名として残す
+# ok - 多言語トップの英語名はGoogle Play Points Calculatorを先頭にする
+# ok - 検索LPの上部には通常時と倍率別の即答表がある
+# ok - READMEと正規化設定は公式URLだけを一次導線にする
+# ok - 共有ボタンは結果アクション行にまとめて表示状態を切り替える
+# ok - 検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
+# ok - ブログRSSとAtomフィードは発見可能で最新記事を含む
+# ok - ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う
+# Successfully synchronized asset versions and dates in sample.html
+# ok - HTML同期はアセットバージョンと日付表記を単体で更新する
+# ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
+# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
+# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
+# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
+# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
+# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
+# ok - ステータス選択の再生成でoptionが重複しない
+# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
+# ok - トップページは同一URLの英語hreflangを出さない
+# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
+# ok - デプロイ前に全回帰テストを実行する
+# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
+# ok - テストファイルはルート限定の除外で本番へ同期しない
+# ok - SEO監視はサイトマップ掲載記事も確認する
+# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
+# ok - blog robots.txtは本番ドメインのサイトマップを指す
+# ok - ブログ一覧は記事JSONを正規化してから描画する
+# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
+# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
+# ok - CSPのscript-srcはhttps全体を許可しない
+# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
+# ok - target blankリンクにはnoopener noreferrerを付ける
+# ok - blogの再読み込みボタンはインラインonclickを使わない
+# ok - blog articles.jsonは実在するPlay Points記事だけを含む
+# ok - blog sitemapは登録済みPlay Points記事をすべて含む
+# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
+# ok - 記事ページのOGP画像は実ファイルが存在する
+# ok - blog SearchActionは実装と同じqパラメータを使う
+# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
+# ok - blogトップは自前のOGP画像とfaviconを使う
+# ok - blogトップの説明文は検索結果向けの長さを確保する
+# ok - blogの正規URLはindex.htmlを露出しない
+# ok - blogトップは外部Google Fontsへ接続しない
+# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
+# ok - blog記事カードクリックをAnalyticsへ送る
+# ok - 主要な操作要素は44px以上のタップ領域を持つ
+# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
+# ok - 狭い画面でも日記タブの文字を省略しない
+# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
+# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
+# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
+# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
+# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
+# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
+# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
+# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
+# ok - 全記事から有効なGoogle公式ヘルプを確認できる
+# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
+# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
+# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
+# ok - 最新情報リンクはヘッダーから外しフッターで維持する
+# ok - 計算条件を共有URLへ保存し再訪時に復元できる
+# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
+# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
+# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
+# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
+# ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
+# ok - モバイルの補助リンクと共有ボタンは縦に増えすぎない
+# ok - モバイル初期表示外の重い領域は遅延描画される
+# ok - 記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ
+# ok - ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ
+# ok - 外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる
+# ok - Analyticsのイベント設計と検証手順が文書化されている
+# ok - Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする
+# ok - トップページの更新日メタとサイト更新日を用途別に保持する
+# ok - サイトマップ同期はトップページ群のlastmodだけを更新する
+# ok - 反映タイミング記事は結論と確認手順を見出しで整理する
+# ok - CMP起動用のAdSenseタグは二重読み込みしない
+# ok - 共有URLは実在するステータス値だけを復元する
+# ok - 日記保存イベントはストレージ保存成功時だけ送る
+# ok - 記事のAdSenseは固定スクロール量を待たず同意状態に従ってasync読み込みする
+# ok - ブログと記事は共通コンポーネントからGA4本体を読み込む
+# ok - 共通コンポーネントは既存のヘッダーとフッターを重複生成しない
+# ok - 公開されている全記事HTMLが必要なSEOタグと共通AdSense読込を含んでいること
+# ok - ブログと記事の変更アセットはバージョン付きURLで配信する
+# ok - 記事共通デザインは前後ナビと操作領域とカテゴリー配色を統一する
+# ok - ブログのライトテーマとモバイル導線は読みやすさを維持する
+# ok - 記事はfaviconを指定しAdSenseが必要とする接続先をCSPで許可する
+# ok - 運営者プロフィールは検索可能な独立ページとして公開する
+# ok - 全記事は著者ページへリンクしArticle構造化データの著者と発行者を統一する
+# ok - ブログ検索タイトルと内部リンクは運営者の専門性を明示する
+# ok - サイトマップとSearch Console運用は著者ページと記事群を監視対象にする
+# ok - sw.js と各言語版 index.html の style.css バージョンクエリが一致していること
+# ok - 多言語HTMLビルド出力の整合性とhreflangの検証
+# ok - 海外向けSEOページは主要検索意図ごとに公開可能な構造を持つ
+# ok - 海外向けSEOページは既存記事の読み物感と各言語の自然な導線を保つ
+# ok - 海外LPは相互hreflangで対応言語とx-defaultを明示する
+# ok - 海外向け英語記事は目次と外部化CSSで読みやすさと保守性を保つ
+# ok - 海外LPの補助ラベルは各言語に合わせる
+# ok - 海外向け韓国語・繁体字記事は公式名寄せのサイト名とプラチナ導線を持つ
+# ok - 海外向けSEOは計測対象と追加記事クラスタを持つ
+# ok - 国変更・定期購入クラスタは韓国語と繁体字で公式根拠・FAQ・相互hreflangを持つ
+# ok - ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される
+# ok - 韓国（KR）リージョンの spendUnit 正確性検証
+# ok - 削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない
+# ok - 平均パック課金額シミュレーションの検証
+# ok - 通常還元とキャンペーン還元の差額は既存の購入単位で比較する
+# ok - 米国のパック計算は購入ごとのポイントを最も近い整数へ丸める
+# ok - 米国の小数パック額は金額全体に還元率を掛けてから購入ごとに丸める
+# ok - 海外記事は言語別の記事一覧へ戻り、対応する翻訳版をhreflangで示す
+# ok - 国際記事の公開日と更新日は記事データに保持し、生成日で上書きしない
+# ok - 海外版の計算結果導線は各言語の実在ページだけを使う
+# ok - 海外版トップはJavaScriptなしでも実在する最新情報ハブへリンクする
+# ok - 言語トップはURLと異なる保存済み地域設定で表示を上書きしない
+# ok - カレンダー登録は固定済みの過去日時を使わない
+# ok - 国際記事はビルド日を公開日として上書きしない
+# ok - 主要な日本語Play Points記事は検索意図へ答える本文量を保つ
+# ok - 断定を避けるべき記事と公式仕様の記事は重要な注意点を保持する
+# ok - サイトマップ掲載HTMLは検索結果タイトルと基本SEO要素を保つ
+# ok - 国際記事一覧とギフトカード記事は相互hreflangを持つ
+# ok - 主要記事のtitleとh1は煽り表現に依存しない
+# ok - 修正した記事の一覧タイトルとページtitleは一致する
+# ok - 日本語Play Points記事は一覧・OGP・構造化データ・著者メタを同期する
+# ok - 更新した記事は一覧・表示・メタデータ・フィード用更新日を一致させる
+# ok - フィードは公開日を保ったまま記事の更新日を反映する
+# ok - 計算結果のエラー表示とクリアは前回の共有用データを破棄する
+# ok - トップの更新日はサイト更新であることを明示する
+# ok - 重要記事は2026年時点の公式仕様と判断上の注意を保持する
+# ok - 記事共通UIは文脈リンク・主要見出し目次・安定表示を使う
+# ok - 記事一覧の静的リンクはarticles.jsonのタイトルと一致する
+# ok - トップの記事ドロワーは表示件数とリンク件数を一致させる
+# ok - 記事サイトマップのlastmodは記事一覧の更新日と一致する
+# ok - サイトマップ生成は記事一覧のmodifiedを自動反映する
+# ok - 100ポイント記事は貯める金額と使う価値を分けて案内する
+# ok - 100ポイント多言語記事は国別公式レートと相互hreflangを持つ
+# ok - 日本語検索クラスターは意図を分けて公式条件を明示する
+# ok - 記事ハブとフィードは新しい日本語・多言語記事を発見できる
+# ok - ポイント数から必要額を出す計算ツールは4地域で公開可能な構造を持つ
+# ok - 現金化ガイドは4言語で公式根拠・相互参照・計算導線を持つ
+# ok - 期限・返金・家族共有ガイドは4言語の相互参照と公式根拠を持つ
+# Subtest: tests/playpoint-regression.test.cjs
+ok 40 - tests/playpoint-regression.test.cjs
+  ---
+  duration_ms: 256.749895
+  type: 'test'
+  ...
+# [repository-integrity] tracked=404 deployable=297 resolved=284
+# Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+not ok 226 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+  ---
+  duration_ms: 3.196841
+  type: 'test'
+  location: '/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:194:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   '.github/scripts/temp-sync-ads-pwa.cjs',
+    +   '.github/workflows/temp-sync-ads-pwa.yml'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: '.github/scripts/temp-sync-ads-pwa.cjs'
+    1: '.github/workflows/temp-sync-ads-pwa.yml'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:205:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: 移設・統合・共通化済みの実体を残さない
+ok 227 - 移設・統合・共通化済みの実体を残さない
+  ---
+  duration_ms: 0.210117
+  type: 'test'
+  ...
+# Subtest: 公開ファイルの内部参照とアンカーは実在する
+ok 228 - 公開ファイルの内部参照とアンカーは実在する
+  ---
+  duration_ms: 0.199472
+  type: 'test'
+  ...
+# Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
+ok 229 - 全公開HTMLのcanonicalは自己一致し重複しない
+  ---
+  duration_ms: 1.902405
+  type: 'test'
+  ...
+# Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
+ok 230 - 公開コードは旧パス・開発URL・旧ホストを参照しない
+  ---
+  duration_ms: 14.905384
+  type: 'test'
+  ...
+# Subtest: 公開画像の実形式とHTTP配信形式を一致させる
+ok 231 - 公開画像の実形式とHTTP配信形式を一致させる
+  ---
+  duration_ms: 8.721009
+  type: 'test'
+  ...
+# Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
+ok 232 - 未参照アセットと内容が完全重複する公開ファイルを残さない
+  ---
+  duration_ms: 22.763889
+  type: 'test'
+  ...
+# Subtest: READMEとPWAメタデータは現行機能を説明する
+ok 233 - READMEとPWAメタデータは現行機能を説明する
+  ---
+  duration_ms: 0.282377
+  type: 'test'
+  ...
+# Subtest: 送信するXMLサイトマップ間でURLを重複させない
+ok 234 - 送信するXMLサイトマップ間でURLを重複させない
+  ---
+  duration_ms: 3.598838
+  type: 'test'
+  ...
+# Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
+ok 235 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
+  ---
+  duration_ms: 0.545895
+  type: 'test'
+  ...
+# Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
+ok 236 - 専用XMLサイトマップへ移したURLをルートへ重ねない
+  ---
+  duration_ms: 0.900831
+  type: 'test'
+  ...
+# Subtest: Play Pointsブログとフィードに家計記事を混在させない
+ok 237 - Play Pointsブログとフィードに家計記事を混在させない
+  ---
+  duration_ms: 2.037279
+  type: 'test'
+  ...
+# Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
+ok 238 - 人向けサイトマップはPlay Pointsの案内に集中する
+  ---
+  duration_ms: 0.380074
+  type: 'test'
+  ...
+# Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+ok 239 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+  ---
+  duration_ms: 0.260784
+  type: 'test'
+  ...
+# Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
+ok 240 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
+  ---
+  duration_ms: 0.313193
+  type: 'test'
+  ...
+# Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
+ok 241 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
+  ---
+  duration_ms: 3.232635
+  type: 'test'
+  ...
+# Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
+ok 242 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
+  ---
+  duration_ms: 2.05794
+  type: 'test'
+  ...
+# Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
+ok 243 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
+  ---
+  duration_ms: 0.276648
+  type: 'test'
+  ...
+# Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
+ok 244 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
+  ---
+  duration_ms: 0.199272
+  type: 'test'
+  ...
+# Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+ok 245 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+  ---
+  duration_ms: 0.464031
+  type: 'test'
+  ...
+# Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+ok 246 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+  ---
+  duration_ms: 0.220453
+  type: 'test'
+  ...
+# Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
+ok 247 - 静的生成辞書は多言語フッターの全リンク文言を持つ
+  ---
+  duration_ms: 1.538885
+  type: 'test'
+  ...
+# Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+ok 248 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+  ---
+  duration_ms: 9.41607
+  type: 'test'
+  ...
+# Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+ok 249 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+  ---
+  duration_ms: 4.501392
+  type: 'test'
+  ...
+# Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+ok 250 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+  ---
+  duration_ms: 1.691145
+  type: 'test'
+  ...
+1..250
+# tests 250
+# suites 0
+# pass 249
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1123.854194
+
+事前検証で失敗した工程:
+- 全回帰テスト
+- 圧縮後の全回帰テスト
