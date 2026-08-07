@@ -30,10 +30,30 @@ jobs:
         run: node scripts/apply-growth-flow-foundation.cjs
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs --prepare-deploy 2>&1 | tee preflight-failure.log
+          status=${PIPESTATUS[0]}
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Preserve failed preflight log
+        if: steps.preflight.outputs.status != '0'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add preflight-failure.log
+          git commit -m "一時診断: 事前検証の失敗ログ"
+          git push origin HEAD:refactor/growth-flow-foundation
+          exit 1
 
       - name: Commit verified changes
+        if: steps.preflight.outputs.status == '0'
         run: |
+          rm -f preflight-failure.log
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
