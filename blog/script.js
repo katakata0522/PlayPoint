@@ -249,7 +249,9 @@
         sidebarOverlay: document.getElementById('sidebar-overlay'),
         sidebarClose: document.getElementById('sidebar-close'),
         sidebarCategories: document.getElementById('sidebar-categories'),
-        sidebarRecent: document.getElementById('sidebar-recent')
+        sidebarRecent: document.getElementById('sidebar-recent'),
+        resultStatus: document.getElementById('article-result-status'),
+        categoryScrollHint: document.getElementById('category-scroll-hint')
     };
 
     // Create Particles in Hero Section
@@ -280,6 +282,7 @@
     function showSkeletonLoading() {
         if (!dom.grid) return;
         dom.grid.innerHTML = '';
+        if (dom.resultStatus) { var label = currentCategory === 'all' ? 'すべて' : currentCategory; dom.resultStatus.textContent = (currentSearch ? '「' + currentSearch + '」の検索結果：' : label + 'の記事：') + filtered.length + '件'; }
         for (let i = 0; i < 3; i++) {
             const skeleton = document.createElement('div');
             skeleton.className = 'skeleton-card';
@@ -399,9 +402,6 @@
         // Initialize theme from storage
         initTheme();
 
-        // Create hero particles
-        createParticles();
-
         // Show skeleton loading while fetching
         showSkeletonLoading();
 
@@ -458,16 +458,12 @@
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles');
             const articles = await response.json();
-            allArticles = Array.isArray(articles) ? articles.map(normalizeArticle) : [];
+            allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories
             setupCategories(allArticles);
-
-            // Populate sidebar
-            populateSidebarCategories(allArticles);
-            populateSidebarRecent(allArticles);
-            populateTagCloud(allArticles);
+            setupCategoryOverflow();
 
             // Search setup with debounce
             if (dom.searchInput) {
@@ -776,42 +772,15 @@
         dom.grid.innerHTML = '';
 
         if (pageItems.length === 0) {
-            dom.grid.innerHTML = `
-                <div class="empty-state">
-                    <p>😢 該当する記事が見つかりませんでした。</p>
-                    <button class="reset-btn" id="reset-filters">フィルターをリセット</button>
-                </div>
-            `;
-            const resetBtn = document.getElementById('reset-filters');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    currentCategory = 'all';
-                    currentSearch = '';
-                    if (dom.searchInput) dom.searchInput.value = '';
-                    // Reset URL
-                    window.history.pushState({}, '', window.location.pathname);
-                    // Reset category buttons
-                    if (dom.categoryFilter) {
-                        dom.categoryFilter.querySelectorAll('button').forEach(btn => {
-                            btn.classList.toggle('active', btn.dataset.category === 'all');
-                        });
-                    }
-                    render();
-                });
-            }
-            renderPagination(0);
-            return;
+          var q = BlogUtils.escapeHtml(currentSearch);
+          dom.grid.innerHTML = '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>';
+          document.getElementById('reset-filters').addEventListener('click', function () { currentCategory = 'all'; currentSearch = ''; if (dom.searchInput) dom.searchInput.value = ''; window.history.replaceState({}, '', window.location.pathname); render(); });
+          renderPagination(0); return;
         }
 
         // Accessibility: Announce updates
         dom.grid.setAttribute('aria-live', 'polite');
 
-        // Show article count
-        const countLabel = currentCategory === 'all' ? '全' : currentCategory;
-        const countInfo = document.createElement('div');
-        countInfo.className = 'article-count-info';
-        countInfo.innerHTML = `📚 <strong>${countLabel}${filtered.length}件</strong>の記事`;
-        dom.grid.appendChild(countInfo);
 
         let articleIndex = 0;
 
@@ -870,68 +839,17 @@
     }
 
     function renderPagination(totalPages) {
-        if (!dom.pagination) return;
-        dom.pagination.innerHTML = '';
+      if (!dom.pagination) return; dom.pagination.innerHTML = ''; if (totalPages <= 1) return;
+      var prev = document.createElement('button'); prev.textContent = '← 前へ'; prev.disabled = currentPage === 1; prev.className = 'pagination-nav'; prev.addEventListener('click', function () { changePage(currentPage - 1); });
+      var status = document.createElement('span'); status.className = 'pagination-status'; status.textContent = currentPage + ' / ' + totalPages; status.setAttribute('aria-current', 'page');
+      var next = document.createElement('button'); next.textContent = '次へ →'; next.disabled = currentPage === totalPages; next.className = 'pagination-nav'; next.addEventListener('click', function () { changePage(currentPage + 1); });
+      dom.pagination.append(prev, status, next);
+    }
 
-        if (totalPages <= 1) return;
-
-        // Prev
-        const prevBtn = document.createElement('button');
-        prevBtn.innerHTML = '← 前へ';
-        prevBtn.disabled = currentPage === 1;
-        prevBtn.className = 'pagination-nav';
-        prevBtn.addEventListener('click', () => changePage(currentPage - 1));
-        dom.pagination.appendChild(prevBtn);
-
-        // Numbers (show limited range for many pages)
-        const maxVisible = 5;
-        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-        if (endPage - startPage < maxVisible - 1) {
-            startPage = Math.max(1, endPage - maxVisible + 1);
-        }
-
-        if (startPage > 1) {
-            const firstBtn = document.createElement('button');
-            firstBtn.textContent = '1';
-            firstBtn.addEventListener('click', () => changePage(1));
-            dom.pagination.appendChild(firstBtn);
-            if (startPage > 2) {
-                const dots = document.createElement('span');
-                dots.textContent = '...';
-                dots.className = 'pagination-dots';
-                dom.pagination.appendChild(dots);
-            }
-        }
-
-        for (let i = startPage; i <= endPage; i++) {
-            const pageBtn = document.createElement('button');
-            pageBtn.textContent = i;
-            if (i === currentPage) pageBtn.classList.add('active');
-            pageBtn.addEventListener('click', () => changePage(i));
-            dom.pagination.appendChild(pageBtn);
-        }
-
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                const dots = document.createElement('span');
-                dots.textContent = '...';
-                dots.className = 'pagination-dots';
-                dom.pagination.appendChild(dots);
-            }
-            const lastBtn = document.createElement('button');
-            lastBtn.textContent = totalPages;
-            lastBtn.addEventListener('click', () => changePage(totalPages));
-            dom.pagination.appendChild(lastBtn);
-        }
-
-        // Next
-        const nextBtn = document.createElement('button');
-        nextBtn.innerHTML = '次へ →';
-        nextBtn.disabled = currentPage === totalPages;
-        nextBtn.className = 'pagination-nav';
-        nextBtn.addEventListener('click', () => changePage(currentPage + 1));
-        dom.pagination.appendChild(nextBtn);
+    function setupCategoryOverflow() {
+      if (!dom.categoryFilter || !dom.categoryScrollHint) return;
+      function sync() { var overflow = dom.categoryFilter.scrollWidth > dom.categoryFilter.clientWidth + 2; var end = dom.categoryFilter.scrollLeft + dom.categoryFilter.clientWidth >= dom.categoryFilter.scrollWidth - 4; dom.categoryScrollHint.hidden = !overflow; dom.categoryFilter.classList.toggle('is-scrollable', overflow && !end); }
+      sync(); dom.categoryFilter.addEventListener('scroll', sync, { passive: true }); window.addEventListener('resize', sync);
     }
 
     function changePage(num) {

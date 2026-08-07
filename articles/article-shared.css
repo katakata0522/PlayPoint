@@ -562,3 +562,7 @@ body[data-blog-theme="light"] .main-card {
         font-size: 0.75rem;
     }
 }
+/* ARTICLE_USABILITY_PASS_START */
+.content{width:min(100%,760px);margin-inline:auto;line-height:1.85}.content>p,.content .section>p{margin-top:0;margin-bottom:1.05rem}.hero-meta.article-verification-meta{display:flex;flex-wrap:wrap;justify-content:center}.table-wrap,.table-card{max-width:100%;overflow-x:auto;scrollbar-gutter:stable;-webkit-overflow-scrolling:touch}.table-wrap table,.table-card table{min-width:560px}:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid var(--article-accent);outline-offset:3px;box-shadow:0 0 0 2px #fff}
+@media(max-width:700px){.content{width:100%;padding-inline:1.1rem}.table-wrap::after,.table-card::after{content:"← 表は横にスクロールできます →";display:block;padding:.45rem;color:#64748b;font-size:.72rem;text-align:right}.table-wrap th:first-child,.table-wrap td:first-child,.table-card th:first-child,.table-card td:first-child{position:sticky;left:0;z-index:1;background:#fff;box-shadow:1px 0 #dbe2ea}}
+/* ARTICLE_USABILITY_PASS_END */

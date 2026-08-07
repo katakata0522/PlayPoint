@@ -366,7 +366,18 @@
         return null;
     }
 
+    function setupArticleUsability() {
+      var meta = document.querySelector('.hero-meta, .article-meta, .post-meta');
+      var pub = document.querySelector('meta[property="article:published_time"]')?.content?.slice(0, 10).replace(/-/g, '/');
+      var mod = document.querySelector('meta[property="article:modified_time"]')?.content?.slice(0, 10).replace(/-/g, '/');
+      var note = Array.from(document.querySelectorAll('.source-list .small, .official-sources .small, p.small')).find(function (e) { return /最終確認日/.test(e.textContent || ''); });
+      var checked = note && note.textContent.match(/最終確認日は?(\d{4})年(\d{1,2})月(\d{1,2})日/);
+      if (meta && pub) { meta.classList.add('article-verification-meta'); meta.textContent = '公開 ' + pub + (checked ? ' ｜ 最終確認 ' + checked[1] + '/' + String(checked[2]).padStart(2, '0') + '/' + String(checked[3]).padStart(2, '0') : (mod && mod !== pub ? ' ｜ 更新 ' + mod : '')); }
+      document.querySelectorAll('.table-wrap, .table-card').forEach(function (w, i) { w.tabIndex = 0; w.setAttribute('role', 'region'); w.setAttribute('aria-label', '比較表' + (i + 1) + '（横にスクロールできます）'); });
+    }
+
     async function init() {
+        setupArticleUsability();
         setupCalculatorPrompt();
         setupContextualGuideLinks();
         setupArticleNextStepCta();
