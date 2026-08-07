@@ -111,24 +111,25 @@ jobs:
           regression_path.write_text(source, encoding='utf-8')
 
           nine_path = Path('tests/playpoint-nine-fixes.test.cjs')
-          nine = nine_path.read_text(encoding='utf-8')
-          old = """  assert.ok(main.includes('ensureConsentManager'));
-          assert.ok(main.includes('scheduleThirdPartyLoad'));
-          assert.ok(main.includes('void loadAdsense()'));
-          assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
-          """
-          new = """  assert.ok(main.includes('ensureConsentManager'));
-          assert.ok(main.includes('void ensureConsentManager();'));
-          assert.ok(main.includes('void loadAdsense();'));
-          assert.ok(main.includes('scheduleAnalyticsLoad();'));
-          assert.ok(!main.includes('ADSENSE_DELAY_MS'));
-          assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));
-          """
-          if old in nine:
-              nine = nine.replace(old, new)
-          elif new not in nine:
-              raise SystemExit('playpoint-nine-fixes consent regression target not found')
-          nine_path.write_text(nine, encoding='utf-8')
+          lines = nine_path.read_text(encoding='utf-8').splitlines()
+          if any("main.includes('scheduleAnalyticsLoad();')" in line for line in lines):
+              pass
+          else:
+              old_index = next((i for i, line in enumerate(lines) if "main.includes('scheduleThirdPartyLoad')" in line), None)
+              if old_index is None or old_index < 1 or old_index + 2 >= len(lines):
+                  raise SystemExit('playpoint-nine-fixes consent regression target not found')
+              start = old_index - 1
+              indent = lines[start][:len(lines[start]) - len(lines[start].lstrip())]
+              replacement = [
+                  indent + "assert.ok(main.includes('ensureConsentManager'));",
+                  indent + "assert.ok(main.includes('void ensureConsentManager();'));",
+                  indent + "assert.ok(main.includes('void loadAdsense();'));",
+                  indent + "assert.ok(main.includes('scheduleAnalyticsLoad();'));",
+                  indent + "assert.ok(!main.includes('ADSENSE_DELAY_MS'));",
+                  indent + "assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));"
+              ]
+              lines[start:old_index + 3] = replacement
+              nine_path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
           PY
 
       - name: Remove temporary sync machinery
