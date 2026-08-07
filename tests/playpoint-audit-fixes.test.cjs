@@ -145,11 +145,23 @@ test('計算方法と検証方針を全言語で本文から確認できる', ()
   }
 });
 
-test('広告と計測は初期表示後に低優先度で読み込む', () => {
+test('AdSenseは早期async取得し分析だけを初期表示後に低優先度で読み込む', () => {
   const source = read('js/third-party.js');
+  const articleSource = read('blog/article.js');
+  const components = read('blog/components.js');
+  const adsenseBlock = source.slice(source.indexOf('async function loadAdsense'), source.indexOf('function getCurrentAssetPrefix'));
+
   assert.match(source, /window\.addEventListener\('load', scheduleAfterLoad, \{ once: true \}\)/);
   assert.match(source, /ANALYTICS_DELAY_MS\s*=\s*1200/);
   assert.match(source, /ADSENSE_DELAY_MS\s*=\s*3000/);
   assert.match(source, /fetchpriority:\s*'low'/);
+  assert.ok(source.indexOf('void loadAdsense();') < source.indexOf('const scheduleAfterLoad'));
+  assert.doesNotMatch(adsenseBlock, /fetchpriority/);
+  assert.match(source, /app_display_mode/);
+  assert.match(source, /display-mode: standalone/);
+  assert.match(components, /app_display_mode/);
+  assert.doesNotMatch(articleSource, /window\.scrollY\s*<\s*600/);
+  assert.doesNotMatch(components, /window\.scrollY\s*<\s*600/);
+  assert.match(components, /runAfterConsent\(loadBlogAdsense\)/);
   assert.ok(source.indexOf('ensureConsentManager();') < source.indexOf('scheduleThirdPartyLoad();'));
 });
