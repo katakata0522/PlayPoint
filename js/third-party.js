@@ -4,13 +4,12 @@
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     const ANALYTICS_DELAY_MS = 1200;
-    const ADSENSE_DELAY_MS = 3000;
     const ANALYTICS_SCRIPT_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
 
     let gaLoaded = false;
     let adsLoaded = false;
-    let thirdPartyScheduled = false;
+    let analyticsScheduled = false;
     let consentManagerPromise = null;
 
     function loadScript(src, attrs = {}) {
@@ -33,6 +32,13 @@
         });
     }
 
+    function getDisplayMode() {
+        const standaloneMedia = typeof window.matchMedia === 'function'
+            && window.matchMedia('(display-mode: standalone)').matches;
+        const iosStandalone = window.navigator && window.navigator.standalone === true;
+        return standaloneMedia || iosStandalone ? 'standalone' : 'browser';
+    }
+
     async function loadAnalytics() {
         if (gaLoaded) return;
         try {
@@ -45,6 +51,8 @@
                 window.dataLayer.push(arguments);
             };
             window.gtag('js', new Date());
+            // PWAと通常ブラウザを同じイベント群で比較できるよう、以後のイベントへ共通付与する。
+            window.gtag('set', { display_mode: getDisplayMode() });
             window.gtag('config', GA_MEASUREMENT_ID);
             if (window.PP_APP && window.PP_APP.ANALYTICS) {
                 window.PP_APP.ANALYTICS.flushPending();
@@ -58,9 +66,10 @@
     async function loadAdsense() {
         if (adsLoaded) return;
         try {
+            // asyncのまま早期に広告オークションを準備し、人工的な待機で短時間利用を取りこぼさない。
             await loadScript(
                 ADSENSE_SCRIPT_SRC,
-                { crossorigin: 'anonymous', fetchpriority: 'low' }
+                { crossorigin: 'anonymous' }
             );
             adsLoaded = true;
         } catch (error) {
@@ -110,20 +119,15 @@
         }, delay);
     }
 
-    function scheduleThirdPartyLoad() {
-        if (thirdPartyScheduled) return;
-        thirdPartyScheduled = true;
+    function scheduleAnalyticsLoad() {
+        if (analyticsScheduled) return;
+        analyticsScheduled = true;
 
         const scheduleAfterLoad = () => {
-            // 初期表示と最初の操作を優先し、計測と広告は別々に遅延する。
+            // 計測は初期表示と最初の操作を優先し、既存の低優先度読み込みを維持する。
             scheduleDelayedIdleTask(() => {
                 void runAfterConsent(loadAnalytics);
             }, ANALYTICS_DELAY_MS);
-
-            // AdSenseタグはGoogle認定CMPにも使われるため読み込み自体は維持する。
-            scheduleDelayedIdleTask(() => {
-                void loadAdsense();
-            }, ADSENSE_DELAY_MS);
         };
 
         if (document.readyState === 'complete') {
@@ -133,13 +137,8 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            void ensureConsentManager();
-            scheduleThirdPartyLoad();
-        }, { once: true });
-    } else {
-        void ensureConsentManager();
-        scheduleThirdPartyLoad();
-    }
+    // AdSenseタグはGoogle認定CMPにも使われるため、同意管理やloadイベントを待たずasyncで準備する。
+    void ensureConsentManager();
+    void loadAdsense();
+    scheduleAnalyticsLoad();
 })();
