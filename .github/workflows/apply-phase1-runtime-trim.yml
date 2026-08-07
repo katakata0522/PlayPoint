@@ -43,14 +43,15 @@ jobs:
       - name: Synchronize generated output
         run: node scripts/build-html.js
 
-      - name: Remove temporary automation
+      - name: Remove temporary automation and diagnostics
         shell: bash
         run: |
           git rm -f \
             scripts/apply-phase1-runtime-trim.cjs \
             scripts/apply-phase1-runtime-trim-fixes.cjs \
             .github/workflows/apply-phase1-runtime-trim.yml \
-            .github/workflows/diagnose-phase1-runtime-trim.yml
+            .github/workflows/diagnose-phase1-runtime-trim.yml \
+            runtime-trim-preflight.log
 
       - name: Create clean local commit
         shell: bash
