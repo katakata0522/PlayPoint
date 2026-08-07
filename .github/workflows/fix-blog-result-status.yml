@@ -26,6 +26,9 @@ jobs:
       - name: Validate JavaScript syntax
         run: node --check blog/script.js
 
+      - name: Synchronize generated HTML
+        run: node scripts/build-html.js
+
       - name: Synchronize assets and run preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
@@ -42,11 +45,13 @@ jobs:
           mapfile -d '' changed < <(git diff HEAD --name-only -z)
           for file in "${changed[@]}"; do
             case "$file" in
-              blog/script.js|sw.js|*.html|*/*.html|*/*/*.html|scripts/fix-blog-result-status.cjs|.github/workflows/fix-blog-result-status.yml)
+              scripts/fix-blog-result-status.cjs|.github/workflows/fix-blog-result-status.yml)
+                ;;
+              .github/*|.github/*/*|scripts/*|scripts/*/*|tests/*|tests/*/*|docs/*|docs/*/*)
+                echo "想定外の運用ファイル変更: $file"
+                exit 1
                 ;;
               *)
-                echo "想定外の変更ファイル: $file"
-                exit 1
                 ;;
             esac
           done
