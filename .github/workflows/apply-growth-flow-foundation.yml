@@ -1,0 +1,42 @@
+name: Apply growth flow foundation
+
+on:
+  push:
+    branches:
+      - refactor/growth-flow-foundation
+    paths:
+      - scripts/apply-growth-flow-foundation.cjs
+      - .github/workflows/apply-growth-flow-foundation.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-growth-flow-foundation
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refactor/growth-flow-foundation
+          fetch-depth: 0
+
+      - name: Apply focused migration
+        run: node scripts/apply-growth-flow-foundation.cjs
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
+
+      - name: Commit verified changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "成長導線と分析基盤を整理"
+          git push origin HEAD:refactor/growth-flow-foundation
