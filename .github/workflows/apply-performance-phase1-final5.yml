@@ -17,7 +17,7 @@ concurrency:
 jobs:
   finalize-and-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - name: Checkout performance branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -38,6 +38,7 @@ jobs:
           node --check blog/script.js
           node --check .github/scripts/browser-smoke.cjs
           node --check .github/scripts/lighthouse-diagnostics.cjs
+          node --check .github/scripts/mobile-performance-budget.cjs
           node --check scripts/article-asset-versioning.cjs
           node --check scripts/article-static-usability.cjs
           node --check tests/mobile-performance-phase1.test.cjs
@@ -129,16 +130,22 @@ jobs:
               "${blocked_flags[@]}" \
               --quiet
           }
-          audit_page calculator-home /
+          audit_page calculator-home-1 /
+          audit_page calculator-home-2 /
+          audit_page calculator-home-3 /
           audit_page article-hub /blog/
           audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
           node .github/scripts/lighthouse-diagnostics.cjs \
-            performance-artifacts/calculator-home.json \
+            performance-artifacts/calculator-home-1.json \
+            performance-artifacts/calculator-home-2.json \
+            performance-artifacts/calculator-home-3.json \
             performance-artifacts/article-hub.json \
             performance-artifacts/representative-article.json \
             --output-dir performance-artifacts
           node .github/scripts/mobile-performance-budget.cjs \
-            performance-artifacts/calculator-home.json \
+            performance-artifacts/calculator-home-1.json \
+            performance-artifacts/calculator-home-2.json \
+            performance-artifacts/calculator-home-3.json \
             performance-artifacts/article-hub.json \
             performance-artifacts/representative-article.json
 
