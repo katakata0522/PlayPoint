@@ -145,11 +145,13 @@ test('計算方法と検証方針を全言語で本文から確認できる', ()
   }
 });
 
-test('広告と計測は初期表示後に低優先度で読み込む', () => {
+test('AdSenseは人工的に待たせず、計測だけを低優先度で遅延する', () => {
   const source = read('js/third-party.js');
-  assert.match(source, /window\.addEventListener\('load', scheduleAfterLoad, \{ once: true \}\)/);
   assert.match(source, /ANALYTICS_DELAY_MS\s*=\s*1200/);
-  assert.match(source, /ADSENSE_DELAY_MS\s*=\s*3000/);
-  assert.match(source, /fetchpriority:\s*'low'/);
-  assert.ok(source.indexOf('ensureConsentManager();') < source.indexOf('scheduleThirdPartyLoad();'));
+  assert.doesNotMatch(source, /ADSENSE_DELAY_MS/);
+  assert.match(source, /await loadScript\(\s*ANALYTICS_SCRIPT_SRC,\s*\{\s*fetchpriority:\s*'low'\s*\}\s*\)/s);
+  assert.match(source, /await loadScript\(\s*ADSENSE_SCRIPT_SRC,\s*\{\s*crossorigin:\s*'anonymous'\s*\}\s*\)/s);
+  assert.match(source, /window\.gtag\('set', \{ display_mode: getDisplayMode\(\) \}\);/);
+  assert.match(source, /void loadAdsense\(\);\s*scheduleAnalyticsLoad\(\);/s);
+  assert.match(source, /window\.addEventListener\('load', scheduleAfterLoad, \{ once: true \}\)/);
 });

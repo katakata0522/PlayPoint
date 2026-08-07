@@ -101,7 +101,7 @@ function patchRegressionTests() {
 function syncGeneratedOutput() {
   const indexHtml = read('index.html');
   const serviceWorker = read('sw.js');
-  const modifiedDate = indexHtml.match(/<meta name="last-modified" content="(\\d{4}-\\d{2}-\\d{2})">/)?.[1];
+  const modifiedDate = indexHtml.match(/<meta name="last-modified" content="([0-9]{4}-[0-9]{2}-[0-9]{2})">/)?.[1];
   const assetVersion = serviceWorker.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
   if (!modifiedDate || !assetVersion) throw new Error('既存の公開日またはアセット版を取得できません');
 

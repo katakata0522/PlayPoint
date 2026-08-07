@@ -1089,10 +1089,13 @@ test('トップページは同一URLの英語hreflangを出さない', () => {
   assert.ok(!html.includes('hreflang="en" href="https://playpoint-sim.com/"'));
 });
 
-test('第三者スクリプトは初回操作待ちではなく初期描画後に読み込む', () => {
+test('第三者スクリプトは広告を早期準備し計測だけを初期表示後に遅延する', () => {
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
-  assert.ok(script.includes('DOMContentLoaded'));
+  assert.ok(script.includes('void loadAdsense();'));
+  assert.ok(script.includes("window.addEventListener('load', scheduleAfterLoad, { once: true })"));
+  assert.ok(script.includes('scheduleAnalyticsLoad();'));
+  assert.ok(!script.includes('ADSENSE_DELAY_MS'));
   assert.ok(!script.includes("window.addEventListener('pointerdown'"));
   assert.ok(!script.includes("window.addEventListener('keydown'"));
   assert.ok(!script.includes("window.addEventListener('touchstart'"));
@@ -1429,14 +1432,15 @@ test('計算と日記保存の完了を個人情報なしでAnalyticsへ送る',
   assert.ok(!diary.includes('points_value:'));
 });
 
-test('AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する', () => {
+test('AdSenseタグはConsent Mode初期化と並行して非同期で早期準備する', () => {
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
   assert.ok(script.includes('ensureConsentManager()'));
-  assert.ok(script.includes('void loadAdsense()'));
-  assert.ok(script.includes('scheduleThirdPartyLoad'));
-  assert.ok(script.indexOf('void ensureConsentManager();') < script.indexOf('scheduleThirdPartyLoad();'));
-  assert.ok(script.indexOf('ADSENSE_DELAY_MS') < script.indexOf('void loadAdsense()'));
+  assert.ok(script.includes('void ensureConsentManager();'));
+  assert.ok(script.includes('void loadAdsense();'));
+  assert.ok(script.includes("{ crossorigin: 'anonymous' }"));
+  assert.ok(!script.includes('ADSENSE_DELAY_MS'));
+  assert.ok(script.indexOf('void ensureConsentManager();') < script.indexOf('void loadAdsense();'));
 });
 
 test('トップページはブラウザ言語だけでクライアントサイドリダイレクトしない', () => {
@@ -1887,16 +1891,18 @@ test('日記保存イベントはストレージ保存成功時だけ送る', ()
   assert.ok(script.includes('if (!this.saveDiaryData(data)) return;'));
 });
 
-test('記事のAdSenseは本文スクロール後に共通スクリプトから読み込む', () => {
+test('記事のAdSenseは固定スクロール待ちより先に共通スクリプトから非同期で準備する', () => {
   const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
   const articleFiles = fs.readdirSync(path.join(root, 'articles'))
     .filter(file => file.endsWith('.html'));
 
   assert.ok(articleScript.includes('function loadArticleAdsense()'));
-  assert.ok(articleScript.includes('window.scrollY < 600'));
+  assert.ok(articleScript.includes("function setupArticleAdsense() {\n        loadArticleAdsense();"));
+  assert.ok(articleScript.includes('script.async = true'));
+  assert.ok(articleScript.includes('window.scrollY < 600'), '通信失敗時の再試行導線がありません');
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
-    assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} loads AdSense before article engagement`);
+    assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} embeds AdSense directly instead of using the shared loader`);
   }
 });
 
@@ -1908,7 +1914,10 @@ test('ブログと記事は共通コンポーネントからGA4本体を読み�
 
   assert.ok(components.includes("const GA_MEASUREMENT_ID = 'G-HED6D0FR4L'"));
   assert.ok(components.includes('googletagmanager.com/gtag/js'));
+  assert.ok(components.includes("window.gtag('set', { display_mode: getDisplayMode() })"));
   assert.ok(components.includes("window.gtag('config', GA_MEASUREMENT_ID)"));
+  assert.ok(components.includes("function setupBlogAdsense() {\n        if (!isBlogPage) return;\n        loadBlogAdsense();"));
+  assert.ok(!components.includes('window.scrollY < 600'));
   assert.ok(blogHtml.includes('components.js'));
   assert.ok(!blogHtml.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'));
   assert.ok(components.includes('function loadBlogAdsense()'));

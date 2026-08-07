@@ -10,6 +10,13 @@
     const isBlogPage = window.location.pathname.includes('/blog');
     const rootPath = (isArticlePageTop || isBlogPage) ? '../' : './';
 
+    function getDisplayMode() {
+        const standaloneMedia = typeof window.matchMedia === 'function'
+            && window.matchMedia('(display-mode: standalone)').matches;
+        const iosStandalone = window.navigator && window.navigator.standalone === true;
+        return standaloneMedia || iosStandalone ? 'standalone' : 'browser';
+    }
+
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (consentManagerPromise) return consentManagerPromise;
@@ -66,6 +73,7 @@
             window.dataLayer.push(arguments);
         };
         window.gtag('js', new Date());
+        window.gtag('set', { display_mode: getDisplayMode() });
         window.gtag('config', GA_MEASUREMENT_ID);
 
         if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
@@ -86,26 +94,26 @@
 
     function loadBlogAdsense() {
         if (blogAdsenseLoaded) return;
-        blogAdsenseLoaded = true;
-        window.removeEventListener('scroll', handleBlogAdsenseScroll);
-        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
+        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) {
+            blogAdsenseLoaded = true;
+            return;
+        }
 
         const script = document.createElement('script');
         script.async = true;
         script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
         script.crossOrigin = 'anonymous';
-        script.onerror = () => console.error('AdSense load failed');
+        script.onerror = () => {
+            blogAdsenseLoaded = false;
+            console.error('AdSense load failed');
+        };
         document.head.appendChild(script);
-    }
-
-    function handleBlogAdsenseScroll() {
-        if (window.scrollY < 600) return;
-        void runAfterConsent(loadBlogAdsense);
+        blogAdsenseLoaded = true;
     }
 
     function setupBlogAdsense() {
-        if (!window.location.pathname.includes('/blog')) return;
-        window.addEventListener('scroll', handleBlogAdsenseScroll, { passive: true });
+        if (!isBlogPage) return;
+        loadBlogAdsense();
     }
 
     // ===========================================

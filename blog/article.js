@@ -297,17 +297,25 @@
         });
     }
 
-    // 記事本文を読み始める前に自動広告を挿入せず、十分なスクロール後に一度だけ読み込む
+    // AdSense本体はページ描画を止めないasyncで早期に準備し、短時間閲覧の広告機会を失わない。
+    // 初回通信に失敗した場合だけ、既存のスクロール導線を再試行の保険として残す。
     function loadArticleAdsense() {
         if (articleAdsenseLoaded) return;
-        articleAdsenseLoaded = true;
+        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) {
+            articleAdsenseLoaded = true;
+            return;
+        }
 
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455';
         script.crossOrigin = 'anonymous';
-        script.onerror = () => console.error('AdSense load failed');
+        script.onerror = () => {
+            articleAdsenseLoaded = false;
+            console.error('AdSense load failed');
+        };
         document.head.appendChild(script);
+        articleAdsenseLoaded = true;
     }
 
     function handleArticleAdsenseScroll() {
@@ -319,6 +327,7 @@
     }
 
     function setupArticleAdsense() {
+        loadArticleAdsense();
         window.addEventListener('scroll', handleArticleAdsenseScroll, { passive: true });
         document.addEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
     }
