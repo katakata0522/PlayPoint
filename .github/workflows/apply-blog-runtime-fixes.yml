@@ -27,13 +27,48 @@ jobs:
       - name: Apply runtime and accessibility fixes
         run: node scripts/apply-blog-runtime-fixes.cjs
 
+      - name: Synchronize generated HTML and asset hashes
+        run: node scripts/build-html.js
+
       - name: Validate JavaScript syntax
         run: |
           node --check blog/script.js
           node --check .github/scripts/browser-smoke.cjs
 
-      - name: Prepare deploy assets and run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+      - name: Commit prepared repair locally
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mapfile -d '' changed < <(git diff HEAD --name-only -z)
+          test "${#changed[@]}" -gt 0
+
+          staged=0
+          for file in "${changed[@]}"; do
+            case "$file" in
+              scripts/apply-blog-runtime-fixes.cjs|.github/workflows/apply-blog-runtime-fixes.yml)
+                continue
+                ;;
+              blog/script.js|blog/index.html|.github/scripts/browser-smoke.cjs|tests/blog-runtime-regressions.test.cjs|js/third-party.js|sw.js)
+                ;;
+              *.html|*.xml|feed.json|*/feed.json|manifest.webmanifest)
+                ;;
+              *)
+                echo "想定外の変更ファイル: $file"
+                exit 1
+                ;;
+            esac
+            git add -- "$file"
+            staged=1
+          done
+
+          test "$staged" -eq 1
+          git diff --cached --check
+          git commit -m "fix: repair blog runtime state and add browser coverage"
+
+      - name: Run complete repository preflight on committed output
+        run: node .github/scripts/preflight.cjs
 
       - name: Install browser driver
         run: |
@@ -45,38 +80,15 @@ jobs:
       - name: Verify calculator and blog in Chromium
         run: node .github/scripts/browser-smoke.cjs
 
-      - name: Commit verified repair
+      - name: Remove repair automation and publish verified commits
         env:
           TARGET_BRANCH: fix/blog-runtime-regressions
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git status --short
+          git diff --exit-code
 
           git rm -- scripts/apply-blog-runtime-fixes.cjs .github/workflows/apply-blog-runtime-fixes.yml
-
-          mapfile -d '' changed < <(git diff HEAD --name-only -z)
-          test "${#changed[@]}" -gt 0
-
-          for file in "${changed[@]}"; do
-            case "$file" in
-              blog/script.js|blog/index.html|.github/scripts/browser-smoke.cjs|tests/blog-runtime-regressions.test.cjs|sw.js)
-                ;;
-              scripts/apply-blog-runtime-fixes.cjs|.github/workflows/apply-blog-runtime-fixes.yml)
-                ;;
-              *.html|*.xml|feed.json|manifest.webmanifest)
-                ;;
-              *)
-                echo "想定外の変更ファイル: $file"
-                exit 1
-                ;;
-            esac
-          done
-
-          for file in "${changed[@]}"; do
-            git add -- "$file"
-          done
-
           git diff --cached --check
-          git commit -m "fix: repair blog runtime state and add browser coverage"
+          git commit -m "chore: remove temporary blog repair automation"
           git push origin "HEAD:${TARGET_BRANCH}"
