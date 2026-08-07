@@ -90,15 +90,20 @@ test('トップページは大きな画像プレビューとOGP画像サイズ�
   }
 });
 
-test('初期操作に必要なアプリモジュールは内容ハッシュ付きで先読みする', () => {
-  const expectedModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
+test('初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする', () => {
+  const dependencyModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
   for (const [file, prefix] of [['index.html', ''], ['en/index.html', '../'], ['ko/index.html', '../'], ['tw/index.html', '../']]) {
     const html = read(file);
-    for (const moduleName of expectedModules) {
+    for (const moduleName of dependencyModules) {
       assert.match(
         html,
-        new RegExp(`<link rel="modulepreload" href="${prefix}js/${moduleName}\\?v=[a-f0-9]{10}">`),
+        new RegExp(`<link rel="modulepreload" href="${prefix}js/${moduleName}">`),
         `${file}: ${moduleName}`
+      );
+      assert.doesNotMatch(
+        html,
+        new RegExp(`<link rel="modulepreload" href="${prefix}js/${moduleName}\\?v=`),
+        `${file}: ${moduleName}をimportと異なるURLで先読みしています`
       );
     }
     const preloadMain = html.match(new RegExp(`<link rel="modulepreload" href="${prefix}js/main\\.js\\?v=([a-f0-9]{10})">`));
