@@ -39,21 +39,22 @@ jobs:
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Preserve failed preflight log
+      - name: Preserve failed preflight summary
         if: steps.preflight.outputs.status != '0'
         shell: bash
         run: |
+          tail -n 220 preflight-failure.log > preflight-summary.log
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add preflight-failure.log
-          git commit -m "一時診断: 事前検証の失敗ログ"
+          git add preflight-summary.log
+          git commit -m "一時診断: 事前検証の末尾ログ"
           git push origin HEAD:refactor/growth-flow-foundation
           exit 1
 
       - name: Commit verified changes
         if: steps.preflight.outputs.status == '0'
         run: |
-          rm -f preflight-failure.log
+          rm -f preflight-failure.log preflight-summary.log
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
