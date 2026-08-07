@@ -40,7 +40,8 @@ function layoutShiftItems(report) {
     for (const item of auditItems) {
       const candidate = item.node || item.source || item;
       const description = nodeDescription(candidate);
-      const score = Number(item.score ?? item.value ?? item.cumulativeLayoutShiftScore ?? 0);
+      const rawScore = item.score ?? item.value ?? item.cumulativeLayoutShiftScore;
+      const score = rawScore === undefined ? null : Number(rawScore);
       if (!description && !Number.isFinite(score)) continue;
       items.push({
         auditId,
@@ -139,21 +140,29 @@ function toMarkdown(summaries) {
   return `${lines.join('\n')}\n`;
 }
 
-const { reportPaths, outputDir } = parseArgs(process.argv.slice(2));
-if (reportPaths.length === 0) {
-  console.error('診断するLighthouse JSONを指定してください。');
-  process.exit(1);
+function main(argv = process.argv.slice(2)) {
+  const { reportPaths, outputDir } = parseArgs(argv);
+  if (reportPaths.length === 0) {
+    console.error('診断するLighthouse JSONを指定してください。');
+    return 1;
+  }
+
+  fs.mkdirSync(outputDir, { recursive: true });
+  const summaries = reportPaths.map(summarize);
+  fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.json'), `${JSON.stringify(summaries, null, 2)}\n`);
+  fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.md'), toMarkdown(summaries));
+  console.log(`Lighthouse診断結果を保存しました: ${outputDir}`);
+  return 0;
 }
 
-fs.mkdirSync(outputDir, { recursive: true });
-const summaries = reportPaths.map(summarize);
-fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.json'), `${JSON.stringify(summaries, null, 2)}\n`);
-fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.md'), toMarkdown(summaries));
-console.log(`Lighthouse診断結果を保存しました: ${outputDir}`);
+if (require.main === module) {
+  process.exitCode = main();
+}
 
 module.exports = {
   layoutShiftItems,
   longTaskItems,
+  main,
   parseArgs,
   summarize,
   toMarkdown,
