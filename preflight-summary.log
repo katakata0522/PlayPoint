@@ -1,27 +1,63 @@
   type: 'test'
   ...
+# Subtest: 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+ok 202 - 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
+  ---
+  duration_ms: 1.795889
+  type: 'test'
+  ...
+# Subtest: 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+ok 203 - 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
+  ---
+  duration_ms: 1.083218
+  type: 'test'
+  ...
+# Subtest: CSPは計測と広告品質確認で実際に使う接続先を許可する
+ok 204 - CSPは計測と広告品質確認で実際に使う接続先を許可する
+  ---
+  duration_ms: 0.741786
+  type: 'test'
+  ...
+# Subtest: 日記の景品選択には全言語で読み上げ可能な名前がある
+ok 205 - 日記の景品選択には全言語で読み上げ可能な名前がある
+  ---
+  duration_ms: 1.847226
+  type: 'test'
+  ...
+# Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
+ok 206 - トップページは大きな画像プレビューとOGP画像サイズを明示する
+  ---
+  duration_ms: 0.643872
+  type: 'test'
+  ...
+# Subtest: 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+ok 207 - 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
+  ---
+  duration_ms: 0.895876
+  type: 'test'
+  ...
 # Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
 ok 208 - 日記の重複通知を表示せず、カレンダー登録は残す
   ---
-  duration_ms: 1.467245
+  duration_ms: 1.180872
   type: 'test'
   ...
 # Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
 ok 209 - 地域差案内は日本語トップでも英語の注意導線として表示する
   ---
-  duration_ms: 1.531646
+  duration_ms: 1.368344
   type: 'test'
   ...
 # Subtest: 計算方法と検証方針を全言語で本文から確認できる
 ok 210 - 計算方法と検証方針を全言語で本文から確認できる
   ---
-  duration_ms: 1.428932
+  duration_ms: 1.143882
   type: 'test'
   ...
 # Subtest: 広告と計測は初期表示後に低優先度で読み込む
 ok 211 - 広告と計測は初期表示後に低優先度で読み込む
   ---
-  duration_ms: 0.397261
+  duration_ms: 0.346031
   type: 'test'
   ...
 # ok - 著者ページのOGP画像は実在する
@@ -48,7 +84,7 @@ ok 211 - 広告と計測は初期表示後に低優先度で読み込む
 # Subtest: tests/playpoint-nine-fixes.test.cjs
 ok 39 - tests/playpoint-nine-fixes.test.cjs
   ---
-  duration_ms: 71.983946
+  duration_ms: 63.934056
   type: 'test'
   ...
 # ok - ステータス選択の初期値はブロンズになる
@@ -137,14 +173,18 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 # ok - 最新情報リンクはヘッダーから外しフッターで維持する
 # ok - 計算条件を共有URLへ保存し再訪時に復元できる
 # ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
-# not ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
+# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
+# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
+# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
+# not ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
 # /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:141
 #     throw error;
 #     ^
-# AssertionError [ERR_ASSERTION]: lp_to_calculator_clicked is missing from analytics allowlist
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1637:12
+# AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+#   assert.ok(articleScript.includes('setupArticleNextStepCta'))
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1705:10
 #     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:137:5)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1614:1)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1701:1)
 #     at Module._compile (node:internal/modules/cjs/loader:1781:14)
 #     at Object..js (node:internal/modules/cjs/loader:1913:10)
 #     at Module.load (node:internal/modules/cjs/loader:1505:32)
@@ -152,18 +192,18 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 #     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
 #     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
 #     at node:internal/main/run_main_module:36:49 {
-#   generatedMessage: false,
+#   generatedMessage: true,
 #   code: 'ERR_ASSERTION',
 #   actual: false,
 #   expected: true,
 #   operator: '==',
 #   diff: 'simple'
 # }
-# Node.js v22.23.1
+# Node.js v22.23.2
 # Subtest: tests/playpoint-regression.test.cjs
 not ok 40 - tests/playpoint-regression.test.cjs
   ---
-  duration_ms: 230.859886
+  duration_ms: 216.407215
   type: 'test'
   location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
   failureType: 'testCodeFailure'
@@ -172,155 +212,155 @@ not ok 40 - tests/playpoint-regression.test.cjs
   error: 'test failed'
   code: 'ERR_TEST_FAILURE'
   ...
-# [repository-integrity] tracked=406 deployable=298 resolved=285
+# [repository-integrity] tracked=407 deployable=298 resolved=285
 # Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
 ok 214 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
   ---
-  duration_ms: 3.427712
+  duration_ms: 3.051481
   type: 'test'
   ...
 # Subtest: 移設・統合・共通化済みの実体を残さない
 ok 215 - 移設・統合・共通化済みの実体を残さない
   ---
-  duration_ms: 0.27492
+  duration_ms: 0.213071
   type: 'test'
   ...
 # Subtest: 公開ファイルの内部参照とアンカーは実在する
 ok 216 - 公開ファイルの内部参照とアンカーは実在する
   ---
-  duration_ms: 0.205679
+  duration_ms: 0.234531
   type: 'test'
   ...
 # Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
 ok 217 - 全公開HTMLのcanonicalは自己一致し重複しない
   ---
-  duration_ms: 2.905434
+  duration_ms: 2.777886
   type: 'test'
   ...
 # Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
 ok 218 - 公開コードは旧パス・開発URL・旧ホストを参照しない
   ---
-  duration_ms: 17.07461
+  duration_ms: 18.028121
   type: 'test'
   ...
 # Subtest: 公開画像の実形式とHTTP配信形式を一致させる
 ok 219 - 公開画像の実形式とHTTP配信形式を一致させる
   ---
-  duration_ms: 13.112487
+  duration_ms: 18.134628
   type: 'test'
   ...
 # Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
 ok 220 - 未参照アセットと内容が完全重複する公開ファイルを残さない
   ---
-  duration_ms: 33.029892
+  duration_ms: 39.257969
   type: 'test'
   ...
 # Subtest: READMEとPWAメタデータは現行機能を説明する
 ok 221 - READMEとPWAメタデータは現行機能を説明する
   ---
-  duration_ms: 0.445442
+  duration_ms: 0.311125
   type: 'test'
   ...
 # Subtest: 送信するXMLサイトマップ間でURLを重複させない
 ok 222 - 送信するXMLサイトマップ間でURLを重複させない
   ---
-  duration_ms: 4.217656
+  duration_ms: 4.527097
   type: 'test'
   ...
 # Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
 ok 223 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
   ---
-  duration_ms: 0.749768
+  duration_ms: 0.690239
   type: 'test'
   ...
 # Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
 ok 224 - 専用XMLサイトマップへ移したURLをルートへ重ねない
   ---
-  duration_ms: 1.20062
+  duration_ms: 1.166284
   type: 'test'
   ...
 # Subtest: Play Pointsブログとフィードに家計記事を混在させない
 ok 225 - Play Pointsブログとフィードに家計記事を混在させない
   ---
-  duration_ms: 2.092838
+  duration_ms: 1.991657
   type: 'test'
   ...
 # Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
 ok 226 - 人向けサイトマップはPlay Pointsの案内に集中する
   ---
-  duration_ms: 0.494024
+  duration_ms: 0.487788
   type: 'test'
   ...
 # Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
 ok 227 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
   ---
-  duration_ms: 0.390508
+  duration_ms: 0.38818
   type: 'test'
   ...
 # Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
 ok 228 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
   ---
-  duration_ms: 0.410105
+  duration_ms: 0.382229
   type: 'test'
   ...
 # Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
 ok 229 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
   ---
-  duration_ms: 5.139208
+  duration_ms: 4.905529
   type: 'test'
   ...
 # Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
 ok 230 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
   ---
-  duration_ms: 2.877481
+  duration_ms: 2.346444
   type: 'test'
   ...
 # Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
 ok 231 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
   ---
-  duration_ms: 0.399726
+  duration_ms: 0.305735
   type: 'test'
   ...
 # Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
 ok 232 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
   ---
-  duration_ms: 0.342007
+  duration_ms: 0.217409
   type: 'test'
   ...
 # Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
 ok 233 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
   ---
-  duration_ms: 0.76098
+  duration_ms: 0.4625
   type: 'test'
   ...
 # Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
 ok 234 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
   ---
-  duration_ms: 0.329353
+  duration_ms: 0.210526
   type: 'test'
   ...
 # Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
 ok 235 - 静的生成辞書は多言語フッターの全リンク文言を持つ
   ---
-  duration_ms: 1.480861
+  duration_ms: 1.894203
   type: 'test'
   ...
 # Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
 ok 236 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
   ---
-  duration_ms: 8.399765
+  duration_ms: 8.667096
   type: 'test'
   ...
 # Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
 ok 237 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
   ---
-  duration_ms: 4.356529
+  duration_ms: 3.905769
   type: 'test'
   ...
 # Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
 ok 238 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
   ---
-  duration_ms: 2.502673
+  duration_ms: 2.233011
   type: 'test'
   ...
 1..238
@@ -331,7 +371,7 @@ ok 238 - 多言語トップの利用者向け静的文言へ別言語の文字�
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1419.275638
+# duration_ms 1360.409288
 
 === 公開記事の検索意図・内部リンク正規化 ===
 記事検索意図・内部リンク監査: 140件
