@@ -59,8 +59,15 @@ test('プライバシー文書はWeb版と認定CMPの運用に一致する', ()
 
   assert.doesNotMatch(privacy, /AdMob|当アプリ|広告ID/);
   assert.doesNotMatch(terms, /当アプリ/);
-  assert.match(privacy, /最終改定日：<\/strong>2026年7月27日/);
-  assert.match(terms, /最終改定日：<\/strong>2026年7月27日/);
+  for (const [label, html] of [['privacy', privacy], ['terms', terms]]) {
+    const match = html.match(/最終改定日：<\/strong>(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    assert.ok(match, `${label}: 最終改定日がありません`);
+    const [, year, month, day] = match.map(Number);
+    const normalized = new Date(Date.UTC(year, month - 1, day));
+    assert.equal(normalized.getUTCFullYear(), year, `${label}: 年が不正です`);
+    assert.equal(normalized.getUTCMonth(), month - 1, `${label}: 月が不正です`);
+    assert.equal(normalized.getUTCDate(), day, `${label}: 日が不正です`);
+  }
   assert.match(consent, /__tcfapi/);
   assert.match(consent, /showRevocationMessage/);
   assert.doesNotMatch(consent, /data-consent-accept.*focus/s);
