@@ -112,20 +112,18 @@ jobs:
 
           nine_path = Path('tests/playpoint-nine-fixes.test.cjs')
           nine = nine_path.read_text(encoding='utf-8')
-          old = dedent("""\
-            assert.ok(main.includes('ensureConsentManager'));
-            assert.ok(main.includes('scheduleThirdPartyLoad'));
-            assert.ok(main.includes('void loadAdsense()'));
-            assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
-          """)
-          new = dedent("""\
-            assert.ok(main.includes('ensureConsentManager'));
-            assert.ok(main.includes('void ensureConsentManager();'));
-            assert.ok(main.includes('void loadAdsense();'));
-            assert.ok(main.includes('scheduleAnalyticsLoad();'));
-            assert.ok(!main.includes('ADSENSE_DELAY_MS'));
-            assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));
-          """)
+          old = """  assert.ok(main.includes('ensureConsentManager'));
+          assert.ok(main.includes('scheduleThirdPartyLoad'));
+          assert.ok(main.includes('void loadAdsense()'));
+          assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
+          """
+          new = """  assert.ok(main.includes('ensureConsentManager'));
+          assert.ok(main.includes('void ensureConsentManager();'));
+          assert.ok(main.includes('void loadAdsense();'));
+          assert.ok(main.includes('scheduleAnalyticsLoad();'));
+          assert.ok(!main.includes('ADSENSE_DELAY_MS'));
+          assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));
+          """
           if old in nine:
               nine = nine.replace(old, new)
           elif new not in nine:
