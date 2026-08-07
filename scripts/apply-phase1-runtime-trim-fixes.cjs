@@ -77,6 +77,17 @@ function patchRuntimeAssetRegression() {
   write('tests/playpoint-regression.test.cjs', source);
 }
 
+function patchServiceWorkerSyncRegression() {
+  let source = read('tests/playpoint-regression.test.cjs');
+  source = replaceOnce(
+    source,
+    `  assert.strictEqual(\n    ROOT_SERVICE_WORKER_ASSETS.filter(({ assetPath }) => assetPath !== './js/app-modules').length,\n    11\n  );\n  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(\n    ({ versionKey, assetPath }) => versionKey === 'appModuleRevision' && assetPath === './js/app-modules'\n  ));\n  for (const expected of [\n    './style.css?v=css-v',\n    './js/consent.js?v=consent-v',\n    './js/third-party.js?v=third-v',\n    './js/intent-tracking.js?v=intent-v',\n    './blog/style.css?v=blog-css-v',\n    './blog/script.js?v=blog-script-v',\n    './blog/components.js?v=blog-components-v',\n    './blog/article.js?v=article-script-v',\n    './articles/article-shared.css?v=article-v',\n    './js/main-calculator-ui.js?v=main-calculator-ui-v',\n    './js/main.js?v=main-v'\n  ]) {\n    assert.ok(updated.includes(expected), \`${'${expected}'} was not synchronized\`);\n  }`,
+    `  assert.deepStrictEqual(\n    ROOT_SERVICE_WORKER_ASSETS,\n    [\n      { versionKey: 'cssVersion', assetPath: './style.css' },\n      { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },\n      { versionKey: 'mainVersion', assetPath: './js/main.js' },\n      { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }\n    ]\n  );\n  for (const expected of [\n    './style.css?v=css-v',\n    './js/main-calculator-ui.js?v=main-calculator-ui-v',\n    './js/main.js?v=main-v'\n  ]) {\n    assert.ok(updated.includes(expected), \`${'${expected}'} was not synchronized\`);\n  }\n  for (const optional of [\n    './js/consent.js',\n    './js/third-party.js',\n    './js/intent-tracking.js',\n    './blog/style.css',\n    './blog/script.js',\n    './blog/components.js',\n    './blog/article.js',\n    './articles/article-shared.css'\n  ]) {\n    assert.ok(updated.includes(\`${'${optional}'}?v=old\`), \`${'${optional}'} should remain outside Service Worker shell versioning\`);\n  }`,
+    'Service Worker shell-only synchronization regression'
+  );
+  write('tests/playpoint-regression.test.cjs', source);
+}
+
 function strengthenLazyDiaryRegression() {
   let source = read('tests/mobile-performance-phase1.test.cjs');
   source = replaceOnce(
@@ -102,6 +113,7 @@ function strengthenBrowserCacheCheck() {
 patchServiceWorkerVersioning();
 patchPreloadRegression();
 patchRuntimeAssetRegression();
+patchServiceWorkerSyncRegression();
 strengthenLazyDiaryRegression();
 strengthenBrowserCacheCheck();
-console.log('Aligned lazy diary regressions, runtime asset versioning, and Service Worker cache revision inputs.');
+console.log('Aligned lazy diary regressions, runtime asset versioning, and Service Worker shell cache responsibility.');
