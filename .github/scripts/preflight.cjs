@@ -33,6 +33,13 @@ function replaceOnce(source, before, after, label) {
   return source.slice(0, first) + after + source.slice(first + before.length);
 }
 
+function replaceRegexOnce(source, pattern, replacement, label) {
+  const matches = [...source.matchAll(new RegExp(pattern.source, pattern.flags.includes('g') ? pattern.flags : `${pattern.flags}g`))];
+  if (matches.length === 0) throw new Error(`Target not found: ${label}`);
+  if (matches.length > 1) throw new Error(`Target is not unique: ${label}`);
+  return source.replace(pattern, replacement);
+}
+
 try {
   run('git', ['fetch', 'origin', 'main', 'fix/article-site-usability']);
   run('git', ['reset', '--hard', 'origin/fix/article-site-usability']);
@@ -40,19 +47,26 @@ try {
   const scriptPath = path.join(root, 'blog', 'script.js');
   let script = fs.readFileSync(scriptPath, 'utf8');
 
-  script = replaceOnce(
-    script,
-    "        dom.grid.innerHTML = '';\n        if (dom.resultStatus) { var label = currentCategory === 'all' ? 'すべて' : currentCategory; dom.resultStatus.textContent = (currentSearch ? '「' + currentSearch + '」の検索結果：' : label + 'の記事：') + filtered.length + '件'; }\n        for (let i = 0; i < 3; i++) {",
-    "        dom.grid.innerHTML = '';\n        for (let i = 0; i < 3; i++) {",
-    'remove premature result count from skeleton loading'
-  );
+  const skeletonStart = script.indexOf('    function showSkeletonLoading() {');
+  const skeletonEnd = script.indexOf('\n    // Intersection Observer', skeletonStart);
+  if (skeletonStart < 0 || skeletonEnd < 0) throw new Error('Could not isolate showSkeletonLoading.');
+  let skeletonBlock = script.slice(skeletonStart, skeletonEnd);
+  const prematurePattern = /\r?\n\s*if \(dom\.resultStatus\) \{[^\r\n]*filtered\.length[^\r\n]*\}\r?\n/;
+  if (!prematurePattern.test(skeletonBlock)) throw new Error('Target not found: premature result count in skeleton loading');
+  skeletonBlock = skeletonBlock.replace(prematurePattern, '\n');
+  script = script.slice(0, skeletonStart) + skeletonBlock + script.slice(skeletonEnd);
 
-  script = replaceOnce(
-    script,
-    "        if (dom.loading) dom.loading.classList.add('hidden');\n        dom.grid.innerHTML = '';\n\n        if (pageItems.length === 0) {",
-    "        if (dom.loading) dom.loading.classList.add('hidden');\n        dom.grid.innerHTML = '';\n        if (dom.resultStatus) {\n            const label = currentCategory === 'all' ? 'すべて' : currentCategory;\n            dom.resultStatus.textContent = (currentSearch ? '「' + currentSearch + '」の検索結果：' : label + 'の記事：') + filtered.length + '件';\n        }\n\n        if (pageItems.length === 0) {",
-    'move result count into render after filtering'
+  const renderStart = script.indexOf('    function render() {');
+  const renderEnd = script.indexOf('\n    function renderPagination', renderStart);
+  if (renderStart < 0 || renderEnd < 0) throw new Error('Could not isolate render.');
+  let renderBlock = script.slice(renderStart, renderEnd);
+  renderBlock = replaceRegexOnce(
+    renderBlock,
+    /(\r?\n\s*dom\.grid\.innerHTML = '';\r?\n)(\s*\r?\n\s*if \(pageItems\.length === 0\) \{)/,
+    `$1        if (dom.resultStatus) {\n            const label = currentCategory === 'all' ? 'すべて' : currentCategory;\n            dom.resultStatus.textContent = (currentSearch ? '「' + currentSearch + '」の検索結果：' : label + 'の記事：') + filtered.length + '件';\n        }\n$2`,
+    'render result count target'
   );
+  script = script.slice(0, renderStart) + renderBlock + script.slice(renderEnd);
 
   script = replaceOnce(
     script,
@@ -89,11 +103,21 @@ try {
   );
   fs.writeFileSync(articlePath, article, 'utf8');
 
+  const sharedCssPath = path.join(root, 'articles', 'article-shared.css');
+  let sharedCss = fs.readFileSync(sharedCssPath, 'utf8');
+  sharedCss = replaceOnce(
+    sharedCss,
+    'background:#fff;box-shadow:1px 0 #dbe2ea',
+    'background:inherit;box-shadow:1px 0 #dbe2ea',
+    'preserve sticky table cell theme background'
+  );
+  fs.writeFileSync(sharedCssPath, sharedCss, 'utf8');
+
   const testPath = path.join(root, 'tests', 'blog-index-runtime-regression.test.cjs');
-  fs.writeFileSync(testPath, `'use strict';\n\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\nconst assert = require('node:assert/strict');\n\nconst root = path.resolve(__dirname, '..');\nconst script = fs.readFileSync(path.join(root, 'blog', 'script.js'), 'utf8');\nconst article = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');\nconst index = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');\n\ntest('skeleton loading does not read filtered before article data exists', () => {\n  const skeleton = script.match(/function showSkeletonLoading\\(\\) \\{[\\s\\S]*?\\n    \\}\\n\\n    \\/\\/ Intersection Observer/);\n  assert.ok(skeleton, 'showSkeletonLoading function should exist');\n  assert.doesNotMatch(skeleton[0], /\\bfiltered\\b/);\n});\n\ntest('result status is updated inside render after filtering', () => {\n  const render = script.match(/function render\\(\\) \\{[\\s\\S]*?\\n    function renderPagination/);\n  assert.ok(render, 'render function should exist');\n  assert.match(render[0], /dom\\.resultStatus[\\s\\S]*filtered\\.length/);\n});\n\ntest('sidebar aria state is synchronized with its visual state', () => {\n  assert.match(index, /id="sidebar-toggle"[^>]*aria-controls="sidebar"[^>]*aria-expanded="false"/);\n  assert.match(script, /setAttribute\\('aria-hidden', 'false'\\)/);\n  assert.match(script, /setAttribute\\('aria-hidden', 'true'\\)/);\n  assert.match(script, /setAttribute\\('aria-expanded', 'true'\\)/);\n  assert.match(script, /setAttribute\\('aria-expanded', 'false'\\)/);\n});\n\ntest('Japanese date normalization does not overwrite localized article metadata', () => {\n  assert.match(article, /lang\\.startsWith\\('ja'\\) && meta && pub/);\n});\n`, 'utf8');
+  fs.writeFileSync(testPath, `'use strict';\n\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\nconst assert = require('node:assert/strict');\n\nconst root = path.resolve(__dirname, '..');\nconst script = fs.readFileSync(path.join(root, 'blog', 'script.js'), 'utf8');\nconst article = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');\nconst index = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');\nconst sharedCss = fs.readFileSync(path.join(root, 'articles', 'article-shared.css'), 'utf8');\n\ntest('skeleton loading does not read filtered before article data exists', () => {\n  const skeleton = script.match(/function showSkeletonLoading\\(\\) \\{[\\s\\S]*?\\n    \\}\\n\\n    \\/\\/ Intersection Observer/);\n  assert.ok(skeleton, 'showSkeletonLoading function should exist');\n  assert.doesNotMatch(skeleton[0], /\\bfiltered\\b/);\n});\n\ntest('result status is updated inside render after filtering', () => {\n  const render = script.match(/function render\\(\\) \\{[\\s\\S]*?\\n    function renderPagination/);\n  assert.ok(render, 'render function should exist');\n  assert.match(render[0], /dom\\.resultStatus[\\s\\S]*filtered\\.length/);\n});\n\ntest('sidebar aria state is synchronized with its visual state', () => {\n  assert.match(index, /id="sidebar-toggle"[^>]*aria-controls="sidebar"[^>]*aria-expanded="false"/);\n  assert.match(script, /setAttribute\\('aria-hidden', 'false'\\)/);\n  assert.match(script, /setAttribute\\('aria-hidden', 'true'\\)/);\n  assert.match(script, /setAttribute\\('aria-expanded', 'true'\\)/);\n  assert.match(script, /setAttribute\\('aria-expanded', 'false'\\)/);\n});\n\ntest('Japanese date normalization does not overwrite localized article metadata', () => {\n  assert.match(article, /lang\\.startsWith\\('ja'\\) && meta && pub/);\n});\n\ntest('sticky mobile table cells inherit the active article theme', () => {\n  assert.match(sharedCss, /background:inherit;box-shadow:1px 0 #dbe2ea/);\n  assert.doesNotMatch(sharedCss, /background:#fff;box-shadow:1px 0 #dbe2ea/);\n});\n`, 'utf8');
 
   const { syncDynamicArticleStylesheetVersion, syncPublicAssetVersions } = require(path.join(root, 'scripts', 'article-asset-versioning.cjs'));
-  const { collectAssetVersions, syncRootServiceWorker } = require(path.join(root, 'scripts', 'asset-sync.cjs'));
+  const { collectAssetVersions, syncRootServiceWorker } = require(path.join(root, 'scripts', 'asset-sync.cjjs'));
   syncDynamicArticleStylesheetVersion(root);
   syncPublicAssetVersions(root);
   const serviceWorkerPath = path.join(root, 'sw.js');
