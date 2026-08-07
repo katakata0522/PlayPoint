@@ -27,27 +27,13 @@ jobs:
       - name: Apply runtime and accessibility fixes
         run: node scripts/apply-blog-runtime-fixes.cjs
 
-      - name: Synchronize generated HTML and asset hashes
-        run: node scripts/build-html.js
-
       - name: Validate JavaScript syntax
         run: |
           node --check blog/script.js
           node --check .github/scripts/browser-smoke.cjs
 
-      - name: Run complete repository preflight
-        run: |
-          set -o pipefail
-          node .github/scripts/preflight.cjs 2>&1 | tee preflight.log
-
-      - name: Upload preflight diagnostics
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: blog-repair-preflight-${{ github.run_id }}
-          path: preflight.log
-          if-no-files-found: error
-          retention-days: 7
+      - name: Prepare deploy assets and run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
 
       - name: Install browser driver
         run: |
@@ -68,7 +54,6 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git rm -- scripts/apply-blog-runtime-fixes.cjs .github/workflows/apply-blog-runtime-fixes.yml
-          rm -f preflight.log
 
           mapfile -d '' changed < <(git diff HEAD --name-only -z)
           test "${#changed[@]}" -gt 0
