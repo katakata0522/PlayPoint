@@ -1,0 +1,206 @@
+name: Finalize performance phase 1 with deploy output
+
+on:
+  push:
+    branches:
+      - perf/phase1-mobile-stability-20260807
+    paths:
+      - .github/workflows/apply-performance-phase1-final3.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-performance-phase1-deploy-output
+  cancel-in-progress: false
+
+jobs:
+  finalize-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout performance branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: perf/phase1-mobile-stability-20260807
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Apply measured fixes and production-like audit setup
+        run: |
+          node scripts/apply-performance-phase1-followup.cjs
+          node scripts/apply-performance-audit-output.cjs
+          node - <<'NODE'
+          const fs = require('node:fs');
+
+          const phaseFile = 'tests/mobile-performance-phase1.test.cjs';
+          let phaseContent = fs.readFileSync(phaseFile, 'utf8');
+          const phaseBefore = "    assert.equal((html.match(/article-calculator-prompt/g) || []).length, 2, 'asideと内部クラスに一度ずつ現れる');";
+          const phaseAfter = "    assert.equal((html.match(/<aside class=\\\"article-calculator-prompt cta-box\\\"/g) || []).length, 1);";
+          if (!phaseContent.includes(phaseBefore)) throw new Error('static prompt assertion target was not found');
+          phaseContent = phaseContent.replace(phaseBefore, phaseAfter);
+          if (!phaseContent.includes('Prepare production-like local assets')) {
+            const workflowAssertion = "  assert.match(workflow, /http:\\\/\\\\/127\\\\.0\\\\.0\\\\.1:4173/);";
+            const extraAssertions = [
+              workflowAssertion,
+              "  assert.match(workflow, /Prepare production-like local assets/);",
+              "  assert.match(workflow, /node \\.github\\/scripts\\/minify\\.cjs/);"
+            ].join('\n');
+            if (!phaseContent.includes(workflowAssertion)) throw new Error('workflow local-server assertion target was not found');
+            phaseContent = phaseContent.replace(workflowAssertion, extraAssertions);
+          }
+          fs.writeFileSync(phaseFile, phaseContent);
+
+          const auditFile = 'tests/playpoint-audit-fixes.test.cjs';
+          let auditContent = fs.readFileSync(auditFile, 'utf8');
+          const auditPattern = /test\('初期操作に必要なアプリモジュールは依存解析前から取得を開始する',[\s\S]*?\n\}\);\n\ntest\('日記の重複通知を表示せず、カレンダー登録は残す'/;
+          if (!auditPattern.test(auditContent)) throw new Error('modulepreload regression test target was not found');
+          const replacement = `test('初期操作に必要なアプリモジュールは内容ハッシュ付きで先読みする', () => {
+            const expectedModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
+            for (const [file, prefix] of [['index.html', ''], ['en/index.html', '../'], ['ko/index.html', '../'], ['tw/index.html', '../']]) {
+              const html = read(file);
+              for (const moduleName of expectedModules) {
+                assert.match(html, new RegExp(\`<link rel="modulepreload" href="\${prefix}js/\${moduleName}\\\\?v=[a-f0-9]{10}">\`), \`\${file}: \${moduleName}\`);
+              }
+              const preloadMain = html.match(new RegExp(\`<link rel="modulepreload" href="\${prefix}js/main\\\\.js\\\\?v=([a-f0-9]{10})">\`));
+              const executedMain = html.match(new RegExp(\`<script type="module" src="\${prefix}js/main\\\\.js\\\\?v=([a-f0-9]{10})"></script>\`));
+              assert.ok(preloadMain && executedMain, \`\${file}: main.jsの先読みまたは実行タグがありません\`);
+              assert.equal(preloadMain[1], executedMain[1], \`\${file}: main.jsを異なるURLで二重取得します\`);
+            }
+          });
+
+          test('日記の重複通知を表示せず、カレンダー登録は残す'`;
+          fs.writeFileSync(auditFile, auditContent.replace(auditPattern, replacement));
+          NODE
+
+      - name: Verify patched sources
+        run: |
+          node --check blog/script.js
+          node --check .github/scripts/browser-smoke.cjs
+          node --check .github/scripts/lighthouse-diagnostics.cjs
+          node --check scripts/article-asset-versioning.cjs
+          node --check scripts/article-static-usability.cjs
+          node --check tests/playpoint-audit-fixes.test.cjs
+
+      - name: Synchronize generated output
+        run: node scripts/build-html.js
+
+      - name: Remove temporary automation
+        run: |
+          git rm scripts/apply-performance-phase1-followup.cjs
+          git rm scripts/apply-performance-audit-output.cjs
+          git rm .github/workflows/apply-performance-phase1-followup.yml
+          git rm .github/workflows/apply-performance-phase1-final.yml
+          git rm .github/workflows/apply-performance-phase1-final2.yml
+          git rm .github/workflows/apply-performance-phase1-final3.yml
+
+      - name: Verify generated diff scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          unexpected=0
+          while IFS= read -r file; do
+            case "$file" in
+              .github/scripts/browser-smoke.cjs|.github/workflows/mobile-performance.yml|tests/mobile-performance-phase1.test.cjs|tests/playpoint-audit-fixes.test.cjs|style.css|blog/script.js|blog/index-compact.css|articles/article-shared.css|sw.js|feed.xml|atom.xml|sitemap.xml|blog/sitemap.xml|*.html|*/*.html|*/*/*.html|scripts/apply-performance-phase1-followup.cjs|scripts/apply-performance-audit-output.cjs|.github/workflows/apply-performance-phase1-followup.yml|.github/workflows/apply-performance-phase1-final.yml|.github/workflows/apply-performance-phase1-final2.yml|.github/workflows/apply-performance-phase1-final3.yml)
+                ;;
+              *) echo "Unexpected generated change: $file"; unexpected=1 ;;
+            esac
+          done < <(git diff --name-only)
+          test "$unexpected" -eq 0
+
+      - name: Create clean local commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          git diff --cached --stat
+          git commit -m "実測に基づき初期描画とモバイル転送量を改善"
+
+      - name: Verify generator reproducibility
+        run: node .github/scripts/verify-build-output.cjs
+
+      - name: Run focused and full regression tests
+        shell: bash
+        run: |
+          set +e
+          node --test tests/mobile-performance-phase1.test.cjs
+          focused_status=$?
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          preflight_status=$?
+          if [[ "$preflight_status" -ne 0 ]]; then
+            grep -n -E 'not ok|AssertionError|ERR_ASSERTION|事前検証で失敗' /tmp/preflight.log || true
+            tail -n 220 /tmp/preflight.log
+          fi
+          test "$focused_status" -eq 0
+          exit "$preflight_status"
+
+      - name: Install browser driver
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify calculator and mobile article hub in Chromium
+        run: node .github/scripts/browser-smoke.cjs
+
+      - name: Prepare deploy-equivalent compressed assets
+        run: node .github/scripts/minify.cjs
+
+      - name: Start local server for Lighthouse
+        shell: bash
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/playpoint-performance-server.log 2>&1 &
+          for attempt in {1..20}; do
+            curl --fail --silent http://127.0.0.1:4173/ > /dev/null && exit 0
+            sleep 0.5
+          done
+          cat /tmp/playpoint-performance-server.log
+          exit 1
+
+      - name: Measure strengthened low-end Android budgets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p performance-artifacts
+          blocked_flags=(
+            '--blocked-url-patterns=https://www.googletagmanager.com/*'
+            '--blocked-url-patterns=https://www.google-analytics.com/*'
+            '--blocked-url-patterns=https://analytics.google.com/*'
+            '--blocked-url-patterns=https://stats.g.doubleclick.net/*'
+            '--blocked-url-patterns=https://pagead2.googlesyndication.com/*'
+            '--blocked-url-patterns=https://googleads.g.doubleclick.net/*'
+          )
+          audit_page() {
+            npx --yes lighthouse@13.3.0 "http://127.0.0.1:4173$2" \
+              --only-categories=performance \
+              --form-factor=mobile \
+              --throttling.cpuSlowdownMultiplier=6 \
+              --output=json \
+              --output-path="performance-artifacts/$1.json" \
+              --chrome-flags="--headless --no-sandbox --disable-gpu" \
+              --max-wait-for-load=45000 \
+              "${blocked_flags[@]}" \
+              --quiet
+          }
+          audit_page calculator-home /
+          audit_page article-hub /blog/
+          audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
+          node .github/scripts/lighthouse-diagnostics.cjs performance-artifacts/calculator-home.json performance-artifacts/article-hub.json performance-artifacts/representative-article.json --output-dir performance-artifacts
+          node .github/scripts/mobile-performance-budget.cjs performance-artifacts/calculator-home.json performance-artifacts/article-hub.json performance-artifacts/representative-article.json
+
+      - name: Restore source tree and clean local artifacts
+        shell: bash
+        run: |
+          git reset --hard HEAD
+          rm -rf node_modules browser-smoke-artifacts performance-artifacts
+          test -z "$(git status --porcelain)"
+
+      - name: Push verified result
+        run: git push origin HEAD:perf/phase1-mobile-stability-20260807
