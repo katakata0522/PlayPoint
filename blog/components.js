@@ -111,10 +111,14 @@
         blogAdsenseLoaded = true;
     }
 
-    function setupBlogAdsense() {
-        if (!isBlogPage) return;
-        loadBlogAdsense();
-    }
+function setupBlogAdsense() {
+    if (!isBlogPage && !isArticlePageTop) return;
+    void ensureConsentManager()
+        .catch((error) => console.error('Consent manager load failed:', error))
+        .finally(() => {
+            loadBlogAdsense();
+        });
+}
 
     // ===========================================
     // Common Styles Injection

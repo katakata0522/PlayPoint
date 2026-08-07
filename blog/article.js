@@ -43,8 +43,6 @@
 
     // Flags
     let scrollListenerAdded = false;
-    let articleAdsenseLoaded = false;
-    let articleAdsenseScheduled = false;
 
     // Local fallback utilities (in case BlogUtils is not loaded)
     const fallbackUtils = {
@@ -297,41 +295,6 @@
         });
     }
 
-    // AdSense本体はページ描画を止めないasyncで早期に準備し、短時間閲覧の広告機会を失わない。
-    // 初回通信に失敗した場合だけ、既存のスクロール導線を再試行の保険として残す。
-    function loadArticleAdsense() {
-        if (articleAdsenseLoaded) return;
-        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) {
-            articleAdsenseLoaded = true;
-            return;
-        }
-
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455';
-        script.crossOrigin = 'anonymous';
-        script.onerror = () => {
-            articleAdsenseLoaded = false;
-            console.error('AdSense load failed');
-        };
-        document.head.appendChild(script);
-        articleAdsenseLoaded = true;
-    }
-
-    function handleArticleAdsenseScroll() {
-        if (window.scrollY < 600 || articleAdsenseScheduled || !window.PlayPointConsent) return;
-        articleAdsenseScheduled = true;
-        window.removeEventListener('scroll', handleArticleAdsenseScroll);
-        document.removeEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
-        window.PlayPointConsent.whenGranted(loadArticleAdsense);
-    }
-
-    function setupArticleAdsense() {
-        loadArticleAdsense();
-        window.addEventListener('scroll', handleArticleAdsenseScroll, { passive: true });
-        document.addEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
-    }
-
     function sanitizeArticleFile(value) {
         if (typeof value !== 'string') return '#';
         if (!value.startsWith('../articles/')) return '#';
@@ -393,7 +356,6 @@
         setupOfficialSourceNotice();
         setupBreadcrumbStructuredData();
         setupCalculatorLinkTracking();
-        setupArticleAdsense();
         if (window.BlogUtils) {
             BlogUtils.updateFooterYear();
             BlogUtils.setupShareButton();
