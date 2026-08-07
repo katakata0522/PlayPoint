@@ -322,6 +322,89 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
   }
 }
 
+async function verifyBlogPage(browser, baseUrl) {
+  const origin = new URL(baseUrl).origin;
+  const context = await browser.newContext({
+    locale: 'ja-JP',
+    timezoneId: 'Asia/Tokyo',
+    viewport: { width: 390, height: 844 }
+  });
+  await blockExternalRequests(context, origin);
+  const page = await context.newPage();
+  const browserState = observeBrowser(page, origin);
+
+  try {
+    const response = await page.goto(new URL('blog/', baseUrl).href, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    if (response && !response.ok()) throw new Error(`HTTP ${response.status()}`);
+    await page.locator('.article-card').first().waitFor({ state: 'visible', timeout: 30_000 });
+    await page.waitForFunction(() => /\d+件/.test(document.querySelector('#article-result-status')?.textContent || ''));
+
+    const initial = await page.evaluate(() => ({
+      cards: document.querySelectorAll('.article-card').length,
+      resultStatus: document.querySelector('#article-result-status')?.textContent || '',
+      pagination: document.querySelector('.pagination-status')?.textContent || '',
+      activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
+      toggleExpanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
+      sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+    }));
+    assert(initial.cards > 0, 'Blog initial article cards were not rendered');
+    assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
+    assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
+    assert(initial.toggleExpanded === 'false' && initial.sidebarHidden === 'true', 'Blog sidebar initial ARIA state mismatch');
+
+    const nextButton = page.getByRole('button', { name: '次へ →' });
+    if (await nextButton.count()) {
+      await nextButton.click();
+      await page.waitForFunction(() => new URL(location.href).searchParams.get('page') === '2');
+      assert((await page.locator('.pagination-status').textContent())?.trim().startsWith('2 /'), 'Blog pagination did not advance');
+    }
+
+    await page.locator('#search-input').fill('__playpoint_no_result__');
+    await page.waitForFunction(() => (document.querySelector('#article-result-status')?.textContent || '').includes('0件'));
+    await page.getByRole('button', { name: '検索とカテゴリーをリセット' }).click();
+    await page.locator('.article-card').first().waitFor({ state: 'visible', timeout: 30_000 });
+    await page.waitForFunction(() => {
+      const url = new URL(location.href);
+      return !url.searchParams.has('q') && !url.searchParams.has('category') && !url.searchParams.has('page');
+    });
+    const resetState = await page.evaluate(() => ({
+      activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
+      query: document.querySelector('#search-input')?.value || ''
+    }));
+    assert(resetState.activeCategory === 'all' && resetState.query === '', 'Blog reset state is inconsistent');
+
+    const categoryButton = page.locator('#category-filter button:not([data-category="all"])').first();
+    const category = await categoryButton.getAttribute('data-category');
+    await categoryButton.click();
+    await page.waitForFunction(expected => new URL(location.href).searchParams.get('category') === expected, category);
+    assert(await categoryButton.evaluate(element => element.classList.contains('active')), 'Blog category active state did not update');
+
+    await page.locator('#sidebar-toggle').click();
+    await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'true');
+    const openState = await page.evaluate(() => ({
+      expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
+      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+    }));
+    assert(openState.expanded === 'true' && openState.hidden === 'false', 'Blog sidebar open ARIA state mismatch');
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'false');
+    const closeState = await page.evaluate(() => ({
+      expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
+      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+    }));
+    assert(closeState.expanded === 'false' && closeState.hidden === 'true', 'Blog sidebar close ARIA state mismatch');
+
+    await page.waitForTimeout(500);
+    browserState.verify('Blog browser errors');
+    return { initial, resetState, category, openState, closeState, errors: browserState.values };
+  } catch (error) {
+    await saveScreenshot(page, 'blog.png');
+    throw error;
+  } finally {
+    await context.close();
+  }
+}
+
 async function verifyRevision(baseUrl) {
   if (!EXPECTED_REVISION) return { checked: false };
   const url = new URL('status/deploy-revision.txt', baseUrl);
@@ -353,6 +436,7 @@ async function main() {
     baseUrl,
     revision: null,
     locales: [],
+    blog: { passed: false },
     passed: false
   };
   const browser = await chromium.launch({
@@ -376,7 +460,14 @@ async function main() {
       }
       report.locales.push(result);
     }
-    report.passed = report.locales.every(result => result.passed);
+    try {
+      report.blog = { passed: true, details: await verifyBlogPage(browser, baseUrl) };
+      console.log('ok - Blog initial render, search, reset, pagination, category and sidebar');
+    } catch (error) {
+      report.blog = { passed: false, error: error.message };
+      console.error(`not ok - Blog: ${error.message}`);
+    }
+    report.passed = report.locales.every(result => result.passed) && report.blog.passed;
   } finally {
     await browser.close();
     if (localServer) await localServer.close();
@@ -384,7 +475,7 @@ async function main() {
   }
 
   assert(report.passed, 'Browser smoke test failed. See browser-smoke-artifacts/report.json.');
-  console.log(`Browser smoke test passed (${report.mode}, ${LOCALES.length} locales).`);
+  console.log(`Browser smoke test passed (${report.mode}, ${LOCALES.length} locales + blog).`);
 }
 
 main().catch(error => {
