@@ -64,6 +64,11 @@ jobs:
           fi
           echo "AUDIT_TARGET=$target" >> "$GITHUB_ENV"
 
+      # PRでも本番デプロイと同じ圧縮成果物を測り、未圧縮ソースの大きさで誤判定しない。
+      - name: Prepare production-like local assets
+        if: env.AUDIT_TARGET == 'local'
+        run: node .github/scripts/minify.cjs
+
       - name: Start local static server
         if: env.AUDIT_TARGET == 'local'
         shell: bash
