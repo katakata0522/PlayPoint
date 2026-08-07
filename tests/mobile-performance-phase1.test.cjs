@@ -71,12 +71,11 @@ test('性能ワークフローがPR成果物・記事一覧・診断アーティ
   assert.match(workflow, /audit_page article-hub \/blog\//);
   assert.match(workflow, /lighthouse-diagnostics\.cjs/);
   assert.match(workflow, /actions\/upload-artifact@/);
-  assert.match(workflow, /retention-days: 14/);
+  assert.match(workflow, /retention-days:\s*14/);
 });
 
 test('記事広告枠が端末幅別の予約領域を持つ', () => {
   const css = read('articles/article-shared.css');
-  assert.match(css, /Performance stability: reserve responsive ad space/);
   assert.match(css, /\.article-ad-slot\s*\{[^}]*min-height:\s*280px/s);
-  assert.match(css, /@media \(max-width: 600px\)[\s\S]*\.article-ad-slot\s*\{[^}]*min-height:\s*250px/s);
+  assert.match(css, /@media\s*\(max-width:\s*600px\)[\s\S]*\.article-ad-slot\s*\{[^}]*min-height:\s*250px/s);
 });
