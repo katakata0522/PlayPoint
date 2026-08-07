@@ -42,16 +42,15 @@ jobs:
       - name: Apply focused changes and sync generated output
         run: node scripts/tmp-apply-adsense-best-practice.cjs
 
-      - name: Align AdSense regressions with split loading roles
+      - name: Align remaining AdSense and consent regressions
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
           from textwrap import dedent
 
-          path = Path('tests/playpoint-regression.test.cjs')
-          source = path.read_text(encoding='utf-8')
-
+          regression_path = Path('tests/playpoint-regression.test.cjs')
+          source = regression_path.read_text(encoding='utf-8')
           replacements = [
               (
                   dedent("""\
@@ -104,21 +103,46 @@ jobs:
                   """)
               )
           ]
-
           for old, new in replacements:
               if old in source:
                   source = source.replace(old, new)
               elif new not in source:
                   raise SystemExit('AdSense regression test target not found')
+          regression_path.write_text(source, encoding='utf-8')
 
-          path.write_text(source, encoding='utf-8')
+          nine_path = Path('tests/playpoint-nine-fixes.test.cjs')
+          nine = nine_path.read_text(encoding='utf-8')
+          old = dedent("""\
+            assert.ok(main.includes('ensureConsentManager'));
+            assert.ok(main.includes('scheduleThirdPartyLoad'));
+            assert.ok(main.includes('void loadAdsense()'));
+            assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
+          """)
+          new = dedent("""\
+            assert.ok(main.includes('ensureConsentManager'));
+            assert.ok(main.includes('void ensureConsentManager();'));
+            assert.ok(main.includes('void loadAdsense();'));
+            assert.ok(main.includes('scheduleAnalyticsLoad();'));
+            assert.ok(!main.includes('ADSENSE_DELAY_MS'));
+            assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));
+          """)
+          if old in nine:
+              nine = nine.replace(old, new)
+          elif new not in nine:
+              raise SystemExit('playpoint-nine-fixes consent regression target not found')
+          nine_path.write_text(nine, encoding='utf-8')
           PY
+
+      - name: Remove temporary sync machinery
+        run: rm -f .github/workflows/tmp-sync-adsense-best-practice.yml scripts/tmp-apply-adsense-best-practice.cjs
 
       - name: Verify JavaScript syntax
         run: node .github/scripts/verify-js-syntax.cjs
 
       - name: Run focused regression tests
-        run: node --test tests/playpoint-audit-fixes.test.cjs tests/playpoint-regression.test.cjs
+        run: |
+          node --test tests/playpoint-audit-fixes.test.cjs tests/playpoint-regression.test.cjs
+          node tests/playpoint-nine-fixes.test.cjs
 
       - name: Commit synchronized changes
         shell: bash
@@ -129,7 +153,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No synchronized changes to commit."
           else
-            git commit -m "広告読み込みとPWA計測を最適化"
+            git commit -m "広告読み込み改修の回帰テストと生成物を確定"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
 
