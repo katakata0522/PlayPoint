@@ -1,0 +1,88 @@
+name: Apply performance phase 1
+
+on:
+  push:
+    branches:
+      - perf/phase1-mobile-stability-20260807
+    paths:
+      - scripts/apply-performance-phase1.cjs
+      - .github/workflows/apply-performance-phase1.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-performance-phase1
+  cancel-in-progress: false
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout performance branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: perf/phase1-mobile-stability-20260807
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Apply article layout stability rules
+        run: node scripts/apply-performance-phase1.cjs
+
+      - name: Synchronize generated HTML and asset revisions
+        run: node scripts/build-html.js
+
+      - name: Remove temporary automation
+        run: |
+          git rm scripts/apply-performance-phase1.cjs
+          git rm .github/workflows/apply-performance-phase1.yml
+
+      - name: Verify generated diff scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          unexpected=0
+          while IFS= read -r file; do
+            case "$file" in
+              articles/article-shared.css|sw.js|feed.xml|atom.xml|sitemap.xml|blog/sitemap.xml|*.html|*/*.html|*/*/*.html|scripts/apply-performance-phase1.cjs|.github/workflows/apply-performance-phase1.yml)
+                ;;
+              *)
+                echo "Unexpected generated change: $file"
+                unexpected=1
+                ;;
+            esac
+          done < <(git diff --name-only)
+          test "$unexpected" -eq 0
+
+      - name: Create clean local commit for reproducibility checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          git diff --cached --stat
+          git commit -m "記事広告枠の表示安定性と性能監視を強化"
+
+      - name: Verify monitoring scripts
+        run: |
+          node --check .github/scripts/mobile-performance-budget.cjs
+          node --check .github/scripts/lighthouse-diagnostics.cjs
+          node --test tests/mobile-performance-phase1.test.cjs
+
+      - name: Run full repository preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Confirm clean verified tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+
+      - name: Push verified result
+        run: git push origin HEAD:perf/phase1-mobile-stability-20260807
