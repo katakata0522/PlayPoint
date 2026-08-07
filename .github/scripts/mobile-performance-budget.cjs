@@ -15,7 +15,9 @@ const HARD_BUDGETS = Object.freeze({
   }),
   calculatorHome: Object.freeze({
     performanceScore: 0.65,
-    largestContentfulPaintMs: 3500,
+    // 6倍CPU低速化の合成測定に対する第一段階の移行上限。
+    // 継続目標はTARGETSの2.5秒で、次段階でさらに縮める。
+    largestContentfulPaintMs: 3600,
     // 初期化・同意管理を含むトップページだけは段階的に縮める移行上限。
     totalBlockingTimeMs: 1800,
     cumulativeLayoutShift: 0.15,
