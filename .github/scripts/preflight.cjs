@@ -19,7 +19,10 @@ const postMinifyTestFiles = [
   'tests/play-points-rounding-guide.test.cjs',
   'tests/static-calculator-delivery.test.cjs',
   'tests/playpoint-product-guards.test.cjs',
-  'tests/runtime-module-guards.test.cjs'
+  'tests/runtime-module-guards.test.cjs',
+  // minify 対象の js/ を読む検査（圧縮後に壊れやすい）
+  'tests/common-pages-fact-ux.test.cjs',
+  'tests/content-structure.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
 const requiredPublicFiles = ['en/index.html', 'ko/index.html', 'tw/index.html'];

@@ -72,10 +72,12 @@
 ## preflight の実行方針（2026-08-07 更新）
 
 - **圧縮前:** 全 `tests/*.test.cjs` を1回
-- **圧縮後:** 構文チェック + 重点セットのみ  
-  (`playpoint-regression` / `main-calculator-ui` / `play-points-rounding-guide` /  
-  `static-calculator-delivery` / `playpoint-product-guards` / `runtime-module-guards`)
+- **圧縮後:** 構文チェック + 重点セット  
+  - 計算・ランタイム: `playpoint-regression` / `main-calculator-ui` / `play-points-rounding-guide` /  
+    `static-calculator-delivery` / `playpoint-product-guards` / `runtime-module-guards`
+  - minify 対象 JS を読む検査: `common-pages-fact-ux` / `content-structure`
 - 記事SEO・intl 全文監査は圧縮で壊れにくいため、圧縮後の二重実行から外す
+- 日記保存成功時のみイベント送信・URL優先の地域表示は `runtime-module-guards` で固定
 
 ---
 

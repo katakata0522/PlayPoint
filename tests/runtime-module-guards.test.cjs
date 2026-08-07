@@ -102,3 +102,35 @@ test('許可された主要計測イベント名が設定に残る', () => {
     assert.ok(config.includes(eventName), eventName);
   }
 });
+
+// --- 回帰ダイエットで落ちた重要ガードの復元 ---
+
+test('日記保存イベントと計測はストレージ保存成功時だけ送る', () => {
+  const script = read('js/diary.js');
+  // 保存失敗時は return し、成功後だけ track / CustomEvent を発火する
+  assert.ok(script.includes('if (!this.saveDiaryData(data)) return;'));
+  const saveHandler = script.slice(script.indexOf('handleDiarySave'));
+  const guardIndex = saveHandler.indexOf('if (!this.saveDiaryData(data)) return;');
+  const trackIndex = saveHandler.indexOf("ANALYTICS.track('diary_entry_saved'");
+  const eventIndex = saveHandler.indexOf("playpoint:diary-saved");
+  assert.ok(guardIndex >= 0, '保存失敗時の早期 return がありません');
+  assert.ok(trackIndex > guardIndex, '計測が保存成功前にあります');
+  assert.ok(eventIndex > guardIndex, 'diary-saved が保存成功前にあります');
+});
+
+test('言語トップはURLと異なる保存済み地域設定で表示を上書きしない', () => {
+  // ルート/言語パスの表示地域は URL を正とし、localStorage の旧設定で上書きしない
+  const regionNav = read('js/region-navigation.js');
+  const applyBody = regionNav.slice(
+    regionNav.indexOf('export function applyRegionFromPath'),
+    regionNav.indexOf('export function switchRegion')
+  );
+  assert.ok(applyBody.includes("STATE.currentRegion = 'JP'"), 'ルートを日本語固定する処理がありません');
+  assert.ok(
+    !applyBody.includes('localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY)'),
+    'applyRegionFromPath が保存済み地域で表示を上書きしています'
+  );
+  // main も古い「保存地域を読んで優先」パターンを持たない
+  const main = read('js/main.js');
+  assert.ok(!main.includes('const savedRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);'));
+});
