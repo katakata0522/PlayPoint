@@ -81,6 +81,9 @@ jobs:
           set +e
           node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
           status=$?
+          if [[ "$status" -ne 0 ]]; then
+            grep -n -E 'not ok|AssertionError|ERR_ASSERTION|事前検証で失敗' /tmp/preflight.log || true
+          fi
           tail -n 220 /tmp/preflight.log
           exit "$status"
 
