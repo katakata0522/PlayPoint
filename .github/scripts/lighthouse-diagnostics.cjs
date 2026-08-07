@@ -28,29 +28,56 @@ function numericValue(report, auditId) {
 
 function nodeDescription(node) {
   if (!node || typeof node !== 'object') return '';
+  if (node.type === 'text') return node.value || '';
   return node.selector || node.nodeLabel || node.snippet || '';
 }
 
+function detailRows(details) {
+  if (!details || !Array.isArray(details.items)) return [];
+  if (details.type === 'table') return details.items;
+  if (details.type === 'list') {
+    return details.items.flatMap(item => {
+      if (item?.type === 'table' && Array.isArray(item.items)) return item.items;
+      return [];
+    });
+  }
+  return [];
+}
+
+function layoutShiftCauses(item) {
+  const subItems = item?.subItems?.items;
+  if (!Array.isArray(subItems)) return [];
+  return subItems.map(subItem => ({
+    cause: String(subItem.cause || '').trim(),
+    element: nodeDescription(subItem.extra || subItem.node || subItem.source)
+  })).filter(cause => cause.cause || cause.element);
+}
+
 function layoutShiftItems(report) {
-  const auditIds = ['layout-shift-elements', 'cls-culprits-insight'];
-  const items = [];
+  const auditIds = ['layout-shifts', 'layout-shift-elements', 'cls-culprits-insight'];
+  const found = new Map();
+
   for (const auditId of auditIds) {
-    const auditItems = report.audits?.[auditId]?.details?.items;
-    if (!Array.isArray(auditItems)) continue;
-    for (const item of auditItems) {
+    const rows = detailRows(report.audits?.[auditId]?.details);
+    for (const item of rows) {
       const candidate = item.node || item.source || item;
       const description = nodeDescription(candidate);
+      if (!description || description === 'Total') continue;
       const rawScore = item.score ?? item.value ?? item.cumulativeLayoutShiftScore;
       const score = rawScore === undefined ? null : Number(rawScore);
-      if (!description && !Number.isFinite(score)) continue;
-      items.push({
+      const normalizedScore = Number.isFinite(score) ? score : null;
+      const key = `${description}\u0000${normalizedScore ?? ''}`;
+      if (found.has(key)) continue;
+      found.set(key, {
         auditId,
-        description: description || '(要素情報なし)',
-        score: Number.isFinite(score) ? score : null
+        description,
+        score: normalizedScore,
+        causes: layoutShiftCauses(item)
       });
     }
   }
-  return items
+
+  return [...found.values()]
     .sort((a, b) => (b.score || 0) - (a.score || 0))
     .slice(0, 10);
 }
@@ -73,8 +100,8 @@ function topOpportunities(report) {
     .map(([id, audit]) => ({
       id,
       title: audit.title || id,
-      wastedMs: Number(audit.details?.overallSavingsMs ?? audit.numericValue ?? 0),
-      wastedBytes: Number(audit.details?.overallSavingsBytes ?? 0),
+      wastedMs: Number(audit.details?.overallSavingsMs || 0),
+      wastedBytes: Number(audit.details?.overallSavingsBytes || 0),
       score: audit.score
     }))
     .filter(item => item.wastedMs > 0 || item.wastedBytes > 0)
@@ -117,6 +144,10 @@ function toMarkdown(summaries) {
     } else {
       summary.layoutShiftElements.forEach(item => {
         lines.push(`- \`${item.description.replace(/`/g, '\\`')}\` — score: ${item.score ?? 'n/a'} (${item.auditId})`);
+        item.causes.forEach(cause => {
+          const element = cause.element ? ` — \`${cause.element.replace(/`/g, '\\`')}\`` : '';
+          lines.push(`  - ${cause.cause || 'Related element'}${element}`);
+        });
       });
     }
     lines.push('', '### Long tasks');
@@ -160,6 +191,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  detailRows,
   layoutShiftItems,
   longTaskItems,
   main,
