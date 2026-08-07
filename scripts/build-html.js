@@ -2,6 +2,7 @@
 
 const path = require('path');
 const { applyEditorialStructure } = require('./article-editorial-structure.cjs');
+const { synchronizeArticleStaticUsability } = require('./article-static-usability.cjs');
 const {
   syncPublicAssetVersions,
   syncDynamicArticleStylesheetVersion
@@ -31,6 +32,9 @@ const locales = createLocales(todayStr);
 
 const editorialArticleCount = applyEditorialStructure(rootDir, todayStr);
 console.log(`[build-html] synchronized editorial structure: ${editorialArticleCount}`);
+
+const staticUsabilityArticleCount = synchronizeArticleStaticUsability(rootDir);
+console.log(`[build-html] synchronized static article usability: ${staticUsabilityArticleCount}`);
 
 writeLocalizedPages(rootDir, indexHtml, locales);
 
