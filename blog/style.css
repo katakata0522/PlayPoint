@@ -108,28 +108,14 @@ body {
     color: var(--accent);
 }
 
+/* 旧ブランドの装飾「P」は一覧では使わない（可読性・記事ページらしさのため） */
 .brand span {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 800;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    display: none;
 }
 
 .back-link {
-    font-size: 0.9rem;
-    color: var(--header-muted);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-}
-
-.back-link:hover {
-    color: var(--accent);
-    background: rgba(88, 166, 255, 0.1);
+    /* 記事一覧ヘッダーからは計算機リンクを外した。サイドバーに残す */
+    display: none;
 }
 
 /* =============================================

@@ -781,11 +781,16 @@
             filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
 
+        // 画面上の「〜の記事：N件」は位置も冗長なので出さない。
+        // スクリーンリーダー向けに、変化時だけ短いステータスを残す。
         if (dom.resultStatus) {
-            const label = currentCategory === 'all' ? 'すべて' : currentCategory;
-            dom.resultStatus.textContent = (currentSearch
-                ? '「' + currentSearch + '」の検索結果：'
-                : label + 'の記事：') + filtered.length + '件';
+            if (currentSearch) {
+                dom.resultStatus.textContent = '「' + currentSearch + '」の検索結果 ' + filtered.length + '件';
+            } else if (currentCategory !== 'all') {
+                dom.resultStatus.textContent = currentCategory + ' ' + filtered.length + '件';
+            } else {
+                dom.resultStatus.textContent = '';
+            }
         }
 
         // 3. Paginate

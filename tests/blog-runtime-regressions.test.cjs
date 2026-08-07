@@ -35,7 +35,10 @@ test('result count is calculated inside render after filtering', () => {
     '    function render() {',
     '\n    function renderPagination('
   );
-  assert.match(body, /dom\.resultStatus\.textContent[\s\S]*filtered\.length/);
+  // 件数は画面に出さず、検索/カテゴリ時だけ aria-live 用に更新する
+  assert.match(body, /dom\.resultStatus\.textContent/);
+  assert.match(body, /filtered\.length/);
+  assert.match(body, /currentSearch/);
 });
 
 test('pagination, reset and category controls synchronize URL and active state', () => {

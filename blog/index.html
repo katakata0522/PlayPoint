@@ -21,8 +21,8 @@
 
     <!-- Favicon -->
     <link rel="icon" href="../favicon.svg">
-<link rel="stylesheet" href="style.css?v=73cb119703">
-    <link rel="stylesheet" href="index-compact.css?v=0139d991f1">
+<link rel="stylesheet" href="style.css?v=0229992e9e">
+    <link rel="stylesheet" href="index-compact.css?v=fb99e15a31">
     <!-- Inherit generic styles if needed or use isolated blog styles -->
 
     <!-- JSON-LD Structured Data -->
@@ -76,12 +76,9 @@
 
     <!-- Header -->
     <header class="blog-header glass-panel">
-        <a href="./" class="brand">
-            <span style="font-family: 'Outfit', sans-serif;">P</span> Playポイント計算機
-        </a>
+        <a href="./" class="brand">Playポイント攻略</a>
         <div class="header-right">
             <button id="theme-toggle" class="theme-toggle" aria-label="テーマ切替" title="テーマ切替">☀️</button>
-            <a href="../index.html" class="back-link">← 計算機</a>
             <button id="sidebar-toggle" class="sidebar-toggle" aria-label="メニューを開く" aria-controls="sidebar" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -131,7 +128,8 @@
             </div>
         </div>
 
-        <p id="article-result-status" class="article-result-status" role="status" aria-live="polite"></p>
+        <!-- 件数表示はカテゴリボタン側の (35) 等で足りるため、ここには出さない -->
+        <p id="article-result-status" class="article-result-status visually-hidden" role="status" aria-live="polite"></p>
 
         <!-- Article Grid -->
         <div id="article-grid" class="grid-container">
@@ -265,7 +263,7 @@
 
     <script src="utils.js?v=f103b00987"></script>
     <script src="components.js?v=318154498a"></script>
-    <script src="script.js?v=590f709115"></script>
+    <script src="script.js?v=36fd2cbde7"></script>
 </body>
 
 </html>
