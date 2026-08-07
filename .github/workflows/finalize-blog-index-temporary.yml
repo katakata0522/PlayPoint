@@ -1,0 +1,16 @@
+name: Temporary PR 70 runtime validation
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/blog-index-first-view
+          fetch-depth: 0
+      - name: Convert layout to static HTML
+        run: node .github/scripts/preflight.cjs
