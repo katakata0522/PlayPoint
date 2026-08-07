@@ -1,0 +1,220 @@
+# ok - 多言語トップはJS実行前の主要文言も翻訳済みにする
+# not ok - 同意済み計測はGA本体ロード前のイベントを短期キューへ保持する
+# GAロード前イベントのキューがありません
+# ok - Xserver同期後に本番スモークテストを実行する
+# ok - Xserver同期後に本番SEOヘルスチェックを実行する
+# ok - デプロイ検証の変更でもワークフローを実行する
+# ok - デプロイ前検証は全テストをミニファイ前後に実行する
+# ok - 本番スモークテストの期待文字列は配信元ファイルに存在する
+# ok - 本番スモークテストは主要PlayPointページと言語トップを確認する
+# 2件の修正が未実装です。
+# Subtest: tests/playpoint-nine-fixes.test.cjs
+not ok 39 - tests/playpoint-nine-fixes.test.cjs
+  ---
+  duration_ms: 64.460501
+  type: 'test'
+  location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-nine-fixes.test.cjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# not ok - ステータス選択の初期値はブロンズになる
+# calculator-bundle.js:3
+# { ANALYTICS } from './analytics.js';
+#                    ^^^^^^^^^^^^^^^^
+# SyntaxError: Unexpected string
+#     at new Script (node:vm:117:7)
+#     at createScript (node:vm:269:10)
+#     at Object.runInContext (node:vm:300:10)
+#     at loadCalculatorContext (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:122:6)
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:137:47
+#     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:128:5)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:136:1)
+#     at Module._compile (node:internal/modules/cjs/loader:1781:14)
+#     at Object..js (node:internal/modules/cjs/loader:1913:10)
+#     at Module.load (node:internal/modules/cjs/loader:1505:32)
+# Node.js v22.23.1
+# Subtest: tests/playpoint-regression.test.cjs
+not ok 40 - tests/playpoint-regression.test.cjs
+  ---
+  duration_ms: 48.779957
+  type: 'test'
+  location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# node:fs:440
+#     return binding.readFileUtf8(path, stringToFlags(options.flag));
+#                    ^
+# Error: ENOENT: no such file or directory, open '/home/runner/work/PlayPoint/PlayPoint/.github/workflows/apply-growth-flow-foundation.yml'
+#     at Object.readFileSync (node:fs:440:20)
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:71:8
+#     at Array.map (<anonymous>)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:69:24)
+#     at Module._compile (node:internal/modules/cjs/loader:1781:14)
+#     at Object..js (node:internal/modules/cjs/loader:1913:10)
+#     at Module.load (node:internal/modules/cjs/loader:1505:32)
+#     at Function._load (node:internal/modules/cjs/loader:1309:12)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5) {
+#   errno: -2,
+#   code: 'ENOENT',
+#   syscall: 'open',
+#   path: '/home/runner/work/PlayPoint/PlayPoint/.github/workflows/apply-growth-flow-foundation.yml'
+# }
+# Node.js v22.23.1
+# Subtest: tests/repository-integrity-audit.test.cjs
+not ok 41 - tests/repository-integrity-audit.test.cjs
+  ---
+  duration_ms: 58.721826
+  type: 'test'
+  location: '/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 送信するXMLサイトマップ間でURLを重複させない
+ok 215 - 送信するXMLサイトマップ間でURLを重複させない
+  ---
+  duration_ms: 2.959069
+  type: 'test'
+  ...
+# Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
+ok 216 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
+  ---
+  duration_ms: 0.532784
+  type: 'test'
+  ...
+# Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
+ok 217 - 専用XMLサイトマップへ移したURLをルートへ重ねない
+  ---
+  duration_ms: 0.8323
+  type: 'test'
+  ...
+# Subtest: Play Pointsブログとフィードに家計記事を混在させない
+ok 218 - Play Pointsブログとフィードに家計記事を混在させない
+  ---
+  duration_ms: 1.506325
+  type: 'test'
+  ...
+# Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
+ok 219 - 人向けサイトマップはPlay Pointsの案内に集中する
+  ---
+  duration_ms: 0.378974
+  type: 'test'
+  ...
+# Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+ok 220 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+  ---
+  duration_ms: 0.242622
+  type: 'test'
+  ...
+# Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
+ok 221 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
+  ---
+  duration_ms: 0.260398
+  type: 'test'
+  ...
+# Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
+ok 222 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
+  ---
+  duration_ms: 4.27535
+  type: 'test'
+  ...
+# Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
+ok 223 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
+  ---
+  duration_ms: 2.822786
+  type: 'test'
+  ...
+# Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
+ok 224 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
+  ---
+  duration_ms: 0.34233
+  type: 'test'
+  ...
+# Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
+ok 225 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
+  ---
+  duration_ms: 0.259427
+  type: 'test'
+  ...
+# Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+ok 226 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+  ---
+  duration_ms: 0.626674
+  type: 'test'
+  ...
+# Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+ok 227 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+  ---
+  duration_ms: 0.255981
+  type: 'test'
+  ...
+# Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
+ok 228 - 静的生成辞書は多言語フッターの全リンク文言を持つ
+  ---
+  duration_ms: 1.354488
+  type: 'test'
+  ...
+# Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+ok 229 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+  ---
+  duration_ms: 8.347357
+  type: 'test'
+  ...
+# Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+ok 230 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+  ---
+  duration_ms: 4.025178
+  type: 'test'
+  ...
+# Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+ok 231 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+  ---
+  duration_ms: 2.339767
+  type: 'test'
+  ...
+1..231
+# tests 231
+# suites 0
+# pass 221
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1193.786885
+
+=== 公開記事の検索意図・内部リンク正規化 ===
+記事検索意図・内部リンク監査: 140件
+変更: 15件 / 役割注記: 6件 / 関連記事追加: 9件
+全記事の関連記事と競合境界が整合しています。
+
+=== 公開記事の検索意図・内部リンク検証 ===
+記事検索意図・内部リンク監査: 140件
+変更: 0件 / 役割注記: 0件 / 関連記事追加: 0件
+全記事の関連記事と競合境界が整合しています。
+
+=== 公開記事SEO正規化 ===
+記事SEO正規化: 140件確認、140件更新対象
+- FAQPage本文同期: 17件
+- 可視FAQなしのFAQPage除去: 101件
+- max-image-preview:large更新: 140件
+
+=== 公開記事SEO正規化後検証 ===
+記事SEO正規化: 140件確認、0件更新対象
+- FAQPage本文同期: 0件
+- 可視FAQなしのFAQPage除去: 0件
+- max-image-preview:large更新: 0件
+
+事前検証で失敗した工程:
+- 生成物の再現性検証
+- 全回帰テスト
+- 圧縮後の全回帰テスト
