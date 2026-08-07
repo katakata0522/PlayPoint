@@ -1,39 +1,27 @@
   type: 'test'
   ...
-# Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
-ok 206 - トップページは大きな画像プレビューとOGP画像サイズを明示する
-  ---
-  duration_ms: 0.938245
-  type: 'test'
-  ...
-# Subtest: 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
-ok 207 - 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
-  ---
-  duration_ms: 1.278932
-  type: 'test'
-  ...
 # Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
 ok 208 - 日記の重複通知を表示せず、カレンダー登録は残す
   ---
-  duration_ms: 1.457115
+  duration_ms: 1.467245
   type: 'test'
   ...
 # Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
 ok 209 - 地域差案内は日本語トップでも英語の注意導線として表示する
   ---
-  duration_ms: 1.387545
+  duration_ms: 1.531646
   type: 'test'
   ...
 # Subtest: 計算方法と検証方針を全言語で本文から確認できる
 ok 210 - 計算方法と検証方針を全言語で本文から確認できる
   ---
-  duration_ms: 1.269714
+  duration_ms: 1.428932
   type: 'test'
   ...
 # Subtest: 広告と計測は初期表示後に低優先度で読み込む
 ok 211 - 広告と計測は初期表示後に低優先度で読み込む
   ---
-  duration_ms: 0.365603
+  duration_ms: 0.397261
   type: 'test'
   ...
 # ok - 著者ページのOGP画像は実在する
@@ -60,7 +48,7 @@ ok 211 - 広告と計測は初期表示後に低優先度で読み込む
 # Subtest: tests/playpoint-nine-fixes.test.cjs
 ok 39 - tests/playpoint-nine-fixes.test.cjs
   ---
-  duration_ms: 64.652811
+  duration_ms: 71.983946
   type: 'test'
   ...
 # ok - ステータス選択の初期値はブロンズになる
@@ -96,15 +84,67 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 # Successfully synchronized asset versions and dates in sample.html
 # ok - HTML同期はアセットバージョンと日付表記を単体で更新する
 # ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
-# not ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
+# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
+# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
+# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
+# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
+# ok - ステータス選択の再生成でoptionが重複しない
+# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
+# ok - トップページは同一URLの英語hreflangを出さない
+# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
+# ok - デプロイ前に全回帰テストを実行する
+# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
+# ok - テストファイルはルート限定の除外で本番へ同期しない
+# ok - SEO監視はサイトマップ掲載記事も確認する
+# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
+# ok - blog robots.txtは本番ドメインのサイトマップを指す
+# ok - ブログ一覧は記事JSONを正規化してから描画する
+# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
+# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
+# ok - CSPのscript-srcはhttps全体を許可しない
+# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
+# ok - target blankリンクにはnoopener noreferrerを付ける
+# ok - blogの再読み込みボタンはインラインonclickを使わない
+# ok - blog articles.jsonは実在するPlay Points記事だけを含む
+# ok - blog sitemapは登録済みPlay Points記事をすべて含む
+# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
+# ok - 記事ページのOGP画像は実ファイルが存在する
+# ok - blog SearchActionは実装と同じqパラメータを使う
+# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
+# ok - blogトップは自前のOGP画像とfaviconを使う
+# ok - blogトップの説明文は検索結果向けの長さを確保する
+# ok - blogの正規URLはindex.htmlを露出しない
+# ok - blogトップは外部Google Fontsへ接続しない
+# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
+# ok - blog記事カードクリックをAnalyticsへ送る
+# ok - 主要な操作要素は44px以上のタップ領域を持つ
+# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
+# ok - 狭い画面でも日記タブの文字を省略しない
+# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
+# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
+# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
+# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
+# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
+# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
+# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
+# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
+# ok - 全記事から有効なGoogle公式ヘルプを確認できる
+# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
+# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
+# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
+# ok - 最新情報リンクはヘッダーから外しフッターで維持する
+# ok - 計算条件を共有URLへ保存し再訪時に復元できる
+# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
+# not ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
 # /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:141
 #     throw error;
 #     ^
-# AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
-# 12 !== 11
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:907:10
+# AssertionError [ERR_ASSERTION]: lp_to_calculator_clicked is missing from analytics allowlist
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1637:12
 #     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:137:5)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:877:1)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1614:1)
 #     at Module._compile (node:internal/modules/cjs/loader:1781:14)
 #     at Object..js (node:internal/modules/cjs/loader:1913:10)
 #     at Module.load (node:internal/modules/cjs/loader:1505:32)
@@ -112,18 +152,18 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 #     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
 #     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
 #     at node:internal/main/run_main_module:36:49 {
-#   generatedMessage: true,
+#   generatedMessage: false,
 #   code: 'ERR_ASSERTION',
-#   actual: 12,
-#   expected: 11,
-#   operator: 'strictEqual',
+#   actual: false,
+#   expected: true,
+#   operator: '==',
 #   diff: 'simple'
 # }
 # Node.js v22.23.1
 # Subtest: tests/playpoint-regression.test.cjs
 not ok 40 - tests/playpoint-regression.test.cjs
   ---
-  duration_ms: 127.715286
+  duration_ms: 230.859886
   type: 'test'
   location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
   failureType: 'testCodeFailure'
@@ -132,155 +172,155 @@ not ok 40 - tests/playpoint-regression.test.cjs
   error: 'test failed'
   code: 'ERR_TEST_FAILURE'
   ...
-# [repository-integrity] tracked=405 deployable=298 resolved=285
+# [repository-integrity] tracked=406 deployable=298 resolved=285
 # Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
 ok 214 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
   ---
-  duration_ms: 2.87676
+  duration_ms: 3.427712
   type: 'test'
   ...
 # Subtest: 移設・統合・共通化済みの実体を残さない
 ok 215 - 移設・統合・共通化済みの実体を残さない
   ---
-  duration_ms: 0.182421
+  duration_ms: 0.27492
   type: 'test'
   ...
 # Subtest: 公開ファイルの内部参照とアンカーは実在する
 ok 216 - 公開ファイルの内部参照とアンカーは実在する
   ---
-  duration_ms: 0.176751
+  duration_ms: 0.205679
   type: 'test'
   ...
 # Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
 ok 217 - 全公開HTMLのcanonicalは自己一致し重複しない
   ---
-  duration_ms: 2.469849
+  duration_ms: 2.905434
   type: 'test'
   ...
 # Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
 ok 218 - 公開コードは旧パス・開発URL・旧ホストを参照しない
   ---
-  duration_ms: 18.665148
+  duration_ms: 17.07461
   type: 'test'
   ...
 # Subtest: 公開画像の実形式とHTTP配信形式を一致させる
 ok 219 - 公開画像の実形式とHTTP配信形式を一致させる
   ---
-  duration_ms: 12.0466
+  duration_ms: 13.112487
   type: 'test'
   ...
 # Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
 ok 220 - 未参照アセットと内容が完全重複する公開ファイルを残さない
   ---
-  duration_ms: 32.255195
+  duration_ms: 33.029892
   type: 'test'
   ...
 # Subtest: READMEとPWAメタデータは現行機能を説明する
 ok 221 - READMEとPWAメタデータは現行機能を説明する
   ---
-  duration_ms: 0.32141
+  duration_ms: 0.445442
   type: 'test'
   ...
 # Subtest: 送信するXMLサイトマップ間でURLを重複させない
 ok 222 - 送信するXMLサイトマップ間でURLを重複させない
   ---
-  duration_ms: 3.482113
+  duration_ms: 4.217656
   type: 'test'
   ...
 # Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
 ok 223 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
   ---
-  duration_ms: 0.701162
+  duration_ms: 0.749768
   type: 'test'
   ...
 # Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
 ok 224 - 専用XMLサイトマップへ移したURLをルートへ重ねない
   ---
-  duration_ms: 1.140113
+  duration_ms: 1.20062
   type: 'test'
   ...
 # Subtest: Play Pointsブログとフィードに家計記事を混在させない
 ok 225 - Play Pointsブログとフィードに家計記事を混在させない
   ---
-  duration_ms: 2.489857
+  duration_ms: 2.092838
   type: 'test'
   ...
 # Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
 ok 226 - 人向けサイトマップはPlay Pointsの案内に集中する
   ---
-  duration_ms: 0.485187
+  duration_ms: 0.494024
   type: 'test'
   ...
 # Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
 ok 227 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
   ---
-  duration_ms: 0.418162
+  duration_ms: 0.390508
   type: 'test'
   ...
 # Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
 ok 228 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
   ---
-  duration_ms: 0.38521
+  duration_ms: 0.410105
   type: 'test'
   ...
 # Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
 ok 229 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
   ---
-  duration_ms: 4.059532
+  duration_ms: 5.139208
   type: 'test'
   ...
 # Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
 ok 230 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
   ---
-  duration_ms: 2.615151
+  duration_ms: 2.877481
   type: 'test'
   ...
 # Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
 ok 231 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
   ---
-  duration_ms: 0.404136
+  duration_ms: 0.399726
   type: 'test'
   ...
 # Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
 ok 232 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
   ---
-  duration_ms: 0.302656
+  duration_ms: 0.342007
   type: 'test'
   ...
 # Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
 ok 233 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
   ---
-  duration_ms: 0.697545
+  duration_ms: 0.76098
   type: 'test'
   ...
 # Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
 ok 234 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
   ---
-  duration_ms: 0.279803
+  duration_ms: 0.329353
   type: 'test'
   ...
 # Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
 ok 235 - 静的生成辞書は多言語フッターの全リンク文言を持つ
   ---
-  duration_ms: 2.096742
+  duration_ms: 1.480861
   type: 'test'
   ...
 # Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
 ok 236 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
   ---
-  duration_ms: 11.884727
+  duration_ms: 8.399765
   type: 'test'
   ...
 # Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
 ok 237 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
   ---
-  duration_ms: 5.625401
+  duration_ms: 4.356529
   type: 'test'
   ...
 # Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
 ok 238 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
   ---
-  duration_ms: 3.121758
+  duration_ms: 2.502673
   type: 'test'
   ...
 1..238
@@ -291,7 +331,7 @@ ok 238 - 多言語トップの利用者向け静的文言へ別言語の文字�
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1589.586897
+# duration_ms 1419.275638
 
 === 公開記事の検索意図・内部リンク正規化 ===
 記事検索意図・内部リンク監査: 140件
