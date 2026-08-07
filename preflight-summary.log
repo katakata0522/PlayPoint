@@ -1,36 +1,39 @@
+  type: 'test'
+  ...
+# Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
 ok 206 - トップページは大きな画像プレビューとOGP画像サイズを明示する
   ---
-  duration_ms: 1.240228
+  duration_ms: 0.938245
   type: 'test'
   ...
 # Subtest: 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
 ok 207 - 初期操作に必要なアプリモジュールは依存解析前から取得を開始する
   ---
-  duration_ms: 2.197887
+  duration_ms: 1.278932
   type: 'test'
   ...
 # Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
 ok 208 - 日記の重複通知を表示せず、カレンダー登録は残す
   ---
-  duration_ms: 2.055589
+  duration_ms: 1.457115
   type: 'test'
   ...
 # Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
 ok 209 - 地域差案内は日本語トップでも英語の注意導線として表示する
   ---
-  duration_ms: 1.538319
+  duration_ms: 1.387545
   type: 'test'
   ...
 # Subtest: 計算方法と検証方針を全言語で本文から確認できる
 ok 210 - 計算方法と検証方針を全言語で本文から確認できる
   ---
-  duration_ms: 1.068817
+  duration_ms: 1.269714
   type: 'test'
   ...
 # Subtest: 広告と計測は初期表示後に低優先度で読み込む
 ok 211 - 広告と計測は初期表示後に低優先度で読み込む
   ---
-  duration_ms: 0.366939
+  duration_ms: 0.365603
   type: 'test'
   ...
 # ok - 著者ページのOGP画像は実在する
@@ -57,29 +60,70 @@ ok 211 - 広告と計測は初期表示後に低優先度で読み込む
 # Subtest: tests/playpoint-nine-fixes.test.cjs
 ok 39 - tests/playpoint-nine-fixes.test.cjs
   ---
-  duration_ms: 67.078801
+  duration_ms: 64.652811
   type: 'test'
   ...
-# not ok - ステータス選択の初期値はブロンズになる
-# calculator-bundle.js:505
-# var ANALYTICS = PP_APP.ANALYTICS;
+# ok - ステータス選択の初期値はブロンズになる
+# ok - 通常計算では現在ステータスから次のランクだけを目標にする
+# ok - 前年からランクを引き継いだ場合も目標閾値全体を入力できる
+# ok - 直接レートと倍率は代替入力として高い方と採用理由を返す
+# ok - パック額未入力では購入ごとの丸めを仮定しない概算として表示する
+# ok - パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する
+# ok - 1回0ポイントになる購入額は概算へフォールバックせずエラーにする
+# ok - 逆算モードは入力額を1回の購入として丸める前提を表示する
+# ok - 金曜の開始時刻を過ぎたカレンダー登録は翌週を使う
+# ok - 月平均の分母は年末までの残日数から切り上げ月数で計算する
+# ok - 12月31日でも通常計算は合計必要額を表示する
+# ok - 必要ポイントはHTMLの整数制約に違反する小数を拒否する
+# ok - 記事件数は言語UI更新後に実際の件数で再描画する
+# ok - フッターの運営者リンクは色だけに頼らず下線で区別する
+# ok - モバイルのヘッダーリンクは内側余白を含めて画面幅に収める
+# ok - デスクトップのトップバーは言語切替と補助リンクを同じ段に収める
+# ok - 通常計算の結果は週平均と1日あたりの目安も表示する
+# ok - 通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する
+# ok - 計算結果の関連記事は検索意図別LPを優先する
+# ok - 計算結果の下には金額や条件に応じた次の判断導線が出る
+# ok - 英語トップはJS実行前のファーストビューに日本語の主要文言を残さない
+# ok - 英語トップの日記エリアはJS実行前でも英語で読める
+# ok - トップのSEO名はGoogle Play Points計算機を主名にし旧名を別名として残す
+# ok - 多言語トップの英語名はGoogle Play Points Calculatorを先頭にする
+# ok - 検索LPの上部には通常時と倍率別の即答表がある
+# ok - READMEと正規化設定は公式URLだけを一次導線にする
+# ok - 共有ボタンは結果アクション行にまとめて表示状態を切り替える
+# ok - 検索意図別LPは条件付き計算リンクとSEO基本タグを持つ
+# ok - ブログRSSとAtomフィードは発見可能で最新記事を含む
+# ok - ブログフィード生成は単体でURL正規化・日付順・XMLエスケープを行う
+# Successfully synchronized asset versions and dates in sample.html
+# ok - HTML同期はアセットバージョンと日付表記を単体で更新する
+# ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
+# not ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
+# /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:141
+#     throw error;
 #     ^
-# SyntaxError: Identifier 'ANALYTICS' has already been declared
-#     at new Script (node:vm:117:7)
-#     at createScript (node:vm:269:10)
-#     at Object.runInContext (node:vm:300:10)
-#     at loadCalculatorContext (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:130:6)
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:145:47
-#     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:136:5)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:144:1)
+# AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+# 12 !== 11
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:907:10
+#     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:137:5)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:877:1)
 #     at Module._compile (node:internal/modules/cjs/loader:1781:14)
 #     at Object..js (node:internal/modules/cjs/loader:1913:10)
 #     at Module.load (node:internal/modules/cjs/loader:1505:32)
+#     at Function._load (node:internal/modules/cjs/loader:1309:12)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+#     at node:internal/main/run_main_module:36:49 {
+#   generatedMessage: true,
+#   code: 'ERR_ASSERTION',
+#   actual: 12,
+#   expected: 11,
+#   operator: 'strictEqual',
+#   diff: 'simple'
+# }
 # Node.js v22.23.1
 # Subtest: tests/playpoint-regression.test.cjs
 not ok 40 - tests/playpoint-regression.test.cjs
   ---
-  duration_ms: 55.982245
+  duration_ms: 127.715286
   type: 'test'
   location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
   failureType: 'testCodeFailure'
@@ -88,149 +132,166 @@ not ok 40 - tests/playpoint-regression.test.cjs
   error: 'test failed'
   code: 'ERR_TEST_FAILURE'
   ...
-# node:fs:440
-#     return binding.readFileUtf8(path, stringToFlags(options.flag));
-#                    ^
-# Error: ENOENT: no such file or directory, open '/home/runner/work/PlayPoint/PlayPoint/blog/index-compact.css'
-#     at Object.readFileSync (node:fs:440:20)
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:71:8
-#     at Array.map (<anonymous>)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:69:24)
-#     at Module._compile (node:internal/modules/cjs/loader:1781:14)
-#     at Object..js (node:internal/modules/cjs/loader:1913:10)
-#     at Module.load (node:internal/modules/cjs/loader:1505:32)
-#     at Function._load (node:internal/modules/cjs/loader:1309:12)
-#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
-#     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5) {
-#   errno: -2,
-#   code: 'ENOENT',
-#   syscall: 'open',
-#   path: '/home/runner/work/PlayPoint/PlayPoint/blog/index-compact.css'
-# }
-# Node.js v22.23.1
-# Subtest: tests/repository-integrity-audit.test.cjs
-not ok 41 - tests/repository-integrity-audit.test.cjs
+# [repository-integrity] tracked=405 deployable=298 resolved=285
+# Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
+ok 214 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
   ---
-  duration_ms: 65.675994
+  duration_ms: 2.87676
   type: 'test'
-  location: '/home/runner/work/PlayPoint/PlayPoint/tests/repository-integrity-audit.test.cjs:1:1'
-  failureType: 'testCodeFailure'
-  exitCode: 1
-  signal: ~
-  error: 'test failed'
-  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 移設・統合・共通化済みの実体を残さない
+ok 215 - 移設・統合・共通化済みの実体を残さない
+  ---
+  duration_ms: 0.182421
+  type: 'test'
+  ...
+# Subtest: 公開ファイルの内部参照とアンカーは実在する
+ok 216 - 公開ファイルの内部参照とアンカーは実在する
+  ---
+  duration_ms: 0.176751
+  type: 'test'
+  ...
+# Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
+ok 217 - 全公開HTMLのcanonicalは自己一致し重複しない
+  ---
+  duration_ms: 2.469849
+  type: 'test'
+  ...
+# Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
+ok 218 - 公開コードは旧パス・開発URL・旧ホストを参照しない
+  ---
+  duration_ms: 18.665148
+  type: 'test'
+  ...
+# Subtest: 公開画像の実形式とHTTP配信形式を一致させる
+ok 219 - 公開画像の実形式とHTTP配信形式を一致させる
+  ---
+  duration_ms: 12.0466
+  type: 'test'
+  ...
+# Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
+ok 220 - 未参照アセットと内容が完全重複する公開ファイルを残さない
+  ---
+  duration_ms: 32.255195
+  type: 'test'
+  ...
+# Subtest: READMEとPWAメタデータは現行機能を説明する
+ok 221 - READMEとPWAメタデータは現行機能を説明する
+  ---
+  duration_ms: 0.32141
+  type: 'test'
   ...
 # Subtest: 送信するXMLサイトマップ間でURLを重複させない
-ok 215 - 送信するXMLサイトマップ間でURLを重複させない
+ok 222 - 送信するXMLサイトマップ間でURLを重複させない
   ---
-  duration_ms: 3.398801
+  duration_ms: 3.482113
   type: 'test'
   ...
 # Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
-ok 216 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
+ok 223 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
   ---
-  duration_ms: 0.738075
+  duration_ms: 0.701162
   type: 'test'
   ...
 # Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
-ok 217 - 専用XMLサイトマップへ移したURLをルートへ重ねない
+ok 224 - 専用XMLサイトマップへ移したURLをルートへ重ねない
   ---
-  duration_ms: 1.110866
+  duration_ms: 1.140113
   type: 'test'
   ...
 # Subtest: Play Pointsブログとフィードに家計記事を混在させない
-ok 218 - Play Pointsブログとフィードに家計記事を混在させない
+ok 225 - Play Pointsブログとフィードに家計記事を混在させない
   ---
-  duration_ms: 2.151088
+  duration_ms: 2.489857
   type: 'test'
   ...
 # Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
-ok 219 - 人向けサイトマップはPlay Pointsの案内に集中する
+ok 226 - 人向けサイトマップはPlay Pointsの案内に集中する
   ---
-  duration_ms: 0.505028
+  duration_ms: 0.485187
   type: 'test'
   ...
 # Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
-ok 220 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
+ok 227 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
   ---
-  duration_ms: 0.403577
+  duration_ms: 0.418162
   type: 'test'
   ...
 # Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
-ok 221 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
+ok 228 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
   ---
-  duration_ms: 0.405962
+  duration_ms: 0.38521
   type: 'test'
   ...
 # Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
-ok 222 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
+ok 229 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
   ---
-  duration_ms: 4.017524
+  duration_ms: 4.059532
   type: 'test'
   ...
 # Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
-ok 223 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
+ok 230 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
   ---
-  duration_ms: 1.727323
+  duration_ms: 2.615151
   type: 'test'
   ...
 # Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
-ok 224 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
+ok 231 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
   ---
-  duration_ms: 0.265017
+  duration_ms: 0.404136
   type: 'test'
   ...
 # Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
-ok 225 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
+ok 232 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
   ---
-  duration_ms: 0.211427
+  duration_ms: 0.302656
   type: 'test'
   ...
 # Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
-ok 226 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+ok 233 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
   ---
-  duration_ms: 0.507673
+  duration_ms: 0.697545
   type: 'test'
   ...
 # Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
-ok 227 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+ok 234 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
   ---
-  duration_ms: 0.200997
+  duration_ms: 0.279803
   type: 'test'
   ...
 # Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
-ok 228 - 静的生成辞書は多言語フッターの全リンク文言を持つ
+ok 235 - 静的生成辞書は多言語フッターの全リンク文言を持つ
   ---
-  duration_ms: 1.457587
+  duration_ms: 2.096742
   type: 'test'
   ...
 # Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
-ok 229 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+ok 236 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
   ---
-  duration_ms: 7.730583
+  duration_ms: 11.884727
   type: 'test'
   ...
 # Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
-ok 230 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+ok 237 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
   ---
-  duration_ms: 3.62218
+  duration_ms: 5.625401
   type: 'test'
   ...
 # Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
-ok 231 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+ok 238 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
   ---
-  duration_ms: 2.193327
+  duration_ms: 3.121758
   type: 'test'
   ...
-1..231
-# tests 231
+1..238
+# tests 238
 # suites 0
-# pass 224
-# fail 7
+# pass 236
+# fail 2
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1227.737917
+# duration_ms 1589.586897
 
 === 公開記事の検索意図・内部リンク正規化 ===
 記事検索意図・内部リンク監査: 140件
@@ -255,6 +316,5 @@ ok 231 - 多言語トップの利用者向け静的文言へ別言語の文字�
 - max-image-preview:large更新: 0件
 
 事前検証で失敗した工程:
-- 生成物の再現性検証
 - 全回帰テスト
 - 圧縮後の全回帰テスト
