@@ -1,7 +1,14 @@
 ﻿# AGENTS.md - Instructions for Jules & AI Agents
 
 ## 1. Project Overview
-This repository is an experimental project by **katakata0522**.
+This repository is the **production source of truth** for PlayPoint by **katakata0522**.
+- **Public site:** https://playpoint-sim.com/
+- **GitHub:** https://github.com/katakata0522/PlayPoint
+- **Local path:** `C:\Users\tomok\PlayPoint`
+- **Deploy:** This repo's GitHub Actions → Xserver (NOT `cli-auto`)
+- **Legacy warning:** `cli-auto/PlayPoint` is archive-only. Do not treat it as production.
+- **Test triage:** See `docs/TEST_TRIAGE.md`
+
 The goal is to create **high-quality, robust, and monetizeable** applications.
 
 ## 2. Critical Rules (Strictly Prohibited)

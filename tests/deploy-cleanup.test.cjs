@@ -87,10 +87,22 @@ test('全階層のindex.htmlを階層を保った正規URLへ301転送する', (
 });
 
 test('デプロイスクリプトのBash構文が有効である', (t) => {
-  const result = spawnSync('bash', ['-n', scriptPath], { encoding: 'utf8' });
+  // Git Bash 等は Windows パスのバックスラッシュを壊すため、POSIX 風パスへ変換する
+  const bashScriptPath = process.platform === 'win32'
+    ? `/${scriptPath.replace(/\\/g, '/').replace(/^([A-Za-z]):/, (_, drive) => drive.toLowerCase())}`
+    : scriptPath;
+  const result = spawnSync('bash', ['-n', bashScriptPath], { encoding: 'utf8' });
   if (result.error && result.error.code === 'ENOENT') {
     t.skip('bashがない環境ではGitHub Actions上の検査に委ねます');
     return;
+  }
+  // パス変換後も bash が解釈できない場合（MSYS無しの bash 等）は CI に委ねる
+  if (result.status !== 0 && process.platform === 'win32') {
+    const detail = `${result.stderr || ''}${result.stdout || ''}`;
+    if (/No such file or directory|cannot open/i.test(detail)) {
+      t.skip(`Windows 上の bash がスクリプトパスを解決できないためスキップ: ${detail.trim()}`);
+      return;
+    }
   }
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });

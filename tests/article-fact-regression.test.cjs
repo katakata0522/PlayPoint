@@ -74,3 +74,27 @@ test('終了済みの2025年末から2026年正月予測には履歴記事の明
   assert.match(html, /(?:予測対象期間|当時の予測期間|2025年末の予測)(?:は|が)?(?:すでに)?終了/);
   assert.match(html, /過去(?:の開始日や倍率|傾向|予測)/);
 });
+
+// 旧 jp-guide-batch-20260805 から、計算・参加条件の誤案内防止に直結する要点だけ残す
+test('日本語ランク総合記事は5段階としきい値の違いを説明する', () => {
+  const html = readArticle('2026-08-05-play-points-levels-guide.html');
+  for (const term of ['ブロンズ', 'シルバー', 'ゴールド', 'プラチナ', 'ダイヤモンド']) {
+    assert.match(html, new RegExp(term));
+  }
+  for (const threshold of ['250', '1,000', '4,000', '15,000']) {
+    assert.match(html, new RegExp(threshold));
+  }
+  assert.match(html, /使えるポイント残高|年間のレベル進捗/);
+});
+
+test('倍率記事は直接レートと倍率入力を足し合わせない', () => {
+  const html = readArticle('2026-08-05-play-points-multiplier-stacking.html');
+  assert.match(html, /高い方|いずれか高い|max|最大/);
+  assert.doesNotMatch(html, /レートに倍率を掛けてさらに加算|加算して合算/);
+});
+
+test('参加できない記事は条件を順番に切り分け、国変更を万能策にしない', () => {
+  const html = readArticle('2026-08-05-play-points-cannot-join.html');
+  assert.match(html, /管理されていないGoogleアカウント|有効な支払い方法|請求先住所|Google Playの国/);
+  assert.doesNotMatch(html, /国を変更すれば必ず/);
+});

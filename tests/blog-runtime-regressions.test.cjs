@@ -6,9 +6,11 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const blogScript = fs.readFileSync(path.join(root, 'blog/script.js'), 'utf8');
-const blogIndex = fs.readFileSync(path.join(root, 'blog/index.html'), 'utf8');
-const browserSmoke = fs.readFileSync(path.join(root, '.github/scripts/browser-smoke.cjs'), 'utf8');
+// Windows の CRLF でもマーカー検索が壊れないよう LF に正規化する
+const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
+const blogScript = readText('blog/script.js');
+const blogIndex = readText('blog/index.html');
+const browserSmoke = readText('.github/scripts/browser-smoke.cjs');
 
 function functionBody(source, startMarker, endMarker) {
   const start = source.indexOf(startMarker);
@@ -75,10 +77,11 @@ test('browser smoke covers the blog runtime flow', () => {
 test('production revision verification retries IPv4 network errors', () => {
   assert.match(browserSmoke, /family: 4/);
   assert.match(browserSmoke, /function requestRevisionText\(url\)/);
+  // 終端は改行数に依存せず main 定義の直前まで取る
   const body = functionBody(
     browserSmoke,
     'async function verifyRevision(baseUrl) {',
-    '\n\nasync function main() {'
+    'async function main() {'
   );
   assert.match(body, /attempt <= 4/);
   assert.match(body, /catch \(error\)/);
