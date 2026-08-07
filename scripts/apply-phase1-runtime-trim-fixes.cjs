@@ -24,6 +24,12 @@ function patchServiceWorkerVersioning() {
   let source = read('scripts/asset-sync.cjs');
   source = replaceOnce(
     source,
+    `const ROOT_SERVICE_WORKER_ASSETS = [\n  { versionKey: 'cssVersion', assetPath: './style.css' },\n  { versionKey: 'consentVersion', assetPath: './js/consent.js' },\n  { versionKey: 'thirdPartyVersion', assetPath: './js/third-party.js' },\n  { versionKey: 'intentTrackingVersion', assetPath: './js/intent-tracking.js' },\n  { versionKey: 'blogCssVersion', assetPath: './blog/style.css' },\n  { versionKey: 'blogScriptVersion', assetPath: './blog/script.js' },\n  { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },\n  { versionKey: 'articleScriptVersion', assetPath: './blog/article.js' },\n  { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },\n  { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },\n  { versionKey: 'mainVersion', assetPath: './js/main.js' },\n  { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }\n];`,
+    `const ROOT_SERVICE_WORKER_ASSETS = [\n  { versionKey: 'cssVersion', assetPath: './style.css' },\n  { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },\n  { versionKey: 'mainVersion', assetPath: './js/main.js' },\n  { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }\n];`,
+    'Service Worker cache revision inputs'
+  );
+  source = replaceOnce(
+    source,
     '    content = replaceAssetVersion(content, assetPath, versions[versionKey]);\n',
     '    content = replaceOptionalAssetVersion(content, assetPath, versions[versionKey]);\n',
     'Service Worker optional asset versioning'
@@ -46,6 +52,29 @@ function patchPreloadRegression() {
     'explicit diary preload exclusion'
   );
   write('tests/playpoint-audit-fixes.test.cjs', source);
+}
+
+function patchRuntimeAssetRegression() {
+  let source = read('tests/playpoint-regression.test.cjs');
+  source = replaceOnce(
+    source,
+    "  const { createFileRevision } = require(path.join(root, 'scripts', 'asset-sync.cjs'));\n  const componentsVersion = createFileRevision(root, 'blog/components.js');\n  const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');\n  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');\n",
+    "  const { createFileRevision } = require(path.join(root, 'scripts', 'asset-sync.cjs'));\n  const componentsVersion = createFileRevision(root, 'blog/components.js');\n  const articleSharedVersion = createFileRevision(root, 'articles/article-shared.css');\n  const articleScriptVersion = createFileRevision(root, 'blog/article.js');\n  const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');\n  const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');\n",
+    'runtime asset direct content versions'
+  );
+  source = replaceOnce(
+    source,
+    "  const articleSharedVersion = sw.match(/\\.\\/articles\\/article-shared\\.css\\?v=([0-9_a-z-]+)/)?.[1];\n  assert.ok(articleSharedVersion, 'sw.js does not version article-shared.css');\n  assert.match(sw, /\\.\\/blog\\/article\\.js\\?v=[0-9_a-z-]+/);\n",
+    "  assert.ok(articleSharedVersion, 'article-shared.css content hash is missing');\n  assert.ok(articleScriptVersion, 'article.js content hash is missing');\n  assert.doesNotMatch(sw, /\\.\\/articles\\/article-shared\\.css/, 'article-shared.css should be runtime-cached, not precached');\n  assert.doesNotMatch(sw, /\\.\\/blog\\/article\\.js/, 'article.js should be runtime-cached, not precached');\n",
+    'runtime assets are versioned outside Service Worker precache'
+  );
+  source = replaceOnce(
+    source,
+    "    assert.match(html, /\\.\\.\\/blog\\/article\\.js\\?v=[0-9_a-z-]+/, `${file} does not version article.js`);\n",
+    "    assert.ok(html.includes(`../blog/article.js?v=${articleScriptVersion}`), `${file} does not match article.js content hash`);\n",
+    'article script content hash assertion'
+  );
+  write('tests/playpoint-regression.test.cjs', source);
 }
 
 function strengthenLazyDiaryRegression() {
@@ -72,6 +101,7 @@ function strengthenBrowserCacheCheck() {
 
 patchServiceWorkerVersioning();
 patchPreloadRegression();
+patchRuntimeAssetRegression();
 strengthenLazyDiaryRegression();
 strengthenBrowserCacheCheck();
-console.log('Aligned lazy diary regressions and Service Worker content versioning.');
+console.log('Aligned lazy diary regressions, runtime asset versioning, and Service Worker cache revision inputs.');
