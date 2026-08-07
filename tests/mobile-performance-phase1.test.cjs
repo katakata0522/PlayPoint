@@ -9,7 +9,9 @@ const path = require('node:path');
 const rootDir = path.join(__dirname, '..');
 const {
   HARD_BUDGETS,
+  MINIMUM_SAMPLES,
   TARGETS,
+  evaluateProfileGroup,
   getProfile
 } = require('../.github/scripts/mobile-performance-budget.cjs');
 const {
@@ -33,19 +35,88 @@ function createTempRoot() {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-phase1-'));
 }
 
+function writeLighthouseReport(directory, name, metrics) {
+  const filePath = path.join(directory, name);
+  fs.writeFileSync(filePath, JSON.stringify({
+    finalUrl: 'https://playpoint-sim.com/',
+    categories: { performance: { score: metrics.performanceScore } },
+    audits: {
+      'largest-contentful-paint': { numericValue: metrics.largestContentfulPaintMs },
+      'total-blocking-time': { numericValue: metrics.totalBlockingTimeMs },
+      'cumulative-layout-shift': { numericValue: metrics.cumulativeLayoutShift },
+      'total-byte-weight': { numericValue: metrics.totalByteWeight }
+    }
+  }));
+  return filePath;
+}
+
+function calculatorMetrics(lcp) {
+  return {
+    performanceScore: 0.83,
+    largestContentfulPaintMs: lcp,
+    totalBlockingTimeMs: 5,
+    cumulativeLayoutShift: 0.07,
+    totalByteWeight: 295000
+  };
+}
+
 test('低性能Androidのハード予算が旧基準より厳しく、ページ別に設定されている', () => {
-  assert.equal(getProfile('calculator-home.json'), 'calculatorHome');
+  assert.equal(getProfile('calculator-home-1.json'), 'calculatorHome');
   assert.equal(getProfile('article-hub.json'), 'articleHub');
   assert.equal(getProfile('representative-article.json'), 'representativeArticle');
 
   assert.ok(HARD_BUDGETS.calculatorHome.performanceScore >= 0.65);
   assert.ok(HARD_BUDGETS.calculatorHome.largestContentfulPaintMs <= 3600);
+  assert.equal(MINIMUM_SAMPLES.calculatorHome, 3);
   assert.ok(HARD_BUDGETS.articleHub.totalBlockingTimeMs <= 1200);
   assert.ok(HARD_BUDGETS.representativeArticle.totalBlockingTimeMs <= 800);
   assert.ok(HARD_BUDGETS.representativeArticle.cumulativeLayoutShift <= 0.15);
   assert.ok(HARD_BUDGETS.default.totalByteWeight <= 350 * 1024);
   assert.equal(TARGETS.largestContentfulPaintMs, 2500);
   assert.equal(TARGETS.cumulativeLayoutShift, 0.10);
+});
+
+test('トップページは3回の中央値で判定し、単発の遅い外れ値に左右されない', () => {
+  const tempRoot = createTempRoot();
+  try {
+    const reports = [3500, 3550, 5000].map((lcp, index) =>
+      writeLighthouseReport(tempRoot, `calculator-home-${index + 1}.json`, calculatorMetrics(lcp))
+    );
+    const result = evaluateProfileGroup('calculatorHome', reports);
+    assert.equal(result.aggregation, 'median');
+    assert.equal(result.sampleCount, 3);
+    assert.equal(result.metrics.largestContentfulPaintMs, 3550);
+    assert.deepEqual(result.failures, []);
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('トップページは3回中2回が上限超過なら中央値で失敗する', () => {
+  const tempRoot = createTempRoot();
+  try {
+    const reports = [3500, 3700, 3800].map((lcp, index) =>
+      writeLighthouseReport(tempRoot, `calculator-home-${index + 1}.json`, calculatorMetrics(lcp))
+    );
+    const result = evaluateProfileGroup('calculatorHome', reports);
+    assert.equal(result.metrics.largestContentfulPaintMs, 3700);
+    assert.ok(result.failures.some(failure => failure.includes('largestContentfulPaintMs')));
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('トップページの測定が3回未満なら性能値に関係なく失敗する', () => {
+  const tempRoot = createTempRoot();
+  try {
+    const reports = [3400, 3450].map((lcp, index) =>
+      writeLighthouseReport(tempRoot, `calculator-home-${index + 1}.json`, calculatorMetrics(lcp))
+    );
+    const result = evaluateProfileGroup('calculatorHome', reports);
+    assert.ok(result.failures.some(failure => failure.includes('sampleCount')));
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
 });
 
 test('Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を抽出する', () => {
@@ -109,12 +180,15 @@ test('Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を�
   assert.deepEqual(topOpportunities(report).map(item => item.id), ['unused-javascript']);
 });
 
-test('性能ワークフローが本番同等成果物・記事一覧・診断アーティファクトを検査する', () => {
+test('性能ワークフローが本番同等成果物・3回測定・記事一覧・診断アーティファクトを検査する', () => {
   const workflow = read('.github/workflows/mobile-performance.yml');
   assert.match(workflow, /pull_request:/);
   assert.match(workflow, /http:\/\/127\.0\.0\.1:4173/);
   assert.match(workflow, /Prepare production-like local assets/);
   assert.match(workflow, /node \.github\/scripts\/minify\.cjs/);
+  assert.match(workflow, /audit_page calculator-home-1 \//);
+  assert.match(workflow, /audit_page calculator-home-2 \//);
+  assert.match(workflow, /audit_page calculator-home-3 \//);
   assert.match(workflow, /audit_page article-hub \/blog\//);
   assert.match(workflow, /blocked-url-patterns=https:\/\/www\.googletagmanager\.com\/\*/);
   assert.match(workflow, /AUDIT_TARGET.*local/);
