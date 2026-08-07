@@ -1,5 +1,8 @@
 name: Low-end Android performance
 
+# Phase 1 verified baseline (6x CPU slowdown, production-like minified assets):
+# calculator median LCP 2.259s / 245KB, article hub LCP 1.952s / 140KB,
+# representative article LCP 1.880s / CLS 0.0039.
 on:
   workflow_dispatch:
     inputs:
