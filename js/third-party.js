@@ -139,9 +139,9 @@
 
     // Consent Modeのデフォルト状態をGoogleタグより先に確定し、広告自体はその直後にasyncで準備する。
     void ensureConsentManager()
-        .catch((error) => console.error('Consent manager load failed:', error))
-        .finally(() => {
+        .then(() => {
             void loadAdsense();
-        });
+        })
+        .catch((error) => console.error('Consent manager load failed:', error));
     scheduleAnalyticsLoad();
 })();

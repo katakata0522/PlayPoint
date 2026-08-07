@@ -153,7 +153,7 @@ test('AdSenseは人工的に待たせず、計測だけを低優先度で遅延�
   assert.match(source, /await loadScript\(\s*ADSENSE_SCRIPT_SRC,\s*\{\s*crossorigin:\s*'anonymous'\s*\}\s*\)/s);
   assert.match(source, /window\.gtag\('set', \{ display_mode: getDisplayMode\(\) \}\);/);
   assert.match(source, /void ensureConsentManager\(\)/);
-  assert.match(source, /\.finally\(\(\) => \{\s*void loadAdsense\(\);\s*\}\)/s);
+  assert.match(source, /\.then\(\(\) => \{\s*void loadAdsense\(\);\s*\}\)\s*\.catch/s);
   assert.ok(source.indexOf('void ensureConsentManager()') < source.indexOf('void loadAdsense();'));
   assert.match(source, /window\.addEventListener\('load', scheduleAfterLoad, \{ once: true \}\)/);
 });

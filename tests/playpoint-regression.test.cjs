@@ -1093,7 +1093,7 @@ test('第三者スクリプトはConsent Mode初期化後に広告を早期準�
   const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
 
   assert.ok(script.includes('void ensureConsentManager()'));
-  assert.ok(script.includes('.finally(() => {'));
+  assert.ok(script.includes('.then(() => {'));
   assert.ok(script.includes('void loadAdsense();'));
   assert.ok(script.includes("window.addEventListener('load', scheduleAfterLoad, { once: true })"));
   assert.ok(script.includes('scheduleAnalyticsLoad();'));
@@ -1439,7 +1439,7 @@ test('AdSenseタグはConsent Mode初期化後に非同期で早期準備する'
 
   assert.ok(script.includes('ensureConsentManager()'));
   assert.ok(script.includes('void ensureConsentManager()'));
-  assert.ok(script.includes('.finally(() => {'));
+  assert.ok(script.includes('.then(() => {'));
   assert.ok(script.includes('void loadAdsense();'));
   assert.ok(script.includes("{ crossorigin: 'anonymous' }"));
   assert.ok(!script.includes('ADSENSE_DELAY_MS'));
@@ -1904,7 +1904,7 @@ test('記事とブログのAdSenseはConsent Mode初期化後に共通コンポ�
   assert.ok(components.includes('function loadBlogAdsense()'));
   assert.ok(components.includes('if (!isBlogPage && !isArticlePageTop) return;'));
   assert.ok(components.includes('void ensureConsentManager()'));
-  assert.ok(components.includes('.finally(() => {'));
+  assert.ok(components.includes('.then(() => {'));
   assert.ok(components.includes('loadBlogAdsense();'));
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
@@ -1924,7 +1924,7 @@ test('ブログと記事は共通コンポーネントからGA4本体を読み�
   assert.ok(components.includes("window.gtag('config', GA_MEASUREMENT_ID)"));
   assert.ok(components.includes('if (!isBlogPage && !isArticlePageTop) return;'));
   assert.ok(components.includes('void ensureConsentManager()'));
-  assert.ok(components.includes('.finally(() => {'));
+  assert.ok(components.includes('.then(() => {'));
   assert.ok(!components.includes('window.scrollY < 600'));
   assert.ok(blogHtml.includes('components.js'));
   assert.ok(!blogHtml.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'));

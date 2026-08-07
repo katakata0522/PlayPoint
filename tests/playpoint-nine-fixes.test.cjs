@@ -81,11 +81,12 @@ test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
   assert.ok(main.includes('void loadAdsense();'));
   assert.ok(main.includes('scheduleAnalyticsLoad();'));
   assert.ok(!main.includes('ADSENSE_DELAY_MS'));
-  assert.ok(main.includes('.finally(() => {'));
+  assert.ok(main.includes('.then(() => {'));
   assert.ok(main.indexOf('void ensureConsentManager()') < main.indexOf('void loadAdsense();'));
   assert.ok(blog.includes('PlayPointConsent.whenGranted'));
   assert.ok(article.includes("window.PlayPointConsent.getStatus() === 'granted'"));
   assert.ok(blog.includes('if (!isBlogPage && !isArticlePageTop) return;'));
+  assert.ok(blog.includes(`js/consent.js?v=${createFileRevision(root, 'js/consent.js')}`));
   assert.ok(privacy.includes('プライバシー設定'));
   assert.ok(privacy.includes(`js/consent.js?v=${createFileRevision(root, 'js/consent.js')}`));
   assert.ok(!privacy.includes('許可を与えたものとみなします'));

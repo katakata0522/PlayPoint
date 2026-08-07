@@ -29,7 +29,7 @@
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=20260727a';
+            script.src = rootPath + 'js/consent.js?v=55813d3bcb';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -111,14 +111,14 @@
         blogAdsenseLoaded = true;
     }
 
-function setupBlogAdsense() {
-    if (!isBlogPage && !isArticlePageTop) return;
-    void ensureConsentManager()
-        .catch((error) => console.error('Consent manager load failed:', error))
-        .finally(() => {
-            loadBlogAdsense();
-        });
-}
+    function setupBlogAdsense() {
+        if (!isBlogPage && !isArticlePageTop) return;
+        void ensureConsentManager()
+            .then(() => {
+                loadBlogAdsense();
+            })
+            .catch((error) => console.error('Consent manager load failed:', error));
+    }
 
     // ===========================================
     // Common Styles Injection
