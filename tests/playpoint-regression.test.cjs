@@ -1887,16 +1887,19 @@ test('日記保存イベントはストレージ保存成功時だけ送る', ()
   assert.ok(script.includes('if (!this.saveDiaryData(data)) return;'));
 });
 
-test('記事のAdSenseは本文スクロール後に共通スクリプトから読み込む', () => {
+test('記事のAdSenseは固定スクロール量を待たず同意状態に従ってasync読み込みする', () => {
   const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
   const articleFiles = fs.readdirSync(path.join(root, 'articles'))
     .filter(file => file.endsWith('.html'));
 
   assert.ok(articleScript.includes('function loadArticleAdsense()'));
-  assert.ok(articleScript.includes('window.scrollY < 600'));
+  assert.ok(articleScript.includes('PlayPointConsent.whenGranted(loadArticleAdsense)'));
+  assert.ok(articleScript.includes("document.addEventListener('playpoint:consent-ready'"));
+  assert.ok(articleScript.includes('script.async = true'));
+  assert.ok(!/window\.scrollY\s*<\s*600/.test(articleScript));
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
-    assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} loads AdSense before article engagement`);
+    assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} should delegate AdSense loading to the shared script`);
   }
 });
 

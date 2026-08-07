@@ -37,6 +37,16 @@
             .catch((error) => console.error('Consent manager load failed:', error));
     }
 
+    function getDisplayMode() {
+        if (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) {
+            return 'standalone';
+        }
+        if (window.navigator && window.navigator.standalone === true) {
+            return 'standalone';
+        }
+        return 'browser';
+    }
+
     // 記事ページにもブログで選んだテーマとカテゴリー配色を引き継ぐ
     function applyArticlePresentationSettings() {
         if (!window.location.pathname.includes('/articles/')) return;
@@ -66,6 +76,7 @@
             window.dataLayer.push(arguments);
         };
         window.gtag('js', new Date());
+        window.gtag('set', { app_display_mode: getDisplayMode() });
         window.gtag('config', GA_MEASUREMENT_ID);
 
         if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
@@ -87,25 +98,23 @@
     function loadBlogAdsense() {
         if (blogAdsenseLoaded) return;
         blogAdsenseLoaded = true;
-        window.removeEventListener('scroll', handleBlogAdsenseScroll);
         if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
 
         const script = document.createElement('script');
         script.async = true;
         script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
         script.crossOrigin = 'anonymous';
-        script.onerror = () => console.error('AdSense load failed');
+        script.onerror = () => {
+            blogAdsenseLoaded = false;
+            console.error('AdSense load failed');
+        };
         document.head.appendChild(script);
-    }
-
-    function handleBlogAdsenseScroll() {
-        if (window.scrollY < 600) return;
-        void runAfterConsent(loadBlogAdsense);
     }
 
     function setupBlogAdsense() {
         if (!window.location.pathname.includes('/blog')) return;
-        window.addEventListener('scroll', handleBlogAdsenseScroll, { passive: true });
+        // 固定600pxのスクロール条件を置かず、同意状態に従ってasync取得を開始する。
+        void runAfterConsent(loadBlogAdsense);
     }
 
     // ===========================================
