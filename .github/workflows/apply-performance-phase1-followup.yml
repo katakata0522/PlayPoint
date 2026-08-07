@@ -36,13 +36,41 @@ jobs:
           node scripts/apply-performance-phase1-followup.cjs
           node - <<'NODE'
           const fs = require('node:fs');
-          const file = 'tests/mobile-performance-phase1.test.cjs';
-          let content = fs.readFileSync(file, 'utf8');
-          const before = "    assert.equal((html.match(/article-calculator-prompt/g) || []).length, 2, 'asideと内部クラスに一度ずつ現れる');";
-          const after = "    assert.equal((html.match(/<aside class=\\\"article-calculator-prompt cta-box\\\"/g) || []).length, 1);";
-          if (!content.includes(before)) throw new Error('static prompt assertion target was not found');
-          content = content.replace(before, after);
-          fs.writeFileSync(file, content);
+
+          const phaseFile = 'tests/mobile-performance-phase1.test.cjs';
+          let phaseContent = fs.readFileSync(phaseFile, 'utf8');
+          const phaseBefore = "    assert.equal((html.match(/article-calculator-prompt/g) || []).length, 2, 'asideと内部クラスに一度ずつ現れる');";
+          const phaseAfter = "    assert.equal((html.match(/<aside class=\\\"article-calculator-prompt cta-box\\\"/g) || []).length, 1);";
+          if (!phaseContent.includes(phaseBefore)) throw new Error('static prompt assertion target was not found');
+          phaseContent = phaseContent.replace(phaseBefore, phaseAfter);
+          fs.writeFileSync(phaseFile, phaseContent);
+
+          const auditFile = 'tests/playpoint-audit-fixes.test.cjs';
+          let auditContent = fs.readFileSync(auditFile, 'utf8');
+          const auditPattern = /test\('初期操作に必要なアプリモジュールは依存解析前から取得を開始する',[\s\S]*?\n\}\);\n\ntest\('日記の重複通知を表示せず、カレンダー登録は残す'/;
+          const matches = auditContent.match(auditPattern);
+          if (!matches) throw new Error('modulepreload regression test target was not found');
+          const auditReplacement = `test('初期操作に必要なアプリモジュールは内容ハッシュ付きで先読みする', () => {
+            const expectedModules = ['config.js', 'ui.js', 'diary.js', 'share.js', 'calculator.js'];
+            for (const [file, prefix] of [['index.html', ''], ['en/index.html', '../'], ['ko/index.html', '../'], ['tw/index.html', '../']]) {
+              const html = read(file);
+              for (const moduleName of expectedModules) {
+                assert.match(
+                  html,
+                  new RegExp(\`<link rel="modulepreload" href="\${prefix}js/\${moduleName}\\\\?v=[a-f0-9]{10}">\`),
+                  \`\${file}: \${moduleName}\`
+                );
+              }
+              const preloadMain = html.match(new RegExp(\`<link rel="modulepreload" href="\${prefix}js/main\\\\.js\\\\?v=([a-f0-9]{10})">\`));
+              const executedMain = html.match(new RegExp(\`<script type="module" src="\${prefix}js/main\\\\.js\\\\?v=([a-f0-9]{10})"></script>\`));
+              assert.ok(preloadMain && executedMain, \`\${file}: main.jsの先読みまたは実行タグがありません\`);
+              assert.equal(preloadMain[1], executedMain[1], \`\${file}: main.jsを異なるURLで二重取得します\`);
+            }
+          });
+
+          test('日記の重複通知を表示せず、カレンダー登録は残す'`;
+          auditContent = auditContent.replace(auditPattern, auditReplacement);
+          fs.writeFileSync(auditFile, auditContent);
           NODE
 
       - name: Verify patched JavaScript syntax
@@ -52,6 +80,7 @@ jobs:
           node --check .github/scripts/lighthouse-diagnostics.cjs
           node --check scripts/article-asset-versioning.cjs
           node --check scripts/article-static-usability.cjs
+          node --check tests/playpoint-audit-fixes.test.cjs
 
       - name: Synchronize generated HTML and asset revisions
         run: node scripts/build-html.js
@@ -68,7 +97,7 @@ jobs:
           unexpected=0
           while IFS= read -r file; do
             case "$file" in
-              .github/scripts/browser-smoke.cjs|tests/mobile-performance-phase1.test.cjs|style.css|blog/script.js|blog/index-compact.css|articles/article-shared.css|sw.js|feed.xml|atom.xml|sitemap.xml|blog/sitemap.xml|*.html|*/*.html|*/*/*.html|scripts/apply-performance-phase1-followup.cjs|.github/workflows/apply-performance-phase1-followup.yml)
+              .github/scripts/browser-smoke.cjs|tests/mobile-performance-phase1.test.cjs|tests/playpoint-audit-fixes.test.cjs|style.css|blog/script.js|blog/index-compact.css|articles/article-shared.css|sw.js|feed.xml|atom.xml|sitemap.xml|blog/sitemap.xml|*.html|*/*.html|*/*/*.html|scripts/apply-performance-phase1-followup.cjs|.github/workflows/apply-performance-phase1-followup.yml)
                 ;;
               *)
                 echo "Unexpected generated change: $file"
@@ -87,6 +116,22 @@ jobs:
           git add -u
           git diff --cached --stat
           git commit -m "実測に基づき初期描画とモバイル転送量を改善"
+
+      - name: Diagnose generator reproducibility
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/verify-build-output.cjs > /tmp/repro.log 2>&1
+          status=$?
+          cat /tmp/repro.log
+          if [[ "$status" -ne 0 ]]; then
+            echo '--- generated diff names ---'
+            git diff --name-only
+            echo '--- generated diff summary ---'
+            git diff --stat
+          fi
+          git reset --hard HEAD
+          exit "$status"
 
       - name: Run focused and full regression tests
         shell: bash
