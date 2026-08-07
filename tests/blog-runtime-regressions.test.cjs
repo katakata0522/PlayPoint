@@ -70,3 +70,17 @@ test('browser smoke covers the blog runtime flow', () => {
     /Blog initial render, search, reset, pagination, category and sidebar/
   );
 });
+
+
+test('production revision verification retries IPv4 network errors', () => {
+  assert.match(browserSmoke, /family: 4/);
+  assert.match(browserSmoke, /function requestRevisionText\(url\)/);
+  const body = functionBody(
+    browserSmoke,
+    'async function verifyRevision(baseUrl) {',
+    '\n\nasync function main() {'
+  );
+  assert.match(body, /attempt <= 4/);
+  assert.match(body, /catch \(error\)/);
+  assert.match(body, /lastError = error/);
+});
