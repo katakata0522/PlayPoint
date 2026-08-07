@@ -1,4 +1,4 @@
-name: Temporary diagnose ads and PWA analytics
+name: Temporary sync ads and PWA analytics
 
 on:
   push:
@@ -9,13 +9,15 @@ permissions:
   contents: write
 
 jobs:
-  diagnose:
+  sync:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Update regression expectations and analytics docs
         run: node .github/scripts/temp-sync-ads-pwa.cjs
@@ -23,24 +25,19 @@ jobs:
       - name: Synchronize generated files
         run: node scripts/build-html.js
 
-      - name: Locate stale third-party expectation
+      - name: Create local synchronized commit
         run: |
-          grep -R -n -C 8 -E "第三者スクリプトは同意管理を先に初期化してから遅延読込する|third-party.js still loads before DOMContentLoaded" tests || true
-
-      - name: Verify source syntax before minify
-        run: node .github/scripts/verify-js-syntax.cjs
-
-      - name: Minify public assets
-        run: node .github/scripts/minify.cjs
-
-      - name: Diagnose article syntax after minify
-        run: |
-          if node .github/scripts/verify-js-syntax.cjs; then
-            echo "圧縮後のJavaScript構文は正常です。"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "同期対象の差分はありません。"
           else
-            echo "--- blog/article.js lines 45-90 ---"
-            nl -ba blog/article.js | sed -n '45,90p'
-            echo "--- blog/article.js lines 1-120 ---"
-            nl -ba blog/article.js | sed -n '1,120p'
-            exit 1
+            git commit -m "広告読込改善の生成物と回帰テストを同期"
           fi
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push synchronized commit
+        run: git push origin HEAD:optimize/adsense-pwa-revenue-20260807
