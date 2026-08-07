@@ -1,0 +1,162 @@
+name: Finalize performance phase 1 permanent changes
+
+on:
+  push:
+    branches:
+      - perf/phase1-mobile-stability-20260807
+    paths:
+      - .github/workflows/apply-performance-phase1-final4.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: finalize-performance-phase1-permanent
+  cancel-in-progress: false
+
+jobs:
+  finalize-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout performance branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: perf/phase1-mobile-stability-20260807
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+
+      - name: Apply measured first-party improvements
+        run: node scripts/apply-performance-phase1-followup.cjs
+
+      - name: Verify patched sources
+        run: |
+          node --check blog/script.js
+          node --check .github/scripts/browser-smoke.cjs
+          node --check .github/scripts/lighthouse-diagnostics.cjs
+          node --check scripts/article-asset-versioning.cjs
+          node --check scripts/article-static-usability.cjs
+          node --check tests/mobile-performance-phase1.test.cjs
+          node --check tests/playpoint-audit-fixes.test.cjs
+
+      - name: Synchronize generated output
+        run: node scripts/build-html.js
+
+      - name: Remove temporary patch automation
+        shell: bash
+        run: |
+          git rm -f --ignore-unmatch \
+            scripts/apply-performance-phase1-followup.cjs \
+            scripts/apply-performance-audit-output.cjs \
+            .github/workflows/apply-performance-phase1-followup.yml \
+            .github/workflows/apply-performance-phase1-final.yml \
+            .github/workflows/apply-performance-phase1-final2.yml \
+            .github/workflows/apply-performance-phase1-final3.yml \
+            .github/workflows/apply-performance-phase1-final4.yml
+
+      - name: Create clean local commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --stat
+          git commit -m "実測に基づき初期描画とモバイル転送量を改善"
+
+      - name: Verify generator reproducibility
+        run: node .github/scripts/verify-build-output.cjs
+
+      - name: Run complete repository preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Install browser driver
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify calculator and mobile article hub in Chromium
+        run: node .github/scripts/browser-smoke.cjs
+
+      - name: Prepare deploy-equivalent compressed assets
+        run: node .github/scripts/minify.cjs
+
+      - name: Start local server for Lighthouse
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/playpoint-performance-server.log 2>&1 &
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 0.5
+          done
+          cat /tmp/playpoint-performance-server.log
+          exit 1
+
+      - name: Measure strengthened low-end Android budgets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p performance-artifacts
+          blocked_flags=(
+            '--blocked-url-patterns=https://www.googletagmanager.com/*'
+            '--blocked-url-patterns=https://www.google-analytics.com/*'
+            '--blocked-url-patterns=https://analytics.google.com/*'
+            '--blocked-url-patterns=https://stats.g.doubleclick.net/*'
+            '--blocked-url-patterns=https://pagead2.googlesyndication.com/*'
+            '--blocked-url-patterns=https://googleads.g.doubleclick.net/*'
+          )
+          audit_page() {
+            local name="$1"
+            local page_path="$2"
+            npx --yes lighthouse@13.3.0 "http://127.0.0.1:4173${page_path}" \
+              --only-categories=performance \
+              --form-factor=mobile \
+              --throttling.cpuSlowdownMultiplier=6 \
+              --output=json \
+              --output-path="performance-artifacts/${name}.json" \
+              --chrome-flags="--headless --no-sandbox --disable-gpu" \
+              --max-wait-for-load=45000 \
+              "${blocked_flags[@]}" \
+              --quiet
+          }
+          audit_page calculator-home /
+          audit_page article-hub /blog/
+          audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
+          node .github/scripts/lighthouse-diagnostics.cjs \
+            performance-artifacts/calculator-home.json \
+            performance-artifacts/article-hub.json \
+            performance-artifacts/representative-article.json \
+            --output-dir performance-artifacts
+          node .github/scripts/mobile-performance-budget.cjs \
+            performance-artifacts/calculator-home.json \
+            performance-artifacts/article-hub.json \
+            performance-artifacts/representative-article.json
+
+      - name: Upload final Lighthouse evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: phase1-final-lighthouse-${{ github.run_id }}
+          path: performance-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Restore source tree and clean local artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git reset --hard HEAD
+          rm -rf node_modules browser-smoke-artifacts performance-artifacts
+          test -z "$(git status --porcelain)"
+
+      - name: Push verified result
+        run: git push origin HEAD:perf/phase1-mobile-stability-20260807
