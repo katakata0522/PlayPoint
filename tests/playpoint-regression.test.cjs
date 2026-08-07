@@ -895,27 +895,33 @@ test('Service Workerアセット同期は定義済みパスをバージョンキ
     thirdPartyVersion: 'third-v'
   });
 
-  assert.strictEqual(
-    ROOT_SERVICE_WORKER_ASSETS.filter(({ assetPath }) => assetPath !== './js/app-modules').length,
-    11
+  assert.deepStrictEqual(
+    ROOT_SERVICE_WORKER_ASSETS,
+    [
+      { versionKey: 'cssVersion', assetPath: './style.css' },
+      { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
+      { versionKey: 'mainVersion', assetPath: './js/main.js' },
+      { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }
+    ]
   );
-  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(
-    ({ versionKey, assetPath }) => versionKey === 'appModuleRevision' && assetPath === './js/app-modules'
-  ));
   for (const expected of [
     './style.css?v=css-v',
-    './js/consent.js?v=consent-v',
-    './js/third-party.js?v=third-v',
-    './js/intent-tracking.js?v=intent-v',
-    './blog/style.css?v=blog-css-v',
-    './blog/script.js?v=blog-script-v',
-    './blog/components.js?v=blog-components-v',
-    './blog/article.js?v=article-script-v',
-    './articles/article-shared.css?v=article-v',
     './js/main-calculator-ui.js?v=main-calculator-ui-v',
     './js/main.js?v=main-v'
   ]) {
     assert.ok(updated.includes(expected), `${expected} was not synchronized`);
+  }
+  for (const optional of [
+    './js/consent.js',
+    './js/third-party.js',
+    './js/intent-tracking.js',
+    './blog/style.css',
+    './blog/script.js',
+    './blog/components.js',
+    './blog/article.js',
+    './articles/article-shared.css'
+  ]) {
+    assert.ok(updated.includes(`${optional}?v=old`), `${optional} should remain outside Service Worker shell versioning`);
   }
 });
 
@@ -1938,6 +1944,8 @@ test('公開されている全記事HTMLが必要なSEOタグと共通AdSense読
 test('ブログと記事の変更アセットはバージョン付きURLで配信する', () => {
   const { createFileRevision } = require(path.join(root, 'scripts', 'asset-sync.cjs'));
   const componentsVersion = createFileRevision(root, 'blog/components.js');
+  const articleSharedVersion = createFileRevision(root, 'articles/article-shared.css');
+  const articleScriptVersion = createFileRevision(root, 'blog/article.js');
   const blogHtml = fs.readFileSync(path.join(root, 'blog', 'index.html'), 'utf8');
   const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
   const articleFiles = fs.readdirSync(path.join(root, 'articles'))
@@ -1947,13 +1955,14 @@ test('ブログと記事の変更アセットはバージョン付きURLで配�
   assert.ok(blogHtml.includes(`components.js?v=${componentsVersion}`));
   assert.match(blogHtml, /script\.js\?v=[0-9_a-z-]+/);
   assert.ok(/playpoint-calc-v2026\d{4}/.test(sw));
-  const articleSharedVersion = sw.match(/\.\/articles\/article-shared\.css\?v=([0-9_a-z-]+)/)?.[1];
-  assert.ok(articleSharedVersion, 'sw.js does not version article-shared.css');
-  assert.match(sw, /\.\/blog\/article\.js\?v=[0-9_a-z-]+/);
+  assert.ok(articleSharedVersion, 'article-shared.css content hash is missing');
+  assert.ok(articleScriptVersion, 'article.js content hash is missing');
+  assert.doesNotMatch(sw, /\.\/articles\/article-shared\.css/, 'article-shared.css should be runtime-cached, not precached');
+  assert.doesNotMatch(sw, /\.\/blog\/article\.js/, 'article.js should be runtime-cached, not precached');
   for (const file of articleFiles) {
     const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
     assert.ok(html.includes(`article-shared.css?v=${articleSharedVersion}`), `${file} does not match sw.js article-shared.css version`);
-    assert.match(html, /\.\.\/blog\/article\.js\?v=[0-9_a-z-]+/, `${file} does not version article.js`);
+    assert.ok(html.includes(`../blog/article.js?v=${articleScriptVersion}`), `${file} does not match article.js content hash`);
     assert.ok(html.includes(`../blog/components.js?v=${componentsVersion}`), `${file} does not version components.js`);
   }
 });

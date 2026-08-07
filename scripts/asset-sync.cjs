@@ -7,14 +7,6 @@ const { replaceAssetVersion } = require('./html-replacements.cjs');
 
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
-  { versionKey: 'consentVersion', assetPath: './js/consent.js' },
-  { versionKey: 'thirdPartyVersion', assetPath: './js/third-party.js' },
-  { versionKey: 'intentTrackingVersion', assetPath: './js/intent-tracking.js' },
-  { versionKey: 'blogCssVersion', assetPath: './blog/style.css' },
-  { versionKey: 'blogScriptVersion', assetPath: './blog/script.js' },
-  { versionKey: 'blogComponentsVersion', assetPath: './blog/components.js' },
-  { versionKey: 'articleScriptVersion', assetPath: './blog/article.js' },
-  { versionKey: 'articleSharedCssVersion', assetPath: './articles/article-shared.css' },
   { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' },
   { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }
@@ -149,7 +141,7 @@ function syncServiceWorkerAssetVersions(swContent, versions, assets = ROOT_SERVI
   let content = swContent;
 
   for (const { versionKey, assetPath } of assets) {
-    content = replaceAssetVersion(content, assetPath, versions[versionKey]);
+    content = replaceOptionalAssetVersion(content, assetPath, versions[versionKey]);
   }
 
   return content;

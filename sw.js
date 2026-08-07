@@ -1,53 +1,31 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260807_1038-15fbdbac';
+const CACHE_NAME = 'playpoint-calc-v20260807_1518-327fda82';
+// 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
-  './style.css?v=08116211ba',
+  './style.css?v=ed240917f2',
   './favicon.svg',
-  './ogp.png',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './about-playpoints.html',
-  './info.html',
-  './changelog.html',
-  './attention.html',
-  './privacy.html',
-  './terms.html',
-  './sitemap.html',
-  './embed.html',
-  './latest/',
-  './author/katakata.html',
   './js/config.js',
   './js/ui.js',
-  './js/diary.js',
   './js/calculator.js',
   './js/share.js',
   './js/main-calculator-ui.js?v=fe1ecf8545',
-  './js/main.js?v=416109bf12',
+  './js/main.js?v=3f90f264ce',
+  './js/web-vitals.js',
   './js/region-navigation.js',
   './js/language-suggestion.js',
   './js/calendar-reminder.js',
   './js/pwa-install.js',
   './js/widget-referral.js',
   './js/service-worker-registration.js',
-  './js/intent-tracking.js?v=5cdd51c178',
-  './js/consent.js?v=55813d3bcb',
-  './js/third-party.js?v=30f1e46c0b',
-  './blog/style.css?v=73cb119703',
-  './blog/components.js?v=784e955c93',
-  './blog/script.js?v=8022af841c',
-  './blog/article.js?v=905d06a119',
-  './articles/article-shared.css?v=570302fe13',
   './en/',
   './ko/',
-  './tw/',
-  './articles/2026-06-20-discount-gift-cards.html',
-  './en/articles/2026-06-20-discount-gift-cards.html',
-  './ko/articles/2026-06-20-discount-gift-cards.html',
-  './tw/articles/2026-06-20-discount-gift-cards.html'
+  './tw/'
 ];
 
 // インストール時に静的アセットをキャッシュ

@@ -219,6 +219,10 @@
         };
     }
 
+    function shouldRenderArticleThumbnails() {
+        return !(window.matchMedia && window.matchMedia('(max-width: 760px)').matches);
+    }
+
     // Create AdSense ad element
     function createAdElement() {
         const adContainer = document.createElement('div');
@@ -808,6 +812,7 @@
 
 
         let articleIndex = 0;
+        const renderThumbnails = shouldRenderArticleThumbnails();
 
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
@@ -833,9 +838,15 @@
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
+            const thumbnailMarkup = renderThumbnails
+                ? `<img src="${safeThumbnail}" alt="${safeTitle}" width="600" height="400" loading="lazy" decoding="async" fetchpriority="low">`
+                : '';
+            const thumbnailClass = renderThumbnails ? 'card-thumb' : 'card-thumb card-thumb--text-only';
+            const thumbnailStyle = renderThumbnails ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
+
             card.innerHTML = `
-                <div class="card-thumb">
-                    <img src="${safeThumbnail}" alt="${safeTitle}" loading="lazy">
+                <div class="${thumbnailClass}"${thumbnailStyle}>
+                    ${thumbnailMarkup}
                     <span class="card-category badge" style="background: ${categoryColor};">${safeCategory}</span>
                     ${newBadge}
                 </div>

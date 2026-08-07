@@ -2026,3 +2026,12 @@ html:not([lang="ja"]) .ja-only {
         flex-direction: column;
     }
 }
+
+/* CALCULATION_FLOW_LAYOUT_STABILITY_START */
+.calculation-flow-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 8 / 3;
+}
+/* CALCULATION_FLOW_LAYOUT_STABILITY_END */

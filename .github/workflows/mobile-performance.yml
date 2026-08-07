@@ -1,7 +1,33 @@
 name: Low-end Android performance
 
+# Phase 1 verified baseline (6x CPU slowdown, production-like minified assets):
+# calculator median LCP 2.259s / 245KB, article hub LCP 1.952s / 140KB,
+# representative article LCP 1.880s / CLS 0.0039.
 on:
   workflow_dispatch:
+    inputs:
+      target:
+        description: Audit target
+        required: true
+        default: local
+        type: choice
+        options:
+          - local
+          - production
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'style.css'
+      - 'js/**'
+      - 'blog/**'
+      - 'articles/**'
+      - 'scripts/**'
+      - 'tests/mobile-performance-phase1.test.cjs'
+      - '.github/workflows/mobile-performance.yml'
+      - '.github/scripts/mobile-performance-budget.cjs'
+      - '.github/scripts/lighthouse-diagnostics.cjs'
   schedule:
     # 毎週月曜 05:30 JST
     - cron: '30 20 * * 0'
@@ -10,44 +36,124 @@ permissions:
   contents: read
 
 concurrency:
-  group: low-end-android-performance
+  group: low-end-android-performance-${{ github.event_name }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - name: Audit calculator with low-end Android settings
-        run: >-
-          npx --yes lighthouse@13.3.0 https://playpoint-sim.com/
-          --only-categories=performance
-          --form-factor=mobile
-          --throttling.cpuSlowdownMultiplier=6
-          --output=json
-          --output-path=home-performance.json
-          --chrome-flags="--headless --no-sandbox --disable-gpu"
-          --quiet
+      - name: Resolve audit target
+        shell: bash
+        run: |
+          set -euo pipefail
+          target=local
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            target=production
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ inputs.target }}" == "production" ]]; then
+            target=production
+          fi
 
-      - name: Audit representative article
-        run: >-
-          npx --yes lighthouse@13.3.0
-          https://playpoint-sim.com/articles/2026-03-10-play-points-reflection-timing.html
-          --only-categories=performance
-          --form-factor=mobile
-          --throttling.cpuSlowdownMultiplier=6
-          --output=json
-          --output-path=article-performance.json
-          --chrome-flags="--headless --no-sandbox --disable-gpu"
-          --quiet
+          if [[ "$target" == "production" ]]; then
+            echo 'AUDIT_BASE_URL=https://playpoint-sim.com' >> "$GITHUB_ENV"
+          else
+            echo 'AUDIT_BASE_URL=http://127.0.0.1:4173' >> "$GITHUB_ENV"
+          fi
+          echo "AUDIT_TARGET=$target" >> "$GITHUB_ENV"
 
-      - name: Enforce mobile performance budget
+      # PRでも本番デプロイと同じ圧縮成果物を測り、未圧縮ソースの大きさで誤判定しない。
+      - name: Prepare production-like local assets
+        if: env.AUDIT_TARGET == 'local'
+        run: node .github/scripts/minify.cjs
+
+      - name: Start local static server
+        if: env.AUDIT_TARGET == 'local'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/playpoint-performance-server.log 2>&1 &
+          echo $! > /tmp/playpoint-performance-server.pid
+          for attempt in {1..20}; do
+            if curl --fail --silent --show-error http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 0.5
+          done
+          cat /tmp/playpoint-performance-server.log
+          exit 1
+
+      - name: Audit calculator, article hub and representative article
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p performance-artifacts
+
+          blocked_flags=()
+          if [[ "$AUDIT_TARGET" == "local" ]]; then
+            # PRでは変更した自サイト資産を安定して比較し、第三者タグの揺らぎは
+            # 週次のproduction監査で別途確認する。
+            blocked_flags+=(
+              '--blocked-url-patterns=https://www.googletagmanager.com/*'
+              '--blocked-url-patterns=https://www.google-analytics.com/*'
+              '--blocked-url-patterns=https://analytics.google.com/*'
+              '--blocked-url-patterns=https://stats.g.doubleclick.net/*'
+              '--blocked-url-patterns=https://pagead2.googlesyndication.com/*'
+              '--blocked-url-patterns=https://googleads.g.doubleclick.net/*'
+            )
+          fi
+
+          audit_page() {
+            local name="$1"
+            local page_path="$2"
+            npx --yes lighthouse@13.3.0 "${AUDIT_BASE_URL}${page_path}" \
+              --only-categories=performance \
+              --form-factor=mobile \
+              --throttling.cpuSlowdownMultiplier=6 \
+              --output=json \
+              --output-path="performance-artifacts/${name}.json" \
+              --chrome-flags="--headless --no-sandbox --disable-gpu" \
+              --max-wait-for-load=45000 \
+              "${blocked_flags[@]}" \
+              --quiet
+          }
+
+          # LighthouseのLCPは同一成果物でも揺れるため、トップだけ3回測定して中央値で判定する。
+          audit_page calculator-home-1 /
+          audit_page calculator-home-2 /
+          audit_page calculator-home-3 /
+          audit_page article-hub /blog/
+          audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
+
+      - name: Save Lighthouse diagnostics
+        run: >-
+          node .github/scripts/lighthouse-diagnostics.cjs
+          performance-artifacts/calculator-home-1.json
+          performance-artifacts/calculator-home-2.json
+          performance-artifacts/calculator-home-3.json
+          performance-artifacts/article-hub.json
+          performance-artifacts/representative-article.json
+          --output-dir performance-artifacts
+
+      - name: Enforce strengthened mobile performance budgets
         run: >-
           node .github/scripts/mobile-performance-budget.cjs
-          home-performance.json
-          article-performance.json
+          performance-artifacts/calculator-home-1.json
+          performance-artifacts/calculator-home-2.json
+          performance-artifacts/calculator-home-3.json
+          performance-artifacts/article-hub.json
+          performance-artifacts/representative-article.json
+
+      - name: Upload Lighthouse reports and CLS evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: low-end-android-performance-${{ github.event_name }}-${{ github.run_id }}
+          path: performance-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
