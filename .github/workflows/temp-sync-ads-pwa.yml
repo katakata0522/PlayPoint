@@ -36,8 +36,17 @@ jobs:
             git commit -m "広告読込改善の生成物と回帰テストを同期"
           fi
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+      - name: Capture complete preflight result
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > .github/scripts/temp-preflight.log 2>&1
+          status=$?
+          set -e
+          tail -n 400 .github/scripts/temp-preflight.log > .github/scripts/temp-preflight-tail.log
+          printf '%s\n' "$status" > .github/scripts/temp-preflight-status.txt
+          git add .github/scripts/temp-preflight-tail.log .github/scripts/temp-preflight-status.txt
+          git commit -m "chore: capture temporary preflight diagnostics" || true
+          echo "preflight status: $status"
 
-      - name: Push synchronized commit
+      - name: Push synchronized commit and diagnostics
         run: git push origin HEAD:optimize/adsense-pwa-revenue-20260807
