@@ -1,0 +1,54 @@
+name: Temporary AdSense Best Practice Sync
+
+on:
+  push:
+    branches:
+      - fix/adsense-pwa-revenue-best-practice
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-adsense-best-practice-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  sync-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Apply focused changes and sync generated output
+        run: node scripts/tmp-apply-adsense-best-practice.cjs
+
+      - name: Verify JavaScript syntax
+        run: node .github/scripts/verify-js-syntax.cjs
+
+      - name: Run focused regression tests
+        run: node --test tests/playpoint-audit-fixes.test.cjs tests/playpoint-regression.test.cjs
+
+      - name: Commit synchronized changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No synchronized changes to commit."
+          else
+            git commit -m "広告読み込みとPWA計測を最適化"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Run full preflight
+        run: node .github/scripts/preflight.cjs
