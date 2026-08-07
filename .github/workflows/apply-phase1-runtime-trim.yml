@@ -35,11 +35,13 @@ jobs:
         run: |
           node --check scripts/apply-phase1-runtime-trim.cjs
           node --check scripts/apply-phase1-runtime-trim-fixes.cjs
+          node --check scripts/fix-browser-smoke-scope.cjs
 
       - name: Apply runtime trimming
         run: |
           node scripts/apply-phase1-runtime-trim.cjs
           node scripts/apply-phase1-runtime-trim-fixes.cjs
+          node scripts/fix-browser-smoke-scope.cjs
 
       - name: Synchronize generated output
         run: node scripts/build-html.js
@@ -50,9 +52,11 @@ jobs:
           git rm -f \
             scripts/apply-phase1-runtime-trim.cjs \
             scripts/apply-phase1-runtime-trim-fixes.cjs \
+            scripts/fix-browser-smoke-scope.cjs \
             .github/workflows/apply-phase1-runtime-trim.yml \
             .github/workflows/diagnose-phase1-runtime-trim.yml \
-            runtime-trim-preflight.log
+            runtime-trim-preflight.log \
+            runtime-trim-browser-smoke.log
 
       - name: Create clean local commit
         shell: bash
