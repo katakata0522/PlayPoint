@@ -31,10 +31,14 @@ jobs:
           node-version: '22'
 
       - name: Verify patch syntax
-        run: node --check scripts/apply-phase1-runtime-trim.cjs
+        run: |
+          node --check scripts/apply-phase1-runtime-trim.cjs
+          node --check scripts/apply-phase1-runtime-trim-fixes.cjs
 
       - name: Apply runtime trimming
-        run: node scripts/apply-phase1-runtime-trim.cjs
+        run: |
+          node scripts/apply-phase1-runtime-trim.cjs
+          node scripts/apply-phase1-runtime-trim-fixes.cjs
 
       - name: Synchronize generated output
         run: node scripts/build-html.js
@@ -42,7 +46,11 @@ jobs:
       - name: Remove temporary automation
         shell: bash
         run: |
-          git rm -f scripts/apply-phase1-runtime-trim.cjs .github/workflows/apply-phase1-runtime-trim.yml
+          git rm -f \
+            scripts/apply-phase1-runtime-trim.cjs \
+            scripts/apply-phase1-runtime-trim-fixes.cjs \
+            .github/workflows/apply-phase1-runtime-trim.yml \
+            .github/workflows/diagnose-phase1-runtime-trim.yml
 
       - name: Create clean local commit
         shell: bash
