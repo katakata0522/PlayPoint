@@ -282,7 +282,6 @@
     function showSkeletonLoading() {
         if (!dom.grid) return;
         dom.grid.innerHTML = '';
-        if (dom.resultStatus) { var label = currentCategory === 'all' ? 'すべて' : currentCategory; dom.resultStatus.textContent = (currentSearch ? '「' + currentSearch + '」の検索結果：' : label + 'の記事：') + filtered.length + '件'; }
         for (let i = 0; i < 3; i++) {
             const skeleton = document.createElement('div');
             skeleton.className = 'skeleton-card';
@@ -324,18 +323,26 @@
     // Helper functions moved to utils.js
 
     // Sidebar Toggle Functions
+    function setSidebarState(isOpen) {
+        if (dom.sidebar) {
+            dom.sidebar.classList.toggle('active', isOpen);
+            dom.sidebar.setAttribute('aria-hidden', String(!isOpen));
+        }
+        if (dom.sidebarOverlay) dom.sidebarOverlay.classList.toggle('active', isOpen);
+        if (dom.sidebarToggle) {
+            dom.sidebarToggle.classList.toggle('active', isOpen);
+            dom.sidebarToggle.setAttribute('aria-expanded', String(isOpen));
+            dom.sidebarToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
+        }
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+    }
+
     function openSidebar() {
-        if (dom.sidebar) dom.sidebar.classList.add('active');
-        if (dom.sidebarOverlay) dom.sidebarOverlay.classList.add('active');
-        if (dom.sidebarToggle) dom.sidebarToggle.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        setSidebarState(true);
     }
 
     function closeSidebar() {
-        if (dom.sidebar) dom.sidebar.classList.remove('active');
-        if (dom.sidebarOverlay) dom.sidebarOverlay.classList.remove('active');
-        if (dom.sidebarToggle) dom.sidebarToggle.classList.remove('active');
-        document.body.style.overflow = '';
+        setSidebarState(false);
     }
 
     function populateSidebarCategories(articles) {
@@ -512,12 +519,7 @@
                     dom.searchInput.value = currentSearch;
                 }
 
-                if (dom.categoryFilter) {
-                    const buttons = dom.categoryFilter.querySelectorAll('button');
-                    buttons.forEach(btn => {
-                        btn.classList.toggle('active', btn.dataset.category === currentCategory);
-                    });
-                }
+                syncCategoryActiveState();
 
                 render();
             });
@@ -710,6 +712,29 @@
         });
     }
 
+    function syncCategoryActiveState() {
+        if (dom.categoryFilter) {
+            dom.categoryFilter.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === currentCategory);
+            });
+        }
+        if (dom.sidebarCategories) {
+            dom.sidebarCategories.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === currentCategory);
+            });
+        }
+    }
+
+    function resetFilters() {
+        currentCategory = 'all';
+        currentSearch = '';
+        currentPage = 1;
+        if (dom.searchInput) dom.searchInput.value = '';
+        syncCategoryActiveState();
+        updateURLState();
+        render();
+    }
+
     function setCategory(cat) {
         currentCategory = cat;
         currentPage = 1;
@@ -720,14 +745,7 @@
         // Track in GA4
         Analytics.trackCategoryFilter(cat);
 
-        // Update UI buttons
-        if (dom.categoryFilter) {
-            const buttons = dom.categoryFilter.querySelectorAll('button');
-            buttons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.category === cat);
-            });
-        }
-
+        syncCategoryActiveState();
         render();
     }
 
@@ -759,6 +777,13 @@
             filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
         }
 
+        if (dom.resultStatus) {
+            const label = currentCategory === 'all' ? 'すべて' : currentCategory;
+            dom.resultStatus.textContent = (currentSearch
+                ? '「' + currentSearch + '」の検索結果：'
+                : label + 'の記事：') + filtered.length + '件';
+        }
+
         // 3. Paginate
         const totalPages = Math.ceil(filtered.length / CONFIG.itemsPerPage);
         if (currentPage > totalPages) currentPage = 1;
@@ -774,7 +799,7 @@
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);
           dom.grid.innerHTML = '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>';
-          document.getElementById('reset-filters').addEventListener('click', function () { currentCategory = 'all'; currentSearch = ''; if (dom.searchInput) dom.searchInput.value = ''; window.history.replaceState({}, '', window.location.pathname); render(); });
+          document.getElementById('reset-filters').addEventListener('click', resetFilters);
           renderPagination(0); return;
         }
 
@@ -854,6 +879,7 @@
 
     function changePage(num) {
         currentPage = num;
+        updateURLState();
         render();
         // Scroll to top of grid (with null check)
         const scrollTarget = dom.categoryFilter || dom.grid;
