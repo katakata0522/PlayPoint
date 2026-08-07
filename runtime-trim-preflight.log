@@ -3,14 +3,14 @@
 JS syntax check passed (66 files).
 
 === 生成物の再現性検証 ===
-Synchronized dates, asset versions, and calculator layout (v=20260807_1457a) in index.html
+Synchronized dates, asset versions, and calculator layout (v=20260807_1503a) in index.html
 [build-html] synchronized editorial structure: 9
 [article-static-usability] synchronized: 0
 [build-html] synchronized static article usability: 0
 Generated /home/runner/work/PlayPoint/PlayPoint/en/index.html successfully.
 Generated /home/runner/work/PlayPoint/PlayPoint/ko/index.html successfully.
 Generated /home/runner/work/PlayPoint/PlayPoint/tw/index.html successfully.
-Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260807_1457-5338c72d
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260807_1503-327fda82
 Successfully synchronized consent.js version in third-party.js to v=55813d3bcb
 Generated international SEO pages (57 files).
 [manual-intl] restored canonical article content: 40
@@ -120,7 +120,7 @@ index babd346..7ed0f8a 100644
  
  </body>
 diff --git a/sw.js b/sw.js
-index 62f8d8b..89cad4d 100644
+index 62f8d8b..7e1e6cf 100644
 --- a/sw.js
 +++ b/sw.js
 @@ -1,53 +1,30 @@
@@ -128,7 +128,7 @@ index 62f8d8b..89cad4d 100644
  
  const CACHE_PREFIX = 'playpoint-calc-v';
 -const CACHE_NAME = 'playpoint-calc-v20260807_1402-74d5b009';
-+const CACHE_NAME = 'playpoint-calc-v20260807_1457-5338c72d';
++const CACHE_NAME = 'playpoint-calc-v20260807_1503-327fda82';
  const ASSETS = [
    './',
    './style.css?v=ed240917f2',
@@ -222,409 +222,409 @@ TAP version 13
 # Subtest: the complete published article corpus keeps structural quality signals
 ok 1 - the complete published article corpus keeps structural quality signals
   ---
-  duration_ms: 40.905262
+  duration_ms: 59.778947
   type: 'test'
   ...
 # Subtest: article hreflang links are reciprocal and use the Taiwan locale code
 ok 2 - article hreflang links are reciprocal and use the Taiwan locale code
   ---
-  duration_ms: 27.523008
+  duration_ms: 38.303919
   type: 'test'
   ...
 # Subtest: rewritten gift-card guides contain verifiable checks, not permanent discount claims
 ok 3 - rewritten gift-card guides contain verifiable checks, not permanent discount claims
   ---
-  duration_ms: 0.483814
+  duration_ms: 1.03124
   type: 'test'
   ...
 # Subtest: known overstatements do not return to published copy
 ok 4 - known overstatements do not return to published copy
   ---
-  duration_ms: 7.326446
+  duration_ms: 15.142568
   type: 'test'
   ...
 # Subtest: missing mapped related section is inserted before article end
 ok 5 - missing mapped related section is inserted before article end
   ---
-  duration_ms: 1.359713
+  duration_ms: 2.013346
   type: 'test'
   ...
 # Subtest: existing related section is preserved without duplication
 ok 6 - existing related section is preserved without duplication
   ---
-  duration_ms: 0.305442
+  duration_ms: 0.387937
   type: 'test'
   ...
 # Subtest: mapped section containing only non-article links is replaced with curated article guides
 ok 7 - mapped section containing only non-article links is replaced with curated article guides
   ---
-  duration_ms: 0.355661
+  duration_ms: 0.559206
   type: 'test'
   ...
 # Subtest: scope note is inserted after the lead answer and links to the paired page
 ok 8 - scope note is inserted after the lead answer and links to the paired page
   ---
-  duration_ms: 0.521252
+  duration_ms: 0.762914
   type: 'test'
   ...
 # Subtest: check mode detects required changes and does not write
 ok 9 - check mode detects required changes and does not write
   ---
-  duration_ms: 2.187138
+  duration_ms: 5.983327
   type: 'test'
   ...
 # Subtest: normalization is idempotent and validates related targets
 ok 10 - normalization is idempotent and validates related targets
   ---
-  duration_ms: 1.469863
+  duration_ms: 1.951732
   type: 'test'
   ...
 # Subtest: validator rejects self links in a non-curated related section
 ok 11 - validator rejects self links in a non-curated related section
   ---
-  duration_ms: 0.537088
+  duration_ms: 0.633849
   type: 'test'
   ...
 # Subtest: 通常のウィークリーリワードとPlay Pass週次特典を区別して案内する
 ok 12 - 通常のウィークリーリワードとPlay Pass週次特典を区別して案内する
   ---
-  duration_ms: 1.094931
+  duration_ms: 1.686953
   type: 'test'
   ...
 # Subtest: 入門記事の獲得対象は現在の日本向け公式案内に合わせる
 ok 13 - 入門記事の獲得対象は現在の日本向け公式案内に合わせる
   ---
-  duration_ms: 0.340032
+  duration_ms: 0.431633
   type: 'test'
   ...
 # Subtest: 週次特典を使う補足記事にもシルバー以上の条件を明記する
 ok 14 - 週次特典を使う補足記事にもシルバー以上の条件を明記する
   ---
-  duration_ms: 0.394652
+  duration_ms: 0.582481
   type: 'test'
   ...
 # Subtest: ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
 ok 15 - ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
   ---
-  duration_ms: 0.325035
+  duration_ms: 0.438914
   type: 'test'
   ...
 # Subtest: サブスク記事は現行の公式確認項目だけを例示する
 ok 16 - サブスク記事は現行の公式確認項目だけを例示する
   ---
-  duration_ms: 0.380037
+  duration_ms: 0.561149
   type: 'test'
   ...
 # Subtest: ダイヤモンド記事は未公表の週次上限を事実扱いしない
 ok 17 - ダイヤモンド記事は未公表の週次上限を事実扱いしない
   ---
-  duration_ms: 0.229178
+  duration_ms: 0.364732
   type: 'test'
   ...
 # Subtest: 反映時間は公式案内にない時間幅を断定しない
 ok 18 - 反映時間は公式案内にない時間幅を断定しない
   ---
-  duration_ms: 0.246852
+  duration_ms: 0.405964
   type: 'test'
   ...
 # Subtest: 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
 ok 19 - 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
   ---
-  duration_ms: 0.355477
+  duration_ms: 0.467708
   type: 'test'
   ...
 # Subtest: all quality-audit P1 article files exist
 ok 20 - all quality-audit P1 article files exist
   ---
-  duration_ms: 1.089997
+  duration_ms: 1.353087
   type: 'test'
   ...
 # Subtest: all international P1 articles are protected as canonical manual content
 ok 21 - all international P1 articles are protected as canonical manual content
   ---
-  duration_ms: 0.211728
+  duration_ms: 0.212351
   type: 'test'
   ...
 # Subtest: international P1 articles share a validated audit update date
 ok 22 - international P1 articles share a validated audit update date
   ---
-  duration_ms: 2.293293
+  duration_ms: 3.199491
   type: 'test'
   ...
 # Subtest: Super Weekly Prize pages retain the verified ticket and eligibility boundaries
 ok 23 - Super Weekly Prize pages retain the verified ticket and eligibility boundaries
   ---
-  duration_ms: 0.804366
+  duration_ms: 1.38178
   type: 'test'
   ...
 # Subtest: gift-card discount guides use authorized regional rules instead of a permanent seller ranking
 ok 24 - gift-card discount guides use authorized regional rules instead of a permanent seller ranking
   ---
-  duration_ms: 1.789121
+  duration_ms: 2.217274
   type: 'test'
   ...
 # Subtest: free-benefit guides separate no-new-purchase benefits from planned purchases
 ok 25 - free-benefit guides separate no-new-purchase benefits from planned purchases
   ---
-  duration_ms: 0.713392
+  duration_ms: 0.844037
   type: 'test'
   ...
 # Subtest: regional Platinum and Diamond pages expose official thresholds in the title and first screen
 ok 26 - regional Platinum and Diamond pages expose official thresholds in the title and first screen
   ---
-  duration_ms: 0.40909
+  duration_ms: 0.455479
   type: 'test'
   ...
 # Subtest: country-difference pages are hubs for local level and country-change guides
 ok 27 - country-difference pages are hubs for local level and country-change guides
   ---
-  duration_ms: 0.32525
+  duration_ms: 0.497788
   type: 'test'
   ...
 # Subtest: Japanese seasonal and Diamond guides preserve the new editorial framing
 ok 28 - Japanese seasonal and Diamond guides preserve the new editorial framing
   ---
-  duration_ms: 0.477098
+  duration_ms: 0.54865
   type: 'test'
   ...
 # Subtest: 可視本文と一致するFAQPageは保持する
 ok 29 - 可視本文と一致するFAQPageは保持する
   ---
-  duration_ms: 2.342232
+  duration_ms: 26.284174
   type: 'test'
   ...
 # Subtest: 本文と文言がずれたFAQPageは可視FAQへ同期する
 ok 30 - 本文と文言がずれたFAQPageは可視FAQへ同期する
   ---
-  duration_ms: 0.629058
+  duration_ms: 1.305164
   type: 'test'
   ...
 # Subtest: 可視FAQが無いFAQPageだけを除去しArticleは残す
 ok 31 - 可視FAQが無いFAQPageだけを除去しArticleは残す
   ---
-  duration_ms: 0.146173
+  duration_ms: 0.346654
   type: 'test'
   ...
 # Subtest: 既存robots指示を保ったままmax-image-previewをlargeへ統一する
 ok 32 - 既存robots指示を保ったままmax-image-previewをlargeへ統一する
   ---
-  duration_ms: 0.671084
+  duration_ms: 0.962576
   type: 'test'
   ...
 # Subtest: robots metaが無い場合もhead内へ安全に追加する
 ok 33 - robots metaが無い場合もhead内へ安全に追加する
   ---
-  duration_ms: 0.222003
+  duration_ms: 0.350821
   type: 'test'
   ...
 # Subtest: 4言語の記事ディレクトリだけを処理し、checkモードでは書き換えない
 ok 34 - 4言語の記事ディレクトリだけを処理し、checkモードでは書き換えない
   ---
-  duration_ms: 1.891326
+  duration_ms: 3.385702
   type: 'test'
   ...
 # Subtest: 注意ページは既存モードをそのまま使える国を正確に分類する
 ok 35 - 注意ページは既存モードをそのまま使える国を正確に分類する
   ---
-  duration_ms: 0.762516
+  duration_ms: 0.874763
   type: 'test'
   ...
 # Subtest: 似ているだけの国を完全一致として案内しない
 ok 36 - 似ているだけの国を完全一致として案内しない
   ---
-  duration_ms: 0.222767
+  duration_ms: 0.303169
   type: 'test'
   ...
 # Subtest: 国をブラウザ言語だけで推測せず公式確認導線を残す
 ok 37 - 国をブラウザ言語だけで推測せず公式確認導線を残す
   ---
-  duration_ms: 0.233248
+  duration_ms: 0.313875
   type: 'test'
   ...
 # Subtest: 注意ページの確認日をサイト全体の更新日で巻き戻さない
 ok 38 - 注意ページの確認日をサイト全体の更新日で巻き戻さない
   ---
-  duration_ms: 0.179374
+  duration_ms: 0.268537
   type: 'test'
   ...
 # Subtest: static blog article links follow article registry titles and remain idempotent
 ok 39 - static blog article links follow article registry titles and remain idempotent
   ---
-  duration_ms: 2.571213
+  duration_ms: 4.01866
   type: 'test'
   ...
 # Subtest: skeleton loading never references filtered results
 ok 40 - skeleton loading never references filtered results
   ---
-  duration_ms: 0.704037
+  duration_ms: 1.327298
   type: 'test'
   ...
 # Subtest: result count is calculated inside render after filtering
 ok 41 - result count is calculated inside render after filtering
   ---
-  duration_ms: 0.797794
+  duration_ms: 1.113985
   type: 'test'
   ...
 # Subtest: pagination, reset and category controls synchronize URL and active state
 ok 42 - pagination, reset and category controls synchronize URL and active state
   ---
-  duration_ms: 0.237489
+  duration_ms: 0.443891
   type: 'test'
   ...
 # Subtest: sidebar ARIA state is synchronized in markup and runtime
 ok 43 - sidebar ARIA state is synchronized in markup and runtime
   ---
-  duration_ms: 0.107275
+  duration_ms: 0.27122
   type: 'test'
   ...
 # Subtest: browser smoke covers the blog runtime flow
 ok 44 - browser smoke covers the blog runtime flow
   ---
-  duration_ms: 0.13634
+  duration_ms: 0.310069
   type: 'test'
   ...
 # Subtest: production revision verification retries IPv4 network errors
 ok 45 - production revision verification retries IPv4 network errors
   ---
-  duration_ms: 0.095668
+  duration_ms: 0.218321
   type: 'test'
   ...
 # Subtest: 地域別の公式レート・年間しきい値・通貨単位を固定する
 ok 46 - 地域別の公式レート・年間しきい値・通貨単位を固定する
   ---
-  duration_ms: 4.9957
+  duration_ms: 5.490676
   type: 'test'
   ...
 # Subtest: 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
 ok 47 - 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
   ---
-  duration_ms: 0.411205
+  duration_ms: 0.474928
   type: 'test'
   ...
 # Subtest: トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
 ok 48 - トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
   ---
-  duration_ms: 0.615713
+  duration_ms: 0.56835
   type: 'test'
   ...
 # Subtest: 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
 ok 49 - 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
   ---
-  duration_ms: 1.11793
+  duration_ms: 1.658329
   type: 'test'
   ...
 # Subtest: 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
 ok 50 - 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
   ---
-  duration_ms: 0.955461
+  duration_ms: 0.58847
   type: 'test'
   ...
 # Subtest: アプリモジュール変更がService Worker用の指紋を必ず変える
 ok 51 - アプリモジュール変更がService Worker用の指紋を必ず変える
   ---
-  duration_ms: 1.348624
+  duration_ms: 1.591818
   type: 'test'
   ...
 # Subtest: 記事一覧は4つの検索意図カテゴリだけを使う
 ok 52 - 記事一覧は4つの検索意図カテゴリだけを使う
   ---
-  duration_ms: 1.492919
+  duration_ms: 2.185316
   type: 'test'
   ...
 # Subtest: 反映トラブルの重複記事は新しい包括記事へ恒久統合する
 ok 53 - 反映トラブルの重複記事は新しい包括記事へ恒久統合する
   ---
-  duration_ms: 1.343013
+  duration_ms: 2.420312
   type: 'test'
   ...
 # Subtest: 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
 ok 54 - 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
   ---
-  duration_ms: 1.1329
+  duration_ms: 1.911972
   type: 'test'
   ...
 # Subtest: 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
 ok 55 - 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
   ---
-  duration_ms: 0.26455
+  duration_ms: 0.424873
   type: 'test'
   ...
 # Subtest: 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
 ok 56 - 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
   ---
-  duration_ms: 1.280869
+  duration_ms: 1.009828
   type: 'test'
   ...
 # Subtest: 公開記事はトップから3クリック以内で到達できる
 ok 57 - 公開記事はトップから3クリック以内で到達できる
   ---
-  duration_ms: 35.680797
+  duration_ms: 67.502613
   type: 'test'
   ...
 # Subtest: 深いURLでも同意管理スクリプトをサイトルートから読み込む
 ok 58 - 深いURLでも同意管理スクリプトをサイトルートから読み込む
   ---
-  duration_ms: 0.151925
+  duration_ms: 0.254585
   type: 'test'
   ...
 # Subtest: デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
 ok 59 - デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
   ---
-  duration_ms: 0.828706
+  duration_ms: 1.439057
   type: 'test'
   ...
 # Subtest: 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
 ok 60 - 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
   ---
-  duration_ms: 0.144506
+  duration_ms: 0.278912
   type: 'test'
   ...
 # Subtest: 旧calculatorファイルを持たず301転送だけを維持する
 ok 61 - 旧calculatorファイルを持たず301転送だけを維持する
   ---
-  duration_ms: 0.153919
+  duration_ms: 0.344612
   type: 'test'
   ...
 # Subtest: 全階層のindex.htmlを階層を保った正規URLへ301転送する
 ok 62 - 全階層のindex.htmlを階層を保った正規URLへ301転送する
   ---
-  duration_ms: 0.081709
+  duration_ms: 0.249808
   type: 'test'
   ...
 # Subtest: デプロイスクリプトのBash構文が有効である
 ok 63 - デプロイスクリプトのBash構文が有効である
   ---
-  duration_ms: 6.272392
+  duration_ms: 8.648765
   type: 'test'
   ...
 # Subtest: PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
 ok 64 - PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
   ---
-  duration_ms: 0.930031
+  duration_ms: 1.593801
   type: 'test'
   ...
 # Subtest: 公開HTMLと生成元にサイト内遷移用UTMを残さない
 ok 65 - 公開HTMLと生成元にサイト内遷移用UTMを残さない
   ---
-  duration_ms: 21.481255
+  duration_ms: 32.225508
   type: 'test'
   ...
 # Subtest: プライバシー文書はWeb版と認定CMPの運用に一致する
 ok 66 - プライバシー文書はWeb版と認定CMPの運用に一致する
   ---
-  duration_ms: 0.59789
+  duration_ms: 0.677045
   type: 'test'
   ...
 # Subtest: 再訪と配布の主要イベントだけを許可する
 ok 67 - 再訪と配布の主要イベントだけを許可する
   ---
-  duration_ms: 0.524885
+  duration_ms: 0.87913
   type: 'test'
   ...
 # Subtest: ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
 ok 68 - ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
   ---
-  duration_ms: 0.28066
+  duration_ms: 0.381417
   type: 'test'
   ...
 # ok - 実ユーザー速度は同意後に匿名区分だけを計測する
@@ -636,532 +636,532 @@ ok 68 - ウィジェット作成ページは狭い画面でグリッド内容を
 # Subtest: tests/growth-priority.test.cjs
 ok 13 - tests/growth-priority.test.cjs
   ---
-  duration_ms: 50.481134
+  duration_ms: 62.834645
   type: 'test'
   ...
 # Subtest: mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
 ok 70 - mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
   ---
-  duration_ms: 16.922282
+  duration_ms: 17.520841
   type: 'test'
   ...
 # Subtest: mapWithConcurrencyは一件の失敗後も残りを検査する
 ok 71 - mapWithConcurrencyは一件の失敗後も残りを検査する
   ---
-  duration_ms: 0.310926
+  duration_ms: 0.431853
   type: 'test'
   ...
 # Subtest: retryは失敗対象だけを指定回数まで再試行する
 ok 72 - retryは失敗対象だけを指定回数まで再試行する
   ---
-  duration_ms: 2.585827
+  duration_ms: 3.295396
   type: 'test'
   ...
 # Subtest: 機種変更記事は独立した検索意図と症状別の確認導線を持つ
 ok 73 - 機種変更記事は独立した検索意図と症状別の確認導線を持つ
   ---
-  duration_ms: 1.037217
+  duration_ms: 1.523465
   type: 'test'
   ...
 # Subtest: 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
 ok 74 - 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
   ---
-  duration_ms: 1.534912
+  duration_ms: 2.202862
   type: 'test'
   ...
 # Subtest: 機種変更記事のFAQ本文とFAQPage構造化データは一致する
 ok 75 - 機種変更記事のFAQ本文とFAQPage構造化データは一致する
   ---
-  duration_ms: 1.581791
+  duration_ms: 2.402845
   type: 'test'
   ...
 # Subtest: 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
 ok 76 - 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
   ---
-  duration_ms: 0.837869
+  duration_ms: 1.357333
   type: 'test'
   ...
 # Subtest: 国・地域別の実用記事を3言語で十分な本文として公開する
 ok 77 - 国・地域別の実用記事を3言語で十分な本文として公開する
   ---
-  duration_ms: 6.600266
+  duration_ms: 11.057919
   type: 'test'
   ...
 # Subtest: 言語別記事一覧と専用サイトマップから対象ページを発見できる
 ok 78 - 言語別記事一覧と専用サイトマップから対象ページを発見できる
   ---
-  duration_ms: 0.447445
+  duration_ms: 0.636664
   type: 'test'
   ...
 # Subtest: 国際記事内のローカルリンク先が存在する
 ok 79 - 国際記事内のローカルリンク先が存在する
   ---
-  duration_ms: 2.111835
+  duration_ms: 4.201982
   type: 'test'
   ...
 # Subtest: 日本語では重複する残高併用記事を追加しない
 ok 80 - 日本語では重複する残高併用記事を追加しない
   ---
-  duration_ms: 0.340266
+  duration_ms: 0.364211
   type: 'test'
   ...
 # Subtest: クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
 ok 81 - クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
   ---
-  duration_ms: 3.272851
+  duration_ms: 4.649153
   type: 'test'
   ...
 # Subtest: 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
 ok 82 - 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
   ---
-  duration_ms: 0.239812
+  duration_ms: 0.426696
   type: 'test'
   ...
 # Subtest: 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
 ok 83 - 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
   ---
-  duration_ms: 0.479822
+  duration_ms: 0.905791
   type: 'test'
   ...
 # Subtest: 新規記事のサイト内リンク先はすべて存在する
 ok 84 - 新規記事のサイト内リンク先はすべて存在する
   ---
-  duration_ms: 1.778721
+  duration_ms: 3.788672
   type: 'test'
   ...
 # Subtest: 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
 ok 85 - 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
   ---
-  duration_ms: 3.654729
+  duration_ms: 7.196478
   type: 'test'
   ...
 # Subtest: 地域外の維持門檻や通貨を流用していない
 ok 86 - 地域外の維持門檻や通貨を流用していない
   ---
-  duration_ms: 3.428655
+  duration_ms: 1.006462
   type: 'test'
   ...
 # Subtest: 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
 ok 87 - 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
   ---
-  duration_ms: 0.236812
+  duration_ms: 0.318712
   type: 'test'
   ...
 # Subtest: 日本語既存ページと海外6ページは完全なhreflangで相互接続する
 ok 88 - 日本語既存ページと海外6ページは完全なhreflangで相互接続する
   ---
-  duration_ms: 1.253261
+  duration_ms: 2.320029
   type: 'test'
   ...
 # Subtest: 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
 ok 89 - 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
   ---
-  duration_ms: 0.610391
+  duration_ms: 0.928024
   type: 'test'
   ...
 # Subtest: 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
 ok 90 - 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
   ---
-  duration_ms: 6.62838
+  duration_ms: 10.324299
   type: 'test'
   ...
 # Subtest: 維持解説・比較記事から同一地域の計算ページへ進める
 ok 91 - 維持解説・比較記事から同一地域の計算ページへ進める
   ---
-  duration_ms: 0.637831
+  duration_ms: 0.866391
   type: 'test'
   ...
 # Subtest: manual multilingual guide links survive regeneration exactly once
 ok 92 - manual multilingual guide links survive regeneration exactly once
   ---
-  duration_ms: 53.505944
+  duration_ms: 8.218193
   type: 'test'
   ...
 # Subtest: プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
 ok 93 - プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
   ---
-  duration_ms: 1.273118
+  duration_ms: 1.934376
   type: 'test'
   ...
 # Subtest: 地域の通貨とランク条件を他地域から流用していない
 ok 94 - 地域の通貨とランク条件を他地域から流用していない
   ---
-  duration_ms: 1.107143
+  duration_ms: 1.544287
   type: 'test'
   ...
 # Subtest: 専用サイトマップと記事一覧から4言語ページを発見できる
 ok 95 - 専用サイトマップと記事一覧から4言語ページを発見できる
   ---
-  duration_ms: 0.415261
+  duration_ms: 0.54912
   type: 'test'
   ...
 # Subtest: 日本語記事データと配信ファイルの更新日・説明が一致する
 ok 96 - 日本語記事データと配信ファイルの更新日・説明が一致する
   ---
-  duration_ms: 0.395948
+  duration_ms: 0.653318
   type: 'test'
   ...
 # Subtest: 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
 ok 97 - 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
   ---
-  duration_ms: 0.96566
+  duration_ms: 1.329531
   type: 'test'
   ...
 # Subtest: ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
 ok 98 - ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
   ---
-  duration_ms: 1.21257
+  duration_ms: 2.61732
   type: 'test'
   ...
 # Subtest: 日本語の既存記事と記事データは同じ更新日を持つ
 ok 99 - 日本語の既存記事と記事データは同じ更新日を持つ
   ---
-  duration_ms: 0.973812
+  duration_ms: 1.790409
   type: 'test'
   ...
 # Subtest: 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
 ok 100 - 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
   ---
-  duration_ms: 0.193107
+  duration_ms: 0.371862
   type: 'test'
   ...
 # Subtest: 言語別一覧と人向けサイトマップから新しい記事へ移動できる
 ok 101 - 言語別一覧と人向けサイトマップから新しい記事へ移動できる
   ---
-  duration_ms: 0.273636
+  duration_ms: 0.706078
   type: 'test'
   ...
 # Subtest: 新しい多言語記事のサイト内リンク先は存在する
 ok 102 - 新しい多言語記事のサイト内リンク先は存在する
   ---
-  duration_ms: 0.929262
+  duration_ms: 2.08907
   type: 'test'
   ...
 # Subtest: 海外向け記事から日本円固定ページへ誘導しない
 ok 103 - 海外向け記事から日本円固定ページへ誘導しない
   ---
-  duration_ms: 8.184744
+  duration_ms: 16.323996
   type: 'test'
   ...
 # Subtest: ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
 ok 104 - ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
   ---
-  duration_ms: 0.322223
+  duration_ms: 0.512225
   type: 'test'
   ...
 # Subtest: 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
 ok 105 - 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
   ---
-  duration_ms: 0.108494
+  duration_ms: 0.232753
   type: 'test'
   ...
 # Subtest: Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
 ok 106 - Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
   ---
-  duration_ms: 0.239771
+  duration_ms: 0.526998
   type: 'test'
   ...
 # Subtest: 영문 수치 기사는 미국 기준임을 명시한다
 ok 107 - 영문 수치 기사는 미국 기준임을 명시한다
   ---
-  duration_ms: 0.256716
+  duration_ms: 0.518214
   type: 'test'
   ...
 # Subtest: regional guide set exists in all three locales
 ok 108 - regional guide set exists in all three locales
   ---
-  duration_ms: 1.094119
+  duration_ms: 1.593922
   type: 'test'
   ...
 # Subtest: every regional article has reciprocal hreflang links
 ok 109 - every regional article has reciprocal hreflang links
   ---
-  duration_ms: 3.179842
+  duration_ms: 3.123725
   type: 'test'
   ...
 # Subtest: regional level thresholds and earning units are not mixed
 ok 110 - regional level thresholds and earning units are not mixed
   ---
-  duration_ms: 0.464159
+  duration_ms: 0.683644
   type: 'test'
   ...
 # Subtest: Silver strategy uses regional thresholds and positive value framing
 ok 111 - Silver strategy uses regional thresholds and positive value framing
   ---
-  duration_ms: 0.499992
+  duration_ms: 0.685407
   type: 'test'
   ...
 # Subtest: promotion articles state no stacking, highest rate, pre-tax and rounding
 ok 112 - promotion articles state no stacking, highest rate, pre-tax and rounding
   ---
-  duration_ms: 0.41951
+  duration_ms: 0.644245
   type: 'test'
   ...
 # Subtest: country-change guides warn that points and level do not transfer
 ok 113 - country-change guides warn that points and level do not transfer
   ---
-  duration_ms: 1.157148
+  duration_ms: 1.431656
   type: 'test'
   ...
 # Subtest: localized Silver landing pages use the correct threshold and article route
 ok 114 - localized Silver landing pages use the correct threshold and article route
   ---
-  duration_ms: 0.326033
+  duration_ms: 0.481638
   type: 'test'
   ...
 # Subtest: manual article source list preserves all regional guides
 ok 115 - manual article source list preserves all regional guides
   ---
-  duration_ms: 0.303036
+  duration_ms: 0.436861
   type: 'test'
   ...
 # Subtest: reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
 ok 116 - reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
   ---
-  duration_ms: 2.751342
+  duration_ms: 3.759397
   type: 'test'
   ...
 # Subtest: new international guides are substantial, sourced and usable instead of thin translations
 ok 117 - new international guides are substantial, sourced and usable instead of thin translations
   ---
-  duration_ms: 3.37287
+  duration_ms: 4.222749
   type: 'test'
   ...
 # Subtest: Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
 ok 118 - Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
   ---
-  duration_ms: 1.222529
+  duration_ms: 1.77837
   type: 'test'
   ...
 # Subtest: quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
 ok 119 - quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
   ---
-  duration_ms: 1.288732
+  duration_ms: 1.15001
   type: 'test'
   ...
 # Subtest: locale indexes and the dedicated sitemap expose all six new international guides
 ok 120 - locale indexes and the dedicated sitemap expose all six new international guides
   ---
-  duration_ms: 0.359521
+  duration_ms: 2.740886
   type: 'test'
   ...
 # Subtest: ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
 ok 121 - ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
   ---
-  duration_ms: 1.958431
+  duration_ms: 2.419821
   type: 'test'
   ...
 # Subtest: 専用サイトマップは6記事を公開しrobots.txtから発見できる
 ok 122 - 専用サイトマップは6記事を公開しrobots.txtから発見できる
   ---
-  duration_ms: 1.208128
+  duration_ms: 1.03802
   type: 'test'
   ...
 # Subtest: 新規記事のサイト内リンク先は存在する
 ok 123 - 新規記事のサイト内リンク先は存在する
   ---
-  duration_ms: 1.533397
+  duration_ms: 2.308312
   type: 'test'
   ...
 # Subtest: 週次特典と複数アカウント記事は3言語で公開要件を満たす
 ok 124 - 週次特典と複数アカウント記事は3言語で公開要件を満たす
   ---
-  duration_ms: 1.902851
+  duration_ms: 2.893127
   type: 'test'
   ...
 # Subtest: 新規記事は同一言語内で相互に接続される
 ok 125 - 新規記事は同一言語内で相互に接続される
   ---
-  duration_ms: 0.550406
+  duration_ms: 0.799299
   type: 'test'
   ...
 # Subtest: 国際ガイド専用サイトマップをrobots.txtから発見できる
 ok 126 - 国際ガイド専用サイトマップをrobots.txtから発見できる
   ---
-  duration_ms: 0.336547
+  duration_ms: 0.484843
   type: 'test'
   ...
 # Subtest: 新規国際記事のローカルリンク先はすべて存在する
 ok 127 - 新規国際記事のローカルリンク先はすべて存在する
   ---
-  duration_ms: 1.968013
+  duration_ms: 2.537659
   type: 'test'
   ...
 # Subtest: 日本語のランク総合記事が5段階と判定値の違いを説明する
 ok 128 - 日本語のランク総合記事が5段階と判定値の違いを説明する
   ---
-  duration_ms: 1.089697
+  duration_ms: 1.505427
   type: 'test'
   ...
 # Subtest: 登録できない記事が参加条件を順番に切り分ける
 ok 129 - 登録できない記事が参加条件を順番に切り分ける
   ---
-  duration_ms: 0.289649
+  duration_ms: 0.373645
   type: 'test'
   ...
 # Subtest: 国変更記事がポイント・残高・変更条件を混同しない
 ok 130 - 国変更記事がポイント・残高・変更条件を混同しない
   ---
-  duration_ms: 0.34917
+  duration_ms: 0.491774
   type: 'test'
   ...
 # Subtest: 倍率記事が直接レートと倍率入力を足し合わせない
 ok 131 - 倍率記事が直接レートと倍率入力を足し合わせない
   ---
-  duration_ms: 0.800218
+  duration_ms: 1.246586
   type: 'test'
   ...
 # Subtest: シルバー記事が購入予定と高い獲得率を組み合わせる
 ok 132 - シルバー記事が購入予定と高い獲得率を組み合わせる
   ---
-  duration_ms: 0.386279
+  duration_ms: 0.537383
   type: 'test'
   ...
 # Subtest: ウィークリー記事が通常リワードとPlay Pass週次特典を分離する
 ok 133 - ウィークリー記事が通常リワードとPlay Pass週次特典を分離する
   ---
-  duration_ms: 0.356135
+  duration_ms: 0.465704
   type: 'test'
   ...
 # Subtest: ランク記事からシルバーのお得記事へ重複なく移動できる
 ok 134 - ランク記事からシルバーのお得記事へ重複なく移動できる
   ---
-  duration_ms: 0.348505
+  duration_ms: 0.537032
   type: 'test'
   ...
 # Subtest: シルバー計算入口の上部からお得記事へ移動できる
 ok 135 - シルバー計算入口の上部からお得記事へ移動できる
   ---
-  duration_ms: 0.214415
+  duration_ms: 0.329278
   type: 'test'
   ...
 # Subtest: 倍率キャンペーン入口からシルバーのお得記事へ移動できる
 ok 136 - 倍率キャンペーン入口からシルバーのお得記事へ移動できる
   ---
-  duration_ms: 0.422468
+  duration_ms: 0.851568
   type: 'test'
   ...
 # Subtest: 記事一覧へ新規5本が重複なく登録される
 ok 137 - 記事一覧へ新規5本が重複なく登録される
   ---
-  duration_ms: 0.464277
+  duration_ms: 0.981354
   type: 'test'
   ...
 # Subtest: 最新情報ハブは確認範囲・公式参照・確認日を明示する
 ok 138 - 最新情報ハブは確認範囲・公式参照・確認日を明示する
   ---
-  duration_ms: 0.975654
+  duration_ms: 1.401561
   type: 'test'
   ...
 # Subtest: 最新情報ハブは週次3制度とクエストを別項目として扱う
 ok 139 - 最新情報ハブは週次3制度とクエストを別項目として扱う
   ---
-  duration_ms: 0.224564
+  duration_ms: 0.29083
   type: 'test'
   ...
 # Subtest: 生成処理は確認していない日に最新情報ハブの日付を進めない
 ok 140 - 生成処理は確認していない日に最新情報ハブの日付を進めない
   ---
-  duration_ms: 0.083294
+  duration_ms: 0.117719
   type: 'test'
   ...
 # Subtest: 鮮度検査は14日を超えた確認日を検出する
 ok 141 - 鮮度検査は14日を超えた確認日を検出する
   ---
-  duration_ms: 1.138822
+  duration_ms: 1.453519
   type: 'test'
   ...
 # Subtest: 運用手順は日付だけの更新と個別オファーの一般化を禁止する
 ok 142 - 運用手順は日付だけの更新と個別オファーの一般化を禁止する
   ---
-  duration_ms: 0.192291
+  duration_ms: 0.282628
   type: 'test'
   ...
 # Subtest: 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
 ok 143 - 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
   ---
-  duration_ms: 0.798027
+  duration_ms: 1.217883
   type: 'test'
   ...
 # Subtest: 4言語に自動入力の獲得率と通常倍率の文言が用意されている
 ok 144 - 4言語に自動入力の獲得率と通常倍率の文言が用意されている
   ---
-  duration_ms: 0.236238
+  duration_ms: 0.361968
   type: 'test'
   ...
 # Subtest: 初期化前にDOMを組み替え、地域更新時に文言も更新する
 ok 145 - 初期化前にDOMを組み替え、地域更新時に文言も更新する
   ---
-  duration_ms: 0.223493
+  duration_ms: 0.311631
   type: 'test'
   ...
 # Subtest: 既存の主要入力IDと共有URL仕様を維持する
 ok 146 - 既存の主要入力IDと共有URL仕様を維持する
   ---
-  duration_ms: 1.951365
+  duration_ms: 2.234801
   type: 'test'
   ...
 # Subtest: UIモジュールを圧縮・版管理・Service Workerの対象に含める
 ok 147 - UIモジュールを圧縮・版管理・Service Workerの対象に含める
   ---
-  duration_ms: 0.290235
+  duration_ms: 0.347176
   type: 'test'
   ...
 # Subtest: main.jsは初期化と画面調停に集中し独立責務を各モジュールへ委譲する
 ok 148 - main.jsは初期化と画面調停に集中し独立責務を各モジュールへ委譲する
   ---
-  duration_ms: 1.082324
+  duration_ms: 1.246676
   type: 'test'
   ...
 # Subtest: 分離した責務の実装と既存イベント名は専用モジュールに保持する
 ok 149 - 分離した責務の実装と既存イベント名は専用モジュールに保持する
   ---
-  duration_ms: 0.418352
+  duration_ms: 0.415249
   type: 'test'
   ...
 # Subtest: 新しい実行時モジュールは圧縮・キャッシュ更新・オフライン先読みに含める
 ok 150 - 新しい実行時モジュールは圧縮・キャッシュ更新・オフライン先読みに含める
   ---
-  duration_ms: 0.317383
+  duration_ms: 0.421498
   type: 'test'
   ...
 # [manual-intl] restored canonical article content: 40
 # Subtest: 地域別に手動確認した記事の正本一覧を固定する
 ok 151 - 地域別に手動確認した記事の正本一覧を固定する
   ---
-  duration_ms: 1.890092
+  duration_ms: 2.996173
   type: 'test'
   ...
 # Subtest: 手動正本の公開日・更新日・last-modifiedを一致させる
 ok 152 - 手動正本の公開日・更新日・last-modifiedを一致させる
   ---
-  duration_ms: 2.978269
+  duration_ms: 4.95076
   type: 'test'
   ...
 # Subtest: 国際記事台帳は手動正本の日付を自動採用する
 ok 153 - 国際記事台帳は手動正本の日付を自動採用する
   ---
-  duration_ms: 1.217709
+  duration_ms: 2.023802
   type: 'test'
   ...
 # Subtest: ビルドは国際記事生成の直前に退避し直後に復元する
 ok 154 - ビルドは国際記事生成の直前に退避し直後に復元する
   ---
-  duration_ms: 0.128367
+  duration_ms: 0.21136
   type: 'test'
   ...
 # Subtest: 生成処理で上書きされても手動記事を完全に復元できる
 ok 155 - 生成処理で上書きされても手動記事を完全に復元できる
   ---
-  duration_ms: 4.516578
+  duration_ms: 10.361586
   type: 'test'
   ...
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-bNuCEE/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-bNuCEE/calculator-home-2.json",
-#     "/tmp/playpoint-phase1-bNuCEE/calculator-home-3.json"
+#     "/tmp/playpoint-phase1-u09NI8/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-u09NI8/calculator-home-2.json",
+#     "/tmp/playpoint-phase1-u09NI8/calculator-home-3.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -1223,9 +1223,9 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-nFdFXK/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-nFdFXK/calculator-home-2.json",
-#     "/tmp/playpoint-phase1-nFdFXK/calculator-home-3.json"
+#     "/tmp/playpoint-phase1-MfZsiO/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-MfZsiO/calculator-home-2.json",
+#     "/tmp/playpoint-phase1-MfZsiO/calculator-home-3.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -1289,8 +1289,8 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-cP4elj/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-cP4elj/calculator-home-2.json"
+#     "/tmp/playpoint-phase1-68z6YL/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-68z6YL/calculator-home-2.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -1349,409 +1349,409 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # Subtest: 低性能Androidのハード予算が旧基準より厳しく、ページ別に設定されている
 ok 156 - 低性能Androidのハード予算が旧基準より厳しく、ページ別に設定されている
   ---
-  duration_ms: 0.959086
+  duration_ms: 1.532999
   type: 'test'
   ...
 # Subtest: トップページは3回の中央値で判定し、単発の遅い外れ値に左右されない
 ok 157 - トップページは3回の中央値で判定し、単発の遅い外れ値に左右されない
   ---
-  duration_ms: 2.446579
+  duration_ms: 3.872348
   type: 'test'
   ...
 # Subtest: トップページは3回中2回が上限超過なら中央値で失敗する
 ok 158 - トップページは3回中2回が上限超過なら中央値で失敗する
   ---
-  duration_ms: 0.853896
+  duration_ms: 1.56023
   type: 'test'
   ...
 # Subtest: トップページの測定が3回未満なら性能値に関係なく失敗する
 ok 159 - トップページの測定が3回未満なら性能値に関係なく失敗する
   ---
-  duration_ms: 0.764428
+  duration_ms: 1.182169
   type: 'test'
   ...
 # Subtest: Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を抽出する
 ok 160 - Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を抽出する
   ---
-  duration_ms: 0.752509
+  duration_ms: 1.086023
   type: 'test'
   ...
 # Subtest: 性能ワークフローが本番同等成果物・3回測定・記事一覧・診断アーティファクトを検査する
 ok 161 - 性能ワークフローが本番同等成果物・3回測定・記事一覧・診断アーティファクトを検査する
   ---
-  duration_ms: 0.393167
+  duration_ms: 2.251075
   type: 'test'
   ...
 # Subtest: modulepreloadと実スクリプトが同じ内容ハッシュへ同期される
 ok 162 - modulepreloadと実スクリプトが同じ内容ハッシュへ同期される
   ---
-  duration_ms: 3.646659
+  duration_ms: 3.577152
   type: 'test'
   ...
 # Subtest: 記事の共通ヘッダーと計算機導線を生成時に一度だけ埋め込む
 ok 163 - 記事の共通ヘッダーと計算機導線を生成時に一度だけ埋め込む
   ---
-  duration_ms: 2.486822
+  duration_ms: 7.403811
   type: 'test'
   ...
 # Subtest: 記事広告枠・静的ヘッダー・計算図が初期レイアウトを予約する
 ok 164 - 記事広告枠・静的ヘッダー・計算図が初期レイアウトを予約する
   ---
-  duration_ms: 0.533067
+  duration_ms: 0.908084
   type: 'test'
   ...
 # Subtest: 記事一覧はモバイルで重いOGP画像を生成せず、デスクトップだけに画像を残す
 ok 165 - 記事一覧はモバイルで重いOGP画像を生成せず、デスクトップだけに画像を残す
   ---
-  duration_ms: 0.43235
+  duration_ms: 0.814792
   type: 'test'
   ...
 # Subtest: 生成済み代表記事は初回HTMLからヘッダーと計算導線を持つ
 ok 166 - 生成済み代表記事は初回HTMLからヘッダーと計算導線を持つ
   ---
-  duration_ms: 0.178033
+  duration_ms: 0.364392
   type: 'test'
   ...
 # Subtest: 日記は初期モジュールグラフと先読みから外し、利用時だけ動的読込する
 ok 167 - 日記は初期モジュールグラフと先読みから外し、利用時だけ動的読込する
   ---
-  duration_ms: 0.43517
+  duration_ms: 0.745548
   type: 'test'
   ...
 # Subtest: Service Workerの初回キャッシュは必須シェルだけに絞り、重い任意資産は利用時キャッシュへ回す
 ok 168 - Service Workerの初回キャッシュは必須シェルだけに絞り、重い任意資産は利用時キャッシュへ回す
   ---
-  duration_ms: 0.16394
+  duration_ms: 0.25748
   type: 'test'
   ...
 # Subtest: JPEG実体の既存OGP URLをimage/jpegとして配信する
 ok 169 - JPEG実体の既存OGP URLをimage/jpegとして配信する
   ---
-  duration_ms: 0.918486
+  duration_ms: 1.433789
   type: 'test'
   ...
 # Subtest: デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
 ok 170 - デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
   ---
-  duration_ms: 0.167785
+  duration_ms: 0.229767
   type: 'test'
   ...
 # Subtest: 記事CSSは外部化され、AdSense以外のinline styleを残さない
 ok 171 - 記事CSSは外部化され、AdSense以外のinline styleを残さない
   ---
-  duration_ms: 17.258446
+  duration_ms: 20.646916
   type: 'test'
   ...
 # Subtest: 記事のローカルCSSは内容ハッシュ付きURLで参照する
 ok 172 - 記事のローカルCSSは内容ハッシュ付きURLで参照する
   ---
-  duration_ms: 14.757158
+  duration_ms: 13.281372
   type: 'test'
   ...
 # Subtest: 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
 ok 173 - 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
   ---
-  duration_ms: 9.100041
+  duration_ms: 10.785322
   type: 'test'
   ...
 # Subtest: 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
 ok 174 - 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
   ---
-  duration_ms: 50.999588
+  duration_ms: 82.873366
   type: 'test'
   ...
 # Subtest: 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
 ok 175 - 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
   ---
-  duration_ms: 0.350032
+  duration_ms: 0.570854
   type: 'test'
   ...
 # Subtest: バージョン付き資産だけを1年間immutableでキャッシュする
 ok 176 - バージョン付き資産だけを1年間immutableでキャッシュする
   ---
-  duration_ms: 0.209325
+  duration_ms: 0.338963
   type: 'test'
   ...
 # Subtest: 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
 ok 177 - 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
   ---
-  duration_ms: 0.229441
+  duration_ms: 0.37686
   type: 'test'
   ...
 # Subtest: 未参照だった旧共通CSSを公開物に残さない
 ok 178 - 未参照だった旧共通CSSを公開物に残さない
   ---
-  duration_ms: 0.116064
+  duration_ms: 0.200474
   type: 'test'
   ...
 # Subtest: PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
 ok 179 - PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
   ---
-  duration_ms: 0.864628
+  duration_ms: 1.740734
   type: 'test'
   ...
 # Subtest: 事前検証は全テストを自動収集し失敗工程を最後にまとめる
 ok 180 - 事前検証は全テストを自動収集し失敗工程を最後にまとめる
   ---
-  duration_ms: 0.206735
+  duration_ms: 0.326584
   type: 'test'
   ...
 # Subtest: 事前検証は多言語の公開必須ファイル欠損を検出する
 ok 181 - 事前検証は多言語の公開必須ファイル欠損を検出する
   ---
-  duration_ms: 0.147101
+  duration_ms: 0.326744
   type: 'test'
   ...
 # Subtest: Service Workerの全先読み対象をデプロイ前に検証する
 ok 182 - Service Workerの全先読み対象をデプロイ前に検証する
   ---
-  duration_ms: 0.109331
+  duration_ms: 0.298832
   type: 'test'
   ...
 # Subtest: 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
 ok 183 - 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
   ---
-  duration_ms: 0.140921
+  duration_ms: 0.348888
   type: 'test'
   ...
 # Subtest: ルートService Workerは画面遷移をネットワーク優先で更新する
 ok 184 - ルートService Workerは画面遷移をネットワーク優先で更新する
   ---
-  duration_ms: 0.099477
+  duration_ms: 0.274655
   type: 'test'
   ...
 # Subtest: ルートキャッシュ世代は全共有アセット版から自動生成する
 ok 185 - ルートキャッシュ世代は全共有アセット版から自動生成する
   ---
-  duration_ms: 0.119305
+  duration_ms: 0.3434
   type: 'test'
   ...
 # Subtest: アプリモジュールのキャッシュ世代は改行コードが違っても一致する
 ok 186 - アプリモジュールのキャッシュ世代は改行コードが違っても一致する
   ---
-  duration_ms: 3.739669
+  duration_ms: 9.14817
   type: 'test'
   ...
 # Subtest: 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
 ok 187 - 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
   ---
-  duration_ms: 0.583869
+  duration_ms: 2.559202
   type: 'test'
   ...
 # Subtest: 公開デプロイ状態は検証完了前と完了後を区別する
 ok 188 - 公開デプロイ状態は検証完了前と完了後を区別する
   ---
-  duration_ms: 2.835769
+  duration_ms: 2.163874
   type: 'test'
   ...
 # Subtest: 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
 ok 189 - 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
   ---
-  duration_ms: 0.187582
+  duration_ms: 0.275597
   type: 'test'
   ...
 # Subtest: HTTP検査は同時接続数を制限し失敗対象だけを再試行する
 ok 190 - HTTP検査は同時接続数を制限し失敗対象だけを再試行する
   ---
-  duration_ms: 0.166751
+  duration_ms: 0.307214
   type: 'test'
   ...
 # Subtest: 外部Actionは固定SHAで実行しDependabotで月次更新する
 ok 191 - 外部Actionは固定SHAで実行しDependabotで月次更新する
   ---
-  duration_ms: 0.252921
+  duration_ms: 0.455869
   type: 'test'
   ...
 # Subtest: 新規記事は記事台帳へ一意に登録される
 ok 192 - 新規記事は記事台帳へ一意に登録される
   ---
-  duration_ms: 1.010547
+  duration_ms: 1.796127
   type: 'test'
   ...
 # Subtest: スーパーウィークリー記事は一般条件と個別条件を分離する
 ok 193 - スーパーウィークリー記事は一般条件と個別条件を分離する
   ---
-  duration_ms: 1.812208
+  duration_ms: 2.582226
   type: 'test'
   ...
 # Subtest: クエスト記事は対象・購入・ログイン・返金条件を案内する
 ok 194 - クエスト記事は対象・購入・ログイン・返金条件を案内する
   ---
-  duration_ms: 0.260505
+  duration_ms: 0.447777
   type: 'test'
   ...
 # Subtest: 週次親記事は3制度を比較し日記を主要導線にする
 ok 195 - 週次親記事は3制度を比較し日記を主要導線にする
   ---
-  duration_ms: 0.26028
+  duration_ms: 0.437812
   type: 'test'
   ...
 # Subtest: 無料獲得記事は無料・追加購入なし・有料条件を混同しない
 ok 196 - 無料獲得記事は無料・追加購入なし・有料条件を混同しない
   ---
-  duration_ms: 0.360824
+  duration_ms: 0.603824
   type: 'test'
   ...
 # Subtest: 買い切り購入と継続課金の記事は役割を相互案内する
 ok 197 - 買い切り購入と継続課金の記事は役割を相互案内する
   ---
-  duration_ms: 0.300185
+  duration_ms: 0.572446
   type: 'test'
   ...
 # Subtest: 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
 ok 198 - 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
   ---
-  duration_ms: 0.813197
+  duration_ms: 1.350312
   type: 'test'
   ...
 # Subtest: 公式例のシルバー500円は6ポイントへ丸める
 ok 199 - 公式例のシルバー500円は6ポイントへ丸める
   ---
-  duration_ms: 0.658483
+  duration_ms: 1.485968
   type: 'test'
   ...
 # Subtest: 購入ごとの丸めと総額への一度だけの丸めを分ける
 ok 200 - 購入ごとの丸めと総額への一度だけの丸めを分ける
   ---
-  duration_ms: 0.138203
+  duration_ms: 0.273474
   type: 'test'
   ...
 # Subtest: 丸め関数は非負のポイントを最も近い整数へ丸める
 ok 201 - 丸め関数は非負のポイントを最も近い整数へ丸める
   ---
-  duration_ms: 0.236873
+  duration_ms: 0.589572
   type: 'test'
   ...
 # Subtest: 不正な購入回数と獲得率を拒否する
 ok 202 - 不正な購入回数と獲得率を拒否する
   ---
-  duration_ms: 0.118773
+  duration_ms: 0.339443
   type: 'test'
   ...
 # Subtest: 記事は税抜・四捨五入・機能の限界を明示する
 ok 203 - 記事は税抜・四捨五入・機能の限界を明示する
   ---
-  duration_ms: 0.892325
+  duration_ms: 1.530095
   type: 'test'
   ...
 # Subtest: 記事冒頭は通常獲得率と交換価値を分けて即答する
 ok 204 - 記事冒頭は通常獲得率と交換価値を分けて即答する
   ---
-  duration_ms: 0.251083
+  duration_ms: 0.531554
   type: 'test'
   ...
 # Subtest: 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
 ok 205 - 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
   ---
-  duration_ms: 0.22821
+  duration_ms: 0.486426
   type: 'test'
   ...
 # Subtest: スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
 ok 206 - スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
   ---
-  duration_ms: 0.340402
+  duration_ms: 0.702764
   type: 'test'
   ...
 # Subtest: FAQと補助導線は主要目次へ混入しない構造にする
 ok 207 - FAQと補助導線は主要目次へ混入しない構造にする
   ---
-  duration_ms: 0.324477
+  duration_ms: 0.765117
   type: 'test'
   ...
 # Subtest: シミュレーターは差が見える初期例と利用限界を明示する
 ok 208 - シミュレーターは差が見える初期例と利用限界を明示する
   ---
-  duration_ms: 0.463596
+  duration_ms: 0.957749
   type: 'test'
   ...
 # Subtest: 記事別の検証カード文言は生成元でも保持する
 ok 209 - 記事別の検証カード文言は生成元でも保持する
   ---
-  duration_ms: 0.249053
+  duration_ms: 0.619237
   type: 'test'
   ...
 # Subtest: 画面のFAQとFAQPage構造化データが一致する
 ok 210 - 画面のFAQとFAQPage構造化データが一致する
   ---
-  duration_ms: 0.837352
+  duration_ms: 1.644708
   type: 'test'
   ...
 # Subtest: 記事台帳は既存記事の役割を維持して更新日と説明を同期する
 ok 211 - 記事台帳は既存記事の役割を維持して更新日と説明を同期する
   ---
-  duration_ms: 0.874968
+  duration_ms: 2.166708
   type: 'test'
   ...
 # Subtest: 海外向け案内は英語を全世界共通レートとして案内しない
 ok 212 - 海外向け案内は英語を全世界共通レートとして案内しない
   ---
-  duration_ms: 1.124472
+  duration_ms: 1.283191
   type: 'test'
   ...
 # Subtest: 多言語トップの実行時記事リンクは各言語の記事一覧を指す
 ok 213 - 多言語トップの実行時記事リンクは各言語の記事一覧を指す
   ---
-  duration_ms: 4.047169
+  duration_ms: 4.605688
   type: 'test'
   ...
 # Subtest: 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
 ok 214 - 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
   ---
-  duration_ms: 2.426451
+  duration_ms: 2.552973
   type: 'test'
   ...
 # Subtest: 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
 ok 215 - 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
   ---
-  duration_ms: 0.449364
+  duration_ms: 0.501228
   type: 'test'
   ...
 # Subtest: CSPは計測と広告品質確認で実際に使う接続先を許可する
 ok 216 - CSPは計測と広告品質確認で実際に使う接続先を許可する
   ---
-  duration_ms: 0.478594
+  duration_ms: 0.456461
   type: 'test'
   ...
 # Subtest: 日記の景品選択には全言語で読み上げ可能な名前がある
 ok 217 - 日記の景品選択には全言語で読み上げ可能な名前がある
   ---
-  duration_ms: 2.124687
+  duration_ms: 2.116172
   type: 'test'
   ...
 # Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
 ok 218 - トップページは大きな画像プレビューとOGP画像サイズを明示する
   ---
-  duration_ms: 0.597682
+  duration_ms: 0.612927
   type: 'test'
   ...
 # Subtest: 初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする
 ok 219 - 初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする
   ---
-  duration_ms: 1.370048
+  duration_ms: 1.644407
   type: 'test'
   ...
 # Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
 ok 220 - 日記の重複通知を表示せず、カレンダー登録は残す
   ---
-  duration_ms: 1.012506
+  duration_ms: 1.125303
   type: 'test'
   ...
 # Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
 ok 221 - 地域差案内は日本語トップでも英語の注意導線として表示する
   ---
-  duration_ms: 0.788782
+  duration_ms: 1.226636
   type: 'test'
   ...
 # Subtest: 計算方法と検証方針を全言語で本文から確認できる
 ok 222 - 計算方法と検証方針を全言語で本文から確認できる
   ---
-  duration_ms: 0.61468
+  duration_ms: 1.220166
   type: 'test'
   ...
 # Subtest: 広告と計測は初期表示後に低優先度で読み込む
 ok 223 - 広告と計測は初期表示後に低優先度で読み込む
   ---
-  duration_ms: 0.197244
+  duration_ms: 0.356109
   type: 'test'
   ...
 # ok - 著者ページのOGP画像は実在する
@@ -1778,7 +1778,7 @@ ok 223 - 広告と計測は初期表示後に低優先度で読み込む
 # Subtest: tests/playpoint-nine-fixes.test.cjs
 ok 39 - tests/playpoint-nine-fixes.test.cjs
   ---
-  duration_ms: 33.953886
+  duration_ms: 61.888014
   type: 'test'
   ...
 # ok - ステータス選択の初期値はブロンズになる
@@ -1814,88 +1814,15 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 # Successfully synchronized asset versions and dates in sample.html
 # ok - HTML同期はアセットバージョンと日付表記を単体で更新する
 # ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
-# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
-# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
-# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
-# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
-# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
-# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
-# ok - ステータス選択の再生成でoptionが重複しない
-# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
-# ok - トップページは同一URLの英語hreflangを出さない
-# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
-# ok - デプロイ前に全回帰テストを実行する
-# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
-# ok - テストファイルはルート限定の除外で本番へ同期しない
-# ok - SEO監視はサイトマップ掲載記事も確認する
-# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
-# ok - blog robots.txtは本番ドメインのサイトマップを指す
-# ok - ブログ一覧は記事JSONを正規化してから描画する
-# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
-# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
-# ok - CSPのscript-srcはhttps全体を許可しない
-# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
-# ok - target blankリンクにはnoopener noreferrerを付ける
-# ok - blogの再読み込みボタンはインラインonclickを使わない
-# ok - blog articles.jsonは実在するPlay Points記事だけを含む
-# ok - blog sitemapは登録済みPlay Points記事をすべて含む
-# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
-# ok - 記事ページのOGP画像は実ファイルが存在する
-# ok - blog SearchActionは実装と同じqパラメータを使う
-# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
-# ok - blogトップは自前のOGP画像とfaviconを使う
-# ok - blogトップの説明文は検索結果向けの長さを確保する
-# ok - blogの正規URLはindex.htmlを露出しない
-# ok - blogトップは外部Google Fontsへ接続しない
-# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
-# ok - blog記事カードクリックをAnalyticsへ送る
-# ok - 主要な操作要素は44px以上のタップ領域を持つ
-# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
-# ok - 狭い画面でも日記タブの文字を省略しない
-# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
-# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
-# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
-# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
-# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
-# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
-# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
-# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
-# ok - 全記事から有効なGoogle公式ヘルプを確認できる
-# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
-# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
-# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
-# ok - 最新情報リンクはヘッダーから外しフッターで維持する
-# ok - 計算条件を共有URLへ保存し再訪時に復元できる
-# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
-# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
-# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
-# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
-# ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
-# ok - モバイルの補助リンクと共有ボタンは縦に増えすぎない
-# ok - モバイル初期表示外の重い領域は遅延描画される
-# ok - 記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ
-# ok - ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ
-# ok - 外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる
-# ok - Analyticsのイベント設計と検証手順が文書化されている
-# ok - Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする
-# ok - トップページの更新日メタとサイト更新日を用途別に保持する
-# ok - サイトマップ同期はトップページ群のlastmodだけを更新する
-# ok - 反映タイミング記事は結論と確認手順を見出しで整理する
-# ok - CMP起動用のAdSenseタグは二重読み込みしない
-# ok - 共有URLは実在するステータス値だけを復元する
-# ok - 日記保存イベントはストレージ保存成功時だけ送る
-# ok - 記事のAdSenseは本文スクロール後に共通スクリプトから読み込む
-# ok - ブログと記事は共通コンポーネントからGA4本体を読み込む
-# ok - 共通コンポーネントは既存のヘッダーとフッターを重複生成しない
-# ok - 公開されている全記事HTMLが必要なSEOタグと共通AdSense読込を含んでいること
-# not ok - ブログと記事の変更アセットはバージョン付きURLで配信する
+# not ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
 # /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:132
 #     throw error;
 #     ^
-# AssertionError [ERR_ASSERTION]: sw.js does not version article-shared.css
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1951:10
+# AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+# 3 !== 11
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:898:10
 #     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:128:5)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1938:1)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:868:1)
 #     at Module._compile (node:internal/modules/cjs/loader:1781:14)
 #     at Object..js (node:internal/modules/cjs/loader:1913:10)
 #     at Module.load (node:internal/modules/cjs/loader:1505:32)
@@ -1903,18 +1830,18 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 #     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
 #     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
 #     at node:internal/main/run_main_module:36:49 {
-#   generatedMessage: false,
+#   generatedMessage: true,
 #   code: 'ERR_ASSERTION',
-#   actual: undefined,
-#   expected: true,
-#   operator: '==',
+#   actual: 3,
+#   expected: 11,
+#   operator: 'strictEqual',
 #   diff: 'simple'
 # }
-# Node.js v22.23.1
+# Node.js v22.23.2
 # Subtest: tests/playpoint-regression.test.cjs
 not ok 40 - tests/playpoint-regression.test.cjs
   ---
-  duration_ms: 146.356843
+  duration_ms: 1122.676949
   type: 'test'
   location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
   failureType: 'testCodeFailure'
@@ -1923,155 +1850,155 @@ not ok 40 - tests/playpoint-regression.test.cjs
   error: 'test failed'
   code: 'ERR_TEST_FAILURE'
   ...
-# [repository-integrity] tracked=406 deployable=297 resolved=284
+# [repository-integrity] tracked=407 deployable=298 resolved=284
 # Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
 ok 226 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
   ---
-  duration_ms: 1.661787
+  duration_ms: 1.985845
   type: 'test'
   ...
 # Subtest: 移設・統合・共通化済みの実体を残さない
 ok 227 - 移設・統合・共通化済みの実体を残さない
   ---
-  duration_ms: 0.133646
+  duration_ms: 0.161735
   type: 'test'
   ...
 # Subtest: 公開ファイルの内部参照とアンカーは実在する
 ok 228 - 公開ファイルの内部参照とアンカーは実在する
   ---
-  duration_ms: 0.087249
+  duration_ms: 0.106181
   type: 'test'
   ...
 # Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
 ok 229 - 全公開HTMLのcanonicalは自己一致し重複しない
   ---
-  duration_ms: 1.393828
+  duration_ms: 1.492848
   type: 'test'
   ...
 # Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
 ok 230 - 公開コードは旧パス・開発URL・旧ホストを参照しない
   ---
-  duration_ms: 13.923735
+  duration_ms: 15.386768
   type: 'test'
   ...
 # Subtest: 公開画像の実形式とHTTP配信形式を一致させる
 ok 231 - 公開画像の実形式とHTTP配信形式を一致させる
   ---
-  duration_ms: 8.183716
+  duration_ms: 8.68533
   type: 'test'
   ...
 # Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
 ok 232 - 未参照アセットと内容が完全重複する公開ファイルを残さない
   ---
-  duration_ms: 25.18753
+  duration_ms: 29.822066
   type: 'test'
   ...
 # Subtest: READMEとPWAメタデータは現行機能を説明する
 ok 233 - READMEとPWAメタデータは現行機能を説明する
   ---
-  duration_ms: 0.184351
+  duration_ms: 0.349148
   type: 'test'
   ...
 # Subtest: 送信するXMLサイトマップ間でURLを重複させない
 ok 234 - 送信するXMLサイトマップ間でURLを重複させない
   ---
-  duration_ms: 2.707438
+  duration_ms: 2.862931
   type: 'test'
   ...
 # Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
 ok 235 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
   ---
-  duration_ms: 0.435734
+  duration_ms: 0.498665
   type: 'test'
   ...
 # Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
 ok 236 - 専用XMLサイトマップへ移したURLをルートへ重ねない
   ---
-  duration_ms: 0.749719
+  duration_ms: 0.85266
   type: 'test'
   ...
 # Subtest: Play Pointsブログとフィードに家計記事を混在させない
 ok 237 - Play Pointsブログとフィードに家計記事を混在させない
   ---
-  duration_ms: 1.383401
+  duration_ms: 1.548443
   type: 'test'
   ...
 # Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
 ok 238 - 人向けサイトマップはPlay Pointsの案内に集中する
   ---
-  duration_ms: 0.286078
+  duration_ms: 0.352233
   type: 'test'
   ...
 # Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
 ok 239 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
   ---
-  duration_ms: 0.146539
+  duration_ms: 0.279403
   type: 'test'
   ...
 # Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
 ok 240 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
   ---
-  duration_ms: 0.156237
+  duration_ms: 0.332623
   type: 'test'
   ...
 # Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
 ok 241 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
   ---
-  duration_ms: 2.820886
+  duration_ms: 3.409057
   type: 'test'
   ...
 # Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
 ok 242 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
   ---
-  duration_ms: 1.939008
+  duration_ms: 1.931913
   type: 'test'
   ...
 # Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
 ok 243 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
   ---
-  duration_ms: 0.294205
+  duration_ms: 0.307104
   type: 'test'
   ...
 # Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
 ok 244 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
   ---
-  duration_ms: 0.191395
+  duration_ms: 0.203498
   type: 'test'
   ...
 # Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
 ok 245 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
   ---
-  duration_ms: 0.40349
+  duration_ms: 0.449319
   type: 'test'
   ...
 # Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
 ok 246 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
   ---
-  duration_ms: 0.204987
+  duration_ms: 0.235756
   type: 'test'
   ...
 # Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
 ok 247 - 静的生成辞書は多言語フッターの全リンク文言を持つ
   ---
-  duration_ms: 1.317165
+  duration_ms: 1.418656
   type: 'test'
   ...
 # Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
 ok 248 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
   ---
-  duration_ms: 8.240688
+  duration_ms: 8.612249
   type: 'test'
   ...
 # Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
 ok 249 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
   ---
-  duration_ms: 4.924379
+  duration_ms: 4.020723
   type: 'test'
   ...
 # Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
 ok 250 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
   ---
-  duration_ms: 2.012438
+  duration_ms: 2.361382
   type: 'test'
   ...
 1..250
@@ -2082,7 +2009,7 @@ ok 250 - 多言語トップの利用者向け静的文言へ別言語の文字�
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 833.292901
+# duration_ms 2234.54494
 
 === ads.txt検証 ===
 ads.txt is present and matches the AdSense publisher record.
@@ -2136,7 +2063,7 @@ Minified JS: utils.js (2466 -> 2462 bytes)
 Minified JS: playpoint-widget.js (29958 -> 29853 bytes)
 [article-assets] synchronized source-notice.css: v=3c2ec22615
 Successfully synchronized consent.js version in third-party.js to v=dc975a5e38
-Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260807_1457-fc0263ff
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260807_1503-ee2c5959
 [public-assets] synchronized content hashes: 197 files
 
 === 圧縮後JavaScript構文検証 ===
@@ -2147,409 +2074,409 @@ TAP version 13
 # Subtest: the complete published article corpus keeps structural quality signals
 ok 1 - the complete published article corpus keeps structural quality signals
   ---
-  duration_ms: 35.063315
+  duration_ms: 53.199881
   type: 'test'
   ...
 # Subtest: article hreflang links are reciprocal and use the Taiwan locale code
 ok 2 - article hreflang links are reciprocal and use the Taiwan locale code
   ---
-  duration_ms: 21.477214
+  duration_ms: 31.547145
   type: 'test'
   ...
 # Subtest: rewritten gift-card guides contain verifiable checks, not permanent discount claims
 ok 3 - rewritten gift-card guides contain verifiable checks, not permanent discount claims
   ---
-  duration_ms: 0.614662
+  duration_ms: 0.994825
   type: 'test'
   ...
 # Subtest: known overstatements do not return to published copy
 ok 4 - known overstatements do not return to published copy
   ---
-  duration_ms: 8.491761
+  duration_ms: 16.581484
   type: 'test'
   ...
 # Subtest: missing mapped related section is inserted before article end
 ok 5 - missing mapped related section is inserted before article end
   ---
-  duration_ms: 1.421375
+  duration_ms: 1.96286
   type: 'test'
   ...
 # Subtest: existing related section is preserved without duplication
 ok 6 - existing related section is preserved without duplication
   ---
-  duration_ms: 0.279823
+  duration_ms: 0.431072
   type: 'test'
   ...
 # Subtest: mapped section containing only non-article links is replaced with curated article guides
 ok 7 - mapped section containing only non-article links is replaced with curated article guides
   ---
-  duration_ms: 0.351641
+  duration_ms: 0.53511
   type: 'test'
   ...
 # Subtest: scope note is inserted after the lead answer and links to the paired page
 ok 8 - scope note is inserted after the lead answer and links to the paired page
   ---
-  duration_ms: 0.51175
+  duration_ms: 0.750826
   type: 'test'
   ...
 # Subtest: check mode detects required changes and does not write
 ok 9 - check mode detects required changes and does not write
   ---
-  duration_ms: 2.261115
+  duration_ms: 4.658703
   type: 'test'
   ...
 # Subtest: normalization is idempotent and validates related targets
 ok 10 - normalization is idempotent and validates related targets
   ---
-  duration_ms: 1.489242
+  duration_ms: 2.561345
   type: 'test'
   ...
 # Subtest: validator rejects self links in a non-curated related section
 ok 11 - validator rejects self links in a non-curated related section
   ---
-  duration_ms: 0.526427
+  duration_ms: 0.645647
   type: 'test'
   ...
 # Subtest: 通常のウィークリーリワードとPlay Pass週次特典を区別して案内する
 ok 12 - 通常のウィークリーリワードとPlay Pass週次特典を区別して案内する
   ---
-  duration_ms: 1.590781
+  duration_ms: 1.725671
   type: 'test'
   ...
 # Subtest: 入門記事の獲得対象は現在の日本向け公式案内に合わせる
 ok 13 - 入門記事の獲得対象は現在の日本向け公式案内に合わせる
   ---
-  duration_ms: 0.310663
+  duration_ms: 0.456431
   type: 'test'
   ...
 # Subtest: 週次特典を使う補足記事にもシルバー以上の条件を明記する
 ok 14 - 週次特典を使う補足記事にもシルバー以上の条件を明記する
   ---
-  duration_ms: 0.399994
+  duration_ms: 0.565605
   type: 'test'
   ...
 # Subtest: ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
 ok 15 - ゲーム以外の記事は終了・未確認サービスを獲得対象と断定しない
   ---
-  duration_ms: 0.348751
+  duration_ms: 0.431162
   type: 'test'
   ...
 # Subtest: サブスク記事は現行の公式確認項目だけを例示する
 ok 16 - サブスク記事は現行の公式確認項目だけを例示する
   ---
-  duration_ms: 0.335701
+  duration_ms: 0.540517
   type: 'test'
   ...
 # Subtest: ダイヤモンド記事は未公表の週次上限を事実扱いしない
 ok 17 - ダイヤモンド記事は未公表の週次上限を事実扱いしない
   ---
-  duration_ms: 0.219364
+  duration_ms: 0.37048
   type: 'test'
   ...
 # Subtest: 反映時間は公式案内にない時間幅を断定しない
 ok 18 - 反映時間は公式案内にない時間幅を断定しない
   ---
-  duration_ms: 0.278686
+  duration_ms: 0.428238
   type: 'test'
   ...
 # Subtest: 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
 ok 19 - 終了済みの2025年末から2026年正月予測には履歴記事の明示がある
   ---
-  duration_ms: 0.30326
+  duration_ms: 0.462519
   type: 'test'
   ...
 # Subtest: all quality-audit P1 article files exist
 ok 20 - all quality-audit P1 article files exist
   ---
-  duration_ms: 1.213912
+  duration_ms: 1.924702
   type: 'test'
   ...
 # Subtest: all international P1 articles are protected as canonical manual content
 ok 21 - all international P1 articles are protected as canonical manual content
   ---
-  duration_ms: 0.204885
+  duration_ms: 0.300515
   type: 'test'
   ...
 # Subtest: international P1 articles share a validated audit update date
 ok 22 - international P1 articles share a validated audit update date
   ---
-  duration_ms: 5.70209
+  duration_ms: 4.439756
   type: 'test'
   ...
 # Subtest: Super Weekly Prize pages retain the verified ticket and eligibility boundaries
 ok 23 - Super Weekly Prize pages retain the verified ticket and eligibility boundaries
   ---
-  duration_ms: 0.883013
+  duration_ms: 1.193135
   type: 'test'
   ...
 # Subtest: gift-card discount guides use authorized regional rules instead of a permanent seller ranking
 ok 24 - gift-card discount guides use authorized regional rules instead of a permanent seller ranking
   ---
-  duration_ms: 1.461936
+  duration_ms: 1.949479
   type: 'test'
   ...
 # Subtest: free-benefit guides separate no-new-purchase benefits from planned purchases
 ok 25 - free-benefit guides separate no-new-purchase benefits from planned purchases
   ---
-  duration_ms: 0.787719
+  duration_ms: 1.054015
   type: 'test'
   ...
 # Subtest: regional Platinum and Diamond pages expose official thresholds in the title and first screen
 ok 26 - regional Platinum and Diamond pages expose official thresholds in the title and first screen
   ---
-  duration_ms: 0.432416
+  duration_ms: 0.598936
   type: 'test'
   ...
 # Subtest: country-difference pages are hubs for local level and country-change guides
 ok 27 - country-difference pages are hubs for local level and country-change guides
   ---
-  duration_ms: 0.368281
+  duration_ms: 0.573698
   type: 'test'
   ...
 # Subtest: Japanese seasonal and Diamond guides preserve the new editorial framing
 ok 28 - Japanese seasonal and Diamond guides preserve the new editorial framing
   ---
-  duration_ms: 0.525786
+  duration_ms: 0.707801
   type: 'test'
   ...
 # Subtest: 可視本文と一致するFAQPageは保持する
 ok 29 - 可視本文と一致するFAQPageは保持する
   ---
-  duration_ms: 3.363842
+  duration_ms: 4.854965
   type: 'test'
   ...
 # Subtest: 本文と文言がずれたFAQPageは可視FAQへ同期する
 ok 30 - 本文と文言がずれたFAQPageは可視FAQへ同期する
   ---
-  duration_ms: 0.972307
+  duration_ms: 1.131432
   type: 'test'
   ...
 # Subtest: 可視FAQが無いFAQPageだけを除去しArticleは残す
 ok 31 - 可視FAQが無いFAQPageだけを除去しArticleは残す
   ---
-  duration_ms: 0.247641
+  duration_ms: 0.264611
   type: 'test'
   ...
 # Subtest: 既存robots指示を保ったままmax-image-previewをlargeへ統一する
 ok 32 - 既存robots指示を保ったままmax-image-previewをlargeへ統一する
   ---
-  duration_ms: 0.774991
+  duration_ms: 0.715172
   type: 'test'
   ...
 # Subtest: robots metaが無い場合もhead内へ安全に追加する
 ok 33 - robots metaが無い場合もhead内へ安全に追加する
   ---
-  duration_ms: 0.282952
+  duration_ms: 0.261085
   type: 'test'
   ...
 # Subtest: 4言語の記事ディレクトリだけを処理し、checkモードでは書き換えない
 ok 34 - 4言語の記事ディレクトリだけを処理し、checkモードでは書き換えない
   ---
-  duration_ms: 2.121989
+  duration_ms: 2.686724
   type: 'test'
   ...
 # Subtest: 注意ページは既存モードをそのまま使える国を正確に分類する
 ok 35 - 注意ページは既存モードをそのまま使える国を正確に分類する
   ---
-  duration_ms: 0.713653
+  duration_ms: 0.804297
   type: 'test'
   ...
 # Subtest: 似ているだけの国を完全一致として案内しない
 ok 36 - 似ているだけの国を完全一致として案内しない
   ---
-  duration_ms: 0.214809
+  duration_ms: 0.222937
   type: 'test'
   ...
 # Subtest: 国をブラウザ言語だけで推測せず公式確認導線を残す
 ok 37 - 国をブラウザ言語だけで推測せず公式確認導線を残す
   ---
-  duration_ms: 0.187517
+  duration_ms: 0.216117
   type: 'test'
   ...
 # Subtest: 注意ページの確認日をサイト全体の更新日で巻き戻さない
 ok 38 - 注意ページの確認日をサイト全体の更新日で巻き戻さない
   ---
-  duration_ms: 0.140108
+  duration_ms: 0.169226
   type: 'test'
   ...
 # Subtest: static blog article links follow article registry titles and remain idempotent
 ok 39 - static blog article links follow article registry titles and remain idempotent
   ---
-  duration_ms: 2.007505
+  duration_ms: 3.704605
   type: 'test'
   ...
 # Subtest: skeleton loading never references filtered results
 ok 40 - skeleton loading never references filtered results
   ---
-  duration_ms: 1.059045
+  duration_ms: 1.688054
   type: 'test'
   ...
 # Subtest: result count is calculated inside render after filtering
 ok 41 - result count is calculated inside render after filtering
   ---
-  duration_ms: 0.858232
+  duration_ms: 1.354218
   type: 'test'
   ...
 # Subtest: pagination, reset and category controls synchronize URL and active state
 ok 42 - pagination, reset and category controls synchronize URL and active state
   ---
-  duration_ms: 0.322534
+  duration_ms: 0.497994
   type: 'test'
   ...
 # Subtest: sidebar ARIA state is synchronized in markup and runtime
 ok 43 - sidebar ARIA state is synchronized in markup and runtime
   ---
-  duration_ms: 0.200062
+  duration_ms: 0.228626
   type: 'test'
   ...
 # Subtest: browser smoke covers the blog runtime flow
 ok 44 - browser smoke covers the blog runtime flow
   ---
-  duration_ms: 0.160848
+  duration_ms: 0.278131
   type: 'test'
   ...
 # Subtest: production revision verification retries IPv4 network errors
 ok 45 - production revision verification retries IPv4 network errors
   ---
-  duration_ms: 0.119249
+  duration_ms: 0.223929
   type: 'test'
   ...
 # Subtest: 地域別の公式レート・年間しきい値・通貨単位を固定する
 ok 46 - 地域別の公式レート・年間しきい値・通貨単位を固定する
   ---
-  duration_ms: 5.335166
+  duration_ms: 7.571915
   type: 'test'
   ...
 # Subtest: 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
 ok 47 - 共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す
   ---
-  duration_ms: 0.41145
+  duration_ms: 0.59477
   type: 'test'
   ...
 # Subtest: トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
 ok 48 - トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する
   ---
-  duration_ms: 0.603575
+  duration_ms: 0.834022
   type: 'test'
   ...
 # Subtest: 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
 ok 49 - 4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する
   ---
-  duration_ms: 1.532579
+  duration_ms: 1.740083
   type: 'test'
   ...
 # Subtest: 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
 ok 50 - 海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる
   ---
-  duration_ms: 0.556273
+  duration_ms: 0.810326
   type: 'test'
   ...
 # Subtest: アプリモジュール変更がService Worker用の指紋を必ず変える
 ok 51 - アプリモジュール変更がService Worker用の指紋を必ず変える
   ---
-  duration_ms: 53.959141
+  duration_ms: 2.10861
   type: 'test'
   ...
 # Subtest: 記事一覧は4つの検索意図カテゴリだけを使う
 ok 52 - 記事一覧は4つの検索意図カテゴリだけを使う
   ---
-  duration_ms: 1.427659
+  duration_ms: 2.231666
   type: 'test'
   ...
 # Subtest: 反映トラブルの重複記事は新しい包括記事へ恒久統合する
 ok 53 - 反映トラブルの重複記事は新しい包括記事へ恒久統合する
   ---
-  duration_ms: 1.518171
+  duration_ms: 2.202272
   type: 'test'
   ...
 # Subtest: 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
 ok 54 - 主要検索記事は即答と判明・不明の境界を静的HTMLで示す
   ---
-  duration_ms: 1.070348
+  duration_ms: 1.882097
   type: 'test'
   ...
 # Subtest: 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
 ok 55 - 既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く
   ---
-  duration_ms: 0.271697
+  duration_ms: 0.43593
   type: 'test'
   ...
 # Subtest: 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
 ok 56 - 引用用比較表は恒久URL・固定アンカー・一次情報を持つ
   ---
-  duration_ms: 0.638475
+  duration_ms: 1.734755
   type: 'test'
   ...
 # Subtest: 公開記事はトップから3クリック以内で到達できる
 ok 57 - 公開記事はトップから3クリック以内で到達できる
   ---
-  duration_ms: 30.011176
+  duration_ms: 61.333907
   type: 'test'
   ...
 # Subtest: 深いURLでも同意管理スクリプトをサイトルートから読み込む
 ok 58 - 深いURLでも同意管理スクリプトをサイトルートから読み込む
   ---
-  duration_ms: 0.106862
+  duration_ms: 0.18514
   type: 'test'
   ...
 # Subtest: デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
 ok 59 - デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する
   ---
-  duration_ms: 0.672554
+  duration_ms: 1.070159
   type: 'test'
   ...
 # Subtest: 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
 ok 60 - 移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する
   ---
-  duration_ms: 0.173309
+  duration_ms: 0.248025
   type: 'test'
   ...
 # Subtest: 旧calculatorファイルを持たず301転送だけを維持する
 ok 61 - 旧calculatorファイルを持たず301転送だけを維持する
   ---
-  duration_ms: 0.159749
+  duration_ms: 0.261986
   type: 'test'
   ...
 # Subtest: 全階層のindex.htmlを階層を保った正規URLへ301転送する
 ok 62 - 全階層のindex.htmlを階層を保った正規URLへ301転送する
   ---
-  duration_ms: 0.085246
+  duration_ms: 0.142295
   type: 'test'
   ...
 # Subtest: デプロイスクリプトのBash構文が有効である
 ok 63 - デプロイスクリプトのBash構文が有効である
   ---
-  duration_ms: 3.305638
+  duration_ms: 4.999463
   type: 'test'
   ...
 # Subtest: PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
 ok 64 - PlayPointと無関係なツールはKatakataLabへ移設し旧URLを恒久転送する
   ---
-  duration_ms: 0.831707
+  duration_ms: 1.390283
   type: 'test'
   ...
 # Subtest: 公開HTMLと生成元にサイト内遷移用UTMを残さない
 ok 65 - 公開HTMLと生成元にサイト内遷移用UTMを残さない
   ---
-  duration_ms: 15.760519
+  duration_ms: 28.001516
   type: 'test'
   ...
 # Subtest: プライバシー文書はWeb版と認定CMPの運用に一致する
 ok 66 - プライバシー文書はWeb版と認定CMPの運用に一致する
   ---
-  duration_ms: 0.312273
+  duration_ms: 0.543091
   type: 'test'
   ...
 # Subtest: 再訪と配布の主要イベントだけを許可する
 ok 67 - 再訪と配布の主要イベントだけを許可する
   ---
-  duration_ms: 0.396194
+  duration_ms: 0.599166
   type: 'test'
   ...
 # Subtest: ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
 ok 68 - ウィジェット作成ページは狭い画面でグリッド内容をはみ出させない
   ---
-  duration_ms: 0.20463
+  duration_ms: 0.32389
   type: 'test'
   ...
 # ok - 実ユーザー速度は同意後に匿名区分だけを計測する
@@ -2561,532 +2488,532 @@ ok 68 - ウィジェット作成ページは狭い画面でグリッド内容を
 # Subtest: tests/growth-priority.test.cjs
 ok 13 - tests/growth-priority.test.cjs
   ---
-  duration_ms: 41.385589
+  duration_ms: 79.803226
   type: 'test'
   ...
 # Subtest: mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
 ok 70 - mapWithConcurrencyは指定した同時実行数を超えず入力順を保持する
   ---
-  duration_ms: 16.937837
+  duration_ms: 18.040922
   type: 'test'
   ...
 # Subtest: mapWithConcurrencyは一件の失敗後も残りを検査する
 ok 71 - mapWithConcurrencyは一件の失敗後も残りを検査する
   ---
-  duration_ms: 0.36208
+  duration_ms: 0.580929
   type: 'test'
   ...
 # Subtest: retryは失敗対象だけを指定回数まで再試行する
 ok 72 - retryは失敗対象だけを指定回数まで再試行する
   ---
-  duration_ms: 2.530946
+  duration_ms: 3.474657
   type: 'test'
   ...
 # Subtest: 機種変更記事は独立した検索意図と症状別の確認導線を持つ
 ok 73 - 機種変更記事は独立した検索意図と症状別の確認導線を持つ
   ---
-  duration_ms: 0.753586
+  duration_ms: 1.213706
   type: 'test'
   ...
 # Subtest: 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
 ok 74 - 既存記事が履歴・週次特典・交換先の主担当として必要情報を持つ
   ---
-  duration_ms: 1.015824
+  duration_ms: 1.803448
   type: 'test'
   ...
 # Subtest: 機種変更記事のFAQ本文とFAQPage構造化データは一致する
 ok 75 - 機種変更記事のFAQ本文とFAQPage構造化データは一致する
   ---
-  duration_ms: 1.218671
+  duration_ms: 2.401473
   type: 'test'
   ...
 # Subtest: 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
 ok 76 - 記事台帳のid・file・titleは重複せず、登録先ファイルが存在する
   ---
-  duration_ms: 1.057335
+  duration_ms: 1.398256
   type: 'test'
   ...
 # Subtest: 国・地域別の実用記事を3言語で十分な本文として公開する
 ok 77 - 国・地域別の実用記事を3言語で十分な本文として公開する
   ---
-  duration_ms: 5.055226
+  duration_ms: 11.846296
   type: 'test'
   ...
 # Subtest: 言語別記事一覧と専用サイトマップから対象ページを発見できる
 ok 78 - 言語別記事一覧と専用サイトマップから対象ページを発見できる
   ---
-  duration_ms: 0.545891
+  duration_ms: 0.829465
   type: 'test'
   ...
 # Subtest: 国際記事内のローカルリンク先が存在する
 ok 79 - 国際記事内のローカルリンク先が存在する
   ---
-  duration_ms: 2.295088
+  duration_ms: 3.462458
   type: 'test'
   ...
 # Subtest: 日本語では重複する残高併用記事を追加しない
 ok 80 - 日本語では重複する残高併用記事を追加しない
   ---
-  duration_ms: 0.226745
+  duration_ms: 0.39649
   type: 'test'
   ...
 # Subtest: クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
 ok 81 - クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす
   ---
-  duration_ms: 3.425839
+  duration_ms: 3.859598
   type: 'test'
   ...
 # Subtest: 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
 ok 82 - 専用サイトマップは8記事と完全なhreflangを持ちrobots.txtから発見できる
   ---
-  duration_ms: 0.33127
+  duration_ms: 0.331922
   type: 'test'
   ...
 # Subtest: 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
 ok 83 - 言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる
   ---
-  duration_ms: 0.547872
+  duration_ms: 0.69821
   type: 'test'
   ...
 # Subtest: 新規記事のサイト内リンク先はすべて存在する
 ok 84 - 新規記事のサイト内リンク先はすべて存在する
   ---
-  duration_ms: 1.771372
+  duration_ms: 2.303735
   type: 'test'
   ...
 # Subtest: 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
 ok 85 - 海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける
   ---
-  duration_ms: 4.9421
+  duration_ms: 5.11272
   type: 'test'
   ...
 # Subtest: 地域外の維持門檻や通貨を流用していない
 ok 86 - 地域外の維持門檻や通貨を流用していない
   ---
-  duration_ms: 0.640675
+  duration_ms: 0.955876
   type: 'test'
   ...
 # Subtest: 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
 ok 87 - 維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する
   ---
-  duration_ms: 0.221668
+  duration_ms: 0.274496
   type: 'test'
   ...
 # Subtest: 日本語既存ページと海外6ページは完全なhreflangで相互接続する
 ok 88 - 日本語既存ページと海外6ページは完全なhreflangで相互接続する
   ---
-  duration_ms: 1.572903
+  duration_ms: 1.466479
   type: 'test'
   ...
 # Subtest: 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
 ok 89 - 専用サイトマップ・robots・一覧から地域別維持計算を発見できる
   ---
-  duration_ms: 0.584495
+  duration_ms: 0.632457
   type: 'test'
   ...
 # Subtest: 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
 ok 90 - 生成設定は手書き維持計算を上書きせずサイトマップ対象に保つ
   ---
-  duration_ms: 6.211854
+  duration_ms: 7.967433
   type: 'test'
   ...
 # Subtest: 維持解説・比較記事から同一地域の計算ページへ進める
 ok 91 - 維持解説・比較記事から同一地域の計算ページへ進める
   ---
-  duration_ms: 0.559154
+  duration_ms: 0.882145
   type: 'test'
   ...
 # Subtest: manual multilingual guide links survive regeneration exactly once
 ok 92 - manual multilingual guide links survive regeneration exactly once
   ---
-  duration_ms: 26.234508
+  duration_ms: 8.856108
   type: 'test'
   ...
 # Subtest: プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
 ok 93 - プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する
   ---
-  duration_ms: 1.280741
+  duration_ms: 2.558681
   type: 'test'
   ...
 # Subtest: 地域の通貨とランク条件を他地域から流用していない
 ok 94 - 地域の通貨とランク条件を他地域から流用していない
   ---
-  duration_ms: 1.058456
+  duration_ms: 1.979375
   type: 'test'
   ...
 # Subtest: 専用サイトマップと記事一覧から4言語ページを発見できる
 ok 95 - 専用サイトマップと記事一覧から4言語ページを発見できる
   ---
-  duration_ms: 0.386587
+  duration_ms: 0.777667
   type: 'test'
   ...
 # Subtest: 日本語記事データと配信ファイルの更新日・説明が一致する
 ok 96 - 日本語記事データと配信ファイルの更新日・説明が一致する
   ---
-  duration_ms: 0.387834
+  duration_ms: 0.907783
   type: 'test'
   ...
 # Subtest: 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
 ok 97 - 独立管理の記事は生成処理で上書きされずサイトマップ対象に残る
   ---
-  duration_ms: 0.949911
+  duration_ms: 2.045224
   type: 'test'
   ...
 # Subtest: ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
 ok 98 - ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす
   ---
-  duration_ms: 1.58518
+  duration_ms: 2.331918
   type: 'test'
   ...
 # Subtest: 日本語の既存記事と記事データは同じ更新日を持つ
 ok 99 - 日本語の既存記事と記事データは同じ更新日を持つ
   ---
-  duration_ms: 1.147793
+  duration_ms: 1.5866
   type: 'test'
   ...
 # Subtest: 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
 ok 100 - 専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる
   ---
-  duration_ms: 0.236306
+  duration_ms: 0.278912
   type: 'test'
   ...
 # Subtest: 言語別一覧と人向けサイトマップから新しい記事へ移動できる
 ok 101 - 言語別一覧と人向けサイトマップから新しい記事へ移動できる
   ---
-  duration_ms: 0.396369
+  duration_ms: 0.525776
   type: 'test'
   ...
 # Subtest: 新しい多言語記事のサイト内リンク先は存在する
 ok 102 - 新しい多言語記事のサイト内リンク先は存在する
   ---
-  duration_ms: 1.198326
+  duration_ms: 1.997261
   type: 'test'
   ...
 # Subtest: 海外向け記事から日本円固定ページへ誘導しない
 ok 103 - 海外向け記事から日本円固定ページへ誘導しない
   ---
-  duration_ms: 8.127596
+  duration_ms: 13.586018
   type: 'test'
   ...
 # Subtest: ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
 ok 104 - ギフトカード購入・登録と対象コンテンツ購入を分離して説明する
   ---
-  duration_ms: 0.336134
+  duration_ms: 0.424292
   type: 'test'
   ...
 # Subtest: 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
 ok 105 - 영문 구독 가이드는 적격 Google Play 구독의 적립 가능성을 직접 답한다
   ---
-  duration_ms: 0.119337
+  duration_ms: 0.205461
   type: 'test'
   ...
 # Subtest: Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
 ok 106 - Super Weekly Prize와 Super Ticket의 공식 명칭과 계정 한정을 유지한다
   ---
-  duration_ms: 0.344233
+  duration_ms: 0.432664
   type: 'test'
   ...
 # Subtest: 영문 수치 기사는 미국 기준임을 명시한다
 ok 107 - 영문 수치 기사는 미국 기준임을 명시한다
   ---
-  duration_ms: 0.393621
+  duration_ms: 0.531584
   type: 'test'
   ...
 # Subtest: regional guide set exists in all three locales
 ok 108 - regional guide set exists in all three locales
   ---
-  duration_ms: 0.937771
+  duration_ms: 1.621794
   type: 'test'
   ...
 # Subtest: every regional article has reciprocal hreflang links
 ok 109 - every regional article has reciprocal hreflang links
   ---
-  duration_ms: 2.068408
+  duration_ms: 3.587827
   type: 'test'
   ...
 # Subtest: regional level thresholds and earning units are not mixed
 ok 110 - regional level thresholds and earning units are not mixed
   ---
-  duration_ms: 0.528912
+  duration_ms: 0.72046
   type: 'test'
   ...
 # Subtest: Silver strategy uses regional thresholds and positive value framing
 ok 111 - Silver strategy uses regional thresholds and positive value framing
   ---
-  duration_ms: 0.491129
+  duration_ms: 0.738086
   type: 'test'
   ...
 # Subtest: promotion articles state no stacking, highest rate, pre-tax and rounding
 ok 112 - promotion articles state no stacking, highest rate, pre-tax and rounding
   ---
-  duration_ms: 0.62111
+  duration_ms: 0.689493
   type: 'test'
   ...
 # Subtest: country-change guides warn that points and level do not transfer
 ok 113 - country-change guides warn that points and level do not transfer
   ---
-  duration_ms: 1.295252
+  duration_ms: 1.369001
   type: 'test'
   ...
 # Subtest: localized Silver landing pages use the correct threshold and article route
 ok 114 - localized Silver landing pages use the correct threshold and article route
   ---
-  duration_ms: 0.33662
+  duration_ms: 0.493726
   type: 'test'
   ...
 # Subtest: manual article source list preserves all regional guides
 ok 115 - manual article source list preserves all regional guides
   ---
-  duration_ms: 0.300929
+  duration_ms: 0.486406
   type: 'test'
   ...
 # Subtest: reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
 ok 116 - reward and quest topics have complete Japanese, English, Korean and Taiwan clusters
   ---
-  duration_ms: 2.396975
+  duration_ms: 4.154775
   type: 'test'
   ...
 # Subtest: new international guides are substantial, sourced and usable instead of thin translations
 ok 117 - new international guides are substantial, sourced and usable instead of thin translations
   ---
-  duration_ms: 2.885105
+  duration_ms: 4.404123
   type: 'test'
   ...
 # Subtest: Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
 ok 118 - Super Weekly Reward articles explain stock and the Super Ticket trade-off without promising premium prizes
   ---
-  duration_ms: 1.274087
+  duration_ms: 1.602334
   type: 'test'
   ...
 # Subtest: quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
 ok 119 - quest articles cover account-specific conditions, qualifying purchases, sign-in and refunds
   ---
-  duration_ms: 0.806066
+  duration_ms: 1.125032
   type: 'test'
   ...
 # Subtest: locale indexes and the dedicated sitemap expose all six new international guides
 ok 120 - locale indexes and the dedicated sitemap expose all six new international guides
   ---
-  duration_ms: 2.402108
+  duration_ms: 1.941452
   type: 'test'
   ...
 # Subtest: ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
 ok 121 - ポイント利用・参加条件記事は3言語でSEO公開要件を満たす
   ---
-  duration_ms: 1.662461
+  duration_ms: 3.208484
   type: 'test'
   ...
 # Subtest: 専用サイトマップは6記事を公開しrobots.txtから発見できる
 ok 122 - 専用サイトマップは6記事を公開しrobots.txtから発見できる
   ---
-  duration_ms: 0.662714
+  duration_ms: 1.048456
   type: 'test'
   ...
 # Subtest: 新規記事のサイト内リンク先は存在する
 ok 123 - 新規記事のサイト内リンク先は存在する
   ---
-  duration_ms: 1.448867
+  duration_ms: 2.361873
   type: 'test'
   ...
 # Subtest: 週次特典と複数アカウント記事は3言語で公開要件を満たす
 ok 124 - 週次特典と複数アカウント記事は3言語で公開要件を満たす
   ---
-  duration_ms: 2.058353
+  duration_ms: 3.280062
   type: 'test'
   ...
 # Subtest: 新規記事は同一言語内で相互に接続される
 ok 125 - 新規記事は同一言語内で相互に接続される
   ---
-  duration_ms: 0.561761
+  duration_ms: 0.829135
   type: 'test'
   ...
 # Subtest: 国際ガイド専用サイトマップをrobots.txtから発見できる
 ok 126 - 国際ガイド専用サイトマップをrobots.txtから発見できる
   ---
-  duration_ms: 0.423302
+  duration_ms: 0.513256
   type: 'test'
   ...
 # Subtest: 新規国際記事のローカルリンク先はすべて存在する
 ok 127 - 新規国際記事のローカルリンク先はすべて存在する
   ---
-  duration_ms: 1.33654
+  duration_ms: 2.626574
   type: 'test'
   ...
 # Subtest: 日本語のランク総合記事が5段階と判定値の違いを説明する
 ok 128 - 日本語のランク総合記事が5段階と判定値の違いを説明する
   ---
-  duration_ms: 1.111688
+  duration_ms: 1.252444
   type: 'test'
   ...
 # Subtest: 登録できない記事が参加条件を順番に切り分ける
 ok 129 - 登録できない記事が参加条件を順番に切り分ける
   ---
-  duration_ms: 0.291148
+  duration_ms: 0.290139
   type: 'test'
   ...
 # Subtest: 国変更記事がポイント・残高・変更条件を混同しない
 ok 130 - 国変更記事がポイント・残高・変更条件を混同しない
   ---
-  duration_ms: 0.334045
+  duration_ms: 0.355157
   type: 'test'
   ...
 # Subtest: 倍率記事が直接レートと倍率入力を足し合わせない
 ok 131 - 倍率記事が直接レートと倍率入力を足し合わせない
   ---
-  duration_ms: 1.296835
+  duration_ms: 1.327308
   type: 'test'
   ...
 # Subtest: シルバー記事が購入予定と高い獲得率を組み合わせる
 ok 132 - シルバー記事が購入予定と高い獲得率を組み合わせる
   ---
-  duration_ms: 0.361273
+  duration_ms: 0.360986
   type: 'test'
   ...
 # Subtest: ウィークリー記事が通常リワードとPlay Pass週次特典を分離する
 ok 133 - ウィークリー記事が通常リワードとPlay Pass週次特典を分離する
   ---
-  duration_ms: 0.410251
+  duration_ms: 0.376529
   type: 'test'
   ...
 # Subtest: ランク記事からシルバーのお得記事へ重複なく移動できる
 ok 134 - ランク記事からシルバーのお得記事へ重複なく移動できる
   ---
-  duration_ms: 0.363485
+  duration_ms: 0.365062
   type: 'test'
   ...
 # Subtest: シルバー計算入口の上部からお得記事へ移動できる
 ok 135 - シルバー計算入口の上部からお得記事へ移動できる
   ---
-  duration_ms: 0.234849
+  duration_ms: 0.247094
   type: 'test'
   ...
 # Subtest: 倍率キャンペーン入口からシルバーのお得記事へ移動できる
 ok 136 - 倍率キャンペーン入口からシルバーのお得記事へ移動できる
   ---
-  duration_ms: 0.596091
+  duration_ms: 0.577334
   type: 'test'
   ...
 # Subtest: 記事一覧へ新規5本が重複なく登録される
 ok 137 - 記事一覧へ新規5本が重複なく登録される
   ---
-  duration_ms: 0.695359
+  duration_ms: 0.742423
   type: 'test'
   ...
 # Subtest: 最新情報ハブは確認範囲・公式参照・確認日を明示する
 ok 138 - 最新情報ハブは確認範囲・公式参照・確認日を明示する
   ---
-  duration_ms: 1.273494
+  duration_ms: 1.840164
   type: 'test'
   ...
 # Subtest: 最新情報ハブは週次3制度とクエストを別項目として扱う
 ok 139 - 最新情報ハブは週次3制度とクエストを別項目として扱う
   ---
-  duration_ms: 0.276851
+  duration_ms: 0.378032
   type: 'test'
   ...
 # Subtest: 生成処理は確認していない日に最新情報ハブの日付を進めない
 ok 140 - 生成処理は確認していない日に最新情報ハブの日付を進めない
   ---
-  duration_ms: 0.130523
+  duration_ms: 0.181935
   type: 'test'
   ...
 # Subtest: 鮮度検査は14日を超えた確認日を検出する
 ok 141 - 鮮度検査は14日を超えた確認日を検出する
   ---
-  duration_ms: 1.489329
+  duration_ms: 1.568283
   type: 'test'
   ...
 # Subtest: 運用手順は日付だけの更新と個別オファーの一般化を禁止する
 ok 142 - 運用手順は日付だけの更新と個別オファーの一般化を禁止する
   ---
-  duration_ms: 0.214578
+  duration_ms: 0.331141
   type: 'test'
   ...
 # Subtest: 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
 ok 143 - 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
   ---
-  duration_ms: 0.683487
+  duration_ms: 1.272375
   type: 'test'
   ...
 # Subtest: 4言語に自動入力の獲得率と通常倍率の文言が用意されている
 ok 144 - 4言語に自動入力の獲得率と通常倍率の文言が用意されている
   ---
-  duration_ms: 0.292534
+  duration_ms: 0.405133
   type: 'test'
   ...
 # Subtest: 初期化前にDOMを組み替え、地域更新時に文言も更新する
 ok 145 - 初期化前にDOMを組み替え、地域更新時に文言も更新する
   ---
-  duration_ms: 0.543847
+  duration_ms: 0.327656
   type: 'test'
   ...
 # Subtest: 既存の主要入力IDと共有URL仕様を維持する
 ok 146 - 既存の主要入力IDと共有URL仕様を維持する
   ---
-  duration_ms: 1.615814
+  duration_ms: 2.417417
   type: 'test'
   ...
 # Subtest: UIモジュールを圧縮・版管理・Service Workerの対象に含める
 ok 147 - UIモジュールを圧縮・版管理・Service Workerの対象に含める
   ---
-  duration_ms: 0.222239
+  duration_ms: 0.327345
   type: 'test'
   ...
 # Subtest: main.jsは初期化と画面調停に集中し独立責務を各モジュールへ委譲する
 ok 148 - main.jsは初期化と画面調停に集中し独立責務を各モジュールへ委譲する
   ---
-  duration_ms: 1.059054
+  duration_ms: 1.683547
   type: 'test'
   ...
 # Subtest: 分離した責務の実装と既存イベント名は専用モジュールに保持する
 ok 149 - 分離した責務の実装と既存イベント名は専用モジュールに保持する
   ---
-  duration_ms: 0.399396
+  duration_ms: 0.636352
   type: 'test'
   ...
 # Subtest: 新しい実行時モジュールは圧縮・キャッシュ更新・オフライン先読みに含める
 ok 150 - 新しい実行時モジュールは圧縮・キャッシュ更新・オフライン先読みに含める
   ---
-  duration_ms: 0.307188
+  duration_ms: 0.493947
   type: 'test'
   ...
 # [manual-intl] restored canonical article content: 40
 # Subtest: 地域別に手動確認した記事の正本一覧を固定する
 ok 151 - 地域別に手動確認した記事の正本一覧を固定する
   ---
-  duration_ms: 2.007934
+  duration_ms: 2.495315
   type: 'test'
   ...
 # Subtest: 手動正本の公開日・更新日・last-modifiedを一致させる
 ok 152 - 手動正本の公開日・更新日・last-modifiedを一致させる
   ---
-  duration_ms: 3.37114
+  duration_ms: 7.790095
   type: 'test'
   ...
 # Subtest: 国際記事台帳は手動正本の日付を自動採用する
 ok 153 - 国際記事台帳は手動正本の日付を自動採用する
   ---
-  duration_ms: 1.681124
+  duration_ms: 2.516728
   type: 'test'
   ...
 # Subtest: ビルドは国際記事生成の直前に退避し直後に復元する
 ok 154 - ビルドは国際記事生成の直前に退避し直後に復元する
   ---
-  duration_ms: 0.172161
+  duration_ms: 0.248596
   type: 'test'
   ...
 # Subtest: 生成処理で上書きされても手動記事を完全に復元できる
 ok 155 - 生成処理で上書きされても手動記事を完全に復元できる
   ---
-  duration_ms: 5.599022
+  duration_ms: 13.110984
   type: 'test'
   ...
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-MCJ199/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-MCJ199/calculator-home-2.json",
-#     "/tmp/playpoint-phase1-MCJ199/calculator-home-3.json"
+#     "/tmp/playpoint-phase1-kOOVAD/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-kOOVAD/calculator-home-2.json",
+#     "/tmp/playpoint-phase1-kOOVAD/calculator-home-3.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -3148,9 +3075,9 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-iBh8Bx/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-iBh8Bx/calculator-home-2.json",
-#     "/tmp/playpoint-phase1-iBh8Bx/calculator-home-3.json"
+#     "/tmp/playpoint-phase1-ps2cEi/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-ps2cEi/calculator-home-2.json",
+#     "/tmp/playpoint-phase1-ps2cEi/calculator-home-3.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -3214,8 +3141,8 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # {
 #   "profile": "calculatorHome",
 #   "files": [
-#     "/tmp/playpoint-phase1-fhIC9N/calculator-home-1.json",
-#     "/tmp/playpoint-phase1-fhIC9N/calculator-home-2.json"
+#     "/tmp/playpoint-phase1-tQ9Iv9/calculator-home-1.json",
+#     "/tmp/playpoint-phase1-tQ9Iv9/calculator-home-2.json"
 #   ],
 #   "urls": [
 #     "https://playpoint-sim.com/",
@@ -3274,409 +3201,409 @@ ok 155 - 生成処理で上書きされても手動記事を完全に復元で�
 # Subtest: 低性能Androidのハード予算が旧基準より厳しく、ページ別に設定されている
 ok 156 - 低性能Androidのハード予算が旧基準より厳しく、ページ別に設定されている
   ---
-  duration_ms: 0.620405
+  duration_ms: 1.324714
   type: 'test'
   ...
 # Subtest: トップページは3回の中央値で判定し、単発の遅い外れ値に左右されない
 ok 157 - トップページは3回の中央値で判定し、単発の遅い外れ値に左右されない
   ---
-  duration_ms: 1.753628
+  duration_ms: 3.553376
   type: 'test'
   ...
 # Subtest: トップページは3回中2回が上限超過なら中央値で失敗する
 ok 158 - トップページは3回中2回が上限超過なら中央値で失敗する
   ---
-  duration_ms: 0.692858
+  duration_ms: 1.28904
   type: 'test'
   ...
 # Subtest: トップページの測定が3回未満なら性能値に関係なく失敗する
 ok 159 - トップページの測定が3回未満なら性能値に関係なく失敗する
   ---
-  duration_ms: 0.604882
+  duration_ms: 1.085803
   type: 'test'
   ...
 # Subtest: Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を抽出する
 ok 160 - Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を抽出する
   ---
-  duration_ms: 0.628664
+  duration_ms: 1.028846
   type: 'test'
   ...
 # Subtest: 性能ワークフローが本番同等成果物・3回測定・記事一覧・診断アーティファクトを検査する
 ok 161 - 性能ワークフローが本番同等成果物・3回測定・記事一覧・診断アーティファクトを検査する
   ---
-  duration_ms: 0.31376
+  duration_ms: 0.599037
   type: 'test'
   ...
 # Subtest: modulepreloadと実スクリプトが同じ内容ハッシュへ同期される
 ok 162 - modulepreloadと実スクリプトが同じ内容ハッシュへ同期される
   ---
-  duration_ms: 2.524134
+  duration_ms: 4.243149
   type: 'test'
   ...
 # Subtest: 記事の共通ヘッダーと計算機導線を生成時に一度だけ埋め込む
 ok 163 - 記事の共通ヘッダーと計算機導線を生成時に一度だけ埋め込む
   ---
-  duration_ms: 2.551008
+  duration_ms: 3.622611
   type: 'test'
   ...
 # Subtest: 記事広告枠・静的ヘッダー・計算図が初期レイアウトを予約する
 ok 164 - 記事広告枠・静的ヘッダー・計算図が初期レイアウトを予約する
   ---
-  duration_ms: 0.39565
+  duration_ms: 0.815844
   type: 'test'
   ...
 # Subtest: 記事一覧はモバイルで重いOGP画像を生成せず、デスクトップだけに画像を残す
 ok 165 - 記事一覧はモバイルで重いOGP画像を生成せず、デスクトップだけに画像を残す
   ---
-  duration_ms: 0.5213
+  duration_ms: 0.85307
   type: 'test'
   ...
 # Subtest: 生成済み代表記事は初回HTMLからヘッダーと計算導線を持つ
 ok 166 - 生成済み代表記事は初回HTMLからヘッダーと計算導線を持つ
   ---
-  duration_ms: 0.271259
+  duration_ms: 0.398663
   type: 'test'
   ...
 # Subtest: 日記は初期モジュールグラフと先読みから外し、利用時だけ動的読込する
 ok 167 - 日記は初期モジュールグラフと先読みから外し、利用時だけ動的読込する
   ---
-  duration_ms: 0.661831
+  duration_ms: 1.006683
   type: 'test'
   ...
 # Subtest: Service Workerの初回キャッシュは必須シェルだけに絞り、重い任意資産は利用時キャッシュへ回す
 ok 168 - Service Workerの初回キャッシュは必須シェルだけに絞り、重い任意資産は利用時キャッシュへ回す
   ---
-  duration_ms: 0.227179
+  duration_ms: 0.383299
   type: 'test'
   ...
 # Subtest: JPEG実体の既存OGP URLをimage/jpegとして配信する
 ok 169 - JPEG実体の既存OGP URLをimage/jpegとして配信する
   ---
-  duration_ms: 0.682899
+  duration_ms: 1.160786
   type: 'test'
   ...
 # Subtest: デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
 ok 170 - デプロイ後のSEO検査は実際のOGP Content-Typeを確認する
   ---
-  duration_ms: 0.129954
+  duration_ms: 0.176447
   type: 'test'
   ...
 # Subtest: 記事CSSは外部化され、AdSense以外のinline styleを残さない
 ok 171 - 記事CSSは外部化され、AdSense以外のinline styleを残さない
   ---
-  duration_ms: 12.673155
+  duration_ms: 19.111096
   type: 'test'
   ...
 # Subtest: 記事のローカルCSSは内容ハッシュ付きURLで参照する
 ok 172 - 記事のローカルCSSは内容ハッシュ付きURLで参照する
   ---
-  duration_ms: 8.782508
+  duration_ms: 13.516238
   type: 'test'
   ...
 # Subtest: 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
 ok 173 - 記事のローカルJavaScriptも内容ハッシュ付きURLで参照する
   ---
-  duration_ms: 6.720558
+  duration_ms: 11.258081
   type: 'test'
   ...
 # Subtest: 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
 ok 174 - 公開HTMLのローカルCSS・JavaScriptは実ファイルと一致する内容ハッシュを使う
   ---
-  duration_ms: 42.33728
+  duration_ms: 70.635863
   type: 'test'
   ...
 # Subtest: 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
 ok 175 - 画面外描画の最適化は長文下部だけに限定し、印刷時に解除する
   ---
-  duration_ms: 0.315352
+  duration_ms: 0.550673
   type: 'test'
   ...
 # Subtest: バージョン付き資産だけを1年間immutableでキャッシュする
 ok 176 - バージョン付き資産だけを1年間immutableでキャッシュする
   ---
-  duration_ms: 0.202593
+  duration_ms: 0.338332
   type: 'test'
   ...
 # Subtest: 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
 ok 177 - 低性能Android相当の定期Lighthouse検査を固定バージョンで実行する
   ---
-  duration_ms: 0.250143
+  duration_ms: 0.385123
   type: 'test'
   ...
 # Subtest: 未参照だった旧共通CSSを公開物に残さない
 ok 178 - 未参照だった旧共通CSSを公開物に残さない
   ---
-  duration_ms: 0.108974
+  duration_ms: 0.182977
   type: 'test'
   ...
 # Subtest: PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
 ok 179 - PRでは秘密情報を使わず一つのジョブで全事前検証を実行する
   ---
-  duration_ms: 1.178567
+  duration_ms: 1.770539
   type: 'test'
   ...
 # Subtest: 事前検証は全テストを自動収集し失敗工程を最後にまとめる
 ok 180 - 事前検証は全テストを自動収集し失敗工程を最後にまとめる
   ---
-  duration_ms: 0.242728
+  duration_ms: 0.328517
   type: 'test'
   ...
 # Subtest: 事前検証は多言語の公開必須ファイル欠損を検出する
 ok 181 - 事前検証は多言語の公開必須ファイル欠損を検出する
   ---
-  duration_ms: 0.226318
+  duration_ms: 0.361216
   type: 'test'
   ...
 # Subtest: Service Workerの全先読み対象をデプロイ前に検証する
 ok 182 - Service Workerの全先読み対象をデプロイ前に検証する
   ---
-  duration_ms: 0.159444
+  duration_ms: 0.269848
   type: 'test'
   ...
 # Subtest: 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
 ok 183 - 通常の事前検証は生成・圧縮対象を元に戻しデプロイ時だけ保持する
   ---
-  duration_ms: 0.214021
+  duration_ms: 0.339223
   type: 'test'
   ...
 # Subtest: ルートService Workerは画面遷移をネットワーク優先で更新する
 ok 184 - ルートService Workerは画面遷移をネットワーク優先で更新する
   ---
-  duration_ms: 0.152894
+  duration_ms: 0.2508
   type: 'test'
   ...
 # Subtest: ルートキャッシュ世代は全共有アセット版から自動生成する
 ok 185 - ルートキャッシュ世代は全共有アセット版から自動生成する
   ---
-  duration_ms: 0.216624
+  duration_ms: 0.315287
   type: 'test'
   ...
 # Subtest: アプリモジュールのキャッシュ世代は改行コードが違っても一致する
 ok 186 - アプリモジュールのキャッシュ世代は改行コードが違っても一致する
   ---
-  duration_ms: 3.600631
+  duration_ms: 7.828653
   type: 'test'
   ...
 # Subtest: 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
 ok 187 - 本番確認はコミット状態と公開JSONの両方で完全一致を検証する
   ---
-  duration_ms: 3.731217
+  duration_ms: 2.53824
   type: 'test'
   ...
 # Subtest: 公開デプロイ状態は検証完了前と完了後を区別する
 ok 188 - 公開デプロイ状態は検証完了前と完了後を区別する
   ---
-  duration_ms: 1.490104
+  duration_ms: 2.149191
   type: 'test'
   ...
 # Subtest: 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
 ok 189 - 本番デプロイは実行中ジョブを中断せず待機中の最新版だけを残す
   ---
-  duration_ms: 0.208718
+  duration_ms: 0.314936
   type: 'test'
   ...
 # Subtest: HTTP検査は同時接続数を制限し失敗対象だけを再試行する
 ok 190 - HTTP検査は同時接続数を制限し失敗対象だけを再試行する
   ---
-  duration_ms: 0.184512
+  duration_ms: 0.293594
   type: 'test'
   ...
 # Subtest: 外部Actionは固定SHAで実行しDependabotで月次更新する
 ok 191 - 外部Actionは固定SHAで実行しDependabotで月次更新する
   ---
-  duration_ms: 0.287924
+  duration_ms: 0.458133
   type: 'test'
   ...
 # Subtest: 新規記事は記事台帳へ一意に登録される
 ok 192 - 新規記事は記事台帳へ一意に登録される
   ---
-  duration_ms: 1.129511
+  duration_ms: 1.829488
   type: 'test'
   ...
 # Subtest: スーパーウィークリー記事は一般条件と個別条件を分離する
 ok 193 - スーパーウィークリー記事は一般条件と個別条件を分離する
   ---
-  duration_ms: 1.800819
+  duration_ms: 2.614145
   type: 'test'
   ...
 # Subtest: クエスト記事は対象・購入・ログイン・返金条件を案内する
 ok 194 - クエスト記事は対象・購入・ログイン・返金条件を案内する
   ---
-  duration_ms: 0.28812
+  duration_ms: 0.440156
   type: 'test'
   ...
 # Subtest: 週次親記事は3制度を比較し日記を主要導線にする
 ok 195 - 週次親記事は3制度を比較し日記を主要導線にする
   ---
-  duration_ms: 0.276021
+  duration_ms: 0.412864
   type: 'test'
   ...
 # Subtest: 無料獲得記事は無料・追加購入なし・有料条件を混同しない
 ok 196 - 無料獲得記事は無料・追加購入なし・有料条件を混同しない
   ---
-  duration_ms: 0.376635
+  duration_ms: 0.550152
   type: 'test'
   ...
 # Subtest: 買い切り購入と継続課金の記事は役割を相互案内する
 ok 197 - 買い切り購入と継続課金の記事は役割を相互案内する
   ---
-  duration_ms: 0.341344
+  duration_ms: 0.5418
   type: 'test'
   ...
 # Subtest: 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
 ok 198 - 今回のPlay Points公式記事群へ第三者決済キャンペーンを混入させない
   ---
-  duration_ms: 0.853187
+  duration_ms: 1.293577
   type: 'test'
   ...
 # Subtest: 公式例のシルバー500円は6ポイントへ丸める
 ok 199 - 公式例のシルバー500円は6ポイントへ丸める
   ---
-  duration_ms: 0.950425
+  duration_ms: 1.658328
   type: 'test'
   ...
 # Subtest: 購入ごとの丸めと総額への一度だけの丸めを分ける
 ok 200 - 購入ごとの丸めと総額への一度だけの丸めを分ける
   ---
-  duration_ms: 0.200028
+  duration_ms: 0.297771
   type: 'test'
   ...
 # Subtest: 丸め関数は非負のポイントを最も近い整数へ丸める
 ok 201 - 丸め関数は非負のポイントを最も近い整数へ丸める
   ---
-  duration_ms: 0.406562
+  duration_ms: 0.648341
   type: 'test'
   ...
 # Subtest: 不正な購入回数と獲得率を拒否する
 ok 202 - 不正な購入回数と獲得率を拒否する
   ---
-  duration_ms: 0.216347
+  duration_ms: 0.288897
   type: 'test'
   ...
 # Subtest: 記事は税抜・四捨五入・機能の限界を明示する
 ok 203 - 記事は税抜・四捨五入・機能の限界を明示する
   ---
-  duration_ms: 1.384376
+  duration_ms: 1.925683
   type: 'test'
   ...
 # Subtest: 記事冒頭は通常獲得率と交換価値を分けて即答する
 ok 204 - 記事冒頭は通常獲得率と交換価値を分けて即答する
   ---
-  duration_ms: 0.357452
+  duration_ms: 0.47601
   type: 'test'
   ...
 # Subtest: 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
 ok 205 - 記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ
   ---
-  duration_ms: 0.332655
+  duration_ms: 0.491844
   type: 'test'
   ...
 # Subtest: スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
 ok 206 - スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする
   ---
-  duration_ms: 0.509136
+  duration_ms: 0.669914
   type: 'test'
   ...
 # Subtest: FAQと補助導線は主要目次へ混入しない構造にする
 ok 207 - FAQと補助導線は主要目次へ混入しない構造にする
   ---
-  duration_ms: 0.459626
+  duration_ms: 0.718577
   type: 'test'
   ...
 # Subtest: シミュレーターは差が見える初期例と利用限界を明示する
 ok 208 - シミュレーターは差が見える初期例と利用限界を明示する
   ---
-  duration_ms: 0.714676
+  duration_ms: 1.077931
   type: 'test'
   ...
 # Subtest: 記事別の検証カード文言は生成元でも保持する
 ok 209 - 記事別の検証カード文言は生成元でも保持する
   ---
-  duration_ms: 0.475181
+  duration_ms: 0.610033
   type: 'test'
   ...
 # Subtest: 画面のFAQとFAQPage構造化データが一致する
 ok 210 - 画面のFAQとFAQPage構造化データが一致する
   ---
-  duration_ms: 0.967554
+  duration_ms: 1.76541
   type: 'test'
   ...
 # Subtest: 記事台帳は既存記事の役割を維持して更新日と説明を同期する
 ok 211 - 記事台帳は既存記事の役割を維持して更新日と説明を同期する
   ---
-  duration_ms: 0.895046
+  duration_ms: 1.433679
   type: 'test'
   ...
 # Subtest: 海外向け案内は英語を全世界共通レートとして案内しない
 ok 212 - 海外向け案内は英語を全世界共通レートとして案内しない
   ---
-  duration_ms: 0.82327
+  duration_ms: 1.264372
   type: 'test'
   ...
 # Subtest: 多言語トップの実行時記事リンクは各言語の記事一覧を指す
 ok 213 - 多言語トップの実行時記事リンクは各言語の記事一覧を指す
   ---
-  duration_ms: 3.438768
+  duration_ms: 5.066594
   type: 'test'
   ...
 # Subtest: 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
 ok 214 - 日本語の必要ポイント例はあとがきにつながる実例1728を保つ
   ---
-  duration_ms: 2.216825
+  duration_ms: 2.82282
   type: 'test'
   ...
 # Subtest: 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
 ok 215 - 結果カードの見出しだけをブロック化し、金額の内訳は分断しない
   ---
-  duration_ms: 0.284706
+  duration_ms: 0.579827
   type: 'test'
   ...
 # Subtest: CSPは計測と広告品質確認で実際に使う接続先を許可する
 ok 216 - CSPは計測と広告品質確認で実際に使う接続先を許可する
   ---
-  duration_ms: 0.308437
+  duration_ms: 0.704926
   type: 'test'
   ...
 # Subtest: 日記の景品選択には全言語で読み上げ可能な名前がある
 ok 217 - 日記の景品選択には全言語で読み上げ可能な名前がある
   ---
-  duration_ms: 1.702849
+  duration_ms: 2.467994
   type: 'test'
   ...
 # Subtest: トップページは大きな画像プレビューとOGP画像サイズを明示する
 ok 218 - トップページは大きな画像プレビューとOGP画像サイズを明示する
   ---
-  duration_ms: 0.398289
+  duration_ms: 0.615341
   type: 'test'
   ...
 # Subtest: 初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする
 ok 219 - 初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする
   ---
-  duration_ms: 1.080672
+  duration_ms: 1.588743
   type: 'test'
   ...
 # Subtest: 日記の重複通知を表示せず、カレンダー登録は残す
 ok 220 - 日記の重複通知を表示せず、カレンダー登録は残す
   ---
-  duration_ms: 0.688631
+  duration_ms: 0.981625
   type: 'test'
   ...
 # Subtest: 地域差案内は日本語トップでも英語の注意導線として表示する
 ok 221 - 地域差案内は日本語トップでも英語の注意導線として表示する
   ---
-  duration_ms: 0.754896
+  duration_ms: 1.172654
   type: 'test'
   ...
 # Subtest: 計算方法と検証方針を全言語で本文から確認できる
 ok 222 - 計算方法と検証方針を全言語で本文から確認できる
   ---
-  duration_ms: 0.521383
+  duration_ms: 0.945341
   type: 'test'
   ...
 # Subtest: 広告と計測は初期表示後に低優先度で読み込む
 ok 223 - 広告と計測は初期表示後に低優先度で読み込む
   ---
-  duration_ms: 0.162847
+  duration_ms: 0.256007
   type: 'test'
   ...
 # ok - 著者ページのOGP画像は実在する
@@ -3703,7 +3630,7 @@ ok 223 - 広告と計測は初期表示後に低優先度で読み込む
 # Subtest: tests/playpoint-nine-fixes.test.cjs
 ok 39 - tests/playpoint-nine-fixes.test.cjs
   ---
-  duration_ms: 39.666159
+  duration_ms: 62.329377
   type: 'test'
   ...
 # ok - ステータス選択の初期値はブロンズになる
@@ -3739,88 +3666,15 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 # Successfully synchronized asset versions and dates in sample.html
 # ok - HTML同期はアセットバージョンと日付表記を単体で更新する
 # ok - HTML置換ヘルパーは日付メタデータと指定アセットだけを更新する
-# ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
-# ok - トップページの更新メタデータ同期は日付と主要アセットだけを更新する
-# ok - 多言語生成設定は共通内容の更新日を下回らないメタ行を作る
-# ok - 多言語HTML生成は言語別メタ情報と相対パスを同期する
-# ok - ダイヤモンド維持LPは最高ランク維持用の条件と文脈に絞る
-# ok - キャンペーン/金額LPは日本向けの要約・比較・注意表示を持つ
-# ok - ステータス選択の再生成でoptionが重複しない
-# ok - 送信XMLサイトマップに登録済みPlay Points記事がすべて含まれている
-# ok - トップページは同一URLの英語hreflangを出さない
-# ok - 第三者スクリプトは初回操作待ちではなく初期描画後に読み込む
-# ok - デプロイ前に全回帰テストを実行する
-# ok - デプロイ同期は削除済み・除外済みファイルを本番からも消す
-# ok - テストファイルはルート限定の除外で本番へ同期しない
-# ok - SEO監視はサイトマップ掲載記事も確認する
-# ok - Play Pointsの公開canonical URLは送信XMLサイトマップに含める
-# ok - blog robots.txtは本番ドメインのサイトマップを指す
-# ok - ブログ一覧は記事JSONを正規化してから描画する
-# ok - ブログ一覧の記事リンクとサムネイルは許可した相対パスだけを使う
-# ok - 記事ページの関連記事も記事JSONを正規化してから描画する
-# ok - CSPのscript-srcはhttps全体を許可しない
-# ok - 静的配信設定はフィードとローカルフォントを効率よく配信する
-# ok - target blankリンクにはnoopener noreferrerを付ける
-# ok - blogの再読み込みボタンはインラインonclickを使わない
-# ok - blog articles.jsonは実在するPlay Points記事だけを含む
-# ok - blog sitemapは登録済みPlay Points記事をすべて含む
-# ok - blogと記事ページのローカルリンクは存在するファイルだけを指す
-# ok - 記事ページのOGP画像は実ファイルが存在する
-# ok - blog SearchActionは実装と同じqパラメータを使う
-# ok - blog一覧HTMLはJS実行前でも全記事への静的リンクを持つ
-# ok - blogトップは自前のOGP画像とfaviconを使う
-# ok - blogトップの説明文は検索結果向けの長さを確保する
-# ok - blogの正規URLはindex.htmlを露出しない
-# ok - blogトップは外部Google Fontsへ接続しない
-# ok - 記事ページの前後ナビは関連記事コンテナが無くても描画される
-# ok - blog記事カードクリックをAnalyticsへ送る
-# ok - 主要な操作要素は44px以上のタップ領域を持つ
-# ok - トップの入力導線は説明を残しつつフォームを圧迫しない
-# ok - 狭い画面でも日記タブの文字を省略しない
-# ok - 計算と日記保存の完了を個人情報なしでAnalyticsへ送る
-# ok - AdSenseタグはConsent Mode設定後に読み込みGoogle認定CMPを起動する
-# ok - トップページはブラウザ言語だけでクライアントサイドリダイレクトしない
-# ok - ブログのH1はPlay Points攻略記事の検索意図と一致する
-# ok - トップページの静的初期表示は古い曜日や年で信頼性を落とさない
-# ok - ブログ一覧の静的HTMLは読み込み失敗表示を常時露出しない
-# ok - blog articles.jsonは記事ごとのfileキーを1つだけ持つ
-# ok - 課金効率記事は煽り表現より条件と注意を前面に出す
-# ok - 全記事から有効なGoogle公式ヘルプを確認できる
-# ok - 記事HTMLの見出しタグは壊れた属性形式を含まない
-# ok - トップページの記事リンクはローカルに存在する公開記事だけを指す
-# ok - トップ上部は商業色の強い課金導線を前面に出しすぎない
-# ok - 最新情報リンクはヘッダーから外しフッターで維持する
-# ok - 計算条件を共有URLへ保存し再訪時に復元できる
-# ok - 記事から計算機への導線はセッション参照元を上書きせず計測できる
-# ok - 流入施策はLPと結果画面の主要導線を個人情報なしで計測する
-# ok - 最新情報ハブは検証日・公式参照・計算機CTAを持つ
-# ok - 記事共通CTAは計算機への自然導線と計測文脈を持つ
-# ok - 記事末尾CTAは記事文脈ごとに次アクションを出し分ける
-# ok - モバイルの補助リンクと共有ボタンは縦に増えすぎない
-# ok - モバイル初期表示外の重い領域は遅延描画される
-# ok - 記事クラスタは検索意図別LPへ文脈に合う内部リンクを持つ
-# ok - ポイント未反映記事は検索意図の即答と計算後導線を上部に持つ
-# ok - 外部サイト向け埋め込みウィジェットは依存なしで安全に計算できる
-# ok - Analyticsのイベント設計と検証手順が文書化されている
-# ok - Service Workerは共有URL機能を含む最新版アセットを事前キャッシュする
-# ok - トップページの更新日メタとサイト更新日を用途別に保持する
-# ok - サイトマップ同期はトップページ群のlastmodだけを更新する
-# ok - 反映タイミング記事は結論と確認手順を見出しで整理する
-# ok - CMP起動用のAdSenseタグは二重読み込みしない
-# ok - 共有URLは実在するステータス値だけを復元する
-# ok - 日記保存イベントはストレージ保存成功時だけ送る
-# ok - 記事のAdSenseは本文スクロール後に共通スクリプトから読み込む
-# ok - ブログと記事は共通コンポーネントからGA4本体を読み込む
-# ok - 共通コンポーネントは既存のヘッダーとフッターを重複生成しない
-# ok - 公開されている全記事HTMLが必要なSEOタグと共通AdSense読込を含んでいること
-# not ok - ブログと記事の変更アセットはバージョン付きURLで配信する
+# not ok - Service Workerアセット同期は定義済みパスをバージョンキーで更新する
 # /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:132
 #     throw error;
 #     ^
-# AssertionError [ERR_ASSERTION]: sw.js does not version article-shared.css
-#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1951:10
+# AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+# 3 !== 11
+#     at /home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:898:10
 #     at test (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:128:5)
-#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1938:1)
+#     at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:868:1)
 #     at Module._compile (node:internal/modules/cjs/loader:1781:14)
 #     at Object..js (node:internal/modules/cjs/loader:1913:10)
 #     at Module.load (node:internal/modules/cjs/loader:1505:32)
@@ -3828,18 +3682,18 @@ ok 39 - tests/playpoint-nine-fixes.test.cjs
 #     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
 #     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
 #     at node:internal/main/run_main_module:36:49 {
-#   generatedMessage: false,
+#   generatedMessage: true,
 #   code: 'ERR_ASSERTION',
-#   actual: undefined,
-#   expected: true,
-#   operator: '==',
+#   actual: 3,
+#   expected: 11,
+#   operator: 'strictEqual',
 #   diff: 'simple'
 # }
-# Node.js v22.23.1
+# Node.js v22.23.2
 # Subtest: tests/playpoint-regression.test.cjs
 not ok 40 - tests/playpoint-regression.test.cjs
   ---
-  duration_ms: 139.119688
+  duration_ms: 124.124245
   type: 'test'
   location: '/home/runner/work/PlayPoint/PlayPoint/tests/playpoint-regression.test.cjs:1:1'
   failureType: 'testCodeFailure'
@@ -3848,155 +3702,155 @@ not ok 40 - tests/playpoint-regression.test.cjs
   error: 'test failed'
   code: 'ERR_TEST_FAILURE'
   ...
-# [repository-integrity] tracked=406 deployable=297 resolved=284
+# [repository-integrity] tracked=407 deployable=298 resolved=284
 # Subtest: ファイル名はOS差で衝突せず、一時ファイルを追跡しない
 ok 226 - ファイル名はOS差で衝突せず、一時ファイルを追跡しない
   ---
-  duration_ms: 1.297486
+  duration_ms: 2.858976
   type: 'test'
   ...
 # Subtest: 移設・統合・共通化済みの実体を残さない
 ok 227 - 移設・統合・共通化済みの実体を残さない
   ---
-  duration_ms: 0.127186
+  duration_ms: 0.219061
   type: 'test'
   ...
 # Subtest: 公開ファイルの内部参照とアンカーは実在する
 ok 228 - 公開ファイルの内部参照とアンカーは実在する
   ---
-  duration_ms: 0.070868
+  duration_ms: 0.174344
   type: 'test'
   ...
 # Subtest: 全公開HTMLのcanonicalは自己一致し重複しない
 ok 229 - 全公開HTMLのcanonicalは自己一致し重複しない
   ---
-  duration_ms: 1.240605
+  duration_ms: 2.371087
   type: 'test'
   ...
 # Subtest: 公開コードは旧パス・開発URL・旧ホストを参照しない
 ok 230 - 公開コードは旧パス・開発URL・旧ホストを参照しない
   ---
-  duration_ms: 12.115475
+  duration_ms: 18.659568
   type: 'test'
   ...
 # Subtest: 公開画像の実形式とHTTP配信形式を一致させる
 ok 231 - 公開画像の実形式とHTTP配信形式を一致させる
   ---
-  duration_ms: 6.793493
+  duration_ms: 9.062219
   type: 'test'
   ...
 # Subtest: 未参照アセットと内容が完全重複する公開ファイルを残さない
 ok 232 - 未参照アセットと内容が完全重複する公開ファイルを残さない
   ---
-  duration_ms: 23.714144
+  duration_ms: 29.79885
   type: 'test'
   ...
 # Subtest: READMEとPWAメタデータは現行機能を説明する
 ok 233 - READMEとPWAメタデータは現行機能を説明する
   ---
-  duration_ms: 0.25443
+  duration_ms: 0.318933
   type: 'test'
   ...
 # Subtest: 送信するXMLサイトマップ間でURLを重複させない
 ok 234 - 送信するXMLサイトマップ間でURLを重複させない
   ---
-  duration_ms: 2.612036
+  duration_ms: 4.028815
   type: 'test'
   ...
 # Subtest: ルートサイトマップはPlay Pointsの公開導線だけを扱う
 ok 235 - ルートサイトマップはPlay Pointsの公開導線だけを扱う
   ---
-  duration_ms: 0.49544
+  duration_ms: 0.745698
   type: 'test'
   ...
 # Subtest: 専用XMLサイトマップへ移したURLをルートへ重ねない
 ok 236 - 専用XMLサイトマップへ移したURLをルートへ重ねない
   ---
-  duration_ms: 0.718655
+  duration_ms: 0.976608
   type: 'test'
   ...
 # Subtest: Play Pointsブログとフィードに家計記事を混在させない
 ok 237 - Play Pointsブログとフィードに家計記事を混在させない
   ---
-  duration_ms: 1.40107
+  duration_ms: 1.551226
   type: 'test'
   ...
 # Subtest: 人向けサイトマップはPlay Pointsの案内に集中する
 ok 238 - 人向けサイトマップはPlay Pointsの案内に集中する
   ---
-  duration_ms: 0.340111
+  duration_ms: 0.357932
   type: 'test'
   ...
 # Subtest: 韓国語トップは為替計算をうたわず実際の入力条件を説明する
 ok 239 - 韓国語トップは為替計算をうたわず実際の入力条件を説明する
   ---
-  duration_ms: 0.232587
+  duration_ms: 0.233052
   type: 'test'
   ...
 # Subtest: Q&Aは現在のランク判定と計算機の責任範囲を明示する
 ok 240 - Q&Aは現在のランク判定と計算機の責任範囲を明示する
   ---
-  duration_ms: 0.319266
+  duration_ms: 0.255848
   type: 'test'
   ...
 # Subtest: 旧HTMLを5項目の静的レイアウトへ安全に変換できる
 ok 241 - 旧HTMLを5項目の静的レイアウトへ安全に変換できる
   ---
-  duration_ms: 2.910194
+  duration_ms: 3.209295
   type: 'test'
   ...
 # Subtest: 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
 ok 242 - 4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ
   ---
-  duration_ms: 1.995416
+  duration_ms: 1.906754
   type: 'test'
   ...
 # Subtest: 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
 ok 243 - 多言語生成処理は通常計算専用ラベルを一般翻訳と分離する
   ---
-  duration_ms: 0.259734
+  duration_ms: 0.265131
   type: 'test'
   ...
 # Subtest: UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
 ok 244 - UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する
   ---
-  duration_ms: 0.198543
+  duration_ms: 0.200333
   type: 'test'
   ...
 # Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
 ok 245 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
   ---
-  duration_ms: 0.459786
+  duration_ms: 0.57522
   type: 'test'
   ...
 # Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
 ok 246 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
   ---
-  duration_ms: 0.184192
+  duration_ms: 0.197088
   type: 'test'
   ...
 # Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
 ok 247 - 静的生成辞書は多言語フッターの全リンク文言を持つ
   ---
-  duration_ms: 1.134269
+  duration_ms: 1.802968
   type: 'test'
   ...
 # Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
 ok 248 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
   ---
-  duration_ms: 6.899456
+  duration_ms: 10.548813
   type: 'test'
   ...
 # Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
 ok 249 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
   ---
-  duration_ms: 3.329973
+  duration_ms: 4.22414
   type: 'test'
   ...
 # Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
 ok 250 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
   ---
-  duration_ms: 1.715071
+  duration_ms: 2.243254
   type: 'test'
   ...
 1..250
@@ -4007,7 +3861,7 @@ ok 250 - 多言語トップの利用者向け静的文言へ別言語の文字�
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 837.795723
+# duration_ms 1278.45155
 
 事前検証で失敗した工程:
 - 生成物の再現性検証
