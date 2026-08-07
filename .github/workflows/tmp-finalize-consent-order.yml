@@ -1,0 +1,245 @@
+name: Temporary Finalize Consent Order
+
+on:
+  push:
+    branches:
+      - fix/adsense-pwa-revenue-best-practice
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-finalize-consent-order-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  finalize-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Apply consent-first AdSense loading and update regressions
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from textwrap import dedent
+
+          def replace_once(path, old, new, label):
+              source = path.read_text(encoding='utf-8')
+              if old in source:
+                  source = source.replace(old, new, 1)
+              elif new not in source:
+                  raise SystemExit(f'{label}: target not found')
+              path.write_text(source, encoding='utf-8')
+
+          def replace_test(source, title, next_title, replacement):
+              start_marker = f"test('{title}'"
+              next_marker = f"test('{next_title}'"
+              start = source.find(start_marker)
+              if start == -1:
+                  if replacement.strip() in source:
+                      return source
+                  raise SystemExit(f'test not found: {title}')
+              end = source.find(next_marker, start)
+              if end == -1:
+                  raise SystemExit(f'next test not found after: {title}')
+              return source[:start] + replacement + '\n\n' + source[end:]
+
+          # Top calculator: establish Consent Mode defaults before appending Google AdSense.
+          third_party = Path('js/third-party.js')
+          old_bottom = dedent("""\
+              // AdSenseタグはGoogle認定CMPにも使われるため、同意管理やloadイベントを待たずasyncで準備する。
+              void ensureConsentManager();
+              void loadAdsense();
+              scheduleAnalyticsLoad();
+          """)
+          new_bottom = dedent("""\
+              // Consent Modeのデフォルト状態をGoogleタグより先に確定し、広告自体はその直後にasyncで準備する。
+              void ensureConsentManager()
+                  .catch((error) => console.error('Consent manager load failed:', error))
+                  .finally(() => {
+                      void loadAdsense();
+                  });
+              scheduleAnalyticsLoad();
+          """)
+          replace_once(third_party, old_bottom, new_bottom, 'third-party consent order')
+
+          # Blog/article common runtime: one consent-first AdSense loader for both surfaces.
+          components = Path('blog/components.js')
+          old_setup = dedent("""\
+              function setupBlogAdsense() {
+                  if (!isBlogPage) return;
+                  loadBlogAdsense();
+              }
+          """)
+          new_setup = dedent("""\
+              function setupBlogAdsense() {
+                  if (!isBlogPage && !isArticlePageTop) return;
+                  void ensureConsentManager()
+                      .catch((error) => console.error('Consent manager load failed:', error))
+                      .finally(() => {
+                          loadBlogAdsense();
+                      });
+              }
+          """)
+          replace_once(components, old_setup, new_setup, 'components shared AdSense loader')
+
+          # Article runtime: remove the duplicate loader so it cannot race the common consent initialization.
+          article = Path('blog/article.js')
+          article_source = article.read_text(encoding='utf-8')
+          article_source = article_source.replace(
+              "    let scrollListenerAdded = false;\n    let articleAdsenseLoaded = false;\n    let articleAdsenseScheduled = false;\n",
+              "    let scrollListenerAdded = false;\n",
+              1
+          )
+          ad_start = article_source.find('    // AdSense本体はページ描画を止めないasyncで早期に準備し、短時間閲覧の広告機会を失わない。')
+          ad_end = article_source.find('    function sanitizeArticleFile', ad_start)
+          if ad_start != -1 and ad_end != -1:
+              article_source = article_source[:ad_start] + article_source[ad_end:]
+          elif 'function loadArticleAdsense()' in article_source or 'function setupArticleAdsense()' in article_source:
+              raise SystemExit('article duplicate AdSense loader could not be removed')
+          article_source = article_source.replace('        setupArticleAdsense();\n', '', 1)
+          article.write_text(article_source, encoding='utf-8')
+
+          # Focused audit test.
+          audit = Path('tests/playpoint-audit-fixes.test.cjs')
+          audit_source = audit.read_text(encoding='utf-8')
+          old_assert = "  assert.match(source, /void loadAdsense\\(\\);\\s*scheduleAnalyticsLoad\\(\\);/s);"
+          new_assert = "  assert.match(source, /void ensureConsentManager\\(\\)/);\n  assert.match(source, /\\.finally\\(\\(\\) => \\{\\s*void loadAdsense\\(\\);\\s*\\}\\)/s);\n  assert.ok(source.indexOf('void ensureConsentManager()') < source.indexOf('void loadAdsense();'));"
+          if old_assert in audit_source:
+              audit_source = audit_source.replace(old_assert, new_assert, 1)
+          elif new_assert not in audit_source:
+              raise SystemExit('audit consent-order assertion target not found')
+          audit.write_text(audit_source, encoding='utf-8')
+
+          # Main regression tests.
+          regression = Path('tests/playpoint-regression.test.cjs')
+          reg = regression.read_text(encoding='utf-8')
+
+          article_test = dedent("""\
+          test('記事とブログのAdSenseはConsent Mode初期化後に共通コンポーネントから非同期で準備する', () => {
+            const articleScript = fs.readFileSync(path.join(root, 'blog', 'article.js'), 'utf8');
+            const components = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+            const articleFiles = fs.readdirSync(path.join(root, 'articles'))
+              .filter(file => file.endsWith('.html'));
+
+            assert.ok(!articleScript.includes('loadArticleAdsense'));
+            assert.ok(!articleScript.includes('setupArticleAdsense'));
+            assert.ok(!articleScript.includes('window.scrollY < 600'));
+            assert.ok(components.includes('function loadBlogAdsense()'));
+            assert.ok(components.includes('if (!isBlogPage && !isArticlePageTop) return;'));
+            assert.ok(components.includes('void ensureConsentManager()'));
+            assert.ok(components.includes('.finally(() => {'));
+            assert.ok(components.includes('loadBlogAdsense();'));
+            for (const file of articleFiles) {
+              const html = fs.readFileSync(path.join(root, 'articles', file), 'utf8');
+              assert.ok(html.includes('../blog/components.js'), `${file} does not use the shared components loader`);
+              assert.ok(!html.includes('pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'), `${file} embeds AdSense directly`);
+            }
+          });
+          """).rstrip()
+          reg = replace_test(
+              reg,
+              '記事のAdSenseは固定スクロール待ちより先に共通スクリプトから非同期で準備する',
+              'ブログと記事は共通コンポーネントからGA4本体を読み込む',
+              article_test
+          )
+
+          third_party_test = dedent("""\
+          test('第三者スクリプトはConsent Mode初期化後に広告を早期準備し計測だけを遅延する', () => {
+            const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+            assert.ok(script.includes('void ensureConsentManager()'));
+            assert.ok(script.includes('.finally(() => {'));
+            assert.ok(script.includes('void loadAdsense();'));
+            assert.ok(script.includes("window.addEventListener('load', scheduleAfterLoad, { once: true })"));
+            assert.ok(script.includes('scheduleAnalyticsLoad();'));
+            assert.ok(!script.includes('ADSENSE_DELAY_MS'));
+            assert.ok(script.indexOf('void ensureConsentManager()') < script.indexOf('void loadAdsense();'));
+            assert.ok(!script.includes("window.addEventListener('pointerdown'"));
+            assert.ok(!script.includes("window.addEventListener('keydown'"));
+            assert.ok(!script.includes("window.addEventListener('touchstart'"));
+          });
+          """).rstrip()
+          reg = replace_test(
+              reg,
+              '第三者スクリプトは広告を早期準備し計測だけを初期表示後に遅延する',
+              'デプロイ前に全回帰テストを実行する',
+              third_party_test
+          )
+
+          consent_test = dedent("""\
+          test('AdSenseタグはConsent Mode初期化後に非同期で早期準備する', () => {
+            const script = fs.readFileSync(path.join(root, 'js', 'third-party.js'), 'utf8');
+
+            assert.ok(script.includes('ensureConsentManager()'));
+            assert.ok(script.includes('void ensureConsentManager()'));
+            assert.ok(script.includes('.finally(() => {'));
+            assert.ok(script.includes('void loadAdsense();'));
+            assert.ok(script.includes("{ crossorigin: 'anonymous' }"));
+            assert.ok(!script.includes('ADSENSE_DELAY_MS'));
+            assert.ok(script.indexOf('void ensureConsentManager()') < script.indexOf('void loadAdsense();'));
+          });
+          """).rstrip()
+          reg = replace_test(
+              reg,
+              'AdSenseタグはConsent Mode初期化と並行して非同期で早期準備する',
+              'トップページはブラウザ言語だけでクライアントサイドリダイレクトしない',
+              consent_test
+          )
+
+          reg = reg.replace(
+              "if (!isBlogPage) return;\\n        loadBlogAdsense();",
+              "if (!isBlogPage && !isArticlePageTop) return;",
+          )
+          regression.write_text(reg, encoding='utf-8')
+
+          # Consent regression: the article uses its own consent guard for analytics, while ads are centralized.
+          nine = Path('tests/playpoint-nine-fixes.test.cjs')
+          nine_source = nine.read_text(encoding='utf-8')
+          nine_source = nine_source.replace("assert.ok(main.includes('void ensureConsentManager();'));", "assert.ok(main.includes('void ensureConsentManager()'));", 1)
+          nine_source = nine_source.replace("assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('void loadAdsense();'));", "assert.ok(main.includes('.finally(() => {'));\n  assert.ok(main.indexOf('void ensureConsentManager()') < main.indexOf('void loadAdsense();'));", 1)
+          nine_source = nine_source.replace("assert.ok(article.includes('PlayPointConsent.whenGranted'));", "assert.ok(article.includes(\"window.PlayPointConsent.getStatus() === 'granted'\"));\n  assert.ok(blog.includes('if (!isBlogPage && !isArticlePageTop) return;'));", 1)
+          nine.write_text(nine_source, encoding='utf-8')
+          PY
+
+      - name: Sync generated HTML and asset revisions
+        shell: bash
+        run: |
+          MODIFIED_DATE="$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          ASSET_VERSION="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1]);")"
+          PLAYPOINT_MODIFIED_DATE="$MODIFIED_DATE" PLAYPOINT_ASSET_VERSION="$ASSET_VERSION" node scripts/build-html.js
+
+      - name: Remove temporary workflow
+        run: rm -f .github/workflows/tmp-finalize-consent-order.yml
+
+      - name: Verify focused regressions
+        run: |
+          node .github/scripts/verify-js-syntax.cjs
+          node --test tests/playpoint-audit-fixes.test.cjs tests/playpoint-regression.test.cjs
+          node tests/playpoint-nine-fixes.test.cjs
+
+      - name: Commit final synchronized changes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Consent Mode初期化後に広告を早期読み込み"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Run full preflight
+        run: node .github/scripts/preflight.cjs
