@@ -20,6 +20,8 @@ on:
       - 'js/**'
       - 'blog/**'
       - 'articles/**'
+      - 'scripts/**'
+      - 'tests/mobile-performance-phase1.test.cjs'
       - '.github/workflows/mobile-performance.yml'
       - '.github/scripts/mobile-performance-budget.cjs'
       - '.github/scripts/lighthouse-diagnostics.cjs'
@@ -84,6 +86,20 @@ jobs:
           set -euo pipefail
           mkdir -p performance-artifacts
 
+          blocked_flags=()
+          if [[ "$AUDIT_TARGET" == "local" ]]; then
+            # PRでは変更した自サイト資産を安定して比較し、第三者タグの揺らぎは
+            # 週次のproduction監査で別途確認する。
+            blocked_flags+=(
+              '--blocked-url-patterns=https://www.googletagmanager.com/*'
+              '--blocked-url-patterns=https://www.google-analytics.com/*'
+              '--blocked-url-patterns=https://analytics.google.com/*'
+              '--blocked-url-patterns=https://stats.g.doubleclick.net/*'
+              '--blocked-url-patterns=https://pagead2.googlesyndication.com/*'
+              '--blocked-url-patterns=https://googleads.g.doubleclick.net/*'
+            )
+          fi
+
           audit_page() {
             local name="$1"
             local page_path="$2"
@@ -95,6 +111,7 @@ jobs:
               --output-path="performance-artifacts/${name}.json" \
               --chrome-flags="--headless --no-sandbox --disable-gpu" \
               --max-wait-for-load=45000 \
+              "${blocked_flags[@]}" \
               --quiet
           }
 
