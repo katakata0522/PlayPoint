@@ -44,7 +44,6 @@
     // Flags
     let scrollListenerAdded = false;
     let articleAdsenseLoaded = false;
-    let articleAdsenseScheduled = false;
 
     // Local fallback utilities (in case BlogUtils is not loaded)
     const fallbackUtils = {
@@ -297,30 +296,35 @@
         });
     }
 
-    // 記事本文を読み始める前に自動広告を挿入せず、十分なスクロール後に一度だけ読み込む
+    // AdSense本体はページ解析をブロックしないasyncで早期取得し、固定スクロール量による機会損失を避ける。
     function loadArticleAdsense() {
         if (articleAdsenseLoaded) return;
         articleAdsenseLoaded = true;
+
+        if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
 
         const script = document.createElement('script');
         script.async = true;
         script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3845885843809455';
         script.crossOrigin = 'anonymous';
-        script.onerror = () => console.error('AdSense load failed');
+        script.onerror = () => {
+            articleAdsenseLoaded = false;
+            console.error('AdSense load failed');
+        };
         document.head.appendChild(script);
     }
 
-    function handleArticleAdsenseScroll() {
-        if (window.scrollY < 600 || articleAdsenseScheduled || !window.PlayPointConsent) return;
-        articleAdsenseScheduled = true;
-        window.removeEventListener('scroll', handleArticleAdsenseScroll);
-        document.removeEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
+    function scheduleArticleAdsenseLoad() {
+        if (!window.PlayPointConsent) return;
         window.PlayPointConsent.whenGranted(loadArticleAdsense);
     }
 
     function setupArticleAdsense() {
-        window.addEventListener('scroll', handleArticleAdsenseScroll, { passive: true });
-        document.addEventListener('playpoint:consent-ready', handleArticleAdsenseScroll);
+        if (window.PlayPointConsent) {
+            scheduleArticleAdsenseLoad();
+            return;
+        }
+        document.addEventListener('playpoint:consent-ready', scheduleArticleAdsenseLoad, { once: true });
     }
 
     function sanitizeArticleFile(value) {
