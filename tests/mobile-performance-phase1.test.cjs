@@ -107,10 +107,12 @@ test('Lighthouse 13のCLS要素・原因・長時間タスク・改善候補を�
   assert.deepEqual(topOpportunities(report).map(item => item.id), ['unused-javascript']);
 });
 
-test('性能ワークフローがPR成果物・記事一覧・診断アーティファクトを検査する', () => {
+test('性能ワークフローが本番同等成果物・記事一覧・診断アーティファクトを検査する', () => {
   const workflow = read('.github/workflows/mobile-performance.yml');
   assert.match(workflow, /pull_request:/);
   assert.match(workflow, /http:\/\/127\.0\.0\.1:4173/);
+  assert.match(workflow, /Prepare production-like local assets/);
+  assert.match(workflow, /node \.github\/scripts\/minify\.cjs/);
   assert.match(workflow, /audit_page article-hub \/blog\//);
   assert.match(workflow, /blocked-url-patterns=https:\/\/www\.googletagmanager\.com\/\*/);
   assert.match(workflow, /AUDIT_TARGET.*local/);
@@ -160,7 +162,7 @@ test('記事の共通ヘッダーと計算機導線を生成時に一度だけ�
     assert.equal(synchronizeArticleStaticUsability(tempRoot), 0, '二度目は変更しない');
     const html = fs.readFileSync(path.join(tempRoot, 'articles', 'example.html'), 'utf8');
     assert.equal((html.match(/article-static-header/g) || []).length, 1);
-    assert.equal((html.match(/article-calculator-prompt/g) || []).length, 2, 'asideと内部クラスに一度ずつ現れる');
+    assert.equal((html.match(/<aside class="article-calculator-prompt cta-box"/g) || []).length, 1);
     assert.ok(html.indexOf('article-static-header') < html.indexOf('<main'));
     assert.ok(html.indexOf('article-calculator-prompt') > html.indexOf('</section>'));
   } finally {
