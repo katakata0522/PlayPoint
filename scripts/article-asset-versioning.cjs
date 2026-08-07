@@ -42,6 +42,14 @@ function syncPublicAssetVersions(rootDir) {
   for (const htmlFile of listPublicHtmlFiles(rootDir)) {
       const original = fs.readFileSync(htmlFile, 'utf8');
       let updated = original.replace(
+        /(<link\b[^>]*\brel=["']modulepreload["'][^>]*\bhref=["'])([^"']+\.js)(?:\?v=[a-zA-Z0-9_-]+)?(["'][^>]*>)/gi,
+        (match, prefix, href, suffix) => {
+          const script = resolveLocalAsset(rootDir, htmlFile, href, '.js');
+          if (!script) return match;
+          return `${prefix}${href}?v=${createRevision(script)}${suffix}`;
+        }
+      );
+      updated = updated.replace(
         /(<link\b[^>]*\brel=["']stylesheet["'][^>]*\bhref=["'])([^"']+\.css)(?:\?v=[a-zA-Z0-9_-]+)?(["'][^>]*>)/gi,
         (match, prefix, href, suffix) => {
           const stylesheet = resolveLocalAsset(rootDir, htmlFile, href, '.css');
