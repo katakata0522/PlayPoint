@@ -12,6 +12,15 @@ const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .filter(file => file.endsWith('.test.cjs'))
   .sort()
   .map(file => path.join('tests', file));
+// 圧縮後は「minifyで壊れやすい計算・ランタイム・圧縮自体」だけ再検査する（記事SEO系は二重実行しない）
+const postMinifyTestFiles = [
+  'tests/playpoint-regression.test.cjs',
+  'tests/main-calculator-ui.test.cjs',
+  'tests/play-points-rounding-guide.test.cjs',
+  'tests/static-calculator-delivery.test.cjs',
+  'tests/playpoint-product-guards.test.cjs',
+  'tests/runtime-module-guards.test.cjs'
+].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
 const requiredPublicFiles = ['en/index.html', 'ko/index.html', 'tw/index.html'];
 const snapshots = new Map();
@@ -111,7 +120,8 @@ try {
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  runPhase('圧縮後の全回帰テスト', process.execPath, ['--test', ...testFiles]);
+  // 全量の再実行はコストが高い。minify影響を受けやすい最小セットだけ再実行する
+  runPhase('圧縮後の重点回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
   if (prepareDeploy) {
     runPhase('公開記事の検索意図・内部リンク正規化', process.execPath, ['scripts/article-content-navigation-normalize.cjs']);
     runPhase('公開記事の検索意図・内部リンク検証', process.execPath, ['scripts/article-content-navigation-normalize.cjs', '--check']);
@@ -127,5 +137,8 @@ if (failures.length > 0) {
   failures.forEach(name => console.error('- ' + name));
   process.exitCode = 1;
 } else {
-  console.log('\n全事前検証に成功しました（テストファイル: ' + testFiles.length + '件）。');
+  console.log(
+    '\n全事前検証に成功しました（全回帰: ' + testFiles.length
+    + '件 / 圧縮後重点: ' + postMinifyTestFiles.length + '件）。'
+  );
 }

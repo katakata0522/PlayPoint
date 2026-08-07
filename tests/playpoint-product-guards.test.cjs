@@ -245,12 +245,20 @@ test('デプロイ検証の変更でもワークフローを実行する', () =>
   assert.ok(!workflow.includes("- '.github/**'"), '.github配下の検証変更がデプロイワークフローから除外されています');
 });
 
-test('デプロイ前検証は全テストをミニファイ前後に実行する', () => {
+test('デプロイ前検証は圧縮前に全回帰し、圧縮後は重点テストだけ再実行する', () => {
   const preflight = read('.github/scripts/preflight.cjs');
   const minifyIndex = preflight.indexOf("runPhase('公開アセット圧縮'");
   assert.ok(minifyIndex >= 0, 'ミニファイ処理がありません');
   assert.ok(preflight.includes("runPhase('全回帰テスト'"), 'ミニファイ前の全回帰テストがありません');
-  assert.ok(preflight.slice(minifyIndex).includes("runPhase('圧縮後の全回帰テスト'"), 'ミニファイ後の全回帰テストがありません');
+  assert.ok(preflight.includes('postMinifyTestFiles'), '圧縮後重点テスト一覧がありません');
+  assert.ok(
+    preflight.slice(minifyIndex).includes("runPhase('圧縮後の重点回帰テスト'"),
+    'ミニファイ後の重点回帰テストがありません'
+  );
+  assert.ok(
+    !preflight.slice(minifyIndex).includes("runPhase('圧縮後の全回帰テスト'"),
+    '圧縮後に全量再実行が残っています'
+  );
   assert.ok(preflight.includes(".filter(file => file.endsWith('.test.cjs'))"), 'テストファイルが動的に収集されていません');
 });
 

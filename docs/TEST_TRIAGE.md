@@ -69,6 +69,16 @@
 
 ---
 
+## preflight の実行方針（2026-08-07 更新）
+
+- **圧縮前:** 全 `tests/*.test.cjs` を1回
+- **圧縮後:** 構文チェック + 重点セットのみ  
+  (`playpoint-regression` / `main-calculator-ui` / `play-points-rounding-guide` /  
+  `static-calculator-delivery` / `playpoint-product-guards` / `runtime-module-guards`)
+- 記事SEO・intl 全文監査は圧縮で壊れにくいため、圧縮後の二重実行から外す
+
+---
+
 ## 触る場所
 
 | 用途 | 場所 |
