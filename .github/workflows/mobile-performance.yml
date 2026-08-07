@@ -39,7 +39,7 @@ concurrency:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -120,14 +120,19 @@ jobs:
               --quiet
           }
 
-          audit_page calculator-home /
+          # LighthouseのLCPは同一成果物でも揺れるため、トップだけ3回測定して中央値で判定する。
+          audit_page calculator-home-1 /
+          audit_page calculator-home-2 /
+          audit_page calculator-home-3 /
           audit_page article-hub /blog/
           audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
 
       - name: Save Lighthouse diagnostics
         run: >-
           node .github/scripts/lighthouse-diagnostics.cjs
-          performance-artifacts/calculator-home.json
+          performance-artifacts/calculator-home-1.json
+          performance-artifacts/calculator-home-2.json
+          performance-artifacts/calculator-home-3.json
           performance-artifacts/article-hub.json
           performance-artifacts/representative-article.json
           --output-dir performance-artifacts
@@ -135,7 +140,9 @@ jobs:
       - name: Enforce strengthened mobile performance budgets
         run: >-
           node .github/scripts/mobile-performance-budget.cjs
-          performance-artifacts/calculator-home.json
+          performance-artifacts/calculator-home-1.json
+          performance-artifacts/calculator-home-2.json
+          performance-artifacts/calculator-home-3.json
           performance-artifacts/article-hub.json
           performance-artifacts/representative-article.json
 
