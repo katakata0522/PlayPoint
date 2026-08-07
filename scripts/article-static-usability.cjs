@@ -6,7 +6,10 @@ const path = require('node:path');
 const HEADER_MARKER = 'article-static-header';
 const PROMPT_MARKER = 'article-calculator-prompt';
 const EDITORIAL_END_MARKER = '<!-- editorial-summary:end -->';
-const PROMPT_PATTERN = /\s*<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
+const GENERATED_PROMPT_ATTRIBUTE = 'data-generated-article-prompt="true"';
+const GENERATED_PROMPT_PATTERN = /\s*<aside\b(?=[^>]*\bdata-generated-article-prompt=["']true["'])[^>]*>[\s\S]*?<\/aside>/i;
+const LEGACY_GENERATED_PROMPT_PATTERN = /\s*<aside\b[^>]*class=["']article-calculator-prompt cta-box["'][^>]*>[\s\S]*?<\/aside>/i;
+const ARTICLE_PROMPT_PATTERN = /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i;
 
 const HEADER_HTML = `    <header class="header article-static-header">
         <div class="header-inner">
@@ -21,7 +24,7 @@ const HEADER_HTML = `    <header class="header article-static-header">
 `;
 
 const PROMPT_HTML = `
-            <aside class="article-calculator-prompt cta-box" aria-label="あなたの場合の必要額を計算">
+            <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE} aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
                 <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
@@ -83,14 +86,19 @@ function findPromptAnchorEnd(html) {
 }
 
 function removeStaticPrompt(html) {
-  return html.replace(PROMPT_PATTERN, '');
+  return html
+    .replace(GENERATED_PROMPT_PATTERN, '')
+    .replace(LEGACY_GENERATED_PROMPT_PATTERN, '');
 }
 
 function insertStaticPrompt(html) {
-  const withoutPrompt = removeStaticPrompt(html);
-  const anchorEnd = findPromptAnchorEnd(withoutPrompt);
+  const withoutGeneratedPrompt = removeStaticPrompt(html);
+  if (ARTICLE_PROMPT_PATTERN.test(withoutGeneratedPrompt)) {
+    return withoutGeneratedPrompt;
+  }
+  const anchorEnd = findPromptAnchorEnd(withoutGeneratedPrompt);
   if (anchorEnd < 0) return html;
-  return `${withoutPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutPrompt.slice(anchorEnd)}`;
+  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutGeneratedPrompt.slice(anchorEnd)}`;
 }
 
 function synchronizeArticleStaticUsability(rootDir) {
@@ -114,10 +122,13 @@ if (require.main === module) {
 }
 
 module.exports = {
+  ARTICLE_PROMPT_PATTERN,
   EDITORIAL_END_MARKER,
+  GENERATED_PROMPT_ATTRIBUTE,
+  GENERATED_PROMPT_PATTERN,
   HEADER_HTML,
+  LEGACY_GENERATED_PROMPT_PATTERN,
   PROMPT_HTML,
-  PROMPT_PATTERN,
   findPromptAnchorEnd,
   insertStaticHeader,
   insertStaticPrompt,
