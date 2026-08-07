@@ -1,10 +1,10 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260807_1315-e458ccd5';
+const CACHE_NAME = 'playpoint-calc-v20260807_1402-74d5b009';
 const ASSETS = [
   './',
-  './style.css?v=08116211ba',
+  './style.css?v=ed240917f2',
   './favicon.svg',
   './ogp.png',
   './manifest.json',
@@ -38,9 +38,9 @@ const ASSETS = [
   './js/third-party.js?v=30f1e46c0b',
   './blog/style.css?v=73cb119703',
   './blog/components.js?v=784e955c93',
-  './blog/script.js?v=8022af841c',
+  './blog/script.js?v=590f709115',
   './blog/article.js?v=905d06a119',
-  './articles/article-shared.css?v=737e05a0c2',
+  './articles/article-shared.css?v=dd9ac711cd',
   './en/',
   './ko/',
   './tw/',

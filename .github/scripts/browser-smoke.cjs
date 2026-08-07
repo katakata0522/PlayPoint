@@ -346,12 +346,16 @@ async function verifyBlogPage(browser, baseUrl) {
       pagination: document.querySelector('.pagination-status')?.textContent || '',
       activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
       toggleExpanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+      sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
+      thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
+      textOnlyThumbnails: document.querySelectorAll('.article-card .card-thumb--text-only').length
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
     assert(initial.toggleExpanded === 'false' && initial.sidebarHidden === 'true', 'Blog sidebar initial ARIA state mismatch');
+    assert(initial.thumbnailImages === 0, `Blog mobile cards loaded ${initial.thumbnailImages} heavy thumbnail images`);
+    assert(initial.textOnlyThumbnails === initial.cards, `Blog compact thumbnails mismatch: ${initial.textOnlyThumbnails}/${initial.cards}`);
 
     const nextButton = page.getByRole('button', { name: '次へ →' });
     if (await nextButton.count()) {
