@@ -1,5 +1,6 @@
 name: Finalize performance phase 1
 
+# Final verification after aligning modulepreload URLs with ES Module imports.
 on:
   push:
     branches:
