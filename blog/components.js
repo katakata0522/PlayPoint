@@ -8,7 +8,8 @@
 
     const isArticlePageTop = window.location.pathname.includes('/articles/');
     const isBlogPage = window.location.pathname.includes('/blog');
-    const rootPath = (isArticlePageTop || isBlogPage) ? '../' : './';
+    const isLatestPage = window.location.pathname.includes('/latest/');
+    const rootPath = (isArticlePageTop || isBlogPage || isLatestPage) ? '../' : './';
 
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);

@@ -76,6 +76,7 @@ function preprocessESM(code) {
 
 function loadCalculatorContext(dateClass = Date) {
   const renderedResults = [];
+  const renderedResultDetails = [];
   const context = {
     console,
     Option: createOption,
@@ -86,7 +87,11 @@ function loadCalculatorContext(dateClass = Date) {
       targetElement.renderedContent = content;
       renderedResults.push({ targetElement, content, isError });
     },
+    displayResultDetails(content) {
+      renderedResultDetails.push(content);
+    },
     renderedResults,
+    renderedResultDetails,
   };
   context.window = context;
   context.__TEST_ENV__ = true;
@@ -95,7 +100,8 @@ function loadCalculatorContext(dateClass = Date) {
     preprocessESM(fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8')),
     `
       PP_APP.UI = {
-        displayResult
+        displayResult,
+        displayResultDetails
       };
     `,
     preprocessESM(fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8')),
@@ -115,7 +121,8 @@ function loadCalculatorContext(dateClass = Date) {
         computeRateComparison: PP_APP.CALC_PURE.computeRateComparison.bind(PP_APP.CALC_PURE),
         calculate: PP_APP.CALC.calculate.bind(PP_APP.CALC),
         reverseCalculate: PP_APP.CALC.reverseCalculate.bind(PP_APP.CALC),
-        renderedResults
+        renderedResults,
+        renderedResultDetails
       };
     `,
   ].join('\n');
@@ -184,7 +191,7 @@ test('直接レートと倍率は代替入力として高い方と採用理由�
 });
 
 test('パック額未入力では購入ごとの丸めを仮定しない概算として表示する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'US';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -203,11 +210,11 @@ test('パック額未入力では購入ごとの丸めを仮定しない概算�
   const content = renderedResults[0].content;
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(content.includes('data-value="6"'));
-  assert.ok(content.includes('does not apply purchase-by-purchase point rounding'));
+  assert.ok(renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding'));
 });
 
 test('パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'US';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -227,7 +234,7 @@ test('パック額入力時は購入ごとの四捨五入で必要回数と合�
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(content.includes('data-value="2"'));
   assert.ok(content.includes('data-value="10"'));
-  assert.ok(content.includes('Points are rounded for each entered purchase amount'));
+  assert.ok(renderedResultDetails[0].includes('Points are rounded for each entered purchase amount'));
 });
 
 test('1回0ポイントになる購入額は概算へフォールバックせずエラーにする', () => {
@@ -345,7 +352,7 @@ test('必要ポイントはHTMLの整数制約に違反する小数を拒否す�
   assert.ok(renderedResults[0].content.includes('有効な数値'));
 });
 
-test('通常計算の結果は週平均と1日あたりの目安も表示する', () => {
+test('通常計算は主要結果と折りたたみ詳細を分け、週平均と年末までの残り日数を表示しない', () => {
   class FakeDate extends Date {
     constructor(...args) {
       if (args.length === 0) return new Date(2026, 0, 1);
@@ -356,7 +363,7 @@ test('通常計算の結果は週平均と1日あたりの目安も表示する'
   FakeDate.parse = Date.parse;
   FakeDate.now = () => new Date(2026, 0, 1).getTime();
 
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext(FakeDate);
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext(FakeDate);
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -371,16 +378,36 @@ test('通常計算の結果は週平均と1日あたりの目安も表示する'
   calculate();
 
   assert.strictEqual(renderedResults[0].isError, false);
-  assert.ok(renderedResults[0].content.includes('週平均目安'));
-  assert.ok(renderedResults[0].content.includes('1日あたり目安'));
-  assert.ok(renderedResults[0].content.includes('年末までの残り日数'));
-  assert.ok(renderedResults[0].content.includes('data-value="472"'));
-  assert.ok(renderedResults[0].content.includes('data-value="69"'));
-  assert.ok(renderedResults[0].content.includes('data-value="365"'));
+  assert.ok(renderedResults[0].content.includes('合計の必要課金額目安'));
+  assert.ok(!renderedResults[0].content.includes('月平均目安'));
+  assert.ok(!renderedResults[0].content.includes('1日あたり目安'));
+  assert.strictEqual(renderedResultDetails.length, 1);
+  assert.ok(renderedResultDetails[0].includes('<details'));
+  assert.ok(renderedResultDetails[0].includes('計算の詳細を見る'));
+  assert.ok(renderedResultDetails[0].includes('月平均目安'));
+  assert.ok(renderedResultDetails[0].includes('1日あたり目安'));
+  assert.ok(!renderedResultDetails[0].includes('週平均目安'));
+  assert.ok(!renderedResultDetails[0].includes('年末までの残り日数'));
+  assert.ok(renderedResultDetails[0].includes('data-value="2084"'));
+  assert.ok(renderedResultDetails[0].includes('data-value="69"'));
 });
 
-test('通常計算の結果は条件別関連記事を最大4件だけ結果の後に表示する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+test('必要ポイントの説明も削除した週平均を案内しない', () => {
+  const { PP_REGION_CONFIGS: configs } = loadCalculatorContext();
+  const disallowed = {
+    JP: '月・週・日',
+    US: 'weekly',
+    KR: '월·주·일',
+    TW: '月、週、日'
+  };
+
+  for (const [region, phrase] of Object.entries(disallowed)) {
+    assert.ok(!configs[region].tooltips['tooltip-needed-points'].includes(phrase), region);
+  }
+});
+
+test('通常計算の補足導線は1グループに統合し最大3件だけ表示する', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -396,23 +423,23 @@ test('通常計算の結果は条件別関連記事を最大4件だけ結果の�
   PP_STATE.dom.targetStatus.selectedIndex = 1;
   calculate();
 
-  const content = renderedResults[0].content;
-  const relatedBlock = content.match(/<div class="result-related-links">[\s\S]*?<\/div>/)?.[0] || '';
-  const links = [...relatedBlock.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
+  const content = renderedResultDetails[0];
+  const guidanceBlock = content.match(/<div class="result-guidance-links">[\s\S]*?<\/div>/)?.[0] || '';
+  const links = [...guidanceBlock.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
 
-  assert.strictEqual(renderedResults[0].isError, false);
-  assert.ok(content.indexOf('関連記事') > content.indexOf('合計の必要課金額目安'));
-  assert.ok(content.includes('result-related-links'));
-  assert.ok(links.length > 0 && links.length <= 4);
+  assert.ok(content.includes('次に確認すること'));
+  assert.ok(content.includes('result-guidance-links'));
+  assert.ok(!content.includes('result-related-links'));
+  assert.ok(!content.includes('result-decision-links'));
+  assert.ok(links.length > 0 && links.length <= 3);
   assert.ok(links.includes('articles/2025-12-25-campaign.html'));
-  assert.ok(links.includes('status/diamond/'));
   links.forEach((href) => {
     assert.ok(fs.existsSync(path.join(root, href)), `関連記事リンクが存在しません: ${href}`);
   });
 });
 
-test('計算結果の関連記事は検索意図別LPを優先する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+test('計算結果の統合導線は検索意図別LPを優先する', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -428,15 +455,14 @@ test('計算結果の関連記事は検索意図別LPを優先する', () => {
   PP_STATE.dom.targetStatus.selectedIndex = 0;
   calculate();
 
-  const content = renderedResults[0].content;
+  const content = renderedResultDetails[0];
   const links = [...content.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
 
   assert.ok(links.includes('maintenance/platinum/'), 'プラチナ維持LPへの導線がありません');
-  assert.ok(links.includes('status/diamond/'), 'ダイヤモンド到達LPへの導線がありません');
 });
 
-test('計算結果の下には金額や条件に応じた次の判断導線が出る', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
+test('計算結果の統合導線には金額や条件に応じた次の判断が含まれる', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -452,13 +478,11 @@ test('計算結果の下には金額や条件に応じた次の判断導線が�
   PP_STATE.dom.targetStatus.selectedIndex = 1;
   calculate();
 
-  const content = renderedResults[0].content;
-  assert.ok(content.includes('result-decision-links'), '判断導線のコンテナがありません');
+  const content = renderedResultDetails[0];
+  assert.ok(content.includes('result-guidance-links'), '統合導線のコンテナがありません');
   assert.ok(content.includes('次に確認すること'), '判断導線の見出しがありません');
   assert.ok(content.includes('campaign/3x/'), '高額時の3倍キャンペーン導線がありません');
-  assert.ok(content.includes('articles/2026-03-10-play-points-reflection-timing.html'), '反映トラブル導線がありません');
-  assert.ok(content.includes('articles/2026-06-20-discount-gift-cards.html'), '購入前チェック導線がありません');
-  assert.ok(content.indexOf('result-decision-links') > content.indexOf('result-related-links'), '判断導線は関連記事の後に出してください');
+  assert.ok([...content.matchAll(/<a href="([^"]+)"/g)].length <= 3, '統合導線は3件以内にしてください');
 });
 
 test('ステータス選択の再生成でoptionが重複しない', () => {
@@ -562,6 +586,36 @@ test('削除済みのウィークリーリワード自動差し引きは設定�
   assert.ok(!configSource.includes('subtractRewardsLabel'), '旧リワード差し引き文言が残っています');
   assert.ok(!calculatorSource.includes('subtractRewards'), '旧リワード差し引き分岐が残っています');
   assert.ok(!localeSource.includes('subtractRewardsLabel'), '言語ページ生成設定に旧文言が残っています');
+});
+
+test('公開LPは削除済みのウィークリーリワード差し引き操作を案内しない', () => {
+  const publicPages = [
+    'status/platinum/index.html',
+    'maintenance/platinum/index.html',
+    'maintenance/diamond/index.html'
+  ];
+
+  for (const relativePath of publicPages) {
+    const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
+    assert.doesNotMatch(html, /差し引き設定|差し引く設定|差し引く前|週次リワード差し引き|リワード見込みを差し引く/, relativePath);
+  }
+});
+
+test('主要結果、共有、折りたたみ詳細の順で4言語ページに配置する', () => {
+  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
+    const resultPosition = html.indexOf('id="result"');
+    const actionsPosition = html.indexOf('id="result-actions"');
+    const detailsPosition = html.indexOf('id="result-details"');
+    assert.ok(resultPosition >= 0 && actionsPosition > resultPosition && detailsPosition > actionsPosition, relativePath);
+  }
+});
+
+test('折りたたみ詳細の見出しを4言語で用意する', () => {
+  const configSource = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
+  for (const label of ['計算の詳細を見る', 'View calculation details', '계산 상세 보기', '查看計算詳情']) {
+    assert.ok(configSource.includes(label), `折りたたみ見出しがありません: ${label}`);
+  }
 });
 
 test('平均パック課金額シミュレーションの検証', () => {

@@ -124,7 +124,7 @@ export function init() {
 
     const ids = [
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
-        'neededPoints', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'result-actions', 'copyButton',
+        'neededPoints', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
         'tweetButton', 'amountYen', 'reverseStatus', 'reverseBaseRate',
         'reverseMultiplier', 'reverseCalculateButton', 'reverseResult', 'share-twitter-reverse',
         'copyright-year',

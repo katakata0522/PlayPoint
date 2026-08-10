@@ -229,23 +229,6 @@ export const CALC = {
         }).slice(0, 4);
     },
 
-    renderRelatedArticles(targetStatusLabel, multiplier) {
-        const texts = CONFIGS[STATE.currentRegion].uiText;
-        const articles = this.getRelatedArticles(targetStatusLabel, multiplier);
-        if (!articles.length) return '';
-
-        const items = articles
-            .map((article, index) => `<li><a href="${article.href}" data-result-related-link data-link-position="${index + 1}">${article.title}</a></li>`)
-            .join('');
-
-        return `
-            <div class="result-related-links">
-                <h3>${texts.resultRelatedTitle || '関連記事'}</h3>
-                <ul>${items}</ul>
-            </div>
-        `;
-    },
-
     getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
         const target = String(targetStatusLabel || '').toLowerCase();
         const links = [];
@@ -279,23 +262,45 @@ export const CALC = {
         }).slice(0, 4);
     },
 
-    renderDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
-        const links = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+    getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
+        const relatedArticles = this.getRelatedArticles(targetStatusLabel, multiplier);
+        const decisionLinks = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+        const prioritizedLinks = [
+            ...relatedArticles.slice(0, 1).map(link => ({ ...link, linkType: 'related' })),
+            ...decisionLinks.map(link => ({ ...link, linkType: 'decision' })),
+            ...relatedArticles.slice(1).map(link => ({ ...link, linkType: 'related' }))
+        ];
+
+        const seen = new Set();
+        return prioritizedLinks.filter(link => {
+            if (seen.has(link.href)) return false;
+            seen.add(link.href);
+            return true;
+        }).slice(0, 3);
+    },
+
+    renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
+        const links = this.getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
         if (!links.length) return '';
 
         const items = links
-            .map((link, index) => `
-                <li>
-                    <a href="${link.href}" data-result-decision-link data-link-position="${index + 1}">
-                        <span>${link.title}</span>
-                        <small>${link.note}</small>
-                    </a>
-                </li>
-            `)
+            .map((link, index) => {
+                const analyticsAttribute = link.linkType === 'decision'
+                    ? 'data-result-decision-link'
+                    : 'data-result-related-link';
+                return `
+                    <li>
+                        <a href="${link.href}" ${analyticsAttribute} data-link-position="${index + 1}">
+                            <span>${link.title}</span>
+                            ${link.note ? `<small>${link.note}</small>` : ''}
+                        </a>
+                    </li>
+                `;
+            })
             .join('');
 
         return `
-            <div class="result-decision-links">
+            <div class="result-guidance-links">
                 <h3>${this.getResultNavigation().decisionTitle}</h3>
                 <ul>${items}</ul>
             </div>
@@ -494,7 +499,6 @@ export const CALC = {
         const now = new Date();
         const nextYearStart = new Date(now.getFullYear() + 1, 0, 1);
         const remainingDays = Math.max(0, Math.ceil((nextYearStart - now) / (1000 * 60 * 60 * 24)));
-        const remainingWeeks = Math.ceil(remainingDays / 7);
         const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
         const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
         const rateDetails = this.getRateDetails(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
@@ -551,9 +555,8 @@ export const CALC = {
 
         const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
         let resultContent = '';
-
-        const relatedArticlesContent = this.renderRelatedArticles(targetStatusLabel, multiplier);
-        const decisionLinksContent = this.renderDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+        let resultDetailsContent = '';
+        const guidanceContent = this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
 
         if (finalNeededPoints <= 0) {
             resultContent = `
@@ -564,9 +567,15 @@ export const CALC = {
                     <dt>${texts.resultLabelNeededPoints}</dt>
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
                 </dl>
-                ${relatedArticlesContent}
-                ${decisionLinksContent}
             `;
+            resultDetailsContent = guidanceContent
+                ? `
+                    <details>
+                        <summary>${texts.resultDetailsSummary || '計算の詳細を見る'}</summary>
+                        <div class="result-details-content">${guidanceContent}</div>
+                    </details>
+                `
+                : '';
         } else {
             const monthlyResultContent = remainingMonths > 0
                 ? `
@@ -574,22 +583,10 @@ export const CALC = {
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
                 `
                 : '';
-            const paceResultContent = remainingDays > 0
+            const dailyResultContent = remainingDays > 0
                 ? `
-                    <div class="result-summary-grid" aria-label="${texts.resultLabelPaceSummary || '達成ペース目安'}">
-                        <div>
-                            <span>${texts.resultLabelWeeklyYen || '週平均目安'}</span>
-                            <b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingWeeks)}">0</span> ${config.currencySymbol}${texts.perWeek || '/週'}</b>
-                        </div>
-                        <div>
-                            <span>${texts.resultLabelDailyYen || '1日あたり目安'}</span>
-                            <b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingDays)}">0</span> ${config.currencySymbol}${texts.perDay || '/日'}</b>
-                        </div>
-                        <div>
-                            <span>${texts.resultLabelRemainingDays || '年末までの残り日数'}</span>
-                            <b><span class="count-target" data-value="${remainingDays}">0</span> ${texts.daysUnit || '日'}</b>
-                        </div>
-                    </div>
+                    <dt>${texts.resultLabelDailyYen || '1日あたり目安'}</dt>
+                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingDays)}">0</span> ${config.currencySymbol}${texts.perDay || '/日'}</b></dd>
                 `
                 : '';
             const comparison = Number.isFinite(normalRate) && finalRate > normalRate
@@ -625,21 +622,28 @@ export const CALC = {
                     ${packResultContent}
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
-                    ${monthlyResultContent}
                 </dl>
-                ${paceResultContent}
-                ${comparisonContent}
-                <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-                <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${hasPackAmount ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
-                <div style="font-size:0.82em; color:var(--link-color); margin-top:0.8em; line-height:1.4;">
-                    ${calculationNoteText}
-                </div>
-                ${relatedArticlesContent}
-                ${decisionLinksContent}
+            `;
+            resultDetailsContent = `
+                <details>
+                    <summary>${texts.resultDetailsSummary || '計算の詳細を見る'}</summary>
+                    <div class="result-details-content">
+                        <dl class="result-detail-grid">
+                            ${monthlyResultContent}
+                            ${dailyResultContent}
+                        </dl>
+                        ${comparisonContent}
+                        <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
+                        <p class="rounding-assumption-note">${hasPackAmount ? texts.roundingNoteWithPack : texts.roundingNoteWithoutPack}</p>
+                        <div class="calculation-note">${calculationNoteText}</div>
+                        ${guidanceContent}
+                    </div>
+                </details>
             `;
         }
         
         UI.displayResult(STATE.dom.result, resultContent);
+        UI.displayResultDetails(resultDetailsContent);
         STATE.dom.result.dataset.requiredYen = totalAmountNeeded;
         STATE.dom.result.dataset.targetStatusLabel = targetStatusLabel;
         STATE.dom.result.dataset.shareUrl = SHARE ? SHARE.buildMainShareUrl() : '';

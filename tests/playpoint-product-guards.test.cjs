@@ -329,10 +329,10 @@ test('日本語の必要ポイント例はあとがきにつながる実例1728�
   assert.match(info, /1728という数字は私がプラチナ到達までに必要なリアルな数字/);
 });
 
-test('結果カードの見出しだけをブロック化し、金額の内訳は分断しない', () => {
+test('計算詳細は項目名と値を2列で揃え、値の内部は分断しない', () => {
   const css = read('style.css');
-  assert.match(css, /\.result-summary-grid\s*>\s*div\s*>\s*span\s*\{/);
-  assert.doesNotMatch(css, /\.result-summary-grid\s+span\s*\{/);
+  assert.match(css, /\.result-detail-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto;/s);
+  assert.doesNotMatch(css, /\.result-detail-grid\s+(?:span|strong)\s*\{/);
 });
 
 test('CSPは計測と広告品質確認で実際に使う接続先を許可する', () => {

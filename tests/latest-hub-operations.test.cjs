@@ -14,11 +14,13 @@ test('最新情報ハブは確認範囲・公式参照・確認日を明示す�
   const html = fs.readFileSync(latestPath, 'utf8');
   const result = validateLatestHub(html);
 
-  assert.equal(result.verificationDate, '2026-07-31');
-  assert.ok(html.includes('<meta name="last-modified" content="2026-07-31">'));
-  assert.match(html, /"dateModified"\s*:\s*"2026-07-31"/);
-  assert.ok(html.includes('最終更新: <time datetime="2026-07-31">2026-07-31</time>'));
-  assert.ok(html.includes('次回確認目安: 2026-08-07頃'));
+  assert.equal(result.verificationDate, '2026-08-11');
+  assert.ok(html.includes('<meta name="last-modified" content="2026-08-11">'));
+  assert.match(html, /"dateModified"\s*:\s*"2026-08-11"/);
+  assert.ok(html.includes('最終更新: <time datetime="2026-08-11">2026-08-11</time>'));
+  assert.ok(html.includes('次回確認目安: 2026-08-14頃'));
+  assert.ok(html.includes('次回確認目安: 2026-08-13頃'));
+  assert.match(html, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
 });
 
 test('最新情報ハブは週次3制度とクエストを別項目として扱う', () => {
@@ -33,7 +35,7 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
 });
 
 test('生成処理は確認していない日に最新情報ハブの日付を進めない', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-07-31');
+  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-11');
 });
 
 test('鮮度検査は14日を超えた確認日を検出する', () => {
@@ -43,10 +45,20 @@ test('鮮度検査は14日を超えた確認日を検出する', () => {
     () => validateLatestHub(html, {
       enforceFreshness: true,
       maxAgeDays: 14,
-      now: new Date('2026-08-16T00:00:00Z')
+      now: new Date('2026-08-27T00:00:00Z')
     }),
     /公式確認から16日経過/
   );
+});
+
+test('鮮度検査は日本時間の日付をUTC前日の未来日と誤判定しない', () => {
+  const html = fs.readFileSync(latestPath, 'utf8');
+
+  assert.doesNotThrow(() => validateLatestHub(html, {
+    enforceFreshness: true,
+    maxAgeDays: 14,
+    now: new Date('2026-08-10T15:30:00Z')
+  }));
 });
 
 test('運用手順は日付だけの更新と個別オファーの一般化を禁止する', () => {
@@ -56,4 +68,11 @@ test('運用手順は日付だけの更新と個別オファーの一般化を�
   assert.ok(guide.includes('個別オファーを全利用者向けの情報として掲載しない'));
   assert.ok(guide.includes('latest/index.html'));
   assert.ok(guide.includes('CONTENT_DATE_OVERRIDES'));
+});
+
+test('最新情報ハブの共通計測はサイトルートの同意管理を読み込む', () => {
+  const components = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+
+  assert.match(components, /const isLatestPage = window\.location\.pathname\.includes\('\/latest\/'\);/);
+  assert.match(components, /isArticlePageTop \|\| isBlogPage \|\| isLatestPage/);
 });

@@ -7,7 +7,7 @@
     <meta name="description" content="Google Play Pointsのプラチナ維持に必要な残りポイント、課金額、年末までのペースを整理し、現在プラチナの条件からすぐ計算できるページです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-08-08">
+    <meta name="last-modified" content="2026-08-11">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Playポイント計算機">
     <meta property="og:title" content="Google Play Points プラチナ維持はいくら必要？">
@@ -25,7 +25,7 @@
     <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/maintenance/platinum/">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/maintenance/platinum/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="/style.css?v=ed240917f2">
+    <link rel="stylesheet" href="/style.css?v=5460ea354a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -33,7 +33,7 @@
       "name": "Google Play Points プラチナ維持計算",
       "description": "Google Play Pointsのプラチナ維持に必要な課金額を計算するための入口ページです。",
       "url": "https://playpoint-sim.com/maintenance/platinum/",
-      "dateModified": "2026-08-08",
+      "dateModified": "2026-08-11",
       "author": { "@type": "Person", "name": "かたかた", "url": "https://playpoint-sim.com/author/katakata.html" },
       "isPartOf": { "@type": "WebSite", "name": "Playポイント計算機", "url": "https://playpoint-sim.com/" }
     }
@@ -93,7 +93,7 @@
     </section>
     <section class="section">
         <h2>プラチナ維持の早見表</h2>
-        <p>現在プラチナで、維持ラインまで不足しているポイントを入れた場合の概算です。週次リワードを差し引く前の保守的な目安として見てください。</p>
+        <p>現在プラチナで、維持ラインまで不足しているポイントを入れた場合の概算です。未受領の週次リワードを予測に含めない、保守的な目安として見てください。</p>
         <div class="lp-table-wrap">
             <table class="lp-comparison-table">
                 <thead>
@@ -132,7 +132,7 @@
         <h2>維持で見るべきポイント</h2>
         <div class="lp-mini-grid">
             <div><h3>年末までの残り</h3><p>維持計算は12月31日までの残り日数が重要です。同じ不足ポイントでも、残り日数が短いほど必要ペースは上がります。</p></div>
-            <div><h3>週次リワード</h3><p>リワード予想を差し引く設定も使うと、追加課金の目安を現実に近づけられます。</p></div>
+            <div><h3>週次リワード</h3><p>受け取り後にGoogle Playの履歴を確認し、実績ポイントを不足分へ反映すると、追加課金の目安を現実に近づけられます。</p></div>
             <div><h3>反映の遅れ</h3><p>年末ぎりぎりの課金は反映タイミングも確認しておくと安全です。</p></div>
         </div>
     </section>
@@ -143,7 +143,7 @@
             <li><strong>現在ステータス:</strong> プラチナを選びます。このページのボタンから開くと、プラチナ維持を見やすい条件で計算機に移動します。</li>
             <li><strong>目標ステータス:</strong> プラチナを選びます。ダイヤモンド昇格ではなく、現在ランクの維持を見たい場合は目標がプラチナになっていることを確認してください。</li>
             <li><strong>あと何ポイント必要か:</strong> 年末までに維持ラインへ足りないポイントを入力します。初期値は1000ポイントで、実際の進捗に合わせて変更します。</li>
-            <li><strong>倍率とリワード:</strong> 通常倍率、キャンペーン倍率、週次リワード差し引きを分けて試します。楽観的な条件だけで判断しないのが大事です。</li>
+            <li><strong>倍率とリワード:</strong> 通常倍率とキャンペーン倍率を分けて試します。週次リワードは自動で差し引かないため、受け取り後の実績だけを必要ポイントへ反映します。</li>
         </ol>
         <p class="lp-note">維持条件やポイント付与対象は、Google Play側の表示が最優先です。計算結果は支出計画の目安として使ってください。</p>
     </section>
@@ -151,8 +151,8 @@
         <h2>維持判断の見方</h2>
         <div class="lp-detail-grid">
             <div class="lp-detail-box">
-                <h3>差し引き前の結果を見る</h3>
-                <p>まずは週次リワードを差し引かずに計算すると、最も保守的な必要額が分かります。そこからリワード見込みを差し引くと、どれだけ余裕があるか見えます。</p>
+                <h3>現在の不足ポイントで計算する</h3>
+                <p>週次リワードは予測で差し引かず、受け取った後にGoogle Playの履歴を確認して不足ポイントを更新します。未受領の見込みを含めないため、必要額を保守的に確認できます。</p>
             </div>
             <div class="lp-detail-box">
                 <h3>予定済みの課金で届くか</h3>

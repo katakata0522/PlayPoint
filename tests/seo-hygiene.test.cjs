@@ -52,7 +52,7 @@ test('ルートサイトマップはPlay Pointsの公開導線だけを扱う', 
   assert.ok(!sitemap.includes('<priority>'));
   assert.ok(!read('blog/sitemap.xml').includes('<changefreq>'));
   assert.ok(!read('blog/sitemap.xml').includes('<priority>'));
-  assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>2026-07-31</lastmod>`));
+  assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>2026-08-11</lastmod>`));
   assert.match(sitemap, new RegExp(`<loc>${origin}/ko/</loc>\\r?\\n\\s*<lastmod>2026-07-26</lastmod>`));
 });
 

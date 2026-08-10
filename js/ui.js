@@ -140,6 +140,31 @@ export const UI = {
         }
     },
 
+    // 通常計算の補足情報を、共有ボタンより後ろの折りたたみ領域へ表示する
+    displayResultDetails(content) {
+        const targetElement = STATE.dom.resultDetails;
+        if (!targetElement) return;
+
+        targetElement.innerHTML = content || '';
+        setElementVisibility(targetElement, Boolean(content));
+
+        if (!content) return;
+        const config = CONFIGS[STATE.currentRegion];
+        targetElement.querySelectorAll('.count-target').forEach(element => {
+            const endValue = parseFloat(element.dataset.value);
+            if (!Number.isNaN(endValue)) {
+                this.animateValue(element, 0, endValue, 800, config.lang);
+            }
+        });
+    },
+
+    clearResultDetails() {
+        const targetElement = STATE.dom.resultDetails;
+        if (!targetElement) return;
+        targetElement.innerHTML = '';
+        setElementVisibility(targetElement, false);
+    },
+
     // 結果表示メソッド（カウントアップアニメーション発火）
     displayResult(targetElement, content, isError = false) {
         if (!targetElement) return;
@@ -151,6 +176,7 @@ export const UI = {
             span.className = 'error-text';
             span.textContent = content;
             targetElement.appendChild(span);
+            if (targetElement === STATE.dom.result) this.clearResultDetails();
         } else {
             targetElement.innerHTML = content;
         }
@@ -177,6 +203,7 @@ export const UI = {
         this.clearResultData(targetElement);
         targetElement.innerHTML = "";
         targetElement.classList.remove(CONSTANTS.CLASS_HAS_RESULT);
+        if (targetElement === STATE.dom.result) this.clearResultDetails();
         setResultActionsVisibility(targetElement, false);
     },
 

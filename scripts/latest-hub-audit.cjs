@@ -9,6 +9,7 @@ const REQUIRED_OFFICIAL_ANSWERS = Object.freeze([
   '9080348',
   '9077247'
 ]);
+const JST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 function extractVerificationDate(html) {
   const match = html.match(/<time\s+data-latest-verified\s+datetime="(\d{4}-\d{2}-\d{2})"/i);
@@ -24,6 +25,11 @@ function parseDateOnly(value) {
     throw new Error(`確認日を日付として解析できません: ${value}`);
   }
   return date;
+}
+
+function getJstDateOnly(now) {
+  const jstNow = new Date(now.getTime() + JST_OFFSET_MS);
+  return new Date(Date.UTC(jstNow.getUTCFullYear(), jstNow.getUTCMonth(), jstNow.getUTCDate()));
 }
 
 function validateLatestHub(html, options = {}) {
@@ -52,8 +58,8 @@ function validateLatestHub(html, options = {}) {
     const now = options.now instanceof Date ? options.now : new Date();
     const maxAgeDays = Number.isFinite(options.maxAgeDays) ? options.maxAgeDays : 14;
     const verifiedAt = parseDateOnly(verificationDate);
-    const todayUtc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-    const ageDays = Math.floor((todayUtc.getTime() - verifiedAt.getTime()) / 86400000);
+    const todayJst = getJstDateOnly(now);
+    const ageDays = Math.floor((todayJst.getTime() - verifiedAt.getTime()) / 86400000);
 
     if (ageDays < 0) {
       throw new Error(`最新情報ハブの確認日が未来です: ${verificationDate}`);

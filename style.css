@@ -647,32 +647,60 @@ button:active {
 .result dl { margin: 0; }
 .result dt { font-weight: normal; font-size: 0.9em; color: var(--link-color); }
 .result dd { margin-left: 0; margin-bottom: 0.5em; }
-.result-summary-grid {
+.result-details {
+  margin-top: 0.75em;
+}
+.result-details details {
+  border: 1px solid rgba(11, 87, 208, 0.16);
+  border-radius: 8px;
+  background: rgba(11, 87, 208, 0.025);
+}
+.result-details summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0.7em 0.85em;
+  color: var(--link-hover-color);
+  font-weight: 700;
+  cursor: pointer;
+}
+.result-details summary:hover {
+  background: rgba(11, 87, 208, 0.06);
+}
+.result-details-content {
+  padding: 0 0.85em 0.85em;
+  color: var(--text-color);
+  font-size: 0.96em;
+  line-height: 1.55;
+}
+.result-detail-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5em;
-  margin: 0.75em 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.45em 0.8em;
+  margin: 0;
 }
-.result-summary-grid div {
+.result-detail-grid dt,
+.result-detail-grid dd {
   min-width: 0;
-  padding: 0.55em;
-  border: 1px solid rgba(40, 167, 69, 0.18);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.65);
+  padding: 0.5em 0;
+  border-bottom: 1px solid rgba(40, 167, 69, 0.14);
 }
-.result-summary-grid > div > span {
-  display: block;
+.result-detail-grid dt {
   color: var(--link-color);
-  font-size: 0.78em;
-  font-weight: 400;
-  line-height: 1.35;
+  font-size: 0.82em;
 }
-.result-summary-grid b {
-  display: block;
-  margin-top: 0.15em;
-  font-size: 0.94em;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
+.result-detail-grid dd {
+  margin: 0;
+  text-align: right;
+  font-weight: 700;
+}
+.rounding-assumption-note,
+.calculation-note {
+  margin: 0.8em 0 0;
+  color: var(--link-color);
+  font-size: 0.82em;
+  font-weight: 400;
+  line-height: 1.5;
 }
 .result-rate-comparison {
   margin: 0.8em 0;
@@ -699,26 +727,26 @@ button:active {
   font-weight: normal;
   color: var(--link-color);
 }
-.result-related-links {
+.result-guidance-links {
   margin-top: 0.9em;
   padding-top: 0.75em;
   border-top: 1px solid rgba(40, 167, 69, 0.18);
 }
-.result-related-links h3 {
+.result-guidance-links h3 {
   margin: 0 0 0.45em;
   border: 0;
   color: var(--text-color);
   font-size: 0.94em;
 }
-.result-related-links ul {
+.result-guidance-links ul {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.45em;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.result-related-links a {
+.result-guidance-links a {
   display: block;
   min-height: 44px;
   padding: 0.55em 0.65em;
@@ -730,52 +758,17 @@ button:active {
   line-height: 1.35;
   text-decoration: none;
 }
-.result-related-links a:hover {
+.result-guidance-links a:hover {
   background: rgba(11, 87, 208, 0.1);
   text-decoration: underline;
-}
-.result-decision-links {
-  margin-top: 0.9em;
-  padding-top: 0.75em;
-  border-top: 1px solid rgba(40, 167, 69, 0.18);
-}
-.result-decision-links h3 {
-  margin: 0 0 0.45em;
-  border: 0;
-  color: var(--text-color);
-  font-size: 0.94em;
-}
-.result-decision-links ul {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.45em;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.result-decision-links a {
-  display: block;
-  min-height: 44px;
-  padding: 0.55em 0.65em;
-  border: 1px solid rgba(40, 167, 69, 0.2);
-  border-radius: 6px;
-  background: rgba(40, 167, 69, 0.06);
-  color: var(--text-color);
-  line-height: 1.35;
-  text-decoration: none;
-}
-.result-decision-links a:hover {
-  background: rgba(40, 167, 69, 0.12);
-  text-decoration: underline;
-}
-.result-decision-links span,
-.result-decision-links small {
+.result-guidance-links span,
+.result-guidance-links small {
   display: block;
 }
-.result-decision-links span {
+.result-guidance-links span {
   font-size: 0.88em;
 }
-.result-decision-links small {
+.result-guidance-links small {
   margin-top: 0.15em;
   color: var(--link-color);
   font-size: 0.76em;
@@ -921,7 +914,7 @@ button:active {
   flex-wrap: wrap;
   gap: 0.55em;
   align-items: center;
-  margin-top: 0.7em;
+  margin: 0.15em 0 0.75em;
 }
 .result-actions button {
   min-height: 44px;
@@ -1265,12 +1258,6 @@ button:active {
     display: none;
   }
 
-  .result-summary-grid {
-    grid-template-columns: 1fr;
-  }
-  .result-related-links ul {
-    grid-template-columns: 1fr;
-  }
   .result-actions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
