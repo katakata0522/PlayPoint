@@ -782,14 +782,14 @@
         }
 
         // 画面上の「〜の記事：N件」は位置も冗長なので出さない。
-        // スクリーンリーダー向けに、変化時だけ短いステータスを残す。
+        // スクリーンリーダー向けの非表示ステータスには初期件数も残す。
         if (dom.resultStatus) {
             if (currentSearch) {
                 dom.resultStatus.textContent = '「' + currentSearch + '」の検索結果 ' + filtered.length + '件';
             } else if (currentCategory !== 'all') {
                 dom.resultStatus.textContent = currentCategory + ' ' + filtered.length + '件';
             } else {
-                dom.resultStatus.textContent = '';
+                dom.resultStatus.textContent = filtered.length + '件';
             }
         }
 
