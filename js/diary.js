@@ -254,6 +254,8 @@ export const DIARY = {
         if (!STATE.dom.backupInputWrapper) return;
         const isHidden = STATE.dom.backupInputWrapper.classList.contains(CONSTANTS.CLASS_HIDDEN);
         STATE.dom.backupInputWrapper.classList.toggle(CONSTANTS.CLASS_HIDDEN, !isHidden);
+        STATE.dom.backupInputWrapper.hidden = !isHidden;
+        STATE.dom.backupInputWrapper.setAttribute('aria-hidden', isHidden ? 'false' : 'true');
         if (isHidden && STATE.dom.diaryBackupData) {
             STATE.dom.diaryBackupData.value = "";
             STATE.dom.diaryBackupData.focus();
@@ -329,6 +331,8 @@ export const DIARY = {
             this.renderDiary();
             if (STATE.dom.backupInputWrapper) {
                 STATE.dom.backupInputWrapper.classList.add(CONSTANTS.CLASS_HIDDEN);
+                STATE.dom.backupInputWrapper.hidden = true;
+                STATE.dom.backupInputWrapper.setAttribute('aria-hidden', 'true');
             }
             STATE.dom.diaryBackupData.value = "";
             UI.showToast(texts.importSuccess);

@@ -118,7 +118,7 @@ test('国際記事台帳は手動正本の日付を自動採用する', () => {
 test('ビルドは国際記事生成の直前に退避し直後に復元する', () => {
   const buildScript = fs.readFileSync(path.join(root, 'scripts/build-html.js'), 'utf8');
   const snapshotAt = buildScript.indexOf('snapshotManualIntlArticles(rootDir)');
-  const generateAt = buildScript.indexOf('writeIntlSeoPages(rootDir, assetVersions, todayStr)');
+  const generateAt = buildScript.indexOf('writeIntlSeoPages(rootDir, assetVersions)');
   const restoreAt = buildScript.indexOf('restoreManualIntlArticles(rootDir, manualIntlSnapshots)');
   const assetSyncAt = buildScript.indexOf('syncPublicAssetVersions(rootDir)');
 

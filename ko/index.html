@@ -151,39 +151,39 @@
     <p id="site-description" class="site-description" data-lang-key="siteDescription">먼저 현재 등급, 목표 등급, 목표까지 필요한 포인트를 입력하세요.<br>등급 달성에 필요한 결제 금액과 결제 금액으로 받을 수 있는 포인트를 계산합니다.</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">일반 계산</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" data-lang-key="tabReverse">역산 모드</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">주간 리워드 일기</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">일반 계산</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">역산 모드</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">주간 리워드 일기</button>
     </div>
 
-    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" data-visible-base-rate-layout="true">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">등급 입력</h2>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">현재 등급</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
-                <div class="tooltip-box" id="tooltip-current-status"></div>
+                <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
             <select id="currentStatus"></select>
 
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">목표 등급</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
-                <div class="tooltip-box" id="tooltip-target-status"></div>
+                <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
             <select id="targetStatus"></select>
 
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">목표까지 필요한 포인트</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
-                <div class="tooltip-box" id="tooltip-needed-points"></div>
+                <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="예: 120" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
             <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">₩1,000당 적립률 (자동 입력·수정 가능)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
-                <div class="tooltip-box" id="tooltip-base-rate"></div>
+                <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
 
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
@@ -191,7 +191,7 @@
             <label for="multiplier" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="multiplierLabel">캠페인 배율 (보통 1배)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
-                <div class="tooltip-box" id="tooltip-multiplier"></div>
+                <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
@@ -202,42 +202,42 @@
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">결제 금액 계산</button>
             <div class="result" id="result" aria-live="polite"></div>
-            <div id="result-actions" class="result-actions hidden" aria-label="계산 결과 공유" data-lang-aria="shareResultAria">
-                <button id="copyButton" class="hidden" data-lang-key="copyButton">복사하기</button>
-                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">결과를 X에 공유</button>
+            <div id="result-actions" class="result-actions hidden" hidden aria-label="계산 결과 공유" data-lang-aria="shareResultAria">
+                <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">복사하기</button>
+                <button id="tweetButton" class="hidden" hidden data-lang-key="tweetButton">결과를 X에 공유</button>
             </div>
-            <div id="result-details" class="result-details hidden"></div>
+            <div id="result-details" class="result-details hidden" hidden></div>
         </div>
     </div>
 
-    <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
+    <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">역산 모드</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">결제 금액 (₩)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
-                <div class="tooltip-box" id="tooltip-amount-yen"></div>
+                <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
             <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="예: 50000" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">현재 등급</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-status"></div>
+                <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">1,000원당 적립률(직접 입력)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
+                <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
                 <span data-lang-key="labelMultiplierReverse">이벤트 배율(다른 입력 방식)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
+                <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
@@ -246,13 +246,13 @@
          <div class="section">
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
-            <button id="share-twitter-reverse" class="hidden">
+            <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">결과를 X에 공유</span>
             </button>
         </div>
     </div>
 
-    <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
+    <div id="diaryMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-diary" aria-hidden="true">
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="이전 연도" data-lang-aria="prevYearAria">&lt;</button>
             <h2 id="currentYear" data-lang-key="currentYearLabel">현재 연도</h2>
@@ -303,7 +303,8 @@
                 <button id="exportDiaryBtn" data-lang-key="exportBtn">데이터 내보내기 (복사)</button>
                 <button id="importDiaryBtn" data-lang-key="importBtn">데이터 가져오기 (복원)</button>
             </div>
-            <div id="backup-input-wrapper" class="hidden">
+            <div id="backup-input-wrapper" class="hidden" hidden aria-hidden="true">
+                <label for="diaryBackupData" class="visually-hidden" data-lang-key="backupDataLabel">복원할 데이터</label>
                 <textarea id="diaryBackupData" placeholder="내보낸 데이터를 여기에 붙여넣어 주세요" data-lang-placeholder="backupPlaceholder"></textarea>
                 <button id="confirmImportBtn" data-lang-key="confirmImportBtn">복원 실행</button>
             </div>
@@ -368,7 +369,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">의견 제안</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: 2026-08-12</p>
+        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: 2026-07-26</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool

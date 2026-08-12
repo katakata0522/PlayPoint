@@ -323,14 +323,38 @@ test('多言語トップの実行時記事リンクは各言語の記事一覧�
   }
 });
 
-test('日本語の必要ポイント例はあとがきにつながる実例1728を保つ', () => {
+test('日本語の必要ポイント例は初期上限内に収め、1728の実例はあとがきに保つ', () => {
   const configs = loadConfigs();
   const placeholder = configs.JP.uiText.neededPointsPlaceholder;
   const info = read('info.html');
-  assert.equal(placeholder, '例：1728');
+  assert.equal(placeholder, '例：250');
   assert.match(read('index.html'), new RegExp(`placeholder="${placeholder}"`));
   assert.match(info, /Q\. 例題の「1728」って何ですか？/);
   assert.match(info, /1728という数字は私がプラチナ到達までに必要なリアルな数字/);
+});
+
+test('タブ・補足・復元欄はCSSが失敗してもhidden属性で初期非表示になる', () => {
+  const html = read('index.html');
+  const ui = read('js/ui.js');
+  const diary = read('js/diary.js');
+  assert.match(html, /id="reverseMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /id="diaryMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /id="backup-input-wrapper"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /<label for="diaryBackupData"[^>]*data-lang-key="backupDataLabel"/);
+  assert.equal((html.match(/class="tooltip-box"[^>]*\bhidden\b/g) || []).length, 9);
+  assert.match(ui, /element\.hidden = !isVisible/);
+  assert.match(ui, /tooltip\.hidden = false/);
+  assert.match(diary, /backupInputWrapper\.hidden = !isHidden/);
+});
+
+test('ブログ初期表示は最終件数と同じ6枚のスケルトンをHTMLで確保する', () => {
+  const html = read('blog/index.html');
+  const script = read('blog/script.js');
+  assert.equal((html.match(/class="skeleton-card"/g) || []).length, 6);
+  assert.match(html, /<noscript>[\s\S]*href="noscript\.css\?v=[a-f0-9]+"/);
+  assert.match(html, /<noscript>[\s\S]*class="static-article-fallback"[\s\S]*<\/noscript>/);
+  assert.match(script, /querySelectorAll\('\.skeleton-card'\)\.length === CONFIG\.itemsPerPage/);
+  assert.match(script, /i < CONFIG\.itemsPerPage/);
 });
 
 test('計算詳細は項目名と値を2列で揃え、値の内部は分断しない', () => {
