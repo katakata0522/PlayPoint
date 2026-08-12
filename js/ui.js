@@ -21,7 +21,15 @@ function updateLocalizedLink(element, value, isSubDir) {
 }
 
 function setElementVisibility(element, isVisible) {
-    if (element) element.classList.toggle(CONSTANTS.CLASS_HIDDEN, !isVisible);
+    if (!element) return;
+    element.classList.toggle(CONSTANTS.CLASS_HIDDEN, !isVisible);
+    element.hidden = !isVisible;
+}
+
+function setPanelVisibility(element, isVisible) {
+    if (!element) return;
+    setElementVisibility(element, isVisible);
+    element.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
 }
 
 function setResultActionsVisibility(targetElement, isVisible) {
@@ -209,13 +217,14 @@ export const UI = {
 
     // モード（タブ）の切替メソッド
     switchMode(mode) {
-        STATE.dom.mainMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_MAIN);
-        STATE.dom.reverseMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_REVERSE);
-        if (STATE.dom.diaryMode) STATE.dom.diaryMode.classList.toggle(CONSTANTS.CLASS_HIDDEN, mode !== CONSTANTS.MODE_DIARY);
+        setPanelVisibility(STATE.dom.mainMode, mode === CONSTANTS.MODE_MAIN);
+        setPanelVisibility(STATE.dom.reverseMode, mode === CONSTANTS.MODE_REVERSE);
+        setPanelVisibility(STATE.dom.diaryMode, mode === CONSTANTS.MODE_DIARY);
         document.querySelectorAll(".tab-switch button").forEach(button => {
             const isActive = button.dataset.mode === mode;
             button.classList.toggle(CONSTANTS.CLASS_ACTIVE, isActive);
             button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            button.tabIndex = isActive ? 0 : -1;
         });
         if (STATE.dom.result) this.clearResult(STATE.dom.result);
         if (STATE.dom.reverseResult) this.clearResult(STATE.dom.reverseResult);
@@ -225,6 +234,7 @@ export const UI = {
     closeAllTooltips() {
         document.querySelectorAll(`${CONSTANTS.SELECTOR_TOOLTIP_BOX}.${CONSTANTS.CLASS_VISIBLE}`).forEach(box => {
             box.classList.remove(CONSTANTS.CLASS_VISIBLE);
+            box.hidden = true;
             const btn = box.parentElement.querySelector(CONSTANTS.SELECTOR_INFO_BTN);
             if (btn) btn.setAttribute('aria-expanded', 'false');
         });
@@ -240,6 +250,7 @@ export const UI = {
         const isVisible = tooltip.classList.contains(CONSTANTS.CLASS_VISIBLE);
         this.closeAllTooltips();
         if (!isVisible) {
+            tooltip.hidden = false;
             tooltip.classList.add(CONSTANTS.CLASS_VISIBLE);
             btn.setAttribute('aria-expanded', 'true');
         }

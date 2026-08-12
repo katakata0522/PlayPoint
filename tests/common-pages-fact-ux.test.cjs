@@ -15,7 +15,8 @@ function loadConfigs() {
   const context = { console, __TEST_ENV__: true };
   context.window = context;
   vm.createContext(context);
-  vm.runInContext(read('js/config.js').replace(/^export\s+/gm, ''), context, { filename: 'config.js' });
+  vm.runInContext(read('js/analytics-core.js'), context, { filename: 'analytics-core.js' });
+  vm.runInContext(read('js/config.js').replace(/^import[^\n]+\n/gm, '').replace(/^export\s+/gm, ''), context, { filename: 'config.js' });
   return JSON.parse(JSON.stringify(context.PP_APP.CONFIGS));
 }
 

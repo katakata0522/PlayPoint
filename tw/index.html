@@ -9,8 +9,8 @@
     <meta name="description" content="Google Play Points 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援活動倍率、剩餘點數與每週獎勵紀錄。">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="katakata">
-    <meta name="last-modified" content="2026-08-11">
-    <meta property="article:modified_time" content="2026-08-11T00:00:00+09:00">
+    <meta name="last-modified" content="2026-08-12">
+    <meta property="article:modified_time" content="2026-08-12T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/tw/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/">
@@ -38,10 +38,11 @@
 
     <link rel="modulepreload" href="../js/main.js?v=bca2d17243">
     <link rel="modulepreload" href="../js/config.js">
+    <link rel="modulepreload" href="../js/analytics-core.js?v=54c7b8621b">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=5460ea354a">
+    <link rel="stylesheet" href="../style.css?v=67087e072a">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -57,7 +58,7 @@
         "name": "katakata",
         "url": "https://playpoint-sim.com/author/katakata.html"
       },
-      "dateModified": "2026-08-11",
+      "dateModified": "2026-08-12",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -150,39 +151,39 @@
     <p id="site-description" class="site-description" data-lang-key="siteDescription">請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" data-lang-key="tabReverse">逆算模式</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" data-lang-key="tabDiary">每週獎勵日記</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算模式</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
     </div>
 
-    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" data-visible-base-rate-layout="true">
+    <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">輸入等級</h2>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">目前等級</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
-                <div class="tooltip-box" id="tooltip-current-status"></div>
+                <div class="tooltip-box" id="tooltip-current-status" hidden></div>
             </label>
             <select id="currentStatus"></select>
 
             <label for="targetStatus" class="label-with-tooltip">
                 <span data-lang-key="labelTargetStatus">目標等級</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-target-status">?</span>
-                <div class="tooltip-box" id="tooltip-target-status"></div>
+                <div class="tooltip-box" id="tooltip-target-status" hidden></div>
             </label>
             <select id="targetStatus"></select>
 
             <label for="neededPoints" class="label-with-tooltip">
                 <span data-lang-key="labelNeededPoints">距離目標所需點數</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-needed-points">?</span>
-                <div class="tooltip-box" id="tooltip-needed-points"></div>
+                <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
             <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">每 NT$30 獲得點數（自動帶入，可修改）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
-                <div class="tooltip-box" id="tooltip-base-rate"></div>
+                <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
 
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
@@ -190,7 +191,7 @@
             <label for="multiplier" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="multiplierLabel">活動倍率（通常為 1 倍）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
-                <div class="tooltip-box" id="tooltip-multiplier"></div>
+                <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
@@ -201,42 +202,42 @@
         <div class="section">
             <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div class="result" id="result" aria-live="polite"></div>
-            <div id="result-actions" class="result-actions hidden" aria-label="分享計算結果" data-lang-aria="shareResultAria">
-                <button id="copyButton" class="hidden" data-lang-key="copyButton">複製</button>
-                <button id="tweetButton" class="hidden" data-lang-key="tweetButton">分享至 X</button>
+            <div id="result-actions" class="result-actions hidden" hidden aria-label="分享計算結果" data-lang-aria="shareResultAria">
+                <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">複製</button>
+                <button id="tweetButton" class="hidden" hidden data-lang-key="tweetButton">分享至 X</button>
             </div>
-            <div id="result-details" class="result-details hidden"></div>
+            <div id="result-details" class="result-details hidden" hidden></div>
         </div>
     </div>
 
-    <div id="reverseMode" class="hidden" role="tabpanel" aria-labelledby="tab-reverse">
+    <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleReverse">逆算模式</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">消費金額 (NT$)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
-                <div class="tooltip-box" id="tooltip-amount-yen"></div>
+                <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
             <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例如：1500" inputmode="numeric" data-lang-placeholder="amountYenPlaceholder">
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">目前等級</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-status">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-status"></div>
+                <div class="tooltip-box" id="tooltip-reverse-status" hidden></div>
             </label>
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
                 <span data-lang-key="labelBaseRate">每 NT$30 回饋率（直接輸入）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-base-rate"></div>
+                <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
                 <span data-lang-key="labelMultiplierReverse">活動倍率（另一種輸入方式）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
-                <div class="tooltip-box" id="tooltip-reverse-multiplier"></div>
+                <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
@@ -245,13 +246,13 @@
          <div class="section">
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
             <div class="result" id="reverseResult" aria-live="polite"></div>
-            <button id="share-twitter-reverse" class="hidden">
+            <button id="share-twitter-reverse" class="hidden" hidden>
                 <span data-lang-key="tweetButton">分享至 X</span>
             </button>
         </div>
     </div>
 
-    <div id="diaryMode" class="hidden" role="tabpanel" aria-labelledby="tab-diary">
+    <div id="diaryMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-diary" aria-hidden="true">
         <div class="diary-header">
             <button id="prevYearBtn" aria-label="上一年" data-lang-aria="prevYearAria">&lt;</button>
             <h2 id="currentYear" data-lang-key="currentYearLabel">目前年份</h2>
@@ -302,7 +303,8 @@
                 <button id="exportDiaryBtn" data-lang-key="exportBtn">匯出資料 (複製)</button>
                 <button id="importDiaryBtn" data-lang-key="importBtn">匯入資料 (還原)</button>
             </div>
-            <div id="backup-input-wrapper" class="hidden">
+            <div id="backup-input-wrapper" class="hidden" hidden aria-hidden="true">
+                <label for="diaryBackupData" class="visually-hidden" data-lang-key="backupDataLabel">要還原的資料</label>
                 <textarea id="diaryBackupData" placeholder="請將匯出的資料貼至此處" data-lang-placeholder="backupPlaceholder"></textarea>
                 <button id="confirmImportBtn" data-lang-key="confirmImportBtn">執行還原</button>
             </div>
@@ -367,7 +369,7 @@
           <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" data-lang-key="linkFeedback">意見回饋</a>
         </p>
                 <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-08-11</p>
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: 2026-08-12</p>
         <!-- META_LINE_END -->
         <p class="copyright">
           © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
@@ -378,7 +380,7 @@
 </main>
 
 <script type="module" src="../js/main.js?v=bca2d17243"></script>
-<script src="../js/third-party.js?v=c1dd0567f7" defer></script>
+<script src="../js/third-party.js?v=849a63f8c7" defer></script>
 
 </body>
 </html>

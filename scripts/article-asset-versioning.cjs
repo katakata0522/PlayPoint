@@ -43,7 +43,7 @@ function modulePreloadHref(rootDir, htmlFile, href) {
   // main.jsはHTMLの実行タグも同じ内容ハッシュURLを使う。
   // 依存モジュールはmain.js内の相対import（クエリなし）と完全一致させ、
   // preloadとimportが別URL扱いになって二重取得されるのを防ぐ。
-  if (path.basename(script) === 'main.js') {
+  if (['main.js', 'analytics-core.js'].includes(path.basename(script))) {
     return `${href}?v=${createRevision(script)}`;
   }
   return href;

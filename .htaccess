@@ -88,6 +88,10 @@ Options -Indexes
   </FilesMatch>
   # 内容ハッシュ付きのCSS/JSだけを長期保存する。上の短期設定はv付き資産では上書きされる。
   Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{QUERY_STRING} =~ m#(^|&)v=[a-zA-Z0-9_-]+(&|$)#"
+  # 記事一覧は版付きURLでも短時間で再検証し、新着記事が古いJSONに固定されるのを防ぐ。
+  <Files "articles.json">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </Files>
   <Files "feed.xml">
     Header set Cache-Control "public, max-age=1800"
   </Files>

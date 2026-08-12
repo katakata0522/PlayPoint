@@ -170,9 +170,10 @@ test('生成設定は手書き維持計算を上書きせずサイトマップ�
     assert.ok(entries.some(entry => entry.url === url && entry.lastmod === '2026-07-25'));
   }
 
-  const source = read('scripts/intl-seo-pages.cjs');
-  assert.ok(source.includes('MANUAL_MAINTENANCE_PAGES'));
-  assert.ok(!source.includes("writeFile(rootDir, page.file"));
+  const contentSource = read('scripts/intl-seo-content.cjs');
+  const generatorSource = read('scripts/intl-seo-pages.cjs');
+  assert.ok(contentSource.includes('MANUAL_MAINTENANCE_PAGES'));
+  assert.ok(!generatorSource.includes("writeFile(rootDir, page.file"));
 });
 
 test('維持解説・比較記事から同一地域の計算ページへ進める', () => {

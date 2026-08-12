@@ -131,9 +131,10 @@ test('日本語記事データと配信ファイルの更新日・説明が一�
 });
 
 test('独立管理の記事は生成処理で上書きされずサイトマップ対象に残る', () => {
+  const content = read('scripts/intl-seo-content.cjs');
   const generator = read('scripts/intl-seo-pages.cjs');
-  assert.ok(generator.includes('const MANUAL_COMPARISON_ARTICLES'));
+  assert.ok(content.includes('const MANUAL_COMPARISON_ARTICLES'));
   assert.ok(generator.includes('if (article.manual) continue;'));
-  assert.ok(generator.includes("file: 'ko/articles/google-play-points-platinum-diamond-cost.html'"));
-  assert.ok(generator.includes("file: 'tw/articles/google-play-points-platinum-diamond-cost.html'"));
+  assert.ok(content.includes("file: 'ko/articles/google-play-points-platinum-diamond-cost.html'"));
+  assert.ok(content.includes("file: 'tw/articles/google-play-points-platinum-diamond-cost.html'"));
 });

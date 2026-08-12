@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
 const { ensureStaticCalculatorLayout } = require('./static-calculator-layout.cjs');
+const { TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
 
 function createBuildMetadata(env = process.env, now = new Date()) {
   const jstDate = new Date(now.getTime() + 9 * 60 * 60 * 1000);
@@ -23,14 +24,14 @@ function createBuildMetadata(env = process.env, now = new Date()) {
   };
 }
 
-function syncIndexMetadataContent(indexHtml, todayStr, assetVersion) {
+function syncIndexMetadataContent(indexHtml, contentModifiedAt, assetVersion) {
   let content = indexHtml.includes('id="mainMode"')
     ? ensureStaticCalculatorLayout(indexHtml)
     : indexHtml;
-  content = replaceDateMetadata(content, todayStr);
+  content = replaceDateMetadata(content, contentModifiedAt);
   const version = `${assetVersion}a`;
 
-  content = content.replace(/サイト更新: \d{4}-\d{2}-\d{2}/g, `サイト更新: ${todayStr}`);
+  content = content.replace(/サイト更新: \d{4}-\d{2}-\d{2}/g, `サイト更新: ${contentModifiedAt}`);
   content = replaceAssetVersion(content, 'style.css', version);
   content = replaceAssetVersion(content, 'js/main.js', version);
   content = replaceAssetVersion(content, 'js/third-party.js', version);
@@ -41,10 +42,14 @@ function syncIndexMetadataContent(indexHtml, todayStr, assetVersion) {
 
 function syncIndexMetadata(rootDir, metadata = createBuildMetadata()) {
   const sourcePath = path.join(rootDir, 'index.html');
-  const indexHtml = syncIndexMetadataContent(fs.readFileSync(sourcePath, 'utf8'), metadata.todayStr, metadata.assetVersion);
+  const indexHtml = syncIndexMetadataContent(
+    fs.readFileSync(sourcePath, 'utf8'),
+    TOP_PAGE_CONTENT_DATES.ja,
+    metadata.assetVersion
+  );
 
   fs.writeFileSync(sourcePath, indexHtml, 'utf8');
-  console.log(`Synchronized dates, asset versions, and calculator layout (v=${metadata.assetVersion}a) in index.html`);
+  console.log(`Synchronized content metadata, asset versions, and calculator layout (v=${metadata.assetVersion}a) in index.html`);
 
   return {
     ...metadata,

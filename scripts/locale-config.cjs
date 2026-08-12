@@ -1,12 +1,14 @@
 'use strict';
 
-function createLocales(todayStr) {
-  const siteUpdatedAt = todayStr < '2026-07-26' ? '2026-07-26' : todayStr;
+const { TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
+
+function createLocales() {
   return {
     'en': {
         region: 'US',
         langCode: 'en',           // BCP47 言語コード（lang属性・inLanguageに使用）
         inLanguage: 'en',
+        modifiedAt: TOP_PAGE_CONTENT_DATES.en,
         title: 'Google Play Points Calculator | How much to reach the next level?',
         description: 'Google Play Points calculator. Estimate how much you need to spend to reach Silver, Gold, Platinum, or Diamond with campaign multipliers and weekly reward notes.',
         ogTitle: 'Google Play Points Calculator | How much to reach the next level?',
@@ -70,6 +72,7 @@ function createLocales(todayStr) {
             importBtn: 'Import Data (Restore)',
             confirmImportBtn: 'Execute Restore',
             backupPlaceholder: 'Paste your exported data here',
+            backupDataLabel: 'Data to restore',
             linkPrivacy: 'Privacy Policy',
             linkTerms: 'Terms of Service',
             linkQA: 'Q&A & Afterword',
@@ -160,7 +163,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${siteUpdatedAt}</p>
+        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${TOP_PAGE_CONTENT_DATES.en}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     },
@@ -170,7 +173,7 @@ function createLocales(todayStr) {
         inLanguage: 'ko',
         title: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
         description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 등급별 기본 적립률과 이벤트 배율로 계산합니다.',
-        modifiedAt: '2026-07-26',
+        modifiedAt: TOP_PAGE_CONTENT_DATES.ko,
         ogTitle: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
         ogDescription: '구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.',
         currency: 'KRW',
@@ -228,6 +231,7 @@ function createLocales(todayStr) {
             importBtn: '데이터 가져오기 (복원)',
             confirmImportBtn: '복원 실행',
             backupPlaceholder: '내보낸 데이터를 여기에 붙여넣어 주세요',
+            backupDataLabel: '복원할 데이터',
             linkPrivacy: '개인정보처리방침 (일본어)',
             linkTerms: '이용약관 (일본어)',
             linkQA: 'Q&A 및 후기 (일본어)',
@@ -318,7 +322,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${siteUpdatedAt}</p>
+        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${TOP_PAGE_CONTENT_DATES.ko}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     },
@@ -326,6 +330,7 @@ function createLocales(todayStr) {
         region: 'TW',
         langCode: 'zh-TW',        // BCP47 言語コード（"tw" は非標準のため必ず zh-TW を使用）
         inLanguage: 'zh-TW',
+        modifiedAt: TOP_PAGE_CONTENT_DATES.tw,
         title: 'Google Play Points 計算器｜距離升級還差多少？',
         description: 'Google Play Points 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援活動倍率、剩餘點數與每週獎勵紀錄。',
         ogTitle: 'Google Play Points 計算器｜距離升級還差多少？',
@@ -385,6 +390,7 @@ function createLocales(todayStr) {
             importBtn: '匯入資料 (還原)',
             confirmImportBtn: '執行還原',
             backupPlaceholder: '請將匯出的資料貼至此處',
+            backupDataLabel: '要還原的資料',
             linkPrivacy: '隱私權政策 (日文)',
             linkTerms: '服務條款 (日文)',
             linkQA: 'Q&A 與後記 (日文)',
@@ -475,7 +481,7 @@ function createLocales(todayStr) {
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${siteUpdatedAt}</p>
+        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${TOP_PAGE_CONTENT_DATES.tw}</p>
         <!-- META_LINE_END -->`,
         authorName: 'katakata'
     }

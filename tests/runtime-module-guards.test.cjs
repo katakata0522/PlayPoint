@@ -19,6 +19,11 @@ const runtimeModules = [
   'js/service-worker-registration.js'
 ];
 
+const sharedRuntimeAssets = [
+  'js/analytics-core.js',
+  'blog/common-components.css'
+];
+
 test('分離した実行時モジュールは圧縮・キャッシュ改訂・Service Worker先読みに含まれる', () => {
   const minify = read('.github/scripts/minify.cjs');
   const assetSync = read('scripts/asset-sync.cjs');
@@ -35,6 +40,22 @@ test('分離した実行時モジュールは圧縮・キャッシュ改訂・Se
       `sw missing: ${file}`
     );
   }
+});
+
+test('共通計測とブログ共通CSSは圧縮・版管理・必要画面への読込に含まれる', () => {
+  const minify = read('.github/scripts/minify.cjs');
+  const assetSync = read('scripts/asset-sync.cjs');
+  const serviceWorker = read('sw.js');
+  const components = read('blog/components.js');
+
+  for (const file of sharedRuntimeAssets) {
+    assert.ok(minify.includes(`'${file}'`), `minify missing: ${file}`);
+    assert.ok(assetSync.includes(`'${file}'`), `asset-sync missing: ${file}`);
+  }
+  assert.match(serviceWorker, /'\.\/js\/analytics-core\.js\?v=[a-f0-9]{10}'/);
+  assert.ok(assetSync.includes("versionKey: 'analyticsCoreVersion'"));
+  assert.match(read('js/config.js'), /import '\.\/analytics-core\.js\?v=[a-f0-9]{10}'/);
+  assert.ok(components.includes('blog/common-components.css'));
 });
 
 test('アプリモジュールのキャッシュ世代は改行コードが違っても一致する', (t) => {
@@ -92,14 +113,14 @@ test('埋め込みウィジェットは外部依存なしで計算できる', ()
 });
 
 test('許可された主要計測イベント名が設定に残る', () => {
-  const config = read('js/config.js');
+  const analyticsCore = read('js/analytics-core.js');
   for (const eventName of [
     'calendar_reminder_added',
     'pwa_install_accepted',
     'widget_code_copied',
     'widget_referral_landed'
   ]) {
-    assert.ok(config.includes(eventName), eventName);
+    assert.ok(analyticsCore.includes(eventName), eventName);
   }
 });
 

@@ -8,8 +8,8 @@
 
 | Event | Trigger | Properties | Decision |
 | --- | --- | --- | --- |
-| `calculation_completed` | 通常計算が成功した時 | `calculation_mode`, `region`, `target_status` | ランク計算の利用状況を判断する |
-| `reverse_calculation_completed` | 逆算が成功した時 | `calculation_mode`, `region` | 逆算機能の需要を判断する |
+| `calculation_completed` | 通常計算が成功した時 | `calculation_mode`, `region`, `target_status`, 流入属性（該当時のみ） | ランク計算の利用状況と記事・LPからの完了率を判断する |
+| `reverse_calculation_completed` | 逆算が成功した時 | `calculation_mode`, `region`, 流入属性（該当時のみ） | 逆算機能の需要と記事・LPからの完了率を判断する |
 | `diary_entry_saved` | 週次日記の保存が成功した時 | `region`, `entry_type` | 継続利用の有無を判断する |
 | `article_to_calculator_clicked` | 記事から計算機へ移動した時 | `source_path`, `link_context`, `destination_path` | コンテンツがツール利用へつながったか判断する |
 | `lp_to_calculator_clicked` | 検索意図別LPから計算機へ移動した時 | `source_path`, `source_surface`, `link_context` | どのLPとCTAが計算開始につながるか判断する |
@@ -24,7 +24,9 @@
 | `widget_referral_landed` | 埋め込みウィジェットから計算機へ到着した時 | `region`, `entry_surface` | 配布ウィジェットが本体利用へつながるか判断する |
 | `web_vital` | ページを離れる時にLCP/INP/CLSを観測できた場合 | `metric_name`, `metric_rating`, `metric_value_bucket`, `page_group`, `release_version` | 実際の利用環境で速度悪化したページ群とリリースを特定する |
 
-`calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。
+`calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。記事・検索意図別LPから計算機へ移動した場合は、同意済みセッション内に `entry_source_path`, `entry_link_context`, `calculator_preset` を最大30分だけ保持し、次の計算完了イベントへ一度だけ追加して破棄する。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。
+
+イベント名とパラメータは `js/analytics-core.js` の許可リストで統一する。同意マネージャ読込前は最大20件だけをメモリに保留し、拒否時は保留イベントと流入情報を破棄する。
 
 ## Conversion
 
@@ -49,6 +51,7 @@
 7. 課金額、必要ポイント、獲得ポイント、日記の入力値がパラメータへ含まれないことを確認する。
 8. スマホ幅とPC幅、同意状態ごとに重複送信がないことを確認する。
 9. ページを操作して別タブへ移動し、`web_vital` に値そのものではなく `metric_rating` と `metric_value_bucket` だけが入ることを確認する。
+10. 記事と検索意図別LPから計算機へ移動して計算し、流入属性が最初の完了イベントだけに付くことを確認する。
 
 ### DebugViewの完了条件
 

@@ -3,17 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
-
-const CONTENT_DATE_OVERRIDES = Object.freeze({
-  'info.html': '2026-07-26',
-  'latest/index.html': '2026-08-11',
-  'embed.html': '2026-07-27',
-  'compare/earning-rates/index.html': '2026-07-30',
-  'attention.html': '2026-08-04',
-  'en/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',
-  'ko/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',
-  'tw/articles/2026-06-20-discount-gift-cards.html': '2026-08-05'
-});
+const { CONTENT_DATE_OVERRIDES } = require('./content-dates.cjs');
 
 function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
   const filePath = path.join(rootDir, file);
@@ -38,7 +28,11 @@ function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
 
 function syncHtmlFiles(rootDir, files, assetVersions, todayStr) {
   for (const file of files) {
-    syncHtmlFile(rootDir, file, assetVersions, CONTENT_DATE_OVERRIDES[file] || todayStr);
+    const contentDate = CONTENT_DATE_OVERRIDES[file];
+    if (!contentDate) {
+      throw new Error(`Missing explicit content date for ${file}`);
+    }
+    syncHtmlFile(rootDir, file, assetVersions, contentDate);
   }
 }
 

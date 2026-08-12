@@ -69,12 +69,10 @@
     // ===========================================
     // Google Analytics 4 Event Tracking
     // ===========================================
-    const ANALYTICS_EVENT_COMMAND = 'event';
     const Analytics = {
         track: function (eventName, params) {
-            if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
-                window.gtag(ANALYTICS_EVENT_COMMAND, eventName, params);
-            }
+            if (!window.PlayPointAnalytics) return;
+            window.PlayPointAnalytics.track(eventName, params);
         },
         trackArticleClick: function (title, category) {
             this.track('article_click', {
@@ -285,10 +283,12 @@
     // Create Skeleton Loading Cards
     function showSkeletonLoading() {
         if (!dom.grid) return;
+        if (dom.grid.querySelectorAll('.skeleton-card').length === CONFIG.itemsPerPage) return;
         dom.grid.innerHTML = '';
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < CONFIG.itemsPerPage; i++) {
             const skeleton = document.createElement('div');
             skeleton.className = 'skeleton-card';
+            skeleton.setAttribute('aria-hidden', 'true');
             skeleton.innerHTML = `
                 <div class="skeleton-thumb"></div>
                 <div class="skeleton-content">

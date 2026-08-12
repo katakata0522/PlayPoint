@@ -163,7 +163,8 @@
     }
 
     function setupContextualGuideLinks() {
-        if (document.querySelector('.contextual-guide-links')) return;
+        // 記事固有の関連記事欄を優先し、同じ役割の汎用リンク群を重ねない。
+        if (document.querySelector('.contextual-guide-links, .related-links-section, .article-related-guides')) return;
         const content = document.querySelector('.content');
         if (!content) return;
         const guides = getContextualGuides();
@@ -250,7 +251,8 @@
     }
 
     function setupArticleNextStepCta() {
-        if (document.querySelector('.article-next-step-cta')) return;
+        // 記事固有の末尾導線があれば、汎用CTAを追加して選択肢を重複させない。
+        if (document.querySelector('.article-next-step-cta, .related-links-section, .article-related-guides')) return;
         const content = document.querySelector('.content');
         if (!content) return;
 
@@ -277,7 +279,6 @@
 
     // 記事が計算機の利用につながったかだけを計測し、入力値は送信しない
     function setupCalculatorLinkTracking() {
-        const eventCommand = 'event';
         document.addEventListener('click', (event) => {
             const link = event.target && typeof event.target.closest === 'function'
                 ? event.target.closest('a[href]')
@@ -286,13 +287,19 @@
             const url = new URL(link.href, window.location.href);
             if (url.origin !== window.location.origin || url.pathname !== '/') return;
 
-            if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
-                window.gtag(eventCommand, 'article_to_calculator_clicked', {
-                    source_path: window.location.pathname,
-                    link_context: link.closest('.article-calculator-prompt') ? 'article_calculator_prompt' : (link.closest('.cta-box, .cta-banner') ? 'article_cta' : 'article_link'),
-                    destination_path: url.pathname
-                });
-            }
+            const analytics = window.PlayPointAnalytics;
+            if (!analytics) return;
+            const context = {
+                source_path: window.location.pathname,
+                link_context: link.closest('.article-calculator-prompt')
+                    ? 'article_calculator_prompt'
+                    : (link.closest('.cta-box, .cta-banner') ? 'article_cta' : 'article_link')
+            };
+            analytics.rememberCalculatorEntry(url, context);
+            analytics.track('article_to_calculator_clicked', {
+                ...context,
+                destination_path: url.pathname
+            });
         });
     }
 

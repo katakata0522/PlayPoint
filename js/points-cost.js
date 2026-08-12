@@ -1,5 +1,7 @@
 'use strict';
 
+import './analytics-core.js?v=54c7b8621b';
+
 const REGIONS = {
   JP: {
     locale: 'ja-JP',
@@ -103,9 +105,8 @@ function pointBucket(points) {
 }
 
 function trackCalculation(region, status, points) {
-  if (!window.PlayPointConsent || window.PlayPointConsent.getStatus() !== 'granted') return;
-  if (typeof window.gtag !== 'function') return;
-  window.gtag('event', 'points_cost_calculation_completed', {
+  if (!window.PlayPointAnalytics) return;
+  window.PlayPointAnalytics.track('points_cost_calculation_completed', {
     region,
     status,
     point_bucket: pointBucket(points)

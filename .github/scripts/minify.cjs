@@ -29,6 +29,7 @@ const cssTargets = [
   'articles/article-shared.css',
   'articles/source-notice.css',
   'blog/style.css',
+  'blog/common-components.css',
   'en/articles/intl-article.css',
   ...fs.existsSync(path.join(root, 'articles', 'styles'))
     ? fs.readdirSync(path.join(root, 'articles', 'styles'))
@@ -41,6 +42,8 @@ const cssTargets = [
 const jsTargets = [
   'sw.js',
   'js/main.js',
+  'js/points-cost.js',
+  'js/analytics-core.js',
   'js/region-navigation.js',
   'js/language-suggestion.js',
   'js/calendar-reminder.js',
@@ -71,7 +74,7 @@ function main() {
   const {
     collectAssetVersions,
     syncRootServiceWorker,
-    syncThirdPartyConsentVersion
+    syncSharedRuntimeAssetVersions
   } = require('../../scripts/asset-sync.cjs');
   const {
     syncDynamicArticleStylesheetVersion,
@@ -99,7 +102,7 @@ function main() {
   syncDynamicArticleStylesheetVersion(root);
   const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   let versions = collectAssetVersions(root, indexHtml);
-  syncThirdPartyConsentVersion(root, versions.consentVersion);
+  syncSharedRuntimeAssetVersions(root, versions);
   versions = collectAssetVersions(root, indexHtml);
 
   const serviceWorker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');

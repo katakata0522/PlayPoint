@@ -37,7 +37,8 @@ function loadConfigs() {
   const context = { console, __TEST_ENV__: true };
   context.window = context;
   vm.createContext(context);
-  vm.runInContext(read('js/config.js').replace(/^export\s+/gm, ''), context, { filename: 'config.js' });
+  vm.runInContext(read('js/analytics-core.js'), context, { filename: 'analytics-core.js' });
+  vm.runInContext(read('js/config.js').replace(/^import[^\n]+\n/gm, '').replace(/^export\s+/gm, ''), context, { filename: 'config.js' });
   return JSON.parse(JSON.stringify(context.PP_APP.CONFIGS));
 }
 
@@ -90,16 +91,18 @@ test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
 });
 
 test('計測イベントは同意済みラッパー経由だけで送信する', () => {
+  const core = read('js/analytics-core.js');
   const config = read('js/config.js');
   const article = read('blog/article.js');
   const blog = read('blog/script.js');
 
-  assert.ok(config.includes("window.PlayPointConsent.getStatus() === 'granted'"), '同意済み状態だけを明示的に許可していません');
-  assert.ok(!config.includes('window.PlayPointConsent && window.PlayPointConsent.getStatus() !=='), '同意マネージャ未ロード時にイベントをキューへ積めます');
+  assert.ok(core.includes("window.PlayPointConsent.getStatus() === 'granted'"), '同意済み状態だけを明示的に許可していません');
+  assert.ok(core.includes('pendingEvents'), '同意マネージャ読込前の短期キューがありません');
+  assert.ok(config.includes('window.PlayPointAnalytics'), '計算機が共通計測ラッパーを参照していません');
   assert.ok(!article.includes("window.gtag('event'"), '記事ページが同意ラッパーを通さずイベント送信しています');
   assert.ok(!blog.includes("gtag('event'"), 'ブログ一覧が同意ラッパーを通さずイベント送信しています');
-  assert.ok(article.includes('PlayPointConsent.getStatus()'), '記事ページのクリック計測が同意状態を確認していません');
-  assert.ok(blog.includes('PlayPointConsent.getStatus()'), 'ブログ一覧の計測が同意状態を確認していません');
+  assert.ok(article.includes('PlayPointAnalytics'), '記事ページが共通計測ラッパーを利用していません');
+  assert.ok(blog.includes('PlayPointAnalytics'), 'ブログ一覧が共通計測ラッパーを利用していません');
 });
 
 test('ルートService Workerは自分のキャッシュだけを削除対象にする', () => {
@@ -154,6 +157,7 @@ test('デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジ�
 
   for (const file of [
     'blog/style.css',
+    'blog/common-components.css',
     'blog/script.js',
     'blog/components.js',
     'blog/article.js',
@@ -214,12 +218,12 @@ test('多言語トップはJS実行前の主要文言も翻訳済みにする', 
 });
 
 test('同意済み計測はGA本体ロード前のイベントを短期キューへ保持する', () => {
-  const config = read('js/config.js');
+  const core = read('js/analytics-core.js');
   const thirdParty = read('js/third-party.js');
 
-  assert.ok(config.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
-  assert.ok(config.includes('flushPending'), '保留イベントのflush処理がありません');
-  assert.ok(thirdParty.includes('window.PP_APP.ANALYTICS.flushPending()'), 'GAロード後に保留イベントをflushしていません');
+  assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
+  assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
+  assert.ok(thirdParty.includes('window.PlayPointAnalytics.flushPending()'), 'GAロード後に保留イベントをflushしていません');
 });
 
 test('Xserver同期後に本番スモークテストを実行する', () => {
@@ -319,20 +323,50 @@ test('多言語トップの実行時記事リンクは各言語の記事一覧�
   }
 });
 
-test('日本語の必要ポイント例はあとがきにつながる実例1728を保つ', () => {
+test('日本語の必要ポイント例は初期上限内に収め、1728の実例はあとがきに保つ', () => {
   const configs = loadConfigs();
   const placeholder = configs.JP.uiText.neededPointsPlaceholder;
   const info = read('info.html');
-  assert.equal(placeholder, '例：1728');
+  assert.equal(placeholder, '例：250');
   assert.match(read('index.html'), new RegExp(`placeholder="${placeholder}"`));
   assert.match(info, /Q\. 例題の「1728」って何ですか？/);
   assert.match(info, /1728という数字は私がプラチナ到達までに必要なリアルな数字/);
+});
+
+test('タブ・補足・復元欄はCSSが失敗してもhidden属性で初期非表示になる', () => {
+  const html = read('index.html');
+  const ui = read('js/ui.js');
+  const diary = read('js/diary.js');
+  assert.match(html, /id="reverseMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /id="diaryMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /id="backup-input-wrapper"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
+  assert.match(html, /<label for="diaryBackupData"[^>]*data-lang-key="backupDataLabel"/);
+  assert.equal((html.match(/class="tooltip-box"[^>]*\bhidden\b/g) || []).length, 9);
+  assert.match(ui, /element\.hidden = !isVisible/);
+  assert.match(ui, /tooltip\.hidden = false/);
+  assert.match(diary, /backupInputWrapper\.hidden = !isHidden/);
+});
+
+test('ブログ初期表示は最終件数と同じ6枚のスケルトンをHTMLで確保する', () => {
+  const html = read('blog/index.html');
+  const script = read('blog/script.js');
+  assert.equal((html.match(/class="skeleton-card"/g) || []).length, 6);
+  assert.match(html, /<noscript>[\s\S]*href="noscript\.css\?v=[a-f0-9]+"/);
+  assert.match(html, /<noscript>[\s\S]*class="static-article-fallback"[\s\S]*<\/noscript>/);
+  assert.match(script, /querySelectorAll\('\.skeleton-card'\)\.length === CONFIG\.itemsPerPage/);
+  assert.match(script, /i < CONFIG\.itemsPerPage/);
 });
 
 test('計算詳細は項目名と値を2列で揃え、値の内部は分断しない', () => {
   const css = read('style.css');
   assert.match(css, /\.result-detail-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto;/s);
   assert.doesNotMatch(css, /\.result-detail-grid\s+(?:span|strong)\s*\{/);
+});
+
+test('計算結果リンクのhover規則を閉じ、後続のツールチップ非表示を巻き込まない', () => {
+  const css = read('style.css');
+  assert.match(css, /\.result-guidance-links a:hover\s*\{[^{}]*text-decoration:\s*underline;\s*\}/s);
+  assert.match(css, /\.tooltip-box\s*\{[^{}]*display:\s*none;/s);
 });
 
 test('CSPは計測と広告品質確認で実際に使う接続先を許可する', () => {
@@ -446,4 +480,3 @@ test('AdSenseは早期async取得し分析だけを初期表示後に低優先�
   assert.match(components, /runAfterConsent\(loadBlogAdsense\)/);
   assert.ok(source.indexOf('ensureConsentManager();') < source.indexOf('scheduleThirdPartyLoad();'));
 });
-

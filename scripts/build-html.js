@@ -22,13 +22,14 @@ const {
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
+const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
 const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
-const locales = createLocales(todayStr);
+const locales = createLocales();
 
 const editorialArticleCount = applyEditorialStructure(rootDir, todayStr);
 console.log(`[build-html] synchronized editorial structure: ${editorialArticleCount}`);
@@ -43,7 +44,7 @@ const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, i
 
 const manualIntlSnapshots = snapshotManualIntlArticles(rootDir);
 try {
-  writeIntlSeoPages(rootDir, assetVersions, todayStr);
+  writeIntlSeoPages(rootDir, assetVersions);
 } finally {
   restoreManualIntlArticles(rootDir, manualIntlSnapshots);
 }
@@ -51,9 +52,10 @@ syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
+syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);
 
-syncSitemap(rootDir, todayStr);
+syncSitemap(rootDir);
 
 generateBlogFeeds(rootDir);
 
