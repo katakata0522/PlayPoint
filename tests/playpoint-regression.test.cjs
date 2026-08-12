@@ -62,6 +62,7 @@ function createInput(value = '') {
 
 function preprocessESM(code) {
   return code
+    .replace(/^import\s*'[^']+';\s*$/gm, '')
     .replace(/import\s*\{\s*([^}]+)\s*\}\s*from\s*'[^']+'\s*;/g, (match, imports) => {
       const names = imports.split(',').map(s => s.trim());
       const needed = names.filter(name => name === 'UI' || name === 'SHARE' || name === 'CALC' || name === 'DIARY');
@@ -97,6 +98,7 @@ function loadCalculatorContext(dateClass = Date) {
   context.__TEST_ENV__ = true;
   vm.createContext(context);
   const code = [
+    fs.readFileSync(path.join(root, 'js', 'analytics-core.js'), 'utf8'),
     preprocessESM(fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8')),
     `
       PP_APP.UI = {
@@ -767,4 +769,3 @@ test('計算結果のエラー表示とクリアは前回の共有用データ�
   assert.deepStrictEqual(Object.keys(target.dataset), []);
   assert.ok(!classNames.has('has-result'));
 });
-

@@ -23,6 +23,7 @@ const assetExtensions = new Set([
 ]);
 const runtimeEntrypoints = new Set([
   'articles/source-notice.css',
+  'blog/common-components.css',
   'blog/articles.json',
   'sw.js'
 ]);

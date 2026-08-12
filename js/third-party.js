@@ -14,6 +14,7 @@
     let adsRetryAttempted = false;
     let thirdPartyScheduled = false;
     let consentManagerPromise = null;
+    let analyticsCorePromise = null;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -49,21 +50,17 @@
     async function loadAnalytics() {
         if (gaLoaded) return;
         try {
+            await ensureAnalyticsCore();
             await loadScript(
                 ANALYTICS_SCRIPT_SRC,
                 { fetchpriority: 'low' }
             );
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = window.gtag || function gtag() {
-                window.dataLayer.push(arguments);
-            };
+            window.PlayPointAnalytics.installGtagBridge();
             window.gtag('js', new Date());
             // ページビューと以後のイベントへ技術的な起動形態だけを付与し、入力値は追加しない。
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.gtag('config', GA_MEASUREMENT_ID);
-            if (window.PP_APP && window.PP_APP.ANALYTICS) {
-                window.PP_APP.ANALYTICS.flushPending();
-            }
+            window.PlayPointAnalytics.flushPending();
             gaLoaded = true;
         } catch (error) {
             console.error('Analytics load failed:', error);
@@ -101,6 +98,16 @@
         return prefix;
     }
 
+    function ensureAnalyticsCore() {
+        if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
+        if (!analyticsCorePromise) {
+            const prefix = getCurrentAssetPrefix();
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=54c7b8621b`)
+                .then(() => window.PlayPointAnalytics);
+        }
+        return analyticsCorePromise;
+    }
+
     function ensureConsentManager() {
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
@@ -112,7 +119,7 @@
     }
 
     function runAfterConsent(callback) {
-        return ensureConsentManager()
+        return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
             .then(() => window.PlayPointConsent.whenGranted(callback))
             .catch((error) => console.error('Consent manager load failed:', error));
     }
@@ -155,10 +162,12 @@
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => {
+            void ensureAnalyticsCore();
             void ensureConsentManager();
             scheduleThirdPartyLoad();
         }, { once: true });
     } else {
+        void ensureAnalyticsCore();
         void ensureConsentManager();
         scheduleThirdPartyLoad();
     }

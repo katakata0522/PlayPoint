@@ -5,6 +5,7 @@
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     let blogAdsenseLoaded = false;
     let consentManagerPromise = null;
+    let analyticsCorePromise = null;
 
     const isArticlePageTop = window.location.pathname.includes('/articles/');
     const isBlogPage = window.location.pathname.includes('/blog');
@@ -16,14 +17,14 @@
         if (consentManagerPromise) return consentManagerPromise;
 
         consentManagerPromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/consent.js"]');
+            const existing = document.querySelector('script[src*="/js/consent.js?v=55813d3bcb"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=20260727a';
+            script.src = rootPath + 'js/consent.js?v=55813d3bcb';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -32,8 +33,29 @@
         return consentManagerPromise;
     }
 
+    function ensureAnalyticsCore() {
+        if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
+        if (analyticsCorePromise) return analyticsCorePromise;
+
+        analyticsCorePromise = new Promise((resolve, reject) => {
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=54c7b8621b"]');
+            if (existing) {
+                existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
+                existing.addEventListener('error', reject, { once: true });
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = rootPath + 'js/analytics-core.js?v=54c7b8621b';
+            script.async = true;
+            script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
+            script.addEventListener('error', reject, { once: true });
+            document.head.appendChild(script);
+        });
+        return analyticsCorePromise;
+    }
+
     function runAfterConsent(callback) {
-        return ensureConsentManager()
+        return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
             .then(() => window.PlayPointConsent.whenGranted(callback))
             .catch((error) => console.error('Consent manager load failed:', error));
     }
@@ -72,13 +94,11 @@
     function loadCommonAnalytics() {
         if (window.__playpointGaConfigured) return;
         window.__playpointGaConfigured = true;
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function gtag() {
-            window.dataLayer.push(arguments);
-        };
+        window.PlayPointAnalytics.installGtagBridge();
         window.gtag('js', new Date());
         window.gtag('set', { app_display_mode: getDisplayMode() });
         window.gtag('config', GA_MEASUREMENT_ID);
+        window.PlayPointAnalytics.flushPending();
 
         if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
         const script = document.createElement('script');
@@ -118,148 +138,13 @@
         void runAfterConsent(loadBlogAdsense);
     }
 
-    // ===========================================
-    // Common Styles Injection
-    // ===========================================
-    function injectStyles() {
-        const styleId = 'common-components-style';
-        if (document.getElementById(styleId)) return;
-
-        const css = `
-            /* Header */
-            .header {
-                background: rgba(13, 17, 23, 0.94);
-                border-bottom: 1px solid rgba(139, 148, 158, 0.28);
-                backdrop-filter: blur(16px);
-                -webkit-backdrop-filter: blur(16px);
-                padding: 0.65rem 1.5rem;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            }
-            .header-inner {
-                max-width: 800px;
-                margin: 0 auto;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .logo {
-                color: #fff;
-                text-decoration: none;
-                font-weight: 800;
-                font-size: 1.1rem;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                min-height: 44px;
-                padding: 0 0.25rem;
-                white-space: nowrap;
-                flex-shrink: 0;
-            }
-            .nav {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-            }
-            .nav a {
-                color: rgba(255, 255, 255, 0.9);
-                text-decoration: none;
-                margin-left: 0;
-                font-size: 0.9rem;
-                transition: opacity 0.2s;
-                display: inline-flex;
-                align-items: center;
-                min-height: 44px;
-                padding: 0 0.25rem;
-                white-space: nowrap;
-            }
-            .nav a:hover {
-                opacity: 0.7;
-            }
-
-            /* Footer */
-            .site-footer {
-                text-align: center;
-                padding: 2rem;
-                color: #666;
-                font-size: 0.85rem;
-                background: #f8f9fa;
-                margin-top: auto;
-            }
-            .site-footer a {
-                color: #666;
-                text-decoration: none;
-                transition: color 0.2s;
-                display: inline-flex;
-                align-items: center;
-                min-height: 44px;
-            }
-            .site-footer a:hover {
-                color: #22c55e;
-            }
-            .logo:focus-visible,
-            .nav a:focus-visible,
-            .site-footer a:focus-visible {
-                outline: 3px solid #58a6ff;
-                outline-offset: 2px;
-                border-radius: 6px;
-            }
-
-            /* Table of Contents (TOC) */
-            .toc-box {
-                background: #f8f9fa;
-                border: 2px solid #e9ecef;
-                border-radius: 16px;
-                padding: 1.5rem;
-                margin: 2rem 0;
-            }
-            .toc-title {
-                font-weight: 700;
-                margin-bottom: 1rem;
-                color: #333;
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-            }
-            .toc-list {
-                padding-left: 1.25rem;
-                padding: 0;
-                margin: 0;
-            }
-            .toc-item {
-                margin-bottom: 0.5rem;
-                line-height: 1.5;
-            }
-            .toc-item a {
-                text-decoration: none;
-                color: #555;
-                transition: color 0.2s;
-                font-size: 0.95rem;
-                display: inline-flex;
-                align-items: center;
-                min-height: 40px;
-                padding: 0.15rem 0;
-            }
-            .toc-item a:hover {
-                color: #22c55e;
-                text-decoration: underline;
-            }
-
-            @media (max-width: 600px) {
-                .header { padding: 0.35rem 0.75rem; }
-                .header-inner { gap: 0.35rem; }
-                .logo { font-size: 1rem; }
-                .nav { gap: 0.2rem; min-width: 0; }
-                .nav a { font-size: 0.7rem; padding: 0 0.15rem; }
-            }
-        `;
-
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = css;
-        document.head.appendChild(style);
+    function ensureCommonStyles() {
+        if (document.querySelector('link[data-common-components-style]')) return;
+        const stylesheet = document.createElement('link');
+        stylesheet.rel = 'stylesheet';
+        stylesheet.href = rootPath + 'blog/common-components.css?v=fd92d73b24';
+        stylesheet.dataset.commonComponentsStyle = 'true';
+        document.head.appendChild(stylesheet);
     }
 
     // ===========================================
@@ -359,13 +244,14 @@
         headings[0].insertAdjacentElement('beforebegin', tocContainer);
     }
 
+    ensureCommonStyles();
+    void ensureAnalyticsCore();
     applyArticlePresentationSettings();
 
     // Execute functions
     document.addEventListener('DOMContentLoaded', () => {
         scheduleCommonAnalytics();
         setupBlogAdsense();
-        injectStyles();
         renderCommonComponents();
         generateTableOfContents();
     });

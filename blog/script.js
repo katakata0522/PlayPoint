@@ -69,12 +69,10 @@
     // ===========================================
     // Google Analytics 4 Event Tracking
     // ===========================================
-    const ANALYTICS_EVENT_COMMAND = 'event';
     const Analytics = {
         track: function (eventName, params) {
-            if (window.PlayPointConsent && window.PlayPointConsent.getStatus() === 'granted' && typeof window.gtag === 'function') {
-                window.gtag(ANALYTICS_EVENT_COMMAND, eventName, params);
-            }
+            if (!window.PlayPointAnalytics) return;
+            window.PlayPointAnalytics.track(eventName, params);
         },
         trackArticleClick: function (title, category) {
             this.track('article_click', {

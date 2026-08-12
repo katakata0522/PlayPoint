@@ -22,6 +22,7 @@ const {
 const { syncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
+const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
 
@@ -51,6 +52,7 @@ syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
+syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir, todayStr);

@@ -1,112 +1,12 @@
 'use strict';
 
-// GA4本体の読み込み前でも、意味のある完了イベントだけを安全にキューへ積む
-export const ANALYTICS = {
-    pendingEvents: [],
-    maxPendingEvents: 20,
-    allowedParams: {
-        calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign'],
-        reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign'],
-        diary_entry_saved: ['region', 'entry_type'],
-        article_to_calculator_clicked: ['source_path', 'link_context', 'destination_path'],
-        lp_to_calculator_clicked: ['source_path', 'entry_campaign', 'link_context'],
-        lp_related_link_clicked: ['source_path', 'target_path', 'link_context'],
-        result_related_article_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
-        result_decision_link_clicked: ['source_path', 'target_path', 'target_status', 'calculation_mode', 'link_position'],
-        share_url_copied: ['calculation_mode', 'region', 'target_status'],
-        share_x_clicked: ['calculation_mode', 'region', 'target_status'],
-        calendar_reminder_added: ['region', 'calendar_type'],
-        pwa_install_accepted: ['region', 'install_surface'],
-        widget_referral_landed: ['region', 'entry_surface'],
-        widget_code_copied: ['theme', 'language', 'mode'],
-        web_vital: ['metric_name', 'metric_rating', 'metric_value_bucket', 'page_group', 'release_version']
-    },
-    hasConsent() {
-        return typeof window !== 'undefined'
-            && window.PlayPointConsent
-            && window.PlayPointConsent.getStatus() === 'granted';
-    },
-    sanitizeValue(key, value) {
-        if (value === undefined || value === null || value === '') return null;
-        if (key === 'link_position') {
-            const numberValue = Number(value);
-            return Number.isInteger(numberValue) && numberValue >= 1 && numberValue <= 10 ? numberValue : null;
-        }
-        let text = String(value).trim();
-        if (!text) return null;
-        if (key.endsWith('_path')) {
-            try {
-                text = new URL(text, window.location.origin).pathname;
-            } catch (error) {
-                return null;
-            }
-        }
-        return text.replace(/[<>"']/g, '').slice(0, 120);
-    },
-    sanitizeParams(eventName, params = {}) {
-        const allowed = this.allowedParams[eventName];
-        if (!allowed) return null;
-        return allowed.reduce((clean, key) => {
-            const value = this.sanitizeValue(key, params[key]);
-            if (value !== null) clean[key] = value;
-            return clean;
-        }, {});
-    },
-    getEntryContext() {
-        if (typeof window === 'undefined') return {};
-        if (typeof URLSearchParams === 'undefined' || !window.location) return {};
-        const params = new URLSearchParams(window.location.search);
-        return {
-            entry_source: params.get('utm_source') || undefined,
-            entry_medium: params.get('utm_medium') || undefined,
-            entry_campaign: params.get('utm_campaign') || undefined
-        };
-    },
-    queue(eventName, params) {
-        if (this.pendingEvents.length >= this.maxPendingEvents) this.pendingEvents.shift();
-        this.pendingEvents.push({ eventName, params });
-    },
-    send(eventName, params) {
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function gtag() {
-            window.dataLayer.push(arguments);
-        };
-        window.gtag('event', eventName, params);
-    },
-    track(eventName, params = {}) {
-        if (!/^[a-z][a-z0-9_]{0,39}$/.test(eventName)) return;
-        if (typeof window === 'undefined') return;
-        const cleanParams = this.sanitizeParams(eventName, params);
-        if (!cleanParams) return;
+import './analytics-core.js?v=54c7b8621b';
 
-        if (!window.PlayPointConsent) {
-            this.queue(eventName, cleanParams);
-            return;
-        }
-        if (!this.hasConsent()) {
-            this.pendingEvents = [];
-            return;
-        }
-
-        this.send(eventName, cleanParams);
-    },
-    flushPending() {
-        if (typeof window === 'undefined' || !window.PlayPointConsent) return;
-        if (!this.hasConsent()) {
-            this.pendingEvents = [];
-            return;
-        }
-        while (this.pendingEvents.length) {
-            const { eventName, params } = this.pendingEvents.shift();
-            this.send(eventName, params);
-        }
-    },
-    markEngaged() {
-        if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
-            window.dispatchEvent(new CustomEvent('playpoint:engaged'));
-        }
-    }
-};
+// 全画面で同じ許可リスト・同意判定・流入引き継ぎを利用する。
+if (!window.PlayPointAnalytics) {
+    throw new Error('PlayPoint analytics core is not loaded.');
+}
+export const ANALYTICS = window.PlayPointAnalytics;
 
 export const CONSTANTS = {
     MODE_MAIN: 'main',

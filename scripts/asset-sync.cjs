@@ -7,12 +7,14 @@ const { replaceAssetVersion } = require('./html-replacements.cjs');
 
 const ROOT_SERVICE_WORKER_ASSETS = [
   { versionKey: 'cssVersion', assetPath: './style.css' },
+  { versionKey: 'analyticsCoreVersion', assetPath: './js/analytics-core.js' },
   { versionKey: 'mainCalculatorUiVersion', assetPath: './js/main-calculator-ui.js' },
   { versionKey: 'mainVersion', assetPath: './js/main.js' },
   { versionKey: 'appModuleRevision', assetPath: './js/app-modules' }
 ];
 
 const APP_MODULE_FILES = [
+  'js/analytics-core.js',
   'js/config.js',
   'js/region-navigation.js',
   'js/language-suggestion.js',
@@ -110,6 +112,7 @@ function syncServiceWorkerRegistration(rootDir) {
 
 function collectAssetVersions(rootDir) {
   const cssVersion = createFileRevision(rootDir, 'style.css');
+  const analyticsCoreVersion = createFileRevision(rootDir, 'js/analytics-core.js');
   const consentVersion = createFileRevision(rootDir, 'js/consent.js');
   const mainCalculatorUiVersion = createFileRevision(rootDir, 'js/main-calculator-ui.js');
   const mainVersion = createFileRevision(rootDir, 'js/main.js');
@@ -118,13 +121,16 @@ function collectAssetVersions(rootDir) {
   const blogCssVersion = createFileRevision(rootDir, 'blog/style.css');
   const blogScriptVersion = createFileRevision(rootDir, 'blog/script.js');
   const blogComponentsVersion = createFileRevision(rootDir, 'blog/components.js');
+  const blogCommonComponentsCssVersion = createFileRevision(rootDir, 'blog/common-components.css');
   const articleSharedCssVersion = createFileRevision(rootDir, 'articles/article-shared.css');
   const articleScriptVersion = createFileRevision(rootDir, 'blog/article.js');
 
   return {
+    analyticsCoreVersion,
     articleScriptVersion,
     articleSharedCssVersion,
     blogComponentsVersion,
+    blogCommonComponentsCssVersion,
     blogCssVersion,
     blogScriptVersion,
     consentVersion,
@@ -177,14 +183,46 @@ function syncThirdPartyConsentVersion(rootDir, consentVersion) {
   console.log(`Successfully synchronized consent.js version in third-party.js to v=${consentVersion}`);
 }
 
+function syncSharedRuntimeAssetVersions(rootDir, versions) {
+  const targets = [
+    { file: 'js/third-party.js', replacements: [
+      ['js/consent.js', versions.consentVersion],
+      ['js/analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/config.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'js/points-cost.js', replacements: [
+      ['analytics-core.js', versions.analyticsCoreVersion]
+    ] },
+    { file: 'blog/components.js', replacements: [
+      ['js/consent.js', versions.consentVersion],
+      ['js/analytics-core.js', versions.analyticsCoreVersion],
+      ['blog/common-components.css', versions.blogCommonComponentsCssVersion]
+    ] }
+  ];
+
+  for (const target of targets) {
+    const targetPath = path.join(rootDir, target.file);
+    if (!fs.existsSync(targetPath)) continue;
+    let content = fs.readFileSync(targetPath, 'utf8');
+    for (const [assetPath, version] of target.replacements) {
+      content = replaceOptionalAssetVersion(content, assetPath, version);
+    }
+    fs.writeFileSync(targetPath, content, 'utf8');
+  }
+  console.log('Successfully synchronized shared analytics and component asset versions.');
+}
+
 function syncServiceWorkerAssets(rootDir, assetVersion) {
   const mainCalculatorUiVersion = createFileRevision(rootDir, 'js/main-calculator-ui.js');
   syncMainCalculatorUiImportVersion(rootDir, mainCalculatorUiVersion);
   syncServiceWorkerRegistration(rootDir);
 
-  const versions = collectAssetVersions(rootDir);
+  let versions = collectAssetVersions(rootDir);
+  syncSharedRuntimeAssetVersions(rootDir, versions);
+  versions = collectAssetVersions(rootDir);
   syncRootServiceWorker(rootDir, assetVersion, versions);
-  syncThirdPartyConsentVersion(rootDir, versions.consentVersion);
   return versions;
 }
 
@@ -202,5 +240,6 @@ module.exports = {
   syncServiceWorkerAssetVersions,
   syncServiceWorkerAssets,
   syncServiceWorkerRegistration,
+  syncSharedRuntimeAssetVersions,
   syncThirdPartyConsentVersion
 };
