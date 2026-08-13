@@ -407,6 +407,23 @@ export const CALC = {
         return targetThreshold;
     },
 
+    // 選択中の現在ステータスと目標ステータスに合う入力例を表示
+    updateNeededPointsPlaceholder(config, currentStatusValue, targetStatusLabel) {
+        if (!STATE.dom.neededPoints) return;
+        const currentStatusLabel = Object.keys(config.statuses)
+            .find(label => config.statuses[label] === currentStatusValue);
+        const transitionKey = currentStatusLabel && targetStatusLabel
+            ? `${currentStatusLabel}:${targetStatusLabel}`
+            : '';
+        const transitionPlaceholder = transitionKey
+            ? config.neededPointsPlaceholderOverrides?.[transitionKey]
+            : null;
+
+        STATE.dom.neededPoints.placeholder = transitionPlaceholder
+            || config.uiText.neededPointsPlaceholder
+            || '';
+    },
+
     // 必要ポイント入力エリアの最大値を自動制御（矛盾防止）
     updateNeededPointsConstraint() {
         if (!STATE.dom.currentStatus || !STATE.dom.targetStatus || !STATE.dom.neededPoints) return;
@@ -414,6 +431,8 @@ export const CALC = {
         const currentStatusValue = parseFloat(STATE.dom.currentStatus.value);
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
+        const targetStatusLabel = selectedTargetOption?.dataset.statusLabel || '';
+        this.updateNeededPointsPlaceholder(config, currentStatusValue, targetStatusLabel);
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
 
         if (maxNeededPoints === null) {
