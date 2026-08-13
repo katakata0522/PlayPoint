@@ -113,6 +113,7 @@ function loadCalculatorContext(dateClass = Date) {
         PP_STATE: PP_APP.STATE,
         populateStatusSelects: PP_APP.CALC.populateStatusSelects.bind(PP_APP.CALC),
         updateBaseRateAndTarget: PP_APP.CALC.updateBaseRateAndTarget.bind(PP_APP.CALC),
+        updateNeededPointsConstraint: PP_APP.CALC.updateNeededPointsConstraint.bind(PP_APP.CALC),
         getMaxNeededPointsForTarget: PP_APP.CALC.getMaxNeededPointsForTarget.bind(PP_APP.CALC),
         getRateDetails: PP_APP.CALC.getRateDetails.bind(PP_APP.CALC),
         getRemainingMonths: PP_APP.CALC.getRemainingMonths.bind(PP_APP.CALC),
@@ -168,6 +169,31 @@ test('通常計算では現在ステータスから次のランクだけを目�
   assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 1);
   assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'シルバー');
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '250');
+  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
+});
+
+test('日本語の必要ポイント例はゴールドからプラチナの時だけ1728になる', () => {
+  const { PP_STATE, updateBaseRateAndTarget, updateNeededPointsConstraint } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.currentStatus.value = '1.5';
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput();
+
+  updateBaseRateAndTarget();
+  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ゴールド');
+  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
+
+  PP_STATE.dom.targetStatus.selectedIndex = 1;
+  updateNeededPointsConstraint();
+  assert.strictEqual(PP_STATE.dom.targetStatus.options[1].dataset.statusLabel, 'プラチナ');
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, '4000');
+  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：1728');
+
+  PP_STATE.dom.targetStatus.selectedIndex = 0;
+  updateNeededPointsConstraint();
+  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 });
 
 test('前年からランクを引き継いだ場合も目標閾値全体を入力できる', () => {

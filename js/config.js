@@ -63,6 +63,7 @@ export const CONFIGS = {
         currencySymbol: "円",
         rateUnit: "100円",
         spendUnit: 100,
+        neededPointsPlaceholderOverrides: { "ゴールド:プラチナ": "例：1728" },
         tooltips: {
             'tooltip-current-status': `<strong>【現在のステータスの確認方法】</strong><ol><li>Google Play ストアを開きます。</li><li>右上のプロフィールアイコンをタップします。</li><li>「Play ポイント」を選択します。</li></ol><hr><p>※ステータスに応じて、基本還元率は自動で入力されます。</p>`,
             'tooltip-target-status': `<strong>【各ステータスの達成条件】</strong><ul><li><strong>シルバー:</strong> 250 pt 以上</li><li><strong>ゴールド:</strong> 1,000 pt 以上</li><li><strong>プラチナ:</strong> 4,000 pt 以上</li><li><strong>ダイヤモンド:</strong> 15,000 pt 以上</li></ul><hr><p>※ポイントは毎年1月1日〜12月31日の1年間で累積され、目標ポイントに達した時点で即座にランクアップします（有効期限は翌年末まで）。</p>`,
