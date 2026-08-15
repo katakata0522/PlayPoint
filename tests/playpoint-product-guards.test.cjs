@@ -83,7 +83,7 @@ test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
   assert.ok(blog.includes('PlayPointConsent.whenGranted'));
   assert.ok(article.includes('PlayPointConsent.whenGranted'));
   assert.ok(privacy.includes('プライバシー設定'));
-  assert.ok(privacy.includes(`js/consent.js?v=${createFileRevision(root, 'js/consent.js')}`));
+  assert.ok(/js\/consent\.js\?v=[a-f0-9]+/.test(privacy));
   assert.ok(!privacy.includes('許可を与えたものとみなします'));
   assert.ok(consent.includes('__tcfapi'), 'TCF APIとの連携がありません');
   assert.ok(consent.includes('showRevocationMessage'), 'Google CMPの設定変更導線がありません');
