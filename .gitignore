@@ -1,0 +1,5 @@
+node_modules/
+test-results/
+.playwright-mcp/
+.system_generated/
+*.log
