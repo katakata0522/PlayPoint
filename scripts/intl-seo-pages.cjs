@@ -98,7 +98,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = GE
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(content.title)}</title>
     <meta name="description" content="${escapeHtml(content.description)}">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="${escapeHtml(locale.author)}">
     <meta name="last-modified" content="${contentModifiedAt}">
     <meta property="og:type" content="website">
@@ -247,7 +247,7 @@ function renderArticle(article, assetVersions) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(localeKey === 'en' ? article.title : `${article.title} | ${siteName}`)}</title>
     <meta name="description" content="${escapeHtml(article.description)}">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="${escapeHtml(authorName)}">
     <meta name="last-modified" content="${modifiedAt}">
     <link rel="canonical" href="${canonical}">
@@ -363,7 +363,7 @@ function renderArticleHub(localeKey, assetVersions) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(content.title)} | ${escapeHtml(locale.siteName)}</title>
     <meta name="description" content="${escapeHtml(content.description)}">
-    <meta name="robots" content="index,follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="last-modified" content="${modifiedAt}">
     <link rel="canonical" href="${canonical}">
     <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/articles/">
