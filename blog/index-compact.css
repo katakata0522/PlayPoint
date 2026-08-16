@@ -151,9 +151,294 @@ body.blog-index-compact .visually-hidden{
     white-space:nowrap!important;
     border:0!important;
 }
-body.blog-index-compact .search-pathways-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.search-pathway-card{display:flex;flex-direction:column;gap:.35rem;padding:1rem;color:var(--text-main);text-decoration:none}.search-pathway-card span{color:var(--text-muted);font-size:.82rem}.sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}.pagination{display:flex;align-items:center;justify-content:center;gap:.75rem}.pagination-status{min-width:4rem;text-align:center;color:var(--text-muted)}.empty-state{text-align:center;padding:2rem 1rem}.blog-bottom-ad{min-height:120px;max-width:800px;margin:2rem auto;padding:0 1rem}
-.search-pathways-quick-links{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem 1rem;margin-top:.9rem}.search-pathways-quick-links a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);font-size:.82rem;font-weight:700;text-underline-offset:.18em}
+body.blog-index-compact .search-pathways-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.search-pathways-inner {
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.search-pathways-header h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.search-pathways-header p {
+    margin: 0 0 1.2rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* 4大目的カード */
+.search-pathway-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1.1rem;
+    background: var(--bg-secondary);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-pathway-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0.6;
+    transition: opacity 0.2s ease, height 0.2s ease;
+}
+
+.search-pathway-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    background: var(--bg-card-hover);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 16px var(--accent-glow);
+}
+
+.search-pathway-card:hover::before {
+    opacity: 1;
+    height: 4px;
+}
+
+.pathway-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pathway-icon {
+    font-size: 1.3rem;
+}
+
+.pathway-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.pathway-desc {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    flex: 1;
+}
+
+.pathway-arrow {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+.search-pathway-card:hover .pathway-arrow {
+    transform: translateX(4px);
+}
+
+/* クイック計算ピルチップセクション */
+.pathways-quick-section {
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.quick-section-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+
+.search-pathways-quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 0.9rem;
+}
+
+.quick-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    padding: 0.5rem 1rem;
+    background: rgba(88, 166, 255, 0.08);
+    border: 1px solid rgba(88, 166, 255, 0.25);
+    border-radius: 999px;
+    color: var(--accent);
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.quick-pill:hover {
+    background: rgba(88, 166, 255, 0.18);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--accent-glow);
+    color: var(--text-primary);
+}
+
+.pill-icon {
+    font-size: 0.95rem;
+}
+
+/* 多言語ガイドリンク */
+.quick-lang-section {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+}
+
+.quick-lang-label {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.quick-lang-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.lang-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.lang-pill:hover {
+    background: var(--accent);
+    color: var(--bg-primary);
+    border-color: var(--accent);
+}
+
+/* 🎮 ゲーム別計算機特設バナー */
+.pathways-games-banner {
+    margin-top: 1.4rem;
+    padding: 1.1rem 1.4rem;
+    background: linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(99, 102, 241, 0.12) 100%);
+    border: 1.5px solid rgba(2, 132, 199, 0.35);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+}
+
+.games-banner-left {
+    flex: 1;
+}
+
+.games-banner-badge {
+    display: inline-block;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 0.35rem;
+}
+
+.games-banner-title {
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.games-banner-desc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+.games-banner-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 1.2rem;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.86rem;
+    font-weight: 700;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.games-banner-btn:hover {
+    background: #0369a1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+}
+
+.sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}.pagination{display:flex;align-items:center;justify-content:center;gap:.75rem}.pagination-status{min-width:4rem;text-align:center;color:var(--text-muted)}.empty-state{text-align:center;padding:2rem 1rem}.blog-bottom-ad{min-height:120px;max-width:800px;margin:2rem auto;padding:0 1rem}
 body.blog-index-compact :where(a,button,input,select,summary,[tabindex]):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+@media(max-width:768px){
+    body.blog-index-compact .search-pathways-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .pathways-games-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .games-banner-btn {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}
+
+@media(max-width:480px){
+    body.blog-index-compact .search-pathways-grid {
+        grid-template-columns: 1fr;
+    }
+    .search-pathways-inner {
+        padding: 1rem;
+    }
+    .quick-pill {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}
+
 @media(max-width:760px){body.blog-index-compact .search-pathways-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body.blog-index-compact .article-card{display:grid;grid-template-columns:92px minmax(0,1fr);min-height:112px}body.blog-index-compact .card-thumb{height:100%;min-height:112px}body.blog-index-compact .card-content{min-width:0;padding:.8rem}.card-content h3,.card-desc{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical}.card-content h3{-webkit-line-clamp:2;font-size:.98rem}.card-desc{-webkit-line-clamp:2;font-size:.8rem}.card-tags,.badge-new{display:none!important}}
 /* BLOG_USABILITY_PASS_END */
 
