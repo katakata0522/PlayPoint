@@ -22,9 +22,12 @@
   <meta property="og:url" content="https://playpoint-sim.com/en/games/starrail/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Honkai: Star Rail - Google Play Points Calculator" />
+  <meta name="twitter:description" content="Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Glory, and 90/180-pull pity summons in Honkai: Star Rail!" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
-  <link rel="stylesheet" href="../../../games/games.css?v=4509219281" />
+  <link rel="stylesheet" href="../../../games/games.css?v=213805f32c" />
 
   <script type="application/ld+json">
   {
@@ -141,7 +144,7 @@
           <section class="game-sim-card">
               <h2 class="game-sim-title">🧮 Star Rail</h2>
 
-              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <p class="preset-heading">▼ Quick Targets:</p>
               <div class="preset-buttons">
                   <button type="button" class="preset-btn active" data-amount="4.99" data-mult="1" aria-pressed="true">Express Supply Pass ($4.99)</button>
               <button type="button" class="preset-btn " data-amount="25" data-mult="1" aria-pressed="false">10-pulls ($25.00)</button>
@@ -228,7 +231,7 @@
                   <div class="game-giftcard-cta">
                       <div class="game-giftcard-cta-content">
                           <div class="game-giftcard-cta-title">💳 Maximizing Play Points with Gift Cards</div>
-                          <p class="game-giftcard-cta-text">Learn how Google Play Gift Cards interact with points, promotions, and status level progress.</p>
+                          <p class="game-giftcard-cta-text">Learn how Google Play Gift Cards interact with points, promotions, and status level progress. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
                       <a class="game-giftcard-cta-btn" href="../../../en/articles/google-play-points-gift-cards.html">Read Gift Card Guide ➔</a>
                   </div>
@@ -253,14 +256,14 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>Express Supply Pass ($4.99)</td><td>$4.99</td><td>約 5 pt</td><td>約 25 pt</td></tr>
-<tr><td>Nameless Glory ($9.99)</td><td>$9.99</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>60 Oneiric Shards ($0.99)</td><td>$0.99</td><td>約 1 pt</td><td>約 5 pt</td></tr>
-<tr><td>300+30 Oneiric Shards ($4.99)</td><td>$4.99</td><td>約 5 pt</td><td>約 25 pt</td></tr>
-<tr><td>980+110 Oneiric Shards ($14.99)</td><td>$14.99</td><td>約 15 pt</td><td>約 75 pt</td></tr>
-<tr><td>1980+260 Oneiric Shards ($29.99)</td><td>$29.99</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr><td>3280+600 Oneiric Shards ($49.99)</td><td>$49.99</td><td>約 50 pt</td><td>約 250 pt</td></tr>
-<tr><td>6480+1600 Oneiric Shards ($99.99)</td><td>$99.99</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+                          <tr><td>Express Supply Pass ($4.99)</td><td>$4.99</td><td>~5 pt</td><td>~25 pt</td></tr>
+<tr><td>Nameless Glory ($9.99)</td><td>$9.99</td><td>~10 pt</td><td>~50 pt</td></tr>
+<tr><td>60 Oneiric Shards ($0.99)</td><td>$0.99</td><td>~1 pt</td><td>~5 pt</td></tr>
+<tr><td>300+30 Oneiric Shards ($4.99)</td><td>$4.99</td><td>~5 pt</td><td>~25 pt</td></tr>
+<tr><td>980+110 Oneiric Shards ($14.99)</td><td>$14.99</td><td>~15 pt</td><td>~75 pt</td></tr>
+<tr><td>1980+260 Oneiric Shards ($29.99)</td><td>$29.99</td><td>~30 pt</td><td>~150 pt</td></tr>
+<tr><td>3280+600 Oneiric Shards ($49.99)</td><td>$49.99</td><td>~50 pt</td><td>~250 pt</td></tr>
+<tr><td>6480+1600 Oneiric Shards ($99.99)</td><td>$99.99</td><td>~100 pt</td><td>~500 pt</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -401,6 +404,6 @@
   </footer>
 
   <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
-  <script src="../../../games/game-sim.js?v=461a6f8e6e"></script>
+  <script src="../../../games/game-sim.js?v=82e3beac34"></script>
 </body>
 </html>

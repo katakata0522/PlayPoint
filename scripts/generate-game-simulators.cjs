@@ -31,6 +31,8 @@ const LOCALES = {
     portalMeta: 'お気に入りのゲームを選んで、パック課金や天井ガチャで貯まるPlayポイントを計算できます。',
     portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブなど）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
     openCalc: '計算機を開く ➔',
+    presetHeading: '▼ 目標プリセット：',
+    approxText: '約 ',
     customAmountLabel: '課金予定合計額（円）：',
     packSelectLabel: '課金パックを選択：',
     packCountLabel: '購入回数：',
@@ -109,6 +111,8 @@ const LOCALES = {
     portalMeta: 'Select your favorite mobile game to calculate Google Play Points earned on in-app purchases, monthly passes, and pity summons.',
     portalLead: 'Accurate Play Points simulation for top mobile titles including Genshin Impact, Honkai: Star Rail, Zenless Zone Zero, Blue Archive, Pokémon TCG Pocket, and FGO. Estimate points earned from monthly passes, pity summons, and level-up progress in one click.',
     openCalc: 'Open Calculator ➔',
+    presetHeading: '▼ Quick Targets:',
+    approxText: '~',
     customAmountLabel: 'Planned Spending ($ USD):',
     packSelectLabel: 'Select Purchase Pack:',
     packCountLabel: 'Quantity:',
@@ -185,8 +189,10 @@ const LOCALES = {
     portalBadge: '🎮 모바일 게임 특화',
     portalH1: '인기 모바일 게임 Google Play Points 과금·천장 계산기',
     portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
-    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈의 화석, 모노크롬, 청휘석, 포케골드 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
+    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포케골드 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
     openCalc: '계산기 열기 ➔',
+    presetHeading: '▼ 목표 프리셋:',
+    approxText: '약 ',
     customAmountLabel: '과금 예정 금액 (원):',
     packSelectLabel: '과금 패키지 선택:',
     packCountLabel: '구매 수량:',
@@ -263,8 +269,10 @@ const LOCALES = {
     portalBadge: '🎮 手遊課金專區',
     portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
     portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
-    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林/底片、青輝石、寶可金幣等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
+    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、底片、青輝石、寶可金幣等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
     openCalc: '開啟計算器 ➔',
+    presetHeading: '▼ 快速試算目標：',
+    approxText: '約 ',
     customAmountLabel: '預計課金總額（新台幣）：',
     packSelectLabel: '選擇課金禮包：',
     packCountLabel: '購買次數：',
@@ -433,7 +441,7 @@ const GAMES_DATA = [
     descs: {
       ja: '往日の夢華・列車補給標章・ナナシビトの褒章・仮天井（90連）・確定天井（180連）課金で貯まるPlayポイントを計算！',
       en: 'Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Glory, and 90/180-pull pity summons in Honkai: Star Rail!',
-      ko: '오래된 꿈의 화석, 열차 보급 허가증, 무명의 공훈, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
+      ko: '오래된 꿈, 열차 보급 허가증, 무명의 공훈, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算古老夢華、列車補給憑證、無名客的榮勳、90抽/180抽保底課金可獲得的 Play Points！'
     },
     packs: {
@@ -460,12 +468,12 @@ const GAMES_DATA = [
       ko: [
         { name: '열차 보급 허가증 (₩5,900)', price: 5900 },
         { name: '무명의 공훈 (₩12,000)', price: 12000 },
-        { name: '오래된 꿈의 화석 60개 (₩1,200)', price: 1200 },
-        { name: '오래된 꿈의 화석 300+30개 (₩5,900)', price: 5900 },
-        { name: '오래된 꿈의 화석 980+110개 (₩19,000)', price: 19000 },
-        { name: '오래된 꿈의 화석 1980+260개 (₩37,000)', price: 37000 },
-        { name: '오래된 꿈의 화석 3280+600개 (₩65,000)', price: 65000 },
-        { name: '오래된 꿈의 화석 6480+1600개 (₩119,000)', price: 119000 }
+        { name: '오래된 꿈 60개 (₩1,200)', price: 1200 },
+        { name: '오래된 꿈 300+30개 (₩5,900)', price: 5900 },
+        { name: '오래된 꿈 980+110개 (₩19,000)', price: 19000 },
+        { name: '오래된 꿈 1980+260개 (₩37,000)', price: 37000 },
+        { name: '오래된 꿈 3280+600개 (₩65,000)', price: 65000 },
+        { name: '오래된 꿈 6480+1600개 (₩119,000)', price: 119000 }
       ],
       tw: [
         { name: '列車補給憑證 (NT$170)', price: 170 },
@@ -529,8 +537,8 @@ const GAMES_DATA = [
     descs: {
       ja: 'モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！',
       en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent pity pulls in ZZZ!',
-      ko: '모노크롬, 로프꾼 회원, 에리두 도시 펀드, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算絕區零菲林/底片、繩網會員、新艾利都城募基金、S級代理人保底課金可獲得的 Play Points！'
+      ko: '모노크롬, 로프꾼 회원, 뉴에리두 도시 펀드, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算絕區零底片、繩網會員、新艾利都城募基金、S級代理人保底課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -555,7 +563,7 @@ const GAMES_DATA = [
       ],
       ko: [
         { name: '로프꾼 회원 (₩5,900)', price: 5900 },
-        { name: '에리두 도시 펀드 (₩12,000)', price: 12000 },
+        { name: '뉴에리두 도시 펀드 (₩12,000)', price: 12000 },
         { name: '모노크롬 60개 (₩1,200)', price: 1200 },
         { name: '모노크롬 300+30개 (₩5,900)', price: 5900 },
         { name: '모노크롬 980+110개 (₩19,000)', price: 19000 },
@@ -566,12 +574,12 @@ const GAMES_DATA = [
       tw: [
         { name: '繩網會員 (NT$170)', price: 170 },
         { name: '新艾利都城募基金 (NT$330)', price: 330 },
-        { name: '菲林 60個 (NT$33)', price: 33 },
-        { name: '菲林 300+30個 (NT$170)', price: 170 },
-        { name: '菲林 980+110個 (NT$490)', price: 490 },
-        { name: '菲林 1980+260個 (NT$990)', price: 990 },
-        { name: '菲林 3280+600個 (NT$1,690)', price: 1690 },
-        { name: '菲林 6480+1600個 (NT$3,290)', price: 3290 }
+        { name: '底片 60個 (NT$33)', price: 33 },
+        { name: '底片 300+30個 (NT$170)', price: 170 },
+        { name: '底片 980+110個 (NT$490)', price: 490 },
+        { name: '底片 1980+260個 (NT$990)', price: 990 },
+        { name: '底片 3280+600個 (NT$1,690)', price: 1690 },
+        { name: '底片 6480+1600個 (NT$3,290)', price: 3290 }
       ]
     },
     presets: {
@@ -1212,7 +1220,7 @@ function generateGamePageHtml(game, localeKey) {
     const normalPts = Math.round(p.price / loc.unitSpend);
     const cpPts = Math.round((p.price / loc.unitSpend) * 5);
     const formattedPrice = `${loc.currencyPrefix}${p.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}${loc.currencySuffix}`;
-    return `<tr><td>${p.name}</td><td>${formattedPrice}</td><td>約 ${normalPts.toLocaleString()} pt</td><td>約 ${cpPts.toLocaleString()} pt</td></tr>`;
+    return `<tr><td>${p.name}</td><td>${formattedPrice}</td><td>${loc.approxText}${normalPts.toLocaleString()} pt</td><td>${loc.approxText}${cpPts.toLocaleString()} pt</td></tr>`;
   }).join('\n');
 
   const faqSchema = {
@@ -1286,6 +1294,9 @@ function generateGamePageHtml(game, localeKey) {
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/${game.id}/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${gameTitle} - ${loc.siteName}" />
+  <meta name="twitter:description" content="${gameDesc}" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="${assetsRelative}articles/article-shared.css?v=eb2e12f5ef" />
   <link rel="stylesheet" href="${assetsRelative}games/games.css" />
@@ -1354,7 +1365,7 @@ function generateGamePageHtml(game, localeKey) {
           <section class="game-sim-card">
               <h2 class="game-sim-title">🧮 ${gameShort}</h2>
 
-              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <p class="preset-heading">${loc.presetHeading}</p>
               <div class="preset-buttons">
                   ${presetButtons}
               </div>
@@ -1431,7 +1442,7 @@ function generateGamePageHtml(game, localeKey) {
                   <div class="game-giftcard-cta">
                       <div class="game-giftcard-cta-content">
                           <div class="game-giftcard-cta-title">${loc.giftCardCtaTitle}</div>
-                          <p class="game-giftcard-cta-text">${loc.giftCardCtaText}</p>
+                          <p class="game-giftcard-cta-text">${loc.giftCardCtaText} <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
                       <a class="game-giftcard-cta-btn" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardCtaBtn}</a>
                   </div>
@@ -1606,6 +1617,9 @@ function generatePortalPageHtml(localeKey) {
   <meta property="og:url" content="https://playpoint-sim.com${langPrefix}/games/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${loc.portalH1} - ${loc.siteName}" />
+  <meta name="twitter:description" content="${loc.portalMeta}" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="${assetsRelative}articles/article-shared.css?v=eb2e12f5ef" />
   <link rel="stylesheet" href="${assetsRelative}games/games.css" />

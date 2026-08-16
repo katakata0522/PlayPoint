@@ -22,9 +22,12 @@
   <meta property="og:url" content="https://playpoint-sim.com/ko/games/fgo/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="페이트/그랜드 오더 (FGO) - Google Play Points 계산기" />
+  <meta name="twitter:description" content="성정석, 복주머니, 330연차 천장 결제 시 적립되는 Play Points를 계산하세요!" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
-  <link rel="stylesheet" href="../../../games/games.css?v=4509219281" />
+  <link rel="stylesheet" href="../../../games/games.css?v=213805f32c" />
 
   <script type="application/ld+json">
   {
@@ -133,7 +136,7 @@
           <section class="game-sim-card">
               <h2 class="game-sim-title">🧮 페그오</h2>
 
-              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <p class="preset-heading">▼ 목표 프리셋:</p>
               <div class="preset-buttons">
                   <button type="button" class="preset-btn active" data-amount="19000" data-mult="1" aria-pressed="true">복주머니 (약 ₩19,000)</button>
               <button type="button" class="preset-btn " data-amount="29000" data-mult="1" aria-pressed="false">10연차 (약 ₩29,000)</button>
@@ -217,7 +220,7 @@
                   <div class="game-giftcard-cta">
                       <div class="game-giftcard-cta-content">
                           <div class="game-giftcard-cta-title">💳 기프트카드 결제 시 포인트 적립 팁</div>
-                          <p class="game-giftcard-cta-text">Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다.</p>
+                          <p class="game-giftcard-cta-text">Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
                       <a class="game-giftcard-cta-btn" href="../../../ko/articles/google-play-points-gift-cards.html">기프트카드 가이드 확인 ➔</a>
                   </div>
@@ -242,12 +245,12 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>성정석 1개 (₩1,200)</td><td>₩1,200원</td><td>約 1 pt</td><td>約 6 pt</td></tr>
-<tr><td>성정석 4+1개 (₩4,900)</td><td>₩4,900원</td><td>約 5 pt</td><td>約 25 pt</td></tr>
-<tr><td>성정석 12+6개 (₩14,000)</td><td>₩14,000원</td><td>約 14 pt</td><td>約 70 pt</td></tr>
-<tr><td>성정석 25+16개 (₩29,000)</td><td>₩29,000원</td><td>約 29 pt</td><td>約 145 pt</td></tr>
-<tr><td>성정석 42+34개 (₩49,000)</td><td>₩49,000원</td><td>約 49 pt</td><td>約 245 pt</td></tr>
-<tr><td>성정석 86+82개 (₩99,000)</td><td>₩99,000원</td><td>約 99 pt</td><td>約 495 pt</td></tr>
+                          <tr><td>성정석 1개 (₩1,200)</td><td>₩1,200원</td><td>약 1 pt</td><td>약 6 pt</td></tr>
+<tr><td>성정석 4+1개 (₩4,900)</td><td>₩4,900원</td><td>약 5 pt</td><td>약 25 pt</td></tr>
+<tr><td>성정석 12+6개 (₩14,000)</td><td>₩14,000원</td><td>약 14 pt</td><td>약 70 pt</td></tr>
+<tr><td>성정석 25+16개 (₩29,000)</td><td>₩29,000원</td><td>약 29 pt</td><td>약 145 pt</td></tr>
+<tr><td>성정석 42+34개 (₩49,000)</td><td>₩49,000원</td><td>약 49 pt</td><td>약 245 pt</td></tr>
+<tr><td>성정석 86+82개 (₩99,000)</td><td>₩99,000원</td><td>약 99 pt</td><td>약 495 pt</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -277,7 +280,7 @@
                       <div>
                           <div class="game-card-icon">🚂</div>
                           <h3 class="game-card-title">붕괴: 스타레일</h3>
-                          <p class="game-card-desc">오래된 꿈의 화석, 열차 보급 허가증, 무명의 공훈, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!</p>
+                          <p class="game-card-desc">오래된 꿈, 열차 보급 허가증, 무명의 공훈, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!</p>
                       </div>
                       <div class="game-card-action">계산기 열기 ➔</div>
                   </a>
@@ -285,7 +288,7 @@
                       <div>
                           <div class="game-card-icon">⚡</div>
                           <h3 class="game-card-title">젠레스 존 제로</h3>
-                          <p class="game-card-desc">모노크롬, 로프꾼 회원, 에리두 도시 펀드, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!</p>
+                          <p class="game-card-desc">모노크롬, 로프꾼 회원, 뉴에리두 도시 펀드, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!</p>
                       </div>
                       <div class="game-card-action">계산기 열기 ➔</div>
                   </a>
@@ -386,6 +389,6 @@
   </footer>
 
   <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
-  <script src="../../../games/game-sim.js?v=461a6f8e6e"></script>
+  <script src="../../../games/game-sim.js?v=82e3beac34"></script>
 </body>
 </html>

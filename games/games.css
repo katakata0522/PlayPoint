@@ -96,6 +96,13 @@ body {
   gap: 8px;
 }
 
+.preset-heading {
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #475569;
+}
+
 .preset-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -200,10 +207,22 @@ body {
   display: block;
   margin-top: 4px;
   word-break: break-word;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .result-stat-value.highlight {
   color: #ea580c;
+}
+
+/* 数値更新時のマイクロアニメーション */
+@keyframes valueUpdateFlash {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); text-shadow: 0 0 6px rgba(2, 132, 199, 0.3); }
+  100% { transform: scale(1); }
+}
+
+.result-stat-value.value-updated {
+  animation: valueUpdateFlash 0.25s ease-out;
 }
 
 /* ランク進捗バー */
@@ -273,6 +292,12 @@ body {
   color: #78350f;
   margin: 0;
   line-height: 1.45;
+}
+
+.dynamic-savings-badge {
+  display: inline;
+  font-weight: 800;
+  color: #c2410c;
 }
 
 .game-giftcard-cta-btn {
