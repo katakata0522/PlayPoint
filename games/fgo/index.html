@@ -6,42 +6,31 @@
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
-  <title>Fate/Grand Order (FGO)の課金で貯まるPlayポイント計算機【天井・パック別還元額】</title>
+  <title>Fate/Grand Order (FGO) - Playポイント計算機</title>
   <meta name="description" content="聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！" />
   <link rel="canonical" href="https://playpoint-sim.com/games/fgo/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/fgo/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/fgo/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/fgo/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/fgo/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/fgo/" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Playポイント計算機" />
-  <meta property="og:title" content="Fate/Grand Order (FGO)の課金で貯まるPlayポイント計算機" />
+  <meta property="og:title" content="Fate/Grand Order (FGO) - Playポイント計算機" />
   <meta property="og:description" content="聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！" />
   <meta property="og:url" content="https://playpoint-sim.com/games/fgo/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="stylesheet" href="../../articles/article-shared.css?v=a8380ee86e" />
-  <link rel="stylesheet" href="../games.css?v=a282b3a98a" />
-
-  <script type="speculationrules">
-  {
-    "prefetch": [
-      {
-        "source": "document",
-        "where": {
-          "and": [
-            { "href_matches": "/*" },
-            { "not": { "href_matches": ["/privacy.html*", "/terms.html*", "/author/*"] } }
-          ]
-        },
-        "eagerness": "moderate"
-      }
-    ]
-  }
-  </script>
+  <link rel="stylesheet" href="../../articles/article-shared.css?v=1eab2d8529" />
+  <link rel="stylesheet" href="../../games/games.css?v=a282b3a98a" />
 
   <script type="application/ld+json">
   {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Fate/Grand Order (FGO) Playポイント課金計算機",
+  "name": "Fate/Grand Order (FGO) Play Points Calculator",
   "url": "https://playpoint-sim.com/games/fgo/",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "All"
@@ -57,7 +46,7 @@
       "name": "FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まり、一気にゴールドランクへランクアップします。"
+        "text": "通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。"
       }
     }
   ]
@@ -66,14 +55,14 @@
 </head>
 <body>
 
-  <!-- Cocoon風 ヘッダー -->
+  <!-- ヘッダー -->
   <header class="site-header">
       <div class="site-header-inner">
           <a class="site-logo" href="../../">
               <span class="site-logo-icon">🎮</span>
               <span class="site-logo-text">Playポイント計算機</span>
           </a>
-          <p class="site-tagline">Google Play Points の必要額・還元シミュレーター</p>
+          <p class="site-tagline">お気に入りのゲームを選んで、パック課金や天井ガチャで貯まるPlayポイントを計算できます。</p>
       </div>
   </header>
 
@@ -82,19 +71,15 @@
       <div class="global-nav-inner">
           <a class="nav-item" href="../../">
               <span>ホーム</span>
-              <span class="nav-sub">必要額計算</span>
           </a>
           <a class="nav-item active" href="../">
               <span>ゲーム別計算</span>
-              <span class="nav-sub">人気ソシャゲ</span>
           </a>
           <a class="nav-item" href="../../blog/">
               <span>記事一覧</span>
-              <span class="nav-sub">攻略・ノウハウ</span>
           </a>
           <a class="nav-item" href="../../author/katakata.html">
               <span>運営者</span>
-              <span class="nav-sub">検証方針</span>
           </a>
       </div>
   </nav>
@@ -103,7 +88,7 @@
   <div class="breadcrumbs-wrapper">
       <nav aria-label="パンくずリスト">
           <a href="../../">ホーム</a> <span>&gt;</span>
-          <a href="../">ゲーム別計算機</a> <span>&gt;</span>
+          <a href="../">ゲーム別計算機一覧</a> <span>&gt;</span>
           <span>Fate/Grand Order (FGO)</span>
       </nav>
   </div>
@@ -112,22 +97,21 @@
       <main class="game-main-content">
           <header class="game-header">
               <span class="game-badge">⚔️ 人気ゲーム別シミュレーター</span>
-              <h1 class="game-title">Fate/Grand Order (FGO) 課金Playポイント計算機</h1>
-              <p class="game-meta">最終確認：2026年8月 ｜ Google Play Points 公式レート（100円=1pt）準拠</p>
+              <h1 class="game-title">Fate/Grand Order (FGO)</h1>
+              <p class="game-meta">最終確認：2026年8月 ｜ Google Play Points (100円=1pt)</p>
           </header>
 
           <p>聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！</p>
 
           <!-- シミュレーター操作パネル -->
           <section class="game-sim-card">
-              <h2 class="game-sim-title">🧮 FGO 課金シミュレーター</h2>
+              <h2 class="game-sim-title">🧮 FGO</h2>
 
-              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標からワンタップで選択：</p>
+              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
               <div class="preset-buttons">
                   <button type="button" class="preset-btn active" data-amount="1900" data-mult="1">福袋目安 (約1,900円)</button>
               <button type="button" class="preset-btn " data-amount="3000" data-mult="1">10連分 (約3,000円)</button>
               <button type="button" class="preset-btn " data-amount="55000" data-mult="1">天井 330連 (約55,000円)</button>
-              <button type="button" class="preset-btn " data-amount="250000" data-mult="1">宝具5目安 (約250,000円)</button>
               </div>
 
               <form id="game-sim-form">
@@ -152,29 +136,20 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="1900" min="0" step="10" inputmode="numeric">
+                          <input type="number" id="sim-custom-amount" value="1900" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
                           <label for="sim-multiplier">ポイント倍率：</label>
                           <select id="sim-multiplier">
-                              <option value="1">通常時（等倍 / 1%）</option>
-                              <option value="2">2倍キャンペーン</option>
-                              <option value="3">3倍キャンペーン</option>
-                              <option value="4">4倍キャンペーン</option>
-                              <option value="5">5倍キャンペーン</option>
-                              <option value="7">7倍キャンペーン</option>
+                              <option value="1">通常時（等倍 / 1%）</option><option value="2">2倍キャンペーン</option><option value="3">3倍キャンペーン</option><option value="4">4倍キャンペーン</option><option value="5">5倍キャンペーン</option><option value="7">7倍キャンペーン</option>
                           </select>
                       </div>
 
                       <div class="input-field">
                           <label for="sim-status">現在の会員ランク：</label>
                           <select id="sim-status">
-                              <option value="1.0">ブロンズ（100円=1pt）</option>
-                              <option value="1.25">シルバー（100円=1.25pt）</option>
-                              <option value="1.5">ゴールド（100円=1.5pt）</option>
-                              <option value="1.75">プラチナ（100円=1.75pt）</option>
-                              <option value="2.0">ダイヤモンド（100円=2.0pt）</option>
+                              <option value="1.0">ブロンズ（100円=1pt）</option><option value="1.25">シルバー（100円=1.25pt）</option><option value="1.5">ゴールド（100円=1.5pt）</option><option value="1.75">プラチナ（100円=1.75pt）</option><option value="2.0">ダイヤモンド（100円=2.0pt）</option>
                           </select>
                       </div>
                   </div>
@@ -185,7 +160,7 @@
                   <div class="result-main-grid">
                       <div class="result-stat-box">
                           <span class="result-stat-label">課金合計金額</span>
-                          <strong id="res-total-amount" class="result-stat-value">- 円</strong>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
                           <span class="result-stat-label">獲得予定 Playポイント</span>
@@ -193,7 +168,7 @@
                       </div>
                       <div class="result-stat-box">
                           <span class="result-stat-label">ポイント還元価値</span>
-                          <strong id="res-point-value-yen" class="result-stat-value">- 円分</strong>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
                           <span class="result-stat-label">到達ステータス</span>
@@ -213,7 +188,7 @@
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
-                      ※Google Play公式の四捨五入ルール（100円単位）に基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。
+                      ※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。
                   </p>
               </div>
           </section>
@@ -247,7 +222,7 @@
           <section class="section">
               <h2>よくある質問（FAQ）</h2>
               <h3>FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？</h3>
-<p>通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まり、一気にゴールドランクへランクアップします。</p>
+<p>通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。</p>
           </section>
 
           <!-- 他のゲーム計算機 -->
@@ -259,7 +234,39 @@
                       <div>
                           <div class="game-card-icon">✨</div>
                           <h3 class="game-card-title">原神（Genshin Impact）</h3>
-                          <p class="game-card-desc">創世結晶パック・空月の祝福・紀行・天井（180連）・完凸課金で貯まるPlayポイントと到達ランクをシミュレーション！</p>
+                          <p class="game-card-desc">創世結晶パック・空月の祝福・天空紀行・天井（180連）・完凸課金で貯まるPlayポイントと到達ランクをシミュレーション！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">崩壊：スターレイル（Honkai: Star Rail）</h3>
+                          <p class="game-card-desc">往日の夢華・列車補給標章・ナナシビトの褒章・仮天井（90連）・確定天井（180連）課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../zzz/">
+                      <div>
+                          <div class="game-card-icon">⚡</div>
+                          <h3 class="game-card-title">ゼンレスゾーンゼロ（Zenless Zone Zero）</h3>
+                          <p class="game-card-desc">モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">ブルーアーカイブ（Blue Archive）</h3>
+                          <p class="game-card-desc">青輝石パック・マンスリーパッケージ・200連天井（24,000石=約4.8万円）で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h3>
+                          <p class="game-card-desc">ポケゴールド・プレミアムパス・パック開封で貯まるGoogle Playポイントを計算！</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -295,14 +302,6 @@
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
-                  <a class="game-portal-card" href="../pokepoke/">
-                      <div>
-                          <div class="game-card-icon">🎴</div>
-                          <h3 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h3>
-                          <p class="game-card-desc">ポケゴールド・プレミアムパス・10連パック開封で貯まるGoogle Playポイントを計算！</p>
-                      </div>
-                      <div class="game-card-action">計算機を開く ➔</div>
-                  </a>
               </div>
           </section>
 
@@ -328,27 +327,10 @@
           </div>
 
           <div class="sidebar-widget">
-              <div class="sidebar-widget-title">🎮 ゲーム別一覧</div>
-              <div class="sidebar-widget-body">
-                  <ul class="sidebar-article-list">
-                      <li><a href="../genshin/">✨ 原神</a></li>
-                      <li><a href="../umamusume/">🐴 ウマ娘</a></li>
-                      <li><a href="../fgo/">⚔️ FGO</a></li>
-                      <li><a href="../monst/">🐉 モンスト</a></li>
-                      <li><a href="../gakumas/">🌟 学マス</a></li>
-                      <li><a href="../proseka/">🎵 プロセカ</a></li>
-                      <li><a href="../pokepoke/">🎴 ポケポケ</a></li>
-                  </ul>
-              </div>
-          </div>
-
-          <div class="sidebar-widget">
               <div class="sidebar-widget-title">📚 おすすめ攻略記事</div>
               <div class="sidebar-widget-body">
                   <ul class="sidebar-article-list">
-                      <li><a href="../../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
-                      <li><a href="../../articles/2026-07-24-play-points-1-value.html">1ポイントはいくら相当？</a></li>
-                      <li><a href="../../articles/2026-07-31-super-weekly-reward.html">スーパーウィークリーリワード完全ガイド</a></li>
+                      <li><a href="../../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li><li><a href="../../articles/2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li><li><a href="../../articles/2026-07-31-super-weekly-reward.html">スーパーウィークリーリワード完全ガイド</a></li>
                   </ul>
               </div>
           </div>
@@ -358,17 +340,17 @@
   <!-- サイトフッター -->
   <footer class="site-footer">
       <div class="site-footer-links">
-          <a href="../../">計算機トップ</a> ｜
-          <a href="../">ゲーム別計算機</a> ｜
+          <a href="../../">ホーム</a> ｜
+          <a href="../">ゲーム別計算</a> ｜
           <a href="../../blog/">記事一覧</a> ｜
-          <a href="../../privacy.html">プライバシーポリシー</a> ｜
-          <a href="../../terms.html">利用規約</a> ｜
-          <a href="../../author/katakata.html">運営者情報</a>
+          <a href="../../privacy.html">Privacy</a> ｜
+          <a href="../../terms.html">Terms</a> ｜
+          <a href="../../author/katakata.html">運営者</a>
       </div>
       <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
   </footer>
 
-  <script src="../game-sim.js?v=a6f3cacd4b"></script>
   <script src="../../js/analytics-core.js?v=6938dbdfa8"></script>
+  <script src="../../games/game-sim.js?v=f011a16bcb"></script>
 </body>
 </html>

@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+  <title>世界計畫 繽紛舞台！ - Google Play Points 計算器</title>
+  <meta name="description" content="計算世界計畫付費水晶、月卡、300抽保底課金可獲得的 Play Points！" />
+  <link rel="canonical" href="https://playpoint-sim.com/tw/games/proseka/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/proseka/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/proseka/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/proseka/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/proseka/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/proseka/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Google Play Points 計算器" />
+  <meta property="og:title" content="世界計畫 繽紛舞台！ - Google Play Points 計算器" />
+  <meta property="og:description" content="計算世界計畫付費水晶、月卡、300抽保底課金可獲得的 Play Points！" />
+  <meta property="og:url" content="https://playpoint-sim.com/tw/games/proseka/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
+  <link rel="stylesheet" href="../../../games/games.css?v=a282b3a98a" />
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "世界計畫 繽紛舞台！ Play Points Calculator",
+  "url": "https://playpoint-sim.com/tw/games/proseka/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "世界計畫 300抽保底能拿多少點數？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "一般回饋約 800 點，5倍活動時可獲約 4,000 點。"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Google Play Points 計算器</span>
+          </a>
+          <p class="site-tagline">針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="メインナビゲーション">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>計算機</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>遊戲專屬計算</span>
+          </a>
+          <a class="nav-item" href="../../articles/">
+              <span>攻略指南</span>
+          </a>
+          <a class="nav-item" href="../../../author/katakata.html">
+              <span>營運團隊</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="パンくずリスト">
+          <a href="../../">首頁</a> <span>&gt;</span>
+          <a href="../">熱門遊戲點數計算器</a> <span>&gt;</span>
+          <span>世界計畫 繽紛舞台！</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">🎵 熱門手遊點數試算工具</span>
+              <h1 class="game-title">世界計畫 繽紛舞台！</h1>
+              <p class="game-meta">最後確認：2026年8月 ｜ Google Play Points (NT$30=1pt)</p>
+          </header>
+
+          <p>計算世界計畫付費水晶、月卡、300抽保底課金可獲得的 Play Points！</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 世界計畫</h2>
+
+              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="620" data-mult="1">月卡組合 (NT$620)</button>
+              <button type="button" class="preset-btn " data-amount="790" data-mult="1">10連抽 (NT$790)</button>
+              <button type="button" class="preset-btn " data-amount="24000" data-mult="1">300抽保底 (NT$24,000)</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">選擇課金禮包：</label>
+                          <select id="sim-pack-select">
+                              <option value="130">繽紛通行證 (NT$130)</option>
+                  <option value="490">高級任務通行證 (NT$490)</option>
+                  <option value="33">水晶 100個 (NT$33)</option>
+                  <option value="790">水晶 2000個 (NT$790)</option>
+                  <option value="2690">水晶 7000個 (NT$2,690)</option>
+                              <option value="custom">自由輸入（自訂金額）</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">購買次數：</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">預計課金總額（新台幣）：</label>
+                          <input type="number" id="sim-custom-amount" value="620" min="0" step="any" inputmode="decimal">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">點數加碼倍率：</label>
+                          <select id="sim-multiplier">
+                              <option value="1">一般回饋（1倍 / 3.3%）</option><option value="2">2倍活動加碼</option><option value="3">3倍活動加碼</option><option value="4">4倍活動加碼</option><option value="5">5倍活動加碼</option><option value="7">7倍活動加碼</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">目前會員等級：</label>
+                          <select id="sim-status">
+                              <option value="1.0">銅級（NT$30 = 1點）</option><option value="1.1">銀級（NT$30 = 1.1點）</option><option value="1.2">金級（NT$30 = 1.2點）</option><option value="1.4">白金級（NT$30 = 1.4點）</option><option value="1.75">鑽石級（NT$30 = 1.75點）</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">課金總金額</span>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">預計獲得 Play Points</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">點數換算價值</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">達成等級</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>等級進度</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                      </div>
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※ 依據 Google Play 官方四捨五入計算規則試算。實際獲得點數請以購買結帳畫面顯示為準。
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>世界計畫 課金禮包 Play Points 回饋速查表</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>禮包 / 道具名稱</th>
+                              <th>售價 (TWD)</th>
+                              <th>一般回饋 (1倍)</th>
+                              <th>5倍加碼 (5倍)</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>繽紛通行證 (NT$130)</td><td>NT$130 元</td><td>約 4 pt</td><td>約 22 pt</td></tr>
+<tr><td>高級任務通行證 (NT$490)</td><td>NT$490 元</td><td>約 16 pt</td><td>約 82 pt</td></tr>
+<tr><td>水晶 100個 (NT$33)</td><td>NT$33 元</td><td>約 1 pt</td><td>約 6 pt</td></tr>
+<tr><td>水晶 2000個 (NT$790)</td><td>NT$790 元</td><td>約 26 pt</td><td>約 132 pt</td></tr>
+<tr><td>水晶 7000個 (NT$2,690)</td><td>NT$2,690 元</td><td>約 90 pt</td><td>約 448 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>常見問題（FAQ）</h2>
+              <h3>世界計畫 300抽保底能拿多少點數？</h3>
+<p>一般回饋約 800 點，5倍活動時可獲約 4,000 點。</p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>其他熱門遊戲計算器</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">原神 (Genshin Impact)</h3>
+                          <p class="game-card-desc">試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命課金可獲得的 Play Points 與等級進度！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">崩壞：星穹鐵道</h3>
+                          <p class="game-card-desc">計算古老夢華、列車補給憑證、無名客的榮勳、90抽/180抽保底課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../zzz/">
+                      <div>
+                          <div class="game-card-icon">⚡</div>
+                          <h3 class="game-card-title">絕區零 (Zenless Zone Zero)</h3>
+                          <p class="game-card-desc">計算絕區零菲林/底片、繩網會員、新艾利都城募基金、S級代理人保底課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">蔚藍檔案 (Blue Archive)</h3>
+                          <p class="game-card-desc">計算蔚藍檔案青輝石禮包、月卡、200抽保底（24,000青輝石）課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">寶可夢 TCG Pocket</h3>
+                          <p class="game-card-desc">計算寶可金幣與高級通行證課金可獲得的 Google Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
+                          <p class="game-card-desc">試算聖晶石禮包、福袋召喚、330抽保底課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../umamusume/">
+                      <div>
+                          <div class="game-card-icon">🐴</div>
+                          <h3 class="game-card-title">賽馬娘 Pretty Derby</h3>
+                          <p class="game-card-desc">計算寶石、每日寶石包、200抽保底課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">怪物彈珠 (Monster Strike)</h3>
+                          <p class="game-card-desc">計算寶珠、怪物彈珠通行證、超獸神祭課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">學園偶像大師</h3>
+                          <p class="game-card-desc">試算學園偶像大師寶石與200抽保底課金可獲得的 Play Points！</p>
+                      </div>
+                      <div class="game-card-action">開啟計算器 ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>目標點數逆算計算器</h3>
+              <p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>
+              <a class="cta-btn" href="../../">前往 Play Points 綜合計算器 ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 綜合計算器</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>還差多少點數升級？</h4>
+                      <p>即時試算達成目標等級所需的課金金額！</p>
+                      <a class="sidebar-calc-btn" href="../../">使用計算器 ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 推薦攻略</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../../tw/articles/google-play-points-levels.html">Play Points 等級結構與升級攻略</a></li><li><a href="../../../tw/articles/google-play-points-not-showing.html">點數未正常顯示的排查步驟</a></li><li><a href="../../../tw/articles/google-play-points-gift-cards.html">禮物卡與點數回饋條件整理</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">計算機</a> ｜
+          <a href="../">遊戲專屬計算</a> ｜
+          <a href="../../articles/">攻略指南</a> ｜
+          <a href="../../../privacy.html">Privacy</a> ｜
+          <a href="../../../terms.html">Terms</a> ｜
+          <a href="../../../author/katakata.html">營運團隊</a>
+      </div>
+      <p>© 2026 Google Play Points 計算器 All Rights Reserved.</p>
+  </footer>
+
+  <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
+  <script src="../../../games/game-sim.js?v=f011a16bcb"></script>
+</body>
+</html>

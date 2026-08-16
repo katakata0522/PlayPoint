@@ -1,25 +1,97 @@
 /**
  * PlayPoint Game-Specific Simulator Logic
  * Zero-dependency, accurate Google Play Points calculator for popular mobile games.
+ * Supports Multilingual Locales: Japanese (ja), English (en), Korean (ko), Traditional Chinese (zh-TW).
  */
 (function() {
     'use strict';
 
-    const RANKS = [
-        { name: 'ブロンズ', points: 0, rate: 1.0 },
-        { name: 'シルバー', points: 250, rate: 1.25 },
-        { name: 'ゴールド', points: 1000, rate: 1.5 },
-        { name: 'プラチナ', points: 4000, rate: 1.75 },
-        { name: 'ダイヤモンド', points: 15000, rate: 2.0 }
-    ];
+    const LOCALE_CONFIGS = {
+        'ja': {
+            unitSpend: 100,
+            currencySymbol: '円',
+            currencyPrefix: '',
+            currencySuffix: ' 円',
+            pointValuePrefix: '約 ',
+            pointValueSuffix: ' 円分',
+            maxRankAchievedText: '最高ランク（ダイヤモンド）達成！',
+            nextRankText: (name, pts) => `${name}まであと ${pts.toLocaleString('ja-JP')} pt`,
+            ranks: [
+                { name: 'ブロンズ', points: 0, rate: 1.0 },
+                { name: 'シルバー', points: 250, rate: 1.25 },
+                { name: 'ゴールド', points: 1000, rate: 1.5 },
+                { name: 'プラチナ', points: 4000, rate: 1.75 },
+                { name: 'ダイヤモンド', points: 15000, rate: 2.0 }
+            ]
+        },
+        'en': {
+            unitSpend: 1.0,
+            currencySymbol: '$',
+            currencyPrefix: '$',
+            currencySuffix: '',
+            pointValuePrefix: 'Approx. $',
+            pointValueSuffix: ' value',
+            maxRankAchievedText: 'Top level (Diamond) achieved!',
+            nextRankText: (name, pts) => `${pts.toLocaleString('en-US')} pts needed for ${name}`,
+            ranks: [
+                { name: 'Bronze', points: 0, rate: 1.0 },
+                { name: 'Silver', points: 150, rate: 1.1 },
+                { name: 'Gold', points: 600, rate: 1.2 },
+                { name: 'Platinum', points: 3000, rate: 1.4 },
+                { name: 'Diamond', points: 10000, rate: 1.75 }
+            ]
+        },
+        'ko': {
+            unitSpend: 1000,
+            currencySymbol: '원',
+            currencyPrefix: '₩',
+            currencySuffix: '원',
+            pointValuePrefix: '약 ₩',
+            pointValueSuffix: ' 상당',
+            maxRankAchievedText: '최고 등급(다이아몬드) 달성!',
+            nextRankText: (name, pts) => `${name}까지 남은 포인트: ${pts.toLocaleString('ko-KR')} pt`,
+            ranks: [
+                { name: '브론즈', points: 0, rate: 1.0 },
+                { name: '실버', points: 150, rate: 1.1 },
+                { name: '골드', points: 600, rate: 1.2 },
+                { name: '플래티넘', points: 3000, rate: 1.4 },
+                { name: '다이아몬드', points: 10000, rate: 1.75 }
+            ]
+        },
+        'zh-TW': {
+            unitSpend: 30,
+            currencySymbol: 'NT$',
+            currencyPrefix: 'NT$',
+            currencySuffix: ' 元',
+            pointValuePrefix: '約 NT$',
+            pointValueSuffix: ' 等值',
+            maxRankAchievedText: '已達成最高等級（鑽石級）！',
+            nextRankText: (name, pts) => `距離${name}還差 ${pts.toLocaleString('zh-TW')} 點`,
+            ranks: [
+                { name: '銅級', points: 0, rate: 1.0 },
+                { name: '銀級', points: 250, rate: 1.1 },
+                { name: '金級', points: 1000, rate: 1.2 },
+                { name: '白金級', points: 5000, rate: 1.4 },
+                { name: '鑽石級', points: 15000, rate: 1.75 }
+            ]
+        }
+    };
 
-    function calculateGamePoints(amount, multiplier, currentStatusRate) {
-        const validAmount = Math.max(0, parseInt(amount, 10) || 0);
+    function getLocaleConfig() {
+        const lang = (document.documentElement.lang || 'ja').toLowerCase();
+        if (lang.startsWith('en')) return LOCALE_CONFIGS['en'];
+        if (lang.startsWith('ko')) return LOCALE_CONFIGS['ko'];
+        if (lang.startsWith('zh') || lang.includes('tw')) return LOCALE_CONFIGS['zh-TW'];
+        return LOCALE_CONFIGS['ja'];
+    }
+
+    function calculateGamePoints(amount, multiplier, currentStatusRate, cfg) {
+        const validAmount = Math.max(0, parseFloat(amount) || 0);
         const validMult = Math.max(1, parseFloat(multiplier) || 1);
         const rate = Math.max(currentStatusRate || 1.0, validMult);
 
-        // Google Play公式仕様: 税抜価格（約100円）× 還元率 → 最も近い整数に丸め
-        const points = Math.round((validAmount / 100) * rate);
+        // 各国の基本単位ごとの四捨五入計算
+        const points = Math.round((validAmount / cfg.unitSpend) * rate);
         return {
             amount: validAmount,
             rate: rate,
@@ -27,14 +99,15 @@
         };
     }
 
-    function getReachedRank(totalEarnedPoints) {
-        let reached = RANKS[0];
-        let nextRank = RANKS[1];
+    function getReachedRank(totalEarnedPoints, cfg) {
+        const ranks = cfg.ranks;
+        let reached = ranks[0];
+        let nextRank = ranks[1];
 
-        for (let i = RANKS.length - 1; i >= 0; i--) {
-            if (totalEarnedPoints >= RANKS[i].points) {
-                reached = RANKS[i];
-                nextRank = RANKS[i + 1] || null;
+        for (let i = ranks.length - 1; i >= 0; i--) {
+            if (totalEarnedPoints >= ranks[i].points) {
+                reached = ranks[i];
+                nextRank = ranks[i + 1] || null;
                 break;
             }
         }
@@ -52,6 +125,8 @@
     function initGameSimulator() {
         const form = document.getElementById('game-sim-form');
         if (!form) return;
+
+        const cfg = getLocaleConfig();
 
         const packSelect = document.getElementById('sim-pack-select');
         const countInput = document.getElementById('sim-pack-count');
@@ -73,23 +148,31 @@
         function update() {
             let amount = 0;
             if (packSelect && countInput && packSelect.value !== 'custom') {
-                const unitPrice = parseInt(packSelect.value, 10) || 0;
+                const unitPrice = parseFloat(packSelect.value) || 0;
                 const count = Math.max(1, parseInt(countInput.value, 10) || 1);
                 amount = unitPrice * count;
                 if (customAmountInput) customAmountInput.value = amount;
             } else if (customAmountInput) {
-                amount = parseInt(customAmountInput.value, 10) || 0;
+                amount = parseFloat(customAmountInput.value) || 0;
             }
 
             const mult = multSelect ? parseFloat(multSelect.value) : 1;
             const statusRate = statusSelect ? parseFloat(statusSelect.value) : 1.0;
 
-            const res = calculateGamePoints(amount, mult, statusRate);
-            const rankInfo = getReachedRank(res.points);
+            const res = calculateGamePoints(amount, mult, statusRate, cfg);
+            const rankInfo = getReachedRank(res.points, cfg);
 
-            if (totalAmountEl) totalAmountEl.textContent = res.amount.toLocaleString('ja-JP') + ' 円';
-            if (earnedPointsEl) earnedPointsEl.textContent = res.points.toLocaleString('ja-JP') + ' pt';
-            if (pointValueYenEl) pointValueYenEl.textContent = '約 ' + res.points.toLocaleString('ja-JP') + ' 円分';
+            if (totalAmountEl) {
+                const formattedAmount = res.amount.toLocaleString(undefined, { maximumFractionDigits: 2 });
+                totalAmountEl.textContent = `${cfg.currencyPrefix}${formattedAmount}${cfg.currencySuffix}`;
+            }
+            if (earnedPointsEl) {
+                earnedPointsEl.textContent = `${res.points.toLocaleString()} pt`;
+            }
+            if (pointValueYenEl) {
+                const formattedVal = (res.points * (cfg.unitSpend === 1 ? 0.01 : 1)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+                pointValueYenEl.textContent = `${cfg.pointValuePrefix}${formattedVal}${cfg.pointValueSuffix}`;
+            }
 
             if (reachedRankEl) {
                 reachedRankEl.textContent = rankInfo.current.name;
@@ -97,10 +180,10 @@
 
             if (nextRankProgressEl && rankProgressBar) {
                 if (rankInfo.next) {
-                    nextRankProgressEl.textContent = `${rankInfo.next.name}まであと ${rankInfo.neededForNext.toLocaleString('ja-JP')} pt`;
+                    nextRankProgressEl.textContent = cfg.nextRankText(rankInfo.next.name, rankInfo.neededForNext);
                     rankProgressBar.style.width = `${rankInfo.progressPercent}%`;
                 } else {
-                    nextRankProgressEl.textContent = '最高ランク（ダイヤモンド）達成！';
+                    nextRankProgressEl.textContent = cfg.maxRankAchievedText;
                     rankProgressBar.style.width = '100%';
                 }
             }

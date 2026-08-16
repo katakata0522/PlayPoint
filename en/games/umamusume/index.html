@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+  <title>Umamusume: Pretty Derby - Google Play Points Calculator</title>
+  <meta name="description" content="Calculate Google Play Points earned on Jewels, Daily Packs, and 200-pull pity in Umamusume!" />
+  <link rel="canonical" href="https://playpoint-sim.com/en/games/umamusume/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/umamusume/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/umamusume/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/umamusume/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/umamusume/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/umamusume/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Google Play Points Calculator" />
+  <meta property="og:title" content="Umamusume: Pretty Derby - Google Play Points Calculator" />
+  <meta property="og:description" content="Calculate Google Play Points earned on Jewels, Daily Packs, and 200-pull pity in Umamusume!" />
+  <meta property="og:url" content="https://playpoint-sim.com/en/games/umamusume/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
+  <link rel="stylesheet" href="../../../games/games.css?v=a282b3a98a" />
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Umamusume: Pretty Derby Play Points Calculator",
+  "url": "https://playpoint-sim.com/en/games/umamusume/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How many points for 200-pull pity in Umamusume?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Around ~480 points at base rate, or ~2,400 points during a 5x promotion."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Google Play Points Calculator</span>
+          </a>
+          <p class="site-tagline">Select your favorite mobile game to calculate Google Play Points earned on in-app purchases, monthly passes, and pity summons.</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="メインナビゲーション">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>Calculator</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>Game Calculators</span>
+          </a>
+          <a class="nav-item" href="../../articles/">
+              <span>Guides</span>
+          </a>
+          <a class="nav-item" href="../../../author/katakata.html">
+              <span>About</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="パンくずリスト">
+          <a href="../../">Home</a> <span>&gt;</span>
+          <a href="../">Game Points Calculators</a> <span>&gt;</span>
+          <span>Umamusume: Pretty Derby</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">🐴 Mobile Game Points Simulator</span>
+              <h1 class="game-title">Umamusume: Pretty Derby</h1>
+              <p class="game-meta">Verified: August 2026 ｜ Google Play Points ($1=1pt)</p>
+          </header>
+
+          <p>Calculate Google Play Points earned on Jewels, Daily Packs, and 200-pull pity in Umamusume!</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 Umamusume</h2>
+
+              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="7.99" data-mult="1">Daily Jewel ($7.99)</button>
+              <button type="button" class="preset-btn " data-amount="24" data-mult="1">10-pulls ($24.00)</button>
+              <button type="button" class="preset-btn " data-amount="480" data-mult="1">200-pull Pity ($480.00)</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">Select Purchase Pack:</label>
+                          <select id="sim-pack-select">
+                              <option value="7.99">Daily Jewel Pack ($7.99)</option>
+                  <option value="0.99">50 Jewels ($0.99)</option>
+                  <option value="3.99">150 Jewels ($3.99)</option>
+                  <option value="7.99">320 Jewels ($7.99)</option>
+                  <option value="23.99">1000 Jewels ($23.99)</option>
+                  <option value="39.99">1700 Jewels ($39.99)</option>
+                  <option value="79.99">5000 Jewels ($79.99)</option>
+                              <option value="custom">Custom Amount (Free input)</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">Quantity:</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">Planned Spending ($ USD):</label>
+                          <input type="number" id="sim-custom-amount" value="7.99" min="0" step="any" inputmode="decimal">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">Promotion Multiplier:</label>
+                          <select id="sim-multiplier">
+                              <option value="1">Standard Rate (1x)</option><option value="2">2x Point Promotion</option><option value="3">3x Point Promotion</option><option value="4">4x Point Promotion</option><option value="5">5x Point Promotion</option><option value="7">7x Point Promotion</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">Current Status Level:</label>
+                          <select id="sim-status">
+                              <option value="1.0">Bronze ($1 = 1pt)</option><option value="1.1">Silver ($1 = 1.1pt)</option><option value="1.2">Gold ($1 = 1.2pt)</option><option value="1.4">Platinum ($1 = 1.4pt)</option><option value="1.75">Diamond ($1 = 1.75pt)</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">Total Spending</span>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">Estimated Play Points</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">Points Cash Value</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">Reached Level</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>Level Progress</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                      </div>
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※ Calculated based on official Google Play rounding rules. Check the Google Play purchase screen for exact points before checkout.
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>Umamusume In-App Purchase Packs & Points Reward Table</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>Pack / Item Name</th>
+                              <th>Price (USD)</th>
+                              <th>Standard (1x)</th>
+                              <th>5x Promo (5x)</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>Daily Jewel Pack ($7.99)</td><td>$7.99</td><td>約 8 pt</td><td>約 40 pt</td></tr>
+<tr><td>50 Jewels ($0.99)</td><td>$0.99</td><td>約 1 pt</td><td>約 5 pt</td></tr>
+<tr><td>150 Jewels ($3.99)</td><td>$3.99</td><td>約 4 pt</td><td>約 20 pt</td></tr>
+<tr><td>320 Jewels ($7.99)</td><td>$7.99</td><td>約 8 pt</td><td>約 40 pt</td></tr>
+<tr><td>1000 Jewels ($23.99)</td><td>$23.99</td><td>約 24 pt</td><td>約 120 pt</td></tr>
+<tr><td>1700 Jewels ($39.99)</td><td>$39.99</td><td>約 40 pt</td><td>約 200 pt</td></tr>
+<tr><td>5000 Jewels ($79.99)</td><td>$79.99</td><td>約 80 pt</td><td>約 400 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>Frequently Asked Questions (FAQ)</h2>
+              <h3>How many points for 200-pull pity in Umamusume?</h3>
+<p>Around ~480 points at base rate, or ~2,400 points during a 5x promotion.</p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>Other Popular Game Points Calculators</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">Genshin Impact</h3>
+                          <p class="game-card-desc">Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">Honkai: Star Rail</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Glory, and 90/180-pull pity summons in Honkai: Star Rail!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../zzz/">
+                      <div>
+                          <div class="game-card-icon">⚡</div>
+                          <h3 class="game-card-title">Zenless Zone Zero</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent pity pulls in ZZZ!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">Blue Archive</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull spark pity (24,000 Pyroxenes) in Blue Archive!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">Pokémon TCG Pocket</h3>
+                          <p class="game-card-desc">Calculate Google Play Points earned on Poké Gold and Premium Pass in Pokémon TCG Pocket!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Saint Quartz, Lucky Bag summons, and 330-summon pity in FGO!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">Monster Strike</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Orbs, Monpass, and special banner summons in Monster Strike!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">Gakuen Idolmaster</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Jewels and 200-pull pity in Gakuen Idolmaster!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../proseka/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">Project SEKAI: Colorful Stage!</h3>
+                          <p class="game-card-desc">Calculate Play Points earned on Crystals, Colorful Pass, and 300-pull spark pity in Project SEKAI!</p>
+                      </div>
+                      <div class="game-card-action">Open Calculator ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>Reverse Mode & Target Status Calculator</h3>
+              <p>Need to find out how much spending is required for Silver, Gold, or Platinum? Use our main Google Play Points calculator.</p>
+              <a class="cta-btn" href="../../">Open Main Calculator ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 Main Calculator</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>How many points needed?</h4>
+                      <p>Estimate spending required for your target status level instantly!</p>
+                      <a class="sidebar-calc-btn" href="../../">Go to Calculator ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 Recommended Guides</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../../en/articles/google-play-points-levels.html">Google Play Points Levels Explained</a></li><li><a href="../../../en/articles/google-play-points-not-showing.html">Points Not Showing Up Troubleshooting</a></li><li><a href="../../../en/articles/google-play-points-gift-cards.html">Google Play Gift Cards & Points Guide</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">Calculator</a> ｜
+          <a href="../">Game Calculators</a> ｜
+          <a href="../../articles/">Guides</a> ｜
+          <a href="../../../privacy.html">Privacy</a> ｜
+          <a href="../../../terms.html">Terms</a> ｜
+          <a href="../../../author/katakata.html">About</a>
+      </div>
+      <p>© 2026 Google Play Points Calculator All Rights Reserved.</p>
+  </footer>
+
+  <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
+  <script src="../../../games/game-sim.js?v=f011a16bcb"></script>
+</body>
+</html>

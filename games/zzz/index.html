@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+  <title>ゼンレスゾーンゼロ（Zenless Zone Zero） - Playポイント計算機</title>
+  <meta name="description" content="モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！" />
+  <link rel="canonical" href="https://playpoint-sim.com/games/zzz/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/zzz/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/zzz/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/zzz/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/zzz/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/zzz/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Playポイント計算機" />
+  <meta property="og:title" content="ゼンレスゾーンゼロ（Zenless Zone Zero） - Playポイント計算機" />
+  <meta property="og:description" content="モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！" />
+  <meta property="og:url" content="https://playpoint-sim.com/games/zzz/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="../../articles/article-shared.css?v=1eab2d8529" />
+  <link rel="stylesheet" href="../../games/games.css?v=a282b3a98a" />
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ゼンレスゾーンゼロ（Zenless Zone Zero） Play Points Calculator",
+  "url": "https://playpoint-sim.com/games/zzz/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "ゼンゼロの課金でPlayポイントは貯まりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Playポイント計算機</span>
+          </a>
+          <p class="site-tagline">お気に入りのゲームを選んで、パック課金や天井ガチャで貯まるPlayポイントを計算できます。</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="メインナビゲーション">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>ホーム</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>ゲーム別計算</span>
+          </a>
+          <a class="nav-item" href="../../blog/">
+              <span>記事一覧</span>
+          </a>
+          <a class="nav-item" href="../../author/katakata.html">
+              <span>運営者</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="パンくずリスト">
+          <a href="../../">ホーム</a> <span>&gt;</span>
+          <a href="../">ゲーム別計算機一覧</a> <span>&gt;</span>
+          <span>ゼンレスゾーンゼロ（Zenless Zone Zero）</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">⚡ 人気ゲーム別シミュレーター</span>
+              <h1 class="game-title">ゼンレスゾーンゼロ（Zenless Zone Zero）</h1>
+              <p class="game-meta">最終確認：2026年8月 ｜ Google Play Points (100円=1pt)</p>
+          </header>
+
+          <p>モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 ゼンゼロ</h2>
+
+              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1">インターノット会員 (610円)</button>
+              <button type="button" class="preset-btn " data-amount="3000" data-mult="1">10連分 (約3,000円)</button>
+              <button type="button" class="preset-btn " data-amount="27000" data-mult="1">仮天井 90連 (約27,000円)</button>
+              <button type="button" class="preset-btn " data-amount="54000" data-mult="1">確定天井 180連 (約54,000円)</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">課金パックを選択：</label>
+                          <select id="sim-pack-select">
+                              <option value="610">インターノット会員 (610円)</option>
+                  <option value="1220">エリーファンド 成長プラン (1,220円)</option>
+                  <option value="120">モノクローム 60個 (120円)</option>
+                  <option value="610">モノクローム 300+30個 (610円)</option>
+                  <option value="1220">モノクローム 980+110個 (1,220円)</option>
+                  <option value="3680">モノクローム 1980+260個 (3,680円)</option>
+                  <option value="6100">モノクローム 3280+600個 (6,100円)</option>
+                  <option value="12000">モノクローム 6480+1600個 (12,000円)</option>
+                              <option value="custom">自由入力（カスタム金額）</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">購入回数：</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">課金予定合計額（円）：</label>
+                          <input type="number" id="sim-custom-amount" value="610" min="0" step="any" inputmode="decimal">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">ポイント倍率：</label>
+                          <select id="sim-multiplier">
+                              <option value="1">通常時（等倍 / 1%）</option><option value="2">2倍キャンペーン</option><option value="3">3倍キャンペーン</option><option value="4">4倍キャンペーン</option><option value="5">5倍キャンペーン</option><option value="7">7倍キャンペーン</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">現在の会員ランク：</label>
+                          <select id="sim-status">
+                              <option value="1.0">ブロンズ（100円=1pt）</option><option value="1.25">シルバー（100円=1.25pt）</option><option value="1.5">ゴールド（100円=1.5pt）</option><option value="1.75">プラチナ（100円=1.75pt）</option><option value="2.0">ダイヤモンド（100円=2.0pt）</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">課金合計金額</span>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">獲得予定 Playポイント</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">ポイント還元価値</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">到達ステータス</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>ランク進捗状況</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                      </div>
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>ゼンゼロ 課金パック別 Playポイント還元早見表</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>課金パック名</th>
+                              <th>価格 (税込)</th>
+                              <th>通常時還元 (1%)</th>
+                              <th>5倍CP時還元 (5%)</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>インターノット会員 (610円)</td><td>610 円</td><td>約 6 pt</td><td>約 31 pt</td></tr>
+<tr><td>エリーファンド 成長プラン (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>
+<tr><td>モノクローム 60個 (120円)</td><td>120 円</td><td>約 1 pt</td><td>約 6 pt</td></tr>
+<tr><td>モノクローム 300+30個 (610円)</td><td>610 円</td><td>約 6 pt</td><td>約 31 pt</td></tr>
+<tr><td>モノクローム 980+110個 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>
+<tr><td>モノクローム 1980+260個 (3,680円)</td><td>3,680 円</td><td>約 37 pt</td><td>約 184 pt</td></tr>
+<tr><td>モノクローム 3280+600個 (6,100円)</td><td>6,100 円</td><td>約 61 pt</td><td>約 305 pt</td></tr>
+<tr><td>モノクローム 6480+1600個 (12,000円)</td><td>12,000 円</td><td>約 120 pt</td><td>約 600 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>よくある質問（FAQ）</h2>
+              <h3>ゼンゼロの課金でPlayポイントは貯まりますか？</h3>
+<p>はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。</p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>他の人気ゲームの課金シミュレーター</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">原神（Genshin Impact）</h3>
+                          <p class="game-card-desc">創世結晶パック・空月の祝福・天空紀行・天井（180連）・完凸課金で貯まるPlayポイントと到達ランクをシミュレーション！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">崩壊：スターレイル（Honkai: Star Rail）</h3>
+                          <p class="game-card-desc">往日の夢華・列車補給標章・ナナシビトの褒章・仮天井（90連）・確定天井（180連）課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">ブルーアーカイブ（Blue Archive）</h3>
+                          <p class="game-card-desc">青輝石パック・マンスリーパッケージ・200連天井（24,000石=約4.8万円）で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h3>
+                          <p class="game-card-desc">ポケゴールド・プレミアムパス・パック開封で貯まるGoogle Playポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
+                          <p class="game-card-desc">聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../umamusume/">
+                      <div>
+                          <div class="game-card-icon">🐴</div>
+                          <h3 class="game-card-title">ウマ娘 プリティーダービー</h3>
+                          <p class="game-card-desc">ジュエル購入・デイリージュエルパック・天井（200連=6万円）課金で貯まるPlayポイントを即計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">モンスターストライク (モンスト)</h3>
+                          <p class="game-card-desc">オーブ購入・モンパス・超獣神祭・コラボガチャ課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">学園アイドルマスター (学マス)</h3>
+                          <p class="game-card-desc">ジュエルパック・パス課金・天井（200連=6万円）で貯まるPlayポイントと到達ステータスを試算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../proseka/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">プロジェクトセカイ (プロセカ)</h3>
+                          <p class="game-card-desc">有償クリスタル・カラフルパス・プレパス・天井課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>目標ポイントからの逆算シミュレーター</h3>
+              <p>「ゴールドランクまであと◯◯pt必要」など、不足ポイントから必要課金額を逆算したい場合は総合計算機をご利用ください。</p>
+              <a class="cta-btn" href="../../">Playポイント総合計算機へ ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 総合計算機</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>あと何ポイント必要？</h4>
+                      <p>目標ランクまでの必要金額を即時シミュレーション！</p>
+                      <a class="sidebar-calc-btn" href="../../">計算機を使う ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 おすすめ攻略記事</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li><li><a href="../../articles/2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li><li><a href="../../articles/2026-07-31-super-weekly-reward.html">スーパーウィークリーリワード完全ガイド</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">ホーム</a> ｜
+          <a href="../">ゲーム別計算</a> ｜
+          <a href="../../blog/">記事一覧</a> ｜
+          <a href="../../privacy.html">Privacy</a> ｜
+          <a href="../../terms.html">Terms</a> ｜
+          <a href="../../author/katakata.html">運営者</a>
+      </div>
+      <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+  </footer>
+
+  <script src="../../js/analytics-core.js?v=6938dbdfa8"></script>
+  <script src="../../games/game-sim.js?v=f011a16bcb"></script>
+</body>
+</html>
