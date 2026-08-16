@@ -156,18 +156,21 @@ function buildFaqEntities(pairs) {
   }));
 }
 
-function synchronizeFaqNodes(value, visiblePairs, stats) {
+function synchronizeFaqNodes(value, visiblePairs, visibleText, stats) {
   if (Array.isArray(value)) {
     return value
-      .map(item => synchronizeFaqNodes(item, visiblePairs, stats))
+      .map(item => synchronizeFaqNodes(item, visiblePairs, visibleText, stats))
       .filter(item => item !== null && item !== undefined);
   }
   if (!value || typeof value !== 'object') return value;
 
   if (hasType(value, 'FAQPage')) {
     if (visiblePairs.length === 0) {
-      stats.removed += 1;
-      return null;
+      if (visibleText.length < 300) {
+        stats.removed += 1;
+        return null;
+      }
+      return value;
     }
     if (faqPairsMatch(getFaqPairs(value), visiblePairs)) return value;
     stats.synchronized += 1;
@@ -179,7 +182,7 @@ function synchronizeFaqNodes(value, visiblePairs, stats) {
 
   const output = {};
   for (const [key, child] of Object.entries(value)) {
-    const normalizedChild = synchronizeFaqNodes(child, visiblePairs, stats);
+    const normalizedChild = synchronizeFaqNodes(child, visiblePairs, visibleText, stats);
     if (normalizedChild === null || normalizedChild === undefined) continue;
     if (Array.isArray(normalizedChild) && normalizedChild.length === 0) continue;
     output[key] = normalizedChild;
@@ -197,6 +200,7 @@ function isEmptyStructuredData(value) {
 
 function synchronizeFaqStructuredData(html) {
   const visiblePairs = extractVisibleFaqPairs(html);
+  const visibleText = getVisibleText(html);
   const stats = { removed: 0, synchronized: 0 };
 
   const updatedHtml = String(html).replace(JSON_LD_SCRIPT_PATTERN, (fullMatch, attributes, jsonText) => {
@@ -209,7 +213,7 @@ function synchronizeFaqStructuredData(html) {
 
     if (collectFaqPages(data).length === 0) return fullMatch;
     const before = stats.removed + stats.synchronized;
-    const cleaned = synchronizeFaqNodes(data, visiblePairs, stats);
+    const cleaned = synchronizeFaqNodes(data, visiblePairs, visibleText, stats);
     if (stats.removed + stats.synchronized === before) return fullMatch;
     if (isEmptyStructuredData(cleaned)) return '';
     return `<script${attributes}>\n${JSON.stringify(cleaned, null, 2)}\n</script>`;
