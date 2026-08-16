@@ -29,7 +29,7 @@ const LOCALES = {
     portalBadge: '🎮 ソシャゲ特化',
     portalH1: '人気ゲーム別 Playポイント課金・天井シミュレーター',
     portalMeta: 'お気に入りのゲームを選んで、パック課金や天井ガチャで貯まるPlayポイントを計算できます。',
-    portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブなど）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
+    portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブ、月相、有償ジュエル、龍石、純正源石など）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
     openCalc: '計算機を開く ➔',
     presetHeading: '▼ 目標プリセット：',
     approxText: '約 ',
@@ -59,6 +59,9 @@ const LOCALES = {
     resValueLabel: 'ポイント還元価値',
     resRankLabel: '到達ステータス',
     resProgressTitle: 'ランク進捗状況',
+    shareBtnText: '𝕏 で計算結果をシェア',
+    copyLinkText: '🔗 結果リンクをコピー',
+    copiedAlert: '結果リンクをクリップボードにコピーしました！',
     disclaimerText: '※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。',
     giftCardCtaTitle: '💳 課金前にチェック！さらにお得にする裏技',
     giftCardCtaText: '楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU等）が二重取りできて実質数％〜十数％お得になります！',
@@ -109,7 +112,7 @@ const LOCALES = {
     portalBadge: '🎮 Mobile Game Special',
     portalH1: 'Google Play Points Mobile Game Spending Calculators',
     portalMeta: 'Select your favorite mobile game to calculate Google Play Points earned on in-app purchases, monthly passes, and pity summons.',
-    portalLead: 'Accurate Play Points simulation for top mobile titles including Genshin Impact, Honkai: Star Rail, Zenless Zone Zero, Blue Archive, Pokémon TCG Pocket, and FGO. Estimate points earned from monthly passes, pity summons, and level-up progress in one click.',
+    portalLead: 'Accurate Play Points simulation for top mobile titles including Genshin Impact, Honkai: Star Rail, Zenless Zone Zero, Blue Archive, Pokémon TCG Pocket, FGO, NIKKE, Wuthering Waves, Dokkan Battle, and Arknights. Estimate points earned from monthly passes, pity summons, and level-up progress in one click.',
     openCalc: 'Open Calculator ➔',
     presetHeading: '▼ Quick Targets:',
     approxText: '~',
@@ -139,6 +142,9 @@ const LOCALES = {
     resValueLabel: 'Points Cash Value',
     resRankLabel: 'Reached Level',
     resProgressTitle: 'Level Progress',
+    shareBtnText: '𝕏 Share Result',
+    copyLinkText: '🔗 Copy Link',
+    copiedAlert: 'Result link copied to clipboard!',
     disclaimerText: '※ Calculated based on official Google Play rounding rules. Check the Google Play purchase screen for exact points before checkout.',
     giftCardCtaTitle: '💳 Maximizing Play Points with Gift Cards',
     giftCardCtaText: 'Learn how Google Play Gift Cards interact with points, promotions, and status level progress.',
@@ -188,8 +194,8 @@ const LOCALES = {
     badgeText: '인기 게임별 포인트 시뮬레이터',
     portalBadge: '🎮 모바일 게임 특화',
     portalH1: '인기 모바일 게임 Google Play Points 과금·천장 계산기',
-    portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
-    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
+    portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket, 니케, 명조 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
+    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드, 월상, 유료 쥬얼, 용석, 순수한 원석 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
     openCalc: '계산기 열기 ➔',
     presetHeading: '▼ 목표 프리셋:',
     approxText: '약 ',
@@ -219,6 +225,9 @@ const LOCALES = {
     resValueLabel: '포인트 환산 가치',
     resRankLabel: '도달 등급',
     resProgressTitle: '등급 진행 상황',
+    shareBtnText: '𝕏 결과 공유하기',
+    copyLinkText: '🔗 링크 복사',
+    copiedAlert: '결과 링크가 클립보드에 복사되었습니다!',
     disclaimerText: '※ Google Play 공식 사사오입(반올림) 기준에 따라 계산됩니다. 실제 적립 포인트는 결제 전 Google Play 화면에서 확인하세요.',
     giftCardCtaTitle: '💳 기프트카드 결제 시 포인트 적립 팁',
     giftCardCtaText: 'Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다.',
@@ -268,8 +277,8 @@ const LOCALES = {
     badgeText: '熱門手遊點數試算工具',
     portalBadge: '🎮 手遊課金專區',
     portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
-    portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
-    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
+    portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌、妮姬、鳴潮等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
+    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊、月相、付費珠寶、龍石、至純源石等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
     openCalc: '開啟計算器 ➔',
     presetHeading: '▼ 快速試算目標：',
     approxText: '約 ',
@@ -299,6 +308,9 @@ const LOCALES = {
     resValueLabel: '點數換算價值',
     resRankLabel: '達成等級',
     resProgressTitle: '等級進度',
+    shareBtnText: '𝕏 分享試算結果',
+    copyLinkText: '🔗 複製結果連結',
+    copiedAlert: '結果連結已成功複製至剪貼簿！',
     disclaimerText: '※ 依據 Google Play 官方四捨五入計算規則試算。實際獲得點數請以購買結帳畫面顯示為準。',
     giftCardCtaTitle: '💳 禮物卡儲值與點數累積重點',
     giftCardCtaText: '使用 Google Play 禮物卡儲值餘額後購買遊戲道具，同樣享有會員等級之點數回饋！',
@@ -327,7 +339,7 @@ const LOCALES = {
   }
 };
 
-// 全10大ゲームデータ（公式固有名詞・正確なストア価格レート対応）
+// 全14大ゲームデータ（公式固有名詞・正確なストア価格レート対応）
 const GAMES_DATA = [
   {
     id: 'genshin',
@@ -415,21 +427,17 @@ const GAMES_DATA = [
     faq: {
       ja: [
         { q: '原神の課金でGoogle Play Pointsは貯まりますか？', a: 'はい。Android端末またはGoogle Play Games（PC版）経由で課金した場合、通常100円につき1ポイント以上のPlay Pointsが貯まります。' },
-        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playのポイント増量キャンペーン（4倍〜7倍時）なら約2,160pt〜3,780pt貯まります。' },
-        { q: '空月の祝福や天空紀行の課金でもポイントは付きますか？', a: 'はい。定期課金やシーズンパスもすべて通常のGoogle Play課金と同じ扱いとなり、購入金額に応じたPlay Pointsが付与されます。' }
+        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playのポイント増量キャンペーン（4倍〜7倍時）なら約2,160pt〜3,780pt貯まります。' }
       ],
       en: [
         { q: 'Do I earn Google Play Points on Genshin Impact purchases?', a: 'Yes! When purchasing Genesis Crystals or passes on Android or Google Play Games PC, you earn at least 1 Play Point per $1 spent.' },
-        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points during 4x-7x special point promotions.' },
-        { q: 'Do Welkin Moon and Battle Pass purchases count?', a: 'Yes, both Blessing of the Welkin Moon and Gnostic Hymn earn full Play Points based on your current membership tier.' }
+        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points during 4x-7x special point promotions.' }
       ],
       ko: [
-        { q: '원신 결제 시 Google Play Points가 적립되나요?', a: '네! 안드로이드 기기 또는 Google Play Games PC 버전을 통해 결제하면 1,000원당 1포인트 이상의 Play Points가 적립됩니다.' },
-        { q: '공월 축복이나 진주 기행 결제도 포인트 적립 대상인가요?', a: '네, 정기 패스 및 기행 결제 금액도 전액 정상적으로 Play Points 적립 대상에 포함됩니다.' }
+        { q: '원신 결제 시 Google Play Points가 적립되나요?', a: '네! 안드로이드 기기 또는 Google Play Games PC 버전을 통해 결제하면 1,000원당 1포인트 이상의 Play Points가 적립됩니다.' }
       ],
       tw: [
-        { q: '在原神課金可以獲得 Google Play Points 嗎？', a: '可以！透過 Android 手機或 Google Play Games 電腦版進行遊戲內購買，每 NT$30 即可累積 1 點以上的 Play Points。' },
-        { q: '購買空月祝福或珍珠紀行也有點數回饋嗎？', a: '有的，所有月卡與通行證皆享有點數回饋，並計入年度會員等級晉升進度。' }
+        { q: '在原神課金可以獲得 Google Play Points 嗎？', a: '可以！透過 Android 手機或 Google Play Games 電腦版進行遊戲內購買，每 NT$30 即可累積 1 點以上的 Play Points。' }
       ]
     }
   },
@@ -514,12 +522,10 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'スターレイルの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Games経由で決済すると、100円あたり1pt以上のPlay Pointsが付与されます。' },
-        { q: 'スターレイルで天井まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、5倍CP時なら約2,700pt貯まり、一気にゴールドランクに到達できます。' }
+        { q: 'スターレイルの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Games経由で決済すると、100円あたり1pt以上のPlay Pointsが付与されます。' }
       ],
       en: [
-        { q: 'Can I earn Play Points on Honkai: Star Rail?', a: 'Yes! In-app purchases made via Google Play on Android or PC earn Play Points according to your status tier.' },
-        { q: 'How many points for 180-pull hard pity in Star Rail?', a: 'Spending ~$400 earns ~400 points at base rate, or ~2,000 points during a 5x points event.' }
+        { q: 'Can I earn Play Points on Honkai: Star Rail?', a: 'Yes! In-app purchases made via Google Play on Android or PC earn Play Points according to your status tier.' }
       ],
       ko: [
         { q: '스타레일 과금 시 Play Points가 적립되나요?', a: '네, Google Play 스토어 인앱 결제 시 결제액 1,000원당 1pt 이상이 적립됩니다.' }
@@ -610,8 +616,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ゼンゼロの課金でPlayポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。' },
-        { q: 'S級確定天井（90連/180連）で何ポイント貯まりますか？', a: '90連で約270pt（5倍CP時約1,350pt）、180連で約540pt（5倍CP時約2,700pt）還元されます。' }
+        { q: 'ゼンゼロの課金でPlayポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。' }
       ],
       en: [
         { q: 'Do ZZZ purchases earn Google Play Points?', a: 'Yes, purchases made through Google Play Store earn Play Points based on your current tier.' }
@@ -697,8 +702,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ブルアカの天井（200連=約4.8万円）で何ポイント貯まりますか？', a: '通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。' },
-        { q: 'マンスリーパッケージはPlayポイント対象ですか？', a: 'はい。マンスリーパッケージおよびハーフマンスリーパッケージも通常の課金と同様にポイントが付与されます。' }
+        { q: 'ブルアカの天井（200連=約4.8万円）で何ポイント貯まりますか？', a: '通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。' }
       ],
       en: [
         { q: 'How many points for 200-pull spark in Blue Archive?', a: 'Spending ~$380 for 200 pulls earns ~380 pts at base rate, or ~1,900 pts during a 5x promotion.' }
@@ -780,8 +784,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ポケポケの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末から購入するとPlay Pointsが貯まります。' },
-        { q: 'プレミアムパスはPlayポイントの対象になりますか？', a: 'はい。毎月の更新時にも自動でPlay Pointsが付与されます。' }
+        { q: 'ポケポケの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末から購入するとPlay Pointsが貯まります。' }
       ],
       en: [
         { q: 'Do Pokémon TCG Pocket purchases earn Play Points?', a: 'Yes, purchases made through Google Play Store earn Play Points.' }
@@ -863,8 +866,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', a: '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。' },
-        { q: '福袋（有償15個）の課金でもPlayポイントは付きますか？', a: 'はい。有償石の購入時に全額ポイント付与の対象となります。' }
+        { q: 'FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', a: '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。' }
       ],
       en: [
         { q: 'How many points for 330-pull pity in FGO?', a: 'Spending ~$440 earns ~440 pts normally, or ~2,200 pts during a 5x promotion.' }
@@ -950,8 +952,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', a: '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。' },
-        { q: 'DMM版（PC）の課金でもPlayポイントは付きますか？', a: 'いいえ。Google Play PointsはAndroid端末またはGoogle Play Games経由で決済した場合のみ付与されます。' }
+        { q: 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', a: '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。' }
       ],
       en: [
         { q: 'How many points for 200-pull pity in Umamusume?', a: 'Around ~480 points at base rate, or ~2,400 points during a 5x promotion.' }
@@ -1098,8 +1099,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: '学マスの天井課金（6万円）でゴールドランクになれますか？', a: 'はい。通常レートで約600pt、CP時なら約1,800pt〜3,000pt貯まり、ゴールド（1,000pt）に到達可能です。' },
-        { q: '有償ジュエルの購入時期はいつがお得ですか？', a: 'Google Play Pointsのポイント3倍〜5倍増量キャンペーン期間中にまとめ買いすると最も効率的です。' }
+        { q: '学マスの天井課金（6万円）でゴールドランクになれますか？', a: 'はい。通常レートで約600pt、CP時なら約1,800pt〜3,000pt貯まり、ゴールド（1,000pt）に到達可能です。' }
       ],
       en: [
         { q: 'Can I reach Gold status with 200-pull pity in Gakumas?', a: 'Yes! Pity spending generates enough points to reach Silver and Gold during promotional periods.' }
@@ -1180,8 +1180,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'プロセカの天井（9万円）で何ポイント還元されますか？', a: '通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。' },
-        { q: 'カラフルパスの月額課金もポイント対象ですか？', a: 'はい。カラフルパスおよびプレミアムミッションパスも全額ポイント付与の対象です。' }
+        { q: 'プロセカの天井（9万円）で何ポイント還元されますか？', a: '通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。' }
       ],
       en: [
         { q: 'How many Play Points for 300-pull spark in Project SEKAI?', a: 'Around ~720 pts normally, or up to ~3,600 pts with a 5x multiplier.' }
@@ -1191,6 +1190,383 @@ const GAMES_DATA = [
       ],
       tw: [
         { q: '世界計畫 300抽保底能拿多少點數？', a: '一般回饋約 800 點，5倍活動時可獲約 4,000 點。' }
+      ]
+    }
+  },
+  {
+    id: 'nikke',
+    icon: '🔫',
+    names: { ja: '勝利の女神：NIKKE', en: 'Goddess of Victory: NIKKE', ko: '승리의 여신: 니케', tw: '勝利女神：妮姬' },
+    shortNames: { ja: 'ニケ', en: 'NIKKE', ko: '니케', tw: '妮姬' },
+    descs: {
+      ja: '30-DAY補給品・ミッションパス・ゴールドマイレージ天井(200連)・コアMAX(3凸+7)で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on 30-Day Supply, Mission Pass, 200 Gold Mileage pity, and Max Core summons in NIKKE!',
+      ko: '30일 보급품, 미션 패스, 골드 마일리지 200장 천장, 코어 MAX(3돌+7) 과금 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算妮姬30天補給品、任務Pass、金色積分券200張保底、核心MAX(3突+7)課金可獲得的 Play Points！'
+    },
+    packs: {
+      ja: [
+        { name: '30-DAY補給品 (800円)', price: 800 },
+        { name: 'ミッションパス (3,200円)', price: 3200 },
+        { name: 'ジュエル 60個 (160円)', price: 160 },
+        { name: 'ジュエル 320個 (800円)', price: 800 },
+        { name: 'ジュエル 1020個 (2,400円)', price: 2400 },
+        { name: 'ジュエル 1980個 (4,800円)', price: 4800 },
+        { name: 'ジュエル 3300個 (8,000円)', price: 8000 },
+        { name: 'ジュエル 6200個 (15,800円)', price: 15800 }
+      ],
+      en: [
+        { name: '30-Day Supply ($4.99)', price: 4.99 },
+        { name: 'Mission Pass ($19.99)', price: 19.99 },
+        { name: '60 Gems ($0.99)', price: 0.99 },
+        { name: '320 Gems ($4.99)', price: 4.99 },
+        { name: '1020 Gems ($14.99)', price: 14.99 },
+        { name: '1980 Gems ($29.99)', price: 29.99 },
+        { name: '3300 Gems ($49.99)', price: 49.99 },
+        { name: '6200 Gems ($99.99)', price: 99.99 }
+      ],
+      ko: [
+        { name: '30일 보급품 (₩7,500)', price: 7500 },
+        { name: '미션 패스 (₩30,000)', price: 30000 },
+        { name: '쥬얼 60개 (₩1,500)', price: 1500 },
+        { name: '쥬얼 320개 (₩7,500)', price: 7500 },
+        { name: '쥬얼 1020개 (₩23,000)', price: 23000 },
+        { name: '쥬얼 1980개 (₩45,000)', price: 45000 },
+        { name: '쥬얼 3300개 (₩75,000)', price: 75000 },
+        { name: '쥬얼 6200개 (₩149,000)', price: 149000 }
+      ],
+      tw: [
+        { name: '30天補給品 (NT$170)', price: 170 },
+        { name: '任務Pass (NT$670)', price: 670 },
+        { name: '珠寶 60個 (NT$33)', price: 33 },
+        { name: '珠寶 320個 (NT$170)', price: 170 },
+        { name: '珠寶 1020個 (NT$490)', price: 490 },
+        { name: '珠寶 1980個 (NT$990)', price: 990 },
+        { name: '珠寶 3300個 (NT$1,690)', price: 1690 },
+        { name: '珠寶 6200個 (NT$3,290)', price: 3290 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '30-DAY補給品 (800円)', amount: 800, mult: 1 },
+        { label: 'ミッションパス (3,200円)', amount: 3200, mult: 1 },
+        { label: '10連分 (約3,800円)', amount: 3800, mult: 1 },
+        { label: '金票天井 200連 (約76,000円)', amount: 76000, mult: 1 },
+        { label: '3凸MLB (約200,000円)', amount: 200000, mult: 1 }
+      ],
+      en: [
+        { label: '30-Day Supply ($4.99)', amount: 4.99, mult: 1 },
+        { label: 'Mission Pass ($19.99)', amount: 19.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: '200 Mileage Spark ($500.00)', amount: 500.0, mult: 1 }
+      ],
+      ko: [
+        { label: '30일 보급품 (₩7,500)', amount: 7500, mult: 1 },
+        { label: '미션 패스 (₩30,000)', amount: 30000, mult: 1 },
+        { label: '10연차 (약 ₩37,000)', amount: 37000, mult: 1 },
+        { label: '골드 마일리지 200연차 (약 ₩745,000)', amount: 745000, mult: 1 }
+      ],
+      tw: [
+        { label: '30天補給品 (NT$170)', amount: 170, mult: 1 },
+        { label: '任務Pass (NT$670)', amount: 670, mult: 1 },
+        { label: '10連抽 (約 NT$790)', amount: 790, mult: 1 },
+        { label: '200張金票保底 (約 NT$16,000)', amount: 16000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'NIKKEのゴールドマイレージ（金票200枚）で何ポイント還元されますか？', a: '200連（約7.6万円）課金した場合、通常時（1%）で約760pt、5倍CP時なら約3,800pt貯まります。' },
+        { q: '30-DAY補給品やミッションパスもPlayポイントの対象ですか？', a: 'はい。月額補給品やプレミアムパスの購入時にも全額Play Pointsが付与されます。' }
+      ],
+      en: [
+        { q: 'Do NIKKE in-app purchases earn Google Play Points?', a: 'Yes! 30-Day Supply, Mission Pass, and Gem bundles earn Play Points based on your current tier.' }
+      ],
+      ko: [
+        { q: '니케 결제 시 Google Play Points가 적립되나요?', a: '네! 30일 보급품, 미션 패스, 쥬얼 결제 시 1,000원당 1pt 이상이 적립됩니다.' }
+      ],
+      tw: [
+        { q: '在妮姬課金可以獲得 Google Play Points 嗎？', a: '可以！購買30天補給品、任務Pass與珠寶禮包均享有會員點數回饋。' }
+      ]
+    }
+  },
+  {
+    id: 'wutheringwaves',
+    icon: '🌊',
+    names: { ja: '鳴潮 (Wuthering Waves)', en: 'Wuthering Waves', ko: '명조: 워더링 웨이브', tw: '鳴潮 (Wuthering Waves)' },
+    shortNames: { ja: '鳴潮', en: 'WuWa', ko: '명조', tw: '鳴潮' },
+    descs: {
+      ja: '月相パック・月相観測パス・先駆ラジオ・確定天井(160連)・共鳴チェーン6(完凸/S6)で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
+      ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
+    },
+    packs: {
+      ja: [
+        { name: '月相観測パス (610円)', price: 610 },
+        { name: '先駆ラジオ ユニバース (1,220円)', price: 1220 },
+        { name: '先駆ラジオ 豪華特約 (2,440円)', price: 2440 },
+        { name: '月相 60個 (120円)', price: 120 },
+        { name: '月相 300+30個 (610円)', price: 610 },
+        { name: '月相 980+110個 (1,220円)', price: 1220 },
+        { name: '月相 1980+260個 (3,680円)', price: 3680 },
+        { name: '月相 3280+600個 (6,100円)', price: 6100 },
+        { name: '月相 6480+1600個 (12,000円)', price: 12000 }
+      ],
+      en: [
+        { name: 'Lunite Subscription ($4.99)', price: 4.99 },
+        { name: 'Pioneer Podcast Insider ($9.99)', price: 9.99 },
+        { name: 'Pioneer Podcast Connoisseur ($19.99)', price: 19.99 },
+        { name: '60 Lunite ($0.99)', price: 0.99 },
+        { name: '300+30 Lunite ($4.99)', price: 4.99 },
+        { name: '980+110 Lunite ($14.99)', price: 14.99 },
+        { name: '1980+260 Lunite ($29.99)', price: 29.99 },
+        { name: '3280+600 Lunite ($49.99)', price: 49.99 },
+        { name: '6480+1600 Lunite ($99.99)', price: 99.99 }
+      ],
+      ko: [
+        { name: '월상 관측 카드 (₩5,900)', price: 5900 },
+        { name: '선구 라디오 유니버스 (₩12,000)', price: 12000 },
+        { name: '선구 라디오 엑스트라 (₩25,000)', price: 25000 },
+        { name: '월상 60개 (₩1,200)', price: 1200 },
+        { name: '월상 300+30개 (₩5,900)', price: 5900 },
+        { name: '월상 980+110개 (₩19,000)', price: 19000 },
+        { name: '월상 1980+260개 (₩37,000)', price: 37000 },
+        { name: '월상 3280+600개 (₩65,000)', price: 65000 },
+        { name: '월상 6480+1600개 (₩119,000)', price: 119000 }
+      ],
+      tw: [
+        { name: '月相觀測卡 (NT$170)', price: 170 },
+        { name: '先驅電台 通行電台 (NT$330)', price: 330 },
+        { name: '先驅電台 寰宇特約 (NT$670)', price: 670 },
+        { name: '月相 60個 (NT$33)', price: 33 },
+        { name: '月相 300+30個 (NT$170)', price: 170 },
+        { name: '月相 980+110個 (NT$490)', price: 490 },
+        { name: '月相 1980+260個 (NT$990)', price: 990 },
+        { name: '月相 3280+600個 (NT$1,690)', price: 1690 },
+        { name: '月相 6480+1600個 (NT$3,290)', price: 3290 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '月相観測パス (610円)', amount: 610, mult: 1 },
+        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
+        { label: '仮天井 80連 (約24,000円)', amount: 24000, mult: 1 },
+        { label: '確定天井 160連 (約48,000円)', amount: 48000, mult: 1 },
+        { label: '完凸S6 (約200,000円)', amount: 200000, mult: 1 }
+      ],
+      en: [
+        { label: 'Lunite Subscription ($4.99)', amount: 4.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: '80-pull Soft Pity ($200.00)', amount: 200.0, mult: 1 },
+        { label: '160-pull Hard Pity ($400.00)', amount: 400.0, mult: 1 }
+      ],
+      ko: [
+        { label: '월상 관측 카드 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '80연차 반천장 (약 ₩240,000)', amount: 240000, mult: 1 },
+        { label: '160연차 확천 (약 ₩480,000)', amount: 480000, mult: 1 }
+      ],
+      tw: [
+        { label: '月相觀測卡 (NT$170)', amount: 170, mult: 1 },
+        { label: '10連抽 (約 NT$750)', amount: 750, mult: 1 },
+        { label: '80抽小保底 (約 NT$6,000)', amount: 6000, mult: 1 },
+        { label: '160抽大保底 (約 NT$12,000)', amount: 12000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: '鳴潮の確定天井（160連）で何ポイント貯まりますか？', a: '160連（約4.8万円）課金した場合、通常時（1%）で約480pt、5倍CP時なら約2,400pt（ゴールドランク到達）還元されます。' },
+        { q: '武器ガチャ（80連確定）の課金でもポイントは付きますか？', a: 'はい。武器ガチャ用の金髄の波模様購入も全額Play Pointsの対象です。' }
+      ],
+      en: [
+        { q: 'Do Wuthering Waves purchases earn Google Play Points?', a: 'Yes! Lunite packs and subscriptions earn Play Points on Android and Google Play Games PC.' }
+      ],
+      ko: [
+        { q: '명조 결제 시 Google Play Points가 적립되나요?', a: '네! 구글 플레이 스토어 결제 시 1,000원당 1pt 이상이 적립됩니다.' }
+      ],
+      tw: [
+        { q: '在鳴潮課金可以累積 Play Points 嗎？', a: '可以！透過 Google Play 商店購買月相或禮包均享有回饋。' }
+      ]
+    }
+  },
+  {
+    id: 'dokkan',
+    icon: '💥',
+    names: { ja: 'ドラゴンボールZ ドッカンバトル', en: 'DRAGON BALL Z DOKKAN BATTLE', ko: '드래곤볼 Z 폭렬격전', tw: '七龍珠爆裂激戰' },
+    shortNames: { ja: 'ドッカン', en: 'Dokkan', ko: '폭렬격전', tw: '爆裂激戰' },
+    descs: {
+      ja: '龍石パック・デイリーカプセル・ドッカンフェスコイン交換・潜在能力100%解放(虹凸)で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Dragon Stones, Daily Capsules, Dokkan Festival Coins, and 100% Rainbow units in Dokkan Battle!',
+      ko: '용석 패키지, 데일리 캡슐, 돗칸 축제 코인 교환, 잠재능력 100% 해방(무지개) 과금 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算七龍珠爆裂激戰龍石、每日膠囊、Dokkan祭硬幣兌換、潛在能力100%解放(彩星)課金可獲得的 Play Points！'
+    },
+    packs: {
+      ja: [
+        { name: 'デイリーカプセル 30日 (1,200円)', price: 1200 },
+        { name: '龍石 1個 (120円)', price: 120 },
+        { name: '龍石 6個 (480円)', price: 480 },
+        { name: '龍石 12個 (980円)', price: 980 },
+        { name: '龍石 30個 (2,000円)', price: 2000 },
+        { name: '龍石 60個 (3,800円)', price: 3800 },
+        { name: '龍石 91個 (5,400円)', price: 5400 },
+        { name: '龍石 セール100個 (4,000円)', price: 4000 }
+      ],
+      en: [
+        { name: 'Daily Capsule 30-Day ($9.99)', price: 9.99 },
+        { name: '1 Dragon Stone ($0.99)', price: 0.99 },
+        { name: '6 Dragon Stones ($3.99)', price: 3.99 },
+        { name: '12 Dragon Stones ($7.99)', price: 7.99 },
+        { name: '32 Dragon Stones ($16.99)', price: 16.99 },
+        { name: '63 Dragon Stones ($31.99)', price: 31.99 },
+        { name: '91 Dragon Stones ($44.99)', price: 44.99 }
+      ],
+      ko: [
+        { name: '데일리 캡슐 30일 (₩12,000)', price: 12000 },
+        { name: '용석 1개 (₩1,200)', price: 1200 },
+        { name: '용석 6개 (₩4,900)', price: 4900 },
+        { name: '용석 12개 (₩9,900)', price: 9900 },
+        { name: '용석 32개 (₩21,000)', price: 21000 },
+        { name: '용석 63개 (₩39,000)', price: 39000 },
+        { name: '용석 91개 (₩55,000)', price: 55000 }
+      ],
+      tw: [
+        { name: '每日膠囊 30天 (NT$330)', price: 330 },
+        { name: '龍石 1個 (NT$33)', price: 33 },
+        { name: '龍石 6個 (NT$130)', price: 130 },
+        { name: '龍石 12個 (NT$270)', price: 270 },
+        { name: '龍石 32個 (NT$590)', price: 590 },
+        { name: '龍石 63個 (NT$1,090)', price: 1090 },
+        { name: '龍石 91個 (NT$1,490)', price: 1490 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'デイリーカプセル (1,200円)', amount: 1200, mult: 1 },
+        { label: '10連分 50個 (約3,000円)', amount: 3000, mult: 1 },
+        { label: '周年・Wフェス (50,000円)', amount: 50000, mult: 1 }
+      ],
+      en: [
+        { label: 'Daily Capsule ($9.99)', amount: 9.99, mult: 1 },
+        { label: '10-pulls 50 Stones ($25.00)', amount: 25.0, mult: 1 },
+        { label: 'Anniversary Banner ($400.00)', amount: 400.0, mult: 1 }
+      ],
+      ko: [
+        { label: '데일리 캡슐 (₩12,000)', amount: 12000, mult: 1 },
+        { label: '10연차 50개 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '주년 대형 이벤트 (₩500,000)', amount: 500000, mult: 1 }
+      ],
+      tw: [
+        { label: '每日膠囊 (NT$330)', amount: 330, mult: 1 },
+        { label: '10連抽 50顆 (約 NT$790)', amount: 790, mult: 1 },
+        { label: '週年慶大活動 (NT$13,000)', amount: 13000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'ドッカンバトルの課金でGoogle Playポイントは貯まりますか？', a: 'はい。龍石パックやデイリーカプセルの購入時にPlay Pointsが付与されます。' }
+      ],
+      en: [
+        { q: 'Do Dokkan Battle purchases earn Play Points?', a: 'Yes! All Dragon Stone packs earn Google Play Points based on your membership tier.' }
+      ],
+      ko: [
+        { q: '폭렬격전 결제 시 포인트가 적립되나요?', a: '네! 용석 및 데일리 캡슐 구매 시 포인트가 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: '七龍珠爆裂激戰課金可以拿點數嗎？', a: '可以！購買龍石禮包與每日膠囊均可累積 Google Play Points。' }
+      ]
+    }
+  },
+  {
+    id: 'arknights',
+    icon: '🛡️',
+    names: { ja: 'アークナイツ (Arknights)', en: 'Arknights', ko: '명일방주', tw: '明日方舟 (Arknights)' },
+    shortNames: { ja: 'アクナイ', en: 'Arknights', ko: '명방', tw: '明日方舟' },
+    descs: {
+      ja: '純正源石・月パス・月間スカウトパック・限定300連天井・潜在6(完凸)で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Originite Prime, Monthly Card, Headhunting Packs, 300-pull spark pity, and Pot 6 in Arknights!',
+      ko: '순수한 원석, 월정액, 월간 헤드헌팅 패키지, 한정 300연차 천장, 풀잠(잠재6) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算明日方舟至純源石、月卡、每月尋訪組合包、限定300抽保底、滿潛(潛能6)課金可獲得的 Play Points！'
+    },
+    packs: {
+      ja: [
+        { name: '月パス (610円)', price: 610 },
+        { name: '月間スカウトパック (3,200円)', price: 3200 },
+        { name: '純正源石 1個 (120円)', price: 120 },
+        { name: '純正源石 6個 (610円)', price: 610 },
+        { name: '純正源石 20個 (1,800円)', price: 1800 },
+        { name: '純正源石 40個 (3,600円)', price: 3600 },
+        { name: '純正源石 66個 (5,900円)', price: 5900 },
+        { name: '純正源石 130個 (12,000円)', price: 12000 }
+      ],
+      en: [
+        { name: 'Monthly Card ($4.99)', price: 4.99 },
+        { name: 'Monthly Headhunting Pack ($24.99)', price: 24.99 },
+        { name: '1 Originite Prime ($0.99)', price: 0.99 },
+        { name: '6 Originite Prime ($4.99)', price: 4.99 },
+        { name: '20 Originite Prime ($14.99)', price: 14.99 },
+        { name: '40 Originite Prime ($29.99)', price: 29.99 },
+        { name: '66 Originite Prime ($49.99)', price: 49.99 },
+        { name: '130 Originite Prime ($99.99)', price: 99.99 }
+      ],
+      ko: [
+        { name: '월정액 (₩5,900)', price: 5900 },
+        { name: '월간 헤드헌팅 패키지 (₩32,000)', price: 32000 },
+        { name: '순수한 원석 1개 (₩1,200)', price: 1200 },
+        { name: '순수한 원석 6개 (₩5,900)', price: 5900 },
+        { name: '순수한 원석 20개 (₩19,000)', price: 19000 },
+        { name: '순수한 원석 40개 (₩37,000)', price: 37000 },
+        { name: '순수한 원석 66개 (₩65,000)', price: 65000 },
+        { name: '순수한 원석 130개 (₩119,000)', price: 119000 }
+      ],
+      tw: [
+        { name: '月卡 (NT$170)', price: 170 },
+        { name: '每月尋訪組合包 (NT$830)', price: 830 },
+        { name: '至純源石 1個 (NT$33)', price: 33 },
+        { name: '至純源石 6個 (NT$170)', price: 170 },
+        { name: '至純源石 20個 (NT$490)', price: 490 },
+        { name: '至純源石 40個 (NT$990)', price: 990 },
+        { name: '至純源石 66個 (NT$1,690)', price: 1690 },
+        { name: '至純源石 130個 (NT$3,290)', price: 3290 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '月パス (610円)', amount: 610, mult: 1 },
+        { label: '月間スカウトパック (3,200円)', amount: 3200, mult: 1 },
+        { label: '10連分 (約3,100円)', amount: 3100, mult: 1 },
+        { label: '限定フェス天井 300連 (約90,000円)', amount: 90000, mult: 1 }
+      ],
+      en: [
+        { label: 'Monthly Card ($4.99)', amount: 4.99, mult: 1 },
+        { label: 'Monthly Headhunting Pack ($24.99)', amount: 24.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: '300-pull Limited Spark ($720.00)', amount: 720.0, mult: 1 }
+      ],
+      ko: [
+        { label: '월정액 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '월간 헤드헌팅 패키지 (₩32,000)', amount: 32000, mult: 1 },
+        { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '한정 300연차 천장 (₩890,000)', amount: 890000, mult: 1 }
+      ],
+      tw: [
+        { label: '月卡 (NT$170)', amount: 170, mult: 1 },
+        { label: '每月尋訪組合包 (NT$830)', amount: 830, mult: 1 },
+        { label: '10連抽 (約 NT$790)', amount: 790, mult: 1 },
+        { label: '限定300抽保底 (約 NT$24,000)', amount: 24000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'アークナイツの限定フェス天井（300連）で何ポイント貯まりますか？', a: '300連（約9万円）課金した場合、通常時（1%）で約900pt、5倍CP時なら約4,500pt（プラチナランク到達）還元されます。' }
+      ],
+      en: [
+        { q: 'Do Arknights purchases earn Google Play Points?', a: 'Yes! Originite Prime and Headhunting packs earn Play Points based on your current tier.' }
+      ],
+      ko: [
+        { q: '명일방주 결제 시 포인트가 적립되나요?', a: '네! 원석 및 패키지 구매 시 구글 플레이 포인트가 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: '明日方舟課金可以累積 Play Points 嗎？', a: '可以！購買源石與尋訪禮包皆享有會員點數回饋。' }
       ]
     }
   }
@@ -1436,6 +1812,16 @@ function generateGamePageHtml(game, localeKey) {
                       <div class="rank-bar-bg">
                           <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
+                  </div>
+
+                  <!-- シェア・リンクボタン -->
+                  <div class="game-share-actions">
+                      <button type="button" id="btn-share-x" class="game-share-btn x-btn">
+                          <span>${loc.shareBtnText}</span>
+                      </button>
+                      <button type="button" id="btn-copy-link" class="game-share-btn copy-btn">
+                          <span>${loc.copyLinkText}</span>
+                      </button>
                   </div>
 
                   <!-- ギフトカード収益化CTAカード -->

@@ -407,6 +407,61 @@ body {
   gap: 4px;
 }
 
+
+/* シェア＆リンクコピーアクション */
+.game-share-actions {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0;
+  flex-wrap: wrap;
+}
+
+.game-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 42px;
+  user-select: none;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+}
+
+.game-share-btn.x-btn {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.game-share-btn.x-btn:hover {
+  background: #1e293b;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+}
+
+.game-share-btn.copy-btn {
+  background: #ffffff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.game-share-btn.copy-btn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.game-share-btn.copied {
+  background: #059669;
+  color: #ffffff;
+  border-color: #059669;
+}
+
 @media (max-width: 768px) {
   .game-page-container {
     flex-direction: column;
@@ -427,6 +482,13 @@ body {
   .result-main-grid {
     grid-template-columns: 1fr 1fr;
   }
+  .game-share-actions {
+    flex-direction: column;
+  }
+  .game-share-btn {
+    width: 100%;
+    box-sizing: border-box;
+  }
   .game-giftcard-cta {
     flex-direction: column;
     align-items: flex-start;
@@ -437,3 +499,4 @@ body {
     box-sizing: border-box;
   }
 }
+

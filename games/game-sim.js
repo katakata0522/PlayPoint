@@ -156,6 +156,40 @@
 
         const presetBtns = document.querySelectorAll('.preset-btn');
 
+        // URLクエリパラメータの初期読み込み (Deep Linking)
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramAmount = urlParams.get('amount');
+            const paramMult = urlParams.get('mult');
+            const paramStatus = urlParams.get('status');
+
+            if (paramAmount !== null && !isNaN(parseFloat(paramAmount))) {
+                if (customAmountInput) customAmountInput.value = parseFloat(paramAmount);
+                if (packSelect) {
+                    let matched = false;
+                    for (let i = 0; i < packSelect.options.length; i++) {
+                        if (parseFloat(packSelect.options[i].value) === parseFloat(paramAmount)) {
+                            packSelect.selectedIndex = i;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        packSelect.value = 'custom';
+                        if (countInput) countInput.style.display = 'none';
+                    }
+                }
+            }
+            if (paramMult !== null && multSelect) {
+                multSelect.value = paramMult;
+            }
+            if (paramStatus !== null && statusSelect) {
+                statusSelect.value = paramStatus;
+            }
+        } catch (e) {
+            console.error('Failed to parse URL query params', e);
+        }
+
         // 初期ロード時の双方向同期判定
         if (customAmountInput && packSelect) {
             const initVal = parseFloat(customAmountInput.value) || 0;
@@ -242,6 +276,61 @@
                     ctaSavingsEl.style.display = 'none';
                 }
             }
+        }
+
+        // 𝕏 (Twitter) シェア機能
+        const btnShareX = document.getElementById('btn-share-x');
+        if (btnShareX) {
+            btnShareX.addEventListener('click', () => {
+                const amount = customAmountInput ? (parseFloat(customAmountInput.value) || 0) : 0;
+                const mult = multSelect ? multSelect.value : '1';
+                const status = statusSelect ? statusSelect.value : '1.0';
+                const res = calculateGamePoints(amount, parseFloat(mult), parseFloat(status), cfg);
+
+                const currentTitle = document.querySelector('h1.game-title') ? document.querySelector('h1.game-title').textContent : 'PlayPoint';
+                const shareUrl = `${window.location.origin}${window.location.pathname}?amount=${amount}&mult=${mult}&status=${status}`;
+
+                let shareText = '';
+                if (cfg.lang === 'ja') {
+                    shareText = `【${currentTitle}】で ${cfg.currencyPrefix}${amount.toLocaleString()}${cfg.currencySuffix} 課金すると、Google Playポイントが【約 ${res.points.toLocaleString()} pt】貯まる！💰\n#Playポイント計算機 #GooglePlayPoints\n`;
+                } else if (cfg.lang === 'ko') {
+                    shareText = `【${currentTitle}】 ${cfg.currencyPrefix}${amount.toLocaleString()}${cfg.currencySuffix} 결제 시 Google Play Points 【약 ${res.points.toLocaleString()} pt】 적립! 💰\n#구글플레이포인트 #PlayPoints\n`;
+                } else if (cfg.lang === 'zh-TW') {
+                    shareText = `【${currentTitle}】課金 ${cfg.currencyPrefix}${amount.toLocaleString()}${cfg.currencySuffix}，預計可獲得 Google Play Points【約 ${res.points.toLocaleString()} 點】！💰\n#GooglePlayPoints #手遊課金\n`;
+                } else {
+                    shareText = `Calculated Google Play Points for ${currentTitle}: Spending ${cfg.currencyPrefix}${amount.toLocaleString()}${cfg.currencySuffix} earns ~${res.points.toLocaleString()} pts! 💰\n#GooglePlayPoints #Gaming\n`;
+                }
+
+                const twitterIntent = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+                window.open(twitterIntent, '_blank', 'noopener,noreferrer');
+            });
+        }
+
+        // 結果リンクコピー機能
+        const btnCopyLink = document.getElementById('btn-copy-link');
+        if (btnCopyLink) {
+            btnCopyLink.addEventListener('click', () => {
+                const amount = customAmountInput ? (parseFloat(customAmountInput.value) || 0) : 0;
+                const mult = multSelect ? multSelect.value : '1';
+                const status = statusSelect ? statusSelect.value : '1.0';
+                const shareUrl = `${window.location.origin}${window.location.pathname}?amount=${amount}&mult=${mult}&status=${status}`;
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        const origHtml = btnCopyLink.innerHTML;
+                        btnCopyLink.classList.add('copied');
+                        btnCopyLink.innerHTML = '<span>✅ コピー完了！</span>';
+                        setTimeout(() => {
+                            btnCopyLink.classList.remove('copied');
+                            btnCopyLink.innerHTML = origHtml;
+                        }, 2500);
+                    }).catch(() => {
+                        prompt('URL:', shareUrl);
+                    });
+                } else {
+                    prompt('URL:', shareUrl);
+                }
+            });
         }
 
         // プリセットボタンクリック
@@ -336,3 +425,4 @@
         initGameSimulator();
     }
 })();
+
