@@ -23,6 +23,35 @@
     <link rel="icon" href="../favicon.svg">
 <link rel="stylesheet" href="style.css?v=e3d7cc6398">
     <link rel="stylesheet" href="index-compact.css?v=5fe8b4374f">
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/articles/*" },
+              { "href_matches": "/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
     <!-- Inherit generic styles if needed or use isolated blog styles -->
 
     <!-- JSON-LD Structured Data -->

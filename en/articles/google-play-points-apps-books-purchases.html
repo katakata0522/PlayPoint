@@ -25,6 +25,35 @@
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html"},"headline":"Do Paid Apps, Games and Books Earn Google Play Points?","description":"See which Google Play purchases can earn Play Points in the United States, including paid apps, games, in-app purchases, subscriptions and books, plus tax and account checks.","inLanguage":"en","datePublished":"2026-08-04","dateModified":"2026-08-04","image":"https://playpoint-sim.com/ogp.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points Calculator","url":"https://playpoint-sim.com/"}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do paid Android apps earn Play Points?","acceptedAnswer":{"@type":"Answer","text":"Eligible paid apps and games bought through Google Play with the enrolled account can earn Play Points."}},{"@type":"Question","name":"Do Google Play Books earn points in the US?","acceptedAnswer":{"@type":"Answer","text":"Google lists books as an eligible purchase category and the US level table includes book multipliers, but individual offers and eligibility should be checked in Google Play."}},{"@type":"Question","name":"Does downloading a free game always earn points?","acceptedAnswer":{"@type":"Answer","text":"No. A free download earns points only when a specific install promotion or quest is shown and its conditions are completed."}}]}</script>
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/en/articles/*" },
+              { "href_matches": "/en/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 <main class="main-card">
@@ -100,4 +129,5 @@
 <script src="/js/third-party.js?v=849a63f8c7"></script>
 </body>
 </html>
+
 

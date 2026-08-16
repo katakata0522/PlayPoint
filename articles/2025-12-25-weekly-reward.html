@@ -26,7 +26,10 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-weekly-reward.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/weekly-reward.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script type="application/ld+json">
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
+
+    <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Article",
@@ -56,7 +59,7 @@
   }
 }
   </script>
-  <script type="application/ld+json">
+    <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -104,8 +107,36 @@
   ]
 }
   </script>
-    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
-    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/articles/*" },
+              { "href_matches": "/status/*" },
+              { "href_matches": "/blog/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body data-article-category="ランク">
 

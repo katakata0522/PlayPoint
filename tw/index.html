@@ -43,6 +43,35 @@
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
     <link rel="stylesheet" href="../style.css?v=67087e072a">
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/tw/articles/*" },
+              { "href_matches": "/tw/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

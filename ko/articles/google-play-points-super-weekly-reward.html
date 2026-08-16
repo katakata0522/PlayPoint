@@ -30,6 +30,35 @@
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Super Weekly Prize는 모든 Gold 이상 계정에서 이용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"보장되지 않습니다. 본인의 Play 국가와 Google 계정에 Super Weekly Prize 카드 및 조건이 표시될 때 현재 이용 가능하다고 판단하는 편이 정확합니다."}},{"@type":"Question","name":"Super Ticket을 사용하면 처음 받은 리워드도 유지되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 공식 안내상 Super Ticket으로 다시 도전하면 이전 리워드는 유지되지 않습니다."}},{"@type":"Question","name":"Super Ticket은 얼마나 자주 지급되나요?","acceptedAnswer":{"@type":"Answer","text":"현재 공식 안내는 Play Pass 구독자와 Diamond 회원은 30일마다 1장, Platinum 회원은 90일마다 1장이라고 설명합니다. 실제 제공은 계정 화면을 확인해야 합니다."}}]}
   </script>
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/ko/articles/*" },
+              { "href_matches": "/ko/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 <main class="main-card">
@@ -55,3 +84,4 @@
 <script src="/js/intent-tracking.js?v=e101478b3b"></script><script src="/js/third-party.js?v=849a63f8c7"></script>
 </body>
 </html>
+

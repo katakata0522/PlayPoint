@@ -30,6 +30,35 @@
   <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"所有 Gold 以上帳號都能使用 Super Weekly Prize 嗎？","acceptedAnswer":{"@type":"Answer","text":"不保證。自己的 Play 國家／地區與 Google 帳號顯示 Super Weekly Prize 卡片及條款時，才適合判定目前可用。"}},{"@type":"Question","name":"使用 Super Ticket 後可以保留第一次獎勵嗎？","acceptedAnswer":{"@type":"Answer","text":"不可以。依官方說明，使用 Super Ticket 再次挑戰時不會保留原本獎勵。"}},{"@type":"Question","name":"Super Ticket 多久會提供一次？","acceptedAnswer":{"@type":"Answer","text":"目前官方說明為 Play Pass 訂閱者與 Diamond 會員每 30 天一張，Platinum 會員每 90 天一張；實際仍須以帳號畫面為準。"}}]}
   </script>
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/tw/articles/*" },
+              { "href_matches": "/tw/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 <main class="main-card">
@@ -55,3 +84,4 @@
 <script src="/js/intent-tracking.js?v=e101478b3b"></script><script src="/js/third-party.js?v=849a63f8c7"></script>
 </body>
 </html>
+

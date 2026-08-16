@@ -29,6 +29,35 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Play Points 可以轉到另一個帳號嗎？","acceptedAnswer":{"@type":"Answer","text":"不行。依 Google 官方說明，點數不能在帳號之間轉移，也不能轉給其他人。"}},{"@type":"Question","name":"使用家庭付款方式時，付款方式擁有人會得到點數嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。重點是由哪個已加入 Play Points 的帳號完成購買，家庭成員的購買點數不會共享。"}},{"@type":"Question","name":"加入 Play Points 前的購買可以補點數嗎？","acceptedAnswer":{"@type":"Answer","text":"不行。加入前完成的購買不會事後補發點數。"}}]}
   </script>
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/tw/articles/*" },
+              { "href_matches": "/tw/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 <main class="main-card">
@@ -53,4 +82,5 @@
 <script src="/js/intent-tracking.js?v=e101478b3b"></script><script src="/js/third-party.js?v=849a63f8c7"></script>
 </body>
 </html>
+
 

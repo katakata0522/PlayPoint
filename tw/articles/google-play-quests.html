@@ -30,6 +30,35 @@
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"每個人都會收到相同的 Google Play 任務嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。任務是否顯示、步驟與獎勵可能依帳號設定、Play Points 等級與活動而不同。"}},{"@type":"Question","name":"使用 Play Points 也算任務中的購買嗎？","acceptedAnswer":{"@type":"Answer","text":"不算。使用或兌換點數不會產生新的 Play Points，因此不算 Play Points 獎勵任務中的購買。"}},{"@type":"Question","name":"退款會讓已完成的任務失效嗎？","acceptedAnswer":{"@type":"Answer","text":"有可能。符合條件的交易退款後，任務可能回到未完成，已領取的獎勵也可能被取消。"}}]}
   </script>
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/tw/articles/*" },
+              { "href_matches": "/tw/status/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
 <main class="main-card">
@@ -61,4 +90,5 @@
 <script src="/js/intent-tracking.js?v=e101478b3b"></script><script src="/js/third-party.js?v=849a63f8c7"></script>
 </body>
 </html>
+
 

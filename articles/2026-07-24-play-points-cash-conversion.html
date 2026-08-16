@@ -26,7 +26,10 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-07-24-play-points-cash-conversion.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/getting-started.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script type="application/ld+json">
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
+
+    <script type="application/ld+json">
   {
     "@context":"https://schema.org",
     "@type":"Article",
@@ -41,11 +44,39 @@
     "publisher":{"@type":"Organization","name":"Playポイント計算機","url":"https://playpoint-sim.com/","logo":{"@type":"ImageObject","url":"https://playpoint-sim.com/favicon.svg"}}
   }
   </script>
-  <script type="application/ld+json">
+    <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Google Play Pointsは現金化できますか？","acceptedAnswer":{"@type":"Answer","text":"できません。Google Play Pointsを現金、PayPay残高、銀行口座へ移す公式機能はありません。"}},{"@type":"Question","name":"交換先はどれを選ぶのが最適ですか？","acceptedAnswer":{"@type":"Answer","text":"全員に共通する最適解はありません。現在のアカウントに表示される交換先から、期限内に実際に使う予定と払い戻し条件を確認して選びます。"}},{"@type":"Question","name":"交換後に取り消しや払い戻しはできますか？","acceptedAnswer":{"@type":"Answer","text":"交換先によって異なります。アプリ内・ゲーム内アイテムや寄付は払い戻し不可で、クーポンや購入時のポイント利用は取引状況により返却条件が異なります。"}}]}
 </script>
-    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ],
+      "prerender": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/articles/*" },
+              { "href_matches": "/status/*" },
+              { "href_matches": "/blog/*" },
+              { "not": { "selector_matches": "[rel~=nofollow]" } }
+            ]
+          },
+          "eagerness": "conservative"
+        }
+      ]
+    }
+    </script>
 </head>
 <body data-article-category="使い方">
 
