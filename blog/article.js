@@ -86,7 +86,7 @@
         if (!document.querySelector('link[data-article-source-style]')) {
             const stylesheet = document.createElement('link');
             stylesheet.rel = 'stylesheet';
-            stylesheet.href = '../articles/source-notice.css?v=b37d38d306';
+            stylesheet.href = '../articles/source-notice.css?v=3c2ec22615';
             stylesheet.dataset.articleSourceStyle = 'true';
             document.head.appendChild(stylesheet);
         }
@@ -127,7 +127,6 @@
         }
         content.insertBefore(prompt, content.firstChild);
     }
-
 
     function getContextualGuides() {
         const path = window.location.pathname;

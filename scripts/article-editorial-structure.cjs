@@ -209,11 +209,11 @@ function applyEditorialStructure(rootDir, modifiedDate) {
     if (config.answer) {
       editorialHtml = `${renderAnswer(config.answer)}\n            ${knowledge}`;
       html = html.replace(
-        /(<article class="content">)/,
+        /(<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>)/i,
         `$1\n            <!-- editorial-summary:start -->\n            ${editorialHtml}\n            <!-- editorial-summary:end -->`
       );
     } else {
-      const answerBoxPattern = /(<section class="answer-box"[\s\S]*?<\/section>)/;
+      const answerBoxPattern = /(<section\b[^>]*class="[^"]*\banswer-box\b[^"]*"[^>]*>[\s\S]*?<\/section>)/i;
       if (!answerBoxPattern.test(html)) {
         throw new Error(`既存の即答欄がありません: ${relativePath}`);
       }

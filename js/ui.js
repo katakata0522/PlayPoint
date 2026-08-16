@@ -44,12 +44,12 @@ function setResultActionsVisibility(targetElement, isVisible) {
 
 export const UI = {
     toastTimerId: null,
-    
+
     // トースト通知を表示するメソッド
     showToast(message, type = 'normal') {
         const toast = document.getElementById('toast');
         if (!toast) return;
-        
+
         toast.textContent = message;
         toast.className = 'toast show';
         if (type === 'error') {
@@ -189,7 +189,7 @@ export const UI = {
             targetElement.innerHTML = content;
         }
         targetElement.classList.add(CONSTANTS.CLASS_HAS_RESULT);
-        
+
         // 正常な計算結果表示時のアニメーション処理
         if (!isError) {
             const targets = targetElement.querySelectorAll('.count-target');
@@ -263,7 +263,7 @@ window.onerror = function(message, source, lineno, colno, error) {
     if (UI && typeof UI.showToast === 'function') {
         UI.showToast("予期せぬエラーが発生しました。ページをリロードしてみてください。", 'error');
     }
-    return true; 
+    return true;
 };
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {

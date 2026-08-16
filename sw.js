@@ -1,22 +1,22 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260816_1927-speculation-rules';
+const CACHE_NAME = 'playpoint-calc-v20260816_1939-f417c573';
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
-  './style.css?v=67087e072a',
+  './style.css?v=460bb43865',
   './favicon.svg',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './js/analytics-core.js?v=54c7b8621b',
+  './js/analytics-core.js?v=6938dbdfa8',
   './js/config.js',
   './js/ui.js',
   './js/calculator.js',
   './js/share.js',
-  './js/main-calculator-ui.js?v=fe1ecf8545',
-  './js/main.js?v=bca2d17243',
+  './js/main-calculator-ui.js?v=be4a5a6b85',
+  './js/main.js?v=e6baea048c',
   './js/web-vitals.js',
   './js/region-navigation.js',
   './js/language-suggestion.js',

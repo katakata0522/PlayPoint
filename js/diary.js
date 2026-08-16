@@ -124,19 +124,19 @@ export const DIARY = {
                 <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
                 <button data-week="${weekNum}">${texts.saveButton}</button>
             `;
-            
+
             // オートセーブ用のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
             const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
             const saveBtn = row.querySelector(`button[data-week="${weekNum}"]`);
-            
+
             const triggerAutoSave = () => {
                 this.handleDiarySave({ target: saveBtn }, true); // サイレント保存
             };
-            
+
             pointsInput.addEventListener('blur', triggerAutoSave);
             prizeSelect.addEventListener('change', triggerAutoSave);
-            
+
             STATE.dom.weekInputs.appendChild(row);
         });
     },
@@ -238,7 +238,7 @@ export const DIARY = {
             console.error("日記データの読み込みに失敗しました:", e);
         }
         const exportString = data ? data : "{}";
-        
+
         navigator.clipboard.writeText(exportString)
             .then(() => {
                 UI.showToast(texts.exportSuccess);
@@ -280,53 +280,53 @@ export const DIARY = {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const rawData = STATE.dom.diaryBackupData.value.trim();
-        
+
         if (!rawData) {
             UI.showToast(texts.errorEmptyBackup || "復元するデータが空です。", 'error');
             return;
         }
-        
+
         try {
             const parsed = JSON.parse(rawData);
             if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
                 throw new Error("Invalid root data structure");
             }
-            
+
             const validatedData = {};
-            
+
             // 厳格なスキーマ検証と値のクレンジング (XSS防御)
             for (const [yearStr, monthData] of Object.entries(parsed)) {
                 const year = parseInt(yearStr, 10);
-                if (isNaN(year) || year < 2020 || year > 2100) continue; 
-                
+                if (isNaN(year) || year < 2020 || year > 2100) continue;
+
                 if (typeof monthData !== 'object' || monthData === null || Array.isArray(monthData)) continue;
                 validatedData[year] = {};
-                
+
                 for (const [monthStr, weekData] of Object.entries(monthData)) {
                     const month = parseInt(monthStr, 10);
                     if (isNaN(month) || month < 1 || month > 12) continue;
-                    
+
                     if (typeof weekData !== 'object' || weekData === null || Array.isArray(weekData)) continue;
                     validatedData[year][month] = {};
-                    
+
                     for (const [weekStr, valueObj] of Object.entries(weekData)) {
                         const week = parseInt(weekStr, 10);
                         if (isNaN(week) || week < 1 || week > 5) continue;
-                        
+
                         if (typeof valueObj !== 'object' || valueObj === null) continue;
-                        
+
                         const rawPoints = String(valueObj.points || '').trim();
                         const pointsNum = parseInt(rawPoints, 10);
                         const points = (isNaN(pointsNum) || pointsNum < 0) ? '' : String(pointsNum);
-                        
+
                         const rawPrize = String(valueObj.prize || '').trim();
                         const prize = this.sanitizeString(rawPrize);
-                        
+
                         validatedData[year][month][week] = { points, prize };
                     }
                 }
             }
-            
+
             if (!this.saveDiaryData(validatedData)) return;
             this.renderDiary();
             if (STATE.dom.backupInputWrapper) {

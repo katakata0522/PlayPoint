@@ -250,19 +250,19 @@
                 lang = lang.toLowerCase().split('-')[0];
                 if (I18N[lang]) return lang;
             }
-            
+
             const htmlLang = document.documentElement.lang;
             if (htmlLang) {
                 const normalizedHtmlLang = htmlLang.toLowerCase().split('-')[0];
                 if (I18N[normalizedHtmlLang]) return normalizedHtmlLang;
             }
-            
+
             const navLang = navigator.language;
             if (navLang) {
                 const normalizedNavLang = navLang.toLowerCase().split('-')[0];
                 if (I18N[normalizedNavLang]) return normalizedNavLang;
             }
-            
+
             return 'ja';
         }
 
@@ -287,10 +287,10 @@
 
             const currentVal = currentStatusSelect.value;
             const targetObj = t.targets[currentVal];
-            
+
             if (targetObj && targetObj.val > 0) {
                 targetDisplay.textContent = `${targetObj.label} (${targetObj.val.toLocaleString(lang === 'en' ? 'en-US' : 'ja-JP')}pt)`;
-                
+
                 // 矛盾防止の最大必要ポイント算出
                 let prevVal = 0;
                 const keys = Object.keys(t.targets);
@@ -586,10 +586,10 @@
                             ${multiplierOptions}
                         </select>
                     </div>
-                    
+
                     <button class="calc-btn" id="calculate" type="button">${t.calcBtnMain}</button>
                     <output id="result" aria-live="polite">${t.initOutputMain}</output>
-                    
+
                     <div class="footer-link">
                         <a href="${shareUrl}" target="_blank" rel="noopener noreferrer">${t.linkText} →</a>
                     </div>

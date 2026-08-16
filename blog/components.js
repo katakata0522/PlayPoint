@@ -17,14 +17,14 @@
         if (consentManagerPromise) return consentManagerPromise;
 
         consentManagerPromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/consent.js?v=55813d3bcb"]');
+            const existing = document.querySelector('script[src*="/js/consent.js?v=dc975a5e38"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=55813d3bcb';
+            script.src = rootPath + 'js/consent.js?v=dc975a5e38';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -38,14 +38,14 @@
         if (analyticsCorePromise) return analyticsCorePromise;
 
         analyticsCorePromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=54c7b8621b"]');
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=6938dbdfa8"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/analytics-core.js?v=54c7b8621b';
+            script.src = rootPath + 'js/analytics-core.js?v=6938dbdfa8';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -142,7 +142,7 @@
         if (document.querySelector('link[data-common-components-style]')) return;
         const stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = rootPath + 'blog/common-components.css?v=fd92d73b24';
+        stylesheet.href = rootPath + 'blog/common-components.css?v=8dcb8215e7';
         stylesheet.dataset.commonComponentsStyle = 'true';
         document.head.appendChild(stylesheet);
     }
@@ -158,8 +158,8 @@
         // Allow relative path adjustment if needed (default to absolute/root-relative for now based on file analysis)
         // Since files are in /articles/, links need to go up one level or use absolute URLs
         // The existing code used absolute URLs (https://playpoint-sim.com/), we will preserve that for consistency with current production
-        // OR use relative paths if running locally. Let's stick to the existing absolute URLs as seen in the file, 
-        // BUT for local development, it might be better to handle relative paths. 
+        // OR use relative paths if running locally. Let's stick to the existing absolute URLs as seen in the file,
+        // BUT for local development, it might be better to handle relative paths.
         // Let's use relative paths for better local preview support, based on where the script is running.
 
         // --- Header Rendering ---

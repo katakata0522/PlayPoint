@@ -102,7 +102,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=54c7b8621b`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=6938dbdfa8`)
                 .then(() => window.PlayPointAnalytics);
         }
         return analyticsCorePromise;
@@ -112,7 +112,7 @@
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
             const prefix = getCurrentAssetPrefix();
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=55813d3bcb`)
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=dc975a5e38`)
                 .then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;

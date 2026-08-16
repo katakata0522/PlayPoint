@@ -4,7 +4,7 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
-import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=fe1ecf8545';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=be4a5a6b85';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 import {
     applyRegionFromPath,
@@ -135,7 +135,7 @@ export function init() {
         'language-suggestion-banner', 'switch-to-en-btn', 'close-lang-banner-btn',
         'register-google-cal-btn', 'download-ical-btn'
     ];
-    
+
     ids.forEach(id => {
         const key = id.replace(/-([a-z])/g, g => g[1].toUpperCase());
         const element = document.getElementById(id);
@@ -171,18 +171,18 @@ export function init() {
             }
         });
     });
-    
+
     // ヘルプツールチップ
     document.querySelectorAll(CONSTANTS.SELECTOR_INFO_BTN).forEach(button => {
         button.addEventListener('click', (e) => UI.toggleTooltip(e));
         button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); UI.toggleTooltip(e); } });
     });
-    
+
     // 言語切り替え
     document.querySelectorAll(".region-switch button").forEach(button => button.addEventListener('click', (e) => switchRegion(e.currentTarget.dataset.region)));
 
     document.addEventListener('click', trackResultLinkClicks);
-    
+
     // ツールチップを閉じるグローバルリスナー
     document.addEventListener('click', (e) => { if (!e.target.closest(CONSTANTS.SELECTOR_INFO_BTN) && !e.target.closest(CONSTANTS.SELECTOR_TOOLTIP_BOX)) UI.closeAllTooltips(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') UI.closeAllTooltips(); });

@@ -17,7 +17,7 @@
 
         /**
          * Escape HTML characters to prevent XSS
-         * @param {string} text 
+         * @param {string} text
          * @returns {string}
          */
         escapeHtml: function (text) {
@@ -35,7 +35,7 @@
 
         /**
          * Format date string from YYYY-MM-DD to YYYY.MM.DD
-         * @param {string} dateStr 
+         * @param {string} dateStr
          * @returns {string}
          */
         formatDate: function (dateStr) {
@@ -45,7 +45,7 @@
 
         /**
          * Handle image loading errors by setting a fallback placeholder
-         * @param {HTMLImageElement} img 
+         * @param {HTMLImageElement} img
          */
         handleImageError: function (img) {
             img.onerror = null; // Prevent infinite loop

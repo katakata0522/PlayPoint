@@ -529,12 +529,12 @@ export const CALC = {
         const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
-        
+
         if (neededPoints === null || neededPoints <= 0) return UI.displayResult(STATE.dom.result, texts.errorNeededPoints || texts.errorInput, true);
         if (!targetStatusLabel) return UI.displayResult(STATE.dom.result, texts.errorTargetStatus || texts.errorInput, true);
         if (finalRate === null || finalRate <= 0) return UI.displayResult(STATE.dom.result, texts.errorRate, true);
         if (maxNeededPoints === null || neededPoints > maxNeededPoints) return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
-        
+
         const finalNeededPoints = neededPoints;
         const spendUnit = config.spendUnit || 100;
 
@@ -633,7 +633,7 @@ export const CALC = {
                     </aside>
                 `
                 : '';
-            
+
             resultContent = `
                 <dl>
                     <dt>${texts.resultLabelNeededPoints}</dt>
@@ -660,7 +660,7 @@ export const CALC = {
                 </details>
             `;
         }
-        
+
         UI.displayResult(STATE.dom.result, resultContent);
         UI.displayResultDetails(resultDetailsContent);
         STATE.dom.result.dataset.requiredYen = totalAmountNeeded;
@@ -683,17 +683,17 @@ export const CALC = {
         const rateDetails = this.getRateDetails(STATE.dom.reverseBaseRate, STATE.dom.reverseStatus, STATE.dom.reverseMultiplier);
         const finalRate = rateDetails ? rateDetails.finalRate : null;
         const rateSourceLabel = this.getRateSourceLabel(rateDetails, texts);
-        
+
         if (amountYen === null || finalRate === null) return UI.displayResult(STATE.dom.reverseResult, texts.errorInputReverse, true);
         if (finalRate <= 0) return UI.displayResult(STATE.dom.reverseResult, texts.errorRateReverse, true);
-        
+
         const spendUnit = config.spendUnit || 100;
         const { earnedPoints, earnedPointsRaw } = CALC_PURE.computeReverseResult({
             amountYen,
             finalRate,
             spendUnit
         });
-        
+
         const resultContent = `
             <dl>
                 <dt>${texts.resultLabelEarnedPoints}</dt>
@@ -702,7 +702,7 @@ export const CALC = {
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
             <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${texts.roundingNoteReverse}</p>
         `;
-        
+
         UI.displayResult(STATE.dom.reverseResult, resultContent);
         STATE.dom.reverseResult.dataset.earnedPoints = String(earnedPoints);
         STATE.dom.reverseResult.dataset.earnedPointsRaw = earnedPointsRaw.toFixed(2);
@@ -730,18 +730,18 @@ export const CALC = {
         const requiredYen = STATE.dom.result.dataset.requiredYen;
         const targetStatusLabel = STATE.dom.result.dataset.targetStatusLabel;
         if (!STATE.dom.result.classList.contains(CONSTANTS.CLASS_HAS_RESULT) || !requiredYen || !targetStatusLabel) return;
-        
+
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
         const shareUrl = STATE.dom.result.dataset.shareUrl || 'https://playpoint-sim.com/';
-        
+
         const textToCopy = texts.copyResultTemplate
             .replace('{status}', targetStatusLabel)
             .replace('{yen}', formattedYen)
             .replace('{symbol}', config.currencySymbol)
             .replace('{url}', shareUrl);
-        
+
         navigator.clipboard.writeText(textToCopy)
             .then(() => {
                 ANALYTICS.track('share_url_copied', {
@@ -759,7 +759,7 @@ export const CALC = {
         const requiredYen = STATE.dom.result.dataset.requiredYen;
         const targetStatusLabel = STATE.dom.result.dataset.targetStatusLabel;
         if (!requiredYen || !targetStatusLabel) return;
-        
+
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const formattedYen = parseFloat(requiredYen).toLocaleString(config.lang);
@@ -780,7 +780,7 @@ export const CALC = {
         const earnedPoints = STATE.dom.reverseResult.dataset.earnedPoints;
         const amountYen = STATE.dom.reverseResult.dataset.amountYen;
         if (!earnedPoints || !amountYen) return;
-        
+
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const formattedPoints = parseFloat(earnedPoints).toLocaleString(config.lang);

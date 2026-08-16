@@ -236,7 +236,6 @@
         return adContainer;
     }
 
-
     const dom = {
         grid: document.getElementById('article-grid'),
         pagination: document.getElementById('pagination'),
@@ -814,7 +813,6 @@
 
         // Accessibility: Announce updates
         dom.grid.setAttribute('aria-live', 'polite');
-
 
         let articleIndex = 0;
         const renderThumbnails = shouldRenderArticleThumbnails();
