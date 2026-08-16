@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -25,8 +26,6 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-08-05-play-points-multiplier-stacking.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/campaign.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -105,31 +104,67 @@
   ]
 }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="キャンペーン">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">倍率・計算ルール</span>
-    <h1>Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</h1>
-    <p class="hero-meta">2026/08/05 公開 ・ 読了 8分</p>
-  </header>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
+        </div>
+    </nav>
 
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：通常率とキャンペーンを勝手に足し算・掛け算しない</h2>
-      <p>Google公式の計算例では、ランクの通常獲得率とスペシャルオファーを比べ、より高い獲得率が適用されます。シルバーの1.25ポイント/100円と、3ポイント/100円のオファーが同時にある場合、4.25ポイントではなく3ポイントです。</p>
-      <p>複数のプロモーションは併用されず、対象購入には利用できる最も高い獲得率が適用されます。「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があるため、表示単位、対象商品、期間、開始操作を確認してから計算してください。</p>
-    </section>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=キャンペーン">キャンペーン</a> <span>&gt;</span>
+            <span>Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -137,124 +172,240 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section" id="relationship">
-      <h2>通常獲得率とスペシャルオファーの関係</h2>
-      <p>Google公式の例では、シルバーの通常獲得率が100円ごとに1.25ポイントでも、対象ゲームに「100円ごとに3ポイント」のスペシャルオファーがある場合は、より高い3ポイントの獲得率が適用されます。</p>      <div class="table-card">
-        <table>
-          <caption>100円の対象購入での考え方</caption>
-          <thead><tr><th>表示</th><th>誤った計算</th><th>公式例に沿う見方</th></tr></thead>
-          <tbody>
-            <tr><td>シルバー1.25＋3ポイント/100円オファー</td><td>1.25＋3＝4.25ポイント</td><td>高い方の3ポイント</td></tr>
-            <tr><td>「3倍」など倍率表記</td><td>1.25＋3、または1.25×3と自動計算する</td><td>プロモーションに記載された最終獲得率・計算条件を確認</td></tr>
-            <tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と計算</td><td>対象となる最も高い獲得率を確認</td></tr>
-          </tbody>
-        </table>
-      </div>      <p><strong>「3倍」と「100円ごとに3ポイント」は同じ意味とは限りません。</strong> 画面に書かれた単位と、プロモーション固有の利用規約を先に確認します。</p>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">倍率・計算ルール</span>
+                <h1 class="article-title">Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</h1>
+                <p class="hero-meta">2026/08/05 公開 ・ 読了 8分</p>
+            </header>
 
-    <section class="section" id="calculator">
-      <h2>計算機では直接獲得率と倍率を使い分ける</h2>
-      <p>Playポイント計算機には、ステータスの通常獲得率、キャンペーン倍率、直接入力する獲得率があります。表示内容に合わせて次のように使います。</p>      <div class="table-card">
-        <table>
-          <caption>入力方法の選び方</caption>
-          <thead><tr><th>Google Playの表示</th><th>入力方法</th><th>例</th></tr></thead>
-          <tbody>
-            <tr><td>「通常の3倍」かつ基準レートへの乗算と規約に明記</td><td>倍率へ3を入力</td><td>表示・規約で計算基準を確認して使用</td></tr>
-            <tr><td>「100円ごとに5ポイント」などレートが明記</td><td>獲得率へ5を直接入力</td><td>ランク通常率より高い5を使用</td></tr>
-            <tr><td>複数のオファーやレートが見える</td><td>適用対象の最終レートを確認</td><td>同じ購入では併用せず、対象となる最も高い獲得率を使用</td></tr>
-          </tbody>
-        </table>
-      </div>      <p><a href="/?mode=main&amp;status=1&amp;target=silver&amp;points=250&amp;multiplier=3">3倍条件でシルバーまでの必要額を試算する</a></p>
-      <p><a href="./2026-08-05-fastest-silver.html">購入予定とキャンペーンを組み合わせて、シルバーをお得に目指す手順を見る</a></p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：通常率とキャンペーンを勝手に足し算・掛け算しない</h2>
+<p>Google公式の計算例では、ランクの通常獲得率とスペシャルオファーを比べ、より高い獲得率が適用されます。シルバーの1.25ポイント/100円と、3ポイント/100円のオファーが同時にある場合、4.25ポイントではなく3ポイントです。</p>
+<p>複数のプロモーションは併用されず、対象購入には利用できる最も高い獲得率が適用されます。「通常の3倍」と「100円ごとに3ポイント」は意味が異なる場合があるため、表示単位、対象商品、期間、開始操作を確認してから計算してください。</p>
+</section>
 
-    <section class="section" id="rounding">
-      <h2>ポイントは税抜の対象価格に対して商品ごとに丸める</h2>
-      <p>獲得ポイントは、ポイント対象となるアイテム価格に適用獲得率を掛け、最も近い整数へ四捨五入して計算されます。税金はポイント対象額に含まれません。</p>      <div class="table-card">
-        <table>
-          <caption>シルバー1.25ポイント/100円の例</caption>
-          <thead><tr><th>購入方法</th><th>計算前</th><th>獲得ポイントの例</th></tr></thead>
-          <tbody>
-            <tr><td>500円の商品を1回購入</td><td>500÷100×1.25＝6.25</td><td>6ポイント</td></tr>
-            <tr><td>同じ総額を小分け購入</td><td>各商品ごとに計算・四捨五入</td><td>合計が6ポイントと一致しない場合がある</td></tr>
-            <tr><td>割引後の対象価格が500円</td><td>割引後価格を基準に確認</td><td>税や対象外部分は含めない</td></tr>
-          </tbody>
-        </table>
-      </div>      <p>端数を狙って購入を細かく分けても、常に有利になるとは限りません。必要な商品を自然な単位で購入し、購入後のポイント履歴で確認してください。</p>
-    </section>
+<section class="section" id="relationship">
+<h2>通常獲得率とスペシャルオファーの関係</h2>
+<p>Google公式の例では、シルバーの通常獲得率が100円ごとに1.25ポイントでも、対象ゲームに「100円ごとに3ポイント」のスペシャルオファーがある場合は、より高い3ポイントの獲得率が適用されます。</p> <div class="table-card">
+<table>
+<caption>100円の対象購入での考え方</caption>
+<thead><tr><th>表示</th><th>誤った計算</th><th>公式例に沿う見方</th></tr></thead>
+<tbody>
+<tr><td>シルバー1.25＋3ポイント/100円オファー</td><td>1.25＋3＝4.25ポイント</td><td>高い方の3ポイント</td></tr>
+<tr><td>「3倍」など倍率表記</td><td>1.25＋3、または1.25×3と自動計算する</td><td>プロモーションに記載された最終獲得率・計算条件を確認</td></tr>
+<tr><td>2倍と3倍が同時に見える</td><td>2＋3＝5倍、2×3＝6倍と計算</td><td>対象となる最も高い獲得率を確認</td></tr>
+</tbody>
+</table>
+</div> <p><strong>「3倍」と「100円ごとに3ポイント」は同じ意味とは限りません。</strong> 画面に書かれた単位と、プロモーション固有の利用規約を先に確認します。</p>
+</section>
+<section class="section" id="calculator">
+<h2>計算機では直接獲得率と倍率を使い分ける</h2>
+<p>Playポイント計算機には、ステータスの通常獲得率、キャンペーン倍率、直接入力する獲得率があります。表示内容に合わせて次のように使います。</p> <div class="table-card">
+<table>
+<caption>入力方法の選び方</caption>
+<thead><tr><th>Google Playの表示</th><th>入力方法</th><th>例</th></tr></thead>
+<tbody>
+<tr><td>「通常の3倍」かつ基準レートへの乗算と規約に明記</td><td>倍率へ3を入力</td><td>表示・規約で計算基準を確認して使用</td></tr>
+<tr><td>「100円ごとに5ポイント」などレートが明記</td><td>獲得率へ5を直接入力</td><td>ランク通常率より高い5を使用</td></tr>
+<tr><td>複数のオファーやレートが見える</td><td>適用対象の最終レートを確認</td><td>同じ購入では併用せず、対象となる最も高い獲得率を使用</td></tr>
+</tbody>
+</table>
+</div> <p><a href="/?mode=main&amp;status=1&amp;target=silver&amp;points=250&amp;multiplier=3">3倍条件でシルバーまでの必要額を試算する</a></p>
+<p><a href="./2026-08-05-fastest-silver.html">購入予定とキャンペーンを組み合わせて、シルバーをお得に目指す手順を見る</a></p>
+</section>
+<section class="section" id="rounding">
+<h2>ポイントは税抜の対象価格に対して商品ごとに丸める</h2>
+<p>獲得ポイントは、ポイント対象となるアイテム価格に適用獲得率を掛け、最も近い整数へ四捨五入して計算されます。税金はポイント対象額に含まれません。</p> <div class="table-card">
+<table>
+<caption>シルバー1.25ポイント/100円の例</caption>
+<thead><tr><th>購入方法</th><th>計算前</th><th>獲得ポイントの例</th></tr></thead>
+<tbody>
+<tr><td>500円の商品を1回購入</td><td>500÷100×1.25＝6.25</td><td>6ポイント</td></tr>
+<tr><td>同じ総額を小分け購入</td><td>各商品ごとに計算・四捨五入</td><td>合計が6ポイントと一致しない場合がある</td></tr>
+<tr><td>割引後の対象価格が500円</td><td>割引後価格を基準に確認</td><td>税や対象外部分は含めない</td></tr>
+</tbody>
+</table>
+</div> <p>端数を狙って購入を細かく分けても、常に有利になるとは限りません。必要な商品を自然な単位で購入し、購入後のポイント履歴で確認してください。</p>
+</section>
+<section class="section" id="multiple">
+<h2>複数キャンペーンが見える時の確認順</h2>
+<ol>
+<li>各キャンペーンの対象アプリ、商品、期間、開始操作を確認する</li>
+<li>表示が倍率なのか、100円ごとのポイント数なのかを確認する</li>
+<li>対象者、上限、初回限定などの個別条件を読む</li>
+<li>複数のプロモーションは足し算・掛け算せず、対象となる最も高い獲得率を使う</li>
+<li>決済後、ポイント履歴で実際の獲得数を確認する</li>
+</ol> <p>Google Playのプロモーションは、アカウント設定やアクティビティによって表示や対象条件が異なる場合があります。他の人のスクリーンショットだけで、自分にも同じ倍率が適用されるとは判断できません。</p>
+</section>
+<section class="section" id="examples">
+<h2>よくある計算例</h2>
+<div class="table-card">
+<table>
+<caption>250ポイントを貯める単純概算</caption>
+<thead><tr><th>適用獲得率</th><th>計算</th><th>対象購入額の概算</th></tr></thead>
+<tbody>
+<tr><td>1ポイント/100円</td><td>250÷1×100</td><td>25,000円</td></tr>
+<tr><td>2ポイント/100円</td><td>250÷2×100</td><td>12,500円</td></tr>
+<tr><td>3ポイント/100円</td><td>250÷3×100</td><td>8,334円</td></tr>
+<tr><td>5ポイント/100円</td><td>250÷5×100</td><td>5,000円</td></tr>
+</tbody>
+</table>
+</div> <p>これは購入ごとの四捨五入や税を無視した単純概算です。実際の不足ポイントと購入単位を計算機へ入力すると、より近い目安を出せます。</p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？</h3><p>なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。</p></div>
+<div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。</p></div>
+<div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。</p></div>
+<div class="faq-item"><h3>税金にもPlay Pointsは付きますか？</h3><p>Google公式は、ポイント対象となるのはアイテム価格で、支払った税金は含まれないと案内しています。</p></div>
+<div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。</p></div>
+</section>
+<aside class="official-source-note">
+<h2>確認に使用したGoogle公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
+<li><a href="https://support.google.com/googleplay/answer/15698521?hl=ja" rel="noopener noreferrer" target="_blank">Google Playでのプロモーション</a></li>
+</ul>
+<p>制度や個別プロモーションは変更される場合があります。最終的な対象可否、獲得率、期限は、ご自身のGoogle Play画面と各特典の利用規約を優先してください。</p>
+</aside>
+<section class="section related-links-section">
+<h2>状況に合わせて次に読む記事</h2>
+<ul>
+<li><a href="./2026-07-24-play-points-1-value.html">Google Play Points 1ポイントはいくらか</a></li>
+<li><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか</a></li>
+<li><a href="./2025-12-25-promo-code.html">プロモコード・割引時もポイントが貯まるか</a></li>
+<li><a href="./2026-08-05-fastest-silver.html">シルバーをお得・効率的に目指す方法</a></li>
+</ul>
+</section>
+<section class="section" id="multiplier-calculation-note">
+<h2>倍率計算で最も多い間違い</h2>
+<p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。計算の基準は<strong>税金を除いたアイテム価格</strong>です。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>
+</section>
 
-    <section class="section" id="multiple">
-      <h2>複数キャンペーンが見える時の確認順</h2>
-      <ol>
-        <li>各キャンペーンの対象アプリ、商品、期間、開始操作を確認する</li>
-        <li>表示が倍率なのか、100円ごとのポイント数なのかを確認する</li>
-        <li>対象者、上限、初回限定などの個別条件を読む</li>
-        <li>複数のプロモーションは足し算・掛け算せず、対象となる最も高い獲得率を使う</li>
-        <li>決済後、ポイント履歴で実際の獲得数を確認する</li>
-      </ol>      <p>Google Playのプロモーションは、アカウント設定やアクティビティによって表示や対象条件が異なる場合があります。他の人のスクリーンショットだけで、自分にも同じ倍率が適用されるとは判断できません。</p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section" id="examples">
-      <h2>よくある計算例</h2>
-      <div class="table-card">
-        <table>
-          <caption>250ポイントを貯める単純概算</caption>
-          <thead><tr><th>適用獲得率</th><th>計算</th><th>対象購入額の概算</th></tr></thead>
-          <tbody>
-            <tr><td>1ポイント/100円</td><td>250÷1×100</td><td>25,000円</td></tr>
-            <tr><td>2ポイント/100円</td><td>250÷2×100</td><td>12,500円</td></tr>
-            <tr><td>3ポイント/100円</td><td>250÷3×100</td><td>8,334円</td></tr>
-            <tr><td>5ポイント/100円</td><td>250÷5×100</td><td>5,000円</td></tr>
-          </tbody>
-        </table>
-      </div>      <p>これは購入ごとの四捨五入や税を無視した単純概算です。実際の不足ポイントと購入単位を計算機へ入力すると、より近い目安を出せます。</p>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>シルバーの1.25ポイントと3ポイントのオファーは4.25ポイントになりますか？</h3><p>なりません。Google公式の例では、通常獲得率とスペシャルオファーを足さず、高い方の3ポイントが適用されます。</p></div>
-      <div class="faq-item"><h3>2倍と3倍は6倍になりますか？</h3><p>なりません。Google公式では複数のプロモーションは併用されず、対象購入には最も高い獲得率が適用されます。</p></div>
-      <div class="faq-item"><h3>3倍と100円ごとに3ポイントは同じですか？</h3><p>通常獲得率の3倍と明記された場合、ブロンズの基準1ポイントでは数値が同じになります。倍率表記か直接獲得率かを確認してください。</p></div>
-      <div class="faq-item"><h3>税金にもPlay Pointsは付きますか？</h3><p>Google公式は、ポイント対象となるのはアイテム価格で、支払った税金は含まれないと案内しています。</p></div>
-      <div class="faq-item"><h3>購入を分けるとポイントは増えますか？</h3><p>商品ごとに四捨五入されるため結果が変わる場合はありますが、常に増えるとは限りません。購入単位ごとの結果を計算機とポイント履歴で確認してください。</p></div>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <aside class="official-source-note">
-      <h2>確認に使用したGoogle公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/15698521?hl=ja" target="_blank" rel="noopener noreferrer">Google Playでのプロモーション</a></li>
-      </ul>
-      <p>制度や個別プロモーションは変更される場合があります。最終的な対象可否、獲得率、期限は、ご自身のGoogle Play画面と各特典の利用規約を優先してください。</p>
-    </aside>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>状況に合わせて次に読む記事</h2>
-      <ul>
-        <li><a href="./2026-07-24-play-points-1-value.html">Google Play Points 1ポイントはいくらか</a></li>
-        <li><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか</a></li>
-        <li><a href="./2025-12-25-promo-code.html">プロモコード・割引時もポイントが貯まるか</a></li>
-        <li><a href="./2026-08-05-fastest-silver.html">シルバーをお得・効率的に目指す方法</a></li>
-      </ul>
-    </section>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section" id="multiplier-calculation-note">
-      <h2>倍率計算で最も多い間違い</h2>
-      <p><strong>通常レートとキャンペーン倍率は足し算しない</strong>でください。計算の基準は<strong>税金を除いたアイテム価格</strong>です。たとえば、通常が100円あたり1ポイントの条件で最終表示が3倍なら、獲得目安は<strong>100円あたり3ポイント</strong>です。画面に表示された最終倍率を基準にし、複数の特典が同時に見えても適用条件と対象商品を個別に確認します。</p>
-    </section>
-</article>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p>
-  </footer>
-</main>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

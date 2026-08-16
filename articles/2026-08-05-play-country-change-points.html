@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -25,8 +26,6 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-08-05-play-country-change-points.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/multiple-accounts.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -105,31 +104,67 @@
   ]
 }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="トラブル">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">国・地域の変更</span>
-    <h1>Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</h1>
-    <p class="hero-meta">2026/08/05 公開 ・ 読了 8分</p>
-  </header>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
+        </div>
+    </nav>
 
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：国変更ではPlay Pointsとステータスを失い、新しい国へ移せない</h2>
-      <p>Google Playの国または地域を変更すると、現在のPlay Points残高とステータスは失われ、新しい国へ引き継げません。Google Play残高は別扱いで、以前の国に紐づいたまま残りますが、新しい国では使えません。</p>
-      <p>機種変更やGoogleアカウントの切り替えとは影響が違います。国を変更する前に、ポイント、交換済み特典、Play残高、定期購入、利用中のコンテンツを確認してください。</p>
-    </section>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=トラブル">トラブル</a> <span>&gt;</span>
+            <span>Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -137,110 +172,227 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section" id="impact">
-      <h2>国を変更すると何が起きるか</h2>
-      <div class="table-card">
-        <table>
-          <caption>Google Playの国変更による主な影響</caption>
-          <thead><tr><th>項目</th><th>変更後の扱い</th><th>注意</th></tr></thead>
-          <tbody>
-            <tr><td>Play Points残高</td><td>すべて失われる</td><td>新しい国へ引き継げない</td></tr>
-            <tr><td>Play Pointsステータス</td><td>失われる</td><td>新しい国で同じランクから始まらない</td></tr>
-            <tr><td>Google Play残高</td><td>以前の国に紐づいたまま</td><td>新しい国では使えず、以前の国へ戻すと再利用できる場合がある</td></tr>
-            <tr><td>定期購入</td><td>解約しない限り以前の支払いプロファイルで継続</td><td>新しい国で再契約が必要な場合がある</td></tr>
-            <tr><td>アプリ・書籍など</td><td>一部へアクセスできなくなる場合がある</td><td>国ごとの配信状況が異なる</td></tr>
-          </tbody>
-        </table>
-      </div>      <p><strong>Play PointsとGoogle Play残高は別です。</strong> Pointsは国変更で失われますが、Play残高は以前の国に関連付けられて残り、新しい国では使えません。</p>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">国・地域の変更</span>
+                <h1 class="article-title">Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</h1>
+                <p class="hero-meta">2026/08/05 公開 ・ 読了 8分</p>
+            </header>
 
-    <section class="section" id="before">
-      <h2>変更前に必ず確認するチェックリスト</h2>
-      <ol>
-        <li>現在のPlay Points残高、ステータス、ポイント履歴を記録する</li>
-        <li>使う予定のポイントをクーポン、アイテム、Playクレジットなどへ交換するか検討する</li>
-        <li>交換後のクーポンやクレジットが国変更後に利用できるか、個別条件を確認する</li>
-        <li>Google Play残高の残額を確認する</li>
-        <li>定期購入が以前の支払いプロファイルで続くか確認する</li>
-        <li>必要なアプリ、書籍、映画へ変更後もアクセスできるか確認する</li>
-      </ol>      <p>ポイントを使い切れば必ず損を防げるとは限りません。交換後の特典にも国、通貨、期限、対象アプリの条件があります。変更直前に大量交換する前に、受け取り後の利用条件まで確認してください。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：国変更ではPlay Pointsとステータスを失い、新しい国へ移せない</h2>
+<p>Google Playの国または地域を変更すると、現在のPlay Points残高とステータスは失われ、新しい国へ引き継げません。Google Play残高は別扱いで、以前の国に紐づいたまま残りますが、新しい国では使えません。</p>
+<p>機種変更やGoogleアカウントの切り替えとは影響が違います。国を変更する前に、ポイント、交換済み特典、Play残高、定期購入、利用中のコンテンツを確認してください。</p>
+</section>
 
-    <section class="section" id="requirements">
-      <h2>国変更には居住地・支払い方法・90日以上の間隔が必要</h2>
-      <p>2026年8月5日時点のGoogle公式案内では、新しい国または地域を設定するには、その国に居住し、その国で利用できる支払い方法が必要です。国を設定した後、次に変更できるまで少なくとも90日間空ける必要があります。場合によっては追加制限もあります。</p>      <ul>
-        <li>VPNや一時的な旅行だけを理由に国を切り替えない</li>
-        <li>ファミリーグループのメンバーは、Playの国を変更できない</li>
-        <li>プロフィール更新には最大48時間ほどかかる場合がある</li>
-        <li>変更回数や利用状況によって、画面に国の選択肢が表示されない場合がある</li>
-      </ul>
-    </section>
+<section class="section" id="impact">
+<h2>国を変更すると何が起きるか</h2>
+<div class="table-card">
+<table>
+<caption>Google Playの国変更による主な影響</caption>
+<thead><tr><th>項目</th><th>変更後の扱い</th><th>注意</th></tr></thead>
+<tbody>
+<tr><td>Play Points残高</td><td>すべて失われる</td><td>新しい国へ引き継げない</td></tr>
+<tr><td>Play Pointsステータス</td><td>失われる</td><td>新しい国で同じランクから始まらない</td></tr>
+<tr><td>Google Play残高</td><td>以前の国に紐づいたまま</td><td>新しい国では使えず、以前の国へ戻すと再利用できる場合がある</td></tr>
+<tr><td>定期購入</td><td>解約しない限り以前の支払いプロファイルで継続</td><td>新しい国で再契約が必要な場合がある</td></tr>
+<tr><td>アプリ・書籍など</td><td>一部へアクセスできなくなる場合がある</td><td>国ごとの配信状況が異なる</td></tr>
+</tbody>
+</table>
+</div> <p><strong>Play PointsとGoogle Play残高は別です。</strong> Pointsは国変更で失われますが、Play残高は以前の国に関連付けられて残り、新しい国では使えません。</p>
+</section>
+<section class="section" id="before">
+<h2>変更前に必ず確認するチェックリスト</h2>
+<ol>
+<li>現在のPlay Points残高、ステータス、ポイント履歴を記録する</li>
+<li>使う予定のポイントをクーポン、アイテム、Playクレジットなどへ交換するか検討する</li>
+<li>交換後のクーポンやクレジットが国変更後に利用できるか、個別条件を確認する</li>
+<li>Google Play残高の残額を確認する</li>
+<li>定期購入が以前の支払いプロファイルで続くか確認する</li>
+<li>必要なアプリ、書籍、映画へ変更後もアクセスできるか確認する</li>
+</ol> <p>ポイントを使い切れば必ず損を防げるとは限りません。交換後の特典にも国、通貨、期限、対象アプリの条件があります。変更直前に大量交換する前に、受け取り後の利用条件まで確認してください。</p>
+</section>
+<section class="section" id="requirements">
+<h2>国変更には居住地・支払い方法・90日以上の間隔が必要</h2>
+<p>2026年8月5日時点のGoogle公式案内では、新しい国または地域を設定するには、その国に居住し、その国で利用できる支払い方法が必要です。国を設定した後、次に変更できるまで少なくとも90日間空ける必要があります。場合によっては追加制限もあります。</p> <ul>
+<li>VPNや一時的な旅行だけを理由に国を切り替えない</li>
+<li>ファミリーグループのメンバーは、Playの国を変更できない</li>
+<li>プロフィール更新には最大48時間ほどかかる場合がある</li>
+<li>変更回数や利用状況によって、画面に国の選択肢が表示されない場合がある</li>
+</ul>
+</section>
+<section class="section" id="device">
+<h2>機種変更と国変更を混同しない</h2>
+<div class="table-card">
+<table>
+<caption>似ている操作の違い</caption>
+<thead><tr><th>操作</th><th>Play Points</th><th>必要な対応</th></tr></thead>
+<tbody>
+<tr><td>同じ国・同じGoogleアカウントで機種変更</td><td>通常は残高・ランク・履歴を確認可能</td><td>新端末で同じアカウントを選ぶ</td></tr>
+<tr><td>別のGoogleアカウントへ切り替え</td><td>元アカウントのポイントは表示されない</td><td>元の加入済みアカウントへ戻す</td></tr>
+<tr><td>Google Playの国を変更</td><td>ポイントとステータスを失う</td><td>変更前に影響を確認する</td></tr>
+</tbody>
+</table>
+</div> <p>スマートフォンを買い替えただけなら、Google Playの国を変更する必要はありません。新端末でポイントが見つからない時は、まず同じGoogleアカウントを選んでいるか確認してください。</p> <p><a href="./2026-08-03-play-points-device-change.html">機種変更後の確認順を見る</a></p>
+</section>
+<section class="section" id="after">
+<h2>変更後にポイントが消えた時</h2>
+<p>国変更後にPlay Pointsが表示されなくなった場合、公式仕様上は新しい国へ引き継げません。アプリの再起動やキャッシュ削除で元のポイントを移行できる問題ではありません。</p> <ol>
+<li>実際にPlayの国が変更されたか確認する</li>
+<li>以前と同じGoogleアカウントか確認する</li>
+<li>Google Play残高とPlay Pointsを混同していないか確認する</li>
+<li>意図しない変更や請求上の問題がある場合はGoogle Playサポートへ相談する</li>
+</ol>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Google Playの国を変更するとPlay Pointsは消えますか？</h3><p>はい。Google公式は、国を変更するとすべてのPlay Pointsとステータスが失われ、新しい国へ引き継げないと案内しています。</p></div>
+<div class="faq-item"><h3>以前の国へ戻せばPlay Pointsも戻りますか？</h3><p>Google Play残高は以前の国へ戻すと再利用できる場合がありますが、Play Pointsとステータスは国変更で失われるため、戻るとは案内されていません。</p></div>
+<div class="faq-item"><h3>国は何日ごとに変更できますか？</h3><p>2026年8月5日時点の公式案内では、変更の間隔を少なくとも90日空ける必要があります。追加制限が適用される場合もあります。</p></div>
+<div class="faq-item"><h3>旅行中に国を変更した方がよいですか？</h3><p>旅行だけでは国変更の条件を満たしません。新しい国に居住し、その国の支払い方法を持つことが条件で、ポイントやコンテンツへの影響もあります。</p></div>
+<div class="faq-item"><h3>機種変更でもPlay Pointsは消えますか？</h3><p>同じGoogleアカウントと同じPlayの国で機種変更しただけなら、通常は残高・ランク・履歴を確認できます。国変更とは別です。</p></div>
+</section>
+<aside class="official-source-note">
+<h2>確認に使用したGoogle公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/7431675?hl=ja" rel="noopener noreferrer" target="_blank">Google Playの国を変更する方法</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
+</ul>
+<p>制度や個別プロモーションは変更される場合があります。最終的な対象可否、獲得率、期限は、ご自身のGoogle Play画面と各特典の利用規約を優先してください。</p>
+</aside>
+<section class="section related-links-section">
+<h2>状況に合わせて次に読む記事</h2>
+<ul>
+<li><a href="./2026-08-03-play-points-device-change.html">機種変更でPlay Pointsは消えるか</a></li>
+<li><a href="./2025-12-25-multiple-accounts.html">複数アカウントで合算できるか</a></li>
+<li><a href="./2025-12-25-check-balance.html">Play Pointsの残高・履歴を確認する方法</a></li>
+<li><a href="./2026-07-25-play-credit-not-working.html">Playクレジットへ交換できない・使えない原因</a></li>
+</ul>
+</section>
 
-    <section class="section" id="device">
-      <h2>機種変更と国変更を混同しない</h2>
-      <div class="table-card">
-        <table>
-          <caption>似ている操作の違い</caption>
-          <thead><tr><th>操作</th><th>Play Points</th><th>必要な対応</th></tr></thead>
-          <tbody>
-            <tr><td>同じ国・同じGoogleアカウントで機種変更</td><td>通常は残高・ランク・履歴を確認可能</td><td>新端末で同じアカウントを選ぶ</td></tr>
-            <tr><td>別のGoogleアカウントへ切り替え</td><td>元アカウントのポイントは表示されない</td><td>元の加入済みアカウントへ戻す</td></tr>
-            <tr><td>Google Playの国を変更</td><td>ポイントとステータスを失う</td><td>変更前に影響を確認する</td></tr>
-          </tbody>
-        </table>
-      </div>      <p>スマートフォンを買い替えただけなら、Google Playの国を変更する必要はありません。新端末でポイントが見つからない時は、まず同じGoogleアカウントを選んでいるか確認してください。</p>      <p><a href="./2026-08-03-play-points-device-change.html">機種変更後の確認順を見る</a></p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section" id="after">
-      <h2>変更後にポイントが消えた時</h2>
-      <p>国変更後にPlay Pointsが表示されなくなった場合、公式仕様上は新しい国へ引き継げません。アプリの再起動やキャッシュ削除で元のポイントを移行できる問題ではありません。</p>      <ol>
-        <li>実際にPlayの国が変更されたか確認する</li>
-        <li>以前と同じGoogleアカウントか確認する</li>
-        <li>Google Play残高とPlay Pointsを混同していないか確認する</li>
-        <li>意図しない変更や請求上の問題がある場合はGoogle Playサポートへ相談する</li>
-      </ol>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Google Playの国を変更するとPlay Pointsは消えますか？</h3><p>はい。Google公式は、国を変更するとすべてのPlay Pointsとステータスが失われ、新しい国へ引き継げないと案内しています。</p></div>
-      <div class="faq-item"><h3>以前の国へ戻せばPlay Pointsも戻りますか？</h3><p>Google Play残高は以前の国へ戻すと再利用できる場合がありますが、Play Pointsとステータスは国変更で失われるため、戻るとは案内されていません。</p></div>
-      <div class="faq-item"><h3>国は何日ごとに変更できますか？</h3><p>2026年8月5日時点の公式案内では、変更の間隔を少なくとも90日空ける必要があります。追加制限が適用される場合もあります。</p></div>
-      <div class="faq-item"><h3>旅行中に国を変更した方がよいですか？</h3><p>旅行だけでは国変更の条件を満たしません。新しい国に居住し、その国の支払い方法を持つことが条件で、ポイントやコンテンツへの影響もあります。</p></div>
-      <div class="faq-item"><h3>機種変更でもPlay Pointsは消えますか？</h3><p>同じGoogleアカウントと同じPlayの国で機種変更しただけなら、通常は残高・ランク・履歴を確認できます。国変更とは別です。</p></div>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <aside class="official-source-note">
-      <h2>確認に使用したGoogle公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/7431675?hl=ja" target="_blank" rel="noopener noreferrer">Google Playの国を変更する方法</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する</a></li>
-      </ul>
-      <p>制度や個別プロモーションは変更される場合があります。最終的な対象可否、獲得率、期限は、ご自身のGoogle Play画面と各特典の利用規約を優先してください。</p>
-    </aside>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>状況に合わせて次に読む記事</h2>
-      <ul>
-        <li><a href="./2026-08-03-play-points-device-change.html">機種変更でPlay Pointsは消えるか</a></li>
-        <li><a href="./2025-12-25-multiple-accounts.html">複数アカウントで合算できるか</a></li>
-        <li><a href="./2025-12-25-check-balance.html">Play Pointsの残高・履歴を確認する方法</a></li>
-        <li><a href="./2026-07-25-play-credit-not-working.html">Playクレジットへ交換できない・使えない原因</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p>
-  </footer>
-</main>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

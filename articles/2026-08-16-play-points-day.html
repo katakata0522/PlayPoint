@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -21,8 +22,6 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/play-points-day.png" />
   <meta name="twitter:image" content="https://playpoint-sim.com/articles/ogp/play-points-day.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -93,51 +92,67 @@
   ]
 }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="キャンペーン">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">キャンペーン</span>
-    <h1>Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法</h1>
-    <p class="hero-meta">2026/08/16 公開 ・ 読了 7分</p>
-  </header>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
+        </div>
+    </nav>
 
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：最大7倍は見出し。自分の倍率は「貯める」で確認する</h2>
-      <p>Playポイントデーは、Google Play Japan公式アカウントが2026年7月以降、毎月1日に案内しているポイント増量日です。案内では期間を毎月1日0:00〜23:59、獲得倍率はステータスによって変わるとされています。</p>
-      <p>「最大7倍」は上限の表現です。すべてのアカウントへ同じ倍率が適用されるとは、公開公式ヘルプにも公式アカウント案内にも書かれていません。購入前にPlay Pointsの「貯める」へ表示されている獲得率・対象・有効化・期限を確認してください。</p>
-    </section>
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>判明していること</h3>
-          <ul>
-            <li>公式アカウントは、毎月1日0:00〜23:59、最大7倍、倍率はステータスによって変わると案内しています。</li>
-            <li>Google公式ヘルプは、プロモーションは組み合わせられず、適用されるのはその購入の最高獲得率だと案内しています。</li>
-          </ul>
-        </div>
-        <div>
-          <h3>このサイトからは不明なこと</h3>
-          <ul>
-            <li>自分のアカウントに何倍が表示されるか、対象商品や上限、有効化の要否。</li>
-            <li>ランクごとの固定倍率表。公開ヘルプにステータス別のPlayポイントデー倍率はありません。</li>
-          </ul>
-        </div>
-      </div>
-      <p class="knowledge-boundary__source"><a href="/compare/earning-rates/#campaign-comparison">通常・2倍・3倍の比較表を見る</a></p>
-    </section>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=キャンペーン">キャンペーン</a> <span>&gt;</span>
+            <span>Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -145,82 +160,221 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section" id="what">
-      <h2>Playポイントデーとして確認できる範囲</h2>
-      <p>2026年8月16日時点で、日本向けの公開ヘルプ（ポイントの貯め方）に「Playポイントデー」という見出しはありません。確認できるのは次の2層です。</p>
-      <div class="table-card">
-        <table>
-          <caption>公開情報と画面で分かること</caption>
-          <thead><tr><th>情報源</th><th>分かること</th><th>分からないこと</th></tr></thead>
-          <tbody>
-            <tr><td>Google Play Japan公式アカウント</td><td>毎月1日、最大7倍、ステータスで倍率が変わる、0:00〜23:59、予告なく変更・終了し得る</td><td>自分の倍率、対象商品、上限</td></tr>
-            <tr><td>Google公式ヘルプ（プロモーション）</td><td>最高獲得率が適用される、併用不可、有効化や期限がある場合がある、一部利用者だけの場合がある</td><td>今月1日のオファー内容</td></tr>
-            <tr><td>自分の「貯める」画面</td><td>表示中の獲得率、対象、開始操作、期限</td><td>他人の画面と同じか</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>SNSの体験談に出るランク別の数字は、そのアカウントの表示です。公開公式のランク別固定表としては扱えません。</p>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">キャンペーン</span>
+                <h1 class="article-title">Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法</h1>
+                <p class="hero-meta">2026/08/16 公開 ・ 読了 7分</p>
+            </header>
 
-    <section class="section" id="check">
-      <h2>購入前に確認する順</h2>
-      <ol>
-        <li>Google Playストアを開き、Play Pointsに参加済みのGoogleアカウントを選ぶ</li>
-        <li>「Play Points」→「貯める」を開く</li>
-        <li>通常獲得率と、下部のプロモーション一覧を見る</li>
-        <li>開始や有効化のボタンがある場合は、購入前に操作する</li>
-        <li>対象アプリ、対象購入、期限、上限を読む</li>
-        <li>表示されている獲得率を計算機に入れ、通常時の必要額と比べる</li>
-      </ol>
-      <p>予定していない購入を増やすと、増えたポイントより支出の方が大きくなります。すでに買う予定がある対象商品だけを、1日に寄せるかどうかを判断してください。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：最大7倍は見出し。自分の倍率は「貯める」で確認する</h2>
+<p>Playポイントデーは、Google Play Japan公式アカウントが2026年7月以降、毎月1日に案内しているポイント増量日です。案内では期間を毎月1日0:00〜23:59、獲得倍率はステータスによって変わるとされています。</p>
+<p>「最大7倍」は上限の表現です。すべてのアカウントへ同じ倍率が適用されるとは、公開公式ヘルプにも公式アカウント案内にも書かれていません。購入前にPlay Pointsの「貯める」へ表示されている獲得率・対象・有効化・期限を確認してください。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>判明していること</h3>
+<ul>
+<li>公式アカウントは、毎月1日0:00〜23:59、最大7倍、倍率はステータスによって変わると案内しています。</li>
+<li>Google公式ヘルプは、プロモーションは組み合わせられず、適用されるのはその購入の最高獲得率だと案内しています。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトからは不明なこと</h3>
+<ul>
+<li>自分のアカウントに何倍が表示されるか、対象商品や上限、有効化の要否。</li>
+<li>ランクごとの固定倍率表。公開ヘルプにステータス別のPlayポイントデー倍率はありません。</li>
+</ul>
+</div>
+</div>
+<p class="knowledge-boundary__source"><a href="/compare/earning-rates/#campaign-comparison">通常・2倍・3倍の比較表を見る</a></p>
+</section>
 
-    <section class="section" id="stacking">
-      <h2>他の倍率キャンペーンとは足し算しない</h2>
-      <p>Google公式は、1回の購入で複数のプロモーションを組み合わせることはできないと案内しています。ランクの通常獲得率とキャンペーン表示、複数の増量オファーがある場合も、その購入に適用されるのは最も高い獲得率です。</p>
-      <p>計算機でも、獲得率の直接入力と「ステータス×倍率」は別の入力方法です。両方を足して使う計算にはしません。</p>
-      <p><a href="./2026-08-05-play-points-multiplier-stacking.html">倍率は重複するか確認する</a></p>
-    </section>
+<section class="section" id="what">
+<h2>Playポイントデーとして確認できる範囲</h2>
+<p>2026年8月16日時点で、日本向けの公開ヘルプ（ポイントの貯め方）に「Playポイントデー」という見出しはありません。確認できるのは次の2層です。</p>
+<div class="table-card">
+<table>
+<caption>公開情報と画面で分かること</caption>
+<thead><tr><th>情報源</th><th>分かること</th><th>分からないこと</th></tr></thead>
+<tbody>
+<tr><td>Google Play Japan公式アカウント</td><td>毎月1日、最大7倍、ステータスで倍率が変わる、0:00〜23:59、予告なく変更・終了し得る</td><td>自分の倍率、対象商品、上限</td></tr>
+<tr><td>Google公式ヘルプ（プロモーション）</td><td>最高獲得率が適用される、併用不可、有効化や期限がある場合がある、一部利用者だけの場合がある</td><td>今月1日のオファー内容</td></tr>
+<tr><td>自分の「貯める」画面</td><td>表示中の獲得率、対象、開始操作、期限</td><td>他人の画面と同じか</td></tr>
+</tbody>
+</table>
+</div>
+<p>SNSの体験談に出るランク別の数字は、そのアカウントの表示です。公開公式のランク別固定表としては扱えません。</p>
+</section>
+<section class="section" id="check">
+<h2>購入前に確認する順</h2>
+<ol>
+<li>Google Playストアを開き、Play Pointsに参加済みのGoogleアカウントを選ぶ</li>
+<li>「Play Points」→「貯める」を開く</li>
+<li>通常獲得率と、下部のプロモーション一覧を見る</li>
+<li>開始や有効化のボタンがある場合は、購入前に操作する</li>
+<li>対象アプリ、対象購入、期限、上限を読む</li>
+<li>表示されている獲得率を計算機に入れ、通常時の必要額と比べる</li>
+</ol>
+<p>予定していない購入を増やすと、増えたポイントより支出の方が大きくなります。すでに買う予定がある対象商品だけを、1日に寄せるかどうかを判断してください。</p>
+</section>
+<section class="section" id="stacking">
+<h2>他の倍率キャンペーンとは足し算しない</h2>
+<p>Google公式は、1回の購入で複数のプロモーションを組み合わせることはできないと案内しています。ランクの通常獲得率とキャンペーン表示、複数の増量オファーがある場合も、その購入に適用されるのは最も高い獲得率です。</p>
+<p>計算機でも、獲得率の直接入力と「ステータス×倍率」は別の入力方法です。両方を足して使う計算にはしません。</p>
+<p><a href="./2026-08-05-play-points-multiplier-stacking.html">倍率は重複するか確認する</a></p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Playポイントデーは毎月必ず7倍ですか？</h3><p>いいえ。公式アカウントは最大7倍、倍率はステータスによって変わると案内しています。自分の獲得率はPlay Pointsの「貯める」で確認してください。</p></div>
+<div class="faq-item"><h3>Playポイントデーは何時から何時までですか？</h3><p>公式アカウントは毎月1日0:00〜23:59と案内しています。タイムゾーンや終了条件は画面と各オファーの表示を優先してください。</p></div>
+<div class="faq-item"><h3>他のキャンペーンと7倍は併用できますか？</h3><p>Google公式は、1回の購入で複数のプロモーションを組み合わせることはできないと案内しています。適用されるのはその購入の最高獲得率です。</p></div>
+<div class="faq-item"><h3>開始操作は必要ですか？</h3><p>プロモーションによっては有効化が必要です。貯める画面に開始や有効化の表示がある場合は、購入前に操作したかを確認してください。</p></div>
+</section>
+<aside class="official-source-note">
+<h2>確認に使用したGoogle公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する（日本向け）</a></li>
+<li><a href="https://www.youtube.com/watch?v=xY4UDHRrkYk" rel="noopener noreferrer" target="_blank">Google Play Japan公式「Play ポイントデー」案内</a></li>
+</ul>
+<p>最終公式確認日：2026年8月16日。Playポイントデーの名称・期間・倍率は予告なく変わる場合があります。購入直前の「貯める」画面と各オファー表示を優先してください。</p>
+</aside>
+<section class="section related-links-section">
+<h2>状況に合わせて次に読む記事</h2>
+<ul>
+<li><a href="./2025-12-25-campaign.html">キャンペーンを待つべきかの判断</a></li>
+<li><a href="./2026-08-05-play-points-multiplier-stacking.html">倍率は重複するか</a></li>
+<li><a href="../campaign/3x/">3倍表示時の必要額を計算する</a></li>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">購入後にポイントが反映されない時</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Playポイントデーは毎月必ず7倍ですか？</h3><p>いいえ。公式アカウントは最大7倍、倍率はステータスによって変わると案内しています。自分の獲得率はPlay Pointsの「貯める」で確認してください。</p></div>
-      <div class="faq-item"><h3>Playポイントデーは何時から何時までですか？</h3><p>公式アカウントは毎月1日0:00〜23:59と案内しています。タイムゾーンや終了条件は画面と各オファーの表示を優先してください。</p></div>
-      <div class="faq-item"><h3>他のキャンペーンと7倍は併用できますか？</h3><p>Google公式は、1回の購入で複数のプロモーションを組み合わせることはできないと案内しています。適用されるのはその購入の最高獲得率です。</p></div>
-      <div class="faq-item"><h3>開始操作は必要ですか？</h3><p>プロモーションによっては有効化が必要です。貯める画面に開始や有効化の表示がある場合は、購入前に操作したかを確認してください。</p></div>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <aside class="official-source-note">
-      <h2>確認に使用したGoogle公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する（日本向け）</a></li>
-        <li><a href="https://www.youtube.com/watch?v=xY4UDHRrkYk" target="_blank" rel="noopener noreferrer">Google Play Japan公式「Play ポイントデー」案内</a></li>
-      </ul>
-      <p>最終公式確認日：2026年8月16日。Playポイントデーの名称・期間・倍率は予告なく変わる場合があります。購入直前の「貯める」画面と各オファー表示を優先してください。</p>
-    </aside>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section related-links-section">
-      <h2>状況に合わせて次に読む記事</h2>
-      <ul>
-        <li><a href="./2025-12-25-campaign.html">キャンペーンを待つべきかの判断</a></li>
-        <li><a href="./2026-08-05-play-points-multiplier-stacking.html">倍率は重複するか</a></li>
-        <li><a href="../campaign/3x/">3倍表示時の必要額を計算する</a></li>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">購入後にポイントが反映されない時</a></li>
-      </ul>
-    </section>
-  </article>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p>
-  </footer>
-</main>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

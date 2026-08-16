@@ -1,6 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google Play Pointsクーポンが自動適用されない原因</title>
@@ -18,7 +19,6 @@
   <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/articles/google-play-points-coupon-not-applied.html">
   <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/google-play-points-coupon-not-applied.html">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/articles/article-shared.css?v=679799d0c4">
   <link rel="stylesheet" href="/en/articles/intl-article.css?v=7e174d8811">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Google Play Points 計算機">
@@ -29,48 +29,67 @@
   <meta name="twitter:card" content="summary_large_image">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Google Play Pointsクーポンが自動適用されない原因","description":"Google Play Pointsのクーポンが自動適用されないときに、対象アプリ、購入額、他の割引、アカウント、国・通貨を順番に確認する方法を解説します。","url":"https://playpoint-sim.com/articles/2026-07-25-play-points-coupon-not-applied.html","inLanguage":"ja","datePublished":"2026-07-25","dateModified":"2026-08-04","image":"https://playpoint-sim.com/articles/ogp/best-use.png","author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 計算機","url":"https://playpoint-sim.com/","logo":{"@type":"ImageObject","url":"https://playpoint-sim.com/favicon.svg"}}}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"保存したクーポンはどこで確認できますか？","acceptedAnswer":{"@type":"Answer","text":"Google Playの「通知と特典」にある保存済み特典で確認できます。"}},{"@type":"Question","name":"クーポンより安い商品にも使えますか？","acceptedAnswer":{"@type":"Answer","text":"使えません。商品価格はクーポン額以上である必要があります。"}},{"@type":"Question","name":"別の割引と一緒に使えますか？","acceptedAnswer":{"@type":"Answer","text":"1回の購入で利用できるクレジットまたはプロモーションは1つです。購入画面で適用されている特典を確認してください。"}}]}</script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="トラブル">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <div class="hero">
-    <span class="hero-badge">クーポン未適用</span>
-    <h1>Google Play Pointsクーポンが自動適用されない原因</h1>
-    <p class="hero-meta">2026/08/04 更新 ・ 読了 5分</p>
-  </div>
-  <article class="content">
-    <section class="answer-box editorial-answer" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">先に結論</h2>
-      <p>クーポンが適用されない場合は、対象アプリ、最低購入額、他の割引、交換したアカウント、国・通貨の順で確認します。条件を確かめるための重複購入は避け、購入前の画面で適用状態を確認してください。</p>
-    </section>
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">公式に確認できること／個別に確認が必要なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>公式に確認できること</h3>
-          <ul>
-            <li>保存済みクーポンの対象アプリ、割引額、期限はGoogle Playの画面で確認できます。</li>
-            <li>商品価格がクーポン額以上であることなど、クーポンごとの条件があります。</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>個別に確認が必要なこと</h3>
-          <ul>
-            <li>その商品がクーポンの対象か、決済画面で自動適用されているか。</li>
-            <li>別の割引、アカウント、国・通貨の条件が影響していないか。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=トラブル">トラブル</a> <span>&gt;</span>
+            <span>Google Play Pointsクーポンが自動適用されない原因</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -78,101 +97,234 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <nav class="intl-article-toc" aria-label="目次">
-      <h2>目次</h2>
-      <ol>
-        <li><a href="#section-1">保存済みの特典を確認する</a></li>
-        <li><a href="#section-2">商品価格と利用条件を確認する</a></li>
-        <li><a href="#section-3">他の割引が選ばれていないか確認する</a></li>
-        <li><a href="#section-4">対象アプリ・アカウント・国を確認する</a></li>
-        <li><a href="#section-5">条件が合うのに表示されないとき</a></li>
-      </ol>
-    </nav>
+            <header class="hero">
+                <span class="hero-badge">クーポン未適用</span>
+                <h1 class="article-title">Google Play Pointsクーポンが自動適用されない原因</h1>
+                <p class="hero-meta">2026/08/04 更新 ・ 読了 5分</p>
+            </header>
 
-    <section class="section">
-      <h2 id="section-1">保存済みの特典を確認する</h2>
-      <p>Play Pointsで交換したクーポンは、Google Playの「通知と特典」にある保存済み特典から確認できます。表示されない場合は、クーポンを交換したGoogleアカウントと、現在開いているアカウントが同じかを確認してください。</p>
-      <p>対象アプリ、割引額、最低購入額、有効期限を開き、購入しようとしている商品が条件を満たすかを照合します。問い合わせが必要になった場合に備え、個人情報が映り込まない範囲で画面を保存しておくと確認しやすくなります。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box editorial-answer">
+<h2 id="quick-answer">先に結論</h2>
+<p>クーポンが適用されない場合は、対象アプリ、最低購入額、他の割引、交換したアカウント、国・通貨の順で確認します。条件を確かめるための重複購入は避け、購入前の画面で適用状態を確認してください。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">公式に確認できること／個別に確認が必要なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>公式に確認できること</h3>
+<ul>
+<li>保存済みクーポンの対象アプリ、割引額、期限はGoogle Playの画面で確認できます。</li>
+<li>商品価格がクーポン額以上であることなど、クーポンごとの条件があります。</li>
+</ul>
+</div>
+<div>
+<h3>個別に確認が必要なこと</h3>
+<ul>
+<li>その商品がクーポンの対象か、決済画面で自動適用されているか。</li>
+<li>別の割引、アカウント、国・通貨の条件が影響していないか。</li>
+</ul>
+</div>
+</div>
+</section>
 
-    <section class="section">
-      <h2 id="section-2">商品価格と利用条件を確認する</h2>
-      <p>Google公式の問題解決案内では、商品価格がクーポン額以上でなければ利用できません。たとえば300円分のクーポンは、200円の商品には適用できません。</p>
-      <p>同じアプリ内でも、対象商品が限定されている場合があります。商品一覧の価格だけでなく、購入確認画面に表示される最終金額とクーポン名を確認してください。</p>
-    </section>
+<nav aria-label="目次" class="intl-article-toc">
+<h2>目次</h2>
+<ol>
+<li><a href="#section-1">保存済みの特典を確認する</a></li>
+<li><a href="#section-2">商品価格と利用条件を確認する</a></li>
+<li><a href="#section-3">他の割引が選ばれていないか確認する</a></li>
+<li><a href="#section-4">対象アプリ・アカウント・国を確認する</a></li>
+<li><a href="#section-5">条件が合うのに表示されないとき</a></li>
+</ol>
+</nav>
+<section class="section">
+<h2 id="section-1">保存済みの特典を確認する</h2>
+<p>Play Pointsで交換したクーポンは、Google Playの「通知と特典」にある保存済み特典から確認できます。表示されない場合は、クーポンを交換したGoogleアカウントと、現在開いているアカウントが同じかを確認してください。</p>
+<p>対象アプリ、割引額、最低購入額、有効期限を開き、購入しようとしている商品が条件を満たすかを照合します。問い合わせが必要になった場合に備え、個人情報が映り込まない範囲で画面を保存しておくと確認しやすくなります。</p>
+</section>
+<section class="section">
+<h2 id="section-2">商品価格と利用条件を確認する</h2>
+<p>Google公式の問題解決案内では、商品価格がクーポン額以上でなければ利用できません。たとえば300円分のクーポンは、200円の商品には適用できません。</p>
+<p>同じアプリ内でも、対象商品が限定されている場合があります。商品一覧の価格だけでなく、購入確認画面に表示される最終金額とクーポン名を確認してください。</p>
+</section>
+<section class="section">
+<h2 id="section-3">他の割引が選ばれていないか確認する</h2>
+<p>1回の購入で利用できるクレジットまたはプロモーションは1つです。別のクーポンやプロモーションが選ばれていると、使いたいPlay Pointsクーポンが自動適用されないことがあります。</p>
+<p>購入画面の支払い方法やプロモーション欄を開き、適用されている特典を確認します。複数の割引が同時に使える前提で必要額を計算しないでください。</p>
+</section>
+<section class="section">
+<h2 id="section-4">対象アプリ・アカウント・国を確認する</h2>
+<p>Play Pointsクーポンは、指定されたアプリやゲームの条件を満たす購入で使います。別のアプリ、対象外の商品、Google Playを通さないウェブ決済では適用されません。</p>
+<p>クーポンは交換したGoogleアカウントに紐づきます。また、交換した国・地域や通貨の条件を受けるため、複数アカウントを使う端末や国設定を変更した後は、購入アカウントとPlayの国を確認してください。</p>
+</section>
+<section class="section">
+<h2 id="section-5">条件が合うのに表示されないとき</h2>
+<ol>
+<li>Google Playストアと対象アプリを最新版にする</li>
+<li>対象アプリを終了して開き直す</li>
+<li>購入アカウントと保存済みクーポンをもう一度確認する</li>
+<li>Google公式の案内に沿って、必要な場合だけアプリの強制停止やPlayストアのキャッシュを確認する</li>
+</ol>
+<p>それでも適用されない場合は、クーポンの条件画面、対象商品、購入直前の画面を残し、Google Playサポートまたはアプリ開発者へ問い合わせます。同じ商品を試しに何度も購入しないでください。</p>
+</section>
+<div class="cta-box">
+<h3>追加購入の前に条件を確認</h3>
+<p>クーポンが適用されない原因を確認してから、必要なポイントや購入額を計算できます。</p>
+<a class="cta-btn" href="/">計算機で確認する</a>
+</div>
+<aside class="official-source-note">
+<h2>Google公式情報</h2>
+<p>画面や条件は変更される場合があります。個別のクーポン画面と以下の公式ヘルプを最終基準にしてください。</p>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/15776916?hl=ja" rel="noopener noreferrer" target="_blank">クーポン交換・保存・期限</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" rel="noopener noreferrer" target="_blank">クーポンが使えないときの確認手順</a></li>
+<li><a href="https://support.google.com/googleplay/answer/15698521?hl=ja" rel="noopener noreferrer" target="_blank">Google Playのプロモーション条件</a></li>
+</ul>
+</aside>
+<section class="section">
+<h2>よくある質問</h2>
+<h3>保存したクーポンはどこで確認できますか？</h3>
+<p>Google Playの「通知と特典」にある保存済み特典で確認できます。</p>
+<h3>クーポンより安い商品にも使えますか？</h3>
+<p>使えません。商品価格はクーポン額以上である必要があります。</p>
+<h3>別の割引と一緒に使えますか？</h3>
+<p>1回の購入で利用できるクレジットまたはプロモーションは1つです。購入画面で現在適用されている特典を確認してください。</p>
+</section>
+<section class="section related-links-section">
+<h2>あわせて確認</h2>
+<ul>
+<li><a href="/articles/2026-07-25-play-credit-not-working.html">Playクレジットへ交換できない・使えないとき</a></li>
+<li><a href="/articles/2025-12-25-best-use.html">Play Pointsの使い道を比較</a></li>
+<li><a href="/articles/2025-12-25-campaign.html">キャンペーン条件を確認</a></li>
+<li><a href="/articles/2026-03-10-play-points-reflection-timing.html">ポイントが反映されないとき</a></li>
+<li><a href="../author/katakata.html">運営者・検証方針</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2 id="section-3">他の割引が選ばれていないか確認する</h2>
-      <p>1回の購入で利用できるクレジットまたはプロモーションは1つです。別のクーポンやプロモーションが選ばれていると、使いたいPlay Pointsクーポンが自動適用されないことがあります。</p>
-      <p>購入画面の支払い方法やプロモーション欄を開き、適用されている特典を確認します。複数の割引が同時に使える前提で必要額を計算しないでください。</p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2 id="section-4">対象アプリ・アカウント・国を確認する</h2>
-      <p>Play Pointsクーポンは、指定されたアプリやゲームの条件を満たす購入で使います。別のアプリ、対象外の商品、Google Playを通さないウェブ決済では適用されません。</p>
-      <p>クーポンは交換したGoogleアカウントに紐づきます。また、交換した国・地域や通貨の条件を受けるため、複数アカウントを使う端末や国設定を変更した後は、購入アカウントとPlayの国を確認してください。</p>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2 id="section-5">条件が合うのに表示されないとき</h2>
-      <ol>
-        <li>Google Playストアと対象アプリを最新版にする</li>
-        <li>対象アプリを終了して開き直す</li>
-        <li>購入アカウントと保存済みクーポンをもう一度確認する</li>
-        <li>Google公式の案内に沿って、必要な場合だけアプリの強制停止やPlayストアのキャッシュを確認する</li>
-      </ol>
-      <p>それでも適用されない場合は、クーポンの条件画面、対象商品、購入直前の画面を残し、Google Playサポートまたはアプリ開発者へ問い合わせます。同じ商品を試しに何度も購入しないでください。</p>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <div class="cta-box">
-      <h3>追加購入の前に条件を確認</h3>
-      <p>クーポンが適用されない原因を確認してから、必要なポイントや購入額を計算できます。</p>
-      <a class="cta-btn" href="/">計算機で確認する</a>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
     </div>
 
-    <aside class="official-source-note">
-      <h2>Google公式情報</h2>
-      <p>画面や条件は変更される場合があります。個別のクーポン画面と以下の公式ヘルプを最終基準にしてください。</p>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/15776916?hl=ja" target="_blank" rel="noopener noreferrer">クーポン交換・保存・期限</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" target="_blank" rel="noopener noreferrer">クーポンが使えないときの確認手順</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/15698521?hl=ja" target="_blank" rel="noopener noreferrer">Google Playのプロモーション条件</a></li>
-      </ul>
-    </aside>
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <h3>保存したクーポンはどこで確認できますか？</h3>
-      <p>Google Playの「通知と特典」にある保存済み特典で確認できます。</p>
-      <h3>クーポンより安い商品にも使えますか？</h3>
-      <p>使えません。商品価格はクーポン額以上である必要があります。</p>
-      <h3>別の割引と一緒に使えますか？</h3>
-      <p>1回の購入で利用できるクレジットまたはプロモーションは1つです。購入画面で現在適用されている特典を確認してください。</p>
-    </section>
-
-    <section class="section related-links-section">
-      <h2>あわせて確認</h2>
-      <ul>
-        <li><a href="/articles/2026-07-25-play-credit-not-working.html">Playクレジットへ交換できない・使えないとき</a></li>
-        <li><a href="/articles/2025-12-25-best-use.html">Play Pointsの使い道を比較</a></li>
-        <li><a href="/articles/2025-12-25-campaign.html">キャンペーン条件を確認</a></li>
-        <li><a href="/articles/2026-03-10-play-points-reflection-timing.html">ポイントが反映されないとき</a></li>
-        <li><a href="../author/katakata.html">運営者・検証方針</a></li>
-      </ul>
-    </section>
-  </article>
-
-  <aside class="author-box" aria-label="この記事を書いた人">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Google Play Points 計算機 運営・編集</p>
-    <p>公式条件と一般的な確認手順を分けて整理しています。最終的な適用状態は、ご自身のGoogle Play画面で確認してください。</p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="/blog/">記事一覧</a> ｜ <a href="/">計算機トップ</a></p>
-    <p class="small">本記事は一般的な確認手順です。最新条件はGoogle Play公式ヘルプとアプリ画面を基準にしてください。</p>
-  </footer>
-</main>
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -26,50 +27,67 @@
     <meta property="og:site_name" content="Playポイント計算機" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="/articles/styles/2026-03-10-play-points-reflection-timing.css?v=710e23361a" />
-    <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-        <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="トラブル">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-        <div class="hero">
-            <span class="hero-badge">⏳ トラブル</span>
-            <h1>Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</h1>
-            <p class="hero-meta">📅 2026/08/04 更新 ・ ⏱ 読了 5分</p>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
+    </nav>
 
-        <article class="content">
-            <section class="answer-box editorial-answer" aria-labelledby="quick-answer">
-                <h2 id="quick-answer">先に結論</h2>
-                <p>購入が完了しているのにポイントが見えない場合は、注文状態、Play Pointsの履歴、購入したGoogleアカウント、参加時期、キャンペーン条件の順で確認します。正確な反映時刻は状況によって異なるため、待ち時間だけでは原因を判断できません。</p>
-            </section>
-            <section class="knowledge-boundary" aria-labelledby="known-unknown">
-                <h2 id="known-unknown">画面で確認できること／このサイトでは確認できないこと</h2>
-                <div class="knowledge-boundary__grid">
-                    <div>
-                        <h3>画面で確認できること</h3>
-                        <ul>
-                            <li>注文が完了、保留、キャンセル、返金のどの状態か。</li>
-                            <li>通常ポイントやキャンペーン分がポイント履歴へ記録されているか。</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3>このサイトでは確認できないこと</h3>
-                        <ul>
-                            <li>個別アカウントの処理状況や、正確に何時に反映されるか。</li>
-                            <li>対象者限定オファーが個別の購入へ適用されたか。</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=トラブル">トラブル</a> <span>&gt;</span>
+            <span>Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -77,133 +95,263 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-            <section class="section">
-                <h2>最初に確認する4つ</h2>
-                <ol>
-                    <li><strong>購入履歴</strong>：注文が完了しているか、保留・キャンセル・返金になっていないか確認します。</li>
-                    <li><strong>Play Pointsの履歴</strong>：ポイントが未反映なのか、別の項目として記録されているのか確認します。</li>
-                    <li><strong>Googleアカウント</strong>：購入したアカウントと、Play Pointsを見ているアカウントが同じか確認します。</li>
-                    <li><strong>参加時期</strong>：対象購入より前に、そのアカウントでPlay Pointsへ参加していたか確認します。</li>
-                </ol>
-                <p>「ポイントがない」という結果だけを見るのではなく、注文が成立しているかから順番に確認します。キャンペーンを利用した場合は、対象アプリ、対象期間、事前の有効化、上限も見直してください。</p>
-            </section>
+            <header class="hero">
+                <span class="hero-badge">⏳ トラブル</span>
+                <h1 class="article-title">Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安</h1>
+                <p class="hero-meta">📅 2026/08/04 更新 ・ ⏱ 読了 5分</p>
+            </header>
 
-            <section class="section">
-                <h2>状況別の確認方法</h2>
-                <h3>購入直後で、注文は完了している</h3>
-                <p>Play Pointsの画面と履歴を更新して確認します。購入直後に見えないことだけで、すぐに不具合と判断する必要はありません。</p>
+<section aria-labelledby="quick-answer" class="answer-box editorial-answer">
+<h2 id="quick-answer">先に結論</h2>
+<p>購入が完了しているのにポイントが見えない場合は、注文状態、Play Pointsの履歴、購入したGoogleアカウント、参加時期、キャンペーン条件の順で確認します。正確な反映時刻は状況によって異なるため、待ち時間だけでは原因を判断できません。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">画面で確認できること／このサイトでは確認できないこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>画面で確認できること</h3>
+<ul>
+<li>注文が完了、保留、キャンセル、返金のどの状態か。</li>
+<li>通常ポイントやキャンペーン分がポイント履歴へ記録されているか。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトでは確認できないこと</h3>
+<ul>
+<li>個別アカウントの処理状況や、正確に何時に反映されるか。</li>
+<li>対象者限定オファーが個別の購入へ適用されたか。</li>
+</ul>
+</div>
+</div>
+</section>
 
-                <h3>注文が保留になっている</h3>
-                <p>ポイントより先に決済の完了を確認します。支払いが確定していない間は、待つだけではポイントが付かない場合があります。</p>
-
-                <h3>注文がキャンセル・返金になっている</h3>
-                <p>キャンセルされた購入は獲得対象になりません。返金された購入では、いったん獲得したポイントも残高とレベル進捗から差し引かれます。</p>
-
-                <h3>キャンペーン分だけ見当たらない</h3>
-                <p>通常ポイントとキャンペーン分を分け、対象期間、対象商品、参加条件、利用アカウント、事前の有効化を確認してください。</p>
-
-                <h3>注文は完了しているが、履歴にも表示されない</h3>
-                <p>以下の端末側の確認を行い、注文情報を整理したうえでGoogle Playサポートへ問い合わせます。</p>
-            </section>
-
-            <section class="section">
-                <h2>端末側で試すこと</h2>
-                <ul>
-                    <li>Google Playストアを最新版へ更新する</li>
-                    <li>Google Playストアを閉じて開き直す</li>
-                    <li>端末を再起動する</li>
-                    <li>購入したGoogleアカウントへ切り替え、購入履歴とポイント履歴を確認する</li>
-                </ul>
-                <p>ここまで試しても反映されない場合は、同じ商品をもう一度購入しないでください。二重購入を避け、すでにある注文の状況を公式サポートへ確認します。</p>
-            </section>
-
-            <section class="section">
-                <h2>問い合わせ前に残しておく情報</h2>
-                <ul>
-                    <li>購入日時と注文番号</li>
-                    <li>購入したGoogleアカウント</li>
-                    <li>購入履歴とPlay Points履歴の表示</li>
-                    <li>利用したキャンペーン名、対象期間、獲得率</li>
-                    <li>購入前にキャンペーンを有効化したか</li>
-                </ul>
-                <p>注文番号やメールアドレス、支払い情報はSNSなどへ公開せず、公式サポートへの問い合わせにだけ使用してください。</p>
-            </section>
-
-            <section class="section">
-                <h2>「何分待てばよい」と一律には決められない</h2>
-                <p>Google公式は、一部のコンテンツやAndroid TV、PC版Google Play Gamesなどでは、ポイントの確認に時間がかかる場合があると案内しています。一方、購入前にPlay Pointsへ参加していなかった場合は、後から参加してもその購入のポイントは獲得できません。</p>
-                <div class="callout callout-info">
-                    <h3>待つ前に原因を分ける</h3>
-                    <ul>
-                        <li>注文が完了していない → 決済状態を確認</li>
-                        <li>別のアカウントで購入した → 購入したアカウントの履歴を確認</li>
-                        <li>キャンペーン分だけない → 条件と有効化を確認</li>
-                        <li>注文・アカウント・条件が正しい → 端末側の確認後、必要なら公式サポートへ</li>
-                    </ul>
-                </div>
-                <p class="small">参考：<a href="https://support.google.com/googleplay/answer/9077247?hl=ja" target="_blank" rel="noopener noreferrer">Google Play Pointsに関する問題を解決する（Google公式）</a></p>
-            </section>
-
-            <section class="section">
-                <h2>端末側で最後に試すこと</h2>
-                <p>注文状態・ポイント履歴・購入アカウント・キャンペーン条件を確認した後に、Play ストアや対象アプリの再起動、端末の再起動を試します。反映確認のために<strong>もう一度購入して試さない</strong>でください。重複購入になるおそれがあります。</p>
-            </section>
-
-            <div class="cta-box">
-                <h3>残高とポイント履歴の開き方を確認</h3>
-                <p>どの画面を見ればよいか分からない場合は、残高・履歴・有効期限の確認手順を先に確認してください。</p>
-                <a class="cta-btn" href="./2025-12-25-check-balance.html">確認方法を読む →</a>
-            </div>
-
-            <div class="article-ad-slot">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
-                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
+<section class="section">
+<h2>最初に確認する4つ</h2>
+<ol>
+<li><strong>購入履歴</strong>：注文が完了しているか、保留・キャンセル・返金になっていないか確認します。</li>
+<li><strong>Play Pointsの履歴</strong>：ポイントが未反映なのか、別の項目として記録されているのか確認します。</li>
+<li><strong>Googleアカウント</strong>：購入したアカウントと、Play Pointsを見ているアカウントが同じか確認します。</li>
+<li><strong>参加時期</strong>：対象購入より前に、そのアカウントでPlay Pointsへ参加していたか確認します。</li>
+</ol>
+<p>「ポイントがない」という結果だけを見るのではなく、注文が成立しているかから順番に確認します。キャンペーンを利用した場合は、対象アプリ、対象期間、事前の有効化、上限も見直してください。</p>
+</section>
+<section class="section">
+<h2>状況別の確認方法</h2>
+<h3>購入直後で、注文は完了している</h3>
+<p>Play Pointsの画面と履歴を更新して確認します。購入直後に見えないことだけで、すぐに不具合と判断する必要はありません。</p>
+<h3>注文が保留になっている</h3>
+<p>ポイントより先に決済の完了を確認します。支払いが確定していない間は、待つだけではポイントが付かない場合があります。</p>
+<h3>注文がキャンセル・返金になっている</h3>
+<p>キャンセルされた購入は獲得対象になりません。返金された購入では、いったん獲得したポイントも残高とレベル進捗から差し引かれます。</p>
+<h3>キャンペーン分だけ見当たらない</h3>
+<p>通常ポイントとキャンペーン分を分け、対象期間、対象商品、参加条件、利用アカウント、事前の有効化を確認してください。</p>
+<h3>注文は完了しているが、履歴にも表示されない</h3>
+<p>以下の端末側の確認を行い、注文情報を整理したうえでGoogle Playサポートへ問い合わせます。</p>
+</section>
+<section class="section">
+<h2>端末側で試すこと</h2>
+<ul>
+<li>Google Playストアを最新版へ更新する</li>
+<li>Google Playストアを閉じて開き直す</li>
+<li>端末を再起動する</li>
+<li>購入したGoogleアカウントへ切り替え、購入履歴とポイント履歴を確認する</li>
+</ul>
+<p>ここまで試しても反映されない場合は、同じ商品をもう一度購入しないでください。二重購入を避け、すでにある注文の状況を公式サポートへ確認します。</p>
+</section>
+<section class="section">
+<h2>問い合わせ前に残しておく情報</h2>
+<ul>
+<li>購入日時と注文番号</li>
+<li>購入したGoogleアカウント</li>
+<li>購入履歴とPlay Points履歴の表示</li>
+<li>利用したキャンペーン名、対象期間、獲得率</li>
+<li>購入前にキャンペーンを有効化したか</li>
+</ul>
+<p>注文番号やメールアドレス、支払い情報はSNSなどへ公開せず、公式サポートへの問い合わせにだけ使用してください。</p>
+</section>
+<section class="section">
+<h2>「何分待てばよい」と一律には決められない</h2>
+<p>Google公式は、一部のコンテンツやAndroid TV、PC版Google Play Gamesなどでは、ポイントの確認に時間がかかる場合があると案内しています。一方、購入前にPlay Pointsへ参加していなかった場合は、後から参加してもその購入のポイントは獲得できません。</p>
+<div class="callout callout-info">
+<h3>待つ前に原因を分ける</h3>
+<ul>
+<li>注文が完了していない → 決済状態を確認</li>
+<li>別のアカウントで購入した → 購入したアカウントの履歴を確認</li>
+<li>キャンペーン分だけない → 条件と有効化を確認</li>
+<li>注文・アカウント・条件が正しい → 端末側の確認後、必要なら公式サポートへ</li>
+</ul>
+</div>
+<p class="small">参考：<a href="https://support.google.com/googleplay/answer/9077247?hl=ja" rel="noopener noreferrer" target="_blank">Google Play Pointsに関する問題を解決する（Google公式）</a></p>
+</section>
+<section class="section">
+<h2>端末側で最後に試すこと</h2>
+<p>注文状態・ポイント履歴・購入アカウント・キャンペーン条件を確認した後に、Play ストアや対象アプリの再起動、端末の再起動を試します。反映確認のために<strong>もう一度購入して試さない</strong>でください。重複購入になるおそれがあります。</p>
+</section>
+<div class="cta-box">
+<h3>残高とポイント履歴の開き方を確認</h3>
+<p>どの画面を見ればよいか分からない場合は、残高・履歴・有効期限の確認手順を先に確認してください。</p>
+<a class="cta-btn" href="./2025-12-25-check-balance.html">確認方法を読む →</a>
+</div>
+<div class="article-ad-slot">
+<ins class="adsbygoogle" data-ad-client="ca-pub-3845885843809455" data-ad-format="auto" data-ad-slot="8250492620" data-full-width-responsive="true" style="display:block"></ins>
+<script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
+</div>
+<section class="section faq-section">
+<h2>よくある質問</h2>
+<div class="faq-item">
+<h3>Q. 課金したのにポイントがすぐに増えません。どのくらい待つべきですか？</h3>
+<p>A. 通常は数分〜数十分で反映されますが、通信状況やGoogle Playの決済処理の混雑により、数時間〜最大24時間程度かかる場合があります。まずはPlayストアアプリを一度終了して再起動し、注文履歴が「完了」になっているかご確認ください。</p>
+</div>
+<div class="faq-item">
+<h3>Q. 反映されない時にやってはいけないことは何ですか？</h3>
+<p>A. 反映確認のために「もう一度同じアイテムを購入して試す」ことは絶対に避けてください。二重決済や重複購入の原因になります。</p>
+</div>
+<div class="faq-item">
+<h3>Q. 24時間以上経ってもポイントが付かない場合はどうすればいいですか？</h3>
+<p>A. Google Playから届いた注文レシートメール（「GPA.」で始まる注文番号）を確認し、課金したGoogleアカウントとPlay Points参加アカウントが一致しているか確認した上で、Google Play公式サポートへお問い合わせください。</p>
+</div>
+</section>
+<section class="section related-links-section">
+<h2>あわせて読みたい</h2>
+<ul>
+<li><a href="./2025-12-25-check-balance.html">ポイント残高・履歴・有効期限の確認方法</a></li>
+<li><a href="./2025-12-25-refund.html">返金後のポイント残高とステータスへの影響</a></li>
+<li><a href="./2025-12-25-promo-code.html">プロモコード・割引利用時のポイント確認方法</a></li>
+<li><a href="./2026-08-16-points-disappeared.html">ポイントが消えたときの確認順</a></li>
+<li><a href="./2026-08-16-payment-methods-points.html">支払い方法とポイント対象の切り分け</a></li>
+</ul>
+</section>
+
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
             </div>
 
-            <section class="section faq-section">
-                <h2>よくある質問</h2>
-                <div class="faq-item">
-                    <h3>Q. 課金したのにポイントがすぐに増えません。どのくらい待つべきですか？</h3>
-                    <p>A. 通常は数分〜数十分で反映されますが、通信状況やGoogle Playの決済処理の混雑により、数時間〜最大24時間程度かかる場合があります。まずはPlayストアアプリを一度終了して再起動し、注文履歴が「完了」になっているかご確認ください。</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Q. 反映されない時にやってはいけないことは何ですか？</h3>
-                    <p>A. 反映確認のために「もう一度同じアイテムを購入して試す」ことは絶対に避けてください。二重決済や重複購入の原因になります。</p>
-                </div>
-                <div class="faq-item">
-                    <h3>Q. 24時間以上経ってもポイントが付かない場合はどうすればいいですか？</h3>
-                    <p>A. Google Playから届いた注文レシートメール（「GPA.」で始まる注文番号）を確認し、課金したGoogleアカウントとPlay Points参加アカウントが一致しているか確認した上で、Google Play公式サポートへお問い合わせください。</p>
-                </div>
-            </section>
-
-            <section class="section related-links-section">
-                <h2>あわせて読みたい</h2>
-                <ul>
-                    <li><a href="./2025-12-25-check-balance.html">ポイント残高・履歴・有効期限の確認方法</a></li>
-                    <li><a href="./2025-12-25-refund.html">返金後のポイント残高とステータスへの影響</a></li>
-                    <li><a href="./2025-12-25-promo-code.html">プロモコード・割引利用時のポイント確認方法</a></li>
-                    <li><a href="./2026-08-16-points-disappeared.html">ポイントが消えたときの確認順</a></li>
-                    <li><a href="./2026-08-16-payment-methods-points.html">支払い方法とポイント対象の切り分け</a></li>
-                </ul>
-            </section>
+            <nav id="article-nav" class="article-nav"></nav>
         </article>
 
-        <aside class="author-box" aria-label="この記事の著者">
-            <p class="author-box-label">この記事を書いた人</p>
-            <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-            <p>Google Play公式情報と計算条件を確認し、変更される可能性がある内容は注意点を添えて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
         </aside>
 
-        <nav id="article-nav" class="article-nav"></nav>
-        <footer class="article-footer">
-            <p>📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ 🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a></p>
-            <p class="small article-note-spacing">※個別アカウントの反映状況は、このサイトから確認できません。注文履歴とGoogle Play公式サポートを最終基準にしてください。</p>
-        </footer>
-    </main>
-    <script type="application/ld+json">
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
+<script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+<script type="application/ld+json">
 {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -233,7 +381,7 @@
       }
     }
     </script>
-    <script type="application/ld+json">
+<script type="application/ld+json">
 {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -265,8 +413,8 @@
       ]
     }
     </script>
-    <script src="/js/analytics-core.js?v=54c7b8621b"></script>
-    <script src="../blog/article.js?v=f6e42c66c3"></script>
-    <script src="../blog/components.js?v=e0250b3aa5"></script>
+<script src="/js/analytics-core.js?v=54c7b8621b"></script>
+<script src="../blog/article.js?v=f6e42c66c3"></script>
+<script src="../blog/components.js?v=e0250b3aa5"></script>
 </body>
 </html>

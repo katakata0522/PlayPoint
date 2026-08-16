@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -24,57 +25,67 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/weekly-reward.png" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="ランク">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">PLAY POINTS 週次特典</span>
-    <h1>Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの使い方</h1>
-    <p class="hero-meta">2026/08/05 更新 ・ 読了 6分</p>
-  </header>
-
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：まず、自分の「特典」画面にカードが出ているかを見る</h2>
-      <p>スーパーウィークリーリワードは、Google公式ページで<strong>ゴールド・プラチナ・ダイヤモンド</strong>向けに案内されている、在庫制の週次賞品企画です。ただし、ランクだけで全アカウントへの提供を断定することはできません。</p>
-      <p>自分のPlayの国・Googleアカウントでカードが表示され、参加条件と賞品が確認できる場合に、その週の対象と考えるのが確実です。日本で提供される週は、金曜日の午前0時以降に新しい賞品が利用可能になると案内されています。</p>
-    </section>
-
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">公式に確認できること／個別画面で見ること</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>公式に確認できること</h3>
-          <ul>
-            <li>プロモーション上の対象ランクはゴールド、プラチナ、ダイヤモンドです。</li>
-            <li>賞品数には限りがあり、追加の資格要件が付く場合があります。</li>
-            <li>Super Ticketを使うと、直前に受け取った特典は保持できません。</li>
-            <li>Play Pass加入者とダイヤモンドは30日ごと、プラチナは90日ごとに1枚と案内されています。</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>個別画面で見ること</h3>
-          <ul>
-            <li>今週のカードが自分のアカウントに表示されているか</li>
-            <li>現在の賞品、残りの賞品数、追加条件</li>
-            <li>Super Ticketの付与状況と受け取り期限</li>
-            <li>今週分をすでに受け取っていないか</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=ランク">ランク</a> <span>&gt;</span>
+            <span>Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの使い方</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -82,116 +93,255 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section">
-      <h2>通常・スーパー・Play Pass週次特典の違い</h2>
-      <div class="table-card reward-comparison" aria-label="週次特典3制度の比較">
-        <table>
-          <thead><tr><th>種類</th><th>主な対象</th><th>日本での更新</th><th>確認場所・特徴</th></tr></thead>
-          <tbody>
-            <tr><td>通常のウィークリーリワード</td><td>シルバー以上</td><td>金曜日</td><td>Play Pointsの「特典」から受け取る通常の週次特典</td></tr>
-            <tr><td>スーパーウィークリーリワード</td><td>ゴールド以上として案内</td><td>提供週は金曜日 午前0時以降</td><td>在庫制の別企画。カード表示と追加条件を確認</td></tr>
-            <tr><td>Play Passの週次ボーナス・ブースター</td><td>対象のPlay Pass加入者・ファミリー</td><td>木曜日</td><td>Play Pass画面で確認する別制度</td></tr>
-          </tbody>
-        </table>
-        <div class="reward-comparison-mobile" role="list" aria-label="週次特典3制度の比較">
-          <section class="reward-option" role="listitem"><h3>通常のウィークリーリワード</h3><dl><div><dt>主な対象</dt><dd>シルバー以上</dd></div><div><dt>更新</dt><dd>金曜日</dd></div><div><dt>特徴</dt><dd>通常のPlay Points週次特典</dd></div></dl></section>
-          <section class="reward-option" role="listitem"><h3>スーパーウィークリーリワード</h3><dl><div><dt>主な対象</dt><dd>ゴールド以上として案内</dd></div><div><dt>更新</dt><dd>提供週は金曜日 午前0時以降</dd></div><div><dt>特徴</dt><dd>カード表示と在庫・追加条件を確認</dd></div></dl></section>
-          <section class="reward-option" role="listitem"><h3>Play Pass週次ボーナス</h3><dl><div><dt>主な対象</dt><dd>対象のPlay Pass加入者など</dd></div><div><dt>更新</dt><dd>木曜日</dd></div><div><dt>特徴</dt><dd>Play Passの別制度</dd></div></dl></section>
+            <header class="hero">
+                <span class="hero-badge">PLAY POINTS 週次特典</span>
+                <h1 class="article-title">Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの使い方</h1>
+                <p class="hero-meta">2026/08/05 更新 ・ 読了 6分</p>
+            </header>
+
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：まず、自分の「特典」画面にカードが出ているかを見る</h2>
+<p>スーパーウィークリーリワードは、Google公式ページで<strong>ゴールド・プラチナ・ダイヤモンド</strong>向けに案内されている、在庫制の週次賞品企画です。ただし、ランクだけで全アカウントへの提供を断定することはできません。</p>
+<p>自分のPlayの国・Googleアカウントでカードが表示され、参加条件と賞品が確認できる場合に、その週の対象と考えるのが確実です。日本で提供される週は、金曜日の午前0時以降に新しい賞品が利用可能になると案内されています。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">公式に確認できること／個別画面で見ること</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>公式に確認できること</h3>
+<ul>
+<li>プロモーション上の対象ランクはゴールド、プラチナ、ダイヤモンドです。</li>
+<li>賞品数には限りがあり、追加の資格要件が付く場合があります。</li>
+<li>Super Ticketを使うと、直前に受け取った特典は保持できません。</li>
+<li>Play Pass加入者とダイヤモンドは30日ごと、プラチナは90日ごとに1枚と案内されています。</li>
+</ul>
+</div>
+<div>
+<h3>個別画面で見ること</h3>
+<ul>
+<li>今週のカードが自分のアカウントに表示されているか</li>
+<li>現在の賞品、残りの賞品数、追加条件</li>
+<li>Super Ticketの付与状況と受け取り期限</li>
+<li>今週分をすでに受け取っていないか</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="section">
+<h2>通常・スーパー・Play Pass週次特典の違い</h2>
+<div aria-label="週次特典3制度の比較" class="table-card reward-comparison">
+<table>
+<thead><tr><th>種類</th><th>主な対象</th><th>日本での更新</th><th>確認場所・特徴</th></tr></thead>
+<tbody>
+<tr><td>通常のウィークリーリワード</td><td>シルバー以上</td><td>金曜日</td><td>Play Pointsの「特典」から受け取る通常の週次特典</td></tr>
+<tr><td>スーパーウィークリーリワード</td><td>ゴールド以上として案内</td><td>提供週は金曜日 午前0時以降</td><td>在庫制の別企画。カード表示と追加条件を確認</td></tr>
+<tr><td>Play Passの週次ボーナス・ブースター</td><td>対象のPlay Pass加入者・ファミリー</td><td>木曜日</td><td>Play Pass画面で確認する別制度</td></tr>
+</tbody>
+</table>
+<div aria-label="週次特典3制度の比較" class="reward-comparison-mobile" role="list">
+<section class="reward-option" role="listitem"><h3>通常のウィークリーリワード</h3><dl><div><dt>主な対象</dt><dd>シルバー以上</dd></div><div><dt>更新</dt><dd>金曜日</dd></div><div><dt>特徴</dt><dd>通常のPlay Points週次特典</dd></div></dl></section>
+<section class="reward-option" role="listitem"><h3>スーパーウィークリーリワード</h3><dl><div><dt>主な対象</dt><dd>ゴールド以上として案内</dd></div><div><dt>更新</dt><dd>提供週は金曜日 午前0時以降</dd></div><div><dt>特徴</dt><dd>カード表示と在庫・追加条件を確認</dd></div></dl></section>
+<section class="reward-option" role="listitem"><h3>Play Pass週次ボーナス</h3><dl><div><dt>主な対象</dt><dd>対象のPlay Pass加入者など</dd></div><div><dt>更新</dt><dd>木曜日</dd></div><div><dt>特徴</dt><dd>Play Passの別制度</dd></div></dl></section>
+</div>
+</div>
+<p>「今週分がない」と感じたときは、まずどの制度を探しているかを分けてください。更新曜日と対象者が異なるため、同じ画面に並ばないことがあります。</p>
+</section>
+<section class="section">
+<h2>参加条件と受け取り方</h2>
+<ol>
+<li>Play Pointsへ登録しているGoogleアカウントを開く</li>
+<li>現在のランクとPlayの国を確認する</li>
+<li>金曜日の更新後に「Play Points」→「特典」を開く</li>
+<li>スーパーウィークリーリワードのカードがあるか確認する</li>
+<li>カード内の参加条件、賞品、残数、利用規約を読んで受け取る</li>
+</ol>
+<p class="note">複数のGoogleアカウントを使っている場合、ランクを見たアカウントと特典画面を開いたアカウントが一致しているかも確認してください。</p>
+</section>
+<section class="section">
+<h2>賞品例より、今週のカードを見る</h2>
+<p>公式ページでは過去に端末、ギフトカード、Play Pointsなどの賞品例が示されています。ただし、例は企画の形式を知るためのもので、今週の賞品や当選を保証する一覧ではありません。</p>
+<ul>
+<li>現在の賞品と残数は、受け取り前のカードで確認する</li>
+<li>一部の賞品は他よりレアと案内されている</li>
+<li>賞品数には限りがあり、在庫がなくなる場合がある</li>
+<li>ステータスや追加資格によって内容が異なる場合がある</li>
+</ul>
+<div class="callout callout-warning">
+<h3>予定購入と、抽選型の特典価値は分けて比較する</h3>
+<p>賞品の当選確率や期待値は公開されていません。まず予定しているGoogle Play購入で得られるポイントとランク進捗を計算し、スーパーウィークリーリワードは金額が確定していない追加特典として考えると判断しやすくなります。</p>
+</div>
+</section>
+<section class="section">
+<h2>Super Ticketは、元の特典と引き換える再挑戦</h2>
+<p>Super Ticketは、スーパーウィークリーリワードでPlay Pointsの特典を受け取った後、プレミアム特典へもう一度挑戦できる仕組みです。重要なのは、<strong>Super Ticketを使うと、直前に受け取った特典は保持できない</strong>ことです。Super Ticketはプレミアム特典が必ず当たる仕組みではありません。</p>
+<p>Google公式では、Play Pass加入者とダイヤモンド会員は30日ごとに1枚、プラチナ会員は90日ごとに1枚受け取れると案内されています。実際のチケットと受け取り期間は、自分のアカウント画面に表示されている必要があります。</p>
+<div class="callout callout-warning">
+<h3>使う前に、現在の特典と再抽選を比べる</h3>
+<p>最初の特典が自分にとって使いやすいなら、そのまま受け取る選択もあります。再挑戦する場合は、現在の特典を手放して結果が未確定の抽選へ進むことを理解してから使ってください。チケットを後の機会まで保存することもできます。</p>
+</div>
+</section>
+<section class="section">
+<h2>表示されない・受け取れない時の確認順</h2>
+<ol>
+<li>Play Pointsに登録したGoogleアカウントで開いているか</li>
+<li>現在のランクとPlayの国が想定どおりか</li>
+<li>金曜日の更新時刻を過ぎているか</li>
+<li>今週分をすでに受け取っていないか、ポイント履歴を見る</li>
+<li>追加資格、終了、在庫切れの表示がないか</li>
+<li>探しているのが通常週次やPlay Pass特典ではないか</li>
+</ol>
+<p>カードが表示されているのに条件どおり動かない場合は、個人情報を含めずにカードと利用規約の画面を保存し、Google Playサポートへ問い合わせてください。このサイトから個別アカウントの資格や在庫は確認できません。</p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<h3>シルバーでもスーパーウィークリーリワードへ参加できますか？</h3>
+<p>スーパーウィークリーリワードの公式プロモーションはゴールド、プラチナ、ダイヤモンドを案内しています。シルバー以上の通常ウィークリーリワードとは別です。</p>
+<h3>金曜日に早く受け取れば、良い賞品が保証されますか？</h3>
+<p>保証されません。在庫が変わる可能性はありますが、特定の賞品が当たるとは限りません。</p>
+<h3>購入判断にはどう組み込めばよいですか？</h3>
+<p>予定している購入額と確定しているランク特典を先に比較し、スーパーウィークリーリワードはアカウントに表示される可能性のある変動特典として別枠で考えてください。</p>
+</section>
+<section class="section">
+<h2>公式情報</h2>
+<ul>
+<li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_editorialmd_loyalty_swp_cujs_unenrolled_fcp" rel="noopener noreferrer" target="_blank">スーパーウィークリーリワードの公式プロモーション</a></li>
+<li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_games_editorialmd_product_gpp_swp_super_tickets_fcp" rel="noopener noreferrer" target="_blank">Super Ticketの公式案内</a></li>
+</ul>
+<p class="small">最終公式確認日：2026年8月5日。提供地域、対象条件、Ticketの周期、賞品と在庫は変更される場合があります。</p>
+</section>
+<section class="section related-links-section">
+<h2>あわせて読みたい</h2>
+<ul>
+<li><a href="./2025-12-25-weekly-reward.html">通常・スーパー・Play Passの週次特典を比較</a></li>
+<li><a href="./2026-07-24-earn-play-points-free.html">予定購入以外で受け取れるPlay Points特典</a></li>
+<li><a href="./2025-12-25-diamond-worth-it.html">ダイヤモンド到達に必要な金額と特典を比較</a></li>
+</ul>
+</section>
+
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
+
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
+
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
         </div>
-      </div>
-      <p>「今週分がない」と感じたときは、まずどの制度を探しているかを分けてください。更新曜日と対象者が異なるため、同じ画面に並ばないことがあります。</p>
-    </section>
-
-    <section class="section">
-      <h2>参加条件と受け取り方</h2>
-      <ol>
-        <li>Play Pointsへ登録しているGoogleアカウントを開く</li>
-        <li>現在のランクとPlayの国を確認する</li>
-        <li>金曜日の更新後に「Play Points」→「特典」を開く</li>
-        <li>スーパーウィークリーリワードのカードがあるか確認する</li>
-        <li>カード内の参加条件、賞品、残数、利用規約を読んで受け取る</li>
-      </ol>
-      <p class="note">複数のGoogleアカウントを使っている場合、ランクを見たアカウントと特典画面を開いたアカウントが一致しているかも確認してください。</p>
-    </section>
-
-    <section class="section">
-      <h2>賞品例より、今週のカードを見る</h2>
-      <p>公式ページでは過去に端末、ギフトカード、Play Pointsなどの賞品例が示されています。ただし、例は企画の形式を知るためのもので、今週の賞品や当選を保証する一覧ではありません。</p>
-      <ul>
-        <li>現在の賞品と残数は、受け取り前のカードで確認する</li>
-        <li>一部の賞品は他よりレアと案内されている</li>
-        <li>賞品数には限りがあり、在庫がなくなる場合がある</li>
-        <li>ステータスや追加資格によって内容が異なる場合がある</li>
-      </ul>
-      <div class="callout callout-warning">
-        <h3>予定購入と、抽選型の特典価値は分けて比較する</h3>
-        <p>賞品の当選確率や期待値は公開されていません。まず予定しているGoogle Play購入で得られるポイントとランク進捗を計算し、スーパーウィークリーリワードは金額が確定していない追加特典として考えると判断しやすくなります。</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>Super Ticketは、元の特典と引き換える再挑戦</h2>
-      <p>Super Ticketは、スーパーウィークリーリワードでPlay Pointsの特典を受け取った後、プレミアム特典へもう一度挑戦できる仕組みです。重要なのは、<strong>Super Ticketを使うと、直前に受け取った特典は保持できない</strong>ことです。Super Ticketはプレミアム特典が必ず当たる仕組みではありません。</p>
-      <p>Google公式では、Play Pass加入者とダイヤモンド会員は30日ごとに1枚、プラチナ会員は90日ごとに1枚受け取れると案内されています。実際のチケットと受け取り期間は、自分のアカウント画面に表示されている必要があります。</p>
-      <div class="callout callout-warning">
-        <h3>使う前に、現在の特典と再抽選を比べる</h3>
-        <p>最初の特典が自分にとって使いやすいなら、そのまま受け取る選択もあります。再挑戦する場合は、現在の特典を手放して結果が未確定の抽選へ進むことを理解してから使ってください。チケットを後の機会まで保存することもできます。</p>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>表示されない・受け取れない時の確認順</h2>
-      <ol>
-        <li>Play Pointsに登録したGoogleアカウントで開いているか</li>
-        <li>現在のランクとPlayの国が想定どおりか</li>
-        <li>金曜日の更新時刻を過ぎているか</li>
-        <li>今週分をすでに受け取っていないか、ポイント履歴を見る</li>
-        <li>追加資格、終了、在庫切れの表示がないか</li>
-        <li>探しているのが通常週次やPlay Pass特典ではないか</li>
-      </ol>
-      <p>カードが表示されているのに条件どおり動かない場合は、個人情報を含めずにカードと利用規約の画面を保存し、Google Playサポートへ問い合わせてください。このサイトから個別アカウントの資格や在庫は確認できません。</p>
-    </section>
-
-    <section class="section">
-      <h2>よくある質問</h2>
-      <h3>シルバーでもスーパーウィークリーリワードへ参加できますか？</h3>
-      <p>スーパーウィークリーリワードの公式プロモーションはゴールド、プラチナ、ダイヤモンドを案内しています。シルバー以上の通常ウィークリーリワードとは別です。</p>
-      <h3>金曜日に早く受け取れば、良い賞品が保証されますか？</h3>
-      <p>保証されません。在庫が変わる可能性はありますが、特定の賞品が当たるとは限りません。</p>
-      <h3>購入判断にはどう組み込めばよいですか？</h3>
-      <p>予定している購入額と確定しているランク特典を先に比較し、スーパーウィークリーリワードはアカウントに表示される可能性のある変動特典として別枠で考えてください。</p>
-    </section>
-
-    <section class="section">
-      <h2>公式情報</h2>
-      <ul>
-        <li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_editorialmd_loyalty_swp_cujs_unenrolled_fcp" target="_blank" rel="noopener noreferrer">スーパーウィークリーリワードの公式プロモーション</a></li>
-        <li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_games_editorialmd_product_gpp_swp_super_tickets_fcp" target="_blank" rel="noopener noreferrer">Super Ticketの公式案内</a></li>
-      </ul>
-      <p class="small">最終公式確認日：2026年8月5日。提供地域、対象条件、Ticketの周期、賞品と在庫は変更される場合があります。</p>
-    </section>
-
-    <section class="section related-links-section">
-      <h2>あわせて読みたい</h2>
-      <ul>
-        <li><a href="./2025-12-25-weekly-reward.html">通常・スーパー・Play Passの週次特典を比較</a></li>
-        <li><a href="./2026-07-24-earn-play-points-free.html">予定購入以外で受け取れるPlay Points特典</a></li>
-        <li><a href="./2025-12-25-diamond-worth-it.html">ダイヤモンド到達に必要な金額と特典を比較</a></li>
-      </ul>
-    </section>
-  </article>
-
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の計算条件を照合し、公開情報で分かることと個別画面で確認すべきことを分けて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ <a href="https://playpoint-sim.com/">計算機トップへ</a></p>
-    <p class="small article-note-spacing--compact">※賞品と参加条件はアカウントごとに変わるため、受け取り前の特典画面も確認してください。</p>
-  </footer>
-</main>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
 <script type="application/ld+json">
 {

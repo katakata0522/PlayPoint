@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -21,8 +22,6 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/payment-methods-points.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://playpoint-sim.com/articles/ogp/payment-methods-points.png" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -50,115 +49,282 @@
   ]
 }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">使い方</span>
-    <h1>キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？</h1>
-    <p class="hero-meta">2026/08/16 公開 ・ 読了 6分</p>
-  </header>
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：分かれ目は支払いブランドではなく、対象のPlay購入かどうか</h2>
-      <p>ギフトカードの購入やアカウントへのチャージそのものでは、ポイントは付きません。対象のアプリ・ゲーム、アプリ内／ゲーム内購入、対象の定期購入、Android向けGoogle Oneを、Playのお支払い方法で払ったときに付き得ます。</p>
-      <p>キャリア独自の還元キャンペーンはPlayポイントではありません。カード払いだから必ず貯まる、でもありません。</p>
-    </section>
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>判明していること</h3>
-          <ul>
-            <li>ギフトカードの購入・チャージでは貯まりません。</li>
-            <li>獲得対象は公開ヘルプのリストです。税と未請求期間は対象外です。</li>
-          </ul>
+
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>このサイトからは不明なこと</h3>
-          <ul>
-            <li>特定キャリアやカード会社の独自還元率。</li>
-            <li>自分の次の購入が対象か、キャンペーン除外か。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
                 <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
-    <section class="section" id="split">
-      <h2>支払い方法ごとの整理</h2>
-      <div class="table-card">
-        <table>
-          <caption>チャージと対象購入の切り分け</caption>
-          <thead><tr><th>手段</th><th>チャージ／準備</th><th>対象のPlay購入に使ったとき</th></tr></thead>
-          <tbody>
-            <tr><td>ギフトカード／Play残高</td><td>ポイント対象外</td><td>付き得る</td></tr>
-            <tr><td>クレジットカード</td><td>—</td><td>対象購入なら付き得る</td></tr>
-            <tr><td>キャリア決済</td><td>キャリア独自還元は別制度</td><td>Play支払いなら付き得る</td></tr>
-            <tr><td>Playポイント自体</td><td>—</td><td>新しいポイントの獲得対象ではない</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>同時に見えるキャンペーンは、Playポイント側では最も高い獲得率だけが適用されます。キャリア側の還元率まで足し算してはいけません。</p>
-    </section>
-    <section class="section" id="check">
-      <h2>確認順</h2>
-      <ol>
-        <li>それが対象のPlay購入か（アプリ・ゲーム、アプリ内購入、対象の定期購入、Android向けGoogle One）</li>
-        <li>税抜か、未請求のお試し期間でないか</li>
-        <li>ギフトカードなら、チャージではなく対象購入の支払いに使ったか</li>
-        <li>キャリア還元とPlayポイントを分けて見る</li>
-        <li>ポイント履歴に付与があるか確認する</li>
-      </ol>
-      <p>定期購入は請求が発生した対象購入だけが対象です。<a href="./2025-12-25-subscription.html">継続課金の請求経路を確認する</a></p>
-    </section>
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>ギフトカードをチャージしただけでポイントは付きますか？</h3><p>付きません。公式は、ギフトカードの購入やアカウントへのチャージではポイントが貯まらないと書いています。</p></div>
-      <div class="faq-item"><h3>キャリア決済でもPlayポイントは貯まりますか？</h3><p>対象のPlay購入を、Playのお支払い方法としてキャリア決済で払った場合は付くことがあります。キャリア独自のポイント還元はPlayポイントではありません。</p></div>
-      <div class="faq-item"><h3>クレジットカード払いなら必ず貯まりますか？</h3><p>カードであること自体が条件ではありません。対象の購入かどうか、税抜か、未請求期間でないか、キャンペーン除外でないかが先です。</p></div>
-      <div class="faq-item"><h3>ギフト残高でアプリを買ったらポイントは付きますか？</h3><p>対象のPlay購入をギフト残高で払った場合は付くことがあります。チャージした瞬間ではなく、対象購入の支払いとして使ったときです。</p></div>
-    </section>
-    <aside class="official-source-note">
-      <h2>確認に使用したGoogle公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する（日本向け）</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/14931929?hl=ja" target="_blank" rel="noopener noreferrer">よくある質問</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/2651410?hl=ja" target="_blank" rel="noopener noreferrer">お支払い方法を管理する</a></li>
-      </ul>
-      <p>最終公式確認日：2026年8月16日。対象かどうかは、購入後のポイント履歴を優先してください。</p>
-    </aside>
-    <section class="section related-links-section">
-      <h2>状況に合わせて次に読む記事</h2>
-      <ul>
-        <li><a href="./2026-06-20-discount-gift-cards.html">ギフトカード割引とポイント</a></li>
-        <li><a href="./2025-12-25-subscription.html">継続課金とポイント</a></li>
-        <li><a href="./2026-08-16-pc-play-games-points.html">PC版Playゲームでも貯まる？</a></li>
-        <li><a href="./2026-08-16-youtube-premium-play-points.html">YouTube Premiumは貯まる？</a></li>
-      </ul>
-    </section>
-  </article>
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の画面で確認すべき内容を分け、条件や影響を誤解しにくい形で掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer"><p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p></footer>
-</main>
+
+            <header class="hero">
+                <span class="hero-badge">使い方</span>
+                <h1 class="article-title">キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？</h1>
+                <p class="hero-meta">2026/08/16 公開 ・ 読了 6分</p>
+            </header>
+
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：分かれ目は支払いブランドではなく、対象のPlay購入かどうか</h2>
+<p>ギフトカードの購入やアカウントへのチャージそのものでは、ポイントは付きません。対象のアプリ・ゲーム、アプリ内／ゲーム内購入、対象の定期購入、Android向けGoogle Oneを、Playのお支払い方法で払ったときに付き得ます。</p>
+<p>キャリア独自の還元キャンペーンはPlayポイントではありません。カード払いだから必ず貯まる、でもありません。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>判明していること</h3>
+<ul>
+<li>ギフトカードの購入・チャージでは貯まりません。</li>
+<li>獲得対象は公開ヘルプのリストです。税と未請求期間は対象外です。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトからは不明なこと</h3>
+<ul>
+<li>特定キャリアやカード会社の独自還元率。</li>
+<li>自分の次の購入が対象か、キャンペーン除外か。</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="section" id="split">
+<h2>支払い方法ごとの整理</h2>
+<div class="table-card">
+<table>
+<caption>チャージと対象購入の切り分け</caption>
+<thead><tr><th>手段</th><th>チャージ／準備</th><th>対象のPlay購入に使ったとき</th></tr></thead>
+<tbody>
+<tr><td>ギフトカード／Play残高</td><td>ポイント対象外</td><td>付き得る</td></tr>
+<tr><td>クレジットカード</td><td>—</td><td>対象購入なら付き得る</td></tr>
+<tr><td>キャリア決済</td><td>キャリア独自還元は別制度</td><td>Play支払いなら付き得る</td></tr>
+<tr><td>Playポイント自体</td><td>—</td><td>新しいポイントの獲得対象ではない</td></tr>
+</tbody>
+</table>
+</div>
+<p>同時に見えるキャンペーンは、Playポイント側では最も高い獲得率だけが適用されます。キャリア側の還元率まで足し算してはいけません。</p>
+</section>
+<section class="section" id="check">
+<h2>確認順</h2>
+<ol>
+<li>それが対象のPlay購入か（アプリ・ゲーム、アプリ内購入、対象の定期購入、Android向けGoogle One）</li>
+<li>税抜か、未請求のお試し期間でないか</li>
+<li>ギフトカードなら、チャージではなく対象購入の支払いに使ったか</li>
+<li>キャリア還元とPlayポイントを分けて見る</li>
+<li>ポイント履歴に付与があるか確認する</li>
+</ol>
+<p>定期購入は請求が発生した対象購入だけが対象です。<a href="./2025-12-25-subscription.html">継続課金の請求経路を確認する</a></p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>ギフトカードをチャージしただけでポイントは付きますか？</h3><p>付きません。公式は、ギフトカードの購入やアカウントへのチャージではポイントが貯まらないと書いています。</p></div>
+<div class="faq-item"><h3>キャリア決済でもPlayポイントは貯まりますか？</h3><p>対象のPlay購入を、Playのお支払い方法としてキャリア決済で払った場合は付くことがあります。キャリア独自のポイント還元はPlayポイントではありません。</p></div>
+<div class="faq-item"><h3>クレジットカード払いなら必ず貯まりますか？</h3><p>カードであること自体が条件ではありません。対象の購入かどうか、税抜か、未請求期間でないか、キャンペーン除外でないかが先です。</p></div>
+<div class="faq-item"><h3>ギフト残高でアプリを買ったらポイントは付きますか？</h3><p>対象のPlay購入をギフト残高で払った場合は付くことがあります。チャージした瞬間ではなく、対象購入の支払いとして使ったときです。</p></div>
+</section>
+<aside class="official-source-note">
+<h2>確認に使用したGoogle公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する（日本向け）</a></li>
+<li><a href="https://support.google.com/googleplay/answer/14931929?hl=ja" rel="noopener noreferrer" target="_blank">よくある質問</a></li>
+<li><a href="https://support.google.com/googleplay/answer/2651410?hl=ja" rel="noopener noreferrer" target="_blank">お支払い方法を管理する</a></li>
+</ul>
+<p>最終公式確認日：2026年8月16日。対象かどうかは、購入後のポイント履歴を優先してください。</p>
+</aside>
+<section class="section related-links-section">
+<h2>状況に合わせて次に読む記事</h2>
+<ul>
+<li><a href="./2026-06-20-discount-gift-cards.html">ギフトカード割引とポイント</a></li>
+<li><a href="./2025-12-25-subscription.html">継続課金とポイント</a></li>
+<li><a href="./2026-08-16-pc-play-games-points.html">PC版Playゲームでも貯まる？</a></li>
+<li><a href="./2026-08-16-youtube-premium-play-points.html">YouTube Premiumは貯まる？</a></li>
+</ul>
+</section>
+
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
+
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
+
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
+
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

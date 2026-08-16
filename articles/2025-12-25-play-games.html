@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -19,55 +20,67 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/play-games.png" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">PLAY GAMES × PLAY POINTS</span>
-    <h1>Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件</h1>
-    <p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>
-  </header>
-
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：別サービスだが、クエストやPC版では連携する場面がある</h2>
-      <p>Google Play Gamesはゲームプロフィール、実績、対応ゲーム、PCでのゲーム体験などを扱うサービスです。Play Pointsは、対象購入や公式特典でポイントを貯めて使うプログラムです。</p>
-      <p>普通にゲームを遊んだり実績を解除したりするだけで、常にPlay Pointsが付くわけではありません。ただし、一部のクエストでは<strong>Play Gamesプロフィールへのログイン</strong>が進行記録に必要です。</p>
-    </section>
-
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>判明していること</h3>
-          <ul>
-            <li>通常のゲームプレイや実績解除は、Play Pointsの常設獲得条件ではありません。</li>
-            <li>対象購入、インストールオファー、クエストなどは例外です。</li>
-            <li>一部のクエストではPlay Gamesプロフィールへのログインが必要です。</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>このサイトからは不明なこと</h3>
-          <ul>
-            <li>あなたに表示されている対象ゲームやクエストは確認できません。</li>
-            <li>今後のリーグ、イベント、ポイント報酬は予測できません。</li>
-            <li>個別ゲーム内の進行状況はGoogle Playの画面が最終判断です。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -75,135 +88,270 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section">
-      <h2>2つのサービスの役割</h2>
-      <div class="table-card">
-        <table>
-          <thead><tr><th>サービス</th><th>主な役割</th><th>確認できるもの</th></tr></thead>
-          <tbody>
-            <tr><td>Google Play Games</td><td>ゲームプロフィール、実績、対応ゲーム、PC版Google Play Games</td><td>実績、ライブラリ、ゲームプロフィール、対応ゲーム情報</td></tr>
-            <tr><td>Google Play Points</td><td>対象購入・特典でポイントを獲得し、アイテムなどへ交換</td><td>ポイント残高、年間のレベル進捗、特典、履歴、プロモーション</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>登録と残高は別に管理されます。一方、PC版Google Play GamesからPlay Pointsの状況や対象ブーストを確認できるなど、Google Play全体の体験として連携する範囲があります。</p>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">PLAY GAMES × PLAY POINTS</span>
+                <h1 class="article-title">Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件</h1>
+                <p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>
+            </header>
 
-    <section class="section">
-      <h2>ゲームを遊ぶだけでポイントが貯まるわけではない</h2>
-      <p>Play Pointsの基本は、参加済みのGoogleアカウントでGoogle Playの対象購入を行うことです。ゲームの起動時間、ログイン日数、実績解除だけで、常にポイントが付く仕組みではありません。</p>
-      <p>ポイント獲得が発生する可能性がある例は次のとおりです。</p>
-      <ul>
-        <li>Google Playを通じたゲーム本体・アプリ内アイテム・定期購入</li>
-        <li>Play Pointsの「貯める」に表示された初回インストールオファー</li>
-        <li>ポイント報酬が明記されたGoogle公式イベントやリーグ</li>
-        <li>対象アカウントに表示されたGoogle Playクエスト</li>
-      </ul>
-      <div class="callout callout-warning"><h3>対応ゲーム＝ポイント対象ではない</h3><p>Google Play Games対応タイトルであることだけでは、Play Pointsの付与条件を満たしません。Play Pointsの「貯める」やクエスト進行状況ページの条件を確認してください。</p></div>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：別サービスだが、クエストやPC版では連携する場面がある</h2>
+<p>Google Play Gamesはゲームプロフィール、実績、対応ゲーム、PCでのゲーム体験などを扱うサービスです。Play Pointsは、対象購入や公式特典でポイントを貯めて使うプログラムです。</p>
+<p>普通にゲームを遊んだり実績を解除したりするだけで、常にPlay Pointsが付くわけではありません。ただし、一部のクエストでは<strong>Play Gamesプロフィールへのログイン</strong>が進行記録に必要です。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>判明していること</h3>
+<ul>
+<li>通常のゲームプレイや実績解除は、Play Pointsの常設獲得条件ではありません。</li>
+<li>対象購入、インストールオファー、クエストなどは例外です。</li>
+<li>一部のクエストではPlay Gamesプロフィールへのログインが必要です。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトからは不明なこと</h3>
+<ul>
+<li>あなたに表示されている対象ゲームやクエストは確認できません。</li>
+<li>今後のリーグ、イベント、ポイント報酬は予測できません。</li>
+<li>個別ゲーム内の進行状況はGoogle Playの画面が最終判断です。</li>
+</ul>
+</div>
+</div>
+</section>
 
-    <section class="section">
-      <h2>Google Play Games Leaguesでポイント報酬が出る場合がある</h2>
-      <p><strong>Google Play Games Leagues</strong>は、対象ゲームで他のユーザーと競い、リーダーボード上位や参加条件に応じた特典を目指す企画です。Google公式は、リーグへの参加や成績に応じてGoogle Playポイントが付与される場合があると案内しています。</p>
-      <p>ただし、すべてのユーザーやゲームで常時利用できる機能ではありません。対象地域の一部ユーザーに限られ、対象ゲーム、期間、スコア条件、特典はリーグごとに異なります。Google Playの「リーグ」またはPlay Pointsの「特典」に表示された個別条件を確認してください。</p>
-    </section>
+<section class="section">
+<h2>2つのサービスの役割</h2>
+<div class="table-card">
+<table>
+<thead><tr><th>サービス</th><th>主な役割</th><th>確認できるもの</th></tr></thead>
+<tbody>
+<tr><td>Google Play Games</td><td>ゲームプロフィール、実績、対応ゲーム、PC版Google Play Games</td><td>実績、ライブラリ、ゲームプロフィール、対応ゲーム情報</td></tr>
+<tr><td>Google Play Points</td><td>対象購入・特典でポイントを獲得し、アイテムなどへ交換</td><td>ポイント残高、年間のレベル進捗、特典、履歴、プロモーション</td></tr>
+</tbody>
+</table>
+</div>
+<p>登録と残高は別に管理されます。一方、PC版Google Play GamesからPlay Pointsの状況や対象ブーストを確認できるなど、Google Play全体の体験として連携する範囲があります。</p>
+</section>
+<section class="section">
+<h2>ゲームを遊ぶだけでポイントが貯まるわけではない</h2>
+<p>Play Pointsの基本は、参加済みのGoogleアカウントでGoogle Playの対象購入を行うことです。ゲームの起動時間、ログイン日数、実績解除だけで、常にポイントが付く仕組みではありません。</p>
+<p>ポイント獲得が発生する可能性がある例は次のとおりです。</p>
+<ul>
+<li>Google Playを通じたゲーム本体・アプリ内アイテム・定期購入</li>
+<li>Play Pointsの「貯める」に表示された初回インストールオファー</li>
+<li>ポイント報酬が明記されたGoogle公式イベントやリーグ</li>
+<li>対象アカウントに表示されたGoogle Playクエスト</li>
+</ul>
+<div class="callout callout-warning"><h3>対応ゲーム＝ポイント対象ではない</h3><p>Google Play Games対応タイトルであることだけでは、Play Pointsの付与条件を満たしません。Play Pointsの「貯める」やクエスト進行状況ページの条件を確認してください。</p></div>
+</section>
+<section class="section">
+<h2>Google Play Games Leaguesでポイント報酬が出る場合がある</h2>
+<p><strong>Google Play Games Leagues</strong>は、対象ゲームで他のユーザーと競い、リーダーボード上位や参加条件に応じた特典を目指す企画です。Google公式は、リーグへの参加や成績に応じてGoogle Playポイントが付与される場合があると案内しています。</p>
+<p>ただし、すべてのユーザーやゲームで常時利用できる機能ではありません。対象地域の一部ユーザーに限られ、対象ゲーム、期間、スコア条件、特典はリーグごとに異なります。Google Playの「リーグ」またはPlay Pointsの「特典」に表示された個別条件を確認してください。</p>
+</section>
+<section class="section">
+<h2>クエストではPlay Gamesログインが必要な場合がある</h2>
+<p>Google公式は、一部のクエストを達成するためにPlay Gamesプロフィールへのログインが必要だと案内しています。プロフィールへログインせずにゲームをプレイすると、クエストを達成できない、または特典を受け取れない場合があります。</p>
+<ol>
+<li>クエストを開始したGoogleアカウントを確認する</li>
+<li>対象ゲーム内で使っているアカウントを確認する</li>
+<li>Play Gamesプロフィールへ同じアカウントでログインする</li>
+<li>クエスト画面に必要な設定・プレイ条件がないか確認する</li>
+<li>プレイ後にクエスト進行状況を確認する</li>
+</ol>
+<p>すべてのクエストでPlay Gamesログインが必要とは限りません。個別画面に示された条件が優先されます。</p>
+<p><a href="./2026-07-31-google-play-quests.html">Google Playクエストの条件とトラブル確認を詳しく見る</a></p>
+</section>
+<section class="section">
+<h2>初回インストールオファーの注意点</h2>
+<p>Google公式ヘルプでは、対象アプリの初回インストールプロモーションについて、インストール後24時間以内に2分以上使用し、付与まで7日ほどかかる場合があると案内されています。</p>
+<ul>
+<li>過去にインストールしたことがあるアカウントは対象外になる場合がある</li>
+<li>特定アプリのアクティビティ確認にパーソナライズ設定が必要な場合がある</li>
+<li>条件未達の場合はポイント履歴へ表示されない</li>
+<li>実際の期間、ポイント数、対象条件はオファー画面が優先される</li>
+</ul>
+</section>
+<section class="section">
+<h2>PC版Google Play Gamesでの購入・ブースト</h2>
+<p>Google公式は、PC版Google Play Gamesで有効化できるポイントブーストを案内しています。「PC」の表示があるブーストは、パソコンで購入した対象アイテムにだけ適用され、スマートフォンでの購入には適用されません。</p>
+<ol>
+<li>対象ブーストに「PC」表示があるか確認する</li>
+<li>対象ゲームと有効期限を確認する</li>
+<li>必要な有効化を行う</li>
+<li>対象の端末・アカウントから購入する</li>
+<li>購入後にポイント履歴を確認する</li>
+</ol>
+<p>スマートフォンとPCの両方で対象になるブーストもあるため、固定ルールではなく現在のキャンペーン画面を確認してください。</p>
+</section>
+<section class="section">
+<h2>ポイントが見つからない時の確認順</h2>
+<ol>
+<li>Play Points参加済みのGoogleアカウントか</li>
+<li>購入・プレイしたアカウントが同じか</li>
+<li>購入ならGoogle Playを通じた対象取引か</li>
+<li>クエストならPlay Gamesログイン・設定・ステップを満たしたか</li>
+<li>PCブーストなら対象端末から購入したか</li>
+<li>ポイント履歴と購入履歴を確認する</li>
+</ol>
+<p>解決しない場合は注文情報やクエスト画面を記録し、個人情報を公開せずGoogle Playサポートへ相談してください。</p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Q. ゲームを起動するだけでPlay Pointsは貯まりますか？</h3><p>A. 通常は貯まりません。ポイント報酬が明記されたインストールオファー、イベント、クエストなどは例外です。</p></div>
+<div class="faq-item"><h3>Q. 実績解除でPlay Pointsをもらえますか？</h3><p>A. 通常の実績解除そのものは獲得条件ではありません。個別クエストやイベントに条件として明記されている場合だけ、その案内が優先されます。</p></div>
+<div class="faq-item"><h3>Q. Play Gamesへ登録しないとPlay Pointsは使えませんか？</h3><p>A. いいえ。Play PointsはGoogle Playストアから参加できます。ただし一部のゲーム系クエストではPlay Gamesプロフィールへのログインが必要です。</p></div>
+</section>
+<section aria-labelledby="calculator-cta" class="cta-box">
+<h2 id="calculator-cta">対象購入で貯まるポイントを計算</h2>
+<p>購入予定額と現在のステータスから、通常時または画面に表示された獲得率で得られるポイントの目安を確認できます。</p>
+<a class="cta-btn" href="../">Playポイント計算機を開く</a>
+</section>
+<section class="section source-list">
+<h2>公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/16561562?hl=ja" rel="noopener noreferrer" target="_blank">Play Games リーグに参加する（Google公式）</a></li>
+<li><a href="https://support.google.com/googleplay/answer/11534416?hl=ja" rel="noopener noreferrer" target="_blank">Google Play のクエスト（Google公式）</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
+<li><a href="https://blog.google/intl/ja-jp/products/android-chrome-play/google-play-curation-update-september-2025/" rel="noopener noreferrer" target="_blank">Google Play GamesとPlay Pointsの連携（Google公式ブログ）</a></li>
+</ul>
+<p class="small">最終公式確認日：2026年7月31日。イベント、クエスト、ブーストは対象者と期間によって異なります。</p>
+</section>
+<section class="section related-links-section">
+<h2>あわせて読みたい</h2>
+<ul>
+<li><a href="./2026-07-31-google-play-quests.html">Google Playクエストが進まない時の確認</a></li>
+<li><a href="./2026-07-24-earn-play-points-free.html">追加購入なしで得られる正規特典</a></li>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">Play Pointsの反映が遅い時の確認</a></li>
+<li><a href="./2026-08-16-pc-play-games-points.html">PC版Play Gamesの課金とポイント</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2>クエストではPlay Gamesログインが必要な場合がある</h2>
-      <p>Google公式は、一部のクエストを達成するためにPlay Gamesプロフィールへのログインが必要だと案内しています。プロフィールへログインせずにゲームをプレイすると、クエストを達成できない、または特典を受け取れない場合があります。</p>
-      <ol>
-        <li>クエストを開始したGoogleアカウントを確認する</li>
-        <li>対象ゲーム内で使っているアカウントを確認する</li>
-        <li>Play Gamesプロフィールへ同じアカウントでログインする</li>
-        <li>クエスト画面に必要な設定・プレイ条件がないか確認する</li>
-        <li>プレイ後にクエスト進行状況を確認する</li>
-      </ol>
-      <p>すべてのクエストでPlay Gamesログインが必要とは限りません。個別画面に示された条件が優先されます。</p>
-      <p><a href="./2026-07-31-google-play-quests.html">Google Playクエストの条件とトラブル確認を詳しく見る</a></p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>初回インストールオファーの注意点</h2>
-      <p>Google公式ヘルプでは、対象アプリの初回インストールプロモーションについて、インストール後24時間以内に2分以上使用し、付与まで7日ほどかかる場合があると案内されています。</p>
-      <ul>
-        <li>過去にインストールしたことがあるアカウントは対象外になる場合がある</li>
-        <li>特定アプリのアクティビティ確認にパーソナライズ設定が必要な場合がある</li>
-        <li>条件未達の場合はポイント履歴へ表示されない</li>
-        <li>実際の期間、ポイント数、対象条件はオファー画面が優先される</li>
-      </ul>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>PC版Google Play Gamesでの購入・ブースト</h2>
-      <p>Google公式は、PC版Google Play Gamesで有効化できるポイントブーストを案内しています。「PC」の表示があるブーストは、パソコンで購入した対象アイテムにだけ適用され、スマートフォンでの購入には適用されません。</p>
-      <ol>
-        <li>対象ブーストに「PC」表示があるか確認する</li>
-        <li>対象ゲームと有効期限を確認する</li>
-        <li>必要な有効化を行う</li>
-        <li>対象の端末・アカウントから購入する</li>
-        <li>購入後にポイント履歴を確認する</li>
-      </ol>
-      <p>スマートフォンとPCの両方で対象になるブーストもあるため、固定ルールではなく現在のキャンペーン画面を確認してください。</p>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>ポイントが見つからない時の確認順</h2>
-      <ol>
-        <li>Play Points参加済みのGoogleアカウントか</li>
-        <li>購入・プレイしたアカウントが同じか</li>
-        <li>購入ならGoogle Playを通じた対象取引か</li>
-        <li>クエストならPlay Gamesログイン・設定・ステップを満たしたか</li>
-        <li>PCブーストなら対象端末から購入したか</li>
-        <li>ポイント履歴と購入履歴を確認する</li>
-      </ol>
-      <p>解決しない場合は注文情報やクエスト画面を記録し、個人情報を公開せずGoogle Playサポートへ相談してください。</p>
-    </section>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Q. ゲームを起動するだけでPlay Pointsは貯まりますか？</h3><p>A. 通常は貯まりません。ポイント報酬が明記されたインストールオファー、イベント、クエストなどは例外です。</p></div>
-      <div class="faq-item"><h3>Q. 実績解除でPlay Pointsをもらえますか？</h3><p>A. 通常の実績解除そのものは獲得条件ではありません。個別クエストやイベントに条件として明記されている場合だけ、その案内が優先されます。</p></div>
-      <div class="faq-item"><h3>Q. Play Gamesへ登録しないとPlay Pointsは使えませんか？</h3><p>A. いいえ。Play PointsはGoogle Playストアから参加できます。ただし一部のゲーム系クエストではPlay Gamesプロフィールへのログインが必要です。</p></div>
-    </section>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="cta-box" aria-labelledby="calculator-cta">
-      <h2 id="calculator-cta">対象購入で貯まるポイントを計算</h2>
-      <p>購入予定額と現在のステータスから、通常時または画面に表示された獲得率で得られるポイントの目安を確認できます。</p>
-      <a class="cta-btn" href="../">Playポイント計算機を開く</a>
-    </section>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-    <section class="section source-list">
-      <h2>公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/16561562?hl=ja" target="_blank" rel="noopener noreferrer">Play Games リーグに参加する（Google公式）</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/11534416?hl=ja" target="_blank" rel="noopener noreferrer">Google Play のクエスト（Google公式）</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
-        <li><a href="https://blog.google/intl/ja-jp/products/android-chrome-play/google-play-curation-update-september-2025/" target="_blank" rel="noopener noreferrer">Google Play GamesとPlay Pointsの連携（Google公式ブログ）</a></li>
-      </ul>
-      <p class="small">最終公式確認日：2026年7月31日。イベント、クエスト、ブーストは対象者と期間によって異なります。</p>
-    </section>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>あわせて読みたい</h2>
-      <ul>
-        <li><a href="./2026-07-31-google-play-quests.html">Google Playクエストが進まない時の確認</a></li>
-        <li><a href="./2026-07-24-earn-play-points-free.html">追加購入なしで得られる正規特典</a></li>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">Play Pointsの反映が遅い時の確認</a></li>
-        <li><a href="./2026-08-16-pc-play-games-points.html">PC版Play Gamesの課金とポイント</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報を基準に、ゲームプレイ、購入、クエスト、PCブーストの条件を分けて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ <a href="https://playpoint-sim.com/">計算機トップへ</a></p>
-  </footer>
-</main>
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
 <script type="application/ld+json">
 {

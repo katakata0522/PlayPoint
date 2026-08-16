@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -20,8 +21,6 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-07-24-play-points-1-value.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/getting-started.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <link rel="stylesheet" href="./styles/2026-07-24-play-points-1-value.css?v=0f2d8d9826" />
   <script type="application/ld+json">
   {
@@ -50,206 +49,358 @@
     ]
   }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">税抜価格・端数・四捨五入</span>
-    <h1>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</h1>
-    <p class="hero-meta">2026/08/03 更新 ・ 読了 8分</p>
-  </header>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
+        </div>
+    </nav>
 
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：通常のブロンズは対象価格100円で1ポイント</h2>
-      <p>日本のブロンズは通常、<strong>税金を除いた対象アイテム価格100円あたり1ポイント</strong>です。Google公式は、アイテム価格へ獲得率を掛け、その結果を<strong>最も近い整数へ丸める（四捨五入する）</strong>と案内しています。</p>
-      <p>この記事で説明するのは、<strong>1ポイントを貯めるために必要な金額</strong>です。1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません。</p>
-      <p>税込の表示価格だけでは正確な対象額を判断できない場合があります。最終的な付与数は、購入前の獲得予定表示と購入後のポイント履歴で確認してください。</p>
-    </section>
-            <!-- editorial-summary:start -->
-            <section class="knowledge-boundary" aria-labelledby="known-unknown">
-                <h2 id="known-unknown">公式で確認できること／Google Play画面で確認すること</h2>
-                <div class="knowledge-boundary__grid">
-                    <div>
-                        <h3>公式で確認できること</h3>
-                        <ul><li>ポイント対象は税金を除いたアイテム価格で、獲得ポイントを最も近い整数へ丸める計算方法はGoogle公式で確認できます。</li><li>日本のステータス別通常獲得率は100円あたり1～2ポイントです。</li></ul>
-                    </div>
-                    <div>
-                        <h3>Google Play画面で確認すること</h3>
-                        <ul><li>その購入が対象か、キャンペーンが適用されるか。</li><li>購入前の獲得予定ポイントと、購入後の実際の付与数。</li></ul>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
+            <aside class="article-calculator-prompt rounding-jump" aria-labelledby="rounding-jump-title">
+                <p class="article-calculator-prompt__label">この記事内で仕組みを確認</p>
+                <h2 id="rounding-jump-title">丸め方の差を例で確認する</h2>
+                <p>実際の付与予測ではなく、別々の購入と合計後の計算で差が出る仕組みを確認するための比較です。</p>
+                <a class="rounding-jump__button" href="#rounding-simulator-section">差が出る例を見る</a>
+            </aside>
+
+            <header class="hero">
+                <span class="hero-badge">税抜価格・端数・四捨五入</span>
+                <h1 class="article-title">Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</h1>
+                <p class="hero-meta">2026/08/03 更新 ・ 読了 8分</p>
+            </header>
+
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：通常のブロンズは対象価格100円で1ポイント</h2>
+<p>日本のブロンズは通常、<strong>税金を除いた対象アイテム価格100円あたり1ポイント</strong>です。Google公式は、アイテム価格へ獲得率を掛け、その結果を<strong>最も近い整数へ丸める（四捨五入する）</strong>と案内しています。</p>
+<p>この記事で説明するのは、<strong>1ポイントを貯めるために必要な金額</strong>です。1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません。</p>
+<p>税込の表示価格だけでは正確な対象額を判断できない場合があります。最終的な付与数は、購入前の獲得予定表示と購入後のポイント履歴で確認してください。</p>
+</section>
+ editorial-summary:start 
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">公式で確認できること／Google Play画面で確認すること</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>公式で確認できること</h3>
+<ul><li>ポイント対象は税金を除いたアイテム価格で、獲得ポイントを最も近い整数へ丸める計算方法はGoogle公式で確認できます。</li><li>日本のステータス別通常獲得率は100円あたり1～2ポイントです。</li></ul>
+</div>
+<div>
+<h3>Google Play画面で確認すること</h3>
+<ul><li>その購入が対象か、キャンペーンが適用されるか。</li><li>購入前の獲得予定ポイントと、購入後の実際の付与数。</li></ul>
+</div>
+</div>
+<p class="knowledge-boundary__source"><a href="/compare/earning-rates/#status-rates">ステータス別獲得率の引用用比較表を見る</a></p>
+</section>
+ editorial-summary:end 
+
+<section class="section">
+<h2>公式の計算ルールを3段階で整理</h2>
+<ol>
+<li><strong>対象となるアイテム価格を確認する：</strong>支払った税金はポイント計算に含まれません。</li>
+<li><strong>ステータスの通常獲得率を掛ける：</strong>ブロンズは通常100円ごとに1ポイントで、日本の各ステータスでは100円あたり1～2ポイントです。</li>
+<li><strong>最も近い整数へ丸める：</strong>小数のまま残高へ加算されるわけではありません。</li>
+</ol>
+<div class="formula">概算ポイント ＝ 税金を除く対象アイテム価格 ÷ 100 × 獲得率 → 最も近い整数へ丸める</div>
+<p class="note">日本はGoogle Playの表示価格が税込になる場合があります。一方でPlay Pointsは税金を除いて計算されるため、表示価格だけから税抜の計算対象額を正確に逆算できない取引もあります。</p>
+</section>
+<section class="section">
+<h2>日本のステータス別獲得率</h2>
+<div class="table-wrap rounding-table-wrap">
+<table class="rounding-table">
+<caption>日本の通常獲得率と税抜500円を例にした丸め</caption>
+<thead><tr><th>ステータス</th><th>100円あたり</th><th>税抜500円の計算</th><th>丸め後</th></tr></thead>
+<tbody>
+<tr><td data-label="ステータス">ブロンズ</td><td data-label="100円あたり">1ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1 = 5</td><td data-label="丸め後">5ポイント</td></tr>
+<tr><td data-label="ステータス">シルバー</td><td data-label="100円あたり">1.25ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.25 = 6.25</td><td data-label="丸め後">6ポイント</td></tr>
+<tr><td data-label="ステータス">ゴールド</td><td data-label="100円あたり">1.5ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.5 = 7.5</td><td data-label="丸め後">8ポイント</td></tr>
+<tr><td data-label="ステータス">プラチナ</td><td data-label="100円あたり">1.75ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.75 = 8.75</td><td data-label="丸め後">9ポイント</td></tr>
+<tr><td data-label="ステータス">ダイヤモンド</td><td data-label="100円あたり">2ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 2 = 10</td><td data-label="丸め後">10ポイント</td></tr>
+</tbody>
+</table>
+</div>
+<p>シルバーの「500円で6ポイント」はGoogle公式にも例示されています。ほかの行は、同じ公式の獲得率と四捨五入ルールを当てはめた計算例です。</p>
+</section>
+<section class="section">
+<h2>分割購入と合計計算で差が出る理由</h2>
+<p>Google公式は、<strong>アイテムの価格</strong>に獲得率を掛けて整数へ丸めると説明しています。この記事では、その説明を<strong>購入した商品ごとに最も近い整数へ丸める</strong>ものとして比較しています。複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p>
+<div class="table-wrap rounding-table-wrap">
+<table class="rounding-table">
+<caption>税抜40円・ゴールド・2回購入の計算例</caption>
+<thead><tr><th>計算方法</th><th>途中計算</th><th>結果</th></tr></thead>
+<tbody>
+<tr><td data-label="計算方法">購入ごとに丸める</td><td data-label="途中計算">40 ÷ 100 × 1.5 = 0.6 → 1ポイント、それを2回</td><td data-label="結果">2ポイント</td></tr>
+<tr><td data-label="計算方法">合計80円として一度だけ丸める</td><td data-label="途中計算">80 ÷ 100 × 1.5 = 1.2</td><td data-label="結果">1ポイント</td></tr>
+</tbody>
+</table>
+</div>
+<p class="small">これは丸め方を理解するための架空の数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
+</section>
+<section class="section" id="rounding-simulator-section">
+<h2>購入ごとの丸めと合計計算を比較する</h2>
+<p>税金を除いた対象価格が分かっている場合に、購入ごとに丸めた結果と、総額へ一度だけ丸めた結果を比較できます。</p>
+<p class="note">購入画面に獲得予定ポイントが表示されている場合は、その表示を優先してください。この機能は税額や対象可否を判定せず、丸め方の仕組みを比較するためのものです。</p>
+<div class="rounding-simulator" id="rounding-simulator">
+<div class="rounding-fields">
+<div class="rounding-field">
+<label for="rounding-price">1回の対象価格（税抜・円）</label>
+<input id="rounding-price" inputmode="numeric" min="0" step="1" type="number" value="40"/>
+</div>
+<div class="rounding-field">
+<label for="rounding-count">同じ価格の購入回数</label>
+<input id="rounding-count" inputmode="numeric" max="1000" min="1" step="1" type="number" value="2"/>
+</div>
+<div class="rounding-field">
+<label for="rounding-rate">100円あたりの獲得率</label>
+<select id="rounding-rate">
+<option value="1">ブロンズ：1</option>
+<option value="1.25">シルバー：1.25</option>
+<option value="1.5" selected>ゴールド：1.5</option>
+<option value="1.75">プラチナ：1.75</option>
+<option value="2">ダイヤモンド：2</option>
+</select>
+</div>
+</div>
+<p class="small rounding-default-note">初期値は、丸め方の差が見える架空例「税抜40円を2回・ゴールド」です。表示価格しか分からない場合は、実際の付与予測には使わないでください。</p>
+<button aria-controls="rounding-result" class="rounding-action" id="rounding-calculate" type="button">丸め方を比較する</button>
+<div class="rounding-result" id="rounding-result" aria-live="off" aria-atomic="true"></div>
+</div>
+</section>
+<section class="section">
+<h2>税込表示から単純に逆算しない</h2>
+<p>Google Playでは、購入手続きの完了前に適用される税金が表示されます。また、日本は表示価格へ税を含める内税方式の対象地域です。一方、Play Pointsの公式計算では税金を含めません。</p>
+<p>したがって「表示価格が550円だから税抜500円」と常に決め打ちするのではなく、注文情報、購入前の獲得予定ポイント、購入後のポイント履歴を確認する方が安全です。コンテンツの種類や販売者によって税金の処理が異なる場合があります。</p>
+</section>
+<section class="section">
+<h2>キャンペーンとクーポン利用時の注意</h2>
+<ul>
+<li>キャンペーン倍率は、対象商品・対象期間・有効化条件を満たす場合だけ適用します。</li>
+<li>複数のプロモーションは、同じ購入へ重ねて使えないとGoogleは案内しています。</li>
+<li>クーポンや割引利用後のポイントは、購入画面の支払額と獲得予定表示を確認します。</li>
+<li>別のGoogleアカウントで購入すると、確認中のアカウントへポイントは付きません。</li>
+</ul>
+<p><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか判断する方法</a>と、<a href="./2026-07-25-play-points-coupon-not-applied.html">クーポンが適用されない時の確認順</a>も参照してください。</p>
+</section>
+<section class="section faq">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？</h3><p>Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。</p></div>
+<div class="faq-item"><h3>99円の商品なら必ず1ポイント貯まりますか？</h3><p>表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。</p></div>
+<div class="faq-item"><h3>分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p></div>
+<div class="faq-item"><h3>この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。</p></div>
+</section>
+<aside class="official-source-note source-list">
+<h2>Google公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">日本のステータスと通常獲得率</a></li>
+<li><a href="https://support.google.com/googleplay/answer/2850368?hl=ja" rel="noopener noreferrer" target="_blank">Google Playでの購入にかかる税金の情報</a></li>
+<li><a href="https://support.google.com/googleplay/android-developer/answer/138000?hl=ja" rel="noopener noreferrer" target="_blank">表示価格へ税を含める地域の公式案内</a></li>
+</ul>
+<p class="small">公式情報の最終確認日：2026年8月3日。個別の獲得予定ポイントはGoogle Playの購入画面とポイント履歴を優先してください。</p>
+</aside>
+<aside aria-labelledby="calculator-cta" class="article-next-step-cta">
+<p class="article-next-step-cta__label">次に確認</p>
+<h2 id="calculator-cta">目標ポイントまでの必要額を計算する</h2>
+<p>丸め比較とは別に、現在ステータスと確認済みの倍率から必要額の目安を逆算できます。</p>
+<div class="article-next-step-cta__links">
+<a href="../points-cost/?points=1">1ポイントから必要額を計算</a>
+</div>
+</aside>
+<aside class="contextual-guide-links related-links-section" aria-labelledby="related-guides">
+<h2 id="related-guides">次に確認する記事</h2>
+<ul>
+<li><a href="./2026-07-24-play-points-100-value.html">100ポイントの必要額と使う価値</a></li>
+<li><a href="./2026-07-24-play-points-500-1000-value.html">500・1,000ポイントの必要額早見表</a></li>
+<li><a href="./2025-12-25-check-balance.html">購入後のポイント履歴を確認する</a></li>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">計算と履歴が合わない時の確認順</a></li>
+</ul>
+</aside>
+<section aria-labelledby="related-guides" class="section related-links-section article-related-guides">
+<h2 id="related-guides">次に確認したい関連記事</h2>
+<ul>
+<li><a href="./2026-07-24-play-points-100-value.html">100ポイントを貯める金額と使う価値を確認</a></li>
+<li><a href="./2026-07-24-play-points-500-1000-value.html">500・1,000ポイントの必要額を早見表で比較</a></li>
+<li><a href="./2026-08-05-play-points-levels-guide.html">ランク別の獲得率と必要ポイントを確認</a></li>
+</ul>
+</section>
+
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
+
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
+
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
                     </div>
                 </div>
-                <p class="knowledge-boundary__source"><a href="/compare/earning-rates/#status-rates">ステータス別獲得率の引用用比較表を見る</a></p>
-            </section>
-            <!-- editorial-summary:end -->
+            </div>
 
-    <aside class="article-calculator-prompt rounding-jump" aria-labelledby="rounding-jump-title">
-      <p class="article-calculator-prompt__label">この記事内で仕組みを確認</p>
-      <h2 id="rounding-jump-title">丸め方の差を例で確認する</h2>
-      <p>実際の付与予測ではなく、別々の購入と合計後の計算で差が出る仕組みを確認するための比較です。</p>
-      <a class="rounding-jump__button" href="#rounding-simulator-section">差が出る例を見る</a>
-    </aside>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>公式の計算ルールを3段階で整理</h2>
-      <ol>
-        <li><strong>対象となるアイテム価格を確認する：</strong>支払った税金はポイント計算に含まれません。</li>
-        <li><strong>ステータスの通常獲得率を掛ける：</strong>ブロンズは通常100円ごとに1ポイントで、日本の各ステータスでは100円あたり1～2ポイントです。</li>
-        <li><strong>最も近い整数へ丸める：</strong>小数のまま残高へ加算されるわけではありません。</li>
-      </ol>
-      <div class="formula">概算ポイント ＝ 税金を除く対象アイテム価格 ÷ 100 × 獲得率 → 最も近い整数へ丸める</div>
-      <p class="note">日本はGoogle Playの表示価格が税込になる場合があります。一方でPlay Pointsは税金を除いて計算されるため、表示価格だけから税抜の計算対象額を正確に逆算できない取引もあります。</p>
-    </section>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>日本のステータス別獲得率</h2>
-      <div class="table-wrap rounding-table-wrap">
-        <table class="rounding-table">
-          <caption>日本の通常獲得率と税抜500円を例にした丸め</caption>
-          <thead><tr><th>ステータス</th><th>100円あたり</th><th>税抜500円の計算</th><th>丸め後</th></tr></thead>
-          <tbody>
-            <tr><td data-label="ステータス">ブロンズ</td><td data-label="100円あたり">1ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1 = 5</td><td data-label="丸め後">5ポイント</td></tr>
-            <tr><td data-label="ステータス">シルバー</td><td data-label="100円あたり">1.25ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.25 = 6.25</td><td data-label="丸め後">6ポイント</td></tr>
-            <tr><td data-label="ステータス">ゴールド</td><td data-label="100円あたり">1.5ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.5 = 7.5</td><td data-label="丸め後">8ポイント</td></tr>
-            <tr><td data-label="ステータス">プラチナ</td><td data-label="100円あたり">1.75ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 1.75 = 8.75</td><td data-label="丸め後">9ポイント</td></tr>
-            <tr><td data-label="ステータス">ダイヤモンド</td><td data-label="100円あたり">2ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 2 = 10</td><td data-label="丸め後">10ポイント</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>シルバーの「500円で6ポイント」はGoogle公式にも例示されています。ほかの行は、同じ公式の獲得率と四捨五入ルールを当てはめた計算例です。</p>
-    </section>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>分割購入と合計計算で差が出る理由</h2>
-      <p>Google公式は、<strong>アイテムの価格</strong>に獲得率を掛けて整数へ丸めると説明しています。この記事では、その説明を<strong>購入した商品ごとに最も近い整数へ丸める</strong>ものとして比較しています。複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p>
-      <div class="table-wrap rounding-table-wrap">
-        <table class="rounding-table">
-          <caption>税抜40円・ゴールド・2回購入の計算例</caption>
-          <thead><tr><th>計算方法</th><th>途中計算</th><th>結果</th></tr></thead>
-          <tbody>
-            <tr><td data-label="計算方法">購入ごとに丸める</td><td data-label="途中計算">40 ÷ 100 × 1.5 = 0.6 → 1ポイント、それを2回</td><td data-label="結果">2ポイント</td></tr>
-            <tr><td data-label="計算方法">合計80円として一度だけ丸める</td><td data-label="途中計算">80 ÷ 100 × 1.5 = 1.2</td><td data-label="結果">1ポイント</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="small">これは丸め方を理解するための架空の数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
-    </section>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <section class="section" id="rounding-simulator-section">
-      <h2>購入ごとの丸めと合計計算を比較する</h2>
-      <p>税金を除いた対象価格が分かっている場合に、購入ごとに丸めた結果と、総額へ一度だけ丸めた結果を比較できます。</p>
-      <p class="note">購入画面に獲得予定ポイントが表示されている場合は、その表示を優先してください。この機能は税額や対象可否を判定せず、丸め方の仕組みを比較するためのものです。</p>
-      <div class="rounding-simulator" id="rounding-simulator">
-        <div class="rounding-fields">
-          <div class="rounding-field">
-            <label for="rounding-price">1回の対象価格（税抜・円）</label>
-            <input id="rounding-price" type="number" min="0" step="1" value="40" inputmode="numeric" />
-          </div>
-          <div class="rounding-field">
-            <label for="rounding-count">同じ価格の購入回数</label>
-            <input id="rounding-count" type="number" min="1" max="1000" step="1" value="2" inputmode="numeric" />
-          </div>
-          <div class="rounding-field">
-            <label for="rounding-rate">100円あたりの獲得率</label>
-            <select id="rounding-rate">
-              <option value="1">ブロンズ：1</option>
-              <option value="1.25">シルバー：1.25</option>
-              <option value="1.5" selected>ゴールド：1.5</option>
-              <option value="1.75">プラチナ：1.75</option>
-              <option value="2">ダイヤモンド：2</option>
-            </select>
-          </div>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
         </div>
-        <p class="small rounding-default-note">初期値は、丸め方の差が見える架空例「税抜40円を2回・ゴールド」です。表示価格しか分からない場合は、実際の付与予測には使わないでください。</p>
-        <button class="rounding-action" id="rounding-calculate" type="button" aria-controls="rounding-result">丸め方を比較する</button>
-        <div class="rounding-result" id="rounding-result" aria-live="off" aria-atomic="true"></div>
-      </div>
-    </section>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
-    <section class="section">
-      <h2>税込表示から単純に逆算しない</h2>
-      <p>Google Playでは、購入手続きの完了前に適用される税金が表示されます。また、日本は表示価格へ税を含める内税方式の対象地域です。一方、Play Pointsの公式計算では税金を含めません。</p>
-      <p>したがって「表示価格が550円だから税抜500円」と常に決め打ちするのではなく、注文情報、購入前の獲得予定ポイント、購入後のポイント履歴を確認する方が安全です。コンテンツの種類や販売者によって税金の処理が異なる場合があります。</p>
-    </section>
-
-    <section class="section">
-      <h2>キャンペーンとクーポン利用時の注意</h2>
-      <ul>
-        <li>キャンペーン倍率は、対象商品・対象期間・有効化条件を満たす場合だけ適用します。</li>
-        <li>複数のプロモーションは、同じ購入へ重ねて使えないとGoogleは案内しています。</li>
-        <li>クーポンや割引利用後のポイントは、購入画面の支払額と獲得予定表示を確認します。</li>
-        <li>別のGoogleアカウントで購入すると、確認中のアカウントへポイントは付きません。</li>
-      </ul>
-      <p><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか判断する方法</a>と、<a href="./2026-07-25-play-points-coupon-not-applied.html">クーポンが適用されない時の確認順</a>も参照してください。</p>
-    </section>
-
-    <section class="section faq">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？</h3><p>Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。</p></div>
-      <div class="faq-item"><h3>99円の商品なら必ず1ポイント貯まりますか？</h3><p>表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。</p></div>
-      <div class="faq-item"><h3>分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p></div>
-      <div class="faq-item"><h3>この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。</p></div>
-    </section>
-
-    <aside class="official-source-note source-list">
-      <h2>Google公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">日本のステータスと通常獲得率</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/2850368?hl=ja" target="_blank" rel="noopener noreferrer">Google Playでの購入にかかる税金の情報</a></li>
-        <li><a href="https://support.google.com/googleplay/android-developer/answer/138000?hl=ja" target="_blank" rel="noopener noreferrer">表示価格へ税を含める地域の公式案内</a></li>
-      </ul>
-      <p class="small">公式情報の最終確認日：2026年8月3日。個別の獲得予定ポイントはGoogle Playの購入画面とポイント履歴を優先してください。</p>
-    </aside>
-
-    <aside class="article-next-step-cta" aria-labelledby="calculator-cta">
-      <p class="article-next-step-cta__label">次に確認</p>
-      <h2 id="calculator-cta">目標ポイントまでの必要額を計算する</h2>
-      <p>丸め比較とは別に、現在ステータスと確認済みの倍率から必要額の目安を逆算できます。</p>
-      <div class="article-next-step-cta__links">
-        <a href="../points-cost/?points=1">1ポイントから必要額を計算</a>
-      </div>
-    </aside>
-
-    <aside class="contextual-guide-links related-links-section" aria-labelledby="related-guides">
-      <h2 id="related-guides">次に確認する記事</h2>
-      <ul>
-        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントの必要額と使う価値</a></li>
-        <li><a href="./2026-07-24-play-points-500-1000-value.html">500・1,000ポイントの必要額早見表</a></li>
-        <li><a href="./2025-12-25-check-balance.html">購入後のポイント履歴を確認する</a></li>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">計算と履歴が合わない時の確認順</a></li>
-      </ul>
-    </aside>
-
-            <section class="section related-links-section article-related-guides" aria-labelledby="related-guides">
-                <h2 id="related-guides">次に確認したい関連記事</h2>
-                <ul>
-                    <li><a href="./2026-07-24-play-points-100-value.html">100ポイントを貯める金額と使う価値を確認</a></li>
-                    <li><a href="./2026-07-24-play-points-500-1000-value.html">500・1,000ポイントの必要額を早見表で比較</a></li>
-                    <li><a href="./2026-08-05-play-points-levels-guide.html">ランク別の獲得率と必要ポイントを確認</a></li>
-                </ul>
-            </section>
-</article>
-
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式の計算条件と、サイト内のシミュレーションで扱える範囲を分けて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer"><p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p><p class="small">本記事は購入を勧めるものではありません。実際の付与数はGoogle Playの表示をご確認ください。</p></footer>
-</main>
-<script src="../js/play-points-rounding.js?v=3f07a96fe2" defer></script>
+<script defer="" src="../js/play-points-rounding.js?v=3f07a96fe2"></script>
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

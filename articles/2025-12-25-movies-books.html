@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -19,55 +20,67 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/movies-books.png" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">PLAY POINTS 買い切り購入</span>
-    <h1>Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件</h1>
-    <p class="hero-meta">2026/07/31 更新 ・ 読了 5分</p>
-  </header>
-
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：Google Play経由の対象購入なら貯まるが、国と商品で異なる</h2>
-      <p>日本では、Google Playストアの有料アプリやゲーム、Google Playで購入する書籍など、Play Pointsの対象となる買い切り購入でポイントを獲得できます。</p>
-      <p>ただし、Play Pointsへ参加する前の購入、Google Playを経由しない外部決済、対象外の商品・地域では付与されません。購入前にアカウントとPlay Pointsの通常獲得率を確認してください。</p>
-    </section>
-
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>判明していること</h3>
-          <ul>
-            <li>参加済みアカウントのGoogle Play対象購入でポイントが貯まります。</li>
-            <li>Android、PC、スマートテレビからのGoogle Play購入も対象になり得ます。</li>
-            <li>獲得対象コンテンツは国によって異なります。</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>このサイトからは不明なこと</h3>
-          <ul>
-            <li>購入しようとしている個別商品が対象かは決済画面を確認する必要があります。</li>
-            <li>アカウント限定の倍率やキャンペーンは予測できません。</li>
-            <li>外部ストアや出版社独自決済のポイント付与可否は一括で判断できません。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -75,107 +88,246 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section">
-      <h2>この記事は「買い切り購入」を扱う</h2>
-      <p>このページでは、有料アプリ、ゲーム本体、電子書籍など、一度の決済で購入する商品を中心に説明します。</p>
-      <div class="callout">
-        <h3>サブスクを調べている場合</h3>
-        <p>Google One、アプリ内定期購入、初回サブスクボーナス、更新時のポイントは別記事で扱います。</p>
-        <p><a href="./2025-12-25-subscription.html">Google One・アプリ内サブスクの対象条件を見る</a></p>
-      </div>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">PLAY POINTS 買い切り購入</span>
+                <h1 class="article-title">Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件</h1>
+                <p class="hero-meta">2026/07/31 更新 ・ 読了 5分</p>
+            </header>
 
-    <section class="section">
-      <h2>主な買い切り購入の考え方</h2>
-      <div class="table-card">
-        <table>
-          <thead><tr><th>購入内容</th><th>基本的な見方</th><th>購入前の確認</th></tr></thead>
-          <tbody>
-            <tr><td>有料アプリ・ゲーム本体</td><td>Google Playストアの対象購入なら獲得対象</td><td>購入アカウント、価格、表示倍率</td></tr>
-            <tr><td>アプリ内・ゲーム内の買い切りアイテム</td><td>Google Playを通じた対象購入なら獲得対象</td><td>決済画面がGoogle Playか</td></tr>
-            <tr><td>電子書籍</td><td>日本のGoogle Playで対象となる購入なら獲得対象</td><td>購入国、対象アカウント、価格</td></tr>
-            <tr><td>外部サイト・他社ストアの購入</td><td>Google Playを経由しない場合は原則としてPlay Points対象外</td><td>請求元と領収書</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>同じ作品やアイテムでも、Google Playストアから買う場合と、出版社・ゲーム会社の外部サイトで買う場合では請求経路が異なります。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：Google Play経由の対象購入なら貯まるが、国と商品で異なる</h2>
+<p>日本では、Google Playストアの有料アプリやゲーム、Google Playで購入する書籍など、Play Pointsの対象となる買い切り購入でポイントを獲得できます。</p>
+<p>ただし、Play Pointsへ参加する前の購入、Google Playを経由しない外部決済、対象外の商品・地域では付与されません。購入前にアカウントとPlay Pointsの通常獲得率を確認してください。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>判明していること</h3>
+<ul>
+<li>参加済みアカウントのGoogle Play対象購入でポイントが貯まります。</li>
+<li>Android、PC、スマートテレビからのGoogle Play購入も対象になり得ます。</li>
+<li>獲得対象コンテンツは国によって異なります。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトからは不明なこと</h3>
+<ul>
+<li>購入しようとしている個別商品が対象かは決済画面を確認する必要があります。</li>
+<li>アカウント限定の倍率やキャンペーンは予測できません。</li>
+<li>外部ストアや出版社独自決済のポイント付与可否は一括で判断できません。</li>
+</ul>
+</div>
+</div>
+</section>
 
-    <section class="section">
-      <h2>購入前に確認する4項目</h2>
-      <ol>
-        <li><strong>Play Pointsへ参加済みか：</strong>参加前の購入は遡って付与されません。</li>
-        <li><strong>購入アカウント：</strong>Play Points残高を貯めたいGoogleアカウントで決済します。</li>
-        <li><strong>Google Play経由か：</strong>決済画面と領収書の請求元を確認します。</li>
-        <li><strong>現在の獲得率：</strong>「Play Points」→「貯める」で通常レートと対象キャンペーンを確認します。</li>
-      </ol>
-      <p>倍率キャンペーンには有効化、対象商品、期限、上限などが設定される場合があります。最も高い対象レートが適用され、複数キャンペーンを同じ購入へ重ねられるとは限りません。</p>
-    </section>
+<section class="section">
+<h2>この記事は「買い切り購入」を扱う</h2>
+<p>このページでは、有料アプリ、ゲーム本体、電子書籍など、一度の決済で購入する商品を中心に説明します。</p>
+<div class="callout">
+<h3>サブスクを調べている場合</h3>
+<p>Google One、アプリ内定期購入、初回サブスクボーナス、更新時のポイントは別記事で扱います。</p>
+<p><a href="./2025-12-25-subscription.html">Google One・アプリ内サブスクの対象条件を見る</a></p>
+</div>
+</section>
+<section class="section">
+<h2>主な買い切り購入の考え方</h2>
+<div class="table-card">
+<table>
+<thead><tr><th>購入内容</th><th>基本的な見方</th><th>購入前の確認</th></tr></thead>
+<tbody>
+<tr><td>有料アプリ・ゲーム本体</td><td>Google Playストアの対象購入なら獲得対象</td><td>購入アカウント、価格、表示倍率</td></tr>
+<tr><td>アプリ内・ゲーム内の買い切りアイテム</td><td>Google Playを通じた対象購入なら獲得対象</td><td>決済画面がGoogle Playか</td></tr>
+<tr><td>電子書籍</td><td>日本のGoogle Playで対象となる購入なら獲得対象</td><td>購入国、対象アカウント、価格</td></tr>
+<tr><td>外部サイト・他社ストアの購入</td><td>Google Playを経由しない場合は原則としてPlay Points対象外</td><td>請求元と領収書</td></tr>
+</tbody>
+</table>
+</div>
+<p>同じ作品やアイテムでも、Google Playストアから買う場合と、出版社・ゲーム会社の外部サイトで買う場合では請求経路が異なります。</p>
+</section>
+<section class="section">
+<h2>購入前に確認する4項目</h2>
+<ol>
+<li><strong>Play Pointsへ参加済みか：</strong>参加前の購入は遡って付与されません。</li>
+<li><strong>購入アカウント：</strong>Play Points残高を貯めたいGoogleアカウントで決済します。</li>
+<li><strong>Google Play経由か：</strong>決済画面と領収書の請求元を確認します。</li>
+<li><strong>現在の獲得率：</strong>「Play Points」→「貯める」で通常レートと対象キャンペーンを確認します。</li>
+</ol>
+<p>倍率キャンペーンには有効化、対象商品、期限、上限などが設定される場合があります。最も高い対象レートが適用され、複数キャンペーンを同じ購入へ重ねられるとは限りません。</p>
+</section>
+<section class="section">
+<h2>端末が違ってもGoogle Play購入なら対象になり得る</h2>
+<p>Google公式は、Androidデバイスだけでなく、パソコンやスマートテレビからGoogle Playで購入した場合もポイントを獲得できると案内しています。</p>
+<p>ただし、端末ではなく次の条件が重要です。</p>
+<ul>
+<li>Play Points参加済みのGoogleアカウント</li>
+<li>Google Playを通じた対象購入</li>
+<li>対象国・通貨</li>
+<li>購入時点で有効な通常レートまたはキャンペーン</li>
+</ul>
+</section>
+<section class="section">
+<h2>購入後にポイントを確認する</h2>
+<ol>
+<li>Google Playストアを開く</li>
+<li>右上のプロフィール画像をタップする</li>
+<li>「Play Points」を開く</li>
+<li>ポイント履歴で購入と付与を確認する</li>
+<li>見つからない場合は購入履歴のアカウントと注文状態を確認する</li>
+</ol>
+<p>返金・キャンセルされた対象購入では、獲得ポイントが残高とステータス判定ポイントから差し引かれます。</p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Q. 無料アプリをダウンロードするだけで貯まりますか？</h3><p>A. 常に貯まるわけではありません。対象アカウントに初回インストールオファーが表示され、その条件を満たした場合は例外です。</p></div>
+<div class="faq-item"><h3>Q. 電子書籍ならすべて対象ですか？</h3><p>A. 対象コンテンツは国によって異なります。日本のGoogle Playで購入する商品の決済画面と、Play Pointsの表示を確認してください。</p></div>
+<div class="faq-item"><h3>Q. 外部サイトで買ったアイテムも貯まりますか？</h3><p>A. Google Playを通じた購入でなければ、通常はPlay Pointsの対象ではありません。請求元を確認してください。</p></div>
+</section>
+<section aria-labelledby="calculator-cta" class="cta-box">
+<h2 id="calculator-cta">買い切り購入で得られるポイントを計算</h2>
+<p>商品価格と現在の獲得率を入力し、通常時または表示中のキャンペーンで得られる目安を確認できます。</p>
+<a class="cta-btn" href="../">Playポイント計算機を開く</a>
+</section>
+<section class="section source-list">
+<h2>公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077312?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play Points に登録する（日本向けGoogle公式）</a></li>
+</ul>
+<p class="small">最終公式確認日：2026年7月31日。対象コンテンツとプロモーションは国、商品、アカウントによって異なります。</p>
+</section>
+<section class="section related-links-section">
+<h2>あわせて読みたい</h2>
+<ul>
+<li><a href="./2025-12-25-subscription.html">Google One・アプリ内サブスクのポイント条件</a></li>
+<li><a href="./2025-12-25-gift-card.html">ギフトカード残高で購入した時のポイント</a></li>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の確認方法</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2>端末が違ってもGoogle Play購入なら対象になり得る</h2>
-      <p>Google公式は、Androidデバイスだけでなく、パソコンやスマートテレビからGoogle Playで購入した場合もポイントを獲得できると案内しています。</p>
-      <p>ただし、端末ではなく次の条件が重要です。</p>
-      <ul>
-        <li>Play Points参加済みのGoogleアカウント</li>
-        <li>Google Playを通じた対象購入</li>
-        <li>対象国・通貨</li>
-        <li>購入時点で有効な通常レートまたはキャンペーン</li>
-      </ul>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>購入後にポイントを確認する</h2>
-      <ol>
-        <li>Google Playストアを開く</li>
-        <li>右上のプロフィール画像をタップする</li>
-        <li>「Play Points」を開く</li>
-        <li>ポイント履歴で購入と付与を確認する</li>
-        <li>見つからない場合は購入履歴のアカウントと注文状態を確認する</li>
-      </ol>
-      <p>返金・キャンセルされた対象購入では、獲得ポイントが残高とステータス判定ポイントから差し引かれます。</p>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Q. 無料アプリをダウンロードするだけで貯まりますか？</h3><p>A. 常に貯まるわけではありません。対象アカウントに初回インストールオファーが表示され、その条件を満たした場合は例外です。</p></div>
-      <div class="faq-item"><h3>Q. 電子書籍ならすべて対象ですか？</h3><p>A. 対象コンテンツは国によって異なります。日本のGoogle Playで購入する商品の決済画面と、Play Pointsの表示を確認してください。</p></div>
-      <div class="faq-item"><h3>Q. 外部サイトで買ったアイテムも貯まりますか？</h3><p>A. Google Playを通じた購入でなければ、通常はPlay Pointsの対象ではありません。請求元を確認してください。</p></div>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="cta-box" aria-labelledby="calculator-cta">
-      <h2 id="calculator-cta">買い切り購入で得られるポイントを計算</h2>
-      <p>商品価格と現在の獲得率を入力し、通常時または表示中のキャンペーンで得られる目安を確認できます。</p>
-      <a class="cta-btn" href="../">Playポイント計算機を開く</a>
-    </section>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section source-list">
-      <h2>公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077312?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play Points に登録する（日本向けGoogle公式）</a></li>
-      </ul>
-      <p class="small">最終公式確認日：2026年7月31日。対象コンテンツとプロモーションは国、商品、アカウントによって異なります。</p>
-    </section>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>あわせて読みたい</h2>
-      <ul>
-        <li><a href="./2025-12-25-subscription.html">Google One・アプリ内サブスクのポイント条件</a></li>
-        <li><a href="./2025-12-25-gift-card.html">ギフトカード残高で購入した時のポイント</a></li>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の確認方法</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報を基準に、商品種類よりも購入アカウントと請求経路を重視して検証しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer"><p><a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ <a href="https://playpoint-sim.com/">計算機トップへ</a></p></footer>
-</main>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
 <script type="application/ld+json">
 {

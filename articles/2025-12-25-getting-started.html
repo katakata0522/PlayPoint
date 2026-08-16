@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ja">
-
 <head>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -25,233 +25,365 @@
     <meta property="og:site_name" content="Playポイント計算機" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
     <link rel="stylesheet" href="/articles/styles/2025-12-25-getting-started.css?v=2cb4f5c046" />
-    <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
+<body data-article-category="使い方">
 
-<body>
-        <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-        <div class="hero">
-            <span class="hero-badge">🔰 初心者向け</span>
-            <h1>Google Play Pointsの始め方<br>登録方法と最初に確認すること</h1>
-            <p class="hero-meta">📅 2026/08/04 更新 ・ ⏱ 読了 5分</p>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
+    </nav>
 
-        <article class="content">
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google Play Pointsの始め方｜登録方法と最初に確認すること</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
                 <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
-            <div class="intro">
-                <strong>Google Play Pointsは、Google Playの対象購入でポイントが貯まる無料のプログラムです。</strong><br>
+
+            <header class="hero">
+                <span class="hero-badge">🔰 初心者向け</span>
+                <h1 class="article-title">Google Play Pointsの始め方｜登録方法と最初に確認すること</h1>
+                <p class="hero-meta">📅 2026/08/04 更新 ・ ⏱ 読了 5分</p>
+            </header>
+
+<div class="intro">
+<strong>Google Play Pointsは、Google Playの対象購入でポイントが貯まる無料のプログラムです。</strong><br/>
                 自動では始まらないため、利用するGoogleアカウントで参加手続きを行います。
             </div>
-
-            <div class="summary-box">
-                <h2>📌 この記事で分かること</h2>
-                <ul>
-                    <li>Play Pointsへの登録手順</li>
-                    <li>ポイントが貯まる購入と対象外の例</li>
-                    <li>交換先とランク制度の基本</li>
-                    <li>参加後に最初に確認する画面</li>
-                </ul>
-            </div>
-
-            <section class="section">
-                <h2>🎮 Google Play Pointsとは？</h2>
-                <p>Google Play Pointsは、Google Playを通じたアプリ、ゲーム、アプリ内購入、書籍などの対象購入でポイントが貯まるプログラムです。</p>
-                <p>貯まったポイントは、現在の「使う」画面に表示されるGoogle Playクレジット、対象アプリのクーポン、ゲーム内アイテムなどへ交換できます。交換先は国・時期・アカウントによって異なります。</p>
-
-                <div class="callout callout-success">
-                    <h3>参加費はかからない</h3>
-                    <p>Play Pointsへの参加・登録は無料です。ただし、参加前に行った購入へ後からポイントが付くわけではないため、利用するアカウントで先に参加状況を確認してください。</p>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2>📝 登録・有効化の手順</h2>
-                <div class="steps">
-                    <ol>
-                        <li>Android端末で<strong>Google Playストア</strong>を開く</li>
-                        <li>右上のプロフィール画像をタップする</li>
-                        <li><strong>「Play Points」</strong>を選ぶ</li>
-                        <li>画面の案内に従って<strong>「参加」または「有効にする」</strong>を選ぶ</li>
-                    </ol>
-                </div>
-
-                <div class="callout callout-info">
-                    <h3>すでに参加している場合</h3>
-                    <p>参加ボタンではなくPlay Pointsのホーム画面が開きます。そこからポイント残高、ステータス、レベル進捗、利用できる特典を確認できます。</p>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2>💰 ポイントが貯まる購入</h2>
-                <p>日本では、主に次のようなGoogle Play上の対象購入でポイントを獲得できます。</p>
-                <ul>
-                    <li>有料アプリ・ゲーム</li>
-                    <li>アプリ内購入・ゲーム内購入</li>
-                    <li>アプリやゲーム内の定期購入</li>
-                    <li>Google Play ブックスの対象書籍</li>
-                    <li>Androidから購入したGoogle Oneの定期購入</li>
-                </ul>
-
-                <div class="callout callout-warning">
-                    <h3>支払えばすべて対象、ではない</h3>
-                    <p>ギフトカードの購入や残高へのチャージ、対象外の商品、Google Playを通さない外部決済などでは、通常のPlay Pointsは貯まりません。購入前にアカウントと決済画面を確認してください。</p>
-                </div>
-
-                <h3>日本の通常獲得率</h3>
-                <div class="table-card">
-                    <table>
-                        <tr><th>ステータス</th><th>100円あたりの獲得ポイント</th></tr>
-                        <tr><td>ブロンズ</td><td>1ポイント</td></tr>
-                        <tr><td>シルバー</td><td>1.25ポイント</td></tr>
-                        <tr><td>ゴールド</td><td>1.5ポイント</td></tr>
-                        <tr><td>プラチナ</td><td>1.75ポイント</td></tr>
-                        <tr><td>ダイヤモンド</td><td>2ポイント</td></tr>
-                    </table>
-                </div>
-                <p class="small">※対象購入ごとに計算され、税や丸めの影響があります。増量オファーが表示されている購入では、利用可能な中で最も高い獲得率が適用されます。</p>
-            </section>
-
-            <section class="section">
-                <h2>🎁 ポイントの使い方</h2>
-                <p>Play Pointsの「使う」を開くと、そのアカウントで現在交換できるものが表示されます。</p>
-                <ul>
-                    <li><strong>Google Playクレジット</strong>：Google Play残高として対象コンテンツへ使う</li>
-                    <li><strong>アプリ・ゲーム用クーポン</strong>：対象タイトルと最低購入額などの条件を満たして使う</li>
-                    <li><strong>アプリ内・ゲーム内アイテム</strong>：対象タイトルのアイテムと交換する</li>
-                    <li><strong>パートナー特典など</strong>：表示されている場合に、個別の条件を確認して使う</li>
-                </ul>
-
-                <div class="callout callout-info">
-                    <h3>交換前に期限と条件を確認</h3>
-                    <p>必要ポイントだけでなく、対象アプリ、最低購入額、交換後の有効期限、払い戻し条件、実際に使う予定を確認してください。</p>
-                </div>
-            </section>
-
-            <section class="section">
-                <h2>🏆 ステータス制度の基本</h2>
-                <p>日本のPlay Pointsには5段階のステータスがあり、1月1日から12月31日までに獲得したレベル進捗によって決まります。</p>
-
-                <div class="table-card">
-                    <table>
-                        <tr><th>ステータス</th><th>必要ポイント</th></tr>
-                        <tr><td>ブロンズ</td><td>0〜249ポイント</td></tr>
-                        <tr><td>シルバー</td><td>250〜999ポイント</td></tr>
-                        <tr><td>ゴールド</td><td>1,000〜3,999ポイント</td></tr>
-                        <tr><td>プラチナ</td><td>4,000〜14,999ポイント</td></tr>
-                        <tr><td>ダイヤモンド</td><td>15,000ポイント以上</td></tr>
-                    </table>
-                </div>
-
-                <div class="callout callout-success">
-                    <h3>ステータスで変わる主な内容</h3>
-                    <ul>
-                        <li>通常の獲得率</li>
-                        <li>シルバー以上のランク別ウィークリーリワード</li>
-                        <li>プラチナ・ダイヤモンドのプレミアムサポート</li>
-                    </ul>
-                </div>
-                <p>Play Pass加入者向けの週次特典など、ステータス別ウィークリーリワードとは別の制度が表示される場合もあります。名称が似ているため、対象条件と更新曜日を分けて確認してください。</p>
-            </section>
-
-            <section class="section">
-                <h2>参加後に最初に確認すること</h2>
-                <ol>
-                    <li>参加したGoogleアカウントが、普段購入に使うアカウントか確認する</li>
-                    <li>「使う」で現在の交換先と有効期限を確認する</li>
-                    <li>現在のステータスと次のステータスまでのレベル進捗を見る</li>
-                    <li>シルバー以上になったら<strong>通常のウィークリーリワード</strong>を毎週金曜日に確認する</li>
-                    <li>購入前に「貯める」で利用できる増量オファーを確認する</li>
-                </ol>
-                <p class="small">参考：<a href="https://support.google.com/googleplay/answer/9077312?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Play Pointsに登録する（Google公式）</a>／<a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">ポイントを貯める・管理する（Google公式）</a></p>
-            </section>
-
-            <div class="cta-box">
-                <h3>次のステータスまでの必要額を確認</h3>
-                <p>Google Playに表示された不足ポイントと、現在の獲得率から目安を計算できます。</p>
-                <a class="cta-btn" href="https://playpoint-sim.com/" target="_blank" rel="noopener noreferrer">計算機を使う →</a>
-            </div>
-
-            <div class="article-ad-slot">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
-                    data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
+<div class="summary-box">
+<h2>📌 この記事で分かること</h2>
+<ul>
+<li>Play Pointsへの登録手順</li>
+<li>ポイントが貯まる購入と対象外の例</li>
+<li>交換先とランク制度の基本</li>
+<li>参加後に最初に確認する画面</li>
+</ul>
+</div>
+<section class="section">
+<h2>🎮 Google Play Pointsとは？</h2>
+<p>Google Play Pointsは、Google Playを通じたアプリ、ゲーム、アプリ内購入、書籍などの対象購入でポイントが貯まるプログラムです。</p>
+<p>貯まったポイントは、現在の「使う」画面に表示されるGoogle Playクレジット、対象アプリのクーポン、ゲーム内アイテムなどへ交換できます。交換先は国・時期・アカウントによって異なります。</p>
+<div class="callout callout-success">
+<h3>参加費はかからない</h3>
+<p>Play Pointsへの参加・登録は無料です。ただし、参加前に行った購入へ後からポイントが付くわけではないため、利用するアカウントで先に参加状況を確認してください。</p>
+</div>
+</section>
+<section class="section">
+<h2>📝 登録・有効化の手順</h2>
+<div class="steps">
+<ol>
+<li>Android端末で<strong>Google Playストア</strong>を開く</li>
+<li>右上のプロフィール画像をタップする</li>
+<li><strong>「Play Points」</strong>を選ぶ</li>
+<li>画面の案内に従って<strong>「参加」または「有効にする」</strong>を選ぶ</li>
+</ol>
+</div>
+<div class="callout callout-info">
+<h3>すでに参加している場合</h3>
+<p>参加ボタンではなくPlay Pointsのホーム画面が開きます。そこからポイント残高、ステータス、レベル進捗、利用できる特典を確認できます。</p>
+</div>
+</section>
+<section class="section">
+<h2>💰 ポイントが貯まる購入</h2>
+<p>日本では、主に次のようなGoogle Play上の対象購入でポイントを獲得できます。</p>
+<ul>
+<li>有料アプリ・ゲーム</li>
+<li>アプリ内購入・ゲーム内購入</li>
+<li>アプリやゲーム内の定期購入</li>
+<li>Google Play ブックスの対象書籍</li>
+<li>Androidから購入したGoogle Oneの定期購入</li>
+</ul>
+<div class="callout callout-warning">
+<h3>支払えばすべて対象、ではない</h3>
+<p>ギフトカードの購入や残高へのチャージ、対象外の商品、Google Playを通さない外部決済などでは、通常のPlay Pointsは貯まりません。購入前にアカウントと決済画面を確認してください。</p>
+</div>
+<h3>日本の通常獲得率</h3>
+<div class="table-card">
+<table>
+<tr><th>ステータス</th><th>100円あたりの獲得ポイント</th></tr>
+<tr><td>ブロンズ</td><td>1ポイント</td></tr>
+<tr><td>シルバー</td><td>1.25ポイント</td></tr>
+<tr><td>ゴールド</td><td>1.5ポイント</td></tr>
+<tr><td>プラチナ</td><td>1.75ポイント</td></tr>
+<tr><td>ダイヤモンド</td><td>2ポイント</td></tr>
+</table>
+</div>
+<p class="small">※対象購入ごとに計算され、税や丸めの影響があります。増量オファーが表示されている購入では、利用可能な中で最も高い獲得率が適用されます。</p>
+</section>
+<section class="section">
+<h2>🎁 ポイントの使い方</h2>
+<p>Play Pointsの「使う」を開くと、そのアカウントで現在交換できるものが表示されます。</p>
+<ul>
+<li><strong>Google Playクレジット</strong>：Google Play残高として対象コンテンツへ使う</li>
+<li><strong>アプリ・ゲーム用クーポン</strong>：対象タイトルと最低購入額などの条件を満たして使う</li>
+<li><strong>アプリ内・ゲーム内アイテム</strong>：対象タイトルのアイテムと交換する</li>
+<li><strong>パートナー特典など</strong>：表示されている場合に、個別の条件を確認して使う</li>
+</ul>
+<div class="callout callout-info">
+<h3>交換前に期限と条件を確認</h3>
+<p>必要ポイントだけでなく、対象アプリ、最低購入額、交換後の有効期限、払い戻し条件、実際に使う予定を確認してください。</p>
+</div>
+</section>
+<section class="section">
+<h2>🏆 ステータス制度の基本</h2>
+<p>日本のPlay Pointsには5段階のステータスがあり、1月1日から12月31日までに獲得したレベル進捗によって決まります。</p>
+<div class="table-card">
+<table>
+<tr><th>ステータス</th><th>必要ポイント</th></tr>
+<tr><td>ブロンズ</td><td>0〜249ポイント</td></tr>
+<tr><td>シルバー</td><td>250〜999ポイント</td></tr>
+<tr><td>ゴールド</td><td>1,000〜3,999ポイント</td></tr>
+<tr><td>プラチナ</td><td>4,000〜14,999ポイント</td></tr>
+<tr><td>ダイヤモンド</td><td>15,000ポイント以上</td></tr>
+</table>
+</div>
+<div class="callout callout-success">
+<h3>ステータスで変わる主な内容</h3>
+<ul>
+<li>通常の獲得率</li>
+<li>シルバー以上のランク別ウィークリーリワード</li>
+<li>プラチナ・ダイヤモンドのプレミアムサポート</li>
+</ul>
+</div>
+<p>Play Pass加入者向けの週次特典など、ステータス別ウィークリーリワードとは別の制度が表示される場合もあります。名称が似ているため、対象条件と更新曜日を分けて確認してください。</p>
+</section>
+<section class="section">
+<h2>参加後に最初に確認すること</h2>
+<ol>
+<li>参加したGoogleアカウントが、普段購入に使うアカウントか確認する</li>
+<li>「使う」で現在の交換先と有効期限を確認する</li>
+<li>現在のステータスと次のステータスまでのレベル進捗を見る</li>
+<li>シルバー以上になったら<strong>通常のウィークリーリワード</strong>を毎週金曜日に確認する</li>
+<li>購入前に「貯める」で利用できる増量オファーを確認する</li>
+</ol>
+<p class="small">参考：<a href="https://support.google.com/googleplay/answer/9077312?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Play Pointsに登録する（Google公式）</a>／<a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">ポイントを貯める・管理する（Google公式）</a></p>
+</section>
+<div class="cta-box">
+<h3>次のステータスまでの必要額を確認</h3>
+<p>Google Playに表示された不足ポイントと、現在の獲得率から目安を計算できます。</p>
+<a class="cta-btn" href="https://playpoint-sim.com/" rel="noopener noreferrer" target="_blank">計算機を使う →</a>
+</div>
+<div class="article-ad-slot">
+<ins class="adsbygoogle" data-ad-client="ca-pub-3845885843809455" data-ad-format="auto" data-ad-slot="8250492620" data-full-width-responsive="true" style="display:block"></ins>
+<script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
+</div>
+<section class="section">
+<h2>❓ よくある質問</h2>
+<div class="faq-item">
+<h3>Q. Play Pointsは無料で使える？</h3>
+<p>A. 参加・登録は無料です。参加後、登録したアカウントで対象となるGoogle Playの購入を行うとポイントが貯まります。</p>
+</div>
+<div class="faq-item">
+<h3>Q. ポイントに有効期限はある？</h3>
+<p>A. あります。最後にポイントを獲得または使用した日から1年で失効します。</p>
+</div>
+<div class="faq-item">
+<h3>Q. ステータスは一度上がったら下がらない？</h3>
+<p>A. 到達したステータスは翌年の12月31日まで維持されます。その後は前年のレベル進捗によって再判定されます。</p>
+</div>
+</section>
+<section class="section" id="account-country-troubleshooting">
+<h2>登録・国設定で困ったとき</h2>
+<p>Play Pointsが表示されない、参加できない場合は、まずアカウント条件とPlayの国設定を切り分けると解決しやすくなります。</p>
+<ul>
+<li><a href="/articles/2026-08-05-play-points-cannot-join.html">Play Pointsに登録できない・表示されない原因を確認する</a></li>
+<li><a href="/articles/2026-08-05-play-country-change-points.html">Google Playの国変更でポイントやランクがどうなるか確認する</a></li>
+</ul>
+</section>
+<section aria-labelledby="related-guides" class="section related-links-section article-related-guides">
+<h2 id="related-guides">次に確認したい関連記事</h2>
+<ul>
+<li><a href="./2026-08-05-play-points-levels-guide.html">ランク・獲得率・必要ポイントの全体像</a></li>
+<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限の確認方法</a></li>
+<li><a href="./2026-08-05-play-points-cannot-join.html">登録できない・表示されない時の確認順</a></li>
+<li><a href="./2026-08-16-youtube-premium-play-points.html">継続課金の請求経路を確認する</a></li>
+</ul>
+</section>
+
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
             </div>
 
-            <section class="section">
-                <h2>❓ よくある質問</h2>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-                <div class="faq-item">
-                    <h3>Q. Play Pointsは無料で使える？</h3>
-                    <p>A. 参加・登録は無料です。参加後、登録したアカウントで対象となるGoogle Playの購入を行うとポイントが貯まります。</p>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
                 </div>
+            </div>
 
-                <div class="faq-item">
-                    <h3>Q. ポイントに有効期限はある？</h3>
-                    <p>A. あります。最後にポイントを獲得または使用した日から1年で失効します。</p>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
                 </div>
+            </div>
 
-                <div class="faq-item">
-                    <h3>Q. ステータスは一度上がったら下がらない？</h3>
-                    <p>A. 到達したステータスは翌年の12月31日まで維持されます。その後は前年のレベル進捗によって再判定されます。</p>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
                 </div>
-            </section>
+            </div>
 
-    <section class="section" id="account-country-troubleshooting">
-      <h2>登録・国設定で困ったとき</h2>
-      <p>Play Pointsが表示されない、参加できない場合は、まずアカウント条件とPlayの国設定を切り分けると解決しやすくなります。</p>
-      <ul>
-        <li><a href="/articles/2026-08-05-play-points-cannot-join.html">Play Pointsに登録できない・表示されない原因を確認する</a></li>
-        <li><a href="/articles/2026-08-05-play-country-change-points.html">Google Playの国変更でポイントやランクがどうなるか確認する</a></li>
-      </ul>
-    </section>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-            <section class="section related-links-section article-related-guides" aria-labelledby="related-guides">
-                <h2 id="related-guides">次に確認したい関連記事</h2>
-                <ul>
-                    <li><a href="./2026-08-05-play-points-levels-guide.html">ランク・獲得率・必要ポイントの全体像</a></li>
-                    <li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限の確認方法</a></li>
-                    <li><a href="./2026-08-05-play-points-cannot-join.html">登録できない・表示されない時の確認順</a></li>
-                    <li><a href="./2026-08-16-youtube-premium-play-points.html">継続課金の請求経路を確認する</a></li>
-                </ul>
-            </section>
-</article>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-        <aside class="author-box" aria-label="この記事の著者">
-            <p class="author-box-label">この記事を書いた人</p>
-            <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-            <p>Google Play公式情報と計算条件を確認し、変更される可能性がある内容は注意点を添えて掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
         </aside>
 
-        <nav id="article-nav" class="article-nav"></nav>
-        <footer class="article-footer">
-            <p>
-                📚 <a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜
-                🔢 <a href="https://playpoint-sim.com/">計算機トップへ</a>
-            </p>
-            <p class="small article-note-spacing">参照：Google Play ヘルプ「Google Play Points」</p>
-        </footer>
-    </main>
+    </div>
 
-    <script type="application/ld+json">
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
+<script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+<script type="application/ld+json">
 {
       "@context": "https://schema.org",
       "@type": "Article",
@@ -281,8 +413,7 @@
       }
     }
     </script>
-
-    <script type="application/ld+json">
+<script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -305,10 +436,8 @@
         ]
     }
     </script>
-
-    <script src="/js/analytics-core.js?v=54c7b8621b"></script>
-    <script src="../blog/article.js?v=f6e42c66c3"></script>
-    <script src="../blog/components.js?v=e0250b3aa5"></script>
+<script src="/js/analytics-core.js?v=54c7b8621b"></script>
+<script src="../blog/article.js?v=f6e42c66c3"></script>
+<script src="../blog/components.js?v=e0250b3aa5"></script>
 </body>
-
 </html>

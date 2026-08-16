@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -20,8 +21,6 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2026-08-03-play-points-device-change.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/multiple-accounts.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -50,71 +49,67 @@
     ]
   }
   </script>
+    <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="トラブル">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">機種変更・新端末</span>
-    <h1>機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</h1>
-    <p class="hero-meta">2026/08/03 公開 ・ 読了 7分</p>
-  </header>
-
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：同じGoogleアカウントなら、端末間の移行操作は不要</h2>
-      <p>Google Play Pointsは、Play Pointsへ登録している<strong>Googleアカウントで管理</strong>されます。同じアカウントを新しい端末のGoogle Playストアで選べば、通常はポイント残高、ステータス、ポイント履歴を確認できます。</p>
-      <p><strong>旧端末の操作は前提ではありません。</strong>すでに初期化・返却済みでも、新端末で同じGoogleアカウントを選び、残高・ステータス・履歴を確認できます。</p>
-      <p>ただし、<strong>別のGoogleアカウントを開いている</strong>、<strong>Google Playの国を変更した</strong>、または<strong>Play Passの週次特典が新端末へ反映されるまでの確認期間中</strong>である場合は、残高や特典が見つからないことがあります。</p>
-    </section>
-
-    <section class="section" id="symptom-guide">
-      <h2>症状から確認先を選ぶ</h2>
-      <p>「何も表示されない」のか、「一部だけ見つからない」のかで確認先が変わります。最初に近い症状を選ぶと、不要な手順を飛ばせます。</p>
-      <div class="table-card">
-        <table>
-          <caption>機種変更後に見つからないもの別の確認先</caption>
-          <thead><tr><th>見つからないもの</th><th>最初に確認すること</th><th>読む場所</th></tr></thead>
-          <tbody>
-            <tr><td>Play Pointsのメニュー自体</td><td>参加済みアカウント、Google Playの国、対応端末</td><td><a href="#new-device">新端末での確認順</a></td></tr>
-            <tr><td>残高・ランク・履歴が以前と違う</td><td>旧端末と同じGoogleアカウントか</td><td><a href="#account-country">別アカウント・国変更</a></td></tr>
-            <tr><td>Play Passの週次特典だけ</td><td>新端末へアカウントを追加してからの日数</td><td><a href="#play-pass">最長15日の注意</a></td></tr>
-            <tr><td>購入で得るはずのポイントだけ</td><td>注文状態、購入アカウント、ポイント履歴</td><td><a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の記事</a></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">引き継がれるもの／別に確認が必要なもの</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>同じアカウントで確認できるもの</h3>
-          <ul>
-            <li>現在使えるPlay Points残高</li>
-            <li>現在のステータスと年間のレベル進捗</li>
-            <li>購入・特典・交換・返金を含むポイント履歴</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>端末変更後に遅れたり異なるもの</h3>
-          <ul>
-            <li>Play Passの週次ボーナス・ブースターなど一部プロモーション</li>
-            <li>端末ごとのアプリ内データやゲームのセーブデータ</li>
-            <li>別アカウントや別のPlay国にあるポイント・クーポン</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=トラブル">トラブル</a> <span>&gt;</span>
+            <span>機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -122,126 +117,280 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <nav class="intl-article-toc" aria-label="目次">
-      <h2>目次</h2>
-      <ol>
-        <li><a href="#before">旧端末が使える場合に確認すること</a></li>
-        <li><a href="#new-device">新端末での確認順</a></li>
-        <li><a href="#play-pass">Play Pass特典は最長15日かかる場合がある</a></li>
-        <li><a href="#account-country">別アカウントと国変更は機種変更とは別問題</a></li>
-        <li><a href="#missing">それでも見つからない時</a></li>
-      </ol>
-    </nav>
+            <header class="hero">
+                <span class="hero-badge">機種変更・新端末</span>
+                <h1 class="article-title">機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</h1>
+                <p class="hero-meta">2026/08/03 公開 ・ 読了 7分</p>
+            </header>
 
-    <section class="section" id="before">
-      <h2>旧端末が使える場合に確認すること</h2>
-      <p>旧端末が手元になくても引き継ぎ確認はできます。まだ操作できる場合だけ、スクリーンショットやメモで次の情報を残しておくと、新端末で同じアカウントを開けているか判断しやすくなります。</p>
-      <ul>
-        <li>Play Pointsに参加しているGoogleアカウント</li>
-        <li>現在のポイント残高</li>
-        <li>現在のステータスと次のステータスまでの必要ポイント</li>
-        <li>直近のポイント履歴</li>
-        <li>受取済みのクーポンやPlayクレジットの期限</li>
-      </ul>
-      <p>注文番号、メールアドレス、決済情報をSNSや問い合わせ掲示板へ公開しないでください。Googleサポートへ相談するときだけ、公式フォーム内で必要な情報を提示します。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：同じGoogleアカウントなら、端末間の移行操作は不要</h2>
+<p>Google Play Pointsは、Play Pointsへ登録している<strong>Googleアカウントで管理</strong>されます。同じアカウントを新しい端末のGoogle Playストアで選べば、通常はポイント残高、ステータス、ポイント履歴を確認できます。</p>
+<p><strong>旧端末の操作は前提ではありません。</strong>すでに初期化・返却済みでも、新端末で同じGoogleアカウントを選び、残高・ステータス・履歴を確認できます。</p>
+<p>ただし、<strong>別のGoogleアカウントを開いている</strong>、<strong>Google Playの国を変更した</strong>、または<strong>Play Passの週次特典が新端末へ反映されるまでの確認期間中</strong>である場合は、残高や特典が見つからないことがあります。</p>
+</section>
+<section class="section" id="symptom-guide">
+<h2>症状から確認先を選ぶ</h2>
+<p>「何も表示されない」のか、「一部だけ見つからない」のかで確認先が変わります。最初に近い症状を選ぶと、不要な手順を飛ばせます。</p>
+<div class="table-card">
+<table>
+<caption>機種変更後に見つからないもの別の確認先</caption>
+<thead><tr><th>見つからないもの</th><th>最初に確認すること</th><th>読む場所</th></tr></thead>
+<tbody>
+<tr><td>Play Pointsのメニュー自体</td><td>参加済みアカウント、Google Playの国、対応端末</td><td><a href="#new-device">新端末での確認順</a></td></tr>
+<tr><td>残高・ランク・履歴が以前と違う</td><td>旧端末と同じGoogleアカウントか</td><td><a href="#account-country">別アカウント・国変更</a></td></tr>
+<tr><td>Play Passの週次特典だけ</td><td>新端末へアカウントを追加してからの日数</td><td><a href="#play-pass">最長15日の注意</a></td></tr>
+<tr><td>購入で得るはずのポイントだけ</td><td>注文状態、購入アカウント、ポイント履歴</td><td><a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の記事</a></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">引き継がれるもの／別に確認が必要なもの</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>同じアカウントで確認できるもの</h3>
+<ul>
+<li>現在使えるPlay Points残高</li>
+<li>現在のステータスと年間のレベル進捗</li>
+<li>購入・特典・交換・返金を含むポイント履歴</li>
+</ul>
+</div>
+<div>
+<h3>端末変更後に遅れたり異なるもの</h3>
+<ul>
+<li>Play Passの週次ボーナス・ブースターなど一部プロモーション</li>
+<li>端末ごとのアプリ内データやゲームのセーブデータ</li>
+<li>別アカウントや別のPlay国にあるポイント・クーポン</li>
+</ul>
+</div>
+</div>
+</section>
 
-    <section class="section" id="new-device">
-      <h2>新端末ではこの順番で確認する</h2>
-      <ol>
-        <li>Google Playストアを開き、右上のプロフィール画像を確認する</li>
-        <li>旧端末と同じGoogleアカウントを選ぶ</li>
-        <li>プロフィール画像 →「Play Points」を開く</li>
-        <li>残高とステータスを確認する</li>
-        <li>右上のその他メニューから「ポイント履歴」を開く</li>
-        <li>「特典」「使う」「Play Pass」も必要に応じて確認する</li>
-      </ol>
-      <div class="callout">
-        <h3>残高だけで判断しない</h3>
-        <p>ポイントを使った後は残高が減っていても、年間のレベル進捗は通常そのままです。旧端末と比較するときは、残高・ステータス・履歴を別々に確認してください。</p>
-      </div>
-    </section>
+<nav aria-label="目次" class="intl-article-toc">
+<h2>目次</h2>
+<ol>
+<li><a href="#before">旧端末が使える場合に確認すること</a></li>
+<li><a href="#new-device">新端末での確認順</a></li>
+<li><a href="#play-pass">Play Pass特典は最長15日かかる場合がある</a></li>
+<li><a href="#account-country">別アカウントと国変更は機種変更とは別問題</a></li>
+<li><a href="#missing">それでも見つからない時</a></li>
+</ol>
+</nav>
+<section class="section" id="before">
+<h2>旧端末が使える場合に確認すること</h2>
+<p>旧端末が手元になくても引き継ぎ確認はできます。まだ操作できる場合だけ、スクリーンショットやメモで次の情報を残しておくと、新端末で同じアカウントを開けているか判断しやすくなります。</p>
+<ul>
+<li>Play Pointsに参加しているGoogleアカウント</li>
+<li>現在のポイント残高</li>
+<li>現在のステータスと次のステータスまでの必要ポイント</li>
+<li>直近のポイント履歴</li>
+<li>受取済みのクーポンやPlayクレジットの期限</li>
+</ul>
+<p>注文番号、メールアドレス、決済情報をSNSや問い合わせ掲示板へ公開しないでください。Googleサポートへ相談するときだけ、公式フォーム内で必要な情報を提示します。</p>
+</section>
+<section class="section" id="new-device">
+<h2>新端末ではこの順番で確認する</h2>
+<ol>
+<li>Google Playストアを開き、右上のプロフィール画像を確認する</li>
+<li>旧端末と同じGoogleアカウントを選ぶ</li>
+<li>プロフィール画像 →「Play Points」を開く</li>
+<li>残高とステータスを確認する</li>
+<li>右上のその他メニューから「ポイント履歴」を開く</li>
+<li>「特典」「使う」「Play Pass」も必要に応じて確認する</li>
+</ol>
+<div class="callout">
+<h3>残高だけで判断しない</h3>
+<p>ポイントを使った後は残高が減っていても、年間のレベル進捗は通常そのままです。旧端末と比較するときは、残高・ステータス・履歴を別々に確認してください。</p>
+</div>
+</section>
+<section class="section" id="play-pass">
+<h2>Play Passの週次特典は、新端末で最長15日ほどかかる場合がある</h2>
+<p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンスの確認により、<strong>Play Pointsの週次リワードやその他のプロモーション特典が表示されるまで最長15日ほどかかることがある</strong>と案内しています。</p>
+<p>この注意は、通常のポイント残高が15日間消えるという意味ではありません。主にPlay Pass加入者向けの週次ボーナス、ブースター、プロモーション表示についての案内です。</p>
+<p>木曜日のPlay Pass特典と、金曜日の通常・スーパーウィークリーリワードは別制度です。探している特典を分けて確認してください。</p>
+<p><a href="./2025-12-25-weekly-reward.html">3種類のウィークリーリワードの違いを見る</a></p>
+</section>
+<section class="section" id="account-country">
+<h2>別アカウント・国変更は、機種変更とは別の問題</h2>
+<div class="table-card">
+<table>
+<caption>端末変更・アカウント変更・国変更の違い</caption>
+<thead><tr><th>状況</th><th>扱い</th><th>確認先</th></tr></thead>
+<tbody>
+<tr><td>同じGoogleアカウントで新端末を使う</td><td>通常は残高・ランク・履歴を確認可能</td><td>Play Points画面</td></tr>
+<tr><td>別のGoogleアカウントを選んでいる</td><td>元のアカウントのポイントは表示されない</td><td>プロフィール画像から切り替え</td></tr>
+<tr><td>別アカウントへポイントを移したい</td><td>移行・合算不可</td><td>元のアカウントで利用</td></tr>
+<tr><td>Google Playの請求先国を変更した</td><td>旧国のポイントは失われ、ステータスも引き継がれない</td><td>Playの国とプロフィール</td></tr>
+</tbody>
+</table>
+</div>
+<p>「スマホを替えた」と「Google Playの国を替えた」は結果が異なります。機種変更だけなら、請求先国を変更する必要はありません。</p>
+</section>
+<section class="section" id="missing">
+<h2>それでもポイントや特典が見つからない時</h2>
+<ol>
+<li>Play Points参加済みのアカウントか確認する</li>
+<li>旧端末が使える場合は、ポイント履歴を新端末と比較する</li>
+<li>Playストアを閉じて開き直し、アプリ更新も確認する</li>
+<li>Play Pass特典だけがない場合は、新端末追加からの日数を確認する</li>
+<li>購入ポイントだけがない場合は、注文状態と購入アカウントを確認する</li>
+<li>解決しなければGoogle Playサポートへ問い合わせる</li>
+</ol>
+<p>問い合わせ前に、発生日、利用したGoogleアカウント、購入日時、ポイント履歴の表示、旧端末と新端末の違いを整理すると説明しやすくなります。</p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>機種変更するとGoogle Play Pointsは消えますか？</h3><p>同じPlay Points加入済みGoogleアカウントを新端末で使用する場合、通常は残高・ランク・履歴を確認できます。端末間でポイントを移す操作は不要です。</p></div>
+<div class="faq-item"><h3>旧端末を初期化・返却済みでも確認できますか？</h3><p>はい。旧端末の操作は前提ではありません。新端末で同じ加入済みGoogleアカウントを選び、Play Points画面の残高・ステータス・履歴を確認してください。</p></div>
+<div class="faq-item"><h3>新端末でPlay Passの週次特典が出ないのはなぜですか？</h3><p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンス確認により週次Play Points特典などの表示に最長15日ほどかかる場合があると案内しています。</p></div>
+<div class="faq-item"><h3>iPhoneへ変更してもポイントは残りますか？</h3><p>ポイントは加入済みGoogleアカウントで管理されます。確認や利用は、Googleが案内しているAndroid端末またはパソコンのGoogle Playから行ってください。</p></div>
+<div class="faq-item"><h3>ゲームのセーブデータもPlay Pointsと一緒に移りますか？</h3><p>移りません。ゲームデータはPlay Pointsとは別で、Google Play Games、ゲーム独自アカウント、引き継ぎコードなど各アプリの方法を確認する必要があります。</p></div>
+</section>
+<aside class="official-source-note">
+<h2>Google公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
+<li><a href="https://support.google.com/googleplay/answer/16507543?hl=ja" rel="noopener noreferrer" target="_blank">Play Pass定期購入者向けの週次Play Pointsリワード</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" rel="noopener noreferrer" target="_blank">Google Play Pointsに関する問題を解決する方法</a></li>
+<li><a href="https://support.google.com/googleplay/answer/7431675?hl=ja" rel="noopener noreferrer" target="_blank">Google Playの国を変更した場合のポイントとステータス</a></li>
+<li><a href="https://support.google.com/googleplay/answer/15776077?hl=ja" rel="noopener noreferrer" target="_blank">Google Play Pointsの参加条件と対応端末</a></li>
+</ul>
+</aside>
+<section class="section related-links-section">
+<h2>状況に合わせて次に読む記事</h2>
+<ul>
+<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限の確認方法</a></li>
+<li><a href="./2025-12-25-multiple-accounts.html">複数アカウント間で合算できない理由</a></li>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">購入ポイントの反映が遅い時の確認順</a></li>
+<li><a href="./2025-12-25-weekly-reward.html">通常・スーパー・Play Pass週次特典の違い</a></li>
+</ul>
+</section>
 
-    <section class="section" id="play-pass">
-      <h2>Play Passの週次特典は、新端末で最長15日ほどかかる場合がある</h2>
-      <p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンスの確認により、<strong>Play Pointsの週次リワードやその他のプロモーション特典が表示されるまで最長15日ほどかかることがある</strong>と案内しています。</p>
-      <p>この注意は、通常のポイント残高が15日間消えるという意味ではありません。主にPlay Pass加入者向けの週次ボーナス、ブースター、プロモーション表示についての案内です。</p>
-      <p>木曜日のPlay Pass特典と、金曜日の通常・スーパーウィークリーリワードは別制度です。探している特典を分けて確認してください。</p>
-      <p><a href="./2025-12-25-weekly-reward.html">3種類のウィークリーリワードの違いを見る</a></p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section" id="account-country">
-      <h2>別アカウント・国変更は、機種変更とは別の問題</h2>
-      <div class="table-card">
-        <table>
-          <caption>端末変更・アカウント変更・国変更の違い</caption>
-          <thead><tr><th>状況</th><th>扱い</th><th>確認先</th></tr></thead>
-          <tbody>
-            <tr><td>同じGoogleアカウントで新端末を使う</td><td>通常は残高・ランク・履歴を確認可能</td><td>Play Points画面</td></tr>
-            <tr><td>別のGoogleアカウントを選んでいる</td><td>元のアカウントのポイントは表示されない</td><td>プロフィール画像から切り替え</td></tr>
-            <tr><td>別アカウントへポイントを移したい</td><td>移行・合算不可</td><td>元のアカウントで利用</td></tr>
-            <tr><td>Google Playの請求先国を変更した</td><td>旧国のポイントは失われ、ステータスも引き継がれない</td><td>Playの国とプロフィール</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>「スマホを替えた」と「Google Playの国を替えた」は結果が異なります。機種変更だけなら、請求先国を変更する必要はありません。</p>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section" id="missing">
-      <h2>それでもポイントや特典が見つからない時</h2>
-      <ol>
-        <li>Play Points参加済みのアカウントか確認する</li>
-        <li>旧端末が使える場合は、ポイント履歴を新端末と比較する</li>
-        <li>Playストアを閉じて開き直し、アプリ更新も確認する</li>
-        <li>Play Pass特典だけがない場合は、新端末追加からの日数を確認する</li>
-        <li>購入ポイントだけがない場合は、注文状態と購入アカウントを確認する</li>
-        <li>解決しなければGoogle Playサポートへ問い合わせる</li>
-      </ol>
-      <p>問い合わせ前に、発生日、利用したGoogleアカウント、購入日時、ポイント履歴の表示、旧端末と新端末の違いを整理すると説明しやすくなります。</p>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>機種変更するとGoogle Play Pointsは消えますか？</h3><p>同じPlay Points加入済みGoogleアカウントを新端末で使用する場合、通常は残高・ランク・履歴を確認できます。端末間でポイントを移す操作は不要です。</p></div>
-      <div class="faq-item"><h3>旧端末を初期化・返却済みでも確認できますか？</h3><p>はい。旧端末の操作は前提ではありません。新端末で同じ加入済みGoogleアカウントを選び、Play Points画面の残高・ステータス・履歴を確認してください。</p></div>
-      <div class="faq-item"><h3>新端末でPlay Passの週次特典が出ないのはなぜですか？</h3><p>Google公式は、Play Passアカウントを新しいモバイル端末へ追加した場合、ポリシーとコンプライアンス確認により週次Play Points特典などの表示に最長15日ほどかかる場合があると案内しています。</p></div>
-      <div class="faq-item"><h3>iPhoneへ変更してもポイントは残りますか？</h3><p>ポイントは加入済みGoogleアカウントで管理されます。確認や利用は、Googleが案内しているAndroid端末またはパソコンのGoogle Playから行ってください。</p></div>
-      <div class="faq-item"><h3>ゲームのセーブデータもPlay Pointsと一緒に移りますか？</h3><p>移りません。ゲームデータはPlay Pointsとは別で、Google Play Games、ゲーム独自アカウント、引き継ぎコードなど各アプリの方法を確認する必要があります。</p></div>
-    </section>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <aside class="official-source-note">
-      <h2>Google公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/16507543?hl=ja" target="_blank" rel="noopener noreferrer">Play Pass定期購入者向けの週次Play Pointsリワード</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" target="_blank" rel="noopener noreferrer">Google Play Pointsに関する問題を解決する方法</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/7431675?hl=ja" target="_blank" rel="noopener noreferrer">Google Playの国を変更した場合のポイントとステータス</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/15776077?hl=ja" target="_blank" rel="noopener noreferrer">Google Play Pointsの参加条件と対応端末</a></li>
-      </ul>
-    </aside>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>状況に合わせて次に読む記事</h2>
-      <ul>
-        <li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限の確認方法</a></li>
-        <li><a href="./2025-12-25-multiple-accounts.html">複数アカウント間で合算できない理由</a></li>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">購入ポイントの反映が遅い時の確認順</a></li>
-        <li><a href="./2025-12-25-weekly-reward.html">通常・スーパー・Play Pass週次特典の違い</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>Google Play公式情報と実際の確認手順を分け、端末・アカウント・国変更を混同しないよう検証して掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer">
-    <p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p>
-  </footer>
-</main>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>

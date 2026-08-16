@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -24,56 +25,67 @@
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/subscription.png" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">PLAY POINTS 継続課金</span>
-    <h1>Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法</h1>
-    <p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>
-  </header>
-
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：サービス名より「Google Play経由で請求されるか」を確認する</h2>
-      <p>日本では、AndroidからのGoogle One定期購入や、Google Playを通じたアプリ内・ゲーム内の定期購入でPlay Pointsを獲得できます。</p>
-      <p>同じサービスでも、公式サイト、iPhone、通信会社、別の決済事業者などから契約すると請求経路が異なり、Play Pointsの対象にならない場合があります。Google Playの「お支払いと定期購入」で契約と請求元を確認してください。</p>
-    </section>
-
-    <section class="knowledge-boundary" aria-labelledby="known-unknown">
-      <h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
-      <div class="knowledge-boundary__grid">
-        <div>
-          <h3>判明していること</h3>
-          <ul>
-            <li>AndroidからGoogle Oneを定期購入するとポイント獲得対象になります。</li>
-            <li>Google Playを通じたアプリ内・ゲーム内定期購入は対象になります。</li>
-            <li>通常は現在のステータスの通常獲得率が適用されます。</li>
-            <li>初回契約や請求時に追加ポイントが付く個別プロモーションの場合があります。</li>
-          </ul>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
         </div>
-        <div>
-          <h3>このサイトからは不明なこと</h3>
-          <ul>
-            <li>個別契約の請求経路と次回請求日は確認できません。</li>
-            <li>あなたに表示される初回ボーナスや継続特典は予測できません。</li>
-            <li>サービス側の外部決済がPlay Points対象かは一括で判断できません。</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+    </nav>
+
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -81,127 +93,265 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section">
-      <h2>この記事は「継続課金」を扱う</h2>
-      <p>このページではGoogle One、アプリ内定期購入、ゲーム内月額パスなど、一定期間ごとに料金が発生する契約を扱います。</p>
-      <div class="callout">
-        <h3>買い切り商品を調べている場合</h3>
-        <p>有料アプリ、ゲーム本体、電子書籍、買い切りアイテムは別記事で整理しています。</p>
-        <p><a href="./2025-12-25-movies-books.html">本・有料アプリなど買い切り購入の条件を見る</a></p>
-      </div>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">PLAY POINTS 継続課金</span>
+                <h1 class="article-title">Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法</h1>
+                <p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>
+            </header>
 
-    <section class="section">
-      <h2>対象になりやすい継続課金</h2>
-      <div class="table-card">
-        <table>
-          <thead><tr><th>契約</th><th>基本的な条件</th><th>確認場所</th></tr></thead>
-          <tbody>
-            <tr><td>Google One</td><td>AndroidからGoogle Oneを定期購入</td><td>Google Playの定期購入一覧・領収書</td></tr>
-            <tr><td>アプリ内サブスク</td><td>Google Playを通じて定期購入</td><td>Google Playの決済画面・定期購入一覧</td></tr>
-            <tr><td>ゲーム内月額パス</td><td>Google Playを通じたゲーム内定期購入</td><td>購入画面・Google Playの注文履歴</td></tr>
-            <tr><td>公式サイトや他社経由の契約</td><td>Google Playを通じない場合は原則対象外</td><td>請求元・契約管理画面</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>アプリをAndroidで利用していても、契約自体が外部サイトで行われていればGoogle Play請求とは限りません。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：サービス名より「Google Play経由で請求されるか」を確認する</h2>
+<p>日本では、AndroidからのGoogle One定期購入や、Google Playを通じたアプリ内・ゲーム内の定期購入でPlay Pointsを獲得できます。</p>
+<p>同じサービスでも、公式サイト、iPhone、通信会社、別の決済事業者などから契約すると請求経路が異なり、Play Pointsの対象にならない場合があります。Google Playの「お支払いと定期購入」で契約と請求元を確認してください。</p>
+</section>
+<section aria-labelledby="known-unknown" class="knowledge-boundary">
+<h2 id="known-unknown">判明していること／このサイトからは不明なこと</h2>
+<div class="knowledge-boundary__grid">
+<div>
+<h3>判明していること</h3>
+<ul>
+<li>AndroidからGoogle Oneを定期購入するとポイント獲得対象になります。</li>
+<li>Google Playを通じたアプリ内・ゲーム内定期購入は対象になります。</li>
+<li>通常は現在のステータスの通常獲得率が適用されます。</li>
+<li>初回契約や請求時に追加ポイントが付く個別プロモーションの場合があります。</li>
+</ul>
+</div>
+<div>
+<h3>このサイトからは不明なこと</h3>
+<ul>
+<li>個別契約の請求経路と次回請求日は確認できません。</li>
+<li>あなたに表示される初回ボーナスや継続特典は予測できません。</li>
+<li>サービス側の外部決済がPlay Points対象かは一括で判断できません。</li>
+</ul>
+</div>
+</div>
+</section>
 
-    <section class="section">
-      <h2>Google Oneで確認すること</h2>
-      <p>Google公式は、ポイントの貯め方として「AndroidからGoogle Oneを定期購入する」と案内しています。</p>
-      <ol>
-        <li>契約したGoogleアカウントを確認する</li>
-        <li>Google Playストアの「お支払いと定期購入」を開く</li>
-        <li>Google Oneが定期購入一覧にあるか確認する</li>
-        <li>次回請求日と請求額を確認する</li>
-        <li>請求後にPlay Pointsのポイント履歴を確認する</li>
-      </ol>
-      <p>Web、iPhone、通信会社など別経路で契約している場合は、同じGoogle OneでもPlay Pointsの対象条件が異なる可能性があります。</p>
-    </section>
+<section class="section">
+<h2>この記事は「継続課金」を扱う</h2>
+<p>このページではGoogle One、アプリ内定期購入、ゲーム内月額パスなど、一定期間ごとに料金が発生する契約を扱います。</p>
+<div class="callout">
+<h3>買い切り商品を調べている場合</h3>
+<p>有料アプリ、ゲーム本体、電子書籍、買い切りアイテムは別記事で整理しています。</p>
+<p><a href="./2025-12-25-movies-books.html">本・有料アプリなど買い切り購入の条件を見る</a></p>
+</div>
+</section>
+<section class="section">
+<h2>対象になりやすい継続課金</h2>
+<div class="table-card">
+<table>
+<thead><tr><th>契約</th><th>基本的な条件</th><th>確認場所</th></tr></thead>
+<tbody>
+<tr><td>Google One</td><td>AndroidからGoogle Oneを定期購入</td><td>Google Playの定期購入一覧・領収書</td></tr>
+<tr><td>アプリ内サブスク</td><td>Google Playを通じて定期購入</td><td>Google Playの決済画面・定期購入一覧</td></tr>
+<tr><td>ゲーム内月額パス</td><td>Google Playを通じたゲーム内定期購入</td><td>購入画面・Google Playの注文履歴</td></tr>
+<tr><td>公式サイトや他社経由の契約</td><td>Google Playを通じない場合は原則対象外</td><td>請求元・契約管理画面</td></tr>
+</tbody>
+</table>
+</div>
+<p>アプリをAndroidで利用していても、契約自体が外部サイトで行われていればGoogle Play請求とは限りません。</p>
+</section>
+<section class="section">
+<h2>Google Oneで確認すること</h2>
+<p>Google公式は、ポイントの貯め方として「AndroidからGoogle Oneを定期購入する」と案内しています。</p>
+<ol>
+<li>契約したGoogleアカウントを確認する</li>
+<li>Google Playストアの「お支払いと定期購入」を開く</li>
+<li>Google Oneが定期購入一覧にあるか確認する</li>
+<li>次回請求日と請求額を確認する</li>
+<li>請求後にPlay Pointsのポイント履歴を確認する</li>
+</ol>
+<p>Web、iPhone、通信会社など別経路で契約している場合は、同じGoogle OneでもPlay Pointsの対象条件が異なる可能性があります。</p>
+</section>
+<section class="section">
+<h2>通常レートと初回・継続プロモーション</h2>
+<p>Google公式ヘルプでは、アプリを通じた定期購入は通常、各ステータスの通常獲得率に戻ると案内しています。一方で、次のプロモーションが提供される場合があります。</p>
+<ul>
+<li>特定アプリやゲームを初めて定期購入した人への1回限りのボーナス</li>
+<li>特定の定期購入者への請求時に追加ポイントが付く企画</li>
+<li>Play Pass加入者向けの週次ポイント獲得率ブースター</li>
+</ul>
+<p>ボーナスが常設されているとは限りません。契約前に「Play Points」→「貯める」で対象アプリ、期間、初回限定、有効化、上限を確認してください。</p>
+</section>
+<section class="section">
+<h2>クエストの「購入」に数えられる場合</h2>
+<p>Play Points特典クエストでは、Google Playを通じた定期購入の支払いが「購入」として数えられます。Google公式は、Play Passの定期購入更新も、ポイントが付くためクエスト内の購入に数えられる例として案内しています。</p>
+<ul>
+<li>クエスト開始前の支払いが対象とは限らない</li>
+<li>対象金額、回数、期間はクエストごとに異なる</li>
+<li>キャンセル・返金でクエストが未完了へ戻る場合がある</li>
+</ul>
+<p><a href="./2026-07-31-google-play-quests.html">Google Playクエストの購入条件と返金時の扱いを見る</a></p>
+</section>
+<section class="section">
+<h2>ポイントが付かない時の確認順</h2>
+<ol>
+<li>Play Points参加済みアカウントと契約アカウントが同じか</li>
+<li>Google Playの定期購入一覧に契約が表示されるか</li>
+<li>請求が完了しており、無料期間や保留状態ではないか</li>
+<li>Play Pointsのポイント履歴に請求が反映されているか</li>
+<li>キャンペーンなら対象アプリ、初回条件、有効化、期限を満たしたか</li>
+<li>解決しなければ注文情報を保存してGoogle Playサポートへ相談する</li>
+</ol>
+<p>サービス名だけでなく、Google Playの注文番号と請求元を確認することが最も確実です。</p>
+</section>
+<section class="section">
+<h2>解約・返金時の注意</h2>
+<p>定期購入を解約しても、通常は支払い済み期間の終了までは利用できます。解約そのものと返金は別です。</p>
+<p>対象購入が返金・キャンセルされた場合は、獲得したPlay Pointsが残高とステータス判定ポイントから差し引かれます。返金後の残高が不足するとマイナスになる場合があります。</p>
+<p><a href="./2025-12-25-refund.html">返金後のポイント残高とランクへの影響を見る</a></p>
+</section>
+<section class="section">
+<h2>よくある質問</h2>
+<div class="faq-item"><h3>Q. Google Oneなら契約方法に関係なく貯まりますか？</h3><p>A. Google公式は「AndroidからGoogle Oneを定期購入する」ことを対象として案内しています。契約経路とGoogle Playの定期購入一覧を確認してください。</p></div>
+<div class="faq-item"><h3>Q. サブスク更新のたびにポイントは貯まりますか？</h3><p>A. Google Playを通じた対象請求なら通常獲得率でポイントが付くのが基本です。無料期間、保留、外部請求などは別です。</p></div>
+<div class="faq-item"><h3>Q. 初回ボーナスは全員にありますか？</h3><p>A. いいえ。特定アプリや対象アカウントに表示されるプロモーションで、期間や条件が異なります。</p></div>
+</section>
+<section aria-labelledby="calculator-cta" class="cta-box">
+<h2 id="calculator-cta">毎月の請求で得られるポイントを計算</h2>
+<p>月額料金と現在の獲得率を入力し、通常時に得られるポイントの目安を確認できます。個別ボーナスは画面の固定ポイント数を別に確認してください。</p>
+<a class="cta-btn" href="../">Playポイント計算機を開く</a>
+</section>
+<section class="section source-list">
+<h2>公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
+<li><a href="https://support.google.com/googleplay/answer/11534416?hl=ja" rel="noopener noreferrer" target="_blank">Google Play のクエスト（Google公式）</a></li>
+</ul>
+<p class="small">最終公式確認日：2026年7月31日。契約経路、対象請求、プロモーションはGoogle Playの契約画面をご確認ください。</p>
+</section>
+<section class="section related-links-section">
+<h2>あわせて読みたい</h2>
+<ul>
+<li><a href="./2025-12-25-movies-books.html">本・有料アプリなど買い切り購入の条件</a></li>
+<li><a href="./2026-07-31-google-play-quests.html">クエストの購入扱いと返金時の確認</a></li>
+<li><a href="./2025-12-25-refund.html">返金後のポイントとランクへの影響</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2>通常レートと初回・継続プロモーション</h2>
-      <p>Google公式ヘルプでは、アプリを通じた定期購入は通常、各ステータスの通常獲得率に戻ると案内しています。一方で、次のプロモーションが提供される場合があります。</p>
-      <ul>
-        <li>特定アプリやゲームを初めて定期購入した人への1回限りのボーナス</li>
-        <li>特定の定期購入者への請求時に追加ポイントが付く企画</li>
-        <li>Play Pass加入者向けの週次ポイント獲得率ブースター</li>
-      </ul>
-      <p>ボーナスが常設されているとは限りません。契約前に「Play Points」→「貯める」で対象アプリ、期間、初回限定、有効化、上限を確認してください。</p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>クエストの「購入」に数えられる場合</h2>
-      <p>Play Points特典クエストでは、Google Playを通じた定期購入の支払いが「購入」として数えられます。Google公式は、Play Passの定期購入更新も、ポイントが付くためクエスト内の購入に数えられる例として案内しています。</p>
-      <ul>
-        <li>クエスト開始前の支払いが対象とは限らない</li>
-        <li>対象金額、回数、期間はクエストごとに異なる</li>
-        <li>キャンセル・返金でクエストが未完了へ戻る場合がある</li>
-      </ul>
-      <p><a href="./2026-07-31-google-play-quests.html">Google Playクエストの購入条件と返金時の扱いを見る</a></p>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>ポイントが付かない時の確認順</h2>
-      <ol>
-        <li>Play Points参加済みアカウントと契約アカウントが同じか</li>
-        <li>Google Playの定期購入一覧に契約が表示されるか</li>
-        <li>請求が完了しており、無料期間や保留状態ではないか</li>
-        <li>Play Pointsのポイント履歴に請求が反映されているか</li>
-        <li>キャンペーンなら対象アプリ、初回条件、有効化、期限を満たしたか</li>
-        <li>解決しなければ注文情報を保存してGoogle Playサポートへ相談する</li>
-      </ol>
-      <p>サービス名だけでなく、Google Playの注文番号と請求元を確認することが最も確実です。</p>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>解約・返金時の注意</h2>
-      <p>定期購入を解約しても、通常は支払い済み期間の終了までは利用できます。解約そのものと返金は別です。</p>
-      <p>対象購入が返金・キャンセルされた場合は、獲得したPlay Pointsが残高とステータス判定ポイントから差し引かれます。返金後の残高が不足するとマイナスになる場合があります。</p>
-      <p><a href="./2025-12-25-refund.html">返金後のポイント残高とランクへの影響を見る</a></p>
-    </section>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>よくある質問</h2>
-      <div class="faq-item"><h3>Q. Google Oneなら契約方法に関係なく貯まりますか？</h3><p>A. Google公式は「AndroidからGoogle Oneを定期購入する」ことを対象として案内しています。契約経路とGoogle Playの定期購入一覧を確認してください。</p></div>
-      <div class="faq-item"><h3>Q. サブスク更新のたびにポイントは貯まりますか？</h3><p>A. Google Playを通じた対象請求なら通常獲得率でポイントが付くのが基本です。無料期間、保留、外部請求などは別です。</p></div>
-      <div class="faq-item"><h3>Q. 初回ボーナスは全員にありますか？</h3><p>A. いいえ。特定アプリや対象アカウントに表示されるプロモーションで、期間や条件が異なります。</p></div>
-    </section>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="cta-box" aria-labelledby="calculator-cta">
-      <h2 id="calculator-cta">毎月の請求で得られるポイントを計算</h2>
-      <p>月額料金と現在の獲得率を入力し、通常時に得られるポイントの目安を確認できます。個別ボーナスは画面の固定ポイント数を別に確認してください。</p>
-      <a class="cta-btn" href="../">Playポイント計算機を開く</a>
-    </section>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-    <section class="section source-list">
-      <h2>公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する（日本向けGoogle公式）</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/11534416?hl=ja" target="_blank" rel="noopener noreferrer">Google Play のクエスト（Google公式）</a></li>
-      </ul>
-      <p class="small">最終公式確認日：2026年7月31日。契約経路、対象請求、プロモーションはGoogle Playの契約画面をご確認ください。</p>
-    </section>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>あわせて読みたい</h2>
-      <ul>
-        <li><a href="./2025-12-25-movies-books.html">本・有料アプリなど買い切り購入の条件</a></li>
-        <li><a href="./2026-07-31-google-play-quests.html">クエストの購入扱いと返金時の確認</a></li>
-        <li><a href="./2025-12-25-refund.html">返金後のポイントとランクへの影響</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>サービス名だけで対象と断定せず、Google Playの契約一覧、請求元、公式の対象条件を照合して掲載しています。<a href="../author/katakata.html">運営者・記事の検証方針を見る</a></p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer"><p><a href="https://playpoint-sim.com/blog/">記事一覧へ戻る</a> ｜ <a href="https://playpoint-sim.com/">計算機トップへ</a></p></footer>
-</main>
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
 
 <script type="application/ld+json">
 {

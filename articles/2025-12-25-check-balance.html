@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ja">
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -20,8 +21,6 @@
   <meta property="og:url" content="https://playpoint-sim.com/articles/2025-12-25-check-balance.html" />
   <meta property="og:image" content="https://playpoint-sim.com/articles/ogp/check-balance.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="/articles/article-modern.css?v=59b39a295e" />
-  <link rel="stylesheet" href="./article-shared.css?v=679799d0c4" />
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -69,31 +68,67 @@
     ]
   }
   </script>
+    <link rel="stylesheet" href="/articles/article-legacy.css?v=cf9c90e6a2" />
+    <link rel="stylesheet" href="./article-shared.css?v=63a3d82464" />
 </head>
-<body>
-    <header class="header article-static-header">
-        <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
-            <nav class="nav" aria-label="記事サイト">
+<body data-article-category="使い方">
+
+    <!-- サイトヘッダー -->
+    <header class="site-header">
+        <div class="site-header-inner">
+            <a class="site-logo" href="../index.html">🎮 Google Play Points 計算機 ＆ 攻略ガイド</a>
+            <div class="site-header-links">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
-            </nav>
+                <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">🧪 KatakataLab</a>
+            </div>
         </div>
     </header>
 
-<main class="main-card">
-  <header class="hero">
-    <span class="hero-badge">残高・履歴の確認</span>
-    <h1>Google Play Pointsの残高・履歴・有効期限を確認する方法</h1>
-    <p class="hero-meta">2026/08/03 更新 ・ 読了 6分</p>
-  </header>
+    <!-- グローバルナビゲーション（Cocoon風 帯メニュー） -->
+    <nav class="global-nav" aria-label="グローバルナビゲーション">
+        <div class="global-nav-inner">
+            <a class="nav-item" href="../">
+                <span>計算機トップ</span>
+                <span class="nav-sub">必要額シミュレーター</span>
+            </a>
+            <a class="nav-item" href="../blog/">
+                <span>記事一覧</span>
+                <span class="nav-sub">全攻略ガイド</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=キャンペーン">
+                <span>キャンペーン</span>
+                <span class="nav-sub">お得・還元情報</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=ランク">
+                <span>ランク攻略</span>
+                <span class="nav-sub">プラチナ・ダイヤ達成</span>
+            </a>
+            <a class="nav-item active" href="../blog/?category=使い方">
+                <span>ポイント使い道</span>
+                <span class="nav-sub">お得な交換先</span>
+            </a>
+            <a class="nav-item" href="../blog/?category=トラブル">
+                <span>トラブル解決</span>
+                <span class="nav-sub">Q&amp;A・原因特定</span>
+            </a>
+        </div>
+    </nav>
 
-  <article class="content">
-    <section class="answer-box" aria-labelledby="quick-answer">
-      <h2 id="quick-answer">結論：残高、年間進捗、履歴、有効期限は別々に確認する</h2>
-      <p>Google Playストアの右上にあるプロフィール画像から<strong>「Play Points」</strong>を開くと、現在使えるポイント残高とステータスを確認できます。右上のその他メニューから<strong>「ポイント履歴」</strong>を開くと、購入、週次特典、交換、返金などの増減を追えます。</p>
-      <p>ポイント残高と年間のレベル進捗は同じ数字ではありません。何を確認したいかを先に分けると、計算機へ誤った数字を入れにくくなります。</p>
-    </section>
+    <!-- パンくずリスト -->
+    <div class="breadcrumbs-wrapper">
+        <nav aria-label="パンくずリスト">
+            <a href="../">ホーム</a> <span>&gt;</span>
+            <a href="../blog/">記事一覧</a> <span>&gt;</span>
+            <a href="../blog/?category=使い方">使い方</a> <span>&gt;</span>
+            <span>Google Play Pointsの残高・履歴・有効期限を確認する方法</span>
+        </nav>
+    </div>
+
+    <!-- 2カラム レイアウトコンテナ -->
+    <div class="layout-container">
+        
+        <!-- 左側：メイン記事 -->
+        <article class="content main-content-column">
             <aside class="article-calculator-prompt cta-box" data-generated-article-prompt="true" aria-label="あなたの場合の必要額を計算">
                 <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
                 <h2>あなたの場合はいくら必要？</h2>
@@ -101,129 +136,248 @@
                 <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
             </aside>
 
-    <section class="section">
-      <h2>4つの数字を混同しない</h2>
-      <div class="table-card">
-        <table>
-          <thead><tr><th>項目</th><th>意味</th><th>主な用途</th></tr></thead>
-          <tbody>
-            <tr><td>ポイント残高</td><td>現在交換に使えるポイント</td><td>クーポン、Playクレジット、アイテムなど</td></tr>
-            <tr><td>年間のレベル進捗</td><td>その暦年に獲得したステータス判定用ポイント</td><td>次のランク、翌年のランク判定</td></tr>
-            <tr><td>次のステータスまで</td><td>次のランクに不足しているポイント</td><td>必要金額の逆算</td></tr>
-            <tr><td>有効期限</td><td>ポイント残高が失効する基準</td><td>使い忘れ防止</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>ポイントを使うと残高は減りますが、通常はその年のレベル進捗からは差し引かれません。対象購入を返金・キャンセルした場合は、残高とレベル進捗の両方から獲得分が差し引かれます。</p>
-    </section>
+            <header class="hero">
+                <span class="hero-badge">残高・履歴の確認</span>
+                <h1 class="article-title">Google Play Pointsの残高・履歴・有効期限を確認する方法</h1>
+                <p class="hero-meta">2026/08/03 更新 ・ 読了 6分</p>
+            </header>
 
-    <section class="section">
-      <h2>残高と履歴を確認する手順</h2>
-      <ol>
-        <li>Google Playストアアプリを開く</li>
-        <li>右上のプロフィール画像をタップする</li>
-        <li>ポイントを貯めているGoogleアカウントか確認する</li>
-        <li>「Play Points」を開く</li>
-        <li>残高、ステータス、次のステータスまでの表示を確認する</li>
-        <li>右上のその他メニューから「ポイント履歴」を開く</li>
-      </ol>
-      <p>週次特典を受取済みか確認する場合も、ポイント履歴を使えます。Google公式の案内では、Play Pointsの「特典」画面からその他メニューを開き、ポイント履歴で確認します。</p>
-    </section>
+<section aria-labelledby="quick-answer" class="answer-box">
+<h2 id="quick-answer">結論：残高、年間進捗、履歴、有効期限は別々に確認する</h2>
+<p>Google Playストアの右上にあるプロフィール画像から<strong>「Play Points」</strong>を開くと、現在使えるポイント残高とステータスを確認できます。右上のその他メニューから<strong>「ポイント履歴」</strong>を開くと、購入、週次特典、交換、返金などの増減を追えます。</p>
+<p>ポイント残高と年間のレベル進捗は同じ数字ではありません。何を確認したいかを先に分けると、計算機へ誤った数字を入れにくくなります。</p>
+</section>
 
-    <section class="section">
-      <h2>ポイント履歴の読み方</h2>
-      <div class="table-card">
-        <table>
-          <thead><tr><th>履歴の種類</th><th>確認すること</th><th>関連する問題</th></tr></thead>
-          <tbody>
-            <tr><td>購入による獲得</td><td>購入日時、付与ポイント、購入アカウント</td><td>購入したのに付かない</td></tr>
-            <tr><td>週次特典・キャンペーン</td><td>受取日、通常購入分との違い</td><td>受取済みか分からない</td></tr>
-            <tr><td>ポイント交換</td><td>必要ポイント、交換先、交換日時</td><td>残高が急に減った</td></tr>
-            <tr><td>返金・キャンセル</td><td>過去に付与されたポイントの減算</td><td>残高と進捗が減った</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p>履歴に購入自体がない場合は、別のGoogleアカウントで購入していないか、注文が完了しているかを先に確認します。履歴に購入はあるのにポイントだけ見当たらない場合は、反映待ちや対象条件を確認します。</p>
-      <p>Google公式は、ポイントの反映にはコンテンツやデバイスによって時間がかかる場合があると案内しています。購入履歴があるのにポイントだけ見当たらない場合は、<a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の確認順</a>へ進んでください。</p>
-    </section>
+<section class="section">
+<h2>4つの数字を混同しない</h2>
+<div class="table-card">
+<table>
+<thead><tr><th>項目</th><th>意味</th><th>主な用途</th></tr></thead>
+<tbody>
+<tr><td>ポイント残高</td><td>現在交換に使えるポイント</td><td>クーポン、Playクレジット、アイテムなど</td></tr>
+<tr><td>年間のレベル進捗</td><td>その暦年に獲得したステータス判定用ポイント</td><td>次のランク、翌年のランク判定</td></tr>
+<tr><td>次のステータスまで</td><td>次のランクに不足しているポイント</td><td>必要金額の逆算</td></tr>
+<tr><td>有効期限</td><td>ポイント残高が失効する基準</td><td>使い忘れ防止</td></tr>
+</tbody>
+</table>
+</div>
+<p>ポイントを使うと残高は減りますが、通常はその年のレベル進捗からは差し引かれません。対象購入を返金・キャンセルした場合は、残高とレベル進捗の両方から獲得分が差し引かれます。</p>
+</section>
+<section class="section">
+<h2>残高と履歴を確認する手順</h2>
+<ol>
+<li>Google Playストアアプリを開く</li>
+<li>右上のプロフィール画像をタップする</li>
+<li>ポイントを貯めているGoogleアカウントか確認する</li>
+<li>「Play Points」を開く</li>
+<li>残高、ステータス、次のステータスまでの表示を確認する</li>
+<li>右上のその他メニューから「ポイント履歴」を開く</li>
+</ol>
+<p>週次特典を受取済みか確認する場合も、ポイント履歴を使えます。Google公式の案内では、Play Pointsの「特典」画面からその他メニューを開き、ポイント履歴で確認します。</p>
+</section>
+<section class="section">
+<h2>ポイント履歴の読み方</h2>
+<div class="table-card">
+<table>
+<thead><tr><th>履歴の種類</th><th>確認すること</th><th>関連する問題</th></tr></thead>
+<tbody>
+<tr><td>購入による獲得</td><td>購入日時、付与ポイント、購入アカウント</td><td>購入したのに付かない</td></tr>
+<tr><td>週次特典・キャンペーン</td><td>受取日、通常購入分との違い</td><td>受取済みか分からない</td></tr>
+<tr><td>ポイント交換</td><td>必要ポイント、交換先、交換日時</td><td>残高が急に減った</td></tr>
+<tr><td>返金・キャンセル</td><td>過去に付与されたポイントの減算</td><td>残高と進捗が減った</td></tr>
+</tbody>
+</table>
+</div>
+<p>履歴に購入自体がない場合は、別のGoogleアカウントで購入していないか、注文が完了しているかを先に確認します。履歴に購入はあるのにポイントだけ見当たらない場合は、反映待ちや対象条件を確認します。</p>
+<p>Google公式は、ポイントの反映にはコンテンツやデバイスによって時間がかかる場合があると案内しています。購入履歴があるのにポイントだけ見当たらない場合は、<a href="./2026-03-10-play-points-reflection-timing.html">反映が遅い時の確認順</a>へ進んでください。</p>
+</section>
+<section class="section">
+<h2>有効期限を確認するときの注意</h2>
+<p>Play Pointsの残高は、最後にポイントを獲得または使用した時点から1年間有効です。表示される期限は、交換後のPlayクレジットやクーポンの期限とは別です。</p>
+<ul>
+<li>Play Points残高の期限</li>
+<li>ポイント交換で受け取ったPlayクレジットの期限</li>
+<li>ポイント交換で受け取ったクーポンの期限</li>
+</ul>
+<p>この3つは同じ日とは限りません。失効対策では、残高だけでなく交換済み特典の保存先と期限も確認してください。</p>
+</section>
+<section class="section">
+<h2>計算機へ入力する数字</h2>
+<p>次のランクに必要な購入額を知りたい場合は、Play Points画面に表示される<strong>「次のステータスまであと○ポイント」</strong>を入力します。現在のポイント残高を入力するものではありません。</p>
+<div class="cta-box">
+<h3>次のランクまでの必要金額を計算</h3>
+<p>現在ランク、残りポイント、確認済みのキャンペーン倍率から逆算できます。</p>
+<a class="cta-btn" href="/points-cost/">必要額計算機を開く</a>
+</div>
+</section>
+<section class="section">
+<h2>表示が見つからない時の確認順</h2>
+<ol>
+<li>Play Pointsへ参加しているアカウントを選んでいるか</li>
+<li>Google Playの国と請求先住所が対応しているか</li>
+<li>購入したアカウントと確認中のアカウントが同じか</li>
+<li>Playストアを閉じて開き直したか</li>
+<li>機種変更直後なら、新端末で同じアカウントを選んでいるか</li>
+</ol>
+<p><a href="./2026-08-03-play-points-device-change.html">機種変更後だけ表示されない場合の確認方法</a>も参照してください。</p>
+</section>
+<section class="section faq-section">
+<h2>よくある質問</h2>
+<div class="faq-item">
+<h3>Q. ポイント残高と「次のステータスまで」の数字が違うのはなぜ？</h3>
+<p>A. 「ポイント残高」は現在アイテムやクレジット交換に使える保有数で、「次のステータスまで」はその年に獲得したランク判定用累計ポイントの不足分です。ポイントを使っても年間進捗は減りません。</p>
+</div>
+<div class="faq-item">
+<h3>Q. 今持っているポイントの有効期限はどこで確認できますか？</h3>
+<p>A. Google Playストアのプロフィールアイコンから「Play Points」を開くと、現在の残高の下に有効期限日が表示されます。</p>
+</div>
+<div class="faq-item">
+<h3>Q. 過去に獲得・使用したポイントの履歴を見るには？</h3>
+<p>A. Play Points画面右上のその他メニュー（縦の3点リーダー）をタップし、「ポイント履歴」を選択すると、購入獲得・特典受取・交換・返金などの詳細履歴を確認できます。</p>
+</div>
+</section>
+<aside class="official-source-note">
+<h2>Google公式情報</h2>
+<ul>
+<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
+<li><a href="https://support.google.com/googleplay/answer/15776969?hl=ja" rel="noopener noreferrer" target="_blank">Play Pointsの確認と週次特典の履歴</a></li>
+<li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" rel="noopener noreferrer" target="_blank">Google Play Pointsに関する問題を解決する方法</a></li>
+</ul>
+</aside>
+<section class="section related-links-section">
+<h2>次に確認する記事</h2>
+<ul>
+<li><a href="./2026-03-10-play-points-reflection-timing.html">購入ポイントの反映が遅い時</a></li>
+<li><a href="./2025-12-25-expiration.html">Play Pointsの有効期限と失効対策</a></li>
+<li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持と年次リセット</a></li>
+<li><a href="./2026-08-03-play-points-device-change.html">機種変更後の引き継ぎと表示遅延</a></li>
+</ul>
+</section>
 
-    <section class="section">
-      <h2>有効期限を確認するときの注意</h2>
-      <p>Play Pointsの残高は、最後にポイントを獲得または使用した時点から1年間有効です。表示される期限は、交換後のPlayクレジットやクーポンの期限とは別です。</p>
-      <ul>
-        <li>Play Points残高の期限</li>
-        <li>ポイント交換で受け取ったPlayクレジットの期限</li>
-        <li>ポイント交換で受け取ったクーポンの期限</li>
-      </ul>
-      <p>この3つは同じ日とは限りません。失効対策では、残高だけでなく交換済み特典の保存先と期限も確認してください。</p>
-    </section>
+            <!-- 著者プロフィール -->
+            <div class="author-profile-box">
+                <div class="author-avatar">✍️</div>
+                <div class="author-info">
+                    <h4>この記事の著者：<a href="../author/katakata.html" rel="author">かたかた</a></h4>
+                    <p>Google Play Points 計算機 運営・編集。Google Play公式情報を基準に、読者が損をせず最短でランクアップできるよう検証しています。<a href="../author/katakata.html" rel="author">詳しい検証方針を見る</a></p>
+                </div>
+            </div>
 
-    <section class="section">
-      <h2>計算機へ入力する数字</h2>
-      <p>次のランクに必要な購入額を知りたい場合は、Play Points画面に表示される<strong>「次のステータスまであと○ポイント」</strong>を入力します。現在のポイント残高を入力するものではありません。</p>
-      <div class="cta-box">
-        <h3>次のランクまでの必要金額を計算</h3>
-        <p>現在ランク、残りポイント、確認済みのキャンペーン倍率から逆算できます。</p>
-        <a class="cta-btn" href="/points-cost/">必要額計算機を開く</a>
-      </div>
-    </section>
+            <nav id="article-nav" class="article-nav"></nav>
+        </article>
 
-    <section class="section">
-      <h2>表示が見つからない時の確認順</h2>
-      <ol>
-        <li>Play Pointsへ参加しているアカウントを選んでいるか</li>
-        <li>Google Playの国と請求先住所が対応しているか</li>
-        <li>購入したアカウントと確認中のアカウントが同じか</li>
-        <li>Playストアを閉じて開き直したか</li>
-        <li>機種変更直後なら、新端末で同じアカウントを選んでいるか</li>
-      </ol>
-      <p><a href="./2026-08-03-play-points-device-change.html">機種変更後だけ表示されない場合の確認方法</a>も参照してください。</p>
-    </section>
+        <!-- 右側：サイドバー -->
+        <aside class="sidebar-column">
+            
+            <!-- ウィジェット1：計算機バナー -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🧮 Playポイント計算機</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-calc-banner">
+                        <h4>あといくら必要？</h4>
+                        <p>不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！</p>
+                        <a class="sidebar-calc-btn" href="../">計算機を使ってみる ➔</a>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section faq-section">
-      <h2>よくある質問</h2>
-      <div class="faq-item">
-        <h3>Q. ポイント残高と「次のステータスまで」の数字が違うのはなぜ？</h3>
-        <p>A. 「ポイント残高」は現在アイテムやクレジット交換に使える保有数で、「次のステータスまで」はその年に獲得したランク判定用累計ポイントの不足分です。ポイントを使っても年間進捗は減りません。</p>
-      </div>
-      <div class="faq-item">
-        <h3>Q. 今持っているポイントの有効期限はどこで確認できますか？</h3>
-        <p>A. Google Playストアのプロフィールアイコンから「Play Points」を開くと、現在の残高の下に有効期限日が表示されます。</p>
-      </div>
-      <div class="faq-item">
-        <h3>Q. 過去に獲得・使用したポイントの履歴を見るには？</h3>
-        <p>A. Play Points画面右上のその他メニュー（縦の3点リーダー）をタップし、「ポイント履歴」を選択すると、購入獲得・特典受取・交換・返金などの詳細履歴を確認できます。</p>
-      </div>
-    </section>
+            <!-- ウィジェット2：目標ランク別 必要額 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🎯 ランク別 必要額ガイド</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-rank-grid">
+                        <a class="sidebar-rank-link" href="../status/silver/">
+                            <span class="sidebar-rank-name">🥈 シルバー</span>
+                            <span class="sidebar-rank-pt">500 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/gold/">
+                            <span class="sidebar-rank-name">🥇 ゴールド</span>
+                            <span class="sidebar-rank-pt">3,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/platinum/">
+                            <span class="sidebar-rank-name">💎 プラチナ</span>
+                            <span class="sidebar-rank-pt">15,000 pt達成</span>
+                        </a>
+                        <a class="sidebar-rank-link" href="../status/diamond/">
+                            <span class="sidebar-rank-name">👑 ダイヤ</span>
+                            <span class="sidebar-rank-pt">75,000 pt達成</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-    <aside class="official-source-note">
-      <h2>Google公式情報</h2>
-      <ul>
-        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play ポイントを貯める、管理する</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/15776969?hl=ja" target="_blank" rel="noopener noreferrer">Play Pointsの確認と週次特典の履歴</a></li>
-        <li><a href="https://support.google.com/googleplay/answer/9077247?hl=ja" target="_blank" rel="noopener noreferrer">Google Play Pointsに関する問題を解決する方法</a></li>
-      </ul>
-    </aside>
+            <!-- ウィジェット3：注目イベント・お得情報 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📅 お得イベント速報</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">毎週金曜</span>
+                        <span><strong>ウィークリーリワード更新日！</strong> 特典タブから週次リワードの獲得をお忘れなく</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">5と0の日</span>
+                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>
+                    </div>
+                    <div class="sidebar-event-item">
+                        <span class="sidebar-event-tag">月末月初</span>
+                        <span><strong>キャリア決済還元！</strong> 各キャリアの課金還元キャンペーンをチェック</span>
+                    </div>
+                </div>
+            </div>
 
-    <section class="section related-links-section">
-      <h2>次に確認する記事</h2>
-      <ul>
-        <li><a href="./2026-03-10-play-points-reflection-timing.html">購入ポイントの反映が遅い時</a></li>
-        <li><a href="./2025-12-25-expiration.html">Play Pointsの有効期限と失効対策</a></li>
-        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持と年次リセット</a></li>
-        <li><a href="./2026-08-03-play-points-device-change.html">機種変更後の引き継ぎと表示遅延</a></li>
-      </ul>
-    </section>
-  </article>
+            <!-- ウィジェット4：豆知識Tips -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">💡 Playポイント豆知識</div>
+                <div class="sidebar-widget-body">
+                    <div class="sidebar-tip-box">
+                        <strong>知ってた？</strong><br>
+                        Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！
+                    </div>
+                </div>
+            </div>
 
-  <aside class="author-box" aria-label="この記事の著者">
-    <p class="author-box-label">この記事を書いた人</p>
-    <p class="author-box-name"><a href="../author/katakata.html" rel="author">かたかた</a> — Playポイント計算機 運営・編集</p>
-    <p>残高、履歴、ランク進捗、有効期限を混同しないよう、Google Play公式情報と画面上の確認目的を分けて解説しています。</p>
-  </aside>
-  <nav id="article-nav" class="article-nav"></nav>
-  <footer class="article-footer"><p><a href="../blog/">記事一覧へ戻る</a> ｜ <a href="../">計算機トップへ</a></p></footer>
-</main>
+            <!-- ウィジェット5：カテゴリー一覧 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">📁 カテゴリー</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-category-list">
+                        <li><a href="../blog/?category=キャンペーン">🎁 キャンペーン情報</a></li>
+                        <li><a href="../blog/?category=ランク">👑 ランクアップ攻略</a></li>
+                        <li><a href="../blog/?category=使い方">💡 ポイントの使い道</a></li>
+                        <li><a href="../blog/?category=トラブル">❓ トラブル・疑問</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ウィジェット6：おすすめ記事 -->
+            <div class="sidebar-widget">
+                <div class="sidebar-widget-title">🔥 おすすめ記事</div>
+                <div class="sidebar-widget-body">
+                    <ul class="sidebar-article-list">
+                        <li><a href="./2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                        <li><a href="./2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                        <li><a href="./2026-03-10-play-points-reflection-timing.html">ポイントが反映されない時の対処法</a></li>
+                        <li><a href="./2025-12-25-playpoints-rank-maintenance.html">ランク維持期間と年末の注意点</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- サイトフッター -->
+    <footer class="site-footer">
+        <div class="site-footer-links">
+            <a href="../">計算機トップ</a> ｜
+            <a href="../blog/">記事一覧</a> ｜
+            <a href="../privacy.html">プライバシーポリシー</a> ｜
+            <a href="../terms.html">利用規約</a> ｜
+            <a href="../author/katakata.html">運営者情報</a>
+        </div>
+        <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+    </footer>
+
 <script src="/js/analytics-core.js?v=54c7b8621b"></script>
 <script src="../blog/article.js?v=f6e42c66c3"></script>
 <script src="../blog/components.js?v=e0250b3aa5"></script>
