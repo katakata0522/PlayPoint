@@ -471,7 +471,8 @@ function writeIntlSeoPages(rootDir, assetVersions) {
       writeFile(rootDir, file, renderSeoPage(localeKey, pageKey, assetVersions));
     }
   }
-  writeFile(rootDir, 'en/articles/intl-article.css', INTL_ARTICLE_CSS);
+  const { minifyCSS } = require('../.github/scripts/minify.cjs');
+  writeFile(rootDir, 'en/articles/intl-article.css', minifyCSS(INTL_ARTICLE_CSS));
   for (const localeKey of Object.keys(LOCALES)) {
     writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
   }
