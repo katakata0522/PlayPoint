@@ -871,8 +871,6 @@ content-visibility: visible;
 contain-intrinsic-size: none;
 }
 }
-
-/* インライン・ミニ計算機ウィジェット */
 .inline-calc-widget {
 background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 border: 1.5px solid #cbd5e1;
@@ -990,4 +988,61 @@ justify-content: space-between;
 .inline-calc-footer {
 text-align: center;
 }
+}
+.inpage-toc,
+.intl-article-toc,
+.toc-box {
+background: #f8fafc;
+border: 1px solid #cbd5e1;
+border-radius: 8px;
+padding: 18px 22px;
+margin: 28px 0;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+.inpage-toc-title,
+.intl-article-toc h2,
+.toc-title {
+font-size: 16px;
+font-weight: 800;
+color: #1e293b;
+margin: 0 0 14px 0 !important;
+padding: 0 0 8px 0 !important;
+border-bottom: 2px solid #e2e8f0 !important;
+display: flex;
+align-items: center;
+gap: 8px;
+background: none !important;
+}
+.inpage-toc ol,
+.intl-article-toc ol,
+.toc-box ol {
+margin: 0;
+padding-left: 24px;
+}
+.inpage-toc li,
+.intl-article-toc li,
+.toc-box li {
+margin-bottom: 8px;
+line-height: 1.6;
+font-size: 14.5px;
+color: #334155;
+}
+.inpage-toc li:last-child,
+.intl-article-toc li:last-child,
+.toc-box li:last-child {
+margin-bottom: 0;
+}
+.inpage-toc a,
+.intl-article-toc a,
+.toc-box a {
+color: var(--cocoon-link, #0056b3);
+text-decoration: none;
+font-weight: 600;
+transition: color 0.15s, text-decoration 0.15s;
+}
+.inpage-toc a:hover,
+.intl-article-toc a:hover,
+.toc-box a:hover {
+color: var(--cocoon-link-hover, #003d82);
+text-decoration: underline;
 }

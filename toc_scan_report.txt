@@ -1,0 +1,91 @@
+Total articles scanned: 154
+
+=== Articles with Manual HTML TOC (74) ===
+ - articles/2026-06-20-discount-gift-cards.html (TOC count: 2)
+ - articles/2026-07-25-play-credit-not-working.html (TOC count: 1)
+ - articles/2026-07-25-play-points-coupon-not-applied.html (TOC count: 1)
+ - articles/2026-08-03-play-points-device-change.html (TOC count: 1)
+ - en/articles/google-play-points-100-value.html (TOC count: 1)
+ - en/articles/google-play-points-cash-conversion.html (TOC count: 1)
+ - en/articles/google-play-points-country-change.html (TOC count: 1)
+ - en/articles/google-play-points-country-differences.html (TOC count: 1)
+ - en/articles/google-play-points-coupon-not-applied.html (TOC count: 1)
+ - en/articles/google-play-points-expiration.html (TOC count: 1)
+ - en/articles/google-play-points-family-sharing.html (TOC count: 1)
+ - en/articles/google-play-points-fastest-silver.html (TOC count: 1)
+ - en/articles/google-play-points-gift-cards.html (TOC count: 1)
+ - en/articles/google-play-points-join-eligibility.html (TOC count: 1)
+ - en/articles/google-play-points-level-maintenance-reset.html (TOC count: 1)
+ - en/articles/google-play-points-levels.html (TOC count: 1)
+ - en/articles/google-play-points-multiple-accounts.html (TOC count: 1)
+ - en/articles/google-play-points-not-showing.html (TOC count: 1)
+ - en/articles/google-play-points-platinum-diamond-cost.html (TOC count: 1)
+ - en/articles/google-play-points-play-credit-not-working.html (TOC count: 1)
+ - en/articles/google-play-points-promotion-not-applied.html (TOC count: 1)
+ - en/articles/google-play-points-promotion-stacking.html (TOC count: 1)
+ - en/articles/google-play-points-refund.html (TOC count: 1)
+ - en/articles/google-play-points-subscriptions.html (TOC count: 1)
+ - en/articles/google-play-points-super-weekly-reward.html (TOC count: 1)
+ - en/articles/google-play-points-use-coupons.html (TOC count: 1)
+ - en/articles/google-play-points-weekly-reward.html (TOC count: 1)
+ - en/articles/google-play-quests.html (TOC count: 1)
+ - ko/articles/google-play-points-100-value.html (TOC count: 1)
+ - ko/articles/google-play-points-cash-conversion.html (TOC count: 1)
+ - ko/articles/google-play-points-country-change.html (TOC count: 1)
+ - ko/articles/google-play-points-country-differences.html (TOC count: 1)
+ - ko/articles/google-play-points-coupon-not-applied.html (TOC count: 1)
+ - ko/articles/google-play-points-expiration.html (TOC count: 1)
+ - ko/articles/google-play-points-family-sharing.html (TOC count: 1)
+ - ko/articles/google-play-points-fastest-silver.html (TOC count: 1)
+ - ko/articles/google-play-points-gift-cards.html (TOC count: 1)
+ - ko/articles/google-play-points-join-eligibility.html (TOC count: 1)
+ - ko/articles/google-play-points-level-maintenance-reset.html (TOC count: 1)
+ - ko/articles/google-play-points-levels.html (TOC count: 1)
+ - ko/articles/google-play-points-multiple-accounts.html (TOC count: 1)
+ - ko/articles/google-play-points-not-showing.html (TOC count: 1)
+ - ko/articles/google-play-points-play-credit-not-working.html (TOC count: 1)
+ - ko/articles/google-play-points-promotion-not-applied.html (TOC count: 1)
+ - ko/articles/google-play-points-promotion-stacking.html (TOC count: 1)
+ - ko/articles/google-play-points-refund.html (TOC count: 1)
+ - ko/articles/google-play-points-subscriptions.html (TOC count: 1)
+ - ko/articles/google-play-points-super-weekly-reward.html (TOC count: 1)
+ - ko/articles/google-play-points-use-coupons.html (TOC count: 1)
+ - ko/articles/google-play-points-weekly-reward.html (TOC count: 1)
+ - ko/articles/google-play-quests.html (TOC count: 1)
+ - tw/articles/google-play-points-100-value.html (TOC count: 1)
+ - tw/articles/google-play-points-cash-conversion.html (TOC count: 1)
+ - tw/articles/google-play-points-country-change.html (TOC count: 1)
+ - tw/articles/google-play-points-country-differences.html (TOC count: 1)
+ - tw/articles/google-play-points-coupon-not-applied.html (TOC count: 1)
+ - tw/articles/google-play-points-expiration.html (TOC count: 1)
+ - tw/articles/google-play-points-family-sharing.html (TOC count: 1)
+ - tw/articles/google-play-points-fastest-silver.html (TOC count: 1)
+ - tw/articles/google-play-points-gift-cards.html (TOC count: 1)
+ - tw/articles/google-play-points-join-eligibility.html (TOC count: 1)
+ - tw/articles/google-play-points-level-maintenance-reset.html (TOC count: 1)
+ - tw/articles/google-play-points-levels.html (TOC count: 1)
+ - tw/articles/google-play-points-multiple-accounts.html (TOC count: 1)
+ - tw/articles/google-play-points-not-showing.html (TOC count: 1)
+ - tw/articles/google-play-points-play-credit-not-working.html (TOC count: 1)
+ - tw/articles/google-play-points-promotion-not-applied.html (TOC count: 1)
+ - tw/articles/google-play-points-promotion-stacking.html (TOC count: 1)
+ - tw/articles/google-play-points-refund.html (TOC count: 1)
+ - tw/articles/google-play-points-subscriptions.html (TOC count: 1)
+ - tw/articles/google-play-points-super-weekly-reward.html (TOC count: 1)
+ - tw/articles/google-play-points-use-coupons.html (TOC count: 1)
+ - tw/articles/google-play-points-weekly-reward.html (TOC count: 1)
+ - tw/articles/google-play-quests.html (TOC count: 1)
+
+=== Articles with Numbered Headings (12) ===
+ - articles/2026-06-20-discount-gift-cards.html (Numbered headings: 10) e.g., ['h2: 1. 【還元率最強】楽天市場 Google Play ギフトコード 認定店', 'h2: 2. 【クレカ不要・手軽】携帯キャリア決済キャンペーン', 'h2: 3. 最初に見るのは、割引率ではなく実質負担']
+ - articles/2026-07-24-earn-play-points-free.html (Numbered headings: 3) e.g., ['h3: 1. 通常ウィークリーリワード', 'h3: 2. スーパーウィークリーリワード', 'h3: 3. アプリ・ゲーム体験オファー']
+ - en/articles/2026-06-20-discount-gift-cards.html (Numbered headings: 6) e.g., ['h2: 1. Compare effective cost, not the headline rate', 'h2: 2. Check authorized seller, country, and currency first', 'h2: 3. Read a live offer in this order']
+ - en/articles/google-play-points-earn-free.html (Numbered headings: 3) e.g., ['h3: 1. Regular weekly prize', 'h3: 2. Super Weekly Prize', 'h3: 3. Featured app or game install']
+ - en/articles/google-play-points-fastest-silver.html (Numbered headings: 5) e.g., ['h2: 1. Start with the exact missing points', 'h2: 2. Check and activate the Earn offers', 'h2: 3. Align planned purchases with the best window']
+ - en/articles/google-play-points-not-showing.html (Numbered headings: 5) e.g., ['h2: 1. Confirm the Google account', 'h2: 2. Check whether the purchase was eligible', 'h2: 3. Separate normal points from campaign points']
+ - ko/articles/2026-06-20-discount-gift-cards.html (Numbered headings: 6) e.g., ['h2: 1. 표시 할인율보다 실질 결제액을 봅니다', 'h2: 2. 공인 판매처·한국 계정·원화를 먼저 확인합니다', 'h2: 3. 현재 프로모션은 이 순서로 읽습니다']
+ - ko/articles/google-play-points-fastest-silver.html (Numbered headings: 5) e.g., ['h2: 1. 실버까지 남은 포인트 확인', 'h2: 2. 적립 탭의 오퍼 확인과 활성화', 'h2: 3. 예정된 결제를 좋은 적립 구간에 맞추기']
+ - ko/articles/google-play-points-not-showing.html (Numbered headings: 5) e.g., ['h2: 1. 결제한 Google 계정부터 확인하기', 'h2: 2. 구매가 포인트 대상인지 보기', 'h2: 3. 일반 포인트와 캠페인 보너스를 나누기']
+ - tw/articles/2026-06-20-discount-gift-cards.html (Numbered headings: 5) e.g., ['h2: 1. 台灣帳號先確認「是否正式提供」', 'h2: 2. 為什麼「便宜的海外序號」不等於省錢', 'h2: 3. 若未來正式提供，應該怎麼比較']
+ - tw/articles/google-play-points-fastest-silver.html (Numbered headings: 5) e.g., ['h2: 1. 先看還差多少點', 'h2: 2. 查看並啟用累積優惠', 'h2: 3. 把原定購買安排在較佳累積區間']
+ - tw/articles/google-play-points-not-showing.html (Numbered headings: 5) e.g., ['h2: 1. 先確認付款使用的 Google 帳號', 'h2: 2. 查看購買是否符合點數資格', 'h2: 3. 把一般點數和活動加碼分開看']

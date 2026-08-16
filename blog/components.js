@@ -199,34 +199,35 @@
     // Auto Table of Contents (TOC)
     // ===========================================
     function generateTableOfContents() {
-        const content = document.querySelector('.content');
-        if (!content || content.querySelector('.toc-box')) return;
+        const content = document.querySelector('.content, .main-content-column');
+        if (!content || content.querySelector('.toc-box, .inpage-toc, .intl-article-toc, .toc-container, .article-toc, [aria-label*="目次"], [aria-label*="Table of contents"]')) return;
 
         // 主題となるセクションだけに絞り、CTAや補足見出しで目次を膨らませない
-        const headings = Array.from(content.querySelectorAll('.section > h2'))
-            .filter(heading => !heading.closest('.faq, .cta-box, .article-next-step-cta, .article-calculator-prompt'));
+        const headings = Array.from(content.querySelectorAll('.section > h2, article > section > h2'))
+            .filter(heading => !heading.closest('.faq, .cta-box, .article-next-step-cta, .article-calculator-prompt, .cocoon-box-point'));
         if (headings.length < 3) return;
 
         const tocContainer = document.createElement('nav');
-        tocContainer.className = 'toc-box';
+        tocContainer.className = 'inpage-toc';
         tocContainer.setAttribute('aria-label', 'この記事の目次');
 
-        const tocTitle = document.createElement('p');
-        tocTitle.className = 'toc-title';
-        tocTitle.textContent = 'この記事の内容';
+        const tocTitle = document.createElement('div');
+        tocTitle.className = 'inpage-toc-title';
+        tocTitle.textContent = '📋 目次';
 
         const tocList = document.createElement('ol');
-        tocList.className = 'toc-list';
 
         headings.forEach((heading, index) => {
             if (!heading.id) heading.id = `section-${index + 1}`;
 
             const item = document.createElement('li');
-            item.className = 'toc-item';
 
             const link = document.createElement('a');
             link.href = `#${heading.id}`;
-            link.textContent = heading.textContent.replace(/^[^\p{L}\p{N}]+/u, '').trim();
+            // 先頭の「1. 」「2. 」などの連番重複を取り除く
+            let cleanText = heading.textContent.replace(/^\s*\d+[\.、．]\s*/u, '').trim();
+            cleanText = cleanText.replace(/^[^\p{L}\p{N}【]+(?![】])/u, '').trim();
+            link.textContent = cleanText || heading.textContent.trim();
 
             item.appendChild(link);
             tocList.appendChild(item);
@@ -234,9 +235,11 @@
 
         tocContainer.append(tocTitle, tocList);
 
+        const pointBox = content.querySelector('.cocoon-box-point');
+        const badgeGrid = content.querySelector('.feature-badge-grid');
         const summaryBox = content.querySelector('.summary-box');
         const intro = content.querySelector('.intro');
-        const anchor = summaryBox || intro;
+        const anchor = badgeGrid || pointBox || summaryBox || intro;
         if (anchor) {
             anchor.insertAdjacentElement('afterend', tocContainer);
             return;
