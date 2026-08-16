@@ -138,3 +138,78 @@ test('1月1日再判定記事は残高リセットと到達年の即日降格を
   assert.doesNotMatch(html, /1月1日にポイント(?:残高)?(?:も)?(?:が)?消える/);
   assert.doesNotMatch(html, /到達した翌年1月1日に必ず下がる/);
 });
+
+test('Play Pass記事は日本をゴールド特典対象国に入れず木曜週次と金曜を分ける', () => {
+  const html = readArticle('2026-08-16-play-pass-worth-it.html');
+  assert.match(html, /木曜日/);
+  assert.match(html, /フランス、ドイツ、米国、英国/);
+  assert.match(html, /日本はその対象国リストに入っていません/);
+  assert.doesNotMatch(html, /カレンダー/);
+  assert.doesNotMatch(html, /日本でPlay Passに入るとゴールドになります[^か]/);
+});
+
+test('PC版Play Games記事はプレイ時間獲得とスマホへのPCブースト適用を書かない', () => {
+  const html = readArticle('2026-08-16-pc-play-games-points.html');
+  assert.match(html, /パソコンで購入したアイテムにのみ適用/);
+  assert.match(html, /クエストとスタンプカードはスマートフォンでのみ/);
+  assert.doesNotMatch(html, /遊ぶだけで(?:ポイントは)?貯まる[^か]/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('ゴールド到達記事は1,000ポイントと1.25概算を守り非公式倍率を書かない', () => {
+  const html = readArticle('2026-08-16-fastest-gold.html');
+  assert.match(html, /1,000ポイント/);
+  assert.match(html, /約60,000円/);
+  assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('プラチナ到達記事は4,000ポイントと税抜約20万円を守り非公式倍率を書かない', () => {
+  const html = readArticle('2026-08-16-fastest-platinum.html');
+  assert.match(html, /4,000ポイント/);
+  assert.match(html, /約200,000円/);
+  assert.match(html, /プレミアムサポートはプラチナとダイヤモンド/);
+  assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('プレミアムサポート記事はプラチナ以上と待ち時間非保証を明記する', () => {
+  const html = readArticle('2026-08-16-premium-support.html');
+  assert.match(html, /プラチナとダイヤモンド/);
+  assert.match(html, /待ち時間の短縮は保証されない/);
+  assert.doesNotMatch(html, /待ち時間は必ず短くなります[^か]/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('支払い方法記事はチャージ非対象を守りキャリア還元をPlayポイントと足さない', () => {
+  const html = readArticle('2026-08-16-payment-methods-points.html');
+  assert.match(html, /ギフトカードの購入やアカウントへのチャージではポイントが貯まらない/);
+  assert.match(html, /キャリア独自のポイント還元はPlayポイントではありません/);
+  assert.doesNotMatch(html, /クレジットカード払いなら必ず貯まります[^か]/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('ポイント消失記事は1年期限とランクリセットを分けて残高消去を断定しない', () => {
+  const html = readArticle('2026-08-16-points-disappeared.html');
+  assert.match(html, /獲得から1年/);
+  assert.match(html, /ランクの年次リセットと、ポイント残高の失効は別/);
+  assert.doesNotMatch(html, /1月1日にポイント残高が消える/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('Family Link記事は管理アカウントを対象外とし回避策を書かない', () => {
+  const html = readArticle('2026-08-16-family-link-play-points.html');
+  assert.match(html, /参加対象外/);
+  assert.match(html, /公式の回避策はありません/);
+  assert.doesNotMatch(html, /Family Linkを外す手順/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('ゴールド対プラチナ記事は日本のパス特典対象国を誤らない', () => {
+  const html = readArticle('2026-08-16-gold-platinum-worth-it.html');
+  assert.match(html, /約200,000円/);
+  assert.match(html, /フランス、ドイツ、米国、英国/);
+  assert.match(html, /日本は含まれていません/);
+  assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
+  assert.doesNotMatch(html, /カレンダー/);
+});

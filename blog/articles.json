@@ -1,5 +1,140 @@
 [
   {
+    "id": "play-pass-worth-it",
+    "title": "Play Passはポイント目的で入るべき？木曜週次と対象条件",
+    "date": "2026-08-16",
+    "category": "キャンペーン",
+    "tags": [
+      "Play Points",
+      "Play Pass",
+      "ウィークリーリワード",
+      "ゴールド"
+    ],
+    "description": "日本のPlay Pass加入者向けPlay Points週次ボーナス・ブースターは木曜日更新の別制度です。ゴールド付与特典の公式対象国には日本は入っていません。加入判断は画面の特典と予定購入で行います。",
+    "file": "../articles/2026-08-16-play-pass-worth-it.html",
+    "thumbnail": "../articles/ogp/play-pass-worth-it.png"
+  },
+  {
+    "id": "pc-play-games-points",
+    "title": "PC版Play Gamesで課金するとPlay Pointsは貯まる？ブーストの範囲",
+    "date": "2026-08-16",
+    "category": "使い方",
+    "tags": [
+      "Play Points",
+      "PC",
+      "Play Games",
+      "ブースト"
+    ],
+    "description": "PC版Google Play Gamesでの対象購入はポイント対象になり得ます。PCマークのブーストはPC購入だけに適用され、スマホ購入には付きません。クエストはスマホ限定です。",
+    "file": "../articles/2026-08-16-pc-play-games-points.html",
+    "thumbnail": "../articles/ogp/pc-play-games-points.png"
+  },
+  {
+    "id": "fastest-gold",
+    "title": "Google Play Pointsでゴールドをお得に目指す方法｜1,000ポイント",
+    "date": "2026-08-16",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "ゴールド",
+      "1,000ポイント",
+      "計算機"
+    ],
+    "description": "日本のゴールドは暦年1,000ポイントです。シルバー現在なら残りを1.25ポイント/100円で概算し、スーパー週次の対象確認と表示中の高獲得率へ購入予定を合わせます。",
+    "file": "../articles/2026-08-16-fastest-gold.html",
+    "thumbnail": "../articles/ogp/fastest-gold.png"
+  },
+  {
+    "id": "fastest-platinum",
+    "title": "Google Play Pointsでプラチナをお得に目指す方法｜4,000ポイント",
+    "date": "2026-08-16",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "プラチナ",
+      "4,000ポイント",
+      "プレミアムサポート"
+    ],
+    "description": "日本のプラチナは暦年4,000ポイントです。ゴールド現在なら残り3,000ポイントを獲得率1.50で概算すると税抜約20万円です。プレミアムサポートはプラチナ以上です。",
+    "file": "../articles/2026-08-16-fastest-platinum.html",
+    "thumbnail": "../articles/ogp/fastest-platinum.png"
+  },
+  {
+    "id": "gold-platinum-worth-it",
+    "title": "ゴールドで止めるかプラチナまで行くか｜特典差と残り約20万円",
+    "date": "2026-08-16",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "ゴールド",
+      "プラチナ",
+      "費用対効果"
+    ],
+    "description": "ゴールドは獲得率1.50とスーパーウィークリー。プラチナは1.75とプレミアムサポート。ゴールドからプラチナの残りは3,000ポイント、税抜約20万円相当です。日本のパスにゴールド会員向け特典は載っていません。",
+    "file": "../articles/2026-08-16-gold-platinum-worth-it.html",
+    "thumbnail": "../articles/ogp/gold-platinum-worth-it.png"
+  },
+  {
+    "id": "premium-support",
+    "title": "プレミアムサポートの出し方｜プラチナ以上・待ち時間は保証されない",
+    "date": "2026-08-16",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "プレミアムサポート",
+      "プラチナ",
+      "ダイヤモンド"
+    ],
+    "description": "日本向け公式特典表では、チャットと電話のプレミアムサポートはプラチナとダイヤモンドです。ログインが必要で、すべての問題が対象ではなく、待ち時間の短縮は保証されません。",
+    "file": "../articles/2026-08-16-premium-support.html",
+    "thumbnail": "../articles/ogp/premium-support.png"
+  },
+  {
+    "id": "payment-methods-points",
+    "title": "キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？",
+    "date": "2026-08-16",
+    "category": "使い方",
+    "tags": [
+      "Play Points",
+      "キャリア決済",
+      "ギフトカード",
+      "お支払い方法"
+    ],
+    "description": "ギフトカードのチャージそのものではポイントは付きません。対象のPlay購入をPlayのお支払い方法で払った場合に付くことがあります。キャリア独自の還元はPlayポイントではありません。",
+    "file": "../articles/2026-08-16-payment-methods-points.html",
+    "thumbnail": "../articles/ogp/payment-methods-points.png"
+  },
+  {
+    "id": "points-disappeared",
+    "title": "Playポイントが消えたときの確認順｜期限・未反映・ランク",
+    "date": "2026-08-16",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "消えた",
+      "有効期限",
+      "ウィークリー"
+    ],
+    "description": "残高の1年期限、1年の未利用、ウィークリーの1週間期限、未請求期間、未ログイン、Family Link管理アカウントを先に切り分けます。1月のランクリセットと残高の消失は別です。",
+    "file": "../articles/2026-08-16-points-disappeared.html",
+    "thumbnail": "../articles/ogp/points-disappeared.png"
+  },
+  {
+    "id": "family-link-play-points",
+    "title": "Family Linkの子どもアカウントでPlayポイントは貯まらない",
+    "date": "2026-08-16",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "Family Link",
+      "子ども",
+      "対象外"
+    ],
+    "description": "Family Linkで管理されているアカウントは、Playポイントプログラムの参加対象外です。年齢や国を変える回避策は公式にありません。家族の他メンバーは、自身がポイント会員なら参加できます。",
+    "file": "../articles/2026-08-16-family-link-play-points.html",
+    "thumbnail": "../articles/ogp/family-link-play-points.png"
+  },
+  {
     "id": "play-points-day",
     "title": "Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法",
     "date": "2026-08-16",
