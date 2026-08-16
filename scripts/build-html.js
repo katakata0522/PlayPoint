@@ -25,6 +25,7 @@ const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
 const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
+const { normalizeArticleFiles } = require('./article-seo-normalize.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -61,8 +62,12 @@ syncSitemap(rootDir);
 
 generateBlogFeeds(rootDir);
 
+const seoSummary = normalizeArticleFiles(rootDir, { checkOnly: false });
+console.log(`[build-html] synchronized article SEO: ${seoSummary.changed} updated`);
+
 const strippedFontFiles = stripExternalGoogleFonts(rootDir);
 console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`);
 
 const sanitizedInternalLinkFiles = sanitizeInternalLinks(rootDir);
 console.log(`[build-html] sanitized internal attribution links: ${sanitizedInternalLinkFiles}`);
+

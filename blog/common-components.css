@@ -119,3 +119,110 @@ text-decoration: underline;
 .nav { gap: 0.2rem; min-width: 0; }
 .nav a { font-size: 0.7rem; padding: 0 0.15rem; }
 }
+#reading-progress {
+position: fixed;
+top: 0;
+left: 0;
+width: 0%;
+height: 3.5px;
+background: linear-gradient(90deg, #00875a, #4285f4, #ea4335, #fbbc05);
+z-index: 99999;
+transition: width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+pointer-events: none;
+}
+.reading-time-badge {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+background: #f1f5f9;
+color: #475569;
+font-size: 12px;
+font-weight: 600;
+padding: 2px 8px;
+border-radius: 999px;
+margin-left: 8px;
+vertical-align: middle;
+border: 1px solid #e2e8f0;
+letter-spacing: 0.02em;
+}
+.mobile-sticky-cta {
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+z-index: 9990;
+background: rgba(255, 255, 255, 0.96);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+border-top: 1px solid #e1e4e8;
+box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+padding: 8px 14px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+transform: translateY(120%);
+transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.mobile-sticky-cta.visible {
+transform: translateY(0);
+}
+.mobile-sticky-cta-content {
+display: flex;
+flex-direction: column;
+gap: 2px;
+min-width: 0;
+margin-right: 8px;
+}
+.mobile-sticky-cta-title {
+font-size: 0.85rem;
+font-weight: 700;
+color: #0f172a;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.mobile-sticky-cta-sub {
+font-size: 0.72rem;
+color: #64748b;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.mobile-sticky-cta-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+background: linear-gradient(135deg, #00875a, #00704a);
+color: #ffffff !important;
+font-weight: 700;
+font-size: 0.82rem;
+padding: 8px 14px;
+border-radius: 20px;
+text-decoration: none !important;
+white-space: nowrap;
+box-shadow: 0 2px 6px rgba(0, 135, 90, 0.25);
+flex-shrink: 0;
+transition: transform 0.15s, box-shadow 0.15s;
+}
+.mobile-sticky-cta-btn:active {
+transform: scale(0.97);
+}
+.mobile-sticky-cta-close {
+background: none;
+border: none;
+font-size: 1.1rem;
+color: #94a3b8;
+cursor: pointer;
+padding: 4px;
+margin-left: 6px;
+display: flex;
+align-items: center;
+justify-content: center;
+line-height: 1;
+}
+@media (min-width: 769px) {
+.mobile-sticky-cta {
+display: none !important;
+}
+}

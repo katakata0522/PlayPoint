@@ -414,7 +414,164 @@
         });
     }
 
+    function getLocale() {
+        const path = window.location.pathname;
+        if (path.includes('/en/')) return 'en';
+        if (path.includes('/ko/')) return 'ko';
+        if (path.includes('/tw/')) return 'tw';
+        return 'ja';
+    }
+
+    function setupReadingProgressBar() {
+        let progressBar = document.getElementById('reading-progress');
+        if (!progressBar) {
+            progressBar = document.createElement('div');
+            progressBar.id = 'reading-progress';
+            document.body.prepend(progressBar);
+        }
+
+        if (scrollListenerAdded) return;
+        scrollListenerAdded = true;
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    if (scrollHeight > 0) {
+                        const scrolled = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100));
+                        progressBar.style.width = scrolled + '%';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    function setupReadingTime() {
+        if (document.querySelector('.reading-time-badge')) return;
+        const content = document.querySelector('.content, .main-content-column, article');
+        if (!content) return;
+
+        const loc = getLocale();
+        const text = content.innerText || content.textContent || '';
+        let minutes = 1;
+
+        if (loc === 'en') {
+            const words = text.trim().split(/\s+/).length;
+            minutes = Math.max(1, Math.ceil(words / 200));
+        } else {
+            const chars = text.replace(/\s+/g, '').length;
+            minutes = Math.max(1, Math.ceil(chars / 500));
+        }
+
+        const labels = {
+            ja: `⏱️ 約${minutes}分で読めます`,
+            en: `⏱️ Approx. ${minutes} min read`,
+            ko: `⏱️ 약 ${minutes}분 소요`,
+            tw: `⏱️ 約需 ${minutes} 分鐘閱讀`
+        };
+
+        const badge = document.createElement('span');
+        badge.className = 'reading-time-badge';
+        badge.textContent = labels[loc] || labels.ja;
+
+        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
+        if (targetMeta) {
+            targetMeta.appendChild(badge);
+        } else {
+            const h1 = document.querySelector('h1');
+            if (h1 && h1.parentNode) {
+                const metaWrap = document.createElement('div');
+                metaWrap.className = 'reading-time-wrap';
+                metaWrap.style.margin = '8px 0 16px';
+                metaWrap.appendChild(badge);
+                h1.parentNode.insertBefore(metaWrap, h1.nextSibling);
+            }
+        }
+    }
+
+    function setupMobileStickyCta() {
+        if (document.querySelector('.mobile-sticky-cta')) return;
+        if (sessionStorage.getItem('dismiss_mobile_sticky_cta') === '1') return;
+
+        const loc = getLocale();
+        const config = {
+            ja: {
+                title: '💡 あなたの場合はいくら必要？',
+                sub: '条件を入力して必要額をすぐ確認',
+                btn: '計算機を開く',
+                href: '../'
+            },
+            en: {
+                title: '💡 How much do you need?',
+                sub: 'Simulate with your regional settings',
+                btn: 'Open Calculator',
+                href: '/en/'
+            },
+            ko: {
+                title: '💡 내 조건에서 필요한 금액은?',
+                sub: '내 계정 조건으로 바로 계산',
+                btn: '계산기 열기',
+                href: '/ko/'
+            },
+            tw: {
+                title: '💡 你的情況需要花費多少？',
+                sub: '輸入目前條件立即試算',
+                btn: '開啟計算機',
+                href: '/tw/'
+            }
+        };
+
+        const t = config[loc] || config.ja;
+
+        const cta = document.createElement('div');
+        cta.className = 'mobile-sticky-cta';
+        cta.innerHTML = `
+            <div class="mobile-sticky-cta-content">
+                <div class="mobile-sticky-cta-title">${t.title}</div>
+                <div class="mobile-sticky-cta-sub">${t.sub}</div>
+            </div>
+            <a href="${t.href}" class="mobile-sticky-cta-btn">${t.btn}</a>
+            <button class="mobile-sticky-cta-close" aria-label="閉じる">&times;</button>
+        `;
+
+        const closeBtn = cta.querySelector('.mobile-sticky-cta-close');
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            cta.classList.remove('visible');
+            sessionStorage.setItem('dismiss_mobile_sticky_cta', '1');
+            setTimeout(() => cta.remove(), 300);
+        });
+
+        document.body.appendChild(cta);
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+
+                    if (progress > 0.20 && progress < 0.96) {
+                        cta.classList.add('visible');
+                    } else {
+                        cta.classList.remove('visible');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
     async function init() {
+        setupReadingProgressBar();
+        setupReadingTime();
+        setupMobileStickyCta();
         setupArticleUsability();
         setupCalculatorPrompt();
         setupInlineCalculatorWidgets();

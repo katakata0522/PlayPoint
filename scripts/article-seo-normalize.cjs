@@ -60,28 +60,38 @@ function extractVisibleFaqPairs(html) {
   const pairs = [];
   const text = String(html);
 
+  // 1. Support <section ...> with <h2>FAQ / よくある質問 / ...</h2>
+  const faqSectionRegex = /<section\b[^>]*>[\s\S]*?<h2\b[^>]*>[\s\S]*?(?:よくある質問|FAQ|常問問題|常見問題|자주\s*묻는\s*질문|Frequently\s*Asked\s*Questions)[\s\S]*?<\/h2>([\s\S]*?)<\/section>/gi;
+  for (const sectionMatch of text.matchAll(faqSectionRegex)) {
+    const body = sectionMatch[1];
+
+    const parts = body.split(/<h3\b[^>]*>/i);
+    for (let i = 1; i < parts.length; i++) {
+      const part = parts[i];
+      const h3End = part.indexOf('</h3>');
+      if (h3End !== -1) {
+        const qRaw = part.slice(0, h3End);
+        const rest = part.slice(h3End);
+        const pM = rest.match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
+        if (pM) {
+          const question = removeFaqLabel(cleanVisibleText(qRaw), 'Q');
+          const answer = removeFaqLabel(cleanVisibleText(pM[1]), 'A');
+          if (question && answer) pairs.push({ question, answer });
+        }
+      }
+    }
+    if (pairs.length > 0) return pairs;
+  }
+
+  // 2. Global faq-item search
   for (const match of text.matchAll(FAQ_ITEM_PATTERN)) {
-    const questionMatch = match[1].match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i);
-    const answerMatch = match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
+    const questionMatch = match[1].match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i) || match[1].match(/<div\b[^>]*class="[^"]*\bfaq-q\b[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+    const answerMatch = match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i) || match[1].match(/<div\b[^>]*class="[^"]*\bfaq-a\b[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
     if (!questionMatch || !answerMatch) continue;
 
     const question = removeFaqLabel(cleanVisibleText(questionMatch[1]), 'Q');
     const answer = removeFaqLabel(cleanVisibleText(answerMatch[1]), 'A');
     if (question && answer) pairs.push({ question, answer });
-  }
-
-  if (pairs.length > 0) return pairs;
-
-  // Support <section ...> with <h2>FAQ / よくある質問 / ...</h2>
-  const faqSectionRegex = /<section\b[^>]*>[\s\S]*?<h2\b[^>]*>(?:よくある質問|FAQ|常問問題|常見問題|자주\s*묻는\s*질문|Frequently\s*Asked\s*Questions)[\s\S]*?<\/h2>([\s\S]*?)<\/section>/gi;
-  for (const sectionMatch of text.matchAll(faqSectionRegex)) {
-    const body = sectionMatch[1];
-    const h3pRegex = /<h3\b[^>]*>([\s\S]*?)<\/h3>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi;
-    for (const item of body.matchAll(h3pRegex)) {
-      const question = removeFaqLabel(cleanVisibleText(item[1]), 'Q');
-      const answer = removeFaqLabel(cleanVisibleText(item[2]), 'A');
-      if (question && answer) pairs.push({ question, answer });
-    }
   }
 
   return pairs;
@@ -216,8 +226,9 @@ function synchronizeFaqStructuredData(html) {
   const visiblePairs = extractVisibleFaqPairs(html);
   const visibleText = getVisibleText(html);
   const stats = { removed: 0, synchronized: 0 };
+  let hasFaqPage = false;
 
-  const updatedHtml = String(html).replace(JSON_LD_SCRIPT_PATTERN, (fullMatch, attributes, jsonText) => {
+  let updatedHtml = String(html).replace(JSON_LD_SCRIPT_PATTERN, (fullMatch, attributes, jsonText) => {
     let data;
     try {
       data = JSON.parse(jsonText);
@@ -226,12 +237,26 @@ function synchronizeFaqStructuredData(html) {
     }
 
     if (collectFaqPages(data).length === 0) return fullMatch;
+    hasFaqPage = true;
     const before = stats.removed + stats.synchronized;
     const cleaned = synchronizeFaqNodes(data, visiblePairs, visibleText, stats);
     if (stats.removed + stats.synchronized === before) return fullMatch;
     if (isEmptyStructuredData(cleaned)) return '';
     return `<script${attributes}>\n${JSON.stringify(cleaned, null, 2)}\n</script>`;
   });
+
+  if (!hasFaqPage && visiblePairs.length > 0) {
+    const faqSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: buildFaqEntities(visiblePairs)
+    };
+    const newScript = `<script type="application/ld+json">\n${JSON.stringify(faqSchema, null, 2)}\n</script>\n`;
+    if (updatedHtml.includes('</head>')) {
+      updatedHtml = updatedHtml.replace('</head>', `${newScript}</head>`);
+      stats.synchronized += 1;
+    }
+  }
 
   return {
     html: updatedHtml,
