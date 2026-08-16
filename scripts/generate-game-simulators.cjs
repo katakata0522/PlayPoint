@@ -188,8 +188,8 @@ const LOCALES = {
     badgeText: '인기 게임별 포인트 시뮬레이터',
     portalBadge: '🎮 모바일 게임 특화',
     portalH1: '인기 모바일 게임 Google Play Points 과금·천장 계산기',
-    portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
-    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포케골드 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
+    portalMeta: '원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.',
+    portalLead: 'Google Play 스토어에서 서비스 중인 주요 모바일 게임의 인앱 결제 패키지(창세의 결정, 오래된 꿈, 모노크롬, 청휘석, 포켓골드 등) 가격에 대응! 천장 가챠 결제 시 적립 포인트 및 등급 달성을 즉시 시뮬레이션할 수 있습니다.',
     openCalc: '계산기 열기 ➔',
     presetHeading: '▼ 목표 프리셋:',
     approxText: '약 ',
@@ -269,7 +269,7 @@ const LOCALES = {
     portalBadge: '🎮 手遊課金專區',
     portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
     portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
-    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、底片、青輝石、寶可金幣等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
+    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
     openCalc: '開啟計算器 ➔',
     presetHeading: '▼ 快速試算目標：',
     approxText: '約 ',
@@ -327,18 +327,18 @@ const LOCALES = {
   }
 };
 
-// 全10大ゲームデータ（多言語対応）
+// 全10大ゲームデータ（公式固有名詞・正確なストア価格レート対応）
 const GAMES_DATA = [
   {
     id: 'genshin',
     icon: '✨',
-    names: { ja: '原神（Genshin Impact）', en: 'Genshin Impact', ko: '원신 (Genshin Impact)', tw: '原神 (Genshin Impact)' },
+    names: { ja: '原神 (Genshin Impact)', en: 'Genshin Impact', ko: '원신 (Genshin Impact)', tw: '原神 (Genshin Impact)' },
     shortNames: { ja: '原神', en: 'Genshin', ko: '원신', tw: '原神' },
     descs: {
-      ja: '創世結晶パック・空月の祝福・天空紀行・天井（180連）・完凸課金で貯まるPlayポイントと到達ランクをシミュレーション！',
-      en: 'Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons!',
-      ko: '창세의 결정 패키지, 공월 축복, 진주 기행, 180회 확정 천장, 풀돌 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
-      tw: '試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命課金可獲得的 Play Points 與等級進度！'
+      ja: '創世結晶パック・空月の祝福・天空紀行・確定天井（180連）・完凸(6凸)課金で貯まるPlayポイントと到達ランクをシミュレーション！',
+      en: 'Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons in Genshin Impact!',
+      ko: '창세의 결정 패키지, 공월 축복, 진주 기행, 180연차 확천, 풀돌(6돌) 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
+      tw: '試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命(6命)課金可獲得的 Play Points 與等級進度！'
     },
     packs: {
       ja: [
@@ -393,7 +393,7 @@ const GAMES_DATA = [
       en: [
         { label: 'Welkin Moon ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
-        { label: '90-pull Pity ($200.00)', amount: 200.0, mult: 1 },
+        { label: '90-pull Soft Pity ($200.00)', amount: 200.0, mult: 1 },
         { label: '180-pull Hard Pity ($400.00)', amount: 400.0, mult: 1 },
         { label: 'C6 Character (~$1,800.00)', amount: 1800.0, mult: 1 }
       ],
@@ -401,7 +401,7 @@ const GAMES_DATA = [
         { label: '공월 축복 (₩5,900)', amount: 5900, mult: 1 },
         { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
         { label: '90연차 반천장 (약 ₩270,000)', amount: 270000, mult: 1 },
-        { label: '180연차 확정천장 (약 ₩540,000)', amount: 540000, mult: 1 },
+        { label: '180연차 확천 (약 ₩540,000)', amount: 540000, mult: 1 },
         { label: '풀돌 기준 (약 ₩2,500,000)', amount: 2500000, mult: 1 }
       ],
       tw: [
@@ -436,13 +436,13 @@ const GAMES_DATA = [
   {
     id: 'starrail',
     icon: '🚂',
-    names: { ja: '崩壊：スターレイル（Honkai: Star Rail）', en: 'Honkai: Star Rail', ko: '붕괴: 스타레일', tw: '崩壞：星穹鐵道' },
-    shortNames: { ja: 'スターレイル', en: 'Star Rail', ko: '스타레일', tw: '星穹鐵道' },
+    names: { ja: '崩壊：スターレイル (Honkai: Star Rail)', en: 'Honkai: Star Rail', ko: '붕괴: 스타레일', tw: '崩壞：星穹鐵道' },
+    shortNames: { ja: 'スターレイル', en: 'Star Rail', ko: '붕스', tw: '星鐵' },
     descs: {
-      ja: '往日の夢華・列車補給標章・ナナシビトの褒章・仮天井（90連）・確定天井（180連）課金で貯まるPlayポイントを計算！',
-      en: 'Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Glory, and 90/180-pull pity summons in Honkai: Star Rail!',
-      ko: '오래된 꿈, 열차 보급 허가증, 무명의 공훈, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算古老夢華、列車補給憑證、無名客的榮勳、90抽/180抽保底課金可獲得的 Play Points！'
+      ja: '往日の夢華・列車補給標章・ナナシの勲功・確定天井（180連）・完凸(6凸/E6)課金で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Honor, 180-pull hard pity, and E6 character summons in Honkai: Star Rail!',
+      ko: '오래된 꿈, 열차보급허가증, 무명의 공훈, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算古老夢華、列車補給憑證、無名客的榮勳、180抽大保底、滿魂(6魂)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -466,7 +466,7 @@ const GAMES_DATA = [
         { name: '6480+1600 Oneiric Shards ($99.99)', price: 99.99 }
       ],
       ko: [
-        { name: '열차 보급 허가증 (₩5,900)', price: 5900 },
+        { name: '열차보급허가증 (₩5,900)', price: 5900 },
         { name: '무명의 공훈 (₩12,000)', price: 12000 },
         { name: '오래된 꿈 60개 (₩1,200)', price: 1200 },
         { name: '오래된 꿈 300+30개 (₩5,900)', price: 5900 },
@@ -497,13 +497,13 @@ const GAMES_DATA = [
         { label: 'Express Supply Pass ($4.99)', amount: 4.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
         { label: '90-pull Pity ($200.00)', amount: 200.0, mult: 1 },
-        { label: '180-pull Pity ($400.00)', amount: 400.0, mult: 1 }
+        { label: '180-pull Hard Pity ($400.00)', amount: 400.0, mult: 1 }
       ],
       ko: [
-        { label: '열차 보급 허가증 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '열차보급허가증 (₩5,900)', amount: 5900, mult: 1 },
         { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
         { label: '90연차 반천장 (약 ₩270,000)', amount: 270000, mult: 1 },
-        { label: '180연차 확정천장 (약 ₩540,000)', amount: 540000, mult: 1 }
+        { label: '180연차 확천 (약 ₩540,000)', amount: 540000, mult: 1 }
       ],
       tw: [
         { label: '列車補給憑證 (NT$170)', amount: 170, mult: 1 },
@@ -532,18 +532,18 @@ const GAMES_DATA = [
   {
     id: 'zzz',
     icon: '⚡',
-    names: { ja: 'ゼンレスゾーンゼロ（Zenless Zone Zero）', en: 'Zenless Zone Zero', ko: '젠레스 존 제로', tw: '絕區零 (Zenless Zone Zero)' },
+    names: { ja: 'ゼンレスゾーンゼロ (Zenless Zone Zero)', en: 'Zenless Zone Zero', ko: '젠레스 존 제로', tw: '絕區零 (Zenless Zone Zero)' },
     shortNames: { ja: 'ゼンゼロ', en: 'ZZZ', ko: '젠존제', tw: '絕區零' },
     descs: {
-      ja: 'モノクロームパック・インターノット会員・エリーファンド・90/180連天井ガチャで貯まるPlayポイントを即時試算！',
-      en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent pity pulls in ZZZ!',
-      ko: '모노크롬, 로프꾼 회원, 뉴에리두 도시 펀드, 90/180연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算絕區零底片、繩網會員、新艾利都城募基金、S級代理人保底課金可獲得的 Play Points！'
+      ja: 'モノクロームパック・インターノット会員・エリドゥファンド・確定天井（180連）・完凸(M6)で貯まるPlayポイントを即時試算！',
+      en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent M6 summons in ZZZ!',
+      ko: '모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算絕區零菲林底片、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
         { name: 'インターノット会員 (610円)', price: 610 },
-        { name: 'エリーファンド 成長プラン (1,220円)', price: 1220 },
+        { name: 'エリドゥファンド 成長プラン (1,220円)', price: 1220 },
         { name: 'モノクローム 60個 (120円)', price: 120 },
         { name: 'モノクローム 300+30個 (610円)', price: 610 },
         { name: 'モノクローム 980+110個 (1,220円)', price: 1220 },
@@ -562,8 +562,8 @@ const GAMES_DATA = [
         { name: '6480+1600 Monochrome ($99.99)', price: 99.99 }
       ],
       ko: [
-        { name: '로프꾼 회원 (₩5,900)', price: 5900 },
-        { name: '뉴에리두 도시 펀드 (₩12,000)', price: 12000 },
+        { name: '로프넷 회원 (₩5,900)', price: 5900 },
+        { name: '뉴에리두 펀드 (₩12,000)', price: 12000 },
         { name: '모노크롬 60개 (₩1,200)', price: 1200 },
         { name: '모노크롬 300+30개 (₩5,900)', price: 5900 },
         { name: '모노크롬 980+110개 (₩19,000)', price: 19000 },
@@ -573,13 +573,13 @@ const GAMES_DATA = [
       ],
       tw: [
         { name: '繩網會員 (NT$170)', price: 170 },
-        { name: '新艾利都城募基金 (NT$330)', price: 330 },
-        { name: '底片 60個 (NT$33)', price: 33 },
-        { name: '底片 300+30個 (NT$170)', price: 170 },
-        { name: '底片 980+110個 (NT$490)', price: 490 },
-        { name: '底片 1980+260個 (NT$990)', price: 990 },
-        { name: '底片 3280+600個 (NT$1,690)', price: 1690 },
-        { name: '底片 6480+1600個 (NT$3,290)', price: 3290 }
+        { name: '麗都城募 成長計畫 (NT$330)', price: 330 },
+        { name: '菲林底片 60個 (NT$33)', price: 33 },
+        { name: '菲林底片 300+30個 (NT$170)', price: 170 },
+        { name: '菲林底片 980+110個 (NT$490)', price: 490 },
+        { name: '菲林底片 1980+260個 (NT$990)', price: 990 },
+        { name: '菲林底片 3280+600個 (NT$1,690)', price: 1690 },
+        { name: '菲林底片 6480+1600個 (NT$3,290)', price: 3290 }
       ]
     },
     presets: {
@@ -596,10 +596,10 @@ const GAMES_DATA = [
         { label: '180-pull Guarantee ($400.00)', amount: 400.0, mult: 1 }
       ],
       ko: [
-        { label: '로프꾼 회원 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '로프넷 회원 (₩5,900)', amount: 5900, mult: 1 },
         { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
         { label: '90연차 반천장 (약 ₩270,000)', amount: 270000, mult: 1 },
-        { label: '180연차 확정천장 (약 ₩540,000)', amount: 540000, mult: 1 }
+        { label: '180연차 확천 (약 ₩540,000)', amount: 540000, mult: 1 }
       ],
       tw: [
         { label: '繩網會員 (NT$170)', amount: 170, mult: 1 },
@@ -627,13 +627,13 @@ const GAMES_DATA = [
   {
     id: 'bluearchive',
     icon: '🎯',
-    names: { ja: 'ブルーアーカイブ（Blue Archive）', en: 'Blue Archive', ko: '블루 아카이브', tw: '蔚藍檔案 (Blue Archive)' },
-    shortNames: { ja: 'ブルアカ', en: 'Blue Archive', ko: '블루아카', tw: '蔚藍檔案' },
+    names: { ja: 'ブルーアーカイブ (Blue Archive)', en: 'Blue Archive', ko: '블루 아카이브', tw: '蔚藍檔案 (Blue Archive)' },
+    shortNames: { ja: 'ブルアカ', en: 'Blue Archive', ko: '블아', tw: '蔚藍檔案' },
     descs: {
-      ja: '青輝石パック・マンスリーパッケージ・200連天井（24,000石=約4.8万円）で貯まるPlayポイントを計算！',
-      en: 'Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull spark pity (24,000 Pyroxenes) in Blue Archive!',
-      ko: '청휘석 패키지, 월간 청휘석 패키지, 200연차 천장(24,000 청휘석) 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算蔚藍檔案青輝石禮包、月卡、200抽保底（24,000青輝石）課金可獲得的 Play Points！'
+      ja: '青輝石パック・マンスリーパッケージ・200連天井（呼び出し/24,000石）・固有武器★3完凸で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull Sparking recruitment in Blue Archive!',
+      ko: '청휘석 패키지, 월간 청휘석 패키지, 200연차 모집 포인트 교환(천장) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -664,7 +664,7 @@ const GAMES_DATA = [
         { name: '청휘석 6,600개 (₩99,000)', price: 99000 }
       ],
       tw: [
-        { name: '月度青輝石禮包 (NT$130)', price: 130 },
+        { name: '月間青輝石禮包 (NT$130)', price: 130 },
         { name: '青輝石 76個 (NT$33)', price: 33 },
         { name: '青輝石 240個 (NT$130)', price: 130 },
         { name: '青輝石 530個 (NT$270)', price: 270 },
@@ -687,7 +687,7 @@ const GAMES_DATA = [
       ko: [
         { label: '월간 패키지 (₩4,900)', amount: 4900, mult: 1 },
         { label: '10연차 (약 ₩29,000)', amount: 29000, mult: 1 },
-        { label: '천장 200연차 (약 ₩480,000)', amount: 480000, mult: 1 }
+        { label: '200연차 천장 (약 ₩480,000)', amount: 480000, mult: 1 }
       ],
       tw: [
         { label: '月卡禮包 (NT$130)', amount: 130, mult: 1 },
@@ -714,13 +714,13 @@ const GAMES_DATA = [
   {
     id: 'pokepoke',
     icon: '🎴',
-    names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 TCG 포켓', tw: '寶可夢 TCG Pocket' },
-    shortNames: { ja: 'ポケポケ', en: 'PokéPoké', ko: '포켓몬카드', tw: '寶可夢卡牌' },
+    names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 카드 게임 Pocket', tw: '寶可夢 TCG Pocket' },
+    shortNames: { ja: 'ポケポケ', en: 'PTCGP', ko: '포케포케', tw: '寶可夢卡牌' },
     descs: {
-      ja: 'ポケゴールド・プレミアムパス・パック開封で貯まるGoogle Playポイントを計算！',
-      en: 'Calculate Google Play Points earned on Poké Gold and Premium Pass in Pokémon TCG Pocket!',
-      ko: '포케골드 및 프리미엄 패스 결제 시 적립되는 Google Play Points를 계산하세요!',
-      tw: '計算寶可金幣與高級通行證課金可獲得的 Google Play Points！'
+      ja: 'ポケゴールド・プレミアムパス・パックポイント交換で貯まるGoogle Playポイントを計算！',
+      en: 'Calculate Google Play Points earned on Poké Gold, Premium Pass, and pack openings in Pokémon TCG Pocket!',
+      ko: '포켓골드 및 프리미엄 패스 결제 시 적립되는 Google Play Points를 계산하세요!',
+      tw: '計算寶可金塊與特級護照課金可獲得的 Google Play Points！'
     },
     packs: {
       ja: [
@@ -743,21 +743,21 @@ const GAMES_DATA = [
       ],
       ko: [
         { name: '프리미엄 패스 (₩12,000)', price: 12000 },
-        { name: '포케골드 5개 (₩1,400)', price: 1400 },
-        { name: '포케골드 15개 (₩4,200)', price: 4200 },
-        { name: '포케골드 31개 (₩8,400)', price: 8400 },
-        { name: '포케골드 105개 (₩28,000)', price: 28000 },
-        { name: '포케골드 215개 (₩56,000)', price: 56000 },
-        { name: '포케골드 550개 (₩139,000)', price: 139000 }
+        { name: '포켓골드 5개 (₩1,400)', price: 1400 },
+        { name: '포켓골드 15개 (₩4,200)', price: 4200 },
+        { name: '포켓골드 31개 (₩8,400)', price: 8400 },
+        { name: '포켓골드 105개 (₩28,000)', price: 28000 },
+        { name: '포켓골드 215개 (₩56,000)', price: 56000 },
+        { name: '포켓골드 550개 (₩139,000)', price: 139000 }
       ],
       tw: [
-        { name: '高級通行證 (NT$310)', price: 310 },
-        { name: '寶可金幣 5個 (NT$33)', price: 33 },
-        { name: '寶可金幣 15個 (NT$99)', price: 99 },
-        { name: '寶可金幣 31個 (NT$190)', price: 190 },
-        { name: '寶可金幣 105個 (NT$630)', price: 630 },
-        { name: '寶可金幣 215個 (NT$1,260)', price: 1260 },
-        { name: '寶可金幣 550個 (NT$3,190)', price: 3190 }
+        { name: '特級護照 (NT$310)', price: 310 },
+        { name: '寶可金塊 5個 (NT$33)', price: 33 },
+        { name: '寶可金塊 15個 (NT$99)', price: 99 },
+        { name: '寶可金塊 31個 (NT$190)', price: 190 },
+        { name: '寶可金塊 105個 (NT$630)', price: 630 },
+        { name: '寶可金塊 215個 (NT$1,260)', price: 1260 },
+        { name: '寶可金塊 550個 (NT$3,190)', price: 3190 }
       ]
     },
     presets: {
@@ -771,11 +771,11 @@ const GAMES_DATA = [
       ],
       ko: [
         { label: '프리미엄 패스 (₩12,000)', amount: 12000, mult: 1 },
-        { label: '포케골드 550개 (₩139,000)', amount: 139000, mult: 1 }
+        { label: '포켓골드 550개 (₩139,000)', amount: 139000, mult: 1 }
       ],
       tw: [
-        { label: '高級通行證 (NT$310)', amount: 310, mult: 1 },
-        { label: '寶可金幣 550個 (NT$3,190)', amount: 3190, mult: 1 }
+        { label: '特級護照 (NT$310)', amount: 310, mult: 1 },
+        { label: '寶可金塊 550個 (NT$3,190)', amount: 3190, mult: 1 }
       ]
     },
     faq: {
@@ -787,7 +787,7 @@ const GAMES_DATA = [
         { q: 'Do Pokémon TCG Pocket purchases earn Play Points?', a: 'Yes, purchases made through Google Play Store earn Play Points.' }
       ],
       ko: [
-        { q: '포켓몬 TCG 포켓 결제 시 포인트가 적립되나요?', a: '네, 구글 플레이 스토어 결제 시 정상 적립됩니다.' }
+        { q: '포켓몬 카드 게임 Pocket 결제 시 포인트가 적립되나요?', a: '네, 구글 플레이 스토어 결제 시 정상 적립됩니다.' }
       ],
       tw: [
         { q: '寶可夢 TCG Pocket 課金能累積點數嗎？', a: '可以，透過 Google Play 商店購買均能累積點數。' }
@@ -797,13 +797,13 @@ const GAMES_DATA = [
   {
     id: 'fgo',
     icon: '⚔️',
-    names: { ja: 'Fate/Grand Order (FGO)', en: 'Fate/Grand Order (FGO)', ko: '페이트/그랜드 오더 (FGO)', tw: 'Fate/Grand Order (FGO)' },
+    names: { ja: 'Fate/Grand Order (FGO)', en: 'Fate/Grand Order (FGO)', ko: '페이트/그랜드 오더 (FGO)', tw: '命運-冠位指定 (FGO)' },
     shortNames: { ja: 'FGO', en: 'FGO', ko: '페그오', tw: 'FGO' },
     descs: {
-      ja: '聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！',
-      en: 'Calculate Play Points earned on Saint Quartz, Lucky Bag summons, and 330-summon pity in FGO!',
-      ko: '성정석, 복주머니, 330연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '試算聖晶石禮包、福袋召喚、330抽保底課金可獲得的 Play Points！'
+      ja: '聖晶石パック・福袋召喚(GSSR)・確定召喚（天井330連）・宝具5(完凸)で貯まるPlayポイントと還元額をシミュレーション！',
+      en: 'Calculate Play Points earned on Saint Quartz, Lucky Bag GSSR summons, 330-summon pity, and NP5 in FGO!',
+      ko: '성정석, 복주머니 GSSR, 330연차 확정소환(천장), 보5 과금 시 적립되는 Play Points를 계산하세요!',
+      tw: '試算聖晶石禮包、福袋召喚(GSSR)、330抽確定召喚(保底)、寶5課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -846,12 +846,12 @@ const GAMES_DATA = [
         { label: '天井 330連 (約55,000円)', amount: 55000, mult: 1 }
       ],
       en: [
-        { label: 'Lucky Bag (~$15.00)', amount: 15.0, mult: 1 },
+        { label: 'Lucky Bag GSSR (~$15.00)', amount: 15.0, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
         { label: '330-pull Pity ($440.00)', amount: 440.0, mult: 1 }
       ],
       ko: [
-        { label: '복주머니 (약 ₩19,000)', amount: 19000, mult: 1 },
+        { label: '복주머니 GSSR (약 ₩19,000)', amount: 19000, mult: 1 },
         { label: '10연차 (약 ₩29,000)', amount: 29000, mult: 1 },
         { label: '330연차 천장 (약 ₩550,000)', amount: 550000, mult: 1 }
       ],
@@ -870,7 +870,7 @@ const GAMES_DATA = [
         { q: 'How many points for 330-pull pity in FGO?', a: 'Spending ~$440 earns ~440 pts normally, or ~2,200 pts during a 5x promotion.' }
       ],
       ko: [
-        { q: 'FGO 330연차 천장 과금 시 적립되는 포인트는?', a: '기본 적립 약 550pt, 5배 이벤트 시 약 2,750pt가 적립됩니다.' }
+        { q: 'FGO 330연차 확정소환 과금 시 적립되는 포인트는?', a: '기본 적립 약 550pt, 5배 이벤트 시 약 2,750pt가 적립됩니다.' }
       ],
       tw: [
         { q: 'FGO 330抽保底能累積多少點數？', a: '一般回饋約 460 點，若遇 5 倍加碼則可獲得約 2,300 點。' }
@@ -883,10 +883,10 @@ const GAMES_DATA = [
     names: { ja: 'ウマ娘 プリティーダービー', en: 'Umamusume: Pretty Derby', ko: '우마무스메 프리티 더비', tw: '賽馬娘 Pretty Derby' },
     shortNames: { ja: 'ウマ娘', en: 'Umamusume', ko: '우마무스메', tw: '賽馬娘' },
     descs: {
-      ja: 'ジュエル購入・デイリージュエルパック・天井（200連=6万円）課金で貯まるPlayポイントを即計算！',
-      en: 'Calculate Google Play Points earned on Jewels, Daily Packs, and 200-pull pity in Umamusume!',
-      ko: '쥬얼, 데일리 쥬얼 팩, 200연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算寶石、每日寶石包、200抽保底課金可獲得的 Play Points！'
+      ja: 'ジュエル購入・マンスリーウマ娘パス・天井（200連=6万円）・サポカ完凸(4凸)で貯まるPlayポイントを即計算！',
+      en: 'Calculate Google Play Points earned on Jewels, Daily Packs, 200-pull spark pity, and MLB Support Cards in Umamusume!',
+      ko: '쥬얼, 먼슬리 우마(데일리 쥬얼), 200연차 교환 Pt 천장, 서포트 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算賽馬娘寶石、每日寶石包、200抽兌換Pt保底、支援卡4凸(滿凸)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -935,7 +935,7 @@ const GAMES_DATA = [
       en: [
         { label: 'Daily Jewel ($7.99)', amount: 7.99, mult: 1 },
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
-        { label: '200-pull Pity ($480.00)', amount: 480.0, mult: 1 }
+        { label: '200-pull Spark ($480.00)', amount: 480.0, mult: 1 }
       ],
       ko: [
         { label: '데일리 쥬얼 (₩9,900)', amount: 9900, mult: 1 },
@@ -970,10 +970,10 @@ const GAMES_DATA = [
     names: { ja: 'モンスターストライク (モンスト)', en: 'Monster Strike', ko: '몬스터 스트라이크', tw: '怪物彈珠 (Monster Strike)' },
     shortNames: { ja: 'モンスト', en: 'Monst', ko: '몬스', tw: '怪物彈珠' },
     descs: {
-      ja: 'オーブ購入・モンパス・超獣神祭・コラボガチャ課金で貯まるPlayポイントを計算！',
-      en: 'Calculate Play Points earned on Orbs, Monpass, and special banner summons in Monster Strike!',
-      ko: '오브 구매, 몬패스, 초수신제 과금 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算寶珠、怪物彈珠通行證、超獸神祭課金可獲得的 Play Points！'
+      ja: 'オーブ購入・モンパス・ホシ玉ガチャ・超獣神祭・運極(ラック99)課金で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Orbs, Monpass, Hoshitama summons, and Max Luck units in Monster Strike!',
+      ko: '오브 구매, 몬패스, 호시타마, 초수신제, 운극 과금 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算寶珠、怪彈會員、星玉、超獸神祭、極運課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -998,7 +998,7 @@ const GAMES_DATA = [
         { name: '오브 60+25개 (₩99,000)', price: 99000 }
       ],
       tw: [
-        { name: '通行證 (NT$130)', price: 130 },
+        { name: '怪彈會員 (NT$130)', price: 130 },
         { name: '寶珠 1個 (NT$33)', price: 33 },
         { name: '寶珠 6+1個 (NT$270)', price: 270 },
         { name: '寶珠 60+25個 (NT$2,690)', price: 2690 }
@@ -1020,7 +1020,7 @@ const GAMES_DATA = [
         { label: '10연차 (₩35,000)', amount: 35000, mult: 1 }
       ],
       tw: [
-        { label: '通行證 (NT$130)', amount: 130, mult: 1 },
+        { label: '怪彈會員 (NT$130)', amount: 130, mult: 1 },
         { label: '10連抽 (NT$950)', amount: 950, mult: 1 }
       ]
     },
@@ -1043,12 +1043,12 @@ const GAMES_DATA = [
     id: 'gakumas',
     icon: '🌟',
     names: { ja: '学園アイドルマスター (学マス)', en: 'Gakuen Idolmaster', ko: '학원 아이돌마스터', tw: '學園偶像大師' },
-    shortNames: { ja: '学マス', en: 'Gakumas', ko: '학마스', tw: '學馬斯' },
+    shortNames: { ja: '学マス', en: 'Gakumas', ko: '학마스', tw: '學馬仕' },
     descs: {
-      ja: 'ジュエルパック・パス課金・天井（200連=6万円）で貯まるPlayポイントと到達ステータスを試算！',
-      en: 'Calculate Play Points earned on Jewels and 200-pull pity in Gakuen Idolmaster!',
-      ko: '쥬얼 패키지 및 200연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '試算學園偶像大師寶石與200抽保底課金可獲得的 Play Points！'
+      ja: 'ジュエルパック・プレミアムミッションパス・ガシャPt(200連天井)・完凸(4凸)で貯まるPlayポイントと到達ステータスを試算！',
+      en: 'Calculate Play Points earned on Jewels, Premium Mission Pass, and 200 Gacha Pts pity in Gakuen Idolmaster!',
+      ko: '쥬얼 패키지, 프리미엄 미션 패스, 200 가챠 Pt 천장, 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '試算學園偶像大師寶石、高級任務通行證、200 轉蛋Pt 保底、4凸(滿凸)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -1108,20 +1108,20 @@ const GAMES_DATA = [
         { q: '학마스 천장 결제로 골드 등급 달성이 가능한가요?', a: '네! 이벤트 결합 시 골드 등급(600pt 이상)에 즉시 도달할 수 있습니다.' }
       ],
       tw: [
-        { q: '學馬斯保底能達到金級會員嗎？', a: '可以，配合加碼活動可順利達到金級（1,000點）門檻。' }
+        { q: '學馬仕保底能達到金級會員嗎？', a: '可以，配合加碼活動可順利達到金級（1,000點）門檻。' }
       ]
     }
   },
   {
     id: 'proseka',
     icon: '🎵',
-    names: { ja: 'プロジェクトセカイ (プロセカ)', en: 'Project SEKAI: Colorful Stage!', ko: '프로젝트 세카이 컬러풀 스테이지!', tw: '世界計畫 繽紛舞台！' },
-    shortNames: { ja: 'プロセカ', en: 'ProSEKAI', ko: '프세카', tw: '世界計畫' },
+    names: { ja: 'プロジェクトセカイ (プロセカ)', en: 'HATSUNE MIKU: COLORFUL STAGE!', ko: '프로젝트 세카이 컬러풀 스테이지!', tw: '世界計畫 繽紛舞台！' },
+    shortNames: { ja: 'プロセカ', en: 'PJSK', ko: '프세카', tw: '世界計畫' },
     descs: {
-      ja: '有償クリスタル・カラフルパス・プレパス・天井課金で貯まるPlayポイントを計算！',
-      en: 'Calculate Play Points earned on Crystals, Colorful Pass, and 300-pull spark pity in Project SEKAI!',
-      ko: '유료 크리스탈, 컬러풀 패스, 300연차 천장 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算世界計畫付費水晶、月卡、300抽保底課金可獲得的 Play Points！'
+      ja: '有償クリスタル・カラフルパス・プレミアムミッションパス・ガチャシール300枚天井・マスターランク5で貯まるPlayポイントを計算！',
+      en: 'Calculate Play Points earned on Crystals, Colorful Pass, Premium Mission Pass, and 300 Gacha Stickers spark in Project SEKAI!',
+      ko: '유료 크리스탈, 컬러풀 패스, 프리미엄 미션 패스, 가챠 스티커 300장 천장, 마스터 랭크 5 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算世界計畫付費水晶、彩色通行證、高階任務通行證、轉蛋貼紙300張保底、大師等級5課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -1149,8 +1149,8 @@ const GAMES_DATA = [
         { name: '크리스탈 7000개 (₩99,000)', price: 99000 }
       ],
       tw: [
-        { name: '繽紛通行證 (NT$130)', price: 130 },
-        { name: '高級任務通行證 (NT$490)', price: 490 },
+        { name: '彩色通行證 (NT$130)', price: 130 },
+        { name: '高階任務通行證 (NT$490)', price: 490 },
         { name: '水晶 100個 (NT$33)', price: 33 },
         { name: '水晶 2000個 (NT$790)', price: 790 },
         { name: '水晶 7000個 (NT$2,690)', price: 2690 }
