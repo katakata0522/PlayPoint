@@ -41,6 +41,11 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.sidebar-column {
+  width: 300px;
+  flex-shrink: 0;
+}
+
 .game-header {
   border-bottom: 2px solid var(--game-border);
   padding-bottom: 18px;
@@ -53,7 +58,7 @@ body {
   color: #0369a1;
   font-size: 0.82rem;
   font-weight: 700;
-  padding: 3px 10px;
+  padding: 4px 12px;
   border-radius: 4px;
   margin-bottom: 10px;
 }
@@ -94,20 +99,25 @@ body {
 .preset-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
 .preset-btn {
   background: #ffffff;
-  border: 1px solid #94a3b8;
+  border: 1.5px solid #94a3b8;
   color: #334155;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 10px 16px;
+  min-height: 44px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.15s ease;
+  user-select: none;
 }
 
 .preset-btn:hover {
@@ -143,12 +153,14 @@ body {
 
 .input-field input, .input-field select {
   padding: 10px 12px;
+  min-height: 44px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 600;
   background: #ffffff;
   color: #0f172a;
+  box-sizing: border-box;
 }
 
 /* 計算結果ボックス */
@@ -162,8 +174,8 @@ body {
 
 .result-main-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
   margin-bottom: 18px;
 }
 
@@ -182,11 +194,12 @@ body {
 }
 
 .result-stat-value {
-  font-size: 1.35rem;
+  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
   font-weight: 800;
   color: #0284c7;
   display: block;
   margin-top: 4px;
+  word-break: break-word;
 }
 
 .result-stat-value.highlight {
@@ -208,6 +221,8 @@ body {
   font-size: 0.88rem;
   font-weight: 700;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .rank-bar-bg {
@@ -224,10 +239,69 @@ body {
   transition: width 0.3s ease;
 }
 
+/* ギフトカード収益化CTAカード */
+.game-giftcard-cta {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px solid #fde68a;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 20px 0 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.game-giftcard-cta-content {
+  flex: 1;
+  min-width: 240px;
+}
+
+.game-giftcard-cta-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #92400e;
+  margin: 0 0 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.game-giftcard-cta-text {
+  font-size: 0.85rem;
+  color: #78350f;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.game-giftcard-cta-btn {
+  background: #f59e0b;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+  display: inline-flex;
+  align-items: center;
+}
+
+.game-giftcard-cta-btn:hover {
+  background: #d97706;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
 /* パック早見表テーブル */
 .pack-table-wrap {
   overflow-x: auto;
   margin: 24px 0;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
 }
 
 .pack-table {
@@ -246,6 +320,7 @@ body {
   background: #f1f5f9;
   font-weight: 700;
   color: #334155;
+  white-space: nowrap;
 }
 
 .pack-table tbody tr:hover {
@@ -315,6 +390,9 @@ body {
   .game-main-content {
     padding: 20px 16px;
   }
+  .sidebar-column {
+    width: 100%;
+  }
   .game-title {
     font-size: 1.4rem;
   }
@@ -323,5 +401,14 @@ body {
   }
   .result-main-grid {
     grid-template-columns: 1fr 1fr;
+  }
+  .game-giftcard-cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .game-giftcard-cta-btn {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
   }
 }

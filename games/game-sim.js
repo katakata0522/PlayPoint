@@ -112,13 +112,16 @@
             }
         }
 
+        const denom = nextRank ? (nextRank.points - reached.points) : 0;
+        const progressPercent = (nextRank && denom > 0)
+            ? Math.min(100, Math.max(0, Math.round(((totalEarnedPoints - reached.points) / denom) * 100)))
+            : 100;
+
         return {
             current: reached,
             next: nextRank,
             neededForNext: nextRank ? Math.max(0, nextRank.points - totalEarnedPoints) : 0,
-            progressPercent: nextRank
-                ? Math.min(100, Math.round(((totalEarnedPoints - reached.points) / (nextRank.points - reached.points)) * 100))
-                : 100
+            progressPercent: progressPercent
         };
     }
 
@@ -170,7 +173,11 @@
                 earnedPointsEl.textContent = `${res.points.toLocaleString()} pt`;
             }
             if (pointValueYenEl) {
-                const formattedVal = (res.points * (cfg.unitSpend === 1 ? 0.01 : 1)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+                const pointValueRatio = cfg.unitSpend / 100;
+                const formattedVal = (res.points * pointValueRatio).toLocaleString(undefined, {
+                    minimumFractionDigits: cfg.unitSpend === 1 ? 2 : 0,
+                    maximumFractionDigits: 2
+                });
                 pointValueYenEl.textContent = `${cfg.pointValuePrefix}${formattedVal}${cfg.pointValueSuffix}`;
             }
 
@@ -182,9 +189,11 @@
                 if (rankInfo.next) {
                     nextRankProgressEl.textContent = cfg.nextRankText(rankInfo.next.name, rankInfo.neededForNext);
                     rankProgressBar.style.width = `${rankInfo.progressPercent}%`;
+                    rankProgressBar.setAttribute('aria-valuenow', rankInfo.progressPercent.toString());
                 } else {
                     nextRankProgressEl.textContent = cfg.maxRankAchievedText;
                     rankProgressBar.style.width = '100%';
+                    rankProgressBar.setAttribute('aria-valuenow', '100');
                 }
             }
         }
@@ -192,15 +201,22 @@
         if (presetBtns.length) {
             presetBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    presetBtns.forEach(b => b.classList.remove('active'));
+                    presetBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
                     btn.classList.add('active');
+                    btn.setAttribute('aria-pressed', 'true');
 
                     const targetAmount = btn.getAttribute('data-amount');
                     const targetMult = btn.getAttribute('data-mult');
 
                     if (targetAmount && customAmountInput) {
                         customAmountInput.value = targetAmount;
-                        if (packSelect) packSelect.value = 'custom';
+                        if (packSelect) {
+                            packSelect.value = 'custom';
+                            if (countInput) countInput.style.display = 'none';
+                        }
                     }
                     if (targetMult && multSelect) {
                         multSelect.value = targetMult;
@@ -212,16 +228,38 @@
 
         if (packSelect) {
             packSelect.addEventListener('change', () => {
-                presetBtns.forEach(b => b.classList.remove('active'));
+                presetBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 if (countInput) countInput.style.display = packSelect.value === 'custom' ? 'none' : 'inline-block';
                 update();
             });
         }
 
-        [countInput, customAmountInput, multSelect, statusSelect].forEach(el => {
+        if (customAmountInput) {
+            const handleCustomInput = () => {
+                if (packSelect && packSelect.value !== 'custom') {
+                    packSelect.value = 'custom';
+                    if (countInput) countInput.style.display = 'none';
+                }
+                presetBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                update();
+            };
+            customAmountInput.addEventListener('input', handleCustomInput);
+            customAmountInput.addEventListener('focus', handleCustomInput);
+        }
+
+        [countInput, multSelect, statusSelect].forEach(el => {
             if (el) {
                 el.addEventListener('input', () => {
-                    presetBtns.forEach(b => b.classList.remove('active'));
+                    presetBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.setAttribute('aria-pressed', 'false');
+                    });
                     update();
                 });
                 el.addEventListener('change', update);

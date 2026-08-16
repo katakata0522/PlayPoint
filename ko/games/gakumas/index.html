@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="author" content="かたかた" />
+  <meta name="author" content="카타카타" />
   <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
   <title>학원 아이돌마스터 - Google Play Points 계산기</title>
   <meta name="description" content="쥬얼 패키지 및 200연차 천장 결제 시 적립되는 Play Points를 계산하세요!" />
@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
-  <link rel="stylesheet" href="../../../games/games.css?v=a282b3a98a" />
+  <link rel="stylesheet" href="../../../games/games.css?v=4509219281" />
 
   <script type="application/ld+json">
   {
@@ -34,6 +34,32 @@
   "url": "https://playpoint-sim.com/ko/games/gakumas/",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "홈",
+      "item": "https://playpoint-sim.com/ko/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "게임별 포인트 계산기 목록",
+      "item": "https://playpoint-sim.com/ko/games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "학원 아이돌마스터",
+      "item": "https://playpoint-sim.com/ko/games/gakumas/"
+    }
+  ]
 }
   </script>
   <script type="application/ld+json">
@@ -109,8 +135,8 @@
 
               <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="29000" data-mult="1">10연차 (₩29,000)</button>
-              <button type="button" class="preset-btn " data-amount="594000" data-mult="1">200연차 천장 (₩594,000)</button>
+                  <button type="button" class="preset-btn active" data-amount="29000" data-mult="1" aria-pressed="true">10연차 (₩29,000)</button>
+              <button type="button" class="preset-btn " data-amount="594000" data-mult="1" aria-pressed="false">200연차 천장 (₩594,000)</button>
               </div>
 
               <form id="game-sim-form">
@@ -180,8 +206,17 @@
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">💳 기프트카드 결제 시 포인트 적립 팁</div>
+                          <p class="game-giftcard-cta-text">Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다.</p>
+                      </div>
+                      <a class="game-giftcard-cta-btn" href="../../../ko/articles/google-play-points-gift-cards.html">기프트카드 가이드 확인 ➔</a>
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -309,7 +344,7 @@
       </main>
 
       <!-- サイドバー -->
-      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+      <aside class="sidebar-column">
           <div class="sidebar-widget">
               <div class="sidebar-widget-title">🧮 종합 계산기</div>
               <div class="sidebar-widget-body">
@@ -346,6 +381,6 @@
   </footer>
 
   <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
-  <script src="../../../games/game-sim.js?v=f011a16bcb"></script>
+  <script src="../../../games/game-sim.js?v=461a6f8e6e"></script>
 </body>
 </html>

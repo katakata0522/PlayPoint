@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="author" content="かたかた" />
+  <meta name="author" content="Katakata" />
   <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
   <title>怪物彈珠 (Monster Strike) - Google Play Points 計算器</title>
   <meta name="description" content="計算寶珠、怪物彈珠通行證、超獸神祭課金可獲得的 Play Points！" />
@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=1eab2d8529" />
-  <link rel="stylesheet" href="../../../games/games.css?v=a282b3a98a" />
+  <link rel="stylesheet" href="../../../games/games.css?v=4509219281" />
 
   <script type="application/ld+json">
   {
@@ -34,6 +34,32 @@
   "url": "https://playpoint-sim.com/tw/games/monst/",
   "applicationCategory": "UtilityApplication",
   "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "首頁",
+      "item": "https://playpoint-sim.com/tw/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "熱門遊戲點數計算器",
+      "item": "https://playpoint-sim.com/tw/games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "怪物彈珠 (Monster Strike)",
+      "item": "https://playpoint-sim.com/tw/games/monst/"
+    }
+  ]
 }
   </script>
   <script type="application/ld+json">
@@ -109,8 +135,8 @@
 
               <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="130" data-mult="1">通行證 (NT$130)</button>
-              <button type="button" class="preset-btn " data-amount="950" data-mult="1">10連抽 (NT$950)</button>
+                  <button type="button" class="preset-btn active" data-amount="130" data-mult="1" aria-pressed="true">通行證 (NT$130)</button>
+              <button type="button" class="preset-btn " data-amount="950" data-mult="1" aria-pressed="false">10連抽 (NT$950)</button>
               </div>
 
               <form id="game-sim-form">
@@ -180,8 +206,17 @@
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">💳 禮物卡儲值與點數累積重點</div>
+                          <p class="game-giftcard-cta-text">使用 Google Play 禮物卡儲值餘額後購買遊戲道具，同樣享有會員等級之點數回饋！</p>
+                      </div>
+                      <a class="game-giftcard-cta-btn" href="../../../tw/articles/google-play-points-gift-cards.html">查看禮物卡攻略 ➔</a>
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -309,7 +344,7 @@
       </main>
 
       <!-- サイドバー -->
-      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+      <aside class="sidebar-column">
           <div class="sidebar-widget">
               <div class="sidebar-widget-title">🧮 綜合計算器</div>
               <div class="sidebar-widget-body">
@@ -346,6 +381,6 @@
   </footer>
 
   <script src="../../../js/analytics-core.js?v=6938dbdfa8"></script>
-  <script src="../../../games/game-sim.js?v=f011a16bcb"></script>
+  <script src="../../../games/game-sim.js?v=461a6f8e6e"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=1eab2d8529" />
-  <link rel="stylesheet" href="../../games/games.css?v=a282b3a98a" />
+  <link rel="stylesheet" href="../../games/games.css?v=4509219281" />
 
   <script type="application/ld+json">
   {
@@ -39,6 +39,32 @@
   <script type="application/ld+json">
   {
   "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "ホーム",
+      "item": "https://playpoint-sim.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "ゲーム別計算機一覧",
+      "item": "https://playpoint-sim.com/games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "ウマ娘 プリティーダービー",
+      "item": "https://playpoint-sim.com/games/umamusume/"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {
@@ -47,6 +73,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "DMM版（PC）の課金でもPlayポイントは付きますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "いいえ。Google Play PointsはAndroid端末またはGoogle Play Games経由で決済した場合のみ付与されます。"
       }
     }
   ]
@@ -109,9 +143,9 @@
 
               <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1">デイリージュエル (980円)</button>
-              <button type="button" class="preset-btn " data-amount="3000" data-mult="1">10連分 (3,000円)</button>
-              <button type="button" class="preset-btn " data-amount="60000" data-mult="1">1天井 200連 (60,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1" aria-pressed="true">デイリージュエル (980円)</button>
+              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (3,000円)</button>
+              <button type="button" class="preset-btn " data-amount="60000" data-mult="1" aria-pressed="false">1天井 200連 (60,000円)</button>
               </div>
 
               <form id="game-sim-form">
@@ -184,8 +218,17 @@
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>
+                          <p class="game-giftcard-cta-text">楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU等）が二重取りできて実質数％〜十数％お得になります！</p>
+                      </div>
+                      <a class="game-giftcard-cta-btn" href="../../articles/2026-06-20-discount-gift-cards.html">お得な購入方法を見る ➔</a>
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -225,6 +268,8 @@
               <h2>よくある質問（FAQ）</h2>
               <h3>ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？</h3>
 <p>通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。</p>
+<h3>DMM版（PC）の課金でもPlayポイントは付きますか？</h3>
+<p>いいえ。Google Play PointsはAndroid端末またはGoogle Play Games経由で決済した場合のみ付与されます。</p>
           </section>
 
           <!-- 他のゲーム計算機 -->
@@ -316,7 +361,7 @@
       </main>
 
       <!-- サイドバー -->
-      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+      <aside class="sidebar-column">
           <div class="sidebar-widget">
               <div class="sidebar-widget-title">🧮 総合計算機</div>
               <div class="sidebar-widget-body">
@@ -353,6 +398,6 @@
   </footer>
 
   <script src="../../js/analytics-core.js?v=6938dbdfa8"></script>
-  <script src="../../games/game-sim.js?v=f011a16bcb"></script>
+  <script src="../../games/game-sim.js?v=461a6f8e6e"></script>
 </body>
 </html>

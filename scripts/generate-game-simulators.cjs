@@ -10,6 +10,7 @@ const LOCALES = {
     langCode: 'ja',
     dir: '',
     siteName: 'Playポイント計算機',
+    authorName: 'かたかた',
     homeTitle: 'ホーム',
     portalTitle: 'ゲーム別計算',
     blogTitle: '記事一覧',
@@ -57,6 +58,10 @@ const LOCALES = {
     resRankLabel: '到達ステータス',
     resProgressTitle: 'ランク進捗状況',
     disclaimerText: '※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。',
+    giftCardCtaTitle: '💳 課金前にチェック！さらにお得にする裏技',
+    giftCardCtaText: '楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU等）が二重取りできて実質数％〜十数％お得になります！',
+    giftCardCtaBtn: 'お得な購入方法を見る ➔',
+    giftCardCtaHref: 'articles/2026-06-20-discount-gift-cards.html',
     tableTitle: '課金パック別 Playポイント還元早見表',
     tableThPack: '課金パック名',
     tableThPrice: '価格 (税込)',
@@ -83,6 +88,7 @@ const LOCALES = {
     langCode: 'en',
     dir: 'en',
     siteName: 'Google Play Points Calculator',
+    authorName: 'Katakata',
     homeTitle: 'Calculator',
     portalTitle: 'Game Calculators',
     blogTitle: 'Guides',
@@ -130,6 +136,10 @@ const LOCALES = {
     resRankLabel: 'Reached Level',
     resProgressTitle: 'Level Progress',
     disclaimerText: '※ Calculated based on official Google Play rounding rules. Check the Google Play purchase screen for exact points before checkout.',
+    giftCardCtaTitle: '💳 Maximizing Play Points with Gift Cards',
+    giftCardCtaText: 'Learn how Google Play Gift Cards interact with points, promotions, and status level progress.',
+    giftCardCtaBtn: 'Read Gift Card Guide ➔',
+    giftCardCtaHref: 'en/articles/google-play-points-gift-cards.html',
     tableTitle: 'In-App Purchase Packs & Points Reward Table',
     tableThPack: 'Pack / Item Name',
     tableThPrice: 'Price (USD)',
@@ -156,6 +166,7 @@ const LOCALES = {
     langCode: 'ko',
     dir: 'ko',
     siteName: 'Google Play Points 계산기',
+    authorName: '카타카타',
     homeTitle: '계산기',
     portalTitle: '게임별 계산',
     blogTitle: '가이드',
@@ -203,6 +214,10 @@ const LOCALES = {
     resRankLabel: '도달 등급',
     resProgressTitle: '등급 진행 상황',
     disclaimerText: '※ Google Play 공식 사사오입(반올림) 기준에 따라 계산됩니다. 실제 적립 포인트는 결제 전 Google Play 화면에서 확인하세요.',
+    giftCardCtaTitle: '💳 기프트카드 결제 시 포인트 적립 팁',
+    giftCardCtaText: 'Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다.',
+    giftCardCtaBtn: '기프트카드 가이드 확인 ➔',
+    giftCardCtaHref: 'ko/articles/google-play-points-gift-cards.html',
     tableTitle: '패키지별 Play Points 적립 비교표',
     tableThPack: '패키지 / 아이템명',
     tableThPrice: '가격 (KRW)',
@@ -229,6 +244,7 @@ const LOCALES = {
     langCode: 'zh-TW',
     dir: 'tw',
     siteName: 'Google Play Points 計算器',
+    authorName: 'Katakata',
     homeTitle: '計算機',
     portalTitle: '遊戲專屬計算',
     blogTitle: '攻略指南',
@@ -276,6 +292,10 @@ const LOCALES = {
     resRankLabel: '達成等級',
     resProgressTitle: '等級進度',
     disclaimerText: '※ 依據 Google Play 官方四捨五入計算規則試算。實際獲得點數請以購買結帳畫面顯示為準。',
+    giftCardCtaTitle: '💳 禮物卡儲值與點數累積重點',
+    giftCardCtaText: '使用 Google Play 禮物卡儲值餘額後購買遊戲道具，同樣享有會員等級之點數回饋！',
+    giftCardCtaBtn: '查看禮物卡攻略 ➔',
+    giftCardCtaHref: 'tw/articles/google-play-points-gift-cards.html',
     tableTitle: '課金禮包 Play Points 回饋速查表',
     tableThPack: '禮包 / 道具名稱',
     tableThPrice: '售價 (TWD)',
@@ -374,30 +394,34 @@ const GAMES_DATA = [
         { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
         { label: '90연차 반천장 (약 ₩270,000)', amount: 270000, mult: 1 },
         { label: '180연차 확정천장 (약 ₩540,000)', amount: 540000, mult: 1 },
-        { label: '풀돌目安 (약 ₩2,500,000)', amount: 2500000, mult: 1 }
+        { label: '풀돌 기준 (약 ₩2,500,000)', amount: 2500000, mult: 1 }
       ],
       tw: [
         { label: '空月祝福 (NT$170)', amount: 170, mult: 1 },
         { label: '10連抽 (約 NT$750)', amount: 750, mult: 1 },
         { label: '90抽小保底 (約 NT$6,500)', amount: 6500, mult: 1 },
         { label: '180抽大保底 (約 NT$13,000)', amount: 13000, mult: 1 },
-        { label: '滿命目安 (約 NT$60,000)', amount: 60000, mult: 1 }
+        { label: '滿命預估 (約 NT$60,000)', amount: 60000, mult: 1 }
       ]
     },
     faq: {
       ja: [
         { q: '原神の課金でGoogle Play Pointsは貯まりますか？', a: 'はい。Android端末またはGoogle Play Games（PC版）経由で課金した場合、通常100円につき1ポイント以上のPlay Pointsが貯まります。' },
-        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playのポイント増量キャンペーン（4倍〜7倍時）なら約2,160pt〜3,780pt貯まります。' }
+        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playのポイント増量キャンペーン（4倍〜7倍時）なら約2,160pt〜3,780pt貯まります。' },
+        { q: '空月の祝福や天空紀行の課金でもポイントは付きますか？', a: 'はい。定期課金やシーズンパスもすべて通常のGoogle Play課金と同じ扱いとなり、購入金額に応じたPlay Pointsが付与されます。' }
       ],
       en: [
         { q: 'Do I earn Google Play Points on Genshin Impact purchases?', a: 'Yes! When purchasing Genesis Crystals or passes on Android or Google Play Games PC, you earn at least 1 Play Point per $1 spent.' },
-        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points during 4x-7x special point promotions.' }
+        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points during 4x-7x special point promotions.' },
+        { q: 'Do Welkin Moon and Battle Pass purchases count?', a: 'Yes, both Blessing of the Welkin Moon and Gnostic Hymn earn full Play Points based on your current membership tier.' }
       ],
       ko: [
-        { q: '원신 결제 시 Google Play Points가 적립되나요?', a: '네! 안드로이드 기기 또는 Google Play Games PC 버전을 통해 결제하면 1,000원당 1포인트 이상의 Play Points가 적립됩니다.' }
+        { q: '원신 결제 시 Google Play Points가 적립되나요?', a: '네! 안드로이드 기기 또는 Google Play Games PC 버전을 통해 결제하면 1,000원당 1포인트 이상의 Play Points가 적립됩니다.' },
+        { q: '공월 축복이나 진주 기행 결제도 포인트 적립 대상인가요?', a: '네, 정기 패스 및 기행 결제 금액도 전액 정상적으로 Play Points 적립 대상에 포함됩니다.' }
       ],
       tw: [
-        { q: '在原神課金可以獲得 Google Play Points 嗎？', a: '可以！透過 Android 手機或 Google Play Games 電腦版進行遊戲內購買，每 NT$30 即可累積 1 點以上的 Play Points。' }
+        { q: '在原神課金可以獲得 Google Play Points 嗎？', a: '可以！透過 Android 手機或 Google Play Games 電腦版進行遊戲內購買，每 NT$30 即可累積 1 點以上的 Play Points。' },
+        { q: '購買空月祝福或珍珠紀行也有點數回饋嗎？', a: '有的，所有月卡與通行證皆享有點數回饋，並計入年度會員等級晉升進度。' }
       ]
     }
   },
@@ -482,10 +506,12 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'スターレイルの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Games経由で決済すると、100円あたり1pt以上のPlay Pointsが付与されます。' }
+        { q: 'スターレイルの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Games経由で決済すると、100円あたり1pt以上のPlay Pointsが付与されます。' },
+        { q: 'スターレイルで天井まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、5倍CP時なら約2,700pt貯まり、一気にゴールドランクに到達できます。' }
       ],
       en: [
-        { q: 'Can I earn Play Points on Honkai: Star Rail?', a: 'Yes! In-app purchases made via Google Play on Android or PC earn Play Points according to your status tier.' }
+        { q: 'Can I earn Play Points on Honkai: Star Rail?', a: 'Yes! In-app purchases made via Google Play on Android or PC earn Play Points according to your status tier.' },
+        { q: 'How many points for 180-pull hard pity in Star Rail?', a: 'Spending ~$400 earns ~400 points at base rate, or ~2,000 points during a 5x points event.' }
       ],
       ko: [
         { q: '스타레일 과금 시 Play Points가 적립되나요?', a: '네, Google Play 스토어 인앱 결제 시 결제액 1,000원당 1pt 이상이 적립됩니다.' }
@@ -576,7 +602,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ゼンゼロの課金でPlayポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。' }
+        { q: 'ゼンゼロの課金でPlayポイントは貯まりますか？', a: 'はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。' },
+        { q: 'S級確定天井（90連/180連）で何ポイント貯まりますか？', a: '90連で約270pt（5倍CP時約1,350pt）、180連で約540pt（5倍CP時約2,700pt）還元されます。' }
       ],
       en: [
         { q: 'Do ZZZ purchases earn Google Play Points?', a: 'Yes, purchases made through Google Play Store earn Play Points based on your current tier.' }
@@ -662,7 +689,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ブルアカの天井（200連=約4.8万円）で何ポイント貯まりますか？', a: '通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。' }
+        { q: 'ブルアカの天井（200連=約4.8万円）で何ポイント貯まりますか？', a: '通常時で約480pt、Google Playの5倍キャンペーン時なら約2,400pt（ゴールドランク即時達成）貯まります。' },
+        { q: 'マンスリーパッケージはPlayポイント対象ですか？', a: 'はい。マンスリーパッケージおよびハーフマンスリーパッケージも通常の課金と同様にポイントが付与されます。' }
       ],
       en: [
         { q: 'How many points for 200-pull spark in Blue Archive?', a: 'Spending ~$380 for 200 pulls earns ~380 pts at base rate, or ~1,900 pts during a 5x promotion.' }
@@ -744,7 +772,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ポケポケの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末から購入するとPlay Pointsが貯まります。' }
+        { q: 'ポケポケの課金でGoogle Playポイントは貯まりますか？', a: 'はい。Android端末から購入するとPlay Pointsが貯まります。' },
+        { q: 'プレミアムパスはPlayポイントの対象になりますか？', a: 'はい。毎月の更新時にも自動でPlay Pointsが付与されます。' }
       ],
       en: [
         { q: 'Do Pokémon TCG Pocket purchases earn Play Points?', a: 'Yes, purchases made through Google Play Store earn Play Points.' }
@@ -819,14 +848,15 @@ const GAMES_DATA = [
         { label: '330연차 천장 (약 ₩550,000)', amount: 550000, mult: 1 }
       ],
       tw: [
-        { label: '福袋目安 (約 NT$490)', amount: 490, mult: 1 },
+        { label: '福袋預估 (約 NT$490)', amount: 490, mult: 1 },
         { label: '10連抽 (約 NT$790)', amount: 790, mult: 1 },
         { label: '330抽保底 (約 NT$14,000)', amount: 14000, mult: 1 }
       ]
     },
     faq: {
       ja: [
-        { q: 'FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', a: '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。' }
+        { q: 'FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？', a: '通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。' },
+        { q: '福袋（有償15個）の課金でもPlayポイントは付きますか？', a: 'はい。有償石の購入時に全額ポイント付与の対象となります。' }
       ],
       en: [
         { q: 'How many points for 330-pull pity in FGO?', a: 'Spending ~$440 earns ~440 pts normally, or ~2,200 pts during a 5x promotion.' }
@@ -912,7 +942,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', a: '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。' }
+        { q: 'ウマ娘の天井（200連=6万円）で何ポイント貯まりますか？', a: '通常時で約600ポイント、Google Playポイント5倍キャンペーン時なら約3,000ポイント貯まります。' },
+        { q: 'DMM版（PC）の課金でもPlayポイントは付きますか？', a: 'いいえ。Google Play PointsはAndroid端末またはGoogle Play Games経由で決済した場合のみ付与されます。' }
       ],
       en: [
         { q: 'How many points for 200-pull pity in Umamusume?', a: 'Around ~480 points at base rate, or ~2,400 points during a 5x promotion.' }
@@ -1059,7 +1090,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: '学マスの天井課金（6万円）でゴールドランクになれますか？', a: 'はい。通常レートで約600pt、CP時なら約1,800pt〜3,000pt貯まり、ゴールド（1,000pt）に到達可能です。' }
+        { q: '学マスの天井課金（6万円）でゴールドランクになれますか？', a: 'はい。通常レートで約600pt、CP時なら約1,800pt〜3,000pt貯まり、ゴールド（1,000pt）に到達可能です。' },
+        { q: '有償ジュエルの購入時期はいつがお得ですか？', a: 'Google Play Pointsのポイント3倍〜5倍増量キャンペーン期間中にまとめ買いすると最も効率的です。' }
       ],
       en: [
         { q: 'Can I reach Gold status with 200-pull pity in Gakumas?', a: 'Yes! Pity spending generates enough points to reach Silver and Gold during promotional periods.' }
@@ -1140,7 +1172,8 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'プロセカの天井（9万円）で何ポイント還元されますか？', a: '通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。' }
+        { q: 'プロセカの天井（9万円）で何ポイント還元されますか？', a: '通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。' },
+        { q: 'カラフルパスの月額課金もポイント対象ですか？', a: 'はい。カラフルパスおよびプレミアムミッションパスも全額ポイント付与の対象です。' }
       ],
       en: [
         { q: 'How many Play Points for 300-pull spark in Project SEKAI?', a: 'Around ~720 pts normally, or up to ~3,600 pts with a 5x multiplier.' }
@@ -1172,7 +1205,7 @@ function generateGamePageHtml(game, localeKey) {
   const gameFaq = game.faq[localeKey] || game.faq.ja;
 
   const packOptions = gamePacks.map(p => `<option value="${p.price}">${p.name}</option>`).join('\n                  ');
-  const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}" data-mult="${p.mult}">${p.label}</button>`).join('\n              ');
+  const presetButtons = gamePresets.map((p, idx) => `<button type="button" class="preset-btn ${idx === 0 ? 'active' : ''}" data-amount="${p.amount}" data-mult="${p.mult}" aria-pressed="${idx === 0 ? 'true' : 'false'}">${p.label}</button>`).join('\n              ');
   const faqHtml = gameFaq.map(f => `<h3>${f.q}</h3>\n<p>${f.a}</p>`).join('\n');
   
   const packTableRows = gamePacks.map(p => {
@@ -1204,13 +1237,38 @@ function generateGamePageHtml(game, localeKey) {
     "operatingSystem": "All"
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": loc.breadcrumbsHome,
+        "item": `https://playpoint-sim.com${langPrefix}/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": loc.breadcrumbsPortal,
+        "item": `https://playpoint-sim.com${langPrefix}/games/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": gameTitle,
+        "item": `https://playpoint-sim.com${langPrefix}/games/${game.id}/`
+      }
+    ]
+  };
+
   return `<!doctype html>
 <html lang="${loc.langCode}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="author" content="かたかた" />
+  <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />
   <title>${gameTitle} - ${loc.siteName}</title>
   <meta name="description" content="${gameDesc}" />
@@ -1234,6 +1292,9 @@ function generateGamePageHtml(game, localeKey) {
 
   <script type="application/ld+json">
   ${JSON.stringify(appSchema, null, 2)}
+  </script>
+  <script type="application/ld+json">
+  ${JSON.stringify(breadcrumbSchema, null, 2)}
   </script>
   <script type="application/ld+json">
   ${JSON.stringify(faqSchema, null, 2)}
@@ -1362,8 +1423,17 @@ function generateGamePageHtml(game, localeKey) {
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">${loc.giftCardCtaTitle}</div>
+                          <p class="game-giftcard-cta-text">${loc.giftCardCtaText}</p>
+                      </div>
+                      <a class="game-giftcard-cta-btn" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardCtaBtn}</a>
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -1423,7 +1493,7 @@ function generateGamePageHtml(game, localeKey) {
       </main>
 
       <!-- サイドバー -->
-      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+      <aside class="sidebar-column">
           <div class="sidebar-widget">
               <div class="sidebar-widget-title">${loc.sidebarCalcTitle}</div>
               <div class="sidebar-widget-body">
@@ -1485,13 +1555,40 @@ function generatePortalPageHtml(localeKey) {
     </a>
   `).join('\n');
 
+  const portalBreadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": loc.breadcrumbsHome,
+        "item": `https://playpoint-sim.com${langPrefix}/`
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": loc.breadcrumbsPortal,
+        "item": `https://playpoint-sim.com${langPrefix}/games/`
+      }
+    ]
+  };
+
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": loc.portalH1,
+    "url": `https://playpoint-sim.com${langPrefix}/games/`,
+    "description": loc.portalMeta
+  };
+
   return `<!doctype html>
 <html lang="${loc.langCode}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="author" content="かたかた" />
+  <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />
   <title>${loc.portalH1} - ${loc.siteName}</title>
   <meta name="description" content="${loc.portalMeta}" />
@@ -1512,6 +1609,13 @@ function generatePortalPageHtml(localeKey) {
 
   <link rel="stylesheet" href="${assetsRelative}articles/article-shared.css?v=eb2e12f5ef" />
   <link rel="stylesheet" href="${assetsRelative}games/games.css" />
+
+  <script type="application/ld+json">
+  ${JSON.stringify(collectionSchema, null, 2)}
+  </script>
+  <script type="application/ld+json">
+  ${JSON.stringify(portalBreadcrumbSchema, null, 2)}
+  </script>
 </head>
 <body>
 
@@ -1574,7 +1678,7 @@ function generatePortalPageHtml(localeKey) {
       </main>
 
       <!-- サイドバー -->
-      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+      <aside class="sidebar-column">
           <div class="sidebar-widget">
               <div class="sidebar-widget-title">${loc.sidebarCalcTitle}</div>
               <div class="sidebar-widget-body">
