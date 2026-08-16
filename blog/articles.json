@@ -1,5 +1,80 @@
 [
   {
+    "id": "play-points-day",
+    "title": "Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法",
+    "date": "2026-08-16",
+    "category": "キャンペーン",
+    "tags": [
+      "Play Points",
+      "Playポイントデー",
+      "毎月1日",
+      "キャンペーン"
+    ],
+    "description": "Playポイントデーは、Google Play公式アカウントが毎月1日0:00〜23:59に案内するポイント増量日です。最大7倍は全員共通ではなく、自分の倍率は「貯める」画面で確認します。",
+    "file": "../articles/2026-08-16-play-points-day.html",
+    "thumbnail": "../articles/ogp/play-points-day.png"
+  },
+  {
+    "id": "youtube-premium-play-points",
+    "title": "YouTube PremiumでPlay Pointsは貯まる？請求経路の確認方法",
+    "date": "2026-08-16",
+    "category": "使い方",
+    "tags": [
+      "Play Points",
+      "YouTube Premium",
+      "サブスク",
+      "請求経路"
+    ],
+    "description": "日本向け公式ヘルプの獲得対象リストにYouTube Premiumは載っていません。貯まるかはGoogle Play経由の請求か、ポイント履歴に付与があるかで確認します。",
+    "file": "../articles/2026-08-16-youtube-premium-play-points.html",
+    "thumbnail": "../articles/ogp/youtube-premium-play-points.png"
+  },
+  {
+    "id": "pixel-discount-coupon",
+    "title": "Play PointsのPixel割引クーポンはいつ出る？特典タブの確認方法",
+    "date": "2026-08-16",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "Pixel",
+      "特典",
+      "クーポン"
+    ],
+    "description": "日本向け公式の常設特典表にPixel割引は載っていません。表示される場合は特典タブの個別オファーです。対象・金額・期限は画面で確認します。",
+    "file": "../articles/2026-08-16-pixel-discount-coupon.html",
+    "thumbnail": "../articles/ogp/pixel-discount-coupon.png"
+  },
+  {
+    "id": "weekly-reward-not-showing",
+    "title": "ウィークリーリワードが受け取れない・ボタンが無い時の確認順",
+    "date": "2026-08-16",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "ウィークリーリワード",
+      "特典",
+      "表示されない"
+    ],
+    "description": "通常のウィークリーリワードはシルバー以上、日本の金曜日にリセットされます。ボタンが無い時はランク、アカウント、受取済み、Play Pass木曜特典の取り違えを順に確認します。",
+    "file": "../articles/2026-08-16-weekly-reward-not-showing.html",
+    "thumbnail": "../articles/ogp/weekly-reward-not-showing.png"
+  },
+  {
+    "id": "january-rank-reset",
+    "title": "1月1日にPlay Pointsのランクが下がった？再判定と残高の違い",
+    "date": "2026-08-16",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "1月1日",
+      "ランク",
+      "再判定"
+    ],
+    "description": "Play Pointsのステータスは毎年初めに、前年の獲得ポイントで変わることがあります。1月1日に下がってもポイント残高は消えません。別アカウントや有効期限と切り分けます。",
+    "file": "../articles/2026-08-16-january-rank-reset.html",
+    "thumbnail": "../articles/ogp/january-rank-reset.png"
+  },
+  {
     "id": "play-points-levels-guide",
     "title": "Google Play Pointsのランク一覧｜条件・必要ポイント・必要額・特典を比較",
     "date": "2026-08-05",

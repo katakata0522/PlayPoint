@@ -98,3 +98,43 @@ test('参加できない記事は条件を順番に切り分け、国変更を�
   assert.match(html, /管理されていないGoogleアカウント|有効な支払い方法|請求先住所|Google Playの国/);
   assert.doesNotMatch(html, /国を変更すれば必ず/);
 });
+
+test('Playポイントデー記事は最大7倍を全員共通と書かない', () => {
+  const html = readArticle('2026-08-16-play-points-day.html');
+  assert.match(html, /最大7倍/);
+  assert.match(html, /貯める/);
+  assert.match(html, /ステータスによって変わる/);
+  assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍|全員が7倍/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('YouTube Premium記事は公式獲得対象リストへ載せない', () => {
+  const html = readArticle('2026-08-16-youtube-premium-play-points.html');
+  assert.match(html, /YouTube Premiumというサービス名は載っていません/);
+  assert.match(html, /AndroidからのGoogle One定期購入/);
+  assert.doesNotMatch(html, /Android(?:アプリ)?から契約すれば必ず貯まる/);
+  assert.doesNotMatch(html, /公式の獲得対象です[^か]/);
+});
+
+test('Pixel割引記事は常設特典表に無いことを明記する', () => {
+  const html = readArticle('2026-08-16-pixel-discount-coupon.html');
+  assert.match(html, /Pixel割引は載っていません/);
+  assert.match(html, /特典/);
+  assert.doesNotMatch(html, /必ずクーポン|常設特典としてPixel|最大3万円/);
+});
+
+test('ウィークリーリワード非表示記事はシルバー以上と金曜を守り上限を断定しない', () => {
+  const html = readArticle('2026-08-16-weekly-reward-not-showing.html');
+  assert.match(html, /シルバー以上/);
+  assert.match(html, /金曜日/);
+  assert.doesNotMatch(html, /最大\s*(?:100|200|500|1,000)\s*(?:pt|ポイント)/);
+  assert.doesNotMatch(html, /カレンダー/);
+});
+
+test('1月1日再判定記事は残高リセットと到達年の即日降格を書かない', () => {
+  const html = readArticle('2026-08-16-january-rank-reset.html');
+  assert.match(html, /翌年の年末まで維持/);
+  assert.match(html, /前年の獲得ポイント/);
+  assert.doesNotMatch(html, /1月1日にポイント(?:残高)?(?:も)?(?:が)?消える/);
+  assert.doesNotMatch(html, /到達した翌年1月1日に必ず下がる/);
+});

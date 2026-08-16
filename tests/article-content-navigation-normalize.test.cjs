@@ -94,6 +94,7 @@ test('normalization is idempotent and validates related targets', () => {
   createTargets(root, [
     'articles/2025-12-25-new-year-campaign.html',
     'articles/2026-08-05-play-points-multiplier-stacking.html',
+    'articles/2026-08-16-play-points-day.html',
     'articles/2026-03-10-play-points-reflection-timing.html'
   ]);
 

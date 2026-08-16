@@ -11,6 +11,7 @@ const RELATED_SECTIONS = {
     links: [
       ['./2025-12-25-new-year-campaign.html', '年末年始キャンペーンの確認方法'],
       ['./2026-08-05-play-points-multiplier-stacking.html', 'ランクとキャンペーン倍率が重複するか確認'],
+      ['./2026-08-16-play-points-day.html', '毎月1日のPlayポイントデーを画面で確認'],
       ['./2026-03-10-play-points-reflection-timing.html', '購入後にポイントが反映されない時の確認']
     ]
   },
@@ -19,7 +20,8 @@ const RELATED_SECTIONS = {
     links: [
       ['./2025-12-25-diamond-vip.html', 'ダイヤモンド固有・共通特典を確認'],
       ['./2026-08-05-play-points-levels-guide.html', '全ランクの条件・必要額・特典を比較'],
-      ['./2025-12-25-playpoints-rank-maintenance.html', '獲得したランクの維持期間を確認']
+      ['./2025-12-25-playpoints-rank-maintenance.html', '獲得したランクの維持期間を確認'],
+      ['./2026-08-16-pixel-discount-coupon.html', 'Pixel割引クーポンは特典タブで確認']
     ]
   },
   'articles/2025-12-25-playpoints-rank-maintenance.html': {
@@ -27,7 +29,8 @@ const RELATED_SECTIONS = {
     links: [
       ['./2026-08-05-play-points-levels-guide.html', '全ランクの条件と必要ポイントを比較'],
       ['./2025-12-25-diamond-worth-it.html', 'ダイヤモンドを目指す費用と特典を比較'],
-      ['./2025-12-25-weekly-reward.html', 'ランク別ウィークリーリワードを確認']
+      ['./2025-12-25-weekly-reward.html', 'ランク別ウィークリーリワードを確認'],
+      ['./2026-08-16-january-rank-reset.html', '1月1日にランクが下がった時の確認']
     ]
   },
   'articles/2025-12-25-getting-started.html': {
@@ -35,7 +38,8 @@ const RELATED_SECTIONS = {
     links: [
       ['./2026-08-05-play-points-levels-guide.html', 'ランク・獲得率・必要ポイントの全体像'],
       ['./2025-12-25-check-balance.html', '残高・履歴・有効期限の確認方法'],
-      ['./2026-08-05-play-points-cannot-join.html', '登録できない・表示されない時の確認順']
+      ['./2026-08-05-play-points-cannot-join.html', '登録できない・表示されない時の確認順'],
+      ['./2026-08-16-youtube-premium-play-points.html', '継続課金の請求経路を確認する']
     ]
   },
   'articles/2025-12-25-gift-card.html': {
