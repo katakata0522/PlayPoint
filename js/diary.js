@@ -2,6 +2,7 @@
 
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
+import { SHARE } from './share.js';
 
 export const DIARY_PURE = {
     summarizeYear(yearData = {}) {
@@ -122,13 +123,17 @@ export const DIARY = {
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
                 <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${weekData.points || ''}" inputmode="numeric">
                 <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
-                <button data-week="${weekNum}">${texts.saveButton}</button>
+                <div class="diary-btn-group">
+                    <button class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
+                    <button type="button" class="diary-x-share-btn" data-week="${weekNum}" title="X（Twitter）でシェア" aria-label="Xでシェア">𝕏</button>
+                </div>
             `;
 
             // オートセーブ用のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
             const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
-            const saveBtn = row.querySelector(`button[data-week="${weekNum}"]`);
+            const saveBtn = row.querySelector(`.diary-save-btn[data-week="${weekNum}"]`);
+            const shareBtn = row.querySelector(`.diary-x-share-btn[data-week="${weekNum}"]`);
 
             const triggerAutoSave = () => {
                 this.handleDiarySave({ target: saveBtn }, true); // サイレント保存
@@ -136,6 +141,17 @@ export const DIARY = {
 
             pointsInput.addEventListener('blur', triggerAutoSave);
             prizeSelect.addEventListener('change', triggerAutoSave);
+
+            if (shareBtn) {
+                shareBtn.addEventListener('click', () => {
+                    const currentPoints = pointsInput.value;
+                    const currentPrize = prizeSelect.value;
+                    if (currentPoints !== '') {
+                        triggerAutoSave();
+                    }
+                    SHARE.shareRewardToX(currentPoints, currentPrize);
+                });
+            }
 
             STATE.dom.weekInputs.appendChild(row);
         });

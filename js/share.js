@@ -109,6 +109,34 @@ export const SHARE = {
 
         // 共有URLからの復元時に自動計算を実行
         CALC.calculate();
+    },
+
+    buildRewardShareUrl(points, prize) {
+        const lang = STATE.currentRegion || 'ja';
+        const numPoints = Number.parseInt(points, 10);
+        const validPoints = Number.isFinite(numPoints) && numPoints >= 0 ? numPoints : 0;
+        const siteUrl = 'https://playpoint-sim.com/';
+
+        let tweetText = '';
+        if (lang === 'en') {
+            tweetText = `Got ${validPoints} Play Points from this week's Google Play Weekly Prize! 🎉 #GooglePlay #PlayPoints #PlayPointCalc`;
+        } else if (lang === 'ko') {
+            tweetText = `이번 주 Google Play 주간 혜택으로 ${validPoints}pt를 받았습니다! 🎉 #구글플레이 #플레이포인트 #PlayPoint계산기`;
+        } else if (lang === 'tw') {
+            tweetText = `這週的 Google Play 每週獎勵抽到了 ${validPoints} 點！🎉 #GooglePlay #Play點數 #PlayPoint計算器`;
+        } else {
+            tweetText = `今週のGoogle Playウィークリーリワードは【${validPoints}pt】でした！🎉 #Playポイント #GooglePlay #Playポイント計算機`;
+        }
+
+        const shareUrl = new URL('https://twitter.com/intent/tweet');
+        shareUrl.searchParams.set('text', tweetText);
+        shareUrl.searchParams.set('url', siteUrl);
+        return shareUrl.toString();
+    },
+
+    shareRewardToX(points, prize) {
+        const url = this.buildRewardShareUrl(points, prize);
+        window.open(url, '_blank', 'noopener,noreferrer');
     }
 };
 

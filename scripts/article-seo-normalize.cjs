@@ -58,7 +58,9 @@ function getVisibleText(html) {
 
 function extractVisibleFaqPairs(html) {
   const pairs = [];
-  for (const match of String(html).matchAll(FAQ_ITEM_PATTERN)) {
+  const text = String(html);
+
+  for (const match of text.matchAll(FAQ_ITEM_PATTERN)) {
     const questionMatch = match[1].match(/<h[2-6]\b[^>]*>([\s\S]*?)<\/h[2-6]>/i);
     const answerMatch = match[1].match(/<p\b[^>]*>([\s\S]*?)<\/p>/i);
     if (!questionMatch || !answerMatch) continue;
@@ -67,6 +69,21 @@ function extractVisibleFaqPairs(html) {
     const answer = removeFaqLabel(cleanVisibleText(answerMatch[1]), 'A');
     if (question && answer) pairs.push({ question, answer });
   }
+
+  if (pairs.length > 0) return pairs;
+
+  // Support <section ...> with <h2>FAQ / よくある質問 / ...</h2>
+  const faqSectionRegex = /<section\b[^>]*>[\s\S]*?<h2\b[^>]*>(?:よくある質問|FAQ|常問問題|常見問題|자주\s*묻는\s*질문|Frequently\s*Asked\s*Questions)[\s\S]*?<\/h2>([\s\S]*?)<\/section>/gi;
+  for (const sectionMatch of text.matchAll(faqSectionRegex)) {
+    const body = sectionMatch[1];
+    const h3pRegex = /<h3\b[^>]*>([\s\S]*?)<\/h3>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi;
+    for (const item of body.matchAll(h3pRegex)) {
+      const question = removeFaqLabel(cleanVisibleText(item[1]), 'Q');
+      const answer = removeFaqLabel(cleanVisibleText(item[2]), 'A');
+      if (question && answer) pairs.push({ question, answer });
+    }
+  }
+
   return pairs;
 }
 
@@ -166,11 +183,8 @@ function synchronizeFaqNodes(value, visiblePairs, visibleText, stats) {
 
   if (hasType(value, 'FAQPage')) {
     if (visiblePairs.length === 0) {
-      if (visibleText.length < 300) {
-        stats.removed += 1;
-        return null;
-      }
-      return value;
+      stats.removed += 1;
+      return null;
     }
     if (faqPairsMatch(getFaqPairs(value), visiblePairs)) return value;
     stats.synchronized += 1;

@@ -386,9 +386,38 @@
       document.querySelectorAll('.table-wrap, .table-card').forEach(function (w, i) { w.tabIndex = 0; w.setAttribute('role', 'region'); w.setAttribute('aria-label', '比較表' + (i + 1) + '（横にスクロールできます）'); });
     }
 
+    function setupInlineCalculatorWidgets() {
+        const widgets = document.querySelectorAll('.inline-calc-widget');
+        if (!widgets.length) return;
+
+        widgets.forEach((widget) => {
+            const input = widget.querySelector('.inline-calc-input');
+            const normalVal = widget.querySelector('.ic-normal');
+            const boostVal = widget.querySelector('.ic-boost');
+            const detailLink = widget.querySelector('.inline-calc-link');
+
+            if (!input || !normalVal || !boostVal) return;
+
+            function update() {
+                const pts = Math.max(1, parseInt(input.value, 10) || 0);
+                normalVal.textContent = '約' + Math.ceil(pts * 100).toLocaleString('ja-JP') + '円';
+                boostVal.textContent = '約' + Math.ceil((pts / 5) * 100).toLocaleString('ja-JP') + '円';
+
+                if (detailLink) {
+                    detailLink.href = '../?points=' + pts;
+                }
+            }
+
+            input.addEventListener('input', update);
+            input.addEventListener('change', update);
+            update();
+        });
+    }
+
     async function init() {
         setupArticleUsability();
         setupCalculatorPrompt();
+        setupInlineCalculatorWidgets();
         setupContextualGuideLinks();
         setupArticleNextStepCta();
         setupOfficialSourceNotice();

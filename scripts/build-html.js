@@ -51,6 +51,8 @@ try {
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
 
+require('./generate-game-simulators.cjs');
+
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
 syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);

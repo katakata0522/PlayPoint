@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+  <title>Pokémon TCG Pocket (ポケポケ)の課金で貯まるPlayポイント計算機【天井・パック別還元額】</title>
+  <meta name="description" content="ポケゴールド・プレミアムパス・10連パック開封で貯まるGoogle Playポイントを計算！" />
+  <link rel="canonical" href="https://playpoint-sim.com/games/pokepoke/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Playポイント計算機" />
+  <meta property="og:title" content="Pokémon TCG Pocket (ポケポケ)の課金で貯まるPlayポイント計算機" />
+  <meta property="og:description" content="ポケゴールド・プレミアムパス・10連パック開封で貯まるGoogle Playポイントを計算！" />
+  <meta property="og:url" content="https://playpoint-sim.com/games/pokepoke/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="../../articles/article-shared.css?v=bfbbfb89d0" />
+  <link rel="stylesheet" href="../games.css?v=a282b3a98a" />
+
+  <script type="speculationrules">
+  {
+    "prefetch": [
+      {
+        "source": "document",
+        "where": {
+          "and": [
+            { "href_matches": "/*" },
+            { "not": { "href_matches": ["/privacy.html*", "/terms.html*", "/author/*"] } }
+          ]
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Pokémon TCG Pocket (ポケポケ) Playポイント課金計算機",
+  "url": "https://playpoint-sim.com/games/pokepoke/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All"
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "ポケポケの課金でGoogle Playポイントは貯まりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "はい。Android端末からポケゴールドやプレミアムパスを購入すると、100円あたり1pt以上のPlay Pointsが貯まります。"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- Cocoon風 ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Playポイント計算機</span>
+          </a>
+          <p class="site-tagline">Google Play Points の必要額・還元シミュレーター</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="メインナビゲーション">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>ホーム</span>
+              <span class="nav-sub">必要額計算</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>ゲーム別計算</span>
+              <span class="nav-sub">人気ソシャゲ</span>
+          </a>
+          <a class="nav-item" href="../../blog/">
+              <span>記事一覧</span>
+              <span class="nav-sub">攻略・ノウハウ</span>
+          </a>
+          <a class="nav-item" href="../../author/katakata.html">
+              <span>運営者</span>
+              <span class="nav-sub">検証方針</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="パンくずリスト">
+          <a href="../../">ホーム</a> <span>&gt;</span>
+          <a href="../">ゲーム別計算機</a> <span>&gt;</span>
+          <span>Pokémon TCG Pocket (ポケポケ)</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">🎴 人気ゲーム別シミュレーター</span>
+              <h1 class="game-title">Pokémon TCG Pocket (ポケポケ) 課金Playポイント計算機</h1>
+              <p class="game-meta">最終確認：2026年8月 ｜ Google Play Points 公式レート（100円=1pt）準拠</p>
+          </header>
+
+          <p>ポケゴールド・プレミアムパス・10連パック開封で貯まるGoogle Playポイントを計算！</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 ポケポケ 課金シミュレーター</h2>
+
+              <p style="font-size:0.9rem; margin-bottom:12px; font-weight:700; color:#475569;">▼ 目標からワンタップで選択：</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1">プレミアムパス月額 (980円)</button>
+              <button type="button" class="preset-btn " data-amount="13800" data-mult="1">ポケゴールド 550個 (13,800円)</button>
+              <button type="button" class="preset-btn " data-amount="50000" data-mult="1">図鑑コンプ課金 (50,000円)</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">課金パックを選択：</label>
+                          <select id="sim-pack-select">
+                              <option value="980">プレミアムパス (980円)</option>
+                  <option value="140">ポケゴールド 5個 (140円)</option>
+                  <option value="420">ポケゴールド 15個 (420円)</option>
+                  <option value="840">ポケゴールド 31個 (840円)</option>
+                  <option value="2800">ポケゴールド 105個 (2,800円)</option>
+                  <option value="5600">ポケゴールド 215個 (5,600円)</option>
+                  <option value="13800">ポケゴールド 550個 (13,800円)</option>
+                              <option value="custom">自由入力（カスタム金額）</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">購入回数：</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">課金予定合計額（円）：</label>
+                          <input type="number" id="sim-custom-amount" value="980" min="0" step="10" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">ポイント倍率：</label>
+                          <select id="sim-multiplier">
+                              <option value="1">通常時（等倍 / 1%）</option>
+                              <option value="2">2倍キャンペーン</option>
+                              <option value="3">3倍キャンペーン</option>
+                              <option value="4">4倍キャンペーン</option>
+                              <option value="5">5倍キャンペーン</option>
+                              <option value="7">7倍キャンペーン</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">現在の会員ランク：</label>
+                          <select id="sim-status">
+                              <option value="1.0">ブロンズ（100円=1pt）</option>
+                              <option value="1.25">シルバー（100円=1.25pt）</option>
+                              <option value="1.5">ゴールド（100円=1.5pt）</option>
+                              <option value="1.75">プラチナ（100円=1.75pt）</option>
+                              <option value="2.0">ダイヤモンド（100円=2.0pt）</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">課金合計金額</span>
+                          <strong id="res-total-amount" class="result-stat-value">- 円</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">獲得予定 Playポイント</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">ポイント還元価値</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">- 円分</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">到達ステータス</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>ランク進捗状況</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill"></div>
+                      </div>
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※Google Play公式の四捨五入ルール（100円単位）に基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>ポケポケ 課金パック別 Playポイント還元早見表</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>課金パック名</th>
+                              <th>価格 (税込)</th>
+                              <th>通常時還元 (1%)</th>
+                              <th>5倍CP時還元 (5%)</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>プレミアムパス (980円)</td><td>980 円</td><td>約 10 pt</td><td>約 49 pt</td></tr>
+<tr><td>ポケゴールド 5個 (140円)</td><td>140 円</td><td>約 1 pt</td><td>約 7 pt</td></tr>
+<tr><td>ポケゴールド 15個 (420円)</td><td>420 円</td><td>約 4 pt</td><td>約 21 pt</td></tr>
+<tr><td>ポケゴールド 31個 (840円)</td><td>840 円</td><td>約 8 pt</td><td>約 42 pt</td></tr>
+<tr><td>ポケゴールド 105個 (2,800円)</td><td>2,800 円</td><td>約 28 pt</td><td>約 140 pt</td></tr>
+<tr><td>ポケゴールド 215個 (5,600円)</td><td>5,600 円</td><td>約 56 pt</td><td>約 280 pt</td></tr>
+<tr><td>ポケゴールド 550個 (13,800円)</td><td>13,800 円</td><td>約 138 pt</td><td>約 690 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>よくある質問（FAQ）</h2>
+              <h3>ポケポケの課金でGoogle Playポイントは貯まりますか？</h3>
+<p>はい。Android端末からポケゴールドやプレミアムパスを購入すると、100円あたり1pt以上のPlay Pointsが貯まります。</p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>他の人気ゲームの課金シミュレーター</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">原神（Genshin Impact）</h3>
+                          <p class="game-card-desc">創世結晶パック・空月の祝福・紀行・天井（180連）・完凸課金で貯まるPlayポイントと到達ランクをシミュレーション！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../umamusume/">
+                      <div>
+                          <div class="game-card-icon">🐴</div>
+                          <h3 class="game-card-title">ウマ娘 プリティーダービー</h3>
+                          <p class="game-card-desc">ジュエル購入・デイリージュエルパック・天井（200連=6万円）課金で貯まるPlayポイントを即計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
+                          <p class="game-card-desc">聖晶石パック・福袋（有償15個）・確定召喚（天井330連）で貯まるPlayポイントと還元額をシミュレーション！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">モンスターストライク (モンスト)</h3>
+                          <p class="game-card-desc">オーブ購入・モンパス・超獣神祭・コラボガチャ課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">学園アイドルマスター (学マス)</h3>
+                          <p class="game-card-desc">ジュエルパック・パス課金・天井（200連=6万円）で貯まるPlayポイントと到達ステータスを試算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../proseka/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">プロジェクトセカイ (プロセカ)</h3>
+                          <p class="game-card-desc">有償クリスタル・カラフルパス・プレパス・天井課金で貯まるPlayポイントを計算！</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>目標ポイントからの逆算シミュレーター</h3>
+              <p>「ゴールドランクまであと◯◯pt必要」など、不足ポイントから必要課金額を逆算したい場合は総合計算機をご利用ください。</p>
+              <a class="cta-btn" href="../../">Playポイント総合計算機へ ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column" style="width:300px; flex-shrink:0;">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 総合計算機</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>あと何ポイント必要？</h4>
+                      <p>目標ランクまでの必要金額を即時シミュレーション！</p>
+                      <a class="sidebar-calc-btn" href="../../">計算機を使う ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🎮 ゲーム別一覧</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../genshin/">✨ 原神</a></li>
+                      <li><a href="../umamusume/">🐴 ウマ娘</a></li>
+                      <li><a href="../fgo/">⚔️ FGO</a></li>
+                      <li><a href="../monst/">🐉 モンスト</a></li>
+                      <li><a href="../gakumas/">🌟 学マス</a></li>
+                      <li><a href="../proseka/">🎵 プロセカ</a></li>
+                      <li><a href="../pokepoke/">🎴 ポケポケ</a></li>
+                  </ul>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 おすすめ攻略記事</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li>
+                      <li><a href="../../articles/2026-07-24-play-points-1-value.html">1ポイントはいくら相当？</a></li>
+                      <li><a href="../../articles/2026-07-31-super-weekly-reward.html">スーパーウィークリーリワード完全ガイド</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">計算機トップ</a> ｜
+          <a href="../">ゲーム別計算機</a> ｜
+          <a href="../../blog/">記事一覧</a> ｜
+          <a href="../../privacy.html">プライバシーポリシー</a> ｜
+          <a href="../../terms.html">利用規約</a> ｜
+          <a href="../../author/katakata.html">運営者情報</a>
+      </div>
+      <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+  </footer>
+
+  <script src="../game-sim.js?v=a6f3cacd4b"></script>
+  <script src="../../js/analytics-core.js?v=6938dbdfa8"></script>
+</body>
+</html>

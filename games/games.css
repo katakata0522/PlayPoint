@@ -1,0 +1,327 @@
+/* ==========================================================================
+   PlayPoint Game-Specific Simulators (Cocoon & Modern Theme)
+   ========================================================================== */
+
+:root {
+  --game-primary: #0284c7;
+  --game-primary-hover: #0369a1;
+  --game-accent: #f59e0b;
+  --game-bg: #f8fafc;
+  --game-card-bg: #ffffff;
+  --game-border: #e2e8f0;
+  --game-text-main: #1e293b;
+  --game-text-sub: #64748b;
+}
+
+body {
+  background-color: var(--game-bg);
+  color: var(--game-text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+.game-page-container {
+  max-width: 1140px;
+  margin: 20px auto 60px;
+  padding: 0 16px;
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.game-main-content {
+  flex: 1;
+  min-width: 0;
+  background: var(--game-card-bg);
+  border: 1px solid var(--game-border);
+  border-radius: 8px;
+  padding: 32px 36px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.game-header {
+  border-bottom: 2px solid var(--game-border);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
+
+.game-badge {
+  display: inline-block;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.game-title {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  line-height: 1.35;
+}
+
+.game-meta {
+  font-size: 0.85rem;
+  color: var(--game-text-sub);
+}
+
+/* シミュレーターカード */
+.game-sim-card {
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.game-sim-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.preset-btn {
+  background: #ffffff;
+  border: 1px solid #94a3b8;
+  color: #334155;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-btn:hover {
+  background: #e2e8f0;
+  border-color: #64748b;
+}
+
+.preset-btn.active {
+  background: var(--game-primary);
+  color: #ffffff;
+  border-color: var(--game-primary);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-field label {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.input-field input, .input-field select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* 計算結果ボックス */
+.game-result-container {
+  background: #ffffff;
+  border: 1.5px solid #0284c7;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.result-main-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.result-stat-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+
+.result-stat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--game-text-sub);
+  display: block;
+}
+
+.result-stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0284c7;
+  display: block;
+  margin-top: 4px;
+}
+
+.result-stat-value.highlight {
+  color: #ea580c;
+}
+
+/* ランク進捗バー */
+.rank-progress-wrapper {
+  margin: 18px 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.rank-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.rank-bar-bg {
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.rank-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8 0%, #0284c7 100%);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* パック早見表テーブル */
+.pack-table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+.pack-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.pack-table th, .pack-table td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 14px;
+  text-align: left;
+}
+
+.pack-table th {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: #334155;
+}
+
+.pack-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* ゲーム一覧ポータルカード */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 28px 0;
+}
+
+.game-portal-card {
+  background: #ffffff;
+  border: 1.5px solid var(--game-border);
+  border-radius: 10px;
+  padding: 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.game-portal-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--game-primary);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.12);
+}
+
+.game-card-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.game-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.game-card-desc {
+  font-size: 0.85rem;
+  color: var(--game-text-sub);
+  margin: 0 0 14px 0;
+  flex: 1;
+}
+
+.game-card-action {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--game-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .game-page-container {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+  .game-main-content {
+    padding: 20px 16px;
+  }
+  .game-title {
+    font-size: 1.4rem;
+  }
+  .input-grid {
+    grid-template-columns: 1fr;
+  }
+  .result-main-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
