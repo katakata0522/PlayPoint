@@ -88,7 +88,8 @@ const LOCALES = {
       { title: 'Google Playギフトコードをお得に買う方法', href: 'articles/2026-06-20-discount-gift-cards.html' },
       { title: '100ポイントはいくら相当？', href: 'articles/2026-07-24-play-points-100-value.html' },
       { title: 'スーパーウィークリーリワード完全ガイド', href: 'articles/2026-07-31-super-weekly-reward.html' }
-    ]
+    ],
+    trademarkNotice: 'Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは独立した非公式ファンサイト・シミュレーターであり、Google LLC および掲載されている各ゲームの開発・配信元企業とは一切関係ありません。記載されているゲーム名・アイテム名・商標の権利は各権利元に帰属します。'
   },
   en: {
     lang: 'en',
@@ -171,7 +172,8 @@ const LOCALES = {
       { title: 'Google Play Points Levels Explained', href: 'en/articles/google-play-points-levels.html' },
       { title: 'Points Not Showing Up Troubleshooting', href: 'en/articles/google-play-points-not-showing.html' },
       { title: 'Google Play Gift Cards & Points Guide', href: 'en/articles/google-play-points-gift-cards.html' }
-    ]
+    ],
+    trademarkNotice: 'Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide, not affiliated with or endorsed by Google LLC or any game publishers mentioned. All game titles, trademarks, and assets belong to their respective copyright holders.'
   },
   ko: {
     lang: 'ko',
@@ -254,7 +256,8 @@ const LOCALES = {
       { title: 'Play Points 등급 구조 및 혜택', href: 'ko/articles/google-play-points-levels.html' },
       { title: 'Play Points가 표시되지 않을 때 해결법', href: 'ko/articles/google-play-points-not-showing.html' },
       { title: '기프트카드와 포인트 적립 조건', href: 'ko/articles/google-play-points-gift-cards.html' }
-    ]
+    ],
+    trademarkNotice: 'Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 정보 사이트이며, Google LLC 및 각 게임 배급사/개발사와 제휴 또는 승인 관계가 없습니다. 언급된 모든 상표와 게임 관련 권리는 해당 권리자에게 귀속됩니다.'
   },
   tw: {
     lang: 'zh-TW',
@@ -337,7 +340,8 @@ const LOCALES = {
       { title: 'Play Points 等級結構與升級攻略', href: 'tw/articles/google-play-points-levels.html' },
       { title: '點數未正常顯示的排查步驟', href: 'tw/articles/google-play-points-not-showing.html' },
       { title: '禮物卡與點數回饋條件整理', href: 'tw/articles/google-play-points-gift-cards.html' }
-    ]
+    ],
+    trademarkNotice: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為非官方社群營運之計算與攻略站，與 Google LLC 及各遊戲開發/發行商無關。所提及之所有遊戲名稱、商標及版權均歸其各自權利人所有。'
   }
 };
 
@@ -1942,6 +1946,7 @@ function generateGamePageHtml(game, localeKey) {
           <a href="${assetsRelative}terms.html">Terms</a> ｜
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
+      <p class="site-footer-trademark">${loc.trademarkNotice}</p>
       <p>© 2026 ${loc.siteName} All Rights Reserved.</p>
   </footer>
 
@@ -2130,6 +2135,7 @@ function generatePortalPageHtml(localeKey) {
           <a href="${assetsRelative}terms.html">Terms</a> ｜
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
+      <p class="site-footer-trademark">${loc.trademarkNotice}</p>
       <p>© 2026 ${loc.siteName} All Rights Reserved.</p>
   </footer>
 

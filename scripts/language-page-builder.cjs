@@ -166,6 +166,11 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   // 12. フッター meta-line の置換
   output = output.replace(/<!-- META_LINE_START -->[\s\S]*?<!-- META_LINE_END -->/, config.metaLine);
 
+  // 13. 商標免責の置換
+  if (config.trademarkDisclaimer) {
+    output = output.replace(/<!-- TRADEMARK_DISCLAIMER_START -->[\s\S]*?<!-- TRADEMARK_DISCLAIMER_END -->/, config.trademarkDisclaimer);
+  }
+
   return output;
 }
 

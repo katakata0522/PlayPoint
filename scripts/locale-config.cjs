@@ -166,6 +166,9 @@ function createLocales() {
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${TOP_PAGE_CONTENT_DATES.en}</p>
         <!-- META_LINE_END -->`,
+        trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
+        <p class="site-footer-trademark">Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide, not affiliated with or endorsed by Google LLC or any game publishers mentioned.</p>
+        <!-- TRADEMARK_DISCLAIMER_END -->`,
         authorName: 'katakata'
     },
     'ko': {
@@ -326,6 +329,9 @@ function createLocales() {
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${TOP_PAGE_CONTENT_DATES.ko}</p>
         <!-- META_LINE_END -->`,
+        trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
+        <p class="site-footer-trademark">Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 가이드 사이트이며, Google LLC 및 각 게임 개발사/배급사와 제휴 또는 승인 관계가 없습니다.</p>
+        <!-- TRADEMARK_DISCLAIMER_END -->`,
         authorName: 'katakata'
     },
     'tw': {
@@ -486,6 +492,9 @@ function createLocales() {
         metaLine: `        <!-- META_LINE_START -->
         <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${TOP_PAGE_CONTENT_DATES.tw}</p>
         <!-- META_LINE_END -->`,
+        trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
+        <p class="site-footer-trademark">Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為非官方社群營運之計算器與攻略指南，與 Google LLC 及各遊戲開發/發行商無關。</p>
+        <!-- TRADEMARK_DISCLAIMER_END -->`,
         authorName: 'katakata'
     }
 };
