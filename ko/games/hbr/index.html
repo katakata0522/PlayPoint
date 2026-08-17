@@ -7,7 +7,7 @@
   <meta name="author" content="카타카타" />
   <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
   <title>헤븐 번즈 레드 (HBR) - Google Play Points 계산기</title>
-  <meta name="description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 월정액, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
+  <meta name="description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
   <link rel="canonical" href="https://playpoint-sim.com/ko/games/hbr/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/hbr/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/hbr/" />
@@ -18,12 +18,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Google Play Points 계산기" />
   <meta property="og:title" content="헤븐 번즈 레드 (HBR) - Google Play Points 계산기" />
-  <meta property="og:description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 월정액, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
+  <meta property="og:description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
   <meta property="og:url" content="https://playpoint-sim.com/ko/games/hbr/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="헤븐 번즈 레드 (HBR) - Google Play Points 계산기" />
-  <meta name="twitter:description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 월정액, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
+  <meta name="twitter:description" content="헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다." />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="../../../articles/article-shared.css?v=96f29b746a" />
@@ -130,7 +130,7 @@
               <p class="game-meta">최종 확인: 2026년 8월 ｜ Google Play Points (1,000원=1pt)</p>
           </header>
 
-          <p>헤븐 번즈 레드(HBR)의 쿼츠 구매, 월정액, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.</p>
+          <p>헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.</p>
 
           <!-- シミュレーター操作パネル -->
           <section class="game-sim-card">
@@ -138,7 +138,8 @@
 
               <p class="preset-heading">▼ 목표 프리셋:</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="5900" data-mult="1" aria-pressed="true">월정액 (₩5,900)</button>
+                  <button type="button" class="preset-btn active" data-amount="5900" data-mult="1" aria-pressed="true">라이트 패스 (₩5,900)</button>
+              <button type="button" class="preset-btn " data-amount="29000" data-mult="1" aria-pressed="false">프리미엄 패스 (₩29,000)</button>
               <button type="button" class="preset-btn " data-amount="30000" data-mult="1" aria-pressed="false">10연차 (약 ₩30,000)</button>
               <button type="button" class="preset-btn " data-amount="590000" data-mult="1" aria-pressed="false">200연차 천장 (₩590,000)</button>
               <button type="button" class="preset-btn " data-amount="2400000" data-mult="1" aria-pressed="false">풀돌 기준 (약 ₩2,400,000)</button>
@@ -150,11 +151,11 @@
                           <label for="sim-pack-select">과금 패키지 선택:</label>
                           <select id="sim-pack-select">
                               <option value="1500">쿼츠 120개 (₩1,500)</option>
-                  <option value="4900">쿼츠 370개 (₩4,900)</option>
-                  <option value="9900">쿼츠 750개 (₩9,900)</option>
-                  <option value="29000">쿼츠 2,260개 (₩29,000)</option>
-                  <option value="49000">쿼츠 3,800개 (₩49,000)</option>
-                  <option value="99000">쿼츠 8,000개 (₩99,000)</option>
+                  <option value="4900">쿼츠 420개 (₩4,900)</option>
+                  <option value="9900">쿼츠 850개 (₩9,900)</option>
+                  <option value="29000">쿼츠 2,750개 (₩29,000)</option>
+                  <option value="49000">쿼츠 4,750개 (₩49,000)</option>
+                  <option value="99000">쿼츠 10,000개 (₩99,000)</option>
                               <option value="custom">직접 입력 (자유 금액)</option>
                           </select>
                       </div>
@@ -259,11 +260,11 @@
                       </thead>
                       <tbody>
                           <tr><td>쿼츠 120개 (₩1,500)</td><td>₩1,500원</td><td>약 2 pt</td><td>약 8 pt</td></tr>
-<tr><td>쿼츠 370개 (₩4,900)</td><td>₩4,900원</td><td>약 5 pt</td><td>약 25 pt</td></tr>
-<tr><td>쿼츠 750개 (₩9,900)</td><td>₩9,900원</td><td>약 10 pt</td><td>약 50 pt</td></tr>
-<tr><td>쿼츠 2,260개 (₩29,000)</td><td>₩29,000원</td><td>약 29 pt</td><td>약 145 pt</td></tr>
-<tr><td>쿼츠 3,800개 (₩49,000)</td><td>₩49,000원</td><td>약 49 pt</td><td>약 245 pt</td></tr>
-<tr><td>쿼츠 8,000개 (₩99,000)</td><td>₩99,000원</td><td>약 99 pt</td><td>약 495 pt</td></tr>
+<tr><td>쿼츠 420개 (₩4,900)</td><td>₩4,900원</td><td>약 5 pt</td><td>약 25 pt</td></tr>
+<tr><td>쿼츠 850개 (₩9,900)</td><td>₩9,900원</td><td>약 10 pt</td><td>약 50 pt</td></tr>
+<tr><td>쿼츠 2,750개 (₩29,000)</td><td>₩29,000원</td><td>약 29 pt</td><td>약 145 pt</td></tr>
+<tr><td>쿼츠 4,750개 (₩49,000)</td><td>₩49,000원</td><td>약 49 pt</td><td>약 245 pt</td></tr>
+<tr><td>쿼츠 10,000개 (₩99,000)</td><td>₩99,000원</td><td>약 99 pt</td><td>약 495 pt</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -432,7 +433,7 @@
                       <div>
                           <div class="game-card-icon">🎵</div>
                           <h3 class="game-card-title">메멘토 모리 (MementoMori)</h3>
-                          <p class="game-card-desc">메멘토 모리의 다이아 결제, 월간 패스 및 뽑기 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
+                          <p class="game-card-desc">메멘토 모리의 다이아 결제, 월간 부스트 및 100연차 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
                       </div>
                       <div class="game-card-action">계산기 열기 ➔</div>
                   </a>
@@ -448,7 +449,7 @@
                       <div>
                           <div class="game-card-icon">⏳</div>
                           <h3 class="game-card-title">리버스: 1999 (Reverse: 1999)</h3>
-                          <p class="game-card-desc">리버스: 1999의 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
+                          <p class="game-card-desc">리버스: 1999의 순수한 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를計算합니다.</p>
                       </div>
                       <div class="game-card-action">계산기 열기 ➔</div>
                   </a>
