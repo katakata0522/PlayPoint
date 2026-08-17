@@ -28,7 +28,7 @@ const LOCALES = {
     badgeText: '人気ゲーム別シミュレーター',
     portalBadge: '🎮 ソシャゲ特化',
     portalH1: '人気ゲーム別 Playポイント課金・天井シミュレーター',
-    portalMeta: '原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パック・天井ガチャで貯まるGoogle Play Pointsを即時計算！各ゲームの課金アイテム価格と還元率、お得な交換レート、ギフトコード活用法を一覧で比較できます。',
+    portalMeta: '原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パックや天井ガチャで貯まるPlayポイントをパッと計算！各ゲームの課金アイテム価格や還元早見表、お得な交換レートを掲載しています。ガチャ前の計画にぜひ役立ててくださいね。',
     portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブ、月相、有償ジュエル、龍石、純正源石など）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
     openCalc: '計算機を開く ➔',
     presetHeading: '▼ 目標プリセット：',
@@ -393,7 +393,7 @@ const GAMES_DATA = [
     names: { ja: '原神 (Genshin Impact)', en: 'Genshin Impact', ko: '원신 (Genshin Impact)', tw: '原神 (Genshin Impact)' },
     shortNames: { ja: '原神', en: 'Genshin', ko: '원신', tw: '原神' },
     descs: {
-      ja: '原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsを即時計算！課金パック別ポイント還元早見表やおすすめ交換レート比較、ギフトコードでお得に課金する裏技も掲載。',
+      ja: '原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な交換レートも比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons in Genshin Impact!',
       ko: '창세의 결정 패키지, 공월 축복, 진주 기행, 180연차 확천, 풀돌(6돌) 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
       tw: '試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命(6命)課金可獲得的 Play Points 與等級進度！'
@@ -493,7 +493,7 @@ const GAMES_DATA = [
     names: { ja: '崩壊：スターレイル (Honkai: Star Rail)', en: 'Honkai: Star Rail', ko: '붕괴: 스타레일', tw: '崩壞：星穹鐵道' },
     shortNames: { ja: 'スターレイル', en: 'Star Rail', ko: '붕스', tw: '星鐵' },
     descs: {
-      ja: '崩壊スターレイルの往日の夢華、列車補給標章、ナナシビトの褒章、180連確定天井・完凸で貯まるPlayポイントを計算！パック別還元早見表や交換レート比較、楽天認定店ギフトコードを活用したお得な課金術を公開。',
+      ja: '崩壊スターレイルの往日の夢華、列車補給標章、ナナシビトの褒章、180連確定天井・完凸で貯まるPlayポイントを即時計算！パック別還元早見表やポイントの使い道も比較できます。ガチャ前のシミュレーションにぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Oneiric Shards, Express Supply Pass, Nameless Honor, 180-pull hard pity, and E6 character summons in Honkai: Star Rail!',
       ko: '오래된 꿈, 열차보급허가증, 무명의 공훈, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算古老夢華、列車補給憑證、無名客的榮勳、180抽大保底、滿魂(6魂)課金可獲得的 Play Points！'
@@ -587,7 +587,7 @@ const GAMES_DATA = [
     names: { ja: 'ゼンレスゾーンゼロ (Zenless Zone Zero)', en: 'Zenless Zone Zero', ko: '젠레스 존 제로', tw: '絕區零 (Zenless Zone Zero)' },
     shortNames: { ja: 'ゼンゼロ', en: 'ZZZ', ko: '젠존제', tw: '絕區零' },
     descs: {
-      ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントを即時計算！課金パック別還元早見表や交換レート比較、ギフトコードでお得に課金する裏技を掲載。',
+      ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や交換レートもまとめているので、課金前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent M6 summons in ZZZ!',
       ko: '모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算絕區零菲林底片、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
@@ -681,7 +681,7 @@ const GAMES_DATA = [
     names: { ja: 'ブルーアーカイブ (Blue Archive)', en: 'Blue Archive', ko: '블루 아카이브', tw: '蔚藍檔案 (Blue Archive)' },
     shortNames: { ja: 'ブルアカ', en: 'Blue Archive', ko: '블아', tw: '蔚藍檔案' },
     descs: {
-      ja: 'ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井（24,000石）・固有武器完凸で貯まるPlayポイントを計算！パック別早見表やポイントお得な使い道比較、高還元ギフトコード購入技を徹底解説。',
+      ja: 'ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント交換レートも比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull Sparking recruitment in Blue Archive!',
       ko: '청휘석 패키지, 월간 청휘석 패키지, 200연차 모집 포인트 교환(천장) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！'
@@ -767,7 +767,7 @@ const GAMES_DATA = [
     names: { ja: 'Pokémon TCG Pocket (ポケポケ)', en: 'Pokémon TCG Pocket', ko: '포켓몬 카드 게임 Pocket', tw: '寶可夢 TCG Pocket' },
     shortNames: { ja: 'ポケポケ', en: 'PTCGP', ko: '포케포케', tw: '寶可夢卡牌' },
     descs: {
-      ja: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！課金パック別ポイント還元早見表や交換レート比較、ギフトコード活用法を掲載。',
+      ja: 'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Poké Gold, Premium Pass, and pack openings in Pokémon TCG Pocket!',
       ko: '포켓골드 및 프리미엄 패스 결제 시 적립되는 Google Play Points를 계산하세요!',
       tw: '計算寶可金塊與特級護照課金可獲得的 Google Play Points！'
@@ -849,7 +849,7 @@ const GAMES_DATA = [
     names: { ja: 'Fate/Grand Order (FGO)', en: 'Fate/Grand Order (FGO)', ko: '페이트/그랜드 오더 (FGO)', tw: '命運-冠位指定 (FGO)' },
     shortNames: { ja: 'FGO', en: 'FGO', ko: '페그오', tw: 'FGO' },
     descs: {
-      ja: 'Fate/Grand Order（FGO）の聖晶石購入、福袋召喚（GSSR）、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントを計算！課金パック別ポイント早見表や交換レート比較、お得なギフトコード購入術を公開。',
+      ja: 'Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な交換レートも比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Saint Quartz, Lucky Bag GSSR summons, 330-summon pity, and NP5 in FGO!',
       ko: '성정석, 복주머니 GSSR, 330연차 확정소환(천장), 보5 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '試算聖晶石禮包、福袋召喚(GSSR)、330抽確定召喚(保底)、寶5課金可獲得的 Play Points！'
@@ -931,7 +931,7 @@ const GAMES_DATA = [
     names: { ja: 'ウマ娘 プリティーダービー', en: 'Umamusume: Pretty Derby', ko: '우마무스메 프리티 더비', tw: '賽馬娘 Pretty Derby' },
     shortNames: { ja: 'ウマ娘', en: 'Umamusume', ko: '우마무스메', tw: '賽馬娘' },
     descs: {
-      ja: 'ウマ娘のジュエル購入、デイリージュエルパック、200連天井ガチャ・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別ポイント還元早見表やお得な交換レート比較、ギフトコード活用術を掲載。',
+      ja: 'ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別還元早見表やポイント使い道もまとめているので、育成前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Jewels, Daily Packs, 200-pull spark pity, and MLB Support Cards in Umamusume!',
       ko: '쥬얼, 먼슬리 우마(데일리 쥬얼), 200연차 교환 Pt 천장, 서포트 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算賽馬娘寶石、每日寶石包、200抽兌換Pt保底、支援卡4凸(滿凸)課金可獲得的 Play Points！'
@@ -1017,7 +1017,7 @@ const GAMES_DATA = [
     names: { ja: 'モンスターストライク (モンスト)', en: 'Monster Strike', ko: '몬스터 스트라이크', tw: '怪物彈珠 (Monster Strike)' },
     shortNames: { ja: 'モンスト', en: 'Monst', ko: '몬스', tw: '怪物彈珠' },
     descs: {
-      ja: 'モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsを即時計算！課金パック別還元早見表やPlayクレジット・割引クーポン交換レート比較、お得な課金術を解説。',
+      ja: 'モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント交換レートも掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Orbs, Monpass, Hoshitama summons, and Max Luck units in Monster Strike!',
       ko: '오브 구매, 몬패스, 호시타마, 초수신제, 운극 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算寶珠、怪彈會員、星玉、超獸神祭、極運課金可獲得的 Play Points！'
@@ -1092,7 +1092,7 @@ const GAMES_DATA = [
     names: { ja: '学園アイドルマスター (学マス)', en: 'Gakuen Idolmaster', ko: '학원 아이돌마스터', tw: '學園偶像大師' },
     shortNames: { ja: '学マス', en: 'Gakumas', ko: '학마스', tw: '學馬仕' },
     descs: {
-      ja: '学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントを計算！課金パック別還元早見表やポイントお得な使い道比較、楽天認定店ギフトコード活用法を公開。',
+      ja: '学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な交換レートも比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Jewels, Premium Mission Pass, and 200 Gacha Pts pity in Gakuen Idolmaster!',
       ko: '쥬얼 패키지, 프리미엄 미션 패스, 200 가챠 Pt 천장, 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '試算學園偶像大師寶石、高級任務通行證、200 轉蛋Pt 保底、4凸(滿凸)課金可獲得的 Play Points！'
@@ -1164,7 +1164,7 @@ const GAMES_DATA = [
     names: { ja: 'プロジェクトセカイ (プロセカ)', en: 'HATSUNE MIKU: COLORFUL STAGE!', ko: '프로젝트 세카이 컬러풀 스테이지!', tw: '世界計畫 繽紛舞台！' },
     shortNames: { ja: 'プロセカ', en: 'PJSK', ko: '프세카', tw: '世界計畫' },
     descs: {
-      ja: 'プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！課金パック別ポイント還元早見表や交換レート比較、ギフトコードでお得に課金する裏技も掲載。',
+      ja: 'プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や交換レートも掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Crystals, Colorful Pass, Premium Mission Pass, and 300 Gacha Stickers spark in Project SEKAI!',
       ko: '유료 크리스탈, 컬러풀 패스, 프리미엄 미션 패스, 가챠 스티커 300장 천장, 마스터 랭크 5 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算世界計畫付費水晶、彩色通行證、高階任務通行證、轉蛋貼紙300張保底、大師等級5課金可獲得的 Play Points！'
@@ -1245,7 +1245,7 @@ const GAMES_DATA = [
     names: { ja: '勝利の女神：NIKKE', en: 'Goddess of Victory: NIKKE', ko: '승리의 여신: 니케', tw: '勝利女神：妮姬' },
     shortNames: { ja: 'ニケ', en: 'NIKKE', ko: '니케', tw: '妮姬' },
     descs: {
-      ja: '勝利の女神：NIKKEのジュエル購入、30日補給品（月パス）、イベントパス、マイレージ200連天井で貯まるPlayポイントを計算！課金パック別還元早見表やお得な交換レート比較、ギフトコード高還元購入技を徹底解説。',
+      ja: '勝利の女神：NIKKEのジュエル購入、30日補給品、イベントパス、マイレージ200連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。隊員募集前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on 30-Day Supply, Mission Pass, 200 Gold Mileage pity, and Max Core summons in NIKKE!',
       ko: '30일 보급품, 미션 패스, 골드 마일리지 200장 천장, 코어 MAX(3돌+7) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算妮姬30天補給品、任務Pass、金色積分券200張保底、核心MAX(3突+7)課金可獲得的 Play Points！'
@@ -1341,7 +1341,7 @@ const GAMES_DATA = [
     names: { ja: '鳴潮 (Wuthering Waves)', en: 'Wuthering Waves', ko: '명조: 워더링 웨이브', tw: '鳴潮 (Wuthering Waves)' },
     shortNames: { ja: '鳴潮', en: 'WuWa', ko: '명조', tw: '鳴潮' },
     descs: {
-      ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを計算！課金パック別還元早見表やポイント使い道比較、楽天認定店ギフトコードを活用した課金術を公開。',
+      ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な交換レートも比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
       ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
@@ -1441,7 +1441,7 @@ const GAMES_DATA = [
     names: { ja: 'ドラゴンボールZ ドッカンバトル', en: 'DRAGON BALL Z DOKKAN BATTLE', ko: '드래곤볼 Z 폭렬격전', tw: '七龍珠爆裂激戰' },
     shortNames: { ja: 'ドッカン', en: 'Dokkan', ko: '폭렬격전', tw: '爆裂激戰' },
     descs: {
-      ja: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるGoogle Play Pointsを計算！課金パック別ポイント早見表や交換レート比較、お得なギフトコード購入技を掲載。',
+      ja: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や交換レートも比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Dragon Stones, Daily Capsules, Dokkan Festival Coins, and 100% Rainbow units in Dokkan Battle!',
       ko: '용석 패키지, 데일리 캡슐, 돗칸 축제 코인 교환, 잠재능력 100% 해방(무지개) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算七龍珠爆裂激戰龍石、每日膠囊、Dokkan祭硬幣兌換、潛在能力100%解放(彩星)課金可獲得的 Play Points！'
@@ -1528,7 +1528,7 @@ const GAMES_DATA = [
     names: { ja: 'アークナイツ (Arknights)', en: 'Arknights', ko: '명일방주', tw: '明日方舟 (Arknights)' },
     shortNames: { ja: 'アクナイ', en: 'Arknights', ko: '명방', tw: '明日方舟' },
     descs: {
-      ja: 'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを計算！課金パック別還元早見表やポイントお得な使い道比較、高還元ギフトコード購入法を公開。',
+      ja: 'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Originite Prime, Monthly Card, Headhunting Packs, 300-pull spark pity, and Pot 6 in Arknights!',
       ko: '순수한 원석, 월정액, 월간 헤드헌팅 패키지, 한정 300연차 천장, 풀잠(잠재6) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算明日方舟至純源石、月卡、每月尋訪組合包、限定300抽保底、滿潛(潛能6)課金可獲得的 Play Points！'
@@ -1622,7 +1622,7 @@ const GAMES_DATA = [
     names: { ja: 'ヘブンバーンズレッド (ヘブバン)', en: 'Heaven Burns Red', ko: '헤븐 번즈 레드 (HBR)', tw: '緋染天空 (Heaven Burns Red)' },
     shortNames: { ja: 'ヘブバン', en: 'HBR', ko: 'HBR', tw: '緋染天空' },
     descs: {
-      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsを即時計算！課金パック別ポイント還元早見表や交換レート比較、ギフトコードでお得に課金する裏技も掲載。',
+      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や交換レートも掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Google Play Points earned on Quartz, HBR Pass, and 200-pull Spark pity in Heaven Burns Red.',
       ko: '헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.',
       tw: '計算緋染天空（Heaven Burns Red）購買石英、月卡通行證與200抽保底時可獲得的 Google Play Points。'
@@ -1713,7 +1713,7 @@ const GAMES_DATA = [
     names: { ja: 'メメントモリ (MementoMori)', en: 'MementoMori: AFKRPG', ko: '메멘토 모리 (MementoMori)', tw: 'MementoMori' },
     shortNames: { ja: 'メメントモリ', en: 'MementoMori', ko: '메멘토모리', tw: 'MementoMori' },
     descs: {
-      ja: 'メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるGoogle Play Pointsを即時計算！課金パック別還元早見表やおすすめ交換先レート比較、ギフトコード購入のポイント還元技を解説。',
+      ja: 'メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や交換レートも比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Diamonds, Monthly Boosts, and 100-pull Pity in MementoMori.',
       ko: '메멘토 모리의 다이아 결제, 월간 부스트 및 100연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算 MementoMori 購買鑽石、月間特權及100抽保底時可獲得的 Google Play Points。'
@@ -1800,7 +1800,7 @@ const GAMES_DATA = [
     names: { ja: '呪術廻戦 ファントムパレード (ファンパレ)', en: 'Jujutsu Kaisen Phantom Parade', ko: '주술회전 팬텀 퍼레이드', tw: '咒術迴戰 幻影夜行 (Phantom Parade)' },
     shortNames: { ja: 'ファンパレ', en: 'Phantom Parade', ko: '팬텀퍼레이드', tw: '幻影夜行' },
     descs: {
-      ja: '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるGoogle Play Pointsを計算！パック別還元早見表やポイントお得な使い道比較、楽天認定店ギフトコードを活用した高還元課金術を公開。',
+      ja: '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。ガチャ前のシミュレーションにぜひ使ってみてくださいね。',
       en: 'Calculate Google Play Points earned on Kaishu, Battle Pass, and 250-pull Pity in Jujutsu Kaisen Phantom Parade.',
       ko: '주술회전 팬텀 퍼레이드의 유료 회주, 패스 및 250연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算咒術迴戰 幻影夜行購買有償迴珠、通行證及250抽保底時可獲得的 Google Play Points。'
@@ -1886,7 +1886,7 @@ const GAMES_DATA = [
     names: { ja: 'リバース：1999 (Reverse: 1999)', en: 'Reverse: 1999', ko: '리버스: 1999 (Reverse: 1999)', tw: '重返未來：1999 (Reverse: 1999)' },
     shortNames: { ja: 'リバース1999', en: 'Reverse: 1999', ko: '리버스1999', tw: '重返未來1999' },
     descs: {
-      ja: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時シミュレーション！課金パック別ポイント早見表や交換レート比較、お得なギフトコード購入技を掲載。',
+      ja: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や交換レートも比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Clear Drops, Roaring Month, and 70/140-pull Pity in Reverse: 1999.',
       ko: '리버스: 1999의 순수한 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를計算합니다.',
       tw: '計算重返未來：1999購買獨享雨滴、咆哮之月（月卡）及70/140抽保底時可獲得的 Google Play Points。'
@@ -1972,7 +1972,7 @@ const GAMES_DATA = [
     names: { ja: '崩壊3rd (Honkai Impact 3rd)', en: 'Honkai Impact 3rd', ko: '붕괴3rd (Honkai Impact 3rd)', tw: '崩壞3rd (Honkai Impact 3rd)' },
     shortNames: { ja: '崩壊3rd', en: 'Honkai 3rd', ko: '붕괴3rd', tw: '崩壞3rd' },
     descs: {
-      ja: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsを計算！課金パック別ポイント還元早見表やPlayクレジット・割引クーポン交換レート比較、認定店ギフトコード活用法を徹底解説。',
+      ja: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や交換レートも一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
       en: 'Calculate Google Play Points earned on Crystals, Monthly Cards, and 90-pull Character Pity in Honkai Impact 3rd.',
       ko: '붕괴3rd의 수정 구매, 월정액, 90연차 캐릭터 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算崩壞3rd購買水晶、月卡及90抽角色保底時可獲得的 Google Play Points。'
@@ -2059,7 +2059,7 @@ const GAMES_DATA = [
     names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌駕世界 (Shadowverse: WB)' },
     shortNames: { ja: 'シャドバWB', en: 'Shadowverse: WB', ko: '섀도우버스 WB', tw: '闇影詩章WB' },
     descs: {
-      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレミアムバトルパス、パックポイント天井で貯まるPlayポイントを即時計算！パック別還元早見表や交換レート比較、ギフトコードを活用してお得に課金する裏技を掲載。',
+      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や交換レートも掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Crystals, Premium Battle Pass, and Pack Points in Shadowverse: Worlds Beyond.',
       ko: '섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算闇影詩章：凌駕世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
