@@ -165,6 +165,21 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = GE
         <h2>FAQ</h2>
         ${content.faq.map(([question, answer]) => `<details><summary>${escapeHtml(question)}</summary><p>${escapeHtml(answer)}</p></details>`).join('\n        ')}
     </section>
+    <footer class="page-footer">
+        <p class="footer-nav-links">
+            <a href="/${localeKey}/">${escapeHtml(locale.home)}</a>
+            <span class="footer-separator">|</span>
+            <a href="/${localeKey}/articles/">${escapeHtml(locale.blog)}</a>
+            <span class="footer-separator">|</span>
+            <a href="/author/katakata.html">${escapeHtml(locale.policyLabel)}</a>
+            <span class="footer-separator">|</span>
+            <a href="/privacy.html">Privacy</a>
+            <span class="footer-separator">|</span>
+            <a href="/terms.html">Terms</a>
+        </p>
+        <p class="site-footer-trademark">${escapeHtml(locale.trademarkNotice)}</p>
+        <p class="copyright">© 2026 PlayPoint Simulation Tool</p>
+    </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
 <script src="/js/third-party.js?v=${assetVersions.thirdPartyVersion}"></script>
@@ -324,6 +339,7 @@ ${jsonLd(faqSchema)}
     <nav id="article-nav" class="article-nav"></nav>
     <footer class="article-footer">
         <p><a href="/${localeKey}/articles/">${escapeHtml(labels.backToGuides)}</a> | <a href="${escapeHtml(ctaHref.replace(/\?.*$/, ''))}">${escapeHtml(labels.calculatorTop)}</a></p>
+        <p class="site-footer-trademark">${escapeHtml(LOCALES[localeKey].trademarkNotice)}</p>
         <p class="small article-note-spacing">${escapeHtml(labels.footerNote)}</p>
     </footer>
 </main>
@@ -406,6 +422,7 @@ ${jsonLd(schema)}
     </aside>
     <footer class="article-footer">
         <p><a href="/${localeKey}/">${escapeHtml(locale.back)}</a></p>
+        <p class="site-footer-trademark">${escapeHtml(locale.trademarkNotice)}</p>
     </footer>
 </main>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>

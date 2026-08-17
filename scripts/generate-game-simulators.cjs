@@ -74,6 +74,19 @@ const LOCALES = {
     tableThPrice: '価格 (税込)',
     tableThNormal: '通常時還元 (1%)',
     tableThCp: '5倍CP時還元 (5%)',
+    rewardCompareTitle: '貯まったPlayポイントのお得な使い道（交換レート比較）',
+    rewardTagCoupon: '割引クーポン',
+    rewardCouponName: 'ゲーム専用 割引クーポン',
+    rewardCouponRate: '1pt ＝ 約2.0〜2.5円相当',
+    rewardCouponDesc: '250ptで500円引、1,000ptで2,500円引など。課金時に使うなら最も還元率が高くおすすめです。',
+    rewardTagDirect: '直接交換',
+    rewardDirectName: 'ゲーム内課金通貨・アイテム',
+    rewardDirectRate: '1pt ＝ 約1.5〜2.0円相当',
+    rewardDirectDesc: 'パック購入不要で直接通貨やガチャ石を入手。クーポン利用条件の金額に届かない小額交換に最適です。',
+    rewardTagCredit: 'Play残高',
+    rewardCreditName: 'Google Play クレジット',
+    rewardCreditRate: '1pt ＝ 1.0円相当',
+    rewardCreditDesc: '100ptで100円分の残高に等価交換。他ゲームや有料アプリ購入にも自由に使える万能型です。',
     faqHeading: 'よくある質問（FAQ）',
     otherGamesHeading: '他の人気ゲームの課金シミュレーター',
     ctaTitle: '目標ポイントからの逆算シミュレーター',
@@ -85,9 +98,10 @@ const LOCALES = {
     sidebarCalcBtn: '計算機を使う ➔',
     sidebarArticlesTitle: '📚 おすすめ攻略記事',
     sidebarArticles: [
+      { title: '東京ゲームショウ Google Play VIP特典', href: 'articles/2026-08-17-tgs-google-play-vip.html' },
+      { title: 'Google Play大感謝祭の参加方法と特典', href: 'articles/2026-08-17-diamond-valley-festival-guide.html' },
       { title: 'Google Playギフトコードをお得に買う方法', href: 'articles/2026-06-20-discount-gift-cards.html' },
-      { title: '100ポイントはいくら相当？', href: 'articles/2026-07-24-play-points-100-value.html' },
-      { title: 'スーパーウィークリーリワード完全ガイド', href: 'articles/2026-07-31-super-weekly-reward.html' }
+      { title: '100ポイントはいくら相当？', href: 'articles/2026-07-24-play-points-100-value.html' }
     ],
     trademarkNotice: 'Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは独立した非公式ファンサイト・シミュレーターであり、Google LLC および掲載されている各ゲームの開発・配信元企業とは一切関係ありません。記載されているゲーム名・アイテム名・商標の権利は各権利元に帰属します。'
   },
@@ -158,6 +172,19 @@ const LOCALES = {
     tableThPrice: 'Price (USD)',
     tableThNormal: 'Standard (1x)',
     tableThCp: '5x Promo (5x)',
+    rewardCompareTitle: 'Best Ways to Redeem Points (Value Comparison)',
+    rewardTagCoupon: 'Discount Coupon',
+    rewardCouponName: 'Game-Specific Coupon',
+    rewardCouponRate: '1pt = approx. $0.02 - $0.025 value (2x+)',
+    rewardCouponDesc: 'e.g., 250pts for $5 off. Best value for active in-app spenders.',
+    rewardTagDirect: 'Direct Item',
+    rewardDirectName: 'In-Game Items & Gems',
+    rewardDirectRate: '1pt = approx. $0.015 - $0.02 value',
+    rewardDirectDesc: 'Claim gems and items directly without purchasing packs.',
+    rewardTagCredit: 'Play Balance',
+    rewardCreditName: 'Google Play Credit',
+    rewardCreditRate: '1pt = $0.01 value (Base)',
+    rewardCreditDesc: '100pts = $1.00 Play Credit. Universal balance for any app or subscription.',
     faqHeading: 'Frequently Asked Questions (FAQ)',
     otherGamesHeading: 'Other Popular Game Points Calculators',
     ctaTitle: 'Reverse Mode & Target Status Calculator',
@@ -242,6 +269,19 @@ const LOCALES = {
     tableThPrice: '가격 (KRW)',
     tableThNormal: '일반 적립 (1배)',
     tableThCp: '5배 이벤트 (5배)',
+    rewardCompareTitle: '모은 포인트의 가장 이득인 사용처 (가치 비교)',
+    rewardTagCoupon: '할인 쿠폰',
+    rewardCouponName: '게임 전용 할인 쿠폰',
+    rewardCouponRate: '1pt ＝ 약 2.0~2.5배 가치',
+    rewardCouponDesc: '250pt로 5,000원 할인 등. 추가 결제 시 가장 높은 가치를 제공합니다.',
+    rewardTagDirect: '직접 교환',
+    rewardDirectName: '게임 내 재화 및 아이템',
+    rewardDirectRate: '1pt ＝ 약 1.5~2.0배 가치',
+    rewardDirectDesc: '패키지 구매 없이 직접 유료 재화나 뽑기 재화를 획득할 때 유용합니다.',
+    rewardTagCredit: 'Play 잔액',
+    rewardCreditName: 'Google Play 잔액 충전',
+    rewardCreditRate: '1pt ＝ 1원 기준',
+    rewardCreditDesc: '100pt로 100원 충전. 다른 앱이나 정기결제에도 자유롭게 사용 가능합니다.',
     faqHeading: '자주 묻는 질문 (FAQ)',
     otherGamesHeading: '다른 인기 게임 계산기',
     ctaTitle: '목표 포인트 역산 시뮬레이터',
@@ -1575,6 +1615,522 @@ const GAMES_DATA = [
         { q: '明日方舟課金可以累積 Play Points 嗎？', a: '可以！購買源石與尋訪禮包皆享有會員點數回饋。' }
       ]
     }
+  },
+  {
+    id: 'hbr',
+    icon: '⚔️',
+    names: { ja: 'ヘブンバーンズレッド (ヘブバン)', en: 'Heaven Burns Red', ko: '헤븐 번즈 레드 (HBR)', tw: '緋染天空 (Heaven Burns Red)' },
+    shortNames: { ja: 'ヘブバン', en: 'HBR', ko: 'HBR', tw: '緋染天空' },
+    descs: {
+      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入・マンスリーパス・200連天井ガチャで貯まるGoogle Play Pointsを計算できます。',
+      en: 'Calculate Google Play Points earned on Quartz, Monthly Pass, and 200-pull Spark pity in Heaven Burns Red.',
+      ko: '헤븐 번즈 레드(HBR)의 쿼츠 구매, 월정액, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算緋染天空（Heaven Burns Red）購買石英、月卡與200抽保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: 'クォーツ 120個 (160円)', price: 160 },
+        { name: 'クォーツ 370個 (490円)', price: 490 },
+        { name: 'クォーツ 750個 (980円)', price: 980 },
+        { name: 'クォーツ 2,260個 (2,940円)', price: 2940 },
+        { name: 'クォーツ 3,800個 (4,900円)', price: 4900 },
+        { name: 'クォーツ 8,000個 (10,000円)', price: 10000 }
+      ],
+      en: [
+        { name: '120 Quartz ($0.99)', price: 0.99 },
+        { name: '370 Quartz ($3.99)', price: 3.99 },
+        { name: '750 Quartz ($7.99)', price: 7.99 },
+        { name: '2,260 Quartz ($23.99)', price: 23.99 },
+        { name: '3,800 Quartz ($39.99)', price: 39.99 },
+        { name: '8,000 Quartz ($79.99)', price: 79.99 }
+      ],
+      ko: [
+        { name: '쿼츠 120개 (₩1,500)', price: 1500 },
+        { name: '쿼츠 370개 (₩4,900)', price: 4900 },
+        { name: '쿼츠 750개 (₩9,900)', price: 9900 },
+        { name: '쿼츠 2,260개 (₩29,000)', price: 29000 },
+        { name: '쿼츠 3,800개 (₩49,000)', price: 49000 },
+        { name: '쿼츠 8,000개 (₩99,000)', price: 99000 }
+      ],
+      tw: [
+        { name: '石英 120個 (NT$33)', price: 33 },
+        { name: '石英 370個 (NT$130)', price: 130 },
+        { name: '石英 750個 (NT$270)', price: 270 },
+        { name: '石英 2,260個 (NT$830)', price: 830 },
+        { name: '石英 3,800個 (NT$1,390)', price: 1390 },
+        { name: '石英 8,000個 (NT$2,690)', price: 2690 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'マンスリーパス (600円)', amount: 600, mult: 1 },
+        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
+        { label: '天井 200連 (約60,000円)', amount: 60000, mult: 1 },
+        { label: '完凸目安 (約240,000円)', amount: 240000, mult: 1 }
+      ],
+      en: [
+        { label: 'Monthly Pass ($4.99)', amount: 4.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: '200-pull Spark ($480.00)', amount: 480.0, mult: 1 },
+        { label: 'Max Limit Break (~$1,900.00)', amount: 1900.0, mult: 1 }
+      ],
+      ko: [
+        { label: '월정액 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '200연차 천장 (₩590,000)', amount: 590000, mult: 1 },
+        { label: '풀돌 기준 (약 ₩2,400,000)', amount: 2400000, mult: 1 }
+      ],
+      tw: [
+        { label: '月卡 (NT$170)', amount: 170, mult: 1 },
+        { label: '10連抽 (約 NT$800)', amount: 800, mult: 1 },
+        { label: '200抽保底 (約 NT$16,000)', amount: 16000, mult: 1 },
+        { label: '滿突預估 (約 NT$64,000)', amount: 64000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'ヘブバンのクォーツ課金でGoogle Play Pointsは貯まりますか？', a: 'はい！AndroidおよびPC版（Steam除くPlayストア経由）の決済で100円につき1pt以上が貯まります。' }
+      ],
+      en: [
+        { q: 'Do Heaven Burns Red purchases earn Google Play Points?', a: 'Yes! In-app purchases for Quartz earn points based on your account level.' }
+      ],
+      ko: [
+        { q: '헤븐 번즈 레드 결제 시 포인트가 적립되나요?', a: '네! 구글 플레이 스토어 결제 시 정상적으로 적립됩니다.' }
+      ],
+      tw: [
+        { q: '緋染天空課金可以累積 Play Points 嗎？', a: '可以！透過 Google Play 購買石英均可享有會員回饋。' }
+      ]
+    }
+  },
+  {
+    id: 'mementomori',
+    icon: '🎵',
+    names: { ja: 'メメントモリ (MementoMori)', en: 'MementoMori: AFKRPG', ko: '메멘토 모리 (MementoMori)', tw: 'MementoMori' },
+    shortNames: { ja: 'メメントモリ', en: 'MementoMori', ko: '메멘토모리', tw: 'MementoMori' },
+    descs: {
+      ja: 'メメントモリ（メメモリ）のダイヤ購入・月間パス・ピックアップガチャ天井で貯まるGoogle Play Pointsを計算できます。',
+      en: 'Calculate Google Play Points earned on Diamonds, Monthly Boosts, and Pity Summons in MementoMori.',
+      ko: '메멘토 모리의 다이아 결제, 월간 패스 및 뽑기 천장 결제 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算 MementoMori 購買鑽石、月間特權及轉蛋保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: 'ダイヤ 60個 (160円)', price: 160 },
+        { name: 'ダイヤ 190個 (480円)', price: 480 },
+        { name: 'ダイヤ 400個 (1,000円)', price: 1000 },
+        { name: 'ダイヤ 1,220個 (3,000円)', price: 3000 },
+        { name: 'ダイヤ 2,050個 (5,000円)', price: 5000 },
+        { name: 'ダイヤ 4,150個 (10,000円)', price: 10000 }
+      ],
+      en: [
+        { name: '60 Diamonds ($0.99)', price: 0.99 },
+        { name: '190 Diamonds ($3.99)', price: 3.99 },
+        { name: '400 Diamonds ($7.99)', price: 7.99 },
+        { name: '1,220 Diamonds ($23.99)', price: 23.99 },
+        { name: '2,050 Diamonds ($39.99)', price: 39.99 },
+        { name: '4,150 Diamonds ($79.99)', price: 79.99 }
+      ],
+      ko: [
+        { name: '다이아 60개 (₩1,500)', price: 1500 },
+        { name: '다이아 190개 (₩4,900)', price: 4900 },
+        { name: '다이아 400개 (₩9,900)', price: 9900 },
+        { name: '다이아 1,220개 (₩29,000)', price: 29000 },
+        { name: '다이아 2,050개 (₩49,000)', price: 49000 },
+        { name: '다이아 4,150개 (₩99,000)', price: 99000 }
+      ],
+      tw: [
+        { name: '鑽石 60個 (NT$33)', price: 33 },
+        { name: '鑽石 190個 (NT$130)', price: 130 },
+        { name: '鑽石 400個 (NT$270)', price: 270 },
+        { name: '鑽石 1,220個 (NT$830)', price: 830 },
+        { name: '鑽石 2,050個 (NT$1,390)', price: 1390 },
+        { name: '鑽石 4,150個 (NT$2,690)', price: 2690 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '月間ブースト (980円)', amount: 980, mult: 1 },
+        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
+        { label: 'ピックアップ天井 (約30,000円)', amount: 30000, mult: 1 },
+        { label: 'LR進化目安 (約150,000円)', amount: 150000, mult: 1 }
+      ],
+      en: [
+        { label: 'Monthly Boost ($7.99)', amount: 7.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: 'Pickup Pity ($240.00)', amount: 240.0, mult: 1 },
+        { label: 'LR Evolution (~$1,200.00)', amount: 1200.0, mult: 1 }
+      ],
+      ko: [
+        { label: '월간 패스 (₩9,900)', amount: 9900, mult: 1 },
+        { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '픽업 천장 (₩290,000)', amount: 290000, mult: 1 },
+        { label: 'LR 진화 기준 (약 ₩1,500,000)', amount: 1500000, mult: 1 }
+      ],
+      tw: [
+        { label: '月間特權 (NT$270)', amount: 270, mult: 1 },
+        { label: '10連抽 (約 NT$800)', amount: 800, mult: 1 },
+        { label: '專屬保底 (約 NT$8,000)', amount: 8000, mult: 1 },
+        { label: 'LR進化預估 (約 NT$40,000)', amount: 40000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'メメントモリの課金でPlayポイントは貯まりますか？', a: 'はい！ダイヤ購入やVIPパックなどすべてのアプリ内決済でPlayポイントが獲得できます。' }
+      ],
+      en: [
+        { q: 'Can I earn Google Play Points in MementoMori?', a: 'Yes! All in-app diamond and bundle purchases earn Play Points.' }
+      ],
+      ko: [
+        { q: '메멘토 모리에서 결제하면 포인트가 적립되나요?', a: '네! 모든 다이아 및 패키지 결제 시 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: 'MementoMori 課金有 Play Points 回饋嗎？', a: '有的！所有鑽石及禮包購買均能累積點數。' }
+      ]
+    }
+  },
+  {
+    id: 'phantomparade',
+    icon: '🌀',
+    names: { ja: '呪術廻戦 ファントムパレード (ファンパレ)', en: 'Jujutsu Kaisen Phantom Parade', ko: '주술회전 팬텀 퍼레이드', tw: '咒術迴戰 幻影夜行 (Phantom Parade)' },
+    shortNames: { ja: 'ファンパレ', en: 'Phantom Parade', ko: '팬텀퍼레이드', tw: '幻影夜行' },
+    descs: {
+      ja: '呪術廻戦ファンパレの有償廻珠購入・ファンパレパス・250連天井ガチャで貯まるGoogle Play Pointsを計算できます。',
+      en: 'Calculate Google Play Points earned on Kaishu, Battle Pass, and 250-pull Pity in Jujutsu Kaisen Phantom Parade.',
+      ko: '주술회전 팬텀 퍼레이드의 유료 회주, 패스 및 250연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算咒術迴戰 幻影夜行購買有償迴珠、通行證及250抽保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: '廻珠 60個 (160円)', price: 160 },
+        { name: '廻珠 190個 (480円)', price: 480 },
+        { name: '廻珠 400個 (1,000円)', price: 1000 },
+        { name: '廻珠 1,220個 (3,000円)', price: 3000 },
+        { name: '廻珠 2,050個 (5,000円)', price: 5000 },
+        { name: '廻珠 4,150個 (10,000円)', price: 10000 }
+      ],
+      en: [
+        { name: '60 Kaishu ($0.99)', price: 0.99 },
+        { name: '190 Kaishu ($3.99)', price: 3.99 },
+        { name: '400 Kaishu ($7.99)', price: 7.99 },
+        { name: '1,220 Kaishu ($23.99)', price: 23.99 },
+        { name: '2,050 Kaishu ($39.99)', price: 39.99 },
+        { name: '4,150 Kaishu ($79.99)', price: 79.99 }
+      ],
+      ko: [
+        { name: '회주 60개 (₩1,500)', price: 1500 },
+        { name: '회주 190개 (₩4,900)', price: 4900 },
+        { name: '회주 400개 (₩9,900)', price: 9900 },
+        { name: '회주 1,220개 (₩29,000)', price: 29000 },
+        { name: '회주 2,050개 (₩49,000)', price: 49000 },
+        { name: '회주 4,150개 (₩99,000)', price: 99000 }
+      ],
+      tw: [
+        { name: '迴珠 60個 (NT$33)', price: 33 },
+        { name: '迴珠 190個 (NT$130)', price: 130 },
+        { name: '迴珠 400個 (NT$270)', price: 270 },
+        { name: '迴珠 1,220個 (NT$830)', price: 830 },
+        { name: '迴珠 2,050個 (NT$1,390)', price: 1390 },
+        { name: '迴珠 4,150個 (NT$2,690)', price: 2690 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'ファンパレパス (980円)', amount: 980, mult: 1 },
+        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
+        { label: '天井 250連 (約75,000円)', amount: 75000, mult: 1 },
+        { label: '完凸目安 (約300,000円)', amount: 300000, mult: 1 }
+      ],
+      en: [
+        { label: 'Battle Pass ($7.99)', amount: 7.99, mult: 1 },
+        { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
+        { label: '250-pull Pity ($600.00)', amount: 600.0, mult: 1 },
+        { label: 'Max Limit Break (~$2,400.00)', amount: 2400.0, mult: 1 }
+      ],
+      ko: [
+        { label: '팬텀 패스 (₩9,900)', amount: 9900, mult: 1 },
+        { label: '10연차 (약 ₩30,000)', amount: 30000, mult: 1 },
+        { label: '250연차 천장 (₩740,000)', amount: 740000, mult: 1 },
+        { label: '풀돌 기준 (약 ₩3,000,000)', amount: 3000000, mult: 1 }
+      ],
+      tw: [
+        { label: '通行證 (NT$270)', amount: 270, mult: 1 },
+        { label: '10連抽 (約 NT$800)', amount: 800, mult: 1 },
+        { label: '250抽保底 (約 NT$20,000)', amount: 20000, mult: 1 },
+        { label: '滿突預估 (約 NT$80,000)', amount: 80000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'ファンパレの天井（250連）で何ポイント貯まりますか？', a: '約75,000円課金した場合、通常時（1%）で約750pt、5倍CP時なら約3,750pt（ゴールドランク即到達）還元されます。' }
+      ],
+      en: [
+        { q: 'How many points for 250-pull pity in Phantom Parade?', a: 'Spending ~$600 earns ~600 pts at base rate, or ~3,000 pts during 5x point events.' }
+      ],
+      ko: [
+        { q: '팬텀 퍼레이드 250연차 천장 시 포인트는 얼마나 적립되나요?', a: '약 74만원 결제 시 기본 740pt, 5배 이벤트 시 약 3,700pt가 적립됩니다.' }
+      ],
+      tw: [
+        { q: '幻影夜行250抽保底可以獲得多少點數？', a: '約課金 NT$20,000 可獲得 666 點，5倍活動時可獲得高達 3,330 點！' }
+      ]
+    }
+  },
+  {
+    id: 'reverse1999',
+    icon: '⏳',
+    names: { ja: 'リバース：1999 (Reverse: 1999)', en: 'Reverse: 1999', ko: '리버스: 1999 (Reverse: 1999)', tw: '重返未來：1999 (Reverse: 1999)' },
+    shortNames: { ja: 'リバース1999', en: 'Reverse: 1999', ko: '리버스1999', tw: '重返未來1999' },
+    descs: {
+      ja: 'リバース：1999の粹雨購入・咆哮のひと月（月パス）・70連/140連天井ガチャで貯まるGoogle Play Pointsを計算できます。',
+      en: 'Calculate Google Play Points earned on Clear Drops, Roaring Month, and 70/140-pull Pity in Reverse: 1999.',
+      ko: '리버스: 1999의 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算重返未來：1999購買粹雨、咆哮之月（月卡）及70/140抽保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: '粹雨 60個 (160円)', price: 160 },
+        { name: '粹雨 300個 (650円)', price: 650 },
+        { name: '粹雨 680個 (1,300円)', price: 1300 },
+        { name: '粹雨 1,980個 (3,200円)', price: 3200 },
+        { name: '粹雨 3,280個 (6,500円)', price: 6500 },
+        { name: '粹雨 6,480個 (12,000円)', price: 12000 }
+      ],
+      en: [
+        { name: '60 Clear Drops ($0.99)', price: 0.99 },
+        { name: '300 Clear Drops ($4.99)', price: 4.99 },
+        { name: '680 Clear Drops ($9.99)', price: 9.99 },
+        { name: '1,980 Clear Drops ($24.99)', price: 24.99 },
+        { name: '3,280 Clear Drops ($49.99)', price: 49.99 },
+        { name: '6,480 Clear Drops ($99.99)', price: 99.99 }
+      ],
+      ko: [
+        { name: '빗방울 60개 (₩1,500)', price: 1500 },
+        { name: '빗방울 300개 (₩5,900)', price: 5900 },
+        { name: '빗방울 680개 (₩12,000)', price: 12000 },
+        { name: '빗방울 1,980개 (₩32,000)', price: 32000 },
+        { name: '빗방울 3,280개 (₩65,000)', price: 65000 },
+        { name: '빗방울 6,480개 (₩119,000)', price: 119000 }
+      ],
+      tw: [
+        { name: '粹雨 60個 (NT$33)', price: 33 },
+        { name: '粹雨 300個 (NT$170)', price: 170 },
+        { name: '粹雨 680個 (NT$330)', price: 330 },
+        { name: '粹雨 1,980個 (NT$830)', price: 830 },
+        { name: '粹雨 3,280個 (NT$1,690)', price: 1690 },
+        { name: '粹雨 6,480個 (NT$3,290)', price: 3290 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '咆哮のひと月 (650円)', amount: 650, mult: 1 },
+        { label: '10連分 (約2,500円)', amount: 2500, mult: 1 },
+        { label: '仮天井 70連 (約17,500円)', amount: 17500, mult: 1 },
+        { label: '確定天井 140連 (約35,000円)', amount: 35000, mult: 1 }
+      ],
+      en: [
+        { label: 'Roaring Month ($4.99)', amount: 4.99, mult: 1 },
+        { label: '10-pulls ($20.00)', amount: 20.0, mult: 1 },
+        { label: '70-pull Soft Pity ($140.00)', amount: 140.0, mult: 1 },
+        { label: '140-pull Hard Pity ($280.00)', amount: 280.0, mult: 1 }
+      ],
+      ko: [
+        { label: '포효의 이달 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '10연차 (약 ₩25,000)', amount: 25000, mult: 1 },
+        { label: '70연차 반천장 (약 ₩175,000)', amount: 175000, mult: 1 },
+        { label: '140연차 확천 (약 ₩350,000)', amount: 350000, mult: 1 }
+      ],
+      tw: [
+        { label: '咆哮之月 (NT$170)', amount: 170, mult: 1 },
+        { label: '10連抽 (約 NT$650)', amount: 650, mult: 1 },
+        { label: '70抽小保底 (約 NT$4,500)', amount: 4500, mult: 1 },
+        { label: '140抽大保底 (約 NT$9,000)', amount: 9000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'リバース：1999の課金でPlayポイントは貯まりますか？', a: 'はい！咆哮のひと月（月パス）や粹雨パックの購入ですべてポイントが還元されます。' }
+      ],
+      en: [
+        { q: 'Do Reverse: 1999 purchases earn Play Points?', a: 'Yes! Roaring Month and Clear Drop purchases earn Play Points.' }
+      ],
+      ko: [
+        { q: '리버스: 1999 결제 시 포인트가 적립되나요?', a: '네! 월정액 및 빗방울 결제 시 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: '重返未來：1999 課金有回饋嗎？', a: '有的！購買咆哮之月及粹雨均享有 Play Points 點數回饋。' }
+      ]
+    }
+  },
+  {
+    id: 'honkai3rd',
+    icon: '🚀',
+    names: { ja: '崩壊3rd (Honkai Impact 3rd)', en: 'Honkai Impact 3rd', ko: '붕괴3rd (Honkai Impact 3rd)', tw: '崩壞3rd (Honkai Impact 3rd)' },
+    shortNames: { ja: '崩壊3rd', en: 'Honkai 3rd', ko: '붕괴3rd', tw: '崩壞3rd' },
+    descs: {
+      ja: '崩壊3rdの水晶・月パス・90連キャラ確定天井で貯まるGoogle Play Pointsを計算できます。',
+      en: 'Calculate Google Play Points earned on Crystals, Monthly Cards, and 90-pull Character Pity in Honkai Impact 3rd.',
+      ko: '붕괴3rd의 수정 구매, 월정액, 90연차 캐릭터 천장 결제 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算崩壞3rd購買水晶、月卡及90抽角色保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: '水晶 65個 (160円)', price: 160 },
+        { name: '水晶 330個 (650円)', price: 650 },
+        { name: '水晶 710個 (1,300円)', price: 1300 },
+        { name: '水晶 1,980個 (3,200円)', price: 3200 },
+        { name: '水晶 3,860個 (6,500円)', price: 6500 },
+        { name: '水晶 8,088個 (12,000円)', price: 12000 }
+      ],
+      en: [
+        { name: '65 Crystals ($0.99)', price: 0.99 },
+        { name: '330 Crystals ($4.99)', price: 4.99 },
+        { name: '710 Crystals ($9.99)', price: 9.99 },
+        { name: '1,980 Crystals ($24.99)', price: 24.99 },
+        { name: '3,860 Crystals ($49.99)', price: 49.99 },
+        { name: '8,088 Crystals ($99.99)', price: 99.99 }
+      ],
+      ko: [
+        { name: '수정 65개 (₩1,500)', price: 1500 },
+        { name: '수정 330개 (₩5,900)', price: 5900 },
+        { name: '수정 710개 (₩12,000)', price: 12000 },
+        { name: '수정 1,980개 (₩32,000)', price: 32000 },
+        { name: '수정 3,860개 (₩65,000)', price: 65000 },
+        { name: '수정 8,088개 (₩119,000)', price: 119000 }
+      ],
+      tw: [
+        { name: '水晶 65個 (NT$33)', price: 33 },
+        { name: '水晶 330個 (NT$170)', price: 170 },
+        { name: '水晶 710個 (NT$330)', price: 330 },
+        { name: '水晶 1,980個 (NT$830)', price: 830 },
+        { name: '水晶 3,860個 (NT$1,690)', price: 1690 },
+        { name: '水晶 8,088個 (NT$3,290)', price: 3290 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: '月パス (610円)', amount: 610, mult: 1 },
+        { label: '10連分 (約3,300円)', amount: 3300, mult: 1 },
+        { label: '確定天井 90連 (約30,000円)', amount: 30000, mult: 1 },
+        { label: '装備一式目安 (約70,000円)', amount: 70000, mult: 1 }
+      ],
+      en: [
+        { label: 'Monthly Card ($4.99)', amount: 4.99, mult: 1 },
+        { label: '10-pulls ($27.00)', amount: 27.0, mult: 1 },
+        { label: '90-pull Character Pity ($240.00)', amount: 240.0, mult: 1 },
+        { label: 'Full Gear (~$580.00)', amount: 580.0, mult: 1 }
+      ],
+      ko: [
+        { label: '월정액 (₩5,900)', amount: 5900, mult: 1 },
+        { label: '10연차 (약 ₩33,000)', amount: 33000, mult: 1 },
+        { label: '90연차 확천 (₩290,000)', amount: 290000, mult: 1 },
+        { label: '종결 세팅 (약 ₩700,000)', amount: 700000, mult: 1 }
+      ],
+      tw: [
+        { label: '月卡 (NT$170)', amount: 170, mult: 1 },
+        { label: '10連抽 (約 NT$850)', amount: 850, mult: 1 },
+        { label: '90抽保底 (約 NT$7,500)', amount: 7500, mult: 1 },
+        { label: '畢業裝備 (約 NT$18,000)', amount: 18000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: '崩壊3rdでキャラ確定天井（90連）まで課金すると何ポイント？', a: '約30,000円課金した場合、通常時（1%）で約300pt、5倍CP時なら約1,500pt貯まります。' }
+      ],
+      en: [
+        { q: 'How many points for 90-pull pity in Honkai 3rd?', a: 'Spending ~$240 yields ~240 pts, or ~1,200 pts during 5x promo events.' }
+      ],
+      ko: [
+        { q: '붕괴3rd 90연차 천장 시 적립 포인트는?', a: '약 29만원 결제 시 기본 290pt, 5배 이벤트 시 약 1,450pt가 적립됩니다.' }
+      ],
+      tw: [
+        { q: '崩壞3rd 90抽保底可以獲得多少點數？', a: '約課金 NT$7,500 可獲得 250 點，5倍活動時可獲得 1,250 點。' }
+      ]
+    }
+  },
+  {
+    id: 'shadowversewb',
+    icon: '🃏',
+    names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌駕世界 (Shadowverse: WB)' },
+    shortNames: { ja: 'シャドバWB', en: 'Shadowverse: WB', ko: '섀도우버스 WB', tw: '闇影詩章WB' },
+    descs: {
+      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入・プレミアムバトルパス・パックポイント天井で貯まるPlayポイントを計算できます。',
+      en: 'Calculate Google Play Points earned on Crystals, Premium Battle Pass, and Pack Points in Shadowverse: Worlds Beyond.',
+      ko: '섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.',
+      tw: '計算闇影詩章：凌駕世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
+    },
+    packs: {
+      ja: [
+        { name: 'クリスタル 50個 (160円)', price: 160 },
+        { name: 'クリスタル 150個 (480円)', price: 480 },
+        { name: 'クリスタル 320個 (1,000円)', price: 1000 },
+        { name: 'クリスタル 1,000個 (3,000円)', price: 3000 },
+        { name: 'クリスタル 1,750個 (5,000円)', price: 5000 },
+        { name: 'クリスタル 3,600個 (10,000円)', price: 10000 }
+      ],
+      en: [
+        { name: '50 Crystals ($0.99)', price: 0.99 },
+        { name: '150 Crystals ($3.99)', price: 3.99 },
+        { name: '320 Crystals ($7.99)', price: 7.99 },
+        { name: '1,000 Crystals ($23.99)', price: 23.99 },
+        { name: '1,750 Crystals ($39.99)', price: 39.99 },
+        { name: '3,600 Crystals ($79.99)', price: 79.99 }
+      ],
+      ko: [
+        { name: '크리스탈 50개 (₩1,500)', price: 1500 },
+        { name: '크리스탈 150개 (₩4,900)', price: 4900 },
+        { name: '크리스탈 320개 (₩9,900)', price: 9900 },
+        { name: '크리스탈 1,000개 (₩29,000)', price: 29000 },
+        { name: '크리스탈 1,750개 (₩49,000)', price: 49000 },
+        { name: '크리스탈 3,600개 (₩99,000)', price: 99000 }
+      ],
+      tw: [
+        { name: '水晶 50個 (NT$33)', price: 33 },
+        { name: '水晶 150個 (NT$130)', price: 130 },
+        { name: '水晶 320個 (NT$270)', price: 270 },
+        { name: '水晶 1,000個 (NT$830)', price: 830 },
+        { name: '水晶 1,750個 (NT$1,390)', price: 1390 },
+        { name: '水晶 3,600個 (NT$2,690)', price: 2690 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'プレミアムパス (1,200円)', amount: 1200, mult: 1 },
+        { label: '10パック分 (2,000円)', amount: 2000, mult: 1 },
+        { label: '新弾50パック (10,000円)', amount: 10000, mult: 1 },
+        { label: '天井交換目安 (約50,000円)', amount: 50000, mult: 1 }
+      ],
+      en: [
+        { label: 'Battle Pass ($9.99)', amount: 9.99, mult: 1 },
+        { label: '10 Packs ($16.00)', amount: 16.0, mult: 1 },
+        { label: '50 Packs ($80.00)', amount: 80.0, mult: 1 },
+        { label: 'Spark Exchange (~$400.00)', amount: 400.0, mult: 1 }
+      ],
+      ko: [
+        { label: '배틀 패스 (₩12,000)', amount: 12000, mult: 1 },
+        { label: '10팩 (₩20,000)', amount: 20000, mult: 1 },
+        { label: '신규 50팩 (₩99,000)', amount: 99000, mult: 1 },
+        { label: '천장 교환 (약 ₩490,000)', amount: 490000, mult: 1 }
+      ],
+      tw: [
+        { label: '通行證 (NT$330)', amount: 330, mult: 1 },
+        { label: '10包卡包 (NT$540)', amount: 540, mult: 1 },
+        { label: '新卡包50包 (NT$2,690)', amount: 2690, mult: 1 },
+        { label: '保底兌換 (約 NT$13,000)', amount: 13000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'シャドバWBの課金でPlayポイントは貯まりますか？', a: 'はい！クリスタル購入やプレミアムバトルパスの購入でPlayポイントが貯まります。' }
+      ],
+      en: [
+        { q: 'Do Shadowverse: WB purchases earn Play Points?', a: 'Yes! Crystal and Battle Pass purchases earn Google Play Points.' }
+      ],
+      ko: [
+        { q: '섀도우버스 WB 결제 시 포인트가 적립되나요?', a: '네! 크리스탈 및 배틀 패스 결제 시 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: '闇影詩章WB課金可以累積 Play Points 嗎？', a: '可以！購買水晶及尊享通行證均可獲得點數回饋。' }
+      ]
+    }
   }
 ];
 
@@ -1879,6 +2435,31 @@ function generateGamePageHtml(game, localeKey) {
                        data-ad-client="ca-pub-3845885843809455"
                        data-ad-format="auto"
                        data-full-width-responsive="true"></ins>
+              </div>
+          </section>
+
+          <!-- ポイント交換レート・損得比較 -->
+          <section class="section">
+              <h2>${gameShort} ${loc.rewardCompareTitle}</h2>
+              <div class="reward-compare-grid">
+                  <div class="reward-compare-card highlight">
+                      <div class="reward-compare-tag best">${loc.rewardTagCoupon}</div>
+                      <h4>${loc.rewardCouponName}</h4>
+                      <div class="reward-rate-val">${loc.rewardCouponRate}</div>
+                      <p class="reward-rate-desc">${loc.rewardCouponDesc}</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">${loc.rewardTagDirect}</div>
+                      <h4>${loc.rewardDirectName}</h4>
+                      <div class="reward-rate-val">${loc.rewardDirectRate}</div>
+                      <p class="reward-rate-desc">${loc.rewardDirectDesc}</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">${loc.rewardTagCredit}</div>
+                      <h4>${loc.rewardCreditName}</h4>
+                      <div class="reward-rate-val">${loc.rewardCreditRate}</div>
+                      <p class="reward-rate-desc">${loc.rewardCreditDesc}</p>
+                  </div>
               </div>
           </section>
 
