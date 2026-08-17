@@ -28,7 +28,7 @@ const LOCALES = {
     badgeText: '人気ゲーム別シミュレーター',
     portalBadge: '🎮 ソシャゲ特化',
     portalH1: '人気ゲーム別 Playポイント課金・天井シミュレーター',
-    portalMeta: 'お気に入りのゲームを選んで、パック課金や天井ガチャで貯まるPlayポイントを計算できます。',
+    portalMeta: '原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パック・天井ガチャで貯まるGoogle Play Pointsを即時計算！各ゲームの課金アイテム価格と還元率、お得な交換レート、ギフトコード活用法を一覧で比較できます。',
     portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブ、月相、有償ジュエル、龍石、純正源石など）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
     openCalc: '計算機を開く ➔',
     presetHeading: '▼ 目標プリセット：',
@@ -2187,7 +2187,18 @@ function generateGamePageHtml(game, localeKey) {
     "name": `${gameTitle} Play Points Calculator`,
     "url": `https://playpoint-sim.com${langPrefix}/games/${game.id}/`,
     "applicationCategory": "UtilityApplication",
-    "operatingSystem": "All"
+    "operatingSystem": "All",
+    "inLanguage": loc.langCode,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": localeKey === 'ja' ? 'JPY' : (localeKey === 'en' ? 'USD' : (localeKey === 'ko' ? 'KRW' : 'TWD'))
+    },
+    "author": {
+      "@type": "Person",
+      "name": loc.authorName,
+      "url": `https://playpoint-sim.com/author/katakata.html`
+    }
   };
 
   const breadcrumbSchema = {
@@ -2451,19 +2462,19 @@ function generateGamePageHtml(game, localeKey) {
               <div class="reward-compare-grid">
                   <div class="reward-compare-card highlight">
                       <div class="reward-compare-tag best">${loc.rewardTagCoupon}</div>
-                      <h4>${loc.rewardCouponName}</h4>
+                      <h3>${loc.rewardCouponName}</h3>
                       <div class="reward-rate-val">${loc.rewardCouponRate}</div>
                       <p class="reward-rate-desc">${loc.rewardCouponDesc}</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">${loc.rewardTagDirect}</div>
-                      <h4>${loc.rewardDirectName}</h4>
+                      <h3>${loc.rewardDirectName}</h3>
                       <div class="reward-rate-val">${loc.rewardDirectRate}</div>
                       <p class="reward-rate-desc">${loc.rewardDirectDesc}</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">${loc.rewardTagCredit}</div>
-                      <h4>${loc.rewardCreditName}</h4>
+                      <h3>${loc.rewardCreditName}</h3>
                       <div class="reward-rate-val">${loc.rewardCreditRate}</div>
                       <p class="reward-rate-desc">${loc.rewardCreditDesc}</p>
                   </div>

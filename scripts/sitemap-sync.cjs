@@ -159,6 +159,38 @@ ${articleEntries}
 `;
 }
 
+function getGameSitemapEntries(rootDir) {
+  const entries = [];
+  const dirs = [
+    { prefix: 'games', dir: path.join(rootDir, 'games') },
+    { prefix: 'en/games', dir: path.join(rootDir, 'en', 'games') },
+    { prefix: 'ko/games', dir: path.join(rootDir, 'ko', 'games') },
+    { prefix: 'tw/games', dir: path.join(rootDir, 'tw', 'games') }
+  ];
+
+  for (const { prefix, dir } of dirs) {
+    if (!fs.existsSync(dir)) continue;
+    entries.push({
+      url: `${SITE_ORIGIN}/${prefix}/`,
+      lastmod: TOP_PAGE_CONTENT_DATES.ja
+    });
+
+    const subdirs = fs.readdirSync(dir, { withFileTypes: true });
+    for (const sub of subdirs) {
+      if (sub.isDirectory()) {
+        const indexPath = path.join(dir, sub.name, 'index.html');
+        if (fs.existsSync(indexPath)) {
+          entries.push({
+            url: `${SITE_ORIGIN}/${prefix}/${sub.name}/`,
+            lastmod: TOP_PAGE_CONTENT_DATES.ja
+          });
+        }
+      }
+    }
+  }
+  return entries;
+}
+
 function syncSitemap(rootDir) {
   const sitemapPath = path.join(rootDir, 'sitemap.xml');
   if (!fs.existsSync(sitemapPath)) {
@@ -175,10 +207,12 @@ function syncSitemap(rootDir) {
     { url: `${SITE_ORIGIN}/blog/`, lastmod: latestBlogDate },
     ...blogEntries
   ];
+  const gameEntries = getGameSitemapEntries(rootDir);
   const topPageSynced = syncSitemapContent(fs.readFileSync(sitemapPath, 'utf8'));
   let content = syncSitemapEntries(topPageSynced, [
     ...getIntlSitemapEntries(),
     ...discoverableBlogEntries,
+    ...gameEntries,
     ...getContentDateEntries()
   ]);
   const excludedUrls = new Set([
