@@ -64,8 +64,10 @@ const LOCALES = {
     copiedAlert: '結果リンクをクリップボードにコピーしました！',
     disclaimerText: '※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。',
     giftCardCtaTitle: '💳 課金前にチェック！さらにお得にする裏技',
-    giftCardCtaText: '楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU等）が二重取りできて実質数％〜十数％お得になります！',
-    giftCardCtaBtn: 'お得な購入方法を見る ➔',
+    giftCardCtaText: '楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU・お買い物マラソン・5と0のつく日）で実質5%〜15%以上の超高還元！',
+    giftCardCtaBtn: '🛒 楽天市場 認定店でギフトコードを見る ➔',
+    giftCardCtaAffiliateUrl: 'https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D',
+    giftCardGuideBtn: '📖 お得な買い方・注意点ガイド ➔',
     giftCardCtaHref: 'articles/2026-06-20-discount-gift-cards.html',
     tableTitle: '課金パック別 Playポイント還元早見表',
     tableThPack: '課金パック名',
@@ -1830,7 +1832,14 @@ function generateGamePageHtml(game, localeKey) {
                           <div class="game-giftcard-cta-title">${loc.giftCardCtaTitle}</div>
                           <p class="game-giftcard-cta-text">${loc.giftCardCtaText} <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
+                      ${localeKey === 'ja' ? `
+                      <div class="game-giftcard-cta-actions">
+                          <a class="game-giftcard-cta-btn rakuten-primary-btn" href="${loc.giftCardCtaAffiliateUrl}" target="_blank" rel="sponsored noopener noreferrer">${loc.giftCardCtaBtn}</a>
+                          <a class="game-giftcard-cta-sublink" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardGuideBtn}</a>
+                      </div>
+                      ` : `
                       <a class="game-giftcard-cta-btn" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardCtaBtn}</a>
+                      `}
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
@@ -1856,6 +1865,16 @@ function generateGamePageHtml(game, localeKey) {
                           ${packTableRows}
                       </tbody>
                   </table>
+              </div>
+
+              <!-- 広告枠（レスポンシブ） -->
+              <div class="game-ad-container">
+                  <span class="game-ad-label">スポンサーリンク</span>
+                  <ins class="adsbygoogle"
+                       style="display:block"
+                       data-ad-client="ca-pub-3845885843809455"
+                       data-ad-format="auto"
+                       data-full-width-responsive="true"></ins>
               </div>
           </section>
 

@@ -300,6 +300,13 @@ body {
   color: #c2410c;
 }
 
+.game-giftcard-cta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+}
+
 .game-giftcard-cta-btn {
   background: #f59e0b;
   color: #ffffff;
@@ -313,12 +320,59 @@ body {
   box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
   display: inline-flex;
   align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.game-giftcard-cta-btn.rakuten-primary-btn {
+  background: linear-gradient(135deg, #bf0000 0%, #e60000 100%);
+  box-shadow: 0 3px 10px rgba(191, 0, 0, 0.35);
+}
+
+.game-giftcard-cta-btn.rakuten-primary-btn:hover {
+  background: linear-gradient(135deg, #990000 0%, #cc0000 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(191, 0, 0, 0.45);
 }
 
 .game-giftcard-cta-btn:hover {
   background: #d97706;
   color: #ffffff;
   transform: translateY(-1px);
+}
+
+.game-giftcard-cta-sublink {
+  font-size: 0.78rem;
+  color: #92400e;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.game-giftcard-cta-sublink:hover {
+  color: #b45309;
+}
+
+/* 広告ユニットスタイル */
+.game-ad-container {
+  margin: 28px 0;
+  text-align: center;
+  min-height: 100px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.game-ad-label {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
 }
 
 /* パック早見表テーブル */

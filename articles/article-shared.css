@@ -1295,3 +1295,22 @@ display: none !important;
         justify-content: center;
     }
 }
+
+/* 記事内・記事下 広告枠 */
+.article-ad-container {
+    margin: 32px 0 16px;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+    padding: 12px;
+    overflow: hidden;
+}
+.article-ad-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}

@@ -2224,3 +2224,76 @@ width: 100%;
 height: auto;
 aspect-ratio: 8 / 3;
 }
+
+/* LP向け 楽天アフィリエイト＆AdSense枠 */
+.lp-affiliate-box {
+    background: linear-gradient(135deg, #fffbf0 0%, #fff7ed 100%);
+    border: 1.5px solid #f59e0b;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 16px 0;
+}
+.lp-affiliate-box-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.lp-affiliate-box-title {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #92400e;
+    font-weight: 800;
+}
+.lp-affiliate-box-text {
+    font-size: 0.9rem;
+    color: #78350f;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+.lp-affiliate-box-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.lp-affiliate-btn {
+    background: linear-gradient(135deg, #bf0000 0%, #e60000 100%);
+    color: #ffffff !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none !important;
+    font-weight: 700;
+    font-size: 0.92rem;
+    box-shadow: 0 3px 8px rgba(191, 0, 0, 0.3);
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.lp-affiliate-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(191, 0, 0, 0.45);
+}
+.lp-affiliate-sublink {
+    font-size: 0.85rem;
+    color: #92400e;
+    text-decoration: underline;
+    font-weight: 600;
+}
+.lp-ad-container {
+    margin: 20px 0;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e1;
+    padding: 12px;
+    overflow: hidden;
+}
+.lp-ad-label {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
