@@ -73,3 +73,58 @@ test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {
     assert.ok(read(file).includes('data-ad-slot=\"' + SLOT + '\"'), file);
   }
 });
+
+
+test('ゲーム計算機の国別公式レートは現行Google表と一致する', () => {
+  const generator = read('scripts/generate-game-simulators.cjs');
+  const runtime = read('games/game-sim.js');
+  for (const expected of [
+    "Diamond ($1 = 1.6pt)",
+    "골드 (1,000원=1.3pt)",
+    "플래티넘 (1,000원=1.6pt)",
+    "다이아몬드 (1,000원=2pt)",
+    "銀級（NT$30 = 1.25點）",
+    "金級（NT$30 = 1.5點）",
+    "白金級（NT$30 = 1.75點）",
+    "鑽石級（NT$30 = 2點）"
+  ]) assert.ok(generator.includes(expected), expected);
+  assert.ok(runtime.includes("{ name: 'Diamond', points: 10000, rate: 1.6 }"));
+  assert.ok(runtime.includes("{ name: '플래티넘', points: 2400, rate: 1.6 }"));
+  assert.ok(runtime.includes("{ name: '다이아몬드', points: 15000, rate: 2.0 }"));
+  assert.ok(runtime.includes("{ name: '白金級', points: 4000, rate: 1.75 }"));
+});
+
+test('ゲーム計算機は固定のポイント換金価値を断定しない', () => {
+  const generator = read('scripts/generate-game-simulators.cjs');
+  const runtime = read('games/game-sim.js');
+  for (const forbidden of ['1pt ＝ 約2.0〜2.5円相当', '100ptで100円分', '100pts = $1.00 Play Credit', '100pt로 100원 충전']) {
+    assert.ok(!generator.includes(forbidden), forbidden);
+  }
+  assert.ok(runtime.includes('redeemCheckText'));
+  assert.ok(!runtime.includes('res.points * pointValueRatio'));
+  assert.ok(!runtime.includes('実質 約${min.toLocaleString()}円'));
+});
+
+test('品質保留記事はタイトル・OGP・構造化データ・記事台帳を保守的表現へ統一する', () => {
+  const catalog = JSON.parse(read('blog/articles.json'));
+  for (const [file, id] of [
+    ['articles/2026-08-17-diamond-valley-festival-guide.html', 'diamond-valley-festival-guide'],
+    ['articles/2026-08-17-tgs-google-play-vip.html', 'tgs-google-play-vip']
+  ]) {
+    const html = read(file);
+    const title = (html.match(/<h1>([^<]+)<\/h1>/) || [])[1];
+    assert.ok(title);
+    assert.ok(html.includes('content=\"' + title + '\"'));
+    assert.ok(html.includes('\"headline\": \"' + title + '\"'));
+    const item = catalog.find(entry => entry.id === id);
+    assert.equal(item.title, title);
+  }
+});
+
+test('ゲーム計算機4言語に未定義テンプレート値を残さない', () => {
+  for (const file of ['games/fgo/index.html', 'en/games/fgo/index.html', 'ko/games/fgo/index.html', 'tw/games/fgo/index.html']) {
+    const html = read(file);
+    assert.ok(!html.includes('>undefined<'), file);
+    assert.ok(!html.includes('undefined</'), file);
+  }
+});

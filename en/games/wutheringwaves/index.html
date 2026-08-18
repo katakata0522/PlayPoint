@@ -193,7 +193,7 @@
                       <div class="input-field">
                           <label for="sim-status">Current Status Level:</label>
                           <select id="sim-status">
-                              <option value="1.0">Bronze ($1 = 1pt)</option><option value="1.1">Silver ($1 = 1.1pt)</option><option value="1.2">Gold ($1 = 1.2pt)</option><option value="1.4">Platinum ($1 = 1.4pt)</option><option value="1.75">Diamond ($1 = 1.75pt)</option>
+                              <option value="1.0">Bronze ($1 = 1pt)</option><option value="1.1">Silver ($1 = 1.1pt)</option><option value="1.2">Gold ($1 = 1.2pt)</option><option value="1.4">Platinum ($1 = 1.4pt)</option><option value="1.6">Diamond ($1 = 1.6pt)</option>
                           </select>
                       </div>
                   </div>
@@ -211,11 +211,11 @@
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">Points Cash Value</span>
+                          <span class="result-stat-label">Redemption value (check Play)</span>
                           <strong id="res-point-value-yen" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">Reached Level</span>
+                          <span class="result-stat-label">Reference level from 0 pts</span>
                           <strong id="res-reached-rank" class="result-stat-value">-</strong>
                       </div>
                   </div>
@@ -223,7 +223,7 @@
                   <!-- ランク進捗 -->
                   <div class="rank-progress-wrapper">
                       <div class="rank-progress-header">
-                          <span>Level Progress</span>
+                          <span>Reference progress from 0 pts</span>
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
@@ -245,7 +245,7 @@
                   <div class="game-giftcard-cta">
                       <div class="game-giftcard-cta-content">
                           <div class="game-giftcard-cta-title">💳 Maximizing Play Points with Gift Cards</div>
-                          <p class="game-giftcard-cta-text">Learn how Google Play Gift Cards interact with points, promotions, and status level progress. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
+                          <p class="game-giftcard-cta-text">Check the gift card guide for how Google Play Gift Cards interact with points, promotions, and account conditions before purchase. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
                       
                       <a class="game-giftcard-cta-btn" href="../../../en/articles/google-play-points-gift-cards.html">Read Gift Card Guide ➔</a>
@@ -253,7 +253,7 @@
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
-                      ※ Calculated based on official Google Play rounding rules. Check the Google Play purchase screen for exact points before checkout.
+                      ※Point estimates use the current US base rates and Google Play rounding rules. The level display is only a reference starting from 0 annual points and does not include your current yearly progress. Check the Play purchase screen and level progress before checkout.
                   </p>
               </div>
           </section>
@@ -297,27 +297,27 @@
               </div>
           </section>
 
-          <!-- ポイント交換レート・損得比較 -->
+          <!-- ポイント使い道・損得比較 -->
           <section class="section">
-              <h2>WuWa Best Ways to Redeem Points (Value Comparison)</h2>
+              <h2>WuWa Redemption options shown in Play Points</h2>
               <div class="reward-compare-grid">
                   <div class="reward-compare-card highlight">
                       <div class="reward-compare-tag best">Discount Coupon</div>
                       <h3>Game-Specific Coupon</h3>
-                      <div class="reward-rate-val">1pt = approx. $0.02 - $0.025 value (2x+)</div>
-                      <p class="reward-rate-desc">e.g., 250pts for $5 off. Best value for active in-app spenders.</p>
+                      <div class="reward-rate-val">Points and discount vary by shown offer</div>
+                      <p class="reward-rate-desc">Game-specific coupons may appear in Play Points. Use the points cost, discount, minimum purchase, and expiry shown in your Play Points account as the source of truth.</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">Direct Item</div>
                       <h3>In-Game Items & Gems</h3>
-                      <div class="reward-rate-val">1pt = approx. $0.015 - $0.02 value</div>
-                      <p class="reward-rate-desc">Claim gems and items directly without purchasing packs.</p>
+                      <div class="reward-rate-val">Contents and points vary by shown offer</div>
+                      <p class="reward-rate-desc">Eligible in-game items may be available for points. Availability and points cost can vary by country, time, and account, so check the Play Points redemption screen.</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">Play Balance</div>
                       <h3>Google Play Credit</h3>
-                      <div class="reward-rate-val">1pt = $0.01 value (Base)</div>
-                      <p class="reward-rate-desc">100pts = $1.00 Play Credit. Universal balance for any app or subscription.</p>
+                      <div class="reward-rate-val">Points and credit amount: check Play Points</div>
+                      <p class="reward-rate-desc">Google Play Credit may be available as a redemption option. Check the points cost and credit amount shown in Play Points. Play Credit received from points expires after one year.</p>
                   </div>
               </div>
           </section>
@@ -537,6 +537,6 @@
 
   <script src="../../../js/analytics-core.js?v=e3c32d54c1"></script>
   <script src="../../../js/third-party.js?v=1654f2b50d"></script>
-  <script src="../../../games/game-sim.js?v=a10cce9d4d"></script>
+  <script src="../../../games/game-sim.js?v=ef2aba97ba"></script>
 </body>
 </html>

@@ -192,7 +192,7 @@
                       <div class="input-field">
                           <label for="sim-status">현재 회원 등급:</label>
                           <select id="sim-status">
-                              <option value="1.0">브론즈 (1,000원=1pt)</option><option value="1.1">실버 (1,000원=1.1pt)</option><option value="1.2">골드 (1,000원=1.2pt)</option><option value="1.4">플래티넘 (1,000원=1.4pt)</option><option value="1.75">다이아몬드 (1,000원=1.75pt)</option>
+                              <option value="1.0">브론즈 (1,000원=1pt)</option><option value="1.1">실버 (1,000원=1.1pt)</option><option value="1.3">골드 (1,000원=1.3pt)</option><option value="1.6">플래티넘 (1,000원=1.6pt)</option><option value="2.0">다이아몬드 (1,000원=2pt)</option>
                           </select>
                       </div>
                   </div>
@@ -210,11 +210,11 @@
                           <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">포인트 환산 가치</span>
+                          <span class="result-stat-label">교환 가치 (Play 화면 확인)</span>
                           <strong id="res-point-value-yen" class="result-stat-value">-</strong>
                       </div>
                       <div class="result-stat-box">
-                          <span class="result-stat-label">도달 등급</span>
+                          <span class="result-stat-label">0pt 기준 참고 등급</span>
                           <strong id="res-reached-rank" class="result-stat-value">-</strong>
                       </div>
                   </div>
@@ -222,7 +222,7 @@
                   <!-- ランク進捗 -->
                   <div class="rank-progress-wrapper">
                       <div class="rank-progress-header">
-                          <span>등급 진행 상황</span>
+                          <span>0pt 기준 참고 진행도</span>
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
@@ -244,7 +244,7 @@
                   <div class="game-giftcard-cta">
                       <div class="game-giftcard-cta-content">
                           <div class="game-giftcard-cta-title">💳 기프트카드 결제 시 포인트 적립 팁</div>
-                          <p class="game-giftcard-cta-text">Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
+                          <p class="game-giftcard-cta-text">Google Play 기프트카드 사용 시 포인트 적립 여부와 조건은 실제 Google Play 결제 화면과 계정 조건을 확인하세요. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
                       </div>
                       
                       <a class="game-giftcard-cta-btn" href="../../../ko/articles/google-play-points-gift-cards.html">기프트카드 가이드 확인 ➔</a>
@@ -252,7 +252,7 @@
                   </div>
 
                   <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
-                      ※ Google Play 공식 사사오입(반올림) 기준에 따라 계산됩니다. 실제 적립 포인트는 결제 전 Google Play 화면에서 확인하세요.
+                      ※포인트 예상치는 현재 대한민국 공식 기본 적립률과 Google Play 반올림 규칙을 기준으로 합니다. 등급 표시는 연간 누적 0pt에서 시작한 참고값이며 현재 연간 진행도는 반영하지 않습니다. 결제 전에 Google Play 화면의 예상 포인트와 등급 진행도를 확인하세요.
                   </p>
               </div>
           </section>
@@ -295,27 +295,27 @@
               </div>
           </section>
 
-          <!-- ポイント交換レート・損得比較 -->
+          <!-- ポイント使い道・損得比較 -->
           <section class="section">
-              <h2>붕스 모은 포인트의 가장 이득인 사용처 (가치 비교)</h2>
+              <h2>붕스 Play Points 사용 탭에서 확인할 교환처</h2>
               <div class="reward-compare-grid">
                   <div class="reward-compare-card highlight">
                       <div class="reward-compare-tag best">할인 쿠폰</div>
                       <h3>게임 전용 할인 쿠폰</h3>
-                      <div class="reward-rate-val">1pt ＝ 약 2.0~2.5배 가치</div>
-                      <p class="reward-rate-desc">250pt로 5,000원 할인 등. 추가 결제 시 가장 높은 가치를 제공합니다.</p>
+                      <div class="reward-rate-val">필요 포인트와 할인액은 표시된 조건 확인</div>
+                      <p class="reward-rate-desc">대상 게임 할인 쿠폰이 표시될 수 있습니다. 필요한 포인트, 할인액, 최소 결제 금액, 유효기간은 Play Points의 사용 화면에 표시된 조건을 기준으로 확인하세요.</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">직접 교환</div>
                       <h3>게임 내 재화 및 아이템</h3>
-                      <div class="reward-rate-val">1pt ＝ 약 1.5~2.0배 가치</div>
-                      <p class="reward-rate-desc">패키지 구매 없이 직접 유료 재화나 뽑기 재화를 획득할 때 유용합니다.</p>
+                      <div class="reward-rate-val">교환 내용과 필요 포인트는 표시된 오퍼 확인</div>
+                      <p class="reward-rate-desc">대상 게임의 인게임 아이템과 포인트를 교환할 수 있는 경우가 있습니다. 제공 여부와 필요 포인트는 국가, 시기, 계정에 따라 달라질 수 있으므로 Play Points 사용 화면을 확인하세요.</p>
                   </div>
                   <div class="reward-compare-card">
                       <div class="reward-compare-tag">Play 잔액</div>
                       <h3>Google Play 잔액 충전</h3>
-                      <div class="reward-rate-val">1pt ＝ 1원 기준</div>
-                      <p class="reward-rate-desc">100pt로 100원 충전. 다른 앱이나 정기결제에도 자유롭게 사용 가능합니다.</p>
+                      <div class="reward-rate-val">필요 포인트와 크레딧 금액은 Play Points에서 확인</div>
+                      <p class="reward-rate-desc">Google Play 크레딧으로 교환할 수 있는 경우가 있습니다. 필요한 포인트와 금액은 Play Points 사용 화면을 확인하세요. 포인트로 받은 Play 크레딧은 1년 후 만료됩니다.</p>
                   </div>
               </div>
           </section>
@@ -535,6 +535,6 @@
 
   <script src="../../../js/analytics-core.js?v=e3c32d54c1"></script>
   <script src="../../../js/third-party.js?v=1654f2b50d"></script>
-  <script src="../../../games/game-sim.js?v=a10cce9d4d"></script>
+  <script src="../../../games/game-sim.js?v=ef2aba97ba"></script>
 </body>
 </html>
