@@ -5,7 +5,6 @@
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
     const MANAGED_ADSENSE_SLOT = '8250492620';
     const ANALYTICS_DELAY_MS = 1200;
-    // 初回広告取得は遅延させない。通信失敗時だけ短い間隔を置いて1回再試行する。
     const ADSENSE_DELAY_MS = 3000;
     const ANALYTICS_SCRIPT_SRC = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
@@ -28,9 +27,7 @@
             const script = document.createElement('script');
             script.src = src;
             script.async = true;
-            Object.entries(attrs).forEach(([key, value]) => {
-                script.setAttribute(key, value);
-            });
+            Object.entries(attrs).forEach(([key, value]) => script.setAttribute(key, value));
             script.onload = () => resolve(script);
             script.onerror = () => reject(new Error(`Failed to load: ${src}`));
             document.head.appendChild(script);
@@ -38,13 +35,8 @@
     }
 
     function getDisplayMode() {
-        if (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) {
-            return 'standalone';
-        }
-        // iOSのホーム画面起動もstandaloneとして同じ軸で比較する。
-        if (window.navigator && window.navigator.standalone === true) {
-            return 'standalone';
-        }
+        if (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) return 'standalone';
+        if (window.navigator && window.navigator.standalone === true) return 'standalone';
         return 'browser';
     }
 
@@ -52,13 +44,9 @@
         if (gaLoaded) return;
         try {
             await ensureAnalyticsCore();
-            await loadScript(
-                ANALYTICS_SCRIPT_SRC,
-                { fetchpriority: 'low' }
-            );
+            await loadScript(ANALYTICS_SCRIPT_SRC, { fetchpriority: 'low' });
             window.PlayPointAnalytics.installGtagBridge();
             window.gtag('js', new Date());
-            // ページビューと以後のイベントへ技術的な起動形態だけを付与し、入力値は追加しない。
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.gtag('config', GA_MEASUREMENT_ID);
             gaLoaded = true;
@@ -85,28 +73,21 @@
     async function loadAdsense() {
         if (adsLoaded) return;
         try {
-            await loadScript(
-                ADSENSE_SCRIPT_SRC,
-                { crossorigin: 'anonymous' }
-            );
+            await loadScript(ADSENSE_SCRIPT_SRC, { crossorigin: 'anonymous' });
             adsLoaded = true;
         } catch (error) {
             console.error('AdSense load failed:', error);
             if (!adsRetryAttempted) {
                 adsRetryAttempted = true;
-                window.setTimeout(() => {
-                    void loadAdsense();
-                }, ADSENSE_DELAY_MS);
+                window.setTimeout(() => void loadAdsense(), ADSENSE_DELAY_MS);
             }
         }
     }
 
     function getCurrentAssetPrefix() {
         let prefix = '/';
-        const currentScript = document.currentScript ||
-            document.querySelector('script[src*="js/third-party.js"]');
+        const currentScript = document.currentScript || document.querySelector('script[src*="js/third-party.js"]');
         if (!currentScript || !currentScript.src) return prefix;
-
         const src = currentScript.getAttribute('src') || '';
         const index = src.indexOf('js/third-party.js');
         if (index !== -1) prefix = src.substring(0, index);
@@ -117,8 +98,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=a7babf5f72`)
-                .then(() => window.PlayPointAnalytics);
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=a7babf5f72`).then(() => window.PlayPointAnalytics);
         }
         return analyticsCorePromise;
     }
@@ -127,15 +107,25 @@
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
             const prefix = getCurrentAssetPrefix();
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=725b19a671`)
-                .then(() => window.PlayPointConsent);
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=725b19a671`).then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;
     }
 
-    function runAfterConsent(callback) {
+    function runAfterConsent(callback, purpose = 'analytics') {
         return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
-            .then(() => window.PlayPointConsent.whenGranted(callback))
+            .then(() => {
+                const consent = window.PlayPointConsent;
+                if (purpose === 'ads' && typeof consent.whenAdsAllowed === 'function') {
+                    consent.whenAdsAllowed(callback);
+                    return;
+                }
+                if (typeof consent.whenAnalyticsGranted === 'function') {
+                    consent.whenAnalyticsGranted(callback);
+                    return;
+                }
+                consent.whenGranted(callback);
+            })
             .catch((error) => console.error('Consent manager load failed:', error));
     }
 
@@ -148,33 +138,24 @@
     }
 
     function scheduleDelayedIdleTask(callback, delay) {
-        window.setTimeout(() => {
-            runWhenIdle(callback);
-        }, delay);
+        window.setTimeout(() => runWhenIdle(callback), delay);
     }
 
     function scheduleThirdPartyLoad() {
         if (thirdPartyScheduled) return;
         thirdPartyScheduled = true;
 
-        // AdSenseはasyncのまま早期に取得を開始し、短時間利用でも広告機会を失いにくくする。
-        // 計算UIのHTML解析や主処理はブロックしない。
+        // Load the async AdSense library early so Google Privacy & Messaging / TCF can initialize.
+        // Manual ad-slot requests remain gated by ad_storage consent below.
         void loadAdsense();
-        // 手動広告枠のリクエストは同意取得後だけ行う。スクリプト取得自体の既存挙動は変えない。
-        void runAfterConsent(initializeManagedAds);
+        void runAfterConsent(initializeManagedAds, 'ads');
 
         const scheduleAfterLoad = () => {
-            // 分析は初期表示と最初の操作を優先し、既存どおり低優先度で読み込む。
-            scheduleDelayedIdleTask(() => {
-                void runAfterConsent(loadAnalytics);
-            }, ANALYTICS_DELAY_MS);
+            scheduleDelayedIdleTask(() => void runAfterConsent(loadAnalytics, 'analytics'), ANALYTICS_DELAY_MS);
         };
 
-        if (document.readyState === 'complete') {
-            scheduleAfterLoad();
-        } else {
-            window.addEventListener('load', scheduleAfterLoad, { once: true });
-        }
+        if (document.readyState === 'complete') scheduleAfterLoad();
+        else window.addEventListener('load', scheduleAfterLoad, { once: true });
     }
 
     if (document.readyState === 'loading') {
