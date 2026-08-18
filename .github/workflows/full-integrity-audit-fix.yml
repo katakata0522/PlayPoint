@@ -1,0 +1,50 @@
+name: One-time full integrity audit fix
+
+on:
+  push:
+    branches:
+      - fix/full-integrity-audit-20260818
+    paths:
+      - tests/trigger.txt
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/full-integrity-audit-20260818
+          fetch-depth: 0
+
+      - name: Apply audited fixes
+        run: node scripts/apply-full-integrity-audit-20260818.cjs
+
+      - name: Rebuild generated assets
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-18'
+          PLAYPOINT_ASSET_VERSION: '2026_08_18'
+        run: node scripts/build-html.js
+
+      - name: Run targeted integrity regression
+        run: node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Commit verified changes
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "fix: align calculator, consent, SEO and CI integrity"
+          git push origin HEAD:fix/full-integrity-audit-20260818
