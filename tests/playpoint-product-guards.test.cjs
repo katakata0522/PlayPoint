@@ -223,7 +223,11 @@ test('同意済み計測はGA本体ロード前のイベントを短期キュー
 
   assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
   assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
-  assert.ok(thirdParty.includes('window.PlayPointAnalytics.flushPending()'), 'GAロード後に保留イベントをflushしていません');
+  assert.ok(core.includes('markAnalyticsReady'), 'GA4準備完了を明示する処理がありません');
+  const configIndex = thirdParty.indexOf("window.gtag('config', GA_MEASUREMENT_ID)");
+  const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');
+  assert.ok(configIndex >= 0, 'GA4 config呼び出しがありません');
+  assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');
 });
 
 test('Xserver同期後に本番スモークテストを実行する', () => {
