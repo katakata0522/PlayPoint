@@ -59,6 +59,28 @@ jobs:
           const fs = require('node:fs');
           const file = 'tests/monetization-search-quality.test.cjs';
           let source = fs.readFileSync(file, 'utf8');
+          const firstStart = source.indexOf("test('記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ'");
+          const nextStart = source.indexOf("test('記事・LP・ゲームの広告初期化経路が共通ローダーと同意管理に接続される'", firstStart);
+          if (firstStart < 0 || nextStart < 0) throw new Error('managed ad regression test block not found');
+          const replacement = `test('記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ', () => {
+  const targets = [
+    ['articles/2025-12-25-campaign.html', 'article-ad-container'],
+    ['status/gold/index.html', 'lp-ad-container'],
+    ['games/fgo/index.html', 'game-ad-container'],
+    ['en/games/fgo/index.html', 'game-ad-container']
+  ];
+  for (const [targetFile, klass] of targets) {
+    const html = read(targetFile);
+    const marker = 'class="' + klass + '"';
+    const index = html.indexOf(marker);
+    assert.ok(index >= 0, targetFile + ': 管理広告枠がありません');
+    const block = html.slice(index, index + 900);
+    assert.ok(block.includes('data-ad-slot="' + SLOT + '"'), targetFile + ': data-ad-slot がありません');
+  }
+});
+
+`;
+          source = source.slice(0, firstStart) + replacement + source.slice(nextStart);
           const before = "  assert.ok(game.includes('js/third-party.js'));";
           const after = "  assert.ok(game.includes('js/third-party.js'));\n  assert.ok(read('games/index.html').includes('js/third-party.js'));";
           if (source.includes(before) && !source.includes("read('games/index.html').includes('js/third-party.js')")) {
