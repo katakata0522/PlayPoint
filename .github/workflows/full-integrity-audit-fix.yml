@@ -27,6 +27,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Mark workflow stage
+        run: |
+          printf 'checkpoint workflow started %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
+          git add .github/audit-stage.txt
+          git commit -m "chore: mark checkpoint audit workflow start" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+
       - name: Repair one-time fixer helper
         run: |
           python - <<'PY'
