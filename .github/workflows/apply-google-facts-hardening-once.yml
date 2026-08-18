@@ -20,16 +20,20 @@ jobs:
         with:
           node-version: 24
 
-      - name: Normalize migration helper for missing Taiwan reward fields
+      - name: Normalize one-time hardening script
         run: |
           node <<'NODE'
           const fs = require('node:fs');
           const file = 'scripts/apply-20260818-google-facts-hardening.cjs';
           let source = fs.readFileSync(file, 'utf8');
-          const before = "  if (index !== values.length) throw new Error(`${field}: expected ${values.length}, got ${index}`);";
-          const after = "  if (index !== values.length && !field.startsWith('reward')) throw new Error(`${field}: expected ${values.length}, got ${index}`);";
-          if (!source.includes(before)) throw new Error('migration helper target not found');
-          source = source.replace(before, after);
+          const beforeCount = "  if (index !== values.length) throw new Error(`${field}: expected ${values.length}, got ${index}`);";
+          const afterCount = "  if (index !== values.length && !field.startsWith('reward')) throw new Error(`${field}: expected ${values.length}, got ${index}`);";
+          if (!source.includes(beforeCount)) throw new Error('migration helper target not found');
+          source = source.replace(beforeCount, afterCount);
+          const beforeTemplate = "assert.ok(!runtime.includes('実質 約${min.toLocaleString()}円'));";
+          const afterTemplate = "assert.ok(!runtime.includes('実質 約\\${min.toLocaleString()}円'));";
+          if (!source.includes(beforeTemplate)) throw new Error('template escape target not found');
+          source = source.replace(beforeTemplate, afterTemplate);
           fs.writeFileSync(file, source, 'utf8');
           NODE
 
