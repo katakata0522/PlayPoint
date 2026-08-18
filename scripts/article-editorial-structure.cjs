@@ -3,7 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const EDITORIAL_MARKER_PATTERN = /\n?\s*<!-- editorial-summary:start -->[\s\S]*?<!-- editorial-summary:end -->\n?/;
+const EDITORIAL_COMMENT_BLOCK_PATTERN = /\n?\s*<!--\s*editorial-summary:start\s*-->[\s\S]*?<!--\s*editorial-summary:end\s*-->\n?/gi;
+const EDITORIAL_PLAIN_BLOCK_PATTERN = /\n?\s*(?:<!---->\s*)?editorial-summary:start\b[\s\S]*?editorial-summary:end\b\s*/gi;
 const EDITORIAL_MODIFIED_DATE = '2026-07-30';
 
 const EDITORIAL_TARGETS = Object.freeze({
@@ -129,6 +130,18 @@ const EDITORIAL_TARGETS = Object.freeze({
   }
 });
 
+function stripEditorialSummaryBlocks(html) {
+  let result = String(html);
+  let previous;
+  do {
+    previous = result;
+    result = result
+      .replace(EDITORIAL_COMMENT_BLOCK_PATTERN, '\n')
+      .replace(EDITORIAL_PLAIN_BLOCK_PATTERN, '\n');
+  } while (result !== previous);
+  return result;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -202,7 +215,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
       continue;
     }
 
-    html = html.replace(EDITORIAL_MARKER_PATTERN, '\n');
+    html = stripEditorialSummaryBlocks(html);
     const knowledge = renderKnowledgeBoundary(config);
     let editorialHtml;
 
@@ -251,5 +264,6 @@ module.exports = {
   escapeHtml,
   renderAnswer,
   renderKnowledgeBoundary,
+  stripEditorialSummaryBlocks,
   updateDateMetadata
 };
