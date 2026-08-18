@@ -1,5 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
 
 const lpFiles = [
   'status/silver/index.html',
@@ -42,29 +44,47 @@ const affiliateSection = `    <section class="section">
             <span class="lp-ad-label">スポンサーリンク</span>
             <ins class="adsbygoogle"
                  style="display:block"
-                     data-ad-client="ca-pub-3845885843809455"
-                     data-ad-slot="8250492620"
-                     data-ad-format="auto"
+                 data-ad-client="ca-pub-3845885843809455"
+                 data-ad-slot="8250492620"
+                 data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
         </div>
     </section>`;
 
-lpFiles.forEach(file => {
-  const fullPath = path.resolve(__dirname, '..', file);
-  if (!fs.existsSync(fullPath)) return;
-  let content = fs.readFileSync(fullPath, 'utf8');
+const existingSectionPattern = /<section class="section">\s*<h2>(?:課金前にやっておくべき実質割引テクニック|課金前に確認したいギフトコード購入条件)<\/h2>[\s\S]*?<\/section>/g;
 
-  // 既存のセクションがあれば除去
-  const existingRegex = /<section class="section">\s*<h2>課金前に確認したいギフトコード購入条件<\/h2>[\s\S]*?<\/section>/g;
-  content = content.replace(existingRegex, '');
-
-  // 最後の </main> または <footer の直前に挿入
-  if (content.includes('</main>')) {
-    content = content.replace('</main>', `${affiliateSection}\n    </main>`);
-  } else if (content.includes('<footer')) {
-    content = content.replace('<footer', `${affiliateSection}\n    <footer`);
+function normalizeLpContent(content) {
+  const withoutExisting = content.replace(existingSectionPattern, '').replace(/\n{3,}/g, '\n\n');
+  if (withoutExisting.includes('</main>')) {
+    return withoutExisting.replace('</main>', `${affiliateSection}\n    </main>`);
   }
+  if (withoutExisting.includes('<footer')) {
+    return withoutExisting.replace('<footer', `${affiliateSection}\n    <footer`);
+  }
+  return withoutExisting;
+}
 
-  fs.writeFileSync(fullPath, content, 'utf8');
-  console.log(`Cleanly updated monetization section in ${file}`);
-});
+function applyLpMonetization(rootDir = path.resolve(__dirname, '..')) {
+  let updated = 0;
+  for (const file of lpFiles) {
+    const fullPath = path.join(rootDir, file);
+    if (!fs.existsSync(fullPath)) continue;
+    const original = fs.readFileSync(fullPath, 'utf8');
+    const next = normalizeLpContent(original);
+    if (next === original) continue;
+    fs.writeFileSync(fullPath, next, 'utf8');
+    updated += 1;
+  }
+  console.log(`[lp-monetization] synchronized: ${updated}`);
+  return updated;
+}
+
+if (require.main === module) applyLpMonetization();
+
+module.exports = {
+  affiliateSection,
+  applyLpMonetization,
+  existingSectionPattern,
+  lpFiles,
+  normalizeLpContent
+};
