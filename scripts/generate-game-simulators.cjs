@@ -2505,9 +2505,9 @@ function generateGamePageHtml(game, localeKey) {
           </section>
 
           <section class="section game-source-section">
-              <h2>${locale.lang === 'ja' ? '出典・確認範囲' : locale.lang === 'ko' ? '출처 및 확인 범위' : locale.lang === 'zh-TW' ? '來源與確認範圍' : 'Sources & verification scope'}</h2>
-              <p>${locale.lang === 'ja' ? 'Play Pointsの国別通常獲得率・ランク条件・四捨五入ルールはGoogle Play公式ヘルプを基準に確認しています。ゲーム内パック価格、ガチャ天井、商品構成は変更されるため参考値であり、購入前に各ゲーム内ストアと公式告知で再確認してください。' : locale.lang === 'ko' ? 'Play Points의 국가별 기본 적립률, 등급 조건, 반올림 규칙은 Google Play 공식 도움말을 기준으로 확인합니다. 게임 내 패키지 가격과 천장 조건은 변경될 수 있는 참고값이므로 결제 전 게임 내 상점과 공식 공지를 다시 확인하세요.' : locale.lang === 'zh-TW' ? 'Play Points 的地區基本獲點率、等級條件與四捨五入規則以 Google Play 官方說明為基準。遊戲內商品價格與保底條件可能變更，僅作參考；購買前請在遊戲內商店與官方公告再次確認。' : 'Google Play Points base earn rates, level thresholds, and rounding rules are checked against Google Play Help. In-game pack prices and pity/guarantee values can change and are reference inputs only; verify them in the game store and publisher notices before purchase.'}</p>
-              <p><a href="${locale.lang === 'ja' ? 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' : 'https://support.google.com/googleplay/answer/9077192'}" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
+              <h2>${loc.lang === 'ja' ? '出典・確認範囲' : loc.lang === 'ko' ? '출처 및 확인 범위' : loc.lang === 'zh-TW' ? '來源與確認範圍' : 'Sources & verification scope'}</h2>
+              <p>${loc.lang === 'ja' ? 'Play Pointsの国別通常獲得率・ランク条件・四捨五入ルールはGoogle Play公式ヘルプを基準に確認しています。ゲーム内パック価格、ガチャ天井、商品構成は変更されるため参考値であり、購入前に各ゲーム内ストアと公式告知で再確認してください。' : loc.lang === 'ko' ? 'Play Points의 국가별 기본 적립률, 등급 조건, 반올림 규칙은 Google Play 공식 도움말을 기준으로 확인합니다. 게임 내 패키지 가격과 천장 조건은 변경될 수 있는 참고값이므로 결제 전 게임 내 상점과 공식 공지를 다시 확인하세요.' : loc.lang === 'zh-TW' ? 'Play Points 的地區基本獲點率、等級條件與四捨五入規則以 Google Play 官方說明為基準。遊戲內商品價格與保底條件可能變更，僅作參考；購買前請在遊戲內商店與官方公告再次確認。' : 'Google Play Points base earn rates, level thresholds, and rounding rules are checked against Google Play Help. In-game pack prices and pity/guarantee values can change and are reference inputs only; verify them in the game store and publisher notices before purchase.'}</p>
+              <p><a href="${loc.lang === 'ja' ? 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' : 'https://support.google.com/googleplay/answer/9077192'}" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
           </section>
 
           <!-- 他のゲーム計算機 -->

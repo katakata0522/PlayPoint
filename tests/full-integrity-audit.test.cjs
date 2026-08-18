@@ -8,4 +8,4 @@ test('楽天還元率を固定の5〜15%以上と断定しない',()=>{for(const
 test('法務ページの更新日は2026-08-18へ統一',()=>{for(const p of ['privacy.html','terms.html']){const h=read(p);assert.match(h,/last-modified" content="2026-08-18/);assert.match(h,/dateModified": "2026-08-18/);assert.match(h,/最終改定日：<\/strong>2026-08-18/);}});
 test('CSPはHTML属性のinline scriptを禁止する',()=>{assert.match(read('.htaccess'),/script-src-attr 'none'/);});
 test('ブラウザCIはゲームと記事の収益経路を検査する',()=>{const w=read('.github/workflows/browser-smoke.yml');assert.match(w,/browser-revenue-smoke\.cjs/);const s=read('.github/scripts/browser-revenue-smoke.cjs');assert.match(s,/games\/genshin/);assert.match(s,/article-ad-container/);});
-test('ゲームサイトマップはコンテンツ日付台帳を参照する',()=>{const s=read('scripts/sitemap-sync.cjs');assert.match(s,/CONTENT_DATE_OVERRIDES\[relativePath\]/);assert.match(read('scripts/content-dates.cjs'),/games\/hbr\/index\.html': '2026-08-18'/);});
+test('ゲームサイトマップはコンテンツ日付台帳を参照する',()=>{const s=read('scripts/sitemap-sync.cjs');assert.match(s,/CONTENT_DATE_OVERRIDES\[relativePath\]/);assert.match(s,/htmlDateFor/);assert.match(read('scripts/generate-game-simulators.cjs'),/last-modified/);});
