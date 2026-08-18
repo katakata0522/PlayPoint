@@ -8,6 +8,7 @@ on:
       - tests/trigger.txt
       - scripts/audit-final-followup-20260818.cjs
       - scripts/audit-consent-followup-20260818.cjs
+      - scripts/audit-content-date-followup-20260818.cjs
       - .github/workflows/full-integrity-audit-fix.yml
 
 permissions:
@@ -39,12 +40,13 @@ jobs:
           {
             node scripts/audit-final-followup-20260818.cjs
             node scripts/audit-consent-followup-20260818.cjs
+            node scripts/audit-content-date-followup-20260818.cjs
           } > .github/audit-followup.txt 2>&1
           status=$?
           cat .github/audit-followup.txt
           printf 'followup status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add -A
-          git commit -m "fix: apply final cross-locale and consent integrity repairs" || true
+          git commit -m "fix: apply final cross-locale consent and date repairs" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
 
