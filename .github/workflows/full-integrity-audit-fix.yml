@@ -21,18 +21,21 @@ jobs:
           ref: fix/full-integrity-audit-20260818
           fetch-depth: 0
 
-      - name: Mark workflow start
+      - name: Configure workflow git identity
         run: |
-          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          printf 'started %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-workflow-started.txt
-          git add .github/audit-workflow-started.txt
-          git commit -m "chore: mark integrity workflow start"
-          git push origin HEAD:fix/full-integrity-audit-20260818
 
-      - name: Apply audited fixes
-        run: node scripts/apply-full-integrity-audit-20260818.cjs
+      - name: Apply audited fixes with diagnostics
+        run: |
+          set +e
+          node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer.log 2>&1
+          status=$?
+          git add .github/audit-fixer.log
+          git commit -m "chore: record integrity fixer diagnostics" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+          cat .github/audit-fixer.log
+          exit $status
 
       - name: Rebuild generated assets
         env:
