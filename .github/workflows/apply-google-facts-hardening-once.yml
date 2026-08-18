@@ -37,3 +37,5 @@ jobs:
           git add -A
           git commit -m "fix: Google公式値と検索品質の整合を強化"
           git push
+
+# one-time audit workflow; remove after successful application.
