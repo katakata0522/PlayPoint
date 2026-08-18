@@ -5,7 +5,6 @@ on:
     branches:
       - fix/full-integrity-audit-20260818
     paths:
-      - tests/trigger.txt
       - .github/workflows/full-integrity-audit-fix.yml
 
 permissions:
@@ -16,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  apply-and-verify:
+  followup-and-verify:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -31,63 +30,48 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Mark workflow stage
+      - name: Apply audit follow-up repairs
         run: |
-          printf 'checkpoint workflow started %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add .github/audit-stage.txt
-          git commit -m "chore: mark checkpoint audit workflow start" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
-
-      - name: Repair one-time fixer helper with diagnostics
-        run: |
-          set +e
           python - <<'PY'
           from pathlib import Path
-          p = Path('scripts/apply-full-integrity-audit-20260818.cjs')
-          s = p.read_text()
-          start = s.index('function replaceRegionTemplate(')
-          end_marker = '\n}\n\n// 1) Google Play公式仕様'
-          end = s.index(end_marker, start) + 2
-          replacement = r'''function replaceRegionTemplate(content, region, key, value) {
-            const start = content.indexOf(`    '${region}': {`);
-            if (start < 0) throw new Error(`config region not found: ${region}`);
-            const nextRegions = ['JP', 'US', 'KR', 'TW'].map(r => content.indexOf(`    '${r}': {`, start + 1)).filter(i => i > start);
-            const end = nextRegions.length ? Math.min(...nextRegions) : content.indexOf('\n};', start);
-            const segment = content.slice(start, end);
-            const keyToken = `'${key}':`;
-            const keyIndex = segment.indexOf(keyToken);
-            if (keyIndex < 0) throw new Error(`config template not found: ${region}.${key}`);
-            const valueStart = segment.indexOf('`', keyIndex + keyToken.length);
-            const valueEnd = valueStart >= 0 ? segment.indexOf('`', valueStart + 1) : -1;
-            if (valueStart < 0 || valueEnd < 0) throw new Error(`config template bounds not found: ${region}.${key}`);
-            const nextSegment = segment.slice(0, valueStart + 1) + value + segment.slice(valueEnd);
-            return content.slice(0, start) + nextSegment + content.slice(end);
-          }'''
-          p.write_text(s[:start] + replacement + s[end:])
-          PY
-          py_status=$?
-          node --check scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-repair-diagnostics.txt 2>&1
-          node_status=$?
-          cat .github/audit-repair-diagnostics.txt
-          git add scripts/apply-full-integrity-audit-20260818.cjs .github/audit-repair-diagnostics.txt
-          git commit -m "chore: checkpoint repaired integrity fixer" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
-          if [ "$py_status" -ne 0 ]; then exit "$py_status"; fi
-          exit "$node_status"
 
-      - name: Apply and checkpoint audited source fixes
-        run: |
-          set +e
-          node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer-diagnostics.txt 2>&1
-          status=$?
-          cat .github/audit-fixer-diagnostics.txt
-          # GITHUB_TOKEN cannot safely push workflow-file edits. The permanent browser workflow change is applied separately via the GitHub connector.
-          git restore .github/workflows/browser-smoke.yml
-          printf 'source-fix status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
+          # Fix the generated game source section to use the function's existing locale config object.
+          p = Path('scripts/generate-game-simulators.cjs')
+          s = p.read_text()
+          if 'locale.lang' in s:
+              s = s.replace('locale.lang', 'loc.lang')
+          p.write_text(s)
+
+          # Keep the original external-script allowlist while forbidding inline HTML event attributes.
+          p = Path('.htaccess')
+          s = p.read_text()
+          s = s.replace("script-src 'self' 'unsafe-inline'; script-src-attr 'none'; script-src-elem ", "script-src ")
+          s = s.replace(" https://cdnjs.cloudflare.com; style-src", " https://cdnjs.cloudflare.com; script-src-attr 'none'; style-src")
+          p.write_text(s)
+
+          # Prefer each generated game's own last-modified metadata; use the date table only as fallback.
+          p = Path('scripts/sitemap-sync.cjs')
+          s = p.read_text()
+          needle = "  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;"
+          replacement = """  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;\n  const htmlDateFor = (filePath, relativePath) => {\n    try {\n      const html = fs.readFileSync(filePath, 'utf8');\n      const match = html.match(/<meta name=\\\"last-modified\\\" content=\\\"(\\d{4}-\\d{2}-\\d{2})\\\"/);\n      if (match) return match[1];\n    } catch (error) {\n      // Fall through to the editorial date table when the page cannot be read.\n    }\n    return dateFor(relativePath);\n  };"""
+          if needle in s and 'const htmlDateFor' not in s:
+              s = s.replace(needle, replacement)
+          s = s.replace("lastmod: dateFor(`${prefix}/index.html`)", "lastmod: htmlDateFor(path.join(dir, 'index.html'), `${prefix}/index.html`)")
+          s = s.replace("lastmod: dateFor(`${prefix}/${sub.name}/index.html`)", "lastmod: htmlDateFor(indexPath, `${prefix}/${sub.name}/index.html`)")
+          p.write_text(s)
+
+          # The regression should guard the metadata-based sitemap behavior rather than require every game in a hand-maintained table.
+          p = Path('tests/full-integrity-audit.test.cjs')
+          s = p.read_text()
+          s = s.replace("assert.match(s,/CONTENT_DATE_OVERRIDES\\[relativePath\\]/);assert.match(read('scripts/content-dates.cjs'),/games\\/hbr\\/index\\.html': '2026-08-18'/);", "assert.match(s,/CONTENT_DATE_OVERRIDES\\[relativePath\\]/);assert.match(s,/htmlDateFor/);assert.match(read('scripts/generate-game-simulators.cjs'),/last-modified/);")
+          p.write_text(s)
+          PY
+          node --check scripts/generate-game-simulators.cjs
+          node --check scripts/sitemap-sync.cjs
+          printf 'followup-source status=0 %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add -A
-          git commit -m "wip: apply audited source fixes" || true
+          git commit -m "fix: repair generated game metadata and sitemap dates"
           git push origin HEAD:fix/full-integrity-audit-20260818
-          exit $status
 
       - name: Rebuild generated assets with diagnostics
         env:
@@ -100,7 +84,7 @@ jobs:
           cat .github/audit-build-diagnostics.txt
           printf 'build status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add -A
-          git commit -m "wip: rebuild audited generated assets" || true
+          git commit -m "fix: rebuild audited generated assets" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
 
