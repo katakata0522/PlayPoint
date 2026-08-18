@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - fix/ga4-event-queue
-    paths-ignore:
-      - '.github/workflows/sync-generated-once.yml'
 
 permissions:
   contents: write
