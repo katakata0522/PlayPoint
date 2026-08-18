@@ -1,0 +1,149 @@
+TAP version 13
+# Subtest: GA4初期化前のイベントは保持し、準備完了後に一度だけ送信する
+ok 1 - GA4初期化前のイベントは保持し、準備完了後に一度だけ送信する
+  ---
+  duration_ms: 4.163294
+  type: 'test'
+  ...
+# Subtest: 記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ
+ok 2 - 記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ
+  ---
+  duration_ms: 1.784698
+  type: 'test'
+  ...
+# Subtest: 許可外イベント・パラメータ・外部遷移は送信または保存しない
+ok 3 - 許可外イベント・パラメータ・外部遷移は送信または保存しない
+  ---
+  duration_ms: 2.687066
+  type: 'test'
+  ...
+# Subtest: 同意後でもGA4準備前はflushせず、拒否時は保存情報も破棄する
+ok 4 - 同意後でもGA4準備前はflushせず、拒否時は保存情報も破棄する
+  ---
+  duration_ms: 2.166919
+  type: 'test'
+  ...
+# Subtest: 期限切れ・改ざん済み流入情報は計算値を上書きしない
+ok 5 - 期限切れ・改ざん済み流入情報は計算値を上書きしない
+  ---
+  duration_ms: 1.461675
+  type: 'test'
+  ...
+# /home/runner/work/PlayPoint/PlayPoint/tests/full-integrity-audit.test.cjs:6
+# test('ゲーム生成物は確認範囲と出典を明示し保留記事を推薦しない',()=>{const g=read('scripts/generate-game-simulators.cjs');assert.match(g,/game-source-section/);assert.match(g,/game prices/pity are reference values/);assert.ok(!g.includes('tgs-google-play-vip.html'));assert.ok(!g.includes('diamond-valley-festival-guide.html'));});
+#                                                                                                                                                    ^
+# SyntaxError: Invalid regular expression flags
+#     at wrapSafe (node:internal/modules/cjs/loader:1713:18)
+#     at Module._compile (node:internal/modules/cjs/loader:1755:20)
+#     at Object..js (node:internal/modules/cjs/loader:1913:10)
+#     at Module.load (node:internal/modules/cjs/loader:1505:32)
+#     at Function._load (node:internal/modules/cjs/loader:1309:12)
+#     at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+#     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+#     at node:internal/main/run_main_module:36:49
+# Node.js v22.23.2
+# Subtest: tests/full-integrity-audit.test.cjs
+not ok 2 - tests/full-integrity-audit.test.cjs
+  ---
+  duration_ms: 34.296638
+  type: 'test'
+  location: '/home/runner/work/PlayPoint/PlayPoint/tests/full-integrity-audit.test.cjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
+ok 7 - 通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない
+  ---
+  duration_ms: 1.261335
+  type: 'test'
+  ...
+# Subtest: 4言語に自動入力の獲得率と通常倍率の文言が用意されている
+ok 8 - 4言語に自動入力の獲得率と通常倍率の文言が用意されている
+  ---
+  duration_ms: 0.349583
+  type: 'test'
+  ...
+# Subtest: 初期化前にDOMを組み替え、地域更新時に文言も更新する
+ok 9 - 初期化前にDOMを組み替え、地域更新時に文言も更新する
+  ---
+  duration_ms: 0.297464
+  type: 'test'
+  ...
+# Subtest: 既存の主要入力IDと共有URL仕様を維持する
+ok 10 - 既存の主要入力IDと共有URL仕様を維持する
+  ---
+  duration_ms: 2.327359
+  type: 'test'
+  ...
+# Subtest: UIモジュールを圧縮・版管理・Service Workerの対象に含める
+ok 11 - UIモジュールを圧縮・版管理・Service Workerの対象に含める
+  ---
+  duration_ms: 0.340379
+  type: 'test'
+  ...
+# Subtest: 記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ
+ok 12 - 記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ
+  ---
+  duration_ms: 2.310103
+  type: 'test'
+  ...
+# Subtest: 記事・LP・ゲームの広告初期化経路が共通ローダーと同意管理に接続される
+ok 13 - 記事・LP・ゲームの広告初期化経路が共通ローダーと同意管理に接続される
+  ---
+  duration_ms: 0.767457
+  type: 'test'
+  ...
+# Subtest: 記事・ブログGA4はconfig後にreadinessを立てる
+ok 14 - 記事・ブログGA4はconfig後にreadinessを立てる
+  ---
+  duration_ms: 0.247881
+  type: 'test'
+  ...
+# Subtest: 未確認の未来イベント記事は検索品質保留としてnoindex・サイトマップ除外する
+ok 15 - 未確認の未来イベント記事は検索品質保留としてnoindex・サイトマップ除外する
+  ---
+  duration_ms: 0.603923
+  type: 'test'
+  ...
+# Subtest: 広告生成スクリプト自体もdata-ad-slotを保持する
+ok 16 - 広告生成スクリプト自体もdata-ad-slotを保持する
+  ---
+  duration_ms: 1.16452
+  type: 'test'
+  ...
+# Subtest: ゲーム計算機の国別公式レートは現行Google表と一致する
+ok 17 - ゲーム計算機の国別公式レートは現行Google表と一致する
+  ---
+  duration_ms: 1.722505
+  type: 'test'
+  ...
+# Subtest: ゲーム計算機は固定のポイント換金価値を断定しない
+ok 18 - ゲーム計算機は固定のポイント換金価値を断定しない
+  ---
+  duration_ms: 1.37146
+  type: 'test'
+  ...
+# Subtest: 品質保留記事はタイトル・OGP・構造化データ・記事台帳を保守的表現へ統一する
+ok 19 - 品質保留記事はタイトル・OGP・構造化データ・記事台帳を保守的表現へ統一する
+  ---
+  duration_ms: 0.656191
+  type: 'test'
+  ...
+# Subtest: ゲーム計算機4言語に未定義テンプレート値を残さない
+ok 20 - ゲーム計算機4言語に未定義テンプレート値を残さない
+  ---
+  duration_ms: 0.908799
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 19
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 118.817984
