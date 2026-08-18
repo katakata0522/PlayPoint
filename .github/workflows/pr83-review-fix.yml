@@ -1,0 +1,47 @@
+name: PR83 review fix
+
+on:
+  push:
+    branches:
+      - fix/full-integrity-audit-20260818
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pr83-review-fix
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Apply review follow-up
+        run: node scripts/pr83-review-followup.cjs
+
+      - name: Remove one-time helpers
+        run: rm -f scripts/pr83-review-followup.cjs .github/workflows/pr83-review-fix.yml pr83-review-trigger.txt
+
+      - name: Rebuild canonical outputs
+        run: node scripts/build-html.js
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
+
+      - name: Commit repaired source and generated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "fix: close PR83 review gaps"
+          git push origin HEAD:fix/full-integrity-audit-20260818
