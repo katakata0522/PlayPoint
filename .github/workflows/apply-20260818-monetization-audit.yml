@@ -19,14 +19,53 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - name: Normalize one-time migration target
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/insert-lp-monetization.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          source = source.replace(
+            /^\s*data-ad-client="ca-pub-3845885843809455"\r?\n\s*data-ad-format="auto"/m,
+            '                     data-ad-client="ca-pub-3845885843809455"\n                     data-ad-format="auto"'
+          );
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
       - name: Apply source fixes
         run: node scripts/apply-20260818-monetization-audit.cjs
+      - name: Connect game portal analytics
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/generate-game-simulators.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          const before = '  <script src="${assetsRelative}js/analytics-core.js"></script>\n</body>';
+          const after = '  <script src="${assetsRelative}js/analytics-core.js"></script>\n  <script src="${assetsRelative}js/third-party.js"></script>\n</body>';
+          if (!source.includes(after)) {
+            if (!source.includes(before)) throw new Error('game portal analytics target not found');
+            source = source.replace(before, after);
+          }
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
       - name: Regenerate monetization outputs
         run: |
           node scripts/insert-article-ads.cjs
           node scripts/insert-lp-monetization.cjs
           node scripts/generate-game-simulators.cjs
           node scripts/build-html.js
+      - name: Strengthen focused regression test
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'tests/monetization-search-quality.test.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          const before = "  assert.ok(game.includes('js/third-party.js'));";
+          const after = "  assert.ok(game.includes('js/third-party.js'));\n  assert.ok(read('games/index.html').includes('js/third-party.js'));";
+          if (source.includes(before) && !source.includes("read('games/index.html').includes('js/third-party.js')")) {
+            source = source.replace(before, after);
+          }
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
       - name: Run focused regression tests
         run: |
           node --check js/third-party.js
