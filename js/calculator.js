@@ -474,7 +474,8 @@ export const CALC = {
         return (!Number.isFinite(value) || value < effectiveMin || value > effectiveMax) ? null : value;
     },
 
-    // 直接入力と倍率入力を別の入力方法として比較し、採用理由も返す
+    // 通常獲得率とGoogle Playに表示された特別獲得率を比較し、採用理由も返す。
+    // multiplierElement というID/URLパラメータ名は既存共有URLとの互換性のため維持する。
     getRateDetails(baseRateElement, statusSelectElement, multiplierElement) {
         const config = CONFIGS[STATE.currentRegion];
         const directRate = this.getValidNumberInput(baseRateElement, 0.01);
@@ -483,8 +484,10 @@ export const CALC = {
         const statusRate = config.statusRates[statusValue];
         if (directRate === null || multiplier === null || !statusRate) return null;
 
-        const multipliedRate = statusRate * multiplier;
-        const difference = directRate - multipliedRate;
+        // Google Playのスペシャルオファーは、ランク通常率へ倍率を掛けるのではなく
+        // 「100円/$1/1,000원/NT$30 あたり何pt」の特別獲得率として通常率と比較する。
+        const promotionRate = multiplier;
+        const difference = directRate - promotionRate;
         const source = Math.abs(difference) < 1e-9
             ? 'same'
             : (difference > 0 ? 'direct' : 'multiplier');
@@ -492,8 +495,10 @@ export const CALC = {
         return {
             directRate,
             multiplier,
-            multipliedRate,
-            finalRate: Math.max(directRate, multipliedRate),
+            promotionRate,
+            // 古いテスト・補助コードとの互換性を保つ読み取り専用エイリアス。
+            multipliedRate: promotionRate,
+            finalRate: Math.max(directRate, promotionRate),
             source
         };
     },

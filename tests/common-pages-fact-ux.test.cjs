@@ -49,17 +49,18 @@ test('共通説明は年初再判定・残高と年間進捗の違いを公式UR
   }
 });
 
-test('トップは倍率と直接レートを代替入力として説明し、入力境界をHTMLでも制約する', () => {
+test('トップは通常率と特別獲得率を比較し、入力境界をHTMLでも制約する', () => {
   const html = read('index.html');
   const calculator = read('js/calculator.js');
-  assert.match(html, /100円あたりの獲得率（自動入力・編集可）/);
-  assert.match(html, /キャンペーン倍率（通常は1倍）/);
+  assert.match(html, /通常獲得率（ステータスから自動入力）/);
+  assert.match(html, /キャンペーン特別獲得率/);
   assert.match(html, /高い方を試算に使います/);
   assert.match(html, /対象・上限・有効化/);
   assert.match(html, /id="neededPoints" min="1" step="1"/);
   assert.doesNotMatch(html, /id="pack-amount"/);
   assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
-  assert.match(calculator, /finalRate:\s*Math\.max\(directRate, multipliedRate\)/);
+  assert.match(calculator, /finalRate:\s*Math\.max\(directRate, promotionRate\)/);
+  assert.doesNotMatch(calculator, /statusRate \* multiplier/);
   assert.match(calculator, /resultRateSourceDirect/);
   assert.match(calculator, /getValidNumberInput\(STATE\.dom\.amountYen, 0\.01\)/);
 });

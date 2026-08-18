@@ -212,7 +212,7 @@
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例：250" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
             <label for="baseRate" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
+                <span data-simplified-calculator-copy="baseRateLabel">通常獲得率（ステータスから自動入力）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
             </label>
@@ -220,7 +220,7 @@
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン倍率（通常は1倍）</span>
+                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン特別獲得率（例：3pt/100円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
@@ -228,7 +228,7 @@
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">
-                「獲得率の直接入力」または「ステータス×倍率」の高い方を試算に使います。両方は別の入力方法です。実際の対象・上限・有効化はキャンペーン画面で確認してください。
+                Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
         </div>
 
@@ -261,21 +261,21 @@
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの獲得率（直接入力）</span>
+                <span data-lang-key="labelBaseRate">通常獲得率（ステータスから自動入力）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率（もう一つの入力方法）</span>
+                <span data-lang-key="labelMultiplierReverse">キャンペーン特別獲得率（例：3pt/100円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">
-                「獲得率の直接入力」または「ステータス×倍率」の高い方を試算に使います。両方は別の入力方法です。実際の対象・上限・有効化はキャンペーン画面で確認してください。
+                Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
         </div>
          <div class="section">

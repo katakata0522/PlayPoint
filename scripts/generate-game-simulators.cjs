@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const GAME_CONTENT_UPDATED_AT = '2026-08-18';
+
 // 多言語ロケール定義
 const LOCALES = {
   ja: {
@@ -24,7 +26,7 @@ const LOCALES = {
     pointValueSuffix: ' 円分',
     unitSpend: 100,
     rateText: '100円=1pt',
-    verifiedDate: '最終確認：2026年8月',
+    verifiedDate: 'Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）',
     badgeText: '人気ゲーム別シミュレーター',
     portalBadge: '🎮 ソシャゲ特化',
     portalH1: '人気ゲーム別 Playポイント課金・天井シミュレーター',
@@ -37,14 +39,14 @@ const LOCALES = {
     packSelectLabel: '課金パックを選択：',
     packCountLabel: '購入回数：',
     customOption: '自由入力（カスタム金額）',
-    multiplierLabel: 'ポイント倍率：',
+    multiplierLabel: 'キャンペーン特別獲得率：',
     multiplierOptions: [
-      { val: '1', label: '通常時（等倍 / 1%）' },
-      { val: '2', label: '2倍キャンペーン' },
-      { val: '3', label: '3倍キャンペーン' },
-      { val: '4', label: '4倍キャンペーン' },
-      { val: '5', label: '5倍キャンペーン' },
-      { val: '7', label: '7倍キャンペーン' }
+      { val: '1', label: '通常 / 100円あたり1pt' },
+      { val: '2', label: '特別獲得率：100円あたり2pt' },
+      { val: '3', label: '特別獲得率：100円あたり3pt' },
+      { val: '4', label: '特別獲得率：100円あたり4pt' },
+      { val: '5', label: '特別獲得率：100円あたり5pt' },
+      { val: '7', label: '特別獲得率：100円あたり7pt' }
     ],
     statusLabel: '現在の会員ランク：',
     statusOptions: [
@@ -73,7 +75,7 @@ const LOCALES = {
     tableThPack: '課金パック名',
     tableThPrice: '価格 (税込)',
     tableThNormal: '通常時還元 (1%)',
-    tableThCp: '5倍CP時還元 (5%)',
+    tableThCp: '特別獲得率 5pt/100円時',
     rewardCompareTitle: 'Play Points「使う」で確認できる交換先',
     rewardTagCoupon: '割引クーポン',
     rewardCouponName: 'ゲーム専用 割引クーポン',
@@ -98,8 +100,8 @@ const LOCALES = {
     sidebarCalcBtn: '計算機を使う ➔',
     sidebarArticlesTitle: '📚 おすすめ攻略記事',
     sidebarArticles: [
-      { title: '東京ゲームショウ Google Play VIP特典', href: 'articles/2026-08-17-tgs-google-play-vip.html' },
-      { title: 'Google Play大感謝祭の参加方法と特典', href: 'articles/2026-08-17-diamond-valley-festival-guide.html' },
+      { title: '倍率・キャンペーンの正しい計算方法', href: 'articles/2026-08-05-play-points-multiplier-stacking.html' },
+      { title: 'Play Pointsランク完全ガイド', href: 'articles/2026-08-05-play-points-levels-guide.html' },
       { title: 'Google Playギフトコードをお得に買う方法', href: 'articles/2026-06-20-discount-gift-cards.html' },
       { title: '100ポイントはいくら相当？', href: 'articles/2026-07-24-play-points-100-value.html' }
     ],
@@ -124,7 +126,7 @@ const LOCALES = {
     pointValueSuffix: ' value',
     unitSpend: 1.0,
     rateText: '$1=1pt',
-    verifiedDate: 'Verified: August 2026',
+    verifiedDate: 'Play Points rates checked: August 2026 (game prices/pity are reference values)',
     badgeText: 'Mobile Game Points Simulator',
     portalBadge: '🎮 Mobile Game Special',
     portalH1: 'Google Play Points Mobile Game Spending Calculators',
@@ -137,14 +139,14 @@ const LOCALES = {
     packSelectLabel: 'Select Purchase Pack:',
     packCountLabel: 'Quantity:',
     customOption: 'Custom Amount (Free input)',
-    multiplierLabel: 'Promotion Multiplier:',
+    multiplierLabel: 'Promotion special earn rate:',
     multiplierOptions: [
-      { val: '1', label: 'Standard Rate (1x)' },
-      { val: '2', label: '2x Point Promotion' },
-      { val: '3', label: '3x Point Promotion' },
-      { val: '4', label: '4x Point Promotion' },
-      { val: '5', label: '5x Point Promotion' },
-      { val: '7', label: '7x Point Promotion' }
+      { val: '1', label: 'Base reference: 1 pt / $1' },
+      { val: '2', label: 'Special rate: 2 pt / $1' },
+      { val: '3', label: 'Special rate: 3 pt / $1' },
+      { val: '4', label: 'Special rate: 4 pt / $1' },
+      { val: '5', label: 'Special rate: 5 pt / $1' },
+      { val: '7', label: 'Special rate: 7 pt / $1' }
     ],
     statusLabel: 'Current Status Level:',
     statusOptions: [
@@ -171,7 +173,7 @@ const LOCALES = {
     tableThPack: 'Pack / Item Name',
     tableThPrice: 'Price (USD)',
     tableThNormal: 'Standard (1x)',
-    tableThCp: '5x Promo (5x)',
+    tableThCp: 'Special rate (5 pt / $1)',
     rewardCompareTitle: 'Redemption options shown in Play Points',
     rewardTagCoupon: 'Discount Coupon',
     rewardCouponName: 'Game-Specific Coupon',
@@ -318,7 +320,7 @@ const LOCALES = {
     pointValueSuffix: ' 等值',
     unitSpend: 30,
     rateText: 'NT$30=1pt',
-    verifiedDate: '最後確認：2026年8月',
+    verifiedDate: 'Play Points 獲點率確認：2026年8月（遊戲價格／保底為參考值）',
     badgeText: '熱門手遊點數試算工具',
     portalBadge: '🎮 手遊課金專區',
     portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
@@ -2245,6 +2247,7 @@ function generateGamePageHtml(game, localeKey) {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="last-modified" content="${GAME_CONTENT_UPDATED_AT}" />
   <meta name="author" content="${loc.authorName}" />
   <link rel="icon" href="${assetsRelative}favicon.svg" type="image/svg+xml" />
   <title>${gameTitle} - ${loc.siteName}</title>
@@ -2499,6 +2502,12 @@ function generateGamePageHtml(game, localeKey) {
           <section class="section">
               <h2>${loc.faqHeading}</h2>
               ${faqHtml}
+          </section>
+
+          <section class="section game-source-section">
+              <h2>${locale.lang === 'ja' ? '出典・確認範囲' : locale.lang === 'ko' ? '출처 및 확인 범위' : locale.lang === 'zh-TW' ? '來源與確認範圍' : 'Sources & verification scope'}</h2>
+              <p>${locale.lang === 'ja' ? 'Play Pointsの国別通常獲得率・ランク条件・四捨五入ルールはGoogle Play公式ヘルプを基準に確認しています。ゲーム内パック価格、ガチャ天井、商品構成は変更されるため参考値であり、購入前に各ゲーム内ストアと公式告知で再確認してください。' : locale.lang === 'ko' ? 'Play Points의 국가별 기본 적립률, 등급 조건, 반올림 규칙은 Google Play 공식 도움말을 기준으로 확인합니다. 게임 내 패키지 가격과 천장 조건은 변경될 수 있는 참고값이므로 결제 전 게임 내 상점과 공식 공지를 다시 확인하세요.' : locale.lang === 'zh-TW' ? 'Play Points 的地區基本獲點率、等級條件與四捨五入規則以 Google Play 官方說明為基準。遊戲內商品價格與保底條件可能變更，僅作參考；購買前請在遊戲內商店與官方公告再次確認。' : 'Google Play Points base earn rates, level thresholds, and rounding rules are checked against Google Play Help. In-game pack prices and pity/guarantee values can change and are reference inputs only; verify them in the game store and publisher notices before purchase.'}</p>
+              <p><a href="${locale.lang === 'ja' ? 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja' : 'https://support.google.com/googleplay/answer/9077192'}" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
           </section>
 
           <!-- 他のゲーム計算機 -->

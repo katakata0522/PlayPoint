@@ -166,6 +166,7 @@ ${articleEntries}
 
 function getGameSitemapEntries(rootDir) {
   const entries = [];
+  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;
   const dirs = [
     { prefix: 'games', dir: path.join(rootDir, 'games') },
     { prefix: 'en/games', dir: path.join(rootDir, 'en', 'games') },
@@ -177,7 +178,7 @@ function getGameSitemapEntries(rootDir) {
     if (!fs.existsSync(dir)) continue;
     entries.push({
       url: `${SITE_ORIGIN}/${prefix}/`,
-      lastmod: TOP_PAGE_CONTENT_DATES.ja
+      lastmod: dateFor(`${prefix}/index.html`)
     });
 
     const subdirs = fs.readdirSync(dir, { withFileTypes: true });
@@ -187,7 +188,7 @@ function getGameSitemapEntries(rootDir) {
         if (fs.existsSync(indexPath)) {
           entries.push({
             url: `${SITE_ORIGIN}/${prefix}/${sub.name}/`,
-            lastmod: TOP_PAGE_CONTENT_DATES.ja
+            lastmod: dateFor(`${prefix}/${sub.name}/index.html`)
           });
         }
       }
