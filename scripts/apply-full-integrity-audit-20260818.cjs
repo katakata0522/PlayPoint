@@ -39,9 +39,14 @@ function replaceRegionTemplate(content, region, key, value) {
   const nextRegions = ['JP', 'US', 'KR', 'TW'].map(r => content.indexOf(`    '${r}': {`, start + 1)).filter(i => i > start);
   const end = nextRegions.length ? Math.min(...nextRegions) : content.indexOf('\n};', start);
   const segment = content.slice(start, end);
-  const re = new RegExp(`('${key}':\\s*)\\`[\\s\\S]*?\\``);
-  if (!re.test(segment)) throw new Error(`config template not found: ${region}.${key}`);
-  return content.slice(0, start) + segment.replace(re, `$1\`${value}\``) + content.slice(end);
+  const keyToken = `'${key}':`;
+  const keyIndex = segment.indexOf(keyToken);
+  if (keyIndex < 0) throw new Error(`config template not found: ${region}.${key}`);
+  const valueStart = segment.indexOf('`', keyIndex + keyToken.length);
+  const valueEnd = valueStart >= 0 ? segment.indexOf('`', valueStart + 1) : -1;
+  if (valueStart < 0 || valueEnd < 0) throw new Error(`config template bounds not found: ${region}.${key}`);
+  const nextSegment = segment.slice(0, valueStart + 1) + value + segment.slice(valueEnd);
+  return content.slice(0, start) + nextSegment + content.slice(end);
 }
 
 // 1) Google Play公式仕様: プロモーションは「ステータス率×倍率」ではなく、表示された特別獲得率と通常率の高い方。
