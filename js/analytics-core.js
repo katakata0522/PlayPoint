@@ -41,6 +41,7 @@
     });
 
     const pendingEvents = [];
+    let analyticsReady = false;
 
     function hasConsent() {
         return Boolean(window.PlayPointConsent)
@@ -171,8 +172,7 @@
             if (command === 'event' && typeof eventName === 'string') {
                 const enrichedParams = enrichCalculationParams(eventName, params || {});
                 if (enrichedParams === null) return;
-                window.dataLayer.push([command, eventName, enrichedParams]);
-                return;
+                arguments[2] = enrichedParams;
             }
             window.dataLayer.push(arguments);
         };
@@ -202,6 +202,10 @@
             clearCalculatorEntry();
             return false;
         }
+        if (!analyticsReady) {
+            queue(eventName, cleanParams);
+            return false;
+        }
 
         send(eventName, cleanParams);
         return true;
@@ -214,10 +218,18 @@
             clearCalculatorEntry();
             return;
         }
+        if (!analyticsReady) return;
+
         while (pendingEvents.length) {
             const { eventName, params } = pendingEvents.shift();
             send(eventName, params);
         }
+    }
+
+    function markAnalyticsReady() {
+        if (analyticsReady) return;
+        analyticsReady = true;
+        flushPending();
     }
 
     function markEngaged() {
@@ -232,6 +244,7 @@
         getEntryContext,
         hasConsent,
         installGtagBridge,
+        markAnalyticsReady,
         markEngaged,
         rememberCalculatorEntry,
         sanitizeParams,
