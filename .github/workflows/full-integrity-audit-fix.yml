@@ -5,6 +5,7 @@ on:
     branches:
       - fix/full-integrity-audit-20260818
     paths:
+      - tests/trigger.txt
       - .github/workflows/full-integrity-audit-fix.yml
 
 permissions:
