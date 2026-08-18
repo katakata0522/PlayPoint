@@ -9,6 +9,7 @@ const source = fs.readFileSync(path.resolve(__dirname, '../js/consent.js'), 'utf
 function runtime(googleValues = null) {
   const events = [];
   let tcfListener = null;
+  let timeoutCallback = null;
   const googleCallbacks = [];
   const context = {
     console,
@@ -17,8 +18,8 @@ function runtime(googleValues = null) {
     document: { dispatchEvent(event) { events.push(event); } },
     setInterval() { return 1; },
     clearInterval() {},
-    setTimeout() { return 2; },
-    clearTimeout() {},
+    setTimeout(callback) { timeoutCallback = callback; return 2; },
+    clearTimeout() { timeoutCallback = null; },
     googlefc: {
       callbackQueue: { push(value) { googleCallbacks.push(value); } },
       getGoogleConsentModeValues() { return googleValues; }
@@ -38,6 +39,12 @@ function runtime(googleValues = null) {
       const callback = googleCallbacks.find(item => typeof item.CONSENT_MODE_DATA_READY === 'function');
       assert.ok(callback, 'CONSENT_MODE_DATA_READY callback missing');
       callback.CONSENT_MODE_DATA_READY();
+    },
+    fireTimeout() {
+      assert.equal(typeof timeoutCallback, 'function', 'consent fallback timeout missing');
+      const callback = timeoutCallback;
+      timeoutCallback = null;
+      callback();
     }
   };
 }
@@ -121,4 +128,70 @@ test('拒否後に設定を変更して同意すると待機中callbackが復帰
   assert.equal(context.PlayPointConsent.getAdStatus(), 'granted');
   assert.equal(analyticsCalls, 1);
   assert.equal(adCalls, 1);
+});
+
+test('Analytics確定・広告UNKNOWNでは確定済み同意を保ったままUNKNOWNだけtimeoutで拒否する', () => {
+  const { context, fireGoogleFc, fireTimeout } = runtime({
+    analyticsStoragePurposeConsentStatus: 1,
+    adStoragePurposeConsentStatus: 0,
+    adUserDataPurposeConsentStatus: 0,
+    adPersonalizationPurposeConsentStatus: 0
+  });
+  let analyticsCalls = 0;
+  let adCalls = 0;
+  context.PlayPointConsent.whenAnalyticsGranted(() => { analyticsCalls += 1; });
+  context.PlayPointConsent.whenAdsAllowed(() => { adCalls += 1; });
+
+  fireGoogleFc();
+  assert.equal(context.PlayPointConsent.getStatus(), 'granted');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'pending');
+  assert.equal(context.PlayPointConsent.getSource(), 'googlefc');
+  assert.equal(analyticsCalls, 1);
+  assert.equal(adCalls, 0);
+
+  fireTimeout();
+  assert.equal(context.PlayPointConsent.getStatus(), 'granted');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'denied');
+  assert.equal(context.PlayPointConsent.getSource(), 'googlefc-timeout');
+  assert.equal(analyticsCalls, 1);
+  assert.equal(adCalls, 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.PlayPointConsent.getConsentState())), {
+    analytics_storage: 'granted',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied'
+  });
+});
+
+test('広告確定・Analytics UNKNOWNでも広告同意を保ったままAnalyticsだけtimeoutで拒否する', () => {
+  const { context, fireGoogleFc, fireTimeout } = runtime({
+    analyticsStoragePurposeConsentStatus: 0,
+    adStoragePurposeConsentStatus: 1,
+    adUserDataPurposeConsentStatus: 1,
+    adPersonalizationPurposeConsentStatus: 1
+  });
+  let analyticsCalls = 0;
+  let adCalls = 0;
+  context.PlayPointConsent.whenAnalyticsGranted(() => { analyticsCalls += 1; });
+  context.PlayPointConsent.whenAdsAllowed(() => { adCalls += 1; });
+
+  fireGoogleFc();
+  assert.equal(context.PlayPointConsent.getStatus(), 'pending');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'granted');
+  assert.equal(context.PlayPointConsent.getSource(), 'googlefc');
+  assert.equal(analyticsCalls, 0);
+  assert.equal(adCalls, 1);
+
+  fireTimeout();
+  assert.equal(context.PlayPointConsent.getStatus(), 'denied');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'granted');
+  assert.equal(context.PlayPointConsent.getSource(), 'googlefc-timeout');
+  assert.equal(analyticsCalls, 0);
+  assert.equal(adCalls, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.PlayPointConsent.getConsentState())), {
+    analytics_storage: 'denied',
+    ad_storage: 'granted',
+    ad_user_data: 'granted',
+    ad_personalization: 'granted'
+  });
 });
