@@ -26,17 +26,31 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Repair one-time fixer syntax
+      - name: Repair one-time fixer helper
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('scripts/apply-full-integrity-audit-20260818.cjs')
           s = p.read_text()
-          old = "  const re = new RegExp(`('${key}':\\\\s*)\\\\`[\\\\s\\\\S]*?\\\\``);"
-          new = "  const re = new RegExp(\"('\\\" + key + \\"':\\\\\\\\s*)`[\\\\\\\\s\\\\\\\\S]*?`\");"
-          if old not in s:
-              raise SystemExit('expected broken regex line not found')
-          p.write_text(s.replace(old, new))
+          start = s.index('function replaceRegionTemplate(')
+          end_marker = '\n}\n\n// 1) Google Play公式仕様'
+          end = s.index(end_marker, start) + 2
+          replacement = r'''function replaceRegionTemplate(content, region, key, value) {
+            const start = content.indexOf(`    '${region}': {`);
+            if (start < 0) throw new Error(`config region not found: ${region}`);
+            const nextRegions = ['JP', 'US', 'KR', 'TW'].map(r => content.indexOf(`    '${r}': {`, start + 1)).filter(i => i > start);
+            const end = nextRegions.length ? Math.min(...nextRegions) : content.indexOf('\n};', start);
+            const segment = content.slice(start, end);
+            const keyToken = `'${key}':`;
+            const keyIndex = segment.indexOf(keyToken);
+            if (keyIndex < 0) throw new Error(`config template not found: ${region}.${key}`);
+            const valueStart = segment.indexOf('`', keyIndex + keyToken.length);
+            const valueEnd = valueStart >= 0 ? segment.indexOf('`', valueStart + 1) : -1;
+            if (valueStart < 0 || valueEnd < 0) throw new Error(`config template bounds not found: ${region}.${key}`);
+            const nextSegment = segment.slice(0, valueStart + 1) + value + segment.slice(valueEnd);
+            return content.slice(0, start) + nextSegment + content.slice(end);
+          }'''
+          p.write_text(s[:start] + replacement + s[end:])
           PY
           node --check scripts/apply-full-integrity-audit-20260818.cjs
 
