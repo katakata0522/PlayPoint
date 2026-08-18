@@ -40,9 +40,13 @@ function getArticleUpdatedDate(article) {
   return article.modified || article.date;
 }
 
+function isListedArticle(article) {
+  return article && article.listed !== false;
+}
+
 function normalizeFeedArticles(articles) {
   return articles
-    .filter(article => article && article.file && article.title && article.date)
+    .filter(article => article && article.file && article.title && article.date && isListedArticle(article))
     .sort((a, b) => String(getArticleUpdatedDate(b)).localeCompare(String(getArticleUpdatedDate(a))));
 }
 

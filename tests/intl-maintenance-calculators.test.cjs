@@ -89,7 +89,7 @@ test('維持計算ロジックは不足点・通常時・倍率・年末ペー�
   const script = read('maintenance/intl-maintenance.js');
 
   assert.ok(script.includes('Math.max(0, target - normalizedProgress)'));
-  assert.ok(script.includes('Math.ceil((remaining / (rate * multiplier)) * spendUnit)'));
+  assert.ok(script.includes('Math.ceil((remaining / Math.max(rate, specialRate)) * spendUnit)'));
   assert.ok(script.includes('new Date(now.getFullYear(), 11, 31'));
   assert.ok(script.includes("setText('monthly'"));
   assert.ok(script.includes("setText('weekly'"));

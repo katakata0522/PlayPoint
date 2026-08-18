@@ -226,7 +226,7 @@ test('通常獲得率と特別獲得率は高い方を使い、ランク率へ�
   assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'same');
 });
 
-test('パック額未入力では購入ごとの丸めを仮定しない概算として表示する', () => {
+test('通常計算は購入ごとの丸めを仮定しない概算として表示する', () => {
   const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'US';
   PP_STATE.dom.currentStatus = createSelect();
@@ -235,7 +235,6 @@ test('パック額未入力では購入ごとの丸めを仮定しない概算�
   PP_STATE.dom.targetStatus = createSelect();
   PP_STATE.dom.neededPoints = createInput('6');
   PP_STATE.dom.multiplier = createInput('1');
-  PP_STATE.dom.packAmount = createInput('0');
   PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
 
   populateStatusSelects();
@@ -247,52 +246,7 @@ test('パック額未入力では購入ごとの丸めを仮定しない概算�
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(content.includes('data-value="6"'));
   assert.ok(renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding'));
-});
-
-test('パック額入力時は購入ごとの四捨五入で必要回数と合計額を計算する', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
-  PP_STATE.currentRegion = 'US';
-  PP_STATE.dom.currentStatus = createSelect();
-  PP_STATE.dom.reverseStatus = createSelect();
-  PP_STATE.dom.baseRate = createInput();
-  PP_STATE.dom.targetStatus = createSelect();
-  PP_STATE.dom.neededPoints = createInput('12');
-  PP_STATE.dom.multiplier = createInput('1');
-  PP_STATE.dom.packAmount = createInput('5');
-  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
-
-  populateStatusSelects();
-  PP_STATE.dom.currentStatus.value = '1.1';
-  updateBaseRateAndTarget();
-  calculate();
-
-  const content = renderedResults[0].content;
-  assert.strictEqual(renderedResults[0].isError, false);
-  assert.ok(content.includes('data-value="2"'));
-  assert.ok(content.includes('data-value="10"'));
-  assert.ok(renderedResultDetails[0].includes('Points are rounded for each entered purchase amount'));
-});
-
-test('1回0ポイントになる購入額は概算へフォールバックせずエラーにする', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
-  PP_STATE.currentRegion = 'US';
-  PP_STATE.dom.currentStatus = createSelect();
-  PP_STATE.dom.reverseStatus = createSelect();
-  PP_STATE.dom.baseRate = createInput();
-  PP_STATE.dom.targetStatus = createSelect();
-  PP_STATE.dom.neededPoints = createInput('6');
-  PP_STATE.dom.multiplier = createInput('1');
-  PP_STATE.dom.packAmount = createInput('0.01');
-  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
-
-  populateStatusSelects();
-  PP_STATE.dom.currentStatus.value = '1.1';
-  updateBaseRateAndTarget();
-  calculate();
-
-  assert.strictEqual(renderedResults[0].isError, true);
-  assert.ok(renderedResults[0].content.includes('each purchase rounds to 0 points'));
-  assert.ok(!renderedResults[0].content.includes('data-value="6"'));
+  assert.ok(!renderedResultDetails[0].includes('Enter an average amount per purchase'));
 });
 
 test('逆算モードは入力額を1回の購入として丸める前提を表示する', () => {
@@ -654,82 +608,51 @@ test('折りたたみ詳細の見出しを4言語で用意する', () => {
   }
 });
 
-test('平均パック課金額シミュレーションの検証', () => {
+test('通常計算はパック額なしの必要額概算だけを返す', () => {
   const { PP_STATE, calculate, renderedResults } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
-  PP_STATE.dom.currentStatus.value = '1.5'; // ゴールド (還元率1.5pt/100円)
+  PP_STATE.dom.currentStatus.value = '1.5';
   PP_STATE.dom.baseRate = createInput('1.5');
   PP_STATE.dom.targetStatus = createSelect();
   const option2 = createOption('プラチナ', 4000);
   option2.dataset.statusLabel = 'プラチナ';
   PP_STATE.dom.targetStatus.add(option2);
-  PP_STATE.dom.neededPoints = createInput('300'); // あと300pt必要
+  PP_STATE.dom.neededPoints = createInput('300');
   PP_STATE.dom.multiplier = createInput('1');
   PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
-  
-  // パック額 = 9800円 (9800円 / 100 = 98回。 98 * 1.5 = 147pt獲得)
-  // 300pt ➔ 147pt × 3パック = 441pt ➔ 29400円必要
-  PP_STATE.dom.packAmount = createInput('9800');
 
   calculate();
 
-  assert.ok(renderedResults[0].content.includes('data-value="3"'), '必要購入パック数が3パックとなること');
-  assert.ok(renderedResults[0].content.includes('data-value="29400"'), '合計課金額が29,400円になること');
+  assert.ok(renderedResults[0].content.includes('data-value="20000"'), '300ptはゴールド1.5pt/100円で20,000円になること');
+  assert.ok(!renderedResults[0].content.includes('必要購入パック数'));
 });
 
-test('通常還元とキャンペーン還元の差額は既存の購入単位で比較する', () => {
+test('通常還元と特別獲得率の差額は必要額概算で比較する', () => {
   const { computeRateComparison } = loadCalculatorContext();
-  const samePack = computeRateComparison({
-    neededPoints: 50,
-    selectedRate: 2,
-    baseRate: 1,
-    packAmount: 9800,
-    spendUnit: 100
-  });
-  assert.deepEqual(
-    JSON.parse(JSON.stringify(samePack)),
-    { baseAmount: 9800, selectedAmount: 9800, savedAmount: 0 }
-  );
-
-  const withoutPack = computeRateComparison({
+  const comparison = computeRateComparison({
     neededPoints: 100,
     selectedRate: 2,
     baseRate: 1,
     spendUnit: 100
   });
   assert.deepEqual(
-    JSON.parse(JSON.stringify(withoutPack)),
+    JSON.parse(JSON.stringify(comparison)),
     { baseAmount: 10000, selectedAmount: 5000, savedAmount: 5000 }
   );
 });
 
-test('米国のパック計算は購入ごとのポイントを最も近い整数へ丸める', () => {
+test('computeMainResultはパック額を使わず必要額だけを返す', () => {
   const { computeMainResult } = loadCalculatorContext();
   const result = computeMainResult({
     neededPoints: 12,
     finalRate: 1.1,
-    packAmount: 5,
     spendUnit: 1,
     baseDate: new Date(2026, 6, 10)
   });
 
-  assert.strictEqual(result.packsNeeded, 2, 'Silverの$5は1パック6ptとして扱うこと');
-  assert.strictEqual(result.totalAmountNeeded, 10, '12ptには$5パックが2回で足りること');
-});
-
-test('米国の小数パック額は金額全体に還元率を掛けてから購入ごとに丸める', () => {
-  const { computeMainResult } = loadCalculatorContext();
-  const result = computeMainResult({
-    neededPoints: 60,
-    finalRate: 1.1,
-    packAmount: 5.99,
-    spendUnit: 1,
-    baseDate: new Date(2026, 6, 10)
-  });
-
-  assert.strictEqual(result.packsNeeded, 9, 'Silverの$5.99は1パック7ptとして扱うこと');
-  assert.strictEqual(result.totalAmountNeeded, 53.91, '60ptには$5.99パックが9回で足りること');
+  assert.strictEqual(result.packsNeeded, undefined);
+  assert.strictEqual(result.totalAmountNeeded, 11);
 });
 
 test('海外版の計算結果導線は各言語の実在ページだけを使う', () => {

@@ -79,6 +79,12 @@ test('通常計算と逆算は開始・初回成功・入力エラーを別イ�
   assert.ok(mainSource.includes('error_type: errorType'));
   assert.ok(mainSource.includes('bindCalculatorFunnelStart(STATE.dom.neededPoints'));
   assert.ok(mainSource.includes('bindCalculatorFunnelStart(STATE.dom.amountYen'));
+  assert.ok(mainSource.includes("getStatus?.() !== 'denied'"));
+  assert.match(mainSource, /function canRecordCalculatorFunnel[\s\S]*function trackCalculatorFormStarted/);
+  assert.match(
+    mainSource.slice(mainSource.indexOf('function trackCalculatorFormStarted'), mainSource.indexOf('function getValidationErrorType')),
+    /if \(!canRecordCalculatorFunnel\(\)\) return;/
+  );
 });
 
 test('新しいファネル送信処理は入力した数値そのものをイベントパラメータにしない', () => {

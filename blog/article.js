@@ -381,7 +381,8 @@
             date: typeof article.date === 'string' ? article.date : '',
             category: typeof article.category === 'string' ? article.category : '',
             file: sanitizeArticleFile(article.file),
-            thumbnail: sanitizeArticleThumbnail(article.thumbnail)
+            thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            listed: article.listed !== false
         };
     }
 
@@ -630,7 +631,7 @@
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles for recommendation');
             const articles = await response.json();
-            const allArticles = Array.isArray(articles) ? articles.map(normalizeArticle) : [];
+            const allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(article => article.listed !== false);
 
             // Get current article info
             const currentPath = window.location.pathname;

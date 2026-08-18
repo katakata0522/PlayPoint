@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=d7541c96a8">
+    <link rel="modulepreload" href="js/main.js?v=af582f9688">
     <link rel="modulepreload" href="js/config.js">
-    <link rel="modulepreload" href="js/analytics-core.js?v=01921e4cd4">
+    <link rel="modulepreload" href="js/analytics-core.js?v=a16d188b9e">
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=5c1728dc6b">
+    <link rel="stylesheet" href="style.css?v=1b28a59c77">
     <script type="speculationrules">
     {
       "prefetch": [
@@ -220,7 +220,7 @@
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン倍率（通常は1倍）</span>
+                <span data-simplified-calculator-copy="multiplierLabel">キャンペーン特別獲得率（例：3pt/100円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
@@ -355,19 +355,19 @@
         <p>とくに「プラチナまであと少し」「ダイヤモンドに届くか知りたい」「ポイント増量キャンペーンを待つべきか迷っている」という場面で、感覚ではなく数字で判断しやすくなります。</p>
         <ul>
             <li>プラチナ・ダイヤモンドまでの必要金額を試算</li>
-            <li>通常還元とキャンペーン倍率を比較しながら逆算</li>
+            <li>通常還元とキャンペーン特別獲得率を比較しながら逆算</li>
             <li>ほくほくリワード日記で、毎週の獲得ポイントを手元で管理</li>
         </ul>
         <figure class="calculation-flow-figure">
             <img src="images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="不足ポイント、還元条件、必要課金額目安を順番に確認する計算の流れ">
             <figcaption>不足ポイントと還元条件から、必要課金額の目安を出す3ステップ。図中の1,728ptは入力例です。</figcaption>
         </figure>
-        <p class="calculation-method-note"><strong>計算と検証について:</strong> 入力値は外部へ送信せず、このブラウザ上で計算します。必要ポイントと採用した還元条件から金額を試算し、パック額を指定した場合は購入単位で切り上げます。情報源・更新・訂正の方針は <a href="author/katakata.html" rel="author">運営者・検証方針</a> で確認できます。</p>
+        <p class="calculation-method-note"><strong>計算と検証について:</strong> 入力値は外部へ送信せず、このブラウザ上で計算します。必要ポイントと採用した還元条件から金額を試算します。情報源・更新・訂正の方針は <a href="author/katakata.html" rel="author">運営者・検証方針</a> で確認できます。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
     <!-- ARTICLE_DRAWER_START -->
     <section class="section"><h2 data-lang-key="articleDrawerTitle">よくある悩みを確認する</h2>
-      <p>計算結果と一緒に確認されることが多い、代表的な6記事と最新情報を案内します。 <span class="article-count">7記事</span></p>
+      <p>計算結果と一緒に確認されることが多い、最新情報ハブと代表的な6記事を案内します。 <span class="article-count">7記事</span></p>
       <ul class="article-link-list">
         <li><a class="article-link-card" href="latest/"><span class="article-link-tag">最新情報</span><span class="article-link-title">キャンペーン・仕様変更・反映遅延</span></a></li>
         <li><a class="article-link-card" href="articles/2026-07-24-play-points-100-value.html"><span class="article-link-tag">必要額</span><span class="article-link-title">100ポイントはいくら？</span></a></li>
@@ -432,8 +432,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=d7541c96a8"></script>
-<script src="js/third-party.js?v=7f5a61bbb2" defer></script>
+<script type="module" src="js/main.js?v=af582f9688"></script>
+<script src="js/third-party.js?v=fa89801d8d" defer></script>
 
 </body>
 </html>

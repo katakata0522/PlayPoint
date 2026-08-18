@@ -1,6 +1,6 @@
 'use strict';
 
-import './analytics-core.js?v=01921e4cd4';
+import './analytics-core.js?v=a16d188b9e';
 
 const REGIONS = {
   JP: {
@@ -18,7 +18,7 @@ const REGIONS = {
     resultLabel: '必要な購入額の目安',
     rateLabel: '適用レート',
     note: '購入ごとにポイントが四捨五入されるため、実際の合計は購入の分け方や対象金額で前後します。',
-    error: 'ポイント数と倍率を正しく入力してください。',
+    error: 'ポイント数と特別獲得率を正しく入力してください。',
     copied: '計算条件のURLをコピーしました'
   },
   US: {
@@ -36,7 +36,7 @@ const REGIONS = {
     resultLabel: 'Estimated eligible spend',
     rateLabel: 'Applied earn rate',
     note: 'Google rounds points for each item, so the actual total can vary with item prices, taxes, and eligibility.',
-    error: 'Enter valid points and a valid multiplier.',
+    error: 'Enter valid points and a valid special earn rate.',
     copied: 'Calculation link copied'
   },
   KR: {
@@ -54,7 +54,7 @@ const REGIONS = {
     resultLabel: '예상 필요 결제액',
     rateLabel: '적용 적립률',
     note: '포인트는 구매 건별로 반올림되므로 상품 가격, 세금, 적립 대상 여부에 따라 실제 합계가 달라질 수 있습니다.',
-    error: '포인트와 배율을 올바르게 입력하세요.',
+    error: '포인트와 특별 적립률을 올바르게 입력하세요.',
     copied: '계산 조건 링크를 복사했습니다'
   },
   TW: {
@@ -72,7 +72,7 @@ const REGIONS = {
     resultLabel: '預估所需消費金額',
     rateLabel: '套用積點率',
     note: '點數會依每筆商品價格四捨五入，因此實際結果可能因購買拆分、稅金與適用資格而不同。',
-    error: '請輸入有效點數與活動倍率。',
+    error: '請輸入有效點數與活動特別獲點率。',
     copied: '已複製計算條件連結'
   }
 };
@@ -152,7 +152,7 @@ function init() {
       return;
     }
 
-    const finalRate = status[1] * multiplier;
+    const finalRate = Math.max(status[1], multiplier);
     const spend = roundSpend((points / finalRate) * config.unit, config.precision);
     const url = updateUrl(points, statusIndex, multiplier);
     result.classList.remove('is-error');

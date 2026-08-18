@@ -15,7 +15,7 @@
             neededPointsLabel: '目標までの必要ポイント',
             neededPointsPlaceholder: '例：150',
             rateLabel: '100円あたりの基本ポイント',
-            multiplierLabel: 'キャンペーン倍率',
+            multiplierLabel: 'キャンペーン特別獲得率',
             calcBtnMain: '課金額を計算',
             calcBtnReverse: 'ポイントを計算',
             initOutputMain: '必要ポイントを入力してください。',
@@ -47,12 +47,12 @@
                 '2.0': { label: 'なし', val: 0 }
             },
             multipliers: {
-                1: '通常（1倍）',
-                2: '2倍',
-                3: '3倍',
-                4: '4倍',
-                5: '5倍',
-                10: '10倍'
+                1: '通常（ステータス獲得率）',
+                2: '2pt/100円',
+                3: '3pt/100円',
+                4: '4pt/100円',
+                5: '5pt/100円',
+                10: '10pt/100円'
             }
         },
         en: {
@@ -67,7 +67,7 @@
             neededPointsLabel: 'Points to Next Level',
             neededPointsPlaceholder: 'e.g., 100',
             rateLabel: 'Points per $1',
-            multiplierLabel: 'Campaign Multiplier',
+            multiplierLabel: 'Promotion special earn rate',
             calcBtnMain: 'Calculate Spend',
             calcBtnReverse: 'Calculate Points',
             initOutputMain: 'Enter the points needed.',
@@ -99,12 +99,12 @@
                 '1.6': { label: 'None', val: 0 }
             },
             multipliers: {
-                1: 'Normal (1x)',
-                2: '2x',
-                3: '3x',
-                4: '4x',
-                5: '5x',
-                10: '10x'
+                1: 'Level rate',
+                2: '2 pt / $1',
+                3: '3 pt / $1',
+                4: '4 pt / $1',
+                5: '5 pt / $1',
+                10: '10 pt / $1'
             }
         },
         ko: {
@@ -119,7 +119,7 @@
             neededPointsLabel: '목표까지 필요한 포인트',
             neededPointsPlaceholder: '예: 120',
             rateLabel: '1,000₩당 기본 포인트',
-            multiplierLabel: '이벤트 배율',
+            multiplierLabel: '프로모션 특별 적립률',
             calcBtnMain: '결제 금액 계산',
             calcBtnReverse: '포인트 계산',
             initOutputMain: '필요 포인트를 입력해 주세요.',
@@ -151,12 +151,12 @@
                 '2.0': { label: '없음', val: 0 }
             },
             multipliers: {
-                1: '일반 (1배)',
-                2: '2배',
-                3: '3배',
-                4: '4배',
-                5: '5배',
-                10: '10배'
+                1: '등급 적립률',
+                2: '1,000원당 2pt',
+                3: '1,000원당 3pt',
+                4: '1,000원당 4pt',
+                5: '1,000원당 5pt',
+                10: '1,000원당 10pt'
             }
         },
         zh: {
@@ -171,7 +171,7 @@
             neededPointsLabel: '距離下一等級所需點數',
             neededPointsPlaceholder: '例：150',
             rateLabel: '每 30元 基本點數',
-            multiplierLabel: '加倍活動倍率',
+            multiplierLabel: '活動特別獲點率',
             calcBtnMain: '計算消費金額',
             calcBtnReverse: '計算點數',
             initOutputMain: '請輸入距離下一等級所需的點數。',
@@ -203,12 +203,12 @@
                 '2.0': { label: '無', val: 0 }
             },
             multipliers: {
-                1: '一般 (1倍)',
-                2: '2倍',
-                3: '3倍',
-                4: '4倍',
-                5: '5倍',
-                10: '10倍'
+                1: '等級獲點率',
+                2: '每 NT$30 2 點',
+                3: '每 NT$30 3 點',
+                4: '每 NT$30 4 點',
+                5: '每 NT$30 5 點',
+                10: '每 NT$30 10 點'
             }
         }
     };
@@ -653,7 +653,7 @@
                 return;
             }
 
-            const finalRate = rate * multiplier;
+            const finalRate = Math.max(rate, multiplier);
             const unit = t.unit || (lang === 'en' ? 1 : 100);
             const totalAmountNeeded = Math.ceil((neededPoints / finalRate) * unit);
 
@@ -687,7 +687,7 @@
             }
 
             const unit = t.unit || (lang === 'en' ? 1 : 100);
-            const points = Math.round((amount / unit) * rate * multiplier);
+            const points = Math.round((amount / unit) * Math.max(rate, multiplier));
 
             const localeCode = lang === 'en' ? 'en-US' : lang === 'ko' ? 'ko-KR' : lang === 'zh' ? 'zh-TW' : 'ja-JP';
             result.textContent = `${t.resultPointsPrefix}${points.toLocaleString(localeCode)}${t.resultPointsSuffix}`;

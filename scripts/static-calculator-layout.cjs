@@ -2,7 +2,7 @@
 
 const STATIC_LABELS = Object.freeze({
   baseRate: '100円あたりの獲得率（自動入力・編集可）',
-  multiplier: 'キャンペーン倍率（通常は1倍）'
+  multiplier: 'キャンペーン特別獲得率（例：3pt/100円）'
 });
 
 function findBalancedElementRange(content, openingIndex, tagName) {

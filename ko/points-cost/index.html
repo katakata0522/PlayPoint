@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Play Points 필요 금액 계산기 | 100·500·1,000포인트</title>
-    <meta name="description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 캠페인 배율로 계산합니다.">
+    <meta name="description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 특별 적립률로 계산합니다.">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://playpoint-sim.com/ko/points-cost/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="/points-cost.css?v=3fec1cb366">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Google Play Points 필요 금액 계산기 | 100·500·1,000포인트">
-    <meta property="og:description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 캠페인 배율로 계산합니다.">
+    <meta property="og:description" content="한국 Google Play Points 100·500·1,000포인트 적립에 필요한 결제액을 현재 등급과 특별 적립률로 계산합니다.">
     <meta property="og:url" content="https://playpoint-sim.com/ko/points-cost/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -53,7 +53,7 @@
     },
     {
       "@type": "Question",
-      "name": "캠페인 배율은 언제 입력하나요?",
+      "name": "특별 적립률은 언제 입력하나요?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "대상 앱, 기간, 활성화 조건, 적립 상한이 계획한 결제에 적용되는 경우에만 입력하세요."
@@ -87,7 +87,7 @@
     <div class="points-cost-shell">
       <div class="points-cost-kicker">포인트 → 필요 결제액</div>
       <h1>100·500·1,000포인트 적립에 필요한 금액 계산</h1>
-      <p>원하는 포인트, 현재 등급, 확인된 캠페인 배율을 입력하세요. 등급 달성 목표가 없어도 한국 기준 적립 예상액을 바로 계산할 수 있습니다.</p>
+      <p>원하는 포인트, 현재 등급, 확인된 특별 적립률을 입력하세요. 등급 달성 목표가 없어도 한국 기준 적립 예상액을 바로 계산할 수 있습니다.</p>
     </div>
   </section>
   <div class="points-cost-shell">
@@ -104,7 +104,7 @@
           </div>
           <label for="points-status">현재 등급</label>
           <select id="points-status" name="status"></select>
-          <label for="points-multiplier">캠페인 배율</label>
+          <label for="points-multiplier">특별 적립률 (예: 1,000원당 3pt)</label>
           <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
           <button class="points-cost-submit" type="submit">예상 필요 금액 계산</button>
         </form>
@@ -142,7 +142,7 @@
         <h2>자주 묻는 질문</h2>
           <h3>1포인트는 항상 1원인가요?</h3>
           <p>아닙니다. 이 페이지는 포인트 적립에 필요한 결제액을 계산합니다. 사용 가치는 계정에 표시되는 리워드에 따라 다릅니다.</p>
-          <h3>캠페인 배율은 언제 입력하나요?</h3>
+          <h3>특별 적립률은 언제 입력하나요?</h3>
           <p>대상 앱, 기간, 활성화 조건, 적립 상한이 계획한 결제에 적용되는 경우에만 입력하세요.</p>
           <h3>계산 결과와 실제 적립이 같나요?</h3>
           <p>구매 건별 반올림, 세금, 대상 제외 결제로 인해 달라질 수 있습니다.</p>
@@ -181,7 +181,7 @@
   </div>
     <p class="site-footer-trademark">Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 가이드 사이트이며, Google LLC 및 각 게임 개발사/배급사와 제휴 또는 승인 관계가 없습니다.</p>
     </footer>
-<script type="module" src="/js/points-cost.js?v=7e30cf5162"></script>
-<script src="/js/third-party.js?v=7f5a61bbb2" defer></script>
+<script type="module" src="/js/points-cost.js?v=5ddd80d18c"></script>
+<script src="/js/third-party.js?v=fa89801d8d" defer></script>
 </body>
 </html>

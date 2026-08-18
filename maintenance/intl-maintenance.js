@@ -29,8 +29,8 @@
     });
   };
 
-  const estimateSpend = (remaining, multiplier) =>
-    Math.ceil((remaining / (rate * multiplier)) * spendUnit);
+  const estimateSpend = (remaining, specialRate) =>
+    Math.ceil((remaining / Math.max(rate, specialRate)) * spendUnit);
 
   const recalculate = () => {
     const progress = Number(input.value);

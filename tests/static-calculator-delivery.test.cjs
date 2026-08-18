@@ -14,19 +14,19 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 const expectedLabels = Object.freeze({
   'index.html': [
     '100円あたりの獲得率（自動入力・編集可）',
-    'キャンペーン倍率（通常は1倍）'
+    'キャンペーン特別獲得率（例：3pt/100円）'
   ],
   'en/index.html': [
     'Points per $1 (auto-filled, editable)',
-    'Campaign multiplier (normally 1×)'
+    'Promotion special earn rate (e.g. 3 pt / $1)'
   ],
   'ko/index.html': [
     '₩1,000당 적립률 (자동 입력·수정 가능)',
-    '캠페인 배율 (보통 1배)'
+    '캠페인 특별 적립률 (예: 1,000원당 3pt)'
   ],
   'tw/index.html': [
     '每 NT$30 獲得點數（自動帶入，可修改）',
-    '活動倍率（通常為 1 倍）'
+    '活動特別獲點率（例：每 NT$30 3 點）'
   ]
 });
 const indexPaths = Object.keys(expectedLabels);
@@ -61,7 +61,7 @@ test('旧HTMLを5項目の静的レイアウトへ安全に変換できる', () 
   assert.ok(!converted.includes('sectionTitleRate'));
   assert.match(converted, /data-visible-base-rate-layout="true"/);
   assert.match(converted, /100円あたりの獲得率（自動入力・編集可）/);
-  assert.match(converted, /キャンペーン倍率（通常は1倍）/);
+  assert.match(converted, /キャンペーン特別獲得率（例：3pt\/100円）/);
   assert.ok(!converted.includes('data-lang-key="labelBaseRate"'));
   assert.ok(!converted.includes('data-lang-key="labelMultiplier"'));
   assert.equal(ensureStaticCalculatorLayout(converted), converted, '静的化処理は冪等である');

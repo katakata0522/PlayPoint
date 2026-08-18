@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=d7541c96a8">
+    <link rel="modulepreload" href="../js/main.js?v=af582f9688">
     <link rel="modulepreload" href="../js/config.js">
-    <link rel="modulepreload" href="../js/analytics-core.js?v=01921e4cd4">
+    <link rel="modulepreload" href="../js/analytics-core.js?v=a16d188b9e">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=5c1728dc6b">
+    <link rel="stylesheet" href="../style.css?v=1b28a59c77">
     <script type="speculationrules">
     {
       "prefetch": [
@@ -220,14 +220,14 @@
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">캠페인 배율 (보통 1배)</span>
+                <span data-simplified-calculator-copy="multiplierLabel">캠페인 특별 적립률 (예: 1,000원당 3pt)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.</div>
+            <div class="warning" data-lang-key="warningRate">Google Play에 표시된 특별 적립률과 기본 적립률 중 높은 값을 사용합니다. 현재 등급의 기본 적립률에 프로모션 숫자를 곱하지 않습니다. 대상, 상한, 활성화 조건은 Google Play에서 확인하세요.</div>
         </div>
 
         <div class="section">
@@ -266,13 +266,13 @@
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">이벤트 배율(다른 입력 방식)</span>
+                <span data-lang-key="labelMultiplierReverse">프로모션 특별 적립률(예: 1,000원당 3pt)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">직접 입력한 적립률과 등급 기본 적립률×배율 중 높은 예상치를 사용합니다. 두 항목은 서로 다른 입력 방식이며, 실제 대상·활성화·상한은 공식 혜택 화면에서 확인해야 합니다.</div>
+            <div class="warning" data-lang-key="warningRate">Google Play에 표시된 특별 적립률과 기본 적립률 중 높은 값을 사용합니다. 현재 등급의 기본 적립률에 프로모션 숫자를 곱하지 않습니다. 대상, 상한, 활성화 조건은 Google Play에서 확인하세요.</div>
         </div>
          <div class="section">
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">포인트 계산</button>
@@ -413,8 +413,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=d7541c96a8"></script>
-<script src="../js/third-party.js?v=7f5a61bbb2" defer></script>
+<script type="module" src="../js/main.js?v=af582f9688"></script>
+<script src="../js/third-party.js?v=fa89801d8d" defer></script>
 
 </body>
 </html>

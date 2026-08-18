@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Play Points 必要額計算｜100・500・1,000ポイントはいくら？</title>
-    <meta name="description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、キャンペーン倍率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
+    <meta name="description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、特別獲得率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
     <meta name="robots" content="index,follow">
     <link rel="canonical" href="https://playpoint-sim.com/points-cost/">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/points-cost/">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="/points-cost.css?v=3fec1cb366">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Google Play Points 必要額計算｜100・500・1,000ポイントはいくら？">
-    <meta property="og:description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、キャンペーン倍率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
+    <meta property="og:description" content="欲しいGoogle Play Pointsのポイント数、現在ランク、特別獲得率から必要な購入額を計算。100・500・1,000ポイントの早見表にも対応。">
     <meta property="og:url" content="https://playpoint-sim.com/points-cost/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -53,7 +53,7 @@
     },
     {
       "@type": "Question",
-      "name": "キャンペーン倍率はいつ入力しますか？",
+      "name": "特別獲得率はいつ入力しますか？",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "対象アプリ、期間、エントリー条件などが確認できた購入だけに入力してください。"
@@ -87,7 +87,7 @@
     <div class="points-cost-shell">
       <div class="points-cost-kicker">ポイント数 → 必要額</div>
       <h1>100・500・1,000ポイントに必要な購入額を計算</h1>
-      <p>欲しいポイント数を入力すると、現在のステータスとキャンペーン倍率に合わせて必要な購入額の目安を計算します。ランクアップ目的でなくても使えるシンプルな計算ページです。</p>
+      <p>欲しいポイント数を入力すると、現在のステータスと特別獲得率に合わせて必要な購入額の目安を計算します。ランクアップ目的でなくても使えるシンプルな計算ページです。</p>
     </div>
   </section>
   <div class="points-cost-shell">
@@ -104,7 +104,7 @@
           </div>
           <label for="points-status">現在のステータス</label>
           <select id="points-status" name="status"></select>
-          <label for="points-multiplier">キャンペーン倍率</label>
+          <label for="points-multiplier">特別獲得率（例：3pt/100円）</label>
           <input id="points-multiplier" name="multiplier" type="number" min="1" max="10" step="0.1" value="1" inputmode="decimal" required>
           <button class="points-cost-submit" type="submit">必要額を計算</button>
         </form>
@@ -138,7 +138,7 @@
         <ul>
             <li>100・500・1,000ポイントなど任意のポイント数に必要な対象購入額</li>
             <li>ブロンズからダイヤモンドまで、ステータス別の基本レート差</li>
-            <li>2倍・3倍など、対象キャンペーンが明確な場合の比較</li>
+            <li>2pt/100円・3pt/100円など、対象キャンペーンが明確な場合の比較</li>
         </ul>
       </section>
       <section class="points-cost-note">
@@ -149,8 +149,8 @@
         <h2>よくある質問</h2>
           <h3>1ポイントは必ず1円ですか？</h3>
           <p>いいえ。このページはポイントを貯めるための購入額を計算します。交換価値は特典やアプリによって異なります。</p>
-          <h3>キャンペーン倍率はいつ入力しますか？</h3>
-          <p>対象アプリ、期間、エントリー条件などが確認できた購入だけに入力してください。</p>
+          <h3>特別獲得率はいつ入力しますか？</h3>
+          <p>Google Playに表示された100円あたりの最終獲得率を、対象アプリ・期間・エントリー条件が確認できた購入だけに入力してください。</p>
           <h3>結果どおりのポイントになりますか？</h3>
           <p>購入ごとの四捨五入、税金、対象外取引により前後します。目安として使ってください。</p>
       </section>
@@ -219,7 +219,7 @@
   </div>
     <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
     </footer>
-<script type="module" src="/js/points-cost.js?v=7e30cf5162"></script>
-<script src="/js/third-party.js?v=7f5a61bbb2" defer></script>
+<script type="module" src="/js/points-cost.js?v=5ddd80d18c"></script>
+<script src="/js/third-party.js?v=fa89801d8d" defer></script>
 </body>
 </html>

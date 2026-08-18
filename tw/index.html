@@ -36,13 +36,13 @@
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=d7541c96a8">
+    <link rel="modulepreload" href="../js/main.js?v=af582f9688">
     <link rel="modulepreload" href="../js/config.js">
-    <link rel="modulepreload" href="../js/analytics-core.js?v=01921e4cd4">
+    <link rel="modulepreload" href="../js/analytics-core.js?v=a16d188b9e">
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=5c1728dc6b">
+    <link rel="stylesheet" href="../style.css?v=1b28a59c77">
     <script type="speculationrules">
     {
       "prefetch": [
@@ -220,14 +220,14 @@
             <input type="number" id="baseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="multiplier" class="label-with-tooltip">
-                <span data-simplified-calculator-copy="multiplierLabel">活動倍率（通常為 1 倍）</span>
+                <span data-simplified-calculator-copy="multiplierLabel">活動特別獲點率（例：每 NT$30 3 點）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-multiplier" hidden></div>
             </label>
 
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">計算器會使用直接輸入回饋率與等級基本回饋率×倍率中較高的估算值。兩者是不同輸入方式；實際資格、啟用與上限請查看官方活動畫面。</div>
+            <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
         </div>
 
         <div class="section">
@@ -266,13 +266,13 @@
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">活動倍率（另一種輸入方式）</span>
+                <span data-lang-key="labelMultiplierReverse">活動特別獲點率（例：每 NT$30 3 點）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
-            <div class="warning" data-lang-key="warningRate">計算器會使用直接輸入回饋率與等級基本回饋率×倍率中較高的估算值。兩者是不同輸入方式；實際資格、啟用與上限請查看官方活動畫面。</div>
+            <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
         </div>
          <div class="section">
             <button id="reverseCalculateButton" data-lang-key="reverseCalculateButton">計算點數</button>
@@ -413,8 +413,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/main.js?v=d7541c96a8"></script>
-<script src="../js/third-party.js?v=7f5a61bbb2" defer></script>
+<script type="module" src="../js/main.js?v=af582f9688"></script>
+<script src="../js/third-party.js?v=fa89801d8d" defer></script>
 
 </body>
 </html>

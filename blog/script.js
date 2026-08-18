@@ -5,7 +5,7 @@
     // Configuration Constants
     // ===========================================
     const CONFIG = {
-        articlesUrl: 'articles.json?v=20260816_1400a',
+        articlesUrl: 'articles.json?v=20260818_1200a',
         itemsPerPage: 6,
         adInterval: 3,
         newThresholdDays: 7,
@@ -213,7 +213,8 @@
             tags: tags.filter(tag => typeof tag === 'string'),
             description: typeof article.description === 'string' ? article.description : '',
             file: sanitizeArticleFile(article.file),
-            thumbnail: sanitizeArticleThumbnail(article.thumbnail)
+            thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            listed: article.listed !== false
         };
     }
 
@@ -468,7 +469,7 @@
             const response = await fetch(CONFIG.articlesUrl);
             if (!response.ok) throw new Error('Failed to load articles');
             const articles = await response.json();
-            allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
+            allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories

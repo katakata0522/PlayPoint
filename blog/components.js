@@ -17,14 +17,14 @@
         if (consentManagerPromise) return consentManagerPromise;
 
         consentManagerPromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/consent.js?v=782a530308"]');
+            const existing = document.querySelector('script[src*="/js/consent.js?v=8c5b4cd6f2"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=782a530308';
+            script.src = rootPath + 'js/consent.js?v=8c5b4cd6f2';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -38,14 +38,14 @@
         if (analyticsCorePromise) return analyticsCorePromise;
 
         analyticsCorePromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=01921e4cd4"]');
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=a16d188b9e"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/analytics-core.js?v=01921e4cd4';
+            script.src = rootPath + 'js/analytics-core.js?v=a16d188b9e';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
             script.addEventListener('error', reject, { once: true });

@@ -54,13 +54,20 @@ test('未確認の未来イベント記事は検索品質保留としてnoindex�
   ];
   const mainSitemap = read('sitemap.xml');
   const blogSitemap = read('blog/sitemap.xml');
+  const rss = read('feed.xml');
+  const atom = read('atom.xml');
+  const catalog = JSON.parse(read('blog/articles.json'));
   for (const file of files) {
     const html = read(file);
     const name = path.basename(file);
+    const item = catalog.find(entry => entry.file === '../' + file);
     assert.match(html, /name=\"robots\" content=\"noindex, follow, max-image-preview:large\"/);
     assert.match(html, /公式発表待ち|未確認/);
     assert.ok(!mainSitemap.includes(name), name + ': main sitemapに残っています');
     assert.ok(!blogSitemap.includes(name), name + ': blog sitemapに残っています');
+    assert.ok(!rss.includes(name), name + ': RSSに残っています');
+    assert.ok(!atom.includes(name), name + ': Atomに残っています');
+    assert.equal(item.listed, false, name + ': 記事台帳で非掲載になっていません');
   }
 });
 

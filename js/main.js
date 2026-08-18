@@ -71,8 +71,13 @@ function getAnalyticsCalculationMode(mode) {
     return mode === CONSTANTS.MODE_REVERSE ? 'spend_to_points' : 'rank_up';
 }
 
+function canRecordCalculatorFunnel() {
+    return window.PlayPointConsent?.getStatus?.() !== 'denied';
+}
+
 function trackCalculatorFormStarted(mode, startField) {
     if (mode !== CONSTANTS.MODE_MAIN && mode !== CONSTANTS.MODE_REVERSE) return;
+    if (!canRecordCalculatorFunnel()) return;
     if (calculatorFunnelStartedModes.has(mode)) return;
     calculatorFunnelStartedModes.add(mode);
     ANALYTICS.track('calculator_form_started', {
@@ -98,7 +103,6 @@ function getValidationErrorType(mode) {
             ['errorTargetStatus', 'target_status'],
             ['errorRate', 'rate'],
             ['errorTargetConsistency', 'target_consistency'],
-            ['errorZeroPointPurchase', 'zero_point_purchase'],
             ['errorInput', 'invalid_input']
         ];
 
@@ -228,7 +232,7 @@ export function init() {
 
     const ids = [
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
-        'neededPoints', 'pack-amount', 'multiplier', 'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
+        'neededPoints', 'multiplier', 'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
         'tweetButton', 'amountYen', 'reverseStatus', 'reverseBaseRate',
         'reverseMultiplier', 'reverseCalculateButton', 'reverseResult', 'share-twitter-reverse',
         'copyright-year',

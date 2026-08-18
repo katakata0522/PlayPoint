@@ -12,7 +12,8 @@
     ],
     "description": "東京ゲームショウにおけるGoogle Play Points向け特典について、2026年の公式発表待ちであることを明確にし、確認すべき項目とGoogle Play公式の通常特典を整理します。",
     "file": "../articles/2026-08-17-tgs-google-play-vip.html",
-    "thumbnail": "../articles/ogp/diamond-vip.png"
+    "thumbnail": "../articles/ogp/campaign.png",
+    "listed": false
   },
   {
     "id": "diamond-valley-festival-guide",
@@ -27,7 +28,8 @@
     ],
     "description": "Diamond Valleyの過去開催で公式に確認できる仕組みを整理します。2026年の日本向け日程・対象ステータス・特典はGoogle Play公式発表待ちとして、未確定情報と分けて案内します。",
     "file": "../articles/2026-08-17-diamond-valley-festival-guide.html",
-    "thumbnail": "../articles/ogp/campaign.png"
+    "thumbnail": "../articles/ogp/campaign.png",
+    "listed": false
   },
   {
     "id": "play-pass-worth-it",

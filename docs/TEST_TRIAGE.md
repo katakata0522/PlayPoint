@@ -35,7 +35,7 @@
 ### 1. `playpoint-regression` ダイエット
 
 - **162ケース / 約3180行 → 29ケース / 約716行**
-- 残す: `loadCalculatorContext` / `CALC_PURE` 系（計算・パック丸め・共有URL・地域 spendUnit 等）
+- 残す: `loadCalculatorContext` / `CALC_PURE` 系（計算・逆算丸め・共有URL・地域 spendUnit 等）
 - 外した: blog/SEO/記事HTML/デプロイ文字列など、**他ファイルに既にある静的検査**
 
 ### 2. nine-fixes + audit-fixes 統合
