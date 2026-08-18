@@ -5,10 +5,6 @@ on:
     branches:
       - fix/full-integrity-audit-20260818
     paths:
-      - tests/trigger.txt
-      - scripts/audit-final-followup-20260818.cjs
-      - scripts/audit-consent-followup-20260818.cjs
-      - scripts/audit-content-date-followup-20260818.cjs
       - .github/workflows/full-integrity-audit-fix.yml
 
 permissions:
@@ -19,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
+  final-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -33,37 +29,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Apply consolidated final audit follow-up
-        run: |
-          set +e
-          {
-            node scripts/audit-final-followup-20260818.cjs
-            node scripts/audit-consent-followup-20260818.cjs
-            node scripts/audit-content-date-followup-20260818.cjs
-          } > .github/audit-followup.txt 2>&1
-          status=$?
-          cat .github/audit-followup.txt
-          printf 'followup status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add -A
-          git commit -m "fix: apply final cross-locale consent and date repairs" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
-          exit $status
-
-      - name: Rebuild all generated assets
-        env:
-          PLAYPOINT_MODIFIED_DATE: '2026-08-18'
-          PLAYPOINT_ASSET_VERSION: '2026_08_18'
-        run: |
-          set +e
-          node scripts/build-html.js > .github/audit-build-diagnostics.txt 2>&1
-          status=$?
-          cat .github/audit-build-diagnostics.txt
-          printf 'build status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add -A
-          git commit -m "fix: rebuild final audited assets" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
-          exit $status
 
       - name: Run complete preflight
         run: |
