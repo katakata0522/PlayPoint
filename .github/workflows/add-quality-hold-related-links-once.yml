@@ -1,0 +1,68 @@
+name: Add quality-hold related links once
+
+on:
+  push:
+    branches:
+      - fix/adsense-ga4-policy-audit-20260818
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Register curated related sections
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/article-content-navigation-normalize.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          const marker = "  'articles/2026-07-24-play-points-1-value.html': {";
+          if (!source.includes("'articles/2026-08-17-diamond-valley-festival-guide.html':")) {
+            const block = [
+              "  'articles/2026-08-17-diamond-valley-festival-guide.html': {",
+              "    heading: '次に確認したい関連記事',",
+              "    links: [",
+              "      ['./2025-12-25-diamond-vip.html', 'ダイヤモンド会員の公式特典を確認'],",
+              "      ['./2025-12-25-playpoints-rank-maintenance.html', 'ランクの維持期間と年末条件を確認'],",
+              "      ['./2026-08-05-play-points-levels-guide.html', 'Play Pointsの全ランク条件を確認']",
+              "    ]",
+              "  },",
+              "  'articles/2026-08-17-tgs-google-play-vip.html': {",
+              "    heading: '次に確認したい関連記事',",
+              "    links: [",
+              "      ['./2025-12-25-diamond-vip.html', 'プラチナ・ダイヤモンドの公式特典を確認'],",
+              "      ['./2026-08-05-play-points-levels-guide.html', 'Play Pointsのステータス条件を確認'],",
+              "      ['./2025-12-25-playpoints-rank-maintenance.html', '年末のランク維持条件を確認']",
+              "    ]",
+              "  },",
+              ""
+            ].join('\n');
+            if (!source.includes(marker)) throw new Error('related section insertion target not found');
+            source = source.replace(marker, block + marker);
+          }
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
+      - name: Normalize article navigation and rebuild
+        run: |
+          node scripts/article-content-navigation-normalize.cjs
+          node scripts/build-html.js
+      - name: Verify article quality and monetization audit
+        run: |
+          node --test tests/all-article-quality-audit.test.cjs tests/monetization-search-quality.test.cjs
+          node scripts/article-content-navigation-normalize.cjs --check
+      - name: Commit canonical outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: 品質保留記事の関連記事導線を整合"
+          git push
