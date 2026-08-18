@@ -1,0 +1,39 @@
+name: Apply Google facts hardening once
+
+on:
+  push:
+    branches:
+      - fix/adsense-ga4-policy-audit-20260818
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Apply Google facts hardening
+        run: node scripts/apply-20260818-google-facts-hardening.cjs
+      - name: Regenerate game and canonical outputs
+        run: |
+          node scripts/generate-game-simulators.cjs
+          node scripts/build-html.js
+      - name: Run focused regression tests
+        run: |
+          node --check games/game-sim.js
+          node --check scripts/generate-game-simulators.cjs
+          node --test tests/monetization-search-quality.test.cjs tests/analytics-core.test.cjs tests/playpoint-product-guards.test.cjs
+      - name: Commit canonical outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: Google公式値と検索品質の整合を強化"
+          git push
