@@ -1,0 +1,30 @@
+Synchronized content metadata, asset versions, and calculator layout (v=2026_08_18a) in index.html
+[build-html] synchronized editorial structure: 9
+[article-static-usability] synchronized: 0
+[build-html] synchronized static article usability: 0
+Generated /home/runner/work/PlayPoint/PlayPoint/en/index.html successfully.
+Generated /home/runner/work/PlayPoint/PlayPoint/ko/index.html successfully.
+Generated /home/runner/work/PlayPoint/PlayPoint/tw/index.html successfully.
+Successfully synchronized shared analytics and component asset versions.
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v2026_08_18-7bea6e1e
+Generated international SEO pages (57 files).
+[manual-intl] restored canonical article content: 40
+[intl-content-expansion] published 39 locale articles
+Generated games/index.html
+/home/runner/work/PlayPoint/PlayPoint/scripts/generate-game-simulators.cjs:2508
+              <h2>${locale.lang === 'ja' ? '出典・確認範囲' : locale.lang === 'ko' ? '출처 및 확인 범위' : locale.lang === 'zh-TW' ? '來源與確認範圍' : 'Sources & verification scope'}</h2>
+                    ^
+
+ReferenceError: locale is not defined
+    at generateGamePageHtml (/home/runner/work/PlayPoint/PlayPoint/scripts/generate-game-simulators.cjs:2508:21)
+    at buildAll (/home/runner/work/PlayPoint/PlayPoint/scripts/generate-game-simulators.cjs:2793:60)
+    at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/scripts/generate-game-simulators.cjs:2799:1)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Module.require (node:internal/modules/cjs/loader:1527:12)
+    at require (node:internal/modules/helpers:147:16)
+
+Node.js v22.23.2

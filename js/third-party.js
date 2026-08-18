@@ -127,7 +127,7 @@
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
             const prefix = getCurrentAssetPrefix();
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=dc975a5e38`)
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=8da2bd6d2a`)
                 .then(() => window.PlayPointConsent);
         }
         return consentManagerPromise;
