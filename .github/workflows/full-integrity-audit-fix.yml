@@ -17,7 +17,7 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Checkout audit branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -30,53 +30,164 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Restore complete regression file and patch only campaign-rate case
+      - name: Finish multilingual and Q&A audit repairs
         run: |
           set -euo pipefail
-          git show origin/main:tests/playpoint-regression.test.cjs > tests/playpoint-regression.test.cjs
           python - <<'PY'
           from pathlib import Path
-          p = Path('tests/playpoint-regression.test.cjs')
+
+          # Q&A: correct the accidentally duplicated sentence and keep the existing non-guarantee guardrail.
+          p = Path('info.html')
           s = p.read_text()
-          old = """test('直接レートと倍率は代替入力として高い方と採用理由を返す', () => {
-            const { PP_STATE, getRateDetails } = loadCalculatorContext();
-            PP_STATE.currentRegion = 'JP';
-            const status = createInput('1.5');
+          old_visible = 'A. 獲得率が「3ポイント/100円」のように表示される場合はGoogle Playのオファー画面に「100円ごとに3ポイント」のような特別獲得率が表示される場合は、その最終的な獲得率をキャンペーン欄へ入力します。計算機は現在ステータスの通常獲得率と特別獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。対象判定、上限、期間、有効化の要否はGoogle Playの表示を優先してください。購入前に対象アプリ、期間、上限、有効化の有無を公式画面で確認してください。'
+          new_visible = 'A. Google Playのオファー画面に「100円ごとに3ポイント」のような特別獲得率が表示される場合は、その最終的な獲得率をキャンペーン欄へ入力します。計算機は現在ステータスの通常獲得率と特別獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定を保証するものではありません。対象アプリ、期間、上限、有効化の要否はGoogle Playの公式画面を優先してください。'
+          if old_visible not in s:
+              raise SystemExit('info visible campaign explanation not found')
+          s = s.replace(old_visible, new_visible)
+          old_schema = '獲得率を直接入力する方法とキャンペーン倍率を入力する方法を用意し、両方が入力された場合は高い方を試算に使います。キャンペーンの併用可否や対象判定を保証するものではないため、公式画面の条件を確認してください。'
+          new_schema = 'Google Playに表示された特別獲得率と現在ステータスの通常獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定は保証せず、公式画面の条件を優先してください。'
+          if old_schema in s:
+              s = s.replace(old_schema, new_schema)
+          s = s.replace('<meta name="last-modified" content="2026-07-26">', '<meta name="last-modified" content="2026-08-18">')
+          s = s.replace('<meta property="article:modified_time" content="2026-07-26T00:00:00+09:00">', '<meta property="article:modified_time" content="2026-08-18T00:00:00+09:00">')
+          s = s.replace('"dateModified": "2026-07-26"', '"dateModified": "2026-08-18"')
+          p.write_text(s)
 
-            assert.deepStrictEqual(
-              JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
-              { directRate: 4, multiplier: 2, multipliedRate: 3, finalRate: 4, source: 'direct' }
-            );
-            assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'multiplier');
-            assert.strictEqual(getRateDetails(createInput('3'), status, createInput('2')).source, 'same');
-          });"""
-          new = """test('通常獲得率と特別獲得率は高い方を使い、ランク率へ掛け算しない', () => {
-            const { PP_STATE, getRateDetails } = loadCalculatorContext();
-            PP_STATE.currentRegion = 'JP';
-            const status = createInput('1.5');
+          p = Path('scripts/content-dates.cjs')
+          s = p.read_text().replace("'info.html': '2026-07-26'", "'info.html': '2026-08-18'")
+          p.write_text(s)
 
-            assert.deepStrictEqual(
-              JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
-              {
-                directRate: 4,
-                multiplier: 2,
-                promotionRate: 2,
-                multipliedRate: 2,
-                finalRate: 4,
-                source: 'direct'
-              }
-            );
-            assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).finalRate, 3);
-            assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).source, 'multiplier');
-            assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'same');
-          });"""
-          if old not in s:
-              raise SystemExit('legacy regression block not found in origin/main')
-          p.write_text(s.replace(old, new))
+          # Game calculator localization: all four locales use final special earn rates, never tier × multiplier wording.
+          p = Path('scripts/generate-game-simulators.cjs')
+          s = p.read_text()
+          replacements = {
+            "verifiedDate: '최종 확인: 2026년 8월'": "verifiedDate: 'Play Points 적립률 확인: 2026년 8월 (게임 가격/천장은 참고값)'",
+            "multiplierLabel: '포인트 배율:'": "multiplierLabel: '프로모션 특별 적립률:'",
+            "{ val: '1', label: '일반 적립 (1배 / 1%)' }": "{ val: '1', label: '기본 기준: 1,000원당 1pt' }",
+            "{ val: '2', label: '2배 이벤트' }": "{ val: '2', label: '특별 적립률: 1,000원당 2pt' }",
+            "{ val: '3', label: '3배 이벤트' }": "{ val: '3', label: '특별 적립률: 1,000원당 3pt' }",
+            "{ val: '4', label: '4배 이벤트' }": "{ val: '4', label: '특별 적립률: 1,000원당 4pt' }",
+            "{ val: '5', label: '5배 이벤트' }": "{ val: '5', label: '특별 적립률: 1,000원당 5pt' }",
+            "{ val: '7', label: '7배 이벤트' }": "{ val: '7', label: '특별 적립률: 1,000원당 7pt' }",
+            "tableThNormal: '일반 적립 (1배)'": "tableThNormal: '기본 적립률 (1,000원당 1pt)'",
+            "tableThCp: '5배 이벤트 (5배)'": "tableThCp: '특별 적립률 (1,000원당 5pt)'",
+            "multiplierLabel: '點數加碼倍率：'": "multiplierLabel: '活動特別獲點率：'",
+            "{ val: '1', label: '一般回饋（1倍 / 3.3%）' }": "{ val: '1', label: '基本參考：每 NT$30 1點' }",
+            "{ val: '2', label: '2倍活動加碼' }": "{ val: '2', label: '特別獲點率：每 NT$30 2點' }",
+            "{ val: '3', label: '3倍活動加碼' }": "{ val: '3', label: '特別獲點率：每 NT$30 3點' }",
+            "{ val: '4', label: '4倍活動加碼' }": "{ val: '4', label: '特別獲點率：每 NT$30 4點' }",
+            "{ val: '5', label: '5倍活動加碼' }": "{ val: '5', label: '特別獲點率：每 NT$30 5點' }",
+            "{ val: '7', label: '7倍活動加碼' }": "{ val: '7', label: '特別獲點率：每 NT$30 7點' }",
+            "tableThNormal: '一般回饋 (1倍)'": "tableThNormal: '基本獲點率（每 NT$30 1點）'",
+            "tableThCp: '5倍加碼 (5倍)'": "tableThCp: '特別獲點率（每 NT$30 5點）'",
+            'Google Playのポイント増量キャンペーン（4倍〜7倍時）なら': 'Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら',
+            'during 4x-7x special point promotions': 'when an eligible special earn rate of 4-7 points per $1 is shown in Google Play',
+            '4배~7배 이벤트': 'Google Play에 1,000원당 4~7pt의 특별 적립률이 표시되는 대상 오퍼',
+            '4～7 倍活動': 'Google Play 顯示每 NT$30 4～7 點且該筆消費符合資格的活動'
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+          p.write_text(s)
+
+          # International generated LPs: fix legacy 2x/3x wording and provide a real trademark notice.
+          p = Path('scripts/intl-seo-content.cjs')
+          s = p.read_text()
+          locale_insertions = {
+            "    siteName: 'Google Play Points Calculator',": "    siteName: 'Google Play Points Calculator',\n    trademarkNotice: 'Google Play, the Google Play logo, and Android are trademarks of Google LLC. This independent calculator is not affiliated with or endorsed by Google LLC or the game publishers mentioned on this site.',",
+            "    siteName: 'Google Play Points 계산기',": "    siteName: 'Google Play Points 계산기',\n    trademarkNotice: 'Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 독립적으로 운영되는 비공식 계산기이며 Google LLC 및 언급된 게임의 개발·배급사와 제휴 또는 승인 관계가 없습니다.',",
+            "    siteName: 'Google Play Points 計算器',": "    siteName: 'Google Play Points 計算器',\n    trademarkNotice: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為獨立營運的非官方計算工具，與 Google LLC 及所提及遊戲的開發或發行商無隸屬或認可關係。',"
+          }
+          for old, new in locale_insertions.items():
+              if old in s and new not in s:
+                  s = s.replace(old, new, 1)
+
+          phrase_replacements = {
+            'A 3x promotion can change a status plan more than a small discount, but only when the purchase qualifies. Compare 1x, 2x, and 3x before deciding.': 'This legacy “3x” page models a final special earn rate of 3 points per $1 when Google Play shows that rate for an eligible purchase. It does not multiply your tier base rate by 3.',
+            'Preset: 3x multiplier': 'Preset: special earn rate 3 pt / $1',
+            'Calculate with 3x': 'Calculate with 3 pt / $1',
+            'Use 3x only when it is real': 'Use the 3 pt / $1 rate only when it is shown',
+            'A 3x headline does not always apply to every app, item, payment method, or account. Confirm the offer before treating the result as likely.': 'Only enter 3 when Google Play shows a final special earn rate of 3 points per $1 for the purchase. Check the eligible app, item, period, activation, and cap.',
+            'Compare against 1x and 2x': 'Compare against your base earn rate',
+            'The useful question is not whether 3x looks attractive. It is whether the difference is large enough to change a purchase you already planned.': 'Compare the confirmed special earn rate with your normal tier earn rate. Use the higher applicable rate rather than multiplying the two.',
+            'Not necessarily. Base rate, caps, and eligibility can change the final result.': 'Not necessarily. A 3-point special rate is compared with your base tier rate; it does not multiply that tier rate. Caps and eligibility can also change the result.',
+            '3배 캠페인은 등급 계획을 크게 바꿀 수 있지만, 대상 결제일 때만 의미가 있습니다. 1배, 2배, 3배를 비교한 뒤 판단하세요.': '이 기존 “3배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때 그 값을 사용합니다. 현재 등급의 기본 적립률에 3을 곱하지 않습니다.',
+            '초기 조건: 3배 배율': '초기 조건: 특별 적립률 1,000원당 3pt',
+            '3배로 계산하기': '1,000원당 3pt로 계산하기',
+            '3배 문구가 모든 앱, 상품, 결제수단, 계정에 적용된다고 가정하면 안 됩니다.': 'Google Play에 해당 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때만 3을 입력하세요. 대상 앱, 상품, 기간, 활성화, 상한을 함께 확인해야 합니다.',
+            '1배와 2배도 함께 비교': '기본 적립률과 비교',
+            '중요한 것은 3배가 좋아 보이는지가 아니라, 원래 예정된 결제의 시점을 바꿀 만큼 차이가 있는지입니다.': '확인된 특별 적립률과 현재 등급의 기본 적립률을 비교해 더 높은 적용률을 사용하며, 두 값을 곱하지 않습니다.',
+            '항상 그렇지는 않습니다. 기본 적립률, 상한, 대상 조건이 영향을 줍니다.': '항상 그렇지는 않습니다. 1,000원당 3pt의 특별 적립률은 등급 기본 적립률과 비교하는 값이며, 기본 적립률에 3을 곱하지 않습니다. 상한과 대상 조건도 확인해야 합니다.',
+            '3 倍活動可能大幅改變等級計畫，但前提是該筆消費符合資格。請先比較 1 倍、2 倍與 3 倍。': '這個保留「3 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 3 點時使用 3；不會把會員等級的基本獲點率再乘以 3。',
+            '預設: 3 倍倍率': '預設：特別獲點率每 NT$30 3 點',
+            '用 3 倍計算': '以每 NT$30 3 點計算',
+            '3 倍標題不代表所有 App、商品、付款方式或帳號都適用。': '只有 Google Play 對該筆消費顯示最終特別獲點率為每 NT$30 3 點時才輸入 3，並確認適用 App、商品、期間、啟用方式與上限。',
+            '同時比較 1 倍與 2 倍': '與基本獲點率比較',
+            '重點不是 3 倍看起來多好，而是差距是否足以改變原本計畫的購買時機。': '請比較已確認的活動特別獲點率與會員等級基本獲點率，採用實際適用的較高者，不要把兩者相乘。',
+            '不一定，基本回饋率、上限與資格都會影響結果。': '不一定。每 NT$30 3 點的特別獲點率要與等級基本獲點率比較，不是把基本獲點率乘以 3；上限與資格也會影響結果。',
+            'Use Start with your base rate, then enter the final special earn rate shown for an eligible purchase in Google Play.': 'Start with your base rate, then enter the final special earn rate shown for an eligible purchase in Google Play.',
+            '如果估算金額高於平常消費，先比較 1 倍、2 倍或 3 倍，不要為了等級增加不必要支出。': '如果估算金額高於平常消費，請比較目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率，不要為了等級增加不必要支出。',
+            '可以，但只有實際符合活動資格的消費才適合使用倍率估算。': '可以，但請輸入 Google Play 顯示的最終特別獲點率，並且只用於實際符合活動資格的消費。'
+          }
+          for old, new in phrase_replacements.items():
+              s = s.replace(old, new)
+          p.write_text(s)
+
+          # Permanent regression guards for the extra issues found during the audit.
+          p = Path('tests/full-integrity-audit.test.cjs')
+          s = p.read_text()
+          addition = r'''
+
+test('韓国語・繁体字ゲーム計算機も特別獲得率として表示する', () => {
+  const generator = read('scripts/generate-game-simulators.cjs');
+  assert.match(generator, /프로모션 특별 적립률/);
+  assert.match(generator, /活動特別獲點率/);
+  assert.ok(!generator.includes("multiplierLabel: '포인트 배율:'"));
+  assert.ok(!generator.includes("multiplierLabel: '點數加碼倍率：'"));
+});
+
+test('国際LPはundefinedフッターやランク率×倍率の説明を生成しない', () => {
+  const content = read('scripts/intl-seo-content.cjs');
+  assert.match(content, /trademarkNotice/);
+  assert.ok(!content.includes('Preset: 3x multiplier'));
+  assert.ok(!content.includes('초기 조건: 3배 배율'));
+  assert.ok(!content.includes('預設: 3 倍倍率'));
+  for (const file of ['en/campaign/3x/index.html', 'ko/campaign/3x/index.html', 'tw/campaign/3x/index.html']) {
+    const html = read(file);
+    assert.ok(!html.includes('>undefined<'), file);
+  }
+});
+
+test('Q&Aのキャンペーン説明は重複せず公式画面を優先する', () => {
+  const html = read('info.html');
+  assert.ok(!html.includes('表示される場合はGoogle Playのオファー画面'));
+  assert.ok(html.includes('通常獲得率へキャンペーン数字を掛ける計算ではありません'));
+  assert.ok(html.includes('キャンペーンの併用可否や対象判定を保証するものではありません'));
+});
+'''
+          if "韓国語・繁体字ゲーム計算機も特別獲得率として表示する" not in s:
+              s += addition
+          p.write_text(s)
           PY
-          git add tests/playpoint-regression.test.cjs
-          git commit -m "test: align full regression with special earn rate semantics"
+          node --check scripts/generate-game-simulators.cjs
+          node --check scripts/intl-seo-content.cjs
+          git add -A
+          git commit -m "fix: finish multilingual promotion and generated footer audit"
           git push origin HEAD:fix/full-integrity-audit-20260818
+
+      - name: Rebuild all generated assets
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-18'
+          PLAYPOINT_ASSET_VERSION: '2026_08_18'
+        run: |
+          set +e
+          node scripts/build-html.js > .github/audit-build-diagnostics.txt 2>&1
+          status=$?
+          cat .github/audit-build-diagnostics.txt
+          printf 'build status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
+          git add -A
+          git commit -m "fix: rebuild final audited assets" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+          exit $status
 
       - name: Run complete preflight
         run: |
