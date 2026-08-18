@@ -15,6 +15,7 @@ const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
+const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
 const {
   restoreManualIntlArticles,
   snapshotManualIntlArticles
@@ -55,6 +56,7 @@ applyIntlContentExpansion(rootDir);
 require('./generate-game-simulators.cjs');
 
 syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
+applyLpMonetization(rootDir);
 syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);
 
@@ -70,4 +72,3 @@ console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`)
 
 const sanitizedInternalLinkFiles = sanitizeInternalLinks(rootDir);
 console.log(`[build-html] sanitized internal attribution links: ${sanitizedInternalLinkFiles}`);
-

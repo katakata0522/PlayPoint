@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="last-modified" content="2026-08-18" />
   <meta name="author" content="Katakata" />
   <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
   <title>Monster Strike - Google Play Points Calculator</title>
@@ -138,7 +139,7 @@
           <header class="game-header">
               <span class="game-badge">🐉 Mobile Game Points Simulator</span>
               <h1 class="game-title">Monster Strike</h1>
-              <p class="game-meta">Verified: August 2026 ｜ Google Play Points ($1=1pt)</p>
+              <p class="game-meta">Play Points rates checked: August 2026 (game prices/pity are reference values) ｜ Google Play Points ($1=1pt)</p>
           </header>
 
           <p>Calculate Play Points earned on Orbs, Monpass, Hoshitama summons, and Max Luck units in Monster Strike!</p>
@@ -178,9 +179,9 @@
                       </div>
 
                       <div class="input-field">
-                          <label for="sim-multiplier">Promotion Multiplier:</label>
+                          <label for="sim-multiplier">Promotion special earn rate:</label>
                           <select id="sim-multiplier">
-                              <option value="1">Standard Rate (1x)</option><option value="2">2x Point Promotion</option><option value="3">3x Point Promotion</option><option value="4">4x Point Promotion</option><option value="5">5x Point Promotion</option><option value="7">7x Point Promotion</option>
+                              <option value="1">Base reference: 1 pt / $1</option><option value="2">Special rate: 2 pt / $1</option><option value="3">Special rate: 3 pt / $1</option><option value="4">Special rate: 4 pt / $1</option><option value="5">Special rate: 5 pt / $1</option><option value="7">Special rate: 7 pt / $1</option>
                           </select>
                       </div>
 
@@ -262,7 +263,7 @@
                               <th>Pack / Item Name</th>
                               <th>Price (USD)</th>
                               <th>Standard (1x)</th>
-                              <th>5x Promo (5x)</th>
+                              <th>Special rate (5 pt / $1)</th>
                           </tr>
                       </thead>
                       <tbody>
@@ -316,6 +317,12 @@
               <h2>Frequently Asked Questions (FAQ)</h2>
               <h3>How many Play Points for spending $800 on Monster Strike?</h3>
 <p>You earn ~800 pts normally, or ~4,000 pts during a 5x promo.</p>
+          </section>
+
+          <section class="section game-source-section">
+              <h2>Sources & verification scope</h2>
+              <p>Google Play Points base earn rates, level thresholds, and rounding rules are checked against Google Play Help. In-game pack prices and pity/guarantee values can change and are reference inputs only; verify them in the game store and publisher notices before purchase.</p>
+              <p><a href="https://support.google.com/googleplay/answer/9077192" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
           </section>
 
           <!-- 他のゲーム計算機 -->
@@ -524,8 +531,8 @@
       <p>© 2026 Google Play Points Calculator All Rights Reserved.</p>
   </footer>
 
-  <script src="../../../js/analytics-core.js?v=e3c32d54c1"></script>
-  <script src="../../../js/third-party.js?v=1654f2b50d"></script>
+  <script src="../../../js/analytics-core.js?v=a7babf5f72"></script>
+  <script src="../../../js/third-party.js?v=2f0ff8bae8"></script>
   <script src="../../../games/game-sim.js?v=ef2aba97ba"></script>
 </body>
 </html>

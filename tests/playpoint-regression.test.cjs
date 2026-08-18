@@ -205,17 +205,25 @@ test('前年からランクを引き継いだ場合も目標閾値全体を入�
   assert.strictEqual(getMaxNeededPointsForTarget(config, 1.5, 1000), 1000);
 });
 
-test('直接レートと倍率は代替入力として高い方と採用理由を返す', () => {
+test('通常獲得率と特別獲得率は高い方を使い、ランク率へ掛け算しない', () => {
   const { PP_STATE, getRateDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   const status = createInput('1.5');
 
   assert.deepStrictEqual(
     JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
-    { directRate: 4, multiplier: 2, multipliedRate: 3, finalRate: 4, source: 'direct' }
+    {
+      directRate: 4,
+      multiplier: 2,
+      promotionRate: 2,
+      multipliedRate: 2,
+      finalRate: 4,
+      source: 'direct'
+    }
   );
-  assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'multiplier');
-  assert.strictEqual(getRateDetails(createInput('3'), status, createInput('2')).source, 'same');
+  assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).finalRate, 3);
+  assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).source, 'multiplier');
+  assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'same');
 });
 
 test('パック額未入力では購入ごとの丸めを仮定しない概算として表示する', () => {

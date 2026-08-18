@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算</title>
-    <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やキャンペーン倍率を目安で逆算できます。">
+    <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映して目安を逆算できます。">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="かたかた">
     <meta name="last-modified" content="2026-08-12">
@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
     <meta property="og:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
-    <meta property="og:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
+    <meta property="og:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
@@ -33,12 +33,12 @@
     <meta property="og:site_name" content="Google Play Points 計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
-    <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
+    <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=e6baea048c">
+    <link rel="modulepreload" href="js/main.js?v=617dd4f267">
     <link rel="modulepreload" href="js/config.js">
-    <link rel="modulepreload" href="js/analytics-core.js?v=e3c32d54c1">
+    <link rel="modulepreload" href="js/analytics-core.js?v=a7babf5f72">
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
@@ -122,7 +122,7 @@
           "name": "課金目標の計算はどのように行われますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。"
+            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。"
           }
         },
         {
@@ -179,7 +179,7 @@
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算機</h1>
-    <p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やキャンペーン倍率込みの目安を確認できます。</p>
+    <p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">通常計算</button>
@@ -228,7 +228,7 @@
             <input type="number" id="multiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">
-                「獲得率の直接入力」または「ステータス×倍率」の高い方を試算に使います。両方は別の入力方法です。実際の対象・上限・有効化はキャンペーン画面で確認してください。
+                Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
         </div>
 
@@ -261,21 +261,21 @@
             <select id="reverseStatus"></select>
 
             <label for="reverseBaseRate" class="label-with-tooltip">
-                <span data-lang-key="labelBaseRate">100円あたりの獲得率（直接入力）</span>
+                <span data-lang-key="labelBaseRate">通常獲得率（ステータスから自動入力）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-base-rate" hidden></div>
             </label>
             <input type="number" id="reverseBaseRate" value="1.0" step="0.01" min="0.1" max="100" inputmode="decimal">
 
             <label for="reverseMultiplier" class="label-with-tooltip">
-                <span data-lang-key="labelMultiplierReverse">キャンペーン倍率（もう一つの入力方法）</span>
+                <span data-lang-key="labelMultiplierReverse">キャンペーン特別獲得率（例：3pt/100円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-reverse-multiplier">?</span>
                 <div class="tooltip-box" id="tooltip-reverse-multiplier" hidden></div>
             </label>
             <input type="number" id="reverseMultiplier" value="1" step="0.1" min="1" max="10" inputmode="decimal">
 
             <div class="warning" data-lang-key="warningRate">
-                「獲得率の直接入力」または「ステータス×倍率」の高い方を試算に使います。両方は別の入力方法です。実際の対象・上限・有効化はキャンペーン画面で確認してください。
+                Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
         </div>
          <div class="section">
@@ -385,7 +385,7 @@
         <h2 data-lang-key="faqSectionTitle">❓ よくある質問 (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. 課金目標の計算はどのように行われますか？</h3>
-            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。</p>
+            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。</p>
         </div>
         <div class="faq-item">
             <h3>Q. 逆算モードとは何ですか？</h3>
@@ -432,8 +432,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=e6baea048c"></script>
-<script src="js/third-party.js?v=1654f2b50d" defer></script>
+<script type="module" src="js/main.js?v=617dd4f267"></script>
+<script src="js/third-party.js?v=2f0ff8bae8" defer></script>
 
 </body>
 </html>

@@ -31,9 +31,9 @@ test('記事・LP・ゲームの広告初期化経路が共通ローダーと同
   const thirdParty = read('js/third-party.js');
   const game = read('games/fgo/index.html');
   assert.ok(article.includes('.article-ad-container ins.adsbygoogle'));
-  assert.ok(article.includes('PlayPointConsent.whenGranted(loadArticleAdsense)'));
+  assert.ok(article.includes('PlayPointConsent.whenAdsAllowed(loadArticleAdsense)'));
   assert.ok(thirdParty.includes('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle'));
-  assert.ok(thirdParty.includes('runAfterConsent(initializeManagedAds)'));
+  assert.ok(thirdParty.includes("runAfterConsent(initializeManagedAds, 'ads')"));
   assert.ok(game.includes('js/third-party.js'));
   assert.ok(read('games/index.html').includes('js/third-party.js'));
 });

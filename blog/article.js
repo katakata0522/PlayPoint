@@ -205,11 +205,11 @@
             return {
                 label: 'キャンペーン判断',
                 title: '今課金するか、待つかを比較する',
-                body: '通常時・2倍・3倍で必要額を比べて、キャンペーンを待つ価値があるか確認できます。',
+                body: '通常獲得率と、Google Playに表示された2pt/100円・3pt/100円などの特別獲得率で必要額を比べ、キャンペーンを待つ価値があるか確認できます。',
                 links: [
                     { href: '../campaign/wait/', text: 'キャンペーン待ちを判断' },
-                    { href: '../campaign/2x/', text: '2倍で計算' },
-                    { href: '../campaign/3x/', text: '3倍で計算' }
+                    { href: '../campaign/2x/', text: '2pt/100円で計算' },
+                    { href: '../campaign/3x/', text: '3pt/100円で計算' }
                 ]
             };
         }
@@ -342,6 +342,10 @@
 
     function scheduleArticleAdsenseLoad() {
         if (!window.PlayPointConsent) return;
+        if (typeof window.PlayPointConsent.whenAdsAllowed === 'function') {
+            window.PlayPointConsent.whenAdsAllowed(loadArticleAdsense);
+            return;
+        }
         window.PlayPointConsent.whenGranted(loadArticleAdsense);
     }
 

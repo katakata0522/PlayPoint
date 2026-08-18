@@ -101,6 +101,13 @@ function insertStaticPrompt(html) {
   return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutGeneratedPrompt.slice(anchorEnd)}`;
 }
 
+function normalizeSharedArticleCopy(html) {
+  return html
+    .replaceAll('不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！', '不足ポイントとGoogle Playに表示されたキャンペーン特別獲得率から、目標ランクまでの必要課金額をシミュレーションできます。')
+    .replaceAll('<span class="sidebar-event-tag">5と0の日</span>\n                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>', '<span class="sidebar-event-tag">購入前確認</span>\n                        <span><strong>ギフトコードの還元条件を確認</strong> 付与率・上限・エントリー要否は購入時の表示を確認</span>')
+    .replaceAll('Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！', 'Play Pointsの交換先や必要ポイント数は時期・国・アカウントで変わります。「使う」画面に表示された現在の条件を確認してください。');
+}
+
 function synchronizeArticleStaticUsability(rootDir) {
   let updated = 0;
   for (const articlePath of japaneseArticlePaths(rootDir)) {
@@ -108,7 +115,7 @@ function synchronizeArticleStaticUsability(rootDir) {
       throw new Error(`記事一覧にあるHTMLが見つかりません: ${path.relative(rootDir, articlePath)}`);
     }
     const original = fs.readFileSync(articlePath, 'utf8');
-    const next = insertStaticPrompt(insertStaticHeader(original));
+    const next = normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original)));
     if (next === original) continue;
     fs.writeFileSync(articlePath, next, 'utf8');
     updated += 1;
@@ -134,5 +141,6 @@ module.exports = {
   insertStaticPrompt,
   japaneseArticlePaths,
   removeStaticPrompt,
+  normalizeSharedArticleCopy,
   synchronizeArticleStaticUsability
 };

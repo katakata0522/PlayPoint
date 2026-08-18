@@ -166,6 +166,17 @@ ${articleEntries}
 
 function getGameSitemapEntries(rootDir) {
   const entries = [];
+  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;
+  const htmlDateFor = (filePath, relativePath) => {
+    try {
+      const html = fs.readFileSync(filePath, 'utf8');
+      const match = html.match(/<meta name=\"last-modified\" content=\"(\d{4}-\d{2}-\d{2})\"/);
+      if (match) return match[1];
+    } catch (error) {
+      // Fall through to the editorial date table when the page cannot be read.
+    }
+    return dateFor(relativePath);
+  };
   const dirs = [
     { prefix: 'games', dir: path.join(rootDir, 'games') },
     { prefix: 'en/games', dir: path.join(rootDir, 'en', 'games') },
@@ -177,7 +188,7 @@ function getGameSitemapEntries(rootDir) {
     if (!fs.existsSync(dir)) continue;
     entries.push({
       url: `${SITE_ORIGIN}/${prefix}/`,
-      lastmod: TOP_PAGE_CONTENT_DATES.ja
+      lastmod: htmlDateFor(path.join(dir, 'index.html'), `${prefix}/index.html`)
     });
 
     const subdirs = fs.readdirSync(dir, { withFileTypes: true });
@@ -187,7 +198,7 @@ function getGameSitemapEntries(rootDir) {
         if (fs.existsSync(indexPath)) {
           entries.push({
             url: `${SITE_ORIGIN}/${prefix}/${sub.name}/`,
-            lastmod: TOP_PAGE_CONTENT_DATES.ja
+            lastmod: htmlDateFor(indexPath, `${prefix}/${sub.name}/index.html`)
           });
         }
       }

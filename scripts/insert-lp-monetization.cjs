@@ -1,5 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
 
 const lpFiles = [
   'status/silver/index.html',
@@ -18,14 +20,14 @@ const lpFiles = [
 ];
 
 const affiliateSection = `    <section class="section">
-        <h2>課金前にやっておくべき実質割引テクニック</h2>
+        <h2>課金前に確認したいギフトコード購入条件</h2>
         <div class="lp-affiliate-box">
             <div class="lp-affiliate-box-header">
                 <span style="font-size: 1.3rem;">🛒</span>
-                <h3 class="lp-affiliate-box-title">楽天市場のGoogle Playギフトコード認定店でポイント二重取り</h3>
+                <h3 class="lp-affiliate-box-title">楽天市場のGoogle Playギフトコード認定店の還元条件を確認</h3>
             </div>
             <p class="lp-affiliate-box-text">
-                直接クレジットカードで決済する前に、楽天市場の「Google Play ギフトコード認定店」を経由すると、<strong>SPU（スーパーポイントアップ）やお買い物マラソン、5と0のつく日で実質5%〜15%以上の楽天ポイントが還元</strong>されます。コードはメールで即時届くため、課金の実質負担を大幅に抑えられます。
+                楽天市場の「Google Play ギフトコード認定店」では、<strong>楽天市場側のキャンペーンや会員条件によってポイント還元の対象になる場合があります。</strong> 付与率・上限・エントリー要否・コードの受取条件は変わるため、購入画面とキャンペーン詳細を確認してください。
             </p>
             <div class="lp-affiliate-box-actions">
                 <a class="lp-affiliate-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&amp;link_type=hybrid_url&amp;ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">
@@ -42,29 +44,62 @@ const affiliateSection = `    <section class="section">
             <span class="lp-ad-label">スポンサーリンク</span>
             <ins class="adsbygoogle"
                  style="display:block"
-                     data-ad-client="ca-pub-3845885843809455"
-                     data-ad-slot="8250492620"
-                     data-ad-format="auto"
+                 data-ad-client="ca-pub-3845885843809455"
+                 data-ad-slot="8250492620"
+                 data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
         </div>
     </section>`;
 
-lpFiles.forEach(file => {
-  const fullPath = path.resolve(__dirname, '..', file);
-  if (!fs.existsSync(fullPath)) return;
-  let content = fs.readFileSync(fullPath, 'utf8');
+// Consume the surrounding whitespace together with an old/new managed section.
+// Otherwise each rebuild can leave an indented blank line behind and add another one.
+const existingSectionPattern = /(?:\r?\n[ \t]*)*<section class="section">\s*<h2>(?:課金前にやっておくべき実質割引テクニック|課金前に確認したいギフトコード購入条件)<\/h2>[\s\S]*?<\/section>[ \t]*(?:\r?\n)?/g;
 
-  // 既存のセクションがあれば除去
-  const existingRegex = /<section class="section">\s*<h2>課金前にやっておくべき実質割引テクニック<\/h2>[\s\S]*?<\/section>/g;
-  content = content.replace(existingRegex, '');
+function insertBeforeClosingTag(content, tagPattern, closingTag) {
+  if (!tagPattern.test(content)) return null;
+  tagPattern.lastIndex = 0;
+  return content.replace(tagPattern, `\n${affiliateSection}\n    ${closingTag}`);
+}
 
-  // 最後の </main> または <footer の直前に挿入
-  if (content.includes('</main>')) {
-    content = content.replace('</main>', `${affiliateSection}\n    </main>`);
-  } else if (content.includes('<footer')) {
-    content = content.replace('<footer', `${affiliateSection}\n    <footer`);
+function normalizeLpContent(content) {
+  const withoutExisting = content.replace(existingSectionPattern, '\n');
+
+  const beforeMain = insertBeforeClosingTag(
+    withoutExisting,
+    /(?:\r?\n[ \t]*)*<\/main>/,
+    '</main>'
+  );
+  if (beforeMain !== null) return beforeMain;
+
+  const beforeFooter = insertBeforeClosingTag(
+    withoutExisting,
+    /(?:\r?\n[ \t]*)*<footer/,
+    '<footer'
+  );
+  return beforeFooter === null ? withoutExisting : beforeFooter;
+}
+
+function applyLpMonetization(rootDir = path.resolve(__dirname, '..')) {
+  let updated = 0;
+  for (const file of lpFiles) {
+    const fullPath = path.join(rootDir, file);
+    if (!fs.existsSync(fullPath)) continue;
+    const original = fs.readFileSync(fullPath, 'utf8');
+    const next = normalizeLpContent(original);
+    if (next === original) continue;
+    fs.writeFileSync(fullPath, next, 'utf8');
+    updated += 1;
   }
+  console.log(`[lp-monetization] synchronized: ${updated}`);
+  return updated;
+}
 
-  fs.writeFileSync(fullPath, content, 'utf8');
-  console.log(`Cleanly updated monetization section in ${file}`);
-});
+if (require.main === module) applyLpMonetization();
+
+module.exports = {
+  affiliateSection,
+  applyLpMonetization,
+  existingSectionPattern,
+  lpFiles,
+  normalizeLpContent
+};

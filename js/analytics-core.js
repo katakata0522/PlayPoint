@@ -197,7 +197,12 @@
             queue(eventName, cleanParams);
             return false;
         }
-        if (!hasConsent()) {
+        const consentStatus = window.PlayPointConsent.getStatus();
+        if (consentStatus === 'pending') {
+            queue(eventName, cleanParams);
+            return false;
+        }
+        if (consentStatus !== 'granted') {
             pendingEvents.length = 0;
             clearCalculatorEntry();
             return false;
@@ -213,7 +218,9 @@
 
     function flushPending() {
         if (!window.PlayPointConsent) return;
-        if (!hasConsent()) {
+        const consentStatus = window.PlayPointConsent.getStatus();
+        if (consentStatus === 'pending') return;
+        if (consentStatus !== 'granted') {
             pendingEvents.length = 0;
             clearCalculatorEntry();
             return;

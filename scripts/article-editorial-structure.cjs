@@ -51,14 +51,14 @@ const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-07-24-play-points-500-1000-value.html': {
     known: [
       '500・1,000ポイントの通常時概算は、ステータス別獲得率から比較できます。',
-      '2倍・3倍は対象商品の対象期間内購入にだけ適用して試算します。'
+      '2pt/100円・3pt/100円などの特別獲得率は、Google Playにその最終獲得率が表示された対象購入にだけ適用して試算します。'
     ],
     unknown: [
       '今後のキャンペーン開催時期や個別アカウントの対象可否は予測できません。',
       '商品ごとの丸めにより、合計額だけの計算とは数ポイントずれる場合があります。'
     ],
     comparisonHref: '/compare/earning-rates/#campaign-comparison',
-    comparisonLabel: '通常・2倍・3倍の引用用比較表を見る'
+    comparisonLabel: '通常獲得率・特別獲得率の引用用比較表を見る'
   },
   'articles/2026-07-24-play-points-cash-conversion.html': {
     manualStructure: true,
@@ -115,17 +115,17 @@ const EDITORIAL_TARGETS = Object.freeze({
   'articles/2025-12-25-campaign.html': {
     manualStructure: true,
     modifiedDate: '2026-08-04',
-    answer: 'キャンペーンを待つかは、予定している購入だけを通常・2倍・3倍で比較し、対象アプリ、期間、開始操作、上限を確認して判断します。',
+    answer: 'キャンペーンを待つかは、予定している購入だけを通常獲得率とGoogle Playに表示された特別獲得率で比較し、対象アプリ、期間、開始操作、上限を確認して判断します。',
     known: [
       '通常時の獲得率を基準にすると、キャンペーン分の差額を比較できます。',
-      '倍率は対象商品と対象期間へだけ適用する必要があります。'
+      '特別獲得率はGoogle Playにその最終獲得率が表示された対象商品・対象期間へだけ適用する必要があります。'
     ],
     unknown: [
       '次回キャンペーンの開催時期や、個別アカウントが対象になるかは予測できません。',
-      'Google Playに表示されていない倍率を確定情報として扱うことはできません。'
+      'Google Playに表示されていない特別獲得率を確定情報として扱うことはできません。'
     ],
     comparisonHref: '/compare/earning-rates/#campaign-comparison',
-    comparisonLabel: '通常・2倍・3倍の引用用比較表を見る'
+    comparisonLabel: '通常獲得率・特別獲得率の引用用比較表を見る'
   }
 });
 

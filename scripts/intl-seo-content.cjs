@@ -13,6 +13,7 @@ const LOCALES = {
     back: 'Back to calculator',
     author: 'Katakata',
     siteName: 'Google Play Points Calculator',
+    trademarkNotice: 'Google Play, the Google Play logo, and Android are trademarks of Google LLC. This independent calculator is not affiliated with or endorsed by Google LLC or the game publishers mentioned on this site.',
     relatedTitle: 'Related guides',
     regionNoteTitle: 'Regional note',
     lastUpdatedLabel: 'Last updated',
@@ -38,6 +39,7 @@ const LOCALES = {
     back: '계산기로 돌아가기',
     author: 'Katakata',
     siteName: 'Google Play Points 계산기',
+    trademarkNotice: 'Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 독립적으로 운영되는 비공식 계산기이며 Google LLC 및 언급된 게임의 개발·배급사와 제휴 또는 승인 관계가 없습니다.',
     relatedTitle: '함께 확인할 가이드',
     regionNoteTitle: '국가별 확인',
     lastUpdatedLabel: '업데이트',
@@ -63,6 +65,7 @@ const LOCALES = {
     back: '返回計算機',
     author: 'Katakata',
     siteName: 'Google Play Points 計算器',
+    trademarkNotice: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為獨立營運的非官方計算工具，與 Google LLC 及所提及遊戲的開發或發行商無隸屬或認可關係。',
     relatedTitle: '相關指南',
     regionNoteTitle: '地區確認',
     lastUpdatedLabel: '更新日期',
@@ -70,7 +73,7 @@ const LOCALES = {
     policyLabel: '營運與驗證方針',
     estimateTitle: '如何閱讀這個估算',
     estimateBody: '計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。',
-    disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動倍率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
+    disclaimer: '本頁提供規劃用估算。Google Play Points 的適用付款、活動特別獲點率、回饋時間與條款可能因國家、地區或帳號而不同，購買前請先在 Google Play App 內確認。',
     officialSourceTitle: '官方資訊確認',
     officialSourceBody: 'Play Points 的提供地區、等級、回饋與活動條件可能因國家、地區或帳號不同。購買前請先確認 Google Play 官方說明與 App 內顯示。',
     officialSourceLink: 'Google Play Points 官方說明',
@@ -103,11 +106,11 @@ const PAGE_TYPES = {
       sections: [
         ['What to check first', 'Start with the remaining points shown in Google Play. If you enter total lifetime points instead of the missing points, the estimate will be too high.'],
         ['Country differences', 'Promotions, reward availability, and point earning rules can vary. Treat the calculator as a planning tool, then confirm the final rule in your local Google Play app.'],
-        ['When to wait', 'If the estimate is far above your usual spending, compare 1x and campaign multipliers before buying anything only for status.']
+        ['When to wait', 'If the estimate is far above your usual spending, compare the base rate and the special earn rate shown in Google Play before buying anything only for status.']
       ],
       faq: [
         ['Can this calculator confirm the official Diamond requirement?', 'No. It estimates spending from the values you enter. The official progress shown in Google Play is the source of truth.'],
-        ['Should I use a campaign multiplier?', 'Use 1x first, then compare the result with 2x or 3x if your purchase is actually eligible for that promotion.'],
+        ['Should I use a campaign special earn rate?', 'Start with your base rate, then enter the final special earn rate shown for an eligible purchase in Google Play.'],
         ['Is Diamond always worth reaching?', 'Not always. It depends on whether you use the rewards enough to justify the extra spending.']
       ]
     },
@@ -116,7 +119,7 @@ const PAGE_TYPES = {
       description: 'Google Play Points 다이아몬드까지 남은 포인트와 필요 금액을 계산하고, 한국·일본·미국·대만의 캠페인 차이와 공식 확인 포인트를 함께 점검합니다.',
       eyebrow: '다이아몬드 등급 계획',
       h1: 'Google Play Points 다이아몬드는 얼마가 필요할까요?',
-      lead: '다이아몬드를 목표로 할 때는 총 결제액보다 남은 포인트, 캠페인 배율, 국가별 조건을 먼저 확인하는 편이 안전합니다.',
+      lead: '다이아몬드를 목표로 할 때는 총 결제액보다 남은 포인트, 캠페인 특별 적립률, 국가별 조건을 먼저 확인하는 편이 안전합니다.',
       cta: '다이아몬드까지 계산하기',
       secondary: '영문 등급 가이드 보기',
       secondaryHref: '/en/articles/google-play-points-levels.html',
@@ -124,11 +127,11 @@ const PAGE_TYPES = {
       sections: [
         ['먼저 확인할 것', 'Google Play 앱에 표시된 남은 포인트를 기준으로 입력하세요. 전체 누적 포인트를 넣으면 예상 금액이 어긋날 수 있습니다.'],
         ['국가별 차이', '한국, 일본, 미국, 대만은 프로모션과 리워드 표시가 다를 수 있습니다. 계산 후 앱의 조건을 다시 확인하세요.'],
-        ['기다릴지 판단', '평소 결제액보다 필요한 금액이 크다면 1배와 캠페인 배율을 비교하고, 불필요한 지출은 피하는 것이 좋습니다.']
+        ['기다릴지 판단', '평소 결제액보다 필요한 금액이 크다면 1배와 캠페인 특별 적립률을 비교하고, 불필요한 지출은 피하는 것이 좋습니다.']
       ],
       faq: [
         ['공식 필요 금액을 보장하나요?', '아니요. 입력값을 바탕으로 한 예상치이며, 최종 기준은 Google Play 앱의 진행 상황입니다.'],
-        ['캠페인 배율을 넣어도 되나요?', '대상 결제가 맞을 때만 넣어 비교하세요. 먼저 1배로 기준을 보는 것이 안전합니다.'],
+        ['캠페인 특별 적립률을 넣어도 되나요?', '대상 결제가 맞을 때만 넣어 비교하세요. 먼저 1배로 기준을 보는 것이 안전합니다.'],
         ['다이아몬드는 항상 이득인가요?', '리워드를 실제로 사용할 수 있는지에 따라 달라집니다.']
       ]
     },
@@ -137,7 +140,7 @@ const PAGE_TYPES = {
       description: '估算 Google Play Points 鑽石等級所需點數與金額，並確認台灣、日本、美國、韓國的活動差異與官方條件確認重點。',
       eyebrow: '鑽石等級規劃',
       h1: 'Google Play Points 鑽石等級需要多少？',
-      lead: '想衝鑽石等級時，先確認還差多少點、是否有活動倍率，以及所在地區的規則是否相同，會比直接估總金額更安全。',
+      lead: '想衝鑽石等級時，先確認還差多少點、是否有活動特別獲點率，以及所在地區的規則是否相同，會比直接估總金額更安全。',
       cta: '計算鑽石等級進度',
       secondary: '查看英文等級指南',
       secondaryHref: '/en/articles/google-play-points-levels.html',
@@ -145,11 +148,11 @@ const PAGE_TYPES = {
       sections: [
         ['先看剩餘點數', '請以 Google Play App 顯示的剩餘點數為準。若輸入累積總點數，估算金額可能會失真。'],
         ['地區差異', '台灣、日本、韓國、美國的活動顯示與回饋條件可能不同。計算後仍要回到 App 確認。'],
-        ['是否等待活動', '如果估算金額高於平常消費，先比較 1 倍、2 倍或 3 倍，不要為了等級增加不必要支出。']
+        ['是否等待活動', '如果估算金額高於平常消費，請比較目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率，不要為了等級增加不必要支出。']
       ],
       faq: [
         ['這能保證官方鑽石條件嗎？', '不能。這是依輸入值估算，官方進度仍以 Google Play App 顯示為準。'],
-        ['可以輸入活動倍率嗎？', '可以，但只有實際符合活動資格的消費才適合使用倍率估算。'],
+        ['可以輸入活動特別獲點率嗎？', '可以，但請輸入 Google Play 顯示的最終特別獲點率，並且只用於實際符合活動資格的消費。'],
         ['鑽石等級一定值得嗎？', '不一定，取決於你是否真的會使用相關回饋。']
       ]
     }
@@ -165,7 +168,7 @@ const PAGE_TYPES = {
       description: 'Estimate how much spending may be needed to reach Google Play Points Platinum, with US, Korea, Taiwan, and Japan region notes.',
       eyebrow: 'Platinum status planning',
       h1: 'How much does it take to reach Google Play Points Platinum?',
-      lead: 'Platinum is one of the most common Play Points goals because it can feel close enough to plan around. The useful estimate starts with missing points, then checks status rate, promotion multiplier, and country-specific eligibility.',
+      lead: 'Platinum is one of the most common Play Points goals because it can feel close enough to plan around. The useful estimate starts with missing points, then checks status rate, promotion special earn rate, and country-specific eligibility.',
       cta: 'Calculate Platinum progress',
       secondary: 'Compare Diamond status',
       secondaryHref: '/en/status/diamond/',
@@ -187,7 +190,7 @@ const PAGE_TYPES = {
       description: 'Google Play Points 플래티넘까지 남은 포인트와 필요 금액을 계산하고 한국, 미국, 대만, 일본의 조건 차이를 확인합니다.',
       eyebrow: '플래티넘 등급 계획',
       h1: 'Google Play Points 플래티넘은 얼마가 필요할까요?',
-      lead: '플래티넘은 현실적인 목표로 검색되는 경우가 많습니다. 남은 포인트, 현재 등급 적립률, 캠페인 배율, 국가별 대상 조건을 함께 확인해야 과소비를 피할 수 있습니다.',
+      lead: '플래티넘은 현실적인 목표로 검색되는 경우가 많습니다. 남은 포인트, 현재 등급 적립률, 캠페인 특별 적립률, 국가별 대상 조건을 함께 확인해야 과소비를 피할 수 있습니다.',
       cta: '플래티넘까지 계산하기',
       secondary: '다이아몬드 계산 보기',
       secondaryHref: '/ko/status/diamond/',
@@ -195,7 +198,7 @@ const PAGE_TYPES = {
       sections: [
         ['남은 포인트부터 입력', '누적 포인트가 아니라 Google Play 앱에 표시된 목표까지 남은 포인트를 기준으로 입력하세요.'],
         ['한국 조건을 앱에서 확인', 'Google Play Points 적립률, 혜택, 캠페인은 국가나 계정에 따라 다를 수 있습니다. 계산기는 계획용으로 쓰고 최종 조건은 앱에서 확인하세요.'],
-        ['캠페인 배율 비교', '먼저 1배 기준으로 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하는 편이 안전합니다.'],
+        ['캠페인 특별 적립률 비교', '먼저 1배 기준으로 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하는 편이 안전합니다.'],
         ['등급 가치 판단', '예정된 결제와 가까운 금액이면 플래티넘 목표가 의미 있을 수 있지만, 등급만을 위한 추가 결제라면 혜택 가치와 비교해야 합니다.']
       ],
       faq: [
@@ -209,7 +212,7 @@ const PAGE_TYPES = {
       description: '估算 Google Play Points 白金等級所需點數與金額，並確認台灣、美國、韓國、日本的地區差異。',
       eyebrow: '白金等級規劃',
       h1: 'Google Play Points 白金等級需要多少？',
-      lead: '白金是許多使用者會先規劃的等級。請先確認還差多少點，再比較目前等級回饋、活動倍率與所在地區的適用條件。',
+      lead: '白金是許多使用者會先規劃的等級。請先確認還差多少點，再比較目前等級回饋、活動特別獲點率與所在地區的適用條件。',
       cta: '計算白金等級進度',
       secondary: '比較鑽石等級',
       secondaryHref: '/tw/status/diamond/',
@@ -217,7 +220,7 @@ const PAGE_TYPES = {
       sections: [
         ['從剩餘點數開始', '請輸入 Google Play App 顯示的目標剩餘點數，而不是累積總點數。'],
         ['確認台灣適用條件', 'Google Play Points 的回饋率、優惠與活動可能因國家或帳號不同。計算結果應作為規劃參考，最終仍以 App 為準。'],
-        ['比較一般與活動倍率', '先以 1 倍建立基準，只有在該筆消費確定符合活動時，才用 2 倍或 3 倍估算。'],
+        ['比較一般與活動特別獲點率', '先以 1 倍建立基準，只有在該筆消費確定符合活動時，才用 2 倍或 3 倍估算。'],
         ['判斷白金是否值得', '如果金額接近原本計畫的消費，白金可能值得考慮；如果只是為了等級而新增支出，應先比較回饋價值。']
       ],
       faq: [
@@ -251,16 +254,16 @@ const PAGE_TYPES = {
       ],
       faq: [
         ['Is Gold a good first target?', 'Often, yes. It is easier to evaluate than Platinum or Diamond because the missing amount is usually smaller.'],
-        ['Can I use a promotion multiplier?', 'Yes, but only if the exact purchase qualifies for that promotion.'],
+        ['Can I use a promotion special earn rate?', 'Yes, but only if the exact purchase qualifies for that promotion.'],
         ['Does this replace the official Google Play progress?', 'No. It is a planning estimate, not an account checker.']
       ]
     },
     ko: {
       title: 'Google Play Points 골드 필요 금액 계산',
-      description: 'Google Play Points 골드까지 남은 포인트와 필요 금액을 계산하고, 캠페인 배율과 국가별 조건을 비교해 무리한 결제 없이 다음 등급을 판단합니다.',
+      description: 'Google Play Points 골드까지 남은 포인트와 필요 금액을 계산하고, 캠페인 특별 적립률과 국가별 조건을 비교해 무리한 결제 없이 다음 등급을 판단합니다.',
       eyebrow: '골드 등급 계획',
       h1: 'Google Play Points 골드는 얼마가 필요할까요?',
-      lead: '골드는 처음으로 현실적인 목표가 되기 쉬운 등급입니다. 남은 포인트와 일반 적립, 캠페인 배율, 지역 조건을 함께 확인하세요.',
+      lead: '골드는 처음으로 현실적인 목표가 되기 쉬운 등급입니다. 남은 포인트와 일반 적립, 캠페인 특별 적립률, 지역 조건을 함께 확인하세요.',
       cta: '골드까지 계산하기',
       secondary: '플래티넘 계산 보기',
       secondaryHref: '/ko/status/platinum/',
@@ -273,16 +276,16 @@ const PAGE_TYPES = {
       ],
       faq: [
         ['골드는 첫 목표로 괜찮나요?', '대체로 판단하기 좋은 목표입니다. 플래티넘이나 다이아몬드보다 필요한 금액을 현실적으로 비교하기 쉽습니다.'],
-        ['캠페인 배율을 넣어도 되나요?', '해당 결제가 실제 캠페인 대상일 때만 넣어 비교하세요.'],
+        ['캠페인 특별 적립률을 넣어도 되나요?', '해당 결제가 실제 캠페인 대상일 때만 넣어 비교하세요.'],
         ['공식 진행 상황을 대신하나요?', '아니요. 공식 기준은 Google Play 앱의 진행 상황입니다.']
       ]
     },
     tw: {
       title: 'Google Play Points 金級需要多少？',
-      description: '估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動倍率比較是否值得升級。',
+      description: '估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。',
       eyebrow: '金級規劃',
       h1: 'Google Play Points 金級需要多少？',
-      lead: '金級通常是第一個比較容易規劃的目標。請輸入還差多少點，再比較一般回饋、活動倍率與地區條件。',
+      lead: '金級通常是第一個比較容易規劃的目標。請輸入還差多少點，再比較一般回饋、活動特別獲點率與地區條件。',
       cta: '計算金級進度',
       secondary: '比較白金等級',
       secondaryHref: '/tw/status/platinum/',
@@ -295,7 +298,7 @@ const PAGE_TYPES = {
       ],
       faq: [
         ['金級適合作為第一個目標嗎？', '通常適合，因為比白金或鑽石更容易用平常消費來比較。'],
-        ['可以輸入活動倍率嗎？', '可以，但必須是實際符合活動資格的消費。'],
+        ['可以輸入活動特別獲點率嗎？', '可以，但必須是實際符合活動資格的消費。'],
         ['這能取代官方進度嗎？', '不能。官方進度仍以 Google Play App 顯示為準。']
       ]
     }
@@ -355,7 +358,7 @@ const PAGE_TYPES = {
     tw: {
       query: 'status=1&target=silver&points=250&multiplier=1',
       title: '台灣 Google Play Points 銀級需要多少？',
-      description: '估算台灣 Google Play Points 銀級所需的 250 點與金額，並依 NT$30 累積單位、帳號特典與活動倍率安排購買計畫。',
+      description: '估算台灣 Google Play Points 銀級所需的 250 點與金額，並依 NT$30 累積單位、帳號特典與活動特別獲點率安排購買計畫。',
       eyebrow: '台灣銀級規劃',
       h1: '台灣 Google Play Points 銀級需要多少？',
       lead: '台灣銀級從年度 250 點開始。先確認還差多少點，再把原本規劃的購買安排到帳號顯示的最高適用累積率。',
@@ -372,7 +375,7 @@ const PAGE_TYPES = {
       faq: [
         ['台灣銀級需要幾點？', '年度 250 點。'],
         ['從 0 點的基本估算是多少？', '以銅級一般累積率計算，未稅約 NT$7,500。'],
-        ['可以把多個活動倍率相乘嗎？', '不可以，套用最高的適用累積率。']
+        ['可以把多個活動特別獲點率相乘嗎？', '不可以，套用最高的適用累積率。']
       ]
     }
   },
@@ -387,18 +390,18 @@ const PAGE_TYPES = {
       description: 'Compare regular Google Play Points earning with a 2x promotion and estimate the spending needed for status progress.',
       eyebrow: '2x promotion estimate',
       h1: 'How much does a Google Play Points 2x promotion help?',
-      lead: 'A 2x promotion can reduce the spending needed for a target, but only if the purchase is eligible. Use this page to open the calculator with a 2x multiplier and compare it with regular earning.',
-      cta: 'Calculate with 2x',
+      lead: 'This legacy “2x” page models a final special earn rate of 2 points per $1 when Google Play shows that rate for an eligible purchase. It does not multiply your tier base rate by 2.',
+      cta: 'Calculate with 2 pt / $1',
       secondary: 'Compare 3x promotion',
-      secondaryHref: '/campaign/3x/',
-      summary: ['Preset: 2x multiplier', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
+      secondaryHref: '/en/campaign/3x/',
+      summary: ['Preset: special earn rate 2 pt / $1', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
       sections: [
-        ['Compare 1x and 2x', 'Run the estimate at 1x first, then switch to 2x. The difference shows whether waiting for the campaign matters.'],
+        ['Compare your base rate with 2 pt / $1', 'Use your normal tier earn rate as the baseline, then enter 2 only when Google Play shows a final special earn rate of 2 points per $1 for the eligible purchase.'],
         ['Eligibility matters', 'Promotion labels can hide limits such as selected apps, maximum bonus points, or payment-method restrictions.'],
         ['Avoid forced spending', 'Use campaigns to move planned purchases, not to create new purchases that exceed the value of the reward.']
       ],
       faq: [
-        ['Does 2x make the cost exactly half?', 'Not always. It depends on base earning, status, caps, and eligible purchase amount.'],
+        ['Does 2x make the cost exactly half?', 'Not necessarily. A 2-point special earn rate is compared with your tier base rate rather than multiplying that base rate by 2; caps and eligibility also matter.'],
         ['Can gift cards count?', 'They may not count at purchase time in the way users expect. Check the local rule and compare with the gift-card guide.'],
         ['Is 2x enough for Platinum or Diamond?', 'It depends on missing points. Use the calculator result with your current Play Points progress.']
       ]
@@ -408,18 +411,18 @@ const PAGE_TYPES = {
       description: 'Google Play Points 2배 캠페인에서 필요한 결제 금액을 비교하고, 일반 적립과 캠페인 적용 시 차이를 한국어로 확인합니다.',
       eyebrow: '2배 캠페인 예상',
       h1: 'Google Play Points 2배 캠페인은 얼마나 도움이 될까요?',
-      lead: '2배 캠페인은 필요한 금액을 낮출 수 있지만, 대상 결제일 때만 의미가 있습니다. 이 페이지는 2배 배율로 계산기를 열어 일반 조건과 비교할 수 있게 합니다.',
-      cta: '2배로 계산하기',
+      lead: '2배 캠페인은 필요한 금액을 낮출 수 있지만, 대상 결제일 때만 의미가 있습니다. 이 기존 “2배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 2pt로 표시될 때 그 값을 사용하며, 등급 기본 적립률에 2를 곱하지 않습니다.',
+      cta: '1,000원당 2pt로 계산하기',
       secondary: '3배 캠페인 비교',
-      secondaryHref: '/campaign/3x/',
-      summary: ['초기 조건: 2배 배율', '추천: 예정된 결제가 있는 경우', '확인: 대상 앱, 상한, 반영 시점'],
+      secondaryHref: '/ko/campaign/3x/',
+      summary: ['초기 조건: 특별 적립률 1,000원당 2pt', '추천: 예정된 결제가 있는 경우', '확인: 대상 앱, 상한, 반영 시점'],
       sections: [
-        ['1배와 2배 비교', '먼저 1배 기준을 보고 2배로 바꾸면 캠페인을 기다릴 가치가 있는지 판단하기 쉽습니다.'],
+        ['기본 적립률과 1,000원당 2pt 비교', '현재 등급의 기본 적립률을 기준으로 보고, Google Play에 해당 결제의 최종 특별 적립률이 1,000원당 2pt로 표시될 때만 2를 입력해 비교하세요.'],
         ['대상 조건 확인', '일부 앱, 결제수단, 보너스 상한이 있을 수 있습니다.'],
         ['불필요한 지출 방지', '캠페인은 예정된 결제를 옮기는 데 쓰고, 등급만을 위해 새 지출을 만들지 않는 편이 안전합니다.']
       ],
       faq: [
-        ['2배면 금액이 정확히 절반인가요?', '항상 그렇지는 않습니다. 기본 적립, 등급, 상한, 대상 금액에 따라 달라집니다.'],
+        ['2배면 금액이 정확히 절반인가요?', '아닙니다. 1,000원당 2pt의 특별 적립률은 현재 등급 기본 적립률과 비교하는 값이며, 기본 적립률에 2를 곱하지 않습니다. 상한과 대상 조건도 확인해야 합니다.'],
         ['기프트카드도 대상인가요?', '사용자가 기대하는 방식과 다를 수 있으므로 지역별 조건을 확인해야 합니다.'],
         ['플래티넘이나 다이아몬드에 충분한가요?', '남은 포인트에 따라 다릅니다. 현재 진행 상황과 함께 보세요.']
       ]
@@ -429,18 +432,18 @@ const PAGE_TYPES = {
       description: '使用 Google Play Points 2 倍活動估算所需消費，並和一般 1 倍累積比較，判斷活動是否值得等待。',
       eyebrow: '2 倍活動估算',
       h1: 'Google Play Points 2 倍活動能省多少？',
-      lead: '2 倍活動可能降低達成目標所需金額，但前提是該筆消費符合資格。這頁會以 2 倍倍率開啟計算機，方便與一般條件比較。',
-      cta: '用 2 倍計算',
+      lead: '2 倍活動可能降低達成目標所需金額，但前提是該筆消費符合資格。這個保留「2 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 2 點時使用 2，不會把等級基本獲點率乘以 2。',
+      cta: '以每 NT$30 2 點計算',
       secondary: '比較 3 倍活動',
-      secondaryHref: '/campaign/3x/',
-      summary: ['預設: 2 倍倍率', '適合: 已計畫的消費', '確認: 適用 App、上限、回饋時間'],
+      secondaryHref: '/tw/campaign/3x/',
+      summary: ['預設：特別獲點率每 NT$30 2 點', '適合: 已計畫的消費', '確認: 適用 App、上限、回饋時間'],
       sections: [
-        ['比較 1 倍與 2 倍', '先看 1 倍基準，再切換到 2 倍，就能判斷是否值得等待活動。'],
+        ['比較基本獲點率與每 NT$30 2 點', '先以目前等級基本獲點率為基準，只有 Google Play 對該筆消費顯示最終特別獲點率為每 NT$30 2 點時，才輸入 2 進行比較。'],
         ['資格條件很重要', '活動可能限制 App、付款方式或加碼點數上限。'],
         ['避免為活動硬買', '活動適合調整原本就要買的項目，不適合為了等級增加不必要支出。']
       ],
       faq: [
-        ['2 倍會讓成本剛好減半嗎？', '不一定，會受到基本回饋、等級、上限與適用金額影響。'],
+        ['2 倍會讓成本剛好減半嗎？', '不會直接減半。每 NT$30 2 點的特別獲點率是與會員等級基本獲點率比較，不是把基本獲點率乘以 2；上限與適用條件也要確認。'],
         ['禮物卡也算嗎？', '可能與直覺不同，請確認所在地區的規則。'],
         ['2 倍足夠升白金或鑽石嗎？', '取決於剩餘點數，請搭配 Google Play App 的進度查看。']
       ]
@@ -457,19 +460,19 @@ const PAGE_TYPES = {
       description: 'Compare regular Google Play Points earning with a 3x promotion and estimate whether waiting changes the required spending.',
       eyebrow: '3x promotion estimate',
       h1: 'How much does a Google Play Points 3x promotion help?',
-      lead: 'A 3x promotion can change a status plan more than a small discount, but only when the purchase qualifies. Compare 1x, 2x, and 3x before deciding.',
-      cta: 'Calculate with 3x',
+      lead: 'This legacy “3x” page models a final special earn rate of 3 points per $1 when Google Play shows that rate for an eligible purchase. It does not multiply your tier base rate by 3.',
+      cta: 'Calculate with 3 pt / $1',
       secondary: 'Should I wait for a campaign?',
       secondaryHref: '/en/campaign/wait/',
-      summary: ['Preset: 3x multiplier', 'Best for: larger planned purchases', 'Check: caps, activation, and eligible apps'],
+      summary: ['Preset: special earn rate 3 pt / $1', 'Best for: larger planned purchases', 'Check: caps, activation, and eligible apps'],
       sections: [
-        ['Use 3x only when it is real', 'A 3x headline does not always apply to every app, item, payment method, or account. Confirm the offer before treating the result as likely.'],
-        ['Compare against 1x and 2x', 'The useful question is not whether 3x looks attractive. It is whether the difference is large enough to change a purchase you already planned.'],
+        ['Use the 3 pt / $1 rate only when it is shown', 'Only enter 3 when Google Play shows a final special earn rate of 3 points per $1 for the purchase. Check the eligible app, item, period, activation, and cap.'],
+        ['Compare against your base earn rate', 'Compare the confirmed special earn rate with your normal tier earn rate. Use the higher applicable rate rather than multiplying the two.'],
         ['Watch bonus caps', 'A maximum bonus can make the final result smaller than the headline suggests.'],
         ['Do not chase status with new spending', 'If the purchase exists only because of the campaign, compare the reward value with the extra cost first.']
       ],
       faq: [
-        ['Does 3x cut the cost to one third?', 'Not necessarily. Base rate, caps, and eligibility can change the final result.'],
+        ['Does 3x cut the cost to one third?', 'Not necessarily. A 3-point special rate is compared with your base tier rate; it does not multiply that tier rate. Caps and eligibility can also change the result.'],
         ['Is 3x better than a gift-card discount?', 'They answer different questions. Compare point eligibility and cost savings separately.'],
         ['Should I wait for 3x?', 'Only when the purchase can wait and the offer clearly applies.']
       ]
@@ -479,19 +482,19 @@ const PAGE_TYPES = {
       description: 'Google Play Points 3배 캠페인 기준으로 필요한 결제 금액을 비교하고, 보너스 조건과 일반 적립 기준의 차이를 한국어로 점검합니다.',
       eyebrow: '3배 캠페인 예상',
       h1: 'Google Play Points 3배 캠페인은 얼마나 도움이 될까요?',
-      lead: '3배 캠페인은 등급 계획을 크게 바꿀 수 있지만, 대상 결제일 때만 의미가 있습니다. 1배, 2배, 3배를 비교한 뒤 판단하세요.',
-      cta: '3배로 계산하기',
+      lead: '이 기존 “3배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때 그 값을 사용합니다. 현재 등급의 기본 적립률에 3을 곱하지 않습니다.',
+      cta: '1,000원당 3pt로 계산하기',
       secondary: '캠페인을 기다릴지 보기',
       secondaryHref: '/ko/campaign/wait/',
-      summary: ['초기 조건: 3배 배율', '추천: 큰 예정 결제', '확인: 상한, 활성화, 대상 앱'],
+      summary: ['초기 조건: 특별 적립률 1,000원당 3pt', '추천: 큰 예정 결제', '확인: 상한, 활성화, 대상 앱'],
       sections: [
-        ['실제 대상일 때만 사용', '3배 문구가 모든 앱, 상품, 결제수단, 계정에 적용된다고 가정하면 안 됩니다.'],
-        ['1배와 2배도 함께 비교', '중요한 것은 3배가 좋아 보이는지가 아니라, 원래 예정된 결제의 시점을 바꿀 만큼 차이가 있는지입니다.'],
+        ['실제 대상일 때만 사용', 'Google Play에 해당 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때만 3을 입력하세요. 대상 앱, 상품, 기간, 활성화, 상한을 함께 확인해야 합니다.'],
+        ['기본 적립률과 비교', '확인된 특별 적립률과 현재 등급의 기본 적립률을 비교해 더 높은 적용률을 사용하며, 두 값을 곱하지 않습니다.'],
         ['보너스 상한 확인', '상한이 있으면 문구보다 실제 결과가 작을 수 있습니다.'],
         ['등급만을 위한 새 지출 피하기', '캠페인 때문에 생긴 지출이라면 혜택 가치와 추가 비용을 먼저 비교하세요.']
       ],
       faq: [
-        ['3배면 비용이 3분의 1인가요?', '항상 그렇지는 않습니다. 기본 적립률, 상한, 대상 조건이 영향을 줍니다.'],
+        ['3배면 비용이 3분의 1인가요?', '항상 그렇지는 않습니다. 1,000원당 3pt의 특별 적립률은 등급 기본 적립률과 비교하는 값이며, 기본 적립률에 3을 곱하지 않습니다. 상한과 대상 조건도 확인해야 합니다.'],
         ['기프트카드 할인보다 낫나요?', '포인트 대상 여부와 비용 절감은 별도 문제로 비교해야 합니다.'],
         ['3배 캠페인을 기다려야 하나요?', '결제를 기다릴 수 있고 조건이 확실할 때만 고려하세요.']
       ]
@@ -501,19 +504,19 @@ const PAGE_TYPES = {
       description: '使用 Google Play Points 3 倍活動估算所需消費，並檢查活動條件、剩餘點數與一般累積時的差異。',
       eyebrow: '3 倍活動估算',
       h1: 'Google Play Points 3 倍活動能省多少？',
-      lead: '3 倍活動可能大幅改變等級計畫，但前提是該筆消費符合資格。請先比較 1 倍、2 倍與 3 倍。',
-      cta: '用 3 倍計算',
+      lead: '這個保留「3 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 3 點時使用 3；不會把會員等級的基本獲點率再乘以 3。',
+      cta: '以每 NT$30 3 點計算',
       secondary: '判斷是否等待活動',
       secondaryHref: '/tw/campaign/wait/',
-      summary: ['預設: 3 倍倍率', '適合: 較大的計畫消費', '確認: 上限、啟用、適用 App'],
+      summary: ['預設：特別獲點率每 NT$30 3 點', '適合: 較大的計畫消費', '確認: 上限、啟用、適用 App'],
       sections: [
-        ['只有符合資格才使用', '3 倍標題不代表所有 App、商品、付款方式或帳號都適用。'],
-        ['同時比較 1 倍與 2 倍', '重點不是 3 倍看起來多好，而是差距是否足以改變原本計畫的購買時機。'],
+        ['只有符合資格才使用', '只有 Google Play 對該筆消費顯示最終特別獲點率為每 NT$30 3 點時才輸入 3，並確認適用 App、商品、期間、啟用方式與上限。'],
+        ['與基本獲點率比較', '請比較已確認的活動特別獲點率與會員等級基本獲點率，採用實際適用的較高者，不要把兩者相乘。'],
         ['注意加碼上限', '若有上限，實際結果可能低於標題直覺。'],
         ['不要為等級新增消費', '如果這筆消費只是為了活動產生，請先比較回饋價值與額外成本。']
       ],
       faq: [
-        ['3 倍會讓成本變成三分之一嗎？', '不一定，基本回饋率、上限與資格都會影響結果。'],
+        ['3 倍會讓成本變成三分之一嗎？', '不一定。每 NT$30 3 點的特別獲點率要與等級基本獲點率比較，不是把基本獲點率乘以 3；上限與資格也會影響結果。'],
         ['比禮物卡折扣更好嗎？', '點數資格與成本折扣要分開比較。'],
         ['應該等 3 倍活動嗎？', '只有在原本消費可以等待且資格明確時才值得考慮。']
       ]
@@ -532,9 +535,9 @@ const PAGE_TYPES = {
       h1: 'Should you wait for a Google Play Points promotion?',
       lead: 'Waiting can help when a purchase is planned and the promotion applies. It can also create unnecessary spending if the target is only attractive under uncertain conditions.',
       cta: 'Compare promotion timing',
-      secondary: 'Calculate with 3x',
+      secondary: 'Calculate with 3 pt / $1',
       secondaryHref: '/en/campaign/3x/',
-      summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: 1x, 2x, 3x and eligibility'],
+      summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: base rate, special earn rate, and eligibility'],
       sections: [
         ['Start with the 1x baseline', 'If the target is already reasonable at 1x, a promotion is a timing bonus rather than a requirement.'],
         ['Use 2x or 3x only for eligible purchases', 'A multiplier should be entered only when the offer clearly applies to the planned purchase.'],
@@ -576,9 +579,9 @@ const PAGE_TYPES = {
       h1: 'Google Play Points 活動值得等嗎？',
       lead: '如果原本就有計畫消費，且活動資格明確，等待可能有幫助。但若只因不確定活動而新增消費，就需要保守。',
       cta: '比較活動時機',
-      secondary: '用 3 倍計算',
+      secondary: '以每 NT$30 3 點計算',
       secondaryHref: '/tw/campaign/3x/',
-      summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認: 1 倍、2 倍、3 倍與資格'],
+      summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認：基本獲點率、特別獲點率與資格'],
       sections: [
         ['先看 1 倍基準', '如果 1 倍時目標已經合理，活動只是時機優化，不是必要條件。'],
         ['只有符合資格才輸入倍率', '只有在該筆計畫消費明確符合活動時，才用 2 倍或 3 倍比較。'],
@@ -600,10 +603,10 @@ const PAGE_TYPES = {
     jaPath: '/amount/10000/',
     en: {
       title: 'How many Google Play Points for 10,000 yen?',
-      description: 'Estimate how many Google Play Points you may earn from a 10,000 yen purchase, with status and promotion multiplier notes.',
+      description: 'Estimate how many Google Play Points you may earn from a 10,000 yen purchase, with status and promotion special earn rate notes.',
       eyebrow: '10,000 yen reverse estimate',
       h1: 'How many Google Play Points do you get for 10,000 yen?',
-      lead: 'A fixed amount like 10,000 yen is useful for planning, but the points earned depend on status, campaign multipliers, and whether the purchase is eligible in your country.',
+      lead: 'A fixed amount like 10,000 yen is useful for planning, but the points earned depend on status, campaign special earn rates, and whether the purchase is eligible in your country.',
       cta: 'Calculate points for 10,000 yen',
       secondary: 'Read gift-card notes',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
@@ -621,10 +624,10 @@ const PAGE_TYPES = {
     },
     ko: {
       title: '10,000엔 결제로 Google Play Points는 몇 포인트?',
-      description: '10,000엔 결제 시 Google Play Points 예상치를 계산하고, 현재 등급과 캠페인 배율에 따라 받을 수 있는 포인트를 한국어로 비교합니다.',
+      description: '10,000엔 결제 시 Google Play Points 예상치를 계산하고, 현재 등급과 캠페인 특별 적립률에 따라 받을 수 있는 포인트를 한국어로 비교합니다.',
       eyebrow: '10,000엔 역산',
       h1: '10,000엔 결제하면 Google Play Points는 몇 포인트일까요?',
-      lead: '고정 금액은 계획에 편리하지만, 실제 포인트는 등급, 캠페인 배율, 국가별 대상 결제 조건에 따라 달라집니다.',
+      lead: '고정 금액은 계획에 편리하지만, 실제 포인트는 등급, 캠페인 특별 적립률, 국가별 대상 결제 조건에 따라 달라집니다.',
       cta: '10,000엔 포인트 계산',
       secondary: '영문 기프트카드 가이드',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
@@ -642,16 +645,16 @@ const PAGE_TYPES = {
     },
     tw: {
       title: '10,000 日圓可獲得多少 Google Play Points？',
-      description: '估算 10,000 日圓可獲得多少 Google Play Points，並依目前等級與活動倍率比較可能獲得的點數。',
+      description: '估算 10,000 日圓可獲得多少 Google Play Points，並依目前等級與活動特別獲點率比較可能獲得的點數。',
       eyebrow: '10,000 日圓反推',
       h1: '10,000 日圓可獲得多少 Google Play Points？',
-      lead: '固定金額方便規劃，但實際點數會受到等級、活動倍率、所在地區的適用付款條件影響。',
+      lead: '固定金額方便規劃，但實際點數會受到等級、活動特別獲點率、所在地區的適用付款條件影響。',
       cta: '計算 10,000 日圓點數',
       secondary: '查看英文禮物卡指南',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
       summary: ['預設: 反推模式', '適合: 從金額估點數', '確認: 等級、倍率、適用金額'],
       sections: [
-        ['使用反推模式', '這頁會以金額作為輸入，請依自己的等級與活動倍率調整。'],
+        ['使用反推模式', '這頁會以金額作為輸入，請依自己的等級與活動特別獲點率調整。'],
         ['貨幣與地區', '本頁以日圓為例。台灣使用者可參考計算邏輯，但實際幣別與資格請以 App 為準。'],
         ['下一步', '確認 10,000 日圓的點數後，再與白金或鑽石所需剩餘點數比較。']
       ],
@@ -701,7 +704,7 @@ const EN_ARTICLES = [
       ['1. Confirm the Google account', ['Open Google Play and check the account icon before anything else. Points are not pooled across accounts, so a family device, old phone, or secondary Gmail account can make the balance look wrong even when the purchase itself succeeded.', 'If the purchase receipt is in another account, do not keep changing calculator settings to make the number match. The right next step is to review that account\'s Play Points activity.']],
       ['2. Check whether the purchase was eligible', ['Not every payment pattern behaves the way users expect. Promotional credit, subscriptions, gift-card-funded purchases, trial conversions, refunds, and partial cancellations all deserve a closer look.', 'Read the purchase details and the local Play Points terms together. If the transaction is not eligible, a perfect estimate still will not create points.']],
       ['3. Separate normal points from campaign points', ['A campaign headline such as 2x or 3x is only the front door. The actual rule can include selected apps, a date range, country availability, payment method restrictions, maximum bonus points, or a requirement to activate the offer first.', 'If normal points appear but the bonus does not, the issue may be the campaign condition rather than a full tracking failure. That distinction makes your next action much clearer.']],
-      ['4. Compare with a simple estimate', ['Use the calculator at 1x first, then run the same amount with the campaign multiplier that you believe applied. The gap between those two results helps you explain the situation without relying on memory.', 'The calculator is not an official account checker. Its job is to turn your assumptions into a number, then let you compare that number with Google Play\'s activity screen.']],
+      ['4. Compare with a simple estimate', ['Use the calculator at 1x first, then run the same amount with the campaign special earn rate that you believe applied. The gap between those two results helps you explain the situation without relying on memory.', 'The calculator is not an official account checker. Its job is to turn your assumptions into a number, then let you compare that number with Google Play\'s activity screen.']],
       ['5. Prepare support details only after narrowing the cause', ['If everything still looks correct, collect the purchase date, order status, account, item name, and campaign name. Avoid posting order numbers or payment details publicly. A short, organized support message is more useful than a long explanation built from guesses.']]
     ],
     faq: [
@@ -739,7 +742,7 @@ const EN_ARTICLES = [
     h1: 'How much to reach Platinum or Diamond?',
     badge: 'Cost estimate',
     lead: 'The cost to reach Platinum or Diamond depends on current status, missing points, multiplier, and whether purchases are eligible. A single global number is usually misleading.',
-    intro: 'Platinum and Diamond sound like clear goals, but the cost changes quickly once you add status rate, remaining points, campaign multipliers, and local rules. Instead of looking for one universal amount, build the estimate in layers. That makes it easier to see whether a promotion helps or whether the target is simply outside your normal spending.',
+    intro: 'Platinum and Diamond sound like clear goals, but the cost changes quickly once you add status rate, remaining points, campaign special earn rates, and local rules. Instead of looking for one universal amount, build the estimate in layers. That makes it easier to see whether a promotion helps or whether the target is simply outside your normal spending.',
     sections: [
       ['Define one target at a time', ['Start with either Platinum or Diamond, not both. If you mix status progress, campaign bonuses, gift-card discounts, and reward value in one step, the decision becomes noisy before the estimate is even useful.', 'A clean target is simple: current status, missing points, normal earning rate, and the multiplier you can honestly use.']],
       ['Estimate at 1x before checking campaigns', ['A 1x estimate gives you the baseline cost. It may look higher than you hoped, but it is the number that tells you whether the goal is close in normal conditions.', 'After that, test 2x or 3x only if a real campaign applies to the purchase you already planned. This prevents the common mistake of treating a campaign headline as a universal discount.']],
@@ -812,7 +815,7 @@ const ADDITIONAL_EN_ARTICLES = [
       ['Check dates, time zones, and purchase completion', ['Campaign windows can depend on local dates, store time zones, or the moment a transaction completes. A pending payment near the beginning or end of a campaign can be harder to judge from memory.', 'Use the purchase receipt time and campaign details together. If the order was later cancelled, refunded, or adjusted, the bonus may also change or disappear.']],
       ['Review app, item, and payment eligibility', ['A campaign may apply only to selected apps, games, subscriptions, in-app items, or payment methods. It may also exclude trials, promotional credit, refunded purchases, or some gift-card flows.', 'Do not rely only on the banner headline. The smaller conditions are often where the answer is. If normal points appear but bonus points do not, eligibility is one of the strongest places to check.']],
       ['Look for caps and partial bonuses', ['Some campaigns have maximum bonus points or only apply to part of the purchase. That can make the result look incomplete even when the promotion worked correctly.', 'Compare the expected normal points first, then estimate the bonus separately. A partial result is easier to understand when you know whether the base earning matched.']],
-      ['Use the calculator to make the support story cleaner', ['Run the same amount at 1x, then run it with the campaign multiplier. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
+      ['Use the calculator to make the support story cleaner', ['Run the same amount at 1x, then run it with the campaign special earn rate. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
     ],
     faq: [
       ['Does a campaign banner mean every purchase qualifies?', 'No. Check the offer details for eligible apps, payment methods, dates, and caps.'],
@@ -1029,11 +1032,11 @@ const KO_ARTICLES = [
     lead: '캠페인 보너스가 보이지 않을 때는 전체 포인트 누락인지, 일반 포인트와 보너스가 분리되어 있는지부터 확인해야 합니다.',
     intro: 'Google Play Points 캠페인은 “2배”, “3배”처럼 단순하게 보이지만 실제 조건은 더 세부적일 수 있습니다. 활성화가 필요했는지, 기간 안에 결제했는지, 대상 앱인지, 보너스 상한이 있는지에 따라 결과가 달라집니다. 이 글은 캠페인이 적용되지 않았다고 느낄 때 확인할 순서를 정리합니다.',
     sections: [
-      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 1배와 캠페인 배율로 나누어 비교하세요. 두 결과의 차이가 바로 확인해야 할 보너스 영역입니다.']],
+      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 1배와 캠페인 특별 적립률로 나누어 비교하세요. 두 결과의 차이가 바로 확인해야 할 보너스 영역입니다.']],
       ['캠페인 활성화 여부 확인하기', ['일부 캠페인은 보기만 해도 적용되는 것이 아니라, 참여 버튼을 누르거나 특정 화면에서 조건을 확인해야 할 수 있습니다. 캠페인 상세 화면에서 활성화 상태를 확인하세요.', '활성화 전에 결제한 구매가 나중에 자동으로 캠페인 대상이 된다고 기대하면 안 됩니다. 결제 시간과 캠페인 시작 시간을 나누어 보세요.']],
       ['기간, 앱, 상품 조건 확인하기', ['캠페인은 전체 Google Play 결제에 적용되는 것처럼 보여도 특정 앱, 게임, 상품, 결제 방식에 제한될 수 있습니다. 구독 갱신이나 프로모션 잔액 사용이 대상에서 빠질 수도 있습니다.', '영수증의 구매 시각, 상품명, 앱 이름을 캠페인 조건과 비교하세요. 조건을 하나씩 지우면 문의할 때도 설명이 쉬워집니다.']],
       ['보너스 상한과 반영 시점 보기', ['캠페인에는 최대 보너스 포인트나 계정별 제한이 있을 수 있습니다. 기대한 포인트보다 적게 보인다면 상한에 걸렸는지 확인하세요.', '또한 일반 포인트와 보너스가 같은 시점에 보이지 않을 수 있습니다. 구매 직후 잔액만 보고 결론을 내리지 말고 활동 내역을 함께 확인하세요.']],
-      ['문의 전에 계산 결과를 정리하기', ['1배 예상치, 캠페인 배율 예상치, 실제 표시 포인트를 간단히 적어두면 원인을 좁히기 쉽습니다. 단, 주문번호와 결제 정보는 공개하지 마세요.', '모든 조건을 확인했는데도 보너스가 보이지 않는다면 공식 지원에 문의하세요. 계산기는 계정을 확인하거나 포인트를 반영시키는 도구가 아니라, 설명을 정리하기 위한 보조 도구입니다.']]
+      ['문의 전에 계산 결과를 정리하기', ['1배 예상치, 캠페인 특별 적립률 예상치, 실제 표시 포인트를 간단히 적어두면 원인을 좁히기 쉽습니다. 단, 주문번호와 결제 정보는 공개하지 마세요.', '모든 조건을 확인했는데도 보너스가 보이지 않는다면 공식 지원에 문의하세요. 계산기는 계정을 확인하거나 포인트를 반영시키는 도구가 아니라, 설명을 정리하기 위한 보조 도구입니다.']]
     ],
     faq: [
       ['2배 캠페인인데 정확히 두 배가 아닌 이유는 무엇인가요?', '대상 금액, 보너스 상한, 반영 시점, 구매 조건 때문에 기대와 다르게 보일 수 있습니다.'],
@@ -1181,9 +1184,9 @@ const TW_ARTICLES = [
     intro: '等級名稱看起來像目標，但真正需要判斷的是下一級是否值得。你是否真的會用到回饋？需要的金額是否高於原本消費？活動條件是否確定適用？這篇文章把等級當作規劃工具，而不是鼓勵為了徽章硬買。',
     sections: [
       ['等級是比較框架，不是必買目標', ['銅、銀、金、白金、鑽石可以幫你理解回饋率與福利，但等級越高不代表一定更划算。實際價值取決於你是否會使用那些回饋。', '不同國家、地區或帳號看到的活動與獎勵可能不同。請把等級當作下一步比較的標籤，而不是今天一定要達成的目標。']],
-      ['規劃時看剩餘點數，而不是累積總數', ['想估算升級成本時，最重要的是距離目標還差多少點。若把目前餘額、已使用點數或累積總數混在一起，估算很容易偏離。', '使用計算機時，請輸入還需要的點數，再調整目前等級與活動倍率。這樣比較接近實際決策。']],
+      ['規劃時看剩餘點數，而不是累積總數', ['想估算升級成本時，最重要的是距離目標還差多少點。若把目前餘額、已使用點數或累積總數混在一起，估算很容易偏離。', '使用計算機時，請輸入還需要的點數，再調整目前等級與活動特別獲點率。這樣比較接近實際決策。']],
       ['把總金額拆成每週或每月節奏', ['一個很大的總額會讓人判斷失真。把它除以剩餘週數或月份後，就能看出是否符合平常的 App、遊戲、訂閱或書籍消費。', '如果每月需要增加的金額明顯高於平常，這本身就是答案。維持目前等級或等待原本就要買的項目，可能比追等級更合理。']],
-      ['活動倍率可以改變時機，但不能替你決定', ['2 倍或 3 倍活動可能很有幫助，但只有符合資格的購買才適合拿來估算。活動適合調整原本就要買的時間，不適合創造新的不必要消費。', '先看 1 倍基準，再看活動倍率。如果計畫只有在狹窄活動條件下才勉強成立，購買前就要更保守。']],
+      ['活動特別獲點率可以改變時機，但不能替你決定', ['2 倍或 3 倍活動可能很有幫助，但只有符合資格的購買才適合拿來估算。活動適合調整原本就要買的時間，不適合創造新的不必要消費。', '先看 1 倍基準，再看活動特別獲點率。如果計畫只有在狹窄活動條件下才勉強成立，購買前就要更保守。']],
       ['海外資料只拿來參考結構', ['PlayPoint 有日文、英文、韓文與繁體中文頁面，但官方條件仍由你所在地區的 Google Play App 決定。跨語言內容可以幫你理解檢查順序，不能取代官方畫面。', '內部連結的目的，是讓你從等級、活動、缺點數問題之間順著查下去，而不是讓頁面變成強烈推銷。最好的結果是少一點衝動，多一點確定性。']]
     ],
     faq: [
@@ -1220,7 +1223,7 @@ const TW_ARTICLES = [
     sections: [
       ['先把折扣和點數分成兩欄', ['禮物卡折扣是降低實際成本，Play Points 則取決於 Google Play 內的消費是否符合條件。若把兩者直接加總，容易得到過度樂觀的結果。', '建議先記錄禮物卡折扣，再用計算機估算該筆 Google Play 消費可能獲得的點數。這樣可以知道哪一部分是省錢，哪一部分是等級進度。']],
       ['購買禮物卡和使用餘額不是同一時點', ['有些人以為買禮物卡時就會拿到 Play Points，也有人以為使用餘額時才會累積。實際規則可能依地區、帳號與付款流程而不同。', '如果禮物卡是在 Google Play 以外的商店購買，請更小心區分商店給的回饋與 Google Play App 內的點數紀錄。']],
-      ['搭配活動倍率時要看細則', ['2 倍或 3 倍活動可能限定特定 App、日期、付款方式、啟用步驟或加碼上限。使用禮物卡餘額不代表所有活動都會自動套用。', '請先用 1 倍估算基準，再確認活動是否明確適用該筆購買。只有條件確定時，才用活動倍率比較。']],
+      ['搭配活動特別獲點率時要看細則', ['2 倍或 3 倍活動可能限定特定 App、日期、付款方式、啟用步驟或加碼上限。使用禮物卡餘額不代表所有活動都會自動套用。', '請先用 1 倍估算基準，再確認活動是否明確適用該筆購買。只有條件確定時，才用活動特別獲點率比較。']],
       ['台灣帳戶先確認官方提供狀態', ['Google 官方清單目前未將台灣列為 Google Play 禮物卡提供國家。其他國家購買的序號受發行國家與幣別限制，帳戶國家也必須相符。', '日文或英文頁面可以幫助理解限制，但不能證明外國序號可用於台灣帳戶。請以官方清單和自己帳戶的 Google Play App 顯示為準。']],
       ['不要為了折扣買超過需要的金額', ['禮物卡折扣看起來划算，但如果買了短期內用不到的餘額，資金被鎖住就不一定是好事。為了等級而多買，也可能讓實際回饋不如預期。', '最安全的做法是從原本就打算購買的 App、遊戲或訂閱開始，再檢查禮物卡與活動是否剛好適用。']]
     ],
@@ -1260,7 +1263,7 @@ const TW_ARTICLES = [
       ['確認活動是否需要啟用', ['有些活動需要先點擊參加或在指定頁面啟用，並不是看到活動頁就一定自動套用。請回到 Google Play App 內確認活動狀態。', '如果購買發生在啟用之前，後續通常不能直接假設會補套用。購買時間和活動開始時間要分開看。']],
       ['檢查期間、App 與付款條件', ['活動可能只適用特定 App、遊戲、商品、期間或付款方式。訂閱續約、試用轉付費、促銷餘額或禮物卡餘額，也可能需要特別確認。', '把收據上的購買日期、商品名稱和活動條件對照，可以更快排除不適用的原因。']],
       ['注意加碼上限與反映時間', ['活動可能有帳號上限或最高加碼點數。如果實際點數比預期少，請確認是否已達上限。', '另外，一般點數與活動加碼可能不是同時出現在畫面上。只看購買後的瞬間餘額，容易太早下結論。']],
-      ['詢問支援前整理計算與證據', ['如果條件都符合，仍看不到加碼，請整理購買日期、活動名稱、預期倍率、1 倍估算、活動倍率估算與實際顯示點數。', '訂單編號與付款資訊不要公開。計算機不能替帳號補點數，但能讓你把問題說得更清楚。']]
+      ['詢問支援前整理計算與證據', ['如果條件都符合，仍看不到加碼，請整理購買日期、活動名稱、預期倍率、1 倍估算、活動特別獲點率估算與實際顯示點數。', '訂單編號與付款資訊不要公開。計算機不能替帳號補點數，但能讓你把問題說得更清楚。']]
     ],
     faq: [
       ['為什麼 2 倍活動不是剛好兩倍？', '可能受到適用金額、加碼上限、活動條件或反映時間影響。'],

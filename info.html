@@ -7,8 +7,8 @@
   <meta name="description" content="Playポイント計算機のQ&A、更新履歴、開発経緯、非公式ツールとしての使い方をまとめたページです。計算結果の見方や確認時の注意点も整理しています。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-07-26">
-    <meta property="article:modified_time" content="2026-07-26T00:00:00+09:00">
+    <meta name="last-modified" content="2026-08-18">
+    <meta property="article:modified_time" content="2026-08-18T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/info.html">
@@ -49,7 +49,7 @@
         "name": "還元設定の計算はどうなっていますか？",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "獲得率を直接入力する方法とキャンペーン倍率を入力する方法を用意し、両方が入力された場合は高い方を試算に使います。キャンペーンの併用可否や対象判定を保証するものではないため、公式画面の条件を確認してください。"
+          "text": "Google Playに表示された特別獲得率と現在ステータスの通常獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定は保証せず、公式画面の条件を優先してください。"
         }
       }]
     }
@@ -61,7 +61,7 @@
       "name": "あとがき・Q&A",
       "url": "https://playpoint-sim.com/info.html",
       "inLanguage": "ja",
-      "dateModified": "2026-07-26",
+      "dateModified": "2026-08-18",
       "author": {
         "@type": "Person",
         "name": "かたかた"
@@ -132,7 +132,7 @@
         <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 開発者がプラチナに達するまでに必要だったポイントの例です。開発の経緯や詳細は、このページの下部にある <a href="#about-section"><b>あとがき・開発経緯</b></a> をぜひお読みになってください。</dd>
 
         <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 還元設定の計算はどうなっていますか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 獲得率が「3ポイント/100円」のように表示される場合は獲得率欄へ直接入力し、「3倍」のように表示される場合は倍率欄を使います。両方を入力した場合、計算機は「直接入力した獲得率」と「ステータスの基本獲得率×倍率」を比較し、高い方を試算に使います。これは入力方法を選べるようにするための計算であり、キャンペーンの併用可否や対象判定を保証するものではありません。購入前に対象アプリ、期間、上限、有効化の有無を公式画面で確認してください。</dd>
+        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. Google Playのオファー画面に「100円ごとに3ポイント」のような特別獲得率が表示される場合は、その最終的な獲得率をキャンペーン欄へ入力します。計算機は現在ステータスの通常獲得率と特別獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定を保証するものではありません。対象アプリ、期間、上限、有効化の要否はGoogle Playの公式画面を優先してください。</dd>
         <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 現在のポイント残高と年間のステータス進捗は同じですか？</dt>
         <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 同じではありません。現在の残高は使えるポイント数、年間の進捗はその暦年にステータス判定へ加算されたポイントです。ポイントを使っただけで年間進捗が同じ分だけ減るわけではありませんが、対象購入の返金・キャンセルでは残高とステータス判定ポイントから差し引かれる場合があります。</dd>
       </dl>
@@ -142,6 +142,7 @@
     <div class="section" id="update-section">
       <h2>アップデート情報 (Update Log)</h2>
       <ul>
+        <li><strong>2026/08/18</strong>: キャンペーンの特別獲得率をGoogle Play公式の考え方に合わせ、通常獲得率へ倍率を掛けない説明へ統一。Consent・計測・多言語表示も監査修正。</li>
         <li><strong>2026/07/26 (v2.4.0)</strong>: 共通ページと計算入力の説明を公式条件に合わせ、年末再判定・ウィークリーリワード・ローカル保存・キャンペーン入力の注意点を整理。</li>
         <li><strong>2026/06/21 (v2.3.0)</strong>: アップデートの歴史をビジュアル化した専用タイムラインページ「changelog.html」を新設。</li>
         <li><strong>2026/06/20 (v2.2.0)</strong>: 各サブページのデザインシステムを統一。OGP画像のPNG形式への修正、不要ファイルのクリーンアップによる高速化。</li>
@@ -164,7 +165,7 @@
         開発者: かたかた
       </p>
       <p style="font-size: 0.86em; color: var(--link-color);">
-        最終更新日: 2026年7月26日 (v2.4.0)
+        最終更新日: 2026年8月18日
       </p>
     </div>
 
@@ -179,7 +180,7 @@
         <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
         <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
       </p>
-      <p class="meta-line">運営者: かたかた / 最終更新: 2026-07-26</p>
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-08-18</p>
       <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
         <p class="copyright">
         © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
