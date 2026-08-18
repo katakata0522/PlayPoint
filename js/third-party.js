@@ -102,7 +102,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=6938dbdfa8`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=e3c32d54c1`)
                 .then(() => window.PlayPointAnalytics);
         }
         return analyticsCorePromise;
