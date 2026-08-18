@@ -178,7 +178,7 @@ Successfully synchronized asset versions and dates in en/articles/2026-06-20-dis
 Successfully synchronized asset versions and dates in ko/articles/2026-06-20-discount-gift-cards.html
 Successfully synchronized asset versions and dates in tw/articles/2026-06-20-discount-gift-cards.html
 [analytics-runtime] synchronized core loader: 35 files
-[public-assets] synchronized content hashes: 278 files
+[public-assets] synchronized content hashes: 123 files
 Updated sitemap.xml and blog/sitemap.xml with current article dates (49 articles).
 Generated blog feeds (51 articles).
 [blog-index] synchronized static article titles: 0
