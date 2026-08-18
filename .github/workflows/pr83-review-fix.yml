@@ -24,7 +24,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply review follow-up
-        run: node scripts/pr83-review-followup.cjs
+        run: |
+          node scripts/pr83-review-followup.cjs
+          node scripts/pr83-test-contract-followup.cjs
 
       - name: Rebuild canonical outputs
         run: node scripts/build-html.js
@@ -60,7 +62,7 @@ jobs:
           cat /tmp/pr83-tests.txt
 
       - name: Remove one-time helpers
-        run: rm -f scripts/pr83-review-followup.cjs .github/workflows/pr83-review-fix.yml pr83-review-trigger.txt pr83-preflight-diagnostic.txt
+        run: rm -f scripts/pr83-review-followup.cjs scripts/pr83-test-contract-followup.cjs .github/workflows/pr83-review-fix.yml pr83-review-trigger.txt pr83-preflight-diagnostic.txt
 
       - name: Commit repaired source and generated outputs
         run: |
