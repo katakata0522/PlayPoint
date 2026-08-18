@@ -411,11 +411,16 @@ body {
 }
 
 /* ゲーム一覧ポータルカード */
+.game-portal-lead {
+  margin: 1.4rem 0 0;
+  line-height: 1.7;
+}
+
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 20px;
-  margin: 28px 0;
+  margin: 16px 0 28px;
 }
 
 .game-portal-card {
@@ -429,6 +434,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .game-portal-card:hover {
@@ -526,7 +533,24 @@ body {
     margin-top: 10px;
   }
   .game-main-content {
-    padding: 20px 16px;
+    padding: 16px 14px;
+  }
+  .game-header {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+  .game-title,
+  .game-card-title,
+  .game-card-desc {
+    overflow-wrap: anywhere;
+  }
+  .games-grid {
+    grid-template-columns: 1fr;
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+  .game-portal-purchase-check {
+    margin-top: 0.4rem;
   }
   .sidebar-column {
     width: 100%;

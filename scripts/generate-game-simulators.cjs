@@ -2673,7 +2673,6 @@ function generatePortalPageHtml(localeKey) {
               <span class="site-logo-icon">🎮</span>
               <span class="site-logo-text">${loc.siteName}</span>
           </a>
-          <p class="site-tagline">${loc.portalMeta}</p>
       </div>
   </header>
 
@@ -2708,10 +2707,11 @@ function generatePortalPageHtml(localeKey) {
           <header class="game-header">
               <span class="game-badge">${loc.portalBadge}</span>
               <h1 class="game-title">${loc.portalH1}</h1>
-              <p class="game-meta">${loc.portalMeta}</p>
           </header>
 
-          <p>${loc.portalLead}</p>
+          <div class="games-grid">
+              ${cardsHtml}
+          </div>
 
           <div class="game-giftcard-cta game-portal-purchase-check">
               <div class="game-giftcard-cta-content">
@@ -2728,9 +2728,7 @@ function generatePortalPageHtml(localeKey) {
               `}
           </div>
 
-          <div class="games-grid">
-              ${cardsHtml}
-          </div>
+          <p class="game-portal-lead">${loc.portalLead}</p>
 
           <aside class="cta-box" style="margin-top:40px;">
               <h3>${loc.ctaTitle}</h3>

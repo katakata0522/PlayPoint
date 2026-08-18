@@ -61,7 +61,12 @@ test('トップは通常率と特別獲得率を比較し、入力境界をHTML�
   assert.doesNotMatch(read('status/gold/index.html'), /キャンペーン倍率別/);
   assert.match(read('compare/earning-rates/index.html'), /通常／2pt／3ptの比較表/);
   assert.match(read('campaign/3x/index.html'), /3pt\/100円と表示された/);
-  assert.match(read('games/index.html'), /game-portal-purchase-check/);
+  const gamesIndex = read('games/index.html');
+  assert.match(gamesIndex, /game-portal-purchase-check/);
+  assert.doesNotMatch(gamesIndex, /class="site-tagline"/);
+  assert.doesNotMatch(gamesIndex, /class="game-meta"/);
+  assert.ok(gamesIndex.indexOf('class="games-grid"') < gamesIndex.indexOf('class="game-portal-lead"'), 'ゲーム一覧の説明はグリッドの後に置く');
+  assert.ok(gamesIndex.indexOf('class="games-grid"') < gamesIndex.indexOf('game-portal-purchase-check'), '購入前チェックはグリッドの後に置く');
   assert.match(read('articles/2026-06-20-discount-gift-cards.html'), /楽天市場のGoogle Playギフトコード認定店/);
   assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
   assert.match(calculator, /finalRate:\s*Math\.max\(directRate, promotionRate\)/);

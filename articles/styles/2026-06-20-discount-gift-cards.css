@@ -41,6 +41,9 @@ padding: 0 16px;
 display: flex;
 justify-content: space-between;
 align-items: center;
+flex-wrap: wrap;
+gap: 0.75rem 1rem;
+min-width: 0;
 }
 .site-logo {
 font-size: 22px;
@@ -50,11 +53,15 @@ text-decoration: none;
 display: inline-flex;
 align-items: center;
 gap: 8px;
+min-width: 0;
+max-width: 100%;
 }
 .site-header-links {
 display: flex;
+flex-wrap: wrap;
 gap: 16px;
 font-size: 14px;
+min-width: 0;
 }
 .site-header-links a {
 color: #475569;
@@ -694,6 +701,27 @@ margin: 0 10px;
 }
 .site-footer a:hover {
 text-decoration: underline;
+}
+@media (max-width: 768px) {
+.site-header-inner {
+flex-direction: column;
+align-items: center;
+text-align: center;
+}
+.site-logo {
+display: block;
+max-width: 100%;
+text-align: center;
+white-space: normal;
+overflow-wrap: anywhere;
+word-break: break-word;
+line-height: 1.35;
+font-size: 1.05rem;
+}
+.site-header-links {
+justify-content: center;
+width: 100%;
+}
 }
 @media (max-width: 860px) {
 .layout-container {
