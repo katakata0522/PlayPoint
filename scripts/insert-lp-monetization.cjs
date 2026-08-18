@@ -51,17 +51,32 @@ const affiliateSection = `    <section class="section">
         </div>
     </section>`;
 
-const existingSectionPattern = /<section class="section">\s*<h2>(?:課金前にやっておくべき実質割引テクニック|課金前に確認したいギフトコード購入条件)<\/h2>[\s\S]*?<\/section>/g;
+// Consume the surrounding whitespace together with an old/new managed section.
+// Otherwise each rebuild can leave an indented blank line behind and add another one.
+const existingSectionPattern = /(?:\r?\n[ \t]*)*<section class="section">\s*<h2>(?:課金前にやっておくべき実質割引テクニック|課金前に確認したいギフトコード購入条件)<\/h2>[\s\S]*?<\/section>[ \t]*(?:\r?\n)?/g;
+
+function insertBeforeClosingTag(content, tagPattern, closingTag) {
+  if (!tagPattern.test(content)) return null;
+  tagPattern.lastIndex = 0;
+  return content.replace(tagPattern, `\n${affiliateSection}\n    ${closingTag}`);
+}
 
 function normalizeLpContent(content) {
-  const withoutExisting = content.replace(existingSectionPattern, '').replace(/\n{3,}/g, '\n\n');
-  if (withoutExisting.includes('</main>')) {
-    return withoutExisting.replace('</main>', `${affiliateSection}\n    </main>`);
-  }
-  if (withoutExisting.includes('<footer')) {
-    return withoutExisting.replace('<footer', `${affiliateSection}\n    <footer`);
-  }
-  return withoutExisting;
+  const withoutExisting = content.replace(existingSectionPattern, '\n');
+
+  const beforeMain = insertBeforeClosingTag(
+    withoutExisting,
+    /(?:\r?\n[ \t]*)*<\/main>/,
+    '</main>'
+  );
+  if (beforeMain !== null) return beforeMain;
+
+  const beforeFooter = insertBeforeClosingTag(
+    withoutExisting,
+    /(?:\r?\n[ \t]*)*<footer/,
+    '<footer'
+  );
+  return beforeFooter === null ? withoutExisting : beforeFooter;
 }
 
 function applyLpMonetization(rootDir = path.resolve(__dirname, '..')) {
