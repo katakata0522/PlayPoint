@@ -13,7 +13,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  repair:
+  diagnose:
+    if: ${{ !contains(github.event.head_commit.message, '[diagnostic]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -25,23 +26,36 @@ jobs:
       - name: Apply review follow-up
         run: node scripts/pr83-review-followup.cjs
 
-      - name: Remove one-time helpers
-        run: rm -f scripts/pr83-review-followup.cjs .github/workflows/pr83-review-fix.yml pr83-review-trigger.txt
-
       - name: Rebuild canonical outputs
         run: node scripts/build-html.js
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+      - name: Capture preflight diagnostics
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs --prepare-deploy > /tmp/pr83-preflight-diagnostic.txt 2>&1
+          status=$?
+          echo >> /tmp/pr83-preflight-diagnostic.txt
+          echo "PRELIGHT_EXIT_STATUS=$status" >> /tmp/pr83-preflight-diagnostic.txt
+          echo "--- failing individual tests ---" >> /tmp/pr83-preflight-diagnostic.txt
+          for file in tests/*.test.cjs; do
+            node --test "$file" > /tmp/pr83-one-test.txt 2>&1
+            test_status=$?
+            if [ "$test_status" -ne 0 ]; then
+              echo "=== $file (exit $test_status) ===" >> /tmp/pr83-preflight-diagnostic.txt
+              cat /tmp/pr83-one-test.txt >> /tmp/pr83-preflight-diagnostic.txt
+              echo >> /tmp/pr83-preflight-diagnostic.txt
+            fi
+          done
+          cp /tmp/pr83-preflight-diagnostic.txt /tmp/pr83-preflight-diagnostic.saved.txt
+          git reset --hard HEAD
+          git clean -fd
+          cp /tmp/pr83-preflight-diagnostic.saved.txt pr83-preflight-diagnostic.txt
 
-      - name: Commit repaired source and generated outputs
+      - name: Commit diagnostic only
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "fix: close PR83 review gaps"
+          git add pr83-preflight-diagnostic.txt
+          git commit -m "[diagnostic] capture PR83 preflight failure"
           git push origin HEAD:fix/full-integrity-audit-20260818
