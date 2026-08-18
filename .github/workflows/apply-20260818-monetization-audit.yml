@@ -40,3 +40,5 @@ jobs:
           git add -A
           git commit -m "fix: 収益計測と検索品質の監査修正を反映"
           git push
+
+# このワークフローは監査修正の一度きり適用後に削除する。
