@@ -20,6 +20,10 @@ import { trackWidgetReferral } from './widget-referral.js';
 import { registerServiceWorker } from './service-worker-registration.js';
 
 let diaryModulePromise = null;
+const calculatorFunnelStartedModes = new Set();
+const calculatorFunnelCompletedModes = new Set();
+let activeCalculatorMode = CONSTANTS.MODE_MAIN;
+let diaryTabOpenedThisPage = false;
 
 function loadDiaryModule() {
     if (!diaryModulePromise) {
@@ -61,6 +65,106 @@ function bindEnterAction(elements, action) {
             action();
         });
     }
+}
+
+function getAnalyticsCalculationMode(mode) {
+    return mode === CONSTANTS.MODE_REVERSE ? 'spend_to_points' : 'rank_up';
+}
+
+function trackCalculatorFormStarted(mode, startField) {
+    if (mode !== CONSTANTS.MODE_MAIN && mode !== CONSTANTS.MODE_REVERSE) return;
+    if (calculatorFunnelStartedModes.has(mode)) return;
+    calculatorFunnelStartedModes.add(mode);
+    ANALYTICS.track('calculator_form_started', {
+        calculation_mode: getAnalyticsCalculationMode(mode),
+        region: STATE.currentRegion,
+        start_field: startField
+    });
+}
+
+function getValidationErrorType(mode) {
+    const target = mode === CONSTANTS.MODE_REVERSE ? STATE.dom.reverseResult : STATE.dom.result;
+    const message = target?.querySelector('.error-text')?.textContent || '';
+    if (!message) return null;
+
+    const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+    const candidates = mode === CONSTANTS.MODE_REVERSE
+        ? [
+            ['errorInputReverse', 'amount_or_rate_input'],
+            ['errorRateReverse', 'rate']
+        ]
+        : [
+            ['errorNeededPoints', 'needed_points'],
+            ['errorTargetStatus', 'target_status'],
+            ['errorRate', 'rate'],
+            ['errorTargetConsistency', 'target_consistency'],
+            ['errorZeroPointPurchase', 'zero_point_purchase'],
+            ['errorInput', 'invalid_input']
+        ];
+
+    const matched = candidates.find(([key]) => texts[key] && texts[key] === message);
+    return matched ? matched[1] : 'unknown';
+}
+
+function runTrackedCalculation(mode) {
+    const calculationMode = getAnalyticsCalculationMode(mode);
+    const target = mode === CONSTANTS.MODE_REVERSE ? STATE.dom.reverseResult : STATE.dom.result;
+    trackCalculatorFormStarted(mode, 'submit');
+
+    if (mode === CONSTANTS.MODE_REVERSE) {
+        CALC.reverseCalculate();
+    } else {
+        CALC.calculate();
+    }
+
+    const errorType = getValidationErrorType(mode);
+    if (errorType) {
+        ANALYTICS.track('calculator_validation_error', {
+            calculation_mode: calculationMode,
+            region: STATE.currentRegion,
+            error_type: errorType
+        });
+        return;
+    }
+
+    if (!target?.classList.contains(CONSTANTS.CLASS_HAS_RESULT) || calculatorFunnelCompletedModes.has(mode)) return;
+    calculatorFunnelCompletedModes.add(mode);
+    ANALYTICS.track('calculator_funnel_completed', {
+        calculation_mode: calculationMode,
+        region: STATE.currentRegion
+    });
+}
+
+function bindCalculatorFunnelStart(element, mode, startField, eventName = 'input') {
+    bindEvent(element, eventName, () => trackCalculatorFormStarted(mode, startField));
+}
+
+function trackCalculatorModeChange(nextMode) {
+    const previousMode = activeCalculatorMode;
+    if (!nextMode || previousMode === nextMode) return;
+
+    ANALYTICS.track('calculator_mode_changed', {
+        region: STATE.currentRegion,
+        from_mode: previousMode,
+        to_mode: nextMode
+    });
+    activeCalculatorMode = nextMode;
+
+    if (nextMode === CONSTANTS.MODE_DIARY && !diaryTabOpenedThisPage) {
+        diaryTabOpenedThisPage = true;
+        ANALYTICS.track('diary_tab_opened', {
+            region: STATE.currentRegion,
+            open_surface: 'tab'
+        });
+    }
+}
+
+function resetFunnelDedupIfDenied() {
+    const status = window.PlayPointConsent?.getStatus?.();
+    if (status !== 'denied') return;
+    calculatorFunnelStartedModes.clear();
+    calculatorFunnelCompletedModes.clear();
+    diaryTabOpenedThisPage = false;
 }
 
 function getResultLinkAnalyticsParams(link) {
@@ -143,28 +247,47 @@ export function init() {
     });
 
     // アクションボタンのイベントバインド
-    bindEvent(STATE.dom.calculateButton, 'click', () => CALC.calculate());
+    bindEvent(STATE.dom.calculateButton, 'click', () => runTrackedCalculation(CONSTANTS.MODE_MAIN));
     bindEvent(STATE.dom.copyButton, 'click', () => CALC.copyResult());
     bindEvent(STATE.dom.tweetButton, 'click', () => CALC.handleTweet());
-    bindEvent(STATE.dom.reverseCalculateButton, 'click', () => CALC.reverseCalculate());
+    bindEvent(STATE.dom.reverseCalculateButton, 'click', () => runTrackedCalculation(CONSTANTS.MODE_REVERSE));
     bindEvent(STATE.dom.shareTwitterReverse, 'click', () => CALC.handleTweetReverse());
-    bindEvent(STATE.dom.currentStatus, 'change', () => CALC.updateBaseRateAndTarget());
-    bindEvent(STATE.dom.targetStatus, 'change', () => CALC.updateNeededPointsConstraint());
-    bindEvent(STATE.dom.reverseStatus, 'change', () => CALC.updateReverseBaseRate());
+    bindEvent(STATE.dom.currentStatus, 'change', () => {
+        trackCalculatorFormStarted(CONSTANTS.MODE_MAIN, 'current_status');
+        CALC.updateBaseRateAndTarget();
+    });
+    bindEvent(STATE.dom.targetStatus, 'change', () => {
+        trackCalculatorFormStarted(CONSTANTS.MODE_MAIN, 'target_status');
+        CALC.updateNeededPointsConstraint();
+    });
+    bindEvent(STATE.dom.reverseStatus, 'change', () => {
+        trackCalculatorFormStarted(CONSTANTS.MODE_REVERSE, 'status');
+        CALC.updateReverseBaseRate();
+    });
     bindEvent(STATE.dom.exportDiaryBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.exportDiary()));
     bindEvent(STATE.dom.importDiaryBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.toggleImportArea()));
     bindEvent(STATE.dom.confirmImportBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.executeImport()));
     bindLanguageSuggestionDismiss();
     bindCalendarReminderEvents();
 
+    bindCalculatorFunnelStart(STATE.dom.neededPoints, CONSTANTS.MODE_MAIN, 'needed_points');
+    bindCalculatorFunnelStart(STATE.dom.baseRate, CONSTANTS.MODE_MAIN, 'base_rate');
+    bindCalculatorFunnelStart(STATE.dom.multiplier, CONSTANTS.MODE_MAIN, 'promotion_rate');
+    bindCalculatorFunnelStart(STATE.dom.amountYen, CONSTANTS.MODE_REVERSE, 'amount');
+    bindCalculatorFunnelStart(STATE.dom.reverseBaseRate, CONSTANTS.MODE_REVERSE, 'base_rate');
+    bindCalculatorFunnelStart(STATE.dom.reverseMultiplier, CONSTANTS.MODE_REVERSE, 'promotion_rate');
+    document.addEventListener('playpoint:consent-ready', resetFunnelDedupIfDenied);
+    document.addEventListener('playpoint:consent-updated', resetFunnelDedupIfDenied);
+
     // Enterキー押下での計算実行
-    bindEnterAction([STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier], () => CALC.calculate());
-    bindEnterAction([STATE.dom.amountYen, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier], () => CALC.reverseCalculate());
+    bindEnterAction([STATE.dom.neededPoints, STATE.dom.baseRate, STATE.dom.multiplier], () => runTrackedCalculation(CONSTANTS.MODE_MAIN));
+    bindEnterAction([STATE.dom.amountYen, STATE.dom.reverseBaseRate, STATE.dom.reverseMultiplier], () => runTrackedCalculation(CONSTANTS.MODE_REVERSE));
 
     // タブ切り替え
     document.querySelectorAll(".tab-switch button").forEach(button => {
         button.addEventListener('click', () => {
             const mode = button.dataset.mode;
+            trackCalculatorModeChange(mode);
             UI.switchMode(mode);
             if (mode === CONSTANTS.MODE_DIARY) {
                 queueDiaryAction((DIARY) => DIARY.renderDiary());
