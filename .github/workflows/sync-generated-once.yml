@@ -1,0 +1,36 @@
+name: Sync generated files once
+
+on:
+  push:
+    branches:
+      - fix/ga4-event-queue
+    paths-ignore:
+      - '.github/workflows/sync-generated-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Generate canonical build outputs
+        run: node scripts/build-html.js
+      - name: Commit generated outputs
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: sync generated assets for GA4 fix"
+          git push
