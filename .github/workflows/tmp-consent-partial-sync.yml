@@ -39,3 +39,5 @@ jobs:
           fi
           git commit -m 'Sync generated assets after Consent partial UNKNOWN fix'
           git push origin HEAD:fix/full-integrity-audit-20260818
+
+# one-shot trigger; this file deletes itself after a successful synchronization
