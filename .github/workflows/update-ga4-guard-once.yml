@@ -1,0 +1,47 @@
+name: Update GA4 guard once
+
+on:
+  push:
+    branches:
+      - fix/ga4-event-queue
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Update guard contract
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'tests/playpoint-product-guards.test.cjs';
+          const source = fs.readFileSync(path, 'utf8');
+          const oldBlock = `  assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
+            assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
+            assert.ok(thirdParty.includes('window.PlayPointAnalytics.flushPending()'), 'GAロード後に保留イベントをflushしていません');`;
+          const newBlock = `  assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
+            assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
+            assert.ok(core.includes('markAnalyticsReady'), 'GA4準備完了を明示する処理がありません');
+            const configIndex = thirdParty.indexOf(\"window.gtag('config', GA_MEASUREMENT_ID)\");
+            const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');
+            assert.ok(configIndex >= 0, 'GA4 config呼び出しがありません');
+            assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');`;
+          if (!source.includes(oldBlock)) {
+            throw new Error('Expected GA4 guard block was not found');
+          }
+          fs.writeFileSync(path, source.replace(oldBlock, newBlock), 'utf8');
+          NODE
+      - name: Commit guard update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/playpoint-product-guards.test.cjs
+          git commit -m "test(analytics): align guard with GA4 readiness contract"
+          git push
