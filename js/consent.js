@@ -80,6 +80,12 @@
         return Object.values(state).some(value => value === 'pending');
     }
 
+    function hasUnresolvedConsent() {
+        return analyticsStatus === 'pending'
+            || adStatus === 'pending'
+            || hasPendingConsentState(consentState);
+    }
+
     function resolvePendingAsDenied(state) {
         return Object.fromEntries(
             Object.entries(state).map(([key, value]) => [key, value === 'pending' ? 'denied' : value])
@@ -215,10 +221,10 @@
 
     registerGoogleFcListener();
     waitForTcfApi();
-    // If GoogleFC/TCF leaves any purpose UNKNOWN, fail closed only for the unresolved
-    // purpose after the grace period while preserving already resolved decisions.
+    // If GoogleFC/TCF is silent or leaves any purpose UNKNOWN, fail closed only for unresolved
+    // internal state after the grace period while preserving already resolved decisions.
     timeoutId = window.setTimeout(() => {
-        if (!hasPendingConsentState(consentState)) return;
+        if (!hasUnresolvedConsent()) return;
         const timeoutSource = source === 'pending' ? 'timeout' : `${source}-timeout`;
         applyConsentState(resolvePendingAsDenied(consentState), timeoutSource);
     }, 5000);

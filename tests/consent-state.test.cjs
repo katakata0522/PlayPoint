@@ -195,3 +195,29 @@ test('広告確定・Analytics UNKNOWNでも広告同意を保ったままAnalyt
     ad_personalization: 'granted'
   });
 });
+
+test('GoogleFC/TCFが無応答でもtimeoutでpendingを拒否へ収束する', () => {
+  const { context, fireTimeout } = runtime(null);
+  let analyticsCalls = 0;
+  let adCalls = 0;
+  context.PlayPointConsent.whenAnalyticsGranted(() => { analyticsCalls += 1; });
+  context.PlayPointConsent.whenAdsAllowed(() => { adCalls += 1; });
+
+  assert.equal(context.PlayPointConsent.getStatus(), 'pending');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'pending');
+  assert.equal(context.PlayPointConsent.getSource(), 'pending');
+
+  fireTimeout();
+
+  assert.equal(context.PlayPointConsent.getStatus(), 'denied');
+  assert.equal(context.PlayPointConsent.getAdStatus(), 'denied');
+  assert.equal(context.PlayPointConsent.getSource(), 'timeout');
+  assert.equal(analyticsCalls, 0);
+  assert.equal(adCalls, 0);
+  assert.deepEqual(JSON.parse(JSON.stringify(context.PlayPointConsent.getConsentState())), {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied'
+  });
+});
