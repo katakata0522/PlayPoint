@@ -26,6 +26,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Repair one-time fixer syntax
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/apply-full-integrity-audit-20260818.cjs')
+          s = p.read_text()
+          old = "  const re = new RegExp(`('${key}':\\\\s*)\\\\`[\\\\s\\\\S]*?\\\\``);"
+          new = "  const re = new RegExp(\"('\\\" + key + \\"':\\\\\\\\s*)`[\\\\\\\\s\\\\\\\\S]*?`\");"
+          if old not in s:
+              raise SystemExit('expected broken regex line not found')
+          p.write_text(s.replace(old, new))
+          PY
+          node --check scripts/apply-full-integrity-audit-20260818.cjs
+
       - name: Apply audited fixes with diagnostics
         run: |
           set +e
