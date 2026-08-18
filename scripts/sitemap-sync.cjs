@@ -23,6 +23,10 @@ const RETIRED_CONTENT_URLS = new Set([
   `${SITE_ORIGIN}/articles/2025-12-25-playpoints-not-reflected.html`,
   `${SITE_ORIGIN}/en/articles/google-play-points-reflection-timing.html`
 ]);
+const SEARCH_QUALITY_HOLD_URLS = new Set([
+  `${SITE_ORIGIN}/articles/2026-08-17-diamond-valley-festival-guide.html`,
+  `${SITE_ORIGIN}/articles/2026-08-17-tgs-google-play-vip.html`
+]);
 const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
 
 function escapeRegExp(value) {
@@ -132,7 +136,8 @@ function getBlogSitemapEntries(rootDir) {
     .map(article => ({
       url: `${SITE_ORIGIN}/${String(article.file).replace(/^\.\.\//, '')}`,
       lastmod: article.modified || article.date
-    }));
+    }))
+    .filter(entry => !SEARCH_QUALITY_HOLD_URLS.has(entry.url));
 }
 
 function renderBlogSitemap(entries) {
@@ -218,6 +223,7 @@ function syncSitemap(rootDir) {
   const excludedUrls = new Set([
     ...NON_PLAYPOINT_URLS,
     ...RETIRED_CONTENT_URLS,
+    ...SEARCH_QUALITY_HOLD_URLS,
     ...getDedicatedSitemapUrls(rootDir)
   ]);
   content = removeSitemapEntries(content, excludedUrls);
@@ -234,6 +240,7 @@ module.exports = {
   TOP_PAGE_URLS,
   NON_PLAYPOINT_URLS,
   RETIRED_CONTENT_URLS,
+  SEARCH_QUALITY_HOLD_URLS,
   escapeRegExp,
   getBlogSitemapEntries,
   syncDedicatedSitemapDates,

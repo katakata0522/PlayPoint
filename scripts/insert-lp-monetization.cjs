@@ -42,8 +42,9 @@ const affiliateSection = `    <section class="section">
             <span class="lp-ad-label">スポンサーリンク</span>
             <ins class="adsbygoogle"
                  style="display:block"
-                 data-ad-client="ca-pub-3845885843809455"
-                 data-ad-format="auto"
+                     data-ad-client="ca-pub-3845885843809455"
+                     data-ad-slot="8250492620"
+                     data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
         </div>
     </section>`;

@@ -17,7 +17,8 @@
             pointValueSuffix: ' 円分',
             maxRankAchievedText: '最高ランク（ダイヤモンド）達成！',
             nextRankText: (name, pts) => `${name}まであと ${pts.toLocaleString('ja-JP')} pt`,
-            savingsText: (min, max) => `（実質 約${min.toLocaleString()}円〜${max.toLocaleString()}円相当おトク！）`,
+            savingsText: () => '',
+            redeemCheckText: 'Play Points「使う」で交換条件を確認',
             ranks: [
                 { name: 'ブロンズ', points: 0, rate: 1.0 },
                 { name: 'シルバー', points: 250, rate: 1.25 },
@@ -37,12 +38,13 @@
             maxRankAchievedText: 'Top level (Diamond) achieved!',
             nextRankText: (name, pts) => `${pts.toLocaleString('en-US')} pts needed for ${name}`,
             savingsText: () => '',
+            redeemCheckText: 'Check redemption options in Play Points',
             ranks: [
                 { name: 'Bronze', points: 0, rate: 1.0 },
                 { name: 'Silver', points: 150, rate: 1.1 },
                 { name: 'Gold', points: 600, rate: 1.2 },
                 { name: 'Platinum', points: 3000, rate: 1.4 },
-                { name: 'Diamond', points: 10000, rate: 1.75 }
+                { name: 'Diamond', points: 10000, rate: 1.6 }
             ]
         },
         'ko': {
@@ -56,12 +58,13 @@
             maxRankAchievedText: '최고 등급(다이아몬드) 달성!',
             nextRankText: (name, pts) => `${name}까지 남은 포인트: ${pts.toLocaleString('ko-KR')} pt`,
             savingsText: () => '',
+            redeemCheckText: 'Play Points 사용 화면에서 교환 조건 확인',
             ranks: [
                 { name: '브론즈', points: 0, rate: 1.0 },
                 { name: '실버', points: 150, rate: 1.1 },
-                { name: '골드', points: 600, rate: 1.2 },
-                { name: '플래티넘', points: 3000, rate: 1.4 },
-                { name: '다이아몬드', points: 10000, rate: 1.75 }
+                { name: '골드', points: 600, rate: 1.3 },
+                { name: '플래티넘', points: 2400, rate: 1.6 },
+                { name: '다이아몬드', points: 15000, rate: 2.0 }
             ]
         },
         'zh-TW': {
@@ -75,12 +78,13 @@
             maxRankAchievedText: '已達成最高等級（鑽石級）！',
             nextRankText: (name, pts) => `距離${name}還差 ${pts.toLocaleString('zh-TW')} 點`,
             savingsText: () => '',
+            redeemCheckText: '請在 Play Points「使用」頁面確認兌換條件',
             ranks: [
                 { name: '銅級', points: 0, rate: 1.0 },
-                { name: '銀級', points: 250, rate: 1.1 },
-                { name: '金級', points: 1000, rate: 1.2 },
-                { name: '白金級', points: 5000, rate: 1.4 },
-                { name: '鑽石級', points: 15000, rate: 1.75 }
+                { name: '銀級', points: 250, rate: 1.25 },
+                { name: '金級', points: 1000, rate: 1.5 },
+                { name: '白金級', points: 4000, rate: 1.75 },
+                { name: '鑽石級', points: 15000, rate: 2.0 }
             ]
         }
     };
@@ -236,12 +240,7 @@
                 if (isUserAction) triggerUpdateAnimation(earnedPointsEl);
             }
             if (pointValueYenEl) {
-                const pointValueRatio = cfg.unitSpend / 100;
-                const formattedVal = (res.points * pointValueRatio).toLocaleString(undefined, {
-                    minimumFractionDigits: cfg.unitSpend === 1 ? 2 : 0,
-                    maximumFractionDigits: 2
-                });
-                pointValueYenEl.textContent = `${cfg.pointValuePrefix}${formattedVal}${cfg.pointValueSuffix}`;
+                pointValueYenEl.textContent = cfg.redeemCheckText || '';
             }
 
             if (reachedRankEl) {

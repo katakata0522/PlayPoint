@@ -28,7 +28,7 @@ const LOCALES = {
     badgeText: '人気ゲーム別シミュレーター',
     portalBadge: '🎮 ソシャゲ特化',
     portalH1: '人気ゲーム別 Playポイント課金・天井シミュレーター',
-    portalMeta: '原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パックや天井ガチャで貯まるPlayポイントをパッと計算！各ゲームの課金アイテム価格や還元早見表、お得な交換レートを掲載しています。ガチャ前の計画にぜひ役立ててくださいね。',
+    portalMeta: '原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パックや天井ガチャで貯まるPlayポイントをパッと計算！各ゲームの課金アイテム価格や還元早見表、お得な使い道を掲載しています。ガチャ前の計画にぜひ役立ててくださいね。',
     portalLead: 'Google Playストアで配信されている人気ゲームの課金アイテム（創世結晶、往日の夢華、モノクローム、青輝石、ポケゴールド、ジュエル、聖晶石、オーブ、月相、有償ジュエル、龍石、純正源石など）の価格レートに対応！「天井（ガチャ確定）まで回したら何ポイント還元される？」「完凸でゴールド・プラチナランクに届く？」をワンタップでシミュレーションできます。',
     openCalc: '計算機を開く ➔',
     presetHeading: '▼ 目標プリセット：',
@@ -56,15 +56,15 @@ const LOCALES = {
     ],
     resTotalLabel: '課金合計金額',
     resEarnedLabel: '獲得予定 Playポイント',
-    resValueLabel: 'ポイント還元価値',
-    resRankLabel: '到達ステータス',
-    resProgressTitle: 'ランク進捗状況',
+    resValueLabel: '交換価値（Play画面で確認）',
+    resRankLabel: '0ptから見た参考ランク',
+    resProgressTitle: '0ptから見た参考進捗',
     shareBtnText: '𝕏 で計算結果をシェア',
     copyLinkText: '🔗 結果リンクをコピー',
     copiedAlert: '結果リンクをクリップボードにコピーしました！',
-    disclaimerText: '※Google Play公式の四捨五入ルールに基づき計算しています。実際の付与ポイントはGoogle Play購入画面の事前表示をご確認ください。',
+    disclaimerText: '※獲得ポイントはGoogle Play公式の国別通常獲得率と四捨五入ルールを基準にした目安です。ランク表示は年間累計0ptから見た参考で、現在の年間進捗は反映しません。購入前にGoogle Play画面の獲得予定ポイントとステータス進捗をご確認ください。',
     giftCardCtaTitle: '💳 課金前にチェック！さらにお得にする裏技',
-    giftCardCtaText: '楽天市場の「Google Play ギフトコード認定店」で購入すると、楽天ポイント（SPU・お買い物マラソン・5と0のつく日）で実質5%〜15%以上の超高還元！',
+    giftCardCtaText: '楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。',
     giftCardCtaBtn: '🛒 楽天市場 認定店でギフトコードを見る ➔',
     giftCardCtaAffiliateUrl: 'https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D',
     giftCardGuideBtn: '📖 お得な買い方・注意点ガイド ➔',
@@ -74,19 +74,19 @@ const LOCALES = {
     tableThPrice: '価格 (税込)',
     tableThNormal: '通常時還元 (1%)',
     tableThCp: '5倍CP時還元 (5%)',
-    rewardCompareTitle: '貯まったPlayポイントのお得な使い道（交換レート比較）',
+    rewardCompareTitle: 'Play Points「使う」で確認できる交換先',
     rewardTagCoupon: '割引クーポン',
     rewardCouponName: 'ゲーム専用 割引クーポン',
-    rewardCouponRate: '1pt ＝ 約2.0〜2.5円相当',
-    rewardCouponDesc: '250ptで500円引、1,000ptで2,500円引など。課金時に使うなら最も高還元です（※一定金額以上の購入時に適用・有効期限1年）。',
+    rewardCouponRate: '必要ポイント・割引額は表示条件で確認',
+    rewardCouponDesc: '対象ゲームの割引クーポンが表示される場合があります。必要ポイント、割引額、最低購入額、有効期限はPlay Pointsの「使う」に表示された条件を基準にしてください。',
     rewardTagDirect: '直接交換',
     rewardDirectName: 'ゲーム内課金通貨・アイテム',
-    rewardDirectRate: '1pt ＝ 約1.5〜2.0円相当',
-    rewardDirectDesc: 'パック購入不要で直接通貨やガチャ石を入手。※抱き合わせ素材もあるため、欲しいアイテム単体の場合の交換がおすすめです。',
+    rewardDirectRate: '交換内容・必要ポイントは表示中のオファーで確認',
+    rewardDirectDesc: '対象ゲームのゲーム内アイテムとポイントを交換できる場合があります。内容や必要ポイントは国・時期・アカウントで異なるため、Play Pointsの「使う」を確認してください。',
     rewardTagCredit: 'Play残高',
     rewardCreditName: 'Google Play クレジット',
-    rewardCreditRate: '1pt ＝ 1.0円相当',
-    rewardCreditDesc: '100ptで100円分の残高に等価交換。専用クーポンが常設されていないタイトルや、他アプリ・サブスクにも使える万能型です。',
+    rewardCreditRate: '必要ポイント・受取額はPlay Points画面で確認',
+    rewardCreditDesc: 'Google Playクレジットと交換できる場合があります。交換条件はPlay Pointsの「使う」に表示された内容を確認してください。ポイント交換で受け取ったPlayクレジットの有効期限は1年です。',
     faqHeading: 'よくある質問（FAQ）',
     otherGamesHeading: '他の人気ゲームの課金シミュレーター',
     ctaTitle: '目標ポイントからの逆算シミュレーター',
@@ -152,19 +152,19 @@ const LOCALES = {
       { val: '1.1', label: 'Silver ($1 = 1.1pt)' },
       { val: '1.2', label: 'Gold ($1 = 1.2pt)' },
       { val: '1.4', label: 'Platinum ($1 = 1.4pt)' },
-      { val: '1.75', label: 'Diamond ($1 = 1.75pt)' }
+      { val: '1.6', label: 'Diamond ($1 = 1.6pt)' }
     ],
     resTotalLabel: 'Total Spending',
     resEarnedLabel: 'Estimated Play Points',
-    resValueLabel: 'Points Cash Value',
-    resRankLabel: 'Reached Level',
-    resProgressTitle: 'Level Progress',
+    resValueLabel: 'Redemption value (check Play)',
+    resRankLabel: 'Reference level from 0 pts',
+    resProgressTitle: 'Reference progress from 0 pts',
     shareBtnText: '𝕏 Share Result',
     copyLinkText: '🔗 Copy Link',
     copiedAlert: 'Result link copied to clipboard!',
-    disclaimerText: '※ Calculated based on official Google Play rounding rules. Check the Google Play purchase screen for exact points before checkout.',
+    disclaimerText: '※Point estimates use the current US base rates and Google Play rounding rules. The level display is only a reference starting from 0 annual points and does not include your current yearly progress. Check the Play purchase screen and level progress before checkout.',
     giftCardCtaTitle: '💳 Maximizing Play Points with Gift Cards',
-    giftCardCtaText: 'Learn how Google Play Gift Cards interact with points, promotions, and status level progress.',
+    giftCardCtaText: 'Check the gift card guide for how Google Play Gift Cards interact with points, promotions, and account conditions before purchase.',
     giftCardCtaBtn: 'Read Gift Card Guide ➔',
     giftCardCtaHref: 'en/articles/google-play-points-gift-cards.html',
     tableTitle: 'In-App Purchase Packs & Points Reward Table',
@@ -172,19 +172,19 @@ const LOCALES = {
     tableThPrice: 'Price (USD)',
     tableThNormal: 'Standard (1x)',
     tableThCp: '5x Promo (5x)',
-    rewardCompareTitle: 'Best Ways to Redeem Points (Value Comparison)',
+    rewardCompareTitle: 'Redemption options shown in Play Points',
     rewardTagCoupon: 'Discount Coupon',
     rewardCouponName: 'Game-Specific Coupon',
-    rewardCouponRate: '1pt = approx. $0.02 - $0.025 value (2x+)',
-    rewardCouponDesc: 'e.g., 250pts for $5 off. Best value for active in-app spenders.',
+    rewardCouponRate: 'Points and discount vary by shown offer',
+    rewardCouponDesc: 'Game-specific coupons may appear in Play Points. Use the points cost, discount, minimum purchase, and expiry shown in your Play Points account as the source of truth.',
     rewardTagDirect: 'Direct Item',
     rewardDirectName: 'In-Game Items & Gems',
-    rewardDirectRate: '1pt = approx. $0.015 - $0.02 value',
-    rewardDirectDesc: 'Claim gems and items directly without purchasing packs.',
+    rewardDirectRate: 'Contents and points vary by shown offer',
+    rewardDirectDesc: 'Eligible in-game items may be available for points. Availability and points cost can vary by country, time, and account, so check the Play Points redemption screen.',
     rewardTagCredit: 'Play Balance',
     rewardCreditName: 'Google Play Credit',
-    rewardCreditRate: '1pt = $0.01 value (Base)',
-    rewardCreditDesc: '100pts = $1.00 Play Credit. Universal balance for any app or subscription.',
+    rewardCreditRate: 'Points and credit amount: check Play Points',
+    rewardCreditDesc: 'Google Play Credit may be available as a redemption option. Check the points cost and credit amount shown in Play Points. Play Credit received from points expires after one year.',
     faqHeading: 'Frequently Asked Questions (FAQ)',
     otherGamesHeading: 'Other Popular Game Points Calculators',
     ctaTitle: 'Reverse Mode & Target Status Calculator',
@@ -247,21 +247,21 @@ const LOCALES = {
     statusOptions: [
       { val: '1.0', label: '브론즈 (1,000원=1pt)' },
       { val: '1.1', label: '실버 (1,000원=1.1pt)' },
-      { val: '1.2', label: '골드 (1,000원=1.2pt)' },
-      { val: '1.4', label: '플래티넘 (1,000원=1.4pt)' },
-      { val: '1.75', label: '다이아몬드 (1,000원=1.75pt)' }
+      { val: '1.3', label: '골드 (1,000원=1.3pt)' },
+      { val: '1.6', label: '플래티넘 (1,000원=1.6pt)' },
+      { val: '2.0', label: '다이아몬드 (1,000원=2pt)' }
     ],
     resTotalLabel: '과금 합계 금액',
     resEarnedLabel: '적립 예정 Play Points',
-    resValueLabel: '포인트 환산 가치',
-    resRankLabel: '도달 등급',
-    resProgressTitle: '등급 진행 상황',
+    resValueLabel: '교환 가치 (Play 화면 확인)',
+    resRankLabel: '0pt 기준 참고 등급',
+    resProgressTitle: '0pt 기준 참고 진행도',
     shareBtnText: '𝕏 결과 공유하기',
     copyLinkText: '🔗 링크 복사',
     copiedAlert: '결과 링크가 클립보드에 복사되었습니다!',
-    disclaimerText: '※ Google Play 공식 사사오입(반올림) 기준에 따라 계산됩니다. 실제 적립 포인트는 결제 전 Google Play 화면에서 확인하세요.',
+    disclaimerText: '※포인트 예상치는 현재 대한민국 공식 기본 적립률과 Google Play 반올림 규칙을 기준으로 합니다. 등급 표시는 연간 누적 0pt에서 시작한 참고값이며 현재 연간 진행도는 반영하지 않습니다. 결제 전에 Google Play 화면의 예상 포인트와 등급 진행도를 확인하세요.',
     giftCardCtaTitle: '💳 기프트카드 결제 시 포인트 적립 팁',
-    giftCardCtaText: 'Google Play 기프트카드로 잔액을 충전한 후 결제해도 동일하게 등급별 Play Points가 정상 적립됩니다.',
+    giftCardCtaText: 'Google Play 기프트카드 사용 시 포인트 적립 여부와 조건은 실제 Google Play 결제 화면과 계정 조건을 확인하세요.',
     giftCardCtaBtn: '기프트카드 가이드 확인 ➔',
     giftCardCtaHref: 'ko/articles/google-play-points-gift-cards.html',
     tableTitle: '패키지별 Play Points 적립 비교표',
@@ -269,19 +269,19 @@ const LOCALES = {
     tableThPrice: '가격 (KRW)',
     tableThNormal: '일반 적립 (1배)',
     tableThCp: '5배 이벤트 (5배)',
-    rewardCompareTitle: '모은 포인트의 가장 이득인 사용처 (가치 비교)',
+    rewardCompareTitle: 'Play Points 사용 탭에서 확인할 교환처',
     rewardTagCoupon: '할인 쿠폰',
     rewardCouponName: '게임 전용 할인 쿠폰',
-    rewardCouponRate: '1pt ＝ 약 2.0~2.5배 가치',
-    rewardCouponDesc: '250pt로 5,000원 할인 등. 추가 결제 시 가장 높은 가치를 제공합니다.',
+    rewardCouponRate: '필요 포인트와 할인액은 표시된 조건 확인',
+    rewardCouponDesc: '대상 게임 할인 쿠폰이 표시될 수 있습니다. 필요한 포인트, 할인액, 최소 결제 금액, 유효기간은 Play Points의 사용 화면에 표시된 조건을 기준으로 확인하세요.',
     rewardTagDirect: '직접 교환',
     rewardDirectName: '게임 내 재화 및 아이템',
-    rewardDirectRate: '1pt ＝ 약 1.5~2.0배 가치',
-    rewardDirectDesc: '패키지 구매 없이 직접 유료 재화나 뽑기 재화를 획득할 때 유용합니다.',
+    rewardDirectRate: '교환 내용과 필요 포인트는 표시된 오퍼 확인',
+    rewardDirectDesc: '대상 게임의 인게임 아이템과 포인트를 교환할 수 있는 경우가 있습니다. 제공 여부와 필요 포인트는 국가, 시기, 계정에 따라 달라질 수 있으므로 Play Points 사용 화면을 확인하세요.',
     rewardTagCredit: 'Play 잔액',
     rewardCreditName: 'Google Play 잔액 충전',
-    rewardCreditRate: '1pt ＝ 1원 기준',
-    rewardCreditDesc: '100pt로 100원 충전. 다른 앱이나 정기결제에도 자유롭게 사용 가능합니다.',
+    rewardCreditRate: '필요 포인트와 크레딧 금액은 Play Points에서 확인',
+    rewardCreditDesc: 'Google Play 크레딧으로 교환할 수 있는 경우가 있습니다. 필요한 포인트와 금액은 Play Points 사용 화면을 확인하세요. 포인트로 받은 Play 크레딧은 1년 후 만료됩니다.',
     faqHeading: '자주 묻는 질문 (FAQ)',
     otherGamesHeading: '다른 인기 게임 계산기',
     ctaTitle: '목표 포인트 역산 시뮬레이터',
@@ -343,22 +343,22 @@ const LOCALES = {
     statusLabel: '目前會員等級：',
     statusOptions: [
       { val: '1.0', label: '銅級（NT$30 = 1點）' },
-      { val: '1.1', label: '銀級（NT$30 = 1.1點）' },
-      { val: '1.2', label: '金級（NT$30 = 1.2點）' },
-      { val: '1.4', label: '白金級（NT$30 = 1.4點）' },
-      { val: '1.75', label: '鑽石級（NT$30 = 1.75點）' }
+      { val: '1.25', label: '銀級（NT$30 = 1.25點）' },
+      { val: '1.5', label: '金級（NT$30 = 1.5點）' },
+      { val: '1.75', label: '白金級（NT$30 = 1.75點）' },
+      { val: '2.0', label: '鑽石級（NT$30 = 2點）' }
     ],
     resTotalLabel: '課金總金額',
     resEarnedLabel: '預計獲得 Play Points',
-    resValueLabel: '點數換算價值',
-    resRankLabel: '達成等級',
-    resProgressTitle: '等級進度',
+    resValueLabel: '兌換價值（請以 Play 畫面為準）',
+    resRankLabel: '以 0 點起算的參考等級',
+    resProgressTitle: '以 0 點起算的參考進度',
     shareBtnText: '𝕏 分享試算結果',
     copyLinkText: '🔗 複製結果連結',
     copiedAlert: '結果連結已成功複製至剪貼簿！',
-    disclaimerText: '※ 依據 Google Play 官方四捨五入計算規則試算。實際獲得點數請以購買結帳畫面顯示為準。',
+    disclaimerText: '※點數為依目前台灣官方基本回饋率與 Google Play 四捨五入規則計算的參考值。等級顯示僅以年度累積 0 點起算，不包含你目前的年度進度；付款前請以 Google Play 畫面的預計點數與等級進度為準。',
     giftCardCtaTitle: '💳 禮物卡儲值與點數累積重點',
-    giftCardCtaText: '使用 Google Play 禮物卡儲值餘額後購買遊戲道具，同樣享有會員等級之點數回饋！',
+    giftCardCtaText: '使用 Google Play 禮物卡前，請先確認你的 Play Points 帳戶條件、付款畫面與當期活動規則。',
     giftCardCtaBtn: '查看禮物卡攻略 ➔',
     giftCardCtaHref: 'tw/articles/google-play-points-gift-cards.html',
     tableTitle: '課金禮包 Play Points 回饋速查表',
@@ -366,6 +366,19 @@ const LOCALES = {
     tableThPrice: '售價 (TWD)',
     tableThNormal: '一般回饋 (1倍)',
     tableThCp: '5倍加碼 (5倍)',
+    rewardCompareTitle: '請在 Play Points「使用」頁面確認兌換選項',
+    rewardTagCoupon: '折價券',
+    rewardCouponName: '遊戲專屬折價券',
+    rewardCouponRate: '所需點數與折扣額依顯示優惠為準',
+    rewardCouponDesc: 'Play Points 可能會顯示特定遊戲折價券。所需點數、折扣額、最低消費與期限，請以你帳戶「使用」頁面顯示的條件為準。',
+    rewardTagDirect: '直接兌換',
+    rewardDirectName: '遊戲內道具與內容',
+    rewardDirectRate: '內容與所需點數依顯示優惠為準',
+    rewardDirectDesc: '部分遊戲可能提供點數兌換遊戲內道具。是否提供與所需點數可能因地區、時間與帳戶而異，請查看 Play Points「使用」頁面。',
+    rewardTagCredit: 'Play 餘額',
+    rewardCreditName: 'Google Play 餘額',
+    rewardCreditRate: '所需點數與額度請以 Play Points 畫面為準',
+    rewardCreditDesc: '可兌換 Google Play 餘額時，請以 Play Points「使用」頁面顯示的所需點數與額度為準。使用點數取得的 Play 餘額會在一年後到期。',
     faqHeading: '常見問題（FAQ）',
     otherGamesHeading: '其他熱門遊戲計算器',
     ctaTitle: '目標點數逆算計算器',
@@ -393,7 +406,7 @@ const GAMES_DATA = [
     names: { ja: '原神 (Genshin Impact)', en: 'Genshin Impact', ko: '원신 (Genshin Impact)', tw: '原神 (Genshin Impact)' },
     shortNames: { ja: '原神', en: 'Genshin', ko: '원신', tw: '原神' },
     descs: {
-      ja: '原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な交換レートも比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
+      ja: '原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Genesis Crystals, Blessing of the Welkin Moon, Gnostic Hymn, 180-pull hard pity, and C6 character summons in Genshin Impact!',
       ko: '창세의 결정 패키지, 공월 축복, 진주 기행, 180연차 확천, 풀돌(6돌) 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
       tw: '試算創世結晶、空月祝福、珍珠紀行、180抽大保底、滿命(6命)課金可獲得的 Play Points 與等級進度！'
@@ -587,7 +600,7 @@ const GAMES_DATA = [
     names: { ja: 'ゼンレスゾーンゼロ (Zenless Zone Zero)', en: 'Zenless Zone Zero', ko: '젠레스 존 제로', tw: '絕區零 (Zenless Zone Zero)' },
     shortNames: { ja: 'ゼンゼロ', en: 'ZZZ', ko: '젠존제', tw: '絕區零' },
     descs: {
-      ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や交換レートもまとめているので、課金前の確認にぜひ使ってみてくださいね。',
+      ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent M6 summons in ZZZ!',
       ko: '모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算絕區零菲林底片、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
@@ -681,7 +694,7 @@ const GAMES_DATA = [
     names: { ja: 'ブルーアーカイブ (Blue Archive)', en: 'Blue Archive', ko: '블루 아카이브', tw: '蔚藍檔案 (Blue Archive)' },
     shortNames: { ja: 'ブルアカ', en: 'Blue Archive', ko: '블아', tw: '蔚藍檔案' },
     descs: {
-      ja: 'ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント交換レートも比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。',
+      ja: 'ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント使い道も比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Pyroxenes, Monthly Packages, and 200-pull Sparking recruitment in Blue Archive!',
       ko: '청휘석 패키지, 월간 청휘석 패키지, 200연차 모집 포인트 교환(천장) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！'
@@ -849,7 +862,7 @@ const GAMES_DATA = [
     names: { ja: 'Fate/Grand Order (FGO)', en: 'Fate/Grand Order (FGO)', ko: '페이트/그랜드 오더 (FGO)', tw: '命運-冠位指定 (FGO)' },
     shortNames: { ja: 'FGO', en: 'FGO', ko: '페그오', tw: 'FGO' },
     descs: {
-      ja: 'Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な交換レートも比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。',
+      ja: 'Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な使い道も比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Saint Quartz, Lucky Bag GSSR summons, 330-summon pity, and NP5 in FGO!',
       ko: '성정석, 복주머니 GSSR, 330연차 확정소환(천장), 보5 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '試算聖晶石禮包、福袋召喚(GSSR)、330抽確定召喚(保底)、寶5課金可獲得的 Play Points！'
@@ -1017,7 +1030,7 @@ const GAMES_DATA = [
     names: { ja: 'モンスターストライク (モンスト)', en: 'Monster Strike', ko: '몬스터 스트라이크', tw: '怪物彈珠 (Monster Strike)' },
     shortNames: { ja: 'モンスト', en: 'Monst', ko: '몬스', tw: '怪物彈珠' },
     descs: {
-      ja: 'モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント交換レートも掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
+      ja: 'モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Orbs, Monpass, Hoshitama summons, and Max Luck units in Monster Strike!',
       ko: '오브 구매, 몬패스, 호시타마, 초수신제, 운극 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算寶珠、怪彈會員、星玉、超獸神祭、極運課金可獲得的 Play Points！'
@@ -1092,7 +1105,7 @@ const GAMES_DATA = [
     names: { ja: '学園アイドルマスター (学マス)', en: 'Gakuen Idolmaster', ko: '학원 아이돌마스터', tw: '學園偶像大師' },
     shortNames: { ja: '学マス', en: 'Gakumas', ko: '학마스', tw: '學馬仕' },
     descs: {
-      ja: '学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な交換レートも比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。',
+      ja: '学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な使い道も比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Jewels, Premium Mission Pass, and 200 Gacha Pts pity in Gakuen Idolmaster!',
       ko: '쥬얼 패키지, 프리미엄 미션 패스, 200 가챠 Pt 천장, 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '試算學園偶像大師寶石、高級任務通行證、200 轉蛋Pt 保底、4凸(滿凸)課金可獲得的 Play Points！'
@@ -1164,7 +1177,7 @@ const GAMES_DATA = [
     names: { ja: 'プロジェクトセカイ (プロセカ)', en: 'HATSUNE MIKU: COLORFUL STAGE!', ko: '프로젝트 세카이 컬러풀 스테이지!', tw: '世界計畫 繽紛舞台！' },
     shortNames: { ja: 'プロセカ', en: 'PJSK', ko: '프세카', tw: '世界計畫' },
     descs: {
-      ja: 'プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や交換レートも掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。',
+      ja: 'プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Crystals, Colorful Pass, Premium Mission Pass, and 300 Gacha Stickers spark in Project SEKAI!',
       ko: '유료 크리스탈, 컬러풀 패스, 프리미엄 미션 패스, 가챠 스티커 300장 천장, 마스터 랭크 5 결제 시 적립되는 Play Points를 계산하세요!',
       tw: '計算世界計畫付費水晶、彩色通行證、高階任務通行證、轉蛋貼紙300張保底、大師等級5課金可獲得的 Play Points！'
@@ -1341,7 +1354,7 @@ const GAMES_DATA = [
     names: { ja: '鳴潮 (Wuthering Waves)', en: 'Wuthering Waves', ko: '명조: 워더링 웨이브', tw: '鳴潮 (Wuthering Waves)' },
     shortNames: { ja: '鳴潮', en: 'WuWa', ko: '명조', tw: '鳴潮' },
     descs: {
-      ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な交換レートも比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
+      ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
       ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
@@ -1441,7 +1454,7 @@ const GAMES_DATA = [
     names: { ja: 'ドラゴンボールZ ドッカンバトル', en: 'DRAGON BALL Z DOKKAN BATTLE', ko: '드래곤볼 Z 폭렬격전', tw: '七龍珠爆裂激戰' },
     shortNames: { ja: 'ドッカン', en: 'Dokkan', ko: '폭렬격전', tw: '爆裂激戰' },
     descs: {
-      ja: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や交換レートも比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
+      ja: 'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。',
       en: 'Calculate Play Points earned on Dragon Stones, Daily Capsules, Dokkan Festival Coins, and 100% Rainbow units in Dokkan Battle!',
       ko: '용석 패키지, 데일리 캡슐, 돗칸 축제 코인 교환, 잠재능력 100% 해방(무지개) 과금 시 적립되는 Play Points를 계산하세요!',
       tw: '計算七龍珠爆裂激戰龍石、每日膠囊、Dokkan祭硬幣兌換、潛在能力100%解放(彩星)課金可獲得的 Play Points！'
@@ -1622,7 +1635,7 @@ const GAMES_DATA = [
     names: { ja: 'ヘブンバーンズレッド (ヘブバン)', en: 'Heaven Burns Red', ko: '헤븐 번즈 레드 (HBR)', tw: '緋染天空 (Heaven Burns Red)' },
     shortNames: { ja: 'ヘブバン', en: 'HBR', ko: 'HBR', tw: '緋染天空' },
     descs: {
-      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や交換レートも掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
+      ja: 'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Google Play Points earned on Quartz, HBR Pass, and 200-pull Spark pity in Heaven Burns Red.',
       ko: '헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.',
       tw: '計算緋染天空（Heaven Burns Red）購買石英、月卡通行證與200抽保底時可獲得的 Google Play Points。'
@@ -1713,7 +1726,7 @@ const GAMES_DATA = [
     names: { ja: 'メメントモリ (MementoMori)', en: 'MementoMori: AFKRPG', ko: '메멘토 모리 (MementoMori)', tw: 'MementoMori' },
     shortNames: { ja: 'メメントモリ', en: 'MementoMori', ko: '메멘토모리', tw: 'MementoMori' },
     descs: {
-      ja: 'メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や交換レートも比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
+      ja: 'メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Diamonds, Monthly Boosts, and 100-pull Pity in MementoMori.',
       ko: '메멘토 모리의 다이아 결제, 월간 부스트 및 100연차 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算 MementoMori 購買鑽石、月間特權及100抽保底時可獲得的 Google Play Points。'
@@ -1886,7 +1899,7 @@ const GAMES_DATA = [
     names: { ja: 'リバース：1999 (Reverse: 1999)', en: 'Reverse: 1999', ko: '리버스: 1999 (Reverse: 1999)', tw: '重返未來：1999 (Reverse: 1999)' },
     shortNames: { ja: 'リバース1999', en: 'Reverse: 1999', ko: '리버스1999', tw: '重返未來1999' },
     descs: {
-      ja: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や交換レートも比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
+      ja: 'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Clear Drops, Roaring Month, and 70/140-pull Pity in Reverse: 1999.',
       ko: '리버스: 1999의 순수한 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를計算합니다.',
       tw: '計算重返未來：1999購買獨享雨滴、咆哮之月（月卡）及70/140抽保底時可獲得的 Google Play Points。'
@@ -1972,7 +1985,7 @@ const GAMES_DATA = [
     names: { ja: '崩壊3rd (Honkai Impact 3rd)', en: 'Honkai Impact 3rd', ko: '붕괴3rd (Honkai Impact 3rd)', tw: '崩壞3rd (Honkai Impact 3rd)' },
     shortNames: { ja: '崩壊3rd', en: 'Honkai 3rd', ko: '붕괴3rd', tw: '崩壞3rd' },
     descs: {
-      ja: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や交換レートも一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
+      ja: '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や使い道も一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。',
       en: 'Calculate Google Play Points earned on Crystals, Monthly Cards, and 90-pull Character Pity in Honkai Impact 3rd.',
       ko: '붕괴3rd의 수정 구매, 월정액, 90연차 캐릭터 천장 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算崩壞3rd購買水晶、月卡及90抽角色保底時可獲得的 Google Play Points。'
@@ -2059,7 +2072,7 @@ const GAMES_DATA = [
     names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌駕世界 (Shadowverse: WB)' },
     shortNames: { ja: 'シャドバWB', en: 'Shadowverse: WB', ko: '섀도우버스 WB', tw: '闇影詩章WB' },
     descs: {
-      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や交換レートも掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。',
+      ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や使い道も掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Crystals, Premium Battle Pass, and Pack Points in Shadowverse: Worlds Beyond.',
       ko: '섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.',
       tw: '計算闇影詩章：凌駕世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
@@ -2451,12 +2464,13 @@ function generateGamePageHtml(game, localeKey) {
                   <ins class="adsbygoogle"
                        style="display:block"
                        data-ad-client="ca-pub-3845885843809455"
+                       data-ad-slot="8250492620"
                        data-ad-format="auto"
                        data-full-width-responsive="true"></ins>
               </div>
           </section>
 
-          <!-- ポイント交換レート・損得比較 -->
+          <!-- ポイント使い道・損得比較 -->
           <section class="section">
               <h2>${gameShort} ${loc.rewardCompareTitle}</h2>
               <div class="reward-compare-grid">
@@ -2550,6 +2564,7 @@ function generateGamePageHtml(game, localeKey) {
   </footer>
 
   <script src="${assetsRelative}js/analytics-core.js"></script>
+  <script src="${assetsRelative}js/third-party.js"></script>
   <script src="${assetsRelative}games/game-sim.js"></script>
 </body>
 </html>
@@ -2739,6 +2754,7 @@ function generatePortalPageHtml(localeKey) {
   </footer>
 
   <script src="${assetsRelative}js/analytics-core.js"></script>
+  <script src="${assetsRelative}js/third-party.js"></script>
 </body>
 </html>
 `;

@@ -302,10 +302,30 @@
         });
     }
 
+    const MANAGED_ADSENSE_SLOT = '8250492620';
+
+    function initializeManagedArticleAds() {
+        document.querySelectorAll('.article-ad-container ins.adsbygoogle').forEach((ad) => {
+            if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
+            if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
+            ad.dataset.playpointAdRequested = 'true';
+            try {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (error) {
+                delete ad.dataset.playpointAdRequested;
+                console.error('AdSense slot initialization failed:', error);
+            }
+        });
+    }
+
     // AdSense本体はページ解析をブロックしないasyncで早期取得し、固定スクロール量による機会損失を避ける。
     function loadArticleAdsense() {
-        if (articleAdsenseLoaded) return;
+        if (articleAdsenseLoaded) {
+            initializeManagedArticleAds();
+            return;
+        }
         articleAdsenseLoaded = true;
+        initializeManagedArticleAds();
 
         if (document.querySelector('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')) return;
 

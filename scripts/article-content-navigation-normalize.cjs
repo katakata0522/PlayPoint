@@ -66,6 +66,22 @@ const RELATED_SECTIONS = {
       ['./2026-08-05-play-points-multiplier-stacking.html', '複数倍率が重複するか確認']
     ]
   },
+  'articles/2026-08-17-diamond-valley-festival-guide.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2025-12-25-diamond-vip.html', 'ダイヤモンド会員の公式特典を確認'],
+      ['./2025-12-25-playpoints-rank-maintenance.html', 'ランクの維持期間と年末条件を確認'],
+      ['./2026-08-05-play-points-levels-guide.html', 'Play Pointsの全ランク条件を確認']
+    ]
+  },
+  'articles/2026-08-17-tgs-google-play-vip.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2025-12-25-diamond-vip.html', 'プラチナ・ダイヤモンドの公式特典を確認'],
+      ['./2026-08-05-play-points-levels-guide.html', 'Play Pointsのステータス条件を確認'],
+      ['./2025-12-25-playpoints-rank-maintenance.html', '年末のランク維持条件を確認']
+    ]
+  },
   'articles/2026-07-24-play-points-1-value.html': {
     heading: '次に確認したい関連記事',
     links: [
