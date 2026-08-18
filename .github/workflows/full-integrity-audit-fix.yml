@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  followup-and-verify:
+  verify:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -30,65 +30,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Apply audit follow-up repairs
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          # Fix the generated game source section to use the function's existing locale config object.
-          p = Path('scripts/generate-game-simulators.cjs')
-          s = p.read_text()
-          if 'locale.lang' in s:
-              s = s.replace('locale.lang', 'loc.lang')
-          p.write_text(s)
-
-          # Keep the original external-script allowlist while forbidding inline HTML event attributes.
-          p = Path('.htaccess')
-          s = p.read_text()
-          s = s.replace("script-src 'self' 'unsafe-inline'; script-src-attr 'none'; script-src-elem ", "script-src ")
-          s = s.replace(" https://cdnjs.cloudflare.com; style-src", " https://cdnjs.cloudflare.com; script-src-attr 'none'; style-src")
-          p.write_text(s)
-
-          # Prefer each generated game's own last-modified metadata; use the date table only as fallback.
-          p = Path('scripts/sitemap-sync.cjs')
-          s = p.read_text()
-          needle = "  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;"
-          replacement = """  const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;\n  const htmlDateFor = (filePath, relativePath) => {\n    try {\n      const html = fs.readFileSync(filePath, 'utf8');\n      const match = html.match(/<meta name=\\\"last-modified\\\" content=\\\"(\\d{4}-\\d{2}-\\d{2})\\\"/);\n      if (match) return match[1];\n    } catch (error) {\n      // Fall through to the editorial date table when the page cannot be read.\n    }\n    return dateFor(relativePath);\n  };"""
-          if needle in s and 'const htmlDateFor' not in s:
-              s = s.replace(needle, replacement)
-          s = s.replace("lastmod: dateFor(`${prefix}/index.html`)", "lastmod: htmlDateFor(path.join(dir, 'index.html'), `${prefix}/index.html`)")
-          s = s.replace("lastmod: dateFor(`${prefix}/${sub.name}/index.html`)", "lastmod: htmlDateFor(indexPath, `${prefix}/${sub.name}/index.html`)")
-          p.write_text(s)
-
-          # The regression should guard the metadata-based sitemap behavior rather than require every game in a hand-maintained table.
-          p = Path('tests/full-integrity-audit.test.cjs')
-          s = p.read_text()
-          s = s.replace("assert.match(s,/CONTENT_DATE_OVERRIDES\\[relativePath\\]/);assert.match(read('scripts/content-dates.cjs'),/games\\/hbr\\/index\\.html': '2026-08-18'/);", "assert.match(s,/CONTENT_DATE_OVERRIDES\\[relativePath\\]/);assert.match(s,/htmlDateFor/);assert.match(read('scripts/generate-game-simulators.cjs'),/last-modified/);")
-          p.write_text(s)
-          PY
-          node --check scripts/generate-game-simulators.cjs
-          node --check scripts/sitemap-sync.cjs
-          printf 'followup-source status=0 %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add -A
-          git commit -m "fix: repair generated game metadata and sitemap dates"
-          git push origin HEAD:fix/full-integrity-audit-20260818
-
-      - name: Rebuild generated assets with diagnostics
-        env:
-          PLAYPOINT_MODIFIED_DATE: '2026-08-18'
-          PLAYPOINT_ASSET_VERSION: '2026_08_18'
-        run: |
-          set +e
-          node scripts/build-html.js > .github/audit-build-diagnostics.txt 2>&1
-          status=$?
-          cat .github/audit-build-diagnostics.txt
-          printf 'build status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add -A
-          git commit -m "fix: rebuild audited generated assets" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
-          exit $status
-
-      - name: Run targeted integrity regression with diagnostics
+      - name: Run targeted integrity regression
         run: |
           set +e
           node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs > .github/audit-targeted-tests.txt 2>&1
@@ -100,7 +42,7 @@ jobs:
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
 
-      - name: Run complete preflight with diagnostics
+      - name: Run complete preflight
         run: |
           set +e
           node .github/scripts/preflight.cjs > .github/audit-preflight.txt 2>&1
