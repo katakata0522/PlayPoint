@@ -29,12 +29,12 @@ jobs:
       - name: Apply audited fixes with diagnostics
         run: |
           set +e
-          node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer.log 2>&1
+          node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer-diagnostics.txt 2>&1
           status=$?
-          git add .github/audit-fixer.log
+          git add .github/audit-fixer-diagnostics.txt
           git commit -m "chore: record integrity fixer diagnostics" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
-          cat .github/audit-fixer.log
+          cat .github/audit-fixer-diagnostics.txt
           exit $status
 
       - name: Rebuild generated assets
