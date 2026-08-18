@@ -396,12 +396,12 @@ const PAGE_TYPES = {
       secondaryHref: '/campaign/3x/',
       summary: ['Preset: special earn rate 2 pt / $1', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
       sections: [
-        ['Compare 1x and 2x', 'Run the estimate at 1x first, then switch to 2x. The difference shows whether waiting for the campaign matters.'],
+        ['Compare your base rate with 2 pt / $1', 'Use your normal tier earn rate as the baseline, then enter 2 only when Google Play shows a final special earn rate of 2 points per $1 for the eligible purchase.'],
         ['Eligibility matters', 'Promotion labels can hide limits such as selected apps, maximum bonus points, or payment-method restrictions.'],
         ['Avoid forced spending', 'Use campaigns to move planned purchases, not to create new purchases that exceed the value of the reward.']
       ],
       faq: [
-        ['Does 2x make the cost exactly half?', 'Not always. It depends on base earning, status, caps, and eligible purchase amount.'],
+        ['Does 2x make the cost exactly half?', 'Not necessarily. A 2-point special earn rate is compared with your tier base rate rather than multiplying that base rate by 2; caps and eligibility also matter.'],
         ['Can gift cards count?', 'They may not count at purchase time in the way users expect. Check the local rule and compare with the gift-card guide.'],
         ['Is 2x enough for Platinum or Diamond?', 'It depends on missing points. Use the calculator result with your current Play Points progress.']
       ]
@@ -411,11 +411,11 @@ const PAGE_TYPES = {
       description: 'Google Play Points 2배 캠페인에서 필요한 결제 금액을 비교하고, 일반 적립과 캠페인 적용 시 차이를 한국어로 확인합니다.',
       eyebrow: '2배 캠페인 예상',
       h1: 'Google Play Points 2배 캠페인은 얼마나 도움이 될까요?',
-      lead: '2배 캠페인은 필요한 금액을 낮출 수 있지만, 대상 결제일 때만 의미가 있습니다. 이 페이지는 2배 배율로 계산기를 열어 일반 조건과 비교할 수 있게 합니다.',
+      lead: '2배 캠페인은 필요한 금액을 낮출 수 있지만, 대상 결제일 때만 의미가 있습니다. 이 기존 “2배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 2pt로 표시될 때 그 값을 사용하며, 등급 기본 적립률에 2를 곱하지 않습니다.',
       cta: '2배로 계산하기',
       secondary: '3배 캠페인 비교',
       secondaryHref: '/campaign/3x/',
-      summary: ['초기 조건: 2배 배율', '추천: 예정된 결제가 있는 경우', '확인: 대상 앱, 상한, 반영 시점'],
+      summary: ['초기 조건: 특별 적립률 1,000원당 2pt', '추천: 예정된 결제가 있는 경우', '확인: 대상 앱, 상한, 반영 시점'],
       sections: [
         ['1배와 2배 비교', '먼저 1배 기준을 보고 2배로 바꾸면 캠페인을 기다릴 가치가 있는지 판단하기 쉽습니다.'],
         ['대상 조건 확인', '일부 앱, 결제수단, 보너스 상한이 있을 수 있습니다.'],
@@ -432,11 +432,11 @@ const PAGE_TYPES = {
       description: '使用 Google Play Points 2 倍活動估算所需消費，並和一般 1 倍累積比較，判斷活動是否值得等待。',
       eyebrow: '2 倍活動估算',
       h1: 'Google Play Points 2 倍活動能省多少？',
-      lead: '2 倍活動可能降低達成目標所需金額，但前提是該筆消費符合資格。這頁會以 2 倍倍率開啟計算機，方便與一般條件比較。',
+      lead: '2 倍活動可能降低達成目標所需金額，但前提是該筆消費符合資格。這個保留「2 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 2 點時使用 2，不會把等級基本獲點率乘以 2。',
       cta: '用 2 倍計算',
       secondary: '比較 3 倍活動',
       secondaryHref: '/campaign/3x/',
-      summary: ['預設: 2 倍倍率', '適合: 已計畫的消費', '確認: 適用 App、上限、回饋時間'],
+      summary: ['預設：特別獲點率每 NT$30 2 點', '適合: 已計畫的消費', '確認: 適用 App、上限、回饋時間'],
       sections: [
         ['比較 1 倍與 2 倍', '先看 1 倍基準，再切換到 2 倍，就能判斷是否值得等待活動。'],
         ['資格條件很重要', '活動可能限制 App、付款方式或加碼點數上限。'],

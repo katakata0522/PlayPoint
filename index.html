@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算</title>
-    <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やキャンペーン倍率を目安で逆算できます。">
+    <meta name="description" content="Google Play Points のランクアップまでにあといくら必要かを計算。現在ステータス、目標ステータス、必要ポイントを入力するだけで、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映して目安を逆算できます。">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="かたかた">
     <meta name="last-modified" content="2026-08-12">
@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
     <meta property="og:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
-    <meta property="og:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
+    <meta property="og:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
@@ -33,10 +33,10 @@
     <meta property="og:site_name" content="Google Play Points 計算機">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算機｜あといくらでランクアップ？必要課金額を逆算">
-    <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やキャンペーン倍率込みの目安を逆算できます。">
+    <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=e6baea048c">
+    <link rel="modulepreload" href="js/main.js?v=617dd4f267">
     <link rel="modulepreload" href="js/config.js">
     <link rel="modulepreload" href="js/analytics-core.js?v=a7babf5f72">
     <link rel="modulepreload" href="js/ui.js">
@@ -122,7 +122,7 @@
           "name": "課金目標の計算はどのように行われますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。"
+            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。"
           }
         },
         {
@@ -179,7 +179,7 @@
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算機</h1>
-    <p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やキャンペーン倍率込みの目安を確認できます。</p>
+    <p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">通常計算</button>
@@ -385,7 +385,7 @@
         <h2 data-lang-key="faqSectionTitle">❓ よくある質問 (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. 課金目標の計算はどのように行われますか？</h3>
-            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の基本還元ポイントやキャンペーン倍率に基づいて必要な課金額を算出します。</p>
+            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。</p>
         </div>
         <div class="faq-item">
             <h3>Q. 逆算モードとは何ですか？</h3>
@@ -432,8 +432,8 @@
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=e6baea048c"></script>
-<script src="js/third-party.js?v=a8f3297d3d" defer></script>
+<script type="module" src="js/main.js?v=617dd4f267"></script>
+<script src="js/third-party.js?v=b4e658760b" defer></script>
 
 </body>
 </html>

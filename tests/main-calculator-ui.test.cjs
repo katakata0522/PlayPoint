@@ -29,16 +29,16 @@ test('通常計算は自動入力される獲得率と倍率を主画面に残�
   assert.doesNotMatch(uiSource, /advancedSummary/);
 });
 
-test('4言語に自動入力の獲得率と通常倍率の文言が用意されている', () => {
+test('4言語に通常獲得率とキャンペーン特別獲得率の文言が用意されている', () => {
   const expectedCopy = [
-    '100円あたりの獲得率（自動入力・編集可）',
-    'キャンペーン倍率（通常は1倍）',
-    'Points per $1 (auto-filled, editable)',
-    'Campaign multiplier (normally 1×)',
-    '₩1,000당 적립률 (자동 입력·수정 가능)',
-    '캠페인 배율 (보통 1배)',
-    '每 NT$30 獲得點數（自動帶入，可修改）',
-    '活動倍率（通常為 1 倍）'
+    '通常獲得率（自動入力・編集可）',
+    'キャンペーン特別獲得率（例：3pt/100円）',
+    'Base earn rate per $1 (auto-filled, editable)',
+    'Promotion special earn rate (e.g. 3 pt / $1)',
+    '기본 적립률 (자동 입력·수정 가능)',
+    '캠페인 특별 적립률 (예: 1,000원당 3pt)',
+    '基本獲點率（自動帶入，可修改）',
+    '活動特別獲點率（例：每 NT$30 3 點）'
   ];
 
   for (const text of expectedCopy) {

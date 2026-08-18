@@ -15,12 +15,15 @@ test('Google Play特別獲得率をランク通常率へ掛けない', () => {
   assert.doesNotMatch(calculator, /statusRate \* multiplier/);
 });
 
-test('Consent Modeは広告用途をPurpose 1だけで一括許可しない', () => {
+test('ConsentはGoogleFCを一次情報にしTCFフォールバックでPurpose 7まで扱う', () => {
   const consent = read('js/consent.js');
-  assert.match(consent, /consents\[3\]/);
-  assert.match(consent, /consents\[4\]/);
-  assert.match(consent, /ad_user_data: personalizedAdsAllowed/);
-  assert.match(consent, /ad_personalization: personalizedAdsAllowed/);
+  assert.match(consent, /gtag_enable_tcf_support = true/);
+  assert.match(consent, /CONSENT_MODE_DATA_READY/);
+  assert.match(consent, /getGoogleConsentModeValues/);
+  assert.match(consent, /consents\[7\]/);
+  assert.match(consent, /whenAnalyticsGranted/);
+  assert.match(consent, /whenAdsAllowed/);
+  assert.doesNotMatch(consent, /settleWithoutTcf/);
 });
 
 test('ゲーム生成物は確認範囲と出典を明示し保留記事を推薦しない', () => {
@@ -120,12 +123,57 @@ test('Consent pendingはGA4イベントを破棄せず後からの同意変更�
   const analytics = read('js/analytics-core.js');
   const consent = read('js/consent.js');
   assert.match(analytics, /consentStatus === 'pending'/);
-  assert.ok(!consent.includes("if (status !== 'granted') callbacks.clear()"));
-  assert.match(consent, /else callbacks\.add\(callback\)/);
+  assert.match(consent, /else analyticsCallbacks\.add\(callback\)/);
+  assert.match(consent, /else adCallbacks\.add\(callback\)/);
+  assert.match(consent, /whenAnalyticsGranted/);
+  assert.match(consent, /whenAdsAllowed/);
 });
 
 
 test('今回内容を更新した国際生成LPは8月18日を編集日として持つ', () => {
   const dates = read('scripts/content-dates.cjs');
   assert.match(dates, /GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18'/);
+});
+
+
+test('レビューで見つかった表示破損と旧倍率コピーを残さない', () => {
+  const config = read('js/config.js');
+  const simplified = read('js/main-calculator-ui.js');
+  assert.ok(!config.includes('pt/labelMultiplier'));
+  assert.ok(!config.includes('pt/labelMultiplierReverse'));
+  assert.ok(!simplified.includes('Campaign multiplier (normally 1×)'));
+  assert.ok(simplified.includes('Promotion special earn rate (e.g. 3 pt / $1)'));
+});
+
+test('LP収益セクションはcanonical buildで冪等に同期される', () => {
+  const source = read('scripts/insert-lp-monetization.cjs');
+  const build = read('scripts/build-html.js');
+  assert.ok(source.includes('課金前にやっておくべき実質割引テクニック'));
+  assert.ok(source.includes('課金前に確認したいギフトコード購入条件'));
+  assert.ok(source.includes('normalizeLpContent'));
+  assert.ok(build.includes('applyLpMonetization(rootDir)'));
+  for (const file of ['campaign/2x/index.html', 'campaign/3x/index.html']) {
+    const html = read(file);
+    assert.ok(!html.includes('ポイント還元の対象になる場合</strong>されます'));
+    assert.ok(!html.includes('ポイント二重取り'));
+    assert.equal((html.match(/課金前に確認したいギフトコード購入条件/g) || []).length, 1, file);
+  }
+});
+
+test('国際2xページも最終特別獲得率として説明する', () => {
+  const source = read('scripts/intl-seo-content.cjs');
+  assert.ok(!source.includes('Preset: 2x multiplier'));
+  assert.ok(!source.includes('초기 조건: 2배 배율'));
+  assert.ok(!source.includes('預設: 2 倍倍率'));
+  assert.ok(source.includes('special earn rate of 2 points per $1'));
+});
+
+test('記事共通導線は固定交換価値や旧キャンペーン倍率を断定しない', () => {
+  const source = read('scripts/article-static-usability.cjs');
+  assert.ok(source.includes('Play Pointsの交換先や必要ポイント数は時期・国・アカウントで変わります'));
+  for (const name of fs.readdirSync(path.join(root, 'articles')).filter(name => name.endsWith('.html'))) {
+    const html = read('articles/' + name);
+    assert.ok(!html.includes('不足ポイントとキャンペーン倍率から'), name);
+    assert.ok(!html.includes('1pt = 最大2円〜3円相当'), name);
+  }
 });

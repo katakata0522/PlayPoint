@@ -17,14 +17,14 @@
         if (consentManagerPromise) return consentManagerPromise;
 
         consentManagerPromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/consent.js?v=725b19a671"]');
+            const existing = document.querySelector('script[src*="/js/consent.js?v=fa7ca65a92"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=725b19a671';
+            script.src = rootPath + 'js/consent.js?v=fa7ca65a92';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
@@ -54,9 +54,20 @@
         return analyticsCorePromise;
     }
 
-    function runAfterConsent(callback) {
+    function runAfterConsent(callback, purpose = 'analytics') {
         return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
-            .then(() => window.PlayPointConsent.whenGranted(callback))
+            .then(() => {
+                const consent = window.PlayPointConsent;
+                if (purpose === 'ads' && typeof consent.whenAdsAllowed === 'function') {
+                    consent.whenAdsAllowed(callback);
+                    return;
+                }
+                if (typeof consent.whenAnalyticsGranted === 'function') {
+                    consent.whenAnalyticsGranted(callback);
+                    return;
+                }
+                consent.whenGranted(callback);
+            })
             .catch((error) => console.error('Consent manager load failed:', error));
     }
 
@@ -133,9 +144,10 @@
     }
 
     function setupBlogAdsense() {
-        if (!window.location.pathname.includes('/blog')) return;
-        // 固定600pxのスクロール条件を置かず、同意状態に従ってasync取得を開始する。
-        void runAfterConsent(loadBlogAdsense);
+        if (!(isBlogPage || isArticlePageTop)) return;
+        // Google Privacy & Messaging / TCFの初期化に必要な非同期ライブラリは早期取得する。
+        // 手動広告枠のpushはarticle.js側でad_storage許可後にだけ実行する。
+        loadBlogAdsense();
     }
 
     function ensureCommonStyles() {
