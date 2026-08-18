@@ -13,7 +13,7 @@ const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-12';
 
 const CONTENT_DATE_OVERRIDES = Object.freeze({
   'about-playpoints.html': '2026-08-12',
-  'info.html': '2026-07-26',
+  'info.html': '2026-08-18',
   'changelog.html': '2026-08-12',
   'attention.html': '2026-08-04',
   'privacy.html': '2026-08-18',

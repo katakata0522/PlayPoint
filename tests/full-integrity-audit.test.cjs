@@ -70,3 +70,47 @@ test('ゲームサイトマップは各ページのlast-modifiedを優先する'
   assert.match(sitemap, /htmlDateFor/);
   assert.match(read('scripts/generate-game-simulators.cjs'), /last-modified/);
 });
+
+
+test('韓国語・繁体字ゲーム計算機も特別獲得率として表示する', () => {
+  const generator = read('scripts/generate-game-simulators.cjs');
+  assert.match(generator, /프로모션 특별 적립률/);
+  assert.match(generator, /活動特別獲點率/);
+  assert.ok(!generator.includes("multiplierLabel: '포인트 배율:'"));
+  assert.ok(!generator.includes("multiplierLabel: '點數加碼倍率：'"));
+});
+
+test('国際LPはundefinedフッターやランク率×倍率の説明を生成しない', () => {
+  const content = read('scripts/intl-seo-content.cjs');
+  assert.match(content, /trademarkNotice/);
+  assert.ok(!content.includes('Preset: 3x multiplier'));
+  assert.ok(!content.includes('초기 조건: 3배 배율'));
+  assert.ok(!content.includes('預設: 3 倍倍率'));
+  for (const file of ['en/campaign/3x/index.html', 'ko/campaign/3x/index.html', 'tw/campaign/3x/index.html']) {
+    const html = read(file);
+    assert.ok(!html.includes('>undefined<'), file);
+  }
+});
+
+test('Q&Aのキャンペーン説明は重複せず公式画面を優先する', () => {
+  const html = read('info.html');
+  assert.ok(!html.includes('表示される場合はGoogle Playのオファー画面'));
+  assert.ok(html.includes('通常獲得率へキャンペーン数字を掛ける計算ではありません'));
+  assert.ok(html.includes('キャンペーンの併用可否や対象判定を保証するものではありません'));
+});
+
+test('2pt/100円LPはランク通常率へ2を掛けた旧金額を残さない', () => {
+  const html = read('campaign/2x/index.html');
+  assert.ok(html.includes('<td>37,500円</td>'));
+  assert.ok(html.includes('<td>150,000円</td>'));
+  assert.ok(html.includes('<td>200,000円</td>'));
+  assert.ok(html.includes('<td>550,000円</td>'));
+  assert.ok(!html.includes('<td>約314,286円</td>'));
+});
+
+test('LPアフィリエイト文言は固定還元や二重取りを断定しない', () => {
+  const source = read('scripts/insert-lp-monetization.cjs');
+  assert.ok(!source.includes('ポイント二重取り'));
+  assert.ok(!source.includes('場合</strong>されます'));
+  assert.ok(source.includes('ポイント還元の対象になる場合があります'));
+});

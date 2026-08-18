@@ -223,7 +223,7 @@ const LOCALES = {
     pointValueSuffix: ' 상당',
     unitSpend: 1000,
     rateText: '1,000원=1pt',
-    verifiedDate: '최종 확인: 2026년 8월',
+    verifiedDate: 'Play Points 적립률 확인: 2026년 8월 (게임 가격/천장은 참고값)',
     badgeText: '인기 게임별 포인트 시뮬레이터',
     portalBadge: '🎮 모바일 게임 특화',
     portalH1: '인기 모바일 게임 Google Play Points 과금·천장 계산기',
@@ -236,14 +236,14 @@ const LOCALES = {
     packSelectLabel: '과금 패키지 선택:',
     packCountLabel: '구매 수량:',
     customOption: '직접 입력 (자유 금액)',
-    multiplierLabel: '포인트 배율:',
+    multiplierLabel: '프로모션 특별 적립률:',
     multiplierOptions: [
-      { val: '1', label: '일반 적립 (1배 / 1%)' },
-      { val: '2', label: '2배 이벤트' },
-      { val: '3', label: '3배 이벤트' },
-      { val: '4', label: '4배 이벤트' },
-      { val: '5', label: '5배 이벤트' },
-      { val: '7', label: '7배 이벤트' }
+      { val: '1', label: '기본 기준: 1,000원당 1pt' },
+      { val: '2', label: '특별 적립률: 1,000원당 2pt' },
+      { val: '3', label: '특별 적립률: 1,000원당 3pt' },
+      { val: '4', label: '특별 적립률: 1,000원당 4pt' },
+      { val: '5', label: '특별 적립률: 1,000원당 5pt' },
+      { val: '7', label: '특별 적립률: 1,000원당 7pt' }
     ],
     statusLabel: '현재 회원 등급:',
     statusOptions: [
@@ -269,8 +269,8 @@ const LOCALES = {
     tableTitle: '패키지별 Play Points 적립 비교표',
     tableThPack: '패키지 / 아이템명',
     tableThPrice: '가격 (KRW)',
-    tableThNormal: '일반 적립 (1배)',
-    tableThCp: '5배 이벤트 (5배)',
+    tableThNormal: '기본 적립률 (1,000원당 1pt)',
+    tableThCp: '특별 적립률 (1,000원당 5pt)',
     rewardCompareTitle: 'Play Points 사용 탭에서 확인할 교환처',
     rewardTagCoupon: '할인 쿠폰',
     rewardCouponName: '게임 전용 할인 쿠폰',
@@ -333,14 +333,14 @@ const LOCALES = {
     packSelectLabel: '選擇課金禮包：',
     packCountLabel: '購買次數：',
     customOption: '自由輸入（自訂金額）',
-    multiplierLabel: '點數加碼倍率：',
+    multiplierLabel: '活動特別獲點率：',
     multiplierOptions: [
-      { val: '1', label: '一般回饋（1倍 / 3.3%）' },
-      { val: '2', label: '2倍活動加碼' },
-      { val: '3', label: '3倍活動加碼' },
-      { val: '4', label: '4倍活動加碼' },
-      { val: '5', label: '5倍活動加碼' },
-      { val: '7', label: '7倍活動加碼' }
+      { val: '1', label: '基本參考：每 NT$30 1點' },
+      { val: '2', label: '特別獲點率：每 NT$30 2點' },
+      { val: '3', label: '特別獲點率：每 NT$30 3點' },
+      { val: '4', label: '特別獲點率：每 NT$30 4點' },
+      { val: '5', label: '特別獲點率：每 NT$30 5點' },
+      { val: '7', label: '特別獲點率：每 NT$30 7點' }
     ],
     statusLabel: '目前會員等級：',
     statusOptions: [
@@ -366,8 +366,8 @@ const LOCALES = {
     tableTitle: '課金禮包 Play Points 回饋速查表',
     tableThPack: '禮包 / 道具名稱',
     tableThPrice: '售價 (TWD)',
-    tableThNormal: '一般回饋 (1倍)',
-    tableThCp: '5倍加碼 (5倍)',
+    tableThNormal: '基本獲點率（每 NT$30 1點）',
+    tableThCp: '特別獲點率（每 NT$30 5點）',
     rewardCompareTitle: '請在 Play Points「使用」頁面確認兌換選項',
     rewardTagCoupon: '折價券',
     rewardCouponName: '遊戲專屬折價券',
@@ -488,11 +488,11 @@ const GAMES_DATA = [
     faq: {
       ja: [
         { q: '原神の課金でGoogle Play Pointsは貯まりますか？', a: 'はい。Android端末またはGoogle Play Games（PC版）経由で課金した場合、通常100円につき1ポイント以上のPlay Pointsが貯まります。' },
-        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playのポイント増量キャンペーン（4倍〜7倍時）なら約2,160pt〜3,780pt貯まります。' }
+        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。' }
       ],
       en: [
         { q: 'Do I earn Google Play Points on Genshin Impact purchases?', a: 'Yes! When purchasing Genesis Crystals or passes on Android or Google Play Games PC, you earn at least 1 Play Point per $1 spent.' },
-        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points during 4x-7x special point promotions.' }
+        { q: 'How many points for 180-pull hard pity in Genshin?', a: 'Spending around $400 for 180 pulls yields ~400 points at base rate, or 1,600 to 2,800 points when an eligible special earn rate of 4-7 points per $1 is shown in Google Play.' }
       ],
       ko: [
         { q: '원신 결제 시 Google Play Points가 적립되나요?', a: '네! 안드로이드 기기 또는 Google Play Games PC 버전을 통해 결제하면 1,000원당 1포인트 이상의 Play Points가 적립됩니다.' }

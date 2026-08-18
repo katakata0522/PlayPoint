@@ -18,14 +18,14 @@ const lpFiles = [
 ];
 
 const affiliateSection = `    <section class="section">
-        <h2>課金前にやっておくべき実質割引テクニック</h2>
+        <h2>課金前に確認したいギフトコード購入条件</h2>
         <div class="lp-affiliate-box">
             <div class="lp-affiliate-box-header">
                 <span style="font-size: 1.3rem;">🛒</span>
-                <h3 class="lp-affiliate-box-title">楽天市場のGoogle Playギフトコード認定店でポイント二重取り</h3>
+                <h3 class="lp-affiliate-box-title">楽天市場のGoogle Playギフトコード認定店の還元条件を確認</h3>
             </div>
             <p class="lp-affiliate-box-text">
-                直接クレジットカードで決済する前に、楽天市場の「Google Play ギフトコード認定店」を経由すると、<strong>楽天市場側のキャンペーンや会員条件により楽天ポイント還元の対象になる場合</strong>されます。付与率・上限・エントリー要否・コードの受取条件は変わるため、購入画面とキャンペーン詳細を確認してください。
+                楽天市場の「Google Play ギフトコード認定店」では、<strong>楽天市場側のキャンペーンや会員条件によってポイント還元の対象になる場合があります。</strong> 付与率・上限・エントリー要否・コードの受取条件は変わるため、購入画面とキャンペーン詳細を確認してください。
             </p>
             <div class="lp-affiliate-box-actions">
                 <a class="lp-affiliate-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&amp;link_type=hybrid_url&amp;ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">
@@ -55,7 +55,7 @@ lpFiles.forEach(file => {
   let content = fs.readFileSync(fullPath, 'utf8');
 
   // 既存のセクションがあれば除去
-  const existingRegex = /<section class="section">\s*<h2>課金前にやっておくべき実質割引テクニック<\/h2>[\s\S]*?<\/section>/g;
+  const existingRegex = /<section class="section">\s*<h2>課金前に確認したいギフトコード購入条件<\/h2>[\s\S]*?<\/section>/g;
   content = content.replace(existingRegex, '');
 
   // 最後の </main> または <footer の直前に挿入

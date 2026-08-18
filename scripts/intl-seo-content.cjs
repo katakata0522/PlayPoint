@@ -13,6 +13,7 @@ const LOCALES = {
     back: 'Back to calculator',
     author: 'Katakata',
     siteName: 'Google Play Points Calculator',
+    trademarkNotice: 'Google Play, the Google Play logo, and Android are trademarks of Google LLC. This independent calculator is not affiliated with or endorsed by Google LLC or the game publishers mentioned on this site.',
     relatedTitle: 'Related guides',
     regionNoteTitle: 'Regional note',
     lastUpdatedLabel: 'Last updated',
@@ -38,6 +39,7 @@ const LOCALES = {
     back: '계산기로 돌아가기',
     author: 'Katakata',
     siteName: 'Google Play Points 계산기',
+    trademarkNotice: 'Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 독립적으로 운영되는 비공식 계산기이며 Google LLC 및 언급된 게임의 개발·배급사와 제휴 또는 승인 관계가 없습니다.',
     relatedTitle: '함께 확인할 가이드',
     regionNoteTitle: '국가별 확인',
     lastUpdatedLabel: '업데이트',
@@ -63,6 +65,7 @@ const LOCALES = {
     back: '返回計算機',
     author: 'Katakata',
     siteName: 'Google Play Points 計算器',
+    trademarkNotice: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為獨立營運的非官方計算工具，與 Google LLC 及所提及遊戲的開發或發行商無隸屬或認可關係。',
     relatedTitle: '相關指南',
     regionNoteTitle: '地區確認',
     lastUpdatedLabel: '更新日期',
@@ -107,7 +110,7 @@ const PAGE_TYPES = {
       ],
       faq: [
         ['Can this calculator confirm the official Diamond requirement?', 'No. It estimates spending from the values you enter. The official progress shown in Google Play is the source of truth.'],
-        ['Should I use a campaign special earn rate?', 'Use Start with your base rate, then enter the final special earn rate shown for an eligible purchase in Google Play.'],
+        ['Should I use a campaign special earn rate?', 'Start with your base rate, then enter the final special earn rate shown for an eligible purchase in Google Play.'],
         ['Is Diamond always worth reaching?', 'Not always. It depends on whether you use the rewards enough to justify the extra spending.']
       ]
     },
@@ -145,11 +148,11 @@ const PAGE_TYPES = {
       sections: [
         ['先看剩餘點數', '請以 Google Play App 顯示的剩餘點數為準。若輸入累積總點數，估算金額可能會失真。'],
         ['地區差異', '台灣、日本、韓國、美國的活動顯示與回饋條件可能不同。計算後仍要回到 App 確認。'],
-        ['是否等待活動', '如果估算金額高於平常消費，先比較 1 倍、2 倍或 3 倍，不要為了等級增加不必要支出。']
+        ['是否等待活動', '如果估算金額高於平常消費，請比較目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率，不要為了等級增加不必要支出。']
       ],
       faq: [
         ['這能保證官方鑽石條件嗎？', '不能。這是依輸入值估算，官方進度仍以 Google Play App 顯示為準。'],
-        ['可以輸入活動特別獲點率嗎？', '可以，但只有實際符合活動資格的消費才適合使用倍率估算。'],
+        ['可以輸入活動特別獲點率嗎？', '可以，但請輸入 Google Play 顯示的最終特別獲點率，並且只用於實際符合活動資格的消費。'],
         ['鑽石等級一定值得嗎？', '不一定，取決於你是否真的會使用相關回饋。']
       ]
     }
@@ -388,10 +391,10 @@ const PAGE_TYPES = {
       eyebrow: '2x promotion estimate',
       h1: 'How much does a Google Play Points 2x promotion help?',
       lead: 'A 2x promotion can reduce the spending needed for a target, but only if the purchase is eligible. Use this page to open the calculator with a 2x multiplier and compare it with regular earning.',
-      cta: 'Calculate with 2x',
+      cta: 'Calculate with 2 pt / $1',
       secondary: 'Compare 3x promotion',
       secondaryHref: '/campaign/3x/',
-      summary: ['Preset: 2x multiplier', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
+      summary: ['Preset: special earn rate 2 pt / $1', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
       sections: [
         ['Compare 1x and 2x', 'Run the estimate at 1x first, then switch to 2x. The difference shows whether waiting for the campaign matters.'],
         ['Eligibility matters', 'Promotion labels can hide limits such as selected apps, maximum bonus points, or payment-method restrictions.'],
@@ -457,19 +460,19 @@ const PAGE_TYPES = {
       description: 'Compare regular Google Play Points earning with a 3x promotion and estimate whether waiting changes the required spending.',
       eyebrow: '3x promotion estimate',
       h1: 'How much does a Google Play Points 3x promotion help?',
-      lead: 'A 3x promotion can change a status plan more than a small discount, but only when the purchase qualifies. Compare 1x, 2x, and 3x before deciding.',
-      cta: 'Calculate with 3x',
+      lead: 'This legacy “3x” page models a final special earn rate of 3 points per $1 when Google Play shows that rate for an eligible purchase. It does not multiply your tier base rate by 3.',
+      cta: 'Calculate with 3 pt / $1',
       secondary: 'Should I wait for a campaign?',
       secondaryHref: '/en/campaign/wait/',
-      summary: ['Preset: 3x multiplier', 'Best for: larger planned purchases', 'Check: caps, activation, and eligible apps'],
+      summary: ['Preset: special earn rate 3 pt / $1', 'Best for: larger planned purchases', 'Check: caps, activation, and eligible apps'],
       sections: [
-        ['Use 3x only when it is real', 'A 3x headline does not always apply to every app, item, payment method, or account. Confirm the offer before treating the result as likely.'],
-        ['Compare against 1x and 2x', 'The useful question is not whether 3x looks attractive. It is whether the difference is large enough to change a purchase you already planned.'],
+        ['Use the 3 pt / $1 rate only when it is shown', 'Only enter 3 when Google Play shows a final special earn rate of 3 points per $1 for the purchase. Check the eligible app, item, period, activation, and cap.'],
+        ['Compare against your base earn rate', 'Compare the confirmed special earn rate with your normal tier earn rate. Use the higher applicable rate rather than multiplying the two.'],
         ['Watch bonus caps', 'A maximum bonus can make the final result smaller than the headline suggests.'],
         ['Do not chase status with new spending', 'If the purchase exists only because of the campaign, compare the reward value with the extra cost first.']
       ],
       faq: [
-        ['Does 3x cut the cost to one third?', 'Not necessarily. Base rate, caps, and eligibility can change the final result.'],
+        ['Does 3x cut the cost to one third?', 'Not necessarily. A 3-point special rate is compared with your base tier rate; it does not multiply that tier rate. Caps and eligibility can also change the result.'],
         ['Is 3x better than a gift-card discount?', 'They answer different questions. Compare point eligibility and cost savings separately.'],
         ['Should I wait for 3x?', 'Only when the purchase can wait and the offer clearly applies.']
       ]
@@ -479,19 +482,19 @@ const PAGE_TYPES = {
       description: 'Google Play Points 3배 캠페인 기준으로 필요한 결제 금액을 비교하고, 보너스 조건과 일반 적립 기준의 차이를 한국어로 점검합니다.',
       eyebrow: '3배 캠페인 예상',
       h1: 'Google Play Points 3배 캠페인은 얼마나 도움이 될까요?',
-      lead: '3배 캠페인은 등급 계획을 크게 바꿀 수 있지만, 대상 결제일 때만 의미가 있습니다. 1배, 2배, 3배를 비교한 뒤 판단하세요.',
-      cta: '3배로 계산하기',
+      lead: '이 기존 “3배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때 그 값을 사용합니다. 현재 등급의 기본 적립률에 3을 곱하지 않습니다.',
+      cta: '1,000원당 3pt로 계산하기',
       secondary: '캠페인을 기다릴지 보기',
       secondaryHref: '/ko/campaign/wait/',
-      summary: ['초기 조건: 3배 배율', '추천: 큰 예정 결제', '확인: 상한, 활성화, 대상 앱'],
+      summary: ['초기 조건: 특별 적립률 1,000원당 3pt', '추천: 큰 예정 결제', '확인: 상한, 활성화, 대상 앱'],
       sections: [
-        ['실제 대상일 때만 사용', '3배 문구가 모든 앱, 상품, 결제수단, 계정에 적용된다고 가정하면 안 됩니다.'],
-        ['1배와 2배도 함께 비교', '중요한 것은 3배가 좋아 보이는지가 아니라, 원래 예정된 결제의 시점을 바꿀 만큼 차이가 있는지입니다.'],
+        ['실제 대상일 때만 사용', 'Google Play에 해당 결제의 최종 특별 적립률이 1,000원당 3pt로 표시될 때만 3을 입력하세요. 대상 앱, 상품, 기간, 활성화, 상한을 함께 확인해야 합니다.'],
+        ['기본 적립률과 비교', '확인된 특별 적립률과 현재 등급의 기본 적립률을 비교해 더 높은 적용률을 사용하며, 두 값을 곱하지 않습니다.'],
         ['보너스 상한 확인', '상한이 있으면 문구보다 실제 결과가 작을 수 있습니다.'],
         ['등급만을 위한 새 지출 피하기', '캠페인 때문에 생긴 지출이라면 혜택 가치와 추가 비용을 먼저 비교하세요.']
       ],
       faq: [
-        ['3배면 비용이 3분의 1인가요?', '항상 그렇지는 않습니다. 기본 적립률, 상한, 대상 조건이 영향을 줍니다.'],
+        ['3배면 비용이 3분의 1인가요?', '항상 그렇지는 않습니다. 1,000원당 3pt의 특별 적립률은 등급 기본 적립률과 비교하는 값이며, 기본 적립률에 3을 곱하지 않습니다. 상한과 대상 조건도 확인해야 합니다.'],
         ['기프트카드 할인보다 낫나요?', '포인트 대상 여부와 비용 절감은 별도 문제로 비교해야 합니다.'],
         ['3배 캠페인을 기다려야 하나요?', '결제를 기다릴 수 있고 조건이 확실할 때만 고려하세요.']
       ]
@@ -501,19 +504,19 @@ const PAGE_TYPES = {
       description: '使用 Google Play Points 3 倍活動估算所需消費，並檢查活動條件、剩餘點數與一般累積時的差異。',
       eyebrow: '3 倍活動估算',
       h1: 'Google Play Points 3 倍活動能省多少？',
-      lead: '3 倍活動可能大幅改變等級計畫，但前提是該筆消費符合資格。請先比較 1 倍、2 倍與 3 倍。',
-      cta: '用 3 倍計算',
+      lead: '這個保留「3 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 3 點時使用 3；不會把會員等級的基本獲點率再乘以 3。',
+      cta: '以每 NT$30 3 點計算',
       secondary: '判斷是否等待活動',
       secondaryHref: '/tw/campaign/wait/',
-      summary: ['預設: 3 倍倍率', '適合: 較大的計畫消費', '確認: 上限、啟用、適用 App'],
+      summary: ['預設：特別獲點率每 NT$30 3 點', '適合: 較大的計畫消費', '確認: 上限、啟用、適用 App'],
       sections: [
-        ['只有符合資格才使用', '3 倍標題不代表所有 App、商品、付款方式或帳號都適用。'],
-        ['同時比較 1 倍與 2 倍', '重點不是 3 倍看起來多好，而是差距是否足以改變原本計畫的購買時機。'],
+        ['只有符合資格才使用', '只有 Google Play 對該筆消費顯示最終特別獲點率為每 NT$30 3 點時才輸入 3，並確認適用 App、商品、期間、啟用方式與上限。'],
+        ['與基本獲點率比較', '請比較已確認的活動特別獲點率與會員等級基本獲點率，採用實際適用的較高者，不要把兩者相乘。'],
         ['注意加碼上限', '若有上限，實際結果可能低於標題直覺。'],
         ['不要為等級新增消費', '如果這筆消費只是為了活動產生，請先比較回饋價值與額外成本。']
       ],
       faq: [
-        ['3 倍會讓成本變成三分之一嗎？', '不一定，基本回饋率、上限與資格都會影響結果。'],
+        ['3 倍會讓成本變成三分之一嗎？', '不一定。每 NT$30 3 點的特別獲點率要與等級基本獲點率比較，不是把基本獲點率乘以 3；上限與資格也會影響結果。'],
         ['比禮物卡折扣更好嗎？', '點數資格與成本折扣要分開比較。'],
         ['應該等 3 倍活動嗎？', '只有在原本消費可以等待且資格明確時才值得考慮。']
       ]
@@ -532,7 +535,7 @@ const PAGE_TYPES = {
       h1: 'Should you wait for a Google Play Points promotion?',
       lead: 'Waiting can help when a purchase is planned and the promotion applies. It can also create unnecessary spending if the target is only attractive under uncertain conditions.',
       cta: 'Compare promotion timing',
-      secondary: 'Calculate with 3x',
+      secondary: 'Calculate with 3 pt / $1',
       secondaryHref: '/en/campaign/3x/',
       summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: 1x, 2x, 3x and eligibility'],
       sections: [
@@ -576,7 +579,7 @@ const PAGE_TYPES = {
       h1: 'Google Play Points 活動值得等嗎？',
       lead: '如果原本就有計畫消費，且活動資格明確，等待可能有幫助。但若只因不確定活動而新增消費，就需要保守。',
       cta: '比較活動時機',
-      secondary: '用 3 倍計算',
+      secondary: '以每 NT$30 3 點計算',
       secondaryHref: '/tw/campaign/3x/',
       summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認: 1 倍、2 倍、3 倍與資格'],
       sections: [
