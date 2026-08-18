@@ -17,14 +17,14 @@
         if (consentManagerPromise) return consentManagerPromise;
 
         consentManagerPromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/consent.js?v=fa7ca65a92"]');
+            const existing = document.querySelector('script[src*="/js/consent.js?v=10f02fb7a9"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/consent.js?v=fa7ca65a92';
+            script.src = rootPath + 'js/consent.js?v=10f02fb7a9';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointConsent), { once: true });
             script.addEventListener('error', reject, { once: true });
