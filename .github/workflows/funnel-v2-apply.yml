@@ -1,9 +1,11 @@
 name: Apply calculator funnel v2
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/calculator-funnel-v2
+      - main
+    types:
+      - synchronize
     paths:
       - '.github/workflows/funnel-v2-apply.yml'
 
@@ -12,6 +14,7 @@ permissions:
 
 jobs:
   apply:
+    if: github.event.pull_request.head.ref == 'agent/calculator-funnel-v2'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -55,5 +58,3 @@ jobs:
           fi
           git commit -m '計算ファネルv2を実装'
           git push origin HEAD:agent/calculator-funnel-v2
-
-# one-shot trigger: 2026-08-18
