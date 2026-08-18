@@ -3,28 +3,37 @@
 (() => {
     if (window.PlayPointConsent) return;
 
-    const callbacks = new Set();
+    const analyticsCallbacks = new Set();
+    const adCallbacks = new Set();
     const EEA_UK_CH_REGIONS = [
         'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR',
         'GB', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
         'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'
     ];
-    let status = 'pending';
-    let tcfListenerAttached = false;
-    let tcfObserved = false;
-    let consentState = Object.freeze({
+    const PURPOSE_STATUS = Object.freeze({ UNKNOWN: 0, GRANTED: 1, DENIED: 2, NOT_APPLICABLE: 3, NOT_CONFIGURED: 4 });
+    const DENIED_STATE = Object.freeze({
         analytics_storage: 'denied',
         ad_storage: 'denied',
         ad_user_data: 'denied',
         ad_personalization: 'denied'
     });
 
+    let analyticsStatus = 'pending';
+    let adStatus = 'pending';
+    let source = 'pending';
+    let consentState = DENIED_STATE;
+    let tcfListenerAttached = false;
+    let timeoutId = null;
+
+    // Google tags should read the CMP's TC string directly. This must be set before gtag calls.
+    window.gtag_enable_tcf_support = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function gtag() {
         window.dataLayer.push(arguments);
     };
 
-    // 対象地域外は通常動作。EEA・英国・スイスはCMP更新まで保存を拒否する。
+    // Outside regulated regions, keep the existing granted default. In EEA/UK/CH, default to denied
+    // until Google Privacy & Messaging / TCF provides the user's choice.
     window.gtag('consent', 'default', {
         analytics_storage: 'granted',
         ad_storage: 'granted',
@@ -40,52 +49,99 @@
         wait_for_update: 500
     });
 
-    function flushCallbacks() {
-        if (status !== 'granted') return;
+    function flush(callbacks, allowed) {
+        if (!allowed) return;
         for (const callback of callbacks) {
             try { callback(); } catch (error) { console.error('同意後の処理に失敗しました。', error); }
         }
         callbacks.clear();
     }
 
-    function dispatchStatus(source) {
+    function dispatchStatus() {
         document.dispatchEvent(new CustomEvent('playpoint:consent-updated', {
-            detail: { status, source, consent: { ...consentState } }
+            detail: {
+                status: analyticsStatus,
+                adStatus,
+                source,
+                consent: { ...consentState }
+            }
         }));
     }
 
-    function applyConsentState(nextState, source) {
-        consentState = Object.freeze({ ...nextState });
-        status = consentState.analytics_storage === 'granted' ? 'granted' : 'denied';
-        window.gtag('consent', 'update', consentState);
-        flushCallbacks();
-        dispatchStatus(source);
+    function normalizePurposeStatus(value) {
+        if (value === PURPOSE_STATUS.GRANTED || value === PURPOSE_STATUS.NOT_APPLICABLE || value === PURPOSE_STATUS.NOT_CONFIGURED) {
+            return 'granted';
+        }
+        if (value === PURPOSE_STATUS.DENIED) return 'denied';
+        return 'pending';
     }
 
-    function buildTcfConsentState(tcData) {
+    function applyConsentState(nextState, nextSource) {
+        consentState = Object.freeze({ ...DENIED_STATE, ...nextState });
+        source = nextSource;
+        analyticsStatus = consentState.analytics_storage === 'granted'
+            ? 'granted'
+            : (consentState.analytics_storage === 'pending' ? 'pending' : 'denied');
+        adStatus = consentState.ad_storage === 'granted'
+            ? 'granted'
+            : (consentState.ad_storage === 'pending' ? 'pending' : 'denied');
+        if (analyticsStatus !== 'pending' || adStatus !== 'pending') {
+            if (timeoutId !== null) window.clearTimeout(timeoutId);
+            timeoutId = null;
+        }
+        flush(analyticsCallbacks, analyticsStatus === 'granted');
+        flush(adCallbacks, adStatus === 'granted');
+        dispatchStatus();
+    }
+
+    function readGoogleFcConsentMode() {
+        if (!window.googlefc || typeof window.googlefc.getGoogleConsentModeValues !== 'function') return false;
+        let values;
+        try {
+            values = window.googlefc.getGoogleConsentModeValues();
+        } catch (error) {
+            console.warn('Google consent mode values could not be read.', error);
+            return false;
+        }
+        if (!values) return false;
+        applyConsentState({
+            analytics_storage: normalizePurposeStatus(values.analyticsStoragePurposeConsentStatus),
+            ad_storage: normalizePurposeStatus(values.adStoragePurposeConsentStatus),
+            ad_user_data: normalizePurposeStatus(values.adUserDataPurposeConsentStatus),
+            ad_personalization: normalizePurposeStatus(values.adPersonalizationPurposeConsentStatus)
+        }, 'googlefc');
+        return true;
+    }
+
+    function buildTcfFallbackState(tcData) {
         if (tcData.gdprApplies === false) {
             return {
-                analytics_storage: 'granted', ad_storage: 'granted',
-                ad_user_data: 'granted', ad_personalization: 'granted'
+                analytics_storage: 'granted',
+                ad_storage: 'granted',
+                ad_user_data: 'granted',
+                ad_personalization: 'granted'
             };
         }
         const consents = tcData.purpose?.consents || {};
-        const storageAllowed = consents[1] === true;
-        const personalizedAdsAllowed = storageAllowed && consents[3] === true && consents[4] === true;
+        const purpose1 = consents[1] === true;
+        const purpose3 = consents[3] === true;
+        const purpose4 = consents[4] === true;
+        const purpose7 = consents[7] === true;
         return {
-            analytics_storage: storageAllowed ? 'granted' : 'denied',
-            ad_storage: storageAllowed ? 'granted' : 'denied',
-            // Purpose 1だけで広告ユーザーデータ/パーソナライズまで許可しない。
-            ad_user_data: personalizedAdsAllowed ? 'granted' : 'denied',
-            ad_personalization: personalizedAdsAllowed ? 'granted' : 'denied'
+            analytics_storage: purpose1 ? 'granted' : 'denied',
+            ad_storage: purpose1 ? 'granted' : 'denied',
+            ad_user_data: purpose1 && purpose7 ? 'granted' : 'denied',
+            ad_personalization: purpose1 && purpose3 && purpose4 ? 'granted' : 'denied'
         };
     }
 
     function handleTcfData(tcData, success) {
         if (!success || !tcData) return;
         if (!['tcloaded', 'useractioncomplete'].includes(tcData.eventStatus)) return;
-        tcfObserved = true;
-        applyConsentState(buildTcfConsentState(tcData), 'tcf');
+        // Google Privacy & Messaging values are the preferred source because they already map
+        // the CMP decision to Consent Mode purposes. TCF is a conservative fallback only.
+        if (readGoogleFcConsentMode()) return;
+        applyConsentState(buildTcfFallbackState(tcData), 'tcf-fallback');
     }
 
     function attachTcfListener() {
@@ -95,17 +151,14 @@
         return true;
     }
 
-    function settleWithoutTcf() {
-        if (tcfObserved || tcfListenerAttached) return;
-        // TCF APIがない地域では内部処理を許可するが、Consent Modeのupdateは送らない。
-        // これによりGoogle側の地域別default（EEA等はdenied）を上書きしない。
-        status = 'granted';
-        consentState = Object.freeze({
-            analytics_storage: 'granted', ad_storage: 'granted',
-            ad_user_data: 'granted', ad_personalization: 'granted'
+    function registerGoogleFcListener() {
+        window.googlefc = window.googlefc || {};
+        window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+        window.googlefc.callbackQueue.push({
+            CONSENT_MODE_DATA_READY() {
+                readGoogleFcConsentMode();
+            }
         });
-        flushCallbacks();
-        dispatchStatus('no-tcf');
     }
 
     function waitForTcfApi() {
@@ -113,14 +166,7 @@
         let attempts = 0;
         const timer = window.setInterval(() => {
             attempts += 1;
-            if (attachTcfListener()) {
-                window.clearInterval(timer);
-                return;
-            }
-            if (attempts >= 8) {
-                window.clearInterval(timer);
-                settleWithoutTcf();
-            }
+            if (attachTcfListener() || attempts >= 20) window.clearInterval(timer);
         }, 250);
     }
 
@@ -136,16 +182,34 @@
     }
 
     window.PlayPointConsent = Object.freeze({
-        whenGranted(callback) {
+        whenAnalyticsGranted(callback) {
             if (typeof callback !== 'function') return;
-            if (status === 'granted') callback();
-            else callbacks.add(callback);
+            if (analyticsStatus === 'granted') callback();
+            else analyticsCallbacks.add(callback);
         },
-        getStatus() { return status; },
+        whenAdsAllowed(callback) {
+            if (typeof callback !== 'function') return;
+            if (adStatus === 'granted') callback();
+            else adCallbacks.add(callback);
+        },
+        // Backward-compatible alias for analytics callers.
+        whenGranted(callback) { this.whenAnalyticsGranted(callback); },
+        getStatus() { return analyticsStatus; },
+        getAdStatus() { return adStatus; },
         getConsentState() { return { ...consentState }; },
+        getSource() { return source; },
         showSettings
     });
 
-    document.dispatchEvent(new CustomEvent('playpoint:consent-ready', { detail: { status } }));
+    registerGoogleFcListener();
     waitForTcfApi();
+    // If both the GoogleFC and TCF APIs fail to become available, do not silently grant consent.
+    // A late CMP callback can still recover from this denied state.
+    timeoutId = window.setTimeout(() => {
+        if (analyticsStatus === 'pending' && adStatus === 'pending') applyConsentState(DENIED_STATE, 'timeout');
+    }, 5000);
+
+    document.dispatchEvent(new CustomEvent('playpoint:consent-ready', {
+        detail: { status: analyticsStatus, adStatus }
+    }));
 })();
