@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: one-time-full-integrity-audit-fix
+  cancel-in-progress: true
+
 jobs:
   apply-and-verify:
     runs-on: ubuntu-latest
