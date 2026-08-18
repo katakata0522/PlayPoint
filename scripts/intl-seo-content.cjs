@@ -390,10 +390,10 @@ const PAGE_TYPES = {
       description: 'Compare regular Google Play Points earning with a 2x promotion and estimate the spending needed for status progress.',
       eyebrow: '2x promotion estimate',
       h1: 'How much does a Google Play Points 2x promotion help?',
-      lead: 'A 2x promotion can reduce the spending needed for a target, but only if the purchase is eligible. Use this page to open the calculator with a 2x multiplier and compare it with regular earning.',
+      lead: 'This legacy “2x” page models a final special earn rate of 2 points per $1 when Google Play shows that rate for an eligible purchase. It does not multiply your tier base rate by 2.',
       cta: 'Calculate with 2 pt / $1',
       secondary: 'Compare 3x promotion',
-      secondaryHref: '/campaign/3x/',
+      secondaryHref: '/en/campaign/3x/',
       summary: ['Preset: special earn rate 2 pt / $1', 'Best for: planned purchases', 'Check: eligible apps, caps, and timing'],
       sections: [
         ['Compare your base rate with 2 pt / $1', 'Use your normal tier earn rate as the baseline, then enter 2 only when Google Play shows a final special earn rate of 2 points per $1 for the eligible purchase.'],
@@ -412,17 +412,17 @@ const PAGE_TYPES = {
       eyebrow: '2배 캠페인 예상',
       h1: 'Google Play Points 2배 캠페인은 얼마나 도움이 될까요?',
       lead: '2배 캠페인은 필요한 금액을 낮출 수 있지만, 대상 결제일 때만 의미가 있습니다. 이 기존 “2배” 페이지는 Google Play에 대상 결제의 최종 특별 적립률이 1,000원당 2pt로 표시될 때 그 값을 사용하며, 등급 기본 적립률에 2를 곱하지 않습니다.',
-      cta: '2배로 계산하기',
+      cta: '1,000원당 2pt로 계산하기',
       secondary: '3배 캠페인 비교',
-      secondaryHref: '/campaign/3x/',
+      secondaryHref: '/ko/campaign/3x/',
       summary: ['초기 조건: 특별 적립률 1,000원당 2pt', '추천: 예정된 결제가 있는 경우', '확인: 대상 앱, 상한, 반영 시점'],
       sections: [
-        ['1배와 2배 비교', '먼저 1배 기준을 보고 2배로 바꾸면 캠페인을 기다릴 가치가 있는지 판단하기 쉽습니다.'],
+        ['기본 적립률과 1,000원당 2pt 비교', '현재 등급의 기본 적립률을 기준으로 보고, Google Play에 해당 결제의 최종 특별 적립률이 1,000원당 2pt로 표시될 때만 2를 입력해 비교하세요.'],
         ['대상 조건 확인', '일부 앱, 결제수단, 보너스 상한이 있을 수 있습니다.'],
         ['불필요한 지출 방지', '캠페인은 예정된 결제를 옮기는 데 쓰고, 등급만을 위해 새 지출을 만들지 않는 편이 안전합니다.']
       ],
       faq: [
-        ['2배면 금액이 정확히 절반인가요?', '항상 그렇지는 않습니다. 기본 적립, 등급, 상한, 대상 금액에 따라 달라집니다.'],
+        ['2배면 금액이 정확히 절반인가요?', '아닙니다. 1,000원당 2pt의 특별 적립률은 현재 등급 기본 적립률과 비교하는 값이며, 기본 적립률에 2를 곱하지 않습니다. 상한과 대상 조건도 확인해야 합니다.'],
         ['기프트카드도 대상인가요?', '사용자가 기대하는 방식과 다를 수 있으므로 지역별 조건을 확인해야 합니다.'],
         ['플래티넘이나 다이아몬드에 충분한가요?', '남은 포인트에 따라 다릅니다. 현재 진행 상황과 함께 보세요.']
       ]
@@ -433,17 +433,17 @@ const PAGE_TYPES = {
       eyebrow: '2 倍活動估算',
       h1: 'Google Play Points 2 倍活動能省多少？',
       lead: '2 倍活動可能降低達成目標所需金額，但前提是該筆消費符合資格。這個保留「2 倍」搜尋名稱的頁面，僅在 Google Play 對符合資格的消費顯示最終特別獲點率為每 NT$30 2 點時使用 2，不會把等級基本獲點率乘以 2。',
-      cta: '用 2 倍計算',
+      cta: '以每 NT$30 2 點計算',
       secondary: '比較 3 倍活動',
-      secondaryHref: '/campaign/3x/',
+      secondaryHref: '/tw/campaign/3x/',
       summary: ['預設：特別獲點率每 NT$30 2 點', '適合: 已計畫的消費', '確認: 適用 App、上限、回饋時間'],
       sections: [
-        ['比較 1 倍與 2 倍', '先看 1 倍基準，再切換到 2 倍，就能判斷是否值得等待活動。'],
+        ['比較基本獲點率與每 NT$30 2 點', '先以目前等級基本獲點率為基準，只有 Google Play 對該筆消費顯示最終特別獲點率為每 NT$30 2 點時，才輸入 2 進行比較。'],
         ['資格條件很重要', '活動可能限制 App、付款方式或加碼點數上限。'],
         ['避免為活動硬買', '活動適合調整原本就要買的項目，不適合為了等級增加不必要支出。']
       ],
       faq: [
-        ['2 倍會讓成本剛好減半嗎？', '不一定，會受到基本回饋、等級、上限與適用金額影響。'],
+        ['2 倍會讓成本剛好減半嗎？', '不會直接減半。每 NT$30 2 點的特別獲點率是與會員等級基本獲點率比較，不是把基本獲點率乘以 2；上限與適用條件也要確認。'],
         ['禮物卡也算嗎？', '可能與直覺不同，請確認所在地區的規則。'],
         ['2 倍足夠升白金或鑽石嗎？', '取決於剩餘點數，請搭配 Google Play App 的進度查看。']
       ]
@@ -537,7 +537,7 @@ const PAGE_TYPES = {
       cta: 'Compare promotion timing',
       secondary: 'Calculate with 3 pt / $1',
       secondaryHref: '/en/campaign/3x/',
-      summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: 1x, 2x, 3x and eligibility'],
+      summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: base rate, special earn rate, and eligibility'],
       sections: [
         ['Start with the 1x baseline', 'If the target is already reasonable at 1x, a promotion is a timing bonus rather than a requirement.'],
         ['Use 2x or 3x only for eligible purchases', 'A multiplier should be entered only when the offer clearly applies to the planned purchase.'],
@@ -581,7 +581,7 @@ const PAGE_TYPES = {
       cta: '比較活動時機',
       secondary: '以每 NT$30 3 點計算',
       secondaryHref: '/tw/campaign/3x/',
-      summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認: 1 倍、2 倍、3 倍與資格'],
+      summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認：基本獲點率、特別獲點率與資格'],
       sections: [
         ['先看 1 倍基準', '如果 1 倍時目標已經合理，活動只是時機優化，不是必要條件。'],
         ['只有符合資格才輸入倍率', '只有在該筆計畫消費明確符合活動時，才用 2 倍或 3 倍比較。'],

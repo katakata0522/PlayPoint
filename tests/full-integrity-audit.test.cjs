@@ -163,9 +163,13 @@ test('LP収益セクションはcanonical buildで冪等に同期される', () 
 test('国際2xページも最終特別獲得率として説明する', () => {
   const source = read('scripts/intl-seo-content.cjs');
   assert.ok(!source.includes('Preset: 2x multiplier'));
+  assert.ok(!source.includes('with a 2x multiplier'));
   assert.ok(!source.includes('초기 조건: 2배 배율'));
   assert.ok(!source.includes('預設: 2 倍倍率'));
   assert.ok(source.includes('special earn rate of 2 points per $1'));
+  assert.ok(source.includes("secondaryHref: '/en/campaign/3x/'"));
+  assert.ok(source.includes("secondaryHref: '/ko/campaign/3x/'"));
+  assert.ok(source.includes("secondaryHref: '/tw/campaign/3x/'"));
 });
 
 test('記事共通導線は固定交換価値や旧キャンペーン倍率を断定しない', () => {
