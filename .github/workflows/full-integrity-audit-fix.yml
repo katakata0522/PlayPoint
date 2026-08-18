@@ -34,8 +34,9 @@ jobs:
           git commit -m "chore: mark checkpoint audit workflow start" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
 
-      - name: Repair one-time fixer helper
+      - name: Repair one-time fixer helper with diagnostics
         run: |
+          set +e
           python - <<'PY'
           from pathlib import Path
           p = Path('scripts/apply-full-integrity-audit-20260818.cjs')
@@ -60,7 +61,15 @@ jobs:
           }'''
           p.write_text(s[:start] + replacement + s[end:])
           PY
-          node --check scripts/apply-full-integrity-audit-20260818.cjs
+          py_status=$?
+          node --check scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-repair-diagnostics.txt 2>&1
+          node_status=$?
+          cat .github/audit-repair-diagnostics.txt
+          git add scripts/apply-full-integrity-audit-20260818.cjs .github/audit-repair-diagnostics.txt
+          git commit -m "chore: checkpoint repaired integrity fixer" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+          if [ "$py_status" -ne 0 ]; then exit "$py_status"; fi
+          exit "$node_status"
 
       - name: Apply and checkpoint audited source fixes
         run: |
