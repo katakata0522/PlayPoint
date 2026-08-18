@@ -194,3 +194,24 @@ test('期限切れ・改ざん済み流入情報は計算値を上書きしな�
     entry_link_context: 'article_link'
   });
 });
+
+
+test('同意pending中はイベントを捨てず、明示拒否時だけ破棄する', () => {
+  const pending = createRuntime('pending');
+  pending.context.PlayPointAnalytics.markAnalyticsReady();
+  pending.context.PlayPointAnalytics.track('theme_change', { theme_mode: 'dark' });
+  assert.equal(eventCalls(pending.context, 'theme_change').length, 0);
+
+  pending.context.PlayPointConsent = { getStatus: () => 'granted' };
+  pending.context.document.dispatchEvent({ type: 'playpoint:consent-updated' });
+  assert.equal(eventCalls(pending.context, 'theme_change').length, 1);
+
+  const denied = createRuntime('pending');
+  denied.context.PlayPointAnalytics.markAnalyticsReady();
+  denied.context.PlayPointAnalytics.track('theme_change', { theme_mode: 'dark' });
+  denied.context.PlayPointConsent = { getStatus: () => 'denied' };
+  denied.context.document.dispatchEvent({ type: 'playpoint:consent-updated' });
+  denied.context.PlayPointConsent = { getStatus: () => 'granted' };
+  denied.context.document.dispatchEvent({ type: 'playpoint:consent-updated' });
+  assert.equal(eventCalls(denied.context, 'theme_change').length, 0);
+});

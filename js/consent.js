@@ -58,7 +58,6 @@
         consentState = Object.freeze({ ...nextState });
         status = consentState.analytics_storage === 'granted' ? 'granted' : 'denied';
         window.gtag('consent', 'update', consentState);
-        if (status !== 'granted') callbacks.clear();
         flushCallbacks();
         dispatchStatus(source);
     }
@@ -140,7 +139,7 @@
         whenGranted(callback) {
             if (typeof callback !== 'function') return;
             if (status === 'granted') callback();
-            else if (status === 'pending') callbacks.add(callback);
+            else callbacks.add(callback);
         },
         getStatus() { return status; },
         getConsentState() { return { ...consentState }; },

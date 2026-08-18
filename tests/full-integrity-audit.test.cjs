@@ -114,3 +114,12 @@ test('LPアフィリエイト文言は固定還元や二重取りを断定しな
   assert.ok(!source.includes('場合</strong>されます'));
   assert.ok(source.includes('ポイント還元の対象になる場合があります'));
 });
+
+
+test('Consent pendingはGA4イベントを破棄せず後からの同意変更にも復帰する', () => {
+  const analytics = read('js/analytics-core.js');
+  const consent = read('js/consent.js');
+  assert.match(analytics, /consentStatus === 'pending'/);
+  assert.ok(!consent.includes("if (status !== 'granted') callbacks.clear()"));
+  assert.match(consent, /else callbacks\.add\(callback\)/);
+});

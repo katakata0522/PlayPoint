@@ -1,1 +1,1 @@
-preflight status=1 2026-08-18T05:21:14Z
+followup status=0 2026-08-18T05:22:02Z
