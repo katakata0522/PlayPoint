@@ -20,6 +20,11 @@
     const ALLOWED_PARAMS = Object.freeze({
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
+        calculator_form_started: ['calculation_mode', 'region', 'start_field'],
+        calculator_funnel_completed: ['calculation_mode', 'region'],
+        calculator_validation_error: ['calculation_mode', 'region', 'error_type'],
+        calculator_mode_changed: ['region', 'from_mode', 'to_mode'],
+        diary_tab_opened: ['region', 'open_surface'],
         diary_entry_saved: ['region', 'entry_type'],
         article_to_calculator_clicked: ['source_path', 'link_context', 'destination_path'],
         lp_to_calculator_clicked: ['source_path', 'source_surface', 'entry_campaign', 'link_context'],
