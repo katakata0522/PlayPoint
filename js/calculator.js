@@ -292,6 +292,21 @@ export const CALC = {
         `;
     },
 
+    // 折りたたみ詳細ではなく、金額の直後に買う前チェックを出す。
+    renderPurchaseCheckLink() {
+        const gift = this.getResultNavigation().giftCards;
+        if (!gift?.href) return '';
+        const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+        const label = texts.purchaseCheckLabel || gift.title;
+        const note = texts.purchaseCheckNote || gift.note || '';
+        return `
+            <p class="result-purchase-check">
+                <a href="${gift.href}" data-result-decision-link data-link-position="purchase-check">${label}</a>
+                ${note ? `<small>${note}</small>` : ''}
+            </p>
+        `;
+    },
+
     // ステータスセレクトボックスの選択肢を初期化
     populateStatusSelects() {
         const config = CONFIGS[STATE.currentRegion];
@@ -551,6 +566,7 @@ export const CALC = {
                     <dt>${texts.resultLabelNeededPoints}</dt>
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
                 </dl>
+                ${this.renderPurchaseCheckLink()}
             `;
             resultDetailsContent = guidanceContent
                 ? `
@@ -605,6 +621,7 @@ export const CALC = {
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
                 </dl>
+                ${this.renderPurchaseCheckLink()}
             `;
             resultDetailsContent = `
                 <details>
@@ -664,6 +681,7 @@ export const CALC = {
             </dl>
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
             <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${texts.roundingNoteReverse}</p>
+            ${this.renderPurchaseCheckLink()}
         `;
 
         UI.displayResult(STATE.dom.reverseResult, resultContent);

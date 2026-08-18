@@ -58,6 +58,11 @@ test('トップは通常率と特別獲得率を比較し、入力境界をHTML�
   assert.match(html, /対象・上限・有効化/);
   assert.match(html, /id="neededPoints" min="1" step="1"/);
   assert.doesNotMatch(html, /id="pack-amount"/);
+  assert.doesNotMatch(read('status/gold/index.html'), /キャンペーン倍率別/);
+  assert.match(read('compare/earning-rates/index.html'), /通常／2pt／3ptの比較表/);
+  assert.match(read('campaign/3x/index.html'), /3pt\/100円と表示された/);
+  assert.match(read('games/index.html'), /game-portal-purchase-check/);
+  assert.match(read('articles/2026-06-20-discount-gift-cards.html'), /楽天市場のGoogle Playギフトコード認定店/);
   assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
   assert.match(calculator, /finalRate:\s*Math\.max\(directRate, promotionRate\)/);
   assert.doesNotMatch(calculator, /statusRate \* multiplier/);

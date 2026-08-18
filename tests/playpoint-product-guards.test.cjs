@@ -374,6 +374,7 @@ test('計算詳細は項目名と値を2列で揃え、値の内部は分断し�
 test('計算結果リンクのhover規則を閉じ、後続のツールチップ非表示を巻き込まない', () => {
   const css = read('style.css');
   assert.match(css, /\.result-guidance-links a:hover\s*\{[^{}]*text-decoration:\s*underline;\s*\}/s);
+  assert.match(css, /\.result-purchase-check a:hover\s*\{[^{}]*text-decoration:\s*underline;\s*\}/s);
   assert.match(css, /\.tooltip-box\s*\{[^{}]*display:\s*none;/s);
 });
 

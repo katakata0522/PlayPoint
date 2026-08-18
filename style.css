@@ -746,6 +746,33 @@ font-size: 0.78em;
 font-weight: normal;
 color: var(--link-color);
 }
+.result-purchase-check {
+margin: 0.75em 0 0;
+}
+.result-purchase-check a {
+display: block;
+min-height: 44px;
+padding: 0.6em 0.7em;
+border: 1px solid rgba(11, 87, 208, 0.2);
+border-radius: 6px;
+background: rgba(11, 87, 208, 0.05);
+color: var(--link-hover-color);
+font-size: 0.9em;
+font-weight: 700;
+line-height: 1.35;
+text-decoration: none;
+}
+.result-purchase-check a:hover {
+background: rgba(11, 87, 208, 0.1);
+text-decoration: underline;
+}
+.result-purchase-check small {
+display: block;
+margin-top: 0.25em;
+color: var(--link-color);
+font-size: 0.78em;
+font-weight: 400;
+}
 .result-guidance-links {
 margin-top: 0.9em;
 padding-top: 0.75em;

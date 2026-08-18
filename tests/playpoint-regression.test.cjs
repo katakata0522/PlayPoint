@@ -608,6 +608,35 @@ test('折りたたみ詳細の見出しを4言語で用意する', () => {
   }
 });
 
+test('計算結果の直後に買う前のギフト確認リンクを出す', () => {
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput('300');
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+  PP_STATE.dom.amountYen = createInput('10000');
+  PP_STATE.dom.reverseBaseRate = createInput('1');
+  PP_STATE.dom.reverseMultiplier = createInput('1');
+  PP_STATE.dom.reverseResult = { dataset: {}, innerHTML: '', isError: false };
+
+  populateStatusSelects();
+  PP_STATE.dom.currentStatus.value = '1.5';
+  updateBaseRateAndTarget();
+  calculate();
+
+  assert.ok(renderedResults[0].content.includes('result-purchase-check'));
+  assert.ok(renderedResults[0].content.includes('articles/2026-06-20-discount-gift-cards.html'));
+  assert.ok(renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る'));
+
+  reverseCalculate();
+  assert.ok(renderedResults[1].content.includes('result-purchase-check'));
+  assert.ok(renderedResults[1].content.includes('articles/2026-06-20-discount-gift-cards.html'));
+});
+
 test('通常計算はパック額なしの必要額概算だけを返す', () => {
   const { PP_STATE, calculate, renderedResults } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';

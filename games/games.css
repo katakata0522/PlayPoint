@@ -258,6 +258,10 @@ body {
   transition: width 0.3s ease;
 }
 
+.game-portal-purchase-check {
+  margin: 1.2rem 0 1.6rem;
+}
+
 /* ギフトカード収益化CTAカード */
 .game-giftcard-cta {
   background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);

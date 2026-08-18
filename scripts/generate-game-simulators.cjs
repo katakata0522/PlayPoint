@@ -2713,6 +2713,21 @@ function generatePortalPageHtml(localeKey) {
 
           <p>${loc.portalLead}</p>
 
+          <div class="game-giftcard-cta game-portal-purchase-check">
+              <div class="game-giftcard-cta-content">
+                  <div class="game-giftcard-cta-title">${loc.giftCardCtaTitle}</div>
+                  <p class="game-giftcard-cta-text">${loc.giftCardCtaText}</p>
+              </div>
+              ${localeKey === 'ja' ? `
+              <div class="game-giftcard-cta-actions">
+                  <a class="game-giftcard-cta-btn rakuten-primary-btn" href="${loc.giftCardCtaAffiliateUrl}" target="_blank" rel="sponsored noopener noreferrer">${loc.giftCardCtaBtn}</a>
+                  <a class="game-giftcard-cta-sublink" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardGuideBtn}</a>
+              </div>
+              ` : `
+              <a class="game-giftcard-cta-btn" href="${assetsRelative}${loc.giftCardCtaHref}">${loc.giftCardCtaBtn}</a>
+              `}
+          </div>
+
           <div class="games-grid">
               ${cardsHtml}
           </div>
