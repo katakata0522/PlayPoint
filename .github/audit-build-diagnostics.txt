@@ -6,7 +6,7 @@ Generated /home/runner/work/PlayPoint/PlayPoint/en/index.html successfully.
 Generated /home/runner/work/PlayPoint/PlayPoint/ko/index.html successfully.
 Generated /home/runner/work/PlayPoint/PlayPoint/tw/index.html successfully.
 Successfully synchronized shared analytics and component asset versions.
-Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v2026_08_18-7bea6e1e
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v2026_08_18-5bba3463
 Generated international SEO pages (57 files).
 [manual-intl] restored canonical article content: 40
 [intl-content-expansion] published 39 locale articles
@@ -178,7 +178,7 @@ Successfully synchronized asset versions and dates in en/articles/2026-06-20-dis
 Successfully synchronized asset versions and dates in ko/articles/2026-06-20-discount-gift-cards.html
 Successfully synchronized asset versions and dates in tw/articles/2026-06-20-discount-gift-cards.html
 [analytics-runtime] synchronized core loader: 35 files
-[public-assets] synchronized content hashes: 123 files
+[public-assets] synchronized content hashes: 292 files
 Updated sitemap.xml and blog/sitemap.xml with current article dates (49 articles).
 Generated blog feeds (51 articles).
 [blog-index] synchronized static article titles: 0
