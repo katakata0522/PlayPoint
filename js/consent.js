@@ -76,6 +76,16 @@
         return 'pending';
     }
 
+    function hasPendingConsentState(state = consentState) {
+        return Object.values(state).some(value => value === 'pending');
+    }
+
+    function resolvePendingAsDenied(state) {
+        return Object.fromEntries(
+            Object.entries(state).map(([key, value]) => [key, value === 'pending' ? 'denied' : value])
+        );
+    }
+
     function applyConsentState(nextState, nextSource) {
         consentState = Object.freeze({ ...DENIED_STATE, ...nextState });
         source = nextSource;
@@ -85,7 +95,9 @@
         adStatus = consentState.ad_storage === 'granted'
             ? 'granted'
             : (consentState.ad_storage === 'pending' ? 'pending' : 'denied');
-        if (analyticsStatus !== 'pending' || adStatus !== 'pending') {
+        // UNKNOWN may exist for only one Consent Mode purpose. Keep the safety timer alive
+        // until every purpose is resolved so a partial UNKNOWN cannot remain pending forever.
+        if (!hasPendingConsentState(consentState)) {
             if (timeoutId !== null) window.clearTimeout(timeoutId);
             timeoutId = null;
         }
@@ -203,10 +215,12 @@
 
     registerGoogleFcListener();
     waitForTcfApi();
-    // If both the GoogleFC and TCF APIs fail to become available, do not silently grant consent.
-    // A late CMP callback can still recover from this denied state.
+    // If GoogleFC/TCF leaves any purpose UNKNOWN, fail closed only for the unresolved
+    // purpose after the grace period while preserving already resolved decisions.
     timeoutId = window.setTimeout(() => {
-        if (analyticsStatus === 'pending' && adStatus === 'pending') applyConsentState(DENIED_STATE, 'timeout');
+        if (!hasPendingConsentState(consentState)) return;
+        const timeoutSource = source === 'pending' ? 'timeout' : `${source}-timeout`;
+        applyConsentState(resolvePendingAsDenied(consentState), timeoutSource);
     }, 5000);
 
     document.dispatchEvent(new CustomEvent('playpoint:consent-ready', {
