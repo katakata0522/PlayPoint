@@ -66,3 +66,5 @@ jobs:
           git add -A
           git commit -m "fix: 品質保留記事の関連記事導線を整合"
           git push
+
+# one-time workflow; remove after successful application.
