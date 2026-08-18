@@ -4,7 +4,7 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
-import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=6375b8daf1';
+import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=8f2f7d1cac';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 import {
     applyRegionFromPath,
