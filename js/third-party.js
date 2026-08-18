@@ -60,8 +60,8 @@
             // ページビューと以後のイベントへ技術的な起動形態だけを付与し、入力値は追加しない。
             window.gtag('set', { app_display_mode: getDisplayMode() });
             window.gtag('config', GA_MEASUREMENT_ID);
-            window.PlayPointAnalytics.flushPending();
             gaLoaded = true;
+            window.PlayPointAnalytics.markAnalyticsReady();
         } catch (error) {
             console.error('Analytics load failed:', error);
         }
@@ -102,7 +102,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=6938dbdfa8`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=e3c32d54c1`)
                 .then(() => window.PlayPointAnalytics);
         }
         return analyticsCorePromise;
