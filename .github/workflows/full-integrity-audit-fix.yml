@@ -5,6 +5,7 @@ on:
     branches:
       - fix/full-integrity-audit-20260818
     paths:
+      - tests/trigger.txt
       - .github/workflows/full-integrity-audit-fix.yml
 
 permissions:
@@ -36,7 +37,6 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          # Q&A: correct the accidentally duplicated sentence and keep the existing non-guarantee guardrail.
           p = Path('info.html')
           s = p.read_text()
           old_visible = 'A. 獲得率が「3ポイント/100円」のように表示される場合はGoogle Playのオファー画面に「100円ごとに3ポイント」のような特別獲得率が表示される場合は、その最終的な獲得率をキャンペーン欄へ入力します。計算機は現在ステータスの通常獲得率と特別獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。対象判定、上限、期間、有効化の要否はGoogle Playの表示を優先してください。購入前に対象アプリ、期間、上限、有効化の有無を公式画面で確認してください。'
@@ -46,8 +46,7 @@ jobs:
           s = s.replace(old_visible, new_visible)
           old_schema = '獲得率を直接入力する方法とキャンペーン倍率を入力する方法を用意し、両方が入力された場合は高い方を試算に使います。キャンペーンの併用可否や対象判定を保証するものではないため、公式画面の条件を確認してください。'
           new_schema = 'Google Playに表示された特別獲得率と現在ステータスの通常獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定は保証せず、公式画面の条件を優先してください。'
-          if old_schema in s:
-              s = s.replace(old_schema, new_schema)
+          s = s.replace(old_schema, new_schema)
           s = s.replace('<meta name="last-modified" content="2026-07-26">', '<meta name="last-modified" content="2026-08-18">')
           s = s.replace('<meta property="article:modified_time" content="2026-07-26T00:00:00+09:00">', '<meta property="article:modified_time" content="2026-08-18T00:00:00+09:00">')
           s = s.replace('"dateModified": "2026-07-26"', '"dateModified": "2026-08-18"')
@@ -57,7 +56,6 @@ jobs:
           s = p.read_text().replace("'info.html': '2026-07-26'", "'info.html': '2026-08-18'")
           p.write_text(s)
 
-          # Game calculator localization: all four locales use final special earn rates, never tier × multiplier wording.
           p = Path('scripts/generate-game-simulators.cjs')
           s = p.read_text()
           replacements = {
@@ -89,7 +87,6 @@ jobs:
               s = s.replace(old, new)
           p.write_text(s)
 
-          # International generated LPs: fix legacy 2x/3x wording and provide a real trademark notice.
           p = Path('scripts/intl-seo-content.cjs')
           s = p.read_text()
           locale_insertions = {
@@ -98,7 +95,7 @@ jobs:
             "    siteName: 'Google Play Points 計算器',": "    siteName: 'Google Play Points 計算器',\n    trademarkNotice: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為獨立營運的非官方計算工具，與 Google LLC 及所提及遊戲的開發或發行商無隸屬或認可關係。',"
           }
           for old, new in locale_insertions.items():
-              if old in s and new not in s:
+              if old in s and 'trademarkNotice' not in s[s.index(old):s.index(old)+500]:
                   s = s.replace(old, new, 1)
 
           phrase_replacements = {
@@ -132,7 +129,6 @@ jobs:
               s = s.replace(old, new)
           p.write_text(s)
 
-          # Permanent regression guards for the extra issues found during the audit.
           p = Path('tests/full-integrity-audit.test.cjs')
           s = p.read_text()
           addition = r'''
@@ -164,7 +160,7 @@ test('Q&Aのキャンペーン説明は重複せず公式画面を優先する',
   assert.ok(html.includes('キャンペーンの併用可否や対象判定を保証するものではありません'));
 });
 '''
-          if "韓国語・繁体字ゲーム計算機も特別獲得率として表示する" not in s:
+          if '韓国語・繁体字ゲーム計算機も特別獲得率として表示する' not in s:
               s += addition
           p.write_text(s)
           PY
