@@ -123,3 +123,9 @@ test('Consent pendingはGA4イベントを破棄せず後からの同意変更�
   assert.ok(!consent.includes("if (status !== 'granted') callbacks.clear()"));
   assert.match(consent, /else callbacks\.add\(callback\)/);
 });
+
+
+test('今回内容を更新した国際生成LPは8月18日を編集日として持つ', () => {
+  const dates = read('scripts/content-dates.cjs');
+  assert.match(dates, /GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18'/);
+});

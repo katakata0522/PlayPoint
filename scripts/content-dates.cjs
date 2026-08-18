@@ -9,7 +9,7 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
   tw: '2026-08-12'
 });
 
-const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-12';
+const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
 
 const CONTENT_DATE_OVERRIDES = Object.freeze({
   'about-playpoints.html': '2026-08-12',
