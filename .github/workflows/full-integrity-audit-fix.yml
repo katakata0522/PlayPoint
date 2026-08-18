@@ -81,6 +81,9 @@ jobs:
           node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer-diagnostics.txt 2>&1
           status=$?
           cat .github/audit-fixer-diagnostics.txt
+          # GITHUB_TOKEN cannot safely push workflow-file edits. The permanent browser workflow change is applied separately via the GitHub connector.
+          git restore .github/workflows/browser-smoke.yml
+          printf 'source-fix status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add -A
           git commit -m "wip: apply audited source fixes" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
@@ -95,6 +98,7 @@ jobs:
           node scripts/build-html.js > .github/audit-build-diagnostics.txt 2>&1
           status=$?
           cat .github/audit-build-diagnostics.txt
+          printf 'build status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add -A
           git commit -m "wip: rebuild audited generated assets" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
@@ -106,7 +110,8 @@ jobs:
           node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs > .github/audit-targeted-tests.txt 2>&1
           status=$?
           cat .github/audit-targeted-tests.txt
-          git add .github/audit-targeted-tests.txt
+          printf 'targeted-tests status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
+          git add .github/audit-targeted-tests.txt .github/audit-stage.txt
           git commit -m "chore: record targeted integrity test result" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
@@ -117,7 +122,8 @@ jobs:
           node .github/scripts/preflight.cjs > .github/audit-preflight.txt 2>&1
           status=$?
           cat .github/audit-preflight.txt
-          git add .github/audit-preflight.txt
+          printf 'preflight status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
+          git add .github/audit-preflight.txt .github/audit-stage.txt
           git commit -m "chore: record full preflight result" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
