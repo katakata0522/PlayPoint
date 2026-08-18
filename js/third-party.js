@@ -3,6 +3,7 @@
 (() => {
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
+    const MANAGED_ADSENSE_SLOT = '8250492620';
     const ANALYTICS_DELAY_MS = 1200;
     // 初回広告取得は遅延させない。通信失敗時だけ短い間隔を置いて1回再試行する。
     const ADSENSE_DELAY_MS = 3000;
@@ -65,6 +66,20 @@
         } catch (error) {
             console.error('Analytics load failed:', error);
         }
+    }
+
+    function initializeManagedAds() {
+        document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle').forEach((ad) => {
+            if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
+            if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
+            ad.dataset.playpointAdRequested = 'true';
+            try {
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            } catch (error) {
+                delete ad.dataset.playpointAdRequested;
+                console.error('AdSense slot initialization failed:', error);
+            }
+        });
     }
 
     async function loadAdsense() {
@@ -145,6 +160,8 @@
         // AdSenseはasyncのまま早期に取得を開始し、短時間利用でも広告機会を失いにくくする。
         // 計算UIのHTML解析や主処理はブロックしない。
         void loadAdsense();
+        // 手動広告枠のリクエストは同意取得後だけ行う。スクリプト取得自体の既存挙動は変えない。
+        void runAfterConsent(initializeManagedAds);
 
         const scheduleAfterLoad = () => {
             // 分析は初期表示と最初の操作を優先し、既存どおり低優先度で読み込む。

@@ -98,7 +98,7 @@
         window.gtag('js', new Date());
         window.gtag('set', { app_display_mode: getDisplayMode() });
         window.gtag('config', GA_MEASUREMENT_ID);
-        window.PlayPointAnalytics.flushPending();
+        window.PlayPointAnalytics.markAnalyticsReady();
 
         if (document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}"]`)) return;
         const script = document.createElement('script');

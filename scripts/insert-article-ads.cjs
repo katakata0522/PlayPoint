@@ -11,6 +11,7 @@ const articleAdUnit = `
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="ca-pub-3845885843809455"
+                     data-ad-slot="8250492620"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
             </div>`;
@@ -27,6 +28,12 @@ files.forEach(file => {
 
   // 古いstyle付きarticle-ad-containerがあれば除去
   content = content.replace(/<div class="article-ad-container"[^>]*>[\s\S]*?<\/div>/g, '');
+
+  // noindex の品質保留ページには広告を追加しない。
+  if (/name=\"robots\"[^>]*content=\"[^\"]*noindex/i.test(content)) {
+    fs.writeFileSync(filePath, content, 'utf8');
+    return;
+  }
 
   // </article> の直前に挿入
   if (content.includes('</article>')) {

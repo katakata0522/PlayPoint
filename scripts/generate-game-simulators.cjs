@@ -2451,6 +2451,7 @@ function generateGamePageHtml(game, localeKey) {
                   <ins class="adsbygoogle"
                        style="display:block"
                        data-ad-client="ca-pub-3845885843809455"
+                       data-ad-slot="8250492620"
                        data-ad-format="auto"
                        data-full-width-responsive="true"></ins>
               </div>
@@ -2550,6 +2551,7 @@ function generateGamePageHtml(game, localeKey) {
   </footer>
 
   <script src="${assetsRelative}js/analytics-core.js"></script>
+  <script src="${assetsRelative}js/third-party.js"></script>
   <script src="${assetsRelative}games/game-sim.js"></script>
 </body>
 </html>
@@ -2739,6 +2741,7 @@ function generatePortalPageHtml(localeKey) {
   </footer>
 
   <script src="${assetsRelative}js/analytics-core.js"></script>
+  <script src="${assetsRelative}js/third-party.js"></script>
 </body>
 </html>
 `;
