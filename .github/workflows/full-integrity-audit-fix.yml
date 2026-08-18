@@ -13,7 +13,7 @@ permissions:
 jobs:
   apply-and-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout audit branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -54,36 +54,49 @@ jobs:
           PY
           node --check scripts/apply-full-integrity-audit-20260818.cjs
 
-      - name: Apply audited fixes with diagnostics
+      - name: Apply and checkpoint audited source fixes
         run: |
           set +e
           node scripts/apply-full-integrity-audit-20260818.cjs > .github/audit-fixer-diagnostics.txt 2>&1
           status=$?
-          git add .github/audit-fixer-diagnostics.txt
-          git commit -m "chore: record integrity fixer diagnostics" || true
-          git push origin HEAD:fix/full-integrity-audit-20260818
           cat .github/audit-fixer-diagnostics.txt
+          git add -A
+          git commit -m "wip: apply audited source fixes" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
 
-      - name: Rebuild generated assets
+      - name: Rebuild generated assets with diagnostics
         env:
           PLAYPOINT_MODIFIED_DATE: '2026-08-18'
           PLAYPOINT_ASSET_VERSION: '2026_08_18'
-        run: node scripts/build-html.js
-
-      - name: Run targeted integrity regression
-        run: node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs
-
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
-
-      - name: Commit verified changes
         run: |
-          set -euo pipefail
+          set +e
+          node scripts/build-html.js > .github/audit-build-diagnostics.txt 2>&1
+          status=$?
+          cat .github/audit-build-diagnostics.txt
           git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "fix: align calculator, consent, SEO and CI integrity"
+          git commit -m "wip: rebuild audited generated assets" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
+          exit $status
+
+      - name: Run targeted integrity regression with diagnostics
+        run: |
+          set +e
+          node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs > .github/audit-targeted-tests.txt 2>&1
+          status=$?
+          cat .github/audit-targeted-tests.txt
+          git add .github/audit-targeted-tests.txt
+          git commit -m "chore: record targeted integrity test result" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+          exit $status
+
+      - name: Run complete preflight with diagnostics
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > .github/audit-preflight.txt 2>&1
+          status=$?
+          cat .github/audit-preflight.txt
+          git add .github/audit-preflight.txt
+          git commit -m "chore: record full preflight result" || true
+          git push origin HEAD:fix/full-integrity-audit-20260818
+          exit $status
