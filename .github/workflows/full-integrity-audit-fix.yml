@@ -30,17 +30,53 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Run targeted integrity regression
+      - name: Restore complete regression file and patch only campaign-rate case
         run: |
-          set +e
-          node --test tests/full-integrity-audit.test.cjs tests/main-calculator-ui.test.cjs tests/analytics-core.test.cjs tests/monetization-search-quality.test.cjs > .github/audit-targeted-tests.txt 2>&1
-          status=$?
-          cat .github/audit-targeted-tests.txt
-          printf 'targeted-tests status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
-          git add .github/audit-targeted-tests.txt .github/audit-stage.txt
-          git commit -m "chore: record targeted integrity test result" || true
+          set -euo pipefail
+          git show origin/main:tests/playpoint-regression.test.cjs > tests/playpoint-regression.test.cjs
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tests/playpoint-regression.test.cjs')
+          s = p.read_text()
+          old = """test('直接レートと倍率は代替入力として高い方と採用理由を返す', () => {
+            const { PP_STATE, getRateDetails } = loadCalculatorContext();
+            PP_STATE.currentRegion = 'JP';
+            const status = createInput('1.5');
+
+            assert.deepStrictEqual(
+              JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
+              { directRate: 4, multiplier: 2, multipliedRate: 3, finalRate: 4, source: 'direct' }
+            );
+            assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'multiplier');
+            assert.strictEqual(getRateDetails(createInput('3'), status, createInput('2')).source, 'same');
+          });"""
+          new = """test('通常獲得率と特別獲得率は高い方を使い、ランク率へ掛け算しない', () => {
+            const { PP_STATE, getRateDetails } = loadCalculatorContext();
+            PP_STATE.currentRegion = 'JP';
+            const status = createInput('1.5');
+
+            assert.deepStrictEqual(
+              JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
+              {
+                directRate: 4,
+                multiplier: 2,
+                promotionRate: 2,
+                multipliedRate: 2,
+                finalRate: 4,
+                source: 'direct'
+              }
+            );
+            assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).finalRate, 3);
+            assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).source, 'multiplier');
+            assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'same');
+          });"""
+          if old not in s:
+              raise SystemExit('legacy regression block not found in origin/main')
+          p.write_text(s.replace(old, new))
+          PY
+          git add tests/playpoint-regression.test.cjs
+          git commit -m "test: align full regression with special earn rate semantics"
           git push origin HEAD:fix/full-integrity-audit-20260818
-          exit $status
 
       - name: Run complete preflight
         run: |
@@ -50,6 +86,6 @@ jobs:
           cat .github/audit-preflight.txt
           printf 'preflight status=%s %s\n' "$status" "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/audit-stage.txt
           git add .github/audit-preflight.txt .github/audit-stage.txt
-          git commit -m "chore: record full preflight result" || true
+          git commit -m "chore: record final full preflight result" || true
           git push origin HEAD:fix/full-integrity-audit-20260818
           exit $status
