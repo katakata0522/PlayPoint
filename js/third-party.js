@@ -29,7 +29,11 @@
             script.async = true;
             Object.entries(attrs).forEach(([key, value]) => script.setAttribute(key, value));
             script.onload = () => resolve(script);
-            script.onerror = () => reject(new Error(`Failed to load: ${src}`));
+            script.onerror = () => {
+                // Failed script elements must not satisfy a later retry as an already-loaded dependency.
+                script.remove();
+                reject(new Error(`Failed to load: ${src}`));
+            };
             document.head.appendChild(script);
         });
     }
