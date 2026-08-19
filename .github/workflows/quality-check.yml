@@ -27,5 +27,19 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+      - name: Capture complete preflight output
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs --prepare-deploy > preflight-output.txt 2>&1
+          code=$?
+          echo "$code" > preflight-exit-code.txt
+          exit 0
+
+      - name: Upload preflight diagnostics
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: preflight-diagnostics
+          path: |
+            preflight-output.txt
+            preflight-exit-code.txt
+          if-no-files-found: error
