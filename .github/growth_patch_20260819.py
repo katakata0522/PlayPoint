@@ -41,7 +41,28 @@ text = replace_once(text,
     'latest result summary')
 path.write_text(text, encoding='utf-8')
 
-# 2-a) evergreenキャンペーン記事から「最新予定」の担当ページを明示
+# 編集日を生成元にも反映
+path = Path('scripts/content-dates.cjs')
+text = path.read_text(encoding='utf-8')
+text = replace_once(text, "  'latest/index.html': '2026-08-11',", "  'latest/index.html': '2026-08-19',", 'latest date override')
+text = replace_once(text, "  'status/diamond/index.html': '2026-08-12',", "  'status/diamond/index.html': '2026-08-19',", 'diamond date override')
+path.write_text(text, encoding='utf-8')
+
+# 鮮度テストを新しい実確認日に合わせる
+path = Path('tests/latest-hub-operations.test.cjs')
+text = path.read_text(encoding='utf-8')
+text = text.replace("result.verificationDate, '2026-08-11'", "result.verificationDate, '2026-08-19'")
+text = text.replace('content="2026-08-11"', 'content="2026-08-19"')
+text = text.replace('"2026-08-11"/', '"2026-08-19"/')
+text = text.replace('datetime="2026-08-11">2026-08-11', 'datetime="2026-08-19">2026-08-19')
+text = text.replace('次回確認目安: 2026-08-14頃', '次回確認目安: 2026-08-21頃')
+text = text.replace('次回確認目安: 2026-08-13頃', '次回確認目安: 2026-08-20頃')
+text = text.replace("CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-11'", "CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-19'")
+text = text.replace("new Date('2026-08-27T00:00:00Z')", "new Date('2026-09-04T00:00:00Z')")
+text = text.replace("new Date('2026-08-10T15:30:00Z')", "new Date('2026-08-18T15:30:00Z')")
+path.write_text(text, encoding='utf-8')
+
+# 2-a) evergreenキャンペーン記事から最新予定の担当ページを明示
 path = Path('articles/2025-12-25-campaign.html')
 text = path.read_text(encoding='utf-8')
 text = text.replace('2026-08-04', '2026-08-19')
@@ -69,19 +90,22 @@ text = replace_once(text,
     'diamond direct answer')
 path.write_text(text, encoding='utf-8')
 
-# トップページから専用ページへ静的な役割分担リンクを追加
-path = Path('index.html')
+# 多言語トップには手を入れず、日本語のダイヤモンド記事冒頭から専用LPへ役割を寄せる
+path = Path('articles/2025-12-25-diamond-worth-it.html')
 text = path.read_text(encoding='utf-8')
-text = text.replace('2026-08-12', '2026-08-19')
-marker = '<p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。</p>'
-addition = marker + '\n    <p class="site-description"><a href="status/diamond/">ダイヤモンドはいくら必要？課金額の早見表</a> ・ <a href="latest/">2026年のキャンペーン予定・最新情報</a></p>'
-text = replace_once(text, marker, addition, 'home intent links')
+text = text.replace('2026-08-04', '2026-08-19')
+text = text.replace('2026/08/04', '2026/08/19')
+intro = '<div class="intro">\n<strong>結論：ダイヤモンドを目指すかは、普段の対象購入だけで15,000ポイントへ近づくかを先に確認します。</strong><br/>\n                通常獲得率はプラチナより高いものの、共通する特典も多いため、追加支出だけで到達を狙うと支出に見合わない場合があります。\n            </div>'
+intro_new = intro + '\n<p><a href="../status/diamond/">ダイヤモンドまでの必要課金額を、不足ポイントと現在の獲得率から確認する</a></p>'
+text = replace_once(text, intro, intro_new, 'diamond early role link')
 path.write_text(text, encoding='utf-8')
 
-# 2-c / 3) 韓国語現金化ページ: 検索語をタイトル先頭に合わせ、ファーストビューから次ページへ1本だけ導線
+# 2-c / 3) 韓国語現金化: URL中の日付は維持し、編集日・検索語・早期回遊だけ更新
 path = Path('ko/articles/google-play-points-cash-conversion.html')
 text = path.read_text(encoding='utf-8')
-text = text.replace('2026-07-24', '2026-08-19')
+text = replace_once(text, '<meta name="last-modified" content="2026-07-24">', '<meta name="last-modified" content="2026-08-19">', 'ko last modified')
+text = replace_once(text, '"dateModified":"2026-07-24"', '"dateModified":"2026-08-19"', 'ko structured modified')
+text = replace_once(text, '<p class="hero-meta">2026-07-24 업데이트 · 한국 계정 가이드</p>', '<p class="hero-meta">2026-08-19 업데이트 · 한국 계정 가이드</p>', 'ko visible modified')
 text = replace_once(text,
     '<title>Google Play Points 현금화 가능할까? 계좌이체와의 차이</title>',
     '<title>구글 플레이 포인트 현금화 가능할까? 계좌이체·현금 전환 정리</title>',
@@ -90,11 +114,8 @@ text = replace_once(text,
     '<meta name="description" content="Google Play Points는 현금화, 계좌 출금, 다른 계정으로 이전할 수 없습니다. Play 크레딧·쿠폰·게임 아이템과의 차이와 안전한 사용법을 정리합니다.">',
     '<meta name="description" content="구글 플레이 포인트(Play Points)는 현금화, 계좌 출금, 다른 계정으로 이전할 수 없습니다. 현금 전환과 Play 크레딧·쿠폰의 차이, 실제 사용 가치를 정리합니다.">',
     'ko description')
-text = replace_once(text,
-    '<meta property="og:title" content="Google Play Points 현금화 가능할까?">',
-    '<meta property="og:title" content="구글 플레이 포인트 현금화 가능할까?">',
-    'ko og title')
-text = text.replace('"headline":"Google Play Points 현금화 가능할까? 계좌이체와의 차이"', '"headline":"구글 플레이 포인트 현금화 가능할까? 계좌이체·현금 전환 정리"')
+text = replace_once(text, '<meta property="og:title" content="Google Play Points 현금화 가능할까?">', '<meta property="og:title" content="구글 플레이 포인트 현금화 가능할까?">', 'ko og title')
+text = replace_once(text, '"headline":"Google Play Points 현금화 가능할까? 계좌이체와의 차이"', '"headline":"구글 플레이 포인트 현금화 가능할까? 계좌이체·현금 전환 정리"', 'ko headline')
 text = replace_once(text,
     '<div class="hero"><span class="hero-badge">공식 규정 확인</span><h1>Google Play Points 현금화 가능할까?</h1><p class="hero-meta">2026-08-19 업데이트 · 한국 계정 가이드</p></div>',
     '<div class="hero"><span class="hero-badge">공식 규정 확인</span><h1>구글 플레이 포인트 현금화 가능할까?</h1><p class="hero-meta">2026-08-19 업데이트 · 한국 계정 가이드</p></div>',
