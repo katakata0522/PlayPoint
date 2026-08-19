@@ -8,6 +8,7 @@ This repository is the **production source of truth** for PlayPoint by **katakat
 - **Deploy:** This repo's GitHub Actions → Xserver (NOT `cli-auto`)
 - **Legacy warning:** `cli-auto/PlayPoint` is archive-only. Do not treat it as production.
 - **Test triage:** See `docs/TEST_TRIAGE.md`
+- **Behavior-first migration / test ownership:** See `docs/TEST_BEHAVIOR_MIGRATION_2026-08-19.md`
 
 The goal is to create **high-quality, robust, and monetizeable** applications.
 
