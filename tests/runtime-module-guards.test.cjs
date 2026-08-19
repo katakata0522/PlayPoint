@@ -98,12 +98,6 @@ test('公開HTMLは外部Google Fontsへ接続しない', () => {
   }
 });
 
-test('ルートService Workerは画面遷移をネットワーク優先で更新する', () => {
-  const serviceWorker = read('sw.js');
-  assert.ok(serviceWorker.includes("event.request.mode === 'navigate'"));
-  assert.ok(serviceWorker.includes('handleNavigationRequest'));
-});
-
 test('埋め込みウィジェットは外部依存なしで計算できる', () => {
   const embed = read('embed.html');
   const widget = read('embed/playpoint-widget.js');

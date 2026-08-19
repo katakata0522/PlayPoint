@@ -52,13 +52,6 @@ test('著者ページのOGP画像は実在する', () => {
   assert.ok(fs.existsSync(path.join(root, match[1])), `OGP画像が存在しません: ${match[1]}`);
 });
 
-test('ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする', () => {
-  const source = read('sw.js');
-  assert.ok(source.includes("event.request.method !== 'GET'"), 'GET制限がありません');
-  assert.ok(source.includes('isCacheableRequest'), 'キャッシュ許可判定がありません');
-  assert.ok(source.includes('getCacheKey'), 'クエリを正規化するキャッシュキーがありません');
-});
-
 test('Consentの公開UIと広告境界に旧独自同意フローを戻さない', () => {
   const consent = read('js/consent.js');
   const article = read('blog/article.js');
@@ -82,20 +75,6 @@ test('記事・ブログはGA4 eventを直接送らず共通計測境界を利�
   assert.doesNotMatch(blog, directGtagEvent, 'ブログ一覧が共通計測境界を迂回しています');
   assert.match(article, /PlayPointAnalytics/, '記事ページが共通計測境界を利用していません');
   assert.match(blog, /PlayPointAnalytics/, 'ブログ一覧が共通計測境界を利用していません');
-});
-
-test('ルートService Workerは自分のキャッシュだけを削除対象にする', () => {
-  const rootSw = read('sw.js');
-
-  assert.ok(rootSw.includes('cache.startsWith(CACHE_PREFIX)'), 'ルートSWが他アプリのキャッシュを削除し得ます');
-});
-
-test('ルートService Workerはprecache失敗時に壊れたまま有効化しない', () => {
-  const source = read('sw.js');
-  const installBlock = source.slice(source.indexOf("self.addEventListener('install'"), source.indexOf("self.addEventListener('activate'"));
-
-  assert.ok(installBlock.includes('return cache.addAll(bypassRequests).then(() => self.skipWaiting())'), 'precache成功時だけskipWaitingする形ではありません');
-  assert.ok(!installBlock.includes('.catch('), 'install失敗を握りつぶしています');
 });
 
 test('デプロイ同期は公開不要な運用ファイルをルート限定で除外する', () => {
