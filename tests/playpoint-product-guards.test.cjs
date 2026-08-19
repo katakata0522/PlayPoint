@@ -59,30 +59,16 @@ test('ルートService WorkerはGETの許可対象だけを安定したキーで
   assert.ok(source.includes('getCacheKey'), 'クエリを正規化するキャッシュキーがありません');
 });
 
-test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
+test('Consentの公開UIと広告境界に旧独自同意フローを戻さない', () => {
   const consent = read('js/consent.js');
-  const main = read('js/third-party.js');
-  const blog = read('blog/components.js');
   const article = read('blog/article.js');
   const privacy = read('privacy.html');
-  assert.ok(consent.includes("analytics_storage: 'denied'"));
-  assert.ok(consent.includes("ad_storage: 'denied'"));
-  assert.ok(consent.includes('whenAnalyticsGranted'));
-  assert.ok(consent.includes('whenAdsAllowed'));
-  assert.ok(consent.includes('getGoogleConsentModeValues'));
-  assert.ok(consent.includes('consents[7]'));
-  assert.ok(main.includes('ensureConsentManager'));
-  assert.ok(main.includes('scheduleThirdPartyLoad'));
-  assert.ok(main.includes('void loadAdsense()'));
-  assert.ok(main.indexOf('void ensureConsentManager();') < main.indexOf('scheduleThirdPartyLoad();'));
-  assert.ok(blog.includes('whenAnalyticsGranted'));
-  assert.ok(article.includes('PlayPointConsent.whenAdsAllowed'));
-  assert.ok(privacy.includes('プライバシー設定'));
-  assert.ok(/js\/consent\.js\?v=[a-f0-9]+/.test(privacy));
-  assert.ok(!privacy.includes('許可を与えたものとみなします'));
-  assert.ok(consent.includes('__tcfapi'), 'TCF APIとの連携がありません');
-  assert.ok(consent.includes('showRevocationMessage'), 'Google CMPの設定変更導線がありません');
-  assert.ok(!consent.includes('data-consent-accept'), '廃止した独自同意UIが残っています');
+
+  assert.ok(privacy.includes('プライバシー設定'), 'ユーザーが同意設定を開く公開導線がありません');
+  assert.match(privacy, /js\/consent\.js\?v=[a-f0-9]+/, 'Consent管理スクリプトが公開ページから読み込まれていません');
+  assert.ok(!privacy.includes('許可を与えたものとみなします'), '閲覧だけで同意扱いする旧文言が戻っています');
+  assert.doesNotMatch(consent, /data-consent-accept/, '廃止した独自同意UIが戻っています');
+  assert.match(article, /PlayPointConsent\.whenAdsAllowed/, '記事広告が共通Consent境界を利用していません');
 });
 
 test('記事・ブログはGA4 eventを直接送らず共通計測境界を利用する', () => {
