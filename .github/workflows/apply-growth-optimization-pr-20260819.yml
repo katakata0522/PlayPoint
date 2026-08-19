@@ -23,6 +23,27 @@ jobs:
       - name: データに基づく最小改善を適用
         run: python3 .github/growth_patch_20260819.py
 
+      - name: 最小更新日の契約を整合
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # 内部リンク1本だけを追加する比較記事は、内容の基準日を8/4のまま維持する。
+          path = Path('articles/2025-12-25-diamond-worth-it.html')
+          text = path.read_text(encoding='utf-8').replace('2026-08-19', '2026-08-04')
+          path.write_text(text, encoding='utf-8')
+
+          # latest は実際に8/19へ内容更新するため、サイトマップ鮮度契約も同日へ更新する。
+          path = Path('tests/seo-hygiene.test.cjs')
+          text = path.read_text(encoding='utf-8')
+          old = '<lastmod>2026-08-11</lastmod>'
+          new = '<lastmod>2026-08-19</lastmod>'
+          if text.count(old) != 1:
+              raise SystemExit(f'seo-hygiene latest lastmod contract: expected 1 occurrence, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
       - name: 生成物と更新日を同期
         run: node scripts/prepare-pr.cjs
 
