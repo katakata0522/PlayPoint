@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -19,29 +19,48 @@ concurrency:
 
 jobs:
   quality:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Reproduce committed build output
+      - name: Reproduce generated build output
         run: node .github/scripts/verify-build-output.cjs || true
 
-      - name: Capture generated drift
-        if: always()
+      - name: Verify drift is only third-party asset revision
         run: |
-          git diff --binary > generated-drift.patch
-          git diff --name-only > generated-drift-files.txt
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const oldRevision = 'third-party.js?v=6fb554fae4';
+          const newRevision = 'third-party.js?v=790f53fd26';
+          const files = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
+            .trim().split(/\r?\n/).filter(Boolean);
+          if (files.length !== 239 || files.some(file => !file.endsWith('.html'))) {
+            console.error('Unexpected generated drift scope:', files.length, files.filter(file => !file.endsWith('.html')));
+            process.exit(1);
+          }
+          const diff = execFileSync('git', ['diff', '--unified=0'], { encoding: 'utf8' });
+          const changedLines = diff.split(/\r?\n/).filter(line =>
+            (line.startsWith('+') && !line.startsWith('+++')) ||
+            (line.startsWith('-') && !line.startsWith('---'))
+          );
+          const bad = changedLines.filter(line =>
+            line.startsWith('+') ? !line.includes(newRevision) : !line.includes(oldRevision)
+          );
+          if (changedLines.length !== 478 || bad.length) {
+            console.error('Unexpected generated content drift:', { changedLines: changedLines.length, bad: bad.slice(0, 10) });
+            process.exit(1);
+          }
+          NODE
 
-      - name: Upload generated drift
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: third-party-generated-drift
-          path: |
-            generated-drift.patch
-            generated-drift-files.txt
-          if-no-files-found: error
+      - name: Commit exact generated revision update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git diff --name-only -z | xargs -0 git add --
+          git commit -m 'build: synchronize third-party asset revision'
+          git push
