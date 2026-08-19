@@ -14,12 +14,12 @@ test('最新情報ハブは確認範囲・公式参照・確認日を明示す�
   const html = fs.readFileSync(latestPath, 'utf8');
   const result = validateLatestHub(html);
 
-  assert.equal(result.verificationDate, '2026-08-11');
-  assert.ok(html.includes('<meta name="last-modified" content="2026-08-11">'));
-  assert.match(html, /"dateModified"\s*:\s*"2026-08-11"/);
-  assert.ok(html.includes('最終更新: <time datetime="2026-08-11">2026-08-11</time>'));
-  assert.ok(html.includes('次回確認目安: 2026-08-14頃'));
-  assert.ok(html.includes('次回確認目安: 2026-08-13頃'));
+  assert.equal(result.verificationDate, '2026-08-19');
+  assert.ok(html.includes('<meta name="last-modified" content="2026-08-19">'));
+  assert.match(html, /"dateModified"\s*:\s*"2026-08-19"/);
+  assert.ok(html.includes('最終更新: <time datetime="2026-08-19">2026-08-19</time>'));
+  assert.ok(html.includes('次回確認目安: 2026-08-21頃'));
+  assert.ok(html.includes('次回確認目安: 2026-08-20頃'));
   assert.match(html, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
 });
 
@@ -35,7 +35,7 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
 });
 
 test('生成処理は確認していない日に最新情報ハブの日付を進めない', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-11');
+  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-19');
 });
 
 test('鮮度検査は14日を超えた確認日を検出する', () => {
@@ -45,7 +45,7 @@ test('鮮度検査は14日を超えた確認日を検出する', () => {
     () => validateLatestHub(html, {
       enforceFreshness: true,
       maxAgeDays: 14,
-      now: new Date('2026-08-27T00:00:00Z')
+      now: new Date('2026-09-04T00:00:00Z')
     }),
     /公式確認から16日経過/
   );
@@ -57,7 +57,7 @@ test('鮮度検査は日本時間の日付をUTC前日の未来日と誤判定�
   assert.doesNotThrow(() => validateLatestHub(html, {
     enforceFreshness: true,
     maxAgeDays: 14,
-    now: new Date('2026-08-10T15:30:00Z')
+    now: new Date('2026-08-18T15:30:00Z')
   }));
 });
 
