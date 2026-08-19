@@ -118,21 +118,10 @@ test('許可された主要計測イベント名が設定に残る', () => {
   }
 });
 
-// --- 回帰ダイエットで落ちた重要ガードの復元 ---
-
-test('言語トップはURLと異なる保存済み地域設定で表示を上書きしない', () => {
-  // ルート/言語パスの表示地域は URL を正とし、localStorage の旧設定で上書きしない
-  const regionNav = read('js/region-navigation.js');
-  const applyBody = regionNav.slice(
-    regionNav.indexOf('export function applyRegionFromPath'),
-    regionNav.indexOf('export function switchRegion')
-  );
-  assert.ok(applyBody.includes("STATE.currentRegion = 'JP'"), 'ルートを日本語固定する処理がありません');
-  assert.ok(
-    !applyBody.includes('localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY)'),
-    'applyRegionFromPath が保存済み地域で表示を上書きしています'
-  );
-  // main も古い「保存地域を読んで優先」パターンを持たない
+test('地域表示の決定と保存責務はregion-navigationへ集約する', () => {
   const main = read('js/main.js');
-  assert.ok(!main.includes('const savedRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);'));
+
+  assert.match(main, /applyRegionFromPath/, 'mainがURL由来の地域初期化を委譲していません');
+  assert.doesNotMatch(main, /STORAGE_REGION_KEY/, 'mainが地域保存キーを直接扱っています');
+  assert.doesNotMatch(main, /playpointPreferredRegion/, 'mainが地域保存の実装詳細を直接所有しています');
 });
