@@ -1,0 +1,51 @@
+name: Apply Growth Optimization on Temporary PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.head_ref == 'agent/playpoint-growth-optimization-20260819'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 作業ブランチを取得
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: agent/playpoint-growth-optimization-20260819
+          fetch-depth: 0
+
+      - name: データに基づく最小改善を適用
+        run: python3 .github/growth_patch_20260819.py
+
+      - name: 生成物と更新日を同期
+        run: node scripts/prepare-pr.cjs
+
+      - name: 全テスト
+        run: node --test tests/*.test.cjs
+
+      - name: 差分検査
+        run: git diff --check
+
+      - name: 一時ファイルを除去してコミット
+        shell: bash
+        run: |
+          rm -f .github/growth-optimization-request
+          rm -f .github/growth_patch_20260819.py
+          rm -f .github/workflows/apply-growth-optimization-20260819.yml
+          rm -f .github/workflows/apply-growth-optimization-pr-20260819.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo '変更なし' >&2
+            exit 1
+          fi
+          git commit -m '最新情報と検索意図・回遊導線をデータに合わせて改善'
+          git push origin HEAD:agent/playpoint-growth-optimization-20260819
