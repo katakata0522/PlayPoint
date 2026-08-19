@@ -9,6 +9,7 @@ const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const analyticsSource = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
 const mainSource = fs.readFileSync(path.join(root, 'js/main.js'), 'utf8');
+const funnelSource = fs.readFileSync(path.join(root, 'js/calculator-funnel-analytics.js'), 'utf8');
 
 function createAnalyticsRuntime() {
   const context = {
@@ -62,37 +63,12 @@ test('計算ファネルイベントは分類値だけを許可し入力値を�
   assert.deepEqual(lastEvent(context, 'diary_tab_opened'), { region: 'JP', open_surface: 'tab' });
 });
 
-test('通常計算と逆算は開始・初回成功・入力エラーを別イベントで計測する', () => {
-  for (const token of [
-    "ANALYTICS.track('calculator_form_started'",
-    "ANALYTICS.track('calculator_funnel_completed'",
-    "ANALYTICS.track('calculator_validation_error'",
-    "ANALYTICS.track('calculator_mode_changed'",
-    "ANALYTICS.track('diary_tab_opened'"
-  ]) {
-    assert.ok(mainSource.includes(token), token);
-  }
+test('計算ファネルの状態管理は専用モジュールへ集約する', () => {
+  assert.match(mainSource, /from '\.\/calculator-funnel-analytics\.js'/, 'mainが専用ファネルモジュールを利用していません');
+  assert.match(mainSource, /createCalculatorFunnelAnalytics/, 'mainがファネルトラッカーを初期化していません');
+  assert.doesNotMatch(mainSource, /calculatorFunnelStartedModes|calculatorFunnelCompletedModes|diaryTabOpenedThisPage/, 'mainにファネルdedupe状態が再実装されています');
 
-  assert.ok(mainSource.includes('calculatorFunnelStartedModes.has(mode)'));
-  assert.ok(mainSource.includes('calculatorFunnelCompletedModes.has(mode)'));
-  assert.ok(mainSource.includes('start_field: startField'));
-  assert.ok(mainSource.includes('error_type: errorType'));
-  assert.ok(mainSource.includes('bindCalculatorFunnelStart(STATE.dom.neededPoints'));
-  assert.ok(mainSource.includes('bindCalculatorFunnelStart(STATE.dom.amountYen'));
-  assert.ok(mainSource.includes("getStatus?.() !== 'denied'"));
-  assert.match(mainSource, /function canRecordCalculatorFunnel[\s\S]*function trackCalculatorFormStarted/);
-  assert.match(
-    mainSource.slice(mainSource.indexOf('function trackCalculatorFormStarted'), mainSource.indexOf('function getValidationErrorType')),
-    /if \(!canRecordCalculatorFunnel\(\)\) return;/
-  );
-});
-
-test('新しいファネル送信処理は入力した数値そのものをイベントパラメータにしない', () => {
-  const start = mainSource.indexOf('function getAnalyticsCalculationMode');
-  const end = mainSource.indexOf('function getResultLinkAnalyticsParams');
-  assert.ok(start >= 0 && end > start);
-  const funnelSection = mainSource.slice(start, end);
-  assert.doesNotMatch(funnelSection, /STATE\.dom\.(?:neededPoints|amountYen|baseRate|multiplier)\.value/);
-  assert.doesNotMatch(funnelSection, /needed_points:\s*STATE\./);
-  assert.doesNotMatch(funnelSection, /amount:\s*STATE\./);
+  assert.doesNotMatch(funnelSource, /STATE\.|document\.|\.value\b/, 'ファネルモジュールがDOMや生入力値へ直接依存しています');
+  assert.match(funnelSource, /getConsentStatus/, 'Consent状態がファネル境界へ注入されていません');
+  assert.match(funnelSource, /getRegion/, '地域分類がファネル境界へ注入されていません');
 });
