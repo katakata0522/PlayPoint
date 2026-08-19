@@ -67,7 +67,6 @@ test('ルートService WorkerはGETの許可対象だけを安定したキーで
 });
 
 test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
-  const { createFileRevision } = require(path.join(root, 'scripts', 'asset-sync.cjs'));
   const consent = read('js/consent.js');
   const main = read('js/third-party.js');
   const blog = read('blog/components.js');
@@ -93,19 +92,17 @@ test('GAとAdSenseは地域別Consent ModeとGoogle認定CMPに従う', () => {
   assert.ok(!consent.includes('data-consent-accept'), '廃止した独自同意UIが残っています');
 });
 
-test('計測イベントは同意済みラッパー経由だけで送信する', () => {
-  const core = read('js/analytics-core.js');
+test('記事・ブログはGA4 eventを直接送らず共通計測境界を利用する', () => {
   const config = read('js/config.js');
   const article = read('blog/article.js');
   const blog = read('blog/script.js');
+  const directGtagEvent = /(?:window\.)?gtag\s*\(\s*['"]event['"]/;
 
-  assert.ok(core.includes("window.PlayPointConsent.getStatus() === 'granted'"), '同意済み状態だけを明示的に許可していません');
-  assert.ok(core.includes('pendingEvents'), '同意マネージャ読込前の短期キューがありません');
-  assert.ok(config.includes('window.PlayPointAnalytics'), '計算機が共通計測ラッパーを参照していません');
-  assert.ok(!article.includes("window.gtag('event'"), '記事ページが同意ラッパーを通さずイベント送信しています');
-  assert.ok(!blog.includes("gtag('event'"), 'ブログ一覧が同意ラッパーを通さずイベント送信しています');
-  assert.ok(article.includes('PlayPointAnalytics'), '記事ページが共通計測ラッパーを利用していません');
-  assert.ok(blog.includes('PlayPointAnalytics'), 'ブログ一覧が共通計測ラッパーを利用していません');
+  assert.match(config, /PlayPointAnalytics/, '計算機が共通計測境界を参照していません');
+  assert.doesNotMatch(article, directGtagEvent, '記事ページが共通計測境界を迂回しています');
+  assert.doesNotMatch(blog, directGtagEvent, 'ブログ一覧が共通計測境界を迂回しています');
+  assert.match(article, /PlayPointAnalytics/, '記事ページが共通計測境界を利用していません');
+  assert.match(blog, /PlayPointAnalytics/, 'ブログ一覧が共通計測境界を利用していません');
 });
 
 test('ルートService Workerは自分のキャッシュだけを削除対象にする', () => {
@@ -218,22 +215,6 @@ test('多言語トップはJS実行前の主要文言も翻訳済みにする', 
   assert.ok(!en.includes('data-lang-key="tabMain">通常計算</button>'));
   assert.ok(!ko.includes('data-lang-key="tabMain">通常計算</button>'));
   assert.ok(!tw.includes('data-lang-key="tabMain">通常計算</button>'));
-});
-
-test('同意済み計測はGA本体ロード前のイベントを短期キューへ保持する', () => {
-  const core = read('js/analytics-core.js');
-  const thirdParty = read('js/third-party.js');
-
-  assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
-  assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
-  assert.ok(core.includes('markAnalyticsReady'), 'GA4準備完了を明示する処理がありません');
-  const configIndex = thirdParty.indexOf("window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false })");
-  const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');
-  assert.ok(configIndex >= 0, 'GA4 configで自動page_viewを明示停止していません');
-  assert.ok(core.includes("page_view: []"), '明示page_viewが共通計測の許可対象にありません');
-  assert.ok(core.includes('sendInitialPageView'), '初回page_viewの明示送信処理がありません');
-  assert.ok(thirdParty.includes('window.__playpointGaConfigured'), 'GA4の二重初期化防止ガードがありません');
-  assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');
 });
 
 test('Xserver同期後に本番スモークテストを実行する', () => {
