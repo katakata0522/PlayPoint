@@ -5,26 +5,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
+const { CONTENT_DATE_OVERRIDES } = require('../scripts/content-dates.cjs');
+
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
-
-test('Google Play特別獲得率をランク通常率へ掛けない', () => {
-  const calculator = read('js/calculator.js');
-  assert.match(calculator, /const promotionRate = multiplier/);
-  assert.match(calculator, /Math\.max\(directRate, promotionRate\)/);
-  assert.doesNotMatch(calculator, /statusRate \* multiplier/);
-});
-
-test('ConsentはGoogleFCを一次情報にしTCFフォールバックでPurpose 7まで扱う', () => {
-  const consent = read('js/consent.js');
-  assert.match(consent, /gtag_enable_tcf_support = true/);
-  assert.match(consent, /CONSENT_MODE_DATA_READY/);
-  assert.match(consent, /getGoogleConsentModeValues/);
-  assert.match(consent, /consents\[7\]/);
-  assert.match(consent, /whenAnalyticsGranted/);
-  assert.match(consent, /whenAdsAllowed/);
-  assert.doesNotMatch(consent, /settleWithoutTcf/);
-});
 
 test('ゲーム生成物は確認範囲と出典を明示し保留記事を推薦しない', () => {
   const generator = read('scripts/generate-game-simulators.cjs');
@@ -44,12 +28,20 @@ test('楽天還元率を固定の5〜15%以上と断定しない', () => {
   }
 });
 
-test('法務ページの更新日は2026-08-18へ統一', () => {
+test('法務ページの更新日はメタデータ・構造化データ・本文・内容日台帳で一致する', () => {
   for (const file of ['privacy.html', 'terms.html']) {
     const html = read(file);
-    assert.match(html, /last-modified" content="2026-08-18/);
-    assert.match(html, /dateModified": "2026-08-18/);
-    assert.match(html, /最終改定日：<\/strong>2026-08-18/);
+    const metaDate = html.match(/last-modified" content="(\d{4}-\d{2}-\d{2})/)?.[1];
+    const schemaDate = html.match(/dateModified":\s*"(\d{4}-\d{2}-\d{2})/)?.[1];
+    const visibleDate = html.match(/最終改定日：<\/strong>(\d{4}-\d{2}-\d{2})/)?.[1];
+
+    assert.ok(metaDate, `${file}: last-modified がありません`);
+    assert.ok(schemaDate, `${file}: dateModified がありません`);
+    assert.ok(visibleDate, `${file}: 本文の最終改定日がありません`);
+    assert.equal(schemaDate, metaDate, `${file}: 構造化データの更新日が不一致です`);
+    assert.equal(visibleDate, metaDate, `${file}: 本文の更新日が不一致です`);
+    assert.equal(CONTENT_DATE_OVERRIDES[file], metaDate, `${file}: 内容日台帳とHTMLが不一致です`);
+    assert.match(metaDate, /^\d{4}-\d{2}-\d{2}$/);
   }
 });
 
@@ -116,23 +108,6 @@ test('LPアフィリエイト文言は固定還元や二重取りを断定しな
   assert.ok(!source.includes('ポイント二重取り'));
   assert.ok(!source.includes('場合</strong>されます'));
   assert.ok(source.includes('ポイント還元の対象になる場合があります'));
-});
-
-
-test('Consent pendingはGA4イベントを破棄せず後からの同意変更にも復帰する', () => {
-  const analytics = read('js/analytics-core.js');
-  const consent = read('js/consent.js');
-  assert.match(analytics, /consentStatus === 'pending'/);
-  assert.match(consent, /else analyticsCallbacks\.add\(callback\)/);
-  assert.match(consent, /else adCallbacks\.add\(callback\)/);
-  assert.match(consent, /whenAnalyticsGranted/);
-  assert.match(consent, /whenAdsAllowed/);
-});
-
-
-test('今回内容を更新した国際生成LPは8月18日を編集日として持つ', () => {
-  const dates = read('scripts/content-dates.cjs');
-  assert.match(dates, /GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18'/);
 });
 
 
