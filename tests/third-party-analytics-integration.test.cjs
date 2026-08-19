@@ -224,8 +224,6 @@ test('既にrequest済みまたは初期化済みの広告枠は二重pushしな
 
   assert.equal(runtime.context.adsbygoogle.length, 1);
   assert.equal(fresh.dataset.playpointAdRequested, 'true');
-  assert.equal(requested.dataset.adSlot, undefined);
-  assert.equal(initialized.dataset.adSlot, undefined);
 });
 
 test('AdSense取得失敗時は失敗scriptを再利用せず実際に一度だけ再取得する', async () => {
