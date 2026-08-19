@@ -8,6 +8,8 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.resolve(__dirname, '../sw.js'), 'utf8');
 const ORIGIN = 'https://playpoint-sim.com';
+const currentCacheName = source.match(/const CACHE_NAME = '([^']+)'/)?.[1];
+assert.ok(currentCacheName, 'sw.jsの現行CACHE_NAMEを取得できません');
 
 class FakeRequest {
   constructor(url, options = {}) {
@@ -144,11 +146,11 @@ test('precache成功時だけ最新版をreload取得してskipWaitingする', a
   assert.equal(failure.skipWaitingCalls, 0, 'precache失敗を握りつぶして有効化しています');
 });
 
-test('activateはPlayPointの古い世代だけを削除し他アプリのcacheを残す', async () => {
+test('activateはPlayPointの古い世代だけを削除し現行cacheと他アプリcacheを残す', async () => {
   const runtime = createRuntime({
     cacheNames: [
       'playpoint-calc-vold',
-      'playpoint-calc-v20260819_1117-1e52215a',
+      currentCacheName,
       'other-app-cache'
     ]
   });
