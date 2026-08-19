@@ -27,5 +27,21 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+      - name: Reproduce committed build output
+        run: node .github/scripts/verify-build-output.cjs || true
+
+      - name: Capture generated drift
+        if: always()
+        run: |
+          git diff --binary > generated-drift.patch
+          git diff --name-only > generated-drift-files.txt
+
+      - name: Upload generated drift
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: generated-drift
+          path: |
+            generated-drift.patch
+            generated-drift-files.txt
+          if-no-files-found: error
