@@ -78,8 +78,26 @@ jobs:
           );
           NODE
 
-      - name: 生成物とアセット参照を同期
-        run: node scripts/prepare-pr.cjs
+      - name: GA4変更に必要な生成物とアセット参照だけ同期
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { spawnSync } = require('node:child_process');
+          const indexHtml = fs.readFileSync('index.html', 'utf8');
+          const serviceWorker = fs.readFileSync('sw.js', 'utf8');
+          const modifiedDate = indexHtml.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
+          const assetVersion = serviceWorker.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/)?.[1];
+          if (!modifiedDate || !assetVersion) throw new Error('committed build pins not found');
+          const result = spawnSync(process.execPath, ['scripts/build-html.js'], {
+            stdio: 'inherit',
+            env: {
+              ...process.env,
+              PLAYPOINT_MODIFIED_DATE: modifiedDate,
+              PLAYPOINT_ASSET_VERSION: assetVersion
+            }
+          });
+          if (result.status !== 0) process.exit(result.status || 1);
+          NODE
 
       - name: Analytics重点回帰テスト
         run: node --test tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/monetization-search-quality.test.cjs tests/playpoint-product-guards.test.cjs
