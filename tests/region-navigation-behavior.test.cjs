@@ -11,32 +11,48 @@ const source = fs.readFileSync(path.resolve(__dirname, '../js/region-navigation.
   .replace(/^export\s+/gm, '');
 
 const STORAGE_KEY = 'playpointPreferredRegion';
+const ORIGIN = 'https://playpoint-sim.com';
 
-function createRuntime(pathname, savedRegion = null) {
+function createRuntime(pathname, savedRegion = null, currentRegion = null) {
   const storage = new Map();
   if (savedRegion !== null) storage.set(STORAGE_KEY, savedRegion);
+
+  let currentHref = new URL(pathname, ORIGIN).href;
+  const location = { pathname: new URL(currentHref).pathname };
+  Object.defineProperty(location, 'href', {
+    get() { return currentHref; },
+    set(value) {
+      currentHref = new URL(value, currentHref).href;
+      location.pathname = new URL(currentHref).pathname;
+    }
+  });
 
   const context = {
     console: { log() {}, warn() {}, error() {} },
     CONFIGS: { JP: {}, US: {}, KR: {}, TW: {} },
-    STATE: { currentRegion: null },
-    CONSTANTS: { STORAGE_REGION_KEY: STORAGE_KEY },
-    location: { pathname, href: `https://playpoint-sim.com${pathname}` },
+    STATE: { currentRegion },
+    CONSTANTS: { STORAGE_REGION_KEY: STORAGE_KEY, CLASS_ACTIVE: 'active' },
+    UI: { showToast() {} },
+    location,
     localStorage: {
       getItem(key) { return storage.has(key) ? storage.get(key) : null; },
       setItem(key, value) { storage.set(key, String(value)); },
       removeItem(key) { storage.delete(key); }
-    }
+    },
+    document: { querySelectorAll() { return []; } }
   };
   context.window = context;
 
   vm.createContext(context);
-  vm.runInContext(`${source}\nglobalThis.__region = { applyRegionFromPath, getRegionPath, isEnglishPath, isKoreanPath, isTaiwanPath };`, context, {
-    filename: 'region-navigation.js'
-  });
+  vm.runInContext(
+    `${source}\nglobalThis.__region = { applyRegionFromPath, isEnglishPath, isKoreanPath, isTaiwanPath, switchRegion };`,
+    context,
+    { filename: 'region-navigation.js' }
+  );
 
   return {
     api: context.__region,
+    location,
     state: context.STATE,
     storedRegion: () => storage.get(STORAGE_KEY) ?? null
   };
@@ -68,7 +84,7 @@ test('言語URLは古い保存設定より優先され、現在URLの地域を�
   }
 });
 
-test('言語判定は完全な先頭segmentだけを対象にし、似たパスを誤判定しない', () => {
+test('言語判定は言語segmentだけに一致し、似た文字列のパスを誤判定しない', () => {
   const english = createRuntime('/en/articles/guide.html');
   assert.equal(english.api.isEnglishPath(), true);
   assert.equal(english.api.isKoreanPath(), false);
@@ -82,11 +98,20 @@ test('言語判定は完全な先頭segmentだけを対象にし、似たパス�
   }
 });
 
-test('地域切替先はJPだけルート、海外3地域は各言語ルートへ正規化する', () => {
-  const runtime = createRuntime('/');
-  assert.equal(runtime.api.getRegionPath('JP'), '/');
-  assert.equal(runtime.api.getRegionPath('US'), '/en/');
-  assert.equal(runtime.api.getRegionPath('KR'), '/ko/');
-  assert.equal(runtime.api.getRegionPath('TW'), '/tw/');
-  assert.equal(runtime.api.getRegionPath('UNKNOWN'), '/');
+test('地域切替は保存値を更新し、対応する言語URLへ実際に遷移する', () => {
+  const cases = [
+    { pathname: '/', current: 'JP', next: 'US', expectedPath: '/en/' },
+    { pathname: '/en/', current: 'US', next: 'JP', expectedPath: '/' },
+    { pathname: '/ko/', current: 'KR', next: 'TW', expectedPath: '/tw/' },
+    { pathname: '/tw/', current: 'TW', next: 'KR', expectedPath: '/ko/' }
+  ];
+
+  for (const { pathname, current, next, expectedPath } of cases) {
+    const runtime = createRuntime(pathname, current, current);
+    runtime.api.switchRegion(next);
+
+    assert.equal(runtime.state.currentRegion, next, `${pathname} -> ${next}`);
+    assert.equal(runtime.storedRegion(), next, `${pathname}: 切替先が保存されていません`);
+    assert.equal(runtime.location.pathname, expectedPath, `${pathname}: 切替先URLが不正です`);
+  }
 });
