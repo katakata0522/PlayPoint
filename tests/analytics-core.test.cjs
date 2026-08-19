@@ -86,6 +86,26 @@ test('GA4初期化前のイベントは保持し、準備完了後に一度だ�
   assert.equal(eventCalls(context, 'calculation_completed').length, 1);
 });
 
+test('手動page_viewモードでは保留イベントより先に一度だけpage_viewを送る', () => {
+  const { context } = createRuntime('granted');
+  const analytics = context.PlayPointAnalytics;
+  context.__playpointManualPageView = true;
+  analytics.track('theme_change', { theme_mode: 'dark' });
+
+  analytics.markAnalyticsReady();
+
+  const sentNames = context.dataLayer
+    .filter(item => item && item[0] === 'event')
+    .map(item => item[1]);
+  assert.equal(sentNames[0], 'page_view');
+  assert.equal(sentNames[1], 'theme_change');
+  assert.equal(eventCalls(context, 'page_view').length, 1);
+
+  analytics.markAnalyticsReady();
+  analytics.flushPending();
+  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');
+});
+
 test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {
   const { context, storage } = createRuntime('granted');
   const analytics = context.PlayPointAnalytics;

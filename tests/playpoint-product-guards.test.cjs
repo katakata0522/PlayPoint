@@ -227,9 +227,12 @@ test('同意済み計測はGA本体ロード前のイベントを短期キュー
   assert.ok(core.includes('pendingEvents'), 'GAロード前イベントのキューがありません');
   assert.ok(core.includes('flushPending'), '保留イベントのflush処理がありません');
   assert.ok(core.includes('markAnalyticsReady'), 'GA4準備完了を明示する処理がありません');
-  const configIndex = thirdParty.indexOf("window.gtag('config', GA_MEASUREMENT_ID)");
+  const configIndex = thirdParty.indexOf("window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false })");
   const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');
-  assert.ok(configIndex >= 0, 'GA4 config呼び出しがありません');
+  assert.ok(configIndex >= 0, 'GA4 configで自動page_viewを明示停止していません');
+  assert.ok(core.includes("page_view: []"), '明示page_viewが共通計測の許可対象にありません');
+  assert.ok(core.includes('sendInitialPageView'), '初回page_viewの明示送信処理がありません');
+  assert.ok(thirdParty.includes('window.__playpointGaConfigured'), 'GA4の二重初期化防止ガードがありません');
   assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');
 });
 
