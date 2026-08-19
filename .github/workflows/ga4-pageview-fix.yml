@@ -62,13 +62,20 @@ jobs:
             "            window.gtag('set', { app_display_mode: getDisplayMode() });\n            window.__playpointManualPageView = true;\n            window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });\n            window.__playpointGaConfigured = true;\n            gaLoaded = true;\n            window.PlayPointAnalytics.markAnalyticsReady();"
           );
 
-          const testFile = 'tests/analytics-core.test.cjs';
-          let testSource = fs.readFileSync(testFile, 'utf8');
+          const analyticsTest = 'tests/analytics-core.test.cjs';
+          let analyticsTestSource = fs.readFileSync(analyticsTest, 'utf8');
           const anchor = "test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {";
-          if (!testSource.includes(anchor)) throw new Error('analytics test anchor missing');
-          const newTest = `test('手動page_viewモードでは保留イベントより先に一度だけpage_viewを送る', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  context.__playpointManualPageView = true;\n  analytics.track('theme_change', { theme_mode: 'dark' });\n\n  analytics.markAnalyticsReady();\n\n  const sentNames = context.dataLayer\n    .filter(item => item && item[0] === 'event')\n    .map(item => item[1]);\n  assert.deepEqual(sentNames.slice(0, 2), ['page_view', 'theme_change']);\n  assert.equal(eventCalls(context, 'page_view').length, 1);\n\n  analytics.markAnalyticsReady();\n  analytics.flushPending();\n  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');\n});\n\n`;
-          testSource = testSource.replace(anchor, newTest + anchor);
-          fs.writeFileSync(testFile, testSource);
+          if (!analyticsTestSource.includes(anchor)) throw new Error('analytics test anchor missing');
+          const newTest = `test('手動page_viewモードでは保留イベントより先に一度だけpage_viewを送る', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  context.__playpointManualPageView = true;\n  analytics.track('theme_change', { theme_mode: 'dark' });\n\n  analytics.markAnalyticsReady();\n\n  const sentNames = context.dataLayer\n    .filter(item => item && item[0] === 'event')\n    .map(item => item[1]);\n  assert.equal(sentNames[0], 'page_view');\n  assert.equal(sentNames[1], 'theme_change');\n  assert.equal(eventCalls(context, 'page_view').length, 1);\n\n  analytics.markAnalyticsReady();\n  analytics.flushPending();\n  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');\n});\n\n`;
+          analyticsTestSource = analyticsTestSource.replace(anchor, newTest + anchor);
+          fs.writeFileSync(analyticsTest, analyticsTestSource);
+
+          const guardTest = 'tests/playpoint-product-guards.test.cjs';
+          replaceOnce(
+            guardTest,
+            "  const configIndex = thirdParty.indexOf(\"window.gtag('config', GA_MEASUREMENT_ID)\");\n  const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');\n  assert.ok(configIndex >= 0, 'GA4 config呼び出しがありません');\n  assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');",
+            "  const configIndex = thirdParty.indexOf(\"window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false })\");\n  const readyIndex = thirdParty.indexOf('window.PlayPointAnalytics.markAnalyticsReady()');\n  assert.ok(configIndex >= 0, 'GA4 configで自動page_viewを明示停止していません');\n  assert.ok(core.includes(\"page_view: []\"), '明示page_viewが共通計測の許可対象にありません');\n  assert.ok(core.includes('sendInitialPageView'), '初回page_viewの明示送信処理がありません');\n  assert.ok(thirdParty.includes('window.__playpointGaConfigured'), 'GA4の二重初期化防止ガードがありません');\n  assert.ok(readyIndex > configIndex, 'GA4 config完了前に保留イベントをflushし得ます');"
+          );
           NODE
 
       - name: 生成物とアセット参照を同期
