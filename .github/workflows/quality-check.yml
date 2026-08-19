@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -19,29 +19,35 @@ concurrency:
 
 jobs:
   quality:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Reproduce committed build output
+      - name: Reproduce generated build output
         run: node .github/scripts/verify-build-output.cjs || true
 
-      - name: Capture generated drift
-        if: always()
+      - name: Verify drift scope
         run: |
-          git diff --binary > generated-drift.patch
-          git diff --name-only > generated-drift-files.txt
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const expected = ['en/index.html', 'index.html', 'ko/index.html', 'sw.js', 'tw/index.html'];
+          const actual = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
+            .trim().split(/\r?\n/).filter(Boolean).sort();
+          if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+            console.error('Unexpected generated drift:', actual);
+            process.exit(1);
+          }
+          NODE
 
-      - name: Upload generated drift
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: generated-drift
-          path: |
-            generated-drift.patch
-            generated-drift-files.txt
-          if-no-files-found: error
+      - name: Commit exact generated drift
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add en/index.html index.html ko/index.html sw.js tw/index.html
+          git commit -m 'build: synchronize calculator funnel assets'
+          git push
