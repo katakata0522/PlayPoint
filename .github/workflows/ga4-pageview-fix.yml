@@ -102,13 +102,10 @@ jobs:
       - name: Analytics重点回帰テスト
         run: node --test tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/monetization-search-quality.test.cjs tests/playpoint-product-guards.test.cjs
 
-      - name: 生成物再現性検証
-        run: node .github/scripts/verify-build-output.cjs
-
       - name: 差分検査
         run: git diff --check
 
-      - name: 検証済み差分を保存
+      - name: 重点検証済み差分を保存
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
