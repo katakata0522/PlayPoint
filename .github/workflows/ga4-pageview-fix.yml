@@ -1,9 +1,9 @@
 name: GA4 Page View Fix Runner
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/ga4-landing-page-view-fix
+      - main
 
 permissions:
   contents: write
@@ -15,8 +15,10 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: page_view初回送信を決定論化
+      - name: page_view欠損とGA4二重初期化を修復
         run: |
           node <<'NODE'
           const fs = require('node:fs');
@@ -46,24 +48,25 @@ jobs:
           replaceOnce(
             'js/analytics-core.js',
             "        if (!analyticsReady) return;\n\n        while (pendingEvents.length) {",
-            "        if (!analyticsReady) return;\n\n        sendInitialPageView();\n        while (pendingEvents.length) {"
+            "        if (!analyticsReady) return;\n\n        if (window.__playpointManualPageView === true) sendInitialPageView();\n        while (pendingEvents.length) {"
+          );
+
+          replaceOnce(
+            'js/third-party.js',
+            "    async function loadAnalytics() {\n        if (gaLoaded) return;\n        try {",
+            "    async function loadAnalytics() {\n        if (gaLoaded) return;\n        if (window.__playpointGaConfigured) {\n            gaLoaded = true;\n            return;\n        }\n        try {"
           );
           replaceOnce(
             'js/third-party.js',
-            "            window.gtag('config', GA_MEASUREMENT_ID);",
-            "            window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });"
-          );
-          replaceOnce(
-            'blog/components.js',
-            "        window.gtag('config', GA_MEASUREMENT_ID);",
-            "        window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });"
+            "            window.gtag('set', { app_display_mode: getDisplayMode() });\n            window.gtag('config', GA_MEASUREMENT_ID);\n            gaLoaded = true;\n            window.PlayPointAnalytics.markAnalyticsReady();",
+            "            window.gtag('set', { app_display_mode: getDisplayMode() });\n            window.__playpointManualPageView = true;\n            window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });\n            window.__playpointGaConfigured = true;\n            gaLoaded = true;\n            window.PlayPointAnalytics.markAnalyticsReady();"
           );
 
           const testFile = 'tests/analytics-core.test.cjs';
           let testSource = fs.readFileSync(testFile, 'utf8');
           const anchor = "test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {";
           if (!testSource.includes(anchor)) throw new Error('analytics test anchor missing');
-          const newTest = `test('GA4準備完了時はpage_viewを保留イベントより先に一度だけ送信する', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  analytics.track('theme_change', { theme_mode: 'dark' });\n\n  analytics.markAnalyticsReady();\n\n  const sentNames = context.dataLayer\n    .filter(item => item && item[0] === 'event')\n    .map(item => item[1]);\n  assert.deepEqual(sentNames.slice(0, 2), ['page_view', 'theme_change']);\n  assert.equal(eventCalls(context, 'page_view').length, 1);\n\n  analytics.markAnalyticsReady();\n  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');\n});\n\n`;
+          const newTest = `test('手動page_viewモードでは保留イベントより先に一度だけpage_viewを送る', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  context.__playpointManualPageView = true;\n  analytics.track('theme_change', { theme_mode: 'dark' });\n\n  analytics.markAnalyticsReady();\n\n  const sentNames = context.dataLayer\n    .filter(item => item && item[0] === 'event')\n    .map(item => item[1]);\n  assert.deepEqual(sentNames.slice(0, 2), ['page_view', 'theme_change']);\n  assert.equal(eventCalls(context, 'page_view').length, 1);\n\n  analytics.markAnalyticsReady();\n  analytics.flushPending();\n  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');\n});\n\n`;
           testSource = testSource.replace(anchor, newTest + anchor);
           fs.writeFileSync(testFile, testSource);
           NODE
@@ -71,7 +74,7 @@ jobs:
       - name: 生成物とアセット参照を同期
         run: node scripts/prepare-pr.cjs
 
-      - name: Analytics回帰テスト
+      - name: Analytics重点回帰テスト
         run: node --test tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/monetization-search-quality.test.cjs tests/playpoint-product-guards.test.cjs
 
       - name: 全事前検証
@@ -85,5 +88,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          git commit -m 'fix: ensure initial GA4 page_view before queued events'
+          git commit -m 'fix: stabilize GA4 initial page_view and single initialization'
           git push
