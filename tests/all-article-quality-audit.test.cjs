@@ -65,7 +65,7 @@ test('the complete published article corpus keeps structural quality signals', (
     assert.match(
       html,
       /support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial/,
-      `${file}: a visible Google official source link is missing`
+      `${file}: a visible Google official source link is missing (need support.google.com/googleplay or play.google.com/store/apps/editorial)`
     );
     assert.match(
       html,

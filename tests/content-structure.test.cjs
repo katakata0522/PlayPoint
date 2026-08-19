@@ -95,11 +95,35 @@ test('引用用比較表は恒久URL・固定アンカー・一次情報を持�
   }
 });
 
+test('記事台帳の公開記事はブログ静的一覧に載り、非掲載は載せない', () => {
+  const articles = readArticles();
+  const blogIndex = read('blog/index.html');
+  const humanSitemap = read('sitemap.html');
+
+  for (const article of articles) {
+    const fileName = path.basename(article.file || '');
+    if (!fileName || !/^\.\.\/articles\/[^/]+\.html$/.test(article.file)) continue;
+    if (article.listed === false) {
+      assert.ok(!blogIndex.includes(fileName), `非掲載記事がブログ静的一覧に残っています: ${fileName}`);
+      assert.ok(!humanSitemap.includes(fileName), `非掲載記事が人向けサイトマップに残っています: ${fileName}`);
+      continue;
+    }
+    assert.ok(
+      blogIndex.includes(`href="${article.file}"`),
+      `公開記事がブログ静的一覧にありません: ${article.file}`
+    );
+  }
+});
+
 test('公開記事はトップから3クリック以内で到達できる', () => {
   const { auditClickDepth } = require('../scripts/site-click-depth.cjs');
   const result = auditClickDepth(root);
 
-  assert.equal(result.unreachable.length, 0, `未到達URL: ${result.unreachable.join(', ')}`);
+  assert.equal(
+    result.unreachable.length,
+    0,
+    `未到達URL: ${result.unreachable.join(', ')} / ブログJS一覧は数えません。node scripts/prepare-pr.cjs で静的導線を生成してコミットしてください`
+  );
   assert.equal(result.overLimit.length, 0, `4クリック超URL: ${result.overLimit.join(', ')}`);
   assert.ok(result.checkedUrls.length > 0);
   assert.ok(result.maxDepth <= 3);

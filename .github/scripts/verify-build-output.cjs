@@ -34,7 +34,23 @@ const diff = spawnSync('git', ['diff', '--exit-code', '--', ...generatedFiles], 
 });
 
 if (diff.status !== 0) {
-  console.error('Generated files are out of sync. Run `node scripts/build-html.js`, review the diff, and commit the generated output.');
+  const changed = spawnSync('git', ['--no-pager', 'diff', '--name-only', '--', ...generatedFiles], {
+    cwd: root,
+    encoding: 'utf8',
+    env: { ...process.env, PAGER: 'cat', GIT_PAGER: 'cat' }
+  });
+  const names = String(changed.stdout || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+  console.error('生成物が HEAD と一致しません。日付とアセット版を固定して再生成し、差分をコミットしてください。');
+  console.error('  node scripts/prepare-pr.cjs');
+  console.error(`固定値: PLAYPOINT_MODIFIED_DATE=${modifiedDate} PLAYPOINT_ASSET_VERSION=${assetVersion}`);
+  console.error('env なしで node scripts/build-html.js を回すとアセット版が時刻で変わり、差分が増えます。');
+  if (names.length > 0) {
+    console.error('変更ファイル:');
+    for (const name of names) console.error('- ' + name);
+  }
   process.exit(diff.status || 1);
 }
 

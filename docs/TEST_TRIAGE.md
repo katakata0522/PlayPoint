@@ -69,6 +69,19 @@
 
 ---
 
+## 記事追加時（検査は緩めない）
+
+検査条件はそのまま。落ちる主因は「記事HTMLだけ足して生成物と静的導線を揃えていない」こと。
+
+1. `blog/articles.json` へ載せる（非掲載は `listed: false`）
+2. 本文に `support.google.com/googleplay` または `play.google.com/store/apps/editorial` の公式リンクを入れる
+3. `node scripts/prepare-pr.cjs` を実行する（日付・アセット版はコミット済み値で固定）
+4. 生成された sitemap / feed / `blog/index.html` の noscript / `sitemap.html` / 関連リンクを確認してコミットする
+
+`node scripts/build-html.js` を env なしで回すとアセット版が時刻で変わり、再現性検査が落ちます。3クリック検査はブログのJS一覧を数えません。
+
+---
+
 ## preflight の実行方針（2026-08-07 更新）
 
 - **圧縮前:** 全 `tests/*.test.cjs` を1回

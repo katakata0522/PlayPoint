@@ -67,6 +67,8 @@ test('未確認の未来イベント記事は検索品質保留としてnoindex�
     assert.ok(!blogSitemap.includes(name), name + ': blog sitemapに残っています');
     assert.ok(!rss.includes(name), name + ': RSSに残っています');
     assert.ok(!atom.includes(name), name + ': Atomに残っています');
+    assert.ok(!read('blog/index.html').includes(name), name + ': ブログ静的一覧に残っています');
+    assert.ok(!read('sitemap.html').includes(name), name + ': 人向けサイトマップに残っています');
     assert.equal(item.listed, false, name + ': 記事台帳で非掲載になっていません');
   }
 });

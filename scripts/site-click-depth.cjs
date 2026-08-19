@@ -143,6 +143,8 @@ function runCli() {
   }
 
   if (result.unreachable.length || result.overLimit.length) {
+    console.error('ブログのJS一覧は数えません。静的な href（blog/index.html の noscript または sitemap.html）が必要です。');
+    console.error('記事台帳へ追加したあとは node scripts/prepare-pr.cjs を実行し、生成された静的導線をコミットしてください。');
     process.exitCode = 1;
   }
 }

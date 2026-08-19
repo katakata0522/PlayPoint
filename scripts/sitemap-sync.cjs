@@ -28,9 +28,19 @@ const SEARCH_QUALITY_HOLD_URLS = new Set([
   `${SITE_ORIGIN}/articles/2026-08-17-tgs-google-play-vip.html`
 ]);
 const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
+const GENERATED_LISTED_START = '<!-- generated-listed-articles:start -->';
+const GENERATED_LISTED_END = '<!-- generated-listed-articles:end -->';
 
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function toPublicUrl(file) {
@@ -132,12 +142,79 @@ function getBlogSitemapEntries(rootDir) {
   if (!fs.existsSync(articlesPath)) return [];
 
   return JSON.parse(fs.readFileSync(articlesPath, 'utf8'))
-    .filter(article => article && article.file && article.date)
+    .filter(article => article && article.file && article.date && article.listed !== false)
     .map(article => ({
       url: `${SITE_ORIGIN}/${String(article.file).replace(/^\.\.\//, '')}`,
       lastmod: article.modified || article.date
     }))
     .filter(entry => !SEARCH_QUALITY_HOLD_URLS.has(entry.url));
+}
+
+function listedJapaneseSitemapEntries(rootDir) {
+  const articlesPath = path.join(rootDir, 'blog', 'articles.json');
+  if (!fs.existsSync(articlesPath)) return [];
+
+  return JSON.parse(fs.readFileSync(articlesPath, 'utf8'))
+    .filter(article => article && article.listed !== false && article.file && article.title && article.date)
+    .filter(article => /^\.\.\/articles\/[^/]+\.html$/.test(article.file))
+    .sort((left, right) => String(right.modified || right.date).localeCompare(String(left.modified || left.date)))
+    .map(article => ({
+      href: String(article.file).replace(/^\.\.\//, ''),
+      title: article.title
+    }));
+}
+
+function stripGeneratedListedArticles(html) {
+  const start = html.indexOf(GENERATED_LISTED_START);
+  const end = html.indexOf(GENERATED_LISTED_END);
+  if (start < 0 || end < start) return html;
+  return html.slice(0, start) + html.slice(end + GENERATED_LISTED_END.length);
+}
+
+function renderGeneratedListedArticles(items) {
+  if (items.length === 0) return '';
+  const newline = '\n';
+  const list = items
+    .map(item => `        <li><a href="${escapeHtml(item.href)}">${escapeHtml(item.title)}</a></li>`)
+    .join(newline);
+  return `${GENERATED_LISTED_START}
+    <section class="group" data-generated-listed-articles="true">
+      <h2>公開中の解説記事</h2>
+      <ul>
+${list}
+      </ul>
+    </section>
+    ${GENERATED_LISTED_END}`;
+}
+
+function upsertGeneratedListedArticles(html, block) {
+  let next = stripGeneratedListedArticles(html);
+  next = next.replace(/\n{3,}/g, '\n\n');
+  if (!block) return next;
+
+  const policyHeading = next.indexOf('<h2>ポリシー</h2>');
+  if (policyHeading < 0) {
+    throw new Error('sitemap.html にポリシー欄がありません');
+  }
+  const sectionStart = next.lastIndexOf('<section', policyHeading);
+  const prefix = next.slice(0, sectionStart).replace(/\s+$/, '\n\n    ');
+  return `${prefix}${block}\n\n    ${next.slice(sectionStart)}`;
+}
+
+function syncHumanSitemapListedArticles(rootDir) {
+  const sitemapPath = path.join(rootDir, 'sitemap.html');
+  if (!fs.existsSync(sitemapPath)) return 0;
+
+  const original = fs.readFileSync(sitemapPath, 'utf8');
+  const listed = listedJapaneseSitemapEntries(rootDir);
+  const outsideGenerated = stripGeneratedListedArticles(original);
+  const existing = new Set(
+    [...outsideGenerated.matchAll(/href="(articles\/[^"]+\.html)"/g)].map(match => match[1])
+  );
+  const missing = listed.filter(item => !existing.has(item.href));
+  const next = upsertGeneratedListedArticles(original, renderGeneratedListedArticles(missing));
+  if (next !== original) fs.writeFileSync(sitemapPath, next, 'utf8');
+  return missing.length;
 }
 
 function renderBlogSitemap(entries) {
@@ -242,7 +319,9 @@ function syncSitemap(rootDir) {
 
   fs.writeFileSync(sitemapPath, content, 'utf8');
   fs.writeFileSync(path.join(rootDir, 'blog', 'sitemap.xml'), renderBlogSitemap(blogEntries), 'utf8');
+  const humanSitemapCount = syncHumanSitemapListedArticles(rootDir);
   console.log(`Updated sitemap.xml and blog/sitemap.xml with current article dates (${blogEntries.length} articles).`);
+  console.log(`[sitemap.html] synchronized listed article links: ${humanSitemapCount}`);
   return true;
 }
 
@@ -254,12 +333,14 @@ module.exports = {
   SEARCH_QUALITY_HOLD_URLS,
   escapeRegExp,
   getBlogSitemapEntries,
+  listedJapaneseSitemapEntries,
   syncDedicatedSitemapDates,
   getContentDateEntries,
   getDedicatedSitemapUrls,
   removeIgnoredSitemapHints,
   removeSitemapEntries,
   renderBlogSitemap,
+  syncHumanSitemapListedArticles,
   syncSitemap,
   syncSitemapContent,
   syncSitemapEntries,

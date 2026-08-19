@@ -138,6 +138,8 @@ try {
 if (failures.length > 0) {
   console.error('\n事前検証で失敗した工程:');
   failures.forEach(name => console.error('- ' + name));
+  console.error('\n記事追加や生成物のずれなら、先に node scripts/prepare-pr.cjs を実行して差分をコミットしてください。');
+  console.error('検査条件自体は変わりません。生成物・静的導線・公式リンクの手順漏れを先に揃えます。');
   process.exitCode = 1;
 } else {
   console.log(
