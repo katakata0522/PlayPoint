@@ -24,6 +24,7 @@ const ASSETS = [
   './js/pwa-install.js',
   './js/widget-referral.js',
   './js/service-worker-registration.js',
+  './js/calculator-funnel-analytics.js',
   './en/',
   './ko/',
   './tw/'
