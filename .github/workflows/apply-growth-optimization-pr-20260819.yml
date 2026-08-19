@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   apply:
@@ -35,23 +34,18 @@ jobs:
           set -o pipefail
           node --test tests/*.test.cjs 2>&1 | tee /tmp/growth-tests.log
 
-      - name: 失敗テストをPRへ記録
+      - name: 失敗ログをArtifactへ保存
         if: steps.tests.outcome == 'failure'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          {
-            echo '## 一時Growth Optimizationテスト診断'
-            echo
-            echo '全テストで失敗したため、本番変更はコミットしていません。末尾ログ:'
-            echo
-            echo '```text'
-            tail -n 220 /tmp/growth-tests.log
-            echo '```'
-          } > /tmp/growth-test-diagnostic.md
-          gh pr comment 87 --body-file /tmp/growth-test-diagnostic.md
-          exit 1
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: growth-test-diagnostic-${{ github.run_id }}
+          path: /tmp/growth-tests.log
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: テスト失敗を確定
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
 
       - name: 差分検査
         run: git diff --check
