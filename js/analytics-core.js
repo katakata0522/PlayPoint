@@ -18,6 +18,7 @@
     ];
     const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/']);
     const ALLOWED_PARAMS = Object.freeze({
+        page_view: [],
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         calculator_form_started: ['calculation_mode', 'region', 'start_field'],
@@ -47,6 +48,7 @@
 
     const pendingEvents = [];
     let analyticsReady = false;
+    let initialPageViewSent = false;
 
     function hasConsent() {
         return Boolean(window.PlayPointConsent)
@@ -221,6 +223,13 @@
         return true;
     }
 
+    function sendInitialPageView() {
+        if (initialPageViewSent || !analyticsReady || !hasConsent()) return false;
+        initialPageViewSent = true;
+        send('page_view', {});
+        return true;
+    }
+
     function flushPending() {
         if (!window.PlayPointConsent) return;
         const consentStatus = window.PlayPointConsent.getStatus();
@@ -232,6 +241,7 @@
         }
         if (!analyticsReady) return;
 
+        if (window.__playpointManualPageView === true) sendInitialPageView();
         while (pendingEvents.length) {
             const { eventName, params } = pendingEvents.shift();
             send(eventName, params);

@@ -42,13 +42,19 @@
 
     async function loadAnalytics() {
         if (gaLoaded) return;
+        if (window.__playpointGaConfigured) {
+            gaLoaded = true;
+            return;
+        }
         try {
             await ensureAnalyticsCore();
             await loadScript(ANALYTICS_SCRIPT_SRC, { fetchpriority: 'low' });
             window.PlayPointAnalytics.installGtagBridge();
             window.gtag('js', new Date());
             window.gtag('set', { app_display_mode: getDisplayMode() });
-            window.gtag('config', GA_MEASUREMENT_ID);
+            window.__playpointManualPageView = true;
+            window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });
+            window.__playpointGaConfigured = true;
             gaLoaded = true;
             window.PlayPointAnalytics.markAnalyticsReady();
         } catch (error) {
@@ -98,7 +104,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=a16d188b9e`).then(() => window.PlayPointAnalytics);
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=42b5e82926`).then(() => window.PlayPointAnalytics);
         }
         return analyticsCorePromise;
     }
