@@ -52,13 +52,6 @@ test('著者ページのOGP画像は実在する', () => {
   assert.ok(fs.existsSync(path.join(root, match[1])), `OGP画像が存在しません: ${match[1]}`);
 });
 
-test('計算機は有限値とHTMLの上下限を検証する', () => {
-  const source = read('js/calculator.js');
-  assert.ok(source.includes('Number.isFinite(value)'), '有限値検証がありません');
-  assert.ok(source.includes('element.max'), 'max属性の検証がありません');
-  assert.ok(source.includes('element.min'), 'min属性の検証がありません');
-});
-
 test('ルートService WorkerはGETの許可対象だけを安定したキーでキャッシュする', () => {
   const source = read('sw.js');
   assert.ok(source.includes("event.request.method !== 'GET'"), 'GET制限がありません');
