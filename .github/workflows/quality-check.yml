@@ -11,7 +11,7 @@ on:
       - '.gitattributes'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: quality-${{ github.workflow }}-${{ github.head_ref || github.ref }}
@@ -19,35 +19,13 @@ concurrency:
 
 jobs:
   quality:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-      - name: Checkout PR branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: false
 
-      - name: Reproduce generated build output
-        run: node .github/scripts/verify-build-output.cjs || true
-
-      - name: Verify drift scope
-        run: |
-          node <<'NODE'
-          const { execFileSync } = require('node:child_process');
-          const expected = ['en/index.html', 'index.html', 'ko/index.html', 'sw.js', 'tw/index.html'];
-          const actual = execFileSync('git', ['diff', '--name-only'], { encoding: 'utf8' })
-            .trim().split(/\r?\n/).filter(Boolean).sort();
-          if (JSON.stringify(actual) !== JSON.stringify(expected)) {
-            console.error('Unexpected generated drift:', actual);
-            process.exit(1);
-          }
-          NODE
-
-      - name: Commit exact generated drift
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add en/index.html index.html ko/index.html sw.js tw/index.html
-          git commit -m 'build: synchronize calculator funnel assets'
-          git push
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
