@@ -50,6 +50,7 @@ const jsTargets = [
   'js/pwa-install.js',
   'js/widget-referral.js',
   'js/service-worker-registration.js',
+  'js/calculator-funnel-analytics.js',
   'js/main-calculator-ui.js',
   'js/calculator.js',
   'js/ui.js',

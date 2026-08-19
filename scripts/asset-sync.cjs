@@ -22,6 +22,7 @@ const APP_MODULE_FILES = [
   'js/pwa-install.js',
   'js/widget-referral.js',
   'js/service-worker-registration.js',
+  'js/calculator-funnel-analytics.js',
   'js/ui.js',
   'js/diary.js',
   'js/calculator.js',
