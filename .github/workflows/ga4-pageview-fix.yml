@@ -1,0 +1,89 @@
+name: GA4 Page View Fix Runner
+
+on:
+  push:
+    branches:
+      - agent/ga4-landing-page-view-fix
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: page_view初回送信を決定論化
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceOnce(file, before, after) {
+            const source = fs.readFileSync(file, 'utf8');
+            const count = source.split(before).length - 1;
+            if (count !== 1) throw new Error(`${file}: replacement target count=${count}`);
+            fs.writeFileSync(file, source.replace(before, after));
+          }
+
+          replaceOnce(
+            'js/analytics-core.js',
+            "    const ALLOWED_PARAMS = Object.freeze({\n        calculation_completed:",
+            "    const ALLOWED_PARAMS = Object.freeze({\n        page_view: [],\n        calculation_completed:"
+          );
+          replaceOnce(
+            'js/analytics-core.js',
+            "    const pendingEvents = [];\n    let analyticsReady = false;",
+            "    const pendingEvents = [];\n    let analyticsReady = false;\n    let initialPageViewSent = false;"
+          );
+          replaceOnce(
+            'js/analytics-core.js',
+            "    function flushPending() {\n        if (!window.PlayPointConsent) return;",
+            "    function sendInitialPageView() {\n        if (initialPageViewSent || !analyticsReady || !hasConsent()) return false;\n        initialPageViewSent = true;\n        send('page_view', {});\n        return true;\n    }\n\n    function flushPending() {\n        if (!window.PlayPointConsent) return;"
+          );
+          replaceOnce(
+            'js/analytics-core.js',
+            "        if (!analyticsReady) return;\n\n        while (pendingEvents.length) {",
+            "        if (!analyticsReady) return;\n\n        sendInitialPageView();\n        while (pendingEvents.length) {"
+          );
+          replaceOnce(
+            'js/third-party.js',
+            "            window.gtag('config', GA_MEASUREMENT_ID);",
+            "            window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });"
+          );
+          replaceOnce(
+            'blog/components.js',
+            "        window.gtag('config', GA_MEASUREMENT_ID);",
+            "        window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false });"
+          );
+
+          const testFile = 'tests/analytics-core.test.cjs';
+          let testSource = fs.readFileSync(testFile, 'utf8');
+          const anchor = "test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {";
+          if (!testSource.includes(anchor)) throw new Error('analytics test anchor missing');
+          const newTest = `test('GA4準備完了時はpage_viewを保留イベントより先に一度だけ送信する', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  analytics.track('theme_change', { theme_mode: 'dark' });\n\n  analytics.markAnalyticsReady();\n\n  const sentNames = context.dataLayer\n    .filter(item => item && item[0] === 'event')\n    .map(item => item[1]);\n  assert.deepEqual(sentNames.slice(0, 2), ['page_view', 'theme_change']);\n  assert.equal(eventCalls(context, 'page_view').length, 1);\n\n  analytics.markAnalyticsReady();\n  assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');\n});\n\n`;
+          testSource = testSource.replace(anchor, newTest + anchor);
+          fs.writeFileSync(testFile, testSource);
+          NODE
+
+      - name: 生成物とアセット参照を同期
+        run: node scripts/prepare-pr.cjs
+
+      - name: Analytics回帰テスト
+        run: node --test tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/monetization-search-quality.test.cjs tests/playpoint-product-guards.test.cjs
+
+      - name: 全事前検証
+        run: node .github/scripts/preflight.cjs
+
+      - name: 差分検査
+        run: git diff --check
+
+      - name: 検証済み差分を保存
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: ensure initial GA4 page_view before queued events'
+          git push
