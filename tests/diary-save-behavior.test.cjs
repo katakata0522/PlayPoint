@@ -10,6 +10,8 @@ const source = fs.readFileSync(path.resolve(__dirname, '../js/diary.js'), 'utf8'
   .replace(/^import[^\n]+\n/gm, '')
   .replace(/^export\s+/gm, '');
 
+const toPlain = (value) => JSON.parse(JSON.stringify(value));
+
 function createRuntime({ saveFails = false } = {}) {
   const analyticsEvents = [];
   const dispatchedEvents = [];
@@ -130,7 +132,7 @@ test('通常保存が成功した時だけ保存データ・計測・成功通�
   assert.deepEqual(JSON.parse(runtime.savedValues[0].value), {
     2026: { 8: { 1: { points: '125', prize: 'Silver reward' } } }
   });
-  assert.deepEqual(runtime.analyticsEvents, [{
+  assert.deepEqual(toPlain(runtime.analyticsEvents), [{
     name: 'diary_entry_saved',
     params: { region: 'JP', entry_type: 'weekly_reward' }
   }]);
@@ -138,7 +140,7 @@ test('通常保存が成功した時だけ保存データ・計測・成功通�
   assert.equal(runtime.summaryCalls, 1);
   assert.equal(runtime.dispatchedEvents.length, 1);
   assert.equal(runtime.dispatchedEvents[0].type, 'playpoint:diary-saved');
-  assert.deepEqual(runtime.dispatchedEvents[0].detail, { region: 'JP' });
+  assert.deepEqual(toPlain(runtime.dispatchedEvents[0].detail), { region: 'JP' });
   assert.equal(runtime.toastCalls.filter(call => call.message === '保存しました').length, 1);
   assert.equal(runtime.button.textContent, '保存');
   assert.equal(runtime.button.disabled, false);
