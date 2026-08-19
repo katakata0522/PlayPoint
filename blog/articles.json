@@ -1,5 +1,80 @@
 [
   {
+    "id": "play-points-locked",
+    "title": "Play Pointsが利用停止・ロックされた時の対処法｜アカウント問題の確認順",
+    "date": "2026-08-19",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "利用停止",
+      "ロック",
+      "アカウント"
+    ],
+    "description": "Google Play Pointsが『利用できません』『アカウントに問題があります』と表示された時に、表示不具合とアカウント制限を切り分け、サポートへ伝える情報まで整理します。",
+    "file": "../articles/2026-08-19-play-points-locked.html",
+    "thumbnail": "../articles/ogp/getting-started.png"
+  },
+  {
+    "id": "install-offer-points-not-received",
+    "title": "Play Pointsのアプリインストール特典が付かない原因｜初回・2分・24時間を確認",
+    "date": "2026-08-19",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "インストール特典",
+      "未反映",
+      "初回"
+    ],
+    "description": "アプリを試すPlay Points特典が付かない時に、初回インストール、24時間以内に2分以上利用、パーソナライズ設定、対象アカウントを順番に確認します。",
+    "file": "../articles/2026-08-19-install-offer-points-not-received.html",
+    "thumbnail": "../articles/ogp/campaign.png"
+  },
+  {
+    "id": "redeemed-item-not-received",
+    "title": "Play Pointsで交換したゲーム内アイテムが届かない時の確認順｜ポイントだけ減った場合",
+    "date": "2026-08-19",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "ゲーム内アイテム",
+      "未着",
+      "交換"
+    ],
+    "description": "Play Pointsで交換したゲーム内アイテムが届かない時に、ポイント履歴、再起動、Playストア更新、ゲーム運営への問い合わせまで順番に切り分けます。",
+    "file": "../articles/2026-08-19-redeemed-item-not-received.html",
+    "thumbnail": "../articles/ogp/best-use.png"
+  },
+  {
+    "id": "web-store-external-billing-points",
+    "title": "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い",
+    "date": "2026-08-19",
+    "category": "使い方",
+    "tags": [
+      "Play Points",
+      "Webストア",
+      "外部決済",
+      "代替課金"
+    ],
+    "description": "ゲーム公式Webストアや代替課金とGoogle Play課金の違いを整理し、Play Points・Play残高・特典の扱いと実質的なお得さの比較方法を解説します。",
+    "file": "../articles/2026-08-19-web-store-external-billing-points.html",
+    "thumbnail": "../articles/ogp/campaign.png"
+  },
+  {
+    "id": "play-points-google-store",
+    "title": "Google Play PointsはGoogle Storeで使える？Pixel割引・Googleストアポイントとの違い",
+    "date": "2026-08-19",
+    "category": "使い方",
+    "tags": [
+      "Play Points",
+      "Google Store",
+      "Pixel",
+      "Googleストアポイント"
+    ],
+    "description": "日本でPlay PointsをGoogle Store用プロモーションコードへ交換できる場合の仕組みと、Googleストアポイント・Playクレジットとの違いを整理します。",
+    "file": "../articles/2026-08-19-play-points-google-store.html",
+    "thumbnail": "../articles/ogp/getting-started.png"
+  },
+  {
     "id": "tgs-google-play-vip",
     "title": "東京ゲームショウのGoogle Play特典｜2026年公式発表待ちと確認ポイント",
     "date": "2026-08-17",

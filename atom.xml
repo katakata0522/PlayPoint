@@ -5,11 +5,46 @@
   <link href="https://playpoint-sim.com/blog/" rel="alternate" type="text/html" />
   <link href="https://playpoint-sim.com/atom.xml" rel="self" type="application/atom+xml" />
   <id>https://playpoint-sim.com/blog/</id>
-  <updated>2026-08-16T12:00:00+09:00</updated>
+  <updated>2026-08-19T12:00:00+09:00</updated>
   <author>
     <name>かたかた</name>
     <uri>https://playpoint-sim.com/author/katakata.html</uri>
   </author>
+  <entry>
+    <title>Play Pointsが利用停止・ロックされた時の対処法｜アカウント問題の確認順</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-19-play-points-locked.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-19-play-points-locked.html</id>
+    <updated>2026-08-19T12:00:00+09:00</updated>
+    <summary>Google Play Pointsが『利用できません』『アカウントに問題があります』と表示された時に、表示不具合とアカウント制限を切り分け、サポートへ伝える情報まで整理します。</summary>
+  </entry>
+  <entry>
+    <title>Play Pointsのアプリインストール特典が付かない原因｜初回・2分・24時間を確認</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-19-install-offer-points-not-received.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-19-install-offer-points-not-received.html</id>
+    <updated>2026-08-19T12:00:00+09:00</updated>
+    <summary>アプリを試すPlay Points特典が付かない時に、初回インストール、24時間以内に2分以上利用、パーソナライズ設定、対象アカウントを順番に確認します。</summary>
+  </entry>
+  <entry>
+    <title>Play Pointsで交換したゲーム内アイテムが届かない時の確認順｜ポイントだけ減った場合</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-19-redeemed-item-not-received.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-19-redeemed-item-not-received.html</id>
+    <updated>2026-08-19T12:00:00+09:00</updated>
+    <summary>Play Pointsで交換したゲーム内アイテムが届かない時に、ポイント履歴、再起動、Playストア更新、ゲーム運営への問い合わせまで順番に切り分けます。</summary>
+  </entry>
+  <entry>
+    <title>ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-19-web-store-external-billing-points.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-19-web-store-external-billing-points.html</id>
+    <updated>2026-08-19T12:00:00+09:00</updated>
+    <summary>ゲーム公式Webストアや代替課金とGoogle Play課金の違いを整理し、Play Points・Play残高・特典の扱いと実質的なお得さの比較方法を解説します。</summary>
+  </entry>
+  <entry>
+    <title>Google Play PointsはGoogle Storeで使える？Pixel割引・Googleストアポイントとの違い</title>
+    <link href="https://playpoint-sim.com/articles/2026-08-19-play-points-google-store.html" rel="alternate" type="text/html" />
+    <id>https://playpoint-sim.com/articles/2026-08-19-play-points-google-store.html</id>
+    <updated>2026-08-19T12:00:00+09:00</updated>
+    <summary>日本でPlay PointsをGoogle Store用プロモーションコードへ交換できる場合の仕組みと、Googleストアポイント・Playクレジットとの違いを整理します。</summary>
+  </entry>
   <entry>
     <title>Play Passはポイント目的で入るべき？木曜週次と対象条件</title>
     <link href="https://playpoint-sim.com/articles/2026-08-16-play-pass-worth-it.html" rel="alternate" type="text/html" />
