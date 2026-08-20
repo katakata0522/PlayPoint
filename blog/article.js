@@ -110,51 +110,14 @@
         const content = document.querySelector('.content');
         if (!content) return;
 
-        const loc = getLocale();
-        const config = {
-            ja: {
-                aria: 'あなたの場合の必要額を計算',
-                label: '記事の条件を自分の数字で確認',
-                title: 'あなたの場合はいくら必要？',
-                body: '先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。',
-                button: '計算機で自分の必要額を見る',
-                href: '../'
-            },
-            en: {
-                aria: 'Estimate the spend needed for your target',
-                label: 'Check this guide with your own numbers',
-                title: 'How much do you need?',
-                body: 'Estimate the spend for your target before continuing, so you can separate general rules from your own situation.',
-                button: 'Open calculator',
-                href: '/en/'
-            },
-            ko: {
-                aria: '목표까지 필요한 금액 계산',
-                label: '내 조건으로 가이드 확인',
-                title: '내 경우에는 얼마가 필요할까?',
-                body: '본문을 계속 읽기 전에 목표에 필요한 금액을 먼저 계산하면 일반 규정과 내 상황을 구분하기 쉽습니다.',
-                button: '계산기 열기',
-                href: '/ko/'
-            },
-            tw: {
-                aria: '估算目標所需花費',
-                label: '用你的條件確認本文',
-                title: '你的情況需要花費多少？',
-                body: '繼續閱讀前先估算目標所需花費，更容易區分一般規則與自己的情況。',
-                button: '開啟計算器',
-                href: '/tw/'
-            }
-        };
-        const t = config[loc] || config.ja;
-
         const prompt = document.createElement('aside');
         prompt.className = 'article-calculator-prompt cta-box';
-        prompt.setAttribute('aria-label', t.aria);
+        prompt.setAttribute('aria-label', 'あなたの場合の必要額を計算');
         prompt.innerHTML = `
-            <p class="article-calculator-prompt__label">${fallbackUtils.escapeHtml(t.label)}</p>
-            <h2>${fallbackUtils.escapeHtml(t.title)}</h2>
-            <p>${fallbackUtils.escapeHtml(t.body)}</p>
-            <a class="article-calculator-prompt__button" href="${fallbackUtils.escapeHtml(t.href)}">${fallbackUtils.escapeHtml(t.button)}</a>
+            <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
+            <h2>あなたの場合はいくら必要？</h2>
+            <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
+            <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
         `;
 
         const anchor = content.querySelector('.answer-box, .summary-box, .intro');
@@ -565,29 +528,25 @@
                 title: '💡 あなたの場合はいくら必要？',
                 sub: '条件を入力して必要額をすぐ確認',
                 btn: '計算機を開く',
-                href: '../',
-                closeAria: '閉じる'
+                href: '../'
             },
             en: {
                 title: '💡 How much do you need?',
                 sub: 'Simulate with your regional settings',
                 btn: 'Open Calculator',
-                href: '/en/',
-                closeAria: 'Close'
+                href: '/en/'
             },
             ko: {
                 title: '💡 내 조건에서 필요한 금액은?',
                 sub: '내 계정 조건으로 바로 계산',
                 btn: '계산기 열기',
-                href: '/ko/',
-                closeAria: '닫기'
+                href: '/ko/'
             },
             tw: {
                 title: '💡 你的情況需要花費多少？',
                 sub: '輸入目前條件立即試算',
                 btn: '開啟計算機',
-                href: '/tw/',
-                closeAria: '關閉'
+                href: '/tw/'
             }
         };
 
@@ -601,7 +560,7 @@
                 <div class="mobile-sticky-cta-sub">${t.sub}</div>
             </div>
             <a href="${t.href}" class="mobile-sticky-cta-btn">${t.btn}</a>
-            <button class="mobile-sticky-cta-close" aria-label="${t.closeAria}">&times;</button>
+            <button class="mobile-sticky-cta-close" aria-label="閉じる">&times;</button>
         `;
 
         const closeBtn = cta.querySelector('.mobile-sticky-cta-close');
@@ -738,6 +697,7 @@
                 container.appendChild(card);
                 });
             }
+
         } catch (e) {
             console.error('Related Articles Error:', e);
             if (container) {
