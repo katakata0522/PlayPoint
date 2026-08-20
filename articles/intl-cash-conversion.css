@@ -1,0 +1,33 @@
+.content .intl-article-toc h2,
+.content .official-source-note h2 {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  display: block;
+  gap: 0;
+}
+.content .intl-article-toc h2 {
+  color: #111827;
+  margin: 0 0 0.7rem;
+  padding: 0 0 0.4rem;
+  border: 0;
+  border-bottom: 2px solid #e2e8f0;
+}
+.content .section h2 {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  display: block;
+  gap: 0;
+  color: var(--accent);
+  margin: 0 0 1rem;
+  padding: 0 0 0.5rem;
+  border: 0;
+  border-bottom: 3px solid var(--accent-light);
+}
+.content .official-source-note h2 {
+  color: var(--text);
+  margin: 0 0 0.6rem;
+  padding: 0;
+  border: 0;
+}
