@@ -73,6 +73,7 @@ const clusters = [
           ko: ['이전할 수 없습니다', '가족 결제수단', '가입 전'],
           tw: ['不能在帳號之間轉移', '家庭付款方式', '加入前']
         },
+        modifiedDates: { tw: '2026-08-20' },
         peer: 'google-play-points-weekly-reward.html'
       }
     ]
@@ -87,9 +88,12 @@ for (const cluster of clusters) {
         assert.ok(exists(relativePath), relativePath);
         const html = read(relativePath);
         assertBasicSeo(html, relativePath, { lang: locale.lang, siteName: locale.siteName });
+        const expectedModifiedDate = topic.modifiedDates?.[locale.dir];
         assert.ok(
-          html.includes('<meta name="last-modified" content="2026-07-25">')
-          || html.includes('<meta name="last-modified" content="2026-08-05">'),
+          expectedModifiedDate
+            ? html.includes(`<meta name="last-modified" content="${expectedModifiedDate}">`)
+            : html.includes('<meta name="last-modified" content="2026-07-25">')
+              || html.includes('<meta name="last-modified" content="2026-08-05">'),
           `${relativePath}: last-modified`
         );
         assert.ok(
