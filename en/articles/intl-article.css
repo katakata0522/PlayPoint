@@ -70,7 +70,14 @@ background: #f8fafc;
 }
 .intl-article-toc h2 {
 margin: 0 0 0.7rem;
+padding: 0 0 0.4rem;
 border: 0;
+border-bottom: 2px solid #e2e8f0;
+background: none;
+box-shadow: none;
+border-radius: 0;
+display: block;
+gap: 0;
 color: #111827;
 font-size: 1rem;
 }
@@ -94,9 +101,15 @@ text-decoration: none;
 .section h2 {
 font-size: 1.2rem;
 color: var(--accent);
-margin-bottom: 1rem;
-padding-bottom: 0.5rem;
+margin: 0 0 1rem;
+padding: 0 0 0.5rem;
+border: 0;
 border-bottom: 3px solid var(--accent-light);
+background: none;
+box-shadow: none;
+border-radius: 0;
+display: block;
+gap: 0;
 }
 .section p { margin-bottom: 1rem; }
 .section ul { padding-left: 1.4rem; margin-bottom: 1rem; }
@@ -127,7 +140,18 @@ background: #f8fbff;
 border: 1px solid #d8e5ff;
 border-radius: 16px;
 }
-.official-source-note h2 { font-size: 1.05rem; margin-bottom: 0.6rem; }
+.official-source-note h2 {
+font-size: 1.05rem;
+margin: 0 0 0.6rem;
+padding: 0;
+border: 0;
+background: none;
+box-shadow: none;
+border-radius: 0;
+display: block;
+gap: 0;
+color: var(--text);
+}
 .official-source-note p { color: var(--muted); margin-bottom: 0.8rem; }
 .author-box {
 margin: 0 2rem 1.5rem;
