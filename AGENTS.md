@@ -42,3 +42,11 @@ The goal is to create **high-quality, robust, and monetizeable** applications.
     *   Analyze backup folders and files with _old, er1.
     *   If redundant, suggest deletion or move to an _archive folder.
 *   **Context:** Read docs/IDEAS.md to understand the roadmap.
+
+## 6. Pull Request Safety
+*   Do not push implementation changes directly to `main`. Create a working branch and open a pull request.
+*   `main` is protected by a GitHub Ruleset. Do not bypass deletion or force-push protections.
+*   The required status check for pull requests is **PR Gate**. Merge only after it succeeds.
+*   Keep **Require branches to be up to date before merging** disabled unless the user explicitly decides to enable stricter synchronization.
+*   Do not add extra required checks, review approvals, signed-commit requirements, or deployment gates without an explicit need; keep the workflow safe without slowing normal development unnecessarily.
+*   After a pull request is merged, allow GitHub's automatic head-branch deletion to clean up the branch.
