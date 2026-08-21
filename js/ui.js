@@ -110,6 +110,13 @@ export const UI = {
 
     // 数値を 0 から目標値までスムーズにカウントアップするアニメーションメソッド
     animateValue(obj, start, end, duration, formatLang = 'ja') {
+        const prefersReducedMotion = typeof window.matchMedia === 'function'
+            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion || duration <= 0) {
+            obj.textContent = end.toLocaleString(formatLang);
+            return;
+        }
+
         let startTimestamp = null;
         const step = (timestamp) => {
             if (!startTimestamp) startTimestamp = timestamp;
