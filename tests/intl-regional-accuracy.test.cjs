@@ -18,20 +18,33 @@ function localeArticleFiles(locale) {
     .map(file => `${locale}/articles/${file}`);
 }
 
-test('海外向け記事から日本円固定ページへ誘導しない', () => {
-  const forbiddenLinks = {
-    en: '/en/amount/10000/',
-    ko: '/ko/amount/10000/',
-    tw: '/tw/amount/10000/'
-  };
-
-  for (const [locale, forbiddenLink] of Object.entries(forbiddenLinks)) {
-    for (const file of localeArticleFiles(locale)) {
-      assert.ok(
-        !read(file).includes(forbiddenLink),
-        `${file}: 地域向け記事に日本円固定ページ ${forbiddenLink} が残っています`
-      );
+test('海外の金額LPは各地域の現地通貨と初期金額を使う', () => {
+  const cases = [
+    {
+      file: 'en/amount/10000/index.html',
+      marker: '$50',
+      href: '/en/?mode=reverse&status=1&amount=50&multiplier=1',
+      forbidden: '10,000 yen'
+    },
+    {
+      file: 'ko/amount/10000/index.html',
+      marker: '50,000원',
+      href: '/ko/?mode=reverse&status=1&amount=50000&multiplier=1',
+      forbidden: '10,000엔'
+    },
+    {
+      file: 'tw/amount/10000/index.html',
+      marker: 'NT$1,500',
+      href: '/tw/?mode=reverse&status=1&amount=1500&multiplier=1',
+      forbidden: '10,000 日圓'
     }
+  ];
+
+  for (const { file, marker, href, forbidden } of cases) {
+    const html = read(file);
+    assert.ok(html.includes(marker), `${file}: 現地通貨の代表金額 ${marker} がありません`);
+    assert.ok(html.includes(href), `${file}: 現地通貨の逆算初期値が計算機リンクに反映されていません`);
+    assert.ok(!html.includes(forbidden), `${file}: 旧日本円固定表現 ${forbidden} が残っています`);
   }
 });
 
