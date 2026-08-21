@@ -10,10 +10,13 @@ const {
   getContentDateForFile
 } = require('../scripts/content-dates.cjs');
 const {
-  GAME_LOCALE_DIRECTORIES,
   getGameContentDate,
   getGamePageHtmlFiles
 } = require('../scripts/game-page-targets.cjs');
+const {
+  GAME_LOCALE_DIRECTORIES,
+  SITE_LOCALES
+} = require('../scripts/locale-ids.cjs');
 const {
   SITE_ORIGIN,
   getGameSitemapEntries
@@ -31,11 +34,35 @@ function getGeneratorMetadata() {
   assert.ok(gameIds.length > 0, 'GAMES_DATA should contain at least one game');
   assert.equal(new Set(gameIds).size, gameIds.length, 'GAMES_DATA ids must stay unique');
 
+  const localeBlockStart = source.indexOf('const LOCALES = {');
+  const localeBlockEnd = source.indexOf('const GAMES_DATA = [');
+  assert.ok(localeBlockStart >= 0 && localeBlockEnd > localeBlockStart, 'LOCALES block should remain discoverable');
+  const localeKeys = [...source.slice(localeBlockStart, localeBlockEnd).matchAll(/^  ([a-z]{2}): \{$/gm)]
+    .map(match => match[1]);
+
   const dateMatch = source.match(/const GAME_CONTENT_UPDATED_AT = '(\d{4}-\d{2}-\d{2})';/);
   assert.ok(dateMatch, 'game generator content date should remain explicit');
 
-  return { gameIds, contentDate: dateMatch[1] };
+  return { gameIds, localeKeys, contentDate: dateMatch[1] };
 }
+
+test('game locale discovery shares dependency-free site locale identifiers', () => {
+  const { localeKeys } = getGeneratorMetadata();
+  const gameTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'game-page-targets.cjs'), 'utf8');
+
+  assert.deepEqual(localeKeys, [...SITE_LOCALES], 'game generator locales should match the public site locale set');
+  assert.deepEqual(
+    [...GAME_LOCALE_DIRECTORIES],
+    ['', ...SITE_LOCALES.filter(locale => locale !== 'ja')],
+    'Japanese game pages should stay at root and international locales should use locale directories'
+  );
+  assert.match(gameTargetsSource, /require\('\.\/locale-ids\.cjs'\)/);
+  assert.doesNotMatch(
+    gameTargetsSource,
+    /Object\.freeze\(\['',\s*'en',\s*'ko',\s*'tw'\]\)/,
+    'game-page-targets.cjs must not restore its own locale directory list'
+  );
+});
 
 test('game page sync targets are derived from every generated locale and game id', () => {
   const { gameIds } = getGeneratorMetadata();

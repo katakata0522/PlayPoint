@@ -3,6 +3,7 @@
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 const OFFICIAL_SOURCE_PATTERN = /support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial/;
@@ -36,7 +37,7 @@ function committedBuildPins() {
 function scanOfficialSources() {
   const registry = JSON.parse(fs.readFileSync(path.join(root, 'blog', 'articles.json'), 'utf8'));
   const japanese = registry.map(article => String(article.file || '').replace(/^\.\.\//, ''));
-  const international = ['en', 'ko', 'tw'].flatMap(locale => {
+  const international = INTERNATIONAL_LOCALES.flatMap(locale => {
     const directory = path.join(root, locale, 'articles');
     if (!fs.existsSync(directory)) return [];
     return fs.readdirSync(directory)

@@ -6,7 +6,7 @@ const { getIntlContentExpansionFiles } = require('./intl-content-expansion.cjs')
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
 const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
-const { createLocales } = require('./locale-config.cjs');
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 const {
   CONTENT_DATE_OVERRIDES,
   isGeneratedGamePagePath
@@ -14,6 +14,8 @@ const {
 
 const rootDir = path.resolve(__dirname, '..');
 const excludedPublicDirectories = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
+const localeKeys = INTERNATIONAL_LOCALES;
+const internationalArticleDirectories = localeKeys.map(locale => `${locale}/articles`);
 
 function getPublicHtmlFiles(currentDir = rootDir) {
   return fs.readdirSync(currentDir, { withFileTypes: true }).flatMap(entry => {
@@ -26,7 +28,7 @@ function getPublicHtmlFiles(currentDir = rootDir) {
 }
 
 const publicHtmlFiles = getPublicHtmlFiles();
-const articleHtmlFiles = ['articles', 'en/articles', 'ko/articles', 'tw/articles']
+const articleHtmlFiles = ['articles', ...internationalArticleDirectories]
   .flatMap(directory => {
     const absoluteDirectory = path.join(rootDir, directory);
     if (!fs.existsSync(absoluteDirectory)) return [];
@@ -35,7 +37,7 @@ const articleHtmlFiles = ['articles', 'en/articles', 'ko/articles', 'tw/articles
       .map(file => `${directory}/${file}`);
   });
 
-const generatedLocaleFiles = Object.keys(createLocales())
+const generatedLocaleFiles = localeKeys
   .map(locale => `${locale}/index.html`);
 
 function getStaticSyncedHtmlFiles() {
@@ -77,6 +79,7 @@ module.exports = {
   articleHtmlFiles,
   generatedFiles: uniqueGeneratedFiles,
   generatedLocaleFiles,
+  internationalArticleDirectories,
   getStaticSyncedHtmlFiles,
   getSyncedHtmlFiles,
   syncedHtmlFiles
