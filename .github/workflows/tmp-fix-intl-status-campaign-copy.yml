@@ -1,0 +1,70 @@
+name: Temporary international Status/Campaign copy migration
+
+on:
+  push:
+    branches:
+      - fix/intl-status-campaign-earn-rate-copy
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/intl-status-campaign-earn-rate-copy
+          fetch-depth: 0
+
+      - name: Apply canonical source migration
+        run: node .github/scripts/tmp-fix-intl-status-campaign-copy.cjs
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Validate and commit expected files only
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only)"
+          echo "$changed"
+          if [ -z "$changed" ]; then
+            echo "No migration diff produced."
+            exit 0
+          fi
+
+          unexpected=0
+          while IFS= read -r file; do
+            case "$file" in
+              scripts/intl-seo-content.cjs|scripts/intl-seo-pages.cjs|scripts/content-dates.cjs|\
+              ko/status/diamond/index.html|\
+              en/status/platinum/index.html|ko/status/platinum/index.html|tw/status/platinum/index.html|\
+              en/status/gold/index.html|ko/status/gold/index.html|tw/status/gold/index.html|\
+              en/campaign/wait/index.html|ko/campaign/wait/index.html|tw/campaign/wait/index.html|\
+              sitemap.xml)
+                ;;
+              *)
+                echo "Unexpected generated diff: $file" >&2
+                unexpected=1
+                ;;
+            esac
+          done <<< "$changed"
+          if [ "$unexpected" -ne 0 ]; then
+            exit 1
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            scripts/intl-seo-content.cjs \
+            scripts/intl-seo-pages.cjs \
+            scripts/content-dates.cjs \
+            ko/status/diamond/index.html \
+            en/status/platinum/index.html ko/status/platinum/index.html tw/status/platinum/index.html \
+            en/status/gold/index.html ko/status/gold/index.html tw/status/gold/index.html \
+            en/campaign/wait/index.html ko/campaign/wait/index.html tw/campaign/wait/index.html \
+            sitemap.xml
+          git commit -m "fix: align international earn-rate copy"
+          git push origin HEAD:fix/intl-status-campaign-earn-rate-copy
