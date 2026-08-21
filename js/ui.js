@@ -5,6 +5,21 @@ import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config
 const HTML_TEXT_KEYS = new Set(['siteDescription', 'warningRate', 'guestNotice']);
 const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/'];
 const TAB_NAVIGATION_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'Home', 'End']);
+const UNEXPECTED_ERROR_MESSAGES = Object.freeze({
+    ja: '予期せぬエラーが発生しました。ページをリロードしてみてください。',
+    en: 'An unexpected error occurred. Please try reloading the page.',
+    ko: '예기치 않은 오류가 발생했습니다. 페이지를 새로고침해 주세요.',
+    'zh-tw': '發生未預期的錯誤。請嘗試重新載入頁面。'
+});
+
+function getUnexpectedErrorMessage() {
+    const lang = typeof document !== 'undefined'
+        ? String(document.documentElement?.lang || '').toLowerCase()
+        : '';
+    if (lang.startsWith('zh')) return UNEXPECTED_ERROR_MESSAGES['zh-tw'];
+    const primaryLang = lang.split('-')[0];
+    return UNEXPECTED_ERROR_MESSAGES[primaryLang] || UNEXPECTED_ERROR_MESSAGES.ja;
+}
 
 function isLocalizedSubdirectory(pathname) {
     return LOCALIZED_PAGE_PREFIXES.some(prefix => pathname.includes(prefix));
@@ -288,7 +303,7 @@ export const UI = {
 window.onerror = function(message, source, lineno, colno, error) {
     console.error("予期せぬエラーが発生しました:", { message, source, lineno, colno, error });
     if (UI && typeof UI.showToast === 'function') {
-        UI.showToast("予期せぬエラーが発生しました。ページをリロードしてみてください。", 'error');
+        UI.showToast(getUnexpectedErrorMessage(), 'error');
     }
     return true;
 };
