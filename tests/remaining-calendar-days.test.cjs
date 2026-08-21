@@ -32,11 +32,11 @@ test('remaining calendar days is stable while New York is on DST', () => {
     const fs = require('node:fs');
     const vm = require('node:vm');
     const source = fs.readFileSync('js/calculator.js', 'utf8')
-      .replace(/^import .*;\\s*$/gm, '')
-      .replace(/^export\\s+/gm, '');
+      .replace(/^import .*;\s*$/gm, '')
+      .replace(/^export\s+/gm, '');
     const context = { Date };
     vm.createContext(context);
-    vm.runInContext(source + '\\nglobalThis.__CALC_PURE = CALC_PURE;', context);
+    vm.runInContext(source + '\nglobalThis.__CALC_PURE = CALC_PURE;', context);
     const baseDate = new Date(2026, 6, 1, 0, 30);
     const nextYearStart = new Date(baseDate.getFullYear() + 1, 0, 1);
     const oldElapsedDayResult = Math.max(0, Math.ceil((nextYearStart - baseDate) / 86400000));
