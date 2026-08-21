@@ -127,11 +127,7 @@ jobs:
           DEPLOY_VERIFIED_AT="$DEPLOY_VERIFIED_AT" \
           node .github/scripts/deploy-status.cjs
 
-          rsync -avz --delay-updates \
-            -e "ssh -p 10022 -i ~/.ssh/id_ed25519 -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=~/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15" \
-            status/deploy-revision.txt status/deploy-status.json \
-            hajikkoroom@hajikkoroom.xsrv.jp:/home/hajikkoroom/playpoint-sim.com/public_html/status/
-
+          bash .github/scripts/deploy-rsync.sh --publish-status
           node .github/scripts/verify-deploy-status.cjs
 
       - name: Report Xserver deployment result
