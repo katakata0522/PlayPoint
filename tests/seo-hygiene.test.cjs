@@ -95,7 +95,7 @@ test('人向けサイトマップはPlay Pointsの案内に集中する', () => 
 
 test('韓国語トップは為替計算をうたわず実際の入力条件を説明する', () => {
   const html = read('ko/index.html');
-  const description = '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 등급별 기본 적립률과 이벤트 배율로 계산합니다.';
+  const description = '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 계산합니다.';
 
   assert.ok(html.includes(`<meta name="description" content="${description}">`));
   assert.ok(!html.includes('환율과 보너스 이벤트'));
