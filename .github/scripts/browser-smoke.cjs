@@ -380,6 +380,7 @@ async function verifyBlogPage(browser, baseUrl) {
       activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
       toggleExpanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
       sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
+      sidebarInert: document.querySelector('#sidebar')?.hasAttribute('inert'),
       thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
       textOnlyThumbnails: document.querySelectorAll('.article-card .card-thumb--text-only').length
     }));
@@ -387,6 +388,7 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
     assert(initial.toggleExpanded === 'false' && initial.sidebarHidden === 'true', 'Blog sidebar initial ARIA state mismatch');
+    assert(initial.sidebarInert === true, 'Blog sidebar must be inert while closed');
     assert(initial.thumbnailImages === 0, `Blog mobile cards loaded ${initial.thumbnailImages} heavy thumbnail images`);
     assert(initial.textOnlyThumbnails === initial.cards, `Blog compact thumbnails mismatch: ${initial.textOnlyThumbnails}/${initial.cards}`);
 
@@ -421,16 +423,24 @@ async function verifyBlogPage(browser, baseUrl) {
     await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'true');
     const openState = await page.evaluate(() => ({
       expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
+      inert: document.querySelector('#sidebar')?.hasAttribute('inert'),
+      activeElement: document.activeElement?.id || ''
     }));
     assert(openState.expanded === 'true' && openState.hidden === 'false', 'Blog sidebar open ARIA state mismatch');
+    assert(openState.inert === false, 'Blog sidebar remained inert after opening');
+    assert(openState.activeElement === 'sidebar-close', 'Blog sidebar open focus mismatch: ' + openState.activeElement);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'false');
     const closeState = await page.evaluate(() => ({
       expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden')
+      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
+      inert: document.querySelector('#sidebar')?.hasAttribute('inert'),
+      activeElement: document.activeElement?.id || ''
     }));
     assert(closeState.expanded === 'false' && closeState.hidden === 'true', 'Blog sidebar close ARIA state mismatch');
+    assert(closeState.inert === true, 'Blog sidebar must become inert after closing');
+    assert(closeState.activeElement === 'sidebar-toggle', 'Blog sidebar close focus mismatch: ' + closeState.activeElement);
 
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');
