@@ -30,7 +30,7 @@ for (const relativePath of files) {
   if (text !== before) fs.writeFileSync(absolutePath, text);
 }
 
-if (count !== 4) {
-  throw new Error(`Expected exactly 4 copy-polish replacements, got ${count}`);
+if (count !== 5) {
+  throw new Error(`Expected exactly 5 copy-polish replacements, got ${count}`);
 }
 console.log(`[intl-article-copy-polish] replacements=${count}`);
