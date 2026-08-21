@@ -20,7 +20,7 @@ const {
   restoreManualIntlArticles,
   snapshotManualIntlArticles
 } = require('./manual-intl-articles.cjs');
-const { syncedHtmlFiles } = require('./build-targets.cjs');
+const { getSyncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
 const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
@@ -55,7 +55,7 @@ applyIntlContentExpansion(rootDir);
 
 require('./generate-game-simulators.cjs');
 
-syncHtmlFiles(rootDir, syncedHtmlFiles, assetVersions, todayStr);
+syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
 syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);

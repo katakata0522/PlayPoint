@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { replaceAssetVersion, replaceDateMetadata } = require('./html-replacements.cjs');
-const { CONTENT_DATE_OVERRIDES } = require('./content-dates.cjs');
+const { CONTENT_DATE_OVERRIDES, getContentDateForFile } = require('./content-dates.cjs');
 
 function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
   const filePath = path.join(rootDir, file);
@@ -28,7 +28,7 @@ function syncHtmlFile(rootDir, file, assetVersions, todayStr) {
 
 function syncHtmlFiles(rootDir, files, assetVersions, todayStr) {
   for (const file of files) {
-    const contentDate = CONTENT_DATE_OVERRIDES[file];
+    const contentDate = getContentDateForFile(file);
     if (!contentDate) {
       throw new Error(`Missing explicit content date for ${file}`);
     }
