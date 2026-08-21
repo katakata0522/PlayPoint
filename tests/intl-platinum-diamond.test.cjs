@@ -57,7 +57,9 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
   for (const page of pages) {
     const html = read(page.file);
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
-    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-05';
+    // The international articles received a meaningful editorial guidance update on 2026-08-21.
+    // Their separate official-source verification note intentionally remains 2026-08-05.
+    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-21';
     assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}"`), page.file);
     assert.ok(html.includes('article:modified_time'), page.file);
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
