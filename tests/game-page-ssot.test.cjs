@@ -14,6 +14,10 @@ const {
   getGameContentDate,
   getGamePageHtmlFiles
 } = require('../scripts/game-page-targets.cjs');
+const {
+  SITE_ORIGIN,
+  getGameSitemapEntries
+} = require('../scripts/sitemap-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
 const generatorPath = path.join(root, 'scripts', 'generate-game-simulators.cjs');
@@ -49,6 +53,27 @@ test('game page sync targets are derived from every generated locale and game id
     [...getGamePageHtmlFiles(root)].sort(),
     expected.sort(),
     'generated game outputs and discovered synchronization targets must stay aligned'
+  );
+});
+
+test('game sitemap entries are derived from the same discovered game pages', () => {
+  const expectedUrls = getGamePageHtmlFiles(root)
+    .map(file => `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`)
+    .sort();
+  const sitemapEntries = getGameSitemapEntries(root);
+  const actualUrls = sitemapEntries.map(entry => entry.url).sort();
+  const sitemapSource = fs.readFileSync(path.join(root, 'scripts', 'sitemap-sync.cjs'), 'utf8');
+
+  assert.deepEqual(actualUrls, expectedUrls);
+  assert.ok(
+    sitemapEntries.every(entry => entry.lastmod === GENERATED_GAME_PAGE_CONTENT_DATE),
+    'game sitemap entries should keep the canonical game editorial date'
+  );
+  assert.match(sitemapSource, /getGamePageHtmlFiles\(rootDir\)\.map/);
+  assert.doesNotMatch(
+    sitemapSource,
+    /\{\s*prefix:\s*'en\/games'/,
+    'sitemap-sync.cjs must not restore a second handwritten game locale directory list'
   );
 });
 
