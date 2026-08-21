@@ -95,10 +95,18 @@ test('Xserverの一時的なSSH障害を全ての書き込み経路で上限付�
   assert.doesNotMatch(script, /Waiting 10 seconds before retrying/);
 });
 
+test('接続後にXserver応答が止まってもSSHとrsyncが無期限に待たない', () => {
+  assert.match(script, /-o ServerAliveInterval=15/);
+  assert.match(script, /-o ServerAliveCountMax=2/);
+  assert.match(script, /RSYNC_IO_TIMEOUT_SECONDS=60/);
+  const rsyncTimeoutUses = script.match(/--timeout="\$RSYNC_IO_TIMEOUT_SECONDS"/g) || [];
+  assert.equal(rsyncTimeoutUses.length, 2, 'deploy and verified-status rsync paths must both have an I/O timeout');
+});
+
 test('GitHub Actionsのjob timeoutはXserver retry予算を途中で打ち切らない', () => {
   const match = workflow.match(/timeout-minutes:\s*(\d+)/);
   assert.ok(match, 'deploy workflow timeout is missing');
-  assert.ok(Number(match[1]) >= 20, `deploy timeout is too short for bounded retry/backoff: ${match[1]} minutes`);
+  assert.ok(Number(match[1]) >= 30, `deploy timeout is too short for bounded retry/backoff: ${match[1]} minutes`);
 });
 
 test('旧calculatorファイルを持たず301転送だけを維持する', () => {
