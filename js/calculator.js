@@ -33,6 +33,22 @@ export const CALC_PURE = {
     },
 
     /**
+     * 年末までの残り日数を算出（暦日基準）。
+     * local date componentだけをUTC上の日付へ写し、DSTやtimezone offsetで
+     * 「1日」が23/25時間になる影響を受けないようにする。
+     * @param {Date} baseDate
+     * @returns {number} 次年1月1日までの残り暦日数
+     */
+    getRemainingCalendarDays(baseDate = new Date()) {
+        const year = baseDate.getFullYear();
+        const month = baseDate.getMonth();
+        const day = baseDate.getDate();
+        const todayUtc = Date.UTC(year, month, day);
+        const nextYearUtc = Date.UTC(year + 1, 0, 1);
+        return Math.max(0, (nextYearUtc - todayUtc) / 86400000);
+    },
+
+    /**
      * 課金シミュレーション計算（純粋関数）
      * @param {object} params - 計算に必要なパラメータ
      * @param {number} params.neededPoints - 必要ポイント数
@@ -156,7 +172,7 @@ export const CALC = {
                 },
                 decisionTitle: '다음으로 확인할 사항',
                 highSpend: { href: 'campaign/3x/', title: '3배 캠페인과 비교', note: '구매 전 차이를 확인하세요' },
-                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 조건 확인', note: '이번 구매에 적용되는지 확인하세요' },
+                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인条件確認', note: '이번 구매에 적용되는지 확인하세요' },
                 diamond: { href: 'status/diamond/', title: '다이아몬드 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
                 platinum: { href: 'status/platinum/', title: '플래티넘 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
                 nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '포인트 반영 상태 확인', note: '연말 전 반영 상태를 확인하세요' },
@@ -521,8 +537,7 @@ export const CALC = {
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         const now = new Date();
-        const nextYearStart = new Date(now.getFullYear() + 1, 0, 1);
-        const remainingDays = Math.max(0, Math.ceil((nextYearStart - now) / (1000 * 60 * 60 * 24)));
+        const remainingDays = CALC_PURE.getRemainingCalendarDays(now);
         const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
         const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
         const rateDetails = this.getRateDetails(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
