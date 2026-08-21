@@ -1,6 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+const INTERNAL_ORIGIN = 'https://playpoint-sim.com';
+const INTERNAL_HOSTNAMES = new Set(['playpoint-sim.com', 'www.playpoint-sim.com']);
 const EXCLUDED_DIRECTORIES = new Set([
   '.git',
   '.github',
@@ -62,6 +64,50 @@ function stripInternalTrackingFromHtml(html) {
   });
 }
 
+function readAttributeValue(tag, name) {
+  const pattern = new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, 'i');
+  const match = tag.match(pattern);
+  return match ? (match[1] ?? match[2] ?? match[3] ?? '') : null;
+}
+
+function isInternalHref(href) {
+  if (typeof href !== 'string' || !href.trim()) return false;
+
+  try {
+    const url = new URL(href.trim(), `${INTERNAL_ORIGIN}/`);
+    return (url.protocol === 'http:' || url.protocol === 'https:')
+      && INTERNAL_HOSTNAMES.has(url.hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
+function normalizeInternalAnchorTarget(anchorTag) {
+  const href = readAttributeValue(anchorTag, 'href');
+  const target = readAttributeValue(anchorTag, 'target');
+  if (!href || String(target || '').toLowerCase() !== '_blank' || !isInternalHref(href)) {
+    return anchorTag;
+  }
+
+  let normalized = anchorTag.replace(/\s+target\s*=\s*(?:"_blank"|'_blank'|_blank)(?=\s|>)/i, '');
+  normalized = normalized.replace(
+    /\s+rel\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i,
+    (match, doubleQuoted, singleQuoted, unquoted) => {
+      const value = doubleQuoted ?? singleQuoted ?? unquoted ?? '';
+      const tokens = value
+        .split(/\s+/)
+        .filter(Boolean)
+        .filter(token => !['noopener', 'noreferrer'].includes(token.toLowerCase()));
+      return tokens.length ? ` rel="${tokens.join(' ')}"` : '';
+    }
+  );
+  return normalized;
+}
+
+function normalizeInternalTargetsInHtml(html) {
+  return html.replace(/<a\b[^>]*>/gi, normalizeInternalAnchorTarget);
+}
+
 function walkHtmlFiles(rootDirectory) {
   const files = [];
 
@@ -86,7 +132,8 @@ function sanitizeInternalLinks(rootDirectory) {
 
   for (const filePath of walkHtmlFiles(rootDirectory)) {
     const before = fs.readFileSync(filePath, 'utf8');
-    const after = stripInternalTrackingFromHtml(before);
+    const withoutTracking = stripInternalTrackingFromHtml(before);
+    const after = normalizeInternalTargetsInHtml(withoutTracking);
 
     if (after !== before) {
       fs.writeFileSync(filePath, after);
@@ -104,6 +151,9 @@ if (require.main === module) {
 }
 
 module.exports = {
+  isInternalHref,
+  normalizeInternalAnchorTarget,
+  normalizeInternalTargetsInHtml,
   sanitizeInternalLinks,
   stripInternalTrackingFromHref,
   stripInternalTrackingFromHtml,
