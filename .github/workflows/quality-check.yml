@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -17,59 +17,12 @@ jobs:
   gate:
     name: PR Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 7
     steps:
-      - name: Checkout PR branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
-      - name: Apply targeted international article migration
-        run: node scripts/tmp-fix-intl-article-meaning.cjs
-
-      - name: Normalize apostrophes in generated JS source copy
-        run: |
-          node - <<'NODE'
-          const fs = require('node:fs');
-          const file = 'scripts/intl-seo-content.cjs';
-          let source = fs.readFileSync(file, 'utf8');
-          source = source.replaceAll("tier's", 'tier’s');
-          fs.writeFileSync(file, source);
-          NODE
-
-      - name: Regenerate canonical outputs
-        run: node scripts/prepare-pr.cjs
-
-      - name: Verify focused regression test
-        run: node --test tests/intl-article-earn-rate-meaning.test.cjs
-
-      - name: Restore normal CI and remove temporary migration files
-        run: |
-          set -euo pipefail
-          git fetch origin main
-          git checkout origin/main -- .github/workflows/quality-check.yml
-          git rm -f scripts/tmp-fix-intl-article-meaning.cjs
-          git rm -f .github/workflows/tmp-intl-article-meaning.yml
-
-      - name: Guard final diff scope
-        run: |
-          set -euo pipefail
-          changed="$(git diff --name-only HEAD)"
-          printf '%s\n' "$changed"
-          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/quality-check\.yml|\.github/workflows/tmp-intl-article-meaning\.yml|scripts/tmp-fix-intl-article-meaning\.cjs|scripts/intl-seo-content\.cjs|tests/intl-article-earn-rate-meaning\.test\.cjs|(en|ko|tw)/articles/[^/]+\.html|sitemap\.xml|sitemap-intl-content-expansion\.xml|blog/sitemap\.xml|blog/feed\.(xml|json)|atom\.xml|rss\.xml|feed\.json)$' || true)"
-          if [ -n "$unexpected" ]; then
-            echo "Unexpected files changed; refusing to commit:" >&2
-            echo "$unexpected" >&2
-            exit 1
-          fi
-
-      - name: Commit canonical migration result
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "fix: align international article earn-rate semantics"
-          git push origin HEAD:fix/intl-article-earn-rate-meaning
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
