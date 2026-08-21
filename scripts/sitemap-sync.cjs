@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
 const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
@@ -242,7 +243,6 @@ ${articleEntries}
 }
 
 function getGameSitemapEntries(rootDir) {
-  const entries = [];
   const dateFor = (relativePath) => CONTENT_DATE_OVERRIDES[relativePath] || TOP_PAGE_CONTENT_DATES.ja;
   const htmlDateFor = (filePath, relativePath) => {
     try {
@@ -254,34 +254,11 @@ function getGameSitemapEntries(rootDir) {
     }
     return dateFor(relativePath);
   };
-  const dirs = [
-    { prefix: 'games', dir: path.join(rootDir, 'games') },
-    { prefix: 'en/games', dir: path.join(rootDir, 'en', 'games') },
-    { prefix: 'ko/games', dir: path.join(rootDir, 'ko', 'games') },
-    { prefix: 'tw/games', dir: path.join(rootDir, 'tw', 'games') }
-  ];
 
-  for (const { prefix, dir } of dirs) {
-    if (!fs.existsSync(dir)) continue;
-    entries.push({
-      url: `${SITE_ORIGIN}/${prefix}/`,
-      lastmod: htmlDateFor(path.join(dir, 'index.html'), `${prefix}/index.html`)
-    });
-
-    const subdirs = fs.readdirSync(dir, { withFileTypes: true });
-    for (const sub of subdirs) {
-      if (sub.isDirectory()) {
-        const indexPath = path.join(dir, sub.name, 'index.html');
-        if (fs.existsSync(indexPath)) {
-          entries.push({
-            url: `${SITE_ORIGIN}/${prefix}/${sub.name}/`,
-            lastmod: htmlDateFor(indexPath, `${prefix}/${sub.name}/index.html`)
-          });
-        }
-      }
-    }
-  }
-  return entries;
+  return getGamePageHtmlFiles(rootDir).map(relativePath => ({
+    url: toPublicUrl(relativePath),
+    lastmod: htmlDateFor(path.join(rootDir, relativePath), relativePath)
+  }));
 }
 
 function syncSitemap(rootDir) {
@@ -333,6 +310,7 @@ module.exports = {
   SEARCH_QUALITY_HOLD_URLS,
   escapeRegExp,
   getBlogSitemapEntries,
+  getGameSitemapEntries,
   listedJapaneseSitemapEntries,
   syncDedicatedSitemapDates,
   getContentDateEntries,
