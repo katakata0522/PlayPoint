@@ -24,3 +24,6 @@ jobs:
 
       - name: Check technical SEO basics
         run: node .github/scripts/seo-health-check.cjs
+
+      - name: Check production internal links
+        run: node .github/scripts/live-internal-link-check.cjs

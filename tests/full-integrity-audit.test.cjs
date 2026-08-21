@@ -18,6 +18,31 @@ test('ゲーム生成物は確認範囲と出典を明示し保留記事を推�
   assert.ok(!generator.includes('diamond-valley-festival-guide.html'));
 });
 
+test('ゲーム生成テンプレのナビariaと広告ラベルは言語別に出す', () => {
+  const generator = read('scripts/generate-game-simulators.cjs');
+  assert.match(generator, /navAriaLabel:/);
+  assert.match(generator, /breadcrumbAriaLabel:/);
+  assert.match(generator, /adLabel:/);
+  assert.match(generator, /aria-label="\$\{loc\.navAriaLabel\}"/);
+  assert.match(generator, /aria-label="\$\{loc\.breadcrumbAriaLabel\}"/);
+  assert.match(generator, /<span class="game-ad-label">\$\{loc\.adLabel\}<\/span>/);
+  assert.ok(!generator.includes('aria-label="メインナビゲーション"'));
+  assert.ok(!generator.includes('aria-label="パンくずリスト"'));
+  assert.ok(!generator.includes('<span class="game-ad-label">スポンサーリンク</span>'));
+
+  for (const [file, nav, crumb, ad] of [
+    ['en/games/genshin/index.html', 'Main navigation', 'Breadcrumb', 'Sponsored'],
+    ['ko/games/genshin/index.html', '주 메뉴', '탐색 경로', '광고'],
+    ['tw/games/genshin/index.html', '主要導覽', '導覽路徑', '廣告'],
+    ['games/genshin/index.html', 'メインナビゲーション', 'パンくずリスト', 'スポンサーリンク']
+  ]) {
+    const html = read(file);
+    assert.ok(html.includes(`aria-label="${nav}"`), `${file}: nav aria-label`);
+    assert.ok(html.includes(`aria-label="${crumb}"`), `${file}: breadcrumb aria-label`);
+    assert.ok(html.includes(`class="game-ad-label">${ad}<`), `${file}: ad label`);
+  }
+});
+
 test('楽天還元率を固定の5〜15%以上と断定しない', () => {
   for (const file of [
     'scripts/insert-lp-monetization.cjs',

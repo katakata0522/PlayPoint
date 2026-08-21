@@ -125,7 +125,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = GE
 <main class="calculator-wrapper lp-wrapper">
     <nav class="top-bar" aria-label="Site links">
         <a href="/${localeKey}/">${escapeHtml(locale.back)}</a>
-        <a href="/blog/">${escapeHtml(locale.blog)}</a>
+        <a href="/${localeKey}/articles/">${escapeHtml(locale.blog)}</a>
     </nav>
     <section class="lp-hero">
         <p class="lp-eyebrow">${escapeHtml(content.eyebrow)}</p>
@@ -173,9 +173,9 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = GE
             <span class="footer-separator">|</span>
             <a href="/author/katakata.html">${escapeHtml(locale.policyLabel)}</a>
             <span class="footer-separator">|</span>
-            <a href="/privacy.html">Privacy</a>
+            <a href="/privacy.html">${escapeHtml(locale.privacyLabel)}</a>
             <span class="footer-separator">|</span>
-            <a href="/terms.html">Terms</a>
+            <a href="/terms.html">${escapeHtml(locale.termsLabel)}</a>
         </p>
         <p class="site-footer-trademark">${escapeHtml(locale.trademarkNotice)}</p>
         <p class="copyright">© 2026 PlayPoint Simulation Tool</p>

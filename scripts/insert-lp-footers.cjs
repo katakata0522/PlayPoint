@@ -15,6 +15,8 @@ const footerData = {
     authorUrl: '/author/katakata.html',
     privacyUrl: '/privacy.html',
     termsUrl: '/terms.html',
+    privacyLabel: 'プライバシーポリシー',
+    termsLabel: '利用規約',
     siteName: 'PlayPoint Simulation Tool',
     disclaimer: 'Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。'
   },
@@ -29,6 +31,8 @@ const footerData = {
     authorUrl: '/author/katakata.html',
     privacyUrl: '/privacy.html',
     termsUrl: '/terms.html',
+    privacyLabel: 'Privacy Policy (Japanese)',
+    termsLabel: 'Terms of Service (Japanese)',
     siteName: 'Google Play Points Calculator',
     disclaimer: 'Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide, not affiliated with or endorsed by Google LLC or any game publishers mentioned.'
   },
@@ -43,6 +47,8 @@ const footerData = {
     authorUrl: '/author/katakata.html',
     privacyUrl: '/privacy.html',
     termsUrl: '/terms.html',
+    privacyLabel: '개인정보처리방침 (일본어)',
+    termsLabel: '이용약관 (일본어)',
     siteName: 'Google Play Points 계산기',
     disclaimer: 'Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 가이드 사이트이며, Google LLC 및 각 게임 개발사/배급사와 제휴 또는 승인 관계가 없습니다.'
   },
@@ -57,6 +63,8 @@ const footerData = {
     authorUrl: '/author/katakata.html',
     privacyUrl: '/privacy.html',
     termsUrl: '/terms.html',
+    privacyLabel: '隱私權政策 (日文)',
+    termsLabel: '服務條款 (日文)',
     siteName: 'Google Play Points 計算器',
     disclaimer: 'Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為非官方社群營運之計算器與攻略指南，與 Google LLC 及各遊戲開發/發行商無關。'
   }
@@ -82,9 +90,9 @@ function buildFooterHtml(locKey) {
           <span class="footer-separator">|</span>
           <a href="${d.authorUrl}">${d.author}</a>
           <span class="footer-separator">|</span>
-          <a href="${d.privacyUrl}">Privacy</a>
+          <a href="${d.privacyUrl}">${d.privacyLabel}</a>
           <span class="footer-separator">|</span>
-          <a href="${d.termsUrl}">Terms</a>
+          <a href="${d.termsUrl}">${d.termsLabel}</a>
         </p>
         <p class="site-footer-trademark">${d.disclaimer}</p>
         <p class="copyright">© 2026 ${d.siteName} All Rights Reserved.</p>

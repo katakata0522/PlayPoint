@@ -79,6 +79,7 @@
 
     // 記事のテーマに対応する一次情報を示し、読者が根拠を確認できるようにする
     function setupOfficialSourceNotice() {
+        if (getLocale() !== 'ja') return;
         if (document.querySelector('.official-source-note')) return;
         const article = document.querySelector('article');
         if (!article) return;
@@ -110,14 +111,15 @@
         const content = document.querySelector('.content');
         if (!content) return;
 
+        const copy = getCalculatorPromptCopy();
         const prompt = document.createElement('aside');
         prompt.className = 'article-calculator-prompt cta-box';
-        prompt.setAttribute('aria-label', 'あなたの場合の必要額を計算');
+        prompt.setAttribute('aria-label', copy.aria);
         prompt.innerHTML = `
-            <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
-            <h2>あなたの場合はいくら必要？</h2>
-            <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
-            <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
+            <p class="article-calculator-prompt__label">${fallbackUtils.escapeHtml(copy.label)}</p>
+            <h2>${fallbackUtils.escapeHtml(copy.title)}</h2>
+            <p>${fallbackUtils.escapeHtml(copy.body)}</p>
+            <a class="article-calculator-prompt__button" href="${fallbackUtils.escapeHtml(copy.href)}">${fallbackUtils.escapeHtml(copy.button)}</a>
         `;
 
         const anchor = content.querySelector('.answer-box, .summary-box, .intro');
@@ -162,6 +164,7 @@
     }
 
     function setupContextualGuideLinks() {
+        if (getLocale() !== 'ja') return;
         // 記事固有の関連記事欄を優先し、同じ役割の汎用リンク群を重ねない。
         if (document.querySelector('.contextual-guide-links, .related-links-section, .article-related-guides')) return;
         const content = document.querySelector('.content');
@@ -184,6 +187,7 @@
     function setupBreadcrumbStructuredData() {
         if (document.querySelector('script[data-article-breadcrumbs]')) return;
         const title = document.querySelector('h1')?.textContent.replace(/\s+/g, ' ').trim() || document.title;
+        const crumb = getArticleBreadcrumbCopy();
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.dataset.articleBreadcrumbs = 'true';
@@ -191,8 +195,8 @@
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
-                { '@type': 'ListItem', position: 1, name: 'Playポイント計算機', item: 'https://playpoint-sim.com/' },
-                { '@type': 'ListItem', position: 2, name: '記事一覧', item: 'https://playpoint-sim.com/blog/' },
+                { '@type': 'ListItem', position: 1, name: crumb.site, item: crumb.siteUrl },
+                { '@type': 'ListItem', position: 2, name: crumb.list, item: crumb.listUrl },
                 { '@type': 'ListItem', position: 3, name: title, item: window.location.origin + window.location.pathname }
             ]
         });
@@ -250,6 +254,7 @@
     }
 
     function setupArticleNextStepCta() {
+        if (getLocale() !== 'ja') return;
         // 記事固有の末尾導線があれば、汎用CTAを追加して選択肢を重複させない。
         if (document.querySelector('.article-next-step-cta, .related-links-section, .article-related-guides')) return;
         const content = document.querySelector('.content');
@@ -284,7 +289,7 @@
                 : null;
             if (!link) return;
             const url = new URL(link.href, window.location.href);
-            if (url.origin !== window.location.origin || url.pathname !== '/') return;
+            if (url.origin !== window.location.origin || !isCalculatorDestination(url)) return;
 
             const analytics = window.PlayPointAnalytics;
             if (!analytics) return;
@@ -402,6 +407,7 @@
     }
 
     function setupArticleUsability() {
+      if (getLocale() !== 'ja') return;
       var meta = document.querySelector('.hero-meta, .article-meta, .post-meta');
       var pub = document.querySelector('meta[property="article:published_time"]')?.content?.slice(0, 10).replace(/-/g, '/');
       var mod = document.querySelector('meta[property="article:modified_time"]')?.content?.slice(0, 10).replace(/-/g, '/');
@@ -412,6 +418,7 @@
     }
 
     function setupInlineCalculatorWidgets() {
+        if (getLocale() !== 'ja') return;
         const widgets = document.querySelectorAll('.inline-calc-widget');
         if (!widgets.length) return;
 
@@ -445,6 +452,78 @@
         if (path.includes('/ko/')) return 'ko';
         if (path.includes('/tw/')) return 'tw';
         return 'ja';
+    }
+
+    function isCalculatorDestination(url) {
+        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);
+    }
+
+    function getCalculatorPromptCopy() {
+        const copies = {
+            ja: {
+                aria: 'あなたの場合の必要額を計算',
+                label: '記事の条件を自分の数字で確認',
+                title: 'あなたの場合はいくら必要？',
+                body: '先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。',
+                button: '計算機で自分の必要額を見る',
+                href: '../'
+            },
+            en: {
+                aria: 'Calculate with your own numbers',
+                label: 'Check this guide against your own numbers',
+                title: 'How much do you need?',
+                body: 'Run a quick estimate first, then compare the article with the values shown in your own Google Play account.',
+                button: 'Open the calculator',
+                href: '/en/'
+            },
+            ko: {
+                aria: '내 조건으로 필요 금액 계산',
+                label: '가이드 내용을 내 숫자로 확인',
+                title: '내 경우에는 얼마가 필요할까요?',
+                body: '먼저 대략 금액을 계산한 뒤 본문과 내 계정 조건을 나눠서 확인하세요.',
+                button: '계산기 열기',
+                href: '/ko/'
+            },
+            tw: {
+                aria: '用自己的數字試算所需金額',
+                label: '用自己的數字核對本篇指南',
+                title: '以你的情況需要多少？',
+                body: '先算出概估金額，再把文章內容與你帳戶顯示的條件分開確認。',
+                button: '開啟計算器',
+                href: '/tw/'
+            }
+        };
+        return copies[getLocale()] || copies.ja;
+    }
+
+    function getArticleBreadcrumbCopy() {
+        const copies = {
+            ja: {
+                site: 'Playポイント計算機',
+                siteUrl: 'https://playpoint-sim.com/',
+                list: '記事一覧',
+                listUrl: 'https://playpoint-sim.com/blog/'
+            },
+            en: {
+                site: 'Google Play Points Calculator',
+                siteUrl: 'https://playpoint-sim.com/en/',
+                list: 'Guides',
+                listUrl: 'https://playpoint-sim.com/en/articles/'
+            },
+            ko: {
+                site: 'Google Play Points 계산기',
+                siteUrl: 'https://playpoint-sim.com/ko/',
+                list: '가이드',
+                listUrl: 'https://playpoint-sim.com/ko/articles/'
+            },
+            tw: {
+                site: 'Google Play Points 計算器',
+                siteUrl: 'https://playpoint-sim.com/tw/',
+                list: '指南',
+                listUrl: 'https://playpoint-sim.com/tw/articles/'
+            }
+        };
+        return copies[getLocale()] || copies.ja;
     }
 
     function setupReadingProgressBar() {
@@ -528,25 +607,29 @@
                 title: '💡 あなたの場合はいくら必要？',
                 sub: '条件を入力して必要額をすぐ確認',
                 btn: '計算機を開く',
-                href: '../'
+                href: '../',
+                closeAria: '閉じる'
             },
             en: {
                 title: '💡 How much do you need?',
                 sub: 'Simulate with your regional settings',
                 btn: 'Open Calculator',
-                href: '/en/'
+                href: '/en/',
+                closeAria: 'Close'
             },
             ko: {
                 title: '💡 내 조건에서 필요한 금액은?',
                 sub: '내 계정 조건으로 바로 계산',
                 btn: '계산기 열기',
-                href: '/ko/'
+                href: '/ko/',
+                closeAria: '닫기'
             },
             tw: {
                 title: '💡 你的情況需要花費多少？',
                 sub: '輸入目前條件立即試算',
                 btn: '開啟計算機',
-                href: '/tw/'
+                href: '/tw/',
+                closeAria: '關閉'
             }
         };
 
@@ -560,7 +643,7 @@
                 <div class="mobile-sticky-cta-sub">${t.sub}</div>
             </div>
             <a href="${t.href}" class="mobile-sticky-cta-btn">${t.btn}</a>
-            <button class="mobile-sticky-cta-close" aria-label="閉じる">&times;</button>
+            <button class="mobile-sticky-cta-close" aria-label="${fallbackUtils.escapeHtml(t.closeAria)}">&times;</button>
         `;
 
         const closeBtn = cta.querySelector('.mobile-sticky-cta-close');
@@ -625,6 +708,12 @@
 
                 progressBar.style.width = scrolled + '%';
             });
+        }
+
+        if (getLocale() !== 'ja') {
+            const navContainer = document.getElementById('article-nav');
+            if (navContainer) navContainer.remove();
+            return;
         }
 
         try {
@@ -708,6 +797,7 @@
 
     // Previous / Next Article Navigation
     function setupPrevNextNav(articles) {
+        if (getLocale() !== 'ja') return;
         const navContainer = document.getElementById('article-nav');
         if (!navContainer) return;
 
