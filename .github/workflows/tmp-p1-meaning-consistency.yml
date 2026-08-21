@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - fix/p1-meaning-consistency
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   regenerate:
-    if: github.event.head_commit.message != 'chore: regenerate meaning consistency'
+    if: github.event_name == 'pull_request' || github.event.head_commit.message != 'chore: regenerate meaning consistency'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
