@@ -1,0 +1,16 @@
+/home/runner/work/PlayPoint/PlayPoint/.github/scripts/tmp-fix-intl-status-campaign-copy.cjs:171
+  const addition = `${anchor}const GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({\n  'diamond:ko': '2026-08-21',\n  'platinum:en': '2026-08-21',\n  'platinum:ko': '2026-08-21',\n  'platinum:tw': '2026-08-21',\n  'gold:en': '2026-08-21',\n  'gold:ko': '2026-08-21',\n  'gold:tw': '2026-08-21',\n  'campaignWait:en': '2026-08-21',\n  'campaignWait:ko': '2026-08-21',\n  'campaignWait:tw': '2026-08-21'\n});\n\nfunction getGeneratedIntlPageContentDate(pageKey, localeKey) {\n  return GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES[\`${pageKey}:${localeKey}\`] || GENERATED_INTL_PAGE_CONTENT_DATE;\n}\n`;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
+
+ReferenceError: pageKey is not defined
+    at migrateContentDates (/home/runner/work/PlayPoint/PlayPoint/.github/scripts/tmp-fix-intl-status-campaign-copy.cjs:171:543)
+    at Object.<anonymous> (/home/runner/work/PlayPoint/PlayPoint/.github/scripts/tmp-fix-intl-status-campaign-copy.cjs:213:1)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49
+
+Node.js v22.23.2
