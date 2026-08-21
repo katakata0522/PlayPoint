@@ -17,6 +17,7 @@ const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
 const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
+const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
 const {
   restoreManualIntlArticles,
   snapshotManualIntlArticles
@@ -60,6 +61,8 @@ syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
 const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);
+const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
+console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);
 
