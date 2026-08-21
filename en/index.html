@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <title>Google Play Points Calculator | How much to reach the next level?</title>
-    <meta name="description" content="Google Play Points calculator. Estimate how much you need to spend to reach Silver, Gold, Platinum, or Diamond with campaign multipliers and weekly reward notes.">
+    <meta name="description" content="Google Play Points calculator. Estimate spending to reach Silver, Gold, Platinum, or Diamond using your base earn rate and any special earn rate shown in Google Play, plus weekly reward notes.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta name="author" content="katakata">
     <meta name="last-modified" content="2026-08-12">
@@ -23,7 +23,7 @@
     <link rel="apple-touch-icon" href="../icon-192.png">
     <link rel="manifest" href="../manifest.json">
     <meta property="og:title" content="Google Play Points Calculator | How much to reach the next level?">
-    <meta property="og:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
+    <meta property="og:description" content="Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/en/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
@@ -33,7 +33,7 @@
     <meta property="og:site_name" content="Google Play Points Calculator">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points Calculator | How much to reach the next level?">
-    <meta name="twitter:description" content="Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.">
+    <meta name="twitter:description" content="Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
     <link rel="modulepreload" href="../js/main.js?v=c56906a0e8">
@@ -122,7 +122,7 @@
           "name": "How is the spending goal calculated?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns."
+            "text": "By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates."
           }
         },
         {
@@ -130,7 +130,7 @@
           "name": "What is the reverse calculation mode?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings."
+            "text": "By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play."
           }
         },
         {
@@ -179,7 +179,7 @@
     </div>
 
     <h1 id="main-title" data-lang-key="mainTitle">Google Play Points Calculator</h1>
-    <p id="site-description" class="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.</p>
+    <p id="site-description" class="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed; the calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate.</p>
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">Standard</button>
@@ -345,11 +345,11 @@
         <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
         <h2>What You Can Do with Google Play Points Calculator</h2>
-        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how advantageous it will be during multiplier campaigns</strong>.</p>
+        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how a special earn rate shown in Google Play changes the estimate</strong>.</p>
         <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
         <ul>
             <li>Estimate the required spending to reach Platinum or Diamond status.</li>
-            <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
+            <li>Compare base earn rates with special earn rates shown in Google Play for reverse calculations.</li>
             <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
         <figure class="calculation-flow-figure">
@@ -366,11 +366,11 @@
         <h2>❓ Frequently Asked Questions (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. How is the spending goal calculated?</h3>
-            <p>A. By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns.</p>
+            <p>A. By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates.</p>
         </div>
         <div class="faq-item">
             <h3>Q. What is the reverse calculation mode?</h3>
-            <p>A. By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings.</p>
+            <p>A. By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play.</p>
         </div>
         <div class="faq-item">
             <h3>Q. Is this an official Google page?</h3>

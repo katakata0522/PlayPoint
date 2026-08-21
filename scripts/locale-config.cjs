@@ -10,9 +10,9 @@ function createLocales() {
         inLanguage: 'en',
         modifiedAt: TOP_PAGE_CONTENT_DATES.en,
         title: 'Google Play Points Calculator | How much to reach the next level?',
-        description: 'Google Play Points calculator. Estimate how much you need to spend to reach Silver, Gold, Platinum, or Diamond with campaign multipliers and weekly reward notes.',
+        description: 'Google Play Points calculator. Estimate spending to reach Silver, Gold, Platinum, or Diamond using your base earn rate and any special earn rate shown in Google Play, plus weekly reward notes.',
         ogTitle: 'Google Play Points Calculator | How much to reach the next level?',
-        ogDescription: 'Estimate Google Play Points level-up spending, reverse calculations, and campaign multiplier effects.',
+        ogDescription: 'Estimate Play Points level-up spending and reverse calculations using the higher of your base earn rate or the special earn rate shown in Google Play.',
         currency: 'USD',
         appName: 'Google Play Points Calculator',
         alternateName: 'Play Points Calculator',
@@ -21,7 +21,7 @@ function createLocales() {
             closeAria: 'Close', showHelpAria: 'Show explanation', shareResultAria: 'Share calculation result', prevYearAria: 'Previous year', nextYearAria: 'Next year',
             mainTitle: 'Google Play Points Calculator',
             siteAlias: 'Also known as Play Points Calculator / unofficial tool',
-            siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.',
+            siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed; the calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate.',
             linkAttention: '⚠️ Country notes',
             linkGames: '🎮 Game Calculators',
             linkLatest: '🆕 Latest Hub (Japanese)',
@@ -93,7 +93,7 @@ function createLocales() {
           "name": "How is the spending goal calculated?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns."
+            "text": "By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates."
           }
         },
         {
@@ -101,7 +101,7 @@ function createLocales() {
           "name": "What is the reverse calculation mode?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings."
+            "text": "By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play."
           }
         },
         {
@@ -129,11 +129,11 @@ function createLocales() {
         <h2>❓ Frequently Asked Questions (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. How is the spending goal calculated?</h3>
-            <p>A. By inputting your current points and target status, we calculate the required spending based on your base point rate and any active multiplier campaigns.</p>
+            <p>A. By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates.</p>
         </div>
         <div class="faq-item">
             <h3>Q. What is the reverse calculation mode?</h3>
-            <p>A. By inputting the spending amount, the tool simulates the expected points you will earn based on your current status and campaign settings.</p>
+            <p>A. By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play.</p>
         </div>
         <div class="faq-item">
             <h3>Q. Is this an official Google page?</h3>
@@ -148,11 +148,11 @@ function createLocales() {
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
         <h2>What You Can Do with Google Play Points Calculator</h2>
-        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how advantageous it will be during multiplier campaigns</strong>.</p>
+        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how a special earn rate shown in Google Play changes the estimate</strong>.</p>
         <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
         <ul>
             <li>Estimate the required spending to reach Platinum or Diamond status.</li>
-            <li>Compare base rewards and campaign multiplier rates for reverse calculations.</li>
+            <li>Compare base earn rates with special earn rates shown in Google Play for reverse calculations.</li>
             <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
         </ul>
         <figure class="calculation-flow-figure">
@@ -175,7 +175,7 @@ function createLocales() {
         langCode: 'ko',           // BCP47 言語コード
         inLanguage: 'ko',
         title: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
-        description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 등급별 기본 적립률과 이벤트 배율로 계산합니다.',
+        description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 계산합니다.',
         modifiedAt: TOP_PAGE_CONTENT_DATES.ko,
         ogTitle: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
         ogDescription: '구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.',
@@ -254,7 +254,7 @@ function createLocales() {
           "name": "등급 달성 계산은 어떻게 진행되나요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률 및 보너스 이벤트 배율에 따라 필요한 결제 금액을 산출합니다."
+            "text": "현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률과 Google Play에 표시된 특별 적립률을 비교해 높은 값을 사용하여 필요한 결제 금액을 계산합니다. 두 적립률을 서로 곱하지 않습니다."
           }
         },
         {
@@ -262,7 +262,7 @@ function createLocales() {
           "name": "역산 모드는 무엇인가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다."
+            "text": "결제할 금액을 입력하면, 현재 등급의 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 획득 예상 포인트를 시뮬레이션합니다."
           }
         },
         {
@@ -290,11 +290,11 @@ function createLocales() {
         <h2>❓ 자주 묻는 질문 (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. 등급 달성 계산은 어떻게 진행되나요?</h3>
-            <p>A. 현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률 및 보너스 이벤트 배율에 따라 필요한 결제 금액을 산출합니다.</p>
+            <p>A. 현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률과 Google Play에 표시된 특별 적립률을 비교해 높은 값을 사용하여 필요한 결제 금액을 계산합니다. 두 적립률을 서로 곱하지 않습니다.</p>
         </div>
         <div class="faq-item">
             <h3>Q. 역산 모드는 무엇인가요?</h3>
-            <p>A. 결제할 금액을 입력하면, 현재 등급 및 보너스 이벤트 설정에 따라 획득 예상 포인트를 시뮬레이션합니다.</p>
+            <p>A. 결제할 금액을 입력하면, 현재 등급의 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 획득 예상 포인트를 시뮬레이션합니다.</p>
         </div>
         <div class="faq-item">
             <h3>Q. 이 콘텐츠는 공식 페이지인가요?</h3>
@@ -309,11 +309,11 @@ function createLocales() {
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
         <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
-        <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>이벤트 시 얼마나 더 이득인지</strong>를 한눈에 확인할 수 있습니다.</p>
+        <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 적용했을 때 예상치가 어떻게 달라지는지</strong>를 한눈에 확인할 수 있습니다.</p>
         <p>특히 '플래티넘까지 조금 남았을 때', '다이아몬드 달성 가능 여부를 알고 싶을 때', '포인트 증량 이벤트를 기다려야 할지 고민될 때' 감이 아닌 숫자로 쉽게 판단할 수 있도록 도와줍니다.</p>
         <ul>
             <li>플래티넘, 다이아몬드 등급 달성에 필요한 결제 금액 시뮬레이션</li>
-            <li>기본 적립률과 이벤트 배율을 비교하면서 획득 포인트 역산</li>
+            <li>기본 적립률과 Google Play에 표시된 특별 적립률을 비교하여 획득 포인트 역산</li>
             <li>주간 리워드 일기로 매주 획득한 포인트를 편리하게 관리</li>
         </ul>
         <figure class="calculation-flow-figure">
@@ -337,9 +337,9 @@ function createLocales() {
         inLanguage: 'zh-TW',
         modifiedAt: TOP_PAGE_CONTENT_DATES.tw,
         title: 'Google Play Points 計算器｜距離升級還差多少？',
-        description: 'Google Play Points 點數等級計算器。計算達到銀級、金級、白金級、鑽石級所需的消費金額，支援活動倍率、剩餘點數與每週獎勵紀錄。',
+        description: 'Google Play Points 點數等級計算器。估算達到銀級、金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。',
         ogTitle: 'Google Play Points 計算器｜距離升級還差多少？',
-        ogDescription: '免費模擬 Google Play 點數升級需求、逆算模式與加倍活動的點數試算工具。',
+        ogDescription: '免費模擬 Google Play 點數升級需求與逆算模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。',
         currency: 'TWD',
         appName: 'Google Play Points 計算器',
         alternateName: 'Google Play 點數計算器',
@@ -415,7 +415,7 @@ function createLocales() {
           "name": "升級目標的消費金額是如何計算的？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "輸入目前的點數與目標等級所需的點數後，系統會根據您目前的基本回饋率及加倍活動倍率，計算出所需的消費金額。"
+            "text": "輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。"
           }
         },
         {
@@ -423,7 +423,7 @@ function createLocales() {
           "name": "什麼是逆算模式？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。"
+            "text": "輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。"
           }
         },
         {
@@ -451,11 +451,11 @@ function createLocales() {
         <h2>❓ 常見問題 (FAQ)</h2>
         <div class="faq-item">
             <h3>Q. 升級目標的消費金額是如何計算的？</h3>
-            <p>A. 輸入目前的點數與目標等級所需的點數後，系統會根據您目前的基本回饋率及加倍活動倍率，計算出所需的消費金額。</p>
+            <p>A. 輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
         </div>
         <div class="faq-item">
             <h3>Q. 什麼是逆算模式？</h3>
-            <p>A. 輸入預計消費的金額後，系統會根據目前的等級與活動設定，估算您可獲得的預期點數。</p>
+            <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
         </div>
         <div class="faq-item">
             <h3>Q. 這是官方內容嗎？</h3>
@@ -470,11 +470,11 @@ function createLocales() {
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
     <section class="section">
         <h2>Google Play 點數計算器可以做什麼？</h2>
-        <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>在點數加倍活動期間能多獲得多少點數</strong>。</p>
+        <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>Google Play 顯示活動特別獲點率時，預估點數會如何變化</strong>。</p>
         <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
         <ul>
             <li>估算達到白金級、鑽石級所需的消費金額。</li>
-            <li>比較基本回饋與活動加倍倍率，進行點數逆算。</li>
+            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數逆算。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
         <figure class="calculation-flow-figure">
