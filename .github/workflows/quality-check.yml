@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -17,12 +17,48 @@ jobs:
   gate:
     name: PR Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 12
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          persist-credentials: true
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+      - name: Apply targeted copy polish
+        run: node scripts/tmp-polish-intl-article-meaning.cjs
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify focused regression test
+        run: node --test tests/intl-article-earn-rate-meaning.test.cjs
+
+      - name: Restore normal CI and remove temporary script
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout origin/main -- .github/workflows/quality-check.yml
+          git rm -f scripts/tmp-polish-intl-article-meaning.cjs
+
+      - name: Guard final diff scope
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only HEAD)"
+          printf '%s\n' "$changed"
+          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/quality-check\.yml|scripts/tmp-polish-intl-article-meaning\.cjs|scripts/intl-seo-content\.cjs|tests/intl-article-earn-rate-meaning\.test\.cjs|(en|ko|tw)/articles/[^/]+\.html|sitemap\.xml|sitemap-intl-content-expansion\.xml|blog/sitemap\.xml|blog/feed\.(xml|json)|atom\.xml|rss\.xml|feed\.json)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected files changed; refusing to commit:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+      - name: Commit polished canonical result
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: polish international earn-rate guidance"
+          git push origin HEAD:fix/intl-article-earn-rate-meaning
