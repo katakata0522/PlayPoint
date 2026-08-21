@@ -27,6 +27,16 @@ test('remaining calendar days uses date-only boundaries', () => {
   assert.equal(calc.getRemainingCalendarDays(new Date(2026, 10, 16, 23, 59)), 46);
 });
 
+test('remaining calendar days handles leap-year boundaries', () => {
+  const calc = loadCalcPure();
+
+  assert.equal(calc.getRemainingCalendarDays(new Date(2028, 0, 1, 12, 0)), 366);
+  assert.equal(calc.getRemainingCalendarDays(new Date(2028, 1, 28, 12, 0)), 308);
+  assert.equal(calc.getRemainingCalendarDays(new Date(2028, 1, 29, 12, 0)), 307);
+  assert.equal(calc.getRemainingCalendarDays(new Date(2028, 2, 1, 12, 0)), 306);
+  assert.equal(calc.getRemainingCalendarDays(new Date(2028, 11, 31, 23, 30)), 1);
+});
+
 test('remaining calendar days is stable while New York is on DST', () => {
   const script = String.raw`
     const fs = require('node:fs');
