@@ -16,16 +16,18 @@ test('visible details are the source of truth for FAQPage JSON-LD', () => {
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Old question","acceptedAnswer":{"@type":"Answer","text":"Old answer"}}]}</script>
 </head><body>
 <section class="section lp-faq"><h2>よくある疑問</h2>
-<details><summary>新しい質問&amp;確認</summary><p>新しい回答です。</p></details>
+<details><summary>新しい質問&amp;確認？</summary><p>新しい回答です。</p></details>
 <details><summary>2つ目の質問</summary><p><strong>本文</strong>から同期します。</p></details>
 </section></body></html>`;
 
   const result = synchronizeLpFaqStructuredData(html);
   assert.equal(result.changed, true);
   assert.deepEqual(stableFaqPairsFromStructuredData(result.html), [
-    { question: '新しい質問&確認', answer: '新しい回答です。' },
+    { question: '新しい質問&確認？', answer: '新しい回答です。' },
     { question: '2つ目の質問', answer: '本文から同期します。' }
   ]);
+  assert.match(result.html, /新しい質問&確認？/);
+  assert.doesNotMatch(result.html, /新しい質問&確認\?/);
 });
 
 test('already synchronized FAQPage stays byte-stable', () => {
