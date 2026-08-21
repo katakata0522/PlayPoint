@@ -4,6 +4,7 @@ import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config
 
 const HTML_TEXT_KEYS = new Set(['siteDescription', 'warningRate', 'guestNotice']);
 const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/'];
+const TAB_NAVIGATION_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'Home', 'End']);
 
 function isLocalizedSubdirectory(pathname) {
     return LOCALIZED_PAGE_PREFIXES.some(prefix => pathname.includes(prefix));
@@ -40,6 +41,32 @@ function setResultActionsVisibility(targetElement, isVisible) {
     } else if (targetElement === STATE.dom.reverseResult) {
         setElementVisibility(STATE.dom.shareTwitterReverse, isVisible);
     }
+}
+
+function handleTabListKeydown(event) {
+    if (!TAB_NAVIGATION_KEYS.has(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+
+    const currentTab = event.target.closest?.('.tab-switch [role="tab"]');
+    if (!currentTab) return;
+
+    const tabList = currentTab.closest('[role="tablist"]');
+    if (!tabList) return;
+
+    const tabs = Array.from(tabList.querySelectorAll('[role="tab"]'))
+        .filter(tab => !tab.disabled && tab.getAttribute('aria-disabled') !== 'true');
+    const currentIndex = tabs.indexOf(currentTab);
+    if (currentIndex < 0 || tabs.length === 0) return;
+
+    let nextIndex = currentIndex;
+    if (event.key === 'ArrowRight') nextIndex = (currentIndex + 1) % tabs.length;
+    if (event.key === 'ArrowLeft') nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+    if (event.key === 'Home') nextIndex = 0;
+    if (event.key === 'End') nextIndex = tabs.length - 1;
+
+    event.preventDefault();
+    const nextTab = tabs[nextIndex];
+    nextTab.focus();
+    nextTab.click();
 }
 
 export const UI = {
@@ -265,6 +292,8 @@ window.onerror = function(message, source, lineno, colno, error) {
     }
     return true;
 };
+
+document.addEventListener('keydown', handleTabListKeydown);
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
     window.PP_APP = window.PP_APP || {};
