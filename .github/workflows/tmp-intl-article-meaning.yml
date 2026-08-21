@@ -1,0 +1,56 @@
+name: Temporary international article meaning migration
+
+on:
+  push:
+    branches:
+      - fix/intl-article-earn-rate-meaning
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/intl-article-earn-rate-meaning
+          fetch-depth: 0
+
+      - name: Apply targeted source and article migration
+        run: node scripts/tmp-fix-intl-article-meaning.cjs
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify focused regression test
+        run: node --test tests/intl-article-earn-rate-meaning.test.cjs
+
+      - name: Remove temporary migration files
+        run: |
+          git rm scripts/tmp-fix-intl-article-meaning.cjs
+          git rm .github/workflows/tmp-intl-article-meaning.yml
+
+      - name: Guard final diff scope
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only HEAD)"
+          printf '%s\n' "$changed"
+          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(scripts/intl-seo-content\.cjs|tests/intl-article-earn-rate-meaning\.test\.cjs|(en|ko|tw)/articles/[^/]+\.html|sitemap\.xml|blog/sitemap\.xml|blog/feed\.(xml|json)|sitemap-intl-content-expansion\.xml)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected files changed; refusing to commit:" >&2
+            echo "$unexpected" >&2
+            exit 1
+          fi
+
+      - name: Commit canonical result
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: align international article earn-rate semantics"
+          git push origin HEAD:fix/intl-article-earn-rate-meaning
