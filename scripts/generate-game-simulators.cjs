@@ -19,6 +19,9 @@ const LOCALES = {
     authorTitle: '運営者',
     breadcrumbsHome: 'ホーム',
     breadcrumbsPortal: 'ゲーム別計算機一覧',
+    navAriaLabel: 'メインナビゲーション',
+    breadcrumbAriaLabel: 'パンくずリスト',
+    adLabel: 'スポンサーリンク',
     currencySymbol: '円',
     currencyPrefix: '',
     currencySuffix: ' 円',
@@ -119,6 +122,9 @@ const LOCALES = {
     authorTitle: 'About',
     breadcrumbsHome: 'Home',
     breadcrumbsPortal: 'Game Points Calculators',
+    navAriaLabel: 'Main navigation',
+    breadcrumbAriaLabel: 'Breadcrumb',
+    adLabel: 'Sponsored',
     currencySymbol: '$',
     currencyPrefix: '$',
     currencySuffix: '',
@@ -216,6 +222,9 @@ const LOCALES = {
     authorTitle: '운영자',
     breadcrumbsHome: '홈',
     breadcrumbsPortal: '게임별 포인트 계산기 목록',
+    navAriaLabel: '주 메뉴',
+    breadcrumbAriaLabel: '탐색 경로',
+    adLabel: '광고',
     currencySymbol: '원',
     currencyPrefix: '₩',
     currencySuffix: '원',
@@ -313,6 +322,9 @@ const LOCALES = {
     authorTitle: '營運團隊',
     breadcrumbsHome: '首頁',
     breadcrumbsPortal: '熱門遊戲點數計算器',
+    navAriaLabel: '主要導覽',
+    breadcrumbAriaLabel: '導覽路徑',
+    adLabel: '廣告',
     currencySymbol: 'NT$',
     currencyPrefix: 'NT$',
     currencySuffix: ' 元',
@@ -2297,7 +2309,7 @@ function generateGamePageHtml(game, localeKey) {
   </header>
 
   <!-- グローバルナビゲーション -->
-  <nav class="global-nav" aria-label="メインナビゲーション">
+  <nav class="global-nav" aria-label="${loc.navAriaLabel}">
       <div class="global-nav-inner">
           <a class="nav-item" href="${rootRelative}">
               <span>${loc.homeTitle}</span>
@@ -2316,7 +2328,7 @@ function generateGamePageHtml(game, localeKey) {
 
   <!-- パンくずリスト -->
   <div class="breadcrumbs-wrapper">
-      <nav aria-label="パンくずリスト">
+      <nav aria-label="${loc.breadcrumbAriaLabel}">
           <a href="${rootRelative}">${loc.breadcrumbsHome}</a> <span>&gt;</span>
           <a href="${portalRelative}">${loc.breadcrumbsPortal}</a> <span>&gt;</span>
           <span>${gameTitle}</span>
@@ -2463,7 +2475,7 @@ function generateGamePageHtml(game, localeKey) {
 
               <!-- 広告枠（レスポンシブ） -->
               <div class="game-ad-container">
-                  <span class="game-ad-label">スポンサーリンク</span>
+                  <span class="game-ad-label">${loc.adLabel}</span>
                   <ins class="adsbygoogle"
                        style="display:block"
                        data-ad-client="ca-pub-3845885843809455"
@@ -2677,7 +2689,7 @@ function generatePortalPageHtml(localeKey) {
   </header>
 
   <!-- グローバルナビゲーション -->
-  <nav class="global-nav" aria-label="メインナビゲーション">
+  <nav class="global-nav" aria-label="${loc.navAriaLabel}">
       <div class="global-nav-inner">
           <a class="nav-item" href="${rootRelative}">
               <span>${loc.homeTitle}</span>
@@ -2696,7 +2708,7 @@ function generatePortalPageHtml(localeKey) {
 
   <!-- パンくずリスト -->
   <div class="breadcrumbs-wrapper">
-      <nav aria-label="パンくずリスト">
+      <nav aria-label="${loc.breadcrumbAriaLabel}">
           <a href="${rootRelative}">${loc.breadcrumbsHome}</a> <span>&gt;</span>
           <span>${loc.breadcrumbsPortal}</span>
       </nav>

@@ -7,7 +7,12 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const enRoot = path.join(root, 'en');
-const japaneseLeakPattern = /[\u3040-\u30ff\u3001\u3002\u300c\u300d\u300e\u300f\u3010\u3011\uff08\uff09]/u;
+// カタカナ中黒（U+30FB）は英語記事の区切り記号として許可する
+const japaneseLeakPattern = /[\u3040-\u30fa\u30fc-\u30ff\u3001\u3002\u300c\u300d\u300e\u300f\u3010\u3011\uff08\uff09]/u;
+
+function withoutHtmlComments(html) {
+  return html.replace(/<!--[\s\S]*?-->/g, '');
+}
 
 function htmlFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -21,7 +26,7 @@ test('English HTML does not contain accidental Japanese-script UI or punctuation
   const failures = [];
 
   for (const file of htmlFiles(enRoot)) {
-    const html = fs.readFileSync(file, 'utf8');
+    const html = withoutHtmlComments(fs.readFileSync(file, 'utf8'));
     const lines = html.split(/\r?\n/);
 
     lines.forEach((line, index) => {
