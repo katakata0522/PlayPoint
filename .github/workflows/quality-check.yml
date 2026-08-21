@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -22,12 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: true
-          fetch-depth: 0
-
-      - name: Regenerate P2 decimal-input branch
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/p2-decimal-inputmode'
-        run: node .github/scripts/tmp-p2-decimal-inputmode.cjs
+          persist-credentials: false
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
