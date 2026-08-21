@@ -23,7 +23,9 @@ jobs:
     # 本番反映はmainの内容だけを対象にする
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    # Xserverの3つの通信フェーズが最大5回の接続待ち・backoffを使い切っても、
+    # GitHub Actions側のjob timeoutが先にretryを打ち切らない余裕を持たせる。
+    timeout-minutes: 20
     steps:
       - name: Mark Xserver deployment as pending
         env:
