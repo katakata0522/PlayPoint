@@ -95,6 +95,13 @@ deploy_once() {
     --exclude '/CNAME'
 }
 
+publish_verified_status_once() {
+  rsync -avz --delay-updates \
+    -e "$RSYNC_RSH" \
+    status/deploy-revision.txt status/deploy-status.json \
+    "$REMOTE_HOST:$REMOTE_ROOT/status/"
+}
+
 verify_remote_cleanup_once() {
   # 除外対象や他サイトへ移設済みの旧コンテンツが、Xserver上に残っていないことを直接確認する。
   # URLの301転送だけでは物理ファイルの残存を検知できないため、SSHで実体を検査する。
@@ -155,6 +162,17 @@ echo "Legacy and non-public server artifacts are absent."
 REMOTE
 }
 
-run_with_transient_retry "Deploying via rsync" deploy_once
-echo "Deployment succeeded!"
-run_with_transient_retry "Verifying remote cleanup" verify_remote_cleanup_once
+case "${1:-deploy}" in
+  deploy)
+    run_with_transient_retry "Deploying via rsync" deploy_once
+    echo "Deployment succeeded!"
+    run_with_transient_retry "Verifying remote cleanup" verify_remote_cleanup_once
+    ;;
+  --publish-status)
+    run_with_transient_retry "Publishing verified deployment status" publish_verified_status_once
+    ;;
+  *)
+    echo "Unknown deploy-rsync mode: $1" >&2
+    exit 2
+    ;;
+esac
