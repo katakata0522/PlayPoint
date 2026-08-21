@@ -2,8 +2,8 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { GAME_LOCALE_DIRECTORIES } = require('./locale-ids.cjs');
 
-const GAME_LOCALE_DIRECTORIES = Object.freeze(['', 'en', 'ko', 'tw']);
 const GAME_GENERATOR_FILE = 'scripts/generate-game-simulators.cjs';
 
 function toPosixRelative(rootDir, filePath) {
