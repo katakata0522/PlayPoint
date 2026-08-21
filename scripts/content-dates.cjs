@@ -19,6 +19,22 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
 
 const rootDir = path.resolve(__dirname, '..');
 const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
+const GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
+  'diamond:ko': '2026-08-21',
+  'platinum:en': '2026-08-21',
+  'platinum:ko': '2026-08-21',
+  'platinum:tw': '2026-08-21',
+  'gold:en': '2026-08-21',
+  'gold:ko': '2026-08-21',
+  'gold:tw': '2026-08-21',
+  'campaignWait:en': '2026-08-21',
+  'campaignWait:ko': '2026-08-21',
+  'campaignWait:tw': '2026-08-21'
+});
+
+function getGeneratedIntlPageContentDate(pageKey, localeKey) {
+  return GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES[`${pageKey}:${localeKey}`] || GENERATED_INTL_PAGE_CONTENT_DATE;
+}
 const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 
@@ -76,8 +92,10 @@ module.exports = {
   CONTENT_DATE_OVERRIDES,
   GENERATED_GAME_PAGE_CONTENT_DATE,
   GENERATED_INTL_PAGE_CONTENT_DATE,
+  GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES,
   LATEST_HUB_VERIFICATION_DATE,
   TOP_PAGE_CONTENT_DATES,
   getContentDateForFile,
+  getGeneratedIntlPageContentDate,
   isGeneratedGamePagePath
 };
