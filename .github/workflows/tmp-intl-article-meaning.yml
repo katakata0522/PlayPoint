@@ -54,3 +54,5 @@ jobs:
           git add -A
           git commit -m "fix: align international article earn-rate semantics"
           git push origin HEAD:fix/intl-article-earn-rate-meaning
+
+# trigger after opening draft PR
