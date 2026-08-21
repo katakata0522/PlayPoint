@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -22,7 +22,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Regenerate P2 global-error branch
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/p2-global-error-localization'
+        run: node .github/scripts/tmp-p2-global-error.cjs
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
