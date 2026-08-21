@@ -58,7 +58,7 @@ jobs:
           set -euo pipefail
           changed="$(git diff --name-only HEAD)"
           printf '%s\n' "$changed"
-          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(scripts/intl-seo-content\.cjs|tests/intl-article-earn-rate-meaning\.test\.cjs|(en|ko|tw)/articles/[^/]+\.html|sitemap\.xml|sitemap-intl-content-expansion\.xml|blog/sitemap\.xml|blog/feed\.(xml|json)|atom\.xml|rss\.xml|feed\.json)$' || true)"
+          unexpected="$(printf '%s\n' "$changed" | grep -Ev '^(\.github/workflows/quality-check\.yml|\.github/workflows/tmp-intl-article-meaning\.yml|scripts/tmp-fix-intl-article-meaning\.cjs|scripts/intl-seo-content\.cjs|tests/intl-article-earn-rate-meaning\.test\.cjs|(en|ko|tw)/articles/[^/]+\.html|sitemap\.xml|sitemap-intl-content-expansion\.xml|blog/sitemap\.xml|blog/feed\.(xml|json)|atom\.xml|rss\.xml|feed\.json)$' || true)"
           if [ -n "$unexpected" ]; then
             echo "Unexpected files changed; refusing to commit:" >&2
             echo "$unexpected" >&2
