@@ -8,12 +8,12 @@ const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
-const TOP_PAGE_URLS = [
-  `${SITE_ORIGIN}/`,
-  `${SITE_ORIGIN}/en/`,
-  `${SITE_ORIGIN}/ko/`,
-  `${SITE_ORIGIN}/tw/`
-];
+
+function topPageUrlForLocale(locale) {
+  return locale === 'ja' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}/${locale}/`;
+}
+
+const TOP_PAGE_URLS = Object.keys(TOP_PAGE_CONTENT_DATES).map(topPageUrlForLocale);
 const NON_PLAYPOINT_URLS = new Set([
   `${SITE_ORIGIN}/tools/gravity-todo/`,
   `${SITE_ORIGIN}/kids-smile-land/`,
@@ -106,12 +106,12 @@ function syncSitemapContent(sitemapContent, contentDates = TOP_PAGE_CONTENT_DATE
     content += '\n';
   }
 
-  const datesByUrl = new Map([
-    [`${SITE_ORIGIN}/`, contentDates.ja],
-    [`${SITE_ORIGIN}/en/`, contentDates.en],
-    [`${SITE_ORIGIN}/ko/`, contentDates.ko],
-    [`${SITE_ORIGIN}/tw/`, contentDates.tw]
-  ]);
+  const datesByUrl = new Map(
+    Object.entries(contentDates).map(([locale, lastmod]) => [
+      topPageUrlForLocale(locale),
+      lastmod
+    ])
+  );
 
   for (const url of urls) {
     const pattern = new RegExp(`(<loc>${escapeRegExp(url)}</loc>\\s*<lastmod>)\\d{4}-\\d{2}-\\d{2}(</lastmod>)`);
@@ -322,5 +322,6 @@ module.exports = {
   syncSitemap,
   syncSitemapContent,
   syncSitemapEntries,
+  topPageUrlForLocale,
   toPublicUrl
 };
