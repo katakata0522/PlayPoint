@@ -30,7 +30,10 @@ function decodeHtmlEntities(value) {
 }
 
 function cleanVisibleText(value) {
-  return decodeHtmlEntities(String(value).replace(/<[^>]*>/g, ' '))
+  const withoutMarkup = String(value)
+    .replace(/<br\s*\/?\s*>/gi, ' ')
+    .replace(/<[^>]*>/g, '');
+  return decodeHtmlEntities(withoutMarkup)
     .replace(/\s+/g, ' ')
     .trim();
 }
