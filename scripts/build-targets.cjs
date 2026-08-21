@@ -6,7 +6,7 @@ const { getIntlContentExpansionFiles } = require('./intl-content-expansion.cjs')
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
 const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
-const { createLocales } = require('./locale-config.cjs');
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 const {
   CONTENT_DATE_OVERRIDES,
   isGeneratedGamePagePath
@@ -14,7 +14,7 @@ const {
 
 const rootDir = path.resolve(__dirname, '..');
 const excludedPublicDirectories = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
-const localeKeys = Object.keys(createLocales());
+const localeKeys = INTERNATIONAL_LOCALES;
 const internationalArticleDirectories = localeKeys.map(locale => `${locale}/articles`);
 
 function getPublicHtmlFiles(currentDir = rootDir) {
