@@ -11,6 +11,7 @@ const {
 } = require('../scripts/content-dates.cjs');
 const {
   GAME_LOCALE_DIRECTORIES,
+  getGameContentDate,
   getGamePageHtmlFiles
 } = require('../scripts/game-page-targets.cjs');
 
@@ -51,14 +52,29 @@ test('game page sync targets are derived from every generated locale and game id
   );
 });
 
-test('all generated game pages receive the game editorial date and synchronization pass', () => {
+test('game editorial date has a single canonical source in the generator', () => {
   const { contentDate } = getGeneratorMetadata();
+  const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
+
+  assert.equal(getGameContentDate(root), contentDate, 'game date helper should resolve the generator date');
   assert.equal(
     GENERATED_GAME_PAGE_CONTENT_DATE,
     contentDate,
-    'content date resolver must match the game generator until the date constant is centralized'
+    'content date resolver should derive the game editorial date from the generator'
   );
+  assert.equal(
+    contentDatesSource.includes(`GENERATED_GAME_PAGE_CONTENT_DATE = '${contentDate}'`),
+    false,
+    'content-dates.cjs must not duplicate the generator game date literal'
+  );
+  assert.match(
+    contentDatesSource,
+    /GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate\(rootDir\)/,
+    'content-dates.cjs should explicitly derive the game date through the SSOT helper'
+  );
+});
 
+test('all generated game pages receive the canonical game editorial date and synchronization pass', () => {
   const synced = new Set(getSyncedHtmlFiles(root));
   for (const file of getGamePageHtmlFiles(root)) {
     assert.equal(getContentDateForFile(file), GENERATED_GAME_PAGE_CONTENT_DATE, `${file} should use the game editorial date`);

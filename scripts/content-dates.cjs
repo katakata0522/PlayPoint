@@ -1,7 +1,10 @@
 'use strict';
 
 const path = require('node:path');
-const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+const {
+  getGameContentDate,
+  getGamePageHtmlFiles
+} = require('./game-page-targets.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
@@ -13,8 +16,8 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
 });
 
 const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
-const GENERATED_GAME_PAGE_CONTENT_DATE = '2026-08-18';
 const rootDir = path.resolve(__dirname, '..');
+const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
 
 function isGeneratedGamePagePath(file) {
   return /^(?:(?:en|ko|tw)\/)?games\/(?:index\.html|[^/]+\/index\.html)$/.test(String(file));
