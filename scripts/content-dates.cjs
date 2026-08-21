@@ -29,10 +29,7 @@ const GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'gold:tw': '2026-08-21',
   'campaignWait:en': '2026-08-21',
   'campaignWait:ko': '2026-08-21',
-  'campaignWait:tw': '2026-08-21',
-  'amount10000:en': '2026-08-21',
-  'amount10000:ko': '2026-08-21',
-  'amount10000:tw': '2026-08-21'
+  'campaignWait:tw': '2026-08-21'
 });
 
 function getGeneratedIntlPageContentDate(pageKey, localeKey) {
