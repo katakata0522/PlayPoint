@@ -24,9 +24,9 @@ function createLocales() {
             siteDescription: 'Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed to estimate spending with campaign multipliers.',
             linkAttention: '⚠️ Country notes',
             linkGames: '🎮 Game Calculators',
-            linkLatest: '🆕 Latest Hub',
+            linkLatest: '🆕 Latest Hub (Japanese)',
             linkArticles: '📝 Articles',
-            linkKatakata: '🧪 KatakataLab',
+            linkKatakata: '🧪 KatakataLab (Japanese)',
             tabMain: 'Standard',
             tabReverse: 'Reverse',
             tabDiary: 'Weekly Awards Diary',
@@ -73,14 +73,14 @@ function createLocales() {
             confirmImportBtn: 'Execute Restore',
             backupPlaceholder: 'Paste your exported data here',
             backupDataLabel: 'Data to restore',
-            linkPrivacy: 'Privacy Policy',
-            linkTerms: 'Terms of Service',
-            linkQA: 'Q&A & Afterword',
+            linkPrivacy: 'Privacy Policy (Japanese)',
+            linkTerms: 'Terms of Service (Japanese)',
+            linkQA: 'Q&A & Afterword (Japanese)',
             linkFeedback: 'Feedback',
             linkAbout: 'What are Play Points?',
             linkWidget: 'Free widget',
             linkDiscount: '💡 Discount Guide',
-            linkAuthor: 'Operator & Policy'
+            linkAuthor: 'Operator & Policy (Japanese)'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">

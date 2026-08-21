@@ -289,7 +289,7 @@
                 : null;
             if (!link) return;
             const url = new URL(link.href, window.location.href);
-            if (url.origin !== window.location.origin || url.pathname !== '/') return;
+            if (url.origin !== window.location.origin || !isCalculatorDestination(url)) return;
 
             const analytics = window.PlayPointAnalytics;
             if (!analytics) return;
@@ -454,6 +454,10 @@
         return 'ja';
     }
 
+    function isCalculatorDestination(url) {
+        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);
+    }
+
     function getCalculatorPromptCopy() {
         const copies = {
             ja: {
@@ -603,25 +607,29 @@
                 title: '💡 あなたの場合はいくら必要？',
                 sub: '条件を入力して必要額をすぐ確認',
                 btn: '計算機を開く',
-                href: '../'
+                href: '../',
+                closeAria: '閉じる'
             },
             en: {
                 title: '💡 How much do you need?',
                 sub: 'Simulate with your regional settings',
                 btn: 'Open Calculator',
-                href: '/en/'
+                href: '/en/',
+                closeAria: 'Close'
             },
             ko: {
                 title: '💡 내 조건에서 필요한 금액은?',
                 sub: '내 계정 조건으로 바로 계산',
                 btn: '계산기 열기',
-                href: '/ko/'
+                href: '/ko/',
+                closeAria: '닫기'
             },
             tw: {
                 title: '💡 你的情況需要花費多少？',
                 sub: '輸入目前條件立即試算',
                 btn: '開啟計算機',
-                href: '/tw/'
+                href: '/tw/',
+                closeAria: '關閉'
             }
         };
 
@@ -635,7 +643,7 @@
                 <div class="mobile-sticky-cta-sub">${t.sub}</div>
             </div>
             <a href="${t.href}" class="mobile-sticky-cta-btn">${t.btn}</a>
-            <button class="mobile-sticky-cta-close" aria-label="閉じる">&times;</button>
+            <button class="mobile-sticky-cta-close" aria-label="${fallbackUtils.escapeHtml(t.closeAria)}">&times;</button>
         `;
 
         const closeBtn = cta.querySelector('.mobile-sticky-cta-close');
@@ -700,6 +708,12 @@
 
                 progressBar.style.width = scrolled + '%';
             });
+        }
+
+        if (getLocale() !== 'ja') {
+            const navContainer = document.getElementById('article-nav');
+            if (navContainer) navContainer.remove();
+            return;
         }
 
         try {
