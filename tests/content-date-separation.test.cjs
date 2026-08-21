@@ -15,7 +15,11 @@ const { getSyncedHtmlFiles } = require('../scripts/build-targets.cjs');
 const { createLocales } = require('../scripts/locale-config.cjs');
 const { getIntlSitemapEntries } = require('../scripts/intl-seo-pages.cjs');
 const { syncIndexMetadataContent } = require('../scripts/build-metadata.cjs');
-const { syncSitemapContent } = require('../scripts/sitemap-sync.cjs');
+const {
+  TOP_PAGE_URLS,
+  syncSitemapContent,
+  topPageUrlForLocale
+} = require('../scripts/sitemap-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -43,18 +47,26 @@ test('トップHTMLは内容更新日とアセット版を独立して同期す�
   assert.doesNotMatch(output, /2099-12-31/);
 });
 
-test('サイトマップの言語トップはページごとの固定内容日を使う', () => {
-  const source = Object.values({
-    ja: 'https://playpoint-sim.com/',
-    en: 'https://playpoint-sim.com/en/',
-    ko: 'https://playpoint-sim.com/ko/',
-    tw: 'https://playpoint-sim.com/tw/'
-  }).map(url => `<url><loc>${url}</loc><lastmod>2099-12-31</lastmod></url>`).join('\n');
+test('サイトマップの言語トップは内容日台帳の言語集合と日付を正本にする', () => {
+  const expectedUrls = Object.keys(TOP_PAGE_CONTENT_DATES).map(topPageUrlForLocale);
+  const source = expectedUrls
+    .map(url => `<url><loc>${url}</loc><lastmod>2099-12-31</lastmod></url>`)
+    .join('\n');
   const output = syncSitemapContent(source);
+  const sitemapSource = fs.readFileSync(path.join(root, 'scripts', 'sitemap-sync.cjs'), 'utf8');
+
+  assert.deepEqual(TOP_PAGE_URLS, expectedUrls);
   for (const date of Object.values(TOP_PAGE_CONTENT_DATES)) {
     assert.match(output, new RegExp(`<lastmod>${date}<\\/lastmod>`));
   }
   assert.doesNotMatch(output, /2099-12-31/);
+  assert.match(sitemapSource, /Object\.keys\(TOP_PAGE_CONTENT_DATES\)\.map\(topPageUrlForLocale\)/);
+  assert.match(sitemapSource, /Object\.entries\(contentDates\)\.map/);
+  assert.doesNotMatch(
+    sitemapSource,
+    /const TOP_PAGE_URLS = \[/,
+    'sitemap-sync.cjs must not restore a second handwritten top-page URL list'
+  );
 });
 
 test('静的HTML同期対象は内容日台帳から導出し、対象一覧を二重管理しない', () => {
