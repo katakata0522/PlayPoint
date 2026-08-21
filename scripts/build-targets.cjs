@@ -6,6 +6,7 @@ const { getIntlContentExpansionFiles } = require('./intl-content-expansion.cjs')
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
 const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+const { createLocales } = require('./locale-config.cjs');
 const {
   CONTENT_DATE_OVERRIDES,
   isGeneratedGamePagePath
@@ -34,11 +35,8 @@ const articleHtmlFiles = ['articles', 'en/articles', 'ko/articles', 'tw/articles
       .map(file => `${directory}/${file}`);
   });
 
-const generatedLocaleFiles = [
-  'en/index.html',
-  'ko/index.html',
-  'tw/index.html'
-];
+const generatedLocaleFiles = Object.keys(createLocales())
+  .map(locale => `${locale}/index.html`);
 
 function getStaticSyncedHtmlFiles() {
   return Object.keys(CONTENT_DATE_OVERRIDES)
