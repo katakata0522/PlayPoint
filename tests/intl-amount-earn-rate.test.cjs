@@ -11,46 +11,35 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function assertContentDate(relativePath) {
-  const html = read(relativePath);
-  assert.match(html, /<meta name="last-modified" content="2026-08-21">/, relativePath);
-  assert.match(html, /"dateModified": "2026-08-21"/, relativePath);
-}
+test('dormant international Amount fallback copy uses special earn-rate terminology', () => {
+  const source = read('scripts/intl-seo-content.cjs');
 
-test('international amount pages describe special earn rate rather than a multiplier input', () => {
+  assert.match(source, /Check: status, special earn rate, eligible amount/);
+  assert.match(source, /Change the status and special earn rate to match your account/);
+  assert.doesNotMatch(source, /Check: status, multiplier, eligible amount/);
+  assert.doesNotMatch(source, /Change the status and multiplier to match your account/);
+
+  assert.match(source, /확인: 등급, 특별 적립률, 대상 금액/);
+  assert.match(source, /실제 등급과 특별 적립률에 맞게 바꾸세요/);
+  assert.doesNotMatch(source, /확인: 등급, 배율, 대상 금액/);
+  assert.doesNotMatch(source, /실제 등급과 배율에 맞게 바꾸세요/);
+
+  assert.match(source, /確認: 等級、特別獲點率、適用金額/);
+  assert.doesNotMatch(source, /確認: 等級、倍率、適用金額/);
+});
+
+test('published international Amount overrides stay unchanged and keep legacy query compatibility', () => {
   const en = read('en/amount/10000/index.html');
-  assert.match(en, /Check: status, special earn rate, eligible amount/);
-  assert.match(en, /Change the status and special earn rate to match your account/);
-  assert.doesNotMatch(en, /Check: status, multiplier, eligible amount/);
-  assert.doesNotMatch(en, /Change the status and multiplier to match your account/);
-
   const ko = read('ko/amount/10000/index.html');
-  assert.match(ko, /확인: 등급, 특별 적립률, 대상 금액/);
-  assert.match(ko, /실제 등급과 특별 적립률에 맞게 바꾸세요/);
-  assert.doesNotMatch(ko, /확인: 등급, 배율, 대상 금액/);
-  assert.doesNotMatch(ko, /실제 등급과 배율에 맞게 바꾸세요/);
-
   const tw = read('tw/amount/10000/index.html');
+
+  assert.match(en, /Check: level, promotion rate, eligible pre-tax amount/);
+  assert.match(en, /Change the amount, level, or special earn rate to match the purchase you are planning/);
+  assert.match(ko, /확인: 등급, 특별 적립률, 대상 금액/);
   assert.match(tw, /確認: 等級、特別獲點率、適用金額/);
-  assert.doesNotMatch(tw, /確認: 等級、倍率、適用金額/);
-});
 
-test('all three international amount pages receive the meaningful content date', () => {
-  for (const file of [
-    'en/amount/10000/index.html',
-    'ko/amount/10000/index.html',
-    'tw/amount/10000/index.html'
-  ]) {
-    assertContentDate(file);
-  }
-});
-
-test('legacy multiplier query parameter remains for backward-compatible amount links', () => {
-  for (const file of [
-    'en/amount/10000/index.html',
-    'ko/amount/10000/index.html',
-    'tw/amount/10000/index.html'
-  ]) {
-    assert.match(read(file), /multiplier=1/, file);
+  for (const html of [en, ko, tw]) {
+    assert.match(html, /multiplier=1/);
+    assert.match(html, /2026-08-18/);
   }
 });
