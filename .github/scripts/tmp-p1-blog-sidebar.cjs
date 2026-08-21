@@ -106,7 +106,7 @@ replaceExact(
     }));
     assert(openState.expanded === 'true' && openState.hidden === 'false', 'Blog sidebar open ARIA state mismatch');
     assert(openState.inert === false, 'Blog sidebar remained inert after opening');
-    assert(openState.activeElement === 'sidebar-close', `Blog sidebar open focus mismatch: ${openState.activeElement}`);`
+    assert(openState.activeElement === 'sidebar-close', 'Blog sidebar open focus mismatch: ' + openState.activeElement);`
 );
 replaceExact(
   '.github/scripts/browser-smoke.cjs',
@@ -123,7 +123,7 @@ replaceExact(
     }));
     assert(closeState.expanded === 'false' && closeState.hidden === 'true', 'Blog sidebar close ARIA state mismatch');
     assert(closeState.inert === true, 'Blog sidebar must become inert after closing');
-    assert(closeState.activeElement === 'sidebar-toggle', `Blog sidebar close focus mismatch: ${closeState.activeElement}`);`
+    assert(closeState.activeElement === 'sidebar-toggle', 'Blog sidebar close focus mismatch: ' + closeState.activeElement);`
 );
 
 run(process.execPath, ['scripts/prepare-pr.cjs']);
