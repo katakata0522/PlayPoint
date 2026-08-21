@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('node:fs');
 const { spawnSync } = require('node:child_process');
 
 function run(command, args) {
@@ -7,6 +8,19 @@ function run(command, args) {
   if (result.status !== 0) process.exit(result.status || 1);
 }
 
+function restoreRuntimeExternalCalendarLink() {
+  const path = 'index.html';
+  let source = fs.readFileSync(path, 'utf8');
+  const withoutTarget = '<a id="register-google-cal-btn" class="calendar-btn google" href="#" data-lang-key="btnGoogleCal">';
+  const withTarget = '<a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer" data-lang-key="btnGoogleCal">';
+  if (source.includes(withTarget)) return;
+  const count = source.split(withoutTarget).length - 1;
+  if (count !== 1) throw new Error(`index.html: expected one Google Calendar runtime link, found ${count}`);
+  source = source.replace(withoutTarget, withTarget);
+  fs.writeFileSync(path, source, 'utf8');
+}
+
+restoreRuntimeExternalCalendarLink();
 run(process.execPath, ['scripts/prepare-pr.cjs']);
 run(process.execPath, ['--test', 'tests/internal-link-targets.test.cjs']);
 
