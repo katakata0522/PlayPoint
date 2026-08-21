@@ -686,7 +686,7 @@ const EN_ARTICLES = [
     intro: 'If you paid in Google Play and the point balance did not move, it is easy to feel that something broke. In many cases, the calmer first step is to separate three things: the purchase record, the Play Points activity view, and the Google account that made the purchase. This guide keeps the decision practical so you can tell whether you should wait, check another screen, or prepare details for support.',
     sections: [
       ['Start with the purchase record', ['Open the Google Play purchase history first. Confirm that the order is completed, not pending, cancelled, refunded, or attached to a different Google account. This sounds basic, but it prevents the most frustrating mistake: looking at the right Play Points screen for the wrong purchase account.', 'If you use a work profile, family device, or more than one Gmail account, check the account icon before judging the balance. Play Points are account-based, so a purchase on one account will not quietly move to another one.']],
-      ['Check regular points and bonus points separately', ['Regular earning and campaign bonus points can feel like one result, but they may not be shown or processed in the same way. When a campaign is involved, compare the normal point estimate first, then review the campaign details for app eligibility, dates, payment method, and any cap.', 'This is also where the calculator helps. A 1x estimate gives you a calm baseline. If the 2x or 3x result is very different, you know that the missing part may be the bonus condition rather than the whole purchase.']],
+      ['Check regular points and bonus points separately', ['Regular earning and campaign bonus points can feel like one result, but they may not be shown or processed in the same way. When a campaign is involved, compare the normal point estimate first, then review the campaign details for app eligibility, dates, payment method, and any cap.', 'This is also where the calculator helps. An estimate using your current tier’s normal earn rate gives you a calm baseline. If the 2x or 3x result is very different, you know that the missing part may be the bonus condition rather than the whole purchase.']],
       ['Do not rush if the transaction is still changing', ['A pending payment, refund, subscription update, or store adjustment can change the point result later. If the order itself is not final, the point balance is not a reliable final answer yet.', 'Before contacting support, take a screenshot only if it hides private information such as email address, payment details, or order numbers. Keep those details for the official support form, not for public posts.']],
       ['Country and account differences matter', ['Play Points availability, campaigns, rewards, and timing can differ by country or account. A guide written for Japan or a US-style English page can explain the checking method, but the local Google Play app should decide the final rule.', 'For that reason, this page avoids promising an exact waiting time. The practical goal is to help you narrow the cause without buying more, switching accounts repeatedly, or assuming a campaign applied when it did not.']],
       ['When to move from waiting to action', ['If the purchase is completed, the account is correct, the campaign conditions clearly match, and the activity view still does not show the expected result after a reasonable wait, collect the order date, item name, account, and campaign name. That gives support a cleaner trail than a message that only says the points are missing.']]
@@ -710,7 +710,7 @@ const EN_ARTICLES = [
       ['1. Confirm the Google account', ['Open Google Play and check the account icon before anything else. Points are not pooled across accounts, so a family device, old phone, or secondary Gmail account can make the balance look wrong even when the purchase itself succeeded.', 'If the purchase receipt is in another account, do not keep changing calculator settings to make the number match. The right next step is to review that account\'s Play Points activity.']],
       ['2. Check whether the purchase was eligible', ['Not every payment pattern behaves the way users expect. Promotional credit, subscriptions, gift-card-funded purchases, trial conversions, refunds, and partial cancellations all deserve a closer look.', 'Read the purchase details and the local Play Points terms together. If the transaction is not eligible, a perfect estimate still will not create points.']],
       ['3. Separate normal points from campaign points', ['A campaign headline such as 2x or 3x is only the front door. The actual rule can include selected apps, a date range, country availability, payment method restrictions, maximum bonus points, or a requirement to activate the offer first.', 'If normal points appear but the bonus does not, the issue may be the campaign condition rather than a full tracking failure. That distinction makes your next action much clearer.']],
-      ['4. Compare with a simple estimate', ['Use the calculator at 1x first, then run the same amount with the campaign special earn rate that you believe applied. The gap between those two results helps you explain the situation without relying on memory.', 'The calculator is not an official account checker. Its job is to turn your assumptions into a number, then let you compare that number with Google Play\'s activity screen.']],
+      ['4. Compare with a simple estimate', ['Use the calculator with your current tier’s normal earn rate first, then run the same amount with the final special earn rate shown for that eligible purchase in Google Play. The gap between those two results helps you explain the situation without relying on memory.', 'The calculator is not an official account checker. Its job is to turn your assumptions into a number, then let you compare that number with Google Play\'s activity screen.']],
       ['5. Prepare support details only after narrowing the cause', ['If everything still looks correct, collect the purchase date, order status, account, item name, and campaign name. Avoid posting order numbers or payment details publicly. A short, organized support message is more useful than a long explanation built from guesses.']]
     ],
     faq: [
@@ -729,9 +729,9 @@ const EN_ARTICLES = [
     intro: 'Status can make Play Points feel like a game, but the useful question is more ordinary: will the next level actually help the way you spend? This page explains the levels as a planning tool, not as a reason to force extra purchases. Keep your current balance, missing points, and normal spending pace in view while you compare.',
     sections: [
       ['Levels are planning categories', ['Bronze, Silver, Gold, Platinum, and Diamond help frame earning rates and benefits. They are useful labels, but they are not the same as guaranteed value. Rewards, campaigns, and visibility can differ by country or account.', 'Think of each level as a planning category. It tells you what to compare next, not what you must buy today.']],
-      ['Use missing points, not lifetime points', ['For planning, the key number is how many points remain until the target level. Lifetime points, current balance, and points already spent can make the screen feel confusing if you copy the wrong number into a calculator.', 'The PlayPoint calculator is built around the missing-point approach. Enter the points you still need, then compare the amount under your current status and multiplier.']],
-      ['Check whether the next level fits your spending rhythm', ['A level can be attractive on paper and still be a poor target if the required spending is far above your normal pace. Weekly and monthly views are helpful because they turn one large number into a habit-sized number.', 'If the monthly amount feels uncomfortable, that is useful information. It may mean waiting for a planned purchase or accepting the current level is better than chasing a badge.']],
-      ['Campaigns can change the timing, not the principle', ['A 2x or 3x campaign can make a target easier, but only when the purchase is already useful and eligible. A campaign should move planned spending into a better window, not invent spending that you would not otherwise make.', 'Always compare the 1x estimate first. If the target makes no sense at 1x and only barely works under a narrow campaign, read the campaign details carefully before deciding.']],
+      ['Use missing points, not lifetime points', ['For planning, the key number is how many points remain until the target level. Lifetime points, current balance, and points already spent can make the screen feel confusing if you copy the wrong number into a calculator.', 'The PlayPoint calculator is built around the missing-point approach. Enter the points you still need, then compare the amount using your current tier’s normal earn rate and, when applicable, the final special earn rate shown in Google Play.']],
+      ['Check whether the next level fits your spending rhythm', ['A level can be attractive on paper and still be a poor target if the required spending is far above your normal pace. The monthly amount and overall remaining-time pace are helpful because they turn one large number into a more practical plan.', 'If the monthly amount feels uncomfortable, that is useful information. It may mean waiting for a planned purchase or accepting the current level is better than chasing a badge.']],
+      ['Campaigns can change the timing, not the principle', ['A 2x or 3x campaign can make a target easier, but only when the purchase is already useful and eligible. A campaign should move planned spending into a better window, not invent spending that you would not otherwise make.', 'Always start with your current tier’s normal earn rate. If the target makes no sense at the normal earn rate and only barely works under a narrow campaign, read the campaign details carefully before deciding.']],
       ['International users should verify local rules', ['The site provides Japanese pages, English guidance, Korean pages, and Traditional Chinese pages, but the official Google Play app in your country remains the source of truth. Use this guide for structure and the app for the final rule.', 'That balance keeps the page useful overseas without pretending that every country has exactly the same rewards, campaigns, or status experience.']]
     ],
     faq: [
@@ -747,12 +747,12 @@ const EN_ARTICLES = [
     description: 'Estimate the spending needed to reach Google Play Points Platinum or Diamond and decide whether waiting for a promotion makes sense.',
     h1: 'How much to reach Platinum or Diamond?',
     badge: 'Cost estimate',
-    lead: 'The cost to reach Platinum or Diamond depends on current status, missing points, multiplier, and whether purchases are eligible. A single global number is usually misleading.',
+    lead: 'The cost to reach Platinum or Diamond depends on current status, missing points, the applicable earn rate, and whether purchases are eligible. A single global number is usually misleading.',
     intro: 'Platinum and Diamond sound like clear goals, but the cost changes quickly once you add status rate, remaining points, campaign special earn rates, and local rules. Instead of looking for one universal amount, build the estimate in layers. That makes it easier to see whether a promotion helps or whether the target is simply outside your normal spending.',
     sections: [
-      ['Define one target at a time', ['Start with either Platinum or Diamond, not both. If you mix status progress, campaign bonuses, gift-card discounts, and reward value in one step, the decision becomes noisy before the estimate is even useful.', 'A clean target is simple: current status, missing points, normal earning rate, and the multiplier you can honestly use.']],
-      ['Estimate at 1x before checking campaigns', ['A 1x estimate gives you the baseline cost. It may look higher than you hoped, but it is the number that tells you whether the goal is close in normal conditions.', 'After that, test 2x or 3x only if a real campaign applies to the purchase you already planned. This prevents the common mistake of treating a campaign headline as a universal discount.']],
-      ['Translate the result into weekly or monthly pace', ['A total amount can feel abstract. Break it into the remaining weeks or months of the status period and ask whether that pace matches your actual use of apps, games, subscriptions, or in-app purchases.', 'If the pace is much higher than usual, the level may not be worth forcing. Keeping money for purchases you genuinely want can be better than buying only to reach a status label.']],
+      ['Define one target at a time', ['Start with either Platinum or Diamond, not both. If you mix status progress, campaign bonuses, gift-card discounts, and reward value in one step, the decision becomes noisy before the estimate is even useful.', 'A clean target is simple: current status, missing points, normal earning rate, and any final special earn rate shown for an eligible purchase in Google Play.']],
+      ['Start with the normal earn rate before checking campaigns', ['An estimate using your current tier’s normal earn rate gives you the baseline cost. It may look higher than you hoped, but it is the number that tells you whether the goal is close in normal conditions.', 'After that, use the final special earn rate shown in Google Play only if a real 2x or 3x campaign applies to the purchase you already planned. This prevents the common mistake of treating a campaign headline as a universal discount.']],
+      ['Translate the result into a monthly or remaining-time pace', ['A total amount can feel abstract. Compare it with the remaining months or days in the status period and ask whether that pace matches your actual use of apps, games, subscriptions, or in-app purchases.', 'If the pace is much higher than usual, the level may not be worth forcing. Keeping money for purchases you genuinely want can be better than buying only to reach a status label.']],
       ['Gift-card discounts and Play Points are separate checks', ['A discounted gift card can reduce your effective cost, but it does not automatically prove that points or campaign bonuses apply in the way you expect. Treat savings and point eligibility as two separate columns.', 'This is especially important for international users because gift-card rules, payment flows, and campaign terms can vary by country.']],
       ['Use country-aware caution before deciding', ['The calculation pattern works globally, but official earning rates, reward availability, and promotion rules may differ by country or account. The calculator helps with planning; the Google Play app decides the final rule.', 'If the estimate only works under a narrow campaign or uncertain gift-card flow, wait until the official conditions are clear before spending.']]
     ],
@@ -774,7 +774,7 @@ const EN_ARTICLES = [
     sections: [
       ['Separate discount from points', ['A discounted gift card can lower your real cost, but that does not automatically mean Play Points are earned when the card is purchased. The saving and the point earning are two different questions.', 'Keep a simple note: card discount on one side, Play Points estimate on the other. If either side is uncertain, do not combine them into one optimistic result.']],
       ['Check redemption and purchase flow', ['Some users expect points when buying the card. Others expect points when spending the balance inside Google Play. The local Google Play rule and the actual payment flow decide what happens.', 'Look at the activity screen after an eligible purchase rather than assuming the card itself created points. This is especially important if the card was bought outside Google Play.']],
-      ['Campaign combinations need care', ['A 2x or 3x campaign may include conditions that do not match every gift-card-funded purchase. It can depend on app, date, country, payment method, activation, or a bonus cap.', 'Before you treat a gift card as part of a status strategy, read the campaign details and compare the result at 1x. If the plan only works because of a bonus that may not apply, the risk is too high.']],
+      ['Campaign combinations need care', ['A 2x or 3x campaign may include conditions that do not match every gift-card-funded purchase. It can depend on app, date, country, payment method, activation, or a bonus cap.', 'Before you treat a gift card as part of a status strategy, read the campaign details and compare the result using your current tier’s normal earn rate. If the plan only works because of a bonus that may not apply, the risk is too high.']],
       ['Compare effective cost safely', ['Use the calculator for the Play Points side, then separately note the gift-card discount as a cost-saving side note. This keeps the math honest and makes it easier to explain later.', 'For example, a discounted card may still be useful even if it does not improve status progress. The reverse can also be true: a point campaign may be useful without making a gift card the best payment choice.']],
       ['Avoid buying value you do not plan to use', ['The safest gift-card plan starts with a purchase you already wanted. If you buy a larger card only because it looks cheaper or might help a status goal, you may lock money into a balance that does not create enough value.', 'For international users, also check whether the card region, account region, and Google Play country settings match. Region mismatch can create practical problems that a calculator cannot solve.']]
     ],
@@ -798,9 +798,9 @@ const ADDITIONAL_EN_ARTICLES = [
     sections: [
       ['What can differ by country', ['Availability, status names, reward catalogs, campaign timing, bonus caps, eligible payment methods, and display language can all differ by country or account. Even when two users see the same 2x or 3x headline, the small conditions below that headline may not match.', 'Do not treat a screenshot from another region as a rule for your own account. It can be useful for learning what to check, but the purchase decision should wait until your local app shows the offer clearly.']],
       ['Use the local app screen as the final rule', ['The calculator can estimate a cost or point result, but it cannot read your account country or campaign eligibility. Before spending, open Google Play, check the Play Points page, and read the offer details from the account that will make the purchase.', 'This is especially important after moving countries, changing payment profiles, or using multiple accounts. A regional mismatch can make a normal purchase feel like a points problem when the real issue is account setup.']],
-      ['Compare estimates without assuming the same currency', ['A yen-based shortcut can still teach the calculation pattern, but it should not be copied as a local price. Currency, tax handling, exchange rates, and eligible amount rules can change the actual result.', 'When you use an international page, focus on the relationship between missing points, status rate, and multiplier. Then translate the decision back to your local currency and official screen.']],
+      ['Compare estimates without assuming the same currency', ['A yen-based shortcut can still teach the calculation pattern, but it should not be copied as a local price. Currency, tax handling, exchange rates, and eligible amount rules can change the actual result.', 'When you use an international page, focus on the relationship between missing points, your current tier’s normal earn rate, and any final special earn rate shown in Google Play. Then translate the decision back to your local currency and official screen.']],
       ['When another country guide is still useful', ['A guide from another country is useful when it explains the order of checks: account, purchase record, eligibility, campaign terms, and timing. That process is often more portable than the exact reward value.', 'Use overseas examples to avoid mistakes, not to force a specific outcome. If a reward is not shown in your country, the guide cannot make it available.']],
-      ['How to use PlayPoint pages together', ['Start with the English overview if you want the broad structure, then use Korean or Traditional Chinese pages when they match your reading language. For numbers, open the calculator with the closest preset and adjust status, missing points, and multiplier yourself.', 'This keeps internal links helpful without overselling. The site should guide users toward a cleaner decision, not push them into extra spending because one region has an attractive-looking promotion.']]
+      ['How to use PlayPoint pages together', ['Start with the English overview if you want the broad structure, then use Korean or Traditional Chinese pages when they match your reading language. For numbers, open the calculator with the closest preset and adjust status and missing points, then enter the final special earn rate shown for an eligible purchase when applicable.', 'This keeps internal links helpful without overselling. The site should guide users toward a cleaner decision, not push them into extra spending because one region has an attractive-looking promotion.']]
     ],
     faq: [
       ['Are Play Points rules identical worldwide?', 'No. Availability, offers, rewards, and eligibility can differ by country and account.'],
@@ -821,7 +821,7 @@ const ADDITIONAL_EN_ARTICLES = [
       ['Check dates, time zones, and purchase completion', ['Campaign windows can depend on local dates, store time zones, or the moment a transaction completes. A pending payment near the beginning or end of a campaign can be harder to judge from memory.', 'Use the purchase receipt time and campaign details together. If the order was later cancelled, refunded, or adjusted, the bonus may also change or disappear.']],
       ['Review app, item, and payment eligibility', ['A campaign may apply only to selected apps, games, subscriptions, in-app items, or payment methods. It may also exclude trials, promotional credit, refunded purchases, or some gift-card flows.', 'Do not rely only on the banner headline. The smaller conditions are often where the answer is. If normal points appear but bonus points do not, eligibility is one of the strongest places to check.']],
       ['Look for caps and partial bonuses', ['Some campaigns have maximum bonus points or only apply to part of the purchase. That can make the result look incomplete even when the promotion worked correctly.', 'Compare the expected normal points first, then estimate the bonus separately. A partial result is easier to understand when you know whether the base earning matched.']],
-      ['Use the calculator to make the support story cleaner', ['Run the same amount at 1x, then run it with the campaign special earn rate. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
+      ['Use the calculator to make the support story cleaner', ['Run the same amount at your current tier’s normal earn rate, then run it with the final special earn rate shown for the eligible purchase in Google Play. The gap gives you a simple way to explain what you expected and which part seems missing.', 'The calculator does not prove official eligibility, but it helps you avoid vague messages. A clear support note should include purchase date, account, campaign name, expected bonus, and what actually appeared.']]
     ],
     faq: [
       ['Does a campaign banner mean every purchase qualifies?', 'No. Check the offer details for eligible apps, payment methods, dates, and caps.'],
@@ -841,7 +841,7 @@ const ADDITIONAL_EN_ARTICLES = [
     sections: [
       ['Separate the first charge from renewals', ['A subscription may have an initial charge, trial conversion, introductory price, or recurring renewal. Each stage can feel like the same subscription to the user, but Google Play may show and process them differently.', 'When estimating Play Points, note which payment you are planning around. If you only care about the next month, use the next renewal amount instead of the annual total you have not committed to paying yet.']],
       ['Check trials, discounts, and cancellations', ['Free trials, discounted first months, cancellations, refunds, and grace periods can all change the point result. A subscription that looks active in the app may not mean a full eligible charge has settled.', 'Do not include points from a trial unless the local rule and activity screen support that assumption. The safer approach is to estimate only completed, eligible charges.']],
-      ['Campaigns may not cover every renewal', ['A 2x or 3x promotion can be tied to selected apps, new purchases, first payments, or limited dates. A renewal outside that window may earn differently from the first charge.', 'If a campaign is involved, calculate the subscription at 1x first. Then compare the promotional result only for the charge that clearly falls inside the campaign conditions.']],
+      ['Campaigns may not cover every renewal', ['A 2x or 3x promotion can be tied to selected apps, new purchases, first payments, or limited dates. A renewal outside that window may earn differently from the first charge.', 'If a campaign is involved, calculate the subscription using your current tier’s normal earn rate first. Then compare the promotional result only for the charge that clearly falls inside the campaign conditions.']],
       ['Use recurring spend as a pace check', ['Subscriptions can make a status target easier to understand because they are predictable. Add the monthly eligible amount and compare it with the missing points and remaining time in the status period.', 'If the required extra amount is still large after normal subscriptions, that is a signal not to chase status through unplanned purchases. The best estimate is the one that respects spending you already intended.']],
       ['Keep official account screens in the loop', ['Subscription rules, reward availability, and campaign eligibility can differ by country or account. The calculator is a planning layer, not an account statement.', 'Before changing or adding a subscription for Play Points, check Google Play subscription details, Play Points activity, and campaign terms from the same account. That prevents a clean estimate from being attached to the wrong payment profile.']]
     ],
@@ -937,7 +937,7 @@ const KO_ARTICLES = [
     sections: [
       ['1. 결제한 Google 계정부터 확인하기', ['Google Play 앱 오른쪽 위의 계정 아이콘을 먼저 확인하세요. Play Points는 계정별로 관리되므로, 가족 기기나 예전 휴대폰에서 다른 Gmail 계정으로 결제했다면 현재 보는 잔액에는 나타나지 않습니다.', '영수증이 도착한 계정과 Play Points 화면의 계정이 같은지 확인하는 것만으로도 많은 혼란을 줄일 수 있습니다. 계산기 숫자를 계속 바꾸기 전에 계정 일치 여부를 먼저 정리하세요.']],
       ['2. 구매가 포인트 대상인지 보기', ['모든 결제가 사용자가 기대하는 방식으로 포인트 대상이 되는 것은 아닙니다. 체험 기간, 일부 구독 전환, 프로모션 크레딧, 기프트카드 사용, 환불, 부분 취소는 별도로 확인해야 합니다.', '구매 내역에서 주문 상태가 완료인지, 환불이나 취소가 없는지 확인하세요. 결제 자체가 대상이 아니라면 계산 결과가 맞아도 실제 포인트는 생기지 않습니다.']],
-      ['3. 일반 포인트와 캠페인 보너스를 나누기', ['2배나 3배 캠페인은 문구가 단순해 보여도 대상 앱, 결제수단, 기간, 활성화 여부, 보너스 상한이 붙을 수 있습니다. 일반 포인트는 보이는데 보너스만 안 보인다면 전체 누락이 아니라 캠페인 조건 문제일 수 있습니다.', '먼저 1배 기준으로 예상치를 보고, 실제로 적용된다고 생각한 배율을 따로 비교하세요. 두 숫자의 차이가 무엇이 부족한지 설명하는 데 도움이 됩니다.']],
+      ['3. 일반 포인트와 캠페인 보너스를 나누기', ['2배나 3배 캠페인은 문구가 단순해 보여도 대상 앱, 결제수단, 기간, 활성화 여부, 보너스 상한이 붙을 수 있습니다. 일반 포인트는 보이는데 보너스만 안 보인다면 전체 누락이 아니라 캠페인 조건 문제일 수 있습니다.', '먼저 현재 등급의 일반 적립률로 예상치를 보고, Google Play에서 대상 결제에 표시된 최종 특별 적립률이 있다면 그 값을 따로 비교하세요. 두 숫자의 차이가 무엇이 부족한지 설명하는 데 도움이 됩니다.']],
       ['4. 국가와 계정 조건을 최종 기준으로 보기', ['한국어로 검색하더라도 일부 정보는 일본, 미국, 대만 기준으로 작성되어 있을 수 있습니다. 확인 순서는 참고할 수 있지만 최종 조건은 본인 계정의 Google Play 앱에 표시된 내용을 기준으로 해야 합니다.', '국가 설정, 결제 프로필, 앱의 제공 국가가 다르면 같은 구매처럼 보여도 포인트 조건이 달라질 수 있습니다. 다른 지역의 스크린샷만 보고 판단하지 않는 것이 좋습니다.']],
       ['5. 문의 전에 필요한 정보를 짧게 모으기', ['계정, 구매일, 주문 상태, 상품명, 캠페인 이름, 예상한 포인트와 실제 표시된 포인트를 정리하세요. 주문번호나 결제 정보는 공개 글에 올리지 말고 공식 문의에만 사용하세요.', '정리된 정보가 있으면 지원 문의도 짧아집니다. “포인트가 안 들어왔어요”보다 어떤 조건까지 확인했는지를 적는 편이 해결 가능성을 높입니다.']]
     ],
@@ -968,9 +968,9 @@ const KO_ARTICLES = [
     intro: '등급 이름은 게임처럼 보이지만 실제 판단은 단순해야 합니다. 다음 등급이 내 소비 습관과 맞는지, 필요한 금액이 평소 계획을 넘지 않는지, 리워드를 실제로 사용할 수 있는지가 더 중요합니다. 이 글은 등급을 쫓기 위한 글이 아니라 무리한 결제를 피하면서 숫자를 읽는 방법을 정리합니다.',
     sections: [
       ['등급은 목표가 아니라 비교 기준입니다', ['브론즈, 실버, 골드, 플래티넘, 다이아몬드는 적립률과 혜택을 비교하기 위한 틀입니다. 하지만 등급이 높다고 항상 이득인 것은 아닙니다.', '국가와 계정에 따라 리워드, 캠페인, 표시 방식이 달라질 수 있으므로 등급명보다 실제로 받을 수 있는 혜택을 먼저 보세요.']],
-      ['누적 포인트보다 남은 포인트가 중요합니다', ['계획을 세울 때는 목표 등급까지 남은 포인트를 입력해야 합니다. 현재 보유 포인트, 이미 사용한 포인트, 누적 포인트를 섞으면 필요한 금액이 쉽게 틀어집니다.', '계산기는 남은 포인트를 기준으로 보는 도구입니다. 현재 등급, 목표까지 부족한 포인트, 적용할 배율을 차례로 넣고 비교하세요.']],
-      ['평소 결제 리듬과 맞는지 확인하기', ['한 번에 필요한 총액만 보면 판단이 흐려질 수 있습니다. 남은 기간을 주 단위나 월 단위로 나누면 실제 생활에서 감당 가능한 금액인지 더 잘 보입니다.', '월별 금액이 평소보다 크다면 그것도 중요한 결과입니다. 등급을 올리는 것보다 현재 등급을 유지하거나 예정된 결제만 하는 편이 나을 수 있습니다.']],
-      ['캠페인은 기회를 줄 뿐 결정을 대신하지 않습니다', ['2배나 3배 캠페인은 도움이 될 수 있지만 대상 결제일 때만 의미가 있습니다. 캠페인은 이미 예정된 결제를 좋은 시점으로 옮기는 데 쓰는 것이 좋습니다.', '먼저 1배 기준을 보고, 캠페인 조건이 분명할 때만 배율을 바꿔 비교하세요. 캠페인 없이는 말이 안 되는 계획이라면 조건을 더 엄격하게 확인해야 합니다.']],
+      ['누적 포인트보다 남은 포인트가 중요합니다', ['계획을 세울 때는 목표 등급까지 남은 포인트를 입력해야 합니다. 현재 보유 포인트, 이미 사용한 포인트, 누적 포인트를 섞으면 필요한 금액이 쉽게 틀어집니다.', '계산기는 남은 포인트를 기준으로 보는 도구입니다. 현재 등급과 목표까지 부족한 포인트를 입력하고, Google Play에서 대상 결제에 표시된 최종 특별 적립률이 있다면 그 값을 비교하세요.']],
+      ['평소 결제 리듬과 맞는지 확인하기', ['한 번에 필요한 총액만 보면 판단이 흐려질 수 있습니다. 남은 기간의 월별 금액과 전체 페이스를 함께 보면 실제 생활에서 감당 가능한지 더 잘 보입니다.', '월별 금액이 평소보다 크다면 그것도 중요한 결과입니다. 등급을 올리는 것보다 현재 등급을 유지하거나 예정된 결제만 하는 편이 나을 수 있습니다.']],
+      ['캠페인은 기회를 줄 뿐 결정을 대신하지 않습니다', ['2배나 3배 캠페인은 도움이 될 수 있지만 대상 결제일 때만 의미가 있습니다. 캠페인은 이미 예정된 결제를 좋은 시점으로 옮기는 데 쓰는 것이 좋습니다.', '먼저 현재 등급의 일반 적립률을 보고, 캠페인 조건이 분명할 때만 Google Play에 표시된 최종 특별 적립률을 비교하세요. 캠페인 없이는 말이 안 되는 계획이라면 조건을 더 엄격하게 확인해야 합니다.']],
       ['해외 정보는 구조만 참고하기', ['한국어 페이지라도 일본 엔 기준 계산이나 영어 가이드를 함께 볼 수 있습니다. 이런 페이지는 확인 순서를 배우는 데 유용하지만, 최종 조건은 한국 계정의 Google Play 앱에서 확인해야 합니다.', 'PlayPoint의 내부 링크는 관련 주제를 이어 보기 위한 장치입니다. 더 많이 쓰게 만들기보다, 숫자를 차분히 확인하고 불필요한 결제를 피하게 하는 것이 목적입니다.']]
     ],
     faq: [
@@ -1002,7 +1002,7 @@ const KO_ARTICLES = [
     sections: [
       ['할인과 Play Points를 분리해서 보기', ['기프트카드 할인은 실제 지출을 줄이는 효과이고, Play Points는 Google Play 안에서 대상 구매가 어떻게 처리되는지에 대한 문제입니다. 두 값을 한 번에 합치면 지나치게 낙관적인 계산이 되기 쉽습니다.', '먼저 기프트카드 할인율을 따로 적고, 그 다음 Google Play에서 실제로 결제될 구매가 포인트 대상인지 확인하세요. 계산기는 포인트 쪽 예상치를 보는 도구로 쓰는 편이 안전합니다.']],
       ['구매 시점과 사용 시점을 구분하기', ['사용자는 카드 자체를 구매할 때 포인트가 붙는다고 생각하기도 하고, 충전한 잔액을 앱이나 게임에 사용할 때 포인트가 붙는다고 생각하기도 합니다. 실제 조건은 국가와 결제 흐름에 따라 달라질 수 있습니다.', '특히 외부 쇼핑몰이나 편의점에서 산 카드라면, 카드 구매처의 혜택과 Google Play 안에서의 포인트 적립을 같은 혜택으로 보지 마세요.']],
-      ['캠페인과 함께 쓸 때 확인할 것', ['2배나 3배 캠페인은 대상 앱, 대상 결제, 기간, 활성화 조건, 보너스 상한을 가질 수 있습니다. 기프트카드 잔액을 사용했다는 이유만으로 모든 캠페인이 자동 적용된다고 가정하면 위험합니다.', '먼저 1배 기준으로 필요한 포인트와 금액을 계산하고, 실제 캠페인 조건을 확인한 뒤에만 배율을 넣어 비교하세요.']],
+      ['캠페인과 함께 쓸 때 확인할 것', ['2배나 3배 캠페인은 대상 앱, 대상 결제, 기간, 활성화 조건, 보너스 상한을 가질 수 있습니다. 기프트카드 잔액을 사용했다는 이유만으로 모든 캠페인이 자동 적용된다고 가정하면 위험합니다.', '먼저 현재 등급의 일반 적립률로 필요한 포인트와 금액을 계산하고, 실제 캠페인 조건을 확인한 뒤 Google Play에 표시된 최종 특별 적립률만 비교하세요.']],
       ['국가와 계정 지역을 맞춰 확인하기', ['Google Play 기프트카드는 지역과 통화 조건이 중요합니다. 계정 국가, 결제 프로필, 카드 지역이 어긋나면 사용 자체가 어렵거나 예상과 다른 방식으로 처리될 수 있습니다.', '한국 계정에서 확인할 때는 한국 Google Play 앱 화면을 기준으로 보세요. 일본 엔 기준 예시나 영어권 설명은 계산 구조를 이해하는 데만 활용하는 편이 좋습니다.']],
       ['불필요한 충전을 피하는 기준', ['기프트카드는 할인율이 좋아 보여도, 실제로 쓸 예정이 없는 금액을 미리 묶어두면 절약이 아닐 수 있습니다. 등급을 올리기 위해 필요한 금액이 평소 소비보다 크다면 더 조심해야 합니다.', '예정된 구매가 있고, 카드 지역과 사용 조건이 명확하며, 캠페인 대상 여부도 확인될 때만 기프트카드를 계산에 넣는 것이 안전합니다.']]
     ],
@@ -1038,11 +1038,11 @@ const KO_ARTICLES = [
     lead: '캠페인 보너스가 보이지 않을 때는 전체 포인트 누락인지, 일반 포인트와 보너스가 분리되어 있는지부터 확인해야 합니다.',
     intro: 'Google Play Points 캠페인은 “2배”, “3배”처럼 단순하게 보이지만 실제 조건은 더 세부적일 수 있습니다. 활성화가 필요했는지, 기간 안에 결제했는지, 대상 앱인지, 보너스 상한이 있는지에 따라 결과가 달라집니다. 이 글은 캠페인이 적용되지 않았다고 느낄 때 확인할 순서를 정리합니다.',
     sections: [
-      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 1배와 캠페인 특별 적립률로 나누어 비교하세요. 두 결과의 차이가 바로 확인해야 할 보너스 영역입니다.']],
+      ['일반 포인트와 보너스를 분리하기', ['먼저 기본 적립 포인트가 들어왔는지 확인하세요. 기본 포인트는 있는데 보너스만 없다면, 구매 추적 실패보다 캠페인 조건 문제일 가능성이 큽니다.', '계산기에서는 같은 금액을 현재 등급의 일반 적립률과 Google Play에 표시된 최종 특별 적립률로 나누어 비교하세요. 두 결과의 차이가 바로 확인해야 할 보너스 영역입니다.']],
       ['캠페인 활성화 여부 확인하기', ['일부 캠페인은 보기만 해도 적용되는 것이 아니라, 참여 버튼을 누르거나 특정 화면에서 조건을 확인해야 할 수 있습니다. 캠페인 상세 화면에서 활성화 상태를 확인하세요.', '활성화 전에 결제한 구매가 나중에 자동으로 캠페인 대상이 된다고 기대하면 안 됩니다. 결제 시간과 캠페인 시작 시간을 나누어 보세요.']],
       ['기간, 앱, 상품 조건 확인하기', ['캠페인은 전체 Google Play 결제에 적용되는 것처럼 보여도 특정 앱, 게임, 상품, 결제 방식에 제한될 수 있습니다. 구독 갱신이나 프로모션 잔액 사용이 대상에서 빠질 수도 있습니다.', '영수증의 구매 시각, 상품명, 앱 이름을 캠페인 조건과 비교하세요. 조건을 하나씩 지우면 문의할 때도 설명이 쉬워집니다.']],
       ['보너스 상한과 반영 시점 보기', ['캠페인에는 최대 보너스 포인트나 계정별 제한이 있을 수 있습니다. 기대한 포인트보다 적게 보인다면 상한에 걸렸는지 확인하세요.', '또한 일반 포인트와 보너스가 같은 시점에 보이지 않을 수 있습니다. 구매 직후 잔액만 보고 결론을 내리지 말고 활동 내역을 함께 확인하세요.']],
-      ['문의 전에 계산 결과를 정리하기', ['1배 예상치, 캠페인 특별 적립률 예상치, 실제 표시 포인트를 간단히 적어두면 원인을 좁히기 쉽습니다. 단, 주문번호와 결제 정보는 공개하지 마세요.', '모든 조건을 확인했는데도 보너스가 보이지 않는다면 공식 지원에 문의하세요. 계산기는 계정을 확인하거나 포인트를 반영시키는 도구가 아니라, 설명을 정리하기 위한 보조 도구입니다.']]
+      ['문의 전에 계산 결과를 정리하기', ['일반 적립률 예상치, 최종 특별 적립률 예상치, 실제 표시 포인트를 간단히 적어두면 원인을 좁히기 쉽습니다. 단, 주문번호와 결제 정보는 공개하지 마세요.', '모든 조건을 확인했는데도 보너스가 보이지 않는다면 공식 지원에 문의하세요. 계산기는 계정을 확인하거나 포인트를 반영시키는 도구가 아니라, 설명을 정리하기 위한 보조 도구입니다.']]
     ],
     faq: [
       ['2배 캠페인인데 정확히 두 배가 아닌 이유는 무엇인가요?', '대상 금액, 보너스 상한, 반영 시점, 구매 조건 때문에 기대와 다르게 보일 수 있습니다.'],
@@ -1116,7 +1116,7 @@ const KO_ARTICLES = [
     intro: '정기 결제는 한 번의 구매와 달리 자동 갱신, 체험 전환, 첫 가입 보너스, 국가 변경이 겹칠 수 있습니다. 따라서 “구독이면 모두 몇 배”라고 계산하기보다 결제 계정, Google Play 주문 기록, 프로모션 조건을 나누어 보는 것이 안전합니다.',
     sections: [
       ['결론: 대상 정기 결제는 일반 적립 대상이 될 수 있습니다', ['Google 공식 도움말은 앱을 통해 이루어진 정기 결제가 일반 등급 적립률로 포인트를 받을 수 있다고 안내합니다. 단, 결제가 Google Play에서 처리되었는지와 해당 국가·계정에서 적립 대상인지가 먼저입니다.', '앱 회사 웹사이트나 다른 결제 서비스에서 가입한 구독은 Google Play 주문과 다를 수 있습니다. 이메일 영수증과 Play 구매 내역에서 실제 결제 경로를 확인하세요.']],
-      ['첫 정기 결제 보너스는 반복 적립이 아닙니다', ['첫 정기 결제에 추가 포인트가 표시되는 프로모션은 일반적으로 최초 한 번만 적용되는 조건을 가질 수 있습니다. 매월 같은 보너스가 반복된다고 가정하면 예상치가 크게 부풀어집니다.', '기본 적립과 첫 가입 보너스를 두 줄로 분리하세요. 계산기에서는 먼저 1배 기준을 보고, 공식 화면에 명확한 배율이 있을 때만 캠페인 값을 비교하세요.']],
+      ['첫 정기 결제 보너스는 반복 적립이 아닙니다', ['첫 정기 결제에 추가 포인트가 표시되는 프로모션은 일반적으로 최초 한 번만 적용되는 조건을 가질 수 있습니다. 매월 같은 보너스가 반복된다고 가정하면 예상치가 크게 부풀어집니다.', '기본 적립과 첫 가입 보너스를 두 줄로 분리하세요. 계산기에서는 먼저 현재 등급의 일반 적립률을 보고, 공식 화면에 최종 특별 적립률이 명확히 표시된 경우에만 그 값을 비교하세요.']],
       ['체험 종료와 자동 갱신 시점을 확인하세요', ['무료 체험 시작일과 실제 유료 결제일은 다를 수 있습니다. 포인트를 확인할 때는 체험을 시작한 날보다 Google Play 주문이 실제로 완료된 날을 기준으로 보는 편이 정확합니다.', '갱신이 보류, 실패, 취소 또는 환불된 경우 포인트 결과도 달라질 수 있습니다. 잔액만 보지 말고 Play Points 활동과 주문 상태를 함께 확인하세요.']],
       ['계정과 국가를 바꾸면 구독 흐름이 복잡해집니다', ['포인트는 결제한 계정 기준으로 확인해야 합니다. 여러 Google 계정을 쓰는 기기라면 구독 관리 화면, 영수증 계정, Play Points 화면의 계정이 같은지 먼저 맞추세요.', 'Play 국가를 변경해도 기존 구독은 이전 결제 프로필에서 계속될 수 있습니다. 새 국가에서 다시 가입하기 전에 기존 구독과 다음 결제일을 확인해 중복 결제를 피하세요.']],
       ['월 지출 계획은 포인트보다 먼저 정하세요', ['정기 결제는 자동으로 반복되기 때문에 등급 달성을 위해 새 구독을 추가하면 작은 금액이 계속 쌓일 수 있습니다. 원래 사용할 서비스인지, 해지 예정일을 기억할 수 있는지, 연간 비용이 감당 가능한지부터 확인하세요.', 'Play Points는 부가 혜택입니다. 포인트 가치가 사용하지 않는 구독료를 상쇄한다고 가정하지 말고, 이미 필요한 구독의 결제 시점과 조건을 정리하는 데 계산기를 사용하세요.']]
@@ -1159,7 +1159,7 @@ const TW_ARTICLES = [
     sections: [
       ['1. 先確認付款使用的 Google 帳號', ['打開 Google Play 後，先看右上角帳號圖示。Play Points 是依帳號管理，如果購買發生在另一個 Gmail 帳號，目前帳號的點數餘額就不會變動。', '家人共用裝置、舊手機、工作設定檔都可能造成帳號混淆。請先比對收據帳號與 Play Points 畫面，再判斷是否真的少了點數。']],
       ['2. 查看購買是否符合點數資格', ['不是每一種付款流程都會照直覺累積點數。試用期、訂閱轉換、促銷餘額、禮物卡付款、退款或部分取消，都需要分開確認。', '先看訂單狀態是否完成。如果購買本身不符合資格，計算機估算再漂亮，也不會讓實際點數出現。']],
-      ['3. 把一般點數和活動加碼分開看', ['2 倍或 3 倍活動可能有限定 App、付款方式、期間、啟用步驟或加碼上限。一般點數有出現但加碼沒有出現時，問題可能是活動條件，而不是整筆購買沒有被追蹤。', '可以先用 1 倍估算基準，再用你認為適用的倍率比較。兩個結果之間的差距，能幫你更清楚說明少的是哪一部分。']],
+      ['3. 把一般點數和活動加碼分開看', ['2 倍或 3 倍活動可能有限定 App、付款方式、期間、啟用步驟或加碼上限。一般點數有出現但加碼沒有出現時，問題可能是活動條件，而不是整筆購買沒有被追蹤。', '可以先用目前等級的一般獲點率估算，再用 Google Play 對符合資格購買顯示的最終活動特別獲點率比較。兩個結果之間的差距，能幫你更清楚說明少的是哪一部分。']],
       ['4. 地區與帳號規則要以官方畫面為準', ['繁體中文使用者可能會看到日本、韓國或英文頁面的資訊。這些內容可以參考檢查方法，但最終條件仍要以自己帳號所在的 Google Play App 顯示為準。', '付款地區、Google Play 國家設定、活動提供地區不同，都可能讓同樣的購買看起來有不同結果。不要只靠其他地區的截圖做決定。']],
       ['5. 詢問支援前先整理短資料', ['如果帳號、訂單、活動條件都確認過，仍然沒有看到預期點數，再整理購買日期、商品名稱、活動名稱、預期點數與實際顯示結果。', '訂單編號和付款資訊不要放在公開貼文中。把資訊保留給官方支援，並用簡短清楚的方式說明你已經確認過哪些項目。']]
     ],
@@ -1191,8 +1191,8 @@ const TW_ARTICLES = [
     sections: [
       ['等級是比較框架，不是必買目標', ['銅、銀、金、白金、鑽石可以幫你理解回饋率與福利，但等級越高不代表一定更划算。實際價值取決於你是否會使用那些回饋。', '不同國家、地區或帳號看到的活動與獎勵可能不同。請把等級當作下一步比較的標籤，而不是今天一定要達成的目標。']],
       ['規劃時看剩餘點數，而不是累積總數', ['想估算升級成本時，最重要的是距離目標還差多少點。若把目前餘額、已使用點數或累積總數混在一起，估算很容易偏離。', '使用計算機時，請輸入還需要的點數，再調整目前等級與活動特別獲點率。這樣比較接近實際決策。']],
-      ['把總金額拆成每週或每月節奏', ['一個很大的總額會讓人判斷失真。把它除以剩餘週數或月份後，就能看出是否符合平常的 App、遊戲、訂閱或書籍消費。', '如果每月需要增加的金額明顯高於平常，這本身就是答案。維持目前等級或等待原本就要買的項目，可能比追等級更合理。']],
-      ['活動特別獲點率可以改變時機，但不能替你決定', ['2 倍或 3 倍活動可能很有幫助，但只有符合資格的購買才適合拿來估算。活動適合調整原本就要買的時間，不適合創造新的不必要消費。', '先看 1 倍基準，再看活動特別獲點率。如果計畫只有在狹窄活動條件下才勉強成立，購買前就要更保守。']],
+      ['把總金額換成每月或剩餘期間的節奏', ['一個很大的總額會讓人判斷失真。把它和剩餘月份或天數對照後，就能看出是否符合平常的 App、遊戲、訂閱或書籍消費。', '如果每月需要增加的金額明顯高於平常，這本身就是答案。維持目前等級或等待原本就要買的項目，可能比追等級更合理。']],
+      ['活動特別獲點率可以改變時機，但不能替你決定', ['2 倍或 3 倍活動可能很有幫助，但只有符合資格的購買才適合拿來估算。活動適合調整原本就要買的時間，不適合創造新的不必要消費。', '先看目前等級的一般獲點率，再看 Google Play 顯示的最終活動特別獲點率。如果計畫只有在狹窄活動條件下才勉強成立，購買前就要更保守。']],
       ['海外資料只拿來參考結構', ['PlayPoint 有日文、英文、韓文與繁體中文頁面，但官方條件仍由你所在地區的 Google Play App 決定。跨語言內容可以幫你理解檢查順序，不能取代官方畫面。', '內部連結的目的，是讓你從等級、活動、缺點數問題之間順著查下去，而不是讓頁面變成強烈推銷。最好的結果是少一點衝動，多一點確定性。']]
     ],
     faq: [
@@ -1229,7 +1229,7 @@ const TW_ARTICLES = [
     sections: [
       ['先把折扣和點數分成兩欄', ['禮物卡折扣是降低實際成本，Play Points 則取決於 Google Play 內的消費是否符合條件。若把兩者直接加總，容易得到過度樂觀的結果。', '建議先記錄禮物卡折扣，再用計算機估算該筆 Google Play 消費可能獲得的點數。這樣可以知道哪一部分是省錢，哪一部分是等級進度。']],
       ['購買禮物卡和使用餘額不是同一時點', ['有些人以為買禮物卡時就會拿到 Play Points，也有人以為使用餘額時才會累積。實際規則可能依地區、帳號與付款流程而不同。', '如果禮物卡是在 Google Play 以外的商店購買，請更小心區分商店給的回饋與 Google Play App 內的點數紀錄。']],
-      ['搭配活動特別獲點率時要看細則', ['2 倍或 3 倍活動可能限定特定 App、日期、付款方式、啟用步驟或加碼上限。使用禮物卡餘額不代表所有活動都會自動套用。', '請先用 1 倍估算基準，再確認活動是否明確適用該筆購買。只有條件確定時，才用活動特別獲點率比較。']],
+      ['搭配活動特別獲點率時要看細則', ['2 倍或 3 倍活動可能限定特定 App、日期、付款方式、啟用步驟或加碼上限。使用禮物卡餘額不代表所有活動都會自動套用。', '請先用目前等級的一般獲點率估算，再確認活動是否明確適用該筆購買。只有條件確定時，才用活動特別獲點率比較。']],
       ['台灣帳戶先確認官方提供狀態', ['Google 官方清單目前未將台灣列為 Google Play 禮物卡提供國家。其他國家購買的序號受發行國家與幣別限制，帳戶國家也必須相符。', '日文或英文頁面可以幫助理解限制，但不能證明外國序號可用於台灣帳戶。請以官方清單和自己帳戶的 Google Play App 顯示為準。']],
       ['不要為了折扣買超過需要的金額', ['禮物卡折扣看起來划算，但如果買了短期內用不到的餘額，資金被鎖住就不一定是好事。為了等級而多買，也可能讓實際回饋不如預期。', '最安全的做法是從原本就打算購買的 App、遊戲或訂閱開始，再檢查禮物卡與活動是否剛好適用。']]
     ],
@@ -1265,11 +1265,11 @@ const TW_ARTICLES = [
     lead: '活動加碼沒有出現時，先分清楚是整筆點數沒有顯示，還是一般點數和加碼點數的條件不同。',
     intro: 'Google Play Points 活動常以 2 倍、3 倍呈現，但實際上可能有啟用、日期、指定 App、付款方式、加碼上限等條件。當你覺得活動沒有套用時，最重要的是不要立刻再次購買，而是把一般點數、活動加碼和官方條件拆開確認。',
     sections: [
-      ['先看一般點數是否已出現', ['如果一般點數有出現，但活動加碼沒有出現，問題可能不是整筆購買失敗，而是活動條件或反映時間不同。', '用計算機先估 1 倍結果，再估 2 倍或 3 倍結果。兩者差額就是你要追蹤的活動加碼部分。']],
+      ['先看一般點數是否已出現', ['如果一般點數有出現，但活動加碼沒有出現，問題可能不是整筆購買失敗，而是活動條件或反映時間不同。', '用計算機先依目前等級的一般獲點率估算，再依 Google Play 顯示的最終活動特別獲點率估算。兩者差額就是你要追蹤的活動加碼部分。']],
       ['確認活動是否需要啟用', ['有些活動需要先點擊參加或在指定頁面啟用，並不是看到活動頁就一定自動套用。請回到 Google Play App 內確認活動狀態。', '如果購買發生在啟用之前，後續通常不能直接假設會補套用。購買時間和活動開始時間要分開看。']],
       ['檢查期間、App 與付款條件', ['活動可能只適用特定 App、遊戲、商品、期間或付款方式。訂閱續約、試用轉付費、促銷餘額或禮物卡餘額，也可能需要特別確認。', '把收據上的購買日期、商品名稱和活動條件對照，可以更快排除不適用的原因。']],
       ['注意加碼上限與反映時間', ['活動可能有帳號上限或最高加碼點數。如果實際點數比預期少，請確認是否已達上限。', '另外，一般點數與活動加碼可能不是同時出現在畫面上。只看購買後的瞬間餘額，容易太早下結論。']],
-      ['詢問支援前整理計算與證據', ['如果條件都符合，仍看不到加碼，請整理購買日期、活動名稱、預期倍率、1 倍估算、活動特別獲點率估算與實際顯示點數。', '訂單編號與付款資訊不要公開。計算機不能替帳號補點數，但能讓你把問題說得更清楚。']]
+      ['詢問支援前整理計算與證據', ['如果條件都符合，仍看不到加碼，請整理購買日期、活動名稱、一般獲點率估算、最終活動特別獲點率估算與實際顯示點數。', '訂單編號與付款資訊不要公開。計算機不能替帳號補點數，但能讓你把問題說得更清楚。']]
     ],
     faq: [
       ['為什麼 2 倍活動不是剛好兩倍？', '可能受到適用金額、加碼上限、活動條件或反映時間影響。'],
@@ -1343,7 +1343,7 @@ const TW_ARTICLES = [
     intro: '訂閱會遇到自動續訂、試用轉付費、首次加入加碼與國家/地區變更，因此不能只用「訂閱都是幾倍」來估算。請分開檢查付款帳號、Google Play 訂單與活動條件。',
     sections: [
       ['結論：符合資格的訂閱可按一般回饋率累積', ['Google 官方說明提到，透過 App 進行的訂閱可依一般等級回饋率取得點數。前提是付款由 Google Play 處理，而且該地區與帳號符合累積資格。', '如果是在服務商網站或其他付款平台訂閱，可能不會成為 Google Play 訂單。請比對電子收據與 Play 購買紀錄。']],
-      ['首次訂閱加碼不是每月重複加碼', ['畫面若顯示首次訂閱額外點數，通常可能有僅限首次一次的條件。把這項加碼套用到每個月，會讓預估結果明顯偏高。', '請把一般回饋與首次加碼分成兩列。計算時先看 1 倍基準，只有官方畫面明確顯示倍率時才加入活動比較。']],
+      ['首次訂閱加碼不是每月重複加碼', ['畫面若顯示首次訂閱額外點數，通常可能有僅限首次一次的條件。把這項加碼套用到每個月，會讓預估結果明顯偏高。', '請把一般回饋與首次加碼分成兩列。計算時先看目前等級的一般獲點率，只有官方畫面明確顯示最終活動特別獲點率時才加入比較。']],
       ['確認試用結束與實際扣款時間', ['免費試用開始日不一定是點數產生的日期。檢查時應以 Google Play 訂單實際完成的付費日期為準。', '續訂若處於保留、付款失敗、取消或退款狀態，點數也可能受到影響。不要只看總餘額，請一起查看 Play Points 活動與訂單狀態。']],
       ['帳號與國家/地區變更會讓流程更複雜', ['點數要在實際付款的 Google 帳號查看。使用多個帳號時，請確認訂閱管理、收據與 Play Points 畫面都是同一個帳號。', '變更 Play 國家/地區後，舊訂閱可能繼續使用原付款資料。重新加入前，先查看舊訂閱與下次扣款日，避免重複付款。']],
       ['先決定月支出，再考慮點數', ['訂閱會自動重複扣款。為了升級而新增用不到的服務，可能讓小額支出長期累積，遠高於獲得的點數價值。', 'Play Points 應是附加回饋。計算器適合整理原本就需要的訂閱，不適合用來合理化不會使用的月費。']]
@@ -1440,7 +1440,7 @@ const POINT_VALUE_100_ARTICLES = [
         "How promotions change the estimate",
         [
           "At Bronze, an eligible 2x offer can reduce the rough spend for 100 points from $100 to $50, and a 3x offer to about $33.34. This only works when the offer applies to that item and account.",
-          "Run the calculator at 1x first. Then read the activation step, cap, and end date instead of buying only to reach a round point balance."
+          "Start with your current tier’s normal earn rate. Then read the activation step, cap, and end date instead of buying only to reach a round point balance."
         ]
       ],
       [
@@ -1537,7 +1537,7 @@ const POINT_VALUE_100_ARTICLES = [
         "2배·3배 캠페인일 때",
         [
           "브론즈에서 대상 2배 적립이면 약 50,000원, 3배라면 약 33,334원이 단순 기준입니다. 캠페인은 대상 앱, 기간, 참여 버튼, 상한을 가질 수 있습니다.",
-          "먼저 1배 기준을 계산하고 내 계정에 표시된 적립률을 비교하세요. 예정에 없던 결제는 권하지 않습니다."
+          "먼저 현재 등급의 일반 적립률로 계산하고, 내 계정에 표시된 최종 특별 적립률이 있다면 그 값을 비교하세요. 예정에 없던 결제는 권하지 않습니다."
         ]
       ],
       [
@@ -1656,27 +1656,27 @@ POINT_VALUE_100_ARTICLES.forEach((article) => {
 
 const INTL_ARTICLE_DATES = {
   'en/articles/google-play-points-reflection-timing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
   'en/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-25' },
+  'en/articles/google-play-points-platinum-diamond-cost.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
   'en/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
+  'en/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
   'en/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'en/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
   'ko/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'ko/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-10' },
-  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
-  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-08-21' },
+  'tw/articles/google-play-points-not-showing.html': { publishedAt: '2026-07-07', modifiedAt: '2026-08-21' },
   'tw/articles/google-play-points-levels.html': { publishedAt: '2026-07-07', modifiedAt: '2026-07-10' },
   'tw/articles/google-play-points-gift-cards.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-25' },
-  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-07-24' },
-  'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
-  'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
-  'tw/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
-  'tw/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'tw/articles/google-play-points-promotion-not-applied.html': { publishedAt: '2026-07-10', modifiedAt: '2026-08-21' },
+  'ko/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'ko/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'tw/articles/google-play-points-country-differences.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
+  'tw/articles/google-play-points-subscriptions.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
   'en/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
-  'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' },
+  'ko/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-08-21' },
   'tw/articles/google-play-points-100-value.html': { publishedAt: '2026-07-24', modifiedAt: '2026-07-24' }
 };
 
@@ -1686,7 +1686,7 @@ const MANUAL_COMPARISON_ARTICLES = [
     lang: 'ko',
     title: 'Google Play Points 플래티넘과 다이아몬드 비교 | 필요 포인트·유지 금액',
     publishedAt: '2026-07-25',
-    modifiedAt: '2026-07-25',
+    modifiedAt: '2026-08-21',
     manual: true
   },
   {
@@ -1694,7 +1694,7 @@ const MANUAL_COMPARISON_ARTICLES = [
     lang: 'zh-TW',
     title: 'Google Play Points 白金與鑽石比較｜點數、維持金額與福利',
     publishedAt: '2026-07-25',
-    modifiedAt: '2026-07-25',
+    modifiedAt: '2026-08-21',
     manual: true
   }
 ];

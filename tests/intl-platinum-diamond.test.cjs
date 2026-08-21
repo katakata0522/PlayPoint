@@ -57,7 +57,9 @@ test('プラチナ・ダイヤモンド比較は地域別公式数値と計算�
   for (const page of pages) {
     const html = read(page.file);
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
-    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-05';
+    // The international articles received a meaningful editorial guidance update on 2026-08-21.
+    // Their separate official-source verification note intentionally remains 2026-08-05.
+    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-21';
     assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}"`), page.file);
     assert.ok(html.includes('article:modified_time'), page.file);
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
@@ -106,6 +108,16 @@ test('専用サイトマップと記事一覧から4言語ページを発見で�
 
   for (const [lang, url] of Object.entries(urls)) {
     assert.ok(sitemap.includes(`<loc>${url}</loc>`));
+
+    const page = pages.find(candidate => candidate.lang === lang);
+    assert.ok(page, `missing page metadata for ${lang}`);
+    const modifiedMatch = read(page.file).match(/<meta name="last-modified" content="([^"]+)"/);
+    assert.ok(modifiedMatch, `${page.file}: missing last-modified`);
+    const entryStart = sitemap.indexOf(`<loc>${url}</loc>`);
+    const entryEnd = sitemap.indexOf('</url>', entryStart);
+    const entry = sitemap.slice(entryStart, entryEnd);
+    assert.ok(entry.includes(`<lastmod>${modifiedMatch[1]}</lastmod>`), `${page.file}: sitemap lastmod`);
+
     for (const [alternateLang, alternateUrl] of Object.entries(urls)) {
       assert.ok(sitemap.includes(`hreflang="${alternateLang}" href="${alternateUrl}"`));
     }
