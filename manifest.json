@@ -7,7 +7,6 @@
   "display": "standalone",
   "background_color": "#eef",
   "theme_color": "#28a745",
-  "orientation": "portrait-primary",
   "categories": ["utilities", "finance"],
   "screenshots": [
     {
