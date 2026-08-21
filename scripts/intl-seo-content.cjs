@@ -616,9 +616,9 @@ const PAGE_TYPES = {
       cta: 'Calculate points for 10,000 yen',
       secondary: 'Read gift-card notes',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
-      summary: ['Preset: reverse mode', 'Best for: spend-to-points planning', 'Check: status, multiplier, eligible amount'],
+      summary: ['Preset: reverse mode', 'Best for: spend-to-points planning', 'Check: status, special earn rate, eligible amount'],
       sections: [
-        ['Use reverse mode', 'This page opens the calculator with amount-based input. Change the status and multiplier to match your account.'],
+        ['Use reverse mode', 'This page opens the calculator with amount-based input. Change the status and special earn rate to match your account.'],
         ['Currency and region', 'The Japanese page uses yen. Overseas users can still compare the point logic, but local currency, tax, and eligibility may differ.'],
         ['Next step', 'After checking points from 10,000 yen, compare the result with the missing points for Platinum or Diamond.']
       ],
@@ -637,9 +637,9 @@ const PAGE_TYPES = {
       cta: '10,000엔 포인트 계산',
       secondary: '영문 기프트카드 가이드',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
-      summary: ['초기 조건: 역산 모드', '추천: 금액에서 포인트를 보고 싶은 경우', '확인: 등급, 배율, 대상 금액'],
+      summary: ['초기 조건: 역산 모드', '추천: 금액에서 포인트를 보고 싶은 경우', '확인: 등급, 특별 적립률, 대상 금액'],
       sections: [
-        ['역산 모드 사용', '금액을 기준으로 예상 포인트를 계산합니다. 실제 등급과 배율에 맞게 바꾸세요.'],
+        ['역산 모드 사용', '금액을 기준으로 예상 포인트를 계산합니다. 실제 등급과 특별 적립률에 맞게 바꾸세요.'],
         ['통화와 국가', '이 페이지는 일본 엔 기준입니다. 한국 사용자는 구조 참고용으로 보고, 실제 조건은 앱에서 확인하세요.'],
         ['다음 단계', '10,000엔의 예상 포인트를 본 뒤 목표 등급까지 부족한 포인트와 비교하세요.']
       ],
@@ -658,7 +658,7 @@ const PAGE_TYPES = {
       cta: '計算 10,000 日圓點數',
       secondary: '查看英文禮物卡指南',
       secondaryHref: '/en/articles/google-play-points-gift-cards.html',
-      summary: ['預設: 反推模式', '適合: 從金額估點數', '確認: 等級、倍率、適用金額'],
+      summary: ['預設: 反推模式', '適合: 從金額估點數', '確認: 等級、特別獲點率、適用金額'],
       sections: [
         ['使用反推模式', '這頁會以金額作為輸入，請依自己的等級與活動特別獲點率調整。'],
         ['貨幣與地區', '本頁以日圓為例。台灣使用者可參考計算邏輯，但實際幣別與資格請以 App 為準。'],
