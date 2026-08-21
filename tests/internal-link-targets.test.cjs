@@ -63,15 +63,18 @@ test('internal blank targets become same-tab links without discarding unrelated 
   );
 });
 
-test('external blank targets stay untouched', () => {
+test('external and runtime-external blank targets stay untouched', () => {
   const external = '<a href="https://support.google.com/googleplay/" target="_blank" rel="noopener noreferrer">';
   assert.equal(normalizeInternalAnchorTarget(external), external);
+
+  const runtimeExternal = '<a id="register-google-cal-btn" class="calendar-btn google" href="#" target="_blank" rel="noopener noreferrer">';
+  assert.equal(normalizeInternalAnchorTarget(runtimeExternal), runtimeExternal);
 
   const html = `<p>${external}Google Play Help</a></p>`;
   assert.equal(normalizeInternalTargetsInHtml(html), html);
 });
 
-test('committed public HTML contains no internal target=_blank links', () => {
+test('committed public HTML contains no normal internal target=_blank links', () => {
   const offenders = [];
   for (const filePath of walkHtmlFiles(root)) {
     const html = fs.readFileSync(filePath, 'utf8');
