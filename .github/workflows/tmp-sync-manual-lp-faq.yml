@@ -1,0 +1,36 @@
+name: Temporary manual LP FAQ sync
+
+on:
+  push:
+    branches:
+      - fix/manual-lp-faq-sync
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/manual-lp-faq-sync
+          fetch-depth: 0
+
+      - name: Synchronize committed manual LP FAQ output
+        run: node scripts/lp-faq-sync.cjs
+
+      - name: Commit synchronized HTML only when needed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- status campaign; then
+            echo "Manual LP FAQ output is already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- status/silver/index.html status/gold/index.html status/platinum/index.html status/diamond/index.html campaign/2x/index.html campaign/3x/index.html campaign/wait/index.html
+          git commit -m "build: synchronize manual LP FAQ schema output"
+          git push origin HEAD:fix/manual-lp-faq-sync
