@@ -5,6 +5,7 @@ const {
   getGameContentDate,
   getGamePageHtmlFiles
 } = require('./game-page-targets.cjs');
+const { GAME_LOCALE_DIRECTORIES } = require('./locale-ids.cjs');
 const { getLatestHubVerificationDate } = require('./latest-hub-audit.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
@@ -22,7 +23,15 @@ const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 
 function isGeneratedGamePagePath(file) {
-  return /^(?:(?:en|ko|tw)\/)?games\/(?:index\.html|[^/]+\/index\.html)$/.test(String(file));
+  const normalized = String(file).replaceAll('\\', '/');
+
+  return GAME_LOCALE_DIRECTORIES.some(localeDirectory => {
+    const gamesPrefix = localeDirectory ? `${localeDirectory}/games/` : 'games/';
+    if (!normalized.startsWith(gamesPrefix)) return false;
+
+    const relativeGamePath = normalized.slice(gamesPrefix.length);
+    return relativeGamePath === 'index.html' || /^[^/]+\/index\.html$/.test(relativeGamePath);
+  });
 }
 
 const gameContentDateOverrides = Object.fromEntries(
