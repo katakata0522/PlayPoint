@@ -3,6 +3,7 @@ const path = require('node:path');
 
 const INTERNAL_ORIGIN = 'https://playpoint-sim.com';
 const INTERNAL_HOSTNAMES = new Set(['playpoint-sim.com', 'www.playpoint-sim.com']);
+const RUNTIME_EXTERNAL_LINK_IDS = new Set(['register-google-cal-btn']);
 const EXCLUDED_DIRECTORIES = new Set([
   '.git',
   '.github',
@@ -83,6 +84,11 @@ function isInternalHref(href) {
 }
 
 function normalizeInternalAnchorTarget(anchorTag) {
+  const id = readAttributeValue(anchorTag, 'id');
+  if (id && RUNTIME_EXTERNAL_LINK_IDS.has(id)) {
+    return anchorTag;
+  }
+
   const href = readAttributeValue(anchorTag, 'href');
   const target = readAttributeValue(anchorTag, 'target');
   if (!href || String(target || '').toLowerCase() !== '_blank' || !isInternalHref(href)) {
