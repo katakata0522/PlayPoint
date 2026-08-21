@@ -13,10 +13,13 @@ SSH_OPTIONS=(
   -o "UserKnownHostsFile=$HOME/.ssh/known_hosts"
   -o LogLevel=ERROR
   -o ConnectTimeout=15
+  -o ServerAliveInterval=15
+  -o ServerAliveCountMax=2
 )
-RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15"
+RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=2"
 
 MAX_ATTEMPTS=5
+RSYNC_IO_TIMEOUT_SECONDS=60
 
 is_transient_network_exit_code() {
   case "$1" in
@@ -79,7 +82,7 @@ run_with_transient_retry() {
 }
 
 deploy_once() {
-  rsync -avz --delete-after --delete-excluded --delay-updates \
+  rsync -avz --delete-after --delete-excluded --delay-updates --timeout="$RSYNC_IO_TIMEOUT_SECONDS" \
     -e "$RSYNC_RSH" \
     ./ "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
@@ -96,7 +99,7 @@ deploy_once() {
 }
 
 publish_verified_status_once() {
-  rsync -avz --delay-updates \
+  rsync -avz --timeout="$RSYNC_IO_TIMEOUT_SECONDS" --delay-updates \
     -e "$RSYNC_RSH" \
     status/deploy-revision.txt status/deploy-status.json \
     "$REMOTE_HOST:$REMOTE_ROOT/status/"
