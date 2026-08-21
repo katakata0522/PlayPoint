@@ -19,12 +19,26 @@ jobs:
           ref: fix/intl-status-campaign-earn-rate-copy
           fetch-depth: 0
 
+      - name: Repair one-shot template escaping in the runner only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('.github/scripts/tmp-fix-intl-status-campaign-copy.cjs')
+          text = path.read_text()
+          old = '${pageKey}:${localeKey}'
+          new = r'\${pageKey}:\${localeKey}'
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one template interpolation, found {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
       - name: Apply canonical source migration
         run: |
           set +e
           node .github/scripts/tmp-fix-intl-status-campaign-copy.cjs > /tmp/migration.log 2>&1
           status=$?
           set -e
+          git checkout -- .github/scripts/tmp-fix-intl-status-campaign-copy.cjs
           cat /tmp/migration.log
           if [ "$status" -ne 0 ]; then
             cp /tmp/migration.log .github/tmp-intl-migration-error.txt
