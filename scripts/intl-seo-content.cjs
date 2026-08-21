@@ -133,11 +133,11 @@ const PAGE_TYPES = {
       sections: [
         ['먼저 확인할 것', 'Google Play 앱에 표시된 남은 포인트를 기준으로 입력하세요. 전체 누적 포인트를 넣으면 예상 금액이 어긋날 수 있습니다.'],
         ['국가별 차이', '한국, 일본, 미국, 대만은 프로모션과 리워드 표시가 다를 수 있습니다. 계산 후 앱의 조건을 다시 확인하세요.'],
-        ['기다릴지 판단', '평소 결제액보다 필요한 금액이 크다면 1배와 캠페인 특별 적립률을 비교하고, 불필요한 지출은 피하는 것이 좋습니다.']
+        ['기다릴지 판단', '평소 결제액보다 필요한 금액이 크다면 현재 등급의 기본 적립률과 Google Play에 표시된 최종 특별 적립률을 비교하고, 불필요한 지출은 피하는 것이 좋습니다.']
       ],
       faq: [
         ['공식 필요 금액을 보장하나요?', '아니요. 입력값을 바탕으로 한 예상치이며, 최종 기준은 Google Play 앱의 진행 상황입니다.'],
-        ['캠페인 특별 적립률을 넣어도 되나요?', '대상 결제가 맞을 때만 넣어 비교하세요. 먼저 1배로 기준을 보는 것이 안전합니다.'],
+        ['캠페인 특별 적립률을 넣어도 되나요?', '대상 결제가 맞을 때만 Google Play에 표시된 최종 특별 적립률을 입력해 비교하세요. 먼저 현재 등급의 기본 적립률을 기준으로 보는 것이 안전합니다.'],
         ['다이아몬드는 항상 이득인가요?', '리워드를 실제로 사용할 수 있는지에 따라 달라집니다.']
       ]
     },
@@ -182,13 +182,13 @@ const PAGE_TYPES = {
       sections: [
         ['Start from missing points', 'Use the remaining points shown in Google Play, not the total points you have earned so far. This keeps the estimate tied to the next status target.'],
         ['Use your local status rate', 'Google Play Points status benefits and point rates can differ by country or account. For US, Korea, Taiwan, and Japan users, the calculator should be treated as a planning aid until the Google Play app confirms the official progress.'],
-        ['Compare normal earning with campaigns', 'Run the estimate at 1x first, then compare 2x or 3x only when the purchase is actually eligible. A promotion that does not apply should not change the decision.'],
+        ['Compare normal earning with campaigns', 'Start with your normal tier earn rate, then compare the final special earn rate shown in Google Play only when the purchase is actually eligible. A promotion that does not apply should not change the decision.'],
         ['Check whether Platinum is worth the extra spend', 'If the missing amount is close to a purchase you already planned, Platinum may be a reasonable goal. If it requires new spending only for status, compare the reward value before buying.']
       ],
       faq: [
         ['Is this a US Google Play Points Platinum calculator?', 'It is written for international users, including the US, but it does not replace the official Google Play progress shown in your account.'],
         ['Can I use this for Korea or Taiwan?', 'Yes, as an estimate. Confirm the local status rate, campaign terms, and eligible purchase amount in the Google Play app.'],
-        ['Should I wait for a promotion before trying for Platinum?', 'If the purchase can wait and the promotion clearly applies, comparing 1x and 2x or 3x can show whether waiting changes the result.']
+        ['Should I wait for a promotion before trying for Platinum?', 'If the purchase can wait and the promotion clearly applies, compare your normal tier earn rate with the final special earn rate shown in Google Play to see whether waiting changes the result.']
       ]
     },
     ko: {
@@ -200,17 +200,17 @@ const PAGE_TYPES = {
       cta: '플래티넘까지 계산하기',
       secondary: '다이아몬드 계산 보기',
       secondaryHref: '/ko/status/diamond/',
-      summary: ['초기 조건: 골드에서 플래티넘', '추천: 다음 등급을 계획하는 사용자', '확인: 남은 포인트, 배율, 지역 조건'],
+      summary: ['초기 조건: 골드에서 플래티넘', '추천: 다음 등급을 계획하는 사용자', '확인: 남은 포인트, 특별 적립률, 지역 조건'],
       sections: [
         ['남은 포인트부터 입력', '누적 포인트가 아니라 Google Play 앱에 표시된 목표까지 남은 포인트를 기준으로 입력하세요.'],
         ['한국 조건을 앱에서 확인', 'Google Play Points 적립률, 혜택, 캠페인은 국가나 계정에 따라 다를 수 있습니다. 계산기는 계획용으로 쓰고 최종 조건은 앱에서 확인하세요.'],
-        ['캠페인 특별 적립률 비교', '먼저 1배 기준으로 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하는 편이 안전합니다.'],
+        ['캠페인 특별 적립률 비교', '먼저 현재 등급의 기본 적립률을 기준으로 보고, 실제 대상 결제일 때만 Google Play에 표시된 최종 특별 적립률을 입력해 비교하는 편이 안전합니다.'],
         ['등급 가치 판단', '예정된 결제와 가까운 금액이면 플래티넘 목표가 의미 있을 수 있지만, 등급만을 위한 추가 결제라면 혜택 가치와 비교해야 합니다.']
       ],
       faq: [
         ['한국 Google Play Points 플래티넘 계산에 쓸 수 있나요?', '예상치로 사용할 수 있습니다. 단, 공식 진행 상황과 대상 조건은 Google Play 앱 기준입니다.'],
         ['미국이나 대만 조건도 같나요?', '국가와 계정에 따라 다를 수 있으므로 같은 숫자를 그대로 적용하지 말고 앱에서 확인하세요.'],
-        ['캠페인을 기다리는 것이 좋나요?', '예정된 결제가 있고 캠페인 대상이 확실하다면 1배와 2배 또는 3배를 비교해 볼 가치가 있습니다.']
+        ['캠페인을 기다리는 것이 좋나요?', '예정된 결제가 있고 캠페인 대상이 확실하다면 현재 등급의 기본 적립률과 Google Play에 표시된 최종 특별 적립률을 비교해 볼 가치가 있습니다.']
       ]
     },
     tw: {
@@ -222,17 +222,17 @@ const PAGE_TYPES = {
       cta: '計算白金等級進度',
       secondary: '比較鑽石等級',
       secondaryHref: '/tw/status/diamond/',
-      summary: ['預設: 金級到白金', '適合: 規劃下一個等級', '確認: 剩餘點數、倍率、地區條件'],
+      summary: ['預設: 金級到白金', '適合: 規劃下一個等級', '確認: 剩餘點數、特別獲點率、地區條件'],
       sections: [
         ['從剩餘點數開始', '請輸入 Google Play App 顯示的目標剩餘點數，而不是累積總點數。'],
         ['確認台灣適用條件', 'Google Play Points 的回饋率、優惠與活動可能因國家或帳號不同。計算結果應作為規劃參考，最終仍以 App 為準。'],
-        ['比較一般與活動特別獲點率', '先以 1 倍建立基準，只有在該筆消費確定符合活動時，才用 2 倍或 3 倍估算。'],
+        ['比較一般與活動特別獲點率', '先以目前等級基本獲點率建立基準，只有在該筆消費確定符合活動時，才輸入 Google Play 顯示的最終特別獲點率進行估算。'],
         ['判斷白金是否值得', '如果金額接近原本計畫的消費，白金可能值得考慮；如果只是為了等級而新增支出，應先比較回饋價值。']
       ],
       faq: [
         ['這能用來估算台灣 Google Play Points 白金嗎？', '可以作為估算，但官方進度與適用條件仍以 Google Play App 顯示為準。'],
         ['美國或韓國也能參考嗎？', '可以參考計算方式，但國家與帳號條件可能不同，請不要直接套用同一數字。'],
-        ['應該等活動再衝白金嗎？', '如果原本就有計畫消費，且活動資格明確，比較 1 倍與 2 倍或 3 倍會更好判斷。']
+        ['應該等活動再衝白金嗎？', '如果原本就有計畫消費，且活動資格明確，比較目前等級基本獲點率與 Google Play 顯示的最終特別獲點率會更好判斷。']
       ]
     }
   },
@@ -254,7 +254,7 @@ const PAGE_TYPES = {
       summary: ['Preset: Silver to Gold', 'Best for: first realistic status goal', 'Check: missing points and local rules'],
       sections: [
         ['Start with the next reachable tier', 'Gold can be a practical target when the missing points are close to spending you already planned. Enter only the points still needed for the next status.'],
-        ['Compare before waiting for a campaign', 'Run a 1x estimate first, then compare 2x or 3x only when the purchase is eligible and useful.'],
+        ['Compare before waiting for a campaign', 'Start with your normal tier earn rate, then compare the final special earn rate shown in Google Play only when the purchase is eligible and useful.'],
         ['Use local Google Play conditions', 'Rewards, point rates, and campaign details may differ by country or account, so the Google Play app should decide the final rule.'],
         ['Avoid making Gold a spending excuse', 'If the estimate is far above normal purchases, staying at the current level may be the better decision.']
       ],
@@ -276,7 +276,7 @@ const PAGE_TYPES = {
       summary: ['초기 조건: 실버에서 골드', '추천: 첫 등급 목표', '확인: 남은 포인트와 지역 조건'],
       sections: [
         ['가까운 목표부터 보기', '골드는 예정된 결제와 가까운 금액일 때 의미가 있습니다. 누적 포인트가 아니라 목표까지 남은 포인트를 입력하세요.'],
-        ['캠페인 전후 비교', '먼저 1배 기준을 보고, 실제 대상 결제일 때만 2배 또는 3배를 넣어 비교하세요.'],
+        ['캠페인 전후 비교', '먼저 현재 등급의 기본 적립률을 기준으로 보고, 실제 대상 결제일 때만 Google Play에 표시된 최종 특별 적립률을 입력해 비교하세요.'],
         ['한국 계정 조건 확인', '리워드, 적립률, 캠페인은 국가와 계정에 따라 달라질 수 있으므로 Google Play 앱을 최종 기준으로 보세요.'],
         ['무리한 결제 방지', '평소 소비보다 필요한 금액이 크다면 현재 등급을 유지하는 선택도 합리적입니다.']
       ],
@@ -298,7 +298,7 @@ const PAGE_TYPES = {
       summary: ['預設: 銀級到金級', '適合: 第一個實際目標', '確認: 剩餘點數與地區條件'],
       sections: [
         ['先看最近的等級', '金級適合用來判斷下一步是否值得。請輸入目標還差的點數，而不是累積總點數。'],
-        ['比較活動前後', '先以 1 倍建立基準，只有在消費確定符合活動時，才用 2 倍或 3 倍估算。'],
+        ['比較活動前後', '先以目前等級基本獲點率建立基準，只有在消費確定符合活動時，才輸入 Google Play 顯示的最終特別獲點率估算。'],
         ['以所在地區 App 為準', '回饋、活動與資格可能依地區或帳號不同，最終仍要確認 Google Play App。'],
         ['避免為等級硬買', '如果估算金額高於平常消費，維持目前等級可能更合理。']
       ],
@@ -536,7 +536,7 @@ const PAGE_TYPES = {
     jaPath: '/campaign/wait/',
     en: {
       title: 'Should you wait for a Google Play Points promotion?',
-      description: 'Compare regular, 2x, and 3x Google Play Points earning to decide whether waiting for a promotion is worth it.',
+      description: 'Compare your normal tier earn rate with the final special earn rate shown by an eligible Google Play promotion to decide whether waiting is worth it.',
       eyebrow: 'Promotion wait decision',
       h1: 'Should you wait for a Google Play Points promotion?',
       lead: 'Waiting can help when a purchase is planned and the promotion applies. It can also create unnecessary spending if the target is only attractive under uncertain conditions.',
@@ -545,42 +545,42 @@ const PAGE_TYPES = {
       secondaryHref: '/en/campaign/3x/',
       summary: ['Preset: compare promotion timing', 'Best for: planned purchases', 'Check: base rate, special earn rate, and eligibility'],
       sections: [
-        ['Start with the 1x baseline', 'If the target is already reasonable at 1x, a promotion is a timing bonus rather than a requirement.'],
-        ['Use 2x or 3x only for eligible purchases', 'A multiplier should be entered only when the offer clearly applies to the planned purchase.'],
+        ['Start with your normal tier earn rate', 'If the target is already reasonable at your normal tier earn rate, a promotion is a timing bonus rather than a requirement.'],
+        ['Use a special earn rate only for eligible purchases', 'Enter only the final special earn rate shown in Google Play when the offer clearly applies to the planned purchase.'],
         ['Waiting is useful when the purchase can move', 'If you already planned to buy soon and the campaign window is clear, waiting can improve the result without increasing spending.'],
         ['Do not wait forever for a vague offer', 'If the campaign is uncertain or the purchase is not needed, waiting can turn into a spending trap.']
       ],
       faq: [
         ['When is waiting worth it?', 'When the purchase is already planned, can wait, and the campaign terms clearly apply.'],
         ['Should I buy more during a promotion?', 'Not unless the purchase itself has value outside the status goal.'],
-        ['What should I compare first?', 'Compare 1x, then 2x, then 3x with the same missing-point target.']
+        ['What should I compare first?', 'Use the same missing-point target and compare your normal tier earn rate with the final special earn rate shown in Google Play.']
       ]
     },
     ko: {
       title: 'Google Play Points 캠페인을 기다려야 할까요?',
-      description: 'Google Play Points 캠페인을 기다릴지 지금 결제할지, 1배·2배·3배 예상치와 남은 포인트 기준으로 한국어로 비교합니다.',
+      description: 'Google Play Points 캠페인을 기다릴지 지금 결제할지, 현재 등급의 기본 적립률과 Google Play에 표시된 최종 특별 적립률, 남은 포인트를 기준으로 한국어로 비교합니다.',
       eyebrow: '캠페인 대기 판단',
       h1: 'Google Play Points 캠페인을 기다려야 할까요?',
       lead: '예정된 결제가 있고 캠페인 대상이 확실하다면 기다리는 것이 도움이 될 수 있습니다. 하지만 불확실한 조건 때문에 새 지출을 만들면 위험합니다.',
       cta: '캠페인 시점 비교',
       secondary: '3배 계산 보기',
       secondaryHref: '/ko/campaign/3x/',
-      summary: ['초기 조건: 캠페인 대기 비교', '추천: 예정된 결제', '확인: 1배, 2배, 3배와 대상 조건'],
+      summary: ['초기 조건: 캠페인 대기 비교', '추천: 예정된 결제', '확인: 기본 적립률, 최종 특별 적립률, 대상 조건'],
       sections: [
-        ['1배 기준부터 보기', '1배에서도 목표가 현실적이라면 캠페인은 필수가 아니라 시점 조정입니다.'],
-        ['대상 결제일 때만 배율 사용', '캠페인 조건이 명확한 예정 결제에만 2배나 3배를 넣어 비교하세요.'],
+        ['현재 등급 기본 적립률부터 보기', '현재 등급의 기본 적립률에서도 목표가 현실적이라면 캠페인은 필수가 아니라 시점 조정입니다.'],
+        ['대상 결제일 때만 특별 적립률 사용', '캠페인 조건이 명확한 예정 결제에만 Google Play에 표시된 최종 특별 적립률을 입력해 비교하세요.'],
         ['결제를 미룰 수 있을 때 유용', '원래 살 예정이고 기간이 분명하다면 기다리는 것이 지출을 늘리지 않고 결과를 개선할 수 있습니다.'],
         ['막연한 캠페인을 기다리지 않기', '조건이 불확실하거나 필요 없는 구매라면 기다림 자체가 과소비의 시작이 될 수 있습니다.']
       ],
       faq: [
         ['언제 기다릴 가치가 있나요?', '원래 예정된 결제가 있고, 기다릴 수 있으며, 캠페인 조건이 확실할 때입니다.'],
         ['캠페인 때 더 사도 되나요?', '등급 외에도 그 구매 자체의 가치가 있을 때만 고려하세요.'],
-        ['무엇부터 비교하나요?', '같은 부족 포인트로 1배, 2배, 3배를 차례로 비교하세요.']
+        ['무엇부터 비교하나요?', '같은 부족 포인트로 현재 등급의 기본 적립률과 Google Play에 표시된 최종 특별 적립률을 비교하세요.']
       ]
     },
     tw: {
       title: 'Google Play Points 活動值得等嗎？',
-      description: '比較 Google Play Points 活動前後是否應該等待，用 1 倍、2 倍、3 倍估算判斷升級所需金額。',
+      description: '比較目前等級基本獲點率與 Google Play 顯示的最終特別獲點率，判斷等待 Google Play Points 活動是否值得。',
       eyebrow: '活動等待判斷',
       h1: 'Google Play Points 活動值得等嗎？',
       lead: '如果原本就有計畫消費，且活動資格明確，等待可能有幫助。但若只因不確定活動而新增消費，就需要保守。',
@@ -589,15 +589,15 @@ const PAGE_TYPES = {
       secondaryHref: '/tw/campaign/3x/',
       summary: ['預設: 活動等待比較', '適合: 已計畫的消費', '確認：基本獲點率、特別獲點率與資格'],
       sections: [
-        ['先看 1 倍基準', '如果 1 倍時目標已經合理，活動只是時機優化，不是必要條件。'],
-        ['只有符合資格才輸入倍率', '只有在該筆計畫消費明確符合活動時，才用 2 倍或 3 倍比較。'],
+        ['先看目前等級基本獲點率', '如果以目前等級基本獲點率估算時目標已經合理，活動只是時機優化，不是必要條件。'],
+        ['只有符合資格才輸入特別獲點率', '只有在該筆計畫消費明確符合活動時，才輸入 Google Play 顯示的最終特別獲點率比較。'],
         ['能移動購買時間時才有用', '如果本來就要買且活動期間明確，等待可以在不增加支出的情況下改善結果。'],
         ['不要無限等待模糊活動', '若活動不確定或購買本身不需要，等待可能變成過度消費的入口。']
       ],
       faq: [
         ['什麼時候值得等？', '原本有計畫消費、可以等待，且活動條件明確時。'],
         ['活動期間應該多買嗎？', '只有該購買本身有價值，而不是單純為了等級時才考慮。'],
-        ['先比較什麼？', '用同一個剩餘點數目標，依序比較 1 倍、2 倍、3 倍。']
+        ['先比較什麼？', '用同一個剩餘點數目標，比較目前等級基本獲點率與 Google Play 顯示的最終特別獲點率。']
       ]
     }
   },

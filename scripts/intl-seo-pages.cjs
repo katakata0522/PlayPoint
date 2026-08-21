@@ -11,7 +11,7 @@ const {
   MANUAL_MAINTENANCE_PAGES,
   PAGE_TYPES
 } = require('./intl-seo-content.cjs');
-const { GENERATED_INTL_PAGE_CONTENT_DATE } = require('./content-dates.cjs');
+const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
 
 // 既存の /amount/10000/ URLは維持しつつ、海外3地域では現地通貨の入口として表示する。
 const AMOUNT_ENTRY_OVERRIDES = {
@@ -118,7 +118,7 @@ function pageUrl(locale, slug) {
   return `https://playpoint-sim.com/${locale}/${slug}/`;
 }
 
-function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = GENERATED_INTL_PAGE_CONTENT_DATE) {
+function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = getGeneratedIntlPageContentDate(pageKey, localeKey)) {
   const locale = LOCALES[localeKey];
   const page = PAGE_TYPES[pageKey];
   const baseContent = page[localeKey];
@@ -534,7 +534,7 @@ function getIntlSitemapEntries() {
   const entries = [];
   for (const localeKey of Object.keys(LOCALES)) {
     for (const pageKey of Object.keys(PAGE_TYPES)) {
-      entries.push({ url: pageUrl(localeKey, PAGE_TYPES[pageKey].slug), lastmod: GENERATED_INTL_PAGE_CONTENT_DATE });
+      entries.push({ url: pageUrl(localeKey, PAGE_TYPES[pageKey].slug), lastmod: getGeneratedIntlPageContentDate(pageKey, localeKey) });
     }
     const hubArticles = getPublishedIntlArticles().filter(article => localeKeyForArticle(article) === localeKey);
     entries.push({
