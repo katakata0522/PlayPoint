@@ -328,9 +328,19 @@
 
     // Sidebar Toggle Functions
     function setSidebarState(isOpen) {
+        // aria-hidden / inert を付ける前に、閉じる操作ではフォーカスをトグルへ戻す。
+        if (!isOpen && dom.sidebarToggle) {
+            dom.sidebarToggle.focus();
+        }
+
         if (dom.sidebar) {
             dom.sidebar.classList.toggle('active', isOpen);
             dom.sidebar.setAttribute('aria-hidden', String(!isOpen));
+            if (isOpen) {
+                dom.sidebar.removeAttribute('inert');
+            } else {
+                dom.sidebar.setAttribute('inert', '');
+            }
         }
         if (dom.sidebarOverlay) dom.sidebarOverlay.classList.toggle('active', isOpen);
         if (dom.sidebarToggle) {
@@ -339,6 +349,11 @@
             dom.sidebarToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
         }
         document.body.style.overflow = isOpen ? 'hidden' : '';
+
+        if (isOpen && dom.sidebar) {
+            const focusTarget = dom.sidebarClose || dom.sidebar.querySelector('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+            if (focusTarget) focusTarget.focus();
+        }
     }
 
     function openSidebar() {
