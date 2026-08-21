@@ -75,7 +75,7 @@ test('移設済み・非公開・統合済みの旧パスをXserver上の実体�
   assert.match(script, /Legacy and non-public server artifacts are absent\./);
 });
 
-test('Xserverの一時的なSSH障害だけを上限付きバックオフで再試行する', () => {
+test('Xserverの一時的なSSH障害を全ての書き込み経路で上限付きバックオフ再試行する', () => {
   assert.match(script, /MAX_ATTEMPTS=5/);
   assert.match(script, /10\|12\|30\|35\|255/);
   assert.match(script, /10 \* \(1 << \(retry_number - 1\)\)/);
@@ -84,6 +84,13 @@ test('Xserverの一時的なSSH障害だけを上限付きバックオフで再�
   assert.match(script, /non-transient exit code \$exit_code; failing fast/);
   assert.match(script, /run_with_transient_retry "Deploying via rsync" deploy_once/);
   assert.match(script, /run_with_transient_retry "Verifying remote cleanup" verify_remote_cleanup_once/);
+  assert.match(script, /run_with_transient_retry "Publishing verified deployment status" publish_verified_status_once/);
+  assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --publish-status/);
+  assert.doesNotMatch(
+    workflow,
+    /rsync -avz --delay-updates[\s\S]*status\/deploy-revision\.txt status\/deploy-status\.json/,
+    'verified status publish must not bypass the shared Xserver retry helper'
+  );
   assert.doesNotMatch(script, /MAX_RETRIES=3/);
   assert.doesNotMatch(script, /Waiting 10 seconds before retrying/);
 });
