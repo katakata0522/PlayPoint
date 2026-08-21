@@ -5,6 +5,7 @@ const {
   getGameContentDate,
   getGamePageHtmlFiles
 } = require('./game-page-targets.cjs');
+const { getLatestHubVerificationDate } = require('./latest-hub-audit.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
@@ -15,9 +16,10 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
   tw: '2026-08-12'
 });
 
-const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
 const rootDir = path.resolve(__dirname, '..');
+const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
 const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
+const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 
 function isGeneratedGamePagePath(file) {
   return /^(?:(?:en|ko|tw)\/)?games\/(?:index\.html|[^/]+\/index\.html)$/.test(String(file));
@@ -36,7 +38,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'terms.html': '2026-08-18',
   'sitemap.html': '2026-08-12',
   'embed.html': '2026-07-27',
-  'latest/index.html': '2026-08-19',
+  'latest/index.html': LATEST_HUB_VERIFICATION_DATE,
   'status/diamond/index.html': '2026-08-19',
   'status/platinum/index.html': '2026-08-12',
   'status/gold/index.html': '2026-08-12',
@@ -65,6 +67,7 @@ module.exports = {
   CONTENT_DATE_OVERRIDES,
   GENERATED_GAME_PAGE_CONTENT_DATE,
   GENERATED_INTL_PAGE_CONTENT_DATE,
+  LATEST_HUB_VERIFICATION_DATE,
   TOP_PAGE_CONTENT_DATES,
   getContentDateForFile,
   isGeneratedGamePagePath
