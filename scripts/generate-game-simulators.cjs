@@ -22,6 +22,8 @@ const LOCALES = {
     navAriaLabel: 'メインナビゲーション',
     breadcrumbAriaLabel: 'パンくずリスト',
     adLabel: 'スポンサーリンク',
+    privacyLabel: 'プライバシーポリシー',
+    termsLabel: '利用規約',
     currencySymbol: '円',
     currencyPrefix: '',
     currencySuffix: ' 円',
@@ -125,6 +127,8 @@ const LOCALES = {
     navAriaLabel: 'Main navigation',
     breadcrumbAriaLabel: 'Breadcrumb',
     adLabel: 'Sponsored',
+    privacyLabel: 'Privacy Policy (Japanese)',
+    termsLabel: 'Terms of Service (Japanese)',
     currencySymbol: '$',
     currencyPrefix: '$',
     currencySuffix: '',
@@ -225,6 +229,8 @@ const LOCALES = {
     navAriaLabel: '주 메뉴',
     breadcrumbAriaLabel: '탐색 경로',
     adLabel: '광고',
+    privacyLabel: '개인정보처리방침 (일본어)',
+    termsLabel: '이용약관 (일본어)',
     currencySymbol: '원',
     currencyPrefix: '₩',
     currencySuffix: '원',
@@ -325,6 +331,8 @@ const LOCALES = {
     navAriaLabel: '主要導覽',
     breadcrumbAriaLabel: '導覽路徑',
     adLabel: '廣告',
+    privacyLabel: '隱私權政策 (日文)',
+    termsLabel: '服務條款 (日文)',
     currencySymbol: 'NT$',
     currencyPrefix: 'NT$',
     currencySuffix: ' 元',
@@ -2576,8 +2584,8 @@ function generateGamePageHtml(game, localeKey) {
           <a href="${rootRelative}">${loc.homeTitle}</a> ｜
           <a href="${portalRelative}">${loc.portalTitle}</a> ｜
           <a href="${articlesRelative}">${loc.blogTitle}</a> ｜
-          <a href="${assetsRelative}privacy.html">Privacy</a> ｜
-          <a href="${assetsRelative}terms.html">Terms</a> ｜
+          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a> ｜
+          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a> ｜
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
       <p class="site-footer-trademark">${loc.trademarkNotice}</p>
@@ -2779,8 +2787,8 @@ function generatePortalPageHtml(localeKey) {
           <a href="${rootRelative}">${loc.homeTitle}</a> ｜
           <a href="./">${loc.portalTitle}</a> ｜
           <a href="${articlesRelative}">${loc.blogTitle}</a> ｜
-          <a href="${assetsRelative}privacy.html">Privacy</a> ｜
-          <a href="${assetsRelative}terms.html">Terms</a> ｜
+          <a href="${assetsRelative}privacy.html">${loc.privacyLabel}</a> ｜
+          <a href="${assetsRelative}terms.html">${loc.termsLabel}</a> ｜
           <a href="${authorRelative}">${loc.authorTitle}</a>
       </div>
       <p class="site-footer-trademark">${loc.trademarkNotice}</p>

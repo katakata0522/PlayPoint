@@ -19,6 +19,7 @@
             nextRankText: (name, pts) => `${name}まであと ${pts.toLocaleString('ja-JP')} pt`,
             savingsText: () => '',
             redeemCheckText: 'Play Points「使う」で交換条件を確認',
+            copiedAlert: '✅ コピー完了！',
             ranks: [
                 { name: 'ブロンズ', points: 0, rate: 1.0 },
                 { name: 'シルバー', points: 250, rate: 1.25 },
@@ -39,6 +40,7 @@
             nextRankText: (name, pts) => `${pts.toLocaleString('en-US')} pts needed for ${name}`,
             savingsText: () => '',
             redeemCheckText: 'Check redemption options in Play Points',
+            copiedAlert: '✅ Copied!',
             ranks: [
                 { name: 'Bronze', points: 0, rate: 1.0 },
                 { name: 'Silver', points: 150, rate: 1.1 },
@@ -59,6 +61,7 @@
             nextRankText: (name, pts) => `${name}까지 남은 포인트: ${pts.toLocaleString('ko-KR')} pt`,
             savingsText: () => '',
             redeemCheckText: 'Play Points 사용 화면에서 교환 조건 확인',
+            copiedAlert: '✅ 복사됨!',
             ranks: [
                 { name: '브론즈', points: 0, rate: 1.0 },
                 { name: '실버', points: 150, rate: 1.1 },
@@ -79,6 +82,7 @@
             nextRankText: (name, pts) => `距離${name}還差 ${pts.toLocaleString('zh-TW')} 點`,
             savingsText: () => '',
             redeemCheckText: '請在 Play Points「使用」頁面確認兌換條件',
+            copiedAlert: '✅ 已複製！',
             ranks: [
                 { name: '銅級', points: 0, rate: 1.0 },
                 { name: '銀級', points: 250, rate: 1.25 },
@@ -318,7 +322,7 @@
                     navigator.clipboard.writeText(shareUrl).then(() => {
                         const origHtml = btnCopyLink.innerHTML;
                         btnCopyLink.classList.add('copied');
-                        btnCopyLink.innerHTML = '<span>✅ コピー完了！</span>';
+                        btnCopyLink.innerHTML = '<span>' + cfg.copiedAlert + '</span>';
                         setTimeout(() => {
                             btnCopyLink.classList.remove('copied');
                             btnCopyLink.innerHTML = origHtml;
