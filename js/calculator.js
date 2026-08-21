@@ -172,7 +172,7 @@ export const CALC = {
                 },
                 decisionTitle: '다음으로 확인할 사항',
                 highSpend: { href: 'campaign/3x/', title: '3배 캠페인과 비교', note: '구매 전 차이를 확인하세요' },
-                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인条件確認', note: '이번 구매에 적용되는지 확인하세요' },
+                campaign: { href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 조건 확인', note: '이번 구매에 적용되는지 확인하세요' },
                 diamond: { href: 'status/diamond/', title: '다이아몬드 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
                 platinum: { href: 'status/platinum/', title: '플래티넘 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
                 nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '포인트 반영 상태 확인', note: '연말 전 반영 상태를 확인하세요' },
