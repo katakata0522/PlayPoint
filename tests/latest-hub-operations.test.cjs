@@ -5,7 +5,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { CONTENT_DATE_OVERRIDES } = require('../scripts/html-sync.cjs');
-const { validateLatestHub } = require('../scripts/latest-hub-audit.cjs');
+const {
+  getLatestHubVerificationDate,
+  validateLatestHub
+} = require('../scripts/latest-hub-audit.cjs');
 
 const root = path.resolve(__dirname, '..');
 const latestPath = path.join(root, 'latest', 'index.html');
@@ -13,11 +16,12 @@ const latestPath = path.join(root, 'latest', 'index.html');
 test('最新情報ハブは確認範囲・公式参照・確認日を明示する', () => {
   const html = fs.readFileSync(latestPath, 'utf8');
   const result = validateLatestHub(html);
+  const verificationDate = getLatestHubVerificationDate(root);
 
-  assert.equal(result.verificationDate, '2026-08-19');
-  assert.ok(html.includes('<meta name="last-modified" content="2026-08-19">'));
-  assert.match(html, /"dateModified"\s*:\s*"2026-08-19"/);
-  assert.ok(html.includes('最終更新: <time datetime="2026-08-19">2026-08-19</time>'));
+  assert.equal(result.verificationDate, verificationDate);
+  assert.ok(html.includes(`<meta name="last-modified" content="${verificationDate}">`));
+  assert.match(html, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
+  assert.ok(html.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
   assert.ok(html.includes('次回確認目安: 2026-08-21頃'));
   assert.ok(html.includes('次回確認目安: 2026-08-20頃'));
   assert.match(html, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
@@ -34,8 +38,21 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
   assert.ok(html.includes('../articles/2026-07-31-google-play-quests.html'));
 });
 
-test('生成処理は確認していない日に最新情報ハブの日付を進めない', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], '2026-08-19');
+test('生成処理は公開ページの公式確認日を正本として使い、確認していない日に進めない', () => {
+  const verificationDate = getLatestHubVerificationDate(root);
+  const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
+
+  assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], verificationDate);
+  assert.match(
+    contentDatesSource,
+    /'latest\/index\.html': LATEST_HUB_VERIFICATION_DATE/,
+    'latest hub content date should be derived from the verified date instead of a second date literal'
+  );
+  assert.doesNotMatch(
+    contentDatesSource,
+    /'latest\/index\.html': '\d{4}-\d{2}-\d{2}'/,
+    'content-dates.cjs must not duplicate the latest hub verification date literal'
+  );
 });
 
 test('鮮度検査は14日を超えた確認日を検出する', () => {
