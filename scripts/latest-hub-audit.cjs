@@ -19,6 +19,11 @@ function extractVerificationDate(html) {
   return match[1];
 }
 
+function getLatestHubVerificationDate(rootDir) {
+  const latestPath = path.join(rootDir, 'latest', 'index.html');
+  return extractVerificationDate(fs.readFileSync(latestPath, 'utf8'));
+}
+
 function parseDateOnly(value) {
   const date = new Date(`${value}T00:00:00Z`);
   if (Number.isNaN(date.getTime())) {
@@ -74,16 +79,18 @@ function validateLatestHub(html, options = {}) {
 
 if (require.main === module) {
   const root = path.resolve(__dirname, '..');
+  const verificationDate = getLatestHubVerificationDate(root);
   const html = fs.readFileSync(path.join(root, 'latest', 'index.html'), 'utf8');
-  const result = validateLatestHub(html, {
+  validateLatestHub(html, {
     enforceFreshness: process.argv.includes('--fresh'),
     maxAgeDays: 14
   });
-  console.log(`最新情報ハブ検証成功: ${result.verificationDate}`);
+  console.log(`最新情報ハブ検証成功: ${verificationDate}`);
 }
 
 module.exports = {
   REQUIRED_OFFICIAL_ANSWERS,
   extractVerificationDate,
+  getLatestHubVerificationDate,
   validateLatestHub
 };
