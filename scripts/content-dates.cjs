@@ -1,5 +1,8 @@
 'use strict';
 
+const path = require('node:path');
+const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
 const TOP_PAGE_CONTENT_DATES = Object.freeze({
@@ -10,6 +13,16 @@ const TOP_PAGE_CONTENT_DATES = Object.freeze({
 });
 
 const GENERATED_INTL_PAGE_CONTENT_DATE = '2026-08-18';
+const GENERATED_GAME_PAGE_CONTENT_DATE = '2026-08-18';
+const rootDir = path.resolve(__dirname, '..');
+
+function isGeneratedGamePagePath(file) {
+  return /^(?:(?:en|ko|tw)\/)?games\/(?:index\.html|[^/]+\/index\.html)$/.test(String(file));
+}
+
+const gameContentDateOverrides = Object.fromEntries(
+  getGamePageHtmlFiles(rootDir).map(file => [file, GENERATED_GAME_PAGE_CONTENT_DATE])
+);
 
 const CONTENT_DATE_OVERRIDES = Object.freeze({
   'about-playpoints.html': '2026-08-12',
@@ -32,73 +45,24 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'campaign/wait/index.html': '2026-08-12',
   'amount/10000/index.html': '2026-08-12',
   'compare/earning-rates/index.html': '2026-07-30',
-  'games/index.html': '2026-08-18',
-  'games/genshin/index.html': '2026-08-18',
-  'games/starrail/index.html': '2026-08-18',
-  'games/zzz/index.html': '2026-08-18',
-  'games/bluearchive/index.html': '2026-08-18',
-  'games/pokepoke/index.html': '2026-08-18',
-  'games/fgo/index.html': '2026-08-18',
-  'games/umamusume/index.html': '2026-08-18',
-  'games/monst/index.html': '2026-08-18',
-  'games/gakumas/index.html': '2026-08-18',
-  'games/proseka/index.html': '2026-08-18',
-  'games/nikke/index.html': '2026-08-18',
-  'games/wutheringwaves/index.html': '2026-08-18',
-  'games/dokkan/index.html': '2026-08-18',
-  'games/arknights/index.html': '2026-08-18',
-  'en/games/index.html': '2026-08-18',
-  'en/games/genshin/index.html': '2026-08-18',
-  'en/games/starrail/index.html': '2026-08-18',
-  'en/games/zzz/index.html': '2026-08-18',
-  'en/games/bluearchive/index.html': '2026-08-18',
-  'en/games/pokepoke/index.html': '2026-08-18',
-  'en/games/fgo/index.html': '2026-08-18',
-  'en/games/umamusume/index.html': '2026-08-18',
-  'en/games/monst/index.html': '2026-08-18',
-  'en/games/gakumas/index.html': '2026-08-18',
-  'en/games/proseka/index.html': '2026-08-18',
-  'en/games/nikke/index.html': '2026-08-18',
-  'en/games/wutheringwaves/index.html': '2026-08-18',
-  'en/games/dokkan/index.html': '2026-08-18',
-  'en/games/arknights/index.html': '2026-08-18',
-  'ko/games/index.html': '2026-08-18',
-  'ko/games/genshin/index.html': '2026-08-18',
-  'ko/games/starrail/index.html': '2026-08-18',
-  'ko/games/zzz/index.html': '2026-08-18',
-  'ko/games/bluearchive/index.html': '2026-08-18',
-  'ko/games/pokepoke/index.html': '2026-08-18',
-  'ko/games/fgo/index.html': '2026-08-18',
-  'ko/games/umamusume/index.html': '2026-08-18',
-  'ko/games/monst/index.html': '2026-08-18',
-  'ko/games/gakumas/index.html': '2026-08-18',
-  'ko/games/proseka/index.html': '2026-08-18',
-  'ko/games/nikke/index.html': '2026-08-18',
-  'ko/games/wutheringwaves/index.html': '2026-08-18',
-  'ko/games/dokkan/index.html': '2026-08-18',
-  'ko/games/arknights/index.html': '2026-08-18',
-  'tw/games/index.html': '2026-08-18',
-  'tw/games/genshin/index.html': '2026-08-18',
-  'tw/games/starrail/index.html': '2026-08-18',
-  'tw/games/zzz/index.html': '2026-08-18',
-  'tw/games/bluearchive/index.html': '2026-08-18',
-  'tw/games/pokepoke/index.html': '2026-08-18',
-  'tw/games/fgo/index.html': '2026-08-18',
-  'tw/games/umamusume/index.html': '2026-08-18',
-  'tw/games/monst/index.html': '2026-08-18',
-  'tw/games/gakumas/index.html': '2026-08-18',
-  'tw/games/proseka/index.html': '2026-08-18',
-  'tw/games/nikke/index.html': '2026-08-18',
-  'tw/games/wutheringwaves/index.html': '2026-08-18',
-  'tw/games/dokkan/index.html': '2026-08-18',
-  'tw/games/arknights/index.html': '2026-08-18',
+  ...gameContentDateOverrides,
   'en/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',
   'ko/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',
   'tw/articles/2026-06-20-discount-gift-cards.html': '2026-08-05'
 });
 
+function getContentDateForFile(file) {
+  if (isGeneratedGamePagePath(file)) {
+    return GENERATED_GAME_PAGE_CONTENT_DATE;
+  }
+  return CONTENT_DATE_OVERRIDES[file];
+}
+
 module.exports = {
   CONTENT_DATE_OVERRIDES,
+  GENERATED_GAME_PAGE_CONTENT_DATE,
   GENERATED_INTL_PAGE_CONTENT_DATE,
-  TOP_PAGE_CONTENT_DATES
+  TOP_PAGE_CONTENT_DATES,
+  getContentDateForFile,
+  isGeneratedGamePagePath
 };
