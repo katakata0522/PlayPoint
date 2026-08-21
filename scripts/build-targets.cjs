@@ -6,6 +6,10 @@ const { getIntlContentExpansionFiles } = require('./intl-content-expansion.cjs')
 const { getIntlSeoFiles } = require('./intl-seo-pages.cjs');
 const { EDITORIAL_TARGETS } = require('./article-editorial-structure.cjs');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+const {
+  CONTENT_DATE_OVERRIDES,
+  isGeneratedGamePagePath
+} = require('./content-dates.cjs');
 
 const rootDir = path.resolve(__dirname, '..');
 const excludedPublicDirectories = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
@@ -36,31 +40,12 @@ const generatedLocaleFiles = [
   'tw/index.html'
 ];
 
-const staticSyncedHtmlFiles = [
-  'about-playpoints.html',
-  'info.html',
-  'changelog.html',
-  'attention.html',
-  'privacy.html',
-  'terms.html',
-  'sitemap.html',
-  'embed.html',
-  'latest/index.html',
-  'status/diamond/index.html',
-  'status/platinum/index.html',
-  'status/gold/index.html',
-  'status/silver/index.html',
-  'maintenance/platinum/index.html',
-  'maintenance/diamond/index.html',
-  'campaign/2x/index.html',
-  'campaign/3x/index.html',
-  'campaign/wait/index.html',
-  'amount/10000/index.html',
-  'compare/earning-rates/index.html',
-  'en/articles/2026-06-20-discount-gift-cards.html',
-  'ko/articles/2026-06-20-discount-gift-cards.html',
-  'tw/articles/2026-06-20-discount-gift-cards.html'
-];
+function getStaticSyncedHtmlFiles() {
+  return Object.keys(CONTENT_DATE_OVERRIDES)
+    .filter(file => !isGeneratedGamePagePath(file));
+}
+
+const staticSyncedHtmlFiles = getStaticSyncedHtmlFiles();
 
 function getSyncedHtmlFiles(currentRootDir = rootDir) {
   return [
@@ -94,6 +79,7 @@ module.exports = {
   articleHtmlFiles,
   generatedFiles: uniqueGeneratedFiles,
   generatedLocaleFiles,
+  getStaticSyncedHtmlFiles,
   getSyncedHtmlFiles,
   syncedHtmlFiles
 };

@@ -1,13 +1,23 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
-const { TOP_PAGE_CONTENT_DATES, GENERATED_INTL_PAGE_CONTENT_DATE } = require('../scripts/content-dates.cjs');
+const {
+  CONTENT_DATE_OVERRIDES,
+  GENERATED_INTL_PAGE_CONTENT_DATE,
+  TOP_PAGE_CONTENT_DATES,
+  isGeneratedGamePagePath
+} = require('../scripts/content-dates.cjs');
+const { getSyncedHtmlFiles } = require('../scripts/build-targets.cjs');
 const { createLocales } = require('../scripts/locale-config.cjs');
 const { getIntlSitemapEntries } = require('../scripts/intl-seo-pages.cjs');
 const { syncIndexMetadataContent } = require('../scripts/build-metadata.cjs');
 const { syncSitemapContent } = require('../scripts/sitemap-sync.cjs');
+
+const root = path.resolve(__dirname, '..');
 
 test('ビルド日を変えてもトップと多言語ページの内容更新日は変わらない', () => {
   const locales = createLocales('2099-12-31');
@@ -45,4 +55,22 @@ test('サイトマップの言語トップはページごとの固定内容日�
     assert.match(output, new RegExp(`<lastmod>${date}<\\/lastmod>`));
   }
   assert.doesNotMatch(output, /2099-12-31/);
+});
+
+test('静的HTML同期対象は内容日台帳から導出し、対象一覧を二重管理しない', () => {
+  const expectedStaticFiles = Object.keys(CONTENT_DATE_OVERRIDES)
+    .filter(file => !isGeneratedGamePagePath(file))
+    .sort();
+  const actualStaticFiles = getSyncedHtmlFiles(root)
+    .filter(file => !isGeneratedGamePagePath(file))
+    .sort();
+  const buildTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'build-targets.cjs'), 'utf8');
+
+  assert.deepEqual(actualStaticFiles, expectedStaticFiles);
+  assert.match(buildTargetsSource, /Object\.keys\(CONTENT_DATE_OVERRIDES\)/);
+  assert.doesNotMatch(
+    buildTargetsSource,
+    /const staticSyncedHtmlFiles = \[\s*['"]/,
+    'build-targets.cjs must not restore a second handwritten static sync-target list'
+  );
 });
