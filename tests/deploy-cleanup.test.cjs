@@ -95,6 +95,12 @@ test('Xserverの一時的なSSH障害を全ての書き込み経路で上限付�
   assert.doesNotMatch(script, /Waiting 10 seconds before retrying/);
 });
 
+test('GitHub Actionsのjob timeoutはXserver retry予算を途中で打ち切らない', () => {
+  const match = workflow.match(/timeout-minutes:\s*(\d+)/);
+  assert.ok(match, 'deploy workflow timeout is missing');
+  assert.ok(Number(match[1]) >= 20, `deploy timeout is too short for bounded retry/backoff: ${match[1]} minutes`);
+});
+
 test('旧calculatorファイルを持たず301転送だけを維持する', () => {
   assert.equal(fs.existsSync(path.join(root, 'calculator.html')), false);
   assert.match(htaccess, /RewriteRule \^calculator\\\.html\$ \/ \[R=301,L,NE\]/);
