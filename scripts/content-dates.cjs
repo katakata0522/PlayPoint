@@ -49,7 +49,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'embed.html': '2026-07-27',
   'latest/index.html': LATEST_HUB_VERIFICATION_DATE,
   'status/diamond/index.html': '2026-08-19',
-  'status/platinum/index.html': '2026-08-12',
+  'status/platinum/index.html': '2026-08-21',
   'status/gold/index.html': '2026-08-12',
   'status/silver/index.html': '2026-08-12',
   'maintenance/platinum/index.html': '2026-08-12',
