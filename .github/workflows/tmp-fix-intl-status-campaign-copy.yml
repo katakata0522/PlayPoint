@@ -19,17 +19,25 @@ jobs:
           ref: fix/intl-status-campaign-earn-rate-copy
           fetch-depth: 0
 
-      - name: Repair one-shot template escaping in the runner only
+      - name: Repair one-shot template details in the runner only
         run: |
           python3 - <<'PY'
           from pathlib import Path
           path = Path('.github/scripts/tmp-fix-intl-status-campaign-copy.cjs')
           text = path.read_text()
-          old = '${pageKey}:${localeKey}'
-          new = r'\${pageKey}:\${localeKey}'
-          if text.count(old) != 1:
-              raise SystemExit(f'expected one template interpolation, found {text.count(old)}')
-          path.write_text(text.replace(old, new))
+
+          old_template = '${pageKey}:${localeKey}'
+          new_template = r'\${pageKey}:\${localeKey}'
+          if text.count(old_template) != 1:
+              raise SystemExit(f'expected one template interpolation, found {text.count(old_template)}')
+          text = text.replace(old_template, new_template)
+
+          old_import = "const { getGeneratedIntlPageContentDate } = require('./content-dates.cjs');"
+          new_import = "const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');"
+          if text.count(old_import) != 1:
+              raise SystemExit(f'expected one generated import replacement, found {text.count(old_import)}')
+          text = text.replace(old_import, new_import)
+          path.write_text(text)
           PY
 
       - name: Apply canonical source migration
