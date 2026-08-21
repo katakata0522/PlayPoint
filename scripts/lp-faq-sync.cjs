@@ -31,7 +31,6 @@ function decodeHtmlEntities(value) {
 
 function cleanVisibleText(value) {
   return decodeHtmlEntities(String(value).replace(/<[^>]*>/g, ' '))
-    .normalize('NFKC')
     .replace(/\s+/g, ' ')
     .trim();
 }
