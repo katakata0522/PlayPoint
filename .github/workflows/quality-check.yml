@@ -29,6 +29,16 @@ jobs:
       - name: Apply targeted international article migration
         run: node scripts/tmp-fix-intl-article-meaning.cjs
 
+      - name: Normalize apostrophes in generated JS source copy
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/intl-seo-content.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          source = source.replaceAll("tier's", 'tier’s');
+          fs.writeFileSync(file, source);
+          NODE
+
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
 
