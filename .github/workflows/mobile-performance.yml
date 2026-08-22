@@ -17,15 +17,18 @@ on:
   pull_request:
     branches:
       - main
+    # This workflow audits only the calculator, blog hub and one representative
+    # article. Trigger it only when those measured surfaces or the audit itself
+    # can change; deterministic generation remains covered by PR Gate.
     paths:
       - 'index.html'
       - 'style.css'
       - 'js/**'
       - 'blog/**'
       - 'articles/**'
-      - 'scripts/**'
       - 'tests/mobile-performance-phase1.test.cjs'
       - '.github/workflows/mobile-performance.yml'
+      - '.github/scripts/minify.cjs'
       - '.github/scripts/mobile-performance-budget.cjs'
       - '.github/scripts/lighthouse-diagnostics.cjs'
   schedule:

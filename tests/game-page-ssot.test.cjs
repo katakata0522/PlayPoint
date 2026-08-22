@@ -46,9 +46,8 @@ function getGeneratorMetadata() {
   return { gameIds, localeKeys, contentDate: dateMatch[1] };
 }
 
-test('game locale discovery shares dependency-free site locale identifiers', () => {
+test('game generator and page discovery cover the canonical site locales', () => {
   const { localeKeys } = getGeneratorMetadata();
-  const gameTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'game-page-targets.cjs'), 'utf8');
 
   assert.deepEqual(localeKeys, [...SITE_LOCALES], 'game generator locales should match the public site locale set');
   assert.deepEqual(
@@ -56,15 +55,9 @@ test('game locale discovery shares dependency-free site locale identifiers', () 
     ['', ...SITE_LOCALES.filter(locale => locale !== 'ja')],
     'Japanese game pages should stay at root and international locales should use locale directories'
   );
-  assert.match(gameTargetsSource, /require\('\.\/locale-ids\.cjs'\)/);
-  assert.doesNotMatch(
-    gameTargetsSource,
-    /Object\.freeze\(\['',\s*'en',\s*'ko',\s*'tw'\]\)/,
-    'game-page-targets.cjs must not restore its own locale directory list'
-  );
 });
 
-test('game page sync targets are derived from every generated locale and game id', () => {
+test('game page sync targets cover every generated locale and game id', () => {
   const { gameIds } = getGeneratorMetadata();
   const expected = [];
 
@@ -83,46 +76,28 @@ test('game page sync targets are derived from every generated locale and game id
   );
 });
 
-test('game sitemap entries are derived from the same discovered game pages', () => {
+test('game sitemap entries match the discovered game pages', () => {
   const expectedUrls = getGamePageHtmlFiles(root)
     .map(file => `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`)
     .sort();
   const sitemapEntries = getGameSitemapEntries(root);
   const actualUrls = sitemapEntries.map(entry => entry.url).sort();
-  const sitemapSource = fs.readFileSync(path.join(root, 'scripts', 'sitemap-sync.cjs'), 'utf8');
 
   assert.deepEqual(actualUrls, expectedUrls);
   assert.ok(
     sitemapEntries.every(entry => entry.lastmod === GENERATED_GAME_PAGE_CONTENT_DATE),
     'game sitemap entries should keep the canonical game editorial date'
   );
-  assert.match(sitemapSource, /getGamePageHtmlFiles\(rootDir\)\.map/);
-  assert.doesNotMatch(
-    sitemapSource,
-    /\{\s*prefix:\s*'en\/games'/,
-    'sitemap-sync.cjs must not restore a second handwritten game locale directory list'
-  );
 });
 
-test('game editorial date has a single canonical source in the generator', () => {
+test('game editorial date stays aligned from generator to resolver', () => {
   const { contentDate } = getGeneratorMetadata();
-  const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
 
   assert.equal(getGameContentDate(root), contentDate, 'game date helper should resolve the generator date');
   assert.equal(
     GENERATED_GAME_PAGE_CONTENT_DATE,
     contentDate,
-    'content date resolver should derive the game editorial date from the generator'
-  );
-  assert.equal(
-    contentDatesSource.includes(`GENERATED_GAME_PAGE_CONTENT_DATE = '${contentDate}'`),
-    false,
-    'content-dates.cjs must not duplicate the generator game date literal'
-  );
-  assert.match(
-    contentDatesSource,
-    /GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate\(rootDir\)/,
-    'content-dates.cjs should explicitly derive the game date through the SSOT helper'
+    'content date resolver should use the generator editorial date'
   );
 });
 
@@ -131,17 +106,5 @@ test('all generated game pages receive the canonical game editorial date and syn
   for (const file of getGamePageHtmlFiles(root)) {
     assert.equal(getContentDateForFile(file), GENERATED_GAME_PAGE_CONTENT_DATE, `${file} should use the game editorial date`);
     assert.equal(synced.has(file), true, `${file} should be synchronized after generation`);
-  }
-});
-
-test('game ids are not manually duplicated in build target or content date tables', () => {
-  const { gameIds } = getGeneratorMetadata();
-  const buildTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'build-targets.cjs'), 'utf8');
-  const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
-
-  for (const gameId of gameIds) {
-    const duplicatedPath = `games/${gameId}/index.html`;
-    assert.equal(buildTargetsSource.includes(duplicatedPath), false, `build targets should not hardcode ${duplicatedPath}`);
-    assert.equal(contentDatesSource.includes(duplicatedPath), false, `content dates should not hardcode ${duplicatedPath}`);
   }
 });

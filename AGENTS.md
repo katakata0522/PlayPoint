@@ -49,4 +49,6 @@ The goal is to create **high-quality, robust, and monetizeable** applications.
 *   The required status check for pull requests is **PR Gate**. Merge only after it succeeds.
 *   Keep **Require branches to be up to date before merging** disabled unless the user explicitly decides to enable stricter synchronization.
 *   Do not add extra required checks, review approvals, signed-commit requirements, or deployment gates without an explicit need; keep the workflow safe without slowing normal development unnecessarily.
+*   Prefer behavior/output assertions over source-shape regex checks. Only pin an exact implementation form when it protects a deliberate architecture or security boundary.
+*   Do not split one behavior-preserving refactor into multiple PRs unless the split materially improves reviewability or risk isolation.
 *   After a pull request is merged, allow GitHub's automatic head-branch deletion to clean up the branch.
