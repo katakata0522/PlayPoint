@@ -19,6 +19,17 @@ function extractVerificationDate(html) {
   return match[1];
 }
 
+function extractNextCheckDates(html) {
+  const dates = [...html.matchAll(/次回確認目安:\s*(\d{4}-\d{2}-\d{2})頃/g)]
+    .map(match => match[1]);
+
+  if (dates.length === 0) {
+    throw new Error('最新情報ハブに次回確認目安がありません');
+  }
+
+  return [...new Set(dates)];
+}
+
 function getLatestHubVerificationDate(rootDir) {
   const latestPath = path.join(rootDir, 'latest', 'index.html');
   return extractVerificationDate(fs.readFileSync(latestPath, 'utf8'));
@@ -39,6 +50,7 @@ function getJstDateOnly(now) {
 
 function validateLatestHub(html, options = {}) {
   const verificationDate = extractVerificationDate(html);
+  const nextCheckDates = extractNextCheckDates(html);
   const requiredText = [
     '公開公式情報で確認',
     'アカウント内で確認',
@@ -59,10 +71,17 @@ function validateLatestHub(html, options = {}) {
     }
   }
 
+  const verifiedAt = parseDateOnly(verificationDate);
+  for (const nextCheckDate of nextCheckDates) {
+    const nextCheckAt = parseDateOnly(nextCheckDate);
+    if (nextCheckAt.getTime() < verifiedAt.getTime()) {
+      throw new Error(`最新情報ハブの次回確認目安が最終確認日より前です: ${nextCheckDate}`);
+    }
+  }
+
   if (options.enforceFreshness === true) {
     const now = options.now instanceof Date ? options.now : new Date();
     const maxAgeDays = Number.isFinite(options.maxAgeDays) ? options.maxAgeDays : 14;
-    const verifiedAt = parseDateOnly(verificationDate);
     const todayJst = getJstDateOnly(now);
     const ageDays = Math.floor((todayJst.getTime() - verifiedAt.getTime()) / 86400000);
 
@@ -72,9 +91,17 @@ function validateLatestHub(html, options = {}) {
     if (ageDays > maxAgeDays) {
       throw new Error(`最新情報ハブの公式確認から${ageDays}日経過しています（上限${maxAgeDays}日）`);
     }
+
+    for (const nextCheckDate of nextCheckDates) {
+      const nextCheckAt = parseDateOnly(nextCheckDate);
+      const overdueDays = Math.floor((todayJst.getTime() - nextCheckAt.getTime()) / 86400000);
+      if (overdueDays > 0) {
+        throw new Error(`最新情報ハブの次回確認目安を${overdueDays}日超過しています: ${nextCheckDate}`);
+      }
+    }
   }
 
-  return { verificationDate };
+  return { verificationDate, nextCheckDates };
 }
 
 if (require.main === module) {
@@ -90,6 +117,7 @@ if (require.main === module) {
 
 module.exports = {
   REQUIRED_OFFICIAL_ANSWERS,
+  extractNextCheckDates,
   extractVerificationDate,
   getLatestHubVerificationDate,
   validateLatestHub

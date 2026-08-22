@@ -13,17 +13,25 @@ const {
 const root = path.resolve(__dirname, '..');
 const latestPath = path.join(root, 'latest', 'index.html');
 
-test('最新情報ハブは確認範囲・公式参照・確認日を明示する', () => {
+function addUtcDays(date, days) {
+  return new Date(date.getTime() + days * 86400000);
+}
+
+function verificationDateAsUtcNoon(verificationDate) {
+  return new Date(`${verificationDate}T12:00:00Z`);
+}
+
+test('最新情報ハブは確認範囲・公式参照・確認日・次回確認目安を明示する', () => {
   const html = fs.readFileSync(latestPath, 'utf8');
   const result = validateLatestHub(html);
   const verificationDate = getLatestHubVerificationDate(root);
 
   assert.equal(result.verificationDate, verificationDate);
+  assert.ok(result.nextCheckDates.length > 0, '次回確認目安が抽出できません');
+  assert.ok(result.nextCheckDates.every(date => /^\d{4}-\d{2}-\d{2}$/.test(date)));
   assert.ok(html.includes(`<meta name="last-modified" content="${verificationDate}">`));
   assert.match(html, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
   assert.ok(html.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
-  assert.ok(html.includes('次回確認目安: 2026-08-21頃'));
-  assert.ok(html.includes('次回確認目安: 2026-08-20頃'));
   assert.match(html, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
 });
 
@@ -57,24 +65,46 @@ test('生成処理は公開ページの公式確認日を正本として使い�
 
 test('鮮度検査は14日を超えた確認日を検出する', () => {
   const html = fs.readFileSync(latestPath, 'utf8');
+  const verificationDate = getLatestHubVerificationDate(root);
+  const staleNow = addUtcDays(verificationDateAsUtcNoon(verificationDate), 15);
 
   assert.throws(
     () => validateLatestHub(html, {
       enforceFreshness: true,
       maxAgeDays: 14,
-      now: new Date('2026-09-04T00:00:00Z')
+      now: staleNow
     }),
-    /公式確認から16日経過/
+    /公式確認から\d+日経過/
+  );
+});
+
+test('鮮度検査は次回確認目安の期限超過を検出する', () => {
+  const html = fs.readFileSync(latestPath, 'utf8');
+  const result = validateLatestHub(html);
+  const latestNextCheck = result.nextCheckDates
+    .map(date => new Date(`${date}T00:00:00Z`))
+    .sort((a, b) => b.getTime() - a.getTime())[0];
+  const overdueNow = addUtcDays(latestNextCheck, 1);
+
+  assert.throws(
+    () => validateLatestHub(html, {
+      enforceFreshness: true,
+      maxAgeDays: 365,
+      now: overdueNow
+    }),
+    /次回確認目安を\d+日超過/
   );
 });
 
 test('鮮度検査は日本時間の日付をUTC前日の未来日と誤判定しない', () => {
   const html = fs.readFileSync(latestPath, 'utf8');
+  const verificationDate = getLatestHubVerificationDate(root);
+  const justAfterMidnightJst = new Date(`${verificationDate}T00:30:00+09:00`);
 
   assert.doesNotThrow(() => validateLatestHub(html, {
     enforceFreshness: true,
     maxAgeDays: 14,
-    now: new Date('2026-08-18T15:30:00Z')
+    now: justAfterMidnightJst
   }));
 });
 
