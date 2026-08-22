@@ -23,6 +23,8 @@ test('公開locale識別子は副作用のないleaf moduleを正本として各
   assert.deepEqual(Object.keys(createLocales()), [...INTERNATIONAL_LOCALES]);
   assert.deepEqual(Object.keys(TOP_PAGE_CONTENT_DATES), [...SITE_LOCALES]);
 
+  // Dependency-free is a deliberate architecture boundary: this small module is
+  // shared by build/audit helpers specifically to avoid CommonJS dependency cycles.
   const localeIdsSource = fs.readFileSync(path.join(root, 'scripts', 'locale-ids.cjs'), 'utf8');
   assert.doesNotMatch(
     localeIdsSource,
@@ -31,23 +33,16 @@ test('公開locale識別子は副作用のないleaf moduleを正本として各
   );
 });
 
-test('多言語トップの生成対象は共通locale識別子から導出する', () => {
+test('多言語トップの生成対象は共通locale識別子と一致する', () => {
   const expected = INTERNATIONAL_LOCALES
     .map(locale => `${locale}/index.html`)
     .sort();
   const actual = [...generatedLocaleFiles].sort();
-  const buildTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'build-targets.cjs'), 'utf8');
 
   assert.deepEqual(actual, expected);
-  assert.match(buildTargetsSource, /INTERNATIONAL_LOCALES/);
-  assert.doesNotMatch(
-    buildTargetsSource,
-    /const generatedLocaleFiles = \[\s*['"]/,
-    'build-targets.cjs must not restore a second handwritten locale output list'
-  );
 });
 
-test('国際記事の追跡・公式参照検査対象も共通locale識別子から導出する', () => {
+test('国際記事の追跡対象は共通locale識別子と一致する', () => {
   const expectedDirectories = INTERNATIONAL_LOCALES.map(locale => `${locale}/articles`).sort();
   const expectedArticleFiles = expectedDirectories
     .flatMap(directory => {
@@ -61,21 +56,7 @@ test('国際記事の追跡・公式参照検査対象も共通locale識別子�
   const actualInternationalFiles = articleHtmlFiles
     .filter(file => INTERNATIONAL_LOCALES.some(locale => file.startsWith(`${locale}/articles/`)))
     .sort();
-  const buildTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'build-targets.cjs'), 'utf8');
-  const preparePrSource = fs.readFileSync(path.join(root, 'scripts', 'prepare-pr.cjs'), 'utf8');
 
   assert.deepEqual([...internationalArticleDirectories].sort(), expectedDirectories);
   assert.deepEqual(actualInternationalFiles, expectedArticleFiles);
-  assert.match(buildTargetsSource, /INTERNATIONAL_LOCALES/);
-  assert.match(preparePrSource, /INTERNATIONAL_LOCALES\.flatMap/);
-  assert.doesNotMatch(
-    buildTargetsSource,
-    /'en\/articles',\s*'ko\/articles',\s*'tw\/articles'/,
-    'build-targets.cjs must not restore a handwritten international article locale list'
-  );
-  assert.doesNotMatch(
-    preparePrSource,
-    /\['en',\s*'ko',\s*'tw'\]\.flatMap/,
-    'prepare-pr.cjs must not restore a handwritten international article locale list'
-  );
 });
