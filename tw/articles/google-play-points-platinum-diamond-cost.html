@@ -12,32 +12,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/tw/articles/google-play-points-platinum-diamond-cost.html"},"headline":"台灣 Google Play Points 白金 4,000 點 vs 鑽石 15,000 點比較","description":"台灣帳號白金從 4,000 點、鑽石從 15,000 點開始。比較官方積點率、維持參考金額、共同福利與原定消費情境。","url":"https://playpoint-sim.com/tw/articles/google-play-points-platinum-diamond-cost.html","inLanguage":"zh-TW","datePublished":"2026-07-25","dateModified":"2026-08-21","image":"https://playpoint-sim.com/articles/ogp/diamond-worth-it.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 計算器","url":"https://playpoint-sim.com/"}}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/tw/articles/*" },
-              { "href_matches": "/tw/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/tw/articles/*"
+              },
+              {
+                "href_matches": "/tw/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

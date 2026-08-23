@@ -33,33 +33,53 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Playクレジットの交換項目がグレーなのはなぜですか？","acceptedAnswer":{"@type":"Answer","text":"必要ポイントが不足している可能性があります。現在のポイント数と交換条件を確認してください。"}},{"@type":"Question","name":"交換したPlayクレジットはいつまで使えますか？","acceptedAnswer":{"@type":"Answer","text":"Google公式案内では交換後1年で期限切れになります。"}},{"@type":"Question","name":"国を変更しても残高は使えますか？","acceptedAnswer":{"@type":"Answer","text":"以前の国のPlay残高は新しい国では使えません。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/articles/*" },
-              { "href_matches": "/status/*" },
-              { "href_matches": "/blog/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/articles/*"
+              },
+              {
+                "href_matches": "/status/*"
+              },
+              {
+                "href_matches": "/blog/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body data-article-category="使い方">

@@ -30,32 +30,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do Google Play Points levels reset every December 31?","acceptedAnswer":{"@type":"Answer","text":"Not as a simple full reset. A newly reached level remains through the end of the next calendar year, and the level can change at the start of a year based on points earned in the previous year."}},{"@type":"Question","name":"Will redeeming points make my level go down?","acceptedAnswer":{"@type":"Answer","text":"Redeeming points reduces the spendable balance, not the level progress already earned. A refund or cancelled purchase can deduct points from both."}},{"@type":"Question","name":"Which number should I enter in the calculator?","acceptedAnswer":{"@type":"Answer","text":"Use the remaining points shown in your Google Play level screen. Do not use the spendable balance or subtract another country's threshold."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/en/articles/*" },
-              { "href_matches": "/en/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/en/articles/*"
+              },
+              {
+                "href_matches": "/en/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body>

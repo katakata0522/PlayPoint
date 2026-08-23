@@ -28,32 +28,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Play 抵用金項目呈灰色是什麼原因？","acceptedAnswer":{"@type":"Answer","text":"可能是點數不足。請確認目前點數與兌換條件。"}},{"@type":"Question","name":"兌換的 Play 抵用金何時到期？","acceptedAnswer":{"@type":"Answer","text":"Google 官方說明為一年後到期。"}},{"@type":"Question","name":"變更國家/地區後可以使用舊餘額嗎？","acceptedAnswer":{"@type":"Answer","text":"不可以。舊地區的 Play 餘額不能在新地區使用。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/tw/articles/*" },
-              { "href_matches": "/tw/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/tw/articles/*"
+              },
+              {
+                "href_matches": "/tw/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body>

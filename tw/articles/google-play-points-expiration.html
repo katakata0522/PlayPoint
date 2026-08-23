@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"每一批點數都有不同到期日嗎？","acceptedAnswer":{"@type":"Answer","text":"Google Play 會顯示以最近獲得或使用為基準的餘額到期日。"}},{"@type":"Question","name":"只開啟 Play Points 會延長嗎？","acceptedAnswer":{"@type":"Answer","text":"不會。查看頁面不等於獲得或使用點數。"}},{"@type":"Question","name":"到期日和等級期限相同嗎？","acceptedAnswer":{"@type":"Answer","text":"不同。餘額有效期限與日曆年度的等級進度是兩套規則。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/tw/articles/*" },
-              { "href_matches": "/tw/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/tw/articles/*"
+              },
+              {
+                "href_matches": "/tw/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

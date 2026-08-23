@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"포인트마다 만료일이 따로 있나요?","acceptedAnswer":{"@type":"Answer","text":"Google Play에는 최근 적립 또는 사용을 기준으로 한 잔액 소멸일이 표시됩니다."}},{"@type":"Question","name":"Play Points 화면만 열어도 연장되나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 화면 확인은 포인트 적립이나 사용이 아닙니다."}},{"@type":"Question","name":"등급 유지 기간과 같은 날짜인가요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 잔액 유효기간과 달력 연도 기준의 등급 진행도는 별도입니다."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/ko/articles/*" },
-              { "href_matches": "/ko/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/ko/articles/*"
+              },
+              {
+                "href_matches": "/ko/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

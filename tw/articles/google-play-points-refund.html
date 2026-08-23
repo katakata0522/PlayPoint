@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Play Points 餘額可能變成負數嗎？","acceptedAnswer":{"@type":"Answer","text":"可以。Google 說明退款扣除的點數高於現有餘額時，餘額可能變成負數。"}},{"@type":"Question","name":"退款會讓等級下降嗎？","acceptedAnswer":{"@type":"Answer","text":"可能。從等級進度扣除點數後若低於門檻，等級可能下降。"}},{"@type":"Question","name":"取消訂閱一定會扣點嗎？","acceptedAnswer":{"@type":"Answer","text":"不一定。只取消未來續訂與退回已完成交易是不同處理。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/tw/articles/*" },
-              { "href_matches": "/tw/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/tw/articles/*"
+              },
+              {
+                "href_matches": "/tw/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">
