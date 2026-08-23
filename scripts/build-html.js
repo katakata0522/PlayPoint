@@ -32,6 +32,7 @@ const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
 const { normalizeArticleFiles } = require('./article-seo-normalize.cjs');
+const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -85,3 +86,6 @@ console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`)
 
 const sanitizedInternalLinkFiles = sanitizeInternalLinks(rootDir);
 console.log(`[build-html] sanitized internal attribution links: ${sanitizedInternalLinkFiles}`);
+
+const speculationRulesChanged = syncSpeculationRules(rootDir);
+console.log(`[build-html] synchronized speculation rules: ${speculationRulesChanged} updated`);

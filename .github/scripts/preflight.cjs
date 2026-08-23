@@ -25,7 +25,15 @@ const postMinifyTestFiles = [
   'tests/content-structure.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
-const requiredPublicFiles = ['en/index.html', 'ko/index.html', 'tw/index.html'];
+const requiredPublicFiles = [
+  'index.html',
+  'en/index.html',
+  'ko/index.html',
+  'tw/index.html',
+  'hk/index.html',
+  'in/index.html',
+  'pwa-launch.html'
+];
 const snapshots = new Map();
 const failures = [];
 
@@ -115,8 +123,8 @@ snapshotMutableFiles();
 
 try {
   runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   verifyRequiredPublicFiles();
+  runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   verifyServiceWorkerPrecacheAssets();
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);

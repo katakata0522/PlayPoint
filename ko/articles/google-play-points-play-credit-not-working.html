@@ -28,32 +28,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Play 크레딧 항목이 회색인 이유는 무엇인가요?","acceptedAnswer":{"@type":"Answer","text":"필요한 포인트가 부족할 수 있습니다. 현재 포인트와 제공 조건을 확인하세요."}},{"@type":"Question","name":"교환한 Play 크레딧은 언제 만료되나요?","acceptedAnswer":{"@type":"Answer","text":"Google 공식 안내상 1년 후 만료됩니다."}},{"@type":"Question","name":"국가를 바꾼 뒤에도 이전 잔액을 쓸 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"이전 국가의 Play 잔액은 새 국가에서 사용할 수 없습니다."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/ko/articles/*" },
-              { "href_matches": "/ko/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/ko/articles/*"
+              },
+              {
+                "href_matches": "/ko/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body>

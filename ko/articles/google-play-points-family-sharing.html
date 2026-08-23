@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"가족에게 포인트를 보낼 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 가족 그룹 안에서도 포인트 이전이나 계정 합산 기능은 없습니다."}},{"@type":"Question","name":"가족 결제 수단을 쓰면 누가 적립하나요?","acceptedAnswer":{"@type":"Answer","text":"대상 구매를 진행한 Google 계정에 적립되며 가족 관리자에게 자동으로 모이지 않습니다."}},{"@type":"Question","name":"패밀리 라이브러리가 Play 잔액도 공유하나요?","acceptedAnswer":{"@type":"Answer","text":"아니요. 대상 콘텐츠를 공유하는 기능이며 Play Points 잔액이나 교환한 Play 잔액은 공유하지 않습니다."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/ko/articles/*" },
-              { "href_matches": "/ko/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/ko/articles/*"
+              },
+              {
+                "href_matches": "/ko/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

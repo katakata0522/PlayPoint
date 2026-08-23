@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do all points expire separately?","acceptedAnswer":{"@type":"Answer","text":"Google shows a balance expiry date based on your latest earning or use, rather than requiring you to track each point batch separately."}},{"@type":"Question","name":"Does opening Play Points reset the date?","acceptedAnswer":{"@type":"Answer","text":"No. Viewing the page is not the same as earning or using points."}},{"@type":"Question","name":"Is the expiry date the same as my level date?","acceptedAnswer":{"@type":"Answer","text":"No. Balance expiry and calendar-year level progress are different systems."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/en/articles/*" },
-              { "href_matches": "/en/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/en/articles/*"
+              },
+              {
+                "href_matches": "/en/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

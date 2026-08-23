@@ -30,32 +30,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Google Play Points 等級每年 12 月 31 日都會全部重設嗎？","acceptedAnswer":{"@type":"Answer","text":"不是單純全部重設。新達到的等級會維持到下一個日曆年度結束，年初則可能依前一年累積點數變更等級。"}},{"@type":"Question","name":"兌換點數會讓等級下降嗎？","acceptedAnswer":{"@type":"Answer","text":"兌換會減少可使用的點數餘額，不會減少已累積的等級進度；但退款或取消購買可能同時扣除兩者。"}},{"@type":"Question","name":"計算器應輸入哪一個點數？","acceptedAnswer":{"@type":"Answer","text":"請輸入 Google Play 等級畫面顯示的目標剩餘點數，不要輸入可兌換的點數餘額。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/tw/articles/*" },
-              { "href_matches": "/tw/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/tw/articles/*"
+              },
+              {
+                "href_matches": "/tw/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body>

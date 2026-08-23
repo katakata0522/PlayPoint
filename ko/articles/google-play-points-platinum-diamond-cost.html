@@ -12,32 +12,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":"https://playpoint-sim.com/ko/articles/google-play-points-platinum-diamond-cost.html"},"headline":"한국 Google Play Points 플래티넘 2,400점 vs 다이아몬드 15,000점 비교","description":"한국 계정은 플래티넘 2,400점, 다이아몬드 15,000점부터입니다. 공식 적립률, 유지 참고 금액, 공통 혜택과 예정 결제 기준을 비교합니다.","url":"https://playpoint-sim.com/ko/articles/google-play-points-platinum-diamond-cost.html","inLanguage":"ko","datePublished":"2026-07-25","dateModified":"2026-08-21","image":"https://playpoint-sim.com/articles/ogp/diamond-worth-it.png","author":{"@type":"Person","name":"Katakata","url":"https://playpoint-sim.com/author/katakata.html"},"publisher":{"@type":"Organization","name":"Google Play Points 계산기","url":"https://playpoint-sim.com/"}}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/ko/articles/*" },
-              { "href_matches": "/ko/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/ko/articles/*"
+              },
+              {
+                "href_matches": "/ko/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

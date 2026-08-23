@@ -28,32 +28,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"교환한 쿠폰은 어디에서 확인하나요?","acceptedAnswer":{"@type":"Answer","text":"Google Play의 알림 및 혜택에서 저장된 혜택을 확인하세요."}},{"@type":"Question","name":"쿠폰보다 저렴한 상품에도 사용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"사용할 수 없습니다. 상품 가격이 쿠폰 금액 이상이어야 합니다."}},{"@type":"Question","name":"다른 프로모션과 함께 사용할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"Google은 한 번에 하나의 크레딧이나 프로모션만 사용할 수 있다고 안내합니다."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/ko/articles/*" },
-              { "href_matches": "/ko/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/ko/articles/*"
+              },
+              {
+                "href_matches": "/ko/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body>

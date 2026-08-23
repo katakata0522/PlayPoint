@@ -16,32 +16,50 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can my Play Points balance become negative?","acceptedAnswer":{"@type":"Answer","text":"Yes. Google says it can become negative when a refund deduction is larger than the available balance."}},{"@type":"Question","name":"Can a refund lower my Play Points level?","acceptedAnswer":{"@type":"Answer","text":"Yes. Removing earned points from level progress may cause a level decrease."}},{"@type":"Question","name":"Does canceling a subscription always remove points?","acceptedAnswer":{"@type":"Answer","text":"Not by itself. Points are deducted when a charged purchase is returned or refunded."}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/en/articles/*" },
-              { "href_matches": "/en/status/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/en/articles/*"
+              },
+              {
+                "href_matches": "/en/status/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body><main class="main-card">

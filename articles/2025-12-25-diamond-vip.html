@@ -17,33 +17,53 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"プレミアムサポートはダイヤ限定ですか？","acceptedAnswer":{"@type":"Answer","text":"いいえ。日本ではプラチナとダイヤモンドの両方に案内されています。"}},{"@type":"Question","name":"ダイヤなら週次リワードが必ず多いですか？","acceptedAnswer":{"@type":"Answer","text":"ランク別特典ですが、平均値や当選分布は公表されていません。自分の表示と履歴で確認します。"}},{"@type":"Question","name":"VIPイベントや限定グッズは常設ですか？","acceptedAnswer":{"@type":"Answer","text":"常設とは限りません。開催有無、対象ステータス、地域、期間は企画ごとの公式告知で確認します。"}}]}</script>
     <script type="speculationrules">
     {
-      "prefetch": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
+  "prefetch": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "href_matches": "/*"
           },
-          "eagerness": "moderate"
-        }
-      ],
-      "prerender": [
-        {
-          "source": "document",
-          "where": {
-            "and": [
-              { "href_matches": "/articles/*" },
-              { "href_matches": "/status/*" },
-              { "href_matches": "/blog/*" },
-              { "not": { "selector_matches": "[rel~=nofollow]" } }
-            ]
-          },
-          "eagerness": "conservative"
-        }
-      ]
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "moderate"
     }
+  ],
+  "prerender": [
+    {
+      "source": "document",
+      "where": {
+        "and": [
+          {
+            "or": [
+              {
+                "href_matches": "/articles/*"
+              },
+              {
+                "href_matches": "/status/*"
+              },
+              {
+                "href_matches": "/blog/*"
+              }
+            ]
+          },
+          {
+            "not": {
+              "selector_matches": "[rel~=nofollow]"
+            }
+          }
+        ]
+      },
+      "eagerness": "conservative"
+    }
+  ]
+}
     </script>
 </head>
 <body data-article-category="ランク">
