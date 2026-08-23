@@ -21,6 +21,7 @@ const ASSETS = [
   './js/web-vitals.js',
   './js/region-navigation.js',
   './js/region-expansion-config.js',
+  './js/region-result-navigation.js',
   './js/language-suggestion.js',
   './js/calendar-reminder.js',
   './js/pwa-install.js',
