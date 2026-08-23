@@ -1,0 +1,41 @@
+name: Region Expansion Sync
+
+on:
+  push:
+    branches:
+      - feat/expand-region-selector-hk-in
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, '[region-sync]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/expand-region-selector-hk-in
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Generate site outputs
+        run: node scripts/build-html.js
+      - name: Verify region expansion
+        run: node tests/region-expansion.test.cjs
+      - name: Check whitespace errors
+        run: git diff --check
+      - name: Commit generated outputs
+        shell: bash
+        run: |
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html en/index.html ko/index.html tw/index.html hk/index.html in/index.html sitemap.xml sw.js js/third-party.js blog/articles.json feed.xml atom.xml 2>/dev/null || true
+          git add -u
+          git commit -m "chore: sync Hong Kong and India generated pages [region-sync]"
+          git push origin HEAD:feat/expand-region-selector-hk-in
