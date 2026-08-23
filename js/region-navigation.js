@@ -17,6 +17,8 @@ const REGION_PATHS = Object.freeze({
 
 export const isHongKongPath = () => /\/hk(\/|$)/.test(window.location.pathname);
 export const isIndiaPath = () => /\/in(\/|$)/.test(window.location.pathname);
+export const isUnitedStatesPath = () => /\/en(\/|$)/.test(window.location.pathname);
+export const isTaiwanRegionPath = () => /\/tw(\/|$)/.test(window.location.pathname);
 export const isEnglishPath = () => /\/(?:en|in)(\/|$)/.test(window.location.pathname);
 export const isKoreanPath = () => /\/ko(\/|$)/.test(window.location.pathname);
 export const isTaiwanPath = () => /\/(?:tw|hk)(\/|$)/.test(window.location.pathname);
@@ -169,6 +171,8 @@ if (typeof window !== 'undefined' && window.__TEST_ENV__) {
         isEnglishPath,
         isHongKongPath,
         isIndiaPath,
+        isUnitedStatesPath,
+        isTaiwanRegionPath,
         isKoreanPath,
         isTaiwanPath,
         switchRegion

@@ -44,9 +44,9 @@ export const SHARE = {
     normalizeTarget(value) {
         const label = String(value || '').toLowerCase();
         if (/diamond|ダイヤ|다이아|鑽石/i.test(label)) return 'diamond';
-        if (/platinum|プラチナ|플래티넘|白金/i.test(label)) return 'platinum';
-        if (/gold|ゴールド|골드|黃金/i.test(label)) return 'gold';
-        if (/silver|シルバー|실버|白銀/i.test(label)) return 'silver';
+        if (/platinum|プラチナ|플래티넘|白金|鉑金/i.test(label)) return 'platinum';
+        if (/gold|ゴールド|골드|黃金|金級/i.test(label)) return 'gold';
+        if (/silver|シルバー|실버|白銀|銀級/i.test(label)) return 'silver';
         return '';
     },
 
@@ -112,17 +112,18 @@ export const SHARE = {
     },
 
     buildRewardShareUrl(points, prize) {
-        const lang = STATE.currentRegion || 'ja';
+        const region = STATE.currentRegion || 'JP';
         const numPoints = Number.parseInt(points, 10);
         const validPoints = Number.isFinite(numPoints) && numPoints >= 0 ? numPoints : 0;
-        const siteUrl = 'https://playpoint-sim.com/';
+        const regionPaths = { JP: '', US: 'en/', KR: 'ko/', TW: 'tw/', HK: 'hk/', IN: 'in/' };
+        const siteUrl = new URL(regionPaths[region] || '', 'https://playpoint-sim.com/').toString();
 
         let tweetText = '';
-        if (lang === 'en') {
+        if (region === 'US' || region === 'IN') {
             tweetText = `Got ${validPoints} Play Points from this week's Google Play Weekly Prize! 🎉 #GooglePlay #PlayPoints #PlayPointCalc`;
-        } else if (lang === 'ko') {
+        } else if (region === 'KR') {
             tweetText = `이번 주 Google Play 주간 혜택으로 ${validPoints}pt를 받았습니다! 🎉 #구글플레이 #플레이포인트 #PlayPoint계산기`;
-        } else if (lang === 'tw') {
+        } else if (region === 'TW' || region === 'HK') {
             tweetText = `這週的 Google Play 每週獎勵抽到了 ${validPoints} 點！🎉 #GooglePlay #Play點數 #PlayPoint計算器`;
         } else {
             tweetText = `今週のGoogle Playウィークリーリワードは【${validPoints}pt】でした！🎉 #Playポイント #GooglePlay #Playポイント計算機`;

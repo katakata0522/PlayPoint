@@ -5,6 +5,8 @@ import {
     isEnglishPath,
     isHongKongPath,
     isIndiaPath,
+    isUnitedStatesPath,
+    isTaiwanRegionPath,
     isKoreanPath,
     isTaiwanPath,
     switchRegion
@@ -68,11 +70,21 @@ export function checkLanguageSuggestion() {
         messageText = '한국어 버전이 있습니다!';
         buttonText = '한국어로 전환';
         isCurrentMatch = isKoreanPath();
-    } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh')) {
+    } else if (browserLang.startsWith('zh-tw')) {
+        targetRegion = 'TW';
+        messageText = '提供台灣地區版本！';
+        buttonText = '切換至台灣版';
+        isCurrentMatch = isTaiwanRegionPath();
+    } else if (browserLang.startsWith('zh')) {
         targetRegion = 'TW';
         messageText = '提供繁體中文版本！';
         buttonText = '切換至繁體中文';
         isCurrentMatch = isTaiwanPath();
+    } else if (browserLang.startsWith('en-us')) {
+        targetRegion = 'US';
+        messageText = 'U.S. Play Points calculator is available!';
+        buttonText = 'Switch to U.S. edition';
+        isCurrentMatch = isUnitedStatesPath();
     } else if (browserLang.startsWith('en')) {
         targetRegion = 'US';
         messageText = 'English version is available!';

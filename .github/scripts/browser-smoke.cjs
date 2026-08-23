@@ -13,10 +13,12 @@ const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const EXPECTED_REVISION = (process.env.SMOKE_EXPECT_REVISION || '').trim();
 const MAIN_CONTROLS = '#mainMode select, #mainMode input[type="number"]';
 const LOCALES = [
-  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算' },
-  { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount' },
-  { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산' },
-  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額' }
+  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算', rewardPath: '/', rewardText: 'ウィークリーリワード' },
+  { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount', rewardPath: '/en/', rewardText: 'Weekly Prize' },
+  { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산', rewardPath: '/ko/', rewardText: '주간 혜택' },
+  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
+  { key: 'HK', path: 'hk/', locale: 'zh-HK', title: 'Google Play Points 計算器（香港）', button: '計算消費金額', rewardPath: '/hk/', rewardText: '每週獎勵', statusCount: 5, staticReverseLabel: '每 HK$7 獲得點數（自動帶入，可修改）', gamePath: '/tw/games/', tooltipContains: 'HK$7', tooltipExcludes: 'NT$30', currencyPrefix: 'HK$', calendarPath: '/hk/', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
+  { key: 'IN', path: 'in/', locale: 'en-IN', title: 'Google Play Points Calculator — India', button: 'Calculate Amount', rewardPath: '/in/', rewardText: 'Weekly Prize', statusCount: 4, staticReverseLabel: 'Points per ₹5 (auto-filled, editable)', gamePath: '/en/games/', tooltipContains: '₹5', tooltipExcludes: '$1', currencyPrefix: '₹', calendarPath: '/in/', shareRestore: { status: '1.1', target: 'gold', expected: 'Gold' } }
 ];
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -205,7 +207,9 @@ async function verifyStaticPage(browser, baseUrl, locale) {
       controls: document.querySelectorAll(selector).length,
       packFields: document.querySelectorAll('#pack-amount').length,
       baseRate: document.querySelector('#baseRate')?.value || '',
-      multiplier: document.querySelector('#multiplier')?.value || ''
+      multiplier: document.querySelector('#multiplier')?.value || '',
+      reverseBaseLabel: document.querySelector('label[for="reverseBaseRate"] [data-lang-key="labelBaseRate"]')?.textContent || '',
+      gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || ''
     }), MAIN_CONTROLS);
 
     assert(normalizeText(values.title) === locale.title, `${locale.key} static title: ${normalizeText(values.title)}`);
@@ -213,6 +217,8 @@ async function verifyStaticPage(browser, baseUrl, locale) {
     assert(values.controls === 5, `${locale.key} static controls: ${values.controls}`);
     assert(values.packFields === 0, `${locale.key} static average-pack field returned`);
     assert(sameNumber(values.baseRate, 1) && sameNumber(values.multiplier, 1), `${locale.key} static default values changed`);
+    if (locale.staticReverseLabel) assert(sameCopy(values.reverseBaseLabel, locale.staticReverseLabel), `${locale.key} static reverse-rate label: ${values.reverseBaseLabel}`);
+    if (locale.gamePath) assert(values.gamePath === locale.gamePath, `${locale.key} static game path: ${values.gamePath}`);
     browserState.verify(`${locale.key} static browser errors`);
     return { ...values, errors: browserState.values };
   } catch (error) {
@@ -256,13 +262,31 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
         const style = getComputedStyle(element);
         return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0;
       }).length,
-      packFields: document.querySelectorAll('#pack-amount').length
+      packFields: document.querySelectorAll('#pack-amount').length,
+      statusCount: document.querySelector('#currentStatus')?.options.length || 0,
+      reverseTooltip: document.querySelector('#tooltip-reverse-status')?.textContent || '',
+      gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || '',
+      calendarHref: document.querySelector('#register-google-cal-btn')?.href || ''
     }), MAIN_CONTROLS);
 
     assert(normalizeText(header.title) === locale.title, `${locale.key} hydrated title: ${normalizeText(header.title)}`);
     assert(sameCopy(header.button, locale.button), `${locale.key} hydrated button: ${normalizeText(header.button)}`);
     assert(header.visibleControls === 5, `${locale.key} hydrated controls: ${header.visibleControls}`);
     assert(header.packFields === 0, `${locale.key} hydrated average-pack field returned`);
+    if (locale.statusCount) assert(header.statusCount === locale.statusCount, `${locale.key} status count: ${header.statusCount}`);
+    if (locale.tooltipContains) assert(header.reverseTooltip.includes(locale.tooltipContains), `${locale.key} reverse tooltip missing ${locale.tooltipContains}`);
+    if (locale.tooltipExcludes) assert(!header.reverseTooltip.includes(locale.tooltipExcludes), `${locale.key} reverse tooltip contains stale ${locale.tooltipExcludes}`);
+    if (locale.gamePath) assert(header.gamePath === locale.gamePath, `${locale.key} hydrated game path: ${header.gamePath}`);
+    if (locale.calendarPath) assert(decodeURIComponent(header.calendarHref).includes(locale.calendarPath), `${locale.key} calendar link does not point back to ${locale.calendarPath}`);
+
+    const rewardShare = await page.evaluate(async () => {
+      const { SHARE } = await import('/js/share.js');
+      return SHARE.buildRewardShareUrl(123, '');
+    });
+    const rewardIntent = new URL(rewardShare);
+    const rewardSiteUrl = new URL(rewardIntent.searchParams.get('url'));
+    assert(rewardSiteUrl.pathname === locale.rewardPath, `${locale.key} reward share path: ${rewardSiteUrl.pathname}`);
+    assert((rewardIntent.searchParams.get('text') || '').includes(locale.rewardText), `${locale.key} reward share text language mismatch`);
 
     await page.locator('#currentStatus').selectOption({ index: 1 });
     const selectedRate = await page.locator('#currentStatus').inputValue();
@@ -281,12 +305,14 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
         requiredAmount: Number(result?.dataset.requiredYen),
         targetStatus: result?.dataset.targetStatusLabel || '',
         valueRows: result?.querySelectorAll('dl dt').length || 0,
-        relatedLinks: result?.querySelectorAll('[data-result-related-link]').length || 0
+        relatedLinks: result?.querySelectorAll('[data-result-related-link]').length || 0,
+        html: result?.innerHTML || ''
       };
     });
     assert(Number.isFinite(mainResult.requiredAmount) && mainResult.requiredAmount > 0, `${locale.key} main amount is invalid`);
     assert(mainResult.targetStatus && mainResult.valueRows >= 2, `${locale.key} main result is incomplete`);
     assert(mainResult.relatedLinks <= 4, `${locale.key} too many related links: ${mainResult.relatedLinks}`);
+    if (locale.currencyPrefix) assert(mainResult.html.includes(`${locale.currencyPrefix}<span class="count-target"`), `${locale.key} currency is not prefix-formatted`);
 
     await page.locator('#tab-reverse').click();
     await page.locator('#amountYen').fill('1000');
@@ -301,6 +327,19 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     });
     assert(Number.isFinite(reverseResult.earnedPoints) && reverseResult.earnedPoints > 0, `${locale.key} reverse points are invalid`);
     assert(reverseResult.amount === 1000, `${locale.key} reverse amount changed`);
+
+    if (locale.shareRestore) {
+      const shared = new URL(locale.path, baseUrl);
+      shared.searchParams.set('mode', 'main');
+      shared.searchParams.set('status', locale.shareRestore.status);
+      shared.searchParams.set('target', locale.shareRestore.target);
+      shared.searchParams.set('points', '125');
+      shared.searchParams.set('multiplier', '1');
+      await openPage(page, shared.href);
+      await waitForStage(page, `${locale.key} share URL restore`, expected => (
+        document.querySelector('#targetStatus option:checked')?.dataset.statusLabel === expected
+      ), locale.shareRestore.expected);
+    }
 
     let serviceWorker = { checked: false };
     let lazyDiary = { checked: false };
