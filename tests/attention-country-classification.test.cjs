@@ -9,30 +9,43 @@ const { CONTENT_DATE_OVERRIDES } = require('../scripts/html-sync.cjs');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'attention.html'), 'utf8');
 
-test('注意ページは既存モードをそのまま使える国を正確に分類する', () => {
-  assert.match(html, /United States, United Kingdom, France, Germany, Italy, Spain/);
-  assert.match(html, /Exact match:<\/strong> Japan only/);
-  assert.match(html, /Exact match:<\/strong> South Korea only/);
-  assert.match(html, /Exact match:<\/strong> Taiwan only/);
-  assert.match(html, /Only the displayed currency symbol remains “\$”/);
+test('注意ページは現在の6地域専用モードを正確に案内する', () => {
+  assert.match(html, /Japan, the United States, South Korea, Taiwan, Hong Kong, and India/);
+
+  for (const [label, href] of [
+    ['Japan', './'],
+    ['United States', './en/'],
+    ['South Korea', './ko/'],
+    ['Taiwan', './tw/'],
+    ['Hong Kong', './hk/'],
+    ['India', './in/']
+  ]) {
+    assert.ok(html.includes(label), `Country Guideに${label}がありません`);
+    assert.ok(html.includes(`href="${href}"`), `Country Guideに${href}への導線がありません`);
+  }
 });
 
-test('似ているだけの国を完全一致として案内しない', () => {
-  assert.match(html, /Hong Kong uses the same 250 \/ 1,000 \/ 4,000 \/ 15,000 thresholds/);
-  assert.match(html, /earns 1 point per <strong>HK\$7<\/strong>/);
-  assert.match(html, /US-like through Platinum, but not a full US-mode match/);
-  assert.match(html, /Australia, Austria, Belgium, Brazil, Finland, Greece, Ireland, Netherlands, New Zealand, Portugal, Switzerland/);
-  assert.match(html, /Denmark \(6 DKK\), Norway \(6 NOK\), Sweden \(7 SEK\), Israel \(3 ILS\), Saudi Arabia \(4 SAR\), South Africa \(17 ZAR\), United Arab Emirates \(4 AED\)/);
+test('香港とインドを他地域の代替ルールとして案内しない', () => {
+  assert.match(html, /Hong Kong/);
+  assert.match(html, /HKD \/ HK\$7/);
+  assert.match(html, /India/);
+  assert.match(html, /INR \/ ₹5/);
+  assert.match(html, /Platinum is the highest level in the current India profile/);
+  assert.match(html, /Translation does not change calculation rules/);
 });
 
-test('国をブラウザ言語だけで推測せず公式確認導線を残す', () => {
+test('国をブラウザ言語だけで推測せず6地域の公式確認導線を残す', () => {
   assert.doesNotMatch(html, /browserLang|navigator\.language|navigator\.userLanguage/);
-  assert.match(html, /support\.google\.com\/googleplay\/answer\/9080348\?hl=en/);
-  assert.match(html, /Checked against the official country tables on <time datetime="2026-08-04">August 4, 2026<\/time>/);
+  for (const countryCode of ['JP', 'US', 'KR', 'TW', 'HK', 'IN']) {
+    assert.ok(
+      html.includes(`support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3D${countryCode}&amp;hl=`),
+      `公式確認リンクがありません: ${countryCode}`
+    );
+  }
 });
 
-test('注意ページの確認日をサイト全体の更新日で巻き戻さない', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['attention.html'], '2026-08-04');
-  assert.match(html, /<meta name="last-modified" content="2026-08-04">/);
-  assert.match(html, /"dateModified": "2026-08-04"/);
+test('注意ページの意味のある更新日を生成処理でも維持する', () => {
+  assert.equal(CONTENT_DATE_OVERRIDES['attention.html'], '2026-08-23');
+  assert.match(html, /<meta name="last-modified" content="2026-08-23">/);
+  assert.match(html, /"dateModified": "2026-08-23"/);
 });
