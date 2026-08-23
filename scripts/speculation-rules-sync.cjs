@@ -22,43 +22,68 @@ function getPublicHtmlFiles(rootDir, currentDir = rootDir) {
   });
 }
 
-function normalizeAndBlocks(jsonText) {
-  const lines = jsonText.split('\n');
-  const output = [];
+function isDirectHrefMatchCondition(value) {
+  return value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && Object.keys(value).length === 1
+    && typeof value.href_matches === 'string';
+}
 
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index];
-    const andMatch = line.match(/^(\s*)"and": \[$/);
-    if (!andMatch) {
-      output.push(line);
-      continue;
-    }
-
-    const indent = andMatch[1];
-    const hrefLinePattern = new RegExp(`^${indent}  \\{ "href_matches": "[^"]+" \\},$`);
-    const hrefLines = [];
-    let cursor = index + 1;
-
-    while (cursor < lines.length && hrefLinePattern.test(lines[cursor])) {
-      hrefLines.push(lines[cursor]);
-      cursor += 1;
-    }
-
-    output.push(line);
-    if (hrefLines.length <= 1) continue;
-
-    output.push(`${indent}  {`);
-    output.push(`${indent}    "or": [`);
-    hrefLines.forEach((hrefLine, hrefIndex) => {
-      const item = hrefLine.trim().replace(/,$/, '');
-      output.push(`${indent}      ${item}${hrefIndex < hrefLines.length - 1 ? ',' : ''}`);
+function normalizeConditionTree(value) {
+  if (Array.isArray(value)) {
+    let changed = false;
+    const items = value.map(item => {
+      const normalized = normalizeConditionTree(item);
+      if (normalized.changed) changed = true;
+      return normalized.value;
     });
-    output.push(`${indent}    ]`);
-    output.push(`${indent}  },`);
-    index = cursor - 1;
+    return { value: items, changed };
   }
 
-  return output.join('\n');
+  if (!value || typeof value !== 'object') {
+    return { value, changed: false };
+  }
+
+  let changed = false;
+  const normalizedObject = {};
+  for (const [key, child] of Object.entries(value)) {
+    const normalized = normalizeConditionTree(child);
+    normalizedObject[key] = normalized.value;
+    if (normalized.changed) changed = true;
+  }
+
+  if (!Array.isArray(normalizedObject.and)) {
+    return { value: normalizedObject, changed };
+  }
+
+  const hrefConditions = normalizedObject.and.filter(isDirectHrefMatchCondition);
+  if (hrefConditions.length <= 1) {
+    return { value: normalizedObject, changed };
+  }
+
+  const grouped = [];
+  let insertedHrefGroup = false;
+  for (const child of normalizedObject.and) {
+    if (isDirectHrefMatchCondition(child)) {
+      if (!insertedHrefGroup) {
+        grouped.push({ or: hrefConditions });
+        insertedHrefGroup = true;
+      }
+      continue;
+    }
+    grouped.push(child);
+  }
+
+  normalizedObject.and = grouped;
+  return { value: normalizedObject, changed: true };
+}
+
+function normalizeAndBlocks(jsonText) {
+  const parsed = JSON.parse(jsonText);
+  const normalized = normalizeConditionTree(parsed);
+  if (!normalized.changed) return jsonText;
+  return JSON.stringify(normalized.value, null, 2);
 }
 
 function normalizeSpeculationRulesHtml(html) {
