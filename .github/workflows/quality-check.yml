@@ -25,4 +25,21 @@ jobs:
           persist-credentials: false
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs --prepare-deploy > preflight.log 2>&1
+          code=$?
+          set -e
+          cat preflight.log
+          exit "$code"
+
+      - name: Upload complete preflight output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: complete-preflight-output-${{ github.run_id }}
+          path: preflight.log
+          if-no-files-found: error
+          retention-days: 7
