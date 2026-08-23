@@ -1,0 +1,47 @@
+name: Sync visitor thanks generated pages
+
+on:
+  push:
+    branches:
+      - fix/visitor-thanks-flag-accessibility
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/visitor-thanks-flag-accessibility
+
+      - name: Regenerate committed pages
+        run: node scripts/build-html.js
+
+      - name: Guard generated scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          unexpected="$(git diff --name-only | grep -vE '^(ko/index\.html|tw/index\.html)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected generated changes:"
+            echo "$unexpected"
+            exit 1
+          fi
+
+      - name: Commit generated pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ko/index.html tw/index.html
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: sync visitor thanks generated markup"
+          git push origin HEAD:fix/visitor-thanks-flag-accessibility
