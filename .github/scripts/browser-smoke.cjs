@@ -13,12 +13,12 @@ const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const EXPECTED_REVISION = (process.env.SMOKE_EXPECT_REVISION || '').trim();
 const MAIN_CONTROLS = '#mainMode select, #mainMode input[type="number"]';
 const LOCALES = [
-  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算' },
-  { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount' },
-  { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산' },
-  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
-  { key: 'HK', path: 'hk/', locale: 'zh-HK', title: 'Google Play Points 計算器（香港）', button: '計算消費金額', statusCount: 5, staticReverseLabel: '每 HK$7 獲得點數（自動帶入，可修改）', gamePath: '/tw/games/', tooltipContains: 'HK$7', tooltipExcludes: 'NT$30', currencyPrefix: 'HK$', calendarPath: '/hk/', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
-  { key: 'IN', path: 'in/', locale: 'en-IN', title: 'Google Play Points Calculator — India', button: 'Calculate Amount', statusCount: 4, staticReverseLabel: 'Points per ₹5 (auto-filled, editable)', gamePath: '/en/games/', tooltipContains: '₹5', tooltipExcludes: '$1', currencyPrefix: '₹', calendarPath: '/in/', shareRestore: { status: '1.1', target: 'gold', expected: 'Gold' } }
+  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算', rewardPath: '/', rewardText: 'ウィークリーリワード' },
+  { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount', rewardPath: '/en/', rewardText: 'Weekly Prize' },
+  { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산', rewardPath: '/ko/', rewardText: '주간 혜택' },
+  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
+  { key: 'HK', path: 'hk/', locale: 'zh-HK', title: 'Google Play Points 計算器（香港）', button: '計算消費金額', rewardPath: '/hk/', rewardText: '每週獎勵', statusCount: 5, staticReverseLabel: '每 HK$7 獲得點數（自動帶入，可修改）', gamePath: '/tw/games/', tooltipContains: 'HK$7', tooltipExcludes: 'NT$30', currencyPrefix: 'HK$', calendarPath: '/hk/', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
+  { key: 'IN', path: 'in/', locale: 'en-IN', title: 'Google Play Points Calculator — India', button: 'Calculate Amount', rewardPath: '/in/', rewardText: 'Weekly Prize', statusCount: 4, staticReverseLabel: 'Points per ₹5 (auto-filled, editable)', gamePath: '/en/games/', tooltipContains: '₹5', tooltipExcludes: '$1', currencyPrefix: '₹', calendarPath: '/in/', shareRestore: { status: '1.1', target: 'gold', expected: 'Gold' } }
 ];
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -278,6 +278,15 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     if (locale.tooltipExcludes) assert(!header.reverseTooltip.includes(locale.tooltipExcludes), `${locale.key} reverse tooltip contains stale ${locale.tooltipExcludes}`);
     if (locale.gamePath) assert(header.gamePath === locale.gamePath, `${locale.key} hydrated game path: ${header.gamePath}`);
     if (locale.calendarPath) assert(decodeURIComponent(header.calendarHref).includes(locale.calendarPath), `${locale.key} calendar link does not point back to ${locale.calendarPath}`);
+
+    const rewardShare = await page.evaluate(async () => {
+      const { SHARE } = await import('/js/share.js');
+      return SHARE.buildRewardShareUrl(123, '');
+    });
+    const rewardIntent = new URL(rewardShare);
+    const rewardSiteUrl = new URL(rewardIntent.searchParams.get('url'));
+    assert(rewardSiteUrl.pathname === locale.rewardPath, `${locale.key} reward share path: ${rewardSiteUrl.pathname}`);
+    assert((rewardIntent.searchParams.get('text') || '').includes(locale.rewardText), `${locale.key} reward share text language mismatch`);
 
     await page.locator('#currentStatus').selectOption({ index: 1 });
     const selectedRate = await page.locator('#currentStatus').inputValue();
