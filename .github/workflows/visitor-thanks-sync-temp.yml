@@ -21,8 +21,8 @@ jobs:
         with:
           ref: fix/visitor-thanks-flag-accessibility
 
-      - name: Regenerate committed pages
-        run: node scripts/build-html.js
+      - name: Regenerate committed pages with repository pins
+        run: node scripts/prepare-pr.cjs
 
       - name: Guard generated scope
         shell: bash
