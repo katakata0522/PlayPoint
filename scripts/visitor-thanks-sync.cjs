@@ -26,7 +26,7 @@ function buildVisitorThanksMarkup(config) {
   return `    <div class="visitor-thanks" role="note" aria-label="${config.ariaLabel}">\n` +
     `        <p class="visitor-thanks__lead">${config.lead}</p>\n` +
     `        <p class="visitor-thanks__body">${config.body}</p>\n` +
-    `        <p class="visitor-thanks__signature">${config.signature} <span class="visitor-thanks__flags" aria-label="${config.flagsAriaLabel}">${config.flags}</span></p>\n` +
+    `        <p class="visitor-thanks__signature">${config.signature} <span class="visitor-thanks__flags" role="img" aria-label="${config.flagsAriaLabel}">${config.flags}</span></p>\n` +
     '    </div>';
 }
 
