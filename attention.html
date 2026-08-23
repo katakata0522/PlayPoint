@@ -1,390 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Country & Region Guide - Google Play Points Calculator</title>
-    <meta name="description" content="Find which Google Play Points calculator mode matches your account country. Includes exact matches, similar-but-different countries, and official verification links.">
-    <meta name="robots" content="index,follow">
-    <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-08-04">
-    <meta property="article:modified_time" content="2026-08-04T00:00:00+09:00">
-    <link rel="canonical" href="https://playpoint-sim.com/attention.html">
-    <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/attention.html">
-    <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/attention.html">
-    <meta property="og:title" content="Country & Region Guide | Google Play Points Calculator">
-    <meta property="og:description" content="A friendly guide to choosing the best Google Play Points calculator mode for your account country.">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="https://playpoint-sim.com/attention.html">
-    <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
-    <meta property="og:site_name" content="Play Points Calculator">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Country & Region Guide | Google Play Points Calculator">
-    <meta name="twitter:description" content="See why Google Play Points rules differ by country and how to get accurate calculations for your account.">
-    <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
-    <link rel="icon" href="favicon.svg" type="image/svg+xml">
-
-    <link rel="stylesheet" href="style.css?v=66b5e78c99">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Google Play Points Country & Region Guide",
-      "url": "https://playpoint-sim.com/attention.html",
-      "inLanguage": "en",
-      "dateModified": "2026-08-04",
-      "author": {
-        "@type": "Person",
-        "name": "かたかた"
-      },
-      "breadcrumb": {
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Playポイント計算機",
-            "item": "https://playpoint-sim.com/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Country & Region Guide",
-            "item": "https://playpoint-sim.com/attention.html"
-          }
-        ]
-      }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Country & Region Guide | Google Play Points Calculator</title>
+  <meta name="description" content="Choose the Google Play Points calculator that matches your account country. Dedicated calculator modes are available for Japan, the United States, South Korea, Taiwan, Hong Kong, and India.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="author" content="かたかた">
+  <meta name="last-modified" content="2026-08-23">
+  <meta property="article:modified_time" content="2026-08-23T00:00:00+09:00">
+  <link rel="canonical" href="https://playpoint-sim.com/attention.html">
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/attention.html">
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/attention.html">
+  <meta property="og:title" content="Country & Region Guide | Google Play Points Calculator">
+  <meta property="og:description" content="Pick the calculator mode for your Google Play account country. Japan, U.S., Korea, Taiwan, Hong Kong, and India have dedicated modes.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://playpoint-sim.com/attention.html">
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
+  <meta property="og:site_name" content="Play Points Calculator">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Country & Region Guide | Google Play Points Calculator">
+  <meta name="twitter:description" content="Choose the correct regional calculator for your Google Play account.">
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=66b5e78c99">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Google Play Points Country & Region Guide",
+    "url": "https://playpoint-sim.com/attention.html",
+    "inLanguage": "en",
+    "dateModified": "2026-08-23",
+    "author": {
+      "@type": "Person",
+      "name": "かたかた"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Play Points Calculator",
+          "item": "https://playpoint-sim.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Country & Region Guide",
+          "item": "https://playpoint-sim.com/attention.html"
+        }
+      ]
     }
-    </script>
+  }
+  </script>
+  <style>
+    .region-guide-lead { line-height: 1.75; }
+    .region-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin: 1.2rem 0; }
+    .region-card { border: 1px solid rgba(31, 41, 55, 0.14); border-radius: 12px; padding: 1rem; background: var(--section-bg, #fff); }
+    .region-card h2 { margin: 0 0 .45rem; font-size: 1.15rem; }
+    .region-card p { margin: .35rem 0; line-height: 1.6; }
+    .region-card ul { margin: .55rem 0 .75rem; padding-left: 1.25rem; line-height: 1.65; }
+    .region-card .open-region { display: inline-block; margin-top: .35rem; font-weight: 700; }
+    .region-warning { border-left: 4px solid #d97706; background: rgba(245, 158, 11, .1); padding: .9rem 1rem; border-radius: 8px; line-height: 1.7; }
+    .official-links { line-height: 1.8; }
+  </style>
 </head>
-
 <body>
-
-    <main class="calculator-wrapper">
-        <div class="top-bar" style="margin-bottom: 20px;">
-            <div class="header-links" style="width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <div class="lang-nav" style="font-size: 0.9em;">
-                    <a href="./" style="margin-right: 12px; color: #007bff; text-decoration: none;">日本語</a>
-                    <a href="./en/" style="margin-right: 12px; color: #007bff; text-decoration: none; font-weight: bold;">English</a>
-                    <a href="./ko/" style="margin-right: 12px; color: #007bff; text-decoration: none;">한국어</a>
-                    <a href="./tw/" style="margin-right: 12px; color: #007bff; text-decoration: none;">繁體中文</a>
-                </div>
-                <div>
-                    <a href="privacy.html">Privacy Policy</a>
-                    <a href="terms.html" style="margin-left: 1em;">Terms of Service</a>
-                </div>
-            </div>
+  <main class="calculator-wrapper">
+    <div class="top-bar" style="margin-bottom:20px;">
+      <div class="header-links" style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div class="lang-nav" style="font-size:.9em;display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="./">🇯🇵 Japan</a>
+          <a href="./en/">🇺🇸 U.S.</a>
+          <a href="./ko/">🇰🇷 Korea</a>
+          <a href="./tw/">🇹🇼 Taiwan</a>
+          <a href="./hk/">🇭🇰 Hong Kong</a>
+          <a href="./in/">🇮🇳 India</a>
         </div>
+        <div>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="terms.html" style="margin-left:1em;">Terms of Service</a>
+        </div>
+      </div>
+    </div>
 
-        <article class="section" style="border-top: 5px solid #0284c7;">
-            <h1 style="color: #0369a1; font-size: 1.6em; text-align: left; margin-bottom: 0.4em;">
-                👋 Welcome, International Players!
-            </h1>
-            <p style="font-weight: bold; font-size: 1.1em; color: #0369a1; margin-bottom: 1.2em;">
-                Please choose your calculator mode by your Google Play country, not only by browser language! 😊
-            </p>
+    <article class="section">
+      <h1>Country & Region Guide</h1>
+      <p class="region-guide-lead"><strong>Choose the calculator by your Google Play account country, not only by browser language.</strong> Play Points level thresholds, base earn rates, currency units, and available top levels can differ by country.</p>
+      <p class="region-guide-lead">PlayPoint currently has dedicated calculator modes for <strong>Japan, the United States, South Korea, Taiwan, Hong Kong, and India</strong>. Each mode uses its own regional calculation profile.</p>
 
-            <p style="font-size: 1.02em; line-height: 1.8;">
-                Dear visitor, thank you so much for using this Play Points calculator! ✨<br>
-                To help you get <strong>the most accurate calculation for your own Google Play account</strong>, there is one exciting and important thing I would love to share with you!
-            </p>
+      <div class="region-warning" role="note">
+        <strong>Important:</strong> Translation does not change calculation rules. For example, translating the Taiwan page into English still leaves Taiwan's Play Points rules in place. Open the regional mode that matches the Play country on your account.
+      </div>
 
-            <p style="font-size: 1.02em; line-height: 1.8;">
-                Google Play Points rates and level requirements vary by country. Earning units, multipliers, and the highest available level can also differ.<br>
-                This calculator currently has dedicated modes for <strong>Japan, the United States, South Korea, and Taiwan</strong>.<br>
-                Because of this gap, using auto-translate on the Japanese page will calculate with Japanese yen rules instead of your local currency. Take a look at this comparison chart! 📝
-            </p>
+      <div class="region-grid">
+        <section class="region-card">
+          <h2>🇯🇵 Japan</h2>
+          <p><strong>Currency / base unit:</strong> JPY / ¥100</p>
+          <ul>
+            <li>Silver: 250 pt / 1.25 pt per ¥100</li>
+            <li>Gold: 1,000 pt / 1.5 pt per ¥100</li>
+            <li>Platinum: 4,000 pt / 1.75 pt per ¥100</li>
+            <li>Diamond: 15,000 pt / 2.0 pt per ¥100</li>
+          </ul>
+          <a class="open-region" href="./">Open Japan calculator →</a>
+        </section>
 
-            <!-- 4地域 比較テーブル -->
-            <section aria-labelledby="comparison-title" style="margin: 1.8em 0;">
-                <h2 id="comparison-title" style="font-size: 1.25em; text-align: left; color: #1e293b;">
-                    📊 The Big Difference: Japan vs. US / Korea / Taiwan
-                </h2>
-                <div class="table-wrapper">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
-                        <thead>
-                            <tr>
-                                <th>Rule / Level</th>
-                                <th style="background-color: #fbe9e7; font-weight: bold; color: #c2410c;">🇺🇸 US profile</th>
-                                <th style="background-color: #e3f2fd; font-weight: bold; color: #0369a1;">🇯🇵 Japan</th>
-                                <th style="background-color: #e8f5e9; font-weight: bold; color: #15803d;">🇰🇷 South Korea</th>
-                                <th style="background-color: #f3e5f5; font-weight: bold; color: #7e22ce;">🇹🇼 Taiwan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Base earning unit</td>
-                                <td style="background-color: #fff9f8; font-weight: bold;">1 local currency unit</td>
-                                <td style="background-color: #f4f9ff; font-weight: bold;">¥100</td>
-                                <td style="background-color: #f4fbf4; font-weight: bold;">₩1,000</td>
-                                <td style="background-color: #fbf7ff; font-weight: bold;">NT$30</td>
-                            </tr>
-                            <tr>
-                                <td>🥈 Silver threshold / rate</td>
-                                <td style="background-color: #fff9f8;">150 pt / 1.1</td>
-                                <td style="background-color: #f4f9ff;">250 pt / 1.25</td>
-                                <td style="background-color: #f4fbf4;">150 pt / 1.1</td>
-                                <td style="background-color: #fbf7ff;">250 pt / 1.25</td>
-                            </tr>
-                            <tr>
-                                <td>🥇 Gold threshold / rate</td>
-                                <td style="background-color: #fff9f8;">600 pt / 1.2</td>
-                                <td style="background-color: #f4f9ff;">1,000 pt / 1.5</td>
-                                <td style="background-color: #f4fbf4;">600 pt / 1.3</td>
-                                <td style="background-color: #fbf7ff;">1,000 pt / 1.5</td>
-                            </tr>
-                            <tr>
-                                <td>💎 Platinum threshold / rate</td>
-                                <td style="background-color: #fff9f8;">3,000 pt / 1.4</td>
-                                <td style="background-color: #f4f9ff;">4,000 pt / 1.75</td>
-                                <td style="background-color: #f4fbf4;">2,400 pt / 1.6</td>
-                                <td style="background-color: #fbf7ff;">4,000 pt / 1.75</td>
-                            </tr>
-                            <tr>
-                                <td>👑 Diamond threshold / rate</td>
-                                <td style="background-color: #fff9f8; font-weight: bold; color: #b91c1c;">10,000 pt / 1.6</td>
-                                <td style="background-color: #f4f9ff; font-weight: bold; color: #0369a1;">15,000 pt / 2.0</td>
-                                <td style="background-color: #f4fbf4; font-weight: bold; color: #15803d;">15,000 pt / 2.0</td>
-                                <td style="background-color: #fbf7ff; font-weight: bold; color: #7e22ce;">15,000 pt / 2.0</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
+        <section class="region-card">
+          <h2>🇺🇸 United States</h2>
+          <p><strong>Currency / base unit:</strong> USD / $1</p>
+          <ul>
+            <li>Silver: 150 pt / 1.1 pt per $1</li>
+            <li>Gold: 600 pt / 1.2 pt per $1</li>
+            <li>Platinum: 3,000 pt / 1.4 pt per $1</li>
+            <li>Diamond: 10,000 pt / 1.6 pt per $1</li>
+          </ul>
+          <a class="open-region" href="./en/">Open U.S. calculator →</a>
+        </section>
 
-            <p style="font-size: 1.02em; line-height: 1.8;">
-                It’s quite surprising to see such a big gap, isn’t it? 😖<br>
-                For example, reaching Diamond requires <strong>10,000 points in the US</strong>, but <strong>15,000 points in Japan, Korea, and Taiwan</strong>!
-            </p>
+        <section class="region-card">
+          <h2>🇰🇷 South Korea</h2>
+          <p><strong>Currency / base unit:</strong> KRW / ₩1,000</p>
+          <ul>
+            <li>Silver: 150 pt / 1.1 pt per ₩1,000</li>
+            <li>Gold: 600 pt / 1.3 pt per ₩1,000</li>
+            <li>Platinum: 2,400 pt / 1.6 pt per ₩1,000</li>
+            <li>Diamond: 15,000 pt / 2.0 pt per ₩1,000</li>
+          </ul>
+          <a class="open-region" href="./ko/">Open Korea calculator →</a>
+        </section>
 
-            <p style="font-size: 1.02em; line-height: 1.8;">
-                Because of this, I spent a lot of time tuning each country's calculation engine with care so that gamers all around the world can plan their level-ups accurately and comfortably.<br>
-                I hope you love using this tool as much as I loved building it! 😊💖
-            </p>
+        <section class="region-card">
+          <h2>🇹🇼 Taiwan</h2>
+          <p><strong>Currency / base unit:</strong> TWD / NT$30</p>
+          <ul>
+            <li>Silver: 250 pt / 1.25 pt per NT$30</li>
+            <li>Gold: 1,000 pt / 1.5 pt per NT$30</li>
+            <li>Platinum: 4,000 pt / 1.75 pt per NT$30</li>
+            <li>Diamond: 15,000 pt / 2.0 pt per NT$30</li>
+          </ul>
+          <a class="open-region" href="./tw/">Open Taiwan calculator →</a>
+        </section>
 
-            <!-- 韓国語・繁体字 親しみやすい案内枠 -->
-            <div class="lang-notices" style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 1.2em; margin: 1.8em 0; border-radius: 6px; font-size: 0.95em; color: #14532d; text-align: left;">
-                <p style="margin: 0 0 0.6em 0; font-weight: bold;">🇰🇷 한국 플레이어 여러분께:</p>
-                <p style="margin: 0 0 1.2em 0; line-height: 1.6;">
-                    계산기를 찾아주셔서 진심으로 감사합니다! 😊 한국 계정은 ₩1,000당 1포인트 적립 규칙과 고유 등급 조건이 적용되므로, 상단의 <strong>[한국어 모드]</strong>를 선택하시면 정확한 필요 금액을 시뮬레이션하실 수 있습니다!
-                </p>
+        <section class="region-card">
+          <h2>🇭🇰 Hong Kong</h2>
+          <p><strong>Currency / base unit:</strong> HKD / HK$7</p>
+          <ul>
+            <li>Silver: 250 pt / 1.25 pt per HK$7</li>
+            <li>Gold: 1,000 pt / 1.5 pt per HK$7</li>
+            <li>Platinum: 4,000 pt / 1.75 pt per HK$7</li>
+            <li>Diamond: 15,000 pt / 2.0 pt per HK$7</li>
+          </ul>
+          <a class="open-region" href="./hk/">Open Hong Kong calculator →</a>
+        </section>
 
-                <p style="margin: 0 0 0.6em 0; font-weight: bold;">🇹🇼 給台灣與香港的玩家朋友們:</p>
-                <p style="margin: 0; line-height: 1.6;">
-                    非常感謝您的使用！✨ 台灣 Google Play 帳戶使用每 NT$30 累積 1 點的專屬規則，請點擊 <strong>[繁體中文 / Taiwan]</strong> 模式即可獲得完全精準的升級金額試算喔！
-                </p>
-            </div>
+        <section class="region-card">
+          <h2>🇮🇳 India</h2>
+          <p><strong>Currency / base unit:</strong> INR / ₹5</p>
+          <ul>
+            <li>Silver: 250 pt / 1.1 pt per ₹5</li>
+            <li>Gold: 1,000 pt / 1.2 pt per ₹5</li>
+            <li>Platinum: 4,000 pt / 1.4 pt per ₹5</li>
+            <li>Platinum is the highest level in the current India profile.</li>
+          </ul>
+          <a class="open-region" href="./in/">Open India calculator →</a>
+        </section>
+      </div>
 
-            <!-- モード選択カード -->
-            <section aria-labelledby="mode-guide-title" style="margin-top: 2em;">
-                <h2 id="mode-guide-title" style="font-size: 1.3em; text-align: left; color: #1e293b;">
-                    Which mode can I use?
-                </h2>
+      <section>
+        <h2>Promotion rates</h2>
+        <p>When Google Play shows a special earn rate, enter the <strong>final regional earn rate shown in the offer details</strong>. The calculator compares that rate with the normal rate for your current level and uses the higher one. It does not multiply the level rate by the promotional number.</p>
+      </section>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 1.2em 0 1.8em;">
-                    <div style="border: 2px solid #93c5fd; background: #eff6ff; border-radius: 10px; padding: 1.2em; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin-top: 0; color: #1e40af;">🇺🇸 English / US mode</h3>
-                            <p style="font-size: 0.9em; margin-bottom: 0.5em;"><strong>Same calculation profile:</strong></p>
-                            <p style="margin-top: 0; font-size: 0.92em;">United States, United Kingdom, France, Germany, Italy, Spain</p>
-                            <p style="font-size: 0.85em; color: #64748b; line-height: 1.4;">
-                                These countries use 1 point per 1 local currency unit at Bronze, the same level thresholds, the same multipliers, and Diamond at 10,000 points.
-                                The screen still displays <strong>$</strong>, so UK and euro-area users should read the number as their own local currency.
-                            </p>
-                        </div>
-                        <a href="en/" class="btn-back-home" style="display: block; margin-top: 1em; background-color: #2563eb; text-align: center; text-decoration: none; color: #fff; font-weight: bold; padding: 10px; border-radius: 6px;">Open English mode</a>
-                    </div>
+      <section>
+        <h2>Official verification links</h2>
+        <p>Google can change Play Points conditions. Before making a purchase, check the current conditions shown in Google Play and the official regional Play Points help page.</p>
+        <ul class="official-links">
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Play Points — Japan</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DUS&amp;hl=en" target="_blank" rel="noopener noreferrer">Google Play Points — United States</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DKR&amp;hl=ko" target="_blank" rel="noopener noreferrer">Google Play Points — South Korea</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DTW&amp;hl=zh-Hant" target="_blank" rel="noopener noreferrer">Google Play Points — Taiwan</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&amp;hl=zh-HK" target="_blank" rel="noopener noreferrer">Google Play Points — Hong Kong</a></li>
+          <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&amp;hl=en-IN" target="_blank" rel="noopener noreferrer">Google Play Points — India</a></li>
+        </ul>
+      </section>
+    </article>
 
-                    <div style="border: 2px solid #fca5a5; background: #fef2f2; border-radius: 10px; padding: 1.2em; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin-top: 0; color: #991b1b;">🇯🇵 Japanese / Japan mode</h3>
-                            <p style="font-size: 0.9em; margin-bottom: 0.8em; color: #334155; line-height: 1.5;">
-                                <strong>Exact match:</strong> Japan only
-                            </p>
-                            <p style="font-size: 0.85em; color: #64748b; line-height: 1.4;">
-                                Japan uses 1 point per ¥100, thresholds of 250 / 1,000 / 4,000 / 15,000, and multipliers up to 2.0.
-                            </p>
-                        </div>
-                        <a href="./" class="btn-back-home" style="display: block; margin-top: 1em; background-color: #dc2626; text-align: center; text-decoration: none; color: #fff; font-weight: bold; padding: 10px; border-radius: 6px;">日本版を開く</a>
-                    </div>
-
-                    <div style="border: 2px solid #86efac; background: #f0fdf4; border-radius: 10px; padding: 1.2em; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin-top: 0; color: #166534;">🇰🇷 Korean / South Korea mode</h3>
-                            <p style="font-size: 0.9em; margin-bottom: 0.8em; color: #334155; line-height: 1.5;">
-                                <strong>Exact match:</strong> South Korea only
-                            </p>
-                            <p style="font-size: 0.85em; color: #64748b; line-height: 1.4;">
-                                South Korea uses ₩1,000 as the earning unit and has its own Gold and Platinum thresholds and multipliers.
-                            </p>
-                        </div>
-                        <a href="ko/" class="btn-back-home" style="display: block; margin-top: 1em; background-color: #16a34a; text-align: center; text-decoration: none; color: #fff; font-weight: bold; padding: 10px; border-radius: 6px;">한국어판 열기</a>
-                    </div>
-
-                    <div style="border: 2px solid #d8b4fe; background: #faf5ff; border-radius: 10px; padding: 1.2em; text-align: left; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <h3 style="margin-top: 0; color: #6b21a8;">🇹🇼 Traditional Chinese / Taiwan mode</h3>
-                            <p style="font-size: 0.9em; margin-bottom: 0.8em; color: #334155; line-height: 1.5;">
-                                <strong>Exact match:</strong> Taiwan only
-                            </p>
-                            <p style="font-size: 0.85em; color: #64748b; line-height: 1.4;">
-                                Taiwan shares Japan's level thresholds and multipliers, but uses NT$30 as the earning unit, so it needs its own mode.
-                            </p>
-                        </div>
-                        <a href="tw/" class="btn-back-home" style="display: block; margin-top: 1em; background-color: #9333ea; text-align: center; text-decoration: none; color: #fff; font-weight: bold; padding: 10px; border-radius: 6px;">開啟繁體中文版</a>
-                    </div>
-                </div>
-
-                <!-- ヨーロッパ向けグッドニュース -->
-                <div style="background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 1.1em; border-radius: 6px; text-align: left; margin: 1.5em 0;">
-                    <strong style="color: #1b5e20; font-size: 1.05em;">Good news for UK and euro-area users:</strong><br>
-                    the English mode gives the same numeric result for the United Kingdom, France, Germany, Italy, and Spain.
-                    Only the displayed currency symbol remains “$”.
-                </div>
-            </section>
-
-            <!-- その他地域のアドバイス -->
-            <section aria-labelledby="similar-title" style="margin-top: 2.2em;">
-                <h2 id="similar-title" style="font-size: 1.25em; text-align: left; color: #1e293b;">
-                    Countries that look similar, but should not use a substitute mode
-                </h2>
-                <p>
-                    A matching threshold or multiplier is not enough. The earning unit and highest level must also match.
-                </p>
-                
-                <details style="background: #fff8e1; border: 1px solid #e0b84f; border-radius: 8px; padding: 0.9em 1em; margin-bottom: 0.8em; text-align: left;">
-                    <summary style="cursor: pointer; font-weight: bold;">Hong Kong — same rank structure as Japan/Taiwan, different earning unit</summary>
-                    <p style="margin-bottom: 0;">
-                        Hong Kong uses the same 250 / 1,000 / 4,000 / 15,000 thresholds and 1.0 / 1.25 / 1.5 / 1.75 / 2.0 multipliers,
-                        but earns 1 point per <strong>HK$7</strong>. Japan uses ¥100 and Taiwan uses NT$30, so neither mode gives correct amount calculations for Hong Kong.
-                    </p>
-                </details>
-
-                <details style="background: #f8f9fa; border: 1px solid #c9ced6; border-radius: 8px; padding: 0.9em 1em; margin-bottom: 0.8em; text-align: left;">
-                    <summary style="cursor: pointer; font-weight: bold;">US-like through Platinum, but not a full US-mode match</summary>
-                    <p>
-                        <strong>1 local currency unit, but the current official table is not a full five-level US match:</strong><br>
-                        Australia, Austria, Belgium, Brazil, Finland, Greece, Ireland, Netherlands, New Zealand, Portugal, Switzerland
-                    </p>
-                    <p style="margin-bottom: 0;">
-                        <strong>Same 150 / 600 / 3,000 thresholds through Platinum, but a different earning unit:</strong><br>
-                        Denmark (6 DKK), Norway (6 NOK), Sweden (7 SEK), Israel (3 ILS), Saudi Arabia (4 SAR), South Africa (17 ZAR), United Arab Emirates (4 AED)
-                    </p>
-                </details>
-
-                <details style="background: #f8f9fa; border: 1px solid #c9ced6; border-radius: 8px; padding: 0.9em 1em; margin-bottom: 0.8em; text-align: left;">
-                    <summary style="cursor: pointer; font-weight: bold;">Countries with their own thresholds or earning units</summary>
-                    <p style="margin-bottom: 0;">
-                        Chile, Czech Republic, India, Indonesia, Mexico, Poland, Thailand, and Turkey use country-specific combinations.
-                        Do not use the US, Japan, South Korea, or Taiwan mode for level-up estimates.
-                    </p>
-                </details>
-            </section>
-
-            <section aria-labelledby="unsupported-title" style="margin-top: 2em;">
-                <h2 id="unsupported-title" style="font-size: 1.25em; text-align: left;">What should I do if there is no exact mode?</h2>
-                <ol style="text-align: left; line-height: 1.65;">
-                    <li>Open Google Play and check the earning rate and level requirements shown for your account country.</li>
-                    <li>You may use the calculator's direct earning-rate input for a simple purchase-point estimate.</li>
-                    <li>Do not rely on rank-up, maintenance, or required-spend results unless your country is listed as an exact calculation match above.</li>
-                </ol>
-
-                <p style="font-size: 0.9em; text-align: left;">
-                    <strong>Official reference:</strong>
-                    <a href="https://support.google.com/googleplay/answer/9080348?hl=en" target="_blank" rel="noopener noreferrer">Google Play Points levels and benefits by country</a><br>
-                    Checked against the official country tables on <time datetime="2026-08-04">August 4, 2026</time>.
-                </p>
-            </section>
-
-            <!-- 戻るボタン＆心のこもったメッセージ -->
-            <div class="warning" style="margin-top: 2.2em; padding: 1.5em; text-align: center; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px;">
-                <p style="margin: 0 0 1.2em 0; font-weight: bold; font-size: 1.08em; color: #1e293b;">
-                    Return to the calculator mode you were using.
-                </p>
-                <a href="en/" class="btn-back-home" id="return-calculator-link" style="margin: 0; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); background-color: #28a745; font-size: 1.05em; padding: 12px 28px; display: inline-block; text-decoration: none; color: #fff; font-weight: bold; border-radius: 6px;">Go Back to Calculator</a>
-            </div>
-
-            <p style="margin-top: 25px; font-size: 0.88em; color: var(--link-color); line-height: 1.6; text-align: center;">
-                * This guide covers the calculator's earning unit, level thresholds, multipliers, and highest level.<br>
-                Country-specific campaigns, weekly rewards, coupons, and other benefits are outside this compatibility classification.<br>
-                Always confirm the current details shown in your Google Play account.<br>
-                <br>
-                Thank you again for taking the time to read this guide.<br>
-                I hope this guide will be of some help to you! 🫡✨<br>
-                <br>
-                <strong>See you in the games! 👐</strong>
-            </p>
-        </article>
-
-        <footer class="page-footer">
-            <p>
-                <a href="en/" id="footer-calculator-link">Calculator</a>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">Feedback</a>
-                <a href="privacy.html" style="margin-left: 0.5em;">Privacy Policy</a>
-                <a href="terms.html" style="margin-left: 0.5em;">Terms of Service</a>
-            </p>
-            <p class="meta-line">Operator: かたかた / Last Modified: 2026-08-04</p>
-            <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
-        <p class="copyright">
-                © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
-            </p>
-        </footer>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const yearEl = document.getElementById('copyright-year');
-            if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-            const btn = document.getElementById('return-calculator-link');
-            const footerLink = document.getElementById('footer-calculator-link');
-            const validRegions = new Set(['JP', 'US', 'KR', 'TW']);
-
-            let preferredRegion = null;
-            try {
-                const storedRegion = localStorage.getItem('playpointPreferredRegion');
-                if (validRegions.has(storedRegion)) preferredRegion = storedRegion;
-            } catch (error) {
-                console.error('Failed to read the saved calculator region:', error);
-            }
-
-            const ref = document.referrer;
-            let targetRegion = preferredRegion || 'US';
-
-            if (ref) {
-                if (ref.includes('/ko/')) {
-                    targetRegion = 'KR';
-                } else if (ref.includes('/tw/')) {
-                    targetRegion = 'TW';
-                } else if (ref.includes('/en/')) {
-                    targetRegion = 'US';
-                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
-                    targetRegion = 'JP';
-                }
-            }
-
-            const destinations = {
-                JP: { href: './', button: '計算機に戻る', footer: '計算機' },
-                US: { href: 'en/', button: 'Go Back to Calculator', footer: 'Calculator' },
-                KR: { href: 'ko/', button: '계산기로 돌아가기', footer: '계산기' },
-                TW: { href: 'tw/', button: '返回計算機', footer: '計算機' }
-            };
-            const destination = destinations[targetRegion] || destinations.US;
-
-            if (btn) {
-                btn.href = destination.href;
-                btn.textContent = destination.button;
-            }
-            if (footerLink) {
-                footerLink.href = destination.href;
-                footerLink.textContent = destination.footer;
-            }
-        });
-    </script>
-    <script src="js/third-party.js?v=790f53fd26"></script>
+    <footer class="site-footer">
+      <p><a href="./">Calculator</a> · <a href="sitemap.html">Sitemap</a> · <a href="author/katakata.html" rel="author">Operator & verification policy</a></p>
+      <p class="site-footer-trademark">Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide and is not affiliated with or endorsed by Google LLC.</p>
+      <p class="copyright">© <span id="copyright-year">2026</span> PlayPoint Simulation Tool</p>
+    </footer>
+  </main>
 </body>
-
 </html>

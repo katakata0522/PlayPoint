@@ -256,8 +256,8 @@ test('海外向け案内は英語を全世界共通レートとして案内し�
   for (const misleadingPhrase of ['English / Global mode', 'US (Global) mode', 'not from Japan']) {
     assert.ok(!html.includes(misleadingPhrase), `誤解を招く案内が残っています: ${misleadingPhrase}`);
   }
-  assert.match(html, /Japan, the United States, South Korea, and Taiwan/);
-  assert.match(html, /rates and level requirements vary by country/i);
+  assert.match(html, /Japan, the United States, South Korea, Taiwan, Hong Kong, and India/);
+  assert.match(html, /level thresholds, base earn rates, currency units, and available top levels can differ by country/i);
 });
 
 test('多言語トップの実行時記事リンクは各言語の記事一覧を指す', () => {
