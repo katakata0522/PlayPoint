@@ -18,8 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-      - name: Checkout code
+      - name: Checkout PR head branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Synchronize diagnosed generated outputs
         if: github.event.pull_request.number == 147 && github.head_ref == 'fix/high-priority-audit'
