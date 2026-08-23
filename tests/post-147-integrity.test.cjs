@@ -86,3 +86,16 @@ test('preflightはビルド前に6地域トップとPWAランチャーの存在�
   assert.ok(requiredCheck >= 0 && reproducibilityCheck >= 0);
   assert.ok(requiredCheck < reproducibilityCheck, 'required public files must be checked before generated files can recreate them');
 });
+
+test('本番SmokeとSEO healthは香港・インドの公開トップを監視する', () => {
+  const smoke = read('.github/scripts/smoke-test.cjs');
+  const seoHealth = read('.github/scripts/seo-health-check.cjs');
+
+  assert.match(smoke, /https:\/\/playpoint-sim\.com\/hk\//);
+  assert.match(smoke, /Google Play Points 計算器（香港）/);
+  assert.match(smoke, /https:\/\/playpoint-sim\.com\/in\//);
+  assert.match(smoke, /Google Play Points Calculator for India/);
+
+  assert.match(seoHealth, /`\$\{BASE_URL\}\/hk\/`/);
+  assert.match(seoHealth, /`\$\{BASE_URL\}\/in\/`/);
+});
