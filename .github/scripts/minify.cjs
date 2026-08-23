@@ -23,6 +23,7 @@ function minifyJS(content) {
 
 const cssTargets = [
   'style.css',
+  'visitor-thanks.css',
   'articles/article-gift-card.css',
   'articles/article-legacy.css',
   'articles/article-modern.css',
