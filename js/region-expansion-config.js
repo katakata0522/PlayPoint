@@ -54,7 +54,17 @@ export function createExpansionConfigs(configs) {
             warningRate: '本頁使用香港的等級與基本獲點率。若 Google Play 顯示活動特別獲點率，系統會與基本獲點率比較並採用較高者；資格、上限及啟用條件請以 Google Play 為準。',
             labelAmountYen: '消費金額（HK$）',
             amountYenPlaceholder: '例如：350',
-            calculationNote: '※本頁依香港 Play Points 條件估算。今年剩餘期間以相同進度計算；實際獲點率、適用購買項目與活動條件請以 Google Play 官方畫面為準。'
+            calculationNote: '※本頁依香港 Play Points 條件估算。今年剩餘期間以相同進度計算；實際獲點率、適用購買項目與活動條件請以 Google Play 官方畫面為準。',
+            linkLatest: { text: '🆕 最新資訊中心 (日文)', href: '../latest/' },
+            linkArticles: { text: '📝 繁體中文指南', href: '../tw/articles/' },
+            linkPrivacy: { text: '隱私權政策 (日文)', href: '../privacy.html' },
+            linkTerms: { text: '服務條款 (日文)', href: '../terms.html' },
+            linkQA: { text: 'Q&A 與後記 (日文)', href: '../info.html' },
+            linkAbout: { text: '什麼是 Play Points？', href: '../about-playpoints.html' },
+            linkWidget: { text: '免費小工具', href: '../embed.html' },
+            linkDiscount: { text: '💡 優惠儲值指南（繁中）', href: '../tw/articles/2026-06-20-discount-gift-cards.html' },
+            linkAuthor: { text: '營運者與政策 (日文)', href: '../author/katakata.html' },
+            linkAttention: { text: '⚠️ 國家別差異', href: '../attention.html' }
         }
     });
 
@@ -90,7 +100,17 @@ export function createExpansionConfigs(configs) {
             warningRate: 'This page uses India-specific Play Points levels and base earn rates. If Google Play shows a special promotion rate, the calculator compares it with your base rate and uses the higher one. Check eligibility, caps, and activation in Google Play.',
             labelAmountYen: 'Amount spent (INR)',
             amountYenPlaceholder: 'e.g. 500',
-            calculationNote: 'This estimate uses India Play Points conditions and the remaining period through December 31. Check Google Play for the latest eligible purchases, promotion terms, and earn rates.'
+            calculationNote: 'This estimate uses India Play Points conditions and the remaining period through December 31. Check Google Play for the latest eligible purchases, promotion terms, and earn rates.',
+            linkLatest: { text: '🆕 Latest Hub (Japanese)', href: '../latest/' },
+            linkArticles: { text: '📝 English guides', href: '../en/articles/' },
+            linkPrivacy: { text: 'Privacy Policy (Japanese)', href: '../privacy.html' },
+            linkTerms: { text: 'Terms of Service (Japanese)', href: '../terms.html' },
+            linkQA: { text: 'Q&A & Afterword (Japanese)', href: '../info.html' },
+            linkAbout: { text: 'What are Play Points?', href: '../about-playpoints.html' },
+            linkWidget: { text: 'Free widget', href: '../embed.html' },
+            linkDiscount: { text: '💡 Discount Guide (English)', href: '../en/articles/2026-06-20-discount-gift-cards.html' },
+            linkAuthor: { text: 'Operator & Policy (Japanese)', href: '../author/katakata.html' },
+            linkAttention: { text: '⚠️ Country Diff', href: '../attention.html' }
         }
     });
 
