@@ -113,6 +113,13 @@ export const CALC_PURE = {
 };
 
 export const CALC = {
+    renderCurrencyAmount(value, config) {
+        const amountMarkup = `<span class="count-target" data-value="${value}">0</span>`;
+        return config.currencyPosition === 'prefix'
+            ? `${config.currencySymbol}${amountMarkup}`
+            : `${amountMarkup} ${config.currencySymbol}`;
+    },
+
     relatedArticleGroups: {
         platinum: [
             { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
@@ -595,13 +602,13 @@ export const CALC = {
             const monthlyResultContent = remainingMonths > 0
                 ? `
                     <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
-                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingMonths)}">0</span> ${config.currencySymbol}${texts.perMonth}</b></dd>
+                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingMonths), config)}${texts.perMonth}</b></dd>
                 `
                 : '';
             const dailyResultContent = remainingDays > 0
                 ? `
                     <dt>${texts.resultLabelDailyYen || '1日あたり目安'}</dt>
-                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${Math.ceil(totalAmountNeeded / remainingDays)}">0</span> ${config.currencySymbol}${texts.perDay || '/日'}</b></dd>
+                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingDays), config)}${texts.perDay || '/日'}</b></dd>
                 `
                 : '';
             const comparison = Number.isFinite(normalRate) && finalRate > normalRate
@@ -618,11 +625,11 @@ export const CALC = {
                         <strong>${texts.resultComparisonTitle || '通常時との比較'}</strong>
                         <dl>
                             <dt>${texts.resultComparisonBase || '通常還元の場合'}</dt>
-                            <dd>${texts.approxLabel} <span class="count-target" data-value="${comparison.baseAmount}">0</span> ${config.currencySymbol}</dd>
+                            <dd>${texts.approxLabel} ${this.renderCurrencyAmount(comparison.baseAmount, config)}</dd>
                             <dt>${texts.resultComparisonSelected || '現在の還元条件'}</dt>
-                            <dd>${texts.approxLabel} <span class="count-target" data-value="${comparison.selectedAmount}">0</span> ${config.currencySymbol}</dd>
+                            <dd>${texts.approxLabel} ${this.renderCurrencyAmount(comparison.selectedAmount, config)}</dd>
                             <dt>${texts.resultComparisonSaved || '差額'}</dt>
-                            <dd><b><span class="count-target" data-value="${comparison.savedAmount}">0</span> ${config.currencySymbol}</b></dd>
+                            <dd><b>${this.renderCurrencyAmount(comparison.savedAmount, config)}</b></dd>
                         </dl>
                         ${comparison.savedAmount === 0 ? `<p>${texts.resultComparisonSame || 'この条件では必要額の概算が同じため、差額はありません。'}</p>` : ''}
                     </aside>
@@ -634,7 +641,7 @@ export const CALC = {
                     <dt>${texts.resultLabelNeededPoints}</dt>
                     <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
                     <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>${texts.approxLabel} <span class="count-target" data-value="${totalAmountNeeded}">0</span> ${config.currencySymbol}</b></dd>
+                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
                 </dl>
                 ${this.renderPurchaseCheckLink()}
             `;

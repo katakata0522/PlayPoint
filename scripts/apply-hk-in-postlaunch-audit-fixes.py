@@ -51,7 +51,7 @@ replace_once(
 replace_once(
     'js/region-expansion-config.js',
     "            linkAttention: { text: '⚠️ Country Diff', href: '../attention.html' }\n        }",
-    "            linkAttention: { text: '⚠️ Country Diff', href: '../attention.html' },\n            calDetails: 'Claim your Google Play Points Weekly Reward and log it!\\nhttps://playpoint-sim.com/in/',\n            icsFilename: 'google-play-reward-reminder-in.ics',\n            copyResultTemplate: '▼Google Play Points Calculator Result▼\\nTarget Status: {status}\\nEstimated Spending: Approx. {symbol}{yen}\\n\\nSource: Google Play Points Calculator ( {url} )',\n            tweetTextMain: '[Google Play Points Calculator]\\nI need approx. {symbol}{yen} to reach my goal \\"{status}\\"! 💰',\n            tweetTextReverse: '[Google Play Points Calculator]\\nIf I spend {symbol}{yen}, I can earn approx. {points} points! ✨'\n        }"
+    "            linkAttention: { text: '⚠️ Country Diff', href: '../attention.html' },\n            calDetails: 'Claim your Google Play Points Weekly Reward and log it!\\nhttps://playpoint-sim.com/in/',\n            icsFilename: 'google-play-reward-reminder-in.ics',\n            copyResultTemplate: '▼Google Play Points Calculator Result▼\\nTarget Status: {status}\\nEstimated Spending: Approx. {symbol}{yen}\\n\\nSource: Google Play Points Calculator ( {url} )',\n            tweetTextMain: '[Google Play Points Calculator]\\nI need approx. {symbol}{yen} to reach my goal “{status}”! 💰',\n            tweetTextReverse: '[Google Play Points Calculator]\\nIf I spend {symbol}{yen}, I can earn approx. {points} points! ✨'\n        }"
 )
 
 # 3) 金額表示: 通貨の前置/後置を地域設定で切り替える。
