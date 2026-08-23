@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#28a745">
+  <title>PlayPoint</title>
+  <script>
+    (() => {
+      const regionPaths = Object.freeze({
+        JP: '/',
+        US: '/en/',
+        KR: '/ko/',
+        TW: '/tw/',
+        HK: '/hk/',
+        IN: '/in/'
+      });
+
+      let preferredRegion = 'JP';
+      try {
+        preferredRegion = localStorage.getItem('playpointPreferredRegion') || 'JP';
+      } catch {
+        preferredRegion = 'JP';
+      }
+
+      window.location.replace(regionPaths[preferredRegion] || '/');
+    })();
+  </script>
+</head>
+<body>
+  <p>PlayPointを開いています… / Opening PlayPoint…</p>
+  <noscript><p><a href="/">PlayPointを開く</a></p></noscript>
+</body>
+</html>
