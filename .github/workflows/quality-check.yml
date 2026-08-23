@@ -24,22 +24,25 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
-
-      - name: Capture preflight failure diagnostics
-        if: failure()
+      - name: Capture build reproducibility diagnostics
         run: |
-          mkdir -p preflight-diagnostics
-          git status --short > preflight-diagnostics/status.txt
-          git diff --binary > preflight-diagnostics/generated.diff
-          cp sw.js preflight-diagnostics/sw.js
+          mkdir -p build-repro-diagnostics
+          set +e
+          node .github/scripts/verify-build-output.cjs > build-repro-diagnostics/output.txt 2>&1
+          echo "$?" > build-repro-diagnostics/exit-code.txt
+          set -e
+          git status --short > build-repro-diagnostics/status.txt
+          git diff --binary > build-repro-diagnostics/generated.diff
+          cp sw.js build-repro-diagnostics/sw.js
+          git reset --hard HEAD
 
-      - name: Upload preflight failure diagnostics
-        if: failure()
+      - name: Upload build reproducibility diagnostics
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: preflight-diagnostics-${{ github.run_id }}
-          path: preflight-diagnostics/
+          name: build-repro-diagnostics-${{ github.run_id }}
+          path: build-repro-diagnostics/
           if-no-files-found: error
           retention-days: 7
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
