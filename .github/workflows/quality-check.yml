@@ -25,6 +25,9 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
+      - name: Normalize audit helper quoting
+        run: python3 scripts/fix-hk-in-audit-helper.py
+
       - name: Apply HK/IN post-launch audit fixes
         run: python3 scripts/apply-hk-in-postlaunch-audit-fixes.py
 
