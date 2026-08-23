@@ -6,6 +6,7 @@ const CACHE_NAME = 'playpoint-calc-v20260823_1923-989fa033';
 const ASSETS = [
   './',
   './style.css?v=66b5e78c99',
+  './region-selector.css',
   './favicon.svg',
   './manifest.json',
   './icon-192.png',
@@ -19,6 +20,7 @@ const ASSETS = [
   './js/main.js?v=f80cbefcf3',
   './js/web-vitals.js',
   './js/region-navigation.js',
+  './js/region-expansion-config.js',
   './js/language-suggestion.js',
   './js/calendar-reminder.js',
   './js/pwa-install.js',
@@ -27,7 +29,9 @@ const ASSETS = [
   './js/calculator-funnel-analytics.js',
   './en/',
   './ko/',
-  './tw/'
+  './tw/',
+  './hk/',
+  './in/'
 ];
 
 // インストール時に静的アセットをキャッシュ
