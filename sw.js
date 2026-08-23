@@ -9,6 +9,7 @@ const ASSETS = [
   './region-selector.css',
   './favicon.svg',
   './manifest.json',
+  './pwa-launch.html',
   './icon-192.png',
   './icon-512.png',
   './js/analytics-core.js?v=42b5e82926',
