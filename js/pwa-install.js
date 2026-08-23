@@ -25,6 +25,16 @@ function getInstallCopy() {
             title: '下次更快開啟日記',
             body: '將此工具加到裝置，即可更快開始每週記錄。',
             button: '安裝應用程式'
+        },
+        HK: {
+            title: '下次更快開啟香港版日記',
+            body: '將香港版加到裝置後，即可更快開始每週記錄。',
+            button: '安裝應用程式'
+        },
+        IN: {
+            title: 'Open your India diary faster next time',
+            body: 'Add the India edition to your device for quicker weekly entries.',
+            button: 'Install app'
         }
     };
     return copy[STATE.currentRegion] || copy.JP;
