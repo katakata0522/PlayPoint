@@ -79,7 +79,7 @@ function buildHongKongPage(source) {
   html = html.replace('每 NT$30 獲得點數（自動帶入，可修改）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('每 NT$30 回饋率（直接輸入）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('placeholder="例如：1500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
-  html = html.replace('href="../games/" data-lang-key="linkGames">🎮 遊戲專屬計算</a>', 'href="../tw/games/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）</a>');
+  html = html.replace('href="../games/" data-lang-key="linkGames"', 'href="../tw/games/" data-lang-key="linkGames"');
   html = html.replace(/活動特別獲點率（例：每 NT\$30 3 點）/g, '活動特別獲點率（例：每 HK$7 3 點）');
   html = html.replace(/消費金額 \(NT\$\)/g, '消費金額（HK$）');
   html = html.replace(/白金級/g, '鉑金級');
@@ -108,7 +108,7 @@ function buildIndiaPage(source) {
   html = html.replace('Points per $1 (auto-filled, editable)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('Earn rate per $1 (direct entry)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
-  html = html.replace('href="../games/" data-lang-key="linkGames">🎮 Game Calculators</a>', 'href="../en/games/" data-lang-key="linkGames">🎮 Game calculators (U.S. rules, not India)</a>');
+  html = html.replace('href="../games/" data-lang-key="linkGames"', 'href="../en/games/" data-lang-key="linkGames"');
   html = html.replace(/Promotion special earn rate \(e\.g\. 3 pt \/ \$1\)/g, 'Promotion special earn rate (e.g. 3 pt / ₹5)');
   html = html.replace(/Amount spent \(USD\)/g, 'Amount spent (INR)');
   html = html.replace(/Estimate the required spending to reach Platinum or Diamond status\./g, 'Estimate the required spending to reach Platinum status in India.');
