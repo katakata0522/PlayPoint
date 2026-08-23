@@ -8,11 +8,14 @@ const rootDir = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
 
 const main = read('js/main.js');
+const regionNavigation = read('js/region-navigation.js');
 const assetSync = read('scripts/asset-sync.cjs');
 const serviceWorker = read('sw.js');
 
 assert.match(main, /import \{ installExpandedRegionResultNavigation \} from '\.\/region-result-navigation\.js';/);
 assert.match(main, /installExpandedRegionResultNavigation\(CALC, STATE\);/);
+assert.doesNotMatch(regionNavigation, /installExpandedRegionResultNavigation/);
+assert.doesNotMatch(regionNavigation, /import \{ CALC \} from '\.\/calculator\.js';/);
 assert.match(assetSync, /'js\/region-result-navigation\.js'/);
 assert.match(serviceWorker, /'\.\/js\/region-result-navigation\.js'/);
 assert.match(serviceWorker, /'\.\/hk\/'/);
