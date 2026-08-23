@@ -30,6 +30,7 @@ function createRuntime(pathname, savedRegion = null, currentRegion = null) {
   const context = {
     console: { log() {}, warn() {}, error() {} },
     CONFIGS: { JP: {}, US: {}, KR: {}, TW: {} },
+    createExpansionConfigs() { return { HK: {}, IN: {} }; },
     STATE: { currentRegion },
     CONSTANTS: { STORAGE_REGION_KEY: STORAGE_KEY, CLASS_ACTIVE: 'active' },
     UI: { showToast() {} },
@@ -39,7 +40,12 @@ function createRuntime(pathname, savedRegion = null, currentRegion = null) {
       setItem(key, value) { storage.set(key, String(value)); },
       removeItem(key) { storage.delete(key); }
     },
-    document: { querySelectorAll() { return []; } }
+    document: {
+      readyState: 'loading',
+      querySelector() { return null; },
+      querySelectorAll() { return []; },
+      addEventListener() {}
+    }
   };
   context.window = context;
 
@@ -59,7 +65,7 @@ function createRuntime(pathname, savedRegion = null, currentRegion = null) {
 }
 
 test('ルートは保存済み地域が違っても日本表示を選び、保存設定そのものは上書きしない', () => {
-  for (const staleRegion of ['US', 'KR', 'TW']) {
+  for (const staleRegion of ['US', 'KR', 'TW', 'HK', 'IN']) {
     const runtime = createRuntime('/', staleRegion);
     runtime.api.applyRegionFromPath();
 
@@ -72,7 +78,9 @@ test('言語URLは古い保存設定より優先され、現在URLの地域を�
   const cases = [
     { pathname: '/en/', expected: 'US', stale: 'KR' },
     { pathname: '/ko/', expected: 'KR', stale: 'TW' },
-    { pathname: '/tw/', expected: 'TW', stale: 'US' }
+    { pathname: '/tw/', expected: 'TW', stale: 'US' },
+    { pathname: '/hk/', expected: 'HK', stale: 'TW' },
+    { pathname: '/in/', expected: 'IN', stale: 'US' }
   ];
 
   for (const { pathname, expected, stale } of cases) {
@@ -90,7 +98,15 @@ test('言語判定は言語segmentだけに一致し、似た文字列のパス�
   assert.equal(english.api.isKoreanPath(), false);
   assert.equal(english.api.isTaiwanPath(), false);
 
-  for (const pathname of ['/english/', '/koala/', '/twin/', '/enough/']) {
+  const india = createRuntime('/in/');
+  assert.equal(india.api.isEnglishPath(), true);
+  assert.equal(india.api.isTaiwanPath(), false);
+
+  const hongKong = createRuntime('/hk/');
+  assert.equal(hongKong.api.isEnglishPath(), false);
+  assert.equal(hongKong.api.isTaiwanPath(), true);
+
+  for (const pathname of ['/english/', '/koala/', '/twin/', '/enough/', '/inside/', '/hksar-guide/']) {
     const runtime = createRuntime(pathname);
     assert.equal(runtime.api.isEnglishPath(), false, pathname);
     assert.equal(runtime.api.isKoreanPath(), false, pathname);
@@ -103,7 +119,10 @@ test('地域切替は保存値を更新し、対応する言語URLへ実際に�
     { pathname: '/', current: 'JP', next: 'US', expectedPath: '/en/' },
     { pathname: '/en/', current: 'US', next: 'JP', expectedPath: '/' },
     { pathname: '/ko/', current: 'KR', next: 'TW', expectedPath: '/tw/' },
-    { pathname: '/tw/', current: 'TW', next: 'KR', expectedPath: '/ko/' }
+    { pathname: '/tw/', current: 'TW', next: 'KR', expectedPath: '/ko/' },
+    { pathname: '/', current: 'JP', next: 'HK', expectedPath: '/hk/' },
+    { pathname: '/hk/', current: 'HK', next: 'IN', expectedPath: '/in/' },
+    { pathname: '/in/', current: 'IN', next: 'JP', expectedPath: '/' }
   ];
 
   for (const { pathname, current, next, expectedPath } of cases) {

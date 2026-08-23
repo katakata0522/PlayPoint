@@ -3,6 +3,8 @@
 import { STATE, CONSTANTS } from './config.js';
 import {
     isEnglishPath,
+    isHongKongPath,
+    isIndiaPath,
     isKoreanPath,
     isTaiwanPath,
     switchRegion
@@ -23,7 +25,7 @@ export function bindLanguageSuggestionDismiss() {
     });
 }
 
-// 言語提案バナーの表示ロジック
+// 言語だけでなく、公式条件が異なる地域は可能な範囲で地域版を優先する。
 export function checkLanguageSuggestion() {
     if (!STATE.dom.languageSuggestionBanner) return;
 
@@ -51,12 +53,22 @@ export function checkLanguageSuggestion() {
     let buttonText = '';
     let isCurrentMatch = false;
 
-    if (browserLang.startsWith('ko')) {
+    if (browserLang.startsWith('zh-hk')) {
+        targetRegion = 'HK';
+        messageText = '提供香港地區版本！';
+        buttonText = '切換至香港版';
+        isCurrentMatch = isHongKongPath();
+    } else if (browserLang.startsWith('en-in')) {
+        targetRegion = 'IN';
+        messageText = 'India-specific Play Points calculator is available!';
+        buttonText = 'Switch to India edition';
+        isCurrentMatch = isIndiaPath();
+    } else if (browserLang.startsWith('ko')) {
         targetRegion = 'KR';
         messageText = '한국어 버전이 있습니다!';
         buttonText = '한국어로 전환';
         isCurrentMatch = isKoreanPath();
-    } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+    } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh')) {
         targetRegion = 'TW';
         messageText = '提供繁體中文版本！';
         buttonText = '切換至繁體中文';

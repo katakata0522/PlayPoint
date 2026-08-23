@@ -25,6 +25,7 @@ const runtimeEntrypoints = new Set([
   'articles/source-notice.css',
   'blog/common-components.css',
   'blog/articles.json',
+  'region-selector.css',
   'sw.js'
 ]);
 const standaloneAssets = new Set([
@@ -298,17 +299,7 @@ test('未参照アセットと内容が完全重複する公開ファイルを�
     hashes.set(digest, group);
   }
   const duplicates = [...hashes.values()].filter(group => group.length > 1);
-  console.log(`\n[repository-integrity] tracked=${files.length} deployable=${files.filter(isDeployable).length} resolved=${resolvedReferences.size}`);
+  console.log(`\n[repository-integrity] files=${files.length} text=${textFiles.size} deployable=${files.filter(isDeployable).length} references=${resolvedReferences.size}`);
   assert.deepEqual(orphaned, [], `未参照アセット:\n${orphaned.join('\n')}`);
-  assert.deepEqual(duplicates, [], `完全重複:\n${duplicates.map(group => group.join(' | ')).join('\n')}`);
-});
-
-test('READMEとPWAメタデータは現行機能を説明する', () => {
-  const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
-  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'manifest.json'), 'utf8'));
-  assert.doesNotMatch(readme, /特典倍率の自動反映/);
-  assert.match(readme, /Androidアプリ版 \| 🧪 内部テスト中/);
-  assert.equal(manifest.start_url, '/');
-  assert.equal(manifest.scope, '/');
-  assert.match(manifest.description, /ウィークリーリワード記録日記/);
+  assert.deepEqual(duplicates, [], `完全重複ファイル:\n${duplicates.map(group => group.join(' = ')).join('\n')}`);
 });

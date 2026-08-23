@@ -16,6 +16,8 @@ const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
+const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
+const { syncRegionHreflang } = require('./region-hreflang-sync.cjs');
 const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
 const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
 const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
@@ -44,6 +46,8 @@ console.log(`[build-html] synchronized static article usability: ${staticUsabili
 
 writeLocalizedPages(rootDir, indexHtml, locales);
 syncVisitorThanks(rootDir);
+syncRegionPages(rootDir);
+syncRegionHreflang(rootDir);
 
 syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
@@ -69,6 +73,7 @@ syncAnalyticsRuntimeScripts(rootDir);
 syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);
+syncRegionSitemap(rootDir);
 
 generateBlogFeeds(rootDir);
 

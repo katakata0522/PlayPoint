@@ -16,6 +16,14 @@ const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
     TW: {
         baseRateLabel: '基本獲點率（自動帶入，可修改）',
         multiplierLabel: '活動特別獲點率（例：每 NT$30 3 點）'
+    },
+    HK: {
+        baseRateLabel: '每 HK$7 獲得點數（自動帶入，可修改）',
+        multiplierLabel: '活動特別獲點率（例：每 HK$7 3 點）'
+    },
+    IN: {
+        baseRateLabel: 'Points per ₹5 (auto-filled, editable)',
+        multiplierLabel: 'Promotion special earn rate (e.g. 3 pt / ₹5)'
     }
 });
 
