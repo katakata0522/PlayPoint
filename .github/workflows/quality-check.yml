@@ -31,6 +31,9 @@ jobs:
       - name: Apply HK/IN post-launch audit fixes
         run: python3 scripts/apply-hk-in-postlaunch-audit-fixes.py
 
+      - name: Synchronize generated PR artifacts
+        run: node scripts/prepare-pr.cjs
+
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
