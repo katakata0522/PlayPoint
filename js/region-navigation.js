@@ -103,7 +103,7 @@ export function ensureRegionSelector() {
         if (!wrapper.contains(event.target)) setMenuOpen(wrapper, false);
     });
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
+        if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
             setMenuOpen(wrapper, false);
             toggle.focus();
         }
