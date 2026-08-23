@@ -26,3 +26,20 @@ jobs:
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
+
+      - name: Capture preflight failure diagnostics
+        if: failure()
+        run: |
+          mkdir -p preflight-diagnostics
+          git status --short > preflight-diagnostics/status.txt
+          git diff --binary > preflight-diagnostics/generated.diff
+          cp sw.js preflight-diagnostics/sw.js
+
+      - name: Upload preflight failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: preflight-diagnostics-${{ github.run_id }}
+          path: preflight-diagnostics/
+          if-no-files-found: error
+          retention-days: 7
