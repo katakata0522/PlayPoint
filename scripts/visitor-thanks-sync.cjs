@@ -41,7 +41,7 @@ function applyVisitorThanksToHtml(html, config) {
     '$1\n    <link rel="stylesheet" href="../visitor-thanks.css">'
   );
 
-  const descriptionPattern = /(<p id="site-description"\b[^>]*>[\s\S]*?<\/p>)/;
+  const descriptionPattern = /(<p\s+id="site-description"[^>]*>[\s\S]*?<\/p>)/;
   if (!descriptionPattern.test(output)) {
     throw new Error('visitor-thanks: site description anchor was not found');
   }
