@@ -2,9 +2,12 @@
 
 import { CONFIGS, STATE, CONSTANTS } from './config.js';
 import { UI } from './ui.js';
+import { CALC } from './calculator.js';
 import { createExpansionConfigs } from './region-expansion-config.js';
+import { installExpandedRegionResultNavigation } from './region-result-navigation.js';
 
 Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));
+installExpandedRegionResultNavigation(CALC, STATE);
 
 const REGION_PATHS = Object.freeze({
     JP: '',
