@@ -16,6 +16,8 @@ const targets = [
   { url: 'https://playpoint-sim.com/en/', contains: 'Google Play Points Calculator' },
   { url: 'https://playpoint-sim.com/ko/', contains: '구글 플레이 포인트 계산기' },
   { url: 'https://playpoint-sim.com/tw/', contains: 'Google Play 點數計算器' },
+  { url: 'https://playpoint-sim.com/hk/', contains: 'Google Play Points 計算器（香港）' },
+  { url: 'https://playpoint-sim.com/in/', contains: 'Google Play Points Calculator for India' },
   { url: 'https://playpoint-sim.com/campaign/2x/', contains: '特別獲得率2pt/100円' },
   { url: 'https://playpoint-sim.com/campaign/3x/', contains: '特別獲得率3pt/100円' },
   { url: 'https://playpoint-sim.com/campaign/wait/', contains: 'キャンペーン待ち判断の早見表' },
