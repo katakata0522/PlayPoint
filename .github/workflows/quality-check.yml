@@ -34,6 +34,7 @@ jobs:
           git status --short > build-repro-diagnostics/status.txt
           git diff --binary > build-repro-diagnostics/generated.diff
           cp sw.js build-repro-diagnostics/sw.js
+          cp sitemap.xml build-repro-diagnostics/sitemap.xml
           git reset --hard HEAD
 
       - name: Upload build reproducibility diagnostics
