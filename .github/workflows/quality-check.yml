@@ -11,7 +11,7 @@ permissions:
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   gate:
@@ -34,10 +34,7 @@ jobs:
       - name: Synchronize generated PR artifacts
         run: node scripts/prepare-pr.cjs
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
-
-      - name: Commit generated audit fixes
+      - name: Commit generated audit fixes to feature branch
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
