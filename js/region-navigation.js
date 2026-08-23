@@ -40,6 +40,40 @@ function getRootPrefix() {
     return isRegionalDirectoryPath() ? '../' : './';
 }
 
+export function redirectPwaLaunchToPreferredRegion() {
+    if (!window.location || isRegionalDirectoryPath()) return false;
+
+    let url;
+    try {
+        url = new URL(window.location.href);
+    } catch {
+        return false;
+    }
+    if (url.searchParams.get('pwa') !== '1') return false;
+
+    let preferredRegion = null;
+    try {
+        preferredRegion = localStorage.getItem(CONSTANTS.STORAGE_REGION_KEY);
+    } catch (error) {
+        console.warn('PWA地域設定の読み込みに失敗しました:', error);
+    }
+
+    const targetPath = preferredRegion && preferredRegion !== 'JP'
+        ? REGION_PATHS[preferredRegion]
+        : '';
+    if (targetPath) {
+        window.location.replace(new URL(`/${targetPath}`, window.location.origin).href);
+        return true;
+    }
+
+    url.searchParams.delete('pwa');
+    const cleaned = `${url.pathname}${url.search}${url.hash}`;
+    if (window.history?.replaceState) {
+        window.history.replaceState(null, '', cleaned || '/');
+    }
+    return false;
+}
+
 function ensureRegionSelectorStylesheet() {
     if (document.querySelector('link[data-region-selector-style]')) return;
     const link = document.createElement('link');
@@ -154,6 +188,10 @@ export function switchRegion(newRegion, updateUIForRegion = () => {}) {
     updateUIForRegion();
 }
 
+if (typeof window !== 'undefined') {
+    redirectPwaLaunchToPreferredRegion();
+}
+
 if (typeof document !== 'undefined') {
     const bootRegionSelector = () => ensureRegionSelector();
     if (document.readyState === 'loading') {
@@ -175,6 +213,7 @@ if (typeof window !== 'undefined' && window.__TEST_ENV__) {
         isTaiwanRegionPath,
         isKoreanPath,
         isTaiwanPath,
+        redirectPwaLaunchToPreferredRegion,
         switchRegion
     };
 }
