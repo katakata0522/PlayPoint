@@ -1,12 +1,13 @@
 name: PR Gate
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -18,30 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-      - name: Checkout PR head branch
+      - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.head_ref }}
+          persist-credentials: false
 
-      - name: Synchronize diagnosed generated outputs
-        if: github.event.pull_request.number == 147 && github.head_ref == 'fix/high-priority-audit'
-        env:
-          HEAD_BRANCH: ${{ github.head_ref }}
-        run: |
-          MODIFIED_DATE="$(node -e "const fs=require('fs');const s=fs.readFileSync('index.html','utf8');const m=s.match(/<meta name=\"last-modified\" content=\"(\\d{4}-\\d{2}-\\d{2})\">/);if(!m)process.exit(1);process.stdout.write(m[1])")"
-          ASSET_VERSION="$(node -e "const fs=require('fs');const s=fs.readFileSync('sw.js','utf8');const m=s.match(/playpoint-calc-v([0-9_]+)-[a-f0-9]+/);if(!m)process.exit(1);process.stdout.write(m[1])")"
-
-          PLAYPOINT_MODIFIED_DATE="$MODIFIED_DATE" \
-          PLAYPOINT_ASSET_VERSION="$ASSET_VERSION" \
-          node scripts/build-html.js
-
-          git add sitemap.xml sw.js
-          if git diff --cached --quiet; then
-            echo "Generated outputs are already synchronized."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "build: synchronize generated outputs"
-          git push origin "HEAD:$HEAD_BRANCH"
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs --prepare-deploy
