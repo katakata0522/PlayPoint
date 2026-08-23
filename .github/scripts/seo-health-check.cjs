@@ -29,6 +29,8 @@ const pageUrls = [
   `${BASE_URL}/attention.html`,
   `${BASE_URL}/sitemap.html`,
   `${BASE_URL}/latest/`,
+  `${BASE_URL}/hk/`,
+  `${BASE_URL}/in/`,
   `${BASE_URL}/status/diamond/`,
   `${BASE_URL}/status/platinum/`,
   `${BASE_URL}/status/gold/`,
