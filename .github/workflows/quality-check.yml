@@ -31,6 +31,9 @@ jobs:
       - name: Apply HK/IN post-launch audit fixes
         run: python3 scripts/apply-hk-in-postlaunch-audit-fixes.py
 
+      - name: Apply region-aware weekly reward sharing fix
+        run: python3 scripts/apply-reward-share-audit-fix.py
+
       - name: Synchronize generated PR artifacts
         run: node scripts/prepare-pr.cjs
 
@@ -45,5 +48,5 @@ jobs:
             echo "No audit changes to commit"
             exit 0
           fi
-          git commit -m "香港・インド地域版の監査修正を適用 [audit-fix]"
+          git commit -m "地域別週次リワード共有の監査修正を適用 [audit-fix]"
           git push origin HEAD:${{ github.head_ref || github.ref_name }}
