@@ -2,16 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-
-const MANUAL_LP_FILES = Object.freeze([
-  'status/silver/index.html',
-  'status/gold/index.html',
-  'status/platinum/index.html',
-  'status/diamond/index.html',
-  'campaign/2x/index.html',
-  'campaign/3x/index.html',
-  'campaign/wait/index.html'
-]);
+const { MANUAL_LP_FILES } = require('./manual-lp-targets.cjs');
 
 const JSON_LD_SCRIPT_PATTERN = /<script\b([^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*)>([\s\S]*?)<\/script>/gi;
 const LP_FAQ_SECTION_PATTERN = /<section\b(?=[^>]*\bclass\s*=\s*["'][^"']*\blp-faq\b[^"']*["'])[^>]*>([\s\S]*?)<\/section>/i;
