@@ -399,7 +399,6 @@
         const categoryBadge = document.querySelector('.badge, .hero-badge');
         if (categoryBadge) {
             const text = categoryBadge.textContent.trim();
-            // カテゴリーの表示名が含まれる場合だけ抽出する。
             const match = text.match(/ランク|トラブル|使い方|キャンペーン/);
             if (match) return match[0];
         }
@@ -542,7 +541,7 @@
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
                     if (scrollHeight > 0) {
                         const scrolled = Math.min(100, Math.max(0, (scrollTop / scrollHeight) * 100));
                         progressBar.style.width = scrolled + '%';
@@ -556,6 +555,9 @@
 
     function setupReadingTime() {
         if (document.querySelector('.reading-time-badge')) return;
+        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
+        if (targetMeta && /読了|min read|분 소요|分鐘閱讀/.test(targetMeta.textContent || '')) return; // 既に読了目安がある場合は重複追加しない
+
         const content = document.querySelector('.content, .main-content-column, article');
         if (!content) return;
 
@@ -582,7 +584,6 @@
         badge.className = 'reading-time-badge';
         badge.textContent = labels[loc] || labels.ja;
 
-        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
         if (targetMeta) {
             targetMeta.appendChild(badge);
         } else {
@@ -619,7 +620,7 @@
             },
             ko: {
                 title: '💡 내 조건에서 필요한 금액은?',
-                sub: '내 계정 조건으로 바로 계산',
+                sub: '내 계정 조건으로 바로 計算',
                 btn: '계산기 열기',
                 href: '/ko/',
                 closeAria: '닫기'
@@ -650,6 +651,8 @@
         closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             cta.classList.remove('visible');
+            const scrollBtn = document.getElementById('scroll-to-top');
+            if (scrollBtn) scrollBtn.classList.remove('with-sticky-cta');
             sessionStorage.setItem('dismiss_mobile_sticky_cta', '1');
             setTimeout(() => cta.remove(), 300);
         });
@@ -663,11 +666,14 @@
                     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
                     const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+                    const scrollBtn = document.getElementById('scroll-to-top');
 
                     if (progress > 0.20 && progress < 0.96) {
                         cta.classList.add('visible');
+                        if (scrollBtn) scrollBtn.classList.add('with-sticky-cta');
                     } else {
                         cta.classList.remove('visible');
+                        if (scrollBtn) scrollBtn.classList.remove('with-sticky-cta');
                     }
                     ticking = false;
                 });
