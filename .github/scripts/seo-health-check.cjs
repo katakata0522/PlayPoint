@@ -10,6 +10,7 @@ const HTTP_CONCURRENCY = 4;
 const MAX_ATTEMPTS = 2;
 const RETRY_DELAY_MS = 1500;
 const REPRESENTATIVE_OGP_URL = `${BASE_URL}/articles/ogp/weekly-reward.png`;
+const ENFORCE_LATEST_HUB_NEXT_CHECK = process.env.LATEST_HUB_ENFORCE_NEXT_CHECK === '1';
 const RELATED_HEADING_PATTERN = /(関連記事|あわせて読みたい|次に確認したい|Related guides|Related articles|Read next|관련|함께 읽|相關|延伸閱讀)/i;
 const SCOPE_NOTE_PATHS = new Set([
   '/articles/2026-07-24-play-points-100-value.html',
@@ -122,6 +123,7 @@ async function checkLatestHub() {
 
   return validateLatestHub(body, {
     enforceFreshness: true,
+    enforceNextCheckDates: ENFORCE_LATEST_HUB_NEXT_CHECK,
     maxAgeDays: 14
   });
 }

@@ -1,6 +1,6 @@
 # 最新情報ハブ運用手順
 
-最終更新: 2026-07-26
+最終更新: 2026-08-24
 
 ## 目的
 
@@ -28,13 +28,13 @@
 
 ## 更新手順
 
-1. 上記4ページを実際に開き、対象箇所を確認する。
+1. 上記公式ページと、ページ内で個別に参照している公式情報を実際に開き、対象箇所を確認する。
 2. 既存の計算条件、記事、計算機設定と差分を照合する。
 3. 変更がない場合も、更新ログへ「何を確認し、修正が不要だったか」を記録する。
 4. 変更がある場合は、最新情報ハブだけでなく関連する計算設定・記事・テストも同じPRで更新する。
 5. `data-latest-verified`、各カードの検証日、次回確認目安を実際の確認結果に合わせる。
 6. `<meta name="last-modified">`、`article:modified_time`、JSON-LDの`dateModified`、ページ表示日を一致させる。
-7. `scripts/html-sync.cjs` の `CONTENT_DATE_OVERRIDES['latest/index.html']` を同じ日付へ更新する。
+7. `scripts/content-dates.cjs` の `CONTENT_DATE_OVERRIDES['latest/index.html']` は `data-latest-verified` から自動導出されるため、同じ日付を別の定数として重複登録しない。
 8. ローカル検証、PR、CI、本番確認を行う。
 
 確認せずに日付だけを更新しない。ビルド日やデプロイ日を、公式情報の確認日として自動設定しない。
@@ -51,8 +51,13 @@
 
 ```bash
 node scripts/latest-hub-audit.cjs
+node scripts/latest-hub-audit.cjs --fresh --next-check
 node --test tests/latest-hub-operations.test.cjs
 node .github/scripts/preflight.cjs
 ```
 
-週次のSEO Health Checkでは、本番の`data-latest-verified`が14日を超えていないか確認する。失敗した場合は、日付だけを直さず公式情報を再確認してから更新する。
+通常の構造検証では、公式参照、確認日、次回確認目安の形式と前後関係を確認する。
+
+週次のSEO Health Checkでは、`data-latest-verified`が14日を超えていないことに加えて、ページに明示した「次回確認目安」を超過していないか確認する。失敗した場合は、日付だけを直さず公式情報を再確認してから更新する。
+
+本番デプロイ後のSEO検証は、公式確認から14日を超えた情報や構造上の問題は失敗させるが、「次回確認目安」の超過だけではデプロイを未検証扱いにしない。確認予定日の遵守とデプロイ成否を分離し、情報鮮度の監視は週次SEO Health Checkが担当する。

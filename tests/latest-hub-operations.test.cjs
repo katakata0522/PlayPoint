@@ -6,40 +6,55 @@ const path = require('node:path');
 const test = require('node:test');
 const { CONTENT_DATE_OVERRIDES } = require('../scripts/html-sync.cjs');
 const {
-  getLatestHubVerificationDate,
+  extractVerificationDate,
   validateLatestHub
 } = require('../scripts/latest-hub-audit.cjs');
 
 const root = path.resolve(__dirname, '..');
 const latestPath = path.join(root, 'latest', 'index.html');
+// 実ページそのものの契約確認と、日付ロジックの境界値テストを分離する。
+// 境界値テストは最小の合成HTMLを使い、公開ページの本文や更新日へ結合させない。
+const latestHtml = fs.readFileSync(latestPath, 'utf8');
+const verificationDate = extractVerificationDate(latestHtml);
 
-test('最新情報ハブは確認範囲・公式参照・確認日を明示する', () => {
-  const html = fs.readFileSync(latestPath, 'utf8');
-  const result = validateLatestHub(html);
-  const verificationDate = getLatestHubVerificationDate(root);
+function buildLatestHubFixture({ verified = '2026-08-24', nextCheck = '2026-08-28' } = {}) {
+  return `
+    <time data-latest-verified datetime="${verified}">${verified}</time>
+    <span>公開公式情報で確認</span>
+    <span>アカウント内で確認</span>
+    <span>未確認情報</span>
+    <section data-source-scope="public"></section>
+    <section data-source-scope="account"></section>
+    <a href="https://support.google.com/googleplay/answer/9077312">公式</a>
+    <a href="https://support.google.com/googleplay/answer/9077192">公式</a>
+    <a href="https://support.google.com/googleplay/answer/9080348">公式</a>
+    <a href="https://support.google.com/googleplay/answer/9077247">公式</a>
+    <span>次回確認目安: ${nextCheck}頃</span>
+  `;
+}
+
+test('最新情報ハブは確認範囲・公式参照・確認日・次回確認目安を明示する', () => {
+  const result = validateLatestHub(latestHtml);
 
   assert.equal(result.verificationDate, verificationDate);
-  assert.ok(html.includes(`<meta name="last-modified" content="${verificationDate}">`));
-  assert.match(html, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
-  assert.ok(html.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
-  assert.ok(html.includes('次回確認目安: 2026-08-21頃'));
-  assert.ok(html.includes('次回確認目安: 2026-08-20頃'));
-  assert.match(html, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
+  assert.ok(result.nextCheckDates.length > 0, '次回確認目安が抽出できません');
+  assert.ok(result.nextCheckDates.every(date => /^\d{4}-\d{2}-\d{2}$/.test(date)));
+  assert.ok(latestHtml.includes(`<meta name="last-modified" content="${verificationDate}">`));
+  assert.match(latestHtml, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
+  assert.ok(latestHtml.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
+  assert.match(latestHtml, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
 });
 
 test('最新情報ハブは週次3制度とクエストを別項目として扱う', () => {
-  const html = fs.readFileSync(latestPath, 'utf8');
-
-  assert.ok(html.includes('通常週次｜公開公式情報で確認'));
-  assert.ok(html.includes('スーパー週次｜公開公式情報で確認'));
-  assert.ok(html.includes('Play Pass週次｜公開公式情報で確認'));
-  assert.ok(html.includes('クエスト｜対象者はアカウント内で確認'));
-  assert.ok(html.includes('../articles/2026-07-31-super-weekly-reward.html'));
-  assert.ok(html.includes('../articles/2026-07-31-google-play-quests.html'));
+  assert.ok(latestHtml.includes('通常週次｜公開公式情報で確認'));
+  assert.ok(latestHtml.includes('スーパー週次｜公開公式情報で確認'));
+  assert.ok(latestHtml.includes('Play Pass週次｜公開公式情報で確認'));
+  assert.ok(latestHtml.includes('クエスト｜対象者はアカウント内で確認'));
+  assert.ok(latestHtml.includes('../articles/2026-07-31-super-weekly-reward.html'));
+  assert.ok(latestHtml.includes('../articles/2026-07-31-google-play-quests.html'));
 });
 
 test('生成処理は公開ページの公式確認日を正本として使い、確認していない日に進めない', () => {
-  const verificationDate = getLatestHubVerificationDate(root);
   const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
 
   assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], verificationDate);
@@ -55,26 +70,56 @@ test('生成処理は公開ページの公式確認日を正本として使い�
   );
 });
 
-test('鮮度検査は14日を超えた確認日を検出する', () => {
-  const html = fs.readFileSync(latestPath, 'utf8');
+test('鮮度検査は確認日から14日を超えた状態を検出する', () => {
+  const html = buildLatestHubFixture({ verified: '2026-08-01', nextCheck: '2026-08-31' });
 
   assert.throws(
     () => validateLatestHub(html, {
       enforceFreshness: true,
       maxAgeDays: 14,
-      now: new Date('2026-09-04T00:00:00Z')
+      now: new Date('2026-08-16T12:00:00+09:00')
     }),
-    /公式確認から16日経過/
+    /公式確認から15日経過/
+  );
+});
+
+test('次回確認目安の期限超過は明示的な監視時だけ失敗させる', () => {
+  const html = buildLatestHubFixture({ verified: '2026-08-01', nextCheck: '2026-08-10' });
+  const overdueNow = new Date('2026-08-11T12:00:00+09:00');
+
+  assert.doesNotThrow(() => validateLatestHub(html, {
+    enforceFreshness: true,
+    maxAgeDays: 365,
+    now: overdueNow
+  }));
+
+  assert.throws(
+    () => validateLatestHub(html, {
+      enforceFreshness: true,
+      enforceNextCheckDates: true,
+      maxAgeDays: 365,
+      now: overdueNow
+    }),
+    /次回確認目安を1日超過/
+  );
+});
+
+test('次回確認目安は公式確認日より前に設定できない', () => {
+  const invalidHtml = buildLatestHubFixture({ verified: '2026-08-24', nextCheck: '2026-08-23' });
+
+  assert.throws(
+    () => validateLatestHub(invalidHtml),
+    /次回確認目安が最終確認日より前/
   );
 });
 
 test('鮮度検査は日本時間の日付をUTC前日の未来日と誤判定しない', () => {
-  const html = fs.readFileSync(latestPath, 'utf8');
+  const html = buildLatestHubFixture({ verified: '2026-08-24', nextCheck: '2026-08-28' });
 
   assert.doesNotThrow(() => validateLatestHub(html, {
     enforceFreshness: true,
     maxAgeDays: 14,
-    now: new Date('2026-08-18T15:30:00Z')
+    now: new Date('2026-08-24T00:30:00+09:00')
   }));
 });
 

@@ -22,7 +22,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check technical SEO basics
+      - name: Check technical SEO basics and latest hub schedule
+        env:
+          LATEST_HUB_ENFORCE_NEXT_CHECK: '1'
         run: node .github/scripts/seo-health-check.cjs
 
       - name: Check production internal links
