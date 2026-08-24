@@ -16,6 +16,7 @@ import {
 } from './region-navigation.js';
 import { bindLanguageSuggestionDismiss, checkLanguageSuggestion } from './language-suggestion.js';
 import { bindCalendarReminderEvents, downloadICS } from './calendar-reminder.js';
+import { initFridayRewardBanner } from './friday-banner.js';
 import { initPwaInstallPrompt } from './pwa-install.js';
 import { trackWidgetReferral } from './widget-referral.js';
 import { registerServiceWorker } from './service-worker-registration.js';
@@ -291,6 +292,7 @@ export function init() {
     updateArticleCount();
     SHARE.applyFromUrl();
     checkLanguageSuggestion();
+    initFridayRewardBanner();
     trackWidgetReferral();
 
     registerServiceWorker();

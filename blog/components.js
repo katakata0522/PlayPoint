@@ -259,6 +259,50 @@
         headings[0].insertAdjacentElement('beforebegin', tocContainer);
     }
 
+    function setupFridayRewardBanner() {
+        const now = new Date();
+        if (now.getDay() !== 5) return; // 5 is Friday only!
+
+        const todayStr = now.toISOString().slice(0, 10);
+        if (sessionStorage.getItem('dismiss_friday_banner') === todayStr) return;
+
+        const container = document.querySelector('.blog-main, .container, .main-content-column, article, main');
+        if (!container || document.querySelector('.friday-reward-notice')) return;
+
+        const banner = document.createElement('div');
+        banner.className = 'friday-reward-notice';
+        banner.setAttribute('role', 'region');
+        banner.setAttribute('aria-label', '金曜ウィークリーリワードお知らせ');
+
+        banner.innerHTML = `
+            <button class="friday-reward-notice__close" aria-label="閉じる">&times;</button>
+            <div class="friday-reward-notice__lead">🎉 本日は金曜日！ウィークリーリワード更新日です</div>
+            <div class="friday-reward-notice__body">今週のポイントはもう受け取りましたか？受け取った結果は「ほくほくリワード日記」に記録しておきましょう！</div>
+            <div class="friday-reward-notice__actions">
+                <a href="../#diary" class="friday-reward-notice__btn friday-reward-notice__btn--primary">📝 リワード日記をつける</a>
+                <a href="../articles/2025-12-25-weekly-reward.html" class="friday-reward-notice__btn friday-reward-notice__btn--secondary">📖 受け取り方ガイド</a>
+            </div>
+        `;
+
+        const closeBtn = banner.querySelector('.friday-reward-notice__close');
+        closeBtn.addEventListener('click', () => {
+            sessionStorage.setItem('dismiss_friday_banner', todayStr);
+            banner.style.opacity = '0';
+            banner.style.transform = 'translateY(-8px)';
+            banner.style.transition = 'all 0.2s ease';
+            setTimeout(() => banner.remove(), 200);
+        });
+
+        const targetInsert = document.querySelector('.filter-bar, .hero-meta, .article-meta, .hero');
+        if (targetInsert && targetInsert.nextSibling) {
+            targetInsert.parentNode.insertBefore(banner, targetInsert.nextSibling);
+        } else if (container.firstChild) {
+            container.insertBefore(banner, container.firstChild);
+        } else {
+            container.appendChild(banner);
+        }
+    }
+
     ensureCommonStyles();
     void ensureAnalyticsCore();
     applyArticlePresentationSettings();
@@ -269,6 +313,7 @@
         setupBlogAdsense();
         renderCommonComponents();
         generateTableOfContents();
+        setupFridayRewardBanner();
     });
 
 })();
