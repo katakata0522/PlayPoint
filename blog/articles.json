@@ -13,7 +13,7 @@
     ],
     "description": "ウマ娘5.5周年ハーフアニバーサリーが開幕！無料最大100連、新ウマ娘エピファネイア登場、SSR引換券付きジュエルや回数限定パックの課金効率を徹底解説。Google Play Points還元を活かして無理なくお祭りを楽しむ賢い立ち回りをまとめました。",
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
-    "thumbnail": "../articles/ogp/campaign.png"
+    "thumbnail": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png"
   },
   {
     "id": "play-points-locked",
@@ -28,7 +28,7 @@
     ],
     "description": "Google Play Pointsが『利用できません』『アカウントに問題があります』と表示された時に、表示不具合とアカウント制限を切り分け、サポートへ伝える情報まで整理します。",
     "file": "../articles/2026-08-19-play-points-locked.html",
-    "thumbnail": "../articles/ogp/getting-started.png"
+    "thumbnail": "../articles/ogp/2026-08-19-play-points-locked.png"
   },
   {
     "id": "install-offer-points-not-received",
@@ -43,7 +43,7 @@
     ],
     "description": "アプリを試すPlay Points特典が付かない時に、初回インストール、24時間以内に2分以上利用、パーソナライズ設定、対象アカウントを順番に確認します。",
     "file": "../articles/2026-08-19-install-offer-points-not-received.html",
-    "thumbnail": "../articles/ogp/campaign.png"
+    "thumbnail": "../articles/ogp/2026-08-19-install-offer-points-not-received.png"
   },
   {
     "id": "redeemed-item-not-received",
@@ -58,7 +58,7 @@
     ],
     "description": "Play Pointsで交換したゲーム内アイテムが届かない時に、ポイント履歴、再起動、Playストア更新、ゲーム運営への問い合わせまで順番に切り分けます。",
     "file": "../articles/2026-08-19-redeemed-item-not-received.html",
-    "thumbnail": "../articles/ogp/best-use.png"
+    "thumbnail": "../articles/ogp/2026-08-19-redeemed-item-not-received.png"
   },
   {
     "id": "web-store-external-billing-points",
@@ -73,7 +73,7 @@
     ],
     "description": "ゲーム公式Webストアや代替課金とGoogle Play課金の違いを整理し、Play Points・Play残高・特典の扱いと実質的なお得さの比較方法を解説します。",
     "file": "../articles/2026-08-19-web-store-external-billing-points.html",
-    "thumbnail": "../articles/ogp/campaign.png"
+    "thumbnail": "../articles/ogp/2026-08-19-web-store-external-billing-points.png"
   },
   {
     "id": "play-points-google-store",
@@ -88,7 +88,7 @@
     ],
     "description": "日本でPlay PointsをGoogle Store用プロモーションコードへ交換できる場合の仕組みと、Googleストアポイント・Playクレジットとの違いを整理します。",
     "file": "../articles/2026-08-19-play-points-google-store.html",
-    "thumbnail": "../articles/ogp/getting-started.png"
+    "thumbnail": "../articles/ogp/2026-08-19-play-points-google-store.png"
   },
   {
     "id": "tgs-google-play-vip",
