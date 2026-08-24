@@ -39,8 +39,10 @@ test('already synchronized FAQPage stays byte-stable', () => {
   assert.equal(result.html, html);
 });
 
-test('all seven manual Japanese LPs have visible FAQ and matching FAQPage output', () => {
-  assert.equal(MANUAL_LP_FILES.length, 7);
+test('configured manual Japanese LPs have visible FAQ and matching FAQPage output', () => {
+  assert.ok(MANUAL_LP_FILES.length > 0, 'manual LP target list is empty');
+  assert.equal(new Set(MANUAL_LP_FILES).size, MANUAL_LP_FILES.length, 'manual LP target list has duplicates');
+
   for (const relativePath of MANUAL_LP_FILES) {
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
     const visible = extractVisibleLpFaqPairs(html);

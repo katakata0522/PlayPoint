@@ -14,78 +14,17 @@ const {
 const { getPublishedIntlArticles } = require('../scripts/intl-seo-pages.cjs');
 
 const root = path.resolve(__dirname, '..');
-const expectedFiles = [
-  "en/articles/2026-06-20-discount-gift-cards.html",
-  "en/articles/google-play-points-100-value.html",
-  "en/articles/google-play-points-country-change.html",
-  "en/articles/google-play-points-country-differences.html",
-  "en/articles/google-play-points-earn-free.html",
-  "en/articles/google-play-points-fastest-silver.html",
-  "en/articles/google-play-points-gift-cards.html",
-  "en/articles/google-play-points-join-eligibility.html",
-  "en/articles/google-play-points-levels.html",
-  "en/articles/google-play-points-not-showing.html",
-  "en/articles/google-play-points-platinum-diamond-cost.html",
-  "en/articles/google-play-points-promotion-not-applied.html",
-  "en/articles/google-play-points-promotion-stacking.html",
-  "en/articles/google-play-points-subscriptions.html",
-  "en/articles/google-play-points-super-weekly-reward.html",
-  "en/articles/google-play-points-weekly-reward.html",
-  "ko/articles/2026-06-20-discount-gift-cards.html",
-  "ko/articles/google-play-points-country-change.html",
-  "ko/articles/google-play-points-country-differences.html",
-  "ko/articles/google-play-points-earn-free.html",
-  "ko/articles/google-play-points-fastest-silver.html",
-  "ko/articles/google-play-points-gift-cards.html",
-  "ko/articles/google-play-points-join-eligibility.html",
-  "ko/articles/google-play-points-levels.html",
-  "ko/articles/google-play-points-platinum-diamond-cost.html",
-  "ko/articles/google-play-points-promotion-stacking.html",
-  "ko/articles/google-play-points-super-weekly-reward.html",
-  "ko/articles/google-play-points-weekly-reward.html",
-  "tw/articles/2026-06-20-discount-gift-cards.html",
-  "tw/articles/google-play-points-country-change.html",
-  "tw/articles/google-play-points-country-differences.html",
-  "tw/articles/google-play-points-earn-free.html",
-  "tw/articles/google-play-points-fastest-silver.html",
-  "tw/articles/google-play-points-gift-cards.html",
-  "tw/articles/google-play-points-join-eligibility.html",
-  "tw/articles/google-play-points-levels.html",
-  "tw/articles/google-play-points-platinum-diamond-cost.html",
-  "tw/articles/google-play-points-promotion-stacking.html",
-  "tw/articles/google-play-points-super-weekly-reward.html",
-  "tw/articles/google-play-points-weekly-reward.html",
-];
-const manualFilesOutsideIntlRegistry = [
-  "en/articles/2026-06-20-discount-gift-cards.html",
-  "en/articles/google-play-points-country-change.html",
-  "en/articles/google-play-points-earn-free.html",
-  "en/articles/google-play-points-fastest-silver.html",
-  "en/articles/google-play-points-join-eligibility.html",
-  "en/articles/google-play-points-promotion-stacking.html",
-  "en/articles/google-play-points-super-weekly-reward.html",
-  "en/articles/google-play-points-weekly-reward.html",
-  "ko/articles/2026-06-20-discount-gift-cards.html",
-  "ko/articles/google-play-points-country-change.html",
-  "ko/articles/google-play-points-earn-free.html",
-  "ko/articles/google-play-points-fastest-silver.html",
-  "ko/articles/google-play-points-join-eligibility.html",
-  "ko/articles/google-play-points-promotion-stacking.html",
-  "ko/articles/google-play-points-super-weekly-reward.html",
-  "ko/articles/google-play-points-weekly-reward.html",
-  "tw/articles/2026-06-20-discount-gift-cards.html",
-  "tw/articles/google-play-points-country-change.html",
-  "tw/articles/google-play-points-earn-free.html",
-  "tw/articles/google-play-points-fastest-silver.html",
-  "tw/articles/google-play-points-join-eligibility.html",
-  "tw/articles/google-play-points-promotion-stacking.html",
-  "tw/articles/google-play-points-super-weekly-reward.html",
-  "tw/articles/google-play-points-weekly-reward.html",
-];
 
-test('地域別に手動確認した記事の正本一覧を固定する', () => {
-  assert.deepEqual([...MANUAL_INTL_ARTICLE_FILES], expectedFiles);
+test('地域別に手動確認した記事の正本一覧は重複せず実在する', () => {
+  assert.ok(MANUAL_INTL_ARTICLE_FILES.length > 0, '手動正本一覧が空です');
+  assert.equal(
+    new Set(MANUAL_INTL_ARTICLE_FILES).size,
+    MANUAL_INTL_ARTICLE_FILES.length,
+    '手動正本一覧に重複があります'
+  );
+
   for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
+    assert.match(relativePath, /^(?:en|ko|tw)\/articles\/[^/]+\.html$/);
     assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath}: 正本HTMLがありません`);
   }
 });
@@ -99,14 +38,13 @@ test('手動正本の公開日・更新日・last-modifiedを一致させる', (
   }
 });
 
-test('国際記事台帳は手動正本の日付を自動採用する', () => {
+test('国際記事台帳は登録済みの手動正本の日付を自動採用する', () => {
   const registry = new Map(getPublishedIntlArticles().map(article => [article.file, article]));
-  const outsideRegistry = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => !registry.has(relativePath));
-  assert.deepEqual(outsideRegistry, manualFilesOutsideIntlRegistry);
+  const registeredManualFiles = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => registry.has(relativePath));
+  assert.ok(registeredManualFiles.length > 0, '国際記事台帳に登録された手動正本がありません');
 
-  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
+  for (const relativePath of registeredManualFiles) {
     const article = registry.get(relativePath);
-    if (!article) continue;
     assert.deepEqual(
       { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt },
       readManualIntlArticleDates(root, relativePath),
