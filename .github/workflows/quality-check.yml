@@ -17,7 +17,7 @@ jobs:
   gate:
     name: PR Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 10
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -26,3 +26,25 @@ jobs:
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
+
+      # Temporary diagnostics for PR #142. These only run after preflight fails;
+      # remove them once the failing phase is identified.
+      - name: Diagnose JavaScript syntax
+        if: failure()
+        run: node .github/scripts/verify-js-syntax.cjs
+
+      - name: Diagnose click depth
+        if: failure()
+        run: node scripts/site-click-depth.cjs
+
+      - name: Diagnose regression tests
+        if: failure()
+        run: node --test tests/*.test.cjs
+
+      - name: Diagnose ads.txt
+        if: failure()
+        run: node .github/scripts/check-ads-txt.cjs
+
+      - name: Diagnose build reproducibility
+        if: failure()
+        run: node .github/scripts/verify-build-output.cjs
