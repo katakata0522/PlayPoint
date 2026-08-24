@@ -12,7 +12,8 @@ function minifyCSS(content) {
 }
 
 function minifyJS(content) {
-  // JSは正規表現でコメントを削ると文字列や正規表現リテラルを壊すため、保守的に空白だけ整える。
+  // JSは正規表現で安全にminifyできないため、圧縮候補量の計測だけに使う。
+  // 本番用JSはコミット済みソースをそのまま配信し、この処理では書き換えない。
   return content
     .split(/\r?\n/)
     .map(line => line.replace(/[ \t]+$/g, ''))
@@ -40,6 +41,8 @@ const cssTargets = [
     : []
 ];
 
+// 以前はこの一覧へ擬似minifyを適用していたが、実測で削減がほぼ0〜1 byte/ファイルだった。
+// 現在は書き換えず、削減候補量だけを計測して本番JSをコミット内容と一致させる。
 const jsTargets = [
   'sw.js',
   'js/main.js',
@@ -87,19 +90,23 @@ function main() {
     if (fs.existsSync(file)) {
       const raw = fs.readFileSync(file, 'utf8');
       const min = minifyCSS(raw);
-      fs.writeFileSync(file, min, 'utf8');
+      if (min !== raw) fs.writeFileSync(file, min, 'utf8');
       console.log(`Minified CSS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
     }
   }
 
+  let jsFiles = 0;
+  let potentialJsSavings = 0;
   for (const file of resolveTargets(jsTargets)) {
-    if (fs.existsSync(file)) {
-      const raw = fs.readFileSync(file, 'utf8');
-      const min = minifyJS(raw);
-      fs.writeFileSync(file, min, 'utf8');
-      console.log(`Minified JS: ${path.basename(file)} (${raw.length} -> ${min.length} bytes)`);
-    }
+    if (!fs.existsSync(file)) continue;
+    const raw = fs.readFileSync(file, 'utf8');
+    const compacted = minifyJS(raw);
+    jsFiles += 1;
+    potentialJsSavings += raw.length - compacted.length;
   }
+  console.log(
+    `Skipped JS whitespace rewrite: ${jsFiles} files, ${potentialJsSavings} bytes potential savings; committed JS stays unchanged.`
+  );
 
   syncDynamicArticleStylesheetVersion(root);
   const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
