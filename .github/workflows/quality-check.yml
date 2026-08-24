@@ -28,10 +28,22 @@ jobs:
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
       # Temporary binary-search diagnostics for PR #142.
-      - name: Diagnose tests S
+      - name: Diagnose tests SA-SF
         if: failure()
-        run: git reset --hard HEAD && node --test tests/s*.test.cjs
+        shell: bash
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[a-f]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
 
-      - name: Diagnose tests T-U
+      - name: Diagnose tests SG-SL
         if: failure()
-        run: git reset --hard HEAD && node --test tests/[t-u]*.test.cjs
+        shell: bash
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[g-l]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+
+      - name: Diagnose tests SM-SR
+        if: failure()
+        shell: bash
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[m-r]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+
+      - name: Diagnose tests SS-SZ
+        if: failure()
+        shell: bash
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[s-z]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
