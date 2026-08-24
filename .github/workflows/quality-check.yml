@@ -25,4 +25,4 @@ jobs:
           persist-credentials: false
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+        run: node .github/scripts/preflight.cjs
