@@ -898,20 +898,23 @@
         dom.pagination.innerHTML = '';
         if (totalPages <= 1) return;
 
+        // 1. Navigation buttons container
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'pagination-buttons';
+
         const prev = document.createElement('button');
         prev.textContent = '← 前へ';
         prev.disabled = currentPage === 1;
         prev.className = 'pagination-nav pagination-prev';
         prev.setAttribute('aria-label', '前のページへ');
         prev.addEventListener('click', () => changePage(currentPage - 1));
-        dom.pagination.appendChild(prev);
+        buttonsContainer.appendChild(prev);
 
         // Render page number buttons
         const pageList = document.createElement('div');
         pageList.className = 'pagination-numbers';
 
         for (let i = 1; i <= totalPages; i++) {
-            // Show first, last, and pages around current page
             if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
                 const pageBtn = document.createElement('button');
                 pageBtn.className = 'pagination-num' + (i === currentPage ? ' active' : '');
@@ -927,7 +930,7 @@
                 pageList.appendChild(ellipsis);
             }
         }
-        dom.pagination.appendChild(pageList);
+        buttonsContainer.appendChild(pageList);
 
         const next = document.createElement('button');
         next.textContent = '次へ →';
@@ -935,7 +938,39 @@
         next.className = 'pagination-nav pagination-next';
         next.setAttribute('aria-label', '次のページへ');
         next.addEventListener('click', () => changePage(currentPage + 1));
-        dom.pagination.appendChild(next);
+        buttonsContainer.appendChild(next);
+
+        dom.pagination.appendChild(buttonsContainer);
+
+        // 2. Direct page jump input container (数字指定ジャンプ)
+        const jumpContainer = document.createElement('div');
+        jumpContainer.className = 'pagination-jump';
+        jumpContainer.innerHTML = `
+            <span class="pagination-jump-label">ページ指定:</span>
+            <input type="number" class="pagination-jump-input" min="1" max="${totalPages}" value="${currentPage}" aria-label="移動先のページ番号">
+            <span class="pagination-jump-total">/ ${totalPages} ページ</span>
+            <button type="button" class="pagination-jump-btn">移動</button>
+        `;
+
+        const jumpInput = jumpContainer.querySelector('.pagination-jump-input');
+        const jumpBtn = jumpContainer.querySelector('.pagination-jump-btn');
+
+        function executeJump() {
+            let targetPage = parseInt(jumpInput.value, 10);
+            if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
+            if (targetPage > totalPages) targetPage = totalPages;
+            changePage(targetPage);
+        }
+
+        jumpBtn.addEventListener('click', executeJump);
+        jumpInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                executeJump();
+            }
+        });
+
+        dom.pagination.appendChild(jumpContainer);
     }
 
     function setupCategoryOverflow() {
