@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { generatedFiles } = require('../../scripts/build-targets.cjs');
-const { cssTargets } = require('./minify.cjs');
+const { cssTargets, jsTargets } = require('./minify.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const prepareDeploy = process.argv.includes('--prepare-deploy');
@@ -13,7 +13,7 @@ const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .sort()
   .map(file => path.join('tests', file));
 // 圧縮後は「CSS圧縮・アセット版同期で壊れやすい計算/ランタイム」だけ再検査する。
-// JSソース自体はminify工程で書き換えないため、記事SEO系の全量再実行はしない。
+// JSの空白圧縮はしないが、版同期が一部JSを書き換えるため重点回帰は維持する。
 const postMinifyTestFiles = [
   'tests/playpoint-regression.test.cjs',
   'tests/main-calculator-ui.test.cjs',
@@ -24,7 +24,8 @@ const postMinifyTestFiles = [
   'tests/common-pages-fact-ux.test.cjs',
   'tests/content-structure.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
-const mutableFiles = [...new Set([...generatedFiles, ...cssTargets])];
+// prepare-deployでない検証では、CSS圧縮と版同期が触り得る公開資産を元へ戻す。
+const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
 const requiredPublicFiles = [
   'index.html',
   'en/index.html',
