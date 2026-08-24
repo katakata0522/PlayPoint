@@ -910,38 +910,64 @@
         prev.addEventListener('click', () => changePage(currentPage - 1));
         wrapper.appendChild(prev);
 
-        // 2. [ 今のページ数 / 全体のページ数 ] ボックス（クリック/選択で数字指定ジャンプ可能）
-        const selectWrap = document.createElement('div');
-        selectWrap.className = 'pagination-box pagination-select-wrap';
-        selectWrap.setAttribute('title', 'クリックしてページ番号を選択');
+        // 2. [ 今のページ数 / 全体のページ数 ] ボックス（数字直接入力で何ページでも即ジャンプ）
+        const inputWrap = document.createElement('div');
+        inputWrap.className = 'pagination-box pagination-input-wrap';
+        inputWrap.setAttribute('title', 'ページ番号を入力してEnterで移動');
 
-        const select = document.createElement('select');
-        select.className = 'pagination-select';
-        select.setAttribute('aria-label', `現在のページ: ${currentPage} / 全 ${totalPages} ページ。選択して移動`);
+        const pageInput = document.createElement('input');
+        pageInput.type = 'number';
+        pageInput.className = 'pagination-page-input';
+        pageInput.min = '1';
+        pageInput.max = String(totalPages);
+        pageInput.value = String(currentPage);
+        pageInput.setAttribute('inputmode', 'numeric');
+        pageInput.setAttribute('aria-label', `現在のページ。1から${totalPages}までの数値を入力してEnterで移動`);
 
-        for (let i = 1; i <= totalPages; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.textContent = `${i} / ${totalPages}`;
-            if (i === currentPage) opt.selected = true;
-            select.appendChild(opt);
+        // クリック時に数字を全選択してすぐ上書きできるようにする
+        pageInput.addEventListener('focus', () => {
+            pageInput.select();
+        });
+
+        function handlePageJump() {
+            let targetPage = parseInt(pageInput.value, 10);
+            if (isNaN(targetPage) || targetPage < 1) {
+                targetPage = 1;
+            } else if (targetPage > totalPages) {
+                targetPage = totalPages;
+            }
+            if (targetPage !== currentPage) {
+                changePage(targetPage);
+            } else {
+                pageInput.value = String(currentPage);
+            }
         }
 
-        select.addEventListener('change', (e) => {
-            const targetPage = parseInt(e.target.value, 10);
-            if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
-                changePage(targetPage);
+        pageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                pageInput.blur(); // モバイルのキーボードを閉じる
+                handlePageJump();
             }
         });
 
-        const arrow = document.createElement('span');
-        arrow.className = 'pagination-select-arrow';
-        arrow.setAttribute('aria-hidden', 'true');
-        arrow.textContent = '▾';
+        pageInput.addEventListener('change', () => {
+            handlePageJump();
+        });
 
-        selectWrap.appendChild(select);
-        selectWrap.appendChild(arrow);
-        wrapper.appendChild(selectWrap);
+        const slash = document.createElement('span');
+        slash.className = 'pagination-page-slash';
+        slash.setAttribute('aria-hidden', 'true');
+        slash.textContent = '/';
+
+        const total = document.createElement('span');
+        total.className = 'pagination-page-total';
+        total.textContent = String(totalPages);
+
+        inputWrap.appendChild(pageInput);
+        inputWrap.appendChild(slash);
+        inputWrap.appendChild(total);
+        wrapper.appendChild(inputWrap);
 
         // 3. [ 次のページ ] ボックス
         const next = document.createElement('button');

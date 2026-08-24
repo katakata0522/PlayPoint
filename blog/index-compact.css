@@ -470,57 +470,67 @@ body.blog-index-compact .search-pathways-grid {
     transform: none !important;
 }
 
-/* 真ん中の [ 分数ページ数 ] ボックス（セレクト内包） */
-.pagination div.pagination-select-wrap {
-    position: relative !important;
-    padding: 0 !important;
-    min-width: 110px !important;
+/* 真ん中の [ 分数ページ数 ] ボックス（数字直接入力ジャンプ） */
+.pagination div.pagination-input-wrap {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.35rem !important;
+    min-width: 105px !important;
+    padding: 0 0.8rem !important;
+    cursor: text !important;
 }
 
-.pagination div.pagination-select-wrap:hover {
+.pagination div.pagination-input-wrap:hover,
+.pagination div.pagination-input-wrap:focus-within {
     border-color: var(--accent) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px var(--accent-glow, rgba(11, 87, 208, 0.2)) !important;
+    box-shadow: 0 4px 12px var(--accent-glow, rgba(11, 87, 208, 0.25)) !important;
 }
 
-.pagination-select {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    width: 100% !important;
-    height: 42px !important;
-    padding: 0 1.8rem 0 1.1rem !important;
-    background: transparent !important;
-    border: none !important;
+.pagination-page-input {
+    width: 38px !important;
+    height: 32px !important;
+    padding: 0 2px !important;
+    background: rgba(11, 87, 208, 0.08) !important;
+    border: 1px solid transparent !important;
+    border-radius: 6px !important;
     color: var(--text-primary, var(--text-main)) !important;
     font-size: 0.95rem !important;
     font-weight: 800 !important;
-    cursor: pointer !important;
     text-align: center !important;
     outline: none !important;
+    transition: all 0.2s ease !important;
+    -moz-appearance: textfield !important;
 }
 
-.pagination-select option {
-    background: var(--bg-card, #1e293b) !important;
-    color: var(--text-primary, #ffffff) !important;
+/* Chrome, Safari, Edge のスピンボタンを消してスマートに */
+.pagination-page-input::-webkit-outer-spin-button,
+.pagination-page-input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
 }
 
-.pagination div.pagination-select-wrap:hover .pagination-select {
+.pagination-page-input:focus {
+    background: var(--bg-primary, #ffffff) !important;
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent-glow, rgba(11, 87, 208, 0.2)) !important;
     color: var(--accent) !important;
 }
 
-.pagination-select-arrow {
-    position: absolute !important;
-    right: 0.75rem !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+.pagination-page-slash {
     color: var(--text-muted) !important;
-    font-size: 0.75rem !important;
-    pointer-events: none !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    user-select: none !important;
 }
 
-.pagination div.pagination-select-wrap:hover .pagination-select-arrow {
-    color: var(--accent) !important;
+.pagination-page-total {
+    color: var(--text-muted) !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    user-select: none !important;
+    min-width: 1.2rem !important;
+    text-align: left !important;
 }
 
 @media (max-width: 480px) {
@@ -530,15 +540,19 @@ body.blog-index-compact .search-pathways-grid {
     }
     .pagination button.pagination-box,
     .pagination div.pagination-box {
-        padding: 0 0.8rem !important;
+        padding: 0 0.75rem !important;
         font-size: 0.85rem !important;
         min-height: 40px !important;
         height: 40px !important;
-        min-width: 85px !important;
+        min-width: 80px !important;
     }
-    .pagination-select {
-        height: 38px !important;
-        padding: 0 1.4rem 0 0.7rem !important;
+    .pagination-page-input {
+        width: 32px !important;
+        height: 28px !important;
+        font-size: 0.88rem !important;
+    }
+    .pagination-page-slash,
+    .pagination-page-total {
         font-size: 0.88rem !important;
     }
 }
