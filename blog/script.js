@@ -6,8 +6,8 @@
     // ===========================================
     const CONFIG = {
         articlesUrl: 'articles.json?v=20260818_1200a',
-        itemsPerPage: 6,
-        adInterval: 3,
+        itemsPerPage: 12,
+        adInterval: 4,
         newThresholdDays: 7,
         searchDebounceMs: 300,
         placeholderImage: 'https://placehold.co/600x400/e0e0e0/999999?text=No+Image',
@@ -894,11 +894,48 @@
     }
 
     function renderPagination(totalPages) {
-      if (!dom.pagination) return; dom.pagination.innerHTML = ''; if (totalPages <= 1) return;
-      var prev = document.createElement('button'); prev.textContent = '← 前へ'; prev.disabled = currentPage === 1; prev.className = 'pagination-nav'; prev.addEventListener('click', function () { changePage(currentPage - 1); });
-      var status = document.createElement('span'); status.className = 'pagination-status'; status.textContent = currentPage + ' / ' + totalPages; status.setAttribute('aria-current', 'page');
-      var next = document.createElement('button'); next.textContent = '次へ →'; next.disabled = currentPage === totalPages; next.className = 'pagination-nav'; next.addEventListener('click', function () { changePage(currentPage + 1); });
-      dom.pagination.append(prev, status, next);
+        if (!dom.pagination) return;
+        dom.pagination.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const prev = document.createElement('button');
+        prev.textContent = '← 前へ';
+        prev.disabled = currentPage === 1;
+        prev.className = 'pagination-nav pagination-prev';
+        prev.setAttribute('aria-label', '前のページへ');
+        prev.addEventListener('click', () => changePage(currentPage - 1));
+        dom.pagination.appendChild(prev);
+
+        // Render page number buttons
+        const pageList = document.createElement('div');
+        pageList.className = 'pagination-numbers';
+
+        for (let i = 1; i <= totalPages; i++) {
+            // Show first, last, and pages around current page
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'pagination-num' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.setAttribute('aria-label', `${i}ページ目`);
+                if (i === currentPage) pageBtn.setAttribute('aria-current', 'page');
+                pageBtn.addEventListener('click', () => changePage(i));
+                pageList.appendChild(pageBtn);
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                const ellipsis = document.createElement('span');
+                ellipsis.className = 'pagination-ellipsis';
+                ellipsis.textContent = '…';
+                pageList.appendChild(ellipsis);
+            }
+        }
+        dom.pagination.appendChild(pageList);
+
+        const next = document.createElement('button');
+        next.textContent = '次へ →';
+        next.disabled = currentPage === totalPages;
+        next.className = 'pagination-nav pagination-next';
+        next.setAttribute('aria-label', '次のページへ');
+        next.addEventListener('click', () => changePage(currentPage + 1));
+        dom.pagination.appendChild(next);
     }
 
     function setupCategoryOverflow() {

@@ -407,7 +407,119 @@ body.blog-index-compact .search-pathways-grid {
     box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
 }
 
-.sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}.pagination{display:flex;align-items:center;justify-content:center;gap:.75rem}.pagination-status{min-width:4rem;text-align:center;color:var(--text-muted)}.empty-state{text-align:center;padding:2rem 1rem}.blog-bottom-ad{min-height:120px;max-width:800px;margin:2rem auto;padding:0 1rem}
+.sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}
+
+/* ===================================================
+   モダンページネーション UI
+   =================================================== */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem auto 2.5rem;
+    padding: 0 1rem;
+}
+
+.pagination-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    color: var(--text-main, #1e293b);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.pagination-nav:hover:not(:disabled) {
+    background: var(--accent, #0b57d0);
+    color: #ffffff;
+    border-color: var(--accent, #0b57d0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(11, 87, 208, 0.2);
+}
+
+.pagination-nav:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.pagination-numbers {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.pagination-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 0.5rem;
+    border-radius: 8px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    color: var(--text-main, #1e293b);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-num:hover:not(.active) {
+    background: rgba(11, 87, 208, 0.08);
+    color: var(--accent, #0b57d0);
+    border-color: var(--accent, #0b57d0);
+}
+
+.pagination-num.active {
+    background: var(--accent, #0b57d0);
+    color: #ffffff;
+    border-color: var(--accent, #0b57d0);
+    box-shadow: 0 3px 8px rgba(11, 87, 208, 0.3);
+}
+
+.pagination-ellipsis {
+    color: var(--text-muted, #94a3b8);
+    padding: 0 0.25rem;
+    font-weight: bold;
+}
+
+/* ===================================================
+   PC記事カードのリッチホバー演出
+   =================================================== */
+.article-card {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.article-card .card-thumb {
+    overflow: hidden;
+    position: relative;
+}
+
+.article-card .card-thumb img {
+    transition: transform 0.35s ease;
+}
+
+.article-card:hover .card-thumb img {
+    transform: scale(1.05);
+}
+
+.empty-state{text-align:center;padding:2rem 1rem}.blog-bottom-ad{min-height:120px;max-width:800px;margin:2rem auto;padding:0 1rem}
 body.blog-index-compact :where(a,button,input,select,summary,[tabindex]):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
 @media(max-width:768px){
