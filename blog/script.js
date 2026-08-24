@@ -200,21 +200,29 @@
         return value;
     }
 
-    // 記事JSONの値を描画前に正規化する
+    // 記事JSONの値を描画前に正規化し、高速検索用インデックスを事前生成する
     function normalizeArticle(article) {
         article = article && typeof article === 'object' ? article : {};
         const tags = Array.isArray(article.tags) ? article.tags : [];
+        const title = typeof article.title === 'string' ? article.title : '';
+        const description = typeof article.description === 'string' ? article.description : '';
+        const category = typeof article.category === 'string' ? article.category : '';
+        const cleanTags = tags.filter(tag => typeof tag === 'string');
+
+        // 高速検索用に小文字化・スペース結合したインデックスをメモ化
+        const searchIndex = (title + ' ' + description + ' ' + cleanTags.join(' ') + ' ' + category).toLowerCase();
 
         return {
             id: typeof article.id === 'string' ? article.id : '',
-            title: typeof article.title === 'string' ? article.title : '',
+            title: title,
             date: typeof article.date === 'string' ? article.date : '',
-            category: typeof article.category === 'string' ? article.category : '',
-            tags: tags.filter(tag => typeof tag === 'string'),
-            description: typeof article.description === 'string' ? article.description : '',
+            category: category,
+            tags: cleanTags,
+            description: description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
-            listed: article.listed !== false
+            listed: article.listed !== false,
+            searchIndex: searchIndex
         };
     }
 
@@ -508,7 +516,33 @@
                 dom.searchInput.addEventListener('input', (e) => {
                     debouncedSearch(e.target.value.toLowerCase().trim());
                 });
+
+                // ESC key clears search
+                dom.searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && dom.searchInput.value) {
+                        e.preventDefault();
+                        resetFilters();
+                    }
+                });
             }
+
+            // Keyboard navigation (ArrowLeft / ArrowRight for pagination when not typing)
+            document.addEventListener('keydown', (e) => {
+                const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+                if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+                const filtered = filterArticles();
+                const totalPages = Math.ceil(filtered.length / CONFIG.itemsPerPage);
+                if (totalPages <= 1) return;
+
+                if (e.key === 'ArrowLeft' && currentPage > 1) {
+                    e.preventDefault();
+                    changePage(currentPage - 1);
+                } else if (e.key === 'ArrowRight' && currentPage < totalPages) {
+                    e.preventDefault();
+                    changePage(currentPage + 1);
+                }
+            });
 
             // Sort toggle setup
             if (dom.sortToggle) {
@@ -602,18 +636,17 @@
         });
     }
 
-    // Filter articles (extracted for reuse)
+    // Filter articles with pre-computed search index (ultra-fast)
     function filterArticles() {
         let filtered = allArticles;
         if (currentCategory !== 'all') {
             filtered = filtered.filter(a => a.category === currentCategory);
         }
         if (currentSearch) {
+            const keywords = currentSearch.split(/\s+/).filter(Boolean);
             filtered = filtered.filter(a => {
-                const title = (a.title || '').toLowerCase();
-                const desc = (a.description || '').toLowerCase();
-                const tags = (a.tags || []).join(' ').toLowerCase();
-                return title.includes(currentSearch) || desc.includes(currentSearch) || tags.includes(currentSearch);
+                const idx = a.searchIndex || '';
+                return keywords.every(kw => idx.includes(kw));
             });
         }
         return filtered;
