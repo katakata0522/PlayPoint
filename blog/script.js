@@ -898,79 +898,61 @@
         dom.pagination.innerHTML = '';
         if (totalPages <= 1) return;
 
-        // 1. Navigation buttons container
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.className = 'pagination-buttons';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pagination-compact-wrapper';
 
+        // 1. [ 前のページ ] ボックス
         const prev = document.createElement('button');
-        prev.textContent = '← 前へ';
+        prev.className = 'pagination-box pagination-prev';
+        prev.textContent = '前のページ';
         prev.disabled = currentPage === 1;
-        prev.className = 'pagination-nav pagination-prev';
         prev.setAttribute('aria-label', '前のページへ');
         prev.addEventListener('click', () => changePage(currentPage - 1));
-        buttonsContainer.appendChild(prev);
+        wrapper.appendChild(prev);
 
-        // Render page number buttons
-        const pageList = document.createElement('div');
-        pageList.className = 'pagination-numbers';
+        // 2. [ 今のページ数 / 全体のページ数 ] ボックス（クリック/選択で数字指定ジャンプ可能）
+        const selectWrap = document.createElement('div');
+        selectWrap.className = 'pagination-box pagination-select-wrap';
+        selectWrap.setAttribute('title', 'クリックしてページ番号を選択');
+
+        const select = document.createElement('select');
+        select.className = 'pagination-select';
+        select.setAttribute('aria-label', `現在のページ: ${currentPage} / 全 ${totalPages} ページ。選択して移動`);
 
         for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-                const pageBtn = document.createElement('button');
-                pageBtn.className = 'pagination-num' + (i === currentPage ? ' active' : '');
-                pageBtn.textContent = i;
-                pageBtn.setAttribute('aria-label', `${i}ページ目`);
-                if (i === currentPage) pageBtn.setAttribute('aria-current', 'page');
-                pageBtn.addEventListener('click', () => changePage(i));
-                pageList.appendChild(pageBtn);
-            } else if (i === currentPage - 2 || i === currentPage + 2) {
-                const ellipsis = document.createElement('span');
-                ellipsis.className = 'pagination-ellipsis';
-                ellipsis.textContent = '…';
-                pageList.appendChild(ellipsis);
-            }
-        }
-        buttonsContainer.appendChild(pageList);
-
-        const next = document.createElement('button');
-        next.textContent = '次へ →';
-        next.disabled = currentPage === totalPages;
-        next.className = 'pagination-nav pagination-next';
-        next.setAttribute('aria-label', '次のページへ');
-        next.addEventListener('click', () => changePage(currentPage + 1));
-        buttonsContainer.appendChild(next);
-
-        dom.pagination.appendChild(buttonsContainer);
-
-        // 2. Direct page jump input container (数字指定ジャンプ)
-        const jumpContainer = document.createElement('div');
-        jumpContainer.className = 'pagination-jump';
-        jumpContainer.innerHTML = `
-            <span class="pagination-jump-label">ページ指定:</span>
-            <input type="number" class="pagination-jump-input" min="1" max="${totalPages}" value="${currentPage}" aria-label="移動先のページ番号">
-            <span class="pagination-jump-total">/ ${totalPages} ページ</span>
-            <button type="button" class="pagination-jump-btn">移動</button>
-        `;
-
-        const jumpInput = jumpContainer.querySelector('.pagination-jump-input');
-        const jumpBtn = jumpContainer.querySelector('.pagination-jump-btn');
-
-        function executeJump() {
-            let targetPage = parseInt(jumpInput.value, 10);
-            if (isNaN(targetPage) || targetPage < 1) targetPage = 1;
-            if (targetPage > totalPages) targetPage = totalPages;
-            changePage(targetPage);
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `${i} / ${totalPages}`;
+            if (i === currentPage) opt.selected = true;
+            select.appendChild(opt);
         }
 
-        jumpBtn.addEventListener('click', executeJump);
-        jumpInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                executeJump();
+        select.addEventListener('change', (e) => {
+            const targetPage = parseInt(e.target.value, 10);
+            if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= totalPages) {
+                changePage(targetPage);
             }
         });
 
-        dom.pagination.appendChild(jumpContainer);
+        const arrow = document.createElement('span');
+        arrow.className = 'pagination-select-arrow';
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.textContent = '▾';
+
+        selectWrap.appendChild(select);
+        selectWrap.appendChild(arrow);
+        wrapper.appendChild(selectWrap);
+
+        // 3. [ 次のページ ] ボックス
+        const next = document.createElement('button');
+        next.className = 'pagination-box pagination-next';
+        next.textContent = '次のページ';
+        next.disabled = currentPage === totalPages;
+        next.setAttribute('aria-label', '次のページへ');
+        next.addEventListener('click', () => changePage(currentPage + 1));
+        wrapper.appendChild(next);
+
+        dom.pagination.appendChild(wrapper);
     }
 
     function setupCategoryOverflow() {

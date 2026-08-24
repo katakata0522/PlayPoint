@@ -410,151 +410,121 @@ body.blog-index-compact .search-pathways-grid {
 .sidebar-nav--simple{display:grid;gap:.35rem;padding:1rem}.sidebar-nav--simple a{display:flex;align-items:center;min-height:44px;padding:.65rem .8rem;border-radius:8px;color:var(--text-main);text-decoration:none}
 
 /* ===================================================
-   モダンページネーション UI ＆ ページ直接ジャンプ
+   スマート3連ボックス ページネーション UI
    =================================================== */
 .pagination {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    margin: 2.2rem auto 2.5rem;
+    margin: 2.2rem auto 2.8rem;
     padding: 0 1rem;
 }
 
-.pagination-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-}
-
-.pagination-nav {
+.pagination-compact-wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 38px;
-    padding: 0.4rem 0.9rem;
+    gap: 0.75rem;
+    max-width: 100%;
+}
+
+.pagination-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 1.25rem;
     border-radius: 8px;
     background: var(--card-bg, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
     color: var(--text-main, #1e293b);
-    font-size: 0.88rem;
+    font-size: 0.92rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
 }
 
-.pagination-nav:hover:not(:disabled) {
+.pagination-box:hover:not(:disabled) {
     background: var(--accent, #0b57d0);
     color: #ffffff;
     border-color: var(--accent, #0b57d0);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(11, 87, 208, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 87, 208, 0.25);
 }
 
-.pagination-nav:disabled {
+.pagination-box:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
 
-.pagination-numbers {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.pagination-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 38px;
-    min-height: 38px;
-    padding: 0 0.4rem;
-    border-radius: 8px;
+/* 真ん中の [ 分数ページ数 ] ボックス（セレクト内包） */
+.pagination-select-wrap {
+    position: relative;
+    padding: 0;
+    min-width: 100px;
     background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e2e8f0);
-    color: var(--text-main, #1e293b);
-    font-size: 0.9rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.pagination-num:hover:not(.active) {
-    background: rgba(11, 87, 208, 0.08);
-    color: var(--accent, #0b57d0);
+.pagination-select-wrap:hover {
     border-color: var(--accent, #0b57d0);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 87, 208, 0.15);
 }
 
-.pagination-num.active {
-    background: var(--accent, #0b57d0);
-    color: #ffffff;
-    border-color: var(--accent, #0b57d0);
-    box-shadow: 0 3px 8px rgba(11, 87, 208, 0.3);
-}
-
-.pagination-ellipsis {
-    color: var(--text-muted, #94a3b8);
-    padding: 0 0.25rem;
-    font-weight: bold;
-}
-
-/* ページ指定直接ジャンプ UI */
-.pagination-jump {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.4rem 0.8rem;
-    background: rgba(11, 87, 208, 0.05);
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 999px;
-    font-size: 0.86rem;
-    color: var(--text-muted, #64748b);
-}
-
-.pagination-jump-label {
-    font-weight: 700;
-    color: var(--text-main, #1e293b);
-}
-
-.pagination-jump-input {
-    width: 52px;
-    height: 32px;
-    text-align: center;
-    border-radius: 6px;
-    border: 1px solid var(--border-color, #cbd5e1);
-    background: var(--card-bg, #ffffff);
-    color: var(--text-main, #1e293b);
-    font-size: 0.9rem;
-    font-weight: 800;
-    padding: 0 4px;
-}
-
-.pagination-jump-total {
-    font-size: 0.84rem;
-}
-
-.pagination-jump-btn {
-    min-height: 30px;
-    padding: 0.2rem 0.75rem;
-    border-radius: 6px;
-    background: var(--accent, #0b57d0);
-    color: #ffffff;
+.pagination-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 100%;
+    height: 44px;
+    padding: 0 1.8rem 0 1.1rem;
+    background: transparent;
     border: none;
-    font-size: 0.82rem;
-    font-weight: 700;
+    color: var(--text-main, #1e293b);
+    font-size: 0.95rem;
+    font-weight: 800;
     cursor: pointer;
-    transition: all 0.2s ease;
+    text-align: center;
+    outline: none;
 }
 
-.pagination-jump-btn:hover {
-    background: #0945a5;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(11, 87, 208, 0.25);
+.pagination-select-wrap:hover .pagination-select {
+    color: var(--accent, #0b57d0);
+}
+
+.pagination-select-arrow {
+    position: absolute;
+    right: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted, #64748b);
+    font-size: 0.75rem;
+    pointer-events: none;
+}
+
+.pagination-select-wrap:hover .pagination-select-arrow {
+    color: var(--accent, #0b57d0);
+}
+
+@media (max-width: 480px) {
+    .pagination-compact-wrapper {
+        gap: 0.45rem;
+        width: 100%;
+    }
+    .pagination-box {
+        padding: 0 0.85rem;
+        font-size: 0.85rem;
+        min-height: 40px;
+    }
+    .pagination-select {
+        height: 40px;
+        padding: 0 1.5rem 0 0.8rem;
+        font-size: 0.88rem;
+    }
 }
 
 /* ===================================================
