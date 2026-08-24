@@ -28,22 +28,27 @@ jobs:
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
       # Temporary binary-search diagnostics for PR #142.
-      - name: Diagnose tests SA-SF
+      - name: Diagnose tests SA-SD
         if: failure()
         shell: bash
-        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[a-f]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[a-d]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
 
-      - name: Diagnose tests SG-SL
+      - name: Diagnose tests SEA-SEH
         if: failure()
         shell: bash
-        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[g-l]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/se[a-h]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
 
-      - name: Diagnose tests SM-SR
+      - name: Diagnose tests SEI-SEP
         if: failure()
         shell: bash
-        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[m-r]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/se[i-p]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
 
-      - name: Diagnose tests SS-SZ
+      - name: Diagnose tests SEQ-SEZ
         if: failure()
         shell: bash
-        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/s[s-z]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/se[q-z]*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
+
+      - name: Diagnose tests SF
+        if: failure()
+        shell: bash
+        run: git reset --hard HEAD; shopt -s nullglob; files=(tests/sf*.test.cjs); ((${#files[@]} == 0)) || node --test "${files[@]}"
