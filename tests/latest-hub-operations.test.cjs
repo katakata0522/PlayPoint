@@ -113,6 +113,30 @@ test('次回確認目安は公式確認日より前に設定できない', () =>
   );
 });
 
+test('存在しない公式確認日をカレンダー上の日付へ丸めて受理しない', () => {
+  const invalidHtml = buildLatestHubFixture({ verified: '2026-02-31', nextCheck: '2026-03-05' });
+
+  assert.throws(
+    () => validateLatestHub(invalidHtml),
+    /日付として解析できません: 2026-02-31/
+  );
+});
+
+test('存在しない次回確認目安をカレンダー上の日付へ丸めて受理しない', () => {
+  const invalidHtml = buildLatestHubFixture({ verified: '2026-04-24', nextCheck: '2026-04-31' });
+
+  assert.throws(
+    () => validateLatestHub(invalidHtml),
+    /日付として解析できません: 2026-04-31/
+  );
+});
+
+test('うるう年の実在する2月29日は有効な日付として扱う', () => {
+  const html = buildLatestHubFixture({ verified: '2028-02-29', nextCheck: '2028-03-05' });
+
+  assert.doesNotThrow(() => validateLatestHub(html));
+});
+
 test('鮮度検査は日本時間の日付をUTC前日の未来日と誤判定しない', () => {
   const html = buildLatestHubFixture({ verified: '2026-08-24', nextCheck: '2026-08-28' });
 
