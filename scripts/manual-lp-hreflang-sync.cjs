@@ -2,18 +2,9 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { MANUAL_LP_SLUGS } = require('./manual-lp-targets.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
-const MANUAL_LP_SLUGS = Object.freeze([
-  'status/silver',
-  'status/gold',
-  'status/platinum',
-  'status/diamond',
-  'campaign/2x',
-  'campaign/3x',
-  'campaign/wait'
-]);
-
 const HREFLANG_ORDER = Object.freeze(['ja', 'en', 'ko', 'zh-TW', 'x-default']);
 const ALTERNATE_LINK_PATTERN = /\n?\s*<link\s+rel=["']alternate["']\s+hreflang=["'](?:ja|en|ko|zh-TW|x-default)["']\s+href=["'][^"']+["']\s*\/?>/gi;
 
