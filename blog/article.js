@@ -844,22 +844,6 @@
             BlogUtils.setupShareButton();
         }
 
-        // Reading Progress Bar Setup (only add once)
-        if (!scrollListenerAdded) {
-            scrollListenerAdded = true;
-            window.addEventListener('scroll', () => {
-                const progressBar = document.getElementById('reading-progress');
-                if (!progressBar) return;
-
-                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                if (scrollHeight <= 0) return; // Prevent division by zero
-                const scrolled = (scrollTop / scrollHeight) * 100;
-
-                progressBar.style.width = scrolled + '%';
-            });
-        }
-
         if (getLocale() !== 'ja') {
             const navContainer = document.getElementById('article-nav');
             if (navContainer) navContainer.remove();

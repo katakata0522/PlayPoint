@@ -816,29 +816,30 @@
         const end = start + CONFIG.itemsPerPage;
         const pageItems = filtered.slice(start, end);
 
-        // Render Grid
+        // Render Grid with DocumentFragment (minimizes layout reflows)
         if (dom.loading) dom.loading.classList.add('hidden');
         dom.grid.innerHTML = '';
 
         if (pageItems.length === 0) {
-          var q = BlogUtils.escapeHtml(currentSearch);
-          dom.grid.innerHTML = '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>';
-          document.getElementById('reset-filters').addEventListener('click', resetFilters);
-          renderPagination(0); return;
+            const q = BlogUtils.escapeHtml(currentSearch);
+            dom.grid.innerHTML = `<div class="empty-state"><h2>${q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません'}</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>`;
+            const resetBtn = document.getElementById('reset-filters');
+            if (resetBtn) resetBtn.addEventListener('click', resetFilters);
+            renderPagination(0);
+            return;
         }
 
         // Accessibility: Announce updates
         dom.grid.setAttribute('aria-live', 'polite');
 
-        let articleIndex = 0;
+        const fragment = document.createDocumentFragment();
         const renderThumbnails = shouldRenderArticleThumbnails();
 
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
             if (idx > 0 && idx % CONFIG.adInterval === 0) {
                 const adEl = createAdElement();
-                dom.grid.appendChild(adEl);
-                // Push ad
+                fragment.appendChild(adEl);
                 try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
             }
 
@@ -857,8 +858,14 @@
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
+
+            // LCP Optimization: eager loading for the first 2 visible cards, lazy for others
+            const isPriorityCard = idx < 2;
+            const loadingAttr = isPriorityCard ? 'eager' : 'lazy';
+            const fetchPriorityAttr = isPriorityCard ? 'high' : 'low';
+
             const thumbnailMarkup = renderThumbnails
-                ? `<img src="${safeThumbnail}" alt="${safeTitle}" width="600" height="400" loading="lazy" decoding="async" fetchpriority="low">`
+                ? `<img src="${safeThumbnail}" alt="${safeTitle}" width="600" height="400" loading="${loadingAttr}" decoding="async" fetchpriority="${fetchPriorityAttr}">`
                 : '';
             const thumbnailClass = renderThumbnails ? 'card-thumb' : 'card-thumb card-thumb--text-only';
             const thumbnailStyle = renderThumbnails ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
@@ -883,9 +890,10 @@
             const img = card.querySelector('img');
             if (img) img.onerror = () => BlogUtils.handleImageError(img);
 
-            dom.grid.appendChild(card);
-            articleIndex++;
+            fragment.appendChild(card);
         });
+
+        dom.grid.appendChild(fragment);
 
         renderPagination(totalPages);
 
@@ -930,7 +938,9 @@
         });
 
         function handlePageJump() {
-            let targetPage = parseInt(pageInput.value, 10);
+            // 全角数字を半角に自動正規化
+            const rawVal = String(pageInput.value).replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+            let targetPage = parseInt(rawVal, 10);
             if (isNaN(targetPage) || targetPage < 1) {
                 targetPage = 1;
             } else if (targetPage > totalPages) {
