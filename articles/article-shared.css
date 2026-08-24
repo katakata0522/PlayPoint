@@ -160,9 +160,22 @@ padding: 0 16px;
 font-size: 13px;
 color: var(--cocoon-muted);
 }
+.breadcrumbs-wrapper nav {
+display: flex;
+align-items: center;
+flex-wrap: nowrap;
+overflow-x: auto;
+white-space: nowrap;
+scrollbar-width: none;
+-webkit-overflow-scrolling: touch;
+}
+.breadcrumbs-wrapper nav::-webkit-scrollbar {
+display: none;
+}
 .breadcrumbs-wrapper a {
 color: var(--cocoon-muted);
 text-decoration: none;
+flex-shrink: 0;
 }
 .breadcrumbs-wrapper a:hover {
 text-decoration: underline;
@@ -171,6 +184,19 @@ color: var(--cocoon-link);
 .breadcrumbs-wrapper span {
 margin: 0 6px;
 color: #cbd5e1;
+flex-shrink: 0;
+}
+.breadcrumbs-wrapper span:last-child {
+color: #94a3b8;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 260px;
+}
+@media (max-width: 640px) {
+.breadcrumbs-wrapper {
+margin: 8px auto 0;
+font-size: 12px;
+}
 }
 .layout-container {
 max-width: 1140px;
@@ -1564,4 +1590,180 @@ body[data-article-category="キャンペーン"] .step-number {
     font-size: 13px;
     color: #475569;
     line-height: 1.6;
-}
+}
+
+/* ===================================================
+   アイデア1: 自動目次 (.article-toc)
+   =================================================== */
+.article-toc {
+    background: #f8fafc;
+    border: 1px solid var(--cocoon-border);
+    border-left: 4px solid var(--article-accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 28px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+.article-toc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.article-toc-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--cocoon-heading);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+.article-toc-toggle {
+    font-size: 12px;
+    color: var(--article-accent);
+    background: var(--article-accent-soft);
+    border: 1px solid var(--article-accent);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+.article-toc-list {
+    margin: 14px 0 0;
+    padding: 0 0 0 20px;
+    list-style: decimal;
+    font-size: 14px;
+    line-height: 1.8;
+}
+.article-toc-list li {
+    margin-bottom: 6px;
+}
+.article-toc-list li a {
+    color: #334155;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+.article-toc-list li a:hover {
+    color: var(--article-accent);
+    text-decoration: underline;
+}
+.article-toc.collapsed .article-toc-list {
+    display: none;
+}
+
+/* ===================================================
+   アイデア2: トップへ戻るボタン (.scroll-to-top-btn)
+   =================================================== */
+.scroll-to-top-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid var(--cocoon-border);
+    color: var(--article-accent);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s;
+    z-index: 99;
+}
+.scroll-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.scroll-to-top-btn:hover {
+    background: var(--article-accent-soft);
+    border-color: var(--article-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+@media (max-width: 640px) {
+    .scroll-to-top-btn {
+        bottom: 74px; /* スマホ固定バーと重ならない位置 */
+        right: 14px;
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+/* ===================================================
+   アイデア9: 自動関連記事カード (.auto-related-box)
+   =================================================== */
+.auto-related-box {
+    margin: 36px 0 24px;
+    padding-top: 24px;
+    border-top: 2px dashed #e2e8f0;
+}
+.auto-related-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--cocoon-heading);
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.auto-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+.auto-related-card {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--cocoon-border);
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none !important;
+    color: inherit;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.auto-related-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+.auto-related-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #f1f5f9;
+}
+.auto-related-info {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.auto-related-meta {
+    font-size: 11px;
+    color: var(--cocoon-muted);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+.auto-related-card-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+

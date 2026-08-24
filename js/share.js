@@ -75,11 +75,18 @@ export const SHARE = {
 
     applyFromUrl() {
         const params = new URLSearchParams(window.location.search);
-        const mode = params.get('mode');
+        let mode = params.get('mode');
         const status = this.getNumber(params, 'status', 1, 2);
         const target = params.get('target');
         const multiplier = this.getNumber(params, 'multiplier', 1, 10);
         const dom = STATE.dom;
+
+        // amount パラメータがあり mode が未指定の場合は reverse モードを自動判定
+        if (!mode && params.has('amount')) {
+            mode = 'reverse';
+        } else if (!mode && params.has('points')) {
+            mode = 'main';
+        }
 
         if (mode === 'reverse') {
             const amount = this.getNumber(params, 'amount', 0, 100000000);

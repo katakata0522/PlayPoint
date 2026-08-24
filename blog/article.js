@@ -676,9 +676,153 @@
         }, { passive: true });
     }
 
+    function setupAutoTableOfContents() {
+        if (getLocale() !== 'ja') return;
+        if (document.querySelector('.article-toc, .toc, #toc')) return;
+        const content = document.querySelector('.content, .main-content-column, article');
+        if (!content) return;
+
+        // 記事本文中の主要な H2 見出しを取得（サイドバーや二次ウィジェットは除外）
+        const headings = Array.from(content.querySelectorAll('h2')).filter(h => {
+            return !h.closest('.sidebar-widget, .sidebar-column, .official-source-note, .article-ad-container, .related-links-section, .article-next-step-cta, .author-profile-box, .auto-related-box');
+        });
+
+        if (headings.length < 2) return;
+
+        const toc = document.createElement('div');
+        toc.className = 'article-toc';
+        toc.innerHTML = `
+            <div class="article-toc-header" role="button" tabindex="0" aria-label="目次を開閉">
+                <h3 class="article-toc-title">📑 この記事の目次</h3>
+                <span class="article-toc-toggle">非表示</span>
+            </div>
+            <ol class="article-toc-list">
+                ${headings.map((h, i) => {
+                    if (!h.id) h.id = 'toc-heading-' + (i + 1);
+                    const title = h.textContent.replace(/^[0-9]+\.\s*/, '').trim();
+                    return `<li><a href="#${h.id}">${fallbackUtils.escapeHtml(title)}</a></li>`;
+                }).join('')}
+            </ol>
+        `;
+
+        const header = toc.querySelector('.article-toc-header');
+        const toggle = toc.querySelector('.article-toc-toggle');
+        function toggleToc() {
+            toc.classList.toggle('collapsed');
+            toggle.textContent = toc.classList.contains('collapsed') ? '表示' : '非表示';
+        }
+        header.addEventListener('click', toggleToc);
+        header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleToc();
+            }
+        });
+
+        const anchor = content.querySelector('.article-calculator-prompt, .knowledge-boundary, .answer-box, .hero');
+        if (anchor && anchor.nextSibling) {
+            anchor.parentNode.insertBefore(toc, anchor.nextSibling);
+        } else {
+            content.insertBefore(toc, content.firstChild);
+        }
+    }
+
+    function setupScrollToTopButton() {
+        if (document.getElementById('scroll-to-top')) return;
+        const btn = document.createElement('button');
+        btn.id = 'scroll-to-top';
+        btn.className = 'scroll-to-top-btn';
+        btn.setAttribute('aria-label', 'ページ先頭へ戻る');
+        btn.innerHTML = '⬆️';
+        document.body.appendChild(btn);
+
+        btn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+                    if (scrollTop > 300) {
+                        btn.classList.add('visible');
+                    } else {
+                        btn.classList.remove('visible');
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+    }
+
+    function setupAutoRelatedArticles(allArticles) {
+        if (getLocale() !== 'ja') return;
+        const content = document.querySelector('.content, .main-content-column, article');
+        if (!content) return;
+
+        if (document.querySelector('.auto-related-box, #recommended-grid, #related-articles')) return;
+
+        const currentPath = window.location.pathname;
+        const currentFilename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
+        const currentCategory = getCurrentCategory();
+        const others = allArticles.filter(a => !a.file.includes(currentFilename));
+
+        let recommended = [];
+        if (currentCategory) {
+            const sameCategory = others.filter(a => a.category === currentCategory);
+            const differentCategory = others.filter(a => a.category !== currentCategory);
+            const byNewest = (a, b) => new Date(b.date) - new Date(a.date);
+            sameCategory.sort(byNewest);
+            differentCategory.sort(byNewest);
+            recommended = [...sameCategory, ...differentCategory].slice(0, 3);
+        } else {
+            recommended = others.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+        }
+
+        if (!recommended.length) return;
+
+        const box = document.createElement('div');
+        box.className = 'auto-related-box';
+        box.innerHTML = `
+            <h3 class="auto-related-title">📚 おすすめの関連記事</h3>
+            <div class="auto-related-grid">
+                ${recommended.map(article => {
+                    const utils = getUtils();
+                    const safeTitle = utils.escapeHtml(article.title);
+                    const safeCategory = utils.escapeHtml(article.category);
+                    const formattedDate = utils.formatDate(article.date);
+                    const thumb = article.thumbnail || CONFIG.placeholderImage;
+                    return `
+                        <a href="${article.file}" class="auto-related-card">
+                            <img src="${thumb}" alt="${safeTitle}" class="auto-related-thumb" loading="lazy" onerror="this.src='${CONFIG.placeholderImage}'">
+                            <div class="auto-related-info">
+                                <div class="auto-related-meta">
+                                    <span>${safeCategory}</span>
+                                    <time>${formattedDate}</time>
+                                </div>
+                                <h4 class="auto-related-card-title">${safeTitle}</h4>
+                            </div>
+                        </a>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        const authorProfile = content.querySelector('.author-profile-box, .author-box, .article-ad-container, .site-footer');
+        if (authorProfile) {
+            authorProfile.parentNode.insertBefore(box, authorProfile);
+        } else {
+            content.appendChild(box);
+        }
+    }
+
     async function init() {
         setupReadingProgressBar();
         setupReadingTime();
+        setupScrollToTopButton();
+        setupAutoTableOfContents();
         setupMobileStickyCta();
         setupArticleUsability();
         setupCalculatorPrompt();
@@ -728,8 +872,9 @@
             const currentCategory = getCurrentCategory();
 
             setupPrevNextNav(allArticles);
+            setupAutoRelatedArticles(allArticles);
 
-            // Related Articles
+            // Related Articles (Legacy container if present)
             const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');
             if (!container) return;
 
