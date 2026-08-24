@@ -27,28 +27,20 @@ jobs:
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
-      # Temporary diagnostics for PR #142. Reset before every command because
-      # prepare-deploy intentionally leaves generated/minified files in place.
-      - name: Diagnose latest hub tests
+      # Temporary binary-search diagnostics for PR #142. Reset before every
+      # group because prepare-deploy intentionally leaves generated/minified files.
+      - name: Diagnose tests A-F
         if: failure()
-        run: git reset --hard HEAD && node --test tests/latest-hub-operations.test.cjs
+        run: git reset --hard HEAD && node --test tests/[a-f]*.test.cjs
 
-      - name: Diagnose post-147 integrity
+      - name: Diagnose tests G-L
         if: failure()
-        run: git reset --hard HEAD && node --test tests/post-147-integrity.test.cjs
+        run: git reset --hard HEAD && node --test tests/[g-l]*.test.cjs
 
-      - name: Diagnose product guards
+      - name: Diagnose tests M-R
         if: failure()
-        run: git reset --hard HEAD && node --test tests/playpoint-product-guards.test.cjs
+        run: git reset --hard HEAD && node --test tests/[m-r]*.test.cjs
 
-      - name: Diagnose OGP deployment guards
+      - name: Diagnose tests S-Z
         if: failure()
-        run: git reset --hard HEAD && node --test tests/ogp-mime-deployment.test.cjs
-
-      - name: Diagnose all regression tests
-        if: failure()
-        run: git reset --hard HEAD && node --test tests/*.test.cjs
-
-      - name: Diagnose clean build reproducibility
-        if: failure()
-        run: git reset --hard HEAD && node .github/scripts/verify-build-output.cjs
+        run: git reset --hard HEAD && node --test tests/[s-z]*.test.cjs
