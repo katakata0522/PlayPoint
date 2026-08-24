@@ -6,8 +6,8 @@
     // ===========================================
     const CONFIG = {
         articlesUrl: 'articles.json?v=20260818_1200a',
-        itemsPerPage: 12,
-        adInterval: 4,
+        itemsPerPage: 6,
+        adInterval: 3,
         newThresholdDays: 7,
         searchDebounceMs: 300,
         placeholderImage: 'https://placehold.co/600x400/e0e0e0/999999?text=No+Image',
