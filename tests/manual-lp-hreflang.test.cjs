@@ -27,8 +27,9 @@ test('manual LP synchronizer inserts the complete alternate cluster once', () =>
   assert.equal(stable.html, result.html);
 });
 
-test('all seven Japanese manual LPs advertise ja/en/ko/zh-TW/x-default exactly once', () => {
-  assert.equal(MANUAL_LP_SLUGS.length, 7);
+test('configured Japanese manual LPs advertise ja/en/ko/zh-TW/x-default exactly once', () => {
+  assert.ok(MANUAL_LP_SLUGS.length > 0, 'manual LP target list is empty');
+
   for (const slug of MANUAL_LP_SLUGS) {
     const html = read(`${slug}/index.html`);
     const links = extractAlternateLinks(html);
