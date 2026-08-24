@@ -37,10 +37,24 @@ function getLatestHubVerificationDate(rootDir) {
 }
 
 function parseDateOnly(value) {
-  const date = new Date(`${value}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) {
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
     throw new Error(`確認日を日付として解析できません: ${value}`);
   }
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new Error(`確認日を日付として解析できません: ${value}`);
+  }
+
   return date;
 }
 
