@@ -28,6 +28,8 @@ on:
       - 'en/**'
       - 'ko/**'
       - 'tw/**'
+      - 'hk/**'
+      - 'in/**'
       - 'status/**'
       - 'campaign/**'
       - 'amount/**'
