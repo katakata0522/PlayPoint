@@ -12,7 +12,8 @@ const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .filter(file => file.endsWith('.test.cjs'))
   .sort()
   .map(file => path.join('tests', file));
-// 圧縮後は「minifyで壊れやすい計算・ランタイム・圧縮自体」だけ再検査する（記事SEO系は二重実行しない）
+// 圧縮後は「CSS圧縮・アセット版同期で壊れやすい計算/ランタイム」だけ再検査する。
+// JSの空白圧縮はしないが、版同期が一部JSを書き換えるため重点回帰は維持する。
 const postMinifyTestFiles = [
   'tests/playpoint-regression.test.cjs',
   'tests/main-calculator-ui.test.cjs',
@@ -20,10 +21,10 @@ const postMinifyTestFiles = [
   'tests/static-calculator-delivery.test.cjs',
   'tests/playpoint-product-guards.test.cjs',
   'tests/runtime-module-guards.test.cjs',
-  // minify 対象の js/ を読む検査（圧縮後に壊れやすい）
   'tests/common-pages-fact-ux.test.cjs',
   'tests/content-structure.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
+// prepare-deployでない検証では、CSS圧縮と版同期が触り得る公開資産を元へ戻す。
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
 const requiredPublicFiles = [
   'index.html',
@@ -131,7 +132,7 @@ try {
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  // 全量の再実行はコストが高い。minify影響を受けやすい最小セットだけ再実行する
+  // 全量の再実行はコストが高い。CSS圧縮と版同期の影響を受けやすい最小セットだけ再実行する。
   runPhase('圧縮後の重点回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
   if (prepareDeploy) {
     runPhase('公開記事の検索意図・内部リンク正規化', process.execPath, ['scripts/article-content-navigation-normalize.cjs']);

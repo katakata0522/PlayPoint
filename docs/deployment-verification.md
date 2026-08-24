@@ -1,15 +1,16 @@
 # 本番デプロイ確認手順
 
-PlayPointの本番反映は、GitHub Actionsの画面だけに依存せず、次の2経路で確認する。
+PlayPointの本番反映は、GitHub Actionsのデプロイ結果と本番の公開ステータスを組み合わせて確認する。
 
-## 1. GitHubコミットステータス
+## 1. GitHub Actionsのデプロイ結果
 
-`main`へpushされたコミットには、`xserver/deploy`というコンテキストで状態が付く。
+`main`へpushされた変更は `Deploy to Xserver` workflow で反映する。
 
-- `pending`: Xserverへの反映または本番検査を実行中
-- `success`: Xserver反映、主要ページのスモークテスト、SEOヘルスチェック、公開ステータス検証がすべて成功
-- `failure`: いずれかの処理が失敗
-- `error`: 実行がキャンセルされた
+確認対象はworkflow自体の結果とし、独自のGitHub commit statusは付与しない。ブランチ保護のrequired status checksには使っておらず、Actionsの結果と同じ状態を二重管理する必要がないためである。
+
+- workflow成功: Xserver反映、主要ページのスモークテスト、SEOヘルスチェック、公開ステータス検証まで成功
+- workflow失敗: いずれかの処理が失敗
+- workflowキャンセル: 本番反映完了とは扱わない
 
 ## 2. 本番の公開ステータス
 
@@ -38,7 +39,7 @@ PlayPointの本番反映は、GitHub Actionsの画面だけに依存せず、次
 - 他サイトへ移設済みの`tools`、`kindle-tracker`、旧記事ファイルなどが物理的に残っていないことをSSHで直接検査する
 - 旧URLの301転送は維持するが、転送できることだけで物理ファイル削除済みとは判定しない
 
-この清掃検査に失敗した場合も、`xserver/deploy`は`failure`となり、本番反映完了とは扱わない。
+この清掃検査に失敗した場合はworkflow自体が失敗し、本番反映完了とは扱わない。
 
 ## 自動検証
 
@@ -52,4 +53,4 @@ EXPECTED_DEPLOY_STATUS=verified \
 node .github/scripts/verify-deploy-status.cjs
 ```
 
-「マージ完了」と「本番反映完了」は分けて扱い、`xserver/deploy=success`と公開JSONの一致を確認できるまでは本番反映完了としない。
+「マージ完了」と「本番反映完了」は分けて扱い、`Deploy to Xserver` workflowの成功と公開JSONの一致を確認できるまでは本番反映完了としない。

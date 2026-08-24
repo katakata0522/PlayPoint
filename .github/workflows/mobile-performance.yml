@@ -17,16 +17,21 @@ on:
   pull_request:
     branches:
       - main
-    # This workflow audits only the calculator, blog hub and one representative
-    # article. Trigger it only when those measured surfaces or the audit itself
-    # can change; deterministic generation remains covered by PR Gate.
+    # PRでは実際に計測する3画面と、その共有ランタイム/スタイルだけを対象にする。
+    # 記事本文だけの編集や別記事専用CSSではLighthouseを起動しない。
+    # 生成処理の整合性は常時実行のPR Gateが担当する。
     paths:
       - 'index.html'
       - 'style.css'
       - 'js/**'
-      - 'blog/**'
-      - 'articles/**'
-      - 'tests/mobile-performance-phase1.test.cjs'
+      - 'blog/index.html'
+      - 'blog/articles.json'
+      - 'blog/*.css'
+      - 'blog/*.js'
+      - 'articles/2026-03-10-play-points-reflection-timing.html'
+      - 'articles/article-modern.css'
+      - 'articles/article-shared.css'
+      - 'articles/styles/2026-03-10-play-points-reflection-timing.css'
       - '.github/workflows/mobile-performance.yml'
       - '.github/scripts/minify.cjs'
       - '.github/scripts/mobile-performance-budget.cjs'
@@ -70,7 +75,7 @@ jobs:
           fi
           echo "AUDIT_TARGET=$target" >> "$GITHUB_ENV"
 
-      # PRでも本番デプロイと同じ圧縮成果物を測り、未圧縮ソースの大きさで誤判定しない。
+      # PRでも本番デプロイと同じ公開アセット準備を通した成果物を測る。
       - name: Prepare production-like local assets
         if: env.AUDIT_TARGET == 'local'
         run: node .github/scripts/minify.cjs
