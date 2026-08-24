@@ -24,7 +24,8 @@ const postMinifyTestFiles = [
   'tests/common-pages-fact-ux.test.cjs',
   'tests/content-structure.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
-// prepare-deployでない検証では、CSS圧縮と版同期が触り得る公開資産を元へ戻す。
+// 通常検証では、CSS圧縮と版同期が触り得る公開資産を元へ戻す。
+// --prepare-deploy は配信用の生成・圧縮差分だけを保持し、記事正規化は常にcheck-onlyで扱う。
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
 const requiredPublicFiles = [
   'index.html',
@@ -127,6 +128,9 @@ try {
   verifyRequiredPublicFiles();
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   verifyServiceWorkerPrecacheAssets();
+  runPhase('最新情報ハブ鮮度検証', process.execPath, ['scripts/latest-hub-audit.cjs', '--fresh']);
+  runPhase('公開記事の検索意図・内部リンク検証', process.execPath, ['scripts/article-content-navigation-normalize.cjs', '--check']);
+  runPhase('公開記事SEO検証', process.execPath, ['scripts/article-seo-normalize.cjs', '--check']);
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
@@ -134,12 +138,6 @@ try {
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
   // 全量の再実行はコストが高い。CSS圧縮と版同期の影響を受けやすい最小セットだけ再実行する。
   runPhase('圧縮後の重点回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
-  if (prepareDeploy) {
-    runPhase('公開記事の検索意図・内部リンク正規化', process.execPath, ['scripts/article-content-navigation-normalize.cjs']);
-    runPhase('公開記事の検索意図・内部リンク検証', process.execPath, ['scripts/article-content-navigation-normalize.cjs', '--check']);
-    runPhase('公開記事SEO正規化', process.execPath, ['scripts/article-seo-normalize.cjs']);
-    runPhase('公開記事SEO正規化後検証', process.execPath, ['scripts/article-seo-normalize.cjs', '--check']);
-  }
 } finally {
   if (!prepareDeploy) restoreMutableFiles();
 }
