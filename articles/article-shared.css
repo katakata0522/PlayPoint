@@ -40,6 +40,11 @@ body[data-article-category="キャンペーン"] {
 --article-accent-dark: #b45309;
 --article-accent-soft: #fffbeb;
 }
+body[data-article-category="ゲーム"] {
+--article-accent: #10b981;
+--article-accent-dark: #047857;
+--article-accent-soft: #ecfdf5;
+}
 body {
 font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
 background-color: var(--cocoon-bg);

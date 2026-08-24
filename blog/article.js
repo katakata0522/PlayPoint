@@ -399,7 +399,7 @@
         const categoryBadge = document.querySelector('.badge, .hero-badge');
         if (categoryBadge) {
             const text = categoryBadge.textContent.trim();
-            const match = text.match(/ランク|トラブル|使い方|キャンペーン/);
+            const match = text.match(/ランク|トラブル|使い方|キャンペーン|ゲーム/);
             if (match) return match[0];
         }
         return null;

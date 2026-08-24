@@ -95,7 +95,7 @@
             console.warn('ブログ設定を読み込めませんでした。既定テーマを使用します。', error);
         }
 
-        const allowedCategories = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
+        const allowedCategories = ['ランク', 'トラブル', '使い方', 'キャンペーン', 'ゲーム'];
         const category = document.querySelector('meta[name="article:category"]')?.content;
         document.body.dataset.blogTheme = theme;
         document.body.dataset.articleCategory = allowedCategories.includes(category) ? category : '使い方';
