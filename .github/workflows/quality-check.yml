@@ -27,20 +27,11 @@ jobs:
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
-      # Temporary binary-search diagnostics for PR #142. Reset before every
-      # group because prepare-deploy intentionally leaves generated/minified files.
-      - name: Diagnose tests A-F
+      # Temporary binary-search diagnostics for PR #142.
+      - name: Diagnose tests S-U
         if: failure()
-        run: git reset --hard HEAD && node --test tests/[a-f]*.test.cjs
+        run: git reset --hard HEAD && node --test tests/[s-u]*.test.cjs
 
-      - name: Diagnose tests G-L
+      - name: Diagnose tests V-Z
         if: failure()
-        run: git reset --hard HEAD && node --test tests/[g-l]*.test.cjs
-
-      - name: Diagnose tests M-R
-        if: failure()
-        run: git reset --hard HEAD && node --test tests/[m-r]*.test.cjs
-
-      - name: Diagnose tests S-Z
-        if: failure()
-        run: git reset --hard HEAD && node --test tests/[s-z]*.test.cjs
+        run: git reset --hard HEAD && node --test tests/[v-z]*.test.cjs
