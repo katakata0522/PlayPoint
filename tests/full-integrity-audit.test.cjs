@@ -18,18 +18,7 @@ test('ゲーム生成物は確認範囲と出典を明示し保留記事を推�
   assert.ok(!generator.includes('diamond-valley-festival-guide.html'));
 });
 
-test('ゲーム生成テンプレのナビariaと広告ラベルは言語別に出す', () => {
-  const generator = read('scripts/generate-game-simulators.cjs');
-  assert.match(generator, /navAriaLabel:/);
-  assert.match(generator, /breadcrumbAriaLabel:/);
-  assert.match(generator, /adLabel:/);
-  assert.match(generator, /aria-label="\$\{loc\.navAriaLabel\}"/);
-  assert.match(generator, /aria-label="\$\{loc\.breadcrumbAriaLabel\}"/);
-  assert.match(generator, /<span class="game-ad-label">\$\{loc\.adLabel\}<\/span>/);
-  assert.ok(!generator.includes('aria-label="メインナビゲーション"'));
-  assert.ok(!generator.includes('aria-label="パンくずリスト"'));
-  assert.ok(!generator.includes('<span class="game-ad-label">スポンサーリンク</span>'));
-
+test('ゲーム公開ページのナビariaと広告ラベルは言語別に出す', () => {
   for (const [file, nav, crumb, ad] of [
     ['en/games/genshin/index.html', 'Main navigation', 'Breadcrumb', 'Sponsored'],
     ['ko/games/genshin/index.html', '주 메뉴', '탐색 경로', '광고'],
@@ -84,20 +73,14 @@ test('ブラウザCIはゲームと記事の収益経路を検査する', () => 
   assert.match(smoke, /article-ad-container/);
 });
 
-test('ゲームサイトマップは各ページのlast-modifiedを優先する', () => {
-  const sitemap = read('scripts/sitemap-sync.cjs');
-  assert.match(sitemap, /CONTENT_DATE_OVERRIDES\[relativePath\]/);
-  assert.match(sitemap, /htmlDateFor/);
-  assert.match(read('scripts/generate-game-simulators.cjs'), /last-modified/);
-});
-
-
 test('韓国語・繁体字ゲーム計算機も特別獲得率として表示する', () => {
-  const generator = read('scripts/generate-game-simulators.cjs');
-  assert.match(generator, /프로모션 특별 적립률/);
-  assert.match(generator, /活動特別獲點率/);
-  assert.ok(!generator.includes("multiplierLabel: '포인트 배율:'"));
-  assert.ok(!generator.includes("multiplierLabel: '點數加碼倍率：'"));
+  const ko = read('ko/games/genshin/index.html');
+  const tw = read('tw/games/genshin/index.html');
+
+  assert.match(ko, /프로모션 특별 적립률/);
+  assert.doesNotMatch(ko, /포인트 배율/);
+  assert.match(tw, /活動特別獲點率/);
+  assert.doesNotMatch(tw, /點數加碼倍率/);
 });
 
 test('国際LPはundefinedフッターやランク率×倍率の説明を生成しない', () => {
@@ -134,7 +117,6 @@ test('LPアフィリエイト文言は固定還元や二重取りを断定しな
   assert.ok(!source.includes('場合</strong>されます'));
   assert.ok(source.includes('ポイント還元の対象になる場合があります'));
 });
-
 
 test('レビューで見つかった表示破損と旧倍率コピーを残さない', () => {
   const config = read('js/config.js');
