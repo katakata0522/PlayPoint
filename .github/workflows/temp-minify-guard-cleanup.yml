@@ -1,0 +1,116 @@
+name: Temporary stale JS minify guard cleanup
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temp-minify-guard-cleanup.yml'
+      - '.github/scripts/minify.cjs'
+      - '.github/scripts/preflight.cjs'
+      - 'tests/playpoint-product-guards.test.cjs'
+      - 'tests/runtime-module-guards.test.cjs'
+      - 'tests/main-calculator-ui.test.cjs'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ci/remove-stale-js-minify-overhead
+
+      - name: Replace only stale JS minify guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('tests/playpoint-product-guards.test.cjs')
+          source = path.read_text(encoding='utf-8')
+
+          source, count = re.subn(
+              r"function loadMinifierForTest\(\) \{[\s\S]*?\n\}\n\n(?=function loadConfigs\(\))",
+              '',
+              source,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit(f'expected one obsolete loadMinifierForTest block, got {count}')
+
+          replacement = '''test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ行う', () => {
+            const minifierSource = read('.github/scripts/minify.cjs');
+
+            for (const file of [
+              'style.css',
+              'visitor-thanks.css',
+              'blog/style.css',
+              'blog/common-components.css',
+              'en/articles/intl-article.css'
+            ]) {
+              assert.ok(minifierSource.includes(file), `CSS圧縮対象が不足しています: ${file}`);
+            }
+
+            assert.ok(!minifierSource.includes('function minifyJS('), '実行しないJS minifierが残っています');
+            for (const operation of [
+              'syncDynamicArticleStylesheetVersion',
+              'syncSharedRuntimeAssetVersions',
+              'syncRootServiceWorker',
+              'syncPublicAssetVersions'
+            ]) {
+              assert.ok(minifierSource.includes(operation), `asset version同期処理が不足しています: ${operation}`);
+            }
+          });
+
+          '''
+          source, count = re.subn(
+              r"test\('JSミニファイは文字列中のスラッシュコメント風テキストを壊さない',[\s\S]*?(?=test\('デプロイ前検証はミニファイ後JSの構文を確認する')",
+              replacement,
+              source,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit(f'expected one obsolete JS minify test block, got {count}')
+
+          replacements = {
+              "test('デプロイ前検証はミニファイ後JSの構文を確認する'": "test('デプロイ前検証はasset version同期後JSの構文を確認する'",
+              "test('デプロイ前検証は圧縮前に全回帰し、圧縮後は重点テストだけ再実行する'": "test('デプロイ前検証は圧縮前に全回帰し、圧縮後は配信境界だけ再実行する'",
+              "runPhase('圧縮後の重点回帰テスト'": "runPhase('圧縮後の配信境界回帰テスト'",
+              "ミニファイ後の重点回帰テストがありません": "圧縮後の配信境界回帰テストがありません",
+          }
+          for old, new in replacements.items():
+              if source.count(old) != 1:
+                  raise SystemExit(f'expected one occurrence of {old!r}, got {source.count(old)}')
+              source = source.replace(old, new)
+
+          if 'loadMinifierForTest' in source or "test('JSミニファイ" in source:
+              raise SystemExit('obsolete JS minify guard remains')
+
+          path.write_text(source, encoding='utf-8')
+          PY
+
+      - name: Verify focused tests and diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/playpoint-product-guards.test.cjs tests/runtime-module-guards.test.cjs tests/main-calculator-ui.test.cjs
+          git diff --check
+          changed="$(git diff --name-only)"
+          test "$changed" = 'tests/playpoint-product-guards.test.cjs'
+
+      - name: Commit cleaned guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/playpoint-product-guards.test.cjs
+          git commit -m 'test: 旧JS minify契約を実配信境界へ置換'
+          git push origin HEAD:ci/remove-stale-js-minify-overhead
