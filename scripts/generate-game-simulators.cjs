@@ -1563,6 +1563,87 @@ const GAMES_DATA = [
     }
   },
   {
+    id: 'pad',
+    icon: '🐉',
+    names: { ja: 'パズル＆ドラゴンズ (Puzzle & Dragons)', en: 'Puzzle & Dragons', ko: '퍼즐앤드래곤 (Puzzle & Dragons)', tw: '龍族拼圖 (Puzzle & Dragons)' },
+    shortNames: { ja: 'パズドラ', en: 'PAD', ko: '퍼드', tw: '龍族拼圖' },
+    descs: {
+      ja: 'パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。',
+      en: 'Estimate Google Play Points for Puzzle & Dragons from the PAD Pass and the purchase amount currently shown in the game. Store prices can change, so verify the purchase screen before paying.',
+      ko: '퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요.',
+      tw: '依龍族拼圖通行證與遊戲內目前顯示的購買金額，試算 Google Play Points。商品價格可能調整，付款前請以遊戲內與 Google Play 畫面為準。'
+    },
+    packs: {
+      ja: [
+        { name: 'パズドラパス (月額980円)', price: 980 },
+        { name: '購入額を1,000円として試算', price: 1000 },
+        { name: '購入額を5,000円として試算', price: 5000 },
+        { name: '購入額を10,000円として試算', price: 10000 },
+        { name: '購入額を30,000円として試算', price: 30000 }
+      ],
+      en: [
+        { name: 'PAD Pass example ($8.99)', price: 8.99 },
+        { name: 'Example spend ($10)', price: 10 },
+        { name: 'Example spend ($25)', price: 25 },
+        { name: 'Example spend ($50)', price: 50 },
+        { name: 'Example spend ($100)', price: 100 }
+      ],
+      ko: [
+        { name: '결제 예시 ₩10,000', price: 10000 },
+        { name: '결제 예시 ₩30,000', price: 30000 },
+        { name: '결제 예시 ₩50,000', price: 50000 },
+        { name: '결제 예시 ₩100,000', price: 100000 }
+      ],
+      tw: [
+        { name: '消費範例 NT$300', price: 300 },
+        { name: '消費範例 NT$750', price: 750 },
+        { name: '消費範例 NT$1,500', price: 1500 },
+        { name: '消費範例 NT$3,000', price: 3000 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'パズドラパス (980円)', amount: 980, mult: 1 },
+        { label: '課金予定 5,000円', amount: 5000, mult: 1 },
+        { label: '課金予定 10,000円', amount: 10000, mult: 1 },
+        { label: '課金予定 30,000円', amount: 30000, mult: 1 }
+      ],
+      en: [
+        { label: 'Planned spend $10', amount: 10, mult: 1 },
+        { label: 'Planned spend $25', amount: 25, mult: 1 },
+        { label: 'Planned spend $50', amount: 50, mult: 1 },
+        { label: 'Planned spend $100', amount: 100, mult: 1 }
+      ],
+      ko: [
+        { label: '결제 예정 ₩10,000', amount: 10000, mult: 1 },
+        { label: '결제 예정 ₩30,000', amount: 30000, mult: 1 },
+        { label: '결제 예정 ₩50,000', amount: 50000, mult: 1 },
+        { label: '결제 예정 ₩100,000', amount: 100000, mult: 1 }
+      ],
+      tw: [
+        { label: '預計消費 NT$300', amount: 300, mult: 1 },
+        { label: '預計消費 NT$750', amount: 750, mult: 1 },
+        { label: '預計消費 NT$1,500', amount: 1500, mult: 1 },
+        { label: '預計消費 NT$3,000', amount: 3000, mult: 1 }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'パズドラのGoogle Play課金でPlay Pointsは貯まりますか？', a: 'Google Play Points参加済みのアカウントで、Google Playを通じた対象のゲーム内購入や定期購入を行うとポイントを獲得できます。実際の獲得予定ポイントは購入前のGoogle Play画面で確認してください。' },
+        { q: 'パズドラパスはいくらですか？', a: 'パズドラ公式は、パズドラパスを月額980円の自動更新サービスとして案内しています。価格や提供条件が変更される可能性もあるため、購入時のゲーム内表示も確認してください。' }
+      ],
+      en: [
+        { q: 'Do Puzzle & Dragons purchases earn Google Play Points?', a: 'Eligible purchases made through Google Play with an enrolled account can earn Play Points. Check the Google Play purchase screen for the expected points before paying.' }
+      ],
+      ko: [
+        { q: '퍼즐앤드래곤 결제 시 Google Play Points가 적립되나요?', a: 'Google Play Points에 가입한 계정으로 Google Play의 적립 대상 게임 내 결제 또는 정기 결제를 하면 포인트를 받을 수 있습니다. 결제 전 Google Play 화면의 예상 적립 포인트를 확인하세요.' }
+      ],
+      tw: [
+        { q: '龍族拼圖課金可以累積 Google Play Points 嗎？', a: '已加入 Google Play Points 的帳戶，透過 Google Play 進行符合資格的遊戲內購買或訂閱時可以獲得點數。付款前請確認 Google Play 顯示的預計點數。' }
+      ]
+    }
+  },
+  {
     id: 'arknights',
     icon: '🛡️',
     names: { ja: 'アークナイツ (Arknights)', en: 'Arknights', ko: '명일방주', tw: '明日方舟 (Arknights)' },

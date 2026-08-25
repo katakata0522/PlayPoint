@@ -82,6 +82,32 @@ const RELATED_SECTIONS = {
       ['./2025-12-25-playpoints-rank-maintenance.html', '年末のランク維持条件を確認']
     ]
   },
+  'articles/2026-08-24-umamusume-half-anniversary-points.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2026-06-20-discount-gift-cards.html', 'ギフトコードをお得に買う前の確認事項'],
+      ['./2026-08-16-fastest-gold.html', 'ゴールド到達の必要ポイントを確認'],
+      ['./2025-12-25-subscription.html', '定期購入のポイント獲得条件を確認']
+    ]
+  },
+  'articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2026-08-25-pad-puzzle-and-dragons-play-points.html', 'パズドラ課金とPlay Pointsの確認'],
+      ['./2026-08-24-umamusume-half-anniversary-points.html', 'ウマ娘ハーフアニバ課金とPlay Pointsの確認'],
+      ['./2025-12-25-subscription.html', '定期購入のポイント獲得条件を確認'],
+      ['./2026-06-20-discount-gift-cards.html', 'ギフトコードをお得に買う前の確認事項']
+    ]
+  },
+  'articles/2026-08-25-pad-puzzle-and-dragons-play-points.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2026-08-25-dokkan-battle-dragon-ball-play-points.html', 'ドッカンバトル課金とPlay Pointsの確認'],
+      ['./2026-08-24-umamusume-half-anniversary-points.html', 'ウマ娘ハーフアニバ課金とPlay Pointsの確認'],
+      ['./2025-12-25-subscription.html', '定期購入のポイント獲得条件を確認'],
+      ['./2026-06-20-discount-gift-cards.html', 'ギフトコードをお得に買う前の確認事項']
+    ]
+  },
   'articles/2026-07-24-play-points-1-value.html': {
     heading: '次に確認したい関連記事',
     links: [

@@ -42,6 +42,7 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/genshin/index.html': '2026-08-25',
   'games/honkai3rd/index.html': '2026-08-25',
   'games/nikke/index.html': '2026-08-25',
+  'games/pad/index.html': '2026-08-25',
   'games/phantomparade/index.html': '2026-08-25',
   'games/wutheringwaves/index.html': '2026-08-25'
 });
