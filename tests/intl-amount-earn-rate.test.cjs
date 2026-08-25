@@ -28,6 +28,16 @@ test('dormant international Amount fallback copy uses special earn-rate terminol
   assert.doesNotMatch(source, /確認: 等級、倍率、適用金額/);
 });
 
+test('published Japanese Amount copy uses special earn-rate terminology', () => {
+  const ja = read('amount/10000/index.html');
+
+  assert.match(ja, /特別獲得率/);
+  assert.doesNotMatch(ja, /ステータスや倍率ごとに/);
+  assert.doesNotMatch(ja, /キャンペーン倍率との違い/);
+  assert.doesNotMatch(ja, /逆算・1万円・通常倍率/);
+  assert.match(ja, /multiplier=1/);
+});
+
 test('published international Amount overrides stay unchanged and keep legacy query compatibility', () => {
   const en = read('en/amount/10000/index.html');
   const ko = read('ko/amount/10000/index.html');
