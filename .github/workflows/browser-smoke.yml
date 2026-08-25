@@ -42,7 +42,6 @@ on:
       - 'privacy.html'
       - 'terms.html'
       - 'changelog.html'
-      - 'scripts/**'
       - '.github/scripts/browser-smoke.cjs'
       - '.github/scripts/browser-revenue-smoke.cjs'
       - '.github/workflows/browser-smoke.yml'

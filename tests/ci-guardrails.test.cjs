@@ -8,10 +8,13 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-test('Browser SmokeのPR対象に香港・インドを含める', () => {
+test('Browser SmokeのPR対象に香港・インドを含め、汎用scripts変更では起動しない', () => {
   const workflow = read('.github/workflows/browser-smoke.yml');
   assert.match(workflow, /- 'hk\/\*\*'/);
   assert.match(workflow, /- 'in\/\*\*'/);
+  assert.doesNotMatch(workflow, /- 'scripts\/\*\*'/);
+  assert.match(workflow, /- '\.github\/scripts\/browser-smoke\.cjs'/);
+  assert.match(workflow, /- '\.github\/scripts\/browser-revenue-smoke\.cjs'/);
 });
 
 test('PR Gateは検査専用、Deployだけが配信用アセットを保持する', () => {
@@ -23,10 +26,21 @@ test('PR Gateは検査専用、Deployだけが配信用アセットを保持す�
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });
 
-test('Deployは本番非公開のtests・docs変更だけでは起動しない', () => {
+test('Deployは本番非公開のtests・docs・tools変更だけでは起動しない', () => {
   const workflow = read('.github/workflows/deploy.yml');
   assert.match(workflow, /- 'tests\/\*\*'/);
   assert.match(workflow, /- 'docs\/\*\*'/);
+  assert.match(workflow, /- 'tools\/\*\*'/);
+  assert.match(workflow, /- 'scripts\/ai-sync-preflight\.cjs'/);
+});
+
+test('AI同期プリフライト本体は非公開toolsに置き、公開ミラーから除外する', () => {
+  const wrapper = read('scripts/ai-sync-preflight.cjs');
+  const deployScript = read('.github/scripts/deploy-rsync.sh');
+
+  assert.match(wrapper, /require\('\.\.\/tools\/ai-sync-preflight\.cjs'\)/);
+  assert.ok(fs.existsSync(path.join(root, 'tools/ai-sync-preflight.cjs')));
+  assert.match(deployScript, /--exclude '\/tools\/\*\*\*'/);
 });
 
 test('preflightは本番同期前に鮮度と記事正規化をcheck-onlyで検証する', () => {
