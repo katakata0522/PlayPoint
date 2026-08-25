@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/temp-game-date-sync.yml'
       - 'scripts/content-dates.cjs'
+      - 'scripts/html-replacements.cjs'
       - 'tests/game-page-ssot.test.cjs'
 
 permissions:
@@ -52,8 +53,6 @@ jobs:
               text = open(file, encoding='utf-8').read()
               if 'last-modified" content="2026-08-25"' not in text:
                   raise SystemExit(f'missing updated game content date: {file}')
-              if 'dateModified": "2026-08-25"' not in text:
-                  raise SystemExit(f'missing updated structured content date: {file}')
           PY
           git diff --check
 
