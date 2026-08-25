@@ -35,7 +35,16 @@ const GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
 function getGeneratedIntlPageContentDate(pageKey, localeKey) {
   return GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES[`${pageKey}:${localeKey}`] || GENERATED_INTL_PAGE_CONTENT_DATE;
 }
+
 const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
+const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
+  'games/arknights/index.html': '2026-08-25',
+  'games/genshin/index.html': '2026-08-25',
+  'games/honkai3rd/index.html': '2026-08-25',
+  'games/nikke/index.html': '2026-08-25',
+  'games/phantomparade/index.html': '2026-08-25',
+  'games/wutheringwaves/index.html': '2026-08-25'
+});
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 
 function isGeneratedGamePagePath(file) {
@@ -50,8 +59,13 @@ function isGeneratedGamePagePath(file) {
   });
 }
 
+function getGeneratedGamePageContentDate(file) {
+  const normalized = String(file).replaceAll('\\', '/');
+  return GAME_PAGE_CONTENT_DATE_OVERRIDES[normalized] || GENERATED_GAME_PAGE_CONTENT_DATE;
+}
+
 const gameContentDateOverrides = Object.fromEntries(
-  getGamePageHtmlFiles(rootDir).map(file => [file, GENERATED_GAME_PAGE_CONTENT_DATE])
+  getGamePageHtmlFiles(rootDir).map(file => [file, getGeneratedGamePageContentDate(file)])
 );
 
 const CONTENT_DATE_OVERRIDES = Object.freeze({
@@ -83,7 +97,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
 
 function getContentDateForFile(file) {
   if (isGeneratedGamePagePath(file)) {
-    return GENERATED_GAME_PAGE_CONTENT_DATE;
+    return getGeneratedGamePageContentDate(file);
   }
   return CONTENT_DATE_OVERRIDES[file];
 }
@@ -91,11 +105,13 @@ function getContentDateForFile(file) {
 module.exports = {
   CONTENT_DATE_OVERRIDES,
   GENERATED_GAME_PAGE_CONTENT_DATE,
+  GAME_PAGE_CONTENT_DATE_OVERRIDES,
   GENERATED_INTL_PAGE_CONTENT_DATE,
   GENERATED_INTL_PAGE_CONTENT_DATE_OVERRIDES,
   LATEST_HUB_VERIFICATION_DATE,
   TOP_PAGE_CONTENT_DATES,
   getContentDateForFile,
+  getGeneratedGamePageContentDate,
   getGeneratedIntlPageContentDate,
   isGeneratedGamePagePath
 };
