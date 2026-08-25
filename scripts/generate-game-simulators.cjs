@@ -967,9 +967,9 @@ const GAMES_DATA = [
     shortNames: { ja: 'ウマ娘', en: 'Umamusume', ko: '우마무스메', tw: '賽馬娘' },
     descs: {
       ja: 'ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別還元早見表やポイント使い道もまとめているので、育成前の課金計画にぜひ役立ててみてくださいね。',
-      en: 'Calculate Play Points earned on Jewels, Daily Pack, 200-pull Sparking, and MLB Support Cards in Umamusume!',
-      ko: '쥬얼 구매, 데일리 쥬얼팩, 200연차 천장, 서포트 카드 풀돌 과금 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算賽馬娘寶石、每日寶石包、200抽保底、支援卡滿突課金可獲得的 Play Points！'
+      en: 'Calculate Google Play Points earned on Jewels, Daily Packs, 200-pull spark pity, and MLB Support Cards in Umamusume!',
+      ko: '쥬얼, 먼슬리 우마(데일리 쥬얼), 200연차 교환 Pt 천장, 서포트 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!',
+      tw: '計算賽馬娘寶石、每日寶石包、200抽兌換Pt保底、支援卡4凸(滿凸)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [

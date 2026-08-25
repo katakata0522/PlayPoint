@@ -150,8 +150,9 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="3000" data-mult="1" aria-pressed="true">10連分 (3,000円)</button>
-              <button type="button" class="preset-btn " data-amount="60000" data-mult="1" aria-pressed="false">天井 200連 (60,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="1980" data-mult="1" aria-pressed="true">プレミアムミッションパス (1,980円)</button>
+              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (約3,000円)</button>
+              <button type="button" class="preset-btn " data-amount="60000" data-mult="1" aria-pressed="false">天井 200連 (約60,000円)</button>
               </div>
 
               <form id="game-sim-form">
@@ -159,12 +160,14 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="160">ジュエル 60個 (160円)</option>
-                  <option value="480">ジュエル 180個 (480円)</option>
-                  <option value="1200">ジュエル 470個 (1,200円)</option>
-                  <option value="3000">ジュエル 1200個 (3,000円)</option>
-                  <option value="5000">ジュエル 2050個 (5,000円)</option>
-                  <option value="10000">ジュエル 4200個 (10,000円)</option>
+                              <option value="1980">プレミアムミッションパス (1,980円)</option>
+                  <option value="120">ジュエル 80個 (120円)</option>
+                  <option value="480">ジュエル 360個 (480円)</option>
+                  <option value="800">ジュエル 600個 (800円)</option>
+                  <option value="1500">ジュエル 1,200個 (1,500円)</option>
+                  <option value="3000">ジュエル 2,500個 (3,000円)</option>
+                  <option value="4800">ジュエル 4,000個 (4,800円)</option>
+                  <option value="9800">ジュエル 8,200個 (9,800円)</option>
                               <option value="custom">自由入力（カスタム金額）</option>
                           </select>
                       </div>
@@ -176,7 +179,7 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="3000" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="1980" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -271,12 +274,14 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>ジュエル 60個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
-<tr><td>ジュエル 180個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>ジュエル 470個 (1,200円)</td><td>1,200 円</td><td>約 12 pt</td><td>約 60 pt</td></tr>
-<tr><td>ジュエル 1200個 (3,000円)</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr><td>ジュエル 2050個 (5,000円)</td><td>5,000 円</td><td>約 50 pt</td><td>約 250 pt</td></tr>
-<tr><td>ジュエル 4200個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+                          <tr><td>プレミアムミッションパス (1,980円)</td><td>1,980 円</td><td>約 20 pt</td><td>約 99 pt</td></tr>
+<tr><td>ジュエル 80個 (120円)</td><td>120 円</td><td>約 1 pt</td><td>約 6 pt</td></tr>
+<tr><td>ジュエル 360個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
+<tr><td>ジュエル 600個 (800円)</td><td>800 円</td><td>約 8 pt</td><td>約 40 pt</td></tr>
+<tr><td>ジュエル 1,200個 (1,500円)</td><td>1,500 円</td><td>約 15 pt</td><td>約 75 pt</td></tr>
+<tr><td>ジュエル 2,500個 (3,000円)</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
+<tr><td>ジュエル 4,000個 (4,800円)</td><td>4,800 円</td><td>約 48 pt</td><td>約 240 pt</td></tr>
+<tr><td>ジュエル 8,200個 (9,800円)</td><td>9,800 円</td><td>約 98 pt</td><td>約 490 pt</td></tr>
                       </tbody>
                   </table>
               </div>
