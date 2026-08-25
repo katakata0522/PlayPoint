@@ -1963,6 +1963,11 @@ body[data-article-category="キャンペーン"] .step-number {
     margin-bottom: 4px;
     font-weight: 700;
 }
+@media (min-width: 768px) {
+    .scroll-tip {
+        display: none;
+    }
+}
 .table-inner {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -2046,6 +2051,13 @@ body[data-article-category="キャンペーン"] .step-number {
 @keyframes cleanShimmer {
     0% { transform: rotate(25deg) translateX(-100%); }
     20%, 100% { transform: rotate(25deg) translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-clean-shimmer::before,
+    .marker-anim {
+        animation: none !important;
+    }
 }
 
 /* 7. スクショ白飛び防止枠 */

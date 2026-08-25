@@ -188,3 +188,251 @@ background: #f8fafc;
 .content { padding: 1.5rem; }
 .author-box { margin: 0 1.5rem 1.5rem; }
 }
+
+/* ==========================================================================
+   Refined Design Components (International)
+   ========================================================================== */
+
+/* 1. Text Markers */
+.marker-yellow {
+    background: linear-gradient(transparent 60%, rgba(255, 235, 59, 0.5) 60%);
+    font-weight: 700;
+}
+.marker-blue {
+    background: linear-gradient(transparent 60%, rgba(129, 212, 250, 0.5) 60%);
+    font-weight: 700;
+}
+.marker-pink {
+    background: linear-gradient(transparent 60%, rgba(255, 138, 128, 0.4) 60%);
+    font-weight: 700;
+}
+.marker-anim {
+    background: linear-gradient(transparent 60%, rgba(255, 235, 59, 0.55) 60%);
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    animation: drawMarker 0.8s ease-out forwards;
+}
+@keyframes drawMarker {
+    to { background-size: 100% 100%; }
+}
+
+/* 2. Summary Box */
+.summary-point-box {
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0 24px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.06);
+}
+.summary-point-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #166534;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.summary-point-box ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: #1e293b;
+}
+.summary-point-box li {
+    margin-bottom: 6px;
+    line-height: 1.65;
+}
+.summary-point-box li:last-child {
+    margin-bottom: 0;
+}
+
+/* 3. Pros & Cons Cards */
+.pro-con-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+}
+@media (max-width: 600px) {
+    .pro-con-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.pro-card {
+    background: #f0fdf4;
+    border: 1.5px solid #86efac;
+    border-radius: 12px;
+    padding: 18px;
+}
+.con-card {
+    background: #fef2f2;
+    border: 1.5px solid #fca5a5;
+    border-radius: 12px;
+    padding: 18px;
+}
+.pro-con-head {
+    font-weight: 800;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.pro-card .pro-con-head { color: #166534; }
+.con-card .pro-con-head { color: #991b1b; }
+.pro-card ul, .con-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+.pro-card li, .con-card li { margin-bottom: 6px; }
+.pro-card li:last-child, .con-card li:last-child { margin-bottom: 0; }
+
+/* 4. Clean Accordion (FAQ) */
+.clean-accordion {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin: 14px 0;
+    overflow: hidden;
+}
+.clean-accordion summary {
+    padding: 14px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    transition: background 0.2s;
+    user-select: none;
+}
+.clean-accordion summary:hover {
+    background: #f1f5f9;
+}
+.clean-accordion .q-icon {
+    background: var(--accent, #4f46e5);
+    color: #fff;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.85rem;
+    margin-right: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.clean-accordion .accordion-body {
+    padding: 16px 18px;
+    color: #475569;
+    border-top: 1px solid #e2e8f0;
+    line-height: 1.75;
+    background: #f8fafc;
+}
+
+/* 5. Mobile Optimized Tables */
+.table-scroll-box {
+    margin: 24px 0;
+}
+.scroll-tip {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-align: right;
+    margin-bottom: 4px;
+    font-weight: 700;
+}
+@media (min-width: 768px) {
+    .scroll-tip {
+        display: none;
+    }
+}
+.table-inner {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #d8e1ee;
+    border-radius: 10px;
+}
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px;
+    background: #fff;
+}
+.modern-table th, .modern-table td {
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.95rem;
+}
+.modern-table .col-sticky {
+    position: sticky;
+    left: 0;
+    background: #f8fafc;
+    font-weight: 700;
+    z-index: 1;
+    text-align: left;
+}
+.modern-table .col-crown {
+    background: #fffbeb;
+    border-left: 2px solid #f59e0b;
+    border-right: 2px solid #f59e0b;
+}
+.badge-crown {
+    display: inline-block;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* 6. Shimmer CTA Buttons */
+.btn-clean-shimmer {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 36px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    background: linear-gradient(135deg, #0f7a46, #0b6238);
+    border-radius: 50px;
+    box-shadow: 0 4px 0 #074226, 0 8px 24px rgba(15, 122, 70, 0.25);
+    overflow: hidden;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.btn-clean-shimmer:hover {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #074226, 0 4px 14px rgba(15, 122, 70, 0.3);
+}
+.btn-clean-shimmer::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        60deg,
+        rgba(255, 255, 255, 0) 30%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    transform: rotate(25deg) translateX(-100%);
+    animation: cleanShimmer 4s infinite;
+}
+@keyframes cleanShimmer {
+    0% { transform: rotate(25deg) translateX(-100%); }
+    20%, 100% { transform: rotate(25deg) translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-clean-shimmer::before,
+    .marker-anim {
+        animation: none !important;
+    }
+}
