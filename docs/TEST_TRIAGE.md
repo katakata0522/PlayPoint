@@ -118,7 +118,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | growth-priority | **外部Google Fonts禁止**は `runtime-module-guards` に復元。docs文言固定は不要のまま |
 | growth-migration | 旧パス実体は `deploy-cleanup`。**主要計測イベント名**は `runtime-module-guards` に復元 |
 | http-check-utils | 汎用 util。本番ロジックではない → 削除維持で問題なし |
-| main-responsibility-split | **分離モジュールが minify/asset-sync/sw に含まれる**は `runtime-module-guards` に復元 |
+| main-responsibility-split | **分離モジュールが asset-sync / Service Worker先読みに含まれる**は `runtime-module-guards` に復元。JSは圧縮せず内容ハッシュ同期を契約とする |
 | jp-guide-batch-20260805 | ランク段階・倍率の足し合わせ禁止・参加条件は **`article-fact-regression` に要点だけ復元** |
 | intl-regional-guides-20260805 | hreflang・地域数値は `all-article-quality` / `intl-regional-accuracy` / `manual-intl-articles` が担当 |
 | article-quality-audit-wave1 | 全体監査 `all-article-quality-audit` と重複 → 削除維持 |
@@ -183,6 +183,8 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 - 本番revision取得のIPv4/retry契約は、直接ownerがまだないため維持
 - `performance-hardening.test.cjs` から、`mobile-performance.yml` のschedule / Lighthouse version / CPU slowdown / budget script名をsnapshotするテストを削除
 - Browser Smoke本体・Lighthouse workflow本体・性能budgetは変更せず、実行レイヤーの保証を維持
+- `minify.cjs` の未実行JS minify対象リスト・仮想削減量計測を削除し、CSS圧縮とJS asset version同期の実契約へ一致
+- preflightの圧縮後再実行を8テストファイルから配信境界owner 2ファイルへ縮小。全回帰と圧縮後JavaScript構文検証は維持
 
 ---
 
