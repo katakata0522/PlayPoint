@@ -94,6 +94,7 @@ deploy_once() {
     --exclude '/tests/***' \
     --exclude '/docs/***' \
     --exclude '/scripts/***' \
+    --exclude '/tools/***' \
     --exclude '/みんな用URL.txt' \
     --exclude '/CNAME'
 }
