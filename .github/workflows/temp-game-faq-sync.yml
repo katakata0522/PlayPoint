@@ -35,8 +35,8 @@ jobs:
           old_base = '通常時（1%）'
           if source.count(old_campaign) != 5:
               raise SystemExit(f'expected 5 old campaign FAQ phrases, got {source.count(old_campaign)}')
-          if source.count(old_base) != 5:
-              raise SystemExit(f'expected 5 old base-rate FAQ phrases, got {source.count(old_base)}')
+          if source.count(old_base) != 6:
+              raise SystemExit(f'expected 6 old base-rate FAQ phrases, got {source.count(old_base)}')
 
           source = source.replace(old_campaign, '特別獲得率5pt/100円時')
           source = source.replace(old_base, '通常時（1pt/100円）')
@@ -55,6 +55,7 @@ jobs:
           expected = {
               'scripts/generate-game-simulators.cjs',
               'games/arknights/index.html',
+              'games/genshin/index.html',
               'games/honkai3rd/index.html',
               'games/nikke/index.html',
               'games/phantomparade/index.html',
@@ -77,6 +78,6 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/generate-game-simulators.cjs games/arknights/index.html games/honkai3rd/index.html games/nikke/index.html games/phantomparade/index.html games/wutheringwaves/index.html
+          git add scripts/generate-game-simulators.cjs games/arknights/index.html games/genshin/index.html games/honkai3rd/index.html games/nikke/index.html games/phantomparade/index.html games/wutheringwaves/index.html
           git commit -m 'fix: ゲームFAQの特別獲得率表現を統一'
           git push origin HEAD:${{ github.head_ref }}
