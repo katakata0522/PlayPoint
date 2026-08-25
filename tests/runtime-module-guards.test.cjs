@@ -25,8 +25,7 @@ const sharedRuntimeAssets = [
   'blog/common-components.css'
 ];
 
-test('分離した実行時モジュールは圧縮・キャッシュ改訂・Service Worker先読みに含まれる', () => {
-  const minify = read('.github/scripts/minify.cjs');
+test('分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる', () => {
   const assetSync = read('scripts/asset-sync.cjs');
   const serviceWorker = read('sw.js');
   const main = read('js/main.js');
@@ -34,7 +33,6 @@ test('分離した実行時モジュールは圧縮・キャッシュ改訂・Se
   for (const file of runtimeModules) {
     const importPath = `./${path.basename(file)}`;
     assert.ok(main.includes(importPath), `main.js import missing: ${importPath}`);
-    assert.ok(minify.includes(`'${file}'`), `minify missing: ${file}`);
     assert.ok(assetSync.includes(`'${file}'`), `asset-sync missing: ${file}`);
     assert.ok(
       serviceWorker.includes(`'./${file}'`) || serviceWorker.includes(`"./${file}"`),
@@ -43,16 +41,16 @@ test('分離した実行時モジュールは圧縮・キャッシュ改訂・Se
   }
 });
 
-test('共通計測とブログ共通CSSは圧縮・版管理・必要画面への読込に含まれる', () => {
+test('共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる', () => {
   const minify = read('.github/scripts/minify.cjs');
   const assetSync = read('scripts/asset-sync.cjs');
   const serviceWorker = read('sw.js');
   const components = read('blog/components.js');
 
   for (const file of sharedRuntimeAssets) {
-    assert.ok(minify.includes(`'${file}'`), `minify missing: ${file}`);
     assert.ok(assetSync.includes(`'${file}'`), `asset-sync missing: ${file}`);
   }
+  assert.ok(minify.includes("'blog/common-components.css'"), 'blog common CSS should stay in the CSS compression targets');
   assert.match(serviceWorker, /'\.\/js\/analytics-core\.js\?v=[a-f0-9]{10}'/);
   assert.ok(assetSync.includes("versionKey: 'analyticsCoreVersion'"));
   assert.match(read('js/config.js'), /import '\.\/analytics-core\.js\?v=[a-f0-9]{10}'/);

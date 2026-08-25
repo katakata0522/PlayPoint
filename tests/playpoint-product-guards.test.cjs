@@ -9,30 +9,6 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-function loadMinifierForTest() {
-  const source = read('.github/scripts/minify.cjs');
-  const context = {
-    console: { log() {}, warn() {}, error() {} },
-    require(name) {
-      if (name === 'fs') {
-        return {
-          existsSync() { return false; },
-          readFileSync() { return ''; },
-          writeFileSync() {}
-        };
-      }
-      if (name === 'path') return require('path');
-      return require(name);
-    },
-    __dirname: path.join(root, '.github', 'scripts'),
-    module: { exports: {} },
-    exports: {}
-  };
-  vm.createContext(context);
-  vm.runInContext(source + "\nmodule.exports = { minifyJS, minifyCSS };", context, { filename: 'minify.cjs' });
-  return context.module.exports;
-}
-
 function loadConfigs() {
   const context = { console, __TEST_ENV__: true };
   context.window = context;
@@ -98,35 +74,31 @@ test('デプロイ同期は公開不要な運用ファイルをルート限定�
   }
 });
 
-test('JSミニファイは文字列中のスラッシュコメント風テキストを壊さない', () => {
-  const minifierSource = read('.github/scripts/minify.cjs');
-  assert.ok(!minifierSource.includes("replace(/(^|\\s)\\/\\/.*$/gm"), '正規表現でJS行コメントを削除しています');
-
-  const { minifyJS } = loadMinifierForTest();
-  const source = "const a = 'value // keep';\nconst b = 'https://playpoint-sim.com/';\nconsole.log(a, b);\n";
-  const minified = minifyJS(source);
-  assert.ok(minified.includes("'value // keep'"));
-  assert.ok(minified.includes("'https://playpoint-sim.com/'"));
-  new Function(minified);
-});
-
-test('デプロイ時ミニファイはPlayPoint本体・ブログ・ウィジェットを対象にする', () => {
+test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ行う', () => {
   const minifierSource = read('.github/scripts/minify.cjs');
 
   for (const file of [
+    'style.css',
+    'visitor-thanks.css',
     'blog/style.css',
     'blog/common-components.css',
-    'blog/script.js',
-    'blog/components.js',
-    'blog/article.js',
-    'blog/utils.js',
-    'embed/playpoint-widget.js'
+    'en/articles/intl-article.css'
   ]) {
-    assert.ok(minifierSource.includes(file), `ミニファイ対象が不足しています: ${file}`);
+    assert.ok(minifierSource.includes(file), `CSS圧縮対象が不足しています: ${file}`);
+  }
+
+  assert.ok(!minifierSource.includes('function minifyJS('), '実行しないJS minifierが残っています');
+  for (const operation of [
+    'syncDynamicArticleStylesheetVersion',
+    'syncSharedRuntimeAssetVersions',
+    'syncRootServiceWorker',
+    'syncPublicAssetVersions'
+  ]) {
+    assert.ok(minifierSource.includes(operation), `asset version同期処理が不足しています: ${operation}`);
   }
 });
 
-test('デプロイ前検証はミニファイ後JSの構文を確認する', () => {
+test('デプロイ前検証はasset version同期後JSの構文を確認する', () => {
   const workflow = read('.github/workflows/deploy.yml');
   const preflight = read('.github/scripts/preflight.cjs');
   const minifyIndex = preflight.indexOf("runPhase('公開アセット圧縮'");
@@ -198,15 +170,15 @@ test('デプロイ検証の変更でもワークフローを実行する', () =>
   assert.ok(!workflow.includes("- '.github/**'"), '.github配下の検証変更がデプロイワークフローから除外されています');
 });
 
-test('デプロイ前検証は圧縮前に全回帰し、圧縮後は重点テストだけ再実行する', () => {
+test('デプロイ前検証は圧縮前に全回帰し、圧縮後は配信境界だけ再実行する', () => {
   const preflight = read('.github/scripts/preflight.cjs');
   const minifyIndex = preflight.indexOf("runPhase('公開アセット圧縮'");
   assert.ok(minifyIndex >= 0, 'ミニファイ処理がありません');
   assert.ok(preflight.includes("runPhase('全回帰テスト'"), 'ミニファイ前の全回帰テストがありません');
   assert.ok(preflight.includes('postMinifyTestFiles'), '圧縮後重点テスト一覧がありません');
   assert.ok(
-    preflight.slice(minifyIndex).includes("runPhase('圧縮後の重点回帰テスト'"),
-    'ミニファイ後の重点回帰テストがありません'
+    preflight.slice(minifyIndex).includes("runPhase('圧縮後の配信境界回帰テスト'"),
+    '圧縮後の配信境界回帰テストがありません'
   );
   assert.ok(
     !preflight.slice(minifyIndex).includes("runPhase('圧縮後の全回帰テスト'"),
