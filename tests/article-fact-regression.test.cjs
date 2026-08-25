@@ -205,6 +205,34 @@ test('Family Link記事は管理アカウントを対象外とし回避策を書
   assert.doesNotMatch(html, /カレンダー/);
 });
 
+test('救出3記事はPlay Pointsを還元率パーセントやランク1.5倍として案内しない', () => {
+  const files = [
+    '2026-08-24-umamusume-half-anniversary-points.html',
+    '2026-08-25-dokkan-battle-dragon-ball-play-points.html',
+    '2026-08-25-pad-puzzle-and-dragons-play-points.html'
+  ];
+  for (const file of files) {
+    const html = readArticle(file);
+    assert.doesNotMatch(html, /1%〜2%/, `${file}: cashback percent remains`);
+    assert.doesNotMatch(html, /ゴールドランク \(1\.5倍\)/, `${file}: rank treated as 1.5x multiplier`);
+    assert.doesNotMatch(html, /課金した金額の1%/, `${file}: spend treated as 1% cashback`);
+    assert.match(html, /特別獲得率/, `${file}: current special earn-rate wording is missing`);
+    assert.match(html, /最も近い整数/, `${file}: nearest-integer rounding wording is missing`);
+    assert.match(html, /100円あたり/, `${file}: 100-yen earn-rate wording is missing`);
+  }
+});
+
+test('パズドラ救出記事は未確認の石単価とパス9ptを公式事実にしない', () => {
+  const html = readArticle('2026-08-25-pad-puzzle-and-dragons-play-points.html');
+  const knownBlock = html.match(/公式発表されている確定情報[\s\S]*?プレイヤー各自で確認すること/);
+  assert.ok(knownBlock, 'official-facts block is missing');
+  assert.doesNotMatch(knownBlock[0], /魔法石の基本価格は1個160円/);
+  assert.doesNotMatch(knownBlock[0], /2,400円〜3,600円/);
+  assert.doesNotMatch(html, /パズドラパス \(月額\)[\s\S]{0,120}9 pt/);
+  assert.match(html, /パズドラパスは月額980円/);
+  assert.match(html, /購入前にゲーム内とGoogle Playの表示を確認/);
+});
+
 test('ゴールド対プラチナ記事は日本のパス特典対象国を誤らない', () => {
   const html = readArticle('2026-08-16-gold-platinum-worth-it.html');
   assert.match(html, /約200,000円/);
