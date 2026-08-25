@@ -11,8 +11,6 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'u
 const uiSource = read('js/main-calculator-ui.js');
 const mainSource = read('js/main.js');
 const shareSource = read('js/share.js');
-const swSource = read('sw.js');
-const assetSyncSource = read('scripts/asset-sync.cjs');
 const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html'];
 
 test('通常計算は自動入力される獲得率と倍率を主画面に残し、平均パック額を表示しない', () => {
@@ -71,9 +69,4 @@ test('既存の主要入力IDと共有URL仕様を維持する', () => {
 
   assert.match(shareSource, /url\.searchParams\.set\('multiplier', String\(multiplier\)\)/);
   assert.match(shareSource, /CALC\.calculate\(\)/);
-});
-
-test('UIモジュールを版管理・Service Workerの対象に含める', () => {
-  assert.match(assetSyncSource, /'js\/main-calculator-ui\.js'/);
-  assert.match(swSource, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
 });

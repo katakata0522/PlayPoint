@@ -13,7 +13,7 @@ const japaneseGamePages = fs.readdirSync(path.join(root, 'games'), { withFileTyp
   .map(entry => path.join(root, 'games', entry.name, 'index.html'))
   .filter(file => fs.existsSync(file));
 
-test('ゲームFAQは旧5倍CP表現ではなく特別獲得率として案内する', () => {
+test('ゲームページは旧倍率表現ではなく特別獲得率として案内する', () => {
   assert.doesNotMatch(generator, /5倍CP時/);
   assert.doesNotMatch(generator, /通常時（1%）/);
 
@@ -22,4 +22,11 @@ test('ゲームFAQは旧5倍CP表現ではなく特別獲得率として案内�
     assert.doesNotMatch(html, /5倍CP時/, path.relative(root, file));
     assert.doesNotMatch(html, /通常時（1%）/, path.relative(root, file));
   }
+
+  const ko = fs.readFileSync(path.join(root, 'ko/games/genshin/index.html'), 'utf8');
+  const tw = fs.readFileSync(path.join(root, 'tw/games/genshin/index.html'), 'utf8');
+  assert.match(ko, /프로모션 특별 적립률/);
+  assert.doesNotMatch(ko, /포인트 배율/);
+  assert.match(tw, /活動特別獲點率/);
+  assert.doesNotMatch(tw, /點數加碼倍率/);
 });

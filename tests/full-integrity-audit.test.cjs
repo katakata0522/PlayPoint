@@ -73,16 +73,6 @@ test('ブラウザCIはゲームと記事の収益経路を検査する', () => 
   assert.match(smoke, /article-ad-container/);
 });
 
-test('韓国語・繁体字ゲーム計算機も特別獲得率として表示する', () => {
-  const ko = read('ko/games/genshin/index.html');
-  const tw = read('tw/games/genshin/index.html');
-
-  assert.match(ko, /프로모션 특별 적립률/);
-  assert.doesNotMatch(ko, /포인트 배율/);
-  assert.match(tw, /活動特別獲點率/);
-  assert.doesNotMatch(tw, /點數加碼倍率/);
-});
-
 test('国際LPはundefinedフッターやランク率×倍率の説明を生成しない', () => {
   const content = read('scripts/intl-seo-content.cjs');
   assert.match(content, /trademarkNotice/);
