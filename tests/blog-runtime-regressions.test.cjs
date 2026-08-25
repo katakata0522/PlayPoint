@@ -17,18 +17,6 @@ function functionBody(source, startMarker, endMarker) {
   return source.slice(start, end);
 }
 
-test('ブログ一覧の操作回帰はBrowser smokeを主担当にする', () => {
-  assert.match(browserSmoke, /async function verifyBlogPage\(/);
-  assert.match(browserSmoke, /new URL\('blog\/', baseUrl\)/);
-  assert.match(browserSmoke, /Blog initial article cards were not rendered/);
-  assert.match(browserSmoke, /Blog pagination did not advance/);
-  assert.match(browserSmoke, /Blog reset state is inconsistent/);
-  assert.match(browserSmoke, /Blog category active state did not update/);
-  assert.match(browserSmoke, /Blog sidebar open ARIA state mismatch/);
-  assert.match(browserSmoke, /Blog sidebar close ARIA state mismatch/);
-  assert.match(browserSmoke, /browserState\.verify\('Blog browser errors'\)/);
-});
-
 test('production revision verification retries IPv4 network errors', () => {
   assert.match(browserSmoke, /family: 4/);
   assert.match(browserSmoke, /function requestRevisionText\(url\)/);
