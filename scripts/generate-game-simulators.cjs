@@ -345,7 +345,7 @@ const LOCALES = {
     portalBadge: '🎮 手遊課金專區',
     portalH1: '熱門手遊 Google Play Points 課金與保底點數計算器',
     portalMeta: '針對原神、崩壞：星穹鐵道、絕區零、蔚藍檔案、寶可夢卡牌、妮姬、鳴潮等熱門遊戲，快速計算課金禮包與保底可獲得的 Play Points。',
-    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、菲林底片、青輝石、寶可金塊、月相、付費珠寶、龍石、至純源石等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
+    portalLead: '支援 Google Play 商店熱門手機遊戲（創世結晶、古老夢華、單色菲林、青輝石、寶可金塊、月相、付費珠寶、龍石、至純源石等）價格匯率！一鍵計算大保底能拿多少點數回饋、距離白金與鑽石等級還差多少。',
     openCalc: '開啟計算器 ➔',
     presetHeading: '▼ 快速試算目標：',
     approxText: '約 ',
@@ -556,7 +556,7 @@ const GAMES_DATA = [
       ],
       ko: [
         { name: '열차보급허가증 (₩5,900)', price: 5900 },
-        { name: '무명의 공훈 (₩12,000)', price: 12000 },
+        { name: '무명객의 영광 (₩12,000)', price: 12000 },
         { name: '오래된 꿈 60개 (₩1,200)', price: 1200 },
         { name: '오래된 꿈 300+30개 (₩5,900)', price: 5900 },
         { name: '오래된 꿈 980+110개 (₩19,000)', price: 19000 },
@@ -625,7 +625,7 @@ const GAMES_DATA = [
       ja: 'ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Monochrome bundles, Inter-Knot Membership, New Eridu City Fund, and S-Rank Agent M6 summons in ZZZ!',
       ko: '모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算絕區零菲林底片、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
+      tw: '計算絕區零單色菲林、繩網會員、麗都城募、180抽大保底、滿影(6影)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -661,12 +661,12 @@ const GAMES_DATA = [
       tw: [
         { name: '繩網會員 (NT$170)', price: 170 },
         { name: '麗都城募 成長計畫 (NT$330)', price: 330 },
-        { name: '菲林底片 60個 (NT$33)', price: 33 },
-        { name: '菲林底片 300+30個 (NT$170)', price: 170 },
-        { name: '菲林底片 980+110個 (NT$490)', price: 490 },
-        { name: '菲林底片 1980+260個 (NT$990)', price: 990 },
-        { name: '菲林底片 3280+600個 (NT$1,690)', price: 1690 },
-        { name: '菲林底片 6480+1600個 (NT$3,290)', price: 3290 }
+        { name: '單色菲林 60個 (NT$33)', price: 33 },
+        { name: '單色菲林 300+30個 (NT$170)', price: 170 },
+        { name: '單色菲林 980+110個 (NT$490)', price: 490 },
+        { name: '單色菲林 1980+260個 (NT$990)', price: 990 },
+        { name: '單色菲林 3280+600個 (NT$1,690)', price: 1690 },
+        { name: '單色菲林 6480+1600個 (NT$3,290)', price: 3290 }
       ]
     },
     presets: {
@@ -750,7 +750,7 @@ const GAMES_DATA = [
         { name: '청휘석 6,600개 (₩99,000)', price: 99000 }
       ],
       tw: [
-        { name: '月間青輝石禮包 (NT$130)', price: 130 },
+        { name: '月度青輝石禮包 (NT$130)', price: 130 },
         { name: '青輝石 76個 (NT$33)', price: 33 },
         { name: '青輝石 240個 (NT$130)', price: 130 },
         { name: '青輝石 530個 (NT$270)', price: 270 },
@@ -1384,7 +1384,7 @@ const GAMES_DATA = [
       ja: '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。',
       en: 'Calculate Play Points earned on Lunite, Lunite Subscription, Pioneer Podcast, 160-pull hard pity, and S6 Resonance Chain in Wuthering Waves!',
       ko: '월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!',
-      tw: '計算鳴潮月相、月相觀測卡、先驅電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
+      tw: '計算鳴潮月相、月相觀測卡、先約電台、160抽大保底、共鳴鏈6(滿鏈/S6)課金可獲得的 Play Points！'
     },
     packs: {
       ja: [
@@ -1422,8 +1422,8 @@ const GAMES_DATA = [
       ],
       tw: [
         { name: '月相觀測卡 (NT$170)', price: 170 },
-        { name: '先驅電台 通行電台 (NT$330)', price: 330 },
-        { name: '先驅電台 寰宇特約 (NT$670)', price: 670 },
+        { name: '先約電台 寰宇頻道 (NT$330)', price: 330 },
+        { name: '先約電台 寰宇特約 (NT$670)', price: 670 },
         { name: '月相 60個 (NT$33)', price: 33 },
         { name: '月相 300+30個 (NT$170)', price: 170 },
         { name: '月相 980+110個 (NT$490)', price: 490 },
@@ -1857,12 +1857,12 @@ const GAMES_DATA = [
         { name: '廻珠 10,000個 (10,000円)', price: 10000 }
       ],
       en: [
-        { name: '60 Kaishu ($0.99)', price: 0.99 },
-        { name: '190 Kaishu ($3.99)', price: 3.99 },
-        { name: '400 Kaishu ($7.99)', price: 7.99 },
-        { name: '1,220 Kaishu ($23.99)', price: 23.99 },
-        { name: '2,050 Kaishu ($39.99)', price: 39.99 },
-        { name: '4,150 Kaishu ($79.99)', price: 79.99 }
+        { name: '60 Cubes ($0.99)', price: 0.99 },
+        { name: '190 Cubes ($3.99)', price: 3.99 },
+        { name: '400 Cubes ($7.99)', price: 7.99 },
+        { name: '1,220 Cubes ($23.99)', price: 23.99 },
+        { name: '2,050 Cubes ($39.99)', price: 39.99 },
+        { name: '4,150 Cubes ($79.99)', price: 79.99 }
       ],
       ko: [
         { name: '회주 60개 (₩1,500)', price: 1500 },
@@ -1889,7 +1889,7 @@ const GAMES_DATA = [
         { label: '完凸目安 (約300,000円)', amount: 300000, mult: 1 }
       ],
       en: [
-        { label: 'Battle Pass ($7.99)', amount: 7.99, mult: 1 },
+        { label: 'Phantom Parade Pass ($7.99)', amount: 7.99, mult: 1 },
         { label: '10-pulls ($25.00)', amount: 25.0, mult: 1 },
         { label: '250-pull Pity ($600.00)', amount: 600.0, mult: 1 },
         { label: 'Max Limit Break (~$2,400.00)', amount: 2400.0, mult: 1 }
@@ -2098,13 +2098,13 @@ const GAMES_DATA = [
   {
     id: 'shadowversewb',
     icon: '🃏',
-    names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌駕世界 (Shadowverse: WB)' },
+    names: { ja: 'シャドウバース ワールズビヨンド', en: 'Shadowverse: Worlds Beyond', ko: '섀도우버스 월즈 비욘드', tw: '闇影詩章：凌越世界 (Shadowverse: WB)' },
     shortNames: { ja: 'シャドバWB', en: 'Shadowverse: WB', ko: '섀도우버스 WB', tw: '闇影詩章WB' },
     descs: {
       ja: 'シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や使い道も掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。',
       en: 'Calculate Google Play Points earned on Crystals, Premium Battle Pass, and Pack Points in Shadowverse: Worlds Beyond.',
       ko: '섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.',
-      tw: '計算闇影詩章：凌駕世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
+      tw: '計算闇影詩章：凌越世界購買水晶、尊享通行證及卡包點數保底時可獲得的 Google Play Points。'
     },
     packs: {
       ja: [
