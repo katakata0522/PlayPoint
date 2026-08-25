@@ -66,3 +66,5 @@ jobs:
           git add games/arknights/index.html games/genshin/index.html games/honkai3rd/index.html games/nikke/index.html games/phantomparade/index.html games/wutheringwaves/index.html sitemap.xml
           git commit -m 'chore: ゲーム個別内容日を公開成果物へ同期'
           git push origin HEAD:refactor/game-content-date-overrides
+
+# Temporary workflow: remove after synchronized outputs are committed.
