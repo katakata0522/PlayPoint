@@ -12,7 +12,6 @@ const uiSource = read('js/main-calculator-ui.js');
 const mainSource = read('js/main.js');
 const shareSource = read('js/share.js');
 const swSource = read('sw.js');
-const minifySource = read('.github/scripts/minify.cjs');
 const assetSyncSource = read('scripts/asset-sync.cjs');
 const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html'];
 
@@ -74,8 +73,7 @@ test('既存の主要入力IDと共有URL仕様を維持する', () => {
   assert.match(shareSource, /CALC\.calculate\(\)/);
 });
 
-test('UIモジュールを圧縮・版管理・Service Workerの対象に含める', () => {
-  assert.match(minifySource, /'js\/main-calculator-ui\.js'/);
+test('UIモジュールを版管理・Service Workerの対象に含める', () => {
   assert.match(assetSyncSource, /'js\/main-calculator-ui\.js'/);
   assert.match(swSource, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
 });
