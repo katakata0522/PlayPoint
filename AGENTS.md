@@ -59,3 +59,46 @@ The goal is to create **high-quality, robust, and monetizeable** applications.
 * Do not split one behavior-preserving refactor into multiple PRs unless the split materially improves reviewability or risk isolation. Use one decision/rollback boundary per PR rather than one file per PR.
 * Keep PR descriptions explicit about **Goal / Scope / Not changed / Risk / Verification** so unrelated changes are easy to detect.
 * After a pull request is merged, allow GitHub's automatic head-branch deletion to clean up the branch.
+
+## 7. Risk-Based Human-in-the-Loop Safety
+The human owner primarily operates through **vibe coding** and should not be expected to interpret raw code diffs, command syntax, or generic permission popups. AI agents must therefore make the technical safety judgment first and escalate only when human intent is genuinely needed.
+
+Evaluate actions by **reversibility × blast radius × confidence**, not merely by whether the action is named "delete", "overwrite", or another destructive-sounding verb.
+
+### Level 1 — Routine and Reversible: Act Autonomously
+Proceed without asking when the change is normal, scoped, readily reversible, and covered by the usual verification path.
+Examples include ordinary implementation/refactoring, test fixes, CI retries, PR creation, safe squash merges after required checks, and temporary working changes on a feature branch.
+
+### Level 2 — Destructive-Looking but Proven Safe: Verify, Then Act Autonomously
+Deletion or cleanup does **not** automatically require confirmation. Proceed when the agent can establish that the action is safe.
+Before acting, verify the relevant evidence, such as:
+* the target is unreferenced or fully superseded;
+* useful behavior/data is owned elsewhere;
+* tests or other appropriate checks pass;
+* the change is recoverable from Git/history/backups when applicable;
+* a branch being deleted contains no unique unmerged commits (for example, it is fully contained in `main`).
+
+When those conditions are satisfied, remove stale files, temporary workflows, obsolete generated artifacts, merged branches, or equivalent clutter without burdening the user with a meaningless confirmation prompt. Record the safety evidence in the PR/report when useful.
+
+### Level 3 — High-Risk, Irreversible, Broad, or Uncertain: Stop and Explain in Plain Japanese
+Before executing an action with potentially severe consequences, low reversibility, broad production impact, or unresolved uncertainty, stop and ask the user for an explicit decision.
+Do **not** rely on a raw tool permission popup as the user's meaningful approval.
+
+Explain in natural Japanese, without requiring code knowledge:
+1. **What** you are about to change or delete.
+2. **Why** you believe it may be needed.
+3. **What will happen** if it is executed, including the affected production/data/security scope.
+4. **How reversible it is**, including available rollback or backup paths.
+5. **Safer alternatives**, when they exist.
+6. **Your recommendation**, then ask whether to proceed.
+
+Typical Level 3 examples include:
+* force-pushing or rewriting `main` history;
+* deleting a repository or uniquely unmerged work;
+* irreversible or bulk production-data deletion/overwrite;
+* major DNS/domain or production deployment-destination changes;
+* deleting or rotating secrets/credentials when recovery is uncertain;
+* disabling security protections or other safeguards;
+* stopping infrastructure/services whose current usage has not been confidently established.
+
+If safety can be established to Level 1 or Level 2 confidence, do not escalate merely because an operation looks destructive. If material uncertainty remains, treat it as Level 3.
