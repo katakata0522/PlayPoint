@@ -168,12 +168,7 @@
                 <p class="hero-meta">2026/08/03 更新 ・ 読了 8分</p>
             </header>
 
-            <aside class="article-calculator-prompt rounding-jump" aria-labelledby="rounding-jump-title">
-                <p class="article-calculator-prompt__label">この記事内で仕組みを確認</p>
-                <h2 id="rounding-jump-title">丸め方の差を例で確認する</h2>
-                <p>実際の付与予測ではなく、別々の購入と合計後の計算で差が出る仕組みを確認するための比較です。</p>
-                <a class="rounding-jump__button" href="#rounding-simulator-section">差が出る例を見る</a>
-            </aside>
+            
 
 <section aria-labelledby="quick-answer" class="answer-box">
 <h2 id="quick-answer">結論：通常のブロンズは対象価格100円で1ポイント</h2>
@@ -216,7 +211,10 @@
 <section class="section">
 <h2>日本のステータス別獲得率</h2>
 <div class="table-wrap rounding-table-wrap">
-<table class="rounding-table">
+<div class="table-scroll-box">
+  <div class="scroll-tip">👉 横にスクロールできます</div>
+  <div class="table-inner">
+    <table class="modern-table" class="rounding-table">
 <caption>日本の通常獲得率と税抜500円を例にした丸め</caption>
 <thead><tr><th>ステータス</th><th>100円あたり</th><th>税抜500円の計算</th><th>丸め後</th></tr></thead>
 <tbody>
@@ -227,6 +225,8 @@
 <tr><td data-label="ステータス">ダイヤモンド</td><td data-label="100円あたり">2ポイント</td><td data-label="税抜500円の計算">500 ÷ 100 × 2 = 10</td><td data-label="丸め後">10ポイント</td></tr>
 </tbody>
 </table>
+  </div>
+</div>
 </div>
 <p>シルバーの「500円で6ポイント」はGoogle公式にも例示されています。ほかの行は、同じ公式の獲得率と四捨五入ルールを当てはめた計算例です。</p>
 </section>
@@ -234,7 +234,10 @@
 <h2>分割購入と合計計算で差が出る理由</h2>
 <p>Google公式は、<strong>アイテムの価格</strong>に獲得率を掛けて整数へ丸めると説明しています。この記事では、その説明を<strong>購入した商品ごとに最も近い整数へ丸める</strong>ものとして比較しています。複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p>
 <div class="table-wrap rounding-table-wrap">
-<table class="rounding-table">
+<div class="table-scroll-box">
+  <div class="scroll-tip">👉 横にスクロールできます</div>
+  <div class="table-inner">
+    <table class="modern-table" class="rounding-table">
 <caption>税抜40円・ゴールド・2回購入の計算例</caption>
 <thead><tr><th>計算方法</th><th>途中計算</th><th>結果</th></tr></thead>
 <tbody>
@@ -242,6 +245,8 @@
 <tr><td data-label="計算方法">合計80円として一度だけ丸める</td><td data-label="途中計算">80 ÷ 100 × 1.5 = 1.2</td><td data-label="結果">1ポイント</td></tr>
 </tbody>
 </table>
+  </div>
+</div>
 </div>
 <p class="small">これは丸め方を理解するための架空の数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
 </section>
