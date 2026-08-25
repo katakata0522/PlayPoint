@@ -7,7 +7,9 @@ const test = require('node:test');
 const { getSyncedHtmlFiles } = require('../scripts/build-targets.cjs');
 const {
   GENERATED_GAME_PAGE_CONTENT_DATE,
-  getContentDateForFile
+  GAME_PAGE_CONTENT_DATE_OVERRIDES,
+  getContentDateForFile,
+  getGeneratedGamePageContentDate
 } = require('../scripts/content-dates.cjs');
 const {
   getGameContentDate,
@@ -76,35 +78,71 @@ test('game page sync targets cover every generated locale and game id', () => {
   );
 });
 
-test('game sitemap entries match the discovered game pages', () => {
-  const expectedUrls = getGamePageHtmlFiles(root)
-    .map(file => `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`)
-    .sort();
+test('game sitemap entries match discovered pages and each page editorial date', () => {
   const sitemapEntries = getGameSitemapEntries(root);
-  const actualUrls = sitemapEntries.map(entry => entry.url).sort();
+  const entriesByUrl = new Map(sitemapEntries.map(entry => [entry.url, entry]));
+  const gameFiles = getGamePageHtmlFiles(root);
 
-  assert.deepEqual(actualUrls, expectedUrls);
-  assert.ok(
-    sitemapEntries.every(entry => entry.lastmod === GENERATED_GAME_PAGE_CONTENT_DATE),
-    'game sitemap entries should keep the canonical game editorial date'
-  );
+  assert.equal(entriesByUrl.size, gameFiles.length, 'game sitemap should contain every generated game page exactly once');
+
+  for (const file of gameFiles) {
+    const url = `${SITE_ORIGIN}/${file.replace(/index\.html$/, '')}`;
+    const entry = entriesByUrl.get(url);
+    assert.ok(entry, `${file} should be present in the game sitemap`);
+    assert.equal(
+      entry.lastmod,
+      getGeneratedGamePageContentDate(file),
+      `${file} sitemap lastmod should use its resolved editorial date`
+    );
+  }
 });
 
-test('game editorial date stays aligned from generator to resolver', () => {
+test('default game editorial date stays aligned from generator to resolver', () => {
   const { contentDate } = getGeneratorMetadata();
 
-  assert.equal(getGameContentDate(root), contentDate, 'game date helper should resolve the generator date');
+  assert.equal(getGameContentDate(root), contentDate, 'game date helper should resolve the generator default date');
   assert.equal(
     GENERATED_GAME_PAGE_CONTENT_DATE,
     contentDate,
-    'content date resolver should use the generator editorial date'
+    'content date resolver should keep the generator date as the default for unchanged game pages'
   );
 });
 
-test('all generated game pages receive the canonical game editorial date and synchronization pass', () => {
+test('meaningfully edited game pages can override the shared default without changing other locales', () => {
+  const expectedOverrides = [
+    'games/arknights/index.html',
+    'games/genshin/index.html',
+    'games/honkai3rd/index.html',
+    'games/nikke/index.html',
+    'games/phantomparade/index.html',
+    'games/wutheringwaves/index.html'
+  ];
+
+  assert.deepEqual(Object.keys(GAME_PAGE_CONTENT_DATE_OVERRIDES).sort(), expectedOverrides.sort());
+  for (const file of expectedOverrides) {
+    assert.equal(getGeneratedGamePageContentDate(file), '2026-08-25', `${file} should carry its meaningful edit date`);
+  }
+
+  assert.equal(
+    getGeneratedGamePageContentDate('en/games/genshin/index.html'),
+    GENERATED_GAME_PAGE_CONTENT_DATE,
+    'an unchanged locale counterpart should keep the shared default date'
+  );
+  assert.equal(
+    getGeneratedGamePageContentDate('games/index.html'),
+    GENERATED_GAME_PAGE_CONTENT_DATE,
+    'the game portal should keep the shared default date unless it is edited'
+  );
+});
+
+test('all generated game pages receive their resolved editorial date and synchronization pass', () => {
   const synced = new Set(getSyncedHtmlFiles(root));
   for (const file of getGamePageHtmlFiles(root)) {
-    assert.equal(getContentDateForFile(file), GENERATED_GAME_PAGE_CONTENT_DATE, `${file} should use the game editorial date`);
+    assert.equal(
+      getContentDateForFile(file),
+      getGeneratedGamePageContentDate(file),
+      `${file} should use its resolved game editorial date`
+    );
     assert.equal(synced.has(file), true, `${file} should be synchronized after generation`);
   }
 });
