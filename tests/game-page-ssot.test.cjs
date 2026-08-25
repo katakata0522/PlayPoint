@@ -28,7 +28,7 @@ const root = path.resolve(__dirname, '..');
 const generatorPath = path.join(root, 'scripts', 'generate-game-simulators.cjs');
 
 function getGeneratorMetadata() {
-  const source = fs.readFileSync(generatorPath, 'utf8');
+  const source = fs.readFileSync(generatorPath, 'utf8').replace(/\r\n/g, '\n');
   const gamesBlock = source.match(/const GAMES_DATA = \[([\s\S]*?)\n\];\n\nfunction generateGamePageHtml/);
   assert.ok(gamesBlock, 'GAMES_DATA block should remain discoverable for the regression guard');
 
@@ -125,6 +125,7 @@ test('meaningfully edited game pages can override the shared default without cha
     'games/genshin/index.html',
     'games/honkai3rd/index.html',
     'games/nikke/index.html',
+    'games/pad/index.html',
     'games/phantomparade/index.html',
     'games/wutheringwaves/index.html'
   ];

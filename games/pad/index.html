@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="last-modified" content="2026-08-25" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+  <title>パズル＆ドラゴンズ (Puzzle & Dragons) - Playポイント計算機</title>
+  <meta name="description" content="パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。" />
+  <link rel="canonical" href="https://playpoint-sim.com/games/pad/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/pad/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/pad/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/pad/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/pad/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/pad/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Playポイント計算機" />
+  <meta property="og:title" content="パズル＆ドラゴンズ (Puzzle & Dragons) - Playポイント計算機" />
+  <meta property="og:description" content="パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。" />
+  <meta property="og:url" content="https://playpoint-sim.com/games/pad/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="パズル＆ドラゴンズ (Puzzle & Dragons) - Playポイント計算機" />
+  <meta name="twitter:description" content="パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
+
+  <link rel="stylesheet" href="../../articles/article-shared.css?v=f0239d7bd7" />
+  <link rel="stylesheet" href="../../games/games.css?v=09016b3c58" />
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "パズル＆ドラゴンズ (Puzzle & Dragons) Play Points Calculator",
+  "url": "https://playpoint-sim.com/games/pad/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "inLanguage": "ja",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "かたかた",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "ホーム",
+      "item": "https://playpoint-sim.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "ゲーム別計算機一覧",
+      "item": "https://playpoint-sim.com/games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "パズル＆ドラゴンズ (Puzzle & Dragons)",
+      "item": "https://playpoint-sim.com/games/pad/"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "パズドラのGoogle Play課金でPlay Pointsは貯まりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Play Points参加済みのアカウントで、Google Playを通じた対象のゲーム内購入や定期購入を行うとポイントを獲得できます。実際の獲得予定ポイントは購入前のGoogle Play画面で確認してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "パズドラパスはいくらですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "パズドラ公式は、パズドラパスを月額980円の自動更新サービスとして案内しています。価格や提供条件が変更される可能性もあるため、購入時のゲーム内表示も確認してください。"
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Playポイント計算機</span>
+          </a>
+          <p class="site-tagline">原神・スタレ・ブルアカ・ウマ娘・ヘブバン・ファンパレなど人気ゲームの課金パックや天井ガチャで貯まるPlayポイントをパッと計算！各ゲームの課金アイテム価格や還元早見表、お得な使い道を掲載しています。ガチャ前の計画にぜひ役立ててくださいね。</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="メインナビゲーション">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>ホーム</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>ゲーム別計算</span>
+          </a>
+          <a class="nav-item" href="../../blog/">
+              <span>記事一覧</span>
+          </a>
+          <a class="nav-item" href="../../author/katakata.html">
+              <span>運営者</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="パンくずリスト">
+          <a href="../../">ホーム</a> <span>&gt;</span>
+          <a href="../">ゲーム別計算機一覧</a> <span>&gt;</span>
+          <span>パズル＆ドラゴンズ (Puzzle & Dragons)</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">🐉 人気ゲーム別シミュレーター</span>
+              <h1 class="game-title">パズル＆ドラゴンズ (Puzzle & Dragons)</h1>
+              <p class="game-meta">Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値） ｜ Google Play Points (100円=1pt)</p>
+          </header>
+
+          <p>パズドラパス（月額980円）や、ゲーム内で現在表示されている購入額からGoogle Play Pointsの獲得目安を計算できます。商品価格は変わる可能性があるため、購入前にゲーム内とGoogle Playの表示を確認してください。</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 パズドラ</h2>
+
+              <p class="preset-heading">▼ 目標プリセット：</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1" aria-pressed="true">パズドラパス (980円)</button>
+              <button type="button" class="preset-btn " data-amount="5000" data-mult="1" aria-pressed="false">課金予定 5,000円</button>
+              <button type="button" class="preset-btn " data-amount="10000" data-mult="1" aria-pressed="false">課金予定 10,000円</button>
+              <button type="button" class="preset-btn " data-amount="30000" data-mult="1" aria-pressed="false">課金予定 30,000円</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">課金パックを選択：</label>
+                          <select id="sim-pack-select">
+                              <option value="980">パズドラパス (月額980円)</option>
+                  <option value="1000">購入額を1,000円として試算</option>
+                  <option value="5000">購入額を5,000円として試算</option>
+                  <option value="10000">購入額を10,000円として試算</option>
+                  <option value="30000">購入額を30,000円として試算</option>
+                              <option value="custom">自由入力（カスタム金額）</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">購入回数：</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">課金予定合計額（円）：</label>
+                          <input type="number" id="sim-custom-amount" value="980" min="0" step="any" inputmode="decimal">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">キャンペーン特別獲得率：</label>
+                          <select id="sim-multiplier">
+                              <option value="1">通常 / 100円あたり1pt</option><option value="2">特別獲得率：100円あたり2pt</option><option value="3">特別獲得率：100円あたり3pt</option><option value="4">特別獲得率：100円あたり4pt</option><option value="5">特別獲得率：100円あたり5pt</option><option value="7">特別獲得率：100円あたり7pt</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">現在の会員ランク：</label>
+                          <select id="sim-status">
+                              <option value="1.0">ブロンズ（100円=1pt）</option><option value="1.25">シルバー（100円=1.25pt）</option><option value="1.5">ゴールド（100円=1.5pt）</option><option value="1.75">プラチナ（100円=1.75pt）</option><option value="2.0">ダイヤモンド（100円=2.0pt）</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">課金合計金額</span>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">獲得予定 Playポイント</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">交換価値（Play画面で確認）</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">0ptから見た参考ランク</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>0ptから見た参考進捗</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+
+                  <!-- シェア・リンクボタン -->
+                  <div class="game-share-actions">
+                      <button type="button" id="btn-share-x" class="game-share-btn x-btn">
+                          <span>𝕏 で計算結果をシェア</span>
+                      </button>
+                      <button type="button" id="btn-copy-link" class="game-share-btn copy-btn">
+                          <span>🔗 結果リンクをコピー</span>
+                      </button>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">💳 課金前にチェック！さらにお得にする裏技</div>
+                          <p class="game-giftcard-cta-text">楽天市場のGoogle Play ギフトコード認定店では、楽天側のキャンペーンや会員条件に応じてポイント還元が付く場合があります。購入前に当日の還元条件・上限を確認してください。 <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
+                      </div>
+                      
+                      <div class="game-giftcard-cta-actions">
+                          <a class="game-giftcard-cta-btn rakuten-primary-btn" href="https://hb.afl.rakuten.co.jp/hgc/56983677.8efa0dbe.56983678.1b999667/?pc=https%3A%2F%2Fwww.rakuten.co.jp%2Fgpgiftcard%2F&link_type=hybrid_url&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJoeWJyaWRfdXJsIiwiY29sIjoxLCJjYXQiOjEsImJhbiI6MTcxMDEwMCwiY1W1wIjp1YWxYODQ%3D" target="_blank" rel="sponsored noopener noreferrer">🛒 楽天市場 認定店でギフトコードを見る ➔</a>
+                          <a class="game-giftcard-cta-sublink" href="../../articles/2026-06-20-discount-gift-cards.html">📖 お得な買い方・注意点ガイド ➔</a>
+                      </div>
+                      
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※獲得ポイントはGoogle Play公式の国別通常獲得率と四捨五入ルールを基準にした目安です。ランク表示は年間累計0ptから見た参考で、現在の年間進捗は反映しません。購入前にGoogle Play画面の獲得予定ポイントとステータス進捗をご確認ください。
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>パズドラ 課金パック別 Playポイント還元早見表</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>課金パック名</th>
+                              <th>価格 (税込)</th>
+                              <th>基本獲得率（100円あたり1pt）</th>
+                              <th>特別獲得率 5pt/100円時</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>パズドラパス (月額980円)</td><td>980 円</td><td>約 10 pt</td><td>約 49 pt</td></tr>
+<tr><td>購入額を1,000円として試算</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
+<tr><td>購入額を5,000円として試算</td><td>5,000 円</td><td>約 50 pt</td><td>約 250 pt</td></tr>
+<tr><td>購入額を10,000円として試算</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+<tr><td>購入額を30,000円として試算</td><td>30,000 円</td><td>約 300 pt</td><td>約 1,500 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <!-- 広告枠（レスポンシブ） -->
+              <div class="game-ad-container">
+                  <span class="game-ad-label">スポンサーリンク</span>
+                  <ins class="adsbygoogle"
+                       style="display:block"
+                       data-ad-client="ca-pub-3845885843809455"
+                       data-ad-slot="8250492620"
+                       data-ad-format="auto"
+                       data-full-width-responsive="true"></ins>
+              </div>
+          </section>
+
+          <!-- ポイント使い道・損得比較 -->
+          <section class="section">
+              <h2>パズドラ Play Points「使う」で確認できる交換先</h2>
+              <div class="reward-compare-grid">
+                  <div class="reward-compare-card highlight">
+                      <div class="reward-compare-tag best">割引クーポン</div>
+                      <h3>ゲーム専用 割引クーポン</h3>
+                      <div class="reward-rate-val">必要ポイント・割引額は表示条件で確認</div>
+                      <p class="reward-rate-desc">対象ゲームの割引クーポンが表示される場合があります。必要ポイント、割引額、最低購入額、有効期限はPlay Pointsの「使う」に表示された条件を基準にしてください。</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">直接交換</div>
+                      <h3>ゲーム内課金通貨・アイテム</h3>
+                      <div class="reward-rate-val">交換内容・必要ポイントは表示中のオファーで確認</div>
+                      <p class="reward-rate-desc">対象ゲームのゲーム内アイテムとポイントを交換できる場合があります。内容や必要ポイントは国・時期・アカウントで異なるため、Play Pointsの「使う」を確認してください。</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">Play残高</div>
+                      <h3>Google Play クレジット</h3>
+                      <div class="reward-rate-val">必要ポイント・受取額はPlay Points画面で確認</div>
+                      <p class="reward-rate-desc">Google Playクレジットと交換できる場合があります。交換条件はPlay Pointsの「使う」に表示された内容を確認してください。ポイント交換で受け取ったPlayクレジットの有効期限は1年です。</p>
+                  </div>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>よくある質問（FAQ）</h2>
+              <h3>パズドラのGoogle Play課金でPlay Pointsは貯まりますか？</h3>
+<p>Google Play Points参加済みのアカウントで、Google Playを通じた対象のゲーム内購入や定期購入を行うとポイントを獲得できます。実際の獲得予定ポイントは購入前のGoogle Play画面で確認してください。</p>
+<h3>パズドラパスはいくらですか？</h3>
+<p>パズドラ公式は、パズドラパスを月額980円の自動更新サービスとして案内しています。価格や提供条件が変更される可能性もあるため、購入時のゲーム内表示も確認してください。</p>
+          </section>
+
+          <section class="section game-source-section">
+              <h2>出典・確認範囲</h2>
+              <p>Play Pointsの国別通常獲得率・ランク条件・四捨五入ルールはGoogle Play公式ヘルプを基準に確認しています。ゲーム内パック価格、ガチャ天井、商品構成は変更されるため参考値であり、購入前に各ゲーム内ストアと公式告知で再確認してください。</p>
+              <p><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>他の人気ゲームの課金シミュレーター</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">原神 (Genshin Impact)</h3>
+                          <p class="game-card-desc">原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">崩壊：スターレイル (Honkai: Star Rail)</h3>
+                          <p class="game-card-desc">崩壊スターレイルの往日の夢華、列車補給標章、ナナシビトの褒章、180連確定天井・完凸で貯まるPlayポイントを即時計算！パック別還元早見表やポイントの使い道も比較できます。ガチャ前のシミュレーションにぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../zzz/">
+                      <div>
+                          <div class="game-card-icon">⚡</div>
+                          <h3 class="game-card-title">ゼンレスゾーンゼロ (Zenless Zone Zero)</h3>
+                          <p class="game-card-desc">ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">ブルーアーカイブ (Blue Archive)</h3>
+                          <p class="game-card-desc">ブルーアーカイブ（ブルアカ）の青輝石購入、マンスリーパッケージ、200連天井・固有武器完凸で貯まるPlayポイントをパッと計算！パック別早見表やポイント使い道も比較できます。生徒募集前の計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">Pokémon TCG Pocket (ポケポケ)</h3>
+                          <p class="game-card-desc">ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">Fate/Grand Order (FGO)</h3>
+                          <p class="game-card-desc">Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な使い道も比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../umamusume/">
+                      <div>
+                          <div class="game-card-icon">🐴</div>
+                          <h3 class="game-card-title">ウマ娘 プリティーダービー</h3>
+                          <p class="game-card-desc">ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別還元早見表やポイント使い道もまとめているので、育成前の課金計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">モンスターストライク (モンスト)</h3>
+                          <p class="game-card-desc">モンスターストライク（モンスト）のオーブ購入、モンパス、超獣神祭・コラボガチャ課金で貯まるGoogle Play Pointsをサクッと計算！パック別還元早見表やポイント使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">学園アイドルマスター (学マス)</h3>
+                          <p class="game-card-desc">学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な使い道も比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../proseka/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">プロジェクトセカイ (プロセカ)</h3>
+                          <p class="game-card-desc">プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../nikke/">
+                      <div>
+                          <div class="game-card-icon">🔫</div>
+                          <h3 class="game-card-title">勝利の女神：NIKKE</h3>
+                          <p class="game-card-desc">勝利の女神：NIKKEのジュエル購入、30日補給品、イベントパス、マイレージ200連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。隊員募集前の課金計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../wutheringwaves/">
+                      <div>
+                          <div class="game-card-icon">🌊</div>
+                          <h3 class="game-card-title">鳴潮 (Wuthering Waves)</h3>
+                          <p class="game-card-desc">鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../dokkan/">
+                      <div>
+                          <div class="game-card-icon">💥</div>
+                          <h3 class="game-card-title">ドラゴンボールZ ドッカンバトル</h3>
+                          <p class="game-card-desc">ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../arknights/">
+                      <div>
+                          <div class="game-card-icon">🛡️</div>
+                          <h3 class="game-card-title">アークナイツ (Arknights)</h3>
+                          <p class="game-card-desc">アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../hbr/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">ヘブンバーンズレッド (ヘブバン)</h3>
+                          <p class="game-card-desc">ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！パック別還元早見表や使い道も掲載しています。ガチャ前の確認にぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../mementomori/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">メメントモリ (MementoMori)</h3>
+                          <p class="game-card-desc">メメントモリ（メメモリ）のダイヤ購入、月間ブースト、ピックアップ100連天井・LR進化で貯まるPlayポイントを即時シミュレーション！パック別還元早見表や使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../phantomparade/">
+                      <div>
+                          <div class="game-card-icon">🌀</div>
+                          <h3 class="game-card-title">呪術廻戦 ファントムパレード (ファンパレ)</h3>
+                          <p class="game-card-desc">呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。ガチャ前のシミュレーションにぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../reverse1999/">
+                      <div>
+                          <div class="game-card-icon">⏳</div>
+                          <h3 class="game-card-title">リバース：1999 (Reverse: 1999)</h3>
+                          <p class="game-card-desc">リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も比較できます。召喚前のポイント確認にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../honkai3rd/">
+                      <div>
+                          <div class="game-card-icon">🚀</div>
+                          <h3 class="game-card-title">崩壊3rd (Honkai Impact 3rd)</h3>
+                          <p class="game-card-desc">崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！パック別ポイント還元早見表や使い道も一覧で比較できます。補給前の課金シミュレーションにぜひ使ってみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../shadowversewb/">
+                      <div>
+                          <div class="game-card-icon">🃏</div>
+                          <h3 class="game-card-title">シャドウバース ワールズビヨンド</h3>
+                          <p class="game-card-desc">シャドウバース ワールズビヨンド（シャドバWB）のクリスタル購入、プレパス、天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表や使い道も掲載しています。カードパック購入前の確認にぜひ役立ててみてくださいね。</p>
+                      </div>
+                      <div class="game-card-action">計算機を開く ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>目標ポイントからの逆算シミュレーター</h3>
+              <p>「ゴールドランクまであと◯◯pt必要」など、不足ポイントから必要課金額を逆算したい場合は総合計算機をご利用ください。</p>
+              <a class="cta-btn" href="../../">Playポイント総合計算機へ ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 総合計算機</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>あと何ポイント必要？</h4>
+                      <p>目標ランクまでの必要金額を即時シミュレーション！</p>
+                      <a class="sidebar-calc-btn" href="../../">計算機を使う ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 おすすめ攻略記事</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../articles/2026-08-05-play-points-multiplier-stacking.html">倍率・キャンペーンの正しい計算方法</a></li><li><a href="../../articles/2026-08-05-play-points-levels-guide.html">Play Pointsランク完全ガイド</a></li><li><a href="../../articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法</a></li><li><a href="../../articles/2026-07-24-play-points-100-value.html">100ポイントはいくら相当？</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">ホーム</a> ｜
+          <a href="../">ゲーム別計算</a> ｜
+          <a href="../../blog/">記事一覧</a> ｜
+          <a href="../../privacy.html">プライバシーポリシー</a> ｜
+          <a href="../../terms.html">利用規約</a> ｜
+          <a href="../../author/katakata.html">運営者</a>
+      </div>
+      <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは独立した非公式ファンサイト・シミュレーターであり、Google LLC および掲載されている各ゲームの開発・配信元企業とは一切関係ありません。記載されているゲーム名・アイテム名・商標の権利は各権利元に帰属します。</p>
+      <p>© 2026 Playポイント計算機 All Rights Reserved.</p>
+  </footer>
+
+  <script src="../../js/analytics-core.js?v=42b5e82926"></script>
+  <script src="../../js/third-party.js?v=790f53fd26"></script>
+  <script src="../../games/game-sim.js?v=690a294205"></script>
+</body>
+</html>

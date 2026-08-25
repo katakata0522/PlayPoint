@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="last-modified" content="2026-08-18" />
+  <meta name="author" content="카타카타" />
+  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+  <title>퍼즐앤드래곤 (Puzzle & Dragons) - Google Play Points 계산기</title>
+  <meta name="description" content="퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요." />
+  <link rel="canonical" href="https://playpoint-sim.com/ko/games/pad/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/pad/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/pad/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/pad/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/pad/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/pad/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Google Play Points 계산기" />
+  <meta property="og:title" content="퍼즐앤드래곤 (Puzzle & Dragons) - Google Play Points 계산기" />
+  <meta property="og:description" content="퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요." />
+  <meta property="og:url" content="https://playpoint-sim.com/ko/games/pad/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="퍼즐앤드래곤 (Puzzle & Dragons) - Google Play Points 계산기" />
+  <meta name="twitter:description" content="퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요." />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
+
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=f0239d7bd7" />
+  <link rel="stylesheet" href="../../../games/games.css?v=09016b3c58" />
+
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "퍼즐앤드래곤 (Puzzle & Dragons) Play Points Calculator",
+  "url": "https://playpoint-sim.com/ko/games/pad/",
+  "applicationCategory": "UtilityApplication",
+  "operatingSystem": "All",
+  "inLanguage": "ko",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "카타카타",
+    "url": "https://playpoint-sim.com/author/katakata.html"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "홈",
+      "item": "https://playpoint-sim.com/ko/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "게임별 포인트 계산기 목록",
+      "item": "https://playpoint-sim.com/ko/games/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "퍼즐앤드래곤 (Puzzle & Dragons)",
+      "item": "https://playpoint-sim.com/ko/games/pad/"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+  {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "퍼즐앤드래곤 결제 시 Google Play Points가 적립되나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Google Play Points에 가입한 계정으로 Google Play의 적립 대상 게임 내 결제 또는 정기 결제를 하면 포인트를 받을 수 있습니다. 결제 전 Google Play 화면의 예상 적립 포인트를 확인하세요."
+      }
+    }
+  ]
+}
+  </script>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+      <div class="site-header-inner">
+          <a class="site-logo" href="../../">
+              <span class="site-logo-icon">🎮</span>
+              <span class="site-logo-text">Google Play Points 계산기</span>
+          </a>
+          <p class="site-tagline">원신, 붕괴: 스타레일, 젠레스 존 제로, 블루 아카이브, 포켓몬 카드 게임 Pocket, 니케, 명조 등 인기 게임의 패키지 과금 시 적립되는 Play Points를 계산하세요.</p>
+      </div>
+  </header>
+
+  <!-- グローバルナビゲーション -->
+  <nav class="global-nav" aria-label="주 메뉴">
+      <div class="global-nav-inner">
+          <a class="nav-item" href="../../">
+              <span>계산기</span>
+          </a>
+          <a class="nav-item active" href="../">
+              <span>게임별 계산</span>
+          </a>
+          <a class="nav-item" href="../../articles/">
+              <span>가이드</span>
+          </a>
+          <a class="nav-item" href="../../../author/katakata.html">
+              <span>운영자</span>
+          </a>
+      </div>
+  </nav>
+
+  <!-- パンくずリスト -->
+  <div class="breadcrumbs-wrapper">
+      <nav aria-label="탐색 경로">
+          <a href="../../">홈</a> <span>&gt;</span>
+          <a href="../">게임별 포인트 계산기 목록</a> <span>&gt;</span>
+          <span>퍼즐앤드래곤 (Puzzle & Dragons)</span>
+      </nav>
+  </div>
+
+  <div class="game-page-container">
+      <main class="game-main-content">
+          <header class="game-header">
+              <span class="game-badge">🐉 인기 게임별 포인트 시뮬레이터</span>
+              <h1 class="game-title">퍼즐앤드래곤 (Puzzle & Dragons)</h1>
+              <p class="game-meta">Play Points 적립률 확인: 2026년 8월 (게임 가격/천장은 참고값) ｜ Google Play Points (1,000원=1pt)</p>
+          </header>
+
+          <p>퍼즐앤드래곤의 월정액 패스와 게임 내 현재 표시 금액을 기준으로 Google Play Points 적립 예상치를 계산합니다. 상품 가격은 바뀔 수 있으므로 결제 전 화면을 확인하세요.</p>
+
+          <!-- シミュレーター操作パネル -->
+          <section class="game-sim-card">
+              <h2 class="game-sim-title">🧮 퍼드</h2>
+
+              <p class="preset-heading">▼ 목표 프리셋:</p>
+              <div class="preset-buttons">
+                  <button type="button" class="preset-btn active" data-amount="10000" data-mult="1" aria-pressed="true">결제 예정 ₩10,000</button>
+              <button type="button" class="preset-btn " data-amount="30000" data-mult="1" aria-pressed="false">결제 예정 ₩30,000</button>
+              <button type="button" class="preset-btn " data-amount="50000" data-mult="1" aria-pressed="false">결제 예정 ₩50,000</button>
+              <button type="button" class="preset-btn " data-amount="100000" data-mult="1" aria-pressed="false">결제 예정 ₩100,000</button>
+              </div>
+
+              <form id="game-sim-form">
+                  <div class="input-grid">
+                      <div class="input-field">
+                          <label for="sim-pack-select">과금 패키지 선택:</label>
+                          <select id="sim-pack-select">
+                              <option value="10000">결제 예시 ₩10,000</option>
+                  <option value="30000">결제 예시 ₩30,000</option>
+                  <option value="50000">결제 예시 ₩50,000</option>
+                  <option value="100000">결제 예시 ₩100,000</option>
+                              <option value="custom">직접 입력 (자유 금액)</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-pack-count">구매 수량:</label>
+                          <input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-custom-amount">과금 예정 금액 (원):</label>
+                          <input type="number" id="sim-custom-amount" value="10000" min="0" step="any" inputmode="decimal">
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-multiplier">프로모션 특별 적립률:</label>
+                          <select id="sim-multiplier">
+                              <option value="1">기본 기준: 1,000원당 1pt</option><option value="2">특별 적립률: 1,000원당 2pt</option><option value="3">특별 적립률: 1,000원당 3pt</option><option value="4">특별 적립률: 1,000원당 4pt</option><option value="5">특별 적립률: 1,000원당 5pt</option><option value="7">특별 적립률: 1,000원당 7pt</option>
+                          </select>
+                      </div>
+
+                      <div class="input-field">
+                          <label for="sim-status">현재 회원 등급:</label>
+                          <select id="sim-status">
+                              <option value="1.0">브론즈 (1,000원=1pt)</option><option value="1.1">실버 (1,000원=1.1pt)</option><option value="1.3">골드 (1,000원=1.3pt)</option><option value="1.6">플래티넘 (1,000원=1.6pt)</option><option value="2.0">다이아몬드 (1,000원=2pt)</option>
+                          </select>
+                      </div>
+                  </div>
+              </form>
+
+              <!-- 計算結果表示エリア -->
+              <div class="game-result-container">
+                  <div class="result-main-grid">
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">과금 합계 금액</span>
+                          <strong id="res-total-amount" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">적립 예정 Play Points</span>
+                          <strong id="res-earned-points" class="result-stat-value highlight">- pt</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">교환 가치 (Play 화면 확인)</span>
+                          <strong id="res-point-value-yen" class="result-stat-value">-</strong>
+                      </div>
+                      <div class="result-stat-box">
+                          <span class="result-stat-label">0pt 기준 참고 등급</span>
+                          <strong id="res-reached-rank" class="result-stat-value">-</strong>
+                      </div>
+                  </div>
+
+                  <!-- ランク進捗 -->
+                  <div class="rank-progress-wrapper">
+                      <div class="rank-progress-header">
+                          <span>0pt 기준 참고 진행도</span>
+                          <span id="res-next-progress">-</span>
+                      </div>
+                      <div class="rank-bar-bg">
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+
+                  <!-- シェア・リンクボタン -->
+                  <div class="game-share-actions">
+                      <button type="button" id="btn-share-x" class="game-share-btn x-btn">
+                          <span>𝕏 결과 공유하기</span>
+                      </button>
+                      <button type="button" id="btn-copy-link" class="game-share-btn copy-btn">
+                          <span>🔗 링크 복사</span>
+                      </button>
+                  </div>
+
+                  <!-- ギフトカード収益化CTAカード -->
+                  <div class="game-giftcard-cta">
+                      <div class="game-giftcard-cta-content">
+                          <div class="game-giftcard-cta-title">💳 기프트카드 결제 시 포인트 적립 팁</div>
+                          <p class="game-giftcard-cta-text">Google Play 기프트카드 사용 시 포인트 적립 여부와 조건은 실제 Google Play 결제 화면과 계정 조건을 확인하세요. <span id="cta-dynamic-savings" class="dynamic-savings-badge" style="display:none;"></span></p>
+                      </div>
+                      
+                      <a class="game-giftcard-cta-btn" href="../../../ko/articles/google-play-points-gift-cards.html">기프트카드 가이드 확인 ➔</a>
+                      
+                  </div>
+
+                  <p style="font-size:0.85rem; color:#64748b; margin-top:12px; margin-bottom:0;">
+                      ※포인트 예상치는 현재 대한민국 공식 기본 적립률과 Google Play 반올림 규칙을 기준으로 합니다. 등급 표시는 연간 누적 0pt에서 시작한 참고값이며 현재 연간 진행도는 반영하지 않습니다. 결제 전에 Google Play 화면의 예상 포인트와 등급 진행도를 확인하세요.
+                  </p>
+              </div>
+          </section>
+
+          <!-- パック早見表 -->
+          <section class="section">
+              <h2>퍼드 패키지별 Play Points 적립 비교표</h2>
+              <div class="pack-table-wrap">
+                  <table class="pack-table">
+                      <thead>
+                          <tr>
+                              <th>패키지 / 아이템명</th>
+                              <th>가격 (KRW)</th>
+                              <th>기본 적립률 (1,000원당 1pt)</th>
+                              <th>특별 적립률 (1,000원당 5pt)</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr><td>결제 예시 ₩10,000</td><td>₩10,000원</td><td>약 10 pt</td><td>약 50 pt</td></tr>
+<tr><td>결제 예시 ₩30,000</td><td>₩30,000원</td><td>약 30 pt</td><td>약 150 pt</td></tr>
+<tr><td>결제 예시 ₩50,000</td><td>₩50,000원</td><td>약 50 pt</td><td>약 250 pt</td></tr>
+<tr><td>결제 예시 ₩100,000</td><td>₩100,000원</td><td>약 100 pt</td><td>약 500 pt</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+
+              <!-- 広告枠（レスポンシブ） -->
+              <div class="game-ad-container">
+                  <span class="game-ad-label">광고</span>
+                  <ins class="adsbygoogle"
+                       style="display:block"
+                       data-ad-client="ca-pub-3845885843809455"
+                       data-ad-slot="8250492620"
+                       data-ad-format="auto"
+                       data-full-width-responsive="true"></ins>
+              </div>
+          </section>
+
+          <!-- ポイント使い道・損得比較 -->
+          <section class="section">
+              <h2>퍼드 Play Points 사용 탭에서 확인할 교환처</h2>
+              <div class="reward-compare-grid">
+                  <div class="reward-compare-card highlight">
+                      <div class="reward-compare-tag best">할인 쿠폰</div>
+                      <h3>게임 전용 할인 쿠폰</h3>
+                      <div class="reward-rate-val">필요 포인트와 할인액은 표시된 조건 확인</div>
+                      <p class="reward-rate-desc">대상 게임 할인 쿠폰이 표시될 수 있습니다. 필요한 포인트, 할인액, 최소 결제 금액, 유효기간은 Play Points의 사용 화면에 표시된 조건을 기준으로 확인하세요.</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">직접 교환</div>
+                      <h3>게임 내 재화 및 아이템</h3>
+                      <div class="reward-rate-val">교환 내용과 필요 포인트는 표시된 오퍼 확인</div>
+                      <p class="reward-rate-desc">대상 게임의 인게임 아이템과 포인트를 교환할 수 있는 경우가 있습니다. 제공 여부와 필요 포인트는 국가, 시기, 계정에 따라 달라질 수 있으므로 Play Points 사용 화면을 확인하세요.</p>
+                  </div>
+                  <div class="reward-compare-card">
+                      <div class="reward-compare-tag">Play 잔액</div>
+                      <h3>Google Play 잔액 충전</h3>
+                      <div class="reward-rate-val">필요 포인트와 크레딧 금액은 Play Points에서 확인</div>
+                      <p class="reward-rate-desc">Google Play 크레딧으로 교환할 수 있는 경우가 있습니다. 필요한 포인트와 금액은 Play Points 사용 화면을 확인하세요. 포인트로 받은 Play 크레딧은 1년 후 만료됩니다.</p>
+                  </div>
+              </div>
+          </section>
+
+          <!-- よくある質問 -->
+          <section class="section">
+              <h2>자주 묻는 질문 (FAQ)</h2>
+              <h3>퍼즐앤드래곤 결제 시 Google Play Points가 적립되나요?</h3>
+<p>Google Play Points에 가입한 계정으로 Google Play의 적립 대상 게임 내 결제 또는 정기 결제를 하면 포인트를 받을 수 있습니다. 결제 전 Google Play 화면의 예상 적립 포인트를 확인하세요.</p>
+          </section>
+
+          <section class="section game-source-section">
+              <h2>출처 및 확인 범위</h2>
+              <p>Play Points의 국가별 기본 적립률, 등급 조건, 반올림 규칙은 Google Play 공식 도움말을 기준으로 확인합니다. 게임 내 패키지 가격과 천장 조건은 변경될 수 있는 참고값이므로 결제 전 게임 내 상점과 공식 공지를 다시 확인하세요.</p>
+              <p><a href="https://support.google.com/googleplay/answer/9077192" target="_blank" rel="noopener noreferrer">Google Play Points official help</a></p>
+          </section>
+
+          <!-- 他のゲーム計算機 -->
+          <section class="section">
+              <h2>다른 인기 게임 계산기</h2>
+              <div class="games-grid">
+                  
+                  <a class="game-portal-card" href="../genshin/">
+                      <div>
+                          <div class="game-card-icon">✨</div>
+                          <h3 class="game-card-title">원신 (Genshin Impact)</h3>
+                          <p class="game-card-desc">창세의 결정 패키지, 공월 축복, 진주 기행, 180연차 확천, 풀돌(6돌) 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../starrail/">
+                      <div>
+                          <div class="game-card-icon">🚂</div>
+                          <h3 class="game-card-title">붕괴: 스타레일</h3>
+                          <p class="game-card-desc">오래된 꿈, 열차보급허가증, 무명의 공훈, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../zzz/">
+                      <div>
+                          <div class="game-card-icon">⚡</div>
+                          <h3 class="game-card-title">젠레스 존 제로</h3>
+                          <p class="game-card-desc">모노크롬, 로프넷 회원, 뉴에리두 펀드, 180연차 확천, 풀돌(6돌) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../bluearchive/">
+                      <div>
+                          <div class="game-card-icon">🎯</div>
+                          <h3 class="game-card-title">블루 아카이브</h3>
+                          <p class="game-card-desc">청휘석 패키지, 월간 청휘석 패키지, 200연차 모집 포인트 교환(천장) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../pokepoke/">
+                      <div>
+                          <div class="game-card-icon">🎴</div>
+                          <h3 class="game-card-title">포켓몬 카드 게임 Pocket</h3>
+                          <p class="game-card-desc">포켓골드 및 프리미엄 패스 결제 시 적립되는 Google Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../fgo/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">페이트/그랜드 오더 (FGO)</h3>
+                          <p class="game-card-desc">성정석, 복주머니 GSSR, 330연차 확정소환(천장), 보5 과금 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../umamusume/">
+                      <div>
+                          <div class="game-card-icon">🐴</div>
+                          <h3 class="game-card-title">우마무스메 프리티 더비</h3>
+                          <p class="game-card-desc">쥬얼, 먼슬리 우마(데일리 쥬얼), 200연차 교환 Pt 천장, 서포트 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../monst/">
+                      <div>
+                          <div class="game-card-icon">🐉</div>
+                          <h3 class="game-card-title">몬스터 스트라이크</h3>
+                          <p class="game-card-desc">오브 구매, 몬패스, 호시타마, 초수신제, 운극 과금 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../gakumas/">
+                      <div>
+                          <div class="game-card-icon">🌟</div>
+                          <h3 class="game-card-title">학원 아이돌마스터</h3>
+                          <p class="game-card-desc">쥬얼 패키지, 프리미엄 미션 패스, 200 가챠 Pt 천장, 4돌(풀돌) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../proseka/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">프로젝트 세카이 컬러풀 스테이지!</h3>
+                          <p class="game-card-desc">유료 크리스탈, 컬러풀 패스, 프리미엄 미션 패스, 가챠 스티커 300장 천장, 마스터 랭크 5 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../nikke/">
+                      <div>
+                          <div class="game-card-icon">🔫</div>
+                          <h3 class="game-card-title">승리의 여신: 니케</h3>
+                          <p class="game-card-desc">30일 보급품, 미션 패스, 골드 마일리지 200장 천장, 코어 MAX(3돌+7) 과금 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../wutheringwaves/">
+                      <div>
+                          <div class="game-card-icon">🌊</div>
+                          <h3 class="game-card-title">명조: 워더링 웨이브</h3>
+                          <p class="game-card-desc">월상 패키지, 월상 관측 카드, 선구 라디오, 160연차 확천, 공명 체인 6단계(풀돌/S6) 과금 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../dokkan/">
+                      <div>
+                          <div class="game-card-icon">💥</div>
+                          <h3 class="game-card-title">드래곤볼 Z 폭렬격전</h3>
+                          <p class="game-card-desc">용석 패키지, 데일리 캡슐, 돗칸 축제 코인 교환, 잠재능력 100% 해방(무지개) 과금 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../arknights/">
+                      <div>
+                          <div class="game-card-icon">🛡️</div>
+                          <h3 class="game-card-title">명일방주</h3>
+                          <p class="game-card-desc">순수한 원석, 월정액, 월간 헤드헌팅 패키지, 한정 300연차 천장, 풀잠(잠재6) 결제 시 적립되는 Play Points를 계산하세요!</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../hbr/">
+                      <div>
+                          <div class="game-card-icon">⚔️</div>
+                          <h3 class="game-card-title">헤븐 번즈 레드 (HBR)</h3>
+                          <p class="game-card-desc">헤븐 번즈 레드(HBR)의 쿼츠 구매, 패스, 200연차 천장 달성 시 적립되는 Play Points를 계산합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../mementomori/">
+                      <div>
+                          <div class="game-card-icon">🎵</div>
+                          <h3 class="game-card-title">메멘토 모리 (MementoMori)</h3>
+                          <p class="game-card-desc">메멘토 모리의 다이아 결제, 월간 부스트 및 100연차 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../phantomparade/">
+                      <div>
+                          <div class="game-card-icon">🌀</div>
+                          <h3 class="game-card-title">주술회전 팬텀 퍼레이드</h3>
+                          <p class="game-card-desc">주술회전 팬텀 퍼레이드의 유료 회주, 패스 및 250연차 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../reverse1999/">
+                      <div>
+                          <div class="game-card-icon">⏳</div>
+                          <h3 class="game-card-title">리버스: 1999 (Reverse: 1999)</h3>
+                          <p class="game-card-desc">리버스: 1999의 순수한 빗방울 구매, 포효의 이달(월정액), 70/140연차 천장 결제 시 적립되는 Play Points를計算합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../honkai3rd/">
+                      <div>
+                          <div class="game-card-icon">🚀</div>
+                          <h3 class="game-card-title">붕괴3rd (Honkai Impact 3rd)</h3>
+                          <p class="game-card-desc">붕괴3rd의 수정 구매, 월정액, 90연차 캐릭터 천장 결제 시 적립되는 Play Points를 계산합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+                  <a class="game-portal-card" href="../shadowversewb/">
+                      <div>
+                          <div class="game-card-icon">🃏</div>
+                          <h3 class="game-card-title">섀도우버스 월즈 비욘드</h3>
+                          <p class="game-card-desc">섀도우버스 월즈 비욘드의 크리스탈 구매, 프리미엄 패스 및 팩 포인트 결제 시 적립되는 Play Points를 계산합니다.</p>
+                      </div>
+                      <div class="game-card-action">계산기 열기 ➔</div>
+                  </a>
+              </div>
+          </section>
+
+          <!-- 汎用CTA -->
+          <aside class="cta-box" style="margin-top:40px;">
+              <h3>목표 포인트 역산 시뮬레이터</h3>
+              <p>골드나 플래티넘 등급까지 남은 포인트로 필요한 과금액을 계산하려면 종합 계산기를 이용하세요.</p>
+              <a class="cta-btn" href="../../">종합 계산기로 이동 ➔</a>
+          </aside>
+      </main>
+
+      <!-- サイドバー -->
+      <aside class="sidebar-column">
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">🧮 종합 계산기</div>
+              <div class="sidebar-widget-body">
+                  <div class="sidebar-calc-banner">
+                      <h4>몇 포인트가 더 필요한가요?</h4>
+                      <p>목표 등급까지 필요한 결제 금액을 즉시 시뮬레이션하세요!</p>
+                      <a class="sidebar-calc-btn" href="../../">계산기 사용하기 ➔</a>
+                  </div>
+              </div>
+          </div>
+
+          <div class="sidebar-widget">
+              <div class="sidebar-widget-title">📚 추천 가이드</div>
+              <div class="sidebar-widget-body">
+                  <ul class="sidebar-article-list">
+                      <li><a href="../../../ko/articles/google-play-points-levels.html">Play Points 등급 구조 및 혜택</a></li><li><a href="../../../ko/articles/google-play-points-not-showing.html">Play Points가 표시되지 않을 때 해결법</a></li><li><a href="../../../ko/articles/google-play-points-gift-cards.html">기프트카드와 포인트 적립 조건</a></li>
+                  </ul>
+              </div>
+          </div>
+      </aside>
+  </div>
+
+  <!-- サイトフッター -->
+  <footer class="site-footer">
+      <div class="site-footer-links">
+          <a href="../../">계산기</a> ｜
+          <a href="../">게임별 계산</a> ｜
+          <a href="../../articles/">가이드</a> ｜
+          <a href="../../../privacy.html">개인정보처리방침 (일본어)</a> ｜
+          <a href="../../../terms.html">이용약관 (일본어)</a> ｜
+          <a href="../../../author/katakata.html">운영자</a>
+      </div>
+      <p class="site-footer-trademark">Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 정보 사이트이며, Google LLC 및 각 게임 배급사/개발사와 제휴 또는 승인 관계가 없습니다. 언급된 모든 상표와 게임 관련 권리는 해당 권리자에게 귀속됩니다.</p>
+      <p>© 2026 Google Play Points 계산기 All Rights Reserved.</p>
+  </footer>
+
+  <script src="../../../js/analytics-core.js?v=42b5e82926"></script>
+  <script src="../../../js/third-party.js?v=790f53fd26"></script>
+  <script src="../../../games/game-sim.js?v=690a294205"></script>
+</body>
+</html>
