@@ -11,8 +11,14 @@ function replaceDateMetadata(content, todayStr, options = {}) {
   const includeTraditionalChinese = options.includeTraditionalChinese === true;
   let output = content;
 
-  output = output.replace(/<meta name="last-modified" content="[^"]+">/g, `<meta name="last-modified" content="${todayStr}">`);
-  output = output.replace(/<meta property="article:modified_time" content="[^"]+">/g, `<meta property="article:modified_time" content="${todayStr}T00:00:00+09:00">`);
+  output = output.replace(
+    /(<meta name="last-modified" content=")[^"]+("\s*\/?>)/g,
+    `$1${todayStr}$2`
+  );
+  output = output.replace(
+    /(<meta property="article:modified_time" content=")[^"]+("\s*\/?>)/g,
+    `$1${todayStr}T00:00:00+09:00$2`
+  );
   output = output.replace(/"dateModified": "[^"]+"/g, `"dateModified": "${todayStr}"`);
   output = output.replace(/最終更新: \d{4}-\d{2}-\d{2}/g, `最終更新: ${todayStr}`);
 
