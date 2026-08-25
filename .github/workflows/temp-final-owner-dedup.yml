@@ -1,0 +1,122 @@
+name: Temporary final test owner dedup
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temp-final-owner-dedup.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  dedup:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: test/final-owner-dedup
+
+      - name: Consolidate duplicate ownership guards
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          main_ui = Path('tests/main-calculator-ui.test.cjs')
+          source = main_ui.read_text(encoding='utf-8')
+          block = """test('UIモジュールを版管理・Service Workerの対象に含める', () => {
+            assert.match(assetSyncSource, /'js\\/main-calculator-ui\\.js'/);
+            assert.match(swSource, /'\\.\\/js\\/main-calculator-ui\\.js\\?v=[a-f0-9]{10}'/);
+          });
+          """
+          if source.count(block) != 1:
+              raise SystemExit(f'expected one duplicated main UI delivery block, got {source.count(block)}')
+          source = source.replace(block, '')
+          source = source.replace("const swSource = read('sw.js');\nconst assetSyncSource = read('scripts/asset-sync.cjs');\n", '')
+          main_ui.write_text(source, encoding='utf-8')
+
+          game_copy = Path('tests/game-earn-rate-copy.test.cjs')
+          source = game_copy.read_text(encoding='utf-8')
+          old = """test('ゲームFAQは旧5倍CP表現ではなく特別獲得率として案内する', () => {
+            assert.doesNotMatch(generator, /5倍CP時/);
+            assert.doesNotMatch(generator, /通常時（1%）/);
+
+            for (const file of japaneseGamePages) {
+              const html = fs.readFileSync(file, 'utf8');
+              assert.doesNotMatch(html, /5倍CP時/, path.relative(root, file));
+              assert.doesNotMatch(html, /通常時（1%）/, path.relative(root, file));
+            }
+          });
+          """
+          new = """test('ゲームページは旧倍率表現ではなく特別獲得率として案内する', () => {
+            assert.doesNotMatch(generator, /5倍CP時/);
+            assert.doesNotMatch(generator, /通常時（1%）/);
+
+            for (const file of japaneseGamePages) {
+              const html = fs.readFileSync(file, 'utf8');
+              assert.doesNotMatch(html, /5倍CP時/, path.relative(root, file));
+              assert.doesNotMatch(html, /通常時（1%）/, path.relative(root, file));
+            }
+
+            const ko = fs.readFileSync(path.join(root, 'ko/games/genshin/index.html'), 'utf8');
+            const tw = fs.readFileSync(path.join(root, 'tw/games/genshin/index.html'), 'utf8');
+            assert.match(ko, /프로모션 특별 적립률/);
+            assert.doesNotMatch(ko, /포인트 배율/);
+            assert.match(tw, /活動特別獲點率/);
+            assert.doesNotMatch(tw, /點數加碼倍率/);
+          });
+          """
+          if source.count(old) != 1:
+              raise SystemExit(f'expected one game earn-rate owner block, got {source.count(old)}')
+          game_copy.write_text(source.replace(old, new), encoding='utf-8')
+
+          integrity = Path('tests/full-integrity-audit.test.cjs')
+          source = integrity.read_text(encoding='utf-8')
+          block = """test('韓国語・繁体字ゲーム計算機も特別獲得率として表示する', () => {
+            const ko = read('ko/games/genshin/index.html');
+            const tw = read('tw/games/genshin/index.html');
+
+            assert.match(ko, /프로모션 특별 적립률/);
+            assert.doesNotMatch(ko, /포인트 배율/);
+            assert.match(tw, /活動特別獲點率/);
+            assert.doesNotMatch(tw, /點數加碼倍率/);
+          });
+
+          """
+          if source.count(block) != 1:
+              raise SystemExit(f'expected one international game copy block, got {source.count(block)}')
+          integrity.write_text(source.replace(block, ''), encoding='utf-8')
+          PY
+
+      - name: Verify focused owners and exact diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/main-calculator-ui.test.cjs tests/game-earn-rate-copy.test.cjs tests/full-integrity-audit.test.cjs tests/static-calculator-delivery.test.cjs
+          git diff --check
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+              'tests/main-calculator-ui.test.cjs',
+              'tests/game-earn-rate-copy.test.cjs',
+              'tests/full-integrity-audit.test.cjs',
+          }
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
+          if changed != expected:
+              raise SystemExit(f'unexpected test dedup diff: {sorted(changed)}')
+          PY
+
+      - name: Commit owner consolidation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/main-calculator-ui.test.cjs tests/game-earn-rate-copy.test.cjs tests/full-integrity-audit.test.cjs
+          git commit -m 'test: 重複する公開成果物ownerを統合'
+          git push origin HEAD:test/final-owner-dedup
