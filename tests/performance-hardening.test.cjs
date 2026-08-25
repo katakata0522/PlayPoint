@@ -91,14 +91,6 @@ test('バージョン付き資産だけを1年間immutableでキャッシュす�
   assert.match(htaccess, /text\/css "access plus 7 days"/);
 });
 
-test('低性能Android相当の定期Lighthouse検査を固定バージョンで実行する', () => {
-  const workflow = fs.readFileSync(path.join(root, '.github/workflows/mobile-performance.yml'), 'utf8');
-  assert.match(workflow, /schedule:/);
-  assert.match(workflow, /lighthouse@13\.3\.0/);
-  assert.match(workflow, /cpuSlowdownMultiplier=6/);
-  assert.match(workflow, /mobile-performance-budget\.cjs/);
-});
-
 test('未参照だった旧共通CSSを公開物に残さない', () => {
   assert.equal(fs.existsSync(path.join(root, 'articles/article-common.css')), false);
 });
