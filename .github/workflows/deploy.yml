@@ -9,6 +9,8 @@ on:
       - '**.md'
       - '.gitignore'
       - '.gitattributes'
+      - 'tests/**'
+      - 'docs/**'
 
 permissions:
   contents: read
