@@ -102,3 +102,30 @@ Typical Level 3 examples include:
 * stopping infrastructure/services whose current usage has not been confidently established.
 
 If safety can be established to Level 1 or Level 2 confidence, do not escalate merely because an operation looks destructive. If material uncertainty remains, treat it as Level 3.
+
+## 8. Remote / Local Sync Safety for Multi-AI Work
+GitHub's default branch is the **shared source of truth**, but local-only work is **protected work-in-progress**, not disposable state. Never interpret “GitHub is the source of truth” as permission to overwrite unknown local changes.
+
+### Before Local Editing
+Filesystem/local agents (Codex, IDE agents, CLI agents, etc.) must run the repository preflight before starting a new edit:
+
+`node scripts/ai-sync-preflight.cjs`
+
+The preflight runs `git fetch --prune origin` to refresh remote refs, then reports the current branch, working-tree state, and ahead/behind relationship. It does **not** reset, clean, switch branches, merge, or rewrite the working tree.
+
+Handle its states as follows:
+* **READY:** proceed from the current default branch by creating a task branch.
+* **FAST_FORWARD_AVAILABLE:** when the default branch is clean and has no local-only commits, advance it with `git merge --ff-only origin/<default>` and rerun the preflight before editing.
+* **LOCAL_WORK_PRESENT:** preserve the uncommitted work. Do not use `reset --hard`, `clean`, or checkout/restore commands that overwrite it. Identify what the work belongs to and protect it in an appropriate branch/commit before integrating remote changes when safe.
+* **LOCAL_COMMITS_PRESENT:** preserve the unique local commits in a task branch and share them through the normal PR path. Do not discard them merely to match remote.
+* **DIVERGED:** both local and remote contain unique commits. Preserve both histories, inspect the differences, and integrate them explicitly. Do not force-push or hard-reset one side away.
+* **FEATURE_BRANCH:** continuing the same task is allowed. For a separate task, prefer starting a new branch from the refreshed default branch rather than piling unrelated work onto the existing branch.
+* **DETACHED_HEAD:** protect the current commit/work in a branch before editing further.
+
+Do not use a blind `git pull` as the synchronization strategy. Prefer `fetch` plus an explicit fast-forward or explicit integration so the effect is known before the worktree changes.
+
+### Remote-Only Agents
+Agents operating directly against GitHub (for example, ChatGPT through a GitHub connector) cannot see uncommitted or unpushed work that exists only on a user's PC. They must not pretend otherwise. Work from the current remote default branch, use a dedicated branch and PR, and avoid destructive assumptions about local state so later integration remains possible.
+
+### Same-Repository Parallelism
+Multiple AIs normally work on **different repositories** in this owner's workflow, so do not create extra worktrees or coordination machinery by default. If two agents genuinely need to modify the same repository at the same time, isolate them with separate branches and, when useful, separate Git worktrees. Treat this as an exception, not the default workflow.
