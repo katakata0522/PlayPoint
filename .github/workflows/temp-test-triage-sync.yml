@@ -1,0 +1,60 @@
+name: Temporary test triage sync
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temp-test-triage-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ci/remove-stale-js-minify-overhead
+
+      - name: Update test ownership documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('docs/TEST_TRIAGE.md')
+          source = path.read_text(encoding='utf-8')
+
+          old_row = '| main-responsibility-split | **分離モジュールが minify/asset-sync/sw に含まれる**は `runtime-module-guards` に復元 |'
+          new_row = '| main-responsibility-split | **分離モジュールが asset-sync / Service Worker先読みに含まれる**は `runtime-module-guards` に復元。JSは圧縮せず内容ハッシュ同期を契約とする |'
+          if source.count(old_row) != 1:
+              raise SystemExit(f'expected one stale ownership row, got {source.count(old_row)}')
+          source = source.replace(old_row, new_row)
+
+          anchor = '- Browser Smoke本体・Lighthouse workflow本体・性能budgetは変更せず、実行レイヤーの保証を維持\n'
+          addition = (
+              '- `minify.cjs` の未実行JS minify対象リスト・仮想削減量計測を削除し、CSS圧縮とJS asset version同期の実契約へ一致\n'
+              '- preflightの圧縮後再実行を8テストファイルから配信境界owner 2ファイルへ縮小。全回帰と圧縮後JavaScript構文検証は維持\n'
+          )
+          if source.count(anchor) != 1:
+              raise SystemExit(f'expected one phase-4 anchor, got {source.count(anchor)}')
+          source = source.replace(anchor, anchor + addition)
+
+          path.write_text(source, encoding='utf-8')
+          PY
+          git diff --check
+
+      - name: Commit documentation sync
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/TEST_TRIAGE.md
+          git commit -m 'docs: JS配信境界の現行ownerへTEST_TRIAGEを同期'
+          git push origin HEAD:ci/remove-stale-js-minify-overhead
