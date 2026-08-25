@@ -21,7 +21,7 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Fix canonical FAQ data and regenerate game pages
+      - name: Fix canonical FAQ data and run canonical preparation
         shell: bash
         run: |
           set -euo pipefail
@@ -43,9 +43,9 @@ jobs:
           path.write_text(source, encoding='utf-8')
           PY
 
-          node scripts/generate-game-simulators.cjs
+          node scripts/prepare-pr.cjs
 
-      - name: Verify narrowly scoped generated diff
+      - name: Verify narrowly scoped canonical diff
         shell: bash
         run: |
           set -euo pipefail
@@ -63,7 +63,7 @@ jobs:
           }
           changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
           if changed != expected:
-              raise SystemExit(f'unexpected generated diff: {sorted(changed)}')
+              raise SystemExit(f'unexpected canonical diff: {sorted(changed)}')
 
           for file in expected:
               text = open(file, encoding='utf-8').read()
