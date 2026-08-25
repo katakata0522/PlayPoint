@@ -107,6 +107,7 @@
             return {
                 category: params.get('category') || 'all',
                 search: params.get('q') || '',
+                game: params.get('game') || '',
                 page: parseInt(params.get('page'), 10) || 1,
                 sort: params.get('sort') !== 'oldest'
             };
@@ -124,6 +125,11 @@
                 url.searchParams.set('q', state.search);
             } else {
                 url.searchParams.delete('q');
+            }
+            if (state.game) {
+                url.searchParams.set('game', state.game);
+            } else {
+                url.searchParams.delete('game');
             }
             // Page
             if (state.page && state.page > 1) {
@@ -145,6 +151,7 @@
     let allArticles = [];
     let currentCategory = 'all';
     let currentSearch = '';
+    let currentGameTitle = '';
     let currentPage = 1;
     let sortNewestFirst = true;
     let searchDebounceTimer = null;
@@ -203,18 +210,27 @@
     // 記事JSONの値を描画前に正規化する
     function normalizeArticle(article) {
         article = article && typeof article === 'object' ? article : {};
-        const tags = Array.isArray(article.tags) ? article.tags : [];
+        const tags = Array.isArray(article.tags) ? article.tags.filter(tag => typeof tag === 'string') : [];
+        const title = typeof article.title === 'string' ? article.title : '';
+        const description = typeof article.description === 'string' ? article.description : '';
+        const category = typeof article.category === 'string' ? article.category : '';
 
         return {
             id: typeof article.id === 'string' ? article.id : '',
-            title: typeof article.title === 'string' ? article.title : '',
+            title,
             date: typeof article.date === 'string' ? article.date : '',
-            category: typeof article.category === 'string' ? article.category : '',
-            tags: tags.filter(tag => typeof tag === 'string'),
-            description: typeof article.description === 'string' ? article.description : '',
+            category,
+            tags,
+            description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
-            listed: article.listed !== false
+            listed: article.listed !== false,
+            searchIndex: BlogUtils.buildArticleSearchIndex({
+                title,
+                description,
+                tags,
+                category
+            })
         };
     }
 
@@ -242,6 +258,7 @@
         pagination: document.getElementById('pagination'),
         categoryFilter: document.getElementById('category-filter'),
         searchInput: document.getElementById('search-input'),
+        gameTitleFilter: document.getElementById('game-title-filter'),
         sortToggle: document.getElementById('sort-toggle'),
         loading: null,
         error: null,
@@ -458,6 +475,7 @@
         const urlState = URLState.get();
         currentCategory = urlState.category;
         currentSearch = urlState.search;
+        currentGameTitle = urlState.game;
         currentPage = urlState.page;
         sortNewestFirst = urlState.sort !== undefined ? urlState.sort : Storage.getSortOrder();
 
@@ -490,6 +508,7 @@
             // Extract categories
             setupCategories(allArticles);
             setupCategoryOverflow();
+            setupGameTitleFilter();
 
             // Search setup with debounce
             if (dom.searchInput) {
@@ -531,11 +550,15 @@
                 const state = URLState.get();
                 currentCategory = state.category;
                 currentSearch = state.search;
+                currentGameTitle = state.game;
                 currentPage = state.page;
                 sortNewestFirst = state.sort;
 
                 if (dom.searchInput) {
                     dom.searchInput.value = currentSearch;
+                }
+                if (dom.gameTitleFilter) {
+                    dom.gameTitleFilter.value = currentGameTitle;
                 }
 
                 syncCategoryActiveState();
@@ -597,6 +620,7 @@
         URLState.set({
             category: currentCategory,
             search: currentSearch,
+            game: currentGameTitle,
             page: currentPage,
             sort: sortNewestFirst
         });
@@ -609,14 +633,40 @@
             filtered = filtered.filter(a => a.category === currentCategory);
         }
         if (currentSearch) {
-            filtered = filtered.filter(a => {
-                const title = (a.title || '').toLowerCase();
-                const desc = (a.description || '').toLowerCase();
-                const tags = (a.tags || []).join(' ').toLowerCase();
-                return title.includes(currentSearch) || desc.includes(currentSearch) || tags.includes(currentSearch);
-            });
+            filtered = filtered.filter(a => BlogUtils.articleMatchesSearch(a, currentSearch));
+        }
+        if (currentGameTitle) {
+            filtered = filtered.filter(a => BlogUtils.articleMatchesGameTitle(a, currentGameTitle));
         }
         return filtered;
+    }
+
+    function setupGameTitleFilter() {
+        const select = dom.gameTitleFilter;
+        if (!select) return;
+
+        const existing = new Set(Array.from(select.options).map(option => option.value));
+        BlogUtils.GAME_TITLE_FILTERS.forEach(name => {
+            if (existing.has(name)) return;
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            select.appendChild(option);
+        });
+
+        if (currentGameTitle && !BlogUtils.GAME_TITLE_FILTERS.includes(currentGameTitle)) {
+            currentGameTitle = '';
+        }
+        select.value = currentGameTitle;
+
+        if (select.dataset.bound === 'true') return;
+        select.dataset.bound = 'true';
+        select.addEventListener('change', () => {
+            currentGameTitle = select.value;
+            currentPage = 1;
+            updateURLState();
+            render();
+        });
     }
 
     // Theme toggle
@@ -894,11 +944,53 @@
     }
 
     function renderPagination(totalPages) {
-      if (!dom.pagination) return; dom.pagination.innerHTML = ''; if (totalPages <= 1) return;
-      var prev = document.createElement('button'); prev.textContent = '← 前へ'; prev.disabled = currentPage === 1; prev.className = 'pagination-nav'; prev.addEventListener('click', function () { changePage(currentPage - 1); });
-      var status = document.createElement('span'); status.className = 'pagination-status'; status.textContent = currentPage + ' / ' + totalPages; status.setAttribute('aria-current', 'page');
-      var next = document.createElement('button'); next.textContent = '次へ →'; next.disabled = currentPage === totalPages; next.className = 'pagination-nav'; next.addEventListener('click', function () { changePage(currentPage + 1); });
-      dom.pagination.append(prev, status, next);
+        if (!dom.pagination) return;
+        dom.pagination.innerHTML = '';
+        if (totalPages <= 1) return;
+
+        const prev = document.createElement('button');
+        prev.textContent = '← 前へ';
+        prev.disabled = currentPage === 1;
+        prev.className = 'pagination-nav';
+        prev.addEventListener('click', function () { changePage(currentPage - 1); });
+
+        const pageInput = document.createElement('input');
+        pageInput.type = 'text';
+        pageInput.className = 'pagination-page-input';
+        pageInput.inputMode = 'numeric';
+        pageInput.setAttribute('aria-label', 'ページ番号を入力して移動');
+        pageInput.value = String(currentPage);
+        pageInput.addEventListener('focus', function () { pageInput.select(); });
+
+        function jumpFromInput() {
+            const targetPage = BlogUtils.clampPageJump(pageInput.value, totalPages);
+            if (targetPage !== currentPage) {
+                changePage(targetPage);
+                return;
+            }
+            pageInput.value = String(currentPage);
+        }
+
+        pageInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                jumpFromInput();
+            }
+        });
+        pageInput.addEventListener('change', jumpFromInput);
+
+        const status = document.createElement('span');
+        status.className = 'pagination-status';
+        status.textContent = currentPage + ' / ' + totalPages;
+        status.setAttribute('aria-current', 'page');
+
+        const next = document.createElement('button');
+        next.textContent = '次へ →';
+        next.disabled = currentPage === totalPages;
+        next.className = 'pagination-nav';
+        next.addEventListener('click', function () { changePage(currentPage + 1); });
+
+        dom.pagination.append(prev, pageInput, status, next);
     }
 
     function setupCategoryOverflow() {

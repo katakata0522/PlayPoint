@@ -309,10 +309,61 @@ box-shadow: 0 4px 14px var(--accent-glow);
 display: flex;
 justify-content: center;
 align-items: center;
+flex-wrap: wrap;
 gap: 1rem;
-max-width: 600px;
+max-width: 880px;
 margin: 0 auto 1.5rem;
 padding: 0 1rem;
+}
+.game-filter-container {
+display: flex;
+align-items: center;
+gap: 0.45rem;
+flex: 0 1 210px;
+}
+.game-filter-label {
+font-size: 0.85rem;
+font-weight: 600;
+color: var(--text-secondary);
+white-space: nowrap;
+}
+#game-title-filter {
+min-height: 44px;
+width: 100%;
+padding: 0.65rem 0.9rem;
+border: 1px solid var(--border-color);
+border-radius: 50px;
+background: var(--bg-secondary);
+font-size: 0.95rem;
+color: var(--text-primary);
+outline: none;
+}
+#game-title-filter:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.pagination-page-input {
+width: 4.2rem;
+min-height: 44px;
+padding: 0.4rem 0.5rem;
+border: 1px solid var(--border-color);
+border-radius: 12px;
+background: var(--bg-secondary);
+color: var(--text-primary);
+font-size: 1rem;
+font-weight: 700;
+text-align: center;
+outline: none;
+}
+.pagination-page-input:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 3px var(--accent-glow);
+}
+.pagination-status {
+display: flex;
+align-items: center;
+color: var(--text-secondary);
+font-weight: 600;
 }
 .search-container {
 flex: 1;
