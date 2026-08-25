@@ -73,7 +73,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'campaign/2x/index.html': '2026-08-21',
   'campaign/3x/index.html': '2026-08-21',
   'campaign/wait/index.html': '2026-08-21',
-  'amount/10000/index.html': '2026-08-12',
+  'amount/10000/index.html': '2026-08-25',
   'compare/earning-rates/index.html': '2026-07-30',
   ...gameContentDateOverrides,
   'en/articles/2026-06-20-discount-gift-cards.html': '2026-08-05',
