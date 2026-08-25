@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { generatedFiles } = require('../../scripts/build-targets.cjs');
-const { cssTargets, jsTargets } = require('./minify.cjs');
+const { assetSyncMutableJsTargets, cssTargets } = require('./minify.cjs');
 
 const root = path.resolve(__dirname, '../..');
 const prepareDeploy = process.argv.includes('--prepare-deploy');
@@ -12,21 +12,15 @@ const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .filter(file => file.endsWith('.test.cjs'))
   .sort()
   .map(file => path.join('tests', file));
-// 圧縮後は「CSS圧縮・アセット版同期で壊れやすい計算/ランタイム」だけ再検査する。
-// JSの空白圧縮はしないが、版同期が一部JSを書き換えるため重点回帰は維持する。
+// 全回帰は圧縮前に一度実行済み。圧縮後はCSS圧縮・asset version同期によって
+// 実際に変わる配信境界（公開HTML/モジュール参照/Service Worker）だけ再検査する。
 const postMinifyTestFiles = [
-  'tests/playpoint-regression.test.cjs',
-  'tests/main-calculator-ui.test.cjs',
-  'tests/play-points-rounding-guide.test.cjs',
   'tests/static-calculator-delivery.test.cjs',
-  'tests/playpoint-product-guards.test.cjs',
-  'tests/runtime-module-guards.test.cjs',
-  'tests/common-pages-fact-ux.test.cjs',
-  'tests/content-structure.test.cjs'
+  'tests/runtime-module-guards.test.cjs'
 ].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
-// 通常検証では、CSS圧縮と版同期が触り得る公開資産を元へ戻す。
+// 通常検証では、CSS圧縮とasset version同期が触り得る公開資産を元へ戻す。
 // --prepare-deploy は配信用の生成・圧縮差分だけを保持し、記事正規化は常にcheck-onlyで扱う。
-const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...jsTargets])];
+const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...assetSyncMutableJsTargets])];
 const requiredPublicFiles = [
   'index.html',
   'en/index.html',
@@ -136,8 +130,7 @@ try {
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  // 全量の再実行はコストが高い。CSS圧縮と版同期の影響を受けやすい最小セットだけ再実行する。
-  runPhase('圧縮後の重点回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
+  runPhase('圧縮後の配信境界回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
 } finally {
   if (!prepareDeploy) restoreMutableFiles();
 }
@@ -151,6 +144,6 @@ if (failures.length > 0) {
 } else {
   console.log(
     '\n全事前検証に成功しました（全回帰: ' + testFiles.length
-    + '件 / 圧縮後重点: ' + postMinifyTestFiles.length + '件）。'
+    + '件 / 圧縮後配信境界: ' + postMinifyTestFiles.length + '件）。'
   );
 }
