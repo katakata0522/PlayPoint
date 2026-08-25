@@ -1,0 +1,68 @@
+name: Temporary game content date sync
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temp-game-date-sync.yml'
+      - 'scripts/content-dates.cjs'
+      - 'tests/game-page-ssot.test.cjs'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refactor/game-content-date-overrides
+
+      - name: Run canonical preparation
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/prepare-pr.cjs
+
+      - name: Verify narrowly scoped generated diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import subprocess
+
+          expected = {
+              'games/arknights/index.html',
+              'games/genshin/index.html',
+              'games/honkai3rd/index.html',
+              'games/nikke/index.html',
+              'games/phantomparade/index.html',
+              'games/wutheringwaves/index.html',
+              'sitemap.xml',
+          }
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
+          if changed != expected:
+              raise SystemExit(f'unexpected canonical generated diff: {sorted(changed)}')
+
+          for file in expected - {'sitemap.xml'}:
+              text = open(file, encoding='utf-8').read()
+              if 'last-modified" content="2026-08-25"' not in text:
+                  raise SystemExit(f'missing updated game content date: {file}')
+              if 'dateModified": "2026-08-25"' not in text:
+                  raise SystemExit(f'missing updated structured content date: {file}')
+          PY
+          git diff --check
+
+      - name: Commit synchronized outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add games/arknights/index.html games/genshin/index.html games/honkai3rd/index.html games/nikke/index.html games/phantomparade/index.html games/wutheringwaves/index.html sitemap.xml
+          git commit -m 'chore: ゲーム個別内容日を公開成果物へ同期'
+          git push origin HEAD:refactor/game-content-date-overrides
