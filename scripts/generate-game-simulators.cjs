@@ -2180,6 +2180,99 @@ const GAMES_DATA = [
         { q: '闇影詩章WB課金可以累積 Play Points 嗎？', a: '可以！購買水晶及尊享通行證均可獲得點數回饋。' }
       ]
     }
+  },
+  {
+    id: 'pad',
+    icon: '🐉',
+    names: { ja: 'パズル＆ドラゴンズ (Puzzle & Dragons)', en: 'Puzzle & Dragons', ko: '퍼즐앤드래곤 (Puzzle & Dragons)', tw: '龍族拼圖 (Puzzle & Dragons)' },
+    shortNames: { ja: 'パズドラ', en: 'PAD', ko: '퍼드', tw: '龍族拼圖' },
+    descs: {
+      ja: 'パズドラの魔法石購入、パズドラパス（月額980円）、コラボ確定ガチャセットで貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお買い物マラソンを併用したお得な課金ルートも比較できます。',
+      en: 'Calculate Google Play Points earned on Magic Stones, PAD Pass ($8.99/mo), and Collab Gacha sets in Puzzle & Dragons!',
+      ko: '마법석 패키지, 패스 구독, 콜라보 확정 세트 과금 시 적립되는 Play Points와 달성 등급을 시뮬레이션하세요!',
+      tw: '試算魔法石、月費通行證、合作限定抽卡禮包課金可獲得的 Play Points 與等級進度！'
+    },
+    packs: {
+      ja: [
+        { name: 'パズドラパス (月額980円)', price: 980 },
+        { name: '魔法石 1個 (160円)', price: 160 },
+        { name: '魔法石 6個 (480円)', price: 480 },
+        { name: '魔法石 12個 (980円)', price: 980 },
+        { name: '魔法石 30個 (2,200円)', price: 2200 },
+        { name: '魔法石 85個 (5,000円)', price: 5000 },
+        { name: 'コラボ確定ガチャセット (2,400円)', price: 2400 },
+        { name: 'コラボ確定ガチャセット (3,600円)', price: 3600 }
+      ],
+      en: [
+        { name: 'PAD Pass ($8.99/mo)', price: 8.99 },
+        { name: '1 Magic Stone ($0.99)', price: 0.99 },
+        { name: '6 Magic Stones ($4.99)', price: 4.99 },
+        { name: '12 Magic Stones ($8.99)', price: 8.99 },
+        { name: '30 Magic Stones ($19.99)', price: 19.99 },
+        { name: '85 Magic Stones ($46.99)', price: 46.99 },
+        { name: 'Collab Special Bundle ($19.99)', price: 19.99 },
+        { name: 'Collab Special Bundle ($29.99)', price: 29.99 }
+      ],
+      ko: [
+        { name: '퍼드 패스 (₩11,000/월)', price: 11000 },
+        { name: '마법석 1개 (₩1,500)', price: 1500 },
+        { name: '마법석 6개 (₩5,500)', price: 5500 },
+        { name: '마법석 12개 (₩11,000)', price: 11000 },
+        { name: '마법석 30개 (₩25,000)', price: 25000 },
+        { name: '마법석 85개 (₩55,000)', price: 55000 },
+        { name: '콜라보 확정 세트 (₩28,000)', price: 28000 }
+      ],
+      tw: [
+        { name: '通行證月費 (NT$270/月)', price: 270 },
+        { name: '魔法石 1顆 (NT$33)', price: 33 },
+        { name: '魔法石 6顆 (NT$130)', price: 130 },
+        { name: '魔法石 12顆 (NT$270)', price: 270 },
+        { name: '魔法石 30顆 (NT$620)', price: 620 },
+        { name: '魔法石 85顆 (NT$1,390)', price: 1390 },
+        { name: '合作限定禮包 (NT$690)', price: 690 }
+      ]
+    },
+    presets: {
+      ja: [
+        { label: 'パズパス月額 (980円)', value: 980, desc: '毎日のダンジョン＆ガチャ特典' },
+        { label: '魔法石85個 (5,000円)', value: 5000, desc: 'まとめ買い定番パック' },
+        { label: '魔法石170個 (1万円)', value: 10000, desc: '大型コラボ・フェス限狙い' },
+        { label: 'コラボ全力 (3万円)', value: 30000, desc: '確定セット＋石まとめ買い' }
+      ],
+      en: [
+        { label: 'PAD Pass ($8.99)', value: 8.99, desc: 'Daily dungeons and perks' },
+        { label: '85 Stones ($46.99)', value: 46.99, desc: 'Standard bulk bundle' },
+        { label: '170 Stones ($93.98)', value: 93.98, desc: 'Godfest & Collab summons' },
+        { label: 'Full Collab ($200)', value: 200, desc: 'Bundles and high-tier packs' }
+      ],
+      ko: [
+        { label: '패스 월정액 (₩11,000)', value: 11000, desc: '매일 던전 및 보너스' },
+        { label: '마법석 85개 (₩55,000)', value: 55000, desc: '기본 대량 팩' },
+        { label: '마법석 170개 (₩110,000)', value: 110000, desc: '대형 콜라보/페스' },
+        { label: '콜라보 올인 (₩300,000)', value: 300000, desc: '확정 세트 및 패키지' }
+      ],
+      tw: [
+        { label: '通行證月費 (NT$270)', value: 270, desc: '每日地下城與特權' },
+        { label: '魔法石 85顆 (NT$1,390)', value: 1390, desc: '主力優惠包' },
+        { label: '魔法石 170顆 (NT$2,780)', value: 2780, desc: '大型合作與神祭' },
+        { label: '合作全力 (NT$8,000)', value: 8000, desc: '禮包與大量魔法石' }
+      ]
+    },
+    faq: {
+      ja: [
+        { q: 'パズドラの課金でPlayポイントは貯まりますか？', a: 'はい！魔法石購入やパズドラパスの月額課金、コラボ確定ガチャセットの購入ですべてGoogle Play Pointsが貯まります。' },
+        { q: 'パズドラでお得に課金するコツは？', a: '楽天市場のGoogle Playギフトコード認定店でお買い物マラソン期間中にコードを購入してチャージしてから課金するのが最も還元率が高くなります。' }
+      ],
+      en: [
+        { q: 'Do Puzzle & Dragons purchases earn Play Points?', a: 'Yes! Magic Stones, PAD Pass subscriptions, and Collab Bundles all earn Google Play Points.' }
+      ],
+      ko: [
+        { q: '퍼즐앤드래곤 결제 시 포인트가 적립되나요?', a: '네! 마법석 및 퍼드 패스 정기결제 시 정상 적립됩니다.' }
+      ],
+      tw: [
+        { q: '龍族拼圖課金可以累積 Play Points 嗎？', a: '可以！魔法石與月費通行證均可獲得點數回饋。' }
+      ]
+    }
   }
 ];
 
