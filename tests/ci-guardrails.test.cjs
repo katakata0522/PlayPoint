@@ -23,6 +23,12 @@ test('PR Gateは検査専用、Deployだけが配信用アセットを保持す�
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });
 
+test('Deployは本番非公開のtests・docs変更だけでは起動しない', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+  assert.match(workflow, /- 'tests\/\*\*'/);
+  assert.match(workflow, /- 'docs\/\*\*'/);
+});
+
 test('preflightは本番同期前に鮮度と記事正規化をcheck-onlyで検証する', () => {
   const preflight = read('.github/scripts/preflight.cjs');
   const freshCommand = "['scripts/latest-hub-audit.cjs', '--fresh']";
