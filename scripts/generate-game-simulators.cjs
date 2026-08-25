@@ -508,7 +508,7 @@ const GAMES_DATA = [
     faq: {
       ja: [
         { q: '原神の課金でGoogle Play Pointsは貯まりますか？', a: 'はい。Android端末またはGoogle Play Games（PC版）経由で課金した場合、通常100円につき1ポイント以上のPlay Pointsが貯まります。' },
-        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1%）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。' }
+        { q: '原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', a: '180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。' }
       ],
       en: [
         { q: 'Do I earn Google Play Points on Genshin Impact purchases?', a: 'Yes! When purchasing Genesis Crystals or passes on Android or Google Play Games PC, you earn at least 1 Play Point per $1 spent.' },
@@ -1356,7 +1356,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'NIKKEのゴールドマイレージ（金票200枚）で何ポイント還元されますか？', a: '200連（約7.6万円）課金した場合、通常時（1%）で約760pt、5倍CP時なら約3,800pt貯まります。' },
+        { q: 'NIKKEのゴールドマイレージ（金票200枚）で何ポイント還元されますか？', a: '200連（約7.6万円）課金した場合、通常時（1pt/100円）で約760pt、特別獲得率5pt/100円時なら約3,800pt貯まります。' },
         { q: '30-DAY補給品やミッションパスもPlayポイントの対象ですか？', a: 'はい。月額補給品やプレミアムパスの購入時にも全額Play Pointsが付与されます。' }
       ],
       en: [
@@ -1456,7 +1456,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: '鳴潮の確定天井（160連）で何ポイント貯まりますか？', a: '160連（約4.8万円）課金した場合、通常時（1%）で約480pt、5倍CP時なら約2,400pt（ゴールドランク到達）還元されます。' },
+        { q: '鳴潮の確定天井（160連）で何ポイント貯まりますか？', a: '160連（約4.8万円）課金した場合、通常時（1pt/100円）で約480pt、特別獲得率5pt/100円時なら約2,400pt（ゴールドランク到達）還元されます。' },
         { q: '武器ガチャ（80連確定）の課金でもポイントは付きますか？', a: 'はい。武器ガチャ用の金髄の波模様購入も全額Play Pointsの対象です。' }
       ],
       en: [
@@ -1638,7 +1638,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'アークナイツの限定フェス天井（300連）で何ポイント貯まりますか？', a: '300連（約9万円）課金した場合、通常時（1%）で約900pt、5倍CP時なら約4,500pt（プラチナランク到達）還元されます。' }
+        { q: 'アークナイツの限定フェス天井（300連）で何ポイント貯まりますか？', a: '300連（約9万円）課金した場合、通常時（1pt/100円）で約900pt、特別獲得率5pt/100円時なら約4,500pt（プラチナランク到達）還元されます。' }
       ],
       en: [
         { q: 'Do Arknights purchases earn Google Play Points?', a: 'Yes! Originite Prime and Headhunting packs earn Play Points based on your current tier.' }
@@ -1902,7 +1902,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: 'ファンパレの天井（250連）で何ポイント貯まりますか？', a: '約75,000円課金した場合、通常時（1%）で約750pt、5倍CP時なら約3,750pt（ゴールドランク即到達）還元されます。' }
+        { q: 'ファンパレの天井（250連）で何ポイント貯まりますか？', a: '約75,000円課金した場合、通常時（1pt/100円）で約750pt、特別獲得率5pt/100円時なら約3,750pt（ゴールドランク即到達）還元されます。' }
       ],
       en: [
         { q: 'How many points for 250-pull pity in Phantom Parade?', a: 'Spending ~$600 earns ~600 pts at base rate, or ~3,000 pts during 5x point events.' }
@@ -2075,7 +2075,7 @@ const GAMES_DATA = [
     },
     faq: {
       ja: [
-        { q: '崩壊3rdでキャラ確定天井（90連）まで課金すると何ポイント？', a: '約50,400円課金した場合、通常時（1%）で約504pt、5倍CP時なら約2,520pt（ゴールドランク到達）貯まります。' }
+        { q: '崩壊3rdでキャラ確定天井（90連）まで課金すると何ポイント？', a: '約50,400円課金した場合、通常時（1pt/100円）で約504pt、特別獲得率5pt/100円時なら約2,520pt（ゴールドランク到達）貯まります。' }
       ],
       en: [
         { q: 'How many points for 90-pull pity in Honkai 3rd?', a: 'Spending ~$400 yields ~400 pts, or ~2,000 pts during 5x promo events.' }
