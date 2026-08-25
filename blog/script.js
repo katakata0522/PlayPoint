@@ -981,7 +981,7 @@
 
         const status = document.createElement('span');
         status.className = 'pagination-status';
-        status.textContent = '/ ' + totalPages;
+        status.textContent = currentPage + ' / ' + totalPages;
         status.setAttribute('aria-current', 'page');
 
         const next = document.createElement('button');

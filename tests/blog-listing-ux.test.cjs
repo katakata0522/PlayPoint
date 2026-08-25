@@ -65,5 +65,6 @@ test('blog listing wires page jump, in-memory search, and game-title filter', ()
   assert.match(script, /buildArticleSearchIndex/);
   assert.match(script, /articleMatchesGameTitle/);
   assert.match(script, /clampPageJump/);
+  assert.match(script, /currentPage \+ ' \/ ' \+ totalPages/);
   assert.doesNotMatch(script, /'ゲーム': \{ order: 5/);
 });
