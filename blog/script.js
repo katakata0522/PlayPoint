@@ -628,17 +628,11 @@
 
     // Filter articles (extracted for reuse)
     function filterArticles() {
-        let filtered = allArticles;
-        if (currentCategory !== 'all') {
-            filtered = filtered.filter(a => a.category === currentCategory);
-        }
-        if (currentSearch) {
-            filtered = filtered.filter(a => BlogUtils.articleMatchesSearch(a, currentSearch));
-        }
-        if (currentGameTitle) {
-            filtered = filtered.filter(a => BlogUtils.articleMatchesGameTitle(a, currentGameTitle));
-        }
-        return filtered;
+        return BlogUtils.filterListedArticles(allArticles, {
+            category: currentCategory,
+            search: currentSearch,
+            gameTitle: currentGameTitle
+        });
     }
 
     function setupGameTitleFilter() {
@@ -797,8 +791,10 @@
     function resetFilters() {
         currentCategory = 'all';
         currentSearch = '';
+        currentGameTitle = '';
         currentPage = 1;
         if (dom.searchInput) dom.searchInput.value = '';
+        if (dom.gameTitleFilter) dom.gameTitleFilter.value = '';
         syncCategoryActiveState();
         updateURLState();
         render();
@@ -821,23 +817,7 @@
     function render() {
         if (!dom.grid) return;
 
-        // 1. Filter (Category + Search)
-        let filtered = allArticles;
-
-        // Category Filter
-        if (currentCategory !== 'all') {
-            filtered = filtered.filter(a => a.category === currentCategory);
-        }
-
-        // Search Filter
-        if (currentSearch) {
-            filtered = filtered.filter(a => {
-                const title = (a.title || '').toLowerCase();
-                const desc = (a.description || '').toLowerCase();
-                const tags = (a.tags || []).join(' ').toLowerCase();
-                return title.includes(currentSearch) || desc.includes(currentSearch) || tags.includes(currentSearch);
-            });
-        }
+        let filtered = filterArticles();
 
         // 2. Sort (based on direction)
         if (sortNewestFirst) {
