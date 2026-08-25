@@ -38,7 +38,7 @@ jobs:
               raise SystemExit(f'expected one duplicated main UI delivery block, got {source.count(block)}')
           source = source.replace(block, '')
           source = source.replace("const swSource = read('sw.js');\nconst assetSyncSource = read('scripts/asset-sync.cjs');\n", '')
-          main_ui.write_text(source, encoding='utf-8')
+          main_ui.write_text(source.rstrip() + '\n', encoding='utf-8')
 
           game_copy = Path('tests/game-earn-rate-copy.test.cjs')
           source = game_copy.read_text(encoding='utf-8')
@@ -73,7 +73,7 @@ jobs:
           """
           if source.count(old) != 1:
               raise SystemExit(f'expected one game earn-rate owner block, got {source.count(old)}')
-          game_copy.write_text(source.replace(old, new), encoding='utf-8')
+          game_copy.write_text(source.replace(old, new).rstrip() + '\n', encoding='utf-8')
 
           integrity = Path('tests/full-integrity-audit.test.cjs')
           source = integrity.read_text(encoding='utf-8')
@@ -90,7 +90,7 @@ jobs:
           """
           if source.count(block) != 1:
               raise SystemExit(f'expected one international game copy block, got {source.count(block)}')
-          integrity.write_text(source.replace(block, ''), encoding='utf-8')
+          integrity.write_text(source.replace(block, '').rstrip() + '\n', encoding='utf-8')
           PY
 
       - name: Verify focused owners and exact diff
