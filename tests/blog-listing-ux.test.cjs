@@ -4,13 +4,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const blogUtils = require('../blog/utils.js');
 const {
   buildArticleSearchIndex,
   articleMatchesSearch,
   articleMatchesGameTitle,
   clampPageJump,
   GAME_TITLE_FILTERS
-} = require('../blog/utils.js');
+} = blogUtils;
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -56,15 +57,59 @@ test('page-number jump clamps full-width digits into the published page range', 
   assert.equal(clampPageJump('abc', 10), 1);
 });
 
+function extractNamedFunction(source, name) {
+  const marker = 'function ' + name + '(';
+  const start = source.indexOf(marker);
+  assert.ok(start >= 0, name + ' is missing');
+  const brace = source.indexOf('{', start);
+  assert.ok(brace >= 0, name + ' has no body');
+  let depth = 0;
+  for (let index = brace; index < source.length; index += 1) {
+    const character = source[index];
+    if (character === '{') depth += 1;
+    else if (character === '}') {
+      depth -= 1;
+      if (depth === 0) return source.slice(brace, index + 1);
+    }
+  }
+  throw new Error(name + ' is unclosed');
+}
+
+test('listed corpus AND search and game-title filter share one callable listing filter', () => {
+  assert.equal(typeof blogUtils.filterListedArticles, 'function');
+  const registry = JSON.parse(read('blog/articles.json'));
+  const andHits = blogUtils.filterListedArticles(registry, { search: 'パズドラ 使い方' });
+  assert.ok(andHits.some(article => article.id === 'pad-puzzle-and-dragons-play-points'));
+  assert.ok(andHits.every(article => articleMatchesSearch(article, 'パズドラ 使い方')));
+  assert.equal(
+    blogUtils.filterListedArticles(registry, { search: 'パズドラ ドッカン' }).length,
+    0
+  );
+
+  const uma = blogUtils.filterListedArticles(registry, { gameTitle: 'ウマ娘' });
+  assert.ok(uma.length >= 1);
+  assert.ok(uma.length < registry.length);
+  assert.ok(uma.every(article => articleMatchesGameTitle(article, 'ウマ娘')));
+  assert.equal(uma.some(article => (article.title || '').includes('ロック')), false);
+
+  const categories = [...new Set(registry.map(article => article.category))].sort();
+  assert.deepEqual(categories, ['キャンペーン', 'トラブル', 'ランク', '使い方']);
+});
+
 test('blog listing wires page jump, in-memory search, and game-title filter', () => {
   const html = read('blog/index.html');
   const script = read('blog/script.js');
+  const renderBody = extractNamedFunction(script, 'render');
+  const resetBody = extractNamedFunction(script, 'resetFilters');
   assert.match(html, /id="search-input"/);
   assert.match(html, /id="game-title-filter"/);
   assert.match(script, /pagination-page-input/);
-  assert.match(script, /buildArticleSearchIndex/);
-  assert.match(script, /articleMatchesGameTitle/);
   assert.match(script, /clampPageJump/);
   assert.match(script, /currentPage \+ ' \/ ' \+ totalPages/);
+  assert.match(renderBody, /\bfilterArticles\s*\(/);
+  assert.doesNotMatch(renderBody, /title\.includes\(currentSearch\)/);
+  assert.doesNotMatch(renderBody, /desc\.includes\(currentSearch\)/);
+  assert.match(resetBody, /currentGameTitle\s*=\s*['"]{2}/);
+  assert.match(resetBody, /gameTitleFilter/);
   assert.doesNotMatch(script, /'ゲーム': \{ order: 5/);
 });

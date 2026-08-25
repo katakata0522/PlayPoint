@@ -68,6 +68,26 @@
         return page;
     }
 
+    /**
+     * 一覧表示用フィルタ。カテゴリ・AND検索・ゲーム名を同じ経路でかける
+     * @param {object[]} articles
+     * @param {{category?: string, search?: string, gameTitle?: string}} state
+     * @returns {object[]}
+     */
+    function filterListedArticles(articles, state) {
+        const list = Array.isArray(articles) ? articles : [];
+        const filters = state && typeof state === 'object' ? state : {};
+        const category = typeof filters.category === 'string' ? filters.category : 'all';
+        const search = typeof filters.search === 'string' ? filters.search : '';
+        const gameTitle = typeof filters.gameTitle === 'string' ? filters.gameTitle : '';
+        return list.filter(article => {
+            if (category && category !== 'all' && article.category !== category) return false;
+            if (search && !articleMatchesSearch(article, search)) return false;
+            if (gameTitle && !articleMatchesGameTitle(article, gameTitle)) return false;
+            return true;
+        });
+    }
+
     // Global Utilities for Katakata Blog
     const BlogUtils = {
 
@@ -144,6 +164,7 @@
         articleMatchesSearch: articleMatchesSearch,
         articleMatchesGameTitle: articleMatchesGameTitle,
         clampPageJump: clampPageJump,
+        filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS
     };
 
@@ -152,6 +173,7 @@
         articleMatchesSearch: articleMatchesSearch,
         articleMatchesGameTitle: articleMatchesGameTitle,
         clampPageJump: clampPageJump,
+        filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS
     });
 
