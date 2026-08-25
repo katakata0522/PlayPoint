@@ -11,6 +11,8 @@ on:
       - '.gitattributes'
       - 'tests/**'
       - 'docs/**'
+      - 'tools/**'
+      - 'scripts/ai-sync-preflight.cjs'
 
 permissions:
   contents: read
