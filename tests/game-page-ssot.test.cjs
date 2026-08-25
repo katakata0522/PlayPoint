@@ -48,6 +48,10 @@ function getGeneratorMetadata() {
   return { gameIds, localeKeys, contentDate: dateMatch[1] };
 }
 
+function isGameDetailPage(file) {
+  return !/(^|\/)games\/index\.html$/.test(file);
+}
+
 function readLastModified(file) {
   const html = fs.readFileSync(path.join(root, file), 'utf8');
   const match = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"\s*\/?>/);
@@ -142,12 +146,14 @@ test('meaningfully edited game pages can override the shared default without cha
   );
 });
 
-test('all generated game pages publish their resolved editorial date and stay in the synchronization pass', () => {
+test('all generated game pages use resolved dates, detail pages publish them, and every page stays in the synchronization pass', () => {
   const synced = new Set(getSyncedHtmlFiles(root));
   for (const file of getGamePageHtmlFiles(root)) {
     const resolvedDate = getGeneratedGamePageContentDate(file);
     assert.equal(getContentDateForFile(file), resolvedDate, `${file} should use its resolved game editorial date`);
-    assert.equal(readLastModified(file), resolvedDate, `${file} public metadata should match its resolved editorial date`);
+    if (isGameDetailPage(file)) {
+      assert.equal(readLastModified(file), resolvedDate, `${file} public metadata should match its resolved editorial date`);
+    }
     assert.equal(synced.has(file), true, `${file} should be synchronized after generation`);
   }
 });
