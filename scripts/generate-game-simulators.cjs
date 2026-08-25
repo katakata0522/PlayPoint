@@ -973,13 +973,14 @@ const GAMES_DATA = [
     },
     packs: {
       ja: [
-        { name: 'デイリージュエルパック (980円)', price: 980 },
-        { name: 'ジュエル 50個 (160円)', price: 160 },
-        { name: 'ジュエル 150個 (480円)', price: 480 },
-        { name: 'ジュエル 320個 (1,000円)', price: 1000 },
-        { name: 'ジュエル 1000個 (3,000円)', price: 3000 },
-        { name: 'ジュエル 1700個 (5,000円)', price: 5000 },
-        { name: 'ジュエル 5000個 (10,000円)', price: 10000 }
+        { name: 'デイリージュエルパック (1,000円)', price: 1000 },
+        { name: 'ジュエル 60個 (160円)', price: 160 },
+        { name: 'ジュエル 210個 (480円)', price: 480 },
+        { name: 'ジュエル 350個 (800円)', price: 800 },
+        { name: 'ジュエル 700個 (1,500円)', price: 1500 },
+        { name: 'ジュエル 1,500個 (3,000円)', price: 3000 },
+        { name: 'ジュエル 2,500個 (5,000円)', price: 5000 },
+        { name: 'ジュエル 5,000個 (10,000円)', price: 10000 }
       ],
       en: [
         { name: 'Daily Jewel Pack ($7.99)', price: 7.99 },
@@ -1011,7 +1012,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: 'デイリージュエル (980円)', amount: 980, mult: 1 },
+        { label: 'デイリージュエル (1,000円)', amount: 1000, mult: 1 },
         { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
         { label: '1天井 200連 (60,000円)', amount: 60000, mult: 1 }
       ],
@@ -1060,12 +1061,13 @@ const GAMES_DATA = [
     packs: {
       ja: [
         { name: 'モンパス (480円)', price: 480 },
-        { name: 'オーブ 1個 (160円)', price: 160 },
-        { name: 'オーブ 3個 (480円)', price: 480 },
-        { name: 'オーブ 6+1個 (980円)', price: 980 },
-        { name: 'オーブ 12+3個 (2,000円)', price: 2000 },
-        { name: 'オーブ 30+9個 (4,900円)', price: 4900 },
-        { name: 'オーブ 60+25個 (10,000円)', price: 10000 }
+        { name: 'オーブ 2個 (160円)', price: 160 },
+        { name: 'オーブ 6個 (480円)', price: 480 },
+        { name: 'オーブ 14個 (1,000円)', price: 1000 },
+        { name: 'オーブ 33個 (2,200円)', price: 2200 },
+        { name: 'オーブ 60個 (3,800円)', price: 3800 },
+        { name: 'オーブ 82個 (4,900円)', price: 4900 },
+        { name: 'オーブ 180個 (10,000円)', price: 10000 }
       ],
       en: [
         { name: 'Monpass ($3.99)', price: 3.99 },
@@ -1134,12 +1136,14 @@ const GAMES_DATA = [
     },
     packs: {
       ja: [
-        { name: 'ジュエル 60個 (160円)', price: 160 },
-        { name: 'ジュエル 180個 (480円)', price: 480 },
-        { name: 'ジュエル 470個 (1,200円)', price: 1200 },
-        { name: 'ジュエル 1200個 (3,000円)', price: 3000 },
-        { name: 'ジュエル 2050個 (5,000円)', price: 5000 },
-        { name: 'ジュエル 4200個 (10,000円)', price: 10000 }
+        { name: 'プレミアムミッションパス (1,980円)', price: 1980 },
+        { name: 'ジュエル 80個 (120円)', price: 120 },
+        { name: 'ジュエル 360個 (480円)', price: 480 },
+        { name: 'ジュエル 600個 (800円)', price: 800 },
+        { name: 'ジュエル 1,200個 (1,500円)', price: 1500 },
+        { name: 'ジュエル 2,500個 (3,000円)', price: 3000 },
+        { name: 'ジュエル 4,000個 (4,800円)', price: 4800 },
+        { name: 'ジュエル 8,200個 (9,800円)', price: 9800 }
       ],
       en: [
         { name: '60 Jewels ($0.99)', price: 0.99 },
@@ -1162,8 +1166,9 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
-        { label: '天井 200連 (60,000円)', amount: 60000, mult: 1 }
+        { label: 'プレミアムミッションパス (1,980円)', amount: 1980, mult: 1 },
+        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
+        { label: '天井 200連 (約60,000円)', amount: 60000, mult: 1 }
       ],
       en: [
         { label: '10-pulls ($24.00)', amount: 24.0, mult: 1 },
@@ -1207,7 +1212,7 @@ const GAMES_DATA = [
     packs: {
       ja: [
         { name: 'カラフルパス (480円)', price: 480 },
-        { name: 'プレミアムミッションパス (1,960円)', price: 1960 },
+        { name: 'プレミアムミッションパス (2,000円)', price: 2000 },
         { name: 'クリスタル 100個 (160円)', price: 160 },
         { name: 'クリスタル 300個 (480円)', price: 480 },
         { name: 'クリスタル 650個 (1,000円)', price: 1000 },
@@ -1239,7 +1244,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: 'カラパス+プレパス (2,440円)', amount: 2440, mult: 1 },
+        { label: 'カラパス+プレパス (2,480円)', amount: 2480, mult: 1 },
         { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
         { label: 'シール天井 300連 (90,000円)', amount: 90000, mult: 1 }
       ],
@@ -1522,7 +1527,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: 'デイリーカプセル (1,200円)', amount: 1200, mult: 1 },
+        { label: 'デイリー龍石 15日 (1,000円)', amount: 1000, mult: 1 },
         { label: '10連分 50個 (約3,000円)', amount: 3000, mult: 1 },
         { label: '周年・Wフェス (50,000円)', amount: 50000, mult: 1 }
       ],
@@ -1571,13 +1576,13 @@ const GAMES_DATA = [
     packs: {
       ja: [
         { name: '月パス (610円)', price: 610 },
-        { name: '月間スカウトパック (3,200円)', price: 3200 },
+        { name: '月間スカウトパック (2,440円)', price: 2440 },
         { name: '純正源石 1個 (120円)', price: 120 },
-        { name: '純正源石 6個 (610円)', price: 610 },
-        { name: '純正源石 20個 (1,800円)', price: 1800 },
-        { name: '純正源石 40個 (3,600円)', price: 3600 },
-        { name: '純正源石 66個 (5,900円)', price: 5900 },
-        { name: '純正源石 130個 (12,000円)', price: 12000 }
+        { name: '純正源石 4個 (490円)', price: 490 },
+        { name: '純正源石 12個 (1,480円)', price: 1480 },
+        { name: '純正源石 24個 (2,940円)', price: 2940 },
+        { name: '純正源石 40個 (4,900円)', price: 4900 },
+        { name: '純正源石 90個 (10,000円)', price: 10000 }
       ],
       en: [
         { name: 'Monthly Card ($4.99)', price: 4.99 },
@@ -1613,8 +1618,8 @@ const GAMES_DATA = [
     presets: {
       ja: [
         { label: '月パス (610円)', amount: 610, mult: 1 },
-        { label: '月間スカウトパック (3,200円)', amount: 3200, mult: 1 },
-        { label: '10連分 (約3,100円)', amount: 3100, mult: 1 },
+        { label: '月間スカウトパック (2,440円)', amount: 2440, mult: 1 },
+        { label: '10連分 (約3,000円)', amount: 3000, mult: 1 },
         { label: '限定フェス天井 300連 (約90,000円)', amount: 90000, mult: 1 }
       ],
       en: [
@@ -1842,12 +1847,14 @@ const GAMES_DATA = [
     },
     packs: {
       ja: [
-        { name: '廻珠 60個 (160円)', price: 160 },
-        { name: '廻珠 190個 (480円)', price: 480 },
-        { name: '廻珠 400個 (1,000円)', price: 1000 },
-        { name: '廻珠 1,220個 (3,000円)', price: 3000 },
-        { name: '廻珠 2,050個 (5,000円)', price: 5000 },
-        { name: '廻珠 4,150個 (10,000円)', price: 10000 }
+        { name: 'ファンパレパス (1,000円)', price: 1000 },
+        { name: '廻珠 140個 (160円)', price: 160 },
+        { name: '廻珠 430個 (480円)', price: 480 },
+        { name: '廻珠 930個 (1,000円)', price: 1000 },
+        { name: '廻珠 1,430個 (1,500円)', price: 1500 },
+        { name: '廻珠 3,000個 (3,000円)', price: 3000 },
+        { name: '廻珠 5,000個 (5,000円)', price: 5000 },
+        { name: '廻珠 10,000個 (10,000円)', price: 10000 }
       ],
       en: [
         { name: '60 Kaishu ($0.99)', price: 0.99 },
@@ -1876,7 +1883,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
-        { label: 'ファンパレパス (980円)', amount: 980, mult: 1 },
+        { label: 'ファンパレパス (1,000円)', amount: 1000, mult: 1 },
         { label: '10連分 (3,000円)', amount: 3000, mult: 1 },
         { label: '天井 250連 (約75,000円)', amount: 75000, mult: 1 },
         { label: '完凸目安 (約300,000円)', amount: 300000, mult: 1 }
