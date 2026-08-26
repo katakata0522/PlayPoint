@@ -37,7 +37,9 @@ function decodeHtmlEntities(value) {
 function extractArticleTitle(html, relativePath) {
   const match = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   if (!match) throw new Error(relativePath + ': article h1 is missing');
-  return decodeHtmlEntities(match[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim());
+  const rawTitle = match[1].trim();
+  if (/[<>]/.test(rawTitle)) throw new Error(relativePath + ': article h1 must contain plain text');
+  return decodeHtmlEntities(rawTitle.replace(/\s+/g, ' '));
 }
 
 function renderArticleChrome(localeKey, title, newline) {

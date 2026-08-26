@@ -33,6 +33,21 @@ test('international article shell synchronization is idempotent and preserves ar
   assert.doesNotMatch(first, /class="sidebar-column"/);
 });
 
+test('international article synchronization rejects markup inside h1', () => {
+  const { synchronizeIntlArticleLayouts } = require(modulePath);
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-intl-title-'));
+  const articleDir = path.join(fixtureRoot, 'en', 'articles');
+  fs.mkdirSync(articleDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(articleDir, 'unsafe.html'),
+    '<!doctype html><html lang="en"><body><main class="main-card"><h1>Guide <span>unsafe</span></h1></main></body></html>'
+  );
+
+  assert.throws(
+    () => synchronizeIntlArticleLayouts(fixtureRoot),
+    /article h1 must contain plain text/
+  );
+});
 test('all published international articles use the shared localized article chrome', () => {
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
