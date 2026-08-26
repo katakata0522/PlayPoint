@@ -436,6 +436,19 @@ async function verifyBlogPage(browser, baseUrl) {
       await nextButton.click();
       await page.waitForFunction(() => new URL(location.href).searchParams.get('page') === '2');
       assert((await page.locator('.pagination-status').textContent())?.trim().startsWith('2 /'), 'Blog pagination did not advance');
+      const jumpState = await page.evaluate(() => {
+        const wrap = document.querySelector('.pagination-input-wrap');
+        const input = wrap?.querySelector('.pagination-page-input');
+        const total = wrap?.querySelector('.pagination-page-total');
+        return {
+          wrapPresent: Boolean(wrap),
+          value: input?.value || '',
+          total: total?.textContent || ''
+        };
+      });
+      assert(jumpState.wrapPresent, 'Blog page jump box (.pagination-input-wrap) is missing');
+      assert(jumpState.value === '2', `Blog page input did not show 2: ${jumpState.value}`);
+      assert(/^\d+$/.test(jumpState.total) && Number(jumpState.total) >= 2, `Blog page total missing: ${jumpState.total}`);
     }
 
     await page.locator('#search-input').fill('__playpoint_no_result__');

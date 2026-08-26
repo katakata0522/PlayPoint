@@ -113,3 +113,26 @@ test('blog listing wires page jump, in-memory search, and game-title filter', ()
   assert.match(resetBody, /gameTitleFilter/);
   assert.doesNotMatch(script, /'ゲーム': \{ order: 5/);
 });
+
+test('blog pagination shows current/total as one type-in box', () => {
+  const script = read('blog/script.js');
+  const compact = read('blog/index-compact.css');
+  const style = read('blog/style.css');
+  const body = extractNamedFunction(script, 'renderPagination');
+
+  assert.match(body, /pagination-compact-wrapper/);
+  assert.match(body, /pagination-input-wrap/);
+  assert.match(body, /pagination-page-slash/);
+  assert.match(body, /pagination-page-total/);
+  assert.match(body, /inputWrap\.appendChild\(pageInput\)/);
+  assert.match(body, /slash\.textContent = '\/'/);
+  assert.match(body, /total\.textContent = String\(totalPages\)/);
+  assert.match(body, /currentPage \+ ' \/ ' \+ totalPages/);
+  assert.match(body, /pagination-status/);
+  assert.doesNotMatch(body, /dom\.pagination\.append\(prev, pageInput, status, next\)/);
+  assert.match(compact, /pagination-input-wrap/);
+  assert.match(compact, /pagination-page-slash/);
+  assert.match(compact, /pagination-page-total/);
+  assert.match(compact, /cursor:\s*text/);
+  assert.match(style, /pagination-input-wrap/);
+});
