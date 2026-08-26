@@ -928,11 +928,18 @@
         dom.pagination.innerHTML = '';
         if (totalPages <= 1) return;
 
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pagination-compact-wrapper';
+
         const prev = document.createElement('button');
         prev.textContent = '← 前へ';
         prev.disabled = currentPage === 1;
-        prev.className = 'pagination-nav';
+        prev.className = 'pagination-nav pagination-box pagination-prev';
         prev.addEventListener('click', function () { changePage(currentPage - 1); });
+
+        const inputWrap = document.createElement('div');
+        inputWrap.className = 'pagination-box pagination-input-wrap';
+        inputWrap.setAttribute('title', 'ページ番号を入力してEnterで移動');
 
         const pageInput = document.createElement('input');
         pageInput.type = 'text';
@@ -954,23 +961,41 @@
         pageInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
+                pageInput.blur();
                 jumpFromInput();
             }
         });
         pageInput.addEventListener('change', jumpFromInput);
 
+        const slash = document.createElement('span');
+        slash.className = 'pagination-page-slash';
+        slash.setAttribute('aria-hidden', 'true');
+        slash.textContent = '/';
+
+        const total = document.createElement('span');
+        total.className = 'pagination-page-total';
+        total.textContent = String(totalPages);
+
+        inputWrap.appendChild(pageInput);
+        inputWrap.appendChild(slash);
+        inputWrap.appendChild(total);
+        inputWrap.addEventListener('click', function (event) {
+            if (event.target !== pageInput) pageInput.focus();
+        });
+
         const status = document.createElement('span');
-        status.className = 'pagination-status';
+        status.className = 'pagination-status visually-hidden';
         status.textContent = currentPage + ' / ' + totalPages;
         status.setAttribute('aria-current', 'page');
 
         const next = document.createElement('button');
         next.textContent = '次へ →';
         next.disabled = currentPage === totalPages;
-        next.className = 'pagination-nav';
+        next.className = 'pagination-nav pagination-box pagination-next';
         next.addEventListener('click', function () { changePage(currentPage + 1); });
 
-        dom.pagination.append(prev, pageInput, status, next);
+        wrapper.append(prev, inputWrap, next, status);
+        dom.pagination.append(wrapper);
     }
 
     function setupCategoryOverflow() {
