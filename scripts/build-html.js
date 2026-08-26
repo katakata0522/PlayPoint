@@ -14,6 +14,7 @@ const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
+const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
 const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
@@ -61,6 +62,8 @@ try {
 }
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
+const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
+console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
 
 require('./generate-game-simulators.cjs');
 
