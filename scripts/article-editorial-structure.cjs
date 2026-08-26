@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const EDITORIAL_COMMENT_BLOCK_PATTERN = /\n?\s*<!--\s*editorial-summary:start\s*-->[\s\S]*?<!--\s*editorial-summary:end\s*-->\n?/gi;
+const EDITORIAL_COMMENT_BLOCK_PATTERN = /\n?\s*<!--\s*editorial-summary:start\s*-->[\s\S]*?<!--\s*editorial-summary:end\s*-->[ \t]*(?:\r?\n[ \t]*)*/gi;
 const EDITORIAL_PLAIN_BLOCK_PATTERN = /\n?\s*(?:<!---->\s*)?editorial-summary:start\b[\s\S]*?editorial-summary:end\b\s*/gi;
 const EDITORIAL_MODIFIED_DATE = '2026-07-30';
 
