@@ -1,0 +1,1598 @@
+{
+  "generatedAt": "2026-08-27T13:35:55.750Z",
+  "matches": [
+    {
+      "path": "scripts/generate-game-simulators.cjs",
+      "line": 369,
+      "needle": "金級",
+      "text": "{ val: '1.5', label: '金級（NT$30 = 1.5點）' },"
+    },
+    {
+      "path": "scripts/generate-game-simulators.cjs",
+      "line": 370,
+      "needle": "金級",
+      "text": "{ val: '1.75', label: '白金級（NT$30 = 1.75點）' },"
+    },
+    {
+      "path": "scripts/generate-game-simulators.cjs",
+      "line": 407,
+      "needle": "金級",
+      "text": "ctaDesc: '想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。',"
+    },
+    {
+      "path": "scripts/generate-game-simulators.cjs",
+      "line": 1197,
+      "needle": "金級",
+      "text": "{ q: '學馬仕保底能達到金級會員嗎？', a: '可以，配合加碼活動可順利達到金級（1,000點）門檻。' }"
+    },
+    {
+      "path": "scripts/inspect-intl-fix-targets-temp.cjs",
+      "line": 8,
+      "needle": "金級",
+      "text": "const needles = ['金級', '累積率', '累積條件', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때'];"
+    },
+    {
+      "path": "scripts/inspect-intl-fix-targets-temp.cjs",
+      "line": 8,
+      "needle": "累積率",
+      "text": "const needles = ['金級', '累積率', '累積條件', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때'];"
+    },
+    {
+      "path": "scripts/inspect-intl-fix-targets-temp.cjs",
+      "line": 8,
+      "needle": "累積條件",
+      "text": "const needles = ['金級', '累積率', '累積條件', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때'];"
+    },
+    {
+      "path": "scripts/inspect-intl-fix-targets-temp.cjs",
+      "line": 8,
+      "needle": "Google Play 퀘스트가 표시되거나 완료되지 않을 때",
+      "text": "const needles = ['金級', '累積率', '累積條件', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때'];"
+    },
+    {
+      "path": "scripts/intl-content-expansion.cjs",
+      "line": 50,
+      "needle": "累積條件",
+      "text": "tw: \"付費 App、遊戲與電子書的 Play Points 累積條件\""
+    },
+    {
+      "path": "scripts/intl-manual-content-sync.cjs",
+      "line": 20,
+      "needle": "Google Play 퀘스트가 표시되거나 완료되지 않을 때",
+      "text": "['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때']"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 81,
+      "needle": "累積率",
+      "text": "estimateBody: '計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 225,
+      "needle": "金級",
+      "text": "summary: ['預設: 金級到白金', '適合: 規劃下一個等級', '確認: 剩餘點數、特別獲點率、地區條件'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 290,
+      "needle": "金級",
+      "text": "title: 'Google Play Points 金級需要多少？',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 291,
+      "needle": "金級",
+      "text": "description: '估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 292,
+      "needle": "金級",
+      "text": "eyebrow: '金級規劃',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 293,
+      "needle": "金級",
+      "text": "h1: 'Google Play Points 金級需要多少？',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 294,
+      "needle": "金級",
+      "text": "lead: '金級通常是第一個比較容易規劃的目標。請輸入還差多少點，再比較一般回饋、活動特別獲點率與地區條件。',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 295,
+      "needle": "金級",
+      "text": "cta: '計算金級進度',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 298,
+      "needle": "金級",
+      "text": "summary: ['預設: 銀級到金級', '適合: 第一個實際目標', '確認: 剩餘點數與地區條件'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 300,
+      "needle": "金級",
+      "text": "['先看最近的等級', '金級適合用來判斷下一步是否值得。請輸入目標還差的點數，而不是累積總點數。'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 306,
+      "needle": "金級",
+      "text": "['金級適合作為第一個目標嗎？', '通常適合，因為比白金或鑽石更容易用平常消費來比較。'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 370,
+      "needle": "累積率",
+      "text": "lead: '台灣銀級從年度 250 點開始。先確認還差多少點，再把原本規劃的購買安排到帳號顯示的最高適用累積率。',"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 378,
+      "needle": "累積率",
+      "text": "['比較最高適用累積率', '先看每 NT$30 1 點，再比較已啟用且符合原定購買的優惠。多個促銷不會疊加。'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 383,
+      "needle": "累積率",
+      "text": "['從 0 點的基本估算是多少？', '以銅級一般累積率計算，未稅約 NT$7,500。'],"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 384,
+      "needle": "累積率",
+      "text": "['可以把多個活動特別獲點率相乘嗎？', '不可以，套用最高的適用累積率。']"
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 1622,
+      "needle": "金級",
+      "text": "\"依台灣基本積點率，100 點約需：銅級 NT$3,000、銀級 NT$2,400、金級 NT$2,000、白金級約 NT$1,715、鑽石級 NT$1,500。\","
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 1623,
+      "needle": "金級",
+      "text": "\"每 NT$30 的積點率是銅級 1、銀級 1.25、金級 1.5、白金級 1.75、鑽石級 2 點。商品會逐項四捨五入，稅金不列入。\""
+    },
+    {
+      "path": "scripts/intl-seo-content.cjs",
+      "line": 1802,
+      "needle": "金級",
+      "text": "['/tw/maintenance/platinum/', '白金級維持計算器'],"
+    },
+    {
+      "path": "scripts/locale-config.cjs",
+      "line": 340,
+      "needle": "金級",
+      "text": "description: 'Google Play Points 點數等級計算器。估算達到銀級、金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。',"
+    },
+    {
+      "path": "scripts/locale-config.cjs",
+      "line": 474,
+      "needle": "金級",
+      "text": "<p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>"
+    },
+    {
+      "path": "scripts/locale-config.cjs",
+      "line": 476,
+      "needle": "金級",
+      "text": "<li>估算達到白金級、鑽石級所需的消費金額。</li>"
+    },
+    {
+      "path": "scripts/region-page-sync.cjs",
+      "line": 18,
+      "needle": "金級",
+      "text": "factNote: `<div class=\"region-fact-note\" role=\"note\" aria-label=\"香港 Play Points 官方條件\"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。</p><p><a href=\"https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK\" target=\"_blank\" rel=\"noopener noreferrer\">查看 Google Play 香港官方等級與獲點率</a></p></div>`"
+    },
+    {
+      "path": "scripts/region-page-sync.cjs",
+      "line": 85,
+      "needle": "金級",
+      "text": "html = html.replace(/白金級/g, '鉑金級');"
+    },
+    {
+      "path": "js/calculator.js",
+      "line": 191,
+      "needle": "金級",
+      "text": "platinum: [{ href: 'status/platinum/', title: '白金級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],"
+    },
+    {
+      "path": "js/calculator.js",
+      "line": 200,
+      "needle": "金級",
+      "text": "platinum: { href: 'status/platinum/', title: '確認白金級目標', note: '確認所需點數與預估金額' },"
+    },
+    {
+      "path": "js/config.js",
+      "line": 372,
+      "needle": "金級",
+      "text": "statuses: { \"銅級\": 1.0, \"銀級\": 1.25, \"金級\": 1.5, \"白金級\": 1.75, \"鑽石級\": 2.0 },"
+    },
+    {
+      "path": "js/config.js",
+      "line": 374,
+      "needle": "金級",
+      "text": "thresholds: { \"銀級\": 250, \"金級\": 1000, \"白金級\": 4000, \"鑽石級\": 15000 },"
+    },
+    {
+      "path": "js/config.js",
+      "line": 375,
+      "needle": "金級",
+      "text": "statusPointsMapping: { 1.0: [\"銀級\", \"金級\", \"白金級\", \"鑽石級\"], 1.25: [\"金級\", \"白金級\", \"鑽石級\"], 1.5: [\"白金級\", \"鑽石級\"], 1.75: [\"鑽石級\"], 2.0: [] },"
+    },
+    {
+      "path": "js/config.js",
+      "line": 381,
+      "needle": "金級",
+      "text": "'tooltip-target-status': `<strong>【各等級達成條件】</strong><ul><li><strong>銀級:</strong> 250 pt 以上</li><li><strong>金級:</strong> 1,000 pt 以上</li><li><strong>白金級:</strong> 4,000 pt 以上</li><li><strong>鑽石級:</strong> 15,000 pt 以上</li></ul><hr><p>※點數於每年1月1日至12月31日期間累積，達到目標點數時將立即升級（有效期限至翌年末）。</p>`,"
+    },
+    {
+      "path": "js/config.js",
+      "line": 386,
+      "needle": "金級",
+      "text": "'tooltip-reverse-status': `<strong>各等級基本回饋率:</strong><ul><li><strong>銅級:</strong> 1.0 pt / 30元</li><li><strong>銀級:</strong> 1.25 pt / 30元</li><li><strong>金級:</strong> 1.5 pt / 30元</li><li><strong>白金級:</strong> 1.75 pt / 30元</li><li><strong>鑽石級:</strong> 2.0 pt / 30元</li></ul>`"
+    },
+    {
+      "path": "js/points-cost.js",
+      "line": 68,
+      "needle": "金級",
+      "text": "['黃金級', 1.5],"
+    },
+    {
+      "path": "js/points-cost.js",
+      "line": 69,
+      "needle": "金級",
+      "text": "['白金級', 1.75],"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 26,
+      "needle": "金級",
+      "text": "statuses: { '銅級': 1.0, '銀級': 1.25, '金級': 1.5, '鉑金級': 1.75, '鑽石級': 2.0 },"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 28,
+      "needle": "金級",
+      "text": "thresholds: { '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 },"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 30,
+      "needle": "金級",
+      "text": "1.0: ['銀級', '金級', '鉑金級', '鑽石級'],"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 31,
+      "needle": "金級",
+      "text": "1.25: ['金級', '鉑金級', '鑽石級'],"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 32,
+      "needle": "金級",
+      "text": "1.5: ['鉑金級', '鑽石級'],"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 41,
+      "needle": "金級",
+      "text": "'tooltip-target-status': '<strong>【香港 Play Points 等級條件】</strong><ul><li><strong>銀級:</strong> 250 pt 或以上</li><li><strong>金級:</strong> 1,000 pt 或以上</li><li><strong>鉑金級:</strong> 4,000 pt 或以上</li><li><strong>鑽石級:</strong> 15,000 pt 或以上</li></ul><hr><p>等級與獲點率會因國家／地區而異；本頁使用香港的官方條件。</p>',"
+    },
+    {
+      "path": "js/region-expansion-config.js",
+      "line": 46,
+      "needle": "金級",
+      "text": "'tooltip-reverse-status': '<strong>【香港各等級基本獲點率】</strong><ul><li><strong>銅級:</strong> 1.0 pt / HK$7</li><li><strong>銀級:</strong> 1.25 pt / HK$7</li><li><strong>金級:</strong> 1.5 pt / HK$7</li><li><strong>鉑金級:</strong> 1.75 pt / HK$7</li><li><strong>鑽石級:</strong> 2.0 pt / HK$7</li></ul>'"
+    },
+    {
+      "path": "js/share.js",
+      "line": 48,
+      "needle": "金級",
+      "text": "if (/gold|ゴールド|골드|黃金|金級/i.test(label)) return 'gold';"
+    },
+    {
+      "path": "tw/amount/10000/index.html",
+      "line": 145,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/articles/2026-06-20-discount-gift-cards.html",
+      "line": 206,
+      "needle": "累積條件",
+      "text": "<li><a href=\"/tw/articles/google-play-points-gift-cards.html\">禮物卡與 Play Points 累積條件</a></li>"
+    },
+    {
+      "path": "tw/articles/2026-06-20-discount-gift-cards.html",
+      "line": 214,
+      "needle": "累積率",
+      "text": "<p>在官方未列出台灣禮物卡前，計算器可直接用台灣 Play Points 畫面顯示的累積率估算原本計畫的消費。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-100-value.html",
+      "line": 154,
+      "needle": "金級",
+      "text": "<p>依台灣基本積點率，100 點約需：銅級 NT$3,000、銀級 NT$2,400、金級 NT$2,000、白金級約 NT$1,715、鑽石級 NT$1,500。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-100-value.html",
+      "line": 155,
+      "needle": "金級",
+      "text": "<p>每 NT$30 的積點率是銅級 1、銀級 1.25、金級 1.5、白金級 1.75、鑽石級 2 點。商品會逐項四捨五入，稅金不列入。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-500-1000-cost.html",
+      "line": 143,
+      "needle": "金級",
+      "text": "<tr><td>金級</td><td>1.5 點 / NT$30</td><td>NT$10,000</td><td>NT$20,000</td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-500-1000-cost.html",
+      "line": 144,
+      "needle": "金級",
+      "text": "<tr><td>白金級</td><td>1.75 點 / NT$30</td><td>NT$8,572</td><td>NT$17,143</td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-balance-history-progress.html",
+      "line": 157,
+      "needle": "金級",
+      "text": "<p>台灣帳號以每消費 NT$30 得 1 點為銅級基本單位。官方門檻為銀級 250 點、金級 1,000 點、白金級 4,000 點、鑽石級 15,000 點。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-country-change.html",
+      "line": 173,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-country-change.html",
+      "line": 176,
+      "needle": "累積率",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-weekly-reward.html\">每週獎勵</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-country-differences.html",
+      "line": 125,
+      "needle": "金級",
+      "text": "<section class=\"section\"><h2 id=\"section-1\">官方等級制度快速比較</h2><div class=\"table-wrap\"><table class=\"comparison-table\"><thead><tr><th>Play 國家／地區</th><th>銅級基礎單位</th><th>白金起點</th><th>鑽石起點</th></tr></thead><tbody><tr><td>台灣</td><td>每 NT$30 得 1 點</td><td>4,000 點</td><td>15,000 點</td></tr><tr><td>美國</td><td>每 US$1 得 1 點</td><td>3,000 點</td><td>10,000 點</td></tr><tr><td>韓國</td><td>每 ₩1,000 得 1 點</td><td>2,400 點</td><td>15,000 點</td></tr><tr><td>日本</td><td>每 ¥100 得 1 點</td><td>4,000 點</td><td>15,000 點</td></tr></tbody></table></div><p>這張表只用來找到正確地區。銀級、金級門檻、高等級積點率、每週獎勵與帳號活動也可能不同。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-country-differences.html",
+      "line": 131,
+      "needle": "金級",
+      "text": "<section class=\"section related-links-section\"><h2>下一步</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級指南</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">國家變更指南</a></li><li><a href=\"/tw/articles/google-play-points-platinum-diamond-cost.html\">高等級金額指南</a></li><li><a href=\"/tw/status/platinum/\">計算白金級所需金額</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-earn-free.html",
+      "line": 130,
+      "needle": "金級",
+      "text": "<tr><td>金級以上且顯示卡片</td><td>Super Weekly Prize</td><td>領取時不需新增消費，可能有限量與其他資格</td><td><a href=\"/tw/articles/google-play-points-super-weekly-reward.html\">Super Ticket 說明</a></td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-earn-free.html",
+      "line": 137,
+      "needle": "金級",
+      "text": "<section class=\"section\"><h2>不新增消費時先確認的 3 個地方</h2><h3>一般每週獎勵</h3><p>台灣帳號從銀級開始可確認星期五更新的一般每週獎勵。若不確定是否已領取，可查看點數記錄。</p><h3>Super Weekly Prize</h3><p>這是列出金級、白金級與鑽石級的另一項活動，仍須以自己的帳號是否顯示卡片為準。Super Ticket 不是額外多拿一份，而是放棄第一次獎勵後再抽一次。</p><h3>指定免費 App 或遊戲安裝</h3><p>Google 可能顯示首次安裝與使用指定 App 的活動。並非每個免費下載都有點數，請照卡片上的期限、使用時間與個人化條件完成。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-earn-free.html",
+      "line": 143,
+      "needle": "累積率",
+      "text": "<section class=\"section\"><h2>原本就要消費時，將活動一起比較</h2><p>原定消費不需要被否定。結帳前查看賺取頁的指定倍率、任務、期限與目前等級累積率，結帳後再用點數記錄確認。</p><div class=\"cta-box\"><h3>計算原定消費的點數</h3><p>輸入台灣帳號顯示的 NT$30 累積率與活動倍率，估算點數及下一等級進度。</p><a class=\"cta-btn\" href=\"/tw/\">開啟計算器</a></div></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-earn-free.html",
+      "line": 147,
+      "needle": "累積條件",
+      "text": "<section class=\"section source-list\"><h2>官方資料</h2><ul><li><a href=\"https://support.google.com/googleplay/answer/15776969?hl=zh-hant\" target=\"_blank\" rel=\"noopener noreferrer\">點數記錄與每週獎勵</a></li><li><a href=\"https://support.google.com/googleplay/answer/11534416?hl=zh-hant\" target=\"_blank\" rel=\"noopener noreferrer\">Google Play 任務</a></li><li><a href=\"https://support.google.com/googleplay/answer/16507543?hl=zh-hant\" target=\"_blank\" rel=\"noopener noreferrer\">Play Pass 週 Play Points 福利</a></li><li><a href=\"https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DTW&amp;hl=zh-hant\" target=\"_blank\" rel=\"noopener noreferrer\">台灣 Play Points 累積條件</a></li></ul><p>官方資訊確認日：2026-08-05。活動、對象帳號、步驟與更新條件可能變更。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 7,
+      "needle": "累積率",
+      "text": "<meta name=\"description\" content=\"依台灣銀級 250 點門檻，確認剩餘進度、啟用適用優惠，將原本規劃的購買安排到最高累積率，提高達成效率。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 23,
+      "needle": "累積率",
+      "text": "<meta property=\"og:description\" content=\"依台灣銀級 250 點門檻，確認剩餘進度、啟用適用優惠，將原本規劃的購買安排到最高累積率，提高達成效率。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 31,
+      "needle": "累積率",
+      "text": "\"description\": \"依台灣銀級 250 點門檻，確認剩餘進度、啟用適用優惠，將原本規劃的購買安排到最高累積率，提高達成效率。\","
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 61,
+      "needle": "累積率",
+      "text": "\"text\": \"從 0 點以銅級一般累積率計算，未稅約 NT$7,500。\""
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 166,
+      "needle": "累積率",
+      "text": "<div class=\"intro\">台灣銀級從年度 250 點開始。最有效的方法，是把原本規劃的購買安排到帳號顯示的最高適用累積率，而不是把多個活動疊加。以下流程讓每次購買更有效率地推進銀級。</div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 170,
+      "needle": "累積率",
+      "text": "<p>多個優惠不會疊加，計算時使用實際符合資格的最高累積率。</p></section><section class=\"section\"><h2 id=\"section-3\">3. 把原定購買安排在較佳累積區間</h2><p>從 0 點、銅級一般累積率開始，250 點約需 NT$7,500 未稅適用消費。若確認為每 NT$30 2 點，約 NT$3,750；每 NT$30 3 點，約 NT$2,500。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 174,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 176,
+      "needle": "累積率",
+      "text": "<section class=\"section\"><h2>FAQ</h2><h3>台灣銀級 250 點大約要多少？</h3><p>從 0 點以銅級一般累積率計算，未稅約 NT$7,500。</p><h3>每 NT$30 3 點優惠時大約多少？</h3><p>若全額符合資格，從 0 點約 NT$2,500。</p><h3>一般每週獎勵能幫銅級升銀級嗎？</h3><p>不能，一般每週獎勵從銀級開始。Play Pass 與帳號別累積優惠是另一項制度。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-fastest-silver.html",
+      "line": 177,
+      "needle": "累積率",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-weekly-reward.html\">每週獎勵</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-gift-cards.html",
+      "line": 185,
+      "needle": "累積率",
+      "text": "<p>先用一般累積率估算，再只對帳號明確顯示適用的交易使用活動倍率。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-join-eligibility.html",
+      "line": 174,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-join-eligibility.html",
+      "line": 177,
+      "needle": "累積率",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-weekly-reward.html\">每週獎勵</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li><li><a href=\"/tw/articles/google-play-points-use-coupons.html\">使用點數與優惠券</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-level-maintenance-reset.html",
+      "line": 160,
+      "needle": "金級",
+      "text": "<a class=\"cta-btn\" href=\"/tw/maintenance/platinum/\">開啟白金級維持計算器</a>"
+    },
+    {
+      "path": "tw/articles/google-play-points-level-maintenance-reset.html",
+      "line": 175,
+      "needle": "金級",
+      "text": "<ul><li><a href=\"/tw/maintenance/platinum/\">白金級維持計算器</a></li><li><a href=\"/tw/maintenance/diamond/\">鑽石級維持計算器</a></li><li><a href=\"/tw/articles/google-play-points-levels.html\">Google Play Points 等級說明</a></li><li><a href=\"/tw/status/platinum/\">白金等級需要金額估算</a></li><li><a href=\"/tw/status/diamond/\">鑽石等級需要金額估算</a></li><li><a href=\"/tw/articles/google-play-points-expiration.html\">Play Points 有效期限</a></li><li><a href=\"/tw/articles/google-play-points-refund.html\">退款後點數變化</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li></ul>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 6,
+      "needle": "累積率",
+      "text": "<title>台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵</title>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 7,
+      "needle": "金級",
+      "text": "<meta name=\"description\" content=\"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 7,
+      "needle": "累積率",
+      "text": "<meta name=\"description\" content=\"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 22,
+      "needle": "累積率",
+      "text": "<meta property=\"og:title\" content=\"台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 23,
+      "needle": "金級",
+      "text": "<meta property=\"og:description\" content=\"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 23,
+      "needle": "累積率",
+      "text": "<meta property=\"og:description\" content=\"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 30,
+      "needle": "累積率",
+      "text": "\"headline\": \"台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵\","
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 31,
+      "needle": "金級",
+      "text": "\"description\": \"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\","
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 31,
+      "needle": "累積率",
+      "text": "\"description\": \"比較台灣銅級、銀級、金級、白金級、鑽石級門檻，每 NT$30 累積率、每週獎勵資格與基本消費估算。\","
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 153,
+      "needle": "累積率",
+      "text": "<span class=\"intl-breadcrumb-current\">台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵</span>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 162,
+      "needle": "累積率",
+      "text": "<h1>台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵</h1>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 166,
+      "needle": "累積率",
+      "text": "<div class=\"intro\">這份 Google Play Points 等級說明以台灣官方條件為準。本頁依台灣 Play 國家／地區撰寫。台灣銀級從年度 250 點開始，銅級一般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。</div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 168,
+      "needle": "累積率",
+      "text": "<section class=\"section\"><h2 id=\"section-1\">台灣官方等級表</h2><div class=\"table-wrap\"><table class=\"comparison-table\"><thead><tr><th>等級</th><th>年度點數</th><th>一般累積率</th></tr></thead><tbody><tr><td>銅級</td><td>0～249</td><td>每 NT$30 1 點</td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 170,
+      "needle": "金級",
+      "text": "<tr><td>金級</td><td>1,000～3,999</td><td>每 NT$30 1.5 點</td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 171,
+      "needle": "金級",
+      "text": "<tr><td>白金級</td><td>4,000～14,999</td><td>每 NT$30 1.75 點</td></tr>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 173,
+      "needle": "金級",
+      "text": "<p>可使用點數餘額與年度等級進度是不同數字。兌換點數不會降低年度等級進度；退款或取消則可能扣回該筆交易取得的點數。</p></section><section class=\"section\"><h2 id=\"section-2\">從 0 點開始的基本消費估算</h2><p>只使用銅級一般累積率時，銀級約需 NT$7,500、金級約 NT$30,000、白金級約 NT$120,000、鑽石級約 NT$450,000 的未稅適用消費。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 173,
+      "needle": "累積率",
+      "text": "<p>可使用點數餘額與年度等級進度是不同數字。兌換點數不會降低年度等級進度；退款或取消則可能扣回該筆交易取得的點數。</p></section><section class=\"section\"><h2 id=\"section-2\">從 0 點開始的基本消費估算</h2><p>只使用銅級一般累積率時，銀級約需 NT$7,500、金級約 NT$30,000、白金級約 NT$120,000、鑽石級約 NT$450,000 的未稅適用消費。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 175,
+      "needle": "累積率",
+      "text": "<p>台灣公開等級表未列出像韓國表格那樣的固定最高點數，因此不要把其他地區的上限直接套用到台灣帳號。</p></section><section class=\"section\"><h2 id=\"section-4\">計算機應輸入什麼</h2><p>請輸入距離目標還差的點數，不是可使用餘額。先用目前等級的一般累積率，再比較帳號中已確認符合資格的活動。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 177,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-levels.html",
+      "line": 180,
+      "needle": "金級",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-weekly-reward.html\">每週獎勵</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li><li><a href=\"/tw/status/platinum/\">計算白金級進度</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-platinum-diamond-cost.html",
+      "line": 100,
+      "needle": "金級",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣 Play Points 全部等級</a></li><li><a href=\"/tw/articles/google-play-points-level-maintenance-reset.html\">年度進度與等級維持</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動倍率與基礎積點率</a></li><li><a href=\"/tw/maintenance/platinum/\">白金級維持計算器</a></li><li><a href=\"/tw/maintenance/diamond/\">鑽石級維持計算器</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 6,
+      "needle": "累積率",
+      "text": "<title>台灣 Google Play Points 倍率會疊加嗎？｜最高累積率計算</title>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 7,
+      "needle": "累積率",
+      "text": "<meta name=\"description\" content=\"同一筆購買的多個 Play Points 活動不會疊加。說明台灣最高累積率、啟用、未稅金額與商品別四捨五入。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 22,
+      "needle": "累積率",
+      "text": "<meta property=\"og:title\" content=\"台灣 Google Play Points 倍率會疊加嗎？｜最高累積率計算\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 23,
+      "needle": "累積率",
+      "text": "<meta property=\"og:description\" content=\"同一筆購買的多個 Play Points 活動不會疊加。說明台灣最高累積率、啟用、未稅金額與商品別四捨五入。\">"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 30,
+      "needle": "累積率",
+      "text": "\"headline\": \"台灣 Google Play Points 倍率會疊加嗎？｜最高累積率計算\","
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 31,
+      "needle": "累積率",
+      "text": "\"description\": \"同一筆購買的多個 Play Points 活動不會疊加。說明台灣最高累積率、啟用、未稅金額與商品別四捨五入。\","
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 61,
+      "needle": "累積率",
+      "text": "\"text\": \"不會，套用符合資格的較高 3 點累積率。\""
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 153,
+      "needle": "累積率",
+      "text": "<span class=\"intl-breadcrumb-current\">台灣 Google Play Points 倍率會疊加嗎？｜最高累積率計算</span>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 162,
+      "needle": "累積率",
+      "text": "<h1>台灣 Google Play Points 倍率會疊加嗎？｜最高累積率計算</h1>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 166,
+      "needle": "累積率",
+      "text": "<div class=\"intro\">Google 官方規則指出，同一筆適用購買不能合併多個促銷，會套用可用的最高累積率。銀級每 NT$30 1.25 點與每 NT$30 3 點優惠不會相加成 4.25 點。</div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 167,
+      "needle": "累積率",
+      "text": "<nav class=\"intl-article-toc\" aria-label=\"目錄\"><h2>目錄</h2><ol><li><a href=\"#section-1\">使用最高的適用累積率</a></li><li><a href=\"#section-2\">倍率與直接累積率要分開看</a></li><li><a href=\"#section-3\">稅金與商品別四捨五入</a></li><li><a href=\"#section-4\">啟用、期間與上限</a></li></ol></nav>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 168,
+      "needle": "累積率",
+      "text": "<section class=\"section\"><h2 id=\"section-1\">使用最高的適用累積率</h2><p>銀級一般 1.25 點與符合資格的 3 點優惠同時存在時，使用每 NT$30 3 點。畫面同時有 2 倍與 3 倍，也不會變成 5 倍或 6 倍。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 169,
+      "needle": "累積率",
+      "text": "<p>以結帳畫面與活動條款判斷資格。同一 App 在不同帳號可能出現不同優惠。</p></section><section class=\"section\"><h2 id=\"section-2\">倍率與直接累積率要分開看</h2><p>『一般累積率 3 倍』是依活動條款定義的基準做乘法；『每 NT$30 3 點』已經是最終直接累積率。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 172,
+      "needle": "累積率",
+      "text": "<p>計算機請輸入帳號已確認適用的最高累積率，購買後再查看點數記錄。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 173,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 175,
+      "needle": "累積率",
+      "text": "<section class=\"section\"><h2>FAQ</h2><h3>銀級 1.25 點加 3 點優惠會變 4.25 點嗎？</h3><p>不會，套用符合資格的較高 3 點累積率。</p><h3>2 倍和 3 倍會變 6 倍嗎？</h3><p>不會，多個促銷不能在同一筆購買疊加。</p><h3>稅金會算入點數嗎？</h3><p>不會，Google 以未稅商品價格計算。</p></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-promotion-stacking.html",
+      "line": 176,
+      "needle": "累積率",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-weekly-reward.html\">每週獎勵</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-rounding-tax.html",
+      "line": 150,
+      "needle": "金級",
+      "text": "<p>台灣銅級的基本積點率是每消費 NT$30 得 1 點；銀級 1.25、金級 1.5、白金級 1.75、鑽石級 2 點。帳號個別活動與限定商品要另外確認。</p>"
+    },
+    {
+      "path": "tw/articles/google-play-points-weekly-reward.html",
+      "line": 173,
+      "needle": "累積率",
+      "text": "<div class=\"cta-box\"><h3>使用台灣條件計算</h3><p>輸入尚缺點數與帳號實際顯示的累積率，再比較結果。</p><a class=\"cta-btn\" href=\"/tw/\">開啟台灣計算機</a></div>"
+    },
+    {
+      "path": "tw/articles/google-play-points-weekly-reward.html",
+      "line": 176,
+      "needle": "金級",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li><li><a href=\"/tw/articles/google-play-points-multiple-accounts.html\">多個帳號與 Play Points</a></li><li><a href=\"/tw/status/platinum/\">比較白金級進度</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/google-play-points-weekly-reward.html",
+      "line": 176,
+      "needle": "累積率",
+      "text": "<section class=\"section related-links-section\"><h2>相關指南</h2><ul><li><a href=\"/tw/articles/google-play-points-levels.html\">台灣等級與累積率</a></li><li><a href=\"/tw/articles/google-play-points-join-eligibility.html\">加入條件與加入按鈕</a></li><li><a href=\"/tw/articles/google-play-points-country-change.html\">變更 Play 國家／地區</a></li><li><a href=\"/tw/articles/google-play-points-promotion-stacking.html\">活動疊加規則</a></li><li><a href=\"/tw/articles/google-play-points-fastest-silver.html\">高效達成銀級</a></li><li><a href=\"/tw/\">開啟計算機</a></li><li><a href=\"/author/katakata.html\">營運與驗證方針</a></li><li><a href=\"/tw/articles/google-play-points-multiple-accounts.html\">多個帳號與 Play Points</a></li><li><a href=\"/tw/status/platinum/\">比較白金級進度</a></li></ul></section>"
+    },
+    {
+      "path": "tw/articles/index.html",
+      "line": 78,
+      "needle": "累積條件",
+      "text": "<li><a href=\"/tw/articles/google-play-points-apps-books-purchases.html\">付費 App、遊戲與電子書的 Play Points 累積條件</a></li>"
+    },
+    {
+      "path": "tw/articles/index.html",
+      "line": 117,
+      "needle": "金級",
+      "text": "<li><a href=\"/tw/maintenance/platinum/\">白金級維持計算器</a></li>"
+    },
+    {
+      "path": "tw/campaign/2x/index.html",
+      "line": 145,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/campaign/3x/index.html",
+      "line": 149,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/campaign/wait/index.html",
+      "line": 149,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/games/arknights/index.html",
+      "line": 196,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/arknights/index.html",
+      "line": 508,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/bluearchive/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/bluearchive/index.html",
+      "line": 505,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/dokkan/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/dokkan/index.html",
+      "line": 505,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/fgo/index.html",
+      "line": 193,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/fgo/index.html",
+      "line": 503,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 87,
+      "needle": "金級",
+      "text": "\"name\": \"學馬仕保底能達到金級會員嗎？\","
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 90,
+      "needle": "金級",
+      "text": "\"text\": \"可以，配合加碼活動可順利達到金級（1,000點）門檻。\""
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 190,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 317,
+      "needle": "金級",
+      "text": "<h3>學馬仕保底能達到金級會員嗎？</h3>"
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 318,
+      "needle": "金級",
+      "text": "<p>可以，配合加碼活動可順利達到金級（1,000點）門檻。</p>"
+    },
+    {
+      "path": "tw/games/gakumas/index.html",
+      "line": 498,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/genshin/index.html",
+      "line": 197,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/genshin/index.html",
+      "line": 509,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/hbr/index.html",
+      "line": 195,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/hbr/index.html",
+      "line": 505,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/honkai3rd/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/honkai3rd/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/index.html",
+      "line": 334,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/mementomori/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/mementomori/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/monst/index.html",
+      "line": 190,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/monst/index.html",
+      "line": 498,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/nikke/index.html",
+      "line": 196,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/nikke/index.html",
+      "line": 508,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/pad/index.html",
+      "line": 192,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/pad/index.html",
+      "line": 500,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/phantomparade/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/phantomparade/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/pokepoke/index.html",
+      "line": 193,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/pokepoke/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/proseka/index.html",
+      "line": 192,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/proseka/index.html",
+      "line": 501,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/reverse1999/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/reverse1999/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/shadowversewb/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/shadowversewb/index.html",
+      "line": 504,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/starrail/index.html",
+      "line": 196,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/starrail/index.html",
+      "line": 508,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/umamusume/index.html",
+      "line": 194,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/umamusume/index.html",
+      "line": 505,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/wutheringwaves/index.html",
+      "line": 197,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/wutheringwaves/index.html",
+      "line": 510,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/games/zzz/index.html",
+      "line": 196,
+      "needle": "金級",
+      "text": "<option value=\"1.0\">銅級（NT$30 = 1點）</option><option value=\"1.25\">銀級（NT$30 = 1.25點）</option><option value=\"1.5\">金級（NT$30 = 1.5點）</option><option value=\"1.75\">白金級（NT$30 = 1.75點）</option><option value=\"2.0\">鑽石級（NT$30 = 2點）</option>"
+    },
+    {
+      "path": "tw/games/zzz/index.html",
+      "line": 508,
+      "needle": "金級",
+      "text": "<p>想知道還需要多少課金金額才能升級至金級或白金級？請使用綜合計算器。</p>"
+    },
+    {
+      "path": "tw/index.html",
+      "line": 9,
+      "needle": "金級",
+      "text": "<meta name=\"description\" content=\"Google Play Points 點數等級計算器。估算達到銀級、金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。\">"
+    },
+    {
+      "path": "tw/index.html",
+      "line": 378,
+      "needle": "金級",
+      "text": "<p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>"
+    },
+    {
+      "path": "tw/index.html",
+      "line": 380,
+      "needle": "金級",
+      "text": "<li>估算達到白金級、鑽石級所需的消費金額。</li>"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 6,
+      "needle": "金級",
+      "text": "<title>Google Play Points 白金級維持計算器 | PlayPoint</title>"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 7,
+      "needle": "金級",
+      "text": "<meta name=\"description\" content=\"依台灣官方門檻計算 Google Play Points 白金級維持所差點數、估算消費金額與年末前每月、每週、每日進度。\">"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 20,
+      "needle": "金級",
+      "text": "<meta property=\"og:title\" content=\"Google Play Points 白金級維持計算器\">"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 21,
+      "needle": "金級",
+      "text": "<meta property=\"og:description\" content=\"依台灣官方門檻計算 Google Play Points 白金級維持所差點數、估算消費金額與年末前每月、每週、每日進度。\">"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 25,
+      "needle": "金級",
+      "text": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"WebApplication\",\"name\":\"Google Play Points 白金級維持計算器\",\"description\":\"依台灣官方門檻計算 Google Play Points 白金級維持所差點數、估算消費金額與年末前每月、每週、每日進度。\",\"url\":\"https://playpoint-sim.com/tw/maintenance/platinum/\",\"applicationCategory\":\"FinanceApplication\",\"operatingSystem\":\"Any\",\"inLanguage\":\"zh-TW\",\"datePublished\":\"2026-07-25\",\"dateModified\":\"2026-07-25\",\"author\":{\"@type\":\"Person\",\"name\":\"Katakata\",\"url\":\"https://playpoint-sim.com/author/katakata.html\"},\"offers\":{\"@type\":\"Offer\",\"price\":\"0\",\"priceCurrency\":\"TWD\"}}</script>"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 26,
+      "needle": "金級",
+      "text": "<script type=\"application/ld+json\">{\"@context\":\"https://schema.org\",\"@type\":\"BreadcrumbList\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"計算器\",\"item\":\"https://playpoint-sim.com/tw/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Google Play Points 白金級維持計算器\",\"item\":\"https://playpoint-sim.com/tw/maintenance/platinum/\"}]}</script>"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 43,
+      "needle": "金級",
+      "text": "<h1>白金級維持計算器</h1>"
+    },
+    {
+      "path": "tw/maintenance/platinum/index.html",
+      "line": 46,
+      "needle": "金級",
+      "text": "<li>白金級: 4,000 點</li>"
+    },
+    {
+      "path": "tw/points-cost/index.html",
+      "line": 121,
+      "needle": "金級",
+      "text": "<tr><td>黃金級</td><td>1.5 pt / NT$30</td><td>約 NT$2,000</td></tr>"
+    },
+    {
+      "path": "tw/points-cost/index.html",
+      "line": 122,
+      "needle": "金級",
+      "text": "<tr><td>白金級</td><td>1.75 pt / NT$30</td><td>約 NT$1,715</td></tr>"
+    },
+    {
+      "path": "tw/status/diamond/index.html",
+      "line": 145,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 6,
+      "needle": "金級",
+      "text": "<title>Google Play Points 金級需要多少？</title>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 7,
+      "needle": "金級",
+      "text": "<meta name=\"description\" content=\"估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。\">"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 13,
+      "needle": "金級",
+      "text": "<meta property=\"og:title\" content=\"Google Play Points 金級需要多少？\">"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 14,
+      "needle": "金級",
+      "text": "<meta property=\"og:description\" content=\"估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。\">"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 18,
+      "needle": "金級",
+      "text": "<meta name=\"twitter:title\" content=\"Google Play Points 金級需要多少？\">"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 19,
+      "needle": "金級",
+      "text": "<meta name=\"twitter:description\" content=\"估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。\">"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 33,
+      "needle": "金級",
+      "text": "\"name\": \"Google Play Points 金級需要多少？\","
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 34,
+      "needle": "金級",
+      "text": "\"description\": \"估算 Google Play Points 金級所需點數與金額，並用目前等級、剩餘點數與活動特別獲點率比較是否值得升級。\","
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 64,
+      "needle": "金級",
+      "text": "\"name\": \"Google Play Points 金級需要多少？\","
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 77,
+      "needle": "金級",
+      "text": "\"name\": \"金級適合作為第一個目標嗎？\","
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 110,
+      "needle": "金級",
+      "text": "<p class=\"lp-eyebrow\">金級規劃</p>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 111,
+      "needle": "金級",
+      "text": "<h1>Google Play Points 金級需要多少？</h1>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 112,
+      "needle": "金級",
+      "text": "<p class=\"lp-lead\">金級通常是第一個比較容易規劃的目標。請輸入還差多少點，再比較一般回饋、活動特別獲點率與地區條件。</p>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 121,
+      "needle": "金級",
+      "text": "<div><span class=\"lp-summary-value\">預設: 銀級到金級</span></div>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 126,
+      "needle": "金級",
+      "text": "<a class=\"lp-primary-link\" href=\"/tw/?mode=main&status=1.2&target=gold&points=600&multiplier=1\">計算金級進度</a>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 133,
+      "needle": "金級",
+      "text": "<p>金級適合用來判斷下一步是否值得。請輸入目標還差的點數，而不是累積總點數。</p>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 149,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/status/gold/index.html",
+      "line": 164,
+      "needle": "金級",
+      "text": "<details><summary>金級適合作為第一個目標嗎？</summary><p>通常適合，因為比白金或鑽石更容易用平常消費來比較。</p></details>"
+    },
+    {
+      "path": "tw/status/platinum/index.html",
+      "line": 121,
+      "needle": "金級",
+      "text": "<div><span class=\"lp-summary-value\">預設: 金級到白金</span></div>"
+    },
+    {
+      "path": "tw/status/platinum/index.html",
+      "line": 149,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 88,
+      "needle": "累積率",
+      "text": "\"text\": \"以銅級一般累積率計算，未稅約 NT$7,500。\""
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 96,
+      "needle": "累積率",
+      "text": "\"text\": \"不可以，套用最高的適用累積率。\""
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 112,
+      "needle": "累積率",
+      "text": "<p class=\"lp-lead\">台灣銀級從年度 250 點開始。先確認還差多少點，再把原本規劃的購買安排到帳號顯示的最高適用累積率。</p>"
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 140,
+      "needle": "累積率",
+      "text": "<h2>比較最高適用累積率</h2>"
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 149,
+      "needle": "累積率",
+      "text": "<p>計算結果可用來把原本規劃的購買與帳號確認適用的累積率相配合。請在 Google Play App 確認適用商品與活動期間，點數入帳後再計算剩餘進度。</p>"
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 165,
+      "needle": "累積率",
+      "text": "<details><summary>從 0 點的基本估算是多少？</summary><p>以銅級一般累積率計算，未稅約 NT$7,500。</p></details>"
+    },
+    {
+      "path": "tw/status/silver/index.html",
+      "line": 166,
+      "needle": "累積率",
+      "text": "<details><summary>可以把多個活動特別獲點率相乘嗎？</summary><p>不可以，套用最高的適用累積率。</p></details>"
+    },
+    {
+      "path": "ko/articles/index.html",
+      "line": 87,
+      "needle": "Google Play 퀘스트가 표시되거나 완료되지 않을 때",
+      "text": "<li><a href=\"/ko/articles/google-play-quests.html\">Google Play 퀘스트가 표시되거나 완료되지 않을 때</a></li>"
+    }
+  ],
+  "japanese": [
+    {
+      "id": "pad-puzzle-and-dragons-play-points",
+      "title": "【パズドラ】魔法石・パズパス課金のPlayポイント還元率とお得な立ち回り｜確定ガチャパックの注意点",
+      "file": "articles/2026-08-25-pad-puzzle-and-dragons-play-points.html"
+    },
+    {
+      "id": "dokkan-battle-dragon-ball-play-points",
+      "title": "【ドッカンバトル】龍石・デイリーカプセルの課金効率とPlayポイント還元｜ガシャコイン天井と賢い立ち回り",
+      "file": "articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html"
+    },
+    {
+      "id": "umamusume-half-anniversary-points",
+      "title": "【ウマ娘】5.5周年ハーフアニバ開幕！SSR引換券・お得ジュエルの課金効率とPlayポイント賢い立ち回り",
+      "file": "articles/2026-08-24-umamusume-half-anniversary-points.html"
+    },
+    {
+      "id": "play-points-locked",
+      "title": "Play Pointsが利用停止・ロックされた時の対処法｜アカウント問題の確認順",
+      "file": "articles/2026-08-19-play-points-locked.html"
+    },
+    {
+      "id": "install-offer-points-not-received",
+      "title": "Play Pointsのアプリインストール特典が付かない原因｜初回・2分・24時間を確認",
+      "file": "articles/2026-08-19-install-offer-points-not-received.html"
+    },
+    {
+      "id": "redeemed-item-not-received",
+      "title": "Play Pointsで交換したゲーム内アイテムが届かない時の確認順｜ポイントだけ減った場合",
+      "file": "articles/2026-08-19-redeemed-item-not-received.html"
+    },
+    {
+      "id": "web-store-external-billing-points",
+      "title": "ゲーム公式Webストア・外部決済でもPlay Pointsは貯まる？Google Play課金との違い",
+      "file": "articles/2026-08-19-web-store-external-billing-points.html"
+    },
+    {
+      "id": "play-points-google-store",
+      "title": "Google Play PointsはGoogle Storeで使える？Pixel割引・Googleストアポイントとの違い",
+      "file": "articles/2026-08-19-play-points-google-store.html"
+    },
+    {
+      "id": "tgs-google-play-vip",
+      "title": "東京ゲームショウのGoogle Play特典｜2026年公式発表待ちと確認ポイント",
+      "file": "articles/2026-08-17-tgs-google-play-vip.html"
+    },
+    {
+      "id": "diamond-valley-festival-guide",
+      "title": "Google Play「Diamond Valley」の過去実績と2026年の確認ポイント",
+      "file": "articles/2026-08-17-diamond-valley-festival-guide.html"
+    },
+    {
+      "id": "play-pass-worth-it",
+      "title": "Play Passはポイント目的で入るべき？木曜週次と対象条件",
+      "file": "articles/2026-08-16-play-pass-worth-it.html"
+    },
+    {
+      "id": "pc-play-games-points",
+      "title": "PC版Play Gamesで課金するとPlay Pointsは貯まる？ブーストの範囲",
+      "file": "articles/2026-08-16-pc-play-games-points.html"
+    },
+    {
+      "id": "fastest-gold",
+      "title": "Google Play Pointsでゴールドをお得に目指す方法｜1,000ポイント",
+      "file": "articles/2026-08-16-fastest-gold.html"
+    },
+    {
+      "id": "fastest-platinum",
+      "title": "Google Play Pointsでプラチナをお得に目指す方法｜4,000ポイント",
+      "file": "articles/2026-08-16-fastest-platinum.html"
+    },
+    {
+      "id": "gold-platinum-worth-it",
+      "title": "ゴールドで止めるかプラチナまで行くか｜特典差と残り約20万円",
+      "file": "articles/2026-08-16-gold-platinum-worth-it.html"
+    },
+    {
+      "id": "premium-support",
+      "title": "プレミアムサポートの出し方｜プラチナ以上・待ち時間は保証されない",
+      "file": "articles/2026-08-16-premium-support.html"
+    },
+    {
+      "id": "payment-methods-points",
+      "title": "キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？",
+      "file": "articles/2026-08-16-payment-methods-points.html"
+    },
+    {
+      "id": "points-disappeared",
+      "title": "Playポイントが消えたときの確認順｜期限・未反映・ランク",
+      "file": "articles/2026-08-16-points-disappeared.html"
+    },
+    {
+      "id": "family-link-play-points",
+      "title": "Family Linkの子どもアカウントでPlayポイントは貯まらない",
+      "file": "articles/2026-08-16-family-link-play-points.html"
+    },
+    {
+      "id": "play-points-day",
+      "title": "Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法",
+      "file": "articles/2026-08-16-play-points-day.html"
+    },
+    {
+      "id": "youtube-premium-play-points",
+      "title": "YouTube PremiumでPlay Pointsは貯まる？請求経路の確認方法",
+      "file": "articles/2026-08-16-youtube-premium-play-points.html"
+    },
+    {
+      "id": "pixel-discount-coupon",
+      "title": "Play PointsのPixel割引クーポンはいつ出る？特典タブの確認方法",
+      "file": "articles/2026-08-16-pixel-discount-coupon.html"
+    },
+    {
+      "id": "weekly-reward-not-showing",
+      "title": "ウィークリーリワードが受け取れない・ボタンが無い時の確認順",
+      "file": "articles/2026-08-16-weekly-reward-not-showing.html"
+    },
+    {
+      "id": "january-rank-reset",
+      "title": "1月1日にPlay Pointsのランクが下がった？再判定と残高の違い",
+      "file": "articles/2026-08-16-january-rank-reset.html"
+    },
+    {
+      "id": "play-points-levels-guide",
+      "title": "Google Play Pointsのランク一覧｜条件・必要ポイント・必要額・特典を比較",
+      "file": "articles/2026-08-05-play-points-levels-guide.html"
+    },
+    {
+      "id": "play-points-cannot-join",
+      "title": "Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順",
+      "file": "articles/2026-08-05-play-points-cannot-join.html"
+    },
+    {
+      "id": "play-country-change-points",
+      "title": "Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点",
+      "file": "articles/2026-08-05-play-country-change-points.html"
+    },
+    {
+      "id": "play-points-multiplier-stacking",
+      "title": "Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法",
+      "file": "articles/2026-08-05-play-points-multiplier-stacking.html"
+    },
+    {
+      "id": "fastest-silver",
+      "title": "Google Play Pointsでシルバーをお得に目指す方法｜250ポイントの効率的な貯め方",
+      "file": "articles/2026-08-05-fastest-silver.html"
+    },
+    {
+      "id": "device-change",
+      "title": "機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認",
+      "file": "articles/2026-08-03-play-points-device-change.html"
+    },
+    {
+      "id": "super-weekly-reward",
+      "title": "Google Play Pointsのスーパーウィークリーリワードとは？Super Ticketの使い方",
+      "file": "articles/2026-07-31-super-weekly-reward.html"
+    },
+    {
+      "id": "google-play-quests",
+      "title": "Google Playのクエストとは？表示されない・達成されない時の確認方法",
+      "file": "articles/2026-07-31-google-play-quests.html"
+    },
+    {
+      "id": "play-points-coupon-not-applied",
+      "title": "Google Play Pointsクーポンが自動適用されない原因",
+      "file": "articles/2026-07-25-play-points-coupon-not-applied.html"
+    },
+    {
+      "id": "play-credit-not-working",
+      "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
+      "file": "articles/2026-07-25-play-credit-not-working.html"
+    },
+    {
+      "id": "play-points-cash-conversion",
+      "title": "Google Play Pointsは現金化できる？交換先・使い道を比較",
+      "file": "articles/2026-07-24-play-points-cash-conversion.html"
+    },
+    {
+      "id": "points-value-1",
+      "title": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
+      "file": "articles/2026-07-24-play-points-1-value.html"
+    },
+    {
+      "id": "points-value-500-1000",
+      "title": "Google Play Points 500・1,000ポイントはいくら？必要額早見表",
+      "file": "articles/2026-07-24-play-points-500-1000-value.html"
+    },
+    {
+      "id": "earn-play-points-free",
+      "title": "Google Play Pointsを無料で貯める方法｜予定購入以外の正規特典",
+      "file": "articles/2026-07-24-earn-play-points-free.html"
+    },
+    {
+      "id": "points-value-100",
+      "title": "Google Play Points 100ポイントはいくら？何円で貯まるか計算",
+      "file": "articles/2026-07-24-play-points-100-value.html"
+    },
+    {
+      "id": "discount-gift-cards",
+      "title": "Google Playギフトコードをお得に買う方法｜還元条件と注意点",
+      "file": "articles/2026-06-20-discount-gift-cards.html"
+    },
+    {
+      "id": "play-points-reflection-timing",
+      "title": "Play Pointsはいつ反映される？遅い時の確認ポイントと待つ目安",
+      "file": "articles/2026-03-10-play-points-reflection-timing.html"
+    },
+    {
+      "id": "multiple-accounts",
+      "title": "Google Play Pointsは複数アカウントで合算できる？管理の注意点",
+      "file": "articles/2025-12-25-multiple-accounts.html"
+    },
+    {
+      "id": "play-games",
+      "title": "Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件",
+      "file": "articles/2025-12-25-play-games.html"
+    },
+    {
+      "id": "movies-books",
+      "title": "Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件",
+      "file": "articles/2025-12-25-movies-books.html"
+    },
+    {
+      "id": "expiration",
+      "title": "Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策",
+      "file": "articles/2025-12-25-expiration.html"
+    },
+    {
+      "id": "promo-code",
+      "title": "プロモコード・割引時もGoogle Play Pointsは貯まる？確認方法",
+      "file": "articles/2025-12-25-promo-code.html"
+    },
+    {
+      "id": "check-balance",
+      "title": "Google Play Pointsの残高・履歴・有効期限を確認する方法",
+      "file": "articles/2025-12-25-check-balance.html"
+    },
+    {
+      "id": "refund",
+      "title": "Google Play Pointsは返金でどうなる？残高・ランクへの影響",
+      "file": "articles/2025-12-25-refund.html"
+    },
+    {
+      "id": "gift-card",
+      "title": "Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング",
+      "file": "articles/2025-12-25-gift-card.html"
+    },
+    {
+      "id": "family-sharing",
+      "title": "Google Play Pointsは家族と共有できる？ファミリー利用の注意点",
+      "file": "articles/2025-12-25-family-sharing.html"
+    },
+    {
+      "id": "subscription",
+      "title": "Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法",
+      "file": "articles/2025-12-25-subscription.html"
+    },
+    {
+      "id": "weekly-reward",
+      "title": "Google Play Pointsのウィークリーリワード｜対象ランク・更新日・3種類の違い",
+      "file": "articles/2025-12-25-weekly-reward.html"
+    },
+    {
+      "id": "getting-started",
+      "title": "Google Play Pointsの始め方｜登録方法と最初に確認すること",
+      "file": "articles/2025-12-25-getting-started.html"
+    },
+    {
+      "id": "new-year-campaign",
+      "title": "Google Play Pointsの年末年始キャンペーン｜予定購入・期限・倍率の確認方法",
+      "file": "articles/2025-12-25-new-year-campaign.html"
+    },
+    {
+      "id": "diamond-vip",
+      "title": "Google Play Pointsのダイヤモンド特典｜固有・共通・アカウント限定を整理",
+      "file": "articles/2025-12-25-diamond-vip.html"
+    },
+    {
+      "id": "campaign",
+      "title": "Google Play Pointsのキャンペーンは待つべき？増量率の確認と課金判断",
+      "file": "articles/2025-12-25-campaign.html"
+    },
+    {
+      "id": "best-use",
+      "title": "Google Play Pointsの使い道を比較｜クーポン・アイテム・Playクレジットの選び方",
+      "file": "articles/2025-12-25-best-use.html"
+    },
+    {
+      "id": "diamond-worth-it",
+      "title": "Google Play Pointsのダイヤモンドは得？必要ポイント・購入額・特典を比較",
+      "file": "articles/2025-12-25-diamond-worth-it.html"
+    },
+    {
+      "id": "playpoints-rank-maintenance",
+      "title": "Google Play Pointsのランク維持期間｜翌年末までの仕組みと年末の確認方法",
+      "file": "articles/2025-12-25-playpoints-rank-maintenance.html"
+    }
+  ]
+}
