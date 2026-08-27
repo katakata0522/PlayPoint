@@ -48,14 +48,12 @@ jobs:
           assert count == 1
 
           old_summary = "  const summary = { checked: 0, changed: 0, stylesheetChanged: synchronizeIntlArticleStylesheet(rootDir) };"
-          new_summary = "  const summary = { checked: 0, changed: 0 };"
           assert old_summary in layout
-          layout = layout.replace(old_summary, new_summary, 1)
+          layout = layout.replace(old_summary, "  const summary = { checked: 0, changed: 0 };", 1)
 
           old_export = "  synchronizeIntlArticleLayouts,\n  synchronizeIntlArticleStylesheet"
-          new_export = "  synchronizeIntlArticleLayouts"
           assert old_export in layout
-          layout = layout.replace(old_export, new_export, 1)
+          layout = layout.replace(old_export, "  synchronizeIntlArticleLayouts", 1)
           layout_path.write_text(layout, encoding='utf-8')
 
           pages_path = Path('scripts/intl-seo-pages.cjs')
@@ -85,19 +83,30 @@ jobs:
       - name: Verify focused regression
         run: node --test tests/intl-article-layout.test.cjs
 
-      - name: Regenerate once and prove second pass is clean
+      - name: Commit source fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/intl-article-layout.cjs scripts/intl-seo-pages.cjs tests/intl-article-layout.test.cjs
+          git commit -m "fix: make international article generation idempotent"
+
+      - name: Regenerate canonical outputs and prove next pass is clean
         shell: bash
         run: |
           set -euo pipefail
           node scripts/prepare-pr.cjs
-          git add scripts/intl-article-layout.cjs scripts/intl-seo-pages.cjs tests/intl-article-layout.test.cjs en/articles/intl-article.css en/articles ko/articles tw/articles
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "fix: make international article generation idempotent"
+          if ! git diff --quiet; then
+            echo "first canonical pass changed generated outputs:"
+            git --no-pager diff --name-only
+            git add -A
+            git commit -m "chore: regenerate international article outputs"
+          fi
 
           node scripts/prepare-pr.cjs
           if ! git diff --quiet; then
-            echo "canonical generation still changes tracked output on second pass"
+            echo "canonical generation still changes output on the second pass:"
             git --no-pager diff --name-only
             exit 1
           fi
