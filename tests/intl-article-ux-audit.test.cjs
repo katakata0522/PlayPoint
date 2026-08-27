@@ -40,6 +40,15 @@ test('Japanese articles remain the source layout and do not load international o
   }
 });
 
+test('international navigation classification follows article intent instead of broad keywords', () => {
+  const { inferIntlSection } = require('../scripts/intl-article-layout.cjs');
+  assert.equal(inferIntlSection('en/articles/google-play-points-use-coupons.html'), 'earn');
+  assert.equal(inferIntlSection('en/articles/google-play-quests.html'), 'earn');
+  assert.equal(inferIntlSection('en/articles/google-play-points-coupon-not-applied.html'), 'troubleshooting');
+  assert.equal(inferIntlSection('en/articles/google-play-points-country-change.html'), 'account');
+  assert.equal(inferIntlSection('en/articles/google-play-points-platinum-diamond-cost.html'), 'levels');
+});
+
 test('international font stacks include local Korean and Traditional Chinese fallbacks', () => {
   const cssSource = read('scripts/intl-article-layout.cjs');
   assert.match(cssSource, /Apple SD Gothic Neo/);
