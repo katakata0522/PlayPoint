@@ -14,7 +14,15 @@ const LAYOUT_END = '<!-- INTL_ARTICLE_LAYOUT_END -->';
 const INTL_LAYOUT_CSS = `* { box-sizing: border-box; }
 
 body {
-font-family: "Noto Sans", "Noto Sans KR", "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+font-family: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+html:lang(ko) body {
+font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
+}
+
+html:lang(zh-TW) body {
+font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "微軟正黑體", sans-serif;
 }
 
 .intl-article-breadcrumbs .intl-breadcrumb-current {
@@ -155,6 +163,74 @@ text-decoration: none;
 text-decoration: underline;
 }
 
+
+.intl-article-hub .intl-hub-intro {
+margin: 0 0 28px;
+padding: 18px 20px;
+border: 1px solid #dbe2ea;
+border-left: 4px solid var(--cocoon-nav-bg);
+border-radius: 8px;
+background: #f8fafc;
+font-size: 15px;
+}
+
+.intl-article-hub .related-links-section {
+margin: 34px 0 0;
+}
+
+.intl-article-hub .related-links-section h2 {
+margin-top: 0;
+}
+
+.intl-article-hub .related-links-section ul {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 12px;
+}
+
+.intl-article-hub .related-links-section ul {
+list-style: none;
+padding-left: 0;
+margin-bottom: 0;
+}
+
+.intl-article-hub .related-links-section li {
+margin: 0;
+}
+
+.intl-article-hub .related-links-section a {
+display: flex;
+align-items: center;
+min-height: 68px;
+padding: 14px 16px;
+border: 1px solid #dbe2ea;
+border-radius: 8px;
+background: #ffffff;
+color: #0f4c81;
+font-weight: 700;
+line-height: 1.55;
+text-decoration: none !important;
+box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+text-wrap: pretty;
+}
+
+.intl-article-hub .related-links-section a:hover {
+border-color: #94a3b8;
+box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+transform: translateY(-1px);
+}
+
+@media (max-width: 680px) {
+.intl-article-hub .related-links-section ul {
+grid-template-columns: 1fr;
+}
+
+.intl-article-hub .related-links-section a {
+min-height: 60px;
+}
+}
+
 @media (max-width: 860px) {
 .intl-layout-container .main-card {
 width: 100%;
@@ -255,9 +331,10 @@ function unwrapGeneratedLayout(html, relativePath) {
   return html.slice(0, start) + mainHtml + html.slice(end).replace(/^\s*/, '');
 }
 
-function renderArticleChrome(localeKey, title, newline) {
+function renderArticleChrome(localeKey, title, newline, options = {}) {
   const locale = LOCALES[localeKey];
   const labels = LOCALE_LAYOUT[localeKey];
+  const isHub = options.isHub === true;
   const homeHref = '/' + localeKey + '/';
   const guidesHref = homeHref + 'articles/';
   return [
@@ -282,8 +359,8 @@ function renderArticleChrome(localeKey, title, newline) {
     '<div class="breadcrumbs-wrapper intl-article-breadcrumbs">',
     '  <nav aria-label="' + escapeHtml(labels.breadcrumb) + '">',
     '    <a href="' + homeHref + '">' + escapeHtml(locale.home) + '</a><span aria-hidden="true">&gt;</span>',
-    '    <a href="' + guidesHref + '">' + escapeHtml(locale.blog) + '</a><span aria-hidden="true">&gt;</span>',
-    '    <span class="intl-breadcrumb-current">' + escapeHtml(title) + '</span>',
+    '    <a href="' + guidesHref + '">' + escapeHtml(locale.blog) + '</a>' + (isHub ? '' : '<span aria-hidden="true">&gt;</span>'),
+    ...(isHub ? [] : ['    <span class="intl-breadcrumb-current">' + escapeHtml(title) + '</span>']),
     '  </nav>',
     '</div>',
     CHROME_END
@@ -332,9 +409,18 @@ function renderArticleLayout(localeKey, mainHtml, newline) {
   ].join(newline);
 }
 
+function normalizeIntlArticleStylesheets(html, newline, relativePath) {
+  let next = html.replace(/\s*<link\b[^>]*href=["'][^"']*article-gift-card\.css(?:\?[^"']*)?["'][^>]*\/?>\s*/gi, newline);
+  if (/href=["'][^"']*\/en\/articles\/intl-article\.css(?:\?[^"']*)?["']/i.test(next)) return next;
+  const shared = next.match(/<link\b[^>]*href=["'][^"']*\/articles\/article-shared\.css(?:\?[^"']*)?["'][^>]*\/?>/i);
+  if (!shared) return next;
+  return next.replace(shared[0], shared[0] + newline + '  <link rel="stylesheet" href="/en/articles/intl-article.css">');
+}
+
 function synchronizeArticle(html, localeKey, relativePath) {
   const newline = html.includes('\r\n') ? '\r\n' : '\n';
-  const withoutChrome = html.replace(markerPattern(CHROME_START, CHROME_END), newline);
+  const styledHtml = normalizeIntlArticleStylesheets(html, newline, relativePath);
+  const withoutChrome = styledHtml.replace(markerPattern(CHROME_START, CHROME_END), newline);
   const unwrapped = unwrapGeneratedLayout(withoutChrome, relativePath);
   const title = extractArticleTitle(unwrapped, relativePath);
   const main = findMainBlock(unwrapped, relativePath);
@@ -372,5 +458,7 @@ module.exports = {
   INTL_LAYOUT_CSS,
   LAYOUT_END,
   LAYOUT_START,
+  renderArticleChrome,
+  renderSidebar,
   synchronizeIntlArticleLayouts
 };

@@ -10,7 +10,7 @@ const {
   MANUAL_MAINTENANCE_PAGES,
   PAGE_TYPES
 } = require('./intl-seo-content.cjs');
-const { INTL_LAYOUT_CSS } = require('./intl-article-layout.cjs');
+const { INTL_LAYOUT_CSS, renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
 const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
 
 // 既存の /amount/10000/ URLは維持しつつ、海外3地域では現地通貨の入口として表示する。
@@ -427,11 +427,65 @@ function renderArticleHub(localeKey, assetVersions) {
   const locale = LOCALES[localeKey];
   const content = ARTICLE_HUB_CONTENT[localeKey];
   const articles = getPublishedIntlArticles().filter(article => localeKeyForArticle(article) === localeKey);
-  const hubLinks = [
+  const rawLinks = [
     ...(content.priorityArticles || []),
     ...articles.map(article => [`/${article.file}`, article.title]),
     ...(content.extraArticles || [])
   ];
+  const seen = new Set();
+  const hubLinks = rawLinks.filter(([href]) => {
+    if (seen.has(href)) return false;
+    seen.add(href);
+    return true;
+  });
+  const priorityHrefs = new Set((content.priorityArticles || []).map(([href]) => href));
+  const categoryLabels = {
+    en: {
+      start: 'Start here',
+      account: 'Account & basics',
+      earn: 'Earning & spending',
+      levels: 'Levels & rewards',
+      trouble: 'Troubleshooting',
+      more: 'More guides'
+    },
+    ko: {
+      start: '먼저 볼 가이드',
+      account: '계정 · 기본 규칙',
+      earn: '적립 · 결제',
+      levels: '등급 · 리워드',
+      trouble: '문제 해결',
+      more: '더 많은 가이드'
+    },
+    tw: {
+      start: '先從這裡開始',
+      account: '帳號 · 基本規則',
+      earn: '累積 · 消費',
+      levels: '等級 · 獎勵',
+      trouble: '問題排查',
+      more: '更多指南'
+    }
+  }[localeKey];
+  const buckets = { start: [], account: [], earn: [], levels: [], trouble: [], more: [] };
+  for (const link of hubLinks) {
+    const href = link[0];
+    let bucket = 'more';
+    if (priorityHrefs.has(href)) bucket = 'start';
+    else if (/not-showing|not-applied|quests|refund|coupon|play-credit|device-change/.test(href)) bucket = 'trouble';
+    else if (/level|silver|platinum|diamond|weekly|reward/.test(href)) bucket = 'levels';
+    else if (/earn|500-1000|apps-books|subscription|gift-card|discount|promo|promotion|rounding|cash-conversion|use-coupons/.test(href)) bucket = 'earn';
+    else if (/join|balance|history|account|family|country/.test(href)) bucket = 'account';
+    buckets[bucket].push(link);
+  }
+  const categoryOrder = ['start', 'account', 'earn', 'levels', 'trouble', 'more'];
+  const categorySections = categoryOrder
+    .filter(key => buckets[key].length)
+    .map(key => `<section class="section related-links-section" aria-labelledby="intl-hub-${key}">
+            <h2 id="intl-hub-${key}">${escapeHtml(categoryLabels[key])}</h2>
+            <ul>
+${buckets[key].map(([href, title]) => `                <li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></li>`).join('\n')}
+            </ul>
+          </section>`)
+    .join('\n');
   const canonical = `https://playpoint-sim.com/${localeKey}/articles/`;
   const generatedModifiedAt = articles.reduce((latest, article) => latest > article.modifiedAt ? latest : article.modifiedAt, '');
   const modifiedAt = content.extraModifiedAt > generatedModifiedAt ? content.extraModifiedAt : generatedModifiedAt;
@@ -444,6 +498,28 @@ function renderArticleHub(localeKey, assetVersions) {
     url: canonical,
     inLanguage: locale.lang
   };
+  const mainHtml = `<main class="main-card intl-article-hub">
+    <header class="hero">
+      <span class="hero-badge">${escapeHtml(content.eyebrow)}</span>
+      <h1>${escapeHtml(content.title)}</h1>
+      <p class="hero-meta">${escapeHtml(locale.lastUpdatedLabel)} ${modifiedAt}</p>
+    </header>
+    <article class="content">
+      <div class="intl-hub-intro">${escapeHtml(content.intro)}</div>
+      ${categorySections}
+    </article>
+    <aside class="official-source-note">
+      <h2>${escapeHtml(locale.officialSourceTitle)}</h2>
+      <p>${escapeHtml(locale.officialSourceBody)}</p>
+      <a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(locale.officialSourceLink)}</a>
+    </aside>
+    <footer class="article-footer">
+      <p><a href="/${localeKey}/">${escapeHtml(locale.back)}</a></p>
+      <p class="site-footer-trademark">${escapeHtml(locale.trademarkNotice)}</p>
+    </footer>
+  </main>`;
+  const chrome = renderArticleChrome(localeKey, content.title, '\n', { isHub: true });
+  const sidebar = renderSidebar(localeKey, '\n');
 
   return `<!DOCTYPE html>
 <html lang="${locale.lang}">
@@ -474,30 +550,11 @@ ${jsonLd(schema)}
     </script>
 </head>
 <body>
-<main class="main-card">
-    <div class="hero">
-        <span class="hero-badge">${escapeHtml(content.eyebrow)}</span>
-        <h1>${escapeHtml(content.title)}</h1>
-        <p class="hero-meta">${escapeHtml(locale.lastUpdatedLabel)} ${modifiedAt}</p>
-    </div>
-    <article class="content">
-        <div class="intro">${escapeHtml(content.intro)}</div>
-        <section class="section related-links-section">
-            <ul>
-                ${hubLinks.map(([href, title]) => `<li><a href="${escapeHtml(href)}">${escapeHtml(title)}</a></li>`).join('\n                ')}
-            </ul>
-        </section>
-    </article>
-    <aside class="official-source-note">
-        <h2>${escapeHtml(locale.officialSourceTitle)}</h2>
-        <p>${escapeHtml(locale.officialSourceBody)}</p>
-        <a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(locale.officialSourceLink)}</a>
-    </aside>
-    <footer class="article-footer">
-        <p><a href="/${localeKey}/">${escapeHtml(locale.back)}</a></p>
-        <p class="site-footer-trademark">${escapeHtml(locale.trademarkNotice)}</p>
-    </footer>
-</main>
+${chrome}
+<div class="layout-container intl-layout-container">
+${mainHtml}
+${sidebar}
+</div>
 <script src="/js/intent-tracking.js?v=${assetVersions.intentTrackingVersion}"></script>
 <script src="/js/third-party.js?v=${assetVersions.thirdPartyVersion}"></script>
 </body>

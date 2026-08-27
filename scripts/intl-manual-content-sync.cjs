@@ -52,7 +52,7 @@ function syncArticleHub(rootDir, locale, config) {
   const listItems = config.links
     .map(([href, label]) => `                <li><a href="${href}">${label}</a></li>`)
     .join('\n');
-  const insertionPoint = /(<section class="section related-links-section">\s*<ul>)/;
+  const insertionPoint = /(<section class="section related-links-section"[^>]*>[\s\S]*?<ul>)/;
   if (!insertionPoint.test(html)) {
     throw new Error(`Could not locate the article list in ${path.relative(rootDir, file)}`);
   }

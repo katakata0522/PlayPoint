@@ -142,9 +142,9 @@ function insertIndexLinks(rootDir, locale) {
   const links = missingTopics
     .map(topic => `                <li><a href="/${articlePath(locale, topic.slug)}">${topic.labels[locale]}</a></li>`)
     .join('\n');
-  const anchor = '            <ul>\n';
-  if (!html.includes(anchor)) throw new Error(`Could not find article-list anchor in ${relativePath}`);
-  html = html.replace(anchor, `${anchor}${links}\n`);
+  const anchor = /(<section class=\"section related-links-section\"[^>]*>[\s\S]*?<ul>)/;
+  if (!anchor.test(html)) throw new Error(`Could not find article-list anchor in ${relativePath}`);
+  html = html.replace(anchor, `$1\n${links}`);
   fs.writeFileSync(absolutePath, html);
 }
 
