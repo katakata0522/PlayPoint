@@ -42,6 +42,11 @@ jobs:
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
 
+      - name: Stage exact final tree
+        run: |
+          git add -A
+          test -n "$(git diff --cached --name-only)"
+
       - name: Validate edited sources
         run: |
           node --check scripts/intl-article-layout.cjs
@@ -55,8 +60,6 @@ jobs:
 
       - name: Prove generator fixed point
         run: |
-          git add -A
-          test -n "$(git diff --cached --name-only)"
           node scripts/prepare-pr.cjs
           git diff --exit-code
 
