@@ -64,7 +64,7 @@ jobs:
           git diff --exit-code
 
       - name: Run full repository preflight
-        run: node .github/scripts/preflight.cjs --prepare-deploy
+        run: node .github/scripts/preflight.cjs
 
       - name: Confirm preflight left final tree stable
         run: git diff --exit-code
