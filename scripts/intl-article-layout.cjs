@@ -273,6 +273,33 @@ const INTL_NAV = Object.freeze({
   tw: { account: '帳號與基本', earn: '積點與使用', levels: '等級與回饋', troubleshooting: '問題排查' }
 });
 
+const INTL_NAV_SUB = Object.freeze({
+  en: {
+    home: 'Cost simulator',
+    guides: 'Play Points guide',
+    account: 'Country, eligibility, setup',
+    earn: 'Purchases, coupons, credit',
+    levels: 'Progress & weekly perks',
+    troubleshooting: 'Missing points & errors'
+  },
+  ko: {
+    home: '필요 금액 계산',
+    guides: 'Play Points 가이드',
+    account: '국가·계정 설정',
+    earn: '결제·쿠폰·교환',
+    levels: '진행도·주간 혜택',
+    troubleshooting: '미반영·오류 확인'
+  },
+  tw: {
+    home: '所需金額估算',
+    guides: 'Play Points 指南',
+    account: '地區與帳號設定',
+    earn: '購買、優惠與兌換',
+    levels: '進度與每週福利',
+    troubleshooting: '未入帳與錯誤確認'
+  }
+});
+
 const INTL_SIDEBAR = Object.freeze({
   en: {
     calculatorHeading: 'Estimate your remaining cost',
@@ -414,6 +441,7 @@ function renderArticleChrome(localeKey, title, newline, options = {}) {
   const locale = LOCALES[localeKey];
   const labels = LOCALE_LAYOUT[localeKey];
   const navLabels = INTL_NAV[localeKey];
+  const navSubs = INTL_NAV_SUB[localeKey];
   const isHub = options.isHub === true;
   const isPolicy = options.isPolicy === true;
   const section = options.section || 'guides';
@@ -434,12 +462,12 @@ function renderArticleChrome(localeKey, title, newline, options = {}) {
     '</header>',
     '<nav class="global-nav intl-global-nav" aria-label="' + escapeHtml(labels.primary) + '">',
     '  <div class="global-nav-inner">',
-    '    <a class="' + navClass('home') + '" href="' + homeHref + '"><span>' + escapeHtml(locale.home) + '</span></a>',
-    '    <a class="' + navClass('guides') + '" href="' + guidesHref + '"><span>' + escapeHtml(locale.blog) + '</span></a>',
-    '    <a class="' + navClass('account') + '" href="' + guidesHref + '#intl-hub-account"><span>' + escapeHtml(navLabels.account) + '</span></a>',
-    '    <a class="' + navClass('earn') + '" href="' + guidesHref + '#intl-hub-earn"><span>' + escapeHtml(navLabels.earn) + '</span></a>',
-    '    <a class="' + navClass('levels') + '" href="' + guidesHref + '#intl-hub-levels"><span>' + escapeHtml(navLabels.levels) + '</span></a>',
-    '    <a class="' + navClass('troubleshooting') + '" href="' + guidesHref + '#intl-hub-trouble"><span>' + escapeHtml(navLabels.troubleshooting) + '</span></a>',
+    '    <a class="' + navClass('home') + '" href="' + homeHref + '"><span>' + escapeHtml(locale.home) + '</span><span class="nav-sub">' + escapeHtml(navSubs.home) + '</span></a>',
+    '    <a class="' + navClass('guides') + '" href="' + guidesHref + '"><span>' + escapeHtml(locale.blog) + '</span><span class="nav-sub">' + escapeHtml(navSubs.guides) + '</span></a>',
+    '    <a class="' + navClass('account') + '" href="' + guidesHref + '#intl-hub-account"><span>' + escapeHtml(navLabels.account) + '</span><span class="nav-sub">' + escapeHtml(navSubs.account) + '</span></a>',
+    '    <a class="' + navClass('earn') + '" href="' + guidesHref + '#intl-hub-earn"><span>' + escapeHtml(navLabels.earn) + '</span><span class="nav-sub">' + escapeHtml(navSubs.earn) + '</span></a>',
+    '    <a class="' + navClass('levels') + '" href="' + guidesHref + '#intl-hub-levels"><span>' + escapeHtml(navLabels.levels) + '</span><span class="nav-sub">' + escapeHtml(navSubs.levels) + '</span></a>',
+    '    <a class="' + navClass('troubleshooting') + '" href="' + guidesHref + '#intl-hub-trouble"><span>' + escapeHtml(navLabels.troubleshooting) + '</span><span class="nav-sub">' + escapeHtml(navSubs.troubleshooting) + '</span></a>',
     '  </div>',
     '</nav>',
     '<div class="breadcrumbs-wrapper intl-article-breadcrumbs">',
