@@ -37,9 +37,10 @@ function upsertIntlJa(html, jaPath) {
   if (!anchor.test(next)) throw new Error('International article is missing en hreflang anchor.');
   return next.replace(anchor, tag + '\n$1');
 }
-function upsertJapaneseIntlSet(html, slug) {
-  let next = html.replace(/^[\t ]*<link rel="alternate" hreflang="(?:en|ko|zh-TW|x-default)"[^>]*>[\t ]*\r?\n?/gm, '');
+function upsertJapaneseIntlSet(html, slug, jaPath) {
+  let next = html.replace(/^[\t ]*<link rel="alternate" hreflang="(?:ja|en|ko|zh-TW|x-default)"[^>]*>[\t ]*\r?\n?/gm, '');
   const tags = [
+    '    <link rel="alternate" hreflang="ja" href="' + SITE_ORIGIN + jaPath + '">',
     '    <link rel="alternate" hreflang="en" href="' + intlUrl('en', slug) + '">',
     '    <link rel="alternate" hreflang="ko" href="' + intlUrl('ko', slug) + '">',
     '    <link rel="alternate" hreflang="zh-TW" href="' + intlUrl('tw', slug) + '">',
@@ -70,7 +71,7 @@ function syncIntlArticleJapaneseHreflang(rootDir) {
     }
     checked += 1;
     const jaCurrent = fs.readFileSync(jaFile, 'utf8');
-    if (writeIfChanged(jaFile, upsertJapaneseIntlSet(jaCurrent, slug))) changed += 1;
+    if (writeIfChanged(jaFile, upsertJapaneseIntlSet(jaCurrent, slug, jaPath))) changed += 1;
   }
   return { checked, changed };
 }
