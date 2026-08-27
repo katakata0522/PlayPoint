@@ -62,6 +62,8 @@ test('verified Japanese counterparts have reciprocal hreflang sets', () => {
     const jaFile = sitePathToFile(jaPath);
     assert.ok(fs.existsSync(jaFile), 'missing Japanese target: ' + jaPath);
     const jaHtml = fs.readFileSync(jaFile, 'utf8');
+    const jaSelf = 'hreflang="ja" href="' + SITE_ORIGIN + jaPath + '"';
+    assert.equal(jaHtml.split(jaSelf).length - 1, 1, 'Japanese counterpart must expose exactly one self hreflang: ' + jaPath);
     for (const [locale, hreflang] of INTL_LOCALES) {
       const intlFile = path.join(root, locale, 'articles', slug);
       const intlHtml = fs.readFileSync(intlFile, 'utf8');
