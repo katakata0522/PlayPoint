@@ -71,7 +71,7 @@ test('all published international articles use the Japanese article layout struc
 });
 
 test('international article CSS inherits the Japanese visual contract instead of replacing it', () => {
-  const css = fs.readFileSync(path.join(root, 'en', 'articles', 'intl-article.css'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'articles', 'intl-article.css'), 'utf8');
   assert.doesNotMatch(css, /--brand:|--hero:|--interaction:/i, 'international CSS must not replace Japanese shared theme tokens');
   assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*border-radius:\s*6px/is);
   assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*padding:\s*36px 40px/is);
@@ -80,7 +80,7 @@ test('international article CSS inherits the Japanese visual contract instead of
 });
 
 test('international article typography keeps translated headings readable without hard-coded breaks', () => {
-  const css = fs.readFileSync(path.join(root, 'en', 'articles', 'intl-article.css'), 'utf8');
+  const css = fs.readFileSync(path.join(root, 'articles', 'intl-article.css'), 'utf8');
   assert.match(css, /\.intl-layout-container \.hero h1,[\s\S]*?\.intl-layout-container \.sidebar-widget-title\s*\{[^}]*text-wrap:\s*balance/is);
   assert.match(css, /\.intl-layout-container \.sidebar-article-list li,[\s\S]*?\.intl-article-breadcrumbs nav\s*\{[^}]*text-wrap:\s*pretty/is);
   assert.doesNotMatch(css, /word-break:\s*break-all/i, 'international article text must not be split arbitrarily inside words');
@@ -94,6 +94,32 @@ test('international article typography keeps translated headings readable withou
         assert.doesNotMatch(heading[2], /<br\b/i, locale + '/' + file + ': headings must wrap responsively instead of using forced line breaks');
       }
     }
+  }
+});
+
+test('international article shell follows the Japanese navigation and sidebar rhythm in each language', () => {
+  for (const locale of locales) {
+    const html = fs.readFileSync(path.join(root, locale, 'articles', 'google-play-points-country-change.html'), 'utf8');
+    assert.match(html, /class="global-nav-inner"[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item/, locale + ': six-part Japanese-style navigation');
+    assert.match(html, /sidebar-rank-grid/, locale + ': localized level and reward quick links');
+    assert.match(html, /sidebar-event-item/, locale + ': localized pre-purchase checks');
+    assert.match(html, /sidebar-tip-box/, locale + ': localized regional rule tip');
+    assert.match(html, /sidebar-category-list/, locale + ': category navigation');
+    assert.match(html, new RegExp('href="\/' + locale + '\/author\/katakata\.html"'), locale + ': localized editorial policy link');
+    assert.match(html, /href="\/articles\/intl-article\.css(?:\?[^"']*)?"/, locale + ': neutral shared international stylesheet');
+    assert.doesNotMatch(html, /href="\/en\/articles\/intl-article\.css/, locale + ': must not depend on English directory for shared CSS');
+  }
+});
+
+test('localized author pages share the international Japanese-style shell', () => {
+  for (const locale of locales) {
+    const file = path.join(root, locale, 'author', 'katakata.html');
+    assert.ok(fs.existsSync(file), locale + ': localized author page missing');
+    const html = fs.readFileSync(file, 'utf8');
+    assert.match(html, /class="layout-container intl-layout-container"/);
+    assert.match(html, /class="sidebar-column intl-article-sidebar"/);
+    assert.match(html, /hreflang="ja"/);
+    assert.match(html, new RegExp('canonical" href="https:\/\/playpoint-sim\.com\/' + locale + '\/author\/katakata\.html"'));
   }
 });
 

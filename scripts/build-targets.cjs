@@ -61,7 +61,7 @@ const generatedFiles = [
   ...generatedLocaleFiles,
   ...getIntlSeoFiles(),
   ...getIntlContentExpansionFiles(),
-  'en/articles/intl-article.css',
+  'articles/intl-article.css',
   'feed.xml',
   'atom.xml',
   'sw.js',

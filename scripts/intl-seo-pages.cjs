@@ -11,6 +11,7 @@ const {
   PAGE_TYPES
 } = require('./intl-seo-content.cjs');
 const { INTL_LAYOUT_CSS, renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
+const { getIntlAuthorPageFiles, getIntlAuthorSitemapEntries, writeIntlAuthorPages } = require('./intl-author-pages.cjs');
 const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
 
 // 既存の /amount/10000/ URLは維持しつつ、海外3地域では現地通貨の入口として表示する。
@@ -343,7 +344,7 @@ function renderArticle(article, assetVersions) {
     <link rel="alternate" hreflang="x-default" href="${defaultAlternate.url}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
-    <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
+    <link rel="stylesheet" href="/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="${escapeHtml(siteName)}">
     <meta property="og:title" content="${escapeHtml(article.title)}">
@@ -537,7 +538,7 @@ ${buckets[key].map(([href, title]) => `                <li><a href="${escapeHtml
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/en/articles/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/articles/article-shared.css?v=${articleCssVersion}">
-    <link rel="stylesheet" href="/en/articles/intl-article.css?v=${assetVersions.cssVersion}">
+    <link rel="stylesheet" href="/articles/intl-article.css?v=${assetVersions.cssVersion}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="${escapeHtml(locale.siteName)}">
     <meta property="og:title" content="${escapeHtml(content.title)}">
@@ -582,6 +583,7 @@ function getIntlSeoFiles() {
   return [
     ...pages,
     ...Object.keys(LOCALES).map(localeKey => `${localeKey}/articles/index.html`),
+    ...getIntlAuthorPageFiles(),
     ...getPublishedIntlArticles().map(article => article.file),
     ...MANUAL_MAINTENANCE_PAGES.map(page => page.file)
   ];
@@ -602,6 +604,7 @@ function getIntlSitemapEntries() {
   for (const article of getPublishedIntlArticles()) {
     entries.push({ url: `https://playpoint-sim.com/${article.file}`, lastmod: article.modifiedAt });
   }
+  entries.push(...getIntlAuthorSitemapEntries());
   for (const page of MANUAL_MAINTENANCE_PAGES) {
     entries.push({
       url: `https://playpoint-sim.com/${page.file.replace(/index\.html$/, '')}`,
@@ -619,7 +622,7 @@ function writeIntlSeoPages(rootDir, assetVersions) {
     }
   }
   const { minifyCSS } = require('../.github/scripts/minify.cjs');
-  writeFile(rootDir, 'en/articles/intl-article.css', minifyCSS(INTL_LAYOUT_CSS));
+  writeFile(rootDir, 'articles/intl-article.css', minifyCSS(INTL_LAYOUT_CSS));
   for (const localeKey of Object.keys(LOCALES)) {
     writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
   }
@@ -627,6 +630,7 @@ function writeIntlSeoPages(rootDir, assetVersions) {
     if (article.manual) continue;
     writeFile(rootDir, article.file, renderArticle(article, assetVersions));
   }
+  writeIntlAuthorPages(rootDir, assetVersions, writeFile);
   console.log(`Generated international SEO pages (${getIntlSeoFiles().length} files).`);
 }
 
