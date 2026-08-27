@@ -1,0 +1,500 @@
+{
+  "generatedAt": "2026-08-27T13:19:06.929Z",
+  "canonicalMismatch": [],
+  "selfHreflangMismatch": [],
+  "reciprocityFailures": [],
+  "hubNegationMismatches": [
+    {
+      "locale": "en",
+      "href": "/en/articles/google-play-games-vs-play-points.html",
+      "label": "Google Play Games vs Play Points: XP, achievements and rewards",
+      "h1": "Google Play Games XP is not the same as Google Play Points",
+      "h1Neg": [
+        "not"
+      ]
+    },
+    {
+      "locale": "en",
+      "href": "/en/articles/google-play-points-join-eligibility.html",
+      "label": "Eligibility and missing Join button",
+      "h1": "Can't join Google Play Points in the US? Eligibility checks",
+      "h1Neg": [
+        "can't"
+      ]
+    },
+    {
+      "locale": "tw",
+      "href": "/tw/articles/google-play-points-join-eligibility.html",
+      "label": "加入資格與找不到加入按鈕",
+      "h1": "台灣 Google Play Points 無法加入｜加入按鈕、帳號與付款資料檢查",
+      "h1Neg": [
+        "無法"
+      ]
+    }
+  ],
+  "counts": {
+    "twBareGoldTier": 10,
+    "twHongKongPlatinumTerm": 0,
+    "twCumulativeRateTerm": 38,
+    "twSimplifiedExclusiveChars": 0,
+    "koActualJapaneseText": 0,
+    "enActualCjkText": 0,
+    "repeatedEnglishWord": 35
+  },
+  "languageFindings": {
+    "en": [
+      {
+        "file": "2026-06-20-discount-gift-cards.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-balance-combine-payment.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-games-vs-play-points.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-100-value.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "do Do"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-500-1000-cost.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-apps-books-purchases.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-balance-history-progress.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-cash-conversion.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "No No"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-country-change.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "change Change"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-country-differences.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-coupon-not-applied.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-device-change.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-discounts-promo-codes.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-earn-free.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-expiration.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-family-sharing.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-fastest-silver.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "US US"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-gift-cards.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-join-eligibility.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-level-maintenance-reset.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-levels.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-multiple-accounts.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-not-showing.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-platinum-diamond-cost.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Included Included"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-play-credit-not-working.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-not-applied.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-stacking.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-refund.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "points Points"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-rounding-tax.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-subscriptions.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-super-weekly-reward.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-use-coupons.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-weekly-reward.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "google-play-quests.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      },
+      {
+        "file": "index.html",
+        "findings": [
+          {
+            "code": "repeated-english-word",
+            "sample": "Calculator Calculator"
+          }
+        ]
+      }
+    ],
+    "ko": [],
+    "tw": [
+      {
+        "file": "2026-06-20-discount-gift-cards.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-100-value.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-500-1000-cost.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-balance-history-progress.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-country-change.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-country-differences.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-earn-free.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 2
+          },
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-fastest-silver.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 6
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-gift-cards.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-join-eligibility.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 2
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-levels.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 2
+          },
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 8
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-stacking.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 14
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-rounding-tax.html",
+        "findings": [
+          {
+            "code": "tw-bare-gold-tier",
+            "count": 1
+          }
+        ]
+      },
+      {
+        "file": "google-play-points-weekly-reward.html",
+        "findings": [
+          {
+            "code": "tw-cumulative-rate-term",
+            "count": 2
+          }
+        ]
+      }
+    ]
+  }
+}
