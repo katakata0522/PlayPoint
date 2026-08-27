@@ -6,6 +6,7 @@ on:
       - fix/intl-copy-hreflang
     paths:
       - scripts/apply-intl-quality-fixes-v2-temp.cjs
+      - scripts/fix-intl-hreflang-idempotence-temp.cjs
       - .github/workflows/apply-intl-quality-fixes-temp.yml
 
 permissions:
@@ -21,7 +22,9 @@ jobs:
         with:
           ref: fix/intl-copy-hreflang
       - name: Apply source patch
-        run: node scripts/apply-intl-quality-fixes-v2-temp.cjs
+        run: |
+          node scripts/apply-intl-quality-fixes-v2-temp.cjs
+          node scripts/fix-intl-hreflang-idempotence-temp.cjs
       - name: Generate canonical outputs
         run: node scripts/prepare-pr.cjs
       - name: Run focused localization regression
@@ -36,6 +39,7 @@ jobs:
           rm -f scripts/inspect-intl-fix-targets-temp.cjs
           rm -f scripts/apply-intl-quality-fixes-temp.cjs
           rm -f scripts/apply-intl-quality-fixes-v2-temp.cjs
+          rm -f scripts/fix-intl-hreflang-idempotence-temp.cjs
           rm -f .github/workflows/inspect-intl-fix-targets-temp.yml
           rm -f .github/workflows/apply-intl-quality-fixes-temp.yml
           rm -f audit/intl-fix-targets.json
