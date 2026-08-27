@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { mapOutsideForeignTerminology } = require('./tw-terminology-sync.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const REGION_CONTENT_DATE = '2026-08-23';
@@ -82,8 +83,9 @@ function buildHongKongPage(source) {
   html = html.replace('href="../games/" data-lang-key="linkGames"', 'href="../tw/games/" data-lang-key="linkGames"');
   html = html.replace(/活動特別獲點率（例：每 NT\$30 3 點）/g, '活動特別獲點率（例：每 HK$7 3 點）');
   html = html.replace(/消費金額 \(NT\$\)/g, '消費金額（HK$）');
-  html = html.replace(/黃金級/g, '金級');
-  html = html.replace(/白金級/g, '鉑金級');
+  html = mapOutsideForeignTerminology(html, chunk => chunk
+    .replace(/黃金級/g, '金級')
+    .replace(/白金級/g, '鉑金級'));
   html = replaceContentDate(html);
   return ensureTopHreflang(html);
 }

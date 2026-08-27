@@ -14,7 +14,7 @@ const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-sync.cjs');
-const { syncTaiwanTerminology } = require('./tw-terminology-sync.cjs');
+const { assertTaiwanTerminology } = require('./tw-terminology-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
@@ -71,8 +71,8 @@ console.log(`[build-html] synchronized international article layouts: ${intlArti
 
 require('./generate-game-simulators.cjs');
 
-const twTerminologySummary = syncTaiwanTerminology(rootDir);
-console.log(`[build-html] synchronized Taiwan terminology: ${twTerminologySummary.changed}/${twTerminologySummary.checked} updated`);
+const twTerminologySummary = assertTaiwanTerminology(rootDir);
+console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.checked} HTML files checked`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);

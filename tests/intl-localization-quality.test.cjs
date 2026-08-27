@@ -57,6 +57,40 @@ test('Hong Kong keeps its own official tier names', () => {
   assert.ok(share.includes('黃金|金級'), 'shared target normalization must support both Taiwan and Hong Kong Gold labels');
 });
 
+test('Taiwan terminology contract covers the embeddable widget and fails instead of silently rewriting', () => {
+  const widget = fs.readFileSync(path.join(root, 'embed', 'playpoint-widget.js'), 'utf8');
+  const zhStart = widget.indexOf('        zh: {');
+  const zhEnd = widget.indexOf('    };', zhStart);
+  assert.ok(zhStart >= 0 && zhEnd > zhStart, 'Taiwan widget dictionary block not found');
+  const zh = widget.slice(zhStart, zhEnd);
+  assert.ok(zh.includes("'1.5': '黃金級'"));
+  assert.ok(zh.includes("label: '黃金級', val: 1000"));
+  assert.doesNotMatch(zh, /(?<![白黃])金級/);
+
+  const contract = require('../scripts/tw-terminology-sync.cjs');
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>金級</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>累積率</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>累積條件</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<span data-foreign-terminology>香港では金級</span>').length, 0);
+  const source = fs.readFileSync(path.join(root, 'scripts', 'tw-terminology-sync.cjs'), 'utf8');
+  assert.doesNotMatch(source, /writeFileSync/);
+  assert.doesNotMatch(source, /normalizeTaiwanText/);
+});
+
+test('Hong Kong tier localization preserves explicitly marked foreign-region terminology', () => {
+  const { mapOutsideForeignTerminology } = require('../scripts/tw-terminology-sync.cjs');
+  const source = '<p>黃金級 / 白金級</p><span data-foreign-terminology>台灣：黃金級 / 白金級</span>';
+  const localized = mapOutsideForeignTerminology(source, chunk => chunk
+    .replace(/黃金級/g, '金級')
+    .replace(/白金級/g, '鉑金級'));
+  assert.ok(localized.includes('<p>金級 / 鉑金級</p>'));
+  assert.ok(localized.includes('<span data-foreign-terminology>台灣：黃金級 / 白金級</span>'));
+  const regionSource = fs.readFileSync(path.join(root, 'scripts', 'region-page-sync.cjs'), 'utf8');
+  assert.ok(regionSource.includes('mapOutsideForeignTerminology'));
+  assert.doesNotMatch(regionSource, /html\.replace\(\/黃金級\/g/);
+  assert.doesNotMatch(regionSource, /html\.replace\(\/白金級\/g/);
+});
+
 test('verified Japanese counterparts have reciprocal hreflang sets', () => {
   for (const [slug, jaPath] of Object.entries(ARTICLE_JA_ALTERNATES)) {
     const jaFile = sitePathToFile(jaPath);
