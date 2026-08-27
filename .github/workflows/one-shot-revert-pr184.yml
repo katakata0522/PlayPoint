@@ -1,0 +1,33 @@
+name: One-shot revert PR184
+
+on:
+  push:
+    branches:
+      - fix/intl-use-ja-article-layout
+    paths:
+      - .github/workflows/one-shot-revert-pr184.yml
+
+permissions:
+  contents: write
+
+jobs:
+  revert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: fix/intl-use-ja-article-layout
+
+      - name: Revert mistaken layout direction
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git revert --no-edit 7325f15041c8f1ba5765b1abf3728be795cd4d88
+          rm .github/workflows/one-shot-revert-pr184.yml
+          git add -A
+          git commit -m "chore: 一時巻き戻しworkflowを削除"
+          git push origin HEAD:fix/intl-use-ja-article-layout
