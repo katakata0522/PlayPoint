@@ -6,6 +6,7 @@ const test = require('node:test');
 const {
   DEFAULT_ATTEMPTS,
   DEFAULT_DELAY_MS,
+  DEFAULT_TIMEOUT_MS,
   verifyDeployRevisionWithRetry
 } = require('../.github/scripts/verify-deploy-revision.cjs');
 
@@ -89,11 +90,14 @@ test('post-deploy revision readiness fails after its explicit retry budget', asy
   }
 });
 
-test('production defaults provide a bounded propagation window without becoming an unbounded wait', () => {
+test('production defaults provide a bounded propagation window without consuming the whole browser-smoke job', () => {
   assert.equal(DEFAULT_ATTEMPTS, 8);
   assert.equal(DEFAULT_DELAY_MS, 2500);
+  assert.equal(DEFAULT_TIMEOUT_MS, 10000);
   const scheduledDelayMs = Array.from({ length: DEFAULT_ATTEMPTS - 1 }, (_, index) => DEFAULT_DELAY_MS * (index + 1))
     .reduce((sum, delay) => sum + delay, 0);
+  const worstCaseReadinessMs = scheduledDelayMs + (DEFAULT_ATTEMPTS * DEFAULT_TIMEOUT_MS);
   assert.equal(scheduledDelayMs, 70000);
-  assert.ok(scheduledDelayMs < 120000, 'readiness backoff alone must stay below two minutes');
+  assert.equal(worstCaseReadinessMs, 150000);
+  assert.ok(worstCaseReadinessMs < 180000, 'readiness must remain bounded below three minutes of the ten-minute browser-smoke job');
 });
