@@ -1,0 +1,46 @@
+name: Align Taiwan browser smoke expectation
+
+on:
+  push:
+    branches:
+      - fix/intl-copy-hreflang
+    paths:
+      - .github/workflows/fix-tw-smoke-expected-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/intl-copy-hreflang
+          fetch-depth: 0
+
+      - name: Update Taiwan smoke expectation
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = '.github/scripts/browser-smoke.cjs';
+          const source = fs.readFileSync(file, 'utf8');
+          const from = "{ key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } }";
+          const to = "{ key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '黃金級' } }";
+          if (!source.includes(from)) throw new Error('Taiwan browser smoke locale definition was not found exactly once.');
+          if (source.split(from).length - 1 !== 1) throw new Error('Taiwan browser smoke locale definition is duplicated.');
+          fs.writeFileSync(file, source.replace(from, to), 'utf8');
+          NODE
+          node --check .github/scripts/browser-smoke.cjs
+
+      - name: Remove temporary workflow
+        run: rm .github/workflows/fix-tw-smoke-expected-temp.yml
+
+      - name: Commit smoke expectation
+        run: |
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "test: expect Taiwan official Gold label in browser smoke"
+          git push origin HEAD:fix/intl-copy-hreflang
