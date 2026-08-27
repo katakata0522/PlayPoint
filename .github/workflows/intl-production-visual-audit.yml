@@ -1,0 +1,50 @@
+name: International production visual audit
+
+on:
+  push:
+    branches:
+      - audit/intl-production-visual-20260827
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install browser driver
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Audit every EN KO TW article at desktop and mobile widths
+        env:
+          AUDIT_BASE_URL: https://playpoint-sim.com/
+          AUDIT_OUTPUT: intl-visual-audit-artifacts
+        run: |
+          set +e
+          node scripts/intl-production-visual-audit.cjs
+          code=$?
+          echo "AUDIT_EXIT_CODE=$code" >> "$GITHUB_ENV"
+          exit 0
+
+      - name: Print audit summary
+        run: |
+          cat intl-visual-audit-artifacts/summary.json
+          echo "audit exit code: ${AUDIT_EXIT_CODE}"
+
+      - name: Upload complete visual audit
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: intl-production-visual-audit-${{ github.run_id }}
+          path: intl-visual-audit-artifacts/
+          if-no-files-found: error
+          retention-days: 7
