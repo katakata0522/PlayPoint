@@ -1,0 +1,40 @@
+name: One-shot Japanese guide brand sync
+
+on:
+  push:
+    branches:
+      - fix/ja-complete-guide-brand-final2
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shot-ja-guide-brand-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.event.head_commit.message != 'chore: sync complete guide brand outputs'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/ja-complete-guide-brand-final2
+          fetch-depth: 0
+
+      - name: Regenerate committed outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated output
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: sync complete guide brand outputs"
+          git push origin HEAD:fix/ja-complete-guide-brand-final2
