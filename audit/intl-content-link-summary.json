@@ -1,0 +1,1426 @@
+{
+  "generatedAt": "2026-08-27T13:10:25.452Z",
+  "originalSummary": {
+    "generatedAt": "2026-08-27T13:10:20.046Z",
+    "base": "https://playpoint-sim.com",
+    "sitemapStatus": 200,
+    "articlePages": 105,
+    "pagesByLocale": {
+      "en": 35,
+      "ko": 35,
+      "tw": 35
+    },
+    "pageHttpErrors": 0,
+    "flaggedPages": 95,
+    "errorFlags": 99,
+    "warningFlags": 47,
+    "internalLinksChecked": 162,
+    "internalFailures": 0,
+    "internalRedirects": 0,
+    "externalLinksChecked": 116,
+    "externalFailures": 112,
+    "crossLocaleArticleLinks": 2
+  },
+  "flagCounts": {
+    "hreflang-missing": 36,
+    "foreign-script": 43,
+    "ko-brand-prose": 21,
+    "japanese-script": 20,
+    "tw-brand-prose": 26
+  },
+  "flagsByCode": {
+    "hreflang-missing": [
+      {
+        "url": "https://playpoint-sim.com/en/articles/",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-balance-combine-payment.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-games-vs-play-points.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-500-1000-cost.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-apps-books-purchases.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-balance-history-progress.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-device-change.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-discounts-promo-codes.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-earn-free.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-rounding-tax.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-balance-combine-payment.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-500-1000-cost.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-apps-books-purchases.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-balance-history-progress.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-device-change.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-discounts-promo-codes.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-earn-free.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-rounding-tax.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-balance-combine-payment.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-device-change.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-earn-free.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "ja"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-rounding-tax.html",
+        "severity": "error",
+        "detail": "ja"
+      }
+    ],
+    "foreign-script": [
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-100-value.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-country-change.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-coupon-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-fastest-silver.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-gift-cards.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-join-eligibility.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-level-maintenance-reset.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-levels.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-multiple-accounts.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-not-showing.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-platinum-diamond-cost.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-play-credit-not-working.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-promotion-stacking.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-subscriptions.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-super-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-use-coupons.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-points-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/en/articles/google-play-quests.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-balance-combine-payment.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-100-value.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-country-change.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-coupon-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-device-change.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-fastest-silver.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-gift-cards.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-join-eligibility.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-level-maintenance-reset.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-levels.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-multiple-accounts.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-not-showing.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-platinum-diamond-cost.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-play-credit-not-working.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-promotion-stacking.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-rounding-tax.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-subscriptions.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-super-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-use-coupons.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-quests.html",
+        "severity": "error",
+        "detail": "・"
+      }
+    ],
+    "ko-brand-prose": [
+      {
+        "url": "https://playpoint-sim.com/ko/articles/",
+        "severity": "warn",
+        "detail": "12x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-games-vs-play-points.html",
+        "severity": "warn",
+        "detail": "5x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-100-value.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-country-differences.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-coupon-not-applied.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-device-change.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-expiration.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-family-sharing.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-fastest-silver.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-join-eligibility.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-levels.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-multiple-accounts.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-not-showing.html",
+        "severity": "warn",
+        "detail": "9x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-promotion-not-applied.html",
+        "severity": "warn",
+        "detail": "9x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-promotion-stacking.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-rounding-tax.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-subscriptions.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-super-weekly-reward.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-use-coupons.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 포인트"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-weekly-reward.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 포인트"
+      }
+    ],
+    "japanese-script": [
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-100-value.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-country-change.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-country-differences.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-coupon-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-fastest-silver.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-gift-cards.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-join-eligibility.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-level-maintenance-reset.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-levels.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-multiple-accounts.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-not-showing.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-platinum-diamond-cost.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-play-credit-not-working.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-promotion-not-applied.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-promotion-stacking.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-subscriptions.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-super-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-use-coupons.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-points-weekly-reward.html",
+        "severity": "error",
+        "detail": "・"
+      },
+      {
+        "url": "https://playpoint-sim.com/ko/articles/google-play-quests.html",
+        "severity": "error",
+        "detail": "・"
+      }
+    ],
+    "tw-brand-prose": [
+      {
+        "url": "https://playpoint-sim.com/tw/articles/",
+        "severity": "warn",
+        "detail": "12x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-games-vs-play-points.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-100-value.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-500-1000-cost.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-apps-books-purchases.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-balance-history-progress.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-cash-conversion.html",
+        "severity": "warn",
+        "detail": "5x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-country-differences.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-coupon-not-applied.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-device-change.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-discounts-promo-codes.html",
+        "severity": "warn",
+        "detail": "5x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-expiration.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-family-sharing.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-fastest-silver.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-join-eligibility.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-level-maintenance-reset.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-levels.html",
+        "severity": "warn",
+        "detail": "7x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-multiple-accounts.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-not-showing.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-promotion-not-applied.html",
+        "severity": "warn",
+        "detail": "9x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-promotion-stacking.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-rounding-tax.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-subscriptions.html",
+        "severity": "warn",
+        "detail": "5x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-super-weekly-reward.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-use-coupons.html",
+        "severity": "warn",
+        "detail": "8x Google Play Points, 0x Google Play 點數"
+      },
+      {
+        "url": "https://playpoint-sim.com/tw/articles/google-play-points-weekly-reward.html",
+        "severity": "warn",
+        "detail": "6x Google Play Points, 0x Google Play 點數"
+      }
+    ]
+  },
+  "externalRechecks": {
+    "checked": 112,
+    "ok": 112,
+    "actualFailures": []
+  },
+  "termAudit": {
+    "en": [
+      {
+        "file": "google-play-points-100-value.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-500-1000-cost.html",
+        "findings": [
+          "possible-jp-threshold-in-us-context"
+        ]
+      },
+      {
+        "file": "google-play-points-country-change.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-country-differences.html",
+        "findings": [
+          "foreign-script",
+          "possible-jp-threshold-in-us-context"
+        ]
+      },
+      {
+        "file": "google-play-points-coupon-not-applied.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-fastest-silver.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-gift-cards.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-join-eligibility.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-level-maintenance-reset.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-levels.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-multiple-accounts.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-not-showing.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-platinum-diamond-cost.html",
+        "findings": [
+          "foreign-script",
+          "possible-jp-threshold-in-us-context"
+        ]
+      },
+      {
+        "file": "google-play-points-play-credit-not-working.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-not-applied.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-stacking.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-subscriptions.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-super-weekly-reward.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-use-coupons.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-points-weekly-reward.html",
+        "findings": [
+          "foreign-script"
+        ]
+      },
+      {
+        "file": "google-play-quests.html",
+        "findings": [
+          "foreign-script"
+        ]
+      }
+    ],
+    "ko": [
+      {
+        "file": "2026-06-20-discount-gift-cards.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-balance-combine-payment.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-games-vs-play-points.html",
+        "findings": [
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-100-value.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-500-1000-cost.html",
+        "findings": [
+          "possible-wrong-kr-threshold"
+        ]
+      },
+      {
+        "file": "google-play-points-balance-history-progress.html",
+        "findings": [
+          "possible-wrong-kr-threshold"
+        ]
+      },
+      {
+        "file": "google-play-points-cash-conversion.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-country-change.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-country-differences.html",
+        "findings": [
+          "japanese-script",
+          "english-level-name",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-coupon-not-applied.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-device-change.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-discounts-promo-codes.html",
+        "findings": [
+          "possible-wrong-kr-threshold"
+        ]
+      },
+      {
+        "file": "google-play-points-earn-free.html",
+        "findings": [
+          "english-level-name",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-expiration.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-family-sharing.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-fastest-silver.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-gift-cards.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-join-eligibility.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-level-maintenance-reset.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-levels.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-multiple-accounts.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-not-showing.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-platinum-diamond-cost.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-play-credit-not-working.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-not-applied.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-stacking.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-refund.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-rounding-tax.html",
+        "findings": [
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-subscriptions.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-super-weekly-reward.html",
+        "findings": [
+          "japanese-script",
+          "english-level-name",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-use-coupons.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-weekly-reward.html",
+        "findings": [
+          "japanese-script",
+          "possible-wrong-kr-threshold",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-quests.html",
+        "findings": [
+          "japanese-script",
+          "brand-not-localized-in-prose"
+        ]
+      }
+    ],
+    "tw": [
+      {
+        "file": "2026-06-20-discount-gift-cards.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-balance-combine-payment.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-games-vs-play-points.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-100-value.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-500-1000-cost.html",
+        "findings": [
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-apps-books-purchases.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-balance-history-progress.html",
+        "findings": [
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-cash-conversion.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-country-change.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-country-differences.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-coupon-not-applied.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-device-change.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-discounts-promo-codes.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-earn-free.html",
+        "findings": [
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-expiration.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-family-sharing.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-fastest-silver.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-gift-cards.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-join-eligibility.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-level-maintenance-reset.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-levels.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-multiple-accounts.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-not-showing.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-platinum-diamond-cost.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-play-credit-not-working.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-not-applied.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-promotion-stacking.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-refund.html",
+        "findings": [
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-rounding-tax.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-subscriptions.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-super-weekly-reward.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-use-coupons.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-points-weekly-reward.html",
+        "findings": [
+          "foreign-script",
+          "hk-level-term-on-tw",
+          "brand-not-localized-in-prose"
+        ]
+      },
+      {
+        "file": "google-play-quests.html",
+        "findings": [
+          "foreign-script",
+          "brand-not-localized-in-prose"
+        ]
+      }
+    ]
+  },
+  "factSnippets": {
+    "enLevels": [
+      "ited States guide ・ 2026-08-05 This English guide uses the United States Play country, not Japanese, Korean or Taiwan thresholds. Silver starts at 150 annual points in the US, while the regular earning rate begins at 1 point per $1 before tax. Use the level progress",
+      " ・ 2026-08-05 This English guide uses the United States Play country, not Japanese, Korean or Taiwan thresholds. Silver starts at 150 annual points in the US, while the regular earning rate begins at 1 point per $1 before tax. Use the level progress shown in your",
+      ", Korean or Taiwan thresholds. Silver starts at 150 annual points in the US, while the regular earning rate begins at 1 point per $1 before tax. Use the level progress shown in your own Play Points screen as the final number. Table of contents Official US level ",
+      " zero Weekly benefits and level timing How to use the calculator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Dia",
+      " level timing How to use the calculator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1",
+      "vel timing How to use the calculator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 poin",
+      "ing How to use the calculator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points p",
+      "How to use the calculator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points per $",
+      "ulator Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points per $1 The points shown",
+      "tor Official US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points per $1 The points shown in t",
+      "fficial US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points per $1 The points shown in this ",
+      "ial US level table Level Annual points Regular earning rate Bronze 0–149 1 point per $1 Silver 150–599 1.1 points per $1 Gold 600–2,999 1.2 points per $1 Platinum 3,000–9,999 1.4 points per $1 Diamond 10,000 or more 1.6 points per $1 The points shown in this table "
+    ],
+    "koLevels": [
+      "lay Points 등급표｜조건·적립률·주간 리워드 한국 등급 가이드 한국 Google Play Points 등급표｜조건·적립률·주간 리워드 한국 계정 가이드 ・ 2026-08-05 이 글은 대한민국 Play 국가 기준입니다. 한국 실버는 연간 150포인트부터이며, 브론즈 일반 적립은 세금 제외 대상 금액 ₩1,000당 1포인트입니다. 일본이나 대만의 포인트 기준을 그대로 적용하지 말고 Google Play 앱의 연간 등급 진행도를 최종 기준으로 보세요. 목차 한국",
+      "nts 등급표｜조건·적립률·주간 리워드 한국 등급 가이드 한국 Google Play Points 등급표｜조건·적립률·주간 리워드 한국 계정 가이드 ・ 2026-08-05 이 글은 대한민국 Play 국가 기준입니다. 한국 실버는 연간 150포인트부터이며, 브론즈 일반 적립은 세금 제외 대상 금액 ₩1,000당 1포인트입니다. 일본이나 대만의 포인트 기준을 그대로 적용하지 말고 Google Play 앱의 연간 등급 진행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 ",
+      "립률·주간 리워드 한국 등급 가이드 한국 Google Play Points 등급표｜조건·적립률·주간 리워드 한국 계정 가이드 ・ 2026-08-05 이 글은 대한민국 Play 국가 기준입니다. 한국 실버는 연간 150포인트부터이며, 브론즈 일반 적립은 세금 제외 대상 금액 ₩1,000당 1포인트입니다. 일본이나 대만의 포인트 기준을 그대로 적용하지 말고 Google Play 앱의 연간 등급 진행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 0포인트에서 시작하는 ",
+      "적용하지 말고 Google Play 앱의 연간 등급 진행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당",
+      "연간 등급 진행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연",
+      "등급 진행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급",
+      "행도를 최종 기준으로 보세요. 목차 한국 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트",
+      " 한국 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리",
+      " 공식 등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리워드로 ",
+      "등급표 0포인트에서 시작하는 기본 결제액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리워드로 사용해도 연",
+      "액 한국 주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리워드로 사용해도 연간 등급 진행도는 줄지 않지만, 환불",
+      "주간 리워드 범위 계산기에 넣을 숫자 한국 공식 등급표 등급 연간 포인트 일반 적립률 브론즈 0~149 ₩1,000당 1포인트 실버 150~599 ₩1,000당 1.1포인트 골드 600~2,399 ₩1,000당 1.3포인트 플래티넘 2,400~14,999 ₩1,000당 1.6포인트 다이아몬드 15,000 이상 ₩1,000당 2포인트 사용 가능한 포인트 잔액과 연간 등급 포인트는 다른 숫자입니다. 포인트를 리워드로 사용해도 연간 등급 진행도는 줄지 않지만, 환불이나 취소는"
+    ],
+    "twLevels": [
+      "積率與每週獎勵 台灣等級指南 台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵 台灣帳號指南 ・ 2026-08-05 這份 Google Play Points 等級說明以台灣官方條件為準。本頁依台灣 Play 國家／地區撰寫。台灣銀級從年度 250 點開始，銅級一般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表",
+      "勵 台灣等級指南 台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵 台灣帳號指南 ・ 2026-08-05 這份 Google Play Points 等級說明以台灣官方條件為準。本頁依台灣 Play 國家／地區撰寫。台灣銀級從年度 250 點開始，銅級一般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點",
+      " 台灣 Google Play Points 等級表｜門檻、累積率與每週獎勵 台灣帳號指南 ・ 2026-08-05 這份 Google Play Points 等級說明以台灣官方條件為準。本頁依台灣 Play 國家／地區撰寫。台灣銀級從年度 250 點開始，銅級一般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率",
+      "Points 等級表｜門檻、累積率與每週獎勵 台灣帳號指南 ・ 2026-08-05 這份 Google Play Points 等級說明以台灣官方條件為準。本頁依台灣 Play 國家／地區撰寫。台灣銀級從年度 250 點開始，銅級一般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1",
+      "般累積率為未稅適用金額每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 ",
+      "每 NT$30 1 點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級",
+      "點。不要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字",
+      "要直接套用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字。兌換點",
+      "用日本、美國或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字。兌換點數不會降",
+      "或韓國的門檻，最後以帳號的年度等級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字。兌換點數不會降低年度等級進度；",
+      "級進度為準。 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字。兌換點數不會降低年度等級進度；退款或取消則可能扣回該筆交易取得",
+      " 目錄 台灣官方等級表 從 0 點開始的基本消費估算 每週獎勵與 Play Pass 計算機應輸入什麼 台灣官方等級表 等級 年度點數 一般累積率 銅級 0～249 每 NT$30 1 點 銀級 250～999 每 NT$30 1.25 點 金級 1,000～3,999 每 NT$30 1.5 點 白金級 4,000～14,999 每 NT$30 1.75 點 鑽石級 15,000 以上 每 NT$30 2 點 可使用點數餘額與年度等級進度是不同數字。兌換點數不會降低年度等級進度；退款或取消則可能扣回該筆交易取得的點數。 從"
+    ]
+  }
+}
