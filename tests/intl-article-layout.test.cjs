@@ -64,6 +64,8 @@ test('all published international articles use the Japanese article layout struc
       assert.equal((html.match(/class="layout-container intl-layout-container"/g) || []).length, 1, locale + '/' + file + ': two-column wrapper');
       assert.equal((html.match(/class="sidebar-column intl-article-sidebar"/g) || []).length, 1, locale + '/' + file + ': sidebar');
       assert.equal((html.match(/<main\b[^>]*class=["'][^"']*\bmain-card\b[^"']*["']/g) || []).length, 1, locale + '/' + file + ': main article');
+      assert.match(html, /<!-- INTL_ARTICLE_LAYOUT_END -->\r?\n/, locale + '/' + file + ': layout end must be followed by a newline');
+      assert.doesNotMatch(html, /<!-- INTL_ARTICLE_LAYOUT_END --><\S/, locale + '/' + file + ': trailing markup must never be glued to layout end');
     }
   }
 });
@@ -76,7 +78,6 @@ test('international article CSS inherits the Japanese visual contract instead of
   assert.match(css, /\.intl-layout-container \.hero\s*\{[^}]*background:\s*transparent/is);
   assert.match(css, /\.intl-layout-container \.content\s*\{[^}]*padding:\s*0/is);
 });
-
 
 test('international article CSS has one canonical writer', () => {
   const pagesSource = fs.readFileSync(path.join(root, 'scripts', 'intl-seo-pages.cjs'), 'utf8');
