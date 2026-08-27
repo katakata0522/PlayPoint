@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { LOCALES } = require('./intl-seo-content.cjs');
+const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
 const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
@@ -367,11 +368,13 @@ function renderArticleChrome(localeKey, title, newline, options = {}) {
   ].join(newline);
 }
 
-function renderSidebar(localeKey, newline) {
+function renderSidebar(localeKey, newline, relatedArticles = null) {
   const locale = LOCALES[localeKey];
   const labels = LOCALE_LAYOUT[localeKey];
   const homeHref = '/' + localeKey + '/';
-  const articles = Array.isArray(locale.articles) ? locale.articles.slice(0, 4) : [];
+  const articles = Array.isArray(relatedArticles)
+    ? relatedArticles
+    : (Array.isArray(locale.articles) ? locale.articles.slice(0, 4) : []);
   return [
     '<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(labels.sidebar) + '">',
     '  <section class="sidebar-widget">',
@@ -398,12 +401,12 @@ function renderSidebar(localeKey, newline) {
   ].join(newline);
 }
 
-function renderArticleLayout(localeKey, mainHtml, newline) {
+function renderArticleLayout(localeKey, mainHtml, newline, relatedArticles = null) {
   return [
     LAYOUT_START,
     '<div class="layout-container intl-layout-container">',
     mainHtml,
-    renderSidebar(localeKey, newline),
+    renderSidebar(localeKey, newline, relatedArticles),
     '</div>',
     LAYOUT_END
   ].join(newline);
@@ -417,7 +420,7 @@ function normalizeIntlArticleStylesheets(html, newline, relativePath) {
   return next.replace(shared[0], shared[0] + newline + '  <link rel="stylesheet" href="/en/articles/intl-article.css">');
 }
 
-function synchronizeArticle(html, localeKey, relativePath) {
+function synchronizeArticle(html, localeKey, relativePath, relatedArticles = null) {
   const newline = html.includes('\r\n') ? '\r\n' : '\n';
   const styledHtml = normalizeIntlArticleStylesheets(html, newline, relativePath);
   const withoutChrome = styledHtml.replace(markerPattern(CHROME_START, CHROME_END), newline);
@@ -426,7 +429,7 @@ function synchronizeArticle(html, localeKey, relativePath) {
   const main = findMainBlock(unwrapped, relativePath);
   const mainHtml = unwrapped.slice(main.start, main.end);
   const chrome = renderArticleChrome(localeKey, title, newline);
-  const layout = renderArticleLayout(localeKey, mainHtml, newline);
+  const layout = renderArticleLayout(localeKey, mainHtml, newline, relatedArticles);
   const trailingHtml = unwrapped.slice(main.end).replace(/^\s*/, '');
   return unwrapped.slice(0, main.start).replace(/\s*$/, newline) + chrome + newline + layout
     + (trailingHtml ? newline + trailingHtml : '');
@@ -437,12 +440,25 @@ function synchronizeIntlArticleLayouts(rootDir) {
   for (const localeKey of Object.keys(LOCALE_LAYOUT)) {
     const articleDir = path.join(rootDir, localeKey, 'articles');
     if (!fs.existsSync(articleDir)) continue;
-    const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
+    const files = fs.readdirSync(articleDir)
+      .filter(file => file.endsWith('.html') && file !== 'index.html')
+      .sort();
+    const catalog = files.map(file => {
+      const absolutePath = path.join(articleDir, file);
+      const relativePath = path.posix.join(localeKey, 'articles', file);
+      const html = fs.readFileSync(absolutePath, 'utf8');
+      return {
+        path: relativePath,
+        href: '/' + relativePath,
+        label: extractArticleTitle(html, relativePath)
+      };
+    });
     for (const file of files) {
       const absolutePath = path.join(articleDir, file);
       const relativePath = path.posix.join(localeKey, 'articles', file);
       const before = fs.readFileSync(absolutePath, 'utf8');
-      const after = synchronizeArticle(before, localeKey, relativePath);
+      const relatedArticles = selectRelatedArticles(catalog, relativePath, 4);
+      const after = synchronizeArticle(before, localeKey, relativePath, relatedArticles);
       summary.checked++;
       if (after === before) continue;
       fs.writeFileSync(absolutePath, after, 'utf8');
