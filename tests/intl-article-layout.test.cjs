@@ -79,6 +79,24 @@ test('international article CSS inherits the Japanese visual contract instead of
   assert.match(css, /\.intl-layout-container \.content\s*\{[^}]*padding:\s*0/is);
 });
 
+test('international article typography keeps translated headings readable without hard-coded breaks', () => {
+  const css = fs.readFileSync(path.join(root, 'en', 'articles', 'intl-article.css'), 'utf8');
+  assert.match(css, /\.intl-layout-container \.hero h1,[\s\S]*?\.intl-layout-container \.sidebar-widget-title\s*\{[^}]*text-wrap:\s*balance/is);
+  assert.match(css, /\.intl-layout-container \.sidebar-article-list li,[\s\S]*?\.intl-article-breadcrumbs nav\s*\{[^}]*text-wrap:\s*pretty/is);
+  assert.doesNotMatch(css, /word-break:\s*break-all/i, 'international article text must not be split arbitrarily inside words');
+
+  for (const locale of locales) {
+    const articleDir = path.join(root, locale, 'articles');
+    const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
+    for (const file of files) {
+      const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
+      for (const heading of html.matchAll(/<(h[1-3])\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+        assert.doesNotMatch(heading[2], /<br\b/i, locale + '/' + file + ': headings must wrap responsively instead of using forced line breaks');
+      }
+    }
+  }
+});
+
 test('international article CSS has one canonical writer', () => {
   const pagesSource = fs.readFileSync(path.join(root, 'scripts', 'intl-seo-pages.cjs'), 'utf8');
   const layoutSource = fs.readFileSync(modulePath, 'utf8');
