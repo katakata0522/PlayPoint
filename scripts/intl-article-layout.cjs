@@ -249,27 +249,21 @@ const LOCALE_LAYOUT = Object.freeze({
     breadcrumb: 'Breadcrumb',
     primary: 'Primary navigation',
     sidebar: 'Article sidebar',
-    policy: 'Editorial policy',
-    levels: 'Levels',
-    troubleshooting: 'Troubleshooting'
+    policy: 'Editorial policy'
   },
   ko: {
     navigation: '기사 탐색',
     breadcrumb: '탐색 경로',
     primary: '주요 탐색',
     sidebar: '기사 사이드바',
-    policy: '운영 및 검증 방침',
-    levels: '등급',
-    troubleshooting: '문제 해결'
+    policy: '운영 및 검증 방침'
   },
   tw: {
     navigation: '文章導覽',
     breadcrumb: '導覽路徑',
     primary: '主要導覽',
     sidebar: '文章側欄',
-    policy: '營運與驗證方針',
-    levels: '等級',
-    troubleshooting: '問題排查'
+    policy: '營運與驗證方針'
   }
 });
 
@@ -338,7 +332,7 @@ const INTL_SIDEBAR = Object.freeze({
     checkTitle: '購買前確認',
     checkItems: [
       ['帳號', '以實際付款的 Google 帳號與 Play 國家或地區為準。'],
-      ['活動', '確認適用商品、活動期間，以及 Google Play 顯示的最終活動特別獲點率。'],
+      ['活動', '確認適用商品、活動期間，以及 Google Play 顯示的最終活動特別積點率。'],
       ['購買後', '請重新確認實際入帳點數與剩餘進度，不要把估算值當成保證結果。']
     ],
     tipTitle: '快速判斷',
@@ -350,10 +344,10 @@ const INTL_SIDEBAR = Object.freeze({
 
 function inferIntlSection(relativePath) {
   const slug = path.posix.basename(String(relativePath || ''), '.html').replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase();
-  if (/(?:not-showing|not-applied|not-working|coupon|refund|locked|missing|cannot|quest)/.test(slug)) return 'troubleshooting';
+  if (/(?:not-showing|not-applied|not-working|locked|missing|cannot|refund)/.test(slug)) return 'troubleshooting';
   if (/(?:level|levels|silver|gold|platinum|diamond|weekly-reward|super-weekly|maintenance)/.test(slug)) return 'levels';
-  if (/(?:gift|payment|purchase|subscription|discount|promo|earn|earning|cash|credit|value|cost|spend|rounding|tax)/.test(slug)) return 'earn';
   if (/(?:account|device|country|family|join|eligibility|balance-history|expiration)/.test(slug)) return 'account';
+  if (/(?:gift|payment|purchase|subscription|discount|promo|coupon|quest|earn|earning|cash|credit|value|cost|spend|rounding|tax)/.test(slug)) return 'earn';
   return 'guides';
 }
 
@@ -422,7 +416,7 @@ function renderArticleChrome(localeKey, title, newline, options = {}) {
   const navLabels = INTL_NAV[localeKey];
   const isHub = options.isHub === true;
   const isPolicy = options.isPolicy === true;
-  const section = options.section || (isHub ? 'guides' : 'guides');
+  const section = options.section || 'guides';
   const homeHref = '/' + localeKey + '/';
   const guidesHref = homeHref + 'articles/';
   const policyHref = homeHref + 'author/katakata.html';
@@ -450,7 +444,7 @@ function renderArticleChrome(localeKey, title, newline, options = {}) {
     '</nav>',
     '<div class="breadcrumbs-wrapper intl-article-breadcrumbs">',
     '  <nav aria-label="' + escapeHtml(labels.breadcrumb) + '">',
-    '    <a href="' + homeHref + '">' + escapeHtml(locale.home) + '</a>' + (isPolicy ? '<span aria-hidden="true">&gt;</span>' : '<span aria-hidden="true">&gt;</span>'),
+    '    <a href="' + homeHref + '">' + escapeHtml(locale.home) + '</a><span aria-hidden="true">&gt;</span>',
     ...(isPolicy
       ? ['    <span class="intl-breadcrumb-current">' + escapeHtml(title) + '</span>']
       : [
