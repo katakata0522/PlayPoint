@@ -11,6 +11,7 @@ const { syncServiceWorkerAssets } = require('./asset-sync.cjs');
 const { syncIndexMetadata } = require('./build-metadata.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
+const { syncJapaneseGuideBrand } = require('./japanese-guide-brand.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-sync.cjs');
@@ -87,6 +88,9 @@ generateBlogFeeds(rootDir);
 
 const seoSummary = normalizeArticleFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized article SEO: ${seoSummary.changed} updated`);
+
+const guideBrandSummary = syncJapaneseGuideBrand(rootDir);
+console.log(`[build-html] synchronized Japanese complete-guide brand: ${guideBrandSummary.changedFiles.length}/${guideBrandSummary.articleCount + 1} updated`);
 
 const strippedFontFiles = stripExternalGoogleFonts(rootDir);
 console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`);

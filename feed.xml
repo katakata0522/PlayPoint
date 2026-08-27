@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Google Play Points攻略・使い方ブログ | Playポイント計算機</title>
+    <title>Google Play Points 完全攻略ガイド | Playポイント計算機</title>
     <link>https://playpoint-sim.com/blog/</link>
-    <description>Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。</description>
+    <description>Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。</description>
     <language>ja</language>
     <lastBuildDate>Tue, 25 Aug 2026 03:00:00 GMT</lastBuildDate>
     <atom:link href="https://playpoint-sim.com/feed.xml" rel="self" type="application/rss+xml" />
