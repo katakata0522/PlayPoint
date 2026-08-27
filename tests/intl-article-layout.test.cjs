@@ -85,12 +85,14 @@ test('international article typography keeps translated headings readable withou
   assert.match(css, /\.intl-layout-container \.sidebar-article-list li,[\s\S]*?\.intl-article-breadcrumbs nav\s*\{[^}]*text-wrap:\s*pretty/is);
   assert.doesNotMatch(css, /word-break:\s*break-all/i, 'international article text must not be split arbitrarily inside words');
 
-  const articleDir = path.join(root, 'en', 'articles');
-  const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
-  for (const file of files) {
-    const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
-    for (const heading of html.matchAll(/<(h[1-3])\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
-      assert.doesNotMatch(heading[2], /<br\b/i, 'en/' + file + ': headings must wrap responsively instead of using forced line breaks');
+  for (const locale of locales) {
+    const articleDir = path.join(root, locale, 'articles');
+    const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
+    for (const file of files) {
+      const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
+      for (const heading of html.matchAll(/<(h[1-3])\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+        assert.doesNotMatch(heading[2], /<br\b/i, locale + '/' + file + ': headings must wrap responsively instead of using forced line breaks');
+      }
     }
   }
 });
