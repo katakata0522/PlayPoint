@@ -1,0 +1,44 @@
+name: Verify shared Taiwan and Hong Kong Gold normalization
+
+on:
+  push:
+    branches:
+      - fix/intl-copy-hreflang
+    paths:
+      - scripts/fix-shared-gold-normalization-temp.cjs
+      - .github/workflows/fix-shared-gold-normalization-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/intl-copy-hreflang
+      - name: Fix shared normalization
+        run: node scripts/fix-shared-gold-normalization-temp.cjs
+      - name: Generate canonical outputs
+        run: node scripts/prepare-pr.cjs
+      - name: Run localization regression
+        run: node --test tests/intl-localization-quality.test.cjs tests/intl-article-layout.test.cjs
+      - name: Verify fixed point
+        run: |
+          git add -A
+          node scripts/prepare-pr.cjs
+          git diff --exit-code
+      - name: Remove temporary helper
+        run: |
+          rm -f scripts/fix-shared-gold-normalization-temp.cjs
+          rm -f .github/workflows/fix-shared-gold-normalization-temp.yml
+      - name: Commit corrected outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: preserve Hong Kong Gold label normalization"
+          git push origin HEAD:fix/intl-copy-hreflang
