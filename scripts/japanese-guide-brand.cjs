@@ -6,6 +6,7 @@ const path = require('node:path');
 const GUIDE_BRAND = 'Google Play Points 完全攻略ガイド';
 const GUIDE_PAGE_TITLE = `${GUIDE_BRAND} | Playポイント計算機`;
 const GUIDE_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
+const GUIDE_HERO_TEXT = 'ランク攻略・ポイントの使い方・キャンペーン・トラブル解決・ゲーム別課金まで。Google Play Pointsを使いこなすための攻略情報を、公式情報と計算例でまとめています。';
 
 const LEGACY_BLOG_TITLES = Object.freeze([
   'Google Play Points攻略・使い方ブログ | Playポイント計算機',
@@ -20,6 +21,10 @@ const LEGACY_BLOG_NAMES = Object.freeze([
 
 const LEGACY_BLOG_DESCRIPTIONS = Object.freeze([
   'Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。'
+]);
+
+const LEGACY_HERO_TEXTS = Object.freeze([
+  '反映されない時の確認、100ポイントの目安、ランク維持、キャンペーン条件を、公式情報と計算例をもとに整理しています。'
 ]);
 
 function replaceKnownValue(text, legacyValues, nextValue) {
@@ -38,6 +43,7 @@ function syncBlogIndexBrand(html) {
   next = replaceKnownValue(next, LEGACY_BLOG_TITLES, GUIDE_PAGE_TITLE);
   next = replaceKnownValue(next, LEGACY_BLOG_DESCRIPTIONS, GUIDE_DESCRIPTION);
   next = replaceKnownValue(next, LEGACY_BLOG_NAMES, GUIDE_BRAND);
+  next = replaceKnownValue(next, LEGACY_HERO_TEXTS, GUIDE_HERO_TEXT);
 
   next = next.replace(
     /(<meta\s+property=["']og:site_name["']\s+content=["'])(?:PlayPoint Lab\.|Playポイント計算機)(["'][^>]*>)/i,
@@ -57,6 +63,9 @@ function syncBlogIndexBrand(html) {
   }
   if (!next.includes(`<h1 class="hero-title">${GUIDE_BRAND}</h1>`)) {
     throw new Error('blog/index.html: 完全攻略ガイドのH1を同期できませんでした');
+  }
+  if (!next.includes(`<p class="hero-text">${GUIDE_HERO_TEXT}</p>`)) {
+    throw new Error('blog/index.html: 完全攻略ガイドの導入文を同期できませんでした');
   }
   if (!next.includes(`class="brand">${GUIDE_BRAND}</a>`)) {
     throw new Error('blog/index.html: 完全攻略ガイドのヘッダーブランドを同期できませんでした');
@@ -157,6 +166,7 @@ if (require.main === module) {
 module.exports = {
   GUIDE_BRAND,
   GUIDE_DESCRIPTION,
+  GUIDE_HERO_TEXT,
   GUIDE_PAGE_TITLE,
   japaneseArticleFiles,
   syncArticleBrand,
