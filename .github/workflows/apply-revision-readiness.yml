@@ -39,15 +39,7 @@ jobs:
           smoke = smoke.replace(anchor, anchor + "const { verifyDeployRevisionWithRetry } = require('./verify-deploy-revision.cjs');\n", 1)
 
           pattern = re.compile(r"function requestRevisionText\(url\) \{[\s\S]*?\n\}\n\nasync function verifyRevision\(baseUrl\) \{[\s\S]*?\n\}\n\nasync function main\(\) \{")
-          replacement = """async function verifyRevision(baseUrl) {
-  if (!EXPECTED_REVISION) return { checked: false };
-  return verifyDeployRevisionWithRetry({
-    url: new URL('status/deploy-revision.txt', baseUrl).href,
-    expectedRevision: EXPECTED_REVISION
-  });
-}
-
-async function main() {"""
+          replacement = "async function verifyRevision(baseUrl) {\n  if (!EXPECTED_REVISION) return { checked: false };\n  return verifyDeployRevisionWithRetry({\n    url: new URL('status/deploy-revision.txt', baseUrl).href,\n    expectedRevision: EXPECTED_REVISION\n  });\n}\n\nasync function main() {"
           smoke, count = pattern.subn(replacement, smoke, count=1)
           assert count == 1, f'expected one revision block, found {count}'
           smoke_path.write_text(smoke, encoding='utf-8')
@@ -59,16 +51,7 @@ async function main() {"""
           regression = regression.replace(anchor, anchor + "const deployRevisionReadiness = readText('.github/scripts/verify-deploy-revision.cjs');\n", 1)
 
           pattern = re.compile(r"test\('production revision verification retries IPv4 network errors', \(\) => \{[\s\S]*?\n\}\);")
-          replacement = """test('production revision verification uses bounded IPv4 readiness retries', () => {
-  assert.match(browserSmoke, /verifyDeployRevisionWithRetry/);
-  assert.doesNotMatch(browserSmoke, /function requestRevisionText\\(url\\)/);
-  assert.match(deployRevisionReadiness, /family: 4/);
-  assert.match(deployRevisionReadiness, /DEFAULT_ATTEMPTS = 8/);
-  assert.match(deployRevisionReadiness, /DEFAULT_DELAY_MS = 2500/);
-  assert.match(deployRevisionReadiness, /'cache-control': 'no-cache'/);
-  assert.match(deployRevisionReadiness, /pragma: 'no-cache'/);
-  assert.match(deployRevisionReadiness, /verifyDeployRevisionWithRetry/);
-});"""
+          replacement = "test('production revision verification uses bounded IPv4 readiness retries', () => {\n  assert.match(browserSmoke, /verifyDeployRevisionWithRetry/);\n  assert.doesNotMatch(browserSmoke, /function requestRevisionText\\(url\\)/);\n  assert.match(deployRevisionReadiness, /family: 4/);\n  assert.match(deployRevisionReadiness, /DEFAULT_ATTEMPTS = 8/);\n  assert.match(deployRevisionReadiness, /DEFAULT_DELAY_MS = 2500/);\n  assert.match(deployRevisionReadiness, /'cache-control': 'no-cache'/);\n  assert.match(deployRevisionReadiness, /pragma: 'no-cache'/);\n  assert.match(deployRevisionReadiness, /verifyDeployRevisionWithRetry/);\n});"
           regression, count = pattern.subn(replacement, regression, count=1)
           assert count == 1, f'expected one legacy revision test, found {count}'
           regression_path.write_text(regression, encoding='utf-8')
