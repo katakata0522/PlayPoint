@@ -9,6 +9,150 @@ const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
 const LAYOUT_START = '<!-- INTL_ARTICLE_LAYOUT_START -->';
 const LAYOUT_END = '<!-- INTL_ARTICLE_LAYOUT_END -->';
 
+// intl-seo-pages.cjs は生成途中で旧CSSを書き出すため、記事レイアウト同期を
+// 最終的な正本としてここで日本語版の視覚契約へ戻す。
+const INTL_LAYOUT_CSS = `* { box-sizing: border-box; }
+
+body {
+font-family: "Noto Sans", "Noto Sans KR", "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.intl-article-breadcrumbs .intl-breadcrumb-current {
+color: #475569;
+}
+
+.intl-layout-container .main-card {
+flex: 1;
+min-width: 0;
+max-width: none;
+margin: 0;
+background: var(--cocoon-main-bg);
+border: 1px solid var(--cocoon-border);
+border-radius: 6px;
+padding: 36px 40px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+overflow: visible;
+}
+
+.intl-layout-container .hero {
+background: transparent;
+padding: 0;
+text-align: left;
+}
+
+.intl-layout-container .hero-badge {
+display: inline-block;
+border: 1px solid #cbd5e1;
+color: #64748b;
+font-size: 11px;
+font-weight: 700;
+padding: 2px 7px;
+border-radius: 3px;
+margin-bottom: 12px;
+background: #f8fafc;
+letter-spacing: normal;
+}
+
+.intl-layout-container .hero h1 {
+max-width: none;
+}
+
+.intl-layout-container .content {
+padding: 0;
+}
+
+.intl-article-toc {
+margin: 28px 0;
+}
+
+.comparison-table {
+width: 100%;
+min-width: 520px;
+border-collapse: collapse;
+font-size: 14.5px;
+background: #ffffff;
+}
+
+.table-wrap {
+max-width: 100%;
+overflow-x: auto;
+scrollbar-gutter: stable;
+-webkit-overflow-scrolling: touch;
+margin: 24px 0;
+}
+
+.comparison-table th,
+.comparison-table td {
+padding: 12px 16px;
+border: 1px solid #e2e8f0;
+text-align: left;
+}
+
+.comparison-table th {
+background: #f1f5f9;
+font-weight: 700;
+color: #1e293b;
+}
+
+.decision-box,
+.official-source-note {
+margin: 24px 0;
+padding: 18px 20px;
+border: 1px solid #dbe2ea;
+border-left: 4px solid var(--article-accent);
+border-radius: 8px;
+background: #f8fafc;
+}
+
+.decision-box strong {
+color: var(--article-accent-dark);
+}
+
+.number-note,
+.small {
+font-size: 0.88rem;
+color: var(--cocoon-muted);
+}
+
+.intl-layout-container > .main-card > .author-box {
+display: block;
+margin-top: 48px;
+}
+
+.intl-layout-container > .main-card > .author-box p + p {
+margin-top: 6px;
+}
+
+.article-footer {
+margin-top: 28px;
+padding-top: 20px;
+border-top: 1px solid var(--cocoon-border);
+font-size: 0.88rem;
+color: var(--cocoon-muted);
+}
+
+.article-footer a,
+.intl-sidebar-policy a {
+color: var(--cocoon-link);
+text-decoration: none;
+}
+
+.article-footer a:hover,
+.intl-sidebar-policy a:hover {
+text-decoration: underline;
+}
+
+@media (max-width: 860px) {
+.intl-layout-container .main-card {
+width: 100%;
+padding: 24px 16px;
+border-radius: 0;
+border-left: none;
+border-right: none;
+}
+}
+`;
+
 const LOCALE_LAYOUT = Object.freeze({
   en: {
     navigation: 'Article navigation',
@@ -86,7 +230,7 @@ function findMainBlock(html, relativePath) {
   return { start, end: closeStart + '</main>'.length };
 }
 
-function unwrapGeneratedLayout(html, relativePath, newline) {
+function unwrapGeneratedLayout(html, relativePath) {
   const start = html.indexOf(LAYOUT_START);
   if (start < 0) return html;
   const endStart = html.indexOf(LAYOUT_END, start);
@@ -95,7 +239,7 @@ function unwrapGeneratedLayout(html, relativePath, newline) {
   const generatedBlock = html.slice(start, end);
   const main = findMainBlock(generatedBlock, relativePath);
   const mainHtml = generatedBlock.slice(main.start, main.end);
-  return html.slice(0, start) + mainHtml + html.slice(end).replace(/^\s*/, newline);
+  return html.slice(0, start) + mainHtml + html.slice(end).replace(/^\s*/, '');
 }
 
 function renderArticleChrome(localeKey, title, newline) {
@@ -103,7 +247,7 @@ function renderArticleChrome(localeKey, title, newline) {
   const labels = LOCALE_LAYOUT[localeKey];
   const homeHref = '/' + localeKey + '/';
   const guidesHref = homeHref + 'articles/';
-  const lines = [
+  return [
     CHROME_START,
     '<header class="site-header intl-article-site-header">',
     '  <div class="site-header-inner">',
@@ -130,8 +274,7 @@ function renderArticleChrome(localeKey, title, newline) {
     '  </nav>',
     '</div>',
     CHROME_END
-  ];
-  return lines.join(newline);
+  ].join(newline);
 }
 
 function renderSidebar(localeKey, newline) {
@@ -139,7 +282,7 @@ function renderSidebar(localeKey, newline) {
   const labels = LOCALE_LAYOUT[localeKey];
   const homeHref = '/' + localeKey + '/';
   const articles = Array.isArray(locale.articles) ? locale.articles.slice(0, 4) : [];
-  const lines = [
+  return [
     '<aside class="sidebar-column intl-article-sidebar" aria-label="' + escapeHtml(labels.sidebar) + '">',
     '  <section class="sidebar-widget">',
     '    <h2 class="sidebar-widget-title">' + escapeHtml(locale.siteName) + '</h2>',
@@ -162,8 +305,7 @@ function renderSidebar(localeKey, newline) {
     '    <div class="sidebar-widget-body"><a href="/author/katakata.html">' + escapeHtml(locale.policyLabel) + '</a></div>',
     '  </section>',
     '</aside>'
-  ];
-  return lines.join(newline);
+  ].join(newline);
 }
 
 function renderArticleLayout(localeKey, mainHtml, newline) {
@@ -180,7 +322,7 @@ function renderArticleLayout(localeKey, mainHtml, newline) {
 function synchronizeArticle(html, localeKey, relativePath) {
   const newline = html.includes('\r\n') ? '\r\n' : '\n';
   const withoutChrome = html.replace(markerPattern(CHROME_START, CHROME_END), newline);
-  const unwrapped = unwrapGeneratedLayout(withoutChrome, relativePath, newline);
+  const unwrapped = unwrapGeneratedLayout(withoutChrome, relativePath);
   const title = extractArticleTitle(unwrapped, relativePath);
   const main = findMainBlock(unwrapped, relativePath);
   const mainHtml = unwrapped.slice(main.start, main.end);
@@ -189,8 +331,17 @@ function synchronizeArticle(html, localeKey, relativePath) {
   return unwrapped.slice(0, main.start).replace(/\s*$/, newline) + chrome + newline + layout + unwrapped.slice(main.end);
 }
 
+function synchronizeIntlArticleStylesheet(rootDir) {
+  const cssPath = path.join(rootDir, 'en', 'articles', 'intl-article.css');
+  fs.mkdirSync(path.dirname(cssPath), { recursive: true });
+  const before = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
+  if (before === INTL_LAYOUT_CSS) return false;
+  fs.writeFileSync(cssPath, INTL_LAYOUT_CSS, 'utf8');
+  return true;
+}
+
 function synchronizeIntlArticleLayouts(rootDir) {
-  const summary = { checked: 0, changed: 0 };
+  const summary = { checked: 0, changed: 0, stylesheetChanged: synchronizeIntlArticleStylesheet(rootDir) };
   for (const localeKey of Object.keys(LOCALE_LAYOUT)) {
     const articleDir = path.join(rootDir, localeKey, 'articles');
     if (!fs.existsSync(articleDir)) continue;
@@ -212,7 +363,9 @@ function synchronizeIntlArticleLayouts(rootDir) {
 module.exports = {
   CHROME_END,
   CHROME_START,
+  INTL_LAYOUT_CSS,
   LAYOUT_END,
   LAYOUT_START,
-  synchronizeIntlArticleLayouts
+  synchronizeIntlArticleLayouts,
+  synchronizeIntlArticleStylesheet
 };
