@@ -1,0 +1,401 @@
+/* 日本語記事を国際版と同じ「記事本文が主役」の1カラム構造へ揃える公開レイアウト契約 */
+html[lang="ja"] {
+  --ja-article-bg: #f3f6fb;
+  --ja-article-card: #fff;
+  --ja-article-text: #172033;
+  --ja-article-muted: #596579;
+  --ja-article-brand: #124ea4;
+  --ja-article-brand-dark: #0b3474;
+  --ja-article-brand-soft: #eaf2ff;
+  --ja-article-action: #0f7a46;
+  --ja-article-action-hover: #0b6238;
+  --ja-article-warning-soft: #fff6e5;
+  --ja-article-border: #d8e1ee;
+  --ja-article-radius: 16px;
+}
+
+html[lang="ja"] body {
+  background: var(--ja-article-bg);
+  color: var(--ja-article-text);
+  line-height: 1.85;
+}
+
+/* 記事詳細では本文を主役にする。旧カテゴリ帯とサイドバーは一覧側へ役割を戻す。 */
+html[lang="ja"] .global-nav,
+html[lang="ja"] .sidebar-column {
+  display: none;
+}
+
+html[lang="ja"] .site-header {
+  padding: 14px 0;
+  background: var(--ja-article-card);
+  border-bottom: 1px solid var(--ja-article-border);
+}
+
+html[lang="ja"] .site-header-inner,
+html[lang="ja"] .breadcrumbs-wrapper {
+  max-width: 860px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+html[lang="ja"] .site-logo {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+html[lang="ja"] .site-header-links {
+  gap: 14px;
+  font-size: 0.84rem;
+}
+
+html[lang="ja"] .breadcrumbs-wrapper {
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* 旧2カラムの外枠を国際版と同じ860pxの単一記事カードへ変換する。 */
+html[lang="ja"] .layout-container {
+  display: block;
+  max-width: 860px;
+  margin: 2rem auto 3.2rem;
+  padding: 0;
+}
+
+html[lang="ja"] .main-content-column,
+html[lang="ja"] body > main.content {
+  width: 100%;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background: var(--ja-article-card);
+  border: 1px solid var(--ja-article-border);
+  border-radius: var(--ja-article-radius);
+  box-shadow: 0 18px 50px rgba(18, 42, 75, 0.09);
+}
+
+html[lang="ja"] .main-content-column > :not(.hero),
+html[lang="ja"] body > main.content > :not(.hero) {
+  margin-left: 2.2rem;
+  margin-right: 2.2rem;
+}
+
+html[lang="ja"] .main-content-column > .hero,
+html[lang="ja"] body > main.content > .hero {
+  margin: 0;
+  padding: 2.7rem 2.2rem;
+  background: var(--ja-article-brand-dark);
+  text-align: left;
+}
+
+html[lang="ja"] .hero .hero-badge,
+html[lang="ja"] .hero .pr-tag {
+  display: inline-block;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  color: #dceaff;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+html[lang="ja"] .hero .article-title,
+html[lang="ja"] .hero h1 {
+  max-width: 720px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.55rem, 4vw, 2.15rem);
+  font-weight: 800;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+html[lang="ja"] .hero .article-post-meta,
+html[lang="ja"] .hero .hero-meta {
+  display: block;
+  margin: 1rem 0 0;
+  padding: 0;
+  color: #dce7f7;
+  border: 0;
+  font-size: 0.9rem;
+}
+
+/* 見出しは旧い帯ではなく、国際版と同じ本文の区切りとして扱う。 */
+html[lang="ja"] .main-content-column h2,
+html[lang="ja"] .content h2,
+html[lang="ja"] .section h2 {
+  display: block;
+  margin: 2.5rem 0 1rem;
+  padding: 0 0 0.55rem;
+  color: var(--ja-article-brand-dark);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid var(--ja-article-border);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 1.3rem;
+  line-height: 1.5;
+}
+
+html[lang="ja"] .main-content-column h3,
+html[lang="ja"] .content h3,
+html[lang="ja"] .section h3 {
+  margin: 1.5rem 0 0.65rem;
+  padding: 0;
+  color: var(--ja-article-text);
+  background: transparent;
+  border: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+html[lang="ja"] .content p,
+html[lang="ja"] .section p {
+  margin-bottom: 1rem;
+}
+
+/* 最初に見る結論。情報色の青だけを使い、状態色とは混ぜない。 */
+html[lang="ja"] .answer-box,
+html[lang="ja"] .editorial-answer {
+  position: relative;
+  margin-top: 2.2rem;
+  margin-bottom: 2.2rem;
+  padding: 1.5rem;
+  color: var(--ja-article-text);
+  background: var(--ja-article-brand-soft);
+  border: 0;
+  border-left: 5px solid var(--ja-article-brand);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+html[lang="ja"] .answer-box::before,
+html[lang="ja"] .editorial-answer::before {
+  content: none;
+}
+
+html[lang="ja"] .answer-box h2,
+html[lang="ja"] .editorial-answer h2 {
+  margin: 0 0 0.7rem;
+  padding: 0;
+  color: var(--ja-article-brand-dark);
+  border: 0;
+  font-size: 1.2rem;
+}
+
+/* 既存JSが先に結論ボックス内へ誤挿入する自動目次は隠す。
+   DOM後挿入による大きなCLSも同時に防ぎ、正常な位置の目次は維持する。 */
+html[lang="ja"] .answer-box > .inpage-toc,
+html[lang="ja"] .editorial-answer > .inpage-toc {
+  display: none;
+}
+
+/* 判明事項は比較しやすさを優先し、装飾を増やさない。 */
+html[lang="ja"] .knowledge-boundary {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  padding: 1.3rem;
+  background: #f8fafc;
+  border: 1px solid var(--ja-article-border);
+  border-radius: 12px;
+}
+
+html[lang="ja"] .knowledge-boundary h2 {
+  margin: 0 0 1rem !important;
+  padding: 0 0 0.55rem !important;
+  color: var(--ja-article-brand-dark) !important;
+  border-bottom: 2px solid var(--ja-article-border) !important;
+  font-size: 1.15rem !important;
+}
+
+html[lang="ja"] .knowledge-boundary__grid > div {
+  border-color: var(--ja-article-border);
+  border-radius: 10px;
+}
+
+html[lang="ja"] .knowledge-boundary__grid h3 {
+  color: var(--ja-article-brand-dark);
+}
+
+/* 最後に行動する場所。操作色は緑に固定する。 */
+html[lang="ja"] .article-calculator-prompt,
+html[lang="ja"] .content .cta-box {
+  margin-top: 2.2rem;
+  margin-bottom: 2.2rem;
+  padding: 1.8rem;
+  color: #fff;
+  text-align: center;
+  background: var(--ja-article-brand-dark);
+  border: 0;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+html[lang="ja"] .article-calculator-prompt__label {
+  margin: 0 0 0.4rem;
+  color: #bcd3f4;
+}
+
+html[lang="ja"] .article-calculator-prompt h2,
+html[lang="ja"] .content .cta-box h2,
+html[lang="ja"] .content .cta-box h3 {
+  margin: 0 0 0.55rem !important;
+  padding: 0 !important;
+  color: #fff !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: 1.2rem !important;
+}
+
+html[lang="ja"] .article-calculator-prompt p,
+html[lang="ja"] .content .cta-box p {
+  margin: 0 0 1.1rem;
+  color: #e1ebf8;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+html[lang="ja"] .article-calculator-prompt__button,
+html[lang="ja"] .content .cta-box .cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 0;
+  padding: 0.9rem 1.45rem;
+  color: #fff !important;
+  background: var(--ja-article-action);
+  border-radius: 8px;
+  box-shadow: none;
+  font-weight: 800;
+}
+
+html[lang="ja"] .article-calculator-prompt__button:hover,
+html[lang="ja"] .content .cta-box .cta-btn:hover {
+  background: var(--ja-article-action-hover);
+  box-shadow: none;
+  transform: none;
+}
+
+/* 注意は注意色だけを使う。 */
+html[lang="ja"] .cocoon-box-alert,
+html[lang="ja"] .callout-warning,
+html[lang="ja"] .note {
+  background: var(--ja-article-warning-soft);
+  border-color: #f0d9b2;
+  color: #693c00;
+}
+
+html[lang="ja"] .table-card,
+html[lang="ja"] .table-wrap {
+  margin: 1.2rem 0;
+  border-radius: 12px;
+}
+
+html[lang="ja"] .quick-compare-table th,
+html[lang="ja"] .table-card th,
+html[lang="ja"] .table-wrap th {
+  background: var(--ja-article-brand-soft);
+  color: var(--ja-article-brand-dark);
+}
+
+html[lang="ja"] .author-profile-box,
+html[lang="ja"] .author-box {
+  margin-top: 2.5rem;
+  padding: 1.3rem 1.5rem;
+  background: #f8f9fa;
+  border: 0;
+  border-radius: 16px;
+  color: var(--ja-article-muted);
+}
+
+html[lang="ja"] .article-nav {
+  margin-top: 2.5rem;
+}
+
+html[lang="ja"] .site-footer {
+  margin-top: 0;
+}
+
+@media (max-width: 860px) {
+  html[lang="ja"] .layout-container {
+    margin: 1rem auto 2rem;
+    padding: 0 12px;
+  }
+
+  html[lang="ja"] .main-content-column {
+    border-left: 1px solid var(--ja-article-border);
+    border-right: 1px solid var(--ja-article-border);
+    border-radius: var(--ja-article-radius);
+  }
+}
+
+@media (max-width: 600px) {
+  html[lang="ja"] .site-header-inner {
+    align-items: flex-start;
+    padding: 0 16px;
+    text-align: left;
+  }
+
+  html[lang="ja"] .site-header-links {
+    justify-content: flex-start;
+  }
+
+  html[lang="ja"] .breadcrumbs-wrapper {
+    padding: 0 16px;
+  }
+
+  html[lang="ja"] .layout-container {
+    margin: 0;
+    padding: 0;
+  }
+
+  html[lang="ja"] .main-content-column,
+  html[lang="ja"] body > main.content {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  html[lang="ja"] .main-content-column > .hero,
+  html[lang="ja"] body > main.content > .hero {
+    padding: 2rem 1.3rem;
+  }
+
+  html[lang="ja"] .hero .article-title,
+  html[lang="ja"] .hero h1 {
+    font-size: 1.35rem;
+  }
+
+  html[lang="ja"] .main-content-column > :not(.hero),
+  html[lang="ja"] body > main.content > :not(.hero) {
+    margin-left: 1.4rem;
+    margin-right: 1.4rem;
+  }
+
+  html[lang="ja"] .main-content-column h2,
+  html[lang="ja"] .content h2,
+  html[lang="ja"] .section h2 {
+    margin-top: 2.1rem;
+    font-size: 1.18rem;
+  }
+
+  html[lang="ja"] .answer-box,
+  html[lang="ja"] .editorial-answer {
+    padding: 1.2rem;
+  }
+
+  html[lang="ja"] .article-calculator-prompt,
+  html[lang="ja"] .content .cta-box {
+    padding: 1.5rem 1.2rem;
+  }
+
+  html[lang="ja"] .knowledge-boundary__grid {
+    grid-template-columns: 1fr;
+  }
+}
