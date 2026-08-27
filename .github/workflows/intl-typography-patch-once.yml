@@ -8,84 +8,27 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: intl-typography-patch-once
+  cancel-in-progress: false
+
 jobs:
   patch:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: fix/intl-readable-wrapping
           fetch-depth: 0
 
-      - name: Patch international typography source and regression tests
-        shell: python
-        run: |
-          from pathlib import Path
+      - name: Patch source and tests
+        run: node scripts/tmp-intl-typography-patch.cjs
 
-          source_path = Path('scripts/intl-article-layout.cjs')
-          source = source_path.read_text(encoding='utf-8')
-          old = '''.intl-layout-container .hero h1 {
-          max-width: none;
-          }
-
-          .intl-layout-container .content {
-          padding: 0;
-          }
-'''
-          new = '''.intl-layout-container .hero h1 {
-          max-width: none;
-          }
-
-          .intl-layout-container .hero h1,
-          .intl-layout-container .content h2,
-          .intl-layout-container .content h3,
-          .intl-layout-container .sidebar-widget-title {
-          text-wrap: balance;
-          }
-
-          .intl-layout-container .sidebar-article-list li,
-          .intl-layout-container .content .cta-box .cta-btn,
-          .intl-article-breadcrumbs nav {
-          text-wrap: pretty;
-          }
-
-          .intl-layout-container .content {
-          padding: 0;
-          }
-'''
-          if old not in source:
-              raise SystemExit('intl article CSS insertion point not found')
-          source_path.write_text(source.replace(old, new, 1), encoding='utf-8')
-
-          test_path = Path('tests/intl-article-layout.test.cjs')
-          tests = test_path.read_text(encoding='utf-8')
-          marker = "test('international article CSS has one canonical writer', () => {"
-          block = r'''test('international article typography keeps translated headings readable without hard-coded breaks', () => {
-            const css = fs.readFileSync(path.join(root, 'en', 'articles', 'intl-article.css'), 'utf8');
-            assert.match(css, /\.intl-layout-container \.hero h1,[\s\S]*?\.intl-layout-container \.sidebar-widget-title\s*\{[^}]*text-wrap:\s*balance/is);
-            assert.match(css, /\.intl-layout-container \.sidebar-article-list li,[\s\S]*?\.intl-article-breadcrumbs nav\s*\{[^}]*text-wrap:\s*pretty/is);
-            assert.doesNotMatch(css, /word-break:\s*break-all/i, 'international article text must not be split arbitrarily inside words');
-
-            const articleDir = path.join(root, 'en', 'articles');
-            const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
-            for (const file of files) {
-              const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
-              for (const heading of html.matchAll(/<(h[1-3])\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
-                assert.doesNotMatch(heading[2], /<br\b/i, 'en/' + file + ': headings must wrap responsively instead of using forced line breaks');
-              }
-            }
-          });
-
-          '''
-          if marker not in tests:
-              raise SystemExit('test insertion point not found')
-          test_path.write_text(tests.replace(marker, block + marker, 1), encoding='utf-8')
-
-      - name: Generate derived outputs
+      - name: Generate canonical outputs
         run: node scripts/prepare-pr.cjs
 
-      - name: Run focused international article regressions
+      - name: Run focused regression tests
         run: node --test tests/intl-article-layout.test.cjs
 
       - name: Verify prepare-pr fixed point
@@ -94,11 +37,13 @@ jobs:
           node scripts/prepare-pr.cjs
           git diff --exit-code
 
-      - name: Commit patch and generated outputs
+      - name: Remove temporary patch files
+        run: rm -f .github/workflows/intl-typography-patch-once.yml scripts/tmp-intl-typography-patch.cjs
+
+      - name: Commit canonical patch
         run: |
-          rm .github/workflows/intl-typography-patch-once.yml
-          git add -A
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
           git commit -m "fix: improve international article line wrapping"
           git push origin HEAD:fix/intl-readable-wrapping
