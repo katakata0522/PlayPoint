@@ -18,6 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
+      # 日本語版を正本にしたレイアウト生成を再確認する。
       - name: Generate international article layout
         run: node scripts/prepare-pr.cjs
 
