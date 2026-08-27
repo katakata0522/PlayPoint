@@ -57,6 +57,19 @@ letter-spacing: normal;
 max-width: none;
 }
 
+.intl-layout-container .hero h1,
+.intl-layout-container .content h2,
+.intl-layout-container .content h3,
+.intl-layout-container .sidebar-widget-title {
+text-wrap: balance;
+}
+
+.intl-layout-container .sidebar-article-list li,
+.intl-layout-container .content .cta-box .cta-btn,
+.intl-article-breadcrumbs nav {
+text-wrap: pretty;
+}
+
 .intl-layout-container .content {
 padding: 0;
 }
