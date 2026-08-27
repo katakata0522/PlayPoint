@@ -22,15 +22,14 @@ const LEGACY_BLOG_DESCRIPTIONS = Object.freeze([
   'Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。'
 ]);
 
-const LEGACY_ARTICLE_BRANDS = Object.freeze([
-  'Google Play Points 計算機 ＆ 攻略ガイド',
-  'Playポイント計算機'
-]);
-
 function replaceKnownValue(text, legacyValues, nextValue) {
   let output = text;
   for (const legacyValue of legacyValues) output = output.replaceAll(legacyValue, nextValue);
   return output;
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function syncBlogIndexBrand(html) {
@@ -69,22 +68,43 @@ function syncBlogIndexBrand(html) {
   return next;
 }
 
+function syncArticleHeaderBrand(html, relativePath) {
+  const logoPattern = /(<a\b(?=[^>]*\bclass=["'][^"']*\b(?:site-logo|logo)\b[^"']*["'])[^>]*>)[\s\S]*?(<\/a>)/i;
+  if (!logoPattern.test(html)) {
+    throw new Error(`${relativePath}: 記事ヘッダーのロゴリンクが見つかりません`);
+  }
+  return html.replace(logoPattern, `$1🎮 ${GUIDE_BRAND}$2`);
+}
+
+function syncArticleOgSiteName(html) {
+  const existingPattern = /<meta\s+property=["']og:site_name["']\s+content=["'][^"']*["'][^>]*\/?\s*>/i;
+  if (existingPattern.test(html)) {
+    return html.replace(existingPattern, `<meta property="og:site_name" content="${GUIDE_BRAND}" />`);
+  }
+
+  const ogTypePattern = /(<meta\s+property=["']og:type["'][^>]*\/?\s*>)/i;
+  if (ogTypePattern.test(html)) {
+    return html.replace(ogTypePattern, `$1\n    <meta property="og:site_name" content="${GUIDE_BRAND}" />`);
+  }
+
+  const ogTitlePattern = /(<meta\s+property=["']og:title["'][^>]*\/?\s*>)/i;
+  if (ogTitlePattern.test(html)) {
+    return html.replace(ogTitlePattern, `$1\n    <meta property="og:site_name" content="${GUIDE_BRAND}" />`);
+  }
+
+  throw new Error('og:site_nameを挿入するOpen Graph基準タグが見つかりません');
+}
+
 function syncArticleBrand(html, relativePath) {
-  let next = html;
-
-  const logoPattern = /(<a\b[^>]*class=["'][^"']*\b(?:site-logo|logo)\b[^"']*["'][^>]*>)(?:🎮\s*)?(?:Google Play Points 計算機 ＆ 攻略ガイド|Playポイント計算機)(<\/a>)/i;
-  next = next.replace(logoPattern, `$1🎮 ${GUIDE_BRAND}$2`);
+  let next = syncArticleHeaderBrand(html, relativePath);
   next = next.replaceAll('<span class="nav-sub">全攻略ガイド</span>', '<span class="nav-sub">完全攻略ガイド</span>');
-  next = next.replace(
-    /(<meta\s+property=["']og:site_name["']\s+content=["'])(?:PlayPoint Lab\.|Playポイント計算機)(["'][^>]*>)/i,
-    `$1${GUIDE_BRAND}$2`
-  );
+  next = syncArticleOgSiteName(next);
 
-  const hasGuideLogo = new RegExp(`<a\\b[^>]*class=["'][^"']*\\b(?:site-logo|logo)\\b[^"']*["'][^>]*>🎮\\s*${GUIDE_BRAND.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}<\\/a>`, 'i').test(next);
-  if (!hasGuideLogo) {
+  const guidePattern = new RegExp(`<a\\b(?=[^>]*\\bclass=["'][^"']*\\b(?:site-logo|logo)\\b[^"']*["'])[^>]*>🎮\\s*${escapeRegExp(GUIDE_BRAND)}<\\/a>`, 'i');
+  if (!guidePattern.test(next)) {
     throw new Error(`${relativePath}: 記事ヘッダーを「${GUIDE_BRAND}」へ同期できませんでした`);
   }
-  if (!next.includes(`property="og:site_name" content="${GUIDE_BRAND}"`)) {
+  if (!new RegExp(`property=["']og:site_name["']\\s+content=["']${escapeRegExp(GUIDE_BRAND)}["']`, 'i').test(next)) {
     throw new Error(`${relativePath}: og:site_nameを「${GUIDE_BRAND}」へ同期できませんでした`);
   }
 
@@ -140,6 +160,8 @@ module.exports = {
   GUIDE_PAGE_TITLE,
   japaneseArticleFiles,
   syncArticleBrand,
+  syncArticleHeaderBrand,
+  syncArticleOgSiteName,
   syncBlogIndexBrand,
   syncJapaneseGuideBrand
 };
