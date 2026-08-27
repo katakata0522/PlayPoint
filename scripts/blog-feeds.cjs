@@ -3,8 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const FEED_TITLE = 'Google Play Points攻略・使い方ブログ | Playポイント計算機';
-const FEED_DESCRIPTION = 'Play Pointsの反映タイミング、使い道、ランク維持、キャンペーン確認、トラブル対処をまとめたPlayポイント計算機の攻略ブログです。';
+const FEED_TITLE = 'Google Play Points 完全攻略ガイド | Playポイント計算機';
+const FEED_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 
 function escapeXml(value) {
