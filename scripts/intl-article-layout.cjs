@@ -9,8 +9,8 @@ const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
 const LAYOUT_START = '<!-- INTL_ARTICLE_LAYOUT_START -->';
 const LAYOUT_END = '<!-- INTL_ARTICLE_LAYOUT_END -->';
 
-// intl-seo-pages.cjs は生成途中で旧CSSを書き出すため、記事レイアウト同期を
-// 最終的な正本としてここで日本語版の視覚契約へ戻す。
+// 国際記事は article-shared.css を視覚契約の正本とし、このCSSは言語・既存要素の差分だけを持つ。
+// intl-seo-pages.cjs が正規生成時にこの内容を intl-article.css へ一度だけ書き出す。
 const INTL_LAYOUT_CSS = `* { box-sizing: border-box; }
 
 body {
@@ -328,20 +328,13 @@ function synchronizeArticle(html, localeKey, relativePath) {
   const mainHtml = unwrapped.slice(main.start, main.end);
   const chrome = renderArticleChrome(localeKey, title, newline);
   const layout = renderArticleLayout(localeKey, mainHtml, newline);
-  return unwrapped.slice(0, main.start).replace(/\s*$/, newline) + chrome + newline + layout + unwrapped.slice(main.end);
-}
-
-function synchronizeIntlArticleStylesheet(rootDir) {
-  const cssPath = path.join(rootDir, 'en', 'articles', 'intl-article.css');
-  fs.mkdirSync(path.dirname(cssPath), { recursive: true });
-  const before = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
-  if (before === INTL_LAYOUT_CSS) return false;
-  fs.writeFileSync(cssPath, INTL_LAYOUT_CSS, 'utf8');
-  return true;
+  const trailingHtml = unwrapped.slice(main.end).replace(/^\s*/, '');
+  return unwrapped.slice(0, main.start).replace(/\s*$/, newline) + chrome + newline + layout
+    + (trailingHtml ? newline + trailingHtml : '');
 }
 
 function synchronizeIntlArticleLayouts(rootDir) {
-  const summary = { checked: 0, changed: 0, stylesheetChanged: synchronizeIntlArticleStylesheet(rootDir) };
+  const summary = { checked: 0, changed: 0 };
   for (const localeKey of Object.keys(LOCALE_LAYOUT)) {
     const articleDir = path.join(rootDir, localeKey, 'articles');
     if (!fs.existsSync(articleDir)) continue;
@@ -366,6 +359,5 @@ module.exports = {
   INTL_LAYOUT_CSS,
   LAYOUT_END,
   LAYOUT_START,
-  synchronizeIntlArticleLayouts,
-  synchronizeIntlArticleStylesheet
+  synchronizeIntlArticleLayouts
 };

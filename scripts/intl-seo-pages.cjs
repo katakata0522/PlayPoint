@@ -6,11 +6,11 @@ const {
   ARTICLE_HUB_CONTENT,
   ARTICLE_LABELS,
   INTL_ARTICLES,
-  INTL_ARTICLE_CSS,
   LOCALES,
   MANUAL_MAINTENANCE_PAGES,
   PAGE_TYPES
 } = require('./intl-seo-content.cjs');
+const { INTL_LAYOUT_CSS } = require('./intl-article-layout.cjs');
 const { GENERATED_INTL_PAGE_CONTENT_DATE, getGeneratedIntlPageContentDate } = require('./content-dates.cjs');
 
 // 既存の /amount/10000/ URLは維持しつつ、海外3地域では現地通貨の入口として表示する。
@@ -562,7 +562,7 @@ function writeIntlSeoPages(rootDir, assetVersions) {
     }
   }
   const { minifyCSS } = require('../.github/scripts/minify.cjs');
-  writeFile(rootDir, 'en/articles/intl-article.css', minifyCSS(INTL_ARTICLE_CSS));
+  writeFile(rootDir, 'en/articles/intl-article.css', minifyCSS(INTL_LAYOUT_CSS));
   for (const localeKey of Object.keys(LOCALES)) {
     writeFile(rootDir, `${localeKey}/articles/index.html`, renderArticleHub(localeKey, assetVersions));
   }

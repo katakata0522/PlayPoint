@@ -18,7 +18,8 @@ test('international article shell synchronization is idempotent and preserves ar
   fs.mkdirSync(articleDir, { recursive: true });
   const articlePath = path.join(articleDir, 'sample.html');
   const originalArticle = '<article class="content"><h1>Sample guide</h1><p>Keep this sentence exactly.</p></article>';
-  fs.writeFileSync(articlePath, '<!doctype html><html lang="en"><body><main class="main-card">' + originalArticle + '</main></body></html>');
+  const trailingScript = '<script src="/test.js"></script>';
+  fs.writeFileSync(articlePath, '<!doctype html><html lang="en"><body><main class="main-card">' + originalArticle + '</main>\n' + trailingScript + '</body></html>');
 
   synchronizeIntlArticleLayouts(fixtureRoot);
   const first = fs.readFileSync(articlePath, 'utf8');
@@ -26,6 +27,7 @@ test('international article shell synchronization is idempotent and preserves ar
   const second = fs.readFileSync(articlePath, 'utf8');
 
   assert.equal(second, first, 'layout synchronization must be idempotent');
+  assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_END -->\n<script src="\/test\.js"><\/script>/, 'layout boundary must keep exactly one newline before trailing scripts');
   assert.ok(first.includes(originalArticle), 'article content must remain byte-for-byte intact');
   assert.match(first, /<!-- INTL_ARTICLE_CHROME_START -->[\s\S]*class="global-nav intl-global-nav"/);
   assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_START -->[\s\S]*class="layout-container intl-layout-container"/);
@@ -73,4 +75,13 @@ test('international article CSS inherits the Japanese visual contract instead of
   assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*padding:\s*36px 40px/is);
   assert.match(css, /\.intl-layout-container \.hero\s*\{[^}]*background:\s*transparent/is);
   assert.match(css, /\.intl-layout-container \.content\s*\{[^}]*padding:\s*0/is);
+});
+
+
+test('international article CSS has one canonical writer', () => {
+  const pagesSource = fs.readFileSync(path.join(root, 'scripts', 'intl-seo-pages.cjs'), 'utf8');
+  const layoutSource = fs.readFileSync(modulePath, 'utf8');
+  assert.match(pagesSource, /minifyCSS\(INTL_LAYOUT_CSS\)/);
+  assert.doesNotMatch(pagesSource, /minifyCSS\(INTL_ARTICLE_CSS\)/);
+  assert.doesNotMatch(layoutSource, /function synchronizeIntlArticleStylesheet/);
 });
