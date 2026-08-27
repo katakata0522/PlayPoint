@@ -62,6 +62,7 @@ test('verified Japanese counterparts have reciprocal hreflang sets', () => {
     const jaFile = sitePathToFile(jaPath);
     assert.ok(fs.existsSync(jaFile), 'missing Japanese target: ' + jaPath);
     const jaHtml = fs.readFileSync(jaFile, 'utf8');
+    // A reciprocal language cluster must include the Japanese page itself exactly once.
     const jaSelf = 'hreflang="ja" href="' + SITE_ORIGIN + jaPath + '"';
     assert.equal(jaHtml.split(jaSelf).length - 1, 1, 'Japanese counterpart must expose exactly one self-referential ja hreflang: ' + jaPath);
     for (const [locale, hreflang] of INTL_LOCALES) {
