@@ -45,7 +45,7 @@ export const SHARE = {
         const label = String(value || '').toLowerCase();
         if (/diamond|ダイヤ|다이아|鑽石/i.test(label)) return 'diamond';
         if (/platinum|プラチナ|플래티넘|白金|鉑金/i.test(label)) return 'platinum';
-        if (/gold|ゴールド|골드|黃金|金級/i.test(label)) return 'gold';
+        if (/gold|ゴールド|골드|黃金|黃金級/i.test(label)) return 'gold';
         if (/silver|シルバー|실버|白銀|銀級/i.test(label)) return 'silver';
         return '';
     },

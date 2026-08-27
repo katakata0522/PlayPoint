@@ -369,21 +369,21 @@ export const CONFIGS = {
     },
     'TW': {
         lang: "zh-TW",
-        statuses: { "銅級": 1.0, "銀級": 1.25, "金級": 1.5, "白金級": 1.75, "鑽石級": 2.0 },
+        statuses: { "銅級": 1.0, "銀級": 1.25, "黃金級": 1.5, "白金級": 1.75, "鑽石級": 2.0 },
         statusRates: { 1.0: 1.0, 1.25: 1.25, 1.5: 1.5, 1.75: 1.75, 2.0: 2.0 },
-        thresholds: { "銀級": 250, "金級": 1000, "白金級": 4000, "鑽石級": 15000 },
-        statusPointsMapping: { 1.0: ["銀級", "金級", "白金級", "鑽石級"], 1.25: ["金級", "白金級", "鑽石級"], 1.5: ["白金級", "鑽石級"], 1.75: ["鑽石級"], 2.0: [] },
+        thresholds: { "銀級": 250, "黃金級": 1000, "白金級": 4000, "鑽石級": 15000 },
+        statusPointsMapping: { 1.0: ["銀級", "黃金級", "白金級", "鑽石級"], 1.25: ["黃金級", "白金級", "鑽石級"], 1.5: ["白金級", "鑽石級"], 1.75: ["鑽石級"], 2.0: [] },
         currencySymbol: "NT$",
         rateUnit: "30元",
         spendUnit: 30,
         tooltips: {
             'tooltip-current-status': `<strong>【如何確認目前的等級】</strong><ol><li>開啟 Google Play 商店。</li><li>點擊右上角的個人資料圖示。</li><li>選擇「Play Points」。</li></ol><hr><p>※系統會根據您的等級自動填入基本回饋率。</p>`,
-            'tooltip-target-status': `<strong>【各等級達成條件】</strong><ul><li><strong>銀級:</strong> 250 pt 以上</li><li><strong>金級:</strong> 1,000 pt 以上</li><li><strong>白金級:</strong> 4,000 pt 以上</li><li><strong>鑽石級:</strong> 15,000 pt 以上</li></ul><hr><p>※點數於每年1月1日至12月31日期間累積，達到目標點數時將立即升級（有效期限至翌年末）。</p>`,
+            'tooltip-target-status': `<strong>【各等級達成條件】</strong><ul><li><strong>銀級:</strong> 250 pt 以上</li><li><strong>黃金級:</strong> 1,000 pt 以上</li><li><strong>白金級:</strong> 4,000 pt 以上</li><li><strong>鑽石級:</strong> 15,000 pt 以上</li></ul><hr><p>※點數於每年1月1日至12月31日期間累積，達到目標點數時將立即升級（有效期限至翌年末）。</p>`,
             'tooltip-needed-points': `<strong>【如何確認所需點數】</strong><ol><li>在 Google Play 商店開啟 Play Points。</li><li>輸入畫面顯示的下一等級所需點數。</li></ol><hr><p>月平均與每日金額是以今年12月31日前維持相同進度的估算。達到的新等級會維持到下一個日曆年年底，並可能在每年年初依前一年的累積點數重新判定。</p>`,
             'tooltip-base-rate': `<strong>【直接輸入回饋率】</strong><p>系統會先填入目前等級的基本回饋率。只有官方活動畫面顯示「每 NT$30 可得 3 點」等回饋率時，才改成該數值。</p><hr><p>若活動標題顯示「3 倍」，請打開活動詳情並輸入每 NT$30 顯示的最終特別獲點率；不要把等級基本獲點率乘上倍率。資格、啟用與上限請以 Google Play 為準。</p>`,
             'tooltip-multiplier': `<strong>活動特別獲點率</strong><p>請輸入 Google Play 優惠畫面顯示的最終獲點率，例如每 NT$30 3 點。</p><p><strong>不要把目前等級的基本獲點率再乘以 3。</strong>計算器會比較基本獲點率與特別獲點率並採用較高者。</p><hr><p>適用商品、期間、上限與是否需要啟用，請以 Google Play 顯示為準。</p>`,
             'tooltip-amount-yen': `<strong>【計算獲得點數】</strong><p>模擬輸入金額可獲得的預估點數。</p>`,
-            'tooltip-reverse-status': `<strong>各等級基本回饋率:</strong><ul><li><strong>銅級:</strong> 1.0 pt / 30元</li><li><strong>銀級:</strong> 1.25 pt / 30元</li><li><strong>金級:</strong> 1.5 pt / 30元</li><li><strong>白金級:</strong> 1.75 pt / 30元</li><li><strong>鑽石級:</strong> 2.0 pt / 30元</li></ul>`
+            'tooltip-reverse-status': `<strong>各等級基本回饋率:</strong><ul><li><strong>銅級:</strong> 1.0 pt / 30元</li><li><strong>銀級:</strong> 1.25 pt / 30元</li><li><strong>黃金級:</strong> 1.5 pt / 30元</li><li><strong>白金級:</strong> 1.75 pt / 30元</li><li><strong>鑽石級:</strong> 2.0 pt / 30元</li></ul>`
         },
         uiText: {
             title: "Google Play Points 計算器｜距離升級還差多少？", mainTitle: "Google Play Points 計算器",

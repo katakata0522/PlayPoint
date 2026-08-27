@@ -17,7 +17,7 @@ const HUB_CONTENT = {
     description: '한국 공식 조건을 확인한 Google Play Points 등급, 가입, 국가 변경, 배율, 실버 달성, 주간 리워드와 계정 문제 가이드입니다.',
     links: [
       ['/ko/articles/google-play-points-super-weekly-reward.html', '슈퍼 위클리 리워드 대상·재고·슈퍼 티켓'],
-      ['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되거나 완료되지 않을 때']
+      ['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되지 않거나 완료되지 않을 때']
     ]
   },
   tw: {
