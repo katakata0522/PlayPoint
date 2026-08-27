@@ -10,8 +10,6 @@ const GENERATED_PROMPT_ATTRIBUTE = 'data-generated-article-prompt="true"';
 const GENERATED_PROMPT_PATTERN = /\s*<aside\b(?=[^>]*\bdata-generated-article-prompt=["']true["'])[^>]*>[\s\S]*?<\/aside>/i;
 const LEGACY_GENERATED_PROMPT_PATTERN = /\s*<aside\b[^>]*class=["']article-calculator-prompt cta-box["'][^>]*>[\s\S]*?<\/aside>/i;
 const ARTICLE_PROMPT_PATTERN = /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i;
-const JAPANESE_ARTICLE_LAYOUT_STYLESHEET = '/articles/ja-article-layout.css';
-const JAPANESE_ARTICLE_LAYOUT_PATTERN = /<link\b[^>]*\bhref=["'][^"']*\/articles\/ja-article-layout\.css(?:\?[^"']*)?["'][^>]*>/i;
 
 const HEADER_HTML = `    <header class="header article-static-header">
         <div class="header-inner">
@@ -40,14 +38,6 @@ function japaneseArticlePaths(rootDir) {
     .map(article => article && article.file)
     .filter(file => typeof file === 'string' && /^\.\.\/articles\/[^/]+\.html$/.test(file))
     .map(file => path.join(rootDir, file.replace(/^\.\.\//, ''))))];
-}
-
-function insertArticleLayoutStylesheet(html) {
-  if (JAPANESE_ARTICLE_LAYOUT_PATTERN.test(html)) return html;
-  const headEnd = html.search(/<\/head>/i);
-  if (headEnd < 0) return html;
-  const stylesheet = `    <link rel="stylesheet" href="${JAPANESE_ARTICLE_LAYOUT_STYLESHEET}" />\n`;
-  return `${html.slice(0, headEnd)}${stylesheet}${html.slice(headEnd)}`;
 }
 
 function insertStaticHeader(html) {
@@ -125,9 +115,7 @@ function synchronizeArticleStaticUsability(rootDir) {
       throw new Error(`記事一覧にあるHTMLが見つかりません: ${path.relative(rootDir, articlePath)}`);
     }
     const original = fs.readFileSync(articlePath, 'utf8');
-    const next = normalizeSharedArticleCopy(
-      insertStaticPrompt(insertStaticHeader(insertArticleLayoutStylesheet(original)))
-    );
+    const next = normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original)));
     if (next === original) continue;
     fs.writeFileSync(articlePath, next, 'utf8');
     updated += 1;
@@ -146,12 +134,9 @@ module.exports = {
   GENERATED_PROMPT_ATTRIBUTE,
   GENERATED_PROMPT_PATTERN,
   HEADER_HTML,
-  JAPANESE_ARTICLE_LAYOUT_PATTERN,
-  JAPANESE_ARTICLE_LAYOUT_STYLESHEET,
   LEGACY_GENERATED_PROMPT_PATTERN,
   PROMPT_HTML,
   findPromptAnchorEnd,
-  insertArticleLayoutStylesheet,
   insertStaticHeader,
   insertStaticPrompt,
   japaneseArticlePaths,
