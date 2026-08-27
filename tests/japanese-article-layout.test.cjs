@@ -36,3 +36,9 @@ test('国際版記事へ日本語専用レイアウトCSSを混入させない',
     }
   }
 });
+
+test('先に結論ボックスへ誤挿入された自動目次はレイアウトを動かさない', () => {
+  const css = fs.readFileSync(path.join(root, 'articles', 'ja-article-layout.css'), 'utf8');
+  assert.match(css, /\.answer-box\s*>\s*\.inpage-toc[\s\S]*?display:\s*none\s*;/,
+    '結論ボックス内へ後挿入された目次を非表示にしてCLSを防ぐこと');
+});
