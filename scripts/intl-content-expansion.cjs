@@ -6,6 +6,7 @@ const {
   DEFAULT_INTERNATIONAL_LOCALE,
   INTERNATIONAL_LOCALES
 } = require('./locale-ids.cjs');
+const { getJapaneseAlternateForSlug } = require('./intl-article-hreflang-sync.cjs');
 
 const PUBLISHED_AT = '2026-08-04';
 const SITEMAP_FILE = 'sitemap-intl-content-expansion.xml';
@@ -47,7 +48,7 @@ const TOPICS = [
     labels: {
       en: "Do paid apps, games and books earn Play Points?",
       ko: "유료 앱·게임·도서 구매의 Play Points 적립 조건",
-      tw: "付費 App、遊戲與電子書的 Play Points 累積條件"
+      tw: "付費 App、遊戲與電子書的 Play Points 積點條件"
     }
   },
   {
@@ -156,7 +157,11 @@ function writeSitemap(rootDir) {
       const alternates = LOCALES.map(candidate =>
         `    <xhtml:link rel="alternate" hreflang="${candidate.hreflang}" href="https://playpoint-sim.com/${articlePath(candidate.key, topic.slug)}" />`
       ).join('\n');
-      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${topic.publishedAt || PUBLISHED_AT}</lastmod>\n${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath(DEFAULT_INTERNATIONAL_LOCALE, topic.slug)}" />\n  </url>`);
+      const jaPath = getJapaneseAlternateForSlug(topic.slug);
+      const japaneseAlternate = jaPath
+        ? `    <xhtml:link rel="alternate" hreflang="ja" href="https://playpoint-sim.com${jaPath}" />\n`
+        : '';
+      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${topic.publishedAt || PUBLISHED_AT}</lastmod>\n${japaneseAlternate}${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath(DEFAULT_INTERNATIONAL_LOCALE, topic.slug)}" />\n  </url>`);
     }
   }
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;

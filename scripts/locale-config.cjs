@@ -337,7 +337,7 @@ function createLocales() {
         inLanguage: 'zh-TW',
         modifiedAt: TOP_PAGE_CONTENT_DATES.tw,
         title: 'Google Play Points 計算器｜距離升級還差多少？',
-        description: 'Google Play Points 點數等級計算器。估算達到銀級、金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。',
+        description: 'Google Play Points 點數等級計算器。估算達到銀級、黃金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。',
         ogTitle: 'Google Play Points 計算器｜距離升級還差多少？',
         ogDescription: '免費模擬 Google Play 點數升級需求與逆算模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。',
         currency: 'TWD',

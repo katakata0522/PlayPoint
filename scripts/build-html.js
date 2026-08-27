@@ -13,6 +13,8 @@ const { createLocales } = require('./locale-config.cjs');
 const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
+const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-sync.cjs');
+const { syncTaiwanTerminology } = require('./tw-terminology-sync.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
@@ -62,10 +64,15 @@ try {
 }
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
+const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
+console.log(`[build-html] synchronized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
 const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
 console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
 
 require('./generate-game-simulators.cjs');
+
+const twTerminologySummary = syncTaiwanTerminology(rootDir);
+console.log(`[build-html] synchronized Taiwan terminology: ${twTerminologySummary.changed}/${twTerminologySummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);

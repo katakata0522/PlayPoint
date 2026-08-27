@@ -86,7 +86,7 @@
             ranks: [
                 { name: '銅級', points: 0, rate: 1.0 },
                 { name: '銀級', points: 250, rate: 1.25 },
-                { name: '金級', points: 1000, rate: 1.5 },
+                { name: '黃金級', points: 1000, rate: 1.5 },
                 { name: '白金級', points: 4000, rate: 1.75 },
                 { name: '鑽石級', points: 15000, rate: 2.0 }
             ]
