@@ -21,9 +21,32 @@ test('legacy gift-card stylesheet cannot override international article layout',
   for (const locale of ['en', 'ko', 'tw']) {
     const html = read(`${locale}/articles/2026-06-20-discount-gift-cards.html`);
     assert.doesNotMatch(html, /article-gift-card\.css/);
-    assert.match(html, /\/en\/articles\/intl-article\.css/);
+    assert.match(html, /\/articles\/intl-article\.css/);
+    assert.doesNotMatch(html, /\/en\/articles\/intl-article\.css/);
     assert.match(html, /layout-container intl-layout-container/);
   }
+});
+
+test('Japanese articles remain the source layout and do not load international overrides', () => {
+  const articleDir = path.join(ROOT, 'articles');
+  const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html'));
+  for (const file of files) {
+    const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
+    assert.doesNotMatch(
+      html,
+      /href=["']\/(?:en\/)?articles\/intl-article\.css/,
+      `${file}: Japanese source-layout articles must not depend on international CSS overrides`
+    );
+  }
+});
+
+test('international navigation classification follows article intent instead of broad keywords', () => {
+  const { inferIntlSection } = require('../scripts/intl-article-layout.cjs');
+  assert.equal(inferIntlSection('en/articles/google-play-points-use-coupons.html'), 'earn');
+  assert.equal(inferIntlSection('en/articles/google-play-quests.html'), 'earn');
+  assert.equal(inferIntlSection('en/articles/google-play-points-coupon-not-applied.html'), 'troubleshooting');
+  assert.equal(inferIntlSection('en/articles/google-play-points-country-change.html'), 'account');
+  assert.equal(inferIntlSection('en/articles/google-play-points-platinum-diamond-cost.html'), 'levels');
 });
 
 test('international font stacks include local Korean and Traditional Chinese fallbacks', () => {
