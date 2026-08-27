@@ -1,0 +1,48 @@
+name: Verify Japanese self hreflang generation
+
+on:
+  push:
+    branches:
+      - fix/intl-copy-hreflang
+    paths:
+      - .github/workflows/fix-ja-self-hreflang-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/intl-copy-hreflang
+          fetch-depth: 0
+
+      - name: Generate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run hreflang regressions
+        run: node --test tests/intl-localization-quality.test.cjs tests/all-article-quality-audit.test.cjs
+
+      - name: Verify fixed point
+        run: |
+          git add -A
+          node scripts/prepare-pr.cjs
+          git diff --exit-code
+
+      - name: Remove temporary workflow
+        run: rm .github/workflows/fix-ja-self-hreflang-temp.yml
+
+      - name: Commit canonical outputs
+        run: |
+          git add -A
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "fix: complete reciprocal Japanese hreflang clusters"
+          git push origin HEAD:fix/intl-copy-hreflang
