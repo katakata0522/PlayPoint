@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { GUIDE_BRAND } = require('./japanese-guide-brand.cjs');
 
 const HEADER_MARKER = 'article-static-header';
 const PROMPT_MARKER = 'article-calculator-prompt';
@@ -13,7 +14,7 @@ const ARTICLE_PROMPT_PATTERN = /<aside\b[^>]*class=["'][^"']*\barticle-calculato
 
 const HEADER_HTML = `    <header class="header article-static-header">
         <div class="header-inner">
-            <a class="logo" href="../index.html">🎮 Playポイント計算機</a>
+            <a class="logo" href="../index.html">🎮 ${GUIDE_BRAND}</a>
             <nav class="nav" aria-label="記事サイト">
                 <a href="../blog/">📝 記事一覧</a>
                 <a href="https://katakatalab.com/">🧪 KatakataLab</a>
