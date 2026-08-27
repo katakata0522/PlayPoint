@@ -1,0 +1,208 @@
+name: Taiwan localization contract hardening
+
+on:
+  push:
+    branches:
+      - fix/tw-localization-contracts
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Apply localization contract hardening
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+
+          root = Path('.')
+
+          widget = root / 'embed/playpoint-widget.js'
+          text = widget.read_text(encoding='utf-8')
+          old = text
+          text = text.replace("'1.5': '金級',", "'1.5': '黃金級',", 1)
+          text = text.replace("'1.25': { label: '金級', val: 1000 },", "'1.25': { label: '黃金級', val: 1000 },", 1)
+          if text == old:
+              raise SystemExit('embed widget Taiwan terminology replacement did not apply')
+          widget.write_text(text, encoding='utf-8')
+
+          contract = r'''\'use strict\';
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const FOREIGN_TERMINOLOGY_PATTERN = /<span\\b(?=[^>]*\\bdata-foreign-terminology(?:=(?:"[^"]*"|'[^']*'|[^\\s>]+))?)[^>]*>[\\s\\S]*?<\\/span>/gi;
+const LEGACY_TAIWAN_TERMS = Object.freeze([
+  { code: 'bare-gold-tier', pattern: /(?<![白黃])金級/g, replacement: '黃金級' },
+  { code: 'legacy-earn-rate', pattern: /累積率/g, replacement: '積點率' },
+  { code: 'legacy-earn-condition', pattern: /累積條件/g, replacement: '積點條件' }
+]);
+
+function mapOutsideForeignTerminology(text, transform) {
+  let cursor = 0;
+  let output = '';
+  for (const match of text.matchAll(FOREIGN_TERMINOLOGY_PATTERN)) {
+    const index = match.index ?? 0;
+    output += transform(text.slice(cursor, index));
+    output += match[0];
+    cursor = index + match[0].length;
+  }
+  output += transform(text.slice(cursor));
+  return output;
+}
+
+function findTaiwanTerminologyViolations(text, relativePath = '') {
+  const searchable = text.replace(FOREIGN_TERMINOLOGY_PATTERN, match => ' '.repeat(match.length));
+  const violations = [];
+  for (const rule of LEGACY_TAIWAN_TERMS) {
+    rule.pattern.lastIndex = 0;
+    for (const match of searchable.matchAll(rule.pattern)) {
+      const before = searchable.slice(0, match.index ?? 0);
+      const line = before.split('\\n').length;
+      violations.push({
+        code: rule.code,
+        term: match[0],
+        replacement: rule.replacement,
+        path: relativePath,
+        line
+      });
+    }
+  }
+  return violations;
+}
+
+function assertTaiwanTerminology(rootDir) {
+  const twRoot = path.join(rootDir, 'tw');
+  let checked = 0;
+  const violations = [];
+
+  function visit(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const file = path.join(dir, entry.name);
+      if (entry.isDirectory()) visit(file);
+      else if (entry.name.endsWith('.html')) {
+        checked += 1;
+        const relativePath = path.relative(rootDir, file).replace(/\\\\/g, '/');
+        const current = fs.readFileSync(file, 'utf8');
+        violations.push(...findTaiwanTerminologyViolations(current, relativePath));
+      }
+    }
+  }
+
+  if (fs.existsSync(twRoot)) visit(twRoot);
+  if (violations.length) {
+    const details = violations
+      .map(item => `${item.path}:${item.line} ${item.term} -> ${item.replacement} (${item.code})`)
+      .join('\\n');
+    throw new Error(`Taiwan terminology contract failed with ${violations.length} violation(s):\\n${details}\\nFor an intentional foreign-region quote, wrap only that text in <span data-foreign-terminology>...</span>.`);
+  }
+  return { checked, violations: 0 };
+}
+
+module.exports = {
+  FOREIGN_TERMINOLOGY_PATTERN,
+  LEGACY_TAIWAN_TERMS,
+  assertTaiwanTerminology,
+  findTaiwanTerminologyViolations,
+  mapOutsideForeignTerminology
+};
+'''.replace("\\'use strict\\';", "'use strict';")
+          (root / 'scripts/tw-terminology-sync.cjs').write_text(contract, encoding='utf-8')
+
+          build = root / 'scripts/build-html.js'
+          text = build.read_text(encoding='utf-8')
+          text = text.replace("const { syncTaiwanTerminology } = require('./tw-terminology-sync.cjs');", "const { assertTaiwanTerminology } = require('./tw-terminology-sync.cjs');")
+          text = text.replace("const twTerminologySummary = syncTaiwanTerminology(rootDir);\nconsole.log(`[build-html] synchronized Taiwan terminology: ${twTerminologySummary.changed}/${twTerminologySummary.checked} updated`);", "const twTerminologySummary = assertTaiwanTerminology(rootDir);\nconsole.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.checked} HTML files checked`);")
+          if 'syncTaiwanTerminology' in text:
+              raise SystemExit('build-html still references mutating Taiwan terminology sync')
+          build.write_text(text, encoding='utf-8')
+
+          region = root / 'scripts/region-page-sync.cjs'
+          text = region.read_text(encoding='utf-8')
+          if "mapOutsideForeignTerminology" not in text.split('\n', 8)[0:8]:
+              text = text.replace("const path = require('node:path');", "const path = require('node:path');\nconst { mapOutsideForeignTerminology } = require('./tw-terminology-sync.cjs');")
+          text = text.replace("  html = html.replace(/黃金級/g, '金級');\n  html = html.replace(/白金級/g, '鉑金級');", "  html = mapOutsideForeignTerminology(html, chunk => chunk\n    .replace(/黃金級/g, '金級')\n    .replace(/白金級/g, '鉑金級'));" )
+          if "html.replace(/黃金級/g" in text or "html.replace(/白金級/g" in text:
+              raise SystemExit('unsafe Hong Kong global tier replacement remains')
+          region.write_text(text, encoding='utf-8')
+
+          tests = root / 'tests/intl-localization-quality.test.cjs'
+          text = tests.read_text(encoding='utf-8')
+          marker = "test('verified Japanese counterparts have reciprocal hreflang sets', () => {"
+          addition = r'''test('Taiwan terminology contract covers the embeddable widget and fails instead of silently rewriting', () => {
+  const widget = fs.readFileSync(path.join(root, 'embed', 'playpoint-widget.js'), 'utf8');
+  const zhStart = widget.indexOf('        zh: {');
+  const zhEnd = widget.indexOf('    };', zhStart);
+  assert.ok(zhStart >= 0 && zhEnd > zhStart, 'Taiwan widget dictionary block not found');
+  const zh = widget.slice(zhStart, zhEnd);
+  assert.ok(zh.includes("'1.5': '黃金級'"));
+  assert.ok(zh.includes("label: '黃金級', val: 1000"));
+  assert.doesNotMatch(zh, /(?<![白黃])金級/);
+
+  const contract = require('../scripts/tw-terminology-sync.cjs');
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>金級</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>累積率</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<p>累積條件</p>').length, 1);
+  assert.equal(contract.findTaiwanTerminologyViolations('<span data-foreign-terminology>香港では金級</span>').length, 0);
+  const source = fs.readFileSync(path.join(root, 'scripts', 'tw-terminology-sync.cjs'), 'utf8');
+  assert.doesNotMatch(source, /writeFileSync/);
+  assert.doesNotMatch(source, /normalizeTaiwanText/);
+});
+
+test('Hong Kong tier localization preserves explicitly marked foreign-region terminology', () => {
+  const { mapOutsideForeignTerminology } = require('../scripts/tw-terminology-sync.cjs');
+  const source = '<p>黃金級 / 白金級</p><span data-foreign-terminology>台灣：黃金級 / 白金級</span>';
+  const localized = mapOutsideForeignTerminology(source, chunk => chunk
+    .replace(/黃金級/g, '金級')
+    .replace(/白金級/g, '鉑金級'));
+  assert.ok(localized.includes('<p>金級 / 鉑金級</p>'));
+  assert.ok(localized.includes('<span data-foreign-terminology>台灣：黃金級 / 白金級</span>'));
+  const regionSource = fs.readFileSync(path.join(root, 'scripts', 'region-page-sync.cjs'), 'utf8');
+  assert.ok(regionSource.includes('mapOutsideForeignTerminology'));
+  assert.doesNotMatch(regionSource, /html\.replace\(\/黃金級\/g/);
+  assert.doesNotMatch(regionSource, /html\.replace\(\/白金級\/g/);
+});
+
+'''
+          if "Taiwan terminology contract covers the embeddable widget" not in text:
+              if marker not in text:
+                  raise SystemExit('test insertion anchor not found')
+              text = text.replace(marker, addition + marker)
+          tests.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Generate and run focused regressions
+        shell: bash
+        run: |
+          node scripts/prepare-pr.cjs
+          node --test tests/intl-localization-quality.test.cjs tests/runtime-module-guards.test.cjs
+
+      - name: Verify generator fixed point
+        shell: bash
+        run: |
+          git add -A
+          node scripts/prepare-pr.cjs
+          git diff --exit-code
+
+      - name: Commit hardened implementation
+        shell: bash
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+            exit 0
+          fi
+          git config user.name 'katakata0522'
+          git config user.email 'tomokiandyuuki3@gmail.com'
+          git commit -m 'fix: 台湾ローカライズ契約を堅牢化'
+          git push origin HEAD:${GITHUB_REF_NAME}
