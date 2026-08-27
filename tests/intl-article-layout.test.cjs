@@ -105,7 +105,7 @@ test('international article shell follows the Japanese navigation and sidebar rh
     assert.match(html, /sidebar-event-item/, locale + ': localized pre-purchase checks');
     assert.match(html, /sidebar-tip-box/, locale + ': localized regional rule tip');
     assert.match(html, /sidebar-category-list/, locale + ': category navigation');
-    assert.match(html, new RegExp('href="\/' + locale + '\/author\/katakata\.html"'), locale + ': localized editorial policy link');
+    assert.ok(html.includes(`href="/${locale}/author/katakata.html"`), locale + ': localized editorial policy link');
     assert.match(html, /href="\/articles\/intl-article\.css(?:\?[^"']*)?"/, locale + ': neutral shared international stylesheet');
     assert.doesNotMatch(html, /href="\/en\/articles\/intl-article\.css/, locale + ': must not depend on English directory for shared CSS');
   }
@@ -119,7 +119,7 @@ test('localized author pages share the international Japanese-style shell', () =
     assert.match(html, /class="layout-container intl-layout-container"/);
     assert.match(html, /class="sidebar-column intl-article-sidebar"/);
     assert.match(html, /hreflang="ja"/);
-    assert.match(html, new RegExp('canonical" href="https:\/\/playpoint-sim\.com\/' + locale + '\/author\/katakata\.html"'));
+    assert.ok(html.includes(`canonical" href="https://playpoint-sim.com/${locale}/author/katakata.html"`), locale + ': localized canonical URL');
   }
 });
 
