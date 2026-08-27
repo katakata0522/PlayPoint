@@ -1,0 +1,89 @@
+name: Apply browser revision readiness refactor
+
+on:
+  push:
+    branches:
+      - fix/post-deploy-revision-readiness
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-revision-readiness
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/post-deploy-revision-readiness
+
+      - name: Refactor browser smoke to shared readiness helper
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          smoke_path = Path('.github/scripts/browser-smoke.cjs')
+          smoke = smoke_path.read_text(encoding='utf-8')
+          assert "const https = require('node:https');\n" in smoke
+          smoke = smoke.replace("const https = require('node:https');\n", '', 1)
+          anchor = "const { chromium } = require('playwright-core');\n"
+          assert anchor in smoke
+          smoke = smoke.replace(anchor, anchor + "const { verifyDeployRevisionWithRetry } = require('./verify-deploy-revision.cjs');\n", 1)
+
+          pattern = re.compile(r"function requestRevisionText\(url\) \{[\s\S]*?\n\}\n\nasync function verifyRevision\(baseUrl\) \{[\s\S]*?\n\}\n\nasync function main\(\) \{")
+          replacement = """async function verifyRevision(baseUrl) {
+  if (!EXPECTED_REVISION) return { checked: false };
+  return verifyDeployRevisionWithRetry({
+    url: new URL('status/deploy-revision.txt', baseUrl).href,
+    expectedRevision: EXPECTED_REVISION
+  });
+}
+
+async function main() {"""
+          smoke, count = pattern.subn(replacement, smoke, count=1)
+          assert count == 1, f'expected one revision block, found {count}'
+          smoke_path.write_text(smoke, encoding='utf-8')
+
+          regression_path = Path('tests/blog-runtime-regressions.test.cjs')
+          regression = regression_path.read_text(encoding='utf-8')
+          anchor = "const browserSmoke = readText('.github/scripts/browser-smoke.cjs');\n"
+          assert anchor in regression
+          regression = regression.replace(anchor, anchor + "const deployRevisionReadiness = readText('.github/scripts/verify-deploy-revision.cjs');\n", 1)
+
+          pattern = re.compile(r"test\('production revision verification retries IPv4 network errors', \(\) => \{[\s\S]*?\n\}\);")
+          replacement = """test('production revision verification uses bounded IPv4 readiness retries', () => {
+  assert.match(browserSmoke, /verifyDeployRevisionWithRetry/);
+  assert.doesNotMatch(browserSmoke, /function requestRevisionText\\(url\\)/);
+  assert.match(deployRevisionReadiness, /family: 4/);
+  assert.match(deployRevisionReadiness, /DEFAULT_ATTEMPTS = 8/);
+  assert.match(deployRevisionReadiness, /DEFAULT_DELAY_MS = 2500/);
+  assert.match(deployRevisionReadiness, /'cache-control': 'no-cache'/);
+  assert.match(deployRevisionReadiness, /pragma: 'no-cache'/);
+  assert.match(deployRevisionReadiness, /verifyDeployRevisionWithRetry/);
+});"""
+          regression, count = pattern.subn(replacement, regression, count=1)
+          assert count == 1, f'expected one legacy revision test, found {count}'
+          regression_path.write_text(regression, encoding='utf-8')
+          PY
+
+      - name: Run focused regression tests
+        run: node --test tests/deploy-revision-readiness.test.cjs tests/blog-runtime-regressions.test.cjs
+
+      - name: Commit refactor and remove one-shot workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/apply-revision-readiness.yml
+          git add -A
+          git commit -m "fix: harden post-deploy revision readiness"
+          git push origin HEAD:fix/post-deploy-revision-readiness
