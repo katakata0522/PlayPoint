@@ -49,6 +49,21 @@ test('international navigation classification follows article intent instead of 
   assert.equal(inferIntlSection('en/articles/google-play-points-platinum-diamond-cost.html'), 'levels');
 });
 
+test('international global navigation mirrors the Japanese two-line rhythm with localized sublabels', () => {
+  const expected = {
+    en: ['Cost simulator', 'Play Points guide', 'Country, eligibility, setup', 'Purchases, coupons, credit', 'Progress & weekly perks', 'Missing points & errors'],
+    ko: ['필요 금액 계산', 'Play Points 가이드', '국가·계정 설정', '결제·쿠폰·교환', '진행도·주간 혜택', '미반영·오류 확인'],
+    tw: ['所需金額估算', 'Play Points 指南', '地區與帳號設定', '購買、優惠與兌換', '進度與每週福利', '未入帳與錯誤確認']
+  };
+  for (const locale of ['en', 'ko', 'tw']) {
+    const html = read(`${locale}/articles/google-play-points-country-change.html`);
+    const globalNav = html.match(/<nav class="global-nav intl-global-nav"[\s\S]*?<\/nav>/)?.[0] || '';
+    const readableNav = globalNav.replace(/&amp;/g, '&');
+    assert.equal((globalNav.match(/class="nav-sub"/g) || []).length, 6, `${locale}: six localized nav sublabels`);
+    for (const label of expected[locale]) assert.ok(readableNav.includes(label), `${locale}: missing nav sublabel ${label}`);
+  }
+});
+
 test('international font stacks include local Korean and Traditional Chinese fallbacks', () => {
   const cssSource = read('scripts/intl-article-layout.cjs');
   assert.match(cssSource, /Apple SD Gothic Neo/);
