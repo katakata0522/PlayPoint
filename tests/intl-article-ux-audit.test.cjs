@@ -21,8 +21,22 @@ test('legacy gift-card stylesheet cannot override international article layout',
   for (const locale of ['en', 'ko', 'tw']) {
     const html = read(`${locale}/articles/2026-06-20-discount-gift-cards.html`);
     assert.doesNotMatch(html, /article-gift-card\.css/);
-    assert.match(html, /\/en\/articles\/intl-article\.css/);
+    assert.match(html, /\/articles\/intl-article\.css/);
+    assert.doesNotMatch(html, /\/en\/articles\/intl-article\.css/);
     assert.match(html, /layout-container intl-layout-container/);
+  }
+});
+
+test('Japanese articles remain the source layout and do not load international overrides', () => {
+  const articleDir = path.join(ROOT, 'articles');
+  const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html'));
+  for (const file of files) {
+    const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
+    assert.doesNotMatch(
+      html,
+      /href=["']\/(?:en\/)?articles\/intl-article\.css/,
+      `${file}: Japanese source-layout articles must not depend on international CSS overrides`
+    );
   }
 });
 
