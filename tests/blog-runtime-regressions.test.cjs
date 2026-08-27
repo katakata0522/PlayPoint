@@ -8,6 +8,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const readText = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n/g, '\n');
 const browserSmoke = readText('.github/scripts/browser-smoke.cjs');
+const deployRevisionReadiness = readText('.github/scripts/verify-deploy-revision.cjs');
 
 function functionBody(source, startMarker, endMarker) {
   const start = source.indexOf(startMarker);
@@ -17,15 +18,13 @@ function functionBody(source, startMarker, endMarker) {
   return source.slice(start, end);
 }
 
-test('production revision verification retries IPv4 network errors', () => {
-  assert.match(browserSmoke, /family: 4/);
-  assert.match(browserSmoke, /function requestRevisionText\(url\)/);
-  const body = functionBody(
-    browserSmoke,
-    'async function verifyRevision(baseUrl) {',
-    'async function main() {'
-  );
-  assert.match(body, /attempt <= 4/);
-  assert.match(body, /catch \(error\)/);
-  assert.match(body, /lastError = error/);
+test('production revision verification uses bounded IPv4 readiness retries', () => {
+  assert.match(browserSmoke, /verifyDeployRevisionWithRetry/);
+  assert.doesNotMatch(browserSmoke, /function requestRevisionText\(url\)/);
+  assert.match(deployRevisionReadiness, /family: 4/);
+  assert.match(deployRevisionReadiness, /DEFAULT_ATTEMPTS = 8/);
+  assert.match(deployRevisionReadiness, /DEFAULT_DELAY_MS = 2500/);
+  assert.match(deployRevisionReadiness, /'cache-control': 'no-cache'/);
+  assert.match(deployRevisionReadiness, /pragma: 'no-cache'/);
+  assert.match(deployRevisionReadiness, /verifyDeployRevisionWithRetry/);
 });
