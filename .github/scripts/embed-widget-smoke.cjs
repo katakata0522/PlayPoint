@@ -4,28 +4,46 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
 
+function widgetHarnessHtml(scriptUrl = '') {
+  const script = scriptUrl ? `<script src="${scriptUrl}"></script>` : '';
+  return `<!doctype html><html lang="zh-TW"><body><div data-playpoint-widget data-lang="zh"></div>${script}</body></html>`;
+}
+
+async function loadWidget(page) {
+  const baseUrl = String(process.env.SMOKE_BASE_URL || '').trim();
+  if (baseUrl) {
+    const url = new URL('embed/playpoint-widget.js', baseUrl);
+    url.searchParams.set('browser_smoke', `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+    await page.setContent(widgetHarnessHtml(url.toString()), { waitUntil: 'load' });
+    return `production:${url.origin}`;
+  }
+
+  const widgetSource = fs.readFileSync(path.resolve(__dirname, '../../embed/playpoint-widget.js'), 'utf8');
+  await page.setContent(widgetHarnessHtml());
+  await page.addScriptTag({ content: widgetSource });
+  return 'local';
+}
+
 async function main() {
   const executablePath = process.env.CHROME_PATH;
   if (!executablePath) throw new Error('CHROME_PATH is required.');
 
-  const widgetSource = fs.readFileSync(path.resolve(__dirname, '../../embed/playpoint-widget.js'), 'utf8');
   const browser = await chromium.launch({ executablePath, headless: true });
   try {
     const page = await browser.newPage();
-    await page.setContent('<!doctype html><html lang="zh-TW"><body><div data-playpoint-widget data-lang="zh"></div></body></html>');
-    await page.addScriptTag({ content: widgetSource });
+    const target = await loadWidget(page);
     await page.waitForFunction(() => document.querySelector('playpoint-widget')?.shadowRoot?.getElementById('current-status'));
 
     const initial = await page.evaluate(() => {
       const widget = document.querySelector('playpoint-widget');
       const root = widget.shadowRoot;
       const current = root.getElementById('current-status');
-      const target = root.getElementById('target-status-display');
+      const targetDisplay = root.getElementById('target-status-display');
       current.value = '1.25';
       current.dispatchEvent(new Event('change', { bubbles: true }));
       return {
         options: Array.from(current.options, option => option.textContent.trim()),
-        target: target.textContent.trim()
+        target: targetDisplay.textContent.trim()
       };
     });
 
@@ -50,7 +68,7 @@ async function main() {
       throw new Error(`Taiwan widget reverse calculation changed unexpectedly: ${reverseResult}`);
     }
 
-    console.log('[embed-widget-smoke] Taiwan labels and calculation passed.');
+    console.log(`[embed-widget-smoke] Taiwan labels and calculation passed (${target}).`);
   } finally {
     await browser.close();
   }
