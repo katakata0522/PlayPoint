@@ -25,6 +25,8 @@ on:
       - 'blog/**'
       - 'articles/**'
       - 'games/**'
+      - 'embed.html'
+      - 'embed/**'
       - 'en/**'
       - 'ko/**'
       - 'tw/**'
@@ -44,6 +46,7 @@ on:
       - 'changelog.html'
       - '.github/scripts/browser-smoke.cjs'
       - '.github/scripts/browser-revenue-smoke.cjs'
+      - '.github/scripts/embed-widget-smoke.cjs'
       - '.github/workflows/browser-smoke.yml'
   workflow_run:
     workflows:
@@ -76,10 +79,11 @@ jobs:
           test -n "$chrome_path"
           echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
 
-      - name: Verify local calculator and revenue paths in Chromium
+      - name: Verify local calculator, revenue, and embed widget paths in Chromium
         run: |
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
 
       - name: Upload failure evidence
         if: failure()
