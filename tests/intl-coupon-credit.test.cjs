@@ -4,10 +4,11 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { GUIDE_BRAND } = require('../scripts/japanese-guide-brand.cjs');
 
 const root = path.resolve(__dirname, '..');
 const locales = [
-  { key: 'ja', lang: 'ja', siteName: 'Google Play Points 計算機', prefix: '' },
+  { key: 'ja', lang: 'ja', siteName: GUIDE_BRAND, prefix: '' },
   { key: 'en', lang: 'en', siteName: 'Google Play Points Calculator', prefix: 'en/articles/' },
   { key: 'ko', lang: 'ko', siteName: 'Google Play Points 계산기', prefix: 'ko/articles/' },
   { key: 'tw', lang: 'zh-TW', siteName: 'Google Play Points 計算器', prefix: 'tw/articles/' }
@@ -49,6 +50,10 @@ function schemas(html) {
   return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
 }
+function hasOgSiteName(html, siteName) {
+  return html.includes(`<meta property="og:site_name" content="${siteName}">`)
+    || html.includes(`<meta property="og:site_name" content="${siteName}" />`);
+}
 
 test('クーポン・Playクレジット問題解決記事は4言語でSEO公開要件を満たす', () => {
   for (const topic of topics) {
@@ -68,7 +73,7 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.strictEqual((html.match(/<h1\b/g) || []).length, 1);
       assert.ok((html.match(/<h2\b/g) || []).length >= 8);
       assert.ok(html.length >= 7000, `${relativePath}: thin content ${html.length}`);
-      assert.ok(html.includes(`<meta property="og:site_name" content="${locale.siteName}">`));
+      assert.ok(hasOgSiteName(html, locale.siteName), `${relativePath}: og:site_name=${locale.siteName}`);
       const expectedModified = locale.key === 'ja'
         ? (topic.slug === 'google-play-points-coupon-not-applied.html' ? '2026-08-04' : '2026-07-30')
         : '2026-07-25';
