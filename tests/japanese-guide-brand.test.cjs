@@ -8,6 +8,7 @@ const test = require('node:test');
 const {
   GUIDE_BRAND,
   GUIDE_DESCRIPTION,
+  GUIDE_HERO_TEXT,
   GUIDE_PAGE_TITLE,
   japaneseArticleFiles,
   syncArticleBrand,
@@ -32,6 +33,7 @@ test('日本語記事ハブは「Google Play Points 完全攻略ガイド」を�
   assert.ok(html.includes(`property="og:site_name" content="${GUIDE_BRAND}"`));
   assert.ok(html.includes(`class="brand">${GUIDE_BRAND}</a>`));
   assert.ok(html.includes(`<h1 class="hero-title">${GUIDE_BRAND}</h1>`));
+  assert.ok(html.includes(`<p class="hero-text">${GUIDE_HERO_TEXT}</p>`));
   assert.ok(html.includes(`title="${GUIDE_BRAND} RSS"`));
   assert.ok(html.includes(`title="${GUIDE_BRAND} Atom"`));
 
