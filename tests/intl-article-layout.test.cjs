@@ -27,10 +27,10 @@ test('international article shell synchronization is idempotent and preserves ar
 
   assert.equal(second, first, 'layout synchronization must be idempotent');
   assert.ok(first.includes(originalArticle), 'article content must remain byte-for-byte intact');
-  assert.match(first, /<!-- INTL_ARTICLE_CHROME_START -->[\s\S]*class="site-header intl-article-site-header"/);
-  assert.match(first, /class="breadcrumbs-wrapper intl-article-breadcrumbs"/);
-  assert.ok(first.indexOf('INTL_ARTICLE_CHROME_START') < first.indexOf('<main class="main-card">'));
-  assert.doesNotMatch(first, /class="sidebar-column"/);
+  assert.match(first, /<!-- INTL_ARTICLE_CHROME_START -->[\s\S]*class="global-nav intl-global-nav"/);
+  assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_START -->[\s\S]*class="layout-container intl-layout-container"/);
+  assert.match(first, /class="sidebar-column intl-article-sidebar"/);
+  assert.ok(first.indexOf('INTL_ARTICLE_CHROME_START') < first.indexOf('INTL_ARTICLE_LAYOUT_START'));
 });
 
 test('international article synchronization rejects markup inside h1', () => {
@@ -48,7 +48,8 @@ test('international article synchronization rejects markup inside h1', () => {
     /article h1 must contain plain text/
   );
 });
-test('all published international articles use the shared localized article chrome', () => {
+
+test('all published international articles use the Japanese article layout structure', () => {
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
     const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
@@ -57,20 +58,19 @@ test('all published international articles use the shared localized article chro
     for (const file of files) {
       const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
       assert.equal((html.match(/<!-- INTL_ARTICLE_CHROME_START -->/g) || []).length, 1, locale + '/' + file + ': chrome start marker');
-      assert.equal((html.match(/class="site-header intl-article-site-header"/g) || []).length, 1, locale + '/' + file + ': localized header');
-      assert.equal((html.match(/class="breadcrumbs-wrapper intl-article-breadcrumbs"/g) || []).length, 1, locale + '/' + file + ': breadcrumbs');
-      assert.ok(html.indexOf('INTL_ARTICLE_CHROME_START') < html.indexOf('<main class="main-card">'), locale + '/' + file + ': chrome precedes article');
-      assert.doesNotMatch(html, /class="sidebar-column"/, locale + '/' + file + ': Japan-specific sidebar must not be copied');
+      assert.equal((html.match(/class="global-nav intl-global-nav"/g) || []).length, 1, locale + '/' + file + ': Japanese-style global navigation');
+      assert.equal((html.match(/class="layout-container intl-layout-container"/g) || []).length, 1, locale + '/' + file + ': two-column wrapper');
+      assert.equal((html.match(/class="sidebar-column intl-article-sidebar"/g) || []).length, 1, locale + '/' + file + ': sidebar');
+      assert.equal((html.match(/<main\b[^>]*class=["'][^"']*\bmain-card\b[^"']*["']/g) || []).length, 1, locale + '/' + file + ': main article');
     }
   }
 });
 
-test('international article CSS follows the current Japanese article visual contract', () => {
+test('international article CSS inherits the Japanese visual contract instead of replacing it', () => {
   const css = fs.readFileSync(path.join(root, 'en', 'articles', 'intl-article.css'), 'utf8');
-  assert.doesNotMatch(css, /#667eea|#764ba2/i, 'legacy purple theme must not remain');
-  assert.match(css, /--brand:\s*#124ea4/i);
-  assert.match(css, /\.main-card\s*\{[^}]*max-width:\s*860px/is);
-  assert.match(css, /\.hero\s*\{[^}]*text-align:\s*left/is);
-  assert.match(css, /\.cta-btn\s*\{[^}]*border-radius:\s*8px/is);
-  assert.match(css, /\.intl-article-breadcrumbs \.intl-breadcrumb-current\s*\{[^}]*color:\s*#475569/is);
+  assert.doesNotMatch(css, /--brand:|--hero:|--interaction:/i, 'international CSS must not replace Japanese shared theme tokens');
+  assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*border-radius:\s*6px/is);
+  assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*padding:\s*36px 40px/is);
+  assert.match(css, /\.intl-layout-container \.hero\s*\{[^}]*background:\s*transparent/is);
+  assert.match(css, /\.intl-layout-container \.content\s*\{[^}]*padding:\s*0/is);
 });
