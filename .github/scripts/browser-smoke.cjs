@@ -16,7 +16,7 @@ const LOCALES = [
   { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算', rewardPath: '/', rewardText: 'ウィークリーリワード' },
   { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount', rewardPath: '/en/', rewardText: 'Weekly Prize' },
   { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산', rewardPath: '/ko/', rewardText: '주간 혜택' },
-  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
+  { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '黃金級' } },
   { key: 'HK', path: 'hk/', locale: 'zh-HK', title: 'Google Play Points 計算器（香港）', button: '計算消費金額', rewardPath: '/hk/', rewardText: '每週獎勵', statusCount: 5, staticReverseLabel: '每 HK$7 獲得點數（自動帶入，可修改）', gamePath: '/tw/games/', tooltipContains: 'HK$7', tooltipExcludes: 'NT$30', currencyPrefix: 'HK$', calendarPath: '/hk/', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
   { key: 'IN', path: 'in/', locale: 'en-IN', title: 'Google Play Points Calculator — India', button: 'Calculate Amount', rewardPath: '/in/', rewardText: 'Weekly Prize', statusCount: 4, staticReverseLabel: 'Points per ₹5 (auto-filled, editable)', gamePath: '/en/games/', tooltipContains: '₹5', tooltipExcludes: '$1', currencyPrefix: '₹', calendarPath: '/in/', shareRestore: { status: '1.1', target: 'gold', expected: 'Gold' } }
 ];
