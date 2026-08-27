@@ -1,0 +1,135 @@
+name: Polish international article navigation
+
+on:
+  push:
+    branches:
+      - fix/intl-nav-sublabels
+    paths:
+      - '.github/workflows/intl-nav-polish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/intl-nav-sublabels
+          persist-credentials: true
+
+      - name: Add localized navigation sublabels and regression coverage
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          layout = Path('scripts/intl-article-layout.cjs')
+          text = layout.read_text(encoding='utf-8')
+
+          nav_block = """const INTL_NAV = Object.freeze({
+            en: { account: 'Account & basics', earn: 'Earn & spend', levels: 'Levels & rewards', troubleshooting: 'Troubleshooting' },
+            ko: { account: '계정·기본', earn: '적립·사용', levels: '등급·리워드', troubleshooting: '문제 해결' },
+            tw: { account: '帳號與基本', earn: '積點與使用', levels: '等級與回饋', troubleshooting: '問題排查' }
+          });
+          """
+          nav_replacement = nav_block + """
+          const INTL_NAV_SUB = Object.freeze({
+            en: {
+              home: 'Cost simulator',
+              guides: 'Play Points guide',
+              account: 'Country, eligibility, setup',
+              earn: 'Purchases, coupons, credit',
+              levels: 'Progress & weekly perks',
+              troubleshooting: 'Missing points & errors'
+            },
+            ko: {
+              home: '필요 금액 계산',
+              guides: 'Play Points 가이드',
+              account: '국가·계정 설정',
+              earn: '결제·쿠폰·교환',
+              levels: '진행도·주간 혜택',
+              troubleshooting: '미반영·오류 확인'
+            },
+            tw: {
+              home: '所需金額估算',
+              guides: 'Play Points 指南',
+              account: '地區與帳號設定',
+              earn: '購買、優惠與兌換',
+              levels: '進度與每週福利',
+              troubleshooting: '未入帳與錯誤確認'
+            }
+          });
+          """
+          if nav_block not in text:
+              raise SystemExit('INTL_NAV block not found')
+          text = text.replace(nav_block, nav_replacement, 1)
+
+          old = "  const navLabels = INTL_NAV[localeKey];\n"
+          new = old + "  const navSubs = INTL_NAV_SUB[localeKey];\n"
+          if old not in text:
+              raise SystemExit('navLabels binding not found')
+          text = text.replace(old, new, 1)
+
+          replacements = {
+            "    '    <a class=\"' + navClass('home') + '\" href=\"' + homeHref + '\"><span>' + escapeHtml(locale.home) + '</span></a>',":
+            "    '    <a class=\"' + navClass('home') + '\" href=\"' + homeHref + '\"><span>' + escapeHtml(locale.home) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.home) + '</span></a>',",
+            "    '    <a class=\"' + navClass('guides') + '\" href=\"' + guidesHref + '\"><span>' + escapeHtml(locale.blog) + '</span></a>',":
+            "    '    <a class=\"' + navClass('guides') + '\" href=\"' + guidesHref + '\"><span>' + escapeHtml(locale.blog) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.guides) + '</span></a>',",
+            "    '    <a class=\"' + navClass('account') + '\" href=\"' + guidesHref + '#intl-hub-account\"><span>' + escapeHtml(navLabels.account) + '</span></a>',":
+            "    '    <a class=\"' + navClass('account') + '\" href=\"' + guidesHref + '#intl-hub-account\"><span>' + escapeHtml(navLabels.account) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.account) + '</span></a>',",
+            "    '    <a class=\"' + navClass('earn') + '\" href=\"' + guidesHref + '#intl-hub-earn\"><span>' + escapeHtml(navLabels.earn) + '</span></a>',":
+            "    '    <a class=\"' + navClass('earn') + '\" href=\"' + guidesHref + '#intl-hub-earn\"><span>' + escapeHtml(navLabels.earn) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.earn) + '</span></a>',",
+            "    '    <a class=\"' + navClass('levels') + '\" href=\"' + guidesHref + '#intl-hub-levels\"><span>' + escapeHtml(navLabels.levels) + '</span></a>',":
+            "    '    <a class=\"' + navClass('levels') + '\" href=\"' + guidesHref + '#intl-hub-levels\"><span>' + escapeHtml(navLabels.levels) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.levels) + '</span></a>',",
+            "    '    <a class=\"' + navClass('troubleshooting') + '\" href=\"' + guidesHref + '#intl-hub-trouble\"><span>' + escapeHtml(navLabels.troubleshooting) + '</span></a>',":
+            "    '    <a class=\"' + navClass('troubleshooting') + '\" href=\"' + guidesHref + '#intl-hub-trouble\"><span>' + escapeHtml(navLabels.troubleshooting) + '</span><span class=\"nav-sub\">' + escapeHtml(navSubs.troubleshooting) + '</span></a>',",
+          }
+          for old_line, new_line in replacements.items():
+              if old_line not in text:
+                  raise SystemExit(f'nav render line not found: {old_line}')
+              text = text.replace(old_line, new_line, 1)
+
+          layout.write_text(text, encoding='utf-8')
+
+          test_file = Path('tests/intl-article-ux-audit.test.cjs')
+          tests = test_file.read_text(encoding='utf-8')
+          anchor = "test('international font stacks include local Korean and Traditional Chinese fallbacks', () => {"
+          added = """test('international global navigation mirrors the Japanese two-line rhythm with localized sublabels', () => {
+            const expected = {
+              en: ['Cost simulator', 'Play Points guide', 'Country, eligibility, setup', 'Purchases, coupons, credit', 'Progress & weekly perks', 'Missing points & errors'],
+              ko: ['필요 금액 계산', 'Play Points 가이드', '국가·계정 설정', '결제·쿠폰·교환', '진행도·주간 혜택', '미반영·오류 확인'],
+              tw: ['所需金額估算', 'Play Points 指南', '地區與帳號設定', '購買、優惠與兌換', '進度與每週福利', '未入帳與錯誤確認']
+            };
+            for (const locale of ['en', 'ko', 'tw']) {
+              const html = read(`${locale}/articles/google-play-points-country-change.html`);
+              const globalNav = html.match(/<nav class=\"global-nav intl-global-nav\"[\\s\\S]*?<\\/nav>/)?.[0] || '';
+              assert.equal((globalNav.match(/class=\"nav-sub\"/g) || []).length, 6, `${locale}: six localized nav sublabels`);
+              for (const label of expected[locale]) assert.ok(globalNav.includes(label), `${locale}: missing nav sublabel ${label}`);
+            }
+          });
+
+          """
+          if anchor not in tests:
+              raise SystemExit('test insertion anchor not found')
+          tests = tests.replace(anchor, added + anchor, 1)
+          test_file.write_text(tests, encoding='utf-8')
+          PY
+
+      - name: Regenerate canonical output
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run focused tests
+        run: node --test tests/intl-article-layout.test.cjs tests/intl-article-ux-audit.test.cjs
+
+      - name: Remove temporary workflow and commit
+        run: |
+          set -euo pipefail
+          rm .github/workflows/intl-nav-polish.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'fix: align international nav rhythm with Japanese articles'
+          git push origin HEAD:fix/intl-nav-sublabels
