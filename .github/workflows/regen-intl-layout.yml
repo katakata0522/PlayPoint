@@ -1,0 +1,38 @@
+name: Regenerate international layout branch
+
+on:
+  push:
+    branches:
+      - fix/intl-japanese-layout-polish
+    paths:
+      - '.github/workflows/regen-intl-layout.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/intl-japanese-layout-polish
+          persist-credentials: true
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated outputs
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'chore: regenerate international article outputs'
+          git push origin HEAD:fix/intl-japanese-layout-polish
