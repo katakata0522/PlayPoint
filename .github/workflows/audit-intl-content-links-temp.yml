@@ -1,0 +1,33 @@
+name: Audit international article content and links
+
+on:
+  push:
+    branches:
+      - audit/intl-content-links-20260827
+    paths:
+      - scripts/audit-intl-content-links-temp.cjs
+      - .github/workflows/audit-intl-content-links-temp.yml
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: audit/intl-content-links-20260827
+
+      - name: Run live production content and link audit
+        run: node scripts/audit-intl-content-links-temp.cjs
+
+      - name: Commit audit report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audit/intl-content-link-report.json audit/intl-corpus-en.txt audit/intl-corpus-ko.txt audit/intl-corpus-tw.txt
+          git commit -m "chore: record international content audit" || exit 0
+          git push origin HEAD:audit/intl-content-links-20260827
