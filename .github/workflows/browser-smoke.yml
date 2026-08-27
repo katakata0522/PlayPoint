@@ -114,13 +114,14 @@ jobs:
           test -n "$chrome_path"
           echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
 
-      - name: Verify production calculator and revenue paths in Chromium
+      - name: Verify production calculator, revenue, and embed widget paths in Chromium
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
           SMOKE_EXPECT_REVISION: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || '' }}
         run: |
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
 
       - name: Upload failure evidence
         if: failure()
