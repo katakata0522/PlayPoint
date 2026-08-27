@@ -18,7 +18,11 @@ SSH_OPTIONS=(
 )
 RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=2"
 
-MAX_ATTEMPTS=5
+DEFAULT_MAX_ATTEMPTS=5
+# The full mirror is the only phase that benefits from a longer outage window.
+# Cleanup/status publication stay at the smaller default so a recovered deploy
+# cannot spend the rest of the job retrying secondary verification writes.
+DEPLOY_MAX_ATTEMPTS=7
 RSYNC_IO_TIMEOUT_SECONDS=60
 
 is_transient_network_exit_code() {
@@ -52,11 +56,12 @@ retry_delay_seconds() {
 
 run_with_transient_retry() {
   local label="$1"
-  shift
+  local max_attempts="$2"
+  shift 2
   local attempt=1
 
   while true; do
-    echo "$label (Attempt $attempt/$MAX_ATTEMPTS)..."
+    echo "$label (Attempt $attempt/$max_attempts)..."
     if "$@"; then
       return 0
     else
@@ -68,8 +73,8 @@ run_with_transient_retry() {
       return "$exit_code"
     fi
 
-    if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
-      echo "$label failed after $MAX_ATTEMPTS attempts (last exit code: $exit_code)." >&2
+    if [ "$attempt" -ge "$max_attempts" ]; then
+      echo "$label failed after $max_attempts attempts (last exit code: $exit_code)." >&2
       return "$exit_code"
     fi
 
@@ -168,12 +173,12 @@ REMOTE
 
 case "${1:-deploy}" in
   deploy)
-    run_with_transient_retry "Deploying via rsync" deploy_once
+    run_with_transient_retry "Deploying via rsync" "$DEPLOY_MAX_ATTEMPTS" deploy_once
     echo "Deployment succeeded!"
-    run_with_transient_retry "Verifying remote cleanup" verify_remote_cleanup_once
+    run_with_transient_retry "Verifying remote cleanup" "$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once
     ;;
   --publish-status)
-    run_with_transient_retry "Publishing verified deployment status" publish_verified_status_once
+    run_with_transient_retry "Publishing verified deployment status" "$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once
     ;;
   *)
     echo "Unknown deploy-rsync mode: $1" >&2
