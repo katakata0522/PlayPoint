@@ -1,0 +1,46 @@
+name: One-shot international Japanese-layout polish
+
+on:
+  push:
+    branches:
+      - fix/intl-japanese-layout-polish
+    paths:
+      - 'scripts/patch-intl-japanese-layout-polish.cjs'
+      - 'scripts/intl-author-pages.cjs'
+      - '.github/workflows/one-shot-intl-jp-layout-polish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/intl-japanese-layout-polish
+
+      - name: Apply generator patch
+        run: node scripts/patch-intl-japanese-layout-polish.cjs
+
+      - name: Regenerate and validate
+        run: |
+          node scripts/prepare-pr.cjs
+          rm -f en/articles/intl-article.css
+          node --test tests/intl-article-layout.test.cjs
+
+      - name: Commit generated result and remove one-shot files
+        run: |
+          rm -f scripts/patch-intl-japanese-layout-polish.cjs
+          rm -f .github/workflows/one-shot-intl-jp-layout-polish.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'feat: align international article UX with Japanese layout'
+          git push origin HEAD:fix/intl-japanese-layout-polish
