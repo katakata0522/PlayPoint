@@ -23,7 +23,15 @@ jobs:
           ref: fix/intl-japanese-layout-polish
 
       - name: Apply generator patch
-        run: node scripts/patch-intl-japanese-layout-polish.cjs
+        run: |
+          node scripts/patch-intl-japanese-layout-polish.cjs
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tests/intl-article-layout.test.cjs')
+          text = path.read_text()
+          text = text.replace("(?:?[^\"']*)?", "(?:\\?[^\"']*)?")
+          path.write_text(text)
+          PY
 
       - name: Regenerate and validate
         run: |
