@@ -1,0 +1,112 @@
+name: Fix international generation idempotency
+
+on:
+  push:
+    branches:
+      - fix/intl-use-ja-article-layout
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fix-intl-generation-idempotency
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/intl-use-ja-article-layout
+
+      - name: Patch canonical generators and regression test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          layout_path = Path('scripts/intl-article-layout.cjs')
+          layout = layout_path.read_text(encoding='utf-8')
+
+          old_comment = "// intl-seo-pages.cjs は生成途中で旧CSSを書き出すため、記事レイアウト同期を\n// 最終的な正本としてここで日本語版の視覚契約へ戻す。"
+          new_comment = "// 国際記事は article-shared.css を視覚契約の正本とし、このCSSは言語・既存要素の差分だけを持つ。\n// intl-seo-pages.cjs が正規生成時にこの内容を intl-article.css へ一度だけ書き出す。"
+          assert old_comment in layout
+          layout = layout.replace(old_comment, new_comment, 1)
+
+          old_return = "  return unwrapped.slice(0, main.start).replace(/\\s*$/, newline) + chrome + newline + layout + unwrapped.slice(main.end);"
+          new_return = "  const trailingHtml = unwrapped.slice(main.end).replace(/^\\s*/, '');\n  return unwrapped.slice(0, main.start).replace(/\\s*$/, newline) + chrome + newline + layout\n    + (trailingHtml ? newline + trailingHtml : '');"
+          assert old_return in layout
+          layout = layout.replace(old_return, new_return, 1)
+
+          pattern = re.compile(r"\nfunction synchronizeIntlArticleStylesheet\(rootDir\) \{[\s\S]*?\n\}\n\nfunction synchronizeIntlArticleLayouts")
+          layout, count = pattern.subn("\nfunction synchronizeIntlArticleLayouts", layout, count=1)
+          assert count == 1
+
+          old_summary = "  const summary = { checked: 0, changed: 0, stylesheetChanged: synchronizeIntlArticleStylesheet(rootDir) };"
+          new_summary = "  const summary = { checked: 0, changed: 0 };"
+          assert old_summary in layout
+          layout = layout.replace(old_summary, new_summary, 1)
+
+          old_export = "  synchronizeIntlArticleLayouts,\n  synchronizeIntlArticleStylesheet"
+          new_export = "  synchronizeIntlArticleLayouts"
+          assert old_export in layout
+          layout = layout.replace(old_export, new_export, 1)
+          layout_path.write_text(layout, encoding='utf-8')
+
+          pages_path = Path('scripts/intl-seo-pages.cjs')
+          pages = pages_path.read_text(encoding='utf-8')
+          assert "  INTL_ARTICLE_CSS,\n" in pages
+          pages = pages.replace("  INTL_ARTICLE_CSS,\n", "", 1)
+          anchor = "} = require('./intl-seo-content.cjs');\n"
+          assert anchor in pages
+          pages = pages.replace(anchor, anchor + "const { INTL_LAYOUT_CSS } = require('./intl-article-layout.cjs');\n", 1)
+          assert "minifyCSS(INTL_ARTICLE_CSS)" in pages
+          pages = pages.replace("minifyCSS(INTL_ARTICLE_CSS)", "minifyCSS(INTL_LAYOUT_CSS)", 1)
+          pages_path.write_text(pages, encoding='utf-8')
+
+          test_path = Path('tests/intl-article-layout.test.cjs')
+          tests = test_path.read_text(encoding='utf-8')
+          old_fixture = "  const originalArticle = '<article class=\"content\"><h1>Sample guide</h1><p>Keep this sentence exactly.</p></article>';\n  fs.writeFileSync(articlePath, '<!doctype html><html lang=\"en\"><body><main class=\"main-card\">' + originalArticle + '</main></body></html>');"
+          new_fixture = "  const originalArticle = '<article class=\"content\"><h1>Sample guide</h1><p>Keep this sentence exactly.</p></article>';\n  const trailingScript = '<script src=\"/test.js\"></script>';\n  fs.writeFileSync(articlePath, '<!doctype html><html lang=\"en\"><body><main class=\"main-card\">' + originalArticle + '</main>\\n' + trailingScript + '</body></html>');"
+          assert old_fixture in tests
+          tests = tests.replace(old_fixture, new_fixture, 1)
+          anchor_assert = "  assert.equal(second, first, 'layout synchronization must be idempotent');\n"
+          assert anchor_assert in tests
+          tests = tests.replace(anchor_assert, anchor_assert + "  assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_END -->\\n<script src=\"\\/test\\.js\"><\\/script>/, 'layout boundary must keep exactly one newline before trailing scripts');\n", 1)
+          tests += "\n\ntest('international article CSS has one canonical writer', () => {\n  const pagesSource = fs.readFileSync(path.join(root, 'scripts', 'intl-seo-pages.cjs'), 'utf8');\n  const layoutSource = fs.readFileSync(modulePath, 'utf8');\n  assert.match(pagesSource, /minifyCSS\\(INTL_LAYOUT_CSS\\)/);\n  assert.doesNotMatch(pagesSource, /minifyCSS\\(INTL_ARTICLE_CSS\\)/);\n  assert.doesNotMatch(layoutSource, /function synchronizeIntlArticleStylesheet/);\n});\n"
+          test_path.write_text(tests, encoding='utf-8')
+          PY
+
+      - name: Verify focused regression
+        run: node --test tests/intl-article-layout.test.cjs
+
+      - name: Regenerate once and prove second pass is clean
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/prepare-pr.cjs
+          git add scripts/intl-article-layout.cjs scripts/intl-seo-pages.cjs tests/intl-article-layout.test.cjs en/articles/intl-article.css en/articles ko/articles tw/articles
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "fix: make international article generation idempotent"
+
+          node scripts/prepare-pr.cjs
+          if ! git diff --quiet; then
+            echo "canonical generation still changes tracked output on second pass"
+            git --no-pager diff --name-only
+            exit 1
+          fi
+
+      - name: Remove one-shot workflow and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm .github/workflows/fix-intl-generation-idempotency.yml
+          git add -A
+          git commit -m "chore: remove idempotency fix workflow"
+          git push origin HEAD:fix/intl-use-ja-article-layout
