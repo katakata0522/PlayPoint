@@ -53,6 +53,8 @@ test('Hong Kong keeps its own official tier names', () => {
   assert.ok(hk.includes('鉑金級'));
   assert.ok(!hk.includes('黃金級'));
   assert.ok(!hk.includes('白金級'));
+  const share = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
+  assert.ok(share.includes('黃金|金級'), 'shared target normalization must support both Taiwan and Hong Kong Gold labels');
 });
 
 test('verified Japanese counterparts have reciprocal hreflang sets', () => {
