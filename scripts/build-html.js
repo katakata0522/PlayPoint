@@ -37,6 +37,7 @@ const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
 const { normalizeArticleFiles } = require('./article-seo-normalize.cjs');
+const { syncArticleDateContract } = require('./article-date-contract.cjs');
 const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
@@ -94,6 +95,9 @@ console.log(`[build-html] synchronized article SEO: ${seoSummary.changed} update
 
 const guideBrandSummary = syncJapaneseGuideBrand(rootDir);
 console.log(`[build-html] synchronized Japanese complete-guide brand: ${guideBrandSummary.changedFiles.length}/${guideBrandSummary.articleCount + 1} updated`);
+
+const articleDateSummary = syncArticleDateContract(rootDir);
+console.log(`[build-html] synchronized article dates: ${articleDateSummary.changed}/${articleDateSummary.checked} updated`);
 
 const strippedFontFiles = stripExternalGoogleFonts(rootDir);
 console.log(`[build-html] stripped external Google Fonts: ${strippedFontFiles}`);
