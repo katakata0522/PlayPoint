@@ -1,1 +1,1 @@
-2026-08-28 diagnose PR #198 preflight failure
+2026-08-28 diagnose PR #198 preflight failure retry 2
