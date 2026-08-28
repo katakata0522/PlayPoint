@@ -18,6 +18,7 @@ const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-syn
 const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
+const { syncIntlHubDiscovery } = require('./intl-hub-discovery.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
 const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
@@ -69,6 +70,8 @@ const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
 console.log(`[build-html] synchronized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
 const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
 console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
+const intlHubDiscoverySummary = syncIntlHubDiscovery(rootDir);
+console.log(`[build-html] synchronized international guide discovery: ${intlHubDiscoverySummary.changed}/${intlHubDiscoverySummary.checked} updated`);
 
 require('./generate-game-simulators.cjs');
 

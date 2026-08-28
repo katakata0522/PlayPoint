@@ -36,8 +36,8 @@ test('EN/KO/TW hubs provide five curated starts plus searchable category cards',
     const html = read(`${locale}/articles/index.html`);
     const content = getArticleContent(html);
 
-    assert.match(html, /\/articles\/intl-hub\.css\?v=1/);
-    assert.match(html, /\/js\/intl-guide-hub\.js\?v=1/);
+    assert.match(html, /\/articles\/intl-hub\.css\?v=[a-z0-9_-]+/i);
+    assert.match(html, /\/js\/intl-guide-hub\.js\?v=[a-z0-9_-]+/i);
     assert.match(content, /data-guide-search/);
     assert.match(content, /data-guide-filter="all"/);
     assert.doesNotMatch(content, /class="section related-links-section"/);

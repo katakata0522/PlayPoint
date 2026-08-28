@@ -144,7 +144,7 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/"name": "(?:Play\+?ポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);
 
   // 7. 言語スイッチのアクティブ状態切り替え
-  output = output.replace('<button data-region="JP" class="active">日本語</button>', '<button data-region="JP">日本語</button>');
+  output = output.replace('<button data-region="JP" class="active">', '<button data-region="JP">');
   const activeBtnTarget = `<button data-region="${config.region}">`;
   const activeBtnReplacement = `<button data-region="${config.region}" class="active">`;
   output = output.replace(activeBtnTarget, activeBtnReplacement);
