@@ -8,7 +8,7 @@ on:
       - .github/one-shot-pr-gate-diagnostic-trigger.txt
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   diagnose:
@@ -19,6 +19,8 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run preflight and capture log
+        id: preflight
+        continue-on-error: true
         shell: bash
         run: |
           set -o pipefail
@@ -32,3 +34,17 @@ jobs:
           path: pr-gate-diagnostic.log
           if-no-files-found: warn
           retention-days: 2
+
+      - name: Commit diagnostic log
+        if: steps.preflight.outcome == 'failure'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pr-gate-diagnostic.log
+          git commit -m "chore: PR Gate診断ログを一時保存"
+          git push origin HEAD:feat/article-date-contract
+
+      - name: Fail after log capture
+        if: steps.preflight.outcome == 'failure'
+        run: exit 1
