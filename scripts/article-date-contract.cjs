@@ -13,6 +13,7 @@ const REGISTRY_RELATIVE_PATH = 'scripts/article-official-verification-dates.json
 const JSON_LD_SCRIPT_PATTERN = /<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
 const HERO_META_PATTERN = /<p\b(?=[^>]*\bclass\s*=\s*["'][^"']*\bhero-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/p>/i;
 const ARTICLE_POST_META_PATTERN = /<div\b(?=[^>]*\bclass\s*=\s*["'][^"']*\barticle-post-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/i;
+const ARTICLE_META_PATTERN = /<p\b(?=[^>]*\bclass\s*=\s*["'][^"']*\barticle-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/p>/i;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const MONTHS_EN = Object.freeze([
@@ -121,6 +122,11 @@ function extractReadTime(visibleMetaHtml, localeKey) {
   return text.match(patterns[localeKey])?.[0] || '';
 }
 
+function extractTrailingAuthorHtml(visibleMetaHtml, localeKey) {
+  if (localeKey !== 'ja') return '';
+  return String(visibleMetaHtml).match(/著者：([\s\S]*?)(?=<\/p>)/i)?.[1]?.trim() || '';
+}
+
 function formatDate(date, localeKey) {
   const [yearText, monthText, dayText] = date.split('-');
   const year = Number(yearText);
@@ -153,10 +159,14 @@ function renderDateMetaContent({ localeKey, publishedAt, modifiedAt, officialVer
   return content;
 }
 
-function renderVisibleDateMeta({ variant, ...values }) {
+function renderVisibleDateMeta({ variant, authorHtml = '', ...values }) {
   const content = renderDateMetaContent(values);
   if (variant === 'article-post-meta') {
     return `<div class="article-post-meta">\n                <span>${content}</span>\n            </div>`;
+  }
+  if (variant === 'article-meta') {
+    const author = authorHtml ? ` / 著者：${authorHtml}` : '';
+    return `<p class="article-meta">${content}${author}</p>`;
   }
   return `<p class="hero-meta">${content}</p>`;
 }
@@ -170,6 +180,9 @@ function findVisibleDateMeta(html) {
   if (articlePostMeta) {
     return { html: articlePostMeta, pattern: ARTICLE_POST_META_PATTERN, variant: 'article-post-meta' };
   }
+
+  const articleMeta = source.match(ARTICLE_META_PATTERN)?.[0];
+  if (articleMeta) return { html: articleMeta, pattern: ARTICLE_META_PATTERN, variant: 'article-meta' };
   return null;
 }
 
@@ -239,6 +252,7 @@ function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) 
   const visibleMeta = findVisibleDateMeta(html);
   if (!visibleMeta) throw new Error(`記事の表示日付欄がありません: ${normalizedPath}`);
   const readTime = extractReadTime(visibleMeta.html, localeKey);
+  const authorHtml = extractTrailingAuthorHtml(visibleMeta.html, localeKey);
 
   let output = String(html);
   output = setNamedMeta(output, 'last-modified', modifiedAt);
@@ -247,6 +261,7 @@ function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) 
   output = synchronizeOptionalArticlePropertyMeta(output, 'article:modified_time', modifiedAt);
   output = output.replace(visibleMeta.pattern, renderVisibleDateMeta({
     variant: visibleMeta.variant,
+    authorHtml,
     localeKey,
     publishedAt,
     modifiedAt,
