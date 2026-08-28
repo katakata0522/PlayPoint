@@ -63,11 +63,14 @@ export function checkLanguageSuggestion() {
         messageText = 'India-specific Play Points calculator is available!';
         buttonText = 'Switch to India edition';
         isCurrentMatch = isIndiaPath();
-    } else if (browserLang.startsWith('ko')) {
+    } else if (browserLang.startsWith('ko-kr')) {
         targetRegion = 'KR';
         messageText = '대한민국 Play Points 계산기가 있습니다!';
         buttonText = '대한민국 버전으로 전환';
         isCurrentMatch = isKoreanPath();
+    } else if (browserLang.startsWith('ko')) {
+        // A language-only ko locale does not identify the user's Play country.
+        return;
     } else if (browserLang.startsWith('zh-tw')) {
         targetRegion = 'TW';
         messageText = '提供台灣地區版本！';
