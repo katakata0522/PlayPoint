@@ -34,6 +34,8 @@ const START_HERE_SLUGS = Object.freeze([
 ]);
 
 const CATEGORY_OVERRIDES = Object.freeze({
+  'google-play-balance-combine-payment': 'earn',
+  'google-play-games-vs-play-points': 'account',
   'google-play-points-use-coupons': 'earn',
   'google-play-quests': 'earn',
   'google-play-points-device-change': 'account',

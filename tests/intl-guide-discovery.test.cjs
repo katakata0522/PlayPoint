@@ -26,6 +26,8 @@ test('international guide taxonomy keeps known ambiguous guides in one SSOT cate
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-use-coupons.html'), 'earn');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-quests.html'), 'earn');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-device-change.html'), 'account');
+  assert.equal(getIntlGuideCategory('/en/articles/google-play-balance-combine-payment.html'), 'earn');
+  assert.equal(getIntlGuideCategory('/en/articles/google-play-games-vs-play-points.html'), 'account');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-levels.html'), 'levels');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-not-showing.html'), 'troubleshooting');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-coupon-not-applied.html'), 'troubleshooting');
