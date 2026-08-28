@@ -33,14 +33,17 @@ test('expanded selector keeps Hong Kong and India discoverable as regions', () =
   assert.match(js, /More regions/);
 });
 
-test('browser-language suggestion never treats generic English or Chinese as a US/Taiwan rule match', () => {
+test('browser-language suggestion requires a country-specific locale before choosing Play rules', () => {
   const js = fs.readFileSync(path.join(root, 'js', 'language-suggestion.js'), 'utf8');
   assert.match(js, /en-us/);
+  assert.match(js, /ko-kr/);
+  assert.match(js, /zh-tw/);
   assert.match(js, /U\.S\. Play Points calculator is available!/);
   assert.doesNotMatch(js, /English version is available!/);
   assert.doesNotMatch(js, /提供繁體中文版本/);
   assert.match(js, /대한민국 Play Points 계산기가 있습니다!/);
   assert.match(js, /Generic English does not imply United States Play rules/);
+  assert.match(js, /language-only ko locale does not identify the user's Play country/);
 });
 
 test('longer country labels switch to a two-column mobile grid instead of overflowing', () => {
