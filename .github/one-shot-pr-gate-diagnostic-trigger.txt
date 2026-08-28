@@ -1,1 +1,1 @@
-2026-08-28 audit migrated article dates against main
+2026-08-28 repair article date contract migration
