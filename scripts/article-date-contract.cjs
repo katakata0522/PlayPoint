@@ -11,6 +11,7 @@ const ARTICLE_DIRECTORIES = Object.freeze([
 ]);
 const REGISTRY_RELATIVE_PATH = 'scripts/article-official-verification-dates.json';
 const JSON_LD_SCRIPT_PATTERN = /<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+const JSON_LD_FULL_SCRIPT_PATTERN = /(<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>)([\s\S]*?)(<\/script>)/gi;
 const HERO_META_PATTERN = /<p\b(?=[^>]*\bclass\s*=\s*["'][^"']*\bhero-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/p>/i;
 const ARTICLE_POST_META_PATTERN = /<div\b(?=[^>]*\bclass\s*=\s*["'][^"']*\barticle-post-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/i;
 const ARTICLE_META_PATTERN = /<p\b(?=[^>]*\bclass\s*=\s*["'][^"']*\barticle-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/p>/i;
@@ -127,6 +128,27 @@ function extractTrailingAuthorHtml(visibleMetaHtml, localeKey) {
   return String(visibleMetaHtml).match(/著者：([\s\S]*?)(?=<\/p>)/i)?.[1]?.trim() || '';
 }
 
+function extractSupplementalMetaItems(visibleMetaHtml, localeKey) {
+  const segments = stripTags(visibleMetaHtml)
+    .split(/\s*(?:・|·|｜|\|)\s*/u)
+    .map(segment => segment.trim())
+    .filter(Boolean);
+
+  const generatedPrefixes = {
+    ja: /^(?:📅\s*)?(?:公開|更新|公式情報確認)(?:\s|[:：])|^著者[:：]/,
+    en: /^(?:Published|Updated|Official info checked)\b/i,
+    ko: /^(?:공개|업데이트|공식 정보 확인)(?:\s|[:：])/,
+    tw: /^(?:發布|更新|官方資訊確認)(?:\s|[:：])/
+  };
+
+  return [...new Set(segments.filter(segment => {
+    if (generatedPrefixes[localeKey].test(segment)) return false;
+    if (extractReadTime(segment, localeKey)) return false;
+    if (/\d{4}[./-]\d{1,2}[./-]\d{1,2}/.test(segment) && /(?:公開|更新|Published|Updated|공개|업데이트|發布|更新)/i.test(segment)) return false;
+    return true;
+  }))];
+}
+
 function formatDate(date, localeKey) {
   const [yearText, monthText, dayText] = date.split('-');
   const year = Number(yearText);
@@ -159,16 +181,18 @@ function renderDateMetaContent({ localeKey, publishedAt, modifiedAt, officialVer
   return content;
 }
 
-function renderVisibleDateMeta({ variant, authorHtml = '', ...values }) {
+function renderVisibleDateMeta({ variant, authorHtml = '', supplementalItems = [], ...values }) {
   const content = renderDateMetaContent(values);
+  const separator = values.localeKey === 'ja' ? ' ・ ' : ' · ';
+  const supplemental = supplementalItems.length > 0 ? `${separator}${supplementalItems.join(separator)}` : '';
   if (variant === 'article-post-meta') {
-    return `<div class="article-post-meta">\n                <span>${content}</span>\n            </div>`;
+    return `<div class="article-post-meta">\n                <span>${content}${supplemental}</span>\n            </div>`;
   }
   if (variant === 'article-meta') {
     const author = authorHtml ? ` / 著者：${authorHtml}` : '';
-    return `<p class="article-meta">${content}${author}</p>`;
+    return `<p class="article-meta">${content}${supplemental}${author}</p>`;
   }
-  return `<p class="hero-meta">${content}</p>`;
+  return `<p class="hero-meta">${content}${supplemental}</p>`;
 }
 
 function findVisibleDateMeta(html) {
@@ -204,6 +228,30 @@ function setNamedMeta(html, name, value) {
   return String(html).replace(/<\/head>/i, `${tag}</head>`);
 }
 
+function extractNamedMetaDate(html, name) {
+  const pattern = new RegExp(`<meta\\b(?=[^>]*\\bname\\s*=\\s*["']${escapeRegExp(name)}["'])[^>]*>`, 'i');
+  const tag = String(html).match(pattern)?.[0] || '';
+  const value = tag.match(/\bcontent\s*=\s*(["'])(.*?)\1/i)?.[2] || '';
+  return value ? normalizeDate(value, name) : '';
+}
+
+function synchronizeArticleStructuredDataDates(html, publishedAt, modifiedAt) {
+  return String(html).replace(JSON_LD_FULL_SCRIPT_PATTERN, (full, openTag, body, closeTag) => {
+    let parsed;
+    try {
+      parsed = JSON.parse(body);
+    } catch {
+      return full;
+    }
+    if (collectArticleNodes(parsed, []).length === 0) return full;
+
+    const synchronized = body
+      .replace(/("datePublished"\s*:\s*")[^"]*(")/g, `$1${publishedAt}$2`)
+      .replace(/("dateModified"\s*:\s*")[^"]*(")/g, `$1${modifiedAt}$2`);
+    return `${openTag}${synchronized}${closeTag}`;
+  });
+}
+
 function synchronizeOptionalArticlePropertyMeta(html, propertyName, date) {
   const pattern = new RegExp(`<meta\\b(?=[^>]*\\bproperty\\s*=\\s*["']${escapeRegExp(propertyName)}["'])[^>]*>`, 'i');
   const match = String(html).match(pattern);
@@ -222,10 +270,10 @@ function formatJapaneseLongDate(date) {
 function synchronizeVisibleOfficialVerificationNote(html, localeKey, officialVerifiedAt) {
   const formatted = formatDate(officialVerifiedAt, localeKey);
   const patterns = {
-    ja: /最終公式確認日：\d{4}年\d{1,2}月\d{1,2}日/g,
-    en: /(?:Last official(?: source)? check|Official sources checked):?\s*[A-Z][a-z]+\s+\d{1,2},\s+\d{4}/g,
-    ko: /(?:공식 정보 최종 확인|공식 정보 확인|공식 확인일)\s*[:：]?\s*\d{4}년\s*\d{1,2}월\s*\d{1,2}일/g,
-    tw: /(?:官方資訊最後確認|官方資訊確認|官方確認日)\s*[:：]?\s*\d{4}年\d{1,2}月\d{1,2}日/g
+    ja: /最終公式確認日：\s*(?:\d{4}-\d{2}-\d{2}|\d{4}年\d{1,2}月\d{1,2}日)/g,
+    en: /(?:Last official(?: source)? check(?:ed)?|Official (?:information|info|sources?) (?:checked|verified))(?:\s+on|:)?\s*(?:\d{4}-\d{2}-\d{2}|[A-Z][a-z]+\s+\d{1,2},\s+\d{4})/gi,
+    ko: /(?:공식 정보 최종 확인|공식 정보 확인|공식 확인일)[^<\n]{0,16}?(?:\d{4}-\d{2}-\d{2}|\d{4}년\s*\d{1,2}월\s*\d{1,2}일)/g,
+    tw: /(?:官方資訊最後確認|官方資訊確認|官方確認日)[^<\n]{0,16}?(?:\d{4}-\d{2}-\d{2}|\d{4}年\s*\d{1,2}月\s*\d{1,2}日)/g
   };
   const replacements = {
     ja: `最終公式確認日：${formatJapaneseLongDate(officialVerifiedAt)}`,
@@ -243,7 +291,8 @@ function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) 
   if (!article) throw new Error(`Article構造化データがありません: ${normalizedPath}`);
 
   const publishedAt = normalizeDate(article.datePublished, 'datePublished', normalizedPath);
-  const modifiedAt = normalizeDate(article.dateModified, 'dateModified', normalizedPath);
+  const modifiedAt = extractNamedMetaDate(html, 'last-modified')
+    || normalizeDate(article.dateModified, 'dateModified', normalizedPath);
   const verifiedAt = normalizeDate(officialVerifiedAt, 'officialVerifiedAt', normalizedPath);
   if (publishedAt > modifiedAt) {
     throw new Error(`datePublished が dateModified より後です: ${normalizedPath} (${publishedAt} > ${modifiedAt})`);
@@ -253,15 +302,18 @@ function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) 
   if (!visibleMeta) throw new Error(`記事の表示日付欄がありません: ${normalizedPath}`);
   const readTime = extractReadTime(visibleMeta.html, localeKey);
   const authorHtml = extractTrailingAuthorHtml(visibleMeta.html, localeKey);
+  const supplementalItems = extractSupplementalMetaItems(visibleMeta.html, localeKey);
 
   let output = String(html);
   output = setNamedMeta(output, 'last-modified', modifiedAt);
   output = setNamedMeta(output, 'playpoint:official-verified', verifiedAt);
   output = synchronizeOptionalArticlePropertyMeta(output, 'article:published_time', publishedAt);
   output = synchronizeOptionalArticlePropertyMeta(output, 'article:modified_time', modifiedAt);
+  output = synchronizeArticleStructuredDataDates(output, publishedAt, modifiedAt);
   output = output.replace(visibleMeta.pattern, renderVisibleDateMeta({
     variant: visibleMeta.variant,
     authorHtml,
+    supplementalItems,
     localeKey,
     publishedAt,
     modifiedAt,
@@ -345,6 +397,7 @@ module.exports = {
   REGISTRY_RELATIVE_PATH,
   extractArticleStructuredData,
   extractReadTime,
+  extractSupplementalMetaItems,
   findVisibleDateMeta,
   formatDate,
   getArticleFiles,
@@ -353,5 +406,6 @@ module.exports = {
   renderDateMetaContent,
   renderVisibleDateMeta,
   syncArticleDateContract,
-  synchronizeArticleDateHtml
+  synchronizeArticleDateHtml,
+  synchronizeArticleStructuredDataDates
 };
