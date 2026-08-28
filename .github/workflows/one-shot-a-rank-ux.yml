@@ -23,6 +23,8 @@ jobs:
           persist-credentials: true
       - name: Apply A-rank source patch
         run: node scripts/one-shot-a-rank-ux-patch.cjs
+      - name: Fix generated locale switcher source
+        run: node scripts/one-shot-a-rank-ux-postfix.cjs
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
       - name: Run focused A-rank tests
