@@ -42,6 +42,16 @@ const HUB_COPY = Object.freeze({
   }
 });
 
+const HTML_ENTITY_TEXT = Object.freeze({
+  '&nbsp;': ' ',
+  '&amp;': '&',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x27;': "'",
+  '&lt;': '<',
+  '&gt;': '>'
+});
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -51,24 +61,32 @@ function escapeHtml(value) {
 }
 
 function decodeHtmlText(value) {
-  return String(value)
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#(?:39|x27);/gi, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#(\d+);/g, (_match, code) => String.fromCodePoint(Number(code)));
+  return String(value).replace(/&(?:nbsp|amp|quot|lt|gt|#39|#x27|#\d+);/gi, entity => {
+    const normalized = entity.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(HTML_ENTITY_TEXT, normalized)) {
+      return HTML_ENTITY_TEXT[normalized];
+    }
+
+    const numeric = normalized.match(/^&#(\d+);$/);
+    if (!numeric) return entity;
+    const codePoint = Number(numeric[1]);
+    return Number.isInteger(codePoint) && codePoint >= 0 && codePoint <= 0x10ffff
+      ? String.fromCodePoint(codePoint)
+      : entity;
+  });
 }
 
 function extractHubLinks(articleHtml) {
   const seen = new Set();
   const links = [];
-  const linkPattern = /<li><a href="([^"]+)">([\s\S]*?)<\/a><\/li>/g;
+  // The source hub contract is intentionally narrow: guide titles must be plain
+  // text inside the anchor. Rejecting embedded markup is safer than stripping
+  // arbitrary tags and then treating the remainder as trusted text.
+  const linkPattern = /<li>\s*<a href="([^"]+)">([^<]*)<\/a>\s*<\/li>/g;
   for (const match of articleHtml.matchAll(linkPattern)) {
     const href = match[1];
     if (!/^\/(?:en|ko|tw)\/(?:articles|maintenance)\//.test(href) || seen.has(href)) continue;
-    const title = decodeHtmlText(match[2].replace(/<[^>]+>/g, '').trim());
+    const title = decodeHtmlText(match[2].trim());
     if (!title) continue;
     seen.add(href);
     links.push({ href, title, category: getIntlGuideCategory(href) });
