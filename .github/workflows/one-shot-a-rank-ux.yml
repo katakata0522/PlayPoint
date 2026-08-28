@@ -2,6 +2,11 @@ name: One-shot A-rank UX generator
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/a-rank-article-ux
+    paths:
+      - '.github/workflows/one-shot-a-rank-ux.yml'
 
 permissions:
   contents: write
