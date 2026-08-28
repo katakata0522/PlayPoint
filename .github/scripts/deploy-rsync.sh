@@ -89,6 +89,7 @@ run_with_transient_retry() {
 deploy_once() {
   rsync -avz --delete-after --delete-excluded --delay-updates --timeout="$RSYNC_IO_TIMEOUT_SECONDS" \
     -e "$RSYNC_RSH" \
+    --filter='protect /manner/***' \
     ./ "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
     --exclude '/.github/***' \
