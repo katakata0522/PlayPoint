@@ -38,3 +38,4 @@ jobs:
           git add -A
           git commit -m "feat: implement A-rank article UX improvements" || exit 0
           git push origin HEAD:feat/a-rank-article-ux
+      # run 3: TW editorial label aligned with the existing source spelling
