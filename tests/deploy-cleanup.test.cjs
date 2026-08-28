@@ -43,6 +43,13 @@ test('デプロイは公開物だけを厳密にミラーし、除外物も本�
   }
 });
 
+test('別リポジトリ管理のManner Quizを厳密ミラーの削除対象から保護する', () => {
+  assert.ok(
+    script.includes("--filter='protect /manner/***'"),
+    'cli-autoが所有する /manner/ のrsync protect規則がありません'
+  );
+});
+
 test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', () => {
   assert.match(script, /Refusing to inspect unexpected deployment root/);
   assert.match(script, /\/home\/hajikkoroom\/playpoint-sim\.com\/public_html/);
