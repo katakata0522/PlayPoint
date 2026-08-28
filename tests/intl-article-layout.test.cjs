@@ -28,7 +28,9 @@ test('international article shell synchronization is idempotent and preserves ar
 
   assert.equal(second, first, 'layout synchronization must be idempotent');
   assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_END -->\n<script src="\/test\.js"><\/script>/, 'layout boundary must keep exactly one newline before trailing scripts');
-  assert.ok(first.includes(originalArticle), 'article content must remain byte-for-byte intact');
+  assert.ok(first.includes('<h1>Sample guide</h1>'), 'article heading must remain intact');
+  assert.ok(first.includes('<p>Keep this sentence exactly.</p>'), 'article copy must remain intact');
+  assert.equal((first.match(/data-generated-intl-article-prompt=\"true\"/g) || []).length, 1, 'localized reading prompt must be generated exactly once');
   assert.match(first, /<!-- INTL_ARTICLE_CHROME_START -->[\s\S]*class="global-nav intl-global-nav"/);
   assert.match(first, /<!-- INTL_ARTICLE_LAYOUT_START -->[\s\S]*class="layout-container intl-layout-container"/);
   assert.match(first, /class="sidebar-column intl-article-sidebar"/);

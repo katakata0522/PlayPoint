@@ -5,6 +5,7 @@ const path = require('node:path');
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 const { getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
+const { insertIntlArticlePrompt } = require('./intl-article-reading-flow.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
 const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
@@ -574,7 +575,7 @@ function synchronizeArticle(html, localeKey, relativePath, relatedArticles = nul
   const unwrapped = unwrapGeneratedLayout(withoutChrome, relativePath);
   const title = extractArticleTitle(unwrapped, relativePath);
   const main = findMainBlock(unwrapped, relativePath);
-  const mainHtml = unwrapped.slice(main.start, main.end);
+  const mainHtml = insertIntlArticlePrompt(unwrapped.slice(main.start, main.end), localeKey);
   const chrome = renderArticleChrome(localeKey, title, newline, { section: inferIntlSection(relativePath) });
   const layout = renderArticleLayout(localeKey, mainHtml, newline, relatedArticles);
   const trailingHtml = unwrapped.slice(main.end).replace(/^\s*/, '');
