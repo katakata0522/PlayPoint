@@ -1,1 +1,1 @@
-2026-08-28 diagnose PR #198 preflight failure retry 2
+2026-08-28 audit migrated article dates against main
