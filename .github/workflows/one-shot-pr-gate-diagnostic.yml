@@ -8,7 +8,7 @@ on:
       - .github/one-shot-pr-gate-diagnostic-trigger.txt
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   diagnose:
@@ -17,34 +17,86 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Run preflight and capture log
-        id: preflight
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -o pipefail
-          node .github/scripts/preflight.cjs 2>&1 | tee pr-gate-diagnostic.log
-
-      - name: Upload diagnostic log
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: pr-gate-diagnostic-${{ github.run_id }}
-          path: pr-gate-diagnostic.log
-          if-no-files-found: warn
-          retention-days: 2
+          fetch-depth: 0
 
-      - name: Commit diagnostic log
-        if: steps.preflight.outcome == 'failure'
+      - name: Audit migrated article dates against main
         shell: bash
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add pr-gate-diagnostic.log
-          git commit -m "chore: PR Gate診断ログを一時保存"
-          git push origin HEAD:feat/article-date-contract
+          git fetch origin main --quiet
+          node <<'NODE'
+          'use strict';
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { execFileSync } = require('node:child_process');
 
-      - name: Fail after log capture
-        if: steps.preflight.outcome == 'failure'
-        run: exit 1
+          const dirs = ['articles', 'en/articles', 'ko/articles', 'tw/articles'];
+          const registry = JSON.parse(fs.readFileSync('scripts/article-official-verification-dates.json', 'utf8'));
+          const months = new Map([
+            ['january','01'],['february','02'],['march','03'],['april','04'],['may','05'],['june','06'],
+            ['july','07'],['august','08'],['september','09'],['october','10'],['november','11'],['december','12']
+          ]);
+
+          function files() {
+            return dirs.flatMap(dir => fs.readdirSync(dir)
+              .filter(name => name.endsWith('.html') && name !== 'index.html')
+              .map(name => `${dir}/${name}`)).sort();
+          }
+          function mainFile(file) {
+            try { return execFileSync('git', ['show', `origin/main:${file}`], { encoding: 'utf8' }); }
+            catch { return ''; }
+          }
+          function metaDate(html, name) {
+            const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const match = html.match(new RegExp(`<meta\\b(?=[^>]*\\bname\\s*=\\s*["']${escaped}["'])[^>]*\\bcontent\\s*=\\s*["']([^"']+)["'][^>]*>`, 'i'));
+            return match?.[1]?.slice(0, 10) || '';
+          }
+          function isoDate(year, month, day) {
+            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+          }
+          function explicitOfficialDate(html) {
+            const isoPatterns = [
+              /Official (?:information|info|sources?) (?:checked|verified)(?: on|:)\s*(\d{4}-\d{2}-\d{2})/i,
+              /Last official(?: source)? check(?:ed)?(?: on|:)\s*(\d{4}-\d{2}-\d{2})/i,
+              /공식[^<\n]{0,40}(?:확인|검증)[^<\n]{0,20}(\d{4}-\d{2}-\d{2})/,
+              /官方[^<\n]{0,40}(?:確認|查核|驗證)[^<\n]{0,20}(\d{4}-\d{2}-\d{2})/
+            ];
+            for (const pattern of isoPatterns) {
+              const match = html.match(pattern);
+              if (match) return match[1];
+            }
+            const ja = html.match(/最終公式確認日：\s*(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            if (ja) return isoDate(ja[1], ja[2], ja[3]);
+            const en = html.match(/(?:Official (?:information|info|sources?) (?:checked|verified)|Last official(?: source)? check(?:ed)?)(?: on|:)?\s*([A-Z][a-z]+)\s+(\d{1,2}),\s+(\d{4})/i);
+            if (en) {
+              const month = months.get(en[1].toLowerCase());
+              if (month) return isoDate(en[3], month, en[2]);
+            }
+            const ko = html.match(/공식[^<\n]{0,40}(?:확인|검증)[^<\n]{0,20}(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
+            if (ko) return isoDate(ko[1], ko[2], ko[3]);
+            const tw = html.match(/官方[^<\n]{0,40}(?:確認|查核|驗證)[^<\n]{0,20}(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日/);
+            if (tw) return isoDate(tw[1], tw[2], tw[3]);
+            return '';
+          }
+
+          let modifiedMismatch = 0;
+          let officialMismatch = 0;
+          for (const file of files()) {
+            const before = mainFile(file);
+            if (!before) continue;
+            const current = fs.readFileSync(file, 'utf8');
+            const beforeModified = metaDate(before, 'last-modified');
+            const currentModified = metaDate(current, 'last-modified');
+            if (beforeModified && beforeModified !== currentModified) {
+              modifiedMismatch += 1;
+              console.log(`MODIFIED_MISMATCH ${file} main=${beforeModified} branch=${currentModified}`);
+            }
+            const explicit = explicitOfficialDate(before);
+            const registered = registry[file] || '';
+            if (explicit && explicit !== registered) {
+              officialMismatch += 1;
+              console.log(`OFFICIAL_MISMATCH ${file} explicit=${explicit} registry=${registered}`);
+            }
+          }
+          console.log(`SUMMARY modified_mismatch=${modifiedMismatch} official_mismatch=${officialMismatch}`);
+          NODE
