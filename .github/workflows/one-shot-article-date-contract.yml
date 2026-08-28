@@ -1,0 +1,44 @@
+name: One-shot Article Date Contract
+
+on:
+  push:
+    branches:
+      - feat/article-date-contract
+    paths:
+      - .github/one-shot-article-date-contract-trigger.txt
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Seed registry and integrate generator
+        run: node scripts/one-shot-article-date-contract.cjs
+
+      - name: Generate and run preparation checks
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run focused date contract tests
+        run: node --test tests/article-date-contract.test.cjs
+
+      - name: Check whitespace errors
+        run: git diff --check
+
+      - name: Commit generated article date contract
+        shell: bash
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: 記事の更新日と公式確認日を分離"
+          git push origin HEAD:feat/article-date-contract
