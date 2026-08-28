@@ -9,6 +9,10 @@ const {
   getIntlGuideCategory,
   getStartHereHrefs
 } = require('../scripts/intl-guide-taxonomy.cjs');
+const {
+  extractHubLinks,
+  renderHubBody
+} = require('../scripts/intl-hub-discovery.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -31,6 +35,23 @@ test('international guide taxonomy keeps known ambiguous guides in one SSOT cate
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-levels.html'), 'levels');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-not-showing.html'), 'troubleshooting');
   assert.equal(getIntlGuideCategory('/en/articles/google-play-points-coupon-not-applied.html'), 'troubleshooting');
+});
+
+test('hub title extraction decodes entities once and rejects embedded markup', () => {
+  const source = [
+    '<ul>',
+    '<li><a href="/en/articles/google-play-points-use-coupons.html">Safe &amp;lt;script&gt; title</a></li>',
+    '<li><a href="/en/articles/google-play-quests.html"><script>alert(1)</script>Quest guide</a></li>',
+    '</ul>'
+  ].join('');
+
+  const links = extractHubLinks(source);
+  assert.equal(links.length, 1);
+  assert.equal(links[0].title, 'Safe &lt;script> title');
+
+  const rendered = renderHubBody('en', links);
+  assert.doesNotMatch(rendered, /<script>/i);
+  assert.match(rendered, /&amp;lt;script&gt;/);
 });
 
 test('EN/KO/TW hubs provide five curated starts plus searchable category cards', () => {
