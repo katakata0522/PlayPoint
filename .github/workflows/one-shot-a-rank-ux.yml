@@ -1,0 +1,33 @@
+name: One-shot A-rank UX generator
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/a-rank-article-ux
+          persist-credentials: true
+      - name: Apply A-rank source patch
+        run: node scripts/one-shot-a-rank-ux-patch.cjs
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+      - name: Run focused A-rank tests
+        run: node --test tests/a-rank-article-ux.test.cjs tests/intl-article-ux-audit.test.cjs tests/intl-guide-discovery.test.cjs tests/top-page-language-integrity.test.cjs
+      - name: Run full preflight
+        run: node .github/scripts/preflight.cjs
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: implement A-rank article UX improvements" || exit 0
+          git push origin HEAD:feat/a-rank-article-ux
