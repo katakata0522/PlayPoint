@@ -1,4 +1,4 @@
-name: One-shot PR Gate Diagnostic
+name: One-shot Article Date Contract Fix
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
       - .github/one-shot-pr-gate-diagnostic-trigger.txt
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  fix:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -20,83 +20,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Audit migrated article dates against main
+      - name: Repair migration and regenerate
         shell: bash
         run: |
-          git fetch origin main --quiet
-          node <<'NODE'
-          'use strict';
-          const fs = require('node:fs');
-          const path = require('node:path');
-          const { execFileSync } = require('node:child_process');
+          node scripts/one-shot-article-date-contract-fix.cjs
+          node scripts/prepare-pr.cjs
 
-          const dirs = ['articles', 'en/articles', 'ko/articles', 'tw/articles'];
-          const registry = JSON.parse(fs.readFileSync('scripts/article-official-verification-dates.json', 'utf8'));
-          const months = new Map([
-            ['january','01'],['february','02'],['march','03'],['april','04'],['may','05'],['june','06'],
-            ['july','07'],['august','08'],['september','09'],['october','10'],['november','11'],['december','12']
-          ]);
+      - name: Run focused date and regional regression
+        shell: bash
+        run: node --test tests/article-date-contract.test.cjs tests/intl-platinum-diamond.test.cjs tests/intl-regional-accuracy.test.cjs
 
-          function files() {
-            return dirs.flatMap(dir => fs.readdirSync(dir)
-              .filter(name => name.endsWith('.html') && name !== 'index.html')
-              .map(name => `${dir}/${name}`)).sort();
-          }
-          function mainFile(file) {
-            try { return execFileSync('git', ['show', `origin/main:${file}`], { encoding: 'utf8' }); }
-            catch { return ''; }
-          }
-          function metaDate(html, name) {
-            const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const match = html.match(new RegExp(`<meta\\b(?=[^>]*\\bname\\s*=\\s*["']${escaped}["'])[^>]*\\bcontent\\s*=\\s*["']([^"']+)["'][^>]*>`, 'i'));
-            return match?.[1]?.slice(0, 10) || '';
-          }
-          function isoDate(year, month, day) {
-            return `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-          }
-          function explicitOfficialDate(html) {
-            const isoPatterns = [
-              /Official (?:information|info|sources?) (?:checked|verified)(?: on|:)\s*(\d{4}-\d{2}-\d{2})/i,
-              /Last official(?: source)? check(?:ed)?(?: on|:)\s*(\d{4}-\d{2}-\d{2})/i,
-              /공식[^<\n]{0,40}(?:확인|검증)[^<\n]{0,20}(\d{4}-\d{2}-\d{2})/,
-              /官方[^<\n]{0,40}(?:確認|查核|驗證)[^<\n]{0,20}(\d{4}-\d{2}-\d{2})/
-            ];
-            for (const pattern of isoPatterns) {
-              const match = html.match(pattern);
-              if (match) return match[1];
-            }
-            const ja = html.match(/最終公式確認日：\s*(\d{4})年(\d{1,2})月(\d{1,2})日/);
-            if (ja) return isoDate(ja[1], ja[2], ja[3]);
-            const en = html.match(/(?:Official (?:information|info|sources?) (?:checked|verified)|Last official(?: source)? check(?:ed)?)(?: on|:)?\s*([A-Z][a-z]+)\s+(\d{1,2}),\s+(\d{4})/i);
-            if (en) {
-              const month = months.get(en[1].toLowerCase());
-              if (month) return isoDate(en[3], month, en[2]);
-            }
-            const ko = html.match(/공식[^<\n]{0,40}(?:확인|검증)[^<\n]{0,20}(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/);
-            if (ko) return isoDate(ko[1], ko[2], ko[3]);
-            const tw = html.match(/官方[^<\n]{0,40}(?:確認|查核|驗證)[^<\n]{0,20}(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日/);
-            if (tw) return isoDate(tw[1], tw[2], tw[3]);
-            return '';
-          }
+      - name: Run complete preflight
+        shell: bash
+        run: node .github/scripts/preflight.cjs
 
-          let modifiedMismatch = 0;
-          let officialMismatch = 0;
-          for (const file of files()) {
-            const before = mainFile(file);
-            if (!before) continue;
-            const current = fs.readFileSync(file, 'utf8');
-            const beforeModified = metaDate(before, 'last-modified');
-            const currentModified = metaDate(current, 'last-modified');
-            if (beforeModified && beforeModified !== currentModified) {
-              modifiedMismatch += 1;
-              console.log(`MODIFIED_MISMATCH ${file} main=${beforeModified} branch=${currentModified}`);
-            }
-            const explicit = explicitOfficialDate(before);
-            const registered = registry[file] || '';
-            if (explicit && explicit !== registered) {
-              officialMismatch += 1;
-              console.log(`OFFICIAL_MISMATCH ${file} explicit=${explicit} registry=${registered}`);
-            }
-          }
-          console.log(`SUMMARY modified_mismatch=${modifiedMismatch} official_mismatch=${officialMismatch}`);
-          NODE
+      - name: Validate diff
+        shell: bash
+        run: git diff --check
+
+      - name: Commit generated repair
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "fix: 記事日付の意味と地域注記を保持"
+          git push origin HEAD:feat/article-date-contract
