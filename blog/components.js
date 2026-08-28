@@ -263,10 +263,6 @@
     void ensureAnalyticsCore();
     applyArticlePresentationSettings();
 
-    // components.js is loaded at the end of <body>, so article markup already exists here.
-    // Build the TOC before DOMContentLoaded to avoid shifting visible article content after first paint.
-    generateTableOfContents();
-
     // Execute functions
     document.addEventListener('DOMContentLoaded', () => {
         scheduleCommonAnalytics();
