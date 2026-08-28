@@ -38,6 +38,13 @@ function legacyPostMetaFixture() {
   );
 }
 
+function legacyArticleMetaFixture() {
+  return japaneseFixture().replace(
+    '<p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>',
+    '<p class="article-meta">公開日：2025-12-25 / 更新日：2026-08-17 / 著者：<a href="../author/katakata.html" rel="author">かたかた</a></p>'
+  );
+}
+
 test('更新日と公式情報確認日を別の意味として表示する', () => {
   const result = synchronizeArticleDateHtml(japaneseFixture(), {
     relativePath: 'articles/example.html',
@@ -66,6 +73,17 @@ test('旧article-post-meta形式でも意味を壊さず同期する', () => {
   assert.match(result.html, /更新 <time[^>]*>2026\/08\/17<\/time>/);
   assert.match(result.html, /公式情報確認 <time[^>]*>2026\/07\/31<\/time>/);
   assert.match(result.html, /読了 約6分/);
+});
+
+test('旧article-meta形式は著者リンクを保持して同期する', () => {
+  const result = synchronizeArticleDateHtml(legacyArticleMetaFixture(), {
+    relativePath: 'articles/legacy-announcement.html',
+    officialVerifiedAt: '2026-08-17'
+  });
+
+  assert.match(result.html, /class="article-meta"/);
+  assert.match(result.html, /公式情報確認 <time[^>]*datetime="2026-08-17"/);
+  assert.match(result.html, /著者：<a href="\.\.\/author\/katakata\.html" rel="author">かたかた<\/a>/);
 });
 
 test('記事日付同期は冪等である', () => {
