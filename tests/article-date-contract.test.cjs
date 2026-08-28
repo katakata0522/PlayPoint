@@ -31,6 +31,13 @@ function japaneseFixture() {
 </html>`;
 }
 
+function legacyPostMetaFixture() {
+  return japaneseFixture().replace(
+    '<p class="hero-meta">2026/07/31 更新 ・ 読了 6分</p>',
+    '<div class="article-post-meta"><span>📅 公開: 2025.12.25 ｜ 🔄 更新: 2026.07.31 ｜ ⏱️ 読了 約6分</span></div>'
+  );
+}
+
 test('更新日と公式情報確認日を別の意味として表示する', () => {
   const result = synchronizeArticleDateHtml(japaneseFixture(), {
     relativePath: 'articles/example.html',
@@ -46,6 +53,19 @@ test('更新日と公式情報確認日を別の意味として表示する', ()
   assert.match(result.html, /<meta name="last-modified" content="2026-08-17">/);
   assert.match(result.html, /<meta name="playpoint:official-verified" content="2026-07-31">/);
   assert.match(result.html, /最終公式確認日：2026年7月31日/);
+});
+
+test('旧article-post-meta形式でも意味を壊さず同期する', () => {
+  const result = synchronizeArticleDateHtml(legacyPostMetaFixture(), {
+    relativePath: 'articles/legacy.html',
+    officialVerifiedAt: '2026-07-31'
+  });
+
+  assert.match(result.html, /class="article-post-meta"/);
+  assert.match(result.html, /公開 <time[^>]*>2025\/12\/25<\/time>/);
+  assert.match(result.html, /更新 <time[^>]*>2026\/08\/17<\/time>/);
+  assert.match(result.html, /公式情報確認 <time[^>]*>2026\/07\/31<\/time>/);
+  assert.match(result.html, /読了 約6分/);
 });
 
 test('記事日付同期は冪等である', () => {
