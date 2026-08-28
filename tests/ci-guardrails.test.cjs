@@ -71,3 +71,25 @@ test('preflightは本番同期前に鮮度と記事正規化をcheck-onlyで検�
   assert.ok(navigationIndex < minifyIndex, 'article navigation must be checked before deploy preparation');
   assert.ok(seoIndex < minifyIndex, 'article SEO must be checked before deploy preparation');
 });
+
+test('本番Browser Smokeは成功済みDeployを前提にし、公開SHA待ちを重複しない', () => {
+  const workflow = read('.github/workflows/browser-smoke.yml');
+
+  assert.match(workflow, /workflow_run:/);
+  assert.match(workflow, /github\.event\.workflow_run\.conclusion == 'success'/);
+  assert.doesNotMatch(workflow, /SMOKE_EXPECT_REVISION/);
+});
+
+test('検証専用workflowの変更だけでは本番Deployを起動しない', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+
+  for (const path of [
+    '.github/workflows/browser-smoke.yml',
+    '.github/workflows/mobile-performance.yml',
+    '.github/workflows/quality-check.yml',
+    '.github/workflows/seo-healthcheck.yml'
+  ]) {
+    assert.ok(workflow.includes(`- '${path}'`), `${path} must be ignored by Deploy`);
+  }
+});
+

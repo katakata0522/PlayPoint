@@ -13,6 +13,10 @@ on:
       - 'docs/**'
       - 'tools/**'
       - 'scripts/ai-sync-preflight.cjs'
+      - '.github/workflows/browser-smoke.yml'
+      - '.github/workflows/mobile-performance.yml'
+      - '.github/workflows/quality-check.yml'
+      - '.github/workflows/seo-healthcheck.yml'
 
 permissions:
   contents: read
