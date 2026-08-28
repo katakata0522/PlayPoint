@@ -2,7 +2,7 @@
 
 const GENERATED_PROMPT_ATTRIBUTE = 'data-generated-intl-article-prompt="true"';
 const GENERATED_PROMPT_PATTERN = /\s*<aside\b(?=[^>]*\bdata-generated-intl-article-prompt=["']true["'])[^>]*>[\s\S]*?<\/aside>/i;
-const ARTICLE_PROMPT_PATTERN = /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i;
+const LEGACY_PROMPT_PATTERN = /\s*<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 
 const INTL_PROMPT_COPY = Object.freeze({
   en: Object.freeze({
@@ -86,20 +86,21 @@ function renderIntlArticlePrompt(localeKey) {
 }
 
 function insertIntlArticlePrompt(mainHtml, localeKey) {
-  const withoutGeneratedPrompt = String(mainHtml).replace(GENERATED_PROMPT_PATTERN, '');
-  if (ARTICLE_PROMPT_PATTERN.test(withoutGeneratedPrompt)) return withoutGeneratedPrompt;
-  const anchorEnd = findPromptAnchorEnd(withoutGeneratedPrompt);
-  if (anchorEnd < 0) return withoutGeneratedPrompt;
-  return withoutGeneratedPrompt.slice(0, anchorEnd)
+  const withoutPrompt = String(mainHtml)
+    .replace(GENERATED_PROMPT_PATTERN, '')
+    .replace(LEGACY_PROMPT_PATTERN, '');
+  const anchorEnd = findPromptAnchorEnd(withoutPrompt);
+  if (anchorEnd < 0) return withoutPrompt;
+  return withoutPrompt.slice(0, anchorEnd)
     + renderIntlArticlePrompt(localeKey)
-    + withoutGeneratedPrompt.slice(anchorEnd);
+    + withoutPrompt.slice(anchorEnd);
 }
 
 module.exports = {
-  ARTICLE_PROMPT_PATTERN,
   GENERATED_PROMPT_ATTRIBUTE,
   GENERATED_PROMPT_PATTERN,
   INTL_PROMPT_COPY,
+  LEGACY_PROMPT_PATTERN,
   findPromptAnchorEnd,
   insertIntlArticlePrompt,
   renderIntlArticlePrompt
