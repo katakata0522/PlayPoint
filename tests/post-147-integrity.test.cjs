@@ -64,7 +64,8 @@ test('国別比較記事は現在の6地域を案内する', () => {
   assert.match(article, /CountryCode%3DIN/);
   assert.match(article, /og:title" content="Play Points country differences: 6-region comparison"/);
   assert.doesNotMatch(article, /Play Points country differences: US, Korea, Taiwan/);
-  assert.match(article, /Official information checked on \d{4}-\d{2}-\d{2}\./);
+  assert.match(article, /<meta name="playpoint:official-verified" content="\d{4}-\d{2}-\d{2}">/);
+  assert.match(article, /<time data-article-date="official-verified" datetime="\d{4}-\d{2}-\d{2}">[^<]+<\/time>/);
 });
 
 test('preflightはビルド前に6地域トップとPWAランチャーの存在を確認する', () => {
