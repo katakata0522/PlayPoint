@@ -22,7 +22,20 @@ jobs:
         run: node scripts/one-shot-article-date-contract.cjs
 
       - name: Generate and run preparation checks
-        run: node scripts/prepare-pr.cjs
+        id: prepare
+        shell: bash
+        run: |
+          set -o pipefail
+          node scripts/prepare-pr.cjs 2>&1 | tee article-date-contract-run.log
+
+      - name: Upload preparation log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: article-date-contract-log-${{ github.run_id }}
+          path: article-date-contract-run.log
+          if-no-files-found: warn
+          retention-days: 2
 
       - name: Run focused date contract tests
         run: node --test tests/article-date-contract.test.cjs
