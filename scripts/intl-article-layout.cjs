@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
+const { getIntlGuideCategory } = require('./intl-guide-taxonomy.cjs');
 
 const CHROME_START = '<!-- INTL_ARTICLE_CHROME_START -->';
 const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
@@ -370,12 +371,7 @@ const INTL_SIDEBAR = Object.freeze({
 });
 
 function inferIntlSection(relativePath) {
-  const slug = path.posix.basename(String(relativePath || ''), '.html').replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase();
-  if (/(?:not-showing|not-applied|not-working|locked|missing|cannot|refund)/.test(slug)) return 'troubleshooting';
-  if (/(?:level|levels|silver|gold|platinum|diamond|weekly-reward|super-weekly|maintenance)/.test(slug)) return 'levels';
-  if (/(?:account|device|country|family|join|eligibility|balance-history|expiration)/.test(slug)) return 'account';
-  if (/(?:gift|payment|purchase|subscription|discount|promo|coupon|quest|earn|earning|cash|credit|value|cost|spend|rounding|tax)/.test(slug)) return 'earn';
-  return 'guides';
+  return getIntlGuideCategory(relativePath);
 }
 
 function escapeHtml(value) {

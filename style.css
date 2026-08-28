@@ -178,6 +178,30 @@ background: rgba(0, 0, 0, 0.015);
 .comparison-reference-table-wrap tbody tr:nth-child(even):hover {
 background: rgba(11, 87, 208, 0.04);
 }
+@media (max-width: 520px) {
+.region-switch {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+width: 100%;
+gap: .35rem;
+}
+.region-switch > button {
+width: 100%;
+padding: .4em .55em;
+border: 1px solid var(--input-border-color) !important;
+border-radius: 6px !important;
+white-space: nowrap;
+}
+.region-switch .region-more {
+grid-column: 1 / -1;
+width: 100%;
+}
+.region-switch .region-more-toggle {
+width: 100%;
+border: 1px solid var(--input-border-color) !important;
+border-radius: 6px !important;
+}
+}
 @media (max-width: 700px) {
 .comparison-reference-boundary {
 grid-template-columns: 1fr;

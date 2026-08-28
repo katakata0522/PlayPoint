@@ -6,13 +6,12 @@ const test = require('node:test');
 const ROOT = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 
-test('international article hubs use the shared article shell and grouped cards', () => {
+test('international article hubs keep the shared article shell', () => {
   for (const locale of ['en', 'ko', 'tw']) {
     const html = read(`${locale}/articles/index.html`);
     assert.match(html, /intl-article-site-header/);
     assert.match(html, /layout-container intl-layout-container/);
     assert.match(html, /main-card intl-article-hub/);
-    assert.match(html, /section related-links-section/);
     assert.match(html, /sidebar-column intl-article-sidebar/);
   }
 });

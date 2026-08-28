@@ -161,7 +161,11 @@ function listArticleFiles(root) {
     const absoluteDir = path.join(root, dir);
     if (!fs.existsSync(absoluteDir)) continue;
     for (const name of fs.readdirSync(absoluteDir).sort()) {
-      if (name.endsWith('.html')) files.push(path.posix.join(dir, name));
+      if (!name.endsWith('.html')) continue;
+      // International article indexes are discovery hubs, not article details.
+      // Keep the related-guide requirement strict for every actual article.
+      if (name === 'index.html' && dir !== 'articles') continue;
+      files.push(path.posix.join(dir, name));
     }
   }
   return files;

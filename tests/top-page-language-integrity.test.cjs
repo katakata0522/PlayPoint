@@ -37,7 +37,7 @@ function escapeRegex(text) {
 
 function getUserFacingSurface(html) {
   const withoutNonContent = html
-    .replace(/<div class="region-switch">[\s\S]*?<\/div>/i, ' ')
+    .replace(/<div\b(?=[^>]*\bclass=["'][^"']*\bregion-switch\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/i, ' ')
     .replace(/<!--([\s\S]*?)-->/g, ' ')
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ');
@@ -49,6 +49,12 @@ function getUserFacingSurface(html) {
   const visibleText = withoutNonContent.replace(/<[^>]+>/g, ' ');
   return `${visibleText}\n${accessibilityText.join('\n')}`;
 }
+
+test('地域セレクタだけを属性追加に依存せず多言語混入監査から除外する', () => {
+  const selector = '<div data-test="region" class="top region-switch compact" aria-label="Play country or region"><button>🇯🇵 日本</button><button>🇰🇷 대한민국</button><button>🇹🇼 台灣</button></div>';
+  assert.equal(getUserFacingSurface(`${selector}<main>English only</main>`).match(localeCases.en.forbiddenScripts), null);
+  assert.notEqual(getUserFacingSurface('<main>English text 日本</main>').match(localeCases.en.forbiddenScripts), null);
+});
 
 test('静的生成辞書は多言語フッターの全リンク文言を持つ', () => {
   const locales = createLocales('2026-08-06');
