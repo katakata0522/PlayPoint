@@ -12,6 +12,7 @@ const ARTICLE_DIRECTORIES = Object.freeze([
 const REGISTRY_RELATIVE_PATH = 'scripts/article-official-verification-dates.json';
 const JSON_LD_SCRIPT_PATTERN = /<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
 const HERO_META_PATTERN = /<p\b(?=[^>]*\bclass\s*=\s*["'][^"']*\bhero-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/p>/i;
+const ARTICLE_POST_META_PATTERN = /<div\b(?=[^>]*\bclass\s*=\s*["'][^"']*\barticle-post-meta\b[^"']*["'])[^>]*>[\s\S]*?<\/div>/i;
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const MONTHS_EN = Object.freeze([
@@ -21,6 +22,10 @@ const MONTHS_EN = Object.freeze([
 
 function normalizeRelativePath(value) {
   return String(value).replaceAll('\\', '/').replace(/^\.\//, '');
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function getLocaleKey(relativePath) {
@@ -105,10 +110,10 @@ function stripTags(value) {
     .trim();
 }
 
-function extractReadTime(heroMetaHtml, localeKey) {
-  const text = stripTags(heroMetaHtml);
+function extractReadTime(visibleMetaHtml, localeKey) {
+  const text = stripTags(visibleMetaHtml);
   const patterns = {
-    ja: /読了\s*\d+\s*分/,
+    ja: /読了\s*(?:約\s*)?\d+\s*分/,
     en: /\b\d+\s*min(?:ute)?s?\s*read\b/i,
     ko: /(?:약\s*)?\d+\s*분(?:\s*읽기)?/,
     tw: /(?:約\s*)?\d+\s*分鐘/
@@ -128,7 +133,7 @@ function formatDate(date, localeKey) {
   return `${yearText}/${monthText}/${dayText}`;
 }
 
-function renderHeroMeta({ localeKey, publishedAt, modifiedAt, officialVerifiedAt, readTime }) {
+function renderDateMetaContent({ localeKey, publishedAt, modifiedAt, officialVerifiedAt, readTime }) {
   const published = `<time data-article-date="published" datetime="${publishedAt}">${formatDate(publishedAt, localeKey)}</time>`;
   const modified = `<time data-article-date="modified" datetime="${modifiedAt}">${formatDate(modifiedAt, localeKey)}</time>`;
   const verified = `<time data-article-date="official-verified" datetime="${officialVerifiedAt}">${formatDate(officialVerifiedAt, localeKey)}</time>`;
@@ -144,10 +149,28 @@ function renderHeroMeta({ localeKey, publishedAt, modifiedAt, officialVerifiedAt
     content = `公開 ${published} ・ 更新 ${modified} ・ 公式情報確認 ${verified}`;
   }
 
-  if (readTime) {
-    content += localeKey === 'ja' ? ` ・ ${readTime}` : ` · ${readTime}`;
+  if (readTime) content += localeKey === 'ja' ? ` ・ ${readTime}` : ` · ${readTime}`;
+  return content;
+}
+
+function renderVisibleDateMeta({ variant, ...values }) {
+  const content = renderDateMetaContent(values);
+  if (variant === 'article-post-meta') {
+    return `<div class="article-post-meta">\n                <span>${content}</span>\n            </div>`;
   }
   return `<p class="hero-meta">${content}</p>`;
+}
+
+function findVisibleDateMeta(html) {
+  const source = String(html);
+  const heroMeta = source.match(HERO_META_PATTERN)?.[0];
+  if (heroMeta) return { html: heroMeta, pattern: HERO_META_PATTERN, variant: 'hero-meta' };
+
+  const articlePostMeta = source.match(ARTICLE_POST_META_PATTERN)?.[0];
+  if (articlePostMeta) {
+    return { html: articlePostMeta, pattern: ARTICLE_POST_META_PATTERN, variant: 'article-post-meta' };
+  }
+  return null;
 }
 
 function updateTagContentAttribute(tag, value) {
@@ -158,8 +181,7 @@ function updateTagContentAttribute(tag, value) {
 }
 
 function setNamedMeta(html, name, value) {
-  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`<meta\\b(?=[^>]*\\bname\\s*=\\s*["']${escapedName}["'])[^>]*>`, 'i');
+  const pattern = new RegExp(`<meta\\b(?=[^>]*\\bname\\s*=\\s*["']${escapeRegExp(name)}["'])[^>]*>`, 'i');
   const match = String(html).match(pattern);
   if (match) return String(html).replace(pattern, updateTagContentAttribute(match[0], value));
 
@@ -170,14 +192,18 @@ function setNamedMeta(html, name, value) {
 }
 
 function synchronizeOptionalArticlePropertyMeta(html, propertyName, date) {
-  const escapedName = propertyName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`<meta\\b(?=[^>]*\\bproperty\\s*=\\s*["']${escapedName}["'])[^>]*>`, 'i');
+  const pattern = new RegExp(`<meta\\b(?=[^>]*\\bproperty\\s*=\\s*["']${escapeRegExp(propertyName)}["'])[^>]*>`, 'i');
   const match = String(html).match(pattern);
   if (!match) return String(html);
 
   const currentContent = match[0].match(/\bcontent\s*=\s*(["'])(.*?)\1/i)?.[2] || '';
   const suffix = /^\d{4}-\d{2}-\d{2}/.test(currentContent) ? currentContent.slice(10) : '';
   return String(html).replace(pattern, updateTagContentAttribute(match[0], `${date}${suffix}`));
+}
+
+function formatJapaneseLongDate(date) {
+  const [year, month, day] = date.split('-').map(Number);
+  return `${year}年${month}月${day}日`;
 }
 
 function synchronizeVisibleOfficialVerificationNote(html, localeKey, officialVerifiedAt) {
@@ -189,7 +215,7 @@ function synchronizeVisibleOfficialVerificationNote(html, localeKey, officialVer
     tw: /(?:官方資訊最後確認|官方資訊確認|官方確認日)\s*[:：]?\s*\d{4}年\d{1,2}月\d{1,2}日/g
   };
   const replacements = {
-    ja: `最終公式確認日：${formatted.replaceAll('/', '').replace(/^(\d{4})(\d{2})(\d{2})$/, '$1年$2月$3日').replace(/年0/g, '年').replace(/月0/g, '月')}`,
+    ja: `最終公式確認日：${formatJapaneseLongDate(officialVerifiedAt)}`,
     en: `Official sources checked: ${formatted}`,
     ko: `공식 정보 최종 확인: ${formatted}`,
     tw: `官方資訊最後確認：${formatted}`
@@ -210,16 +236,17 @@ function synchronizeArticleDateHtml(html, { relativePath, officialVerifiedAt }) 
     throw new Error(`datePublished が dateModified より後です: ${normalizedPath} (${publishedAt} > ${modifiedAt})`);
   }
 
-  const heroMeta = String(html).match(HERO_META_PATTERN)?.[0];
-  if (!heroMeta) throw new Error(`hero-meta がありません: ${normalizedPath}`);
-  const readTime = extractReadTime(heroMeta, localeKey);
+  const visibleMeta = findVisibleDateMeta(html);
+  if (!visibleMeta) throw new Error(`記事の表示日付欄がありません: ${normalizedPath}`);
+  const readTime = extractReadTime(visibleMeta.html, localeKey);
 
   let output = String(html);
   output = setNamedMeta(output, 'last-modified', modifiedAt);
   output = setNamedMeta(output, 'playpoint:official-verified', verifiedAt);
   output = synchronizeOptionalArticlePropertyMeta(output, 'article:published_time', publishedAt);
   output = synchronizeOptionalArticlePropertyMeta(output, 'article:modified_time', modifiedAt);
-  output = output.replace(HERO_META_PATTERN, renderHeroMeta({
+  output = output.replace(visibleMeta.pattern, renderVisibleDateMeta({
+    variant: visibleMeta.variant,
     localeKey,
     publishedAt,
     modifiedAt,
@@ -303,11 +330,13 @@ module.exports = {
   REGISTRY_RELATIVE_PATH,
   extractArticleStructuredData,
   extractReadTime,
+  findVisibleDateMeta,
   formatDate,
   getArticleFiles,
   getLocaleKey,
   loadOfficialVerificationRegistry,
-  renderHeroMeta,
+  renderDateMetaContent,
+  renderVisibleDateMeta,
   syncArticleDateContract,
   synchronizeArticleDateHtml
 };
