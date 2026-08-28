@@ -36,10 +36,6 @@ jobs:
         shell: bash
         run: node --test tests/article-date-contract.test.cjs tests/intl-platinum-diamond.test.cjs tests/intl-regional-accuracy.test.cjs
 
-      - name: Run complete preflight
-        shell: bash
-        run: node .github/scripts/preflight.cjs
-
       - name: Validate diff
         shell: bash
         run: git diff --check
@@ -53,3 +49,7 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -m "fix: 記事日付の意味と地域注記を保持"
           git push origin HEAD:feat/article-date-contract
+
+      - name: Run complete preflight after persisted repair
+        shell: bash
+        run: node .github/scripts/preflight.cjs
