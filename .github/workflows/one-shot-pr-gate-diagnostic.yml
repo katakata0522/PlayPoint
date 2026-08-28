@@ -23,8 +23,14 @@ jobs:
       - name: Repair migration and regenerate
         shell: bash
         run: |
-          node scripts/one-shot-article-date-contract-fix.cjs
+          node scripts/one-shot-article-date-contract-fix-v2.cjs
           node scripts/prepare-pr.cjs
+
+      - name: Inspect representative migrated metadata
+        shell: bash
+        run: |
+          grep -n 'last-modified\|hero-meta' articles/2025-12-25-diamond-worth-it.html | head -n 4
+          grep -n 'playpoint:official-verified\|hero-meta\|Official sources checked' en/articles/google-play-points-platinum-diamond-cost.html | head -n 6
 
       - name: Run focused date and regional regression
         shell: bash
