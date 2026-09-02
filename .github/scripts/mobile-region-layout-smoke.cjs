@@ -9,15 +9,16 @@ const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
-const VIEWPORT_WIDTHS = [360, 390];
+const VIEWPORT_WIDTHS = [320, 360, 390, 412];
 const VIEWPORT_HEIGHT = 844;
+const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
 const LOCALES = [
-  { key: 'JP', path: '' },
-  { key: 'US', path: 'en/' },
-  { key: 'KR', path: 'ko/' },
-  { key: 'TW', path: 'tw/' },
-  { key: 'HK', path: 'hk/' },
-  { key: 'IN', path: 'in/' }
+  { key: 'JP', path: '', toggleLabel: '🌐' },
+  { key: 'US', path: 'en/', toggleLabel: '🌐' },
+  { key: 'KR', path: 'ko/', toggleLabel: '🌐' },
+  { key: 'TW', path: 'tw/', toggleLabel: '🌐' },
+  { key: 'HK', path: 'hk/', toggleLabel: '🇭🇰 HK' },
+  { key: 'IN', path: 'in/', toggleLabel: '🇮🇳 IN' }
 ];
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -131,10 +132,18 @@ async function inspectLayout(page) {
     const toggle = switcher?.querySelector('.region-more-toggle');
     if (!switcher || !more || !toggle) return null;
 
+    const primaryButtons = [...switcher.children].filter(element => element.matches('button[data-region]'));
+    if (primaryButtons.length !== 4) return null;
+
     const switchStyle = getComputedStyle(switcher);
     const switchRect = switcher.getBoundingClientRect();
     const moreRect = more.getBoundingClientRect();
     const toggleRect = toggle.getBoundingClientRect();
+    const firstButtonRect = primaryButtons[0].getBoundingClientRect();
+    const directItemRects = [...primaryButtons, more].map(element => {
+      const rect = element.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, width: rect.width };
+    });
     const root = document.documentElement;
     const viewportWidth = root.clientWidth;
     const overflowers = [...document.body.querySelectorAll('*')]
@@ -157,6 +166,19 @@ async function inspectLayout(page) {
         };
       });
 
+    const labels = primaryButtons.map(button => {
+      const mobile = button.querySelector('.region-label-mobile');
+      const desktop = button.querySelector('.region-label-desktop');
+      return {
+        region: button.dataset.region,
+        mobileText: mobile?.textContent?.trim() || '',
+        mobileDisplay: mobile ? getComputedStyle(mobile).display : '',
+        desktopDisplay: desktop ? getComputedStyle(desktop).display : ''
+      };
+    });
+
+    const rowTopSpread = Math.max(...directItemRects.map(item => item.top)) - Math.min(...directItemRects.map(item => item.top));
+
     return {
       display: switchStyle.display,
       columnCount: switchStyle.gridTemplateColumns.trim().split(/\s+/).filter(Boolean).length,
@@ -167,8 +189,12 @@ async function inspectLayout(page) {
         right: switchRect.right,
         width: switchRect.width
       },
+      primaryWidth: firstButtonRect.width,
       moreWidth: moreRect.width,
       toggleWidth: toggleRect.width,
+      rowTopSpread,
+      labels,
+      toggleText: toggle.textContent.trim(),
       overflowers
     };
   });
@@ -192,6 +218,11 @@ async function verifyLocale(browser, baseUrl, locale) {
       const link = document.querySelector('link[data-region-selector-style]');
       return Boolean(link?.sheet && document.querySelector('.region-switch .region-more-toggle'));
     }, null, { timeout: 30_000 });
+    await page.waitForFunction(
+      expected => document.querySelector('.region-more-toggle')?.textContent?.trim() === expected,
+      locale.toggleLabel,
+      { timeout: 10_000 }
+    );
 
     for (const width of VIEWPORT_WIDTHS) {
       await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
@@ -204,18 +235,28 @@ async function verifyLocale(browser, baseUrl, locale) {
         .join(' | ');
 
       assert(layout.display === 'grid', `${locale.key} ${width}px: expected grid, got ${layout.display}`);
-      assert(layout.columnCount === 2, `${locale.key} ${width}px: expected 2 columns, got ${layout.columnCount}`);
+      assert(layout.columnCount === 5, `${locale.key} ${width}px: expected 5 columns, got ${layout.columnCount}`);
+      assert(layout.rowTopSpread <= 1.5, `${locale.key} ${width}px: region controls are not on one row (top spread ${layout.rowTopSpread})`);
       assert(layout.switchRect.left >= -1 && layout.switchRect.right <= layout.viewportWidth + 1,
         `${locale.key} ${width}px: region selector escapes viewport (${layout.switchRect.left}..${layout.switchRect.right}/${layout.viewportWidth})`);
       assert(layout.documentScrollWidth <= layout.viewportWidth + 1,
         `${locale.key} ${width}px: page horizontally overflows (${layout.documentScrollWidth} > ${layout.viewportWidth})${overflowDetails ? `; offenders: ${overflowDetails}` : ''}`);
-      assert(Math.abs(layout.moreWidth - layout.switchRect.width) <= 1.5,
-        `${locale.key} ${width}px: more row does not span selector (${layout.moreWidth} vs ${layout.switchRect.width})`);
+      assert(Math.abs(layout.moreWidth - layout.primaryWidth) <= 1.5,
+        `${locale.key} ${width}px: more control is not one grid column (${layout.moreWidth} vs ${layout.primaryWidth})`);
       assert(Math.abs(layout.toggleWidth - layout.moreWidth) <= 1.5,
-        `${locale.key} ${width}px: more toggle does not fill its row (${layout.toggleWidth} vs ${layout.moreWidth})`);
+        `${locale.key} ${width}px: more toggle does not fill its grid cell (${layout.toggleWidth} vs ${layout.moreWidth})`);
+      assert(layout.toggleText === locale.toggleLabel,
+        `${locale.key} ${width}px: expected toggle label ${locale.toggleLabel}, got ${layout.toggleText}`);
+
+      layout.labels.forEach((label, index) => {
+        assert(label.mobileText === PRIMARY_MOBILE_LABELS[index],
+          `${locale.key} ${width}px: unexpected mobile label for ${label.region}: ${label.mobileText}`);
+        assert(label.mobileDisplay !== 'none', `${locale.key} ${width}px: mobile label hidden for ${label.region}`);
+        assert(label.desktopDisplay === 'none', `${locale.key} ${width}px: desktop label still visible for ${label.region}`);
+      });
 
       results.push({ width, ...layout });
-      console.log(`ok - ${locale.key} mobile region layout at ${width}px`);
+      console.log(`ok - ${locale.key} compact mobile region layout at ${width}px`);
     }
 
     return results;

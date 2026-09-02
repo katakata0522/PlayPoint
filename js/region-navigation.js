@@ -15,6 +15,18 @@ const REGION_PATHS = Object.freeze({
     IN: 'in/'
 });
 
+const PRIMARY_REGION_LABELS = Object.freeze({
+    JP: { desktop: '🇯🇵 日本', mobile: '🇯🇵 JP', name: 'Japan' },
+    US: { desktop: '🇺🇸 United States', mobile: '🇺🇸 US', name: 'United States' },
+    KR: { desktop: '🇰🇷 대한민국', mobile: '🇰🇷 KR', name: 'South Korea' },
+    TW: { desktop: '🇹🇼 台灣', mobile: '🇹🇼 TW', name: 'Taiwan' }
+});
+
+const EXPANDED_REGION_TOGGLE_LABELS = Object.freeze({
+    HK: { short: '🇭🇰 HK', name: 'Hong Kong' },
+    IN: { short: '🇮🇳 IN', name: 'India' }
+});
+
 export const isHongKongPath = () => /\/hk(\/|$)/.test(window.location.pathname);
 export const isIndiaPath = () => /\/in(\/|$)/.test(window.location.pathname);
 export const isUnitedStatesPath = () => /\/en(\/|$)/.test(window.location.pathname);
@@ -49,6 +61,30 @@ function ensureRegionSelectorStylesheet() {
     document.head.appendChild(link);
 }
 
+function applyResponsiveRegionLabel(button, label) {
+    const desktop = document.createElement('span');
+    desktop.className = 'region-label-desktop';
+    desktop.textContent = label.desktop;
+
+    const mobile = document.createElement('span');
+    mobile.className = 'region-label-mobile';
+    mobile.setAttribute('aria-hidden', 'true');
+    mobile.textContent = label.mobile;
+
+    button.replaceChildren(desktop, mobile);
+    button.setAttribute('aria-label', `${label.name} — Google Play Points region`);
+    button.title = label.name;
+}
+
+function decoratePrimaryRegionButtons(switcher) {
+    [...switcher.children].forEach(child => {
+        if (!(child instanceof HTMLButtonElement)) return;
+        const label = PRIMARY_REGION_LABELS[child.dataset.region];
+        if (!label) return;
+        applyResponsiveRegionLabel(child, label);
+    });
+}
+
 function setMenuOpen(wrapper, open) {
     const toggle = wrapper.querySelector('[data-region-menu-toggle]');
     const menu = wrapper.querySelector('[data-region-menu]');
@@ -60,8 +96,23 @@ function setMenuOpen(wrapper, open) {
 function updateExpandedRegionActiveState() {
     const wrapper = document.querySelector('[data-region-more]');
     if (!wrapper) return;
-    const expandedRegion = STATE.currentRegion === 'HK' || STATE.currentRegion === 'IN';
-    wrapper.querySelector('[data-region-menu-toggle]')?.classList.toggle(CONSTANTS.CLASS_ACTIVE, expandedRegion);
+
+    const toggle = wrapper.querySelector('[data-region-menu-toggle]');
+    const currentExpandedRegion = EXPANDED_REGION_TOGGLE_LABELS[STATE.currentRegion] || null;
+    if (toggle) {
+        toggle.textContent = currentExpandedRegion?.short || '🌐';
+        toggle.classList.toggle(CONSTANTS.CLASS_ACTIVE, Boolean(currentExpandedRegion));
+        toggle.setAttribute(
+            'aria-label',
+            currentExpandedRegion
+                ? `More regions; current region ${currentExpandedRegion.name}`
+                : 'More regions'
+        );
+        toggle.title = currentExpandedRegion
+            ? `${currentExpandedRegion.name} — more regions`
+            : 'More regions';
+    }
+
     wrapper.querySelectorAll('[data-region]').forEach(button => {
         button.classList.toggle(CONSTANTS.CLASS_ACTIVE, button.dataset.region === STATE.currentRegion);
     });
@@ -69,9 +120,15 @@ function updateExpandedRegionActiveState() {
 
 export function ensureRegionSelector() {
     const switcher = document.querySelector('.region-switch');
-    if (!switcher || switcher.querySelector('[data-region-more]')) return;
+    if (!switcher) return;
 
     ensureRegionSelectorStylesheet();
+    decoratePrimaryRegionButtons(switcher);
+
+    if (switcher.querySelector('[data-region-more]')) {
+        updateExpandedRegionActiveState();
+        return;
+    }
 
     const wrapper = document.createElement('div');
     wrapper.className = 'region-more';

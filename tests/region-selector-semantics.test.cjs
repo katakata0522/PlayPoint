@@ -31,6 +31,8 @@ test('expanded selector keeps Hong Kong and India discoverable as regions', () =
   assert.match(js, /香港 Hong Kong/);
   assert.match(js, />India</);
   assert.match(js, /More regions/);
+  assert.match(js, /🇭🇰 HK/);
+  assert.match(js, /🇮🇳 IN/);
 });
 
 test('browser-language suggestion requires a country-specific locale before choosing Play rules', () => {
@@ -46,8 +48,20 @@ test('browser-language suggestion requires a country-specific locale before choo
   assert.match(js, /language-only ko locale does not identify the user's Play country/);
 });
 
-test('longer country labels switch to a two-column mobile grid instead of overflowing', () => {
-  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
-  assert.match(css, /@media \(max-width: 520px\)[\s\S]*?\.region-switch \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.region-switch \.region-more \{[\s\S]*?grid-column: 1 \/ -1/);
+test('mobile selector keeps full desktop country names but shows compact region codes in one row', () => {
+  const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
+  const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
+
+  assert.match(css, /@media \(max-width: 520px\)[\s\S]*?\.region-switch \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.region-label-desktop \{[\s\S]*?display: none/);
+  assert.match(css, /\.region-label-mobile \{[\s\S]*?display: inline/);
+  assert.match(css, /\.region-switch \.region-more \{[\s\S]*?grid-column: auto/);
+  assert.match(css, /min-height: 44px/);
+
+  for (const label of ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW']) {
+    assert.ok(js.includes(label), `missing compact mobile label: ${label}`);
+  }
+  for (const name of ['Japan', 'United States', 'South Korea', 'Taiwan']) {
+    assert.ok(js.includes(`${name} — Google Play Points region`) || js.includes(`name: '${name}'`), `missing accessible region name: ${name}`);
+  }
 });
