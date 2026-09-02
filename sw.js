@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260823_1957-1584b96f';
+const CACHE_NAME = 'playpoint-calc-v20260823_1957-2035d112';
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
@@ -128,7 +128,7 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     isNavigation
-      ? handleNavigationRequest(event.request, cacheKey)
-      : handleStaticRequest(event.request, cacheKey)
+      ? handleNavigationRequest(request, cacheKey)
+      : handleStaticRequest(request, cacheKey)
   );
 });
