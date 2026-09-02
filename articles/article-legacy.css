@@ -1,3 +1,11 @@
+/*
+ * Legacy Japanese article compatibility layer.
+ *
+ * article-shared.css owns the published article chrome, layout and typography.
+ * This file only preserves legacy component defaults that older article markup
+ * still depends on. Historical hero decoration is explicitly neutralized at
+ * the end so per-article legacy themes cannot leak into the shared shell.
+ */
 * {
 box-sizing: border-box;
 margin: 0;
@@ -76,4 +84,22 @@ text-align: center;
 padding: 2rem;
 color: var(--muted);
 font-size: 0.85rem;
+}
+
+/*
+ * Published Japanese articles use article-shared.css as the visual contract.
+ * Legacy per-article styles are loaded before this file and may still declare
+ * a themed .hero; cancel only that historical shell decoration here.
+ */
+body[data-article-category] .main-content-column > .hero {
+background: transparent;
+padding: 0;
+text-align: left;
+border-radius: 0;
+box-shadow: none;
+}
+body[data-article-category] .main-content-column > .hero h1,
+body[data-article-category] .main-content-column > .hero .article-title {
+max-width: none;
+text-shadow: none;
 }
