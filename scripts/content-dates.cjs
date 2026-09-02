@@ -74,7 +74,7 @@ const CONTENT_DATE_OVERRIDES = Object.freeze({
   'info.html': '2026-08-18',
   'changelog.html': '2026-08-12',
   'attention.html': '2026-08-23',
-  'privacy.html': '2026-08-18',
+  'privacy.html': '2026-09-02',
   'terms.html': '2026-08-18',
   'sitemap.html': '2026-08-12',
   'embed.html': '2026-07-27',
