@@ -115,3 +115,38 @@
     min-height: 54px;
   }
 }
+
+/* Keep the dynamically enhanced region selector inside the mobile viewport.
+   This file is loaded after style.css, so these rules intentionally own the
+   final mobile layout and cannot be undone by the legacy inline-flex rule. */
+@media (max-width: 520px) {
+  .region-switch {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 0.35rem;
+  }
+
+  .region-switch > button {
+    width: 100%;
+    min-width: 0;
+    padding: 0.4em 0.55em;
+    border: 1px solid var(--input-border-color) !important;
+    border-radius: 6px !important;
+    white-space: nowrap;
+  }
+
+  .region-switch .region-more {
+    display: block;
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .region-switch .region-more-toggle {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--input-border-color) !important;
+    border-radius: 6px !important;
+  }
+}
