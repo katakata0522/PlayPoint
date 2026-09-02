@@ -12,31 +12,33 @@ function firstViewCss() {
   return source.match(/function ensureCalculatorFirstViewCriticalStyle\(\) \{[\s\S]*?style\.textContent = `([\s\S]*?)`;[\s\S]*?document\.head\.appendChild\(style\);[\s\S]*?\}/)?.[1] || '';
 }
 
-test('スマホの補助リンクとタブを1段に圧縮して計算入力を早く見せる', () => {
+test('スマホFirst Viewは行数を変えず余白だけ圧縮する', () => {
   const css = firstViewCss();
   assert.ok(css, 'First View CSSが見つかりません');
   assert.match(css, /@media \(max-width: 640px\)/);
-  assert.match(css, /\.header-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.header-links \.alert-link\s*\{[\s\S]*?grid-column:\s*auto/);
-  assert.match(css, /\.tab-switch\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.tab-switch #tab-diary\s*\{[\s\S]*?grid-column:\s*auto/);
+  assert.match(css, /\.top-bar\s*\{[\s\S]*?margin:\s*0\.55rem auto 0\.8rem/);
+  assert.match(css, /\.site-description\s*\{[\s\S]*?margin-bottom:\s*0\.8rem/);
+  assert.match(css, /\.tab-switch\s*\{[\s\S]*?margin:\s*0\.75em auto 0\.95em/);
 });
 
-test('First View圧縮でナビゲーションやタブを非表示にしない', () => {
+test('CLSを増やすヘッダーやタブの列数変更をFirst View CSSへ入れない', () => {
   const css = firstViewCss();
-  assert.doesNotMatch(css, /\.header-links[^{}]*\{[^{}]*display:\s*none/s);
-  assert.doesNotMatch(css, /\.tab-switch[^{}]*\{[^{}]*display:\s*none/s);
-  assert.match(css, /\.header-links a\s*\{[\s\S]*?min-height:\s*44px/);
+  assert.doesNotMatch(css, /grid-template-columns/);
+  assert.doesNotMatch(css, /grid-column/);
+  assert.doesNotMatch(css, /display:\s*none/);
 });
 
-test('最初の3入力と還元設定の境界を視覚的に分ける', () => {
+test('最初の3入力と還元設定の境界は寸法を増やさず視覚的に分ける', () => {
+  const css = firstViewCss();
   assert.match(
-    firstViewCss(),
+    css,
     /#mainMode > \.section:first-child label\[for="baseRate"\]\s*\{[\s\S]*?border-top:\s*1px solid/
   );
+  assert.doesNotMatch(css, /label\[for="baseRate"\][^}]*padding-top/s);
+  assert.doesNotMatch(css, /label\[for="baseRate"\][^}]*margin-top/s);
 });
 
-test('First View CSSは最初の描画前に一度だけ注入する', () => {
+test('First View CSSは共有初期化で一度だけ注入する', () => {
   assert.match(source, /const FIRST_VIEW_CRITICAL_STYLE_ID = 'calculator-first-view-critical-style'/);
   assert.match(source, /document\.getElementById\(FIRST_VIEW_CRITICAL_STYLE_ID\)/);
   assert.match(source, /ensureCalculatorFirstViewCriticalStyle\(\);[\s\S]*?ensureRegionSelectorCriticalStyle\(\);[\s\S]*?const bootRegionSelector/);
