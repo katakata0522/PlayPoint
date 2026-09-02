@@ -129,6 +129,6 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     isNavigation
       ? handleNavigationRequest(event.request, cacheKey)
-      : handleStaticRequest(request, cacheKey)
+      : handleStaticRequest(event.request, cacheKey)
   );
 });
