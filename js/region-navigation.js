@@ -69,6 +69,7 @@ const REGION_SELECTOR_COPY = Object.freeze({
 });
 
 const REGION_SELECTOR_CRITICAL_STYLE_ID = 'region-selector-critical-style';
+const FIRST_VIEW_CRITICAL_STYLE_ID = 'calculator-first-view-critical-style';
 
 export const isHongKongPath = () => /\/hk(\/|$)/.test(window.location.pathname);
 export const isIndiaPath = () => /\/in(\/|$)/.test(window.location.pathname);
@@ -111,6 +112,56 @@ function getSelectorCopy() {
 function getAccessibleRegionName(region) {
     const localeNames = REGION_ACCESSIBLE_NAMES[getSelectorLocale()] || REGION_ACCESSIBLE_NAMES.en;
     return localeNames[region] || REGION_ACCESSIBLE_NAMES.en[region] || region;
+}
+
+function ensureCalculatorFirstViewCriticalStyle() {
+    if (document.getElementById(FIRST_VIEW_CRITICAL_STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = FIRST_VIEW_CRITICAL_STYLE_ID;
+    style.textContent = `
+@media (max-width: 640px) {
+  .top-bar {
+    margin: 0.45rem auto 0.75rem;
+  }
+  .header-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    width: 100%;
+  }
+  .header-links .alert-link {
+    grid-column: auto;
+  }
+  .header-links a {
+    min-height: 44px;
+    padding: 0.35rem 0.45rem;
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+  .site-description {
+    margin-bottom: 0.7rem;
+  }
+  .tab-switch {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    margin: 0.65em auto 0.9em;
+  }
+  .tab-switch #tab-diary {
+    grid-column: auto;
+  }
+  .tab-switch button {
+    font-size: 0.8em;
+    padding: 0.55em 0.22em;
+    line-height: 1.25;
+  }
+}
+#mainMode > .section:first-child label[for="baseRate"] {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(11, 87, 208, 0.14);
+}`;
+    document.head.appendChild(style);
 }
 
 function ensureRegionSelectorCriticalStyle() {
@@ -325,6 +376,7 @@ export function switchRegion(newRegion, updateUIForRegion = () => {}) {
 }
 
 if (typeof document !== 'undefined') {
+    ensureCalculatorFirstViewCriticalStyle();
     ensureRegionSelectorCriticalStyle();
     const bootRegionSelector = () => ensureRegionSelector();
     if (document.readyState === 'loading') {
