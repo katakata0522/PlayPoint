@@ -1,3 +1,10 @@
+/*
+ * Modern Japanese article compatibility layer.
+ *
+ * article-shared.css owns the published article chrome, layout and typography.
+ * Keep only modern component defaults here until they can be migrated safely;
+ * the historical standalone hero shell is neutralized at the end.
+ */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
 --bg: #f3f6fb;
@@ -183,4 +190,22 @@ margin: 0;
 line-height: 1.7;
 overflow-wrap: anywhere;
 }
+}
+
+/*
+ * Published Japanese articles use article-shared.css as the visual contract.
+ * Neutralize the standalone modern hero shell without touching modern-only
+ * article components such as formula/note/reward comparison blocks.
+ */
+body[data-article-category] .main-content-column > .hero {
+background: transparent;
+padding: 0;
+text-align: left;
+border-radius: 0;
+box-shadow: none;
+}
+body[data-article-category] .main-content-column > .hero h1,
+body[data-article-category] .main-content-column > .hero .article-title {
+max-width: none;
+text-shadow: none;
 }
