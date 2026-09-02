@@ -10,15 +10,16 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const VIEWPORT_WIDTHS = [320, 360, 390, 412];
+const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
 const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
 const LOCALES = [
-  { key: 'JP', path: '', toggleLabel: '🌐' },
-  { key: 'US', path: 'en/', toggleLabel: '🌐' },
-  { key: 'KR', path: 'ko/', toggleLabel: '🌐' },
-  { key: 'TW', path: 'tw/', toggleLabel: '🌐' },
-  { key: 'HK', path: 'hk/', toggleLabel: '🇭🇰 HK' },
-  { key: 'IN', path: 'in/', toggleLabel: '🇮🇳 IN' }
+  { key: 'JP', path: '', toggleLabel: '🌐', activeRegion: 'JP' },
+  { key: 'US', path: 'en/', toggleLabel: '🌐', activeRegion: 'US' },
+  { key: 'KR', path: 'ko/', toggleLabel: '🌐', activeRegion: 'KR' },
+  { key: 'TW', path: 'tw/', toggleLabel: '🌐', activeRegion: 'TW' },
+  { key: 'HK', path: 'hk/', toggleLabel: '🇭🇰 HK', activeRegion: 'HK' },
+  { key: 'IN', path: 'in/', toggleLabel: '🇮🇳 IN', activeRegion: 'IN' }
 ];
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -139,6 +140,7 @@ async function inspectLayout(page) {
     const switchRect = switcher.getBoundingClientRect();
     const moreRect = more.getBoundingClientRect();
     const toggleRect = toggle.getBoundingClientRect();
+    const toggleStyle = getComputedStyle(toggle);
     const firstButtonRect = primaryButtons[0].getBoundingClientRect();
     const directItemRects = [...primaryButtons, more].map(element => {
       const rect = element.getBoundingClientRect();
@@ -177,6 +179,17 @@ async function inspectLayout(page) {
       };
     });
 
+    const primaryActiveRegions = primaryButtons
+      .filter(button => button.classList.contains('active'))
+      .map(button => button.dataset.region);
+    const toggleRegionActive = toggle.dataset.regionActive === 'true';
+    const selectedElement = toggleRegionActive
+      ? toggle
+      : primaryButtons.find(button => button.classList.contains('active'));
+    const selectedBackground = selectedElement ? getComputedStyle(selectedElement).backgroundColor : '';
+    const actionBackground = document.querySelector('#calculateButton')
+      ? getComputedStyle(document.querySelector('#calculateButton')).backgroundColor
+      : '';
     const rowTopSpread = Math.max(...directItemRects.map(item => item.top)) - Math.min(...directItemRects.map(item => item.top));
 
     return {
@@ -195,9 +208,38 @@ async function inspectLayout(page) {
       rowTopSpread,
       labels,
       toggleText: toggle.textContent.trim(),
+      toggleRegionActive,
+      toggleAriaCurrent: toggle.getAttribute('aria-current'),
+      primaryActiveRegions,
+      visualActiveCount: primaryActiveRegions.length + (toggleRegionActive ? 1 : 0),
+      selectedBackground,
+      actionBackground,
+      criticalStylePresent: Boolean(document.getElementById('region-selector-critical-style')),
+      toggleBorderTopRightRadius: parseFloat(toggleStyle.borderTopRightRadius) || 0,
+      toggleBorderBottomRightRadius: parseFloat(toggleStyle.borderBottomRightRadius) || 0,
+      toggleBorderLeftWidth: parseFloat(toggleStyle.borderLeftWidth) || 0,
       overflowers
     };
   });
+}
+
+function assertSelectionState(layout, locale, widthLabel) {
+  const expanded = locale.activeRegion === 'HK' || locale.activeRegion === 'IN';
+  assert(layout.visualActiveCount === 1,
+    `${locale.key} ${widthLabel}: expected exactly one visual active region, got ${layout.visualActiveCount}`);
+  assert(layout.toggleRegionActive === expanded,
+    `${locale.key} ${widthLabel}: expanded toggle active state is ${layout.toggleRegionActive}, expected ${expanded}`);
+  assert(layout.toggleAriaCurrent === (expanded ? 'true' : null),
+    `${locale.key} ${widthLabel}: unexpected aria-current ${layout.toggleAriaCurrent}`);
+  if (expanded) {
+    assert(layout.primaryActiveRegions.length === 0,
+      `${locale.key} ${widthLabel}: stale primary active region(s): ${layout.primaryActiveRegions.join(', ')}`);
+  } else {
+    assert(layout.primaryActiveRegions.length === 1 && layout.primaryActiveRegions[0] === locale.activeRegion,
+      `${locale.key} ${widthLabel}: expected primary active ${locale.activeRegion}, got ${layout.primaryActiveRegions.join(', ')}`);
+  }
+  assert(layout.selectedBackground && layout.actionBackground && layout.selectedBackground !== layout.actionBackground,
+    `${locale.key} ${widthLabel}: region state color must differ from primary action color (${layout.selectedBackground})`);
 }
 
 async function verifyLocale(browser, baseUrl, locale) {
@@ -234,6 +276,7 @@ async function verifyLocale(browser, baseUrl, locale) {
         .map(item => `${item.tag}${item.id ? `#${item.id}` : ''}${item.className ? `.${item.className.split(/\s+/).filter(Boolean).join('.')}` : ''} [${item.left}, ${item.right}]`)
         .join(' | ');
 
+      assert(layout.criticalStylePresent, `${locale.key} ${width}px: critical first-paint style is missing`);
       assert(layout.display === 'grid', `${locale.key} ${width}px: expected grid, got ${layout.display}`);
       assert(layout.columnCount === 5, `${locale.key} ${width}px: expected 5 columns, got ${layout.columnCount}`);
       assert(layout.rowTopSpread <= 1.5, `${locale.key} ${width}px: region controls are not on one row (top spread ${layout.rowTopSpread})`);
@@ -247,6 +290,7 @@ async function verifyLocale(browser, baseUrl, locale) {
         `${locale.key} ${width}px: more toggle does not fill its grid cell (${layout.toggleWidth} vs ${layout.moreWidth})`);
       assert(layout.toggleText === locale.toggleLabel,
         `${locale.key} ${width}px: expected toggle label ${locale.toggleLabel}, got ${layout.toggleText}`);
+      assertSelectionState(layout, locale, `${width}px`);
 
       layout.labels.forEach((label, index) => {
         assert(label.mobileText === PRIMARY_MOBILE_LABELS[index],
@@ -258,6 +302,18 @@ async function verifyLocale(browser, baseUrl, locale) {
       results.push({ width, ...layout });
       console.log(`ok - ${locale.key} compact mobile region layout at ${width}px`);
     }
+
+    await page.setViewportSize({ width: DESKTOP_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display === 'inline-flex', null, { timeout: 10_000 });
+    const desktopLayout = await inspectLayout(page);
+    assert(desktopLayout, `${locale.key} desktop: region selector was not fully initialized`);
+    assertSelectionState(desktopLayout, locale, 'desktop');
+    assert(desktopLayout.toggleBorderTopRightRadius >= 5.5 && desktopLayout.toggleBorderBottomRightRadius >= 5.5,
+      `${locale.key} desktop: more toggle must own rounded right edge (${desktopLayout.toggleBorderTopRightRadius}/${desktopLayout.toggleBorderBottomRightRadius})`);
+    assert(desktopLayout.toggleBorderLeftWidth <= 0.5,
+      `${locale.key} desktop: duplicate divider remains before more toggle (${desktopLayout.toggleBorderLeftWidth}px)`);
+    results.push({ width: DESKTOP_VIEWPORT_WIDTH, ...desktopLayout });
+    console.log(`ok - ${locale.key} desktop region edge and active state`);
 
     return results;
   } catch (error) {
@@ -314,7 +370,7 @@ async function main() {
   }
 
   assert(report.passed, 'Mobile region layout smoke test failed. See browser-smoke-artifacts/mobile-region-layout-report.json.');
-  console.log(`Mobile region layout smoke test passed (${report.mode}, ${LOCALES.length} locales × ${VIEWPORT_WIDTHS.join('/')}px).`);
+  console.log(`Region layout smoke test passed (${report.mode}, ${LOCALES.length} locales × mobile ${VIEWPORT_WIDTHS.join('/')}px + desktop ${DESKTOP_VIEWPORT_WIDTH}px).`);
 }
 
 main().catch(error => {
