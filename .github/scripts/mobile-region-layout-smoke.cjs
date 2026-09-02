@@ -304,9 +304,15 @@ async function verifyLocale(browser, baseUrl, locale) {
     }
 
     await page.setViewportSize({ width: DESKTOP_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
-    await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display === 'inline-flex', null, { timeout: 10_000 });
+    await page.waitForFunction(() => {
+      const switcher = document.querySelector('.region-switch');
+      if (!switcher || window.innerWidth < 521) return false;
+      return getComputedStyle(switcher).display !== 'grid';
+    }, null, { timeout: 10_000 });
     const desktopLayout = await inspectLayout(page);
     assert(desktopLayout, `${locale.key} desktop: region selector was not fully initialized`);
+    assert(desktopLayout.display === 'flex' || desktopLayout.display === 'inline-flex',
+      `${locale.key} desktop: expected flex-based selector, got ${desktopLayout.display}`);
     assertSelectionState(desktopLayout, locale, 'desktop');
     assert(desktopLayout.toggleBorderTopRightRadius >= 5.5 && desktopLayout.toggleBorderBottomRightRadius >= 5.5,
       `${locale.key} desktop: more toggle must own rounded right edge (${desktopLayout.toggleBorderTopRightRadius}/${desktopLayout.toggleBorderBottomRightRadius})`);
