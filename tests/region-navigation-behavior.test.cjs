@@ -42,6 +42,12 @@ function createRuntime(pathname, savedRegion = null, currentRegion = null) {
     },
     document: {
       readyState: 'loading',
+      documentElement: { lang: 'ja' },
+      head: { appendChild() {} },
+      getElementById() { return null; },
+      createElement(tagName) {
+        return { tagName: String(tagName).toUpperCase(), id: '', textContent: '', dataset: {} };
+      },
       querySelector() { return null; },
       querySelectorAll() { return []; },
       addEventListener() {}
