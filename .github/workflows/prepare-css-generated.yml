@@ -1,0 +1,42 @@
+name: Prepare CSS generated outputs
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'articles/article-legacy.css'
+      - 'articles/article-modern.css'
+      - 'tests/japanese-article-css-contract.test.cjs'
+      - 'docs/ARTICLE_CSS_ARCHITECTURE.md'
+      - '.github/workflows/prepare-css-generated.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+          persist-credentials: true
+
+      - name: Synchronize canonical generated output
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated asset versions
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: sync CSS asset versions"
+          git push origin "HEAD:${{ github.head_ref }}"
