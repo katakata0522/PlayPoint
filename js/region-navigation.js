@@ -122,43 +122,16 @@ function ensureCalculatorFirstViewCriticalStyle() {
     style.textContent = `
 @media (max-width: 640px) {
   .top-bar {
-    margin: 0.45rem auto 0.75rem;
-  }
-  .header-links {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.35rem;
-    width: 100%;
-  }
-  .header-links .alert-link {
-    grid-column: auto;
-  }
-  .header-links a {
-    min-height: 44px;
-    padding: 0.35rem 0.45rem;
-    font-size: 0.8rem;
-    line-height: 1.35;
+    margin: 0.55rem auto 0.8rem;
   }
   .site-description {
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.8rem;
   }
   .tab-switch {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2px;
-    margin: 0.65em auto 0.9em;
-  }
-  .tab-switch #tab-diary {
-    grid-column: auto;
-  }
-  .tab-switch button {
-    font-size: 0.8em;
-    padding: 0.55em 0.22em;
-    line-height: 1.25;
+    margin: 0.75em auto 0.95em;
   }
 }
 #mainMode > .section:first-child label[for="baseRate"] {
-  margin-top: 1.1rem;
-  padding-top: 1rem;
   border-top: 1px solid rgba(11, 87, 208, 0.14);
 }`;
     document.head.appendChild(style);
