@@ -45,6 +45,7 @@ on:
       - 'terms.html'
       - 'changelog.html'
       - '.github/scripts/browser-smoke.cjs'
+      - '.github/scripts/mobile-region-layout-smoke.cjs'
       - '.github/scripts/browser-revenue-smoke.cjs'
       - '.github/scripts/embed-widget-smoke.cjs'
       - '.github/workflows/browser-smoke.yml'
@@ -79,9 +80,10 @@ jobs:
           test -n "$chrome_path"
           echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
 
-      - name: Verify local calculator, revenue, and embed widget paths in Chromium
+      - name: Verify local calculator, mobile region layout, revenue, and embed widget paths in Chromium
         run: |
           node .github/scripts/browser-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 
@@ -114,11 +116,12 @@ jobs:
           test -n "$chrome_path"
           echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
 
-      - name: Verify production calculator, revenue, and embed widget paths in Chromium
+      - name: Verify production calculator, mobile region layout, revenue, and embed widget paths in Chromium
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
         run: |
           node .github/scripts/browser-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 
