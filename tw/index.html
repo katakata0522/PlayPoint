@@ -25,7 +25,7 @@
     <link rel="apple-touch-icon" href="../icon-192.png">
     <link rel="manifest" href="../manifest.json">
     <meta property="og:title" content="Google Play Points 計算器｜距離升級還差多少？">
-    <meta property="og:description" content="免費模擬 Google Play 點數升級需求與逆算模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。">
+    <meta property="og:description" content="免費模擬 Google Play 點數升級需求與反推模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://playpoint-sim.com/tw/">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
@@ -35,7 +35,7 @@
     <meta property="og:site_name" content="Google Play Points 計算器">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Google Play Points 計算器｜距離升級還差多少？">
-    <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求與逆算模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。">
+    <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求與反推模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
     <link rel="modulepreload" href="../js/main.js?v=6baac4e8a3">
@@ -150,7 +150,7 @@
         },
         {
           "@type": "Question",
-          "name": "什麼是逆算模式？",
+          "name": "什麼是反推模式？",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。"
@@ -212,7 +212,7 @@
 
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算模式</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">反推模式</button>
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
     </div>
 
@@ -272,7 +272,7 @@
 
     <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算模式</h2>
+            <h2 data-lang-key="sectionTitleReverse">反推模式</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">消費金額 (NT$)</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
@@ -398,7 +398,7 @@
             <p>A. 輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
         </div>
         <div class="faq-item">
-            <h3>Q. 什麼是逆算模式？</h3>
+            <h3>Q. 什麼是反推模式？</h3>
             <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
         </div>
         <div class="faq-item">
@@ -442,6 +442,7 @@
     <div id="toast" class="toast"></div>
 </main>
 
+<script type="module" src="../js/intl-copy-overrides.js"></script>
 <script type="module" src="../js/main.js?v=6baac4e8a3"></script>
 <script src="../js/third-party.js?v=790f53fd26" defer></script>
 
