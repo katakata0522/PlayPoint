@@ -160,7 +160,7 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
 
   try {
     const response = await page.goto(new URL(article.path, baseUrl).href, {
-      waitUntil: 'domcontentloaded',
+      waitUntil: 'commit',
       timeout: 45_000
     });
     assert(response && response.ok(), `${article.key}/${viewport.key}: HTTP ${response?.status() || 'no response'}`);
