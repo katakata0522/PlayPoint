@@ -1,0 +1,120 @@
+name: Prepare intl content wave 2
+
+on:
+  push:
+    branches:
+      - growth/intl-content-quality-wave2
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/intl-content-quality-wave2
+
+      - name: Strengthen TW redemption and EN quest search answers
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceRequired(text, from, to, label) {
+            if (!text.includes(from)) throw new Error(`missing ${label}`);
+            return text.replace(from, to);
+          }
+
+          let tw = fs.readFileSync('tw/articles/google-play-points-use-coupons.html', 'utf8');
+          const twTitleOld = 'Google Play Points 使用方式與優惠券確認';
+          const twTitleNew = 'Google Play Points 怎麼用？優惠券、Play 抵用金與兌換方式';
+          tw = tw.replaceAll(twTitleOld, twTitleNew);
+          tw = replaceRequired(
+            tw,
+            '<meta name="description" content="說明如何把 Google Play Points 用於優惠券、Play 抵用金、App 內項目與合作夥伴獎勵，以及期限與退款條件。">',
+            '<meta name="description" content="Google Play Points 可以換什麼？比較優惠券、Play 抵用金、App/遊戲內商品與合作夥伴優待券，整理怎麼用、最低消費、期限、退款與選擇方式。">',
+            'TW description'
+          );
+          tw = replaceRequired(
+            tw,
+            '<meta property="og:description" content="先分清楚優惠券、Play 抵用金與現金，再使用點數。">',
+            '<meta property="og:description" content="優惠券、Play 抵用金、App/遊戲內商品該怎麼選？用實際用途、最低消費與期限比較。">',
+            'TW og description'
+          );
+          tw = replaceRequired(
+            tw,
+            '"description":"說明如何把 Google Play Points 用於優惠券、Play 抵用金、App 內項目與合作夥伴獎勵，以及期限與退款條件。"',
+            '"description":"Google Play Points 可以換什麼？比較優惠券、Play 抵用金、App/遊戲內商品與合作夥伴優待券，整理怎麼用、最低消費、期限、退款與選擇方式。"',
+            'TW structured description'
+          );
+          tw = replaceRequired(tw, '<meta name="last-modified" content="2026-07-25">', '<meta name="last-modified" content="2026-09-03">', 'TW modified date');
+          tw = replaceRequired(tw, '<meta name="playpoint:official-verified" content="2026-07-25">', '<meta name="playpoint:official-verified" content="2026-09-03">', 'TW verified date');
+          tw = replaceRequired(tw, '"dateModified":"2026-07-25"', '"dateModified":"2026-09-03"', 'TW structured modified date');
+          tw = replaceRequired(
+            tw,
+            '<article class="content">\n    <aside class="article-calculator-prompt',
+            '<article class="content">\n    <section class="section answer-box" aria-labelledby="tw-use-answer"><h2 id="tw-use-answer">先說結論：選你本來就會用的獎勵，不要只看折扣數字</h2><p><strong>如果近期本來就要在指定 App 或遊戲消費，符合條件的優惠券值得先比較；如果想保留用途彈性，帳號有提供時可比較 Play 抵用金。</strong>App/遊戲內商品與合作夥伴優待券，則只在你真的會使用該內容時才有實際價值。</p><div class="table-wrap"><table><thead><tr><th>兌換方式</th><th>比較適合</th><th>兌換前一定要看</th></tr></thead><tbody><tr><td>優惠券／折價券</td><td>近期確定會在指定 App/遊戲購買</td><td>最低消費、折扣額、適用項目、到期日</td></tr><tr><td>Play 抵用金</td><td>想保留較多 Google Play 用途</td><td>可購買內容、兌換額度、一年期限</td></tr><tr><td>App/遊戲內商品</td><td>確定想要該商品</td><td>兌換到哪個 App/遊戲、不可退款</td></tr><tr><td>合作夥伴優待券</td><td>本來就會使用該合作夥伴</td><td>使用期限、合作夥伴條件</td></tr></tbody></table></div><p>比較時用「<strong>自己真的會用到的價值 ÷ 所需點數</strong>」判斷，比只看畫面上的折扣額更實用。若為了用優惠券反而增加原本沒有打算的消費，應把那筆額外支出也算進去。</p></section>\n    <aside class="article-calculator-prompt',
+            'TW answer before calculator'
+          );
+          tw = replaceRequired(
+            tw,
+            '<p><a href="https://support.google.com/googleplay/answer/9079840?hl=zh-Hant" target="_blank" rel="noopener noreferrer">在 Google Play 商店使用點數</a></p>',
+            '<p><a href="https://support.google.com/googleplay/answer/15776916?co=GENIE.Platform%3DAndroid&amp;hl=zh-Hant" target="_blank" rel="noopener noreferrer">在 Google Play 商店中使用點數</a></p><p><a href="https://support.google.com/googleplay/answer/9079840?hl=zh-Hant" target="_blank" rel="noopener noreferrer">Google Play Points 使用、優惠券與抵用金說明</a></p>',
+            'TW official use source'
+          );
+          fs.writeFileSync('tw/articles/google-play-points-use-coupons.html', tw);
+
+          let en = fs.readFileSync('en/articles/google-play-quests.html', 'utf8');
+          en = replaceRequired(
+            en,
+            '<meta name="description" content="Understand Google Play quests, account-specific steps, qualifying purchases, Play Games sign-in, personalization, refunds, and what to check when progress does not update.">',
+            '<meta name="description" content="Google Play quest not showing or not completing? Check eligibility, purchase rules, Play Games sign-in, personalization, refunds and stuck progress before spending again.">',
+            'EN quest description'
+          );
+          en = replaceRequired(en, '<meta name="playpoint:official-verified" content="2026-08-02">', '<meta name="playpoint:official-verified" content="2026-09-03">', 'EN quest verified date');
+          en = replaceRequired(en, '<meta name="last-modified" content="2026-08-02">', '<meta name="last-modified" content="2026-09-03">', 'EN quest modified date');
+          en = replaceRequired(en, '"dateModified":"2026-08-02"', '"dateModified":"2026-09-03"', 'EN quest structured modified date');
+          en = replaceRequired(
+            en,
+            '<article class="content">\n    <aside class="article-calculator-prompt',
+            '<article class="content">\n    <section class="section answer-box" aria-labelledby="quest-quick-check"><h2 id="quest-quick-check">Quest missing or stuck? Start with the type of failure</h2><div class="table-wrap"><table><thead><tr><th>What you see</th><th>Check first</th></tr></thead><tbody><tr><td>The quest never appears</td><td>Eligibility is account-specific; another user seeing it does not mean your account should.</td></tr><tr><td>A purchase step does not count</td><td>The transaction must earn Play Points; redeeming points or paying with points does not count as a quest purchase.</td></tr><tr><td>A game/play step stays incomplete</td><td>Check the Google account, Play Games profile and any Play personalization requirement shown by the quest.</td></tr><tr><td>A completed quest becomes incomplete</td><td>A canceled or refunded qualifying purchase can remove progress and may reverse a claimed reward.</td></tr><tr><td>Progress is still missing after the stated processing time</td><td>Save the quest terms, order time and account used before contacting Google Play support.</td></tr></tbody></table></div><p><strong>Do not make another purchase just to test the quest until you know which condition failed.</strong> The quest progress page on your own account is the final rule for steps, deadline and reward.</p></section>\n    <aside class="article-calculator-prompt',
+            'EN quest diagnosis before calculator'
+          );
+          en = replaceRequired(en, 'Official sources checked: August 2, 2026.', 'Official sources checked: September 3, 2026.', 'EN quest source date');
+          fs.writeFileSync('en/articles/google-play-quests.html', en);
+
+          const datesPath = 'scripts/article-official-verification-dates.json';
+          const dates = JSON.parse(fs.readFileSync(datesPath, 'utf8'));
+          dates['tw/articles/google-play-points-use-coupons.html'] = '2026-09-03';
+          dates['en/articles/google-play-quests.html'] = '2026-09-03';
+          fs.writeFileSync(datesPath, JSON.stringify(dates, null, 2) + '\n');
+
+          const topicPath = 'tests/intl-topic-pages.test.cjs';
+          let topics = fs.readFileSync(topicPath, 'utf8');
+          topics = replaceRequired(
+            topics,
+            "        modifiedDates: { en: '2026-09-03' },",
+            "        modifiedDates: { en: '2026-09-03', tw: '2026-09-03' },",
+            'TW use-coupons modified date contract'
+          );
+          fs.writeFileSync(topicPath, topics);
+
+          fs.writeFileSync('tests/intl-demand-content-quality-wave2.test.cjs', `'use strict';\n\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\n\nconst root = path.resolve(__dirname, '..');\nconst read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');\n\nfunction before(html, first, second, label) {\n  const a = html.indexOf(first);\n  const b = html.indexOf(second);\n  assert.notEqual(a, -1, \`${'${label}'}: missing first marker\`);\n  assert.notEqual(b, -1, \`${'${label}'}: missing second marker\`);\n  assert.ok(a < b, \`${'${label}'}: search answer must precede calculator CTA\`);\n}\n\ntest('Taiwan use-coupons guide gives a reward decision framework before calculator', () => {\n  const html = read('tw/articles/google-play-points-use-coupons.html');\n  assert.match(html, /Google Play Points 怎麼用/);\n  assert.match(html, /自己真的會用到的價值 ÷ 所需點數/);\n  assert.match(html, /最低消費/);\n  assert.match(html, /15776916/);\n  assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n  before(html, 'id="tw-use-answer"', 'data-generated-intl-article-prompt="true"', 'TW use-coupons');\n});\n\ntest('English quests guide diagnoses missing and stuck states before calculator', () => {\n  const html = read('en/articles/google-play-quests.html');\n  assert.match(html, /Quest missing or stuck/);\n  assert.match(html, /purchase step does not count/i);\n  assert.match(html, /Play Games profile/);\n  assert.match(html, /canceled or refunded/);\n  assert.match(html, /11534416/);\n  assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n  before(html, 'id="quest-quick-check"', 'data-generated-intl-article-prompt="true"', 'EN quests');\n});\n`);
+          NODE
+
+      - name: Generate canonical repository outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Remove one-shot workflow and commit
+        shell: bash
+        run: |
+          git rm .github/workflows/prepare-intl-content-wave2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "growth: strengthen TW redemption and EN quest intent"
+          git push origin HEAD:growth/intl-content-quality-wave2
