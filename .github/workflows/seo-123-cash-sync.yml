@@ -20,49 +20,73 @@ jobs:
           ref: growth/article-funnel-seo-123
           fetch-depth: 0
 
-      - name: Specialize JP cash-conversion intent
+      - name: Specialize JP cash-conversion intent in canonical sources
         shell: bash
         run: |
           python3 - <<'PY'
           from pathlib import Path
 
-          path = Path('articles/2026-07-24-play-points-cash-conversion.html')
-          text = path.read_text()
-          replacements = {
-            '<meta name="last-modified" content="2026-08-04" />': '<meta name="last-modified" content="2026-09-03" />',
-            '<meta property="article:modified_time" content="2026-08-04T00:00:00+09:00" />': '<meta property="article:modified_time" content="2026-09-03T00:00:00+09:00" />',
-            '<title>Google Play Pointsは現金化できる？交換先・使い道を比較</title>': '<title>Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道</title>',
-            '<meta name="description" content="Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を、自由度・期限・払い戻し・確認場所で比較します。" />': '<meta name="description" content="Google Play Pointsは現金、PayPay残高、銀行口座へ交換・送金できません。できない範囲と、Playクレジット・クーポンなどGoogle Play内の公式な使い道を整理します。" />',
-            '<meta property="og:title" content="Google Play Pointsは現金化できる？交換先・使い道を比較" />': '<meta property="og:title" content="Google Play Pointsは現金化・PayPay交換できる？" />',
-            '<meta property="og:description" content="Playクレジット、クーポン、アイテム、パートナー特典などを、使いやすさと期限・払い戻し条件で比較します。" />': '<meta property="og:description" content="現金・PayPay・銀行口座への交換や送金はできません。公式に使える代替手段と注意点を整理します。" />',
-            '<span>Google Play Pointsは現金化できる？交換先・使い道を比較</span>': '<span>Google Play Pointsは現金化・PayPay交換できる？</span>',
-            '<span class="hero-badge">交換先・使い道</span>': '<span class="hero-badge">現金化・PayPay</span>',
-            '<h1 class="article-title">Google Play Pointsは現金化できる？交換先・使い道を比較</h1>': '<h1 class="article-title">Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道</h1>',
-            '更新 <time data-article-date="modified" datetime="2026-08-04">2026/08/04</time>': '更新 <time data-article-date="modified" datetime="2026-09-03">2026/09/03</time>',
-            '<h2 id="quick-answer">結論：現金化はできない。交換先は「実際に使う予定」で選ぶ</h2>': '<h2 id="quick-answer">結論：現金化・PayPay交換はできない。代わりに公式の使い道を選ぶ</h2>',
-            '<h2>主な交換先を比較</h2>': '<h2>現金化できない場合の公式な使い道</h2>',
-            '<h2>目的別の選び方</h2>': '<h2>代わりの使い道を目的別に選ぶ</h2>',
-            '<p>全員に共通する最適解はありません。期限内に実際に使う予定があり、対象商品や最低購入額を満たせる交換先を優先してください。</p>': '<p>全員に共通する最適解はありません。<a href="./2025-12-25-best-use.html">交換先おすすめ・使い道の比較ガイド</a>で、期限・最低購入額・実際に使う予定まで含めて選べます。</p>',
-            '<ul>\n<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限を確認する</a></li>': '<ul>\n<li><a href="./2025-12-25-best-use.html">交換先おすすめ・使い道を比較する</a></li>\n<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限を確認する</a></li>',
-          }
-          for old, new in replacements.items():
-            if old not in text:
-              raise SystemExit(f'missing expected cash-conversion fragment: {old[:100]}')
-            text = text.replace(old, new, 1)
-          path.write_text(text)
+          old_title = 'Google Play Pointsは現金化できる？交換先・使い道を比較'
+          new_title = 'Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道'
+          old_description = 'Google Play Pointsは現金、PayPay、銀行口座へ送れません。Playクレジット、クーポン、アプリ内アイテム、パートナー特典、購入時利用を、自由度・期限・払い戻し・確認場所で比較します。'
+          new_description = 'Google Play Pointsは現金、PayPay残高、銀行口座へ交換・送金できません。できない範囲と、Playクレジット・クーポンなどGoogle Play内の公式な使い道を整理します。'
+
+          article = Path('articles/2026-07-24-play-points-cash-conversion.html')
+          text = article.read_text()
+          assert old_title in text
+          text = text.replace(old_title, new_title)
+          text = text.replace(old_description, new_description)
+          text = text.replace('<meta property="og:title" content="Google Play Pointsは現金化できる？交換先・使い道を比較" />', '<meta property="og:title" content="Google Play Pointsは現金化・PayPay交換できる？" />')
+          text = text.replace('<meta property="og:description" content="Playクレジット、クーポン、アイテム、パートナー特典などを、使いやすさと期限・払い戻し条件で比較します。" />', '<meta property="og:description" content="現金・PayPay・銀行口座への交換や送金はできません。公式に使える代替手段と注意点を整理します。" />')
+          text = text.replace('<span class="hero-badge">交換先・使い道</span>', '<span class="hero-badge">現金化・PayPay</span>')
+          text = text.replace('<h2 id="quick-answer">結論：現金化はできない。交換先は「実際に使う予定」で選ぶ</h2>', '<h2 id="quick-answer">結論：現金化・PayPay交換はできない。代わりに公式の使い道を選ぶ</h2>')
+          text = text.replace('<h2>主な交換先を比較</h2>', '<h2>現金化できない場合の公式な使い道</h2>')
+          text = text.replace('<h2>目的別の選び方</h2>', '<h2>代わりの使い道を目的別に選ぶ</h2>')
+          text = text.replace('<p>全員に共通する最適解はありません。期限内に実際に使う予定があり、対象商品や最低購入額を満たせる交換先を優先してください。</p>', '<p>全員に共通する最適解はありません。<a href="./2025-12-25-best-use.html">交換先おすすめ・使い道の比較ガイド</a>で、期限・最低購入額・実際に使う予定まで含めて選べます。</p>')
+          text = text.replace('<ul>\n<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限を確認する</a></li>', '<ul>\n<li><a href="./2025-12-25-best-use.html">交換先おすすめ・使い道を比較する</a></li>\n<li><a href="./2025-12-25-check-balance.html">残高・履歴・有効期限を確認する</a></li>')
+          text = text.replace('"dateModified": "2026-08-04"', '"dateModified": "2026-09-03"')
+          text = text.replace('<meta property="article:modified_time" content="2026-08-04T00:00:00+09:00" />', '<meta property="article:modified_time" content="2026-09-03T00:00:00+09:00" />')
+          text = text.replace('<meta name="last-modified" content="2026-08-04" />', '<meta name="last-modified" content="2026-09-03" />')
+          text = text.replace('更新 <time data-article-date="modified" datetime="2026-08-04">2026/08/04</time>', '更新 <time data-article-date="modified" datetime="2026-09-03">2026/09/03</time>')
+          article.write_text(text)
+
+          editorial = Path('scripts/article-editorial-structure.cjs')
+          text = editorial.read_text()
+          old = "'articles/2026-07-24-play-points-cash-conversion.html': {\n    manualStructure: true,\n    modifiedDate: '2026-08-04',"
+          new = "'articles/2026-07-24-play-points-cash-conversion.html': {\n    manualStructure: true,\n    modifiedDate: '2026-09-03',"
+          assert old in text
+          editorial.write_text(text.replace(old, new, 1))
+
+          registry = Path('blog/articles.json')
+          text = registry.read_text()
+          old = f'''    "id": "play-points-cash-conversion",\n    "title": "{old_title}",\n    "date": "2026-07-24",\n    "modified": "2026-08-04",'''
+          new = f'''    "id": "play-points-cash-conversion",\n    "title": "{new_title}",\n    "date": "2026-07-24",\n    "modified": "2026-09-03",'''
+          assert old in text
+          text = text.replace(old, new, 1)
+          assert old_description in text
+          registry.write_text(text.replace(old_description, new_description, 1))
           PY
 
-      - name: Regenerate canonical output
-        run: node scripts/prepare-pr.cjs
-
       - name: Verify focused SEO and analytics contracts
-        run: node --test tests/jp-cash-conversion-intent.test.cjs tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/calculator-funnel-behavior.test.cjs
+        run: node --test tests/jp-cash-conversion-intent.test.cjs tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/calculator-funnel-behavior.test.cjs tests/article-seo-normalize.test.cjs
 
-      - name: Commit canonical changes
+      - name: Check editorial regeneration keeps the new modified date
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const { applyEditorialStructure } = require('./scripts/article-editorial-structure.cjs');
+          applyEditorialStructure(process.cwd());
+          const fs = require('node:fs');
+          const html = fs.readFileSync('articles/2026-07-24-play-points-cash-conversion.html', 'utf8');
+          if (!html.includes('datetime="2026-09-03"')) throw new Error('modified date was not preserved');
+          if (!html.includes('現金化・PayPay交換できる？')) throw new Error('cash/PayPay intent title was not preserved');
+          NODE
+
+      - name: Commit scoped changes
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add articles/2026-07-24-play-points-cash-conversion.html scripts/article-editorial-structure.cjs blog/articles.json
           git commit -m 'growth: specialize JP cash and PayPay search intent'
           git push origin HEAD:growth/article-funnel-seo-123
