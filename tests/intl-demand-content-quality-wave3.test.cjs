@@ -52,11 +52,17 @@ test('English gift-card guide owns both conversion and earning questions', () =>
 
 test('international content audit covers the complete current EN KO TW inventory', () => {
   const report = read('docs/INTL_CONTENT_AUDIT_2026-09-03.md');
+  const tableRows = report.split('\n').filter(line => /^\| [ABCM] \| (?:EN|KO|TW) \| `\//.test(line));
+
   for (const locale of ['en', 'ko', 'tw']) {
-    const expected = fs.readdirSync(path.join(root, locale, 'articles')).filter(name => name.endsWith('.html') && name !== 'index.html').length;
-    const actual = (report.match(new RegExp('\\| [ABCM] \| ' + locale.toUpperCase() + ' \|', 'g')) || []).length;
+    const expected = fs.readdirSync(path.join(root, locale, 'articles'))
+      .filter(name => name.endsWith('.html') && name !== 'index.html').length;
+    const language = locale.toUpperCase();
+    const actual = tableRows.filter(line => line.startsWith(`| ${line[2]} | ${language} |`)).length;
     assert.equal(actual, expected, `${locale} inventory count`);
   }
+
+  assert.equal(tableRows.length, 102, 'current EN/KO/TW inventory total');
   assert.match(report, /IN_VALUE/);
   assert.match(report, /EN_BALANCE_CASHOUT/);
 });
