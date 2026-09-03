@@ -20,6 +20,7 @@ function collectHtmlFiles(directory) {
   });
 }
 
+// 同じ検索意図でも、現在等級と不足ポイントは各地域の公式進行条件に合わせて固定する。
 test('国際ランク・キャンペーンLPは地域別の現在等級と不足ポイントを引き継ぐ', () => {
   for (const [pageKey, localeQueries] of Object.entries(STATUS_PAGE_QUERIES)) {
     const page = PAGE_TYPES[pageKey];
