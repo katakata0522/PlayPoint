@@ -1362,3 +1362,14 @@ max-width: 820px;
 text-align: center;
 padding: 0 16px;
 }
+
+/*
+ * Published Japanese article title color contract.
+ * Keep the H1 on the shared #1a202c heading token even when compatibility
+ * stylesheets contain historical hero/title rules.
+ */
+body[data-article-category] .main-content-column > .hero .article-title,
+body[data-article-category] .main-content-column > .hero h1 {
+color: var(--cocoon-heading);
+}
+

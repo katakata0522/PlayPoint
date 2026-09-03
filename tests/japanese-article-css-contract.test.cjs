@@ -79,3 +79,12 @@ test('shared CSS remains the final Japanese article typography contract', () => 
   assert.match(css, /\.article-post-meta,\s*\.hero-meta\s*\{[^}]*color:\s*var\(--cocoon-muted\)/is);
   assert.match(css, /\.main-content-column\s*\{[^}]*background:\s*var\(--cocoon-main-bg\)[^}]*padding:\s*36px 40px/is);
 });
+
+test('published Japanese H1 is guarded by the shared heading token', () => {
+  const css = fs.readFileSync(path.join(articleDir, 'article-shared.css'), 'utf8');
+  assert.match(
+    css,
+    /body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+\.article-title,\s*body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+h1\s*\{[^}]*color:\s*var\(--cocoon-heading\)/is
+  );
+});
+
