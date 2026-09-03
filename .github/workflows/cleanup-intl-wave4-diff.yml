@@ -1,0 +1,56 @@
+name: Normalize intl wave 4 diff
+
+on:
+  push:
+    branches:
+      - growth/intl-content-quality-wave4
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/intl-content-quality-wave4
+          fetch-depth: 2
+
+      - name: Restore compact snapshot formatting with only two semantic changes
+        shell: bash
+        run: |
+          git fetch origin main --depth=1
+          git show origin/main:docs/data/intl-content-demand-2026-09-03.json > /tmp/demand-main.json
+          node <<'NODE'
+          const fs = require('node:fs');
+          let text = fs.readFileSync('/tmp/demand-main.json', 'utf8');
+          const replacements = [
+            [
+              '    "/ko/articles/google-play-points-expiration.html": {"pv":15,"activeUsers":14,"avgEngagementSec":12,"organicSessions":15,"engagementRate":33.33,"priority":"C","action":"deep-review-after-wave3","gsc":"Strong landing volume but weak engagement; verify whether simple-answer satisfaction or content mismatch explains it."},',
+              '    "/ko/articles/google-play-points-expiration.html": {"pv":15,"activeUsers":14,"avgEngagementSec":12,"organicSessions":15,"engagementRate":33.33,"priority":"A","action":"observe-after-wave4-answer-first","gsc":"Strong landing volume but weak engagement; verify whether simple-answer satisfaction or content mismatch explains it. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."},'
+            ],
+            [
+              '    "/tw/articles/google-play-points-expiration.html": {"pv":12,"activeUsers":12,"avgEngagementSec":9,"organicSessions":10,"engagementRate":50.0,"priority":"C","action":"deep-review-after-wave3","gsc":"Some expiration intent exists; engagement is short, but demand is smaller than current wave3 targets."},',
+              '    "/tw/articles/google-play-points-expiration.html": {"pv":12,"activeUsers":12,"avgEngagementSec":9,"organicSessions":10,"engagementRate":50.0,"priority":"A","action":"observe-after-wave4-answer-first","gsc":"Some expiration intent exists; engagement is short, but demand is smaller than current wave3 targets. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."},'
+            ]
+          ];
+          for (const [from, to] of replacements) {
+            if (!text.includes(from)) throw new Error(`snapshot line missing: ${from.slice(0, 80)}`);
+            text = text.replace(from, to);
+          }
+          fs.writeFileSync('docs/data/intl-content-demand-2026-09-03.json', text);
+          NODE
+          node scripts/audit-intl-content.cjs
+
+      - name: Remove one-shot workflow and commit cleanup
+        shell: bash
+        run: |
+          git rm .github/workflows/cleanup-intl-wave4-diff.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/intl-content-demand-2026-09-03.json docs/INTL_CONTENT_AUDIT_2026-09-03.md
+          git commit -m "chore: keep wave4 analytics diff reviewable"
+          git push origin HEAD:growth/intl-content-quality-wave4
