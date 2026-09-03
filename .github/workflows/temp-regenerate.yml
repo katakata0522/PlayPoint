@@ -1,0 +1,39 @@
+name: Temporary branch regeneration
+
+on:
+  pull_request:
+    branches:
+      - chatgpt/generator-base-20260903
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825a4c0d18c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+
+      - name: Regenerate committed outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated outputs when needed
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "build: 多言語修正の生成物を同期"
+          git push origin "HEAD:${HEAD_REF}"
