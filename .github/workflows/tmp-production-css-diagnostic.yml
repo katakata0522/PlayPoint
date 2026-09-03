@@ -4,22 +4,28 @@ on:
   push:
     branches: [diagnostic/article-css-production-20260903]
 
+permissions:
+  contents: read
+
 jobs:
   inspect:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Inspect production article HTML and shared CSS
+      - name: Checkout diagnostic revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Install browser driver
         shell: bash
         run: |
           set -euo pipefail
-          echo '=== HTML response ==='
-          curl -sSIL 'https://playpoint-sim.com/articles/2025-12-25-best-use.html'
-          echo '=== HTML stylesheet refs ==='
-          curl -sSL 'https://playpoint-sim.com/articles/2025-12-25-best-use.html' | grep -oE 'href="[^"]*\.css[^" ]*"' || true
-          echo '=== Shared CSS response ==='
-          curl -sSIL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5'
-          echo '=== Shared CSS token / contract ==='
-          curl -sSL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5' | grep -nE 'cocoon-heading|Published Japanese article title color contract|main-content-column > \.hero' || true
-          echo '=== Shared CSS first bytes ==='
-          curl -sSL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5' | head -c 500
-          echo
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Compare CSS readiness with and without third-party blocking
+        shell: bash
+        run: node .github/scripts/tmp-production-css-timing.cjs
