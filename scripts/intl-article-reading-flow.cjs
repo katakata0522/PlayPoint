@@ -100,6 +100,23 @@ function findDivEnd(html, pattern, startIndex, articleEnd) {
   return end + '</div>'.length;
 }
 
+function findIntroductoryBlockEnd(mainHtml, bounds) {
+  const introductorySectionEnd = findSectionEnd(
+    mainHtml,
+    /<section\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi,
+    bounds.start,
+    bounds.end
+  );
+  if (introductorySectionEnd >= 0) return introductorySectionEnd;
+
+  return findDivEnd(
+    mainHtml,
+    /<div\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi,
+    bounds.start,
+    bounds.end
+  );
+}
+
 function findPromptAnchorEnd(mainHtml) {
   const bounds = findArticleBounds(mainHtml);
   if (!bounds) return -1;
@@ -112,13 +129,8 @@ function findPromptAnchorEnd(mainHtml) {
   );
   if (knowledgeBoundaryEnd >= 0) return knowledgeBoundaryEnd;
 
-  const introductorySectionEnd = findSectionEnd(
-    mainHtml,
-    /<section\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi,
-    bounds.start,
-    bounds.end
-  );
-  return introductorySectionEnd >= 0 ? introductorySectionEnd : bounds.start;
+  const introductoryBlockEnd = findIntroductoryBlockEnd(mainHtml, bounds);
+  return introductoryBlockEnd >= 0 ? introductoryBlockEnd : bounds.start;
 }
 
 function findCashConversionAlternativeEnd(mainHtml, localeKey) {
