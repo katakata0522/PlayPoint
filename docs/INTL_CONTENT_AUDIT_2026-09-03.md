@@ -7,7 +7,7 @@ This audit prioritizes **where to invest next**, not whether an article is "good
 - GA4 landing/page period: 2026-08-04 to 2026-09-02
 - Search Console period: 2026-08-02 to 2026-08-31
 - Inventory scanned: 102 EN/KO/TW article pages
-- Priority counts: A=13, B=7, C=5, Monitor=77
+- Priority counts: A=15, B=7, C=3, Monitor=77
 - HK/IN have no article corpus yet, so their regional gaps are tracked separately below.
 
 ## Priority meaning
@@ -26,9 +26,7 @@ High-priority international pages should converge toward: direct answer before c
 
 | Priority | Page | Organic sessions | Engagement | Avg sec | Answer before calc | Structure score / 7 | Action |
 |---|---|---:|---:|---:|:---:|---:|---|
-| C | `/ko/articles/google-play-points-expiration.html` | 15 | 33.33% | 12 | N | 5 | deep-review-after-wave3 |
 | C | `/ko/articles/google-play-points-super-weekly-reward.html` | 12 | 50.00% | 11 | Y | 7 | wave3 |
-| C | `/tw/articles/google-play-points-expiration.html` | 10 | 50.00% | 9 | N | 5 | deep-review-after-wave3 |
 | C | `/ko/articles/google-play-quests.html` | 5 | 40.00% | 6 | Y | 7 | wave3 |
 | C | `/en/articles/google-play-points-gift-cards.html` | 2 | 50.00% | 20 | Y | 7 | wave3 |
 | B | `/tw/articles/google-play-points-coupon-not-applied.html` | 26 | 53.85% | 30 | Y | 5 | targeted-snippet-and-intent-review |
@@ -66,9 +64,7 @@ High-priority international pages should converge toward: direct answer before c
 
 | P | Lang | Page | Modified | Sessions | ER | Answer first | Table | FAQ | Official sources | Action |
 |---|---|---|---|---:|---:|:---:|:---:|:---:|---:|---|
-| C | KO | `/ko/articles/google-play-points-expiration.html` | 2026-07-24 | 15 | 33.33% | N | Y | Y | 1 | deep-review-after-wave3 |
 | C | KO | `/ko/articles/google-play-points-super-weekly-reward.html` | 2026-09-03 | 12 | 50.00% | Y | Y | Y | 2 | wave3 |
-| C | TW | `/tw/articles/google-play-points-expiration.html` | 2026-07-24 | 10 | 50.00% | N | Y | Y | 1 | deep-review-after-wave3 |
 | C | KO | `/ko/articles/google-play-quests.html` | 2026-09-03 | 5 | 40.00% | Y | Y | Y | 1 | wave3 |
 | C | EN | `/en/articles/google-play-points-gift-cards.html` | 2026-09-03 | 2 | 50.00% | Y | Y | Y | 2 | wave3 |
 | B | TW | `/tw/articles/google-play-points-coupon-not-applied.html` | 2026-07-25 | 26 | 53.85% | Y | N | Y | 3 | targeted-snippet-and-intent-review |
@@ -85,7 +81,9 @@ High-priority international pages should converge toward: direct answer before c
 | A | TW | `/tw/articles/google-play-points-use-coupons.html` | 2026-09-03 | 19 | 52.63% | Y | Y | Y | 3 | observe-after-wave2 |
 | A | TW | `/tw/articles/google-play-points-play-credit-not-working.html` | 2026-09-03 | 18 | 61.11% | Y | Y | Y | 4 | observe-after-2026-09-03-refresh |
 | A | EN | `/en/articles/google-play-quests.html` | 2026-09-03 | 16 | 62.50% | Y | Y | Y | 1 | observe-after-wave2 |
+| A | KO | `/ko/articles/google-play-points-expiration.html` | 2026-09-03 | 15 | 33.33% | N | Y | Y | 1 | observe-after-wave4-answer-first |
 | A | EN | `/en/articles/google-play-points-cash-conversion.html` | 2026-09-03 | 13 | 61.54% | Y | Y | Y | 2 | observe-after-2026-09-03-refresh |
+| A | TW | `/tw/articles/google-play-points-expiration.html` | 2026-09-03 | 10 | 50.00% | N | Y | Y | 1 | observe-after-wave4-answer-first |
 | A | KO | `/ko/articles/google-play-points-levels.html` | 2026-08-05 | 8 | 87.50% | N | Y | Y | 3 | maintain |
 | A | EN | `/en/articles/google-play-points-country-differences.html` | 2026-08-24 | 7 | 85.71% | N | Y | Y | 7 | maintain |
 | A | TW | `/tw/articles/google-play-points-multiple-accounts.html` | 2026-08-20 | 7 | 71.43% | N | N | Y | 2 | maintain-as-transfer-owner |
