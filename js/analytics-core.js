@@ -11,6 +11,11 @@
         'calculation_completed',
         'reverse_calculation_completed'
     ]);
+    const CALCULATOR_ATTRIBUTION_EVENTS = new Set([
+        ...CALCULATION_EVENTS,
+        'calculator_form_started',
+        'calculator_funnel_completed'
+    ]);
     const CALCULATOR_ENTRY_PARAMS = [
         'entry_source_path',
         'entry_link_context',
@@ -21,8 +26,8 @@
         page_view: [],
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         reverse_calculation_completed: ['calculation_mode', 'region', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
-        calculator_form_started: ['calculation_mode', 'region', 'start_field'],
-        calculator_funnel_completed: ['calculation_mode', 'region'],
+        calculator_form_started: ['calculation_mode', 'region', 'start_field', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
+        calculator_funnel_completed: ['calculation_mode', 'region', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
         calculator_validation_error: ['calculation_mode', 'region', 'error_type'],
         calculator_mode_changed: ['region', 'from_mode', 'to_mode'],
         diary_tab_opened: ['region', 'open_surface'],
@@ -49,6 +54,8 @@
     const pendingEvents = [];
     let analyticsReady = false;
     let initialPageViewSent = false;
+    let activeCalculatorEntry = null;
+    let calculationEntryConsumed = false;
 
     function hasConsent() {
         return Boolean(window.PlayPointConsent)
@@ -110,7 +117,7 @@
         };
     }
 
-    function clearCalculatorEntry() {
+    function clearStoredCalculatorEntry() {
         try {
             window.sessionStorage.removeItem(ENTRY_STORAGE_KEY);
         } catch (error) {
@@ -118,7 +125,14 @@
         }
     }
 
+    function clearCalculatorEntry() {
+        activeCalculatorEntry = null;
+        calculationEntryConsumed = false;
+        clearStoredCalculatorEntry();
+    }
+
     function readCalculatorEntry() {
+        if (activeCalculatorEntry) return activeCalculatorEntry;
         try {
             const raw = window.sessionStorage.getItem(ENTRY_STORAGE_KEY);
             if (!raw) return null;
@@ -130,7 +144,9 @@
                 clearCalculatorEntry();
                 return null;
             }
-            return sanitizeCalculatorEntry(parsed);
+            activeCalculatorEntry = sanitizeCalculatorEntry(parsed);
+            clearStoredCalculatorEntry();
+            return activeCalculatorEntry;
         } catch (error) {
             clearCalculatorEntry();
             console.warn('計算機の流入情報を読み込めませんでした。', error);
@@ -149,6 +165,8 @@
                 entry_link_context: context.link_context || 'internal_link',
                 calculator_preset: url.search ? 'preset' : 'blank'
             });
+            activeCalculatorEntry = null;
+            calculationEntryConsumed = false;
             window.sessionStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify({
                 ...entry,
                 recorded_at: Date.now()
@@ -162,11 +180,14 @@
 
     function enrichCalculationParams(eventName, params) {
         const clean = sanitizeParams(eventName, params);
-        if (!clean || !CALCULATION_EVENTS.has(eventName)) return clean;
+        if (!clean || !CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return clean;
 
         const entry = readCalculatorEntry();
         if (!entry) return clean;
-        clearCalculatorEntry();
+        if (CALCULATION_EVENTS.has(eventName)) {
+            if (calculationEntryConsumed) return clean;
+            calculationEntryConsumed = true;
+        }
         return sanitizeParams(eventName, { ...clean, ...entry });
     }
 
