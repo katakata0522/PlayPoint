@@ -19,6 +19,10 @@ const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
 const { syncIntlHubDiscovery } = require('./intl-hub-discovery.cjs');
+const {
+  applyIntlSemanticSourceOverrides,
+  normalizeIntlGeneratedCopy
+} = require('./intl-localization-normalize.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
 const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
@@ -44,6 +48,8 @@ const rootDir = path.join(__dirname, '..');
 
 const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
 const locales = createLocales();
+const intlSemanticSourceSummary = applyIntlSemanticSourceOverrides(locales);
+console.log(`[build-html] applied international semantic overrides: ${intlSemanticSourceSummary.statusPages} query groups / ${intlSemanticSourceSummary.campaignPages} campaign copy groups`);
 
 const editorialArticleCount = applyEditorialStructure(rootDir, todayStr);
 console.log(`[build-html] synchronized editorial structure: ${editorialArticleCount}`);
@@ -83,6 +89,11 @@ console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.chan
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
+
+// 地域別の文言補正や実行時補助スクリプトを先に確定し、
+// その後の内容ハッシュ同期で公開HTMLの参照URLも同じビルド内に確定させる。
+const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
+console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);
