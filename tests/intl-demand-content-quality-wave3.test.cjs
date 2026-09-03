@@ -58,7 +58,7 @@ test('international content audit covers the complete current EN KO TW inventory
     const expected = fs.readdirSync(path.join(root, locale, 'articles'))
       .filter(name => name.endsWith('.html') && name !== 'index.html').length;
     const language = locale.toUpperCase();
-    const actual = tableRows.filter(line => line.startsWith(`| ${line[2]} | ${language} |`)).length;
+    const actual = tableRows.filter(line => new RegExp(`^\\| [ABCM] \\| ${language} \\|`).test(line)).length;
     assert.equal(actual, expected, `${locale} inventory count`);
   }
 
