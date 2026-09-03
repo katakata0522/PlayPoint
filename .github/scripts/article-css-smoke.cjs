@@ -112,6 +112,38 @@ async function saveScreenshot(page, filename) {
   } catch {}
 }
 
+async function readStyleReadiness(page, compatibility) {
+  return page.evaluate(({ compatibility }) => {
+    const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+    const compatibilityLink = links.find(link => link.href.includes(compatibility));
+    const sharedLink = links.find(link => link.href.includes('article-shared.css'));
+    return {
+      readyState: document.readyState,
+      headingToken: getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim(),
+      compatibilityHref: compatibilityLink?.href || '',
+      compatibilityAttached: Boolean(compatibilityLink?.sheet),
+      sharedHref: sharedLink?.href || '',
+      sharedAttached: Boolean(sharedLink?.sheet),
+      stylesheetCount: document.styleSheets.length
+    };
+  }, { compatibility });
+}
+
+async function waitForArticleStylesReady(page, article, viewport) {
+  try {
+    await page.waitForFunction(({ compatibility }) => {
+      const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
+      const compatibilityLink = links.find(link => link.href.includes(compatibility));
+      const sharedLink = links.find(link => link.href.includes('article-shared.css'));
+      const headingToken = getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim();
+      return Boolean(compatibilityLink?.sheet && sharedLink?.sheet && headingToken);
+    }, { compatibility: article.compatibility }, { timeout: 15_000 });
+  } catch (error) {
+    const readiness = await readStyleReadiness(page, article.compatibility).catch(() => null);
+    throw new Error(`${article.key}/${viewport.key}: article styles not ready ${JSON.stringify(readiness)}`);
+  }
+}
+
 async function inspectArticle(browser, baseUrl, article, viewport) {
   const origin = new URL(baseUrl).origin;
   const context = await browser.newContext({
@@ -129,6 +161,7 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
     });
     assert(response && response.ok(), `${article.key}/${viewport.key}: HTTP ${response?.status() || 'no response'}`);
     await page.locator('.main-content-column > .hero').waitFor({ state: 'attached', timeout: 15_000 });
+    await waitForArticleStylesReady(page, article, viewport);
 
     const result = await page.evaluate(({ compatibility }) => {
       const hero = document.querySelector('.main-content-column > .hero');
@@ -137,7 +170,9 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
       const heroStyle = hero ? getComputedStyle(hero) : null;
       const titleStyle = title ? getComputedStyle(title) : null;
       const mainStyle = main ? getComputedStyle(main) : null;
-      const stylesheets = [...document.querySelectorAll('link[rel="stylesheet"]')].map(link => link.href);
+      const stylesheetLinks = [...document.querySelectorAll('link[rel="stylesheet"]')];
+      const compatibilityLink = stylesheetLinks.find(link => link.href.includes(compatibility));
+      const sharedLink = stylesheetLinks.find(link => link.href.includes('article-shared.css'));
       return {
         hero: heroStyle ? {
           backgroundColor: heroStyle.backgroundColor,
@@ -155,16 +190,20 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
         } : null,
         mainBackground: mainStyle?.backgroundColor || '',
         headingToken: getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim(),
-        hasCompatibility: stylesheets.some(href => href.includes(compatibility)),
-        hasShared: stylesheets.some(href => href.includes('article-shared.css')),
+        hasCompatibility: Boolean(compatibilityLink),
+        compatibilityLoaded: Boolean(compatibilityLink?.sheet),
+        hasShared: Boolean(sharedLink),
+        sharedLoaded: Boolean(sharedLink?.sheet),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
       };
     }, { compatibility: article.compatibility });
 
     assert(result.hero, `${article.key}/${viewport.key}: hero not found`);
     assert(result.title, `${article.key}/${viewport.key}: title not found`);
-    assert(result.hasCompatibility, `${article.key}/${viewport.key}: ${article.compatibility} not loaded`);
-    assert(result.hasShared, `${article.key}/${viewport.key}: article-shared.css not loaded`);
+    assert(result.hasCompatibility, `${article.key}/${viewport.key}: ${article.compatibility} link missing`);
+    assert(result.compatibilityLoaded, `${article.key}/${viewport.key}: ${article.compatibility} not attached to CSSOM`);
+    assert(result.hasShared, `${article.key}/${viewport.key}: article-shared.css link missing`);
+    assert(result.sharedLoaded, `${article.key}/${viewport.key}: article-shared.css not attached to CSSOM`);
     assert(['rgba(0, 0, 0, 0)', 'transparent'].includes(result.hero.backgroundColor), `${article.key}/${viewport.key}: hero background ${result.hero.backgroundColor}`);
     assert(result.hero.backgroundImage === 'none', `${article.key}/${viewport.key}: hero background image ${result.hero.backgroundImage}`);
     assert([
