@@ -28,6 +28,11 @@ const INTL_PROMPT_COPY = Object.freeze({
   })
 });
 
+const CASH_CONVERSION_H1_PATTERNS = Object.freeze({
+  en: /<h1>\s*Can You (?:Convert|Redeem) Google Play Points (?:to|for) Cash\?\s*<\/h1>/i,
+  ko: /<h1>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i
+});
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -71,8 +76,8 @@ function findPromptAnchorEnd(mainHtml) {
 }
 
 function findCashConversionAlternativeEnd(mainHtml, localeKey) {
-  if (localeKey !== 'ko') return -1;
-  if (!/<h1>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i.test(mainHtml)) return -1;
+  const h1Pattern = CASH_CONVERSION_H1_PATTERNS[localeKey];
+  if (!h1Pattern || !h1Pattern.test(mainHtml)) return -1;
 
   const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(mainHtml);
   if (!articleMatch) return -1;
@@ -118,6 +123,7 @@ function insertIntlArticlePrompt(mainHtml, localeKey) {
 }
 
 module.exports = {
+  CASH_CONVERSION_H1_PATTERNS,
   GENERATED_PROMPT_ATTRIBUTE,
   GENERATED_PROMPT_PATTERN,
   INTL_PROMPT_COPY,
