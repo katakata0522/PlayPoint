@@ -150,7 +150,7 @@ lines.push('');
 lines.push('## New-intent gaps');
 lines.push('');
 for (const gap of snapshot.gaps) {
-  lines.push(`### ${gap.priority} — ${gap.intent}`);
+  lines.push(`### ${gap.priority} — ${gap.id}: ${gap.intent}`);
   lines.push('');
   lines.push(`- Evidence: ${gap.evidence}`);
   lines.push(`- Decision: ${gap.decision}`);
