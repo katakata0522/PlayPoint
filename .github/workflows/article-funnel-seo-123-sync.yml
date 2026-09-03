@@ -1,0 +1,98 @@
+name: Article Funnel SEO 123 Sync
+
+on:
+  push:
+    branches:
+      - growth/article-funnel-seo-123
+    paths:
+      - .github/workflows/article-funnel-seo-123-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/article-funnel-seo-123
+          fetch-depth: 0
+
+      - name: Patch source attribution through the calculator funnel
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('js/analytics-core.js')
+          text = path.read_text()
+
+          old = """    const CALCULATION_EVENTS = new Set([\n        'calculation_completed',\n        'reverse_calculation_completed'\n    ]);\n"""
+          new = """    const CALCULATION_EVENTS = new Set([\n        'calculation_completed',\n        'reverse_calculation_completed'\n    ]);\n    const CALCULATOR_ATTRIBUTION_EVENTS = new Set([\n        ...CALCULATION_EVENTS,\n        'calculator_form_started',\n        'calculator_funnel_completed'\n    ]);\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """        calculator_form_started: ['calculation_mode', 'region', 'start_field'],\n        calculator_funnel_completed: ['calculation_mode', 'region'],\n"""
+          new = """        calculator_form_started: ['calculation_mode', 'region', 'start_field', 'entry_source_path', 'entry_link_context', 'calculator_preset'],\n        calculator_funnel_completed: ['calculation_mode', 'region', 'entry_source_path', 'entry_link_context', 'calculator_preset'],\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """    const pendingEvents = [];\n    let analyticsReady = false;\n    let initialPageViewSent = false;\n"""
+          new = """    const pendingEvents = [];\n    let analyticsReady = false;\n    let initialPageViewSent = false;\n    let activeCalculatorEntry = null;\n    let calculationEntryConsumed = false;\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """    function clearCalculatorEntry() {\n        try {\n            window.sessionStorage.removeItem(ENTRY_STORAGE_KEY);\n        } catch (error) {\n            console.warn('計算機の流入情報を削除できませんでした。', error);\n        }\n    }\n\n    function readCalculatorEntry() {\n        try {\n            const raw = window.sessionStorage.getItem(ENTRY_STORAGE_KEY);\n            if (!raw) return null;\n            const parsed = JSON.parse(raw);\n            const recordedAt = Number(parsed && parsed.recorded_at);\n            if (!parsed || typeof parsed !== 'object' || !Number.isFinite(recordedAt)\n                || recordedAt > Date.now() + 60 * 1000\n                || Date.now() - recordedAt > ENTRY_MAX_AGE_MS) {\n                clearCalculatorEntry();\n                return null;\n            }\n            return sanitizeCalculatorEntry(parsed);\n        } catch (error) {\n            clearCalculatorEntry();\n            console.warn('計算機の流入情報を読み込めませんでした。', error);\n            return null;\n        }\n    }\n"""
+          new = """    function clearStoredCalculatorEntry() {\n        try {\n            window.sessionStorage.removeItem(ENTRY_STORAGE_KEY);\n        } catch (error) {\n            console.warn('計算機の流入情報を削除できませんでした。', error);\n        }\n    }\n\n    function clearCalculatorEntry() {\n        activeCalculatorEntry = null;\n        calculationEntryConsumed = false;\n        clearStoredCalculatorEntry();\n    }\n\n    function readCalculatorEntry() {\n        if (activeCalculatorEntry) return activeCalculatorEntry;\n        try {\n            const raw = window.sessionStorage.getItem(ENTRY_STORAGE_KEY);\n            if (!raw) return null;\n            const parsed = JSON.parse(raw);\n            const recordedAt = Number(parsed && parsed.recorded_at);\n            if (!parsed || typeof parsed !== 'object' || !Number.isFinite(recordedAt)\n                || recordedAt > Date.now() + 60 * 1000\n                || Date.now() - recordedAt > ENTRY_MAX_AGE_MS) {\n                clearCalculatorEntry();\n                return null;\n            }\n            activeCalculatorEntry = sanitizeCalculatorEntry(parsed);\n            clearStoredCalculatorEntry();\n            return activeCalculatorEntry;\n        } catch (error) {\n            clearCalculatorEntry();\n            console.warn('計算機の流入情報を読み込めませんでした。', error);\n            return null;\n        }\n    }\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """    function rememberCalculatorEntry(link, context = {}) {\n        if (!hasConsent()) return false;\n        try {\n            const url = link instanceof URL ? link : new URL(link.href || link, window.location.href);\n            if (url.origin !== window.location.origin || !CALCULATOR_PATHS.has(url.pathname)) return false;\n\n            const entry = sanitizeCalculatorEntry({\n                entry_source_path: context.source_path || window.location.pathname,\n                entry_link_context: context.link_context || 'internal_link',\n                calculator_preset: url.search ? 'preset' : 'blank'\n            });\n            window.sessionStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify({\n                ...entry,\n                recorded_at: Date.now()\n            }));\n            return true;\n"""
+          new = """    function rememberCalculatorEntry(link, context = {}) {\n        if (!hasConsent()) return false;\n        try {\n            const url = link instanceof URL ? link : new URL(link.href || link, window.location.href);\n            if (url.origin !== window.location.origin || !CALCULATOR_PATHS.has(url.pathname)) return false;\n\n            const entry = sanitizeCalculatorEntry({\n                entry_source_path: context.source_path || window.location.pathname,\n                entry_link_context: context.link_context || 'internal_link',\n                calculator_preset: url.search ? 'preset' : 'blank'\n            });\n            activeCalculatorEntry = null;\n            calculationEntryConsumed = false;\n            window.sessionStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify({\n                ...entry,\n                recorded_at: Date.now()\n            }));\n            return true;\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+
+          old = """    function enrichCalculationParams(eventName, params) {\n        const clean = sanitizeParams(eventName, params);\n        if (!clean || !CALCULATION_EVENTS.has(eventName)) return clean;\n\n        const entry = readCalculatorEntry();\n        if (!entry) return clean;\n        clearCalculatorEntry();\n        return sanitizeParams(eventName, { ...clean, ...entry });\n    }\n"""
+          new = """    function enrichCalculationParams(eventName, params) {\n        const clean = sanitizeParams(eventName, params);\n        if (!clean || !CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return clean;\n\n        const entry = readCalculatorEntry();\n        if (!entry) return clean;\n        if (CALCULATION_EVENTS.has(eventName)) {\n            if (calculationEntryConsumed) return clean;\n            calculationEntryConsumed = true;\n        }\n        return sanitizeParams(eventName, { ...clean, ...entry });\n    }\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          path = Path('tests/analytics-core.test.cjs')
+          text = path.read_text()
+          old = """test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {\n  const { context, storage } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  analytics.markAnalyticsReady();\n\n  assert.equal(analytics.rememberCalculatorEntry('/?mode=main', {\n    source_path: '/articles/guide.html',\n    link_context: 'article_cta'\n  }), true);\n  analytics.track('calculation_completed', {\n    calculation_mode: 'main',\n    region: 'JP',\n    target_status: 'platinum',\n    needed_points: '送信してはいけない値'\n  });\n\n  const first = eventCalls(context, 'calculation_completed');\n  assert.equal(first.length, 1);\n  assert.deepEqual(first[0], {\n    calculation_mode: 'main',\n    region: 'JP',\n    target_status: 'platinum',\n    entry_source_path: '/articles/guide.html',\n    entry_link_context: 'article_cta',\n    calculator_preset: 'preset'\n  });\n  assert.equal(storage.size, 0, '流入情報が計算後も残っています');\n\n  analytics.track('calculation_completed', { calculation_mode: 'main', region: 'JP' });\n  const second = eventCalls(context, 'calculation_completed');\n  assert.equal(second.length, 2);\n  assert.equal(second[1].entry_source_path, undefined, '同じ流入が複数回の計算へ付与されています');\n});\n"""
+          new = """test('記事・LPからの流入は開始・初回成功へ引き継ぎ、計算完了には一度だけ付与する', () => {\n  const { context, storage } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  analytics.markAnalyticsReady();\n\n  assert.equal(analytics.rememberCalculatorEntry('/?mode=main', {\n    source_path: '/articles/guide.html',\n    link_context: 'article_cta'\n  }), true);\n\n  analytics.track('calculator_form_started', {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    start_field: 'needed_points'\n  });\n  assert.deepEqual(eventCalls(context, 'calculator_form_started')[0], {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    start_field: 'needed_points',\n    entry_source_path: '/articles/guide.html',\n    entry_link_context: 'article_cta',\n    calculator_preset: 'preset'\n  });\n  assert.equal(storage.size, 0, '計算機到着後も流入情報がsessionStorageに残っています');\n\n  analytics.track('calculation_completed', {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    target_status: 'platinum',\n    needed_points: '送信してはいけない値'\n  });\n  assert.deepEqual(eventCalls(context, 'calculation_completed')[0], {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    target_status: 'platinum',\n    entry_source_path: '/articles/guide.html',\n    entry_link_context: 'article_cta',\n    calculator_preset: 'preset'\n  });\n\n  analytics.track('calculator_funnel_completed', {\n    calculation_mode: 'rank_up',\n    region: 'JP'\n  });\n  assert.deepEqual(eventCalls(context, 'calculator_funnel_completed')[0], {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    entry_source_path: '/articles/guide.html',\n    entry_link_context: 'article_cta',\n    calculator_preset: 'preset'\n  });\n\n  analytics.track('calculation_completed', { calculation_mode: 'rank_up', region: 'JP' });\n  const completions = eventCalls(context, 'calculation_completed');\n  assert.equal(completions.length, 2);\n  assert.equal(completions[1].entry_source_path, undefined, '同じ流入が複数回の計算完了へ付与されています');\n});\n\ntest('計算完了が初回成功イベントより先でも記事起点を失わない', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n  analytics.markAnalyticsReady();\n  analytics.rememberCalculatorEntry('/', {\n    source_path: '/tw/articles/google-play-quests.html',\n    link_context: 'article_calculator_prompt'\n  });\n\n  analytics.track('calculation_completed', { calculation_mode: 'rank_up', region: 'TW' });\n  analytics.track('calculator_funnel_completed', { calculation_mode: 'rank_up', region: 'TW' });\n\n  assert.equal(eventCalls(context, 'calculation_completed')[0].entry_source_path, '/tw/articles/google-play-quests.html');\n  assert.equal(eventCalls(context, 'calculator_funnel_completed')[0].entry_source_path, '/tw/articles/google-play-quests.html');\n});\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          path = Path('docs/ANALYTICS.md')
+          text = path.read_text()
+          text = text.replace(
+              "| `calculator_form_started` | 通常計算・逆算で最初の入力/変更/送信があった時（各モード1ページ1回） | `calculation_mode`, `region`, `start_field` | 計算開始数を取得し、流入変動とフォーム離脱を分離する |",
+              "| `calculator_form_started` | 通常計算・逆算で最初の入力/変更/送信があった時（各モード1ページ1回） | `calculation_mode`, `region`, `start_field`, 流入属性（該当時のみ） | 記事・LP別のクリック→計算開始率を判断する |"
+          )
+          text = text.replace(
+              "| `calculator_funnel_completed` | 各モードで最初の計算成功時（各モード1ページ1回） | `calculation_mode`, `region` | 再計算による水増しを避けて開始→初回成功率を判断する |",
+              "| `calculator_funnel_completed` | 各モードで最初の計算成功時（各モード1ページ1回） | `calculation_mode`, `region`, 流入属性（該当時のみ） | 記事・LP別の計算開始→初回成功率を判断する |"
+          )
+          old = """`calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。記事・検索意図別LPから計算機へ移動した場合は、同意済みセッション内に `entry_source_path`, `entry_link_context`, `calculator_preset` を最大30分だけ保持し、次の計算完了イベントへ一度だけ追加して破棄する。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。\n"""
+          new = """`calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。記事・検索意図別LPから計算機へ移動した場合は、同意済みセッション内に `entry_source_path`, `entry_link_context`, `calculator_preset` を最大30分だけ保持する。計算機側で最初に流入情報を参照した時点で sessionStorage からページ内メモリへ移し、`calculator_form_started` と `calculator_funnel_completed` にも同じ記事・LP起点を付与する。`calculation_completed` / `reverse_calculation_completed` への起点付与は最初の1回だけとし、再計算による水増しを防ぐ。ページを離れるとページ内メモリは破棄されるため、後続の別訪問へ同じ起点を持ち越さない。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。\n"""
+          assert old in text
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+          PY
+
+      - name: Verify focused analytics tests
+        run: node --test tests/analytics-core.test.cjs tests/calculator-funnel-analytics.test.cjs tests/calculator-funnel-behavior.test.cjs
+
+      - name: Commit patched files
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/analytics-core.js tests/analytics-core.test.cjs docs/ANALYTICS.md
+          git commit -m 'feat: attribute article sources through calculator funnel'
+          git push origin HEAD:growth/article-funnel-seo-123
