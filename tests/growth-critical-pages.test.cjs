@@ -66,8 +66,25 @@ test('high-impression 4-15 position pages retain the query intent in title and d
 
   const twCredit = read('tw/articles/google-play-points-play-credit-not-working.html');
   const twCreditTitle = titleOf(twCredit, 'TW Play credit');
-  assert.match(twCreditTitle, /(?:無法|不能)/, 'TW Play credit: cannot-use intent must remain explicit');
-  assert.match(twCreditTitle, /(?:抵用金|Play)/i, 'TW Play credit: Play credit intent must remain explicit');
+  const twCreditDescription = metaContent(twCredit, 'description', 'TW Play credit');
+  assert.match(twCreditTitle, /Google Play/i, 'TW Play credit: Google Play intent must remain explicit');
+  assert.match(twCreditTitle, /抵用金/, 'TW Play credit: Play credit intent must remain explicit');
+  assert.match(twCreditTitle, /(?:無法使用|不能使用)/, 'TW Play credit: cannot-use intent must remain explicit');
+  assert.match(twCreditDescription, /抵用金.*無法使用/, 'TW Play credit: snippet must answer the cannot-use query directly');
+});
+
+test('Taiwan Play credit troubleshooting answers the query before the calculator prompt', () => {
+  const html = read('tw/articles/google-play-points-play-credit-not-working.html');
+  const introIndex = html.indexOf('<div class="intro">');
+  const quickCheckIndex = html.indexOf('id="quick-check"');
+  const calculatorIndex = html.indexOf('article-calculator-prompt');
+
+  assert.ok(introIndex >= 0, 'TW Play credit: direct-answer intro is required');
+  assert.ok(quickCheckIndex > introIndex, 'TW Play credit: quick diagnosis should follow the direct answer');
+  assert.ok(calculatorIndex > quickCheckIndex, 'TW Play credit: troubleshooting must come before the calculator prompt');
+  assert.match(html, /變更 Play 國家\/地區後無法使用舊餘額/, 'TW Play credit: country-change failure mode must stay explicit');
+  assert.match(html, /相同幣別/, 'TW Play credit: same-currency restriction must stay visible');
+  assert.match(html, /一年後到期/, 'TW Play credit: exchanged-credit expiry must stay visible');
 });
 
 test('latest hub keeps the campaign-intent answer visible to search engines', () => {

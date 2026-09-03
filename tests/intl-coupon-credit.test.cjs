@@ -76,11 +76,14 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.ok(hasOgSiteName(html, locale.siteName), `${relativePath}: og:site_name=${locale.siteName}`);
       const expectedModified = locale.key === 'ja'
         ? (topic.slug === 'google-play-points-coupon-not-applied.html' ? '2026-08-04' : '2026-07-30')
-        : '2026-07-25';
+        : (locale.key === 'tw' && topic.slug === 'google-play-points-play-credit-not-working.html' ? '2026-09-03' : '2026-07-25');
       assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}">`));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(html.includes('class="cta-btn"'));
+      assert.ok(
+        html.includes('class="cta-btn"') || html.includes('article-calculator-prompt__button'),
+        `${relativePath}: at least one calculator CTA is required`
+      );
       assert.ok(!html.includes('utm_medium=internal'));
       assert.ok(html.includes('/author/katakata.html'));
       const peerTopic = topics.find(candidate => candidate.slug === topic.peer);
