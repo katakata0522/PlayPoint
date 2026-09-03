@@ -1,0 +1,110 @@
+name: Fix intl wave 1 contracts v2
+
+on:
+  push:
+    branches:
+      - growth/intl-content-quality-wave1
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/intl-content-quality-wave1
+
+      - name: Align demand-led pages with existing intl article contracts
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceRequired(text, from, to, label) {
+            if (!text.includes(from)) throw new Error(`missing ${label}`);
+            return text.replace(from, to);
+          }
+
+          let en = fs.readFileSync('en/articles/google-play-points-use-coupons.html', 'utf8');
+          en = replaceRequired(
+            en,
+            '<p>A coupon is not automatically better because its headline discount is larger. If meeting the minimum purchase makes you spend money you would not otherwise spend, subtract that extra spending from the practical benefit.</p>',
+            '<p>A coupon is not automatically better because its headline discount is larger. When the purchase qualifies, a redeemed coupon can apply automatically at checkout; still confirm the applied discount before paying. If meeting the minimum purchase makes you spend money you would not otherwise spend, subtract that extra spending from the practical benefit.</p>',
+            'EN automatic coupon behavior'
+          );
+          en = replaceRequired(
+            en,
+            '<p><a href="https://support.google.com/googleplay/answer/15776916?co=GENIE.Platform%3DAndroid&amp;hl=en" target="_blank" rel="noopener noreferrer">Use points in the Google Play Store</a> lists in-app or in-game items, coupons, Google Play credit and partner vouchers; it also explains coupon and credit expiry and refund limitations.</p>',
+            '<p><a href="https://support.google.com/googleplay/answer/9079840?hl=en" target="_blank" rel="noopener noreferrer">Use Google Play Points</a> and <a href="https://support.google.com/googleplay/answer/15776916?co=GENIE.Platform%3DAndroid&amp;hl=en" target="_blank" rel="noopener noreferrer">Use points in the Google Play Store</a> document supported redemption options and conditions such as coupons, Google Play credit and eligible rewards.</p>',
+            'EN official use sources'
+          );
+          en = replaceRequired(
+            en,
+            '<li><a href="/en/articles/google-play-points-expiration.html">When Play Points and redeemed rewards expire</a></li>',
+            '<li><a href="/en/articles/google-play-points-expiration.html">When Play Points and redeemed rewards expire</a></li>\n        <li><a href="/en/articles/google-play-points-join-eligibility.html">Join requirements and eligibility checks</a></li>',
+            'EN peer eligibility link'
+          );
+          en = replaceRequired(
+            en,
+            '    <aside class="official-source-note">',
+            '    <div class="cta-box"><h3>Estimate the points you still need</h3><p>After choosing a reward you would actually use, estimate the spending needed to earn any remaining points with the rate shown on your account.</p><a class="cta-btn" href="/en/">Open the calculator</a></div>\n\n    <aside class="official-source-note">',
+            'EN standard calculator CTA'
+          );
+          fs.writeFileSync('en/articles/google-play-points-use-coupons.html', en);
+
+          let tw = fs.readFileSync('tw/articles/google-play-points-weekly-reward.html', 'utf8');
+          tw = replaceRequired(tw, '<h2>一般每週獎勵：銀級以上、星期五重設</h2>', '<h2>一般每週獎勵：銀級以上、週五（星期五）重設</h2>', 'TW Friday wording');
+          tw = replaceRequired(tw, '<h2>Play Pass 星期四福利是另一套制度</h2>', '<h2>Play Pass 週四（星期四）福利是另一套制度</h2>', 'TW Thursday wording');
+          tw = replaceRequired(
+            tw,
+            '<li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DTW&amp;hl=zh-Hant" target="_blank" rel="noopener noreferrer">台灣 Play Points 積點與每週獎勵</a>：銀級以上可領每週獎勵，並依 Play 國家/地區在星期五重設。</li>',
+            '<li><a href="https://support.google.com/googleplay/answer/15776969?hl=zh-Hant" target="_blank" rel="noopener noreferrer">Play Points 每週獎勵與點數記錄</a>：確認週五重設與是否已領取。</li>\n        <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DTW&amp;hl=zh-Hant" target="_blank" rel="noopener noreferrer">台灣 Play Points 積點與每週獎勵</a>：銀級以上可領每週獎勵，並依 Play 國家/地區在星期五重設。</li>',
+            'TW official weekly source'
+          );
+          tw = replaceRequired(
+            tw,
+            '<li><a href="/tw/articles/google-play-points-country-change.html">變更 Play 國家/地區後的影響</a></li><li><a href="/tw/">開啟台灣計算機</a></li>',
+            '<li><a href="/tw/articles/google-play-points-country-change.html">變更 Play 國家/地區後的影響</a></li><li><a href="/tw/articles/google-play-points-multiple-accounts.html">多個 Google 帳號時如何確認 Play Points</a></li><li><a href="/tw/status/platinum/">白金等級所需點數與金額</a></li><li><a href="/tw/">開啟台灣計算機</a></li>',
+            'TW peer and platinum links'
+          );
+          tw = replaceRequired(
+            tw,
+            '    <aside class="official-source-note">',
+            '    <div class="cta-box"><h3>確認週次福利後再算等級進度</h3><p>如果問題不是週次福利本身，而是還差多少點數升級，再用目前帳號的剩餘點數與積點率估算。</p><a class="cta-btn" href="/tw/">開啟台灣計算機</a></div>\n\n    <aside class="official-source-note">',
+            'TW standard calculator CTA'
+          );
+          fs.writeFileSync('tw/articles/google-play-points-weekly-reward.html', tw);
+
+          const testPath = 'tests/intl-topic-pages.test.cjs';
+          let tests = fs.readFileSync(testPath, 'utf8');
+          tests = replaceRequired(
+            tests,
+            "        peer: 'google-play-points-join-eligibility.html'",
+            "        modifiedDates: { en: '2026-09-03' },\n        peer: 'google-play-points-join-eligibility.html'",
+            'EN updated date contract'
+          );
+          tests = replaceRequired(
+            tests,
+            "        peer: 'google-play-points-multiple-accounts.html'",
+            "        modifiedDates: { tw: '2026-09-03' },\n        peer: 'google-play-points-multiple-accounts.html'",
+            'TW updated date contract'
+          );
+          fs.writeFileSync(testPath, tests);
+          NODE
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Remove one-shot workflows and commit
+        shell: bash
+        run: |
+          git rm -f .github/workflows/fix-intl-wave1-contracts.yml .github/workflows/fix-intl-wave1-contracts-v2.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: satisfy intl article publication contracts"
+          git push origin HEAD:growth/intl-content-quality-wave1
