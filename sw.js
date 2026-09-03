@@ -24,6 +24,7 @@ const ASSETS = [
   './js/region-expansion-config.js',
   './js/region-result-navigation.js',
   './js/language-suggestion.js',
+  './js/first-view.js',
   './js/calendar-reminder.js',
   './js/pwa-install.js',
   './js/widget-referral.js',
