@@ -52,6 +52,7 @@ test('English gift-card guide owns both conversion and earning questions', () =>
 
 test('international content audit covers the complete current EN KO TW inventory', () => {
   const report = read('docs/INTL_CONTENT_AUDIT_2026-09-03.md');
+  // Count only complete inventory-table lines; headings and summary tables must never affect coverage.
   const tableRows = report.split('\n').filter(line => /^\| [ABCM] \| (?:EN|KO|TW) \| `\//.test(line));
 
   for (const locale of ['en', 'ko', 'tw']) {
