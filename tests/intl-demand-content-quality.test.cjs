@@ -8,6 +8,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+// Protect the search-intent contracts for international pages that already have measurable demand.
 function indexOfOrFail(html, needle, label) {
   const index = html.indexOf(needle);
   assert.notEqual(index, -1, `${label} is missing: ${needle}`);
