@@ -175,6 +175,23 @@
     }
     </script>
     <!-- FAQ_JSON_LD_END -->
+    <style id="playpoint-first-view-critical">
+.calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
+.calculator-advanced-settings__toggle{display:none}
+.region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
+@media(max-width:640px){
+.calculator-advanced-settings{display:block;margin-top:.85em}
+.calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
+.calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
+.calculator-advanced-settings__toggle:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
+.calculator-advanced-settings__chevron{flex:0 0 auto;font-size:.9em;transition:transform .18s ease}
+.calculator-advanced-settings.is-open .calculator-advanced-settings__chevron,html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings__chevron{transform:rotate(180deg)}
+.calculator-advanced-settings__body{display:block;margin-top:.7em}
+.calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:static!important;width:auto!important;height:auto!important;margin-top:.7em!important;padding:initial!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important}}
+@media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
+</style>
+        <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
 </head>
 <body>
 
@@ -233,7 +250,10 @@
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例：250" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
-            <label for="baseRate" class="label-with-tooltip">
+            <div id="calculator-advanced-settings" class="calculator-advanced-settings">
+    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">獲得率・キャンペーンを調整（任意）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
+    <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
+<label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-base-rate">?</span>
                 <div class="tooltip-box" id="tooltip-base-rate" hidden></div>
@@ -252,6 +272,8 @@
             <div class="warning" data-lang-key="warningRate">
                 Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います。ステータスの通常獲得率へ倍率を掛けません。対象・上限・有効化はキャンペーン画面で確認してください。
             </div>
+    </div>
+</div>
         </div>
 
         <div class="section">

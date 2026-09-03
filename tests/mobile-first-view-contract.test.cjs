@@ -9,27 +9,39 @@ const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const firstView = () => read('js/first-view.js');
 
-test('スマホ通常計算は3つの主要入力を先に見せ、獲得率設定を任意の詳細設定へ分離する', () => {
+test('スマホ詳細設定は初回HTMLに存在し、JavaScriptは入力欄を移動しない', () => {
   const source = firstView();
+  const staticLayout = read('scripts/static-calculator-layout.cjs');
+  const languageBuilder = read('scripts/language-page-builder.cjs');
 
   assert.match(source, /const MOBILE_QUERY = '\(max-width: 640px\)'/);
-  assert.match(source, /neededPoints\.insertAdjacentElement\('afterend', container\)/);
-  assert.match(source, /body\.append\(baseRateLabel, baseRate, multiplierLabel, multiplier, warning\)/);
-  assert.match(source, /calculator-advanced-settings__toggle/);
+  assert.match(source, /document\.getElementById\(SETTINGS_ID\)/);
   assert.match(source, /body\.inert = collapsed/);
-  assert.match(source, /獲得率・キャンペーンを調整（任意）/);
-  assert.match(source, /Adjust earn rates & promotion \(optional\)/);
-  assert.match(source, /적립률·프로모션 조정 \(선택\)/);
-  assert.match(source, /調整獲點率與活動（選填）/);
+  assert.doesNotMatch(source, /insertAdjacentElement/);
+  assert.doesNotMatch(source, /body\.append\(baseRateLabel/);
+  assert.doesNotMatch(source, /document\.createElement\(['"]style['"]\)/);
+  assert.doesNotMatch(source, /document\.createElement\(['"]div['"]\)/);
+
+  assert.match(staticLayout, /ADVANCED_SETTINGS_ID = 'calculator-advanced-settings'/);
+  assert.match(staticLayout, /ADVANCED_SETTINGS_STYLE_ID = 'playpoint-first-view-critical'/);
+  assert.match(staticLayout, /calculator-advanced-settings__toggle/);
+  assert.match(staticLayout, /獲得率・キャンペーンを調整（任意）/);
+  assert.match(staticLayout, /data-simplified-calculator-copy="advancedSettingsLabel"/);
+  assert.match(languageBuilder, /Adjust earn rates & promotion \(optional\)/);
+  assert.match(languageBuilder, /적립률·프로모션 조정 \(선택\)/);
+  assert.match(languageBuilder, /調整獲點率與活動（選填）/);
 });
 
-test('キャンペーン条件付きの共有URLではスマホ詳細設定を自動展開できる', () => {
+test('キャンペーン条件付きURLはbody描画前に詳細設定の初期状態を確定する', () => {
   const source = firstView();
+  const staticLayout = read('scripts/static-calculator-layout.cjs');
 
   assert.match(source, /params\.get\('mode'\) !== 'main'/);
   assert.match(source, /Number\(params\.get\('multiplier'\)\)/);
   assert.match(source, /multiplier > 1/);
-  assert.match(source, /shouldAutoOpenAdvancedSettings\(window\.location\.search\)/);
+  assert.match(source, /dataset\?\.playpointAdvancedSettings === 'open'/);
+  assert.match(staticLayout, /document\.documentElement\.dataset\.playpointAdvancedSettings='open'/);
+  assert.match(staticLayout, /html\[data-playpoint-advanced-settings="open"\]/);
 });
 
 test('地域提案はレイアウトを押し下げるバナーではなく既存の地域ボタンを強調する', () => {

@@ -5,6 +5,33 @@ const STATIC_LABELS = Object.freeze({
   multiplier: 'キャンペーン特別獲得率（例：3pt/100円）'
 });
 
+const ADVANCED_SETTINGS_ID = 'calculator-advanced-settings';
+const ADVANCED_SETTINGS_BODY_ID = 'calculator-advanced-settings-body';
+const ADVANCED_SETTINGS_STYLE_ID = 'playpoint-first-view-critical';
+const ADVANCED_SETTINGS_STATE_SCRIPT_ID = 'playpoint-first-view-state';
+
+const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意）';
+
+const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
+.calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
+.calculator-advanced-settings__toggle{display:none}
+.region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
+@media(max-width:640px){
+.calculator-advanced-settings{display:block;margin-top:.85em}
+.calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
+.calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
+.calculator-advanced-settings__toggle:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
+.calculator-advanced-settings__chevron{flex:0 0 auto;font-size:.9em;transition:transform .18s ease}
+.calculator-advanced-settings.is-open .calculator-advanced-settings__chevron,html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings__chevron{transform:rotate(180deg)}
+.calculator-advanced-settings__body{display:block;margin-top:.7em}
+.calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:static!important;width:auto!important;height:auto!important;margin-top:.7em!important;padding:initial!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important}}
+@media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
+</style>`;
+
+// multiplier付き共有URLはbodyを描画する前に初期状態を決め、JS到着後の展開によるCLSを防ぐ。
+const ADVANCED_SETTINGS_STATE_SCRIPT = `<script id="${ADVANCED_SETTINGS_STATE_SCRIPT_ID}">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>`;
+
 function findBalancedElementRange(content, openingIndex, tagName) {
   if (openingIndex < 0) return null;
   const tagPattern = new RegExp(`<\\/?${tagName}\\b[^>]*>`, 'gi');
@@ -15,20 +42,12 @@ function findBalancedElementRange(content, openingIndex, tagName) {
   for (let match = tagPattern.exec(content); match; match = tagPattern.exec(content)) {
     if (first && match.index !== openingIndex) return null;
     first = false;
-
     const isClosingTag = /^<\//.test(match[0]);
     const isSelfClosingTag = /\/>$/.test(match[0]);
-    if (isClosingTag) {
-      depth -= 1;
-    } else if (!isSelfClosingTag) {
-      depth += 1;
-    }
-
-    if (depth === 0) {
-      return { start: openingIndex, end: tagPattern.lastIndex };
-    }
+    if (isClosingTag) depth -= 1;
+    else if (!isSelfClosingTag) depth += 1;
+    if (depth === 0) return { start: openingIndex, end: tagPattern.lastIndex };
   }
-
   return null;
 }
 
@@ -56,31 +75,6 @@ function findContainingSectionRange(content, childIndex) {
   return findBalancedElementRange(content, openingIndex, 'div');
 }
 
-function normalizeIndent(fragment, spaces = 12) {
-  const lines = fragment.trim().split('\n');
-  const prefix = ' '.repeat(spaces);
-  if (lines.length === 1) return `${prefix}${lines[0]}`;
-
-  const trailingIndents = lines
-    .slice(1)
-    .filter(line => line.trim())
-    .map(line => line.match(/^\s*/)[0].length);
-  const commonTrailingIndent = trailingIndents.length ? Math.min(...trailingIndents) : 0;
-
-  return lines
-    .map((line, index) => {
-      if (!line.trim()) return '';
-      if (index === 0) return `${prefix}${line}`;
-      const leadingIndent = line.match(/^\s*/)[0].length;
-      return `${prefix}${line.slice(Math.min(commonTrailingIndent, leadingIndent))}`;
-    })
-    .join('\n');
-}
-
-function removeWhitespaceOnlyLines(content) {
-  return content.replace(/^[ \t]+$/gm, '');
-}
-
 function decorateStaticLabels(content) {
   return content
     .replace(
@@ -93,34 +87,6 @@ function decorateStaticLabels(content) {
     );
 }
 
-function normalizeStaticCalculatorFormatting(content) {
-  const ranges = [
-    findLabelRange(content, 'baseRate'),
-    findInputRange(content, 'baseRate'),
-    findLabelRange(content, 'multiplier'),
-    findInputRange(content, 'multiplier'),
-    findWarningRange(content)
-  ].filter(Boolean).sort((a, b) => b.start - a.start);
-
-  for (const range of ranges) {
-    const lineStart = content.lastIndexOf('\n', range.start - 1) + 1;
-    const normalized = normalizeIndent(content.slice(range.start, range.end));
-    content = `${content.slice(0, lineStart)}${normalized}${content.slice(range.end)}`;
-  }
-
-  const baseRateRange = findInputRange(content, 'baseRate');
-  const statusSectionRange = baseRateRange && findContainingSectionRange(content, baseRateRange.start);
-  if (statusSectionRange) {
-    const closingTagStart = content.lastIndexOf('</div>', statusSectionRange.end - 1);
-    const closingLineStart = content.lastIndexOf('\n', closingTagStart) + 1;
-    if (closingTagStart >= closingLineStart) {
-      content = `${content.slice(0, closingLineStart)}        ${content.slice(closingTagStart)}`;
-    }
-  }
-
-  return removeWhitespaceOnlyLines(content);
-}
-
 function markStaticLayout(content) {
   return content.replace(
     /<div id="mainMode"([^>]*)>/,
@@ -130,59 +96,91 @@ function markStaticLayout(content) {
   );
 }
 
-function validateStaticLayout(content) {
-  const requiredTokens = [
-    'data-visible-base-rate-layout="true"',
-    'id="currentStatus"',
-    'id="targetStatus"',
-    'id="neededPoints"',
-    'id="baseRate"',
-    'id="multiplier"',
-    'data-simplified-calculator-copy="baseRateLabel"',
-    'data-simplified-calculator-copy="multiplierLabel"'
-  ];
-
-  for (const token of requiredTokens) {
-    if (!content.includes(token)) {
-      throw new Error(`通常計算の静的レイアウトに必要な要素がありません: ${token}`);
-    }
-  }
-
-  if (content.includes('id="pack-amount"')) {
-    throw new Error('通常計算に平均パック額の入力欄が残っています。');
-  }
-
-  const positions = [
-    'id="currentStatus"',
-    'id="targetStatus"',
-    'id="neededPoints"',
-    'id="baseRate"',
-    'id="multiplier"',
-    'id="calculateButton"'
-  ].map(token => content.indexOf(token));
-
-  if (positions.some(position => position < 0)
-      || positions.some((position, index) => index > 0 && position <= positions[index - 1])) {
-    throw new Error('通常計算の入力順序が想定どおりではありません。');
-  }
+function buildAdvancedSettingsToggle() {
+  return `<button type="button" class="calculator-advanced-settings__toggle" aria-controls="${ADVANCED_SETTINGS_BODY_ID}" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">${ADVANCED_SETTINGS_COPY}</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>`;
 }
 
-function ensureStaticCalculatorLayout(indexHtml) {
-  let content = markStaticLayout(indexHtml);
+function normalizeAdvancedSettingsToggle(content) {
+  const openingPattern = /<button\b[^>]*\bclass=["'][^"']*calculator-advanced-settings__toggle[^"']*["'][^>]*>/i;
+  const match = openingPattern.exec(content);
+  if (!match) return content;
+  const range = findBalancedElementRange(content, match.index, 'button');
+  if (!range) throw new Error('詳細設定トグルの範囲を取得できません。');
+  return `${content.slice(0, range.start)}${buildAdvancedSettingsToggle()}${content.slice(range.end)}`;
+}
 
-  if (indexHtml.includes('data-visible-base-rate-layout="true"')) {
-    content = normalizeStaticCalculatorFormatting(decorateStaticLabels(content));
-    validateStaticLayout(content);
-    return content;
+function replaceElementById(content, tagName, id, replacement) {
+  const opening = `<${tagName} id="${id}">`;
+  const start = content.indexOf(opening);
+  if (start < 0) return { content, replaced: false };
+  const closing = `</${tagName}>`;
+  const end = content.indexOf(closing, start + opening.length);
+  if (end < 0) throw new Error(`${id} の終了タグを取得できません。`);
+  return {
+    content: `${content.slice(0, start)}${replacement}${content.slice(end + closing.length)}`,
+    replaced: true
+  };
+}
+
+function ensureCriticalFirstViewAssets(content) {
+  if (!content.includes('</head>')) return content;
+  const additions = [];
+
+  const styleResult = replaceElementById(
+    content,
+    'style',
+    ADVANCED_SETTINGS_STYLE_ID,
+    ADVANCED_SETTINGS_CRITICAL_STYLE
+  );
+  content = styleResult.content;
+  if (!styleResult.replaced) additions.push(ADVANCED_SETTINGS_CRITICAL_STYLE);
+
+  const stateResult = replaceElementById(
+    content,
+    'script',
+    ADVANCED_SETTINGS_STATE_SCRIPT_ID,
+    ADVANCED_SETTINGS_STATE_SCRIPT
+  );
+  content = stateResult.content;
+  if (!stateResult.replaced) additions.push(ADVANCED_SETTINGS_STATE_SCRIPT);
+
+  if (!additions.length) return content;
+  return content.replace('</head>', `${additions.map(item => `    ${item}`).join('\n    ')}\n</head>`);
+}
+
+function ensureStaticAdvancedSettings(content) {
+  if (content.includes(`id="${ADVANCED_SETTINGS_ID}"`)) {
+    content = normalizeAdvancedSettingsToggle(content);
+    return ensureCriticalFirstViewAssets(content);
   }
 
+  const baseRateLabelRange = findLabelRange(content, 'baseRate');
+  const warningRange = findWarningRange(content);
+  if (!baseRateLabelRange || !warningRange || warningRange.end <= baseRateLabelRange.start) {
+    throw new Error('詳細設定の静的化に必要な範囲を取得できません。');
+  }
+
+  const fields = content.slice(baseRateLabelRange.start, warningRange.end);
+  const wrapper = [
+    `<div id="${ADVANCED_SETTINGS_ID}" class="calculator-advanced-settings">`,
+    `    ${buildAdvancedSettingsToggle()}`,
+    `    <div id="${ADVANCED_SETTINGS_BODY_ID}" class="calculator-advanced-settings__body" role="group">`,
+    fields,
+    '    </div>',
+    '</div>'
+  ].join('\n');
+
+  content = `${content.slice(0, baseRateLabelRange.start)}${wrapper}${content.slice(warningRange.end)}`;
+  return ensureCriticalFirstViewAssets(content);
+}
+
+function convertLegacyCalculatorLayout(content) {
   const neededPointsRange = findInputRange(content, 'neededPoints');
   const baseRateLabelRange = findLabelRange(content, 'baseRate');
   const baseRateInputRange = findInputRange(content, 'baseRate');
   const multiplierLabelRange = findLabelRange(content, 'multiplier');
   const multiplierInputRange = findInputRange(content, 'multiplier');
   const warningRange = findWarningRange(content);
-
   const requiredRanges = {
     neededPointsRange,
     baseRateLabelRange,
@@ -206,37 +204,80 @@ function ensureStaticCalculatorLayout(indexHtml) {
     if (!packSettingsRange) throw new Error('平均パック額の設定範囲を取得できません。');
   }
 
-  const baseRateLabel = decorateStaticLabels(content.slice(baseRateLabelRange.start, baseRateLabelRange.end));
-  const multiplierLabel = decorateStaticLabels(content.slice(multiplierLabelRange.start, multiplierLabelRange.end));
   const insertedFields = [
-    baseRateLabel,
+    decorateStaticLabels(content.slice(baseRateLabelRange.start, baseRateLabelRange.end)),
     content.slice(baseRateInputRange.start, baseRateInputRange.end),
-    multiplierLabel,
+    decorateStaticLabels(content.slice(multiplierLabelRange.start, multiplierLabelRange.end)),
     content.slice(multiplierInputRange.start, multiplierInputRange.end),
     content.slice(warningRange.start, warningRange.end)
-  ].map(fragment => normalizeIndent(fragment)).join('\n\n');
+  ].join('\n\n');
 
-  const removalRanges = [rateSectionRange, packSettingsRange]
-    .filter(Boolean)
-    .sort((a, b) => b.start - a.start);
-  for (const range of removalRanges) {
+  for (const range of [rateSectionRange, packSettingsRange].filter(Boolean).sort((a, b) => b.start - a.start)) {
     content = `${content.slice(0, range.start)}${content.slice(range.end)}`;
   }
-
   content = content.replace(/^[ \t]*<!-- オプション設定（平均パック額） -->[ \t]*\r?\n?/gm, '');
 
   const refreshedNeededPointsRange = findInputRange(content, 'neededPoints');
   if (!refreshedNeededPointsRange) throw new Error('必要ポイント入力欄を再取得できません。');
-  content = `${content.slice(0, refreshedNeededPointsRange.end)}\n\n${insertedFields}${content.slice(refreshedNeededPointsRange.end)}`;
-  content = normalizeStaticCalculatorFormatting(decorateStaticLabels(content));
+  return `${content.slice(0, refreshedNeededPointsRange.end)}\n\n${insertedFields}${content.slice(refreshedNeededPointsRange.end)}`;
+}
 
+function validateStaticLayout(content) {
+  const requiredTokens = [
+    'data-visible-base-rate-layout="true"',
+    'id="currentStatus"',
+    'id="targetStatus"',
+    'id="neededPoints"',
+    'id="baseRate"',
+    'id="multiplier"',
+    'data-simplified-calculator-copy="baseRateLabel"',
+    'data-simplified-calculator-copy="multiplierLabel"',
+    `id="${ADVANCED_SETTINGS_ID}"`,
+    `id="${ADVANCED_SETTINGS_BODY_ID}"`,
+    'calculator-advanced-settings__toggle'
+  ];
+  if (content.includes('</head>')) {
+    requiredTokens.push(`id="${ADVANCED_SETTINGS_STYLE_ID}"`, `id="${ADVANCED_SETTINGS_STATE_SCRIPT_ID}"`);
+  }
+
+  for (const token of requiredTokens) {
+    if (!content.includes(token)) throw new Error(`通常計算の静的レイアウトに必要な要素がありません: ${token}`);
+  }
+  if (content.includes('id="pack-amount"')) throw new Error('通常計算に平均パック額の入力欄が残っています。');
+
+  const positions = [
+    'id="currentStatus"',
+    'id="targetStatus"',
+    'id="neededPoints"',
+    `id="${ADVANCED_SETTINGS_ID}"`,
+    'id="baseRate"',
+    'id="multiplier"',
+    'id="calculateButton"'
+  ].map(token => content.indexOf(token));
+  if (positions.some(position => position < 0)
+      || positions.some((position, index) => index > 0 && position <= positions[index - 1])) {
+    throw new Error('通常計算の入力順序が想定どおりではありません。');
+  }
+}
+
+function ensureStaticCalculatorLayout(indexHtml) {
+  let content = markStaticLayout(indexHtml);
+  if (!indexHtml.includes('data-visible-base-rate-layout="true"')) {
+    content = convertLegacyCalculatorLayout(content);
+  }
+  content = decorateStaticLabels(content);
+  content = ensureStaticAdvancedSettings(content);
   validateStaticLayout(content);
   return content;
 }
 
 module.exports = {
+  ADVANCED_SETTINGS_BODY_ID,
+  ADVANCED_SETTINGS_ID,
+  ADVANCED_SETTINGS_STYLE_ID,
   STATIC_LABELS,
   decorateStaticLabels,
+  ensureStaticAdvancedSettings,
   ensureStaticCalculatorLayout,
   findBalancedElementRange,
   validateStaticLayout
