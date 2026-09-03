@@ -47,17 +47,17 @@ High-priority international pages should converge toward: direct answer before c
 
 ## New-intent gaps
 
-### N1 — 1 play point value in india
+### N1 — IN_VALUE: 1 play point value in india
 
 - Evidence: 3 impressions / 0 clicks / average position 6 on /in/
 - Decision: Strengthen /in/ before creating an India article. Bronze earning rate is 1 point per ₹5 eligible spend, not a fixed ₹5 redemption/cash value.
 
-### N2 — cash out Google Play balance / credit
+### N2 — EN_BALANCE_CASHOUT: cash out Google Play balance / credit
 
 - Evidence: Small cluster currently landing on the Play Points cash-conversion page, generally lower positions
 - Decision: Distinct intent from Play Points cash-out, but defer a new page until the cluster grows enough to avoid premature thin content.
 
-### DEFER — Hong Kong-specific Play Points guides
+### DEFER — HK_LOCAL_CONTENT: Hong Kong-specific Play Points guides
 
 - Evidence: Very low current HK traffic; shared Traditional Chinese intent is already won by /tw/ pages
 - Decision: Do not duplicate Taiwan articles until uniquely Hong Kong demand appears.
