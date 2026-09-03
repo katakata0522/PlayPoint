@@ -5,278 +5,35 @@
   "source": "PlayPoint Analytics (GA4 + Search Console)",
   "methodology": "Use page-level organic landing performance for demand strength, query-level GSC evidence for intent/CTR gaps, and article-structure checks for content quality. Missing demand evidence is Monitor, not a quality failure.",
   "pages": {
-    "/ko/articles/google-play-points-cash-conversion.html": {
-      "pv": 104,
-      "activeUsers": 101,
-      "avgEngagementSec": 19,
-      "organicSessions": 92,
-      "engagementRate": 63.04,
-      "priority": "A",
-      "action": "observe-after-2026-09-03-refresh",
-      "gsc": "Large Korean cash-conversion cluster; page refreshed 2026-09-03."
-    },
-    "/tw/articles/google-play-points-coupon-not-applied.html": {
-      "pv": 29,
-      "activeUsers": 27,
-      "avgEngagementSec": 30,
-      "organicSessions": 26,
-      "engagementRate": 53.85,
-      "priority": "B",
-      "action": "targeted-snippet-and-intent-review",
-      "gsc": "google play 無法 套用 優惠: 30 impressions / 3 clicks / position 6; no-space variant 19 / 0 / 5.05."
-    },
-    "/tw/articles/google-play-points-platinum-diamond-cost.html": {
-      "pv": 25,
-      "activeUsers": 22,
-      "avgEngagementSec": 27,
-      "organicSessions": 24,
-      "engagementRate": 75,
-      "priority": "A",
-      "action": "maintain",
-      "gsc": "Dedicated 白金/鑽石 cost queries rank around positions 2-3 with clicks."
-    },
-    "/tw/articles/google-play-points-levels.html": {
-      "pv": 30,
-      "activeUsers": 29,
-      "avgEngagementSec": 17,
-      "organicSessions": 23,
-      "engagementRate": 69.57,
-      "priority": "A",
-      "action": "maintain-and-role-check",
-      "gsc": "Established Taiwan level intent; avoid duplicating cost article."
-    },
-    "/tw/articles/google-play-points-weekly-reward.html": {
-      "pv": 31,
-      "activeUsers": 28,
-      "avgEngagementSec": 25,
-      "organicSessions": 22,
-      "engagementRate": 86.36,
-      "priority": "A",
-      "action": "observe-after-wave1",
-      "gsc": "每週獎勵不見 cluster now directly covered after PR #222."
-    },
-    "/tw/articles/google-play-quests.html": {
-      "pv": 23,
-      "activeUsers": 20,
-      "avgEngagementSec": 18,
-      "organicSessions": 20,
-      "engagementRate": 60,
-      "priority": "B",
-      "action": "targeted-first-answer-review",
-      "gsc": "google play 任務 and play point 任務 rank roughly positions 6 with clicks."
-    },
-    "/tw/articles/google-play-points-use-coupons.html": {
-      "pv": 20,
-      "activeUsers": 19,
-      "avgEngagementSec": 33,
-      "organicSessions": 19,
-      "engagementRate": 52.63,
-      "priority": "A",
-      "action": "observe-after-wave2",
-      "gsc": "Use/coupon intent refreshed in PR #223."
-    },
-    "/tw/articles/google-play-points-play-credit-not-working.html": {
-      "pv": 22,
-      "activeUsers": 19,
-      "avgEngagementSec": 74,
-      "organicSessions": 18,
-      "engagementRate": 61.11,
-      "priority": "A",
-      "action": "observe-after-2026-09-03-refresh",
-      "gsc": "抵用金無法使用 cluster; content refreshed 2026-09-03."
-    },
-    "/en/articles/google-play-quests.html": {
-      "pv": 17,
-      "activeUsers": 16,
-      "avgEngagementSec": 19,
-      "organicSessions": 16,
-      "engagementRate": 62.5,
-      "priority": "A",
-      "action": "observe-after-wave2",
-      "gsc": "English quest diagnosis was refreshed in PR #223."
-    },
-    "/ko/articles/google-play-points-expiration.html": {
-      "pv": 15,
-      "activeUsers": 14,
-      "avgEngagementSec": 12,
-      "organicSessions": 15,
-      "engagementRate": 33.33,
-      "priority": "A",
-      "action": "observe-after-wave4-answer-first",
-      "gsc": "Strong landing volume but weak engagement; verify whether simple-answer satisfaction or content mismatch explains it. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."
-    },
-    "/tw/articles/google-play-points-cash-conversion.html": {
-      "pv": 16,
-      "activeUsers": 15,
-      "avgEngagementSec": 23,
-      "organicSessions": 15,
-      "engagementRate": 46.67,
-      "priority": "B",
-      "action": "separate-cash-vs-transfer-role",
-      "gsc": "餘額換現金 ranks ~2.4 with clicks; 點數換現金 ~2.9 with no clicks; transfer queries overlap multiple-accounts."
-    },
-    "/en/articles/google-play-points-cash-conversion.html": {
-      "pv": 18,
-      "activeUsers": 17,
-      "avgEngagementSec": 26,
-      "organicSessions": 13,
-      "engagementRate": 61.54,
-      "priority": "A",
-      "action": "observe-after-2026-09-03-refresh",
-      "gsc": "Hundreds of cash-out impressions across variants; do not rewrite again before 7-14 day observation."
-    },
-    "/ko/articles/google-play-points-super-weekly-reward.html": {
-      "pv": 14,
-      "activeUsers": 12,
-      "avgEngagementSec": 11,
-      "organicSessions": 12,
-      "engagementRate": 50,
-      "priority": "C",
-      "action": "wave3",
-      "gsc": "구글 슈퍼티켓 55/0/8.25; 구글플레이 슈퍼티켓 31/0/8.0; 얻는 법 19/1/4.58; 사용법 16/2/4.88."
-    },
-    "/tw/articles/google-play-points-expiration.html": {
-      "pv": 12,
-      "activeUsers": 12,
-      "avgEngagementSec": 9,
-      "organicSessions": 10,
-      "engagementRate": 50,
-      "priority": "A",
-      "action": "observe-after-wave4-answer-first",
-      "gsc": "Some expiration intent exists; engagement is short, but demand is smaller than current wave3 targets. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."
-    },
-    "/ko/articles/google-play-points-levels.html": {
-      "pv": 9,
-      "activeUsers": 8,
-      "avgEngagementSec": 11,
-      "organicSessions": 8,
-      "engagementRate": 87.5,
-      "priority": "A",
-      "action": "maintain",
-      "gsc": "Good organic engagement; preserve role."
-    },
-    "/ko/articles/google-play-points-use-coupons.html": {
-      "pv": 7,
-      "activeUsers": 7,
-      "avgEngagementSec": 15,
-      "organicSessions": 7,
-      "engagementRate": 85.71,
-      "priority": "B",
-      "action": "snippet-review-later",
-      "gsc": "쿠폰 queries rank around positions 6-10 but many have zero clicks; body engagement is strong."
-    },
-    "/en/articles/google-play-points-country-differences.html": {
-      "pv": 8,
-      "activeUsers": 7,
-      "avgEngagementSec": 22,
-      "organicSessions": 7,
-      "engagementRate": 85.71,
-      "priority": "A",
-      "action": "maintain",
-      "gsc": "Healthy landing engagement."
-    },
-    "/en/articles/google-play-points-not-showing.html": {
-      "pv": 6,
-      "activeUsers": 6,
-      "avgEngagementSec": 13,
-      "organicSessions": 6,
-      "engagementRate": 83.33,
-      "priority": "A",
-      "action": "maintain",
-      "gsc": "Healthy troubleshooting landing performance."
-    },
-    "/en/articles/google-play-points-super-weekly-reward.html": {
-      "pv": 6,
-      "activeUsers": 6,
-      "avgEngagementSec": 39,
-      "organicSessions": 5,
-      "engagementRate": 60,
-      "priority": "B",
-      "action": "monitor-super-ticket-snippet",
-      "gsc": "super ticket queries rank roughly positions 5-9; engagement is already relatively strong."
-    },
-    "/en/articles/google-play-points-levels.html": {
-      "pv": 5,
-      "activeUsers": 5,
-      "avgEngagementSec": 19,
-      "organicSessions": 5,
-      "engagementRate": 100,
-      "priority": "A",
-      "action": "maintain",
-      "gsc": "Low volume but excellent landing engagement."
-    },
-    "/ko/articles/google-play-quests.html": {
-      "pv": 7,
-      "activeUsers": 5,
-      "avgEngagementSec": 6,
-      "organicSessions": 5,
-      "engagementRate": 40,
-      "priority": "C",
-      "action": "wave3",
-      "gsc": "구글 플레이 퀘스트 15/0/5.53 and 구글플레이 퀘스트 10/0/5.5: page-one visibility, no clicks."
-    },
-    "/en/articles/google-play-points-gift-cards.html": {
-      "pv": 5,
-      "activeUsers": 4,
-      "avgEngagementSec": 20,
-      "organicSessions": 2,
-      "engagementRate": 50,
-      "priority": "C",
-      "action": "wave3",
-      "gsc": "how do play points become gift cards? 26 impressions / 0 clicks / position 10.12; current title answers a different gift-card intent."
-    },
-    "/en/articles/google-play-points-weekly-reward.html": {
-      "pv": 4,
-      "activeUsers": 4,
-      "avgEngagementSec": 26,
-      "organicSessions": 4,
-      "engagementRate": 50,
-      "priority": "B",
-      "action": "targeted-review-later",
-      "gsc": "Existing weekly reward page; avoid duplicating with Super Weekly/Play Pass."
-    },
-    "/ko/articles/google-play-points-platinum-diamond-cost.html": {
-      "pv": 3,
-      "activeUsers": 3,
-      "avgEngagementSec": 34,
-      "organicSessions": 2,
-      "engagementRate": 50,
-      "priority": "B",
-      "action": "title-snippet-role-review",
-      "gsc": "플래티넘 비용 41/0/7.95 plus multiple diamond-cost variants around positions 6-9."
-    },
-    "/tw/articles/google-play-points-multiple-accounts.html": {
-      "pv": 9,
-      "activeUsers": 9,
-      "avgEngagementSec": 46,
-      "organicSessions": 7,
-      "engagementRate": 71.43,
-      "priority": "A",
-      "action": "maintain-as-transfer-owner",
-      "gsc": "play points 轉移 ranks ~3.5 with clicks; this page should own transfer intent over cash-conversion."
-    }
+    "/ko/articles/google-play-points-cash-conversion.html": {"pv":104,"activeUsers":101,"avgEngagementSec":19,"organicSessions":92,"engagementRate":63.04,"priority":"A","action":"observe-after-2026-09-03-refresh","gsc":"Large Korean cash-conversion cluster; page refreshed 2026-09-03."},
+    "/tw/articles/google-play-points-coupon-not-applied.html": {"pv":29,"activeUsers":27,"avgEngagementSec":30,"organicSessions":26,"engagementRate":53.85,"priority":"B","action":"targeted-snippet-and-intent-review","gsc":"google play 無法 套用 優惠: 30 impressions / 3 clicks / position 6; no-space variant 19 / 0 / 5.05."},
+    "/tw/articles/google-play-points-platinum-diamond-cost.html": {"pv":25,"activeUsers":22,"avgEngagementSec":27,"organicSessions":24,"engagementRate":75.0,"priority":"A","action":"maintain","gsc":"Dedicated 白金/鑽石 cost queries rank around positions 2-3 with clicks."},
+    "/tw/articles/google-play-points-levels.html": {"pv":30,"activeUsers":29,"avgEngagementSec":17,"organicSessions":23,"engagementRate":69.57,"priority":"A","action":"maintain-and-role-check","gsc":"Established Taiwan level intent; avoid duplicating cost article."},
+    "/tw/articles/google-play-points-weekly-reward.html": {"pv":31,"activeUsers":28,"avgEngagementSec":25,"organicSessions":22,"engagementRate":86.36,"priority":"A","action":"observe-after-wave1","gsc":"每週獎勵不見 cluster now directly covered after PR #222."},
+    "/tw/articles/google-play-quests.html": {"pv":23,"activeUsers":20,"avgEngagementSec":18,"organicSessions":20,"engagementRate":60.0,"priority":"B","action":"targeted-first-answer-review","gsc":"google play 任務 and play point 任務 rank roughly positions 6 with clicks."},
+    "/tw/articles/google-play-points-use-coupons.html": {"pv":20,"activeUsers":19,"avgEngagementSec":33,"organicSessions":19,"engagementRate":52.63,"priority":"A","action":"observe-after-wave2","gsc":"Use/coupon intent refreshed in PR #223."},
+    "/tw/articles/google-play-points-play-credit-not-working.html": {"pv":22,"activeUsers":19,"avgEngagementSec":74,"organicSessions":18,"engagementRate":61.11,"priority":"A","action":"observe-after-2026-09-03-refresh","gsc":"抵用金無法使用 cluster; content refreshed 2026-09-03."},
+    "/en/articles/google-play-quests.html": {"pv":17,"activeUsers":16,"avgEngagementSec":19,"organicSessions":16,"engagementRate":62.5,"priority":"A","action":"observe-after-wave2","gsc":"English quest diagnosis was refreshed in PR #223."},
+    "/ko/articles/google-play-points-expiration.html": {"pv":15,"activeUsers":14,"avgEngagementSec":12,"organicSessions":15,"engagementRate":33.33,"priority":"A","action":"observe-after-wave4-answer-first","gsc":"Strong landing volume but weak engagement; verify whether simple-answer satisfaction or content mismatch explains it. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."},
+    "/tw/articles/google-play-points-cash-conversion.html": {"pv":16,"activeUsers":15,"avgEngagementSec":23,"organicSessions":15,"engagementRate":46.67,"priority":"B","action":"separate-cash-vs-transfer-role","gsc":"餘額換現金 ranks ~2.4 with clicks; 點數換現金 ~2.9 with no clicks; transfer queries overlap multiple-accounts."},
+    "/en/articles/google-play-points-cash-conversion.html": {"pv":18,"activeUsers":17,"avgEngagementSec":26,"organicSessions":13,"engagementRate":61.54,"priority":"A","action":"observe-after-2026-09-03-refresh","gsc":"Hundreds of cash-out impressions across variants; do not rewrite again before 7-14 day observation."},
+    "/ko/articles/google-play-points-super-weekly-reward.html": {"pv":14,"activeUsers":12,"avgEngagementSec":11,"organicSessions":12,"engagementRate":50.0,"priority":"C","action":"wave3","gsc":"구글 슈퍼티켓 55/0/8.25; 구글플레이 슈퍼티켓 31/0/8.0; 얻는 법 19/1/4.58; 사용법 16/2/4.88."},
+    "/tw/articles/google-play-points-expiration.html": {"pv":12,"activeUsers":12,"avgEngagementSec":9,"organicSessions":10,"engagementRate":50.0,"priority":"A","action":"observe-after-wave4-answer-first","gsc":"Some expiration intent exists; engagement is short, but demand is smaller than current wave3 targets. Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content."},
+    "/ko/articles/google-play-points-levels.html": {"pv":9,"activeUsers":8,"avgEngagementSec":11,"organicSessions":8,"engagementRate":87.5,"priority":"A","action":"maintain","gsc":"Good organic engagement; preserve role."},
+    "/ko/articles/google-play-points-use-coupons.html": {"pv":7,"activeUsers":7,"avgEngagementSec":15,"organicSessions":7,"engagementRate":85.71,"priority":"B","action":"snippet-review-later","gsc":"쿠폰 queries rank around positions 6-10 but many have zero clicks; body engagement is strong."},
+    "/en/articles/google-play-points-country-differences.html": {"pv":8,"activeUsers":7,"avgEngagementSec":22,"organicSessions":7,"engagementRate":85.71,"priority":"A","action":"maintain","gsc":"Healthy landing engagement."},
+    "/en/articles/google-play-points-not-showing.html": {"pv":6,"activeUsers":6,"avgEngagementSec":13,"organicSessions":6,"engagementRate":83.33,"priority":"A","action":"maintain","gsc":"Healthy troubleshooting landing performance."},
+    "/en/articles/google-play-points-super-weekly-reward.html": {"pv":6,"activeUsers":6,"avgEngagementSec":39,"organicSessions":5,"engagementRate":60.0,"priority":"B","action":"monitor-super-ticket-snippet","gsc":"super ticket queries rank roughly positions 5-9; engagement is already relatively strong."},
+    "/en/articles/google-play-points-levels.html": {"pv":5,"activeUsers":5,"avgEngagementSec":19,"organicSessions":5,"engagementRate":100.0,"priority":"A","action":"maintain","gsc":"Low volume but excellent landing engagement."},
+    "/ko/articles/google-play-quests.html": {"pv":7,"activeUsers":5,"avgEngagementSec":6,"organicSessions":5,"engagementRate":40.0,"priority":"C","action":"wave3","gsc":"구글 플레이 퀘스트 15/0/5.53 and 구글플레이 퀘스트 10/0/5.5: page-one visibility, no clicks."},
+    "/en/articles/google-play-points-gift-cards.html": {"pv":5,"activeUsers":4,"avgEngagementSec":20,"organicSessions":2,"engagementRate":50.0,"priority":"C","action":"wave3","gsc":"how do play points become gift cards? 26 impressions / 0 clicks / position 10.12; current title answers a different gift-card intent."},
+    "/en/articles/google-play-points-weekly-reward.html": {"pv":4,"activeUsers":4,"avgEngagementSec":26,"organicSessions":4,"engagementRate":50.0,"priority":"B","action":"targeted-review-later","gsc":"Existing weekly reward page; avoid duplicating with Super Weekly/Play Pass."},
+    "/ko/articles/google-play-points-platinum-diamond-cost.html": {"pv":3,"activeUsers":3,"avgEngagementSec":34,"organicSessions":2,"engagementRate":50.0,"priority":"B","action":"title-snippet-role-review","gsc":"플래티넘 비용 41/0/7.95 plus multiple diamond-cost variants around positions 6-9."},
+    "/tw/articles/google-play-points-multiple-accounts.html": {"pv":9,"activeUsers":9,"avgEngagementSec":46,"organicSessions":7,"engagementRate":71.43,"priority":"A","action":"maintain-as-transfer-owner","gsc":"play points 轉移 ranks ~3.5 with clicks; this page should own transfer intent over cash-conversion."}
   },
   "gaps": [
-    {
-      "id": "IN_VALUE",
-      "priority": "N1",
-      "intent": "1 play point value in india",
-      "evidence": "3 impressions / 0 clicks / average position 6 on /in/",
-      "decision": "Strengthen /in/ before creating an India article. Bronze earning rate is 1 point per ₹5 eligible spend, not a fixed ₹5 redemption/cash value."
-    },
-    {
-      "id": "EN_BALANCE_CASHOUT",
-      "priority": "N2",
-      "intent": "cash out Google Play balance / credit",
-      "evidence": "Small cluster currently landing on the Play Points cash-conversion page, generally lower positions",
-      "decision": "Distinct intent from Play Points cash-out, but defer a new page until the cluster grows enough to avoid premature thin content."
-    },
-    {
-      "id": "HK_LOCAL_CONTENT",
-      "priority": "DEFER",
-      "intent": "Hong Kong-specific Play Points guides",
-      "evidence": "Very low current HK traffic; shared Traditional Chinese intent is already won by /tw/ pages",
-      "decision": "Do not duplicate Taiwan articles until uniquely Hong Kong demand appears."
-    }
+    {"id":"IN_VALUE","priority":"N1","intent":"1 play point value in india","evidence":"3 impressions / 0 clicks / average position 6 on /in/","decision":"Strengthen /in/ before creating an India article. Bronze earning rate is 1 point per ₹5 eligible spend, not a fixed ₹5 redemption/cash value."},
+    {"id":"EN_BALANCE_CASHOUT","priority":"N2","intent":"cash out Google Play balance / credit","evidence":"Small cluster currently landing on the Play Points cash-conversion page, generally lower positions","decision":"Distinct intent from Play Points cash-out, but defer a new page until the cluster grows enough to avoid premature thin content."},
+    {"id":"HK_LOCAL_CONTENT","priority":"DEFER","intent":"Hong Kong-specific Play Points guides","evidence":"Very low current HK traffic; shared Traditional Chinese intent is already won by /tw/ pages","decision":"Do not duplicate Taiwan articles until uniquely Hong Kong demand appears."}
   ]
 }
