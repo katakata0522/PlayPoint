@@ -35,7 +35,7 @@ const clusters = [
           ko: ['1년 후 만료', '자동 적용', 'Play 크레딧'],
           tw: ['一年後到期', '自動套用', 'Play 抵用金']
         },
-        modifiedDates: { en: '2026-09-03' },
+        modifiedDates: { en: '2026-09-03', tw: '2026-09-03' },
         peer: 'google-play-points-join-eligibility.html'
       },
       {
