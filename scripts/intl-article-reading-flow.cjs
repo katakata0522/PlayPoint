@@ -70,6 +70,24 @@ function findPromptAnchorEnd(mainHtml) {
   return introductorySectionEnd >= 0 ? introductorySectionEnd : articleStart;
 }
 
+function findCashConversionAlternativeEnd(mainHtml, localeKey) {
+  if (localeKey !== 'ko') return -1;
+  if (!/<h1>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i.test(mainHtml)) return -1;
+
+  const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(mainHtml);
+  if (!articleMatch) return -1;
+  const articleStart = articleMatch.index + articleMatch[0].length;
+  const articleEndIndex = mainHtml.indexOf('</article>', articleStart);
+  const articleEnd = articleEndIndex < 0 ? mainHtml.length : articleEndIndex;
+
+  return findSectionEnd(
+    mainHtml,
+    /<section\b[^>]*>[\s\S]*?<h2\b[^>]*id=["']alternatives["'][^>]*>/gi,
+    articleStart,
+    articleEnd
+  );
+}
+
 function renderIntlArticlePrompt(localeKey) {
   const copy = INTL_PROMPT_COPY[localeKey];
   if (!copy) throw new Error('unsupported international article locale: ' + localeKey);
@@ -89,7 +107,10 @@ function insertIntlArticlePrompt(mainHtml, localeKey) {
   const withoutPrompt = String(mainHtml)
     .replace(GENERATED_PROMPT_PATTERN, '')
     .replace(LEGACY_PROMPT_PATTERN, '');
-  const anchorEnd = findPromptAnchorEnd(withoutPrompt);
+  const cashConversionAnchorEnd = findCashConversionAlternativeEnd(withoutPrompt, localeKey);
+  const anchorEnd = cashConversionAnchorEnd >= 0
+    ? cashConversionAnchorEnd
+    : findPromptAnchorEnd(withoutPrompt);
   if (anchorEnd < 0) return withoutPrompt;
   return withoutPrompt.slice(0, anchorEnd)
     + renderIntlArticlePrompt(localeKey)
@@ -101,6 +122,7 @@ module.exports = {
   GENERATED_PROMPT_PATTERN,
   INTL_PROMPT_COPY,
   LEGACY_PROMPT_PATTERN,
+  findCashConversionAlternativeEnd,
   findPromptAnchorEnd,
   insertIntlArticlePrompt,
   renderIntlArticlePrompt
