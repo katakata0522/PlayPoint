@@ -1,0 +1,25 @@
+name: Temporary production CSS diagnostic
+
+on:
+  push:
+    branches: [diagnostic/article-css-production-20260903]
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect production article HTML and shared CSS
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '=== HTML response ==='
+          curl -sSIL 'https://playpoint-sim.com/articles/2025-12-25-best-use.html'
+          echo '=== HTML stylesheet refs ==='
+          curl -sSL 'https://playpoint-sim.com/articles/2025-12-25-best-use.html' | grep -oE 'href="[^"]*\.css[^" ]*"' || true
+          echo '=== Shared CSS response ==='
+          curl -sSIL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5'
+          echo '=== Shared CSS token / contract ==='
+          curl -sSL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5' | grep -nE 'cocoon-heading|Published Japanese article title color contract|main-content-column > \.hero' || true
+          echo '=== Shared CSS first bytes ==='
+          curl -sSL 'https://playpoint-sim.com/articles/article-shared.css?v=3b0106c5f5' | head -c 500
+          echo
