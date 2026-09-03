@@ -49,8 +49,9 @@ test('browser-language suggestion requires a country-specific locale before choo
   assert.match(firstView, /browserLang\.startsWith\('ko'\)\) return null/);
   assert.match(firstView, /browserLang\.startsWith\('zh'\)\) return null/);
   assert.match(firstView, /browserLang\.startsWith\('en'\)\) return null/);
-  assert.match(firstView, /hideLegacyLanguageBanner\(\)/);
-  assert.match(firstView, /markRegionRecommended\(suggestion\.region, suggestion\.recommendation\)/);
+  assert.match(firstView, /hideLegacyBanner\(\)/);
+  assert.match(firstView, /markRegionRecommended\(region, RECOMMENDATION_COPY/);
+  assert.match(firstView, /aria-description/);
   assert.doesNotMatch(firstView, /languageSuggestionBanner\.classList\.remove\(CONSTANTS\.CLASS_HIDDEN\)/);
 });
 
