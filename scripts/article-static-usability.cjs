@@ -24,13 +24,42 @@ const HEADER_HTML = `    <header class="header article-static-header">
 
 `;
 
-const PROMPT_HTML = `
-            <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE} aria-label="あなたの場合の必要額を計算">
-                <p class="article-calculator-prompt__label">記事の条件を自分の数字で確認</p>
-                <h2>あなたの場合はいくら必要？</h2>
-                <p>先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。</p>
-                <a class="article-calculator-prompt__button" href="../">計算機で自分の必要額を見る</a>
+const DEFAULT_PROMPT_COPY = Object.freeze({
+  aria: 'あなたの場合の必要額を計算',
+  label: '記事の条件を自分の数字で確認',
+  heading: 'あなたの場合はいくら必要？',
+  body: '先に概算を出してから本文を読むと、一般条件と自分の状況を分けて確認できます。',
+  cta: '計算機で自分の必要額を見る',
+  href: '../'
+});
+
+const QUEST_PROMPT_COPY = Object.freeze({
+  aria: 'クエスト確認後に次のランクまでの必要額を計算',
+  label: 'クエスト条件を確認できたら',
+  heading: '次のランクまで、あといくら必要？',
+  body: 'クエストの条件と特典を確認したら、Play Pointsの現在の進捗は計算機で別に確認できます。実際に反映されたポイントとGoogle Playに表示された獲得率を使ってください。',
+  cta: '次のランクまでの必要額を計算',
+  href: '../'
+});
+
+function renderPromptHtml(copy) {
+  return `
+            <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE} aria-label="${copy.aria}">
+                <p class="article-calculator-prompt__label">${copy.label}</p>
+                <h2>${copy.heading}</h2>
+                <p>${copy.body}</p>
+                <a class="article-calculator-prompt__button" href="${copy.href}">${copy.cta}</a>
             </aside>`;
+}
+
+const PROMPT_HTML = renderPromptHtml(DEFAULT_PROMPT_COPY);
+
+function promptHtmlForArticle(html) {
+  if (String(html).includes('Google Playのクエストとは？表示されない・達成されない時の確認方法')) {
+    return renderPromptHtml(QUEST_PROMPT_COPY);
+  }
+  return PROMPT_HTML;
+}
 
 function japaneseArticlePaths(rootDir) {
   const manifestPath = path.join(rootDir, 'blog', 'articles.json');
@@ -99,7 +128,8 @@ function insertStaticPrompt(html) {
   }
   const anchorEnd = findPromptAnchorEnd(withoutGeneratedPrompt);
   if (anchorEnd < 0) return html;
-  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutGeneratedPrompt.slice(anchorEnd)}`;
+  const promptHtml = promptHtmlForArticle(withoutGeneratedPrompt);
+  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${promptHtml}${withoutGeneratedPrompt.slice(anchorEnd)}`;
 }
 
 function normalizeSharedArticleCopy(html) {
@@ -131,17 +161,21 @@ if (require.main === module) {
 
 module.exports = {
   ARTICLE_PROMPT_PATTERN,
+  DEFAULT_PROMPT_COPY,
   EDITORIAL_END_MARKER,
   GENERATED_PROMPT_ATTRIBUTE,
   GENERATED_PROMPT_PATTERN,
   HEADER_HTML,
   LEGACY_GENERATED_PROMPT_PATTERN,
   PROMPT_HTML,
+  QUEST_PROMPT_COPY,
   findPromptAnchorEnd,
   insertStaticHeader,
   insertStaticPrompt,
   japaneseArticlePaths,
-  removeStaticPrompt,
   normalizeSharedArticleCopy,
+  promptHtmlForArticle,
+  removeStaticPrompt,
+  renderPromptHtml,
   synchronizeArticleStaticUsability
 };

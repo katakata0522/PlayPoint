@@ -28,9 +28,38 @@ const INTL_PROMPT_COPY = Object.freeze({
   })
 });
 
+const TW_CONTEXTUAL_PROMPT_COPY = Object.freeze({
+  couponNotApplied: Object.freeze({
+    aria: '問題排解後反推原定消費可獲得的點數',
+    label: '問題排解完成後的下一步',
+    heading: '原本預計消費，可以累積多少點？',
+    body: '先完成折價券條件檢查；如果仍要進行原本的購買，再用實際預計消費金額與 Google Play 顯示的最終獲點率反推可獲得點數。',
+    cta: '用預計消費金額反推點數',
+    href: '/tw/?mode=reverse'
+  }),
+  platinumDiamond: Object.freeze({
+    aria: '估算距離白金或鑽石的剩餘所需金額',
+    label: '把官方門檻換成自己的剩餘進度',
+    heading: '距離白金／鑽石，我還需要多少？',
+    body: '用實際付款帳號目前還差的點數、目前等級，以及 Google Play 顯示的最終獲點率估算，不要直接把全部不足點數套用目標等級的獲點率。',
+    cta: '用我的不足點數估算',
+    href: '/tw/'
+  })
+});
+
 const CASH_CONVERSION_H1_PATTERNS = Object.freeze({
   en: /<h1>\s*Can You (?:Convert|Redeem) Google Play Points (?:to|for) Cash\?\s*<\/h1>/i,
   ko: /<h1>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i
+});
+
+const TW_CONTEXTUAL_H1_PATTERNS = Object.freeze({
+  couponNotApplied: /<h1>\s*Google Play Points 折價券沒有自動套用時\s*<\/h1>/i,
+  platinumDiamond: /<h1>\s*台灣 Play Points：白金 4,000 點，鑽石 15,000 點起\s*<\/h1>/i
+});
+
+const TW_DUPLICATE_CTA_PATTERNS = Object.freeze({
+  couponNotApplied: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3>再次購買前先確認條件<\/h3>[\s\S]*?<\/div>/i,
+  platinumDiamond: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3>用自己的不足點數計算<\/h3>[\s\S]*?<\/div>/i
 });
 
 function escapeHtml(value) {
@@ -42,6 +71,17 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function findArticleBounds(html) {
+  const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(html);
+  if (!articleMatch) return null;
+  const start = articleMatch.index + articleMatch[0].length;
+  const articleEndIndex = html.indexOf('</article>', start);
+  return {
+    start,
+    end: articleEndIndex < 0 ? html.length : articleEndIndex
+  };
+}
+
 function findSectionEnd(html, pattern, startIndex, articleEnd) {
   pattern.lastIndex = startIndex;
   const match = pattern.exec(html);
@@ -51,74 +91,125 @@ function findSectionEnd(html, pattern, startIndex, articleEnd) {
   return end + '</section>'.length;
 }
 
+function findDivEnd(html, pattern, startIndex, articleEnd) {
+  pattern.lastIndex = startIndex;
+  const match = pattern.exec(html);
+  if (!match || match.index >= articleEnd) return -1;
+  const end = html.indexOf('</div>', match.index + match[0].length);
+  if (end < 0 || end >= articleEnd) return -1;
+  return end + '</div>'.length;
+}
+
 function findPromptAnchorEnd(mainHtml) {
-  const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(mainHtml);
-  if (!articleMatch) return -1;
-  const articleStart = articleMatch.index + articleMatch[0].length;
-  const articleEndIndex = mainHtml.indexOf('</article>', articleStart);
-  const articleEnd = articleEndIndex < 0 ? mainHtml.length : articleEndIndex;
+  const bounds = findArticleBounds(mainHtml);
+  if (!bounds) return -1;
 
   const knowledgeBoundaryEnd = findSectionEnd(
     mainHtml,
     /<section\b[^>]*class=["'][^"']*\bknowledge-boundary\b[^"']*["'][^>]*>/gi,
-    articleStart,
-    articleEnd
+    bounds.start,
+    bounds.end
   );
   if (knowledgeBoundaryEnd >= 0) return knowledgeBoundaryEnd;
 
   const introductorySectionEnd = findSectionEnd(
     mainHtml,
     /<section\b[^>]*class=["'][^"']*\b(?:answer-box|summary-box|intro)\b[^"']*["'][^>]*>/gi,
-    articleStart,
-    articleEnd
+    bounds.start,
+    bounds.end
   );
-  return introductorySectionEnd >= 0 ? introductorySectionEnd : articleStart;
+  return introductorySectionEnd >= 0 ? introductorySectionEnd : bounds.start;
 }
 
 function findCashConversionAlternativeEnd(mainHtml, localeKey) {
   const h1Pattern = CASH_CONVERSION_H1_PATTERNS[localeKey];
   if (!h1Pattern || !h1Pattern.test(mainHtml)) return -1;
 
-  const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(mainHtml);
-  if (!articleMatch) return -1;
-  const articleStart = articleMatch.index + articleMatch[0].length;
-  const articleEndIndex = mainHtml.indexOf('</article>', articleStart);
-  const articleEnd = articleEndIndex < 0 ? mainHtml.length : articleEndIndex;
+  const bounds = findArticleBounds(mainHtml);
+  if (!bounds) return -1;
 
   return findSectionEnd(
     mainHtml,
     /<section\b[^>]*>[\s\S]*?<h2\b[^>]*id=["']alternatives["'][^>]*>/gi,
-    articleStart,
-    articleEnd
+    bounds.start,
+    bounds.end
   );
 }
 
-function renderIntlArticlePrompt(localeKey) {
-  const copy = INTL_PROMPT_COPY[localeKey];
+function detectTwContext(mainHtml, localeKey) {
+  if (localeKey !== 'tw') return null;
+  for (const [key, pattern] of Object.entries(TW_CONTEXTUAL_H1_PATTERNS)) {
+    if (pattern.test(mainHtml)) return key;
+  }
+  return null;
+}
+
+function removeContextualDuplicateCta(mainHtml, localeKey) {
+  const contextKey = detectTwContext(mainHtml, localeKey);
+  if (!contextKey) return mainHtml;
+  const pattern = TW_DUPLICATE_CTA_PATTERNS[contextKey];
+  return pattern ? String(mainHtml).replace(pattern, '') : mainHtml;
+}
+
+function findTwContextualAnchorEnd(mainHtml, contextKey) {
+  const bounds = findArticleBounds(mainHtml);
+  if (!bounds) return -1;
+
+  if (contextKey === 'couponNotApplied') {
+    return findSectionEnd(
+      mainHtml,
+      /<section\b[^>]*>[\s\S]*?<h2\b[^>]*id=["']section-5["'][^>]*>/gi,
+      bounds.start,
+      bounds.end
+    );
+  }
+
+  if (contextKey === 'platinumDiamond') {
+    return findDivEnd(
+      mainHtml,
+      /<div\b[^>]*class=["'][^"']*\bintro\b[^"']*["'][^>]*>/gi,
+      bounds.start,
+      bounds.end
+    );
+  }
+
+  return -1;
+}
+
+function renderIntlArticlePrompt(localeKey, copyOverride = null) {
+  const copy = copyOverride || INTL_PROMPT_COPY[localeKey];
   if (!copy) throw new Error('unsupported international article locale: ' + localeKey);
-  const homeHref = '/' + localeKey + '/';
+  const homeHref = copy.href || '/' + localeKey + '/';
   return [
     '',
     '    <aside class="article-calculator-prompt cta-box intl-article-calculator-prompt" ' + GENERATED_PROMPT_ATTRIBUTE + ' aria-label="' + escapeHtml(copy.aria) + '">',
     '      <p class="article-calculator-prompt__label">' + escapeHtml(copy.label) + '</p>',
     '      <h2>' + escapeHtml(copy.heading) + '</h2>',
     '      <p>' + escapeHtml(copy.body) + '</p>',
-    '      <a class="article-calculator-prompt__button" href="' + homeHref + '">' + escapeHtml(copy.cta) + '</a>',
+    '      <a class="article-calculator-prompt__button" href="' + escapeHtml(homeHref) + '">' + escapeHtml(copy.cta) + '</a>',
     '    </aside>'
   ].join('\n');
 }
 
 function insertIntlArticlePrompt(mainHtml, localeKey) {
-  const withoutPrompt = String(mainHtml)
+  const strippedPrompt = String(mainHtml)
     .replace(GENERATED_PROMPT_PATTERN, '')
     .replace(LEGACY_PROMPT_PATTERN, '');
-  const cashConversionAnchorEnd = findCashConversionAlternativeEnd(withoutPrompt, localeKey);
-  const anchorEnd = cashConversionAnchorEnd >= 0
-    ? cashConversionAnchorEnd
-    : findPromptAnchorEnd(withoutPrompt);
+  const withoutPrompt = removeContextualDuplicateCta(strippedPrompt, localeKey);
+  const twContextKey = detectTwContext(withoutPrompt, localeKey);
+  const contextualAnchorEnd = twContextKey
+    ? findTwContextualAnchorEnd(withoutPrompt, twContextKey)
+    : -1;
+  const cashConversionAnchorEnd = contextualAnchorEnd < 0
+    ? findCashConversionAlternativeEnd(withoutPrompt, localeKey)
+    : -1;
+  const anchorEnd = contextualAnchorEnd >= 0
+    ? contextualAnchorEnd
+    : (cashConversionAnchorEnd >= 0 ? cashConversionAnchorEnd : findPromptAnchorEnd(withoutPrompt));
   if (anchorEnd < 0) return withoutPrompt;
+  const copy = twContextKey ? TW_CONTEXTUAL_PROMPT_COPY[twContextKey] : null;
   return withoutPrompt.slice(0, anchorEnd)
-    + renderIntlArticlePrompt(localeKey)
+    + renderIntlArticlePrompt(localeKey, copy)
     + withoutPrompt.slice(anchorEnd);
 }
 
@@ -128,8 +219,13 @@ module.exports = {
   GENERATED_PROMPT_PATTERN,
   INTL_PROMPT_COPY,
   LEGACY_PROMPT_PATTERN,
+  TW_CONTEXTUAL_H1_PATTERNS,
+  TW_CONTEXTUAL_PROMPT_COPY,
+  detectTwContext,
   findCashConversionAlternativeEnd,
   findPromptAnchorEnd,
+  findTwContextualAnchorEnd,
   insertIntlArticlePrompt,
+  removeContextualDuplicateCta,
   renderIntlArticlePrompt
 };
