@@ -2,18 +2,9 @@
 
 import { STATE, CONSTANTS } from './config.js';
 
-const STYLE_ID = 'playpoint-first-view-style';
 const SETTINGS_ID = 'calculator-advanced-settings';
 const SETTINGS_BODY_ID = 'calculator-advanced-settings-body';
 const MOBILE_QUERY = '(max-width: 640px)';
-
-const ADVANCED_COPY = Object.freeze({
-    ja: '獲得率・キャンペーンを調整（任意）',
-    en: 'Adjust earn rates & promotion (optional)',
-    ko: '적립률·프로모션 조정 (선택)',
-    tw: '調整獲點率與活動（選填）',
-    hk: '調整獲點率與活動（選填）'
-});
 
 const RECOMMENDATION_COPY = Object.freeze({
     ja: 'ブラウザの言語設定からおすすめ',
@@ -32,27 +23,6 @@ function localeKey() {
     return 'ja';
 }
 
-function installStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement('style');
-    style.id = STYLE_ID;
-    style.textContent = `
-.calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
-.calculator-advanced-settings__toggle{display:none}
-.region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
-@media(max-width:640px){
-.calculator-advanced-settings{display:block;margin-top:.85em}
-.calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
-.calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
-.calculator-advanced-settings__toggle:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
-.calculator-advanced-settings__chevron{flex:0 0 auto;font-size:.9em;transition:transform .18s ease}
-.calculator-advanced-settings.is-open .calculator-advanced-settings__chevron{transform:rotate(180deg)}
-.calculator-advanced-settings__body{display:block;margin-top:.7em}
-.calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}}
-@media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}`;
-    document.head.appendChild(style);
-}
-
 export function shouldAutoOpenAdvancedSettings(search = '') {
     const params = new URLSearchParams(search || '');
     if (params.get('mode') !== 'main') return false;
@@ -69,47 +39,28 @@ function syncSettingsState(container, body, toggle, mediaQuery) {
 }
 
 export function enhanceCalculatorAdvancedSettings() {
-    const mainMode = document.getElementById('mainMode');
-    const existing = document.getElementById(SETTINGS_ID);
-    if (!mainMode || existing) return existing;
-
-    const neededPoints = document.getElementById('neededPoints');
-    const baseRateLabel = mainMode.querySelector('label[for="baseRate"]');
-    const baseRate = document.getElementById('baseRate');
-    const multiplierLabel = mainMode.querySelector('label[for="multiplier"]');
-    const multiplier = document.getElementById('multiplier');
-    const warning = mainMode.querySelector('[data-lang-key="warningRate"]');
-    if (![neededPoints, baseRateLabel, baseRate, multiplierLabel, multiplier, warning].every(Boolean)) return null;
-
-    installStyles();
-    const copy = ADVANCED_COPY[localeKey()] || ADVANCED_COPY.ja;
-    const container = document.createElement('div');
-    const toggle = document.createElement('button');
-    const body = document.createElement('div');
-
-    container.id = SETTINGS_ID;
-    container.className = 'calculator-advanced-settings';
-    toggle.type = 'button';
-    toggle.className = 'calculator-advanced-settings__toggle';
-    toggle.setAttribute('aria-controls', SETTINGS_BODY_ID);
-    toggle.innerHTML = `<span>${copy}</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span>`;
-    body.id = SETTINGS_BODY_ID;
-    body.className = 'calculator-advanced-settings__body';
-    body.setAttribute('role', 'group');
-    body.setAttribute('aria-label', copy);
-
-    neededPoints.insertAdjacentElement('afterend', container);
-    container.append(toggle, body);
-    body.append(baseRateLabel, baseRate, multiplierLabel, multiplier, warning);
+    const container = document.getElementById(SETTINGS_ID);
+    const body = document.getElementById(SETTINGS_BODY_ID);
+    const toggle = container?.querySelector('.calculator-advanced-settings__toggle');
+    if (!container || !body || !toggle) return null;
+    if (container.dataset.playpointBound === 'true') return container;
 
     const mediaQuery = typeof window.matchMedia === 'function' ? window.matchMedia(MOBILE_QUERY) : null;
-    if (shouldAutoOpenAdvancedSettings(window.location.search)) container.classList.add('is-open');
+    const bootstrappedOpen = document.documentElement?.dataset?.playpointAdvancedSettings === 'open';
+    if (bootstrappedOpen || shouldAutoOpenAdvancedSettings(window.location.search)) {
+        container.classList.add('is-open');
+    }
+    if (document.documentElement?.dataset?.playpointAdvancedSettings) {
+        delete document.documentElement.dataset.playpointAdvancedSettings;
+    }
+
     const sync = () => syncSettingsState(container, body, toggle, mediaQuery);
     toggle.addEventListener('click', () => {
         container.classList.toggle('is-open');
         sync();
     });
     mediaQuery?.addEventListener?.('change', sync);
+    container.dataset.playpointBound = 'true';
     sync();
     return container;
 }
@@ -180,7 +131,6 @@ export function checkLanguageSuggestion() {
 }
 
 function prepareFirstView() {
-    installStyles();
     enhanceCalculatorAdvancedSettings();
 }
 
