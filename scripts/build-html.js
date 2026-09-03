@@ -89,6 +89,11 @@ console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.chan
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
+
+// 地域別の文言補正や実行時補助スクリプトを先に確定し、
+// その後の内容ハッシュ同期で公開HTMLの参照URLも同じビルド内に確定させる。
+const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
+console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);
@@ -113,9 +118,6 @@ console.log(`[build-html] sanitized internal attribution links: ${sanitizedInter
 
 const speculationRulesChanged = syncSpeculationRules(rootDir);
 console.log(`[build-html] synchronized speculation rules: ${speculationRulesChanged} updated`);
-
-const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
-console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
