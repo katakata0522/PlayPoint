@@ -6,6 +6,7 @@ on:
       - chatgpt/static-first-view-cls-20260903
     paths:
       - tools/temp-pr221-locale-fix.py
+      - tools/temp-pr221-idempotence-fix.py
 
 permissions:
   contents: write
@@ -22,7 +23,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply locale-safe static copy fix
-        run: python tools/temp-pr221-locale-fix.py
+        run: |
+          python tools/temp-pr221-locale-fix.py
+          python tools/temp-pr221-idempotence-fix.py
 
       - name: Regenerate canonical outputs
         env:
