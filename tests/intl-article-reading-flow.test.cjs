@@ -25,7 +25,7 @@ test('international article prompt is localized, idempotent, and placed after th
     assert.ok(first.indexOf('</section>') < first.indexOf('data-generated-intl-article-prompt="true"'), locale + ': prompt follows the quick answer');
     assert.ok(first.indexOf('data-generated-intl-article-prompt="true"') < first.indexOf('<section class="section">'), locale + ': prompt precedes the detailed article body');
     assert.ok(first.includes(copy.heading), locale + ': localized heading');
-    assert.ok(first.includes(copy.cta), locale + ': localized CTA');
+    assert.ok(first.includes(copy.cta), locale + ': localized CTA copy');
     assert.ok(first.includes('href="/' + locale + '/"'), locale + ': CTA returns to the locale calculator');
   }
 });
@@ -38,16 +38,25 @@ test('international article prompt respects a knowledge boundary when one is pre
   assert.ok(promptIndex > knowledgeEnd, 'prompt must follow the article-specific knowledge boundary');
 });
 
-test('Korean cash-conversion article answers and shows alternatives before the calculator prompt', () => {
-  const input = '<main class="main-card"><div class="hero"><h1>구글 플레이 포인트 현금화 가능할까?</h1></div><article class="content"><div class="intro"><strong>현금화는 불가합니다.</strong> 대신 공식 리워드로 사용할 수 있습니다.</div><section class="section"><h2 id="answer">가능한 것과 불가능한 것</h2></section><section class="section"><h2 id="alternatives">현금화 대신 이렇게 쓰는 것이 현실적입니다</h2><p>대안.</p></section><section class="section"><h2 id="credit">Play 크레딧은 현금이 아니다</h2></section></article></main>';
-  const output = insertIntlArticlePrompt(input, 'ko');
+function assertCashConversionPromptOrder({ input, locale, label }) {
+  const output = insertIntlArticlePrompt(input, locale);
   const alternativeEnd = output.indexOf('</section>', output.indexOf('id="alternatives"')) + '</section>'.length;
   const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
   const creditIndex = output.indexOf('id="credit"');
 
-  assert.ok(promptIndex > alternativeEnd, 'cash-conversion: calculator prompt must follow the practical alternatives');
-  assert.ok(promptIndex < creditIndex, 'cash-conversion: calculator prompt should stay near the answer, before secondary detail');
-  assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, 'cash-conversion: exactly one generated prompt');
+  assert.ok(promptIndex > alternativeEnd, label + ': calculator prompt must follow the practical alternatives');
+  assert.ok(promptIndex < creditIndex, label + ': calculator prompt should stay near the answer, before secondary detail');
+  assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, label + ': exactly one generated prompt');
+}
+
+test('English cash-conversion article answers and shows alternatives before the calculator prompt', () => {
+  const input = '<main class="main-card"><div class="hero"><h1>Can You Redeem Google Play Points for Cash?</h1></div><article class="content"><div class="intro"><strong>No cash-out.</strong> Supported rewards can still reduce planned Google Play spending.</div><section class="section"><h2 id="answer">What you can and cannot do</h2></section><section class="section"><h2 id="alternatives">What to do instead of cashing out</h2><p>Alternatives.</p></section><section class="section"><h2 id="credit">Why Play credit is not cash</h2></section></article></main>';
+  assertCashConversionPromptOrder({ input, locale: 'en', label: 'English cash-conversion' });
+});
+
+test('Korean cash-conversion article answers and shows alternatives before the calculator prompt', () => {
+  const input = '<main class="main-card"><div class="hero"><h1>구글 플레이 포인트 현금화 가능할까?</h1></div><article class="content"><div class="intro"><strong>현금화는 불가합니다.</strong> 대신 공식 리워드로 사용할 수 있습니다.</div><section class="section"><h2 id="answer">가능한 것과 불가능한 것</h2></section><section class="section"><h2 id="alternatives">현금화 대신 이렇게 쓰는 것이 현실적입니다</h2><p>대안.</p></section><section class="section"><h2 id="credit">Play 크레딧은 현금이 아니다</h2></section></article></main>';
+  assertCashConversionPromptOrder({ input, locale: 'ko', label: 'Korean cash-conversion' });
 });
 
 test('all published international article pages contain one localized reading-flow prompt', () => {
