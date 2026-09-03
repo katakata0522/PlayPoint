@@ -79,6 +79,8 @@ const ARIA_REPLACEMENTS = Object.freeze({
   ])
 });
 
+const COPY_OVERRIDE_SCRIPT = '<script type="module" src="../js/intl-copy-overrides.js"></script>';
+
 function replaceAllLiteral(source, from, to) {
   return source.split(from).join(to);
 }
@@ -104,6 +106,13 @@ function collectHtmlFiles(directory) {
     if (entry.isDirectory()) return collectHtmlFiles(absolutePath);
     return entry.isFile() && entry.name.endsWith('.html') ? [absolutePath] : [];
   });
+}
+
+function injectRuntimeCopyOverride(html) {
+  if (html.includes('js/intl-copy-overrides.js')) return html;
+  const mainScript = /<script type="module" src="\.\.\/js\/main\.js[^>]*><\/script>/;
+  if (!mainScript.test(html)) throw new Error('Localized calculator main module script was not found.');
+  return html.replace(mainScript, `${COPY_OVERRIDE_SCRIPT}\n$&`);
 }
 
 function applyIntlSemanticSourceOverrides(locales) {
@@ -150,13 +159,13 @@ function normalizeIntlGeneratedCopy(rootDir) {
     }
   }
 
-  mark('ko/index.html', (html) => replaceAllLiteral(
+  mark('ko/index.html', (html) => injectRuntimeCopyOverride(replaceAllLiteral(
     html,
     'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
     'Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?'
-  ));
+  )));
 
-  mark('tw/index.html', (html) => replaceAllLiteral(html, '逆算模式', '反推模式'));
+  mark('tw/index.html', (html) => injectRuntimeCopyOverride(replaceAllLiteral(html, '逆算模式', '反推模式')));
 
   mark('ko/articles/google-play-points-cash-conversion.html', (html) => {
     let next = replaceAllLiteral(html, '현금 환전', '현금 전환');
