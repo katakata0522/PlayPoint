@@ -37,7 +37,8 @@ function assertArticleConversionPath(relativePath, calculatorHref) {
   assert.match(html, /article-calculator-prompt/, relativePath + ': article-to-calculator prompt is required');
   assert.ok(html.includes(`href="${calculatorHref}"`) || html.includes(`href='${calculatorHref}'`), relativePath + ': calculator destination must stay localised');
   assert.match(html, /\/js\/analytics-core\.js/, relativePath + ': analytics core must be present');
-  assert.match(html, /\/js\/intent-tracking\.js/, relativePath + ': intent tracking must be present');
+  // Article conversion events are owned by blog/article.js. intent-tracking.js is the LP runtime
+  // and is intentionally not a requirement for every article shell.
   assert.match(html, /\/blog\/article\.js/, relativePath + ': article conversion tracking runtime must be present');
 }
 
