@@ -31,6 +31,22 @@ test('international article prompt is localized, idempotent, and placed after th
   }
 });
 
+test('legacy div intro is treated as the quick answer before the calculator prompt', () => {
+  for (const locale of locales) {
+    const input = '<main class="main-card"><article class="content"><div class="intro"><strong>Direct answer.</strong> Context.</div><nav class="intl-article-toc"></nav><section class="section"><h2>Details</h2></section></article></main>';
+    const first = insertIntlArticlePrompt(input, locale);
+    const second = insertIntlArticlePrompt(first, locale);
+    const introEnd = first.indexOf('</div>', first.indexOf('class="intro"')) + '</div>'.length;
+    const promptIndex = first.indexOf('data-generated-intl-article-prompt="true"');
+    const detailIndex = first.indexOf('<section class="section">');
+
+    assert.equal(second, first, locale + ': div-intro insertion must remain idempotent');
+    assert.ok(promptIndex > introEnd, locale + ': div intro answer must precede the calculator prompt');
+    assert.ok(promptIndex < detailIndex, locale + ': calculator prompt must still precede detailed content');
+    assert.equal((first.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, locale + ': exactly one generated prompt');
+  }
+});
+
 test('international article prompt respects a knowledge boundary when one is present', () => {
   const input = '<main class="main-card"><article class="content"><section class="answer-box"><p>Answer.</p></section><section class="knowledge-boundary"><h2>Known</h2></section><section class="section"><h2>Details</h2></section></article></main>';
   const output = insertIntlArticlePrompt(input, 'en');
@@ -101,6 +117,8 @@ const contextualPublishedPrompts = Object.freeze({
 });
 
 test('all published international article pages contain one localized reading-flow prompt', () => {
+  let auditedLegacyIntroPages = 0;
+
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
     const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
@@ -111,9 +129,28 @@ test('all published international article pages contain one localized reading-fl
       const contextualCopy = contextualPublishedPrompts[locale + '/' + file];
       const expectedCopy = contextualCopy || INTL_PROMPT_COPY[locale];
       const expectedHref = contextualCopy?.href || '/' + locale + '/';
+      const promptIndex = html.indexOf('data-generated-intl-article-prompt="true"');
       assert.equal((html.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, locale + '/' + file + ': exactly one generated prompt');
       assert.ok(html.includes(expectedCopy.cta), locale + '/' + file + ': localized/contextual CTA copy');
       assert.ok(html.includes('href="' + expectedHref + '"'), locale + '/' + file + ': calculator target');
+
+      const articleIndex = html.indexOf('<article class="content">');
+      const articleEnd = html.indexOf('</article>', articleIndex);
+      const introMatch = /<div\b[^>]*class=["'][^"']*\bintro\b[^"']*["'][^>]*>/i.exec(html.slice(articleIndex, articleEnd));
+      if (introMatch) {
+        const introIndex = articleIndex + introMatch.index;
+        const firstSectionIndex = html.indexOf('<section', articleIndex);
+        const firstNavIndex = html.indexOf('<nav', articleIndex);
+        const introIsOpeningAnswer = (firstSectionIndex < 0 || introIndex < firstSectionIndex)
+          && (firstNavIndex < 0 || introIndex < firstNavIndex);
+        if (introIsOpeningAnswer) {
+          const introEnd = html.indexOf('</div>', introIndex) + '</div>'.length;
+          assert.ok(promptIndex > introEnd, locale + '/' + file + ': opening div intro answer must precede calculator prompt');
+          auditedLegacyIntroPages += 1;
+        }
+      }
     }
   }
+
+  assert.ok(auditedLegacyIntroPages > 0, 'published audit must exercise legacy div-intro pages');
 });
