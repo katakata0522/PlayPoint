@@ -154,6 +154,7 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
           maxWidth: titleStyle.maxWidth
         } : null,
         mainBackground: mainStyle?.backgroundColor || '',
+        headingToken: getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim(),
         hasCompatibility: stylesheets.some(href => href.includes(compatibility)),
         hasShared: stylesheets.some(href => href.includes('article-shared.css')),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
@@ -173,6 +174,7 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
       result.hero.paddingLeft
     ].every(value => value === '0px'), `${article.key}/${viewport.key}: hero padding ${JSON.stringify(result.hero)}`);
     assert(result.hero.textAlign === 'left' || result.hero.textAlign === 'start', `${article.key}/${viewport.key}: hero text-align ${result.hero.textAlign}`);
+    assert(result.headingToken.toLowerCase() === '#1a202c', `${article.key}/${viewport.key}: heading token ${result.headingToken || '(empty)'}`);
     assert(result.title.color === 'rgb(26, 32, 44)', `${article.key}/${viewport.key}: title color ${result.title.color}`);
     assert(result.title.textShadow === 'none', `${article.key}/${viewport.key}: title shadow ${result.title.textShadow}`);
     assert(result.title.maxWidth === 'none', `${article.key}/${viewport.key}: title max-width ${result.title.maxWidth}`);
