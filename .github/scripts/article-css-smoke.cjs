@@ -9,6 +9,8 @@ const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
+const STYLE_READINESS_TIMEOUT_MS = 15_000;
+const STYLE_READINESS_POLL_MS = 50;
 const ARTICLE_CASES = [
   { key: 'legacy-best-use', path: 'articles/2025-12-25-best-use.html', compatibility: 'article-legacy.css' },
   { key: 'modern-fastest-gold', path: 'articles/2026-08-16-fastest-gold.html', compatibility: 'article-modern.css' }
@@ -28,6 +30,10 @@ const MIME_TYPES = {
 
 function assert(value, message) {
   if (!value) throw new Error(message);
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function normalizeBaseUrl(value) {
@@ -130,18 +136,16 @@ async function readStyleReadiness(page, compatibility) {
 }
 
 async function waitForArticleStylesReady(page, article, viewport) {
-  try {
-    await page.waitForFunction(({ compatibility }) => {
-      const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
-      const compatibilityLink = links.find(link => link.href.includes(compatibility));
-      const sharedLink = links.find(link => link.href.includes('article-shared.css'));
-      const headingToken = getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim();
-      return Boolean(compatibilityLink?.sheet && sharedLink?.sheet && headingToken);
-    }, { compatibility: article.compatibility }, { timeout: 15_000 });
-  } catch (error) {
-    const readiness = await readStyleReadiness(page, article.compatibility).catch(() => null);
-    throw new Error(`${article.key}/${viewport.key}: article styles not ready ${JSON.stringify(readiness)}`);
+  const deadline = Date.now() + STYLE_READINESS_TIMEOUT_MS;
+  let readiness = null;
+
+  while (Date.now() < deadline) {
+    readiness = await readStyleReadiness(page, article.compatibility);
+    if (readiness.compatibilityAttached && readiness.sharedAttached && readiness.headingToken) return readiness;
+    await delay(STYLE_READINESS_POLL_MS);
   }
+
+  throw new Error(`${article.key}/${viewport.key}: article styles not ready ${JSON.stringify(readiness)}`);
 }
 
 async function inspectArticle(browser, baseUrl, article, viewport) {
