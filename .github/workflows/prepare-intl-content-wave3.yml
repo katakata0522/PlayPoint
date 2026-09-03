@@ -1,0 +1,172 @@
+name: Prepare intl content wave 3
+
+on:
+  push:
+    branches:
+      - growth/intl-content-quality-wave3
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/intl-content-quality-wave3
+
+      - name: Strengthen KO quest, KO Super Ticket, and EN gift-card intent
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceRequired(text, from, to, label) {
+            if (!text.includes(from)) throw new Error(`missing ${label}`);
+            return text.replace(from, to);
+          }
+
+          // KO quests: generic query + troubleshooting intent should be answered before calculator CTA.
+          let koQuest = fs.readFileSync('ko/articles/google-play-quests.html', 'utf8');
+          const koQuestTitleOld = 'Google Play 퀘스트: 표시되지 않거나 완료되지 않을 때';
+          const koQuestTitleNew = '구글 플레이 퀘스트란? 안 뜸·완료 안됨 원인과 확인 순서';
+          koQuest = koQuest.replaceAll(koQuestTitleOld, koQuestTitleNew);
+          koQuest = replaceRequired(
+            koQuest,
+            '<meta name="description" content="Google Play 퀘스트의 계정별 조건, 구매로 인정되는 결제, Play 게임즈 로그인, 맞춤설정, 환불 후 진행 상태와 미반영 확인 순서를 설명합니다.">',
+            '<meta name="description" content="구글 플레이 퀘스트가 안 뜨거나 완료되지 않을 때 계정별 대상, 구매 인정 조건, Play 게임즈 로그인, 맞춤설정, 환불 후 진행 상태를 순서대로 확인합니다.">',
+            'KO quest description'
+          );
+          koQuest = replaceRequired(
+            koQuest,
+            '<meta property="og:description" content="계정별 단계, 구매 인정 범위, Play 게임즈 로그인, 맞춤설정과 환불 규칙을 확인하세요.">',
+            '<meta property="og:description" content="퀘스트가 안 뜸·미완료·구매 미인정일 때 계정, 결제, Play 게임즈, 맞춤설정과 환불 상태를 확인하세요.">',
+            'KO quest og description'
+          );
+          koQuest = replaceRequired(
+            koQuest,
+            '"description":"Google Play 퀘스트의 계정별 조건, 구매로 인정되는 결제, Play 게임즈 로그인, 맞춤설정, 환불 후 진행 상태와 미반영 확인 순서를 설명합니다."',
+            '"description":"구글 플레이 퀘스트가 안 뜨거나 완료되지 않을 때 계정별 대상, 구매 인정 조건, Play 게임즈 로그인, 맞춤설정, 환불 후 진행 상태를 순서대로 확인합니다."',
+            'KO quest structured description'
+          );
+          koQuest = replaceRequired(koQuest, '<meta name="playpoint:official-verified" content="2026-08-02">', '<meta name="playpoint:official-verified" content="2026-09-03">', 'KO quest verified date');
+          koQuest = replaceRequired(koQuest, '<meta name="last-modified" content="2026-08-02">', '<meta name="last-modified" content="2026-09-03">', 'KO quest modified date');
+          koQuest = replaceRequired(koQuest, '"dateModified":"2026-08-02"', '"dateModified":"2026-09-03"', 'KO quest structured modified date');
+          koQuest = replaceRequired(
+            koQuest,
+            '<article class="content">\n    <aside class="article-calculator-prompt',
+            '<article class="content">\n    <section class="section answer-box" aria-labelledby="ko-quest-quick-check"><h2 id="ko-quest-quick-check">퀘스트가 안 뜨거나 진행되지 않나요? 먼저 멈춘 지점을 구분하세요</h2><div class="table-wrap"><table><thead><tr><th>현재 상태</th><th>먼저 확인할 것</th></tr></thead><tbody><tr><td>퀘스트 자체가 안 뜸</td><td>퀘스트는 계정별 대상입니다. 다른 사람에게 보인다는 이유만으로 내 계정 오류라고 볼 수 없습니다.</td></tr><tr><td>구매 단계가 완료되지 않음</td><td>해당 거래가 실제로 Play Points를 적립하는 구매인지 확인하세요. 포인트 교환이나 포인트를 사용한 결제는 퀘스트 구매로 인정되지 않습니다.</td></tr><tr><td>게임 플레이 단계가 멈춤</td><td>퀘스트를 받은 Google 계정, Play 게임즈 프로필 로그인, 화면에 적힌 Play 맞춤설정 조건을 확인하세요.</td></tr><tr><td>완료 후 다시 미완료가 됨</td><td>조건에 사용한 구매가 취소되거나 환불되면 진행 상태가 되돌아갈 수 있습니다.</td></tr><tr><td>조건을 맞췄는데 계속 미반영</td><td>안내된 처리 시간, 사용 계정, 주문 시각과 조건 화면을 기록한 뒤 Google Play 고객센터에 문의하세요.</td></tr></tbody></table></div><p><strong>원인을 확인하기 전 테스트 목적으로 다시 결제하지 마세요.</strong> 단계, 기한, 리워드는 내 계정의 퀘스트 진행 페이지가 최종 기준입니다.</p></section>\n    <aside class="article-calculator-prompt',
+            'KO quest quick diagnosis'
+          );
+          koQuest = replaceRequired(koQuest, '공식 정보 최종 확인: 2026년 8월 2일.', '공식 정보 최종 확인: 2026년 9월 3일.', 'KO quest source date');
+          fs.writeFileSync('ko/articles/google-play-quests.html', koQuest);
+
+          // KO Super Ticket: front-load the exact acquisition/use intents already appearing in GSC.
+          let koSuper = fs.readFileSync('ko/articles/google-play-points-super-weekly-reward.html', 'utf8');
+          const koSuperTitleOld = 'Google Play Points Super Weekly Prize와 Super Ticket 안내';
+          const koSuperTitleNew = '구글 플레이 슈퍼티켓 얻는 법·사용법｜Super Weekly Prize';
+          koSuper = koSuper.replaceAll(koSuperTitleOld, koSuperTitleNew);
+          koSuper = replaceRequired(
+            koSuper,
+            '<meta name="description" content="내 계정에 Super Weekly Prize가 표시되는지 먼저 확인한 뒤, 한정 재고와 Super Ticket의 30일·90일 지급 주기 및 기존 리워드 교체 조건을 비교합니다.">',
+            '<meta name="description" content="구글 플레이 슈퍼티켓은 어떻게 얻고 쓰나요? Play Pass·다이아몬드·플래티넘 지급 주기, 기존 보상 교체, Super Weekly Prize 사용 조건을 정리합니다.">',
+            'KO super description'
+          );
+          koSuper = replaceRequired(
+            koSuper,
+            '<meta property="og:description" content="계정에 표시된 카드와 조건을 먼저 보고, Super Ticket 사용 시 기존 리워드가 교체된다는 점을 비교합니다.">',
+            '<meta property="og:description" content="슈퍼티켓 얻는 법, 30일·90일 지급 주기와 사용 시 기존 Play Points 보상이 교체되는 조건을 확인하세요.">',
+            'KO super og description'
+          );
+          koSuper = replaceRequired(
+            koSuper,
+            '"description":"내 계정에 Super Weekly Prize가 표시되는지 먼저 확인한 뒤, 한정 재고와 Super Ticket의 30일·90일 지급 주기 및 기존 리워드 교체 조건을 비교합니다."',
+            '"description":"구글 플레이 슈퍼티켓은 어떻게 얻고 쓰나요? Play Pass·다이아몬드·플래티넘 지급 주기, 기존 보상 교체, Super Weekly Prize 사용 조건을 정리합니다."',
+            'KO super structured description'
+          );
+          koSuper = replaceRequired(koSuper, '<meta name="playpoint:official-verified" content="2026-08-05">', '<meta name="playpoint:official-verified" content="2026-09-03">', 'KO super verified date');
+          koSuper = replaceRequired(koSuper, '<meta name="last-modified" content="2026-08-05">', '<meta name="last-modified" content="2026-09-03">', 'KO super modified date');
+          koSuper = replaceRequired(koSuper, '"dateModified":"2026-08-05"', '"dateModified":"2026-09-03"', 'KO super structured modified date');
+          koSuper = replaceRequired(
+            koSuper,
+            '<article class="content">\n    <aside class="article-calculator-prompt',
+            '<article class="content">\n    <section class="section answer-box" aria-labelledby="ko-super-ticket-answer"><h2 id="ko-super-ticket-answer">슈퍼티켓 얻는 법·사용법부터 바로 정리</h2><p><strong>슈퍼티켓은 Super Weekly Prize에서 Play Points 보상을 받은 뒤, 그 보상을 포기하고 프리미엄 보상에 다시 도전할 때 쓰는 티켓입니다.</strong> 추가 보상을 하나 더 받는 기능이 아닙니다.</p><div class="table-wrap"><table><thead><tr><th>궁금한 점</th><th>현재 Google 공식 안내</th></tr></thead><tbody><tr><td>어떻게 얻나요?</td><td>Play Pass 구독자와 Diamond 회원은 30일마다 1장, Platinum 회원은 90일마다 1장을 받습니다.</td></tr><tr><td>언제 쓰나요?</td><td>Super Weekly Prize에서 Play Points 보상을 받은 뒤 프리미엄 보상에 다시 도전할 때 사용할 수 있습니다.</td></tr><tr><td>기존 보상도 남나요?</td><td><strong>아니요.</strong> 슈퍼티켓을 사용하면 이전 Play Points 보상을 유지하지 못합니다.</td></tr><tr><td>바로 써야 하나요?</td><td>티켓은 모아두거나 바로 사용할 수 있습니다. 여러 장이 있으면 프리미엄 보상을 받을 때까지 다시 사용할 수 있습니다.</td></tr></tbody></table></div><p>Gold 회원은 Super Weekly Prize 대상이 될 수 있지만, 공식 슈퍼티켓 정기 지급 목록은 Play Pass·Diamond·Platinum을 따로 안내합니다. 실제 보유 티켓과 사용 가능 여부는 내 계정의 혜택 화면을 확인하세요.</p></section>\n    <aside class="article-calculator-prompt',
+            'KO super answer before calculator'
+          );
+          koSuper = replaceRequired(koSuper, '공식 정보 최종 확인: 2026년 8월 5일.', '공식 정보 최종 확인: 2026년 9월 3일.', 'KO super source date');
+          fs.writeFileSync('ko/articles/google-play-points-super-weekly-reward.html', koSuper);
+
+          // EN gift cards: one owner page for both "earn points on gift cards" and "turn Points into gift cards".
+          let enGift = fs.readFileSync('en/articles/google-play-points-gift-cards.html', 'utf8');
+          const enGiftTitleOld = 'Do gift cards earn Google Play Points?';
+          const enGiftTitleNew = 'Can Google Play Points buy gift cards? Do gift cards earn points?';
+          enGift = enGift.replaceAll(enGiftTitleOld, enGiftTitleNew);
+          enGift = replaceRequired(
+            enGift,
+            '<meta name="description" content="Buying or redeeming a Google Play gift card does not normally earn Play Points. Learn when purchases made with Play balance may earn points under local rules.">',
+            '<meta name="description" content="Can Google Play Points buy gift cards? No. Points and Play balance cannot buy Google Play or brand gift cards. Also learn when gift-card purchases earn points.">',
+            'EN gift description'
+          );
+          enGift = replaceRequired(
+            enGift,
+            '<meta property="og:description" content="Buying or redeeming a gift card does not normally earn Play Points by itself. Eligible Google Play purchases made with the balance may earn points under local rules.">',
+            '<meta property="og:description" content="Play Points cannot buy Google Play or brand gift cards. Separate that question from whether buying a gift card earns points.">',
+            'EN gift og description'
+          );
+          enGift = replaceRequired(
+            enGift,
+            '"description": "Buying or redeeming a Google Play gift card does not normally earn Play Points. Learn when purchases made with Play balance may earn points under local rules."',
+            '"description": "Can Google Play Points buy gift cards? No. Points and Play balance cannot buy Google Play or brand gift cards. Also learn when gift-card purchases earn points."',
+            'EN gift structured description'
+          );
+          enGift = replaceRequired(enGift, '<meta name="playpoint:official-verified" content="2026-08-03">', '<meta name="playpoint:official-verified" content="2026-09-03">', 'EN gift verified date');
+          enGift = replaceRequired(enGift, '<meta name="last-modified" content="2026-08-03">', '<meta name="last-modified" content="2026-09-03">', 'EN gift modified date');
+          enGift = replaceRequired(enGift, '"dateModified": "2026-08-03"', '"dateModified": "2026-09-03"', 'EN gift structured modified date');
+          enGift = replaceRequired(
+            enGift,
+            '    <article class="content">\n    <aside class="article-calculator-prompt',
+            '    <article class="content">\n        <section class="section answer-box" aria-labelledby="gift-card-answer"><h2 id="gift-card-answer">Can Play Points become gift cards? No—not by buying a gift card</h2><p><strong>You cannot use Google Play Points or Google Play balance to buy Google Play gift cards or brand gift cards.</strong> If your Play Points “Use” tab offers Google Play credit, that becomes Play balance; it is not a gift card.</p><div class="table-wrap"><table><thead><tr><th>Intent</th><th>Answer</th></tr></thead><tbody><tr><td>Use Play Points to buy a gift card</td><td>No. Google says Points and Play balance cannot be used to purchase Google Play or brand gift cards.</td></tr><tr><td>Redeem Play Points for Play credit</td><td>Possible when that reward is shown on your account. Play credit is balance, not a gift card.</td></tr><tr><td>Earn Play Points by buying a digital gift card</td><td>Not normally. Google says digital gift-card purchases are not eligible unless a specific promotion says otherwise.</td></tr><tr><td>Earn points on a later eligible Play purchase paid with balance</td><td>The later Google Play purchase may earn points under the enrolled account’s local rules; treat that as a separate transaction.</td></tr></tbody></table></div><p>This distinction answers both common gift-card questions without creating a second page that would compete for the same search results.</p></section>\n    <aside class="article-calculator-prompt',
+            'EN gift direct answer before calculator'
+          );
+          enGift = replaceRequired(
+            enGift,
+            '<section class="section">\n            <h2>FAQ</h2>',
+            '<section class="section">\n            <h2>FAQ</h2>\n            <h3>Can I turn Google Play Points into gift cards?</h3><p>No. Google says Google Play Points and Play balance cannot be used to buy Google Play or brand gift cards. A Play credit reward, when offered, is balance rather than a gift card.</p>',
+            'EN gift visible FAQ'
+          );
+          enGift = replaceRequired(
+            enGift,
+            '        </aside>\n\n        <section class="section">\n            <h2>FAQ</h2>',
+            '            <p>Official sources checked: September 3, 2026.</p>\n        </aside>\n\n        <section class="section">\n            <h2>FAQ</h2>',
+            'EN gift official check date'
+          );
+          fs.writeFileSync('en/articles/google-play-points-gift-cards.html', enGift);
+
+          const datesPath = 'scripts/article-official-verification-dates.json';
+          const dates = JSON.parse(fs.readFileSync(datesPath, 'utf8'));
+          dates['ko/articles/google-play-quests.html'] = '2026-09-03';
+          dates['ko/articles/google-play-points-super-weekly-reward.html'] = '2026-09-03';
+          dates['en/articles/google-play-points-gift-cards.html'] = '2026-09-03';
+          fs.writeFileSync(datesPath, JSON.stringify(dates, null, 2) + '\n');
+
+          fs.writeFileSync('tests/intl-demand-content-quality-wave3.test.cjs', `'use strict';\n\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\n\nconst root = path.resolve(__dirname, '..');\nconst read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');\n\nfunction answerBeforeCalculator(html, marker, label) {\n  const answer = html.indexOf(marker);\n  const calc = html.indexOf('data-generated-intl-article-prompt="true"');\n  assert.notEqual(answer, -1, \`${'${label}'}: answer marker missing\`);\n  assert.notEqual(calc, -1, \`${'${label}'}: calculator prompt missing\`);\n  assert.ok(answer < calc, \`${'${label}'}: search answer must precede calculator prompt\`);\n}\n\ntest('Korean quests owns generic and troubleshooting intent before the calculator', () => {\n  const html = read('ko/articles/google-play-quests.html');\n  assert.match(html, /구글 플레이 퀘스트란/);\n  assert.match(html, /퀘스트 자체가 안 뜸/);\n  assert.match(html, /구매 단계가 완료되지 않음/);\n  assert.match(html, /Play 게임즈 프로필/);\n  assert.match(html, /취소되거나 환불/);\n  assert.match(html, /11534416/);\n  assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n  answerBeforeCalculator(html, 'id="ko-quest-quick-check"', 'KO quests');\n});\n\ntest('Korean Super Ticket guide answers acquisition and use intent first', () => {\n  const html = read('ko/articles/google-play-points-super-weekly-reward.html');\n  assert.match(html, /슈퍼티켓 얻는 법·사용법/);\n  assert.match(html, /30일마다 1장/);\n  assert.match(html, /90일마다 1장/);\n  assert.match(html, /이전 Play Points 보상을 유지하지 못합니다/);\n  assert.match(html, /mc_games_editorialmd_product_gpp_swp_super_tickets_fcp/);\n  assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n  answerBeforeCalculator(html, 'id="ko-super-ticket-answer"', 'KO Super Ticket');\n});\n\ntest('English gift-card guide owns both conversion and earning questions', () => {\n  const html = read('en/articles/google-play-points-gift-cards.html');\n  assert.match(html, /Can Google Play Points buy gift cards/i);\n  assert.match(html, /cannot use Google Play Points or Google Play balance to buy/i);\n  assert.match(html, /Play credit is balance, not a gift card/i);\n  assert.match(html, /digital gift-card purchases are not eligible/i);\n  assert.match(html, /16585331/);\n  assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n  answerBeforeCalculator(html, 'id="gift-card-answer"', 'EN gift cards');\n});\n\ntest('international content audit covers the complete current EN KO TW inventory', () => {\n  const report = read('docs/INTL_CONTENT_AUDIT_2026-09-03.md');\n  for (const locale of ['en', 'ko', 'tw']) {\n    const expected = fs.readdirSync(path.join(root, locale, 'articles')).filter(name => name.endsWith('.html') && name !== 'index.html').length;\n    const actual = (report.match(new RegExp('\\\\| [ABCM] \\| ' + locale.toUpperCase() + ' \\|', 'g')) || []).length;\n    assert.equal(actual, expected, \`${'${locale}'} inventory count\`);\n  }\n  assert.match(report, /IN_VALUE/);\n  assert.match(report, /EN_BALANCE_CASHOUT/);\n});\n`);
+          NODE
+
+      - name: Generate canonical repository outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Generate international content audit
+        run: node scripts/audit-intl-content.cjs
+
+      - name: Remove one-shot workflow and commit
+        shell: bash
+        run: |
+          git rm .github/workflows/prepare-intl-content-wave3.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "growth: upgrade high-opportunity intl content and audit"
+          git push origin HEAD:growth/intl-content-quality-wave3
