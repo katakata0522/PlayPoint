@@ -8,6 +8,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const {
   INTL_PROMPT_COPY,
+  TW_CONTEXTUAL_PROMPT_COPY,
   insertIntlArticlePrompt
 } = require(path.join(root, 'scripts', 'intl-article-reading-flow.cjs'));
 
@@ -59,6 +60,46 @@ test('Korean cash-conversion article answers and shows alternatives before the c
   assertCashConversionPromptOrder({ input, locale: 'ko', label: 'Korean cash-conversion' });
 });
 
+test('Taiwan coupon troubleshooting waits until the resolution steps are complete, then opens reverse mode', () => {
+  const input = '<main class="main-card"><div class="hero"><h1>Google Play Points 折價券沒有自動套用時</h1></div><article class="content"><aside class="article-calculator-prompt cta-box" data-generated-intl-article-prompt="true"><h2>old</h2></aside><div class="intro">先確認折價券條件。</div><section class="section"><h2 id="section-1">第一步</h2></section><section class="section"><h2 id="section-5">條件都符合仍未套用</h2><p>完成問題排解。</p></section><div class="cta-box"><h3>再次購買前先確認條件</h3><p>duplicate</p><a href="/tw/">開啟計算器</a></div><aside class="official-source-note"></aside></article></main>';
+  const output = insertIntlArticlePrompt(input, 'tw');
+  const resolutionEnd = output.indexOf('</section>', output.indexOf('id="section-5"')) + '</section>'.length;
+  const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
+  const sourceIndex = output.indexOf('official-source-note');
+  const copy = TW_CONTEXTUAL_PROMPT_COPY.couponNotApplied;
+
+  assert.ok(promptIndex > resolutionEnd, 'coupon prompt must not interrupt troubleshooting');
+  assert.ok(promptIndex < sourceIndex, 'coupon prompt should be the next action after troubleshooting');
+  assert.ok(output.includes(copy.heading));
+  assert.ok(output.includes(copy.cta));
+  assert.ok(output.includes('href="/tw/?mode=reverse"'));
+  assert.ok(!output.includes('再次購買前先確認條件'), 'duplicate lower CTA must be removed');
+  assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
+});
+
+test('Taiwan platinum/diamond article gives the threshold answer before one calculator CTA', () => {
+  const input = '<main class="main-card"><div class="hero"><h1>台灣 Play Points：白金 4,000 點，鑽石 15,000 點起</h1></div><article class="content"><aside class="article-calculator-prompt cta-box" data-generated-intl-article-prompt="true"><h2>old</h2></aside><div class="intro"><strong>白金 4,000，鑽石 15,000。</strong></div><section class="section"><h2>台灣官方門檻與積點率</h2></section><div class="cta-box"><h3>用自己的不足點數計算</h3><p>duplicate</p><a href="/tw/status/platinum/">舊導線</a></div></article></main>';
+  const output = insertIntlArticlePrompt(input, 'tw');
+  const introEnd = output.indexOf('</div>', output.indexOf('class="intro"')) + '</div>'.length;
+  const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
+  const detailIndex = output.indexOf('<section class="section">');
+  const copy = TW_CONTEXTUAL_PROMPT_COPY.platinumDiamond;
+
+  assert.ok(promptIndex > introEnd, 'rank-cost prompt must follow the direct threshold answer');
+  assert.ok(promptIndex < detailIndex, 'rank-cost prompt should remain before secondary detail');
+  assert.ok(output.includes(copy.heading));
+  assert.ok(output.includes(copy.cta));
+  assert.ok(output.includes('href="/tw/"'));
+  assert.ok(!output.includes('用自己的不足點數計算'), 'duplicate lower CTA must be removed');
+  assert.ok(!output.includes('/tw/status/platinum/'), 'article should go directly to the calculator instead of another LP');
+  assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
+});
+
+const contextualPublishedPrompts = Object.freeze({
+  'tw/google-play-points-coupon-not-applied.html': TW_CONTEXTUAL_PROMPT_COPY.couponNotApplied,
+  'tw/google-play-points-platinum-diamond-cost.html': TW_CONTEXTUAL_PROMPT_COPY.platinumDiamond
+});
+
 test('all published international article pages contain one localized reading-flow prompt', () => {
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
@@ -67,9 +108,12 @@ test('all published international article pages contain one localized reading-fl
 
     for (const file of files) {
       const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
+      const contextualCopy = contextualPublishedPrompts[locale + '/' + file];
+      const expectedCopy = contextualCopy || INTL_PROMPT_COPY[locale];
+      const expectedHref = contextualCopy?.href || '/' + locale + '/';
       assert.equal((html.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, locale + '/' + file + ': exactly one generated prompt');
-      assert.ok(html.includes(INTL_PROMPT_COPY[locale].cta), locale + '/' + file + ': localized CTA copy');
-      assert.ok(html.includes('href="/' + locale + '/"'), locale + '/' + file + ': localized calculator target');
+      assert.ok(html.includes(expectedCopy.cta), locale + '/' + file + ': localized/contextual CTA copy');
+      assert.ok(html.includes('href="' + expectedHref + '"'), locale + '/' + file + ': calculator target');
     }
   }
 });
