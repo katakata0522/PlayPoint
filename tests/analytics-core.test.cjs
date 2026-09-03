@@ -106,7 +106,7 @@ test('手動page_viewモードでは保留イベントより先に一度だけpa
   assert.equal(eventCalls(context, 'page_view').length, 1, '初回page_viewが重複送信されています');
 });
 
-test('記事・LPからの計算機流入は次の計算完了へ一度だけ引き継ぐ', () => {
+test('記事・LPからの流入は開始・初回成功へ引き継ぎ、計算完了には一度だけ付与する', () => {
   const { context, storage } = createRuntime('granted');
   const analytics = context.PlayPointAnalytics;
   analytics.markAnalyticsReady();
@@ -115,29 +115,69 @@ test('記事・LPからの計算機流入は次の計算完了へ一度だけ引
     source_path: '/articles/guide.html',
     link_context: 'article_cta'
   }), true);
+
+  analytics.track('calculator_form_started', {
+    calculation_mode: 'rank_up',
+    region: 'JP',
+    start_field: 'needed_points'
+  });
+  assert.deepEqual(eventCalls(context, 'calculator_form_started')[0], {
+    calculation_mode: 'rank_up',
+    region: 'JP',
+    start_field: 'needed_points',
+    entry_source_path: '/articles/guide.html',
+    entry_link_context: 'article_cta',
+    calculator_preset: 'preset'
+  });
+  assert.equal(storage.size, 0, '計算機到着後も流入情報がsessionStorageに残っています');
+
   analytics.track('calculation_completed', {
-    calculation_mode: 'main',
+    calculation_mode: 'rank_up',
     region: 'JP',
     target_status: 'platinum',
     needed_points: '送信してはいけない値'
   });
-
-  const first = eventCalls(context, 'calculation_completed');
-  assert.equal(first.length, 1);
-  assert.deepEqual(first[0], {
-    calculation_mode: 'main',
+  assert.deepEqual(eventCalls(context, 'calculation_completed')[0], {
+    calculation_mode: 'rank_up',
     region: 'JP',
     target_status: 'platinum',
     entry_source_path: '/articles/guide.html',
     entry_link_context: 'article_cta',
     calculator_preset: 'preset'
   });
-  assert.equal(storage.size, 0, '流入情報が計算後も残っています');
 
-  analytics.track('calculation_completed', { calculation_mode: 'main', region: 'JP' });
-  const second = eventCalls(context, 'calculation_completed');
-  assert.equal(second.length, 2);
-  assert.equal(second[1].entry_source_path, undefined, '同じ流入が複数回の計算へ付与されています');
+  analytics.track('calculator_funnel_completed', {
+    calculation_mode: 'rank_up',
+    region: 'JP'
+  });
+  assert.deepEqual(eventCalls(context, 'calculator_funnel_completed')[0], {
+    calculation_mode: 'rank_up',
+    region: 'JP',
+    entry_source_path: '/articles/guide.html',
+    entry_link_context: 'article_cta',
+    calculator_preset: 'preset'
+  });
+
+  analytics.track('calculation_completed', { calculation_mode: 'rank_up', region: 'JP' });
+  const completions = eventCalls(context, 'calculation_completed');
+  assert.equal(completions.length, 2);
+  assert.equal(completions[1].entry_source_path, undefined, '同じ流入が複数回の計算完了へ付与されています');
+});
+
+test('計算完了が初回成功イベントより先でも記事起点を失わない', () => {
+  const { context } = createRuntime('granted');
+  const analytics = context.PlayPointAnalytics;
+  analytics.markAnalyticsReady();
+  analytics.rememberCalculatorEntry('/', {
+    source_path: '/tw/articles/google-play-quests.html',
+    link_context: 'article_calculator_prompt'
+  });
+
+  analytics.track('calculation_completed', { calculation_mode: 'rank_up', region: 'TW' });
+  analytics.track('calculator_funnel_completed', { calculation_mode: 'rank_up', region: 'TW' });
+
+  assert.equal(eventCalls(context, 'calculation_completed')[0].entry_source_path, '/tw/articles/google-play-quests.html');
+  assert.equal(eventCalls(context, 'calculator_funnel_completed')[0].entry_source_path, '/tw/articles/google-play-quests.html');
 });
 
 test('許可外イベント・パラメータ・外部遷移は送信または保存しない', () => {

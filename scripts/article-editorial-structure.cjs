@@ -63,7 +63,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2026-07-24-play-points-cash-conversion.html': {
     manualStructure: true,
-    modifiedDate: '2026-08-04',
+    modifiedDate: '2026-09-03',
     answer: 'Google Play Pointsは現金、PayPay残高、銀行口座へ直接送金できません。公式に表示されるクーポン、アプリ内アイテム、Google Playクレジットなどの交換先から選びます。',
     known: [
       'ポイントを購入したり現金へ換えたり、別アカウントへ移したりすることはできません。',
