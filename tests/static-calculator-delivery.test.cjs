@@ -29,9 +29,11 @@ const expectedLabels = Object.freeze({
     '活動特別獲點率（例：每 NT$30 3 點）'
   ]
 });
-const indexPaths = Object.keys(expectedLabels);
+const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'];
 
 const legacyCalculatorFixture = `
+<head></head>
+<body>
 <div id="mainMode" role="tabpanel" aria-labelledby="tab-main">
   <div class="section">
     <label for="currentStatus"><span data-lang-key="labelCurrentStatus">現在</span></label>
@@ -52,14 +54,19 @@ const legacyCalculatorFixture = `
     <div class="warning" data-lang-key="warningRate">説明</div>
   </div>
   <div class="section"><button id="calculateButton">計算</button></div>
-</div>`;
+</div>
+</body>`;
 
-test('旧HTMLを5項目の静的レイアウトへ安全に変換できる', () => {
+test('旧HTMLを初回描画から安定する静的レイアウトへ安全に変換できる', () => {
   const converted = ensureStaticCalculatorLayout(legacyCalculatorFixture);
   validateStaticLayout(converted);
   assert.ok(!converted.includes('id="pack-amount"'));
   assert.ok(!converted.includes('sectionTitleRate'));
   assert.match(converted, /data-visible-base-rate-layout="true"/);
+  assert.match(converted, /id="calculator-advanced-settings"/);
+  assert.match(converted, /id="calculator-advanced-settings-body"/);
+  assert.match(converted, /id="playpoint-first-view-critical"/);
+  assert.match(converted, /id="playpoint-first-view-state"/);
   assert.match(converted, /100円あたりの獲得率（自動入力・編集可）/);
   assert.match(converted, /キャンペーン特別獲得率（例：3pt\/100円）/);
   assert.ok(!converted.includes('data-lang-key="labelBaseRate"'));
@@ -67,16 +74,25 @@ test('旧HTMLを5項目の静的レイアウトへ安全に変換できる', () 
   assert.equal(ensureStaticCalculatorLayout(converted), converted, '静的化処理は冪等である');
 });
 
-test('4言語の公開HTMLはJavaScript実行前から5項目と専用ラベルを持つ', () => {
+test('6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOMを持つ', () => {
   for (const indexPath of indexPaths) {
     const html = read(indexPath);
     const mainMode = html.slice(html.indexOf('<div id="mainMode"'), html.indexOf('<div id="reverseMode"'));
     validateStaticLayout(html);
     assert.ok(!mainMode.includes('id="pack-amount"'), `${indexPath}: 平均パック額が残っている`);
     assert.ok(!mainMode.includes('data-lang-key="sectionTitleRate"'), `${indexPath}: 独立した還元設定が残っている`);
+    assert.ok(mainMode.includes('id="calculator-advanced-settings"'), `${indexPath}: 静的な詳細設定ラッパーがない`);
+    assert.ok(mainMode.includes('calculator-advanced-settings__toggle'), `${indexPath}: 静的な詳細設定トグルがない`);
+  }
+});
+
+test('主要4言語の公開HTMLはJavaScript実行前から専用ラベルを持つ', () => {
+  for (const [indexPath, labels] of Object.entries(expectedLabels)) {
+    const html = read(indexPath);
+    const mainMode = html.slice(html.indexOf('<div id="mainMode"'), html.indexOf('<div id="reverseMode"'));
     assert.ok(!mainMode.includes('data-lang-key="labelBaseRate"'), `${indexPath}: 通常計算の獲得率が一般翻訳キーへ依存している`);
     assert.ok(!mainMode.includes('data-lang-key="labelMultiplier"'), `${indexPath}: 通常計算の倍率が一般翻訳キーへ依存している`);
-    for (const label of expectedLabels[indexPath]) {
+    for (const label of labels) {
       assert.ok(mainMode.includes(label), `${indexPath}: 静的ラベルがありません: ${label}`);
     }
   }
