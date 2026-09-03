@@ -19,6 +19,10 @@ const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
 const { syncIntlHubDiscovery } = require('./intl-hub-discovery.cjs');
+const {
+  applyIntlSemanticSourceOverrides,
+  normalizeIntlGeneratedCopy
+} = require('./intl-localization-normalize.cjs');
 const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
 const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
@@ -44,6 +48,8 @@ const rootDir = path.join(__dirname, '..');
 
 const { assetVersion, indexHtml, todayStr } = syncIndexMetadata(rootDir);
 const locales = createLocales();
+const intlSemanticSourceSummary = applyIntlSemanticSourceOverrides(locales);
+console.log(`[build-html] applied international semantic overrides: ${intlSemanticSourceSummary.statusPages} query groups / ${intlSemanticSourceSummary.campaignPages} campaign copy groups`);
 
 const editorialArticleCount = applyEditorialStructure(rootDir, todayStr);
 console.log(`[build-html] synchronized editorial structure: ${editorialArticleCount}`);
@@ -107,6 +113,9 @@ console.log(`[build-html] sanitized internal attribution links: ${sanitizedInter
 
 const speculationRulesChanged = syncSpeculationRules(rootDir);
 console.log(`[build-html] synchronized speculation rules: ${speculationRulesChanged} updated`);
+
+const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
+console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
