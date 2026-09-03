@@ -24,35 +24,27 @@ jobs:
           node <<'NODE'
           const fs = require('node:fs');
 
-          function moveIntroBeforeCalculator(path, verifiedTextOld, verifiedTextNew) {
+          function moveIntroBeforeCalculator(path) {
             let html = fs.readFileSync(path, 'utf8');
             const introMatch = html.match(/\n    <div class="intro">[\s\S]*?<\/div>/);
             if (!introMatch) throw new Error(`${path}: intro not found`);
             const calcIndex = html.indexOf('data-generated-intl-article-prompt="true"');
             const introIndex = html.indexOf(introMatch[0]);
+            if (calcIndex < 0) throw new Error(`${path}: calculator prompt not found`);
             if (introIndex > calcIndex) {
               html = html.replace(introMatch[0], '');
               const articleMarker = '<article class="content">\n';
               if (!html.includes(articleMarker)) throw new Error(`${path}: article marker not found`);
-              html = html.replace(articleMarker, `${articleMarker}${introMatch[0].slice(1)}\n`);
+              html = html.replace(articleMarker, articleMarker + introMatch[0].slice(1) + '\n');
             }
             html = html.replace('<meta name="playpoint:official-verified" content="2026-07-24">', '<meta name="playpoint:official-verified" content="2026-09-03">');
             html = html.replace('<meta name="last-modified" content="2026-07-24">', '<meta name="last-modified" content="2026-09-03">');
             html = html.replace('"dateModified":"2026-07-24"', '"dateModified":"2026-09-03"');
-            if (verifiedTextOld && html.includes(verifiedTextOld)) html = html.replace(verifiedTextOld, verifiedTextNew);
             fs.writeFileSync(path, html);
           }
 
-          moveIntroBeforeCalculator(
-            'ko/articles/google-play-points-expiration.html',
-            '공식 정보 최종 확인: 2026년 7월 24일.',
-            '공식 정보 최종 확인: 2026년 9월 3일.'
-          );
-          moveIntroBeforeCalculator(
-            'tw/articles/google-play-points-expiration.html',
-            '官方資訊最終確認：2026 年 7 月 24 日。',
-            '官方資訊最終確認：2026 年 9 月 3 日。'
-          );
+          moveIntroBeforeCalculator('ko/articles/google-play-points-expiration.html');
+          moveIntroBeforeCalculator('tw/articles/google-play-points-expiration.html');
 
           const datesPath = 'scripts/article-official-verification-dates.json';
           const dates = JSON.parse(fs.readFileSync(datesPath, 'utf8'));
@@ -72,9 +64,46 @@ jobs:
             demand.pages[url].gsc += ' Wave4 keeps the existing substantive guide and only moves the one-year answer before the calculator; short engagement alone is not treated as proof of poor content.';
           }
           fs.writeFileSync(demandPath, JSON.stringify(demand, null, 2) + '\n');
-
-          fs.writeFileSync('tests/intl-demand-content-quality-wave4.test.cjs', `'use strict';\n\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\n\nconst root = path.resolve(__dirname, '..');\nconst read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');\n\nfor (const [locale, file, answer] of [\n  ['KO', 'ko/articles/google-play-points-expiration.html', '마지막으로 포인트를 적립하거나 사용한 날부터 1년 후 소멸'],\n  ['TW', 'tw/articles/google-play-points-expiration.html', '마지막으로 포인트를 적립하거나 사용한 날부터 1년 후 소멸']\n]) {\n  test(\`${'${locale}'} expiration gives the direct answer before calculator without a broad rewrite\`, () => {\n    const html = read(file);\n    const intro = html.indexOf('class="intro"');\n    const calc = html.indexOf('data-generated-intl-article-prompt="true"');\n    assert.notEqual(intro, -1, \`${'${locale}'} intro\`);\n    assert.notEqual(calc, -1, \`${'${locale}'} calculator\`);\n    assert.ok(intro < calc, \`${'${locale}'} answer must precede calculator\`);\n    assert.match(html, /playpoint:official-verified" content="2026-09-03"/);\n    assert.match(html, /9077192/);\n    if (locale === 'KO') assert.match(html, /마지막으로 포인트를 적립하거나 사용한 날부터 1년 후 소멸/);\n    if (locale === 'TW') assert.match(html, /最後一次獲得或使用點數後一年到期/);\n  });\n}\n\ntest('wave4 reclassifies answer-first expiration pages to observation, not repeated rewrite', () => {\n  const report = read('docs/INTL_CONTENT_AUDIT_2026-09-03.md');\n  assert.match(report, /\\| A \\| KO \\| `\\/ko\\/articles\\/google-play-points-expiration\\.html`[\\s\\S]*observe-after-wave4-answer-first/);\n  assert.match(report, /\\| A \\| TW \\| `\\/tw\\/articles\\/google-play-points-expiration\\.html`[\\s\\S]*observe-after-wave4-answer-first/);\n});\n`);
           NODE
+
+      - name: Add focused wave4 regression contract
+        shell: bash
+        run: |
+          cat > tests/intl-demand-content-quality-wave4.test.cjs <<'EOF'
+          'use strict';
+
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const test = require('node:test');
+
+          const root = path.resolve(__dirname, '..');
+          const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
+
+          for (const [locale, file] of [
+            ['KO', 'ko/articles/google-play-points-expiration.html'],
+            ['TW', 'tw/articles/google-play-points-expiration.html']
+          ]) {
+            test(`${locale} expiration gives the direct answer before calculator without a broad rewrite`, () => {
+              const html = read(file);
+              const intro = html.indexOf('class="intro"');
+              const calc = html.indexOf('data-generated-intl-article-prompt="true"');
+              assert.notEqual(intro, -1, `${locale} intro`);
+              assert.notEqual(calc, -1, `${locale} calculator`);
+              assert.ok(intro < calc, `${locale} answer must precede calculator`);
+              assert.match(html, /playpoint:official-verified" content="2026-09-03"/);
+              assert.match(html, /9077192/);
+              if (locale === 'KO') assert.match(html, /마지막으로 포인트를 적립하거나 사용한 날부터 1년 후 소멸/);
+              if (locale === 'TW') assert.match(html, /最後一次獲得或使用點數後一年到期/);
+            });
+          }
+
+          test('wave4 reclassifies answer-first expiration pages to observation, not repeated rewrite', () => {
+            const report = read('docs/INTL_CONTENT_AUDIT_2026-09-03.md');
+            assert.match(report, /\| A \| KO \| `\/ko\/articles\/google-play-points-expiration\.html`[^\n]*observe-after-wave4-answer-first/);
+            assert.match(report, /\| A \| TW \| `\/tw\/articles\/google-play-points-expiration\.html`[^\n]*observe-after-wave4-answer-first/);
+          });
+          EOF
 
       - name: Generate canonical outputs and refreshed audit
         run: |
