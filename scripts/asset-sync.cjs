@@ -21,6 +21,7 @@ const APP_MODULE_FILES = [
   'js/region-result-navigation.js',
   'region-selector.css',
   'js/language-suggestion.js',
+  'js/first-view.js',
   'js/calendar-reminder.js',
   'js/pwa-install.js',
   'js/widget-referral.js',
