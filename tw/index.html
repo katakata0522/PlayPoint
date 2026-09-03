@@ -179,12 +179,6 @@
     <style id="playpoint-first-view-critical">
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
 .calculator-advanced-settings__toggle{display:none}
-.calculator-advanced-settings__copy{display:none}
-html[lang="ja"] .calculator-advanced-settings__copy--ja{display:inline}
-html[lang^="en"] .calculator-advanced-settings__copy--en{display:inline}
-html[lang^="ko"] .calculator-advanced-settings__copy--ko{display:inline}
-html[lang="zh-TW"] .calculator-advanced-settings__copy--tw{display:inline}
-html[lang="zh-HK"] .calculator-advanced-settings__copy--hk{display:inline}
 .region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
 @media(max-width:640px){
 .calculator-advanced-settings{display:block;margin-top:.85em}
@@ -264,7 +258,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
-    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span><span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--ja">獲得率・キャンペーンを調整（任意）</span><span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--en">Adjust earn rates & promotion (optional)</span><span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--ko">적립률·프로모션 조정 (선택)</span><span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--tw">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--hk">調整獲點率與活動（選填）</span></span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
+    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">每 NT$30 獲得點數（自動帶入，可修改）</span>

@@ -14,19 +14,23 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 const expectedLabels = Object.freeze({
   'index.html': [
     '100円あたりの獲得率（自動入力・編集可）',
-    'キャンペーン特別獲得率（例：3pt/100円）'
+    'キャンペーン特別獲得率（例：3pt/100円）',
+    '獲得率・キャンペーンを調整（任意）'
   ],
   'en/index.html': [
     'Points per $1 (auto-filled, editable)',
-    'Promotion special earn rate (e.g. 3 pt / $1)'
+    'Promotion special earn rate (e.g. 3 pt / $1)',
+    'Adjust earn rates & promotion (optional)'
   ],
   'ko/index.html': [
     '₩1,000당 적립률 (자동 입력·수정 가능)',
-    '캠페인 특별 적립률 (예: 1,000원당 3pt)'
+    '캠페인 특별 적립률 (예: 1,000원당 3pt)',
+    '적립률·프로모션 조정 (선택)'
   ],
   'tw/index.html': [
     '每 NT$30 獲得點數（自動帶入，可修改）',
-    '活動特別獲點率（例：每 NT$30 3 點）'
+    '活動特別獲點率（例：每 NT$30 3 點）',
+    '調整獲點率與活動（選填）'
   ]
 });
 const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'];
@@ -83,6 +87,9 @@ test('6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOM�
     assert.ok(!mainMode.includes('data-lang-key="sectionTitleRate"'), `${indexPath}: 独立した還元設定が残っている`);
     assert.ok(mainMode.includes('id="calculator-advanced-settings"'), `${indexPath}: 静的な詳細設定ラッパーがない`);
     assert.ok(mainMode.includes('calculator-advanced-settings__toggle'), `${indexPath}: 静的な詳細設定トグルがない`);
+    const advancedLabels = mainMode.match(/data-simplified-calculator-copy="advancedSettingsLabel"/g) || [];
+    assert.equal(advancedLabels.length, 1, `${indexPath}: 詳細設定ラベルは1言語分だけ静的出力する`);
+    assert.ok(!mainMode.includes('calculator-advanced-settings__copy--'), `${indexPath}: 他言語の非表示コピーを埋め込まない`);
   }
 });
 

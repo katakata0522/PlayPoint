@@ -12,6 +12,7 @@ const firstView = () => read('js/first-view.js');
 test('スマホ詳細設定は初回HTMLに存在し、JavaScriptは入力欄を移動しない', () => {
   const source = firstView();
   const staticLayout = read('scripts/static-calculator-layout.cjs');
+  const languageBuilder = read('scripts/language-page-builder.cjs');
 
   assert.match(source, /const MOBILE_QUERY = '\(max-width: 640px\)'/);
   assert.match(source, /document\.getElementById\(SETTINGS_ID\)/);
@@ -25,9 +26,10 @@ test('スマホ詳細設定は初回HTMLに存在し、JavaScriptは入力欄を
   assert.match(staticLayout, /ADVANCED_SETTINGS_STYLE_ID = 'playpoint-first-view-critical'/);
   assert.match(staticLayout, /calculator-advanced-settings__toggle/);
   assert.match(staticLayout, /獲得率・キャンペーンを調整（任意）/);
-  assert.match(staticLayout, /Adjust earn rates & promotion \(optional\)/);
-  assert.match(staticLayout, /적립률·프로모션 조정 \(선택\)/);
-  assert.match(staticLayout, /調整獲點率與活動（選填）/);
+  assert.match(staticLayout, /data-simplified-calculator-copy="advancedSettingsLabel"/);
+  assert.match(languageBuilder, /Adjust earn rates & promotion \(optional\)/);
+  assert.match(languageBuilder, /적립률·프로모션 조정 \(선택\)/);
+  assert.match(languageBuilder, /調整獲點率與活動（選填）/);
 });
 
 test('キャンペーン条件付きURLはbody描画前に詳細設定の初期状態を確定する', () => {

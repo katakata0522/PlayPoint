@@ -7,15 +7,18 @@ const { replaceDateMetadata } = require('./html-replacements.cjs');
 const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
   en: {
     baseRateLabel: 'Points per $1 (auto-filled, editable)',
-    multiplierLabel: 'Promotion special earn rate (e.g. 3 pt / $1)'
+    multiplierLabel: 'Promotion special earn rate (e.g. 3 pt / $1)',
+    advancedSettingsLabel: 'Adjust earn rates & promotion (optional)'
   },
   ko: {
     baseRateLabel: '₩1,000당 적립률 (자동 입력·수정 가능)',
-    multiplierLabel: '캠페인 특별 적립률 (예: 1,000원당 3pt)'
+    multiplierLabel: '캠페인 특별 적립률 (예: 1,000원당 3pt)',
+    advancedSettingsLabel: '적립률·프로모션 조정 (선택)'
   },
   tw: {
     baseRateLabel: '每 NT$30 獲得點數（自動帶入，可修改）',
-    multiplierLabel: '活動特別獲點率（例：每 NT$30 3 點）'
+    multiplierLabel: '活動特別獲點率（例：每 NT$30 3 點）',
+    advancedSettingsLabel: '調整獲點率與活動（選填）'
   }
 });
 
@@ -49,6 +52,10 @@ function replaceSimplifiedCalculatorCopy(html, copy) {
     .replace(
       /(<span\b[^>]*\bdata-simplified-calculator-copy="multiplierLabel"[^>]*>)[\s\S]*?(<\/span>)/i,
       (_match, openTag, closeTag) => `${openTag}${copy.multiplierLabel}${closeTag}`
+    )
+    .replace(
+      /(<span\b[^>]*\bdata-simplified-calculator-copy="advancedSettingsLabel"[^>]*>)[\s\S]*?(<\/span>)/i,
+      (_match, openTag, closeTag) => `${openTag}${copy.advancedSettingsLabel}${closeTag}`
     );
 }
 

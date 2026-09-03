@@ -10,23 +10,11 @@ const ADVANCED_SETTINGS_BODY_ID = 'calculator-advanced-settings-body';
 const ADVANCED_SETTINGS_STYLE_ID = 'playpoint-first-view-critical';
 const ADVANCED_SETTINGS_STATE_SCRIPT_ID = 'playpoint-first-view-state';
 
-const ADVANCED_SETTINGS_COPY = Object.freeze({
-  ja: '獲得率・キャンペーンを調整（任意）',
-  en: 'Adjust earn rates & promotion (optional)',
-  ko: '적립률·프로모션 조정 (선택)',
-  tw: '調整獲點率與活動（選填）',
-  hk: '調整獲點率與活動（選填）'
-});
+const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意）';
 
 const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
 .calculator-advanced-settings__toggle{display:none}
-.calculator-advanced-settings__copy{display:none}
-html[lang="ja"] .calculator-advanced-settings__copy--ja{display:inline}
-html[lang^="en"] .calculator-advanced-settings__copy--en{display:inline}
-html[lang^="ko"] .calculator-advanced-settings__copy--ko{display:inline}
-html[lang="zh-TW"] .calculator-advanced-settings__copy--tw{display:inline}
-html[lang="zh-HK"] .calculator-advanced-settings__copy--hk{display:inline}
 .region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
 @media(max-width:640px){
 .calculator-advanced-settings{display:block;margin-top:.85em}
@@ -109,23 +97,62 @@ function markStaticLayout(content) {
 }
 
 function buildAdvancedSettingsToggle() {
-  const copies = Object.entries(ADVANCED_SETTINGS_COPY)
-    .map(([key, value]) => `<span class="calculator-advanced-settings__copy calculator-advanced-settings__copy--${key}">${value}</span>`)
-    .join('');
-  return `<button type="button" class="calculator-advanced-settings__toggle" aria-controls="${ADVANCED_SETTINGS_BODY_ID}" aria-expanded="false"><span>${copies}</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>`;
+  return `<button type="button" class="calculator-advanced-settings__toggle" aria-controls="${ADVANCED_SETTINGS_BODY_ID}" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">${ADVANCED_SETTINGS_COPY}</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>`;
+}
+
+function normalizeAdvancedSettingsToggle(content) {
+  const openingPattern = /<button\b[^>]*\bclass=["'][^"']*calculator-advanced-settings__toggle[^"']*["'][^>]*>/i;
+  const match = openingPattern.exec(content);
+  if (!match) return content;
+  const range = findBalancedElementRange(content, match.index, 'button');
+  if (!range) throw new Error('詳細設定トグルの範囲を取得できません。');
+  return `${content.slice(0, range.start)}${buildAdvancedSettingsToggle()}${content.slice(range.end)}`;
+}
+
+function replaceElementById(content, tagName, id, replacement) {
+  const opening = `<${tagName} id="${id}">`;
+  const start = content.indexOf(opening);
+  if (start < 0) return { content, replaced: false };
+  const closing = `</${tagName}>`;
+  const end = content.indexOf(closing, start + opening.length);
+  if (end < 0) throw new Error(`${id} の終了タグを取得できません。`);
+  return {
+    content: `${content.slice(0, start)}${replacement}${content.slice(end + closing.length)}`,
+    replaced: true
+  };
 }
 
 function ensureCriticalFirstViewAssets(content) {
   if (!content.includes('</head>')) return content;
   const additions = [];
-  if (!content.includes(`id="${ADVANCED_SETTINGS_STYLE_ID}"`)) additions.push(ADVANCED_SETTINGS_CRITICAL_STYLE);
-  if (!content.includes(`id="${ADVANCED_SETTINGS_STATE_SCRIPT_ID}"`)) additions.push(ADVANCED_SETTINGS_STATE_SCRIPT);
+
+  const styleResult = replaceElementById(
+    content,
+    'style',
+    ADVANCED_SETTINGS_STYLE_ID,
+    ADVANCED_SETTINGS_CRITICAL_STYLE
+  );
+  content = styleResult.content;
+  if (!styleResult.replaced) additions.push(ADVANCED_SETTINGS_CRITICAL_STYLE);
+
+  const stateResult = replaceElementById(
+    content,
+    'script',
+    ADVANCED_SETTINGS_STATE_SCRIPT_ID,
+    ADVANCED_SETTINGS_STATE_SCRIPT
+  );
+  content = stateResult.content;
+  if (!stateResult.replaced) additions.push(ADVANCED_SETTINGS_STATE_SCRIPT);
+
   if (!additions.length) return content;
   return content.replace('</head>', `${additions.map(item => `    ${item}`).join('\n    ')}\n</head>`);
 }
 
 function ensureStaticAdvancedSettings(content) {
-  if (content.includes(`id="${ADVANCED_SETTINGS_ID}"`)) return ensureCriticalFirstViewAssets(content);
+  if (content.includes(`id="${ADVANCED_SETTINGS_ID}"`)) {
+    content = normalizeAdvancedSettingsToggle(content);
+    return ensureCriticalFirstViewAssets(content);
+  }
 
   const baseRateLabelRange = findLabelRange(content, 'baseRate');
   const warningRange = findWarningRange(content);
