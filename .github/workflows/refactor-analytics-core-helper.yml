@@ -1,0 +1,82 @@
+name: Analytics core refactor helper
+
+on:
+  push:
+    branches:
+      - refactor/analytics-core-boundaries
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refactor/analytics-core-boundaries
+          fetch-depth: 0
+
+      - name: Apply focused analytics refactor
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          function replaceOrFail(file, before, after) {
+            const source = fs.readFileSync(file, 'utf8');
+            if (!source.includes(before)) {
+              throw new Error(`Expected refactor pattern not found in ${file}`);
+            }
+            fs.writeFileSync(file, source.replace(before, after));
+          }
+
+          replaceOrFail('js/analytics-core.js', `    let activeCalculatorEntry = null;\n    let calculationEntryConsumed = false;\n\n    function hasConsent() {\n        return Boolean(window.PlayPointConsent)\n            && window.PlayPointConsent.getStatus() === 'granted';\n    }\n`, `    let activeCalculatorEntry = null;\n    let calculationEntryConsumed = false;\n    let gtagBridge = null;\n\n    function getConsentStatus() {\n        if (!window.PlayPointConsent || typeof window.PlayPointConsent.getStatus !== 'function') return null;\n        return window.PlayPointConsent.getStatus();\n    }\n\n    function hasConsent() {\n        return getConsentStatus() === 'granted';\n    }\n`);
+
+          replaceOrFail('js/analytics-core.js', `    function sanitizeParams(eventName, params = {}) {\n        const allowed = ALLOWED_PARAMS[eventName];\n        if (!allowed || !params || typeof params !== 'object') return null;\n        return allowed.reduce((clean, key) => {\n            const value = sanitizeValue(key, params[key]);\n            if (value !== null) clean[key] = value;\n            return clean;\n        }, {});\n    }\n\n    function sanitizeCalculatorEntry(params = {}) {\n        const clean = sanitizeParams('calculation_completed', params) || {};\n        return CALCULATOR_ENTRY_PARAMS.reduce((entry, key) => {\n            if (clean[key] !== undefined) entry[key] = clean[key];\n            return entry;\n        }, {});\n    }\n`, `    function sanitizeAllowedParams(allowed, params = {}) {\n        if (!Array.isArray(allowed) || !params || typeof params !== 'object') return null;\n        return allowed.reduce((clean, key) => {\n            const value = sanitizeValue(key, params[key]);\n            if (value !== null) clean[key] = value;\n            return clean;\n        }, {});\n    }\n\n    function sanitizeParams(eventName, params = {}) {\n        const allowed = ALLOWED_PARAMS[eventName];\n        if (!allowed) return null;\n        return sanitizeAllowedParams(allowed, params);\n    }\n\n    function sanitizeCalculatorEntry(params = {}) {\n        return sanitizeAllowedParams(CALCULATOR_ENTRY_PARAMS, params) || {};\n    }\n`);
+
+          replaceOrFail('js/analytics-core.js', `    function enrichCalculationParams(eventName, params) {\n        const clean = sanitizeParams(eventName, params);\n        if (!clean || !CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return clean;\n\n        const entry = readCalculatorEntry();\n        if (!entry) return clean;\n        if (CALCULATION_EVENTS.has(eventName)) {\n            if (calculationEntryConsumed) return clean;\n            calculationEntryConsumed = true;\n        }\n        return sanitizeParams(eventName, { ...clean, ...entry });\n    }\n`, `    function enrichSanitizedCalculationParams(eventName, cleanParams) {\n        if (!CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return cleanParams;\n\n        const entry = readCalculatorEntry();\n        if (!entry) return cleanParams;\n        if (CALCULATION_EVENTS.has(eventName)) {\n            if (calculationEntryConsumed) return cleanParams;\n            calculationEntryConsumed = true;\n        }\n        return sanitizeParams(eventName, { ...cleanParams, ...entry });\n    }\n\n    function sanitizeAndEnrichCalculationParams(eventName, params) {\n        const cleanParams = sanitizeParams(eventName, params);\n        if (cleanParams === null) return null;\n        return enrichSanitizedCalculationParams(eventName, cleanParams);\n    }\n`);
+
+          replaceOrFail('js/analytics-core.js', `    function installGtagBridge() {\n        if (window.__playpointGtagBridgeInstalled) return;\n        window.__playpointGtagBridgeInstalled = true;\n        window.dataLayer = window.dataLayer || [];\n\n        window.gtag = function gtag(command, eventName, params) {\n            if (command === 'event' && typeof eventName === 'string') {\n                const enrichedParams = enrichCalculationParams(eventName, params || {});\n                if (enrichedParams === null) return;\n                arguments[2] = enrichedParams;\n            }\n            window.dataLayer.push(arguments);\n        };\n    }\n`, `    function installGtagBridge() {\n        if (window.__playpointGtagBridgeInstalled) return;\n        window.__playpointGtagBridgeInstalled = true;\n        window.dataLayer = window.dataLayer || [];\n\n        gtagBridge = function gtag(command, eventName, params) {\n            if (command === 'event' && typeof eventName === 'string') {\n                const enrichedParams = sanitizeAndEnrichCalculationParams(eventName, params || {});\n                if (enrichedParams === null) return;\n                arguments[2] = enrichedParams;\n            }\n            window.dataLayer.push(arguments);\n        };\n        window.gtag = gtagBridge;\n    }\n`);
+
+          replaceOrFail('js/analytics-core.js', `    function queue(eventName, params) {\n        if (pendingEvents.length >= MAX_PENDING_EVENTS) pendingEvents.shift();\n        pendingEvents.push({ eventName, params });\n    }\n\n    function send(eventName, params) {\n        const enrichedParams = enrichCalculationParams(eventName, params);\n        if (enrichedParams === null) return false;\n        installGtagBridge();\n        window.gtag('event', eventName, enrichedParams);\n        return true;\n    }\n`, `    function queue(eventName, params) {\n        if (pendingEvents.length >= MAX_PENDING_EVENTS) pendingEvents.shift();\n        pendingEvents.push({ eventName, params });\n    }\n\n    function discardPendingAnalytics() {\n        pendingEvents.length = 0;\n        clearCalculatorEntry();\n    }\n\n    function send(eventName, cleanParams) {\n        installGtagBridge();\n        if (window.gtag === gtagBridge) {\n            window.gtag('event', eventName, cleanParams);\n            return true;\n        }\n\n        const enrichedParams = enrichSanitizedCalculationParams(eventName, cleanParams);\n        if (enrichedParams === null) return false;\n        window.gtag('event', eventName, enrichedParams);\n        return true;\n    }\n`);
+
+          replaceOrFail('js/analytics-core.js', `        if (!window.PlayPointConsent) {\n            queue(eventName, cleanParams);\n            return false;\n        }\n        const consentStatus = window.PlayPointConsent.getStatus();\n        if (consentStatus === 'pending') {\n            queue(eventName, cleanParams);\n            return false;\n        }\n        if (consentStatus !== 'granted') {\n            pendingEvents.length = 0;\n            clearCalculatorEntry();\n            return false;\n        }\n`, `        const consentStatus = getConsentStatus();\n        if (consentStatus === null || consentStatus === 'pending') {\n            queue(eventName, cleanParams);\n            return false;\n        }\n        if (consentStatus !== 'granted') {\n            discardPendingAnalytics();\n            return false;\n        }\n`);
+
+          replaceOrFail('js/analytics-core.js', `    function flushPending() {\n        if (!window.PlayPointConsent) return;\n        const consentStatus = window.PlayPointConsent.getStatus();\n        if (consentStatus === 'pending') return;\n        if (consentStatus !== 'granted') {\n            pendingEvents.length = 0;\n            clearCalculatorEntry();\n            return;\n        }\n`, `    function flushPending() {\n        const consentStatus = getConsentStatus();\n        if (consentStatus === null || consentStatus === 'pending') return;\n        if (consentStatus !== 'granted') {\n            discardPendingAnalytics();\n            return;\n        }\n`);
+
+          const testFile = 'tests/analytics-core.test.cjs';
+          const testSource = fs.readFileSync(testFile, 'utf8');
+          const extraTest = `\n\ntest('内部gtag bridgeへの直接eventも許可リストと記事起点を維持する', () => {\n  const { context } = createRuntime('granted');\n  context.PlayPointAnalytics.rememberCalculatorEntry('/?mode=main', {\n    source_path: '/articles/guide.html',\n    link_context: 'article_cta'\n  });\n\n  context.gtag('event', 'calculator_form_started', {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    start_field: 'current_status',\n    secret: 'drop'\n  });\n\n  assert.deepEqual(eventCalls(context, 'calculator_form_started')[0], {\n    calculation_mode: 'rank_up',\n    region: 'JP',\n    start_field: 'current_status',\n    entry_source_path: '/articles/guide.html',\n    entry_link_context: 'article_cta',\n    calculator_preset: 'preset'\n  });\n});\n`;
+          if (testSource.includes("内部gtag bridgeへの直接eventも許可リストと記事起点を維持する")) {
+            throw new Error('Refactor regression test already exists');
+          }
+          fs.writeFileSync(testFile, testSource.trimEnd() + extraTest);
+          NODE
+
+          git diff --check
+
+      - name: Run focused analytics tests
+        run: node --test tests/analytics-core.test.cjs tests/analytics-runtime-attribution.test.cjs
+
+      - name: Synchronize generated assets
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit refactor and generated output
+        shell: bash
+        run: |
+          rm .github/workflows/refactor-analytics-core-helper.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'refactor: simplify analytics send boundaries'
+          git push origin HEAD:refactor/analytics-core-boundaries
+
+      - name: Verify complete preflight on committed tree
+        run: |
+          node .github/scripts/preflight.cjs
+          test -z "$(git status --porcelain)"
