@@ -1,6 +1,6 @@
 'use strict';
 
-import './analytics-core.js?v=b8ced2cf8e';
+import './analytics-core.js?v=6c53259f7f';
 
 const REGIONS = {
   JP: {

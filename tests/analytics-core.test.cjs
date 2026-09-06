@@ -275,3 +275,27 @@ test('同意pending中はイベントを捨てず、明示拒否時だけ破棄�
   denied.context.document.dispatchEvent({ type: 'playpoint:consent-updated' });
   assert.equal(eventCalls(denied.context, 'theme_change').length, 0);
 });
+
+test('内部gtag bridgeへの直接eventも許可リストと記事起点を維持する', () => {
+  const { context } = createRuntime('granted');
+  context.PlayPointAnalytics.rememberCalculatorEntry('/?mode=main', {
+    source_path: '/articles/guide.html',
+    link_context: 'article_cta'
+  });
+
+  context.gtag('event', 'calculator_form_started', {
+    calculation_mode: 'rank_up',
+    region: 'JP',
+    start_field: 'current_status',
+    secret: 'drop'
+  });
+
+  assert.deepEqual(eventCalls(context, 'calculator_form_started')[0], {
+    calculation_mode: 'rank_up',
+    region: 'JP',
+    start_field: 'current_status',
+    entry_source_path: '/articles/guide.html',
+    entry_link_context: 'article_cta',
+    calculator_preset: 'preset'
+  });
+});

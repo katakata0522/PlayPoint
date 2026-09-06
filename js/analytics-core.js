@@ -56,10 +56,15 @@
     let initialPageViewSent = false;
     let activeCalculatorEntry = null;
     let calculationEntryConsumed = false;
+    let gtagBridge = null;
+
+    function getConsentStatus() {
+        if (!window.PlayPointConsent || typeof window.PlayPointConsent.getStatus !== 'function') return null;
+        return window.PlayPointConsent.getStatus();
+    }
 
     function hasConsent() {
-        return Boolean(window.PlayPointConsent)
-            && window.PlayPointConsent.getStatus() === 'granted';
+        return getConsentStatus() === 'granted';
     }
 
     function sanitizeValue(key, value) {
@@ -89,9 +94,8 @@
         return text.replace(/[<>"']/g, '').slice(0, MAX_TEXT_LENGTH);
     }
 
-    function sanitizeParams(eventName, params = {}) {
-        const allowed = ALLOWED_PARAMS[eventName];
-        if (!allowed || !params || typeof params !== 'object') return null;
+    function sanitizeAllowedParams(allowed, params = {}) {
+        if (!Array.isArray(allowed) || !params || typeof params !== 'object') return null;
         return allowed.reduce((clean, key) => {
             const value = sanitizeValue(key, params[key]);
             if (value !== null) clean[key] = value;
@@ -99,12 +103,14 @@
         }, {});
     }
 
+    function sanitizeParams(eventName, params = {}) {
+        const allowed = ALLOWED_PARAMS[eventName];
+        if (!allowed) return null;
+        return sanitizeAllowedParams(allowed, params);
+    }
+
     function sanitizeCalculatorEntry(params = {}) {
-        const clean = sanitizeParams('calculation_completed', params) || {};
-        return CALCULATOR_ENTRY_PARAMS.reduce((entry, key) => {
-            if (clean[key] !== undefined) entry[key] = clean[key];
-            return entry;
-        }, {});
+        return sanitizeAllowedParams(CALCULATOR_ENTRY_PARAMS, params) || {};
     }
 
     function getEntryContext() {
@@ -178,17 +184,22 @@
         }
     }
 
-    function enrichCalculationParams(eventName, params) {
-        const clean = sanitizeParams(eventName, params);
-        if (!clean || !CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return clean;
+    function enrichSanitizedCalculationParams(eventName, cleanParams) {
+        if (!CALCULATOR_ATTRIBUTION_EVENTS.has(eventName)) return cleanParams;
 
         const entry = readCalculatorEntry();
-        if (!entry) return clean;
+        if (!entry) return cleanParams;
         if (CALCULATION_EVENTS.has(eventName)) {
-            if (calculationEntryConsumed) return clean;
+            if (calculationEntryConsumed) return cleanParams;
             calculationEntryConsumed = true;
         }
-        return sanitizeParams(eventName, { ...clean, ...entry });
+        return sanitizeParams(eventName, { ...cleanParams, ...entry });
+    }
+
+    function sanitizeAndEnrichCalculationParams(eventName, params) {
+        const cleanParams = sanitizeParams(eventName, params);
+        if (cleanParams === null) return null;
+        return enrichSanitizedCalculationParams(eventName, cleanParams);
     }
 
     function installGtagBridge() {
@@ -196,14 +207,15 @@
         window.__playpointGtagBridgeInstalled = true;
         window.dataLayer = window.dataLayer || [];
 
-        window.gtag = function gtag(command, eventName, params) {
+        gtagBridge = function gtag(command, eventName, params) {
             if (command === 'event' && typeof eventName === 'string') {
-                const enrichedParams = enrichCalculationParams(eventName, params || {});
+                const enrichedParams = sanitizeAndEnrichCalculationParams(eventName, params || {});
                 if (enrichedParams === null) return;
                 arguments[2] = enrichedParams;
             }
             window.dataLayer.push(arguments);
         };
+        window.gtag = gtagBridge;
     }
 
     function queue(eventName, params) {
@@ -211,10 +223,20 @@
         pendingEvents.push({ eventName, params });
     }
 
-    function send(eventName, params) {
-        const enrichedParams = enrichCalculationParams(eventName, params);
-        if (enrichedParams === null) return false;
+    function discardPendingAnalytics() {
+        pendingEvents.length = 0;
+        clearCalculatorEntry();
+    }
+
+    function send(eventName, cleanParams) {
         installGtagBridge();
+        if (window.gtag === gtagBridge) {
+            window.gtag('event', eventName, cleanParams);
+            return true;
+        }
+
+        const enrichedParams = enrichSanitizedCalculationParams(eventName, cleanParams);
+        if (enrichedParams === null) return false;
         window.gtag('event', eventName, enrichedParams);
         return true;
     }
@@ -224,18 +246,13 @@
         const cleanParams = sanitizeParams(eventName, params);
         if (cleanParams === null) return false;
 
-        if (!window.PlayPointConsent) {
-            queue(eventName, cleanParams);
-            return false;
-        }
-        const consentStatus = window.PlayPointConsent.getStatus();
-        if (consentStatus === 'pending') {
+        const consentStatus = getConsentStatus();
+        if (consentStatus === null || consentStatus === 'pending') {
             queue(eventName, cleanParams);
             return false;
         }
         if (consentStatus !== 'granted') {
-            pendingEvents.length = 0;
-            clearCalculatorEntry();
+            discardPendingAnalytics();
             return false;
         }
         if (!analyticsReady) {
@@ -254,12 +271,10 @@
     }
 
     function flushPending() {
-        if (!window.PlayPointConsent) return;
-        const consentStatus = window.PlayPointConsent.getStatus();
-        if (consentStatus === 'pending') return;
+        const consentStatus = getConsentStatus();
+        if (consentStatus === null || consentStatus === 'pending') return;
         if (consentStatus !== 'granted') {
-            pendingEvents.length = 0;
-            clearCalculatorEntry();
+            discardPendingAnalytics();
             return;
         }
         if (!analyticsReady) return;
