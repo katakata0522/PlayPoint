@@ -212,8 +212,11 @@
     }
 
     function send(eventName, params) {
+        const enrichedParams = enrichCalculationParams(eventName, params);
+        if (enrichedParams === null) return false;
         installGtagBridge();
-        window.gtag('event', eventName, params);
+        window.gtag('event', eventName, enrichedParams);
+        return true;
     }
 
     function track(eventName, params = {}) {
@@ -240,8 +243,7 @@
             return false;
         }
 
-        send(eventName, cleanParams);
-        return true;
+        return send(eventName, cleanParams);
     }
 
     function sendInitialPageView() {
