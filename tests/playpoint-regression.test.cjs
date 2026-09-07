@@ -106,6 +106,7 @@ function loadCalculatorContext(dateClass = Date) {
         displayResultDetails
       };
     `,
+    preprocessESM(fs.readFileSync(path.join(root, 'js', 'result-navigation-config.js'), 'utf8')),
     preprocessESM(fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8')),
     `
       globalThis.__pp = {
