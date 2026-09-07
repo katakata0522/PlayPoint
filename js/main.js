@@ -120,11 +120,25 @@ function bindCalculatorFunnelStart(element, mode, startField, eventName = 'input
     bindEvent(element, eventName, () => calculatorFunnel.trackFormStarted(mode, startField));
 }
 
+function getResultLinkDestinationType(targetUrl) {
+    if (targetUrl.origin === window.location.origin) return 'internal';
+    if (
+        targetUrl.protocol === 'https:'
+        && targetUrl.hostname === 'support.google.com'
+        && targetUrl.pathname.startsWith('/googleplay/')
+    ) {
+        return 'official_google_support';
+    }
+    return 'external';
+}
+
 function getResultLinkAnalyticsParams(link) {
     const targetUrl = new URL(link.href, window.location.href);
+    const destinationType = getResultLinkDestinationType(targetUrl);
     return {
         source_path: window.location.pathname,
-        target_path: targetUrl.pathname,
+        target_path: destinationType === 'internal' ? targetUrl.pathname : undefined,
+        destination_type: destinationType,
         target_status: STATE.dom.result?.dataset?.targetStatusLabel || '',
         calculation_mode: 'rank_up',
         link_position: link.dataset.linkPosition

@@ -16,7 +16,9 @@ assert.match(calculator, /return getResultNavigationConfig\(STATE\.currentRegion
 assert.doesNotMatch(calculator, /const localized = \{/);
 assert.doesNotMatch(regionNavigation, /installExpandedRegionResultNavigation/);
 assert.doesNotMatch(regionNavigation, /import \{ CALC \} from '\.\/calculator\.js';/);
-assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = Object\.freeze\(\{ JP, US, KR, TW, HK, IN \}\);/);
+assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = deepFreeze\(\{ JP, US, KR, TW, HK, IN \}\);/);
+assert.match(resultNavigation, /export function assertResultNavigationCoverage\(regionCodes\)/);
+assert.match(regionNavigation, /assertResultNavigationCoverage\(Object\.keys\(CONFIGS\)\)/);
 assert.equal(fs.existsSync(path.join(rootDir, 'js/region-result-navigation.js')), false);
 assert.match(assetSync, /'js\/result-navigation-config\.js'/);
 assert.doesNotMatch(assetSync, /region-result-navigation\.js/);

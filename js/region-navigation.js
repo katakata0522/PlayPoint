@@ -3,8 +3,10 @@
 import { CONFIGS, STATE, CONSTANTS } from './config.js';
 import { UI } from './ui.js';
 import { createExpansionConfigs } from './region-expansion-config.js';
+import { assertResultNavigationCoverage } from './result-navigation-config.js';
 
 Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));
+assertResultNavigationCoverage(Object.keys(CONFIGS));
 
 const REGION_PATHS = Object.freeze({
     JP: '',

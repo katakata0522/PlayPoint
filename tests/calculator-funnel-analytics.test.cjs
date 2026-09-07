@@ -49,3 +49,46 @@ test('計算ファネルの状態管理は専用モジュールへ集約する',
   assert.match(funnelSource, /getConsentStatus/, 'Consent状態がファネル境界へ注入されていません');
   assert.match(funnelSource, /getRegion/, '地域分類がファネル境界へ注入されていません');
 });
+
+test('結果リンク計測は外部URLを内部pathへ偽装せず遷移種別だけ残す', () => {
+  const context = createRuntime();
+  const analytics = context.PlayPointAnalytics;
+
+  analytics.track('result_decision_link_clicked', {
+    source_path: '/hk/',
+    target_path: 'https://support.google.com/googleplay/answer/9080348',
+    destination_type: 'official_google_support',
+    target_status: '鑽石級',
+    calculation_mode: 'rank_up',
+    link_position: 1
+  });
+  assert.deepEqual(latestEventParams(context, 'result_decision_link_clicked'), {
+    source_path: '/hk/',
+    destination_type: 'official_google_support',
+    target_status: '鑽石級',
+    calculation_mode: 'rank_up',
+    link_position: 1
+  });
+
+  analytics.track('result_related_article_clicked', {
+    source_path: '/en/',
+    target_path: '/en/articles/google-play-points-levels.html',
+    destination_type: 'internal',
+    target_status: 'Platinum',
+    calculation_mode: 'rank_up',
+    link_position: 2
+  });
+  assert.deepEqual(latestEventParams(context, 'result_related_article_clicked'), {
+    source_path: '/en/',
+    target_path: '/en/articles/google-play-points-levels.html',
+    destination_type: 'internal',
+    target_status: 'Platinum',
+    calculation_mode: 'rank_up',
+    link_position: 2
+  });
+
+  assert.match(mainSource, /targetUrl\.origin === window\.location\.origin/);
+  assert.match(mainSource, /targetUrl\.hostname === 'support\.google\.com'/);
+  assert.match(mainSource, /destination_type:\s*destinationType/);
+  assert.match(mainSource, /target_path:\s*destinationType === 'internal' \? targetUrl\.pathname : undefined/);
+});

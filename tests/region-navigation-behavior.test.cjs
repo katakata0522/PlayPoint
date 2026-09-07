@@ -31,6 +31,11 @@ function createRuntime(pathname, savedRegion = null, currentRegion = null) {
     console: { log() {}, warn() {}, error() {} },
     CONFIGS: { JP: {}, US: {}, KR: {}, TW: {} },
     createExpansionConfigs() { return { HK: {}, IN: {} }; },
+    assertResultNavigationCoverage(regionCodes) {
+      if (regionCodes.some(region => !['JP', 'US', 'KR', 'TW', 'HK', 'IN'].includes(region))) {
+        throw new Error('missing result navigation config');
+      }
+    },
     STATE: { currentRegion },
     CONSTANTS: { STORAGE_REGION_KEY: STORAGE_KEY, CLASS_ACTIVE: 'active' },
     UI: { showToast() {} },
