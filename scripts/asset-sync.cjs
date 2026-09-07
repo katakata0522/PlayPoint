@@ -18,7 +18,7 @@ const APP_MODULE_FILES = [
   'js/config.js',
   'js/region-navigation.js',
   'js/region-expansion-config.js',
-  'js/region-result-navigation.js',
+  'js/result-navigation-config.js',
   'region-selector.css',
   'js/language-suggestion.js',
   'js/first-view.js',

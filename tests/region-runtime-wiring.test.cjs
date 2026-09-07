@@ -1,24 +1,27 @@
 'use strict';
-
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-
 const rootDir = path.resolve(__dirname, '..');
-const read = (relativePath) => fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-
+const read = relativePath => fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
 const main = read('js/main.js');
+const calculator = read('js/calculator.js');
 const regionNavigation = read('js/region-navigation.js');
+const resultNavigation = read('js/result-navigation-config.js');
 const assetSync = read('scripts/asset-sync.cjs');
 const serviceWorker = read('sw.js');
-
-assert.match(main, /import \{ installExpandedRegionResultNavigation \} from '\.\/region-result-navigation\.js';/);
-assert.match(main, /installExpandedRegionResultNavigation\(CALC, STATE\);/);
+assert.doesNotMatch(main, /installExpandedRegionResultNavigation/);
+assert.match(calculator, /import \{ getResultNavigationConfig \} from '\.\/result-navigation-config\.js';/);
+assert.match(calculator, /return getResultNavigationConfig\(STATE\.currentRegion\);/);
+assert.doesNotMatch(calculator, /const localized = \{/);
 assert.doesNotMatch(regionNavigation, /installExpandedRegionResultNavigation/);
 assert.doesNotMatch(regionNavigation, /import \{ CALC \} from '\.\/calculator\.js';/);
-assert.match(assetSync, /'js\/region-result-navigation\.js'/);
-assert.match(serviceWorker, /'\.\/js\/region-result-navigation\.js'/);
+assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = Object\.freeze\(\{ JP, US, KR, TW, HK, IN \}\);/);
+assert.equal(fs.existsSync(path.join(rootDir, 'js/region-result-navigation.js')), false);
+assert.match(assetSync, /'js\/result-navigation-config\.js'/);
+assert.doesNotMatch(assetSync, /region-result-navigation\.js/);
+assert.match(serviceWorker, /'\.\/js\/result-navigation-config\.js'/);
+assert.doesNotMatch(serviceWorker, /region-result-navigation\.js/);
 assert.match(serviceWorker, /'\.\/hk\/'/);
 assert.match(serviceWorker, /'\.\/in\/'/);
-
 console.log('Region runtime wiring guards passed.');

@@ -4,7 +4,6 @@ import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE } from './share.js';
 import { CALC } from './calculator.js';
-import { installExpandedRegionResultNavigation } from './region-result-navigation.js';
 import { simplifyMainCalculatorLayout, updateSimplifiedCalculatorCopy } from './main-calculator-ui.js?v=1c7e562190';
 import { initWebVitalsMonitoring } from './web-vitals.js';
 import {
@@ -21,7 +20,6 @@ import { trackWidgetReferral } from './widget-referral.js';
 import { registerServiceWorker } from './service-worker-registration.js';
 import { createCalculatorFunnelAnalytics } from './calculator-funnel-analytics.js';
 
-installExpandedRegionResultNavigation(CALC, STATE);
 
 let diaryModulePromise = null;
 const calculatorFunnel = createCalculatorFunnelAnalytics({
