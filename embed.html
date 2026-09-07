@@ -437,18 +437,26 @@
         let targetRegion = preferredRegion;
 
         if (ref) {
-            if (ref.includes('/ko/')) {
-                targetRegion = 'KR';
-            } else if (ref.includes('/tw/')) {
-                targetRegion = 'TW';
-            } else if (ref.includes('/hk/')) {
-                targetRegion = 'HK';
-            } else if (ref.includes('/in/')) {
-                targetRegion = 'IN';
-            } else if (ref.includes('/en/')) {
-                targetRegion = 'US';
-            } else if (ref.includes('playpoint-sim.com')) {
-                targetRegion = 'JP';
+            try {
+                const refUrl = new URL(ref, window.location.href);
+                if (refUrl.origin === window.location.origin) {
+                    const refPath = refUrl.pathname;
+                    if (refPath.startsWith('/ko/')) {
+                        targetRegion = 'KR';
+                    } else if (refPath.startsWith('/tw/')) {
+                        targetRegion = 'TW';
+                    } else if (refPath.startsWith('/hk/')) {
+                        targetRegion = 'HK';
+                    } else if (refPath.startsWith('/in/')) {
+                        targetRegion = 'IN';
+                    } else if (refPath.startsWith('/en/')) {
+                        targetRegion = 'US';
+                    } else {
+                        targetRegion = 'JP';
+                    }
+                }
+            } catch (error) {
+                console.warn('参照元URLを判定できませんでした。', error);
             }
         }
 

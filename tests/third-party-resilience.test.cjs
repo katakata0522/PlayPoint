@@ -54,7 +54,8 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
       head: {
         appendChild(script) {
           const src = String(script.src);
-          if (src.includes('js/analytics-core.js')) {
+          const parsedSrc = new URL(src, 'https://playpoint-sim.com/');
+          if (parsedSrc.origin === 'https://playpoint-sim.com' && parsedSrc.pathname.endsWith('/js/analytics-core.js')) {
             coreAttempts += 1;
             if (failCoreOnce && coreAttempts === 1) {
               script.onerror?.(new Error('core transient failure'));
@@ -69,7 +70,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
             script.onload?.();
             return;
           }
-          if (src.includes('js/consent.js')) {
+          if (parsedSrc.origin === 'https://playpoint-sim.com' && parsedSrc.pathname.endsWith('/js/consent.js')) {
             context.PlayPointConsent = {
               whenAdsAllowed(callback) { callback(); },
               whenAnalyticsGranted(callback) { callback(); },
@@ -78,7 +79,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
             script.onload?.();
             return;
           }
-          if (src.includes('googletagmanager.com/gtag/js')) {
+          if (parsedSrc.hostname === 'www.googletagmanager.com' && parsedSrc.pathname === '/gtag/js') {
             gaAttempts += 1;
             if (failGaOnce && gaAttempts === 1) {
               script.onerror?.(new Error('gtag transient failure'));
@@ -87,7 +88,7 @@ function createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {
             script.onload?.();
             return;
           }
-          if (src.includes('pagead2.googlesyndication.com')) {
+          if (parsedSrc.hostname === 'pagead2.googlesyndication.com') {
             script.onload?.();
             return;
           }
