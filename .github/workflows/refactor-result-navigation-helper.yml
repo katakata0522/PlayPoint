@@ -128,29 +128,23 @@ jobs:
       - name: Build generated assets before mutation probe
         run: node scripts/build-html.js
 
-      - name: Find test that mutates analytics core
+      - name: Verify tests do not mutate analytics core
         shell: bash
         run: |
           set -euo pipefail
           before="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
-          echo "analytics-core before tests: $before"
           for file in tests/*.test.cjs; do
-            echo "--- probing $file"
             node --test "$file" >/tmp/playpoint-test.log 2>&1 || { cat /tmp/playpoint-test.log; exit 1; }
             after="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
             if [ "$after" != "$before" ]; then
               cat /tmp/playpoint-test.log
               echo "SOURCE_MUTATOR=$file"
-              echo "before=$before"
-              echo "after=$after"
               git diff -- js/analytics-core.js
               exit 97
             fi
           done
-          echo "No single test mutated analytics-core.js"
           node --test tests/*.test.cjs
           after_all="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
-          echo "analytics-core after combined tests: $after_all"
           if [ "$after_all" != "$before" ]; then
             echo "Combined test execution mutates analytics-core.js"
             git diff -- js/analytics-core.js
@@ -160,8 +154,34 @@ jobs:
       - name: Synchronize generated assets
         run: node scripts/prepare-pr.cjs
 
-      - name: Run complete preflight again
-        run: node .github/scripts/preflight.cjs
+      - name: Run complete preflight and capture failure
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs 2>&1 | tee /tmp/result-navigation-preflight.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if [ "$status" -ne 0 ]; then
+            {
+              echo
+              echo '=== POST-PREFLIGHT STATUS ==='
+              git status --short
+              echo
+              echo '=== ANALYTICS / COMPONENT DIFF ==='
+              git --no-pager diff -- js/analytics-core.js blog/components.js scripts/asset-sync.cjs sw.js
+              echo
+              echo '=== GENERATED DIFF NAMES ==='
+              git --no-pager diff --name-only
+            } >> /tmp/result-navigation-preflight.log
+            cp /tmp/result-navigation-preflight.log .github/result-navigation-preflight-debug.log
+            git reset
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f .github/result-navigation-preflight-debug.log
+            git commit -m 'chore: capture result navigation preflight failure'
+            git push origin HEAD:refactor/region-result-navigation-boundaries
+            exit "$status"
+          fi
 
       - name: Verify diff
         run: |
@@ -171,6 +191,7 @@ jobs:
       - name: Commit refactor
         run: |
           rm .github/workflows/refactor-result-navigation-helper.yml
+          rm -f .github/result-navigation-preflight-debug.log
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
