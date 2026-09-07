@@ -10,7 +10,43 @@ permissions:
 
 jobs:
   harden:
-    if: false
+    if: ${{ github.actor != 'github-actions[bot]' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - run: echo paused
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/result-navigation-hardening
+          fetch-depth: 0
+
+      - name: Apply hardening changes
+        run: python3 scripts/result-navigation-hardening-helper.py
+
+      - name: Run focused regression tests
+        run: |
+          node --test \
+            tests/result-navigation-config.test.cjs \
+            tests/calculator-funnel-analytics.test.cjs \
+            tests/analytics-core.test.cjs \
+            tests/region-navigation-behavior.test.cjs
+
+      - name: Synchronize generated assets
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit implementation before full preflight
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/result-navigation-hardening-helper.yml
+          git rm scripts/result-navigation-hardening-helper.py
+          git add -A
+          git commit -m "fix: harden result navigation contracts"
+
+      - name: Run complete preflight against committed HEAD
+        run: |
+          node .github/scripts/preflight.cjs
+          test -z "$(git status --porcelain)"
+
+      - name: Push completed branch
+        run: git push origin HEAD:fix/result-navigation-hardening
