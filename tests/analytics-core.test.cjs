@@ -1,61 +1,16 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
-const vm = require('node:vm');
-
-const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
+const {
+  STORAGE_KEY,
+  createAnalyticsRuntime,
+  eventCalls,
+  eventItems
+} = require('./helpers/analytics-runtime.cjs');
 
 function createRuntime(consentStatus) {
-  const storage = new Map();
-  const listeners = new Map();
-  const context = {
-    console: { warn() {} },
-    URL,
-    URLSearchParams,
-    location: {
-      href: 'https://playpoint-sim.com/articles/guide.html',
-      origin: 'https://playpoint-sim.com',
-      pathname: '/articles/guide.html',
-      search: ''
-    },
-    sessionStorage: {
-      getItem(key) { return storage.has(key) ? storage.get(key) : null; },
-      removeItem(key) { storage.delete(key); },
-      setItem(key, value) { storage.set(key, String(value)); }
-    },
-    dispatchEvent() {},
-    CustomEvent: class CustomEvent {
-      constructor(type) { this.type = type; }
-    },
-    document: {
-      addEventListener(type, listener) { listeners.set(type, listener); },
-      dispatchEvent(event) {
-        const listener = listeners.get(event.type);
-        if (listener) listener(event);
-      }
-    }
-  };
-  if (consentStatus !== undefined) {
-    context.PlayPointConsent = { getStatus: () => consentStatus };
-  }
-  context.window = context;
-  vm.createContext(context);
-  vm.runInContext(source, context, { filename: 'analytics-core.js' });
-  return { context, storage };
-}
-
-function eventItems(context, eventName) {
-  return context.dataLayer
-    .filter(item => item && item[0] === 'event' && item[1] === eventName);
-}
-
-function eventCalls(context, eventName) {
-  return eventItems(context, eventName)
-    .map(item => JSON.parse(JSON.stringify(item[2])));
+  return createAnalyticsRuntime({ consentStatus });
 }
 
 test('GA4初期化前のイベントは保持し、準備完了後に一度だけ送信する', () => {
@@ -231,8 +186,7 @@ test('同意後でもGA4準備前はflushせず、拒否時は保存情報も破
 test('期限切れ・改ざん済み流入情報は計算値を上書きしない', () => {
   const { context, storage } = createRuntime('granted');
   context.PlayPointAnalytics.markAnalyticsReady();
-  const key = 'playpointCalculatorEntryContext';
-  storage.set(key, JSON.stringify({
+  storage.set(STORAGE_KEY, JSON.stringify({
     recorded_at: Date.now() - 31 * 60 * 1000,
     entry_source_path: '/old/',
     region: 'KR'
@@ -241,7 +195,7 @@ test('期限切れ・改ざん済み流入情報は計算値を上書きしな�
   assert.deepEqual(eventCalls(context, 'calculation_completed')[0], { region: 'JP' });
   assert.equal(storage.size, 0);
 
-  storage.set(key, JSON.stringify({
+  storage.set(STORAGE_KEY, JSON.stringify({
     recorded_at: Date.now(),
     entry_source_path: '/articles/guide.html',
     entry_link_context: 'article_link',
@@ -255,6 +209,47 @@ test('期限切れ・改ざん済み流入情報は計算値を上書きしな�
   });
 });
 
+test('未来日時・壊れたJSONの流入情報は破棄し、イベント送信を止めない', () => {
+  const future = createAnalyticsRuntime({
+    consentStatus: 'granted',
+    ready: true,
+    storedEntries: [[STORAGE_KEY, JSON.stringify({
+      recorded_at: Date.now() + 61 * 1000,
+      entry_source_path: '/articles/future.html'
+    })]]
+  });
+  assert.equal(future.context.PlayPointAnalytics.track('calculation_completed', { region: 'JP' }), true);
+  assert.deepEqual(eventCalls(future.context, 'calculation_completed')[0], { region: 'JP' });
+  assert.equal(future.storage.size, 0);
+
+  const malformed = createAnalyticsRuntime({
+    consentStatus: 'granted',
+    ready: true,
+    storedEntries: [[STORAGE_KEY, '{not-json']]
+  });
+  assert.equal(malformed.context.PlayPointAnalytics.track('calculation_completed', { region: 'JP' }), true);
+  assert.deepEqual(eventCalls(malformed.context, 'calculation_completed')[0], { region: 'JP' });
+  assert.equal(malformed.storage.size, 0);
+  assert.equal(malformed.warnings.length, 1);
+});
+
+test('保留キューは上限20件を維持し、古いイベントから落とす', () => {
+  const { context } = createRuntime('pending');
+  context.PlayPointAnalytics.markAnalyticsReady();
+
+  for (let index = 0; index < 25; index += 1) {
+    context.PlayPointAnalytics.track('theme_change', { theme_mode: `mode_${index}` });
+  }
+  assert.equal(eventCalls(context, 'theme_change').length, 0);
+
+  context.PlayPointConsent = { getStatus: () => 'granted' };
+  context.document.dispatchEvent({ type: 'playpoint:consent-updated' });
+
+  const events = eventCalls(context, 'theme_change');
+  assert.equal(events.length, 20);
+  assert.equal(events[0].theme_mode, 'mode_5');
+  assert.equal(events.at(-1).theme_mode, 'mode_24');
+});
 
 test('同意pending中はイベントを捨てず、明示拒否時だけ破棄する', () => {
   const pending = createRuntime('pending');
