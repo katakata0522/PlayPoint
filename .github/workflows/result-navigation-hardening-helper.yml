@@ -21,7 +21,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply hardening changes
-        run: python3 scripts/result-navigation-hardening-helper.py
+        run: |
+          python3 scripts/result-navigation-hardening-helper.py
+          python3 scripts/result-navigation-hardening-test-fixes.py
 
       - name: Run focused regression tests
         run: |
@@ -40,6 +42,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm .github/workflows/result-navigation-hardening-helper.yml
           git rm scripts/result-navigation-hardening-helper.py
+          git rm scripts/result-navigation-hardening-test-fixes.py
           git add -A
           git commit -m "fix: harden result navigation contracts"
 
