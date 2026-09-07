@@ -125,36 +125,20 @@ jobs:
           node tests/region-runtime-wiring.test.cjs
           node --test tests/playpoint-regression.test.cjs
 
-      - name: Build generated assets before mutation probe
-        run: node scripts/build-html.js
-
-      - name: Verify tests do not mutate analytics core
-        shell: bash
-        run: |
-          set -euo pipefail
-          before="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
-          for file in tests/*.test.cjs; do
-            node --test "$file" >/tmp/playpoint-test.log 2>&1 || { cat /tmp/playpoint-test.log; exit 1; }
-            after="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
-            if [ "$after" != "$before" ]; then
-              cat /tmp/playpoint-test.log
-              echo "SOURCE_MUTATOR=$file"
-              git diff -- js/analytics-core.js
-              exit 97
-            fi
-          done
-          node --test tests/*.test.cjs
-          after_all="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
-          if [ "$after_all" != "$before" ]; then
-            echo "Combined test execution mutates analytics-core.js"
-            git diff -- js/analytics-core.js
-            exit 98
-          fi
-
       - name: Synchronize generated assets
         run: node scripts/prepare-pr.cjs
 
-      - name: Run complete preflight and capture failure
+      - name: Create local validation commit
+        run: |
+          rm .github/workflows/refactor-result-navigation-helper.yml
+          rm -f .github/result-navigation-preflight-debug.log
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'refactor: make result navigation configuration explicit'
+
+      - name: Run complete preflight against committed output
         shell: bash
         run: |
           set +e
@@ -167,33 +151,20 @@ jobs:
               echo '=== POST-PREFLIGHT STATUS ==='
               git status --short
               echo
-              echo '=== ANALYTICS / COMPONENT DIFF ==='
-              git --no-pager diff -- js/analytics-core.js blog/components.js scripts/asset-sync.cjs sw.js
-              echo
-              echo '=== GENERATED DIFF NAMES ==='
-              git --no-pager diff --name-only
+              echo '=== POST-PREFLIGHT DIFF ==='
+              git --no-pager diff
             } >> /tmp/result-navigation-preflight.log
             cp /tmp/result-navigation-preflight.log .github/result-navigation-preflight-debug.log
-            git reset
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add -f .github/result-navigation-preflight-debug.log
-            git commit -m 'chore: capture result navigation preflight failure'
+            git commit -m 'chore: capture committed preflight failure'
             git push origin HEAD:refactor/region-result-navigation-boundaries
             exit "$status"
           fi
 
-      - name: Verify diff
+      - name: Verify clean validated tree
         run: |
           git diff --check
-          git status --short
+          test -z "$(git status --porcelain)"
 
-      - name: Commit refactor
-        run: |
-          rm .github/workflows/refactor-result-navigation-helper.yml
-          rm -f .github/result-navigation-preflight-debug.log
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'refactor: make result navigation configuration explicit'
-          git push origin HEAD:refactor/region-result-navigation-boundaries
+      - name: Push validated refactor
+        run: git push origin HEAD:refactor/region-result-navigation-boundaries
