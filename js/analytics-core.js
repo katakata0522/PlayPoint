@@ -21,7 +21,7 @@
         'entry_link_context',
         'calculator_preset'
     ];
-    const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/']);
+    const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);
     const ALLOWED_PARAMS = Object.freeze({
         page_view: [],
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
@@ -123,6 +123,19 @@
         };
     }
 
+    function resolveUrl(link) {
+        return link instanceof URL ? link : new URL(link.href || link, window.location.href);
+    }
+
+    function isCalculatorDestination(link) {
+        try {
+            const url = resolveUrl(link);
+            return url.origin === window.location.origin && CALCULATOR_PATHS.has(url.pathname);
+        } catch (error) {
+            return false;
+        }
+    }
+
     function clearStoredCalculatorEntry() {
         try {
             window.sessionStorage.removeItem(ENTRY_STORAGE_KEY);
@@ -163,8 +176,8 @@
     function rememberCalculatorEntry(link, context = {}) {
         if (!hasConsent()) return false;
         try {
-            const url = link instanceof URL ? link : new URL(link.href || link, window.location.href);
-            if (url.origin !== window.location.origin || !CALCULATOR_PATHS.has(url.pathname)) return false;
+            const url = resolveUrl(link);
+            if (!isCalculatorDestination(url)) return false;
 
             const entry = sanitizeCalculatorEntry({
                 entry_source_path: context.source_path || window.location.pathname,
@@ -304,6 +317,7 @@
         getEntryContext,
         hasConsent,
         installGtagBridge,
+        isCalculatorDestination,
         markAnalyticsReady,
         markEngaged,
         rememberCalculatorEntry,

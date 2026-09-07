@@ -105,6 +105,16 @@ test('埋め込みウィジェットは外部依存なしで計算できる', ()
   assert.doesNotMatch(widget, /from ['"]\.\.\/js\//);
 });
 
+test('埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える', () => {
+  const embed = read('embed.html');
+  assert.match(embed, /PlayPointAnalytics\?\.track\('widget_code_copied'/);
+  assert.doesNotMatch(embed, /window\.gtag\('event', 'widget_code_copied'/);
+  assert.match(embed, /HK: 'hk\/'/);
+  assert.match(embed, /IN: 'in\/'/);
+  assert.match(embed, /browserLang\.startsWith\('zh-hk'\)/);
+  assert.match(embed, /browserLang\.startsWith\('en-in'\)/);
+});
+
 test('許可された主要計測イベント名が設定に残る', () => {
   const analyticsCore = read('js/analytics-core.js');
   for (const eventName of [

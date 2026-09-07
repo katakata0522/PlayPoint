@@ -299,3 +299,19 @@ test('内部gtag bridgeへの直接eventも許可リストと記事起点を維�
     calculator_preset: 'preset'
   });
 });
+
+test('計算機遷移判定は公開中の6地域だけを同一オリジンで許可する', () => {
+  const { context } = createRuntime('granted');
+  const analytics = context.PlayPointAnalytics;
+
+  for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {
+    assert.equal(analytics.isCalculatorDestination(calculatorPath), true, calculatorPath);
+  }
+  assert.equal(analytics.isCalculatorDestination('/games/'), false);
+  assert.equal(analytics.isCalculatorDestination('https://example.com/'), false);
+
+  assert.equal(analytics.rememberCalculatorEntry('/hk/?mode=main', {
+    source_path: '/campaign/2x/',
+    link_context: 'hero_cta'
+  }), true);
+});

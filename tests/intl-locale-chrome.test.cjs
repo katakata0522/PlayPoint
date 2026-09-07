@@ -61,12 +61,6 @@ test('海外points-costの計算機リンクは各言語トップを指す', () 
   assert.ok(!read('tw/points-cost/index.html').includes('<a href="/">升級金額計算器</a>'));
 });
 
-function calculatorRootLiteral(source) {
-  const match = source.match(/\[\s*'\/'\s*,\s*'\/en\/'\s*,\s*'\/ko\/'\s*,\s*'\/tw\/'\s*\]/);
-  assert.ok(match, 'locale calculator roots are missing');
-  return match[0].replace(/\s+/g, '');
-}
-
 function usRuntimeLinkText(configSource, key) {
   const usBlock = configSource.split("'US':")[1];
   assert.ok(usBlock, 'js/config.js US block is missing');
@@ -75,12 +69,18 @@ function usRuntimeLinkText(configSource, key) {
   return match[1];
 }
 
-test('記事から計算機への計測は各言語トップをJAトップと同じ扱いにする', () => {
+test('記事・LPの計算機判定は共通analytics境界へ集約し6地域を扱う', () => {
+  const analytics = read('js/analytics-core.js');
   const article = read('blog/article.js');
   const intent = read('js/intent-tracking.js');
-  assert.ok(!article.includes("url.pathname !== '/'"));
-  assert.match(article, /!isCalculatorDestination\(url\)/);
-  assert.equal(calculatorRootLiteral(article), calculatorRootLiteral(intent));
+
+  for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {
+    assert.ok(analytics.includes(`'${calculatorPath}'`), `analytics core missing: ${calculatorPath}`);
+  }
+  assert.match(article, /analytics\.isCalculatorDestination\(url\)/);
+  assert.match(intent, /analytics\.isCalculatorDestination\(url\)/);
+  assert.doesNotMatch(article, /function isCalculatorDestination/);
+  assert.doesNotMatch(intent, /function isCalculatorDestination/);
 });
 
 test('モバイル下部CTAの閉じる操作名は言語別で日本語固定にしない', () => {

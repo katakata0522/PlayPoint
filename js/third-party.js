@@ -10,6 +10,7 @@
     const ADSENSE_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
 
     let gaLoaded = false;
+    let analyticsRetryAttempted = false;
     let adsLoaded = false;
     let adsRetryAttempted = false;
     let thirdPartyScheduled = false;
@@ -63,6 +64,10 @@
             window.PlayPointAnalytics.markAnalyticsReady();
         } catch (error) {
             console.error('Analytics load failed:', error);
+            if (!analyticsRetryAttempted) {
+                analyticsRetryAttempted = true;
+                window.setTimeout(() => void loadAnalytics(), ANALYTICS_DELAY_MS);
+            }
         }
     }
 
@@ -108,7 +113,17 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=6c53259f7f`).then(() => window.PlayPointAnalytics);
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=abe4d836d4`)
+                .then(() => {
+                    if (!window.PlayPointAnalytics) {
+                        throw new Error('Analytics core loaded without PlayPointAnalytics.');
+                    }
+                    return window.PlayPointAnalytics;
+                })
+                .catch((error) => {
+                    analyticsCorePromise = null;
+                    throw error;
+                });
         }
         return analyticsCorePromise;
     }
@@ -117,15 +132,24 @@
         if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);
         if (!consentManagerPromise) {
             const prefix = getCurrentAssetPrefix();
-            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=8c5b4cd6f2`).then(() => window.PlayPointConsent);
+            consentManagerPromise = loadScript(`${prefix}js/consent.js?v=8c5b4cd6f2`)
+                .then(() => {
+                    if (!window.PlayPointConsent) {
+                        throw new Error('Consent manager loaded without PlayPointConsent.');
+                    }
+                    return window.PlayPointConsent;
+                })
+                .catch((error) => {
+                    consentManagerPromise = null;
+                    throw error;
+                });
         }
         return consentManagerPromise;
     }
 
-    function runAfterConsent(callback, purpose = 'analytics') {
-        return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
-            .then(() => {
-                const consent = window.PlayPointConsent;
+    function runAfterConsent(callback, purpose = 'analytics', allowRetry = true) {
+        return ensureConsentManager()
+            .then((consent) => {
                 if (purpose === 'ads' && typeof consent.whenAdsAllowed === 'function') {
                     consent.whenAdsAllowed(callback);
                     return;
@@ -136,7 +160,12 @@
                 }
                 consent.whenGranted(callback);
             })
-            .catch((error) => console.error('Consent manager load failed:', error));
+            .catch((error) => {
+                console.error('Consent manager load failed:', error);
+                if (allowRetry) {
+                    window.setTimeout(() => void runAfterConsent(callback, purpose, false), ANALYTICS_DELAY_MS);
+                }
+            });
     }
 
     function runWhenIdle(callback, timeout = 2000) {
@@ -168,15 +197,16 @@
         else window.addEventListener('load', scheduleAfterLoad, { once: true });
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            void ensureAnalyticsCore();
-            void ensureConsentManager();
-            scheduleThirdPartyLoad();
-        }, { once: true });
-    } else {
-        void ensureAnalyticsCore();
-        void ensureConsentManager();
+    function initializeThirdParty() {
+        // Preload failures are recoverable: dependency promises reset and later scheduled work retries.
+        void ensureAnalyticsCore().catch((error) => console.warn('Analytics core preload failed:', error));
+        void ensureConsentManager().catch((error) => console.warn('Consent manager preload failed:', error));
         scheduleThirdPartyLoad();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeThirdParty, { once: true });
+    } else {
+        initializeThirdParty();
     }
 })();

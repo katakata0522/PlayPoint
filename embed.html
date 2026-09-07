@@ -396,11 +396,19 @@
 <div id="toast" class="toast">クリップボードにコピーしました！</div>
 
 <script src="embed/playpoint-widget.js?v=ee41c06015" defer></script>
-<script src="js/third-party.js?v=2addc7913f" defer></script>
+<script src="js/third-party.js?v=b0bfd14bc7" defer></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const footerLink = document.getElementById('footer-calculator-link');
     if (footerLink) {
+        const regionPaths = Object.freeze({
+            JP: './',
+            US: 'en/',
+            KR: 'ko/',
+            TW: 'tw/',
+            HK: 'hk/',
+            IN: 'in/'
+        });
         let preferredRegion = null;
         try {
             preferredRegion = localStorage.getItem('playpointPreferredRegion');
@@ -412,8 +420,12 @@
             const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
             if (browserLang.startsWith('ko')) {
                 preferredRegion = 'KR';
-            } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
+            } else if (browserLang.startsWith('zh-hk')) {
+                preferredRegion = 'HK';
+            } else if (browserLang.startsWith('zh-tw')) {
                 preferredRegion = 'TW';
+            } else if (browserLang.startsWith('en-in')) {
+                preferredRegion = 'IN';
             } else if (browserLang.startsWith('en')) {
                 preferredRegion = 'US';
             } else {
@@ -429,22 +441,18 @@
                 targetRegion = 'KR';
             } else if (ref.includes('/tw/')) {
                 targetRegion = 'TW';
+            } else if (ref.includes('/hk/')) {
+                targetRegion = 'HK';
+            } else if (ref.includes('/in/')) {
+                targetRegion = 'IN';
             } else if (ref.includes('/en/')) {
                 targetRegion = 'US';
-            } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
+            } else if (ref.includes('playpoint-sim.com')) {
                 targetRegion = 'JP';
             }
         }
 
-        if (targetRegion === 'KR') {
-            footerLink.href = 'ko/';
-        } else if (targetRegion === 'TW') {
-            footerLink.href = 'tw/';
-        } else if (targetRegion === 'US') {
-            footerLink.href = 'en/';
-        } else {
-            footerLink.href = './';
-        }
+        footerLink.href = regionPaths[targetRegion] || regionPaths.JP;
     }
 
     const selectTheme = document.getElementById('select-theme');
@@ -458,9 +466,7 @@
     const toast = document.getElementById('toast');
 
     function trackWidgetCodeCopied() {
-      if (!window.PlayPointConsent || window.PlayPointConsent.getStatus() !== 'granted') return;
-      if (typeof window.gtag !== 'function') return;
-      window.gtag('event', 'widget_code_copied', {
+      window.PlayPointAnalytics?.track('widget_code_copied', {
         theme: selectTheme.value,
         language: selectLang.value,
         mode: selectMode.value

@@ -289,10 +289,8 @@
                 : null;
             if (!link) return;
             const url = new URL(link.href, window.location.href);
-            if (url.origin !== window.location.origin || !isCalculatorDestination(url)) return;
-
             const analytics = window.PlayPointAnalytics;
-            if (!analytics) return;
+            if (!analytics || !analytics.isCalculatorDestination(url)) return;
             const context = {
                 source_path: window.location.pathname,
                 link_context: link.closest('.article-calculator-prompt')
@@ -452,10 +450,6 @@
         if (path.includes('/ko/')) return 'ko';
         if (path.includes('/tw/')) return 'tw';
         return 'ja';
-    }
-
-    function isCalculatorDestination(url) {
-        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);
     }
 
     function getCalculatorPromptCopy() {
