@@ -1,0 +1,233 @@
+name: Deep analytics refactor helper
+
+on:
+  push:
+    branches:
+      - refactor/analytics-resilience-routing
+
+permissions:
+  contents: write
+
+jobs:
+  refactor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refactor/analytics-resilience-routing
+
+      - name: Apply deep analytics refactor
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          function read(file) {
+            return fs.readFileSync(file, 'utf8');
+          }
+
+          function write(file, content) {
+            fs.writeFileSync(file, content, 'utf8');
+          }
+
+          function replaceOnce(file, from, to, label) {
+            const source = read(file);
+            if (!source.includes(from)) throw new Error(`${label || file}: replacement source not found`);
+            const updated = source.replace(from, to);
+            if (updated === source) throw new Error(`${label || file}: replacement made no change`);
+            write(file, updated);
+          }
+
+          function replaceRange(file, startMarker, endMarker, replacement, label) {
+            const source = read(file);
+            const start = source.indexOf(startMarker);
+            const end = source.indexOf(endMarker, start);
+            if (start === -1 || end === -1 || end <= start) throw new Error(`${label || file}: replacement range not found`);
+            write(file, source.slice(0, start) + replacement + source.slice(end));
+          }
+
+          // 1) Centralize calculator-route recognition and include every shipped calculator locale.
+          replaceOnce(
+            'js/analytics-core.js',
+            "    const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/']);",
+            "    const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);",
+            'calculator paths'
+          );
+
+          replaceOnce(
+            'js/analytics-core.js',
+            `    function getEntryContext() {\n        if (typeof URLSearchParams === 'undefined' || !window.location) return {};\n        const params = new URLSearchParams(window.location.search);\n        return {\n            entry_source: params.get('utm_source') || undefined,\n            entry_medium: params.get('utm_medium') || undefined,\n            entry_campaign: params.get('utm_campaign') || undefined\n        };\n    }\n\n    function clearStoredCalculatorEntry() {`,
+            `    function getEntryContext() {\n        if (typeof URLSearchParams === 'undefined' || !window.location) return {};\n        const params = new URLSearchParams(window.location.search);\n        return {\n            entry_source: params.get('utm_source') || undefined,\n            entry_medium: params.get('utm_medium') || undefined,\n            entry_campaign: params.get('utm_campaign') || undefined\n        };\n    }\n\n    function resolveUrl(link) {\n        return link instanceof URL ? link : new URL(link.href || link, window.location.href);\n    }\n\n    function isCalculatorDestination(link) {\n        try {\n            const url = resolveUrl(link);\n            return url.origin === window.location.origin && CALCULATOR_PATHS.has(url.pathname);\n        } catch (error) {\n            return false;\n        }\n    }\n\n    function clearStoredCalculatorEntry() {`,
+            'calculator route helper'
+          );
+
+          replaceOnce(
+            'js/analytics-core.js',
+            `            const url = link instanceof URL ? link : new URL(link.href || link, window.location.href);\n            if (url.origin !== window.location.origin || !CALCULATOR_PATHS.has(url.pathname)) return false;`,
+            `            const url = resolveUrl(link);\n            if (!isCalculatorDestination(url)) return false;`,
+            'rememberCalculatorEntry routing'
+          );
+
+          replaceOnce(
+            'js/analytics-core.js',
+            `        installGtagBridge,\n        markAnalyticsReady,`,
+            `        installGtagBridge,\n        isCalculatorDestination,\n        markAnalyticsReady,`,
+            'analytics public route helper'
+          );
+
+          // 2) Remove duplicated locale-root lists from article and LP tracking.
+          replaceOnce(
+            'js/intent-tracking.js',
+            `    function isCalculatorDestination(url) {\n        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);\n    }\n\n`,
+            '',
+            'intent duplicated calculator paths'
+          );
+
+          replaceOnce(
+            'js/intent-tracking.js',
+            `        const linkContext = getLinkContext(link);\n        if (isCalculatorDestination(url) && linkContext !== 'related_link') {\n            const context = {\n                source_path: window.location.pathname,\n                source_surface: getSourceSurface(),\n                link_context: linkContext\n            };\n            if (window.PlayPointAnalytics) {\n                window.PlayPointAnalytics.rememberCalculatorEntry(url, context);\n            }\n            track('lp_to_calculator_clicked', context);`,
+            `        const analytics = window.PlayPointAnalytics;\n        const linkContext = getLinkContext(link);\n        if (analytics && analytics.isCalculatorDestination(url) && linkContext !== 'related_link') {\n            const context = {\n                source_path: window.location.pathname,\n                source_surface: getSourceSurface(),\n                link_context: linkContext\n            };\n            analytics.rememberCalculatorEntry(url, context);\n            track('lp_to_calculator_clicked', context);`,
+            'intent shared calculator predicate'
+          );
+
+          replaceOnce(
+            'blog/article.js',
+            `    function isCalculatorDestination(url) {\n        return ['/', '/en/', '/ko/', '/tw/'].includes(url.pathname);\n    }\n\n`,
+            '',
+            'article duplicated calculator paths'
+          );
+
+          replaceOnce(
+            'blog/article.js',
+            `            const url = new URL(link.href, window.location.href);\n            if (url.origin !== window.location.origin || !isCalculatorDestination(url)) return;\n\n            const analytics = window.PlayPointAnalytics;\n            if (!analytics) return;`,
+            `            const url = new URL(link.href, window.location.href);\n            const analytics = window.PlayPointAnalytics;\n            if (!analytics || !analytics.isCalculatorDestination(url)) return;`,
+            'article shared calculator predicate'
+          );
+
+          // 3) Make dependency loading recover from transient failures and remove ads -> analytics coupling.
+          replaceOnce(
+            'js/third-party.js',
+            `    let gaLoaded = false;\n    let adsLoaded = false;`,
+            `    let gaLoaded = false;\n    let analyticsRetryAttempted = false;\n    let adsLoaded = false;`,
+            'analytics retry state'
+          );
+
+          replaceOnce(
+            'js/third-party.js',
+            `        } catch (error) {\n            console.error('Analytics load failed:', error);\n        }\n    }`,
+            `        } catch (error) {\n            console.error('Analytics load failed:', error);\n            if (!analyticsRetryAttempted) {\n                analyticsRetryAttempted = true;\n                window.setTimeout(() => void loadAnalytics(), ANALYTICS_DELAY_MS);\n            }\n        }\n    }`,
+            'analytics retry behavior'
+          );
+
+          replaceRange(
+            'js/third-party.js',
+            `    function ensureAnalyticsCore() {`,
+            `    function ensureConsentManager() {`,
+            `    function ensureAnalyticsCore() {\n        if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);\n        if (!analyticsCorePromise) {\n            const prefix = getCurrentAssetPrefix();\n            analyticsCorePromise = loadScript(\`${'${prefix}'}js/analytics-core.js?v=6c53259f7f\`)\n                .then(() => {\n                    if (!window.PlayPointAnalytics) {\n                        throw new Error('Analytics core loaded without PlayPointAnalytics.');\n                    }\n                    return window.PlayPointAnalytics;\n                })\n                .catch((error) => {\n                    analyticsCorePromise = null;\n                    throw error;\n                });\n        }\n        return analyticsCorePromise;\n    }\n\n`,
+            'retryable analytics dependency'
+          );
+
+          replaceRange(
+            'js/third-party.js',
+            `    function ensureConsentManager() {`,
+            `    function runAfterConsent(callback, purpose = 'analytics') {`,
+            `    function ensureConsentManager() {\n        if (window.PlayPointConsent) return Promise.resolve(window.PlayPointConsent);\n        if (!consentManagerPromise) {\n            const prefix = getCurrentAssetPrefix();\n            consentManagerPromise = loadScript(\`${'${prefix}'}js/consent.js?v=8c5b4cd6f2\`)\n                .then(() => {\n                    if (!window.PlayPointConsent) {\n                        throw new Error('Consent manager loaded without PlayPointConsent.');\n                    }\n                    return window.PlayPointConsent;\n                })\n                .catch((error) => {\n                    consentManagerPromise = null;\n                    throw error;\n                });\n        }\n        return consentManagerPromise;\n    }\n\n`,
+            'retryable consent dependency'
+          );
+
+          replaceOnce(
+            'js/third-party.js',
+            `    function runAfterConsent(callback, purpose = 'analytics') {\n        return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])\n            .then(() => {\n                const consent = window.PlayPointConsent;`,
+            `    function runAfterConsent(callback, purpose = 'analytics', allowRetry = true) {\n        return ensureConsentManager()\n            .then((consent) => {`,
+            'decouple consent from analytics core'
+          );
+
+          replaceOnce(
+            'js/third-party.js',
+            `            })\n            .catch((error) => console.error('Consent manager load failed:', error));\n    }`,
+            `            })\n            .catch((error) => {\n                console.error('Consent manager load failed:', error);\n                if (allowRetry) {\n                    window.setTimeout(() => void runAfterConsent(callback, purpose, false), ANALYTICS_DELAY_MS);\n                }\n            });\n    }`,
+            'consent retry behavior'
+          );
+
+          replaceRange(
+            'js/third-party.js',
+            `    if (document.readyState === 'loading') {`,
+            `})();`,
+            `    function initializeThirdParty() {\n        // Preload failures are recoverable: dependency promises reset and later scheduled work retries.\n        void ensureAnalyticsCore().catch((error) => console.warn('Analytics core preload failed:', error));\n        void ensureConsentManager().catch((error) => console.warn('Consent manager preload failed:', error));\n        scheduleThirdPartyLoad();\n    }\n\n    if (document.readyState === 'loading') {\n        document.addEventListener('DOMContentLoaded', initializeThirdParty, { once: true });\n    } else {\n        initializeThirdParty();\n    }\n`,
+            'single third-party initializer'
+          );
+
+          // 4) Route embed analytics through the common boundary and keep HK/IN region routing current.
+          replaceRange(
+            'embed.html',
+            `    const footerLink = document.getElementById('footer-calculator-link');`,
+            `    const selectTheme = document.getElementById('select-theme');`,
+            `    const footerLink = document.getElementById('footer-calculator-link');\n    if (footerLink) {\n        const regionPaths = Object.freeze({\n            JP: './',\n            US: 'en/',\n            KR: 'ko/',\n            TW: 'tw/',\n            HK: 'hk/',\n            IN: 'in/'\n        });\n        let preferredRegion = null;\n        try {\n            preferredRegion = localStorage.getItem('playpointPreferredRegion');\n        } catch (e) {\n            console.error(\"ローカルストレージの読み込みに失敗しました:\", e);\n        }\n\n        if (!preferredRegion) {\n            const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();\n            if (browserLang.startsWith('ko')) {\n                preferredRegion = 'KR';\n            } else if (browserLang.startsWith('zh-hk')) {\n                preferredRegion = 'HK';\n            } else if (browserLang.startsWith('zh-tw')) {\n                preferredRegion = 'TW';\n            } else if (browserLang.startsWith('en-in')) {\n                preferredRegion = 'IN';\n            } else if (browserLang.startsWith('en')) {\n                preferredRegion = 'US';\n            } else {\n                preferredRegion = 'JP';\n            }\n        }\n\n        const ref = document.referrer;\n        let targetRegion = preferredRegion;\n\n        if (ref) {\n            if (ref.includes('/ko/')) {\n                targetRegion = 'KR';\n            } else if (ref.includes('/tw/')) {\n                targetRegion = 'TW';\n            } else if (ref.includes('/hk/')) {\n                targetRegion = 'HK';\n            } else if (ref.includes('/in/')) {\n                targetRegion = 'IN';\n            } else if (ref.includes('/en/')) {\n                targetRegion = 'US';\n            } else if (ref.includes('playpoint-sim.com')) {\n                targetRegion = 'JP';\n            }\n        }\n\n        footerLink.href = regionPaths[targetRegion] || regionPaths.JP;\n    }\n\n`,
+            'embed six-region routing'
+          );
+
+          replaceOnce(
+            'embed.html',
+            `    function trackWidgetCodeCopied() {\n      if (!window.PlayPointConsent || window.PlayPointConsent.getStatus() !== 'granted') return;\n      if (typeof window.gtag !== 'function') return;\n      window.gtag('event', 'widget_code_copied', {\n        theme: selectTheme.value,\n        language: selectLang.value,\n        mode: selectMode.value\n      });\n    }`,
+            `    function trackWidgetCodeCopied() {\n      window.PlayPointAnalytics?.track('widget_code_copied', {\n        theme: selectTheme.value,\n        language: selectLang.value,\n        mode: selectMode.value\n      });\n    }`,
+            'embed common analytics boundary'
+          );
+
+          // 5) Runtime regression coverage.
+          replaceOnce(
+            'tests/intl-locale-chrome.test.cjs',
+            `function calculatorRootLiteral(source) {\n  const match = source.match(/\\[\\s*'\\/'\\s*,\\s*'\\/en\\/'\\s*,\\s*'\\/ko\\/'\\s*,\\s*'\\/tw\\/'\\s*\\]/);\n  assert.ok(match, 'locale calculator roots are missing');\n  return match[0].replace(/\\s+/g, '');\n}\n\n`,
+            '',
+            'remove duplicated path test helper'
+          );
+
+          replaceOnce(
+            'tests/intl-locale-chrome.test.cjs',
+            `test('記事から計算機への計測は各言語トップをJAトップと同じ扱いにする', () => {\n  const article = read('blog/article.js');\n  const intent = read('js/intent-tracking.js');\n  assert.ok(!article.includes(\"url.pathname !== '/'\"));\n  assert.match(article, /!isCalculatorDestination\\(url\\)/);\n  assert.equal(calculatorRootLiteral(article), calculatorRootLiteral(intent));\n});`,
+            `test('記事・LPの計算機判定は共通analytics境界へ集約し6地域を扱う', () => {\n  const analytics = read('js/analytics-core.js');\n  const article = read('blog/article.js');\n  const intent = read('js/intent-tracking.js');\n\n  for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {\n    assert.ok(analytics.includes(\`'\${calculatorPath}'\`), \`analytics core missing: \${calculatorPath}\`);\n  }\n  assert.match(article, /analytics\\.isCalculatorDestination\\(url\\)/);\n  assert.match(intent, /analytics\\.isCalculatorDestination\\(url\\)/);\n  assert.doesNotMatch(article, /function isCalculatorDestination/);\n  assert.doesNotMatch(intent, /function isCalculatorDestination/);\n});`,
+            'shared route regression test'
+          );
+
+          const analyticsTest = 'tests/analytics-core.test.cjs';
+          let analyticsSource = read(analyticsTest);
+          const routeTest = `\n\ntest('計算機遷移判定は公開中の6地域だけを同一オリジンで許可する', () => {\n  const { context } = createRuntime('granted');\n  const analytics = context.PlayPointAnalytics;\n\n  for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {\n    assert.equal(analytics.isCalculatorDestination(calculatorPath), true, calculatorPath);\n  }\n  assert.equal(analytics.isCalculatorDestination('/games/'), false);\n  assert.equal(analytics.isCalculatorDestination('https://example.com/'), false);\n\n  assert.equal(analytics.rememberCalculatorEntry('/hk/?mode=main', {\n    source_path: '/campaign/2x/',\n    link_context: 'hero_cta'\n  }), true);\n});\n`;
+          if (analyticsSource.includes("計算機遷移判定は公開中の6地域だけを同一オリジンで許可する")) {
+            throw new Error('analytics route regression test already exists');
+          }
+          write(analyticsTest, analyticsSource.trimEnd() + routeTest);
+
+          replaceOnce(
+            'tests/runtime-module-guards.test.cjs',
+            `test('埋め込みウィジェットは外部依存なしで計算できる', () => {\n  const embed = read('embed.html');\n  const widget = read('embed/playpoint-widget.js');\n  assert.match(embed, /playpoint-widget\\.js/);\n  assert.ok(widget.length > 500, 'widget script too thin');\n  assert.doesNotMatch(widget, /from ['\"]\\.\\.\\/js\\//);\n});`,
+            `test('埋め込みウィジェットは外部依存なしで計算できる', () => {\n  const embed = read('embed.html');\n  const widget = read('embed/playpoint-widget.js');\n  assert.match(embed, /playpoint-widget\\.js/);\n  assert.ok(widget.length > 500, 'widget script too thin');\n  assert.doesNotMatch(widget, /from ['\"]\\.\\.\\/js\\//);\n});\n\ntest('埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える', () => {\n  const embed = read('embed.html');\n  assert.match(embed, /PlayPointAnalytics\\?\\.track\\('widget_code_copied'/);\n  assert.doesNotMatch(embed, /window\\.gtag\\('event', 'widget_code_copied'/);\n  assert.match(embed, /HK: 'hk\\/'/);\n  assert.match(embed, /IN: 'in\\/'/);\n  assert.match(embed, /browserLang\\.startsWith\\('zh-hk'\\)/);\n  assert.match(embed, /browserLang\\.startsWith\\('en-in'\\)/);\n});`,
+            'embed regression guards'
+          );
+
+          const resilienceTest = `'use strict';\n\nconst assert = require('node:assert/strict');\nconst fs = require('node:fs');\nconst path = require('node:path');\nconst test = require('node:test');\nconst vm = require('node:vm');\n\nconst root = path.resolve(__dirname, '..');\nconst source = fs.readFileSync(path.join(root, 'js/third-party.js'), 'utf8');\n\nfunction createRuntime({ failCoreOnce = false, failGaOnce = false } = {}) {\n  const timers = [];\n  const ad = { dataset: {} };\n  let coreAttempts = 0;\n  let gaAttempts = 0;\n  let readyCount = 0;\n\n  const context = {\n    console: { error() {}, warn() {}, log() {} },\n    Date,\n    Error,\n    Promise,\n    URL,\n    navigator: {},\n    dataLayer: [],\n    matchMedia: () => ({ matches: false }),\n    addEventListener() {},\n    setTimeout(callback) {\n      timers.push(callback);\n      return timers.length;\n    },\n    clearTimeout() {},\n    document: {\n      readyState: 'complete',\n      currentScript: {\n        src: 'https://playpoint-sim.com/js/third-party.js?v=test',\n        getAttribute() { return '/js/third-party.js?v=test'; }\n      },\n      querySelector() { return null; },\n      querySelectorAll(selector) {\n        return selector.includes('adsbygoogle') ? [ad] : [];\n      },\n      createElement(tag) {\n        assert.equal(tag, 'script');\n        return {\n          async: false,\n          dataset: {},\n          src: '',\n          setAttribute() {},\n          remove() {}\n        };\n      },\n      head: {\n        appendChild(script) {\n          const src = String(script.src);\n          if (src.includes('js/analytics-core.js')) {\n            coreAttempts += 1;\n            if (failCoreOnce && coreAttempts === 1) {\n              script.onerror?.(new Error('core transient failure'));\n              return;\n            }\n            context.PlayPointAnalytics = {\n              installGtagBridge() {\n                context.gtag = function gtag() { context.dataLayer.push(arguments); };\n              },\n              markAnalyticsReady() { readyCount += 1; }\n            };\n            script.onload?.();\n            return;\n          }\n          if (src.includes('js/consent.js')) {\n            context.PlayPointConsent = {\n              whenAdsAllowed(callback) { callback(); },\n              whenAnalyticsGranted(callback) { callback(); },\n              whenGranted(callback) { callback(); }\n            };\n            script.onload?.();\n            return;\n          }\n          if (src.includes('googletagmanager.com/gtag/js')) {\n            gaAttempts += 1;\n            if (failGaOnce && gaAttempts === 1) {\n              script.onerror?.(new Error('gtag transient failure'));\n              return;\n            }\n            script.onload?.();\n            return;\n          }\n          if (src.includes('pagead2.googlesyndication.com')) {\n            script.onload?.();\n            return;\n          }\n          throw new Error('unexpected script: ' + src);\n        }\n      }\n    }\n  };\n  context.window = context;\n  vm.createContext(context);\n  vm.runInContext(source, context, { filename: 'third-party.js' });\n\n  return {\n    ad,\n    context,\n    get coreAttempts() { return coreAttempts; },\n    get gaAttempts() { return gaAttempts; },\n    get readyCount() { return readyCount; },\n    timers\n  };\n}\n\nasync function settle() {\n  await Promise.resolve();\n  await new Promise(resolve => setImmediate(resolve));\n}\n\nasync function drainTimers(runtime, limit = 20) {\n  for (let i = 0; i < limit && runtime.timers.length > 0; i += 1) {\n    const callback = runtime.timers.shift();\n    callback();\n    await settle();\n  }\n  await settle();\n}\n\ntest('analytics coreの一時失敗後もpromiseを捨てて後続ロードで復旧する', async () => {\n  const runtime = createRuntime({ failCoreOnce: true });\n  await settle();\n\n  assert.equal(runtime.coreAttempts, 1);\n  assert.equal(runtime.ad.dataset.playpointAdRequested, 'true', '広告同意処理がanalytics core失敗に巻き込まれています');\n\n  await drainTimers(runtime);\n  assert.equal(runtime.coreAttempts, 2);\n  assert.equal(runtime.gaAttempts, 1);\n  assert.equal(runtime.readyCount, 1);\n});\n\ntest('gtag外部スクリプトの一時失敗は一度だけ再試行して復旧する', async () => {\n  const runtime = createRuntime({ failGaOnce: true });\n  await settle();\n  await drainTimers(runtime);\n\n  assert.equal(runtime.gaAttempts, 2);\n  assert.equal(runtime.readyCount, 1);\n});\n`;
+          write('tests/third-party-resilience.test.cjs', resilienceTest);
+          NODE
+
+      - name: Run focused tests
+        run: node --test tests/analytics-core.test.cjs tests/analytics-runtime-attribution.test.cjs tests/intl-locale-chrome.test.cjs tests/runtime-module-guards.test.cjs tests/third-party-resilience.test.cjs
+
+      - name: Synchronize generated assets
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify working tree quality
+        run: git diff --check
+
+      - name: Remove helper and commit final tree
+        shell: bash
+        run: |
+          rm .github/workflows/deep-analytics-refactor-helper.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: harden analytics routing and dependency recovery"
+          git push origin HEAD:refactor/analytics-resilience-routing
+
+      - name: Verify complete preflight on committed tree
+        run: node .github/scripts/preflight.cjs
