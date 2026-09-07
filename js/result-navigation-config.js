@@ -134,7 +134,22 @@ const IN = {
     giftCards: IN_NOTES
 };
 
-const RESULT_NAVIGATION_CONFIGS = Object.freeze({ JP, US, KR, TW, HK, IN });
+function deepFreeze(value) {
+    if (!value || typeof value !== 'object' || Object.isFrozen(value)) return value;
+    Object.values(value).forEach(deepFreeze);
+    return Object.freeze(value);
+}
+
+const RESULT_NAVIGATION_CONFIGS = deepFreeze({ JP, US, KR, TW, HK, IN });
+
+export function assertResultNavigationCoverage(regionCodes) {
+    const missingRegions = [...new Set(regionCodes || [])]
+        .filter(region => !Object.prototype.hasOwnProperty.call(RESULT_NAVIGATION_CONFIGS, region));
+    if (missingRegions.length > 0) {
+        throw new Error(`Missing result navigation config for region(s): ${missingRegions.join(', ')}`);
+    }
+    return true;
+}
 
 export function getResultNavigationConfig(region) {
     return RESULT_NAVIGATION_CONFIGS[region] || RESULT_NAVIGATION_CONFIGS.JP;
