@@ -1,6 +1,6 @@
 'use strict';
 
-import './analytics-core.js?v=b8ced2cf8e';
+import './analytics-core.js?v=6c53259f7f';
 
 // 全画面で同じ許可リスト・同意判定・流入引き継ぎを利用する。
 if (!window.PlayPointAnalytics) {
