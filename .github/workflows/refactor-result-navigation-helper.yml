@@ -131,6 +131,38 @@ jobs:
           node --test tests/result-navigation-config.test.cjs
           node tests/region-runtime-wiring.test.cjs
 
+      - name: Build generated assets before mutation probe
+        run: node scripts/build-html.js
+
+      - name: Find test that mutates analytics core
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
+          echo "analytics-core before tests: $before"
+          for file in tests/*.test.cjs; do
+            echo "--- probing $file"
+            node --test "$file" >/tmp/playpoint-test.log 2>&1 || { cat /tmp/playpoint-test.log; exit 1; }
+            after="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
+            if [ "$after" != "$before" ]; then
+              cat /tmp/playpoint-test.log
+              echo "SOURCE_MUTATOR=$file"
+              echo "before=$before"
+              echo "after=$after"
+              git diff -- js/analytics-core.js
+              exit 97
+            fi
+          done
+          echo "No single test mutated analytics-core.js"
+          node --test tests/*.test.cjs
+          after_all="$(sha256sum js/analytics-core.js | cut -d' ' -f1)"
+          echo "analytics-core after combined tests: $after_all"
+          if [ "$after_all" != "$before" ]; then
+            echo "Combined test execution mutates analytics-core.js"
+            git diff -- js/analytics-core.js
+            exit 98
+          fi
+
       - name: Synchronize generated assets
         run: node scripts/prepare-pr.cjs
 
