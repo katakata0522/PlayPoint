@@ -1,1 +1,0 @@
-trigger PR #230 checks after CodeQL follow-up
