@@ -48,8 +48,25 @@ jobs:
 
       - name: Run complete preflight against committed HEAD
         run: |
-          node .github/scripts/preflight.cjs
-          test -z "$(git status --porcelain)"
+          set +e
+          node .github/scripts/preflight.cjs 2>&1 | tee preflight.log
+          preflight_status=${PIPESTATUS[0]}
+          printf '\n--- git status after preflight ---\n' | tee -a preflight.log
+          git status --porcelain | tee -a preflight.log
+          if [ "$preflight_status" -eq 0 ] && [ -n "$(git status --porcelain)" ]; then
+            echo "Preflight left the worktree dirty" | tee -a preflight.log
+            preflight_status=1
+          fi
+          exit "$preflight_status"
+
+      - name: Upload preflight log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: result-navigation-preflight-${{ github.run_id }}
+          path: preflight.log
+          if-no-files-found: ignore
+          retention-days: 1
 
       - name: Push completed branch
         run: git push origin HEAD:fix/result-navigation-hardening
