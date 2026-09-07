@@ -32,3 +32,11 @@ replace_once(
     },
     STATE: { currentRegion },""",
 )
+
+replace_once(
+    'tests/region-runtime-wiring.test.cjs',
+    """assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = Object\\.freeze\\(\\{ JP, US, KR, TW, HK, IN \\}\\);/);""",
+    """assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = deepFreeze\\(\\{ JP, US, KR, TW, HK, IN \\}\\);/);
+assert.match(resultNavigation, /export function assertResultNavigationCoverage\\(regionCodes\\)/);
+assert.match(regionNavigation, /assertResultNavigationCoverage\\(Object\\.keys\\(CONFIGS\\)\\)/);""",
+)
