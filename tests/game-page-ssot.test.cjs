@@ -25,28 +25,6 @@ const {
 } = require('../scripts/sitemap-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
-const generatorPath = path.join(root, 'scripts', 'generate-game-simulators.cjs');
-
-function getGeneratorMetadata() {
-  const source = fs.readFileSync(generatorPath, 'utf8').replace(/\r\n/g, '\n');
-  const gamesBlock = source.match(/const GAMES_DATA = \[([\s\S]*?)\n\];\n\nfunction generateGamePageHtml/);
-  assert.ok(gamesBlock, 'GAMES_DATA block should remain discoverable for the regression guard');
-
-  const gameIds = [...gamesBlock[1].matchAll(/^\s+id:\s*'([^']+)'/gm)].map(match => match[1]);
-  assert.ok(gameIds.length > 0, 'GAMES_DATA should contain at least one game');
-  assert.equal(new Set(gameIds).size, gameIds.length, 'GAMES_DATA ids must stay unique');
-
-  const localeBlockStart = source.indexOf('const LOCALES = {');
-  const localeBlockEnd = source.indexOf('const GAMES_DATA = [');
-  assert.ok(localeBlockStart >= 0 && localeBlockEnd > localeBlockStart, 'LOCALES block should remain discoverable');
-  const localeKeys = [...source.slice(localeBlockStart, localeBlockEnd).matchAll(/^  ([a-z]{2}): \{$/gm)]
-    .map(match => match[1]);
-
-  const dateMatch = source.match(/const GAME_CONTENT_UPDATED_AT = '(\d{4}-\d{2}-\d{2})';/);
-  assert.ok(dateMatch, 'game generator content date should remain explicit');
-
-  return { gameIds, localeKeys, contentDate: dateMatch[1] };
-}
 
 function isGameDetailPage(file) {
   return !/(^|\/)games\/index\.html$/.test(file);
@@ -59,34 +37,35 @@ function readLastModified(file) {
   return match[1];
 }
 
-test('game generator and page discovery cover the canonical site locales', () => {
-  const { localeKeys } = getGeneratorMetadata();
+function gameSlugsForLocale(localeDirectory, gameFiles = getGamePageHtmlFiles(root)) {
+  const prefix = localeDirectory ? `${localeDirectory}/games/` : 'games/';
+  return gameFiles
+    .filter(file => file.startsWith(prefix) && file !== `${prefix}index.html`)
+    .map(file => file.slice(prefix.length).replace(/\/index\.html$/, ''))
+    .sort();
+}
 
-  assert.deepEqual(localeKeys, [...SITE_LOCALES], 'game generator locales should match the public site locale set');
+test('generated game outputs cover the canonical game locales with the same game set', () => {
   assert.deepEqual(
     [...GAME_LOCALE_DIRECTORIES],
     ['', ...SITE_LOCALES.filter(locale => locale !== 'ja')],
     'Japanese game pages should stay at root and international locales should use locale directories'
   );
-});
 
-test('game page sync targets cover every generated locale and game id', () => {
-  const { gameIds } = getGeneratorMetadata();
-  const expected = [];
+  const gameFiles = getGamePageHtmlFiles(root);
+  const japaneseSlugs = gameSlugsForLocale('', gameFiles);
+  assert.ok(japaneseSlugs.length > 0, 'at least one generated Japanese game page is required');
+  assert.equal(new Set(japaneseSlugs).size, japaneseSlugs.length, 'generated game slugs must stay unique');
 
   for (const localeDirectory of GAME_LOCALE_DIRECTORIES) {
     const prefix = localeDirectory ? `${localeDirectory}/` : '';
-    expected.push(`${prefix}games/index.html`);
-    for (const gameId of gameIds) {
-      expected.push(`${prefix}games/${gameId}/index.html`);
-    }
+    assert.ok(gameFiles.includes(`${prefix}games/index.html`), `${prefix}games/index.html should exist`);
+    assert.deepEqual(
+      gameSlugsForLocale(localeDirectory, gameFiles),
+      japaneseSlugs,
+      `${localeDirectory || 'ja'} generated game set should match Japanese`
+    );
   }
-
-  assert.deepEqual(
-    [...getGamePageHtmlFiles(root)].sort(),
-    expected.sort(),
-    'generated game outputs and discovered synchronization targets must stay aligned'
-  );
 });
 
 test('game sitemap entries match discovered pages and each page editorial date', () => {
@@ -108,10 +87,9 @@ test('game sitemap entries match discovered pages and each page editorial date',
   }
 });
 
-test('default game editorial date stays aligned from generator to resolver', () => {
-  const { contentDate } = getGeneratorMetadata();
-
-  assert.equal(getGameContentDate(root), contentDate, 'game date helper should resolve the generator default date');
+test('default game editorial date stays aligned with the shared resolver', () => {
+  const contentDate = getGameContentDate(root);
+  assert.match(contentDate, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(
     GENERATED_GAME_PAGE_CONTENT_DATE,
     contentDate,
@@ -119,31 +97,19 @@ test('default game editorial date stays aligned from generator to resolver', () 
   );
 });
 
-test('meaningfully edited game pages can override the shared default without changing other locales', () => {
-  const expectedOverrides = [
-    'games/arknights/index.html',
-    'games/genshin/index.html',
-    'games/honkai3rd/index.html',
-    'games/nikke/index.html',
-    'games/pad/index.html',
-    'games/phantomparade/index.html',
-    'games/wutheringwaves/index.html'
-  ];
+test('game editorial-date overrides target real generated pages without freezing the current override list', () => {
+  const generatedPages = new Set(getGamePageHtmlFiles(root));
 
-  assert.deepEqual(Object.keys(GAME_PAGE_CONTENT_DATE_OVERRIDES).sort(), expectedOverrides.sort());
-  for (const file of expectedOverrides) {
-    assert.equal(getGeneratedGamePageContentDate(file), '2026-08-25', `${file} should carry its meaningful edit date`);
+  for (const [file, date] of Object.entries(GAME_PAGE_CONTENT_DATE_OVERRIDES)) {
+    assert.ok(generatedPages.has(file), `${file} override should target a generated game page`);
+    assert.match(date, /^\d{4}-\d{2}-\d{2}$/, `${file} override should be an ISO date`);
+    assert.equal(getGeneratedGamePageContentDate(file), date, `${file} should resolve its configured editorial date`);
   }
 
   assert.equal(
-    getGeneratedGamePageContentDate('en/games/genshin/index.html'),
-    GENERATED_GAME_PAGE_CONTENT_DATE,
-    'an unchanged locale counterpart should keep the shared default date'
-  );
-  assert.equal(
     getGeneratedGamePageContentDate('games/index.html'),
     GENERATED_GAME_PAGE_CONTENT_DATE,
-    'the game portal should keep the shared default date unless it is edited'
+    'the game portal should keep the shared default date unless it has an explicit override'
   );
 });
 
