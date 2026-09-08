@@ -44,6 +44,23 @@ function getChangedGeneratedFiles() {
     .filter(Boolean);
 }
 
+function getUntrackedGeneratedFiles() {
+  const untracked = spawnSync('git', ['ls-files', '--others', '--exclude-standard', '--', ...generatedFiles], {
+    cwd: root,
+    encoding: 'utf8'
+  });
+
+  if (untracked.status !== 0) {
+    console.error(untracked.stderr || 'Could not inspect untracked generated files.');
+    process.exit(untracked.status || 1);
+  }
+
+  return String(untracked.stdout || '')
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+}
+
 function main() {
   const committedIndex = readCommittedFile('index.html');
   const committedServiceWorker = readCommittedFile('sw.js');
@@ -78,13 +95,19 @@ function main() {
     cwd: root,
     stdio: 'ignore'
   });
+  const untrackedGeneratedFiles = getUntrackedGeneratedFiles();
 
-  if (diff.status === 0) {
+  if (diff.status === 0 && untrackedGeneratedFiles.length === 0) {
     console.log(`Committed build output is reproducible (date=${modifiedDate}, version=${assetVersion}).`);
     return;
   }
 
-  const changedFiles = getChangedGeneratedFiles();
+  const changedFiles = [
+    ...new Set([
+      ...getChangedGeneratedFiles(),
+      ...untrackedGeneratedFiles
+    ])
+  ];
   const boundaryOnlyFiles = [];
   const meaningfulFiles = [];
 
@@ -113,11 +136,14 @@ function main() {
     return;
   }
 
-  spawnSync('git', ['--no-pager', 'diff', '--exit-code', '--', ...meaningfulFiles], {
-    cwd: root,
-    stdio: 'inherit',
-    env: { ...process.env, PAGER: 'cat', GIT_PAGER: 'cat' }
-  });
+  const trackedMeaningfulFiles = meaningfulFiles.filter(file => readCommittedFile(file) != null);
+  if (trackedMeaningfulFiles.length > 0) {
+    spawnSync('git', ['--no-pager', 'diff', '--exit-code', '--', ...trackedMeaningfulFiles], {
+      cwd: root,
+      stdio: 'inherit',
+      env: { ...process.env, PAGER: 'cat', GIT_PAGER: 'cat' }
+    });
+  }
 
   console.error('生成物が HEAD と一致しません。日付とアセット版を固定して再生成し、差分をコミットしてください。');
   console.error('  node scripts/prepare-pr.cjs');
@@ -125,6 +151,9 @@ function main() {
   console.error('env なしで node scripts/build-html.js を回すとアセット版が時刻で変わり、差分が増えます。');
   console.error('変更ファイル:');
   for (const name of meaningfulFiles) console.error('- ' + name);
+  if (untrackedGeneratedFiles.length > 0) {
+    console.error(`注: ${untrackedGeneratedFiles.length}件の未追跡生成物を検出しました。生成対象を追加した場合は成果物もコミットしてください。`);
+  }
   if (boundaryOnlyFiles.length > 0) {
     console.error(`注: ${boundaryOnlyFiles.length}件の改行境界だけの差分はHEADのバイト列へ復元しました。`);
   }
