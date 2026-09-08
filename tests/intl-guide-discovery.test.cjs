@@ -54,7 +54,21 @@ test('hub title extraction decodes entities once and rejects embedded markup', (
   assert.match(rendered, /&amp;lt;script&gt;/);
 });
 
-test('EN/KO/TW hubs provide five curated starts plus searchable category cards', () => {
+test('international start guides are curated per locale instead of translated from one global list', () => {
+  const en = getStartHereHrefs('en');
+  const ko = getStartHereHrefs('ko');
+  const tw = getStartHereHrefs('tw');
+
+  assert.equal(en.length, 5);
+  assert.equal(ko.length, 5);
+  assert.equal(tw.length, 5);
+  assert.notDeepEqual(en, ko);
+  assert.notDeepEqual(en, tw);
+  assert.notDeepEqual(ko, tw);
+  assert.deepEqual(getStartHereHrefs('unsupported-locale'), en);
+});
+
+test('EN/KO/TW hubs provide five locale-curated starts plus searchable category cards', () => {
   for (const locale of ['en', 'ko', 'tw']) {
     const html = read(`${locale}/articles/index.html`);
     const content = getArticleContent(html);
@@ -67,8 +81,9 @@ test('EN/KO/TW hubs provide five curated starts plus searchable category cards',
 
     const startMatch = content.match(/<div class="intl-guide-start-grid">([\s\S]*?)<\/div>\s*<\/section>/);
     assert.ok(startMatch, `${locale}: curated start grid is missing`);
-    const featuredCount = (startMatch[1].match(/intl-guide-card--featured/g) || []).length;
-    assert.equal(featuredCount, 5, `${locale}: Start here must stay at five guides`);
+    const featuredHrefs = [...startMatch[1].matchAll(/<a class="intl-guide-card intl-guide-card--featured" href="([^"]+)"/g)]
+      .map(match => match[1]);
+    assert.deepEqual(featuredHrefs, getStartHereHrefs(locale), `${locale}: featured guides must match locale curation`);
 
     const allCards = [...content.matchAll(/data-guide-card data-category="([^"]+)"/g)].map(match => match[1]);
     assert.ok(allCards.length >= 20, `${locale}: searchable catalog is unexpectedly small`);
@@ -76,10 +91,6 @@ test('EN/KO/TW hubs provide five curated starts plus searchable category cards',
 
     for (const category of CATEGORY_KEYS) {
       assert.match(content, new RegExp(`data-guide-filter="${category}"`), `${locale}: missing ${category} filter`);
-    }
-
-    for (const href of getStartHereHrefs(locale)) {
-      assert.ok(content.includes(`href="${href}"`), `${locale}: curated start link missing ${href}`);
     }
   }
 });
