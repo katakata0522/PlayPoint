@@ -1,0 +1,36 @@
+name: Sync Super Ticket guide
+
+on:
+  push:
+    branches:
+      - content/super-ticket-guide-20260908
+    paths:
+      - .github/workflows/sync-super-ticket-guide.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: content/super-ticket-guide-20260908
+          fetch-depth: 0
+      - name: Apply article ownership changes
+        run: node .github/scripts/sync-super-ticket-guide.cjs
+      - name: Regenerate canonical artifacts
+        run: node scripts/prepare-pr.cjs
+      - name: Run preflight
+        run: node .github/scripts/preflight.cjs
+      - name: Commit generated result and remove temporary files
+        run: |
+          git config user.name "katakata0522"
+          git config user.email "tomokiandyuuki3@gmail.com"
+          git rm .github/workflows/sync-super-ticket-guide.yml .github/scripts/sync-super-ticket-guide.cjs
+          git add -A
+          git commit -m "記事: Super Ticket専用ガイドと導線を同期"
+          git push origin HEAD:content/super-ticket-guide-20260908
