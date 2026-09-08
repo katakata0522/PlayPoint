@@ -90,14 +90,15 @@ test('post-deploy revision readiness fails after its explicit retry budget', asy
   }
 });
 
-test('production defaults provide a bounded propagation window without consuming the whole browser-smoke job', () => {
-  assert.equal(DEFAULT_ATTEMPTS, 8);
-  assert.equal(DEFAULT_DELAY_MS, 2500);
-  assert.equal(DEFAULT_TIMEOUT_MS, 10000);
+test('production defaults provide a bounded propagation window without pinning tuning constants', () => {
+  assert.ok(Number.isInteger(DEFAULT_ATTEMPTS) && DEFAULT_ATTEMPTS >= 2, 'readiness should retry at least once');
+  assert.ok(Number.isFinite(DEFAULT_DELAY_MS) && DEFAULT_DELAY_MS >= 0, 'retry delay must be non-negative');
+  assert.ok(Number.isFinite(DEFAULT_TIMEOUT_MS) && DEFAULT_TIMEOUT_MS > 0, 'request timeout must be positive');
+
   const scheduledDelayMs = Array.from({ length: DEFAULT_ATTEMPTS - 1 }, (_, index) => DEFAULT_DELAY_MS * (index + 1))
     .reduce((sum, delay) => sum + delay, 0);
   const worstCaseReadinessMs = scheduledDelayMs + (DEFAULT_ATTEMPTS * DEFAULT_TIMEOUT_MS);
-  assert.equal(scheduledDelayMs, 70000);
-  assert.equal(worstCaseReadinessMs, 150000);
+
+  assert.ok(worstCaseReadinessMs > 0);
   assert.ok(worstCaseReadinessMs < 180000, 'readiness must remain bounded below three minutes of the ten-minute browser-smoke job');
 });

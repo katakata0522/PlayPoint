@@ -44,8 +44,9 @@ test('国をブラウザ言語だけで推測せず6地域の公式確認導線�
   }
 });
 
-test('注意ページの意味のある更新日を生成処理でも維持する', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['attention.html'], '2026-08-23');
-  assert.match(html, /<meta name="last-modified" content="2026-08-23">/);
-  assert.match(html, /"dateModified": "2026-08-23"/);
+test('注意ページの更新日は内容日台帳・メタデータ・構造化データで一致する', () => {
+  const expectedDate = CONTENT_DATE_OVERRIDES['attention.html'];
+  assert.match(expectedDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.match(html, new RegExp(`<meta name="last-modified" content="${expectedDate}">`));
+  assert.match(html, new RegExp(`"dateModified":\\s*"${expectedDate}"`));
 });

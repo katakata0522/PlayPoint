@@ -38,7 +38,7 @@ test('published Japanese Amount copy uses special earn-rate terminology', () => 
   assert.match(ja, /multiplier=1/);
 });
 
-test('published international Amount overrides stay unchanged and keep legacy query compatibility', () => {
+test('published international Amount overrides keep earn-rate wording and legacy query compatibility', () => {
   const en = read('en/amount/10000/index.html');
   const ko = read('ko/amount/10000/index.html');
   const tw = read('tw/amount/10000/index.html');
@@ -50,6 +50,6 @@ test('published international Amount overrides stay unchanged and keep legacy qu
 
   for (const html of [en, ko, tw]) {
     assert.match(html, /multiplier=1/);
-    assert.match(html, /2026-08-18/);
+    assert.match(html, /<meta name="last-modified" content="\d{4}-\d{2}-\d{2}">/);
   }
 });

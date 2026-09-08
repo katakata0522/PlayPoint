@@ -5,13 +5,10 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const {
-  GAME_LOCALE_DIRECTORIES
-} = require('../scripts/locale-ids.cjs');
+const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
+const { GAME_LOCALE_DIRECTORIES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
-const generatorPath = path.join(root, 'scripts', 'generate-game-simulators.cjs');
-const registryPath = path.join(root, 'blog', 'articles.json');
 
 const RESCUED_ARTICLES = Object.freeze([
   {
@@ -35,43 +32,31 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function getGameIds() {
-  const source = read('scripts/generate-game-simulators.cjs');
-  const gamesBlock = source.match(/const GAMES_DATA = \[([\s\S]*?)\r?\n\];\r?\n\r?\nfunction generateGamePageHtml/);
-  assert.ok(gamesBlock, 'GAMES_DATA should remain discoverable');
-  return [...gamesBlock[1].matchAll(/^\s+id:\s*'([^']+)'/gm)].map(match => match[1]);
-}
-
 function padPagePath(localeDirectory) {
   const prefix = localeDirectory ? `${localeDirectory}/` : '';
   return `${prefix}games/pad/index.html`;
 }
 
-test('PAD is a generated game-simulator id with locale pages and a portal link', () => {
-  assert.equal(fs.existsSync(generatorPath), true, 'game generator source should exist');
-  assert.ok(getGameIds().includes('pad'), 'GAMES_DATA should include pad');
+test('PAD is published for every generated game locale and linked from each portal', () => {
+  const generatedPages = new Set(getGamePageHtmlFiles(root));
 
-  const generator = read('scripts/generate-game-simulators.cjs');
-  assert.match(generator, /id: 'pad'/);
-  assert.match(generator, /パズドラパス \(月額980円\)/);
-  assert.match(generator, /price: 980/);
-
-  const portalPaths = [];
   for (const localeDirectory of GAME_LOCALE_DIRECTORIES) {
     const page = padPagePath(localeDirectory);
-    assert.equal(fs.existsSync(path.join(root, page)), true, `${page} should exist as a generated output`);
+    assert.equal(generatedPages.has(page), true, `${page} should be a discovered generated output`);
+
     const html = read(page);
     assert.match(html, /last-modified" content="\d{4}-\d{2}-\d{2}"/, `${page} should publish last-modified`);
     assert.match(html, /パズドラパス|Puzzle & Dragons|퍼즐앤드래곤|龍族拼圖/, `${page} should name PAD`);
 
     const prefix = localeDirectory ? `${localeDirectory}/` : '';
-    portalPaths.push(`${prefix}games/index.html`);
+    const portal = read(`${prefix}games/index.html`);
+    assert.match(portal, /href="\.\/pad\/"/, `${prefix}games/index.html should link to PAD`);
   }
 
-  for (const portal of portalPaths) {
-    const html = read(portal);
-    assert.match(html, /href="\.\/pad\/"/, `${portal} should link to the PAD simulator`);
-  }
+  // Protect the user-visible preset rather than the generator's internal array syntax.
+  const japanesePage = read('games/pad/index.html');
+  assert.match(japanesePage, /data-amount="980"/);
+  assert.match(japanesePage, /パズドラパス \(980円\)/);
 });
 
 test('the three rescued Japanese articles are listed and published without bulk #168 design classes', () => {

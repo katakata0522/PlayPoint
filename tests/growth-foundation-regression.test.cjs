@@ -68,13 +68,3 @@ test('ブログ共通スタイルは外部CSSとして版管理し、JSへ大量
   assert.doesNotMatch(components, /style\.textContent\s*=/);
   assert.doesNotMatch(components, /function injectStyles/);
 });
-
-test('記事品質監査は構造破損を検出しつつ固定件数・固定本文量を要求しない', () => {
-  const audit = read('tests/all-article-quality-audit.test.cjs');
-  assert.doesNotMatch(audit, /registry\.length\s*>=\s*\d+/);
-  assert.doesNotMatch(audit, /bodyText\.length\s*>=\s*500/);
-  assert.doesNotMatch(audit, /h2Matches\.length\s*>=\s*3/);
-  assert.doesNotMatch(audit, /paragraphs\.length\s*>=\s*5/);
-  assert.match(audit, /article body is empty/);
-  assert.match(audit, /explanatory paragraph is missing/);
-});

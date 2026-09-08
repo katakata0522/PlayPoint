@@ -53,14 +53,17 @@ function schemas(html) {
     .map(match => JSON.parse(match[1]));
 }
 
+function modifiedDate(html, label) {
+  const match = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"/);
+  assert.ok(match, `${label}: last-modified`);
+  return match[1];
+}
+
 test('プラチナ・ダイヤモンド比較は地域別公式数値と計算条件を明示する', () => {
   for (const page of pages) {
     const html = read(page.file);
     assert.ok(html.includes(`<html lang="${page.lang}"`), page.file);
-    // The international articles received a meaningful editorial guidance update on 2026-08-21.
-    // Their separate official-source verification note intentionally remains 2026-08-05.
-    const expectedModified = page.key === 'ja' ? '2026-08-04' : '2026-08-21';
-    assert.ok(html.includes(`<meta name="last-modified" content="${expectedModified}"`), page.file);
+    assert.match(modifiedDate(html, page.file), /^\d{4}-\d{2}-\d{2}$/);
     assert.ok(html.includes('article:modified_time'), page.file);
     assert.ok(html.includes(`CountryCode%3D${page.sourceCountry}`), page.file);
     assert.ok(html.includes('support.google.com/googleplay/answer/9080348'), page.file);
@@ -103,7 +106,7 @@ test('専用サイトマップと記事一覧から4言語ページを発見で�
   const robots = read('robots.txt');
   const human = read('sitemap.html');
 
-  assert.strictEqual((sitemap.match(/<url>/g) || []).length, 4);
+  assert.strictEqual((sitemap.match(/<url>/g) || []).length, Object.keys(urls).length);
   assert.ok(robots.includes('Sitemap: https://playpoint-sim.com/sitemap-intl-platinum-diamond.xml'));
 
   for (const [lang, url] of Object.entries(urls)) {
@@ -111,12 +114,11 @@ test('専用サイトマップと記事一覧から4言語ページを発見で�
 
     const page = pages.find(candidate => candidate.lang === lang);
     assert.ok(page, `missing page metadata for ${lang}`);
-    const modifiedMatch = read(page.file).match(/<meta name="last-modified" content="([^"]+)"/);
-    assert.ok(modifiedMatch, `${page.file}: missing last-modified`);
+    const date = modifiedDate(read(page.file), page.file);
     const entryStart = sitemap.indexOf(`<loc>${url}</loc>`);
     const entryEnd = sitemap.indexOf('</url>', entryStart);
     const entry = sitemap.slice(entryStart, entryEnd);
-    assert.ok(entry.includes(`<lastmod>${modifiedMatch[1]}</lastmod>`), `${page.file}: sitemap lastmod`);
+    assert.ok(entry.includes(`<lastmod>${date}</lastmod>`), `${page.file}: sitemap lastmod`);
 
     for (const [alternateLang, alternateUrl] of Object.entries(urls)) {
       assert.ok(sitemap.includes(`hreflang="${alternateLang}" href="${alternateUrl}"`));
@@ -132,13 +134,14 @@ test('専用サイトマップと記事一覧から4言語ページを発見で�
 test('日本語記事データと配信ファイルの更新日・説明が一致する', () => {
   const articles = JSON.parse(read('blog/articles.json'));
   const article = articles.find(item => item.id === 'diamond-worth-it');
+  const date = modifiedDate(read(pages[0].file), pages[0].file);
   assert.ok(article);
-  assert.strictEqual(article.modified, '2026-08-04');
+  assert.strictEqual(article.modified, date);
   assert.ok(article.description.includes('日本のGoogle公式情報'));
 
   const atom = read('atom.xml');
   const blogSitemap = read('blog/sitemap.xml');
-  assert.ok(atom.includes('<updated>2026-08-04T12:00:00+09:00</updated>'));
+  assert.ok(atom.includes(`<updated>${date}T12:00:00+09:00</updated>`));
   assert.ok(blogSitemap.includes('<loc>https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</loc>'));
 });
 

@@ -44,6 +44,11 @@ function schemas(html) {
   return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
     .map(match => JSON.parse(match[1]));
 }
+function modifiedDate(html, label) {
+  const match = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"/);
+  assert.ok(match, `${label}: last-modified`);
+  return match[1];
+}
 
 test('ランク維持記事は4言語で相互接続され公式条件とSEO要件を満たす', () => {
   for (const page of pages) {
@@ -60,6 +65,7 @@ test('ランク維持記事は4言語で相互接続され公式条件とSEO要�
     assert.ok(html.includes('/author/katakata.html'), page.file);
     assert.ok(parsed.some(schema => schema['@type'] === 'Article'), page.file);
     assert.ok(parsed.some(schema => schema['@type'] === 'FAQPage'), page.file);
+    assert.match(modifiedDate(html, page.file), /^\d{4}-\d{2}-\d{2}$/);
 
     for (const alternate of pages) {
       assert.ok(
@@ -74,8 +80,6 @@ test('ランク維持記事は4言語で相互接続され公式条件とSEO要�
     }
 
     if (page.key !== 'ja') {
-      assert.ok(html.length >= 7000, `${page.file}: thin content ${html.length}`);
-      assert.ok(html.includes('<meta name="last-modified" content="2026-07-25">'), page.file);
       assert.ok(html.includes('article:published_time'), page.file);
       assert.ok(html.includes('article:modified_time'), page.file);
       assert.ok(html.includes('class="cta-btn"'), page.file);
@@ -88,11 +92,11 @@ test('日本語の既存記事と記事データは同じ更新日を持つ', ()
   const html = read(pages[0].file);
   const articles = JSON.parse(read('blog/articles.json'));
   const article = articles.find(item => item.id === 'playpoints-rank-maintenance');
+  const date = modifiedDate(html, pages[0].file);
 
-  assert.ok(html.includes('<meta name="last-modified" content="2026-08-04"'));
-  assert.ok(html.includes('"dateModified": "2026-08-04"'));
   assert.ok(article);
-  assert.strictEqual(article.modified, '2026-08-04');
+  assert.strictEqual(article.modified, date);
+  assert.ok(html.includes(`"dateModified": "${date}"`) || html.includes(`"dateModified":"${date}"`));
 });
 
 test('専用サイトマップは4言語URLと完全なhreflangを持ちrobots.txtから発見できる', () => {

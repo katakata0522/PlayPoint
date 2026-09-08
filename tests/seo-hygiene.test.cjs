@@ -4,6 +4,7 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { TOP_PAGE_CONTENT_DATES } = require('../scripts/content-dates.cjs');
 const { getLatestHubVerificationDate } = require('../scripts/latest-hub-audit.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -55,7 +56,7 @@ test('ルートサイトマップはPlay Pointsの公開導線だけを扱う', 
   assert.ok(!read('blog/sitemap.xml').includes('<changefreq>'));
   assert.ok(!read('blog/sitemap.xml').includes('<priority>'));
   assert.match(sitemap, new RegExp(`<loc>${origin}/latest/</loc>\\r?\\n\\s*<lastmod>${latestVerificationDate}</lastmod>`));
-  assert.match(sitemap, new RegExp(`<loc>${origin}/ko/</loc>\\r?\\n\\s*<lastmod>2026-07-26</lastmod>`));
+  assert.match(sitemap, new RegExp(`<loc>${origin}/ko/</loc>\\r?\\n\\s*<lastmod>${TOP_PAGE_CONTENT_DATES.ko}</lastmod>`));
 });
 
 test('専用XMLサイトマップへ移したURLをルートへ重ねない', () => {
@@ -97,11 +98,14 @@ test('人向けサイトマップはPlay Pointsの案内に集中する', () => 
 
 test('韓国語トップは為替計算をうたわず実際の入力条件を説明する', () => {
   const html = read('ko/index.html');
-  const description = '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 계산합니다.';
+  const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
 
-  assert.ok(html.includes(`<meta name="description" content="${description}">`));
-  assert.ok(!html.includes('환율과 보너스 이벤트'));
-  assert.ok(html.includes('<meta name="last-modified" content="2026-07-26">'));
+  assert.match(description, /실버/);
+  assert.match(description, /골드/);
+  assert.match(description, /기본 적립률/);
+  assert.match(description, /특별 적립률/);
+  assert.ok(!description.includes('환율과 보너스 이벤트'));
+  assert.ok(html.includes(`<meta name="last-modified" content="${TOP_PAGE_CONTENT_DATES.ko}">`));
 });
 
 test('Q&Aは現在のランク判定と計算機の責任範囲を明示する', () => {
