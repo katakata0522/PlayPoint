@@ -1,0 +1,106 @@
+name: Prepare search-intent article sync
+
+on:
+  push:
+    branches:
+      - growth/search-intent-articles-20260908
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/search-intent-articles-20260908
+          persist-credentials: true
+
+      - name: Sync article SSOT
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          verified = Path('scripts/article-official-verification-dates.json')
+          data = json.loads(verified.read_text(encoding='utf-8'))
+          for path in [
+              'articles/2025-12-25-playpoints-rank-maintenance.html',
+              'articles/2025-12-25-weekly-reward.html',
+              'articles/2026-03-10-play-points-reflection-timing.html',
+              'articles/2026-07-31-super-weekly-reward.html',
+          ]:
+              if path not in data:
+                  raise SystemExit(f'missing verification registry entry: {path}')
+              data[path] = '2026-09-08'
+          verified.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          editorial = Path('scripts/article-editorial-structure.cjs')
+          text = editorial.read_text(encoding='utf-8')
+          replacements = {
+              "'articles/2026-03-10-play-points-reflection-timing.html': {\n    manualStructure: true,\n    modifiedDate: '2026-08-04',":
+              "'articles/2026-03-10-play-points-reflection-timing.html': {\n    manualStructure: true,\n    modifiedDate: '2026-09-08',",
+              "'articles/2025-12-25-playpoints-rank-maintenance.html': {\n    manualStructure: true,\n    modifiedDate: '2026-08-04',":
+              "'articles/2025-12-25-playpoints-rank-maintenance.html': {\n    manualStructure: true,\n    modifiedDate: '2026-09-08',",
+          }
+          for old, new in replacements.items():
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'editorial date anchor count must be 1, got {count}: {old[:80]}')
+              text = text.replace(old, new)
+          editorial.write_text(text, encoding='utf-8')
+
+          registry = Path('blog/articles.json')
+          articles = json.loads(registry.read_text(encoding='utf-8'))
+          updates = {
+              'super-weekly-reward': {
+                  'title': 'Google Play Pointsスーパーウィークリーリワード｜賞品・確率・当選例・Super Ticket',
+                  'description': 'スーパーウィークリーリワードでは何が当たる？Google公式の過去賞品、2024年に日本で確認された例、確率が非公開である点、早めに受け取る意味、Super Ticketの注意を整理します。',
+              },
+              'weekly-reward': {
+                  'title': 'Google Play Pointsのウィークリーリワードとは？何が当たる・何曜日・対象ランク',
+                  'description': 'Google Play Pointsの通常ウィークリーリワードは日本ではシルバー以上・毎週金曜更新。何が当たるのか、スーパー週次・Play Pass週次との違い、年間記録の実例も整理します。',
+              },
+              'playpoints-rank-maintenance': {
+                  'title': 'Google Play Pointsのランクは下がる？維持期間・翌年の再判定を解説',
+                  'description': 'Google Play Pointsのランクはいつ下がる？到達したランクは翌年12月31日まで維持され、その年のステータス判定ポイントをもとに次の年のランクが再判定されます。',
+              },
+              'play-points-reflection-timing': {
+                  'title': 'Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番',
+                  'description': '課金したのにPlay Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。',
+              },
+          }
+          seen = set()
+          for article in articles:
+              article_id = article.get('id')
+              if article_id not in updates:
+                  continue
+              article.update(updates[article_id])
+              article['modified'] = '2026-09-08'
+              seen.add(article_id)
+          missing = set(updates) - seen
+          if missing:
+              raise SystemExit(f'missing article registry ids: {sorted(missing)}')
+          registry.write_text(json.dumps(articles, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          PY
+
+      - name: Run canonical PR preparation
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated sync and remove one-time workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/prepare-search-intent-articles-20260908.yml
+          git add -A
+          git status --short
+          if git diff --cached --quiet; then
+            echo "No sync changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: 記事更新のSSOTと生成物を同期"
+          git push origin HEAD:growth/search-intent-articles-20260908
