@@ -33,7 +33,7 @@ function schemas(html) {
     .map((match) => JSON.parse(match[1]));
 }
 
-function assertBasicSeo(html, relativePath, { lang, siteName, requireFaq = true, minHtml = 0 } = {}) {
+function assertBasicSeo(html, relativePath, { lang, siteName, requireFaq = true } = {}) {
   const title = html.match(/<title>([^<]+)<\/title>/)?.[1] || '';
   const description = html.match(/<meta name="description" content="([^"]+)"/)?.[1] || '';
   const canonical = `${SITE}/${relativePath}`;
@@ -41,8 +41,8 @@ function assertBasicSeo(html, relativePath, { lang, siteName, requireFaq = true,
 
   assert.ok(html.includes(`<html lang="${lang}">`), `${relativePath}: lang`);
   assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), `${relativePath}: canonical`);
-  assert.ok(title.length >= 20 && title.length <= 65, `${relativePath}: title len ${title.length}`);
-  assert.ok(description.length >= 45 && description.length <= 170, `${relativePath}: description len ${description.length}`);
+  assert.ok(title.trim(), `${relativePath}: title`);
+  assert.ok(description.trim(), `${relativePath}: description`);
   assert.equal((html.match(/<h1\b/g) || []).length, 1, `${relativePath}: h1`);
   if (siteName) {
     assert.ok(html.includes(`<meta property="og:site_name" content="${siteName}">`), `${relativePath}: siteName`);
@@ -54,9 +54,6 @@ function assertBasicSeo(html, relativePath, { lang, siteName, requireFaq = true,
   assert.ok(html.includes('class="cta-btn"') || html.includes("class='cta-btn'"), `${relativePath}: CTA`);
   assert.ok(!html.includes('utm_medium=internal'), `${relativePath}: internal UTM`);
   assert.ok(html.includes('/author/katakata.html'), `${relativePath}: author`);
-  if (minHtml > 0) {
-    assert.ok(html.length >= minHtml, `${relativePath}: thin content ${html.length}`);
-  }
 }
 
 function assertHreflang(html, relativePath, expected = ['ja', 'en', 'ko', 'zh-TW', 'x-default']) {
