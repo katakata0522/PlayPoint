@@ -1,0 +1,105 @@
+name: Fix PR244 article contracts
+
+on:
+  push:
+    branches:
+      - growth/search-intent-articles-20260908
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: growth/search-intent-articles-20260908
+          persist-credentials: true
+
+      - name: Restore useful article contracts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected one anchor, got {count}: {old[:100]}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          super_path = 'articles/2026-07-31-super-weekly-reward.html'
+          replace_once(
+              super_path,
+              '<p>ただし、ここは期待を盛りすぎないのが大事です。<strong>当選確率の数字は公開されていません。</strong> Googleが明かしているのは「一部の賞品はよりレア」「在庫には限りがある」「早めに受け取るほどプレミアム特典を獲得できる可能性が高くなる」というところまでです。</p>\n  </section>',
+              '<p>ただし、ここは期待を盛りすぎないのが大事です。<strong>当選確率の数字は公開されていません。</strong> Googleが明かしているのは「一部の賞品はよりレア」「在庫には限りがある」「早めに受け取るほどプレミアム特典を獲得できる可能性が高くなる」というところまでです。</p>\n    <p><strong>プレミアム賞品が必ず当たる仕組みではありません。</strong> 「早めに確認する意味はある」と「高額賞品が保証される」は別の話として考えるのが安全です。</p>\n  </section>\n  <section aria-labelledby="known-unknown" class="knowledge-boundary">\n    <h2 id="known-unknown">公式で分かること／今週は自分の画面で見ること</h2>\n    <div class="knowledge-boundary__grid">\n      <div><h3>公式で確認できること</h3><ul><li>主な対象はゴールド・プラチナ・ダイヤモンド</li><li>提供される週は金曜日の午前0時以降に新しい賞品が利用可能</li><li>賞品数には限りがあり、早めの受取ほどプレミアム特典の可能性が高まる</li></ul></div>\n      <div><h3>自分の画面で確認すること</h3><ul><li>現在の賞品、残りの賞品数、追加条件</li><li>自分のアカウントにカードが表示されているか</li><li>Super Ticketの付与状況と期限</li></ul></div>\n    </div>\n    <p>このサイトから個別アカウントの資格や在庫は確認できません。今週の最終判断はGoogle Playの「特典」画面を優先してください。</p>\n  </section>'
+          )
+          replace_once(super_path, '提供される週は金曜日 午前0時（現地時間）以降', '提供される週は金曜日の午前0時以降（現地時間）')
+
+          weekly_path = 'articles/2025-12-25-weekly-reward.html'
+          replace_once(
+              weekly_path,
+              '<p>毎週同じポイントがもらえる仕組みではありません。「今週はいくつかな」と開く楽しみがあるタイプの特典です。なお、Pixelなどが賞品になることがある<strong>スーパーウィークリーリワード</strong>や、木曜更新の<strong>Play Pass週次特典</strong>は別物です。</p>',
+              '<p>毎週同じポイントがもらえる仕組みではありません。「今週はいくつかな」と開く楽しみがあるタイプの特典です。なお、Pixelなどが賞品になることがある<strong>スーパーウィークリーリワード</strong>や、木曜更新の<strong>Play Pass週次特典</strong>は別物です。</p>\n    <p>通常のウィークリーリワードはシルバー以上が公式対象です。Play Pass加入中なら木曜日に、Play Passの週次ボーナス・ブースターを確認すると覚えておくと迷いにくくなります。</p>'
+          )
+
+          rank_path = 'articles/2025-12-25-playpoints-rank-maintenance.html'
+          replace_once(
+              rank_path,
+              '<p>その間、2027年の1年間でどれだけステータス判定用ポイントを獲得したかによって、2028年のランクが決まります。なので「今ゴールドだから来年も自動でゴールド」ではありませんが、<strong>上がった直後にまたゼロから維持ノルマが始まって、すぐ降格するわけでもありません。</strong></p>\n  </section>',
+              '<p>その間、2027年の1年間でどれだけステータス判定用ポイントを獲得したかによって、2028年のランクが決まります。なので「今ゴールドだから来年も自動でゴールド」ではありませんが、<strong>上がった直後にまたゼロから維持ノルマが始まって、すぐ降格するわけでもありません。</strong></p>\n  </section>\n  <section aria-labelledby="known-unknown" class="knowledge-boundary">\n    <h2 id="known-unknown">公式ルールで分かること／自分の画面で確認すること</h2>\n    <div class="knowledge-boundary__grid">\n      <div><h3>公式ルールで分かること</h3><ul><li>到達したランクは翌年末まで維持される</li><li>判定は1月1日〜12月31日の年間進捗で行われる</li><li>ポイント交換で残高を使うことと、年間のランク進捗は別</li></ul></div>\n      <div><h3>自分の画面で確認すること</h3><ul><li>現在のステータス</li><li>今年のレベル進捗</li><li>次のランク・維持ラインまでの不足ポイント</li></ul></div>\n    </div>\n  </section>'
+          )
+          replace_once(rank_path, '「今のランク」と「今年の進捗」は同じではない', '「今のランク」と「今年のレベル進捗」は同じではない')
+
+          reflection_path = 'articles/2026-03-10-play-points-reflection-timing.html'
+          replace_once(
+              reflection_path,
+              '<p>一部の問題では処理に時間がかかるとして数分待って再確認する案内がありますが、<strong>条件を満たしていない購入は待ってもポイントが付きません。</strong> まず注文状態 → ポイント履歴 → 購入アカウント → Play Pointsへ参加していた時期、の順で見るのが近道です。</p>\n  </section>',
+              '<p>一部の問題では処理に時間がかかるとして数分待って再確認する案内がありますが、<strong>条件を満たしていない購入は待ってもポイントが付きません。</strong> まず注文状態 → ポイント履歴 → 購入アカウント → Play Pointsへ参加していた時期、の順で見るのが近道です。</p>\n  </section>\n  <section aria-labelledby="known-unknown" class="knowledge-boundary">\n    <h2 id="known-unknown">画面で確認できること／このサイトでは確認できないこと</h2>\n    <div class="knowledge-boundary__grid">\n      <div><h3>自分で確認できること</h3><ul><li>注文が完了・保留・キャンセル・返金のどれか</li><li>ポイント履歴に通常分・キャンペーン分が記録されているか</li><li>購入したGoogleアカウントと参加アカウントが同じか</li></ul></div>\n      <div><h3>このサイトでは確認できないこと</h3><ul><li>個別注文の内部処理状況</li><li>正確に何時に反映されるか</li><li>対象者限定オファーが個別購入へ適用されたか</li></ul></div>\n    </div>\n  </section>'
+          )
+          replace_once(reflection_path, '条件が合っているなら、端末側は軽く確認', '端末側で最後に試すこと')
+          replace_once(reflection_path, '反映確認のために、同じ商品をもう一度買わない', '反映確認のために、もう一度購入して試さない')
+          PY
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run full regression tests and capture result
+        run: |
+          set +e
+          node --test tests/*.test.cjs > /tmp/pr244-fixed-tests.log 2>&1
+          status=$?
+          rm -f .github/pr244-fix-test-failures.txt
+          if [ "$status" -ne 0 ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/pr244-fixed-tests.log').read_text(encoding='utf-8').splitlines()
+          hits = [i for i, line in enumerate(lines) if line.startswith('not ok ')]
+          out = [f'failed_tests={len(hits)}']
+          for n, i in enumerate(hits, 1):
+              out.append(f'\n=== failure {n} ===')
+              out.extend(lines[max(0, i-3):min(len(lines), i+28)])
+          Path('.github/pr244-fix-test-failures.txt').write_text('\n'.join(out) + '\n', encoding='utf-8')
+          PY
+          fi
+          echo "test_status=$status" >> "$GITHUB_ENV"
+          exit 0
+
+      - name: Commit fix and remove diagnostics
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/fix-pr244-article-contracts.yml
+          rm -f .github/pr244-preflight-diagnostic.txt .github/pr244-test-failures.txt
+          git add -A
+          git commit -m "fix: 記事の安全境界と回帰契約を整合"
+          git push origin HEAD:growth/search-intent-articles-20260908
+
+      - name: Fail if regressions remain
+        if: env.test_status != '0'
+        run: exit 1
