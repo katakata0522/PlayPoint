@@ -8,8 +8,6 @@ const vm = require('node:vm');
 
 const source = fs.readFileSync(path.resolve(__dirname, '../sw.js'), 'utf8');
 const ORIGIN = 'https://playpoint-sim.com';
-const currentCacheName = source.match(/const CACHE_NAME = '([^']+)'/)?.[1];
-assert.ok(currentCacheName, 'sw.jsの現行CACHE_NAMEを取得できません');
 
 class FakeRequest {
   constructor(url, options = {}) {
@@ -36,6 +34,7 @@ function createRuntime({
   const listeners = new Map();
   const addAllCalls = [];
   const deletedCaches = [];
+  const openedCaches = [];
   const putCalls = [];
   const matchCalls = [];
   const fetchCalls = [];
@@ -64,7 +63,7 @@ function createRuntime({
     Set,
     Request: FakeRequest,
     caches: {
-      async open() { return cache; },
+      async open(name) { openedCaches.push(String(name)); return cache; },
       async keys() { return [...cacheNames]; },
       async delete(name) { deletedCaches.push(name); return true; }
     },
@@ -120,6 +119,7 @@ function createRuntime({
     get claimCalls() { return claimCalls; },
     get skipWaitingCalls() { return skipWaitingCalls; },
     matchCalls,
+    openedCaches,
     putCalls
   };
 }
@@ -140,6 +140,8 @@ test('precache成功時だけ最新版をreload取得してskipWaitingする', a
   assert.ok(success.addAllCalls[0].length > 0);
   assert.ok(success.addAllCalls[0].every(item => item instanceof FakeRequest && item.cache === 'reload'));
   assert.equal(success.skipWaitingCalls, 1);
+  assert.equal(success.openedCaches.length, 1, 'install should open exactly one active cache');
+  assert.ok(success.openedCaches[0], 'active cache name should be observable through caches.open');
 
   const failure = createRuntime({ installFailure: true });
   await assert.rejects(failure.fireInstall(), /precache failed/);
@@ -147,6 +149,10 @@ test('precache成功時だけ最新版をreload取得してskipWaitingする', a
 });
 
 test('activateはPlayPointの古い世代だけを削除し現行cacheと他アプリcacheを残す', async () => {
+  const probe = createRuntime();
+  await probe.fireInstall();
+  const currentCacheName = probe.openedCaches[0];
+
   const runtime = createRuntime({
     cacheNames: [
       'playpoint-calc-vold',
