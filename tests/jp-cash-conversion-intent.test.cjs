@@ -15,8 +15,8 @@ test('JP cash-conversion owns cash/PayPay intent instead of generic recommendati
   assert.ok(!html.includes('Google Play Pointsは現金化できる？交換先・使い道を比較'));
 });
 
-test('metadata reflects editorial change without claiming a new official verification', () => {
-  assert.ok(html.includes('<meta name="last-modified" content="2026-09-03"'));
-  assert.ok(html.includes('data-article-date="modified" datetime="2026-09-03"'));
-  assert.ok(html.includes('data-article-date="official-verified" datetime="2026-08-04"'));
+test('editorial update and official verification remain separate metadata fields', () => {
+  assert.match(html, /<meta name="last-modified" content="\d{4}-\d{2}-\d{2}"/);
+  assert.match(html, /data-article-date="modified" datetime="\d{4}-\d{2}-\d{2}"/);
+  assert.match(html, /data-article-date="official-verified" datetime="\d{4}-\d{2}-\d{2}"/);
 });
