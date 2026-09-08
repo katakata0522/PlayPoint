@@ -45,9 +45,9 @@ test('published international x-default links resolve to the canonical default l
 
   let checked = 0;
   for (const topic of TOPICS) {
-    const expectedUrl = `https://playpoint-sim.com/${DEFAULT_INTERNATIONAL_LOCALE}/articles/${topic.slug}.html`;
+    const expectedUrl = `https://playpoint-sim.com/${DEFAULT_INTERNATIONAL_LOCALE}/articles/${topic.slug}`;
     for (const locale of expectedLocales) {
-      const file = path.join(root, locale, 'articles', `${topic.slug}.html`);
+      const file = path.join(root, locale, 'articles', topic.slug);
       if (!fs.existsSync(file)) continue;
       const html = fs.readFileSync(file, 'utf8');
       const match = html.match(/<link rel="alternate" hreflang="x-default" href="([^"]+)">/);
