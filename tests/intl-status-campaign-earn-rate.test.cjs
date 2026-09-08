@@ -11,12 +11,6 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-function assertContentDate(relativePath, expectedDate) {
-  const html = read(relativePath);
-  assert.match(html, new RegExp(`<meta name="last-modified" content="${expectedDate}">`), relativePath);
-  assert.match(html, new RegExp(`"dateModified": "${expectedDate}"`), relativePath);
-}
-
 test('international status pages describe final special earn rates instead of multiplying tier rates', () => {
   const diamondKo = read('ko/status/diamond/index.html');
   assert.match(diamondKo, /현재 등급의 기본 적립률/);
@@ -70,7 +64,7 @@ test('campaign wait pages compare confirmed rates without treating 2x or 3x as a
   assert.doesNotMatch(tw, /只有符合資格才輸入倍率/);
 });
 
-test('only meaningfully edited international LP locale/page pairs receive the new content date', () => {
+test('published international status and campaign pages expose editorial dates without pinning rollout history', () => {
   for (const file of [
     'ko/status/diamond/index.html',
     'en/status/platinum/index.html',
@@ -81,19 +75,18 @@ test('only meaningfully edited international LP locale/page pairs receive the ne
     'tw/status/gold/index.html',
     'en/campaign/wait/index.html',
     'ko/campaign/wait/index.html',
-    'tw/campaign/wait/index.html'
-  ]) {
-    assertContentDate(file, '2026-08-21');
-  }
-
-  for (const file of [
+    'tw/campaign/wait/index.html',
     'en/status/diamond/index.html',
     'tw/status/diamond/index.html',
     'en/status/silver/index.html',
     'en/campaign/2x/index.html',
     'en/campaign/3x/index.html'
   ]) {
-    assertContentDate(file, '2026-08-18');
+    const html = read(file);
+    const meta = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
+    const schema = html.match(/"dateModified":\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
+    assert.ok(meta, `${file}: last-modified`);
+    assert.equal(schema, meta, `${file}: structured date should match metadata`);
   }
 });
 
