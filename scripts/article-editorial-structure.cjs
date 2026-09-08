@@ -10,7 +10,7 @@ const EDITORIAL_MODIFIED_DATE = '2026-07-30';
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
     manualStructure: true,
-    modifiedDate: '2026-08-04',
+    modifiedDate: '2026-09-08',
     answer: '購入が完了しているのにポイントが見えない場合は、注文状態、Play Points履歴、購入したGoogleアカウント、キャンペーン条件の順で確認します。待ち時間だけでは原因を切り分けられません。',
     known: [
       '注文が完了・保留・キャンセル・返金のどれかは購入履歴で確認できます。',
@@ -100,7 +100,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2025-12-25-playpoints-rank-maintenance.html': {
     manualStructure: true,
-    modifiedDate: '2026-08-04',
+    modifiedDate: '2026-09-08',
     answer: 'その年に到達したステータスは翌年末まで維持され、翌年に貯めたポイント数をもとに次の年初のステータスが再判定されます。',
     known: [
       '日本のステータス条件と通常獲得率はGoogle Play公式案内で確認できます。',
