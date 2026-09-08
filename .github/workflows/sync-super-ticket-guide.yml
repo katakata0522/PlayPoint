@@ -34,3 +34,4 @@ jobs:
           git add -A
           git commit -m "記事: Super Ticket専用ガイドと導線を同期"
           git push origin HEAD:content/super-ticket-guide-20260908
+# Retry after strengthening answer-first prose and structured FAQ ownership.
