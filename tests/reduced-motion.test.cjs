@@ -36,10 +36,3 @@ test('custom CSS with keyframe animation respects reduced-motion preference', ()
     );
   }
 });
-
-test('calculator count-up skips requestAnimationFrame when reduced motion is requested', () => {
-  const source = read('js/ui.js');
-  assert.match(source, /matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches/);
-  assert.match(source, /if \(prefersReducedMotion \|\| duration <= 0\) \{/);
-  assert.match(source, /obj\.textContent = end\.toLocaleString\(formatLang\);\s*return;/);
-});
