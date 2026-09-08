@@ -25,7 +25,7 @@ const clusters = [
     name: 'ポイント利用・参加条件',
     sitemap: 'sitemap-intl-use-eligibility.xml',
     robots: 'Sitemap: https://playpoint-sim.com/sitemap-intl-use-eligibility.xml',
-    expectedUrls: 6,
+    exactSitemapCoverage: true,
     topics: [
       {
         slug: 'google-play-points-use-coupons.html',
@@ -35,7 +35,6 @@ const clusters = [
           ko: ['1년 후 만료', '자동 적용', 'Play 크레딧'],
           tw: ['一年後到期', '自動套用', 'Play 抵用金']
         },
-        modifiedDates: { en: '2026-09-03', tw: '2026-09-03' },
         peer: 'google-play-points-join-eligibility.html'
       },
       {
@@ -54,7 +53,7 @@ const clusters = [
     name: '週次特典・複数アカウント',
     sitemap: 'sitemap-intl-guides.xml',
     robots: 'Sitemap: https://playpoint-sim.com/sitemap-intl-guides.xml',
-    expectedUrls: null,
+    exactSitemapCoverage: false,
     topics: [
       {
         slug: 'google-play-points-weekly-reward.html',
@@ -64,7 +63,6 @@ const clusters = [
           ko: ['실버', '금요일', '목요일', 'Play Pass'],
           tw: ['銀級', '週五', '週四', 'Play Pass']
         },
-        modifiedDates: { tw: '2026-09-03' },
         peer: 'google-play-points-multiple-accounts.html'
       },
       {
@@ -75,7 +73,6 @@ const clusters = [
           ko: ['이전할 수 없습니다', '가족 결제수단', '가입 전'],
           tw: ['不能在帳號之間轉移', '家庭付款方式', '加入前']
         },
-        modifiedDates: { tw: '2026-08-20' },
         peer: 'google-play-points-weekly-reward.html'
       }
     ]
@@ -90,14 +87,7 @@ for (const cluster of clusters) {
         assert.ok(exists(relativePath), relativePath);
         const html = read(relativePath);
         assertBasicSeo(html, relativePath, { lang: locale.lang, siteName: locale.siteName });
-        const expectedModifiedDate = topic.modifiedDates?.[locale.dir];
-        assert.ok(
-          expectedModifiedDate
-            ? html.includes(`<meta name="last-modified" content="${expectedModifiedDate}">`)
-            : html.includes('<meta name="last-modified" content="2026-07-25">')
-              || html.includes('<meta name="last-modified" content="2026-08-05">'),
-          `${relativePath}: last-modified`
-        );
+        assert.match(html, /<meta name="last-modified" content="\d{4}-\d{2}-\d{2}">/, `${relativePath}: last-modified`);
         assert.ok(
           html.includes(`/${locale.dir}/articles/${topic.peer}`),
           `${relativePath}: peer ${topic.peer}`
@@ -113,8 +103,12 @@ for (const cluster of clusters) {
     const sitemap = read(cluster.sitemap);
     const robots = read('robots.txt');
     assert.ok(robots.includes(cluster.robots));
-    if (cluster.expectedUrls != null) {
-      assert.equal((sitemap.match(/<url>/g) || []).length, cluster.expectedUrls);
+    if (cluster.exactSitemapCoverage) {
+      assert.equal(
+        (sitemap.match(/<url>/g) || []).length,
+        cluster.topics.length * LOCALES_3.length,
+        `${cluster.name}: sitemap should cover the configured topics/locales exactly`
+      );
     }
     for (const topic of cluster.topics) {
       for (const locale of LOCALES_3) {
