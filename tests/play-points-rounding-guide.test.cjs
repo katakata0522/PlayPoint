@@ -135,8 +135,11 @@ test('画面のFAQとFAQPage構造化データが一致する', () => {
 test('記事台帳は既存記事の役割を維持して更新日と説明を同期する', () => {
   const articles = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
   const entry = articles.find(article => article.id === 'points-value-1');
+  const html = fs.readFileSync(articlePath, 'utf8');
+  const modified = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"/)?.[1];
   assert.ok(entry);
-  assert.equal(entry.modified, '2026-08-03');
+  assert.ok(modified, 'article last-modified is required');
+  assert.equal(entry.modified, modified);
   assert.match(entry.description, /商品ごとの四捨五入/);
   assert.equal(articles.filter(article => /丸め|端数/.test(article.title)).length, 0,
     '既存記事と重複する丸め専用記事を追加しないでください');
