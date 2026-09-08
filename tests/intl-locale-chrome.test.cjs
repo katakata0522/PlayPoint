@@ -37,11 +37,11 @@ test('海外LPのGuidesは公開HTMLで各言語の記事一覧を指す', () =>
 test('フッターの法務ラベルは公開HTMLで言語別に出し日本語ページだと分かる', () => {
   const cases = [
     ['status/gold/index.html', 'プライバシーポリシー', '利用規約'],
-    ['en/status/gold/index.html', 'Privacy Policy (Japanese)', 'Terms of Use (Japanese)'],
+    ['en/status/gold/index.html', 'Privacy Policy (Japanese)', 'Terms of Service (Japanese)'],
     ['ko/status/gold/index.html', '개인정보처리방침 (일본어)', '이용약관 (일본어)'],
     ['tw/status/gold/index.html', '隱私權政策 (日文)', '使用條款 (日文)'],
     ['games/genshin/index.html', 'プライバシーポリシー', '利用規約'],
-    ['en/games/genshin/index.html', 'Privacy Policy (Japanese)', 'Terms of Use (Japanese)']
+    ['en/games/genshin/index.html', 'Privacy Policy (Japanese)', 'Terms of Service (Japanese)']
   ];
 
   for (const [file, privacy, terms] of cases) {
