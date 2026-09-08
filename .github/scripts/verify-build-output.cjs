@@ -68,12 +68,20 @@ function main() {
     process.exit(build.status || 1);
   }
 
-  const changedFiles = getChangedGeneratedFiles();
-  if (changedFiles.length === 0) {
+  // Keep the strict byte-level diff as the primary integrity gate. Only when it
+  // finds drift do we classify whether that drift is transport-only text boundary
+  // normalization or an actual generated-content change.
+  const diff = spawnSync('git', ['diff', '--exit-code', '--', ...generatedFiles], {
+    cwd: root,
+    stdio: 'ignore'
+  });
+
+  if (diff.status === 0) {
     console.log(`Committed build output is reproducible (date=${modifiedDate}, version=${assetVersion}).`);
     return;
   }
 
+  const changedFiles = getChangedGeneratedFiles();
   const boundaryOnlyFiles = [];
   const meaningfulFiles = [];
 
