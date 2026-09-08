@@ -39,15 +39,23 @@ test('international content registries stay aligned with canonical locale identi
   }
 });
 
-test('international x-default uses the canonical default locale', () => {
+test('published international x-default links resolve to the canonical default locale', () => {
   assert.equal(DEFAULT_INTERNATIONAL_LOCALE, expectedLocales[0]);
   assert.ok(expectedLocales.includes(DEFAULT_INTERNATIONAL_LOCALE));
 
-  const source = fs.readFileSync(path.join(root, 'scripts', 'intl-content-expansion.cjs'), 'utf8');
-  assert.match(source, /articlePath\(DEFAULT_INTERNATIONAL_LOCALE, topic\.slug\)/);
-  assert.doesNotMatch(
-    source,
-    /articlePath\('en', topic\.slug\)/,
-    'x-default should not duplicate the default locale literal'
-  );
+  let checked = 0;
+  for (const topic of TOPICS) {
+    const expectedUrl = `https://playpoint-sim.com/${DEFAULT_INTERNATIONAL_LOCALE}/articles/${topic.slug}`;
+    for (const locale of expectedLocales) {
+      const file = path.join(root, locale, 'articles', topic.slug);
+      if (!fs.existsSync(file)) continue;
+      const html = fs.readFileSync(file, 'utf8');
+      const match = html.match(/<link rel="alternate" hreflang="x-default" href="([^"]+)">/);
+      assert.ok(match, `${locale}/${topic.slug}: missing x-default`);
+      assert.equal(match[1], expectedUrl, `${locale}/${topic.slug}: wrong x-default`);
+      checked += 1;
+    }
+  }
+
+  assert.ok(checked > 0, 'expected at least one published international expansion article');
 });

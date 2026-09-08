@@ -69,8 +69,11 @@ test('remaining calendar days is stable while New York is on DST', () => {
   });
 });
 
-test('calculator runtime delegates remaining days to CALC_PURE', () => {
+test('calculator runtime keeps the shared date-only helper on the user-visible calculation path', () => {
   const source = fs.readFileSync(calculatorPath, 'utf8');
-  assert.match(source, /const remainingDays = CALC_PURE\.getRemainingCalendarDays\(now\);/);
+
+  // This is intentionally a narrow integration guard: the behavior tests above own
+  // the algorithm, while this only prevents the runtime from silently bypassing it.
+  assert.match(source, /CALC_PURE\.getRemainingCalendarDays\s*\(/);
   assert.doesNotMatch(source, /Math\.ceil\(\(nextYearStart - now\) \/ \(1000 \* 60 \* 60 \* 24\)\)/);
 });

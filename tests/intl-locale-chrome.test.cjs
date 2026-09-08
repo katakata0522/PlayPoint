@@ -6,10 +6,33 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function visibleText(fragment) {
+  return String(fragment)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function anchorTextForHref(html, href) {
+  const match = html.match(new RegExp(`<a\\b[^>]*\\bhref="${escapeRegExp(href)}"[^>]*>([\\s\\S]*?)<\\/a>`, 'i'));
+  return match ? visibleText(match[1]) : null;
+}
+
+function anchorTextForHrefSuffix(html, suffix) {
+  const match = html.match(new RegExp(`<a\\b[^>]*\\bhref="[^"]*${escapeRegExp(suffix)}"[^>]*>([\\s\\S]*?)<\\/a>`, 'i'));
+  return match ? visibleText(match[1]) : null;
+}
 
 test('海外記事JSは日本語CTA・公式注記・日本語パンくずを差し込まない', () => {
   const source = read('blog/article.js');
+  // This is an architecture/runtime ownership guard: article chrome is injected by
+  // JavaScript, so the source boundary itself matters in addition to published HTML.
   assert.match(source, /Check this guide against your own numbers/);
   assert.match(source, /href: '\/en\/'/);
   assert.match(source, /listUrl: 'https:\/\/playpoint-sim\.com\/en\/articles\/'/);
@@ -18,47 +41,96 @@ test('海外記事JSは日本語CTA・公式注記・日本語パンくずを差
   assert.ok(source.includes("site: 'Google Play Points Calculator'"));
 });
 
-test('海外LPのGuidesは各言語の記事一覧を指す', () => {
-  const generator = read('scripts/intl-seo-pages.cjs');
-  assert.match(generator, /href="\/\$\{localeKey\}\/articles\/"/);
-  assert.ok(!generator.includes('href="/blog/">${escapeHtml(locale.blog)}</a>'));
-  assert.ok(read('en/status/gold/index.html').includes('href="/en/articles/">Guides</a>'));
-  assert.ok(read('ko/status/gold/index.html').includes('href="/ko/articles/">가이드</a>'));
-  assert.ok(read('tw/status/gold/index.html').includes('href="/tw/articles/">指南</a>'));
-  assert.ok(!read('en/status/gold/index.html').includes('href="/blog/">Guides</a>'));
+test('海外LPのGuidesは公開HTMLで各言語の記事一覧を指す', () => {
+  const cases = [
+    ['en/status/gold/index.html', '/en/articles/', 'Guides'],
+    ['ko/status/gold/index.html', '/ko/articles/', '가이드'],
+    ['tw/status/gold/index.html', '/tw/articles/', '指南']
+  ];
+
+  for (const [file, href, label] of cases) {
+    const html = read(file);
+    assert.equal(anchorTextForHref(html, href), label, `${file}: localized Guides link`);
+    assert.notEqual(anchorTextForHref(html, '/blog/'), label, `${file}: must not fall back to Japanese blog`);
+  }
 });
 
-test('フッターの法務ラベルは言語別に出し日本語ページだと分かる', () => {
-  const generator = read('scripts/generate-game-simulators.cjs');
-  assert.match(generator, /privacyLabel:/);
-  assert.match(generator, /termsLabel:/);
-  assert.match(generator, /\$\{loc\.privacyLabel\}/);
-  assert.match(generator, /\$\{loc\.termsLabel\}/);
-  assert.match(read('scripts/insert-lp-footers.cjs'), /\$\{d\.privacyLabel\}/);
-  assert.match(read('scripts/intl-seo-pages.cjs'), /locale\.privacyLabel/);
+test('フッターの法務リンクは公開HTMLで言語別の意味と日本語ページ注記を保つ', () => {
+  const cases = [
+    {
+      file: 'status/gold/index.html',
+      privacy: /プライバシ/,
+      terms: /利用規約/,
+      marker: null
+    },
+    {
+      file: 'en/status/gold/index.html',
+      privacy: /Privacy/i,
+      terms: /Terms/i,
+      marker: /\(Japanese\)/
+    },
+    {
+      file: 'ko/status/gold/index.html',
+      privacy: /개인정보/,
+      terms: /약관/,
+      marker: /\(일본어\)/
+    },
+    {
+      file: 'tw/status/gold/index.html',
+      privacy: /隱私/,
+      terms: /條款/,
+      marker: /\(日文\)/
+    },
+    {
+      file: 'games/genshin/index.html',
+      privacy: /プライバシ/,
+      terms: /利用規約/,
+      marker: null
+    },
+    {
+      file: 'en/games/genshin/index.html',
+      privacy: /Privacy/i,
+      terms: /Terms/i,
+      marker: /\(Japanese\)/
+    }
+  ];
 
-  assert.ok(read('status/gold/index.html').includes('>プライバシーポリシー</a>'));
-  assert.ok(read('en/status/gold/index.html').includes('>Privacy Policy (Japanese)</a>'));
-  assert.ok(read('ko/status/gold/index.html').includes('>개인정보처리방침 (일본어)</a>'));
-  assert.ok(read('tw/status/gold/index.html').includes('>隱私權政策 (日文)</a>'));
-  assert.ok(read('en/games/genshin/index.html').includes('>Privacy Policy (Japanese)</a>'));
-  assert.ok(read('games/genshin/index.html').includes('>プライバシーポリシー</a>'));
+  for (const { file, privacy, terms, marker } of cases) {
+    const html = read(file);
+    const privacyText = anchorTextForHrefSuffix(html, 'privacy.html');
+    const termsText = anchorTextForHrefSuffix(html, 'terms.html');
+    assert.ok(privacyText, `${file}: privacy link`);
+    assert.ok(termsText, `${file}: terms link`);
+    assert.match(privacyText, privacy, `${file}: privacy semantics`);
+    assert.match(termsText, terms, `${file}: terms semantics`);
+    if (marker) {
+      assert.match(privacyText, marker, `${file}: privacy Japanese-only marker`);
+      assert.match(termsText, marker, `${file}: terms Japanese-only marker`);
+    }
+  }
 });
 
-test('ゲーム計算機のコピー完了表示は言語別', () => {
+test('ゲーム計算機のコピー完了表示は言語別設定を利用する', () => {
   const sim = read('games/game-sim.js');
+  // The simulator is an IIFE without an exported locale helper. Keep a narrow
+  // wiring guard instead of restructuring production solely for testability.
   assert.match(sim, /copiedAlert: '✅ Copied!'/);
   assert.match(sim, /cfg\.copiedAlert/);
   assert.ok(!sim.includes("btnCopyLink.innerHTML = '<span>✅ コピー完了！</span>'"));
 });
 
 test('海外points-costの計算機リンクは各言語トップを指す', () => {
-  assert.ok(read('en/points-cost/index.html').includes('<a href="/en/">Level-up calculator</a>'));
-  assert.ok(read('ko/points-cost/index.html').includes('<a href="/ko/">등급 달성 계산기</a>'));
-  assert.ok(read('tw/points-cost/index.html').includes('<a href="/tw/">升級金額計算器</a>'));
-  assert.ok(!read('en/points-cost/index.html').includes('<a href="/">Level-up calculator</a>'));
-  assert.ok(!read('ko/points-cost/index.html').includes('<a href="/">등급 달성 계산기</a>'));
-  assert.ok(!read('tw/points-cost/index.html').includes('<a href="/">升級金額計算器</a>'));
+  const cases = [
+    ['en/points-cost/index.html', '/en/', 'Level-up calculator'],
+    ['ko/points-cost/index.html', '/ko/', '등급 달성 계산기'],
+    ['tw/points-cost/index.html', '/tw/', '升級金額計算器']
+  ];
+
+  for (const [file, href, label] of cases) {
+    const html = read(file);
+    assert.equal(anchorTextForHref(html, href), label, `${file}: localized calculator link`);
+    assert.notEqual(anchorTextForHref(html, '/'), label, `${file}: must not fall back to Japanese root`);
+  }
 });
 
 function usRuntimeLinkText(configSource, key) {
@@ -77,6 +149,8 @@ test('記事・LPの計算機判定は共通analytics境界へ集約し6地域�
   for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {
     assert.ok(analytics.includes(`'${calculatorPath}'`), `analytics core missing: ${calculatorPath}`);
   }
+  // Deliberately static: the contract is that both callers use the shared
+  // architecture boundary rather than reimplementing destination logic locally.
   assert.match(article, /analytics\.isCalculatorDestination\(url\)/);
   assert.match(intent, /analytics\.isCalculatorDestination\(url\)/);
   assert.doesNotMatch(article, /function isCalculatorDestination/);
@@ -99,6 +173,8 @@ test('海外記事は日本語記事一覧JSONを取らず空の前後ナビを�
   const fetchAt = init.indexOf('fetch(CONFIG.articlesUrl)');
   assert.ok(fetchAt !== -1, 'articles.json fetch is missing');
   const beforeFetch = init.slice(0, fetchAt);
+  // This is a network-boundary ordering guard. Turning article.js into a test-only
+  // module just to expose init would increase production coupling more than it removes.
   assert.match(
     beforeFetch,
     /if \(getLocale\(\) !== 'ja'\) \{\s*const navContainer = document\.getElementById\('article-nav'\);\s*if \(navContainer\) navContainer\.remove\(\);\s*return;/

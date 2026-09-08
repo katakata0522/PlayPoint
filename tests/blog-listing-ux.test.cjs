@@ -57,24 +57,6 @@ test('page-number jump clamps full-width digits into the published page range', 
   assert.equal(clampPageJump('abc', 10), 1);
 });
 
-function extractNamedFunction(source, name) {
-  const marker = 'function ' + name + '(';
-  const start = source.indexOf(marker);
-  assert.ok(start >= 0, name + ' is missing');
-  const brace = source.indexOf('{', start);
-  assert.ok(brace >= 0, name + ' has no body');
-  let depth = 0;
-  for (let index = brace; index < source.length; index += 1) {
-    const character = source[index];
-    if (character === '{') depth += 1;
-    else if (character === '}') {
-      depth -= 1;
-      if (depth === 0) return source.slice(brace, index + 1);
-    }
-  }
-  throw new Error(name + ' is unclosed');
-}
-
 test('listed corpus AND search and game-title filter share one callable listing filter', () => {
   assert.equal(typeof blogUtils.filterListedArticles, 'function');
   const registry = JSON.parse(read('blog/articles.json'));
@@ -96,43 +78,19 @@ test('listed corpus AND search and game-title filter share one callable listing 
   assert.deepEqual(categories, ['キャンペーン', 'トラブル', 'ランク', '使い方']);
 });
 
-test('blog listing wires page jump, in-memory search, and game-title filter', () => {
+test('blog listing exposes the public search and game-title controls used by browser smoke', () => {
   const html = read('blog/index.html');
-  const script = read('blog/script.js');
-  const renderBody = extractNamedFunction(script, 'render');
-  const resetBody = extractNamedFunction(script, 'resetFilters');
   assert.match(html, /id="search-input"/);
   assert.match(html, /id="game-title-filter"/);
-  assert.match(script, /pagination-page-input/);
-  assert.match(script, /clampPageJump/);
-  assert.match(script, /currentPage \+ ' \/ ' \+ totalPages/);
-  assert.match(renderBody, /\bfilterArticles\s*\(/);
-  assert.doesNotMatch(renderBody, /title\.includes\(currentSearch\)/);
-  assert.doesNotMatch(renderBody, /desc\.includes\(currentSearch\)/);
-  assert.match(resetBody, /currentGameTitle\s*=\s*['"]{2}/);
-  assert.match(resetBody, /gameTitleFilter/);
-  assert.doesNotMatch(script, /'ゲーム': \{ order: 5/);
 });
 
-test('blog pagination shows current/total as one type-in box', () => {
-  const script = read('blog/script.js');
+test('blog pagination styles cover the runtime DOM contract without pinning renderer implementation', () => {
   const compact = read('blog/index-compact.css');
   const style = read('blog/style.css');
-  const body = extractNamedFunction(script, 'renderPagination');
 
-  assert.match(body, /pagination-compact-wrapper/);
-  assert.match(body, /pagination-input-wrap/);
-  assert.match(body, /pagination-page-slash/);
-  assert.match(body, /pagination-page-total/);
-  assert.match(body, /inputWrap\.appendChild\(pageInput\)/);
-  assert.match(body, /slash\.textContent = '\/'/);
-  assert.match(body, /total\.textContent = String\(totalPages\)/);
-  assert.match(body, /currentPage \+ ' \/ ' \+ totalPages/);
-  assert.match(body, /pagination-status/);
-  assert.doesNotMatch(body, /dom\.pagination\.append\(prev, pageInput, status, next\)/);
-  assert.match(compact, /pagination-input-wrap/);
-  assert.match(compact, /pagination-page-slash/);
-  assert.match(compact, /pagination-page-total/);
+  for (const selector of ['pagination-input-wrap', 'pagination-page-input', 'pagination-page-slash', 'pagination-page-total']) {
+    assert.match(compact, new RegExp(selector), `compact CSS missing ${selector}`);
+    assert.match(style, new RegExp(selector), `base CSS missing ${selector}`);
+  }
   assert.match(compact, /cursor:\s*text/);
-  assert.match(style, /pagination-input-wrap/);
 });

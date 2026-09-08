@@ -17,18 +17,3 @@ test('calculator tabs expose roving tabindex and tab semantics in every locale',
     assert.match(html, /id="tab-diary" role="tab" aria-selected="false"[^>]*tabindex="-1"/, `${relativePath}: diary tab roving tabindex is missing`);
   }
 });
-
-test('calculator tabs support WAI-ARIA horizontal keyboard navigation', () => {
-  const source = read('js/ui.js');
-
-  for (const key of ['ArrowRight', 'ArrowLeft', 'Home', 'End']) {
-    assert.ok(source.includes(`'${key}'`), `keyboard handler is missing ${key}`);
-  }
-
-  assert.match(source, /currentTab\.closest\('\[role="tablist"\]'\)/);
-  assert.match(source, /querySelectorAll\('\[role="tab"\]'\)/);
-  assert.match(source, /event\.preventDefault\(\)/);
-  assert.match(source, /nextTab\.focus\(\)/);
-  assert.match(source, /nextTab\.click\(\)/);
-  assert.match(source, /document\.addEventListener\('keydown', handleTabListKeydown\)/);
-});

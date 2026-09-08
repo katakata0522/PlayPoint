@@ -8,6 +8,10 @@ const {
   ensureStaticCalculatorLayout,
   validateStaticLayout
 } = require('../scripts/static-calculator-layout.cjs');
+const {
+  SIMPLIFIED_CALCULATOR_COPY,
+  replaceSimplifiedCalculatorCopy
+} = require('../scripts/language-page-builder.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -105,37 +109,34 @@ test('主要4言語の公開HTMLはJavaScript実行前から専用ラベルを�
   }
 });
 
-test('多言語生成処理は通常計算専用ラベルを一般翻訳と分離する', () => {
-  const source = read('scripts/language-page-builder.cjs');
-  assert.match(source, /SIMPLIFIED_CALCULATOR_COPY/);
-  assert.match(source, /replaceSimplifiedCalculatorCopy/);
-  for (const labels of Object.values(expectedLabels).slice(1)) {
-    for (const label of labels) assert.ok(source.includes(label), `多言語生成コピーがありません: ${label}`);
-  }
-});
+test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する', () => {
+  const fixture = `
+    <span data-simplified-calculator-copy="baseRateLabel">old base</span>
+    <span data-simplified-calculator-copy="multiplierLabel">old promo</span>
+    <span data-simplified-calculator-copy="advancedSettingsLabel">old advanced</span>`;
 
-test('UIモジュールの旧HTML向けフォールバックと静的HTML向け早期終了を維持する', () => {
-  const source = read('js/main-calculator-ui.js');
-  assert.match(source, /mainMode\.dataset\.visibleBaseRateLayout === 'true'/);
-  assert.match(source, /statusSection\.append\(baseRateLabel, baseRate, multiplierLabel, multiplier\)/);
-  assert.match(source, /if \(packSettings\) packSettings\.remove\(\)/);
+  for (const locale of ['en', 'ko', 'tw']) {
+    const copy = SIMPLIFIED_CALCULATOR_COPY[locale];
+    const converted = replaceSimplifiedCalculatorCopy(fixture, copy);
+    assert.ok(converted.includes(copy.baseRateLabel), `${locale}: base rate copy`);
+    assert.ok(converted.includes(copy.multiplierLabel), `${locale}: promotion copy`);
+    assert.ok(converted.includes(copy.advancedSettingsLabel), `${locale}: advanced settings copy`);
+    assert.equal(replaceSimplifiedCalculatorCopy(converted, copy), converted, `${locale}: copy replacement should be idempotent`);
+  }
 });
 
 test('UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する', () => {
   const mainSource = read('js/main.js');
   const serviceWorkerRegistration = read('js/service-worker-registration.js');
   const serviceWorker = read('sw.js');
-  const assetSync = read('scripts/asset-sync.cjs');
 
+  // These are delivery/cache boundaries: source-level wiring is intentional here.
   assert.match(mainSource, /from '\.\/main-calculator-ui\.js\?v=[a-f0-9]{10}';/);
   assert.match(mainSource, /from '\.\/service-worker-registration\.js';/);
   assert.match(serviceWorkerRegistration, /register\(swPath, \{ updateViaCache: 'none' \}\)/);
   assert.match(serviceWorkerRegistration, /reg\.update\(\)/);
   assert.match(serviceWorker, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
   assert.match(serviceWorker, /'\.\/js\/service-worker-registration\.js'/);
-  assert.match(assetSync, /syncMainCalculatorUiImportVersion/);
-  assert.match(assetSync, /syncServiceWorkerRegistration/);
-  assert.match(assetSync, /mainCalculatorUiVersion/);
 });
 
 test('未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする', () => {

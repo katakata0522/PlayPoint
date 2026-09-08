@@ -4,6 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 
@@ -34,6 +35,78 @@ function lastModified(file) {
   const match = read(file).match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})"/);
   assert.ok(match, `${file}: last-modified`);
   return match[1];
+}
+
+function executeMaintenanceCalculator({ progress = '200', target = 1000, rate = 1.5, spendUnit = 1 } = {}) {
+  const outputs = new Map(
+    ['year', 'target', 'remaining', 'base', 'double', 'triple', 'monthly', 'weekly', 'daily', 'days']
+      .map(name => [name, [{ textContent: '' }]])
+  );
+  const listeners = {};
+  const input = {
+    value: String(progress),
+    addEventListener(type, handler) { listeners[type] = handler; }
+  };
+  const form = {
+    addEventListener(type, handler) { listeners[type] = handler; }
+  };
+  const error = { hidden: true, textContent: '' };
+  const complete = { hidden: true, textContent: '' };
+  const results = { scrollIntoView() {} };
+  const calculatorRoot = {
+    dataset: {
+      target: String(target),
+      rate: String(rate),
+      spendUnit: String(spendUnit),
+      locale: 'en-US',
+      currency: 'USD',
+      completionText: 'Complete',
+      invalidText: 'Invalid'
+    },
+    querySelector(selector) {
+      const nodes = {
+        '[data-maintenance-form]': form,
+        '[data-progress-input]': input,
+        '[data-input-error]': error,
+        '[data-complete-state]': complete,
+        '[data-results]': results
+      };
+      return nodes[selector] || null;
+    },
+    querySelectorAll(selector) {
+      const match = selector.match(/^\[data-output="([^"]+)"\]$/);
+      return match ? outputs.get(match[1]) || [] : [];
+    }
+  };
+  const document = {
+    querySelector(selector) {
+      return selector === '[data-maintenance-calculator]' ? calculatorRoot : null;
+    }
+  };
+
+  class FakeDate extends Date {
+    constructor(...args) {
+      if (args.length === 0) super(2026, 11, 1, 0, 0, 0, 0);
+      else super(...args);
+    }
+  }
+
+  class PlainNumberFormat {
+    format(value) { return String(value); }
+  }
+
+  const context = {
+    document,
+    Date: FakeDate,
+    Intl: { NumberFormat: PlainNumberFormat },
+    Math,
+    Number
+  };
+  vm.createContext(context);
+  vm.runInContext(read('maintenance/intl-maintenance.js'), context, { filename: 'intl-maintenance.js' });
+
+  const value = name => outputs.get(name)[0].textContent;
+  return { input, listeners, error, complete, value };
 }
 
 test('海外向け維持計算は地域別の公式門檻・積点率・通貨を分ける', () => {
@@ -91,19 +164,32 @@ test('地域外の維持門檻や通貨を流用していない', () => {
   assert.ok(!tw.includes('data-currency="USD"') && !tw.includes('data-currency="KRW"'));
 });
 
-test('維持計算ロジックは不足点・通常時・倍率・年末ペースを計算する', () => {
-  const script = read('maintenance/intl-maintenance.js');
+test('維持計算ロジックは不足点・通常時・倍率・年末ペースを実際の出力へ反映する', () => {
+  const fixture = executeMaintenanceCalculator();
 
-  assert.ok(script.includes('Math.max(0, target - normalizedProgress)'));
-  assert.ok(script.includes('Math.ceil((remaining / Math.max(rate, specialRate)) * spendUnit)'));
-  assert.ok(script.includes('new Date(now.getFullYear(), 11, 31'));
-  assert.ok(script.includes("setText('monthly'"));
-  assert.ok(script.includes("setText('weekly'"));
-  assert.ok(script.includes("setText('daily'"));
-  assert.ok(script.includes("setText('double'"));
-  assert.ok(script.includes("setText('triple'"));
-  assert.ok(script.includes('Intl.NumberFormat'));
-  assert.ok(!script.includes('innerHTML'));
+  assert.equal(fixture.value('year'), '2026');
+  assert.equal(fixture.value('target'), '1000');
+  assert.equal(fixture.value('remaining'), '800');
+  assert.equal(fixture.value('base'), '534');
+  assert.equal(fixture.value('double'), '400');
+  assert.equal(fixture.value('triple'), '267');
+  assert.equal(fixture.value('days'), '31');
+  assert.equal(fixture.value('monthly'), '525');
+  assert.equal(fixture.value('weekly'), '121');
+  assert.equal(fixture.value('daily'), '18');
+  assert.equal(fixture.complete.hidden, true);
+
+  fixture.input.value = '1000';
+  fixture.listeners.input();
+  assert.equal(fixture.value('remaining'), '0');
+  assert.equal(fixture.value('base'), '0');
+  assert.equal(fixture.complete.hidden, false);
+  assert.equal(fixture.complete.textContent, 'Complete');
+
+  fixture.input.value = '-1';
+  fixture.listeners.input();
+  assert.equal(fixture.error.hidden, false);
+  assert.equal(fixture.error.textContent, 'Invalid');
 });
 
 test('日本語既存ページと海外6ページは完全なhreflangで相互接続する', () => {
@@ -179,8 +265,8 @@ test('生成設定は手書き維持計算を上書きせずサイトマップ�
     assert.ok(entries.some(entry => entry.url === url && entry.lastmod === expectedDate), `${page.file}: sitemap content date`);
   }
 
-  // Manual pages are a destructive-write boundary: keep the static guard until
-  // the generator exposes a direct dry-run/plan API that can be behavior-tested.
+  // Manual-page overwrite is a destructive boundary. Until the generator exposes
+  // a dry-run plan API, this narrow static guard is intentionally retained.
   const contentSource = read('scripts/intl-seo-content.cjs');
   const generatorSource = read('scripts/intl-seo-pages.cjs');
   assert.ok(contentSource.includes('MANUAL_MAINTENANCE_PAGES'));
