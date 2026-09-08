@@ -4,6 +4,10 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const {
+  insertStaticPrompt,
+  japaneseArticlePaths
+} = require('../scripts/article-static-usability.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -66,12 +70,29 @@ test('主要検索記事は即答と判明・不明の境界を静的HTMLで示�
   }
 });
 
-test('既存CTAの有無にかかわらず記事冒頭近くへ計算導線を置く', () => {
-  const script = read('blog/article.js');
+test('既存CTAの有無にかかわらずcanonical buildは回答直後へ計算導線を1つ置く', () => {
+  const input = '<article class="content"><div class="cta-box">別用途の既存CTA</div><section class="answer-box"><h2>即答</h2><p>回答。</p></section><section class="section"><h2>詳細</h2></section></article>';
+  const first = insertStaticPrompt(input);
+  const second = insertStaticPrompt(first);
+  const answerIndex = first.indexOf('class="answer-box"');
+  const answerEnd = first.indexOf('</section>', answerIndex) + '</section>'.length;
+  const promptIndex = first.indexOf('data-generated-article-prompt="true"');
+  const detailIndex = first.indexOf('<section class="section">');
 
-  assert.ok(!script.includes("if (content.querySelector('.cta-box, .cta-banner')) return;"));
-  assert.ok(script.includes("content.querySelector('.answer-box, .summary-box, .intro')"));
-  assert.ok(script.includes('setupCalculatorPrompt();'));
+  assert.equal(second, first, 'canonical buildを再実行してもCTAを増やしません');
+  assert.ok(first.includes('別用途の既存CTA'), '別用途のCTAを壊しません');
+  assert.ok(promptIndex > answerEnd, '計算CTAは即答の後に置きます');
+  assert.ok(promptIndex < detailIndex, '計算CTAは詳細本文より前に置きます');
+  assert.equal((first.match(/data-generated-article-prompt="true"/g) || []).length, 1);
+
+  for (const articlePath of japaneseArticlePaths(root)) {
+    const html = fs.readFileSync(articlePath, 'utf8');
+    assert.match(
+      html,
+      /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i,
+      `${path.relative(root, articlePath)}: 計算導線がありません`
+    );
+  }
 });
 
 test('引用用比較表は恒久URL・固定アンカー・一次情報を持つ', () => {

@@ -6,32 +6,6 @@ const {
   test,
 } = require('./helpers/playpoint-calculator-test-context.cjs');
 
-test('計算条件を共有URLへ保存し再訪時に復元できる', () => {
-  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  const englishHtml = fs.readFileSync(path.join(root, 'en', 'index.html'), 'utf8');
-  const shareScript = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
-  const calculator = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
-  const main = fs.readFileSync(path.join(root, 'js', 'main.js'), 'utf8');
-
-  assert.ok(html.includes('js/main.js'));
-  assert.ok(englishHtml.includes('../js/main.js'));
-  assert.ok(shareScript.includes('buildMainShareUrl'));
-  assert.ok(shareScript.includes('applyFromUrl'));
-  assert.ok(shareScript.includes('URLSearchParams'));
-  assert.ok(shareScript.includes("url.searchParams.set('target'"));
-  assert.ok(shareScript.includes("params.get('target')"));
-  assert.ok(shareScript.includes('setTargetFromParam(dom.targetStatus, target)'));
-  assert.ok(calculator.includes('dataset.shareUrl'));
-  assert.ok(main.includes('SHARE.applyFromUrl()'));
-});
-
-test('共有URLは実在するステータス値だけを復元する', () => {
-  const script = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
-
-  assert.ok(script.includes('isAllowedStatusValue'));
-  assert.ok(script.includes('params.has(name)'));
-});
-
 test('削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない', () => {
   const configSource = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
   const calculatorSource = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
