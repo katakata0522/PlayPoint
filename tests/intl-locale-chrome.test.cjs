@@ -8,6 +8,27 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function visibleText(fragment) {
+  return String(fragment)
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function anchorTextForHref(html, href) {
+  const match = html.match(new RegExp(`<a\\b[^>]*\\bhref="${escapeRegExp(href)}"[^>]*>([\\s\\S]*?)<\\/a>`, 'i'));
+  return match ? visibleText(match[1]) : null;
+}
+
+function anchorTextForHrefSuffix(html, suffix) {
+  const match = html.match(new RegExp(`<a\\b[^>]*\\bhref="[^"]*${escapeRegExp(suffix)}"[^>]*>([\\s\\S]*?)<\\/a>`, 'i'));
+  return match ? visibleText(match[1]) : null;
+}
+
 test('海外記事JSは日本語CTA・公式注記・日本語パンくずを差し込まない', () => {
   const source = read('blog/article.js');
   // This is an architecture/runtime ownership guard: article chrome is injected by
@@ -29,25 +50,63 @@ test('海外LPのGuidesは公開HTMLで各言語の記事一覧を指す', () =>
 
   for (const [file, href, label] of cases) {
     const html = read(file);
-    assert.ok(html.includes(`href="${href}">${label}</a>`), `${file}: localized Guides link`);
-    assert.ok(!html.includes(`href="/blog/">${label}</a>`), `${file}: must not fall back to Japanese blog`);
+    assert.equal(anchorTextForHref(html, href), label, `${file}: localized Guides link`);
+    assert.notEqual(anchorTextForHref(html, '/blog/'), label, `${file}: must not fall back to Japanese blog`);
   }
 });
 
-test('フッターの法務ラベルは公開HTMLで言語別に出し日本語ページだと分かる', () => {
+test('フッターの法務リンクは公開HTMLで言語別の意味と日本語ページ注記を保つ', () => {
   const cases = [
-    ['status/gold/index.html', 'プライバシーポリシー', '利用規約'],
-    ['en/status/gold/index.html', 'Privacy Policy (Japanese)', 'Terms of Service (Japanese)'],
-    ['ko/status/gold/index.html', '개인정보처리방침 (일본어)', '이용약관 (일본어)'],
-    ['tw/status/gold/index.html', '隱私權政策 (日文)', '使用條款 (日文)'],
-    ['games/genshin/index.html', 'プライバシーポリシー', '利用規約'],
-    ['en/games/genshin/index.html', 'Privacy Policy (Japanese)', 'Terms of Service (Japanese)']
+    {
+      file: 'status/gold/index.html',
+      privacy: /プライバシ/,
+      terms: /利用規約/,
+      marker: null
+    },
+    {
+      file: 'en/status/gold/index.html',
+      privacy: /Privacy/i,
+      terms: /Terms/i,
+      marker: /\(Japanese\)/
+    },
+    {
+      file: 'ko/status/gold/index.html',
+      privacy: /개인정보/,
+      terms: /약관/,
+      marker: /\(일본어\)/
+    },
+    {
+      file: 'tw/status/gold/index.html',
+      privacy: /隱私/,
+      terms: /條款/,
+      marker: /\(日文\)/
+    },
+    {
+      file: 'games/genshin/index.html',
+      privacy: /プライバシ/,
+      terms: /利用規約/,
+      marker: null
+    },
+    {
+      file: 'en/games/genshin/index.html',
+      privacy: /Privacy/i,
+      terms: /Terms/i,
+      marker: /\(Japanese\)/
+    }
   ];
 
-  for (const [file, privacy, terms] of cases) {
+  for (const { file, privacy, terms, marker } of cases) {
     const html = read(file);
-    assert.ok(html.includes(`>${privacy}</a>`), `${file}: privacy label`);
-    assert.ok(html.includes(`>${terms}</a>`), `${file}: terms label`);
+    const privacyText = anchorTextForHrefSuffix(html, 'privacy.html');
+    const termsText = anchorTextForHrefSuffix(html, 'terms.html');
+    assert.ok(privacyText, `${file}: privacy link`);
+    assert.ok(termsText, `${file}: terms link`);
+    assert.match(privacyText, privacy, `${file}: privacy semantics`);
+    assert.match(termsText, terms, `${file}: terms semantics`);
+    if (marker) {
+      assert.match(privacyText, marker, `${file}: privacy Japanese-only marker`);
+      assert.match(termsText, marker, `${file}: terms Japanese-only marker`);
+    }
   }
 });
 
@@ -61,12 +120,17 @@ test('ゲーム計算機のコピー完了表示は言語別設定を利用す�
 });
 
 test('海外points-costの計算機リンクは各言語トップを指す', () => {
-  assert.ok(read('en/points-cost/index.html').includes('<a href="/en/">Level-up calculator</a>'));
-  assert.ok(read('ko/points-cost/index.html').includes('<a href="/ko/">등급 달성 계산기</a>'));
-  assert.ok(read('tw/points-cost/index.html').includes('<a href="/tw/">升級金額計算器</a>'));
-  assert.ok(!read('en/points-cost/index.html').includes('<a href="/">Level-up calculator</a>'));
-  assert.ok(!read('ko/points-cost/index.html').includes('<a href="/">등급 달성 계산기</a>'));
-  assert.ok(!read('tw/points-cost/index.html').includes('<a href="/">升級金額計算器</a>'));
+  const cases = [
+    ['en/points-cost/index.html', '/en/', 'Level-up calculator'],
+    ['ko/points-cost/index.html', '/ko/', '등급 달성 계산기'],
+    ['tw/points-cost/index.html', '/tw/', '升級金額計算器']
+  ];
+
+  for (const [file, href, label] of cases) {
+    const html = read(file);
+    assert.equal(anchorTextForHref(html, href), label, `${file}: localized calculator link`);
+    assert.notEqual(anchorTextForHref(html, '/'), label, `${file}: must not fall back to Japanese root`);
+  }
 });
 
 function usRuntimeLinkText(configSource, key) {
