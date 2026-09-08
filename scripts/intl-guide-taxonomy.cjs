@@ -25,13 +25,34 @@ const CATEGORY_LABELS = Object.freeze({
   })
 });
 
-const START_HERE_SLUGS = Object.freeze([
-  'google-play-points-not-showing',
-  'google-play-points-levels',
-  'google-play-points-100-value',
-  'google-play-points-country-change',
-  'google-play-points-use-coupons'
-]);
+// Keep the first five guides intentionally locale-specific. Search demand and
+// landing-page behavior differ by market, so a single translated shortlist can
+// hide the questions users in that locale actually arrive with. These are
+// curation priorities, not ranking claims; article bodies remain independently
+// reviewed and are not rewritten just because a guide is featured here.
+const START_HERE_SLUGS = Object.freeze({
+  en: Object.freeze([
+    'google-play-points-cash-conversion',
+    'google-play-quests',
+    'google-play-points-not-showing',
+    'google-play-points-country-differences',
+    'google-play-points-gift-cards'
+  ]),
+  ko: Object.freeze([
+    'google-play-points-cash-conversion',
+    'google-play-points-super-weekly-reward',
+    'google-play-points-use-coupons',
+    'google-play-points-platinum-diamond-cost',
+    'google-play-quests'
+  ]),
+  tw: Object.freeze([
+    'google-play-points-weekly-reward',
+    'google-play-points-platinum-diamond-cost',
+    'google-play-points-play-credit-not-working',
+    'google-play-points-coupon-not-applied',
+    'google-play-quests'
+  ])
+});
 
 const CATEGORY_OVERRIDES = Object.freeze({
   'google-play-balance-combine-payment': 'earn',
@@ -75,7 +96,10 @@ function getCategoryLabels(localeKey) {
 }
 
 function getStartHereHrefs(localeKey) {
-  return START_HERE_SLUGS.map(slug => `/${localeKey}/articles/${slug}.html`);
+  const normalizedLocale = Object.prototype.hasOwnProperty.call(START_HERE_SLUGS, localeKey)
+    ? localeKey
+    : 'en';
+  return START_HERE_SLUGS[normalizedLocale].map(slug => `/${normalizedLocale}/articles/${slug}.html`);
 }
 
 module.exports = {
