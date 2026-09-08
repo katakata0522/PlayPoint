@@ -1,0 +1,302 @@
+exit_code=1
+--- preflight output ---
+  ---
+  duration_ms: 0.317167
+  type: 'test'
+  ...
+# Subtest: Diamond LP uses the current special earn-rate meaning
+ok 520 - Diamond LP uses the current special earn-rate meaning
+  ---
+  duration_ms: 1.093597
+  type: 'test'
+  ...
+# Subtest: Diamond LP does not advertise the removed weekly-average result
+ok 521 - Diamond LP does not advertise the removed weekly-average result
+  ---
+  duration_ms: 0.385004
+  type: 'test'
+  ...
+# Subtest: Platinum LP describes the current special earn-rate input
+ok 522 - Platinum LP describes the current special earn-rate input
+  ---
+  duration_ms: 1.960266
+  type: 'test'
+  ...
+# Subtest: Platinum LP does not advertise the removed weekly-average result
+ok 523 - Platinum LP does not advertise the removed weekly-average result
+  ---
+  duration_ms: 0.405823
+  type: 'test'
+  ...
+# Subtest: calculator tabs expose roving tabindex and tab semantics in every locale
+ok 524 - calculator tabs expose roving tabindex and tab semantics in every locale
+  ---
+  duration_ms: 3.260743
+  type: 'test'
+  ...
+# Subtest: DOMContentLoaded後はAdSenseを先に取得しAnalyticsはload・delay・idle後まで待つ
+ok 525 - DOMContentLoaded後はAdSenseを先に取得しAnalyticsはload・delay・idle後まで待つ
+  ---
+  duration_ms: 11.079977
+  type: 'test'
+  ...
+# Subtest: Analytics許可後はconfigしてから初回page_viewを一度だけ送る
+ok 526 - Analytics許可後はconfigしてから初回page_viewを一度だけ送る
+  ---
+  duration_ms: 3.52024
+  type: 'test'
+  ...
+# Subtest: Analyticsと広告枠のConsent境界を独立して守る
+ok 527 - Analyticsと広告枠のConsent境界を独立して守る
+  ---
+  duration_ms: 5.617714
+  type: 'test'
+  ...
+# Subtest: 既にrequest済みまたは初期化済みの広告枠は二重pushしない
+ok 528 - 既にrequest済みまたは初期化済みの広告枠は二重pushしない
+  ---
+  duration_ms: 2.102374
+  type: 'test'
+  ...
+# Subtest: AdSense取得失敗時は失敗scriptを再利用せず実際に一度だけ再取得する
+ok 529 - AdSense取得失敗時は失敗scriptを再利用せず実際に一度だけ再取得する
+  ---
+  duration_ms: 2.467961
+  type: 'test'
+  ...
+# Subtest: 別経路でGA4初期化済みなら二重configしない
+ok 530 - 別経路でGA4初期化済みなら二重configしない
+  ---
+  duration_ms: 1.949246
+  type: 'test'
+  ...
+# Subtest: standalone表示ではGA4へdisplay modeをstandaloneとして送る
+ok 531 - standalone表示ではGA4へdisplay modeをstandaloneとして送る
+  ---
+  duration_ms: 2.46735
+  type: 'test'
+  ...
+# Subtest: analytics coreの一時失敗後もpromiseを捨てて後続ロードで復旧する
+ok 532 - analytics coreの一時失敗後もpromiseを捨てて後続ロードで復旧する
+  ---
+  duration_ms: 8.382534
+  type: 'test'
+  ...
+# Subtest: gtag外部スクリプトの一時失敗は一度だけ再試行して復旧する
+ok 533 - gtag外部スクリプトの一時失敗は一度だけ再試行して復旧する
+  ---
+  duration_ms: 3.16346
+  type: 'test'
+  ...
+# Subtest: 日本語クエスト記事は回答と条件境界の後に文脈化した計算機CTAを置く
+ok 534 - 日本語クエスト記事は回答と条件境界の後に文脈化した計算機CTAを置く
+  ---
+  duration_ms: 1.237076
+  type: 'test'
+  ...
+# Subtest: 台湾クーポン記事は問題排解を完了してから反推モードへ送る
+ok 535 - 台湾クーポン記事は問題排解を完了してから反推モードへ送る
+  ---
+  duration_ms: 0.309212
+  type: 'test'
+  ...
+# Subtest: 台湾白金・鑽石記事は門檻を即答してから直接計算機へ送る
+ok 536 - 台湾白金・鑽石記事は門檻を即答してから直接計算機へ送る
+  ---
+  duration_ms: 0.362792
+  type: 'test'
+  ...
+# Subtest: 地域セレクタだけを属性追加に依存せず多言語混入監査から除外する
+ok 537 - 地域セレクタだけを属性追加に依存せず多言語混入監査から除外する
+  ---
+  duration_ms: 3.005172
+  type: 'test'
+  ...
+# Subtest: 静的生成辞書は多言語フッターの全リンク文言を持つ
+ok 538 - 静的生成辞書は多言語フッターの全リンク文言を持つ
+  ---
+  duration_ms: 1.953063
+  type: 'test'
+  ...
+# Subtest: 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+ok 539 - 3言語トップはJavaScript実行前からウィジェット名が翻訳されている
+  ---
+  duration_ms: 8.445733
+  type: 'test'
+  ...
+# Subtest: フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+ok 540 - フィード名と年次グラフの読み上げ文言を各言語で静的生成する
+  ---
+  duration_ms: 6.359339
+  type: 'test'
+  ...
+# Subtest: 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+ok 541 - 多言語トップの利用者向け静的文言へ別言語の文字が混入しない
+  ---
+  duration_ms: 1.816426
+  type: 'test'
+  ...
+# Subtest: calculator tab keyboard navigation moves focus/click by WAI-ARIA order and skips disabled tabs
+ok 542 - calculator tab keyboard navigation moves focus/click by WAI-ARIA order and skips disabled tabs
+  ---
+  duration_ms: 3.644403
+  type: 'test'
+  ...
+# Subtest: calculator count-up renders the final value immediately when reduced motion is requested
+ok 543 - calculator count-up renders the final value immediately when reduced motion is requested
+  ---
+  duration_ms: 23.292667
+  type: 'test'
+  ...
+# Subtest: global error toast follows the static document language at runtime
+ok 544 - global error toast follows the static document language at runtime
+  ---
+  duration_ms: 4.888573
+  type: 'test'
+  ...
+1..544
+# tests 544
+# suites 0
+# pass 537
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3451.295126
+
+=== ads.txt検証 ===
+ads.txt is present and matches the AdSense publisher record.
+
+=== 公開アセット圧縮 ===
+Minified CSS: style.css (49572 -> 49546 bytes)
+Minified CSS: visitor-thanks.css (923 -> 799 bytes)
+Minified CSS: article-legacy.css (2178 -> 1572 bytes)
+Minified CSS: article-modern.css (5147 -> 4631 bytes)
+Minified CSS: article-shared.css (28326 -> 28137 bytes)
+Minified CSS: source-notice.css (655 -> 655 bytes)
+Minified CSS: style.css (33315 -> 33315 bytes)
+Minified CSS: common-components.css (4381 -> 4381 bytes)
+Minified CSS: 2025-12-25-best-use.css (4134 -> 4134 bytes)
+Minified CSS: 2025-12-25-campaign.css (3999 -> 3999 bytes)
+Minified CSS: 2025-12-25-diamond-vip.css (3786 -> 3786 bytes)
+Minified CSS: 2025-12-25-diamond-worth-it.css (3965 -> 3965 bytes)
+Minified CSS: 2025-12-25-expiration.css (3303 -> 3303 bytes)
+Minified CSS: 2025-12-25-family-sharing.css (3385 -> 3385 bytes)
+Minified CSS: 2025-12-25-getting-started.css (3961 -> 3961 bytes)
+Minified CSS: 2025-12-25-gift-card.css (3430 -> 3430 bytes)
+Minified CSS: 2025-12-25-multiple-accounts.css (3020 -> 3020 bytes)
+Minified CSS: 2025-12-25-new-year-campaign.css (4020 -> 4020 bytes)
+Minified CSS: 2025-12-25-playpoints-rank-maintenance.css (3704 -> 3704 bytes)
+Minified CSS: 2025-12-25-promo-code.css (3237 -> 3237 bytes)
+Minified CSS: 2025-12-25-refund.css (3038 -> 3038 bytes)
+Minified CSS: 2026-03-10-play-points-reflection-timing.css (2594 -> 2594 bytes)
+Minified CSS: 2026-06-20-discount-gift-cards.css (15579 -> 15553 bytes)
+Minified CSS: 2026-07-24-play-points-1-value.css (3535 -> 3535 bytes)
+Successfully synchronized shared analytics and component asset versions.
+Successfully synchronized sw.js cache. CACHE_NAME=playpoint-calc-v20260823_1957-19664486
+[public-assets] synchronized content hashes: 301 files
+
+=== 圧縮後JavaScript構文検証 ===
+JS syntax check passed (118 files).
+
+=== 圧縮後の配信境界回帰テスト ===
+TAP version 13
+# Subtest: 分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる
+ok 1 - 分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる
+  ---
+  duration_ms: 1.369135
+  type: 'test'
+  ...
+# Subtest: 共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる
+ok 2 - 共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる
+  ---
+  duration_ms: 0.90973
+  type: 'test'
+  ...
+# Subtest: アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+ok 3 - アプリモジュールのキャッシュ世代は改行コードが違っても一致する
+  ---
+  duration_ms: 5.913821
+  type: 'test'
+  ...
+# Subtest: 公開HTMLは外部Google Fontsへ接続しない
+ok 4 - 公開HTMLは外部Google Fontsへ接続しない
+  ---
+  duration_ms: 36.506169
+  type: 'test'
+  ...
+# Subtest: 埋め込みウィジェットは外部依存なしで計算できる
+ok 5 - 埋め込みウィジェットは外部依存なしで計算できる
+  ---
+  duration_ms: 0.594528
+  type: 'test'
+  ...
+# Subtest: 埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える
+ok 6 - 埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える
+  ---
+  duration_ms: 0.259398
+  type: 'test'
+  ...
+# Subtest: 許可された主要計測イベント名が設定に残る
+ok 7 - 許可された主要計測イベント名が設定に残る
+  ---
+  duration_ms: 0.293232
+  type: 'test'
+  ...
+# Subtest: 地域表示の決定と保存責務はregion-navigationへ集約する
+ok 8 - 地域表示の決定と保存責務はregion-navigationへ集約する
+  ---
+  duration_ms: 0.335991
+  type: 'test'
+  ...
+# Subtest: 旧HTMLを初回描画から安定する静的レイアウトへ安全に変換できる
+ok 9 - 旧HTMLを初回描画から安定する静的レイアウトへ安全に変換できる
+  ---
+  duration_ms: 4.229614
+  type: 'test'
+  ...
+# Subtest: 6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOMを持つ
+ok 10 - 6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOMを持つ
+  ---
+  duration_ms: 1.900605
+  type: 'test'
+  ...
+# Subtest: 主要4言語の公開HTMLはJavaScript実行前から専用ラベルを持つ
+ok 11 - 主要4言語の公開HTMLはJavaScript実行前から専用ラベルを持つ
+  ---
+  duration_ms: 1.298292
+  type: 'test'
+  ...
+# Subtest: 多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する
+ok 12 - 多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する
+  ---
+  duration_ms: 1.377631
+  type: 'test'
+  ...
+# Subtest: UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+ok 13 - UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する
+  ---
+  duration_ms: 0.387348
+  type: 'test'
+  ...
+# Subtest: 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+ok 14 - 未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする
+  ---
+  duration_ms: 0.234973
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 109.350341
+
+事前検証で失敗した工程:
+- 全回帰テスト
+
+記事追加や生成物のずれなら、先に node scripts/prepare-pr.cjs を実行して差分をコミットしてください。
+検査条件自体は変わりません。生成物・静的導線・公式リンクの手順漏れを先に揃えます。
