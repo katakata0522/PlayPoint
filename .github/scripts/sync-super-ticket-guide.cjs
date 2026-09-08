@@ -12,8 +12,17 @@ function replaceRequired(source, before, after, label) {
   return source.replace(before, after);
 }
 
+let article = fs.readFileSync(ARTICLE_PATH, 'utf8');
+article = replaceRequired(
+  article,
+  '<p>Google Play PointsのSuper Ticket（スーパーチケット）は、<strong>スーパーウィークリーリワードでPlay Pointsの賞品を受け取ったあと、もう一度プレミアム特典へ挑戦するためのチケット</strong>です。</p>',
+  '<p>Google Play PointsのSuper Ticket（スーパーチケット）は、<strong>スーパーウィークリーリワードでPlay Pointsの賞品を受け取ったあと、もう一度プレミアム特典へ挑戦するためのチケット</strong>です。要するに、最初の結果に満足できない時に、手持ちのチケットを使って結果を引き直す仕組みです。</p>',
+  'answer-first prose'
+);
+fs.writeFileSync(ARTICLE_PATH, article);
+
 const articles = JSON.parse(fs.readFileSync(ARTICLES_JSON_PATH, 'utf8'));
-if (!articles.some(article => article.id === 'google-play-super-ticket')) {
+if (!articles.some(articleEntry => articleEntry.id === 'google-play-super-ticket')) {
   articles.unshift({
     id: 'google-play-super-ticket',
     title: 'Google PlayのSuper Ticketとは？使い方・もらい方・保存・注意点',
@@ -92,6 +101,13 @@ superWeekly = replaceRequired(
   '<div class="faq-item"><h3>Super Ticketで外したら元の特典に戻せる？</h3><p>Googleが以前公開していたSuper Ticketの案内では、使うと以前の特典は保持できないと説明されていました。現在の付与状況や期限はGoogle Playの「特典」画面を優先してください。</p></div>\n',
   '',
   'visible FAQ Super Ticket'
+);
+
+superWeekly = replaceRequired(
+  superWeekly,
+  ',\n    {\n      "@type": "Question",\n      "name": "Super Ticketで外したら元の特典に戻せる?",\n      "acceptedAnswer": {\n        "@type": "Answer",\n        "text": "Googleが以前公開していたSuper Ticketの案内では、使うと以前の特典は保持できないと説明されていました。現在の付与状況や期限はGoogle Playの「特典」画面を優先してください。"\n      }\n    }',
+  '',
+  'structured FAQ Super Ticket'
 );
 
 superWeekly = replaceRequired(
