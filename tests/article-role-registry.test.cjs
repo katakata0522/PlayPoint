@@ -53,6 +53,7 @@ test('代表記事を検索意図ではなくプロダクト上の仕事で分�
     ['articles/2026-07-31-google-play-quests.html', true, 'retention'],
     ['articles/2026-08-25-pad-puzzle-and-dragons-play-points.html', true, 'game_decision'],
     ['en/articles/google-play-points-platinum-diamond-cost.html', true, 'calculator_bridge'],
+    ['tw/articles/google-play-points-levels.html', true, 'reference'],
     ['tw/articles/google-play-points-country-differences.html', true, 'reference'],
     ['articles/2026-08-17-tgs-google-play-vip.html', false, 'hold']
   ];
@@ -60,6 +61,17 @@ test('代表記事を検索意図ではなくプロダクト上の仕事で分�
   for (const [file, listed, expected] of cases) {
     assert.equal(classifyArticleRole(file, { listed }), expected, file);
     assert.equal(getArticleRoleContract(file, { listed }).role, expected, file);
+  }
+});
+
+test('levels記事は等級制度の参照点であり、CTAがあってもcalculator_bridgeにしない', () => {
+  for (const file of [
+    'articles/2026-08-05-play-points-levels-guide.html',
+    'en/articles/google-play-points-levels.html',
+    'ko/articles/google-play-points-levels.html',
+    'tw/articles/google-play-points-levels.html'
+  ]) {
+    assert.equal(classifyArticleRole(file), 'reference', file);
   }
 });
 
