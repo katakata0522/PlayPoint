@@ -1,8 +1,10 @@
 'use strict';
 
+const { shouldGenerateGenericCalculatorPrompt } = require('./article-role-registry.cjs');
+
 const GENERATED_PROMPT_ATTRIBUTE = 'data-generated-intl-article-prompt="true"';
 const GENERATED_PROMPT_PATTERN = /\s*<aside\b(?=[^>]*\bdata-generated-intl-article-prompt=["']true["'])[^>]*>[\s\S]*?<\/aside>/i;
-const LEGACY_PROMPT_PATTERN = /\s*<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
+const LEGACY_PROMPT_PATTERN = /\s*<aside\b[^>]*class=["'][^"']*\bintl-article-calculator-prompt\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 
 const INTL_PROMPT_COPY = Object.freeze({
   en: Object.freeze({
@@ -55,6 +57,13 @@ const CASH_CONVERSION_H1_PATTERNS = Object.freeze({
 const TW_CONTEXTUAL_H1_PATTERNS = Object.freeze({
   couponNotApplied: /<h1>\s*Google Play Points 折價券沒有自動套用時\s*<\/h1>/i,
   platinumDiamond: /<h1>\s*台灣 Play Points：白金 4,000 點，鑽石 15,000 點起\s*<\/h1>/i
+});
+
+const CONTEXTUAL_PROMPT_PATHS = Object.freeze({
+  'en/articles/google-play-points-cash-conversion.html': 'cashConversion',
+  'ko/articles/google-play-points-cash-conversion.html': 'cashConversion',
+  'tw/articles/google-play-points-coupon-not-applied.html': 'couponNotApplied',
+  'tw/articles/google-play-points-platinum-diamond-cost.html': 'platinumDiamond'
 });
 
 const TW_DUPLICATE_CTA_PATTERNS = Object.freeze({
@@ -203,11 +212,31 @@ function renderIntlArticlePrompt(localeKey, copyOverride = null) {
   ].join('\n');
 }
 
-function insertIntlArticlePrompt(mainHtml, localeKey) {
+function hasVerifiedContextualPrompt(mainHtml, localeKey, relativePath) {
+  const contextType = CONTEXTUAL_PROMPT_PATHS[relativePath];
+  if (!contextType) return false;
+  if (contextType === 'cashConversion') {
+    return Boolean(CASH_CONVERSION_H1_PATTERNS[localeKey]?.test(mainHtml));
+  }
+  return detectTwContext(mainHtml, localeKey) === contextType;
+}
+
+function shouldGenerateIntlArticlePrompt(mainHtml, localeKey, relativePath = '') {
+  if (!relativePath) return true;
+  if (hasVerifiedContextualPrompt(mainHtml, localeKey, relativePath)) return true;
+  return shouldGenerateGenericCalculatorPrompt(relativePath);
+}
+
+function insertIntlArticlePrompt(mainHtml, localeKey, options = {}) {
+  const relativePath = options.relativePath || '';
   const strippedPrompt = String(mainHtml)
     .replace(GENERATED_PROMPT_PATTERN, '')
     .replace(LEGACY_PROMPT_PATTERN, '');
   const withoutPrompt = removeContextualDuplicateCta(strippedPrompt, localeKey);
+  if (!shouldGenerateIntlArticlePrompt(withoutPrompt, localeKey, relativePath)) {
+    return withoutPrompt;
+  }
+
   const twContextKey = detectTwContext(withoutPrompt, localeKey);
   const contextualAnchorEnd = twContextKey
     ? findTwContextualAnchorEnd(withoutPrompt, twContextKey)
@@ -227,6 +256,7 @@ function insertIntlArticlePrompt(mainHtml, localeKey) {
 
 module.exports = {
   CASH_CONVERSION_H1_PATTERNS,
+  CONTEXTUAL_PROMPT_PATHS,
   GENERATED_PROMPT_ATTRIBUTE,
   GENERATED_PROMPT_PATTERN,
   INTL_PROMPT_COPY,
@@ -237,7 +267,9 @@ module.exports = {
   findCashConversionAlternativeEnd,
   findPromptAnchorEnd,
   findTwContextualAnchorEnd,
+  hasVerifiedContextualPrompt,
   insertIntlArticlePrompt,
   removeContextualDuplicateCta,
-  renderIntlArticlePrompt
+  renderIntlArticlePrompt,
+  shouldGenerateIntlArticlePrompt
 };
