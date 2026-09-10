@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { MANUAL_LP_SLUGS } = require('./manual-lp-targets.cjs');
+const { MANUAL_LP_HREFLANG_SLUGS } = require('./manual-lp-targets.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const HREFLANG_ORDER = Object.freeze(['ja', 'en', 'ko', 'zh-TW', 'x-default']);
@@ -59,7 +59,7 @@ function synchronizeManualLpHreflang(html, slug) {
 function syncManualLpHreflangFiles(rootDir, { checkOnly = false } = {}) {
   const summary = { scanned: 0, changed: 0, changedFiles: [] };
 
-  for (const slug of MANUAL_LP_SLUGS) {
+  for (const slug of MANUAL_LP_HREFLANG_SLUGS) {
     const relativePath = `${slug}/index.html`;
     const absolutePath = path.join(rootDir, relativePath);
     if (!fs.existsSync(absolutePath)) throw new Error(`Manual LP is missing: ${relativePath}`);
@@ -94,7 +94,7 @@ if (require.main === module) main();
 
 module.exports = {
   HREFLANG_ORDER,
-  MANUAL_LP_SLUGS,
+  MANUAL_LP_HREFLANG_SLUGS,
   expectedAlternates,
   extractAlternateLinks,
   synchronizeManualLpHreflang,

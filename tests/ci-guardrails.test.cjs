@@ -43,15 +43,17 @@ test('AI同期プリフライト本体は非公開toolsに置き、公開ミラ�
   assert.match(deployScript, /--exclude '\/tools\/\*\*\*'/);
 });
 
-test('preflightは本番同期前に鮮度と記事正規化をcheck-onlyで検証する', () => {
+test('preflightは本番同期前に鮮度・記事正規化・全送信URL Headを検証する', () => {
   const preflight = read('.github/scripts/preflight.cjs');
   const freshCommand = "['scripts/latest-hub-audit.cjs', '--fresh']";
   const navigationCheck = "['scripts/article-content-navigation-normalize.cjs', '--check']";
   const seoCheck = "['scripts/article-seo-normalize.cjs', '--check']";
+  const headAudit = "['scripts/seo-head-audit.cjs']";
 
   assert.ok(preflight.includes(freshCommand), 'latest hub freshness check is missing');
   assert.ok(preflight.includes(navigationCheck), 'article navigation check-only phase is missing');
   assert.ok(preflight.includes(seoCheck), 'article SEO check-only phase is missing');
+  assert.ok(preflight.includes(headAudit), 'submitted URL head audit is missing');
   assert.ok(
     !preflight.includes("['scripts/article-content-navigation-normalize.cjs']"),
     'preflight must not rewrite article navigation'
@@ -64,12 +66,14 @@ test('preflightは本番同期前に鮮度と記事正規化をcheck-onlyで検�
   const freshIndex = preflight.indexOf(freshCommand);
   const navigationIndex = preflight.indexOf(navigationCheck);
   const seoIndex = preflight.indexOf(seoCheck);
+  const headAuditIndex = preflight.indexOf(headAudit);
   const minifyIndex = preflight.indexOf("['.github/scripts/minify.cjs']");
 
   assert.ok(minifyIndex >= 0, 'minify phase is missing');
   assert.ok(freshIndex < minifyIndex, 'latest hub freshness must be checked before deploy preparation');
   assert.ok(navigationIndex < minifyIndex, 'article navigation must be checked before deploy preparation');
   assert.ok(seoIndex < minifyIndex, 'article SEO must be checked before deploy preparation');
+  assert.ok(headAuditIndex < minifyIndex, 'submitted URL head audit must run before deploy preparation');
 });
 
 test('本番Browser Smokeは成功済みDeployを前提にし、公開SHA待ちを重複しない', () => {

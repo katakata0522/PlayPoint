@@ -15,6 +15,7 @@ const { syncJapaneseGuideBrand } = require('./japanese-guide-brand.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
 const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-sync.cjs');
+const { syncJapaneseAuthorHreflang } = require('./author-hreflang-sync.cjs');
 const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
@@ -89,6 +90,8 @@ const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
+const authorHreflangSummary = syncJapaneseAuthorHreflang(rootDir, { checkOnly: false });
+console.log(`[build-html] synchronized Japanese author hreflang: ${authorHreflangSummary.changed} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
 
 // 地域別の文言補正や実行時補助スクリプトを先に確定し、
