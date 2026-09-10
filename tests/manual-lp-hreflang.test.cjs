@@ -4,11 +4,12 @@ const path = require('node:path');
 const test = require('node:test');
 const {
   HREFLANG_ORDER,
-  MANUAL_LP_SLUGS,
+  MANUAL_LP_HREFLANG_SLUGS,
   expectedAlternates,
   extractAlternateLinks,
   synchronizeManualLpHreflang
 } = require('../scripts/manual-lp-hreflang-sync.cjs');
+const { MANUAL_LP_FILES } = require('../scripts/manual-lp-targets.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -27,10 +28,15 @@ test('manual LP synchronizer inserts the complete alternate cluster once', () =>
   assert.equal(stable.html, result.html);
 });
 
-test('configured Japanese manual LPs advertise ja/en/ko/zh-TW/x-default exactly once', () => {
-  assert.ok(MANUAL_LP_SLUGS.length > 0, 'manual LP target list is empty');
+test('hreflang対象とFAQ対象は別責務で、1万円LPをFAQ同期へ巻き込まない', () => {
+  assert.ok(MANUAL_LP_HREFLANG_SLUGS.includes('amount/10000'));
+  assert.ok(!MANUAL_LP_FILES.includes('amount/10000/index.html'));
+});
 
-  for (const slug of MANUAL_LP_SLUGS) {
+test('configured Japanese manual LPs advertise ja/en/ko/zh-TW/x-default exactly once', () => {
+  assert.ok(MANUAL_LP_HREFLANG_SLUGS.length > 0, 'manual LP hreflang target list is empty');
+
+  for (const slug of MANUAL_LP_HREFLANG_SLUGS) {
     const html = read(`${slug}/index.html`);
     const links = extractAlternateLinks(html);
     assert.deepEqual(links, expectedAlternates(slug), `${slug}: alternate cluster differs`);
@@ -41,7 +47,7 @@ test('configured Japanese manual LPs advertise ja/en/ko/zh-TW/x-default exactly 
 });
 
 test('generated international LPs reciprocate the same Japanese URL cluster', () => {
-  for (const slug of MANUAL_LP_SLUGS) {
+  for (const slug of MANUAL_LP_HREFLANG_SLUGS) {
     const expected = expectedAlternates(slug);
     for (const locale of ['en', 'ko', 'tw']) {
       const html = read(`${locale}/${slug}/index.html`);
