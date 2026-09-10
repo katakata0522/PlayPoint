@@ -80,6 +80,14 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function requireRelativePath(relativePath, caller) {
+  const normalized = String(relativePath || '').trim();
+  if (!normalized) {
+    throw new Error(`${caller} requires relativePath for Article Role classification`);
+  }
+  return normalized;
+}
+
 function findArticleBounds(html) {
   const articleMatch = /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*["'][^>]*>/i.exec(html);
   if (!articleMatch) return null;
@@ -222,13 +230,13 @@ function hasVerifiedContextualPrompt(mainHtml, localeKey, relativePath) {
 }
 
 function shouldGenerateIntlArticlePrompt(mainHtml, localeKey, relativePath = '') {
-  if (!relativePath) return true;
-  if (hasVerifiedContextualPrompt(mainHtml, localeKey, relativePath)) return true;
-  return shouldGenerateGenericCalculatorPrompt(relativePath);
+  const resolvedPath = requireRelativePath(relativePath, 'shouldGenerateIntlArticlePrompt');
+  if (hasVerifiedContextualPrompt(mainHtml, localeKey, resolvedPath)) return true;
+  return shouldGenerateGenericCalculatorPrompt(resolvedPath);
 }
 
 function insertIntlArticlePrompt(mainHtml, localeKey, options = {}) {
-  const relativePath = options.relativePath || '';
+  const relativePath = requireRelativePath(options.relativePath, 'insertIntlArticlePrompt');
   const strippedPrompt = String(mainHtml)
     .replace(GENERATED_PROMPT_PATTERN, '')
     .replace(LEGACY_PROMPT_PATTERN, '');
@@ -271,5 +279,6 @@ module.exports = {
   insertIntlArticlePrompt,
   removeContextualDuplicateCta,
   renderIntlArticlePrompt,
+  requireRelativePath,
   shouldGenerateIntlArticlePrompt
 };
