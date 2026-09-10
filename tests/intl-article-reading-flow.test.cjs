@@ -9,16 +9,22 @@ const root = path.resolve(__dirname, '..');
 const {
   INTL_PROMPT_COPY,
   TW_CONTEXTUAL_PROMPT_COPY,
-  insertIntlArticlePrompt
+  insertIntlArticlePrompt,
+  shouldGenerateIntlArticlePrompt
 } = require(path.join(root, 'scripts', 'intl-article-reading-flow.cjs'));
 
 const locales = ['en', 'ko', 'tw'];
 
-test('international article prompt is localized, idempotent, and placed after the quick answer', () => {
+function calculatorBridgePath(locale) {
+  return `${locale}/articles/google-play-points-100-value.html`;
+}
+
+test('calculator_bridgeの国際記事だけ汎用promptを言語別・冪等に生成する', () => {
   for (const locale of locales) {
     const input = '<main class="main-card"><article class="content"><section class="answer-box"><h2>Answer</h2><p>Summary.</p></section><section class="section"><h2>Details</h2></section></article></main>';
-    const first = insertIntlArticlePrompt(input, locale);
-    const second = insertIntlArticlePrompt(first, locale);
+    const options = { relativePath: calculatorBridgePath(locale) };
+    const first = insertIntlArticlePrompt(input, locale, options);
+    const second = insertIntlArticlePrompt(first, locale, options);
     const copy = INTL_PROMPT_COPY[locale];
 
     assert.equal(second, first, locale + ': prompt insertion must be idempotent');
@@ -31,11 +37,12 @@ test('international article prompt is localized, idempotent, and placed after th
   }
 });
 
-test('legacy div intro is treated as the quick answer before the calculator prompt', () => {
+test('legacy div introはcalculator_bridgeの即答として計算promptより前に残す', () => {
   for (const locale of locales) {
     const input = '<main class="main-card"><article class="content"><div class="intro"><strong>Direct answer.</strong> Context.</div><nav class="intl-article-toc"></nav><section class="section"><h2>Details</h2></section></article></main>';
-    const first = insertIntlArticlePrompt(input, locale);
-    const second = insertIntlArticlePrompt(first, locale);
+    const options = { relativePath: calculatorBridgePath(locale) };
+    const first = insertIntlArticlePrompt(input, locale, options);
+    const second = insertIntlArticlePrompt(first, locale, options);
     const introEnd = first.indexOf('</div>', first.indexOf('class="intro"')) + '</div>'.length;
     const promptIndex = first.indexOf('data-generated-intl-article-prompt="true"');
     const detailIndex = first.indexOf('<section class="section">');
@@ -47,16 +54,16 @@ test('legacy div intro is treated as the quick answer before the calculator prom
   }
 });
 
-test('international article prompt respects a knowledge boundary when one is present', () => {
+test('calculator_bridgeのpromptはknowledge boundaryを越えてから置く', () => {
   const input = '<main class="main-card"><article class="content"><section class="answer-box"><p>Answer.</p></section><section class="knowledge-boundary"><h2>Known</h2></section><section class="section"><h2>Details</h2></section></article></main>';
-  const output = insertIntlArticlePrompt(input, 'en');
+  const output = insertIntlArticlePrompt(input, 'en', { relativePath: calculatorBridgePath('en') });
   const knowledgeEnd = output.indexOf('</section>', output.indexOf('knowledge-boundary')) + '</section>'.length;
   const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
   assert.ok(promptIndex > knowledgeEnd, 'prompt must follow the article-specific knowledge boundary');
 });
 
-function assertCashConversionPromptOrder({ input, locale, label }) {
-  const output = insertIntlArticlePrompt(input, locale);
+function assertCashConversionPromptOrder({ input, locale, relativePath, label }) {
+  const output = insertIntlArticlePrompt(input, locale, { relativePath });
   const alternativeEnd = output.indexOf('</section>', output.indexOf('id="alternatives"')) + '</section>'.length;
   const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
   const creditIndex = output.indexOf('id="credit"');
@@ -66,19 +73,29 @@ function assertCashConversionPromptOrder({ input, locale, label }) {
   assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, label + ': exactly one generated prompt');
 }
 
-test('English cash-conversion article answers and shows alternatives before the calculator prompt', () => {
+test('English cash-conversionは意思決定後の文脈CTAとして例外的に計算へ接続する', () => {
   const input = '<main class="main-card"><div class="hero"><h1>Can You Redeem Google Play Points for Cash?</h1></div><article class="content"><div class="intro"><strong>No cash-out.</strong> Supported rewards can still reduce planned Google Play spending.</div><section class="section"><h2 id="answer">What you can and cannot do</h2></section><section class="section"><h2 id="alternatives">What to do instead of cashing out</h2><p>Alternatives.</p></section><section class="section"><h2 id="credit">Why Play credit is not cash</h2></section></article></main>';
-  assertCashConversionPromptOrder({ input, locale: 'en', label: 'English cash-conversion' });
+  assertCashConversionPromptOrder({
+    input,
+    locale: 'en',
+    relativePath: 'en/articles/google-play-points-cash-conversion.html',
+    label: 'English cash-conversion'
+  });
 });
 
-test('Korean cash-conversion article answers and shows alternatives before the calculator prompt', () => {
+test('Korean cash-conversionは意思決定後の文脈CTAとして例外的に計算へ接続する', () => {
   const input = '<main class="main-card"><div class="hero"><h1>구글 플레이 포인트 현금화 가능할까?</h1></div><article class="content"><div class="intro"><strong>현금화는 불가합니다.</strong> 대신 공식 리워드로 사용할 수 있습니다.</div><section class="section"><h2 id="answer">가능한 것과 불가능한 것</h2></section><section class="section"><h2 id="alternatives">현금화 대신 이렇게 쓰는 것이 현실적입니다</h2><p>대안.</p></section><section class="section"><h2 id="credit">Play 크레딧은 현금이 아니다</h2></section></article></main>';
-  assertCashConversionPromptOrder({ input, locale: 'ko', label: 'Korean cash-conversion' });
+  assertCashConversionPromptOrder({
+    input,
+    locale: 'ko',
+    relativePath: 'ko/articles/google-play-points-cash-conversion.html',
+    label: 'Korean cash-conversion'
+  });
 });
 
-test('Taiwan coupon troubleshooting waits until the resolution steps are complete, then opens reverse mode', () => {
+test('Taiwan coupon troubleshootingは問題排解完了後だけreverse modeへ進める', () => {
   const input = '<main class="main-card"><div class="hero"><h1>Google Play Points 折價券沒有自動套用時</h1></div><article class="content"><aside class="article-calculator-prompt cta-box" data-generated-intl-article-prompt="true"><h2>old</h2></aside><div class="intro">先確認折價券條件。</div><section class="section"><h2 id="section-1">第一步</h2></section><section class="section"><h2 id="section-5">條件都符合仍未套用</h2><p>完成問題排解。</p></section><div class="cta-box"><h3>再次購買前先確認條件</h3><p>duplicate</p><a href="/tw/">開啟計算器</a></div><aside class="official-source-note"></aside></article></main>';
-  const output = insertIntlArticlePrompt(input, 'tw');
+  const output = insertIntlArticlePrompt(input, 'tw', { relativePath: 'tw/articles/google-play-points-coupon-not-applied.html' });
   const resolutionEnd = output.indexOf('</section>', output.indexOf('id="section-5"')) + '</section>'.length;
   const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
   const sourceIndex = output.indexOf('official-source-note');
@@ -93,9 +110,9 @@ test('Taiwan coupon troubleshooting waits until the resolution steps are complet
   assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
 });
 
-test('Taiwan platinum/diamond article gives the threshold answer before one calculator CTA', () => {
+test('Taiwan platinum/diamondはcalculator_bridgeとして門檻回答後に計算へ進める', () => {
   const input = '<main class="main-card"><div class="hero"><h1>台灣 Play Points：白金 4,000 點，鑽石 15,000 點起</h1></div><article class="content"><aside class="article-calculator-prompt cta-box" data-generated-intl-article-prompt="true"><h2>old</h2></aside><div class="intro"><strong>白金 4,000，鑽石 15,000。</strong></div><section class="section"><h2>台灣官方門檻與積點率</h2></section><div class="cta-box"><h3>用自己的不足點數計算</h3><p>duplicate</p><a href="/tw/status/platinum/">舊導線</a></div></article></main>';
-  const output = insertIntlArticlePrompt(input, 'tw');
+  const output = insertIntlArticlePrompt(input, 'tw', { relativePath: 'tw/articles/google-play-points-platinum-diamond-cost.html' });
   const introEnd = output.indexOf('</div>', output.indexOf('class="intro"')) + '</div>'.length;
   const promptIndex = output.indexOf('data-generated-intl-article-prompt="true"');
   const detailIndex = output.indexOf('<section class="section">');
@@ -111,13 +128,38 @@ test('Taiwan platinum/diamond article gives the threshold answer before one calc
   assert.equal((output.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
 });
 
-const contextualPublishedPrompts = Object.freeze({
-  'tw/google-play-points-coupon-not-applied.html': TW_CONTEXTUAL_PROMPT_COPY.couponNotApplied,
-  'tw/google-play-points-platinum-diamond-cost.html': TW_CONTEXTUAL_PROMPT_COPY.platinumDiamond
+test('非calculator Roleへ汎用計算promptを自動挿入しない', () => {
+  const cases = [
+    ['en', 'en/articles/google-play-points-refund.html'],
+    ['ko', 'ko/articles/google-play-points-weekly-reward.html'],
+    ['tw', 'tw/articles/google-play-points-play-credit-not-working.html'],
+    ['en', 'en/articles/google-play-points-use-coupons.html']
+  ];
+  const input = '<main class="main-card"><article class="content"><section class="answer-box"><h2>Answer</h2><p>Summary.</p></section><section class="section"><h2>Details</h2></section></article></main>';
+
+  for (const [locale, relativePath] of cases) {
+    const output = insertIntlArticlePrompt(input, locale, { relativePath });
+    assert.doesNotMatch(output, /data-generated-intl-article-prompt="true"/, relativePath);
+  }
 });
 
-test('all published international article pages contain one localized reading-flow prompt', () => {
+test('記事固有の手動CTAはRole正規化で汎用promptへ置き換えない', () => {
+  const input = '<main class="main-card"><article class="content"><section class="answer-box"><p>Answer.</p></section><aside class="article-calculator-prompt cta-box manual-next-action"><a href="/en/articles/google-play-points-refund.html">Keep manual action</a></aside><section class="section"><h2>Details</h2></section></article></main>';
+  const output = insertIntlArticlePrompt(input, 'en', { relativePath: 'en/articles/google-play-points-expiration.html' });
+
+  assert.match(output, /manual-next-action/);
+  assert.match(output, /Keep manual action/);
+  assert.doesNotMatch(output, /data-generated-intl-article-prompt="true"/);
+});
+
+const contextualPublishedPrompts = Object.freeze({
+  'tw/articles/google-play-points-coupon-not-applied.html': TW_CONTEXTUAL_PROMPT_COPY.couponNotApplied,
+  'tw/articles/google-play-points-platinum-diamond-cost.html': TW_CONTEXTUAL_PROMPT_COPY.platinumDiamond
+});
+
+test('公開中の全国際記事はRoleに応じたgenerated prompt有無を守る', () => {
   let auditedLegacyIntroPages = 0;
+  let checked = 0;
 
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
@@ -125,14 +167,21 @@ test('all published international article pages contain one localized reading-fl
     assert.ok(files.length > 0, locale + ': article pages are missing');
 
     for (const file of files) {
+      const relativePath = `${locale}/articles/${file}`;
       const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
-      const contextualCopy = contextualPublishedPrompts[locale + '/' + file];
+      const contextualCopy = contextualPublishedPrompts[relativePath];
+      const shouldGenerate = shouldGenerateIntlArticlePrompt(html, locale, relativePath);
+      const promptCount = (html.match(/data-generated-intl-article-prompt="true"/g) || []).length;
+      checked += 1;
+
+      assert.equal(promptCount, shouldGenerate ? 1 : 0, relativePath + ': generated prompt policy');
+      if (!shouldGenerate) continue;
+
       const expectedCopy = contextualCopy || INTL_PROMPT_COPY[locale];
       const expectedHref = contextualCopy?.href || '/' + locale + '/';
       const promptIndex = html.indexOf('data-generated-intl-article-prompt="true"');
-      assert.equal((html.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1, locale + '/' + file + ': exactly one generated prompt');
-      assert.ok(html.includes(expectedCopy.cta), locale + '/' + file + ': localized/contextual CTA copy');
-      assert.ok(html.includes('href="' + expectedHref + '"'), locale + '/' + file + ': calculator target');
+      assert.ok(html.includes(expectedCopy.cta), relativePath + ': localized/contextual CTA copy');
+      assert.ok(html.includes('href="' + expectedHref + '"'), relativePath + ': calculator target');
 
       const articleIndex = html.indexOf('<article class="content">');
       const articleEnd = html.indexOf('</article>', articleIndex);
@@ -145,12 +194,13 @@ test('all published international article pages contain one localized reading-fl
           && (firstNavIndex < 0 || introIndex < firstNavIndex);
         if (introIsOpeningAnswer) {
           const introEnd = html.indexOf('</div>', introIndex) + '</div>'.length;
-          assert.ok(promptIndex > introEnd, locale + '/' + file + ': opening div intro answer must precede calculator prompt');
+          assert.ok(promptIndex > introEnd, relativePath + ': opening div intro answer must precede calculator prompt');
           auditedLegacyIntroPages += 1;
         }
       }
     }
   }
 
+  assert.equal(checked, 102, '現在の国際記事102件をすべて監査する');
   assert.ok(auditedLegacyIntroPages > 0, 'published audit must exercise legacy div-intro pages');
 });
