@@ -6,6 +6,14 @@ const path = require('node:path');
 const ORIGIN = 'https://playpoint-sim.com';
 const EXCLUDED_DIRECTORIES = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
 const LOCALE_PREFIXES = new Set(['en', 'ko', 'tw', 'hk', 'in']);
+const HTML_TEXT_ENTITIES = Object.freeze({
+  '&amp;': '&',
+  '&quot;': '"',
+  '&#39;': "'",
+  '&#x27;': "'",
+  '&lt;': '<',
+  '&gt;': '>'
+});
 
 function read(relativePath, rootDir) {
   return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
@@ -22,11 +30,7 @@ function parseAttributes(tag) {
 
 function normalizeText(value) {
   return String(value || '')
-    .replace(/&amp;/gi, '&')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#(?:39|x27);/gi, "'")
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
+    .replace(/&(amp|quot|#39|#x27|lt|gt);/gi, entity => HTML_TEXT_ENTITIES[entity.toLowerCase()] || entity)
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -48,7 +52,7 @@ function extractH1(html) {
 
 function extractJsonLd(head) {
   const results = [];
-  for (const match of head.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+  for (const match of head.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
     const attributes = parseAttributes(`<script ${match[1]}>`);
     if ((attributes.type || '').toLowerCase() !== 'application/ld+json') continue;
     const raw = match[2].trim();
