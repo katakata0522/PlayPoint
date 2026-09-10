@@ -7,7 +7,12 @@ const { inspectPage } = require('../scripts/seo-head-audit.cjs');
 
 const URL = 'https://playpoint-sim.com/seo-audit-fixture.html';
 
-function pageHtml({ title = 'Fixture', description = 'Fixture description', scriptClose = '</script>' } = {}) {
+function pageHtml({
+  title = 'Fixture',
+  description = 'Fixture description',
+  scriptClose = '</script>',
+  jsonLd = '{"@context":"https://schema.org","@type":"WebPage"}'
+} = {}) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -19,7 +24,7 @@ function pageHtml({ title = 'Fixture', description = 'Fixture description', scri
   <meta property="og:description" content="Fixture description">
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
   <meta property="og:url" content="${URL}">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage"}${scriptClose}
+  <script type="application/ld+json">${jsonLd}${scriptClose}
 </head>
 <body><h1>Fixture</h1></body>
 </html>`;
@@ -42,4 +47,20 @@ test('JSON-LD抽出はscript終了タグの閉じ山括弧前の空白を許容�
   assert.deepEqual(page.schemaTypes, ['WebPage']);
   assert.equal(page.errors.some(issue => issue.code === 'jsonld-invalid'), false);
   assert.equal(page.warnings.some(issue => issue.code === 'jsonld-missing'), false);
+});
+
+test('JSON-LD抽出はブラウザが終了タグとして扱う空白と余分トークンを安全に終端する', () => {
+  const page = inspectPage(URL, 'seo-audit-fixture.html', pageHtml({ scriptClose: '</script\t\n data-junk>' }));
+
+  assert.deepEqual(page.schemaTypes, ['WebPage']);
+  assert.equal(page.errors.some(issue => issue.code === 'jsonld-invalid'), false);
+  assert.equal(page.warnings.some(issue => issue.code === 'jsonld-missing'), false);
+});
+
+test('JSON-LD抽出はscript接頭辞だけの文字列を終了タグと誤認しない', () => {
+  const jsonLd = '{"@context":"https://schema.org","@type":"WebPage","name":"</scriptx> stays data"}';
+  const page = inspectPage(URL, 'seo-audit-fixture.html', pageHtml({ jsonLd }));
+
+  assert.deepEqual(page.schemaTypes, ['WebPage']);
+  assert.equal(page.errors.some(issue => issue.code === 'jsonld-invalid'), false);
 });

@@ -14,6 +14,7 @@ const HTML_TEXT_ENTITIES = Object.freeze({
   '&lt;': '<',
   '&gt;': '>'
 });
+const HTML_SPACE_CHARS = new Set([' ', '\t', '\n', '\r', '\f']);
 
 function read(relativePath, rootDir) {
   return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
@@ -50,18 +51,58 @@ function extractH1(html) {
     .map(match => normalizeText(match[1].replace(/<[^>]+>/g, ' ')));
 }
 
+function findScriptEndTag(source, fromIndex) {
+  const lowerSource = source.toLowerCase();
+  let cursor = fromIndex;
+
+  while (cursor < source.length) {
+    const start = lowerSource.indexOf('</script', cursor);
+    if (start === -1) return null;
+
+    const boundary = source[start + 8];
+    const validBoundary = boundary === '>' || boundary === '/' || HTML_SPACE_CHARS.has(boundary);
+    if (!validBoundary) {
+      cursor = start + 8;
+      continue;
+    }
+
+    const close = source.indexOf('>', start + 8);
+    if (close === -1) return null;
+    return { start, end: close + 1 };
+  }
+
+  return null;
+}
+
 function extractJsonLd(head) {
   const results = [];
-  for (const match of head.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
+  const openPattern = /<script\b([^>]*)>/gi;
+  let match;
+
+  while ((match = openPattern.exec(head)) !== null) {
     const attributes = parseAttributes(`<script ${match[1]}>`);
-    if ((attributes.type || '').toLowerCase() !== 'application/ld+json') continue;
-    const raw = match[2].trim();
-    try {
-      results.push({ raw, value: JSON.parse(raw), error: null });
-    } catch (error) {
-      results.push({ raw, value: null, error });
+    const isJsonLd = (attributes.type || '').toLowerCase() === 'application/ld+json';
+    const endTag = findScriptEndTag(head, openPattern.lastIndex);
+
+    if (!endTag) {
+      if (isJsonLd) {
+        results.push({ raw: '', value: null, error: new Error('script end tag not found') });
+      }
+      break;
     }
+
+    if (isJsonLd) {
+      const raw = head.slice(openPattern.lastIndex, endTag.start).trim();
+      try {
+        results.push({ raw, value: JSON.parse(raw), error: null });
+      } catch (error) {
+        results.push({ raw, value: null, error });
+      }
+    }
+
+    openPattern.lastIndex = endTag.end;
   }
+
   return results;
 }
 
