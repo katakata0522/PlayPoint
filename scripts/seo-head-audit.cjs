@@ -198,6 +198,15 @@ function inspectPage(url, file, html) {
   const alternates = linkTags
     .filter(attributes => relTokens(attributes.rel).includes('alternate') && attributes.hreflang && attributes.href)
     .map(attributes => ({ hreflang: attributes.hreflang, href: normalizeText(attributes.href) }));
+  const hreflangCounts = new Map();
+  for (const alternate of alternates) {
+    hreflangCounts.set(alternate.hreflang, (hreflangCounts.get(alternate.hreflang) || 0) + 1);
+  }
+  for (const [hreflang, count] of hreflangCounts) {
+    if (count > 1) {
+      errors.push(createIssue('hreflang-duplicate', { url, file, detail: hreflang + ': count=' + count }));
+    }
+  }
   if (alternates.length > 0 && !alternates.some(item => item.href === url)) {
     errors.push(createIssue('hreflang-self-missing', { url, file }));
   }
@@ -235,13 +244,22 @@ function auditSeoHeads(rootDir = path.resolve(__dirname, '..')) {
   const sitemapFiles = sitemapFilesFromRobots(rootDir);
   const urlSources = new Map();
 
+  if (sitemapFiles.length === 0) {
+    errors.push(createIssue('submitted-sitemap-missing'));
+  }
+
   for (const sitemapFile of sitemapFiles) {
     const absolutePath = path.join(rootDir, sitemapFile);
     if (!fs.existsSync(absolutePath)) {
       errors.push(createIssue('sitemap-file-missing', { file: sitemapFile }));
       continue;
     }
-    for (const url of sitemapUrls(read(sitemapFile, rootDir))) {
+    const urls = sitemapUrls(read(sitemapFile, rootDir));
+    if (urls.length === 0) {
+      errors.push(createIssue('submitted-sitemap-empty', { file: sitemapFile }));
+      continue;
+    }
+    for (const url of urls) {
       const sources = urlSources.get(url) || [];
       sources.push(sitemapFile);
       urlSources.set(url, sources);
