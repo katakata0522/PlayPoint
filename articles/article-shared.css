@@ -1373,3 +1373,342 @@ body[data-article-category] .main-content-column > .hero h1 {
 color: var(--cocoon-heading);
 }
 
+/* ARTICLE_DESIGN_SYSTEM_V2_START */
+/*
+ * Article Design System 2.0
+ *
+ * Preserve historical compatibility layers while making shared CSS the final
+ * visual contract. Prioritize fast scanning: answer, conditions, next action.
+ */
+:root {
+--article-ds-text: #0f172a;
+--article-ds-muted: #64748b;
+--article-ds-border: #dbe3ec;
+--article-ds-surface: #ffffff;
+--article-ds-soft: #f8fafc;
+--article-ds-marker: #fde68a;
+--article-ds-focus: #0b57d0;
+}
+
+body .main-content-column .hero-badge,
+body .main-card .hero-badge {
+border-radius: 999px;
+border-color: var(--article-ds-border);
+background: var(--article-accent-soft, #f0f7fa);
+color: var(--article-accent-dark, #0e3746);
+padding: 4px 9px;
+margin-bottom: 10px;
+letter-spacing: 0.01em;
+}
+body .main-content-column .hero-meta,
+body .main-card .hero-meta {
+color: var(--article-ds-muted);
+border-bottom-color: var(--article-ds-border);
+margin-bottom: 20px;
+}
+
+body .content > .section > h2,
+body .content > section.section > h2,
+body .content > .related-links-section > h2,
+body .content > .contextual-guide-links > h2,
+body .content > .article-related-guides > h2,
+body .content > .faq-section > h2 {
+background: linear-gradient(90deg, var(--article-accent-soft, #f0f7fa) 0%, #ffffff 100%) !important;
+color: var(--article-ds-text) !important;
+border: 1px solid var(--article-ds-border) !important;
+border-left: 5px solid var(--article-accent, #164e63) !important;
+border-radius: 8px !important;
+box-shadow: none !important;
+padding: 11px 14px !important;
+margin: 38px 0 18px !important;
+font-size: 1.16rem !important;
+line-height: 1.5 !important;
+text-wrap: balance;
+scroll-margin-top: 24px;
+}
+body .content > .section > h3 {
+background: transparent !important;
+color: var(--article-ds-text) !important;
+border: 0 !important;
+border-left: 3px solid var(--article-accent, #164e63) !important;
+padding: 3px 0 3px 12px !important;
+margin: 28px 0 14px !important;
+box-shadow: none !important;
+}
+
+body .content > .answer-box,
+body .content > .editorial-answer {
+position: relative;
+background: linear-gradient(135deg, var(--article-accent-soft, #f0f7fa) 0%, #ffffff 82%) !important;
+border: 1px solid var(--article-ds-border) !important;
+border-left: 5px solid var(--article-accent, #164e63) !important;
+border-radius: 10px !important;
+padding: 18px 20px 18px 54px !important;
+margin: 16px 0 !important;
+color: #1f2937;
+box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+text-align: left !important;
+}
+body .content > .answer-box::before,
+body .content > .editorial-answer::before {
+content: "✓" !important;
+position: absolute;
+top: 18px;
+left: 17px;
+display: grid;
+place-items: center;
+width: 25px;
+height: 25px;
+border-radius: 50%;
+background: var(--article-accent, #164e63);
+color: #ffffff;
+font-size: 14px;
+font-weight: 900;
+line-height: 1;
+}
+body .content > .answer-box > h2,
+body .content > .editorial-answer > h2 {
+display: block !important;
+background: none !important;
+color: var(--article-accent-dark, #0e3746) !important;
+border: 0 !important;
+border-radius: 0 !important;
+padding: 0 !important;
+margin: 0 0 8px !important;
+box-shadow: none !important;
+font-size: 1.04rem !important;
+line-height: 1.55 !important;
+}
+body .content > .answer-box > p:last-child,
+body .content > .editorial-answer > p:last-child {
+margin-bottom: 0;
+}
+
+body .content > .intro {
+background: transparent !important;
+color: #334155 !important;
+border: 0 !important;
+border-left: 3px solid var(--article-accent, #164e63) !important;
+border-radius: 0 !important;
+padding: 3px 0 3px 14px !important;
+margin: 14px 0 18px !important;
+box-shadow: none !important;
+text-align: left !important;
+font-size: 1rem !important;
+line-height: 1.8 !important;
+}
+body .content > .answer-box + .intro,
+body .content > .editorial-answer + .intro {
+margin-top: -2px !important;
+}
+
+body .content > .summary-box {
+background: var(--article-ds-soft) !important;
+color: #334155 !important;
+border: 1px solid var(--article-ds-border) !important;
+border-radius: 9px !important;
+padding: 14px 16px !important;
+margin: 16px 0 22px !important;
+box-shadow: none !important;
+}
+body .content > .summary-box > h2 {
+display: block !important;
+background: none !important;
+color: var(--article-ds-text) !important;
+border: 0 !important;
+padding: 0 0 8px !important;
+margin: 0 0 10px !important;
+box-shadow: none !important;
+font-size: 0.98rem !important;
+line-height: 1.5 !important;
+}
+body .content > .summary-box > ul {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 7px 20px;
+padding-left: 1.25rem;
+margin: 0;
+}
+body .content > .summary-box li {
+margin: 0;
+line-height: 1.65;
+}
+
+body .content > .intro > strong:first-child,
+body .content > .answer-box > p:first-of-type strong,
+body .content > .editorial-answer > p:first-of-type strong {
+background-image: linear-gradient(transparent 58%, var(--article-ds-marker) 58%);
+-webkit-box-decoration-break: clone;
+box-decoration-break: clone;
+padding: 0 0.08em;
+}
+body .content .marker-yellow {
+background-image: linear-gradient(transparent 58%, #fde68a 58%);
+-webkit-box-decoration-break: clone;
+box-decoration-break: clone;
+}
+body .content .marker-blue {
+background-image: linear-gradient(transparent 58%, #bae6fd 58%);
+-webkit-box-decoration-break: clone;
+box-decoration-break: clone;
+}
+body .content .marker-red {
+background-image: linear-gradient(transparent 58%, #fecdd3 58%);
+-webkit-box-decoration-break: clone;
+box-decoration-break: clone;
+}
+
+body .content .table-card,
+body .content .table-wrap {
+border: 1px solid var(--article-ds-border);
+border-radius: 10px;
+background: var(--article-ds-surface);
+box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+scrollbar-width: thin;
+overscroll-behavior-inline: contain;
+}
+body .content .table-card table,
+body .content .table-wrap table {
+margin: 0;
+box-shadow: none;
+}
+body .content .table-card th,
+body .content .table-wrap th {
+background: var(--article-accent-soft, #f0f7fa);
+color: var(--article-ds-text);
+}
+body .content .table-card tbody tr:nth-child(even) td,
+body .content .table-wrap tbody tr:nth-child(even) td {
+background: #fbfdff;
+}
+@media (hover: hover) {
+body .content .table-card tbody tr:hover td,
+body .content .table-wrap tbody tr:hover td {
+background: #f8fafc;
+}
+}
+
+body .content .related-links-section > ul,
+body .content .contextual-guide-links > ul,
+body .content .article-related-guides > ul {
+list-style: none;
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 10px;
+padding-left: 0;
+margin-bottom: 0;
+}
+body .content .related-links-section > ul > li,
+body .content .contextual-guide-links > ul > li,
+body .content .article-related-guides > ul > li {
+margin: 0;
+}
+body .content .related-links-section > ul > li > a,
+body .content .contextual-guide-links > ul > li > a,
+body .content .article-related-guides > ul > li > a {
+display: flex;
+align-items: center;
+min-height: 58px;
+padding: 12px 14px;
+border: 1px solid var(--article-ds-border);
+border-radius: 8px;
+background: #ffffff;
+color: var(--cocoon-link, #0284c7);
+font-weight: 700;
+line-height: 1.55;
+text-decoration: none !important;
+box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+text-wrap: pretty;
+}
+@media (hover: hover) {
+body .content .related-links-section > ul > li > a:hover,
+body .content .contextual-guide-links > ul > li > a:hover,
+body .content .article-related-guides > ul > li > a:hover {
+border-color: #94a3b8;
+box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+transform: translateY(-1px);
+}
+}
+
+body .content p,
+body .content li {
+text-wrap: pretty;
+}
+body .content a:focus-visible,
+body .content button:focus-visible,
+body .content summary:focus-visible {
+outline: 3px solid var(--article-ds-focus);
+outline-offset: 3px;
+border-radius: 4px;
+}
+
+@media (max-width: 860px) {
+body .content > .section > h2,
+body .content > section.section > h2,
+body .content > .related-links-section > h2,
+body .content > .contextual-guide-links > h2,
+body .content > .article-related-guides > h2,
+body .content > .faq-section > h2 {
+margin: 30px 0 15px !important;
+padding: 10px 12px !important;
+font-size: 1.08rem !important;
+}
+body .content > .answer-box,
+body .content > .editorial-answer {
+padding: 15px 14px 15px 48px !important;
+border-radius: 8px !important;
+}
+body .content > .answer-box::before,
+body .content > .editorial-answer::before {
+top: 15px;
+left: 13px;
+width: 24px;
+height: 24px;
+}
+body .content > .summary-box > ul,
+body .content .related-links-section > ul,
+body .content .contextual-guide-links > ul,
+body .content .article-related-guides > ul {
+grid-template-columns: 1fr;
+}
+body .content .related-links-section > ul > li > a,
+body .content .contextual-guide-links > ul > li > a,
+body .content .article-related-guides > ul > li > a {
+min-height: 54px;
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+body .content a,
+body .content button,
+body .content summary {
+scroll-behavior: auto !important;
+transition: none !important;
+animation: none !important;
+transform: none !important;
+}
+}
+body .content > .answer-box,
+body .content > .editorial-answer,
+body .content > .summary-box,
+body .content .related-links-section > ul > li,
+body .content .contextual-guide-links > ul > li,
+body .content .article-related-guides > ul > li {
+min-width: 0;
+overflow-wrap: anywhere;
+}
+/* 関連記事の操作領域は遅延描画の仮高さにしない。本文セクションの最適化は維持する。 */
+body .content > .section.related-links-section,
+body .content > .section.contextual-guide-links,
+body .content > .section.article-related-guides,
+body .content .related-links-section,
+body .content .contextual-guide-links,
+body .content .article-related-guides {
+content-visibility: visible;
+contain-intrinsic-size: none;
+}
+@media (prefers-reduced-motion: reduce) {
+html { scroll-behavior: auto !important; }
+}
+/* ARTICLE_DESIGN_SYSTEM_V2_END */

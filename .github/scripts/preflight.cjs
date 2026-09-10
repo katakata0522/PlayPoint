@@ -124,6 +124,7 @@ try {
   verifyServiceWorkerPrecacheAssets();
   runPhase('最新情報ハブ鮮度検証', process.execPath, ['scripts/latest-hub-audit.cjs', '--fresh']);
   runPhase('公開記事の検索意図・内部リンク検証', process.execPath, ['scripts/article-content-navigation-normalize.cjs', '--check']);
+  runPhase('記事Design System 2.0監査', process.execPath, ['scripts/article-design-system-audit.cjs']);
   runPhase('公開記事SEO検証', process.execPath, ['scripts/article-seo-normalize.cjs', '--check']);
   runPhase('送信URLのHead監査', process.execPath, ['scripts/seo-head-audit.cjs']);
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);

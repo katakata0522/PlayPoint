@@ -82,3 +82,21 @@ article-modern.css
 英語・韓国語・繁体字の記事も `article-shared.css` を日本語版の visual contract として利用するが、言語・既存マークアップ差分は `articles/intl-article.css` が担当する。
 
 日本語互換CSS (`article-legacy.css` / `article-modern.css`) の hero 正規化は `body[data-article-category] .main-content-column > .hero` に限定し、国際記事やゲームページへ波及させない。
+
+<!-- ARTICLE_DESIGN_SYSTEM_V2_START -->
+## Design System 2.0 の視覚階層
+
+2026-09-11 以降は、旧Cocoon風の「部品を増やす」発想ではなく、読者が短時間で答えと次の行動を拾える視覚階層を article-shared.css の最終契約として持つ。
+
+- Hero は記事タイトルを主役にし、バッジと日付は補助情報に留める。
+- .answer-box / .editorial-answer をAbove the foldの最優先回答とする。
+- .intro は2つ目の大きなカードにせず、回答を補う短い導入へ縮退する。
+- .summary-box は「この記事で分かること」を素早く走査する小型コンポーネントにする。
+- 蛍光マーカーは重要箇所だけに使う。本文のstrongを一律装飾しない。
+- H2は濃色の全面帯をやめ、カテゴリーアクセント付きの軽い見出しへ統一する。
+- 比較表は横スクロール安全性を維持しつつ、ヘッダー・交互行で視線を支援する。
+- 関連記事はArticle RoleのNext Jobをカードとして見せる。単なる青文字リストへ戻さない。
+- JSが無効でも本文・階層・強調が成立することを必須条件とする。
+
+Article Roleは「何を主導線にするか」を決め、Design Systemは「その主導線をどう読み取れる形にするか」を担当する。Roleを色だけで説明したり、すべてのRoleへ同じCTAを出したりしない。
+<!-- ARTICLE_DESIGN_SYSTEM_V2_END -->
