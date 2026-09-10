@@ -45,3 +45,5 @@ jobs:
           git add amount/10000/index.html author/katakata.html embed.html scripts/seo-head-audit.cjs
           git commit -m 'seo: 全送信URLのhead監査残件を解消'
           git push origin HEAD:seo/head-audit-recovery-20260910
+
+# temporary recovery workflow; removed after canonical outputs are committed
