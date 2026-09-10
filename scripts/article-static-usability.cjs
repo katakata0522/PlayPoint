@@ -123,12 +123,16 @@ function removeStaticPrompt(html) {
 }
 
 function insertStaticPrompt(html, options = {}) {
+  if (!options.relativePath) {
+    throw new Error('insertStaticPrompt requires relativePath for Article Role classification');
+  }
+
   const withoutGeneratedPrompt = removeStaticPrompt(html);
   if (ARTICLE_PROMPT_PATTERN.test(withoutGeneratedPrompt)) {
     return withoutGeneratedPrompt;
   }
 
-  if (options.relativePath && !shouldGenerateGenericCalculatorPrompt(options.relativePath, { listed: options.listed !== false })) {
+  if (!shouldGenerateGenericCalculatorPrompt(options.relativePath, { listed: options.listed !== false })) {
     return withoutGeneratedPrompt;
   }
 
