@@ -54,6 +54,9 @@ jobs:
           overflow-wrap: anywhere;
           }
           /* 関連記事の操作領域は遅延描画の仮高さにしない。本文セクションの最適化は維持する。 */
+          body .content > .section.related-links-section,
+          body .content > .section.contextual-guide-links,
+          body .content > .section.article-related-guides,
           body .content .related-links-section,
           body .content .contextual-guide-links,
           body .content .article-related-guides {
