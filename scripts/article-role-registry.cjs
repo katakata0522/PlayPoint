@@ -87,7 +87,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'calculator_bridge',
-    test: stem => /(?:fastest-|(?:^|-)1-value|100-value|500-1000-(?:value|cost)|levels(?:-guide)?$|platinum-diamond-cost|diamond-worth-it|rank-maintenance|level-maintenance-reset)/.test(stem)
+    test: stem => /(?:fastest-|(?:^|-)1-value|100-value|500-1000-(?:value|cost)|platinum-diamond-cost|diamond-worth-it|rank-maintenance|level-maintenance-reset)/.test(stem)
   },
   {
     role: 'decision_support',
@@ -95,7 +95,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'reference',
-    test: stem => /(?:getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset)/.test(stem)
+    test: stem => /(?:getting-started|check-balance|expiration|family-sharing|family-link|multiple-accounts|movies-books|play-games|games-vs-play-points|refund|subscription|subscriptions|device-change|country-change|country-differences|apps-books-purchases|balance-history-progress|join-eligibility|rounding-tax|diamond-vip|premium-support|pc-play-games-points|redeemed-item|install-offer|january-rank-reset|levels(?:-guide)?$)/.test(stem)
   }
 ]);
 
