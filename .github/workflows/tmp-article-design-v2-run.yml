@@ -163,7 +163,7 @@ jobs:
           CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-css-smoke.log"
           CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-smoke.log"
 
-      - name: Push only the clean validated commit without overwriting newer work
+      - name: Publish code without workflow changes or overwriting newer work
         shell: bash
         env:
           EXPECTED_HEAD: ${{ github.sha }}
@@ -173,11 +173,25 @@ jobs:
             git status --short
             git diff --exit-code
             git diff --cached --exit-code
+            validated_head="$(git rev-parse HEAD)"
+            # workflow変更はGITHUB_TOKENの権限外。生成物のみ保存し、通常のPR編集で最終形へ統合する。
+            git restore --source="$EXPECTED_HEAD" --staged --worktree -- .github/workflows/
+            git commit --amend --no-edit
+            git diff --exit-code "$EXPECTED_HEAD" HEAD -- .github/workflows/
+            git diff --exit-code
+            git diff --cached --exit-code
             actual_head="$(git ls-remote origin refs/heads/feat/article-design-system-v2-20260911 | cut -f1)"
             echo "Expected remote: $EXPECTED_HEAD"
             echo "Actual remote: $actual_head"
             test "$actual_head" = "$EXPECTED_HEAD" || { echo '::error::Branch advanced during validation; refusing to publish stale output.'; exit 1; }
             git push origin HEAD:feat/article-design-system-v2-20260911
+            published_head="$(git rev-parse HEAD)"
+            {
+              echo '## 中間保存のみ: このHEADはマージ対象ではありません'
+              echo "検証済み候補: $validated_head"
+              echo "workflow変更を除いて保存した候補: $published_head"
+              echo 'browser-smokeの接続と一時workflow削除を通常のPR編集で完了し、最終HEADで全ゲートを再実行してください。'
+            } >> "$GITHUB_STEP_SUMMARY"
           } 2>&1 | tee "$RUNNER_TEMP/article-design-publish.log"
 
       - name: Upload candidate and verification evidence even on publication failure
