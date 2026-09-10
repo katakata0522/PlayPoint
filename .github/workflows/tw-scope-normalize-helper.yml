@@ -1,0 +1,30 @@
+name: TW Scope Normalize Helper
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/tw-scope-normalize-helper.yml"
+      - "scripts/article-content-navigation-normalize.cjs"
+
+permissions:
+  contents: read
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Scope noteを正規化
+        run: node scripts/article-content-navigation-normalize.cjs
+      - name: 正規化した2記事だけ保存
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: tw-scope-normalized
+          path: |
+            tw/articles/google-play-points-100-value.html
+            tw/articles/google-play-points-levels.html
+          if-no-files-found: error
+          retention-days: 1
