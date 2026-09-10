@@ -53,6 +53,13 @@ jobs:
           min-width: 0;
           overflow-wrap: anywhere;
           }
+          /* 関連記事の操作領域は遅延描画の仮高さにしない。本文セクションの最適化は維持する。 */
+          body .content .related-links-section,
+          body .content .contextual-guide-links,
+          body .content .article-related-guides {
+          content-visibility: visible;
+          contain-intrinsic-size: none;
+          }
           @media (prefers-reduced-motion: reduce) {
           html { scroll-behavior: auto !important; }
           }
@@ -71,7 +78,10 @@ jobs:
               assert(focus.visible && focus.width >= 2 && focus.style !== 'none', article.key + '/' + viewport.key + ': keyboard focus indicator missing');
               const relatedTarget = page.locator('.content .related-links-section > ul > li > a, .content .contextual-guide-links > ul > li > a, .content .article-related-guides > ul > li > a').first();
               if (await relatedTarget.count()) {
+                const visibility = await relatedTarget.evaluate(element => getComputedStyle(element.closest('.related-links-section, .contextual-guide-links, .article-related-guides')).contentVisibility);
+                assert(visibility === 'visible', article.key + '/' + viewport.key + ': related navigation must have stable rendered geometry');
                 await relatedTarget.hover();
+                await relatedTarget.click({ trial: true });
                 const motion = await relatedTarget.evaluate(element => ({ transform: getComputedStyle(element).transform, transition: getComputedStyle(element).transitionDuration }));
                 assert(motion.transform === 'none' && motion.transition.split(',').every(value => parseFloat(value) === 0), article.key + '/' + viewport.key + ': reduced motion not respected');
               }
@@ -82,6 +92,8 @@ jobs:
           """
           text = replace_once(text, anchor, extra + anchor)
           p.write_text(text)
+          p = Path('docs/ARTICLE_DESIGN_SYSTEM_V2_2026-09-11.md')
+          p.write_text(p.read_text().rstrip() + '\n\n## 検証の境界\n\n記事数は現行コーパスから取得し、固定件数や旧レイアウトの存続を要求しない。代表4記事を1280・390・320pxで、JavaScript無効・動きを減らす設定・キーボードフォーカス・関連記事の操作可能性まで検証する。日本語フォントを備えた環境で成功時も画像と計測結果を保存する。\n\n本文セクションのcontent-visibility最適化は維持するが、関連記事ナビゲーションは仮高さを使わず常時描画する。狭い画面でスクロール直後のリンク位置とヒット領域がずれる問題を防ぐためであり、強制クリックで検証を通さない。\n')
           p = Path('.github/workflows/browser-smoke.yml')
           text = p.read_text()
           anchor = '          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0'
@@ -151,7 +163,7 @@ jobs:
           fi
           exit "$result"
 
-      - name: Verify representative article design in Chromium with Japanese fonts
+      - name: Verify representative article design twice in Chromium with Japanese fonts
         shell: bash
         run: |
           sudo apt-get update -qq
@@ -162,6 +174,7 @@ jobs:
           test -n "$chrome_path"
           CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-css-smoke.log"
           CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-smoke.log"
+          CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-repeat.log"
 
       - name: Publish code without workflow changes or overwriting newer work
         shell: bash
@@ -203,6 +216,7 @@ jobs:
             ${{ runner.temp }}/article-design-preflight.log
             ${{ runner.temp }}/article-css-smoke.log
             ${{ runner.temp }}/article-design-smoke.log
+            ${{ runner.temp }}/article-design-repeat.log
             ${{ runner.temp }}/article-design-fonts.log
             ${{ runner.temp }}/article-design-publish.log
             ${{ runner.temp }}/article-design-candidate.txt
