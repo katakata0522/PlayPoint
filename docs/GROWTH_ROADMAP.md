@@ -1,5 +1,9 @@
 # PlayPoint growth roadmap
 
+> **Historical document — current implementation source of truth is `docs/GROWTH_OPERATING_PLAN.md`.**
+>
+> This roadmap records the growth plan as of 2026-06-27. Many items below have since been implemented, changed, or intentionally rejected. **Do not treat an unchecked/mentioned item here as current work.** Before implementation, check `docs/GROWTH_OPERATING_PLAN.md`, `docs/GROWTH_BASELINE_2026-09-10.md`, and the current GitHub Issues. In particular, do not restore the old weekly-average result card or mass-produce LPs/articles solely because they appear below.
+
 ## 目的
 
 PlayPointの流入と継続利用を増やす。トップページへ機能を詰め込むのではなく、検索意図別の入口、計算結果画面、関連記事導線を強化して、利用者が「すぐ計算できる」「結果を保存・共有できる」「次に読むべき情報へ進める」状態を作る。
