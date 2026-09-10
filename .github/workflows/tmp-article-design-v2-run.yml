@@ -82,6 +82,14 @@ jobs:
           """
           text = replace_once(text, anchor, extra + anchor)
           p.write_text(text)
+          p = Path('.github/workflows/browser-smoke.yml')
+          text = p.read_text()
+          anchor = '          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0'
+          if text.count(anchor) != 2:
+              raise RuntimeError('Expected both local and production browser installation steps')
+          text = text.replace(anchor, '          sudo apt-get update -qq\n          sudo apt-get install -y --no-install-recommends fonts-noto-cjk\n          fc-match sans-serif:lang=ja\n' + anchor)
+          text = text.replace('      - name: Upload failure evidence\n        if: failure()', '      - name: Upload browser verification evidence\n        if: always()')
+          p.write_text(text)
           PY
 
       - name: Synchronize canonical output
@@ -115,6 +123,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "refactor: 記事Design System 2.0と現行記事監査を導入"
+          git show -s --format='commit=%H%ntree=%T%nparent=%P' HEAD > "$RUNNER_TEMP/article-design-candidate.txt"
+          git bundle create "$RUNNER_TEMP/article-design-candidate.bundle" HEAD
 
       - name: Run complete preflight
         shell: bash
@@ -141,16 +151,36 @@ jobs:
           fi
           exit "$result"
 
-      - name: Verify representative article design in Chromium
+      - name: Verify representative article design in Chromium with Japanese fonts
         shell: bash
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja | tee "$RUNNER_TEMP/article-design-fonts.log"
           npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
           chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
           test -n "$chrome_path"
           CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-css-smoke.log"
           CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-smoke.log"
 
-      - name: Upload validation evidence even on failure
+      - name: Push only the clean validated commit without overwriting newer work
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
+        run: |
+          {
+            git show -s --format='Validated candidate: %H' HEAD
+            git status --short
+            git diff --exit-code
+            git diff --cached --exit-code
+            actual_head="$(git ls-remote origin refs/heads/feat/article-design-system-v2-20260911 | cut -f1)"
+            echo "Expected remote: $EXPECTED_HEAD"
+            echo "Actual remote: $actual_head"
+            test "$actual_head" = "$EXPECTED_HEAD" || { echo '::error::Branch advanced during validation; refusing to publish stale output.'; exit 1; }
+            git push origin HEAD:feat/article-design-system-v2-20260911
+          } 2>&1 | tee "$RUNNER_TEMP/article-design-publish.log"
+
+      - name: Upload candidate and verification evidence even on publication failure
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -159,17 +189,10 @@ jobs:
             ${{ runner.temp }}/article-design-preflight.log
             ${{ runner.temp }}/article-css-smoke.log
             ${{ runner.temp }}/article-design-smoke.log
+            ${{ runner.temp }}/article-design-fonts.log
+            ${{ runner.temp }}/article-design-publish.log
+            ${{ runner.temp }}/article-design-candidate.txt
+            ${{ runner.temp }}/article-design-candidate.bundle
             browser-smoke-artifacts/
           if-no-files-found: warn
           retention-days: 7
-
-      - name: Push only the clean validated commit without overwriting newer work
-        shell: bash
-        env:
-          EXPECTED_HEAD: ${{ github.sha }}
-        run: |
-          git diff --exit-code
-          git diff --cached --exit-code
-          actual_head="$(git ls-remote origin refs/heads/feat/article-design-system-v2-20260911 | cut -f1)"
-          test "$actual_head" = "$EXPECTED_HEAD" || { echo '::error::Branch advanced during validation; refusing to publish stale output.'; exit 1; }
-          git push origin HEAD:feat/article-design-system-v2-20260911
