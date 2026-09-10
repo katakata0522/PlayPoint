@@ -114,9 +114,18 @@ function getArticleRoleContract(relativePath, options) {
   return { role, ...ROLE_DEFINITIONS[role] };
 }
 
+/**
+ * 汎用の「必要額を計算」CTAは、Primary KPI自体が計算成功である記事にだけ自動生成する。
+ * それ以外のRoleは、記事固有の文脈CTAや関連記事を優先し、生成側から一律に計算へ寄せない。
+ */
+function shouldGenerateGenericCalculatorPrompt(relativePath, options) {
+  return classifyArticleRole(relativePath, options) === 'calculator_bridge';
+}
+
 module.exports = {
   ROLE_DEFINITIONS,
   classifyArticleRole,
   getArticleRoleContract,
+  shouldGenerateGenericCalculatorPrompt,
   stemOf
 };
