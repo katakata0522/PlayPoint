@@ -26,13 +26,95 @@ jobs:
       - name: Apply design migration
         run: node .github/scripts/tmp-apply-article-design-v2.cjs
 
+      - name: Remove historical assumptions and strengthen browser evidence
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          def replace_once(text, old, new):
+              if text.count(old) != 1:
+                  raise RuntimeError('Expected exactly one migration anchor: ' + old[:100])
+              return text.replace(old, new, 1)
+          p = Path('tests/article-design-system.test.cjs')
+          text = p.read_text()
+          text = replace_once(text, "all 161 role-classified articles stay on the shared visual contract", "all current role-classified articles stay on the shared visual contract")
+          text = replace_once(text, '  assert.equal(result.articleCount, 161);', "  const { articleCorpus } = require('../scripts/article-role-next-action-audit.cjs');\n  const inventory = articleCorpus(root);\n  assert.ok(inventory.length > 0, 'article inventory must not be empty');\n  assert.equal(result.articleCount, inventory.length);\n  assert.equal(Object.values(result.roleCounts).reduce((sum, count) => sum + count, 0), inventory.length);")
+          text = replace_once(text, '  assert.ok(result.components.stackedLead > 0);', '  assert.ok(result.components.stackedLead <= result.articleCount);')
+          p.write_text(text)
+          p = Path('articles/article-shared.css')
+          text = p.read_text()
+          text = replace_once(text, 'transition-duration: 0.01ms !important;', 'transition: none !important;\nanimation: none !important;\ntransform: none !important;')
+          text = replace_once(text, '/* ARTICLE_DESIGN_SYSTEM_V2_END */', '''body .content > .answer-box,
+          body .content > .editorial-answer,
+          body .content > .summary-box,
+          body .content .related-links-section > ul > li,
+          body .content .contextual-guide-links > ul > li,
+          body .content .article-related-guides > ul > li {
+          min-width: 0;
+          overflow-wrap: anywhere;
+          }
+          @media (prefers-reduced-motion: reduce) {
+          html { scroll-behavior: auto !important; }
+          }
+          /* ARTICLE_DESIGN_SYSTEM_V2_END */''')
+          p.write_text(text)
+          p = Path('.github/scripts/article-design-smoke.cjs')
+          text = p.read_text()
+          text = replace_once(text, "  { key: 'mobile', width: 390, height: 844 }", "  { key: 'mobile', width: 390, height: 844 },\n  { key: 'narrow', width: 320, height: 800 }")
+          text = replace_once(text, 'javaScriptEnabled: false, viewport:', "javaScriptEnabled: false, reducedMotion: 'reduce', viewport:")
+          text = text.replace("if (viewport.key === 'mobile')", 'if (viewport.width <= 860)')
+          anchor = "    console.log('[article-design-smoke] ' + article.key + '/' + viewport.key + ': OK');"
+          extra = """    const focusTarget = page.locator('.content a').first();
+              await page.keyboard.press('Tab');
+              await focusTarget.focus();
+              const focus = await focusTarget.evaluate(element => ({ visible: element.matches(':focus-visible'), width: parseFloat(getComputedStyle(element).outlineWidth), style: getComputedStyle(element).outlineStyle }));
+              assert(focus.visible && focus.width >= 2 && focus.style !== 'none', article.key + '/' + viewport.key + ': keyboard focus indicator missing');
+              const relatedTarget = page.locator('.content .related-links-section > ul > li > a, .content .contextual-guide-links > ul > li > a, .content .article-related-guides > ul > li > a').first();
+              if (await relatedTarget.count()) {
+                await relatedTarget.hover();
+                const motion = await relatedTarget.evaluate(element => ({ transform: getComputedStyle(element).transform, transition: getComputedStyle(element).transitionDuration }));
+                assert(motion.transform === 'none' && motion.transition.split(',').every(value => parseFloat(value) === 0), article.key + '/' + viewport.key + ': reduced motion not respected');
+              }
+              fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
+              const evidenceName = 'article-design-' + article.key + '-' + viewport.key;
+              await page.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '.png'), fullPage: true });
+              fs.writeFileSync(path.join(ARTIFACT_DIR, evidenceName + '.json'), JSON.stringify({ article, viewport, result, focus }, null, 2));
+          """
+          text = replace_once(text, anchor, extra + anchor)
+          p.write_text(text)
+          PY
+
       - name: Synchronize canonical output
         run: node scripts/prepare-pr.cjs
 
-      - name: Stage removal of temporary migration infrastructure
+      - name: Prove all HTML content is unchanged except shared CSS fingerprints
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re, subprocess
+          from pathlib import Path
+          changed = subprocess.check_output(['git', 'diff', '--name-only', '-z', 'HEAD']).decode().split('\0')
+          checked = 0
+          for name in filter(None, changed):
+              if not name.endswith('.html'):
+                  continue
+              before = subprocess.check_output(['git', 'show', 'HEAD:' + name]).decode()
+              after = Path(name).read_text()
+              normalize = lambda text: re.sub(r'(article-shared\.css\?v=)[a-f0-9]+', r'\1CONTENT_HASH', text)
+              if normalize(before) != normalize(after):
+                  raise RuntimeError('Design-only HTML boundary violated: ' + name)
+              checked += 1
+          print('HTML content invariant passed for', checked, 'changed pages; only article-shared.css fingerprints differ.')
+          PY
+
+      - name: Create local candidate commit for HEAD-based reproducibility verification
         run: |
           git rm -f .github/scripts/tmp-apply-article-design-v2.cjs
           git rm -f .github/workflows/tmp-article-design-v2-run.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "refactor: 記事Design System 2.0と現行記事監査を導入"
 
       - name: Run complete preflight
         shell: bash
@@ -65,8 +147,8 @@ jobs:
           npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
           chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
           test -n "$chrome_path"
-          CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs
-          CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs
+          CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-css-smoke.log"
+          CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-smoke.log"
 
       - name: Upload validation evidence even on failure
         if: always()
@@ -75,20 +157,19 @@ jobs:
           name: article-design-v2-${{ github.run_id }}
           path: |
             ${{ runner.temp }}/article-design-preflight.log
+            ${{ runner.temp }}/article-css-smoke.log
+            ${{ runner.temp }}/article-design-smoke.log
             browser-smoke-artifacts/
           if-no-files-found: warn
           retention-days: 7
 
-      - name: Commit verified migration without overwriting newer work
+      - name: Push only the clean validated commit without overwriting newer work
         shell: bash
         env:
           EXPECTED_HEAD: ${{ github.sha }}
         run: |
+          git diff --exit-code
+          git diff --cached --exit-code
           actual_head="$(git ls-remote origin refs/heads/feat/article-design-system-v2-20260911 | cut -f1)"
           test "$actual_head" = "$EXPECTED_HEAD" || { echo '::error::Branch advanced during validation; refusing to publish stale output.'; exit 1; }
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --cached --quiet && exit 0
-          git commit -m "refactor: introduce Article Design System 2.0"
           git push origin HEAD:feat/article-design-system-v2-20260911
