@@ -30,23 +30,33 @@ function hasCanonical(html) {
   return (html.match(/<link\b[^>]*>/gi) || []).some((tag) => /\brel=["']canonical["']/i.test(tag));
 }
 
-function assertArticleConversionPath(relativePath, calculatorHref) {
+function assertArticleRuntime(relativePath) {
   const html = read(relativePath);
   assert.ok(hasCanonical(html), relativePath + ': canonical is required');
   assert.ok(metaContent(html, 'description', relativePath).length >= 30, relativePath + ': meaningful meta description is required');
-  assert.match(html, /article-calculator-prompt/, relativePath + ': article-to-calculator prompt is required');
-  assert.ok(html.includes(`href="${calculatorHref}"`) || html.includes(`href='${calculatorHref}'`), relativePath + ': calculator destination must stay localised');
   assert.match(html, /\/js\/analytics-core\.js/, relativePath + ': analytics core must be present');
-  // Article conversion events are owned by blog/article.js. intent-tracking.js is the LP runtime
+  // Article conversion/navigation events are owned by blog/article.js. intent-tracking.js is the LP runtime
   // and is intentionally not a requirement for every article shell.
-  assert.match(html, /\/blog\/article\.js/, relativePath + ': article conversion tracking runtime must be present');
+  assert.match(html, /\/blog\/article\.js/, relativePath + ': article runtime must be present');
+  return html;
 }
 
-test('top organic landing articles keep the search-to-calculator conversion path', () => {
+function assertArticleConversionPath(relativePath, calculatorHref) {
+  const html = assertArticleRuntime(relativePath);
+  assert.match(html, /article-calculator-prompt/, relativePath + ': contextual article-to-calculator prompt is required');
+  assert.ok(html.includes(`href="${calculatorHref}"`) || html.includes(`href='${calculatorHref}'`), relativePath + ': calculator destination must stay localised');
+}
+
+test('top organic landing articles keep role-appropriate next-action paths', () => {
   assertArticleConversionPath('ko/articles/google-play-points-cash-conversion.html', '/ko/');
-  assertArticleConversionPath('articles/2026-07-31-google-play-quests.html', '../');
-  assertArticleConversionPath('tw/articles/google-play-points-coupon-not-applied.html', '/tw/');
+  assertArticleConversionPath('tw/articles/google-play-points-coupon-not-applied.html', '/tw/?mode=reverse');
   assertArticleConversionPath('tw/articles/google-play-points-platinum-diamond-cost.html', '/tw/');
+
+  const quests = assertArticleRuntime('articles/2026-07-31-google-play-quests.html');
+  assert.doesNotMatch(quests, /data-generated-article-prompt=["']true["']/, 'Quests retention article must not get the generic calculator prompt');
+  assert.match(quests, /<section\b[^>]*aria-labelledby=["']next-action["'][^>]*class=["']cta-box["'][^>]*>/i, 'Quests must retain its authored next-action section');
+  assert.match(quests, /購入条件がある場合は必要額を確認/, 'Quests may keep the calculator as a conditional secondary action');
+  assert.match(quests, /<section\b[^>]*class=["'][^"']*\brelated-links-section\b[^"']*["'][^>]*>/i, 'Quests must retain follow-up navigation');
 });
 
 test('high-impression 4-15 position pages retain the query intent in title and description', () => {
@@ -73,15 +83,20 @@ test('high-impression 4-15 position pages retain the query intent in title and d
   assert.match(twCreditDescription, /抵用金.*無法使用/, 'TW Play credit: snippet must answer the cannot-use query directly');
 });
 
-test('Taiwan Play credit troubleshooting answers the query before the calculator prompt', () => {
-  const html = read('tw/articles/google-play-points-play-credit-not-working.html');
+test('Taiwan Play credit troubleshooting answers first and keeps troubleshooting next actions', () => {
+  const html = assertArticleRuntime('tw/articles/google-play-points-play-credit-not-working.html');
   const introIndex = html.indexOf('<div class="intro">');
   const quickCheckIndex = html.indexOf('id="quick-check"');
-  const calculatorIndex = html.indexOf('article-calculator-prompt');
+  const finalDiagnosisIndex = html.indexOf('id="section-5"');
+  const sourceIndex = html.indexOf('official-source-note');
+  const relatedIndex = html.indexOf('related-links-section');
 
   assert.ok(introIndex >= 0, 'TW Play credit: direct-answer intro is required');
   assert.ok(quickCheckIndex > introIndex, 'TW Play credit: quick diagnosis should follow the direct answer');
-  assert.ok(calculatorIndex > quickCheckIndex, 'TW Play credit: troubleshooting must come before the calculator prompt');
+  assert.ok(finalDiagnosisIndex > quickCheckIndex, 'TW Play credit: full diagnosis should follow the quick check');
+  assert.ok(sourceIndex > finalDiagnosisIndex, 'TW Play credit: official evidence should follow the diagnosis');
+  assert.ok(relatedIndex > sourceIndex, 'TW Play credit: related troubleshooting should be the follow-up path');
+  assert.doesNotMatch(html, /data-generated-intl-article-prompt=["']true["']/, 'TW Play credit troubleshooting must not get a generic calculator prompt');
   assert.match(html, /變更 Play 國家\/地區後無法使用舊餘額/, 'TW Play credit: country-change failure mode must stay explicit');
   assert.match(html, /相同幣別/, 'TW Play credit: same-currency restriction must stay visible');
   assert.match(html, /一年後到期/, 'TW Play credit: exchanged-credit expiry must stay visible');

@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { GUIDE_BRAND } = require('./japanese-guide-brand.cjs');
+const { shouldGenerateGenericCalculatorPrompt } = require('./article-role-registry.cjs');
 
 const HEADER_MARKER = 'article-static-header';
 const PROMPT_MARKER = 'article-calculator-prompt';
@@ -33,15 +34,6 @@ const DEFAULT_PROMPT_COPY = Object.freeze({
   href: '../'
 });
 
-const QUEST_PROMPT_COPY = Object.freeze({
-  aria: 'クエスト確認後に次のランクまでの必要額を計算',
-  label: 'クエスト条件を確認できたら',
-  heading: '次のランクまで、あといくら必要？',
-  body: 'クエストの条件と特典を確認したら、Play Pointsの現在の進捗は計算機で別に確認できます。実際に反映されたポイントとGoogle Playに表示された獲得率を使ってください。',
-  cta: '次のランクまでの必要額を計算',
-  href: '../'
-});
-
 function renderPromptHtml(copy) {
   return `
             <aside class="article-calculator-prompt cta-box" ${GENERATED_PROMPT_ATTRIBUTE} aria-label="${copy.aria}">
@@ -54,20 +46,29 @@ function renderPromptHtml(copy) {
 
 const PROMPT_HTML = renderPromptHtml(DEFAULT_PROMPT_COPY);
 
-function promptHtmlForArticle(html) {
-  if (String(html).includes('Google Playのクエストとは？表示されない・達成されない時の確認方法')) {
-    return renderPromptHtml(QUEST_PROMPT_COPY);
-  }
-  return PROMPT_HTML;
+function japaneseArticleEntries(rootDir) {
+  const manifestPath = path.join(rootDir, 'blog', 'articles.json');
+  const articles = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  const seen = new Set();
+  return articles
+    .filter(article => article && typeof article.file === 'string' && /^\.\.\/articles\/[^/]+\.html$/.test(article.file))
+    .map(article => {
+      const relativePath = article.file.replace(/^\.\.\//, '');
+      return {
+        absolutePath: path.join(rootDir, relativePath),
+        relativePath,
+        listed: article.listed !== false
+      };
+    })
+    .filter(entry => {
+      if (seen.has(entry.relativePath)) return false;
+      seen.add(entry.relativePath);
+      return true;
+    });
 }
 
 function japaneseArticlePaths(rootDir) {
-  const manifestPath = path.join(rootDir, 'blog', 'articles.json');
-  const articles = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  return [...new Set(articles
-    .map(article => article && article.file)
-    .filter(file => typeof file === 'string' && /^\.\.\/articles\/[^/]+\.html$/.test(file))
-    .map(file => path.join(rootDir, file.replace(/^\.\.\//, ''))))];
+  return japaneseArticleEntries(rootDir).map(entry => entry.absolutePath);
 }
 
 function insertStaticHeader(html) {
@@ -121,15 +122,23 @@ function removeStaticPrompt(html) {
     .replace(LEGACY_GENERATED_PROMPT_PATTERN, '');
 }
 
-function insertStaticPrompt(html) {
+function insertStaticPrompt(html, options = {}) {
+  if (!options.relativePath) {
+    throw new Error('insertStaticPrompt requires relativePath for Article Role classification');
+  }
+
   const withoutGeneratedPrompt = removeStaticPrompt(html);
   if (ARTICLE_PROMPT_PATTERN.test(withoutGeneratedPrompt)) {
     return withoutGeneratedPrompt;
   }
+
+  if (!shouldGenerateGenericCalculatorPrompt(options.relativePath, { listed: options.listed !== false })) {
+    return withoutGeneratedPrompt;
+  }
+
   const anchorEnd = findPromptAnchorEnd(withoutGeneratedPrompt);
   if (anchorEnd < 0) return html;
-  const promptHtml = promptHtmlForArticle(withoutGeneratedPrompt);
-  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${promptHtml}${withoutGeneratedPrompt.slice(anchorEnd)}`;
+  return `${withoutGeneratedPrompt.slice(0, anchorEnd)}${PROMPT_HTML}${withoutGeneratedPrompt.slice(anchorEnd)}`;
 }
 
 function normalizeSharedArticleCopy(html) {
@@ -141,14 +150,14 @@ function normalizeSharedArticleCopy(html) {
 
 function synchronizeArticleStaticUsability(rootDir) {
   let updated = 0;
-  for (const articlePath of japaneseArticlePaths(rootDir)) {
-    if (!fs.existsSync(articlePath)) {
-      throw new Error(`記事一覧にあるHTMLが見つかりません: ${path.relative(rootDir, articlePath)}`);
+  for (const entry of japaneseArticleEntries(rootDir)) {
+    if (!fs.existsSync(entry.absolutePath)) {
+      throw new Error(`記事一覧にあるHTMLが見つかりません: ${entry.relativePath}`);
     }
-    const original = fs.readFileSync(articlePath, 'utf8');
-    const next = normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original)));
+    const original = fs.readFileSync(entry.absolutePath, 'utf8');
+    const next = normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original), entry));
     if (next === original) continue;
-    fs.writeFileSync(articlePath, next, 'utf8');
+    fs.writeFileSync(entry.absolutePath, next, 'utf8');
     updated += 1;
   }
   console.log(`[article-static-usability] synchronized: ${updated}`);
@@ -168,13 +177,12 @@ module.exports = {
   HEADER_HTML,
   LEGACY_GENERATED_PROMPT_PATTERN,
   PROMPT_HTML,
-  QUEST_PROMPT_COPY,
   findPromptAnchorEnd,
   insertStaticHeader,
   insertStaticPrompt,
+  japaneseArticleEntries,
   japaneseArticlePaths,
   normalizeSharedArticleCopy,
-  promptHtmlForArticle,
   removeStaticPrompt,
   renderPromptHtml,
   synchronizeArticleStaticUsability

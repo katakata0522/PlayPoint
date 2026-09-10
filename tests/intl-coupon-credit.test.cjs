@@ -76,10 +76,6 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       assert.match(html, /<meta name="last-modified" content="\d{4}-\d{2}-\d{2}">/, `${relativePath}: last-modified`);
       assert.ok(jsonLd.some(schema => schema['@type'] === 'Article'));
       assert.ok(jsonLd.some(schema => schema['@type'] === 'FAQPage'));
-      assert.ok(
-        html.includes('class="cta-btn"') || html.includes('article-calculator-prompt__button'),
-        `${relativePath}: at least one calculator CTA is required`
-      );
       assert.ok(!html.includes('utm_medium=internal'));
       assert.ok(html.includes('/author/katakata.html'));
       const peerTopic = topics.find(candidate => candidate.slug === topic.peer);

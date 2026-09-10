@@ -8,20 +8,20 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-test('日本語クエスト記事は回答と条件境界の後に文脈化した計算機CTAを置く', () => {
+test('日本語クエスト記事はRetention回答と条件境界の後に文脈CTAだけを置く', () => {
   const html = read('articles/2026-07-31-google-play-quests.html');
   const answerIndex = html.indexOf('id="quick-answer"');
   const boundaryIndex = html.indexOf('class="knowledge-boundary"');
   const boundaryEnd = html.indexOf('</section>', boundaryIndex) + '</section>'.length;
-  const promptIndex = html.indexOf('data-generated-article-prompt="true"');
+  const contextualCtaIndex = html.indexOf('aria-labelledby="next-action" class="cta-box"');
 
   assert.ok(answerIndex >= 0, 'quick answer is missing');
   assert.ok(boundaryIndex >= 0, 'knowledge boundary is missing');
-  assert.ok(promptIndex > boundaryEnd, 'calculator CTA must follow the answer and knowledge boundary');
-  assert.ok(html.includes('クエスト条件を確認できたら'));
-  assert.ok(html.includes('次のランクまで、あといくら必要？'));
-  assert.ok(html.includes('次のランクまでの必要額を計算'));
-  assert.equal((html.match(/data-generated-article-prompt="true"/g) || []).length, 1);
+  assert.ok(contextualCtaIndex > boundaryEnd, 'contextual CTA must follow the answer and knowledge boundary');
+  assert.ok(html.includes('購入条件がある場合は必要額を確認'));
+  assert.ok(html.includes('元から予定している購入がクエスト条件に該当する場合だけ'));
+  assert.ok(html.includes('Playポイント計算機を開く'));
+  assert.equal((html.match(/data-generated-article-prompt="true"/g) || []).length, 0, 'retention article must not regain the generic calculator prompt');
 });
 
 test('台湾クーポン記事は問題排解を完了してから反推モードへ送る', () => {
