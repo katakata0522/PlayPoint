@@ -49,20 +49,17 @@ jobs:
           PY
       - name: 正規生成と記事intent正規化
         run: node scripts/prepare-pr.cjs
-      - name: 変更範囲を台湾2記事だけに限定
+      - name: 未同期差分をlevels記事だけに限定
         shell: bash
         run: |
           git diff --name-only | sort > /tmp/changed-files.txt
-          printf '%s\n' \
-            'tw/articles/google-play-points-100-value.html' \
-            'tw/articles/google-play-points-levels.html' \
-            | sort > /tmp/expected-files.txt
+          printf '%s\n' 'tw/articles/google-play-points-levels.html' > /tmp/expected-files.txt
           diff -u /tmp/expected-files.txt /tmp/changed-files.txt
       - name: 生成物をhead branchへ同期
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tw/articles/google-play-points-100-value.html tw/articles/google-play-points-levels.html
+          git add tw/articles/google-play-points-levels.html
           git commit -m 'seo: 台湾ランク費用intentの境界を完成'
           git push origin "HEAD:${{ github.head_ref }}"
