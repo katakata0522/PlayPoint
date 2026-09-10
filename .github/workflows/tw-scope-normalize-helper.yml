@@ -19,20 +19,17 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Scope noteを正規化
         run: node scripts/article-content-navigation-normalize.cjs
-      - name: 変更範囲を2記事だけに限定
+      - name: 未同期差分をlevels記事だけに限定
         shell: bash
         run: |
           git diff --name-only | sort > /tmp/changed-files.txt
-          printf '%s\n' \
-            'tw/articles/google-play-points-100-value.html' \
-            'tw/articles/google-play-points-levels.html' \
-            | sort > /tmp/expected-files.txt
+          printf '%s\n' 'tw/articles/google-play-points-levels.html' > /tmp/expected-files.txt
           diff -u /tmp/expected-files.txt /tmp/changed-files.txt
       - name: 正規生成物をhead branchへ同期
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tw/articles/google-play-points-100-value.html tw/articles/google-play-points-levels.html
-          git commit -m 'build: 台湾scope note生成物を同期'
+          git add tw/articles/google-play-points-levels.html
+          git commit -m 'build: 台湾levels scope note生成物を同期'
           git push origin "HEAD:${{ github.head_ref }}"
