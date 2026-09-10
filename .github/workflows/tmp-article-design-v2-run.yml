@@ -8,15 +8,19 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: article-design-system-v2-migration
+  cancel-in-progress: false
+
 jobs:
   migrate:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
-      - name: Checkout design branch
+      - name: Checkout exact event revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: feat/article-design-system-v2-20260911
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Apply design migration
@@ -31,7 +35,29 @@ jobs:
           git rm -f .github/workflows/tmp-article-design-v2-run.yml
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/article-design-preflight.log"
+          result=${PIPESTATUS[0]}
+          set -e
+          if [ "$result" -ne 0 ]; then
+            python3 - <<'PY'
+          import os
+          from pathlib import Path
+          lines = (Path(os.environ['RUNNER_TEMP']) / 'article-design-preflight.log').read_text(errors='replace').splitlines()
+          indices = set(range(max(0, len(lines) - 25), len(lines)))
+          for index, line in enumerate(lines):
+              if 'not ok ' in line or 'Error:' in line or '事前検証で失敗した工程' in line:
+                  indices.update(range(max(0, index - 2), min(len(lines), index + 35)))
+          excerpt = '\n'.join(lines[index] for index in sorted(indices))[:48000]
+          escaped = excerpt.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Article design preflight failure::' + escaped)
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as summary:
+              summary.write('## Article design preflight failed\n\n<pre>' + excerpt.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') + '</pre>\n')
+          PY
+          fi
+          exit "$result"
 
       - name: Verify representative article design in Chromium
         shell: bash
@@ -42,9 +68,24 @@ jobs:
           CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs
           CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs
 
-      - name: Commit verified migration
+      - name: Upload validation evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: article-design-v2-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/article-design-preflight.log
+            browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Commit verified migration without overwriting newer work
         shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.sha }}
         run: |
+          actual_head="$(git ls-remote origin refs/heads/feat/article-design-system-v2-20260911 | cut -f1)"
+          test "$actual_head" = "$EXPECTED_HEAD" || { echo '::error::Branch advanced during validation; refusing to publish stale output.'; exit 1; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
