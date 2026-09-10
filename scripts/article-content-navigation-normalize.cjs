@@ -150,6 +150,14 @@ const SCOPE_NOTES = {
   'en/articles/google-play-points-subscriptions.html': {
     label: 'Scope of this guide',
     html: 'This guide focuses on <strong>recurring charges, renewals, trials, and the Google Play billing path</strong>. For gift-card purchase, redemption, and later Play-balance spending, see <a href="./google-play-points-gift-cards.html">whether gift cards earn Play Points</a>.'
+  },
+  'tw/articles/google-play-points-100-value.html': {
+    label: '這篇處理的範圍',
+    html: '這篇只回答<strong>「累積 100 點需要多少消費」</strong>，並比較不同等級累積 100 點的成本。若你要找的是<strong>「升到白金級／鑽石級總共要花多少」</strong>，請看<a href="./google-play-points-platinum-diamond-cost.html">白金級・鑽石級所需金額比較</a>。'
+  },
+  'tw/articles/google-play-points-levels.html': {
+    label: '這篇處理的範圍',
+    html: '這篇整理<strong>等級門檻、積點率與等級福利</strong>。若你要回答「白金級／鑽石級需要花多少」這個費用問題，請看<a href="./google-play-points-platinum-diamond-cost.html">白金級・鑽石級所需金額比較</a>。'
   }
 };
 
