@@ -41,6 +41,7 @@ const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
 const { stripExternalGoogleFonts } = require('./external-fonts.cjs');
 const { normalizeArticleFiles } = require('./article-seo-normalize.cjs');
+const { run: normalizeArticleContentNavigation } = require('./article-content-navigation-normalize.cjs');
 const { syncArticleDateContract } = require('./article-date-contract.cjs');
 const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 
@@ -118,6 +119,14 @@ console.log(`[build-html] sanitized internal attribution links: ${sanitizedInter
 
 const speculationRulesChanged = syncSpeculationRules(rootDir);
 console.log(`[build-html] synchronized speculation rules: ${speculationRulesChanged} updated`);
+
+// 生成記事も手動正本も、最終的な検索意図境界と関連記事を同じ正規化処理で確定する。
+// prepare-pr 後だけ整う状態を作らず、通常ビルドそのものを再現可能な正本にする。
+const articleNavigationSummary = normalizeArticleContentNavigation({ root: rootDir, check: false });
+if (articleNavigationSummary.failures.length > 0) {
+  throw new Error(`Article content/navigation normalization failed:\n${articleNavigationSummary.failures.join('\n')}`);
+}
+console.log(`[build-html] synchronized article intent/navigation: ${articleNavigationSummary.stats.changed} updated`);
 
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
