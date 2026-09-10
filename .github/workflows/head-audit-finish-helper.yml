@@ -3,7 +3,7 @@ name: Head Audit Finish Helper
 on:
   push:
     branches:
-      - seo/head-audit-recovery-20260910
+      - 'seo/head-audit-recovery-20260910'
     paths:
       - '.github/workflows/head-audit-finish-helper.yml'
 
@@ -17,80 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          ref: seo/head-audit-recovery-20260910
-      - name: 監査とembed headを現行設計へ補強
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          audit_path = Path('scripts/seo-head-audit.cjs')
-          audit = audit_path.read_text()
-
-          old = """  const sitemapFiles = sitemapFilesFromRobots(rootDir);\n  const urlSources = new Map();\n\n  for (const sitemapFile of sitemapFiles) {"""
-          new = """  const sitemapFiles = sitemapFilesFromRobots(rootDir);\n  const urlSources = new Map();\n\n  if (sitemapFiles.length === 0) {\n    errors.push(createIssue('submitted-sitemap-missing'));\n  }\n\n  for (const sitemapFile of sitemapFiles) {"""
-          if audit.count(old) != 1:
-              raise SystemExit(f'sitemap list insertion point count={audit.count(old)}')
-          audit = audit.replace(old, new)
-
-          old = """    for (const url of sitemapUrls(read(sitemapFile, rootDir))) {\n      const sources = urlSources.get(url) || [];\n      sources.push(sitemapFile);\n      urlSources.set(url, sources);\n    }"""
-          new = """    const urls = sitemapUrls(read(sitemapFile, rootDir));\n    if (urls.length === 0) {\n      errors.push(createIssue('submitted-sitemap-empty', { file: sitemapFile }));\n      continue;\n    }\n    for (const url of urls) {\n      const sources = urlSources.get(url) || [];\n      sources.push(sitemapFile);\n      urlSources.set(url, sources);\n    }"""
-          if audit.count(old) != 1:
-              raise SystemExit(f'sitemap urls replacement count={audit.count(old)}')
-          audit = audit.replace(old, new)
-
-          old = """  const alternates = linkTags\n    .filter(attributes => relTokens(attributes.rel).includes('alternate') && attributes.hreflang && attributes.href)\n    .map(attributes => ({ hreflang: attributes.hreflang, href: normalizeText(attributes.href) }));\n  if (alternates.length > 0 && !alternates.some(item => item.href === url)) {"""
-          new = """  const alternates = linkTags\n    .filter(attributes => relTokens(attributes.rel).includes('alternate') && attributes.hreflang && attributes.href)\n    .map(attributes => ({ hreflang: attributes.hreflang, href: normalizeText(attributes.href) }));\n  const hreflangCounts = new Map();\n  for (const alternate of alternates) {\n    hreflangCounts.set(alternate.hreflang, (hreflangCounts.get(alternate.hreflang) || 0) + 1);\n  }\n  for (const [hreflang, count] of hreflangCounts) {\n    if (count > 1) {\n      errors.push(createIssue('hreflang-duplicate', { url, file, detail: `${hreflang}: count=${count}` }));\n    }\n  }\n  if (alternates.length > 0 && !alternates.some(item => item.href === url)) {"""
-          if audit.count(old) != 1:
-              raise SystemExit(f'hreflang insertion point count={audit.count(old)}')
-          audit = audit.replace(old, new)
-          audit_path.write_text(audit)
-
-          embed_path = Path('embed.html')
-          embed = embed_path.read_text()
-          canonical = '  <link rel="canonical" href="https://playpoint-sim.com/embed.html">'
-          head = '''  <link rel="canonical" href="https://playpoint-sim.com/embed.html">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Playポイント計算機">
-  <meta property="og:title" content="Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター">
-  <meta property="og:description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。テーマやサイズをリアルタイムにカスタマイズして、コードを1クリックでコピーできます。">
-  <meta property="og:url" content="https://playpoint-sim.com/embed.html">
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:type" content="image/png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター">
-  <meta name="twitter:description" content="Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置できます。">
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "name": "Playポイント計算機をブログに設置｜無料埋め込みウィジェットジェネレーター",
-    "description": "Google Play Pointsの簡易計算機ウィジェットを無料でブログや攻略サイトに設置し、テーマやサイズを調整して埋め込みコードを作成できるページです。",
-    "url": "https://playpoint-sim.com/embed.html",
-    "inLanguage": "ja",
-    "isPartOf": {
-      "@type": "WebSite",
-      "name": "Playポイント計算機",
-      "url": "https://playpoint-sim.com/"
-    }
-  }
-  </script>'''
-          if 'property="og:url" content="https://playpoint-sim.com/embed.html"' not in embed:
-              if embed.count(canonical) != 1:
-                  raise SystemExit(f'embed canonical count={embed.count(canonical)}')
-              embed = embed.replace(canonical, head)
-          embed_path.write_text(embed)
-          PY
-      - name: 正規生成物を同期
+          ref: 'seo/head-audit-recovery-20260910'
+      - name: Apply scoped recovery patch
+        run: node scripts/head-audit-finish-helper.cjs
+      - name: Synchronize canonical outputs
         run: node scripts/prepare-pr.cjs
-      - name: Head監査と対象回帰テスト
+      - name: Verify head audit and focused regressions
         run: |
           node scripts/seo-head-audit.cjs
           node --test tests/manual-lp-hreflang.test.cjs tests/author-hreflang.test.cjs tests/ci-guardrails.test.cjs
-      - name: 未コミット差分を意図した4ファイルだけに限定
+      - name: Guard generated scope
         shell: bash
         run: |
           git diff --name-only | sort > /tmp/changed-files.txt
@@ -101,7 +37,7 @@ jobs:
             'scripts/seo-head-audit.cjs' \
             | sort > /tmp/expected-files.txt
           diff -u /tmp/expected-files.txt /tmp/changed-files.txt
-      - name: 完成差分をbranchへ同期
+      - name: Commit canonical outputs
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
