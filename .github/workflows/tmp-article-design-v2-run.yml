@@ -1,0 +1,53 @@
+name: Temporary Article Design System V2 Run
+
+on:
+  push:
+    branches:
+      - feat/article-design-system-v2-20260911
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout design branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/article-design-system-v2-20260911
+          fetch-depth: 0
+
+      - name: Apply design migration
+        run: node .github/scripts/tmp-apply-article-design-v2.cjs
+
+      - name: Synchronize canonical output
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Verify representative article design in Chromium
+        shell: bash
+        run: |
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          CHROME_PATH="$chrome_path" node .github/scripts/article-css-smoke.cjs
+          CHROME_PATH="$chrome_path" node .github/scripts/article-design-smoke.cjs
+
+      - name: Remove temporary migration infrastructure
+        run: |
+          rm -f .github/scripts/tmp-apply-article-design-v2.cjs
+          rm -f .github/workflows/tmp-article-design-v2-run.yml
+
+      - name: Commit verified migration
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "refactor: introduce Article Design System 2.0"
+          git push origin HEAD:feat/article-design-system-v2-20260911
