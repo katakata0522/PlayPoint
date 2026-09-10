@@ -46,6 +46,7 @@ on:
       - 'changelog.html'
       - '.github/scripts/browser-smoke.cjs'
       - '.github/scripts/article-css-smoke.cjs'
+      - '.github/scripts/article-design-smoke.cjs'
       - '.github/scripts/mobile-region-layout-smoke.cjs'
       - '.github/scripts/browser-revenue-smoke.cjs'
       - '.github/scripts/embed-widget-smoke.cjs'
@@ -76,6 +77,9 @@ jobs:
 
       - name: Install browser driver
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
           npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
           chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
           test -n "$chrome_path"
@@ -85,12 +89,13 @@ jobs:
         run: |
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 
-      - name: Upload failure evidence
-        if: failure()
+      - name: Upload browser verification evidence
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: browser-smoke-local-${{ github.run_id }}
@@ -113,6 +118,9 @@ jobs:
 
       - name: Install browser driver
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
           npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
           chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
           test -n "$chrome_path"
@@ -124,12 +132,13 @@ jobs:
         run: |
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 
-      - name: Upload failure evidence
-        if: failure()
+      - name: Upload browser verification evidence
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: browser-smoke-production-${{ github.run_id }}
