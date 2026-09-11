@@ -10,7 +10,7 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const CASES = [
-  { key: 'decision-legacy', path: 'articles/2025-12-25-best-use.html', intro: true, summary: true, marker: true, related: true },
+  { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true }
@@ -99,6 +99,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       assert(result.intro.textAlign === 'left' || result.intro.textAlign === 'start', article.key + '/' + viewport.key + ': intro alignment ' + result.intro.textAlign);
       assert(parseFloat(result.intro.borderLeftWidth) >= 3, article.key + '/' + viewport.key + ': intro accent missing');
     }
+    if (article.noIntro) assert(!result.intro, article.key + '/' + viewport.key + ': legacy intro must not return');
     if (article.summary) {
       assert(result.summary, article.key + '/' + viewport.key + ': summary missing');
       assert(parseFloat(result.summary.borderRadius) >= 8, article.key + '/' + viewport.key + ': summary radius ' + result.summary.borderRadius);

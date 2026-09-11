@@ -48,7 +48,7 @@ function auditArticleDesignSystem(rootDir = process.cwd()) {
     if (related) components.related += 1;
   }
 
-  if (components.stackedLead > 0) warnings.push('legacy answer + intro + summary stacks remain in markup: ' + components.stackedLead + ' (visually compacted by Design System 2.0)');
+  if (components.stackedLead > 0) failures.push('legacy answer + intro + summary stacks are not allowed: ' + components.stackedLead);
   if (components.markers === 0) warnings.push('no explicit editorial marker classes remain in article corpus');
   return { articleCount: corpus.length, roleCounts, components, failures, warnings };
 }
