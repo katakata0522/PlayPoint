@@ -51,6 +51,15 @@ https://baymard.com/blog/main-navigation
 
 PlayPointでは active nav、カテゴリ付き breadcrumb、人気記事ランキング内の current page 非リンク表示を採用する。
 
+### Google Search Central — Breadcrumb structured data
+
+https://developers.google.com/search/docs/appearance/structured-data/breadcrumb
+
+- 画面上の階層だけでなく、検索エンジンにも典型的な利用者の経路を伝える。
+- `BreadcrumbList` は表示 breadcrumb と同じ情報設計から生成し、別の分類体系を持たない。
+
+PlayPointでは記事の `Calculator > Guides > Category > Current article`、ハブの `Calculator > Guides`、運営者ページの `Calculator > About Katakata` と同じ経路を JSON-LD に同期する。
+
 ## PlayPoint demand evidence
 
 Popular Guides はリアルタイムランキングのように見せない。
@@ -99,8 +108,10 @@ Source: `docs/INTL_CONTENT_AUDIT_2026-09-03.md`
   - United States
   - Korea
   - Taiwan
+  - Hong Kong
+  - India
 
-地域切替は「Language」ではなく **Play country** として表現する。PlayPointのルールは表示言語より Play country / account の条件に依存するため。
+地域切替は「Language」ではなく **Play country** として表現する。PlayPointのルールは表示言語より Play country / account の条件に依存するため。記事本文を持つ EN / KO / TW だけでなく、計算機として公開済みの HK / IN も切替先から欠落させない。
 
 ### Global navigation
 
@@ -126,6 +137,8 @@ Hub:
 Operator page:
 
 `Calculator > About Katakata`
+
+可視 breadcrumb と `BreadcrumbList` JSON-LD は同じ category / URL を正本として使い、検索向けだけ別階層を作らない。
 
 ## Sidebar contract
 
@@ -182,8 +195,10 @@ Right sidebar を記事本文より上へ無理に移動しない。
 
 - <= 860px: sidebar widgets を2列
 - <= 700px: 1列
+- <= 420px: `About Katakata` と Play country を原則1行の2カラムにまとめ、記事タイトルまでの縦占有を抑える
+- <= 340px: 無理に2カラムを維持せず1列へ戻す
 - primary article CTA は本文側の Article Design System を優先
-- header toolは狭幅で折り返し、Play country switcher はネイティブ操作を維持
+- Play country switcher はネイティブ `<details>/<summary>` 操作を維持
 
 ## Accessibility
 
@@ -214,6 +229,8 @@ Right sidebar を記事本文より上へ無理に移動しない。
 Tests must ensure:
 
 - EN / KO / TW all use the task-first shell.
+- Play country switcher exposes all six supported calculator regions.
+- Visible breadcrumb and managed `BreadcrumbList` stay aligned.
 - Popular Top 5 targets exist and stay inside their locale.
 - Current popular article is never linked to itself.
 - Contextual related links remain unique, existing, same-locale, and current-page-free.
@@ -221,3 +238,18 @@ Tests must ensure:
 - Author pages do not repeat the mini author card.
 - Article bottom author box links to local profile and KatakataLab.
 - Old generic sidebar blocks do not remain in the final generated HTML.
+- Every configured international content-expansion article remains discoverable from its locale hub and sitemap.
+- Canonical generation is idempotent; a second `prepare-pr` pass must not alter the first pass diff.
+
+## Final audit — 2026-09-11
+
+PR #259 の最終監査で以下を追加修正した。
+
+- `intl-shell-v1.css` の参照行が後段の asset normalizer と空白だけ食い違う再現性エラーを修正。
+- `google-play-points-balance-history-progress.html` へのリンクがサイドバーに存在することで、記事ハブ一覧にも存在すると誤判定していた discovery 判定を修正。判定範囲を記事一覧セクションそのものへ限定。
+- Play country switcher を公開中の6地域（JP / US / KR / TW / HK / IN）へ揃えた。
+- 画面上の breadcrumb と同じ階層を `BreadcrumbList` JSON-LD へ同期。
+- 390px前後で `About Katakata` と Play country が縦に2段積みされていたヘッダーを2カラム化し、340px未満だけ1列へフォールバック。
+- focused regression 25件を全通過し、2回目の canonical generation が1回目の差分を変更しないことを確認。
+
+最終合格条件は通常の PR Gate / Browser Smoke でも同じ。重点テストだけを根拠にマージ可能とは扱わない。
