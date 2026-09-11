@@ -36,7 +36,6 @@ jobs:
               "        }).slice(0, 3);\n    },\n\n    renderResultGuidance",
               "        }).slice(0, 2);\n    },\n\n    renderResultGuidance"
           )
-
           replace_fragment(
               'tests/playpoint-calculation-contracts.test.cjs',
               "renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding')",
@@ -47,7 +46,6 @@ jobs:
               "!renderedResultDetails[0].includes('Enter an average amount per purchase')",
               "!content.includes('Enter an average amount per purchase')"
           )
-
           replace_fragment(
               'tests/playpoint-result-contracts.test.cjs',
               "const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();",
@@ -68,7 +66,6 @@ jobs:
               "renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る')",
               "renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る')"
           )
-
           replace_fragment(
               'maintenance/platinum/index.html',
               '全員に共通する「3万円を超えたら降格が得」のような損益分岐点は置かず',
@@ -86,17 +83,19 @@ jobs:
               anchor = "        let basisEl = document.getElementById('game-calculation-basis');"
               if anchor not in game_text:
                   raise SystemExit('game table-note anchor not found')
-              insert = """        const packTable = document.querySelector('.pack-table');
-        if (packTable && !document.getElementById('pack-table-calculation-note')) {
-            const tableNote = document.createElement('p');
-            tableNote.id = 'pack-table-calculation-note';
-            tableNote.className = 'game-calculation-note';
-            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;
-            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;
-            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);
-        }
-
-"""
+              insert_lines = [
+                  "        const packTable = document.querySelector('.pack-table');",
+                  "        if (packTable && !document.getElementById('pack-table-calculation-note')) {",
+                  "            const tableNote = document.createElement('p');",
+                  "            tableNote.id = 'pack-table-calculation-note';",
+                  "            tableNote.className = 'game-calculation-note';",
+                  "            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;",
+                  "            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;",
+                  "            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);",
+                  "        }",
+                  "",
+              ]
+              insert = "\n".join(insert_lines) + "\n"
               game_path.write_text(game_text.replace(anchor, insert + anchor, 1))
           PY
 
