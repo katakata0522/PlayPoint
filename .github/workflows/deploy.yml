@@ -1,6 +1,7 @@
 name: Deploy to Xserver
 
 on:
+  # Explicit fallback when a squash commit message suppresses push-triggered CI.
   workflow_dispatch:
   push:
     branches:
