@@ -11,9 +11,9 @@ const { selectRelatedArticles } = require('../scripts/intl-related-guides.cjs');
 const locales = ['en', 'ko', 'tw'];
 
 function sidebarRelatedHrefs(html) {
-  const list = html.match(/<ul class="sidebar-article-list">([\s\S]*?)<\/ul>/i);
+  const list = html.match(/<ul class="sidebar-related-list">([\s\S]*?)<\/ul>/i);
   if (!list) return [];
-  return [...list[1].matchAll(/<a href="([^"]+)">/g)].map(match => match[1]);
+  return [...list[1].matchAll(/<a[^>]*href="([^"]+)"/g)].map(match => match[1]);
 }
 
 test('related guide ranking prefers concrete slug overlap, then the same topic', () => {
@@ -34,7 +34,7 @@ test('related guide ranking prefers concrete slug overlap, then the same topic',
   assert.doesNotMatch(related.flat().join('\n'), /google-play-points-gift-cards\.html/);
 });
 
-test('published international sidebars contain four existing links, never the current article', () => {
+test('published international sidebars contain three focused existing links, never the current article', () => {
   for (const locale of locales) {
     const articleDir = path.join(root, locale, 'articles');
     const files = fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html');
@@ -43,8 +43,8 @@ test('published international sidebars contain four existing links, never the cu
     for (const file of files) {
       const html = fs.readFileSync(path.join(articleDir, file), 'utf8');
       const hrefs = sidebarRelatedHrefs(html);
-      assert.equal(hrefs.length, 4, `${locale}/${file}: related guide count`);
-      assert.equal(new Set(hrefs).size, 4, `${locale}/${file}: related guides must be unique`);
+      assert.equal(hrefs.length, 3, `${locale}/${file}: related guide count`);
+      assert.equal(new Set(hrefs).size, 3, `${locale}/${file}: related guides must be unique`);
       assert.ok(!hrefs.includes(`/${locale}/articles/${file}`), `${locale}/${file}: sidebar must not link to itself`);
       for (const href of hrefs) {
         const prefix = `/${locale}/articles/`;
