@@ -16,7 +16,7 @@ function createClassList(classes) {
   return { contains(name) { return set.has(name); } };
 }
 
-function createRuntime() {
+function createRuntime(japanese = false) {
   const listeners = new Map();
   const roleWidget = { className: 'sidebar-widget sidebar-widget--next sidebar-widget--role-reference' };
   const categoryLink = { getAttribute(name) { return name === 'href' ? '/en/articles/#intl-hub-account' : null; } };
@@ -51,6 +51,7 @@ function createRuntime() {
         listeners.get(type).push(listener);
       },
       querySelector(selector) {
+        if (selector === '.ja-article-sidebar' && japanese) return { getAttribute: key => ({ 'data-article-role': 'reference', 'data-article-category': 'account' })[key] };
         if (selector === '.intl-article-sidebar .sidebar-widget--next') return roleWidget;
         if (selector === '.intl-breadcrumb-category') return categoryLink;
         return null;
@@ -61,6 +62,7 @@ function createRuntime() {
       }
     }
   };
+  if (japanese) { context.location.pathname = '/articles/2025-12-25-check-balance.html'; context.location.href = context.location.origin + context.location.pathname; popularLink.href = context.location.origin + '/articles/2025-12-25-expiration.html'; }
   context.window = context;
   vm.createContext(context);
   vm.runInContext(analyticsSource, context, { filename: 'analytics-core.js' });
@@ -210,5 +212,18 @@ test('海外記事の行動計測も既存の同意境界で保留・送信・�
   assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
   consent = 'denied';
   click({ target: popularLink });
+  assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
+});
+
+test('日本語の関連記事を同じ有限分類と同意境界で記録する', () => {
+  const { context, listeners, popularLink } = createRuntime(true);
+  listeners.get('click')[0]({ target: popularLink });
+  const events = eventCalls(context, 'article_navigation_click');
+  assert.equal(events.length, 1);
+  assert.equal(events[0].locale, 'ja');
+  assert.equal(events[0].destination_type, 'article');
+  assert.equal(events[0].source_path, '/articles/2025-12-25-check-balance.html');
+  context.PlayPointConsent.getStatus = () => 'denied';
+  listeners.get('click')[0]({ target: popularLink });
   assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
 });
