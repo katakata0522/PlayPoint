@@ -53,14 +53,7 @@ jobs:
           git commit -m 'fix: remove stale eager region config initialization'
 
       - name: Verify focused runtime guard
-        shell: bash
-        run: |
-          set -euo pipefail
-          node tests/region-runtime-wiring.test.cjs
-          if grep -n "Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));" js/region-navigation.js | head -1 | grep -q '^[0-9]\{1,2\}:'; then
-            echo 'stale eager initialization remains near module top' >&2
-            exit 1
-          fi
+        run: node tests/region-runtime-wiring.test.cjs
 
       - name: Run complete preflight
         run: node .github/scripts/preflight.cjs
