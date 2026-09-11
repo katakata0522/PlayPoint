@@ -19,6 +19,7 @@ const { syncJapaneseAuthorHreflang } = require('./author-hreflang-sync.cjs');
 const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
+const { syncJapaneseNavigation } = require('./japanese-navigation-sidebar.cjs');
 const { syncIntlNavigationSidebarV1 } = require('./intl-navigation-sidebar-v1.cjs');
 const { syncIntlHubDiscovery } = require('./intl-hub-discovery.cjs');
 const {
@@ -101,6 +102,7 @@ syncAnalyticsRuntimeScripts(rootDir);
 // その後の内容ハッシュ同期で公開HTMLの参照URLも同じビルド内に確定させる。
 const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
 console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
+syncJapaneseNavigation(rootDir);
 syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);

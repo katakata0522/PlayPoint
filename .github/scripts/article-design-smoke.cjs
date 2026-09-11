@@ -125,6 +125,20 @@ async function inspect(browser, baseUrl, article, viewport) {
       const motion = await relatedTarget.evaluate(element => ({ transform: getComputedStyle(element).transform, transition: getComputedStyle(element).transitionDuration }));
       assert(motion.transform === 'none' && motion.transition.split(',').every(value => parseFloat(value) === 0), article.key + '/' + viewport.key + ': reduced motion not respected');
     }
+    if (article.path.startsWith('articles/')) {
+      const sidebar = page.locator('.ja-article-sidebar');
+      assert(await sidebar.count() === 1, article.key + ': 日本語サイドバーがありません');
+      assert(await sidebar.locator('.sidebar-next-link').count() === 1, article.key + ': 次行動は1件');
+      assert(await sidebar.locator('.sidebar-related-link').count() === 3, article.key + ': 関連記事は3件');
+      const next = sidebar.locator('.sidebar-next-link');
+      await next.focus();
+      const outline = await next.evaluate(el => ({ width: parseFloat(getComputedStyle(el).outlineWidth), visible: el.matches(':focus-visible') }));
+      assert(outline.visible && outline.width >= 2, article.key + ': サイドバーのフォーカス表示');
+      await next.click({ trial: true });
+      const bounds = await sidebar.boundingBox();
+      assert(bounds && bounds.x >= 0 && bounds.x + bounds.width <= viewport.width + 1, article.key + ': サイドバーの横はみ出し');
+    }
+    await page.evaluate(() => window.scrollTo(0, 0));
     fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
     const evidenceName = 'article-design-' + article.key + '-' + viewport.key;
     await page.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '.png'), fullPage: true });

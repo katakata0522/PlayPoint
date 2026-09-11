@@ -17,6 +17,7 @@
 | `diary_tab_opened` | 日記タブをそのページで初めて開いた時 | `region`, `open_surface` | 日記を開いた人のうち保存へ進む割合を判断する |
 | `diary_entry_saved` | 週次日記の保存が成功した時 | `region`, `entry_type` | 継続利用の有無を判断する |
 | `article_to_calculator_clicked` | 記事から計算機へ移動した時 | `source_path`, `link_context`, `destination_path` | コンテンツがツール利用へつながったか判断する |
+| `article_navigation_click` | EN / KO / TW記事のNavigation / Sidebar v1導線を押した時 | `source_path`, `target_path`（同一originのみ）, `component`, `locale`, `article_role`, `article_category`, `destination_type`, `link_position` | Next step / Popular / Related / Author / Browse / headerのうち、どの導線が次行動に使われているか判断する |
 | `lp_to_calculator_clicked` | 検索意図別LPから計算機へ移動した時 | `source_path`, `source_surface`, `link_context` | どのLPとCTAが計算開始につながるか判断する |
 | `lp_related_link_clicked` | LP内の関連記事/関連ページ導線を押した時 | `source_path`, `target_path`, `link_context` | LP内の回遊導線を残すか改善するか判断する |
 | `result_related_article_clicked` | 計算結果下の関連記事を押した時 | `source_path`, `target_path`, `target_status`, `calculation_mode`, `link_position` | 計算完了後に次の読了/理解へ進めているか判断する |
@@ -28,6 +29,10 @@
 | `widget_code_copied` | ウィジェットコードのコピーに成功した時 | `theme`, `language`, `mode` | 配布機能の需要と利用構成を判断する |
 | `widget_referral_landed` | 埋め込みウィジェットから計算機へ到着した時 | `region`, `entry_surface` | 配布ウィジェットが本体利用へつながるか判断する |
 | `web_vital` | ページを離れる時にLCP/INP/CLSを観測できた場合 | `metric_name`, `metric_rating`, `metric_value_bucket`, `page_group`, `release_version` | 実際の利用環境で速度悪化したページ群とリリースを特定する |
+
+`article_navigation_click` はリンク文言・記事タイトル・自由入力を送らず、有限の分類値だけを送る。`component` は `site_identity / global_nav / breadcrumb / region_switch / next_step / popular / related / author / katakatalab / browse`、`locale` は `en / ko / tw`、`article_role` と `article_category` は既存のArticle Role / guide taxonomyに合わせる。外部のKatakataLab導線では `target_path` を送らず、`destination_type=external_profile` だけを記録する。これにより内部リンクのアンカー文言や利用者入力がGA4へ流れないようにする。
+
+分類値の制限はイベント単位で適用する。既存の日本語ブログ `article_click` の `article_category` は海外ナビの分類に変換せず保持し、計算結果リンクの `internal / external / official_google_support` も維持する。海外記事内のアンカー移動は `section`、一般の外部リンクは `external` として内部記事への遷移と区別し、外部URLは送らない。必須項目の欠落や不正な引数は例外にせず、そのイベントを送信しない。
 
 `calculator_form_started` と `calculator_funnel_completed` は通常計算・逆算ごとに1ページ1回だけ送る。`calculation_completed` / `reverse_calculation_completed` は従来どおり再計算のたびに送るため、利用回数は既存イベント、開始→初回成功率はファネル専用イベントで判断する。入力した金額・ポイント数そのものはファネルイベントへ送らない。
 
@@ -59,6 +64,8 @@
 8. スマホ幅とPC幅、同意状態ごとに重複送信がないことを確認する。
 9. ページを操作して別タブへ移動し、`web_vital` に値そのものではなく `metric_rating` と `metric_value_bucket` だけが入ることを確認する。
 10. 記事と検索意図別LPから計算機へ移動して計算し、流入属性が最初の完了イベントだけに付くことを確認する。
+11. EN / KO / TWの代表記事で Next step / Popular / Related / About Katakata / KatakataLab / Browse / Play country を1回ずつ操作し、`article_navigation_click` が有限分類だけで届くことを確認する。
+12. `article_navigation_click` にリンク文言、記事タイトル、課金額、必要ポイントが含まれないことを確認する。
 
 ### DebugViewの完了条件
 
@@ -84,3 +91,5 @@
 ## PWA / ブラウザ起動形態
 
 GA4のページビューと以後のイベントには、技術的な起動形態を比較するため `app_display_mode` を付与します。値は通常ブラウザの `browser` と、PWA・ホーム画面起動の `standalone` の2種類です。入力した金額・ポイント数・個人情報はこの値には含めません。
+
+日本語公開記事も article_navigation_click の対象。locale=ja を追加し、記事のdata属性から有限のRole・categoryを取得する。ナビ・関連記事・次行動・運営者・記事一覧のクリックを既存の同意境界で処理する。
