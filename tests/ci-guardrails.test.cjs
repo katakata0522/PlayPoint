@@ -6,7 +6,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
+const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
 
 test('Browser SmokeのPR対象に香港・インドを含め、汎用scripts変更では起動しない', () => {
   const workflow = read('.github/workflows/browser-smoke.yml');
