@@ -22,12 +22,21 @@
         'calculator_preset'
     ];
     const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);
+    // 同名パラメータでもイベントごとに意味が異なる。海外ナビの分類で
+    // 日本語ブログのarticle_categoryや計算結果の外部遷移を消さない。
+    const RESULT_LINK_PARAM_VALUES = Object.freeze({
+        destination_type: new Set(['internal', 'external', 'official_google_support'])
+    });
     const ENUM_PARAM_VALUES = Object.freeze({
-        component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
-        locale: new Set(['en', 'ko', 'tw']),
-        article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
-        article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
-        destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'official_google_support'])
+        article_navigation_click: Object.freeze({
+            component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
+            locale: new Set(['en', 'ko', 'tw']),
+            article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
+            article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
+            destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
+        }),
+        result_related_article_clicked: RESULT_LINK_PARAM_VALUES,
+        result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
     });
     const REQUIRED_PARAMS = Object.freeze({
         article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
@@ -78,7 +87,7 @@
         return getConsentStatus() === 'granted';
     }
 
-    function sanitizeValue(key, value) {
+    function sanitizeValue(key, value, enumRules = {}) {
         if (value === undefined || value === null || value === '') return null;
         if (key === 'link_position') {
             const numberValue = Number(value);
@@ -93,7 +102,7 @@
 
         let text = String(value).trim();
         if (!text) return null;
-        const enumValues = ENUM_PARAM_VALUES[key];
+        const enumValues = enumRules[key];
         if (enumValues && !enumValues.has(text)) return null;
         if (key.endsWith('_path')) {
             try {
@@ -107,10 +116,10 @@
         return text.replace(/[<>"']/g, '').slice(0, MAX_TEXT_LENGTH);
     }
 
-    function sanitizeAllowedParams(allowed, params = {}) {
+    function sanitizeAllowedParams(allowed, params = {}, enumRules = {}) {
         if (!Array.isArray(allowed) || !params || typeof params !== 'object') return null;
         return allowed.reduce((clean, key) => {
-            const value = sanitizeValue(key, params[key]);
+            const value = sanitizeValue(key, params[key], enumRules);
             if (value !== null) clean[key] = value;
             return clean;
         }, {});
@@ -119,7 +128,8 @@
     function sanitizeParams(eventName, params = {}) {
         const allowed = ALLOWED_PARAMS[eventName];
         if (!allowed) return null;
-        const clean = sanitizeAllowedParams(allowed, params);
+        const clean = sanitizeAllowedParams(allowed, params, ENUM_PARAM_VALUES[eventName]);
+        if (!clean) return null;
         const required = REQUIRED_PARAMS[eventName];
         if (required && required.some(key => clean[key] === undefined)) return null;
         return clean;
@@ -397,12 +407,12 @@
     }
 
     function classifyArticleDestination(url, component) {
-        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'internal';
+        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'external';
         if (isCalculatorDestination(url)) return component === 'region_switch' ? 'region_home' : 'calculator';
         if (component === 'author') return 'operator_profile';
+        if (url.pathname === window.location.pathname && url.hash) return 'section';
         if (/\/(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
         if (/\/(?:en|ko|tw)\/articles\/$/.test(url.pathname)) return url.hash ? 'category' : 'guide_hub';
-        if (url.pathname === window.location.pathname && url.hash) return 'section';
         return 'internal';
     }
 

@@ -32,6 +32,8 @@
 
 `article_navigation_click` はリンク文言・記事タイトル・自由入力を送らず、有限の分類値だけを送る。`component` は `site_identity / global_nav / breadcrumb / region_switch / next_step / popular / related / author / katakatalab / browse`、`locale` は `en / ko / tw`、`article_role` と `article_category` は既存のArticle Role / guide taxonomyに合わせる。外部のKatakataLab導線では `target_path` を送らず、`destination_type=external_profile` だけを記録する。これにより内部リンクのアンカー文言や利用者入力がGA4へ流れないようにする。
 
+分類値の制限はイベント単位で適用する。既存の日本語ブログ `article_click` の `article_category` は海外ナビの分類に変換せず保持し、計算結果リンクの `internal / external / official_google_support` も維持する。海外記事内のアンカー移動は `section`、一般の外部リンクは `external` として内部記事への遷移と区別し、外部URLは送らない。必須項目の欠落や不正な引数は例外にせず、そのイベントを送信しない。
+
 `calculator_form_started` と `calculator_funnel_completed` は通常計算・逆算ごとに1ページ1回だけ送る。`calculation_completed` / `reverse_calculation_completed` は従来どおり再計算のたびに送るため、利用回数は既存イベント、開始→初回成功率はファネル専用イベントで判断する。入力した金額・ポイント数そのものはファネルイベントへ送らない。
 
 `calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。記事・検索意図別LPから計算機へ移動した場合は、同意済みセッション内に `entry_source_path`, `entry_link_context`, `calculator_preset` を最大30分だけ保持する。計算機側で最初に流入情報を参照した時点で sessionStorage からページ内メモリへ移し、`calculator_form_started` と `calculator_funnel_completed` にも同じ記事・LP起点を付与する。`calculation_completed` / `reverse_calculation_completed` への起点付与は最初の1回だけとし、再計算による水増しを防ぐ。ページを離れるとページ内メモリは破棄されるため、後続の別訪問へ同じ起点を持ち越さない。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。
