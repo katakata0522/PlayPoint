@@ -105,13 +105,7 @@ jobs:
       - name: Generate canonical outputs
         run: node scripts/prepare-pr.cjs
 
-      - name: Run full regression suite
-        run: node --test tests/*.test.cjs
-
-      - name: Run canonical preflight
-        run: node .github/scripts/preflight.cjs
-
-      - name: Commit verified final state
+      - name: Persist canonical final state
         shell: bash
         run: |
           set -euo pipefail
@@ -123,5 +117,11 @@ jobs:
           git diff --cached --stat
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "fix: 監査修正を最終検証して整合"
+          git commit -m "fix: 監査修正を最終状態へ反映"
           git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Run full regression suite on committed state
+        run: node --test tests/*.test.cjs
+
+      - name: Run canonical preflight on committed state
+        run: node .github/scripts/preflight.cjs
