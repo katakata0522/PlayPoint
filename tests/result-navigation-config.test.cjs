@@ -85,5 +85,5 @@ test('公開地域に結果ナビ設定が無い場合は明示的に失敗す�
   assert.throws(() => assertCoverage([...publicRegions, 'SG']), /SG/);
 
   const regionNavigation = fs.readFileSync(path.join(root, 'js/region-navigation.js'), 'utf8');
-  assert.match(regionNavigation, /assertResultNavigationCoverage\(Object\.keys\(CONFIGS\)\)/);
+  assert.match(regionNavigation, /assertResultNavigationCoverage\(Object\.keys\(REGION_PATHS\)\)/);
 });
