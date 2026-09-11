@@ -19,6 +19,7 @@ const { syncJapaneseAuthorHreflang } = require('./author-hreflang-sync.cjs');
 const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
 const { writeIntlSeoPages } = require('./intl-seo-pages.cjs');
 const { synchronizeIntlArticleLayouts } = require('./intl-article-layout.cjs');
+const { syncIntlNavigationSidebarV1 } = require('./intl-navigation-sidebar-v1.cjs');
 const { syncIntlHubDiscovery } = require('./intl-hub-discovery.cjs');
 const {
   applyIntlSemanticSourceOverrides,
@@ -81,6 +82,8 @@ const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
 console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
 const intlHubDiscoverySummary = syncIntlHubDiscovery(rootDir);
 console.log(`[build-html] synchronized international guide discovery: ${intlHubDiscoverySummary.changed}/${intlHubDiscoverySummary.checked} updated`);
+const intlShellSummary = syncIntlNavigationSidebarV1(rootDir);
+console.log(`[build-html] synchronized international navigation/sidebar v1: ${intlShellSummary.changed}/${intlShellSummary.checked} updated`);
 
 require('./generate-game-simulators.cjs');
 
