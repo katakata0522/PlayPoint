@@ -28,8 +28,12 @@ jobs:
       - name: Apply measured optimizations
         run: node .github/scripts/p0-apply-optimizations-temp.cjs
 
-      - name: Regenerate canonical public output
-        run: node scripts/prepare-pr.cjs
+      - name: Regenerate canonical public output twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/prepare-pr.cjs
+          node scripts/prepare-pr.cjs
 
       - name: Run focused regression checks
         shell: bash
