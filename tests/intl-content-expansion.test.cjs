@@ -19,7 +19,7 @@ const topics = [
       ko: ["다른 결제 수단", "Play 크레딧", "세금 포함"],
       tw: ["其他付款方式", "Play 抵用金", "含稅"]
     },
-    officialIds: ["6080850", "9077312"]
+    officialIds: ["6080850", "9079840"]
   },
   {
     slug: "google-play-points-device-change.html",
@@ -78,7 +78,7 @@ const topics = [
   {
     slug: "google-play-points-500-1000-cost.html",
     phrases: {
-      en: ["$500", "$1,000", "$312.50"],
+      en: ["$500", "$1,000", "$312.5"],
       ko: ["₩500,000", "₩1,000,000", "₩250,000"],
       tw: ["NT$15,000", "NT$30,000", "NT$7,500"]
     },

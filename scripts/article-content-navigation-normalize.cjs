@@ -21,7 +21,7 @@ const RELATED_SECTIONS = {
       ['./2025-12-25-diamond-vip.html', 'ダイヤモンド固有・共通特典を確認'],
       ['./2026-08-05-play-points-levels-guide.html', '全ランクの条件・必要額・特典を比較'],
       ['./2025-12-25-playpoints-rank-maintenance.html', '獲得したランクの維持期間を確認'],
-      ['./2026-08-16-pixel-discount-coupon.html', 'Pixel割引クーポンは特典タブで確認']
+      ['./2026-08-16-pixel-discount-coupon.html', 'Pixel特典とStoreコードの確認先']
     ]
   },
   'articles/2025-12-25-playpoints-rank-maintenance.html': {
