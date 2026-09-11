@@ -35,7 +35,7 @@ test('all current role-classified articles stay on the shared visual contract', 
   assert.deepEqual(result.failures, []);
   assert.ok(result.components.answer > 0);
   assert.ok(result.components.related > 0);
-  assert.ok(result.components.stackedLead <= result.articleCount);
+  assert.equal(result.components.stackedLead, 0, 'legacy answer + intro + summary stacks must not return');
 });
 
 test('obsolete 49-article validator is removed', () => {
