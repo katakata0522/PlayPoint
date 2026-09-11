@@ -69,7 +69,8 @@ jobs:
             exit 0
           fi
 
-          changed_files="$(git diff --name-only "$before_sha" "$GITHUB_SHA")"
+          # renameは旧pathの削除も本番へ反映する必要があるため、rename検出を無効化して旧/新を両方判定する。
+          changed_files="$(git diff --name-only --no-renames "$before_sha" "$GITHUB_SHA")"
           echo 'Changed files:'
           if [ -n "$changed_files" ]; then
             printf '%s\n' "$changed_files"
