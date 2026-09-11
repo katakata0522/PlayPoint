@@ -43,6 +43,17 @@ jobs:
           node tests/region-expansion.test.cjs
           node --test tests/calculator-funnel-analytics.test.cjs
 
+      - name: Create local optimized HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git status --short
+          git diff --cached --quiet && { echo 'No optimization changes to commit.'; exit 1; }
+          git commit -m 'perf: optimize P0 first paint and regional loading'
+
       - name: Run complete preflight with evidence
         id: preflight
         shell: bash
@@ -53,6 +64,7 @@ jobs:
           code=$?
           printf '%s\n' "$code" > p0-opt-evidence/exit-code.txt
           git status --short > p0-opt-evidence/status-after.txt
+          git rev-parse HEAD > p0-opt-evidence/local-head.txt
           tail -n 220 p0-opt-evidence/preflight.log
           exit "$code"
 
@@ -64,15 +76,9 @@ jobs:
           path: p0-opt-evidence/
           retention-days: 2
 
-      - name: Commit optimized canonical result
+      - name: Push optimized canonical result
         if: success()
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git status --short
-          git diff --cached --quiet && { echo 'No optimization changes to commit.'; exit 1; }
-          git commit -m 'perf: optimize P0 first paint and regional loading'
           git push origin HEAD:feat/article-journey-performance-p0-20260911
