@@ -25,6 +25,22 @@ jobs:
           ref: feat/article-journey-performance-p0-20260911
           fetch-depth: 0
 
+      - name: Inspect history regression source
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '=== git status before changes ==='
+          git status --short
+          echo '=== tracked lookup ==='
+          git ls-files --stage -- tests/region-expansion-history.test.cjs || true
+          echo '=== file lookup ==='
+          if [ -f tests/region-expansion-history.test.cjs ]; then
+            ls -l tests/region-expansion-history.test.cjs
+            sed -n '140,180p' tests/region-expansion-history.test.cjs
+          else
+            echo 'tests/region-expansion-history.test.cjs is absent before local changes'
+          fi
+
       - name: Remove stale eager expansion initialization
         shell: bash
         run: |
