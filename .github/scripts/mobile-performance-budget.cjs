@@ -5,6 +5,14 @@ const path = require('node:path');
 
 const KB = 1024;
 
+const ARTICLE_HARD_BUDGET = Object.freeze({
+  performanceScore: 0.70,
+  largestContentfulPaintMs: 3000,
+  totalBlockingTimeMs: 800,
+  cumulativeLayoutShift: 0.15,
+  totalByteWeight: 350 * KB
+});
+
 const HARD_BUDGETS = Object.freeze({
   default: Object.freeze({
     performanceScore: 0.65,
@@ -30,13 +38,10 @@ const HARD_BUDGETS = Object.freeze({
     cumulativeLayoutShift: 0.15,
     totalByteWeight: 350 * KB
   }),
-  representativeArticle: Object.freeze({
-    performanceScore: 0.70,
-    largestContentfulPaintMs: 3000,
-    totalBlockingTimeMs: 800,
-    cumulativeLayoutShift: 0.15,
-    totalByteWeight: 350 * KB
-  })
+  representativeArticle: ARTICLE_HARD_BUDGET,
+  internationalArticleEn: ARTICLE_HARD_BUDGET,
+  internationalArticleKo: ARTICLE_HARD_BUDGET,
+  internationalArticleTw: ARTICLE_HARD_BUDGET
 });
 
 const TARGETS = Object.freeze({
@@ -51,6 +56,9 @@ const MINIMUM_SAMPLES = Object.freeze({
   calculatorHome: 3,
   articleHub: 1,
   representativeArticle: 1,
+  internationalArticleEn: 1,
+  internationalArticleKo: 1,
+  internationalArticleTw: 1,
   default: 1
 });
 
@@ -85,6 +93,9 @@ function getProfile(reportPath) {
   if (name.includes('calculator-home')) return 'calculatorHome';
   if (name.includes('article-hub')) return 'articleHub';
   if (name.includes('representative-article')) return 'representativeArticle';
+  if (name.includes('international-article-en')) return 'internationalArticleEn';
+  if (name.includes('international-article-ko')) return 'internationalArticleKo';
+  if (name.includes('international-article-tw')) return 'internationalArticleTw';
   return 'default';
 }
 
@@ -230,6 +241,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  ARTICLE_HARD_BUDGET,
   BUDGETS: HARD_BUDGETS.default,
   HARD_BUDGETS,
   METRIC_KEYS,

@@ -22,6 +22,25 @@
         'calculator_preset'
     ];
     const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);
+    // 同名パラメータでもイベントごとに意味が異なる。海外ナビの分類で
+    // 日本語ブログのarticle_categoryや計算結果の外部遷移を消さない。
+    const RESULT_LINK_PARAM_VALUES = Object.freeze({
+        destination_type: new Set(['internal', 'external', 'official_google_support'])
+    });
+    const ENUM_PARAM_VALUES = Object.freeze({
+        article_navigation_click: Object.freeze({
+            component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
+            locale: new Set(['en', 'ko', 'tw']),
+            article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
+            article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
+            destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
+        }),
+        result_related_article_clicked: RESULT_LINK_PARAM_VALUES,
+        result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
+    });
+    const REQUIRED_PARAMS = Object.freeze({
+        article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
+    });
     const ALLOWED_PARAMS = Object.freeze({
         page_view: [],
         calculation_completed: ['calculation_mode', 'region', 'target_status', 'entry_source', 'entry_medium', 'entry_campaign', 'entry_source_path', 'entry_link_context', 'calculator_preset'],
@@ -33,6 +52,7 @@
         diary_tab_opened: ['region', 'open_surface'],
         diary_entry_saved: ['region', 'entry_type'],
         article_to_calculator_clicked: ['source_path', 'link_context', 'destination_path'],
+        article_navigation_click: ['source_path', 'target_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type', 'link_position'],
         lp_to_calculator_clicked: ['source_path', 'source_surface', 'entry_campaign', 'link_context'],
         lp_related_link_clicked: ['source_path', 'target_path', 'link_context'],
         result_related_article_clicked: ['source_path', 'target_path', 'destination_type', 'target_status', 'calculation_mode', 'link_position'],
@@ -67,7 +87,7 @@
         return getConsentStatus() === 'granted';
     }
 
-    function sanitizeValue(key, value) {
+    function sanitizeValue(key, value, enumRules = {}) {
         if (value === undefined || value === null || value === '') return null;
         if (key === 'link_position') {
             const numberValue = Number(value);
@@ -82,6 +102,8 @@
 
         let text = String(value).trim();
         if (!text) return null;
+        const enumValues = enumRules[key];
+        if (enumValues && !enumValues.has(text)) return null;
         if (key.endsWith('_path')) {
             try {
                 const url = new URL(text, window.location.origin);
@@ -94,10 +116,10 @@
         return text.replace(/[<>"']/g, '').slice(0, MAX_TEXT_LENGTH);
     }
 
-    function sanitizeAllowedParams(allowed, params = {}) {
+    function sanitizeAllowedParams(allowed, params = {}, enumRules = {}) {
         if (!Array.isArray(allowed) || !params || typeof params !== 'object') return null;
         return allowed.reduce((clean, key) => {
-            const value = sanitizeValue(key, params[key]);
+            const value = sanitizeValue(key, params[key], enumRules);
             if (value !== null) clean[key] = value;
             return clean;
         }, {});
@@ -106,7 +128,11 @@
     function sanitizeParams(eventName, params = {}) {
         const allowed = ALLOWED_PARAMS[eventName];
         if (!allowed) return null;
-        return sanitizeAllowedParams(allowed, params);
+        const clean = sanitizeAllowedParams(allowed, params, ENUM_PARAM_VALUES[eventName]);
+        if (!clean) return null;
+        const required = REQUIRED_PARAMS[eventName];
+        if (required && required.some(key => clean[key] === undefined)) return null;
+        return clean;
     }
 
     function sanitizeCalculatorEntry(params = {}) {
@@ -305,6 +331,127 @@
         flushPending();
     }
 
+
+    const INTL_ARTICLE_PATH_PATTERN = /^\/(en|ko|tw)\/articles\/[^/]+\.html$/;
+    const ARTICLE_CATEGORY_BY_ANCHOR = Object.freeze({
+        'intl-hub-account': 'account',
+        'intl-hub-earn': 'earn',
+        'intl-hub-levels': 'levels',
+        'intl-hub-trouble': 'troubleshooting'
+    });
+
+    function getArticleJourneyContext() {
+        const pathname = window.location && window.location.pathname ? String(window.location.pathname) : '';
+        const localeMatch = pathname.match(INTL_ARTICLE_PATH_PATTERN);
+        if (!localeMatch || !window.document || typeof window.document.querySelector !== 'function') return null;
+
+        const roleWidget = window.document.querySelector('.intl-article-sidebar .sidebar-widget--next');
+        const roleMatch = String(roleWidget && roleWidget.className || '').match(/\bsidebar-widget--role-([a-z_]+)\b/);
+        if (!roleMatch) return null;
+
+        let articleCategory = 'guides';
+        const categoryLink = window.document.querySelector('.intl-breadcrumb-category');
+        const categoryHref = categoryLink && typeof categoryLink.getAttribute === 'function'
+            ? String(categoryLink.getAttribute('href') || '')
+            : '';
+        for (const [anchor, category] of Object.entries(ARTICLE_CATEGORY_BY_ANCHOR)) {
+            if (categoryHref.includes('#' + anchor)) {
+                articleCategory = category;
+                break;
+            }
+        }
+
+        return {
+            locale: localeMatch[1],
+            article_role: roleMatch[1],
+            article_category: articleCategory
+        };
+    }
+
+    function getSelectorPosition(link, selector) {
+        if (!window.document || typeof window.document.querySelectorAll !== 'function') return null;
+        const links = Array.from(window.document.querySelectorAll(selector));
+        const index = links.indexOf(link);
+        return index >= 0 && index < 10 ? index + 1 : null;
+    }
+
+    function getPopularPosition(link) {
+        const item = link && typeof link.closest === 'function' ? link.closest('.sidebar-popular-item') : null;
+        const rank = item && typeof item.querySelector === 'function' ? item.querySelector('.sidebar-popular-rank') : null;
+        const position = Number.parseInt(rank && rank.textContent || '', 10);
+        return Number.isInteger(position) && position >= 1 && position <= 10 ? position : null;
+    }
+
+    function classifyArticleNavigationLink(link, url) {
+        if (!link || !url) return null;
+        const hasClass = name => Boolean(link.classList && typeof link.classList.contains === 'function' && link.classList.contains(name));
+        const closest = selector => typeof link.closest === 'function' ? link.closest(selector) : null;
+
+        if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
+        if (hasClass('nav-item') && closest('.intl-global-nav')) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item') };
+        if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
+        if (closest('.site-region-menu')) return { component: 'region_switch', link_position: getSelectorPosition(link, '.site-region-menu a') };
+        if (hasClass('sidebar-next-link')) return { component: 'next_step', link_position: 1 };
+        if (hasClass('sidebar-popular-link')) return { component: 'popular', link_position: getPopularPosition(link) };
+        if (hasClass('sidebar-related-link')) return { component: 'related', link_position: getSelectorPosition(link, '.sidebar-related-link') };
+        if (hasClass('sidebar-browse-link')) return { component: 'browse', link_position: getSelectorPosition(link, '.sidebar-browse-link') };
+        if (hasClass('site-about-link') || closest('.sidebar-author-links, .author-box-links')) {
+            const hostname = String(url.hostname || '').toLowerCase();
+            const isKatakataLab = hostname === 'katakatalab.com' || hostname.endsWith('.katakatalab.com');
+            return {
+                component: isKatakataLab ? 'katakatalab' : 'author',
+                link_position: getSelectorPosition(link, '.sidebar-author-links a, .author-box-links a, .site-about-link')
+            };
+        }
+        return null;
+    }
+
+    function classifyArticleDestination(url, component) {
+        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'external';
+        if (isCalculatorDestination(url)) return component === 'region_switch' ? 'region_home' : 'calculator';
+        if (component === 'author') return 'operator_profile';
+        if (url.pathname === window.location.pathname && url.hash) return 'section';
+        if (/\/(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
+        if (/\/(?:en|ko|tw)\/articles\/$/.test(url.pathname)) return url.hash ? 'category' : 'guide_hub';
+        return 'internal';
+    }
+
+    function installArticleJourneyTracking() {
+        if (!window.document || typeof window.document.addEventListener !== 'function') return;
+        const pathname = window.location && window.location.pathname ? String(window.location.pathname) : '';
+        if (!INTL_ARTICLE_PATH_PATTERN.test(pathname)) return;
+
+        window.document.addEventListener('click', event => {
+            const link = event && event.target && typeof event.target.closest === 'function'
+                ? event.target.closest('a[href]')
+                : null;
+            if (!link) return;
+
+            let url;
+            try {
+                url = resolveUrl(link);
+            } catch (error) {
+                return;
+            }
+
+            const journey = classifyArticleNavigationLink(link, url);
+            const context = getArticleJourneyContext();
+            if (!journey || !context) return;
+
+            const params = {
+                source_path: pathname,
+                component: journey.component,
+                locale: context.locale,
+                article_role: context.article_role,
+                article_category: context.article_category,
+                destination_type: classifyArticleDestination(url, journey.component)
+            };
+            if (journey.link_position !== null) params.link_position = journey.link_position;
+            if (url.origin === window.location.origin) params.target_path = url.pathname;
+            track('article_navigation_click', params);
+        });
+    }
+
     function markEngaged() {
         if (typeof window.dispatchEvent === 'function' && typeof window.CustomEvent === 'function') {
             window.dispatchEvent(new CustomEvent('playpoint:engaged'));
@@ -326,6 +473,7 @@
     });
 
     installGtagBridge();
+    installArticleJourneyTracking();
     if (window.document && typeof window.document.addEventListener === 'function') {
         window.document.addEventListener('playpoint:consent-ready', flushPending);
         window.document.addEventListener('playpoint:consent-updated', flushPending);

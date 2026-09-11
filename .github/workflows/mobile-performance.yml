@@ -17,7 +17,7 @@ on:
   pull_request:
     branches:
       - main
-    # PRでは実際に計測する3画面と、その共有ランタイム/スタイルだけを対象にする。
+    # PRでは実際に計測する代表画面と、その共有ランタイム/スタイルだけを対象にする。
     # 記事本文だけの編集や別記事専用CSSではLighthouseを起動しない。
     # 生成処理の整合性は常時実行のPR Gateが担当する。
     paths:
@@ -31,7 +31,12 @@ on:
       - 'articles/2026-03-10-play-points-reflection-timing.html'
       - 'articles/article-modern.css'
       - 'articles/article-shared.css'
+      - 'articles/intl-article.css'
+      - 'articles/intl-shell-v1.css'
       - 'articles/styles/2026-03-10-play-points-reflection-timing.css'
+      - 'en/articles/google-play-points-join-eligibility.html'
+      - 'ko/articles/google-play-points-join-eligibility.html'
+      - 'tw/articles/google-play-points-join-eligibility.html'
       - '.github/workflows/mobile-performance.yml'
       - '.github/scripts/minify.cjs'
       - '.github/scripts/mobile-performance-budget.cjs'
@@ -96,7 +101,7 @@ jobs:
           cat /tmp/playpoint-performance-server.log
           exit 1
 
-      - name: Audit calculator, article hub and representative article
+      - name: Audit calculator, hubs and representative articles
         shell: bash
         run: |
           set -euo pipefail
@@ -137,6 +142,10 @@ jobs:
           audit_page calculator-home-3 /
           audit_page article-hub /blog/
           audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
+          # 海外記事はlocaleごとに別プロファイルで評価し、1地域の悪化を平均値で隠さない。
+          audit_page international-article-en /en/articles/google-play-points-join-eligibility.html
+          audit_page international-article-ko /ko/articles/google-play-points-join-eligibility.html
+          audit_page international-article-tw /tw/articles/google-play-points-join-eligibility.html
 
       - name: Save Lighthouse diagnostics
         run: >-
@@ -146,6 +155,9 @@ jobs:
           performance-artifacts/calculator-home-3.json
           performance-artifacts/article-hub.json
           performance-artifacts/representative-article.json
+          performance-artifacts/international-article-en.json
+          performance-artifacts/international-article-ko.json
+          performance-artifacts/international-article-tw.json
           --output-dir performance-artifacts
 
       - name: Enforce strengthened mobile performance budgets
@@ -156,6 +168,9 @@ jobs:
           performance-artifacts/calculator-home-3.json
           performance-artifacts/article-hub.json
           performance-artifacts/representative-article.json
+          performance-artifacts/international-article-en.json
+          performance-artifacts/international-article-ko.json
+          performance-artifacts/international-article-tw.json
 
       - name: Upload Lighthouse reports and CLS evidence
         if: always()
