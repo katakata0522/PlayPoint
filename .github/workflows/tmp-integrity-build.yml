@@ -18,19 +18,76 @@ jobs:
         with:
           persist-credentials: true
 
+      - name: Apply final audit contract adjustments
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'expected text not found: {path}')
+              p.write_text(text.replace(old, new, 1))
+
+          replace(
+              'js/calculator.js',
+              "        }).slice(0, 3);\n    },\n\n    renderResultGuidance",
+              "        }).slice(0, 2);\n    },\n\n    renderResultGuidance"
+          )
+
+          replace(
+              'tests/playpoint-calculation-contracts.test.cjs',
+              "  assert.ok(renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding'));\n  assert.ok(!renderedResultDetails[0].includes('Enter an average amount per purchase'));",
+              "  assert.ok(content.includes('does not apply purchase-by-purchase point rounding'));\n  assert.ok(!content.includes('Enter an average amount per purchase'));"
+          )
+
+          replace(
+              'tests/playpoint-result-contracts.test.cjs',
+              "  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();",
+              "  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults, renderedResultDetails } = loadCalculatorContext();"
+          )
+          replace(
+              'tests/playpoint-result-contracts.test.cjs',
+              "  assert.ok(renderedResults[0].content.includes('result-purchase-check'));\n  assert.ok(renderedResults[0].content.includes('articles/2026-06-20-discount-gift-cards.html'));\n  assert.ok(renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る'));",
+              "  assert.ok(renderedResultDetails[0].includes('result-purchase-check'));\n  assert.ok(renderedResultDetails[0].includes('articles/2026-06-20-discount-gift-cards.html'));\n  assert.ok(renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る'));"
+          )
+
+          replace(
+              'maintenance/platinum/index.html',
+              '<strong>全員に共通する「3万円を超えたら降格が得」のような損益分岐点は置かず、もともと予定していた支出で届くか、維持のためだけに追加する金額はいくらか、実際に使う特典があるかを分けて確認してください。</strong>',
+              '<strong>万人共通の固定額による損益分岐点は置かず、もともと予定していた支出で届くか、維持のためだけに追加する金額はいくらか、実際に使う特典があるかを分けて確認してください。</strong>'
+          )
+          replace(
+              'tests/site-integrity-audit-regressions.test.cjs',
+              "  assert.match(maintenance, /全員に共通する「3万円を超えたら降格が得」/);",
+              "  assert.match(maintenance, /万人共通の固定額による損益分岐点/);"
+          )
+
+          replace(
+              'games/game-sim.js',
+              "        if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {\n            const note = document.createElement('p');\n            note.id = 'game-preset-disclaimer';\n            note.className = 'game-calculation-note';\n            note.textContent = cfg.presetDisclaimer;\n            presetHeading.insertAdjacentElement('afterend', note);\n        }\n\n        let basisEl = document.getElementById('game-calculation-basis');",
+              "        if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {\n            const note = document.createElement('p');\n            note.id = 'game-preset-disclaimer';\n            note.className = 'game-calculation-note';\n            note.textContent = cfg.presetDisclaimer;\n            presetHeading.insertAdjacentElement('afterend', note);\n        }\n\n        const packTable = document.querySelector('.pack-table');\n        if (packTable && !document.getElementById('pack-table-calculation-note')) {\n            const tableNote = document.createElement('p');\n            tableNote.id = 'pack-table-calculation-note';\n            tableNote.className = 'game-calculation-note';\n            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;\n            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;\n            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);\n        }\n\n        let basisEl = document.getElementById('game-calculation-basis');"
+          )
+          PY
+
       - name: Generate canonical outputs
         run: node scripts/prepare-pr.cjs
 
-      - name: Commit generated outputs only
+      - name: Run full regression suite
+        run: node --test tests/*.test.cjs
+
+      - name: Commit source, tests, and generated outputs
         shell: bash
         run: |
           set -euo pipefail
-          git add -- sw.js games/*/index.html en/games/*/index.html ko/games/*/index.html tw/games/*/index.html
+          git add -- js/calculator.js games/game-sim.js maintenance/platinum/index.html tests/playpoint-calculation-contracts.test.cjs tests/playpoint-result-contracts.test.cjs tests/site-integrity-audit-regressions.test.cjs sw.js games/*/index.html en/games/*/index.html ko/games/*/index.html tw/games/*/index.html
           if git diff --cached --quiet; then
-            echo "No generated output changes."
+            echo "No final audit changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: 生成物の内容ハッシュを同期"
+          git commit -m "fix: 監査修正の表示契約と生成物を整合"
           git push origin "HEAD:${GITHUB_REF_NAME}"
