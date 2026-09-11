@@ -27,7 +27,7 @@
         locale: new Set(['en', 'ko', 'tw']),
         article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
         article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
-        destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal'])
+        destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'official_google_support'])
     });
     const REQUIRED_PARAMS = Object.freeze({
         article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])

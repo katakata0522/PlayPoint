@@ -113,7 +113,7 @@
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
             const prefix = getCurrentAssetPrefix();
-            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=6d6b58c719`)
+            analyticsCorePromise = loadScript(`${prefix}js/analytics-core.js?v=77e734eff2`)
                 .then(() => {
                     if (!window.PlayPointAnalytics) {
                         throw new Error('Analytics core loaded without PlayPointAnalytics.');
