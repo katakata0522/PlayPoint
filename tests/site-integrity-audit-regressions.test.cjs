@@ -238,7 +238,7 @@ test('維持判断とトラブル記事の表示順は監査で決めた信頼�
   assert.doesNotMatch(maintenance, /経済的に絶対にお得/);
   assert.doesNotMatch(maintenance, /年間約1,500[〜-]3,000pt差/);
   assert.match(maintenance, /1\.75pt \/ 100円/);
-  assert.match(maintenance, /全員に共通する「3万円を超えたら降格が得」/);
+  assert.match(maintenance, /万人共通の固定額による損益分岐点/);
 
   const article = fs.readFileSync(path.join(root, 'articles/2026-03-10-play-points-reflection-timing.html'), 'utf8');
   const answerIndex = article.indexOf('class="answer-box editorial-answer"');

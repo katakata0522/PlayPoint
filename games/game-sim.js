@@ -258,6 +258,16 @@
             presetHeading.insertAdjacentElement('afterend', note);
         }
 
+        const packTable = document.querySelector('.pack-table');
+        if (packTable && !document.getElementById('pack-table-calculation-note')) {
+            const tableNote = document.createElement('p');
+            tableNote.id = 'pack-table-calculation-note';
+            tableNote.className = 'game-calculation-note';
+            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;
+            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;
+            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);
+        }
+
         let basisEl = document.getElementById('game-calculation-basis');
         if (!basisEl && resultContainer) {
             basisEl = document.createElement('p');

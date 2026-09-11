@@ -107,7 +107,7 @@ test('折りたたみ詳細の見出しを4言語で用意する', () => {
 });
 
 test('計算結果の直後に買う前のギフト確認リンクを出す', () => {
-  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -126,9 +126,9 @@ test('計算結果の直後に買う前のギフト確認リンクを出す', ()
   updateBaseRateAndTarget();
   calculate();
 
-  assert.ok(renderedResults[0].content.includes('result-purchase-check'));
-  assert.ok(renderedResults[0].content.includes('articles/2026-06-20-discount-gift-cards.html'));
-  assert.ok(renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る'));
+  assert.ok(renderedResultDetails[0].includes('result-purchase-check'));
+  assert.ok(renderedResultDetails[0].includes('articles/2026-06-20-discount-gift-cards.html'));
+  assert.ok(renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る'));
 
   reverseCalculate();
   assert.ok(renderedResults[1].content.includes('result-purchase-check'));

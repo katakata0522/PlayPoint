@@ -192,7 +192,7 @@ export const CALC = {
             if (seen.has(link.href)) return false;
             seen.add(link.href);
             return true;
-        }).slice(0, 3);
+        }).slice(0, 2);
     },
 
     renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
