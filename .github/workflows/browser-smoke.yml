@@ -139,7 +139,8 @@ jobs:
             exit 0
           fi
 
-          changed_files="$(git diff --name-only "$parent_sha" "$head_sha")"
+          # renameは旧pathの削除も判定対象にする。Deploy側と同じ差分契約を使う。
+          changed_files="$(git diff --name-only --no-renames "$parent_sha" "$head_sha")"
           if [ -z "$changed_files" ]; then
             echo 'No changed files were detected; running production browser smoke as a fail-safe.'
             echo 'smoke_needed=true' >> "$GITHUB_OUTPUT"
