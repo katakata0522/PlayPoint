@@ -6,7 +6,7 @@ on:
       - fix/site-integrity-audit-20260911
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -16,32 +16,21 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Generate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated outputs only
         shell: bash
         run: |
-          set +e
-          node scripts/prepare-pr.cjs
-          status=$?
-          git --no-pager status --short > /tmp/build-status.txt
-          git --no-pager diff --name-only > /tmp/build-changed-files.txt
-          echo "$status" > /tmp/prepare-pr-exit-code.txt
-          exit 0
-
-      - name: Collect generated workspace
-        shell: bash
-        run: |
-          mkdir -p /tmp/playpoint-generated
-          tar --exclude=.git -cf - . | tar -xf - -C /tmp/playpoint-generated
-          cp /tmp/build-status.txt /tmp/playpoint-generated/__build-status.txt
-          cp /tmp/build-changed-files.txt /tmp/playpoint-generated/__build-changed-files.txt
-          cp /tmp/prepare-pr-exit-code.txt /tmp/playpoint-generated/__prepare-pr-exit-code.txt
-
-      - name: Upload generated workspace
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: playpoint-integrity-generated-${{ github.run_id }}
-          path: /tmp/playpoint-generated
-          if-no-files-found: error
-          retention-days: 1
+          set -euo pipefail
+          git add -- sw.js games/*/index.html en/games/*/index.html ko/games/*/index.html tw/games/*/index.html
+          if git diff --cached --quiet; then
+            echo "No generated output changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: 生成物の内容ハッシュを同期"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
