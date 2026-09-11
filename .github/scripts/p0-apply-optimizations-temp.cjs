@@ -34,9 +34,19 @@ function replaceOnce(source, before, after, label) {
 {
   const file = 'blog/article.js';
   let source = read(file);
-  source = replaceOnce(source, "        if (document.querySelector('.reading-time-badge')) return;", "        const existingBadge = document.querySelector('.reading-time-badge');", 'reuse prerendered reading time badge');
+  source = replaceOnce(
+    source,
+    "        if (document.querySelector('.reading-time-badge')) return;\n        const content = document.querySelector('.content, .main-content-column, article');\n        if (!content) return;\n\n        const loc = getLocale();",
+    "        const existingBadge = document.querySelector('.reading-time-badge');\n        const content = document.querySelector('.content, .main-content-column, article');\n        if (!content) return;\n\n        const loc = getLocale();\n        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-post-meta, .article-meta, .post-meta');\n        const staticReadTimePatterns = {\n            ja: /読了\\s*(?:約\\s*)?\\d+\\s*分/,\n            en: /\\b\\d+\\s*min(?:ute)?s?\\s*read\\b/i,\n            ko: /(?:약\\s*)?\\d+\\s*분(?:\\s*읽기)?/,\n            tw: /(?:約\\s*)?\\d+\\s*分鐘/\n        };\n        if (!existingBadge && targetMeta && staticReadTimePatterns[loc]?.test(targetMeta.textContent || '')) return;",
+    'recognize canonical static reading time'
+  );
   source = replaceOnce(source, "        const badge = document.createElement('span');", "        const badge = existingBadge || document.createElement('span');", 'reuse existing reading time node');
-  source = replaceOnce(source, "        if (targetMeta) {\n            targetMeta.appendChild(badge);\n        } else {", "        if (targetMeta) {\n            if (!existingBadge) targetMeta.appendChild(badge);\n        } else if (!existingBadge) {", 'avoid late reading time insertion');
+  source = replaceOnce(
+    source,
+    "        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');\n        if (targetMeta) {\n            targetMeta.appendChild(badge);\n        } else {",
+    "        if (targetMeta) {\n            if (!existingBadge) targetMeta.appendChild(badge);\n        } else if (!existingBadge) {",
+    'avoid late reading time insertion'
+  );
   write(file, source);
 }
 
