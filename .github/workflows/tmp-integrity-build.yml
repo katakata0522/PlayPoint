@@ -24,52 +24,80 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
-          def replace(path, old, new):
+          def replace_fragment(path, old, new):
               p = Path(path)
               text = p.read_text()
               if old not in text:
-                  raise SystemExit(f'expected text not found: {path}')
+                  raise SystemExit(f'expected fragment not found: {path}: {old[:80]}')
               p.write_text(text.replace(old, new, 1))
 
-          replace(
+          replace_fragment(
               'js/calculator.js',
               "        }).slice(0, 3);\n    },\n\n    renderResultGuidance",
               "        }).slice(0, 2);\n    },\n\n    renderResultGuidance"
           )
 
-          replace(
+          replace_fragment(
               'tests/playpoint-calculation-contracts.test.cjs',
-              "  assert.ok(renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding'));\n  assert.ok(!renderedResultDetails[0].includes('Enter an average amount per purchase'));",
-              "  assert.ok(content.includes('does not apply purchase-by-purchase point rounding'));\n  assert.ok(!content.includes('Enter an average amount per purchase'));"
+              "renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding')",
+              "content.includes('does not apply purchase-by-purchase point rounding')"
+          )
+          replace_fragment(
+              'tests/playpoint-calculation-contracts.test.cjs',
+              "!renderedResultDetails[0].includes('Enter an average amount per purchase')",
+              "!content.includes('Enter an average amount per purchase')"
           )
 
-          replace(
+          replace_fragment(
               'tests/playpoint-result-contracts.test.cjs',
-              "  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();",
-              "  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults, renderedResultDetails } = loadCalculatorContext();"
+              "const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults } = loadCalculatorContext();",
+              "const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, reverseCalculate, renderedResults, renderedResultDetails } = loadCalculatorContext();"
           )
-          replace(
+          replace_fragment(
               'tests/playpoint-result-contracts.test.cjs',
-              "  assert.ok(renderedResults[0].content.includes('result-purchase-check'));\n  assert.ok(renderedResults[0].content.includes('articles/2026-06-20-discount-gift-cards.html'));\n  assert.ok(renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る'));",
-              "  assert.ok(renderedResultDetails[0].includes('result-purchase-check'));\n  assert.ok(renderedResultDetails[0].includes('articles/2026-06-20-discount-gift-cards.html'));\n  assert.ok(renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る'));"
+              "renderedResults[0].content.includes('result-purchase-check')",
+              "renderedResultDetails[0].includes('result-purchase-check')"
+          )
+          replace_fragment(
+              'tests/playpoint-result-contracts.test.cjs',
+              "renderedResults[0].content.includes('articles/2026-06-20-discount-gift-cards.html')",
+              "renderedResultDetails[0].includes('articles/2026-06-20-discount-gift-cards.html')"
+          )
+          replace_fragment(
+              'tests/playpoint-result-contracts.test.cjs',
+              "renderedResults[0].content.includes('買う前にギフトコードの還元条件を見る')",
+              "renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る')"
           )
 
-          replace(
+          replace_fragment(
               'maintenance/platinum/index.html',
-              '<strong>全員に共通する「3万円を超えたら降格が得」のような損益分岐点は置かず、もともと予定していた支出で届くか、維持のためだけに追加する金額はいくらか、実際に使う特典があるかを分けて確認してください。</strong>',
-              '<strong>万人共通の固定額による損益分岐点は置かず、もともと予定していた支出で届くか、維持のためだけに追加する金額はいくらか、実際に使う特典があるかを分けて確認してください。</strong>'
+              '全員に共通する「3万円を超えたら降格が得」のような損益分岐点は置かず',
+              '万人共通の固定額による損益分岐点は置かず'
           )
-          replace(
+          replace_fragment(
               'tests/site-integrity-audit-regressions.test.cjs',
-              "  assert.match(maintenance, /全員に共通する「3万円を超えたら降格が得」/);",
-              "  assert.match(maintenance, /万人共通の固定額による損益分岐点/);"
+              'assert.match(maintenance, /全員に共通する「3万円を超えたら降格が得」/);',
+              'assert.match(maintenance, /万人共通の固定額による損益分岐点/);'
           )
 
-          replace(
-              'games/game-sim.js',
-              "        if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {\n            const note = document.createElement('p');\n            note.id = 'game-preset-disclaimer';\n            note.className = 'game-calculation-note';\n            note.textContent = cfg.presetDisclaimer;\n            presetHeading.insertAdjacentElement('afterend', note);\n        }\n\n        let basisEl = document.getElementById('game-calculation-basis');",
-              "        if (presetHeading && cfg.presetDisclaimer && !document.getElementById('game-preset-disclaimer')) {\n            const note = document.createElement('p');\n            note.id = 'game-preset-disclaimer';\n            note.className = 'game-calculation-note';\n            note.textContent = cfg.presetDisclaimer;\n            presetHeading.insertAdjacentElement('afterend', note);\n        }\n\n        const packTable = document.querySelector('.pack-table');\n        if (packTable && !document.getElementById('pack-table-calculation-note')) {\n            const tableNote = document.createElement('p');\n            tableNote.id = 'pack-table-calculation-note';\n            tableNote.className = 'game-calculation-note';\n            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;\n            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;\n            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);\n        }\n\n        let basisEl = document.getElementById('game-calculation-basis');"
-          )
+          game_path = Path('games/game-sim.js')
+          game_text = game_path.read_text()
+          if "id = 'pack-table-calculation-note'" not in game_text:
+              anchor = "        let basisEl = document.getElementById('game-calculation-basis');"
+              if anchor not in game_text:
+                  raise SystemExit('game table-note anchor not found')
+              insert = """        const packTable = document.querySelector('.pack-table');
+        if (packTable && !document.getElementById('pack-table-calculation-note')) {
+            const tableNote = document.createElement('p');
+            tableNote.id = 'pack-table-calculation-note';
+            tableNote.className = 'game-calculation-note';
+            tableNote.textContent = `${cfg.basisEstimated} ${cfg.officialRuleText}`;
+            const tableWrap = packTable.closest ? packTable.closest('.pack-table-wrap') : null;
+            if (tableWrap) tableWrap.insertAdjacentElement('beforebegin', tableNote);
+        }
+
+"""
+              game_path.write_text(game_text.replace(anchor, insert + anchor, 1))
           PY
 
       - name: Generate canonical outputs
