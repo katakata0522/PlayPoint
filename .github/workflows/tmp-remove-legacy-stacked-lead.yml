@@ -13,14 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: fix/remove-legacy-stacked-lead-20260911
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
 
       - name: Normalize legacy article markup and harden audit
         shell: bash
@@ -30,36 +26,30 @@ jobs:
 
           article = Path('articles/2025-12-25-best-use.html')
           text = article.read_text(encoding='utf-8')
-          old = '''<section aria-labelledby="quick-answer" class="answer-box">
-          <h2 id="quick-answer">結論：おすすめは「実際に使う予定がある交換先」</h2>
-          <p>クーポンやゲーム内アイテムは、自分がもともと買う予定の対象なら高い実用価値になりやすい一方、使う予定がなければ表示額が大きくても得とは限りません。用途をまだ決めていない場合は、Playクレジットも含めて自分の「使う」画面の条件を比較してください。</p>
-          </section>
-          <div class="intro">
-          <strong>一番よい交換先は、表示されている特典と実際に使う予定で変わります。</strong><br/>
-                          クーポン・アイテム・Playクレジットを、見かけの額ではなく「実際に使える価値」で比べます。
-                      </div>'''
-          new = '''<section aria-labelledby="quick-answer" class="answer-box">
-          <h2 id="quick-answer">結論：おすすめは「実際に使う予定がある交換先」</h2>
-          <p>一番よい交換先は、表示されている特典と実際に使う予定で変わります。クーポンやゲーム内アイテムは、自分がもともと買う予定の対象なら高い実用価値になりやすい一方、使う予定がなければ表示額が大きくても得とは限りません。クーポン・アイテム・Playクレジットを見かけの額ではなく「実際に使える価値」で比べ、用途をまだ決めていない場合はPlayクレジットも含めて自分の「使う」画面の条件を確認してください。</p>
-          </section>'''
-          if old not in text:
-              raise SystemExit('expected legacy answer/intro block not found')
-          article.write_text(text.replace(old, new, 1), encoding='utf-8')
+          old_p = '<p>クーポンやゲーム内アイテムは、自分がもともと買う予定の対象なら高い実用価値になりやすい一方、使う予定がなければ表示額が大きくても得とは限りません。用途をまだ決めていない場合は、Playクレジットも含めて自分の「使う」画面の条件を比較してください。</p>'
+          new_p = '<p>一番よい交換先は、表示されている特典と実際に使う予定で変わります。クーポンやゲーム内アイテムは、自分がもともと買う予定の対象なら高い実用価値になりやすい一方、使う予定がなければ表示額が大きくても得とは限りません。クーポン・アイテム・Playクレジットを見かけの額ではなく「実際に使える価値」で比べ、用途をまだ決めていない場合はPlayクレジットも含めて自分の「使う」画面の条件を確認してください。</p>'
+          legacy_intro = '\n<div class="intro">\n<strong>一番よい交換先は、表示されている特典と実際に使う予定で変わります。</strong><br/>\n                クーポン・アイテム・Playクレジットを、見かけの額ではなく「実際に使える価値」で比べます。\n            </div>'
+          if text.count(old_p) != 1:
+              raise SystemExit(f'expected answer paragraph once, found {text.count(old_p)}')
+          if text.count(legacy_intro) != 1:
+              raise SystemExit(f'expected legacy intro once, found {text.count(legacy_intro)}')
+          text = text.replace(old_p, new_p, 1).replace(legacy_intro, '', 1)
+          article.write_text(text, encoding='utf-8')
 
           audit = Path('scripts/article-design-system-audit.cjs')
           text = audit.read_text(encoding='utf-8')
           old = "if (components.stackedLead > 0) warnings.push('legacy answer + intro + summary stacks remain in markup: ' + components.stackedLead + ' (visually compacted by Design System 2.0)');"
           new = "if (components.stackedLead > 0) failures.push('legacy answer + intro + summary stacks are not allowed: ' + components.stackedLead);"
-          if old not in text:
-              raise SystemExit('expected stackedLead warning rule not found')
+          if text.count(old) != 1:
+              raise SystemExit(f'expected stackedLead warning once, found {text.count(old)}')
           audit.write_text(text.replace(old, new, 1), encoding='utf-8')
 
           test_file = Path('tests/article-design-system.test.cjs')
           text = test_file.read_text(encoding='utf-8')
           old = '  assert.ok(result.components.stackedLead <= result.articleCount);'
           new = "  assert.equal(result.components.stackedLead, 0, 'legacy answer + intro + summary stacks must not return');"
-          if old not in text:
-              raise SystemExit('expected stackedLead test assertion not found')
+          if text.count(old) != 1:
+              raise SystemExit(f'expected stackedLead assertion once, found {text.count(old)}')
           test_file.write_text(text.replace(old, new, 1), encoding='utf-8')
           PY
 
