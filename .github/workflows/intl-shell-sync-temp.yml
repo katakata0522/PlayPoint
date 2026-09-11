@@ -1,0 +1,49 @@
+name: Intl shell sync temp
+
+on:
+  push:
+    branches:
+      - feat/intl-navigation-sidebar-v1-20260911
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/intl-navigation-sidebar-v1-20260911
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build canonical generated outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify navigation/sidebar contracts
+        run: >-
+          node --test
+          tests/intl-article-layout.test.cjs
+          tests/intl-related-guides.test.cjs
+          tests/intl-popular-guides.test.cjs
+          tests/intl-navigation-sidebar-v1.test.cjs
+
+      - name: Commit generated outputs
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "build: sync international navigation shell [skip ci]"
+          git push origin HEAD:feat/intl-navigation-sidebar-v1-20260911
