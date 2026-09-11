@@ -1,4 +1,4 @@
-name: Temporary P0 merge-ref canonical diff
+name: Temporary P0 exact preflight capture
 
 on:
   pull_request:
@@ -13,6 +13,8 @@ on:
       - 'en/articles/**'
       - 'ko/articles/**'
       - 'tw/articles/**'
+      - 'tests/**'
+      - '.github/scripts/**'
 
 permissions:
   contents: read
@@ -27,24 +29,26 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Capture canonical diff
+      - name: Capture exact preflight result
         run: |
-          set -euo pipefail
-          mkdir -p p0-merge-ref-diff
-          git rev-parse HEAD > p0-merge-ref-diff/head.txt
-          git status --short > p0-merge-ref-diff/status-before.txt
-          cp js/analytics-core.js p0-merge-ref-diff/analytics-core-before.js
-          node scripts/prepare-pr.cjs > p0-merge-ref-diff/prepare-pr.log 2>&1 || true
-          git status --short > p0-merge-ref-diff/status-after.txt
-          git --no-pager diff -- js/analytics-core.js > p0-merge-ref-diff/analytics-core.diff || true
-          cp js/analytics-core.js p0-merge-ref-diff/analytics-core-after.js
-          sha256sum p0-merge-ref-diff/analytics-core-before.js p0-merge-ref-diff/analytics-core-after.js > p0-merge-ref-diff/hashes.txt
-          cat p0-merge-ref-diff/status-after.txt
-          cat p0-merge-ref-diff/analytics-core.diff
+          set -u
+          mkdir -p p0-preflight-evidence
+          git rev-parse HEAD > p0-preflight-evidence/head.txt
+          git status --short > p0-preflight-evidence/status-before.txt
+          set +e
+          node .github/scripts/preflight.cjs > p0-preflight-evidence/preflight.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > p0-preflight-evidence/exit-code.txt
+          git status --short > p0-preflight-evidence/status-after.txt
+          git --no-pager diff -- js/analytics-core.js > p0-preflight-evidence/analytics-core.diff || true
+          git --no-pager diff > p0-preflight-evidence/all.diff || true
+          tail -n 160 p0-preflight-evidence/preflight.log
+          exit 0
 
-      - name: Upload merge-ref evidence
+      - name: Upload preflight evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: p0-merge-ref-diff-${{ github.run_id }}
-          path: p0-merge-ref-diff/
+          name: p0-preflight-evidence-${{ github.run_id }}
+          path: p0-preflight-evidence/
           retention-days: 2
