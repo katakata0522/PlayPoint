@@ -31,6 +31,19 @@ jobs:
       - name: Apply P0 observability patch
         run: node tools/apply-p0-article-observability.cjs
 
+      - name: Normalize VM-backed regression fixture
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = 'tests/article-navigation-observability.test.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          const before = "  assert.deepEqual(eventCalls(context, 'article_navigation_click'), [{";
+          const after = "  assert.deepEqual(JSON.parse(JSON.stringify(eventCalls(context, 'article_navigation_click'))), [{";
+          if (!source.includes(before)) throw new Error('Expected VM-array assertion was not found');
+          source = source.replace(before, after);
+          fs.writeFileSync(file, source, 'utf8');
+          NODE
+
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
 
