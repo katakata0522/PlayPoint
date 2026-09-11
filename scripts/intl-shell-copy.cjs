@@ -5,7 +5,7 @@ const COPY = Object.freeze({
     skip: 'Skip to main content',
     about: 'About Katakata',
     regionLabel: 'Play country',
-    regionNames: Object.freeze({ ja: 'Japan', en: 'United States', ko: 'Korea', tw: 'Taiwan' }),
+    regionNames: Object.freeze({ ja: 'Japan', en: 'United States', ko: 'Korea', tw: 'Taiwan', hk: 'Hong Kong', in: 'India' }),
     primary: 'Primary navigation',
     breadcrumb: 'Breadcrumb',
     sidebar: 'Article sidebar',
@@ -28,7 +28,7 @@ const COPY = Object.freeze({
   }),
   ko: Object.freeze({
     skip: '본문으로 건너뛰기', about: 'Katakata 소개', regionLabel: 'Play 국가',
-    regionNames: Object.freeze({ ja: '일본', en: '미국', ko: '대한민국', tw: '대만' }),
+    regionNames: Object.freeze({ ja: '일본', en: '미국', ko: '대한민국', tw: '대만', hk: '홍콩', in: '인도' }),
     primary: '주요 탐색', breadcrumb: '탐색 경로', sidebar: '기사 사이드바',
     nav: Object.freeze({ account: '계정·기본', earn: '적립·사용', levels: '등급·리워드', troubleshooting: '문제 해결' }),
     navSub: Object.freeze({ home: '필요 금액 계산', guides: 'Play Points 가이드', account: '국가·계정 설정', earn: '결제·쿠폰·교환', levels: '진행도·주간 혜택', troubleshooting: '미반영·오류 확인' }),
@@ -49,7 +49,7 @@ const COPY = Object.freeze({
   }),
   tw: Object.freeze({
     skip: '跳到主要內容', about: '關於 Katakata', regionLabel: 'Play 國家／地區',
-    regionNames: Object.freeze({ ja: '日本', en: '美國', ko: '韓國', tw: '台灣' }),
+    regionNames: Object.freeze({ ja: '日本', en: '美國', ko: '韓國', tw: '台灣', hk: '香港', in: '印度' }),
     primary: '主要導覽', breadcrumb: '導覽路徑', sidebar: '文章側欄',
     nav: Object.freeze({ account: '帳號與基本', earn: '積點與使用', levels: '等級與回饋', troubleshooting: '問題排解' }),
     navSub: Object.freeze({ home: '所需金額估算', guides: 'Play Points 指南', account: '地區與帳號設定', earn: '購買、優惠與兌換', levels: '進度與每週福利', troubleshooting: '未入帳與錯誤確認' }),

@@ -89,7 +89,12 @@
   .intl-article-sidebar { grid-template-columns: 1fr; }
 }
 @media (max-width: 420px) {
-  .site-header-tools { align-items: stretch; flex-direction: column; }
-  .site-about-link, .site-region-switcher summary { justify-content: center; width: 100%; }
+  .site-header-tools { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); width: 100%; gap: 8px; align-items: stretch; }
+  .site-about-link, .site-region-switcher, .site-region-switcher summary { min-width: 0; width: 100%; }
+  .site-about-link, .site-region-switcher summary { justify-content: center; padding-left: 8px; padding-right: 8px; }
+  .site-about-link, .site-region-switcher summary > span:last-of-type { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .site-region-menu { width: min(280px, calc(100vw - 28px)); }
+}
+@media (max-width: 340px) {
+  .site-header-tools { grid-template-columns: 1fr; }
 }

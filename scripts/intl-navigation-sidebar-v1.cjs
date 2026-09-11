@@ -14,7 +14,7 @@ const CHROME_END = '<!-- INTL_ARTICLE_CHROME_END -->';
 const SHELL_STYLESHEET = '/articles/intl-shell-v1.css';
 const SECTION_ORDER = ['home', 'guides', 'troubleshooting', 'earn', 'levels', 'account'];
 const SECTION_ANCHORS = Object.freeze({ account: 'intl-hub-account', earn: 'intl-hub-earn', levels: 'intl-hub-levels', troubleshooting: 'intl-hub-trouble' });
-const REGION_PATHS = Object.freeze({ ja: '/', en: '/en/', ko: '/ko/', tw: '/tw/' });
+const REGION_PATHS = Object.freeze({ ja: '/', en: '/en/', ko: '/ko/', tw: '/tw/', hk: '/hk/', in: '/in/' });
 
 function escapeHtml(value) {
   return String(value)
@@ -87,6 +87,55 @@ function renderBreadcrumbs(localeKey, title, section, variant, copy) {
   }
 
   return ['<div class="breadcrumbs-wrapper intl-article-breadcrumbs">', '  <nav aria-label="' + escapeHtml(copy.breadcrumb) + '">', ...items, '  </nav>', '</div>'];
+}
+
+
+const SITE_ORIGIN = 'https://playpoint-sim.com';
+
+function canonicalUrlForPath(relativePath) {
+  let normalized = '/' + String(relativePath).replace(/^\/+/, '');
+  if (normalized.endsWith('/index.html')) normalized = normalized.slice(0, -'index.html'.length);
+  return SITE_ORIGIN + normalized;
+}
+
+function buildBreadcrumbItems(localeKey, title, section, variant, relativePath) {
+  const locale = LOCALES[localeKey];
+  const copy = COPY[localeKey];
+  const homeHref = '/' + localeKey + '/';
+  const guidesHref = homeHref + 'articles/';
+  const items = [{ name: locale.home, item: SITE_ORIGIN + homeHref }];
+
+  if (variant === 'hub') {
+    items.push({ name: locale.blog, item: SITE_ORIGIN + guidesHref });
+    return items;
+  }
+
+  if (variant === 'policy') {
+    items.push({ name: title, item: canonicalUrlForPath(relativePath) });
+    return items;
+  }
+
+  items.push({ name: locale.blog, item: SITE_ORIGIN + guidesHref });
+  if (SECTION_ANCHORS[section] && copy.nav[section]) {
+    items.push({ name: copy.nav[section], item: SITE_ORIGIN + categoryHref(localeKey, section) });
+  }
+  items.push({ name: title, item: canonicalUrlForPath(relativePath) });
+  return items;
+}
+
+function renderBreadcrumbSchema(localeKey, title, section, variant, relativePath) {
+  const itemListElement = buildBreadcrumbItems(localeKey, title, section, variant, relativePath)
+    .map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: item.item }));
+  const schema = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement };
+  return '<script type="application/ld+json" data-intl-breadcrumbs>' + JSON.stringify(schema) + '</script>';
+}
+
+function upsertBreadcrumbSchema(html, localeKey, title, section, variant, relativePath, newline) {
+  const rendered = renderBreadcrumbSchema(localeKey, title, section, variant, relativePath);
+  const managed = /<script\b[^>]*data-intl-breadcrumbs[^>]*>[\s\S]*?<\/script>/i;
+  if (managed.test(html)) return String(html).replace(managed, rendered);
+  if (/"@type"\s*:\s*"BreadcrumbList"/.test(html)) return html;
+  return String(html).replace(/<\/head>/i, rendered + newline + '</head>');
 }
 
 function renderChrome(localeKey, title, section, variant, newline) {
@@ -230,8 +279,8 @@ function renderSidebar(localeKey, relativePath, section, role, relatedArticles, 
 function ensureStylesheet(html, newline) {
   if (String(html).includes(SHELL_STYLESHEET)) return html;
   const intlCss = /<link\b[^>]*href=["'][^"']*\/articles\/intl-article\.css(?:\?[^"']*)?["'][^>]*>/i;
-  if (intlCss.test(html)) return String(html).replace(intlCss, match => match + newline + '  <link rel="stylesheet" href="' + SHELL_STYLESHEET + '">');
-  return String(html).replace(/<\/head>/i, '  <link rel="stylesheet" href="' + SHELL_STYLESHEET + '">' + newline + '</head>');
+  if (intlCss.test(html)) return String(html).replace(intlCss, match => match + newline + '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">');
+  return String(html).replace(/<\/head>/i, '<link rel="stylesheet" href="' + SHELL_STYLESHEET + '">' + newline + '</head>');
 }
 
 function ensureMainTarget(html) {
@@ -271,6 +320,7 @@ function syncPage({ rootDir, localeKey, relativePath, section, role = null, rela
   const title = extractTitle(before, relativePath);
   let after = ensureStylesheet(before, newline);
   after = replaceChrome(after, renderChrome(localeKey, title, section, variant, newline));
+  after = upsertBreadcrumbSchema(after, localeKey, title, section, variant, relativePath, newline);
   after = replaceSidebar(after, renderSidebar(localeKey, relativePath, section, role, relatedArticles, variant, newline));
   after = ensureMainTarget(after);
   if (variant === 'article') after = enhanceAuthorBox(after, localeKey);

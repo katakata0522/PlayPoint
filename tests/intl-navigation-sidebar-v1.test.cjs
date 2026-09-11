@@ -62,3 +62,38 @@ test('guide hubs get a generic next-step card while operator pages avoid a redun
     assert.doesNotMatch(policy, /sidebar-author-card/, locale + ': operator page must not repeat its own mini profile');
   }
 });
+
+test('Play country switcher exposes all six supported calculator regions', () => {
+  const destinations = ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/'];
+  for (const locale of locales) {
+    const html = read(locale, 'google-play-points-not-showing.html');
+    const switcher = html.match(/<details class="site-region-switcher">[\s\S]*?<\/details>/i)?.[0] || '';
+    for (const href of destinations) {
+      if (href === `/${locale}/`) continue;
+      assert.ok(switcher.includes(`href="${href}"`), `${locale}: ${href}`);
+    }
+  }
+});
+
+test('visible category breadcrumbs are paired with BreadcrumbList structured data', () => {
+  for (const locale of locales) {
+    const html = read(locale, 'google-play-points-not-showing.html');
+    const match = html.match(/<script type="application\/ld\+json" data-intl-breadcrumbs>([\s\S]*?)<\/script>/i);
+    assert.ok(match, `${locale}: managed BreadcrumbList`);
+    const schema = JSON.parse(match[1]);
+    assert.strictEqual(schema['@type'], 'BreadcrumbList', `${locale}: schema type`);
+    assert.strictEqual(schema.itemListElement.at(-1).item, `https://playpoint-sim.com/${locale}/articles/google-play-points-not-showing.html`, `${locale}: current URL`);
+    assert.ok(schema.itemListElement.some(item => item.item === `https://playpoint-sim.com/${locale}/articles/#intl-hub-trouble`), `${locale}: category URL`);
+  }
+});
+
+test('guide hub BreadcrumbList ends at the canonical directory URL', () => {
+  for (const locale of locales) {
+    const html = fs.readFileSync(path.join(root, locale, 'articles', 'index.html'), 'utf8');
+    const match = html.match(/<script type="application\/ld\+json" data-intl-breadcrumbs>([\s\S]*?)<\/script>/i);
+    assert.ok(match, `${locale}: hub BreadcrumbList`);
+    const schema = JSON.parse(match[1]);
+    assert.strictEqual(schema.itemListElement.at(-1).item, `https://playpoint-sim.com/${locale}/articles/`, `${locale}: hub canonical URL`);
+  }
+});
+
