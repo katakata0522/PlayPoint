@@ -9,6 +9,13 @@ SSH_OPTIONS=(
   -i "$SSH_KEY"
   -o BatchMode=yes
   -o IdentitiesOnly=yes
+  -o PubkeyAuthentication=yes
+  -o PreferredAuthentications=publickey
+  -o PasswordAuthentication=no
+  -o KbdInteractiveAuthentication=no
+  -o ForwardAgent=no
+  -o ClearAllForwardings=yes
+  -o RequestTTY=no
   -o StrictHostKeyChecking=yes
   -o "UserKnownHostsFile=$HOME/.ssh/known_hosts"
   -o LogLevel=ERROR
@@ -16,7 +23,7 @@ SSH_OPTIONS=(
   -o ServerAliveInterval=15
   -o ServerAliveCountMax=2
 )
-RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=2"
+RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o PubkeyAuthentication=yes -o PreferredAuthentications=publickey -o PasswordAuthentication=no -o KbdInteractiveAuthentication=no -o ForwardAgent=no -o ClearAllForwardings=yes -o RequestTTY=no -o StrictHostKeyChecking=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts -o LogLevel=ERROR -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=2"
 
 DEFAULT_MAX_ATTEMPTS=5
 # The full mirror is the only phase that benefits from a longer outage window.
