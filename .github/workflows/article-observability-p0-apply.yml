@@ -1,0 +1,68 @@
+name: Apply Article Observability P0
+
+on:
+  push:
+    branches:
+      - feat/article-observability-p0-production-20260911
+    paths:
+      - '.github/workflows/article-observability-p0-apply.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: article-observability-p0-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Import only the validated P0 observability sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin feat/article-journey-performance-p0-20260911:refs/remotes/origin/p0-source
+          git checkout refs/remotes/origin/p0-source -- \
+            js/analytics-core.js \
+            docs/ANALYTICS.md \
+            .github/scripts/mobile-performance-budget.cjs \
+            .github/workflows/mobile-performance.yml \
+            tests/article-navigation-observability.test.cjs
+          rm .github/workflows/article-observability-p0-apply.yml
+
+      - name: Regenerate canonical public outputs
+        env:
+          PLAYPOINT_MODIFIED_DATE: '2026-08-12'
+          PLAYPOINT_ASSET_VERSION: '20260823_1957'
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify observability and repository preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/article-navigation-observability.test.cjs
+          node .github/scripts/preflight.cjs
+          git diff --check
+          echo 'Changed files:'
+          git status --short
+
+      - name: Commit verified result
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'feat: add article journey observability baseline'
+          git push origin HEAD:feat/article-observability-p0-production-20260911
