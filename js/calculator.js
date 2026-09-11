@@ -192,7 +192,7 @@ export const CALC = {
             if (seen.has(link.href)) return false;
             seen.add(link.href);
             return true;
-        }).slice(0, 3);
+        }).slice(0, 2);
     },
 
     renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
@@ -223,7 +223,7 @@ export const CALC = {
         `;
     },
 
-    // 折りたたみ詳細ではなく、金額の直後に買う前チェックを出す。
+    // 計算の前提と比較を確認した後に、必要な人だけ購入条件へ進める。
     renderPurchaseCheckLink() {
         const gift = this.getResultNavigation().giftCards;
         if (!gift?.href) return '';
@@ -366,6 +366,9 @@ export const CALC = {
         this.updateNeededPointsPlaceholder(config, currentStatusValue, targetStatusLabel);
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
 
+        // 0ptは「すでに達成済み」の有効状態として扱う。
+        STATE.dom.neededPoints.min = '0';
+
         if (maxNeededPoints === null) {
             STATE.dom.neededPoints.removeAttribute('max');
             return;
@@ -453,7 +456,8 @@ export const CALC = {
         const texts = config.uiText;
         const now = new Date();
         const remainingDays = CALC_PURE.getRemainingCalendarDays(now);
-        const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0.01);
+        if (STATE.dom.neededPoints) STATE.dom.neededPoints.min = '0';
+        const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0);
         const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
         const rateDetails = this.getRateDetails(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
         const finalRate = rateDetails ? rateDetails.finalRate : null;
@@ -465,7 +469,7 @@ export const CALC = {
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
 
-        if (neededPoints === null || neededPoints <= 0) return UI.displayResult(STATE.dom.result, texts.errorNeededPoints || texts.errorInput, true);
+        if (neededPoints === null || neededPoints < 0) return UI.displayResult(STATE.dom.result, texts.errorNeededPoints || texts.errorInput, true);
         if (!targetStatusLabel) return UI.displayResult(STATE.dom.result, texts.errorTargetStatus || texts.errorInput, true);
         if (finalRate === null || finalRate <= 0) return UI.displayResult(STATE.dom.result, texts.errorRate, true);
         if (maxNeededPoints === null || neededPoints > maxNeededPoints) return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
@@ -487,25 +491,20 @@ export const CALC = {
         let resultDetailsContent = '';
         const guidanceContent = this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
 
-        if (finalNeededPoints <= 0) {
+        if (finalNeededPoints === 0) {
             resultContent = `
                 <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
                     🎉 ${texts.resultLabelFreeClear || '課金不要'}
                 </div>
                 <dl>
                     <dt>${texts.resultLabelNeededPoints}</dt>
-                    <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
+                    <dd><b><span class="count-target" data-value="0">0</span> pt</b></dd>
+                    <dt>${texts.resultLabelTotalYen}</dt>
+                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(0, config)}</b></dd>
                 </dl>
-                ${this.renderPurchaseCheckLink()}
             `;
-            resultDetailsContent = guidanceContent
-                ? `
-                    <details>
-                        <summary>${texts.resultDetailsSummary || '計算の詳細を見る'}</summary>
-                        <div class="result-details-content">${guidanceContent}</div>
-                    </details>
-                `
-                : '';
+            // 追加支出が不要な状態では、購入導線や追加の支出判断リンクを出さない。
+            resultDetailsContent = '';
         } else {
             const monthlyResultContent = remainingMonths > 0
                 ? `
@@ -543,6 +542,12 @@ export const CALC = {
                     </aside>
                 `
                 : '';
+            const premiseContent = `
+                <p class="rounding-assumption-note">
+                    <strong>${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}</strong>${rateSourceLabel ? ` · ${rateSourceLabel}` : ''}<br>
+                    ${texts.roundingNoteWithoutPack}
+                </p>
+            `;
 
             resultContent = `
                 <dl>
@@ -551,7 +556,7 @@ export const CALC = {
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
                 </dl>
-                ${this.renderPurchaseCheckLink()}
+                ${premiseContent}
             `;
             resultDetailsContent = `
                 <details>
@@ -562,12 +567,11 @@ export const CALC = {
                             ${dailyResultContent}
                         </dl>
                         ${comparisonContent}
-                        <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-                        <p class="rounding-assumption-note">${texts.roundingNoteWithoutPack}</p>
                         <div class="calculation-note">${calculationNoteText}</div>
                         ${guidanceContent}
                     </div>
                 </details>
+                ${this.renderPurchaseCheckLink()}
             `;
         }
 

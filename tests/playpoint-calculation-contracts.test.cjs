@@ -109,8 +109,8 @@ test('通常計算は購入ごとの丸めを仮定しない概算として表�
   const content = renderedResults[0].content;
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(content.includes('data-value="6"'));
-  assert.ok(renderedResultDetails[0].includes('does not apply purchase-by-purchase point rounding'));
-  assert.ok(!renderedResultDetails[0].includes('Enter an average amount per purchase'));
+  assert.ok(content.includes('does not apply purchase-by-purchase point rounding'));
+  assert.ok(!content.includes('Enter an average amount per purchase'));
 });
 
 test('逆算モードは入力額を1回の購入として丸める前提を表示する', () => {

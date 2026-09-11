@@ -5,6 +5,23 @@ import { UI } from './ui.js';
 import { SHARE } from './share.js';
 
 export const DIARY_PURE = {
+    normalizePointsValue(value) {
+        if (value === null || value === undefined) return '';
+        const raw = String(value).trim();
+        if (raw === '') return '';
+        if (!/^\d+$/.test(raw)) return null;
+        const points = Number(raw);
+        if (!Number.isSafeInteger(points) || points < 0) return null;
+        return String(points);
+    },
+
+    hasMeaningfulEntry(entry = {}, defaultPrize = '') {
+        const normalizedPoints = this.normalizePointsValue(entry?.points);
+        const prize = String(entry?.prize ?? '').trim();
+        return normalizedPoints !== '' && normalizedPoints !== null
+            || (prize !== '' && prize !== String(defaultPrize ?? '').trim());
+    },
+
     summarizeYear(yearData = {}) {
         const monthlyTotals = Array.from({ length: 12 }, () => 0);
         let total = 0;
@@ -13,8 +30,9 @@ export const DIARY_PURE = {
         for (let month = 1; month <= 12; month++) {
             const monthData = yearData[month] || {};
             for (const week of Object.values(monthData)) {
-                const points = Number.parseInt(week?.points, 10);
-                if (!Number.isFinite(points) || points < 0) continue;
+                const normalizedPoints = this.normalizePointsValue(week?.points);
+                if (normalizedPoints === '' || normalizedPoints === null) continue;
+                const points = Number(normalizedPoints);
                 monthlyTotals[month - 1] += points;
                 total += points;
                 recordedWeeks++;
@@ -35,7 +53,8 @@ export const DIARY = {
     loadDiaryData() {
         try {
             const data = localStorage.getItem(CONSTANTS.DIARY_DATA_KEY);
-            return data ? JSON.parse(data) : {};
+            const parsed = data ? JSON.parse(data) : {};
+            return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
         } catch (e) {
             console.error("日記データの読み込みに失敗しました:", e);
             const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
@@ -116,12 +135,14 @@ export const DIARY = {
             const weekNum = index + 1;
             const dateString = `${friday.getMonth() + 1}/${friday.getDate()}`;
             const weekData = monthData[weekNum] || { points: '', prize: texts.prizeOptions[0] };
+            const normalizedPoints = DIARY_PURE.normalizePointsValue(weekData.points);
+            const displayPoints = normalizedPoints === null ? '' : normalizedPoints;
             const row = document.createElement('div');
             row.className = 'week-row';
             const prizeOptionsHTML = texts.prizeOptions.map(opt => `<option value="${opt}" ${weekData.prize === opt ? 'selected' : ''}>${opt}</option>`).join('');
             row.innerHTML = `
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
-                <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${weekData.points || ''}" inputmode="numeric">
+                <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${displayPoints}" min="0" step="1" inputmode="numeric">
                 <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
                 <div class="diary-btn-group">
                     <button class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
@@ -166,8 +187,10 @@ export const DIARY = {
         const monthData = yearData[STATE.diaryState.currentMonth] || {};
         let monthlyTotal = 0, monthlyWeeksWithPoints = 0;
         Object.values(monthData).forEach(week => {
-            const points = parseInt(week.points, 10);
-            if (!isNaN(points)) { monthlyTotal += points; monthlyWeeksWithPoints++; }
+            const normalizedPoints = DIARY_PURE.normalizePointsValue(week?.points);
+            if (normalizedPoints === '' || normalizedPoints === null) return;
+            monthlyTotal += Number(normalizedPoints);
+            monthlyWeeksWithPoints++;
         });
         STATE.dom.monthlyTotal.textContent = monthlyTotal.toLocaleString(config.lang);
         STATE.dom.monthlyAverage.textContent = (monthlyWeeksWithPoints > 0 ? (monthlyTotal / monthlyWeeksWithPoints).toFixed(1) : '0.0');
@@ -210,37 +233,103 @@ export const DIARY = {
         });
     },
 
+    showSaveConfirmation(button, texts) {
+        if (!button) return;
+        const originalText = texts.saveButton;
+        button.textContent = 'OK!';
+        button.disabled = true;
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, CONSTANTS.SAVE_CONFIRMATION_DURATION);
+    },
+
+    cleanEmptyDiaryContainers(data, yearKey, monthKey) {
+        const monthData = data?.[yearKey]?.[monthKey];
+        if (monthData && Object.keys(monthData).length === 0) delete data[yearKey][monthKey];
+        const yearData = data?.[yearKey];
+        if (yearData && Object.keys(yearData).length === 0) delete data[yearKey];
+    },
+
     // 週ごとの入力データ保存処理
     handleDiarySave(e, isSilent = false) {
-        if (e.target.tagName === 'BUTTON' && e.target.dataset.week) {
-            const weekNum = e.target.dataset.week;
-            const pointsInput = STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);
-            const prizeSelect = STATE.dom.weekInputs.querySelector(`#week${weekNum}_prize`);
-            const data = this.loadDiaryData();
-            if (!data[STATE.diaryState.currentYear]) data[STATE.diaryState.currentYear] = {};
-            if (!data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth]) data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth] = {};
-            data[STATE.diaryState.currentYear][STATE.diaryState.currentMonth][weekNum] = { points: pointsInput.value, prize: prizeSelect.value };
+        if (e.target.tagName !== 'BUTTON' || !e.target.dataset.week) return;
+
+        const weekNum = e.target.dataset.week;
+        const pointsInput = STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);
+        const prizeSelect = STATE.dom.weekInputs.querySelector(`#week${weekNum}_prize`);
+        if (!pointsInput || !prizeSelect) return;
+
+        const texts = CONFIGS[STATE.currentRegion].uiText;
+        const normalizedPoints = DIARY_PURE.normalizePointsValue(pointsInput.value);
+        if (normalizedPoints === null) {
+            UI.showToast(texts.errorDiaryPoints || texts.errorInput || 'ポイントは0以上の整数で入力してください。', 'error');
+            return;
+        }
+
+        const defaultPrize = texts.prizeOptions?.[0] || '';
+        const nextEntry = { points: normalizedPoints, prize: prizeSelect.value };
+        const data = this.loadDiaryData();
+        const yearKey = STATE.diaryState.currentYear;
+        const monthKey = STATE.diaryState.currentMonth;
+        const previousEntry = data?.[yearKey]?.[monthKey]?.[weekNum];
+        const hasMeaningfulEntry = DIARY_PURE.hasMeaningfulEntry(nextEntry, defaultPrize);
+
+        if (!hasMeaningfulEntry) {
+            if (!previousEntry) {
+                if (!isSilent) UI.showToast(texts.errorDiaryEmptyEntry || texts.errorInput || '記録する内容を入力してください。', 'error');
+                return;
+            }
+
+            delete data[yearKey][monthKey][weekNum];
+            this.cleanEmptyDiaryContainers(data, yearKey, monthKey);
             if (!this.saveDiaryData(data)) return;
-            ANALYTICS.track('diary_entry_saved', {
-                region: STATE.currentRegion,
-                entry_type: 'weekly_reward'
-            });
-            ANALYTICS.markEngaged();
+            this.updateSummary();
             if (!isSilent) {
-                UI.showToast(CONFIGS[STATE.currentRegion].uiText.toastDiarySaveSuccess);
+                UI.showToast(texts.toastDiarySaveSuccess);
                 document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {
                     detail: { region: STATE.currentRegion }
                 }));
+                this.showSaveConfirmation(e.target, texts);
             }
-            const originalText = CONFIGS[STATE.currentRegion].uiText.saveButton;
-            e.target.textContent = 'OK!';
-            e.target.disabled = true;
-            setTimeout(() => {
-                e.target.textContent = originalText;
-                e.target.disabled = false;
-            }, CONSTANTS.SAVE_CONFIRMATION_DURATION);
-            this.updateSummary();
+            return;
         }
+
+        const normalizedPreviousPoints = previousEntry
+            ? DIARY_PURE.normalizePointsValue(previousEntry.points)
+            : null;
+        const isUnchanged = previousEntry
+            && normalizedPreviousPoints === normalizedPoints
+            && String(previousEntry.prize ?? '') === String(nextEntry.prize ?? '');
+
+        if (isUnchanged) {
+            if (!isSilent) {
+                UI.showToast(texts.toastDiarySaveSuccess);
+                this.showSaveConfirmation(e.target, texts);
+            }
+            return;
+        }
+
+        if (!data[yearKey]) data[yearKey] = {};
+        if (!data[yearKey][monthKey]) data[yearKey][monthKey] = {};
+        data[yearKey][monthKey][weekNum] = nextEntry;
+        if (!this.saveDiaryData(data)) return;
+
+        // 有効な記録が新規作成・更新された時だけ、保存完了として計測する。
+        ANALYTICS.track('diary_entry_saved', {
+            region: STATE.currentRegion,
+            entry_type: 'weekly_reward'
+        });
+        ANALYTICS.markEngaged();
+
+        if (!isSilent) {
+            UI.showToast(texts.toastDiarySaveSuccess);
+            document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {
+                detail: { region: STATE.currentRegion }
+            }));
+            this.showSaveConfirmation(e.target, texts);
+        }
+        this.updateSummary();
     },
 
     // 日記データをJSONテキストとしてエクスポート
@@ -290,7 +379,7 @@ export const DIARY = {
             .replace(/\//g, '&#x2F;');
     },
 
-    // JSONテキストから日記データをインポート（厳格なバリデーション）
+    // JSONテキストから日記データをインポート（既存記録を保持しながら厳格に検証）
     executeImport() {
         if (!STATE.dom.diaryBackupData) return;
         const config = CONFIGS[STATE.currentRegion];
@@ -309,41 +398,60 @@ export const DIARY = {
             }
 
             const validatedData = {};
+            const defaultPrize = texts.prizeOptions?.[0] || '';
+            let validEntryCount = 0;
 
             // 厳格なスキーマ検証と値のクレンジング (XSS防御)
             for (const [yearStr, monthData] of Object.entries(parsed)) {
-                const year = parseInt(yearStr, 10);
-                if (isNaN(year) || year < 2020 || year > 2100) continue;
-
+                const year = Number(yearStr);
+                if (!Number.isInteger(year) || year < 2020 || year > 2100) continue;
                 if (typeof monthData !== 'object' || monthData === null || Array.isArray(monthData)) continue;
-                validatedData[year] = {};
 
                 for (const [monthStr, weekData] of Object.entries(monthData)) {
-                    const month = parseInt(monthStr, 10);
-                    if (isNaN(month) || month < 1 || month > 12) continue;
-
+                    const month = Number(monthStr);
+                    if (!Number.isInteger(month) || month < 1 || month > 12) continue;
                     if (typeof weekData !== 'object' || weekData === null || Array.isArray(weekData)) continue;
-                    validatedData[year][month] = {};
 
                     for (const [weekStr, valueObj] of Object.entries(weekData)) {
-                        const week = parseInt(weekStr, 10);
-                        if (isNaN(week) || week < 1 || week > 5) continue;
+                        const week = Number(weekStr);
+                        if (!Number.isInteger(week) || week < 1 || week > 5) continue;
+                        if (typeof valueObj !== 'object' || valueObj === null || Array.isArray(valueObj)) continue;
 
-                        if (typeof valueObj !== 'object' || valueObj === null) continue;
+                        const rawPoints = valueObj.points ?? '';
+                        const points = DIARY_PURE.normalizePointsValue(rawPoints);
+                        if (points === null) {
+                            throw new Error("Invalid points value");
+                        }
 
-                        const rawPoints = String(valueObj.points || '').trim();
-                        const pointsNum = parseInt(rawPoints, 10);
-                        const points = (isNaN(pointsNum) || pointsNum < 0) ? '' : String(pointsNum);
-
-                        const rawPrize = String(valueObj.prize || '').trim();
+                        const rawPrize = String(valueObj.prize ?? '').trim();
                         const prize = this.sanitizeString(rawPrize);
+                        const entry = { points, prize };
+                        if (!DIARY_PURE.hasMeaningfulEntry(entry, defaultPrize)) continue;
 
-                        validatedData[year][month][week] = { points, prize };
+                        if (!validatedData[year]) validatedData[year] = {};
+                        if (!validatedData[year][month]) validatedData[year][month] = {};
+                        validatedData[year][month][week] = entry;
+                        validEntryCount++;
                     }
                 }
             }
 
-            if (!this.saveDiaryData(validatedData)) return;
+            // 空オブジェクトや日記と無関係なJSONで既存データを消さない。
+            if (validEntryCount === 0) {
+                throw new Error("No valid diary entries");
+            }
+
+            const existingData = this.loadDiaryData();
+            const mergedData = JSON.parse(JSON.stringify(existingData));
+            for (const [year, monthData] of Object.entries(validatedData)) {
+                if (!mergedData[year]) mergedData[year] = {};
+                for (const [month, weekData] of Object.entries(monthData)) {
+                    if (!mergedData[year][month]) mergedData[year][month] = {};
+                    Object.assign(mergedData[year][month], weekData);
+                }
+            }
+
+            if (!this.saveDiaryData(mergedData)) return;
             this.renderDiary();
             if (STATE.dom.backupInputWrapper) {
                 STATE.dom.backupInputWrapper.classList.add(CONSTANTS.CLASS_HIDDEN);
