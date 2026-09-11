@@ -167,3 +167,25 @@ test('深いURLでも同意管理スクリプトをサイトルートから読�
   assert.ok(thirdParty.includes("document.querySelector('script[src*=\"js/third-party.js\"]')"));
   assert.ok(thirdParty.includes("let prefix = '/'"));
 });
+
+ test('旧記事のdiv導入でも計算CTAはタイトルと回答より後に置く', () => {
+  const input = '<article class="content"><header class="hero"><h1>Title</h1></header><div class="intro"><div>Answer</div><p>Condition</p></div><h2>Details</h2></article>';
+  const options = {relativePath:'articles/2025-12-25-diamond-worth-it.html', listed:true};
+  const output = insertStaticPrompt(input, options);
+  assert.ok(output.indexOf('data-generated-article-prompt') > output.indexOf('<p>Condition</p></div>'));
+  assert.ok(output.indexOf('data-generated-article-prompt') < output.indexOf('<h2>Details</h2>'));
+  assert.equal(insertStaticPrompt(output, options), output);
+ });
+
+
+test('公開記事の条件説明は定型の二列カードへ戻らない', () => {
+  for (const article of readArticles().filter(article => article.listed !== false)) {
+    const html = read(article.file.replace('../', ''));
+    assert.ok(!html.includes('knowledge-boundary__grid'), article.file);
+    const note = html.match(/<section class="knowledge-boundary"[^>]*>[\s\S]*?<\/section>/)?.[0];
+    if (note) {
+      assert.match(note, /<h2\b[^>]*>[^<]+<\/h2>/, article.file);
+      assert.match(note, /<p>/, article.file);
+    }
+  }
+});

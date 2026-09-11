@@ -107,13 +107,16 @@ test('シミュレーターは差が見える初期例と利用限界を明示�
   assert.match(js, /rounding-result-title">試算結果/);
 });
 
-test('記事別の検証カード文言は生成元でも保持する', () => {
+test('記事固有の条件説明は生成後も読める', () => {
+  const { EDITORIAL_TARGETS, renderKnowledgeBoundary } = require('../scripts/article-editorial-structure.cjs');
+  const config = EDITORIAL_TARGETS['articles/2026-07-24-play-points-1-value.html'];
+  const rendered = renderKnowledgeBoundary(config);
   const html = fs.readFileSync(articlePath, 'utf8');
-  const generator = read('scripts/article-editorial-structure.cjs');
-  assert.match(html, /公式で確認できること／Google Play画面で確認すること/);
-  assert.match(generator, /boundaryHeading: '公式で確認できること／Google Play画面で確認すること'/);
-  assert.match(generator, /獲得ポイントを最も近い整数へ丸める計算方法/);
-  assert.doesNotMatch(generator, /商品ごとに最も近い整数へ丸める計算方法/);
+  for (const text of ['税金を除いた対象アイテム価格', '最も近い整数', '購入前', '購入後']) {
+    assert.ok(rendered.includes(text));
+    assert.ok(html.includes(text));
+  }
+  assert.doesNotMatch(rendered, /knowledge-boundary__grid/);
 });
 
 test('画面のFAQとFAQPage構造化データが一致する', () => {

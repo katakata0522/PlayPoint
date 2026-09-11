@@ -82,9 +82,17 @@ function findSectionEnd(html, pattern, startIndex, articleEnd) {
   pattern.lastIndex = startIndex;
   const sectionMatch = pattern.exec(html);
   if (!sectionMatch || sectionMatch.index >= articleEnd) return -1;
-  const sectionEnd = html.indexOf('</section>', sectionMatch.index + sectionMatch[0].length);
-  if (sectionEnd < 0 || sectionEnd >= articleEnd) return -1;
-  return sectionEnd + '</section>'.length;
+  const tag = /^<([a-z][a-z0-9]*)\b/i.exec(sectionMatch[0])?.[1];
+  if (!tag) return -1;
+  const tokens = new RegExp('<(/?)' + tag + '\\b[^>]*>', 'gi');
+  tokens.lastIndex = sectionMatch.index + sectionMatch[0].length;
+  let depth = 1;
+  let token;
+  while ((token = tokens.exec(html)) && token.index < articleEnd) {
+    depth += token[1] ? -1 : 1;
+    if (depth === 0) return tokens.lastIndex;
+  }
+  return -1;
 }
 
 function findPromptAnchorEnd(html) {
@@ -113,7 +121,12 @@ function findPromptAnchorEnd(html) {
     articleStart,
     boundedArticleEnd
   );
-  return introductorySectionEnd >= 0 ? introductorySectionEnd : articleStart;
+  if (introductorySectionEnd >= 0) return introductorySectionEnd;
+  // 旧記事のdiv導入でもタイトル・結論より前に計算CTAを挿入しない。
+  const introEnd = findSectionEnd(html, /<div\b[^>]*class=["'][^"']*\bintro\b[^"']*["'][^>]*>/gi, articleStart, boundedArticleEnd);
+  if (introEnd >= 0) return introEnd;
+  const headerEnd = findSectionEnd(html, /<header\b[^>]*>/gi, articleStart, boundedArticleEnd);
+  return headerEnd >= 0 ? headerEnd : articleStart;
 }
 
 function removeStaticPrompt(html) {

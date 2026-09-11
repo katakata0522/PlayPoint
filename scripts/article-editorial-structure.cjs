@@ -5,12 +5,12 @@ const path = require('node:path');
 
 const EDITORIAL_COMMENT_BLOCK_PATTERN = /\n?\s*<!--\s*editorial-summary:start\s*-->[\s\S]*?<!--\s*editorial-summary:end\s*-->[ \t]*(?:\r?\n[ \t]*)*/gi;
 const EDITORIAL_PLAIN_BLOCK_PATTERN = /\n?\s*(?:<!---->\s*)?editorial-summary:start\b[\s\S]*?editorial-summary:end\b\s*/gi;
-const EDITORIAL_MODIFIED_DATE = '2026-07-30';
+const EDITORIAL_MODIFIED_DATE = '2026-09-12';
 
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-08',
+    modifiedDate: '2026-09-12',
     answer: '購入が完了しているのにポイントが見えない場合は、注文状態、Play Points履歴、購入したGoogleアカウント、キャンペーン条件の順で確認します。待ち時間だけでは原因を切り分けられません。',
     known: [
       '注文が完了・保留・キャンセル・返金のどれかは購入履歴で確認できます。',
@@ -22,7 +22,9 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-24-play-points-1-value.html': {
-    modifiedDate: '2026-08-03',
+    contextHeading: "獲得する1ポイントと、使う1ポイントを分ける",
+    contextParagraphs: ["日本の通常獲得率は100円あたり1～2ポイントですが、これは購入で貯まる割合です。交換時に1ポイントを何円分として使えるかとは分けて考えます。","獲得ポイントは税金を除いた対象アイテム価格から計算し、最も近い整数へ丸めます。購入前はGoogle Playに表示された対象条件と獲得予定ポイントを、購入後は実際の付与数を確認してください。"],
+    modifiedDate: '2026-09-12',
     boundaryHeading: '公式で確認できること／Google Play画面で確認すること',
     knownHeading: '公式で確認できること',
     unknownHeading: 'Google Play画面で確認すること',
@@ -38,6 +40,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: 'ステータス別獲得率の引用用比較表を見る'
   },
   'articles/2026-07-24-play-points-100-value.html': {
+    contextHeading: "100ポイントの「貯め方」と「使い道」は別に比べる",
+    contextParagraphs: ["100ポイントを貯める概算は、通常獲得率と対象商品の価格から求められます。一方、100ポイントを何円分として使えるかは、表示される交換先と条件で変わります。","ランクを目指すときは、使えるポイント残高ではなく年間のランク進捗を確認します。交換に使った残高と、ランク判定のために貯めたポイントを混同しないことが大切です。個別キャンペーンの対象可否はGoogle Playの表示で確かめてください。"],
     known: [
       '100ポイントを貯める概算は、ステータス別獲得率と対象商品の価格から計算できます。',
       'ポイント残高と年間のランク進捗は別の数字です。'
@@ -50,6 +54,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     comparisonLabel: '100円ごとの獲得率を比較表で確認する'
   },
   'articles/2026-07-24-play-points-500-1000-value.html': {
+    contextHeading: "概算を自分の購入予定に当てはめる",
+    contextParagraphs: ["通常時の概算と特別獲得率での概算は分けて比べます。2pt/100円・3pt/100円などは、その最終獲得率がGoogle Playに表示された対象購入にだけ使う数値です。","次回キャンペーンや自分が対象になることを前提に購入予定を増やさず、今表示されている条件で判断します。商品ごとにポイントが丸められるため、合計額だけの計算とは数ポイントずれる場合もあります。"],
     known: [
       '500・1,000ポイントの通常時概算は、ステータス別獲得率から比較できます。',
       '2pt/100円・3pt/100円などの特別獲得率は、Google Playにその最終獲得率が表示された対象購入にだけ適用して試算します。'
@@ -63,7 +69,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2026-07-24-play-points-cash-conversion.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-03',
+    modifiedDate: '2026-09-12',
     answer: 'Google Play Pointsは現金、PayPay残高、銀行口座へ直接送金できません。公式に表示されるクーポン、アプリ内アイテム、Google Playクレジットなどの交換先から選びます。',
     known: [
       'ポイントを購入したり現金へ換えたり、別アカウントへ移したりすることはできません。',
@@ -75,6 +81,8 @@ const EDITORIAL_TARGETS = Object.freeze({
     ]
   },
   'articles/2026-07-25-play-credit-not-working.html': {
+    contextHeading: "交換の前後で、確認する残高が変わる",
+    contextParagraphs: ["交換前ならPlay Pointsの残高と必要ポイントを、交換済みならGoogle Playクレジットの残高を確認します。ポイントが減っていても、それだけでクレジットが支払いに適用されたとは判断できません。","交換後のクレジットには期限や利用条件が表示される場合があります。対象購入、利用アカウント、国・通貨を順に照合し、画面の条件が合うかを確認してください。このサイトから個別アカウントの残高やエラー原因を読み取ることはできません。"],
     answer: '交換できない場合はポイント残高と交換条件を、交換後に使えない場合は期限、対象購入、利用アカウント、国・通貨を順に確認します。',
     known: [
       '交換前のポイント残高と、交換後のGoogle Playクレジットは別の残高です。',
@@ -87,7 +95,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2026-07-25-play-points-coupon-not-applied.html': {
     manualStructure: true,
-    modifiedDate: '2026-08-04',
+    modifiedDate: '2026-09-12',
     answer: 'クーポンが適用されない場合は、対象アプリ、最低購入額、他の割引との併用、交換したアカウント、国・通貨の順で確認します。',
     known: [
       '保存済みクーポンの対象アプリや条件はGoogle Playの画面で確認できます。',
@@ -100,7 +108,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2025-12-25-playpoints-rank-maintenance.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-08',
+    modifiedDate: '2026-09-12',
     answer: 'その年に到達したステータスは翌年末まで維持され、翌年に貯めたポイント数をもとに次の年初のステータスが再判定されます。',
     known: [
       '日本のステータス条件と通常獲得率はGoogle Play公式案内で確認できます。',
@@ -115,7 +123,7 @@ const EDITORIAL_TARGETS = Object.freeze({
   },
   'articles/2025-12-25-campaign.html': {
     manualStructure: true,
-    modifiedDate: '2026-08-04',
+    modifiedDate: '2026-09-12',
     answer: 'キャンペーンを待つかは、予定している購入だけを通常獲得率とGoogle Playに表示された特別獲得率で比較し、対象アプリ、期間、開始操作、上限を確認して判断します。',
     known: [
       '通常時の獲得率を基準にすると、キャンペーン分の差額を比較できます。',
@@ -152,25 +160,16 @@ function escapeHtml(value) {
 
 function renderKnowledgeBoundary(config) {
   const comparison = config.comparisonHref
-    ? `<p class="knowledge-boundary__source"><a href="${escapeHtml(config.comparisonHref)}">${escapeHtml(config.comparisonLabel)}</a></p>`
+    ? '<p class="knowledge-boundary__source"><a href="' + escapeHtml(config.comparisonHref) + '">' + escapeHtml(config.comparisonLabel) + '</a></p>'
     : '';
-  const boundaryHeading = config.boundaryHeading || '判明していること／このサイトからは不明なこと';
-  const knownHeading = config.knownHeading || '判明していること';
-  const unknownHeading = config.unknownHeading || 'このサイトからは不明なこと';
-  return `<section class="knowledge-boundary" aria-labelledby="known-unknown">
-                <h2 id="known-unknown">${escapeHtml(boundaryHeading)}</h2>
-                <div class="knowledge-boundary__grid">
-                    <div>
-                        <h3>${escapeHtml(knownHeading)}</h3>
-                        <ul>${config.known.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
-                    </div>
-                    <div>
-                        <h3>${escapeHtml(unknownHeading)}</h3>
-                        <ul>${config.unknown.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
-                    </div>
-                </div>
-                ${comparison}
-            </section>`;
+  // 確認できないことを二列で並べず、購入・交換時の判断につながる説明にする。
+  if (!config.contextHeading || !config.contextParagraphs) {
+    throw new Error('記事固有の補足見出しと説明が必要です');
+  }
+  return '<section class="knowledge-boundary" aria-labelledby="known-unknown">\n' +
+    '<h2 id="known-unknown">' + escapeHtml(config.contextHeading) + '</h2>\n' +
+    config.contextParagraphs.map(text => '<p>' + escapeHtml(text) + '</p>').join('\n') +
+    comparison + '\n</section>';
 }
 
 function renderAnswer(answer) {
