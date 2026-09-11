@@ -180,7 +180,7 @@ test('深いURLでも同意管理スクリプトをサイトルートから読�
 
 test('公開記事の条件説明は定型の二列カードへ戻らない', () => {
   for (const article of readArticles().filter(article => article.listed !== false)) {
-    const html = read(article.file.replace('../', ''));
+    const html = fs.readFileSync(path.resolve(root, 'blog', article.file), 'utf8');
     assert.ok(!html.includes('knowledge-boundary__grid'), article.file);
     const note = html.match(/<section class="knowledge-boundary"[^>]*>[\s\S]*?<\/section>/)?.[0];
     if (note) {
