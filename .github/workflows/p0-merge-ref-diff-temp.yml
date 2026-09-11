@@ -1,0 +1,50 @@
+name: Temporary P0 merge-ref canonical diff
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/p0-merge-ref-diff-temp.yml'
+      - 'js/analytics-core.js'
+      - 'js/asset-versions.js'
+      - 'scripts/**'
+      - 'articles/**'
+      - 'en/articles/**'
+      - 'ko/articles/**'
+      - 'tw/articles/**'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Capture canonical diff
+        run: |
+          set -euo pipefail
+          mkdir -p p0-merge-ref-diff
+          git rev-parse HEAD > p0-merge-ref-diff/head.txt
+          git status --short > p0-merge-ref-diff/status-before.txt
+          cp js/analytics-core.js p0-merge-ref-diff/analytics-core-before.js
+          node scripts/prepare-pr.cjs > p0-merge-ref-diff/prepare-pr.log 2>&1 || true
+          git status --short > p0-merge-ref-diff/status-after.txt
+          git --no-pager diff -- js/analytics-core.js > p0-merge-ref-diff/analytics-core.diff || true
+          cp js/analytics-core.js p0-merge-ref-diff/analytics-core-after.js
+          sha256sum p0-merge-ref-diff/analytics-core-before.js p0-merge-ref-diff/analytics-core-after.js > p0-merge-ref-diff/hashes.txt
+          cat p0-merge-ref-diff/status-after.txt
+          cat p0-merge-ref-diff/analytics-core.diff
+
+      - name: Upload merge-ref evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: p0-merge-ref-diff-${{ github.run_id }}
+          path: p0-merge-ref-diff/
+          retention-days: 2
