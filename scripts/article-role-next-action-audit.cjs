@@ -13,7 +13,7 @@ const INTERNATIONAL_LOCALES = Object.freeze(['en', 'ko', 'tw']);
 const GENERATED_JA_PROMPT = /data-generated-article-prompt=["']true["']/g;
 const GENERATED_INTL_PROMPT = /data-generated-intl-article-prompt=["']true["']/g;
 const PRIMARY_CALCULATOR_PROMPT = /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i;
-const RELATED_SECTION_PATTERN = /<section\b[^>]*class=["'][^"']*\b(?:related-links-section|contextual-guide-links|article-related-guides)\b[^"']*["'][^>]*>[\s\S]*?<\/section>/i;
+const RELATED_SECTION_PATTERN = /<(section|aside)\b[^>]*class=["'][^"']*\b(?:related-links-section|contextual-guide-links|article-related-guides)\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i;
 
 const NEXT_ROLE_HINTS = Object.freeze({
   calculator_bridge: new Set(['decision_support', 'reference', 'retention']),

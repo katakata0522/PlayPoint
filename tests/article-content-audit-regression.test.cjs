@@ -41,3 +41,11 @@ test("全記事でHTMLのIDを一意にする",()=>{
  for(const f of fs.readdirSync(path.join(root,d)).filter(f=>f.endsWith(".html"))){const ids=[...read(d+"/"+f).matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,d+"/"+f);}
  }
 });
+
+test('補助関連記事のasideを認識し、再生成で重複欄を追加しない',()=>{
+ const {normalizeHtml}=require('../scripts/article-content-navigation-normalize.cjs');
+ const file='articles/2026-07-24-play-points-1-value.html',html=read(file);
+ const result=normalizeHtml(file,html);
+ assert.equal(result.changed,false);
+ assert.equal((result.html.match(/id="related-guides"/g)||[]).length,1);
+});

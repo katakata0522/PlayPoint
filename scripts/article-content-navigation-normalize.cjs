@@ -247,7 +247,7 @@ function normalizeHref(filePath, href) {
 }
 
 function extractRelatedSection(html) {
-  const classMatch = html.match(/<section\b[^>]*class=["'][^"']*\b(?:related-links-section|contextual-guide-links|article-related-guides)\b[^"']*["'][^>]*>[\s\S]*?<\/section>/i);
+  const classMatch = html.match(/<(section|aside)\b[^>]*class=["'][^"']*\b(?:related-links-section|contextual-guide-links|article-related-guides)\b[^"']*["'][^>]*>[\s\S]*?<\/\1>/i);
   if (classMatch) return classMatch[0];
 
   const sections = [...html.matchAll(/<section\b[^>]*>[\s\S]*?<\/section>/gi)];
