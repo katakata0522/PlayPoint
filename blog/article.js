@@ -549,11 +549,19 @@
     }
 
     function setupReadingTime() {
-        if (document.querySelector('.reading-time-badge')) return;
+        const existingBadge = document.querySelector('.reading-time-badge');
         const content = document.querySelector('.content, .main-content-column, article');
         if (!content) return;
 
         const loc = getLocale();
+        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-post-meta, .article-meta, .post-meta');
+        const staticReadTimePatterns = {
+            ja: /読了\s*(?:約\s*)?\d+\s*分/,
+            en: /\b\d+\s*min(?:ute)?s?\s*read\b/i,
+            ko: /(?:약\s*)?\d+\s*분(?:\s*읽기)?/,
+            tw: /(?:約\s*)?\d+\s*分鐘/
+        };
+        if (!existingBadge && targetMeta && staticReadTimePatterns[loc]?.test(targetMeta.textContent || '')) return;
         const text = content.innerText || content.textContent || '';
         let minutes = 1;
 
@@ -572,14 +580,13 @@
             tw: `⏱️ 約需 ${minutes} 分鐘閱讀`
         };
 
-        const badge = document.createElement('span');
+        const badge = existingBadge || document.createElement('span');
         badge.className = 'reading-time-badge';
         badge.textContent = labels[loc] || labels.ja;
 
-        const targetMeta = document.querySelector('.article-verification-meta, .article-header-meta, .hero-meta, .article-meta, .post-meta');
         if (targetMeta) {
-            targetMeta.appendChild(badge);
-        } else {
+            if (!existingBadge) targetMeta.appendChild(badge);
+        } else if (!existingBadge) {
             const h1 = document.querySelector('h1');
             if (h1 && h1.parentNode) {
                 const metaWrap = document.createElement('div');

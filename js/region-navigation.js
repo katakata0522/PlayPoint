@@ -2,7 +2,6 @@
 
 import { CONFIGS, STATE, CONSTANTS } from './config.js';
 import { UI } from './ui.js';
-import { createExpansionConfigs } from './region-expansion-config.js';
 import { assertResultNavigationCoverage } from './result-navigation-config.js';
 
 Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));
@@ -16,6 +15,10 @@ const REGION_PATHS = Object.freeze({
     HK: 'hk/',
     IN: 'in/'
 });
+
+const EXPANSION_REGIONS = new Set(['HK', 'IN']);
+let expansionConfigPromise = null;
+assertResultNavigationCoverage(Object.keys(REGION_PATHS));
 
 const PRIMARY_REGION_LABELS = Object.freeze({
     JP: { desktop: '🇯🇵 日本', mobile: '🇯🇵 JP' },
@@ -87,6 +90,24 @@ function getRegionFromPath() {
     if (isKoreanPath()) return 'KR';
     if (/\/tw(\/|$)/.test(window.location.pathname)) return 'TW';
     return 'JP';
+}
+
+export async function prepareRegionConfigForPath() {
+    const region = getRegionFromPath();
+    if (!EXPANSION_REGIONS.has(region) || CONFIGS[region]) return true;
+    if (!expansionConfigPromise) {
+        expansionConfigPromise = import('./region-expansion-config.js')
+            .then(({ createExpansionConfigs }) => {
+                Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));
+                return true;
+            })
+            .catch((error) => {
+                expansionConfigPromise = null;
+                throw error;
+            });
+    }
+    await expansionConfigPromise;
+    return Boolean(CONFIGS[region]);
 }
 
 function isRegionalDirectoryPath() {
@@ -299,7 +320,8 @@ export function applyRegionFromPath() {
 }
 
 export function switchRegion(newRegion, updateUIForRegion = () => {}) {
-    if (!CONFIGS[newRegion] || STATE.currentRegion === newRegion) return;
+    if (STATE.currentRegion === newRegion || REGION_PATHS[newRegion] === undefined) return;
+    if (!CONFIGS[newRegion] && !EXPANSION_REGIONS.has(newRegion)) return;
     STATE.currentRegion = newRegion;
     try {
         localStorage.setItem(CONSTANTS.STORAGE_REGION_KEY, newRegion);

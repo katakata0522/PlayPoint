@@ -11,6 +11,7 @@ import {
     isEnglishPath,
     isKoreanPath,
     isTaiwanPath,
+    prepareRegionConfigForPath,
     switchRegion as navigateToRegion
 } from './region-navigation.js';
 import { bindLanguageSuggestionDismiss, checkLanguageSuggestion } from './language-suggestion.js';
@@ -310,7 +311,9 @@ export function init() {
 
 // 初期ロード完了時の発火
 document.addEventListener('DOMContentLoaded', () => {
-    init();
+    void prepareRegionConfigForPath()
+        .then(() => init())
+        .catch((error) => console.error('地域別設定の読み込みに失敗しました:', error));
 });
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
