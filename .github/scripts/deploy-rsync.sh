@@ -97,6 +97,7 @@ deploy_once() {
   rsync -avz --delete-after --delete-excluded --delay-updates --timeout="$RSYNC_IO_TIMEOUT_SECONDS" \
     -e "$RSYNC_RSH" \
     --filter='protect /manner/***' \
+    --filter='protect /kanji-slicer/***' \
     ./ "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
     --exclude '/.github/***' \
