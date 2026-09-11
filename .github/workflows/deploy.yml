@@ -51,18 +51,25 @@ jobs:
           node .github/scripts/deploy-status.cjs
 
       - name: Setup SSH
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           set -euo pipefail
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+          umask 077
+          if [ -z "${SSH_PRIVATE_KEY_B64:-}" ]; then
             echo "SSH_PRIVATE_KEY が未設定です"
             exit 1
           fi
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > ~/.ssh/id_ed25519
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null
           cat > ~/.ssh/known_hosts <<'EOF'
           [hajikkoroom.xsrv.jp]:10022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEKKSe2ENjD1KRgSqCY7ji78s0zqCNCKBRNfRaxRV7sh
           EOF
+          chmod 600 ~/.ssh/known_hosts
+          unset SSH_PRIVATE_KEY_B64
 
       - name: Deploy strict public mirror via rsync
         run: bash .github/scripts/deploy-rsync.sh
@@ -92,3 +99,7 @@ jobs:
 
           bash .github/scripts/deploy-rsync.sh --publish-status
           node .github/scripts/verify-deploy-status.cjs
+
+      - name: Remove SSH material
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts

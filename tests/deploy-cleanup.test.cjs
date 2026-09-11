@@ -113,6 +113,34 @@ test('接続後にXserver応答が止まってもSSHとrsyncが無期限に待�
   assert.equal(rsyncTimeoutUses.length, 2, 'deploy and verified-status rsync paths must both have an I/O timeout');
 });
 
+test('本番SSHは公開鍵だけを使い、転送・TTY・鍵残存を許さない', () => {
+  for (const option of [
+    '-o BatchMode=yes',
+    '-o IdentitiesOnly=yes',
+    '-o PubkeyAuthentication=yes',
+    '-o PreferredAuthentications=publickey',
+    '-o PasswordAuthentication=no',
+    '-o KbdInteractiveAuthentication=no',
+    '-o ForwardAgent=no',
+    '-o ClearAllForwardings=yes',
+    '-o RequestTTY=no',
+    '-o StrictHostKeyChecking=yes',
+  ]) {
+    assert.ok(script.includes(option), `SSH hardening option is missing: ${option}`);
+  }
+
+  assert.ok(workflow.includes('SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}'));
+  assert.ok(workflow.includes('umask 077'));
+  assert.ok(workflow.includes('chmod 700 ~/.ssh'));
+  assert.ok(workflow.includes("printf '%s' \"$SSH_PRIVATE_KEY_B64\" | base64 -d > ~/.ssh/id_ed25519"));
+  assert.ok(workflow.includes("ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null"));
+  assert.ok(workflow.includes('chmod 600 ~/.ssh/known_hosts'));
+  assert.ok(workflow.includes('- name: Remove SSH material'));
+  assert.ok(workflow.includes('if: always()'));
+  assert.ok(workflow.includes('rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts'));
+  assert.ok(!workflow.includes('echo "${{ secrets.SSH_PRIVATE_KEY }}"'));
+});
+
 test('GitHub Actionsのjob timeoutはXserver retry予算を途中で打ち切らない', () => {
   const match = workflow.match(/timeout-minutes:\s*(\d+)/);
   assert.ok(match, 'deploy workflow timeout is missing');
