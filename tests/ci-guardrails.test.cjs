@@ -103,6 +103,7 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
   assert.match(workflow, /name: Detect production deploy impact/);
   assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
   assert.match(workflow, /fetch-depth: 2/);
+  assert.match(workflow, /git diff --name-only --no-renames/);
 
   for (const stepName of [
     'Run complete preflight and prepare deploy assets',
@@ -127,6 +128,7 @@ test('本番Browser Smokeもno-op Deployの後はChromiumを起動しない', ()
 
   assert.match(workflow, /name: Detect whether production browser smoke is needed/);
   assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
+  assert.match(workflow, /git diff --name-only --no-renames/);
   assert.match(workflow, /steps\.production-impact\.outputs\.smoke_needed == 'false'/);
   assert.match(
     workflow,
