@@ -32,10 +32,12 @@ jobs:
       - name: Verify generated tree is stable
         shell: bash
         run: |
+          git diff --binary > /tmp/generated-before.diff
           node scripts/prepare-pr.cjs
-          if ! git diff --quiet; then
-            echo "Canonical generation is not idempotent."
-            git diff --stat
+          git diff --binary > /tmp/generated-after.diff
+          if ! cmp -s /tmp/generated-before.diff /tmp/generated-after.diff; then
+            echo "Canonical generation changed the working diff on the second pass."
+            diff -u /tmp/generated-before.diff /tmp/generated-after.diff || true
             exit 1
           fi
 
