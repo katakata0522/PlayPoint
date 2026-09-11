@@ -97,3 +97,46 @@ test('検証専用workflowの変更だけでは本番Deployを起動しない', 
   }
 });
 
+test('Deployは変更影響を判定して本番処理を一括でゲートする', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+
+  assert.match(workflow, /name: Detect production deploy impact/);
+  assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
+  assert.match(workflow, /fetch-depth: 2/);
+  assert.match(workflow, /git diff --name-only --no-renames/);
+
+  for (const stepName of [
+    'Run complete preflight and prepare deploy assets',
+    'Create deploying status marker',
+    'Setup SSH',
+    'Deploy strict public mirror via rsync',
+    'Verify production deployment',
+    'Verify production SEO health',
+    'Publish verified deployment status',
+  ]) {
+    const escaped = stepName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(
+      workflow,
+      new RegExp(`- name: ${escaped}\\n\\s+if: steps\\.deploy-impact\\.outputs\\.deploy_needed == 'true'`),
+      `${stepName} must be gated by deploy impact`
+    );
+  }
+});
+
+test('本番Browser Smokeもno-op Deployの後はChromiumを起動しない', () => {
+  const workflow = read('.github/workflows/browser-smoke.yml');
+
+  assert.match(workflow, /name: Detect whether production browser smoke is needed/);
+  assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
+  assert.match(workflow, /git diff --name-only --no-renames/);
+  assert.match(workflow, /steps\.production-impact\.outputs\.smoke_needed == 'false'/);
+  assert.match(
+    workflow,
+    /name: Install browser driver\n\s+if: github\.event_name != 'workflow_run' \|\| steps\.production-impact\.outputs\.smoke_needed == 'true'/
+  );
+  assert.match(
+    workflow,
+    /name: Verify production calculator, article CSS, mobile region layout, revenue, and embed widget paths in Chromium\n\s+if: github\.event_name != 'workflow_run' \|\| steps\.production-impact\.outputs\.smoke_needed == 'true'/
+  );
+});
+
