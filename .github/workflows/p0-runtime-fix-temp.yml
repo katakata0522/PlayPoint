@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 15
     env:
       EXPECTED_SOURCE_SHA: ${{ github.sha }}
-      EXPECTED_PARENT_SHA: 93ee1912fc50badc3dd196b4723dd444e6bd0f34
+      EXPECTED_PARENT_SHA: a34e1064b280be0479aff0a21d1b1e5ebc5cb070
       EXPECTED_FIXED_TREE: 12fcea1f2021197657661c0f759f273603b2f8f1
       TARGET_BRANCH: feat/article-journey-performance-p0-20260911
     steps:
@@ -30,195 +30,33 @@ jobs:
           ref: ${{ github.sha }}
           fetch-depth: 0
 
-      - name: Apply independently tested analytics boundary patch
+      - name: Restore the locally validated patch with exact SHA256 verification
         shell: bash
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT_SHA"
           test -z "$(git status --porcelain)"
-          cat > "$RUNNER_TEMP/pp261-observability.patch" <<'PATCH'
-          diff --git a/docs/ANALYTICS.md b/docs/ANALYTICS.md
-          index e2c5316..5f59bb9 100644
-          --- a/docs/ANALYTICS.md
-          +++ b/docs/ANALYTICS.md
-          @@ -32,6 +32,8 @@
-           
-           `article_navigation_click` はリンク文言・記事タイトル・自由入力を送らず、有限の分類値だけを送る。`component` は `site_identity / global_nav / breadcrumb / region_switch / next_step / popular / related / author / katakatalab / browse`、`locale` は `en / ko / tw`、`article_role` と `article_category` は既存のArticle Role / guide taxonomyに合わせる。外部のKatakataLab導線では `target_path` を送らず、`destination_type=external_profile` だけを記録する。これにより内部リンクのアンカー文言や利用者入力がGA4へ流れないようにする。
-           
-          +分類値の制限はイベント単位で適用する。既存の日本語ブログ `article_click` の `article_category` は海外ナビの分類に変換せず保持し、計算結果リンクの `internal / external / official_google_support` も維持する。海外記事内のアンカー移動は `section`、一般の外部リンクは `external` として内部記事への遷移と区別し、外部URLは送らない。必須項目の欠落や不正な引数は例外にせず、そのイベントを送信しない。
-          +
-           `calculator_form_started` と `calculator_funnel_completed` は通常計算・逆算ごとに1ページ1回だけ送る。`calculation_completed` / `reverse_calculation_completed` は従来どおり再計算のたびに送るため、利用回数は既存イベント、開始→初回成功率はファネル専用イベントで判断する。入力した金額・ポイント数そのものはファネルイベントへ送らない。
-           
-           `calculation_completed` と `reverse_calculation_completed` には、外部キャンペーンURLに `utm_source`, `utm_medium`, `utm_campaign` がある場合のみ `entry_source`, `entry_medium`, `entry_campaign` を追加する。記事・検索意図別LPから計算機へ移動した場合は、同意済みセッション内に `entry_source_path`, `entry_link_context`, `calculator_preset` を最大30分だけ保持する。計算機側で最初に流入情報を参照した時点で sessionStorage からページ内メモリへ移し、`calculator_form_started` と `calculator_funnel_completed` にも同じ記事・LP起点を付与する。`calculation_completed` / `reverse_calculation_completed` への起点付与は最初の1回だけとし、再計算による水増しを防ぐ。ページを離れるとページ内メモリは破棄されるため、後続の別訪問へ同じ起点を持ち越さない。サイト内リンクにはUTMを付けず、ページ階層とCTAの位置から流入面を判定する。入力された課金額、必要ポイント、獲得ポイント、日記本文などの値は送信しない。
-          diff --git a/js/analytics-core.js b/js/analytics-core.js
-          index 3bc5d0e..7cf9e7a 100644
-          --- a/js/analytics-core.js
-          +++ b/js/analytics-core.js
-          @@ -22,12 +22,21 @@
-                   'calculator_preset'
-               ];
-               const CALCULATOR_PATHS = new Set(['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']);
-          +    // 同名パラメータでもイベントごとに意味が異なる。海外ナビの分類で
-          +    // 日本語ブログのarticle_categoryや計算結果の外部遷移を消さない。
-          +    const RESULT_LINK_PARAM_VALUES = Object.freeze({
-          +        destination_type: new Set(['internal', 'external', 'official_google_support'])
-          +    });
-               const ENUM_PARAM_VALUES = Object.freeze({
-          -        component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
-          -        locale: new Set(['en', 'ko', 'tw']),
-          -        article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
-          -        article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
-          -        destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'official_google_support'])
-          +        article_navigation_click: Object.freeze({
-          +            component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
-          +            locale: new Set(['en', 'ko', 'tw']),
-          +            article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
-          +            article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
-          +            destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
-          +        }),
-          +        result_related_article_clicked: RESULT_LINK_PARAM_VALUES,
-          +        result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
-               });
-               const REQUIRED_PARAMS = Object.freeze({
-                   article_navigation_click: Object.freeze(['source_path', 'component', 'locale', 'article_role', 'article_category', 'destination_type'])
-          @@ -78,7 +87,7 @@
-                   return getConsentStatus() === 'granted';
-               }
-           
-          -    function sanitizeValue(key, value) {
-          +    function sanitizeValue(key, value, enumRules = {}) {
-                   if (value === undefined || value === null || value === '') return null;
-                   if (key === 'link_position') {
-                       const numberValue = Number(value);
-          @@ -93,7 +102,7 @@
-           
-                   let text = String(value).trim();
-                   if (!text) return null;
-          -        const enumValues = ENUM_PARAM_VALUES[key];
-          +        const enumValues = enumRules[key];
-                   if (enumValues && !enumValues.has(text)) return null;
-                   if (key.endsWith('_path')) {
-                       try {
-          @@ -107,10 +116,10 @@
-                   return text.replace(/[<>"']/g, '').slice(0, MAX_TEXT_LENGTH);
-               }
-           
-          -    function sanitizeAllowedParams(allowed, params = {}) {
-          +    function sanitizeAllowedParams(allowed, params = {}, enumRules = {}) {
-                   if (!Array.isArray(allowed) || !params || typeof params !== 'object') return null;
-                   return allowed.reduce((clean, key) => {
-          -            const value = sanitizeValue(key, params[key]);
-          +            const value = sanitizeValue(key, params[key], enumRules);
-                       if (value !== null) clean[key] = value;
-                       return clean;
-                   }, {});
-          @@ -119,7 +128,8 @@
-                   const allowed = ALLOWED_PARAMS[eventName];
-                   if (!allowed) return null;
-          -        const clean = sanitizeAllowedParams(allowed, params);
-          +        const clean = sanitizeAllowedParams(allowed, params, ENUM_PARAM_VALUES[eventName]);
-          +        if (!clean) return null;
-                   const required = REQUIRED_PARAMS[eventName];
-                   if (required && required.some(key => clean[key] === undefined)) return null;
-                   return clean;
-          @@ -397,12 +407,12 @@
-               }
-           
-               function classifyArticleDestination(url, component) {
-          -        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'internal';
-          +        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'external';
-                   if (isCalculatorDestination(url)) return component === 'region_switch' ? 'region_home' : 'calculator';
-                   if (component === 'author') return 'operator_profile';
-          +        if (url.pathname === window.location.pathname && url.hash) return 'section';
-                   if (/\/(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
-                   if (/\/(?:en|ko|tw)\/articles\/$/.test(url.pathname)) return url.hash ? 'category' : 'guide_hub';
-          -        if (url.pathname === window.location.pathname && url.hash) return 'section';
-                   return 'internal';
-               }
-           
-          diff --git a/tests/article-navigation-observability.test.cjs b/tests/article-navigation-observability.test.cjs
-          index caba433..00b8dc6 100644
-          --- a/tests/article-navigation-observability.test.cjs
-          +++ b/tests/article-navigation-observability.test.cjs
-          @@ -139,3 +139,76 @@ test('P0 performance CI measures EN KO TW articles independently', () => {
-             assert.equal(budget.TARGETS.largestContentfulPaintMs, 2500);
-             assert.equal(budget.TARGETS.cumulativeLayoutShift, 0.10);
-           });
-          +
-          +test('海外ナビ専用ENUMは日本語ブログの既存カテゴリを消さない', () => {
-          +  const { context } = createRuntime();
-          +  const analytics = context.PlayPointAnalytics;
-          +  const categories = new Set(JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).map(article => article.category));
-          +  for (const category of categories) {
-          +    analytics.track('article_click', { article_title: '公開記事', article_category: category });
-          +    assert.equal(eventCalls(context, 'article_click').at(-1).article_category, category);
-          +    assert.equal(analytics.sanitizeParams('article_navigation_click', {
-          +      source_path: '/en/articles/a.html', component: 'related', locale: 'en',
-          +      article_role: 'reference', article_category: category, destination_type: 'article'
-          +    }), null, '日本語カテゴリを海外ナビの分類へ混入させない');
-          +  }
-          +});
-          +
-          +test('計算結果リンクは内部・外部・Google公式の既存分類を保持する', () => {
-          +  const { context } = createRuntime();
-          +  const analytics = context.PlayPointAnalytics;
-          +  for (const eventName of ['result_related_article_clicked', 'result_decision_link_clicked']) {
-          +    for (const type of ['internal', 'external', 'official_google_support']) {
-          +      analytics.track(eventName, {
-          +        source_path: '/', destination_type: type,
-          +        target_path: type === 'internal' ? '/en/articles/a.html' : 'https://example.com/private?amount=10000'
-          +      });
-          +      const sent = eventCalls(context, eventName).at(-1);
-          +      assert.equal(sent.destination_type, type);
-          +      assert.equal(sent.target_path, type === 'internal' ? '/en/articles/a.html' : undefined);
-          +    }
-          +  }
-          +});
-          +
-          +test('必須項目付きイベントへ不正な引数を渡しても例外や送信を起こさない', () => {
-          +  const { context } = createRuntime();
-          +  const analytics = context.PlayPointAnalytics;
-          +  for (const params of [null, undefined, false, 0, 'private input', [], {}]) {
-          +    assert.equal(analytics.sanitizeParams('article_navigation_click', params), null);
-          +    assert.equal(analytics.track('article_navigation_click', params), false);
-          +  }
-          +  assert.equal(eventCalls(context, 'article_navigation_click').length, 0);
-          +});
-          +
-          +test('同じ記事内のアンカー移動は別記事への遷移と区別する', () => {
-          +  const { context, listeners, popularLink } = createRuntime();
-          +  popularLink.href = context.location.href + '#answer';
-          +  listeners.get('click')[0]({ target: popularLink });
-          +  const sent = eventCalls(context, 'article_navigation_click').at(-1);
-          +  assert.equal(sent.destination_type, 'section');
-          +  assert.equal(sent.target_path, context.location.pathname);
-          +});
-          +
-          +test('海外ナビの外部遷移を内部遷移と誤記録せずURLも送らない', () => {
-          +  const { context, listeners, popularLink } = createRuntime();
-          +  popularLink.href = 'https://example.com/private?amount=10000';
-          +  listeners.get('click')[0]({ target: popularLink });
-          +  const sent = eventCalls(context, 'article_navigation_click').at(-1);
-          +  assert.equal(sent.destination_type, 'external');
-          +  assert.equal(sent.target_path, undefined);
-          +});
-          +
-          +test('海外記事の行動計測も既存の同意境界で保留・送信・拒否する', () => {
-          +  const { context, listeners, popularLink } = createRuntime();
-          +  let consent = 'pending';
-          +  context.PlayPointConsent.getStatus = () => consent;
-          +  const click = listeners.get('click')[0];
-          +  click({ target: popularLink });
-          +  assert.equal(eventCalls(context, 'article_navigation_click').length, 0);
-          +  consent = 'granted';
-          +  context.PlayPointAnalytics.flushPending();
-          +  assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
-          +  consent = 'denied';
-          +  click({ target: popularLink });
-          +  assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
-          +});
-          PATCH
+          git show "$EXPECTED_PARENT_SHA:.github/workflows/p0-runtime-fix-temp.yml" > "$RUNNER_TEMP/pp261-previous.yml"
+          python3 <<'PY'
+          import hashlib
+          import os
+          from pathlib import Path
+          temp = Path(os.environ['RUNNER_TEMP'])
+          text = (temp / 'pp261-previous.yml').read_text()
+          marker = "<<'PATCH'\n"
+          start = text.index(marker) + len(marker)
+          end = text.index('\n          PATCH', start)
+          lines = text[start:end].splitlines()
+          assert all(line.startswith('          ') for line in lines), 'unexpected patch indentation'
+          patch = '\n'.join(line[10:] for line in lines) + '\n'
+          needle = '@@ -119,7 +128,8 @@\n         const allowed = ALLOWED_PARAMS[eventName];'
+          corrected = '@@ -119,7 +128,8 @@\n     function sanitizeParams(eventName, params = {}) {\n         const allowed = ALLOWED_PARAMS[eventName];'
+          assert patch.count(needle) == 1, 'expected exactly one missing context line'
+          patch = patch.replace(needle, corrected)
+          assert hashlib.sha256(patch.encode()).hexdigest() == 'b32444fe1c16b4b3f5eb71607201f2df0c4f02077fd62705b63b8025fa212076', 'patch differs from independently tested source'
+          (temp / 'pp261-observability.patch').write_text(patch)
+          PY
           git apply --check "$RUNNER_TEMP/pp261-observability.patch"
           git apply "$RUNNER_TEMP/pp261-observability.patch"
           git rm .github/workflows/p0-runtime-fix-temp.yml
