@@ -37,7 +37,7 @@ const EDITORIAL_TARGETS = Object.freeze({
       '購入前の獲得予定ポイントと、購入後の実際の付与数。'
     ],
     comparisonHref: '/compare/earning-rates/#status-rates',
-    comparisonLabel: 'ステータス別獲得率の引用用比較表を見る'
+    comparisonLabel: 'ステータス別獲得率の比較表を見る'
   },
   'articles/2026-07-24-play-points-100-value.html': {
     contextHeading: "100ポイントの「貯め方」と「使い道」は別に比べる",
@@ -221,7 +221,7 @@ function applyEditorialStructure(rootDir, modifiedDate) {
     if (config.answer) {
       editorialHtml = `${renderAnswer(config.answer)}\n            ${knowledge}`;
       html = html.replace(
-        /(<article\b[^>]*class="[^"]*\bcontent\b[^"]*"[^>]*>)/i,
+        /(<header\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>[\s\S]*?<\/header>)/i,
         `$1\n            <!-- editorial-summary:start -->\n            ${editorialHtml}\n            <!-- editorial-summary:end -->`
       );
     } else {

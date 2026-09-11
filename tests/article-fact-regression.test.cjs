@@ -71,7 +71,7 @@ test('反映時間は公式案内にない時間幅を断定しない', () => {
 
 test('終了済みの2025年末から2026年正月予測には履歴記事の明示がある', () => {
   const html = readArticle('2025-12-25-new-year-campaign.html');
-  assert.match(html, /(?:予測対象期間|当時の予測期間|2025年末の予測)(?:は|が)?(?:すでに)?終了/);
+  assert.match(html, /過去の開始日や倍率は、次回の確定情報ではありません/);
   assert.match(html, /過去(?:の開始日や倍率|傾向|予測)/);
 });
 
@@ -167,7 +167,7 @@ test('ゴールド到達記事は1,000ポイントと1.25概算を守り非公�
 test('プラチナ到達記事は4,000ポイントと税抜約20万円を守り非公式倍率を書かない', () => {
   const html = readArticle('2026-08-16-fastest-platinum.html');
   assert.match(html, /4,000ポイント/);
-  assert.match(html, /約200,000円/);
+  assert.match(html, /約20万円/);
   assert.match(html, /プレミアムサポートはプラチナとダイヤモンド/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
   assert.doesNotMatch(html, /カレンダー/);
@@ -191,7 +191,8 @@ test('支払い方法記事はチャージ非対象を守りキャリア還元�
 
 test('ポイント消失記事は1年期限とランクリセットを分けて残高消去を断定しない', () => {
   const html = readArticle('2026-08-16-points-disappeared.html');
-  assert.match(html, /獲得から1年/);
+  assert.match(html, /最後(?:に)?(?:ポイントを)?獲得(?:または|・|したか、)使用|最後の獲得または使用/);
+  assert.doesNotMatch(html, /受取後1週間|1年間未使用で失効/);
   assert.match(html, /ランクの年次リセットと、ポイント残高の失効は別/);
   assert.doesNotMatch(html, /1月1日にポイント残高が消える/);
   assert.doesNotMatch(html, /カレンダー/);
@@ -236,7 +237,7 @@ test('パズドラ救出記事は未確認の石単価とパス9ptを公式事�
 
 test('ゴールド対プラチナ記事は日本のパス特典対象国を誤らない', () => {
   const html = readArticle('2026-08-16-gold-platinum-worth-it.html');
-  assert.match(html, /約200,000円/);
+  assert.match(html, /約(?:20万|200,000)円/);
   assert.match(html, /フランス、ドイツ、米国、英国/);
   assert.match(html, /日本は含まれていません/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);

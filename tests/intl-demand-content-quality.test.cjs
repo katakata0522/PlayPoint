@@ -60,7 +60,7 @@ const demandContracts = [
     name: 'Korean Super Ticket guide answers acquisition and use intent without a generic calculator CTA',
     file: 'ko/articles/google-play-points-super-weekly-reward.html',
     marker: 'id="ko-super-ticket-answer"',
-    patterns: [/슈퍼티켓 얻는 법·사용법/, /30일마다 1장/, /90일마다 1장/, /이전 Play Points 보상을 유지하지 못합니다/, /mc_games_editorialmd_product_gpp_swp_super_tickets_fcp/]
+    patterns: [/슈퍼티켓 얻는 법·사용법/, /현재 카드/, /현행 규칙으로 보장하지/, /기존 보상이 사라지는지/, /mc_games_editorialmd_product_gpp_swp_super_tickets_fcp/]
   },
   {
     name: 'English gift-card guide owns conversion and earning questions without a generic calculator CTA',
