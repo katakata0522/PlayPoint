@@ -99,27 +99,37 @@ test('international article typography keeps translated headings readable withou
   }
 });
 
-test('international article shell follows the Japanese navigation and sidebar rhythm in each language', () => {
+test('international shell exposes task-first navigation, discovery, and trust in each language', () => {
   for (const locale of locales) {
     const html = fs.readFileSync(path.join(root, locale, 'articles', 'google-play-points-country-change.html'), 'utf8');
-    assert.match(html, /class="global-nav-inner"[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item/, locale + ': six-part Japanese-style navigation');
-    assert.match(html, /sidebar-rank-grid/, locale + ': localized level and reward quick links');
-    assert.match(html, /sidebar-event-item/, locale + ': localized pre-purchase checks');
-    assert.match(html, /sidebar-tip-box/, locale + ': localized regional rule tip');
-    assert.match(html, /sidebar-category-list/, locale + ': category navigation');
-    assert.ok(html.includes(`href="/${locale}/author/katakata.html"`), locale + ': localized editorial policy link');
+    assert.match(html, /class="global-nav-inner"[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item/, locale + ': six-part task navigation');
+    assert.match(html, /class="site-about-link"/, locale + ': operator trust link');
+    assert.match(html, /class="site-region-switcher"/, locale + ': Play country switcher');
+    assert.match(html, /class="skip-link"/, locale + ': skip link');
+    assert.match(html, /<main id="main-content"[^>]*class="main-card"/, locale + ': main landmark target');
+    assert.match(html, /sidebar-widget--next/, locale + ': role-aware next-step widget');
+    assert.match(html, /sidebar-popular-list/, locale + ': popular discovery list');
+    assert.match(html, /sidebar-related-list/, locale + ': contextual related list');
+    assert.match(html, /sidebar-author-card/, locale + ': operator trust card');
+    assert.match(html, /sidebar-browse-grid/, locale + ': category browse grid');
+    assert.match(html, /katakatalab\.com\/who-is-katakata\.html/, locale + ': KatakataLab trust path');
+    assert.match(html, /href="\/articles\/intl-shell-v1\.css(?:\?[^"']*)?"/, locale + ': shell stylesheet');
+    assert.doesNotMatch(html, /sidebar-rank-grid|sidebar-event-item|sidebar-tip-box|sidebar-category-list/, locale + ': redundant generic widgets must be removed');
     assert.match(html, /href="\/articles\/intl-article\.css(?:\?[^"']*)?"/, locale + ': neutral shared international stylesheet');
     assert.doesNotMatch(html, /href="\/en\/articles\/intl-article\.css/, locale + ': must not depend on English directory for shared CSS');
   }
 });
 
-test('localized author pages share the international Japanese-style shell', () => {
+test('localized author pages share the international Japanese-style shell without repeating the author card', () => {
   for (const locale of locales) {
     const file = path.join(root, locale, 'author', 'katakata.html');
     assert.ok(fs.existsSync(file), locale + ': localized author page missing');
     const html = fs.readFileSync(file, 'utf8');
     assert.match(html, /class="layout-container intl-layout-container"/);
     assert.match(html, /class="sidebar-column intl-article-sidebar"/);
+    assert.match(html, /class="site-region-switcher"/);
+    assert.match(html, /sidebar-popular-list/);
+    assert.doesNotMatch(html, /sidebar-author-card/, locale + ': author page must not repeat its own mini profile');
     assert.match(html, /hreflang="ja"/);
     assert.ok(html.includes(`canonical" href="https://playpoint-sim.com/${locale}/author/katakata.html"`), locale + ': localized canonical URL');
   }

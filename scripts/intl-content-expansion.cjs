@@ -138,7 +138,8 @@ function insertIndexLinks(rootDir, locale) {
   const relativePath = `${locale}/articles/index.html`;
   const absolutePath = path.join(rootDir, relativePath);
   let html = fs.readFileSync(absolutePath, 'utf8');
-  const missingTopics = TOPICS.filter(topic => !html.includes(`/${articlePath(locale, topic.slug)}`));
+  const articleList = html.match(/<section class=\"section related-links-section\"[^>]*>[\s\S]*?<\/section>/)?.[0] || '';
+  const missingTopics = TOPICS.filter(topic => !articleList.includes(`href=\"/${articlePath(locale, topic.slug)}\"`));
   if (!missingTopics.length) return;
   const links = missingTopics
     .map(topic => `                <li><a href="/${articlePath(locale, topic.slug)}">${topic.labels[locale]}</a></li>`)
