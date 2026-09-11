@@ -43,11 +43,16 @@ test('デプロイは公開物だけを厳密にミラーし、除外物も本�
   }
 });
 
-test('別リポジトリ管理のManner Quizを厳密ミラーの削除対象から保護する', () => {
-  assert.ok(
-    script.includes("--filter='protect /manner/***'"),
-    'cli-autoが所有する /manner/ のrsync protect規則がありません'
-  );
+test('別リポジトリ管理の公開領域を厳密ミラーの削除対象から保護する', () => {
+  for (const [ownedPath, owner] of [
+    ['/manner/', 'cli-auto'],
+    ['/kanji-slicer/', 'hajikkogurashi_HP'],
+  ]) {
+    assert.ok(
+      script.includes(`--filter='protect ${ownedPath}***'`),
+      `${owner} が所有する ${ownedPath} のrsync protect規則がありません`
+    );
+  }
 });
 
 test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', () => {
