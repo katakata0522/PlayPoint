@@ -1,0 +1,21 @@
+/* 日本語記事の既存配色とレイアウトを保ち、次の行動を絞る。 */
+.ja-article-sidebar { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.ja-article-sidebar .sidebar-widget { margin: 0; }
+.ja-article-sidebar .sidebar-widget-title { margin: 0; font-size: 15px; line-height: 1.5; }
+.ja-article-sidebar .sidebar-widget-body { padding: 16px; font-size: 14px; line-height: 1.7; }
+.ja-article-sidebar .sidebar-widget-body p { margin: 0 0 12px; }
+.ja-article-sidebar a { overflow-wrap: anywhere; }
+.ja-article-sidebar .sidebar-next-link { display: block; padding: 12px; border: 1px solid currentColor; border-radius: 8px; font-weight: 700; }
+.ja-article-sidebar .sidebar-related-list { margin: 0; padding-left: 1.2em; }
+.ja-article-sidebar .sidebar-related-list li + li { margin-top: 12px; }
+.ja-article-sidebar .sidebar-author-links, .ja-article-sidebar .sidebar-widget--browse .sidebar-widget-body { display: flex; flex-direction: column; gap: 12px; }
+.ja-article-sidebar a:focus-visible, .ja-global-nav a:focus-visible { outline: 3px solid #168a78; outline-offset: 3px; }
+.ja-global-nav .global-nav-inner { display: flex; flex-wrap: wrap; }
+.ja-global-nav .nav-item { min-height: 44px; flex: 1 1 auto; white-space: normal; }
+@media (max-width: 640px) {
+  .ja-global-nav .global-nav-inner { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ja-global-nav .nav-item { min-width: 0; padding: 10px 4px; font-size: 12px; text-align: center; }
+  .ja-article-sidebar { width: 100%; }
+}
+.ja-article-sidebar a { color: #0f4c5c; text-underline-offset: 3px; }
+.ja-article-sidebar a:hover { color: #087968; }

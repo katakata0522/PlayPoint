@@ -30,7 +30,7 @@
     const ENUM_PARAM_VALUES = Object.freeze({
         article_navigation_click: Object.freeze({
             component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
-            locale: new Set(['en', 'ko', 'tw']),
+            locale: new Set(['ja', 'en', 'ko', 'tw']),
             article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
             article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
             destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
@@ -332,7 +332,7 @@
     }
 
 
-    const INTL_ARTICLE_PATH_PATTERN = /^\/(en|ko|tw)\/articles\/[^/]+\.html$/;
+    const INTL_ARTICLE_PATH_PATTERN = /^\/(?:(en|ko|tw)\/)?articles\/[^/]+\.html$/;
     const ARTICLE_CATEGORY_BY_ANCHOR = Object.freeze({
         'intl-hub-account': 'account',
         'intl-hub-earn': 'earn',
@@ -345,6 +345,14 @@
         const localeMatch = pathname.match(INTL_ARTICLE_PATH_PATTERN);
         if (!localeMatch || !window.document || typeof window.document.querySelector !== 'function') return null;
 
+        const japaneseSidebar = window.document.querySelector('.ja-article-sidebar');
+        if (!localeMatch[1] && japaneseSidebar && typeof japaneseSidebar.getAttribute === 'function') {
+            return {
+                locale: 'ja',
+                article_role: japaneseSidebar.getAttribute('data-article-role'),
+                article_category: japaneseSidebar.getAttribute('data-article-category')
+            };
+        }
         const roleWidget = window.document.querySelector('.intl-article-sidebar .sidebar-widget--next');
         const roleMatch = String(roleWidget && roleWidget.className || '').match(/\bsidebar-widget--role-([a-z_]+)\b/);
         if (!roleMatch) return null;
@@ -388,7 +396,7 @@
         const closest = selector => typeof link.closest === 'function' ? link.closest(selector) : null;
 
         if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
-        if (hasClass('nav-item') && closest('.intl-global-nav')) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item') };
+        if (hasClass('nav-item') && (closest('.intl-global-nav') || closest('.ja-global-nav'))) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item, .ja-global-nav .nav-item') };
         if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
         if (closest('.site-region-menu')) return { component: 'region_switch', link_position: getSelectorPosition(link, '.site-region-menu a') };
         if (hasClass('sidebar-next-link')) return { component: 'next_step', link_position: 1 };
@@ -411,8 +419,8 @@
         if (isCalculatorDestination(url)) return component === 'region_switch' ? 'region_home' : 'calculator';
         if (component === 'author') return 'operator_profile';
         if (url.pathname === window.location.pathname && url.hash) return 'section';
-        if (/\/(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
-        if (/\/(?:en|ko|tw)\/articles\/$/.test(url.pathname)) return url.hash ? 'category' : 'guide_hub';
+        if (/\/(?:(?:en|ko|tw)\/)?articles\/[^/]+\.html$/.test(url.pathname)) return 'article';
+        if (/\/(?:(?:en|ko|tw)\/articles|blog)\/$/.test(url.pathname)) return url.hash || url.searchParams.has('category') ? 'category' : 'guide_hub';
         return 'internal';
     }
 
