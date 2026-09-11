@@ -1,0 +1,72 @@
+name: Temporary P0 runtime fix
+
+on:
+  push:
+    branches:
+      - feat/article-journey-performance-p0-20260911
+    paths:
+      - '.github/workflows/p0-runtime-fix-temp.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-p0-runtime-fix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/article-journey-performance-p0-20260911
+          fetch-depth: 0
+
+      - name: Remove stale eager expansion initialization
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = 'js/region-navigation.js';
+          const source = fs.readFileSync(file, 'utf8');
+          const stale = "\nObject.assign(CONFIGS, createExpansionConfigs(CONFIGS));\nassertResultNavigationCoverage(Object.keys(CONFIGS));\n";
+          if (!source.includes(stale)) throw new Error('stale eager expansion initialization not found');
+          const next = source.replace(stale, '\n');
+          if (/Object\.assign\(CONFIGS, createExpansionConfigs\(CONFIGS\)\)/.test(next.split('export async function prepareRegionConfigForPath')[0])) {
+            throw new Error('eager expansion initialization still exists before lazy loader');
+          }
+          fs.writeFileSync(file, next);
+          NODE
+          git rm .github/workflows/p0-runtime-fix-temp.yml
+
+      - name: Create local fixed HEAD
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/region-navigation.js .github/workflows/p0-runtime-fix-temp.yml
+          git commit -m 'fix: remove stale eager region config initialization'
+
+      - name: Verify focused runtime guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/region-runtime-wiring.test.cjs
+          if grep -n "Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));" js/region-navigation.js | head -1 | grep -q '^[0-9]\{1,2\}:'; then
+            echo 'stale eager initialization remains near module top' >&2
+            exit 1
+          fi
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push fixed canonical result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push origin HEAD:feat/article-journey-performance-p0-20260911
