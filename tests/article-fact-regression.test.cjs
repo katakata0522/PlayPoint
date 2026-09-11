@@ -224,10 +224,11 @@ test('救出3記事はPlay Pointsを還元率パーセントやランク1.5倍�
 
 test('パズドラ救出記事は未確認の石単価とパス9ptを公式事実にしない', () => {
   const html = readArticle('2026-08-25-pad-puzzle-and-dragons-play-points.html');
-  const knownBlock = html.match(/公式発表されている確定情報[\s\S]*?プレイヤー各自で確認すること/);
-  assert.ok(knownBlock, 'official-facts block is missing');
-  assert.doesNotMatch(knownBlock[0], /魔法石の基本価格は1個160円/);
-  assert.doesNotMatch(knownBlock[0], /2,400円〜3,600円/);
+  const context = html.match(/<section class="knowledge-boundary"[\s\S]*?<\/section>/);
+  assert.ok(context, 'subscription conditions should be explained');
+  assert.doesNotMatch(context[0], /魔法石の基本価格は1個160円|2,400円〜3,600円/);
+  assert.match(context[0], /自動更新/);
+  assert.match(context[0], /全特典を直ちに受け取れるという意味ではありません/);
   assert.doesNotMatch(html, /パズドラパス \(月額\)[\s\S]{0,120}9 pt/);
   assert.match(html, /パズドラパスは月額980円/);
   assert.match(html, /購入前にゲーム内とGoogle Playの表示を確認/);

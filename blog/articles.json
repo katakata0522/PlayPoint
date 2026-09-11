@@ -1,7 +1,7 @@
 [
   {
     "id": "pad-puzzle-and-dragons-play-points",
-    "title": "【パズドラ】魔法石・パズパス課金のPlayポイント還元率とお得な立ち回り｜確定ガチャパックの注意点",
+    "title": "【パズドラ】魔法石・パズパスの選び方とPlayポイント｜受け取り条件・更新・確定セットの注意点",
     "date": "2026-08-25",
     "category": "使い方",
     "tags": [
@@ -9,13 +9,14 @@
       "パズドラパス",
       "Play Points"
     ],
-    "description": "パズドラの魔法石購入、月額980円のパズドラパス、コラボ確定ガチャセットの課金効率を徹底解説！Google Play Points還元を活用して無理なくパズドラを楽しむ賢い課金立ち回りとポイント活用術をまとめました。",
+    "description": "パズドラパスを使い切れるか、魔法石セットと確定セットをどう比べるかを具体例で解説。自動更新、受け取り条件、Google Play Pointsの獲得と交換価値を分けて判断できます。",
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
-    "thumbnail": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png"
+    "thumbnail": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
-    "title": "【ドッカンバトル】龍石・デイリーカプセルの課金効率とPlayポイント還元｜ガシャコイン天井と賢い立ち回り",
+    "title": "【ドッカンバトル】龍石・デイリーカプセルの選び方とPlayポイント｜受け取り期限とコインの確認",
     "date": "2026-08-25",
     "category": "使い方",
     "tags": [
@@ -23,13 +24,14 @@
       "龍石",
       "Play Points"
     ],
-    "description": "ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、大型CP・周年のセール龍石の課金効率を徹底解説！ドッカンフェスコインの持ち越し仕様とGoogle Play Points還元を活かした賢いガシャ計画をまとめました。",
+    "description": "龍石の総数だけでなく、ガシャ期限までに受け取れる数でデイリーカプセルと即時購入を比較。コインの対象条件とPlayポイントを分け、予算内で選ぶ方法を解説します。",
     "file": "../articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html",
-    "thumbnail": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png"
+    "thumbnail": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "umamusume-half-anniversary-points",
-    "title": "【ウマ娘】5.5周年ハーフアニバ開幕！SSR引換券・お得ジュエルの課金効率とPlayポイント賢い立ち回り",
+    "title": "【ウマ娘】ハーフアニバのジュエル・引換券の選び方とPlayポイント",
     "date": "2026-08-24",
     "category": "キャンペーン",
     "tags": [
@@ -37,9 +39,10 @@
       "ハーフアニバ",
       "Play Points"
     ],
-    "description": "ウマ娘5.5周年ハーフアニバーサリーが開幕！無料最大100連、新ウマ娘エピファネイア登場、SSR引換券付きジュエルや回数限定パックの課金効率を徹底解説。Google Play Points還元を活かして無理なくお祭りを楽しむ賢い立ち回りをまとめました。",
+    "description": "ウマ娘のハーフアニバで、無料ガチャ・引換券・有償ジュエルをどう比べるか。購入前に対象と期限を確認し、仮の価格例で予算とPlayポイントを分けて判断する方法を解説します。",
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
-    "thumbnail": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png"
+    "thumbnail": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "play-points-locked",
@@ -54,7 +57,8 @@
     ],
     "description": "Google Play Pointsが『利用できません』『アカウントに問題があります』と表示された時に、表示不具合とアカウント制限を切り分け、サポートへ伝える情報まで整理します。",
     "file": "../articles/2026-08-19-play-points-locked.html",
-    "thumbnail": "../articles/ogp/2026-08-19-play-points-locked.png"
+    "thumbnail": "../articles/ogp/2026-08-19-play-points-locked.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "install-offer-points-not-received",
@@ -69,7 +73,8 @@
     ],
     "description": "アプリを試すPlay Points特典が付かない時に、初回インストール、24時間以内に2分以上利用、パーソナライズ設定、対象アカウントを順番に確認します。",
     "file": "../articles/2026-08-19-install-offer-points-not-received.html",
-    "thumbnail": "../articles/ogp/2026-08-19-install-offer-points-not-received.png"
+    "thumbnail": "../articles/ogp/2026-08-19-install-offer-points-not-received.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "redeemed-item-not-received",
@@ -84,7 +89,8 @@
     ],
     "description": "Play Pointsで交換したゲーム内アイテムが届かない時に、ポイント履歴、再起動、Playストア更新、ゲーム運営への問い合わせまで順番に切り分けます。",
     "file": "../articles/2026-08-19-redeemed-item-not-received.html",
-    "thumbnail": "../articles/ogp/2026-08-19-redeemed-item-not-received.png"
+    "thumbnail": "../articles/ogp/2026-08-19-redeemed-item-not-received.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "web-store-external-billing-points",
@@ -99,7 +105,8 @@
     ],
     "description": "ゲーム公式Webストアや代替課金とGoogle Play課金の違いを整理し、Play Points・Play残高・特典の扱いと実質的なお得さの比較方法を解説します。",
     "file": "../articles/2026-08-19-web-store-external-billing-points.html",
-    "thumbnail": "../articles/ogp/2026-08-19-web-store-external-billing-points.png"
+    "thumbnail": "../articles/ogp/2026-08-19-web-store-external-billing-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "play-points-google-store",
@@ -114,7 +121,8 @@
     ],
     "description": "日本でPlay PointsをGoogle Store用プロモーションコードへ交換できる場合の仕組みと、Googleストアポイント・Playクレジットとの違いを整理します。",
     "file": "../articles/2026-08-19-play-points-google-store.html",
-    "thumbnail": "../articles/ogp/2026-08-19-play-points-google-store.png"
+    "thumbnail": "../articles/ogp/2026-08-19-play-points-google-store.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "tgs-google-play-vip",
@@ -161,7 +169,8 @@
     ],
     "description": "日本のPlay Pass加入者向けPlay Points週次ボーナス・ブースターは木曜日更新の別制度です。ゴールド付与特典の公式対象国には日本は入っていません。加入判断は画面の特典と予定購入で行います。",
     "file": "../articles/2026-08-16-play-pass-worth-it.html",
-    "thumbnail": "../articles/ogp/play-pass-worth-it.png"
+    "thumbnail": "../articles/ogp/play-pass-worth-it.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "pc-play-games-points",
@@ -176,7 +185,8 @@
     ],
     "description": "PC版Google Play Gamesでの対象購入はポイント対象になり得ます。PCマークのブーストはPC購入だけに適用され、スマホ購入には付きません。クエストはスマホ限定です。",
     "file": "../articles/2026-08-16-pc-play-games-points.html",
-    "thumbnail": "../articles/ogp/pc-play-games-points.png"
+    "thumbnail": "../articles/ogp/pc-play-games-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "fastest-gold",
@@ -191,7 +201,8 @@
     ],
     "description": "日本のゴールドは暦年1,000ポイントです。シルバー現在なら残りを1.25ポイント/100円で概算し、スーパー週次の対象確認と表示中の高獲得率へ購入予定を合わせます。",
     "file": "../articles/2026-08-16-fastest-gold.html",
-    "thumbnail": "../articles/ogp/fastest-gold.png"
+    "thumbnail": "../articles/ogp/fastest-gold.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "fastest-platinum",
@@ -206,7 +217,8 @@
     ],
     "description": "日本のプラチナは暦年4,000ポイントです。ゴールド現在なら残り3,000ポイントを獲得率1.50で概算すると税抜約20万円です。プレミアムサポートはプラチナ以上です。",
     "file": "../articles/2026-08-16-fastest-platinum.html",
-    "thumbnail": "../articles/ogp/fastest-platinum.png"
+    "thumbnail": "../articles/ogp/fastest-platinum.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "gold-platinum-worth-it",
@@ -221,7 +233,8 @@
     ],
     "description": "ゴールドは獲得率1.50とスーパーウィークリー。プラチナは1.75とプレミアムサポート。ゴールドからプラチナの残りは3,000ポイント、税抜約20万円相当です。日本のパスにゴールド会員向け特典は載っていません。",
     "file": "../articles/2026-08-16-gold-platinum-worth-it.html",
-    "thumbnail": "../articles/ogp/gold-platinum-worth-it.png"
+    "thumbnail": "../articles/ogp/gold-platinum-worth-it.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "premium-support",
@@ -236,7 +249,8 @@
     ],
     "description": "日本向け公式特典表では、チャットと電話のプレミアムサポートはプラチナとダイヤモンドです。ログインが必要で、すべての問題が対象ではなく、待ち時間の短縮は保証されません。",
     "file": "../articles/2026-08-16-premium-support.html",
-    "thumbnail": "../articles/ogp/premium-support.png"
+    "thumbnail": "../articles/ogp/premium-support.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "payment-methods-points",
@@ -251,7 +265,8 @@
     ],
     "description": "ギフトカードのチャージそのものではポイントは付きません。対象のPlay購入をPlayのお支払い方法で払った場合に付くことがあります。キャリア独自の還元はPlayポイントではありません。",
     "file": "../articles/2026-08-16-payment-methods-points.html",
-    "thumbnail": "../articles/ogp/payment-methods-points.png"
+    "thumbnail": "../articles/ogp/payment-methods-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "points-disappeared",
@@ -266,7 +281,8 @@
     ],
     "description": "残高の1年期限、1年の未利用、ウィークリーの1週間期限、未請求期間、未ログイン、Family Link管理アカウントを先に切り分けます。1月のランクリセットと残高の消失は別です。",
     "file": "../articles/2026-08-16-points-disappeared.html",
-    "thumbnail": "../articles/ogp/points-disappeared.png"
+    "thumbnail": "../articles/ogp/points-disappeared.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "family-link-play-points",
@@ -281,7 +297,8 @@
     ],
     "description": "Family Linkで管理されているアカウントは、Playポイントプログラムの参加対象外です。年齢や国を変える回避策は公式にありません。家族の他メンバーは、自身がポイント会員なら参加できます。",
     "file": "../articles/2026-08-16-family-link-play-points.html",
-    "thumbnail": "../articles/ogp/family-link-play-points.png"
+    "thumbnail": "../articles/ogp/family-link-play-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "play-points-day",
@@ -296,7 +313,8 @@
     ],
     "description": "Playポイントデーは、Google Play公式アカウントが毎月1日0:00〜23:59に案内するポイント増量日です。最大7倍は全員共通ではなく、自分の倍率は「貯める」画面で確認します。",
     "file": "../articles/2026-08-16-play-points-day.html",
-    "thumbnail": "../articles/ogp/play-points-day.png"
+    "thumbnail": "../articles/ogp/play-points-day.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "youtube-premium-play-points",
@@ -311,7 +329,8 @@
     ],
     "description": "日本向け公式ヘルプの獲得対象リストにYouTube Premiumは載っていません。貯まるかはGoogle Play経由の請求か、ポイント履歴に付与があるかで確認します。",
     "file": "../articles/2026-08-16-youtube-premium-play-points.html",
-    "thumbnail": "../articles/ogp/youtube-premium-play-points.png"
+    "thumbnail": "../articles/ogp/youtube-premium-play-points.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "pixel-discount-coupon",
@@ -326,7 +345,8 @@
     ],
     "description": "日本向け公式の常設特典表にPixel割引は載っていません。表示される場合は特典タブの個別オファーです。対象・金額・期限は画面で確認します。",
     "file": "../articles/2026-08-16-pixel-discount-coupon.html",
-    "thumbnail": "../articles/ogp/pixel-discount-coupon.png"
+    "thumbnail": "../articles/ogp/pixel-discount-coupon.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "weekly-reward-not-showing",
@@ -341,7 +361,8 @@
     ],
     "description": "通常のウィークリーリワードはシルバー以上、日本の金曜日にリセットされます。ボタンが無い時はランク、アカウント、受取済み、Play Pass木曜特典の取り違えを順に確認します。",
     "file": "../articles/2026-08-16-weekly-reward-not-showing.html",
-    "thumbnail": "../articles/ogp/weekly-reward-not-showing.png"
+    "thumbnail": "../articles/ogp/weekly-reward-not-showing.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "january-rank-reset",
@@ -356,7 +377,8 @@
     ],
     "description": "Play Pointsのステータスは毎年初めに、前年の獲得ポイントで変わることがあります。1月1日に下がってもポイント残高は消えません。別アカウントや有効期限と切り分けます。",
     "file": "../articles/2026-08-16-january-rank-reset.html",
-    "thumbnail": "../articles/ogp/january-rank-reset.png"
+    "thumbnail": "../articles/ogp/january-rank-reset.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "play-points-levels-guide",
@@ -446,13 +468,14 @@
     ],
     "description": "機種変更後も同じGoogleアカウントならPlay Pointsの残高・ランク・履歴は通常引き継がれます。別アカウント、国変更、Play Pass特典の最長15日遅延など、表示されない時の確認順を解説します。",
     "file": "../articles/2026-08-03-play-points-device-change.html",
-    "thumbnail": "../articles/ogp/multiple-accounts.png"
+    "thumbnail": "../articles/ogp/multiple-accounts.png",
+    "modified": "2026-09-12"
   },
   {
     "id": "super-weekly-reward",
     "title": "Google Play Pointsスーパーウィークリーリワード｜賞品・確率・当選例・Super Ticket",
     "date": "2026-07-31",
-    "modified": "2026-09-08",
+    "modified": "2026-09-12",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -468,7 +491,7 @@
     "id": "google-play-quests",
     "title": "Google Playのクエストとは？表示されない・達成されない時の確認方法",
     "date": "2026-07-31",
-    "modified": "2026-08-02",
+    "modified": "2026-09-12",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -484,7 +507,7 @@
     "id": "play-points-coupon-not-applied",
     "title": "Google Play Pointsクーポンが自動適用されない原因",
     "date": "2026-07-25",
-    "modified": "2026-08-04",
+    "modified": "2026-09-12",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -500,7 +523,7 @@
     "id": "play-credit-not-working",
     "title": "Play PointsをPlayクレジットへ交換できない・使えない原因",
     "date": "2026-07-25",
-    "modified": "2026-07-30",
+    "modified": "2026-09-12",
     "category": "トラブル",
     "tags": [
       "Play Points",
@@ -516,7 +539,7 @@
     "id": "play-points-cash-conversion",
     "title": "Google Play Pointsは現金化・PayPay交換できる？できない理由と使い道",
     "date": "2026-07-24",
-    "modified": "2026-09-03",
+    "modified": "2026-09-12",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -532,7 +555,7 @@
     "id": "points-value-1",
     "title": "Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか",
     "date": "2026-07-24",
-    "modified": "2026-08-03",
+    "modified": "2026-09-12",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -550,7 +573,7 @@
     "id": "points-value-500-1000",
     "title": "Google Play Points 500・1,000ポイントはいくら？必要額早見表",
     "date": "2026-07-24",
-    "modified": "2026-07-30",
+    "modified": "2026-09-12",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -566,7 +589,7 @@
     "id": "earn-play-points-free",
     "title": "Google Play Pointsを無料で貯める方法｜予定購入以外の正規特典",
     "date": "2026-07-24",
-    "modified": "2026-08-05",
+    "modified": "2026-09-12",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -582,7 +605,7 @@
     "id": "points-value-100",
     "title": "Google Play Points 100ポイントはいくら？何円で貯まるか計算",
     "date": "2026-07-24",
-    "modified": "2026-07-30",
+    "modified": "2026-09-12",
     "category": "使い方",
     "tags": [
       "Play Points",
@@ -624,7 +647,7 @@
     "description": "課金したのにPlay Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
-    "modified": "2026-09-08"
+    "modified": "2026-09-12"
   },
   {
     "id": "multiple-accounts",
@@ -656,7 +679,7 @@
     "description": "Google Play GamesとPlay Pointsの役割の違い、ゲームを遊ぶだけでは通常ポイントが付かない理由、クエストでPlay Gamesログインが必要になる場合、PC版を含む購入・獲得条件を解説します。",
     "file": "../articles/2025-12-25-play-games.html",
     "thumbnail": "../articles/ogp/play-games.png",
-    "modified": "2026-07-31"
+    "modified": "2026-09-12"
   },
   {
     "id": "movies-books",
@@ -672,7 +695,7 @@
     "description": "Google Play Pointsが電子書籍、有料アプリ、ゲーム本体などの買い切り購入で貯まる条件を解説。購入前のPlay Points参加、Google Play経由、対象国・アカウント、端末とポイント履歴の確認方法を整理します。",
     "file": "../articles/2025-12-25-movies-books.html",
     "thumbnail": "../articles/ogp/movies-books.png",
-    "modified": "2026-07-31"
+    "modified": "2026-09-12"
   },
   {
     "id": "expiration",
@@ -784,7 +807,7 @@
     "description": "Google Oneやアプリ・ゲーム内の定期購入でGoogle Play Pointsが貯まる条件を解説。AndroidからのGoogle One契約、Google Play経由の請求、初回ボーナス、更新時の付与、外部決済との違いを整理します。",
     "file": "../articles/2025-12-25-subscription.html",
     "thumbnail": "../articles/ogp/subscription.png",
-    "modified": "2026-07-31"
+    "modified": "2026-09-12"
   },
   {
     "id": "weekly-reward",
@@ -864,7 +887,7 @@
     "description": "Google Play Pointsの増量キャンペーンを待つべきか、対象アカウント、開始操作、最高獲得率、期限を確認し、通常時との必要額を比較する方法を解説します。",
     "file": "../articles/2025-12-25-campaign.html",
     "thumbnail": "../articles/ogp/campaign.png",
-    "modified": "2026-08-04"
+    "modified": "2026-09-12"
   },
   {
     "id": "best-use",
@@ -911,6 +934,6 @@
     "description": "Google Play Pointsのランクはいつ下がる？到達したランクは翌年12月31日まで維持され、その年のステータス判定ポイントをもとに次の年のランクが再判定されます。",
     "file": "../articles/2025-12-25-playpoints-rank-maintenance.html",
     "thumbnail": "../articles/ogp/playpoints-rank-maintenance.png",
-    "modified": "2026-09-08"
+    "modified": "2026-09-12"
   }
 ]

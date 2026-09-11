@@ -9,12 +9,23 @@ const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
-const CASES = [
+const REPRESENTATIVE_CASES = [
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true }
 ];
+// 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
+const CASES = process.env.ARTICLE_REVIEW_ALL === '1'
+  ? [
+      ...JSON.parse(fs.readFileSync(path.join(ROOT, 'blog/articles.json'), 'utf8'))
+        .filter(article => article.listed !== false)
+        .map(article => article.file.replace(/^\.\.\//, '')),
+      ...['en', 'ko', 'tw'].flatMap(locale => fs.readdirSync(path.join(ROOT, locale, 'articles'))
+        .filter(file => file.endsWith('.html') && file !== 'index.html')
+        .map(file => locale + '/articles/' + file))
+    ].map(file => ({ key: file.replace(/[/.]/g, '-'), path: file, allArticle: true }))
+  : REPRESENTATIVE_CASES;
 const VIEWPORTS = [
   { key: 'desktop', width: 1280, height: 900 },
   { key: 'mobile', width: 390, height: 844 },
@@ -86,14 +97,18 @@ async function inspect(browser, baseUrl, article, viewport) {
     });
 
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
-    assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
-    assert(parseFloat(result.answer.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': answer accent missing');
-    assert(parseFloat(result.answer.borderRadius) >= 8, article.key + '/' + viewport.key + ': answer radius ' + result.answer.borderRadius);
-    assert(result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': answer hierarchy missing');
-    assert(result.heading, article.key + '/' + viewport.key + ': section heading missing');
-    assert(parseFloat(result.heading.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': H2 accent missing');
-    assert(result.heading.backgroundImage !== 'none', article.key + '/' + viewport.key + ': H2 soft band missing');
-    assert(result.heading.boxShadow === 'none', article.key + '/' + viewport.key + ': H2 still has heavy shadow');
+    if (!article.allArticle || result.answer) {
+      assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
+      assert(parseFloat(result.answer.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': answer accent missing');
+      assert(parseFloat(result.answer.borderRadius) >= 8, article.key + '/' + viewport.key + ': answer radius ' + result.answer.borderRadius);
+      assert(result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': answer hierarchy missing');
+    }
+    if (!article.allArticle || result.heading) {
+      assert(result.heading, article.key + '/' + viewport.key + ': section heading missing');
+      assert(parseFloat(result.heading.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': H2 accent missing');
+      assert(result.heading.backgroundImage !== 'none', article.key + '/' + viewport.key + ': H2 soft band missing');
+      assert(result.heading.boxShadow === 'none', article.key + '/' + viewport.key + ': H2 still has heavy shadow');
+    }
     if (article.intro) {
       assert(result.intro, article.key + '/' + viewport.key + ': intro missing');
       assert(result.intro.textAlign === 'left' || result.intro.textAlign === 'start', article.key + '/' + viewport.key + ': intro alignment ' + result.intro.textAlign);
@@ -164,6 +179,6 @@ async function main() {
     await browser.close();
     if (local) await local.close();
   }
-  console.log('[article-design-smoke] verified ' + CASES.length + ' representative articles across ' + VIEWPORTS.length + ' viewports');
+  console.log('[article-design-smoke] verified ' + CASES.length + ' articles across ' + VIEWPORTS.length + ' viewports');
 }
 main().catch(error => { console.error(error.stack || error.message || error); process.exitCode = 1; });
