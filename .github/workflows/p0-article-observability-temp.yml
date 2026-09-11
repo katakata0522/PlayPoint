@@ -52,8 +52,10 @@ jobs:
           node --check js/analytics-core.js
           node --test tests/analytics-core.test.cjs tests/article-navigation-observability.test.cjs
 
-      - name: Remove temporary finalizer files
-        run: rm -f tools/apply-p0-article-observability.cjs .github/workflows/p0-article-observability-temp.yml
+      - name: Keep workflow edits on the connector write path
+        run: |
+          git restore .github/workflows/mobile-performance.yml
+          rm -f tools/apply-p0-article-observability.cjs
 
       - name: Commit canonical P0 implementation
         run: |
