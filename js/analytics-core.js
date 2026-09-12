@@ -29,11 +29,11 @@
     });
     const ENUM_PARAM_VALUES = Object.freeze({
         article_navigation_click: Object.freeze({
-            component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse']),
+            component: new Set(['site_identity', 'global_nav', 'breadcrumb', 'region_switch', 'next_step', 'popular', 'related', 'author', 'katakatalab', 'browse', 'citation', 'diary', 'contextual_action']),
             locale: new Set(['ja', 'en', 'ko', 'tw']),
             article_role: new Set(['calculator_bridge', 'decision_support', 'troubleshooting', 'retention', 'game_decision', 'reference', 'hold']),
             article_category: new Set(['account', 'earn', 'levels', 'troubleshooting', 'guides']),
-            destination_type: new Set(['calculator', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
+            destination_type: new Set(['calculator', 'diary', 'article', 'guide_hub', 'category', 'operator_profile', 'external_profile', 'region_home', 'section', 'internal', 'external', 'official_google_support'])
         }),
         result_related_article_clicked: RESULT_LINK_PARAM_VALUES,
         result_decision_link_clicked: RESULT_LINK_PARAM_VALUES
@@ -65,7 +65,7 @@
         widget_code_copied: ['theme', 'language', 'mode'],
         web_vital: ['metric_name', 'metric_rating', 'metric_value_bucket', 'page_group', 'release_version'],
         article_click: ['article_title', 'article_category'],
-        search: ['search_term', 'results_count'],
+        search: ['results_count'],
         category_filter: ['category_name'],
         theme_change: ['theme_mode'],
         points_cost_calculation_completed: ['region', 'status', 'point_bucket']
@@ -156,7 +156,7 @@
     function isCalculatorDestination(link) {
         try {
             const url = resolveUrl(link);
-            return url.origin === window.location.origin && CALCULATOR_PATHS.has(url.pathname);
+            return url.origin === window.location.origin && CALCULATOR_PATHS.has(url.pathname) && url.searchParams.get('mode') !== 'diary';
         } catch (error) {
             return false;
         }
@@ -395,6 +395,9 @@
         const hasClass = name => Boolean(link.classList && typeof link.classList.contains === 'function' && link.classList.contains(name));
         const closest = selector => typeof link.closest === 'function' ? link.closest(selector) : null;
 
+        if (closest('.article-diary-link')) return { component: 'diary', link_position: 1 };
+        if (closest('.article-source-inline')) return { component: 'citation', link_position: null };
+        if (closest('article .cta-box, article .article-next-step')) return { component: 'contextual_action', link_position: null };
         if (hasClass('site-logo')) return { component: 'site_identity', link_position: 1 };
         if (hasClass('nav-item') && (closest('.intl-global-nav') || closest('.ja-global-nav'))) return { component: 'global_nav', link_position: getSelectorPosition(link, '.intl-global-nav .nav-item, .ja-global-nav .nav-item') };
         if (closest('.intl-article-breadcrumbs')) return { component: 'breadcrumb', link_position: getSelectorPosition(link, '.intl-article-breadcrumbs a') };
@@ -415,7 +418,11 @@
     }
 
     function classifyArticleDestination(url, component) {
-        if (url.origin !== window.location.origin) return component === 'katakatalab' ? 'external_profile' : 'external';
+        if (url.origin !== window.location.origin) {
+            if (url.hostname === 'support.google.com' && url.pathname.startsWith('/googleplay/')) return 'official_google_support';
+            return component === 'katakatalab' ? 'external_profile' : 'external';
+        }
+        if (CALCULATOR_PATHS.has(url.pathname) && url.searchParams.get('mode') === 'diary') return 'diary';
         if (isCalculatorDestination(url)) return component === 'region_switch' ? 'region_home' : 'calculator';
         if (component === 'author') return 'operator_profile';
         if (url.pathname === window.location.pathname && url.hash) return 'section';

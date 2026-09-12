@@ -196,7 +196,7 @@ test('許可外イベント・パラメータ・外部遷移は送信または�
   });
 
   assert.equal(eventCalls(context, 'unknown_event').length, 0);
-  assert.deepEqual(eventCalls(context, 'search')[0], { search_term: 'scriptvery long/script' });
+  assert.deepEqual(eventCalls(context, 'search')[0], {});
   assert.equal(storage.size, 0);
 });
 

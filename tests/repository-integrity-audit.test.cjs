@@ -25,6 +25,11 @@ const runtimeEntrypoints = new Set([
   'articles/source-notice.css',
   'blog/common-components.css',
   'blog/articles.json',
+  // Search data is fetched relative to each hub at runtime.
+  'blog/article-search-index.json',
+  'en/articles/article-search-index.json',
+  'ko/articles/article-search-index.json',
+  'tw/articles/article-search-index.json',
   'region-selector.css',
   'sw.js'
 ]);

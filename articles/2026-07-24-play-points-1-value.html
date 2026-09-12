@@ -104,6 +104,12 @@
 }
     </script>
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=ca5a355d8e">
+
+<!-- discovery-assets:start -->
+<link rel="stylesheet" href="/articles/article-discovery.css?v=d8144284de">
+<script defer src="/js/article-search.js?v=7c8bd5d42a"></script>
+<script defer src="/js/reading-library.js?v=c232f6a73f"></script>
+<!-- discovery-assets:end -->
 </head>
 <body data-article-category="使い方">
 
@@ -139,9 +145,13 @@
             <!-- タイトル部（最上部） -->
             <header class="hero">
                 <span class="hero-badge">税抜価格・端数・四捨五入</span>
-                <h1 class="article-title">Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</h1>
+                <h1 class="article-title" id="article-title">Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</h1>
                 <p class="hero-meta">公開 <time data-article-date="published" datetime="2026-07-24">2026/07/24</time> ・ 更新 <time data-article-date="modified" datetime="2026-09-12">2026/09/12</time> ・ 公式情報確認 <time data-article-date="official-verified" datetime="2026-08-03">2026/08/03</time> ・ 読了 8分</p>
             </header>
+<!-- reading-tools:start --><div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">あとで読む</button><a href="/blog/#reading-library">保存した記事・閲覧履歴</a><span role="status"></span></div><!-- reading-tools:end -->
+
+
+
 
 
 
@@ -167,7 +177,7 @@
 <!---->
 
 <section class="section">
-<h2>公式の計算ルールを3段階で整理</h2>
+<h2 id="article-section-4">公式の計算ルールを3段階で整理</h2>
 <ol>
 <li><strong>対象となるアイテム価格を確認する：</strong>支払った税金はポイント計算に含まれません。</li>
 <li><strong>ステータスの通常獲得率を掛ける：</strong>ブロンズは通常100円ごとに1ポイントで、日本の各ステータスでは100円あたり1～2ポイントです。</li>
@@ -177,7 +187,7 @@
 <p class="note">日本はGoogle Playの表示価格が税込になる場合があります。一方でPlay Pointsは税金を除いて計算されるため、表示価格だけから税抜の計算対象額を正確に逆算できない取引もあります。</p>
 </section>
 <section class="section">
-<h2>日本のステータス別獲得率</h2>
+<h2 id="article-section-5">日本のステータス別獲得率</h2>
 <div class="table-wrap rounding-table-wrap">
 <table class="rounding-table">
 <caption>日本の通常獲得率と税抜500円を例にした丸め</caption>
@@ -194,7 +204,7 @@
 <p>シルバーの「500円で6ポイント」はGoogle公式にも例示されています。ほかの行は、同じ公式の獲得率と四捨五入ルールを当てはめた計算例です。</p>
 </section>
 <section class="section">
-<h2>分割購入と合計計算で差が出る理由</h2>
+<h2 id="article-section-6">分割購入と合計計算で差が出る理由</h2>
 <p>Google公式は、<strong>アイテムの価格</strong>に獲得率を掛けて整数へ丸めると説明しています。この記事では、その説明を<strong>購入した商品ごとに最も近い整数へ丸める</strong>ものとして比較しています。複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p>
 <div class="table-wrap rounding-table-wrap">
 <table class="rounding-table">
@@ -209,7 +219,7 @@
 <p class="small">これは丸め方を理解するための架空の数値例です。実際にその価格の商品があることや、対象購入になることを示すものではありません。</p>
 </section>
 <section class="section" id="rounding-simulator-section">
-<h2>購入ごとの丸めと合計計算を比較する</h2>
+<h2 id="article-section-7">購入ごとの丸めと合計計算を比較する</h2>
 <p>税金を除いた対象価格が分かっている場合に、購入ごとに丸めた結果と、総額へ一度だけ丸めた結果を比較できます。</p>
 <p class="note">購入画面に獲得予定ポイントが表示されている場合は、その表示を優先してください。この機能は税額や対象可否を判定せず、丸め方の仕組みを比較するためのものです。</p>
 <div class="rounding-simulator" id="rounding-simulator">
@@ -239,12 +249,12 @@
 </div>
 </section>
 <section class="section">
-<h2>税込表示から単純に逆算しない</h2>
+<h2 id="article-section-8">税込表示から単純に逆算しない</h2>
 <p>Google Playでは、購入手続きの完了前に適用される税金が表示されます。また、日本は表示価格へ税を含める内税方式の対象地域です。一方、Play Pointsの公式計算では税金を含めません。</p>
 <p>したがって「表示価格が550円だから税抜500円」と常に決め打ちするのではなく、注文情報、購入前の獲得予定ポイント、購入後のポイント履歴を確認する方が安全です。コンテンツの種類や販売者によって税金の処理が異なる場合があります。</p>
 </section>
 <section class="section">
-<h2>キャンペーンとクーポン利用時の注意</h2>
+<h2 id="article-section-9">キャンペーンとクーポン利用時の注意</h2>
 <ul>
 <li>キャンペーン倍率は、対象商品・対象期間・有効化条件を満たす場合だけ適用します。</li>
 <li>複数のプロモーションは、同じ購入へ重ねて使えないとGoogleは案内しています。</li>
@@ -254,14 +264,14 @@
 <p><a href="./2025-12-25-campaign.html">キャンペーンを待つべきか判断する方法</a>と、<a href="./2026-07-25-play-points-coupon-not-applied.html">クーポンが適用されない時の確認順</a>も参照してください。</p>
 </section>
 <section class="section faq">
-<h2>よくある質問</h2>
-<div class="faq-item"><h3>Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？</h3><p>Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。</p></div>
-<div class="faq-item"><h3>99円の商品なら必ず1ポイント貯まりますか？</h3><p>表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。</p></div>
-<div class="faq-item"><h3>分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p></div>
-<div class="faq-item"><h3>この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。</p></div>
+<h2 id="article-section-10">よくある質問</h2>
+<div class="faq-item"><h3 id="article-section-11">Google Play Pointsは税込価格と税抜価格のどちらで計算されますか？</h3><p>Google公式は、ポイントの対象はアイテム価格のみで、支払った税金は含まれないと案内しています。日本では表示価格が税込の場合があるため、表示金額をそのまま100で割った結果と一致しないことがあります。</p></div>
+<div class="faq-item"><h3 id="article-section-12">99円の商品なら必ず1ポイント貯まりますか？</h3><p>表示価格だけでは断定できません。対象可否、税金を除いたアイテム価格、ステータス獲得率、キャンペーン条件を使って計算され、最終結果は購入画面とポイント履歴で確認します。</p></div>
+<div class="faq-item"><h3 id="article-section-13">分割購入とまとめて計算した場合でポイントは変わりますか？</h3><p>差が出る場合があります。Google公式はアイテムの価格に獲得率を掛けて最も近い整数へ丸めると案内しています。そのため、複数の別購入を先に合算して一度だけ丸める方法は公式説明どおりの計算ではなく、購入ごとの結果と差が出る場合があります。</p></div>
+<div class="faq-item"><h3 id="article-section-14">この記事のシミュレーターは実際の付与を保証しますか？</h3><p>保証しません。税金を除いた対象価格と獲得率が分かっている場合に、丸め方の差を理解するための試算です。表示価格しか分からない場合や獲得予定ポイントが表示されている場合は、Google Playの購入画面を優先してください。</p></div>
 </section>
 <aside class="official-source-note source-list">
-<h2>Google公式情報</h2>
+<h2 id="article-section-15">Google公式情報</h2>
 <ul>
 <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">Google Play ポイントを貯める、管理する</a></li>
 <li><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" rel="noopener noreferrer" target="_blank">日本のステータスと通常獲得率</a></li>
@@ -353,8 +363,8 @@
     </footer>
 
 <script defer="" src="../js/play-points-rounding.js?v=3f07a96fe2"></script>
-<script src="/js/analytics-core.js?v=496eb11e66"></script>
+<script src="/js/analytics-core.js?v=96fa25c428"></script>
 <script src="../blog/article.js?v=544261c659"></script>
-<script src="../blog/components.js?v=55a28ecf31"></script>
+<script src="../blog/components.js?v=e5377a9d24"></script>
 </body>
 </html>

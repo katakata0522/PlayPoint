@@ -302,6 +302,12 @@ export function init() {
     updateUIForRegion();
     updateArticleCount();
     SHARE.applyFromUrl();
+    const entryParams = new URLSearchParams(window.location.search);
+    if (entryParams.get('mode') === CONSTANTS.MODE_DIARY) {
+        UI.switchMode(CONSTANTS.MODE_DIARY);
+        calculatorFunnel.trackModeChange(CONSTANTS.MODE_DIARY);
+        queueDiaryAction(DIARY => entryParams.get('week') === 'current' ? DIARY.openCurrentWeek() : DIARY.renderDiary());
+    }
     checkLanguageSuggestion();
     trackWidgetReferral();
 

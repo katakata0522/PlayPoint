@@ -38,14 +38,14 @@
         if (analyticsCorePromise) return analyticsCorePromise;
 
         analyticsCorePromise = new Promise((resolve, reject) => {
-            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=496eb11e66"]');
+            const existing = document.querySelector('script[src*="/js/analytics-core.js?v=96fa25c428"]');
             if (existing) {
                 existing.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
                 existing.addEventListener('error', reject, { once: true });
                 return;
             }
             const script = document.createElement('script');
-            script.src = rootPath + 'js/analytics-core.js?v=496eb11e66';
+            script.src = rootPath + 'js/analytics-core.js?v=96fa25c428';
             script.async = true;
             script.addEventListener('load', () => resolve(window.PlayPointAnalytics), { once: true });
             script.addEventListener('error', reject, { once: true });

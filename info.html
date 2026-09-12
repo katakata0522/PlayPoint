@@ -24,7 +24,7 @@
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
-    <link rel="stylesheet" href="style.css?v=fa1708e364">
+    <link rel="stylesheet" href="style.css?v=62a03541b1">
     
     <script type="application/ld+json">
     {
@@ -215,19 +215,16 @@
                 }
             }
 
-            const ref = document.referrer;
             let targetRegion = preferredRegion;
-
-            if (ref) {
-                if (ref.includes('/ko/')) {
-                    targetRegion = 'KR';
-                } else if (ref.includes('/tw/')) {
-                    targetRegion = 'TW';
-                } else if (ref.includes('/en/')) {
-                    targetRegion = 'US';
-                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
-                    targetRegion = 'JP';
+            // 自サイト内の参照元だけから戻り先の言語を引き継ぐ。
+            try {
+                const referrer = new URL(document.referrer);
+                if (referrer.origin === window.location.origin) {
+                    const locale = referrer.pathname.split('/')[1];
+                    targetRegion = { ko: 'KR', tw: 'TW', en: 'US' }[locale] || 'JP';
                 }
+            } catch {
+                // 参照元が空・不正な場合は保存済み設定またはブラウザ言語を使う。
             }
 
             if (targetRegion === 'KR') {

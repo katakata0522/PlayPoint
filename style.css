@@ -2456,3 +2456,5 @@ padding: 0 16px;
     scroll-behavior: auto !important;
   }
 }
+
+.week-row.is-current-week { outline: 2px solid #0891b2; outline-offset: 3px; }

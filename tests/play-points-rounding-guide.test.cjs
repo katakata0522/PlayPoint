@@ -15,7 +15,8 @@ function read(relativePath) {
 }
 
 function normalizeText(value) {
-  return value.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  // 表示テキストと構造化データは、タグ境界の空白を除いて比較する。
+  return value.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, '').trim();
 }
 
 test('公式例のシルバー500円は6ポイントへ丸める', () => {
@@ -126,7 +127,7 @@ test('画面のFAQとFAQPage構造化データが一致する', () => {
   const faqPage = scripts.find(item => item['@type'] === 'FAQPage');
   assert.ok(faqPage);
 
-  const visible = [...html.matchAll(/<div class="faq-item"><h3>([\s\S]*?)<\/h3><p>([\s\S]*?)<\/p><\/div>/g)]
+  const visible = [...html.matchAll(/<div class="faq-item"><h3\b[^>]*>([\s\S]*?)<\/h3><p>([\s\S]*?)<\/p><\/div>/g)]
     .map(match => ({ name: normalizeText(match[1]), answer: normalizeText(match[2]) }));
   const structured = faqPage.mainEntity.map(item => ({
     name: normalizeText(item.name),

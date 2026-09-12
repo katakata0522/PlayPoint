@@ -79,6 +79,6 @@ test('audited English answer headings stay compact', () => {
   ]);
   for (const [file, heading] of expectations) {
     const html = read(file);
-    assert.match(html, new RegExp(`<h2>${heading.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}</h2>`));
+    assert.match(html, new RegExp(`<h2\\b[^>]*>${heading.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}</h2>`));
   }
 });

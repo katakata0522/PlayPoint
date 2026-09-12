@@ -136,5 +136,8 @@ if (articleNavigationSummary.failures.length > 0) {
 }
 console.log(`[build-html] synchronized article intent/navigation: ${articleNavigationSummary.stats.changed} updated`);
 
+const { syncArticleDiscovery } = require('./article-discovery-sync.cjs');
+console.log('[build-html] synchronized article search and reading tools:', syncArticleDiscovery(rootDir));
+syncPublicAssetVersions(rootDir);
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
