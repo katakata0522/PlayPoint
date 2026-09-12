@@ -44,9 +44,10 @@ const diaryCopy = {
   ko: ['이번 주에 받은 혜택을 기록해 두세요', 'Google Play에서 받은 포인트나 경품을 기록할 수 있습니다. 기록은 이 기기에 저장되며 Google 계정과 연결되지 않습니다.', '이번 주 기록 열기'],
   tw: ['記下這週領到的獎勵', '在 Google Play 領取後，可以在這裡記錄點數或獎品。紀錄只儲存在此裝置，不會連結 Google 帳戶。', '開啟本週紀錄']
 };
+function withoutReadingMount(html) { return html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->[ \t]*(?:\r?\n)?/g, ''); }
 function readingMount(html, locale, isHub) {
   const copy = readingCopy[locale], hub = locale === 'ja' ? '/blog/' : '/' + locale + '/articles/';
-  html = html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->[ \t]*(?:\r?\n)?/g, '');
+  html = withoutReadingMount(html);
   const inner = isHub
     ? '<details id="reading-library" class="reading-library"><summary>' + copy[2] + '</summary><p>' + copy[8] + '</p></details>'
     : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
@@ -61,6 +62,7 @@ function syncArticleDiscovery(root) {
   const hubs = ['blog/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/index.html`)];
   for (const entry of entries) {
     const file = path.join(root, entry.path); let html = fs.readFileSync(file, 'utf8'); const before = html;
+    html = withoutReadingMount(html);
     html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
     if (entry.locale !== 'ja') {
       html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>');
