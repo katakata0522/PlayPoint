@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname, '../info.html'), 'utf8');
-const source = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]).find(s => s.includes('btn-back-home'));
+const source = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script[^>]*>/gi)].map(m => m[1]).find(s => s.includes('btn-back-home'));
 function destination(referrer, region = 'US') {
   const button = {}, year = {};
   const context = { URL, Date, navigator: { language: 'en-US' }, localStorage: { getItem: () => region },
