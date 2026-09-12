@@ -3,8 +3,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { createRevision } = require('./article-asset-versioning.cjs');
+const { COPY: readingCopy } = require('../js/reading-library.js');
 function text(html) {
-  return String(html).replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+  return String(html).replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, ' ').replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, ' ')
     .replace(/<[^>]*>/g, ' ').replace(/&(?:amp|quot|apos|lt|gt|nbsp);|&#(?:x[\da-f]+|\d+);/gi, entity => {
       const named = { '&amp;': '&', '&quot;': '"', '&apos;': "'", '&lt;': '<', '&gt;': '>', '&nbsp;': ' ' };
       if (named[entity]) return named[entity];
@@ -21,7 +22,8 @@ function articleEntries(root) {
 }
 function extractSections(html) {
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
-  const body = article.replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
+  const body = article.replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
+    .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
   const sections = headings.map((m, i) => ({ id: m[2].match(/\bid=["']([^"']+)/)?.[1] || '', heading: text(m[3]),
@@ -42,6 +44,18 @@ const diaryCopy = {
   ko: ['이번 주에 받은 혜택을 기록해 두세요', 'Google Play에서 받은 포인트나 경품을 기록할 수 있습니다. 기록은 이 기기에 저장되며 Google 계정과 연결되지 않습니다.', '이번 주 기록 열기'],
   tw: ['記下這週領到的獎勵', '在 Google Play 領取後，可以在這裡記錄點數或獎品。紀錄只儲存在此裝置，不會連結 Google 帳戶。', '開啟本週紀錄']
 };
+function readingMount(html, locale, isHub) {
+  const copy = readingCopy[locale], hub = locale === 'ja' ? '/blog/' : '/' + locale + '/articles/';
+  html = html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, '');
+  const inner = isHub
+    ? '<details id="reading-library" class="reading-library"><summary>' + copy[2] + '</summary><p>' + copy[8] + '</p></details>'
+    : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
+  const block = '\n<!-- reading-tools:start -->' + inner + '<!-- reading-tools:end -->\n';
+  if (isHub) return html.replace(/[ \t]*(<div\b[^>]*(?:data-intl-guide-controls|id="article-grid")[^>]*>)/i, (_, tag) => block + tag);
+  const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
+  if (header) return html.replace(header[0], tag => tag + block);
+  return html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, tag => tag + block);
+}
 function syncArticleDiscovery(root) {
   const entries = articleEntries(root), indexes = { ja: [], en: [], ko: [], tw: [] };
   const hubs = ['blog/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/index.html`)];
@@ -69,6 +83,7 @@ function syncArticleDiscovery(root) {
       const block = `\n<!-- discovery-diary:start --><aside class="article-diary-link"><h2>${copy[0]}</h2><p>${copy[1]}</p><a href="${home}?mode=diary&amp;week=current" data-diary-entry>${copy[2]}</a></aside><!-- discovery-diary:end -->\n`;
       html = html.replace('</article>', block + '</article>');
     }
+    html = readingMount(html, entry.locale, false);
     if (html !== before) fs.writeFileSync(file, html);
     indexes[entry.locale].push({ path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
       description: entry.description || text(html.match(/<meta name="description" content="([^"]*)"/)?.[1] || ''),
@@ -85,6 +100,7 @@ function syncArticleDiscovery(root) {
     const scripts = ['js/article-search.js', 'js/reading-library.js'].map(asset => `<script defer src="/${asset}?v=${createRevision(path.join(root, asset))}"></script>`).join('\n');
     const assets = `\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${createRevision(path.join(root, 'articles/article-discovery.css'))}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
     html = html.replace('</head>', assets + '</head>');
+    if (hubs.includes(relative)) html = readingMount(html, relative.startsWith('blog/') ? 'ja' : relative.split('/')[0], true);
     if (html !== before) fs.writeFileSync(file, html);
   }
   return entries.length;

@@ -6,7 +6,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const search = require('../js/article-search.js');
 const { KEY, makeStore, safePath } = require('../js/reading-library.js');
-const { extractSections } = require('../scripts/article-discovery-sync.cjs');
+const { extractSections, text } = require('../scripts/article-discovery-sync.cjs');
 const outcomes = require('../scripts/article-outcome-report.cjs');
 const root = path.resolve(__dirname, '..');
 test('four-language synonym search finds body-only information and links to its section', () => {
@@ -103,4 +103,11 @@ test('brand spacing variants match without requiring leftover Google tokens', ()
    ['ko',['구글 플레이 포인트','구글 플레이포인트']],
    ['tw',['Google Play點數','GooglePlay點數']]
  ])for(const q of variants)assert.equal(search.matches(article,q,locale),true,locale+': '+q);
+});
+
+test('本文抽出は空白付き終了タグと除去境界を安全なテキストとして扱う', () => {
+ assert.equal(text('<p>Before</p><script>hidden()</script ><style>hidden{}</style ><p>After</p>'),'Before After');
+ assert.equal(text('<scr<script>hidden()</script>ipt>'),'');
+ const section=extractSections('<article><h2 id="one">One</h2><p>Useful</p><!-- reading-tools:start --><div>Saved controls</div><!-- reading-tools:end --></article>');
+ assert.equal(section[0].text,'Useful');
 });

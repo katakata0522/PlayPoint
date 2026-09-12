@@ -31,7 +31,7 @@
     ko: ['나중에 읽기', '저장됨', '저장한 글·최근 읽은 글', '나중에 읽기', '최근 읽은 글', '목록에서 삭제', '목록 비우기', '아직 글이 없습니다.', '이 기기에만 저장됩니다. 저장한 글은 최대 100개, 최근 읽은 글은 20개까지이며 브라우저 데이터를 삭제하면 사라집니다.', '읽은 글 기록하기', '저장 공간을 사용할 수 없습니다. 브라우저 설정을 확인해 주세요.', '글을 저장했습니다.', '저장을 해제했습니다.'],
     tw: ['稍後閱讀', '已儲存', '已儲存文章與閱讀紀錄', '稍後閱讀', '最近閱讀', '從清單移除', '清空清單', '目前沒有文章。', '只儲存在此裝置：最多 100 篇收藏、20 篇閱讀紀錄。清除瀏覽器資料後，清單也會刪除。', '保留閱讀紀錄', '無法使用儲存空間，請檢查瀏覽器設定。', '已儲存文章。', '已取消儲存。']
   };
-  const api = { KEY, safePath, cleanItems, makeStore };
+  const api = { KEY, safePath, cleanItems, makeStore, COPY };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root?.document) return;
   root.PlayPointReading = api;
@@ -49,22 +49,22 @@
     let button, current;
     if (!isHub) {
       current = { path: pathname, title: h1.textContent.trim() };
-      const tools = element('div'); tools.className = 'reading-tools';
+      const tools = document.querySelector('[data-reading-tools]') || element('div'); tools.className = 'reading-tools';
       button = element('button', copy[0]); button.type = 'button'; button.setAttribute('aria-pressed', 'false');
       function updateButton() { const saved = store.read().saved.some(item => item.path === pathname); button.textContent = copy[saved ? 1 : 0]; button.setAttribute('aria-pressed', String(saved)); }
       button.addEventListener('click', () => attempt(() => { store.toggle(current); updateButton(); status.textContent = copy[button.getAttribute('aria-pressed') === 'true' ? 11 : 12]; }));
       const link = element('a', copy[2]); link.href = hub + '#reading-library';
-      tools.append(button, link, status);
-      const header = h1.closest('header'); (header && !header.classList.contains('site-header') ? header : h1).after(tools);
+      tools.replaceChildren(button, link, status);
+      if (!tools.isConnected) { const header = h1.closest('header'); (header && !header.classList.contains('site-header') ? header : h1).after(tools); }
       attempt(() => { store.visit(current); updateButton(); });
       root.addEventListener('storage', event => { if (event.key === KEY || event.key === null) attempt(updateButton); });
       return;
     }
-    const panel = element('details'); panel.id = 'reading-library'; panel.className = 'reading-library';
-    panel.append(element('summary', copy[2]), element('p', copy[8]));
+    const panel = document.getElementById('reading-library') || element('details'); panel.id = 'reading-library'; panel.className = 'reading-library';
+    panel.replaceChildren(element('summary', copy[2]), element('p', copy[8]));
     const controls = element('div'); panel.append(controls, status);
     const mount = document.querySelector('[data-intl-guide-controls], #article-grid, #articles-grid, #blog-grid, .articles-grid');
-    if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel);
+    if (!panel.isConnected) { if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel); }
     function render() {
       controls.replaceChildren(); const state = store.read();
       const label = element('label'), checkbox = element('input'); checkbox.type = 'checkbox'; checkbox.checked = state.historyEnabled;

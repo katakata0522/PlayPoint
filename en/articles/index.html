@@ -40,7 +40,7 @@
 <!-- discovery-assets:start -->
 <link rel="stylesheet" href="/articles/article-discovery.css?v=d8144284de">
 <script defer src="/js/article-search.js?v=7c8bd5d42a"></script>
-<script defer src="/js/reading-library.js?v=f2d708501f"></script>
+<script defer src="/js/reading-library.js?v=c232f6a73f"></script>
 <!-- discovery-assets:end -->
 </head>
 <body>
@@ -122,7 +122,9 @@
     </section>
     <section class="intl-hub-browser" aria-labelledby="intl-hub-browse">
       <div class="intl-hub-section-heading"><h2 id="intl-hub-browse">Browse all guides</h2></div>
-      <div class="intl-guide-controls" data-intl-guide-controls>
+
+<!-- reading-tools:start --><details id="reading-library" class="reading-library"><summary>Saved articles & reading history</summary><p>Stored only on this device: up to 100 saved articles and 20 recent articles. Clearing browser data removes these lists.</p></details><!-- reading-tools:end -->
+<div class="intl-guide-controls" data-intl-guide-controls>
         <label for="intl-guide-search">Search guides</label>
         <input id="intl-guide-search" type="search" autocomplete="off" placeholder="Search by topic or keyword" data-guide-search>
         <div class="intl-guide-filters" role="group" aria-label="Browse all guides">
@@ -341,6 +343,6 @@
 <script src="/js/analytics-core.js?v=96fa25c428"></script>
 <script src="/js/intent-tracking.js?v=cdaccb870f"></script>
 <script src="/js/third-party.js?v=742c5cb45a"></script>
-<script src="/js/intl-guide-hub.js?v=52b6ac02d8" defer data-intl-hub-discovery-script></script>
+<script src="/js/intl-guide-hub.js?v=6846600b30" defer data-intl-hub-discovery-script></script>
 </body>
 </html>

@@ -15,7 +15,8 @@ function read(relativePath) {
 }
 
 function normalizeText(value) {
-  return value.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  // 表示テキストと構造化データは、タグ境界の空白を除いて比較する。
+  return value.replace(/<[^>]*>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, '').trim();
 }
 
 test('公式例のシルバー500円は6ポイントへ丸める', () => {

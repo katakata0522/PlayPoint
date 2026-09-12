@@ -63,14 +63,21 @@
     applyFilters();
   }
   buttons.forEach(button => button.addEventListener('click', () => selectCategory(button.dataset.guideFilter)));
-  search.addEventListener('input', applyFilters);
+  search.addEventListener('focus', loadBodySearch, { once: true });
+  search.addEventListener('input', () => { applyFilters(); if (search.value.trim()) loadBodySearch(); });
   function applyHash() {
     const map = { '#intl-hub-account': 'account', '#intl-hub-earn': 'earn', '#intl-hub-levels': 'levels', '#intl-hub-trouble': 'troubleshooting' };
     if (map[location.hash]) selectCategory(map[location.hash]);
   }
   window.addEventListener('hashchange', applyHash); applyHash(); applyFilters();
-  fetch('article-search-index.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); }).then(index => {
+  let bodySearchPromise;
+  function loadBodySearch() {
+    if (bodySearchPromise) return bodySearchPromise;
+    bodySearchPromise = fetch('article-search-index.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); }).then(index => {
     const byPath = new Map(index.articles.map(article => [article.path, article]));
     articles = articles.map(article => byPath.get(article.path) || article); applyFilters();
   }).catch(() => { const notice = document.createElement('p'); notice.setAttribute('role', 'status'); notice.textContent = copy[4]; search.after(notice); });
+    return bodySearchPromise;
+  }
+  if (search.value.trim()) loadBodySearch();
 })();

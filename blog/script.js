@@ -496,6 +496,24 @@
         await loadArticles();
     }
 
+    // 本文検索は検索欄を使う時に取得し、記事一覧の初期表示を待たせない。
+    let bodySearchPromise;
+    function loadBodySearch() {
+        if (bodySearchPromise) return bodySearchPromise;
+        bodySearchPromise = fetch('article-search-index.json', { cache: 'no-cache' }).then(response => {
+            if (!response.ok) throw new Error('Search index unavailable');
+            return response.json();
+        }).then(index => {
+            const byPath = new Map(index.articles.map(item => [item.path, item]));
+            allArticles.forEach(article => { article.sections = byPath.get(new URL(article.file, window.location.href).pathname)?.sections || []; });
+        }).catch(() => {
+            const notice = document.createElement('p');
+            notice.textContent = '本文検索を読み込めませんでした。現在はタイトル・説明・タグから検索できます。';
+            notice.setAttribute('role', 'status'); dom.searchInput?.after(notice);
+        });
+        return bodySearchPromise;
+    }
+
     // Load articles with retry logic
     async function loadArticles() {
         try {
@@ -503,18 +521,6 @@
             if (!response.ok) throw new Error('Failed to load articles');
             const articles = await response.json();
             allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
-            // 本文データが取れない時も、タイトル・説明による検索は使える。
-            try {
-                const response = await fetch('article-search-index.json', { cache: 'no-cache' });
-                if (!response.ok) throw new Error('Search index unavailable');
-                const index = await response.json();
-                const byPath = new Map(index.articles.map(item => [item.path, item]));
-                allArticles.forEach(article => { article.sections = byPath.get(new URL(article.file, window.location.href).pathname)?.sections || []; });
-            } catch {
-                const notice = document.createElement('p');
-                notice.textContent = '本文検索を読み込めませんでした。現在はタイトル・説明・タグから検索できます。';
-                notice.setAttribute('role', 'status'); dom.searchInput?.after(notice);
-            }
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories
@@ -524,8 +530,10 @@
 
             // Search setup with debounce
             if (dom.searchInput) {
-                const debouncedSearch = debounce((value) => {
+                const debouncedSearch = debounce(async (value) => {
                     currentSearch = value;
+                    if (value) await loadBodySearch();
+                    if (currentSearch !== value) return;
                     currentPage = 1;
                     updateURLState();
                     render();
@@ -536,6 +544,7 @@
                     }
                 }, CONFIG.searchDebounceMs);
 
+                dom.searchInput.addEventListener('focus', () => { loadBodySearch(); }, { once: true });
                 dom.searchInput.addEventListener('input', (e) => {
                     debouncedSearch(e.target.value.toLowerCase().trim());
                 });
@@ -574,10 +583,11 @@
                 }
 
                 syncCategoryActiveState();
-
+                if (currentSearch) loadBodySearch().then(render);
                 render();
             });
 
+            if (currentSearch) await loadBodySearch();
             render();
 
         } catch (e) {
