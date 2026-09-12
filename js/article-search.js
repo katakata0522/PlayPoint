@@ -2,10 +2,10 @@
   'use strict';
   // 地域ごとの同義語をまとめ、ローカルの見出し・本文インデックスを検索する。
   const groups = {
-    ja: [['playpoints', 'google play points', 'play points', 'プレイポイント', 'プレイ ポイント', 'playポイント'], ['期限', '有効期限', '期限切れ', '失効'], ['反映', '付かない', 'つかない', '未付与'], ['残高', '残りポイント'], ['ウィークリー', 'ウイークリー', '週次'], ['クーポン', 'coupon']],
-    en: [['playpoints', 'google play points', 'play points'], ['expiry', 'expiration', 'expire', 'expired'], ['missing', 'not received', 'not showing'], ['weekly', 'weekly prize', 'weekly reward']],
-    ko: [['playpoints', 'google play points', 'play points', '플레이 포인트', '플레이포인트', '구글플레이 포인트'], ['만료', '유효기간', '유효 기간', '소멸'], ['미지급', '적립 안됨', '적립 안 됨'], ['주간', '위클리']],
-    tw: [['playpoints', 'google play points', 'play points', 'play 點數', 'play點數', 'google play 點數'], ['到期', '有效期限', '過期', '失效'], ['未入帳', '沒收到', '未收到'], ['每週', '每周', '週獎勵']]
+    ja: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', 'プレイポイント', 'プレイ ポイント', 'playポイント', 'play ポイント', 'google play ポイント', 'googleplayポイント', 'グーグルプレイポイント', 'グーグル プレイ ポイント'], ['期限', '有効期限', '期限切れ', '失効'], ['反映', '反映されない', '反映されません', '付与されない', '付かない', 'つかない', '未付与'], ['残高', '残りポイント'], ['ウィークリー', 'ウイークリー', '週次'], ['クーポン', 'coupon']],
+    en: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points'], ['expiry', 'expiration', 'expire', 'expired'], ['missing', 'not received', 'not showing'], ['weekly', 'weekly prize', 'weekly reward']],
+    ko: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', '플레이 포인트', '플레이포인트', '구글플레이 포인트', '구글 플레이 포인트', '구글 플레이포인트'], ['만료', '유효기간', '유효 기간', '소멸'], ['미지급', '적립 안됨', '적립 안 됨'], ['주간', '위클리']],
+    tw: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', 'play 點數', 'play點數', 'google play 點數', 'google play點數', 'googleplay點數'], ['到期', '有效期限', '過期', '失效'], ['未入帳', '沒有入帳', '沒收到', '未收到'], ['每週', '每周', '週獎勵']]
   };
   function normalize(value) { return String(value || '').normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim(); }
   function canonical(value, locale = 'ja') {

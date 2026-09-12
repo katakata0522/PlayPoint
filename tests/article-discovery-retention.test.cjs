@@ -94,3 +94,13 @@ test('role reporting uses each article purpose and refuses misleading totals', (
  assert.throws(()=>outcomes.evaluate({period,rows:[rows[0],rows[0]]},root),/duplicate/);
  assert.throws(()=>outcomes.evaluate({period:{start:'2026-02-30',end:'2026-03-02'},rows:[]},root),/valid/);
 });
+
+test('brand spacing variants match without requiring leftover Google tokens', () => {
+ const article={title:'Google Play Points'};
+ for(const [locale,variants] of [
+   ['ja',['GooglePlayPoints','Google Playpoints','GooglePlay Points','Play ポイント','グーグルプレイポイント']],
+   ['en',['googleplaypoints','google playpoints']],
+   ['ko',['구글 플레이 포인트','구글 플레이포인트']],
+   ['tw',['Google Play點數','GooglePlay點數']]
+ ])for(const q of variants)assert.equal(search.matches(article,q,locale),true,locale+': '+q);
+});
