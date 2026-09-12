@@ -46,7 +46,7 @@ const diaryCopy = {
 };
 function readingMount(html, locale, isHub) {
   const copy = readingCopy[locale], hub = locale === 'ja' ? '/blog/' : '/' + locale + '/articles/';
-  html = html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, '');
+  html = html.replace(/\s*<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->[ \t]*(?:\r?\n)?/g, '');
   const inner = isHub
     ? '<details id="reading-library" class="reading-library"><summary>' + copy[2] + '</summary><p>' + copy[8] + '</p></details>'
     : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
