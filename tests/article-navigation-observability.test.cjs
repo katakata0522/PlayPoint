@@ -227,3 +227,16 @@ test('日本語の関連記事を同じ有限分類と同意境界で記録す�
   listeners.get('click')[0]({ target: popularLink });
   assert.equal(eventCalls(context, 'article_navigation_click').length, 1);
 });
+test('diary entry is separate from calculator attribution', () => {
+ const {context,listeners,popularLink}=createRuntime();
+ popularLink.href=context.location.origin+'/?mode=diary&week=current';
+ assert.equal(context.PlayPointAnalytics.isCalculatorDestination(popularLink),false);
+ assert.equal(context.PlayPointAnalytics.rememberCalculatorEntry(popularLink),false);
+ listeners.get('click')[0]({target:popularLink});
+ assert.equal(eventCalls(context,'article_navigation_click').at(-1).destination_type,'diary');
+});
+test('search analytics excludes free text', () => {
+ const {context}=createRuntime();
+ const clean=context.PlayPointAnalytics.sanitizeParams('search',{search_term:'private@example.com',results_count:3});
+ assert.deepEqual(JSON.parse(JSON.stringify(clean)),{results_count:3});
+});

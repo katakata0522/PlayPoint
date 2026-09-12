@@ -4,6 +4,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const MANUAL_INTL_ARTICLE_FILES = Object.freeze([
+  'en/articles/google-play-quests.html',
+  'en/articles/google-play-points-cash-conversion.html',
+  'en/articles/google-play-points-use-coupons.html',
+  'ko/articles/google-play-quests.html',
+  'ko/articles/google-play-points-cash-conversion.html',
+  'ko/articles/google-play-points-use-coupons.html',
+  'tw/articles/google-play-quests.html',
+  'tw/articles/google-play-points-cash-conversion.html',
+  'tw/articles/google-play-points-use-coupons.html',
   'en/articles/2026-06-20-discount-gift-cards.html',
   'en/articles/google-play-points-100-value.html',
   'en/articles/google-play-points-country-change.html',

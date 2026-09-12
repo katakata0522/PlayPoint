@@ -1,0 +1,22 @@
+.reading-tools, .search-recovery { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin:1rem 0; }
+.reading-tools button, .reading-library button, .search-recovery button { font:inherit; padding:.55rem .85rem; border:1px solid currentColor; border-radius:.5rem; background:transparent; color:inherit; cursor:pointer; min-height:44px; }
+.reading-tools button[aria-pressed="true"] { background:#164e63; color:#fff; }
+.reading-tools a, .reading-library a { color:inherit; text-decoration:underline; text-underline-offset:.18em; }
+.reading-library { margin:1.5rem 0; padding:1rem; border:1px solid #94a3b8; border-radius:.65rem; }
+.reading-library summary { cursor:pointer; font-weight:700; min-height:44px; }
+.reading-library ul { padding-left:1.3rem; }
+.reading-library li { margin:.7rem 0; overflow-wrap:anywhere; }
+.reading-library li button { margin-left:.5rem; font-size:.85em; }
+.reading-library p, .reading-tools [role="status"] { font-size:.9em; }
+.reading-library [hidden], .search-recovery[hidden] { display:none; }
+.article-diary-link { border-left:4px solid #0e7490; padding:.8rem 1rem; margin:2rem 0; background:linear-gradient(110deg,#e0f2fe55,transparent); }
+.article-diary-link h2 { font-size:1.15rem; }
+.article-diary-link a { display:inline-block; padding:.7rem 0; font-weight:700; }
+.search-snippet-heading { display:block; font-weight:600; margin:.4rem 0; }
+.intl-guide-card__excerpt { display:block; font-size:.9rem; line-height:1.65; font-weight:400; }
+.search-recovery { grid-column:1 / -1; flex-direction:column; align-items:flex-start; }
+.search-recovery ul { padding-left:1.3rem; }
+.reading-tools :focus-visible, .reading-library :focus-visible, .search-recovery :focus-visible { outline:3px solid #0891b2; outline-offset:3px; }
+.week-row.is-current-week { outline:2px solid #0891b2; outline-offset:3px; }
+@media(max-width:480px) { .reading-tools { align-items:flex-start; } .reading-library { padding:.75rem; } }
+.article-region-scope{font-size:.82rem;line-height:1.6;color:var(--text-secondary,#526372);margin:.65rem 0}.article-source-inline{font-size:.9em}.article-worked-example{padding-left:1rem;border-left:3px solid #9fc5d3}

@@ -50,13 +50,13 @@ const TW_CONTEXTUAL_PROMPT_COPY = Object.freeze({
 });
 
 const CASH_CONVERSION_H1_PATTERNS = Object.freeze({
-  en: /<h1>\s*Can You (?:Convert|Redeem) Google Play Points (?:to|for) Cash\?\s*<\/h1>/i,
-  ko: /<h1>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i
+  en: /<h1\b[^>]*>\s*Can You (?:Convert|Redeem) Google Play Points (?:to|for) Cash\?\s*<\/h1>/i,
+  ko: /<h1\b[^>]*>\s*구글 플레이 포인트 현금화 가능할까\?\s*<\/h1>/i
 });
 
 const TW_CONTEXTUAL_H1_PATTERNS = Object.freeze({
-  couponNotApplied: /<h1>\s*Google Play Points 折價券沒有自動套用時\s*<\/h1>/i,
-  platinumDiamond: /<h1>\s*台灣 Play Points：白金 4,000 點，鑽石 15,000 點起\s*<\/h1>/i
+  couponNotApplied: /<h1\b[^>]*>\s*Google Play Points 折價券沒有自動套用時\s*<\/h1>/i,
+  platinumDiamond: /<h1\b[^>]*>\s*台灣 Play Points：白金 4,000 點，鑽石 15,000 點起\s*<\/h1>/i
 });
 
 const CONTEXTUAL_PROMPT_PATHS = Object.freeze({
@@ -67,8 +67,8 @@ const CONTEXTUAL_PROMPT_PATHS = Object.freeze({
 });
 
 const TW_DUPLICATE_CTA_PATTERNS = Object.freeze({
-  couponNotApplied: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3>再次購買前先確認條件<\/h3>[\s\S]*?<\/div>/i,
-  platinumDiamond: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3>用自己的不足點數計算<\/h3>[\s\S]*?<\/div>/i
+  couponNotApplied: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3\b[^>]*>再次購買前先確認條件<\/h3>[\s\S]*?<\/div>/i,
+  platinumDiamond: /\s*<div\b[^>]*class=["'][^"']*\bcta-box\b[^"']*["'][^>]*>\s*<h3\b[^>]*>用自己的不足點數計算<\/h3>[\s\S]*?<\/div>/i
 });
 
 function escapeHtml(value) {

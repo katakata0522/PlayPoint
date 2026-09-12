@@ -126,7 +126,7 @@ test('画面のFAQとFAQPage構造化データが一致する', () => {
   const faqPage = scripts.find(item => item['@type'] === 'FAQPage');
   assert.ok(faqPage);
 
-  const visible = [...html.matchAll(/<div class="faq-item"><h3>([\s\S]*?)<\/h3><p>([\s\S]*?)<\/p><\/div>/g)]
+  const visible = [...html.matchAll(/<div class="faq-item"><h3\b[^>]*>([\s\S]*?)<\/h3><p>([\s\S]*?)<\/p><\/div>/g)]
     .map(match => ({ name: normalizeText(match[1]), answer: normalizeText(match[2]) }));
   const structured = faqPage.mainEntity.map(item => ({
     name: normalizeText(item.name),

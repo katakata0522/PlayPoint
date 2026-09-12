@@ -82,7 +82,7 @@
         },
         trackSearch: function (query, resultsCount) {
             this.track('search', {
-                search_term: query,
+
                 results_count: resultsCount
             });
         },
@@ -503,6 +503,18 @@
             if (!response.ok) throw new Error('Failed to load articles');
             const articles = await response.json();
             allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
+            // 本文データが取れない時も、タイトル・説明による検索は使える。
+            try {
+                const response = await fetch('article-search-index.json', { cache: 'no-cache' });
+                if (!response.ok) throw new Error('Search index unavailable');
+                const index = await response.json();
+                const byPath = new Map(index.articles.map(item => [item.path, item]));
+                allArticles.forEach(article => { article.sections = byPath.get(new URL(article.file, window.location.href).pathname)?.sections || []; });
+            } catch {
+                const notice = document.createElement('p');
+                notice.textContent = '本文検索を読み込めませんでした。現在はタイトル・説明・タグから検索できます。';
+                notice.setAttribute('role', 'status'); dom.searchInput?.after(notice);
+            }
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories
@@ -820,7 +832,9 @@
         let filtered = filterArticles();
 
         // 2. Sort (based on direction)
-        if (sortNewestFirst) {
+        if (currentSearch && window.PlayPointSearch) {
+            filtered.sort((a, b) => window.PlayPointSearch.score(b, currentSearch, 'ja') - window.PlayPointSearch.score(a, currentSearch, 'ja'));
+        } else if (sortNewestFirst) {
             filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
         } else {
             filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -854,6 +868,21 @@
           var q = BlogUtils.escapeHtml(currentSearch);
           dom.grid.innerHTML = '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>';
           document.getElementById('reset-filters').addEventListener('click', resetFilters);
+          const recovery = document.createElement('div'); recovery.className = 'search-recovery';
+          if (currentCategory !== 'all' || currentGameTitle) {
+              const widen = document.createElement('button'); widen.type = 'button'; widen.textContent = '検索語を残して、全カテゴリーから探す';
+              widen.addEventListener('click', () => { currentCategory = 'all'; currentGameTitle = ''; currentPage = 1; if (dom.gameTitleFilter) dom.gameTitleFilter.value = ''; syncCategoryActiveState(); updateURLState(); render(); }); recovery.append(widen);
+          }
+          const related = window.PlayPointSearch?.suggest(allArticles, currentSearch, 'ja') || [];
+          const label = document.createElement('p'); label.textContent = related.length ? '一部のキーワードに関連する記事' : '目的から探す'; recovery.append(label);
+          const choices = related.length ? related.map(a => ({ href: a.file, title: a.title })) : [
+              { href: '../articles/2026-08-05-play-points-levels-guide.html', title: 'ランクの条件を調べる' },
+              { href: '../articles/2026-03-10-play-points-reflection-timing.html', title: 'ポイントが反映されない時の確認' },
+              { href: '../articles/2025-12-25-best-use.html', title: 'ポイントの使い方を選ぶ' }
+          ];
+          const list = document.createElement('ul');
+          choices.forEach(item => { const li = document.createElement('li'), link = document.createElement('a'); link.href = item.href; link.textContent = item.title; li.append(link); list.append(li); });
+          recovery.append(list); dom.grid.append(recovery);
           renderPagination(0); return;
         }
 
@@ -874,7 +903,8 @@
 
             const card = document.createElement('a');
             const safeTitle = BlogUtils.escapeHtml(article.title);
-            const safeDesc = BlogUtils.escapeHtml(article.description);
+            const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
+            const safeDesc = BlogUtils.escapeHtml(snippet?.text || article.description);
             const safeCategory = BlogUtils.escapeHtml(article.category);
             const safeFile = BlogUtils.escapeHtml(article.file);
             const safeThumbnail = BlogUtils.escapeHtml(article.thumbnail);
@@ -883,6 +913,7 @@
             const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
 
             card.href = safeFile;
+            if (currentSearch && snippet?.id) card.href = article.file + '#' + encodeURIComponent(snippet.id);
             card.className = 'article-card fade-in-up';
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
@@ -902,6 +933,7 @@
                 <div class="card-content">
                     <time datetime="${article.date}">${BlogUtils.formatDate(article.date)}</time>
                     <h3>${safeTitle}</h3>
+                    ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>
                     <div class="card-tags">
                         ${article.tags.map(t => `#${BlogUtils.escapeHtml(t)}`).join(' ')}

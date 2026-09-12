@@ -30,6 +30,8 @@
      * @returns {boolean}
      */
     function articleMatchesSearch(article, query) {
+        const search = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
+        if (search) return search.matches(article, query, 'ja');
         const keywords = String(query || '').toLowerCase().split(/\s+/).filter(Boolean);
         if (keywords.length === 0) return true;
         const index = buildArticleSearchIndex(article);

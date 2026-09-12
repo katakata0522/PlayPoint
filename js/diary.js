@@ -5,6 +5,12 @@ import { UI } from './ui.js';
 import { SHARE } from './share.js';
 
 export const DIARY_PURE = {
+    // 日記の週は端末の日付で直近の金曜日にそろえる。月・年をまたぐ週も同じ記録先になる。
+    currentWeek(now = new Date()) {
+        const friday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+        friday.setDate(friday.getDate() - (friday.getDay() + 2) % 7);
+        return { year: friday.getFullYear(), month: friday.getMonth() + 1, week: Math.floor((friday.getDate() - 1) / 7) + 1 };
+    },
     normalizePointsValue(value) {
         if (value === null || value === undefined) return '';
         const raw = String(value).trim();
@@ -49,6 +55,16 @@ export const DIARY_PURE = {
 };
 
 export const DIARY = {
+    openCurrentWeek() {
+        const current = DIARY_PURE.currentWeek();
+        STATE.diaryState.currentYear = current.year;
+        STATE.diaryState.currentMonth = current.month;
+        this.renderDiary();
+        const input = STATE.dom.weekInputs?.querySelector('#week' + current.week + '_points');
+        input?.closest('.week-row')?.classList.add('is-current-week');
+        input?.scrollIntoView({ block: 'center' });
+        input?.focus({ preventScroll: true });
+    },
     // ローカルストレージから日記データを取得するメソッド
     loadDiaryData() {
         try {
