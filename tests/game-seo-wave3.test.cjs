@@ -79,7 +79,7 @@ test('Arknights preserves verified mechanics but removes unverified price and fi
   assert.ok(guide.includes('有償純正源石6個'));
   assert.ok(guide.includes('合成玉200個'));
   assert.ok(guide.includes('300回スカウト時の追加限定オペレーター'));
-  assert.ok(!guide.includes('300回=9万円'));
+  assert.ok(guide.includes('固定現金額にはしません'));
 });
 
 test('Dokkan separates official Web Store from Google Play and drops changing fixed pack prices', () => {
