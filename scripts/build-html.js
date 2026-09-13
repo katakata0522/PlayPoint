@@ -51,6 +51,7 @@ const { syncGameSeo } = require('./game-seo-sync.cjs');
 const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
 const { syncGameSeoExpanded } = require('./game-seo-expanded-sync.cjs');
 const { syncGameSeoWave3 } = require('./game-seo-wave3-sync.cjs');
+const { syncGameSeoWave4 } = require('./game-seo-wave4-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -99,6 +100,8 @@ const gameSeoExpandedSummary = syncGameSeoExpanded(rootDir);
 console.log(`[build-html] synchronized expanded game SEO: ${gameSeoExpandedSummary.changedFiles.length}/${gameSeoExpandedSummary.checked} updated`);
 const gameSeoWave3Summary = syncGameSeoWave3(rootDir);
 console.log(`[build-html] synchronized game SEO wave 3: ${gameSeoWave3Summary.changedFiles.length}/${gameSeoWave3Summary.checked} updated`);
+const gameSeoWave4Summary = syncGameSeoWave4(rootDir);
+console.log(`[build-html] synchronized game SEO wave 4: ${gameSeoWave4Summary.changedFiles.length}/${gameSeoWave4Summary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
