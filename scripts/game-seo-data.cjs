@@ -28,7 +28,10 @@ const SOURCES = {
   umamusumeUmasukuLaunch: 'https://umamusume.jp/steam-news/detail?id=2264',
   umamusumeUmaplan: 'https://umamusume.jp/news/detail?id=3097',
   prosekaWebStore: 'https://pjsekai.sega.jp/webstore',
-  prosekaFaq: 'https://pjsekai.sega.jp/faq/index.html'
+  prosekaFaq: 'https://pjsekai.sega.jp/faq/index.html',
+  nikkeCommerceLaw: 'https://nikke-jp.com/lawts/',
+  gakumasDmmSettlement: 'https://dmg-gakuen.idolmaster-official.jp/fund-settlement/',
+  gakumasOfficialPre: 'https://gakuen.idolmaster-official.jp/pre/'
 };
 
 const FGO_PACKS_JP = [
@@ -151,8 +154,9 @@ const GAME_SEO = {
   },
   proseka: {
     verifiedAt: VERIFIED_AT,
-    verification: 'official-webstore-current',
+    verification: 'official-webstore-current-google-play-price-recheck-pending',
     sources: [SOURCES.prosekaWebStore, SOURCES.prosekaFaq, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
     webStore: {
       crystalProductPrices: [160, 480, 1000, 1800, 3000, 4900, 10000],
       bulkPrices: [30000, 50000],
@@ -167,6 +171,20 @@ const GAME_SEO = {
       worldPass: 1500
     },
     googlePlayBoundary: 'Official Web Store purchases are outside Google Play and must not be counted as Google Play Points purchases.'
+  },
+  nikke: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-price-page-not-publicly-fixed',
+    sources: [SOURCES.nikkeCommerceLaw, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    note: '公式の特定商取引法表示は価格を各商品ページで確認する方式。現行Google Playの商品価格を公開テキストで固定できないため、旧固定価格や200連・凸の固定円額を計算候補にしない。'
+  },
+  gakumas: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'platform-price-recheck-pending',
+    sources: [SOURCES.gakumasDmmSettlement, SOURCES.gakumasOfficialPre, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    note: '公式DMM版表示でも配信ストアが異なるサービスを区別している。Google Play版の現行商品価格を一次情報で固定できるまで、旧ジュエル価格・パス価格・200連固定円額を掲載しない。'
   }
 };
 
