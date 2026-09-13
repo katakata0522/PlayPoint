@@ -35,7 +35,7 @@ test('手動正本の公開日・更新日・last-modifiedを一致させる', (
   }
 });
 
-test('国際記事台帳は登録済みの手動正本の日付を自動採用する', () => {
+test('国際記事台帳は登録済みの手動正本の日付と所有権を自動採用する', () => {
   const registry = new Map(getPublishedIntlArticles().map(article => [article.file, article]));
   const registeredManualFiles = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => registry.has(relativePath));
   assert.ok(registeredManualFiles.length > 0, '国際記事台帳に登録された手動正本がありません');
@@ -43,9 +43,9 @@ test('国際記事台帳は登録済みの手動正本の日付を自動採用�
   for (const relativePath of registeredManualFiles) {
     const article = registry.get(relativePath);
     assert.deepEqual(
-      { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt },
+      { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt, manual: article.manual },
       readManualIntlArticleDates(root, relativePath),
-      `${relativePath}: 記事台帳と正本HTMLの日付が一致しません`
+      `${relativePath}: 記事台帳と正本HTMLの日付・所有権が一致しません`
     );
   }
 });
