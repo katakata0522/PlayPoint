@@ -10,21 +10,25 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: game-guide-article-hub-integration
+  cancel-in-progress: false
+
 jobs:
   integrate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout integration branch
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: feat/game-guides-article-hub-20260913
+          ref: ${{ github.sha }}
           fetch-depth: 0
 
       - name: Fix staged helper syntax
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
           p = Path('.github/scripts/tmp-game-guide-article-source-patch.cjs')
           lines = p.read_text().splitlines()
           fixed = []
@@ -34,7 +38,6 @@ jobs:
               else:
                   fixed.append(line)
           p.write_text('\n'.join(fixed) + '\n')
-
           c = Path('scripts/game-guide-article-catalog.cjs')
           text = c.read_text()
           needle = "}));\n\nconst GAME_GUIDE_FILE_SET"
@@ -64,7 +67,40 @@ jobs:
           node scripts/article-role-next-action-audit.cjs
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+        id: preflight
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/article-hub-preflight.log 2>&1
+          status=$?
+          cat /tmp/article-hub-preflight.log
+          printf 'exit_code=%s\n' "$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
+
+      - name: Preserve failed verification diagnostics
+        if: failure() && steps.preflight.outputs.exit_code != ''
+        env:
+          TESTED_SHA: ${{ github.sha }}
+          PREFLIGHT_EXIT: ${{ steps.preflight.outputs.exit_code }}
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          lines = Path('/tmp/article-hub-preflight.log').read_text(errors='replace').splitlines()
+          selected = set(range(max(0, len(lines) - 100), len(lines)))
+          for i, line in enumerate(lines):
+              if line.startswith('=== ') or 'not ok ' in line or 'error:' in line or 'Error:' in line or '事前検証で失敗' in line:
+                  selected.update(range(max(0, i - 2), min(len(lines), i + 65)))
+          report = ['tested_sha=' + os.environ['TESTED_SHA'], 'preflight_exit=' + os.environ['PREFLIGHT_EXIT']]
+          report.extend(str(i + 1) + ': ' + lines[i] for i in sorted(selected))
+          output = Path('.github/diagnostics/game-guide-preflight.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text('\n'.join(report) + '\n')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/diagnostics/game-guide-preflight.txt
+          git commit -m "診断: 記事ハブ全体検証の実測失敗結果を記録"
+          git push origin HEAD:feat/game-guides-article-hub-20260913
 
       - name: Remove one-shot integration helpers and commit
         run: |
@@ -72,6 +108,7 @@ jobs:
           rm -f .github/workflows/tmp-game-guide-article-hub-retry.yml
           rm -f .github/workflows/tmp-game-guide-article-hub-retry2.yml
           rm -f .github/scripts/tmp-game-guide-article-source-patch.cjs
+          rm -f .github/diagnostics/game-guide-preflight.txt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
@@ -79,5 +116,5 @@ jobs:
             echo "No changes to commit"
             exit 1
           fi
-          git commit -m "feat: integrate game SEO guides into article hub"
+          git commit -m "機能: ゲーム別ガイドを記事ハブへ統合"
           git push origin HEAD:feat/game-guides-article-hub-20260913
