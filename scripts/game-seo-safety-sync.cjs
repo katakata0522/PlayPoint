@@ -5,8 +5,7 @@ const path = require('node:path');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
 const { VERIFIED_AT } = require('./game-seo-data.cjs');
 
-function writeIfChanged(filePath, content) {
-  const previous = fs.readFileSync(filePath, 'utf8');
+function writeIfChanged(filePath, previous, content) {
   if (previous === content) return false;
   fs.writeFileSync(filePath, content, 'utf8');
   return true;
@@ -14,28 +13,32 @@ function writeIfChanged(filePath, content) {
 
 function syncFgoInitialAmount(rootDir) {
   const filePath = path.join(rootDir, 'games/fgo/index.html');
-  let html = fs.readFileSync(filePath, 'utf8');
+  const previous = fs.readFileSync(filePath, 'utf8');
+  let html = previous;
   html = html.replace(
     '<input type="number" id="sim-custom-amount" value="1900" min="0" step="any" inputmode="decimal">',
     '<input type="number" id="sim-custom-amount" value="1920" min="0" step="any" inputmode="decimal">'
   );
-  return writeIfChanged(filePath, html);
+  return writeIfChanged(filePath, previous, html);
 }
 
-function replaceDescriptionAcrossGamePages(rootDir, before, after) {
+function replaceDescriptionsAcrossGamePages(rootDir, replacements) {
   const changedFiles = [];
   for (const relativePath of getGamePageHtmlFiles(rootDir)) {
     const filePath = path.join(rootDir, relativePath);
-    const html = fs.readFileSync(filePath, 'utf8');
-    if (!html.includes(before)) continue;
-    if (writeIfChanged(filePath, html.replaceAll(before, after))) changedFiles.push(relativePath);
+    const previous = fs.readFileSync(filePath, 'utf8');
+    let html = previous;
+    // 置換の順番は保ち、同じゲームページを置換ごとに読み直さない。
+    for (const [before, after] of replacements) html = html.replaceAll(before, after);
+    if (writeIfChanged(filePath, previous, html)) changedFiles.push(relativePath);
   }
   return changedFiles;
 }
 
 function syncVerifiedInputOnly(rootDir, config) {
   const filePath = path.join(rootDir, config.file);
-  let html = fs.readFileSync(filePath, 'utf8');
+  const previous = fs.readFileSync(filePath, 'utf8');
+  let html = previous;
 
   html = html.replace(
     /<div class="preset-buttons">[\s\S]*?<\/div>/,
@@ -68,7 +71,7 @@ function syncVerifiedInputOnly(rootDir, config) {
     html = html.replaceAll(before, after);
   }
 
-  return writeIfChanged(filePath, html);
+  return writeIfChanged(filePath, previous, html);
 }
 
 function syncBlueArchiveVerifiedInputOnly(rootDir) {
@@ -144,9 +147,7 @@ function syncGameSeoSafety(rootDir) {
       'プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。'
     ]
   ];
-  for (const [before, after] of descriptionReplacements) {
-    changedFiles.push(...replaceDescriptionAcrossGamePages(rootDir, before, after));
-  }
+  changedFiles.push(...replaceDescriptionsAcrossGamePages(rootDir, descriptionReplacements));
 
   return { checked: 5, changedFiles: [...new Set(changedFiles)].sort() };
 }

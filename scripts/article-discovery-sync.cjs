@@ -57,55 +57,76 @@ function readingMount(html, locale, isHub) {
   if (header) return html.replace(header[0], tag => tag + block);
   return html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, tag => tag + block);
 }
+// 本文変換と検索レコードを同じHTMLから作る。ファイルI/Oは呼び出し側だけで行う。
+function prepareDiscoveryArticle(html, entry) {
+  const role = classifyArticleRole(entry.path);
+  html = withoutReadingMount(html);
+  html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
+  if (entry.locale !== 'ja') {
+    html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>');
+  }
+  html = html.replace(/<h1\b([^>]*)>/i, (tag, attrs) => /\bid\s*=/.test(attrs) ? tag : '<h1' + attrs + ' id="article-title">');
+  // 既存アンカーを維持し、見出しへ安定した直リンク先を補う。
+  let index = 0;
+  html = html.replace(/(<article\b[^>]*>)([\s\S]*?)(<\/article>)/i, (_, start, body, end) => {
+    const used = new Set([...body.matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]));
+    return start + body.replace(/<h([23])\b([^>]*)>/gi, (tag, level, attrs) => {
+      if (/\bid\s*=/.test(attrs)) return tag;
+      do { index++; } while (used.has('article-section-' + index));
+      used.add('article-section-' + index);
+      return `<h${level}${attrs} id="article-section-${index}">`;
+    }) + end;
+  });
+  html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
+  if (role === 'retention' && /weekly-reward/.test(entry.path)) {
+    const copy = diaryCopy[entry.locale], home = entry.locale === 'ja' ? '/' : `/${entry.locale}/`;
+    const block = `\n<!-- discovery-diary:start --><aside class="article-diary-link"><h2>${copy[0]}</h2><p>${copy[1]}</p><a href="${home}?mode=diary&amp;week=current" data-diary-entry>${copy[2]}</a></aside><!-- discovery-diary:end -->\n`;
+    html = html.replace('</article>', block + '</article>');
+  }
+  html = readingMount(html, entry.locale, false);
+  const record = { path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
+      description: entry.description || text(html.match(/<meta name="description" content="([^"]*)"/)?.[1] || ''),
+      category: entry.category || '', tags: entry.tags || [], role, sections: extractSections(html) };
+  return { html, record };
+}
+
+function buildDiscoveryAssets(root) {
+  // この工程ではアセットを書き換えないため、同じ3ファイルのハッシュは一度でよい。
+  const scripts = ['js/article-search.js', 'js/reading-library.js'].map(asset => `<script defer src="/${asset}?v=${createRevision(path.join(root, asset))}"></script>`).join('\n');
+  return `\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${createRevision(path.join(root, 'articles/article-discovery.css'))}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
+}
+
+function applyDiscoveryAssets(html, assets) {
+  return html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->/g, '')
+    .replace('</head>', assets + '</head>');
+}
+
 function syncArticleDiscovery(root) {
   const entries = articleEntries(root), indexes = { ja: [], en: [], ko: [], tw: [] };
   const hubs = ['blog/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/index.html`)];
+  const assets = buildDiscoveryAssets(root);
   for (const entry of entries) {
-    const file = path.join(root, entry.path); let html = fs.readFileSync(file, 'utf8'); const before = html;
-    html = withoutReadingMount(html);
-    html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
-    if (entry.locale !== 'ja') {
-      html = html.replace(/(<h1\b[^>]*>[\s\S]*?<\/h1>)/i, '$1\n<p class="article-region-scope">' + scopeCopy[entry.locale] + '</p>');
-    }
-    html = html.replace(/<h1\b([^>]*)>/i, (tag, attrs) => /\bid\s*=/.test(attrs) ? tag : '<h1' + attrs + ' id="article-title">');
-    // 既存アンカーを維持し、見出しへ安定した直リンク先を補う。
-    let index = 0;
-    html = html.replace(/(<article\b[^>]*>)([\s\S]*?)(<\/article>)/i, (_, start, body, end) => {
-      const used = new Set([...body.matchAll(/\bid=["']([^"']+)["']/g)].map(m => m[1]));
-      return start + body.replace(/<h([23])\b([^>]*)>/gi, (tag, level, attrs) => {
-        if (/\bid\s*=/.test(attrs)) return tag;
-        do { index++; } while (used.has('article-section-' + index));
-        used.add('article-section-' + index);
-        return `<h${level}${attrs} id="article-section-${index}">`;
-      }) + end;
-    });
-    html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
-    if (classifyArticleRole(entry.path) === 'retention' && /weekly-reward/.test(entry.path)) {
-      const copy = diaryCopy[entry.locale], home = entry.locale === 'ja' ? '/' : `/${entry.locale}/`;
-      const block = `\n<!-- discovery-diary:start --><aside class="article-diary-link"><h2>${copy[0]}</h2><p>${copy[1]}</p><a href="${home}?mode=diary&amp;week=current" data-diary-entry>${copy[2]}</a></aside><!-- discovery-diary:end -->\n`;
-      html = html.replace('</article>', block + '</article>');
-    }
-    html = readingMount(html, entry.locale, false);
+    const file = path.join(root, entry.path);
+    const before = fs.readFileSync(file, 'utf8');
+    const prepared = prepareDiscoveryArticle(before, entry);
+    const html = applyDiscoveryAssets(prepared.html, assets);
+    // 本文とアセットを別々に読み書きせず、記事単位で最終結果だけ保存する。
     if (html !== before) fs.writeFileSync(file, html);
-    indexes[entry.locale].push({ path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
-      description: entry.description || text(html.match(/<meta name="description" content="([^"]*)"/)?.[1] || ''),
-      category: entry.category || '', tags: entry.tags || [], role: classifyArticleRole(entry.path), sections: extractSections(html) });
+    indexes[entry.locale].push(prepared.record);
   }
   for (const [locale, articles] of Object.entries(indexes)) {
     const target = locale === 'ja' ? 'blog/article-search-index.json' : `${locale}/articles/article-search-index.json`;
     const file = path.join(root, target), output = JSON.stringify({ version: 1, locale, articles });
     if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== output) fs.writeFileSync(file, output);
   }
-  for (const relative of [...entries.map(e => e.path), ...hubs]) {
-    const file = path.join(root, relative); let html = fs.readFileSync(file, 'utf8'); const before = html;
-    html = html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->/g, '');
-    const scripts = ['js/article-search.js', 'js/reading-library.js'].map(asset => `<script defer src="/${asset}?v=${createRevision(path.join(root, asset))}"></script>`).join('\n');
-    const assets = `\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${createRevision(path.join(root, 'articles/article-discovery.css'))}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
-    html = html.replace('</head>', assets + '</head>');
-    if (hubs.includes(relative)) html = readingMount(html, relative.startsWith('blog/') ? 'ja' : relative.split('/')[0], true);
+  for (const relative of hubs) {
+    const file = path.join(root, relative);
+    const before = fs.readFileSync(file, 'utf8');
+    const locale = relative.startsWith('blog/') ? 'ja' : relative.split('/')[0];
+    const html = readingMount(applyDiscoveryAssets(before, assets), locale, true);
     if (html !== before) fs.writeFileSync(file, html);
   }
   return entries.length;
 }
-module.exports = { text, articleEntries, extractSections, syncArticleDiscovery };
+module.exports = { text, articleEntries, extractSections, prepareDiscoveryArticle, syncArticleDiscovery };
 if (require.main === module) console.log('Article discovery:', syncArticleDiscovery(path.resolve(__dirname, '..')));

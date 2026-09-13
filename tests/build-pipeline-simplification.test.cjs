@@ -23,6 +23,12 @@ test('hreflangは二段階を維持し、公開アセット全走査だけ一度
     '公開HTMLのアセット版同期は実差分が出る一度だけにする'
   );
 
+  const regionalRatesAt = build.indexOf('syncGameSeoWave5RegionalRates(rootDir)');
+  const gameHubAt = build.indexOf('syncGameGuideArticleHub(rootDir)');
+  const sharedHtmlAt = build.indexOf('syncHtmlFiles(rootDir,');
+  assert.ok(gameHubAt > regionalRatesAt && sharedHtmlAt > gameHubAt, 'ゲーム記事の登録は地域補正後・共通HTML同期前の独立工程にする');
+  assert.equal(occurrences('syncGameGuideArticleHub(rootDir)'), 1);
+
   const expansionAt = build.indexOf('applyIntlContentExpansion(rootDir)');
   const firstHreflangAt = build.indexOf('syncIntlArticleJapaneseHreflang(rootDir)');
   const layoutAt = build.indexOf('synchronizeIntlArticleLayouts(rootDir)');
