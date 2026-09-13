@@ -59,7 +59,8 @@ test('HBR parent fails closed while the guide preserves current official Web Sho
   assert.ok(guide.includes('アプリ内より5%OFF'));
   assert.ok(guide.includes('購入金額の<strong>1%分のWEB SHOPポイント'));
   assert.ok(guide.includes('プレミアムパス/ライトパスはWEB SHOPから加入できない'));
-  assert.ok(guide.includes('クォーツ × 10000') || guide.includes('クォーツ10,000'));
+  assert.ok(guide.includes('10,000個/9,500円'));
+  assert.ok(guide.includes('30,000個/28,500円'));
 });
 
 test('Honkai Impact 3rd removes cash pity guesses and explains official Charge Center boundaries', () => {
