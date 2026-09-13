@@ -2,14 +2,11 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const {
   MANUAL_INTL_ARTICLE_FILES,
-  readManualIntlArticleDates,
-  restoreManualIntlArticles,
-  snapshotManualIntlArticles
+  readManualIntlArticleDates
 } = require('../scripts/manual-intl-articles.cjs');
 const { getPublishedIntlArticles } = require('../scripts/intl-seo-pages.cjs');
 
@@ -38,7 +35,7 @@ test('手動正本の公開日・更新日・last-modifiedを一致させる', (
   }
 });
 
-test('国際記事台帳は登録済みの手動正本の日付を自動採用する', () => {
+test('国際記事台帳は登録済みの手動正本の日付と所有権を自動採用する', () => {
   const registry = new Map(getPublishedIntlArticles().map(article => [article.file, article]));
   const registeredManualFiles = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => registry.has(relativePath));
   assert.ok(registeredManualFiles.length > 0, '国際記事台帳に登録された手動正本がありません');
@@ -46,52 +43,28 @@ test('国際記事台帳は登録済みの手動正本の日付を自動採用�
   for (const relativePath of registeredManualFiles) {
     const article = registry.get(relativePath);
     assert.deepEqual(
-      { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt },
+      { publishedAt: article.publishedAt, modifiedAt: article.modifiedAt, manual: article.manual },
       readManualIntlArticleDates(root, relativePath),
-      `${relativePath}: 記事台帳と正本HTMLの日付が一致しません`
+      `${relativePath}: 記事台帳と正本HTMLの日付・所有権が一致しません`
     );
   }
 });
 
-test('ビルドは国際記事生成の直前に退避し直後に復元する', () => {
-  const buildScript = fs.readFileSync(path.join(root, 'scripts/build-html.js'), 'utf8');
-  const snapshotAt = buildScript.indexOf('snapshotManualIntlArticles(rootDir)');
-  const generateAt = buildScript.indexOf('writeIntlSeoPages(rootDir, assetVersions)');
-  const restoreAt = buildScript.indexOf('restoreManualIntlArticles(rootDir, manualIntlSnapshots)');
-  const assetSyncAt = buildScript.indexOf('syncPublicAssetVersions(rootDir)');
+test('国際記事生成は手動正本をmanual所有権で除外する', () => {
+  const articles = getPublishedIntlArticles();
+  const registry = new Map(articles.map(article => [article.file, article]));
+  const generatedFiles = new Set(
+    articles.filter(article => article.manual !== true).map(article => article.file)
+  );
+  const registeredManualFiles = MANUAL_INTL_ARTICLE_FILES.filter(relativePath => registry.has(relativePath));
 
-  assert.ok(snapshotAt >= 0, '手動記事の退避処理がビルドにありません');
-  assert.ok(generateAt > snapshotAt, '記事生成より前に手動記事を退避していません');
-  assert.ok(restoreAt > generateAt, '記事生成後に手動記事を復元していません');
-  assert.ok(assetSyncAt > restoreAt, '復元後に共通アセット同期を適用していません');
-  assert.ok(buildScript.includes('finally {'), '生成失敗時にも正本を復元するfinallyがありません');
-});
-
-test('生成処理で上書きされても手動記事を完全に復元できる', () => {
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-manual-intl-'));
-
-  try {
-    for (const [index, relativePath] of MANUAL_INTL_ARTICLE_FILES.entries()) {
-      const absolutePath = path.join(tempRoot, relativePath);
-      fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
-      fs.writeFileSync(absolutePath, `canonical-${index}\n`, 'utf8');
-    }
-
-    const snapshots = snapshotManualIntlArticles(tempRoot);
-    for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
-      fs.writeFileSync(path.join(tempRoot, relativePath), 'generated-content\n', 'utf8');
-    }
-
-    restoreManualIntlArticles(tempRoot, snapshots);
-
-    for (const [index, relativePath] of MANUAL_INTL_ARTICLE_FILES.entries()) {
-      assert.equal(
-        fs.readFileSync(path.join(tempRoot, relativePath), 'utf8'),
-        `canonical-${index}\n`,
-        `${relativePath}: 正本内容を復元できません`
-      );
-    }
-  } finally {
-    fs.rmSync(tempRoot, { recursive: true, force: true });
+  assert.ok(registeredManualFiles.length > 0, 'manual所有権を検証できる登録記事がありません');
+  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
+    assert.equal(generatedFiles.has(relativePath), false, `${relativePath}: 自動生成対象へ混入しています`);
+    const article = registry.get(relativePath);
+    if (article) assert.equal(article.manual, true, `${relativePath}: manual所有権がありません`);
   }
+
+  const generator = fs.readFileSync(path.join(root, 'scripts/intl-seo-pages.cjs'), 'utf8');
+  assert.match(generator, /if \(article\.manual\) continue;/, '生成処理がmanual記事を明示的に除外していません');
 });
