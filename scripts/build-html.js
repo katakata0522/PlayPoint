@@ -14,6 +14,7 @@ const { generateBlogFeeds } = require('./blog-feeds.cjs');
 const { syncJapaneseGuideBrand } = require('./japanese-guide-brand.cjs');
 const { applyIntlContentExpansion } = require('./intl-content-expansion.cjs');
 const { syncIntlManualContent } = require('./intl-manual-content-sync.cjs');
+const { publishLocalizedGameGuides } = require('./intl-game-guide-publish-normalize.cjs');
 const { syncIntlArticleJapaneseHreflang } = require('./intl-article-hreflang-sync.cjs');
 const { syncJapaneseAuthorHreflang } = require('./author-hreflang-sync.cjs');
 const { assertTaiwanTerminology } = require('./tw-terminology-contract.cjs');
@@ -82,6 +83,8 @@ try {
 } finally {
   restoreManualIntlArticles(rootDir, manualIntlSnapshots);
 }
+const intlGameGuidePublishSummary = publishLocalizedGameGuides(rootDir);
+console.log(`[build-html] published localized game guides: ${intlGameGuidePublishSummary.changed}/${intlGameGuidePublishSummary.checked} generated, ${intlGameGuidePublishSummary.normalized} normalized`);
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
 const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);

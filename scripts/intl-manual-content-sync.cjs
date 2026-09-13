@@ -3,7 +3,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { getLocalizedGameGuideLinks } = require('./intl-game-guide-expansion.cjs');
-const { publishLocalizedGameGuides } = require('./intl-game-guide-publish-normalize.cjs');
 
 const HUB_CONTENT = {
   en: {
@@ -63,8 +62,6 @@ function syncArticleHub(rootDir, locale, config) {
 }
 
 function syncIntlManualContent(rootDir) {
-  const publishSummary = publishLocalizedGameGuides(rootDir);
-  console.log(`[intl-game-guides] generated=${publishSummary.changed}/${publishSummary.checked}, normalized=${publishSummary.normalized}`);
   for (const [locale, config] of Object.entries(HUB_CONTENT)) {
     const gameGuideLinks = getLocalizedGameGuideLinks(locale);
     syncArticleHub(rootDir, locale, {
