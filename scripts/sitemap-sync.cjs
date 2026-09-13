@@ -5,6 +5,7 @@ const path = require('path');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
 const { GAME_GUIDE_ARTICLES, isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
 const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
+const { ALL_GUIDES, MODIFIED_AT: INTL_GAME_GUIDE_MODIFIED_AT, hrefFor: intlGameGuideHrefFor } = require('./intl-game-guide-expansion.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
 
@@ -179,14 +180,7 @@ function renderGeneratedListedArticles(items) {
   const list = items
     .map(item => `        <li><a href="${escapeHtml(item.href)}">${escapeHtml(item.title)}</a></li>`)
     .join(newline);
-  return `${GENERATED_LISTED_START}
-    <section class="group" data-generated-listed-articles="true">
-      <h2>公開中の解説記事</h2>
-      <ul>
-${list}
-      </ul>
-    </section>
-    ${GENERATED_LISTED_END}`;
+  return `${GENERATED_LISTED_START}\n    <section class="group" data-generated-listed-articles="true">\n      <h2>公開中の解説記事</h2>\n      <ul>\n${list}\n      </ul>\n    </section>\n    ${GENERATED_LISTED_END}`;
 }
 
 function upsertGeneratedListedArticles(html, block) {
@@ -224,23 +218,9 @@ function renderBlogSitemap(entries) {
     (latest, entry) => String(entry.lastmod) > latest ? String(entry.lastmod) : latest,
     '2024-01-01'
   );
-  const articleEntries = entries.map(({ url, lastmod }) => `  <url>
-    <loc>${url}</loc>
-    <lastmod>${lastmod}</lastmod>
-  </url>`).join('\n');
+  const articleEntries = entries.map(({ url, lastmod }) => `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`).join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${SITE_ORIGIN}/</loc>
-  </url>
-  <url>
-    <loc>${SITE_ORIGIN}/blog/</loc>
-    <lastmod>${latestDate}</lastmod>
-  </url>
-${articleEntries}
-</urlset>
-`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${SITE_ORIGIN}/</loc>\n  </url>\n  <url>\n    <loc>${SITE_ORIGIN}/blog/</loc>\n    <lastmod>${latestDate}</lastmod>\n  </url>\n${articleEntries}\n</urlset>\n`;
 }
 
 function getGameSitemapEntries(rootDir) {
@@ -260,6 +240,13 @@ function getGameSitemapEntries(rootDir) {
     url: toPublicUrl(relativePath),
     lastmod: htmlDateFor(path.join(rootDir, relativePath), relativePath)
   }));
+}
+
+function getLocalizedGameGuideSitemapEntries() {
+  return ['en', 'ko', 'tw'].flatMap(localeKey => ALL_GUIDES.map(guide => ({
+    url: `${SITE_ORIGIN}${intlGameGuideHrefFor(localeKey, guide.slug)}`,
+    lastmod: INTL_GAME_GUIDE_MODIFIED_AT
+  })));
 }
 
 function syncSitemap(rootDir) {
@@ -282,6 +269,7 @@ function syncSitemap(rootDir) {
   const topPageSynced = syncSitemapContent(fs.readFileSync(sitemapPath, 'utf8'));
   let content = syncSitemapEntries(topPageSynced, [
     ...getIntlSitemapEntries(),
+    ...getLocalizedGameGuideSitemapEntries(),
     ...discoverableBlogEntries,
     ...gameEntries,
     ...getContentDateEntries()
@@ -313,6 +301,7 @@ module.exports = {
   escapeRegExp,
   getBlogSitemapEntries,
   getGameSitemapEntries,
+  getLocalizedGameGuideSitemapEntries,
   listedJapaneseSitemapEntries,
   syncDedicatedSitemapDates,
   getContentDateEntries,
