@@ -34,10 +34,6 @@ const { syncRegionHreflang } = require('./region-hreflang-sync.cjs');
 const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
 const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
 const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
-const {
-  restoreManualIntlArticles,
-  snapshotManualIntlArticles
-} = require('./manual-intl-articles.cjs');
 const { getSyncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
@@ -77,18 +73,11 @@ syncRegionHreflang(rootDir);
 syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
 
-const manualIntlSnapshots = snapshotManualIntlArticles(rootDir);
-try {
-  writeIntlSeoPages(rootDir, assetVersions);
-} finally {
-  restoreManualIntlArticles(rootDir, manualIntlSnapshots);
-}
+writeIntlSeoPages(rootDir, assetVersions);
 const intlGameGuidePublishSummary = publishLocalizedGameGuides(rootDir);
 console.log(`[build-html] published localized game guides: ${intlGameGuidePublishSummary.changed}/${intlGameGuidePublishSummary.checked} generated, ${intlGameGuidePublishSummary.normalized} normalized`);
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
-const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
-console.log(`[build-html] synchronized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
 const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
 console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
 const intlHubDiscoverySummary = syncIntlHubDiscovery(rootDir);
@@ -125,7 +114,6 @@ syncAnalyticsRuntimeScripts(rootDir);
 const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
 console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 syncJapaneseNavigation(rootDir);
-syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);
 syncRegionSitemap(rootDir);
@@ -159,12 +147,13 @@ console.log(`[build-html] synchronized article intent/navigation: ${articleNavig
 const { syncArticleDiscovery } = require('./article-discovery-sync.cjs');
 console.log('[build-html] synchronized article search and reading tools:', syncArticleDiscovery(rootDir));
 
-// Game SEO generators run after the first hreflang pass. Re-apply the reciprocal
-// JA/EN/KO/TW set after every article/game generator so the published files and
-// the reproducible build output cannot diverge.
-const finalIntlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
-console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntlJaHreflangSummary.changed}/${finalIntlJaHreflangSummary.checked} updated`);
+// Finalize cross-language identity only after every article/game generator has
+// finished, so one canonical pass owns the published hreflang state.
+const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
+console.log(`[build-html] finalized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
 
+// Version local CSS/JS only after all HTML writers have finished. This avoids
+// rescanning the whole public tree while still guaranteeing final asset hashes.
 syncPublicAssetVersions(rootDir);
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
