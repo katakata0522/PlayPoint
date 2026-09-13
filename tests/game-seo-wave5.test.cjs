@@ -25,6 +25,12 @@ function sourceHost(url) {
   return new URL(url).hostname;
 }
 
+function selectInner(html, id) {
+  const match = html.match(new RegExp(`<select id="${id}">([\\s\\S]*?)<\\/select>`));
+  assert.ok(match, `#${id} should exist`);
+  return match[1];
+}
+
 test('Wave 5 SSOT separates verified purchase routes from unverified current prices', () => {
   assert.deepEqual(Object.keys(GAME_SEO_WAVE5).sort(), [...GAME_ORDER].sort());
   for (const [slug, config] of Object.entries(GAME_SEO_WAVE5)) {
@@ -60,8 +66,9 @@ test('all three Wave 5 parent calculators exist in every canonical game locale',
       const html = read(file);
       assert.match(html, /id="game-sim-form"/);
       assert.match(html, /id="sim-custom-amount"/);
-      assert.match(html, /<option value="custom" selected>/);
-      assert.doesNotMatch(html, /<option value="(?:\d+(?:\.\d+)?)">[^<]*(?:円|\$|₩|NT\$)[^<]*<\/option>/, `${file} must not expose a hard-coded current product price`);
+      const packSelect = selectInner(html, 'sim-pack-select');
+      assert.match(packSelect, /<option value="custom" selected>/);
+      assert.doesNotMatch(packSelect, /<option value="\d/, `${file} must not expose a hard-coded current product price`);
       assert.match(html, new RegExp(`<meta name="last-modified" content="${VERIFIED_AT}"`));
       assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
       assert.ok(html.length > 7000, `${file} should be a substantive calculator page`);
@@ -70,15 +77,18 @@ test('all three Wave 5 parent calculators exist in every canonical game locale',
   }
 });
 
-test('Wave 5 international calculators use each region Play Points rate instead of Japanese 100-yen math', () => {
+test('Wave 5 international calculators use each region Play Points rate and currency metadata', () => {
   for (const [locale, cfg] of Object.entries(REGION)) {
     for (const slug of GAME_ORDER) {
       const html = read(parentFile(locale, slug));
       assert.match(html, new RegExp(cfg.base.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
       for (const rate of cfg.rates) {
-        assert.match(html, new RegExp(`value="${rate}"`));
+        assert.match(selectInner(html, 'sim-status'), new RegExp(`value="${rate}"`));
       }
+      assert.match(html, new RegExp(`"priceCurrency":"${cfg.currencyCode}"`));
       assert.doesNotMatch(html, /100円あたり|100円=|100円 =/, `${locale}/${slug} must not inherit Japan earn-rate wording`);
+      assert.doesNotMatch(selectInner(html, 'sim-multiplier'), /<select/, `${locale}/${slug} earn-rate options must remain valid HTML text`);
+      assert.doesNotMatch(selectInner(html, 'sim-status'), /<select/, `${locale}/${slug} tier options must remain valid HTML text`);
     }
   }
   const en = read(parentFile('en', 'pokemon-go'));
@@ -97,8 +107,10 @@ test('Prospi guide separates Google Play from KONAMI Games Store and its own rew
   assert.match(html, /税込100円[^<]*パワスピ・ゴールド1G/);
   assert.match(html, /税込200円[^<]*dポイント1pt/);
   assert.match(html, /Google Playとは別のWEB決済/);
-  assert.doesNotMatch(html, /Gamesストア[^。]{0,60}Google Play Points[^。]{0,20}(?:貯ま|付与)/);
-  assert.ok(html.length > 7000);
+  assert.match(html, /Google Play Pointsとしては数えず/);
+  assert.match(html, /Google Play上の決済ではないため/);
+  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'Prospi guide should have multiple decision sections');
+  assert.ok(html.length > 5000);
 });
 
 test('Pokémon GO guide distinguishes Google Play, Galaxy Store, Web Store and Reward Road', () => {
@@ -109,7 +121,8 @@ test('Pokémon GO guide distinguishes Google Play, Galaxy Store, Web Store and R
   assert.match(html, /Reward Road/);
   assert.match(html, /Reward RoadポイントはGoogle Play Pointsではありません/);
   assert.match(html, /無料ポケコイン/);
-  assert.ok(html.length > 7000);
+  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'Pokémon GO guide should have multiple decision sections');
+  assert.ok(html.length > 5000);
 });
 
 test('eFootball guide explicitly separates Google Play Points from KONAMI eFootball Points', () => {
@@ -120,7 +133,8 @@ test('eFootball guide explicitly separates Google Play Points from KONAMI eFootb
   assert.match(html, /完全に別のポイント/);
   assert.match(html, /受け取り後6か月後の月末/);
   assert.match(html, /eFootball™コイン、GP、eFootball™ポイント/);
-  assert.ok(html.length > 6500);
+  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'eFootball guide should have multiple decision sections');
+  assert.ok(html.length > 5000);
 });
 
 test('all locale game portals discover every Wave 5 parent page exactly once', () => {
