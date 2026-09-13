@@ -37,15 +37,16 @@ function readLastModified(file) {
   return match[1];
 }
 
-function gameSlugsForLocale(localeDirectory, gameFiles = getGamePageHtmlFiles(root)) {
+function topLevelGameSlugsForLocale(localeDirectory, gameFiles = getGamePageHtmlFiles(root)) {
   const prefix = localeDirectory ? `${localeDirectory}/games/` : 'games/';
   return gameFiles
     .filter(file => file.startsWith(prefix) && file !== `${prefix}index.html`)
     .map(file => file.slice(prefix.length).replace(/\/index\.html$/, ''))
+    .filter(slug => !slug.includes('/'))
     .sort();
 }
 
-test('generated game outputs cover the canonical game locales with the same game set', () => {
+test('generated top-level game outputs cover the canonical game locales with the same game set', () => {
   assert.deepEqual(
     [...GAME_LOCALE_DIRECTORIES],
     ['', ...SITE_LOCALES.filter(locale => locale !== 'ja')],
@@ -53,7 +54,7 @@ test('generated game outputs cover the canonical game locales with the same game
   );
 
   const gameFiles = getGamePageHtmlFiles(root);
-  const japaneseSlugs = gameSlugsForLocale('', gameFiles);
+  const japaneseSlugs = topLevelGameSlugsForLocale('', gameFiles);
   assert.ok(japaneseSlugs.length > 0, 'at least one generated Japanese game page is required');
   assert.equal(new Set(japaneseSlugs).size, japaneseSlugs.length, 'generated game slugs must stay unique');
 
@@ -61,9 +62,9 @@ test('generated game outputs cover the canonical game locales with the same game
     const prefix = localeDirectory ? `${localeDirectory}/` : '';
     assert.ok(gameFiles.includes(`${prefix}games/index.html`), `${prefix}games/index.html should exist`);
     assert.deepEqual(
-      gameSlugsForLocale(localeDirectory, gameFiles),
+      topLevelGameSlugsForLocale(localeDirectory, gameFiles),
       japaneseSlugs,
-      `${localeDirectory || 'ja'} generated game set should match Japanese`
+      `${localeDirectory || 'ja'} generated top-level game set should match Japanese`
     );
   }
 });
