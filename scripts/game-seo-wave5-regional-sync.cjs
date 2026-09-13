@@ -55,6 +55,20 @@ function tierOptions(cfg) {
     .join('');
 }
 
+function syncLocaleNavigation(html) {
+  return html
+    .replace('<a class="site-logo" href="../../../">', '<a class="site-logo" href="../../">')
+    .replace('<a class="nav-item" href="../../../"><span>', '<a class="nav-item" href="../../"><span>')
+    .replace(/(<div class="breadcrumbs-wrapper"><nav[^>]*><a) href="\.\.\/\.\.\/\.\.\/"/, '$1 href="../../"');
+}
+
+function syncEnglishMetadata(html) {
+  return html
+    .replace('<meta name="author" content="かたかた" />', '<meta name="author" content="Katakata" />')
+    .replace('<meta property="og:site_name" content="Playポイント計算機" />', '<meta property="og:site_name" content="PlayPoint Calculator" />')
+    .replaceAll('"name":"かたかた"', '"name":"Katakata"');
+}
+
 function syncGameSeoWave5RegionalRates(rootDir) {
   const changedFiles = [];
   let checked = 0;
@@ -74,6 +88,8 @@ function syncGameSeoWave5RegionalRates(rootDir) {
       html = replaceSelect(html, 'sim-multiplier', rateOptions(cfg), file);
       html = replaceSelect(html, 'sim-status', tierOptions(cfg), file);
       html = html.replace('"priceCurrency":"JPY"', `"priceCurrency":"${cfg.currencyCode}"`);
+      html = syncLocaleNavigation(html);
+      if (locale === 'en') html = syncEnglishMetadata(html);
       if (html !== before) {
         fs.writeFileSync(full, html, 'utf8');
         changedFiles.push(file);
