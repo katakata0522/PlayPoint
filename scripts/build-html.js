@@ -48,6 +48,7 @@ const { run: normalizeArticleContentNavigation } = require('./article-content-na
 const { syncArticleDateContract } = require('./article-date-contract.cjs');
 const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 const { syncGameSeo } = require('./game-seo-sync.cjs');
+const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -90,6 +91,8 @@ console.log(`[build-html] synchronized international navigation/sidebar v1: ${in
 require('./generate-game-simulators.cjs');
 const gameSeoSummary = syncGameSeo(rootDir);
 console.log(`[build-html] synchronized verified game SEO: ${gameSeoSummary.changedFiles.length}/${gameSeoSummary.checked} updated`);
+const gameSeoSafetySummary = syncGameSeoSafety(rootDir);
+console.log(`[build-html] synchronized game SEO safety: ${gameSeoSafetySummary.changedFiles.length}/${gameSeoSafetySummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
