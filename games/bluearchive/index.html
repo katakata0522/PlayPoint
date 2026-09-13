@@ -150,8 +150,7 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="480" data-mult="1" aria-pressed="true">マンスリーパック (480円)</button>
-              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (約3,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Playの表示額を入力</button>
               </div>
 
               <form id="game-sim-form">
@@ -159,14 +158,7 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="480">マンスリーパッケージ (480円)</option>
-                  <option value="160">青輝石 76個 (160円)</option>
-                  <option value="480">青輝石 240個 (480円)</option>
-                  <option value="1000">青輝石 530個 (1,000円)</option>
-                  <option value="3000">青輝石 1700個 (3,000円)</option>
-                  <option value="5000">青輝石 2900個 (5,000円)</option>
-                  <option value="10000">青輝石 6600個 (10,000円)</option>
-                              <option value="custom">自由入力（カスタム金額）</option>
+                              <option value="custom" selected>現行価格をGoogle Playで確認して入力</option>
                           </select>
                       </div>
 
@@ -177,7 +169,7 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="480" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -272,13 +264,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>マンスリーパッケージ (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>青輝石 76個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
-<tr><td>青輝石 240個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>青輝石 530個 (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>青輝石 1700個 (3,000円)</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr><td>青輝石 2900個 (5,000円)</td><td>5,000 円</td><td>約 50 pt</td><td>約 250 pt</td></tr>
-<tr><td>青輝石 6600個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+<tr><td colspan="4">現行のGoogle Play商品価格は一次表示の再確認中です。価格を推測で掲載せず、購入画面に表示された金額を上の自由入力欄へ入れて計算してください。</td></tr>
                       </tbody>
                   </table>
               </div>
