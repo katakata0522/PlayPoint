@@ -1,0 +1,96 @@
+name: Intl game guide finalizer
+
+on:
+  push:
+    branches:
+      - feat/intl-game-guides-20260913
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/intl-game-guides-20260913
+          fetch-depth: 0
+
+      - name: Wire permanent multilingual game-guide generation
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          manual = Path('scripts/intl-manual-content-sync.cjs')
+          text = manual.read_text(encoding='utf-8')
+          import_anchor = "const { getLocalizedGameGuideLinks } = require('./intl-game-guide-expansion.cjs');"
+          publish_import = "const { publishLocalizedGameGuides } = require('./intl-game-guide-publish-normalize.cjs');"
+          if publish_import not in text:
+              if import_anchor not in text:
+                  raise SystemExit('manual content import anchor missing')
+              text = text.replace(import_anchor, import_anchor + '\n' + publish_import, 1)
+          function_anchor = "function syncIntlManualContent(rootDir) {\n  for (const [locale, config] of Object.entries(HUB_CONTENT)) {"
+          function_replacement = "function syncIntlManualContent(rootDir) {\n  const publishSummary = publishLocalizedGameGuides(rootDir);\n  console.log(`[intl-game-guides] generated=${publishSummary.changed}/${publishSummary.checked}, normalized=${publishSummary.normalized}`);\n  for (const [locale, config] of Object.entries(HUB_CONTENT)) {"
+          if function_replacement not in text:
+              if function_anchor not in text:
+                  raise SystemExit('manual content function anchor missing')
+              text = text.replace(function_anchor, function_replacement, 1)
+          manual.write_text(text, encoding='utf-8')
+
+          hreflang = Path('scripts/intl-article-hreflang-sync.cjs')
+          text = hreflang.read_text(encoding='utf-8')
+          path_import = "const path = require('node:path');"
+          guide_import = "const { getLocalizedGameGuideJapaneseAlternates } = require('./intl-game-guide-expansion.cjs');"
+          if guide_import not in text:
+              if path_import not in text:
+                  raise SystemExit('hreflang path import missing')
+              text = text.replace(path_import, path_import + '\n' + guide_import, 1)
+          map_anchor = 'const ARTICLE_JA_ALTERNATES = Object.freeze({\n'
+          map_replacement = 'const ARTICLE_JA_ALTERNATES = Object.freeze({\n  ...getLocalizedGameGuideJapaneseAlternates(),\n'
+          if map_replacement not in text:
+              if map_anchor not in text:
+                  raise SystemExit('hreflang map anchor missing')
+              text = text.replace(map_anchor, map_replacement, 1)
+          hreflang.write_text(text, encoding='utf-8')
+
+          test_file = Path('tests/intl-article-reading-flow.test.cjs')
+          text = test_file.read_text(encoding='utf-8')
+          test_anchor = "test('公開中の全国際記事はRoleに応じたgenerated prompt有無を守る', () => {\n  let auditedLegacyIntroPages = 0;"
+          test_replacement = "test('公開中の全国際記事はRoleに応じたgenerated prompt有無を守る', () => {\n  const expectedPublished = locales.reduce((total, locale) => {\n    const articleDir = path.join(root, locale, 'articles');\n    return total + fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html').length;\n  }, 0);\n  let auditedLegacyIntroPages = 0;"
+          if test_replacement not in text:
+              if test_anchor not in text:
+                  raise SystemExit('reading-flow test anchor missing')
+              text = text.replace(test_anchor, test_replacement, 1)
+          old_assert = "  assert.equal(checked, 102, '現在の国際記事102件をすべて監査する');"
+          new_assert = "  assert.equal(checked, expectedPublished, '現在公開中の全国際記事をすべて監査する');"
+          if old_assert in text:
+              text = text.replace(old_assert, new_assert, 1)
+          elif new_assert not in text:
+              raise SystemExit('reading-flow count assertion missing')
+          test_file.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Generate canonical output
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify localized guide contracts
+        run: |
+          node --test tests/intl-game-guide-expansion.test.cjs
+          node --test tests/intl-article-reading-flow.test.cjs
+          node --test tests/en-locale-hygiene.test.cjs
+
+      - name: Commit normalized output
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No generated drift to commit.'
+            exit 0
+          fi
+          git commit -m 'fix: 多言語ゲーム特集の公開契約を完成'
+          git push origin HEAD:feat/intl-game-guides-20260913
