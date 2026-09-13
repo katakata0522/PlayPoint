@@ -543,7 +543,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/umamusume/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/fgo/</loc>
@@ -559,7 +559,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/proseka/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/pokepoke/</loc>
@@ -567,11 +567,11 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/starrail/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/zzz/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/bluearchive/</loc>
@@ -947,6 +947,22 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/monst/google-play-vs-webshop/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/proseka/google-play-vs-webstore/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/starrail/supply-pass-value/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/umamusume/umasuku-value/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/zzz/membership-value/</loc>
     <lastmod>2026-09-13</lastmod>
   </url>
 </urlset>
