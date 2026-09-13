@@ -53,7 +53,8 @@ test('地域固有の価格・公式用語を日本語版から機械換算し�
 
   const padEn = renderGuide('en', bySlug('puzzle-and-dragons-pass'));
   assert.match(padEn, /US\$8\.99/);
-  assert.doesNotMatch(padEn, /¥980/);
+  assert.match(padEn, /not a converted Japanese ¥980 figure/);
+  assert.doesNotMatch(padEn, /¥980\s*\/\s*month|monthly price[^<]{0,40}¥980/i);
 
   const monstTw = renderGuide('tw', bySlug('monster-strike-google-play-vs-web-shop'));
   assert.match(monstTw, /NT\$620/);
