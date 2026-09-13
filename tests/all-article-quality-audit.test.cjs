@@ -17,6 +17,15 @@ const international = ['en', 'ko', 'tw'].flatMap(locale =>
 const articles = [...new Set([...japanese, ...international])].sort();
 const articleSet = new Set(articles);
 
+function sitePathToFile(sitePath) {
+  const normalized = String(sitePath || '').replace(/^\/+/, '');
+  return normalized.endsWith('/') ? `${normalized}index.html` : normalized;
+}
+
+function fileToSitePath(file) {
+  return String(file || '').replace(/index\.html$/, '');
+}
+
 function schemas(html, file) {
   return [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => {
     try {
@@ -100,13 +109,13 @@ test('article hreflang links are reciprocal and use the Taiwan locale code', () 
     const html = read(file);
     assert.doesNotMatch(html, /hreflang="zh-Hant"/, `${file}: use zh-TW for the Taiwan alternate`);
     const alternates = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="https:\/\/playpoint-sim\.com\/([^"]+)" ?\/?>/g)]
-      .map(match => ({ lang: match[1], file: match[2] }));
+      .map(match => ({ lang: match[1], file: sitePathToFile(match[2]) }));
     if (!alternates.length) continue;
     assert.ok(alternates.some(item => item.file === file), `${file}: hreflang self reference is missing`);
     assert.ok(alternates.some(item => item.lang === 'x-default'), `${file}: x-default is missing`);
     for (const alternate of alternates.filter(item => item.lang !== 'x-default' && articleSet.has(item.file))) {
       const target = read(alternate.file);
-      assert.ok(target.includes(`href="https://playpoint-sim.com/${file}"`), `${file}: ${alternate.file} does not link back`);
+      assert.ok(target.includes(`href="https://playpoint-sim.com/${fileToSitePath(file)}"`), `${file}: ${alternate.file} does not link back`);
     }
   }
 });
