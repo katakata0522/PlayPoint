@@ -9,6 +9,13 @@ const { KEY, makeStore, safePath } = require('../js/reading-library.js');
 const { extractSections, text } = require('../scripts/article-discovery-sync.cjs');
 const outcomes = require('../scripts/article-outcome-report.cjs');
 const root = path.resolve(__dirname, '..');
+function publishedPaths(locale) {
+  if (locale === 'ja') return JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'))
+    .filter(article => article.listed !== false).map(article => '/' + article.file.slice(3));
+  return fs.readdirSync(path.join(root, locale, 'articles'))
+    .filter(file => file.endsWith('.html') && file !== 'index.html')
+    .map(file => '/' + locale + '/articles/' + file);
+}
 test('four-language synonym search finds body-only information and links to its section', () => {
   for (const [locale, query, text] of [
     ['ja', 'プレイポイント 失効', 'Play Pointsの有効期限を確認する'],
@@ -28,7 +35,8 @@ test('all indexed section anchors exist, are unique and contain body text', () =
   for(const locale of ['ja','en','ko','tw']) {
     const relative = locale==='ja'?'blog/article-search-index.json':locale+'/articles/article-search-index.json';
     const index = JSON.parse(fs.readFileSync(path.join(root,relative),'utf8'));
-    assert.equal(index.articles.length,locale==='ja'?57:34);
+    assert.deepEqual(index.articles.map(article => article.path).sort(), publishedPaths(locale).sort());
+    assert.equal(new Set(index.articles.map(article => article.path)).size, index.articles.length);
     for(const article of index.articles) {
       const html=fs.readFileSync(path.join(root,article.path.slice(1)),'utf8');
       assert.ok(article.sections.length>0,article.path);
@@ -78,7 +86,8 @@ test('current diary week follows Friday and crosses month and year correctly', (
  }
 });
 test('role reporting uses each article purpose and refuses misleading totals', () => {
- const template=outcomes.createTemplate(root);assert.equal(template.rows.length,159);
+ const template=outcomes.createTemplate(root);
+ assert.deepEqual(template.rows.map(row => row.path).sort(), ['ja','en','ko','tw'].flatMap(publishedPaths).sort());
  const period={start:'2026-09-01',end:'2026-09-07'};
  const rows=[
   {path:'/en/articles/google-play-points-weekly-reward.html',articleUsers:100,returningUsers:12,calculationUsers:99},
@@ -110,4 +119,25 @@ test('本文抽出は空白付き終了タグと除去境界を安全なテキ�
  assert.equal(text('<scr<script>hidden()</script>ipt>'),'');
  const section=extractSections('<article><h2 id="one">One</h2><p>Useful</p><!-- reading-tools:start --><div>Saved controls</div><!-- reading-tools:end --></article>');
  assert.equal(section[0].text,'Useful');
+});
+
+
+test('ゲーム記事の正規URLとindex.htmlを保存・履歴で重複させない', () => {
+  const storage = memoryStorage();
+  const store = makeStore(storage);
+  const canonical = { path: '/games/fgo/pity-cost/', title: 'FGO' };
+  const alias = { ...canonical, path: canonical.path + 'index.html' };
+  store.toggle(alias); store.visit(alias); store.visit(canonical);
+  assert.deepEqual(store.read().saved, [canonical]);
+  assert.deepEqual(store.read().recent, [canonical]);
+  store.toggle(canonical); assert.equal(store.read().saved.length, 0);
+  store.toggle(canonical); store.remove('saved', alias.path);
+  assert.equal(store.read().saved.length, 0);
+  storage.setItem(KEY, JSON.stringify({ saved: [alias, canonical], recent: [canonical, alias] }));
+  assert.deepEqual(store.read().saved, [canonical]);
+  assert.deepEqual(store.read().recent, [canonical]);
+  for (const candidate of ['/games/', '/games/fgo/', '/games/fgo/../', '/games/fgo/%2e%2e/', '/games/fgo/pity-cost/?x=1', '//evil.example/games/fgo/pity-cost/', 'javascript:alert(1)', '/games/fgo/pity-cost/extra.html']) {
+    assert.equal(safePath(candidate), false, candidate);
+    assert.throws(() => store.toggle({ path: candidate, title: '不正' }), /Invalid article/);
+  }
 });

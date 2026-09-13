@@ -8,6 +8,10 @@ const {
   shouldGenerateGenericCalculatorPrompt
 } = require('./article-role-registry.cjs');
 const { shouldGenerateIntlArticlePrompt } = require('./intl-article-reading-flow.cjs');
+const {
+  isSupportedJapaneseArticleManifestFile,
+  isGameGuideArticlePath
+} = require('./game-guide-article-catalog.cjs');
 
 const INTERNATIONAL_LOCALES = Object.freeze(['en', 'ko', 'tw']);
 const GENERATED_JA_PROMPT = /data-generated-article-prompt=["']true["']/g;
@@ -32,8 +36,16 @@ function normalizeArticleHref(relativePath, href) {
     if (!cleaned.startsWith('https://playpoint-sim.com/')) return null;
     return cleaned.slice('https://playpoint-sim.com/'.length);
   }
-  if (cleaned.startsWith('/')) return cleaned.slice(1);
-  return path.posix.normalize(path.posix.join(path.posix.dirname(relativePath), cleaned));
+  if (cleaned.startsWith('/')) {
+    const local = cleaned.slice(1);
+    return local.endsWith('/') ? `${local}index.html` : local;
+  }
+  const local = path.posix.normalize(path.posix.join(path.posix.dirname(relativePath), cleaned));
+  return local.endsWith('/') ? `${local}index.html` : local;
+}
+
+function isArticleContentTarget(target) {
+  return /(?:^|\/)articles\/[^/]+\.html$/i.test(target) || isGameGuideArticlePath(target);
 }
 
 function extractRelatedTargets(relativePath, html) {
@@ -42,7 +54,7 @@ function extractRelatedTargets(relativePath, html) {
   return [...new Set([...section.matchAll(/<a\b[^>]*href=["']([^"']+)["']/gi)]
     .map(match => normalizeArticleHref(relativePath, match[1]))
     .filter(Boolean)
-    .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target)))];
+    .filter(isArticleContentTarget))];
 }
 
 function articleCorpus(root) {
@@ -51,7 +63,7 @@ function articleCorpus(root) {
   const seen = new Set();
 
   for (const article of manifest) {
-    if (!article || typeof article.file !== 'string' || !/^\.\.\/articles\/[^/]+\.html$/.test(article.file)) continue;
+    if (!article || typeof article.file !== 'string' || !isSupportedJapaneseArticleManifestFile(article.file)) continue;
     const relativePath = article.file.replace(/^\.\.\//, '');
     if (seen.has(relativePath)) continue;
     seen.add(relativePath);
@@ -174,5 +186,6 @@ module.exports = {
   auditArticleRoleNextActions,
   extractRelatedTargets,
   generatedPromptCount,
+  isArticleContentTarget,
   printAudit
 };

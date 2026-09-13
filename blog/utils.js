@@ -5,7 +5,7 @@
     const PLACEHOLDER_IMAGE = 'https://placehold.co/600x400/e0e0e0/999999?text=No+Image';
 
     // 記事一覧のゲーム名絞り込み（articles.json に第5カテゴリを足さない）
-    const GAME_TITLE_FILTERS = Object.freeze(['ウマ娘', 'ドッカン', 'パズドラ']);
+    const GAME_TITLE_FILTERS = Object.freeze(['FGO', '原神', 'モンスト', 'スタレ', 'ゼンゼロ', 'ウマ娘', 'プロセカ', 'ポケポケ', 'パズドラ', 'アークナイツ', 'ドッカン', 'ヘブバン', '崩壊3rd', 'ファンパレ', 'プロスピA', 'Pokémon GO', 'eFootball']);
 
     /**
      * タイトル・説明・タグ・カテゴリを小文字化してメモリ内検索用インデックスにする

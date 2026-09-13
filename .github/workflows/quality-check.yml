@@ -25,4 +25,17 @@ jobs:
           persist-credentials: false
 
       - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+        shell: bash
+        run: |
+          # teeの成功で検証失敗を隠さず、ログ保存と失敗の伝播を両立する。
+          set -euo pipefail
+          node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
+
+      - name: Preserve preflight verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pr-gate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-preflight.log
+          if-no-files-found: warn
+          retention-days: 7

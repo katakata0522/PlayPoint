@@ -1,10 +1,17 @@
 (function (root) {
   'use strict';
   const KEY = 'playpoint_reading_library_v1';
-  function safePath(value) { return typeof value === 'string' && /^\/(?:en\/|ko\/|tw\/)?articles\/[a-z0-9-]+\.html$/.test(value) && !value.endsWith('/index.html'); }
+  function normalizeArticlePath(value) {
+    if (typeof value !== 'string') return null;
+    if (/^\/(?:en\/|ko\/|tw\/)?articles\/[a-z0-9-]+\.html$/.test(value) && !value.endsWith('/index.html')) return value;
+    if (/^\/games\/[a-z0-9-]+\/[a-z0-9-]+\/(?:index\.html)?$/.test(value)) return value.replace(/index\.html$/, '');
+    return null;
+  }
+  function safePath(value) { return normalizeArticlePath(value) !== null; }
   function cleanItems(items, limit) {
     const seen = new Set();
-    return (Array.isArray(items) ? items : []).filter(item => item && safePath(item.path) && typeof item.title === 'string' && !seen.has(item.path) && seen.add(item.path))
+    return (Array.isArray(items) ? items : []).map(item => item && ({ ...item, path: normalizeArticlePath(item.path) }))
+      .filter(item => item && safePath(item.path) && typeof item.title === 'string' && !seen.has(item.path) && seen.add(item.path))
       .slice(0, limit).map(item => ({ path: item.path, title: item.title.slice(0, 240) }));
   }
   function makeStore(storage) {
@@ -15,13 +22,13 @@
     function change(callback) { const state = read(); callback(state); storage.setItem(KEY, JSON.stringify(state)); return state; }
     return {
       read,
-      toggle(item) { if (!safePath(item.path)) throw Error('Invalid article'); return change(s => {
+      toggle(item) { if (!safePath(item?.path)) throw Error('Invalid article'); item = { ...item, path: normalizeArticlePath(item.path) }; return change(s => {
         if (s.saved.some(x => x.path === item.path)) s.saved = s.saved.filter(x => x.path !== item.path);
         else { if (s.saved.length >= 100) throw Object.assign(Error('Saved list full'), { code: 'saved_limit' }); s.saved = cleanItems([item, ...s.saved], 100); }
       }); },
-      visit(item) { if (!safePath(item.path)) return read(); return change(s => { if (s.historyEnabled) s.recent = cleanItems([item, ...s.recent.filter(x => x.path !== item.path)], 20); }); },
+      visit(item) { if (!safePath(item?.path)) return read(); item = { ...item, path: normalizeArticlePath(item.path) }; return change(s => { if (s.historyEnabled) s.recent = cleanItems([item, ...s.recent.filter(x => x.path !== item.path)], 20); }); },
       clear(type) { if (!['saved', 'recent'].includes(type)) throw Error('Invalid list'); return change(s => { s[type] = []; }); },
-      remove(type, articlePath) { if (!['saved', 'recent'].includes(type)) throw Error('Invalid list'); return change(s => { s[type] = s[type].filter(x => x.path !== articlePath); }); },
+      remove(type, articlePath) { if (!['saved', 'recent'].includes(type)) throw Error('Invalid list'); return change(s => { s[type] = s[type].filter(x => x.path !== normalizeArticlePath(articlePath)); }); },
       history(enabled) { return change(s => { s.historyEnabled = Boolean(enabled); if (!enabled) s.recent = []; }); }
     };
   }
@@ -31,12 +38,12 @@
     ko: ['나중에 읽기', '저장됨', '저장한 글·최근 읽은 글', '나중에 읽기', '최근 읽은 글', '목록에서 삭제', '목록 비우기', '아직 글이 없습니다.', '이 기기에만 저장됩니다. 저장한 글은 최대 100개, 최근 읽은 글은 20개까지이며 브라우저 데이터를 삭제하면 사라집니다.', '읽은 글 기록하기', '저장 공간을 사용할 수 없습니다. 브라우저 설정을 확인해 주세요.', '글을 저장했습니다.', '저장을 해제했습니다.'],
     tw: ['稍後閱讀', '已儲存', '已儲存文章與閱讀紀錄', '稍後閱讀', '最近閱讀', '從清單移除', '清空清單', '目前沒有文章。', '只儲存在此裝置：最多 100 篇收藏、20 篇閱讀紀錄。清除瀏覽器資料後，清單也會刪除。', '保留閱讀紀錄', '無法使用儲存空間，請檢查瀏覽器設定。', '已儲存文章。', '已取消儲存。']
   };
-  const api = { KEY, safePath, cleanItems, makeStore, COPY };
+  const api = { KEY, safePath, normalizeArticlePath, cleanItems, makeStore, COPY };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root?.document) return;
   root.PlayPointReading = api;
   function init() {
-    const document = root.document, pathname = root.location.pathname;
+    const document = root.document, pathname = normalizeArticlePath(root.location.pathname) || root.location.pathname;
     const locale = pathname.match(/^\/(en|ko|tw)\//)?.[1] || 'ja', copy = COPY[locale];
     const hub = locale === 'ja' ? '/blog/' : `/${locale}/articles/`;
     const isHub = pathname === hub || pathname === hub + 'index.html';

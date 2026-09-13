@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('node:path');
+const { isGameGuideArticlePath } = require('./game-guide-article-catalog.cjs');
 
 /**
  * 記事カテゴリー（ランク/使い方/トラブル等）とは別に、
@@ -101,6 +102,7 @@ const ROLE_RULES = Object.freeze([
 
 function classifyArticleRole(relativePath, { listed = true } = {}) {
   if (listed === false) return 'hold';
+  if (isGameGuideArticlePath(relativePath)) return 'game_decision';
   const stem = stemOf(relativePath);
   for (const rule of ROLE_RULES) {
     if (rule.test(stem)) return rule.role;

@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ARTICLE_DIRS = ['articles', 'en/articles', 'ko/articles', 'tw/articles'];
+const { getJapaneseArticleRepoPaths, isGameGuideArticlePath } = require('./game-guide-article-catalog.cjs');
 
 const RELATED_SECTIONS = {
   'articles/2025-12-25-campaign.html': {
@@ -164,19 +165,16 @@ const SCOPE_NOTES = {
 const RELATED_HEADING_PATTERN = /(関連記事|あわせて読みたい|次に確認したい|Related guides|Related articles|Read next|관련|함께 읽|相關|延伸閱讀)/i;
 
 function listArticleFiles(root) {
-  const files = [];
-  for (const dir of ARTICLE_DIRS) {
+  const files = [...getJapaneseArticleRepoPaths(root)];
+  for (const dir of ARTICLE_DIRS.filter(value => value !== 'articles')) {
     const absoluteDir = path.join(root, dir);
     if (!fs.existsSync(absoluteDir)) continue;
     for (const name of fs.readdirSync(absoluteDir).sort()) {
-      if (!name.endsWith('.html')) continue;
-      // International article indexes are discovery hubs, not article details.
-      // Keep the related-guide requirement strict for every actual article.
-      if (name === 'index.html' && dir !== 'articles') continue;
+      if (!name.endsWith('.html') || name === 'index.html') continue;
       files.push(path.posix.join(dir, name));
     }
   }
-  return files;
+  return [...new Set(files)].sort();
 }
 
 function hasRelatedSection(html) {
@@ -266,7 +264,7 @@ function extractRelatedArticleTargets(relativePath, html) {
   return [...new Set(hrefs
     .map(href => normalizeHref(relativePath, href))
     .filter(Boolean)
-    .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target)))];
+    .filter(target => /(?:^|\/)articles\/[^/]+\.html$/i.test(target) || isGameGuideArticlePath(target)))];
 }
 
 function normalizeHtml(relativePath, html) {

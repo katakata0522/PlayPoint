@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+const { GAME_GUIDE_ARTICLES, isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
 const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
@@ -145,7 +146,7 @@ function getBlogSitemapEntries(rootDir) {
   return JSON.parse(fs.readFileSync(articlesPath, 'utf8'))
     .filter(article => article && article.file && article.date && article.listed !== false)
     .map(article => ({
-      url: `${SITE_ORIGIN}/${String(article.file).replace(/^\.\.\//, '')}`,
+      url: toPublicUrl(String(article.file).replace(/^\.\.\//, '')),
       lastmod: article.modified || article.date
     }))
     .filter(entry => !SEARCH_QUALITY_HOLD_URLS.has(entry.url));
@@ -157,10 +158,10 @@ function listedJapaneseSitemapEntries(rootDir) {
 
   return JSON.parse(fs.readFileSync(articlesPath, 'utf8'))
     .filter(article => article && article.listed !== false && article.file && article.title && article.date)
-    .filter(article => /^\.\.\/articles\/[^/]+\.html$/.test(article.file))
+    .filter(article => isSupportedJapaneseArticleManifestFile(article.file))
     .sort((left, right) => String(right.modified || right.date).localeCompare(String(left.modified || left.date)))
     .map(article => ({
-      href: String(article.file).replace(/^\.\.\//, ''),
+      href: toPublicUrl(String(article.file).slice(3)).slice(SITE_ORIGIN.length + 1),
       title: article.title
     }));
 }
@@ -286,6 +287,7 @@ function syncSitemap(rootDir) {
     ...getContentDateEntries()
   ]);
   const excludedUrls = new Set([
+    ...GAME_GUIDE_ARTICLES.map(article => SITE_ORIGIN + "/" + article.file.slice(3)),
     ...NON_PLAYPOINT_URLS,
     ...RETIRED_CONTENT_URLS,
     ...SEARCH_QUALITY_HOLD_URLS,

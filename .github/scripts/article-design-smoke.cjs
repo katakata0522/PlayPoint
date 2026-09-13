@@ -13,6 +13,7 @@ const REPRESENTATIVE_CASES = [
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
+  { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true }
 ];
 // 全件確認は明示指定時だけ実行し、通常CIの代表ケースは維持する。
@@ -140,7 +141,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       const motion = await relatedTarget.evaluate(element => ({ transform: getComputedStyle(element).transform, transition: getComputedStyle(element).transitionDuration }));
       assert(motion.transform === 'none' && motion.transition.split(',').every(value => parseFloat(value) === 0), article.key + '/' + viewport.key + ': reduced motion not respected');
     }
-    if (article.path.startsWith('articles/')) {
+    if (article.path.startsWith('articles/') || article.path.startsWith('games/')) {
       const sidebar = page.locator('.ja-article-sidebar');
       assert(await sidebar.count() === 1, article.key + ': 日本語サイドバーがありません');
       assert(await sidebar.locator('.sidebar-next-link').count() === 1, article.key + ': 次行動は1件');
@@ -168,6 +169,39 @@ async function inspect(browser, baseUrl, article, viewport) {
   }
 }
 
+async function inspectGameReading(browser, baseUrl) {
+  const origin = new URL(baseUrl).origin;
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await context.route('**/*', route => new URL(route.request().url()).origin === origin
+    ? route.continue() : route.fulfill({ status: 204, body: '' }));
+  const page = await context.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  try {
+    const articlePath = '/games/fgo/pity-cost/';
+    let response = await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'load' });
+    assert(response?.ok(), 'ゲーム記事の正規URLを開けません');
+    const button = page.locator('[data-reading-tools] button');
+    await button.waitFor({ state: 'visible' });
+    assert(await button.isEnabled(), 'ゲーム記事の保存ボタンが無効です');
+    await button.click();
+    assert(await button.getAttribute('aria-pressed') === 'true', 'ゲーム記事を保存できません');
+    response = await page.goto(new URL(articlePath + 'index.html', baseUrl).href, { waitUntil: 'load' });
+    assert(response?.ok(), 'ゲーム記事の別名URLを開けません');
+    assert(await button.getAttribute('aria-pressed') === 'true', '別名URLで保存状態が失われました');
+    const state = await page.evaluate(() => window.PlayPointReading.makeStore(localStorage).read());
+    assert(state.saved.length === 1 && state.saved[0].path === articlePath, '保存先が正規URLに統一されていません');
+    assert(state.recent.length === 1 && state.recent[0].path === articlePath, '閲覧履歴が重複しました');
+    await page.screenshot({ path: path.join(ARTIFACT_DIR, 'article-game-reading-mobile.png'), fullPage: true });
+    response = await page.goto(new URL('/blog/#reading-library', baseUrl).href, { waitUntil: 'load' });
+    assert(response?.ok(), '記事一覧を開けません');
+    const links = page.locator('#reading-library a').filter({ hasText: 'FGO' });
+    assert(await links.count() >= 1, '保存一覧からゲーム記事へ戻れません');
+    assert(errors.length === 0, 'ゲーム記事の実行時エラー: ' + errors.join('; '));
+    console.log('[article-design-smoke] game reading save/alias/history/hub: OK');
+  } finally { await context.close(); }
+}
+
 async function main() {
   assert(CHROME_PATH, 'CHROME_PATH is required');
   const local = REQUESTED_BASE_URL ? null : await startLocalServer();
@@ -175,6 +209,7 @@ async function main() {
   const browser = await chromium.launch({ executablePath: CHROME_PATH, headless: true });
   try {
     for (const article of CASES) for (const viewport of VIEWPORTS) await inspect(browser, baseUrl, article, viewport);
+    await inspectGameReading(browser, baseUrl);
   } finally {
     await browser.close();
     if (local) await local.close();

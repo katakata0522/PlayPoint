@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cjs');
 
 const GUIDE_BRAND = 'Google Play Points 完全攻略ガイド';
 const GUIDE_PAGE_TITLE = `${GUIDE_BRAND} | Playポイント計算機`;
@@ -121,12 +122,7 @@ function syncArticleBrand(html, relativePath) {
 }
 
 function japaneseArticleFiles(rootDir) {
-  const manifestPath = path.join(rootDir, 'blog', 'articles.json');
-  const articles = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  return [...new Set(articles
-    .map(article => article && article.file)
-    .filter(file => typeof file === 'string' && /^\.\.\/articles\/[^/]+\.html$/.test(file))
-    .map(file => file.replace(/^\.\.\//, '')))];
+  return getJapaneseArticleRepoPaths(rootDir);
 }
 
 function syncJapaneseGuideBrand(rootDir) {

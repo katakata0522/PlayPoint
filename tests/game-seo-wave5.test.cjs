@@ -123,7 +123,7 @@ test('Prospi guide separates Google Play from KONAMI Games Store and its own rew
   assert.match(html, /Google Playとは別のWEB決済/);
   assert.match(html, /Google Play Pointsとしては数えず/);
   assert.match(html, /Google Play上の決済ではないため/);
-  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'Prospi guide should have multiple decision sections');
+  assert.ok((html.match(/<h2\b[^>]*>/g) || []).length >= 5, 'Prospi guide should have multiple decision sections');
   assert.ok(html.length > 5000);
 });
 
@@ -135,7 +135,7 @@ test('Pokémon GO guide distinguishes Google Play, Galaxy Store, Web Store and R
   assert.match(html, /Reward Road/);
   assert.match(html, /Reward RoadポイントはGoogle Play Pointsではありません/);
   assert.match(html, /無料ポケコイン/);
-  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'Pokémon GO guide should have multiple decision sections');
+  assert.ok((html.match(/<h2\b[^>]*>/g) || []).length >= 5, 'Pokémon GO guide should have multiple decision sections');
   assert.ok(html.length > 5000);
 });
 
@@ -147,7 +147,7 @@ test('eFootball guide explicitly separates Google Play Points from KONAMI eFootb
   assert.match(html, /完全に別のポイント/);
   assert.match(html, /受け取り後6か月後の月末/);
   assert.match(html, /eFootball™コイン、GP、eFootball™ポイント/);
-  assert.ok((html.match(/<h2>/g) || []).length >= 5, 'eFootball guide should have multiple decision sections');
+  assert.ok((html.match(/<h2\b[^>]*>/g) || []).length >= 5, 'eFootball guide should have multiple decision sections');
   assert.ok(html.length > 5000);
 });
 

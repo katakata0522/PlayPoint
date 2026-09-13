@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
 
 const FEED_TITLE = 'Google Play Points 完全攻略ガイド | Playポイント計算機';
 const FEED_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
@@ -48,7 +49,7 @@ function isListedArticle(article) {
 }
 
 function isJapaneseArticleFile(file) {
-  return /^\.\.\/articles\/[^/]+\.html$/.test(String(file || ''));
+  return isSupportedJapaneseArticleManifestFile(file);
 }
 
 function listedJapaneseArticles(articles) {

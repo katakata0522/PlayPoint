@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cjs');
 
 const ARTICLE_DIRECTORIES = Object.freeze([
   'articles',
@@ -39,13 +40,15 @@ function getLocaleKey(relativePath) {
 }
 
 function getArticleFiles(rootDir) {
-  return ARTICLE_DIRECTORIES.flatMap(directory => {
+  const files = [...getJapaneseArticleRepoPaths(rootDir)];
+  for (const directory of ARTICLE_DIRECTORIES.filter(value => value !== 'articles')) {
     const absoluteDirectory = path.join(rootDir, directory);
-    if (!fs.existsSync(absoluteDirectory)) return [];
-    return fs.readdirSync(absoluteDirectory, { withFileTypes: true })
+    if (!fs.existsSync(absoluteDirectory)) continue;
+    files.push(...fs.readdirSync(absoluteDirectory, { withFileTypes: true })
       .filter(entry => entry.isFile() && entry.name.endsWith('.html') && entry.name !== 'index.html')
-      .map(entry => normalizeRelativePath(path.join(directory, entry.name)));
-  }).sort();
+      .map(entry => normalizeRelativePath(path.join(directory, entry.name))));
+  }
+  return [...new Set(files.map(normalizeRelativePath))].sort();
 }
 
 function loadOfficialVerificationRegistry(rootDir) {
