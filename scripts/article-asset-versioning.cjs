@@ -36,7 +36,7 @@ function listPublicHtmlFiles(rootDir, currentDir = rootDir) {
   return files;
 }
 
-function modulePreloadHref(rootDir, htmlFile, href) {
+function modulePreloadHref(rootDir, htmlFile, href, revisionFor = createRevision) {
   const script = resolveLocalAsset(rootDir, htmlFile, href, '.js');
   if (!script) return null;
 
@@ -44,20 +44,27 @@ function modulePreloadHref(rootDir, htmlFile, href) {
   // 依存モジュールはmain.js内の相対import（クエリなし）と完全一致させ、
   // preloadとimportが別URL扱いになって二重取得されるのを防ぐ。
   if (['main.js', 'analytics-core.js'].includes(path.basename(script))) {
-    return `${href}?v=${createRevision(script)}`;
+    return `${href}?v=${revisionFor(script)}`;
   }
   return href;
 }
 
 function syncPublicAssetVersions(rootDir) {
   let updatedFiles = 0;
+  // この走査が書くのはHTMLだけ。CSS/JSのハッシュは走査内で再利用し、
+  // 呼び出しをまたいで保持しない（圧縮・編集後の次回実行で必ず再読込する）。
+  const revisions = new Map();
+  function revisionFor(file) {
+    if (!revisions.has(file)) revisions.set(file, createRevision(file));
+    return revisions.get(file);
+  }
 
   for (const htmlFile of listPublicHtmlFiles(rootDir)) {
       const original = fs.readFileSync(htmlFile, 'utf8');
       let updated = original.replace(
         /(<link\b[^>]*\brel=["']modulepreload["'][^>]*\bhref=["'])([^"']+\.js)(?:\?v=[a-zA-Z0-9_-]+)?(["'][^>]*>)/gi,
         (match, prefix, href, suffix) => {
-          const synchronizedHref = modulePreloadHref(rootDir, htmlFile, href);
+          const synchronizedHref = modulePreloadHref(rootDir, htmlFile, href, revisionFor);
           return synchronizedHref ? `${prefix}${synchronizedHref}${suffix}` : match;
         }
       );
@@ -66,7 +73,7 @@ function syncPublicAssetVersions(rootDir) {
         (match, prefix, href, suffix) => {
           const stylesheet = resolveLocalAsset(rootDir, htmlFile, href, '.css');
           if (!stylesheet) return match;
-          return `${prefix}${href}?v=${createRevision(stylesheet)}${suffix}`;
+          return `${prefix}${href}?v=${revisionFor(stylesheet)}${suffix}`;
         }
       );
       updated = updated.replace(
@@ -74,7 +81,7 @@ function syncPublicAssetVersions(rootDir) {
         (match, prefix, src, suffix) => {
           const script = resolveLocalAsset(rootDir, htmlFile, src, '.js');
           if (!script) return match;
-          return `${prefix}${src}?v=${createRevision(script)}${suffix}`;
+          return `${prefix}${src}?v=${revisionFor(script)}${suffix}`;
         }
       );
 
