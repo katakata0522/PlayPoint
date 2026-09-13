@@ -1,5 +1,6 @@
 name: Intl game guide sitemap sync
 
+# Temporary PR-only materializer. Remove after the generated sitemap is committed.
 on:
   pull_request:
     branches: [main]
