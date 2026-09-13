@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { syncGameGuideArticleHub } = require('./game-guide-article-hub-sync.cjs');
 
 const GAME_SLUGS = Object.freeze(['prospi-a', 'pokemon-go', 'efootball']);
 
@@ -97,7 +98,13 @@ function syncGameSeoWave5RegionalRates(rootDir) {
     }
   }
 
-  return { checked, changedFiles };
+  // This is the final game-SEO generation phase in build-html.js. Promote the
+  // already-generated Japanese deep guides into the /blog/ article system only
+  // after every wave has finished, so later game generators cannot overwrite
+  // the article shell or manifest registration.
+  const articleHub = syncGameGuideArticleHub(rootDir);
+
+  return { checked, changedFiles, articleHub };
 }
 
 module.exports = {
