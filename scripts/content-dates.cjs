@@ -39,8 +39,11 @@ function getGeneratedIntlPageContentDate(pageKey, localeKey) {
 
 const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
 const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
-  'games/arknights/index.html': '2026-08-25',
+  'games/arknights/index.html': GAME_SEO_VERIFIED_AT,
+  'games/arknights/monthly-pass-limited-scout/index.html': GAME_SEO_VERIFIED_AT,
   'games/bluearchive/index.html': GAME_SEO_VERIFIED_AT,
+  'games/dokkan/index.html': GAME_SEO_VERIFIED_AT,
+  'games/dokkan/google-play-vs-webstore/index.html': GAME_SEO_VERIFIED_AT,
   'games/fgo/index.html': GAME_SEO_VERIFIED_AT,
   'games/fgo/pity-cost/index.html': GAME_SEO_VERIFIED_AT,
   'games/gakumas/index.html': GAME_SEO_VERIFIED_AT,
@@ -50,15 +53,18 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/monst/index.html': GAME_SEO_VERIFIED_AT,
   'games/monst/google-play-vs-webshop/index.html': GAME_SEO_VERIFIED_AT,
   'games/nikke/index.html': GAME_SEO_VERIFIED_AT,
-  'games/pad/index.html': '2026-08-25',
+  'games/pad/index.html': GAME_SEO_VERIFIED_AT,
+  'games/pad/pad-pass-value/index.html': GAME_SEO_VERIFIED_AT,
   'games/phantomparade/index.html': '2026-08-25',
+  'games/pokepoke/index.html': GAME_SEO_VERIFIED_AT,
+  'games/pokepoke/premium-pass-guide/index.html': GAME_SEO_VERIFIED_AT,
   'games/proseka/index.html': GAME_SEO_VERIFIED_AT,
   'games/proseka/google-play-vs-webstore/index.html': GAME_SEO_VERIFIED_AT,
   'games/starrail/index.html': GAME_SEO_VERIFIED_AT,
   'games/starrail/supply-pass-value/index.html': GAME_SEO_VERIFIED_AT,
   'games/umamusume/index.html': GAME_SEO_VERIFIED_AT,
   'games/umamusume/umasuku-value/index.html': GAME_SEO_VERIFIED_AT,
-  'games/wutheringwaves/index.html': '2026-08-25',
+  'games/wutheringwaves/index.html': GAME_SEO_VERIFIED_AT,
   'games/zzz/index.html': GAME_SEO_VERIFIED_AT,
   'games/zzz/membership-value/index.html': GAME_SEO_VERIFIED_AT
 });
