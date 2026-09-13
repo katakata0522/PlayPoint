@@ -1,0 +1,44 @@
+name: Temporary Game SEO Wave 5 Generate
+
+on:
+  push:
+    branches:
+      - feat/game-seo-wave5-20260913
+    paths:
+      - .github/workflows/tmp-game-seo-wave5-generate.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/game-seo-wave5-20260913
+          fetch-depth: 2
+
+      - name: Generate canonical outputs twice
+        run: |
+          set -euo pipefail
+          node scripts/prepare-pr.cjs
+          node --test tests/game-seo*.test.cjs tests/game-page-ssot.test.cjs
+          node scripts/prepare-pr.cjs
+          node --test tests/game-seo*.test.cjs tests/game-page-ssot.test.cjs
+
+      - name: Commit generated outputs and remove temporary workflow
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/tmp-game-seo-wave5-generate.yml
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 1
+          fi
+          git commit -m "ゲームSEO第5波の正規生成物を更新"
+          git push origin HEAD:feat/game-seo-wave5-20260913
