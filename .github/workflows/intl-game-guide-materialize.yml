@@ -1,0 +1,67 @@
+name: Intl game guide materialize
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.head_ref == 'feat/intl-game-guides-20260913' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Remove duplicated draft helper block
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/intl-game-guide-expansion.cjs')
+          text = p.read_text(encoding='utf-8')
+          marker = '\n// The Japanese catalog contains 17 guides.'
+          end_marker = '\nfunction escapeHtml(value)'
+          if marker in text:
+              start = text.index(marker)
+              end = text.index(end_marker, start)
+              text = text[:start] + '\nconst ALL_GUIDES = GUIDES;\n' + text[end:]
+              p.write_text(text, encoding='utf-8')
+          elif 'const ALL_GUIDES = GUIDES;' not in text:
+              raise SystemExit('localized guide catalog cleanup marker not found')
+          PY
+
+      - name: Verify localized source contract
+        run: node --test tests/intl-game-guide-expansion.test.cjs
+
+      - name: Generate 51 localized game guides
+        run: node scripts/generate-intl-game-guides.cjs
+
+      - name: Normalize through canonical build pipeline
+        run: node scripts/prepare-pr.cjs
+
+      - name: Recheck localized source contract
+        run: node --test tests/intl-game-guide-expansion.test.cjs
+
+      - name: Commit generated output to PR branch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No generated drift to commit.'
+            exit 0
+          fi
+          git commit -m 'chore: 多言語ゲーム特集の生成物を同期'
+          git push origin HEAD:${{ github.head_ref }}
