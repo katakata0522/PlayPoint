@@ -2,6 +2,7 @@
 
 const path = require('node:path');
 const { isGameGuideArticlePath } = require('./game-guide-article-catalog.cjs');
+const { isLocalizedGameGuideArticlePath } = require('./intl-game-guide-expansion.cjs');
 
 /**
  * 記事カテゴリー（ランク/使い方/トラブル等）とは別に、
@@ -69,8 +70,14 @@ const ROLE_DEFINITIONS = Object.freeze({
   })
 });
 
+function normalizeArticlePath(relativePath) {
+  return String(relativePath || '')
+    .replace(/\\/g, '/')
+    .replace(/^\/+/, '');
+}
+
 function stemOf(relativePath) {
-  return path.basename(String(relativePath || ''), '.html').toLowerCase();
+  return path.basename(normalizeArticlePath(relativePath), '.html').toLowerCase();
 }
 
 const ROLE_RULES = Object.freeze([
@@ -102,8 +109,9 @@ const ROLE_RULES = Object.freeze([
 
 function classifyArticleRole(relativePath, { listed = true } = {}) {
   if (listed === false) return 'hold';
-  if (isGameGuideArticlePath(relativePath)) return 'game_decision';
-  const stem = stemOf(relativePath);
+  const normalizedPath = normalizeArticlePath(relativePath);
+  if (isGameGuideArticlePath(normalizedPath) || isLocalizedGameGuideArticlePath(normalizedPath)) return 'game_decision';
+  const stem = stemOf(normalizedPath);
   for (const rule of ROLE_RULES) {
     if (rule.test(stem)) return rule.role;
   }
@@ -128,6 +136,7 @@ module.exports = {
   ROLE_DEFINITIONS,
   classifyArticleRole,
   getArticleRoleContract,
+  normalizeArticlePath,
   shouldGenerateGenericCalculatorPrompt,
   stemOf
 };

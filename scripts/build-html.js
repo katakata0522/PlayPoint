@@ -119,8 +119,6 @@ const authorHreflangSummary = syncJapaneseAuthorHreflang(rootDir, { checkOnly: f
 console.log(`[build-html] synchronized Japanese author hreflang: ${authorHreflangSummary.changed}/${authorHreflangSummary.checked} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
 
-// 地域別の文言補正や実行時補助スクリプトを先に確定し、
-// その後の内容ハッシュ同期で公開HTMLの参照URLも同じビルド内に確定させる。
 const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
 console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 syncJapaneseNavigation(rootDir);
@@ -149,8 +147,6 @@ console.log(`[build-html] sanitized internal attribution links: ${sanitizedInter
 const speculationRulesChanged = syncSpeculationRules(rootDir);
 console.log(`[build-html] synchronized speculation rules: ${speculationRulesChanged} updated`);
 
-// 生成記事も手動正本も、最終的な検索意図境界と関連記事を同じ正規化処理で確定する。
-// prepare-pr 後だけ整う状態を作らず、通常ビルドそのものを再現可能な正本にする。
 const articleNavigationSummary = normalizeArticleContentNavigation({ root: rootDir, check: false });
 if (articleNavigationSummary.failures.length > 0) {
   throw new Error(`Article content/navigation normalization failed:\n${articleNavigationSummary.failures.join('\n')}`);
@@ -159,6 +155,13 @@ console.log(`[build-html] synchronized article intent/navigation: ${articleNavig
 
 const { syncArticleDiscovery } = require('./article-discovery-sync.cjs');
 console.log('[build-html] synchronized article search and reading tools:', syncArticleDiscovery(rootDir));
+
+// Game SEO generators run after the first hreflang pass. Re-apply the reciprocal
+// JA/EN/KO/TW set after every article/game generator so the published files and
+// the reproducible build output cannot diverge.
+const finalIntlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
+console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntlJaHreflangSummary.changed}/${finalIntlJaHreflangSummary.checked} updated`);
+
 syncPublicAssetVersions(rootDir);
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);

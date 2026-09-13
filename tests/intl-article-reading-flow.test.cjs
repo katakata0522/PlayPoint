@@ -158,6 +158,10 @@ const contextualPublishedPrompts = Object.freeze({
 });
 
 test('公開中の全国際記事はRoleに応じたgenerated prompt有無を守る', () => {
+  const expectedPublished = locales.reduce((total, locale) => {
+    const articleDir = path.join(root, locale, 'articles');
+    return total + fs.readdirSync(articleDir).filter(file => file.endsWith('.html') && file !== 'index.html').length;
+  }, 0);
   let auditedLegacyIntroPages = 0;
   let checked = 0;
 
@@ -201,6 +205,6 @@ test('公開中の全国際記事はRoleに応じたgenerated prompt有無を守
     }
   }
 
-  assert.equal(checked, 102, '現在の国際記事102件をすべて監査する');
+  assert.equal(checked, expectedPublished, '現在公開中の全国際記事をすべて監査する');
   assert.ok(auditedLegacyIntroPages > 0, 'published audit must exercise legacy div-intro pages');
 });

@@ -2,27 +2,29 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getLocalizedGameGuideLinks } = require('./intl-game-guide-expansion.cjs');
+const { publishLocalizedGameGuides } = require('./intl-game-guide-publish-normalize.cjs');
 
 const HUB_CONTENT = {
   en: {
-    modifiedAt: '2026-08-05',
-    description: 'Browse region-checked Google Play Points guides for US levels, eligibility, country changes, promotions, Silver progress, weekly rewards and account issues.',
+    modifiedAt: '2026-09-13',
+    description: 'Browse region-checked Google Play Points guides for US levels, eligibility, promotions, account issues and game-specific purchase decisions.',
     links: [
       ['/en/articles/google-play-points-super-weekly-reward.html', 'Super Weekly Prize eligibility, prize stock and Super Tickets'],
       ['/en/articles/google-play-quests.html', 'Google Play quests not appearing or completing']
     ]
   },
   ko: {
-    modifiedAt: '2026-08-05',
-    description: '한국 공식 조건을 확인한 Google Play Points 등급, 가입, 국가 변경, 배율, 실버 달성, 주간 리워드와 계정 문제 가이드입니다.',
+    modifiedAt: '2026-09-13',
+    description: '대한민국 공식 조건을 확인한 Google Play Points 등급, 가입, 프로모션, 계정 문제와 게임별 결제 판단 가이드입니다.',
     links: [
       ['/ko/articles/google-play-points-super-weekly-reward.html', '슈퍼 위클리 리워드 대상·재고·슈퍼 티켓'],
       ['/ko/articles/google-play-quests.html', 'Google Play 퀘스트가 표시되지 않거나 완료되지 않을 때']
     ]
   },
   tw: {
-    modifiedAt: '2026-08-05',
-    description: '瀏覽依台灣官方條件核對的 Google Play Points 等級、加入、國家變更、活動倍率、銀級攻略、每週獎勵與帳號問題指南。',
+    modifiedAt: '2026-09-13',
+    description: '瀏覽依台灣官方條件核對的 Google Play Points 等級、加入、活動、帳號問題與遊戲消費判斷指南。',
     links: [
       ['/tw/articles/google-play-points-super-weekly-reward.html', '超級每週獎勵資格、庫存與超級票券'],
       ['/tw/articles/google-play-quests.html', 'Google Play 任務沒有顯示或無法完成']
@@ -61,8 +63,14 @@ function syncArticleHub(rootDir, locale, config) {
 }
 
 function syncIntlManualContent(rootDir) {
+  const publishSummary = publishLocalizedGameGuides(rootDir);
+  console.log(`[intl-game-guides] generated=${publishSummary.changed}/${publishSummary.checked}, normalized=${publishSummary.normalized}`);
   for (const [locale, config] of Object.entries(HUB_CONTENT)) {
-    syncArticleHub(rootDir, locale, config);
+    const gameGuideLinks = getLocalizedGameGuideLinks(locale);
+    syncArticleHub(rootDir, locale, {
+      ...config,
+      links: [...gameGuideLinks, ...config.links]
+    });
   }
 }
 

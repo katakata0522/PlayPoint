@@ -64,6 +64,18 @@ test('代表記事を検索意図ではなくプロダクト上の仕事で分�
   }
 });
 
+test('正規URL形式でもゲーム記事のRoleを失わない', () => {
+  for (const file of [
+    'games/fgo/pity-cost/index.html',
+    '/games/fgo/pity-cost/index.html',
+    'en/articles/fgo-guaranteed-summon-play-points.html',
+    '/en/articles/fgo-guaranteed-summon-play-points.html'
+  ]) {
+    assert.equal(classifyArticleRole(file), 'game_decision', file);
+    assert.equal(getArticleRoleContract(file).role, 'game_decision', file);
+  }
+});
+
 test('levels記事は等級制度の参照点であり、CTAがあってもcalculator_bridgeにしない', () => {
   for (const file of [
     'articles/2026-08-05-play-points-levels-guide.html',
