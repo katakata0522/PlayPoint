@@ -22,8 +22,8 @@ function escapeHtml(value) {
 
 function stripHtml(value) {
   return String(value || '')
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script[^>]*>/gi, ' ')
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style[^>]*>/gi, ' ')
     .replace(/<[^>]*>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
@@ -239,6 +239,7 @@ function syncGameGuideArticleHub(rootDir) {
 }
 
 module.exports = {
+  stripHtml,
   extractFaqPairs,
   normalizeBodySections,
   renderShell,

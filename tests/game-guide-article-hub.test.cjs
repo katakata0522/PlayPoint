@@ -189,3 +189,15 @@ test('統合済み記事の欠損画像も本文を変えずに修復し再実�
     }
   } finally { fs.rmSync(temporary, { recursive: true, force: true }); }
 });
+
+
+test('文字抽出は空白付きscript/style終了タグを除去して前後の単語を保持する', () => {
+  const { stripHtml } = require('../scripts/game-guide-article-hub-sync.cjs');
+  for (const tag of ['script', 'style']) {
+    for (const ending of ['>', ' >', '\n>', ' ignored="value">']) {
+      const html = '先頭<' + tag + ' type="text/plain">HIDDEN_SENTINEL</' + tag.toUpperCase() + ending + '末尾';
+      assert.equal(stripHtml(html), '先頭 末尾');
+    }
+  }
+  assert.equal(stripHtml('<b>比較</b><em>判断</em>'), '比較 判断');
+});
