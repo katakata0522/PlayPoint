@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
+const { getLocalizedGameGuideLinks } = require('../scripts/intl-game-guide-expansion.cjs');
 const { HUB_CONTENT, syncIntlManualContent } = require('../scripts/intl-manual-content-sync.cjs');
 
 function fixture(locale) {
@@ -29,7 +30,7 @@ function fixture(locale) {
 </html>`;
 }
 
-test('manual multilingual guide links survive regeneration exactly once', t => {
+test('manual multilingual guide links survive regeneration exactly once without generating article bodies', t => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-intl-hubs-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
 
@@ -51,9 +52,14 @@ test('manual multilingual guide links survive regeneration exactly once', t => {
     assert.equal(html, once.get(locale), `${locale}: synchronization must be idempotent`);
     assert.ok(html.includes(`content="${config.description}"`), `${locale}: description was not synchronized`);
     assert.ok(html.includes(`content="${config.modifiedAt}"`), `${locale}: update date was not synchronized`);
-    for (const [href, label] of config.links) {
+
+    for (const [href, label] of [...getLocalizedGameGuideLinks(locale), ...config.links]) {
       assert.equal((html.match(new RegExp(href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length, 1, `${locale}: duplicate ${href}`);
       assert.ok(html.includes(label), `${locale}: label is missing for ${href}`);
     }
+
+    const generatedBodies = fs.readdirSync(path.join(root, locale, 'articles'))
+      .filter(file => file !== 'index.html');
+    assert.deepEqual(generatedBodies, [], `${locale}: manual hub sync must not generate article bodies`);
   }
 });
