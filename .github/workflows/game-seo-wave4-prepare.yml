@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
 
+# Retry after aligning the HBR value assertion with canonical copy formatting.
 jobs:
   prepare:
     runs-on: ubuntu-latest
