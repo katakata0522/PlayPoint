@@ -80,10 +80,10 @@ test('article corpus and search index include every game guide', () => {
 
 test('blog runtime explicitly accepts deep game guides without opening arbitrary paths', () => {
   const script = read('blog/script.js');
-  assert.match(script, /\.\.\\\/games\\\/[a-z0-9\-\]\+\/); // strict local game-guide branch is present
+  assert.match(script, /gameGuideArticle/);
+  assert.match(script, /\^\\\.\\\.\\\/games/);
   assert.match(script, /index\\\.html/);
-  assert.match(script, /value\.startsWith\('\.\.\/articles\/'\)/);
-  assert.doesNotMatch(script, /startsWith\('\.\.\/games\/'\)\s*return value/);
+  assert.doesNotMatch(script, /value\.startsWith\('\.\.\/games\/'\)/);
 });
 
 test('official verification registry covers all game guide articles', () => {
@@ -98,4 +98,51 @@ test('game guide paths are the only game deep pages treated as article records',
   assert.equal(isGameGuideArticlePath('games/genshin/index.html'), false);
   assert.equal(isGameGuideArticlePath('games/genshin/random/index.html'), false);
   assert.equal(isGameGuideArticlePath('games/index.html'), false);
+});
+
+
+test('ゲーム記事のURLはサイトマップとcanonicalで同じ正規形に揃う', () => {
+  const { getBlogSitemapEntries, toPublicUrl } = require('../scripts/sitemap-sync.cjs');
+  const urls = new Set(getBlogSitemapEntries(root).map(entry => entry.url));
+  for (const article of GAME_GUIDE_ARTICLES) {
+    const canonical = toPublicUrl(repoPath(article));
+    assert.ok(urls.has(canonical), canonical);
+    assert.ok(!urls.has(canonical + 'index.html'));
+    assert.ok(read('sitemap.xml').includes('<loc>' + canonical + '</loc>'));
+    assert.ok(!read('sitemap.xml').includes('<loc>' + canonical + 'index.html</loc>'));
+  }
+});
+
+test('一覧ファイルがなくても通常記事を監査し、未登録のゲームページは混ぜない', () => {
+  const os = require('node:os');
+  const { getJapaneseArticleRepoPaths } = require('../scripts/game-guide-article-catalog.cjs');
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-guide-corpus-'));
+  try {
+    fs.mkdirSync(path.join(temporary, 'articles'));
+    fs.writeFileSync(path.join(temporary, 'articles', 'a.html'), '<article></article>');
+    fs.writeFileSync(path.join(temporary, 'articles', 'index.html'), 'hub');
+    assert.deepEqual(getJapaneseArticleRepoPaths(temporary), ['articles/a.html']);
+    fs.mkdirSync(path.join(temporary, 'blog'));
+    fs.writeFileSync(path.join(temporary, 'blog', 'articles.json'), JSON.stringify([
+      { file: GAME_GUIDE_ARTICLES[0].file }, { file: GAME_GUIDE_ARTICLES[0].file },
+      { file: '../games/fgo/index.html' }, { file: '../games/fgo/unregistered/index.html' }
+    ]));
+    assert.deepEqual(getJapaneseArticleRepoPaths(temporary), ['articles/a.html', repoPath(GAME_GUIDE_ARTICLES[0])].sort());
+    fs.writeFileSync(path.join(temporary, 'blog', 'articles.json'), '{broken');
+    assert.throws(() => getJapaneseArticleRepoPaths(temporary), SyntaxError);
+  } finally { fs.rmSync(temporary, { recursive: true, force: true }); }
+});
+
+test('ブログの実際の入力境界は既存記事・ゲーム記事だけを受理する', () => {
+  const vm = require('node:vm');
+  for (const file of ['blog/script.js', 'blog/article.js']) {
+    const source = read(file).match(/    function sanitizeArticleFile\(value\) \{[\s\S]*?\n    \}/)?.[0];
+    assert.ok(source, file);
+    const sanitize = vm.runInNewContext('(' + source.trim() + ')');
+    assert.equal(sanitize('../articles/example.html'), '../articles/example.html');
+    for (const article of GAME_GUIDE_ARTICLES) assert.equal(sanitize(article.file), article.file);
+    for (const candidate of [null, '../games/fgo/index.html', '../games/../private/index.html', '../games/fgo/%2e%2e/index.html', 'https://evil.example/a.html', '../articles/a.html<script>', '../games/fgo/pity-cost/index.html?x=1']) {
+      assert.equal(sanitize(candidate), '#', file + ': ' + candidate);
+    }
+  }
 });

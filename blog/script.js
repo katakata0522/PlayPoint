@@ -193,16 +193,18 @@
 
     function sanitizeArticleFile(value) {
         if (typeof value !== 'string') return '#';
-        if (!value.startsWith('../articles/')) return '#';
-        if (!value.endsWith('.html')) return '#';
+        const standardArticle = /^\.\.\/articles\/[^/]+\.html$/.test(value);
+        const gameGuideArticle = /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(value);
+        if (!standardArticle && !gameGuideArticle) return '#';
         if (/[<>"']/.test(value)) return '#';
         return value;
     }
 
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
-        if (!value.startsWith('../articles/ogp/')) return BlogUtils.getPlaceholderImage();
-        if (!value.endsWith('.png')) return BlogUtils.getPlaceholderImage();
+        const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const sharedSiteOgp = value === '../ogp.png';
+        if (!standardThumbnail && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
         if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
         return value;
     }

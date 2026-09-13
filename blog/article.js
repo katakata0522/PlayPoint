@@ -3,7 +3,7 @@
 
     // Configuration
     const CONFIG = {
-        articlesUrl: '../blog/articles.json',
+        articlesUrl: '/blog/articles.json',
         recommendedCount: 3,
         placeholderImage: 'https://placehold.co/300x200/e0e0e0/999999?text=No+Image',
         officialSources: {
@@ -87,7 +87,7 @@
         if (!document.querySelector('link[data-article-source-style]')) {
             const stylesheet = document.createElement('link');
             stylesheet.rel = 'stylesheet';
-            stylesheet.href = '../articles/source-notice.css?v=3c2ec22615';
+            stylesheet.href = '/articles/source-notice.css?v=3c2ec22615';
             stylesheet.dataset.articleSourceStyle = 'true';
             document.head.appendChild(stylesheet);
         }
@@ -362,18 +362,20 @@
 
     function sanitizeArticleFile(value) {
         if (typeof value !== 'string') return '#';
-        if (!value.startsWith('../articles/')) return '#';
-        if (!value.endsWith('.html')) return '#';
+        const standardArticle = /^\.\.\/articles\/[^/]+\.html$/.test(value);
+        const gameGuideArticle = /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(value);
+        if (!standardArticle && !gameGuideArticle) return '#';
         if (/[<>"']/.test(value)) return '#';
-        return value.replace('../articles/', './');
+        return value;
     }
 
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return CONFIG.placeholderImage;
-        if (!value.startsWith('../articles/ogp/')) return CONFIG.placeholderImage;
-        if (!value.endsWith('.png')) return CONFIG.placeholderImage;
+        const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const sharedSiteOgp = value === '../ogp.png';
+        if (!standardThumbnail && !sharedSiteOgp) return CONFIG.placeholderImage;
         if (/[<>"']/.test(value)) return CONFIG.placeholderImage;
-        return value.replace('../articles/', './');
+        return value;
     }
 
     // 記事JSONの値を描画前に正規化する

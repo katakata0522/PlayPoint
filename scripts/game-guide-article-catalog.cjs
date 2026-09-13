@@ -252,7 +252,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   thumbnail: '../ogp.png',
   source: 'game-guide',
   listed: true
-}));
+})));
 
 const GAME_GUIDE_FILE_SET = new Set(GAME_GUIDE_ARTICLES.map(article => article.file));
 const GAME_GUIDE_PATH_SET = new Set(GAME_GUIDE_ARTICLES.map(article => article.file.replace(/^\.\.\//, '')));
@@ -275,11 +275,19 @@ function isSupportedJapaneseArticleManifestFile(file) {
 }
 
 function getJapaneseArticleRepoPaths(rootDir) {
-  const manifest = JSON.parse(fs.readFileSync(path.join(rootDir, 'blog', 'articles.json'), 'utf8'));
-  return [...new Set(manifest
-    .map(article => article && article.file)
+  const directory = path.join(rootDir, 'articles');
+  const standard = fs.existsSync(directory)
+    ? fs.readdirSync(directory, { withFileTypes: true })
+      .filter(entry => entry.isFile() && entry.name.endsWith('.html') && entry.name !== 'index.html')
+      .map(entry => 'articles/' + entry.name)
+    : [];
+  const manifestPath = path.join(rootDir, 'blog', 'articles.json');
+  const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : [];
+  if (!Array.isArray(manifest)) throw new TypeError('記事一覧は配列である必要があります');
+  const registered = manifest.map(article => article && article.file)
     .filter(isSupportedJapaneseArticleManifestFile)
-    .map(file => file.replace(/^\.\.\//, '')))];
+    .map(file => file.slice(3));
+  return [...new Set([...standard, ...registered])].sort();
 }
 
 function syncGameGuideArticleManifest(rootDir) {

@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cjs');
 
 const ARTICLE_DIRECTORIES = Object.freeze([
   'articles',
@@ -323,13 +324,15 @@ function normalizeArticleHtml(html) {
 }
 
 function getArticleFiles(rootDir) {
-  return ARTICLE_DIRECTORIES.flatMap(directory => {
+  const files = [...getJapaneseArticleRepoPaths(rootDir)];
+  for (const directory of ARTICLE_DIRECTORIES.filter(value => value !== 'articles')) {
     const absoluteDirectory = path.join(rootDir, directory);
-    if (!fs.existsSync(absoluteDirectory)) return [];
-    return fs.readdirSync(absoluteDirectory, { withFileTypes: true })
-      .filter(entry => entry.isFile() && entry.name.endsWith('.html'))
-      .map(entry => path.join(directory, entry.name));
-  });
+    if (!fs.existsSync(absoluteDirectory)) continue;
+    files.push(...fs.readdirSync(absoluteDirectory, { withFileTypes: true })
+      .filter(entry => entry.isFile() && entry.name.endsWith('.html') && entry.name !== 'index.html')
+      .map(entry => path.join(directory, entry.name)));
+  }
+  return [...new Set(files.map(file => String(file).replaceAll('\\', '/')))].sort();
 }
 
 function normalizeArticleFiles(rootDir, { checkOnly = false } = {}) {

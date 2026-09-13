@@ -37,16 +37,20 @@ function relatedFor(article, html, catalog) {
   return selected.slice(0, 3).map(target => byPath.get(target));
 }
 
-function nextFor(role, related) {
+function nextFor(role, related, article) {
   if (role === 'calculator_bridge') return ['/', 'あなたの必要額を計算する'];
   if (role === 'retention') return ['/latest/', '次回の特典・確認日を調べる'];
-  if (role === 'game_decision') return ['/games/', 'ゲーム別の購入額を試算する'];
+  if (role === 'game_decision') {
+    const match = String(article?.path || '').match(/^games\/([^/]+)\/[^/]+\/index\.html$/);
+    if (match) return ['/games/' + match[1] + '/', '同じゲームの課金額を計算する'];
+    return ['/games/', 'ゲーム別の購入額を試算する'];
+  }
   if (role === 'hold' || !related.length) return ['/blog/', '公開中のガイドを探す'];
   return [related[0].href, related[0].label];
 }
 
 function renderSidebar(article, role, related) {
-  const [href, label] = nextFor(role, related);
+  const [href, label] = nextFor(role, related, article);
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事の次の行動と関連ガイド" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
   <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}">
     <h2 class="sidebar-widget-title">次にやること</h2>

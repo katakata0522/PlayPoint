@@ -50,7 +50,7 @@ test('the complete published article corpus keeps structural quality signals', (
   for (const file of articles) {
     const html = read(file);
     const canonical = html.match(/<link rel="canonical" href="([^"]+)"/);
-    assert.equal(canonical && canonical[1], `https://playpoint-sim.com/${file}`, `${file}: canonical mismatch`);
+    assert.equal(canonical && canonical[1], `https://playpoint-sim.com/${file.replace(/\/index\.html$/, "/")}`, `${file}: canonical mismatch`);
     assert.equal((html.match(/<h1\b/g) || []).length, 1, `${file}: expected exactly one h1`);
     assert.ok(/rel="author"/.test(html), `${file}: visible author link is missing`);
     assert.doesNotMatch(html, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, `${file}: placeholder copy remains`);
