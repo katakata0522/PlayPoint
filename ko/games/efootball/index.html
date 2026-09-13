@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="last-modified" content="2026-09-13" />
+  <meta name="author" content="かたかた" />
+  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+  <title>eFootball™ - Google Play Points Calculator | PlayPoint</title>
+  <meta name="description" content="eFootball 코인의 Google Play 결제액으로 Play Points를 계산하고 KONAMI의 eFootball 포인트와 Google Play Points를 명확히 구분합니다." />
+  <link rel="canonical" href="https://playpoint-sim.com/ko/games/efootball/" />
+  <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/efootball/" />
+  <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/efootball/" />
+  <link rel="alternate" hreflang="ko" href="https://playpoint-sim.com/ko/games/efootball/" />
+  <link rel="alternate" hreflang="zh-TW" href="https://playpoint-sim.com/tw/games/efootball/" />
+  <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/games/efootball/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Playポイント計算機" />
+  <meta property="og:title" content="eFootball™ - Google Play Points Calculator" />
+  <meta property="og:description" content="eFootball 코인의 Google Play 결제액으로 Play Points를 계산하고 KONAMI의 eFootball 포인트와 Google Play Points를 명확히 구분합니다." />
+  <meta property="og:url" content="https://playpoint-sim.com/ko/games/efootball/" />
+  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1f3377e639" />
+  <link rel="stylesheet" href="../../../games/games.css?v=09016b3c58" />
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"eFootball™ Google Play Points Calculator","url":"https://playpoint-sim.com/ko/games/efootball/","applicationCategory":"UtilityApplication","operatingSystem":"All","inLanguage":"ko","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"author":{"@type":"Person","name":"かたかた","url":"https://playpoint-sim.com/author/katakata.html"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://playpoint-sim.com/ko/"},{"@type":"ListItem","position":2,"name":"게임별 계산","item":"https://playpoint-sim.com/ko/games/"},{"@type":"ListItem","position":3,"name":"eFootball™","item":"https://playpoint-sim.com/ko/games/efootball/"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"이 게임 결제로 Google Play Points를 적립할 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"Google Play 결제 화면을 최종 기준으로 확인하세요. 적격 Google Play 구매로 처리되고 예상 적립 포인트가 표시되는 경우 그 금액을 계산에 사용할 수 있습니다. 웹 스토어 결제는 별도입니다."}}]}</script>
+</head>
+<body>
+  <header class="site-header"><div class="site-header-inner"><a class="site-logo" href="../../../"><span class="site-logo-icon">🎮</span><span class="site-logo-text">PlayPoint</span></a></div></header>
+  <nav class="global-nav" aria-label="게임별 계산"><div class="global-nav-inner"><a class="nav-item" href="../../../"><span>홈</span></a><a class="nav-item active" href="../"><span>게임별 계산</span></a><a class="nav-item" href="../../../ko/articles/"><span>가이드</span></a><a class="nav-item" href="../../../ko/author/katakata.html"><span>운영자</span></a></div></nav>
+  <div class="breadcrumbs-wrapper"><nav aria-label="Breadcrumb"><a href="../../../">홈</a> <span>&gt;</span> <a href="../">게임별 계산</a> <span>&gt;</span> <span>eFootball™</span></nav></div>
+  <div class="game-page-container"><main class="game-main-content">
+    <header class="game-header"><span class="game-badge">🔎 공식 정보를 기준으로 검증</span><h1 class="game-title">eFootball™</h1><p class="game-meta">최종 확인: 2026-09-13 ｜ Google Play Points</p></header>
+    <p>eFootball 코인의 Google Play 결제액으로 Play Points를 계산하고 KONAMI의 eFootball 포인트와 Google Play Points를 명확히 구분합니다.</p>
+    <p>eFootball 코인의 Google Play 구매 경로는 공식 안내로 확인됩니다. eFootball 포인트는 KONAMI 자체 포인트로 Google Play Points와 별개입니다.</p>
+    <section class="game-sim-card"><h2 class="game-sim-title">🧮 eFootball</h2>
+      <p class="preset-heading">▼ Google Play에 표시된 금액 입력</p>
+      <div class="preset-buttons"><button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Play에 표시된 금액 입력</button></div>
+      <form id="game-sim-form"><div class="input-grid">
+        <div class="input-field"><label for="sim-pack-select">결제 금액:</label><select id="sim-pack-select"><option value="custom" selected>Google Play에서 현재 가격 확인 후 입력</option></select></div>
+        <div class="input-field"><label for="sim-pack-count">구매 횟수:</label><input type="number" id="sim-pack-count" value="1" min="1" max="999" inputmode="numeric"></div>
+        <div class="input-field"><label for="sim-custom-amount">Google Play 결제 예정 총액 (원):</label><input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal"></div>
+        <div class="input-field"><label for="sim-multiplier">특별 적립률:</label><select id="sim-multiplier"><option value="1">기본 기준: 1,000원 1pt</option><option value="2">특별 적립률: 1,000원 2pt</option><option value="3">특별 적립률: 1,000원 3pt</option><option value="4">특별 적립률: 1,000원 4pt</option><option value="5">특별 적립률: 1,000원 5pt</option><option value="7">특별 적립률: 1,000원 7pt</option></select></div>
+        <div class="input-field"><label for="sim-status">현재 Play Points 등급:</label><select id="sim-status"><option value="1">브론즈 (1,000원 = 1pt)</option><option value="1.1">실버 (1,000원 = 1.1pt)</option><option value="1.3">골드 (1,000원 = 1.3pt)</option><option value="1.6">플래티넘 (1,000원 = 1.6pt)</option><option value="2">다이아몬드 (1,000원 = 2pt)</option></select></div>
+      </div></form>
+      <div class="game-result-container"><div class="result-main-grid">
+        <div class="result-stat-box"><span class="result-stat-label">총 결제 금액</span><strong id="res-total-amount" class="result-stat-value">-</strong></div>
+        <div class="result-stat-box"><span class="result-stat-label">예상 Play Points</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong></div>
+        <div class="result-stat-box"><span class="result-stat-label">교환 가치(Play에서 확인)</span><strong id="res-point-value-yen" class="result-stat-value">-</strong></div>
+        <div class="result-stat-box"><span class="result-stat-label">0pt 기준 참고 등급</span><strong id="res-reached-rank" class="result-stat-value">-</strong></div>
+      </div><div class="rank-progress-wrapper"><div class="rank-progress-header"><span>0pt 기준 참고 진행도</span><span id="res-next-progress">-</span></div><div class="rank-bar-bg"><div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div>
+      <div class="game-share-actions"><button type="button" id="btn-share-x" class="game-share-btn x-btn"><span>𝕏에 결과 공유</span></button><button type="button" id="btn-copy-link" class="game-share-btn copy-btn"><span>🔗 결과 링크 복사</span></button></div></div>
+    </section>
+    <div class="game-ad-slot"><div class="game-ad-label">광고</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455" data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins></div>
+    <section class="section"><h2>공식 확인 출처</h2><p>공식 웹 스토어와 퍼블리셔 자체 포인트는 Google Play와 별도 결제·보상 체계입니다. Google Play Points와 합산하지 않습니다. 현재 가격은 실제 결제 화면을 기준으로 합니다.</p><ul><li><a href="https://www.konami.com/efootball/ja/topic/news/5074" target="_blank" rel="noopener noreferrer">공식 출처 1</a></li><li><a href="https://www.konami.com/efootball/ja/page/overview" target="_blank" rel="noopener noreferrer">공식 출처 2</a></li><li><a href="https://www.konami.com/wepes/efootball_point/ja/" target="_blank" rel="noopener noreferrer">공식 출처 3</a></li><li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja" target="_blank" rel="noopener noreferrer">공식 출처 4</a></li></ul></section>
+    
+    <section class="section"><h2>FAQ</h2><details><summary>이 게임 결제로 Google Play Points를 적립할 수 있나요?</summary><p>Google Play 결제 화면을 최종 기준으로 확인하세요. 적격 Google Play 구매로 처리되고 예상 적립 포인트가 표시되는 경우 그 금액을 계산에 사용할 수 있습니다. 웹 스토어 결제는 별도입니다.</p></details></section>
+  </main></div>
+  <footer class="site-footer"><p>© 2026 PlayPoint / Independent unofficial calculator.</p></footer>
+  <script src="../../../js/analytics-core.js?v=96fa25c428"></script>
+  <script src="../../../js/third-party.js?v=742c5cb45a"></script>
+  <script src="../../../games/game-sim.js?v=7d3ab36020"></script>
+</body>
+</html>
