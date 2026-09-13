@@ -14,11 +14,16 @@ test('generated game page predicate follows every canonical game locale director
   }
 });
 
-test('game page predicate rejects unsupported or nested paths', () => {
+test('game page predicate accepts nested editorial detail pages inside a canonical game locale', () => {
+  assert.equal(isGeneratedGamePagePath('games/example/details/index.html'), true);
+  assert.equal(isGeneratedGamePagePath('en/games/example/details/index.html'), true);
+});
+
+test('game page predicate rejects unsupported or malformed paths', () => {
   for (const file of [
     'ja/games/index.html',
     'fr/games/index.html',
-    'games/example/details/index.html',
+    'games/example/details.html',
     'games/example.html',
     'articles/games/index.html'
   ]) {

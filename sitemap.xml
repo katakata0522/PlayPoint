@@ -539,7 +539,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/genshin/</loc>
-    <lastmod>2026-08-25</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/umamusume/</loc>
@@ -547,11 +547,11 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/fgo/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/monst/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/gakumas/</loc>
@@ -575,7 +575,7 @@
   </url>
   <url>
     <loc>https://playpoint-sim.com/games/bluearchive/</loc>
-    <lastmod>2026-08-18</lastmod>
+    <lastmod>2026-09-13</lastmod>
   </url>
   <url>
     <loc>https://playpoint-sim.com/en/games/</loc>
@@ -936,5 +936,17 @@
   <url>
     <loc>https://playpoint-sim.com/tw/author/katakata.html</loc>
     <lastmod>2026-08-28</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/fgo/pity-cost/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/genshin/welkin-value/</loc>
+    <lastmod>2026-09-13</lastmod>
+  </url>
+  <url>
+    <loc>https://playpoint-sim.com/games/monst/google-play-vs-webshop/</loc>
+    <lastmod>2026-09-13</lastmod>
   </url>
 </urlset>

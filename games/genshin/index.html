@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-08-25" />
+  <meta name="last-modified" content="2026-09-13" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>原神 (Genshin Impact) - Playポイント計算機</title>
@@ -92,10 +92,10 @@
     },
     {
       "@type": "Question",
-      "name": "原神で確定天井（180連）まで課金すると何ポイント貯まりますか？",
+      "name": "原神の90連・180連は何円ですか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。"
+        "text": "90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石・空月・初回2倍・配布分で実際の課金額が変わるため固定の円額は断定しません。購入予定額を計算機へ入力し、Google Playの獲得予定ポイント表示を最終確認してください。"
       }
     }
   ]
@@ -147,7 +147,7 @@
           <header class="game-header">
               <span class="game-badge">✨ 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">原神 (Genshin Impact)</h1>
-              <p class="game-meta">Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値） ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">原神価格・空月・Play Points確認：2026-09-13 ｜ Google Play Points (100円=1pt)</p>
           </header>
 
           <p>原神の創世結晶購入、空月の祝福、天空紀行、180連確定天井・完凸課金で貯まるGoogle Play Pointsをパッと計算！パック別の還元早見表やお得な使い道も比較できます。ガチャ前の課金計画にぜひ役立ててみてくださいね。</p>
@@ -158,11 +158,9 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">空月の祝福 (610円)</button>
-              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (約3,000円)</button>
-              <button type="button" class="preset-btn " data-amount="27000" data-mult="1" aria-pressed="false">仮天井 90連 (約27,000円)</button>
-              <button type="button" class="preset-btn " data-amount="54000" data-mult="1" aria-pressed="false">確定天井 180連 (約54,000円)</button>
-              <button type="button" class="preset-btn " data-amount="250000" data-mult="1" aria-pressed="false">完凸目安 (約250,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">空月の祝福（610円）</button>
+                  <button type="button" class="preset-btn" data-amount="1840" data-mult="1" aria-pressed="false">創世結晶980+110個（1,840円）</button>
+                  <button type="button" class="preset-btn" data-amount="12000" data-mult="1" aria-pressed="false">創世結晶6480+1600個（12,000円）</button>
               </div>
 
               <form id="game-sim-form">
@@ -174,7 +172,7 @@
                   <option value="1220">天空紀行 (1,220円)</option>
                   <option value="120">創世結晶 60個 (120円)</option>
                   <option value="610">創世結晶 300+30個 (610円)</option>
-                  <option value="1220">創世結晶 980+110個 (1,220円)</option>
+                  <option value="1840">創世結晶 980+110個 (1,840円)</option>
                   <option value="3680">創世結晶 1980+260個 (3,680円)</option>
                   <option value="6100">創世結晶 3280+600個 (6,100円)</option>
                   <option value="12000">創世結晶 6480+1600個 (12,000円)</option>
@@ -288,7 +286,7 @@
 <tr><td>天空紀行 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>
 <tr><td>創世結晶 60個 (120円)</td><td>120 円</td><td>約 1 pt</td><td>約 6 pt</td></tr>
 <tr><td>創世結晶 300+30個 (610円)</td><td>610 円</td><td>約 6 pt</td><td>約 31 pt</td></tr>
-<tr><td>創世結晶 980+110個 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>
+<tr><td>創世結晶 980+110個 (1,840円)</td><td>1,840 円</td><td>約 18 pt</td><td>約 92 pt</td></tr>
 <tr><td>創世結晶 1980+260個 (3,680円)</td><td>3,680 円</td><td>約 37 pt</td><td>約 184 pt</td></tr>
 <tr><td>創世結晶 3280+600個 (6,100円)</td><td>6,100 円</td><td>約 61 pt</td><td>約 305 pt</td></tr>
 <tr><td>創世結晶 6480+1600個 (12,000円)</td><td>12,000 円</td><td>約 120 pt</td><td>約 600 pt</td></tr>
@@ -338,9 +336,11 @@
               <h2>よくある質問（FAQ）</h2>
               <h3>原神の課金でGoogle Play Pointsは貯まりますか？</h3>
 <p>はい。Android端末またはGoogle Play Games（PC版）経由で課金した場合、通常100円につき1ポイント以上のPlay Pointsが貯まります。</p>
-<h3>原神で確定天井（180連）まで課金すると何ポイント貯まりますか？</h3>
-<p>180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。</p>
+<h3>原神の90連・180連は何円ですか？</h3>
+<p>90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石・空月・初回2倍・配布分で実際の課金額が変わるため固定の円額は断定しません。購入予定額を計算機へ入力し、Google Playの獲得予定ポイント表示を最終確認してください。</p>
           </section>
+
+          <section class="section" data-game-seo-guide="genshin"><h2>空月と通常チャージ、どちらが自分向き？</h2><p>空月の祝福は610円で、30日すべて受け取れば創世結晶300個+原石2,700個、最大3,000原石相当です。一方で即時チャージとは受取速度が違います。旧データで1,220円になっていた創世結晶980個帯は1,840円へ修正しました。</p><p><a href="./welkin-value/">空月610円のお得度とPlay Pointsを詳しく比較する ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>

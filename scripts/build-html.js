@@ -47,6 +47,8 @@ const { normalizeArticleFiles } = require('./article-seo-normalize.cjs');
 const { run: normalizeArticleContentNavigation } = require('./article-content-navigation-normalize.cjs');
 const { syncArticleDateContract } = require('./article-date-contract.cjs');
 const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
+const { syncGameSeo } = require('./game-seo-sync.cjs');
+const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -87,6 +89,10 @@ const intlShellSummary = syncIntlNavigationSidebarV1(rootDir);
 console.log(`[build-html] synchronized international navigation/sidebar v1: ${intlShellSummary.changed}/${intlShellSummary.checked} updated`);
 
 require('./generate-game-simulators.cjs');
+const gameSeoSummary = syncGameSeo(rootDir);
+console.log(`[build-html] synchronized verified game SEO: ${gameSeoSummary.changedFiles.length}/${gameSeoSummary.checked} updated`);
+const gameSeoSafetySummary = syncGameSeoSafety(rootDir);
+console.log(`[build-html] synchronized game SEO safety: ${gameSeoSafetySummary.changedFiles.length}/${gameSeoSafetySummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
@@ -95,7 +101,7 @@ console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.chan
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
 const authorHreflangSummary = syncJapaneseAuthorHreflang(rootDir, { checkOnly: false });
-console.log(`[build-html] synchronized Japanese author hreflang: ${authorHreflangSummary.changed} updated`);
+console.log(`[build-html] synchronized Japanese author hreflang: ${authorHreflangSummary.changed}/${authorHreflangSummary.checked} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
 
 // 地域別の文言補正や実行時補助スクリプトを先に確定し、
