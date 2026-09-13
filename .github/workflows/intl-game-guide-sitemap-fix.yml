@@ -1,0 +1,99 @@
+name: Intl game guide sitemap sync
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.head_ref == 'feat/intl-game-guides-20260913' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Extend sitemap SSOT for localized game guides
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/sitemap-sync.cjs')
+          text = p.read_text(encoding='utf-8')
+          import_anchor = "const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');"
+          import_line = "const { ALL_GUIDES, MODIFIED_AT: INTL_GAME_GUIDE_MODIFIED_AT, hrefFor: intlGameGuideHrefFor } = require('./intl-game-guide-expansion.cjs');"
+          if import_line not in text:
+              if import_anchor not in text:
+                  raise SystemExit('sitemap import anchor not found')
+              text = text.replace(import_anchor, import_anchor + '\n' + import_line, 1)
+
+          function_block = """
+function getLocalizedGameGuideSitemapEntries() {
+  return ['en', 'ko', 'tw'].flatMap(localeKey => ALL_GUIDES.map(guide => ({
+    url: `${SITE_ORIGIN}${intlGameGuideHrefFor(localeKey, guide.slug)}`,
+    lastmod: INTL_GAME_GUIDE_MODIFIED_AT
+  })));
+}
+
+"""
+          sync_anchor = 'function syncSitemap(rootDir) {'
+          if 'function getLocalizedGameGuideSitemapEntries() {' not in text:
+              if sync_anchor not in text:
+                  raise SystemExit('sitemap sync anchor not found')
+              text = text.replace(sync_anchor, function_block + sync_anchor, 1)
+
+          entries_anchor = '    ...getIntlSitemapEntries(),\n'
+          localized_entry = '    ...getLocalizedGameGuideSitemapEntries(),\n'
+          if localized_entry not in text:
+              if entries_anchor not in text:
+                  raise SystemExit('sitemap entry anchor not found')
+              text = text.replace(entries_anchor, entries_anchor + localized_entry, 1)
+
+          export_anchor = '  getGameSitemapEntries,\n'
+          export_line = '  getLocalizedGameGuideSitemapEntries,\n'
+          if export_line not in text:
+              if export_anchor not in text:
+                  raise SystemExit('sitemap export anchor not found')
+              text = text.replace(export_anchor, export_anchor + export_line, 1)
+
+          p.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Normalize generated files
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify all 51 localized game guides are in sitemap
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const { ALL_GUIDES, hrefFor } = require('./scripts/intl-game-guide-expansion.cjs');
+          const sitemap = fs.readFileSync('sitemap.xml', 'utf8');
+          let count = 0;
+          for (const locale of ['en', 'ko', 'tw']) {
+            for (const guide of ALL_GUIDES) {
+              const url = `https://playpoint-sim.com${hrefFor(locale, guide.slug)}`;
+              if (!sitemap.includes(`<loc>${url}</loc>`)) throw new Error(`missing sitemap entry: ${url}`);
+              count++;
+            }
+          }
+          if (count !== 51) throw new Error(`expected 51 sitemap entries, got ${count}`);
+          console.log(`[intl-game-guide-sitemap] verified ${count} entries`);
+          NODE
+
+      - name: Commit sitemap source and generated output
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'No sitemap drift to commit.'
+            exit 0
+          fi
+          git commit -m 'fix: 多言語ゲーム特集をsitemapへ登録'
+          git push origin HEAD:${{ github.head_ref }}
