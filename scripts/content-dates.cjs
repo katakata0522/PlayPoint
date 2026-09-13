@@ -7,6 +7,7 @@ const {
 } = require('./game-page-targets.cjs');
 const { GAME_LOCALE_DIRECTORIES } = require('./locale-ids.cjs');
 const { getLatestHubVerificationDate } = require('./latest-hub-audit.cjs');
+const { VERIFIED_AT: GAME_SEO_VERIFIED_AT } = require('./game-seo-data.cjs');
 
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
@@ -39,8 +40,14 @@ function getGeneratedIntlPageContentDate(pageKey, localeKey) {
 const GENERATED_GAME_PAGE_CONTENT_DATE = getGameContentDate(rootDir);
 const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/arknights/index.html': '2026-08-25',
-  'games/genshin/index.html': '2026-08-25',
+  'games/bluearchive/index.html': GAME_SEO_VERIFIED_AT,
+  'games/fgo/index.html': GAME_SEO_VERIFIED_AT,
+  'games/fgo/pity-cost/index.html': GAME_SEO_VERIFIED_AT,
+  'games/genshin/index.html': GAME_SEO_VERIFIED_AT,
+  'games/genshin/welkin-value/index.html': GAME_SEO_VERIFIED_AT,
   'games/honkai3rd/index.html': '2026-08-25',
+  'games/monst/index.html': GAME_SEO_VERIFIED_AT,
+  'games/monst/google-play-vs-webshop/index.html': GAME_SEO_VERIFIED_AT,
   'games/nikke/index.html': '2026-08-25',
   'games/pad/index.html': '2026-08-25',
   'games/phantomparade/index.html': '2026-08-25',
@@ -56,7 +63,7 @@ function isGeneratedGamePagePath(file) {
     if (!normalized.startsWith(gamesPrefix)) return false;
 
     const relativeGamePath = normalized.slice(gamesPrefix.length);
-    return relativeGamePath === 'index.html' || /^[^/]+\/index\.html$/.test(relativeGamePath);
+    return relativeGamePath === 'index.html' || /^(?:[^/]+\/)+index\.html$/.test(relativeGamePath);
   });
 }
 
