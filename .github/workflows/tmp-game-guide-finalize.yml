@@ -1,0 +1,70 @@
+name: Finalize game guide article hub
+
+on:
+  push:
+    branches:
+      - feat/game-guides-article-hub-20260913
+    paths:
+      - .github/workflows/tmp-game-guide-finalize.yml
+      - .github/scripts/tmp-game-guide-final-fix.cjs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: game-guide-article-hub-integration
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Apply targeted fixes and regenerate canonical output
+        run: |
+          set -euo pipefail
+          node .github/scripts/tmp-game-guide-final-fix.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-finalize.log"
+          node scripts/prepare-pr.cjs 2>&1 | tee -a "$RUNNER_TEMP/playpoint-finalize.log"
+          git diff --binary > "$RUNNER_TEMP/first.diff"
+          node scripts/prepare-pr.cjs 2>&1 | tee -a "$RUNNER_TEMP/playpoint-finalize.log"
+          git diff --binary > "$RUNNER_TEMP/second.diff"
+          cmp "$RUNNER_TEMP/first.diff" "$RUNNER_TEMP/second.diff"
+
+      - name: Remove one-shot tooling and commit candidate
+        run: |
+          set -euo pipefail
+          rm .github/scripts/tmp-game-guide-final-fix.cjs .github/workflows/tmp-game-guide-finalize.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "修正: ゲーム記事の構造化画像と役割判定を完成"
+          git rev-parse HEAD | tee -a "$RUNNER_TEMP/playpoint-finalize.log"
+
+      - name: Verify committed candidate without suppressing failures
+        run: |
+          set -euo pipefail
+          node .github/scripts/preflight.cjs 2>&1 | tee -a "$RUNNER_TEMP/playpoint-finalize.log"
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
+
+      - name: Publish verified candidate
+        run: git push origin HEAD:feat/game-guides-article-hub-20260913
+
+      - name: Preserve exact verification evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: game-guide-finalize-${{ github.run_id }}
+          path: ${{ runner.temp }}/playpoint-finalize.log
+          if-no-files-found: warn
+          retention-days: 7
