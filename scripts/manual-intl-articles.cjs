@@ -107,7 +107,7 @@ function readManualIntlArticleDates(rootDir, relativePath) {
     throw new Error(`${relativePath}: datePublished (${publishedAt}) is later than dateModified (${modifiedAt})`);
   }
 
-  return { publishedAt, modifiedAt };
+  return { publishedAt, modifiedAt, manual: true };
 }
 
 module.exports = {
