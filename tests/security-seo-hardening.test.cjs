@@ -98,7 +98,7 @@ test('live hardening scripts are bounded and only target the canonical productio
     assert.match(source, /MAX_ATTEMPTS = 2/);
     assert.doesNotMatch(source, /http:\/\/playpoint-sim\.com/);
   }
-  assert.match(security, /\/'\.env'/);
+  assert.match(security, /['"]\/\.env['"]/);
   assert.match(security, /\/\.git\/HEAD/);
   assert.match(sitemap, /duplicate submitted URL/);
   assert.match(sitemap, /robots\.txt/);
