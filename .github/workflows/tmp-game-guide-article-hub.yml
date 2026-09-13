@@ -1,0 +1,56 @@
+name: Temp game guide article hub integration
+
+on:
+  push:
+    branches:
+      - feat/game-guides-article-hub-20260913
+    paths:
+      - .github/workflows/tmp-game-guide-article-hub.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/game-guides-article-hub-20260913
+          fetch-depth: 0
+
+      - name: Apply article-site source integration
+        run: node .github/scripts/tmp-game-guide-article-source-patch.cjs
+
+      - name: Generate canonical outputs twice and verify reproducibility
+        run: |
+          node scripts/prepare-pr.cjs
+          git diff --binary > /tmp/article-hub-first.diff
+          node scripts/prepare-pr.cjs
+          git diff --binary > /tmp/article-hub-second.diff
+          cmp /tmp/article-hub-first.diff /tmp/article-hub-second.diff
+
+      - name: Run focused article-hub regression
+        run: |
+          node --test tests/game-guide-article-hub.test.cjs
+          node --test tests/blog-listing-ux.test.cjs
+          node scripts/article-design-system-audit.cjs
+          node scripts/article-role-next-action-audit.cjs
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Remove one-shot integration helpers and commit
+        run: |
+          rm -f .github/workflows/tmp-game-guide-article-hub.yml
+          rm -f .github/scripts/tmp-game-guide-article-source-patch.cjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 1
+          fi
+          git commit -m "feat: integrate game SEO guides into article hub"
+          git push origin HEAD:feat/game-guides-article-hub-20260913
