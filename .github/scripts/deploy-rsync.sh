@@ -103,6 +103,17 @@ deploy_once() {
     --exclude '/.github/***' \
     --exclude '/.gitignore' \
     --exclude '/.gitattributes' \
+    --exclude '/.env' \
+    --exclude '/.env.*' \
+    --exclude '/*.pem' \
+    --exclude '/*.key' \
+    --exclude '/*.log' \
+    --exclude '/*.sql' \
+    --exclude '/*.bak' \
+    --exclude '/package.json' \
+    --exclude '/package-lock.json' \
+    --exclude '/pnpm-lock.yaml' \
+    --exclude '/yarn.lock' \
     --exclude '/README.md' \
     --exclude '/AGENTS.md' \
     --exclude '/tests/***' \
@@ -146,6 +157,10 @@ stale_paths=(
   "tests"
   "docs"
   "scripts"
+  "package.json"
+  "package-lock.json"
+  "pnpm-lock.yaml"
+  "yarn.lock"
   "みんな用URL.txt"
   "CNAME"
   "tools"
@@ -172,11 +187,22 @@ for relative_path in "${stale_paths[@]}"; do
   fi
 done
 
+# 将来誤って追跡された場合でも、秘密情報に使われやすいルートファイルを公開しない。
+sensitive_matches="$(find "$root" -maxdepth 1 -type f \( \
+  -name '.env' -o -name '.env.*' -o -name '*.pem' -o -name '*.key' -o \
+  -name '*.log' -o -name '*.sql' -o -name '*.bak' \
+\) -print 2>/dev/null || true)"
+if [ -n "$sensitive_matches" ]; then
+  echo "Sensitive root files remain on the public server:" >&2
+  printf '%s\n' "$sensitive_matches" >&2
+  remaining=1
+fi
+
 if [ "$remaining" -ne 0 ]; then
   exit 1
 fi
 
-echo "Legacy and non-public server artifacts are absent."
+echo "Sensitive or non-public server artifacts are absent."
 REMOTE
 }
 

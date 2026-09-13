@@ -146,6 +146,14 @@ jobs:
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/seo-health-check.cjs
 
+      - name: Verify production sitemap registry
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        run: node .github/scripts/sitemap-health-check.cjs
+
+      - name: Verify production security headers
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        run: node .github/scripts/security-health-check.cjs
+
       - name: Publish verified deployment status
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:

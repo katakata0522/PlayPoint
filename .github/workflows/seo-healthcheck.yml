@@ -27,5 +27,11 @@ jobs:
           LATEST_HUB_ENFORCE_NEXT_CHECK: '1'
         run: node .github/scripts/seo-health-check.cjs
 
+      - name: Check all submitted sitemaps
+        run: node .github/scripts/sitemap-health-check.cjs
+
+      - name: Check production security headers
+        run: node .github/scripts/security-health-check.cjs
+
       - name: Check production internal links
         run: node .github/scripts/live-internal-link-check.cjs

@@ -84,7 +84,7 @@ test('移設済み・非公開・統合済みの旧パスをXserver上の実体�
   }
 
   assert.match(script, /\[ -e "\$target" \] \|\| \[ -L "\$target" \]/);
-  assert.match(script, /Legacy and non-public server artifacts are absent\./);
+  assert.match(script, /Sensitive or non-public server artifacts are absent\./);
 });
 
 test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、後続処理は短めに再試行する', () => {
