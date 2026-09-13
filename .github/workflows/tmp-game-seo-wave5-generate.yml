@@ -1,5 +1,6 @@
 name: Temporary Game SEO Wave 5 Generate
 
+# retry 2: validate safe literal regional rates and semantic Wave 5 contracts
 on:
   push:
     branches:
