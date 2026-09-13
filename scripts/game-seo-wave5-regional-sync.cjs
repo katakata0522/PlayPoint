@@ -9,6 +9,7 @@ const REGION = Object.freeze({
   en: {
     amountLabel: 'Planned Google Play spend ($ USD)',
     base: '$1',
+    currencyCode: 'USD',
     rates: [1, 1.1, 1.2, 1.4, 1.6],
     tiers: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond'],
     baseCopy: 'Standard',
@@ -17,6 +18,7 @@ const REGION = Object.freeze({
   ko: {
     amountLabel: 'Google Play 결제 예정 총액 (원)',
     base: '1,000원',
+    currencyCode: 'KRW',
     rates: [1, 1.1, 1.3, 1.6, 2],
     tiers: ['브론즈', '실버', '골드', '플래티넘', '다이아몬드'],
     baseCopy: '기본 기준',
@@ -25,6 +27,7 @@ const REGION = Object.freeze({
   tw: {
     amountLabel: '預計 Google Play 課金總額（新台幣）',
     base: 'NT$30',
+    currencyCode: 'TWD',
     rates: [1, 1.25, 1.5, 1.75, 2],
     tiers: ['銅級', '銀級', '黃金級', '白金級', '鑽石級'],
     baseCopy: '基本參考',
@@ -35,7 +38,9 @@ const REGION = Object.freeze({
 function replaceSelect(html, id, options, file) {
   const pattern = new RegExp(`(<select id="${id}">)[\\s\\S]*?(<\\/select>)`);
   if (!pattern.test(html)) throw new Error(`[game-seo-wave5-regional] ${file}: #${id} not found`);
-  return html.replace(pattern, `$1${options}$2`);
+  // A replacement function is required here. Locale copy such as "$1" must stay
+  // literal text and must never be interpreted as a RegExp capture reference.
+  return html.replace(pattern, (_match, open, close) => `${open}${options}${close}`);
 }
 
 function rateOptions(cfg) {
@@ -62,9 +67,13 @@ function syncGameSeoWave5RegionalRates(rootDir) {
       if (!fs.existsSync(full)) throw new Error(`[game-seo-wave5-regional] missing ${file}`);
       let html = fs.readFileSync(full, 'utf8');
       const before = html;
-      html = html.replace(/(<label for="sim-custom-amount">)[^<]*(<\/label>)/, `$1${cfg.amountLabel}:$2`);
+      html = html.replace(
+        /(<label for="sim-custom-amount">)[^<]*(<\/label>)/,
+        (_match, open, close) => `${open}${cfg.amountLabel}:${close}`
+      );
       html = replaceSelect(html, 'sim-multiplier', rateOptions(cfg), file);
       html = replaceSelect(html, 'sim-status', tierOptions(cfg), file);
+      html = html.replace('"priceCurrency":"JPY"', `"priceCurrency":"${cfg.currencyCode}"`);
       if (html !== before) {
         fs.writeFileSync(full, html, 'utf8');
         changedFiles.push(file);
