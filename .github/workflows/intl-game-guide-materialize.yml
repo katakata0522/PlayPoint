@@ -36,6 +36,22 @@ jobs:
               raise SystemExit('localized guide catalog cleanup marker not found')
           PY
 
+      - name: Register official verification dates
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const { ALL_GUIDES, MODIFIED_AT } = require('./scripts/intl-game-guide-expansion.cjs');
+          const file = 'scripts/article-official-verification-dates.json';
+          const registry = JSON.parse(fs.readFileSync(file, 'utf8'));
+          for (const locale of ['en', 'ko', 'tw']) {
+            for (const guide of ALL_GUIDES) {
+              registry[`${locale}/articles/${guide.slug}.html`] = MODIFIED_AT;
+            }
+          }
+          const sorted = Object.fromEntries(Object.entries(registry).sort(([a], [b]) => a.localeCompare(b)));
+          fs.writeFileSync(file, `${JSON.stringify(sorted, null, 2)}\n`);
+          NODE
+
       - name: Verify localized source contract
         run: node --test tests/intl-game-guide-expansion.test.cjs
 
