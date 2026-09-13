@@ -1,0 +1,75 @@
+/* Game deep guides live in /games/ for SEO continuity but use the article-site shell. */
+
+.game-guide-next-action {
+  margin-top: 1.75rem;
+}
+
+.game-guide-visible-faq .faq-item + .faq-item {
+  margin-top: 0.85rem;
+}
+
+.pack-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 1.15rem 0;
+  border: 1px solid #dbe3ec;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pack-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.pack-table th,
+.pack-table td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid #e5eaf0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.pack-table th {
+  background: #f5f8fb;
+  font-weight: 800;
+  color: #26384a;
+  white-space: nowrap;
+}
+
+.pack-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.game-guide-article-note {
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #64748b;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+@media (max-width: 760px) {
+  .pack-table-wrap {
+    border-radius: 8px;
+  }
+
+  .pack-table {
+    min-width: 480px;
+    font-size: 0.86rem;
+  }
+
+  .pack-table th,
+  .pack-table td {
+    padding: 0.62rem 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pack-table-wrap,
+  .game-guide-next-action {
+    scroll-behavior: auto;
+  }
+}
