@@ -12,6 +12,7 @@ const { getGeneratedGamePageContentDate } = require('../scripts/content-dates.cj
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const exists = file => fs.existsSync(path.join(root, file));
+const japaneseLeakPattern = /[\u3040-\u30fa\u30fc-\u30ff\u3001\u3002\u300c\u300d\u300e\u300f\u3010\u3011\uff08\uff09]/u;
 
 function localePrefix(locale) {
   return locale === 'ja' ? '' : `${locale}/`;
@@ -77,7 +78,7 @@ test('all three Wave 5 parent calculators exist in every canonical game locale',
   }
 });
 
-test('Wave 5 international calculators use each region Play Points rate and currency metadata', () => {
+test('Wave 5 international calculators use each region Play Points rate, currency metadata and local home', () => {
   for (const [locale, cfg] of Object.entries(REGION)) {
     for (const slug of GAME_ORDER) {
       const html = read(parentFile(locale, slug));
@@ -89,6 +90,9 @@ test('Wave 5 international calculators use each region Play Points rate and curr
       assert.doesNotMatch(html, /100円あたり|100円=|100円 =/, `${locale}/${slug} must not inherit Japan earn-rate wording`);
       assert.doesNotMatch(selectInner(html, 'sim-multiplier'), /<select/, `${locale}/${slug} earn-rate options must remain valid HTML text`);
       assert.doesNotMatch(selectInner(html, 'sim-status'), /<select/, `${locale}/${slug} tier options must remain valid HTML text`);
+      assert.match(html, /class="site-logo" href="\.\.\/\.\.\/"/);
+      assert.doesNotMatch(html, /class="site-logo" href="\.\.\/\.\.\/\.\.\/"/);
+      assert.match(html, /<div class="breadcrumbs-wrapper"><nav[^>]*><a href="\.\.\/\.\.\/"/);
     }
   }
   const en = read(parentFile('en', 'pokemon-go'));
@@ -97,6 +101,16 @@ test('Wave 5 international calculators use each region Play Points rate and curr
   assert.match(ko, /1,000원 = 1pt/);
   const tw = read(parentFile('tw', 'pokemon-go'));
   assert.match(tw, /NT\$30 = 1pt/);
+});
+
+test('Wave 5 English parent pages contain no accidental Japanese-script metadata or UI', () => {
+  for (const slug of GAME_ORDER) {
+    const html = read(parentFile('en', slug));
+    const leakingLines = html.split(/\r?\n/).filter(line => japaneseLeakPattern.test(line));
+    assert.deepEqual(leakingLines, [], `${slug} English page leaked Japanese text:\n${leakingLines.join('\n')}`);
+    assert.match(html, /<meta name="author" content="Katakata"/);
+    assert.match(html, /<meta property="og:site_name" content="PlayPoint Calculator"/);
+  }
 });
 
 test('Prospi guide separates Google Play from KONAMI Games Store and its own rewards', () => {
