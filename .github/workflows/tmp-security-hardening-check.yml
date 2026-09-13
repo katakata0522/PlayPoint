@@ -1,0 +1,38 @@
+name: Temporary SEO Security Hardening Check
+
+on:
+  push:
+    branches:
+      - chore/seo-security-hardening-20260913
+    paths:
+      - .github/workflows/tmp-security-hardening-check.yml
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: chore/seo-security-hardening-20260913
+          fetch-depth: 2
+
+      - name: Run focused hardening checks
+        run: |
+          set -euo pipefail
+          node .github/scripts/security-seo-contract.cjs
+          node --test tests/security-seo-hardening.test.cjs tests/playpoint-product-guards.test.cjs tests/ci-guardrails.test.cjs
+          node .github/scripts/verify-js-syntax.cjs
+
+      - name: Remove temporary workflow
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/tmp-security-hardening-check.yml
+          git commit -m "SEO/セキュリティ強化の集中検証を完了"
+          git push origin HEAD:chore/seo-security-hardening-20260913
