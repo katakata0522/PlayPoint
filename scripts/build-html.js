@@ -78,6 +78,10 @@ const intlGameGuidePublishSummary = publishLocalizedGameGuides(rootDir);
 console.log(`[build-html] published localized game guides: ${intlGameGuidePublishSummary.changed}/${intlGameGuidePublishSummary.checked} generated, ${intlGameGuidePublishSummary.normalized} normalized`);
 syncIntlManualContent(rootDir);
 applyIntlContentExpansion(rootDir);
+// The international expansion writes locale variants that downstream layout and
+// navigation passes need to see with their reciprocal JA/EN/KO/TW identity.
+const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
+console.log(`[build-html] synchronized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
 const intlArticleLayoutSummary = synchronizeIntlArticleLayouts(rootDir);
 console.log(`[build-html] synchronized international article layouts: ${intlArticleLayoutSummary.changed}/${intlArticleLayoutSummary.checked} updated`);
 const intlHubDiscoverySummary = syncIntlHubDiscovery(rootDir);
@@ -114,6 +118,10 @@ syncAnalyticsRuntimeScripts(rootDir);
 const intlLocalizationSummary = normalizeIntlGeneratedCopy(rootDir);
 console.log(`[build-html] normalized international copy/semantics: ${intlLocalizationSummary.changedFiles.length} updated`);
 syncJapaneseNavigation(rootDir);
+// This pass produces the real content-hash updates. A second full-tree pass at
+// the end of the build was empirically a no-op, so keep the proven position and
+// avoid rescanning every public HTML file twice.
+syncPublicAssetVersions(rootDir);
 
 syncSitemap(rootDir);
 syncRegionSitemap(rootDir);
@@ -147,13 +155,10 @@ console.log(`[build-html] synchronized article intent/navigation: ${articleNavig
 const { syncArticleDiscovery } = require('./article-discovery-sync.cjs');
 console.log('[build-html] synchronized article search and reading tools:', syncArticleDiscovery(rootDir));
 
-// Finalize cross-language identity only after every article/game generator has
-// finished, so one canonical pass owns the published hreflang state.
-const intlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
-console.log(`[build-html] finalized international/Japanese hreflang: ${intlJaHreflangSummary.changed}/${intlJaHreflangSummary.checked} updated`);
+// Game SEO and later article finalizers run after the first hreflang pass.
+// Re-apply the reciprocal set so the committed output cannot retain stale links.
+const finalIntlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
+console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntlJaHreflangSummary.changed}/${finalIntlJaHreflangSummary.checked} updated`);
 
-// Version local CSS/JS only after all HTML writers have finished. This avoids
-// rescanning the whole public tree while still guaranteeing final asset hashes.
-syncPublicAssetVersions(rootDir);
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);
