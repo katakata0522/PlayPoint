@@ -52,6 +52,8 @@ const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
 const { syncGameSeoExpanded } = require('./game-seo-expanded-sync.cjs');
 const { syncGameSeoWave3 } = require('./game-seo-wave3-sync.cjs');
 const { syncGameSeoWave4 } = require('./game-seo-wave4-sync.cjs');
+const { syncGameSeoWave5 } = require('./game-seo-wave5-sync.cjs');
+const { syncGameSeoWave5RegionalRates } = require('./game-seo-wave5-regional-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -102,6 +104,10 @@ const gameSeoWave3Summary = syncGameSeoWave3(rootDir);
 console.log(`[build-html] synchronized game SEO wave 3: ${gameSeoWave3Summary.changedFiles.length}/${gameSeoWave3Summary.checked} updated`);
 const gameSeoWave4Summary = syncGameSeoWave4(rootDir);
 console.log(`[build-html] synchronized game SEO wave 4: ${gameSeoWave4Summary.changedFiles.length}/${gameSeoWave4Summary.checked} updated`);
+const gameSeoWave5Summary = syncGameSeoWave5(rootDir);
+console.log(`[build-html] synchronized game SEO wave 5: ${gameSeoWave5Summary.changedFiles.length}/${gameSeoWave5Summary.checked} updated`);
+const gameSeoWave5RegionalSummary = syncGameSeoWave5RegionalRates(rootDir);
+console.log(`[build-html] synchronized game SEO wave 5 regional rates: ${gameSeoWave5RegionalSummary.changedFiles.length}/${gameSeoWave5RegionalSummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
