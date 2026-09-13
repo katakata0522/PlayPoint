@@ -1,15 +1,15 @@
 name: Intl game guide finalizer
 
 on:
-  push:
-    branches:
-      - feat/intl-game-guides-20260913
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
 
 jobs:
   finalize:
+    if: github.head_ref == 'feat/intl-game-guides-20260913' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
