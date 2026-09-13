@@ -146,3 +146,46 @@ test('ブログの実際の入力境界は既存記事・ゲーム記事だけ�
     }
   }
 });
+
+
+test('公開URL・正規URL・リポジトリパスを同じ登録ゲーム記事として扱う', () => {
+  const { articleForPath } = require('../scripts/game-guide-article-catalog.cjs');
+  for (const article of GAME_GUIDE_ARTICLES) {
+    const file = repoPath(article);
+    for (const candidate of [file, article.file, '/' + file, '/' + file.replace(/index\.html$/, '')]) {
+      assert.equal(isGameGuideArticlePath(candidate), true, candidate);
+      assert.equal(articleForPath(candidate)?.id, article.id, candidate);
+      assert.equal(classifyArticleRole(candidate), 'game_decision', candidate);
+    }
+  }
+  for (const candidate of ['//games/fgo/pity-cost/', '/games/fgo/../', '/games/fgo/random/', '/games/fgo/pity-cost/?x=1', 'https://evil.example/games/fgo/pity-cost/']) {
+    assert.equal(isGameGuideArticlePath(candidate), false, candidate);
+  }
+});
+
+test('統合済み記事の欠損画像も本文を変えずに修復し再実行で差分を増やさない', () => {
+  const os = require('node:os');
+  const { transformGameGuide } = require('../scripts/game-guide-article-hub-sync.cjs');
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-guide-metadata-'));
+  try {
+    for (const article of GAME_GUIDE_ARTICLES) {
+      const file = repoPath(article);
+      const target = path.join(temporary, file);
+      const original = read(file).replace(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g, (full, body) => {
+        const data = JSON.parse(body);
+        if (data['@type'] !== 'Article') return full;
+        delete data.image;
+        return '<script type="application/ld+json">' + JSON.stringify(data) + '</script>';
+      });
+      fs.mkdirSync(path.dirname(target), { recursive: true });
+      fs.writeFileSync(target, original);
+      assert.equal(transformGameGuide(temporary, article), true);
+      const repaired = fs.readFileSync(target, 'utf8');
+      const schemas = [...repaired.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match => JSON.parse(match[1]));
+      assert.equal(schemas.find(node => node['@type'] === 'Article').image, 'https://playpoint-sim.com/ogp.png');
+      assert.equal(repaired.slice(repaired.indexOf('<body')), original.slice(original.indexOf('<body')), file + ': 本文を保持する');
+      assert.equal(transformGameGuide(temporary, article), false, file + ': 冪等性');
+      assert.equal(fs.readFileSync(target, 'utf8'), repaired);
+    }
+  } finally { fs.rmSync(temporary, { recursive: true, force: true }); }
+});

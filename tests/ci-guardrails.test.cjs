@@ -21,7 +21,12 @@ test('PR Gateは検査専用、Deployだけが配信用アセットを保持す�
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
   const deployWorkflow = read('.github/workflows/deploy.yml');
 
-  assert.match(qualityWorkflow, /run: node \.github\/scripts\/preflight\.cjs\s*$/m);
+  assert.match(qualityWorkflow, /shell: bash/);
+  assert.match(qualityWorkflow, /set -euo pipefail/);
+  assert.match(qualityWorkflow, /^\s+node \.github\/scripts\/preflight\.cjs 2>&1 \| tee "\$RUNNER_TEMP\/playpoint-preflight\.log"\s*$/m);
+  assert.doesNotMatch(qualityWorkflow, /continue-on-error|\|\|\s*true/);
+  assert.match(qualityWorkflow, /if: always\(\)/);
+  assert.match(qualityWorkflow, /retention-days: 7/);
   assert.doesNotMatch(qualityWorkflow, /preflight\.cjs --prepare-deploy/);
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });

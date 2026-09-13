@@ -258,7 +258,8 @@ const GAME_GUIDE_FILE_SET = new Set(GAME_GUIDE_ARTICLES.map(article => article.f
 const GAME_GUIDE_PATH_SET = new Set(GAME_GUIDE_ARTICLES.map(article => article.file.replace(/^\.\.\//, '')));
 
 function normalizeRepoPath(value) {
-  return String(value || '').replaceAll('\\', '/').replace(/^\.\//, '').replace(/^\.\.\//, '');
+  const normalized = String(value || '').replaceAll('\\', '/').replace(/^\.\//, '').replace(/^\.\.\//, '').replace(/^\/(?!\/)/, '');
+  return /^games\/[a-z0-9-]+\/[a-z0-9-]+\/$/.test(normalized) ? normalized + 'index.html' : normalized;
 }
 
 function isGameGuideArticleFile(file) {

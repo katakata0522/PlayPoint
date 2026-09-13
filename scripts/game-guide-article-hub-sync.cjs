@@ -79,6 +79,7 @@ function synchronizeStructuredData(head, article) {
     }
     const node = firstArticleNode(data);
     if (!node) return full;
+    node.image ||= new URL(article.thumbnail || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
     node.datePublished = article.date || PUBLISHED_AT;
     node.dateModified = article.modified || article.date || PUBLISHED_AT;
     return `<script${attrs}>\n${JSON.stringify(data, null, 2)}\n</script>`;
@@ -201,10 +202,15 @@ function transformGameGuide(rootDir, article) {
   const absolutePath = path.join(rootDir, relativePath);
   if (!fs.existsSync(absolutePath)) throw new Error(`${relativePath}: registered game guide is missing`);
   const original = fs.readFileSync(absolutePath, 'utf8');
-  if (/data-game-guide-article=["']true["']/.test(original)) return false;
   const headMatch = original.match(/<head>[\s\S]*?<\/head>/i);
   if (!headMatch) throw new Error(`${relativePath}: head not found`);
   const head = standardizeHead(headMatch[0], article);
+  if (/data-game-guide-article=["']true["']/.test(original)) {
+    const repaired = original.replace(headMatch[0], () => head);
+    if (repaired === original) return false;
+    fs.writeFileSync(absolutePath, repaired, 'utf8');
+    return true;
+  }
   const faqPairs = extractFaqPairs(head);
   const main = extractGuideMain(original, relativePath);
   const cta = removeParentCta(main.body);
