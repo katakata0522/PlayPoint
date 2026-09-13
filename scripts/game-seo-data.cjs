@@ -19,7 +19,19 @@ const SOURCES = {
   monstMonthlyWeb: 'https://www.monster-strike.com/news/20240929_1.html',
   monstWebLaunch: 'https://www.monster-strike.com/news/20240808_10.html',
   monstWebCurrent: 'https://webshop.monster-strike.com/transaction',
-  genshinPriceSnapshot: 'https://www.hoyolab.com/article/46140522'
+  genshinPriceSnapshot: 'https://www.hoyolab.com/article/46140522',
+  starrailPriceSnapshot: 'https://www.hoyolab.com/article/43772496',
+  starrailSupplyPassReference: 'https://www.hoyolab.com/article/26127599',
+  zzzPriceSnapshot: 'https://www.hoyolab.com/article/36511454',
+  zzzMembershipReference: 'https://www.hoyolab.com/article/35795196',
+  umamusumeUmasuku: 'https://webstore.cygames.com/umamusume/subscriptions/detail/umapack/',
+  umamusumeUmasukuLaunch: 'https://umamusume.jp/steam-news/detail?id=2264',
+  umamusumeUmaplan: 'https://umamusume.jp/news/detail?id=3097',
+  prosekaWebStore: 'https://pjsekai.sega.jp/webstore',
+  prosekaFaq: 'https://pjsekai.sega.jp/faq/index.html',
+  nikkeCommerceLaw: 'https://nikke-jp.com/lawts/',
+  gakumasDmmSettlement: 'https://dmg-gakuen.idolmaster-official.jp/fund-settlement/',
+  gakumasOfficialPre: 'https://gakuen.idolmaster-official.jp/pre/'
 };
 
 const FGO_PACKS_JP = [
@@ -71,6 +83,38 @@ const GAME_SEO = {
       requiresDailyLogin: true
     }
   },
+  starrail: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'current-published-price-snapshot',
+    sources: [SOURCES.starrailPriceSnapshot, SOURCES.starrailSupplyPassReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    japanPriceCorrections: [
+      { item: '往日の夢華 980+110個', oldPrice: 1220, price: 1840 }
+    ],
+    supplyPass: {
+      price: 610,
+      oneiricShardsImmediate: 300,
+      stellarJadePerDay: 90,
+      days: 30,
+      maxJadeEquivalent: 3000,
+      missedDaysRecoverable: false
+    }
+  },
+  zzz: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'current-published-price-snapshot',
+    sources: [SOURCES.zzzPriceSnapshot, SOURCES.zzzMembershipReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    japanPriceCorrections: [
+      { item: 'モノクローム 980+110個', oldPrice: 1220, price: 1840 }
+    ],
+    membership: {
+      price: 610,
+      monochromeImmediate: 300,
+      polychromePerDay: 90,
+      days: 30,
+      maxPolychromeEquivalent: 3000,
+      requiresDailyLogin: true
+    }
+  },
   monst: {
     verifiedAt: VERIFIED_AT,
     verification: 'official',
@@ -80,10 +124,67 @@ const GAME_SEO = {
     monthlyWebStore: { price: 10000, orbs: 200, limitPerMonth: 1 }
   },
   bluearchive: {
-    verifiedAt: '2026-09-13',
+    verifiedAt: VERIFIED_AT,
     verification: 'mechanics-verified-price-recheck-pending',
     publishPriceChanges: false,
     note: '2026-07-29以降の呼び出しチャージ100/200は確認済み。Google Playの現行商品価格は一次情報で再確認できるまで自動更新しない。'
+  },
+  umamusume: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official',
+    sources: [SOURCES.umamusumeUmasuku, SOURCES.umamusumeUmasukuLaunch, SOURCES.umamusumeUmaplan, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    legacyDailyJewelPack: {
+      endedAt: '2024-12-19T04:59:00+09:00'
+    },
+    umasuku: {
+      price: 980,
+      paidJewelsOnPurchaseOrRenewal: 500,
+      freeJewelsOnPurchaseOrRenewal: 50,
+      freeJewelsPerDay: 50,
+      dailyReset: '05:00',
+      missedDailyDeliveredOnNextLogin: true,
+      validity: 'one-calendar-month',
+      trainingRewardMultiplier: 2,
+      dailyRaceTicketBonus: 3
+    },
+    umaplan: {
+      price: 1980,
+      canCoexistWithUmasuku: true
+    }
+  },
+  proseka: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-webstore-current-google-play-price-recheck-pending',
+    sources: [SOURCES.prosekaWebStore, SOURCES.prosekaFaq, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    webStore: {
+      crystalProductPrices: [160, 480, 1000, 1800, 3000, 4900, 10000],
+      bulkPrices: [30000, 50000],
+      premiumMissionPass: 2000,
+      mySekaiMissionPass: 2000,
+      missionPassSet: 3500,
+      colorfulPass: {
+        basic: { price: 480, dailyFreeCrystals: 25, days: 30 },
+        deluxe: { price: 1500, dailyFreeCrystals: 50, days: 30 },
+        precious: { price: 3000, dailyFreeCrystals: 100, days: 30 }
+      },
+      worldPass: 1500
+    },
+    googlePlayBoundary: 'Official Web Store purchases are outside Google Play and must not be counted as Google Play Points purchases.'
+  },
+  nikke: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-price-page-not-publicly-fixed',
+    sources: [SOURCES.nikkeCommerceLaw, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    note: '公式の特定商取引法表示は価格を各商品ページで確認する方式。現行Google Playの商品価格を公開テキストで固定できないため、旧固定価格や200連・凸の固定円額を計算候補にしない。'
+  },
+  gakumas: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'platform-price-recheck-pending',
+    sources: [SOURCES.gakumasDmmSettlement, SOURCES.gakumasOfficialPre, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    note: '公式DMM版表示でも配信ストアが異なるサービスを区別している。Google Play版の現行商品価格を一次情報で固定できるまで、旧ジュエル価格・パス価格・200連固定円額を掲載しない。'
   }
 };
 

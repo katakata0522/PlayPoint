@@ -49,6 +49,7 @@ const { syncArticleDateContract } = require('./article-date-contract.cjs');
 const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 const { syncGameSeo } = require('./game-seo-sync.cjs');
 const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
+const { syncGameSeoExpanded } = require('./game-seo-expanded-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -93,6 +94,8 @@ const gameSeoSummary = syncGameSeo(rootDir);
 console.log(`[build-html] synchronized verified game SEO: ${gameSeoSummary.changedFiles.length}/${gameSeoSummary.checked} updated`);
 const gameSeoSafetySummary = syncGameSeoSafety(rootDir);
 console.log(`[build-html] synchronized game SEO safety: ${gameSeoSafetySummary.changedFiles.length}/${gameSeoSafetySummary.checked} updated`);
+const gameSeoExpandedSummary = syncGameSeoExpanded(rootDir);
+console.log(`[build-html] synchronized expanded game SEO: ${gameSeoExpandedSummary.changedFiles.length}/${gameSeoExpandedSummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);

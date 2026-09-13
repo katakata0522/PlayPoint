@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-08-18" />
+  <meta name="last-modified" content="2026-09-13" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>プロジェクトセカイ (プロセカ) - Playポイント計算機</title>
-  <meta name="description" content="プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。" />
+  <meta name="description" content="プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。" />
   <link rel="canonical" href="https://playpoint-sim.com/games/proseka/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/proseka/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/proseka/" />
@@ -19,12 +19,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="プロジェクトセカイ (プロセカ) - Playポイント計算機" />
-  <meta property="og:description" content="プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。" />
+  <meta property="og:description" content="プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。" />
   <meta property="og:url" content="https://playpoint-sim.com/games/proseka/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="プロジェクトセカイ (プロセカ) - Playポイント計算機" />
-  <meta name="twitter:description" content="プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。" />
+  <meta name="twitter:description" content="プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=1f3377e639" />
@@ -84,10 +84,10 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "プロセカの天井（9万円）で何ポイント還元されますか？",
+      "name": "プロセカの300連分に必要な現金額は固定9万円ですか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。"
+        "text": "いいえ。所持クリスタル、無償分、パス、キャンペーン、公式WebStoreなどで実際の負担が変わるため、Google Playでの支払額を固定9万円とは扱いません。Google Play購入画面の金額を入力してPlay Pointsを確認してください。"
       }
     }
   ]
@@ -139,10 +139,10 @@
           <header class="game-header">
               <span class="game-badge">🎵 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">プロジェクトセカイ (プロセカ)</h1>
-              <p class="game-meta">Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値） ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">プロセカ購入経路・Play Points確認：2026-09-13 ｜ Google Play Points (100円=1pt)</p>
           </header>
 
-          <p>プロジェクトセカイ（プロセカ）の有償クリスタル、カラフルパス、プレパス、天井ガチャで貯まるGoogle Play Pointsを即時計算！パック別還元早見表や使い道も掲載しています。ガチャ前のポイント確認にぜひ役立ててみてくださいね。</p>
+          <p>プロセカのGoogle Play課金予定額からPlay Pointsを計算。公式WebStoreは別決済として分離し、Google Playの現行商品価格は購入画面を正本として確認できます。</p>
 
           <!-- シミュレーター操作パネル -->
           <section class="game-sim-card">
@@ -150,9 +150,7 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="2480" data-mult="1" aria-pressed="true">カラパス+プレパス (2,480円)</button>
-              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (3,000円)</button>
-              <button type="button" class="preset-btn " data-amount="90000" data-mult="1" aria-pressed="false">シール天井 300連 (90,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Playの表示額を入力</button>
               </div>
 
               <form id="game-sim-form">
@@ -160,15 +158,7 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="480">カラフルパス (480円)</option>
-                  <option value="2000">プレミアムミッションパス (2,000円)</option>
-                  <option value="160">クリスタル 100個 (160円)</option>
-                  <option value="480">クリスタル 300個 (480円)</option>
-                  <option value="1000">クリスタル 650個 (1,000円)</option>
-                  <option value="3000">クリスタル 2000個 (3,000円)</option>
-                  <option value="5000">クリスタル 3400個 (5,000円)</option>
-                  <option value="10000">クリスタル 7000個 (10,000円)</option>
-                              <option value="custom">自由入力（カスタム金額）</option>
+                              <option value="custom" selected>Google Play購入画面の金額を入力</option>
                           </select>
                       </div>
 
@@ -179,7 +169,7 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="2480" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -274,14 +264,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>カラフルパス (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>プレミアムミッションパス (2,000円)</td><td>2,000 円</td><td>約 20 pt</td><td>約 100 pt</td></tr>
-<tr><td>クリスタル 100個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
-<tr><td>クリスタル 300個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>クリスタル 650個 (1,000円)</td><td>1,000 円</td><td>約 10 pt</td><td>約 50 pt</td></tr>
-<tr><td>クリスタル 2000個 (3,000円)</td><td>3,000 円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
-<tr><td>クリスタル 3400個 (5,000円)</td><td>5,000 円</td><td>約 50 pt</td><td>約 250 pt</td></tr>
-<tr><td>クリスタル 7000個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+<tr><td colspan="4">公式WebStoreの現行価格は別記事で確認できますが、WebStoreはGoogle Play決済ではありません。Google Play版の商品価格をWebStoreから類推せず、購入画面の金額を入力してください。</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -326,9 +309,11 @@
           <!-- よくある質問 -->
           <section class="section">
               <h2>よくある質問（FAQ）</h2>
-              <h3>プロセカの天井（9万円）で何ポイント還元されますか？</h3>
-<p>通常時で約900pt、Google Playの5倍キャンペーン時なら約4,500pt（プラチナランク到達）還元されます。</p>
+              <h3>プロセカの300連分に必要な現金額は固定9万円ですか？</h3>
+<p>いいえ。所持クリスタル、無償分、パス、キャンペーン、公式WebStoreなどで実際の負担が変わるため、Google Playでの支払額を固定9万円とは扱いません。Google Play購入画面の金額を入力してPlay Pointsを確認してください。</p>
           </section>
+
+          <section class="section" data-game-seo-guide="proseka"><h2>公式WebStoreとGoogle Playは別の購入経路</h2><p>プロセカ公式WebStoreには現在のクリスタル・カラフルパス・ミッションパス価格が公開されています。ただしWebStore購入をGoogle Play購入として扱わず、Play PointsはGoogle Play側の購入確認画面で比較します。</p><p><a href="./google-play-vs-webstore/">公式WebStoreの価格とPlay Pointsの比較を見る ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>
@@ -393,7 +378,7 @@
                       <div>
                           <div class="game-card-icon">🐴</div>
                           <h3 class="game-card-title">ウマ娘 プリティーダービー</h3>
-                          <p class="game-card-desc">ウマ娘のジュエル購入、デイリージュエルパック、200連天井・完凸課金で貯まるGoogle Play Pointsを即時シミュレーション！パック別還元早見表やポイント使い道もまとめているので、育成前の課金計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">ウマ娘の現行月額「ウマスク」や課金予定額で貯まるGoogle Play Pointsを計算。終了済みデイリージュエルパックを除外し、WebStoreとの購入経路差も確認できます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -409,7 +394,7 @@
                       <div>
                           <div class="game-card-icon">🌟</div>
                           <h3 class="game-card-title">学園アイドルマスター (学マス)</h3>
-                          <p class="game-card-desc">学園アイドルマスター（学マス）の有償ジュエル、プレミアムミッションパス、200連天井・4凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表やお得な使い道も比較できます。プロデュース前の計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">学園アイドルマスター（学マス）のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格を一次情報で固定できない間は、購入画面の金額を自由入力して確認できます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -417,7 +402,7 @@
                       <div>
                           <div class="game-card-icon">🔫</div>
                           <h3 class="game-card-title">勝利の女神：NIKKE</h3>
-                          <p class="game-card-desc">勝利の女神：NIKKEのジュエル購入、30日補給品、イベントパス、マイレージ200連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表やポイント使い道も比較できます。隊員募集前の課金計画にぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">NIKKEのGoogle Play課金予定額からPlay Pointsを計算。現行商品価格は購入画面を正本とし、200連や凸に必要な現金額を固定値として推測しません。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>

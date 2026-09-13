@@ -43,15 +43,24 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/bluearchive/index.html': GAME_SEO_VERIFIED_AT,
   'games/fgo/index.html': GAME_SEO_VERIFIED_AT,
   'games/fgo/pity-cost/index.html': GAME_SEO_VERIFIED_AT,
+  'games/gakumas/index.html': GAME_SEO_VERIFIED_AT,
   'games/genshin/index.html': GAME_SEO_VERIFIED_AT,
   'games/genshin/welkin-value/index.html': GAME_SEO_VERIFIED_AT,
   'games/honkai3rd/index.html': '2026-08-25',
   'games/monst/index.html': GAME_SEO_VERIFIED_AT,
   'games/monst/google-play-vs-webshop/index.html': GAME_SEO_VERIFIED_AT,
-  'games/nikke/index.html': '2026-08-25',
+  'games/nikke/index.html': GAME_SEO_VERIFIED_AT,
   'games/pad/index.html': '2026-08-25',
   'games/phantomparade/index.html': '2026-08-25',
-  'games/wutheringwaves/index.html': '2026-08-25'
+  'games/proseka/index.html': GAME_SEO_VERIFIED_AT,
+  'games/proseka/google-play-vs-webstore/index.html': GAME_SEO_VERIFIED_AT,
+  'games/starrail/index.html': GAME_SEO_VERIFIED_AT,
+  'games/starrail/supply-pass-value/index.html': GAME_SEO_VERIFIED_AT,
+  'games/umamusume/index.html': GAME_SEO_VERIFIED_AT,
+  'games/umamusume/umasuku-value/index.html': GAME_SEO_VERIFIED_AT,
+  'games/wutheringwaves/index.html': '2026-08-25',
+  'games/zzz/index.html': GAME_SEO_VERIFIED_AT,
+  'games/zzz/membership-value/index.html': GAME_SEO_VERIFIED_AT
 });
 const LATEST_HUB_VERIFICATION_DATE = getLatestHubVerificationDate(rootDir);
 
