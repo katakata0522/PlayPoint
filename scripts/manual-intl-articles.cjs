@@ -110,37 +110,7 @@ function readManualIntlArticleDates(rootDir, relativePath) {
   return { publishedAt, modifiedAt };
 }
 
-function snapshotManualIntlArticles(rootDir) {
-  const snapshots = new Map();
-  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
-    const absolutePath = path.join(rootDir, relativePath);
-    if (!fs.existsSync(absolutePath)) {
-      throw new Error(`Manual international article is missing: ${relativePath}`);
-    }
-    snapshots.set(relativePath, fs.readFileSync(absolutePath));
-  }
-  return snapshots;
-}
-
-function restoreManualIntlArticles(rootDir, snapshots) {
-  if (!(snapshots instanceof Map)) {
-    throw new TypeError('Manual international article snapshots must be a Map.');
-  }
-
-  for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
-    const content = snapshots.get(relativePath);
-    if (!Buffer.isBuffer(content)) {
-      throw new Error(`Manual international article snapshot is missing: ${relativePath}`);
-    }
-    fs.writeFileSync(path.join(rootDir, relativePath), content);
-  }
-
-  console.log(`[manual-intl] restored canonical article content: ${MANUAL_INTL_ARTICLE_FILES.length}`);
-}
-
 module.exports = {
   MANUAL_INTL_ARTICLE_FILES,
-  readManualIntlArticleDates,
-  restoreManualIntlArticles,
-  snapshotManualIntlArticles
+  readManualIntlArticleDates
 };
