@@ -192,52 +192,7 @@ const GUIDES = Object.freeze([
   }
 ]);
 
-// The Japanese catalog contains 17 guides. These four entries are intentionally
-// framed as region-bound Japan/global service references rather than translated
-// price tables because current first-party evidence does not support one shared
-// EN/KR/TW commercial catalog.
-const EXTRA_GUIDES = Object.freeze([
-  {
-    slug: 'honkai-impact-3rd-google-play-vs-top-up-center', jaPath: '/games/honkai3rd/google-play-vs-charge-center/', gameId: 'honkai3rd', source: ['Honkai Impact 3rd official site', 'https://honkaiimpact3.hoyoverse.com/']
-  },
-  {
-    slug: 'jujutsu-kaisen-phantom-parade-google-play-vs-web-shop', jaPath: '/games/phantomparade/google-play-vs-webshop/', gameId: 'phantomparade', source: ['Jujutsu Kaisen Phantom Parade official Japan Web Shop', 'https://webshop.jujutsuphanpara.jp/']
-  },
-  {
-    slug: 'prospi-a-google-play-vs-konami-store', jaPath: '/games/prospi-a/google-play-vs-konami-store/', gameId: 'prospi-a', source: ['PROFESSIONAL BASEBALL SPIRITS A official KONAMI site', 'https://www.konami.com/games/prospi_a/']
-  },
-  {
-    slug: 'pokemon-go-google-play-vs-web-store', jaPath: '/games/pokemon-go/google-play-vs-webstore/', gameId: 'pokemon-go', source: ['Pokémon GO Web Store', 'https://store.pokemongolive.com/']
-  }
-]);
-
-function extraContent(guide, localeKey) {
-  const copy = {
-    'honkai-impact-3rd-google-play-vs-top-up-center': {
-      en: entry('Honkai Impact 3rd Google Play vs Top-Up Center: Crystals and Monthly Card', ['Honkai Impact 3rd', 'Top-Up Center', 'Crystals', 'Monthly Card'], 'HoYoverse operates an official Top-Up Center whose payment methods and currencies vary by country or region. It is an official but separate checkout from Google Play.', ['Compare Top-Up Center bonuses and Play Points as separate benefit columns.', 'Do not add US Play Points to an external HoYoverse checkout.', 'Check Monthly Card validity before adding more time.'], 'Confirm server, HoYoverse account, country and currency.', 'Does official Top-Up Center mean Play Points too?', 'No. Official publisher checkout is not automatically Google Play billing.'),
-      ko: entry('붕괴3rd Google Play vs 공식 충전 센터: 수정·월정액·Play Points', ['붕괴3rd', '충전 센터', '수정', '월정액'], 'HoYoverse 공식 충전 센터는 국가·지역에 따라 결제수단과 통화가 달라질 수 있습니다. 공식 경로이지만 Google Play 결제와는 별도입니다.', ['충전 센터 보너스와 한국 Play Points를 별도 비교합니다.', '외부 충전 센터 결제에 Play Points를 자동으로 추가하지 않습니다.', '월정액 추가 구매 전 유효기간 규칙을 확인합니다.'], '서버·계정·지원 통화를 확인하세요.', '공식 충전 센터 결제에 Play Points가 적립되나요?', 'Google Play Billing이 아니라면 자동 적립으로 보지 않습니다.'),
-      tw: entry('《崩壞3rd》Google Play vs 官方儲值中心：水晶、月卡與 Play Points', ['崩壞3rd', '儲值中心', '水晶', '月卡'], 'HoYoverse 官方儲值中心依國家／地區提供不同付款方式與幣別。這是官方外部結帳，不代表每筆交易都由 Google Play 處理。', ['儲值中心優惠與 Google Play Points 分開比較。', '只有台灣 Google Play 適用交易才套用積點率。', '月卡追加購買前確認剩餘有效天數。'], '確認伺服器、帳號與台灣可用付款方式。', '官方儲值中心是否等於 Google Play？', '不是，它是 HoYoverse 官方外部付款管道。')
-    },
-    'jujutsu-kaisen-phantom-parade-google-play-vs-web-shop': {
-      en: entry('Jujutsu Kaisen Phantom Parade Web Shop vs Google Play: Japan-version guide', ['Jujutsu Kaisen Phantom Parade', 'official Japan Web Shop', '廻珠', 'マイルpt'], 'The Japanese official Web Shop is active and sells Web-exclusive Kaiju packs, passes and shop miles in yen. This is a Japan-service storefront, not a US/global price catalog.', ['Japanese-version users can compare Web Shop extras with the app route.', 'Do not count US Play Points on the Japanese Web Shop transaction.', 'A global version must use its own official store and currency.'], 'Confirm game version, account linking and age verification.', 'Is the Japanese Web Shop a US/global store?', 'No. It is a Japanese-service storefront.'),
-      ko: entry('주술회전 팬텀 퍼레이드 일본 공식 WEB SHOP vs Google Play', ['주술회전 팬텀 퍼레이드', '일본 공식 WEB SHOP', '廻珠', '마일pt'], '일본 공식 WEB SHOP은 현재 엔화로 WEB 한정 상품과 마일pt를 제공합니다. 이를 원화 한국 공식 가격처럼 환산하지 않습니다.', ['일본판은 공식 상점의 추가 재화/마일을 비교합니다.', '일본 WEB SHOP에 한국 Play Points를 더하지 않습니다.', '한국/글로벌 서비스는 해당 버전 공식 구매 경로를 따릅니다.'], '게임 버전, 계정 연동, 연령 인증을 확인하세요.', '일본 WEB SHOP 가격을 한국 가격처럼 환산해도 되나요?', '아니요. 서비스 버전과 조건이 다릅니다.'),
-      tw: entry('Phantom Parade 日本官方 WEB SHOP vs Google Play：不要把日圓商品當台灣售價', ['Jujutsu Kaisen Phantom Parade', '日本官方WEB SHOP', '廻珠', 'マイルpt'], '日本官方 WEB SHOP 目前以日圓販售 WEB 限定商品並提供マイルpt。這些條件屬日本服務，不應換算成 NT$ 後當成台灣官方價格。', ['玩日版時比較 WEB SHOP 與日版 App 內購。', '日本 WEB SHOP 不要加台灣 Google Play 點數。', '其他地區版本使用各自官方付款方式。'], '確認遊戲版本、帳號連結與年齡驗證。', '把日圓售價換成 NT$ 就是台灣價格嗎？', '不是，那仍是日本版商品。')
-    },
-    'prospi-a-google-play-vs-konami-store': {
-      en: entry('PROFESSIONAL BASEBALL SPIRITS A: KONAMI Games Store vs Google Play', ['PROFESSIONAL BASEBALL SPIRITS A', 'Energy', 'KONAMI Games Store'], 'KONAMI promotes Games Store products that provide more Energy than in-game purchases. Prospi A is a Japanese mobile title, so this guide does not fabricate a US Energy catalog.', ['Japanese-version users can compare Store Energy with the app checkout.', 'Do not add US Play Points to a KONAMI Games Store transaction.', 'Do not confuse Prospi A with separate global baseball titles.'], 'Use Japanese-service prices only as Japanese-service references.', 'Is the Prospi A KONAMI Games Store a US store?', 'No. Prospi A is a Japan-focused mobile title.'),
-      ko: entry('프로야구 스피리츠 A: KONAMI Games Store vs Google Play 일본판 가이드', ['프로야구 스피리츠 A', '에너지', 'KONAMI Games Store'], 'KONAMI 공식 사이트는 게임 내 구매보다 더 많은 에너지를 얻는 Games Store 상품을 안내합니다. 일본 엔화 상품을 한국 공식 가격으로 환산하지 않습니다.', ['일본판은 Store 에너지 수량과 앱 내 결제를 비교합니다.', '외부 Store 결제에 한국 Play Points를 더하지 않습니다.', '다른 글로벌 야구 타이틀과 혼동하지 않습니다.'], '게임 버전과 일본 Store 결제 조건을 확인하세요.', '일본 가격을 원화로 바꾸면 한국 가격인가요?', '아니요. 일본 서비스 상품일 뿐입니다.'),
-      tw: entry('PROFESSIONAL BASEBALL SPIRITS A：KONAMI Games Store 與 Google Play', ['PROFESSIONAL BASEBALL SPIRITS A', 'Energy', 'KONAMI Games Store'], 'KONAMI 官方網站表示 Games Store 有商品可取得比遊戲內購買更多 Energy。這是日本版服務條件，不能直接轉成台灣價格表。', ['玩日版時比較 Store Energy 與日版 App 內購。', '外部 Store 不要加台灣 Google Play 點數。', '不要和 KONAMI 其他全球棒球遊戲混淆。'], '確認遊戲版本與日本 Store 支援。', '日圓商品換成 NT$ 就能當台灣價格嗎？', '不行，這仍是日本服務商品。')
-    },
-    'pokemon-go-google-play-vs-web-store': {
-      en: entry('Pokémon GO Google Play vs Web Store: PokéCoins, Reward Road and Play Points', ['Pokémon GO Web Store', 'PokéCoins', 'Reward Road'], 'Niantic operates the official Pokémon GO Web Store, where bundles and PokéCoin offers can differ from the app. Reward Road has its own regional/account conditions and is separate from Google Play Points.', ['Use Google Play when the live Play Points rate is more valuable.', 'Use the Web Store when extra PokéCoins or Reward Road progress is stronger.', 'Do not count one purchase as both Web Store and Google Play billing.'], 'Check whether Reward Road is currently available to your account.', 'Do Web Store purchases earn Google Play Points?', 'Not as Google Play purchases; the Web Store has its own programs.'),
-      ko: entry('Pokémon GO Google Play vs Web Store: 포켓코인·리워드 로드·Play Points', ['Pokémon GO Web Store', '포켓코인', '리워드 로드'], 'Niantic 공식 한국어 지원은 Pokémon GO Web Store, 포켓코인, 리워드 로드를 별도 체계로 안내합니다. Web Store 구매와 Google Play 앱 내 결제는 다른 경로입니다.', ['Google Play 적립률이 높으면 앱 내 결제를 비교합니다.', 'Web Store 추가 포켓코인·리워드 로드를 별도 비교합니다.', '한 거래에 두 보상을 중복 적용하지 않습니다.'], '한국 계정에서 리워드 로드가 현재 제공되는지 확인하세요.', 'Web Store에서 사면 Play Points도 적립되나요?', 'Google Play 결제가 아니므로 자동 적립 대상이 아닙니다.'),
-      tw: entry('Pokémon GO：Google Play vs Web Store，寶可幣、獎勵之路與 Play Points', ['Pokémon GO Web Store', '寶可幣', '獎勵之路'], 'Niantic 官方繁中支援使用 Pokémon GO Web Store、寶可幣、獎勵之路等名稱。Web Store 與 App 是不同付款路徑。', ['Google Play 積點活動高時比較 App 內購。', 'Web Store 多送寶可幣或推進獎勵之路時另比外部商店。', '同一筆 Web Store 交易不要再加 Google Play 點數。'], '確認台灣帳號是否顯示獎勵之路與當期條件。', 'Web Store 買寶可幣會有 Google Play 點數嗎？', '不會把外部 Web Store 交易自動視為 Google Play 購買。')
-    }
-  };
-  return copy[guide.slug][localeKey];
-}
-
-const ALL_GUIDES = Object.freeze([...GUIDES, ...EXTRA_GUIDES.map(guide => ({ ...guide, content: localized(extraContent(guide, 'en'), extraContent(guide, 'ko'), extraContent(guide, 'tw')) }))]);
+const ALL_GUIDES = GUIDES;
 
 function escapeHtml(value) {
   return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
