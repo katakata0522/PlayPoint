@@ -50,6 +50,7 @@ const { syncSpeculationRules } = require('./speculation-rules-sync.cjs');
 const { syncGameSeo } = require('./game-seo-sync.cjs');
 const { syncGameSeoSafety } = require('./game-seo-safety-sync.cjs');
 const { syncGameSeoExpanded } = require('./game-seo-expanded-sync.cjs');
+const { syncGameSeoWave3 } = require('./game-seo-wave3-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -96,13 +97,15 @@ const gameSeoSafetySummary = syncGameSeoSafety(rootDir);
 console.log(`[build-html] synchronized game SEO safety: ${gameSeoSafetySummary.changedFiles.length}/${gameSeoSafetySummary.checked} updated`);
 const gameSeoExpandedSummary = syncGameSeoExpanded(rootDir);
 console.log(`[build-html] synchronized expanded game SEO: ${gameSeoExpandedSummary.changedFiles.length}/${gameSeoExpandedSummary.checked} updated`);
+const gameSeoWave3Summary = syncGameSeoWave3(rootDir);
+console.log(`[build-html] synchronized game SEO wave 3: ${gameSeoWave3Summary.changedFiles.length}/${gameSeoWave3Summary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
 const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });
-console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed} updated`);
+console.log(`[build-html] synchronized manual LP hreflang: ${lpHreflangSummary.changed}/${lpHreflangSummary.checked} updated`);
 const authorHreflangSummary = syncJapaneseAuthorHreflang(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized Japanese author hreflang: ${authorHreflangSummary.changed}/${authorHreflangSummary.checked} updated`);
 syncAnalyticsRuntimeScripts(rootDir);
