@@ -7,13 +7,38 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
-const { GAME_SEO, FGO_PACKS_JP } = require('../scripts/game-seo-data.cjs');
+const { GAME_SEO, FGO_PACKS_JP, SOURCES } = require('../scripts/game-seo-data.cjs');
 const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
 
+const SITE_ORIGIN = 'https://playpoint-sim.com/';
 const fgo = () => read('games/fgo/index.html');
 const genshin = () => read('games/genshin/index.html');
 const monstGuide = () => read('games/monst/google-play-vs-webshop/index.html');
 const bluearchive = () => read('games/bluearchive/index.html');
+
+function hrefUrls(html) {
+  return [...html.matchAll(/\bhref="([^"]+)"/g)].map(match => new URL(match[1], SITE_ORIGIN));
+}
+
+function assertHasHref(html, expectedUrl) {
+  const expected = new URL(expectedUrl);
+  const found = hrefUrls(html).some(candidate =>
+    candidate.protocol === expected.protocol &&
+    candidate.hostname === expected.hostname &&
+    candidate.pathname === expected.pathname
+  );
+  assert.equal(found, true, `expected href for ${expected.hostname}${expected.pathname}`);
+}
+
+function sitemapLocUrls(xml) {
+  return [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => new URL(match[1]));
+}
+
+function assertSitemapHasPath(xml, pathname) {
+  const expectedOrigin = new URL(SITE_ORIGIN).origin;
+  const found = sitemapLocUrls(xml).some(candidate => candidate.origin === expectedOrigin && candidate.pathname === pathname);
+  assert.equal(found, true, `expected sitemap path ${pathname}`);
+}
 
 test('FGOの価格・確定召喚・福袋の正本は確認済み値に固定する', () => {
   assert.deepEqual(FGO_PACKS_JP.map(pack => [pack.paid, pack.free, pack.total, pack.price]), [
@@ -45,9 +70,9 @@ test('FGO深掘り記事は公式根拠・54,600円・福袋1,920円を同じペ
   assert.ok(html.includes('54,600円で計902個'));
   assert.ok(html.includes('有償15個'));
   assert.ok(html.includes('1,920円'));
-  assert.ok(html.includes('https://news.fate-go.jp/2022/0930mquf/'));
-  assert.ok(html.includes('https://faq.fate-go.jp/faq/show/1457'));
-  assert.ok(html.includes('https://support.google.com/googleplay/answer/9077192'));
+  assertHasHref(html, SOURCES.fgoPrice);
+  assertHasHref(html, SOURCES.fgoPity);
+  assertHasHref(html, SOURCES.googlePlayEarn);
 });
 
 test('原神は980個帯の旧価格と固定天井円額を公開計算機から除く', () => {
@@ -96,9 +121,9 @@ test('ゲーム深掘り記事はゲームサイトマップ対象として再�
   assert.ok(files.has('games/monst/google-play-vs-webshop/index.html'));
 
   const sitemap = read('sitemap.xml');
-  assert.ok(sitemap.includes('https://playpoint-sim.com/games/fgo/pity-cost/'));
-  assert.ok(sitemap.includes('https://playpoint-sim.com/games/genshin/welkin-value/'));
-  assert.ok(sitemap.includes('https://playpoint-sim.com/games/monst/google-play-vs-webshop/'));
+  assertSitemapHasPath(sitemap, '/games/fgo/pity-cost/');
+  assertSitemapHasPath(sitemap, '/games/genshin/welkin-value/');
+  assertSitemapHasPath(sitemap, '/games/monst/google-play-vs-webshop/');
 });
 
 test('通常ビルドが検証済みゲームSEOとfail-closed安全処理の両方を実行する', () => {
