@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getLocalizedGameGuideJapaneseAlternates } = require('./intl-game-guide-expansion.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const INTL_LOCALES = Object.freeze([
@@ -10,6 +11,7 @@ const INTL_LOCALES = Object.freeze([
   ['tw', 'zh-TW']
 ]);
 const ARTICLE_JA_ALTERNATES = Object.freeze({
+  ...getLocalizedGameGuideJapaneseAlternates(),
   'index.html': '/blog/',
   'google-play-games-vs-play-points.html': '/articles/2025-12-25-play-games.html',
   'google-play-points-apps-books-purchases.html': '/articles/2025-12-25-movies-books.html',
@@ -32,13 +34,13 @@ function intlUrl(locale, slug) {
 }
 function upsertIntlJa(html, jaPath) {
   const tag = '    <link rel="alternate" hreflang="ja" href="' + SITE_ORIGIN + jaPath + '">';
-  let next = html.replace(/^[\t ]*<link rel="alternate" hreflang="ja"[^>]*>[\t ]*\r?\n?/gm, '');
-  const anchor = /(^[\t ]*<link rel="alternate" hreflang="en"[^>]*>)/m;
+  let next = html.replace(/^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']ja["'][^>]*>[\t ]*\r?\n?/gim, '');
+  const anchor = /(^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["']en["'][^>]*>)/im;
   if (!anchor.test(next)) throw new Error('International article is missing en hreflang anchor.');
   return next.replace(anchor, tag + '\n$1');
 }
 function upsertJapaneseIntlSet(html, slug, jaPath) {
-  let next = html.replace(/^[\t ]*<link rel="alternate" hreflang="(?:ja|en|ko|zh-TW|x-default)"[^>]*>[\t ]*\r?\n?/gm, '');
+  let next = html.replace(/^[\t ]*<link\b[^>]*\brel=["']alternate["'][^>]*\bhreflang=["'](?:ja|en|ko|zh-TW|x-default)["'][^>]*>[\t ]*\r?\n?/gim, '');
   const tags = [
     '    <link rel="alternate" hreflang="ja" href="' + SITE_ORIGIN + jaPath + '">',
     '    <link rel="alternate" hreflang="en" href="' + intlUrl('en', slug) + '">',
@@ -46,9 +48,10 @@ function upsertJapaneseIntlSet(html, slug, jaPath) {
     '    <link rel="alternate" hreflang="zh-TW" href="' + intlUrl('tw', slug) + '">',
     '    <link rel="alternate" hreflang="x-default" href="' + intlUrl('en', slug) + '">'
   ].join('\n');
-  const canonical = /(^[\t ]*<link rel="canonical"[^>]*>)/m;
-  if (!canonical.test(next)) throw new Error('Japanese counterpart is missing canonical link.');
-  return next.replace(canonical, '$1\n' + tags);
+  const canonical = /<link\b[^>]*\brel=["']canonical["'][^>]*>/i;
+  const match = next.match(canonical);
+  if (!match) throw new Error('Japanese counterpart is missing canonical link: ' + jaPath);
+  return next.replace(canonical, match[0] + '\n' + tags);
 }
 function writeIfChanged(file, content) {
   const current = fs.readFileSync(file, 'utf8');
@@ -82,5 +85,6 @@ module.exports = {
   SITE_ORIGIN,
   getJapaneseAlternateForSlug,
   intlUrl,
-  syncIntlArticleJapaneseHreflang
+  syncIntlArticleJapaneseHreflang,
+  upsertJapaneseIntlSet
 };
