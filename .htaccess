@@ -107,9 +107,16 @@ Options -Indexes
     Header always set Expires "0"
     Header always set X-Robots-Tag "noindex, nofollow, noarchive"
   </FilesMatch>
+
+  # ブラウザ側の基本防御。広告・計測に不要な強力APIは明示的に無効化する。
   Header always set X-Content-Type-Options "nosniff"
   Header always set X-Frame-Options "SAMEORIGIN"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.googletagmanager.com https://*.google-analytics.com https://*.googleadservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com https://cdnjs.cloudflare.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.googlesyndication.com https://pagead2.googlesyndication.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.adtrafficquality.google; frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set X-XSS-Protection "0"
+  Header always set X-Permitted-Cross-Domain-Policies "none"
+
+  # 外部依存は実際に利用するGoogle広告・計測系だけに限定する。インラインイベント属性は許可しない。
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googlesyndication.com https://*.googletagmanager.com https://*.google-analytics.com https://*.googleadservices.com https://*.adtrafficquality.google https://fundingchoicesmessages.google.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://*.googlesyndication.com https://pagead2.googlesyndication.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.g.doubleclick.net https://*.google.com https://*.adtrafficquality.google; frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net; worker-src 'self'; manifest-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; upgrade-insecure-requests"
 </IfModule>
