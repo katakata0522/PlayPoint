@@ -23,6 +23,14 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          # PR merge commitの両親を取得し、基準mainの実出力と比較する。
+          fetch-depth: 2
+
+      - name: Verify build refactor output equivalence
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/build-')
+        env:
+          REFACTOR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/verify-refactor-output.cjs --base "$REFACTOR_BASE_SHA" --evidence-dir "$RUNNER_TEMP/playpoint-refactor-evidence"
 
       - name: Run complete preflight
         shell: bash
@@ -36,6 +44,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pr-gate-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/playpoint-preflight.log
+          path: |
+            ${{ runner.temp }}/playpoint-preflight.log
+            ${{ runner.temp }}/playpoint-refactor-evidence/
           if-no-files-found: warn
           retention-days: 7
