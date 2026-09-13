@@ -4,11 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-08-18" />
+  <meta name="last-modified" content="2026-09-13" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>Pokémon TCG Pocket (ポケポケ) - Playポイント計算機</title>
-  <meta name="description" content="ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。" />
+  <meta name="description" content="ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面を正本とします。" />
   <link rel="canonical" href="https://playpoint-sim.com/games/pokepoke/" />
   <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/games/pokepoke/" />
   <link rel="alternate" hreflang="en" href="https://playpoint-sim.com/en/games/pokepoke/" />
@@ -19,12 +19,12 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Playポイント計算機" />
   <meta property="og:title" content="Pokémon TCG Pocket (ポケポケ) - Playポイント計算機" />
-  <meta property="og:description" content="ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。" />
+  <meta property="og:description" content="ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面を正本とします。" />
   <meta property="og:url" content="https://playpoint-sim.com/games/pokepoke/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Pokémon TCG Pocket (ポケポケ) - Playポイント計算機" />
-  <meta name="twitter:description" content="ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。" />
+  <meta name="twitter:description" content="ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面を正本とします。" />
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
 
   <link rel="stylesheet" href="../../articles/article-shared.css?v=1f3377e639" />
@@ -87,7 +87,7 @@
       "name": "ポケポケの課金でGoogle Playポイントは貯まりますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "はい。Android端末から購入するとPlay Pointsが貯まります。"
+        "text": "Google Play上の対象購入として処理される場合にポイントが計算されます。購入前のGoogle Play画面に表示される獲得予定ポイントを確認してください。"
       }
     }
   ]
@@ -139,10 +139,10 @@
           <header class="game-header">
               <span class="game-badge">🎴 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">Pokémon TCG Pocket (ポケポケ)</h1>
-              <p class="game-meta">Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値） ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">ポケポケ定期購入・Play Points確認：2026-09-13（価格は購入画面を正本） ｜ Google Play Points</p>
           </header>
 
-          <p>ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。課金前のシミュレーションにぜひ役立ててみてくださいね。</p>
+          <p>ポケポケのGoogle Play課金予定額からPlay Pointsを計算。プレミアムパスは月額定期購入・初回14日無料体験を公式確認し、現行価格は購入画面を正本とします。</p>
 
           <!-- シミュレーター操作パネル -->
           <section class="game-sim-card">
@@ -150,8 +150,7 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="980" data-mult="1" aria-pressed="true">プレミアムパス (980円)</button>
-              <button type="button" class="preset-btn " data-amount="13800" data-mult="1" aria-pressed="false">ポケゴールド 550個 (13,800円)</button>
+                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">Google Playの表示額を入力</button>
               </div>
 
               <form id="game-sim-form">
@@ -159,14 +158,7 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="980">プレミアムパス (980円)</option>
-                  <option value="140">ポケゴールド 5個 (140円)</option>
-                  <option value="420">ポケゴールド 15個 (420円)</option>
-                  <option value="840">ポケゴールド 31個 (840円)</option>
-                  <option value="2800">ポケゴールド 105個 (2,800円)</option>
-                  <option value="5600">ポケゴールド 215個 (5,600円)</option>
-                  <option value="13800">ポケゴールド 550個 (13,800円)</option>
-                              <option value="custom">自由入力（カスタム金額）</option>
+                              <option value="custom" selected>現行価格をGoogle Playで確認して入力</option>
                           </select>
                       </div>
 
@@ -177,7 +169,7 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="980" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -272,13 +264,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>プレミアムパス (980円)</td><td>980 円</td><td>約 10 pt</td><td>約 49 pt</td></tr>
-<tr><td>ポケゴールド 5個 (140円)</td><td>140 円</td><td>約 1 pt</td><td>約 7 pt</td></tr>
-<tr><td>ポケゴールド 15個 (420円)</td><td>420 円</td><td>約 4 pt</td><td>約 21 pt</td></tr>
-<tr><td>ポケゴールド 31個 (840円)</td><td>840 円</td><td>約 8 pt</td><td>約 42 pt</td></tr>
-<tr><td>ポケゴールド 105個 (2,800円)</td><td>2,800 円</td><td>約 28 pt</td><td>約 140 pt</td></tr>
-<tr><td>ポケゴールド 215個 (5,600円)</td><td>5,600 円</td><td>約 56 pt</td><td>約 280 pt</td></tr>
-<tr><td>ポケゴールド 550個 (13,800円)</td><td>13,800 円</td><td>約 138 pt</td><td>約 690 pt</td></tr>
+<tr><td colspan="4">プレミアムパスの定期購入仕様は公式確認済みですが、現行日本円価格・ポケゴールド価格は公開公式FAQで固定されていません。購入画面の実額を入力してください。</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -324,8 +310,10 @@
           <section class="section">
               <h2>よくある質問（FAQ）</h2>
               <h3>ポケポケの課金でGoogle Playポイントは貯まりますか？</h3>
-<p>はい。Android端末から購入するとPlay Pointsが貯まります。</p>
+<p>Google Play上の対象購入として処理される場合にポイントが計算されます。購入前のGoogle Play画面に表示される獲得予定ポイントを確認してください。</p>
           </section>
+
+          <section class="section" data-game-seo-guide="pokepoke"><h2>プレミアムパスの無料体験・更新・Play Pointsを分離</h2><p>公式サポートで1か月の定期購入、初回14日無料体験、Googleアカウントとの紐付けを確認しています。現行価格は推測せず購入画面を正本にします。</p><p><a href="./premium-pass-guide/">プレミアムパスの課金ルールを詳しく見る ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>
@@ -422,7 +410,7 @@
                       <div>
                           <div class="game-card-icon">🌊</div>
                           <h3 class="game-card-title">鳴潮 (Wuthering Waves)</h3>
-                          <p class="game-card-desc">鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！パック別還元早見表やお得な使い道も比較できます。集音前のポイント確認にぜひ使ってみてくださいね。</p>
+                          <p class="game-card-desc">鳴潮のGoogle Play課金予定額からPlay Pointsを計算。現行商品価格や天井の現金額を推測で固定せず、購入画面の実額を正本として確認できます。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -430,7 +418,7 @@
                       <div>
                           <div class="game-card-icon">💥</div>
                           <h3 class="game-card-title">ドラゴンボールZ ドッカンバトル</h3>
-                          <p class="game-card-desc">ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！パック別還元早見表や使い道も比較できます。ガシャ前のシミュレーションにぜひ役立ててみてくださいね。</p>
+                          <p class="game-card-desc">ドッカンバトルのGoogle Play課金予定額からPlay Pointsを計算。公式Web Storeは別決済として分離し、変動する龍石・セール価格は購入画面を正本とします。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>
@@ -446,7 +434,7 @@
                       <div>
                           <div class="game-card-icon">🛡️</div>
                           <h3 class="game-card-title">アークナイツ (Arknights)</h3>
-                          <p class="game-card-desc">アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！パック別還元早見表やポイント使い道も確認できます。人材発掘前の計画にぜひ使ってみてくださいね。</p>
+                          <p class="game-card-desc">アークナイツのGoogle Play課金予定額からPlay Pointsを計算。月パス内容と限定300回の仕様は公式確認し、現行商品価格は購入画面を正本とします。</p>
                       </div>
                       <div class="game-card-action">計算機を開く ➔</div>
                   </a>

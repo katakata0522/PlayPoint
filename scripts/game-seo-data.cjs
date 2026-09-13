@@ -31,7 +31,21 @@ const SOURCES = {
   prosekaFaq: 'https://pjsekai.sega.jp/faq/index.html',
   nikkeCommerceLaw: 'https://nikke-jp.com/lawts/',
   gakumasDmmSettlement: 'https://dmg-gakuen.idolmaster-official.jp/fund-settlement/',
-  gakumasOfficialPre: 'https://gakuen.idolmaster-official.jp/pre/'
+  gakumasOfficialPre: 'https://gakuen.idolmaster-official.jp/pre/',
+  pokepokePremiumPass: 'https://app-ptcgp.pokemon-support.com/hc/ja/articles/39082740268569-%E3%83%97%E3%83%AC%E3%83%9F%E3%82%A2%E3%83%A0%E3%83%91%E3%82%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E6%95%99%E3%81%88%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84',
+  pokepokePremiumMechanics: 'https://support.pokemon.com/hc/en-us/articles/30331739144596-Pok%C3%A9mon-TCG-Pocket-Purchase-and-Premium-Pass-FAQ',
+  padPass: 'https://pad.gungho.jp/member/pdpass/',
+  padPassFaq: 'https://pad.gungho.jp/member/pdpass/faq.html',
+  arknightsMonthlyPass: 'https://www.arknights.jp/contact-1-hint',
+  arknightsLimited2026: 'https://arknights.jp/news/2909',
+  dokkanWebStoreUsage: 'https://bnfaq.channel.or.jp/faq/detail/3015/8687',
+  dokkanWebStoreReflection: 'https://bnfaq.channel.or.jp/faq/detail/3015/8681',
+  wutheringOfficial: 'https://wutheringwaves.kurogames.com/jp/announcement/405',
+  prospiAOfficial: 'https://www.konami.com/games/prospi_a/',
+  prospiAGooglePlayPurchase: 'https://ja-support1.konami.com/hc/ja/articles/5665131759129-Q-%E3%82%A8%E3%83%8A%E3%82%B8%E3%83%BC%E3%81%AE%E8%B3%BC%E5%85%A5%E6%96%B9%E6%B3%95%E3%82%92%E6%95%99%E3%81%88%E3%81%A6%E3%81%8F%E3%81%A0%E3%81%95%E3%81%84-%E3%83%97%E3%83%AD%E9%87%8E%E7%90%83%E3%82%B9%E3%83%94%E3%83%AA%E3%83%83%E3%83%84A',
+  prospiAWebStore: 'https://pawaspi-point.konami.net/general/prospi_games_store',
+  efootballGooglePlay: 'https://www.konami.com/efootball/ja/topic/news/5074',
+  efootballPurchaseLimit: 'https://www.konami.com/efootball/ja/topic/news/4796'
 };
 
 const FGO_PACKS_JP = [
@@ -185,6 +199,73 @@ const GAME_SEO = {
     sources: [SOURCES.gakumasDmmSettlement, SOURCES.gakumasOfficialPre, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     publishGooglePlayPrices: false,
     note: '公式DMM版表示でも配信ストアが異なるサービスを区別している。Google Play版の現行商品価格を一次情報で固定できるまで、旧ジュエル価格・パス価格・200連固定円額を掲載しない。'
+  },
+  pokepoke: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-mechanics-price-recheck-pending',
+    sources: [SOURCES.pokepokePremiumPass, SOURCES.pokepokePremiumMechanics, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    premiumPass: {
+      billing: 'monthly',
+      validFor: 'one-month',
+      firstTrialDays: 14,
+      tiedToPlatformAccount: true,
+      googleAccountSupported: true
+    },
+    note: '公式サポートでGoogle Play定期購入・1か月有効・初回14日無料体験は確認できるが、公開FAQでは現行月額料金やポケゴールド価格を固定していない。購入画面を正本とする。'
+  },
+  pad: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official',
+    sources: [SOURCES.padPass, SOURCES.padPassFaq, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    pass: {
+      price: 980,
+      billing: 'monthly-auto-renew',
+      validFor: 'one-month',
+      freeTrialDays: 7,
+      googlePlaySubscription: true,
+      benefits: {
+        dailySpecialDungeon: true,
+        extraTeamSlots: 5,
+        rankExpBonusPercent: 5,
+        alwaysAvailableDungeonSets: true,
+        passBadge: true,
+        eventQuestExtraRewardsWhenAvailable: true
+      }
+    }
+  },
+  arknights: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-mechanics-price-recheck-pending',
+    sources: [SOURCES.arknightsMonthlyPass, SOURCES.arknightsLimited2026, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    monthlyPass: {
+      paidOriginitePrimeImmediate: 6,
+      orundumPerDay: 200,
+      sanityPotionPerDay: 1,
+      days: 30
+    },
+    limitedScout: {
+      current2026PatternVerified: true,
+      extraLimitedOperatorAtPulls: 300,
+      limitedContractPerPull: 1
+    },
+    note: '月パス内容と2026年リミテッドスカウト300回追加報酬は公式確認済み。現行Google Play価格は公開一次情報で固定できないため、旧価格・90,000円固定天井は掲載しない。'
+  },
+  dokkan: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-webstore-google-play-price-recheck-pending',
+    sources: [SOURCES.dokkanWebStoreUsage, SOURCES.dokkanWebStoreReflection, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    webStoreOutsideGooglePlay: true,
+    note: '公式FAQでWeb Storeとアプリ外購入履歴は確認できる。現行Google Play龍石価格・セール構成は変動するため旧固定価格を掲載せず、Web StoreをGoogle Play購入として数えない。'
+  },
+  wutheringwaves: {
+    verifiedAt: VERIFIED_AT,
+    verification: 'official-game-current-google-play-price-recheck-pending',
+    sources: [SOURCES.wutheringOfficial, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
+    publishGooglePlayPrices: false,
+    note: '公式サイトでAndroid対応・ゲーム内課金ありは確認できるが、現行日本Google Playの商品価格を公開一次情報で固定できないため、旧月相価格・48,000円天井・200,000円完凸を掲載しない。'
   }
 };
 
