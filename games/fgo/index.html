@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-08-18" />
+  <meta name="last-modified" content="2026-09-13" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>Fate/Grand Order (FGO) - Playポイント計算機</title>
@@ -84,10 +84,10 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？",
+      "name": "FGOの確定召喚330回を石0から用意するといくら？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。"
+        "text": "確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。"
       }
     }
   ]
@@ -139,7 +139,7 @@
           <header class="game-header">
               <span class="game-badge">⚔️ 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">Fate/Grand Order (FGO)</h1>
-              <p class="game-meta">Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値） ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">FGO価格・確定召喚・Play Points確認：2026-09-13 ｜ Google Play Points (100円=1pt)</p>
           </header>
 
           <p>Fate/Grand Order（FGO）の聖晶石購入、福袋召喚、確定召喚（330連天井）・宝具5完凸で貯まるPlayポイントをパッと計算！パック別早見表やお得な使い道も比較できます。ガチャ前のポイント確認にぜひ使ってみてくださいね。</p>
@@ -150,9 +150,9 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="1900" data-mult="1" aria-pressed="true">福袋目安 (約1,900円)</button>
-              <button type="button" class="preset-btn " data-amount="3000" data-mult="1" aria-pressed="false">10連分 (約3,000円)</button>
-              <button type="button" class="preset-btn " data-amount="55000" data-mult="1" aria-pressed="false">天井 330連 (約55,000円)</button>
+                  <button type="button" class="preset-btn active" data-amount="1920" data-mult="1" aria-pressed="true">福袋 有償15個をゼロから用意（1,920円）</button>
+                  <button type="button" class="preset-btn" data-amount="10000" data-mult="1" aria-pressed="false">最大パック1回（10,000円）</button>
+                  <button type="button" class="preset-btn" data-amount="54600" data-mult="1" aria-pressed="false">確定召喚330回・石0から（54,600円）</button>
               </div>
 
               <form id="game-sim-form">
@@ -160,12 +160,11 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="160">聖晶石 1個 (160円)</option>
-                  <option value="480">聖晶石 4+1個 (480円)</option>
-                  <option value="1400">聖晶石 12+6個 (1,400円)</option>
-                  <option value="2900">聖晶石 25+16個 (2,900円)</option>
-                  <option value="4900">聖晶石 42+34個 (4,900円)</option>
-                  <option value="10000">聖晶石 86+82個 (10,000円)</option>
+                              <option value="480">聖晶石 有償4+無償1個（計5個 / 480円）</option>
+                              <option value="1600">聖晶石 有償13+無償8個（計21個 / 1,600円）</option>
+                              <option value="3000">聖晶石 有償25+無償16個（計41個 / 3,000円）</option>
+                              <option value="4900">聖晶石 有償42+無償35個（計77個 / 4,900円）</option>
+                              <option value="10000">聖晶石 有償86+無償82個（計168個 / 10,000円）</option>
                               <option value="custom">自由入力（カスタム金額）</option>
                           </select>
                       </div>
@@ -272,12 +271,11 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>聖晶石 1個 (160円)</td><td>160 円</td><td>約 2 pt</td><td>約 8 pt</td></tr>
-<tr><td>聖晶石 4+1個 (480円)</td><td>480 円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
-<tr><td>聖晶石 12+6個 (1,400円)</td><td>1,400 円</td><td>約 14 pt</td><td>約 70 pt</td></tr>
-<tr><td>聖晶石 25+16個 (2,900円)</td><td>2,900 円</td><td>約 29 pt</td><td>約 145 pt</td></tr>
-<tr><td>聖晶石 42+34個 (4,900円)</td><td>4,900 円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
-<tr><td>聖晶石 86+82個 (10,000円)</td><td>10,000 円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
+<tr><td>聖晶石 有償4+無償1個（計5個）</td><td>480円</td><td>約 5 pt</td><td>約 24 pt</td></tr>
+<tr><td>聖晶石 有償13+無償8個（計21個）</td><td>1,600円</td><td>約 16 pt</td><td>約 80 pt</td></tr>
+<tr><td>聖晶石 有償25+無償16個（計41個）</td><td>3,000円</td><td>約 30 pt</td><td>約 150 pt</td></tr>
+<tr><td>聖晶石 有償42+無償35個（計77個）</td><td>4,900円</td><td>約 49 pt</td><td>約 245 pt</td></tr>
+<tr><td>聖晶石 有償86+無償82個（計168個）</td><td>10,000円</td><td>約 100 pt</td><td>約 500 pt</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -322,9 +320,11 @@
           <!-- よくある質問 -->
           <section class="section">
               <h2>よくある質問（FAQ）</h2>
-              <h3>FGOの確定召喚（天井330連=約5.5万円）で貯まるポイントは？</h3>
-<p>通常レートで約550pt、5倍キャンペーン時なら約2,750pt貯まります。</p>
+              <h3>FGOの確定召喚330回を石0から用意するといくら？</h3>
+<p>確認済みの現行価格だけで聖晶石900個以上を最安にそろえる例は54,600円・902個です。ブロンズ通常獲得率なら税込額ベースの概算で約546pt、5pt/100円の特別獲得率なら約2,730ptです。実際の獲得予定ポイントはGoogle Play購入画面を優先してください。</p>
           </section>
+
+          <section class="section" data-game-seo-guide="fgo"><h2>2026年の価格・天井を公式情報で再計算</h2><p>有償1個販売終了後の現行パック、確定召喚330回、福袋の有償15個を分けて再計算しました。石0から確定召喚の上限まで用意する例は54,600円、2026年福袋の有償15個を石0から用意する最小例は1,920円です。</p><p><a href="./pity-cost/">FGO天井330回・福袋・Play Pointsの詳しい計算を見る ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>
