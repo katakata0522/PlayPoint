@@ -1,0 +1,60 @@
+name: One-shot article quality repair
+
+on:
+  push:
+    branches:
+      - fix/article-quality-audit-20260914
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shot-article-quality-repair
+  cancel-in-progress: true
+
+jobs:
+  repair:
+    if: ${{ !contains(github.event.head_commit.message, '[article-quality-ready]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Apply source-level article quality fixes
+        run: node scripts/tmp-article-quality-repair.cjs
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run focused regression tests
+        run: node --test tests/article-quality-polish.test.cjs tests/intl-game-guide-expansion.test.cjs tests/intl-localization-quality.test.cjs tests/intl-localization-semantics.test.cjs
+
+      - name: Run complete preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/article-quality-preflight.log"
+
+      - name: Remove one-shot repair files
+        if: success()
+        run: |
+          rm .github/workflows/tmp-article-quality-repair.yml
+          rm scripts/tmp-article-quality-repair.cjs
+
+      - name: Commit verified repair
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No verified changes to commit"
+            exit 1
+          fi
+          git commit -m "fix: 記事の多言語・日付・構造品質を再整備 [article-quality-ready]"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
