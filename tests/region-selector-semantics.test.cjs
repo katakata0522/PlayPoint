@@ -12,6 +12,11 @@ const primaryRegions = [
   ['KR', '🇰🇷 대한민국'],
   ['TW', '🇹🇼 台灣']
 ];
+const primaryRegionFiles = new Set(['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']);
+const expandedRegionFiles = new Map([
+  ['hk/index.html', /香港 Play Points 官方條件/],
+  ['in/index.html', /India Play Points official conditions/]
+]);
 
 for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
   test(`${file} presents Play country/region rather than language-only labels`, () => {
@@ -22,7 +27,14 @@ for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.ht
       assert.match(html, new RegExp(`<button data-region="${region}"(?: class="active")?>${escaped}<\\/button>`));
     }
     const active = html.match(/<button data-region="(?:JP|US|KR|TW)" class="active">/g) || [];
-    assert.equal(active.length, 1, `${file}: exactly one primary region must be active in fallback HTML`);
+    if (primaryRegionFiles.has(file)) {
+      assert.equal(active.length, 1, `${file}: exactly one primary region must be active in fallback HTML`);
+      return;
+    }
+
+    assert.ok(expandedRegionFiles.has(file), `${file}: unknown region selector contract`);
+    assert.equal(active.length, 0, `${file}: an expanded region must not present another primary region as current`);
+    assert.match(html, expandedRegionFiles.get(file), `${file}: fallback HTML must identify the actual expanded region`);
   });
 }
 
