@@ -55,6 +55,32 @@ test('別リポジトリ管理の公開領域を厳密ミラーの削除対象�
   }
 });
 
+test('デプロイ前snapshotはverified本番だけを公開領域外へ1世代退避する', () => {
+  assert.match(script, /REMOTE_SNAPSHOT_ROOT="\/home\/hajikkoroom\/playpoint-sim\.com\/\.deploy-snapshots"/);
+  assert.match(script, /SNAPSHOT_NAME="previous-verified"/);
+  assert.match(script, /Refusing to snapshot unexpected deployment root/);
+  assert.match(script, /Refusing unexpected snapshot root/);
+  assert.match(script, /if \[ "\$status" != "verified" \]; then/);
+  assert.match(script, /preserving any existing rollback snapshot/);
+  assert.match(script, /\^\[0-9a-f\]\{40\}\$/);
+  assert.match(script, /if \[ "\$commit" != "\$revision" \]; then/);
+  assert.match(script, /--exclude '\/manner\/\*\*\*'/);
+  assert.match(script, /--exclude '\/kanji-slicer\/\*\*\*'/);
+  assert.match(script, /find "\$tmp\/site" -type l -print -quit/);
+  assert.match(script, /mv "\$final" "\$old"/);
+  assert.match(script, /Failed to publish rollback snapshot; previous snapshot restored when available/);
+  assert.match(script, /Stored rollback snapshot for verified production/);
+  assert.match(script, /--snapshot-verified\)/);
+
+  const sshIndex = workflow.indexOf('- name: Setup SSH');
+  const snapshotIndex = workflow.indexOf('- name: Snapshot current verified production');
+  const deployIndex = workflow.indexOf('- name: Deploy strict public mirror via rsync');
+  assert.ok(sshIndex >= 0, 'SSH setup step missing');
+  assert.ok(snapshotIndex > sshIndex, 'snapshot must run only after hardened SSH setup');
+  assert.ok(deployIndex > snapshotIndex, 'snapshot must finish before production mirror starts');
+  assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --snapshot-verified/);
+});
+
 test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', () => {
   assert.match(script, /Refusing to inspect unexpected deployment root/);
   assert.match(script, /\/home\/hajikkoroom\/playpoint-sim\.com\/public_html/);
@@ -87,7 +113,7 @@ test('移設済み・非公開・統合済みの旧パスをXserver上の実体�
   assert.match(script, /Sensitive or non-public server artifacts are absent\./);
 });
 
-test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、後続処理は短めに再試行する', () => {
+test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、snapshot・後続処理は短めに再試行する', () => {
   assert.match(script, /DEFAULT_MAX_ATTEMPTS=5/);
   assert.match(script, /DEPLOY_MAX_ATTEMPTS=7/);
   assert.match(script, /local max_attempts="\$2"/);
@@ -96,10 +122,11 @@ test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、後続�
   assert.match(script, /max_delay" -gt 60/);
   assert.match(script, /RANDOM % \(max_delay - min_delay \+ 1\)/);
   assert.match(script, /non-transient exit code \$exit_code; failing fast/);
+  assert.match(script, /run_with_transient_retry "Snapshotting verified production" "\$DEFAULT_MAX_ATTEMPTS" snapshot_verified_once/);
   assert.match(script, /run_with_transient_retry "Deploying via rsync" "\$DEPLOY_MAX_ATTEMPTS" deploy_once/);
   assert.match(script, /run_with_transient_retry "Verifying remote cleanup" "\$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once/);
   assert.match(script, /run_with_transient_retry "Publishing verified deployment status" "\$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once/);
-  assert.match(workflow, /本体ミラーだけ7回、cleanup\/status公開は5回まで/);
+  assert.match(workflow, /本体ミラーだけ7回、snapshot\/cleanup\/status公開は5回まで/);
   assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --publish-status/);
   assert.doesNotMatch(
     workflow,
@@ -149,7 +176,7 @@ test('本番SSHは公開鍵だけを使い、転送・TTY・鍵残存を許さ�
 test('GitHub Actionsのjob timeoutはXserver retry予算を途中で打ち切らない', () => {
   const match = workflow.match(/timeout-minutes:\s*(\d+)/);
   assert.ok(match, 'deploy workflow timeout is missing');
-  assert.ok(Number(match[1]) >= 30, `deploy timeout is too short for bounded retry/backoff: ${match[1]} minutes`);
+  assert.ok(Number(match[1]) >= 40, `deploy timeout is too short for snapshot plus bounded retry/backoff: ${match[1]} minutes`);
 });
 
 test('旧calculatorファイルを持たず301転送だけを維持する', () => {

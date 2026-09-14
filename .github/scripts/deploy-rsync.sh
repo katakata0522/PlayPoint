@@ -3,6 +3,8 @@ set -euo pipefail
 
 REMOTE_HOST="hajikkoroom@hajikkoroom.xsrv.jp"
 REMOTE_ROOT="/home/hajikkoroom/playpoint-sim.com/public_html"
+REMOTE_SNAPSHOT_ROOT="/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots"
+SNAPSHOT_NAME="previous-verified"
 SSH_KEY="$HOME/.ssh/id_ed25519"
 DEPLOY_SOURCE_ROOT="${DEPLOY_SOURCE_ROOT:-}"
 SSH_OPTIONS=(
@@ -28,8 +30,8 @@ RSYNC_RSH="ssh -p 10022 -i $SSH_KEY -o BatchMode=yes -o IdentitiesOnly=yes -o Pu
 
 DEFAULT_MAX_ATTEMPTS=5
 # The full mirror is the only phase that benefits from a longer outage window.
-# Cleanup/status publication stay at the smaller default so a recovered deploy
-# cannot spend the rest of the job retrying secondary verification writes.
+# Snapshot/cleanup/status publication stay at the smaller default so a recovered
+# deploy cannot spend the rest of the job retrying secondary operations.
 DEPLOY_MAX_ATTEMPTS=7
 RSYNC_IO_TIMEOUT_SECONDS=60
 
@@ -112,6 +114,110 @@ resolve_deploy_source_root() {
     return 2
   fi
   printf '%s\n' "$source_root"
+}
+
+snapshot_verified_once() {
+  ssh "${SSH_OPTIONS[@]}" "$REMOTE_HOST" bash -s -- "$REMOTE_ROOT" "$REMOTE_SNAPSHOT_ROOT" "$SNAPSHOT_NAME" <<'REMOTE'
+set -euo pipefail
+umask 077
+root="$1"
+snapshot_root="$2"
+snapshot_name="$3"
+
+case "$root" in
+  /home/hajikkoroom/playpoint-sim.com/public_html)
+    ;;
+  *)
+    echo "Refusing to snapshot unexpected deployment root: $root" >&2
+    exit 2
+    ;;
+esac
+case "$snapshot_root" in
+  /home/hajikkoroom/playpoint-sim.com/.deploy-snapshots)
+    ;;
+  *)
+    echo "Refusing unexpected snapshot root: $snapshot_root" >&2
+    exit 2
+    ;;
+esac
+if [ "$snapshot_name" != "previous-verified" ]; then
+  echo "Refusing unexpected snapshot name: $snapshot_name" >&2
+  exit 2
+fi
+
+status_file="$root/status/deploy-status.json"
+revision_file="$root/status/deploy-revision.txt"
+if [ ! -f "$status_file" ] || [ ! -f "$revision_file" ]; then
+  echo "Production verification metadata is incomplete; preserving any existing rollback snapshot."
+  exit 0
+fi
+
+status="$(sed -n 's/^[[:space:]]*"status":[[:space:]]*"\([^"]*\)".*/\1/p' "$status_file" | head -n 1)"
+commit="$(sed -n 's/^[[:space:]]*"commit":[[:space:]]*"\([0-9A-Fa-f]*\)".*/\1/p' "$status_file" | head -n 1 | tr '[:upper:]' '[:lower:]')"
+revision="$(tr -d '\r\n' < "$revision_file" | tr '[:upper:]' '[:lower:]')"
+
+if [ "$status" != "verified" ]; then
+  echo "Current production status is '$status', not verified; preserving any existing rollback snapshot."
+  exit 0
+fi
+if ! [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || ! [[ "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "Verified production metadata contains an invalid revision; refusing to replace rollback snapshot." >&2
+  exit 2
+fi
+if [ "$commit" != "$revision" ]; then
+  echo "Verified production metadata disagrees on revision; refusing to replace rollback snapshot." >&2
+  exit 2
+fi
+
+mkdir -p "$snapshot_root"
+chmod 700 "$snapshot_root"
+final="$snapshot_root/$snapshot_name"
+tmp="$snapshot_root/.${snapshot_name}.tmp.$$"
+old="$snapshot_root/.${snapshot_name}.old.$$"
+rm -rf "$tmp"
+mkdir -p "$tmp/site"
+trap 'rm -rf "$tmp"' EXIT
+
+# manner / kanji-slicer are separate projects protected by the production mirror;
+# they are intentionally outside PlayPoint rollback ownership as well.
+rsync -a --delete \
+  --exclude '/manner/***' \
+  --exclude '/kanji-slicer/***' \
+  "$root/" "$tmp/site/"
+
+if find "$tmp/site" -type l -print -quit | grep -q .; then
+  echo "Rollback snapshot contains a symlink; refusing to publish it." >&2
+  exit 2
+fi
+snapshot_revision="$(tr -d '\r\n' < "$tmp/site/status/deploy-revision.txt" | tr '[:upper:]' '[:lower:]')"
+snapshot_status="$(sed -n 's/^[[:space:]]*"status":[[:space:]]*"\([^"]*\)".*/\1/p' "$tmp/site/status/deploy-status.json" | head -n 1)"
+if [ "$snapshot_revision" != "$commit" ] || [ "$snapshot_status" != "verified" ]; then
+  echo "Rollback snapshot failed its verification metadata check." >&2
+  exit 2
+fi
+printf '%s\n' "$commit" > "$tmp/revision.txt"
+printf '%s\n' "verified" > "$tmp/status.txt"
+
+had_previous=0
+if [ -e "$final" ] || [ -L "$final" ]; then
+  mv "$final" "$old"
+  had_previous=1
+fi
+if ! mv "$tmp" "$final"; then
+  if [ "$had_previous" -eq 1 ] && { [ -e "$old" ] || [ -L "$old" ]; }; then
+    mv "$old" "$final"
+  fi
+  echo "Failed to publish rollback snapshot; previous snapshot restored when available." >&2
+  exit 2
+fi
+trap - EXIT
+if [ "$had_previous" -eq 1 ]; then
+  rm -rf "$old"
+fi
+
+file_count="$(find "$final/site" -type f | wc -l | tr -d '[:space:]')"
+echo "Stored rollback snapshot for verified production $commit ($file_count files)."
+REMOTE
 }
 
 deploy_once() {
@@ -239,6 +345,9 @@ case "${1:-deploy}" in
     run_with_transient_retry "Deploying via rsync" "$DEPLOY_MAX_ATTEMPTS" deploy_once
     echo "Deployment succeeded!"
     run_with_transient_retry "Verifying remote cleanup" "$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once
+    ;;
+  --snapshot-verified)
+    run_with_transient_retry "Snapshotting verified production" "$DEFAULT_MAX_ATTEMPTS" snapshot_verified_once
     ;;
   --publish-status)
     run_with_transient_retry "Publishing verified deployment status" "$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once
