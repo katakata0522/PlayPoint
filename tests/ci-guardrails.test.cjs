@@ -31,7 +31,7 @@ test('必須PR GateがローカルChromium検証を所有し、Standalone Browse
     assert.ok(qualityWorkflow.includes(`node .github/scripts/${script}`), `PR Gate missing ${script}`);
   }
   assert.match(qualityWorkflow, /name: Install required browser driver/);
-  assert.match(qualityWorkflow, /playwright-core@1\.55\.0/);
+  assert.match(qualityWorkflow, /bash \.github\/scripts\/setup-browser-runtime\.sh/);
   assert.match(qualityWorkflow, /browser-smoke-artifacts\//);
   assert.doesNotMatch(browserWorkflow, /^\s*pull_request:\s*$/m);
   assert.match(browserWorkflow, /workflow_dispatch:/);
@@ -122,21 +122,24 @@ test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準�
   assert.ok(mirrorIndex < securityIndex, 'HTTP/security checks must follow production mutation');
   assert.ok(securityIndex < browserIndex, 'Chromium must run after basic live health checks');
   assert.ok(browserIndex < publishIndex, 'verified status must wait for production Chromium');
-  assert.match(deployWorkflow, /playwright-core@1\.55\.0/);
+  assert.match(getStepBlock(deployWorkflow, 'Install production browser verifier'), /bash \.github\/scripts\/setup-browser-runtime\.sh/);
   assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
   assert.doesNotMatch(browserWorkflow, /workflow_run:/);
 });
 
-test('検証専用workflowの変更だけでは本番Deployを起動しない', () => {
+test('検証・復旧専用workflowの変更だけでは本番Deployを起動しない', () => {
   const workflow = read('.github/workflows/deploy.yml');
 
-  for (const path of [
+  for (const workflowPath of [
     '.github/workflows/browser-smoke.yml',
     '.github/workflows/mobile-performance.yml',
     '.github/workflows/quality-check.yml',
-    '.github/workflows/seo-healthcheck.yml'
+    '.github/workflows/seo-healthcheck.yml',
+    '.github/workflows/rollback.yml',
+    '.github/workflows/deploy-recovery-watchdog.yml',
+    '.github/workflows/snapshot-history.yml'
   ]) {
-    assert.ok(workflow.includes(`- '${path}'`), `${path} must be ignored by Deploy`);
+    assert.ok(workflow.includes(`- '${workflowPath}'`), `${workflowPath} must be ignored by Deploy push trigger`);
   }
 });
 
