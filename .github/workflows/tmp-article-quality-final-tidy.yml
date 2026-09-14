@@ -1,0 +1,74 @@
+name: One-shot article quality final tidy
+
+on:
+  push:
+    branches:
+      - fix/article-quality-audit-20260914
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-shot-article-quality-final-tidy
+  cancel-in-progress: true
+
+jobs:
+  tidy:
+    if: ${{ !contains(github.event.head_commit.message, '[article-quality-tidy-ready]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 1
+
+      - name: Remove redundant author weight declaration
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('articles/article-shared.css')
+          source = path.read_text(encoding='utf-8')
+          old = ".author-info h4, .author-info .author-profile-title, .author-box-name {\nfont-size: 16px;\nfont-weight: 700;\nmargin-bottom: 6px;\ncolor: #0f172a;\nfont-weight: 800;"
+          new = ".author-info h4, .author-info .author-profile-title, .author-box-name {\nfont-size: 16px;\nmargin-bottom: 6px;\ncolor: #0f172a;\nfont-weight: 800;"
+          if old not in source:
+              raise SystemExit('redundant author weight declaration not found')
+          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run focused article quality regression
+        run: node --test tests/article-quality-polish.test.cjs
+
+      - name: Build clean candidate commit locally
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/tmp-article-quality-final-tidy.yml
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No tidy changes to commit"
+            exit 1
+          fi
+          git commit -m "style: remove redundant article author weight [article-quality-tidy-ready]"
+
+      - name: Run complete preflight against tidy candidate HEAD
+        run: node .github/scripts/preflight.cjs
+
+      - name: Confirm clean worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Preflight left unexpected changes"
+            git status --short
+            exit 1
+          fi
+
+      - name: Publish verified tidy candidate
+        run: git push origin HEAD:"${GITHUB_REF_NAME}"
