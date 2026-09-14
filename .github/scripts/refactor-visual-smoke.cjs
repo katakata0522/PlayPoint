@@ -69,7 +69,29 @@ async function capture(pair, name, report) {
     await entry.page.evaluate(() => document.fonts.ready);
     await entry.page.mouse.move(0, 0);
     await entry.page.evaluate(() => window.scrollTo(0, 0));
-    images.push(await entry.page.screenshot({ path: path.join(evidence, `${name}-${index === 0 ? 'before' : 'after'}.png`), fullPage: true, animations: 'disabled', caret: 'hide' }));
+    // Chromium can skip offscreen content-visibility:auto subtrees in a full-page
+    // capture. Compare rendered content, never random intrinsic-size placeholders.
+    // Only auto is expanded; hidden/display/visibility and pixel equality stay intact.
+    const rendering = await entry.page.evaluateHandle(() => [...document.querySelectorAll('*')]
+      .filter(element => getComputedStyle(element).contentVisibility === 'auto')
+      .map(element => {
+        const previous = { element, value: element.style.getPropertyValue('content-visibility'), priority: element.style.getPropertyPriority('content-visibility') };
+        element.style.setProperty('content-visibility', 'visible', 'important');
+        return previous;
+      }));
+    try {
+      await entry.page.evaluate(async () => {
+        await document.fonts.ready;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
+      images.push(await entry.page.screenshot({ path: path.join(evidence, `${name}-${index === 0 ? 'before' : 'after'}.png`), fullPage: true, animations: 'disabled', caret: 'hide' }));
+    } finally {
+      await rendering.evaluate(items => items.forEach(({ element, value, priority }) => {
+        if (value) element.style.setProperty('content-visibility', value, priority);
+        else element.style.removeProperty('content-visibility');
+      }));
+      await rendering.dispose();
+    }
     assert.deepEqual(entry.errors, [], `${name}: browser errors`);
   }
   const equal = images[0].equals(images[1]);
