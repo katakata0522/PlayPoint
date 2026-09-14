@@ -18,6 +18,7 @@ on:
       - '.github/workflows/mobile-performance.yml'
       - '.github/workflows/quality-check.yml'
       - '.github/workflows/seo-healthcheck.yml'
+      - '.github/workflows/rollback.yml'
 
 permissions:
   contents: read
@@ -32,8 +33,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # Xserverの通信フェーズは接続待ちに加えて、接続後の停止も上限付きで検知して再試行する。
-    # 本体ミラーだけ7回、snapshot/cleanup/status公開は5回までとし、40分以内の有界な復旧予算に収める。
-    timeout-minutes: 40
+    # 本体ミラー7回・snapshot/rollback等5回に加え、失敗時の復元検証まで50分以内に収める。
+    timeout-minutes: 50
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -143,10 +144,22 @@ jobs:
         run: bash .github/scripts/deploy-rsync.sh --snapshot-verified
 
       - name: Verify rollback snapshot before production mutation
+        id: rollback-snapshot
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
-        run: bash .github/scripts/deploy-rsync.sh --verify-snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(bash .github/scripts/deploy-rsync.sh --verify-snapshot)"
+          printf '%s\n' "$output"
+          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_SNAPSHOT_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
+          if ! [[ "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Rollback snapshot did not return one valid revision.' >&2
+            exit 2
+          fi
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
 
       - name: Deploy strict public mirror via rsync
+        id: production-mirror
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: bash .github/scripts/deploy-rsync.sh
 
@@ -186,6 +199,75 @@ jobs:
 
           bash .github/scripts/deploy-rsync.sh --publish-status
           node .github/scripts/verify-deploy-status.cjs
+
+      # ここからは失敗したreleaseを成功扱いにしない復旧レーン。
+      # production-mirrorが実際に試行された場合だけprevious verifiedへ戻す。
+      - name: Auto-rollback failed production mutation
+        id: auto-rollback
+        if: ${{ failure() && steps.rollback-snapshot.outputs.revision != '' && (steps.production-mirror.outcome == 'success' || steps.production-mirror.outcome == 'failure') }}
+        env:
+          EXPECTED_ROLLBACK_REVISION: ${{ steps.rollback-snapshot.outputs.revision }}
+        run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
+
+      - name: Checkout auto-rollback revision for matching verification logic
+        if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.rollback-snapshot.outputs.revision }}
+          path: auto-rollback-verifier
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Verify auto-rollback HTTP, SEO, sitemap, and security
+        id: auto-rollback-http
+        if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
+        working-directory: auto-rollback-verifier
+        env:
+          EXPECTED_DEPLOY_REVISION: ${{ steps.rollback-snapshot.outputs.revision }}
+          EXPECTED_DEPLOY_STATUS: verified
+        run: |
+          set -euo pipefail
+          node .github/scripts/smoke-test.cjs
+          node .github/scripts/verify-deploy-status.cjs
+          node .github/scripts/seo-health-check.cjs
+          node .github/scripts/sitemap-health-check.cjs
+          node .github/scripts/security-health-check.cjs
+
+      - name: Install browser driver for auto-rollback verification
+        if: ${{ failure() && steps.auto-rollback.outcome == 'success' && steps.auto-rollback-http.outcome == 'success' }}
+        working-directory: auto-rollback-verifier
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify auto-rollback production in Chromium
+        if: ${{ failure() && steps.auto-rollback.outcome == 'success' && steps.auto-rollback-http.outcome == 'success' }}
+        working-directory: auto-rollback-verifier
+        env:
+          SMOKE_BASE_URL: https://playpoint-sim.com/
+        run: |
+          set -euo pipefail
+          node .github/scripts/browser-smoke.cjs
+          node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
+          node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
+
+      - name: Upload auto-rollback browser evidence
+        if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: auto-rollback-browser-${{ github.run_id }}
+          path: auto-rollback-verifier/browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Remove SSH material
         if: always()
