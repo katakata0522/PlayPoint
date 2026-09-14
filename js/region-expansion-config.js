@@ -1,5 +1,7 @@
 'use strict';
 
+import { createRegionCalculationConfig } from './region-rules.js';
+
 function cloneRegion(base, overrides) {
     return {
         ...base,
@@ -23,20 +25,10 @@ export function createExpansionConfigs(configs) {
 
     const hk = cloneRegion(baseTw, {
         lang: 'zh-HK',
-        statuses: { '銅級': 1.0, '銀級': 1.25, '金級': 1.5, '鉑金級': 1.75, '鑽石級': 2.0 },
-        statusRates: { 1.0: 1.0, 1.25: 1.25, 1.5: 1.5, 1.75: 1.75, 2.0: 2.0 },
-        thresholds: { '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 },
-        statusPointsMapping: {
-            1.0: ['銀級', '金級', '鉑金級', '鑽石級'],
-            1.25: ['金級', '鉑金級', '鑽石級'],
-            1.5: ['鉑金級', '鑽石級'],
-            1.75: ['鑽石級'],
-            2.0: []
-        },
+        ...createRegionCalculationConfig('HK'),
         currencySymbol: 'HK$',
         currencyPosition: 'prefix',
         rateUnit: 'HK$7',
-        spendUnit: 7,
         tooltips: {
             'tooltip-target-status': '<strong>【香港 Play Points 等級條件】</strong><ul><li><strong>銀級:</strong> 250 pt 或以上</li><li><strong>金級:</strong> 1,000 pt 或以上</li><li><strong>鉑金級:</strong> 4,000 pt 或以上</li><li><strong>鑽石級:</strong> 15,000 pt 或以上</li></ul><hr><p>等級與獲點率會因國家／地區而異；本頁使用香港的官方條件。</p>',
             'tooltip-base-rate': '<strong>【香港基本獲點率】</strong><p>系統會依目前等級，自動帶入每 HK$7 的基本獲點率。只有 Google Play 活動畫面顯示其他特別獲點率時才需要修改。</p>',
@@ -78,19 +70,10 @@ export function createExpansionConfigs(configs) {
 
     const india = cloneRegion(baseUs, {
         lang: 'en-IN',
-        statuses: { Bronze: 1.0, Silver: 1.1, Gold: 1.2, Platinum: 1.4 },
-        statusRates: { 1.0: 1.0, 1.1: 1.1, 1.2: 1.2, 1.4: 1.4 },
-        thresholds: { Silver: 250, Gold: 1000, Platinum: 4000 },
-        statusPointsMapping: {
-            1.0: ['Silver', 'Gold', 'Platinum'],
-            1.1: ['Gold', 'Platinum'],
-            1.2: ['Platinum'],
-            1.4: []
-        },
+        ...createRegionCalculationConfig('IN'),
         currencySymbol: '₹',
         currencyPosition: 'prefix',
         rateUnit: '₹5',
-        spendUnit: 5,
         tooltips: {
             'tooltip-target-status': '<strong>India Play Points level requirements:</strong><ul><li><strong>Silver:</strong> 250+ pts</li><li><strong>Gold:</strong> 1,000+ pts</li><li><strong>Platinum:</strong> 4,000+ pts</li></ul><hr><p>Google currently lists Platinum as the highest Play Points level for India. Levels and earn rates vary by country.</p>',
             'tooltip-base-rate': '<strong>India base earn rate:</strong><p>The calculator fills your level rate per ₹5 automatically. Change it only when Google Play shows a different special earn rate for an eligible promotion.</p>',

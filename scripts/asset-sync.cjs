@@ -30,6 +30,9 @@ const APP_MODULE_FILES = [
   'js/ui.js',
   'js/diary.js',
   'js/calculator.js',
+  'js/calculator-core.js',
+  'js/calculator-result-view.js',
+  'js/region-rules.js',
   'js/share.js',
   'js/main-calculator-ui.js'
 ];

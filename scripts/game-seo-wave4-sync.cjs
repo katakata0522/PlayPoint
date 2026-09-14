@@ -1,106 +1,15 @@
 'use strict';
 
-const fs = require('node:fs');
-const path = require('node:path');
-const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
+const { read, writeIfChanged, replaceDescriptionsAcrossGamePages, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
+const { replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-wave4');
+
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('./game-seo-wave4-data.cjs');
 
-function read(rootDir, relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-}
-
-function writeIfChanged(rootDir, relativePath, content) {
-  const filePath = path.join(rootDir, relativePath);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const normalized = content.replace(/\r\n/g, '\n');
-  const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
-  if (previous === normalized) return false;
-  fs.writeFileSync(filePath, normalized, 'utf8');
-  return true;
-}
-
-function replaceRegexRequired(source, pattern, after, marker, label) {
-  if (marker && source.includes(marker)) return source;
-  if (!pattern.test(source)) throw new Error(`[game-seo-wave4] ${label}: expected source pattern was not found`);
-  pattern.lastIndex = 0;
-  return source.replace(pattern, after);
-}
-
-function insertBeforeRequired(source, needle, block, marker, label) {
-  if (source.includes(marker)) return source;
-  const index = source.indexOf(needle);
-  if (index < 0) throw new Error(`[game-seo-wave4] ${label}: insertion point was not found`);
-  return `${source.slice(0, index)}${block}\n\n          ${source.slice(index)}`;
-}
-
-function replaceDescriptionAcrossGamePages(rootDir, before, after) {
-  const changedFiles = [];
-  for (const relativePath of getGamePageHtmlFiles(rootDir)) {
-    if (!relativePath.startsWith('games/')) continue;
-    const filePath = path.join(rootDir, relativePath);
-    const html = fs.readFileSync(filePath, 'utf8');
-    if (!html.includes(before)) continue;
-    const next = html.replaceAll(before, after);
-    if (next !== html) {
-      fs.writeFileSync(filePath, next, 'utf8');
-      changedFiles.push(relativePath);
-    }
-  }
-  return changedFiles;
-}
-
-function guideShell({ gameId, slug, title, description, lead, body, faq = [] }) {
-  const canonical = `https://playpoint-sim.com/games/${gameId}/${slug}/`;
-  const faqJson = faq.length ? `\n  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map(item => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } }))
-  }, null, 2)}\n  </script>` : '';
-  return `<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="${VERIFIED_AT}" />
-  <meta name="author" content="かたかた" />
-  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
-  <title>${title} | Playポイント計算機</title>
-  <meta name="description" content="${description}" />
-  <link rel="canonical" href="${canonical}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Playポイント計算機" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${canonical}" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1f3377e639" />
-  <link rel="stylesheet" href="../../games.css?v=09016b3c58" />
-  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: title,
-    dateModified: VERIFIED_AT,
-    author: { '@type': 'Person', name: 'かたかた', url: 'https://playpoint-sim.com/author/katakata.html' },
-    publisher: { '@type': 'Organization', name: 'Playポイント計算機', url: 'https://playpoint-sim.com/' },
-    mainEntityOfPage: canonical
-  }, null, 2)}\n  </script>${faqJson}
-</head>
-<body>
-  <header class="site-header"><div class="site-header-inner"><a class="site-logo" href="../../../"><span class="site-logo-icon">🎮</span><span class="site-logo-text">Playポイント計算機</span></a></div></header>
-  <nav class="global-nav" aria-label="メインナビゲーション"><div class="global-nav-inner"><a class="nav-item" href="../../../"><span>ホーム</span></a><a class="nav-item active" href="../../"><span>ゲーム別計算</span></a><a class="nav-item" href="../../../blog/"><span>記事一覧</span></a><a class="nav-item" href="../../../author/katakata.html"><span>運営者</span></a></div></nav>
-  <div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト"><a href="../../../">ホーム</a> <span>&gt;</span> <a href="../../">ゲーム別計算</a> <span>&gt;</span> <a href="../">ゲーム本体</a> <span>&gt;</span> <span>${title}</span></nav></div>
-  <div class="game-page-container"><main class="game-main-content">
-    <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${VERIFIED_AT}</p></header>
-    <p>${lead}</p>
-    ${body}
-    <section class="section"><h2>このページの確認方針</h2><p>Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を最終正本とします。</p></section>
-  </main></div>
-  <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
-</body>
-</html>\n`;
-}
+const guideShell = createGuideShell({
+  verifiedAt: VERIFIED_AT,
+  badge: '🔎 公式情報を基準に検証',
+  verificationPolicy: 'Google Playと公式Web決済は別の購入経路です。現行Google Play価格を公開一次情報で確認できない場合は推測で補わず、ゲーム内・Google Playの購入画面を最終正本とします。'
+});
 
 function syncCustomOnly(rootDir, config) {
   let html = read(rootDir, config.file);
@@ -124,7 +33,7 @@ function renderHbrGuide() {
     <section class="section"><h2>Google Play Pointsを重視するなら</h2><p>WEB SHOPはGoogle Play上の購入ではありません。Google Play Pointsを貯めたい場合は、Google Play側の対象購入で表示される獲得予定ポイントと、WEB SHOPの5%OFF・WEB SHOPポイントを別々に比較してください。両者を同じポイントとして合算しません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hbrWebShop}" target="_blank" rel="noopener noreferrer">ヘブバン公式WEB SHOP：現在の商品表示</a></li><li><a href="${SOURCES.hbrWebShopHelp}" target="_blank" rel="noopener noreferrer">公式ヘルプ：アプリ内より5%OFF</a></li><li><a href="${SOURCES.hbrWebShopPoints}" target="_blank" rel="noopener noreferrer">公式ヘルプ：WEB SHOPポイント</a></li><li><a href="${SOURCES.hbrWebShopOther}" target="_blank" rel="noopener noreferrer">公式ヘルプ：月額パスはWEB SHOP加入不可</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ヘブバン Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'hbr', slug: 'google-play-vs-webshop', title: 'ヘブバンはGoogle PlayとWEB SHOPどっちがお得？5%OFF・独自ポイント・パスの違い【2026年】', description: 'ヘブバン公式WEB SHOPの5%OFF、WEB SHOPポイント、WEB限定クォーツ、月額パス加入不可の条件をGoogle Play Pointsと分けて比較します。', lead: 'ヘブバンは公式WEB SHOPが強い一方、月額パスはWEB SHOPで加入できません。「安さ」「独自ポイント」「Google Play Points」「買える商品」を分けて比較します。', body, faq: [
+  return guideShell({ gameId: 'hbr', slug: 'google-play-vs-webshop', lead: 'ヘブバンは公式WEB SHOPが強い一方、月額パスはWEB SHOPで加入できません。「安さ」「独自ポイント」「Google Play Points」「買える商品」を分けて比較します。', body, faq: [
     { q: 'ヘブバンWEB SHOPはアプリ内より安いですか？', a: '公式ヘルプでは、対象のパック商品やクォーツ商品をアプリ内より5%OFFで購入できると案内しています。商品ごとの現在条件はWEB SHOP表示を確認してください。' },
     { q: 'ヘブバンWEB SHOPでGoogle Play Pointsは貯まりますか？', a: 'WEB SHOPはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play上の対象購入で表示される獲得予定ポイントを確認してください。' }
   ] });
@@ -138,7 +47,7 @@ function renderHi3Guide() {
     <section class="section"><h2>Google Play PointsはGoogle Play購入と分ける</h2><p>HoYoverse公式チャージセンターはGoogle Play上の購入ではありません。Google Play Pointsを重視する場合は、Google Play側の購入確認画面に表示されるポイントと、チャージセンター側の割引・特典を別軸で比較します。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンター</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：2026年チャージセンター割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">崩壊3rd Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', title: '崩壊3rdはGoogle Playと公式チャージセンターどっち？2倍特典・月パス・Play Points【2026年】', description: '崩壊3rdのGoogle Play購入とHoYoverse公式チャージセンターを、2倍チャージ特典、月パス延長、期間限定割引、Play Pointsの違いから整理します。', lead: '崩壊3rdは公式チャージセンターがあり、ゲーム内と共有する特典もあります。ただしGoogle Play Pointsとは別経路なので、購入目的ごとに比較します。', body, faq: [
+  return guideShell({ gameId: 'honkai3rd', slug: 'google-play-vs-charge-center', pageDescription: '崩壊3rdのGoogle Play購入とHoYoverse公式チャージセンターを、2倍チャージ特典、月パス延長、期間限定割引、Play Pointsの違いから整理します。', lead: '崩壊3rdは公式チャージセンターがあり、ゲーム内と共有する特典もあります。ただしGoogle Play Pointsとは別経路なので、購入目的ごとに比較します。', body, faq: [
     { q: '崩壊3rdの公式チャージセンターでも初回2倍は使えますか？', a: '公式案内では、月パス以外の水晶2倍チャージボーナスはゲーム内と公式チャージセンターで共有されます。' },
     { q: '公式チャージセンター購入でGoogle Play Pointsは貯まりますか？', a: '公式チャージセンターはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play側の対象購入で確認してください。' }
   ] });
@@ -153,7 +62,7 @@ function renderPhantomGuide() {
     <section class="section"><h2>Google Play Pointsを含めた比較</h2><p>WEBショップ購入はGoogle Play上の購入ではないため、Google Play Points獲得を前提にしません。「WEB増量・マイル」と「Google Play Points」を別々に見て、自分の購入額と現在のキャンペーンに合わせて選ぶのが安全です。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.phantomWebShop}" target="_blank" rel="noopener noreferrer">ファンパレ公式WEBショップ：現在の商品・増量表示</a></li><li><a href="${SOURCES.phantomWebShopLogin}" target="_blank" rel="noopener noreferrer">公式WEBショップ：アカウント連携</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ファンパレ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', title: 'ファンパレはGoogle PlayとWEBショップどっちがお得？増量・マイル・Play Points比較【2026年】', description: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面を正本にします。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
+  return guideShell({ gameId: 'phantomparade', slug: 'google-play-vs-webshop', pageDescription: 'ファンパレ公式WEBショップの増量率、マイルpt、パス商品とGoogle Play Pointsを別軸で比較。Google Play価格は推測せず購入画面を正本にします。', lead: 'ファンパレ公式WEBショップには増量商品とマイルptがあります。Google Play Pointsと同じものではないため、現在の増量・支払経路・ポイントを分けて比較します。', body, faq: [
     { q: 'ファンパレWEBショップには増量がありますか？', a: '2026年9月13日の公式WEBショップでは、有償廻珠の初回17〜20%増量や、期間商品4〜5%増量などが表示されています。内容は時期で変わります。' },
     { q: 'WEBショップでGoogle Play Pointsは貯まりますか？', a: 'WEBショップはGoogle Play上の購入ではありません。Google Play PointsはGoogle Play上の対象購入で確認してください。' }
   ] });
@@ -222,7 +131,7 @@ function syncGameSeoWave4(rootDir) {
   ];
   for (const [file, html] of guides) if (writeIfChanged(rootDir, file, html)) changedFiles.push(file);
 
-  for (const config of configs) changedFiles.push(...replaceDescriptionAcrossGamePages(rootDir, config.descriptionBefore, config.descriptionAfter));
+  changedFiles.push(...replaceDescriptionsAcrossGamePages(rootDir, configs.map(config => [config.descriptionBefore, config.descriptionAfter])));
 
   return { checked: 7, changedFiles: [...new Set(changedFiles)].sort() };
 }

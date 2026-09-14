@@ -1,7 +1,8 @@
 'use strict';
 
-const fs = require('node:fs');
-const path = require('node:path');
+const { read, writeIfChanged, replaceDescriptionsAcrossGamePages, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
+const { replaceRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-wave3');
+
 const {
   VERIFIED_AT,
   GOOGLE_PLAY_JP_LEVELS,
@@ -9,114 +10,17 @@ const {
   GAME_SEO,
   roundedPointsForYen
 } = require('./game-seo-data.cjs');
-const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
-
-function read(rootDir, relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-}
-
-function writeIfChanged(rootDir, relativePath, content) {
-  const filePath = path.join(rootDir, relativePath);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const normalized = content.replace(/\r\n/g, '\n');
-  const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
-  if (previous === normalized) return false;
-  fs.writeFileSync(filePath, normalized, 'utf8');
-  return true;
-}
-
-function replaceRequired(source, before, after, label) {
-  if (source.includes(after)) return source;
-  if (!source.includes(before)) throw new Error(`[game-seo-wave3] ${label}: expected source text was not found`);
-  return source.replace(before, after);
-}
-
-function replaceRegexRequired(source, pattern, after, marker, label) {
-  if (marker && source.includes(marker)) return source;
-  if (!pattern.test(source)) throw new Error(`[game-seo-wave3] ${label}: expected source pattern was not found`);
-  pattern.lastIndex = 0;
-  return source.replace(pattern, after);
-}
-
-function insertBeforeRequired(source, needle, block, marker, label) {
-  if (source.includes(marker)) return source;
-  const index = source.indexOf(needle);
-  if (index < 0) throw new Error(`[game-seo-wave3] ${label}: insertion point was not found`);
-  return `${source.slice(0, index)}${block}\n\n          ${source.slice(index)}`;
-}
-
-function replaceDescriptionAcrossGamePages(rootDir, before, after) {
-  const changedFiles = [];
-  for (const relativePath of getGamePageHtmlFiles(rootDir)) {
-    const filePath = path.join(rootDir, relativePath);
-    const html = fs.readFileSync(filePath, 'utf8');
-    if (!html.includes(before)) continue;
-    const next = html.replaceAll(before, after);
-    if (next !== html) {
-      fs.writeFileSync(filePath, next, 'utf8');
-      changedFiles.push(relativePath);
-    }
-  }
-  return changedFiles;
-}
 
 function pointTableHtml(amount) {
   const rows = GOOGLE_PLAY_JP_LEVELS.map(level => `<tr><td>${level.label}</td><td>${level.rate}pt / 100円</td><td>約 ${roundedPointsForYen(amount, level.rate).toLocaleString('ja-JP')}pt</td></tr>`).join('\n');
   return `<div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>Play Pointsステータス</th><th>通常獲得率</th><th>${Number(amount).toLocaleString('ja-JP')}円購入時</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-function guideShell({ gameId, slug, title, description, lead, body, faq = [] }) {
-  const canonical = `https://playpoint-sim.com/games/${gameId}/${slug}/`;
-  const faqJson = faq.length ? `\n  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map(item => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } }))
-  }, null, 2)}\n  </script>` : '';
-  return `<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="${VERIFIED_AT}" />
-  <meta name="author" content="かたかた" />
-  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
-  <title>${title} | Playポイント計算機</title>
-  <meta name="description" content="${description}" />
-  <link rel="canonical" href="${canonical}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Playポイント計算機" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${canonical}" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1f3377e639" />
-  <link rel="stylesheet" href="../../games.css?v=09016b3c58" />
-  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: title,
-    dateModified: VERIFIED_AT,
-    author: { '@type': 'Person', name: 'かたかた', url: 'https://playpoint-sim.com/author/katakata.html' },
-    publisher: { '@type': 'Organization', name: 'Playポイント計算機', url: 'https://playpoint-sim.com/' },
-    mainEntityOfPage: canonical
-  }, null, 2)}\n  </script>${faqJson}
-</head>
-<body>
-  <header class="site-header"><div class="site-header-inner"><a class="site-logo" href="../../../"><span class="site-logo-icon">🎮</span><span class="site-logo-text">Playポイント計算機</span></a></div></header>
-  <nav class="global-nav" aria-label="メインナビゲーション"><div class="global-nav-inner"><a class="nav-item" href="../../../"><span>ホーム</span></a><a class="nav-item active" href="../../"><span>ゲーム別計算</span></a><a class="nav-item" href="../../../blog/"><span>記事一覧</span></a><a class="nav-item" href="../../../author/katakata.html"><span>運営者</span></a></div></nav>
-  <div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト"><a href="../../../">ホーム</a> <span>&gt;</span> <a href="../../">ゲーム別計算</a> <span>&gt;</span> <a href="../">ゲーム本体</a> <span>&gt;</span> <span>${title}</span></nav></div>
-  <div class="game-page-container"><main class="game-main-content">
-    <header class="game-header"><span class="game-badge">🔎 公式情報を基準に検証</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${VERIFIED_AT}</p></header>
-    <p>${lead}</p>
-    ${body}
-    <section class="section"><h2>このページの確認方針</h2><p>価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を最終正本にします。</p></section>
-  </main></div>
-  <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
-</body>
-</html>\n`;
-}
+const guideShell = createGuideShell({
+  verifiedAt: VERIFIED_AT,
+  badge: '🔎 公式情報を基準に検証',
+  verificationPolicy: '価格・定額商品・ガチャ仕様は変更されることがあります。公開一次情報で確認できないGoogle Play価格は推測で補わず、購入直前のゲーム内表示とGoogle Playの獲得予定ポイント表示を最終正本にします。'
+});
 
 function syncVerifiedInputOnly(rootDir, config) {
   const file = config.file;
@@ -139,7 +43,7 @@ function renderPokepokeGuide() {
     <section class="section"><h2>Play Pointsで見るときの注意点</h2><p>無料体験中は支払いが発生しないため、その時点の購入額からPlay Pointsを見積もる対象にはしません。有料更新やポケゴールド購入をGoogle Play上で行う場合は、購入確認画面に表示される支払額と獲得予定ポイントを優先してください。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.pokepokePremiumPass}" target="_blank" rel="noopener noreferrer">ポケポケ公式サポート：プレミアムパス</a></li><li><a href="${SOURCES.pokepokePremiumMechanics}" target="_blank" rel="noopener noreferrer">Pokémon Support：購入・Premium Pass FAQ</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ポケポケ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'pokepoke', slug: 'premium-pass-guide', title: 'ポケポケのプレミアムパスはどう課金される？無料体験・Google Play Points確認【2026年】', description: 'Pokémon TCG Pocketのプレミアムパスを、1か月の定期購入、14日無料体験、Googleアカウントとの紐付け、Play Pointsの確認方法から整理します。', lead: 'プレミアムパスは「月額いくら」だけでなく、無料体験、更新、購入アカウント、Play Points対象の支払いタイミングを分けて考える必要があります。', body, faq: [
+  return guideShell({ gameId: 'pokepoke', slug: 'premium-pass-guide', pageDescription: 'Pokémon TCG Pocketのプレミアムパスを、1か月の定期購入、14日無料体験、Googleアカウントとの紐付け、Play Pointsの確認方法から整理します。', lead: 'プレミアムパスは「月額いくら」だけでなく、無料体験、更新、購入アカウント、Play Points対象の支払いタイミングを分けて考える必要があります。', body, faq: [
     { q: 'ポケポケのプレミアムパス無料体験は何日ですか？', a: '公式サポートでは、初回の無料体験は14日間です。利用条件はプラットフォームアカウント単位で確認してください。' },
     { q: 'プレミアムパスの現行価格はいくらですか？', a: '公開公式サポートでは現行の日本円価格を固定表示していないため、PlayPointでは購入時のGoogle Play画面に表示された価格を正本とします。' }
   ] });
@@ -154,7 +58,7 @@ function renderPadGuide() {
     <section class="section"><h2>誰に向く？</h2><p>毎日ログインして専用ダンジョンや常設特典を継続的に使う人ほど価値を取りやすい商品です。反対に、特典を使う頻度が低い場合は「980円で何個の魔法石」という単純比較では判断できません。Play Pointsも含め、継続利用する機能の価値を分けて考えるのが安全です。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.padPass}" target="_blank" rel="noopener noreferrer">パズドラ公式：パズドラパス</a></li><li><a href="${SOURCES.padPassFaq}" target="_blank" rel="noopener noreferrer">パズドラ公式：パズドラパスFAQ</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">パズドラ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'pad', slug: 'pad-pass-value', title: 'パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】', description: 'パズドラパスの月額980円、1週間無料トライアル、毎日ダンジョン、チーム枠、ランク経験値などの公式特典とGoogle Play Pointsを整理します。', lead: 'パズドラパスは魔法石だけで価値を測る商品ではありません。月額、無料体験、毎日・常設特典、Play Pointsを分けて確認します。', body, faq: [
+  return guideShell({ gameId: 'pad', slug: 'pad-pass-value', pageDescription: 'パズドラパスの月額980円、1週間無料トライアル、毎日ダンジョン、チーム枠、ランク経験値などの公式特典とGoogle Play Pointsを整理します。', lead: 'パズドラパスは魔法石だけで価値を測る商品ではありません。月額、無料体験、毎日・常設特典、Play Pointsを分けて確認します。', body, faq: [
     { q: 'パズドラパスはいくらですか？', a: '公式案内では月額980円の自動更新サービスです。AndroidではGoogle Playの定期購入として管理されます。' },
     { q: '無料トライアルはありますか？', a: '公式案内では初回1週間の無料トライアルがあります。適用条件は購入時の表示を確認してください。' }
   ] });
@@ -167,7 +71,7 @@ function renderArknightsGuide() {
     <section class="section"><h2>リミテッドスカウトの「300回」は現金9万円ではない</h2><p>2026年の公式リミテッドスカウトでも、1回のスカウトにつきリミテッドスカウト契約証を1枚獲得し、<strong>300回スカウト時の追加限定オペレーター</strong>が案内されています。ただし、合成玉・スカウト券・無料分・所持資源があるため、「300回=9万円」のような固定現金額にはしません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.arknightsMonthlyPass}" target="_blank" rel="noopener noreferrer">アークナイツ公式サポート：月パス内容</a></li><li><a href="${SOURCES.arknightsLimited2026}" target="_blank" rel="noopener noreferrer">アークナイツ公式：2026年リミテッドスカウト</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">アークナイツ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'arknights', slug: 'monthly-pass-limited-scout', title: 'アークナイツ月パスと限定300連をどう見る？内容・天井・Play Points【2026年】', description: 'アークナイツの月パス内容と限定スカウト300回の仕様を公式情報で整理。Google Play価格を推測せず、Play Pointsとの関係も分けて解説します。', lead: '月パスの「中身」とリミテッド300回の「仕組み」は公式確認できますが、現行Google Play価格は別問題です。確定情報と未確定情報を分けて整理します。', body, faq: [
+  return guideShell({ gameId: 'arknights', slug: 'monthly-pass-limited-scout', pageDescription: 'アークナイツの月パス内容と限定スカウト300回の仕様を公式情報で整理。Google Play価格を推測せず、Play Pointsとの関係も分けて解説します。', lead: '月パスの「中身」とリミテッド300回の「仕組み」は公式確認できますが、現行Google Play価格は別問題です。確定情報と未確定情報を分けて整理します。', body, faq: [
     { q: 'アークナイツの月パスでは何を受け取れますか？', a: '公式サポートでは、購入時に有償純正源石6個、その後30日間毎日、合成玉200個と理性回復剤1個を受け取る仕様です。' },
     { q: '限定300連はいくらですか？', a: '所持合成玉、スカウト券、無料分などで現金負担が変わるため、PlayPointでは固定の円額を断定しません。' }
   ] });
@@ -180,7 +84,7 @@ function renderDokkanGuide() {
     <section class="section"><h2>旧固定価格・周年5万円プリセットは撤去</h2><p>龍石販売やセール商品は時期で変わるため、旧ページにあった固定の龍石価格、デイリーカプセル価格、周年・Wフェス5万円などを現行正本として扱いません。Google Play購入時は購入画面の実額を自由入力してPlay Pointsを計算します。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.dokkanWebStoreUsage}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store購入</a></li><li><a href="${SOURCES.dokkanWebStoreReflection}" target="_blank" rel="noopener noreferrer">バンダイナムコ公式FAQ：Web Store反映</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ドッカンバトル Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'dokkan', slug: 'google-play-vs-webstore', title: 'ドッカンバトルはGoogle PlayとWeb Storeどっちで買う？Play Pointsの違い【2026年】', description: 'ドッカンバトル公式Web StoreとGoogle Play購入を別決済として整理。Play Points対象経路、価格変動、購入前の比較ポイントを解説します。', lead: 'ドッカンバトルではGoogle Playと公式Web Storeが別の購入経路です。龍石の個数だけでなく、Play Points対象かどうかも分けて比較します。', body, faq: [
+  return guideShell({ gameId: 'dokkan', slug: 'google-play-vs-webstore', lead: 'ドッカンバトルではGoogle Playと公式Web Storeが別の購入経路です。龍石の個数だけでなく、Play Points対象かどうかも分けて比較します。', body, faq: [
     { q: 'ドッカンのWeb Store購入でもGoogle Play Pointsは貯まりますか？', a: 'Web StoreはGoogle Play上の購入ではないため、Google Play Pointsの獲得を前提にしません。Google Play PointsはGoogle Play上の対象購入で確認してください。' },
     { q: 'ドッカンの龍石価格は固定ですか？', a: '通常商品やセールは時期で変わるため、PlayPointでは公開一次情報で現行値を固定できない価格を推測掲載しません。' }
   ] });
@@ -260,7 +164,7 @@ function syncWave3(rootDir) {
     [configs[2].descriptionBefore, configs[2].descriptionAfter],
     [configs[3].descriptionBefore, configs[3].descriptionAfter]
   ];
-  for (const [before, after] of replacements) changedFiles.push(...replaceDescriptionAcrossGamePages(rootDir, before, after));
+  changedFiles.push(...replaceDescriptionsAcrossGamePages(rootDir, replacements));
 
   return { checked: 9, changedFiles: [...new Set(changedFiles)].sort() };
 }

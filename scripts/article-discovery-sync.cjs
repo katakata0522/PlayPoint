@@ -58,6 +58,13 @@ function readingMount(html, locale, isHub) {
   return html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, tag => tag + block);
 }
 // 本文変換と検索レコードを同じHTMLから作る。ファイルI/Oは呼び出し側だけで行う。
+// 既存の単一ブロックはその場で更新する。除去後の末尾改行を再挿入で増やさない。
+function replaceExistingMarkedBlock(html, name, block) {
+  const pattern = new RegExp('<!-- ' + name + ':start -->[\\s\\S]*?<!-- ' + name + ':end -->', 'g');
+  if ([...html.matchAll(pattern)].length !== 1) return null;
+  return html.replace(pattern, () => block.trim());
+}
+
 function prepareDiscoveryArticle(html, entry) {
   const role = classifyArticleRole(entry.path);
   html = withoutReadingMount(html);
@@ -77,11 +84,13 @@ function prepareDiscoveryArticle(html, entry) {
       return `<h${level}${attrs} id="article-section-${index}">`;
     }) + end;
   });
-  html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
   if (role === 'retention' && /weekly-reward/.test(entry.path)) {
     const copy = diaryCopy[entry.locale], home = entry.locale === 'ja' ? '/' : `/${entry.locale}/`;
     const block = `\n<!-- discovery-diary:start --><aside class="article-diary-link"><h2>${copy[0]}</h2><p>${copy[1]}</p><a href="${home}?mode=diary&amp;week=current" data-diary-entry>${copy[2]}</a></aside><!-- discovery-diary:end -->\n`;
-    html = html.replace('</article>', block + '</article>');
+    html = replaceExistingMarkedBlock(html, 'discovery-diary', block) ??
+      html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '').replace('</article>', block + '</article>');
+  } else {
+  html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
   }
   html = readingMount(html, entry.locale, false);
   const record = { path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
@@ -97,6 +106,8 @@ function buildDiscoveryAssets(root) {
 }
 
 function applyDiscoveryAssets(html, assets) {
+  const updated = replaceExistingMarkedBlock(html, 'discovery-assets', assets);
+  if (updated !== null) return updated;
   return html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->/g, '')
     .replace('</head>', assets + '</head>');
 }

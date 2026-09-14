@@ -2,13 +2,8 @@
 
 const VERIFIED_AT = '2026-09-13';
 
-const GOOGLE_PLAY_JP_LEVELS = [
-  { id: 'bronze', label: 'ブロンズ', rate: 1 },
-  { id: 'silver', label: 'シルバー', rate: 1.25 },
-  { id: 'gold', label: 'ゴールド', rate: 1.5 },
-  { id: 'platinum', label: 'プラチナ', rate: 1.75 },
-  { id: 'diamond', label: 'ダイヤモンド', rate: 2 }
-];
+const { getRegionRule } = require('../js/region-rules.js');
+const GOOGLE_PLAY_JP_LEVELS = getRegionRule('JP').tiers.map(({ id, label, rate }) => ({ id, label, rate }));
 
 const SOURCES = {
   googlePlayEarn: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja',
@@ -270,7 +265,7 @@ const GAME_SEO = {
 };
 
 function roundedPointsForYen(yen, rate) {
-  return Math.round((Number(yen) / 100) * Number(rate));
+  return Math.round((Number(yen) / getRegionRule('JP').spendUnit) * Number(rate));
 }
 
 function pointRowsForYen(yen) {

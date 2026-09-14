@@ -1,7 +1,8 @@
 'use strict';
 
-const fs = require('node:fs');
-const path = require('node:path');
+const { read, writeIfChanged, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
+const { replaceRequired, replaceAllRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-expanded');
+
 const {
   VERIFIED_AT,
   GOOGLE_PLAY_JP_LEVELS,
@@ -10,48 +11,6 @@ const {
   roundedPointsForYen
 } = require('./game-seo-data.cjs');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
-
-function read(rootDir, relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-}
-
-function writeIfChanged(rootDir, relativePath, content) {
-  const filePath = path.join(rootDir, relativePath);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const normalized = content.replace(/\r\n/g, '\n');
-  const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
-  if (previous === normalized) return false;
-  fs.writeFileSync(filePath, normalized, 'utf8');
-  return true;
-}
-
-function replaceRequired(source, before, after, label) {
-  if (source.includes(after)) return source;
-  if (!source.includes(before)) throw new Error(`[game-seo-expanded] ${label}: expected source text was not found`);
-  return source.replace(before, after);
-}
-
-function replaceAllRequired(source, before, after, label) {
-  if (!source.includes(before)) {
-    if (source.includes(after)) return source;
-    throw new Error(`[game-seo-expanded] ${label}: expected source text was not found`);
-  }
-  return source.replaceAll(before, after);
-}
-
-function replaceRegexRequired(source, pattern, after, marker, label) {
-  if (marker && source.includes(marker)) return source;
-  if (!pattern.test(source)) throw new Error(`[game-seo-expanded] ${label}: expected source pattern was not found`);
-  pattern.lastIndex = 0;
-  return source.replace(pattern, after);
-}
-
-function insertBeforeRequired(source, needle, block, marker, label) {
-  if (source.includes(marker)) return source;
-  const index = source.indexOf(needle);
-  if (index < 0) throw new Error(`[game-seo-expanded] ${label}: insertion point was not found`);
-  return `${source.slice(0, index)}${block}\n\n          ${source.slice(index)}`;
-}
 
 function yen(value) {
   return `${Number(value).toLocaleString('ja-JP')}円`;
@@ -62,58 +21,11 @@ function pointTableHtml(amount) {
   return `<div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>Play Pointsステータス</th><th>通常獲得率</th><th>${yen(amount)}購入時</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-function guideShell({ gameId, slug, title, description, lead, body, faq = [] }) {
-  const canonical = `https://playpoint-sim.com/games/${gameId}/${slug}/`;
-  const faqJson = faq.length ? `\n  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map(item => ({ '@type': 'Question', name: item.q, acceptedAnswer: { '@type': 'Answer', text: item.a } }))
-  }, null, 2)}\n  </script>` : '';
-  return `<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="${VERIFIED_AT}" />
-  <meta name="author" content="かたかた" />
-  <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
-  <title>${title} | Playポイント計算機</title>
-  <meta name="description" content="${description}" />
-  <link rel="canonical" href="${canonical}" />
-  <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="Playポイント計算機" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${canonical}" />
-  <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1f3377e639" />
-  <link rel="stylesheet" href="../../games.css?v=09016b3c58" />
-  <script type="application/ld+json">\n${JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: title,
-    dateModified: VERIFIED_AT,
-    author: { '@type': 'Person', name: 'かたかた', url: 'https://playpoint-sim.com/author/katakata.html' },
-    publisher: { '@type': 'Organization', name: 'Playポイント計算機', url: 'https://playpoint-sim.com/' },
-    mainEntityOfPage: canonical
-  }, null, 2)}\n  </script>${faqJson}
-</head>
-<body>
-  <header class="site-header"><div class="site-header-inner"><a class="site-logo" href="../../../"><span class="site-logo-icon">🎮</span><span class="site-logo-text">Playポイント計算機</span></a></div></header>
-  <nav class="global-nav" aria-label="メインナビゲーション"><div class="global-nav-inner"><a class="nav-item" href="../../../"><span>ホーム</span></a><a class="nav-item active" href="../../"><span>ゲーム別計算</span></a><a class="nav-item" href="../../../blog/"><span>記事一覧</span></a><a class="nav-item" href="../../../author/katakata.html"><span>運営者</span></a></div></nav>
-  <div class="breadcrumbs-wrapper"><nav aria-label="パンくずリスト"><a href="../../../">ホーム</a> <span>&gt;</span> <a href="../../">ゲーム別計算</a> <span>&gt;</span> <a href="../">ゲーム本体</a> <span>&gt;</span> <span>${title}</span></nav></div>
-  <div class="game-page-container"><main class="game-main-content">
-    <header class="game-header"><span class="game-badge">🔎 現行情報を検証</span><h1 class="game-title">${title}</h1><p class="game-meta">最終確認：${VERIFIED_AT}</p></header>
-    <p>${lead}</p>
-    ${body}
-    <section class="section"><h2>このページの確認方針</h2><p>ゲーム内価格・定額商品・ガチャ仕様は変更されることがあります。一次情報を優先し、公式価格が公開テキストで確認できない箇所は現行の公開スナップショットとして区別します。購入直前はゲーム内の最終価格とGoogle Playの獲得予定ポイント表示を優先してください。</p></section>
-  </main></div>
-  <footer class="site-footer"><p>© Playポイント計算機 / 非公式の独立した計算・解説サイトです。</p></footer>
-</body>
-</html>\n`;
-}
+const guideShell = createGuideShell({
+  verifiedAt: VERIFIED_AT,
+  badge: '🔎 現行情報を検証',
+  verificationPolicy: 'ゲーム内価格・定額商品・ガチャ仕様は変更されることがあります。一次情報を優先し、公式価格が公開テキストで確認できない箇所は現行の公開スナップショットとして区別します。購入直前はゲーム内の最終価格とGoogle Playの獲得予定ポイント表示を優先してください。'
+});
 
 function renderStarrailGuide() {
   const data = GAME_SEO.starrail;
@@ -125,10 +37,7 @@ function renderStarrailGuide() {
     <section class="section"><h2>Google Playで610円購入した場合のPlay Points目安</h2>${pointTableHtml(pass.price)}<p>列車補給標章を<strong>Google Play経由</strong>で購入した場合に限り、Google Play上の対象購入としてPlay Pointsを計算します。HoYoverseの別決済経路をGoogle Play購入として数えません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.starrailPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：現在確認できる日本向け価格スナップショット</a></li><li><a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">HoYoLAB：列車補給標章の受取仕様</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">スターレイル Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({
-    gameId: 'starrail', slug: 'supply-pass-value',
-    title: 'スタレ「列車補給標章」はどれくらいお得？610円・3000星玉相当とPlay Points',
-    description: '崩壊：スターレイルの列車補給標章を610円・最大3,000星玉相当・受取速度・Google Play Pointsで比較。旧980個帯価格と固定天井額も見直します。',
+  return guideShell({ gameId: 'starrail', slug: 'supply-pass-value', pageDescription: '崩壊：スターレイルの列車補給標章を610円・最大3,000星玉相当・受取速度・Google Play Pointsで比較。旧980個帯価格と固定天井額も見直します。',
     lead: '列車補給標章はコスパが高い一方、30日かけて受け取る商品です。通常チャージ、ガチャ資金、Play Pointsを同じ数字で混ぜずに比較します。',
     body,
     faq: [
@@ -148,10 +57,7 @@ function renderZzzGuide() {
     <section class="section"><h2>Google Playで610円購入した場合のPlay Points目安</h2>${pointTableHtml(pass.price)}<p>Play PointsはGoogle Play上の対象購入を基準にします。ゲーム外・Google Play外の決済経路は同じものとして加算しません。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.zzzPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：日本向けモノクローム価格の掲載例</a></li><li><a href="${SOURCES.zzzMembershipReference}" target="_blank" rel="noopener noreferrer">HoYoLAB：インターノット会員の内容</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ゼンゼロ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({
-    gameId: 'zzz', slug: 'membership-value',
-    title: 'ゼンゼロ「インターノット会員」はお得？610円・3000相当とPlay Points',
-    description: 'ゼンレスゾーンゼロのインターノット会員を610円・最大3,000ポリクローム相当・受取速度・Google Play Pointsで比較。旧価格と固定天井額も整理します。',
+  return guideShell({ gameId: 'zzz', slug: 'membership-value', pageDescription: 'ゼンレスゾーンゼロのインターノット会員を610円・最大3,000ポリクローム相当・受取速度・Google Play Pointsで比較。旧価格と固定天井額も整理します。',
     lead: '月パス型のインターノット会員と即時チャージでは、同じ金額でも価値の出方が違います。総量・速度・Play Pointsを分けて確認します。',
     body,
     faq: [
@@ -172,10 +78,7 @@ function renderUmasukuGuide() {
     <section class="section"><h2>ウマプランとは別サービス</h2><p>2026年2月24日から月額1,980円の「ウマプラン」も登場しています。ウマスクと重複購入できるため、ジュエル系月額と機能系月額を混同しないようにします。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.umamusumeUmasuku}" target="_blank" rel="noopener noreferrer">ウマ娘公式WebStore：ウマスク詳細</a></li><li><a href="${SOURCES.umamusumeUmasukuLaunch}" target="_blank" rel="noopener noreferrer">ウマ娘公式：ウマスク開始・デイリージュエルパック終了</a></li><li><a href="${SOURCES.umamusumeUmaplan}" target="_blank" rel="noopener noreferrer">ウマ娘公式：ウマプランとWebStore対応</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ウマ娘 Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({
-    gameId: 'umamusume', slug: 'umasuku-value',
-    title: 'ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】',
-    description: 'ウマ娘の現行月額「ウマスク」を公式情報で整理。月980円、購入時の有償500+無償50、毎日50、未受取分、Cygames WebStoreとGoogle Playの違いを比較します。',
+  return guideShell({ gameId: 'umamusume', slug: 'umasuku-value', pageDescription: 'ウマ娘の現行月額「ウマスク」を公式情報で整理。月980円、購入時の有償500+無償50、毎日50、未受取分、Cygames WebStoreとGoogle Playの違いを比較します。',
     lead: '旧デイリージュエルパックはすでに終了しています。現在のウマスクを、ジュエル数だけでなく育成特典・受取仕様・購入経路まで含めて判断します。',
     body,
     faq: [
@@ -194,10 +97,7 @@ function renderProsekaGuide() {
     <section class="section"><h2>Play Pointsを優先するならGoogle Playの最終表示を見る</h2><p>Google Play PointsはGoogle Play上の対象購入に対して付与されます。WebStoreに初回増量やセット割がある場合でも、それはWebStore側のメリットです。Google Playで購入する場合は、購入確認画面の支払額と獲得予定ポイントを見て比較してください。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.prosekaWebStore}" target="_blank" rel="noopener noreferrer">プロセカ公式WebStore：現在の商品・価格</a></li><li><a href="${SOURCES.prosekaFaq}" target="_blank" rel="noopener noreferrer">プロセカ公式FAQ：有償/無償クリスタル・カラフルパス</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">プロセカ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({
-    gameId: 'proseka', slug: 'google-play-vs-webstore',
-    title: 'プロセカはGoogle Playと公式WebStoreどっちがお得？パス・クリスタル・Play Points比較',
-    description: 'プロセカ公式WebStoreの現行価格、カラフルパス3種、ミッションパスとGoogle Play Pointsの違いを整理。WebStoreとGoogle Playを別経路として比較します。',
+  return guideShell({ gameId: 'proseka', slug: 'google-play-vs-webstore', pageDescription: 'プロセカ公式WebStoreの現行価格、カラフルパス3種、ミッションパスとGoogle Play Pointsの違いを整理。WebStoreとGoogle Playを別経路として比較します。',
     lead: '同じプロセカ課金でも、公式WebStoreとGoogle Playでは「商品のお得さ」と「Play Points」が別軸です。経路を混ぜずに現在の公式情報で比較します。',
     body,
     faq: [

@@ -1,124 +1,18 @@
 'use strict';
 
+import { CALC_PURE } from './calculator-core.js';
+import { renderCurrencyAmount, renderMainResult, renderReverseResult } from './calculator-result-view.js';
+
 import { CONFIGS, STATE, CONSTANTS, ANALYTICS } from './config.js';
 import { UI } from './ui.js';
 import { SHARE } from './share.js';
 import { getResultNavigationConfig } from './result-navigation-config.js';
 
-/**
- * CALC_PURE: DOM非依存の純粋計算関数群
- * - ブラウザ環境なしでUnit Testが書ける
- * - 将来的に CALC.calculate() はこちらに計算を委譲する設計
- */
-export const CALC_PURE = {
-    // 購入ごとのポイントは購入金額全体に還元率を掛けてから丸める。
-    getPointsForPurchase(amount, finalRate, spendUnit = 100) {
-        return Math.round((amount / spendUnit) * finalRate);
-    },
-
-    // 小数通貨の金額に浮動小数点誤差を表示・共有しない。
-    roundCurrencyAmount(amount) {
-        return Math.round((amount + Number.EPSILON) * 100) / 100;
-    },
-
-    /**
-     * 年末までの残り月数を算出（カレンダー基準）
-     * @param {Date} baseDate
-     * @returns {number} 残り月数（1〜12）
-     */
-    getRemainingMonths(baseDate = new Date()) {
-        const month = baseDate.getMonth();
-        const day = baseDate.getDate();
-        if (month === 11 && day === 31) return 0;
-        return 12 - month;
-    },
-
-    /**
-     * 年末までの残り日数を算出（暦日基準）。
-     * local date componentだけをUTC上の日付へ写し、DSTやtimezone offsetで
-     * 「1日」が23/25時間になる影響を受けないようにする。
-     * @param {Date} baseDate
-     * @returns {number} 次年1月1日までの残り暦日数
-     */
-    getRemainingCalendarDays(baseDate = new Date()) {
-        const year = baseDate.getFullYear();
-        const month = baseDate.getMonth();
-        const day = baseDate.getDate();
-        const todayUtc = Date.UTC(year, month, day);
-        const nextYearUtc = Date.UTC(year + 1, 0, 1);
-        return Math.max(0, (nextYearUtc - todayUtc) / 86400000);
-    },
-
-    /**
-     * 課金シミュレーション計算（純粋関数）
-     * @param {object} params - 計算に必要なパラメータ
-     * @param {number} params.neededPoints - 必要ポイント数
-     * @param {number} params.finalRate - 最終還元率
-     * @param {number} params.spendUnit - 計算単位（例: 100円）
-     * @param {Date}   params.baseDate - 基準日（デフォルト: 今日）
-     * @returns {{ totalAmountNeeded: number, remainingMonths: number }}
-     */
-    computeMainResult({ neededPoints, finalRate, spendUnit = 100, baseDate = new Date() }) {
-        const remainingMonths = this.getRemainingMonths(baseDate);
-        if (neededPoints <= 0) {
-            return { totalAmountNeeded: 0, remainingMonths };
-        }
-
-        return {
-            totalAmountNeeded: Math.ceil((neededPoints / finalRate) * spendUnit),
-            remainingMonths
-        };
-    },
-
-    /**
-     * 通常還元と選択中の還元条件を比較する。
-     * 表示用の比較であり、既存の計算結果そのものは変更しない。
-     */
-    computeRateComparison({ neededPoints, selectedRate, baseRate, spendUnit = 100 }) {
-        const values = [neededPoints, selectedRate, baseRate, spendUnit];
-        if (!values.every(Number.isFinite) || neededPoints <= 0 || selectedRate <= 0 || baseRate <= 0 || spendUnit <= 0) {
-            return null;
-        }
-
-        const baseResult = this.computeMainResult({
-            neededPoints,
-            finalRate: baseRate,
-            spendUnit
-        });
-        const selectedResult = this.computeMainResult({
-            neededPoints,
-            finalRate: selectedRate,
-            spendUnit
-        });
-
-        return {
-            baseAmount: baseResult.totalAmountNeeded,
-            selectedAmount: selectedResult.totalAmountNeeded,
-            savedAmount: this.roundCurrencyAmount(Math.max(0, baseResult.totalAmountNeeded - selectedResult.totalAmountNeeded))
-        };
-    },
-
-    /**
-     * 逆算シミュレーション計算（純粋関数）
-     * @param {object} params
-     * @param {number} params.amountYen - 課金額
-     * @param {number} params.finalRate - 最終還元率
-     * @param {number} params.spendUnit - 計算単位
-     * @returns {{ earnedPoints: number, earnedPointsRaw: number }}
-     */
-    computeReverseResult({ amountYen, finalRate, spendUnit = 100 }) {
-        const earnedPointsRaw = (amountYen / spendUnit) * finalRate;
-        const earnedPoints = Math.round(earnedPointsRaw);
-        return { earnedPoints, earnedPointsRaw };
-    }
-};
+export { CALC_PURE };
 
 export const CALC = {
     renderCurrencyAmount(value, config) {
-        const amountMarkup = `<span class="count-target" data-value="${value}">0</span>`;
-        return config.currencyPosition === 'prefix'
-            ? `${config.currencySymbol}${amountMarkup}`
-            : `${amountMarkup} ${config.currencySymbol}`;
+        return renderCurrencyAmount(value, config);
     },
 
     getResultNavigation() {
@@ -386,12 +280,7 @@ export const CALC = {
     // 年末までの残り月数を算出（カレンダー基準）
     // 例: 12月1日 → 残り1ヶ月、11月1日 → 残り2ヶ月
     getRemainingMonths(baseDate = new Date()) {
-        const month = baseDate.getMonth(); // 0-indexed (0=1月, 11=12月)
-        const day = baseDate.getDate();
-        // 12月31日のみ0を返す（年末最終日は月割り計算不要）
-        if (month === 11 && day === 31) return 0;
-        // 当月を含む残り月数 = 12(月) - 現在の月インデックス
-        return 12 - month;
+        return CALC_PURE.getRemainingMonths(baseDate);
     },
 
     // 入力値バリデーション
@@ -486,94 +375,16 @@ export const CALC = {
         });
         const { totalAmountNeeded, remainingMonths } = mainResult;
 
-        const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
-        let resultContent = '';
-        let resultDetailsContent = '';
-        const guidanceContent = this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
-
-        if (finalNeededPoints === 0) {
-            resultContent = `
-                <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
-                    🎉 ${texts.resultLabelFreeClear || '課金不要'}
-                </div>
-                <dl>
-                    <dt>${texts.resultLabelNeededPoints}</dt>
-                    <dd><b><span class="count-target" data-value="0">0</span> pt</b></dd>
-                    <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(0, config)}</b></dd>
-                </dl>
-            `;
-            // 追加支出が不要な状態では、購入導線や追加の支出判断リンクを出さない。
-            resultDetailsContent = '';
-        } else {
-            const monthlyResultContent = remainingMonths > 0
-                ? `
-                    <dt>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths})</dt>
-                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingMonths), config)}${texts.perMonth}</b></dd>
-                `
-                : '';
-            const dailyResultContent = remainingDays > 0
-                ? `
-                    <dt>${texts.resultLabelDailyYen || '1日あたり目安'}</dt>
-                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingDays), config)}${texts.perDay || '/日'}</b></dd>
-                `
-                : '';
-            const comparison = Number.isFinite(normalRate) && finalRate > normalRate
-                ? CALC_PURE.computeRateComparison({
-                    neededPoints: finalNeededPoints,
-                    selectedRate: finalRate,
-                    baseRate: normalRate,
-                    spendUnit
-                })
-                : null;
-            const comparisonContent = comparison
-                ? `
-                    <aside class="result-rate-comparison" aria-label="${texts.resultComparisonTitle || '通常時との比較'}">
-                        <strong>${texts.resultComparisonTitle || '通常時との比較'}</strong>
-                        <dl>
-                            <dt>${texts.resultComparisonBase || '通常還元の場合'}</dt>
-                            <dd>${texts.approxLabel} ${this.renderCurrencyAmount(comparison.baseAmount, config)}</dd>
-                            <dt>${texts.resultComparisonSelected || '現在の還元条件'}</dt>
-                            <dd>${texts.approxLabel} ${this.renderCurrencyAmount(comparison.selectedAmount, config)}</dd>
-                            <dt>${texts.resultComparisonSaved || '差額'}</dt>
-                            <dd><b>${this.renderCurrencyAmount(comparison.savedAmount, config)}</b></dd>
-                        </dl>
-                        ${comparison.savedAmount === 0 ? `<p>${texts.resultComparisonSame || 'この条件では必要額の概算が同じため、差額はありません。'}</p>` : ''}
-                    </aside>
-                `
-                : '';
-            const premiseContent = `
-                <p class="rounding-assumption-note">
-                    <strong>${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}</strong>${rateSourceLabel ? ` · ${rateSourceLabel}` : ''}<br>
-                    ${texts.roundingNoteWithoutPack}
-                </p>
-            `;
-
-            resultContent = `
-                <dl>
-                    <dt>${texts.resultLabelNeededPoints}</dt>
-                    <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
-                    <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>${texts.approxLabel} ${this.renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
-                </dl>
-                ${premiseContent}
-            `;
-            resultDetailsContent = `
-                <details>
-                    <summary>${texts.resultDetailsSummary || '計算の詳細を見る'}</summary>
-                    <div class="result-details-content">
-                        <dl class="result-detail-grid">
-                            ${monthlyResultContent}
-                            ${dailyResultContent}
-                        </dl>
-                        ${comparisonContent}
-                        <div class="calculation-note">${calculationNoteText}</div>
-                        ${guidanceContent}
-                    </div>
-                </details>
-                ${this.renderPurchaseCheckLink()}
-            `;
-        }
+        const comparison = finalNeededPoints > 0 && Number.isFinite(normalRate) && finalRate > normalRate
+            ? CALC_PURE.computeRateComparison({
+                neededPoints: finalNeededPoints, selectedRate: finalRate, baseRate: normalRate, spendUnit
+            }) : null;
+        const { resultContent, resultDetailsContent } = renderMainResult({
+            config, neededPoints: finalNeededPoints, totalAmountNeeded, remainingMonths, remainingDays,
+            finalRate, rateSourceLabel, comparison,
+            guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays),
+            purchaseCheckContent: finalNeededPoints > 0 ? this.renderPurchaseCheckLink() : ''
+        });
 
         UI.displayResult(STATE.dom.result, resultContent);
         UI.displayResultDetails(resultDetailsContent);
@@ -608,15 +419,10 @@ export const CALC = {
             spendUnit
         });
 
-        const resultContent = `
-            <dl>
-                <dt>${texts.resultLabelEarnedPoints}</dt>
-                <dd><b>${texts.approxLabel} <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
-            </dl>
-            <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-            <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${texts.roundingNoteReverse}</p>
-            ${this.renderPurchaseCheckLink()}
-        `;
+        const resultContent = renderReverseResult({
+            config, earnedPoints, finalRate, rateSourceLabel,
+            purchaseCheckContent: this.renderPurchaseCheckLink()
+        });
 
         UI.displayResult(STATE.dom.reverseResult, resultContent);
         STATE.dom.reverseResult.dataset.earnedPoints = String(earnedPoints);

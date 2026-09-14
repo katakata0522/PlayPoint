@@ -1,5 +1,7 @@
 'use strict';
 
+import { createRegionCalculationConfig } from './region-rules.js';
+
 import './analytics-core.js?v=96fa25c428';
 
 // 全画面で同じ許可リスト・同意判定・流入引き継ぎを利用する。
@@ -56,13 +58,9 @@ export function getNextFridayCalendarWindow(isGlobalTime, baseDate = new Date())
 export const CONFIGS = {
     'JP': {
         lang: "ja",
-        statuses: { "ブロンズ": 1.0, "シルバー": 1.25, "ゴールド": 1.5, "プラチナ": 1.75, "ダイヤモンド": 2.0 },
-        statusRates: { 1.0: 1.0, 1.25: 1.25, 1.5: 1.5, 1.75: 1.75, 2.0: 2.0 },
-        thresholds: { "シルバー": 250, "ゴールド": 1000, "プラチナ": 4000, "ダイヤモンド": 15000 },
-        statusPointsMapping: { 1.0: ["シルバー", "ゴールド", "プラチナ", "ダイヤモンド"], 1.25: ["ゴールド", "プラチナ", "ダイヤモンド"], 1.5: ["プラチナ", "ダイヤモンド"], 1.75: ["ダイヤモンド"], 2.0: [] },
+        ...createRegionCalculationConfig('JP'),
         currencySymbol: "円",
         rateUnit: "100円",
-        spendUnit: 100,
         neededPointsPlaceholderOverrides: { "ゴールド:プラチナ": "例：1728" },
         tooltips: {
             'tooltip-current-status': `<strong>【現在のステータスの確認方法】</strong><ol><li>Google Play ストアを開きます。</li><li>右上のプロフィールアイコンをタップします。</li><li>「Play ポイント」を選択します。</li></ol><hr><p>※ステータスに応じて、基本還元率は自動で入力されます。</p>`,
@@ -161,13 +159,9 @@ export const CONFIGS = {
     },
     'US': {
         lang: "en",
-        statuses: { "Bronze": 1.0, "Silver": 1.1, "Gold": 1.2, "Platinum": 1.4, "Diamond": 1.6 },
-        statusRates: { 1.0: 1.0, 1.1: 1.1, 1.2: 1.2, 1.4: 1.4, 1.6: 1.6 },
-        thresholds: { "Silver": 150, "Gold": 600, "Platinum": 3000, "Diamond": 10000 },
-        statusPointsMapping: { 1.0: ["Silver", "Gold", "Platinum", "Diamond"], 1.1: ["Gold", "Platinum", "Diamond"], 1.2: ["Platinum", "Diamond"], 1.4: ["Diamond"], 1.6: [] },
+        ...createRegionCalculationConfig('US'),
         currencySymbol: "USD",
         rateUnit: "$1",
-        spendUnit: 1,
         tooltips: {
             'tooltip-current-status': `<strong>How to check your current status:</strong><ol><li>Open the Google Play Store.</li><li>Tap your profile icon in the top right.</li><li>Select "Play Points".</li></ol><hr><p>Note: The base points rate is automatically filled based on your status.</p>`,
             'tooltip-target-status': `<strong>Level-up requirements:</strong><ul><li><strong>Silver:</strong> 150+ pts</li><li><strong>Gold:</strong> 600+ pts</li><li><strong>Platinum:</strong> 3,000+ pts</li><li><strong>Diamond:</strong> 10,000+ pts</li></ul><hr><p>※Points accumulate from Jan 1st to Dec 31st. Once you reach the threshold, you level up immediately (valid until the end of the next year).</p>`,
@@ -265,13 +259,9 @@ export const CONFIGS = {
     },
     'KR': {
         lang: "ko",
-        statuses: { "브론즈": 1.0, "실버": 1.1, "골드": 1.3, "플래티넘": 1.6, "다이아몬드": 2.0 },
-        statusRates: { 1.0: 1.0, 1.1: 1.1, 1.3: 1.3, 1.6: 1.6, 2.0: 2.0 },
-        thresholds: { "실버": 150, "골드": 600, "플래티넘": 2400, "다이아몬드": 15000 },
-        statusPointsMapping: { 1.0: ["실버", "골드", "플래티넘", "다이아몬드"], 1.1: ["골드", "플래티넘", "다이아몬드"], 1.3: ["플래티넘", "다이아몬드"], 1.6: ["다이아몬드"], 2.0: [] },
+        ...createRegionCalculationConfig('KR'),
         currencySymbol: "₩",
         rateUnit: "1,000₩",
-        spendUnit: 1000,
         tooltips: {
             'tooltip-current-status': `<strong>【현재 등급 확인 방법】</strong><ol><li>Google Play 스토어를 엽니다.</li><li>우측 상단의 프로필 아이콘을 누릅니다.</li><li>'Play 포인트'를 선택합니다.</li></ol><hr><p>※등급에 따라 기본 적립률이 자동으로 입력됩니다.</p>`,
             'tooltip-target-status': `<strong>【등급 달성 조건】</strong><ul><li><strong>실버:</strong> 150 pt 이상</li><li><strong>골드:</strong> 600 pt 이상</li><li><strong>플래티넘:</strong> 2,400 pt 이상</li><li><strong>다이아몬드:</strong> 15,000 pt 이상</li></ul><hr><p>※포인트는 매년 1월 1일~12월 31일 동안 누적되며, 조건 달성 시 즉시 등급이 올라갑니다(유효기간은 다음 해 말까지).</p>`,
@@ -369,13 +359,9 @@ export const CONFIGS = {
     },
     'TW': {
         lang: "zh-TW",
-        statuses: { "銅級": 1.0, "銀級": 1.25, "黃金級": 1.5, "白金級": 1.75, "鑽石級": 2.0 },
-        statusRates: { 1.0: 1.0, 1.25: 1.25, 1.5: 1.5, 1.75: 1.75, 2.0: 2.0 },
-        thresholds: { "銀級": 250, "黃金級": 1000, "白金級": 4000, "鑽石級": 15000 },
-        statusPointsMapping: { 1.0: ["銀級", "黃金級", "白金級", "鑽石級"], 1.25: ["黃金級", "白金級", "鑽石級"], 1.5: ["白金級", "鑽石級"], 1.75: ["鑽石級"], 2.0: [] },
+        ...createRegionCalculationConfig('TW'),
         currencySymbol: "NT$",
         rateUnit: "30元",
-        spendUnit: 30,
         tooltips: {
             'tooltip-current-status': `<strong>【如何確認目前的等級】</strong><ol><li>開啟 Google Play 商店。</li><li>點擊右上角的個人資料圖示。</li><li>選擇「Play Points」。</li></ol><hr><p>※系統會根據您的等級自動填入基本回饋率。</p>`,
             'tooltip-target-status': `<strong>【各等級達成條件】</strong><ul><li><strong>銀級:</strong> 250 pt 以上</li><li><strong>黃金級:</strong> 1,000 pt 以上</li><li><strong>白金級:</strong> 4,000 pt 以上</li><li><strong>鑽石級:</strong> 15,000 pt 以上</li></ul><hr><p>※點數於每年1月1日至12月31日期間累積，達到目標點數時將立即升級（有效期限至翌年末）。</p>`,
