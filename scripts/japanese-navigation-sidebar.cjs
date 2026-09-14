@@ -5,6 +5,7 @@ const path = require('node:path');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
+const { syncJapanesePrimaryNavigation } = require('./japanese-primary-navigation.cjs');
 
 const NAV = Object.freeze([
   ['/', '計算する'],
@@ -78,7 +79,7 @@ function transformArticle(html, article, catalog) {
   const related = relatedFor(article, html, catalog);
   const nav = '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === article.href ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
-    const sidebar = renderSidebar(article, role, related);
+  const sidebar = renderSidebar(article, role, related);
   let after = html.replace(GLOBAL_NAV, nav);
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {
@@ -101,6 +102,7 @@ function syncJapaneseNavigation(root) {
     const after = transformArticle(before, article, catalog);
     if (before !== after) { fs.writeFileSync(absolute, after); changed++; }
   }
-  return { checked: catalog.length, changed };
+  const primary = syncJapanesePrimaryNavigation(root);
+  return { checked: catalog.length, changed, primary };
 }
 module.exports = { NAV, relatedFor, nextFor, transformArticle, syncJapaneseNavigation };
