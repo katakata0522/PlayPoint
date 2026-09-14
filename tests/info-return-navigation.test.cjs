@@ -12,7 +12,7 @@ function loadReturnScript(relativePath) {
     .find(source => source.includes('btn-back-home'));
 }
 
-function destination(relativePath, referrer, region = 'US') {
+function buttonState(relativePath, referrer, region = 'US') {
   const source = loadReturnScript(relativePath);
   const button = {}, year = {};
   const context = {
@@ -28,7 +28,7 @@ function destination(relativePath, referrer, region = 'US') {
     }
   };
   vm.runInNewContext(source, context);
-  return button.href;
+  return button;
 }
 
 const referrerCases = [
@@ -45,10 +45,39 @@ const referrerCases = [
 ];
 
 test('案内ページの戻り先は同一オリジンのパスだけから言語を引き継ぐ', () => {
-  for (const relativePath of ['info.html', 'about-playpoints.html']) {
+  for (const relativePath of ['info.html', 'about-playpoints.html', 'sitemap.html']) {
     for (const [referrer, expected] of referrerCases) {
-      assert.equal(destination(relativePath, referrer), expected, `${relativePath}: ${referrer}`);
+      assert.equal(buttonState(relativePath, referrer).href, expected, `${relativePath}: ${referrer}`);
     }
-    assert.equal(destination(relativePath, '', 'KR'), 'ko/', relativePath);
+    assert.equal(buttonState(relativePath, '', 'KR').href, 'ko/', relativePath);
   }
+});
+
+test('更新履歴の戻りラベルも外部referrerでは言語を切り替えない', () => {
+  const sameOriginCases = [
+    ['https://playpoint-sim.com/ko/articles/guide.html', '← Q&A로 돌아가기'],
+    ['https://playpoint-sim.com/tw/', '← 返回問與答'],
+    ['https://playpoint-sim.com/en/', '← Go Back to Q&A'],
+    ['https://playpoint-sim.com/?next=/ko/', '← あとがきに戻る']
+  ];
+  for (const [referrer, expectedText] of sameOriginCases) {
+    const button = buttonState('changelog.html', referrer);
+    assert.equal(button.href, 'info.html');
+    assert.equal(button.textContent, expectedText, referrer);
+  }
+
+  for (const referrer of [
+    'https://playpoint-sim.com.evil.example/ko/',
+    'https://evil.example/?site=playpoint-sim.com',
+    'https://playpoint-sim.com@evil.example/tw/',
+    'http://playpoint-sim.com/ko/',
+    'not a URL',
+    ''
+  ]) {
+    const button = buttonState('changelog.html', referrer, 'US');
+    assert.equal(button.href, 'info.html');
+    assert.equal(button.textContent, '← Go Back to Q&A', referrer);
+  }
+
+  assert.equal(buttonState('changelog.html', '', 'KR').textContent, '← Q&A로 돌아가기');
 });
