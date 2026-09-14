@@ -80,13 +80,16 @@ test('外部restoreは検証済みsnapshot SHAだけを使い、復元後は旧r
   assert.match(workflow, /EXPECTED_DEPLOY_STATUS: verified/);
 });
 
-test('外部restoreを先に完了してHTTP検証し、その後だけbrowser依存とChromiumを実行する', () => {
+test('外部restoreを先に完了してHTTP検証し、その後にtrusted mainの共通helperとChromiumを実行する', () => {
   const restore = workflow.indexOf('- name: Restore previous verified production externally');
   const http = workflow.indexOf('- name: Verify external recovery HTTP, SEO, sitemap, and security');
   const install = workflow.indexOf('- name: Install browser verifier after external restore');
   const chromium = workflow.indexOf('- name: Verify external recovery in Chromium');
   assert.ok(restore >= 0 && restore < http && http < install && install < chromium);
-  assert.match(workflow, /playwright-core@1\.55\.0/);
+  assert.match(workflow, /bash \.github\/scripts\/setup-browser-runtime\.sh/);
+  assert.doesNotMatch(workflow, /playwright-core@1\.55\.0/);
+  assert.match(workflow, /test -x "\$\{CHROME_PATH:-\}"/);
+  assert.match(workflow, /require\.resolve\('playwright-core'\)/);
   assert.match(workflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
   assert.match(workflow, /continue-on-error: true/);
 });

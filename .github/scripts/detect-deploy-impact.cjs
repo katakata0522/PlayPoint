@@ -20,6 +20,7 @@ const DEPLOYMENT_INPUTS = new Set([
   '.github/scripts/deploy-status.cjs',
   '.github/scripts/public-paths.cjs',
   '.github/scripts/prepare-public-tree.cjs',
+  '.github/scripts/setup-browser-runtime.sh',
   'scripts/asset-sync.cjs',
   'scripts/article-asset-versioning.cjs',
   'scripts/html-replacements.cjs',

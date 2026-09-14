@@ -40,14 +40,7 @@ jobs:
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
       - name: Install required browser driver
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
-          fc-match sans-serif:lang=ja
-          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
-          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          test -n "$chrome_path"
-          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+        run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Run required Chromium verification
         run: |

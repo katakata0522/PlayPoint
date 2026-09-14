@@ -34,15 +34,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install browser driver
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
-          fc-match sans-serif:lang=ja
-          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
-          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          test -n "$chrome_path"
-          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+        run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Verify local calculator, article CSS, mobile region layout, revenue, and embed widget paths in Chromium
         run: |
@@ -75,15 +67,7 @@ jobs:
           fetch-depth: 2
 
       - name: Install browser driver
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
-          fc-match sans-serif:lang=ja
-          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
-          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          test -n "$chrome_path"
-          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+        run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Verify production calculator, article CSS, mobile region layout, revenue, and embed widget paths in Chromium
         env:
