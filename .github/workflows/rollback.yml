@@ -4,22 +4,23 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Verify only, or restore the saved previous verified production
+        description: List, verify, or restore a retained verified production snapshot
         required: true
-        default: verify
+        default: list
         type: choice
         options:
+          - list
           - verify
           - restore
       expected_revision:
-        description: Exact snapshot SHA required for restore; leave empty for verify
+        description: Exact retained verified SHA required for verify/restore; leave empty for list
         required: false
         type: string
 
 permissions:
   contents: read
 
-# Deployとrollbackは同じ本番を所有するため、絶対に並行実行しない。
+# Deploy・watchdog・rollback・snapshot履歴は同じ本番を所有するため、絶対に並行実行しない。
 concurrency:
   group: deploy-playpoint-main
 
@@ -56,16 +57,27 @@ jobs:
           chmod 600 ~/.ssh/known_hosts
           unset SSH_PRIVATE_KEY_B64
 
-      - name: Verify saved rollback snapshot
-        id: snapshot
+      - name: List retained verified snapshots
+        if: inputs.operation == 'list'
+        run: bash .github/scripts/snapshot-history.sh --list
+
+      - name: Verify selected history snapshot
+        if: inputs.operation == 'verify' || inputs.operation == 'restore'
+        id: history
         shell: bash
+        env:
+          SELECTED_REVISION: ${{ inputs.expected_revision }}
         run: |
           set -euo pipefail
-          output="$(bash .github/scripts/deploy-rsync.sh --verify-snapshot)"
+          if ! [[ "$SELECTED_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Verify/restore requires an exact lowercase 40-character retained snapshot SHA.' >&2
+            exit 2
+          fi
+          output="$(bash .github/scripts/snapshot-history.sh --verify "$SELECTED_REVISION")"
           printf '%s\n' "$output"
-          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_SNAPSHOT_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
-          if ! [[ "$revision" =~ ^[0-9a-f]{40}$ ]]; then
-            echo 'Rollback snapshot did not return one valid revision.' >&2
+          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_HISTORY_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
+          if [ "$revision" != "$SELECTED_REVISION" ]; then
+            echo 'Selected history snapshot did not verify to the requested SHA.' >&2
             exit 2
           fi
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
@@ -75,7 +87,7 @@ jobs:
         shell: bash
         env:
           EXPECTED_REVISION: ${{ inputs.expected_revision }}
-          SNAPSHOT_REVISION: ${{ steps.snapshot.outputs.revision }}
+          SNAPSHOT_REVISION: ${{ steps.history.outputs.revision }}
         run: |
           set -euo pipefail
           if ! [[ "$EXPECTED_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
@@ -83,9 +95,34 @@ jobs:
             exit 2
           fi
           if [ "$EXPECTED_REVISION" != "$SNAPSHOT_REVISION" ]; then
-            echo "Restore confirmation does not match the saved snapshot: expected $SNAPSHOT_REVISION." >&2
+            echo "Restore confirmation does not match the selected history snapshot: expected $SNAPSHOT_REVISION." >&2
             exit 2
           fi
+
+      - name: Preserve current verified production in history
+        if: inputs.operation == 'restore'
+        env:
+          PROTECTED_HISTORY_REVISION: ${{ inputs.expected_revision }}
+        run: bash .github/scripts/snapshot-history.sh --archive-live
+
+      - name: Activate selected history snapshot as rollback source
+        if: inputs.operation == 'restore'
+        run: bash .github/scripts/snapshot-history.sh --activate "${{ inputs.expected_revision }}"
+
+      - name: Verify activated rollback snapshot
+        if: inputs.operation == 'restore'
+        id: snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(bash .github/scripts/deploy-rsync.sh --verify-snapshot)"
+          printf '%s\n' "$output"
+          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_SNAPSHOT_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
+          if [ "$revision" != "${{ inputs.expected_revision }}" ]; then
+            echo 'Activated rollback source does not match the explicitly selected history SHA.' >&2
+            exit 2
+          fi
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
 
       - name: Restore verified snapshot
         if: inputs.operation == 'restore'
