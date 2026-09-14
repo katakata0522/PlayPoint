@@ -93,7 +93,7 @@ function escapeHtml(value) {
 }
 
 function jsonLd(data) {
-  return JSON.stringify(data, null, 2).replace(/</g, '\u003c');
+  return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
 }
 
 function renderParagraphs(body) {
@@ -388,7 +388,8 @@ ${jsonLd(faqSchema)}
         <aside class="official-source-note">
             <h2>${escapeHtml(article.officialSourceTitle || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceTitle)}</h2>
             <p>${escapeHtml(article.officialSourceBody || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceBody)}</p>
-            <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>${article.officialProgramLink ? `\n            <p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
+            <a href="${escapeHtml(article.officialSourceHref || 'https://support.google.com/googleplay/answer/9077312')}" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialSourceLink || LOCALES[lang === 'ko' ? 'ko' : (lang === 'zh-TW' ? 'tw' : 'en')].officialSourceLink)}</a>${article.officialProgramLink ? `
+            <p><a href="https://support.google.com/googleplay/answer/9077312" target="_blank" rel="noopener noreferrer">${escapeHtml(article.officialProgramLink)}</a></p>` : ''}
         </aside>
 
         <section class="section">
@@ -462,7 +463,7 @@ function renderArticleHub(localeKey, assetVersions) {
       account: '帳號 · 基本規則',
       earn: '累積 · 消費',
       levels: '等級 · 獎勵',
-      trouble: '問題排查',
+      trouble: '問題排解',
       more: '更多指南'
     }
   }[localeKey];
