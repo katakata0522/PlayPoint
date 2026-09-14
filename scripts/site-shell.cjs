@@ -96,6 +96,73 @@ const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
   })
 });
 
+const CALCULATOR_REGION_BUTTONS = Object.freeze([
+  Object.freeze({ region: 'JP', label: '🇯🇵 日本' }),
+  Object.freeze({ region: 'US', label: '🇺🇸 United States' }),
+  Object.freeze({ region: 'KR', label: '🇰🇷 대한민국' }),
+  Object.freeze({ region: 'TW', label: '🇹🇼 台灣' })
+]);
+
+const KATAKATA_LINK_BASE = Object.freeze({
+  href: 'https://katakatalab.com/',
+  target: '_blank',
+  rel: 'noopener noreferrer',
+  className: 'header-link-secondary',
+  langKey: 'linkKatakata'
+});
+
+function freezeCalculatorLinks(links) {
+  return Object.freeze(links.map(link => Object.freeze(link)));
+}
+
+function calculatorHeaderProfile(activeRegion, links) {
+  return Object.freeze({
+    activeRegion,
+    regionAriaLabel: 'Play country or region',
+    regionButtons: CALCULATOR_REGION_BUTTONS,
+    links: freezeCalculatorLinks(links)
+  });
+}
+
+const CALCULATOR_HEADER_PROFILES = Object.freeze({
+  'index.html': calculatorHeaderProfile('JP', [
+    { href: 'attention.html', label: '⚠️ For users outside Japan', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: 'games/', label: '🎮 ゲーム別計算', langKey: 'linkGames' },
+    { href: 'blog/', label: '📝 記事一覧', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab' }
+  ]),
+  'en/index.html': calculatorHeaderProfile('US', [
+    { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../games/', label: '🎮 Game Calculators', langKey: 'linkGames' },
+    { href: './articles/', label: '📝 Articles', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (Japanese)' }
+  ]),
+  'ko/index.html': calculatorHeaderProfile('KR', [
+    { href: '../attention.html', label: '⚠️ 국가별 안내', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../games/', label: '🎮 게임별 계산', langKey: 'linkGames' },
+    { href: './articles/', label: '📝 가이드', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab' }
+  ]),
+  'tw/index.html': calculatorHeaderProfile('TW', [
+    { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../games/', label: '🎮 遊戲專屬計算', langKey: 'linkGames' },
+    { href: './articles/', label: '📝 指南', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab' }
+  ]),
+  'hk/index.html': calculatorHeaderProfile(null, [
+    { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../tw/games/', label: '🎮 遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
+    { href: '../tw/articles/', label: '📝 指南', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab' }
+  ]),
+  'in/index.html': calculatorHeaderProfile(null, [
+    { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
+    { href: '../en/games/', label: '🎮 Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
+    { href: '../en/articles/', label: '📝 Articles', langKey: 'linkArticles' },
+    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (Japanese)' }
+  ])
+});
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -116,6 +183,14 @@ function getFixedPageHeaderProfile(relativePath) {
   const profile = FIXED_PAGE_HEADER_PROFILES[relativePath];
   if (!profile) {
     throw new RangeError(`No fixed-page header profile for: ${relativePath}`);
+  }
+  return profile;
+}
+
+function getCalculatorHeaderProfile(relativePath) {
+  const profile = CALCULATOR_HEADER_PROFILES[relativePath];
+  if (!profile) {
+    throw new RangeError(`No calculator header profile for: ${relativePath}`);
   }
   return profile;
 }
@@ -176,12 +251,65 @@ function renderFixedPageHeader(profile, indent = '') {
   return [first, second, navOpen, navLinks, navClose, policyOpen, policyLinks, policyClose, headerClose, topClose].join('\n');
 }
 
+function renderCalculatorHeaderLink(link, indent) {
+  if (!link?.href || !link?.label || !link?.langKey) {
+    throw new TypeError('Calculator header links require href, label, and langKey.');
+  }
+
+  const attributes = [`href="${escapeHtml(link.href)}"`];
+  if (link.target) attributes.push(`target="${escapeHtml(link.target)}"`);
+  if (link.rel) attributes.push(`rel="${escapeHtml(link.rel)}"`);
+  if (link.className) attributes.push(`class="${escapeHtml(link.className)}"`);
+  if (link.countryNotes) attributes.push('data-country-notes-link');
+  attributes.push(`data-lang-key="${escapeHtml(link.langKey)}"`);
+  return `${indent}<a ${attributes.join(' ')}>${escapeHtml(link.label)}</a>`;
+}
+
+function renderCalculatorHeader(profile, indent = '') {
+  if (!profile || !Array.isArray(profile.regionButtons) || !Array.isArray(profile.links)) {
+    throw new TypeError('Calculator header profile requires regionButtons and links arrays.');
+  }
+  if (profile.regionButtons.length !== 4 || profile.links.length !== 4 || !profile.regionAriaLabel) {
+    throw new TypeError('Calculator header requires four region buttons, four links, and an aria label.');
+  }
+
+  const knownRegions = new Set(profile.regionButtons.map(button => button.region));
+  if (profile.activeRegion !== null && !knownRegions.has(profile.activeRegion)) {
+    throw new RangeError(`Unknown active calculator region: ${profile.activeRegion}`);
+  }
+
+  const regionButtons = profile.regionButtons.map(button => {
+    if (!button?.region || !button?.label) {
+      throw new TypeError('Calculator region buttons require region and label.');
+    }
+    const active = profile.activeRegion === button.region ? ' class="active"' : '';
+    return `${indent}         <button data-region="${escapeHtml(button.region)}"${active}>${escapeHtml(button.label)}</button>`;
+  }).join('\n');
+
+  const links = profile.links.map(link => renderCalculatorHeaderLink(link, `${indent}         `)).join('\n');
+
+  return [
+    `${indent}<div class="top-bar">`,
+    `${indent}     <div class="region-switch" aria-label="${escapeHtml(profile.regionAriaLabel)}">`,
+    regionButtons,
+    `${indent}     </div>`,
+    `${indent}     <div class="header-links">`,
+    links,
+    `${indent}     </div>`,
+    `${indent} </div>`
+  ].join('\n');
+}
+
 module.exports = {
+  CALCULATOR_HEADER_PROFILES,
+  CALCULATOR_REGION_BUTTONS,
   FIXED_PAGE_HEADER_PROFILES,
   LP_FOOTER_PROFILES,
   escapeHtml,
+  getCalculatorHeaderProfile,
   getFixedPageHeaderProfile,
   getLpFooterProfile,
+  renderCalculatorHeader,
   renderFixedPageHeader,
   renderPageFooter
 };
