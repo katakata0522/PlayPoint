@@ -92,7 +92,7 @@ const KNOWN_NON_PUBLIC_ROOT_ENTRIES = new Set([
 ]);
 
 function normalizeRepositoryPath(value) {
-  if (typeof value !== 'string') throw new TypeError('repository path must be a string');
+  if (typeof value !== 'string') throw new TypeError('repository pathは文字列で指定してください');
   return value
     .trim()
     .replaceAll('\\', '/')
@@ -122,6 +122,17 @@ function isPublicRepositoryPath(filePath) {
   const [topLevel, ...rest] = normalized.split('/');
   if (rest.length === 0) return PUBLIC_ROOT_FILES.has(topLevel) || PUBLIC_TOP_LEVEL_DIRECTORIES.has(topLevel);
   return PUBLIC_TOP_LEVEL_DIRECTORIES.has(topLevel);
+}
+
+// Output-equivalence checks have a different safety job from deployment. They
+// must compare unknown newly generated roots instead of silently excluding them;
+// only entries already classified as non-public are ignored. The deploy path
+// remains strict and refuses unknown roots through assertPublicRootContract().
+function isPotentialPublicOutputPath(filePath) {
+  const normalized = normalizeRepositoryPath(filePath);
+  if (!normalized) return false;
+  const topLevel = normalized.split('/')[0];
+  return classifyRootEntry(topLevel) !== 'non-public';
 }
 
 function auditRootEntries(rootDir) {
@@ -165,6 +176,7 @@ module.exports = {
   assertPublicRootContract,
   auditRootEntries,
   classifyRootEntry,
+  isPotentialPublicOutputPath,
   isPublicRepositoryPath,
   isSensitiveRootName,
   normalizeRepositoryPath,
