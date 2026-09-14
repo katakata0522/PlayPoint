@@ -68,18 +68,20 @@ jobs:
           from pathlib import Path
           import re
 
-          matches = []
-          for path in Path('tests').rglob('*.test.cjs'):
-              source = path.read_text(encoding='utf-8')
-              if 'Google Play common rule section' in source:
-                  matches.append((path, source))
-          if len(matches) != 1:
-              raise SystemExit(f'expected one legacy common-rule contract, got {len(matches)}')
-
-          path, source = matches[0]
           pattern = re.compile(
               r'assert\.match\(html,\s*/<section class="section" id="google-play-rule">/u,\s*`\$\{slug\}: Google Play common rule section`\);'
           )
+          matches = []
+          for path in Path('.').rglob('*.cjs'):
+              if '.git' in path.parts or 'node_modules' in path.parts:
+                  continue
+              source = path.read_text(encoding='utf-8')
+              if pattern.search(source):
+                  matches.append((path, source))
+          if len(matches) != 1:
+              raise SystemExit('expected one legacy common-rule structural contract, got ' + str(len(matches)) + ': ' + ', '.join(str(path) for path, _ in matches))
+
+          path, source = matches[0]
           replacement = 'assert.match(html, /class="decision-box article-common-rule"/u, `${slug}: compact Google Play common rule block`);'
           next_source, count = pattern.subn(replacement, source, count=1)
           if count != 1:
