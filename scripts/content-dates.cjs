@@ -113,7 +113,7 @@ const gameContentDateOverrides = Object.fromEntries(
 );
 
 const CONTENT_DATE_OVERRIDES = Object.freeze({
-  'about-playpoints.html': '2026-08-12',
+  'about-playpoints.html': '2026-09-14',
   'info.html': '2026-08-18',
   'changelog.html': '2026-08-12',
   'attention.html': '2026-08-23',
