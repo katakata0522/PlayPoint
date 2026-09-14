@@ -61,6 +61,7 @@ jobs:
         run: |
           rm .github/workflows/tmp-article-quality-repair.yml
           rm scripts/tmp-article-quality-repair.cjs
+          rm -f scripts/tmp-article-quality-trigger.txt
 
       - name: Commit verified repair
         if: success()
