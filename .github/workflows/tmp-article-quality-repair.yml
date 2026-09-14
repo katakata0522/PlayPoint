@@ -23,6 +23,24 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Normalize one-shot test strings
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/tmp-article-quality-repair.cjs')
+          source = path.read_text(encoding='utf-8')
+          source = source.replace(
+              "assert.equal(stripTags(html).split(firstDecision).length - 1, 1, `${localeKey}/${guide.slug}: primary decision duplicated`);",
+              "assert.equal(stripTags(html).split(firstDecision).length - 1, 1, String(localeKey) + '/' + guide.slug + ': primary decision duplicated');"
+          )
+          source = source.replace(
+              "assert.ok(profiles >= 60, `expected broad author coverage, got ${profiles}`);",
+              "assert.ok(profiles >= 60, 'expected broad author coverage, got ' + profiles);"
+          )
+          path.write_text(source, encoding='utf-8')
+          PY
+
       - name: Apply source-level article quality fixes
         run: node scripts/tmp-article-quality-repair.cjs
 
