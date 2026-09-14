@@ -54,8 +54,8 @@ test('changed rendered markup and missing required modules fail the comparator',
   assert.match(result.stderr, /Missing required/);
 });
 
-test('runtime refactoring uses the real base revision and both independent comparison gates', () => {
-  const workflow = fs.readFileSync(path.join(root, '.github/workflows/browser-smoke.yml'), 'utf8');
+test('runtime refactoring uses the real base revision and both independent comparison gates inside required PR Gate', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/quality-check.yml'), 'utf8');
   assert.ok(workflow.includes('github.event.pull_request.base.sha'));
   assert.ok(workflow.includes('git archive "$REFACTOR_BASE_SHA"'));
   assert.ok(workflow.includes('node .github/scripts/refactor-runtime-compatibility.cjs "$baseline_dir"'));

@@ -8,16 +8,29 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
 
-test('Browser SmokeのPR対象に香港・インドを含め、汎用scripts変更では起動しない', () => {
-  const workflow = read('.github/workflows/browser-smoke.yml');
-  assert.match(workflow, /- 'hk\/\*\*'/);
-  assert.match(workflow, /- 'in\/\*\*'/);
-  assert.doesNotMatch(workflow, /- 'scripts\/\*\*'/);
-  assert.match(workflow, /- '\.github\/scripts\/browser-smoke\.cjs'/);
-  assert.match(workflow, /- '\.github\/scripts\/browser-revenue-smoke\.cjs'/);
+test('必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeはPRで重複起動しない', () => {
+  const qualityWorkflow = read('.github/workflows/quality-check.yml');
+  const browserWorkflow = read('.github/workflows/browser-smoke.yml');
+
+  for (const script of [
+    'browser-smoke.cjs',
+    'article-css-smoke.cjs',
+    'article-design-smoke.cjs',
+    'mobile-region-layout-smoke.cjs',
+    'browser-revenue-smoke.cjs',
+    'embed-widget-smoke.cjs'
+  ]) {
+    assert.ok(qualityWorkflow.includes(`node .github/scripts/${script}`), `PR Gate missing ${script}`);
+  }
+  assert.match(qualityWorkflow, /name: Install required browser driver/);
+  assert.match(qualityWorkflow, /playwright-core@1\.55\.0/);
+  assert.match(qualityWorkflow, /browser-smoke-artifacts\//);
+  assert.doesNotMatch(browserWorkflow, /^\s*pull_request:\s*$/m);
+  assert.match(browserWorkflow, /workflow_dispatch:/);
+  assert.match(browserWorkflow, /workflow_run:/);
 });
 
-test('PR Gateは検査専用、Deployだけが配信用アセットを保持する', () => {
+test('PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが配信用アセットを保持する', () => {
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
   const deployWorkflow = read('.github/workflows/deploy.yml');
 
@@ -27,6 +40,7 @@ test('PR Gateは検査専用、Deployだけが配信用アセットを保持す�
   assert.doesNotMatch(qualityWorkflow, /continue-on-error|\|\|\s*true/);
   assert.match(qualityWorkflow, /if: always\(\)/);
   assert.match(qualityWorkflow, /retention-days: 7/);
+  assert.match(qualityWorkflow, /timeout-minutes: 15/);
   assert.doesNotMatch(qualityWorkflow, /preflight\.cjs --prepare-deploy/);
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });
@@ -144,4 +158,3 @@ test('本番Browser Smokeもno-op Deployの後はChromiumを起動しない', ()
     /name: Verify production calculator, article CSS, mobile region layout, revenue, and embed widget paths in Chromium\n\s+if: github\.event_name != 'workflow_run' \|\| steps\.production-impact\.outputs\.smoke_needed == 'true'/
   );
 });
-
