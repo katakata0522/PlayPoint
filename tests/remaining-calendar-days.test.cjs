@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const calculatorPath = path.join(root, 'js', 'calculator.js');
 
 function loadCalcPure(dateClass = Date) {
-  const source = fs.readFileSync(calculatorPath, 'utf8')
+  const source = fs.readFileSync(path.join(root, 'js', 'calculator-core.js'), 'utf8')
     .replace(/^import .*;\s*$/gm, '')
     .replace(/^export\s+/gm, '');
   const context = { Date: dateClass };
@@ -41,7 +41,7 @@ test('remaining calendar days is stable while New York is on DST', () => {
   const script = String.raw`
     const fs = require('node:fs');
     const vm = require('node:vm');
-    const source = fs.readFileSync('js/calculator.js', 'utf8')
+    const source = fs.readFileSync('js/calculator-core.js', 'utf8')
       .replace(/^import .*;\s*$/gm, '')
       .replace(/^export\s+/gm, '');
     const context = { Date };

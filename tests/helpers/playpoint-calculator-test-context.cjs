@@ -66,6 +66,28 @@ function preprocessESM(code) {
     .replace(/^export\s+/gm, '');
 }
 
+// VMテストでも分離先の本物の実装を読み込む。ブラウザのESM検証はChromiumが担当する。
+function readRuntimeModule(name) {
+  return preprocessESM(fs.readFileSync(path.join(root, 'js', name), 'utf8'));
+}
+
+function loadConfigs(includeExpansion = false) {
+  const context = { console, __TEST_ENV__: true };
+  context.window = context;
+  vm.createContext(context);
+  const code = [
+    fs.readFileSync(path.join(root, 'js', 'analytics-core.js'), 'utf8'),
+    readRuntimeModule('region-rules.js'),
+    readRuntimeModule('config.js'),
+  ];
+  if (includeExpansion) {
+    code.push(readRuntimeModule('region-expansion-config.js'));
+    code.push('Object.assign(CONFIGS, createExpansionConfigs(CONFIGS));');
+  }
+  vm.runInContext(code.join('\n'), context, { filename: 'region-config-bundle.js' });
+  return JSON.parse(JSON.stringify(context.PP_APP.CONFIGS));
+}
+
 function loadCalculatorContext(dateClass = Date) {
   const renderedResults = [];
   const renderedResultDetails = [];
@@ -90,7 +112,10 @@ function loadCalculatorContext(dateClass = Date) {
   vm.createContext(context);
   const code = [
     fs.readFileSync(path.join(root, 'js', 'analytics-core.js'), 'utf8'),
-    preprocessESM(fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8')),
+    readRuntimeModule('region-rules.js'),
+    readRuntimeModule('config.js'),
+    readRuntimeModule('calculator-core.js'),
+    readRuntimeModule('calculator-result-view.js'),
     `
       PP_APP.UI = {
         displayResult,
@@ -103,6 +128,7 @@ function loadCalculatorContext(dateClass = Date) {
       globalThis.__pp = {
         PP_REGION_CONFIGS: PP_APP.CONFIGS,
         PP_STATE: PP_APP.STATE,
+        getValidNumberInput: PP_APP.CALC.getValidNumberInput.bind(PP_APP.CALC),
         populateStatusSelects: PP_APP.CALC.populateStatusSelects.bind(PP_APP.CALC),
         updateBaseRateAndTarget: PP_APP.CALC.updateBaseRateAndTarget.bind(PP_APP.CALC),
         updateNeededPointsConstraint: PP_APP.CALC.updateNeededPointsConstraint.bind(PP_APP.CALC),
@@ -140,6 +166,7 @@ module.exports = {
   createOption,
   createSelect,
   createInput,
+  loadConfigs,
   loadCalculatorContext,
   test,
 };

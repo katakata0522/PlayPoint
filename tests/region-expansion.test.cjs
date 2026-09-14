@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const {
   buildHongKongPage,
   buildIndiaPage
@@ -42,15 +43,18 @@ assert.match(india, /India edition/);
 assert.match(india, /href="https:\/\/playpoint-sim\.com\/en\/" hreflang|hreflang="en" href="https:\/\/playpoint-sim\.com\/en\/"/);
 assert.match(india, /hreflang="en-IN" href="https:\/\/playpoint-sim\.com\/in\/"/);
 
-assert.match(configSource, /statuses: \{ Bronze: 1\.0, Silver: 1\.1, Gold: 1\.2, Platinum: 1\.4 \}/);
-assert.match(configSource, /thresholds: \{ Silver: 250, Gold: 1000, Platinum: 4000 \}/);
+const configs = loadConfigs(true);
+assert.deepEqual(configs.IN.statuses, { Bronze: 1, Silver: 1.1, Gold: 1.2, Platinum: 1.4 });
+assert.deepEqual(configs.IN.thresholds, { Silver: 250, Gold: 1000, Platinum: 4000 });
+assert.equal(configs.IN.spendUnit, 5);
+assert.equal(configs.HK.spendUnit, 7);
 assert.match(configSource, /rateUnit: '₹5'/);
 assert.match(configSource, /rateUnit: 'HK\$7'/);
 assert.match(configSource, /currencyPosition: 'prefix'/);
 assert.match(configSource, /tooltip-reverse-status/);
 assert.match(configSource, /playpoint-sim\.com\/hk\//);
 assert.match(configSource, /playpoint-sim\.com\/in\//);
-assert.match(configSource, /thresholds: \{ '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 \}/);
+assert.deepEqual(configs.HK.thresholds, { '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 });
 
 assert.match(navigationSource, /HK: 'hk\/'/);
 assert.match(navigationSource, /IN: 'in\/'/);

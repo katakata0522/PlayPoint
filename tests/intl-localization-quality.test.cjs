@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { ARTICLE_JA_ALTERNATES, INTL_LOCALES, SITE_ORIGIN, intlUrl } = require('../scripts/intl-article-hreflang-sync.cjs');
+const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const terminologyContract = require('../scripts/tw-terminology-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -46,9 +47,10 @@ test('Taiwan pages and Taiwan-owned source assets use the official terminology c
   assert.equal(summary.htmlFilesChecked, files.length);
   assert.equal(summary.sourceFilesChecked, terminologyContract.TAIWAN_SOURCE_FILES.length);
 
-  const runtime = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
-  assert.ok(runtime.includes('"黃金級": 1.5'));
-  assert.ok(!runtime.includes('"金級": 1.5'));
+  const taiwan = loadConfigs().TW;
+  assert.equal(taiwan.statuses['黃金級'], 1.5);
+  assert.equal(Object.hasOwn(taiwan.statuses, '金級'), false);
+  assert.equal(taiwan.thresholds['黃金級'], 1000);
 });
 
 test('Hong Kong keeps its own official tier names', () => {
