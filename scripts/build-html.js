@@ -31,6 +31,7 @@ const { writeLocalizedPages } = require('./language-page-builder.cjs');
 const { syncVisitorThanks } = require('./visitor-thanks-sync.cjs');
 const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs');
 const { syncRegionHreflang } = require('./region-hreflang-sync.cjs');
+const { syncCalculatorHeaders } = require('./calculator-header-sync.cjs');
 const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
 const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
 const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
@@ -73,6 +74,8 @@ writeLocalizedPages(rootDir, indexHtml, locales);
 syncVisitorThanks(rootDir);
 syncRegionPages(rootDir);
 syncRegionHreflang(rootDir);
+const calculatorHeaderSummary = syncCalculatorHeaders(rootDir);
+console.log(`[build-html] synchronized calculator Site Shell headers: ${calculatorHeaderSummary.changed}/${calculatorHeaderSummary.checked} updated`);
 
 syncDynamicArticleStylesheetVersion(rootDir);
 const assetVersions = syncServiceWorkerAssets(rootDir, assetVersion, todayStr, indexHtml);
