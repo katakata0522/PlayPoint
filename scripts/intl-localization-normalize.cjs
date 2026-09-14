@@ -89,7 +89,7 @@ function writeIfChanged(filePath, next) {
   if (!fs.existsSync(filePath)) return false;
   const current = fs.readFileSync(filePath, 'utf8');
   if (current === next) return false;
-  fs.writeFileSync(filePath, next);
+  fs.writeFileSync(filePath, next, 'utf8');
   return true;
 }
 
@@ -132,12 +132,6 @@ function applyIntlSemanticSourceOverrides(locales) {
     }
   }
 
-  if (locales?.ko) {
-    const title = 'Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?';
-    locales.ko.title = title;
-    locales.ko.ogTitle = title;
-  }
-
   return { statusPages: Object.keys(STATUS_PAGE_QUERIES).length, campaignPages: Object.keys(CAMPAIGN_COPY).length };
 }
 
@@ -159,13 +153,9 @@ function normalizeIntlGeneratedCopy(rootDir) {
     }
   }
 
-  mark('ko/index.html', (html) => injectRuntimeCopyOverride(replaceAllLiteral(
-    html,
-    'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
-    'Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?'
-  )));
-
-  mark('tw/index.html', (html) => injectRuntimeCopyOverride(replaceAllLiteral(html, '逆算模式', '反推模式')));
+  for (const localeKey of ['en', 'ko', 'tw']) {
+    mark(`${localeKey}/index.html`, injectRuntimeCopyOverride);
+  }
 
   mark('ko/articles/google-play-points-cash-conversion.html', (html) => {
     let next = replaceAllLiteral(html, '현금 환전', '현금 전환');
