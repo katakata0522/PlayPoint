@@ -32,8 +32,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # Xserverの通信フェーズは接続待ちに加えて、接続後の停止も上限付きで検知して再試行する。
-    # 本体ミラーだけ7回、cleanup/status公開は5回までとし、30分以内の有界な復旧予算に収める。
-    timeout-minutes: 30
+    # 本体ミラーだけ7回、snapshot/cleanup/status公開は5回までとし、40分以内の有界な復旧予算に収める。
+    timeout-minutes: 40
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -137,6 +137,10 @@ jobs:
           EOF
           chmod 600 ~/.ssh/known_hosts
           unset SSH_PRIVATE_KEY_B64
+
+      - name: Snapshot current verified production
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        run: bash .github/scripts/deploy-rsync.sh --snapshot-verified
 
       - name: Deploy strict public mirror via rsync
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
