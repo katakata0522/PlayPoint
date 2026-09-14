@@ -7,6 +7,7 @@ REMOTE_SNAPSHOT_ROOT="/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots"
 SNAPSHOT_NAME="previous-verified"
 SSH_KEY="$HOME/.ssh/id_ed25519"
 DEPLOY_SOURCE_ROOT="${DEPLOY_SOURCE_ROOT:-}"
+EXPECTED_ROLLBACK_REVISION="${EXPECTED_ROLLBACK_REVISION:-}"
 SSH_OPTIONS=(
   -p 10022
   -i "$SSH_KEY"
@@ -220,6 +221,172 @@ echo "Stored rollback snapshot for verified production $commit ($file_count file
 REMOTE
 }
 
+verify_snapshot_once() {
+  ssh "${SSH_OPTIONS[@]}" "$REMOTE_HOST" bash -s -- "$REMOTE_ROOT" "$REMOTE_SNAPSHOT_ROOT" "$SNAPSHOT_NAME" <<'REMOTE'
+set -euo pipefail
+root="$1"
+snapshot_root="$2"
+snapshot_name="$3"
+
+[ "$root" = "/home/hajikkoroom/playpoint-sim.com/public_html" ] || {
+  echo "Refusing to verify snapshot for unexpected deployment root: $root" >&2
+  exit 2
+}
+[ "$snapshot_root" = "/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots" ] || {
+  echo "Refusing unexpected snapshot root: $snapshot_root" >&2
+  exit 2
+}
+[ "$snapshot_name" = "previous-verified" ] || {
+  echo "Refusing unexpected snapshot name: $snapshot_name" >&2
+  exit 2
+}
+
+snapshot="$snapshot_root/$snapshot_name"
+if [ ! -d "$snapshot" ] || [ -L "$snapshot" ] || [ ! -d "$snapshot/site" ] || [ -L "$snapshot/site" ]; then
+  echo "Rollback snapshot is missing or has an unsafe directory shape." >&2
+  exit 2
+fi
+if find "$snapshot" -type l -print -quit | grep -q .; then
+  echo "Rollback snapshot contains a symlink; refusing to trust it." >&2
+  exit 2
+fi
+for owned_elsewhere in manner kanji-slicer; do
+  if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
+    echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
+    exit 2
+  fi
+done
+
+revision_file="$snapshot/revision.txt"
+status_file="$snapshot/status.txt"
+site_revision_file="$snapshot/site/status/deploy-revision.txt"
+site_status_file="$snapshot/site/status/deploy-status.json"
+for required in "$revision_file" "$status_file" "$site_revision_file" "$site_status_file"; do
+  [ -f "$required" ] && [ ! -L "$required" ] || {
+    echo "Rollback snapshot metadata is incomplete or unsafe: $required" >&2
+    exit 2
+  }
+done
+
+revision="$(tr -d '\r\n' < "$revision_file" | tr '[:upper:]' '[:lower:]')"
+status="$(tr -d '\r\n' < "$status_file")"
+site_revision="$(tr -d '\r\n' < "$site_revision_file" | tr '[:upper:]' '[:lower:]')"
+site_status="$(sed -n 's/^[[:space:]]*"status":[[:space:]]*"\([^"]*\)".*/\1/p' "$site_status_file" | head -n 1)"
+site_commit="$(sed -n 's/^[[:space:]]*"commit":[[:space:]]*"\([0-9A-Fa-f]*\)".*/\1/p' "$site_status_file" | head -n 1 | tr '[:upper:]' '[:lower:]')"
+
+if ! [[ "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+  echo "Rollback snapshot revision is invalid." >&2
+  exit 2
+fi
+if [ "$status" != "verified" ] || [ "$site_status" != "verified" ]; then
+  echo "Rollback snapshot is not verified." >&2
+  exit 2
+fi
+if [ "$site_revision" != "$revision" ] || [ "$site_commit" != "$revision" ]; then
+  echo "Rollback snapshot revision metadata disagrees." >&2
+  exit 2
+fi
+file_count="$(find "$snapshot/site" -type f | wc -l | tr -d '[:space:]')"
+if ! [[ "$file_count" =~ ^[0-9]+$ ]] || [ "$file_count" -lt 1 ]; then
+  echo "Rollback snapshot has no regular files." >&2
+  exit 2
+fi
+
+echo "Verified rollback snapshot $revision ($file_count files)."
+echo "ROLLBACK_SNAPSHOT_REVISION=$revision"
+REMOTE
+}
+
+restore_verified_snapshot_once() {
+  local expected_revision="$EXPECTED_ROLLBACK_REVISION"
+  if ! [[ "$expected_revision" =~ ^[0-9a-f]{40}$ ]]; then
+    echo "EXPECTED_ROLLBACK_REVISION must be an exact lowercase 40-character commit SHA." >&2
+    return 2
+  fi
+
+  ssh "${SSH_OPTIONS[@]}" "$REMOTE_HOST" bash -s -- \
+    "$REMOTE_ROOT" "$REMOTE_SNAPSHOT_ROOT" "$SNAPSHOT_NAME" "$expected_revision" <<'REMOTE'
+set -euo pipefail
+umask 077
+root="$1"
+snapshot_root="$2"
+snapshot_name="$3"
+expected_revision="$4"
+
+[ "$root" = "/home/hajikkoroom/playpoint-sim.com/public_html" ] || {
+  echo "Refusing to restore unexpected deployment root: $root" >&2
+  exit 2
+}
+[ "$snapshot_root" = "/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots" ] || {
+  echo "Refusing unexpected snapshot root: $snapshot_root" >&2
+  exit 2
+}
+[ "$snapshot_name" = "previous-verified" ] || {
+  echo "Refusing unexpected snapshot name: $snapshot_name" >&2
+  exit 2
+}
+[[ "$expected_revision" =~ ^[0-9a-f]{40}$ ]] || {
+  echo "Rollback confirmation revision is invalid." >&2
+  exit 2
+}
+
+snapshot="$snapshot_root/$snapshot_name"
+if [ ! -d "$snapshot" ] || [ -L "$snapshot" ] || [ ! -d "$snapshot/site" ] || [ -L "$snapshot/site" ]; then
+  echo "Rollback snapshot is missing or has an unsafe directory shape." >&2
+  exit 2
+fi
+if find "$snapshot" -type l -print -quit | grep -q .; then
+  echo "Rollback snapshot contains a symlink; refusing to restore it." >&2
+  exit 2
+fi
+for owned_elsewhere in manner kanji-slicer; do
+  if [ -e "$snapshot/site/$owned_elsewhere" ] || [ -L "$snapshot/site/$owned_elsewhere" ]; then
+    echo "Rollback snapshot contains separately owned path: $owned_elsewhere" >&2
+    exit 2
+  fi
+done
+
+revision="$(tr -d '\r\n' < "$snapshot/revision.txt" | tr '[:upper:]' '[:lower:]')"
+status="$(tr -d '\r\n' < "$snapshot/status.txt")"
+site_revision="$(tr -d '\r\n' < "$snapshot/site/status/deploy-revision.txt" | tr '[:upper:]' '[:lower:]')"
+site_status="$(sed -n 's/^[[:space:]]*"status":[[:space:]]*"\([^"]*\)".*/\1/p' "$snapshot/site/status/deploy-status.json" | head -n 1)"
+site_commit="$(sed -n 's/^[[:space:]]*"commit":[[:space:]]*"\([0-9A-Fa-f]*\)".*/\1/p' "$snapshot/site/status/deploy-status.json" | head -n 1 | tr '[:upper:]' '[:lower:]')"
+
+if [ "$revision" != "$expected_revision" ]; then
+  echo "Rollback snapshot changed: expected $expected_revision but found $revision." >&2
+  exit 2
+fi
+if [ "$status" != "verified" ] || [ "$site_status" != "verified" ] || \
+   [ "$site_revision" != "$revision" ] || [ "$site_commit" != "$revision" ]; then
+  echo "Rollback snapshot failed verification immediately before restore." >&2
+  exit 2
+fi
+
+# Make an interrupted restore visibly non-verified. A successful rsync restores
+# the snapshot's original verified status files as part of the same mirror.
+mkdir -p "$root/status"
+rollback_marker="$root/status/.deploy-status.rollback.$$"
+printf '{"status":"rolling_back","commit":"%s"}\n' "$revision" > "$rollback_marker"
+mv "$rollback_marker" "$root/status/deploy-status.json"
+
+rsync -a --delete-after --delay-updates \
+  --filter='protect /manner/***' \
+  --filter='protect /kanji-slicer/***' \
+  "$snapshot/site/" "$root/"
+
+restored_revision="$(tr -d '\r\n' < "$root/status/deploy-revision.txt" | tr '[:upper:]' '[:lower:]')"
+restored_status="$(sed -n 's/^[[:space:]]*"status":[[:space:]]*"\([^"]*\)".*/\1/p' "$root/status/deploy-status.json" | head -n 1)"
+restored_commit="$(sed -n 's/^[[:space:]]*"commit":[[:space:]]*"\([0-9A-Fa-f]*\)".*/\1/p' "$root/status/deploy-status.json" | head -n 1 | tr '[:upper:]' '[:lower:]')"
+if [ "$restored_revision" != "$revision" ] || [ "$restored_status" != "verified" ] || [ "$restored_commit" != "$revision" ]; then
+  echo "Rollback mirror completed but production verification metadata does not match the snapshot." >&2
+  exit 2
+fi
+
+echo "Restored verified production snapshot $revision."
+echo "RESTORED_REVISION=$revision"
+REMOTE
+}
+
 deploy_once() {
   local source_root
   source_root="$(resolve_deploy_source_root)"
@@ -348,6 +515,13 @@ case "${1:-deploy}" in
     ;;
   --snapshot-verified)
     run_with_transient_retry "Snapshotting verified production" "$DEFAULT_MAX_ATTEMPTS" snapshot_verified_once
+    ;;
+  --verify-snapshot)
+    run_with_transient_retry "Verifying rollback snapshot" "$DEFAULT_MAX_ATTEMPTS" verify_snapshot_once
+    ;;
+  --restore-verified-snapshot)
+    run_with_transient_retry "Restoring verified production snapshot" "$DEFAULT_MAX_ATTEMPTS" restore_verified_snapshot_once
+    run_with_transient_retry "Verifying remote cleanup after rollback" "$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once
     ;;
   --publish-status)
     run_with_transient_retry "Publishing verified deployment status" "$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once
