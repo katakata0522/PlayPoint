@@ -177,6 +177,7 @@ jobs:
         run: bash .github/scripts/deploy-rsync.sh
 
       - name: Verify production deployment
+        id: production-http
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:
           EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
@@ -186,14 +187,17 @@ jobs:
           node .github/scripts/verify-deploy-status.cjs
 
       - name: Verify production SEO health
+        id: production-seo
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/seo-health-check.cjs
 
       - name: Verify production sitemap registry
+        id: production-sitemap
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/sitemap-health-check.cjs
 
       - name: Verify production security headers
+        id: production-security
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/security-health-check.cjs
 
@@ -212,8 +216,10 @@ jobs:
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 
+      # 証跡保管は観測性の補助であり、本番の健全性判定やrollback条件にはしない。
       - name: Upload production browser evidence
         if: ${{ always() && steps.deploy-impact.outputs.deploy_needed == 'true' && (steps.production-browser.outcome == 'success' || steps.production-browser.outcome == 'failure') }}
+        continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: deploy-production-browser-${{ github.run_id }}
@@ -222,6 +228,7 @@ jobs:
           retention-days: 7
 
       - name: Publish verified deployment status
+        id: publish-verified
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:
           EXPECTED_DEPLOY_REVISION: ${{ github.sha }}
@@ -238,10 +245,10 @@ jobs:
           node .github/scripts/verify-deploy-status.cjs
 
       # ここからは失敗したreleaseを成功扱いにしない復旧レーン。
-      # production-mirrorが実際に試行された場合だけprevious verifiedへ戻す。
+      # GitHub側の証跡保管など非criticalな失敗では戻さず、本番mutation/検証/verified公開の失敗だけを対象にする。
       - name: Auto-rollback failed production mutation
         id: auto-rollback
-        if: ${{ failure() && steps.rollback-snapshot.outputs.revision != '' && (steps.production-mirror.outcome == 'success' || steps.production-mirror.outcome == 'failure') }}
+        if: ${{ failure() && steps.rollback-snapshot.outputs.revision != '' && (steps.production-mirror.outcome == 'failure' || steps.production-http.outcome == 'failure' || steps.production-seo.outcome == 'failure' || steps.production-sitemap.outcome == 'failure' || steps.production-security.outcome == 'failure' || steps.production-browser.outcome == 'failure' || steps.publish-verified.outcome == 'failure') }}
         env:
           EXPECTED_ROLLBACK_REVISION: ${{ steps.rollback-snapshot.outputs.revision }}
         run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
