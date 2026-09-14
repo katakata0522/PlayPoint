@@ -133,10 +133,15 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
     'Verify production SEO health',
     'Publish verified deployment status',
   ]) {
-    const escaped = stepName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const marker = `- name: ${stepName}`;
+    const start = workflow.indexOf(marker);
+    assert.ok(start >= 0, `${stepName} must exist in Deploy`);
+
+    const nextStep = workflow.indexOf('\n      - name: ', start + marker.length);
+    const block = workflow.slice(start, nextStep >= 0 ? nextStep : workflow.length);
     assert.match(
-      workflow,
-      new RegExp(`- name: ${escaped}\\n\\s+if: steps\\.deploy-impact\\.outputs\\.deploy_needed == 'true'`),
+      block,
+      /^\s+if: steps\.deploy-impact\.outputs\.deploy_needed == 'true'\s*$/m,
       `${stepName} must be gated by deploy impact`
     );
   }
