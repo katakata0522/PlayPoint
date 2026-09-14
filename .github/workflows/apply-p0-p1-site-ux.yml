@@ -25,6 +25,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          rm -f docs/P0_P1_PREFLIGHT_DIAGNOSTIC.tmp.txt
           python3 - <<'PY'
           from pathlib import Path
           import re
@@ -94,20 +95,20 @@ jobs:
           blog_test_path = 'tests/blog-listing-ux.test.cjs'
           blog_test = read(blog_test_path)
           anchor = "test('blog pagination styles cover the runtime DOM contract without pinning renderer implementation', () => {"
-          if anchor not in blog_test:
-              raise SystemExit(f'{blog_test_path}: insertion anchor not found')
           guard = """test('blog listing keeps content visible without scroll-animation success and has one canonical footer', () => {\n  const html = read('blog/index.html');\n  const script = read('blog/script.js');\n  const style = read('blog/style.css');\n\n  assert.equal((html.match(/<footer\\b/g) || []).length, 1, 'blog/index.html must expose exactly one footer');\n  assert.doesNotMatch(html, /class=\"blog-footer\"/, 'legacy duplicate footer must not return');\n  assert.doesNotMatch(script, /fade-in-up|setupScrollAnimations|scrollObserver/, 'article visibility must not depend on IntersectionObserver');\n  assert.doesNotMatch(style, /\\.fade-in-up\\s*\\{[^}]*opacity:\\s*0/s, 'primary article cards must never default to opacity:0');\n});\n\n"""
-          if 'blog listing keeps content visible without scroll-animation success' in blog_test:
-              raise SystemExit(f'{blog_test_path}: regression test already exists unexpectedly')
-          write(blog_test_path, blog_test.replace(anchor, guard + anchor, 1))
+          if 'blog listing keeps content visible without scroll-animation success' not in blog_test:
+              if anchor not in blog_test:
+                  raise SystemExit(f'{blog_test_path}: insertion anchor not found')
+              write(blog_test_path, blog_test.replace(anchor, guard + anchor, 1))
 
           product_test_path = 'tests/playpoint-product-guards.test.cjs'
           product_test = read(product_test_path)
-          csp_anchor = "  assert.ok(directives['script-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認スクリプトの接続先がありません');\n"
-          csp_guard = csp_anchor + "  assert.ok(directives['frame-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認フレームの接続先がありません');\n"
-          if product_test.count(csp_anchor) != 1:
-              raise SystemExit(f'{product_test_path}: CSP assertion anchor mismatch')
-          write(product_test_path, product_test.replace(csp_anchor, csp_guard, 1))
+          csp_line = "  assert.ok(directives['frame-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認フレームの接続先がありません');\n"
+          if csp_line not in product_test:
+              csp_anchor = "  assert.ok(directives['script-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認スクリプトの接続先がありません');\n"
+              if product_test.count(csp_anchor) != 1:
+                  raise SystemExit(f'{product_test_path}: CSP assertion anchor mismatch')
+              write(product_test_path, product_test.replace(csp_anchor, csp_anchor + csp_line, 1))
 
           ad_doc = ROOT / 'docs' / 'ADSENSE_UX_GUARDRAILS_2026-09-14.md'
           ad_doc.write_text("""# AdSense UX guardrails (2026-09-14)\n\nPlayPoint は「計算ツール」と「攻略記事」の両方を持つため、広告収益より先に主要操作と回答本文を保護する。\n\n## コード側で保証すること\n\n- ブログ一覧の主要コンテンツは JavaScript / IntersectionObserver の成功を表示条件にしない。\n- 手動広告枠は既存の `.adsbygoogle` 境界で管理し、計算フォームや FAQ の途中へ新しい手動枠を追加しない。\n- CSP は AdSense 本体に加えて広告品質確認 iframe (`https://*.adtrafficquality.google`) を `frame-src` で許可する。\n\n## AdSense 管理画面で固定すること\n\nGoogle 公式の Auto ads 設定はコードだけでは完全に制御できないため、次をサイト設定として維持する。\n\n1. **全画面広告 > 追加のトリガーを許可する: OFF**\n   - タブ復帰、一定時間操作なし後の操作など、計算途中のユーザー操作で全画面広告が出る経路を止める。\n2. **ページ内自動広告 > 除外エリア**\n   - トップ計算機: `.tab-switch`, `#mainMode`, `#reverseMode`, `#diaryMode`\n   - 記事: `.hero`, `.answer-box`, `.inpage-toc`, `.faq-section`, `.reading-tools`\n   - ブログ一覧: `.hero-section`, `.search-sort-row`, `#article-grid` の先頭導線を優先して確認する。\n3. **アンカー広告**\n   - 実機で本文末・FAQ・日記集計を覆う場合はアンカー広告を OFF にする。CSS で広告サイズを推測して余白を足す回避策は採用しない。\n4. 設定変更後は AdSense プレビューだけでなく、モバイル実機で「計算 → タブ切替 → 記事閲覧 → FAQ末尾」まで確認する。\n\n## 判断基準\n\n広告が主要操作を中断する、回答を分断する、閉じないと次の操作へ進めない場合は UX 事故として扱う。収益差は GA4 / AdSense で後から比較し、操作阻害を許容して短期表示回数を優先しない。\n""", encoding='utf-8')
@@ -119,39 +120,7 @@ jobs:
       - name: Run focused regressions
         run: node --test tests/blog-listing-ux.test.cjs tests/playpoint-product-guards.test.cjs
 
-      - name: Run complete preflight and capture diagnostics
-        id: preflight
-        shell: bash
-        run: |
-          set +e
-          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
-          status=$?
-          cat /tmp/preflight.log
-          if [ "$status" -ne 0 ]; then
-            python3 - <<'PY'
-          from pathlib import Path
-          lines = Path('/tmp/preflight.log').read_text(encoding='utf-8', errors='replace').splitlines()
-          hits = []
-          needles = ('not ok', 'AssertionError', 'ERR_', '失敗', 'Error:', 'expected', 'actual')
-          for i, line in enumerate(lines):
-              if any(n in line for n in needles):
-                  start = max(0, i - 5)
-                  end = min(len(lines), i + 12)
-                  hits.extend(lines[start:end])
-                  hits.append('---')
-          tail = lines[-220:]
-          report = ['# P0/P1 preflight diagnostic', '', '## Matched failure context', ''] + hits[-500:] + ['', '## Final 220 lines', ''] + tail
-          Path('docs/P0_P1_PREFLIGHT_DIAGNOSTIC.tmp.txt').write_text('\n'.join(report) + '\n', encoding='utf-8')
-          PY
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add docs/P0_P1_PREFLIGHT_DIAGNOSTIC.tmp.txt
-            git commit -m 'chore: capture P0/P1 preflight failure'
-            git push origin HEAD:fix/p0-p1-site-ux-20260914
-            exit "$status"
-          fi
-
-      - name: Commit verified changes
+      - name: Commit candidate locally for reproducibility gate
         shell: bash
         run: |
           set -euo pipefail
@@ -163,4 +132,9 @@ jobs:
             exit 1
           fi
           git commit -m 'fix: harden critical blog and ad UX'
-          git push origin HEAD:fix/p0-p1-site-ux-20260914
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push verified candidate
+        run: git push origin HEAD:fix/p0-p1-site-ux-20260914
