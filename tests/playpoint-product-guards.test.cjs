@@ -298,6 +298,7 @@ test('CSPは計測と広告品質確認で実際に使う接続先を許可す�
     assert.ok(directives['connect-src']?.includes(origin), `connect-src に必要な接続先がありません: ${origin}`);
   }
   assert.ok(directives['script-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認スクリプトの接続先がありません');
+  assert.ok(directives['frame-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認フレームの接続先がありません');
 });
 
 test('日記の景品選択には全言語で読み上げ可能な名前がある', () => {

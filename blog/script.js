@@ -155,7 +155,6 @@
     let currentPage = 1;
     let sortNewestFirst = true;
     let searchDebounceTimer = null;
-    let scrollObserver = null;
     let fetchRetryCount = 0;
 
     // ===========================================
@@ -318,29 +317,6 @@
             `;
             dom.grid.appendChild(skeleton);
         }
-    }
-
-    // Intersection Observer for Scroll Fade-In
-    function setupScrollAnimations() {
-        // Cleanup previous observer to prevent memory leaks
-        if (scrollObserver) {
-            scrollObserver.disconnect();
-        }
-
-        scrollObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    // Unobserve after animation to save resources
-                    scrollObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        // Observe all article cards with fade-in-up class
-        document.querySelectorAll('.fade-in-up').forEach(el => {
-            scrollObserver.observe(el);
-        });
     }
 
     // Helper functions moved to utils.js
@@ -926,7 +902,7 @@
 
             card.href = safeFile;
             if (currentSearch && snippet?.id) card.href = article.file + '#' + encodeURIComponent(snippet.id);
-            card.className = 'article-card fade-in-up';
+            card.className = 'article-card';
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
@@ -963,8 +939,6 @@
 
         renderPagination(totalPages);
 
-        // Setup scroll animations after cards are rendered
-        setupScrollAnimations();
     }
 
     function renderPagination(totalPages) {
