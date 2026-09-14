@@ -5,17 +5,19 @@ const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
-const { isDirectPublicMirrorPath } = require('../.github/scripts/detect-deploy-impact.cjs');
+const { isPotentialPublicOutputPath } = require('../.github/scripts/public-paths.cjs');
 
-// 同じ正本から期待値を作らず、変更前後の実際の公開ファイルを比較する。
+// 同じ正本から期待値を作らず、変更前後の実際の公開候補ファイルを比較する。
+// Deployそのものはpublic-paths.cjsの明示allowlistだけを公開する一方、ここでは
+// 未分類の新規出力も比較対象にして「buildが勝手に新しいroot成果物を作った」を見逃さない。
 function publicManifest(root) {
   const entries = {};
   function visit(directory) {
     for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
       const absolute = path.join(directory, entry.name);
       const relative = path.relative(root, absolute).split(path.sep).join('/');
-      if (!isDirectPublicMirrorPath(relative)) continue;
-      if (entry.isSymbolicLink()) throw new Error(`公開領域のsymlinkは比較できません: ${relative}`);
+      if (!isPotentialPublicOutputPath(relative)) continue;
+      if (entry.isSymbolicLink()) throw new Error(`公開候補領域のsymlinkは比較できません: ${relative}`);
       if (entry.isDirectory()) visit(absolute);
       else if (entry.isFile()) {
         entries[relative] = crypto.createHash('sha256').update(fs.readFileSync(absolute)).digest('hex');

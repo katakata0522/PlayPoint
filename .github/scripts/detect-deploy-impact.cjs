@@ -1,58 +1,32 @@
 'use strict';
 
 const fs = require('node:fs');
+const {
+  KNOWN_NON_PUBLIC_ROOT_ENTRIES,
+  PUBLIC_ROOT_FILES,
+  PUBLIC_TOP_LEVEL_DIRECTORIES,
+  classifyRootEntry,
+  isPublicRepositoryPath,
+  normalizeRepositoryPath,
+} = require('./public-paths.cjs');
 
-const NON_PUBLIC_ROOT_FILES = new Set([
-  '.gitignore',
-  '.gitattributes',
-  'README.md',
-  'AGENTS.md',
-  'みんな用URL.txt',
-  'CNAME',
-]);
-
-const NON_PUBLIC_TOP_LEVEL_DIRECTORIES = new Set([
-  '.git',
-  '.github',
-  'tests',
-  'docs',
-  'scripts',
-  'tools',
-]);
-
-// These files live outside the public mirror but can change what is actually
-// generated, transported, or published during a production deploy.
+// These files live outside the public tree but can change what is generated,
+// staged, transported, or published during a production deploy.
 const DEPLOYMENT_INPUTS = new Set([
   '.github/workflows/deploy.yml',
   '.github/scripts/preflight.cjs',
   '.github/scripts/minify.cjs',
   '.github/scripts/deploy-rsync.sh',
   '.github/scripts/deploy-status.cjs',
+  '.github/scripts/public-paths.cjs',
+  '.github/scripts/prepare-public-tree.cjs',
   'scripts/asset-sync.cjs',
   'scripts/article-asset-versioning.cjs',
   'scripts/html-replacements.cjs',
 ]);
 
-function normalizeRepositoryPath(filePath) {
-  if (typeof filePath !== 'string') {
-    throw new TypeError('変更パスは文字列で指定してください');
-  }
-  return filePath
-    .trim()
-    .replaceAll('\\', '/')
-    .replace(/^\.\/+/, '')
-    .replace(/\/{2,}/g, '/')
-    .replace(/\/$/, '');
-}
-
 function isDirectPublicMirrorPath(filePath) {
-  const normalized = normalizeRepositoryPath(filePath);
-  if (!normalized) return false;
-  if (NON_PUBLIC_ROOT_FILES.has(normalized)) return false;
-
-  const topLevel = normalized.split('/', 1)[0];
-  if (NON_PUBLIC_TOP_LEVEL_DIRECTORIES.has(topLevel)) return false;
-  return true;
+  return isPublicRepositoryPath(filePath);
 }
 
 function classifyDeployImpact(filePath) {
@@ -63,6 +37,14 @@ function classifyDeployImpact(filePath) {
   }
   if (isDirectPublicMirrorPath(normalized)) {
     return { path: normalized, deploy: true, reason: 'public-mirror' };
+  }
+
+  const topLevel = normalized.split('/', 1)[0];
+  if (classifyRootEntry(topLevel) === 'unknown') {
+    // Unknown repository roots are deliberately fail-closed. Trigger Deploy so
+    // prepare-public-tree can reject the unreviewed root instead of silently
+    // publishing or silently ignoring it.
+    return { path: normalized, deploy: true, reason: 'unclassified-root' };
   }
   return { path: normalized, deploy: false, reason: 'non-public' };
 }
@@ -96,8 +78,9 @@ if (require.main === module) {
 
 module.exports = {
   DEPLOYMENT_INPUTS,
-  NON_PUBLIC_ROOT_FILES,
-  NON_PUBLIC_TOP_LEVEL_DIRECTORIES,
+  KNOWN_NON_PUBLIC_ROOT_ENTRIES,
+  PUBLIC_ROOT_FILES,
+  PUBLIC_TOP_LEVEL_DIRECTORIES,
   classifyDeployImpact,
   detectDeployImpact,
   isDirectPublicMirrorPath,
