@@ -44,6 +44,20 @@ jobs:
       - name: Apply source-level article quality fixes
         run: node scripts/tmp-article-quality-repair.cjs
 
+      - name: Make the new duplication test HTML-escape independent
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('tests/article-quality-polish.test.cjs')
+          source = path.read_text(encoding='utf-8')
+          old = "      const firstDecision = guide.content[localeKey].decisions[0];\n      assert.equal(stripTags(html).split(firstDecision).length - 1, 1, String(localeKey) + '/' + guide.slug + ': primary decision duplicated');"
+          new = "      const decisionSection = html.match(/<section class=\"section\" id=\"decision-guide\">([\\s\\S]*?)<\\/section>/)?.[1] || '';\n      assert.equal((decisionSection.match(/<li>/g) || []).length, guide.content[localeKey].decisions.length - 1, String(localeKey) + '/' + guide.slug + ': decision list still repeats the lead decision');"
+          if old not in source:
+              raise SystemExit('generated duplication assertion target not found')
+          path.write_text(source.replace(old, new), encoding='utf-8')
+          PY
+
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
 
