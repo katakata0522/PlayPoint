@@ -1,0 +1,145 @@
+name: Recover interrupted production deploy
+
+on:
+  workflow_run:
+    workflows:
+      - Deploy to Xserver
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+  actions: read
+
+# Deploy・manual rollback・watchdog restoreは同じ本番を所有するため直列化する。
+concurrency:
+  group: deploy-playpoint-main
+
+jobs:
+  recover:
+    if: ${{ contains(fromJSON('["failure","cancelled","timed_out","action_required","stale","startup_failure"]'), github.event.workflow_run.conclusion) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout trusted recovery control plane
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Inspect failed deploy and live production
+        id: recovery
+        env:
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+          SOURCE_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node .github/scripts/recovery-watchdog.cjs
+
+      - name: Report safe no-recovery result
+        if: steps.recovery.outputs.recovery_needed == 'false'
+        run: echo "No external restore required (${{ steps.recovery.outputs.reason }})."
+
+      - name: Setup recovery SSH
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test -n "${SSH_PRIVATE_KEY_B64:-}"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null
+          cat > ~/.ssh/known_hosts <<'EOF'
+          [hajikkoroom.xsrv.jp]:10022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEKKSe2ENjD1KRgSqCY7ji78s0zqCNCKBRNfRaxRV7sh
+          EOF
+          chmod 600 ~/.ssh/known_hosts
+          unset SSH_PRIVATE_KEY_B64
+
+      - name: Verify saved recovery snapshot
+        id: snapshot
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(bash .github/scripts/deploy-rsync.sh --verify-snapshot)"
+          printf '%s\n' "$output"
+          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_SNAPSHOT_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
+          [[ "$revision" =~ ^[0-9a-f]{40}$ ]]
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+
+      - name: Restore previous verified production externally
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        env:
+          EXPECTED_ROLLBACK_REVISION: ${{ steps.snapshot.outputs.revision }}
+        run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
+
+      - name: Checkout externally restored revision
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.snapshot.outputs.revision }}
+          path: recovery-verifier
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Verify external recovery HTTP, SEO, sitemap, and security
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        working-directory: recovery-verifier
+        env:
+          EXPECTED_DEPLOY_REVISION: ${{ steps.snapshot.outputs.revision }}
+          EXPECTED_DEPLOY_STATUS: verified
+        run: |
+          set -euo pipefail
+          node .github/scripts/smoke-test.cjs
+          node .github/scripts/verify-deploy-status.cjs
+          node .github/scripts/seo-health-check.cjs
+          node .github/scripts/sitemap-health-check.cjs
+          node .github/scripts/security-health-check.cjs
+
+      - name: Install browser verifier after external restore
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        working-directory: recovery-verifier
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify external recovery in Chromium
+        if: steps.recovery.outputs.recovery_needed == 'true'
+        working-directory: recovery-verifier
+        env:
+          SMOKE_BASE_URL: https://playpoint-sim.com/
+        run: |
+          set -euo pipefail
+          node .github/scripts/browser-smoke.cjs
+          node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
+          node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
+
+      - name: Upload external recovery browser evidence
+        if: ${{ always() && steps.recovery.outputs.recovery_needed == 'true' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: deploy-recovery-watchdog-${{ github.event.workflow_run.id }}-${{ github.run_id }}
+          path: recovery-verifier/browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Remove recovery SSH material
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
