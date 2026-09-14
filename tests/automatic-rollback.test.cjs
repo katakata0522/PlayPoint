@@ -112,6 +112,27 @@ test('復元後はsnapshot revision自身の検証コードでHTTPからChromium
   assert.match(workflow, /name: auto-rollback-browser-\$\{\{ github\.run_id \}\}/);
 });
 
+test('復旧Chromiumは本番変更前に準備済みのbrowser runtimeを再利用し追加installしない', () => {
+  const installBlock = getStepBlock('Install production browser verifier');
+  const rollbackBrowserBlock = getStepBlock('Verify auto-rollback production in Chromium');
+  const installIndex = workflow.indexOf('- name: Install production browser verifier');
+  const mirrorIndex = workflow.indexOf('- name: Deploy strict public mirror via rsync');
+  const rollbackHttpIndex = workflow.indexOf('- name: Verify auto-rollback HTTP, SEO, sitemap, and security');
+  const rollbackBrowserIndex = workflow.indexOf('- name: Verify auto-rollback production in Chromium');
+
+  assert.ok(installIndex >= 0 && installIndex < mirrorIndex, 'browser runtime must be prepared before production mutation');
+  assert.ok(rollbackHttpIndex >= 0 && rollbackBrowserIndex > rollbackHttpIndex, 'rollback Chromium must follow rollback HTTP verification');
+  assert.match(installBlock, /playwright-core@1\.55\.0/);
+  assert.match(installBlock, /fonts-noto-cjk/);
+  assert.match(installBlock, /CHROME_PATH=\$chrome_path/);
+  assert.equal((workflow.match(/playwright-core@1\.55\.0/g) || []).length, 1, 'deploy must install playwright-core only once');
+  assert.doesNotMatch(workflow, /Install browser driver for auto-rollback verification/);
+  assert.match(rollbackBrowserBlock, /NODE_PATH: \$\{\{ github\.workspace \}\}\/node_modules/);
+  assert.match(rollbackBrowserBlock, /test -x "\$\{CHROME_PATH:-\}"/);
+  assert.match(rollbackBrowserBlock, /require\.resolve\('playwright-core'\)/);
+  assert.doesNotMatch(rollbackBrowserBlock, /apt-get|npm install|fonts-noto-cjk/);
+});
+
 test('手動rollback workflowだけの変更は通常Deployを起動しない', () => {
   assert.match(workflow, /- '\.github\/workflows\/rollback\.yml'/);
 });
