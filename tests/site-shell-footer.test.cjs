@@ -51,7 +51,9 @@ test('LP footer updater delegates markup ownership to the shared Site Shell rend
   assert.match(source, /require\('\.\/site-shell\.cjs'\)/);
   assert.match(source, /renderPageFooter\(getLpFooterProfile\(locKey\)\)/);
   assert.doesNotMatch(source, /const footerData\s*=/);
-  assert.doesNotMatch(source, /<footer class="page-footer">/);
+  assert.doesNotMatch(source, /footer-nav-links/);
+  assert.doesNotMatch(source, /site-footer-trademark/);
+  assert.doesNotMatch(source, /<p class="copyright">/);
 });
 
 test('unknown LP locale falls back to the Japanese footer instead of producing an empty shell', () => {
