@@ -52,6 +52,8 @@ const { syncGameSeoWave4 } = require('./game-seo-wave4-sync.cjs');
 const { syncGameSeoWave5 } = require('./game-seo-wave5-sync.cjs');
 const { syncGameSeoWave5RegionalRates } = require('./game-seo-wave5-regional-sync.cjs');
 const { syncGameGuideArticleHub } = require('./game-guide-article-hub-sync.cjs');
+const { syncArticleAuthorSemantics } = require('./article-author-semantics.cjs');
+const { syncArticleTableOverflow } = require('./article-table-overflow-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -109,6 +111,10 @@ console.log(`[build-html] synchronized game SEO wave 5 regional rates: ${gameSeo
 // 地域レート補正に記事登録を隠さず、全ゲーム生成後の独立した引き渡しにする。
 const gameArticleHubSummary = syncGameGuideArticleHub(rootDir);
 console.log('[build-html] synchronized Japanese game article hub:', gameArticleHubSummary);
+const authorSemanticsSummary = syncArticleAuthorSemantics(rootDir);
+console.log(`[build-html] normalized Japanese author semantics: ${authorSemanticsSummary.changed}/${authorSemanticsSummary.checked} updated`);
+const articleTableOverflowSummary = syncArticleTableOverflow(rootDir);
+console.log(`[build-html] normalized article table overflow: ${articleTableOverflowSummary.changed}/${articleTableOverflowSummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 applyLpMonetization(rootDir);
