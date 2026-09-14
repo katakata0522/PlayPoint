@@ -8,7 +8,15 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
 
-test('必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeはPRで重複起動しない', () => {
+const getStepBlock = (workflow, stepName) => {
+  const marker = `- name: ${stepName}`;
+  const start = workflow.indexOf(marker);
+  assert.ok(start >= 0, `${stepName} must exist`);
+  const nextStep = workflow.indexOf('\n      - name: ', start + marker.length);
+  return workflow.slice(start, nextStep >= 0 ? nextStep : workflow.length);
+};
+
+test('必須PR GateがローカルChromium検証を所有し、Standalone Browser Smokeは手動専用にする', () => {
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
   const browserWorkflow = read('.github/workflows/browser-smoke.yml');
 
@@ -27,7 +35,7 @@ test('必須PR GateがローカルChromium検証を所有し、Standalone Browse
   assert.match(qualityWorkflow, /browser-smoke-artifacts\//);
   assert.doesNotMatch(browserWorkflow, /^\s*pull_request:\s*$/m);
   assert.match(browserWorkflow, /workflow_dispatch:/);
-  assert.match(browserWorkflow, /workflow_run:/);
+  assert.doesNotMatch(browserWorkflow, /workflow_run:/);
 });
 
 test('PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが配信用アセットを保持する', () => {
@@ -95,12 +103,28 @@ test('preflightは本番同期前に鮮度・記事正規化・全送信URL Head
   assert.ok(headAuditIndex < minifyIndex, 'submitted URL head audit must run before deploy preparation');
 });
 
-test('本番Browser Smokeは成功済みDeployを前提にし、公開SHA待ちを重複しない', () => {
-  const workflow = read('.github/workflows/browser-smoke.yml');
+test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準備失敗では本番を触らない', () => {
+  const deployWorkflow = read('.github/workflows/deploy.yml');
+  const browserWorkflow = read('.github/workflows/browser-smoke.yml');
 
-  assert.match(workflow, /workflow_run:/);
-  assert.match(workflow, /github\.event\.workflow_run\.conclusion == 'success'/);
-  assert.doesNotMatch(workflow, /SMOKE_EXPECT_REVISION/);
+  const installIndex = deployWorkflow.indexOf('- name: Install production browser verifier');
+  const mirrorIndex = deployWorkflow.indexOf('- name: Deploy strict public mirror via rsync');
+  const securityIndex = deployWorkflow.indexOf('- name: Verify production security headers');
+  const browserIndex = deployWorkflow.indexOf('- name: Verify production in Chromium before verified status');
+  const publishIndex = deployWorkflow.indexOf('- name: Publish verified deployment status');
+
+  assert.ok(installIndex >= 0, 'production browser verifier setup is missing');
+  assert.ok(mirrorIndex >= 0, 'production mirror is missing');
+  assert.ok(securityIndex >= 0, 'production security verification is missing');
+  assert.ok(browserIndex >= 0, 'production Chromium verification is missing');
+  assert.ok(publishIndex >= 0, 'verified status publication is missing');
+  assert.ok(installIndex < mirrorIndex, 'browser dependencies must be ready before production mutation');
+  assert.ok(mirrorIndex < securityIndex, 'HTTP/security checks must follow production mutation');
+  assert.ok(securityIndex < browserIndex, 'Chromium must run after basic live health checks');
+  assert.ok(browserIndex < publishIndex, 'verified status must wait for production Chromium');
+  assert.match(deployWorkflow, /playwright-core@1\.55\.0/);
+  assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
+  assert.doesNotMatch(browserWorkflow, /workflow_run:/);
 });
 
 test('検証専用workflowの変更だけでは本番Deployを起動しない', () => {
@@ -127,18 +151,15 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
   for (const stepName of [
     'Run complete preflight and prepare deploy assets',
     'Create deploying status marker',
+    'Install production browser verifier',
     'Setup SSH',
     'Deploy strict public mirror via rsync',
     'Verify production deployment',
     'Verify production SEO health',
+    'Verify production in Chromium before verified status',
     'Publish verified deployment status',
   ]) {
-    const marker = `- name: ${stepName}`;
-    const start = workflow.indexOf(marker);
-    assert.ok(start >= 0, `${stepName} must exist in Deploy`);
-
-    const nextStep = workflow.indexOf('\n      - name: ', start + marker.length);
-    const block = workflow.slice(start, nextStep >= 0 ? nextStep : workflow.length);
+    const block = getStepBlock(workflow, stepName);
     assert.match(
       block,
       /^\s+if: steps\.deploy-impact\.outputs\.deploy_needed == 'true'\s*$/m,
@@ -147,19 +168,31 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
   }
 });
 
-test('本番Browser Smokeもno-op Deployの後はChromiumを起動しない', () => {
+test('本番Chromium失敗はverified前かつproduction mutation後なので自動rollback対象になる', () => {
+  const workflow = read('.github/workflows/deploy.yml');
+  const mirrorIndex = workflow.indexOf('- name: Deploy strict public mirror via rsync');
+  const browserIndex = workflow.indexOf('- name: Verify production in Chromium before verified status');
+  const publishIndex = workflow.indexOf('- name: Publish verified deployment status');
+  const rollbackIndex = workflow.indexOf('- name: Auto-rollback failed production mutation');
+
+  assert.ok(mirrorIndex < browserIndex && browserIndex < publishIndex && publishIndex < rollbackIndex);
+  assert.match(getStepBlock(workflow, 'Verify production in Chromium before verified status'), /id: production-browser/);
+  assert.match(
+    getStepBlock(workflow, 'Auto-rollback failed production mutation'),
+    /failure\(\).*steps\.production-mirror\.outcome == 'success'.*steps\.production-mirror\.outcome == 'failure'/s
+  );
+  assert.match(workflow, /name: Upload production browser evidence/);
+});
+
+test('Standalone Browser Smokeはlocal・productionの手動再確認だけを提供する', () => {
   const workflow = read('.github/workflows/browser-smoke.yml');
 
-  assert.match(workflow, /name: Detect whether production browser smoke is needed/);
-  assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
-  assert.match(workflow, /git diff --name-only --no-renames/);
-  assert.match(workflow, /steps\.production-impact\.outputs\.smoke_needed == 'false'/);
-  assert.match(
-    workflow,
-    /name: Install browser driver\n\s+if: github\.event_name != 'workflow_run' \|\| steps\.production-impact\.outputs\.smoke_needed == 'true'/
-  );
-  assert.match(
-    workflow,
-    /name: Verify production calculator, article CSS, mobile region layout, revenue, and embed widget paths in Chromium\n\s+if: github\.event_name != 'workflow_run' \|\| steps\.production-impact\.outputs\.smoke_needed == 'true'/
-  );
+  assert.match(workflow, /workflow_dispatch:/);
+  assert.match(workflow, /- local/);
+  assert.match(workflow, /- production/);
+  assert.doesNotMatch(workflow, /workflow_run:/);
+  assert.doesNotMatch(workflow, /Detect whether production browser smoke is needed/);
+  assert.doesNotMatch(workflow, /detect-deploy-impact\.cjs/);
+  assert.match(workflow, /if: inputs\.target == 'local'/);
+  assert.match(workflow, /if: inputs\.target == 'production'/);
 });
