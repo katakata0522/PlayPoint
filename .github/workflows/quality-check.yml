@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: true
+          persist-credentials: false
           # PR merge commitの両親を取得し、基準mainの実出力と比較する。
           fetch-depth: 2
 
@@ -33,36 +33,11 @@ jobs:
         run: node scripts/verify-refactor-output.cjs --base "$REFACTOR_BASE_SHA" --evidence-dir "$RUNNER_TEMP/playpoint-refactor-evidence"
 
       - name: Run complete preflight
-        id: preflight
-        continue-on-error: true
         shell: bash
         run: |
           # teeの成功で検証失敗を隠さず、ログ保存と失敗の伝播を両立する。
           set -euo pipefail
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
-
-      - name: Sync generated region pages for the stage1 branch
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/root-audit-stage1-regions-20260914' && steps.preflight.outcome == 'failure'
-        shell: bash
-        env:
-          PLAYPOINT_MODIFIED_DATE: '2026-08-12'
-          PLAYPOINT_ASSET_VERSION: '20260912_1015'
-        run: |
-          set -euo pipefail
-          node scripts/build-html.js
-          git add hk/index.html in/index.html
-          if git diff --cached --quiet; then
-            echo 'No generated regional-page changes to sync.'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'chore: sync expansion region pages'
-          git push origin "HEAD:${{ github.head_ref }}"
-
-      - name: Fail when preflight failed without an auto-sync commit
-        if: steps.preflight.outcome == 'failure' && !(github.event_name == 'pull_request' && github.head_ref == 'fix/root-audit-stage1-regions-20260914')
-        run: exit 1
 
       - name: Preserve preflight verification evidence
         if: always()
