@@ -61,6 +61,33 @@ jobs:
       - name: Regenerate canonical outputs
         run: node scripts/prepare-pr.cjs
 
+      - name: Align legacy game quality contract with compact common-rule UI
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          matches = []
+          for path in Path('tests').rglob('*.test.cjs'):
+              source = path.read_text(encoding='utf-8')
+              if 'Google Play common rule section' in source:
+                  matches.append((path, source))
+          if len(matches) != 1:
+              raise SystemExit(f'expected one legacy common-rule contract, got {len(matches)}')
+
+          path, source = matches[0]
+          pattern = re.compile(
+              r'assert\.match\(html,\s*/<section class="section" id="google-play-rule">/u,\s*`\$\{slug\}: Google Play common rule section`\);'
+          )
+          replacement = 'assert.match(html, /class="decision-box article-common-rule"/u, `${slug}: compact Google Play common rule block`);'
+          next_source, count = pattern.subn(replacement, source, count=1)
+          if count != 1:
+              raise SystemExit(f'legacy common-rule assertion not found in {path}')
+          path.write_text(next_source, encoding='utf-8')
+          print(f'updated legacy game quality contract: {path}')
+          PY
+
       - name: Run focused regression tests
         run: node --test tests/article-quality-polish.test.cjs tests/intl-game-guide-expansion.test.cjs tests/intl-localization-quality.test.cjs tests/intl-localization-semantics.test.cjs
 
