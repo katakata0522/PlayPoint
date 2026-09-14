@@ -6,6 +6,14 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8');
 
+const getStepBlock = stepName => {
+  const marker = `- name: ${stepName}`;
+  const start = workflow.indexOf(marker);
+  assert.ok(start >= 0, `${stepName} must exist`);
+  const nextStep = workflow.indexOf('\n      - name: ', start + marker.length);
+  return workflow.slice(start, nextStep >= 0 ? nextStep : workflow.length);
+};
+
 test('rollback snapshotのSHAを本番変更前に検証してstep outputへ固定する', () => {
   assert.match(workflow, /- name: Verify rollback snapshot before production mutation\n\s+id: rollback-snapshot/);
   assert.match(workflow, /deploy-rsync\.sh --verify-snapshot/);
@@ -18,9 +26,20 @@ test('rollback snapshotのSHAを本番変更前に検証してstep outputへ固�
   assert.ok(snapshotVerifyIndex >= 0 && mirrorIndex > snapshotVerifyIndex, 'snapshot SHA must be fixed before production mutation');
 });
 
-test('自動rollbackはproduction mirrorを実際に試行した後の失敗だけで発火する', () => {
-  assert.match(workflow, /- name: Deploy strict public mirror via rsync\n\s+id: production-mirror/);
-  assert.match(workflow, /- name: Auto-rollback failed production mutation\n\s+id: auto-rollback/);
+test('自動rollbackは本番mutationまたはcritical検証の失敗だけで発火する', () => {
+  const criticalSteps = [
+    ['Deploy strict public mirror via rsync', 'production-mirror'],
+    ['Verify production deployment', 'production-http'],
+    ['Verify production SEO health', 'production-seo'],
+    ['Verify production sitemap registry', 'production-sitemap'],
+    ['Verify production security headers', 'production-security'],
+    ['Verify production in Chromium before verified status', 'production-browser'],
+    ['Publish verified deployment status', 'publish-verified'],
+  ];
+
+  for (const [stepName, id] of criticalSteps) {
+    assert.match(getStepBlock(stepName), new RegExp(`id: ${id}`), `${stepName} must expose ${id}`);
+  }
 
   const autoRollbackStart = workflow.indexOf('- name: Auto-rollback failed production mutation');
   const mirrorStart = workflow.indexOf('- name: Deploy strict public mirror via rsync');
@@ -28,12 +47,26 @@ test('自動rollbackはproduction mirrorを実際に試行した後の失敗だ�
   assert.ok(autoRollbackStart > mirrorStart, 'auto rollback must be placed after production mutation');
   assert.ok(autoRollbackStart > publishStart, 'auto rollback must also catch verified-status publication failure');
 
-  const rollbackSlice = workflow.slice(autoRollbackStart, workflow.indexOf('- name: Checkout auto-rollback revision'));
-  assert.ok(rollbackSlice.includes("failure()"), 'auto rollback must require an existing deploy failure');
+  const rollbackSlice = getStepBlock('Auto-rollback failed production mutation');
+  assert.ok(rollbackSlice.includes('failure()'), 'auto rollback must require an existing job failure');
   assert.ok(rollbackSlice.includes("steps.rollback-snapshot.outputs.revision != ''"), 'auto rollback requires a verified snapshot SHA');
-  assert.ok(rollbackSlice.includes("steps.production-mirror.outcome == 'success'"), 'auto rollback must recognize a completed mirror');
-  assert.ok(rollbackSlice.includes("steps.production-mirror.outcome == 'failure'"), 'auto rollback must recognize a partial/failed mirror attempt');
-  assert.ok(!rollbackSlice.includes("steps.production-mirror.outcome == 'skipped'"), 'pre-mutation failures must not trigger rollback');
+  for (const [, id] of criticalSteps) {
+    assert.ok(
+      rollbackSlice.includes(`steps.${id}.outcome == 'failure'`),
+      `auto rollback must explicitly recognize ${id} failure`
+    );
+  }
+  assert.ok(!rollbackSlice.includes("outcome == 'skipped'"), 'pre-mutation/skipped work must not trigger rollback');
+  assert.ok(!rollbackSlice.includes("outcome == 'success'"), 'successful production work alone must not trigger rollback');
+});
+
+test('本番ブラウザ証跡の保存失敗はrelease判定とrollback条件へ混ぜない', () => {
+  const evidenceBlock = getStepBlock('Upload production browser evidence');
+  const rollbackBlock = getStepBlock('Auto-rollback failed production mutation');
+
+  assert.match(evidenceBlock, /continue-on-error:\s*true/);
+  assert.match(evidenceBlock, /actions\/upload-artifact@/);
+  assert.doesNotMatch(rollbackBlock, /browser evidence|upload-artifact|artifact/i);
 });
 
 test('自動rollbackは検証済みsnapshot SHAをrestoreへ完全一致で渡す', () => {
@@ -43,10 +76,12 @@ test('自動rollbackは検証済みsnapshot SHAをrestoreへ完全一致で渡�
 });
 
 test('失敗したreleaseをrollback成功で成功扱いにしない', () => {
-  const rollbackIndex = workflow.indexOf('- name: Auto-rollback failed production mutation');
-  assert.ok(rollbackIndex >= 0);
-  assert.doesNotMatch(workflow, /continue-on-error:\s*true/);
-  assert.match(workflow.slice(rollbackIndex), /if: \$\{\{ failure\(\)/);
+  const rollbackBlock = getStepBlock('Auto-rollback failed production mutation');
+  assert.doesNotMatch(rollbackBlock, /continue-on-error:\s*true/);
+  assert.match(rollbackBlock, /if: \$\{\{ failure\(\)/);
+
+  const recoverySlice = workflow.slice(workflow.indexOf('- name: Checkout auto-rollback revision'));
+  assert.match(recoverySlice, /if: \$\{\{ failure\(\)/);
 });
 
 test('復元後はsnapshot revision自身の検証コードでHTTPからChromiumまで確認する', () => {

@@ -177,10 +177,13 @@ test('本番Chromium失敗はverified前かつproduction mutation後なので自
 
   assert.ok(mirrorIndex < browserIndex && browserIndex < publishIndex && publishIndex < rollbackIndex);
   assert.match(getStepBlock(workflow, 'Verify production in Chromium before verified status'), /id: production-browser/);
-  assert.match(
-    getStepBlock(workflow, 'Auto-rollback failed production mutation'),
-    /failure\(\).*steps\.production-mirror\.outcome == 'success'.*steps\.production-mirror\.outcome == 'failure'/s
-  );
+
+  const rollbackBlock = getStepBlock(workflow, 'Auto-rollback failed production mutation');
+  assert.match(rollbackBlock, /failure\(\)/);
+  assert.match(rollbackBlock, /steps\.production-mirror\.outcome == 'failure'/);
+  assert.match(rollbackBlock, /steps\.production-browser\.outcome == 'failure'/);
+  assert.match(rollbackBlock, /steps\.publish-verified\.outcome == 'failure'/);
+  assert.doesNotMatch(rollbackBlock, /steps\.production-mirror\.outcome == 'success'/);
   assert.match(workflow, /name: Upload production browser evidence/);
 });
 
