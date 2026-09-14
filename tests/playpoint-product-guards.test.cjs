@@ -3,21 +3,11 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
-
-function loadConfigs() {
-  const context = { console, __TEST_ENV__: true };
-  context.window = context;
-  vm.createContext(context);
-  vm.runInContext(read('js/analytics-core.js'), context, { filename: 'analytics-core.js' });
-  vm.runInContext(read('js/config.js').replace(/^import[^\n]+\n/gm, '').replace(/^export\s+/gm, ''), context, { filename: 'config.js' });
-  return JSON.parse(JSON.stringify(context.PP_APP.CONFIGS));
-}
-
 
 // --- former playpoint-nine-fixes ---
 

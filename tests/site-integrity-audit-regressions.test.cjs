@@ -115,7 +115,8 @@ test('空・無関係な復元データは既存日記を上書きせず、有�
 });
 
 test('通常計算は0ptを達成済みとして完了し、購入導線を表示しない', () => {
-  const source = stripEsm(fs.readFileSync(path.join(root, 'js/calculator.js'), 'utf8'));
+  const source = ['calculator-core.js', 'calculator-result-view.js', 'calculator.js']
+    .map(name => stripEsm(fs.readFileSync(path.join(root, 'js', name), 'utf8'))).join('\n');
   let resultHtml = '';
   let detailsHtml = null;
   const neededPoints = { value: '0', min: '1', max: '250', validity: { valid: true } };

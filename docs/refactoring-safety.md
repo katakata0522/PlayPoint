@@ -70,3 +70,42 @@ runtimeを将来変更する場合、サーバー側の復元だけでPWAキャ�
 ### 今回拡大しない範囲
 
 既存の `CALC_PURE` / `DIARY_PURE`、購入単位の丸めテストは存在する。ファイルサイズだけを根拠に計算ロジックやstorageを再編しない。Wave群のゲーム事実データの統合、全ロケール台帳の全面移行、生成器そのものの全面置換は、今回のI/Oと所有権改善とは別の作業。静的/PWA配信を重いフレームワークへ置換しない。
+
+## Runtime refactoring without changing the user experience
+
+Use `refactor/runtime-` for structural browser changes that intentionally change
+JavaScript bytes or Service Worker cache revisions. This is not an exemption from
+behavior checks and does not relax the `refactor/build-` byte-equivalence gate.
+
+- `js/region-rules.js` owns calculation-only country rules. Derive compatible maps
+  for the existing runtime and relevant game generators; keep UI wording separate.
+  A data relocation is not an official-information re-verification.
+- `js/calculator-core.js` owns pure arithmetic/calendar functions;
+  `js/calculator-result-view.js` returns result HTML. `calculator.js` keeps input
+  validation, DOM application, sharing and analytics order, and its existing API.
+- Game generators share required-edit failure behavior and common guide shells.
+  Game-specific verification policy, unverified-price handling, and distinct
+  listing/search descriptions remain explicit. Do not merge unrelated facts just
+  because they were originally implemented in the same numbered wave.
+- Existing discovery asset/diary blocks are updated in place. Repeated standalone
+  synchronization must not introduce whitespace churn or write unchanged files.
+- Every new runtime dependency must participate in the app-module fingerprint and
+  Service Worker precache, not merely exist in the repository.
+
+The runtime PR browser job extracts the actual base SHA without credentials and
+runs `refactor-runtime-compatibility.cjs` and `refactor-visual-smoke.cjs`. The first
+compares full regional configs, storage constants, returned HTML, numeric datasets
+and analytics call order on normal dates, December 31 and February 29. Its browser
+services are adapters: it does not claim to prove real ESM or browser execution.
+The existing Chromium gate remains required. The second compares 46 screenshots
+(6 regions x 2 widths x main/reverse/diary, plus 5 articles x 2 widths), without
+masking app content, and tests an old-to-new PWA cache upgrade with existing diary
+data. Both sides use the same Chromium/fonts/timezone/date. External advertising
+and analytics scripts are replaced in this local comparison only; real ad delivery
+or revenue is not certified by screenshot equality. Evidence is stored with the
+existing 7-day browser artifact. Missing, failed or incomplete checks are failures.
+
+Recovery is a normal reviewed revert and deployment through the existing gate;
+do not rewrite main, change storage keys, disable checks, or promise instant
+rollback of already-open browser sessions. Keep source rollback and user-data
+recovery distinct.

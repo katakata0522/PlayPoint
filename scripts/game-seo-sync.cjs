@@ -1,7 +1,8 @@
 'use strict';
 
-const fs = require('node:fs');
-const path = require('node:path');
+const { read, writeIfChanged, requireGuideMetadata, createRequiredEdits } = require('./game-seo-common.cjs');
+const { replaceRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo');
+
 const {
   VERIFIED_AT,
   GOOGLE_PLAY_JP_LEVELS,
@@ -16,40 +17,6 @@ const GUIDE_ASSETS = {
   gameCss: '../../games.css?v=09016b3c58'
 };
 
-function read(rootDir, relativePath) {
-  return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-}
-
-function writeIfChanged(rootDir, relativePath, content) {
-  const filePath = path.join(rootDir, relativePath);
-  fs.mkdirSync(path.dirname(filePath), { recursive: true });
-  const normalized = content.replace(/\r\n/g, '\n');
-  const previous = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : null;
-  if (previous === normalized) return false;
-  fs.writeFileSync(filePath, normalized, 'utf8');
-  return true;
-}
-
-function replaceRequired(source, before, after, label) {
-  if (source.includes(after)) return source;
-  if (!source.includes(before)) throw new Error(`[game-seo] ${label}: expected source text was not found`);
-  return source.replace(before, after);
-}
-
-function replaceRegexRequired(source, pattern, after, marker, label) {
-  if (marker && source.includes(marker)) return source;
-  if (!pattern.test(source)) throw new Error(`[game-seo] ${label}: expected source pattern was not found`);
-  pattern.lastIndex = 0;
-  return source.replace(pattern, after);
-}
-
-function insertBeforeRequired(source, needle, block, marker, label) {
-  if (source.includes(marker)) return source;
-  const index = source.indexOf(needle);
-  if (index < 0) throw new Error(`[game-seo] ${label}: insertion point was not found`);
-  return `${source.slice(0, index)}${block}\n\n          ${source.slice(index)}`;
-}
-
 function yen(value) {
   return `${Number(value).toLocaleString('ja-JP')}円`;
 }
@@ -63,7 +30,8 @@ function pointTableHtml(amount) {
   return `<div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>Play Pointsステータス</th><th>通常獲得率</th><th>${yen(amount)}購入時</th></tr></thead><tbody>${rows}</tbody></table></div>\n<p>ゲーム個別の特別獲得率が表示されている場合は、通常獲得率と単純加算せず、Google Play画面に表示される高い方の獲得率を基準にします。参考として5pt/100円なら約 ${special5.toLocaleString('ja-JP')}pt、7pt/100円なら約 ${special7.toLocaleString('ja-JP')}ptです。</p>`;
 }
 
-function guideShell({ gameId, slug, title, description, lead, body, faq }) {
+function guideShell({ gameId, slug, lead, body, faq, pageDescription }) {
+  const { title, description } = requireGuideMetadata(gameId, slug, pageDescription);
   const canonical = `https://playpoint-sim.com/games/${gameId}/${slug}/`;
   const faqJson = faq && faq.length ? `\n  <script type="application/ld+json">\n${JSON.stringify({
     '@context': 'https://schema.org',
@@ -139,7 +107,7 @@ function renderFgoGuide() {
       <section class="section"><h2>福袋の有償15個は、ゼロからなら1,920円</h2><p>2026年の福袋召喚は<strong>有償聖晶石15個</strong>が必要です。現在の最小販売単位は有償4個+無償1個で480円なので、4回購入すると有償16個となり<strong>1,920円</strong>です。無料分4個は福袋の有償条件には入りません。</p>${pointTableHtml(data.luckyBag.cheapestVerifiedSpendFromZero)}</section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.fgoPrice}" target="_blank" rel="noopener noreferrer">FGO公式：聖晶石販売価格</a></li><li><a href="${SOURCES.fgoPity}" target="_blank" rel="noopener noreferrer">FGO公式FAQ：確定召喚330回</a></li><li><a href="${SOURCES.fgoLuckyBag2026}" target="_blank" rel="noopener noreferrer">FGO公式：2026年11周年福袋（有償15個）</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">FGO Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'fgo', slug: 'pity-cost', title: 'FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】', description: 'FGOの確定召喚330回に必要な聖晶石と課金額を、現行の公式価格から計算。ゼロからの最小購入例、福袋の有償15個、Google Play Points還元をまとめます。', lead: '「FGOの天井は結局いくら？」「福袋の有償15個をゼロから買うと何円？」「その課金でPlay Pointsは何ポイント？」を、確認済みの公式価格だけで計算します。', body, faq });
+  return guideShell({ gameId: 'fgo', slug: 'pity-cost', lead: '「FGOの天井は結局いくら？」「福袋の有償15個をゼロから買うと何円？」「その課金でPlay Pointsは何ポイント？」を、確認済みの公式価格だけで計算します。', body, faq });
 }
 
 function renderGenshinGuide() {
@@ -155,7 +123,7 @@ function renderGenshinGuide() {
       <section class="section"><h2>価格確認で修正した点</h2><p>創世結晶980個の日本向け価格は、現在確認できる価格スナップショットで<strong>1,840円</strong>です。旧データの1,220円は修正対象です。購入前にはAndroidのGoogle Play購入画面を最終確認してください。</p></section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.genshinPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：2026年の価格掲載スナップショット</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li><li><a href="${SOURCES.googlePlayLevels}" target="_blank" rel="noopener noreferrer">Google Play公式：日本のステータス別獲得率</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">原神 Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'genshin', slug: 'welkin-value', title: '原神「空月の祝福」はどれくらいお得？610円・原石3000相当とPlay Points', description: '原神の空月の祝福を、610円・最大3,000原石相当・Google Play Pointsの観点で比較。創世結晶の通常購入や90連/180連との違いも整理します。', lead: '空月の祝福は安い一方で、30日ログインが必要な定額型です。即時チャージと同じ物差しで比べず、「原石量」「受取速度」「Play Points」の3つに分けて判断します。', body, faq });
+  return guideShell({ gameId: 'genshin', slug: 'welkin-value', pageDescription: '原神の空月の祝福を、610円・最大3,000原石相当・Google Play Pointsの観点で比較。創世結晶の通常購入や90連/180連との違いも整理します。', lead: '空月の祝福は安い一方で、30日ログインが必要な定額型です。即時チャージと同じ物差しで比べず、「原石量」「受取速度」「Play Points」の3つに分けて判断します。', body, faq });
 }
 
 function renderMonstGuide() {
@@ -172,7 +140,7 @@ function renderMonstGuide() {
       <section class="section"><h2>「どっちが得？」を一律の円換算にしない</h2><p>Play Pointsはゲーム内アイテム、クーポン、Google Playクレジットなど交換先と条件がアカウントや時期で変わります。そのため「500pt=必ず○円」と固定して、Webショップの20オーブと無理に同じ円価値へ換算しません。Play画面で現在使える交換先を確認し、オーブ増量とポイント価値を分けて判断するのが正確です。</p></section>
       <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.monstMonthlyWeb}" target="_blank" rel="noopener noreferrer">モンスト公式：月イチお得オーブ200個/10,000円</a></li><li><a href="${SOURCES.monstWebLaunch}" target="_blank" rel="noopener noreferrer">モンスト公式：Web190個とアプリ内との差</a></li><li><a href="${SOURCES.monstWebCurrent}" target="_blank" rel="noopener noreferrer">モンスト公式Webショップ：現在の商品表示</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの対象と計算</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">モンスト Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'monst', slug: 'google-play-vs-webshop', title: 'モンストはGoogle Play課金とWebショップどっちがお得？月イチ200個とPlay Points比較【2026年】', description: 'モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差と、Google Play Pointsを含めた選び方を公式情報ベースで整理します。', lead: '1万円という同じ支出でも、購入経路でオーブ数とPlay Pointsの条件が変わります。どちらかを一律に「最強」とせず、オーブ数とポイントを別々に比較します。', body, faq });
+  return guideShell({ gameId: 'monst', slug: 'google-play-vs-webshop', pageDescription: 'モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差と、Google Play Pointsを含めた選び方を公式情報ベースで整理します。', lead: '1万円という同じ支出でも、購入経路でオーブ数とPlay Pointsの条件が変わります。どちらかを一律に「最強」とせず、オーブ数とポイントを別々に比較します。', body, faq });
 }
 
 function syncFgo(rootDir) {

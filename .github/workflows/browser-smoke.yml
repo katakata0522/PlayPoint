@@ -45,6 +45,8 @@ on:
       - 'terms.html'
       - 'changelog.html'
       - '.github/scripts/browser-smoke.cjs'
+      - '.github/scripts/refactor-runtime-compatibility.cjs'
+      - '.github/scripts/refactor-visual-smoke.cjs'
       - '.github/scripts/article-css-smoke.cjs'
       - '.github/scripts/article-design-smoke.cjs'
       - '.github/scripts/mobile-region-layout-smoke.cjs'
@@ -74,6 +76,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          fetch-depth: 2
 
       - name: Install browser driver
         run: |
@@ -93,6 +96,33 @@ jobs:
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
+
+      - name: Compare refactored runtime and appearance with the base revision
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-')
+        shell: bash
+        env:
+          REFACTOR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          REFACTOR_EVIDENCE_DIR: ${{ github.workspace }}/browser-smoke-artifacts/refactor
+        run: |
+          set -euo pipefail
+          baseline_dir="$(mktemp -d "$RUNNER_TEMP/playpoint-runtime-base-XXXXXX")"
+          trap 'rm -rf "$baseline_dir"' EXIT
+          git archive "$REFACTOR_BASE_SHA" | tar -x -C "$baseline_dir"
+          node .github/scripts/refactor-runtime-compatibility.cjs "$baseline_dir"
+          node .github/scripts/refactor-visual-smoke.cjs "$baseline_dir"
+
+      - name: Preserve runtime refactor source evidence
+        if: ${{ always() && github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-') }}
+        shell: bash
+        env:
+          REFACTOR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          evidence_dir="browser-smoke-artifacts/refactor"
+          mkdir -p "$evidence_dir"
+          git archive --format=tar "$REFACTOR_BASE_SHA" | gzip > "$evidence_dir/base-source.tar.gz"
+          git archive --format=tar HEAD | gzip > "$evidence_dir/candidate-source.tar.gz"
+          printf 'base=%s\ncandidate=%s\ntree=%s\n' "$REFACTOR_BASE_SHA" "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" > "$evidence_dir/source-revisions.txt"
 
       - name: Upload browser verification evidence
         if: always()

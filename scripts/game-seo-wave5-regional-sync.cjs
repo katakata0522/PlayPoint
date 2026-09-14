@@ -2,6 +2,12 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { getRegionRule } = require('../js/region-rules.js');
+
+function calculationFields(region) {
+  const { currencyCode, tiers } = getRegionRule(region);
+  return { currencyCode, rates: tiers.map(tier => tier.rate), tiers: tiers.map(tier => tier.label) };
+}
 
 const GAME_SLUGS = Object.freeze(['prospi-a', 'pokemon-go', 'efootball']);
 
@@ -9,27 +15,21 @@ const REGION = Object.freeze({
   en: {
     amountLabel: 'Planned Google Play spend ($ USD)',
     base: '$1',
-    currencyCode: 'USD',
-    rates: [1, 1.1, 1.2, 1.4, 1.6],
-    tiers: ['Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond'],
+    ...calculationFields('US'),
     baseCopy: 'Standard',
     specialCopy: 'Special earn rate'
   },
   ko: {
     amountLabel: 'Google Play 결제 예정 총액 (원)',
     base: '1,000원',
-    currencyCode: 'KRW',
-    rates: [1, 1.1, 1.3, 1.6, 2],
-    tiers: ['브론즈', '실버', '골드', '플래티넘', '다이아몬드'],
+    ...calculationFields('KR'),
     baseCopy: '기본 기준',
     specialCopy: '특별 적립률'
   },
   tw: {
     amountLabel: '預計 Google Play 課金總額（新台幣）',
     base: 'NT$30',
-    currencyCode: 'TWD',
-    rates: [1, 1.25, 1.5, 1.75, 2],
-    tiers: ['銅級', '銀級', '黃金級', '白金級', '鑽石級'],
+    ...calculationFields('TW'),
     baseCopy: '基本參考',
     specialCopy: '特殊積點率'
   }
