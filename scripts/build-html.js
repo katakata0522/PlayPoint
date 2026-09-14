@@ -36,6 +36,7 @@ const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
 const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
 const { getSyncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
+const { syncFixedPageHeaders } = require('./fixed-page-header-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
 const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
@@ -117,6 +118,8 @@ const articleTableOverflowSummary = syncArticleTableOverflow(rootDir);
 console.log(`[build-html] normalized article table overflow: ${articleTableOverflowSummary.changed}/${articleTableOverflowSummary.checked} updated`);
 
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
+const fixedPageHeaderSummary = syncFixedPageHeaders(rootDir);
+console.log(`[build-html] synchronized fixed-page Site Shell headers: ${fixedPageHeaderSummary.changed}/${fixedPageHeaderSummary.checked} updated`);
 applyLpMonetization(rootDir);
 const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);

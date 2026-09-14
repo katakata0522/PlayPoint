@@ -51,6 +51,51 @@ const LP_FOOTER_PROFILES = Object.freeze({
   })
 });
 
+const JAPANESE_FIXED_REGION_LINKS = Object.freeze([
+  Object.freeze({ href: './', label: '日本語', style: 'margin-right: 12px; color: #007bff; text-decoration: none;' }),
+  Object.freeze({ href: './en/', label: 'English', style: 'margin-right: 12px; color: #007bff; text-decoration: none;' }),
+  Object.freeze({ href: './ko/', label: '한국어', style: 'margin-right: 12px; color: #007bff; text-decoration: none;' }),
+  Object.freeze({ href: './tw/', label: '繁體中文', style: 'margin-right: 12px; color: #007bff; text-decoration: none;' })
+]);
+
+const JAPANESE_FIXED_POLICY_LINKS = Object.freeze([
+  Object.freeze({ href: 'privacy.html', label: 'プライバシーポリシー' }),
+  Object.freeze({ href: 'terms.html', label: '利用規約', style: 'margin-left: 1em;' })
+]);
+
+const REGION_GUIDE_LINKS = Object.freeze([
+  Object.freeze({ href: './', label: '🇯🇵 Japan' }),
+  Object.freeze({ href: './en/', label: '🇺🇸 U.S.' }),
+  Object.freeze({ href: './ko/', label: '🇰🇷 Korea' }),
+  Object.freeze({ href: './tw/', label: '🇹🇼 Taiwan' }),
+  Object.freeze({ href: './hk/', label: '🇭🇰 Hong Kong' }),
+  Object.freeze({ href: './in/', label: '🇮🇳 India' })
+]);
+
+const REGION_GUIDE_POLICY_LINKS = Object.freeze([
+  Object.freeze({ href: 'privacy.html', label: 'Privacy Policy' }),
+  Object.freeze({ href: 'terms.html', label: 'Terms of Service', style: 'margin-left:1em;' })
+]);
+
+const JAPANESE_FIXED_HEADER_PROFILE = Object.freeze({
+  headerLinksStyle: 'width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;',
+  navStyle: 'font-size: 0.9em;',
+  navLinks: JAPANESE_FIXED_REGION_LINKS,
+  policyLinks: JAPANESE_FIXED_POLICY_LINKS
+});
+
+const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
+  'about-playpoints.html': JAPANESE_FIXED_HEADER_PROFILE,
+  'info.html': JAPANESE_FIXED_HEADER_PROFILE,
+  'attention.html': Object.freeze({
+    topBarStyle: 'margin-bottom:20px;',
+    headerLinksStyle: 'width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;',
+    navStyle: 'font-size:.9em;display:flex;flex-wrap:wrap;gap:10px;',
+    navLinks: REGION_GUIDE_LINKS,
+    policyLinks: REGION_GUIDE_POLICY_LINKS
+  })
+});
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -59,8 +104,20 @@ function escapeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
+function styleAttribute(style) {
+  return style ? ` style="${escapeHtml(style)}"` : '';
+}
+
 function getLpFooterProfile(localeKey) {
   return LP_FOOTER_PROFILES[localeKey] || LP_FOOTER_PROFILES.ja;
+}
+
+function getFixedPageHeaderProfile(relativePath) {
+  const profile = FIXED_PAGE_HEADER_PROFILES[relativePath];
+  if (!profile) {
+    throw new RangeError(`No fixed-page header profile for: ${relativePath}`);
+  }
+  return profile;
 }
 
 function renderPageFooter({ links, disclaimer, copyright }) {
@@ -90,9 +147,41 @@ ${nav}
     </footer>`;
 }
 
+function renderHeaderLink(link, indent) {
+  if (!link?.href || !link?.label) {
+    throw new TypeError('Site header links require href and label.');
+  }
+  return `${indent}<a href="${escapeHtml(link.href)}"${styleAttribute(link.style)}>${escapeHtml(link.label)}</a>`;
+}
+
+function renderFixedPageHeader(profile, indent = '') {
+  if (!profile || !Array.isArray(profile.navLinks) || !Array.isArray(profile.policyLinks)) {
+    throw new TypeError('Fixed-page header profile requires navLinks and policyLinks arrays.');
+  }
+  if (profile.navLinks.length === 0 || profile.policyLinks.length === 0) {
+    throw new TypeError('Fixed-page header navigation groups must not be empty.');
+  }
+
+  const first = `${indent}<div class="top-bar"${styleAttribute(profile.topBarStyle)}>`;
+  const second = `${indent}  <div class="header-links"${styleAttribute(profile.headerLinksStyle)}>`;
+  const navOpen = `${indent}    <div class="lang-nav"${styleAttribute(profile.navStyle)}>`;
+  const navLinks = profile.navLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n');
+  const navClose = `${indent}    </div>`;
+  const policyOpen = `${indent}    <div>`;
+  const policyLinks = profile.policyLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n');
+  const policyClose = `${indent}    </div>`;
+  const headerClose = `${indent}  </div>`;
+  const topClose = `${indent}</div>`;
+
+  return [first, second, navOpen, navLinks, navClose, policyOpen, policyLinks, policyClose, headerClose, topClose].join('\n');
+}
+
 module.exports = {
+  FIXED_PAGE_HEADER_PROFILES,
   LP_FOOTER_PROFILES,
   escapeHtml,
+  getFixedPageHeaderProfile,
   getLpFooterProfile,
+  renderFixedPageHeader,
   renderPageFooter
 };

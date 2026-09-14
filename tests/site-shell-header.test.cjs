@@ -1,0 +1,83 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const test = require('node:test');
+const {
+  FIXED_PAGE_HEADER_PROFILES,
+  getFixedPageHeaderProfile,
+  renderFixedPageHeader
+} = require('../scripts/site-shell.cjs');
+const {
+  locateTopBar,
+  syncFixedPageHeaders
+} = require('../scripts/fixed-page-header-sync.cjs');
+
+const root = path.resolve(__dirname, '..');
+const targetPaths = Object.keys(FIXED_PAGE_HEADER_PROFILES);
+
+test('Stage 12B owns the three fixed-page headers from one immutable Site Shell registry', () => {
+  assert.ok(Object.isFrozen(FIXED_PAGE_HEADER_PROFILES));
+  assert.deepEqual(targetPaths, ['about-playpoints.html', 'info.html', 'attention.html']);
+
+  const about = getFixedPageHeaderProfile('about-playpoints.html');
+  const info = getFixedPageHeaderProfile('info.html');
+  const attention = getFixedPageHeaderProfile('attention.html');
+  assert.equal(about, info);
+  assert.ok(Object.isFrozen(about));
+  assert.ok(Object.isFrozen(about.navLinks));
+  assert.ok(Object.isFrozen(about.policyLinks));
+  assert.equal(about.navLinks.length, 4);
+  assert.equal(attention.navLinks.length, 6);
+  assert.deepEqual(attention.navLinks.map(link => link.href), ['./', './en/', './ko/', './tw/', './hk/', './in/']);
+  assert.throws(() => getFixedPageHeaderProfile('unknown.html'), /No fixed-page header profile/);
+});
+
+test('committed fixed pages are already byte-canonical for the shared Header renderer', () => {
+  for (const relativePath of targetPaths) {
+    const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
+    const located = locateTopBar(html, relativePath);
+    const expected = renderFixedPageHeader(getFixedPageHeaderProfile(relativePath), located.indent);
+    assert.equal(located.html, expected, `${relativePath} header drifted from Site Shell`);
+  }
+});
+
+test('fixed-page Header synchronization repairs drift and becomes idempotent', () => {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-site-shell-'));
+  try {
+    for (const relativePath of targetPaths) {
+      fs.copyFileSync(path.join(root, relativePath), path.join(tempRoot, relativePath));
+    }
+
+    const clean = syncFixedPageHeaders(tempRoot);
+    assert.equal(clean.changed, 0);
+    assert.equal(clean.checked, 3);
+
+    const aboutPath = path.join(tempRoot, 'about-playpoints.html');
+    fs.writeFileSync(
+      aboutPath,
+      fs.readFileSync(aboutPath, 'utf8').replace('>English</a>', '>English drift</a>'),
+      'utf8'
+    );
+
+    const repaired = syncFixedPageHeaders(tempRoot);
+    assert.deepEqual(repaired.changedFiles, ['about-playpoints.html']);
+    assert.doesNotMatch(fs.readFileSync(aboutPath, 'utf8'), /English drift/);
+    assert.equal(syncFixedPageHeaders(tempRoot).changed, 0);
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+});
+
+test('canonical build applies fixed-page Header synchronization before public asset finalization', () => {
+  const source = fs.readFileSync(path.join(root, 'scripts', 'build-html.js'), 'utf8');
+  assert.match(source, /require\('\.\/fixed-page-header-sync\.cjs'\)/);
+  const htmlSyncIndex = source.indexOf('syncHtmlFiles(rootDir');
+  const headerSyncIndex = source.indexOf('syncFixedPageHeaders(rootDir)');
+  const publicAssetsIndex = source.indexOf('syncPublicAssetVersions(rootDir)');
+  assert.ok(htmlSyncIndex >= 0);
+  assert.ok(headerSyncIndex > htmlSyncIndex);
+  assert.ok(publicAssetsIndex > headerSyncIndex);
+});
