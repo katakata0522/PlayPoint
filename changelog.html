@@ -370,19 +370,15 @@
                 }
             }
 
-            const ref = document.referrer;
             let targetRegion = preferredRegion;
-
-            if (ref) {
-                if (ref.includes('/ko/')) {
-                    targetRegion = 'KR';
-                } else if (ref.includes('/tw/')) {
-                    targetRegion = 'TW';
-                } else if (ref.includes('/en/')) {
-                    targetRegion = 'US';
-                } else if (ref.includes('playpoint-sim.com') && !ref.includes('/en/') && !ref.includes('/ko/') && !ref.includes('/tw/')) {
-                    targetRegion = 'JP';
+            try {
+                const referrer = new URL(document.referrer);
+                if (referrer.origin === window.location.origin) {
+                    const locale = referrer.pathname.split('/')[1];
+                    targetRegion = { ko: 'KR', tw: 'TW', en: 'US' }[locale] || 'JP';
                 }
+            } catch (e) {
+                // Empty or invalid referrers keep the preferred region fallback.
             }
 
             if (targetRegion === 'KR') {
