@@ -84,6 +84,17 @@ test('blog listing exposes the public search and game-title controls used by bro
   assert.match(html, /id="game-title-filter"/);
 });
 
+test('blog listing keeps content visible without scroll-animation success and has one canonical footer', () => {
+  const html = read('blog/index.html');
+  const script = read('blog/script.js');
+  const style = read('blog/style.css');
+
+  assert.equal((html.match(/<footer\b/g) || []).length, 1, 'blog/index.html must expose exactly one footer');
+  assert.doesNotMatch(html, /class="blog-footer"/, 'legacy duplicate footer must not return');
+  assert.doesNotMatch(script, /fade-in-up|setupScrollAnimations|scrollObserver/, 'article visibility must not depend on IntersectionObserver');
+  assert.doesNotMatch(style, /\.fade-in-up\s*\{[^}]*opacity:\s*0/s, 'primary article cards must never default to opacity:0');
+});
+
 test('blog pagination styles cover the runtime DOM contract without pinning renderer implementation', () => {
   const compact = read('blog/index-compact.css');
   const style = read('blog/style.css');
