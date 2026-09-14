@@ -38,6 +38,7 @@ const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
 const { getSyncedHtmlFiles } = require('./build-targets.cjs');
 const { syncHtmlFiles } = require('./html-sync.cjs');
 const { syncFixedPageHeaders } = require('./fixed-page-header-sync.cjs');
+const { syncLegalPageLanguageNavs } = require('./legal-page-lang-nav-sync.cjs');
 const { sanitizeInternalLinks } = require('./internal-link-attribution.cjs');
 const { syncAnalyticsRuntimeScripts } = require('./analytics-runtime-sync.cjs');
 const { syncSitemap } = require('./sitemap-sync.cjs');
@@ -123,6 +124,8 @@ console.log(`[build-html] normalized article table overflow: ${articleTableOverf
 syncHtmlFiles(rootDir, getSyncedHtmlFiles(rootDir), assetVersions, todayStr);
 const fixedPageHeaderSummary = syncFixedPageHeaders(rootDir);
 console.log(`[build-html] synchronized fixed-page Site Shell headers: ${fixedPageHeaderSummary.changed}/${fixedPageHeaderSummary.checked} updated`);
+const legalLanguageNavSummary = syncLegalPageLanguageNavs(rootDir);
+console.log(`[build-html] synchronized legal-page Site Shell language navs: ${legalLanguageNavSummary.changed}/${legalLanguageNavSummary.checked} updated`);
 applyLpMonetization(rootDir);
 const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);
