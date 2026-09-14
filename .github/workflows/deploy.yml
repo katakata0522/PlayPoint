@@ -33,7 +33,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     # Xserverの通信フェーズは接続待ちに加えて、接続後の停止も上限付きで検知して再試行する。
-    # 本体ミラー7回・snapshot/rollback等5回に加え、失敗時の復元検証まで50分以内に収める。
+    # 本体ミラー7回・snapshot/rollback等5回に加え、本番Chromiumと失敗時の復元検証まで50分以内に収める。
     timeout-minutes: 50
     steps:
       - name: Checkout code
@@ -93,7 +93,7 @@ jobs:
 
       - name: Skip production deployment for non-public changes
         if: steps.deploy-impact.outputs.deploy_needed == 'false'
-        run: echo 'No public/deployment input changed. Skipping preflight preparation, SSH, rsync, and production verification.'
+        run: echo 'No public/deployment input changed. Skipping preflight preparation, browser setup, SSH, rsync, and production verification.'
 
       - name: Run complete preflight and prepare deploy assets
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
@@ -116,6 +116,19 @@ jobs:
           public_root="$RUNNER_TEMP/playpoint-public"
           node .github/scripts/prepare-public-tree.cjs "$public_root"
           echo "DEPLOY_SOURCE_ROOT=$public_root" >> "$GITHUB_ENV"
+
+      # ブラウザ実行環境の準備失敗はproduction mutationではないため、snapshot/rsyncより前に失敗させる。
+      - name: Install production browser verifier
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
 
       - name: Setup SSH
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
@@ -183,6 +196,30 @@ jobs:
       - name: Verify production security headers
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/security-health-check.cjs
+
+      # HTTP/SEOだけでは検出できない表示・操作・収益経路の破損もverified前に止める。
+      - name: Verify production in Chromium before verified status
+        id: production-browser
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        env:
+          SMOKE_BASE_URL: https://playpoint-sim.com/
+        run: |
+          set -euo pipefail
+          node .github/scripts/browser-smoke.cjs
+          node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
+          node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
+
+      - name: Upload production browser evidence
+        if: ${{ always() && steps.deploy-impact.outputs.deploy_needed == 'true' && (steps.production-browser.outcome == 'success' || steps.production-browser.outcome == 'failure') }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: deploy-production-browser-${{ github.run_id }}
+          path: browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Publish verified deployment status
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
