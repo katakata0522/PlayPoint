@@ -126,7 +126,7 @@ test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、snapsho
   assert.match(script, /run_with_transient_retry "Deploying via rsync" "\$DEPLOY_MAX_ATTEMPTS" deploy_once/);
   assert.match(script, /run_with_transient_retry "Verifying remote cleanup" "\$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once/);
   assert.match(script, /run_with_transient_retry "Publishing verified deployment status" "\$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once/);
-  assert.match(workflow, /本体ミラーだけ7回、snapshot\/cleanup\/status公開は5回まで/);
+  assert.match(workflow, /本体ミラー7回・snapshot\/rollback等5回/);
   assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --publish-status/);
   assert.doesNotMatch(
     workflow,
@@ -173,10 +173,10 @@ test('本番SSHは公開鍵だけを使い、転送・TTY・鍵残存を許さ�
   assert.ok(!workflow.includes('echo "${{ secrets.SSH_PRIVATE_KEY }}"'));
 });
 
-test('GitHub Actionsのjob timeoutはXserver retry予算を途中で打ち切らない', () => {
+test('GitHub Actionsのjob timeoutは失敗時の自動復元・再検証まで途中で打ち切らない', () => {
   const match = workflow.match(/timeout-minutes:\s*(\d+)/);
   assert.ok(match, 'deploy workflow timeout is missing');
-  assert.ok(Number(match[1]) >= 40, `deploy timeout is too short for snapshot plus bounded retry/backoff: ${match[1]} minutes`);
+  assert.ok(Number(match[1]) >= 50, `deploy timeout is too short for bounded deploy plus rollback verification: ${match[1]} minutes`);
 });
 
 test('旧calculatorファイルを持たず301転送だけを維持する', () => {
