@@ -84,10 +84,10 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
                         </dl>
                         ${comparisonContent}
                         <div class="calculation-note">${calculationNoteText}</div>
-                        ${guidanceContent}
                     </div>
                 </details>
                 ${purchaseCheckContent}
+                ${guidanceContent}
             `;
         }
 
