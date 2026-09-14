@@ -119,8 +119,37 @@ jobs:
       - name: Run focused regressions
         run: node --test tests/blog-listing-ux.test.cjs tests/playpoint-product-guards.test.cjs
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
+      - name: Run complete preflight and capture diagnostics
+        id: preflight
+        shell: bash
+        run: |
+          set +e
+          node .github/scripts/preflight.cjs > /tmp/preflight.log 2>&1
+          status=$?
+          cat /tmp/preflight.log
+          if [ "$status" -ne 0 ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/preflight.log').read_text(encoding='utf-8', errors='replace').splitlines()
+          hits = []
+          needles = ('not ok', 'AssertionError', 'ERR_', '失敗', 'Error:', 'expected', 'actual')
+          for i, line in enumerate(lines):
+              if any(n in line for n in needles):
+                  start = max(0, i - 5)
+                  end = min(len(lines), i + 12)
+                  hits.extend(lines[start:end])
+                  hits.append('---')
+          tail = lines[-220:]
+          report = ['# P0/P1 preflight diagnostic', '', '## Matched failure context', ''] + hits[-500:] + ['', '## Final 220 lines', ''] + tail
+          Path('docs/P0_P1_PREFLIGHT_DIAGNOSTIC.tmp.txt').write_text('\n'.join(report) + '\n', encoding='utf-8')
+          PY
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add docs/P0_P1_PREFLIGHT_DIAGNOSTIC.tmp.txt
+            git commit -m 'chore: capture P0/P1 preflight failure'
+            git push origin HEAD:fix/p0-p1-site-ux-20260914
+            exit "$status"
+          fi
 
       - name: Commit verified changes
         shell: bash
