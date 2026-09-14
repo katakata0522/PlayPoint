@@ -4,6 +4,7 @@ set -euo pipefail
 REMOTE_HOST="hajikkoroom@hajikkoroom.xsrv.jp"
 REMOTE_ROOT="/home/hajikkoroom/playpoint-sim.com/public_html"
 SSH_KEY="$HOME/.ssh/id_ed25519"
+DEPLOY_SOURCE_ROOT="${DEPLOY_SOURCE_ROOT:-}"
 SSH_OPTIONS=(
   -p 10022
   -i "$SSH_KEY"
@@ -93,12 +94,38 @@ run_with_transient_retry() {
   done
 }
 
+resolve_deploy_source_root() {
+  if [ -z "$DEPLOY_SOURCE_ROOT" ]; then
+    echo "DEPLOY_SOURCE_ROOT is required. Refusing to mirror the repository root directly." >&2
+    return 2
+  fi
+  if [ ! -d "$DEPLOY_SOURCE_ROOT" ]; then
+    echo "DEPLOY_SOURCE_ROOT does not exist or is not a directory: $DEPLOY_SOURCE_ROOT" >&2
+    return 2
+  fi
+
+  local source_root repository_root
+  source_root="$(cd "$DEPLOY_SOURCE_ROOT" && pwd -P)"
+  repository_root="$(pwd -P)"
+  if [ "$source_root" = "/" ] || [ "$source_root" = "$repository_root" ]; then
+    echo "Refusing unsafe deployment source root: $source_root" >&2
+    return 2
+  fi
+  printf '%s\n' "$source_root"
+}
+
 deploy_once() {
+  local source_root
+  source_root="$(resolve_deploy_source_root)"
+
+  # The source is already an explicit allowlisted public tree. The excludes are
+  # intentionally retained during migration as defense in depth, not as the
+  # ownership boundary that decides what is public.
   rsync -avz --delete-after --delete-excluded --delay-updates --timeout="$RSYNC_IO_TIMEOUT_SECONDS" \
     -e "$RSYNC_RSH" \
     --filter='protect /manner/***' \
     --filter='protect /kanji-slicer/***' \
-    ./ "$REMOTE_HOST:$REMOTE_ROOT/" \
+    "$source_root/" "$REMOTE_HOST:$REMOTE_ROOT/" \
     --exclude '/.git/***' \
     --exclude '/.github/***' \
     --exclude '/.gitignore' \
@@ -163,6 +190,7 @@ stale_paths=(
   "yarn.lock"
   "みんな用URL.txt"
   "CNAME"
+  "toc_scan_report.txt"
   "tools"
   "kindle-tracker"
   "kids-smile-land"
