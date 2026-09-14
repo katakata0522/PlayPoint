@@ -97,6 +97,16 @@ test('mobile selector keeps full desktop country names but shows compact region 
   }
 });
 
+test('desktop selector does not depend on OS flag-emoji rendering', () => {
+  const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
+
+  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-switch > button\[data-region\] \{[\s\S]*?font-size: 0/);
+  for (const [region, label] of [['JP', '日本'], ['US', 'United States'], ['KR', '대한민국'], ['TW', '台灣']]) {
+    assert.match(css, new RegExp(`button\\[data-region="${region}"\\]::before \\{[\\s\\S]*?background-image: url\\("data:image\\/svg\\+xml;base64,`));
+    assert.ok(css.includes(`button[data-region="${region}"]::after {\n    content: "${label}";`), `missing desktop text label for ${region}`);
+  }
+});
+
 test('region selector uses localized accessible names instead of English-only labels', () => {
   const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
 
