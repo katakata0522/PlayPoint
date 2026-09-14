@@ -285,9 +285,10 @@ jobs:
         working-directory: auto-rollback-verifier
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
+          NODE_PATH: ${{ github.workspace }}/node_modules
         run: |
           set -euo pipefail
-          test -n "${CHROME_PATH:-}"
+          test -x "${CHROME_PATH:-}"
           node -e "require.resolve('playwright-core')"
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/article-css-smoke.cjs
