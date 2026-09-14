@@ -24,6 +24,13 @@ test('verified履歴は公開領域外へSHA単位で最大5世代だけ保持�
   assert.match(historyScript, /Current production is '\$status', not verified/);
 });
 
+test('SSH越しに末尾の任意引数が消えてもarchive/listはnounsetで落ちない', () => {
+  assert.match(historyScript, /target_revision="\$\{5:-\}"/);
+  assert.match(historyScript, /protected_revision="\$\{6:-\}"/);
+  assert.doesNotMatch(historyScript, /^target_revision="\$5"$/m);
+  assert.doesNotMatch(historyScript, /^protected_revision="\$6"$/m);
+});
+
 test('verified履歴はsymlink・別所有領域・metadata不一致をfail-closedにする', () => {
   assert.match(historyScript, /find "\$snapshot" -type l -print -quit/);
   assert.match(historyScript, /Verified history snapshot contains a symlink/);
