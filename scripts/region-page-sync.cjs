@@ -39,6 +39,16 @@ function stripVisitorThanks(html) {
   return html.replace(/\n\s*<div class="visitor-thanks"[\s\S]*?<\/div>\s*\n/, '\n');
 }
 
+function deactivatePrimaryRegion(html, region) {
+  const pattern = new RegExp(`(<button\\b(?=[^>]*\\bdata-region=["']${region}["'])[^>]*?)\\s+class=["']active["']([^>]*>)`, 'i');
+  return html.replace(pattern, '$1$2');
+}
+
+function labelFallbackGameLink(html, href, text) {
+  const pattern = /<a\b(?=[^>]*\bdata-lang-key=["']linkGames["'])[^>]*>[\s\S]*?<\/a>/i;
+  return html.replace(pattern, `<a href="${href}" data-lang-key="linkGames">${text}</a>`);
+}
+
 function ensureTopHreflang(html) {
   let next = html
     .replace(/\s*<link rel="alternate" hreflang="zh-HK"[^>]*>\s*/g, '\n')
@@ -72,15 +82,15 @@ function buildHongKongPage(source) {
   html = html.replaceAll(`${SITE_ORIGIN}/tw/`, `${SITE_ORIGIN}/hk/`);
   html = html.replace(/"priceCurrency": "TWD"/g, '"priceCurrency": "HKD"');
   html = html.replace(/"inLanguage": "zh-TW"/g, '"inLanguage": "zh-HK"');
-  html = html.replace('<button data-region="TW" class="active">繁體中文</button>', '<button data-region="TW">繁體中文</button>');
+  html = deactivatePrimaryRegion(html, 'TW');
   html = html.replace('href="./articles/" data-lang-key="linkArticles"', 'href="../tw/articles/" data-lang-key="linkArticles"');
+  html = labelFallbackGameLink(html, '../tw/games/', '🎮 遊戲計算（台灣規則・非香港）');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);
   html = html.replace('每 NT$30 獲得點數（自動帶入，可修改）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('每 NT$30 回饋率（直接輸入）', '每 HK$7 獲得點數（自動帶入，可修改）');
   html = html.replace('placeholder="例如：1500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
-  html = html.replace('href="../games/" data-lang-key="linkGames"', 'href="../tw/games/" data-lang-key="linkGames"');
   html = html.replace(/活動特別獲點率（例：每 NT\$30 3 點）/g, '活動特別獲點率（例：每 HK$7 3 點）');
   html = html.replace(/消費金額 \(NT\$\)/g, '消費金額（HK$）');
   html = mapOutsideForeignTerminology(html, chunk => chunk
@@ -103,15 +113,15 @@ function buildIndiaPage(source) {
   html = html.replaceAll(`${SITE_ORIGIN}/en/`, `${SITE_ORIGIN}/in/`);
   html = html.replace(/"priceCurrency": "USD"/g, '"priceCurrency": "INR"');
   html = html.replace(/"inLanguage": "en"/g, '"inLanguage": "en-IN"');
-  html = html.replace('<button data-region="US" class="active">English</button>', '<button data-region="US">English</button>');
+  html = deactivatePrimaryRegion(html, 'US');
   html = html.replace('href="./articles/" data-lang-key="linkArticles"', 'href="../en/articles/" data-lang-key="linkArticles"');
+  html = labelFallbackGameLink(html, '../en/games/', '🎮 Game calculators (U.S. rules, not India)');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);
   html = html.replace('Points per $1 (auto-filled, editable)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('Earn rate per $1 (direct entry)', 'Points per ₹5 (auto-filled, editable)');
   html = html.replace('placeholder="e.g., 50" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"', 'placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder"');
-  html = html.replace('href="../games/" data-lang-key="linkGames"', 'href="../en/games/" data-lang-key="linkGames"');
   html = html.replace(/Promotion special earn rate \(e\.g\. 3 pt \/ \$1\)/g, 'Promotion special earn rate (e.g. 3 pt / ₹5)');
   html = html.replace(/Amount spent \(USD\)/g, 'Amount spent (INR)');
   html = html.replace(/Estimate the required spending to reach Platinum or Diamond status\./g, 'Estimate the required spending to reach Platinum status in India.');
