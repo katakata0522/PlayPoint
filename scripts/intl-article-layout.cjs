@@ -272,7 +272,7 @@ const LOCALE_LAYOUT = Object.freeze({
 const INTL_NAV = Object.freeze({
   en: { account: 'Account & basics', earn: 'Earn & spend', levels: 'Levels & rewards', troubleshooting: 'Troubleshooting' },
   ko: { account: '계정·기본', earn: '적립·사용', levels: '등급·리워드', troubleshooting: '문제 해결' },
-  tw: { account: '帳號與基本', earn: '積點與使用', levels: '等級與回饋', troubleshooting: '問題排查' }
+  tw: { account: '帳號與基本', earn: '積點與使用', levels: '等級與回饋', troubleshooting: '問題排解' }
 });
 
 const INTL_NAV_SUB = Object.freeze({
@@ -367,7 +367,7 @@ const INTL_SIDEBAR = Object.freeze({
     tipTitle: '快速判斷',
     tipBody: '頁面語言不會改變積點規則。Play 國家或地區、帳號、適用購買與目前活動才是實際條件。',
     categoriesTitle: '瀏覽指南',
-    categories: [['帳號與基本', 'intl-hub-account'], ['積點與使用', 'intl-hub-earn'], ['等級與回饋', 'intl-hub-levels'], ['問題排查', 'intl-hub-trouble']]
+    categories: [['帳號與基本', 'intl-hub-account'], ['積點與使用', 'intl-hub-earn'], ['等級與回饋', 'intl-hub-levels'], ['問題排解', 'intl-hub-trouble']]
   }
 });
 
