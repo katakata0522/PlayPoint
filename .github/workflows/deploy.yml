@@ -118,6 +118,7 @@ jobs:
           echo "DEPLOY_SOURCE_ROOT=$public_root" >> "$GITHUB_ENV"
 
       # ブラウザ実行環境の準備失敗はproduction mutationではないため、snapshot/rsyncより前に失敗させる。
+      # rollback後のChromiumも同じrunner・node_modules・CHROME_PATHを再利用し、緊急復旧中に外部installへ依存しない。
       - name: Install production browser verifier
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: |
@@ -277,19 +278,8 @@ jobs:
           node .github/scripts/sitemap-health-check.cjs
           node .github/scripts/security-health-check.cjs
 
-      - name: Install browser driver for auto-rollback verification
-        if: ${{ failure() && steps.auto-rollback.outcome == 'success' && steps.auto-rollback-http.outcome == 'success' }}
-        working-directory: auto-rollback-verifier
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
-          fc-match sans-serif:lang=ja
-          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
-          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
-          test -n "$chrome_path"
-          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
-
+      # 本番mutation前に準備済みのPlaywright・Chrome・日本語フォントをそのまま再利用する。
+      # 復旧中はapt/npmの追加ネットワーク依存を増やさない。
       - name: Verify auto-rollback production in Chromium
         if: ${{ failure() && steps.auto-rollback.outcome == 'success' && steps.auto-rollback-http.outcome == 'success' }}
         working-directory: auto-rollback-verifier
@@ -297,6 +287,8 @@ jobs:
           SMOKE_BASE_URL: https://playpoint-sim.com/
         run: |
           set -euo pipefail
+          test -n "${CHROME_PATH:-}"
+          node -e "require.resolve('playwright-core')"
           node .github/scripts/browser-smoke.cjs
           node .github/scripts/article-css-smoke.cjs
           node .github/scripts/article-design-smoke.cjs
