@@ -78,6 +78,19 @@ jobs:
           persist-credentials: false
           fetch-depth: 2
 
+      - name: Preserve runtime refactor source evidence
+        if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-')
+        shell: bash
+        env:
+          REFACTOR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          evidence_dir="browser-smoke-artifacts/refactor"
+          mkdir -p "$evidence_dir"
+          git archive --format=tar "$REFACTOR_BASE_SHA" | gzip > "$evidence_dir/base-source.tar.gz"
+          git archive --format=tar HEAD | gzip > "$evidence_dir/candidate-source.tar.gz"
+          printf 'base=%s\ncandidate=%s\ntree=%s\n' "$REFACTOR_BASE_SHA" "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" > "$evidence_dir/source-revisions.txt"
+
       - name: Install browser driver
         run: |
           sudo apt-get update -qq
