@@ -107,6 +107,15 @@ jobs:
           DEPLOY_STARTED_AT="$DEPLOY_STARTED_AT" \
           node .github/scripts/deploy-status.cjs
 
+      - name: Prepare explicit public deployment tree
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          public_root="$RUNNER_TEMP/playpoint-public"
+          node .github/scripts/prepare-public-tree.cjs "$public_root"
+          echo "DEPLOY_SOURCE_ROOT=$public_root" >> "$GITHUB_ENV"
+
       - name: Setup SSH
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:
