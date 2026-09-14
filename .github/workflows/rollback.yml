@@ -1,0 +1,157 @@
+name: Rollback verified production
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Verify only, or restore the saved previous verified production
+        required: true
+        default: verify
+        type: choice
+        options:
+          - verify
+          - restore
+      expected_revision:
+        description: Exact snapshot SHA required for restore; leave empty for verify
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# Deployとrollbackは同じ本番を所有するため、絶対に並行実行しない。
+concurrency:
+  group: deploy-playpoint-main
+
+jobs:
+  rollback:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout rollback control plane
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Setup SSH
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          umask 077
+          if [ -z "${SSH_PRIVATE_KEY_B64:-}" ]; then
+            echo "SSH_PRIVATE_KEY が未設定です"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null
+          cat > ~/.ssh/known_hosts <<'EOF'
+          [hajikkoroom.xsrv.jp]:10022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEKKSe2ENjD1KRgSqCY7ji78s0zqCNCKBRNfRaxRV7sh
+          EOF
+          chmod 600 ~/.ssh/known_hosts
+          unset SSH_PRIVATE_KEY_B64
+
+      - name: Verify saved rollback snapshot
+        id: snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          output="$(bash .github/scripts/deploy-rsync.sh --verify-snapshot)"
+          printf '%s\n' "$output"
+          revision="$(printf '%s\n' "$output" | sed -n 's/^ROLLBACK_SNAPSHOT_REVISION=\([0-9a-f]\{40\}\)$/\1/p' | tail -n 1)"
+          if ! [[ "$revision" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Rollback snapshot did not return one valid revision.' >&2
+            exit 2
+          fi
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+
+      - name: Validate explicit rollback confirmation
+        if: inputs.operation == 'restore'
+        shell: bash
+        env:
+          EXPECTED_REVISION: ${{ inputs.expected_revision }}
+          SNAPSHOT_REVISION: ${{ steps.snapshot.outputs.revision }}
+        run: |
+          set -euo pipefail
+          if ! [[ "$EXPECTED_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Restore requires the exact lowercase 40-character snapshot SHA.' >&2
+            exit 2
+          fi
+          if [ "$EXPECTED_REVISION" != "$SNAPSHOT_REVISION" ]; then
+            echo "Restore confirmation does not match the saved snapshot: expected $SNAPSHOT_REVISION." >&2
+            exit 2
+          fi
+
+      - name: Restore verified snapshot
+        if: inputs.operation == 'restore'
+        env:
+          EXPECTED_ROLLBACK_REVISION: ${{ inputs.expected_revision }}
+        run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
+
+      - name: Checkout restored revision for matching verification logic
+        if: inputs.operation == 'restore'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.snapshot.outputs.revision }}
+          path: rollback-verifier
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Verify restored production HTTP, SEO, sitemap, and security
+        if: inputs.operation == 'restore'
+        working-directory: rollback-verifier
+        env:
+          EXPECTED_DEPLOY_REVISION: ${{ steps.snapshot.outputs.revision }}
+          EXPECTED_DEPLOY_STATUS: verified
+        run: |
+          set -euo pipefail
+          node .github/scripts/smoke-test.cjs
+          node .github/scripts/verify-deploy-status.cjs
+          node .github/scripts/seo-health-check.cjs
+          node .github/scripts/sitemap-health-check.cjs
+          node .github/scripts/security-health-check.cjs
+
+      - name: Install browser driver for restored revision
+        if: inputs.operation == 'restore'
+        working-directory: rollback-verifier
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-noto-cjk
+          fc-match sans-serif:lang=ja
+          npm install --no-save --no-package-lock --ignore-scripts playwright-core@1.55.0
+          chrome_path="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome_path"
+          echo "CHROME_PATH=$chrome_path" >> "$GITHUB_ENV"
+
+      - name: Verify restored production in Chromium
+        if: inputs.operation == 'restore'
+        working-directory: rollback-verifier
+        env:
+          SMOKE_BASE_URL: https://playpoint-sim.com/
+        run: |
+          set -euo pipefail
+          node .github/scripts/browser-smoke.cjs
+          node .github/scripts/article-css-smoke.cjs
+          node .github/scripts/article-design-smoke.cjs
+          node .github/scripts/mobile-region-layout-smoke.cjs
+          node .github/scripts/browser-revenue-smoke.cjs
+          node .github/scripts/embed-widget-smoke.cjs
+
+      - name: Upload rollback browser evidence
+        if: ${{ always() && inputs.operation == 'restore' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rollback-browser-${{ github.run_id }}
+          path: rollback-verifier/browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Remove SSH material
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts

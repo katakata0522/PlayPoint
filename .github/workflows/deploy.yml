@@ -142,6 +142,10 @@ jobs:
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: bash .github/scripts/deploy-rsync.sh --snapshot-verified
 
+      - name: Verify rollback snapshot before production mutation
+        if: steps.deploy-impact.outputs.deploy_needed == 'true'
+        run: bash .github/scripts/deploy-rsync.sh --verify-snapshot
+
       - name: Deploy strict public mirror via rsync
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: bash .github/scripts/deploy-rsync.sh
