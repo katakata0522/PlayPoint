@@ -139,13 +139,14 @@ function extractSupplementalMetaItems(visibleMetaHtml, localeKey) {
 
   const generatedPrefixes = {
     ja: /^(?:📅\s*)?(?:公開|更新|公式情報確認)(?:\s|[:：])|^著者[:：]/,
-    en: /^(?:Published|Updated|Official info checked)\b/i,
-    ko: /^(?:공개|업데이트|공식 정보 확인)(?:\s|[:：])/,
-    tw: /^(?:發布|更新|官方資訊確認)(?:\s|[:：])/
+    en: /^(?:Published|Updated|Official (?:info|sources?) checked)\b/i,
+    ko: /^(?:공개|게시|업데이트|공식 정보 (?:확인|최종 확인))(?:\s|[:：])/,
+    tw: /^(?:發布|更新|官方(?:資訊|資料)確認)(?:\s|[:：])/
   };
 
   return [...new Set(segments.filter(segment => {
     if (generatedPrefixes[localeKey].test(segment)) return false;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(segment)) return false;
     if (extractReadTime(segment, localeKey)) return false;
     if (/\d{4}[./-]\d{1,2}[./-]\d{1,2}/.test(segment) && /(?:公開|更新|Published|Updated|공개|업데이트|發布|更新)/i.test(segment)) return false;
     return true;

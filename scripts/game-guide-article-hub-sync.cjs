@@ -181,7 +181,7 @@ function renderRelatedSection(article) {
 }
 
 function renderAuthor() {
-  return `\n<div class="author-profile-box"><div class="author-avatar">✍️</div><div class="author-info"><h4>この記事の著者：<a href="/author/katakata.html" rel="author">かたかた</a></h4><p>Google Play Points 計算機 運営・編集。ゲーム内課金とGoogle Play Pointsを、公式情報と現在の購入経路を分けて検証しています。<a href="/author/katakata.html" rel="author">詳しい検証方針を見る</a></p></div></div>`;
+  return `\n<div class="author-profile-box"><div class="author-avatar">✍️</div><div class="author-info"><p class="author-profile-title">この記事の著者：<a href="/author/katakata.html" rel="author">かたかた</a></p><p>Google Play Points 計算機 運営・編集。ゲーム内課金とGoogle Play Pointsを、公式情報と現在の購入経路を分けて検証しています。<a href="/author/katakata.html" rel="author">詳しい検証方針を見る</a></p></div></div>`;
 }
 
 function renderArticleAd() {
