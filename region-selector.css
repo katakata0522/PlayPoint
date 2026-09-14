@@ -114,6 +114,64 @@
 /* The legacy segmented control expected the final button to be a direct child.
    The new “more regions” wrapper owns the right edge instead. */
 @media (min-width: 521px) {
+  /* Windows does not render regional-indicator emoji as flag glyphs. Hide the
+     Unicode fallback visually on desktop and draw the four primary flags here,
+     while keeping the existing accessible button names and mobile labels. */
+  .region-switch > button[data-region] {
+    font-size: 0;
+  }
+
+  .region-switch > button[data-region]::before {
+    content: "";
+    display: inline-block;
+    width: 1.28rem;
+    height: 0.84rem;
+    margin-right: 0.42rem;
+    border: 1px solid rgba(31, 41, 55, 0.18);
+    border-radius: 2px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    vertical-align: -0.12rem;
+  }
+
+  .region-switch > button[data-region]::after {
+    font-size: 0.86rem;
+    line-height: 1;
+  }
+
+  .region-switch > button[data-region="JP"]::before {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+PHJlY3Qgd2lkdGg9IjMwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjZmZmIi8+PGNpcmNsZSBjeD0iMTUiIGN5PSIxMCIgcj0iNiIgZmlsbD0iI2JjMDAyZCIvPjwvc3ZnPg==");
+  }
+
+  .region-switch > button[data-region="JP"]::after {
+    content: "日本";
+  }
+
+  .region-switch > button[data-region="US"]::before {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzOCAyMCI+CjxyZWN0IHdpZHRoPSIzOCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBmaWxsPSIjYjIyMjM0IiBkPSJNMCAwaDM4djEuNTRIMHptMCAzLjA4aDM4djEuNTRIMHptMCAzLjA4aDM4VjcuN0gwem0wIDMuMDhoMzh2MS41NEgwem0wIDMuMDhoMzh2MS41NEgwem0wIDMuMDhoMzh2MS41NEgwem0wIDMuMDhoMzhWMjBIMHoiLz4KPHJlY3Qgd2lkdGg9IjE1LjIiIGhlaWdodD0iMTAuNzgiIGZpbGw9IiMzYzNiNmUiLz4KPGcgZmlsbD0iI2ZmZiI+CjxjaXJjbGUgY3g9IjEuNSIgY3k9IjEuMiIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iNC41IiBjeT0iMS4yIiByPSIuNDUiLz48Y2lyY2xlIGN4PSI3LjUiIGN5PSIxLjIiIHI9Ii40NSIvPjxjaXJjbGUgY3g9IjEwLjUiIGN5PSIxLjIiIHI9Ii40NSIvPjxjaXJjbGUgY3g9IjEzLjUiIGN5PSIxLjIiIHI9Ii40NSIvPgo8Y2lyY2xlIGN4PSIzIiBjeT0iMyIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iNiIgY3k9IjMiIHI9Ii40NSIvPjxjaXJjbGUgY3g9IjkiIGN5PSIzIiByPSIuNDUiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjMiIHI9Ii40NSIvPgo8Y2lyY2xlIGN4PSIxLjUiIGN5PSI0LjgiIHI9Ii40NSIvPjxjaXJjbGUgY3g9IjQuNSIgY3k9IjQuOCIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iNy41IiBjeT0iNC44IiByPSIuNDUiLz48Y2lyY2xlIGN4PSIxMC41IiBjeT0iNC44IiByPSIuNDUiLz48Y2lyY2xlIGN4PSIxMy41IiBjeT0iNC44IiByPSIuNDUiLz4KPGNpcmNsZSBjeD0iMyIgY3k9IjYuNiIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iNiIgY3k9IjYuNiIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iOSIgY3k9IjYuNiIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iMTIiIGN5PSI2LjYiIHI9Ii40NSIvPgo8Y2lyY2xlIGN4PSIxLjUiIGN5PSI4LjQiIHI9Ii40NSIvPjxjaXJjbGUgY3g9IjQuNSIgY3k9IjguNCIgcj0iLjQ1Ii8+PGNpcmNsZSBjeD0iNy41IiBjeT0iOC40IiByPSIuNDUiLz48Y2lyY2xlIGN4PSIxMC41IiBjeT0iOC40IiByPSIuNDUiLz48Y2lyY2xlIGN4PSIxMy41IiBjeT0iOC40IiByPSIuNDUiLz4KPC9nPjwvc3ZnPg==");
+  }
+
+  .region-switch > button[data-region="US"]::after {
+    content: "United States";
+  }
+
+  .region-switch > button[data-region="KR"]::before {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2ZmZiIvPgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNSAxMCkgcm90YXRlKC0zMy43KSI+CjxwYXRoIGQ9Ik0wLTVhNSA1IDAgMSAxIDAgMTBhMi41IDIuNSAwIDEgMCAwLTVhMi41IDIuNSAwIDEgMSAwLTV6IiBmaWxsPSIjY2QyZTNhIi8+CjxwYXRoIGQ9Ik0wIDVhNSA1IDAgMSAxIDAtMTBhMi41IDIuNSAwIDEgMCAwIDVhMi41IDIuNSAwIDEgMSAwIDV6IiBmaWxsPSIjMDA0N2EwIi8+CjwvZz4KPGcgc3Ryb2tlPSIjMTExIiBzdHJva2Utd2lkdGg9IjEiPgo8cGF0aCBkPSJNNCA0bDQgM20tNSAwbDQgM20xNS0zbDQtM20tMyA2bDQtM000IDE2bDQtM20tNSAwbDQtM20xNSAzbDQgM20tMy02bDQgMyIvPgo8L2c+PC9zdmc+");
+  }
+
+  .region-switch > button[data-region="KR"]::after {
+    content: "대한민국";
+  }
+
+  .region-switch > button[data-region="TW"]::before {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAyMCI+CjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2ZlMDAwMCIvPgo8cmVjdCB3aWR0aD0iMTUiIGhlaWdodD0iMTAiIGZpbGw9IiMwMDAwOTUiLz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNy41IDUpIiBmaWxsPSIjZmZmIj4KPGNpcmNsZSByPSIyLjEiLz4KPGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9Ii43Ij4KPHBhdGggZD0iTTAtNHYxLjJNMCA0VjIuOE0tNCAwaDEuMk00IDBIMi44TS0yLjgtMi44bC44NS44NU0yLjggMi44bC0uODUtLjg1TTIuOC0yLjhsLS44NS44NU0tMi44IDIuOGwuODUtLjg1Ii8+CjwvZz48L2c+PC9zdmc+");
+  }
+
+  .region-switch > button[data-region="TW"]::after {
+    content: "台灣";
+  }
+
   .region-switch .region-more-toggle {
     border-left: 0;
     border-top-right-radius: 6px;
