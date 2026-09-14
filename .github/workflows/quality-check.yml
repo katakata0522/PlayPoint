@@ -47,5 +47,7 @@ jobs:
           path: |
             ${{ runner.temp }}/playpoint-preflight.log
             ${{ runner.temp }}/playpoint-refactor-evidence/
+            hk/index.html
+            in/index.html
           if-no-files-found: warn
           retention-days: 7
