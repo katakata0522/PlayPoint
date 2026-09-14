@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   apply:
-    if: github.event.head_commit.message == 'chore: apply P0/P1 patch bootstrap'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -52,7 +51,6 @@ jobs:
                   raise SystemExit(f'{path}: {label}: expected exactly one regex match, got {count}')
               write(path, next_text)
 
-          # P0: blog/index.html には正規の page-footer だけを残す。
           regex_once(
               'blog/index.html',
               r'\n\s*<footer class="blog-footer">.*?</footer>\n',
@@ -60,13 +58,7 @@ jobs:
               'duplicate blog footer removal'
           )
 
-          # P1: 記事一覧の本文カードを IntersectionObserver 成功前提にしない。
-          replace_once(
-              'blog/script.js',
-              '    let scrollObserver = null;\n',
-              '',
-              'scroll observer state removal'
-          )
+          replace_once('blog/script.js', '    let scrollObserver = null;\n', '', 'scroll observer state removal')
           regex_once(
               'blog/script.js',
               r'\n    // Intersection Observer for Scroll Fade-In\n    function setupScrollAnimations\(\) \{.*?\n    \}\n\n    // Helper functions moved to utils\.js',
@@ -92,7 +84,6 @@ jobs:
               'fail-closed entrance animation CSS removal'
           )
 
-          # P1: Google の広告品質確認 iframe を CSP で許可する。
           replace_once(
               '.htaccess',
               "frame-src https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net;",
@@ -100,7 +91,6 @@ jobs:
               'ad traffic quality frame source'
           )
 
-          # 既存のブログUXテストへ再発防止を追加する。
           blog_test_path = 'tests/blog-listing-ux.test.cjs'
           blog_test = read(blog_test_path)
           anchor = "test('blog pagination styles cover the runtime DOM contract without pinning renderer implementation', () => {"
@@ -111,7 +101,6 @@ jobs:
               raise SystemExit(f'{blog_test_path}: regression test already exists unexpectedly')
           write(blog_test_path, blog_test.replace(anchor, guard + anchor, 1))
 
-          # 既存のCSP契約テストを frame-src まで拡張する。
           product_test_path = 'tests/playpoint-product-guards.test.cjs'
           product_test = read(product_test_path)
           csp_anchor = "  assert.ok(directives['script-src']?.includes('https://*.adtrafficquality.google'), '広告品質確認スクリプトの接続先がありません');\n"
@@ -120,7 +109,6 @@ jobs:
               raise SystemExit(f'{product_test_path}: CSP assertion anchor mismatch')
           write(product_test_path, product_test.replace(csp_anchor, csp_guard, 1))
 
-          # AdSense の管理画面でしか設定できない UX 項目は、コード側の責務と混ぜず運用契約として固定する。
           ad_doc = ROOT / 'docs' / 'ADSENSE_UX_GUARDRAILS_2026-09-14.md'
           ad_doc.write_text("""# AdSense UX guardrails (2026-09-14)\n\nPlayPoint は「計算ツール」と「攻略記事」の両方を持つため、広告収益より先に主要操作と回答本文を保護する。\n\n## コード側で保証すること\n\n- ブログ一覧の主要コンテンツは JavaScript / IntersectionObserver の成功を表示条件にしない。\n- 手動広告枠は既存の `.adsbygoogle` 境界で管理し、計算フォームや FAQ の途中へ新しい手動枠を追加しない。\n- CSP は AdSense 本体に加えて広告品質確認 iframe (`https://*.adtrafficquality.google`) を `frame-src` で許可する。\n\n## AdSense 管理画面で固定すること\n\nGoogle 公式の Auto ads 設定はコードだけでは完全に制御できないため、次をサイト設定として維持する。\n\n1. **全画面広告 > 追加のトリガーを許可する: OFF**\n   - タブ復帰、一定時間操作なし後の操作など、計算途中のユーザー操作で全画面広告が出る経路を止める。\n2. **ページ内自動広告 > 除外エリア**\n   - トップ計算機: `.tab-switch`, `#mainMode`, `#reverseMode`, `#diaryMode`\n   - 記事: `.hero`, `.answer-box`, `.inpage-toc`, `.faq-section`, `.reading-tools`\n   - ブログ一覧: `.hero-section`, `.search-sort-row`, `#article-grid` の先頭導線を優先して確認する。\n3. **アンカー広告**\n   - 実機で本文末・FAQ・日記集計を覆う場合はアンカー広告を OFF にする。CSS で広告サイズを推測して余白を足す回避策は採用しない。\n4. 設定変更後は AdSense プレビューだけでなく、モバイル実機で「計算 → タブ切替 → 記事閲覧 → FAQ末尾」まで確認する。\n\n## 判断基準\n\n広告が主要操作を中断する、回答を分断する、閉じないと次の操作へ進めない場合は UX 事故として扱う。収益差は GA4 / AdSense で後から比較し、操作阻害を許容して短期表示回数を優先しない。\n""", encoding='utf-8')
           PY
