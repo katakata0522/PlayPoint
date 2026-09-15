@@ -26,37 +26,15 @@ jobs:
           import re
 
           fixes = {
-              'articles/2026-08-16-play-points-day.html': (
-                  './2025-12-25-check-balance.html',
-                  '獲得後の残高・ポイント履歴を確認する',
-              ),
-              'articles/2026-07-24-play-points-500-1000-value.html': (
-                  './2025-12-25-best-use.html',
-                  '貯めたポイントの使い方を比較する',
-              ),
-              'articles/2025-12-25-new-year-campaign.html': (
-                  './2025-12-25-check-balance.html',
-                  '購入後の残高・ポイント履歴を確認する',
-              ),
-              'en/articles/google-play-points-earn-free.html': (
-                  '/en/articles/google-play-points-500-1000-cost.html',
-                  'How much spending is needed for 500 or 1,000 points',
-              ),
-              'ko/articles/google-play-points-earn-free.html': (
-                  '/ko/articles/google-play-points-500-1000-cost.html',
-                  '500·1,000포인트에 필요한 결제 금액 계산',
-              ),
-              'tw/articles/google-play-points-earn-free.html': (
-                  '/tw/articles/google-play-points-500-1000-cost.html',
-                  '500、1,000 點需要多少消費金額',
-              ),
+              'articles/2026-08-16-play-points-day.html': ('./2025-12-25-check-balance.html', '獲得後の残高・ポイント履歴を確認する'),
+              'articles/2026-07-24-play-points-500-1000-value.html': ('./2025-12-25-best-use.html', '貯めたポイントの使い方を比較する'),
+              'articles/2025-12-25-new-year-campaign.html': ('./2025-12-25-check-balance.html', '購入後の残高・ポイント履歴を確認する'),
+              'en/articles/google-play-points-earn-free.html': ('/en/articles/google-play-points-500-1000-cost.html', 'How much spending is needed for 500 or 1,000 points'),
+              'ko/articles/google-play-points-earn-free.html': ('/ko/articles/google-play-points-500-1000-cost.html', '500·1,000포인트에 필요한 결제 금액 계산'),
+              'tw/articles/google-play-points-earn-free.html': ('/tw/articles/google-play-points-500-1000-cost.html', '500、1,000 點需要多少消費金額'),
           }
 
-          section_pattern = re.compile(
-              r'(<(?:section|aside)\b[^>]*class=["\'][^"\']*\brelated-links-section\b[^"\']*["\'][^>]*>[\s\S]*?</(?:section|aside)>)',
-              re.I,
-          )
-
+          section_pattern = re.compile(r'(<(?:section|aside)\b[^>]*class=["\'][^"\']*\brelated-links-section\b[^"\']*["\'][^>]*>[\s\S]*?</(?:section|aside)>)', re.I)
           for file_name, (href, label) in fixes.items():
               path = Path(file_name)
               text = path.read_text(encoding='utf-8')
@@ -99,7 +77,7 @@ jobs:
         run: |
           set -euo pipefail
           git diff --check
-          allowed='^(articles/2026-08-16-play-points-day\.html|articles/2026-07-24-play-points-500-1000-value\.html|articles/2025-12-25-new-year-campaign\.html|en/articles/google-play-points-earn-free\.html|ko/articles/google-play-points-earn-free\.html|tw/articles/google-play-points-earn-free\.html)$'
+          allowed='^(articles/2026-08-16-play-points-day\.html|articles/2026-07-24-play-points-500-1000-value\.html|articles/2025-12-25-new-year-campaign\.html|en/articles/google-play-points-earn-free\.html|ko/articles/google-play-points-earn-free\.html|tw/articles/google-play-points-earn-free\.html|blog/article-search-index\.json|en/articles/article-search-index\.json|ko/articles/article-search-index\.json|tw/articles/article-search-index\.json)$'
           unexpected="$(git diff --name-only | grep -Ev "$allowed" || true)"
           if [[ -n "$unexpected" ]]; then
             echo 'Unexpected generated files:'
@@ -124,6 +102,10 @@ jobs:
             articles/2025-12-25-new-year-campaign.html \
             en/articles/google-play-points-earn-free.html \
             ko/articles/google-play-points-earn-free.html \
-            tw/articles/google-play-points-earn-free.html
+            tw/articles/google-play-points-earn-free.html \
+            blog/article-search-index.json \
+            en/articles/article-search-index.json \
+            ko/articles/article-search-index.json \
+            tw/articles/article-search-index.json
           git commit -m 'Article Role warning 6件の次導線を修正'
           git push origin HEAD:fix/article-next-role-warnings-20260915
