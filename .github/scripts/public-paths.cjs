@@ -38,6 +38,7 @@ const PUBLIC_ROOT_FILES = new Set([
   'sitemap.html',
   'sitemap.xml',
   'style.css',
+  'site-shell-vnext.css',
   'sw.js',
   'terms.html',
   'visitor-thanks.css',
