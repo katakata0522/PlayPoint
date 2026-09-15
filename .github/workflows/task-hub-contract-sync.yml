@@ -13,14 +13,10 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: fix/site-shell-hygiene-4-human-sitemap-20260915
           fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
 
       - name: Update task-hub regression contracts
         shell: bash
