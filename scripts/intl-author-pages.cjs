@@ -65,7 +65,7 @@ const AUTHOR_CONTENT = Object.freeze({
   tw: {
     title: '營運者 Katakata 與文章驗證標準',
     eyebrow: '營運者簡介',
-    lead: 'Katakata 維護 Google Play Points 計算器，並編輯 Play Points 計算、使用方式、地區差異與問題排查指南。',
+    lead: 'Katakata 維護 Google Play Points 計算器，並編輯 Play Points 計算、使用方式、地區差異與問題排解指南。',
     verificationTitle: '文章驗證原則',
     verification: [
       '優先確認 Google Play 官方說明等第一手資訊。',

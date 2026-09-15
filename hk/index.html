@@ -150,7 +150,7 @@
         },
         {
           "@type": "Question",
-          "name": "什麼是逆算模式？",
+          "name": "什麼是反推模式？",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。"
@@ -196,15 +196,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </head>
 <body>
 
-<div id="language-suggestion-banner" class="language-suggestion-banner hidden">
-    <span>English version is available!</span>
-    <button id="switch-to-en-btn">Switch to English</button>
-    <button id="close-lang-banner-btn" aria-label="Close">×</button>
-</div>
-
 <main class="calculator-wrapper">
    <div class="top-bar">
-        <div class="region-switch" aria-label="Play country or region">
+        <div class="region-switch" aria-label="Play 國家或地區">
             <button data-region="JP">🇯🇵 日本</button>
             <button data-region="US">🇺🇸 United States</button>
             <button data-region="KR">🇰🇷 대한민국</button>
@@ -214,7 +208,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <a href="../attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ 地區注意事項</a>
             <a href="../tw/games/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）</a>
             <a href="../tw/articles/" data-lang-key="linkArticles">📝 指南</a>
-            <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab</a>
+            <a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer" class="header-link-secondary" data-lang-key="linkKatakata">🧪 KatakataLab (日文)</a>
         </div>
     </div>
 
@@ -224,7 +218,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">查看 Google Play 香港官方等級與獲點率</a></p></div>
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算模式</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">反推模式</button>
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
     </div>
 
@@ -289,7 +283,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算模式</h2>
+            <h2 data-lang-key="sectionTitleReverse">反推模式</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">消費金額（HK$）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
@@ -395,7 +389,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <p>特別是在「距離鉑金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
         <ul>
             <li>估算達到鉑金級、鑽石級所需的消費金額。</li>
-            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數逆算。</li>
+            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數反推。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
         <figure class="calculation-flow-figure">
@@ -415,7 +409,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <p>A. 輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
         </div>
         <div class="faq-item">
-            <h3>Q. 什麼是逆算模式？</h3>
+            <h3>Q. 什麼是反推模式？</h3>
             <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
         </div>
         <div class="faq-item">
@@ -431,7 +425,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <footer class="page-footer">
         <p class="footer-nav-links">
-          <a href="../latest/" data-lang-key="linkLatest">🆕 最新資訊</a>
+          <a href="../latest/" data-lang-key="linkLatest">🆕 最新資訊中心 (日文)</a>
           <span class="footer-separator">|</span>
           <a href="../info.html" data-lang-key="linkQA">Q&A 與後記 (日文)</a>
           <span class="footer-separator">|</span>

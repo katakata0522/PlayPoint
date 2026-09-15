@@ -21,7 +21,7 @@ const CATEGORY_LABELS = Object.freeze({
     account: '帳號與基本',
     earn: '積點與使用',
     levels: '等級與回饋',
-    troubleshooting: '問題排查'
+    troubleshooting: '問題排解'
   })
 });
 

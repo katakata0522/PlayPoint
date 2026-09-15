@@ -29,7 +29,7 @@ function createLocales() {
             linkKatakata: '🧪 KatakataLab (Japanese)',
             tabMain: 'Standard',
             tabReverse: 'Reverse',
-            tabDiary: 'Weekly Awards Diary',
+            tabDiary: 'Weekly Rewards Diary',
             firstStepTitle: 'Enter just 3 items first',
             firstStepCurrent: 'Current status',
             firstStepTarget: 'Target status',
@@ -52,7 +52,7 @@ function createLocales() {
             amountYenPlaceholder: 'e.g., 50',
             labelMultiplierReverse: 'Promotion special earn rate (e.g. 3 pt / $1)',
             reverseCalculateButton: 'Calculate points',
-            sectionTitleDiary: 'Weekly Awards Diary',
+            sectionTitleDiary: 'Weekly Rewards Diary',
             currentYearLabel: 'Current year',
             initialMonthLabel: 'January',
             monthlySummaryTitle: 'Monthly Summary',
@@ -153,7 +153,7 @@ function createLocales() {
         <ul>
             <li>Estimate the required spending to reach Platinum or Diamond status.</li>
             <li>Compare base earn rates with special earn rates shown in Google Play for reverse calculations.</li>
-            <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
+            <li>Manage your weekly earned points manually in the Weekly Rewards Diary.</li>
         </ul>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
@@ -174,10 +174,10 @@ function createLocales() {
         region: 'KR',
         langCode: 'ko',           // BCP47 言語コード
         inLanguage: 'ko',
-        title: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
+        title: 'Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?',
         description: '구글 플레이 포인트 등급 달성 계산기. 실버, 골드, 플래티넘, 다이아몬드 등급까지 필요한 결제 금액을 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 계산합니다.',
         modifiedAt: TOP_PAGE_CONTENT_DATES.ko,
-        ogTitle: 'Google Play Points 계산기 | 등급 업까지 얼마 남았지?',
+        ogTitle: 'Google Play Points 계산기 | 다음 등급까지 얼마가 필요할까?',
         ogDescription: '구글 플레이 포인트 등급 달성 조건 및 획득 포인트를 무료로 시뮬레이션하는 계산기입니다.',
         currency: 'KRW',
         appName: 'Google Play Points 계산기',
@@ -190,9 +190,9 @@ function createLocales() {
             siteDescription: '먼저 현재 등급, 목표 등급, 목표까지 필요한 포인트를 입력하세요.<br>등급 달성에 필요한 결제 금액과 결제 금액으로 받을 수 있는 포인트를 계산합니다.',
             linkAttention: '⚠️ 국가별 안내',
             linkGames: '🎮 게임별 계산',
-            linkLatest: '🆕 최신 정보',
+            linkLatest: '🆕 최신 정보 허브 (일본어)',
             linkArticles: '📝 가이드',
-            linkKatakata: '🧪 KatakataLab',
+            linkKatakata: '🧪 KatakataLab (일본어)',
             tabMain: '일반 계산',
             tabReverse: '역산 모드',
             tabDiary: '주간 리워드 일기',
@@ -339,7 +339,7 @@ function createLocales() {
         title: 'Google Play Points 計算器｜距離升級還差多少？',
         description: 'Google Play Points 點數等級計算器。估算達到銀級、黃金級、白金級、鑽石級所需的消費金額，會比較基本獲點率與 Google Play 顯示的活動特別獲點率並採用較高者，也可記錄每週獎勵。',
         ogTitle: 'Google Play Points 計算器｜距離升級還差多少？',
-        ogDescription: '免費模擬 Google Play 點數升級需求與逆算模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。',
+        ogDescription: '免費模擬 Google Play 點數升級需求與反推模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。',
         currency: 'TWD',
         appName: 'Google Play Points 計算器',
         alternateName: 'Google Play 點數計算器',
@@ -351,11 +351,11 @@ function createLocales() {
             siteDescription: '請先輸入目前等級、目標等級，以及距離目標還需要的點數。<br>此工具會估算達成等級所需消費金額，以及消費金額可獲得的點數。',
             linkAttention: '⚠️ 地區注意事項',
             linkGames: '🎮 遊戲專屬計算',
-            linkLatest: '🆕 最新資訊',
+            linkLatest: '🆕 最新資訊中心 (日文)',
             linkArticles: '📝 指南',
-            linkKatakata: '🧪 KatakataLab',
+            linkKatakata: '🧪 KatakataLab (日文)',
             tabMain: '一般計算',
-            tabReverse: '逆算模式',
+            tabReverse: '反推模式',
             tabDiary: '每週獎勵日記',
             sectionTitleStatus: '輸入等級',
             labelCurrentStatus: '目前等級',
@@ -369,7 +369,7 @@ function createLocales() {
             calculateButton: '計算消費金額',
             copyButton: '複製',
             tweetButton: '分享至 X',
-            sectionTitleReverse: '逆算模式',
+            sectionTitleReverse: '反推模式',
             labelAmountYen: '消費金額 (NT$)',
             amountYenPlaceholder: '例如：1500',
             labelMultiplierReverse: '活動特別獲點率（例：每 NT$30 3 點）',
@@ -420,7 +420,7 @@ function createLocales() {
         },
         {
           "@type": "Question",
-          "name": "什麼是逆算模式？",
+          "name": "什麼是反推模式？",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。"
@@ -454,7 +454,7 @@ function createLocales() {
             <p>A. 輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
         </div>
         <div class="faq-item">
-            <h3>Q. 什麼是逆算模式？</h3>
+            <h3>Q. 什麼是反推模式？</h3>
             <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
         </div>
         <div class="faq-item">
@@ -474,7 +474,7 @@ function createLocales() {
         <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
         <ul>
             <li>估算達到白金級、鑽石級所需的消費金額。</li>
-            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數逆算。</li>
+            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數反推。</li>
             <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
         </ul>
         <figure class="calculation-flow-figure">
