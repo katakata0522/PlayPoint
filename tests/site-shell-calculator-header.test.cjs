@@ -16,6 +16,14 @@ const { syncCalculatorHeaders } = require('../scripts/calculator-header-sync.cjs
 
 const root = path.resolve(__dirname, '..');
 const targetPaths = Object.keys(CALCULATOR_HEADER_PROFILES);
+const regionAriaLabels = Object.freeze({
+  'index.html': 'Play の国または地域',
+  'en/index.html': 'Play country or region',
+  'ko/index.html': 'Play 국가 또는 지역',
+  'tw/index.html': 'Play 國家或地區',
+  'hk/index.html': 'Play 國家或地區',
+  'in/index.html': 'Play country or region'
+});
 
 function copyTargetTree(tempRoot) {
   for (const relativePath of targetPaths) {
@@ -57,7 +65,7 @@ test('Stage 12C owns the six calculator headers from one immutable Site Shell re
     assert.ok(Object.isFrozen(profile.links));
     assert.equal(profile.regionButtons.length, 4);
     assert.equal(profile.links.length, 4);
-    assert.equal(profile.regionAriaLabel, 'Play country or region');
+    assert.equal(profile.regionAriaLabel, regionAriaLabels[relativePath]);
   }
 
   assert.throws(() => getCalculatorHeaderProfile('games/index.html'), /No calculator header profile/);
