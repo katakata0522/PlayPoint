@@ -88,18 +88,18 @@ jobs:
       - name: Run focused regression tests
         run: node --test tests/common-pages-fact-ux.test.cjs tests/info-return-navigation.test.cjs tests/intl-coupon-credit.test.cjs tests/intl-maintenance-calculators.test.cjs tests/intl-platinum-diamond.test.cjs tests/intl-rank-maintenance.test.cjs tests/sitemap-information-hierarchy.test.cjs tests/trust-pages-consistency.test.cjs tests/human-sitemap-task-hub.test.cjs
 
-      - name: Synchronize canonical output and run full preflight
+      - name: Synchronize canonical output and create local candidate commit
         shell: bash
         run: |
           node scripts/prepare-pr.cjs
-          node .github/scripts/preflight.cjs
-
-      - name: Commit synchronized result
-        shell: bash
-        run: |
           rm .github/workflows/task-hub-contract-sync-v2.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "test: align sitemap discovery contracts with task hub"
-          git push origin HEAD:fix/site-shell-hygiene-4-human-sitemap-20260915
+
+      - name: Run full preflight against committed candidate
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push validated result
+        run: git push origin HEAD:fix/site-shell-hygiene-4-human-sitemap-20260915
