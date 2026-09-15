@@ -9,10 +9,10 @@ const root = path.resolve(__dirname, '..');
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
 
 test('human sitemap introduces the page purpose before secondary navigation groups', () => {
-  const mainStart = sitemap.indexOf('<main class="container">');
-  const h1Index = sitemap.indexOf('<h1>サイトマップ</h1>', mainStart);
+  const mainStart = sitemap.indexOf('<main class="container" data-human-sitemap-mode="task-hub">');
+  const h1Index = sitemap.indexOf('<h1>Playポイント計算機 サイト案内</h1>', mainStart);
   const firstH2Index = sitemap.indexOf('<h2>', mainStart);
-  const leadIndex = sitemap.indexOf('<p class="lead">', mainStart);
+  const leadIndex = sitemap.indexOf('<p>URLを全部並べる一覧ではなく', mainStart);
 
   assert.ok(mainStart >= 0);
   assert.ok(h1Index > mainStart);
@@ -23,5 +23,5 @@ test('human sitemap introduces the page purpose before secondary navigation grou
 
 test('comparison reference remains discoverable exactly once after the sitemap hierarchy repair', () => {
   assert.equal((sitemap.match(/href="compare\/earning-rates\/"/g) || []).length, 1);
-  assert.match(sitemap, /<h2>比較資料<\/h2>/);
+  assert.match(sitemap, />獲得率・通常／2pt／3ptの比較表<\/a>/);
 });

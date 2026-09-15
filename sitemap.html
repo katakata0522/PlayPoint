@@ -3,426 +3,278 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>サイトマップ | Playポイント計算機</title>
-  <meta name="description" content="Playポイント計算機の全ページ一覧です。計算ツール、Google Play Points解説記事、海外向けガイド、Q&A、ポリシー関連ページへすぐ移動できます。">
+  <title>サイト案内 | Playポイント計算機</title>
+  <meta name="description" content="Playポイント計算機の人向けサイト案内です。計算、ゲーム別ツール、困りごと、国・地域、最新情報、運営・法務へ目的別に移動できます。">
   <meta name="robots" content="index,follow">
   <meta name="author" content="かたかた">
   <meta name="last-modified" content="2026-09-15">
   <meta property="article:modified_time" content="2026-09-15T00:00:00+09:00">
   <link rel="canonical" href="https://playpoint-sim.com/sitemap.html">
-  <meta property="og:title" content="サイトマップ | Playポイント計算機">
-  <meta property="og:description" content="Playポイント計算機の全ページ一覧です。">
+  <link rel="alternate" type="application/rss+xml" title="Playポイント計算機 RSS" href="https://playpoint-sim.com/feed.xml">
+  <link rel="alternate" type="application/atom+xml" title="Playポイント計算機 Atom" href="https://playpoint-sim.com/atom.xml">
+  <meta property="og:title" content="サイト案内 | Playポイント計算機">
+  <meta property="og:description" content="計算、ゲーム別ツール、困りごと、国・地域、最新情報、運営・法務へ目的別に移動できます。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://playpoint-sim.com/sitemap.html">
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
   <meta property="og:site_name" content="Playポイント計算機">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="サイトマップ | Playポイント計算機">
-  <meta name="twitter:description" content="Playポイント計算機の全ページ一覧です。">
+  <meta name="twitter:title" content="サイト案内 | Playポイント計算機">
+  <meta name="twitter:description" content="Playポイント計算機を目的別に案内します。">
   <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "サイトマップ",
+    "name": "サイト案内",
     "url": "https://playpoint-sim.com/sitemap.html",
     "inLanguage": "ja",
     "dateModified": "2026-09-15",
-    "author": {
-      "@type": "Person",
-      "name": "かたかた"
-    }
+    "author": { "@type": "Person", "name": "かたかた" }
   }
   </script>
   <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --border: #dbe3ee;
+      --brand: #164e63;
+      --brand-dark: #0e3746;
+      --soft: #eef7f9;
+      --link: #0b57d0;
+      --radius: 14px;
+    }
     body {
       margin: 0;
-      padding: 1.5rem 1rem 2rem;
-      font-family: sans-serif;
-      background: #eef3ff;
-      color: #1f2937;
-    }
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      padding: 1.5rem;
-    }
-    h1 {
-      margin: 0 0 0.6rem;
-      font-size: 1.7rem;
-    }
-    p.lead {
-      margin: 0 0 1.2rem;
-      color: #4b5563;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Yu Gothic", "YuGothic", Meiryo, sans-serif;
       line-height: 1.7;
     }
+    a { color: var(--link); }
+    a:focus-visible { outline: 3px solid #0b57d0; outline-offset: 3px; border-radius: 4px; }
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header__inner {
+      width: min(1040px, calc(100% - 32px));
+      min-height: 64px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      color: var(--text);
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .site-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: flex-end; }
+    .site-nav a { color: #475569; font-size: .92rem; font-weight: 650; text-decoration: none; }
+    .site-nav a:hover { color: var(--brand); }
+    .container { width: min(1040px, calc(100% - 32px)); margin: 0 auto; padding: 30px 0 56px; }
+    .hero {
+      padding: clamp(22px, 5vw, 40px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 26px rgba(15, 23, 42, .05);
+    }
+    .hero .eyebrow { margin: 0 0 4px; color: var(--brand); font-size: .85rem; font-weight: 800; }
+    h1 { margin: 0; font-size: clamp(1.7rem, 5vw, 2.45rem); line-height: 1.3; }
+    .hero p:last-child { margin: 10px 0 0; color: var(--muted); }
+    .hub-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 20px; }
     .group {
-      margin-top: 1.4rem;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 16px rgba(15, 23, 42, .035);
     }
-    .group h2 {
-      font-size: 1.15rem;
-      margin: 0 0 0.6rem;
-      border-left: 5px solid #4a90e2;
-      padding-left: 0.55rem;
-    }
-    ul {
-      margin: 0;
-      padding-left: 1.2rem;
-      line-height: 1.9;
-    }
-    a {
-      color: #1d4ed8;
+    .group h2 { margin: 0 0 5px; color: var(--brand); font-size: 1.14rem; }
+    .group .group-lead { margin: 0 0 12px; color: var(--muted); font-size: .92rem; }
+    .group ul { margin: 0; padding-left: 1.2rem; }
+    .group li { margin: .45rem 0; }
+    .group strong { color: #0f172a; }
+    .wide { grid-column: 1 / -1; }
+    .region-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+    .region-grid a {
+      display: block;
+      min-height: 48px;
+      padding: 11px 12px;
+      border: 1px solid #c9d7e4;
+      border-radius: 10px;
+      background: var(--soft);
+      color: var(--brand-dark);
+      font-weight: 750;
       text-decoration: none;
     }
-    a:hover {
-      text-decoration: underline;
+    .region-grid a:hover { border-color: var(--brand); background: #e6f2f5; }
+    .technical-note {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: .9rem;
     }
-    .back {
-      margin-top: 1.5rem;
+    .technical-note strong { color: var(--text); }
+    .page-footer {
+      margin-top: 24px;
+      padding: 24px 16px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
       text-align: center;
+      font-size: .88rem;
     }
-    .back a {
-      display: inline-block;
-      padding: 0.65rem 1.2rem;
-      background: #111827;
-      color: #fff;
-      border-radius: 8px;
-      text-decoration: none;
+    .page-footer a { margin: 0 6px; }
+    .site-footer-trademark { max-width: 800px; margin: 12px auto 0; font-size: .78rem; line-height: 1.6; }
+    @media (max-width: 760px) {
+      .site-header__inner { min-height: auto; padding: 12px 0; align-items: flex-start; flex-direction: column; }
+      .site-nav { justify-content: flex-start; }
+      .container { padding-top: 18px; }
+      .hub-grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .region-grid { grid-template-columns: 1fr 1fr; }
     }
-    .meta {
-      margin-top: 1rem;
-      font-size: 0.86rem;
-      color: #6b7280;
-      text-align: center;
-    }
+    @media (max-width: 420px) { .region-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <main class="container">
-    <h1>サイトマップ</h1>
-    <p class="lead">Playポイント計算機の全ページ一覧です。必要な情報へすぐ移動できます。</p>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="brand" href="./">🎮 Playポイント計算機</a>
+      <nav class="site-nav" aria-label="主要ナビゲーション">
+        <a href="./">計算機</a>
+        <a href="games/">ゲーム別計算</a>
+        <a href="blog/">記事・ガイド</a>
+        <a href="attention.html">国・地域</a>
+      </nav>
+    </div>
+  </header>
 
-    <section class="group">
-      <h2>比較資料</h2>
-      <ul>
-        <li><a href="compare/earning-rates/">ステータス別獲得率と通常・2倍・3倍の比較表</a></li>
-      </ul>
+  <main class="container" data-human-sitemap-mode="task-hub">
+    <section class="hero">
+      <p class="eyebrow">目的から探す</p>
+      <h1>Playポイント計算機 サイト案内</h1>
+      <p>URLを全部並べる一覧ではなく、「何をしたいか」から必要なページへ進める人向け案内です。記事の完全一覧は記事・ガイド、検索エンジン向けURL一覧はXMLサイトマップが担当します。</p>
     </section>
 
-    <section class="group">
-      <h2>メイン機能</h2>
-      <ul>
-        <li><a href="index.html">Playポイント計算機（トップ）</a></li>
-        <li><a href="blog/">記事一覧（ブログ）</a> ( <a href="feed.xml">RSS</a> / <a href="atom.xml">Atom</a> )</li>
-        <li><a href="latest/">Google Play Points 最新情報ハブ</a></li>
-        <li><a href="embed.html">サイト埋め込み用Playポイント計算機</a></li>
-        <li><a href="attention.html">Country Differences Guide（英語）</a></li>
-      </ul>
-    </section>
+    <div class="hub-grid">
+      <section class="group">
+        <h2>🧮 計算する</h2>
+        <p class="group-lead">不足ポイントや予定課金額から、必要額・獲得ポイントを確認します。</p>
+        <ul>
+          <li><a href="./"><strong>メイン計算機</strong></a> — ランク到達・逆算・週次リワード日記</li>
+          <li><a href="points-cost/"><strong>欲しいポイント数 → 必要額</strong></a> — 100 / 500 / 1,000ptなど</li>
+          <li><a href="compare/earning-rates/">獲得率・通常／2pt／3ptの比較表</a></li>
+          <li><a href="status/platinum/">プラチナ到達の目安</a></li>
+          <li><a href="status/diamond/">ダイヤモンド到達の目安</a></li>
+          <li><a href="maintenance/platinum/">プラチナ維持の目安</a></li>
+          <li><a href="maintenance/diamond/">ダイヤモンド維持の目安</a></li>
+          <li><a href="amount/10000/">1万円課金で何ポイント？</a></li>
+          <li><a href="campaign/wait/">キャンペーンを待つべき？</a></li>
+        </ul>
+      </section>
 
-    <section class="group">
-      <h2>計算ショートカット</h2>
-      <ul>
-        <li><a href="status/platinum/">プラチナ到達はいくら必要？</a></li>
-        <li><a href="status/diamond/">ダイヤモンド到達はいくら必要？</a></li>
-        <li><a href="status/gold/">ゴールド到達はいくら必要？</a></li>
-        <li><a href="status/silver/">シルバー到達はいくら必要？</a></li>
-        <li><a href="maintenance/platinum/">プラチナ維持はいくら必要？</a></li>
-        <li><a href="maintenance/diamond/">ダイヤモンド維持はいくら必要？</a></li>
-        <li><a href="campaign/2x/">2倍キャンペーン時の必要額</a></li>
-        <li><a href="campaign/3x/">3倍キャンペーン時の必要額</a></li>
-        <li><a href="campaign/wait/">キャンペーンは待つべき？</a></li>
-        <li><a href="amount/10000/">1万円課金で何ポイント？</a></li>
-        <li><a href="points-cost/">100・500・1,000ポイントの必要額計算</a></li>
-      </ul>
-    </section>
+      <section class="group">
+        <h2>🎮 ゲーム別に調べる</h2>
+        <p class="group-lead">ゲームごとの課金額・月額商品・天井・Play Pointsを確認します。</p>
+        <ul>
+          <li><a href="games/"><strong>ゲーム別計算機一覧</strong></a></li>
+          <li><a href="games/genshin/">原神</a></li>
+          <li><a href="games/starrail/">崩壊：スターレイル</a></li>
+          <li><a href="games/zzz/">ゼンレスゾーンゼロ</a></li>
+          <li><a href="games/bluearchive/">ブルーアーカイブ</a></li>
+          <li><a href="embed.html">自分のサイトに計算機を埋め込む</a></li>
+        </ul>
+      </section>
 
-    <section class="group">
-      <h2>International shortcuts</h2>
-      <ul>
-        <li><a href="en/status/diamond/">English: Diamond cost calculator</a></li>
-        <li><a href="en/status/platinum/">English: Platinum cost calculator</a></li>
-        <li><a href="en/status/gold/">English: Gold cost calculator</a></li>
-        <li><a href="en/status/silver/">English: Silver cost calculator</a></li>
-        <li><a href="en/campaign/2x/">English: 2x promotion calculator</a></li>
-        <li><a href="en/campaign/3x/">English: 3x promotion calculator</a></li>
-        <li><a href="en/campaign/wait/">English: Should you wait for a promotion?</a></li>
-        <li><a href="en/amount/10000/">English: $50 points estimate</a></li>
-        <li><a href="en/points-cost/">English: points cost calculator</a></li>
-        <li><a href="en/maintenance/platinum/">English: Platinum maintenance calculator</a></li>
-        <li><a href="en/maintenance/diamond/">English: Diamond maintenance calculator</a></li>
-        <li><a href="ko/status/diamond/">한국어: 다이아몬드 필요 금액</a></li>
-        <li><a href="ko/status/platinum/">한국어: 플래티넘 필요 금액</a></li>
-        <li><a href="ko/status/gold/">한국어: 골드 필요 금액</a></li>
-        <li><a href="ko/status/silver/">한국어: 실버 필요 금액</a></li>
-        <li><a href="ko/campaign/2x/">한국어: 2배 캠페인 계산</a></li>
-        <li><a href="ko/campaign/3x/">한국어: 3배 캠페인 계산</a></li>
-        <li><a href="ko/campaign/wait/">한국어: 캠페인 대기 판단</a></li>
-        <li><a href="ko/amount/10000/">한국어: 50,000원 포인트 계산</a></li>
-        <li><a href="ko/points-cost/">한국어: 포인트 필요 금액 계산</a></li>
-        <li><a href="ko/maintenance/platinum/">한국어: 플래티넘 유지 계산기</a></li>
-        <li><a href="ko/maintenance/diamond/">한국어: 다이아몬드 유지 계산기</a></li>
-        <li><a href="tw/status/diamond/">繁體中文: 鑽石等級估算</a></li>
-        <li><a href="tw/status/platinum/">繁體中文: 白金等級估算</a></li>
-        <li><a href="tw/status/gold/">繁體中文: 金級估算</a></li>
-        <li><a href="tw/status/silver/">繁體中文: 銀級估算</a></li>
-        <li><a href="tw/campaign/2x/">繁體中文: 2 倍活動計算</a></li>
-        <li><a href="tw/campaign/3x/">繁體中文: 3 倍活動計算</a></li>
-        <li><a href="tw/campaign/wait/">繁體中文: 活動等待判斷</a></li>
-        <li><a href="tw/amount/10000/">繁體中文: NT$1,500 點數估算</a></li>
-        <li><a href="tw/points-cost/">繁體中文: 點數所需消費計算</a></li>
-        <li><a href="tw/maintenance/platinum/">繁體中文: 白金級維持計算器</a></li>
-        <li><a href="tw/maintenance/diamond/">繁體中文: 鑽石級維持計算器</a></li>
-      </ul>
-    </section>
+      <section class="group">
+        <h2>🆘 困りごと・制度を調べる</h2>
+        <p class="group-lead">使い方、未反映、キャンペーン、ランク制度などを記事・ガイドから探します。</p>
+        <ul>
+          <li><a href="blog/"><strong>日本語の記事・ガイド一覧</strong></a></li>
+          <li><a href="about-playpoints.html">Play Pointsの仕組み・ランクを知る</a></li>
+          <li><a href="latest/">最新情報・制度の確認記録</a></li>
+          <li><a href="articles/2026-03-10-play-points-reflection-timing.html">ポイントが反映されない・遅い</a></li>
+          <li><a href="articles/2026-08-05-play-points-cannot-join.html">Play Pointsに参加できない</a></li>
+          <li><a href="articles/2025-12-25-campaign.html">キャンペーンの見方</a></li>
+        </ul>
+      </section>
 
-    <section class="group">
-      <h2>English Play Points guides</h2>
-      <ul>
-        <li><a href="en/articles/">All English guides</a></li>
-        <li><a href="en/articles/google-play-points-cash-conversion.html">Can you cash out Google Play Points?</a></li>
-        <li><a href="en/articles/google-play-points-expiration.html">When do Google Play Points expire?</a></li>
-        <li><a href="en/articles/google-play-points-refund.html">What happens after a Play Points refund?</a></li>
-        <li><a href="en/articles/google-play-points-family-sharing.html">Can Play Points be shared with family?</a></li>
-        <li><a href="en/articles/google-play-points-not-showing.html">Google Play Points not showing up</a></li>
-        <li><a href="en/articles/google-play-points-levels.html">Google Play Points levels explained</a></li>
-        <li><a href="en/articles/google-play-points-platinum-diamond-cost.html">Platinum vs Diamond: cost and benefits</a></li>
-        <li><a href="en/articles/google-play-points-gift-cards.html">Do gift cards earn Google Play Points?</a></li>
-          <li><a href="en/articles/2026-06-20-discount-gift-cards.html">Gift card discounts: checks before buying</a></li>
-        <li><a href="en/articles/google-play-points-country-differences.html">Google Play Points country differences</a></li>
-        <li><a href="en/articles/google-play-points-promotion-not-applied.html">Google Play Points promotion not applied</a></li>
-        <li><a href="en/articles/google-play-points-subscriptions.html">Do subscriptions earn Google Play Points?</a></li>
-        <li><a href="en/articles/google-play-points-weekly-reward.html">Weekly Play Points rewards</a></li>
-        <li><a href="en/articles/google-play-points-multiple-accounts.html">Play Points with multiple accounts</a></li>
-        <li><a href="en/articles/google-play-points-use-coupons.html">How to use points and coupons</a></li>
-        <li><a href="en/articles/google-play-points-join-eligibility.html">Eligibility and missing Join button</a></li>
-        <li><a href="en/articles/google-play-points-coupon-not-applied.html">Play Points coupon not applied</a></li>
-        <li><a href="en/articles/google-play-points-play-credit-not-working.html">Play credit cannot be exchanged or used</a></li>
-        <li><a href="en/articles/google-play-points-level-maintenance-reset.html">Level maintenance and yearly reset</a></li>
-      </ul>
-    </section>
+      <section class="group">
+        <h2>🌐 海外向けガイド</h2>
+        <p class="group-lead">各地域向けの計算機と、対応している言語別ガイドへ移動します。</p>
+        <ul>
+          <li><a href="en/articles/">English guides</a></li>
+          <li><a href="ko/articles/">한국어 가이드</a></li>
+          <li><a href="tw/articles/">繁體中文指南（台灣）</a></li>
+          <li><a href="attention.html">国・地域による違いを先に確認する</a></li>
+        </ul>
+      </section>
 
-    <section class="group">
-      <h2>Korean Play Points guides</h2>
-      <ul>
-        <li><a href="ko/articles/">한국어 가이드 전체보기</a></li>
-        <li><a href="ko/articles/google-play-points-cash-conversion.html">Play Points 현금화 가능할까?</a></li>
-        <li><a href="ko/articles/google-play-points-expiration.html">Play Points 유효기간은 언제까지일까?</a></li>
-        <li><a href="ko/articles/google-play-points-refund.html">환불 후 Play Points는 어떻게 될까?</a></li>
-        <li><a href="ko/articles/google-play-points-family-sharing.html">Play Points를 가족과 공유할 수 있을까?</a></li>
-        <li><a href="ko/articles/google-play-points-not-showing.html">Play Points가 표시되지 않을 때</a></li>
-        <li><a href="ko/articles/google-play-points-levels.html">Play Points 등급 구조 이해</a></li>
-        <li><a href="ko/articles/google-play-points-gift-cards.html">Google Play 기프트카드와 포인트 조건</a></li>
-          <li><a href="ko/articles/2026-06-20-discount-gift-cards.html">Google Play 기프트카드 할인 구매 전 확인</a></li>
-        <li><a href="ko/articles/google-play-points-promotion-not-applied.html">캠페인 보너스가 적용되지 않을 때</a></li>
-        <li><a href="ko/articles/google-play-points-country-differences.html">국가 변경 시 Play Points는 어떻게 될까?</a></li>
-        <li><a href="ko/articles/google-play-points-subscriptions.html">정기 결제도 Play Points가 적립될까?</a></li>
-        <li><a href="ko/articles/google-play-points-weekly-reward.html">주간 Play Points 리워드</a></li>
-        <li><a href="ko/articles/google-play-points-multiple-accounts.html">여러 계정에서 Play Points 확인</a></li>
-        <li><a href="ko/articles/google-play-points-use-coupons.html">포인트와 쿠폰 사용 방법</a></li>
-        <li><a href="ko/articles/google-play-points-join-eligibility.html">가입 조건과 가입 버튼이 없을 때</a></li>
-        <li><a href="ko/articles/google-play-points-coupon-not-applied.html">쿠폰이 자동 적용되지 않을 때</a></li>
-        <li><a href="ko/articles/google-play-points-play-credit-not-working.html">Play 크레딧을 교환하거나 사용할 수 없을 때</a></li>
-        <li><a href="ko/articles/google-play-points-level-maintenance-reset.html">등급 유지와 연초 재산정</a></li>
-        <li><a href="ko/articles/google-play-points-platinum-diamond-cost.html">플래티넘과 다이아몬드 비교</a></li>
-      </ul>
-    </section>
+      <section class="group wide">
+        <h2>🌍 国・地域を選ぶ</h2>
+        <p class="group-lead">ブラウザ言語ではなく、Google Playアカウントの国・地域に合う計算機を選んでください。</p>
+        <div class="region-grid">
+          <a href="./">🇯🇵 日本</a>
+          <a href="en/">🇺🇸 United States</a>
+          <a href="ko/">🇰🇷 대한민국</a>
+          <a href="tw/">🇹🇼 台灣</a>
+          <a href="hk/">🇭🇰 香港</a>
+          <a href="in/">🇮🇳 India</a>
+        </div>
+        <p class="group-lead" style="margin-top:12px;"><a href="attention.html">Country &amp; Region Guide</a> では、6地域のランク条件・通貨・獲得率の違いをまとめています。</p>
+      </section>
 
-    <section class="group">
-      <h2>Traditional Chinese Play Points guides</h2>
-      <ul>
-        <li><a href="tw/articles/">所有繁體中文指南</a></li>
-        <li><a href="tw/articles/google-play-points-cash-conversion.html">Play Points 可以換現金嗎？</a></li>
-        <li><a href="tw/articles/google-play-points-expiration.html">Play Points 有效期限多久？</a></li>
-        <li><a href="tw/articles/google-play-points-refund.html">退款後 Play Points 怎麼辦？</a></li>
-        <li><a href="tw/articles/google-play-points-family-sharing.html">Play Points 可以和家人共享嗎？</a></li>
-        <li><a href="tw/articles/google-play-points-not-showing.html">Play Points 沒有顯示時</a></li>
-        <li><a href="tw/articles/google-play-points-levels.html">Play Points 等級說明</a></li>
-        <li><a href="tw/articles/google-play-points-gift-cards.html">Google Play 禮物卡與點數條件</a></li>
-          <li><a href="tw/articles/2026-06-20-discount-gift-cards.html">Google Play 禮物卡折扣購買前檢查</a></li>
-        <li><a href="tw/articles/google-play-points-promotion-not-applied.html">活動加碼沒有套用時</a></li>
-        <li><a href="tw/articles/google-play-points-country-differences.html">變更國家/地區後 Play Points 會怎樣？</a></li>
-        <li><a href="tw/articles/google-play-points-subscriptions.html">訂閱也會累積 Play Points 嗎？</a></li>
-        <li><a href="tw/articles/google-play-points-weekly-reward.html">每週 Play Points 獎勵</a></li>
-        <li><a href="tw/articles/google-play-points-multiple-accounts.html">多帳號 Play Points 確認</a></li>
-        <li><a href="tw/articles/google-play-points-use-coupons.html">點數與折價券使用方法</a></li>
-        <li><a href="tw/articles/google-play-points-join-eligibility.html">加入資格與找不到加入按鈕</a></li>
-        <li><a href="tw/articles/google-play-points-coupon-not-applied.html">折價券沒有自動套用時</a></li>
-        <li><a href="tw/articles/google-play-points-play-credit-not-working.html">Play 抵用金無法兌換或使用時</a></li>
-        <li><a href="tw/articles/google-play-points-level-maintenance-reset.html">等級維持與年初重新判定</a></li>
-        <li><a href="tw/articles/google-play-points-platinum-diamond-cost.html">白金與鑽石比較</a></li>
-      </ul>
-    </section>
+      <section class="group">
+        <h2>👤 運営・検証</h2>
+        <p class="group-lead">サイトの運営者、確認方針、更新履歴を確認できます。</p>
+        <ul>
+          <li><a href="author/katakata.html">運営者・記事の検証方針</a></li>
+          <li><a href="info.html">あとがき・Q&amp;A</a></li>
+          <li><a href="changelog.html">アップデート履歴</a></li>
+          <li><a href="feed.xml">RSSフィード</a></li>
+        </ul>
+      </section>
 
-    <section class="group">
-      <h2>解説・ヘルプ</h2>
-      <ul>
-        <li><a href="about-playpoints.html">Playポイントとは？</a></li>
-        <li><a href="articles/2026-08-19-play-points-locked.html">Play Pointsが利用停止・ロックされた時の対処法</a></li>
-        <li><a href="articles/2026-08-19-install-offer-points-not-received.html">アプリインストール特典が付かない原因</a></li>
-        <li><a href="articles/2026-08-19-redeemed-item-not-received.html">交換したゲーム内アイテムが届かない時</a></li>
-        <li><a href="articles/2026-08-19-web-store-external-billing-points.html">Webストア・外部決済でもPlay Pointsは貯まる？</a></li>
-        <li><a href="articles/2026-08-19-play-points-google-store.html">Play PointsはGoogle Storeで使える？</a></li>
-        <li><a href="articles/2026-07-24-play-points-cash-conversion.html">Play Pointsは現金化できる？</a></li>
-        <li><a href="articles/2026-07-25-play-points-coupon-not-applied.html">Play Pointsクーポンが自動適用されない原因</a></li>
-        <li><a href="articles/2026-07-25-play-credit-not-working.html">Playクレジットへ交換できない・使えない原因</a></li>
-        <li><a href="info.html">あとがき・Q&A</a></li>
-        <li><a href="changelog.html">アップデート履歴（開発の軌跡）</a></li>
-        <li><a href="author/katakata.html">運営者・記事の検証方針</a></li>
-      </ul>
-    </section>
+      <section class="group">
+        <h2>🔒 ポリシー</h2>
+        <p class="group-lead">利用条件やデータ・広告・アクセス解析の取り扱いを確認できます。</p>
+        <ul>
+          <li><a href="privacy.html">プライバシーポリシー</a></li>
+          <li><a href="terms.html">利用規約</a></li>
+        </ul>
+      </section>
+    </div>
 
-    <!-- generated-listed-articles:start -->
-    <section class="group" data-generated-listed-articles="true">
-      <h2>公開中の解説記事</h2>
-      <ul>
-        <li><a href="games/fgo/pity-cost/">FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】</a></li>
-        <li><a href="games/genshin/welkin-value/">原神「空月の祝福」はどれくらいお得？610円・原石3000相当とPlay Points</a></li>
-        <li><a href="games/monst/google-play-vs-webshop/">モンストはGoogle Play課金とWebショップどっちがお得？月イチ200個とPlay Points比較【2026年】</a></li>
-        <li><a href="games/starrail/supply-pass-value/">スタレ「列車補給標章」はどれくらいお得？610円・3000星玉相当とPlay Points</a></li>
-        <li><a href="games/zzz/membership-value/">ゼンゼロ「インターノット会員」はお得？610円・3000相当とPlay Points</a></li>
-        <li><a href="games/umamusume/umasuku-value/">ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】</a></li>
-        <li><a href="games/proseka/google-play-vs-webstore/">プロセカはGoogle Playと公式WebStoreどっちがお得？パス・クリスタル・Play Points比較</a></li>
-        <li><a href="games/pokepoke/premium-pass-guide/">ポケポケのプレミアムパスはどう課金される？無料体験・Google Play Points確認【2026年】</a></li>
-        <li><a href="games/pad/pad-pass-value/">パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】</a></li>
-        <li><a href="games/arknights/monthly-pass-limited-scout/">アークナイツ月パスと限定300連をどう見る？内容・天井・Play Points【2026年】</a></li>
-        <li><a href="games/dokkan/google-play-vs-webstore/">ドッカンバトルはGoogle PlayとWeb Storeどっちで買う？Play Pointsの違い【2026年】</a></li>
-        <li><a href="games/hbr/google-play-vs-webshop/">ヘブバンはGoogle PlayとWEB SHOPどっちがお得？5%OFF・独自ポイント・パスの違い【2026年】</a></li>
-        <li><a href="games/honkai3rd/google-play-vs-charge-center/">崩壊3rdはGoogle Playと公式チャージセンターどっち？2倍特典・月パス・Play Points【2026年】</a></li>
-        <li><a href="games/phantomparade/google-play-vs-webshop/">ファンパレはGoogle PlayとWEBショップどっちがお得？増量・マイル・Play Points比較【2026年】</a></li>
-        <li><a href="games/prospi-a/google-play-vs-konami-store/">プロスピAはGoogle PlayとKONAMI Gamesストアどっちがお得？Play Points・パワスピG・dポイント比較【2026年】</a></li>
-        <li><a href="games/pokemon-go/google-play-vs-webstore/">Pokémon GOはGoogle PlayとWeb Storeどっちがお得？ボーナスポケコイン・Reward Road・Play Points比較【2026年】</a></li>
-        <li><a href="games/efootball/google-play-points-vs-efootball-points/">eFootballコイン購入でGoogle Play Pointsは貯まる？eFootballポイントとの違い【2026年】</a></li>
-        <li><a href="articles/2026-08-25-pad-puzzle-and-dragons-play-points.html">【パズドラ】魔法石・パズパスの選び方とPlayポイント｜受け取り条件・更新・確定セットの注意点</a></li>
-        <li><a href="articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html">【ドッカンバトル】龍石・デイリー型商品の選び方とPlayポイント｜受け取り期限とコインの確認</a></li>
-        <li><a href="articles/2026-08-24-umamusume-half-anniversary-points.html">【ウマ娘】ハーフアニバのジュエル・引換券の選び方とPlayポイント</a></li>
-        <li><a href="articles/2026-08-16-play-pass-worth-it.html">Play Passはポイント目的で入るべき？木曜週次と対象条件</a></li>
-        <li><a href="articles/2026-08-16-pc-play-games-points.html">PC版Play Gamesで課金するとPlay Pointsは貯まる？ブーストの範囲</a></li>
-        <li><a href="articles/2026-08-16-fastest-gold.html">Google Play Pointsでゴールドをお得に目指す方法｜1,000ポイント</a></li>
-        <li><a href="articles/2026-08-16-fastest-platinum.html">Google Play Pointsでプラチナをお得に目指す方法｜4,000ポイント</a></li>
-        <li><a href="articles/2026-08-16-gold-platinum-worth-it.html">ゴールドで止めるかプラチナまで行くか｜特典差と残り約20万円</a></li>
-        <li><a href="articles/2026-08-16-premium-support.html">プレミアムサポートの出し方｜プラチナ以上・待ち時間は保証されない</a></li>
-        <li><a href="articles/2026-08-16-payment-methods-points.html">キャリア決済・クレカ・ギフトカードでPlayポイントは貯まる？</a></li>
-        <li><a href="articles/2026-08-16-points-disappeared.html">Playポイントが消えたときの確認順｜期限・未反映・ランク</a></li>
-        <li><a href="articles/2026-08-16-family-link-play-points.html">Family Linkの子どもアカウントでPlayポイントは貯まらない</a></li>
-        <li><a href="articles/2026-08-16-play-points-day.html">Playポイントデーとは？毎月1日の最大7倍を画面で確認する方法</a></li>
-        <li><a href="articles/2026-08-16-youtube-premium-play-points.html">YouTube PremiumでPlay Pointsは貯まる？請求経路の確認方法</a></li>
-        <li><a href="articles/2026-08-16-pixel-discount-coupon.html">Play PointsのPixel割引クーポンはいつ出る？特典タブの確認方法</a></li>
-        <li><a href="articles/2026-08-16-weekly-reward-not-showing.html">ウィークリーリワードが受け取れない・ボタンが無い時の確認順</a></li>
-        <li><a href="articles/2026-08-16-january-rank-reset.html">1月1日にPlay Pointsのランクが下がった？再判定と残高の違い</a></li>
-        <li><a href="articles/2026-08-05-play-points-cannot-join.html">Google Play Pointsに登録できない・表示されない原因｜参加条件の確認順</a></li>
-        <li><a href="articles/2026-08-05-play-points-multiplier-stacking.html">Google Play Pointsの倍率は重複する？ランク・キャンペーンの計算方法</a></li>
-        <li><a href="articles/2026-08-05-fastest-silver.html">Google Play Pointsでシルバーをお得に目指す方法｜250ポイントの効率的な貯め方</a></li>
-        <li><a href="articles/2026-08-03-play-points-device-change.html">機種変更でGoogle Play Pointsは消える？引き継ぎ・表示されない時の確認</a></li>
-        <li><a href="articles/2026-07-31-super-weekly-reward.html">Google Play Pointsスーパーウィークリーリワード｜賞品・確率・当選例・Super Ticket</a></li>
-        <li><a href="articles/2026-07-31-google-play-quests.html">Google Playのクエストとは？表示されない・達成されない時の確認方法</a></li>
-        <li><a href="articles/2026-07-24-play-points-1-value.html">Google Play Points 1ポイントはいくら？100円で何ポイント貯まるか</a></li>
-        <li><a href="articles/2026-07-24-play-points-500-1000-value.html">Google Play Points 500・1,000ポイントはいくら？必要額早見表</a></li>
-        <li><a href="articles/2026-07-24-earn-play-points-free.html">Google Play Pointsを無料で貯める方法｜予定購入以外の正規特典</a></li>
-        <li><a href="articles/2026-07-24-play-points-100-value.html">Google Play Points 100ポイントはいくら？何円で貯まるか計算</a></li>
-        <li><a href="articles/2026-06-20-discount-gift-cards.html">Google Playギフトコードをお得に買う方法｜還元条件と注意点</a></li>
-        <li><a href="articles/2026-03-10-play-points-reflection-timing.html">Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番</a></li>
-        <li><a href="articles/2025-12-25-play-games.html">Google Play GamesとPlay Pointsの違い｜クエスト・連携・獲得条件</a></li>
-        <li><a href="articles/2025-12-25-movies-books.html">Google Play Pointsは本・有料アプリで貯まる？買い切り購入の対象条件</a></li>
-        <li><a href="articles/2025-12-25-promo-code.html">プロモコード・割引時もGoogle Play Pointsは貯まる？確認方法</a></li>
-        <li><a href="articles/2025-12-25-gift-card.html">Google PlayギフトカードでPlay Pointsは貯まる？付与タイミング</a></li>
-        <li><a href="articles/2025-12-25-subscription.html">Google One・アプリ内サブスクでPlay Pointsは貯まる？請求経路の確認方法</a></li>
-        <li><a href="articles/2025-12-25-getting-started.html">Google Play Pointsの始め方｜登録方法と最初に確認すること</a></li>
-        <li><a href="articles/2025-12-25-new-year-campaign.html">Google Play Pointsの年末年始キャンペーン｜予定購入・期限・倍率の確認方法</a></li>
-        <li><a href="articles/2025-12-25-campaign.html">Google Play Pointsのキャンペーンは待つべき？増量率の確認と課金判断</a></li>
-        <li><a href="articles/2025-12-25-playpoints-rank-maintenance.html">Google Play Pointsのランクは下がる？維持期間・翌年の再判定を解説</a></li>
-        <li><a href="articles/2025-12-25-weekly-reward.html">Google Play Pointsのウィークリーリワードとは？何が当たる・何曜日・対象ランク</a></li>
-        <li><a href="articles/2026-08-05-play-points-levels-guide.html">Google Play Pointsのランク一覧｜条件・必要ポイント・必要額・特典を比較</a></li>
-        <li><a href="articles/2026-08-05-play-country-change-points.html">Google Playの国を変更するとPlay Pointsはどうなる？残高・ランクの注意点</a></li>
-        <li><a href="articles/2025-12-25-diamond-vip.html">Google Play Pointsのダイヤモンド特典｜固有・共通・アカウント限定を整理</a></li>
-        <li><a href="articles/2025-12-25-multiple-accounts.html">Google Play Pointsは複数アカウントで合算できる？管理の注意点</a></li>
-        <li><a href="articles/2025-12-25-expiration.html">Google Play Pointsの有効期限｜失効日・確認方法・期限切れ対策</a></li>
-        <li><a href="articles/2025-12-25-refund.html">Google Play Pointsは返金でどうなる？残高・ランクへの影響</a></li>
-        <li><a href="articles/2025-12-25-diamond-worth-it.html">Google Play Pointsのダイヤモンドは得？必要ポイント・購入額・特典を比較</a></li>
-        <li><a href="articles/2025-12-25-check-balance.html">Google Play Pointsの残高・履歴・有効期限を確認する方法</a></li>
-        <li><a href="articles/2025-12-25-best-use.html">Google Play Pointsの使い道を比較｜クーポン・アイテム・Playクレジットの選び方</a></li>
-        <li><a href="articles/2025-12-25-family-sharing.html">Google Play Pointsは家族と共有できる？ファミリー利用の注意点</a></li>
-      </ul>
-    </section>
-    <!-- generated-listed-articles:end -->
-
-    <section class="group">
-      <h2>ポリシー</h2>
-      <ul>
-        <li><a href="privacy.html">プライバシーポリシー</a></li>
-        <li><a href="terms.html">利用規約</a></li>
-      </ul>
-    </section>
-
-    <section class="group">
-      <h2>補助URL</h2>
-      <ul>
-        <li><a href="sitemap.xml">XMLサイトマップ</a></li>
-        <li><a href="feed.xml">RSSフィード</a></li>
-        <li><a href="atom.xml">Atomフィード</a></li>
-        <li><a href="robots.txt">robots.txt</a></li>
-      </ul>
-    </section>
-
-    <p class="back"><a href="index.html" id="btn-back-home">← 計算ツールに戻る</a></p>
-    <p class="meta">運営者: かたかた / 最終更新: 2026-09-15</p>
-    <p class="site-footer-trademark" style="font-size:0.75rem; color:#64748b; margin-top:16px;">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人運営の非公式ファンサイトです。</p>
+    <aside class="technical-note" aria-label="技術URLについて">
+      <strong>検索エンジン・フィードリーダー向けURLについて:</strong>
+      XMLサイトマップ、robots.txt、Atomフィードなどの技術リソースは引き続き公開・自動管理していますが、人がページを探すための主要ナビゲーションからは分離しています。通常の閲覧では上の目的別リンクを利用してください。
+    </aside>
   </main>
 
-  <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const btn = document.getElementById('btn-back-home');
-          if (btn) {
-              let preferredRegion = null;
-              try {
-                  preferredRegion = localStorage.getItem('playpointPreferredRegion');
-              } catch (e) {
-                  console.error("ローカルストレージの読み込みに失敗しました:", e);
-              }
-
-              if (!preferredRegion) {
-                  const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-                  if (browserLang.startsWith('ko')) {
-                      preferredRegion = 'KR';
-                  } else if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hk')) {
-                      preferredRegion = 'TW';
-                  } else if (browserLang.startsWith('en')) {
-                      preferredRegion = 'US';
-                  } else {
-                      preferredRegion = 'JP';
-                  }
-              }
-
-              let targetRegion = preferredRegion;
-              try {
-                  const referrer = new URL(document.referrer);
-                  if (referrer.origin === window.location.origin) {
-                      const locale = referrer.pathname.split('/')[1];
-                      targetRegion = { ko: 'KR', tw: 'TW', en: 'US' }[locale] || 'JP';
-                  }
-              } catch (e) {
-                  // Empty or invalid referrers keep the preferred region fallback.
-              }
-
-              if (targetRegion === 'KR') {
-                  btn.href = 'ko/';
-                  btn.textContent = '← 계산기로 돌아가기';
-              } else if (targetRegion === 'TW') {
-                  btn.href = 'tw/';
-                  btn.textContent = '← 返回計算機';
-              } else if (targetRegion === 'US') {
-                  btn.href = 'en/';
-                  btn.textContent = '← Go Back to Calculator';
-              } else {
-                  btn.href = './';
-                  btn.textContent = '← 計算ツールに戻る';
-              }
-          }
-      });
-  </script>
+  <footer class="page-footer">
+    <p>
+      <a href="./">トップ計算機</a>
+      <a href="games/">ゲーム計算機</a>
+      <a href="blog/">記事一覧</a>
+      <a href="author/katakata.html">運営者・検証方針</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+    </p>
+    <p>運営者: かたかた / 最終更新: 2026-09-15</p>
+    <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
+    <p>© 2026 PlayPoint Simulation Tool</p>
+  </footer>
 </body>
 </html>

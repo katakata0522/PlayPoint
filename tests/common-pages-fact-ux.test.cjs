@@ -90,7 +90,7 @@ test('4言語トップは対象条件・保存範囲・aria-labelを初期表示
   assert.match(read('scripts/language-page-builder.cjs'), /data-lang-aria/);
 });
 
-test('海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる', () => {
+test('海外の既存ギフトカード割引記事を各言語の記事ハブから発見でき、人向けサイト案内は言語ハブへ導く', () => {
   const paths = {
     'en/articles/index.html': '/en/articles/2026-06-20-discount-gift-cards.html',
     'ko/articles/index.html': '/ko/articles/2026-06-20-discount-gift-cards.html',
@@ -99,8 +99,8 @@ test('海外の既存ギフトカード割引記事を記事ハブと人向け�
   const humanSitemap = read('sitemap.html');
   for (const [hub, url] of Object.entries(paths)) {
     assert.ok(read(hub).includes('href="' + url + '"'), hub + ' に記事がありません');
-    const relativeUrl = url.replace(/^\//, '');
-    assert.ok(humanSitemap.includes('href="' + relativeUrl + '"'), 'sitemap.html に ' + relativeUrl + ' がありません');
+    const locale = hub.split('/')[0];
+    assert.ok(humanSitemap.includes('href="' + locale + '/articles/"'), 'sitemap.html に ' + locale + ' 記事ハブがありません');
   }
 });
 

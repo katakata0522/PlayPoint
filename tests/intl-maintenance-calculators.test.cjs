@@ -241,7 +241,9 @@ test('専用サイトマップ・robots・一覧から地域別維持計算を�
       assert.ok(sitemap.includes('href="' + url + '"'));
       assert.ok(!mainSitemap.includes('<loc>' + url + '</loc>'));
       if (!url.includes('playpoint-sim.com/maintenance/')) {
-        assert.ok(humanSitemap.includes(url.replace('https://playpoint-sim.com/', '')));
+        const locale = url.match(/playpoint-sim\.com\/(en|ko|tw)\//)?.[1];
+        assert.ok(locale);
+        assert.ok(humanSitemap.includes(`href="${locale}/"`), `human sitemap locale hub: ${locale}`);
       }
     }
   }

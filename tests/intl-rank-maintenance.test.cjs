@@ -114,13 +114,13 @@ test('専用サイトマップは4言語URLと完全なhreflangを持ちrobots.t
   }
 });
 
-test('言語別一覧と人向けサイトマップから新しい記事へ移動できる', () => {
+test('言語別一覧から新しい記事へ移動でき、人向けサイト案内は各言語ハブへ導く', () => {
   const human = read('sitemap.html');
   for (const page of pages.filter(page => page.key !== 'ja')) {
     const hub = read(`${page.key}/articles/index.html`);
     const href = `/${page.file}`;
     assert.ok(hub.includes(href), `${page.key} hub`);
-    assert.ok(human.includes(`href="${page.file}"`), `human sitemap: ${page.file}`);
+    assert.ok(human.includes(`href="${page.key}/articles/"`), `human sitemap locale hub: ${page.key}`);
   }
 });
 

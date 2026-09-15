@@ -110,14 +110,14 @@ test('専用サイトマップは設定済み記事を完全なhreflang付きで
   }
 });
 
-test('言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる', () => {
+test('言語別一覧・人向け言語ハブ・日本語ブログから記事を発見できる', () => {
   const humanSitemap = read('sitemap.html');
   const blog = read('blog/index.html');
   for (const locale of locales.filter(locale => locale.key !== 'ja')) {
     const hub = read(`${locale.key}/articles/index.html`);
     for (const topic of topics) {
       assert.ok(hub.includes(`/${fileFor(topic, locale)}`), `${locale.key} hub: ${topic.slug}`);
-      assert.ok(humanSitemap.includes(`href="${fileFor(topic, locale)}"`), `human sitemap: ${topic.slug}`);
+      assert.ok(humanSitemap.includes(`href="${locale.key}/articles/"`), `human sitemap locale hub: ${locale.key}`);
     }
     for (const older of [
       'google-play-points-weekly-reward.html',
@@ -129,7 +129,7 @@ test('言語別一覧・人向けサイトマップ・日本語ブログから�
     }
   }
   for (const topic of topics) {
-    assert.ok(humanSitemap.includes(`href="${topic.jaFile}"`), topic.jaFile);
+    assert.ok(humanSitemap.includes('href="blog/"'), 'human sitemap must expose the Japanese guide hub');
     assert.ok(blog.includes(`../${topic.jaFile}`), topic.jaFile);
   }
 });
