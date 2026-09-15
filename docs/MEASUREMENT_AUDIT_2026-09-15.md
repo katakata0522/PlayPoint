@@ -6,6 +6,25 @@ Issue #180（GA4本番計測）と #181（Search Console観察クエリ）につ
 
 この監査では、確認できない項目を完了扱いしない。特にGA4 DebugViewとSearch Consoleの非重複「前28日」比較は、取得できた証拠と区別する。
 
+## Phase 2 — 変更前Baselineの固定
+
+この文書と `scripts/measurement-baseline.cjs` を、2026-09-15以降の改善を比較するための変更前Baselineとする。Baseline IDは `phase2-pre-change-2026-09-15`。
+
+比較時の契約は次のとおり。
+
+- 共通の短期基準期間は **2026-09-01〜2026-09-07**。この7日間の値を後から上書きしない。
+- ユーザー到達を測る主単位は **activeUsers**。`eventCount` は再計算・再クリックで膨らむため診断用とする。
+- 取得できない値は `0` にせず **UNAVAILABLE** として扱う。
+- Product North Starは Organic/Search landing から First Success までの成功計算率。収益サイトとして **Revenue / Successful Calculation** を同格のBusiness KPIとして持つ。
+- Search Consoleは **Raw / Normalized / Property Total** を別レイヤーで保持する。Rawは query × exact URL（fragmentを保持）、Normalizedは query × base URL（fragmentを除去）、Property Totalは query dimensionなしのclick / impressionを使う。
+- GSC totalとGA4 Organicを比較する場合、GA4 Organicは検索エンジン別に分解する。query rows合計だけをProperty Totalの代わりにしない。
+- SEOの前後比較は同じ定義・同じ検索意図で行い、28日比較では前後期間を重複させない。
+- 2026-08-27の `GA4 PV 42 / AdSense page views 630` は **ANOMALY_REVIEW**。原因確定前に自動補正・自動除外しない。
+- 9月上旬のSEO変更は最低14日観察し、次回レビュー日は **2026-09-25** とする。
+- DebugView、`app_display_mode` Custom Dimension登録、非重複の前28日Search Console raw比較は、実データで確認できるまで未完了のまま残す。
+
+このBaselineの目的は「改善を大きく見せるために期間・分母・異常値処理を後から変える」ことを防ぐことであり、将来の新しい実測値を固定することではない。新しい観測値は別スナップショットとして追加し、Baseline自体は保存する。
+
 ## データ鮮度
 
 `PlayPoint Analytics` のシステム状態を 2026-09-15 に確認した。
@@ -103,6 +122,12 @@ Admin / Data APIでは、ブラウザから送った単発イベントがDebugVi
 - 過去28日と、その直前28日の非重複比較
 
 Search Console API / UIでこの比較を取得できる実行環境から確認した後に #181 をcloseする。
+
+## AdSense / 収益比較の扱い
+
+収益最適化では、`Revenue / Organic Landing Session`、`Revenue / Successful Calculation`、`Publisher impressions / session` を主要な比較軸とする。
+
+2026-08-27は GA4 page views 42 に対して AdSense page views 630 と前後日から明確に外れている。現時点では原因未確定なので `ANOMALY_REVIEW` として扱い、集計から勝手に消したり、推定値へ置き換えたりしない。将来のレポートでは「含む / 除外」の両方を確認できる状態を保つ。
 
 ## 次回確認
 
