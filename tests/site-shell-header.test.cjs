@@ -30,9 +30,26 @@ test('Stage 12B owns the three fixed-page headers from one immutable Site Shell 
   assert.ok(Object.isFrozen(about.navLinks));
   assert.ok(Object.isFrozen(about.policyLinks));
   assert.equal(about.navLinks.length, 4);
+
+  assert.equal(attention.brandLink.href, './');
+  assert.match(attention.brandLink.label, /PlayPoint Calculator/);
+  assert.equal(attention.navAriaLabel, 'Calculator country or region');
   assert.equal(attention.navLinks.length, 6);
   assert.deepEqual(attention.navLinks.map(link => link.href), ['./', './en/', './ko/', './tw/', './hk/', './in/']);
+  assert.deepEqual(attention.policyLinks, []);
   assert.throws(() => getFixedPageHeaderProfile('unknown.html'), /No fixed-page header profile/);
+});
+
+test('Country & Region Guide keeps legal links out of the primary header and in the footer', () => {
+  const html = fs.readFileSync(path.join(root, 'attention.html'), 'utf8');
+  const located = locateTopBar(html, 'attention.html');
+  assert.match(located.html, /PlayPoint Calculator/);
+  assert.match(located.html, /Calculator country or region/);
+  assert.doesNotMatch(located.html, /privacy\.html|terms\.html/i);
+
+  const footer = html.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0] || '';
+  assert.match(footer, /privacy\.html/);
+  assert.match(footer, /terms\.html/);
 });
 
 test('committed fixed pages are already byte-canonical for the shared Header renderer', () => {
