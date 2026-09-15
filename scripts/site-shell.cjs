@@ -72,10 +72,11 @@ const REGION_GUIDE_LINKS = Object.freeze([
   Object.freeze({ href: './in/', label: '🇮🇳 India' })
 ]);
 
-const REGION_GUIDE_POLICY_LINKS = Object.freeze([
-  Object.freeze({ href: 'privacy.html', label: 'Privacy Policy' }),
-  Object.freeze({ href: 'terms.html', label: 'Terms of Service', style: 'margin-left:1em;' })
-]);
+const REGION_GUIDE_BRAND_LINK = Object.freeze({
+  href: './',
+  label: '← PlayPoint Calculator',
+  style: 'font-weight:800;color:var(--text-color,#1f2937);text-decoration:none;'
+});
 
 const JAPANESE_FIXED_HEADER_PROFILE = Object.freeze({
   headerLinksStyle: 'width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;',
@@ -89,10 +90,12 @@ const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
   'info.html': JAPANESE_FIXED_HEADER_PROFILE,
   'attention.html': Object.freeze({
     topBarStyle: 'margin-bottom:20px;',
-    headerLinksStyle: 'width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;',
-    navStyle: 'font-size:.9em;display:flex;flex-wrap:wrap;gap:10px;',
+    headerLinksStyle: 'width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:10px;',
+    brandLink: REGION_GUIDE_BRAND_LINK,
+    navAriaLabel: 'Calculator country or region',
+    navStyle: 'font-size:.9em;display:flex;flex-wrap:wrap;gap:8px 10px;',
     navLinks: REGION_GUIDE_LINKS,
-    policyLinks: REGION_GUIDE_POLICY_LINKS
+    policyLinks: Object.freeze([])
   })
 });
 
@@ -233,22 +236,44 @@ function renderFixedPageHeader(profile, indent = '') {
   if (!profile || !Array.isArray(profile.navLinks) || !Array.isArray(profile.policyLinks)) {
     throw new TypeError('Fixed-page header profile requires navLinks and policyLinks arrays.');
   }
-  if (profile.navLinks.length === 0 || profile.policyLinks.length === 0) {
-    throw new TypeError('Fixed-page header navigation groups must not be empty.');
+  if (profile.navLinks.length === 0 && !profile.brandLink) {
+    throw new TypeError('Fixed-page header requires navigation links or a brand link.');
   }
 
-  const first = `${indent}<div class="top-bar"${styleAttribute(profile.topBarStyle)}>`;
-  const second = `${indent}  <div class="header-links"${styleAttribute(profile.headerLinksStyle)}>`;
-  const navOpen = `${indent}    <div class="lang-nav"${styleAttribute(profile.navStyle)}>`;
-  const navLinks = profile.navLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n');
-  const navClose = `${indent}    </div>`;
-  const policyOpen = `${indent}    <div>`;
-  const policyLinks = profile.policyLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n');
-  const policyClose = `${indent}    </div>`;
-  const headerClose = `${indent}  </div>`;
-  const topClose = `${indent}</div>`;
+  const blocks = [
+    `${indent}<div class="top-bar"${styleAttribute(profile.topBarStyle)}>`,
+    `${indent}  <div class="header-links"${styleAttribute(profile.headerLinksStyle)}>`
+  ];
 
-  return [first, second, navOpen, navLinks, navClose, policyOpen, policyLinks, policyClose, headerClose, topClose].join('\n');
+  if (profile.brandLink) {
+    blocks.push(
+      `${indent}    <div class="site-shell-brand">`,
+      renderHeaderLink(profile.brandLink, `${indent}      `),
+      `${indent}    </div>`
+    );
+  }
+
+  if (profile.navLinks.length > 0) {
+    const navAria = profile.navAriaLabel
+      ? ` role="navigation" aria-label="${escapeHtml(profile.navAriaLabel)}"`
+      : '';
+    blocks.push(
+      `${indent}    <div class="lang-nav"${navAria}${styleAttribute(profile.navStyle)}>`,
+      profile.navLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n'),
+      `${indent}    </div>`
+    );
+  }
+
+  if (profile.policyLinks.length > 0) {
+    blocks.push(
+      `${indent}    <div>`,
+      profile.policyLinks.map(link => renderHeaderLink(link, `${indent}      `)).join('\n'),
+      `${indent}    </div>`
+    );
+  }
+
+  blocks.push(`${indent}  </div>`, `${indent}</div>`);
+  return blocks.join('\n');
 }
 
 function renderCalculatorHeaderLink(link, indent) {
