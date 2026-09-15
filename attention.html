@@ -71,18 +71,17 @@
 <body>
   <main class="calculator-wrapper">
     <div class="top-bar" style="margin-bottom:20px;">
-      <div class="header-links" style="width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <div class="lang-nav" style="font-size:.9em;display:flex;flex-wrap:wrap;gap:10px;">
+      <div class="header-links" style="width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:10px;">
+        <div class="site-shell-brand">
+          <a href="./" style="font-weight:800;color:var(--text-color,#1f2937);text-decoration:none;">← PlayPoint Calculator</a>
+        </div>
+        <div class="lang-nav" role="navigation" aria-label="Calculator country or region" style="font-size:.9em;display:flex;flex-wrap:wrap;gap:8px 10px;">
           <a href="./">🇯🇵 Japan</a>
           <a href="./en/">🇺🇸 U.S.</a>
           <a href="./ko/">🇰🇷 Korea</a>
           <a href="./tw/">🇹🇼 Taiwan</a>
           <a href="./hk/">🇭🇰 Hong Kong</a>
           <a href="./in/">🇮🇳 India</a>
-        </div>
-        <div>
-          <a href="privacy.html">Privacy Policy</a>
-          <a href="terms.html" style="margin-left:1em;">Terms of Service</a>
         </div>
       </div>
     </div>
@@ -190,7 +189,7 @@
     </article>
 
     <footer class="site-footer">
-      <p><a href="./">Calculator</a> · <a href="sitemap.html">Sitemap</a> · <a href="author/katakata.html" rel="author">Operator & verification policy</a></p>
+      <p><a href="./">Calculator</a> · <a href="sitemap.html">Sitemap</a> · <a href="author/katakata.html" rel="author">Operator & verification policy</a> · <a href="privacy.html">Privacy Policy (Japanese)</a> · <a href="terms.html">Terms of Service (Japanese)</a></p>
       <p class="site-footer-trademark">Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide and is not affiliated with or endorsed by Google LLC.</p>
       <p class="copyright">© <span id="copyright-year">2026</span> PlayPoint Simulation Tool</p>
     </footer>
