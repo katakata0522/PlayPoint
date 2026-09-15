@@ -1,0 +1,46 @@
+name: Temporary Site Shell Footer Sync
+
+on:
+  push:
+    branches:
+      - fix/site-shell-hygiene-1-footers-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: "!contains(github.event.head_commit.message, 'site-shell-footer-sync')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/site-shell-hygiene-1-footers-20260915
+          fetch-depth: 0
+      - name: Normalize Site Shell footers
+        run: node scripts/insert-lp-footers.cjs
+      - name: Verify only expected footer outputs changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(git diff --name-only)
+          printf '%s\n' "${changed[@]}"
+          allowed='^(points-cost/index\.html|en/points-cost/index\.html|ko/points-cost/index\.html|tw/points-cost/index\.html|en/maintenance/(platinum|diamond)/index\.html|ko/maintenance/(platinum|diamond)/index\.html|tw/maintenance/(platinum|diamond)/index\.html)$'
+          for file in "${changed[@]}"; do
+            [[ "$file" =~ $allowed ]] || { echo "Unexpected generated change: $file"; exit 1; }
+          done
+          [[ ${#changed[@]} -eq 10 ]] || { echo "Expected 10 generated footer files, got ${#changed[@]}"; exit 1; }
+      - name: Commit generated footer cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No generated footer changes.'
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add points-cost/index.html en/points-cost/index.html ko/points-cost/index.html tw/points-cost/index.html en/maintenance/platinum/index.html en/maintenance/diamond/index.html ko/maintenance/platinum/index.html ko/maintenance/diamond/index.html tw/maintenance/platinum/index.html tw/maintenance/diamond/index.html
+          git commit -m 'site-shell-footer-sync'
+          git push origin HEAD:fix/site-shell-hygiene-1-footers-20260915
