@@ -1,0 +1,129 @@
+name: Article Role Warning Fix
+
+on:
+  push:
+    branches:
+      - fix/article-next-role-warnings-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Add one next-job related guide to each warning article
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          fixes = {
+              'articles/2026-08-16-play-points-day.html': (
+                  './2025-12-25-check-balance.html',
+                  '獲得後の残高・ポイント履歴を確認する',
+              ),
+              'articles/2026-07-24-play-points-500-1000-value.html': (
+                  './2025-12-25-best-use.html',
+                  '貯めたポイントの使い方を比較する',
+              ),
+              'articles/2025-12-25-new-year-campaign.html': (
+                  './2025-12-25-check-balance.html',
+                  '購入後の残高・ポイント履歴を確認する',
+              ),
+              'en/articles/google-play-points-earn-free.html': (
+                  '/en/articles/google-play-points-500-1000-cost.html',
+                  'How much spending is needed for 500 or 1,000 points',
+              ),
+              'ko/articles/google-play-points-earn-free.html': (
+                  '/ko/articles/google-play-points-500-1000-cost.html',
+                  '500·1,000포인트에 필요한 결제 금액 계산',
+              ),
+              'tw/articles/google-play-points-earn-free.html': (
+                  '/tw/articles/google-play-points-500-1000-cost.html',
+                  '500、1,000 點需要多少消費金額',
+              ),
+          }
+
+          section_pattern = re.compile(
+              r'(<(?:section|aside)\b[^>]*class=["\'][^"\']*\brelated-links-section\b[^"\']*["\'][^>]*>[\s\S]*?</(?:section|aside)>)',
+              re.I,
+          )
+
+          for file_name, (href, label) in fixes.items():
+              path = Path(file_name)
+              text = path.read_text(encoding='utf-8')
+              if f'href="{href}"' in text or f"href='{href}'" in text:
+                  print(f'already fixed: {file_name}')
+                  continue
+              match = section_pattern.search(text)
+              if not match:
+                  raise SystemExit(f'related-links-section not found: {file_name}')
+              section = match.group(1)
+              if '</ul>' not in section:
+                  raise SystemExit(f'related-links-section has no </ul>: {file_name}')
+              indent_match = re.search(r'\n([ \t]*)<li\b', section)
+              indent = indent_match.group(1) if indent_match else ''
+              link = f'{indent}<li><a href="{href}">{label}</a></li>\n'
+              updated_section = section.replace('</ul>', f'{link}</ul>', 1)
+              text = text[:match.start(1)] + updated_section + text[match.end(1):]
+              path.write_text(text, encoding='utf-8')
+              print(f'fixed: {file_name} -> {href}')
+          PY
+
+      - name: Canonical regeneration
+        run: node scripts/prepare-pr.cjs
+
+      - name: Require Article Role warning zero
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const { auditArticleRoleNextActions, printAudit } = require('./scripts/article-role-next-action-audit.cjs');
+          const result = auditArticleRoleNextActions(process.cwd());
+          printAudit(result);
+          if (result.failures.length || result.warnings.length) {
+            console.error(`Article Role audit must be clean: errors=${result.failures.length}, warnings=${result.warnings.length}`);
+            process.exit(1);
+          }
+          NODE
+
+      - name: Verify minimal diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          allowed='^(articles/2026-08-16-play-points-day\.html|articles/2026-07-24-play-points-500-1000-value\.html|articles/2025-12-25-new-year-campaign\.html|en/articles/google-play-points-earn-free\.html|ko/articles/google-play-points-earn-free\.html|tw/articles/google-play-points-earn-free\.html)$'
+          unexpected="$(git diff --name-only | grep -Ev "$allowed" || true)"
+          if [[ -n "$unexpected" ]]; then
+            echo 'Unexpected generated files:'
+            echo "$unexpected"
+            exit 1
+          fi
+          git diff --stat
+
+      - name: Commit article navigation fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No article changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            articles/2026-08-16-play-points-day.html \
+            articles/2026-07-24-play-points-500-1000-value.html \
+            articles/2025-12-25-new-year-campaign.html \
+            en/articles/google-play-points-earn-free.html \
+            ko/articles/google-play-points-earn-free.html \
+            tw/articles/google-play-points-earn-free.html
+          git commit -m 'Article Role warning 6件の次導線を修正'
+          git push origin HEAD:fix/article-next-role-warnings-20260915
