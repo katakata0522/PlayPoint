@@ -1,0 +1,193 @@
+name: One-shot Task Hub Contract Sync
+
+on:
+  push:
+    branches:
+      - fix/site-shell-hygiene-4-human-sitemap-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/site-shell-hygiene-4-human-sitemap-20260915
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Update task-hub regression contracts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          def sub_test(path, start_title, next_title, replacement):
+              p = Path(path)
+              s = p.read_text()
+              pattern = rf"test\('{re.escape(start_title)}'[\s\S]*?(?=\ntest\('{re.escape(next_title)}')"
+              s2, n = re.subn(pattern, replacement.rstrip() + "\n", s, count=1)
+              if n != 1:
+                  raise SystemExit(f'{path}: expected one test block replacement for {start_title}, got {n}')
+              p.write_text(s2)
+
+          p = Path('sitemap.html')
+          s = p.read_text()
+          needle = '          <li><a href="points-cost/"><strong>欲しいポイント数 → 必要額</strong></a> — 100 / 500 / 1,000ptなど</li>\n'
+          addition = needle + '          <li><a href="compare/earning-rates/">獲得率・通常／2pt／3ptの比較表</a></li>\n'
+          if 'href="compare/earning-rates/"' not in s:
+              if needle not in s:
+                  raise SystemExit('sitemap.html: calculator insertion point not found')
+              s = s.replace(needle, addition, 1)
+          p.write_text(s)
+
+          p = Path('tests/info-return-navigation.test.cjs')
+          s = p.read_text()
+          old = "for (const relativePath of ['info.html', 'about-playpoints.html', 'sitemap.html']) {"
+          new = "for (const relativePath of ['info.html', 'about-playpoints.html']) {"
+          if old not in s:
+              raise SystemExit('info-return-navigation: legacy page list not found')
+          p.write_text(s.replace(old, new, 1))
+
+          sub_test(
+              'tests/common-pages-fact-ux.test.cjs',
+              '海外の既存ギフトカード割引記事を記事ハブと人向けサイトマップから発見できる',
+              'アプリモジュール変更がService Worker用の指紋を必ず変える',
+              '''test('海外の既存ギフトカード割引記事は各言語の記事ハブから発見でき、人向けサイト案内は言語ハブへ導く', () => {
+            const paths = {
+              'en/articles/index.html': '/en/articles/2026-06-20-discount-gift-cards.html',
+              'ko/articles/index.html': '/ko/articles/2026-06-20-discount-gift-cards.html',
+              'tw/articles/index.html': '/tw/articles/2026-06-20-discount-gift-cards.html'
+            };
+            const humanSitemap = read('sitemap.html');
+            for (const [hub, url] of Object.entries(paths)) {
+              assert.ok(read(hub).includes('href="' + url + '"'), hub + ' に記事がありません');
+            }
+            for (const locale of ['en', 'ko', 'tw']) {
+              assert.ok(humanSitemap.includes(`href="${locale}/articles/"`), `sitemap.html に ${locale} 記事ハブがありません`);
+            }
+          });'''
+          )
+
+          sub_test(
+              'tests/intl-coupon-credit.test.cjs',
+              '言語別一覧・人向けサイトマップ・日本語ブログから記事を発見できる',
+              '多言語記事は全地域を同じ主張にしない',
+              '''test('言語別一覧・人向け言語ハブ・日本語ブログから記事を発見できる', () => {
+            const humanSitemap = read('sitemap.html');
+            const blog = read('blog/index.html');
+            for (const locale of locales.filter(locale => locale.key !== 'ja')) {
+              const hub = read(`${locale.key}/articles/index.html`);
+              assert.ok(humanSitemap.includes(`href="${locale.key}/articles/"`), `human sitemap locale hub: ${locale.key}`);
+              for (const topic of topics) {
+                assert.ok(hub.includes(`/${fileFor(topic, locale)}`), `${locale.key} hub: ${topic.slug}`);
+              }
+              for (const older of [
+                'google-play-points-weekly-reward.html',
+                'google-play-points-multiple-accounts.html',
+                'google-play-points-use-coupons.html',
+                'google-play-points-join-eligibility.html'
+              ]) {
+                assert.ok(hub.includes(older), `${locale.key} hub missing older standalone article: ${older}`);
+              }
+            }
+            assert.ok(humanSitemap.includes('href="blog/"'), 'human sitemap must expose the Japanese guide hub');
+            for (const topic of topics) {
+              assert.ok(blog.includes(`../${topic.jaFile}`), topic.jaFile);
+            }
+          });'''
+          )
+
+          sub_test(
+              'tests/intl-rank-maintenance.test.cjs',
+              '言語別一覧と人向けサイトマップから新しい記事へ移動できる',
+              '新しい多言語記事のサイト内リンク先は存在する',
+              '''test('言語別一覧から新しい記事へ移動でき、人向けサイト案内は各言語ハブへ導く', () => {
+            const human = read('sitemap.html');
+            for (const page of pages.filter(page => page.key !== 'ja')) {
+              const hub = read(`${page.key}/articles/index.html`);
+              const href = `/${page.file}`;
+              assert.ok(hub.includes(href), `${page.key} hub`);
+              assert.ok(human.includes(`href="${page.key}/articles/"`), `human sitemap locale hub: ${page.key}`);
+            }
+          });'''
+          )
+
+          p = Path('tests/intl-maintenance-calculators.test.cjs')
+          s = p.read_text()
+          old = "      if (!url.includes('playpoint-sim.com/maintenance/')) {\n        assert.ok(humanSitemap.includes(url.replace('https://playpoint-sim.com/', '')));\n      }"
+          new = "      if (!url.includes('playpoint-sim.com/maintenance/')) {\n        const locale = url.match(/playpoint-sim\\.com\\/(en|ko|tw)\\//)?.[1];\n        assert.ok(locale);\n        assert.ok(humanSitemap.includes(`href=\\\"${locale}/\\\"`), `human sitemap locale hub: ${locale}`);\n      }"
+          if old not in s:
+              raise SystemExit('intl-maintenance-calculators: human sitemap assertion not found')
+          p.write_text(s.replace(old, new, 1))
+
+          p = Path('tests/intl-platinum-diamond.test.cjs')
+          s = p.read_text()
+          old = "    if (lang !== 'ja') assert.ok(human.includes(url.replace('https://playpoint-sim.com/', '')));"
+          new = "    if (lang !== 'ja') {\n      const localePath = lang === 'zh-TW' ? 'tw/' : `${lang}/`;\n      assert.ok(human.includes(`href=\\\"${localePath}\\\"`), `human sitemap locale hub: ${localePath}`);\n    }"
+          if old not in s:
+              raise SystemExit('intl-platinum-diamond: human sitemap assertion not found')
+          p.write_text(s.replace(old, new, 1))
+
+          sub_test(
+              'tests/sitemap-information-hierarchy.test.cjs',
+              'human sitemap introduces the page purpose before secondary navigation groups',
+              'comparison reference remains discoverable exactly once after the sitemap hierarchy repair',
+              '''test('human sitemap introduces the task-hub purpose before navigation groups', () => {
+            const mainStart = sitemap.indexOf('<main class="container" data-human-sitemap-mode="task-hub">');
+            const h1Index = sitemap.indexOf('<h1>Playポイント計算機 サイト案内</h1>', mainStart);
+            const eyebrowIndex = sitemap.indexOf('<p class="eyebrow">目的から探す</p>', mainStart);
+            const firstGroupIndex = sitemap.indexOf('<section class="group">', mainStart);
+
+            assert.ok(mainStart >= 0);
+            assert.ok(eyebrowIndex > mainStart);
+            assert.ok(h1Index > eyebrowIndex);
+            assert.ok(firstGroupIndex > h1Index);
+            assert.equal((sitemap.match(/<h1\\b/g) || []).length, 1);
+          });'''
+          )
+          p = Path('tests/sitemap-information-hierarchy.test.cjs')
+          s = p.read_text().replace("  assert.match(sitemap, /<h2>比較資料<\\/h2>/);", "  assert.match(sitemap, />獲得率・通常／2pt／3ptの比較表<\\/a>/);")
+          p.write_text(s)
+
+          sub_test(
+              'tests/trust-pages-consistency.test.cjs',
+              'human sitemap amount shortcuts use the same local-currency labels as generated regional pages',
+              'human sitemap regional amount sync is deterministic',
+              '''test('human sitemap keeps regional calculator hubs instead of duplicating every amount shortcut', () => {
+            const html = read('sitemap.html');
+            for (const locale of ['en', 'ko', 'tw']) {
+              assert.ok(html.includes(`<a href="${locale}/">`), `${locale} calculator hub must remain discoverable`);
+              assert.ok(!html.includes(`href="${locale}/amount/10000/"`), `${locale} amount shortcut should stay in machine/locale discovery, not the human hub`);
+            }
+            const labels = getIntlAmountHumanSitemapLabels();
+            assert.ok(labels.en && labels.ko && labels.tw, 'regional amount labels remain available to generated regional pages');
+          });'''
+          )
+          PY
+
+      - name: Run focused regression tests
+        run: node --test tests/common-pages-fact-ux.test.cjs tests/info-return-navigation.test.cjs tests/intl-coupon-credit.test.cjs tests/intl-maintenance-calculators.test.cjs tests/intl-platinum-diamond.test.cjs tests/intl-rank-maintenance.test.cjs tests/sitemap-information-hierarchy.test.cjs tests/trust-pages-consistency.test.cjs tests/human-sitemap-task-hub.test.cjs
+
+      - name: Synchronize canonical generated output
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run full preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Remove one-shot workflow and commit synchronized result
+        shell: bash
+        run: |
+          rm .github/workflows/task-hub-contract-sync.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "test: align sitemap discovery contracts with task hub"
+          git push origin HEAD:fix/site-shell-hygiene-4-human-sitemap-20260915
