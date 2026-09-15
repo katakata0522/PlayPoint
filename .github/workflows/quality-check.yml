@@ -49,6 +49,7 @@ jobs:
           node .github/scripts/article-css-smoke.cjs
           node .github/scripts/article-design-smoke.cjs
           node .github/scripts/mobile-region-layout-smoke.cjs
+          node .github/scripts/mobile-first-view-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
 

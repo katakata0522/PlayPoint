@@ -27,13 +27,21 @@ const SIMPLIFIED_CALCULATOR_COPY = Object.freeze({
     }
 });
 
+const FIRST_VIEW_INTRO_COPY = Object.freeze({
+    JP: '目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。'
+});
+
 export function updateSimplifiedCalculatorCopy(region) {
     const copy = SIMPLIFIED_CALCULATOR_COPY[region] || SIMPLIFIED_CALCULATOR_COPY.JP;
     const baseRateLabel = document.querySelector('[data-simplified-calculator-copy="baseRateLabel"]');
     const multiplierLabel = document.querySelector('[data-simplified-calculator-copy="multiplierLabel"]');
+    const siteDescription = document.getElementById('site-description');
 
     if (baseRateLabel) baseRateLabel.textContent = copy.baseRateLabel;
     if (multiplierLabel) multiplierLabel.textContent = copy.multiplierLabel;
+    if (siteDescription && FIRST_VIEW_INTRO_COPY[region]) {
+        siteDescription.textContent = FIRST_VIEW_INTRO_COPY[region];
+    }
 }
 
 export function simplifyMainCalculatorLayout(region = 'JP') {
