@@ -24,6 +24,7 @@ const AMOUNT_ENTRY_OVERRIDES = {
     h1: 'How many Google Play Points do you get for $50 in the US?',
     lead: 'For US accounts, Bronze earns 1 point per $1 of eligible pre-tax spending. Use $50 as a simple starting amount, then adjust your level and any confirmed promotion special earn rate.',
     cta: 'Calculate points for $50',
+    humanSitemapLabel: 'English: $50 points estimate',
     secondary: 'Read gift-card notes',
     secondaryHref: '/en/articles/google-play-points-gift-cards.html',
     summary: ['$50 preset for US accounts', 'Bronze base: about 50 points', 'Check: level, promotion rate, eligible pre-tax amount'],
@@ -46,6 +47,7 @@ const AMOUNT_ENTRY_OVERRIDES = {
     h1: '50,000원 결제하면 Google Play Points는 몇 포인트일까요?',
     lead: '한국 브론즈 기본 적립률은 1,000원당 1포인트입니다. 50,000원을 간단한 시작 금액으로 두고 현재 등급과 실제로 확인된 캠페인 특별 적립률에 맞춰 조정하세요.',
     cta: '50,000원 포인트 계산',
+    humanSitemapLabel: '한국어: 50,000원 포인트 계산',
     secondary: '기프트카드 가이드 보기',
     secondaryHref: '/ko/articles/google-play-points-gift-cards.html',
     summary: ['한국 기준: 50,000원', '브론즈 기본: 약 50포인트', '확인: 등급, 특별 적립률, 대상 금액'],
@@ -68,6 +70,7 @@ const AMOUNT_ENTRY_OVERRIDES = {
     h1: '消費 NT$1,500 可獲得多少 Google Play Points？',
     lead: '台灣銅級基本積點率為每 NT$30 1 點。先用 NT$1,500 作為簡單起點，再依目前等級與實際確認的活動特別獲點率調整。',
     cta: '計算 NT$1,500 點數',
+    humanSitemapLabel: '繁體中文: NT$1,500 點數估算',
     secondary: '查看禮物卡指南',
     secondaryHref: '/tw/articles/google-play-points-gift-cards.html',
     summary: ['台灣預設: NT$1,500', '銅級基本: 約 50 點', '確認: 等級、特別獲點率、適用金額'],
@@ -83,6 +86,12 @@ const AMOUNT_ENTRY_OVERRIDES = {
     ]
   }
 };
+
+function getIntlAmountHumanSitemapLabels() {
+  return Object.fromEntries(
+    Object.entries(AMOUNT_ENTRY_OVERRIDES).map(([localeKey, content]) => [localeKey, content.humanSitemapLabel])
+  );
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -636,6 +645,7 @@ function writeIntlSeoPages(rootDir, assetVersions) {
 }
 
 module.exports = {
+  getIntlAmountHumanSitemapLabels,
   getPublishedIntlArticles,
   getIntlSeoFiles,
   getIntlSitemapEntries,
