@@ -1,0 +1,196 @@
+name: Phase 1 Trust Sync
+
+on:
+  push:
+    branches:
+      - fix/phase1-trust-consistency-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Apply scoped trust consistency fixes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path, old, new, count=None):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              actual = text.count(old)
+              if count is not None and actual != count:
+                  raise SystemExit(f'{path}: expected {count} occurrences, found {actual}: {old[:80]!r}')
+              if actual == 0:
+                  raise SystemExit(f'{path}: target not found: {old[:80]!r}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          # Privacy: describe only currently shipped monetization programs.
+          replace_exact(
+              'privacy.html',
+              '当運営者は、第三者配信の広告サービスおよび各種アフィリエイトプログラムを利用しています。',
+              '当運営者は、第三者配信の広告サービスとしてGoogle AdSenseを利用し、アフィリエイトプログラムとして楽天アフィリエイトを利用しています。',
+              1,
+          )
+          replace_exact(
+              'privacy.html',
+              '<p><strong>アフィリエイトプログラム（楽天アフィリエイト等）</strong><br>\n    当サイトは、楽天アフィリエイトをはじめとするアフィリエイトプログラムに参加しており、適格販売により収入を得ています。当サイト内のリンクを経由して外部サービス（楽天市場・各携帯電話会社等）で商品・ギフトコードの購入やサービスの利用が行われた場合、成果測定のためにCookie等の技術が利用されることがあります。なお、これにより個人を特定できる情報が当運営者に提供されることはありません。</p>',
+              '<p><strong>楽天アフィリエイト</strong><br>\n    当サイトは楽天アフィリエイトに参加しています。当サイト内の楽天市場への一部リンクはアフィリエイトリンクであり、利用者がリンクを経由して商品を購入した場合、当運営者が紹介料を受け取ることがあります。利用者の購入価格に追加料金が加算されるものではありません。成果測定のため、楽天側でCookie等の技術が利用されることがあります。なお、氏名・メールアドレスなど、利用者を直接特定する情報が楽天アフィリエイトから当運営者へ提供されるものではありません。</p>',
+              1,
+          )
+          replace_exact('privacy.html', '2026-09-02', '2026-09-15')
+
+          # Terms: remove account-registration assumptions and make change/notice clauses fit a no-login site.
+          replace_exact(
+              'terms.html',
+              '本利用規約（以下「本規約」といいます。）は、Playポイント計算機（以下「当運営者」といいます。）が提供するウェブサイト「Playポイント計算機」（以下「当サイト」といいます。）の利用条件を定めるものです。',
+              '本利用規約（以下「本規約」といいます。）は、ウェブサイト「Playポイント計算機」の運営者（以下「当運営者」といいます。）が提供する「Playポイント計算機」（以下「当サイト」といいます。）の利用条件を定めるものです。',
+              1,
+          )
+          replace_exact(
+              'terms.html',
+              '<h2>第7条（規約の変更）</h2>\n    <p>当運営者は、ユーザーへの通知なしに本規約を変更できるものとします。変更後に利用を継続した場合、同意したものとみなします。</p>',
+              '<h2>第7条（規約の変更）</h2>\n    <p>当運営者は、法令に従い、必要に応じて本規約を変更することがあります。重要な変更を行う場合は、当サイト上への掲示その他の適切な方法で周知します。変更後の規約は、当サイト上に掲載した時点または別途定めた効力発生日から適用されます。</p>',
+              1,
+          )
+          replace_exact(
+              'terms.html',
+              '<h2>第8条（通知または連絡）</h2>\n    <p>当運営者からの通知・連絡は、当運営者が定める方法により行います。<br>\n    ユーザーが連絡先の変更を届け出ない限り、登録された情報への通知は有効とみなし、発信時点で到達したものとみなします。</p>',
+              '<h2>第8条（通知または連絡）</h2>\n    <p>ユーザーからのお問い合わせへの回答その他必要な連絡は、お問い合わせ時に提供された連絡先、当サイト上の掲示その他当運営者が適切と判断する方法で行います。</p>',
+              1,
+          )
+          replace_exact('terms.html', '2026-08-18', '2026-09-15')
+
+          # Human sitemap page itself receives an editorial update today.
+          replace_exact('sitemap.html', '2026-08-12', '2026-09-15')
+
+          # Keep content-date SSOT aligned with meaningful editorial changes only.
+          replace_exact("scripts/content-dates.cjs", "'privacy.html': '2026-09-02'", "'privacy.html': '2026-09-15'", 1)
+          replace_exact("scripts/content-dates.cjs", "'terms.html': '2026-08-18'", "'terms.html': '2026-09-15'", 1)
+          replace_exact("scripts/content-dates.cjs", "'sitemap.html': '2026-08-12'", "'sitemap.html': '2026-09-15'", 1)
+
+          # Regional amount labels share the same source as generated local-currency pages.
+          replace_exact(
+              'scripts/intl-seo-pages.cjs',
+              "    cta: 'Calculate points for $50',",
+              "    cta: 'Calculate points for $50',\n    humanSitemapLabel: 'English: $50 points estimate',",
+              1,
+          )
+          replace_exact(
+              'scripts/intl-seo-pages.cjs',
+              "    cta: '50,000원 포인트 계산',",
+              "    cta: '50,000원 포인트 계산',\n    humanSitemapLabel: '한국어: 50,000원 포인트 계산',",
+              1,
+          )
+          replace_exact(
+              'scripts/intl-seo-pages.cjs',
+              "    cta: '計算 NT$1,500 點數',",
+              "    cta: '計算 NT$1,500 點數',\n    humanSitemapLabel: '繁體中文: NT$1,500 點數估算',",
+              1,
+          )
+          replace_exact(
+              'scripts/intl-seo-pages.cjs',
+              "function escapeHtml(value) {",
+              "function getIntlAmountHumanSitemapLabels() {\n  return Object.fromEntries(\n    Object.entries(AMOUNT_ENTRY_OVERRIDES).map(([localeKey, content]) => [localeKey, content.humanSitemapLabel])\n  );\n}\n\nfunction escapeHtml(value) {",
+              1,
+          )
+          replace_exact(
+              'scripts/intl-seo-pages.cjs',
+              "module.exports = {\n  getPublishedIntlArticles,",
+              "module.exports = {\n  getIntlAmountHumanSitemapLabels,\n  getPublishedIntlArticles,",
+              1,
+          )
+
+          replace_exact(
+              'scripts/sitemap-sync.cjs',
+              "const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');",
+              "const { getIntlAmountHumanSitemapLabels, getIntlSitemapEntries } = require('./intl-seo-pages.cjs');",
+              1,
+          )
+          marker = "function syncHumanSitemapListedArticles(rootDir) {"
+          helper = '''function syncHumanSitemapRegionalAmountLabels(rootDir) {
+            const sitemapPath = path.join(rootDir, 'sitemap.html');
+            if (!fs.existsSync(sitemapPath)) return 0;
+
+            let html = fs.readFileSync(sitemapPath, 'utf8');
+            let changed = 0;
+            for (const [localeKey, label] of Object.entries(getIntlAmountHumanSitemapLabels())) {
+              const pattern = new RegExp(`(<a href="${escapeRegExp(localeKey)}/amount/10000/">)[^<]*(</a>)`);
+              const next = html.replace(pattern, `$1${escapeHtml(label)}$2`);
+              if (next !== html) {
+                changed += 1;
+                html = next;
+              }
+            }
+
+            if (changed > 0) fs.writeFileSync(sitemapPath, html, 'utf8');
+            return changed;
+          }
+
+          function syncHumanSitemapListedArticles(rootDir) {'''
+          replace_exact('scripts/sitemap-sync.cjs', marker, helper, 1)
+          replace_exact(
+              'scripts/sitemap-sync.cjs',
+              "  const humanSitemapCount = syncHumanSitemapListedArticles(rootDir);\n  console.log(`Updated sitemap.xml and blog/sitemap.xml with current article dates (${blogEntries.length} articles).`);\n  console.log(`[sitemap.html] synchronized listed article links: ${humanSitemapCount}`);",
+              "  const regionalAmountLabelCount = syncHumanSitemapRegionalAmountLabels(rootDir);\n  const humanSitemapCount = syncHumanSitemapListedArticles(rootDir);\n  console.log(`Updated sitemap.xml and blog/sitemap.xml with current article dates (${blogEntries.length} articles).`);\n  console.log(`[sitemap.html] synchronized regional amount labels: ${regionalAmountLabelCount}`);\n  console.log(`[sitemap.html] synchronized listed article links: ${humanSitemapCount}`);",
+              1,
+          )
+          replace_exact(
+              'scripts/sitemap-sync.cjs',
+              "  syncHumanSitemapListedArticles,\n  syncSitemap,",
+              "  syncHumanSitemapListedArticles,\n  syncHumanSitemapRegionalAmountLabels,\n  syncSitemap,",
+              1,
+          )
+          PY
+
+      - name: Regenerate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Run targeted regression tests
+        run: node --test tests/trust-pages-consistency.test.cjs tests/blog-index-sync.test.cjs tests/content-structure.test.cjs tests/intl-regional-accuracy.test.cjs
+
+      - name: Guard scope
+        shell: bash
+        run: |
+          git diff --check
+          python3 - <<'PY'
+          import subprocess
+          allowed = {
+              'privacy.html',
+              'terms.html',
+              'sitemap.html',
+              'sitemap.xml',
+              'scripts/content-dates.cjs',
+              'scripts/intl-seo-pages.cjs',
+              'scripts/sitemap-sync.cjs',
+              'tests/trust-pages-consistency.test.cjs',
+              '.github/workflows/phase1-trust-sync.yml',
+          }
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
+          unexpected = sorted(changed - allowed)
+          if unexpected:
+              raise SystemExit('Unexpected generated changes: ' + ', '.join(unexpected))
+          PY
+
+      - name: Commit Phase 1 changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add privacy.html terms.html sitemap.html sitemap.xml scripts/content-dates.cjs scripts/intl-seo-pages.cjs scripts/sitemap-sync.cjs tests/trust-pages-consistency.test.cjs
+          git commit -m 'fix: align trust pages with current operations'
+          git push
