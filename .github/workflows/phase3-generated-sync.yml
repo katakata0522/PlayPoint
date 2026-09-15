@@ -1,0 +1,67 @@
+name: Phase 3 generated sync
+
+on:
+  push:
+    branches:
+      - fix/phase3-mobile-intro-seo-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.event.head_commit.message != 'build: sync Phase 3 generated assets'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/phase3-mobile-intro-seo-20260915
+          fetch-depth: 2
+
+      - name: Make the Japanese initial HTML concise
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          old = '<p id="site-description" class="site-description" data-lang-key="siteDescription">Google Play ポイントのランクアップまでに、あといくら必要かを目安計算できます。<br>現在ステータス・目標ステータス・必要ポイントを入力すると、<br>必要な課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を確認できます。</p>'
+          new = '<p id="site-description" class="site-description" data-lang-key="siteDescription">目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。</p>'
+          if old not in text and new not in text:
+              raise SystemExit('expected Japanese first-view description was not found')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+
+      - name: Generate canonical public outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Enforce generated-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed='^(index\.html|en/index\.html|ko/index\.html|tw/index\.html|hk/index\.html|in/index\.html|sw\.js)$'
+          unexpected="$(git diff --name-only | grep -Ev "$allowed" || true)"
+          if [ -n "$unexpected" ]; then
+            echo 'prepare-pr changed files outside the Phase 3 generated-output scope:' >&2
+            printf '%s\n' "$unexpected" >&2
+            exit 1
+          fi
+
+      - name: Commit canonical generated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html en/index.html ko/index.html tw/index.html hk/index.html in/index.html sw.js
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo 'No generated drift remains.'
+            exit 0
+          fi
+          git commit -m 'build: sync Phase 3 generated assets'
+          git push origin HEAD:fix/phase3-mobile-intro-seo-20260915
