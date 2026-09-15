@@ -33,6 +33,7 @@ const SEARCH_QUALITY_HOLD_URLS = new Set([
 const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
 const GENERATED_LISTED_START = '<!-- generated-listed-articles:start -->';
 const GENERATED_LISTED_END = '<!-- generated-listed-articles:end -->';
+const HUMAN_SITEMAP_TASK_HUB_MARKER = 'data-human-sitemap-mode="task-hub"';
 
 function escapeRegExp(value) {
   return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -221,6 +222,12 @@ function syncHumanSitemapListedArticles(rootDir) {
   if (!fs.existsSync(sitemapPath)) return 0;
 
   const original = fs.readFileSync(sitemapPath, 'utf8');
+  if (original.includes(HUMAN_SITEMAP_TASK_HUB_MARKER)) {
+    const next = stripGeneratedListedArticles(original).replace(/\n{3,}/g, '\n\n');
+    if (next !== original) fs.writeFileSync(sitemapPath, next, 'utf8');
+    return 0;
+  }
+
   const listed = listedJapaneseSitemapEntries(rootDir);
   const outsideGenerated = stripGeneratedListedArticles(original);
   const existing = new Set(
@@ -319,6 +326,7 @@ module.exports = {
   NON_PLAYPOINT_URLS,
   RETIRED_CONTENT_URLS,
   SEARCH_QUALITY_HOLD_URLS,
+  HUMAN_SITEMAP_TASK_HUB_MARKER,
   escapeRegExp,
   getBlogSitemapEntries,
   getGameSitemapEntries,
