@@ -195,12 +195,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </head>
 <body>
 
-<div id="language-suggestion-banner" class="language-suggestion-banner hidden">
-    <span>English version is available!</span>
-    <button id="switch-to-en-btn">Switch to English</button>
-    <button id="close-lang-banner-btn" aria-label="Close">×</button>
-</div>
-
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play country or region">
@@ -223,7 +217,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div class="tab-switch" role="tablist">
         <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">Standard</button>
         <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">Reverse</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">Weekly Awards Diary</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">Weekly Rewards Diary</button>
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
@@ -394,7 +388,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <ul>
             <li>Estimate the required spending to reach Platinum or Diamond status.</li>
             <li>Compare base earn rates with special earn rates shown in Google Play for reverse calculations.</li>
-            <li>Manage your weekly earned points manually in the Weekly Reward Diary.</li>
+            <li>Manage your weekly earned points manually in the Weekly Rewards Diary.</li>
         </ul>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
@@ -457,6 +451,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
+<script type="module" src="../js/intl-copy-overrides.js?v=d0721f30f4"></script>
 <script type="module" src="../js/main.js?v=a4d4c40668"></script>
 <script src="../js/third-party.js?v=742c5cb45a" defer></script>
 

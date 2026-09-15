@@ -93,7 +93,7 @@ function escapeHtml(value) {
 }
 
 function jsonLd(data) {
-  return JSON.stringify(data, null, 2).replace(/</g, '\\u003c');
+  return JSON.stringify(data, null, 2).replace(/</g, '\u003c');
 }
 
 function renderParagraphs(body) {
