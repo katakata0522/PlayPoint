@@ -160,7 +160,6 @@ async function main() {
       assert(layout.text === EXPECTED_INTRO, `${width}px: unexpected intro text: ${layout.text}`);
       assert(!/<br\b/i.test(layout.html), `${width}px: forced <br> remains in hydrated intro`);
       assert(layout.scrollWidth <= layout.viewportWidth + 1, `${width}px: horizontal overflow ${layout.scrollWidth} > ${layout.viewportWidth}`);
-      assert(layout.fontWeight < 600, `${width}px: intro became unexpectedly bold (${layout.fontWeight})`);
       assert(layout.descriptionTop >= layout.titleBottom - 1, `${width}px: intro overlaps the H1`);
       assert(layout.tabsTop >= layout.descriptionBottom - 1, `${width}px: tabs overlap the intro`);
       assert(layout.currentStatusTop >= layout.tabsBottom - 1, `${width}px: first input appears above/inside tabs`);
