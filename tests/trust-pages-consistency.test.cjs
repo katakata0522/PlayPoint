@@ -1,5 +1,6 @@
 'use strict';
 
+// Phase 1 regression guard: trust pages must stay aligned with shipped behavior.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
