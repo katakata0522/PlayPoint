@@ -39,10 +39,6 @@ jobs:
           set -euo pipefail
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
-      - name: Materialize generated drift evidence after a failed preflight
-        if: failure()
-        run: node scripts/prepare-pr.cjs
-
       - name: Install required browser driver
         run: bash .github/scripts/setup-browser-runtime.sh
 
@@ -93,12 +89,5 @@ jobs:
             ${{ runner.temp }}/playpoint-preflight.log
             ${{ runner.temp }}/playpoint-refactor-evidence/
             browser-smoke-artifacts/
-            index.html
-            en/index.html
-            ko/index.html
-            tw/index.html
-            hk/index.html
-            in/index.html
-            sw.js
           if-no-files-found: warn
           retention-days: 7
