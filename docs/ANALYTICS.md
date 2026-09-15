@@ -42,12 +42,14 @@
 
 ## Conversion
 
-`calculation_completed`と`reverse_calculation_completed`を主要イベント候補とする。GA4管理画面ではセッション単位で確認し、繰り返し計算による水増しと区別する。
+`calculation_completed` を主要Key eventとする。2026-09-15のread-only GA4 Admin API監査で登録済みを確認した。`reverse_calculation_completed` は逆算利用も主要成果として追う場合だけ追加する任意Key eventで、同日時点では未登録。
+
+GA4管理画面ではセッション/ユーザー単位も併記し、繰り返し計算による水増しと区別する。
 
 ### GA4管理画面での設定
 
 1. 「管理」→「データの表示」→「イベント」を開く。
-2. `calculation_completed` をキーイベントとしてマークする。
+2. `calculation_completed` がキーイベントとしてマークされていることを確認する。
 3. 逆算利用も主要成果として追う場合のみ `reverse_calculation_completed` もキーイベントにする。
 4. 公開後7日間は「レポート」→「エンゲージメント」→「イベント」で、計算完了数とユーザー数を併記する。
 5. 同じ利用者の再計算があるため、イベント数だけを訪問者数として扱わない。
@@ -77,16 +79,25 @@
 
 ## Measurement Readiness
 
-実装と自動テスト上は計測可能。GA4管理画面で主要イベント指定とDebugView実測を行うまでは「運用前確認中」とする。サイト内導線は外部集客用UTMから分離済みで、GA4のセッション参照元を上書きしない。
+実装と自動テスト上は計測可能。2026-09-15時点で `calculation_completed` のKey event登録と `entry_source_path` / `entry_link_context` / `calculator_preset` のCustom Dimension登録はread-only Admin APIで確認済み。一方、DebugView実測と `app_display_mode` Custom Dimension登録は未完了なので、そこだけは「運用前確認中」のままとする。サイト内導線は外部集客用UTMから分離済みで、GA4のセッション参照元を上書きしない。
 
-### 2026-08-11 本番点検
+### 2026-08-11 本番点検（当時の状態）
 
 - 本番トップで測定ID `G-HED6D0FR4L` の `gtag.js` と同意管理スクリプトの読み込みを確認した。
 - 実装・回帰テストでは、通常計算の成功時に `calculation_completed` を1回呼び、許可済みの分類値だけを送ることを確認した。
-- GA4プロパティ側のキーイベント指定とDebugViewでの受信確認は、管理画面で確認できるまで未完了とする。
+- 当時はGA4プロパティ側のキーイベント指定とDebugViewでの受信確認が未確認だった。
+
+### 2026-09-15 本番点検
+
+- `calculation_completed` Key event: **確認済み**。
+- `reverse_calculation_completed` Key event: 任意・未登録。
+- `entry_source_path` / `entry_link_context` / `calculator_preset`: Custom Dimension登録を確認済み。
+- 2026-09-01〜2026-09-07のData API集計は `calculator_form_started=36`、`calculation_completed=70`、`reverse_calculation_completed=7`、`calculator_funnel_completed=28`。
+- `app_display_mode` は公開コードから送信しているが、2026-09-10監査時点ではGA4 Custom Dimensionとして未登録。したがってstandalone利用者は0ではなく取得不可。
+- DebugViewでの実ブラウザ受信、raw値非送信、同意前/拒否後の挙動は未完了。コード側の回帰テストを実測の代替にしない。
+- 変更前Baselineは `scripts/measurement-baseline.cjs` の `phase2-pre-change-2026-09-15` と `docs/MEASUREMENT_AUDIT_2026-09-15.md` を正本とする。
 
 担当: PlayPoint運営者。イベント追加時は本書と回帰テストを同時に更新する。
-
 
 ## PWA / ブラウザ起動形態
 
