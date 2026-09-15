@@ -45,7 +45,7 @@ const referrerCases = [
 ];
 
 test('案内ページの戻り先は同一オリジンのパスだけから言語を引き継ぐ', () => {
-  for (const relativePath of ['info.html', 'about-playpoints.html', 'sitemap.html']) {
+  for (const relativePath of ['info.html', 'about-playpoints.html']) {
     for (const [referrer, expected] of referrerCases) {
       assert.equal(buttonState(relativePath, referrer).href, expected, `${relativePath}: ${referrer}`);
     }

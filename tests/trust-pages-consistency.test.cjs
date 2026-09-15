@@ -33,13 +33,13 @@ test('terms page does not assume user registration or stored account contact det
   assert.ok(html.includes('お問い合わせ時に提供された連絡先'));
 });
 
-test('human sitemap amount shortcuts use the same local-currency labels as generated regional pages', () => {
+test('human sitemap exposes regional calculator hubs instead of duplicating every amount shortcut', () => {
   const html = read('sitemap.html');
   const labels = getIntlAmountHumanSitemapLabels();
   for (const [locale, label] of Object.entries(labels)) {
     assert.ok(
-      html.includes(`<a href="${locale}/amount/10000/">${label}</a>`),
-      `${locale} amount shortcut must use ${label}`
+      html.includes(`<a href="${locale}/">`),
+      `${locale} calculator hub must remain discoverable; generated amount label remains ${label}`
     );
   }
   assert.ok(!html.includes('English: 10,000 yen points estimate'));

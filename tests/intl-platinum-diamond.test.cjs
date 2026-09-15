@@ -123,7 +123,10 @@ test('専用サイトマップと記事一覧から4言語ページを発見で�
     for (const [alternateLang, alternateUrl] of Object.entries(urls)) {
       assert.ok(sitemap.includes(`hreflang="${alternateLang}" href="${alternateUrl}"`));
     }
-    if (lang !== 'ja') assert.ok(human.includes(url.replace('https://playpoint-sim.com/', '')));
+    if (lang !== 'ja') {
+      const localePath = lang === 'zh-TW' ? 'tw/' : `${lang}/`;
+      assert.ok(human.includes(`href="${localePath}"`), `human sitemap locale hub: ${localePath}`);
+    }
   }
 
   assert.ok(read('en/articles/index.html').includes('/en/articles/google-play-points-platinum-diamond-cost.html'));
