@@ -1,0 +1,66 @@
+name: Site Shell vNext Normalize
+
+on:
+  push:
+    branches:
+      - feat/site-shell-vnext-canary-20260915
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Classify Site Shell stylesheet as public
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/scripts/public-paths.cjs')
+          text = path.read_text(encoding='utf-8')
+          entry = "  'site-shell-vnext.css',\n"
+          if entry not in text:
+              marker = "  'style.css',\n"
+              if marker not in text:
+                  raise SystemExit('public root marker not found')
+              text = text.replace(marker, marker + entry, 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Canonical regeneration
+        run: node scripts/prepare-pr.cjs
+
+      - name: Verify normalized diff scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          allowed='^(\.github/scripts/public-paths\.cjs|author/katakata\.html|privacy\.html|terms\.html|sitemap\.html|info\.html|blog/index\.html)$'
+          unexpected="$(git diff --name-only | grep -Ev "$allowed" || true)"
+          if [[ -n "$unexpected" ]]; then
+            echo 'Unexpected generated files:'
+            echo "$unexpected"
+            exit 1
+          fi
+          git diff -- .github/scripts/public-paths.cjs author/katakata.html privacy.html terms.html sitemap.html info.html blog/index.html
+
+      - name: Commit normalized files
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No normalization changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/scripts/public-paths.cjs author/katakata.html privacy.html terms.html sitemap.html info.html blog/index.html
+          git commit -m 'Site Shell vNextの公開資産と生成版を正規化'
+          git push origin HEAD:feat/site-shell-vnext-canary-20260915
