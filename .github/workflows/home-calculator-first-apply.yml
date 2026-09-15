@@ -23,6 +23,9 @@ jobs:
       - name: Apply source transform
         run: node .github/scripts/apply-home-calculator-first.cjs
 
+      - name: Apply phone compact pass
+        run: node .github/scripts/compact-home-calculator-first.cjs
+
       - name: Canonical regeneration
         run: node scripts/prepare-pr.cjs
 
@@ -45,6 +48,7 @@ jobs:
           set -euo pipefail
           rm .github/workflows/home-calculator-first-apply.yml
           rm .github/scripts/apply-home-calculator-first.cjs
+          rm .github/scripts/compact-home-calculator-first.cjs
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
