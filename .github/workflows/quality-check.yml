@@ -90,7 +90,11 @@ jobs:
             ${{ runner.temp }}/playpoint-refactor-evidence/
             browser-smoke-artifacts/
             index.html
-            style.css
+            en/index.html
+            ko/index.html
+            tw/index.html
+            hk/index.html
+            in/index.html
             sw.js
           if-no-files-found: warn
           retention-days: 7
