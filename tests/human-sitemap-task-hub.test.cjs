@@ -12,6 +12,8 @@ const {
 
 const rootDir = path.join(__dirname, '..');
 
+// Human navigation stays task-first; exhaustive URL discovery remains owned by
+// locale/article hubs and the submitted XML sitemaps.
 function read(relativePath) {
   return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
 }
