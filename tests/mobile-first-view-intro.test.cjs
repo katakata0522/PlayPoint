@@ -8,6 +8,7 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
+const EXPECTED_JP_INTRO = '目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。';
 
 function loadCopyUpdater(document) {
   const source = read('js/main-calculator-ui.js')
@@ -34,16 +35,22 @@ function createDocument(initialDescription = '') {
   };
 }
 
-test('日本語トップの初回説明は固定改行なしの1文へ短縮する', () => {
+test('日本語トップの初期HTMLから固定改行なしの短い説明を返す', () => {
+  const html = read('index.html');
+  const intro = html.match(/<p id="site-description"[^>]*>([\s\S]*?)<\/p>/);
+
+  assert.ok(intro, 'site description is missing');
+  assert.equal(intro[1], EXPECTED_JP_INTRO);
+  assert.doesNotMatch(intro[1], /<br\b/i);
+});
+
+test('日本語トップの初回説明はhydration後も固定改行なしの1文を保つ', () => {
   const fixture = createDocument('長い説明');
   const update = loadCopyUpdater(fixture.document);
 
   update('JP');
 
-  assert.equal(
-    fixture.description.textContent,
-    '目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。'
-  );
+  assert.equal(fixture.description.textContent, EXPECTED_JP_INTRO);
   assert.doesNotMatch(fixture.description.textContent, /<br\s*\/?\s*>/i);
   assert.equal(fixture.description.textContent.split(/\r?\n/).length, 1);
 });
