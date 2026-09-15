@@ -9,6 +9,10 @@ const {
   getLpFooterProfile,
   renderPageFooter
 } = require('../scripts/site-shell.cjs');
+const {
+  normalizeLpFooter,
+  stripLegacyFamilyFooters
+} = require('../scripts/insert-lp-footers.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -18,6 +22,19 @@ const expectedPrimaryLinks = Object.freeze({
   ko: ['/ko/', '/ko/games/', '/ko/articles/', '/author/katakata.html', '/privacy.html', '/terms.html'],
   tw: ['/tw/', '/tw/games/', '/tw/articles/', '/author/katakata.html', '/privacy.html', '/terms.html']
 });
+
+const canonicalFooterPages = Object.freeze([
+  'points-cost/index.html',
+  'en/points-cost/index.html',
+  'ko/points-cost/index.html',
+  'tw/points-cost/index.html',
+  'en/maintenance/platinum/index.html',
+  'en/maintenance/diamond/index.html',
+  'ko/maintenance/platinum/index.html',
+  'ko/maintenance/diamond/index.html',
+  'tw/maintenance/platinum/index.html',
+  'tw/maintenance/diamond/index.html'
+]);
 
 test('Stage 12A footer profiles are immutable and keep the current six-link structure', () => {
   assert.ok(Object.isFrozen(LP_FOOTER_PROFILES));
@@ -54,6 +71,32 @@ test('LP footer updater delegates markup ownership to the shared Site Shell rend
   assert.doesNotMatch(source, /footer-nav-links/);
   assert.doesNotMatch(source, /site-footer-trademark/);
   assert.doesNotMatch(source, /<p class="copyright">/);
+});
+
+test('legacy family footers are removed before the canonical Site Shell footer is synchronized', () => {
+  const legacy = [
+    '<main><p>body</p></main>',
+    '<footer class="page-footer"><p>old canonical</p></footer>',
+    '<footer class="points-cost-footer"><p>legacy points cost</p></footer>',
+    '<footer class="maintenance-footer"><p>legacy maintenance</p></footer>'
+  ].join('\n');
+
+  const stripped = stripLegacyFamilyFooters(legacy);
+  assert.doesNotMatch(stripped, /points-cost-footer|maintenance-footer/);
+
+  const normalized = normalizeLpFooter(legacy, 'en');
+  assert.equal((normalized.match(/<footer\b/g) || []).length, 1);
+  assert.equal((normalized.match(/class="page-footer"/g) || []).length, 1);
+  assert.doesNotMatch(normalized, /points-cost-footer|maintenance-footer/);
+});
+
+test('points-cost and international maintenance pages expose exactly one canonical footer', () => {
+  for (const relativePath of canonicalFooterPages) {
+    const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
+    assert.equal((html.match(/<footer\b/g) || []).length, 1, `${relativePath}: footer must appear exactly once`);
+    assert.equal((html.match(/class="page-footer"/g) || []).length, 1, `${relativePath}: canonical page-footer must appear exactly once`);
+    assert.doesNotMatch(html, /class="(?:points-cost-footer|maintenance-footer)"/, `${relativePath}: legacy footer must not remain`);
+  }
 });
 
 test('unknown LP locale falls back to the Japanese footer instead of producing an empty shell', () => {
