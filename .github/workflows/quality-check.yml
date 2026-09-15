@@ -89,5 +89,8 @@ jobs:
             ${{ runner.temp }}/playpoint-preflight.log
             ${{ runner.temp }}/playpoint-refactor-evidence/
             browser-smoke-artifacts/
+            index.html
+            style.css
+            sw.js
           if-no-files-found: warn
           retention-days: 7
