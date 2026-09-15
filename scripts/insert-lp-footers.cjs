@@ -4,6 +4,7 @@ const { getLpFooterProfile, renderPageFooter } = require('./site-shell.cjs');
 
 const root = path.resolve(__dirname, '..');
 const LEGACY_FOOTER_CLASS_PATTERN = /<footer class="(?:points-cost-footer|maintenance-footer)">[\s\S]*?<\/footer>\s*/g;
+const LEGACY_FOOTER_CLASS_TEST = /<footer class="(?:points-cost-footer|maintenance-footer)">/;
 
 function getLocale(file) {
   if (file.startsWith('en/')) return 'en';
@@ -21,12 +22,14 @@ function stripLegacyFamilyFooters(content) {
 }
 
 function normalizeLpFooter(content, locKey) {
-  const withoutLegacy = stripLegacyFamilyFooters(content);
-  const footerHtml = buildFooterHtml(locKey);
+  if (!LEGACY_FOOTER_CLASS_TEST.test(content)) return content;
 
+  const withoutLegacy = stripLegacyFamilyFooters(content);
   if (withoutLegacy.includes('<footer class="page-footer">')) {
-    return withoutLegacy.replace(/<footer class="page-footer">[\s\S]*?<\/footer>/, footerHtml.trim());
+    return withoutLegacy;
   }
+
+  const footerHtml = buildFooterHtml(locKey);
   if (withoutLegacy.includes('</main>')) {
     return withoutLegacy.replace('</main>', `</main>\n${footerHtml}`);
   }
@@ -50,7 +53,7 @@ function processDirectory(dir) {
 
         if (normalized !== content) {
           fs.writeFileSync(fullPath, normalized, 'utf8');
-          console.log(`Updated footer in LP: ${rel}`);
+          console.log(`Removed legacy duplicate footer in LP: ${rel}`);
         }
       }
     }
@@ -63,6 +66,7 @@ if (require.main === module) {
 
 module.exports = {
   LEGACY_FOOTER_CLASS_PATTERN,
+  LEGACY_FOOTER_CLASS_TEST,
   buildFooterHtml,
   getLocale,
   normalizeLpFooter,
