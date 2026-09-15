@@ -29,6 +29,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 scripts/phase1-trust-apply.py
+          python3 scripts/phase1-trust-dollar-fix.py
           node scripts/prepare-pr.cjs
 
           allowed_re='^(privacy\.html|terms\.html|sitemap\.html|sitemap\.xml|scripts/content-dates\.cjs|scripts/intl-seo-pages\.cjs|scripts/sitemap-sync\.cjs|tests/trust-pages-consistency\.test\.cjs)$'
