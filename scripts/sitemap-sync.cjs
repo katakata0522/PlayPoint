@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { getGamePageHtmlFiles } = require('./game-page-targets.cjs');
 const { GAME_GUIDE_ARTICLES, isSupportedJapaneseArticleManifestFile } = require('./game-guide-article-catalog.cjs');
-const { getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
+const { getIntlAmountHumanSitemapLabels, getIntlSitemapEntries } = require('./intl-seo-pages.cjs');
 const { ALL_GUIDES, MODIFIED_AT: INTL_GAME_GUIDE_MODIFIED_AT, hrefFor: intlGameGuideHrefFor } = require('./intl-game-guide-expansion.cjs');
 const { createLocales } = require('./locale-config.cjs');
 const { CONTENT_DATE_OVERRIDES, TOP_PAGE_CONTENT_DATES } = require('./content-dates.cjs');
@@ -197,6 +197,25 @@ function upsertGeneratedListedArticles(html, block) {
   return `${prefix}${block}\n\n    ${next.slice(sectionStart)}`;
 }
 
+function syncHumanSitemapRegionalAmountLabels(rootDir) {
+  const sitemapPath = path.join(rootDir, 'sitemap.html');
+  if (!fs.existsSync(sitemapPath)) return 0;
+
+  let html = fs.readFileSync(sitemapPath, 'utf8');
+  let changed = 0;
+  for (const [localeKey, label] of Object.entries(getIntlAmountHumanSitemapLabels())) {
+    const pattern = new RegExp(`(<a href="${escapeRegExp(localeKey)}/amount/10000/">)[^<]*(</a>)`);
+    const next = html.replace(pattern, (_match, prefix, suffix) => `${prefix}${escapeHtml(label)}${suffix}`);
+    if (next !== html) {
+      changed += 1;
+      html = next;
+    }
+  }
+
+  if (changed > 0) fs.writeFileSync(sitemapPath, html, 'utf8');
+  return changed;
+}
+
 function syncHumanSitemapListedArticles(rootDir) {
   const sitemapPath = path.join(rootDir, 'sitemap.html');
   if (!fs.existsSync(sitemapPath)) return 0;
@@ -286,8 +305,10 @@ function syncSitemap(rootDir) {
 
   fs.writeFileSync(sitemapPath, content, 'utf8');
   fs.writeFileSync(path.join(rootDir, 'blog', 'sitemap.xml'), renderBlogSitemap(blogEntries), 'utf8');
+  const regionalAmountLabelCount = syncHumanSitemapRegionalAmountLabels(rootDir);
   const humanSitemapCount = syncHumanSitemapListedArticles(rootDir);
   console.log(`Updated sitemap.xml and blog/sitemap.xml with current article dates (${blogEntries.length} articles).`);
+  console.log(`[sitemap.html] synchronized regional amount labels: ${regionalAmountLabelCount}`);
   console.log(`[sitemap.html] synchronized listed article links: ${humanSitemapCount}`);
   return true;
 }
@@ -310,6 +331,7 @@ module.exports = {
   removeSitemapEntries,
   renderBlogSitemap,
   syncHumanSitemapListedArticles,
+  syncHumanSitemapRegionalAmountLabels,
   syncSitemap,
   syncSitemapContent,
   syncSitemapEntries,
