@@ -17,11 +17,22 @@ const expandedRegionFiles = new Map([
   ['hk/index.html', /香港 Play Points 官方條件/],
   ['in/index.html', /India Play Points official conditions/]
 ]);
+const regionSelectorAriaLabels = new Map([
+  ['index.html', 'Play の国または地域'],
+  ['en/index.html', 'Play country or region'],
+  ['ko/index.html', 'Play 국가 또는 지역'],
+  ['tw/index.html', 'Play 國家或地區'],
+  ['hk/index.html', 'Play 國家或地區'],
+  ['in/index.html', 'Play country or region']
+]);
 
 for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
   test(`${file} presents Play country/region rather than language-only labels`, () => {
     const html = fs.readFileSync(path.join(root, file), 'utf8');
-    assert.match(html, /<div class="region-switch" aria-label="Play country or region">/);
+    assert.ok(
+      html.includes(`<div class="region-switch" aria-label="${regionSelectorAriaLabels.get(file)}">`),
+      `${file}: region selector aria-label must match the page locale`
+    );
     for (const [region, label] of primaryRegions) {
       const escaped = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       assert.match(html, new RegExp(`<button data-region="${region}"(?: class="active")?>${escaped}<\\/button>`));
