@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   sync:
-    if: github.event.head_commit.message != 'build: sync Phase 3 generated assets'
+    if: github.event.head_commit.message != 'phase3-generated-sync'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -63,5 +63,5 @@ jobs:
             echo 'No generated drift remains.'
             exit 0
           fi
-          git commit -m 'build: sync Phase 3 generated assets'
+          git commit -m 'phase3-generated-sync'
           git push origin HEAD:fix/phase3-mobile-intro-seo-20260915
