@@ -10,7 +10,7 @@ const ADVANCED_SETTINGS_BODY_ID = 'calculator-advanced-settings-body';
 const ADVANCED_SETTINGS_STYLE_ID = 'playpoint-first-view-critical';
 const ADVANCED_SETTINGS_STATE_SCRIPT_ID = 'playpoint-first-view-state';
 
-const ADVANCED_SETTINGS_COPY = '詳細な条件を設定する';
+const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意）';
 
 const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
@@ -222,30 +222,6 @@ function convertLegacyCalculatorLayout(content) {
   return `${content.slice(0, refreshedNeededPointsRange.end)}\n\n${insertedFields}${content.slice(refreshedNeededPointsRange.end)}`;
 }
 
-function moveAdvancedSettingsAfterCalculate(content) {
-  const advancedPattern = new RegExp(`<div\\b[^>]*\\bid=["\']${ADVANCED_SETTINGS_ID}["\'][^>]*>`, 'i');
-  const advancedMatch = advancedPattern.exec(content);
-  const calculatePattern = /<button\b[^>]*\bid=["\']calculateButton["\'][^>]*>/i;
-  const calculateMatch = calculatePattern.exec(content);
-  if (!advancedMatch || !calculateMatch) return content;
-
-  const advancedRange = findBalancedElementRange(content, advancedMatch.index, 'div');
-  const calculateRange = findBalancedElementRange(content, calculateMatch.index, 'button');
-  if (!advancedRange || !calculateRange) throw new Error('詳細設定または計算ボタンの範囲を取得できません。');
-  if (advancedRange.start > calculateRange.end) return content;
-
-  const advancedBlock = content.slice(advancedRange.start, advancedRange.end);
-  let output = content.slice(0, advancedRange.start) + content.slice(advancedRange.end);
-  output = output.replace(/[ \t]+(?=\r?$)/gm, '');
-  const refreshedCalculateMatch = calculatePattern.exec(output);
-  if (!refreshedCalculateMatch) throw new Error('詳細設定移動後に計算ボタンを再取得できません。');
-  const refreshedCalculateRange = findBalancedElementRange(output, refreshedCalculateMatch.index, 'button');
-  if (!refreshedCalculateRange) throw new Error('計算ボタンの範囲を再取得できません。');
-  return output.slice(0, refreshedCalculateRange.end)
-    + '\n            ' + advancedBlock.trim()
-    + output.slice(refreshedCalculateRange.end);
-}
-
 function validateStaticLayout(content) {
   const requiredTokens = [
     'data-visible-base-rate-layout="true"',
@@ -273,10 +249,10 @@ function validateStaticLayout(content) {
     'id="currentStatus"',
     'id="targetStatus"',
     'id="neededPoints"',
-    'id="calculateButton"',
     `id="${ADVANCED_SETTINGS_ID}"`,
     'id="baseRate"',
-    'id="multiplier"'
+    'id="multiplier"',
+    'id="calculateButton"'
   ].map(token => content.indexOf(token));
   if (positions.some(position => position < 0)
       || positions.some((position, index) => index > 0 && position <= positions[index - 1])) {
@@ -291,7 +267,6 @@ function ensureStaticCalculatorLayout(indexHtml) {
   }
   content = decorateStaticLabels(content);
   content = ensureStaticAdvancedSettings(content);
-  content = moveAdvancedSettingsAfterCalculate(content);
   content = content.replace(/[ \t]+(?=\r?$)/gm, '');
   validateStaticLayout(content);
   return content;

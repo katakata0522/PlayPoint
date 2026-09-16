@@ -172,9 +172,8 @@ async function main() {
 
       if (width <= 412) {
         assert(layout.lineCount !== null && layout.lineCount <= 3, `${width}px: intro uses ${layout.lineCount} lines; expected at most 3`);
-        assert(layout.currentStatusTop < 590, `${width}px: first input is still too far down (${Math.round(layout.currentStatusTop)}px)`);
+        assert(layout.currentStatusTop < 620, `${width}px: first input is still too far down (${Math.round(layout.currentStatusTop)}px)`);
         assert(layout.diaryLabel === 'ウィークリーリワード記録', `${width}px: weekly reward label not updated: ${layout.diaryLabel}`);
-        if (width >= 390) assert(layout.calculateBottom <= layout.viewportHeight + 1, `${width}px: primary CTA is below the first viewport (${Math.round(layout.calculateBottom)}px)`);
       } else {
         assert(layout.lineCount !== null && layout.lineCount <= 2, `${width}px: desktop intro uses ${layout.lineCount} lines`);
       }

@@ -44,7 +44,7 @@
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=5f12583b18">
+    <link rel="stylesheet" href="../style.css?v=62a03541b1">
     <link rel="stylesheet" href="../visitor-thanks.css?v=82a36e2418">
     <script type="speculationrules">
     {
@@ -196,7 +196,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </head>
 <body>
 
-<main class="calculator-wrapper home-calculator-first">
+<main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play 국가 또는 지역">
             <button data-region="JP">🇯🇵 日本</button>
@@ -230,7 +230,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">등급 입력</h2>
-            <a class="home-help-link" href="#calculator-help" data-lang-key="homeHelpLink">사용 방법 보기 ↓</a>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">현재 등급</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="설명 보기" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
@@ -251,14 +250,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="예: 120" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
-
-
-        </div>
-
-        <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">결제 금액 계산</button>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
-    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">상세 조건 설정</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
+    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">적립률·프로모션 조정 (선택)</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">₩1,000당 적립률 (자동 입력·수정 가능)</span>
@@ -279,6 +272,10 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <div class="warning" data-lang-key="warningRate">Google Play에 표시된 특별 적립률과 기본 적립률 중 높은 값을 사용합니다. 현재 등급의 기본 적립률에 프로모션 숫자를 곱하지 않습니다. 대상, 상한, 활성화 조건은 Google Play에서 확인하세요.</div>
     </div>
 </div>
+        </div>
+
+        <div class="section">
+            <button id="calculateButton" data-lang-key="calculateButton">결제 금액 계산</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" hidden aria-label="계산 결과 공유" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">복사하기</button>
@@ -389,9 +386,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
     </div>
 
-
         <!-- DESCRIPTION_SECTION_START -->
-    <section class="section" id="calculator-help">
+    <section class="section">
         <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
         <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 적용했을 때 예상치가 어떻게 달라지는지</strong>를 한눈에 확인할 수 있습니다.</p>
         <p>특히 '플래티넘까지 조금 남았을 때', '다이아몬드 달성 가능 여부를 알고 싶을 때', '포인트 증량 이벤트를 기다려야 할지 고민될 때' 감이 아닌 숫자로 쉽게 판단할 수 있도록 도와줍니다.</p>
@@ -407,6 +403,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <p class="calculation-method-note"><strong>계산 및 검증:</strong> 입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다. 필요한 포인트와 선택된 적립 조건으로 금액을 추정하며, 패키지 금액을 입력한 경우 구매 단위로 올림합니다. 출처, 업데이트 및 정정 기준은 <a href="../author/katakata.html" rel="author">운영자 및 검증 방침</a>에서 확인할 수 있습니다.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
+
 
         <!-- FAQ_SECTION_START -->
     <section class="section">
