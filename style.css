@@ -2497,7 +2497,8 @@ html[lang^="zh"] .home-calculator-first #tab-main::after{content:"還差多少�
 .home-calculator-first #mainMode label[for="neededPoints"]{grid-column:1/-1;grid-row:4;margin-top:.28rem}.home-calculator-first #neededPoints{grid-column:1/-1;grid-row:5}
 .home-calculator-first #mainMode>.section:first-child label{margin-top:0;font-size:.88rem;font-weight:750}.home-calculator-first #mainMode>.section:first-child select,.home-calculator-first #mainMode>.section:first-child input[type="number"]{min-height:52px;margin:.18rem 0 .25rem;padding:.68rem .72rem;border-radius:10px}
 .home-calculator-first #mainMode>.section:nth-child(2){margin:0 0 .85rem;padding:.18rem 1rem 1rem;border-radius:0 0 18px 18px;box-shadow:0 10px 24px rgba(36,71,120,.09)}
-.home-calculator-first #calculateButton{width:100%;min-height:58px;margin:.25rem 0 0;border:0;border-radius:12px;background:#0b6edc;color:#fff;box-shadow:0 5px 14px rgba(11,110,220,.22);font-size:1.08rem;font-weight:850}
+.home-calculator-first #calculateButton{width:100%;min-height:58px;margin:.25rem 0 0;border:0;border-radius:12px;background:var(--button-bg-color);color:#fff;box-shadow:0 5px 14px rgba(31,122,53,.22);font-size:1.08rem;font-weight:850}
+.home-calculator-first #calculateButton:hover:not(:disabled){background:var(--button-hover-bg-color)}
 .home-calculator-first #calculateButton::before{content:"🧮";margin-right:.48rem}
 .home-calculator-first .calculator-advanced-settings{margin-top:.62rem!important}
 .home-calculator-first .calculator-advanced-settings__toggle{justify-content:center!important;min-height:48px!important;padding:.58rem .75rem!important;border:1px solid #bfd8f6!important;border-radius:12px!important;background:#edf6ff!important;color:#164e87!important;font-weight:800!important}
