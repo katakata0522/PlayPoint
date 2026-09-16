@@ -126,6 +126,8 @@ function collectAssetVersions(rootDir) {
   const mainVersion = createFileRevision(rootDir, 'js/main.js');
   const thirdPartyVersion = createFileRevision(rootDir, 'js/third-party.js');
   const intentTrackingVersion = createFileRevision(rootDir, 'js/intent-tracking.js');
+  const weeklyRewardUiVersion = createFileRevision(rootDir, 'js/weekly-reward-ui.js');
+  const weeklyRewardUiCssVersion = createFileRevision(rootDir, 'weekly-reward-ui.css');
   const blogCssVersion = createFileRevision(rootDir, 'blog/style.css');
   const blogScriptVersion = createFileRevision(rootDir, 'blog/script.js');
   const blogComponentsVersion = createFileRevision(rootDir, 'blog/components.js');
@@ -147,6 +149,8 @@ function collectAssetVersions(rootDir) {
     mainCalculatorUiVersion,
     mainVersion,
     thirdPartyVersion,
+    weeklyRewardUiCssVersion,
+    weeklyRewardUiVersion,
     appModuleRevision: createAppModuleRevision(rootDir)
   };
 }
@@ -195,7 +199,11 @@ function syncSharedRuntimeAssetVersions(rootDir, versions) {
   const targets = [
     { file: 'js/third-party.js', replacements: [
       ['js/consent.js', versions.consentVersion],
-      ['js/analytics-core.js', versions.analyticsCoreVersion]
+      ['js/analytics-core.js', versions.analyticsCoreVersion],
+      ['js/weekly-reward-ui.js', versions.weeklyRewardUiVersion]
+    ] },
+    { file: 'js/weekly-reward-ui.js', replacements: [
+      ['weekly-reward-ui.css', versions.weeklyRewardUiCssVersion]
     ] },
     { file: 'js/config.js', replacements: [
       ['analytics-core.js', versions.analyticsCoreVersion]
