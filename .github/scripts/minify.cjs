@@ -13,6 +13,7 @@ function minifyCSS(content) {
 
 const cssTargets = [
   'style.css',
+  'weekly-reward-ui.css',
   'visitor-thanks.css',
   'articles/article-gift-card.css',
   'articles/article-legacy.css',
@@ -35,6 +36,7 @@ const cssTargets = [
 const assetSyncMutableJsTargets = [
   'sw.js',
   'js/third-party.js',
+  'js/weekly-reward-ui.js',
   'js/config.js',
   'js/points-cost.js',
   'blog/article.js',
