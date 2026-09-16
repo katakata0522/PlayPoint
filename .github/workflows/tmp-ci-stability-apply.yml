@@ -44,14 +44,25 @@ jobs:
           PY
           git apply --check "$RUNNER_TEMP/ci-code.patch"
           git apply "$RUNNER_TEMP/ci-code.patch"
+          python3 - <<'PY'
+          import pathlib
+          for name in ['browser-smoke', 'deploy-recovery-watchdog', 'deploy', 'mobile-performance', 'quality-check', 'rollback', 'seo-healthcheck', 'snapshot-history']:
+              p = pathlib.Path(f'.github/workflows/{name}.yml')
+              p.write_text(p.read_text().rstrip() + '\n')
+          PY
           git rm .github/ci-code-part-1.b64 .github/ci-code-part-2.b64 .github/workflows/tmp-ci-stability-source.yml .github/workflows/tmp-ci-runtime-lock.yml .github/workflows/tmp-ci-stability-apply.yml
       - name: Validate complete candidate
         shell: bash
         run: |
           set -euo pipefail
-          node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/ci-apply-evidence/preflight.log"
+          node .github/scripts/preflight.cjs > "$RUNNER_TEMP/ci-apply-evidence/preflight.log" 2>&1 || { tail -100 "$RUNNER_TEMP/ci-apply-evidence/preflight.log"; exit 1; }
+          tail -20 "$RUNNER_TEMP/ci-apply-evidence/preflight.log"
           git add .github docs tests
+          git status --short
+          echo 'Verify public assets unchanged'
+          git diff --stat bb54ddea118dd60b3dbc8eafd7d332ac4be5c2a5 -- . ':(exclude).github/**' ':(exclude)docs/**' ':(exclude)tests/**'
           git diff --quiet bb54ddea118dd60b3dbc8eafd7d332ac4be5c2a5 -- . ':(exclude).github/**' ':(exclude)docs/**' ':(exclude)tests/**'
+          echo 'Verify patch formatting'
           git diff --cached --check
           python3 - <<'PY'
           import hashlib, json, os, pathlib, subprocess
