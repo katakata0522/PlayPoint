@@ -13,18 +13,36 @@ const helper = read(helperPath);
 
 const workflowExpectations = new Map([
   ['.github/workflows/quality-check.yml', 1],
+  ['.github/workflows/mobile-performance.yml', 1],
   ['.github/workflows/deploy.yml', 1],
   ['.github/workflows/browser-smoke.yml', 2],
   ['.github/workflows/rollback.yml', 1],
   ['.github/workflows/deploy-recovery-watchdog.yml', 1],
 ]);
 
-test('Playwright・日本語font・Chrome検出は単一helperだけが所有する', () => {
-  assert.match(helper, /PLAYWRIGHT_CORE_VERSION="1\.55\.0"/);
+test('Playwright対応Chromium・固定依存・日本語fontは単一helperが所有する', () => {
+  const manifest = JSON.parse(read('.github/ci-runtime/package.json'));
+  const lock = JSON.parse(read('.github/ci-runtime/package-lock.json'));
+  assert.equal(manifest.private, true);
+  assert.equal(manifest.dependencies['playwright-core'], '1.63.0');
+  assert.equal(Object.keys(manifest.dependencies).length, 1);
+  const performance = JSON.parse(read('.github/ci-runtime/lighthouse/package.json'));
+  const performanceLock = JSON.parse(read('.github/ci-runtime/lighthouse/package-lock.json'));
+  assert.equal(performance.dependencies.lighthouse, '13.4.1');
+  assert.equal(performanceLock.packages['node_modules/lighthouse'].version, performance.dependencies.lighthouse);
+  for (const [name, version] of Object.entries(manifest.dependencies)) {
+    assert.equal(lock.packages[''].dependencies[name], version);
+    assert.equal(lock.packages['node_modules/' + name].version, version);
+    assert.ok(lock.packages['node_modules/' + name].integrity);
+  }
+  assert.match(read('.github/ci-runtime/node-version').trim(), /^\d+\.\d+\.\d+$/);
+  assert.match(helper, /npm ci --prefix/);
+  assert.match(helper, /--ignore-scripts/);
+  assert.match(helper, /install --with-deps --no-shell chromium/);
+  assert.match(helper, /chromium\.executablePath\(\)/);
+  assert.doesNotMatch(helper, /command -v (?:google-chrome|chromium)|npm install|--no-package-lock/);
   assert.match(helper, /fonts-noto-cjk/);
   assert.match(helper, /fc-match sans-serif:lang=ja/);
-  assert.match(helper, /npm install --no-save --no-package-lock --ignore-scripts "playwright-core@\$PLAYWRIGHT_CORE_VERSION"/);
-  assert.match(helper, /google-chrome \|\| command -v google-chrome-stable \|\| command -v chromium \|\| command -v chromium-browser/);
   assert.match(helper, /printf 'CHROME_PATH=%s\\n'/);
   assert.match(helper, /printf 'NODE_PATH=%s\\n'/);
   assert.match(helper, /GITHUB_ENV is required/);

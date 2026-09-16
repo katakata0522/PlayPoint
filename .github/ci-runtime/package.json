@@ -1,0 +1,9 @@
+{
+  "name": "playpoint-ci-browser-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "公開アセットと分離したブラウザ検証専用依存",
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

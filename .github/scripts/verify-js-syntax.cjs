@@ -3,7 +3,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '../..');
-const ignoredDirs = new Set(['.git', 'tests', 'docs']);
+const ignoredDirs = new Set(['.git', 'tests', 'docs', 'node_modules']);
 const ignoredPaths = new Set(['.github/workflows']);
 const ignoredFiles = new Set([]);
 const jsFiles = [];

@@ -235,3 +235,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | 本番 | `C:\Users\tomok\PlayPoint` / `katakata0522/PlayPoint` |
 | 公開 | https://playpoint-sim.com/ |
 | 使わない | `cli-auto/PlayPoint`（レガシー） |
+
+## CI安定化の検査所有（2026-09-16）
+
+第0章の実行環境・工程journal・retry記録は `tests/ci-stability.test.cjs`、性能sampleの欠損/重複/集約・追加測定は `tests/ci-performance-sampling.test.cjs` が所有する。runtime配置と共有helperの呼出境界は既存の `tests/browser-runtime-ssot.test.cjs` を更新して維持する。国際記事の測定対象は `lighthouse-suite.cjs` が所有し、workflowから同runnerが呼ばれることと合わせて検証する。個別画面・数式・保存データの回帰検査は削除しない。仕様と証跡の読み方は [CI_STABILITY.md](CI_STABILITY.md)。
