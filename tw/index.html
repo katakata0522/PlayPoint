@@ -44,7 +44,7 @@
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=62a03541b1">
+    <link rel="stylesheet" href="../style.css?v=5f12583b18">
     <link rel="stylesheet" href="../visitor-thanks.css?v=82a36e2418">
     <script type="speculationrules">
     {
@@ -196,7 +196,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </head>
 <body>
 
-<main class="calculator-wrapper">
+<main class="calculator-wrapper home-calculator-first">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play 國家或地區">
             <button data-region="JP">🇯🇵 日本</button>
@@ -230,6 +230,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">輸入等級</h2>
+            <a class="home-help-link" href="#calculator-help" data-lang-key="homeHelpLink">查看使用方式 ↓</a>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">目前等級</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
@@ -251,8 +252,13 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
 
+
+        </div>
+
+        <div class="section">
+            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
-    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
+    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">設定詳細條件</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">每 NT$30 獲得點數（自動帶入，可修改）</span>
@@ -273,10 +279,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             <div class="warning" data-lang-key="warningRate">計算器會比較 Google Play 顯示的活動特別獲點率與基本獲點率，採用較高者；不會把目前等級的基本獲點率再乘上活動數字。適用商品、上限與啟用條件請以 Google Play 為準。</div>
     </div>
 </div>
-        </div>
-
-        <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" hidden aria-label="分享計算結果" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">複製</button>
@@ -387,8 +389,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
     </div>
 
+
         <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section" id="calculator-help">
         <h2>Google Play 點數計算器可以做什麼？</h2>
         <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>Google Play 顯示活動特別獲點率時，預估點數會如何變化</strong>。</p>
         <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
@@ -404,7 +407,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="../author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
-    
 
         <!-- FAQ_SECTION_START -->
     <section class="section">
