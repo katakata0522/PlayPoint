@@ -1,0 +1,35 @@
+name: Temporary prepare weekly reward PR
+
+on:
+  push:
+    branches:
+      - feat/weekly-reward-ui-refresh-20260916
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/weekly-reward-ui-refresh-20260916
+          fetch-depth: 0
+
+      - name: Prepare canonical generated outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated outputs
+        run: |
+          if git diff --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "生成物をウィークリーリワードUI変更へ同期"
+          git push origin HEAD:feat/weekly-reward-ui-refresh-20260916
