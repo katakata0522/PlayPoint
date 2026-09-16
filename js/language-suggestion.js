@@ -189,11 +189,4 @@ if (typeof window !== 'undefined') {
     installOwnedStorageSafety(window);
 }
 
-export {
-    bindLanguageSuggestionDismiss,
-    checkLanguageSuggestion,
-    formatLastCalculationText,
-    getLastMainCalculationForRegion,
-    sameCalculationContext,
-    saveLastMainCalculationForRegion
-} from './first-view.js';
+export { bindLanguageSuggestionDismiss, checkLanguageSuggestion, formatLastCalculationText, getLastMainCalculationForRegion, sameCalculationContext, saveLastMainCalculationForRegion } from './first-view.js';
