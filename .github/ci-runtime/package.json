@@ -1,0 +1,10 @@
+{
+  "name": "playpoint-ci-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "公開アセットと分離した検証専用依存",
+  "dependencies": {
+    "playwright-core": "1.55.0",
+    "lighthouse": "13.3.0"
+  }
+}
