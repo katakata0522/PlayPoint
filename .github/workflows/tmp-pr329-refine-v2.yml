@@ -1,0 +1,35 @@
+name: Temporary PR329 refinement v2
+
+on:
+  push:
+    branches:
+      - feat/calculator-flow-memory-20260916
+    paths:
+      - .github/workflows/tmp-pr329-refine-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/calculator-flow-memory-20260916
+          fetch-depth: 0
+      - name: Refine, generate, validate and push
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '%s' 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgc3VicHJvY2VzcwoKZGVmIHJlYWQocGF0aCk6CiAgICByZXR1cm4gUGF0aChwYXRoKS5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKCmRlZiB3cml0ZShwYXRoLCB0ZXh0KToKICAgIFBhdGgocGF0aCkud3JpdGVfdGV4dCh0ZXh0LCBlbmNvZGluZz0idXRmLTgiKQoKZGVmIHJlcGxhY2Vfb25jZShwYXRoLCBvbGQsIG5ldyk6CiAgICB0ZXh0ID0gcmVhZChwYXRoKQogICAgaWYgb2xkIG5vdCBpbiB0ZXh0OgogICAgICAgIHJhaXNlIFN5c3RlbUV4aXQoZiJ7cGF0aH06IHNvdXJjZSBub3QgZm91bmQ6IHtvbGRbOjEyMF0hcn0iKQogICAgaWYgdGV4dC5jb3VudChvbGQpICE9IDE6CiAgICAgICAgcmFpc2UgU3lzdGVtRXhpdChmIntwYXRofTogZXhwZWN0ZWQgMSBzb3VyY2UsIGZvdW5kIHt0ZXh0LmNvdW50KG9sZCl9OiB7b2xkWzoxMjBdIXJ9IikKICAgIHdyaXRlKHBhdGgsIHRleHQucmVwbGFjZShvbGQsIG5ldywgMSkpCgpwID0gUGF0aCgianMvZmlyc3Qtdmlldy5qcyIpCnMgPSBwLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQpzID0gcy5yZXBsYWNlKAogICAgImltcG9ydCB7IENPTkZJR1MsIFNUQVRFLCBDT05TVEFOVFMgfSBmcm9tICcuL2NvbmZpZy5qcyc7IiwKICAgICJpbXBvcnQgeyBTVEFURSwgQ09OU1RBTlRTIH0gZnJvbSAnLi9jb25maWcuanMnOyIsCiAgICAxLAp9CnN0YXJ0ID0gcy5pbmRleCgiY29uc3QgTEFTVF9NQUlOX0NB...TRUNCATED_FOR_TOOL_CALL...' | base64 -d > /tmp/refine-pr329-v2.py
+          python3 /tmp/refine-pr329-v2.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '計算履歴の保存責務と週次タブを整理'
+          rm .github/workflows/tmp-pr329-refine.yml .github/workflows/tmp-pr329-refine-v2.yml
+          git add -A
+          git commit -m '一時作業ワークフローを削除'
+          git push origin HEAD:feat/calculator-flow-memory-20260916
