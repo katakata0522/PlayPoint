@@ -16,6 +16,7 @@
     let thirdPartyScheduled = false;
     let consentManagerPromise = null;
     let analyticsCorePromise = null;
+    let weeklyRewardUiPromise = null;
 
     function loadScript(src, attrs = {}) {
         return new Promise((resolve, reject) => {
@@ -107,6 +108,19 @@
         const index = src.indexOf('js/third-party.js');
         if (index !== -1) prefix = src.substring(0, index);
         return prefix;
+    }
+
+    function ensureWeeklyRewardUi() {
+        if (!document.getElementById('tab-diary')) return Promise.resolve(null);
+        if (!weeklyRewardUiPromise) {
+            const prefix = getCurrentAssetPrefix();
+            weeklyRewardUiPromise = loadScript(`${prefix}js/weekly-reward-ui.js?v=20260916a`)
+                .catch((error) => {
+                    weeklyRewardUiPromise = null;
+                    throw error;
+                });
+        }
+        return weeklyRewardUiPromise;
     }
 
     function ensureAnalyticsCore() {
@@ -201,6 +215,7 @@
         // Preload failures are recoverable: dependency promises reset and later scheduled work retries.
         void ensureAnalyticsCore().catch((error) => console.warn('Analytics core preload failed:', error));
         void ensureConsentManager().catch((error) => console.warn('Consent manager preload failed:', error));
+        void ensureWeeklyRewardUi().catch((error) => console.warn('Weekly reward UI load failed:', error));
         scheduleThirdPartyLoad();
     }
 
