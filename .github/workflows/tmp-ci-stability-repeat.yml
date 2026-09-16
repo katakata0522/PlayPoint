@@ -1,0 +1,97 @@
+name: Chapter zero identical SHA experiment
+on:
+  push:
+    branches: [verify/ci-stability-repro-20260916]
+    paths: [.github/workflows/tmp-ci-stability-repeat.yml]
+permissions:
+  contents: read
+jobs:
+  repeat:
+    name: Identical SHA sample ${{ matrix.sample }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        sample: [1, 2, 3, 4, 5]
+    env:
+      AUDIT_TARGET: local
+      AUDIT_BASE_URL: http://127.0.0.1:4173
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ddb80aa830c77d75c921e2c855d9967c14ff022e
+          persist-credentials: false
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        id: ci_node
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Verify immutable source and record environment
+        run: |
+          test "$(git rev-parse HEAD)" = ddb80aa830c77d75c921e2c855d9967c14ff022e
+          test "$(git rev-parse HEAD^{tree})" = f7508ebcd4fc837e81998fdf6d1c0cf4d5544b84
+          node .github/scripts/ci-evidence.cjs
+      - name: Run exact preflight
+        id: preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          node .github/scripts/preflight.cjs > "$RUNNER_TEMP/preflight.log" 2>&1 || { tail -100 "$RUNNER_TEMP/preflight.log"; exit 1; }
+          tail -20 "$RUNNER_TEMP/preflight.log"
+      - name: Install locked matching browser and performance runtime
+        id: ci_browser
+        if: ${{ !cancelled() && steps.ci_node.outcome == 'success' }}
+        run: bash .github/scripts/setup-browser-runtime.sh --performance
+      - name: Repeat required gate browser commands
+        id: browser_gate
+        if: ${{ !cancelled() && steps.ci_browser.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in browser-smoke article-css-smoke article-design-smoke mobile-region-layout-smoke mobile-first-view-smoke site-shell-vnext-smoke browser-revenue-smoke embed-widget-smoke; do
+            node ".github/scripts/$script.cjs" > "$RUNNER_TEMP/$script.log" 2>&1 || { tail -100 "$RUNNER_TEMP/$script.log"; exit 1; }
+          done
+      - name: Prepare and measure unchanged public assets
+        id: ci_audit
+        if: ${{ !cancelled() && steps.ci_browser.outcome == 'success' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          node .github/scripts/minify.cjs > "$RUNNER_TEMP/minify.log" 2>&1
+          python3 -m http.server 4173 --bind 127.0.0.1 > "$RUNNER_TEMP/performance-server.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=0
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null; then ready=1; break; fi
+            sleep 0.5
+          done
+          test "$ready" = 1
+          node .github/scripts/lighthouse-suite.cjs
+      - name: Preserve full raw measurement diagnostics
+        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
+        run: node .github/scripts/lighthouse-diagnostics.cjs --manifest performance-artifacts/audit-manifest.json --output-dir performance-artifacts
+      - name: Apply unchanged hard budgets
+        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
+        run: node .github/scripts/mobile-performance-budget.cjs --manifest performance-artifacts/audit-manifest.json
+      - name: Record all outcomes including failures
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: identical-sha-${{ matrix.sample }}-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/playpoint-ci-evidence/
+            ${{ runner.temp }}/*smoke.log
+            ${{ runner.temp }}/preflight.log
+            performance-artifacts/
+            browser-smoke-artifacts/
+          retention-days: 7
+          if-no-files-found: error
