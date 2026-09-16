@@ -19,22 +19,22 @@ const expectedLabels = Object.freeze({
   'index.html': [
     '100円あたりの獲得率（自動入力・編集可）',
     'キャンペーン特別獲得率（例：3pt/100円）',
-    '詳細な条件を設定する'
+    '獲得率・キャンペーンを調整（任意）'
   ],
   'en/index.html': [
     'Points per $1 (auto-filled, editable)',
     'Promotion special earn rate (e.g. 3 pt / $1)',
-    'Detailed conditions'
+    'Adjust earn rates & promotion (optional)'
   ],
   'ko/index.html': [
     '₩1,000당 적립률 (자동 입력·수정 가능)',
     '캠페인 특별 적립률 (예: 1,000원당 3pt)',
-    '상세 조건 설정'
+    '적립률·프로모션 조정 (선택)'
   ],
   'tw/index.html': [
     '每 NT$30 獲得點數（自動帶入，可修改）',
     '活動特別獲點率（例：每 NT$30 3 點）',
-    '設定詳細條件'
+    '調整獲點率與活動（選填）'
   ]
 });
 const indexPaths = ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'];
@@ -107,6 +107,29 @@ test('主要4言語の公開HTMLはJavaScript実行前から専用ラベルを�
       assert.ok(mainMode.includes(label), `${indexPath}: 静的ラベルがありません: ${label}`);
     }
   }
+});
+
+test('6地域トップはPR #326前の通常レイアウトを維持する', () => {
+  const css = read('style.css');
+  assert.ok(!css.includes('HOME_CALCULATOR_FIRST'), 'Calculator-First専用CSSが残っている');
+
+  for (const indexPath of indexPaths) {
+    const html = read(indexPath);
+    const mainMode = html.slice(html.indexOf('<div id="mainMode"'), html.indexOf('<div id="reverseMode"'));
+    assert.ok(!html.includes('home-calculator-first'), `${indexPath}: Calculator-Firstクラスが残っている`);
+    assert.ok(!html.includes('home-help-link'), `${indexPath}: Calculator-First専用リンクが残っている`);
+    assert.ok(
+      mainMode.indexOf('id="calculator-advanced-settings"') < mainMode.indexOf('id="calculateButton"'),
+      `${indexPath}: 詳細設定と計算ボタンの旧配置が崩れている`
+    );
+  }
+});
+
+test('日本語トップは説明の後に通常の記事一覧を表示する', () => {
+  const html = read('index.html');
+  assert.ok(html.indexOf('<!-- DESCRIPTION_SECTION_START -->') < html.indexOf('<!-- ARTICLE_DRAWER_START -->'));
+  assert.ok(!html.includes('home-article-carousel'));
+  assert.ok(html.includes('すべての記事を見る'));
 });
 
 test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する', () => {

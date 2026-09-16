@@ -44,7 +44,7 @@
     <link rel="modulepreload" href="js/ui.js">
     <link rel="modulepreload" href="js/share.js">
     <link rel="modulepreload" href="js/calculator.js">
-    <link rel="stylesheet" href="style.css?v=5f12583b18">
+    <link rel="stylesheet" href="style.css?v=62a03541b1">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -195,7 +195,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 </head>
 <body>
 
-<main class="calculator-wrapper home-calculator-first">
+<main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play の国または地域">
             <button data-region="JP" class="active">🇯🇵 日本</button>
@@ -223,7 +223,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
         <div class="section">
             <h2 data-lang-key="sectionTitleStatus">ステータス入力</h2>
-            <a class="home-help-link" href="#calculator-help" data-lang-key="homeHelpLink">使い方を見る ↓</a>
             <label for="currentStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">現在のステータス</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-current-status">?</span>
@@ -244,14 +243,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例：250" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
-
-
-        </div>
-
-        <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">必要額を計算する</button>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
-    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">詳細な条件を設定する</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
+    <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">獲得率・キャンペーンを調整（任意）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
 <label for="baseRate" class="label-with-tooltip">
                 <span data-simplified-calculator-copy="baseRateLabel">100円あたりの獲得率（自動入力・編集可）</span>
@@ -274,6 +267,10 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
             </div>
     </div>
 </div>
+        </div>
+
+        <div class="section">
+            <button id="calculateButton" data-lang-key="calculateButton">必要額を計算する</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" hidden aria-label="計算結果の共有" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">コピーする</button>
@@ -388,30 +385,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
     </div>
 
-    <!-- ARTICLE_DRAWER_START -->
-    <section class="section home-article-hub">
-      <div class="home-section-heading">
-        <h2 data-lang-key="articleDrawerTitle">よくある悩み・おすすめ記事</h2>
-        <a class="home-section-more" href="blog/">もっと見る →</a>
-      </div>
-      <ul class="article-link-list home-article-carousel" aria-label="よくある悩み・おすすめ記事">
-        <li><a class="article-link-card" href="status/silver/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">シルバーはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/gold/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">ゴールドはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/platinum/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">プラチナはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/diamond/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">ダイヤモンドはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="latest/"><span class="article-link-tag">最新情報</span><span class="article-link-title">キャンペーン・仕様変更・反映遅延</span></a></li>
-        <li><a class="article-link-card" href="articles/2026-07-24-play-points-100-value.html"><span class="article-link-tag">必要額</span><span class="article-link-title">100ポイントはいくら？</span></a></li>
-        <li><a class="article-link-card" href="articles/2026-03-10-play-points-reflection-timing.html"><span class="article-link-tag">トラブル</span><span class="article-link-title">ポイントが反映されない時の確認手順</span></a></li>
-        <li><a class="article-link-card" href="articles/2025-12-25-playpoints-rank-maintenance.html"><span class="article-link-tag">ランク</span><span class="article-link-title">ランク維持期間と年末の確認</span></a></li>
-        <li><a class="article-link-card" href="articles/2025-12-25-campaign.html"><span class="article-link-tag">キャンペーン</span><span class="article-link-title">キャンペーンを待つべきか判断する</span></a></li>
-        <li><a class="article-link-card" href="articles/2025-12-25-best-use.html"><span class="article-link-tag">使い道</span><span class="article-link-title">交換先と使い道を比較する</span></a></li>
-        <li><a class="article-link-card" href="articles/2026-06-20-discount-gift-cards.html"><span class="article-link-tag">購入前チェック</span><span class="article-link-title">Google Playギフトコードをお得に買う方法｜還元条件と注意点</span></a></li>
-      </ul>
-      <p class="article-drawer-note"><a href="info.html">Q&amp;Aを見る</a></p>
-    </section>
-    <!-- ARTICLE_DRAWER_END -->
     <!-- DESCRIPTION_SECTION_START -->
-    <section class="section" id="calculator-help">
+    <section class="section">
         <h2 data-lang-key="descriptionSectionTitle">Play Points 計算機でできること</h2>
         <p>このページでは、Google Play Points の<strong>ランクアップまであといくら必要か</strong>、<strong>今の課金額で何ポイント獲得できるか</strong>、<strong>キャンペーン時にどれだけ有利になるか</strong>をまとめて確認できます。</p>
         <p>とくに「プラチナまであと少し」「ダイヤモンドに届くか知りたい」「ポイント増量キャンペーンを待つべきか迷っている」という場面で、感覚ではなく数字で判断しやすくなります。</p>
@@ -427,6 +402,27 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <p class="calculation-method-note"><strong>計算と検証について:</strong> 入力値は外部へ送信せず、このブラウザ上で計算します。必要ポイントと採用した還元条件から金額を試算します。情報源・更新・訂正の方針は <a href="author/katakata.html" rel="author">運営者・検証方針</a> で確認できます。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->
+    <!-- ARTICLE_DRAWER_START -->
+    <section class="section"><h2 data-lang-key="articleDrawerTitle">よくある悩みを確認する</h2>
+      <p>ランクアップの必要額を知りたい場合は、目標ランク別の専用ページから条件と計算入口を確認できます。</p>
+      <ul class="article-link-list" aria-label="ランク別の必要額を確認">
+        <li><a class="article-link-card" href="status/silver/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">シルバーはいくら必要？</span></a></li>
+        <li><a class="article-link-card" href="status/gold/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">ゴールドはいくら必要？</span></a></li>
+        <li><a class="article-link-card" href="status/platinum/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">プラチナはいくら必要？</span></a></li>
+        <li><a class="article-link-card" href="status/diamond/"><span class="article-link-tag">ランク必要額</span><span class="article-link-title">ダイヤモンドはいくら必要？</span></a></li>
+      </ul>
+      <p>最新情報や代表的な記事から確認したい場合はこちらです。 <span class="article-count">7記事</span></p>
+      <ul class="article-link-list">
+        <li><a class="article-link-card" href="latest/"><span class="article-link-tag">最新情報</span><span class="article-link-title">キャンペーン・仕様変更・反映遅延</span></a></li>
+        <li><a class="article-link-card" href="articles/2026-07-24-play-points-100-value.html"><span class="article-link-tag">必要額</span><span class="article-link-title">100ポイントはいくら？</span></a></li>
+        <li><a class="article-link-card" href="articles/2026-03-10-play-points-reflection-timing.html"><span class="article-link-tag">トラブル</span><span class="article-link-title">ポイントが反映されない時の確認手順</span></a></li>
+        <li><a class="article-link-card" href="articles/2025-12-25-playpoints-rank-maintenance.html"><span class="article-link-tag">ランク</span><span class="article-link-title">ランク維持期間と年末の確認</span></a></li>
+        <li><a class="article-link-card" href="articles/2025-12-25-campaign.html"><span class="article-link-tag">キャンペーン</span><span class="article-link-title">キャンペーンを待つべきか判断する</span></a></li>
+        <li><a class="article-link-card" href="articles/2025-12-25-best-use.html"><span class="article-link-tag">使い道</span><span class="article-link-title">交換先と使い道を比較する</span></a></li>
+        <li><a class="article-link-card" href="articles/2026-06-20-discount-gift-cards.html"><span class="article-link-tag">購入前チェック</span><span class="article-link-title">Google Playギフトコードをお得に買う方法｜還元条件と注意点</span></a></li>
+      </ul><p class="article-drawer-note"><a href="blog/">すべての記事を見る</a> ｜ <a href="info.html">Q&amp;Aを見る</a></p>
+    </section>
+    <!-- ARTICLE_DRAWER_END -->
 
     <!-- FAQ_SECTION_START -->
     <section class="section">
