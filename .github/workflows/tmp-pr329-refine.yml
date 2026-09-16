@@ -1,0 +1,287 @@
+name: Temporary PR329 refinement
+
+on:
+  push:
+    branches:
+      - feat/calculator-flow-memory-20260916
+    paths:
+      - .github/workflows/tmp-pr329-refine.yml
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/calculator-flow-memory-20260916
+          fetch-depth: 0
+      - name: Refine implementation and tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def read(path):
+              return Path(path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              Path(path).write_text(text, encoding='utf-8')
+
+          def replace(path, old, new, count=None):
+              text = read(path)
+              found = text.count(old)
+              if found == 0:
+                  raise SystemExit(f'{path}: replacement source not found: {old[:80]!r}')
+              if count is not None and found != count:
+                  raise SystemExit(f'{path}: expected {count} matches, found {found}: {old[:80]!r}')
+              text = text.replace(old, new, -1 if count is None else count)
+              write(path, text)
+
+          # first-view はファーストビュー責務へ戻し、前回値は副作用のない純粋ヘルパだけ残す。
+          p = Path('js/first-view.js')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace("import { CONFIGS, STATE, CONSTANTS } from './config.js';", "import { STATE, CONSTANTS } from './config.js';")
+          start = s.index("const LAST_MAIN_CALCULATION_KEY = 'playpointLastMainCalculationV1';")
+          end = s.index('function prepareFirstView()')
+          helper = r'''const LAST_MAIN_CALCULATION_KEY = 'playpointLastMainCalculationV1';
+
+function normalizeLastCalculation(value) {
+    const points = Number(value?.neededPoints);
+    if (!value || typeof value.region !== 'string'
+        || typeof value.currentStatus !== 'string'
+        || typeof value.targetStatus !== 'string'
+        || !Number.isSafeInteger(points) || points < 0) return null;
+    return {
+        region: value.region,
+        currentStatus: value.currentStatus,
+        targetStatus: value.targetStatus,
+        neededPoints: String(points)
+    };
+}
+
+function readLastMainCalculationStore(storage = localStorage) {
+    try {
+        const parsed = JSON.parse(storage.getItem(LAST_MAIN_CALCULATION_KEY) || 'null');
+        if (parsed?.version === 1 && parsed.mainByRegion && typeof parsed.mainByRegion === 'object') return parsed;
+    } catch {}
+    return { version: 1, mainByRegion: {} };
+}
+
+export function getLastMainCalculationForRegion(region, storage = localStorage) {
+    const snapshot = normalizeLastCalculation(readLastMainCalculationStore(storage).mainByRegion?.[region]);
+    return snapshot?.region === region ? snapshot : null;
+}
+
+export function saveLastMainCalculationForRegion(region, snapshot, storage = localStorage) {
+    const normalized = normalizeLastCalculation(snapshot);
+    if (!normalized || normalized.region !== region) return false;
+    try {
+        const store = readLastMainCalculationStore(storage);
+        store.mainByRegion[region] = normalized;
+        storage.setItem(LAST_MAIN_CALCULATION_KEY, JSON.stringify(store));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function sameCalculationContext(left, right) {
+    return Boolean(left && right
+        && left.region === right.region
+        && left.currentStatus === right.currentStatus
+        && left.targetStatus === right.targetStatus);
+}
+
+function formatPoints(value, region) {
+    const locale = region === 'JP' ? 'ja-JP'
+        : region === 'KR' ? 'ko-KR'
+        : region === 'TW' ? 'zh-TW'
+        : region === 'HK' ? 'zh-HK'
+        : 'en';
+    return Number(value).toLocaleString(locale);
+}
+
+export function formatLastCalculationText(region, current, previous = null) {
+    const now = formatPoints(current?.neededPoints, region);
+    if (previous && sameCalculationContext(previous, current)) {
+        const beforeValue = Number(previous.neededPoints);
+        const nowValue = Number(current.neededPoints);
+        const delta = beforeValue - nowValue;
+        const before = formatPoints(beforeValue, region);
+        const difference = formatPoints(Math.abs(delta), region);
+        if (region === 'JP') return delta > 0 ? `前回 ${before}pt → 今回 ${now}pt（${difference}pt減）` : delta < 0 ? `前回 ${before}pt → 今回 ${now}pt（${difference}pt増）` : `前回と同じ：${now}pt`;
+        if (region === 'KR') return delta > 0 ? `지난번 ${before}pt → 이번 ${now}pt (${difference}pt 감소)` : delta < 0 ? `지난번 ${before}pt → 이번 ${now}pt (${difference}pt 증가)` : `지난번과 동일: ${now}pt`;
+        if (region === 'TW' || region === 'HK') {
+            const currentLabel = region === 'HK' ? '今次' : '這次';
+            return delta > 0 ? `上次 ${before}點 → ${currentLabel} ${now}點（減少 ${difference}點）` : delta < 0 ? `上次 ${before}點 → ${currentLabel} ${now}點（增加 ${difference}點）` : `和上次相同：${now}點`;
+        }
+        return delta > 0 ? `Last ${before} → now ${now} pts (${difference} fewer)` : delta < 0 ? `Last ${before} → now ${now} pts (${difference} more)` : `Same as last time: ${now} pts`;
+    }
+    if (region === 'JP') return `前回：${now}pt`;
+    if (region === 'KR') return `지난번: ${now}pt`;
+    if (region === 'TW' || region === 'HK') return `上次：${now}點`;
+    return `Last time: ${now} pts`;
+}
+
+'''
+          s = s[:start] + helper + s[end:]
+          tail_start = s.index('function prepareFirstView()')
+          tail = r'''function prepareFirstView() {
+    enhanceCalculatorAdvancedSettings();
+}
+
+if (typeof document !== 'undefined') {
+    if (document.getElementById('mainMode')) prepareFirstView();
+    else document.addEventListener('DOMContentLoaded', prepareFirstView, { once: true });
+}
+'''
+          s = s[:tail_start] + tail
+          p.write_text(s, encoding='utf-8')
+
+          # 互換モジュールから、main が必要な純粋ヘルパも再公開する。
+          write('js/language-suggestion.js', """'use strict';\n\nexport {\n    bindLanguageSuggestionDismiss,\n    checkLanguageSuggestion,\n    formatLastCalculationText,\n    getLastMainCalculationForRegion,\n    sameCalculationContext,\n    saveLastMainCalculationForRegion\n} from './first-view.js';\n""")
+
+          # 計算成功という確定点で保存する。DOM監視は使わない。
+          p = Path('js/main.js')
+          s = p.read_text(encoding='utf-8')
+          old_import = "import { bindLanguageSuggestionDismiss, checkLanguageSuggestion } from './language-suggestion.js';"
+          new_import = "import { bindLanguageSuggestionDismiss, checkLanguageSuggestion, formatLastCalculationText, getLastMainCalculationForRegion, sameCalculationContext, saveLastMainCalculationForRegion } from './language-suggestion.js';"
+          if old_import not in s:
+              raise SystemExit('js/main.js: language-suggestion import not found')
+          s = s.replace(old_import, new_import, 1)
+          marker = 'function runTrackedCalculation(mode) {'
+          if marker not in s:
+              raise SystemExit('js/main.js: runTrackedCalculation marker not found')
+          integration = r'''function getMainCalculationSnapshot() {
+    const points = Number(STATE.dom.neededPoints?.value);
+    if (!Number.isSafeInteger(points) || points < 0) return null;
+    return {
+        region: STATE.currentRegion,
+        currentStatus: String(STATE.dom.currentStatus?.value || ''),
+        targetStatus: String(STATE.dom.targetStatus?.value || ''),
+        neededPoints: String(points)
+    };
+}
+
+function renderLastMainCalculation(snapshot, previous = null) {
+    if (!STATE.dom.calculatorLastValue || !STATE.dom.calculatorLastValueText || !snapshot) return;
+    STATE.dom.calculatorLastValueText.textContent = formatLastCalculationText(STATE.currentRegion, snapshot, previous);
+    STATE.dom.calculatorLastValue.hidden = false;
+}
+
+function renderSavedLastMainCalculation() {
+    const saved = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (saved) renderLastMainCalculation(saved);
+    else if (STATE.dom.calculatorLastValue) STATE.dom.calculatorLastValue.hidden = true;
+}
+
+function restoreLastMainCalculation() {
+    const saved = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (!saved) return;
+    const setSelect = (select, value) => {
+        if (!select || !Array.from(select.options || []).some(option => String(option.value) === value)) return;
+        select.value = value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    setSelect(STATE.dom.currentStatus, saved.currentStatus);
+    setSelect(STATE.dom.targetStatus, saved.targetStatus);
+    if (STATE.dom.neededPoints) {
+        STATE.dom.neededPoints.value = saved.neededPoints;
+        STATE.dom.neededPoints.dispatchEvent(new Event('input', { bubbles: true }));
+        STATE.dom.neededPoints.focus();
+    }
+}
+
+function rememberLastMainCalculation() {
+    const current = getMainCalculationSnapshot();
+    if (!current) return;
+    const previous = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (!saveLastMainCalculationForRegion(STATE.currentRegion, current)) return;
+    if (previous && sameCalculationContext(previous, current)) renderLastMainCalculation(current, previous);
+    else if (STATE.dom.calculatorLastValue) STATE.dom.calculatorLastValue.hidden = true;
+}
+
+'''
+          s = s.replace(marker, integration + marker, 1)
+          completed = '    calculatorFunnel.trackCompleted(mode);\n}'
+          replacement = "    calculatorFunnel.trackCompleted(mode);\n    if (mode === CONSTANTS.MODE_MAIN) rememberLastMainCalculation();\n}"
+          if completed not in s:
+              raise SystemExit('js/main.js: completed marker not found')
+          s = s.replace(completed, replacement, 1)
+          old_ids = "        'neededPoints', 'multiplier', 'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',"
+          new_ids = "        'neededPoints', 'multiplier', 'calculator-last-value', 'calculator-last-value-text', 'calculator-last-value-reuse',\n        'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',"
+          if old_ids not in s:
+              raise SystemExit('js/main.js: ids marker not found')
+          s = s.replace(old_ids, new_ids, 1)
+          bind_marker = "    bindCalendarReminderEvents();\n"
+          if bind_marker not in s:
+              raise SystemExit('js/main.js: bind marker not found')
+          s = s.replace(bind_marker, bind_marker + "    bindEvent(STATE.dom.calculatorLastValueReuse, 'click', restoreLastMainCalculation);\n", 1)
+          share_marker = '    SHARE.applyFromUrl();\n'
+          if share_marker not in s:
+              raise SystemExit('js/main.js: share marker not found')
+          s = s.replace(share_marker, share_marker + '    renderSavedLastMainCalculation();\n', 1)
+          p.write_text(s, encoding='utf-8')
+
+          # 週次タブは行動ベースの短い名称を維持しつつ、承認済みのプレゼントアイコンを戻す。
+          for path in ['js/config.js', 'scripts/locale-config.cjs']:
+              text = read(path)
+              replacements = {
+                  'tabDiary: "週次を記録"': 'tabDiary: "🎁 週次を記録"',
+                  'tabDiary: "Log weekly"': 'tabDiary: "🎁 Log weekly"',
+                  'tabDiary: "주간 기록"': 'tabDiary: "🎁 주간 기록"',
+                  'tabDiary: "每週記錄"': 'tabDiary: "🎁 每週記錄"',
+                  "tabDiary: '週次を記録'": "tabDiary: '🎁 週次を記録'",
+                  "tabDiary: 'Log weekly'": "tabDiary: '🎁 Log weekly'",
+                  "tabDiary: '주간 기록'": "tabDiary: '🎁 주간 기록'",
+                  "tabDiary: '每週記錄'": "tabDiary: '🎁 每週記錄'",
+              }
+              changed = 0
+              for old, new in replacements.items():
+                  n = text.count(old)
+                  if n:
+                      text = text.replace(old, new)
+                      changed += n
+              if not changed:
+                  raise SystemExit(f'{path}: no tabDiary action labels found')
+              write(path, text)
+
+          replace('js/intl-copy-overrides.js', "CONFIGS.US.uiText.tabDiary = 'Log weekly';", "CONFIGS.US.uiText.tabDiary = '🎁 Log weekly';", 1)
+
+          # テストの責務を最新仕様へ合わせる。純粋ロジックはunit、文言の正本はlocalizationが担当。
+          p = Path('tests/mobile-first-view-contract.test.cjs')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace(', readLastMainCalculationStore', '')
+          for old, new in [
+              ("'週次を記録'", "'🎁 週次を記録'"),
+              ("'Log weekly'", "'🎁 Log weekly'"),
+              ("'주간 기록'", "'🎁 주간 기록'"),
+              ("'每週記錄'", "'🎁 每週記錄'")
+          ]:
+              s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+
+          replace('tests/localization-quality-audit.test.cjs', "assert.equal(locales.en.staticText.tabDiary, 'Log weekly');", "assert.equal(locales.en.staticText.tabDiary, '🎁 Log weekly');", 1)
+          # runtime意味検査もアイコン付きの正式文言を確認する。
+          replace('tests/intl-localization-semantics.test.cjs', 'assert.match(runtime, /Log weekly/);', 'assert.match(runtime, /🎁 Log weekly/);', 1)
+          PY
+
+          node --check js/first-view.js
+          node --check js/main.js
+          node --check js/language-suggestion.js
+          node scripts/prepare-pr.cjs
+          node --test tests/mobile-first-view-contract.test.cjs tests/localization-quality-audit.test.cjs tests/intl-localization-semantics.test.cjs tests/static-calculator-delivery.test.cjs
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m '計算履歴の保存責務と週次タブを整理'
+          rm .github/workflows/tmp-pr329-refine.yml
+          git add .github/workflows/tmp-pr329-refine.yml
+          git commit -m '一時作業ワークフローを削除'
+          git push origin HEAD:feat/calculator-flow-memory-20260916
