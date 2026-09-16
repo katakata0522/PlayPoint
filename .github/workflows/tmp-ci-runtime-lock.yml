@@ -17,24 +17,26 @@ jobs:
         with:
           node-version-file: .github/ci-runtime/node-version
           package-manager-cache: false
-      - name: Resolve exact CI dependencies and verify lock
+      - name: Resolve separated CI dependencies and verify locks
         run: |
           set -euo pipefail
           node --version
           npm --version
-          npm install --prefix .github/ci-runtime --package-lock-only --ignore-scripts --no-audit --no-fund
-          npm ci --prefix .github/ci-runtime --ignore-scripts --no-audit --no-fund
-          npm ls --prefix .github/ci-runtime --depth=0
+          for target in .github/ci-runtime .github/ci-runtime/lighthouse; do
+            npm install --prefix "$target" --package-lock-only --ignore-scripts --no-audit --no-fund
+            npm ci --prefix "$target" --ignore-scripts --no-audit --no-fund
+            npm ls --prefix "$target" --depth=0
+            npm audit --prefix "$target" --json > "$RUNNER_TEMP/$(basename "$target")-audit.json" || audit_status=$?
+            printf 'npm audit exit: %s\n' "${audit_status:-0}"
+          done
           node .github/ci-runtime/node_modules/playwright-core/cli.js install --dry-run chromium
-          npm audit --prefix .github/ci-runtime --json > "$RUNNER_TEMP/ci-runtime-audit.json" || audit_status=$?
-          printf 'npm audit exit: %s\n' "${audit_status:-0}"
-          tar -czf "$RUNNER_TEMP/ci-runtime-lock.tar.gz" .github/ci-runtime/package.json .github/ci-runtime/package-lock.json .github/ci-runtime/node-version
+          tar --exclude=node_modules -czf "$RUNNER_TEMP/ci-runtime-lock.tar.gz" .github/ci-runtime
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
           name: ci-runtime-lock
           path: |
             ${{ runner.temp }}/ci-runtime-lock.tar.gz
-            ${{ runner.temp }}/ci-runtime-audit.json
+            ${{ runner.temp }}/*-audit.json
           retention-days: 1
           if-no-files-found: error
