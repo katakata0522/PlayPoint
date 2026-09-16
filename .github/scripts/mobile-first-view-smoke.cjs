@@ -104,13 +104,16 @@ async function inspect(page) {
     const title = document.getElementById('main-title');
     const tabs = document.querySelector('.tab-switch');
     const currentStatus = document.getElementById('currentStatus');
-    if (!description || !title || !tabs || !currentStatus) return null;
+    const calculateButton = document.getElementById('calculateButton');
+    const diaryTab = document.getElementById('tab-diary');
+    if (!description || !title || !tabs || !currentStatus || !calculateButton || !diaryTab) return null;
 
     const descriptionStyle = getComputedStyle(description);
     const descriptionRect = description.getBoundingClientRect();
     const titleRect = title.getBoundingClientRect();
     const tabsRect = tabs.getBoundingClientRect();
     const currentStatusRect = currentStatus.getBoundingClientRect();
+    const calculateRect = calculateButton.getBoundingClientRect();
     const lineHeight = parseFloat(descriptionStyle.lineHeight) || 0;
     const lineCount = lineHeight > 0 ? Math.ceil((descriptionRect.height - 0.5) / lineHeight) : null;
 
@@ -128,6 +131,9 @@ async function inspect(page) {
       tabsBottom: tabsRect.bottom,
       currentStatusTop: currentStatusRect.top,
       currentStatusBottom: currentStatusRect.bottom,
+      calculateTop: calculateRect.top,
+      calculateBottom: calculateRect.bottom,
+      diaryLabel: diaryTab.textContent.trim(),
       viewportHeight: window.innerHeight,
       viewportWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth
@@ -166,7 +172,9 @@ async function main() {
 
       if (width <= 412) {
         assert(layout.lineCount !== null && layout.lineCount <= 3, `${width}px: intro uses ${layout.lineCount} lines; expected at most 3`);
-        assert(layout.currentStatusTop < 620, `${width}px: first input is still too far down (${Math.round(layout.currentStatusTop)}px)`);
+        assert(layout.currentStatusTop < 590, `${width}px: first input is still too far down (${Math.round(layout.currentStatusTop)}px)`);
+        assert(layout.diaryLabel === 'ウィークリーリワード記録', `${width}px: weekly reward label not updated: ${layout.diaryLabel}`);
+        if (width >= 390) assert(layout.calculateBottom <= layout.viewportHeight + 1, `${width}px: primary CTA is below the first viewport (${Math.round(layout.calculateBottom)}px)`);
       } else {
         assert(layout.lineCount !== null && layout.lineCount <= 2, `${width}px: desktop intro uses ${layout.lineCount} lines`);
       }
@@ -174,7 +182,7 @@ async function main() {
       const screenshotPath = path.join(ARTIFACT_DIR, `mobile-first-view-jp-${width}.png`);
       await page.screenshot({ path: screenshotPath, fullPage: false });
       results.push({ width, ...layout });
-      console.log(`ok - JP first view at ${width}px: ${layout.lineCount} line(s), first input y=${Math.round(layout.currentStatusTop)}`);
+      console.log(`ok - JP first view at ${width}px: ${layout.lineCount} line(s), first input y=${Math.round(layout.currentStatusTop)}, CTA bottom=${Math.round(layout.calculateBottom)}`);
     }
 
     fs.writeFileSync(

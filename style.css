@@ -2458,3 +2458,122 @@ padding: 0 16px;
 }
 
 .week-row.is-current-week { outline: 2px solid #0891b2; outline-offset: 3px; }
+
+/* HOME_CALCULATOR_FIRST_V2_START */
+.home-calculator-first{--home-accent:#0b6edc;--home-accent-soft:#eef6ff;--home-border:#cfe0f6;max-width:480px}
+.home-calculator-first .top-bar{display:block;margin:.2rem auto .75rem;padding:0}
+.home-calculator-first .region-switch{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;width:100%;padding:4px;border:1px solid #d4e1f1;border-radius:16px;background:#f8fbff;box-shadow:0 5px 18px rgba(11,87,208,.09);box-sizing:border-box}
+.home-calculator-first .region-switch>button,.home-calculator-first .region-switch .region-more-toggle{width:100%;min-width:0;min-height:52px;margin:0;padding:.45rem .12rem;border:0!important;border-right:1px solid #d8e1ee!important;border-radius:0!important;background:#fff;color:#1f2937;box-shadow:none;font-size:.94rem;font-weight:800;white-space:nowrap}
+.home-calculator-first .region-switch>button:first-child{border-radius:12px 0 0 12px!important}
+.home-calculator-first .region-switch>button.active{background:#0b6edc!important;color:#fff!important;border-color:#0b6edc!important}
+.home-calculator-first .region-switch .region-more{display:block;position:relative;min-width:0}
+.home-calculator-first .region-switch .region-more-toggle{height:100%;border-right:0!important;border-radius:0 12px 12px 0!important;font-size:1.25rem}
+.home-calculator-first .header-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.62rem;width:100%;margin-top:.65rem}
+.home-calculator-first .header-links>a{margin:0!important;white-space:normal;min-width:0;text-decoration:none!important;box-shadow:none;transform:none!important}
+.home-calculator-first .header-links .alert-link{grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:66px;padding:.72rem 2.7rem .72rem 1rem;border:1px solid var(--home-border);border-radius:18px;background:#f5f9ff;color:#1f2937;font-size:.98rem;font-weight:800;line-height:1.25;position:relative}
+html[lang="ja"] .home-calculator-first .header-links .alert-link::after{content:"Point rules may vary by country or region.  ›";display:block;margin-top:.28rem;color:#64748b;font-size:.75rem;font-weight:600;line-height:1.35}
+.home-calculator-first .header-links>a[data-lang-key="linkGames"],.home-calculator-first .header-links>a[data-lang-key="linkArticles"]{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:74px;padding:.7rem .78rem;border:1px solid var(--home-border);border-radius:18px;background:#f8fbff;color:#1f2937;font-size:.98rem;font-weight:800;line-height:1.3;position:relative}
+html[lang="ja"] .home-calculator-first .header-links>a[data-lang-key="linkGames"]::after{content:"よく遊ぶゲームで簡単に  ›";margin-top:.28rem;color:#64748b;font-size:.73rem;font-weight:600}
+html[lang="ja"] .home-calculator-first .header-links>a[data-lang-key="linkArticles"]::after{content:"攻略・キャンペーン情報  ›";margin-top:.28rem;color:#64748b;font-size:.73rem;font-weight:600}
+.home-calculator-first .header-link-secondary{display:none!important}
+.home-calculator-first #main-title{margin:.9rem .1rem .2rem;font-size:clamp(1.6rem,7vw,2rem);line-height:1.25;letter-spacing:-.02em}
+.home-calculator-first #site-description{margin:.15rem auto .65rem;max-width:32rem;font-size:.98rem;font-weight:650;line-height:1.55;color:#374151}
+.home-calculator-first .tab-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.38rem;margin:.45rem 0 .7rem}
+.home-calculator-first .tab-switch button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:72px;margin:0;padding:.55rem .45rem;border:1px solid transparent;border-radius:14px;box-shadow:none;font-size:1rem;font-weight:800;line-height:1.2}
+.home-calculator-first .tab-switch button::before{display:block;margin-bottom:.2rem;font-size:1.35rem;line-height:1}
+.home-calculator-first .tab-switch button::after{display:block;margin-top:.2rem;font-size:.73rem;font-weight:600;opacity:.88;line-height:1.2}
+.home-calculator-first #tab-main::before{content:"🧮"}.home-calculator-first #tab-reverse::before{content:"↔"}.home-calculator-first #tab-diary::before{content:"🎁"}
+html[lang="ja"] .home-calculator-first #tab-main::after{content:"あといくら必要？"}html[lang="ja"] .home-calculator-first #tab-reverse::after{content:"使う金額から計算"}html[lang="ja"] .home-calculator-first #tab-diary::after{content:"毎週のリワードを記録して、もっとお得に"}
+html[lang^="en"] .home-calculator-first #tab-main::after{content:"How much more?"}html[lang^="en"] .home-calculator-first #tab-reverse::after{content:"Start from spend"}html[lang^="en"] .home-calculator-first #tab-diary::after{content:"Track weekly rewards"}
+html[lang="ko"] .home-calculator-first #tab-main::after{content:"얼마가 더 필요할까요?"}html[lang="ko"] .home-calculator-first #tab-reverse::after{content:"사용 금액으로 계산"}html[lang="ko"] .home-calculator-first #tab-diary::after{content:"매주 리워드 기록"}
+html[lang^="zh"] .home-calculator-first #tab-main::after{content:"還差多少？"}html[lang^="zh"] .home-calculator-first #tab-reverse::after{content:"從消費金額計算"}html[lang^="zh"] .home-calculator-first #tab-diary::after{content:"記錄每週獎勵"}
+.home-calculator-first #tab-diary{grid-column:1/-1;min-height:62px;background:#f5f9ff;color:#1f2937;border-color:var(--home-border)}
+.home-calculator-first #tab-diary.active{background:#e6f2ff;color:#0757ad;border-color:#0b6edc}
+.home-calculator-first #mainMode>.section:first-child{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.72rem;row-gap:.18rem;margin:.25rem 0 0;padding:1rem 1rem .68rem;border-radius:18px 18px 0 0;box-shadow:0 8px 24px rgba(36,71,120,.09)}
+.home-calculator-first #mainMode>.section:first-child>h2{grid-column:1/-1;grid-row:1;margin:0 0 .55rem;padding:0 0 .5rem;font-size:1.35rem;border-bottom:2px solid #d1d7e0}
+.home-calculator-first .home-help-link{position:absolute;right:1rem;top:1.05rem;color:#0b6edc;font-size:.82rem;font-weight:800;text-decoration:none}
+.home-calculator-first #mainMode label[for="currentStatus"]{grid-column:1;grid-row:2}.home-calculator-first #currentStatus{grid-column:1;grid-row:3}
+.home-calculator-first #mainMode label[for="targetStatus"]{grid-column:2;grid-row:2}.home-calculator-first #targetStatus{grid-column:2;grid-row:3}
+.home-calculator-first #mainMode label[for="neededPoints"]{grid-column:1/-1;grid-row:4;margin-top:.28rem}.home-calculator-first #neededPoints{grid-column:1/-1;grid-row:5}
+.home-calculator-first #mainMode>.section:first-child label{margin-top:0;font-size:.88rem;font-weight:750}.home-calculator-first #mainMode>.section:first-child select,.home-calculator-first #mainMode>.section:first-child input[type="number"]{min-height:52px;margin:.18rem 0 .25rem;padding:.68rem .72rem;border-radius:10px}
+.home-calculator-first #mainMode>.section:nth-child(2){margin:0 0 .85rem;padding:.18rem 1rem 1rem;border-radius:0 0 18px 18px;box-shadow:0 10px 24px rgba(36,71,120,.09)}
+.home-calculator-first #calculateButton{width:100%;min-height:58px;margin:.25rem 0 0;border:0;border-radius:12px;background:#0b6edc;color:#fff;box-shadow:0 5px 14px rgba(11,110,220,.22);font-size:1.08rem;font-weight:850}
+.home-calculator-first #calculateButton::before{content:"🧮";margin-right:.48rem}
+.home-calculator-first .calculator-advanced-settings{margin-top:.62rem!important}
+.home-calculator-first .calculator-advanced-settings__toggle{justify-content:center!important;min-height:48px!important;padding:.58rem .75rem!important;border:1px solid #bfd8f6!important;border-radius:12px!important;background:#edf6ff!important;color:#164e87!important;font-weight:800!important}
+.home-calculator-first .calculator-advanced-settings__toggle::before{content:"⚙️";margin-right:.45rem}
+.home-calculator-first .result{margin-top:.65rem}.home-calculator-first .result-actions{margin-top:.55rem}
+.home-calculator-first .result-guidance-links{margin-top:1rem;padding-top:.9rem;border-top:1px solid #dce7f4;text-align:left}
+.home-calculator-first .result-guidance-links h3{margin:0;font-size:1.18rem;font-weight:850}.home-calculator-first .result-guidance-subtitle{margin:.15rem 0 .65rem;color:#64748b;font-size:.82rem}
+.home-calculator-first .result-guidance-links ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.48rem;list-style:none;margin:0;padding:0}
+.home-calculator-first .result-guidance-links li{margin:0;min-width:0}.home-calculator-first .result-guidance-links a{display:flex;flex-direction:column;justify-content:center;min-height:104px;padding:.62rem .52rem;border:1px solid #dae4f0;border-radius:14px;background:#fff;color:#1f2937;text-align:center;text-decoration:none;box-shadow:0 4px 14px rgba(31,41,55,.07)}
+.home-calculator-first .result-guidance-links a span{font-size:.82rem;font-weight:800;line-height:1.35}.home-calculator-first .result-guidance-links a small{margin-top:.28rem;color:#64748b;font-size:.68rem;line-height:1.3}
+.home-calculator-first .home-article-hub{margin-top:.9rem;padding:.9rem .85rem 1rem;border-radius:18px;overflow:hidden}
+.home-calculator-first .home-section-heading{display:flex;align-items:center;justify-content:space-between;gap:.7rem;margin-bottom:.65rem}.home-calculator-first .home-section-heading h2{margin:0;padding:0;border:0;font-size:1.18rem}.home-calculator-first .home-section-more{flex:0 0 auto;color:#0b6edc;font-size:.82rem;font-weight:800;text-decoration:none}
+.home-calculator-first .home-article-carousel{display:flex;gap:.58rem;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;padding:.1rem .05rem .55rem;scrollbar-width:thin}
+.home-calculator-first .home-article-carousel li{flex:0 0 30%;min-width:112px;scroll-snap-align:start}.home-calculator-first .home-article-carousel .article-link-card{height:100%;min-height:122px;padding:.68rem .58rem;border-radius:14px;box-sizing:border-box}.home-calculator-first .home-article-carousel .article-link-card::before{content:"📘";display:block;margin-bottom:.35rem;font-size:1.25rem}.home-calculator-first .home-article-carousel .article-link-tag{margin-bottom:.35rem;font-size:.64rem}.home-calculator-first .home-article-carousel .article-link-title{font-size:.78rem;line-height:1.38}.home-calculator-first .home-article-hub .article-drawer-note{margin:.4rem 0 0;font-size:.78rem}
+@media(max-width:359px){.home-calculator-first #mainMode>.section:first-child{grid-template-columns:1fr}.home-calculator-first #mainMode label[for="currentStatus"]{grid-column:1;grid-row:2}.home-calculator-first #currentStatus{grid-column:1;grid-row:3}.home-calculator-first #mainMode label[for="targetStatus"]{grid-column:1;grid-row:4}.home-calculator-first #targetStatus{grid-column:1;grid-row:5}.home-calculator-first #mainMode label[for="neededPoints"]{grid-column:1;grid-row:6}.home-calculator-first #neededPoints{grid-column:1;grid-row:7}.home-calculator-first .home-help-link{display:none}.home-calculator-first .region-switch>button,.home-calculator-first .region-switch .region-more-toggle{font-size:.82rem;min-height:48px}.home-calculator-first .header-links>a[data-lang-key="linkGames"],.home-calculator-first .header-links>a[data-lang-key="linkArticles"]{padding:.62rem .58rem;font-size:.88rem}.home-calculator-first #main-title{font-size:1.48rem}.home-calculator-first .result-guidance-links ul{grid-template-columns:repeat(3,minmax(92px,1fr));overflow-x:auto}.home-calculator-first .home-article-carousel li{flex-basis:38%}}
+@media(min-width:641px){.home-calculator-first #mainMode>.section:first-child,.home-calculator-first #mainMode>.section:nth-child(2){border-radius:16px;margin:.8em auto;padding:1.05em 1.15em;box-shadow:var(--section-shadow)}.home-calculator-first #mainMode>.section:first-child{display:block}.home-calculator-first #mainMode>.section:first-child>h2{margin-bottom:.8em;padding-bottom:.3em;font-size:1.3em}.home-calculator-first #mainMode>.section:first-child label,.home-calculator-first #mainMode>.section:first-child select,.home-calculator-first #mainMode>.section:first-child input[type="number"]{display:block;width:100%;margin-top:.4em}.home-calculator-first .home-help-link{position:static;display:inline-block;margin:-.45rem 0 .5rem}.home-calculator-first .calculator-advanced-settings__toggle{display:none!important}.home-calculator-first .calculator-advanced-settings,.home-calculator-first .calculator-advanced-settings__body{display:contents!important}}
+@media(prefers-reduced-motion:reduce){.home-calculator-first *{scroll-behavior:auto!important;transition:none!important}}
+/* HOME_CALCULATOR_FIRST_V2_END */
+
+/* HOME_CALCULATOR_FIRST_PHONE_COMPACT_START */
+@media(max-width:640px){
+  .home-calculator-first{box-sizing:border-box;padding-left:10px;padding-right:10px}
+  .home-calculator-first .top-bar{margin:.05rem auto .45rem}
+  .home-calculator-first .region-switch{padding:3px;border-radius:14px}
+  .home-calculator-first .region-switch>button,.home-calculator-first .region-switch .region-more-toggle{min-height:44px;padding:.3rem .05rem;font-size:.82rem}
+  .home-calculator-first .region-switch .region-more-toggle{font-size:1.05rem}
+  .home-calculator-first .header-links{gap:.38rem;margin-top:.42rem}
+  .home-calculator-first .header-links .alert-link{min-height:46px;padding:.5rem 2.1rem .5rem .72rem;border-radius:14px;font-size:.84rem;line-height:1.15}
+  html[lang="ja"] .home-calculator-first .header-links .alert-link::after{display:none}
+  .home-calculator-first .header-links>a[data-lang-key="linkGames"],.home-calculator-first .header-links>a[data-lang-key="linkArticles"]{min-height:54px;padding:.45rem .55rem;border-radius:14px;font-size:.86rem;line-height:1.15}
+  html[lang="ja"] .home-calculator-first .header-links>a[data-lang-key="linkGames"]::after,html[lang="ja"] .home-calculator-first .header-links>a[data-lang-key="linkArticles"]::after{margin-top:.18rem;font-size:.62rem;line-height:1.1}
+  .home-calculator-first #main-title{margin:.5rem .1rem .08rem;font-size:1.42rem;line-height:1.18}
+  .home-calculator-first #site-description{margin:.08rem auto .38rem;font-size:.82rem;line-height:1.35}
+  .home-calculator-first .tab-switch{gap:.3rem;margin:.25rem 0 .42rem}
+  .home-calculator-first .tab-switch button{min-height:52px;padding:.34rem .3rem;border-radius:12px;font-size:.9rem;line-height:1.08}
+  .home-calculator-first .tab-switch button::before{margin-bottom:.1rem;font-size:1.06rem}
+  .home-calculator-first .tab-switch button::after{margin-top:.1rem;font-size:.62rem;line-height:1.08}
+  .home-calculator-first #tab-diary{min-height:46px}
+  .home-calculator-first #mainMode>.section:first-child{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.48rem;row-gap:.08rem;margin:.08rem 0 0;padding:.68rem .72rem .42rem;border-radius:15px 15px 0 0}
+  .home-calculator-first #mainMode>.section:first-child>h2{margin:0 0 .35rem;padding:0 0 .32rem;font-size:1.14rem}
+  .home-calculator-first .home-help-link{right:.72rem;top:.7rem;font-size:.69rem}
+  .home-calculator-first #mainMode>.section:first-child label{font-size:.75rem;line-height:1.1}
+  .home-calculator-first #mainMode>.section:first-child select,.home-calculator-first #mainMode>.section:first-child input[type="number"]{min-height:44px;margin:.12rem 0 .18rem;padding:.48rem .5rem;border-radius:9px;font-size:.88rem}
+  .home-calculator-first #mainMode label[for="neededPoints"]{grid-column:1;grid-row:4;align-self:center;margin:.12rem 0 0}
+  .home-calculator-first #neededPoints{grid-column:2;grid-row:4;margin:.1rem 0 .12rem!important}
+  .home-calculator-first #mainMode>.section:nth-child(2){margin:0 0 .55rem;padding:.08rem .72rem .7rem;border-radius:0 0 15px 15px}
+  .home-calculator-first #calculateButton{min-height:50px;margin:.12rem 0 0;border-radius:10px;font-size:.98rem}
+  .home-calculator-first .calculator-advanced-settings{margin-top:.42rem!important}
+  .home-calculator-first .calculator-advanced-settings__toggle{min-height:42px!important;padding:.42rem .55rem!important;border-radius:10px!important;font-size:.82rem!important}
+  .home-calculator-first .result-guidance-links{margin-top:.72rem;padding-top:.66rem}
+  .home-calculator-first .result-guidance-links h3{font-size:1.05rem}
+  .home-calculator-first .result-guidance-subtitle{margin:.1rem 0 .5rem;font-size:.72rem}
+  .home-calculator-first .result-guidance-links ul{gap:.34rem}
+  .home-calculator-first .result-guidance-links a{min-height:88px;padding:.48rem .36rem;border-radius:12px}
+  .home-calculator-first .result-guidance-links a span{font-size:.72rem}
+  .home-calculator-first .result-guidance-links a small{font-size:.6rem}
+  .home-calculator-first .home-article-hub{margin-top:.65rem;padding:.7rem .65rem .78rem}
+  .home-calculator-first .home-section-heading{margin-bottom:.48rem}
+  .home-calculator-first .home-section-heading h2{font-size:1.02rem}
+  .home-calculator-first .home-section-more{font-size:.72rem}
+  .home-calculator-first .home-article-carousel{gap:.42rem;padding-bottom:.4rem}
+  .home-calculator-first .home-article-carousel li{flex-basis:34%;min-width:104px}
+  .home-calculator-first .home-article-carousel .article-link-card{min-height:108px;padding:.52rem .45rem}
+  .home-calculator-first .home-article-carousel .article-link-title{font-size:.7rem}
+}
+@media(max-width:359px){
+  .home-calculator-first #mainMode>.section:first-child{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .home-calculator-first #mainMode label[for="currentStatus"]{grid-column:1;grid-row:2}
+  .home-calculator-first #currentStatus{grid-column:1;grid-row:3}
+  .home-calculator-first #mainMode label[for="targetStatus"]{grid-column:2;grid-row:2}
+  .home-calculator-first #targetStatus{grid-column:2;grid-row:3}
+  .home-calculator-first #mainMode label[for="neededPoints"]{grid-column:1;grid-row:4}
+  .home-calculator-first #neededPoints{grid-column:2;grid-row:4}
+  .home-calculator-first .home-help-link{display:inline-block}
+  .home-calculator-first #main-title{font-size:1.32rem}
+  .home-calculator-first .region-switch>button,.home-calculator-first .region-switch .region-more-toggle{font-size:.74rem}
+  .home-calculator-first .header-links>a[data-lang-key="linkGames"],.home-calculator-first .header-links>a[data-lang-key="linkArticles"]{font-size:.78rem;padding:.4rem .42rem}
+}
+/* HOME_CALCULATOR_FIRST_PHONE_COMPACT_END */

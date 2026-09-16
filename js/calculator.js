@@ -86,7 +86,7 @@ export const CALC = {
             if (seen.has(link.href)) return false;
             seen.add(link.href);
             return true;
-        }).slice(0, 2);
+        }).slice(0, 3);
     },
 
     renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
@@ -109,9 +109,11 @@ export const CALC = {
             })
             .join('');
 
+        const navigation = this.getResultNavigation();
         return `
             <div class="result-guidance-links">
-                <h3>${this.getResultNavigation().decisionTitle}</h3>
+                <h3>${navigation.decisionTitle}</h3>
+                ${navigation.decisionSubtitle ? `<p class="result-guidance-subtitle">${navigation.decisionSubtitle}</p>` : ''}
                 <ul>${items}</ul>
             </div>
         `;

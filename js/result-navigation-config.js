@@ -35,7 +35,8 @@ const JP = {
             { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
         ]
     },
-    decisionTitle: '次に確認すること',
+    decisionTitle: '計算したあとのおすすめ',
+    decisionSubtitle: '結果に合わせて、次の一手をチェックしましょう。',
     highSpend: { href: 'campaign/3x/', title: '高い場合は3倍キャンペーンで比較する', note: '通常時との差を先に確認' },
     campaign: { href: 'articles/2025-12-25-campaign.html', title: 'キャンペーン対象外条件を確認する', note: '倍率が本当に適用されるか確認' },
     diamond: { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' },
