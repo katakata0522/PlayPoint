@@ -117,7 +117,7 @@
             return Promise.resolve(null);
         }
         if (!weeklyRewardUiPromise) {
-            weeklyRewardUiPromise = import('/js/weekly-reward-ui.js')
+            weeklyRewardUiPromise = import('/js/weekly-reward-ui.js?v=7d9372efe3')
                 .catch((error) => {
                     weeklyRewardUiPromise = null;
                     throw error;
