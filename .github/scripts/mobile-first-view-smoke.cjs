@@ -133,7 +133,7 @@ async function inspect(page) {
       currentStatusBottom: currentStatusRect.bottom,
       calculateTop: calculateRect.top,
       calculateBottom: calculateRect.bottom,
-      diaryLabel: diaryTab.textContent.trim(),
+      diaryVisible: diaryTab.getClientRects().length > 0 && getComputedStyle(diaryTab).visibility !== 'hidden',
       viewportHeight: window.innerHeight,
       viewportWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth
@@ -169,11 +169,11 @@ async function main() {
       assert(layout.descriptionTop >= layout.titleBottom - 1, `${width}px: intro overlaps the H1`);
       assert(layout.tabsTop >= layout.descriptionBottom - 1, `${width}px: tabs overlap the intro`);
       assert(layout.currentStatusTop >= layout.tabsBottom - 1, `${width}px: first input appears above/inside tabs`);
+      assert(layout.diaryVisible, `${width}px: diary tab is not visible`);
 
       if (width <= 412) {
         assert(layout.lineCount !== null && layout.lineCount <= 3, `${width}px: intro uses ${layout.lineCount} lines; expected at most 3`);
         assert(layout.currentStatusTop < 620, `${width}px: first input is still too far down (${Math.round(layout.currentStatusTop)}px)`);
-        assert(layout.diaryLabel === 'ウィークリーリワード記録', `${width}px: weekly reward label not updated: ${layout.diaryLabel}`);
       } else {
         assert(layout.lineCount !== null && layout.lineCount <= 2, `${width}px: desktop intro uses ${layout.lineCount} lines`);
       }
