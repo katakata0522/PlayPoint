@@ -21,7 +21,9 @@ jobs:
           fetch-depth: 0
 
       - name: Apply source changes
-        run: node scripts/temporary-apply-calculator-flow.cjs
+        run: |
+          node scripts/temporary-apply-calculator-flow.cjs
+          node scripts/temporary-patch-static-calculator-order.cjs
 
       - name: Syntax check first-view runtime
         run: node --check js/first-view.js
@@ -37,7 +39,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git reset -- .github/workflows/temporary-apply-calculator-flow.yml scripts/temporary-apply-calculator-flow.cjs
+          git reset -- .github/workflows/temporary-apply-calculator-flow.yml scripts/temporary-apply-calculator-flow.cjs scripts/temporary-patch-static-calculator-order.cjs
           if git diff --cached --quiet; then
             echo "No product changes to commit."
             exit 0
