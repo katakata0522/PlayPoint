@@ -130,6 +130,76 @@ export function checkLanguageSuggestion() {
     markRegionRecommended(region, RECOMMENDATION_COPY[key] || RECOMMENDATION_COPY.ja);
 }
 
+const LAST_MAIN_CALCULATION_KEY = 'playpointLastMainCalculationV1';
+
+function normalizeLastCalculation(value) {
+    const points = Number(value?.neededPoints);
+    if (!value || typeof value.region !== 'string'
+        || typeof value.currentStatus !== 'string'
+        || typeof value.targetStatus !== 'string'
+        || !Number.isSafeInteger(points) || points < 0) return null;
+    return { region: value.region, currentStatus: value.currentStatus, targetStatus: value.targetStatus, neededPoints: String(points) };
+}
+
+function readLastMainCalculationStore(storage = localStorage) {
+    try {
+        const parsed = JSON.parse(storage.getItem(LAST_MAIN_CALCULATION_KEY) || 'null');
+        if (parsed?.version === 1 && parsed.mainByRegion && typeof parsed.mainByRegion === 'object') return parsed;
+    } catch {}
+    return { version: 1, mainByRegion: {} };
+}
+
+export function getLastMainCalculationForRegion(region, storage = localStorage) {
+    const snapshot = normalizeLastCalculation(readLastMainCalculationStore(storage).mainByRegion?.[region]);
+    return snapshot?.region === region ? snapshot : null;
+}
+
+export function saveLastMainCalculationForRegion(region, snapshot, storage = localStorage) {
+    const normalized = normalizeLastCalculation(snapshot);
+    if (!normalized || normalized.region !== region) return false;
+    try {
+        const store = readLastMainCalculationStore(storage);
+        store.mainByRegion[region] = normalized;
+        storage.setItem(LAST_MAIN_CALCULATION_KEY, JSON.stringify(store));
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export function sameCalculationContext(left, right) {
+    return Boolean(left && right
+        && left.region === right.region
+        && left.currentStatus === right.currentStatus
+        && left.targetStatus === right.targetStatus);
+}
+
+function formatPoints(value, region) {
+    const locale = region === 'JP' ? 'ja-JP' : region === 'KR' ? 'ko-KR' : region === 'TW' ? 'zh-TW' : region === 'HK' ? 'zh-HK' : 'en';
+    return Number(value).toLocaleString(locale);
+}
+
+export function formatLastCalculationText(region, current, previous = null) {
+    const now = formatPoints(current?.neededPoints, region);
+    if (previous && sameCalculationContext(previous, current)) {
+        const beforeValue = Number(previous.neededPoints);
+        const delta = beforeValue - Number(current.neededPoints);
+        const before = formatPoints(beforeValue, region);
+        const difference = formatPoints(Math.abs(delta), region);
+        if (region === 'JP') return delta > 0 ? `前回 ${before}pt → 今回 ${now}pt（${difference}pt減）` : delta < 0 ? `前回 ${before}pt → 今回 ${now}pt（${difference}pt増）` : `前回と同じ：${now}pt`;
+        if (region === 'KR') return delta > 0 ? `지난번 ${before}pt → 이번 ${now}pt (${difference}pt 감소)` : delta < 0 ? `지난번 ${before}pt → 이번 ${now}pt (${difference}pt 증가)` : `지난번과 동일: ${now}pt`;
+        if (region === 'TW' || region === 'HK') {
+            const currentLabel = region === 'HK' ? '今次' : '這次';
+            return delta > 0 ? `上次 ${before}點 → ${currentLabel} ${now}點（減少 ${difference}點）` : delta < 0 ? `上次 ${before}點 → ${currentLabel} ${now}點（增加 ${difference}點）` : `和上次相同：${now}點`;
+        }
+        return delta > 0 ? `Last ${before} → now ${now} pts (${difference} fewer)` : delta < 0 ? `Last ${before} → now ${now} pts (${difference} more)` : `Same as last time: ${now} pts`;
+    }
+    if (region === 'JP') return `前回：${now}pt`;
+    if (region === 'KR') return `지난번: ${now}pt`;
+    if (region === 'TW' || region === 'HK') return `上次：${now}點`;
+    return `Last time: ${now} pts`;
+}
+
 function prepareFirstView() {
     enhanceCalculatorAdvancedSettings();
 }

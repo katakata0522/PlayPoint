@@ -38,7 +38,7 @@
     <meta name="twitter:description" content="免費模擬 Google Play 點數升級需求與反推模式，會比較基本獲點率與 Google Play 顯示的活動特別獲點率。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="../js/main.js?v=20545d5228">
+    <link rel="modulepreload" href="../js/main.js?v=3b3de5a2df">
     <link rel="modulepreload" href="../js/config.js">
     <link rel="modulepreload" href="../js/analytics-core.js?v=96fa25c428">
     <link rel="modulepreload" href="../js/ui.js">
@@ -177,10 +177,19 @@
     </script>
     <!-- FAQ_JSON_LD_END -->
     <style id="playpoint-first-view-critical">
+#mainMode>.section:first-child{display:flex;flex-direction:column}
+#mainMode>.section:first-child>#calculateButton{order:2;margin-top:1em}
+.calculator-last-value{display:flex;align-items:center;gap:.45em;flex-wrap:wrap;margin:.55em 0 0;font-size:.88em;line-height:1.5;color:var(--muted-text-color,#5f6368)}
+.calculator-last-value[hidden]{display:none!important}
+.calculator-last-value__reuse{appearance:none;border:0;background:transparent;color:var(--link-color,#0b57d0);padding:.1em .15em;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;box-shadow:none}
+.calculator-last-value__reuse:hover{background:transparent;box-shadow:none;transform:none}
+.calculator-last-value__reuse:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
 .calculator-advanced-settings__toggle{display:none}
 .region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
 @media(max-width:640px){
+#mainMode>.section:first-child>#calculateButton{order:1}
+#mainMode>.section:first-child>#calculator-advanced-settings{order:2}
 .calculator-advanced-settings{display:block;margin-top:.85em}
 .calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
 .calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
@@ -222,9 +231,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     </div>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">反推模式</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">還差多少？</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">這筆消費有幾點？</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">🎁 每週記錄</button>
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
@@ -250,6 +259,11 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <div id="calculator-last-value" class="calculator-last-value" hidden aria-live="polite">
+                <span id="calculator-last-value-text"></span>
+                <button type="button" id="calculator-last-value-reuse" class="calculator-last-value__reuse" data-lang-key="lastCalculationReuse">使用上次條件</button>
+            </div>
+            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
@@ -275,7 +289,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
 
         <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" hidden aria-label="分享計算結果" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">複製</button>
@@ -457,8 +470,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/intl-copy-overrides.js?v=d0721f30f4"></script>
-<script type="module" src="../js/main.js?v=20545d5228"></script>
+<script type="module" src="../js/intl-copy-overrides.js?v=52d2b07474"></script>
+<script type="module" src="../js/main.js?v=3b3de5a2df"></script>
 <script src="../js/third-party.js?v=2517871a38" defer></script>
 
 </body>
