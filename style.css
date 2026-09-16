@@ -2519,7 +2519,7 @@ html[lang^="zh"] .home-calculator-first #tab-main::after{content:"還差多少�
 
 /* HOME_CALCULATOR_FIRST_PHONE_COMPACT_START */
 @media(max-width:640px){
-  .home-calculator-first{padding-left:10px;padding-right:10px}
+  .home-calculator-first{box-sizing:border-box;padding-left:10px;padding-right:10px}
   .home-calculator-first .top-bar{margin:.05rem auto .45rem}
   .home-calculator-first .region-switch{padding:3px;border-radius:14px}
   .home-calculator-first .region-switch>button,.home-calculator-first .region-switch .region-more-toggle{min-height:44px;padding:.3rem .05rem;font-size:.82rem}
