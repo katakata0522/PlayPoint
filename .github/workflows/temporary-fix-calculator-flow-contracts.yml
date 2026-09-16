@@ -26,10 +26,7 @@ jobs:
       - name: Prepare canonical generated outputs
         run: node scripts/prepare-pr.cjs
 
-      - name: Run complete preflight
-        run: node .github/scripts/preflight.cjs
-
-      - name: Commit verified product changes
+      - name: Create local verification commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -37,7 +34,17 @@ jobs:
           git reset -- .github/workflows/temporary-fix-calculator-flow-contracts.yml scripts/temporary-fix-calculator-flow-contracts.cjs
           if git diff --cached --quiet; then
             echo "No product changes to commit."
-            exit 0
+          else
+            git commit -m "計算導線の多言語・静的生成契約を整合"
           fi
-          git commit -m "計算導線の多言語・静的生成契約を整合"
-          git push origin HEAD:feat/calculator-flow-memory-20260916
+
+      - name: Verify clean tree before preflight
+        run: |
+          git status --short
+          test -z "$(git status --porcelain)"
+
+      - name: Run complete preflight
+        run: node .github/scripts/preflight.cjs
+
+      - name: Push verified product changes
+        run: git push origin HEAD:feat/calculator-flow-memory-20260916
