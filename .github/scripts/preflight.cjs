@@ -3,6 +3,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { createPhaseRunner } = require('./ci-phase-runner.cjs');
+const { evidenceDir } = require('./ci-evidence.cjs');
 const { generatedFiles } = require('../../scripts/build-targets.cjs');
 const { assetSyncMutableJsTargets, cssTargets } = require('./minify.cjs');
 
@@ -32,6 +34,14 @@ const requiredPublicFiles = [
 ];
 const snapshots = new Map();
 const failures = [];
+const phases = createPhaseRunner({ outputPath: path.join(evidenceDir(), 'preflight.json'), metadata: { prepareDeploy } });
+const phaseConfig = {
+  'JavaScript構文検証': { id: 'syntax', deterministic: true },
+  '生成物の再現性検証': { id: 'build-output', deterministic: true },
+  '公開アセット圧縮': { id: 'minify', dependsOn: ['syntax', 'public-files', 'build-output'] },
+  '圧縮後JavaScript構文検証': { id: 'post-minify-syntax', dependsOn: ['minify'], deterministic: true },
+  '圧縮後の配信境界回帰テスト': { id: 'post-minify-tests', dependsOn: ['minify', 'post-minify-syntax'] }
+};
 
 function snapshotMutableFiles() {
   for (const relativePath of mutableFiles) {
@@ -56,16 +66,22 @@ function restoreMutableFiles() {
 
 function runPhase(name, command, args) {
   console.log('\n=== ' + name + ' ===');
-  const result = spawnSync(command, args, {
-    cwd: root,
-    stdio: 'inherit',
-    env: process.env
-  });
-
-  if (result.error || result.status !== 0) {
+  const phase = phases.run({ name, id: args[0], ...phaseConfig[name] }, () => spawnSync(command, args, {
+    cwd: root, stdio: 'inherit', env: process.env
+  }));
+  if (!['PASS', 'UPSTREAM_SKIPPED'].includes(phase.classification)) {
     failures.push(name);
-    if (result.error) console.error(result.error.message);
+    if (phase.error) console.error(phase.error);
   }
+}
+
+function runInlinePhase(id, name, execute) {
+  const before = failures.length;
+  const phase = phases.run({ id, name, deterministic: true }, () => {
+    execute();
+    return { status: failures.length === before ? 0 : 1 };
+  });
+  if (phase.classification !== 'PASS' && failures.length === before) failures.push(name);
 }
 
 function verifyRequiredPublicFiles() {
@@ -119,9 +135,9 @@ snapshotMutableFiles();
 
 try {
   runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  verifyRequiredPublicFiles();
+  runInlinePhase('public-files', '公開必須ファイル検証', () => { verifyRequiredPublicFiles(); });
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
-  verifyServiceWorkerPrecacheAssets();
+  runInlinePhase('sw-precache', 'Service Worker先読み対象検証', () => { verifyServiceWorkerPrecacheAssets(); });
   runPhase('最新情報ハブ鮮度検証', process.execPath, ['scripts/latest-hub-audit.cjs', '--fresh']);
   runPhase('公開記事の検索意図・内部リンク検証', process.execPath, ['scripts/article-content-navigation-normalize.cjs', '--check']);
   runPhase('記事Design System 2.0監査', process.execPath, ['scripts/article-design-system-audit.cjs']);
@@ -135,7 +151,11 @@ try {
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
   runPhase('圧縮後の配信境界回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
 } finally {
-  if (!prepareDeploy) restoreMutableFiles();
+  try {
+    if (!prepareDeploy) restoreMutableFiles();
+  } finally {
+    if (!phases.finish().passed) process.exitCode = 1;
+  }
 }
 
 if (failures.length > 0) {

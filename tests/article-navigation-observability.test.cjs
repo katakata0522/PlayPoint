@@ -8,6 +8,7 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const analyticsSource = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
+const suiteSource = fs.readFileSync(path.join(root, '.github/scripts/lighthouse-suite.cjs'), 'utf8');
 const workflowSource = fs.readFileSync(path.join(root, '.github/workflows/mobile-performance.yml'), 'utf8');
 const budget = require('../.github/scripts/mobile-performance-budget.cjs');
 
@@ -127,9 +128,10 @@ test('article navigation rejects unknown cardinality values and external target 
 });
 
 test('P0 performance CI measures EN KO TW articles independently', () => {
+  assert.match(workflowSource, /node \.github\/scripts\/lighthouse-suite\.cjs/);
   for (const locale of ['en', 'ko', 'tw']) {
-    assert.match(workflowSource, new RegExp('international-article-' + locale));
-    assert.match(workflowSource, new RegExp('/' + locale + '/articles/google-play-points-join-eligibility\\.html'));
+    assert.match(suiteSource, new RegExp('international-article-' + locale));
+    assert.match(suiteSource, new RegExp('/' + locale + '/articles/google-play-points-join-eligibility\\.html'));
     const profile = budget.getProfile('performance-artifacts/international-article-' + locale + '.json');
     const expected = 'internationalArticle' + locale[0].toUpperCase() + locale.slice(1);
     assert.equal(profile, expected);

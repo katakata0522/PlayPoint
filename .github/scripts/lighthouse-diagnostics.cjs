@@ -2,11 +2,17 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { reportPathsFromArgs } = require('./mobile-performance-budget.cjs');
 
 function parseArgs(argv) {
   const reportPaths = [];
   let outputDir = 'performance-artifacts';
   for (let index = 0; index < argv.length; index += 1) {
+    if (argv[index] === '--manifest') {
+      reportPaths.push(...reportPathsFromArgs(argv.slice(index, index + 2), { requireComplete: false }));
+      index += 1;
+      continue;
+    }
     if (argv[index] === '--output-dir') {
       outputDir = argv[index + 1] || outputDir;
       index += 1;
@@ -115,6 +121,12 @@ function summarize(reportPath) {
     file: reportPath,
     url: report.finalDisplayedUrl || report.finalUrl || '',
     fetchedAt: report.fetchTime || null,
+    lighthouseVersion: report.lighthouseVersion || null,
+    environment: report.environment || null,
+    configSettings: report.configSettings || null,
+    resources: (report.audits?.['network-requests']?.details?.items || []).map(item => ({
+      url: item.url, resourceType: item.resourceType, transferSize: item.transferSize, resourceSize: item.resourceSize, statusCode: item.statusCode
+    })).sort((a, b) => (b.transferSize || 0) - (a.transferSize || 0)),
     metrics: {
       performanceScore: report.categories?.performance?.score ?? null,
       firstContentfulPaintMs: numericValue(report, 'first-contentful-paint'),
@@ -134,6 +146,7 @@ function toMarkdown(summaries) {
   const lines = ['# Low-end Android Lighthouse diagnostics', ''];
   for (const summary of summaries) {
     lines.push(`## ${summary.url || summary.file}`, '');
+    if (summary.error) { lines.push('INVALID_MEASUREMENT: ' + summary.error, ''); continue; }
     lines.push('| Metric | Value |', '|---|---:|');
     for (const [name, value] of Object.entries(summary.metrics)) {
       lines.push(`| ${name} | ${value ?? 'n/a'} |`);
@@ -179,11 +192,13 @@ function main(argv = process.argv.slice(2)) {
   }
 
   fs.mkdirSync(outputDir, { recursive: true });
-  const summaries = reportPaths.map(summarize);
+  const summaries = reportPaths.map(file => {
+    try { return summarize(file); } catch (error) { return { file, error: error.message }; }
+  });
   fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.json'), `${JSON.stringify(summaries, null, 2)}\n`);
   fs.writeFileSync(path.join(outputDir, 'lighthouse-diagnostics.md'), toMarkdown(summaries));
   console.log(`Lighthouse診断結果を保存しました: ${outputDir}`);
-  return 0;
+  return summaries.some(summary => summary.error) ? 1 : 0;
 }
 
 if (require.main === module) {

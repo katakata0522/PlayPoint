@@ -27,16 +27,29 @@ concurrency:
 jobs:
   rollback:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - name: Checkout rollback control plane
+        id: checkout_rollback_control_plane
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 2
 
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
+
       - name: Setup SSH
+        id: setup_ssh
         env:
           SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
@@ -58,10 +71,12 @@ jobs:
           unset SSH_PRIVATE_KEY_B64
 
       - name: List retained verified snapshots
+        id: list_retained_verified_snapshots
         if: inputs.operation == 'list'
         run: bash .github/scripts/snapshot-history.sh --list
 
       - name: Verify selected history snapshot
+        id: verify_selected_history_snapshot
         if: inputs.operation == 'verify' || inputs.operation == 'restore'
         id: history
         shell: bash
@@ -83,6 +98,7 @@ jobs:
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
 
       - name: Validate explicit rollback confirmation
+        id: validate_explicit_rollback_confirmation
         if: inputs.operation == 'restore'
         shell: bash
         env:
@@ -100,16 +116,19 @@ jobs:
           fi
 
       - name: Preserve current verified production in history
+        id: preserve_current_verified_production_in_history
         if: inputs.operation == 'restore'
         env:
           PROTECTED_HISTORY_REVISION: ${{ inputs.expected_revision }}
         run: bash .github/scripts/snapshot-history.sh --archive-live
 
       - name: Activate selected history snapshot as rollback source
+        id: activate_selected_history_snapshot_as_rollback_source
         if: inputs.operation == 'restore'
         run: bash .github/scripts/snapshot-history.sh --activate "${{ inputs.expected_revision }}"
 
       - name: Verify activated rollback snapshot
+        id: verify_activated_rollback_snapshot
         if: inputs.operation == 'restore'
         id: snapshot
         shell: bash
@@ -125,12 +144,14 @@ jobs:
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
 
       - name: Restore verified snapshot
+        id: restore_verified_snapshot
         if: inputs.operation == 'restore'
         env:
           EXPECTED_ROLLBACK_REVISION: ${{ inputs.expected_revision }}
         run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
 
       - name: Checkout restored revision for matching verification logic
+        id: checkout_restored_revision_for_matching_verification_logic
         if: inputs.operation == 'restore'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -140,6 +161,7 @@ jobs:
           fetch-depth: 2
 
       - name: Verify restored production HTTP, SEO, sitemap, and security
+        id: verify_restored_production_http_seo_sitemap_and_security
         if: inputs.operation == 'restore'
         working-directory: rollback-verifier
         env:
@@ -156,10 +178,12 @@ jobs:
       # runtimeはtrusted current main側で一度だけ準備し、復元版には環境だけ渡す。
       # これにより古いsnapshotが新helperを持たなくても検証可能にする。
       - name: Install browser driver for restored revision
+        id: ci_browser
         if: inputs.operation == 'restore'
         run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Verify restored production in Chromium
+        id: verify_restored_production_in_chromium
         if: inputs.operation == 'restore'
         working-directory: rollback-verifier
         env:
@@ -176,6 +200,7 @@ jobs:
           node .github/scripts/embed-widget-smoke.cjs
 
       - name: Upload rollback browser evidence
+        id: upload_rollback_browser_evidence
         if: ${{ always() && inputs.operation == 'restore' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -185,5 +210,24 @@ jobs:
           retention-days: 7
 
       - name: Remove SSH material
+        id: remove_ssh_material
         if: always()
         run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
+          if-no-files-found: warn
+          retention-days: 7

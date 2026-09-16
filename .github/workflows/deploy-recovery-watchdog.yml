@@ -20,15 +20,27 @@ concurrency:
 jobs:
   recover:
     if: ${{ contains(fromJSON('["failure","cancelled","timed_out","action_required","stale","startup_failure"]'), github.event.workflow_run.conclusion) }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Checkout trusted recovery control plane
+        id: checkout_trusted_recovery_control_plane
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
           persist-credentials: false
           fetch-depth: 2
+
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
 
       - name: Inspect failed deploy and live production
         id: recovery
@@ -40,10 +52,12 @@ jobs:
         run: node .github/scripts/recovery-watchdog.cjs
 
       - name: Report safe no-recovery result
+        id: report_safe_no_recovery_result
         if: steps.recovery.outputs.recovery_needed == 'false'
         run: echo "No external restore required (${{ steps.recovery.outputs.reason }})."
 
       - name: Setup recovery SSH
+        id: setup_recovery_ssh
         if: steps.recovery.outputs.recovery_needed == 'true'
         env:
           SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -75,12 +89,14 @@ jobs:
           echo "revision=$revision" >> "$GITHUB_OUTPUT"
 
       - name: Restore previous verified production externally
+        id: restore_previous_verified_production_externally
         if: steps.recovery.outputs.recovery_needed == 'true'
         env:
           EXPECTED_ROLLBACK_REVISION: ${{ steps.snapshot.outputs.revision }}
         run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
 
       - name: Checkout externally restored revision
+        id: checkout_externally_restored_revision
         if: steps.recovery.outputs.recovery_needed == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -90,6 +106,7 @@ jobs:
           fetch-depth: 2
 
       - name: Verify external recovery HTTP, SEO, sitemap, and security
+        id: verify_external_recovery_http_seo_sitemap_and_security
         if: steps.recovery.outputs.recovery_needed == 'true'
         working-directory: recovery-verifier
         env:
@@ -105,10 +122,12 @@ jobs:
 
       # trusted main側の単一helperでruntimeを準備し、復元版には環境だけ渡す。
       - name: Install browser verifier after external restore
+        id: ci_browser
         if: steps.recovery.outputs.recovery_needed == 'true'
         run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Verify external recovery in Chromium
+        id: verify_external_recovery_in_chromium
         if: steps.recovery.outputs.recovery_needed == 'true'
         working-directory: recovery-verifier
         env:
@@ -125,6 +144,7 @@ jobs:
           node .github/scripts/embed-widget-smoke.cjs
 
       - name: Upload external recovery browser evidence
+        id: upload_external_recovery_browser_evidence
         if: ${{ always() && steps.recovery.outputs.recovery_needed == 'true' }}
         continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -135,5 +155,24 @@ jobs:
           retention-days: 7
 
       - name: Remove recovery SSH material
+        id: remove_recovery_ssh_material
         if: always()
         run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
+          if-no-files-found: warn
+          retention-days: 7

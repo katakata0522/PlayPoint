@@ -33,17 +33,29 @@ jobs:
   deploy:
     # 本番反映はmainの内容だけを対象にする
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Xserverの通信フェーズは接続待ちに加えて、接続後の停止も上限付きで検知して再試行する。
     # 本体ミラー7回・snapshot/rollback等5回に加え、本番Chromiumと失敗時の復元検証まで50分以内に収める。
     timeout-minutes: 50
     steps:
       - name: Checkout code
+        id: checkout_code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           # pushのbefore..HEADを判定できれば十分。複数commit pushなどで親を取得できない場合は安全側でDeployする。
           fetch-depth: 2
+
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
 
       - name: Detect production deploy impact
         id: deploy-impact
@@ -94,14 +106,17 @@ jobs:
           echo "deploy_needed=$deploy_needed" >> "$GITHUB_OUTPUT"
 
       - name: Skip production deployment for non-public changes
+        id: skip_production_deployment_for_non_public_changes
         if: steps.deploy-impact.outputs.deploy_needed == 'false'
         run: echo 'No public/deployment input changed. Skipping preflight preparation, browser setup, SSH, rsync, and production verification.'
 
       - name: Run complete preflight and prepare deploy assets
+        id: run_complete_preflight_and_prepare_deploy_assets
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: node .github/scripts/preflight.cjs --prepare-deploy
 
       - name: Create deploying status marker
+        id: create_deploying_status_marker
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: |
           DEPLOY_STARTED_AT="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
@@ -111,6 +126,7 @@ jobs:
           node .github/scripts/deploy-status.cjs
 
       - name: Prepare explicit public deployment tree
+        id: prepare_explicit_public_deployment_tree
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         shell: bash
         run: |
@@ -122,10 +138,12 @@ jobs:
       # ブラウザ実行環境の準備失敗はproduction mutationではないため、snapshot/rsyncより前に失敗させる。
       # rollback後のChromiumも同じrunner・node_modules・CHROME_PATHを再利用し、緊急復旧中に外部installへ依存しない。
       - name: Install production browser verifier
+        id: ci_browser
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Setup SSH
+        id: setup_ssh
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:
           SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -148,6 +166,7 @@ jobs:
           unset SSH_PRIVATE_KEY_B64
 
       - name: Snapshot current verified production
+        id: snapshot_current_verified_production
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         run: bash .github/scripts/deploy-rsync.sh --snapshot-verified
 
@@ -213,6 +232,7 @@ jobs:
 
       # 証跡保管は観測性の補助であり、本番の健全性判定やrollback条件にはしない。
       - name: Upload production browser evidence
+        id: upload_production_browser_evidence
         if: ${{ always() && steps.deploy-impact.outputs.deploy_needed == 'true' && (steps.production-browser.outcome == 'success' || steps.production-browser.outcome == 'failure') }}
         continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -249,6 +269,7 @@ jobs:
         run: bash .github/scripts/deploy-rsync.sh --restore-verified-snapshot
 
       - name: Checkout auto-rollback revision for matching verification logic
+        id: checkout_auto_rollback_revision_for_matching_verification_logic
         if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -275,6 +296,7 @@ jobs:
       # 本番mutation前に準備済みのPlaywright・Chrome・日本語フォントをそのまま再利用する。
       # 復旧中はapt/npmの追加ネットワーク依存を増やさない。
       - name: Verify auto-rollback production in Chromium
+        id: verify_auto_rollback_production_in_chromium
         if: ${{ failure() && steps.auto-rollback.outcome == 'success' && steps.auto-rollback-http.outcome == 'success' }}
         working-directory: auto-rollback-verifier
         env:
@@ -291,6 +313,7 @@ jobs:
           node .github/scripts/embed-widget-smoke.cjs
 
       - name: Upload auto-rollback browser evidence
+        id: upload_auto_rollback_browser_evidence
         if: ${{ failure() && steps.auto-rollback.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -300,5 +323,24 @@ jobs:
           retention-days: 7
 
       - name: Remove SSH material
+        id: remove_ssh_material
         if: always()
         run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
+          if-no-files-found: warn
+          retention-days: 7

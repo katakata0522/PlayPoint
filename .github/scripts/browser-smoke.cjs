@@ -4,6 +4,9 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
+const { withNavigationRetry } = require('./browser-navigation-retry.cjs');
+const { writeJson } = require('./ci-evidence.cjs');
+const navigationAttempts = [];
 const { verifyDeployRevisionWithRetry } = require('./verify-deploy-revision.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -159,19 +162,20 @@ function observeBrowser(page, origin) {
 }
 
 async function openPage(page, url) {
-  let lastError;
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    try {
+  return withNavigationRetry({
+    url,
+    operation: async () => {
       const response = await page.goto(url, { waitUntil: 'commit', timeout: 45_000 });
       if (response && !response.ok()) throw new Error(`HTTP ${response.status()}`);
       await page.locator('#calculateButton').waitFor({ state: 'attached', timeout: 30_000 });
-      return;
-    } catch (error) {
-      lastError = error;
-      if (attempt < 3) await page.waitForTimeout(attempt * 1_000);
+    },
+    delay: ms => page.waitForTimeout(ms),
+    onAttempt: attempt => {
+      navigationAttempts.push(attempt);
+      writeJson(path.join(ARTIFACT_DIR, 'navigation-attempts.json'), navigationAttempts);
+      if (attempt.classification === 'FLAKY_RECOVERED') console.warn(`FLAKY_RECOVERED: ${attempt.url}, attempt ${attempt.attempt}`);
     }
-  }
-  throw lastError;
+  });
 }
 
 async function waitForStage(page, label, callback, argument) {
@@ -514,30 +518,33 @@ async function verifyRevision(baseUrl) {
 }
 
 async function main() {
-  assert(CHROME_PATH, 'CHROME_PATH is required');
   fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
   fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
-
+  navigationAttempts.length = 0;
   let localServer;
-  const baseUrl = REQUESTED_BASE_URL
-    ? normalizeBaseUrl(REQUESTED_BASE_URL)
-    : (localServer = await startLocalServer()).baseUrl;
+  let browser;
+  let stage = 'environment';
   const report = {
     checkedAt: new Date().toISOString(),
     mode: REQUESTED_BASE_URL ? 'production' : 'local',
-    baseUrl,
+    baseUrl: null,
     revision: null,
     locales: [],
     blog: { passed: false },
     passed: false
   };
-  const browser = await chromium.launch({
-    headless: true,
-    executablePath: CHROME_PATH,
-    args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-  });
-
   try {
+    assert(CHROME_PATH, 'CHROME_PATH is required');
+    const baseUrl = REQUESTED_BASE_URL
+      ? normalizeBaseUrl(REQUESTED_BASE_URL)
+      : (localServer = await startLocalServer()).baseUrl;
+    report.baseUrl = baseUrl;
+    browser = await chromium.launch({
+      headless: true,
+      executablePath: CHROME_PATH,
+      args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
+    });
+    stage = 'verification';
     report.revision = await verifyRevision(baseUrl);
     for (const locale of LOCALES) {
       const result = { locale: locale.key, passed: false };
@@ -560,9 +567,18 @@ async function main() {
       console.error(`not ok - Blog: ${error.message}`);
     }
     report.passed = report.locales.every(result => result.passed) && report.blog.passed;
+  } catch (error) {
+    report.error = error.message;
+    report.failedStage = stage;
+    report.passed = false;
   } finally {
-    await browser.close();
-    if (localServer) await localServer.close();
+    // 起動やclose自体が失敗しても、失敗証跡と他方のcleanupを失わない。
+    report.cleanupErrors = [];
+    try { if (browser) await browser.close(); } catch (error) { report.cleanupErrors.push(error.message); }
+    try { if (localServer) await localServer.close(); } catch (error) { report.cleanupErrors.push(error.message); }
+    if (report.cleanupErrors.length) report.passed = false;
+    report.navigationAttempts = navigationAttempts;
+    report.classification = report.passed ? (navigationAttempts.some(item => item.classification === 'FLAKY_RECOVERED') ? 'FLAKY_RECOVERED' : 'PASS') : report.failedStage === 'environment' ? 'ENVIRONMENT_FAIL' : 'CHECK_FAIL';
     fs.writeFileSync(path.join(ARTIFACT_DIR, 'report.json'), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   }
 

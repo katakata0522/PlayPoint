@@ -16,23 +16,37 @@ concurrency:
 jobs:
   gate:
     name: PR Gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout code
+        id: checkout_code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           # PR merge commitの両親を取得し、基準mainの実出力と比較する。
           fetch-depth: 2
 
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
+
       - name: Verify build refactor output equivalence
+        id: verify_build_refactor_output_equivalence
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/build-')
         env:
           REFACTOR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: node scripts/verify-refactor-output.cjs --base "$REFACTOR_BASE_SHA" --evidence-dir "$RUNNER_TEMP/playpoint-refactor-evidence"
 
       - name: Run complete preflight
+        id: run_complete_preflight
         shell: bash
         run: |
           # teeの成功で検証失敗を隠さず、ログ保存と失敗の伝播を両立する。
@@ -40,9 +54,11 @@ jobs:
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
       - name: Install required browser driver
+        id: ci_browser
         run: bash .github/scripts/setup-browser-runtime.sh
 
       - name: Run required Chromium verification
+        id: run_required_chromium_verification
         run: |
           set -euo pipefail
           node .github/scripts/browser-smoke.cjs
@@ -55,6 +71,7 @@ jobs:
           node .github/scripts/embed-widget-smoke.cjs
 
       - name: Compare refactored runtime and appearance with the base revision
+        id: compare_refactored_runtime_and_appearance_with_the_base_revision
         if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-')
         shell: bash
         env:
@@ -69,6 +86,7 @@ jobs:
           node .github/scripts/refactor-visual-smoke.cjs "$baseline_dir"
 
       - name: Preserve runtime refactor source evidence
+        id: preserve_runtime_refactor_source_evidence
         if: ${{ always() && github.event_name == 'pull_request' && startsWith(github.head_ref, 'refactor/runtime-') }}
         shell: bash
         env:
@@ -82,6 +100,7 @@ jobs:
           printf 'base=%s\ncandidate=%s\ntree=%s\n' "$REFACTOR_BASE_SHA" "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" > "$evidence_dir/source-revisions.txt"
 
       - name: Preserve required gate verification evidence
+        id: preserve_required_gate_verification_evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -90,5 +109,23 @@ jobs:
             ${{ runner.temp }}/playpoint-preflight.log
             ${{ runner.temp }}/playpoint-refactor-evidence/
             browser-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
           if-no-files-found: warn
           retention-days: 7

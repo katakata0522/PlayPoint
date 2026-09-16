@@ -19,17 +19,30 @@ jobs:
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Checkout trusted control plane
+        id: checkout_trusted_control_plane
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: main
           persist-credentials: false
           fetch-depth: 2
 
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
+
       - name: Setup SSH
+        id: setup_ssh
         env:
           SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
@@ -48,11 +61,32 @@ jobs:
           unset SSH_PRIVATE_KEY_B64
 
       - name: Archive live verified production
+        id: archive_live_verified_production
         run: bash .github/scripts/snapshot-history.sh --archive-live
 
       - name: Show retained verified revisions
+        id: show_retained_verified_revisions
         run: bash .github/scripts/snapshot-history.sh --list
 
       - name: Remove SSH material
+        id: remove_ssh_material
         if: always()
         run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
+          if-no-files-found: warn
+          retention-days: 7

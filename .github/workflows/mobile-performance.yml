@@ -41,6 +41,10 @@ on:
       - '.github/scripts/minify.cjs'
       - '.github/scripts/mobile-performance-budget.cjs'
       - '.github/scripts/lighthouse-diagnostics.cjs'
+      - '.github/scripts/lighthouse-suite.cjs'
+      - '.github/scripts/setup-browser-runtime.sh'
+      - '.github/scripts/ci-evidence.cjs'
+      - '.github/ci-runtime/**'
   schedule:
     # 毎週月曜 05:30 JST
     - cron: '30 20 * * 0'
@@ -54,15 +58,28 @@ concurrency:
 
 jobs:
   lighthouse:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - name: Checkout code
+        id: checkout_code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
+      - name: Set up pinned CI Node
+        id: ci_node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Record CI environment
+        id: record_ci_environment
+        run: node .github/scripts/ci-evidence.cjs
+
       - name: Resolve audit target
+        id: resolve_audit_target
         shell: bash
         run: |
           set -euo pipefail
@@ -82,10 +99,12 @@ jobs:
 
       # PRでも本番デプロイと同じ公開アセット準備を通した成果物を測る。
       - name: Prepare production-like local assets
+        id: prepare_production_like_local_assets
         if: env.AUDIT_TARGET == 'local'
         run: node .github/scripts/minify.cjs
 
       - name: Start local static server
+        id: start_local_static_server
         if: env.AUDIT_TARGET == 'local'
         shell: bash
         run: |
@@ -101,82 +120,48 @@ jobs:
           cat /tmp/playpoint-performance-server.log
           exit 1
 
+      - name: Install performance browser runtime
+        id: ci_browser
+        run: bash .github/scripts/setup-browser-runtime.sh --performance
+
       - name: Audit calculator, hubs and representative articles
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p performance-artifacts
-
-          blocked_flags=()
-          if [[ "$AUDIT_TARGET" == "local" ]]; then
-            # PRでは変更した自サイト資産を安定して比較し、第三者タグの揺らぎは
-            # 週次のproduction監査で別途確認する。
-            blocked_flags+=(
-              '--blocked-url-patterns=https://www.googletagmanager.com/*'
-              '--blocked-url-patterns=https://www.google-analytics.com/*'
-              '--blocked-url-patterns=https://analytics.google.com/*'
-              '--blocked-url-patterns=https://stats.g.doubleclick.net/*'
-              '--blocked-url-patterns=https://pagead2.googlesyndication.com/*'
-              '--blocked-url-patterns=https://googleads.g.doubleclick.net/*'
-            )
-          fi
-
-          audit_page() {
-            local name="$1"
-            local page_path="$2"
-            npx --yes lighthouse@13.3.0 "${AUDIT_BASE_URL}${page_path}" \
-              --only-categories=performance \
-              --form-factor=mobile \
-              --throttling.cpuSlowdownMultiplier=6 \
-              --output=json \
-              --output-path="performance-artifacts/${name}.json" \
-              --chrome-flags="--headless --no-sandbox --disable-gpu" \
-              --max-wait-for-load=45000 \
-              "${blocked_flags[@]}" \
-              --quiet
-          }
-
-          # LighthouseのLCPは同一成果物でも揺れるため、トップだけ3回測定して中央値で判定する。
-          audit_page calculator-home-1 /
-          audit_page calculator-home-2 /
-          audit_page calculator-home-3 /
-          audit_page article-hub /blog/
-          audit_page representative-article /articles/2026-03-10-play-points-reflection-timing.html
-          # 海外記事はlocaleごとに別プロファイルで評価し、1地域の悪化を平均値で隠さない。
-          audit_page international-article-en /en/articles/google-play-points-join-eligibility.html
-          audit_page international-article-ko /ko/articles/google-play-points-join-eligibility.html
-          audit_page international-article-tw /tw/articles/google-play-points-join-eligibility.html
+        id: ci_audit
+        run: node .github/scripts/lighthouse-suite.cjs
 
       - name: Save Lighthouse diagnostics
-        run: >-
-          node .github/scripts/lighthouse-diagnostics.cjs
-          performance-artifacts/calculator-home-1.json
-          performance-artifacts/calculator-home-2.json
-          performance-artifacts/calculator-home-3.json
-          performance-artifacts/article-hub.json
-          performance-artifacts/representative-article.json
-          performance-artifacts/international-article-en.json
-          performance-artifacts/international-article-ko.json
-          performance-artifacts/international-article-tw.json
-          --output-dir performance-artifacts
+        id: save_lighthouse_diagnostics
+        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
+        run: node .github/scripts/lighthouse-diagnostics.cjs --manifest performance-artifacts/audit-manifest.json --output-dir performance-artifacts
 
       - name: Enforce strengthened mobile performance budgets
-        run: >-
-          node .github/scripts/mobile-performance-budget.cjs
-          performance-artifacts/calculator-home-1.json
-          performance-artifacts/calculator-home-2.json
-          performance-artifacts/calculator-home-3.json
-          performance-artifacts/article-hub.json
-          performance-artifacts/representative-article.json
-          performance-artifacts/international-article-en.json
-          performance-artifacts/international-article-ko.json
-          performance-artifacts/international-article-tw.json
+        id: enforce_strengthened_mobile_performance_budgets
+        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
+        run: node .github/scripts/mobile-performance-budget.cjs --manifest performance-artifacts/audit-manifest.json
 
       - name: Upload Lighthouse reports and CLS evidence
+        id: upload_lighthouse_reports_and_cls_evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: low-end-android-performance-${{ github.event_name }}-${{ github.run_id }}
+          name: low-end-android-performance-${{ github.event_name }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: performance-artifacts/
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Record CI job outcome
+        id: record_ci_job_outcome
+        if: always()
+        env:
+          CI_JOB_STATUS: ${{ job.status }}
+          CI_STEPS_JSON: ${{ toJSON(steps) }}
+        run: node .github/scripts/ci-evidence.cjs finalize
+
+      - name: Preserve CI environment and phase evidence
+        id: preserve_ci_environment_and_phase_evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/playpoint-ci-evidence/
+          if-no-files-found: warn
+          retention-days: 7
