@@ -87,7 +87,7 @@ function loadFirstView({ search = '', language = 'en-US', region = 'JP' } = {}) 
   const source = read('js/first-view.js')
     .replace(/^import\s+.*$/gm, '')
     .replace(/^export\s+/gm, '')
-    .concat('\n;globalThis.__firstView = { shouldAutoOpenAdvancedSettings, enhanceCalculatorAdvancedSettings, getSuggestedRegionForBrowserLanguage, checkLanguageSuggestion, readLastMainCalculationStore, getLastMainCalculationForRegion, saveLastMainCalculationForRegion, sameCalculationContext, formatLastCalculationText };');
+    .concat('\n;globalThis.__firstView = { shouldAutoOpenAdvancedSettings, enhanceCalculatorAdvancedSettings, getSuggestedRegionForBrowserLanguage, checkLanguageSuggestion, getLastMainCalculationForRegion, saveLastMainCalculationForRegion, sameCalculationContext, formatLastCalculationText };');
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'first-view.js' });
 
@@ -260,12 +260,12 @@ test('同じランク条件の再計算だけ前回との差を表示する', ()
 
 test('公開トップは行動ベースのタブ名と、入力を邪魔しない前回値表示領域を持つ', () => {
   const expected = {
-    'index.html': ['あといくら必要？', 'この課金で何pt？', '週次を記録'],
-    'en/index.html': ['How much left?', 'Points from spend', 'Log weekly'],
-    'ko/index.html': ['얼마나 더 필요?', '이 결제로 몇 pt?', '주간 기록'],
-    'tw/index.html': ['還差多少？', '這筆消費有幾點？', '每週記錄'],
-    'hk/index.html': ['還差多少？', '這筆消費有幾點？', '每週記錄'],
-    'in/index.html': ['How much left?', 'Points from spend', 'Log weekly']
+    'index.html': ['あといくら必要？', 'この課金で何pt？', '🎁 週次を記録'],
+    'en/index.html': ['How much left?', 'Points from spend', '🎁 Log weekly'],
+    'ko/index.html': ['얼마나 더 필요?', '이 결제로 몇 pt?', '🎁 주간 기록'],
+    'tw/index.html': ['還差多少？', '這筆消費有幾點？', '🎁 每週記錄'],
+    'hk/index.html': ['還差多少？', '這筆消費有幾點？', '🎁 每週記錄'],
+    'in/index.html': ['How much left?', 'Points from spend', '🎁 Log weekly']
   };
 
   for (const [indexPath, labels] of Object.entries(expected)) {

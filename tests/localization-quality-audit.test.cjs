@@ -33,7 +33,7 @@ test('calculator top pages keep localized region aria and Japanese-only destinat
 test('localized top-page source copy is natural before post-generation normalization', () => {
   const locales = createLocales();
 
-  assert.equal(locales.en.staticText.tabDiary, 'Log weekly');
+  assert.equal(locales.en.staticText.tabDiary, '🎁 Log weekly');
   assert.equal(locales.en.staticText.sectionTitleDiary, 'Weekly Rewards Diary');
   assert.ok(!read('en/index.html').includes('Weekly Awards Diary'));
 

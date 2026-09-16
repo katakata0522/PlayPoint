@@ -2,5 +2,9 @@
 
 export {
     bindLanguageSuggestionDismiss,
-    checkLanguageSuggestion
+    checkLanguageSuggestion,
+    formatLastCalculationText,
+    getLastMainCalculationForRegion,
+    sameCalculationContext,
+    saveLastMainCalculationForRegion
 } from './first-view.js';

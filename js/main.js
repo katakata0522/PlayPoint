@@ -13,7 +13,7 @@ import {
     isTaiwanPath,
     switchRegion as navigateToRegion
 } from './region-navigation.js';
-import { bindLanguageSuggestionDismiss, checkLanguageSuggestion } from './language-suggestion.js';
+import { bindLanguageSuggestionDismiss, checkLanguageSuggestion, formatLastCalculationText, getLastMainCalculationForRegion, sameCalculationContext, saveLastMainCalculationForRegion } from './language-suggestion.js';
 import { bindCalendarReminderEvents, downloadICS } from './calendar-reminder.js';
 import { initPwaInstallPrompt } from './pwa-install.js';
 import { trackWidgetReferral } from './widget-referral.js';
@@ -96,6 +96,55 @@ function getValidationErrorType(mode) {
     return matched ? matched[1] : 'unknown';
 }
 
+function getMainCalculationSnapshot() {
+    const points = Number(STATE.dom.neededPoints?.value);
+    if (!Number.isSafeInteger(points) || points < 0) return null;
+    return {
+        region: STATE.currentRegion,
+        currentStatus: String(STATE.dom.currentStatus?.value || ''),
+        targetStatus: String(STATE.dom.targetStatus?.value || ''),
+        neededPoints: String(points)
+    };
+}
+
+function renderLastMainCalculation(snapshot, previous = null) {
+    if (!STATE.dom.calculatorLastValue || !STATE.dom.calculatorLastValueText || !snapshot) return;
+    STATE.dom.calculatorLastValueText.textContent = formatLastCalculationText(STATE.currentRegion, snapshot, previous);
+    STATE.dom.calculatorLastValue.hidden = false;
+}
+
+function renderSavedLastMainCalculation() {
+    const saved = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (saved) renderLastMainCalculation(saved);
+    else if (STATE.dom.calculatorLastValue) STATE.dom.calculatorLastValue.hidden = true;
+}
+
+function restoreLastMainCalculation() {
+    const saved = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (!saved) return;
+    const setSelect = (select, value) => {
+        if (!select || !Array.from(select.options || []).some(option => String(option.value) === value)) return;
+        select.value = value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    setSelect(STATE.dom.currentStatus, saved.currentStatus);
+    setSelect(STATE.dom.targetStatus, saved.targetStatus);
+    if (STATE.dom.neededPoints) {
+        STATE.dom.neededPoints.value = saved.neededPoints;
+        STATE.dom.neededPoints.dispatchEvent(new Event('input', { bubbles: true }));
+        STATE.dom.neededPoints.focus();
+    }
+}
+
+function rememberLastMainCalculation() {
+    const current = getMainCalculationSnapshot();
+    if (!current) return;
+    const previous = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (!saveLastMainCalculationForRegion(STATE.currentRegion, current)) return;
+    if (previous && sameCalculationContext(previous, current)) renderLastMainCalculation(current, previous);
+    else if (STATE.dom.calculatorLastValue) STATE.dom.calculatorLastValue.hidden = true;
+}
+
 function runTrackedCalculation(mode) {
     const target = mode === CONSTANTS.MODE_REVERSE ? STATE.dom.reverseResult : STATE.dom.result;
     calculatorFunnel.trackFormStarted(mode, 'submit');
@@ -114,6 +163,7 @@ function runTrackedCalculation(mode) {
 
     if (!target?.classList.contains(CONSTANTS.CLASS_HAS_RESULT)) return;
     calculatorFunnel.trackCompleted(mode);
+    if (mode === CONSTANTS.MODE_MAIN) rememberLastMainCalculation();
 }
 
 function bindCalculatorFunnelStart(element, mode, startField, eventName = 'input') {
@@ -195,7 +245,8 @@ export function init() {
 
     const ids = [
         'mainMode', 'reverseMode', 'currentStatus', 'baseRate', 'targetStatus',
-        'neededPoints', 'multiplier', 'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
+        'neededPoints', 'multiplier', 'calculator-last-value', 'calculator-last-value-text', 'calculator-last-value-reuse',
+        'calculateButton', 'result', 'result-actions', 'result-details', 'copyButton',
         'tweetButton', 'amountYen', 'reverseStatus', 'reverseBaseRate',
         'reverseMultiplier', 'reverseCalculateButton', 'reverseResult', 'share-twitter-reverse',
         'copyright-year',
@@ -236,6 +287,7 @@ export function init() {
     bindEvent(STATE.dom.confirmImportBtn, 'click', () => queueDiaryAction((DIARY) => DIARY.executeImport()));
     bindLanguageSuggestionDismiss();
     bindCalendarReminderEvents();
+    bindEvent(STATE.dom.calculatorLastValueReuse, 'click', restoreLastMainCalculation);
 
     bindCalculatorFunnelStart(STATE.dom.neededPoints, CONSTANTS.MODE_MAIN, 'needed_points');
     bindCalculatorFunnelStart(STATE.dom.baseRate, CONSTANTS.MODE_MAIN, 'base_rate');
@@ -302,6 +354,7 @@ export function init() {
     updateUIForRegion();
     updateArticleCount();
     SHARE.applyFromUrl();
+    renderSavedLastMainCalculation();
     const entryParams = new URLSearchParams(window.location.search);
     if (entryParams.get('mode') === CONSTANTS.MODE_DIARY) {
         UI.switchMode(CONSTANTS.MODE_DIARY);
