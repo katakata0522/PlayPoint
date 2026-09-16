@@ -1,78 +1,62 @@
 'use strict';
 
 (() => {
-    const UI_VERSION = '20260916a';
-    const currentScript = document.currentScript;
-    const scriptSrc = currentScript?.getAttribute('src') || '';
-    const scriptIndex = scriptSrc.indexOf('js/weekly-reward-ui.js');
-    const assetPrefix = scriptIndex >= 0 ? scriptSrc.substring(0, scriptIndex) : '/';
-
     const COPY = {
         ja: {
-            monthsToggle: '月を選ぶ',
-            currentWeek: '今週のリワード',
-            thisMonth: '今月の記録',
-            history: 'ほかの週',
-            edit: '編集',
-            close: '閉じる',
-            input: '入力',
-            noRecord: '未記録',
-            autoSave: '変更は自動保存されます',
-            saved: '自動保存済み',
-            yearDetails: '年間の記録を見る',
-            toolsDetails: '通知・バックアップ',
-            recordedWeeks: '週記録',
-            points: 'pt'
+            monthsToggle: '月を選ぶ', currentWeek: '今週のリワード', thisMonth: '今月の記録',
+            edit: '編集', close: '閉じる', input: '入力', noRecord: '未記録',
+            autoSave: '変更は自動保存されます', saved: '自動保存済み',
+            yearDetails: '年間の記録を見る', toolsDetails: '通知・バックアップ', recordedWeeks: '週記録', points: 'pt'
         },
         en: {
-            monthsToggle: 'Choose month',
-            currentWeek: 'This week’s reward',
-            thisMonth: 'This month',
-            history: 'Other weeks',
-            edit: 'Edit',
-            close: 'Close',
-            input: 'Enter',
-            noRecord: 'Not recorded',
-            autoSave: 'Changes are saved automatically',
-            saved: 'Auto-saved',
-            yearDetails: 'View yearly records',
-            toolsDetails: 'Reminders & backup',
-            recordedWeeks: 'weeks recorded',
-            points: 'pt'
+            monthsToggle: 'Choose month', currentWeek: 'This week’s reward', thisMonth: 'This month',
+            edit: 'Edit', close: 'Close', input: 'Enter', noRecord: 'Not recorded',
+            autoSave: 'Changes are saved automatically', saved: 'Auto-saved',
+            yearDetails: 'View yearly records', toolsDetails: 'Reminders & backup', recordedWeeks: 'weeks recorded', points: 'pt'
         },
         ko: {
-            monthsToggle: '월 선택',
-            currentWeek: '이번 주 리워드',
-            thisMonth: '이번 달 기록',
-            history: '다른 주',
-            edit: '수정',
-            close: '닫기',
-            input: '입력',
-            noRecord: '미기록',
-            autoSave: '변경 내용은 자동으로 저장됩니다',
-            saved: '자동 저장됨',
-            yearDetails: '연간 기록 보기',
-            toolsDetails: '알림·백업',
-            recordedWeeks: '주 기록',
-            points: 'pt'
+            monthsToggle: '월 선택', currentWeek: '이번 주 리워드', thisMonth: '이번 달 기록',
+            edit: '수정', close: '닫기', input: '입력', noRecord: '미기록',
+            autoSave: '변경 내용은 자동으로 저장됩니다', saved: '자동 저장됨',
+            yearDetails: '연간 기록 보기', toolsDetails: '알림·백업', recordedWeeks: '주 기록', points: 'pt'
         },
         zh: {
-            monthsToggle: '選擇月份',
-            currentWeek: '本週獎勵',
-            thisMonth: '本月記錄',
-            history: '其他週',
-            edit: '編輯',
-            close: '關閉',
-            input: '輸入',
-            noRecord: '尚未記錄',
-            autoSave: '變更會自動儲存',
-            saved: '已自動儲存',
-            yearDetails: '查看年度記錄',
-            toolsDetails: '提醒與備份',
-            recordedWeeks: '週已記錄',
-            points: 'pt'
+            monthsToggle: '選擇月份', currentWeek: '本週獎勵', thisMonth: '本月記錄',
+            edit: '編輯', close: '關閉', input: '輸入', noRecord: '尚未記錄',
+            autoSave: '變更會自動儲存', saved: '已自動儲存',
+            yearDetails: '查看年度記錄', toolsDetails: '提醒與備份', recordedWeeks: '週已記錄', points: 'pt'
         }
     };
+
+    const STYLE_TEXT = `
+#tab-diary::before{content:"🎁";display:inline-block;margin-right:.35em}
+#diaryMode.weekly-ui-ready{--weekly-accent:#0b57d0;--weekly-soft:rgba(11,87,208,.06);--weekly-border:rgba(11,87,208,.16)}
+#diaryMode .diary-header{margin:1.05em 0 .75em}#diaryMode .diary-header h2{font-size:1.45em}
+.weekly-month-picker,.weekly-secondary-details{border:1px solid var(--weekly-border,rgba(11,87,208,.16));border-radius:10px;background:var(--section-bg-color);overflow:hidden}
+.weekly-month-picker{margin:0 0 .8em}
+.weekly-month-picker>summary,.weekly-secondary-details>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:.72em .95em;color:var(--link-hover-color);font-weight:700;cursor:pointer;box-sizing:border-box}
+.weekly-month-picker>summary::-webkit-details-marker,.weekly-secondary-details>summary::-webkit-details-marker{display:none}
+.weekly-month-picker>summary::after,.weekly-secondary-details>summary::after{content:"⌄";font-size:1.1em;transition:transform .16s ease}
+.weekly-month-picker[open]>summary::after,.weekly-secondary-details[open]>summary::after{transform:rotate(180deg)}
+.weekly-month-picker .month-selector{grid-template-columns:repeat(4,minmax(0,1fr));gap:.45em;margin:0;padding:0 .8em .8em}.weekly-month-picker .month-selector button{padding:.62em .2em;min-height:42px}
+#diaryMode .diary-input-area{padding:0;margin-bottom:.9em;border:0;background:transparent}#diaryMode .diary-input-area>#selectedMonth{margin:0 0 .35em;color:var(--link-color);font-size:.9em;font-weight:700;text-align:left}
+.weekly-month-section-title{margin:0 0 .65em;font-size:.92em;font-weight:800;color:var(--text-color);text-align:left}#diaryMode .week-inputs{gap:.55em}
+#diaryMode .week-row{border:1px solid var(--weekly-border,rgba(11,87,208,.16));border-radius:10px;padding:.8em;background:var(--section-bg-color)}
+#diaryMode .week-row.is-weekly-current{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"current current" "label label" "points prize" "share share" "hint hint";gap:.7em;padding:.95em;border:1.5px solid rgba(11,87,208,.3);background:linear-gradient(180deg,rgba(11,87,208,.065),var(--section-bg-color));box-shadow:0 7px 20px rgba(11,87,208,.08)}
+#diaryMode .is-weekly-current .weekly-current-label{grid-area:current;text-align:left;font-size:1.05em;font-weight:800;color:var(--text-color)}#diaryMode .is-weekly-current>label{grid-area:label;margin:0;color:var(--link-color);font-size:.82em;text-align:left}
+#diaryMode .is-weekly-current>input{grid-area:points}#diaryMode .is-weekly-current>select{grid-area:prize}#diaryMode .is-weekly-current>.diary-btn-group{grid-area:share}
+#diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact .diary-save-btn{display:none}#diaryMode .is-weekly-current .diary-btn-group{justify-content:flex-end;min-height:34px}#diaryMode .is-weekly-current .diary-x-share-btn{flex:0 0 auto;min-width:42px;min-height:38px;padding:.35em .75em}
+.weekly-autosave-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
+#diaryMode .week-row.is-weekly-compact{display:block;padding:0;overflow:hidden}.weekly-compact-summary{display:flex;align-items:center;justify-content:space-between;gap:.7em;min-height:50px;padding:.55em .7em .55em .9em}.weekly-compact-main{display:flex;min-width:0;align-items:baseline;gap:.75em;text-align:left}.weekly-compact-main strong{flex:0 0 auto;color:var(--text-color)}.weekly-compact-main span{min-width:0;color:var(--link-color);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.weekly-edit-toggle{flex:0 0 auto;min-height:36px;margin:0;padding:.35em .75em;border:1px solid rgba(11,87,208,.22);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}.weekly-edit-toggle:hover:not(:disabled){background:rgba(11,87,208,.11)}
+#diaryMode .is-weekly-compact>label,#diaryMode .is-weekly-compact>input,#diaryMode .is-weekly-compact>select,#diaryMode .is-weekly-compact>.diary-btn-group{display:none}#diaryMode .is-weekly-compact.is-weekly-expanded{padding:.8em}#diaryMode .is-weekly-compact.is-weekly-expanded .weekly-compact-summary{margin:-.8em -.8em .7em;border-bottom:1px solid var(--weekly-border,rgba(11,87,208,.16))}
+#diaryMode .is-weekly-compact.is-weekly-expanded>label,#diaryMode .is-weekly-compact.is-weekly-expanded>input,#diaryMode .is-weekly-compact.is-weekly-expanded>select,#diaryMode .is-weekly-compact.is-weekly-expanded>.diary-btn-group{display:block}#diaryMode .is-weekly-compact.is-weekly-expanded>label{margin:0 0 .45em;text-align:left}#diaryMode .is-weekly-compact.is-weekly-expanded>.diary-btn-group{display:flex;justify-content:flex-end;margin-top:.65em}#diaryMode .is-weekly-compact.is-weekly-future .weekly-compact-main span{opacity:.72}
+#diaryMode .diary-summary.weekly-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55em;margin:.85em 0}#diaryMode .weekly-summary-strip .summary-box{padding:.8em;border-radius:10px;box-shadow:none}#diaryMode .weekly-summary-strip .summary-box h4{margin-bottom:.55em;padding-bottom:.35em;font-size:.9em}#diaryMode .weekly-summary-strip .summary-box dl{gap:.25em .55em;font-size:.84em}#diaryMode .weekly-summary-strip .summary-box dd{font-size:1.08em}.weekly-recorded-count{margin:.45em 0 0;color:var(--link-color);font-size:.75em}
+.weekly-secondary-details{margin:.7em 0}.weekly-secondary-details[open]>summary{border-bottom:1px solid var(--weekly-border,rgba(11,87,208,.16))}.weekly-secondary-details .diary-year-chart-section,.weekly-secondary-details .diary-reminder-section,.weekly-secondary-details .diary-backup-section{margin:0;border:0;border-radius:0;box-shadow:none}.weekly-secondary-details .diary-year-chart-section{padding:.9em;background:transparent}.weekly-tools-details .diary-reminder-section,.weekly-tools-details .diary-backup-section{padding:.95em}#diaryMode .guest-notice{margin:.7em 0;padding:.72em .85em;font-size:.78em}
+@media(max-width:480px){.weekly-month-picker .month-selector{grid-template-columns:repeat(4,minmax(0,1fr))}#diaryMode .week-row.is-weekly-current{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#diaryMode .diary-summary.weekly-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}#diaryMode .weekly-summary-strip .summary-box{min-width:0;padding:.68em}.weekly-compact-main{gap:.55em}}
+@media(max-width:360px){#diaryMode .week-row.is-weekly-current{grid-template-columns:1fr;grid-template-areas:"current" "label" "points" "prize" "share" "hint"}#diaryMode .diary-summary.weekly-summary-strip{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.weekly-month-picker>summary::after,.weekly-secondary-details>summary::after{transition:none}}
+`;
 
     const languageKey = (() => {
         const lang = (document.documentElement.lang || 'ja').toLowerCase();
@@ -82,16 +66,14 @@
         return 'ja';
     })();
     const copy = COPY[languageKey];
-
     let decorateQueued = false;
 
-    function ensureStylesheet() {
-        if (document.querySelector('link[data-weekly-reward-ui]')) return;
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = `${assetPrefix}weekly-reward-ui.css?v=${UI_VERSION}`;
-        link.dataset.weeklyRewardUi = UI_VERSION;
-        document.head.appendChild(link);
+    function ensureStyles() {
+        if (document.querySelector('style[data-weekly-reward-ui]')) return;
+        const style = document.createElement('style');
+        style.dataset.weeklyRewardUi = 'true';
+        style.textContent = STYLE_TEXT;
+        document.head.appendChild(style);
     }
 
     function getCurrentFriday(now = new Date()) {
@@ -234,9 +216,7 @@
         const markSaved = () => {
             window.setTimeout(() => {
                 hint.textContent = copy.saved;
-                window.setTimeout(() => {
-                    hint.textContent = copy.autoSave;
-                }, 1600);
+                window.setTimeout(() => { hint.textContent = copy.autoSave; }, 1600);
             }, 0);
         };
         if (input && !input.dataset.weeklyUiBound) {
@@ -260,8 +240,8 @@
         const selectedMonth = getSelectedMonth();
         const isCurrentMonth = displayedYear === currentFriday.getFullYear()
             && selectedMonth === currentFriday.getMonth() + 1;
-
         let currentRow = null;
+
         rows.forEach((row) => {
             const rowDate = parseRowDate(row, displayedYear);
             const isCurrent = isCurrentMonth && isSameDate(rowDate, currentFriday);
@@ -357,9 +337,10 @@
     }
 
     function init() {
-        ensureStylesheet();
+        ensureStyles();
         bindDiaryTab();
         observeDiary();
+        selectCurrentMonth();
         queueDecorate();
     }
 
