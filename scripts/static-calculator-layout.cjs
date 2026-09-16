@@ -245,14 +245,17 @@ function validateStaticLayout(content) {
   }
   if (content.includes('id="pack-amount"')) throw new Error('通常計算に平均パック額の入力欄が残っています。');
 
+  // DOM順はスマホの主要Jobを優先する。デスクトップではCSS orderで
+  // 詳細設定を計算ボタンより先に見せるため、静的HTMLは
+  // 必要ポイント → 計算 → 任意設定 の順を正本とする。
   const positions = [
     'id="currentStatus"',
     'id="targetStatus"',
     'id="neededPoints"',
+    'id="calculateButton"',
     `id="${ADVANCED_SETTINGS_ID}"`,
     'id="baseRate"',
-    'id="multiplier"',
-    'id="calculateButton"'
+    'id="multiplier"'
   ].map(token => content.indexOf(token));
   if (positions.some(position => position < 0)
       || positions.some((position, index) => index > 0 && position <= positions[index - 1])) {

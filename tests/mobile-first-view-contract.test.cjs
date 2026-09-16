@@ -87,7 +87,7 @@ function loadFirstView({ search = '', language = 'en-US', region = 'JP' } = {}) 
   const source = read('js/first-view.js')
     .replace(/^import\s+.*$/gm, '')
     .replace(/^export\s+/gm, '')
-    .concat('\n;globalThis.__firstView = { shouldAutoOpenAdvancedSettings, enhanceCalculatorAdvancedSettings, getSuggestedRegionForBrowserLanguage, checkLanguageSuggestion };');
+    .concat('\n;globalThis.__firstView = { shouldAutoOpenAdvancedSettings, enhanceCalculatorAdvancedSettings, getSuggestedRegionForBrowserLanguage, checkLanguageSuggestion, readLastMainCalculationStore, getLastMainCalculationForRegion, saveLastMainCalculationForRegion, sameCalculationContext, formatLastCalculationText };');
   vm.createContext(context);
   vm.runInContext(source, context, { filename: 'first-view.js' });
 
@@ -233,4 +233,52 @@ test('ファーストビュー処理は互換モジュール経由で読み込�
   assert.match(languageSuggestion, /from '\.\/first-view\.js'/);
   assert.ok(assetSync.includes("'js/first-view.js'"));
   assert.ok(serviceWorker.includes("'./js/first-view.js'"));
+});
+
+
+test('前回の通常計算は地域別に端末内へ1件だけ保持し、別地域を上書きしない', () => {
+  const fixture = loadFirstView({ region: 'JP' });
+  const jp = { region: 'JP', currentStatus: '1.5', currentStatusLabel: 'ゴールド', targetStatus: '4000', targetStatusLabel: 'プラチナ', neededPoints: '1728' };
+  const us = { region: 'US', currentStatus: '1.2', currentStatusLabel: 'Gold', targetStatus: '4000', targetStatusLabel: 'Platinum', neededPoints: '900' };
+
+  assert.equal(fixture.api.saveLastMainCalculationForRegion('JP', jp, fixture.localStorage), true);
+  assert.equal(fixture.api.saveLastMainCalculationForRegion('US', us, fixture.localStorage), true);
+  assert.equal(fixture.api.getLastMainCalculationForRegion('JP', fixture.localStorage).neededPoints, '1728');
+  assert.equal(fixture.api.getLastMainCalculationForRegion('US', fixture.localStorage).neededPoints, '900');
+});
+
+test('同じランク条件の再計算だけ前回との差を表示する', () => {
+  const fixture = loadFirstView({ region: 'JP' });
+  const previous = { region: 'JP', currentStatus: '1.5', currentStatusLabel: 'ゴールド', targetStatus: '4000', targetStatusLabel: 'プラチナ', neededPoints: '1728' };
+  const current = { ...previous, neededPoints: '1200' };
+  const changedTarget = { ...current, targetStatus: '15000', targetStatusLabel: 'ダイヤモンド' };
+
+  assert.equal(fixture.api.sameCalculationContext(previous, current), true);
+  assert.match(fixture.api.formatLastCalculationText('JP', current, previous), /528pt減/);
+  assert.match(fixture.api.formatLastCalculationText('JP', changedTarget, previous), /前回：1,200pt/);
+});
+
+test('公開トップは行動ベースのタブ名と、入力を邪魔しない前回値表示領域を持つ', () => {
+  const expected = {
+    'index.html': ['あといくら必要？', 'この課金で何pt？', '週次を記録'],
+    'en/index.html': ['How much left?', 'Points from spend', 'Log weekly'],
+    'ko/index.html': ['얼마나 더 필요?', '이 결제로 몇 pt?', '주간 기록'],
+    'tw/index.html': ['還差多少？', '這筆消費有幾點？', '每週記錄'],
+    'hk/index.html': ['還差多少？', '這筆消費有幾點？', '每週記錄'],
+    'in/index.html': ['How much left?', 'Points from spend', 'Log weekly']
+  };
+
+  for (const [indexPath, labels] of Object.entries(expected)) {
+    const html = read(indexPath);
+    labels.forEach(label => assert.ok(html.includes(label), indexPath + ': missing ' + label));
+    assert.ok(html.includes('id="calculator-last-value"'), indexPath + ': memory UI missing');
+    const needed = html.indexOf('id="neededPoints"');
+    const calculate = html.indexOf('id="calculateButton"');
+    const advanced = html.indexOf('id="calculator-advanced-settings"');
+    assert.ok(needed >= 0 && needed < calculate && calculate < advanced, indexPath + ': mobile primary action order');
+  }
+
+  const firstView = read('js/first-view.js');
+  assert.doesNotMatch(firstView, /ANALYTICS|gtag|dataLayer/, 'raw previous values must not enter analytics code');
+  assert.match(read('privacy.html'), /直近の通常計算で入力した現在・目標ステータスと必要ポイント/);
 });

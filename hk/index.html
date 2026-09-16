@@ -217,9 +217,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div class="region-fact-note" role="note" aria-label="香港 Play Points 官方條件"><p><strong>香港版：</strong>基本獲點率以每 HK$7 計算。香港目前有銅級、銀級、金級、鉑金級、鑽石級五個等級。</p><p><a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DHK&hl=zh-HK" target="_blank" rel="noopener noreferrer">查看 Google Play 香港官方等級與獲點率</a></p></div>
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">一般計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">反推模式</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週獎勵日記</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">還差多少？</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">這筆消費有幾點？</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">每週記錄</button>
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
@@ -245,6 +245,11 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <div class="tooltip-box" id="tooltip-needed-points" hidden></div>
             </label>
             <input type="number" id="neededPoints" min="1" step="1" placeholder="例如：125" inputmode="numeric" data-lang-placeholder="neededPointsPlaceholder">
+            <div id="calculator-last-value" class="calculator-last-value" hidden aria-live="polite">
+                <span id="calculator-last-value-text"></span>
+                <button type="button" id="calculator-last-value-reuse" class="calculator-last-value__reuse">前回の条件を使う</button>
+            </div>
+            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
@@ -270,7 +275,6 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         </div>
 
         <div class="section">
-            <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
             <div class="result" id="result" aria-live="polite"></div>
             <div id="result-actions" class="result-actions hidden" hidden aria-label="分享計算結果" data-lang-aria="shareResultAria">
                 <button id="copyButton" class="hidden" hidden data-lang-key="copyButton">複製</button>
