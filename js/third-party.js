@@ -111,10 +111,13 @@
     }
 
     function ensureWeeklyRewardUi() {
-        if (!document.getElementById('tab-diary')) return Promise.resolve(null);
+        // Analytics/AdSense unit tests use a deliberately minimal document stub.
+        // In real calculator pages, only load the enhancement when the diary tab exists.
+        if (typeof document.getElementById !== 'function' || !document.getElementById('tab-diary')) {
+            return Promise.resolve(null);
+        }
         if (!weeklyRewardUiPromise) {
-            const prefix = getCurrentAssetPrefix();
-            weeklyRewardUiPromise = loadScript(`${prefix}js/weekly-reward-ui.js?v=20260916a`)
+            weeklyRewardUiPromise = import('/js/weekly-reward-ui.js')
                 .catch((error) => {
                     weeklyRewardUiPromise = null;
                     throw error;
