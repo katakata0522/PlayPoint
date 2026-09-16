@@ -76,7 +76,6 @@ jobs:
         run: bash .github/scripts/snapshot-history.sh --list
 
       - name: Verify selected history snapshot
-        id: verify_selected_history_snapshot
         if: inputs.operation == 'verify' || inputs.operation == 'restore'
         id: history
         shell: bash
@@ -128,7 +127,6 @@ jobs:
         run: bash .github/scripts/snapshot-history.sh --activate "${{ inputs.expected_revision }}"
 
       - name: Verify activated rollback snapshot
-        id: verify_activated_rollback_snapshot
         if: inputs.operation == 'restore'
         id: snapshot
         shell: bash
