@@ -132,84 +132,38 @@ export function checkLanguageSuggestion() {
 
 const LAST_MAIN_CALCULATION_KEY = 'playpointLastMainCalculationV1';
 
-const LAST_CALCULATION_COPY = Object.freeze({
-    JP: Object.freeze({
-        last: '前回：{points}pt{context}',
-        context: '（{current} → {target}）',
-        decreased: '前回 {previous}pt → 今回 {current}pt（{delta}pt減）',
-        increased: '前回 {previous}pt → 今回 {current}pt（{delta}pt増）',
-        same: '前回と同じ：{current}pt',
-        reuse: '前回の条件を使う'
-    }),
-    US: Object.freeze({
-        last: 'Last time: {points} pts{context}',
-        context: ' ({current} → {target})',
-        decreased: 'Last {previous} → now {current} pts ({delta} fewer)',
-        increased: 'Last {previous} → now {current} pts ({delta} more)',
-        same: 'Same as last time: {current} pts',
-        reuse: 'Use last values'
-    }),
-    KR: Object.freeze({
-        last: '지난번: {points}pt{context}',
-        context: ' ({current} → {target})',
-        decreased: '지난번 {previous}pt → 이번 {current}pt ({delta}pt 감소)',
-        increased: '지난번 {previous}pt → 이번 {current}pt ({delta}pt 증가)',
-        same: '지난번과 동일: {current}pt',
-        reuse: '지난번 조건 사용'
-    }),
-    TW: Object.freeze({
-        last: '上次：{points}點{context}',
-        context: '（{current} → {target}）',
-        decreased: '上次 {previous}點 → 這次 {current}點（減少 {delta}點）',
-        increased: '上次 {previous}點 → 這次 {current}點（增加 {delta}點）',
-        same: '和上次相同：{current}點',
-        reuse: '使用上次條件'
-    }),
-    HK: Object.freeze({
-        last: '上次：{points}點{context}',
-        context: '（{current} → {target}）',
-        decreased: '上次 {previous}點 → 今次 {current}點（減少 {delta}點）',
-        increased: '上次 {previous}點 → 今次 {current}點（增加 {delta}點）',
-        same: '和上次相同：{current}點',
-        reuse: '使用上次條件'
-    }),
-    IN: Object.freeze({
-        last: 'Last time: {points} pts{context}',
-        context: ' ({current} → {target})',
-        decreased: 'Last {previous} → now {current} pts ({delta} fewer)',
-        increased: 'Last {previous} → now {current} pts ({delta} more)',
-        same: 'Same as last time: {current} pts',
-        reuse: 'Use last values'
-    })
-});
-
-function emptyLastCalculationStore() {
-    return { version: 1, mainByRegion: {} };
+function regionConfig(region) {
+    return typeof CONFIGS === 'object' ? CONFIGS?.[region] : null;
 }
 
-function isLastCalculationSnapshot(value) {
-    if (!value || typeof value !== 'object') return false;
-    const points = Number(value.neededPoints);
-    return typeof value.region === 'string'
-        && typeof value.currentStatus === 'string'
-        && typeof value.targetStatus === 'string'
-        && Number.isSafeInteger(points)
-        && points >= 0;
+function normalizeLastCalculation(value) {
+    const points = Number(value?.neededPoints);
+    if (!value || typeof value.region !== 'string'
+        || typeof value.currentStatus !== 'string'
+        || typeof value.targetStatus !== 'string'
+        || !Number.isSafeInteger(points) || points < 0) return null;
+    return {
+        region: value.region,
+        currentStatus: value.currentStatus,
+        targetStatus: value.targetStatus,
+        neededPoints: String(points)
+    };
 }
 
 export function readLastMainCalculationStore(storage = localStorage) {
     try {
         const parsed = JSON.parse(storage.getItem(LAST_MAIN_CALCULATION_KEY) || 'null');
-        if (!parsed || parsed.version !== 1 || !parsed.mainByRegion || typeof parsed.mainByRegion !== 'object') {
-            return emptyLastCalculationStore();
+        if (!parsed || parsed.version !== 1 || typeof parsed.mainByRegion !== 'object') {
+            return { version: 1, mainByRegion: {} };
         }
         const mainByRegion = {};
-        for (const [region, snapshot] of Object.entries(parsed.mainByRegion)) {
-            if (isLastCalculationSnapshot(snapshot)) mainByRegion[region] = snapshot;
+        for (const [region, value] of Object.entries(parsed.mainByRegion)) {
+            const snapshot = normalizeLastCalculation(value);
+            if (snapshot?.region === region) mainByRegion[region] = snapshot;
         }
         return { version: 1, mainByRegion };
     } catch {
-        return emptyLastCalculationStore();
+        return { version: 1, mainByRegion: {} };
     }
 }
 
@@ -218,10 +172,11 @@ export function getLastMainCalculationForRegion(region, storage = localStorage) 
 }
 
 export function saveLastMainCalculationForRegion(region, snapshot, storage = localStorage) {
-    if (!isLastCalculationSnapshot(snapshot) || snapshot.region !== region) return false;
+    const normalized = normalizeLastCalculation(snapshot);
+    if (!normalized || normalized.region !== region) return false;
     try {
         const store = readLastMainCalculationStore(storage);
-        store.mainByRegion[region] = { ...snapshot };
+        store.mainByRegion[region] = normalized;
         storage.setItem(LAST_MAIN_CALCULATION_KEY, JSON.stringify(store));
         return true;
     } catch {
@@ -236,65 +191,65 @@ export function sameCalculationContext(left, right) {
         && left.targetStatus === right.targetStatus);
 }
 
-function fillCopy(template, values) {
-    return Object.entries(values).reduce(
-        (text, [key, value]) => text.replaceAll('{' + key + '}', String(value ?? '')),
-        template
-    );
+function formatPoints(value, region) {
+    return Number(value).toLocaleString(regionConfig(region)?.lang || 'en');
 }
 
-function formatPointValue(value, region) {
-    const number = Number(value);
-    if (!Number.isFinite(number)) return String(value ?? '');
-    const locale = typeof CONFIGS === 'object' && CONFIGS?.[region]?.lang ? CONFIGS[region].lang : 'en';
-    return number.toLocaleString(locale);
+function statusLabel(region, snapshot, kind) {
+    const explicit = snapshot?.[`${kind}StatusLabel`];
+    if (explicit) return String(explicit).trim();
+    const config = regionConfig(region);
+    const source = kind === 'current' ? config?.statuses : config?.thresholds;
+    const value = kind === 'current' ? snapshot?.currentStatus : snapshot?.targetStatus;
+    return Object.entries(source || {}).find(([, candidate]) => String(candidate) === String(value))?.[0] || '';
 }
 
 export function formatLastCalculationText(region, currentSnapshot, previousSnapshot = null) {
-    const copy = LAST_CALCULATION_COPY[region] || LAST_CALCULATION_COPY.US;
-    const currentPoints = formatPointValue(currentSnapshot?.neededPoints, region);
-
+    const current = formatPoints(currentSnapshot?.neededPoints, region);
     if (previousSnapshot && sameCalculationContext(previousSnapshot, currentSnapshot)) {
-        const previousValue = Number(previousSnapshot.neededPoints);
-        const currentValue = Number(currentSnapshot.neededPoints);
-        const delta = previousValue - currentValue;
-        const values = {
-            previous: formatPointValue(previousValue, region),
-            current: currentPoints,
-            delta: formatPointValue(Math.abs(delta), region)
-        };
-        if (delta > 0) return fillCopy(copy.decreased, values);
-        if (delta < 0) return fillCopy(copy.increased, values);
-        return fillCopy(copy.same, values);
+        const previous = Number(previousSnapshot.neededPoints);
+        const now = Number(currentSnapshot.neededPoints);
+        const delta = previous - now;
+        const before = formatPoints(previous, region);
+        const difference = formatPoints(Math.abs(delta), region);
+        if (region === 'JP') {
+            if (delta > 0) return `前回 ${before}pt → 今回 ${current}pt（${difference}pt減）`;
+            if (delta < 0) return `前回 ${before}pt → 今回 ${current}pt（${difference}pt増）`;
+            return `前回と同じ：${current}pt`;
+        }
+        if (region === 'KR') {
+            if (delta > 0) return `지난번 ${before}pt → 이번 ${current}pt (${difference}pt 감소)`;
+            if (delta < 0) return `지난번 ${before}pt → 이번 ${current}pt (${difference}pt 증가)`;
+            return `지난번과 동일: ${current}pt`;
+        }
+        if (region === 'TW' || region === 'HK') {
+            const thisTime = region === 'HK' ? '今次' : '這次';
+            if (delta > 0) return `上次 ${before}點 → ${thisTime} ${current}點（減少 ${difference}點）`;
+            if (delta < 0) return `上次 ${before}點 → ${thisTime} ${current}點（增加 ${difference}點）`;
+            return `和上次相同：${current}點`;
+        }
+        if (delta > 0) return `Last ${before} → now ${current} pts (${difference} fewer)`;
+        if (delta < 0) return `Last ${before} → now ${current} pts (${difference} more)`;
+        return `Same as last time: ${current} pts`;
     }
 
-    const hasContext = currentSnapshot?.currentStatusLabel && currentSnapshot?.targetStatusLabel;
-    const context = hasContext
-        ? fillCopy(copy.context, { current: currentSnapshot.currentStatusLabel, target: currentSnapshot.targetStatusLabel })
-        : '';
-    return fillCopy(copy.last, { points: currentPoints, context });
-}
-
-function getSelectedOption(select) {
-    if (!select || !select.options || select.selectedIndex < 0) return null;
-    return select.options[select.selectedIndex] || null;
+    const from = statusLabel(region, currentSnapshot, 'current');
+    const to = statusLabel(region, currentSnapshot, 'target');
+    if (region === 'JP') return `前回：${current}pt${from && to ? `（${from} → ${to}）` : ''}`;
+    if (region === 'KR') return `지난번: ${current}pt${from && to ? ` (${from} → ${to})` : ''}`;
+    if (region === 'TW' || region === 'HK') return `上次：${current}點${from && to ? `（${from} → ${to}）` : ''}`;
+    return `Last time: ${current} pts${from && to ? ` (${from} → ${to})` : ''}`;
 }
 
 function getCurrentMainCalculationSnapshot() {
     const currentStatus = document.getElementById('currentStatus');
     const targetStatus = document.getElementById('targetStatus');
-    const neededPoints = document.getElementById('neededPoints');
-    const points = Number(neededPoints?.value);
+    const points = Number(document.getElementById('neededPoints')?.value);
     if (!currentStatus || !targetStatus || !Number.isSafeInteger(points) || points < 0) return null;
-
-    const currentOption = getSelectedOption(currentStatus);
-    const targetOption = getSelectedOption(targetStatus);
     return {
         region: STATE.currentRegion,
         currentStatus: String(currentStatus.value),
-        currentStatusLabel: String(currentOption?.textContent || '').trim(),
         targetStatus: String(targetStatus.value),
-        targetStatusLabel: String(targetOption?.dataset?.statusLabel || targetOption?.textContent || '').trim(),
         neededPoints: String(points)
     };
 }
@@ -304,10 +259,9 @@ function renderLastCalculation(snapshot, previousSnapshot = null) {
     const text = document.getElementById('calculator-last-value-text');
     const reuse = document.getElementById('calculator-last-value-reuse');
     if (!container || !text || !reuse || !snapshot) return;
-
-    const copy = LAST_CALCULATION_COPY[STATE.currentRegion] || LAST_CALCULATION_COPY.US;
     text.textContent = formatLastCalculationText(STATE.currentRegion, snapshot, previousSnapshot);
-    reuse.textContent = copy.reuse;
+    const reuseCopy = regionConfig(STATE.currentRegion)?.uiText?.lastCalculationReuse;
+    if (reuseCopy) reuse.textContent = reuseCopy;
     container.hidden = false;
 }
 
@@ -316,77 +270,49 @@ function hideLastCalculation() {
     if (container) container.hidden = true;
 }
 
-function dispatchInputEvent(element, type) {
-    if (!element || typeof Event !== 'function') return;
-    element.dispatchEvent(new Event(type, { bubbles: true }));
-}
-
 function restoreLastCalculation() {
     const snapshot = getLastMainCalculationForRegion(STATE.currentRegion);
     if (!snapshot) return;
-
     const currentStatus = document.getElementById('currentStatus');
     const targetStatus = document.getElementById('targetStatus');
     const neededPoints = document.getElementById('neededPoints');
-
-    if (currentStatus && Array.from(currentStatus.options || []).some(option => String(option.value) === snapshot.currentStatus)) {
-        currentStatus.value = snapshot.currentStatus;
-        dispatchInputEvent(currentStatus, 'change');
-    }
-    if (targetStatus && Array.from(targetStatus.options || []).some(option => String(option.value) === snapshot.targetStatus)) {
-        targetStatus.value = snapshot.targetStatus;
-        dispatchInputEvent(targetStatus, 'change');
-    }
+    const restoreSelect = (select, value) => {
+        if (!select || !Array.from(select.options || []).some(option => String(option.value) === value)) return;
+        select.value = value;
+        if (typeof Event === 'function') select.dispatchEvent(new Event('change', { bubbles: true }));
+    };
+    restoreSelect(currentStatus, snapshot.currentStatus);
+    restoreSelect(targetStatus, snapshot.targetStatus);
     if (neededPoints) {
         neededPoints.value = snapshot.neededPoints;
-        dispatchInputEvent(neededPoints, 'input');
+        if (typeof Event === 'function') neededPoints.dispatchEvent(new Event('input', { bubbles: true }));
         neededPoints.focus?.();
     }
-}
-
-function bindLastCalculationReuse() {
-    const reuse = document.getElementById('calculator-last-value-reuse');
-    if (!reuse || reuse.dataset.playpointBound === 'true') return;
-    reuse.addEventListener('click', restoreLastCalculation);
-    reuse.dataset.playpointBound = 'true';
 }
 
 function recordSuccessfulMainCalculation() {
     const result = document.getElementById('result');
     if (!result?.classList?.contains(CONSTANTS.CLASS_HAS_RESULT || 'has-result')) return;
-    const currentSnapshot = getCurrentMainCalculationSnapshot();
-    if (!currentSnapshot) return;
-
-    const previousSnapshot = getLastMainCalculationForRegion(STATE.currentRegion);
-    if (!saveLastMainCalculationForRegion(STATE.currentRegion, currentSnapshot)) return;
-
-    if (previousSnapshot && sameCalculationContext(previousSnapshot, currentSnapshot)) {
-        renderLastCalculation(currentSnapshot, previousSnapshot);
-    } else {
-        hideLastCalculation();
-    }
+    const current = getCurrentMainCalculationSnapshot();
+    if (!current) return;
+    const previous = getLastMainCalculationForRegion(STATE.currentRegion);
+    if (!saveLastMainCalculationForRegion(STATE.currentRegion, current)) return;
+    if (previous && sameCalculationContext(previous, current)) renderLastCalculation(current, previous);
+    else hideLastCalculation();
 }
 
 function bindLastCalculationMemory() {
     const result = document.getElementById('result');
-    if (!result) return;
-
-    bindLastCalculationReuse();
+    const reuse = document.getElementById('calculator-last-value-reuse');
+    if (!result || !reuse || result.dataset.playpointMemoryBound === 'true') return;
+    reuse.addEventListener('click', restoreLastCalculation);
     const saved = getLastMainCalculationForRegion(STATE.currentRegion);
     if (saved) renderLastCalculation(saved);
     else hideLastCalculation();
-
-    if (typeof MutationObserver !== 'function' || result.dataset.playpointMemoryBound === 'true') return;
-    let scheduled = false;
-    const observer = new MutationObserver(() => {
-        if (scheduled) return;
-        scheduled = true;
-        queueMicrotask(() => {
-            scheduled = false;
-            recordSuccessfulMainCalculation();
-        });
-    });
-    observer.observe(result, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+    if (typeof MutationObserver === 'function') {
+        const observer = new MutationObserver(recordSuccessfulMainCalculation);
+        observer.observe(result, { childList: true, attributes: true, attributeFilter: ['class'] });
+    }
     result.dataset.playpointMemoryBound = 'true';
 }
 
