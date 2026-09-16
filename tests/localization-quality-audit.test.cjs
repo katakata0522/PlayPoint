@@ -33,7 +33,7 @@ test('calculator top pages keep localized region aria and Japanese-only destinat
 test('localized top-page source copy is natural before post-generation normalization', () => {
   const locales = createLocales();
 
-  assert.equal(locales.en.staticText.tabDiary, 'Weekly Rewards Diary');
+  assert.equal(locales.en.staticText.tabDiary, 'Log weekly');
   assert.equal(locales.en.staticText.sectionTitleDiary, 'Weekly Rewards Diary');
   assert.ok(!read('en/index.html').includes('Weekly Awards Diary'));
 
@@ -42,11 +42,14 @@ test('localized top-page source copy is natural before post-generation normaliza
   assert.equal(locales.ko.staticText.linkKatakata, '🧪 KatakataLab (일본어)');
   assert.ok(!read('ko/index.html').includes('등급 업까지 얼마 남았지?'));
 
-  assert.equal(locales.tw.staticText.tabReverse, '反推模式');
+  assert.equal(locales.tw.staticText.tabReverse, '這筆消費有幾點？');
   assert.equal(locales.tw.staticText.sectionTitleReverse, '反推模式');
   assert.equal(locales.tw.staticText.linkLatest, '🆕 最新資訊中心 (日文)');
   assert.equal(locales.tw.staticText.linkKatakata, '🧪 KatakataLab (日文)');
   assert.ok(!read('tw/index.html').includes('逆算模式'));
+  assert.equal(locales.en.staticText.lastCalculationReuse, 'Use last values');
+  assert.equal(locales.ko.staticText.lastCalculationReuse, '지난번 조건 사용');
+  assert.equal(locales.tw.staticText.lastCalculationReuse, '使用上次條件');
 });
 
 test('Taiwan copy sources do not reintroduce mainland-oriented troubleshooting wording', () => {

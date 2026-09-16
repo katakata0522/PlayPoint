@@ -13,10 +13,19 @@ const ADVANCED_SETTINGS_STATE_SCRIPT_ID = 'playpoint-first-view-state';
 const ADVANCED_SETTINGS_COPY = '獲得率・キャンペーンを調整（任意）';
 
 const ADVANCED_SETTINGS_CRITICAL_STYLE = `<style id="${ADVANCED_SETTINGS_STYLE_ID}">
+#mainMode>.section:first-child{display:flex;flex-direction:column}
+#mainMode>.section:first-child>#calculateButton{order:2;margin-top:1em}
+.calculator-last-value{display:flex;align-items:center;gap:.45em;flex-wrap:wrap;margin:.55em 0 0;font-size:.88em;line-height:1.5;color:var(--muted-text-color,#5f6368)}
+.calculator-last-value[hidden]{display:none!important}
+.calculator-last-value__reuse{appearance:none;border:0;background:transparent;color:var(--link-color,#0b57d0);padding:.1em .15em;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;box-shadow:none}
+.calculator-last-value__reuse:hover{background:transparent;box-shadow:none;transform:none}
+.calculator-last-value__reuse:focus-visible{outline:3px solid var(--input-focus-border-color,#005fcc);outline-offset:2px}
 .calculator-advanced-settings,.calculator-advanced-settings__body{display:contents}
 .calculator-advanced-settings__toggle{display:none}
 .region-switch [data-region-recommended="true"]{outline:2px solid var(--input-focus-border-color,#005fcc);outline-offset:2px;box-shadow:0 0 0 1px color-mix(in srgb,var(--section-bg-color,#fff) 80%,transparent)}
 @media(max-width:640px){
+#mainMode>.section:first-child>#calculateButton{order:1}
+#mainMode>.section:first-child>#calculator-advanced-settings{order:2}
 .calculator-advanced-settings{display:block;margin-top:.85em}
 .calculator-advanced-settings__toggle{display:flex;align-items:center;justify-content:space-between;gap:.75em;width:100%;min-height:46px;margin:0;padding:.65em .8em;box-sizing:border-box;border:1px solid rgba(11,87,208,.22);border-radius:8px;background:rgba(11,87,208,.055);color:var(--text-color,#1f2937);box-shadow:none;font:inherit;font-weight:700;text-align:left;cursor:pointer}
 .calculator-advanced-settings__toggle:hover{background:rgba(11,87,208,.1);box-shadow:none;transform:none}
@@ -222,6 +231,22 @@ function convertLegacyCalculatorLayout(content) {
   return `${content.slice(0, refreshedNeededPointsRange.end)}\n\n${insertedFields}${content.slice(refreshedNeededPointsRange.end)}`;
 }
 
+function ensurePrimaryActionSourceOrder(content) {
+  const advancedToken = `<div id="${ADVANCED_SETTINGS_ID}"`;
+  let advancedIndex = content.indexOf(advancedToken);
+  const buttonPattern = /<button\b[^>]*\bid=["']calculateButton["'][^>]*>/i;
+  const buttonMatch = buttonPattern.exec(content);
+  if (!buttonMatch || advancedIndex < 0 || buttonMatch.index < advancedIndex) return content;
+
+  const buttonRange = findBalancedElementRange(content, buttonMatch.index, 'button');
+  if (!buttonRange) throw new Error('計算ボタンの範囲を取得できません。');
+  const button = content.slice(buttonRange.start, buttonRange.end);
+  content = content.slice(0, buttonRange.start) + content.slice(buttonRange.end);
+  advancedIndex = content.indexOf(advancedToken);
+  if (advancedIndex < 0) throw new Error('詳細設定の挿入位置を再取得できません。');
+  return content.slice(0, advancedIndex) + button + '\n            ' + content.slice(advancedIndex);
+}
+
 function validateStaticLayout(content) {
   const requiredTokens = [
     'data-visible-base-rate-layout="true"',
@@ -270,6 +295,7 @@ function ensureStaticCalculatorLayout(indexHtml) {
   }
   content = decorateStaticLabels(content);
   content = ensureStaticAdvancedSettings(content);
+  content = ensurePrimaryActionSourceOrder(content);
   content = content.replace(/[ \t]+(?=\r?$)/gm, '');
   validateStaticLayout(content);
   return content;

@@ -109,7 +109,7 @@ test('主要4言語の公開HTMLはJavaScript実行前から専用ラベルを�
   }
 });
 
-test('6地域トップはPR #326前の通常レイアウトを維持する', () => {
+test('6地域トップは通常デザインを保ちつつ主要CTAをモバイル優先のDOM順にする', () => {
   const css = read('style.css');
   assert.ok(!css.includes('HOME_CALCULATOR_FIRST'), 'Calculator-First専用CSSが残っている');
 
@@ -119,9 +119,12 @@ test('6地域トップはPR #326前の通常レイアウトを維持する', () 
     assert.ok(!html.includes('home-calculator-first'), `${indexPath}: Calculator-Firstクラスが残っている`);
     assert.ok(!html.includes('home-help-link'), `${indexPath}: Calculator-First専用リンクが残っている`);
     assert.ok(
-      mainMode.indexOf('id="calculator-advanced-settings"') < mainMode.indexOf('id="calculateButton"'),
-      `${indexPath}: 詳細設定と計算ボタンの旧配置が崩れている`
+      mainMode.indexOf('id="calculateButton"') < mainMode.indexOf('id="calculator-advanced-settings"'),
+      `${indexPath}: 主要CTAが任意設定より後ろに戻っている`
     );
+    assert.match(html, /#mainMode>\.section:first-child>#calculateButton\{order:2;margin-top:1em\}/, `${indexPath}: desktop CTA order`);
+    assert.match(html, /@media\(max-width:640px\)\{[\s\S]*#mainMode>\.section:first-child>#calculateButton\{order:1\}/, `${indexPath}: mobile CTA order`);
+    assert.match(html, /#mainMode>\.section:first-child>#calculator-advanced-settings\{order:2\}/, `${indexPath}: mobile advanced-settings order`);
   }
 });
 

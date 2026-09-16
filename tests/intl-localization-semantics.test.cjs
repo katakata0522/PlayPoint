@@ -73,13 +73,14 @@ test('韓国トップと台湾トップは自然な地域表現を静的HTMLと�
   assert.match(ko, /js\/intl-copy-overrides\.js/);
 
   const tw = read('tw/index.html');
-  assert.match(tw, /反推模式/);
+  assert.match(tw, /這筆消費有幾點？/);
   assert.doesNotMatch(tw, /逆算模式/);
   assert.match(tw, /js\/intl-copy-overrides\.js/);
 
   const runtime = read('js/intl-copy-overrides.js');
   assert.match(runtime, /다음 등급까지 얼마가 필요할까\?/);
-  assert.match(runtime, /反推模式/);
+  assert.match(runtime, /這筆消費有幾點？/);
+  assert.match(runtime, /Log weekly/);
 });
 
 test('台湾公開HTMLでは問題解決カテゴリを「問題排解」に統一する', () => {
