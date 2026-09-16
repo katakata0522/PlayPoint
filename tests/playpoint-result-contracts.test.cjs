@@ -31,7 +31,8 @@ test('通常計算の補足導線は1グループに統合し最大3件だけ表
   const guidanceBlock = content.match(/<div class="result-guidance-links">[\s\S]*?<\/div>/)?.[0] || '';
   const links = [...guidanceBlock.matchAll(/<a href="([^"]+)"/g)].map(match => match[1]);
 
-  assert.ok(content.includes('次に確認すること'));
+  assert.ok(content.includes('計算したあとのおすすめ'));
+  assert.ok(content.includes('結果に合わせて、次の一手をチェックしましょう。'));
   assert.ok(content.includes('result-guidance-links'));
   assert.ok(!content.includes('result-related-links'));
   assert.ok(!content.includes('result-decision-links'));
@@ -83,10 +84,11 @@ test('計算結果の統合導線には金額や条件に応じた次の判断�
   calculate();
 
   const content = renderedResultDetails[0];
+  const guidanceBlock = content.match(/<div class="result-guidance-links">[\s\S]*?<\/div>/)?.[0] || '';
   assert.ok(content.includes('result-guidance-links'), '統合導線のコンテナがありません');
-  assert.ok(content.includes('次に確認すること'), '判断導線の見出しがありません');
+  assert.ok(content.includes('計算したあとのおすすめ'), '判断導線の見出しがありません');
   assert.ok(content.includes('campaign/3x/'), '高額時の3倍キャンペーン導線がありません');
-  assert.ok([...content.matchAll(/<a href="([^"]+)"/g)].length <= 3, '統合導線は3件以内にしてください');
+  assert.ok([...guidanceBlock.matchAll(/<a href="([^"]+)"/g)].length <= 3, '統合導線は3件以内にしてください');
 });
 
 test('主要結果、共有、折りたたみ詳細の順で4言語ページに配置する', () => {

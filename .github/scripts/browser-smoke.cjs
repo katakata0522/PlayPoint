@@ -13,7 +13,7 @@ const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const EXPECTED_REVISION = (process.env.SMOKE_EXPECT_REVISION || '').trim();
 const MAIN_CONTROLS = '#mainMode select, #mainMode input[type="number"]';
 const LOCALES = [
-  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '課金額を計算', rewardPath: '/', rewardText: 'ウィークリーリワード' },
+  { key: 'JP', path: '', locale: 'ja-JP', title: 'Google Play Points 計算機', button: '必要額を計算する', rewardPath: '/', rewardText: 'ウィークリーリワード' },
   { key: 'US', path: 'en/', locale: 'en-US', title: 'Google Play Points Calculator', button: 'Calculate amount', rewardPath: '/en/', rewardText: 'Weekly Prize' },
   { key: 'KR', path: 'ko/', locale: 'ko-KR', title: 'Google Play Points 계산기', button: '결제 금액 계산', rewardPath: '/ko/', rewardText: '주간 혜택' },
   { key: 'TW', path: 'tw/', locale: 'zh-TW', title: 'Google Play Points 計算器', button: '計算消費金額', rewardPath: '/tw/', rewardText: '每週獎勵', shareRestore: { status: '1.25', target: 'gold', expected: '黃金級' } },

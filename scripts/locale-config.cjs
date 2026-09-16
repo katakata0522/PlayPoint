@@ -35,6 +35,7 @@ function createLocales() {
             firstStepTarget: 'Target status',
             firstStepNeeded: 'Points needed',
             sectionTitleStatus: 'Status input',
+            homeHelpLink: 'How to use ↓',
             labelCurrentStatus: 'Current status',
             labelTargetStatus: 'Target status',
             labelNeededPoints: 'Points needed',
@@ -146,7 +147,7 @@ function createLocales() {
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section" id="calculator-help">
         <h2>What You Can Do with Google Play Points Calculator</h2>
         <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how a special earn rate shown in Google Play changes the estimate</strong>.</p>
         <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
@@ -197,6 +198,7 @@ function createLocales() {
             tabReverse: '역산 모드',
             tabDiary: '주간 리워드 일기',
             sectionTitleStatus: '등급 입력',
+            homeHelpLink: '사용 방법 보기 ↓',
             labelCurrentStatus: '현재 등급',
             labelTargetStatus: '목표 등급',
             labelNeededPoints: '목표까지 필요한 포인트',
@@ -307,7 +309,7 @@ function createLocales() {
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section" id="calculator-help">
         <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
         <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 적용했을 때 예상치가 어떻게 달라지는지</strong>를 한눈에 확인할 수 있습니다.</p>
         <p>특히 '플래티넘까지 조금 남았을 때', '다이아몬드 달성 가능 여부를 알고 싶을 때', '포인트 증량 이벤트를 기다려야 할지 고민될 때' 감이 아닌 숫자로 쉽게 판단할 수 있도록 도와줍니다.</p>
@@ -358,6 +360,7 @@ function createLocales() {
             tabReverse: '反推模式',
             tabDiary: '每週獎勵日記',
             sectionTitleStatus: '輸入等級',
+            homeHelpLink: '查看使用方式 ↓',
             labelCurrentStatus: '目前等級',
             labelTargetStatus: '目標等級',
             labelNeededPoints: '距離目標所需點數',
@@ -468,7 +471,7 @@ function createLocales() {
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section" id="calculator-help">
         <h2>Google Play 點數計算器可以做什麼？</h2>
         <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>Google Play 顯示活動特別獲點率時，預估點數會如何變化</strong>。</p>
         <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
