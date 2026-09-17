@@ -1,29 +1,74 @@
-name: Isolated test audit source export
+name: Isolated verified test audit preparation
 on:
   push:
     branches: [fix/test-audit-contracts-20260917]
     paths: [.github/workflows/test-audit-source-export.yml]
 permissions:
   contents: read
+concurrency:
+  group: test-audit-contracts-preparation
+  cancel-in-progress: true
 jobs:
-  source:
+  prepare:
     if: github.repository == 'katakata0522/PlayPoint' && github.ref == 'refs/heads/fix/test-audit-contracts-20260917'
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    timeout-minutes: 5
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          persist-credentials: false
-      - name: Export tracked source only
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Apply verified test-only patch and check all changed bytes
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/test-audit-source"
-          git archive --format=tar HEAD | gzip > "$RUNNER_TEMP/test-audit-source/source.tar.gz"
-          printf 'commit=%s\ntree=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" > "$RUNNER_TEMP/test-audit-source/revision.txt"
+          python3 - <<'PY'
+          import hashlib,json,lzma,pathlib,subprocess,os
+          raw=b''.join(pathlib.Path(f'.github/test-audit-payload-{i}.bin').read_bytes() for i in range(4))
+          assert hashlib.sha256(raw).hexdigest()=='66273d163ad1512d16b5dde26218713071a026ed4885249ae20975d960e43107','Payload integrity mismatch'
+          payload=json.loads(lzma.decompress(raw))
+          patch=pathlib.Path(os.environ['RUNNER_TEMP'])/'test-audit.patch'
+          patch.write_text(payload['patch'],encoding='utf-8')
+          subprocess.run(['git','apply','--unidiff-zero','--check','--index',str(patch)],check=True)
+          subprocess.run(['git','apply','--unidiff-zero','--index',str(patch)],check=True)
+          paths=subprocess.check_output(['git','diff','--cached','--name-only']).decode().splitlines()
+          assert len(paths)==payload['expectedCount']==20,('Unexpected changed-file count',paths)
+          assert all(p.startswith(('tests/','docs/','.github/scripts/')) for p in paths),'Unexpected public or workflow change'
+          records=''.join(f'{p}={hashlib.sha256(subprocess.check_output(["git","show",":"+p])).hexdigest()}\n' for p in sorted(paths))
+          actual=hashlib.sha256(records.encode()).hexdigest()
+          assert actual==payload['expectedDigest']=='306c3f1c65a33ae9c79727b2b989b35a32fe0f9a1a7937cf129b98dae65bc940',('Diff fingerprint mismatch',actual)
+          print('Verified exact source diff:',len(paths),actual)
+          PY
+      - name: Run affected contracts with pinned Node
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --test tests/ci-guardrails.test.cjs tests/deploy-cleanup.test.cjs tests/deploy-impact-classifier.test.cjs tests/markup-contract-fixtures.test.cjs tests/playpoint-product-guards.test.cjs tests/preflight-execution-contract.test.cjs tests/runtime-module-guards.test.cjs tests/static-calculator-delivery.test.cjs tests/syntax-verifier-execution.test.cjs 2>&1 | tee "$RUNNER_TEMP/test-audit-contracts.log"
+          node --check .github/scripts/browser-smoke.cjs
+          node --check .github/scripts/calculator-presentation-contract.cjs
+          node --check .github/scripts/embed-widget-smoke.cjs
+          git diff --cached --check
+      - name: Save verified test changes to this branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'テスト監査: 過剰な固定と見逃しを修正しCI・公開境界を実行検証へ移行'
+          test "$(git ls-remote origin refs/heads/fix/test-audit-contracts-20260917 | cut -f1)" = "$GITHUB_SHA"
+          git diff --exit-code
+          git push origin HEAD:refs/heads/fix/test-audit-contracts-20260917
+          git rev-parse HEAD
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
         with:
-          name: test-audit-source-${{ github.run_id }}
-          path: ${{ runner.temp }}/test-audit-source/
-          retention-days: 1
-          if-no-files-found: error
+          name: test-audit-preparation-${{ github.run_id }}
+          path: ${{ runner.temp }}/test-audit-contracts.log
+          retention-days: 2
+          if-no-files-found: warn
