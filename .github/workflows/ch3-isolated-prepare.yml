@@ -1,0 +1,74 @@
+name: Isolated chapter 3 verified preparation
+on:
+  push:
+    branches: [fix/browser-revision-evidence-20260917]
+    paths: [.github/workflows/ch3-isolated-prepare.yml]
+permissions:
+  contents: read
+concurrency:
+  group: chapter3-verified-preparation
+  cancel-in-progress: true
+jobs:
+  prepare:
+    if: github.repository == 'katakata0522/PlayPoint' && github.ref == 'refs/heads/fix/browser-revision-evidence-20260917'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Apply exact integrity checked source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64,hashlib,json,lzma,pathlib,subprocess,os
+          first=pathlib.Path('.github/ch3-payload-0.bin').read_bytes()
+          encoded=base64.b64encode(pathlib.Path('.github/ch3-payload-1.bin').read_bytes()).decode()
+          encoded=encoded.replace('HpidGr13Kh1Kh1X1','HpidGr13Kh1X1').replace('LaVmJsGJsjb6','LaVmJsjb6')
+          raw=first+base64.b64decode(encoded)
+          assert hashlib.sha256(raw).hexdigest()=='00888e0c8a694d285a224bad08c2a5a9b28b6693525edb720cc4ec48886a97b7','Source payload integrity mismatch'
+          payload=json.loads(lzma.decompress(raw))
+          patch=pathlib.Path(os.environ['RUNNER_TEMP'])/'chapter3.patch'
+          patch.write_text(payload['patch'])
+          subprocess.run(['git','apply','--unidiff-zero','--check','--index',str(patch)],check=True)
+          subprocess.run(['git','apply','--unidiff-zero','--index',str(patch)],check=True)
+          pathlib.Path(os.environ['RUNNER_TEMP'],'chapter3-expected.json').write_text(json.dumps(payload))
+          PY
+          node scripts/prepare-pr.cjs > "$RUNNER_TEMP/chapter3-generation.log" 2>&1
+          git add --all -- .
+          python3 - <<'PY'
+          import hashlib,json,pathlib,subprocess,os
+          payload=json.loads(pathlib.Path(os.environ['RUNNER_TEMP'],'chapter3-expected.json').read_text())
+          paths=subprocess.check_output(['git','diff','--cached','--name-only']).decode().splitlines()
+          assert len(paths)==payload['expectedCount'],('Unexpected file count',len(paths))
+          records=''.join(f'{p}={hashlib.sha256(subprocess.check_output(["git","show",":"+p])).hexdigest()}\n' for p in sorted(paths))
+          actual=hashlib.sha256(records.encode()).hexdigest()
+          assert actual==payload['expectedDigest'],('Unexpected generated output',actual)
+          print('Exact verified diff:',len(paths),actual)
+          PY
+          node --test tests/browser-revision-evidence.test.cjs tests/deploy-revision-readiness.test.cjs tests/ci-stability.test.cjs tests/blog-runtime-regressions.test.cjs tests/automatic-rollback.test.cjs tests/rollback-workflow.test.cjs tests/deploy-recovery-watchdog.test.cjs > "$RUNNER_TEMP/chapter3-tests.log" 2>&1
+          node --check .github/scripts/browser-smoke.cjs
+          git diff --cached --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m '第3章: 本番SHAと検証証跡を結合し全168テストの責務を整理'
+          test "$(git ls-remote origin refs/heads/fix/browser-revision-evidence-20260917 | cut -f1)" = "$GITHUB_SHA"
+          git diff --exit-code
+          git push origin HEAD:refs/heads/fix/browser-revision-evidence-20260917
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: chapter3-preparation-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/chapter3-generation.log
+            ${{ runner.temp }}/chapter3-tests.log
+          retention-days: 2
+          if-no-files-found: warn
