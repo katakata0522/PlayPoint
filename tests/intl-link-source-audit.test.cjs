@@ -9,9 +9,9 @@ const test = require('node:test');
 const {
   auditRepository,
   localeForRoute,
+  markdownReport,
   normalizeInternalHref,
   pageLocale,
-  resolveTarget,
   routeForFile,
   scanSourceGenerators
 } = require('../scripts/intl-link-source-audit.cjs');
@@ -28,6 +28,14 @@ function withFixture(files, fn) {
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
+}
+
+function writeCiEvidence(report) {
+  if (!process.env.RUNNER_TEMP) return;
+  const dir = path.join(process.env.RUNNER_TEMP, 'playpoint-ci-evidence');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'intl-link-source-audit.json'), JSON.stringify(report, null, 2) + '\n');
+  fs.writeFileSync(path.join(dir, 'intl-link-source-audit.md'), markdownReport(report) + '\n');
 }
 
 test('locale and route helpers distinguish Japanese root from regional directories', () => {
@@ -103,14 +111,8 @@ test('current repository scan remains executable and covers every public HTML fi
   assert.ok(report.summary.htmlFiles > 0, 'HTMLを1件以上検出すること');
   assert.ok(report.summary.anchors > 0, 'リンクを1件以上検出すること');
   assert.ok(report.summary.generatorCandidates > 0, '生成元候補を1件以上検出すること');
-  assert.equal(
-    report.summary.problematicLinks,
-    report.problematicLinks.length,
-    'サマリーと詳細件数が一致すること'
-  );
-  assert.equal(
-    report.summary.headFindings,
-    report.headFindings.length,
-    'Head監査のサマリーと詳細件数が一致すること'
-  );
+  assert.equal(report.summary.problematicLinks, report.problematicLinks.length, 'サマリーと詳細件数が一致すること');
+  assert.equal(report.summary.headFindings, report.headFindings.length, 'Head監査のサマリーと詳細件数が一致すること');
+  writeCiEvidence(report);
+  console.log('[intl-link-source-audit]', JSON.stringify(report.summary));
 });
