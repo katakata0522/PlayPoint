@@ -1,6 +1,9 @@
 'use strict';
 
 const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
+const { verifyHttpCache } = require('./http-cache-contract.cjs');
+const path = require('node:path');
+const os = require('node:os');
 
 const BASE_URL = 'https://playpoint-sim.com';
 const FETCH_TIMEOUT_MS = 12000;
@@ -154,6 +157,20 @@ async function main() {
   const failures = [];
   failures.push(...await runChecks(REPRESENTATIVE_PATHS, checkHeaders, 'security headers'));
   failures.push(...await runChecks(SENSITIVE_PATHS, checkSensitivePath, 'non-public path'));
+
+  // 既存security工程に載せ、失敗時は既存の復旧条件をそのまま使う。
+  // 非公開変更でmainだけ進んだ場合も考慮し、指定がなければ実配信SHAへ結び付ける。
+  try {
+    const expectedRevision = process.env.EXPECTED_DEPLOY_REVISION ||
+      (await (await fetchResponse('/deploy-revision.txt', { redirect: 'manual' })).text()).trim();
+    if (!/^[0-9a-f]{40}$/.test(expectedRevision)) throw new Error('Cache verification revision is invalid');
+    const report = await verifyHttpCache({ baseUrl: BASE_URL, expectedRevision,
+      outputFile: path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'playpoint-ci-evidence', `http-cache-${expectedRevision}.json`) });
+    console.log(`ok - production HTTP cache ${report.observations.length} responses; revision ${expectedRevision}`);
+  } catch (error) {
+    failures.push(error);
+    console.error(`not ok - ${error.message}`);
+  }
 
   if (failures.length > 0) {
     console.error(`Production security health check failed (${failures.length} failures).`);

@@ -53,6 +53,11 @@ jobs:
           set -euo pipefail
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
+      # 設定を模倣せず、候補の.htaccessを実Apache/TLSで評価する。Node単体検査はWindowsでも維持。
+      - name: Verify Apache HTTP cache behavior
+        id: verify_apache_http_cache
+        run: node tests/helpers/apache-cache-contract.cjs
+
       - name: Install required browser driver
         id: ci_browser
         run: bash .github/scripts/setup-browser-runtime.sh

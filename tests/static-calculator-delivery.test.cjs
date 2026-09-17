@@ -5,7 +5,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { assertOrderedAttributes } = require('./helpers/markup-contract.cjs');
-const { assertCacheContract } = require('./helpers/apache-cache-contract.cjs');
 const {
   ensureStaticCalculatorLayout,
   validateStaticLayout
@@ -193,6 +192,5 @@ test('SW登録拒否と更新拒否は未処理例外にせず、登録拒否時
   assert.ok(update.warnings.length > 0, '更新失敗を報告していない');
 });
 
-test('未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする', () => {
-  assertCacheContract(read('.htaccess'));
-});
+// S08: HTTP cacheの主担当はPR Gateの実Apache検査とproduction security health。
+// 設定文の並びを疑似解釈する旧静的テストは、実HTTPで同等以上を保証して置換した。
