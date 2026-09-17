@@ -9,7 +9,7 @@ const LOCALE_PREFIXES = new Set(['en', 'ko', 'tw', 'hk', 'in']);
 const CONTENT_LOCALES = new Set(['en', 'ko', 'tw']);
 const EXCLUDED_DIRS = new Set(['.git', '.playwright-cli', 'node_modules', '.ci-evidence']);
 const SOURCE_EXTENSIONS = new Set(['.js', '.cjs', '.mjs', '.html', '.md', '.yml', '.yaml']);
-const JAPANESE_FALLBACK_MARKER = /\(\s*(?:Japanese|일본어|日文)\s*\)/i;
+const JAPANESE_FALLBACK_MARKER = /(?:\bJapanese\b|일본어|日文)/i;
 
 const GENERATOR_GROUPS = Object.freeze([
   {
@@ -249,24 +249,38 @@ function sourceNavigationSignals(rootDir, files) {
   return rows.sort((a, b) => b.total - a.total || a.file.localeCompare(b.file));
 }
 
+function requireLocalNames(lhs) {
+  const value = lhs.trim();
+  if (/^[A-Za-z_$][\w$]*$/.test(value)) return [value];
+  if (!value.startsWith('{') || !value.endsWith('}')) return [];
+  return value.slice(1, -1).split(',').map(part => {
+    const cleaned = part.trim();
+    if (!cleaned) return null;
+    const alias = cleaned.split(':').map(token => token.trim()).filter(Boolean);
+    const local = alias.at(-1)?.replace(/\s*=.*$/, '').trim();
+    return /^[A-Za-z_$][\w$]*$/.test(local || '') ? local : null;
+  }).filter(Boolean);
+}
+
 function buildPipeline(rootDir) {
   const buildFile = path.join(rootDir, 'scripts', 'build-html.js');
   if (!fs.existsSync(buildFile)) return [];
   const text = fs.readFileSync(buildFile, 'utf8');
   const requires = new Map();
-  for (const m of text.matchAll(/const\s+([^=]+?)\s*=\s*require\(['"](\.\/[^'"]+)['"]\)/g)) {
-    const names = [...m[1].matchAll(/[A-Za-z_$][\w$]*/g)].map(x => x[0]);
+  for (const m of text.matchAll(/const\s+([^;=]+?)\s*=\s*require\(['"](\.\/[^'"]+)['"]\)\s*;?/g)) {
     const source = `scripts/${m[2].replace(/^\.\//, '')}`;
-    for (const name of names) requires.set(name, source);
+    for (const name of requireLocalNames(m[1])) requires.set(name, source);
   }
 
   const calls = [];
   const lines = text.split(/\r?\n/);
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
     const line = lines[lineIndex];
-    if (line.trimStart().startsWith('//')) continue;
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith('//')) continue;
     const found = [];
     for (const [fn, source] of requires) {
+      if (new RegExp(`^(?:async\\s+)?function\\s+${fn.replace(/[$]/g, '\\$&')}\\b`).test(trimmed)) continue;
       const match = new RegExp(`\\b${fn.replace(/[$]/g, '\\$&')}\\s*\\(`).exec(line);
       if (match && !/\brequire\s*\(/.test(line.slice(0, match.index + match[0].length))) {
         found.push({ column: match.index, function: fn, source });
@@ -445,7 +459,7 @@ function markdown(report) {
 
   lines.push('## Interpretation rules', '');
   lines.push('- `region-switch` and `locale-switch` are explicit user-controlled crossings and are not issue candidates.');
-  lines.push('- `explicit-ja-fallback` requires a visible Japanese-only marker such as `(Japanese)`, `(일본어)`, or `(日文)` and is kept separate from accidental fallback.');
+  lines.push('- `explicit-ja-fallback` requires a visible Japanese-only marker such as `Japanese`, `일본어`, or `日文` and is kept separate from accidental fallback.');
   lines.push('- `target-not-found` checks the production allowlist, not HTML files only, so RSS/XML/assets do not become false positives.');
   lines.push('- `intl-to-ja-content` is only raised for unmarked EN/KO/TW -> Japanese article/blog transitions.');
   lines.push('- Generator candidates identify likely ownership. Fixes belong in the actual writer/finalizer, never blindly in generated HTML.', '');
