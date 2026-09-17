@@ -132,6 +132,7 @@ jobs:
         working-directory: recovery-verifier
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
+          SMOKE_EXPECT_REVISION: ${{ steps.snapshot.outputs.revision }}
         run: |
           set -euo pipefail
           test -x "${CHROME_PATH:-}"
@@ -142,6 +143,7 @@ jobs:
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
+          node "$GITHUB_WORKSPACE/.github/scripts/bind-browser-evidence.cjs"
 
       - name: Upload external recovery browser evidence
         id: upload_external_recovery_browser_evidence

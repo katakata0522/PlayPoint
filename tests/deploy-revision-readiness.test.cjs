@@ -102,3 +102,29 @@ test('production defaults provide a bounded propagation window without pinning t
   assert.ok(worstCaseReadinessMs > 0);
   assert.ok(worstCaseReadinessMs < 180000, 'readiness must remain bounded below three minutes of the ten-minute browser-smoke job');
 });
+
+test('revision HTTP transport passes IPv4 and no-cache options to the actual client', async t => {
+  const https = require('node:https');
+  const { EventEmitter } = require('node:events');
+  const { requestRevisionText } = require('../.github/scripts/verify-deploy-revision.cjs');
+  let options;
+  t.mock.method(https, 'get', (_url, requestOptions, respond) => {
+    options = requestOptions;
+    const request = new EventEmitter();
+    request.setTimeout = () => request;
+    queueMicrotask(() => {
+      const response = new EventEmitter();
+      response.statusCode = 200;
+      response.setEncoding = () => {};
+      respond(response);
+      response.emit('data', 'fixture-sha\n');
+      response.emit('end');
+    });
+    return request;
+  });
+  const result = await requestRevisionText(new URL('https://fixture.invalid/status/deploy-revision.txt'));
+  assert.equal(result.text, 'fixture-sha\n');
+  assert.equal(options.family, 4);
+  assert.equal(options.headers['cache-control'], 'no-cache');
+  assert.equal(options.headers.pragma, 'no-cache');
+});

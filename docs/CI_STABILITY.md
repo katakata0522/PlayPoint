@@ -51,3 +51,22 @@ Node/ブラウザ/Lighthouseが変わった前後のscore差を、そのまま�
 `tests/ci-stability.test.cjs`は依存skip・独立工程継続・例外・中断分類・retry・秘密情報除外・shellのNode不一致/npm失敗/Chromium失敗を検証する。`tests/ci-performance-sampling.test.cjs`はbyte最大値、外れ値の保存、欠損、重複、環境混在、追加測定、CLI失敗、途中manifestを検証する。
 
 同一SHAの反復はコードを変更せず実施し、実行ID/attempt・checkout SHA/tree・fingerprint・全失敗を記録する。同一runner上の反復は再現性の限定的な検査であり、別runner間・長期のflaky率の証明ではない。成功した回だけ採用したり、コード修正前後を同一SHAの反復と称したりしない。通常PRへ常時5倍の測定を追加しない。
+
+
+## 第3章・本番ブラウザ証跡のSHA結合（2026-09-17）
+
+本番では40桁小文字SHAを `SMOKE_EXPECT_REVISION` に必須とする。通常Deployは公開対象、auto-rollback/manual rollback/watchdogは検証済みsnapshotを渡す。triggerのSHAと復旧先SHAは区別する。ローカルPR検証は `checked: false` と理由を残し、本番検証成功とは扱わない。
+
+`report.json.revision` にexpected/actual/checked/matchと検証前後の観測・時刻を残す。suite末尾で再度live SHAを確認し、checkout SHA一致と全証跡SHA256を `deployment-evidence.json` に保存する。同じmanifestはDeployのCI証跡側 `browser-deployment-evidence.json` にも保存する。署名/改ざん耐性を保証するものではなく、どのrun・checkout・本番・保存ファイルが対応するかを機械照合するための記録である。
+
+旧snapshotのbrowser report（checked/expected/actual）はtrusted current checkoutの結合helperで厳密検証する。旧コードに新helperの存在を要求しない。古いreportの `checked: false` を後付けでtrueにしてはいけない。
+
+ブラウザ成果物を展開したworking directoryで、次のコマンドにより保存済みmanifestと全ファイルを照合できる（HTTP再検査ではない）。
+
+```sh
+SMOKE_EXPECT_REVISION=<exact-40-character-sha> node .github/scripts/bind-browser-evidence.cjs verify
+```
+
+既存のupload工程だけが失敗した場合のjob記録は `OBSERVABILITY_FAIL`。この分類はworkflowの成功/失敗やrollback条件を変更しない。計算・本番HTTP/Chromium等の本物の失敗が混在する場合は引き続き `CHECK_FAIL`。任意のcontinue-on-error工程を成功扱いにする汎用例外は設けない。
+
+故障注入はlocalhost HTTP・一時ディレクトリ・一時Gitリポジトリ・watchdogの純粋な判定入力を使用する。本番への意図的な誤配信・snapshot破損は行わない。
