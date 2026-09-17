@@ -79,7 +79,7 @@ function createLocales() {
             linkQA: 'Q&A & Afterword (Japanese)',
             linkFeedback: 'Feedback',
             linkAbout: 'What are Play Points?',
-            linkWidget: 'Free widget',
+            linkWidget: 'Free widget (Japanese)',
             linkDiscount: '💡 Discount Guide',
             linkAuthor: 'Operator & Policy'
         },
@@ -241,7 +241,7 @@ function createLocales() {
             linkQA: 'Q&A 및 후기 (일본어)',
             linkFeedback: '의견 제안',
             linkAbout: 'Play 포인트란?',
-            linkWidget: '무료 위젯',
+            linkWidget: '무료 위젯 (일본어)',
             linkDiscount: '💡 할인 구매 가이드',
             linkAuthor: '운영자 및 정책'
         },
@@ -403,7 +403,7 @@ function createLocales() {
             linkQA: 'Q&A 與後記 (日文)',
             linkFeedback: '意見回饋',
             linkAbout: '什麼是 Play Points？',
-            linkWidget: '免費小工具',
+            linkWidget: '免費小工具（日文）',
             linkDiscount: '💡 優惠儲值指南',
             linkAuthor: '營運者與政策'
         },

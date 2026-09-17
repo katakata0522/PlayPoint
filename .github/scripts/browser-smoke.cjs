@@ -7,6 +7,7 @@ const { chromium } = require('playwright-core');
 const { withNavigationRetry } = require('./browser-navigation-retry.cjs');
 const { writeJson } = require('./ci-evidence.cjs');
 const navigationAttempts = [];
+const { hasExplicitTargetMarker } = require('../../scripts/navigation-source-map.cjs');
 const { verifyDeployRevisionWithRetry } = require('./verify-deploy-revision.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -216,6 +217,8 @@ async function verifyStaticPage(browser, baseUrl, locale) {
       baseRate: document.querySelector('#baseRate')?.value || '',
       multiplier: document.querySelector('#multiplier')?.value || '',
       reverseBaseLabel: document.querySelector('label[for="reverseBaseRate"] [data-lang-key="labelBaseRate"]')?.textContent || '',
+      widgetPath: document.querySelector('[data-lang-key="linkWidget"]')?.pathname || '',
+      widgetLabel: document.querySelector('[data-lang-key="linkWidget"]')?.textContent || '',
       authorPath: document.querySelector('[data-lang-key="linkAuthor"]')?.pathname || '',
       authorLabel: document.querySelector('[data-lang-key="linkAuthor"]')?.textContent || '',
       gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || ''
@@ -229,6 +232,8 @@ async function verifyStaticPage(browser, baseUrl, locale) {
     if (locale.staticReverseLabel) assert(sameCopy(values.reverseBaseLabel, locale.staticReverseLabel), `${locale.key} static reverse-rate label: ${values.reverseBaseLabel}`);
     if (locale.gamePath) assert(values.gamePath === locale.gamePath, `${locale.key} static game path: ${values.gamePath}`);
     assert(values.authorPath === expectedAuthorPath(locale), `${locale.key} static author path: ${values.authorPath}`);
+    assert(values.widgetPath === '/embed.html', `${locale.key} static widget path`);
+    if (locale.key !== 'JP') assert(hasExplicitTargetMarker(values.widgetLabel, 'ja'), `${locale.key} static widget language notice`);
     browserState.verify(`${locale.key} static browser errors`);
     return { ...values, errors: browserState.values };
   } catch (error) {
@@ -275,6 +280,8 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       packFields: document.querySelectorAll('#pack-amount').length,
       statusCount: document.querySelector('#currentStatus')?.options.length || 0,
       reverseTooltip: document.querySelector('#tooltip-reverse-status')?.textContent || '',
+      widgetPath: document.querySelector('[data-lang-key="linkWidget"]')?.pathname || '',
+      widgetLabel: document.querySelector('[data-lang-key="linkWidget"]')?.textContent || '',
       authorPath: document.querySelector('[data-lang-key="linkAuthor"]')?.pathname || '',
       authorLabel: document.querySelector('[data-lang-key="linkAuthor"]')?.textContent || '',
       gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || '',
@@ -291,6 +298,8 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     if (locale.gamePath) assert(header.gamePath === locale.gamePath, `${locale.key} hydrated game path: ${header.gamePath}`);
     if (locale.calendarPath) assert(decodeURIComponent(header.calendarHref).includes(locale.calendarPath), `${locale.key} calendar link does not point back to ${locale.calendarPath}`);
 
+    assert(header.widgetPath === '/embed.html', `${locale.key} runtime widget path`);
+    if (locale.key !== 'JP') assert(hasExplicitTargetMarker(header.widgetLabel, 'ja'), `${locale.key} runtime widget language notice`);
     assert(header.authorPath === expectedAuthorPath(locale), `${locale.key} runtime author path: ${header.authorPath}`);
     if (locale.key === 'HK') assert(header.authorLabel.includes('繁體中文'), 'HK author fallback language must be visible');
     if (locale.key === 'IN') assert(header.authorLabel.includes('English'), 'IN author fallback language must be visible');
@@ -412,8 +421,31 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     const expectedLang = { JP: 'ja', US: 'en', KR: 'ko', TW: 'zh-TW', HK: 'zh-TW', IN: 'en' }[locale.key];
     assert(authorLang === expectedLang, `${locale.key} author destination language: ${authorLang}`);
     await saveScreenshot(page, `${locale.key.toLowerCase()}-author.png`);
+    await openPage(page, new URL(locale.path, baseUrl).href);
+    await page.locator('[data-lang-key="linkWidget"]').click();
+    await page.waitForURL(url => url.pathname === '/embed.html', { waitUntil: 'domcontentloaded', timeout: 30_000 });
+    await page.locator('h1').first().waitFor({ state: 'visible' });
+    const widgetLang = await page.locator('html').getAttribute('lang');
+    assert(widgetLang === 'ja', `${locale.key} widget destination language`);
+    let diamondReference = null;
+    if (locale.key === 'US') {
+      const response = await page.goto(new URL('en/status/diamond/', baseUrl).href, { waitUntil: 'domcontentloaded' });
+      assert(response?.ok(), 'English Diamond page is reachable');
+      const link = page.locator('a[href="/articles/2025-12-25-diamond-worth-it.html"]');
+      assert(await link.count() === 1, 'Keep exactly one Diamond value reference');
+      const label = await link.textContent();
+      assert(/Japan, Japanese/.test(label), 'Diamond reference must show both region and language');
+      await link.click();
+      await page.waitForURL(url => url.pathname === '/articles/2025-12-25-diamond-worth-it.html', { waitUntil: 'domcontentloaded' });
+      await page.locator('h1').first().waitFor({ state: 'visible' });
+      const lang = await page.locator('html').getAttribute('lang');
+      assert(lang === 'ja', 'Diamond reference destination must be Japanese');
+      diamondReference = { path: new URL(page.url()).pathname, lang, label };
+    }
     browserState.verify(`${locale.key} hydrated browser errors`);
-    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary, authorVisit: { path: authorPath, lang: authorLang }, errors: browserState.values };
+    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary,
+      authorVisit: { path: authorPath, lang: authorLang }, widgetVisit: { path: '/embed.html', lang: widgetLang },
+      diamondReference, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, `${locale.key.toLowerCase()}-hydrated.png`);
     throw error;
