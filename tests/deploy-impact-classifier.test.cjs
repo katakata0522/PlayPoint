@@ -37,6 +37,7 @@ test('品質検査・文書・非公開ツールだけの変更では本番Deplo
     '.github/scripts/seo-health-check.cjs',
     '.github/scripts/verify-deploy-status.cjs',
     '.github/workflows/browser-smoke.yml',
+    '.github/manual-workflows/browser-smoke.yml',
     '.github/workflows/mobile-performance.yml',
     '.github/workflows/quality-check.yml',
     '.github/workflows/seo-healthcheck.yml',

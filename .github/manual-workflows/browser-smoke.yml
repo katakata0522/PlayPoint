@@ -1,3 +1,9 @@
+# Archived manual recipe: this file intentionally lives outside .github/workflows/.
+# GitHub Actions has reproduced a platform-side bug where workflow_dispatch-only
+# workflows with required inputs are incorrectly evaluated on push and fail with
+# zero jobs. PR Gate and deploy.yml own the required local/production Chromium
+# verification, so this recipe is retained only as a reference until the upstream
+# dispatcher issue is confirmed fixed.
 name: Browser calculator smoke
 
 on:

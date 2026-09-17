@@ -15,7 +15,6 @@ const workflowExpectations = new Map([
   ['.github/workflows/quality-check.yml', 1],
   ['.github/workflows/mobile-performance.yml', 1],
   ['.github/workflows/deploy.yml', 1],
-  ['.github/workflows/browser-smoke.yml', 2],
   ['.github/workflows/rollback.yml', 1],
   ['.github/workflows/deploy-recovery-watchdog.yml', 1],
 ]);
@@ -57,6 +56,15 @@ test('browser検証を所有するworkflowは共通helperだけを呼ぶ', () =>
     assert.doesNotMatch(workflow, /npm install --no-save --no-package-lock --ignore-scripts playwright-core/);
     assert.doesNotMatch(workflow, /sudo apt-get install -y --no-install-recommends fonts-noto-cjk/);
   }
+});
+
+test('退避したmanual Browser Smokeも共通helper参照だけを保持する', () => {
+  const recipe = read('.github/manual-workflows/browser-smoke.yml');
+  const calls = recipe.match(/bash \.github\/scripts\/setup-browser-runtime\.sh/g) || [];
+  assert.equal(calls.length, 2);
+  assert.doesNotMatch(recipe, /playwright-core@1\.55\.0/);
+  assert.doesNotMatch(recipe, /npm install --no-save --no-package-lock --ignore-scripts playwright-core/);
+  assert.doesNotMatch(recipe, /sudo apt-get install -y --no-install-recommends fonts-noto-cjk/);
 });
 
 test('browser runtime helper変更は本番Deploy入力として扱う', () => {
