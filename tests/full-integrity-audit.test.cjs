@@ -65,9 +65,11 @@ test('CSPはHTML属性のinline scriptを禁止する', () => {
   assert.match(htaccess, /script-src 'self' 'unsafe-inline' https:\/\/\*\.googlesyndication\.com/);
 });
 
-test('ブラウザCIはゲームと記事の収益経路を検査する', () => {
-  const workflow = read('.github/workflows/browser-smoke.yml');
-  assert.match(workflow, /browser-revenue-smoke\.cjs/);
+test('必須ブラウザCIはゲームと記事の収益経路を検査する', () => {
+  const qualityWorkflow = read('.github/workflows/quality-check.yml');
+  const deployWorkflow = read('.github/workflows/deploy.yml');
+  assert.match(qualityWorkflow, /browser-revenue-smoke\.cjs/);
+  assert.match(deployWorkflow, /browser-revenue-smoke\.cjs/);
   const smoke = read('.github/scripts/browser-revenue-smoke.cjs');
   assert.match(smoke, /games\/genshin/);
   assert.match(smoke, /article-ad-container/);
