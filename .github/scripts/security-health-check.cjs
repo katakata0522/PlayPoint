@@ -161,8 +161,12 @@ async function main() {
   // 既存security工程に載せ、失敗時は既存の復旧条件をそのまま使う。
   // 非公開変更でmainだけ進んだ場合も考慮し、指定がなければ実配信SHAへ結び付ける。
   try {
-    const expectedRevision = process.env.EXPECTED_DEPLOY_REVISION ||
-      (await (await fetchResponse('/deploy-revision.txt', { redirect: 'manual' })).text()).trim();
+    let expectedRevision = process.env.EXPECTED_DEPLOY_REVISION;
+    if (!expectedRevision) {
+      const response = await fetchResponse('/status/deploy-revision.txt', { redirect: 'manual' });
+      if (response.status !== 200) throw new Error(`/status/deploy-revision.txt: HTTP ${response.status}`);
+      expectedRevision = (await response.text()).trim();
+    }
     if (!/^[0-9a-f]{40}$/.test(expectedRevision)) throw new Error('Cache verification revision is invalid');
     const report = await verifyHttpCache({ baseUrl: BASE_URL, expectedRevision,
       outputFile: path.join(process.env.RUNNER_TEMP || os.tmpdir(), 'playpoint-ci-evidence', `http-cache-${expectedRevision}.json`) });
