@@ -136,11 +136,11 @@ test('検証・復旧専用workflowの変更だけでは本番Deployを起動し
     '.github/workflows/quality-check.yml',
     '.github/workflows/seo-healthcheck.yml',
     '.github/workflows/rollback.yml',
-    '.github/workflows/deploy-recovery-watchdog.yml',
-    '.github/workflows/snapshot-history.yml'
+    '.github/workflows/deploy-recovery-watchdog.yml'
   ]) {
     assert.ok(workflow.includes(`- '${workflowPath}'`), `${workflowPath} must be ignored by Deploy push trigger`);
   }
+  assert.equal(fs.existsSync(path.join(root, '.github/workflows/snapshot-history.yml')), false);
 });
 
 test('Deployは変更影響を判定して本番処理を一括でゲートする', () => {
