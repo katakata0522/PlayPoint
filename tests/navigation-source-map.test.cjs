@@ -9,6 +9,7 @@ const {
   audit,
   buildPipeline,
   candidateGenerators,
+  extractAnchors,
   fileToPublicPath,
   localeOf,
   resolveInternalHref,
@@ -62,6 +63,13 @@ test('explicit switches and visible Japanese fallbacks are separated from accide
   assert.equal(transitionKind(edge({ explicitJapaneseFallback: true })), 'explicit-ja-fallback');
   assert.equal(transitionKind(edge()), 'cross-locale-candidate');
   assert.equal(transitionKind(edge({ targetLocale: 'en' })), 'same-locale');
+
+  for (const label of ['Japanese reference page', '일본어 참고 페이지', '日文參考頁', 'Privacy (Japanese)']) {
+    const [anchor] = extractAnchors(`<a href="/privacy.html">${label}</a>`, '/en/');
+    assert.equal(anchor.explicitJapaneseFallback, true, `visible Japanese fallback label must be recognized: ${label}`);
+  }
+  const [unmarked] = extractAnchors('<a href="/privacy.html">Privacy Policy</a>', '/en/');
+  assert.equal(unmarked.explicitJapaneseFallback, false, 'unmarked cross-locale link must stay reviewable');
 });
 
 test('known page families retain explicit generator ownership candidates', () => {
