@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "stage": 3,
+  "baselineCommit": "d46527f7f1adf692c1d5dc881d7ed186052f0ce6",
+  "previousLedger": "TEST_AUDIT_PROGRESS_2026-09-17.json",
+  "baselineCases": 930,
+  "reviewedBaselineCases": 80,
+  "unreviewedBaselineCases": 850,
+  "newlyReviewedIds": [
+    "SW01",
+    "SW02",
+    "SW03",
+    "SW04",
+    "SW05",
+    "SW06"
+  ],
+  "revisitedIds": [
+    "R01",
+    "R02",
+    "S07"
+  ],
+  "currentCases": 943,
+  "testFiles": 171,
+  "postMinifyCases": 18,
+  "items": [
+    {
+      "id": "R01",
+      "status": "既精査・改善完了",
+      "decision": "能動的なESM依存グラフ21モジュールとinstall時の先読みURLを照合。必要7モジュールの内容変更でcache世代が変わることも実行確認。引用符・コメント・re-export経由の同義変更を許容。"
+    },
+    {
+      "id": "R02",
+      "status": "既精査・改善完了",
+      "decision": "configの実import、SWの実先読み、ブログ起動時に挿入されたCSS URLを、独立に求めた内容SHA256の版と照合。共通CSSの二重挿入を防ぎ、圧縮対象のJS混入も拒否。"
+    },
+    {
+      "id": "S07",
+      "status": "既精査・改善完了",
+      "decision": "文字列検査を4ケースへ置換。実地域判定を含む登録モジュールを実行し、6地域のroot URL・HTTP cache不使用・更新確認、idle/timer遅延、未対応、拒否を分離。"
+    },
+    {
+      "id": "SW01",
+      "status": "今回精査・維持改善",
+      "decision": "実installでreload要求とskipWaitingを確認。addAll拒否でinstallが失敗する保護を維持。FakeRequestのinstanceofという私的な実装固定を外した。実ブラウザのCache.addAll原子性を模擬証明しない。"
+    },
+    {
+      "id": "SW02",
+      "status": "今回精査・維持",
+      "decision": "実activateが現行世代と他アプリのcacheを削除しないことを確認。削除APIの実行結果・多タブ更新は別範囲。"
+    },
+    {
+      "id": "SW03",
+      "status": "今回精査・補完",
+      "decision": "GET/同一origin/許可destinationの境界を維持。HEAD・API・音声/動画/worker等の拒否と、許可6種の対になる成功を追加。"
+    },
+    {
+      "id": "SW04",
+      "status": "今回精査・維持",
+      "decision": "画面遷移はcacheがあってもnetwork-first。追跡query除去と取得内容の保存を確認。保存失敗との混同はSW07で修正。"
+    },
+    {
+      "id": "SW05",
+      "status": "今回精査・維持",
+      "decision": "通信失敗時の同一ページ→トップのfallbackを維持。両方欠損時の拒否はSW09へ補完。"
+    },
+    {
+      "id": "SW06",
+      "status": "今回精査・補完",
+      "decision": "静的資産では版vを保持し追跡queryを除去する。異なる版同士の混線をSW12で補完。"
+    },
+    {
+      "id": "SW07",
+      "status": "新規・実装修正済み",
+      "decision": "閲覧中のcache open/match/put失敗で正常なnetwork応答を失わない。document/scriptの6条件で確認。初回installへは緩和を適用しない。"
+    },
+    {
+      "id": "SW08",
+      "status": "新規・実装修正済み",
+      "decision": "静的cache hitはnetworkを待たず返す。再取得と保存を同期dispatch中のevent.waitUntilへ渡し、保存完了まで寿命を保持。遅延Promiseで実時間待ちを避ける。"
+    },
+    {
+      "id": "SW09",
+      "status": "新規・実装修正済み",
+      "decision": "静的再取得失敗で既存cacheを返し、cache missは元の通信エラーで明示拒否。undefinedを正常応答と扱わない。"
+    },
+    {
+      "id": "SW10",
+      "status": "新規・補完",
+      "decision": "404/503・opaque/cors応答を正常cacheへ保存しない。HTTP応答とネットワーク例外を混同しない。"
+    },
+    {
+      "id": "SW11",
+      "status": "新規・補完",
+      "decision": "初回installのcache open拒否は失敗のまま。skipWaiting/claimしない。閲覧中のbest-effort保存とは別契約。"
+    },
+    {
+      "id": "SW12",
+      "status": "新規・補完",
+      "decision": "古いvのcacheがあっても新しいvの通信失敗を古い資産で代替しない。追跡query差は同版として扱う。"
+    }
+  ],
+  "localEvidence": {
+    "targetedPassed": 30,
+    "serialRegressionPassed": 943,
+    "equivalenceExperiments": 4,
+    "faultExperiments": 10,
+    "cancelled": 0,
+    "skipped": 0,
+    "completePreflightPassed": true,
+    "postMinifyPassed": 18
+  },
+  "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。"
+}
