@@ -69,9 +69,7 @@ function collectPublicFiles(rootDir) {
     const absolute = path.join(rootDir, name);
     if (fs.existsSync(absolute) && fs.statSync(absolute).isFile()) files.push(name);
   }
-  for (const name of [...PUBLIC_TOP_LEVEL_DIRECTORIES].sort()) {
-    recurseFiles(rootDir, path.join(rootDir, name), files);
-  }
+  for (const name of [...PUBLIC_TOP_LEVEL_DIRECTORIES].sort()) recurseFiles(rootDir, path.join(rootDir, name), files);
   return [...new Set(files)].sort();
 }
 
@@ -108,11 +106,8 @@ function lineAt(text, offset) {
 }
 
 function decodeHtmlUrl(value) {
-  return String(value || '')
-    .replace(/&amp;/gi, '&')
-    .replace(/&#38;/g, '&')
-    .replace(/&#x26;/gi, '&')
-    .trim();
+  // One replacement pass prevents strings such as "&amp;#38;" from being decoded twice.
+  return String(value || '').replace(/&(amp|#0*38|#x0*26);/gi, '&').trim();
 }
 
 function getAttribute(tag, name) {
@@ -192,17 +187,14 @@ function extractHtmlNavigation(relativePath, html) {
     const href = getAttribute(match[0], 'href');
     if (href !== null) push('anchor', roleForAnchor(match[0], html, match.index), href, match[0], match.index);
   }
-
   for (const match of html.matchAll(/<form\b[^>]*>/gi)) {
     const action = getAttribute(match[0], 'action');
     if (action !== null) push('form-action', 'form', action, match[0], match.index);
   }
-
   for (const match of html.matchAll(/<(?:button|input)\b[^>]*>/gi)) {
     const action = getAttribute(match[0], 'formaction');
     if (action !== null) push('form-action', 'form', action, match[0], match.index);
   }
-
   for (const match of html.matchAll(/<link\b[^>]*>/gi)) {
     const href = getAttribute(match[0], 'href');
     if (href === null) continue;
@@ -212,14 +204,12 @@ function extractHtmlNavigation(relativePath, html) {
       push('hreflang', 'hreflang', href, match[0], match.index, { hreflang: getAttribute(match[0], 'hreflang') });
     }
   }
-
   for (const match of html.matchAll(/<meta\b[^>]*>/gi)) {
     if (String(getAttribute(match[0], 'http-equiv') || '').toLowerCase() !== 'refresh') continue;
     const content = getAttribute(match[0], 'content') || '';
     const url = content.match(/(?:^|;)\s*url\s*=\s*(.+)$/i)?.[1]?.trim().replace(/^["']|["']$/g, '');
     if (url) push('meta-refresh', 'runtime', url, match[0], match.index);
   }
-
   return records;
 }
 
@@ -247,9 +237,7 @@ function extractRuntimeNavigationFromText(sourceFile, text, sourcePath = '/') {
     for (const match of text.matchAll(pattern)) {
       const expression = match[1].trim();
       const literal = literalFromExpression(expression);
-      const resolved = literal === null
-        ? { scope: 'dynamic', raw: expression }
-        : resolveReference(literal, sourceUrl);
+      const resolved = literal === null ? { scope: 'dynamic', raw: expression } : resolveReference(literal, sourceUrl);
       records.push({
         sourceFile,
         sourcePath,
@@ -312,17 +300,12 @@ function findLocalizedEquivalent(record, publicUrlIndex) {
 function classifyTransition(record, publicUrlIndex) {
   const exists = targetExists(record, publicUrlIndex);
   const base = { targetExists: exists, localizedEquivalent: null, disposition: record.scope, severity: null, issue: null };
-
   if (record.scope === 'invalid') return { ...base, disposition: 'invalid-url', severity: 'high', issue: 'invalid-navigation-url' };
   if (record.scope !== 'internal') return base;
-
   if (exists === false) return { ...base, disposition: 'broken-internal-target', severity: 'high', issue: 'broken-internal-target' };
-
   if (record.kind === 'canonical') {
     const same = record.pathname === record.sourcePath || (record.sourcePath.endsWith('/') && record.pathname === record.sourcePath.slice(0, -1));
-    return same
-      ? { ...base, disposition: 'self-canonical' }
-      : { ...base, disposition: 'canonical-review', severity: 'high', issue: 'canonical-points-elsewhere' };
+    return same ? { ...base, disposition: 'self-canonical' } : { ...base, disposition: 'canonical-review', severity: 'high', issue: 'canonical-points-elsewhere' };
   }
   if (record.kind === 'hreflang') return { ...base, disposition: 'hreflang-cross-locale' };
   if (record.role === 'region-switch') return { ...base, disposition: 'declared-region-switch' };
@@ -331,18 +314,9 @@ function classifyTransition(record, publicUrlIndex) {
 
   const equivalent = findLocalizedEquivalent(record, publicUrlIndex);
   if (record.sourceRegion !== 'JP' && record.targetRegion === 'JP') {
-    if (equivalent) {
-      return {
-        ...base,
-        localizedEquivalent: equivalent,
-        disposition: 'likely-wrong-locale',
-        severity: 'high',
-        issue: 'localized-equivalent-exists'
-      };
-    }
+    if (equivalent) return { ...base, localizedEquivalent: equivalent, disposition: 'likely-wrong-locale', severity: 'high', issue: 'localized-equivalent-exists' };
     return { ...base, disposition: 'japanese-fallback-review', severity: 'medium', issue: 'unexpected-japanese-fallback' };
   }
-
   return { ...base, disposition: 'cross-region-review', severity: 'medium', issue: 'cross-region-user-navigation' };
 }
 
@@ -352,7 +326,6 @@ function createGeneratorContext(rootDir) {
   const { getIntlAuthorPageFiles } = require('./intl-author-pages.cjs');
   const { ALL_GUIDES } = require('./intl-game-guide-expansion.cjs');
   const { getGamePageHtmlFiles, GAME_GENERATOR_FILE } = require('./game-page-targets.cjs');
-
   const htmlSet = values => new Set(values.filter(value => String(value).endsWith('.html')).map(toPosix));
   return {
     intlSeo: htmlSet(getIntlSeoFiles()),
@@ -393,23 +366,12 @@ function mutatorsFor(relativePath) {
   const intlArticleSurface = /^(?:en|ko|tw)\/(?:articles|author)\//.test(file);
   const game = /^(?:(?:en|ko|tw)\/)?games\//.test(file);
   const topCalculator = /^(?:index\.html|(?:en|ko|tw|hk|in)\/index\.html)$/.test(file);
-
-  if (topCalculator) {
-    ids.add('calculator-header-sync');
-    ids.add('region-hreflang-sync');
-  }
+  if (topCalculator) { ids.add('calculator-header-sync'); ids.add('region-hreflang-sync'); }
   if (['en/index.html', 'ko/index.html', 'tw/index.html'].includes(file)) ids.add('locale-home-generator');
   if (['hk/index.html', 'in/index.html'].includes(file)) ids.add('region-home-generator');
-  if (intlArticleSurface) {
-    ids.add('intl-layout-sync');
-    ids.add('intl-navigation-sidebar-v1');
-    ids.add('intl-article-hreflang');
-  }
+  if (intlArticleSurface) { ids.add('intl-layout-sync'); ids.add('intl-navigation-sidebar-v1'); ids.add('intl-article-hreflang'); }
   if (intl && /\/articles\//.test(file)) ids.add('intl-hub-discovery');
-  if (article) {
-    ids.add('article-content-navigation');
-    ids.add('article-discovery');
-  }
+  if (article) { ids.add('article-content-navigation'); ids.add('article-discovery'); }
   if (/^articles\//.test(file)) ids.add('japanese-navigation-sidebar');
   if (game) ids.add('game-article-hub');
   if (/^(?:amount|campaign|compare|maintenance|points-cost|status)\//.test(file)) ids.add('manual-lp-hreflang');
@@ -448,13 +410,10 @@ function buildNavigationInventory(rootDir) {
     const absolute = path.join(rootDir, relativePath);
     const html = fs.readFileSync(absolute, 'utf8');
     const owner = primaryOwnerFor(relativePath, generator);
-    const extracted = extractHtmlNavigation(relativePath, html).map(record => ({
-      ...record,
-      ...classifyTransition(record, publicUrlIndex)
-    }));
+    const extracted = extractHtmlNavigation(relativePath, html).map(record => ({ ...record, ...classifyTransition(record, publicUrlIndex) }));
     transitions.push(...extracted);
 
-    for (const script of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)) {
+    for (const script of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script\s*>/gi)) {
       const offset = script.index + script[0].indexOf(script[1]);
       const inline = extractRuntimeNavigationFromText(relativePath, script[1], publicPathForFile(relativePath))
         .map(record => ({ ...record, line: lineAt(html, offset) + record.line - 1 }))
@@ -503,7 +462,6 @@ function buildNavigationInventory(rootDir) {
     ...validateSourceRegistry(rootDir),
     ...pages.filter(page => !page.primaryOwner).map(page => `public HTML has no provenance owner: ${page.file}`)
   ];
-
   const dispositions = {};
   for (const record of transitions) dispositions[record.disposition] = (dispositions[record.disposition] || 0) + 1;
 
@@ -539,7 +497,7 @@ function buildNavigationInventory(rootDir) {
 }
 
 function markdownEscape(value) {
-  return String(value ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
+  return String(value ?? '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 }
 
 function renderMarkdown(report) {
@@ -602,9 +560,7 @@ function renderMarkdown(report) {
   }
 
   lines.push('', '## 4. 生成元・書換元レジストリ', '', '| ID | 種別 | 実装ファイル | 対象 |', '|---|---|---|---|');
-  for (const source of report.sourceRegistry) {
-    lines.push(`| ${source.id} | ${source.kind} | \`${source.file}\` | ${markdownEscape(source.targets)} |`);
-  }
+  for (const source of report.sourceRegistry) lines.push(`| ${source.id} | ${source.kind} | \`${source.file}\` | ${markdownEscape(source.targets)} |`);
 
   lines.push('', '## 5. runtime遷移ソース', '');
   if (report.runtimeNavigation.length === 0) {
@@ -652,17 +608,11 @@ function writeSnapshots(rootDir, report) {
 }
 
 function checkSnapshots(rootDir, report) {
-  const expected = [
-    [SNAPSHOT_JSON, stableJson(report)],
-    [SNAPSHOT_MD, renderMarkdown(report) + '\n']
-  ];
+  const expected = [[SNAPSHOT_JSON, stableJson(report)], [SNAPSHOT_MD, renderMarkdown(report) + '\n']];
   const failures = [];
   for (const [relativePath, content] of expected) {
     const absolute = path.join(rootDir, relativePath);
-    if (!fs.existsSync(absolute)) {
-      failures.push(`snapshot is missing: ${relativePath}`);
-      continue;
-    }
+    if (!fs.existsSync(absolute)) { failures.push(`snapshot is missing: ${relativePath}`); continue; }
     if (fs.readFileSync(absolute, 'utf8') !== content) failures.push(`snapshot is stale: ${relativePath}`);
   }
   return failures;
@@ -681,11 +631,9 @@ function runCli() {
   const report = buildNavigationInventory(rootDir);
   const evidencePath = writeEvidence(report);
   printSummary(report, evidencePath);
-
   const failures = [...report.structuralErrors];
   if (args.has('--write')) writeSnapshots(rootDir, report);
   if (args.has('--check')) failures.push(...checkSnapshots(rootDir, report));
-
   if (failures.length > 0) {
     for (const failure of failures) console.error(`[navigation-provenance] ${failure}`);
     console.error('[navigation-provenance] 更新が意図したものなら --write で一覧を再生成し、差分をレビューしてください。');
