@@ -9,7 +9,14 @@ const LOCALE_PREFIXES = new Set(['en', 'ko', 'tw', 'hk', 'in']);
 const CONTENT_LOCALES = new Set(['en', 'ko', 'tw']);
 const EXCLUDED_DIRS = new Set(['.git', '.playwright-cli', 'node_modules', '.ci-evidence']);
 const SOURCE_EXTENSIONS = new Set(['.js', '.cjs', '.mjs', '.html', '.md', '.yml', '.yaml']);
-const JAPANESE_FALLBACK_MARKER = /(?:\bJapanese\b|일본어|日文)/i;
+const EXPLICIT_TARGET_MARKERS = Object.freeze({
+  ja: /(?:\bJapanese\b|\bJapan\b|日本語|日本|일본어|日文)/i,
+  en: /(?:\bEnglish\b|\bU\.?S\.?\b|United States|영문|英文|英語)/i,
+  ko: /(?:\bKorean\b|\bKorea\b|한국어|대한민국|韓國|韩国|韓国)/i,
+  tw: /(?:Traditional Chinese|\bTaiwan\b|繁體中文|繁体中文|台灣|台湾)/i,
+  hk: /(?:Hong Kong|香港)/i,
+  in: /(?:\bIndia\b|인도|印度)/i
+});
 
 const GENERATOR_GROUPS = Object.freeze([
   {
@@ -148,6 +155,10 @@ function surfaceOf(context) {
   return 'body';
 }
 
+function hasExplicitTargetMarker(label, targetLocale) {
+  return EXPLICIT_TARGET_MARKERS[targetLocale]?.test(String(label || '')) || false;
+}
+
 function extractAnchors(html, publicPath) {
   const anchors = [];
   for (const match of html.matchAll(/<a\b([^>]*?)\bhref=["']([^"']+)["']([^>]*)>/gi)) {
@@ -166,7 +177,7 @@ function extractAnchors(html, publicPath) {
       target,
       label,
       hasHreflang: /\bhreflang\s*=/.test(attrs),
-      explicitJapaneseFallback: JAPANESE_FALLBACK_MARKER.test(label),
+      explicitLocaleFallback: hasExplicitTargetMarker(label, localeOf(target)),
       surface: surfaceOf(html.slice(start, end))
     });
   }
@@ -201,7 +212,7 @@ function transitionKind(edge) {
   if (edge.sourceLocale === edge.targetLocale) return 'same-locale';
   if (edge.surface === 'region-switcher') return 'region-switch';
   if (edge.surface === 'locale-switcher' || edge.hasHreflang) return 'locale-switch';
-  if (edge.explicitJapaneseFallback && edge.targetLocale === 'ja') return 'explicit-ja-fallback';
+  if (edge.explicitLocaleFallback) return 'explicit-locale-fallback';
   return 'cross-locale-candidate';
 }
 
@@ -323,7 +334,7 @@ function audit(rootDir) {
         label: anchor.label,
         surface: anchor.surface,
         hasHreflang: anchor.hasHreflang,
-        explicitJapaneseFallback: anchor.explicitJapaneseFallback,
+        explicitLocaleFallback: anchor.explicitLocaleFallback,
         generatorGroup: generators.group,
         generatorSources: generators.sources
       };
@@ -459,7 +470,7 @@ function markdown(report) {
 
   lines.push('## Interpretation rules', '');
   lines.push('- `region-switch` and `locale-switch` are explicit user-controlled crossings and are not issue candidates.');
-  lines.push('- `explicit-ja-fallback` requires a visible Japanese-only marker such as `Japanese`, `일본어`, or `日文` and is kept separate from accidental fallback.');
+  lines.push('- `explicit-locale-fallback` requires the visible label to name the destination locale/region (for example `Japanese`, `일본어`, `日文`, `English`, `United States`, or `Hong Kong`).');
   lines.push('- `target-not-found` checks the production allowlist, not HTML files only, so RSS/XML/assets do not become false positives.');
   lines.push('- `intl-to-ja-content` is only raised for unmarked EN/KO/TW -> Japanese article/blog transitions.');
   lines.push('- Generator candidates identify likely ownership. Fixes belong in the actual writer/finalizer, never blindly in generated HTML.', '');
@@ -503,6 +514,7 @@ module.exports = {
   classifyEdge,
   extractAnchors,
   fileToPublicPath,
+  hasExplicitTargetMarker,
   localeOf,
   markdown,
   resolveInternalHref,
