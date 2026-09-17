@@ -92,36 +92,54 @@ function getCacheKey(request) {
   return url.toString();
 }
 
-// HTMLはネットワーク優先で更新し、オフライン時だけキャッシュへ戻す
-const OFFLINE_FALLBACK_URL = new URL('./', self.registration.scope).toString();
+// 閲覧中のCache APIは補助保存。初回installの必須先読みとは失敗方針を分ける。
+async function openRuntimeCache() {
+  try { return await caches.open(CACHE_NAME); } catch { return null; }
+}
 
-async function handleNavigationRequest(request, cacheKey) {
-  const cache = await caches.open(CACHE_NAME);
+async function matchRuntimeCache(cache, key) {
+  try { return cache ? await cache.match(key) : undefined; } catch { return undefined; }
+}
 
-  try {
-    const networkResponse = await fetch(request);
-    if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
-      await cache.put(cacheKey, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch {
-    const cachedResponse = await cache.match(cacheKey);
-    return cachedResponse || cache.match(OFFLINE_FALLBACK_URL);
+async function storeRuntimeResponse(cache, key, response) {
+  if (!cache || !response || !response.ok || response.type !== 'basic') return;
+  try { await cache.put(key, response.clone()); } catch {
+    // 容量不足などの保存失敗で、取得済みの正常な応答を失わせない。
   }
 }
 
-// 版番号付きのCSS・JS・画像はStale-While-Revalidateで更新する
-async function handleStaticRequest(request, cacheKey) {
-  const cache = await caches.open(CACHE_NAME);
-  const cachedResponse = await cache.match(cacheKey);
-  const fetchedResponse = fetch(request).then((networkResponse) => {
-    if (networkResponse && networkResponse.ok && networkResponse.type === 'basic') {
-      void cache.put(cacheKey, networkResponse.clone());
-    }
-    return networkResponse;
-  }).catch(() => cachedResponse);
+// HTMLはネットワーク優先。通信が失敗した時だけ同一ページ／トップへ戻す。
+const OFFLINE_FALLBACK_URL = new URL('./', self.registration.scope).toString();
 
-  return cachedResponse || fetchedResponse;
+async function handleNavigationRequest(request, cacheKey) {
+  const cache = await openRuntimeCache();
+  try {
+    const networkResponse = await fetch(request);
+    await storeRuntimeResponse(cache, cacheKey, networkResponse);
+    return networkResponse;
+  } catch (error) {
+    const cachedResponse = await matchRuntimeCache(cache, cacheKey);
+    const fallback = cachedResponse || await matchRuntimeCache(cache, OFFLINE_FALLBACK_URL);
+    if (fallback) return fallback;
+    throw error;
+  }
+}
+
+// 静的資産は既存cacheを先に返し、再取得と保存をイベントの寿命へ結び付ける。
+function handleStaticRequest(request, cacheKey, event) {
+  const cachePromise = openRuntimeCache();
+  const refreshed = cachePromise.then(async (cache) => {
+    const networkResponse = await fetch(request);
+    await storeRuntimeResponse(cache, cacheKey, networkResponse);
+    return networkResponse;
+  });
+  // cache hitでもworker終了で再取得が途中放棄されないよう、dispatch中に登録する。
+  // background失敗は処理済みにするが、cache missの応答側には通信エラーを伝える。
+  event.waitUntil(refreshed.then(() => undefined, () => undefined));
+  return cachePromise.then(async (cache) => {
+    const cachedResponse = await matchRuntimeCache(cache, cacheKey);
+    return cachedResponse || refreshed;
+  });
 }
 
 self.addEventListener('fetch', (event) => {
@@ -133,6 +151,6 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     isNavigation
       ? handleNavigationRequest(event.request, cacheKey)
-      : handleStaticRequest(event.request, cacheKey)
+      : handleStaticRequest(event.request, cacheKey, event)
   );
 });

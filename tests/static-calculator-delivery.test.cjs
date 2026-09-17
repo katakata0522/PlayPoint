@@ -148,18 +148,49 @@ test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適�
   }
 });
 
-test('UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する', () => {
-  const mainSource = read('js/main.js');
-  const serviceWorkerRegistration = read('js/service-worker-registration.js');
-  const serviceWorker = read('sw.js');
+// 資産URL・実importの主担当はruntime-module-guards。ここでは登録APIの動作を分離する。
+const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
 
-  // These are delivery/cache boundaries: source-level wiring is intentional here.
-  assert.match(mainSource, /from '\.\/main-calculator-ui\.js\?v=[a-f0-9]{10}';/);
-  assert.match(mainSource, /from '\.\/service-worker-registration\.js';/);
-  assert.match(serviceWorkerRegistration, /register\(swPath, \{ updateViaCache: 'none' \}\)/);
-  assert.match(serviceWorkerRegistration, /reg\.update\(\)/);
-  assert.match(serviceWorker, /'\.\/js\/main-calculator-ui\.js\?v=[a-f0-9]{10}'/);
-  assert.match(serviceWorker, /'\.\/js\/service-worker-registration\.js'/);
+test('6地域の実登録処理は同じroot SWをHTTP cacheを使わず登録し更新確認する', () => {
+  const paths = ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/'];
+  const results = runEsmProbe({ kind: 'registration', scenarios: paths.map(pathname => ({ pathname })) });
+  for (const [index, result] of results.entries()) {
+    assert.deepEqual(result.calls, [{ url: `${ORIGIN}/sw.js`, options: { updateViaCache: 'none' } }], paths[index]);
+    assert.equal(result.updates, 1, paths[index]);
+    assert.deepEqual(result.errors, [], paths[index]);
+    assert.deepEqual(result.warnings, [], paths[index]);
+  }
+});
+
+test('SW登録はload後のidleへ遅延し、idle APIがない場合もtimerから一度起動する', () => {
+  const results = runEsmProbe({ kind: 'registration', scenarios: [{ pathname: '/' }, { pathname: '/', noIdle: true }] });
+  for (const [index, result] of results.entries()) {
+    assert.equal(result.beforeLoad, 0);
+    assert.equal(result.afterLoad, 0);
+    assert.deepEqual(result.scheduled, index === 0 ? { idle: 1, timers: 0 } : { idle: 0, timers: 1 });
+    assert.equal(result.calls.length, 1);
+    assert.equal(result.updates, 1);
+  }
+});
+
+test('SW未対応環境では登録・更新・遅延タスクを起動しない', () => {
+  const [result] = runEsmProbe({ kind: 'registration', scenarios: [{ pathname: '/', unsupported: true }] });
+  assert.equal(result.loadListeners, 0);
+  assert.equal(result.calls.length, 0);
+  assert.equal(result.updates, 0);
+  assert.deepEqual(result.scheduled, { idle: 0, timers: 0 });
+});
+
+test('SW登録拒否と更新拒否は未処理例外にせず、登録拒否時にupdateしない', () => {
+  const [registration, update] = runEsmProbe({ kind: 'registration', scenarios: [
+    { pathname: '/', registerFailure: true }, { pathname: '/', updateFailure: true }
+  ] });
+  assert.equal(registration.calls.length, 1);
+  assert.equal(registration.updates, 0);
+  assert.ok(registration.errors.length > 0, '登録失敗を報告していない');
+  assert.equal(update.calls.length, 1);
+  assert.equal(update.updates, 1);
+  assert.ok(update.warnings.length > 0, '更新失敗を報告していない');
 });
 
 test('未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする', () => {

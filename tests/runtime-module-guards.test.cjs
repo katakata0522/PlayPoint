@@ -5,8 +5,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
-const { createAppModuleRevision, createFileRevision, ROOT_SERVICE_WORKER_ASSETS } = require('../scripts/asset-sync.cjs');
+const { createAppModuleRevision, collectAssetVersions, APP_MODULE_FILES, ROOT_SERVICE_WORKER_ASSETS } = require('../scripts/asset-sync.cjs');
 const { cssTargets } = require('../.github/scripts/minify.cjs');
+const { createHash } = require('node:crypto');
+const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
+const { createRuntime } = require('./helpers/service-worker-runtime.cjs');
+const { observeComponentStyles } = require('./helpers/component-styles.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -21,42 +25,55 @@ const runtimeModules = [
   'js/calculator-funnel-analytics.js'
 ];
 
-const sharedRuntimeAssets = [
-  'js/analytics-core.js',
-  'blog/common-components.css'
-];
+// URL比較は引用符・コメントではなくESMの能動的な依存とinstall時の要求が対象。
+const graph = runEsmProbe({ kind: 'graph' });
+const revision = file => createHash('sha256').update(read(file).replace(/\r\n/g, '\n')).digest('hex').slice(0, 10);
 
-test('分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる', () => {
-  const assetSync = read('scripts/asset-sync.cjs');
-  const serviceWorker = read('sw.js');
-  const main = read('js/main.js');
-
+test('分離した実行時モジュールは実import・cache改訂・実先読み要求へ結線される', async (t) => {
+  const worker = createRuntime();
+  await worker.fireInstall();
+  const precache = new Set(worker.addAllCalls.flat().map(item => new URL(item.url, `${ORIGIN}/`).href));
+  const modulePaths = new Set(graph.map(item => new URL(item.url).pathname.slice(1)));
   for (const file of runtimeModules) {
-    const importPath = `./${path.basename(file)}`;
-    assert.ok(main.includes(importPath), `main.js import missing: ${importPath}`);
-    assert.ok(assetSync.includes(`'${file}'`) || assetSync.includes(`"${file}"`), `asset-sync missing: ${file}`);
-    assert.ok(
-      serviceWorker.includes(`'./${file}'`) || serviceWorker.includes(`"./${file}"`),
-      `sw missing: ${file}`
-    );
+    assert.ok(modulePaths.has(file), `起動グラフから欠落: ${file}`);
+    assert.ok(APP_MODULE_FILES.includes(file), `cache改訂対象から欠落: ${file}`);
+  }
+  for (const module of graph) {
+    assert.ok(precache.has(module.url), `静的依存の実URLが先読みにない: ${module.url}`);
+  }
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-runtime-revision-'));
+  t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(fixture, 'js'));
+  for (const file of runtimeModules) fs.writeFileSync(path.join(fixture, file), read(file));
+  const before = createAppModuleRevision(fixture);
+  for (const file of runtimeModules) {
+    fs.appendFileSync(path.join(fixture, file), '\n// 改訂検知の独立入力\n');
+    assert.notEqual(createAppModuleRevision(fixture), before, `内容変更がcache世代へ反映されない: ${file}`);
+    fs.writeFileSync(path.join(fixture, file), read(file));
   }
 });
 
-test('共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる', () => {
-
-  const assetSync = read('scripts/asset-sync.cjs');
-  const serviceWorker = read('sw.js');
-  const components = read('blog/components.js');
-
-  for (const file of sharedRuntimeAssets) {
-    assert.ok(assetSync.includes(`'${file}'`) || assetSync.includes(`"${file}"`), `asset-sync missing: ${file}`);
+test('共通計測とブログCSSの実参照は内容hashと一致し、CSSだけが圧縮対象になる', async () => {
+  const analytics = 'js/analytics-core.js';
+  const stylesheet = 'blog/common-components.css';
+  const versions = collectAssetVersions(root);
+  assert.equal(versions.analyticsCoreVersion, revision(analytics));
+  assert.equal(versions.blogCommonComponentsCssVersion, revision(stylesheet));
+  assert.ok(cssTargets.includes(stylesheet), 'ブログ共通CSSが圧縮対象から欠落');
+  assert.ok(!cssTargets.includes(analytics), 'JSをCSS圧縮対象へ混入しない');
+  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(asset => asset.assetPath === './' + analytics));
+  const expectedAnalytics = `${ORIGIN}/${analytics}?v=${revision(analytics)}`;
+  const config = graph.find(item => new URL(item.url).pathname === '/js/config.js');
+  assert.ok(config?.imports.includes(expectedAnalytics), 'configの能動的なimportと実資産のhashが異なる');
+  const worker = createRuntime();
+  await worker.fireInstall();
+  assert.ok(worker.addAllCalls.flat().some(item => new URL(item.url, `${ORIGIN}/`).href === expectedAnalytics));
+  for (const pathname of ['/blog/', '/articles/guide.html', '/latest/']) {
+    const links = observeComponentStyles(pathname);
+    assert.equal(links.length, 1, `${pathname}: 二重起動でも共通CSSは一つ`);
+    assert.equal(links[0].rel, 'stylesheet');
+    assert.equal(links[0].href, `${ORIGIN}/${stylesheet}?v=${revision(stylesheet)}`);
   }
-  assert.ok(cssTargets.includes('blog/common-components.css'), 'ブログ共通CSSが圧縮対象から欠落');
-  const revision = createFileRevision(root, 'js/analytics-core.js');
-  assert.ok(serviceWorker.includes(`./js/analytics-core.js?v=${revision}`), 'precacheの版が実資産と異なる');
-  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(asset => asset.assetPath === './js/analytics-core.js'), '共通計測資産が版管理対象にない');
-  assert.match(read('js/config.js'), new RegExp(`import\\s*[\"']\\./analytics-core\\.js\\?v=${revision}[\"']`));
-  assert.ok(components.includes('blog/common-components.css'));
 });
 
 test('アプリモジュールのキャッシュ世代は改行コードが違っても一致する', (t) => {
