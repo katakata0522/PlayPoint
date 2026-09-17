@@ -26,10 +26,10 @@ function runPreflight(t, { missing = [], empty = false, prepareDeploy = false, c
   const messages = [];
   const fakeProcess = { execPath: process.execPath, argv: [process.execPath, 'preflight.cjs', ...(prepareDeploy ? ['--prepare-deploy'] : [])], env: {}, exitCode: 0 };
   const loaded = {
-    'node:child_process': { spawnSync(command, args) {
+    'node:child_process': { spawnSync(command, args, options) {
       const call = { command, args: Array.from(args) }; calls.push(call);
       if (args[0] === '.github/scripts/minify.cjs') write('style.css', '/* prepared */');
-      return commandResult?.(call, calls) || { status: 0 };
+      return commandResult?.(call, calls, options) || { status: 0 };
     } },
     './ci-phase-runner.cjs': { createPhaseRunner },
     './ci-evidence.cjs': { evidenceDir: () => path.join(fixture, 'evidence') },
