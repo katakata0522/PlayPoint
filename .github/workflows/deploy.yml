@@ -220,6 +220,7 @@ jobs:
         if: steps.deploy-impact.outputs.deploy_needed == 'true'
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
+          SMOKE_EXPECT_REVISION: ${{ github.sha }}
         run: |
           set -euo pipefail
           node .github/scripts/browser-smoke.cjs
@@ -228,6 +229,7 @@ jobs:
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
+          node .github/scripts/bind-browser-evidence.cjs
 
       # 証跡保管は観測性の補助であり、本番の健全性判定やrollback条件にはしない。
       - name: Upload production browser evidence
@@ -311,6 +313,7 @@ jobs:
         working-directory: auto-rollback-verifier
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
+          SMOKE_EXPECT_REVISION: ${{ steps.rollback-snapshot.outputs.revision }}
         run: |
           set -euo pipefail
           test -x "${CHROME_PATH:-}"
@@ -321,6 +324,7 @@ jobs:
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
+          node "$GITHUB_WORKSPACE/.github/scripts/bind-browser-evidence.cjs"
 
       - name: Upload auto-rollback browser evidence
         id: upload_auto_rollback_browser_evidence

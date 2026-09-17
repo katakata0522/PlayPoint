@@ -8,7 +8,7 @@ const { withNavigationRetry } = require('./browser-navigation-retry.cjs');
 const { writeJson } = require('./ci-evidence.cjs');
 const navigationAttempts = [];
 const { hasExplicitTargetMarker } = require('../../scripts/navigation-source-map.cjs');
-const { verifyDeployRevisionWithRetry } = require('./verify-deploy-revision.cjs');
+const { createRevisionSession } = require('./browser-revision-evidence.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -564,14 +564,6 @@ async function verifyBlogPage(browser, baseUrl) {
   }
 }
 
-async function verifyRevision(baseUrl) {
-  if (!EXPECTED_REVISION) return { checked: false };
-  return verifyDeployRevisionWithRetry({
-    url: new URL('status/deploy-revision.txt', baseUrl).href,
-    expectedRevision: EXPECTED_REVISION
-  });
-}
-
 async function main() {
   fs.rmSync(ARTIFACT_DIR, { recursive: true, force: true });
   fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
@@ -579,11 +571,12 @@ async function main() {
   let localServer;
   let browser;
   let stage = 'environment';
+  const revisionSession = createRevisionSession({ expectedRevision: EXPECTED_REVISION, required: Boolean(REQUESTED_BASE_URL) });
   const report = {
     checkedAt: new Date().toISOString(),
     mode: REQUESTED_BASE_URL ? 'production' : 'local',
     baseUrl: null,
-    revision: null,
+    revision: revisionSession.evidence,
     locales: [],
     blog: { passed: false },
     passed: false
@@ -594,13 +587,15 @@ async function main() {
       ? normalizeBaseUrl(REQUESTED_BASE_URL)
       : (localServer = await startLocalServer()).baseUrl;
     report.baseUrl = baseUrl;
+    stage = 'revision-before';
+    await revisionSession.check(baseUrl, 'before-browser');
+    stage = 'environment';
     browser = await chromium.launch({
       headless: true,
       executablePath: CHROME_PATH,
       args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
     });
     stage = 'verification';
-    report.revision = await verifyRevision(baseUrl);
     for (const locale of LOCALES) {
       const result = { locale: locale.key, passed: false };
       try {
@@ -621,6 +616,8 @@ async function main() {
       report.blog = { passed: false, error: error.message };
       console.error(`not ok - Blog: ${error.message}`);
     }
+    stage = 'revision-after';
+    await revisionSession.check(baseUrl, 'after-browser');
     report.passed = report.locales.every(result => result.passed) && report.blog.passed;
   } catch (error) {
     report.error = error.message;

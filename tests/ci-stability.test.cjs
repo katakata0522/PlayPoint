@@ -175,3 +175,13 @@ test('構文検査は取得したnode_modulesを除外するが正本の壊れ�
   assert.notEqual(after.status, 0);
   assert.match(after.stderr, /owned-broken\.cjs/);
 });
+
+
+test('証跡アップロードだけの失敗を本番検証失敗と区別し、混在する本物の失敗は隠さない', () => {
+  const upload = { outcome: 'failure', conclusion: 'success' };
+  assert.equal(classifyJob('success', { upload_production_browser_evidence: upload }), 'OBSERVABILITY_FAIL');
+  assert.equal(classifyJob('failure', { upload_rollback_browser_evidence: { outcome: 'failure', conclusion: 'failure' } }), 'OBSERVABILITY_FAIL');
+  assert.equal(classifyJob('failure', { upload_production_browser_evidence: upload, 'production-browser': { outcome: 'failure' } }), 'CHECK_FAIL');
+  assert.equal(classifyJob('success', { unknown_check: upload }), 'CHECK_FAIL');
+  assert.equal(classifyJob('cancelled', { upload_production_browser_evidence: upload }), 'CANCELLED');
+});

@@ -68,10 +68,18 @@ function classifyPhase(result, deterministic = false) {
   if (result.status === 0) return 'PASS';
   return deterministic ? 'DETERMINISTIC_FAIL' : 'CHECK_FAIL';
 }
+// 保管先へのアップロード失敗と検証失敗を区別する。workflowの成否・rollback条件は変更しない。
+const OBSERVABILITY_STEPS = new Set([
+  'upload_production_browser_evidence', 'upload_external_recovery_browser_evidence',
+  'upload_auto_rollback_browser_evidence', 'upload_rollback_browser_evidence',
+  'upload_browser_verification_evidence', 'preserve_required_gate_verification_evidence',
+  'preserve_ci_environment_and_phase_evidence'
+]);
 function classifyJob(status, steps, superseded = false) {
   if (status === 'cancelled') return superseded ? 'CANCELLED_BY_NEW_COMMIT' : 'CANCELLED';
   const failed = Object.entries(steps).filter(([, step]) => step.outcome === 'failure');
   if (failed.some(([id]) => ['ci_node', 'ci_browser'].includes(id))) return 'ENVIRONMENT_FAIL';
+  if (failed.length && failed.every(([id]) => OBSERVABILITY_STEPS.has(id))) return 'OBSERVABILITY_FAIL';
   if (failed.length || status === 'failure') return 'CHECK_FAIL';
   return status === 'success' ? 'PASS' : 'NOT_RUN';
 }

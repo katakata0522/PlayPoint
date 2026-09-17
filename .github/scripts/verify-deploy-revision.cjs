@@ -72,9 +72,11 @@ async function verifyDeployRevisionWithRetry({
       };
     }, { attempts, delayMs, onRetry });
   } catch (error) {
-    throw new Error(
+    const failure = new Error(
       `deployed revision check failed after ${attemptsUsed || attempts} attempts: expected ${expectedRevision}, got ${lastActual || 'no response'}: ${error.message}`
     );
+    failure.revision = { checked: attemptsUsed > 0, expected: expectedRevision, actual: lastActual || null, attempts: attemptsUsed, match: false };
+    throw failure;
   }
 }
 

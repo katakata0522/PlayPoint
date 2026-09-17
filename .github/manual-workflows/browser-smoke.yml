@@ -125,6 +125,7 @@ jobs:
         id: verify_production_calculator_article_css_mobile_region_layout_revenue_and_embed_widget_paths_in_chromium
         env:
           SMOKE_BASE_URL: https://playpoint-sim.com/
+          SMOKE_EXPECT_REVISION: ${{ github.sha }}
         run: |
           set -euo pipefail
           node .github/scripts/browser-smoke.cjs
@@ -133,6 +134,7 @@ jobs:
           node .github/scripts/mobile-region-layout-smoke.cjs
           node .github/scripts/browser-revenue-smoke.cjs
           node .github/scripts/embed-widget-smoke.cjs
+          node .github/scripts/bind-browser-evidence.cjs
 
       - name: Upload browser verification evidence
         id: upload_browser_verification_evidence
