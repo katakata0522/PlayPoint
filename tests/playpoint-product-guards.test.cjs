@@ -370,7 +370,8 @@ test('計算方法と検証方針を全言語で本文から確認できる', ()
   for (const [file, pattern] of Object.entries(expected)) {
     const html = read(file);
     assert.match(html, pattern, file);
-    assert.match(html, /href="\.\.\/author\/katakata\.html"|href="author\/katakata\.html"/, file);
+    const authorHref = file === 'index.html' ? 'author/katakata.html' : `/${file.split('/')[0]}/author/katakata.html`;
+    assert.ok(html.includes(`href="${authorHref}" rel="author"`), `${file}: localized author link in body`);
   }
 });
 

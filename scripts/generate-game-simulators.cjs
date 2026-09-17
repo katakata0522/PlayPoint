@@ -2271,7 +2271,7 @@ function generateGamePageHtml(game, localeKey) {
   const portalRelative = loc.dir ? '../' : '../';
   const assetsRelative = loc.dir ? '../../../' : '../../';
   const articlesRelative = loc.dir ? '../../articles/' : '../../blog/';
-  const authorRelative = loc.dir ? `${assetsRelative}author/katakata.html` : '../../author/katakata.html';
+  const authorRelative = `${rootRelative}author/katakata.html`;
 
   const gameTitle = game.names[localeKey] || game.names.ja;
   const gameShort = game.shortNames[localeKey] || game.shortNames.ja;
@@ -2320,7 +2320,7 @@ function generateGamePageHtml(game, localeKey) {
     "author": {
       "@type": "Person",
       "name": loc.authorName,
-      "url": `https://playpoint-sim.com/author/katakata.html`
+      "url": `https://playpoint-sim.com${langPrefix}/author/katakata.html`
     }
   };
 
@@ -2694,7 +2694,7 @@ function generatePortalPageHtml(localeKey) {
   const rootRelative = loc.dir ? '../' : '../';
   const assetsRelative = loc.dir ? '../../' : '../';
   const articlesRelative = loc.dir ? '../articles/' : '../blog/';
-  const authorRelative = loc.dir ? `${assetsRelative}author/katakata.html` : '../author/katakata.html';
+  const authorRelative = `${rootRelative}author/katakata.html`;
 
   const cardsHtml = GAMES_DATA.map(game => `
     <a class="game-portal-card" href="./${game.id}/">

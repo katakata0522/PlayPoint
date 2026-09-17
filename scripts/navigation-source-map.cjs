@@ -59,7 +59,7 @@ const GENERATOR_GROUPS = Object.freeze([
     id: 'intl-seo-lp',
     match: p => /^\/(?:en|ko|tw)\/(?:status|campaign|amount|compare|maintenance|points-cost)\//.test(p),
     ownership: 'generated-or-manual+lp-finalizers',
-    sources: ['scripts/intl-seo-pages.cjs', 'scripts/html-sync.cjs', 'scripts/manual-lp-hreflang-sync.cjs', 'scripts/intl-localization-normalize.cjs', 'scripts/site-shell.cjs']
+    sources: ['scripts/intl-seo-pages.cjs', 'scripts/insert-lp-footers.cjs', 'scripts/html-sync.cjs', 'scripts/manual-lp-hreflang-sync.cjs', 'scripts/intl-localization-normalize.cjs', 'scripts/site-shell.cjs']
   },
   {
     id: 'japanese-article',

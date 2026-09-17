@@ -81,7 +81,7 @@ function createLocales() {
             linkAbout: 'What are Play Points?',
             linkWidget: 'Free widget',
             linkDiscount: '💡 Discount Guide',
-            linkAuthor: 'Operator & Policy (Japanese)'
+            linkAuthor: 'Operator & Policy'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
@@ -160,11 +160,11 @@ function createLocales() {
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
             <figcaption>Three steps from the points gap and reward condition to an estimated spending amount. The 1,728-point figure is an input example.</figcaption>
         </figure>
-        <p class="calculation-method-note"><strong>Calculation and verification:</strong> Inputs are calculated in this browser and are not sent externally. The estimate uses the required points and selected reward condition; when a pack amount is entered, the total is rounded up by purchase unit. See the <a href="../author/katakata.html" rel="author">operator and verification policy</a> for sourcing, updates, and corrections.</p>
+        <p class="calculation-method-note"><strong>Calculation and verification:</strong> Inputs are calculated in this browser and are not sent externally. The estimate uses the required points and selected reward condition; when a pack amount is entered, the total is rounded up by purchase unit. See the <a href="/en/author/katakata.html" rel="author">operator and verification policy</a> for sourcing, updates, and corrections.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">Operator: <a href="../author/katakata.html" rel="author">katakata</a> / Last Updated: ${TOP_PAGE_CONTENT_DATES.en}</p>
+        <p class="meta-line">Operator: <a href="/en/author/katakata.html" rel="author">katakata</a> / Last Updated: ${TOP_PAGE_CONTENT_DATES.en}</p>
         <!-- META_LINE_END -->`,
         trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
         <p class="site-footer-trademark">Google Play, the Google Play logo, and Android are trademarks of Google LLC. This website is an unofficial community calculator and guide, not affiliated with or endorsed by Google LLC or any game publishers mentioned.</p>
@@ -243,7 +243,7 @@ function createLocales() {
             linkAbout: 'Play 포인트란?',
             linkWidget: '무료 위젯',
             linkDiscount: '💡 할인 구매 가이드',
-            linkAuthor: '운영자 및 정책 (일본어)'
+            linkAuthor: '운영자 및 정책'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
@@ -322,11 +322,11 @@ function createLocales() {
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="필요 포인트와 적립 조건에서 예상 결제 금액까지 이어지는 3단계 계산 흐름">
             <figcaption>필요 포인트와 적립 조건으로 예상 결제 금액을 구하는 3단계입니다. 그림의 1,728pt는 입력 예시입니다.</figcaption>
         </figure>
-        <p class="calculation-method-note"><strong>계산 및 검증:</strong> 입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다. 필요한 포인트와 선택된 적립 조건으로 금액을 추정하며, 패키지 금액을 입력한 경우 구매 단위로 올림합니다. 출처, 업데이트 및 정정 기준은 <a href="../author/katakata.html" rel="author">운영자 및 검증 방침</a>에서 확인할 수 있습니다.</p>
+        <p class="calculation-method-note"><strong>계산 및 검증:</strong> 입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다. 필요한 포인트와 선택된 적립 조건으로 금액을 추정하며, 패키지 금액을 입력한 경우 구매 단위로 올림합니다. 출처, 업데이트 및 정정 기준은 <a href="/ko/author/katakata.html" rel="author">운영자 및 검증 방침</a>에서 확인할 수 있습니다.</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">운영자: <a href="../author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${TOP_PAGE_CONTENT_DATES.ko}</p>
+        <p class="meta-line">운영자: <a href="/ko/author/katakata.html" rel="author">katakata</a> / 최종 업데이트: ${TOP_PAGE_CONTENT_DATES.ko}</p>
         <!-- META_LINE_END -->`,
         trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
         <p class="site-footer-trademark">Google Play, Google Play 로고 및 Android는 Google LLC의 상표입니다. 본 사이트는 개인이 운영하는 비공식 계산기 및 가이드 사이트이며, Google LLC 및 각 게임 개발사/배급사와 제휴 또는 승인 관계가 없습니다.</p>
@@ -405,7 +405,7 @@ function createLocales() {
             linkAbout: '什麼是 Play Points？',
             linkWidget: '免費小工具',
             linkDiscount: '💡 優惠儲值指南',
-            linkAuthor: '營運者與政策 (日文)'
+            linkAuthor: '營運者與政策'
         },
         faqJsonLd: `    <!-- FAQ_JSON_LD_START -->
     <script type="application/ld+json">
@@ -484,11 +484,11 @@ function createLocales() {
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="從所需點數與回饋條件到預估消費金額的三步驟計算流程">
             <figcaption>從點數差距與回饋條件算出預估消費金額的三個步驟。圖中的1,728pt是輸入範例。</figcaption>
         </figure>
-        <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="../author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
+        <p class="calculation-method-note"><strong>計算與驗證:</strong> 輸入內容不會傳送到外部，而是在此瀏覽器中完成計算。系統依所需點數與採用的回饋條件估算金額；輸入套組金額時，會以購買單位向上取整。資料來源、更新與更正原則請參閱<a href="/tw/author/katakata.html" rel="author">營運者與驗證方針</a>。</p>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
         metaLine: `        <!-- META_LINE_START -->
-        <p class="meta-line">營運者: <a href="../author/katakata.html" rel="author">katakata</a> / 最後更新: ${TOP_PAGE_CONTENT_DATES.tw}</p>
+        <p class="meta-line">營運者: <a href="/tw/author/katakata.html" rel="author">katakata</a> / 最後更新: ${TOP_PAGE_CONTENT_DATES.tw}</p>
         <!-- META_LINE_END -->`,
         trademarkDisclaimer: `        <!-- TRADEMARK_DISCLAIMER_START -->
         <p class="site-footer-trademark">Google Play、Google Play 標誌及 Android 均為 Google LLC 的商標。本網站為非官方社群營運之計算器與攻略指南，與 Google LLC 及各遊戲開發/發行商無關。</p>

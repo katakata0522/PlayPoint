@@ -69,6 +69,16 @@ function replaceContentDate(html) {
     .replace(/(最後更新：\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`);
 }
 
+// 香港・インドは既存の同言語プロフィールを参照し、遷移先言語を可視化する。
+function labelFallbackAuthorLinks(html, sourceLocale, marker) {
+  const target = `/${sourceLocale}/author/katakata.html`;
+  return html.replace(/<a\b([^>]*?\bhref=(["'])([^"']+)\2[^>]*)>([\s\S]*?)<\/a>/gi,
+    (full, attributes, _quote, href, content) => {
+      if (href !== target || content.includes(marker)) return full;
+      return `<a${attributes}>${content}${marker}</a>`;
+    });
+}
+
 function buildHongKongPage(source) {
   const config = REGION_PAGES.hk;
   let html = stripVisitorThanks(source);
@@ -85,6 +95,7 @@ function buildHongKongPage(source) {
   html = deactivatePrimaryRegion(html, 'TW');
   html = html.replace('href="./articles/" data-lang-key="linkArticles"', 'href="../tw/articles/" data-lang-key="linkArticles"');
   html = labelFallbackGameLink(html, '../tw/games/', '🎮 遊戲計算（台灣規則・非香港）');
+  html = labelFallbackAuthorLinks(html, 'tw', '（繁體中文）');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);
@@ -116,6 +127,7 @@ function buildIndiaPage(source) {
   html = deactivatePrimaryRegion(html, 'US');
   html = html.replace('href="./articles/" data-lang-key="linkArticles"', 'href="../en/articles/" data-lang-key="linkArticles"');
   html = labelFallbackGameLink(html, '../en/games/', '🎮 Game calculators (U.S. rules, not India)');
+  html = labelFallbackAuthorLinks(html, 'en', ' (English)');
   html = html.replace(/(<h1 id="main-title"[^>]*>)[\s\S]*?(<\/h1>)/, `$1${config.mainTitle}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>)[\s\S]*?(<\/p>)/, `$1${config.siteDescription}$2`);
   html = html.replace(/(<p id="site-description"[^>]*>[\s\S]*?<\/p>)/, `$1\n\n    ${config.factNote}`);

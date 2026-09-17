@@ -23,6 +23,9 @@ const LOCALES = [
   { key: 'HK', path: 'hk/', locale: 'zh-HK', title: 'Google Play Points 計算器（香港）', button: '計算消費金額', rewardPath: '/hk/', rewardText: '每週獎勵', statusCount: 5, staticReverseLabel: '每 HK$7 獲得點數（自動帶入，可修改）', gamePath: '/tw/games/', tooltipContains: 'HK$7', tooltipExcludes: 'NT$30', currencyPrefix: 'HK$', calendarPath: '/hk/', shareRestore: { status: '1.25', target: 'gold', expected: '金級' } },
   { key: 'IN', path: 'in/', locale: 'en-IN', title: 'Google Play Points Calculator — India', button: 'Calculate Amount', rewardPath: '/in/', rewardText: 'Weekly Prize', statusCount: 4, staticReverseLabel: 'Points per ₹5 (auto-filled, editable)', gamePath: '/en/games/', tooltipContains: '₹5', tooltipExcludes: '$1', currencyPrefix: '₹', calendarPath: '/in/', shareRestore: { status: '1.1', target: 'gold', expected: 'Gold' } }
 ];
+const AUTHOR_LOCALES = { JP: '', US: 'en/', KR: 'ko/', TW: 'tw/', HK: 'tw/', IN: 'en/' };
+function expectedAuthorPath(locale) { return `/${AUTHOR_LOCALES[locale.key]}author/katakata.html`; }
+
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
   '.html': 'text/html; charset=utf-8',
@@ -213,6 +216,8 @@ async function verifyStaticPage(browser, baseUrl, locale) {
       baseRate: document.querySelector('#baseRate')?.value || '',
       multiplier: document.querySelector('#multiplier')?.value || '',
       reverseBaseLabel: document.querySelector('label[for="reverseBaseRate"] [data-lang-key="labelBaseRate"]')?.textContent || '',
+      authorPath: document.querySelector('[data-lang-key="linkAuthor"]')?.pathname || '',
+      authorLabel: document.querySelector('[data-lang-key="linkAuthor"]')?.textContent || '',
       gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || ''
     }), MAIN_CONTROLS);
 
@@ -223,6 +228,7 @@ async function verifyStaticPage(browser, baseUrl, locale) {
     assert(sameNumber(values.baseRate, 1) && sameNumber(values.multiplier, 1), `${locale.key} static default values changed`);
     if (locale.staticReverseLabel) assert(sameCopy(values.reverseBaseLabel, locale.staticReverseLabel), `${locale.key} static reverse-rate label: ${values.reverseBaseLabel}`);
     if (locale.gamePath) assert(values.gamePath === locale.gamePath, `${locale.key} static game path: ${values.gamePath}`);
+    assert(values.authorPath === expectedAuthorPath(locale), `${locale.key} static author path: ${values.authorPath}`);
     browserState.verify(`${locale.key} static browser errors`);
     return { ...values, errors: browserState.values };
   } catch (error) {
@@ -269,6 +275,8 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       packFields: document.querySelectorAll('#pack-amount').length,
       statusCount: document.querySelector('#currentStatus')?.options.length || 0,
       reverseTooltip: document.querySelector('#tooltip-reverse-status')?.textContent || '',
+      authorPath: document.querySelector('[data-lang-key="linkAuthor"]')?.pathname || '',
+      authorLabel: document.querySelector('[data-lang-key="linkAuthor"]')?.textContent || '',
       gamePath: document.querySelector('[data-lang-key="linkGames"]')?.pathname || '',
       calendarHref: document.querySelector('#register-google-cal-btn')?.href || ''
     }), MAIN_CONTROLS);
@@ -282,6 +290,10 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     if (locale.tooltipExcludes) assert(!header.reverseTooltip.includes(locale.tooltipExcludes), `${locale.key} reverse tooltip contains stale ${locale.tooltipExcludes}`);
     if (locale.gamePath) assert(header.gamePath === locale.gamePath, `${locale.key} hydrated game path: ${header.gamePath}`);
     if (locale.calendarPath) assert(decodeURIComponent(header.calendarHref).includes(locale.calendarPath), `${locale.key} calendar link does not point back to ${locale.calendarPath}`);
+
+    assert(header.authorPath === expectedAuthorPath(locale), `${locale.key} runtime author path: ${header.authorPath}`);
+    if (locale.key === 'HK') assert(header.authorLabel.includes('繁體中文'), 'HK author fallback language must be visible');
+    if (locale.key === 'IN') assert(header.authorLabel.includes('English'), 'IN author fallback language must be visible');
 
     const rewardShare = await page.evaluate(async () => {
       const { SHARE } = await import('/js/share.js');
@@ -389,8 +401,19 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     }
 
     await page.waitForTimeout(locale.key === 'JP' ? 700 : 700);
+    // 計算・オフライン検証後に実際のリンクを押し、著者ページ到達まで確認する。
+    const authorPath = expectedAuthorPath(locale);
+    await Promise.all([
+      page.waitForURL(url => url.pathname === authorPath, { waitUntil: 'domcontentloaded', timeout: 30_000 }),
+      page.locator('[data-lang-key="linkAuthor"]').click()
+    ]);
+    await page.locator('h1').first().waitFor({ state: 'visible', timeout: 30_000 });
+    const authorLang = await page.locator('html').getAttribute('lang');
+    const expectedLang = { JP: 'ja', US: 'en', KR: 'ko', TW: 'zh-TW', HK: 'zh-TW', IN: 'en' }[locale.key];
+    assert(authorLang === expectedLang, `${locale.key} author destination language: ${authorLang}`);
+    await saveScreenshot(page, `${locale.key.toLowerCase()}-author.png`);
     browserState.verify(`${locale.key} hydrated browser errors`);
-    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary, errors: browserState.values };
+    return { ...header, selectedRate, mainResult, reverseResult, serviceWorker, lazyDiary, authorVisit: { path: authorPath, lang: authorLang }, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, `${locale.key.toLowerCase()}-hydrated.png`);
     throw error;
