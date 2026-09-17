@@ -84,11 +84,18 @@ test('known page families retain explicit generator ownership candidates', () =>
 test('build pipeline inventory captures assigned calls, late imports, repeat finalizers and side-effect generation', () => {
   const pipeline = buildPipeline(root);
   assert.ok(pipeline.length > 40, `expected full build pipeline, got ${pipeline.length}`);
+  assert.equal(pipeline[0]?.function, 'syncIndexMetadata', 'pipeline must start at the canonical metadata build call');
+  assert.equal(pipeline.at(-1)?.function, 'assertTaiwanTerminology', 'pipeline must include the final Taiwan terminology contract');
   assert.ok(pipeline.some(row => row.source === 'scripts/generate-game-simulators.cjs' && row.function === '[side-effect require]'));
   assert.ok(pipeline.some(row => row.function === 'syncIndexMetadata'), 'assigned build calls must be captured');
-  assert.ok(pipeline.some(row => row.function === 'syncArticleDiscovery'), 'late import must be captured');
+  assert.ok(pipeline.some(row => row.function === 'syncArticleDiscovery' && row.source === 'scripts/article-discovery-sync.cjs'), 'late import must resolve to its real source');
+  assert.ok(pipeline.some(row => row.function === 'normalizeArticleContentNavigation' && row.source === 'scripts/article-content-navigation-normalize.cjs'), 'aliased require must resolve to its real source');
   assert.equal(pipeline.filter(row => row.function === 'syncIntlArticleJapaneseHreflang').length, 2, 'initial and final hreflang passes must both be visible');
   assert.deepEqual(pipeline.map(row => row.order), pipeline.map((_, index) => index + 1));
+  assert.deepEqual([...pipeline].sort((a, b) => a.line - b.line || a.order - b.order), pipeline, 'pipeline rows must remain in build source order');
+  for (const row of pipeline.filter(row => row.function !== '[side-effect require]')) {
+    assert.ok(fs.existsSync(path.join(root, row.source)), `pipeline source must exist: ${row.source}`);
+  }
 });
 
 test('candidate findings remain inventory data rather than an automatic zero-issue gate', () => {
@@ -104,6 +111,6 @@ test('candidate findings remain inventory data rather than an automatic zero-iss
 
 test('preflight stores navigation evidence outside the repository root evidence namespace', () => {
   const preflight = fs.readFileSync(path.join(root, '.github/scripts/preflight.cjs'), 'utf8');
-  assert.match(preflight, /navigation-source-map\.cjs', '--write-evidence', '--evidence-dir'/);
+  assert.match(preflight, /navigation-source-map\.cjs'[\s\S]*'--write-evidence'[\s\S]*'--evidence-dir'/);
   assert.match(preflight, /path\.join\(evidenceDir\(\), 'navigation-source-map'\)/);
 });
