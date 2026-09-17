@@ -144,6 +144,7 @@ try {
   runPhase('公開記事SEO検証', process.execPath, ['scripts/article-seo-normalize.cjs', '--check']);
   runPhase('送信URLのHead監査', process.execPath, ['scripts/seo-head-audit.cjs']);
   runPhase('SEO/セキュリティ契約監査', process.execPath, ['.github/scripts/security-seo-contract.cjs']);
+  runPhase('公開導線・生成元棚卸し', process.execPath, ['scripts/navigation-source-map.cjs', '--write-evidence']);
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
