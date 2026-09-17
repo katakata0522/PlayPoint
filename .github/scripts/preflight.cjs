@@ -13,13 +13,13 @@ const prepareDeploy = process.argv.includes('--prepare-deploy');
 const testFiles = fs.readdirSync(path.join(root, 'tests'))
   .filter(file => file.endsWith('.test.cjs'))
   .sort()
-  .map(file => path.join('tests', file));
+  .map(file => 'tests/' + file);
 // 全回帰は圧縮前に一度実行済み。圧縮後はCSS圧縮・asset version同期によって
 // 実際に変わる配信境界（公開HTML/モジュール参照/Service Worker）だけ再検査する。
 const postMinifyTestFiles = [
   'tests/static-calculator-delivery.test.cjs',
   'tests/runtime-module-guards.test.cjs'
-].filter(relativePath => fs.existsSync(path.join(root, relativePath)));
+];
 // 通常検証では、CSS圧縮とasset version同期が触り得る公開資産を元へ戻す。
 // --prepare-deploy は配信用の生成・圧縮差分だけを保持し、記事正規化は常にcheck-onlyで扱う。
 const mutableFiles = [...new Set([...generatedFiles, ...cssTargets, ...assetSyncMutableJsTargets])];
@@ -38,7 +38,8 @@ const phases = createPhaseRunner({ outputPath: path.join(evidenceDir(), 'preflig
 const phaseConfig = {
   'JavaScript構文検証': { id: 'syntax', deterministic: true },
   '生成物の再現性検証': { id: 'build-output', deterministic: true },
-  '公開アセット圧縮': { id: 'minify', dependsOn: ['syntax', 'public-files', 'build-output'] },
+  '全回帰テスト': { id: 'regression', dependsOn: ['required-tests'] },
+  '公開アセット圧縮': { id: 'minify', dependsOn: ['syntax', 'public-files', 'build-output', 'required-tests'] },
   '圧縮後JavaScript構文検証': { id: 'post-minify-syntax', dependsOn: ['minify'], deterministic: true },
   '圧縮後の配信境界回帰テスト': { id: 'post-minify-tests', dependsOn: ['minify', 'post-minify-syntax'] }
 };
@@ -97,6 +98,16 @@ function verifyRequiredPublicFiles() {
   console.log('公開必須ファイルが揃っています。');
 }
 
+function verifyRequiredTests() {
+  if (testFiles.length === 0) throw new Error('全回帰テストが空です。自動探索へフォールバックしません。');
+  for (const relativePath of postMinifyTestFiles) {
+    const absolutePath = path.join(root, relativePath);
+    if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile() || !testFiles.includes(relativePath)) {
+      throw new Error('圧縮後の必須配信境界テストがありません: ' + relativePath);
+    }
+  }
+}
+
 function serviceWorkerAssetToLocalPath(assetUrl) {
   const pathWithoutQuery = assetUrl.split(/[?#]/, 1)[0].replace(/^\.\//, '');
   return pathWithoutQuery === '' || pathWithoutQuery.endsWith('/')
@@ -135,6 +146,7 @@ snapshotMutableFiles();
 
 try {
   runPhase('JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
+  runInlinePhase('required-tests', '必須テストの実行対象検証', verifyRequiredTests);
   runInlinePhase('public-files', '公開必須ファイル検証', () => { verifyRequiredPublicFiles(); });
   runPhase('生成物の再現性検証', process.execPath, ['.github/scripts/verify-build-output.cjs']);
   runInlinePhase('sw-precache', 'Service Worker先読み対象検証', () => { verifyServiceWorkerPrecacheAssets(); });
@@ -173,6 +185,6 @@ if (failures.length > 0) {
 } else {
   console.log(
     '\n全事前検証に成功しました（全回帰: ' + testFiles.length
-    + '件 / 圧縮後配信境界: ' + postMinifyTestFiles.length + '件）。'
+    + 'ファイル / 圧縮後配信境界: ' + postMinifyTestFiles.length + 'ファイル）。'
   );
 }

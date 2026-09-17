@@ -9,6 +9,7 @@ const { writeJson } = require('./ci-evidence.cjs');
 const navigationAttempts = [];
 const { hasExplicitTargetMarker } = require('../../scripts/navigation-source-map.cjs');
 const { createRevisionSession } = require('./browser-revision-evidence.cjs');
+const { verifyStaticPresentation, verifyResultPresentation } = require('./calculator-presentation-contract.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -234,8 +235,9 @@ async function verifyStaticPage(browser, baseUrl, locale) {
     assert(values.authorPath === expectedAuthorPath(locale), `${locale.key} static author path: ${values.authorPath}`);
     assert(values.widgetPath === '/embed.html', `${locale.key} static widget path`);
     if (locale.key !== 'JP') assert(hasExplicitTargetMarker(values.widgetLabel, 'ja'), `${locale.key} static widget language notice`);
+    const presentation = await verifyStaticPresentation(page, locale.key);
     browserState.verify(`${locale.key} static browser errors`);
-    return { ...values, errors: browserState.values };
+    return { ...values, presentation, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, `${locale.key.toLowerCase()}-static.png`);
     throw error;
@@ -338,6 +340,8 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     assert(mainResult.targetStatus && mainResult.valueRows >= 2, `${locale.key} main result is incomplete`);
     assert(mainResult.relatedLinks <= 4, `${locale.key} too many related links: ${mainResult.relatedLinks}`);
     if (locale.currencyPrefix) assert(mainResult.html.includes(`${locale.currencyPrefix}<span class="count-target"`), `${locale.key} currency is not prefix-formatted`);
+
+    mainResult.presentation = await verifyResultPresentation(page, locale.key);
 
     await page.locator('#tab-reverse').click();
     await page.locator('#amountYen').fill('1000');

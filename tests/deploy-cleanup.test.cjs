@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const test = require('node:test');
+const { runDeployTransport } = require('./helpers/deploy-transport-fixture.cjs');
 
 const root = path.resolve(__dirname, '..');
 const workflowPath = path.join(root, '.github', 'workflows', 'deploy.yml');
@@ -12,47 +13,39 @@ const workflow = fs.readFileSync(workflowPath, 'utf8');
 const script = fs.readFileSync(scriptPath, 'utf8');
 const htaccess = fs.readFileSync(htaccessPath, 'utf8');
 
-test('デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する', () => {
-  assert.match(workflow, /run:\s+bash \.github\/scripts\/deploy-rsync\.sh/);
-  assert.match(script, /--delete-after\s+--delete-excluded\s+--delay-updates/);
-
-  for (const pattern of [
-    '/.git/***',
-    '/.github/***',
-    '/.gitignore',
-    '/.gitattributes',
-    '/README.md',
-    '/AGENTS.md',
-    '/tests/***',
-    '/docs/***',
-    '/scripts/***',
-    '/みんな用URL.txt',
-    '/CNAME',
-  ]) {
-    assert.ok(script.includes(`--exclude '${pattern}'`), `ルート限定の除外がありません: ${pattern}`);
+test('実際のrsync引数で秘密・旧公開物を除外し、公開サブ階層と別管理領域を保護する', t => {
+  assert.match(workflow, /^\s*run:\s*['"]?bash \.github\/scripts\/deploy-rsync\.sh['"]?\s*$/m, '公開workflowから専用転送処理を起動する');
+  const result = runDeployTransport(t);
+  if (!result) return;
+  assert.equal(result.status, 0, result.stderr);
+  const transfer = result.calls.find(call => call.command === 'rsync');
+  assert.ok(transfer, '転送処理が呼ばれていない');
+  const source = path.join(result.dir, 'staged');
+  const destination = path.join(result.dir, 'destination');
+  const put = (base, file) => {
+    fs.mkdirSync(path.dirname(path.join(base, file)), { recursive: true });
+    fs.writeFileSync(path.join(base, file), file);
+  };
+  const privateFiles = ['.git/config', '.github/workflows/private.yml', '.gitignore', '.gitattributes',
+    '.env', '.env.local', 'credential.pem', 'credential.key', 'query.sql', 'debug.log', 'data.bak',
+    'README.md', 'AGENTS.md', 'tests/spec.cjs', 'docs/private.md', 'scripts/build.js', 'tools/private.cjs', 'みんな用URL.txt', 'CNAME'];
+  const publicFiles = ['index.html', 'articles/docs/readme.html', 'articles/scripts/example.js'];
+  for (const file of [...privateFiles, ...publicFiles]) put(source, file);
+  for (const file of [...privateFiles, 'stale.html', 'manner/keep.html', 'kanji-slicer/keep.html']) put(destination, file);
+  // 捕捉したフィルター・削除オプションだけを、二つの一時ローカルディレクトリに適用。
+  // -eとリモートの送受信先は引き継がない。
+  const options = [];
+  for (let i = 0; i < transfer.args.length; i++) {
+    const arg = transfer.args[i];
+    if (arg === '-e') { i++; continue; }
+    if (arg === '--exclude' || arg === '--filter') { options.push(arg, transfer.args[++i]); continue; }
+    if (arg.startsWith('-')) options.push(arg);
   }
-
-  for (const unsafePattern of [
-    "--exclude '.git*'",
-    "--exclude '.github*'",
-    "--exclude 'tests*'",
-    "--exclude 'docs*'",
-    "--exclude 'scripts*'",
-  ]) {
-    assert.ok(!script.includes(unsafePattern), `全階層へ広がる除外が残っています: ${unsafePattern}`);
-  }
-});
-
-test('別リポジトリ管理の公開領域を厳密ミラーの削除対象から保護する', () => {
-  for (const [ownedPath, owner] of [
-    ['/manner/', 'cli-auto'],
-    ['/kanji-slicer/', 'hajikkogurashi_HP'],
-  ]) {
-    assert.ok(
-      script.includes(`--filter='protect ${ownedPath}***'`),
-      `${owner} が所有する ${ownedPath} のrsync protect規則がありません`
-    );
-  }
+  const copied = spawnSync('rsync', [...options, source + '/', destination + '/'], { encoding: 'utf8', timeout: 10000 });
+  assert.equal(copied.status, 0, copied.stderr || copied.error?.message);
+  for (const file of privateFiles) assert.equal(fs.existsSync(path.join(destination, file)), false, `非公開ファイル漏出: ${file}`);
+  assert.equal(fs.existsSync(path.join(destination, 'stale.html')), false, '旧公開物が残った');
+  for (const file of [...publicFiles, 'manner/keep.html', 'kanji-slicer/keep.html']) assert.ok(fs.existsSync(path.join(destination, file)), `過剰な除外・削除: ${file}`);
 });
 
 test('デプロイ前snapshotはverified本番だけを公開領域外へ1世代退避する', () => {
@@ -113,28 +106,33 @@ test('移設済み・非公開・統合済みの旧パスをXserver上の実体�
   assert.match(script, /Sensitive or non-public server artifacts are absent\./);
 });
 
-test('Xserverの一時的なSSH障害は本体ミラーだけ長めに、snapshot・後続処理は短めに再試行する', () => {
-  assert.match(script, /DEFAULT_MAX_ATTEMPTS=5/);
-  assert.match(script, /DEPLOY_MAX_ATTEMPTS=7/);
-  assert.match(script, /local max_attempts="\$2"/);
-  assert.match(script, /10\|12\|30\|35\|255/);
-  assert.match(script, /10 \* \(1 << \(retry_number - 1\)\)/);
-  assert.match(script, /max_delay" -gt 60/);
-  assert.match(script, /RANDOM % \(max_delay - min_delay \+ 1\)/);
-  assert.match(script, /non-transient exit code \$exit_code; failing fast/);
-  assert.match(script, /run_with_transient_retry "Snapshotting verified production" "\$DEFAULT_MAX_ATTEMPTS" snapshot_verified_once/);
-  assert.match(script, /run_with_transient_retry "Deploying via rsync" "\$DEPLOY_MAX_ATTEMPTS" deploy_once/);
-  assert.match(script, /run_with_transient_retry "Verifying remote cleanup" "\$DEFAULT_MAX_ATTEMPTS" verify_remote_cleanup_once/);
-  assert.match(script, /run_with_transient_retry "Publishing verified deployment status" "\$DEFAULT_MAX_ATTEMPTS" publish_verified_status_once/);
-  assert.match(workflow, /本体ミラー7回・snapshot\/rollback等5回/);
+test('通信障害だけ有限回再試行し、非通信エラーを即時に返す', t => {
+  for (const code of [10, 12, 30, 35, 255]) {
+    const result = runDeployTransport(t, { exits: [code, 0] });
+    if (!result) return;
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.calls.filter(c => c.command === 'rsync').length, 2, String(code));
+    assert.equal(result.calls.filter(c => c.command === 'sleep').length, 1);
+  }
+  const fatal = runDeployTransport(t, { exits: [23] });
+  assert.equal(fatal.status, 23);
+  assert.equal(fatal.calls.filter(c => c.command === 'rsync').length, 1);
+  assert.ok(!fatal.calls.some(c => ['sleep', 'ssh'].includes(c.command)), '失敗後に待機やremote cleanupを実行しない');
+  const exhausted = runDeployTransport(t, { exits: [255] });
+  assert.equal(exhausted.status, 255);
+  assert.equal(exhausted.calls.filter(c => c.command === 'rsync').length, 7, '現行の再試行上限');
+  const sleeps = exhausted.calls.filter(c => c.command === 'sleep');
+  assert.equal(sleeps.length, 6);
+  assert.ok(sleeps.every(c => Number(c.args[0]) >= 1 && Number(c.args[0]) <= 60), '待機時間を有限に保つ');
+  for (const [mode, command] of [['--snapshot-verified', 'ssh'], ['--publish-status', 'rsync'], ['deploy', 'ssh']]) {
+    const stopped = runDeployTransport(t, { mode, exits: command === 'rsync' ? [255] : [0], sshExits: command === 'ssh' ? [255] : [0] });
+    assert.equal(stopped.status, 255, mode);
+    assert.equal(stopped.calls.filter(c => c.command === command).length, 5, `${mode}: 補助処理の上限`);
+  }
+  // workflow→共有再試行処理の結線は別契約。内部メッセージの固定はしない。
   assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --publish-status/);
-  assert.doesNotMatch(
-    workflow,
-    /rsync -avz --delay-updates[\s\S]*status\/deploy-revision\.txt status\/deploy-status\.json/,
-    'verified status publish must not bypass the shared Xserver retry helper'
-  );
-  assert.doesNotMatch(script, /MAX_RETRIES=3/);
-  assert.doesNotMatch(script, /Waiting 10 seconds before retrying/);
+  assert.doesNotMatch(workflow, /rsync -avz --delay-updates[\s\S]*status\/deploy-revision\.txt status\/deploy-status\.json/);
+
 });
 
 test('接続後にXserver応答が止まってもSSHとrsyncが無期限に待たない', () => {

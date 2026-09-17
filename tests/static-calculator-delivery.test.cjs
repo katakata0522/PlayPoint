@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { assertOrderedAttributes } = require('./helpers/markup-contract.cjs');
+const { assertCacheContract } = require('./helpers/apache-cache-contract.cjs');
 const {
   ensureStaticCalculatorLayout,
   validateStaticLayout
@@ -118,19 +120,14 @@ test('6地域トップは通常デザインを保ちつつ主要CTAをモバイ�
     const mainMode = html.slice(html.indexOf('<div id="mainMode"'), html.indexOf('<div id="reverseMode"'));
     assert.ok(!html.includes('home-calculator-first'), `${indexPath}: Calculator-Firstクラスが残っている`);
     assert.ok(!html.includes('home-help-link'), `${indexPath}: Calculator-First専用リンクが残っている`);
-    assert.ok(
-      mainMode.indexOf('id="calculateButton"') < mainMode.indexOf('id="calculator-advanced-settings"'),
-      `${indexPath}: 主要CTAが任意設定より後ろに戻っている`
-    );
-    assert.match(html, /#mainMode>\.section:first-child>#calculateButton\{order:2;margin-top:1em\}/, `${indexPath}: desktop CTA order`);
-    assert.match(html, /@media\(max-width:640px\)\{[\s\S]*#mainMode>\.section:first-child>#calculateButton\{order:1\}/, `${indexPath}: mobile CTA order`);
-    assert.match(html, /#mainMode>\.section:first-child>#calculator-advanced-settings\{order:2\}/, `${indexPath}: mobile advanced-settings order`);
+    assertOrderedAttributes(mainMode, 'id', ['calculateButton', 'calculator-advanced-settings'], indexPath);
+    // モバイル表示順・操作可能性は既存browser-smokeの実画面検査が担当する。
   }
 });
 
 test('日本語トップは説明の後に通常の記事一覧を表示する', () => {
   const html = read('index.html');
-  assert.ok(html.indexOf('<!-- DESCRIPTION_SECTION_START -->') < html.indexOf('<!-- ARTICLE_DRAWER_START -->'));
+  assertOrderedAttributes(html, 'data-lang-key', ['descriptionSectionTitle', 'articleDrawerTitle'], '日本語トップ');
   assert.ok(!html.includes('home-article-carousel'));
   assert.ok(html.includes('すべての記事を見る'));
 });
@@ -166,9 +163,5 @@ test('UIモジュールは内容ハッシュ付きで読み込み、Service Work
 });
 
 test('未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする', () => {
-  const htaccess = read('.htaccess');
-  assert.ok(htaccess.includes('<FilesMatch "\\.(js|mjs)$">'));
-  assert.match(htaccess, /max-age=300, must-revalidate/);
-  assert.match(htaccess, /max-age=31536000, immutable/);
-  assert.match(htaccess, /QUERY_STRING/);
+  assertCacheContract(read('.htaccess'));
 });

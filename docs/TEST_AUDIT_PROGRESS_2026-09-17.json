@@ -1,0 +1,653 @@
+{
+  "baseline": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+  "baseline_cases": 930,
+  "previous_reviewed": 46,
+  "new_reviewed": 28,
+  "baseline_reviewed_total": 74,
+  "baseline_unreviewed": 856,
+  "current_local_cases": 934,
+  "current_local_files": 171,
+  "post_minify_rerun_cases": 15,
+  "earlier_items": [
+    {
+      "id": "P01",
+      "test_name": "著者ページのOGP画像は実在する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 14,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "HTMLを構造として読み、og:imageをURL解決して対応資産の存在を検証する。対象は公開中の著者ページへ広げる。"
+    },
+    {
+      "id": "P02",
+      "test_name": "Consentの公開UIと広告境界に旧独自同意フローを戻さない",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 21,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "公開導線・禁止済み同意表現の静的検査と、許可／拒否／再設定の動作検査を分ける。既存法務文言は監査を理由に変更しない。"
+    },
+    {
+      "id": "P03",
+      "test_name": "記事・ブログはGA4 eventを直接送らず共通計測境界を利用する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 33,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "共通APIを通す配置規則は残し、許可・拒否時の送信やパラメータ除去を動作で検証する。内部識別子だけを主な保証にしない。"
+    },
+    {
+      "id": "P04",
+      "test_name": "デプロイ同期は公開不要な運用ファイルをルート限定で除外する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 46,
+      "status": "統合済み",
+      "owner": "deploy-cleanup D01",
+      "action": "転送スクリプトを偽transportで起動して引数を捕捉し、実rsyncを二つの一時フォルダー間で実行。rootの除外漏れ・同名subdir過剰除外・別管理領域削除を検出。workflowの起動境界は残す。"
+    },
+    {
+      "id": "P05",
+      "test_name": "デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ行う",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 67,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "現行のCSSのみ圧縮方針はそのままに、変換前後の資産集合・JSの許容差分・参照URLの整合性を実データで確認する。JS圧縮解禁を勝手に行わない。"
+    },
+    {
+      "id": "P06",
+      "test_name": "デプロイ前検証はasset version同期後JSの構文を確認する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 91,
+      "status": "置換済み",
+      "owner": "preflight-execution-contract",
+      "action": "圧縮後の構文検査の実行と、その失敗が配信境界を止め全体を失敗にすることをVM＋実phase runnerで確認。"
+    },
+    {
+      "id": "P07",
+      "test_name": "CIデプロイはコミット済み成果物だけを公開する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 102,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "一時ディレクトリ上の生成結果・追跡成果物差分・公開treeを検査し、未同期なら失敗する契約にする。起動境界の最小静的チェックは残す。"
+    },
+    {
+      "id": "P08",
+      "test_name": "デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 118,
+      "status": "置換済み",
+      "owner": "syntax-verifier-execution",
+      "action": "本物のCLIへ運用JSの構文エラーと必須ファイル欠損を与え、失敗することを検証。非対象docs/testsは別fixtureで維持。"
+    },
+    {
+      "id": "P09",
+      "test_name": "多言語トップはJS実行前の主要文言も翻訳済みにする",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 127,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "公開中の地域一覧から初期HTMLの見出し・タブを調べ、利用者向け文言と意味を確認する。属性の並びは不問にする。"
+    },
+    {
+      "id": "P10",
+      "test_name": "Xserver同期後に本番スモークテストを実行する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 140,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "workflowの構造と条件を確認する主担当に集約し、ミラー→検証→verifiedの実行契約をテストする。"
+    },
+    {
+      "id": "P11",
+      "test_name": "Xserver同期後に本番SEOヘルスチェックを実行する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 146,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "必要な順序と起動条件を構造解析で確認し、実処理の失敗は統合fixtureで検証する。"
+    },
+    {
+      "id": "P12",
+      "test_name": "デプロイ検証の変更でもワークフローを実行する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 158,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "変更パス→期待する検査／公開の表形式テストへ集約する。検証実行と本番再配信を別に扱う。"
+    },
+    {
+      "id": "P13",
+      "test_name": "デプロイ前検証は圧縮前に全回帰し、圧縮後は配信境界だけ再実行する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 163,
+      "status": "統合済み",
+      "owner": "preflight-execution-contract",
+      "action": "全量一度→圧縮→構文→配信境界という実行と集合を確認。全930件という固定値は追加しない。"
+    },
+    {
+      "id": "P14",
+      "test_name": "本番スモークテストの期待文字列は配信元ファイルに存在する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 180,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "実際の対象定義をデータとして読み込んで全対象を調べる。実行用定義の検証と本番HTTPの確認は区別する。"
+    },
+    {
+      "id": "P15",
+      "test_name": "本番スモークテストは主要PlayPointページと言語トップを確認する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 194,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "地域・ページ役割から必要な代表対象を定義し、実行対象集合と照合する。全398ページを毎回ブラウザで開く設計にはしない。"
+    },
+    {
+      "id": "P16",
+      "test_name": "海外向け案内は英語を全世界共通レートとして案内しない",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 216,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "国・通貨・レートの対応は独立した仕様値として守る。説明文の校正を全文固定と切り離す。意味の正しさを単純な単語検出で証明したことにしない。"
+    },
+    {
+      "id": "P17",
+      "test_name": "多言語トップの実行時記事リンクは各言語の記事一覧を指す",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 225,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "実際の解決後URL・表示名の非空・地域の整合を主に検証する。装飾絵文字は契約から外す候補。"
+    },
+    {
+      "id": "P18",
+      "test_name": "日本語の必要ポイント例は初期状態とゴールドからプラチナの実例を使い分ける",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 237,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "250の初期条件と1728の特定組合せを独立したケースで残し、画面上の出し分けを確認する。FAQの意味は保ち、校正で不要に落とさない。"
+    },
+    {
+      "id": "P19",
+      "test_name": "タブ・補足・復元欄はCSSが失敗してもhidden属性で初期非表示になる",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 248,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "初期HTMLをDOMとして検査し、開閉は操作で確認する。tooltip数は宣言された対象要素と対応させ、9という本数自体を要件にしない。"
+    },
+    {
+      "id": "P20",
+      "test_name": "ブログ初期表示は最終件数と同じ6枚のスケルトンをHTMLで確保する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 262,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "現行6枚の仕様は変更せず、itemsPerPageとスケルトン数が一致する関係を検査する。読み込み後の置換とnoscript導線は動作・DOMで確認する。"
+    },
+    {
+      "id": "P21",
+      "test_name": "計算詳細は項目名と値を2列で揃え、値の内部は分断しない",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 272,
+      "status": "ブラウザへ置換",
+      "owner": "browser-smoke / calculator-presentation-contract",
+      "action": "実結果を展開し、項目と値の対応・はみ出し・値内部の分断を測定。CSSコメントを許し、単列化・spanブロック化を拒否する。"
+    },
+    {
+      "id": "P22",
+      "test_name": "計算結果リンクのhover規則を閉じ、後続のツールチップ非表示を巻き込まない",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 278,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "CSS構文検査とtooltipの初期非表示／表示操作へ分離する。特定のhoverルール形状を要求する目的は再確認する。"
+    },
+    {
+      "id": "P23",
+      "test_name": "CSPは計測と広告品質確認で実際に使う接続先を許可する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 285,
+      "status": "維持",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "目的と検査を維持する。必要originの確認と、許可が広すぎないことの確認は別保証として扱う。HTTP上の実ヘッダー検査も残す。"
+    },
+    {
+      "id": "P24",
+      "test_name": "日記の景品選択には全言語で読み上げ可能な名前がある",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 304,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "DOMのアクセシブルな名前を確認し、対応地域を網羅する。方式ではなく読み上げ名と対象の結び付きを検査する。"
+    },
+    {
+      "id": "P25",
+      "test_name": "トップページは大きな画像プレビューとOGP画像サイズを明示する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 312,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "現在の画像仕様は維持し、metaを構造的に読む。画像実寸・形式との一致を検査し、必要なら対応6地域へ展開する。"
+    },
+    {
+      "id": "P26",
+      "test_name": "初期操作に必要なアプリモジュールは実際のimport URLと同じURLで先読みする",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 322,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "現在の遅延読込方針は守り、実importとpreloadの解決URL集合を比較する。ハッシュ表記だけでなく同一資産であることを確認する。"
+    },
+    {
+      "id": "P27",
+      "test_name": "日記の重複通知を表示せず、カレンダー登録は残す",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 346,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "現行の通知削減という判断を維持し、可視通知の重複とカレンダー登録の操作を確認する。ID自体は連携上必要な場合のみ残す。"
+    },
+    {
+      "id": "P28",
+      "test_name": "地域差案内は日本語トップでも英語の注意導線として表示する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 356,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "海外利用者向けの英語案内という現行仕様を守り、DOM属性・computed表示・到達URLを検証する。"
+    },
+    {
+      "id": "P29",
+      "test_name": "計算方法と検証方針を全言語で本文から確認できる",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 363,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "説明文の確認と、生入力の外部送信を防ぐ動作検証を分ける。リンクはDOMで解決する。法務・プライバシー表現を勝手に変更しない。"
+    },
+    {
+      "id": "P30",
+      "test_name": "ブログ広告はスクロール量に依存せず共通ローダーから初期化する",
+      "file": "tests/playpoint-product-guards.test.cjs",
+      "baseline_line": 378,
+      "status": "未着手",
+      "owner": "tests/playpoint-product-guards.test.cjs",
+      "action": "スクロール0の状態で許可／拒否／待機を与え、共通ローダーの呼出と広告枠要求を観測する。収益を守る目的を削らない。"
+    },
+    {
+      "id": "R01",
+      "test_name": "分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 28,
+      "status": "一部改善・残あり",
+      "owner": "runtime-module-guards",
+      "action": "今回R02と共通の資産パス確認で引用符だけの制約を緩和。main・precacheを実依存データで照合する移行は未完。"
+    },
+    {
+      "id": "R02",
+      "test_name": "共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 44,
+      "status": "一部改善・残あり",
+      "owner": "runtime-module-guards",
+      "action": "cssTargetsとService Worker資産定義を実データとして参照。実資産の版とprecache/importを照合。引用符変更を許容。残るsource包含と主担当集約は次回。"
+    },
+    {
+      "id": "R03",
+      "test_name": "アプリモジュールのキャッシュ世代は改行コードが違っても一致する",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 60,
+      "status": "改善済み",
+      "owner": "runtime-module-guards",
+      "action": "LF/CRLF同値だけでなく、内容変更でhashが変わる対照を追加。"
+    },
+    {
+      "id": "R04",
+      "test_name": "公開HTMLは外部Google Fontsへ接続しない",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 83,
+      "status": "未着手",
+      "owner": "tests/runtime-module-guards.test.cjs",
+      "action": "公開対象台帳に沿って能動的なresource参照を検査し、必要ならCSS import等も見る。説明文や非公開資料に文字があるだけで落とさない。"
+    },
+    {
+      "id": "R05",
+      "test_name": "埋め込みウィジェットは外部依存なしで計算できる",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 100,
+      "status": "ブラウザへ置換",
+      "owner": "embed-widget-smoke",
+      "action": "4言語で通常／逆算を実操作。空・負・上限超過・ゼロを区別。想定外のresource取得を拒否。空実装と10倍誤計算は失敗、コード長は不問。"
+    },
+    {
+      "id": "R06",
+      "test_name": "埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 108,
+      "status": "未着手",
+      "owner": "tests/runtime-module-guards.test.cjs",
+      "action": "案内ジェネレーターの言語入力→解決URLを表形式で実行し、コピー計測の同意・生値除去も検証する。"
+    },
+    {
+      "id": "R07",
+      "test_name": "許可された主要計測イベント名が設定に残る",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 118,
+      "status": "未着手",
+      "owner": "tests/runtime-module-guards.test.cjs",
+      "action": "許可済みイベントを実APIへ渡し、許可時に規定の分類値だけが送られることを検証する。"
+    },
+    {
+      "id": "R08",
+      "test_name": "地域表示の決定と保存責務はregion-navigationへ集約する",
+      "file": "tests/runtime-module-guards.test.cjs",
+      "baseline_line": 130,
+      "status": "未着手",
+      "owner": "tests/runtime-module-guards.test.cjs",
+      "action": "region-navigationの動作テストを主とし、mainの起動から実際に呼ばれる結線も確認する。最小限の依存境界だけ静的に残す。"
+    },
+    {
+      "id": "S01",
+      "test_name": "旧HTMLを初回描画から安定する静的レイアウトへ安全に変換できる",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 68,
+      "status": "未着手",
+      "owner": "tests/static-calculator-delivery.test.cjs",
+      "action": "現在も呼ばれる変換の互換性は維持する。旧形式だから不要と判断せず、入力値・ラベル関連付け・既存属性の保存を確認する。"
+    },
+    {
+      "id": "S02",
+      "test_name": "6地域の公開HTMLはJavaScript実行前から詳細設定の最終DOMを持つ",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 85,
+      "status": "未着手",
+      "owner": "tests/static-calculator-delivery.test.cjs",
+      "action": "最終DOMを独立に読み、入力・ラベル・任意設定の存在／関連付けを確認する。共有CSS等の参照で必要な構造と私的命名を区別する。"
+    },
+    {
+      "id": "S03",
+      "test_name": "主要4言語の公開HTMLはJavaScript実行前から専用ラベルを持つ",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 100,
+      "status": "未着手",
+      "owner": "tests/static-calculator-delivery.test.cjs",
+      "action": "通常率／特別率という意味・通貨単位・編集可否を保ちながら、静的翻訳の主担当へ集約する。HK／INは対応仕様を別途確認して補完する。"
+    },
+    {
+      "id": "S04",
+      "test_name": "6地域トップは通常デザインを保ちつつ主要CTAをモバイル優先のDOM順にする",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 112,
+      "status": "改善済み",
+      "owner": "static-calculator-delivery / browser-smoke",
+      "action": "静的DOMの欠損・重複・順序を独立確認。320/390/1024pxで実際のボタンと操作欄を見る。display:contentsの正しい実装を誤拒否しない。"
+    },
+    {
+      "id": "S05",
+      "test_name": "日本語トップは説明の後に通常の記事一覧を表示する",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 131,
+      "status": "改善済み",
+      "owner": "static-calculator-delivery / browser-smoke",
+      "action": "説明と記事見出しの存在・一意性・順序を確認。コメントの変更は許容。ブラウザでもsection本文・記事リンクを確認する。"
+    },
+    {
+      "id": "S06",
+      "test_name": "多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 138,
+      "status": "維持",
+      "owner": "tests/static-calculator-delivery.test.cjs",
+      "action": "現行の実行検証を維持する。置換結果の件数や未対応言語の挙動は必要に応じた追加候補。"
+    },
+    {
+      "id": "S07",
+      "test_name": "UIモジュールは内容ハッシュ付きで読み込み、Service Workerも即時更新確認する",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 154,
+      "status": "未着手",
+      "owner": "tests/static-calculator-delivery.test.cjs",
+      "action": "資産参照URLの一致は共通検査へ、register引数・update呼出はserviceWorkerを置き換えた隔離実行へ分離する。"
+    },
+    {
+      "id": "S08",
+      "test_name": "未バージョンJavaScriptだけを短期再検証し、v付き資産はimmutableにする",
+      "file": "tests/static-calculator-delivery.test.cjs",
+      "baseline_line": 168,
+      "status": "一部改善・残あり",
+      "owner": "static-calculator-delivery / apache-cache-contract",
+      "action": "コメント内だけの宣言、FilesMatchの誤対象、QUERY_STRING条件反転・無条件immutableを拒否。静的な有効宣言の契約であり、Apache全体や全queryの実HTTPを模倣・証明しない。HTTP比較の追加は残件。"
+    }
+  ],
+  "new_review_items": [
+    {
+      "id": "CI01",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 19,
+      "test_name": "必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeをActions登録しない",
+      "status": "維持・構造改善候補",
+      "decision": "必須6ブラウザ検証の起動境界は必要。文字列がコメントや無効stepにある場合の解析は今後YAMLの有効step検証へ。"
+    },
+    {
+      "id": "CI02",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 43,
+      "test_name": "PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが配信用アセットを保持する",
+      "status": "改善待ち",
+      "decision": "失敗を隠さない・配信用差分を通常PRへ残さない目的は維持。teeの書式、15分、7日を一体固定せず実行・保存・予算を分離する。"
+    },
+    {
+      "id": "CI03",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 58,
+      "test_name": "Deployは本番非公開のtests・docs・tools変更だけでは起動しない",
+      "status": "改善待ち",
+      "decision": "tests/docs/toolsの除外はコスト境界。paths-ignoreの有効scopeを解析して文字の所在だけに依存しない検証へ。"
+    },
+    {
+      "id": "CI04",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 66,
+      "test_name": "AI同期プリフライト本体は非公開toolsに置き、公開ミラーから除外する",
+      "status": "改善待ち",
+      "decision": "非公開toolsへの責務委譲は必要。wrapperの実行と公開treeの除外を主担当にし、requireの引用符固定は移行候補。"
+    },
+    {
+      "id": "CI05",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 75,
+      "test_name": "preflightは本番同期前に鮮度・記事正規化・全送信URL Headを検証する",
+      "status": "置換済み",
+      "decision": "preflightの実entrypointと実phase runnerをVMで実行。外部コマンドだけを捕捉し、--fresh/--checkと圧縮前実行を観測。"
+    },
+    {
+      "id": "CI06",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 108,
+      "test_name": "Deployはproduction Chromiumをverified前に所有し、ブラウザ準備失敗では本番を触らない",
+      "status": "維持・構造改善候補",
+      "decision": "ブラウザ準備→配信→検証→verifiedの境界は必要。全markerの存在確認済み。工程の表示名固定は残る。"
+    },
+    {
+      "id": "CI07",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 130,
+      "test_name": "検証・復旧専用workflowの変更だけでは本番Deployを起動しない",
+      "status": "維持・構造改善候補",
+      "decision": "重複した自動workflowを復活させないコスト境界。trigger/pathの有効構造確認への移行は残る。"
+    },
+    {
+      "id": "CI08",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 146,
+      "test_name": "Deployは変更影響を判定して本番処理を一括でゲートする",
+      "status": "改善待ち",
+      "decision": "変更影響で本番操作を一括制御する必要がある。現在はif表記を固定。条件評価fixtureへ移行候補。"
+    },
+    {
+      "id": "CI09",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 174,
+      "test_name": "本番Chromium失敗はverified前かつproduction mutation後なので自動rollback対象になる",
+      "status": "改善済み・構造改善残",
+      "decision": "mirror欠損時のindexOf=-1を拒否する存在確認を追加。復旧条件やstep構造の本格的な統合は別途。"
+    },
+    {
+      "id": "CI10",
+      "file": "tests/ci-guardrails.test.cjs",
+      "baseline_line": 193,
+      "test_name": "退避したBrowser Smokeレシピはlocal・productionの手動再確認手順を保持する",
+      "status": "維持",
+      "decision": "退避recipeが自動登録されず手動local/production用途を残す保証を維持。archive内容そのものの起動試験は別責務。"
+    },
+    {
+      "id": "D01",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 15,
+      "test_name": "デプロイは公開物だけを厳密にミラーし、除外物も本番から削除する",
+      "status": "置換済み",
+      "decision": "専用script→実argv→実ローカルrsyncで機密除外、旧物除去、同名subdirの保持、別管理領域保護を確認。P04とD02の保証を吸収。"
+    },
+    {
+      "id": "D02",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 46,
+      "test_name": "別リポジトリ管理の公開領域を厳密ミラーの削除対象から保護する",
+      "status": "D01へ統合済み",
+      "decision": "manner/kanji-slicerの実ファイルを残せることをD01で確認。protectの一重引用符を固定する同層重複を除去。"
+    },
+    {
+      "id": "D03",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 58,
+      "test_name": "デプロイ前snapshotはverified本番だけを公開領域外へ1世代退避する",
+      "status": "改善待ち",
+      "decision": "verified snapshot、SHA一致、symlink拒否、atomic入替と復旧の目的は残す。snapshot-history等の実I/O ownerを全文照合してから統合。今回はremote heredocを実行していない。"
+    },
+    {
+      "id": "D04",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 84,
+      "test_name": "移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する",
+      "status": "改善待ち",
+      "decision": "旧公開物・秘密の不存在は必要。文言/パスの所在だけでなく、remote検査のfixture実行へ移す。今回のD01はrsync除外だけでこの検査全体の代替ではない。"
+    },
+    {
+      "id": "D05",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 116,
+      "test_name": "Xserverの一時的なSSH障害は本体ミラーだけ長めに、snapshot・後続処理は短めに再試行する",
+      "status": "置換済み",
+      "decision": "5種類の通信エラーからの再試行成功、非通信エラー即時停止、mirror7回とsnapshot/cleanup/status5回の上限、待機上限を実scriptで観測。remote通信はスタブ。"
+    },
+    {
+      "id": "D06",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 140,
+      "test_name": "接続後にXserver応答が止まってもSSHとrsyncが無期限に待たない",
+      "status": "改善待ち",
+      "decision": "SSH keepalive/rsync I/O有限待機は必要。代入文字列・出現2回より、各モードの捕捉argvの実値へ移行する候補。"
+    },
+    {
+      "id": "D07",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 148,
+      "test_name": "本番SSHは公開鍵だけを使い、転送・TTY・鍵残存を許さない",
+      "status": "改善待ち",
+      "decision": "鍵限定、TTY/転送無効、鍵削除は必要。文字があるだけの保証を有効argv/後処理scopeへ移す。権限や設定は緩和しない。"
+    },
+    {
+      "id": "D08",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 176,
+      "test_name": "GitHub Actionsのjob timeoutは失敗時の自動復元・再検証まで途中で打ち切らない",
+      "status": "再評価待ち",
+      "decision": "50分下限は現行の復旧完遂意図。有限retryと全経路最大時間に対応付け、実測なしに縮小も増加も行わない。"
+    },
+    {
+      "id": "D09",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 182,
+      "test_name": "旧calculatorファイルを持たず301転送だけを維持する",
+      "status": "改善待ち",
+      "decision": "旧URL→301と旧実体不在は必要。RewriteRule一字一句でなく代表URLの結果・query保持のHTTPfixtureへ移行。"
+    },
+    {
+      "id": "D10",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 187,
+      "test_name": "全階層のindex.htmlを階層を保った正規URLへ301転送する",
+      "status": "改善待ち",
+      "decision": "全階層index正規化は必要。コメント内の規則や同義regexを区別するHTTPfixtureへ。"
+    },
+    {
+      "id": "D11",
+      "file": "tests/deploy-cleanup.test.cjs",
+      "baseline_line": 193,
+      "test_name": "デプロイスクリプトのBash構文が有効である",
+      "status": "維持",
+      "decision": "bash -nによる実構文検査は維持。Windows非互換skipとLinux CI必須実行を区別。"
+    },
+    {
+      "id": "C01",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 12,
+      "test_name": "公開ミラーへ実際に入る変更は本番Deploy対象にする",
+      "status": "維持",
+      "decision": "代表的な公開パスを独立した期待値で判定し、実装の一覧そのものから正解を作っていない。"
+    },
+    {
+      "id": "C02",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 26,
+      "test_name": "品質検査・文書・非公開ツールだけの変更では本番Deployしない",
+      "status": "維持",
+      "decision": "非公開・検証専用変更だけで不要な配信をしない境界を維持。"
+    },
+    {
+      "id": "C03",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 52,
+      "test_name": "配信成果物を実行時に変える非公開ビルド入力はDeploy対象にする",
+      "status": "改善済み",
+      "decision": "実装のDEPLOYMENT_INPUTSをそのまま期待値に使う循環を解消。17の現在の配信入力を独立列挙し、preflightを集合から消す故障を検出。"
+    },
+    {
+      "id": "C04",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 62,
+      "test_name": "品質検査と公開変更が混在する場合は安全側でDeployする",
+      "status": "維持",
+      "decision": "公開/非公開が混在しても公開変更を捨てない。"
+    },
+    {
+      "id": "C05",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 74,
+      "test_name": "rsyncで除外するルート管理ファイルはDeploy対象にしない",
+      "status": "維持",
+      "decision": "root管理ファイルの非公開判定は独立した例で維持。"
+    },
+    {
+      "id": "C06",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 88,
+      "test_name": "Windows形式と相対パス表記を正規化する",
+      "status": "維持",
+      "decision": "Windows/相対表記の正規化を維持。preflightの対象パスにもPOSIX表記を採用し、Windowsで必須検査が誤欠損にならないよう修正。"
+    },
+    {
+      "id": "C07",
+      "file": "tests/deploy-impact-classifier.test.cjs",
+      "baseline_line": 94,
+      "test_name": "不正な入力は黙って判定しない",
+      "status": "維持",
+      "decision": "配列以外・非文字列要素で明示失敗。全入力の網羅とは扱わない。"
+    }
+  ]
+}
