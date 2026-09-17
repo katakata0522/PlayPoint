@@ -1,29 +1,112 @@
-name: Isolated navigation source evidence
+name: Isolated navigation preparation and link evidence
 on:
   push:
     branches: [fix/remaining-locale-navigation-20260917]
     paths: [.github/workflows/navigation-source-export.yml]
 permissions:
   contents: read
+concurrency:
+  group: remaining-locale-navigation-preparation
+  cancel-in-progress: true
 jobs:
-  source:
+  prepare:
     if: github.repository == 'katakata0522/PlayPoint' && github.ref == 'refs/heads/fix/remaining-locale-navigation-20260917'
     runs-on: ubuntu-24.04
-    timeout-minutes: 3
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Apply integrity-checked verified patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,lzma,pathlib,subprocess,os
+          raw=pathlib.Path('.github/navigation-payload.xz').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='a132cffcfa8efc3be434782c4b6358ebdb803cb5805235984f6b8cddd8660488'
+          payload=json.loads(lzma.decompress(raw))
+          patch=pathlib.Path(os.environ['RUNNER_TEMP'])/'verified.patch'
+          patch.write_text(payload['patch'])
+          subprocess.run(['git','apply','--unidiff-zero','--check','--index',str(patch)],check=True)
+          subprocess.run(['git','apply','--unidiff-zero','--index',str(patch)],check=True)
+          PY
+          node scripts/prepare-pr.cjs > "$RUNNER_TEMP/navigation-generation.log" 2>&1
+          git add --all -- .
+          python3 - <<'PY'
+          import hashlib,json,lzma,pathlib,subprocess
+          payload=json.loads(lzma.decompress(pathlib.Path('.github/navigation-payload.xz').read_bytes()))
+          paths=subprocess.check_output(['git','diff','--cached','--name-only']).decode().splitlines()
+          assert len(paths)==payload['expectedCount'],('Unexpected file count',len(paths))
+          records=''.join(f'{p}={hashlib.sha256(subprocess.check_output(["git","show",":"+p])).hexdigest()}\n' for p in sorted(paths))
+          actual=hashlib.sha256(records.encode()).hexdigest()
+          assert actual==payload['expectedDigest'],('Unexpected generated output',actual)
+          print('Exact verified source/output:',len(paths),actual)
+          PY
+          node --test tests/public-navigation-contract.test.cjs tests/top-page-language-integrity.test.cjs tests/ui-runtime-behavior.test.cjs > "$RUNNER_TEMP/navigation-tests.log" 2>&1
+          node --check .github/scripts/browser-smoke.cjs
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m '残り6導線の言語・地域表示と全fragment検証を実装'
+          test "$(git ls-remote origin refs/heads/fix/remaining-locale-navigation-20260917 | cut -f1)" = "$GITHUB_SHA"
+          git diff --exit-code
+          git push origin HEAD:refs/heads/fix/remaining-locale-navigation-20260917
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: navigation-preparation-${{ github.run_id }}
+          path: ${{ runner.temp }}/navigation-*.log
+          retention-days: 2
+          if-no-files-found: warn
+  live-links:
+    if: github.repository == 'katakata0522/PlayPoint' && github.ref == 'refs/heads/fix/remaining-locale-navigation-20260917'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
-      - name: Export committed source without credentials
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Check public internal HTTP targets
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/navigation-source"
-          git archive --format=tar HEAD | gzip > "$RUNNER_TEMP/navigation-source/source.tar.gz"
-          printf 'commit=%s\ntree=%s\n' "$(git rev-parse HEAD)" "$(git rev-parse HEAD^{tree})" > "$RUNNER_TEMP/navigation-source/revision.txt"
+          node .github/scripts/live-internal-link-check.cjs 2>&1 | tee "$RUNNER_TEMP/navigation-live-internal.log"
+      - name: Record Google official reference reachability without changing content
+        shell: bash
+        run: |
+          node <<'JS'
+          const fs=require('node:fs'),path=require('node:path');
+          const {audit,SITE_ORIGIN}=require('./scripts/navigation-source-map.cjs');
+          const urls=new Set();
+          for(const p of audit(process.cwd()).pages){
+            const html=fs.readFileSync(p.file,'utf8');
+            for(const m of html.matchAll(/<a\b[^>]*\bhref\s*=\s*(["'])(.*?)\1/gi)){
+              try{const u=new URL(m[2].replace(/&amp;/g,'&'),SITE_ORIGIN+p.publicPath);if(['support.google.com','play.google.com','policies.google.com','blog.google'].includes(u.hostname)){u.hash='';urls.add(u.href);}}catch{}
+            }
+          }
+          const queue=[...urls].sort(),results=[];
+          Promise.all(Array.from({length:4},async()=>{while(queue.length){const url=queue.shift();try{const response=await fetch(url,{redirect:'follow',signal:AbortSignal.timeout(15000),headers:{'user-agent':'PlayPoint-Link-Healthcheck/1.0'}});results.push({url,status:response.status,finalUrl:response.url,ok:response.ok});await response.body?.cancel();}catch(e){results.push({url,ok:false,error:e.message});}}})).then(()=>{
+            const report={checkedAt:new Date().toISOString(),sourceRevision:process.env.GITHUB_SHA,scope:'Google official anchor URLs; HTTP reachability only, not statement validation',total:results.length,ok:results.filter(x=>x.ok).length,results:results.sort((a,b)=>a.url.localeCompare(b.url))};
+            fs.writeFileSync(path.join(process.env.RUNNER_TEMP,'navigation-google-urls.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({total:report.total,ok:report.ok,unconfirmed:report.results.filter(x=>!x.ok)},null,2));
+          });
+          JS
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
         with:
-          name: navigation-source-${{ github.run_id }}
-          path: ${{ runner.temp }}/navigation-source/
-          retention-days: 1
-          if-no-files-found: error
+          name: navigation-live-links-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/navigation-live-internal.log
+            ${{ runner.temp }}/navigation-google-urls.json
+          retention-days: 7
+          if-no-files-found: warn
