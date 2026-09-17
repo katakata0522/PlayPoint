@@ -16,9 +16,9 @@ const getStepBlock = (workflow, stepName) => {
   return workflow.slice(start, nextStep >= 0 ? nextStep : workflow.length);
 };
 
-test('必須PR GateがローカルChromium検証を所有し、Standalone Browser Smokeは手動専用にする', () => {
+test('必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeをActions登録しない', () => {
   const qualityWorkflow = read('.github/workflows/quality-check.yml');
-  const browserWorkflow = read('.github/workflows/browser-smoke.yml');
+  const archivedBrowserRecipe = read('.github/manual-workflows/browser-smoke.yml');
 
   for (const script of [
     'browser-smoke.cjs',
@@ -33,9 +33,11 @@ test('必須PR GateがローカルChromium検証を所有し、Standalone Browse
   assert.match(qualityWorkflow, /name: Install required browser driver/);
   assert.match(qualityWorkflow, /bash \.github\/scripts\/setup-browser-runtime\.sh/);
   assert.match(qualityWorkflow, /browser-smoke-artifacts\//);
-  assert.doesNotMatch(browserWorkflow, /^\s*pull_request:\s*$/m);
-  assert.match(browserWorkflow, /workflow_dispatch:/);
-  assert.doesNotMatch(browserWorkflow, /workflow_run:/);
+  assert.equal(fs.existsSync(path.join(root, '.github/workflows/browser-smoke.yml')), false);
+  assert.match(archivedBrowserRecipe, /workflow_dispatch:/);
+  assert.doesNotMatch(archivedBrowserRecipe, /^\s*pull_request:\s*$/m);
+  assert.doesNotMatch(archivedBrowserRecipe, /^\s*push:\s*$/m);
+  assert.doesNotMatch(archivedBrowserRecipe, /workflow_run:/);
 });
 
 test('PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが配信用アセットを保持する', () => {
@@ -105,7 +107,6 @@ test('preflightは本番同期前に鮮度・記事正規化・全送信URL Head
 
 test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準備失敗では本番を触らない', () => {
   const deployWorkflow = read('.github/workflows/deploy.yml');
-  const browserWorkflow = read('.github/workflows/browser-smoke.yml');
 
   const installIndex = deployWorkflow.indexOf('- name: Install production browser verifier');
   const mirrorIndex = deployWorkflow.indexOf('- name: Deploy strict public mirror via rsync');
@@ -124,7 +125,6 @@ test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準�
   assert.ok(browserIndex < publishIndex, 'verified status must wait for production Chromium');
   assert.match(getStepBlock(deployWorkflow, 'Install production browser verifier'), /bash \.github\/scripts\/setup-browser-runtime\.sh/);
   assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
-  assert.doesNotMatch(browserWorkflow, /workflow_run:/);
 });
 
 test('検証・復旧専用workflowの変更だけでは本番Deployを起動しない', () => {
@@ -190,13 +190,15 @@ test('本番Chromium失敗はverified前かつproduction mutation後なので自
   assert.match(workflow, /name: Upload production browser evidence/);
 });
 
-test('Standalone Browser Smokeはlocal・productionの手動再確認だけを提供する', () => {
-  const workflow = read('.github/workflows/browser-smoke.yml');
+test('退避したBrowser Smokeレシピはlocal・productionの手動再確認手順を保持する', () => {
+  const workflow = read('.github/manual-workflows/browser-smoke.yml');
 
+  assert.equal(fs.existsSync(path.join(root, '.github/workflows/browser-smoke.yml')), false);
   assert.match(workflow, /workflow_dispatch:/);
   assert.match(workflow, /- local/);
   assert.match(workflow, /- production/);
   assert.doesNotMatch(workflow, /workflow_run:/);
+  assert.doesNotMatch(workflow, /^\s*push:\s*$/m);
   assert.doesNotMatch(workflow, /Detect whether production browser smoke is needed/);
   assert.doesNotMatch(workflow, /detect-deploy-impact\.cjs/);
   assert.match(workflow, /if: inputs\.target == 'local'/);
