@@ -9,12 +9,18 @@ const test = require('node:test');
 const {
   auditRepository,
   localeForRoute,
-  markdownReport,
   normalizeInternalHref,
   pageLocale,
   routeForFile,
   scanSourceGenerators
 } = require('../scripts/intl-link-source-audit.cjs');
+const {
+  buildBaseline,
+  markdownReport,
+  ownershipForFile,
+  runtimeRegionContract,
+  sameMaintenanceFamily
+} = require('../scripts/intl-link-source-baseline.cjs');
 
 function withFixture(files, fn) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-intl-audit-'));
@@ -55,14 +61,8 @@ test('relative and absolute same-origin hrefs resolve against the source page', 
     normalizeInternalHref('en/articles/a.html', './b.html?x=1#part'),
     { kind: 'internal', href: './b.html?x=1#part', route: '/en/articles/b.html', hash: '#part', query: '?x=1' }
   );
-  assert.equal(
-    normalizeInternalHref('en/articles/a.html', 'https://playpoint-sim.com/en/').route,
-    '/en/'
-  );
-  assert.equal(
-    normalizeInternalHref('en/articles/a.html', 'https://example.com/').kind,
-    'external'
-  );
+  assert.equal(normalizeInternalHref('en/articles/a.html', 'https://playpoint-sim.com/en/').route, '/en/');
+  assert.equal(normalizeInternalHref('en/articles/a.html', 'https://example.com/').kind, 'external');
 });
 
 test('repository audit detects broken targets and localized Japanese fallbacks', () => {
@@ -82,7 +82,7 @@ test('repository audit detects broken targets and localized Japanese fallbacks',
   });
 });
 
-test('region switcher inventory requires all six supported calculator destinations', () => {
+test('region switcher inventory requires all six supported calculator destinations for anchor-based switchers', () => {
   withFixture({
     'index.html': '<html><head><link rel="canonical" href="https://playpoint-sim.com/"></head><body></body></html>',
     'en/index.html': '<html><head><link rel="canonical" href="https://playpoint-sim.com/en/"></head><body><details class="site-region-switcher"><a href="/">JP</a><a href="/en/">US</a></details></body></html>'
@@ -105,14 +105,36 @@ test('source inventory only includes files carrying navigation/localization sign
   });
 });
 
-test('current repository scan remains executable and covers every public HTML file discovered', () => {
+test('maintenance cross-locale links are recognized as explicit language-switch intent', () => {
+  assert.equal(sameMaintenanceFamily('en/maintenance/diamond/index.html', '/maintenance/diamond/'), true);
+  assert.equal(sameMaintenanceFamily('en/maintenance/diamond/index.html', '/ko/maintenance/diamond/'), true);
+  assert.equal(sameMaintenanceFamily('en/maintenance/diamond/index.html', '/tw/maintenance/platinum/'), false);
+});
+
+test('ownership classification points international families at the responsible build stages', () => {
+  assert.equal(ownershipForFile('en/articles/example.html').sourceFamily, 'intl-article');
+  assert.equal(ownershipForFile('ko/games/fgo/index.html').sourceFamily, 'intl-game');
+  assert.equal(ownershipForFile('tw/status/diamond/index.html').sourceFamily, 'intl-seo-landing');
+  assert.ok(ownershipForFile('en/index.html').ownerCandidates.includes('scripts/language-page-builder.cjs'));
+});
+
+test('runtime region contract requires all six supported calculator regions', () => {
+  withFixture({
+    'js/region-navigation.js': "const REGION_PATHS={JP: '',US: 'en/',KR: 'ko/',TW: 'tw/',HK: 'hk/',IN: 'in/'};"
+  }, root => {
+    assert.deepEqual(runtimeRegionContract(root), { file: 'js/region-navigation.js', ok: true, missing: [] });
+  });
+});
+
+test('current repository baseline remains executable, precise, and emits full CI evidence', () => {
   const root = path.resolve(__dirname, '..');
-  const report = auditRepository(root);
+  const report = buildBaseline(root);
   assert.ok(report.summary.htmlFiles > 0, 'HTMLを1件以上検出すること');
   assert.ok(report.summary.anchors > 0, 'リンクを1件以上検出すること');
   assert.ok(report.summary.generatorCandidates > 0, '生成元候補を1件以上検出すること');
-  assert.equal(report.summary.problematicLinks, report.problematicLinks.length, 'サマリーと詳細件数が一致すること');
-  assert.equal(report.summary.headFindings, report.headFindings.length, 'Head監査のサマリーと詳細件数が一致すること');
+  assert.equal(report.summary.problematicLinks, report.problematicLinks.length, '精密化後サマリーと詳細件数が一致すること');
+  assert.equal(report.summary.regionFindings, report.regionFindings.length, 'regionサマリーと詳細件数が一致すること');
+  assert.equal(report.runtimeRegionContract.ok, true, 'runtime region mapが6地域を保持すること');
   writeCiEvidence(report);
-  console.log('[intl-link-source-audit]', JSON.stringify(report.summary));
+  console.log('[intl-link-source-baseline]', JSON.stringify(report.summary));
 });
