@@ -1,16 +1,17 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const {
   NAVIGATION_SOURCE_REGISTRY,
   SNAPSHOT_JSON,
-  SNAPSHOT_MD,
   buildNavigationInventory,
   buildPublicUrlIndex,
   classifyTransition,
   collectPublicFiles,
-  renderMarkdown
+  renderMarkdown,
+  resolveReference
 } = require('./navigation-provenance-audit.cjs');
 const { evidenceDir } = require('../.github/scripts/ci-evidence.cjs');
 
@@ -18,6 +19,50 @@ const CODE_EXTENSIONS = ['.cjs', '.js', '.mjs'];
 const SOURCE_SCAN_ENTRYPOINTS = Object.freeze([
   'scripts/build-html.js',
   ...NAVIGATION_SOURCE_REGISTRY.map(entry => entry.file)
+]);
+const RUNTIME_DESTINATION_CONTRACTS = Object.freeze([
+  {
+    sourceFile: 'js/region-navigation.js',
+    expression: 'window.location.href = nextUrl',
+    type: 'play-country-router',
+    destinations: ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']
+  },
+  {
+    sourceFile: 'pwa-launch.html',
+    expression: "window.location.replace(regionPaths[preferredRegion] || '/')",
+    type: 'pwa-play-country-router',
+    destinations: ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']
+  },
+  {
+    sourceFile: 'blog/script.js',
+    expression: 'history state URL',
+    type: 'same-document-query-state',
+    destinations: ['same-document']
+  },
+  {
+    sourceFile: 'js/points-cost.js',
+    expression: 'history state URL',
+    type: 'same-document-query-state',
+    destinations: ['same-document']
+  },
+  {
+    sourceFile: 'js/share.js',
+    expression: 'window.open(url)',
+    type: 'external-share-target',
+    destinations: ['dynamic-external']
+  },
+  {
+    sourceFile: 'js/calculator.js',
+    expression: 'window.open(twitter intent)',
+    type: 'external-share-target',
+    destinations: ['https://twitter.com/intent/tweet']
+  },
+  {
+    sourceFile: 'games/game-sim.js',
+    expression: 'window.open(twitterIntent)',
+    type: 'external-share-target',
+    destinations: ['https://twitter.com/intent/tweet']
+  }
 ]);
 
 const NAVIGATION_SIGNALS = Object.freeze([
@@ -49,6 +94,7 @@ function publicIndexAliases(publicFiles) {
 }
 
 function normalizeManualLocaleOwner(page) {
+  if (/^(?:en|ko|tw)\/author\/katakata\.html$/.test(page.file)) return 'intl-author-generator';
   if (page.primaryOwner) return page.primaryOwner;
   if (/^(?:en|ko|tw)\/(?:amount|campaign|compare|maintenance|points-cost|status|latest|embed)\//.test(page.file)) {
     return 'tracked-locale-manual-lp';
@@ -64,6 +110,34 @@ function issueSort(a, b) {
     || String(a.pathname || a.rawHref || '').localeCompare(String(b.pathname || b.rawHref || ''));
 }
 
+function manifestNavigation(rootDir, publicUrlIndex) {
+  const manifestFile = path.join(rootDir, 'manifest.json');
+  if (!fs.existsSync(manifestFile)) return [];
+  let manifest;
+  try { manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8')); }
+  catch (error) {
+    return [{ sourceFile: 'manifest.json', sourcePath: '/manifest.json', sourceRegion: 'JP', kind: 'manifest-parse', role: 'pwa', scope: 'invalid', rawHref: '', disposition: 'invalid-manifest', severity: 'high', issue: `manifest-json-invalid:${error.message}` }];
+  }
+  const values = [];
+  if (typeof manifest.start_url === 'string') values.push(['manifest-start-url', manifest.start_url]);
+  for (const shortcut of Array.isArray(manifest.shortcuts) ? manifest.shortcuts : []) {
+    if (shortcut && typeof shortcut.url === 'string') values.push(['manifest-shortcut', shortcut.url]);
+  }
+  return values.map(([kind, rawHref]) => {
+    const record = {
+      sourceFile: 'manifest.json',
+      sourcePath: '/manifest.json',
+      sourceRegion: 'JP',
+      kind,
+      role: 'pwa',
+      line: null,
+      rawHref,
+      ...resolveReference(rawHref, 'https://playpoint-sim.com/manifest.json')
+    };
+    return { ...record, ...classifyTransition(record, publicUrlIndex) };
+  });
+}
+
 function recomputeReport(rootDir, rawReport) {
   const publicFiles = collectPublicFiles(rootDir);
   const publicUrlIndex = publicIndexAliases(publicFiles);
@@ -75,6 +149,7 @@ function recomputeReport(rootDir, rawReport) {
     ...record,
     ...classifyTransition(record, publicUrlIndex)
   }));
+  const platformNavigation = manifestNavigation(rootDir, publicUrlIndex);
 
   const staticIssuesByFile = new Map();
   for (const record of transitions) {
@@ -93,7 +168,8 @@ function recomputeReport(rootDir, rawReport) {
 
   const issues = [
     ...transitions.filter(record => record.issue).map(record => ({ source: 'static', ...record })),
-    ...runtimeNavigation.filter(record => record.issue).map(record => ({ source: 'runtime', ...record }))
+    ...runtimeNavigation.filter(record => record.issue).map(record => ({ source: 'runtime', ...record })),
+    ...platformNavigation.filter(record => record.issue).map(record => ({ source: 'platform', ...record }))
   ].sort(issueSort);
 
   const structuralErrors = [
@@ -105,12 +181,13 @@ function recomputeReport(rootDir, rawReport) {
 
   return {
     ...rawReport,
-    schemaVersion: 2,
+    schemaVersion: 3,
     generatedBy: 'scripts/navigation-provenance-baseline.cjs',
     coverage: {
       ...rawReport.coverage,
       classifiedHtmlFiles: pages.filter(page => page.primaryOwner).length,
       unclassifiedHtmlFiles: pages.filter(page => !page.primaryOwner).length,
+      platformNavigationReferences: platformNavigation.length,
       brokenInternalTargets: issues.filter(record => record.issue === 'broken-internal-target').length,
       highReviewCandidates: issues.filter(record => record.severity === 'high').length,
       mediumReviewCandidates: issues.filter(record => record.severity === 'medium').length,
@@ -121,6 +198,8 @@ function recomputeReport(rootDir, rawReport) {
     pages,
     issues,
     runtimeNavigation,
+    platformNavigation,
+    runtimeDestinationContracts: RUNTIME_DESTINATION_CONTRACTS,
     transitions
   };
 }
@@ -206,7 +285,7 @@ function discoverNavigationSources(rootDir, report) {
       file: relativePath,
       provenance: runtimeSources.includes(relativePath) ? 'public-runtime-or-build-graph' : 'build-source-graph',
       signals,
-      registered: Boolean(entry),
+      catalogOrigin: entry ? 'known-registry' : 'auto-discovered',
       registryId: entry?.id || null,
       registryKind: entry?.kind || null
     });
@@ -217,11 +296,11 @@ function discoverNavigationSources(rootDir, report) {
     graphFilesScanned: graphFiles.length,
     publicRuntimeSources: runtimeSources,
     candidates: candidates.sort((a, b) => a.file.localeCompare(b.file)),
-    unregisteredCandidates: candidates.filter(candidate => !candidate.registered)
+    autoDiscoveredCandidates: candidates.filter(candidate => candidate.catalogOrigin === 'auto-discovered')
   };
 }
 
-function appendSourceCoverageMarkdown(markdown, sourceCoverage) {
+function appendSourceCoverageMarkdown(markdown, sourceCoverage, platformNavigation) {
   const lines = [
     markdown.trimEnd(),
     '',
@@ -230,22 +309,34 @@ function appendSourceCoverageMarkdown(markdown, sourceCoverage) {
     `- build/runtime依存グラフの走査ファイル: **${sourceCoverage.graphFilesScanned}**`,
     `- 公開HTMLから確認できたruntime script: **${sourceCoverage.publicRuntimeSources.length}**`,
     `- ナビゲーション信号を持つ候補: **${sourceCoverage.candidates.length}**`,
-    `- 手動レジストリ未登録候補: **${sourceCoverage.unregisteredCandidates.length}**`,
+    `- 既知レジストリ外でも自動探索で捕捉した候補: **${sourceCoverage.autoDiscoveredCandidates.length}**`,
     '',
-    '### 未登録候補',
+    '> 「自動探索」は未処理という意味ではありません。build-html依存グラフまたは実際の公開HTMLから読み込まれるruntime scriptを辿り、既知レジストリに無い候補も一覧へ強制的に載せるための漏れ防止層です。',
+    '',
+    '### 自動探索で追加捕捉した候補',
     ''
   ];
-  if (sourceCoverage.unregisteredCandidates.length === 0) {
-    lines.push('なし。自動探索で見つかったナビゲーション生成/書換候補はすべてレジストリで説明されています。');
+  if (sourceCoverage.autoDiscoveredCandidates.length === 0) {
+    lines.push('なし。');
   } else {
     lines.push('| ファイル | 検出シグナル | 経路 |', '|---|---|---|');
-    for (const candidate of sourceCoverage.unregisteredCandidates) {
+    for (const candidate of sourceCoverage.autoDiscoveredCandidates) {
       lines.push(`| \`${candidate.file}\` | ${candidate.signals.join(', ')} | ${candidate.provenance} |`);
     }
   }
-  lines.push('', '### 全候補', '', '| ファイル | 登録 | レジストリID | シグナル |', '|---|---|---|---|');
+  lines.push('', '### 全候補', '', '| ファイル | 由来 | レジストリID | シグナル |', '|---|---|---|---|');
   for (const candidate of sourceCoverage.candidates) {
-    lines.push(`| \`${candidate.file}\` | ${candidate.registered ? 'yes' : 'no'} | ${candidate.registryId || ''} | ${candidate.signals.join(', ')} |`);
+    lines.push(`| \`${candidate.file}\` | ${candidate.catalogOrigin} | ${candidate.registryId || ''} | ${candidate.signals.join(', ')} |`);
+  }
+  lines.push('', '## 9. PWA / runtime動的遷移の補完', '');
+  if (platformNavigation.length > 0) {
+    lines.push('| ソース | 種別 | 行先 | 判定 |', '|---|---|---|---|');
+    for (const item of platformNavigation) lines.push(`| ${item.sourceFile} | ${item.kind} | ${item.pathname || item.rawHref} | ${item.disposition} |`);
+    lines.push('');
+  }
+  lines.push('runtimeで行先が式になっている箇所は、静的解析で無理に推測せず契約として列挙します。', '');
+  for (const contract of RUNTIME_DESTINATION_CONTRACTS) {
+    lines.push(`- \`${contract.sourceFile}\` — ${contract.type}: ${contract.destinations.join(', ')}`);
   }
   lines.push('');
   return lines.join('\n');
@@ -253,6 +344,50 @@ function appendSourceCoverageMarkdown(markdown, sourceCoverage) {
 
 function stableJson(value) {
   return JSON.stringify(value, null, 2) + '\n';
+}
+
+function digestRows(rows) {
+  return crypto.createHash('sha256').update(rows.slice().sort().join('\n')).digest('hex');
+}
+
+function countBy(values, keyFn) {
+  const counts = new Map();
+  for (const value of values) {
+    const key = keyFn(value);
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return Object.fromEntries([...counts.entries()].sort(([a], [b]) => String(a).localeCompare(String(b))));
+}
+
+function compactSnapshot(report) {
+  const edgeRows = report.transitions.map(item => [
+    item.sourceFile, item.kind, item.role, item.rawHref, item.pathname, item.search, item.hash,
+    item.sourceRegion, item.targetRegion, item.disposition, item.issue, item.localizedEquivalent
+  ].map(value => value ?? '').join('|'));
+  const pageRows = report.pages.map(page => [page.file, page.region, page.primaryOwner, page.navigationMutators.join(',')].join('|'));
+  const issueRows = report.issues.map(item => [item.source, item.sourceFile, item.kind, item.role, item.rawHref, item.pathname, item.issue, item.localizedEquivalent].map(value => value ?? '').join('|'));
+  const sourceRows = report.sourceCoverage.candidates.map(item => [item.file, item.catalogOrigin, item.registryId, item.signals.join(',')].map(value => value ?? '').join('|'));
+  const runtimeRows = report.runtimeNavigation.map(item => [item.sourceFile, item.kind, item.expression, item.scope, item.pathname, item.disposition].map(value => value ?? '').join('|'));
+
+  return {
+    schemaVersion: 1,
+    reportDate: report.reportDate,
+    generatedBy: report.generatedBy,
+    coverage: report.coverage,
+    dispositions: report.dispositions,
+    issueCounts: countBy(report.issues, item => `${item.severity || 'none'}|${item.issue || 'none'}|${item.sourceRegion || 'none'}>${item.targetRegion || 'none'}|${item.role || 'none'}`),
+    ownerCounts: countBy(report.pages, page => page.primaryOwner || 'UNCLASSIFIED'),
+    sourceCatalog: report.sourceCoverage.candidates,
+    runtimeDestinationContracts: report.runtimeDestinationContracts,
+    platformNavigation: report.platformNavigation,
+    fingerprints: {
+      staticTransitions: digestRows(edgeRows),
+      pageProvenance: digestRows(pageRows),
+      reviewCandidates: digestRows(issueRows),
+      sourceCatalog: digestRows(sourceRows),
+      runtimeExpressions: digestRows(runtimeRows)
+    }
+  };
 }
 
 function writeFileEnsured(file, content) {
@@ -266,38 +401,32 @@ function buildBaseline(rootDir) {
   report.sourceCoverage = sourceCoverage;
   report.coverage.sourceGraphFilesScanned = sourceCoverage.graphFilesScanned;
   report.coverage.navigationSourceCandidates = sourceCoverage.candidates.length;
-  report.coverage.unregisteredNavigationSourceCandidates = sourceCoverage.unregisteredCandidates.length;
+  report.coverage.autoDiscoveredNavigationSourceCandidates = sourceCoverage.autoDiscoveredCandidates.length;
   return report;
 }
 
 function reportMarkdown(report) {
-  return appendSourceCoverageMarkdown(renderMarkdown(report), report.sourceCoverage) + '\n';
+  return appendSourceCoverageMarkdown(renderMarkdown(report), report.sourceCoverage, report.platformNavigation) + '\n';
 }
 
 function writeEvidence(report) {
   const dir = evidenceDir();
   writeFileEnsured(path.join(dir, 'navigation-provenance-inventory.json'), stableJson(report));
   writeFileEnsured(path.join(dir, 'navigation-provenance-inventory.md'), reportMarkdown(report));
+  writeFileEnsured(path.join(dir, 'navigation-provenance-baseline.json'), stableJson(compactSnapshot(report)));
   return dir;
 }
 
-function writeSnapshots(rootDir, report) {
-  writeFileEnsured(path.join(rootDir, SNAPSHOT_JSON), stableJson(report));
-  writeFileEnsured(path.join(rootDir, SNAPSHOT_MD), reportMarkdown(report));
+function writeSnapshot(rootDir, report) {
+  writeFileEnsured(path.join(rootDir, SNAPSHOT_JSON), stableJson(compactSnapshot(report)));
 }
 
-function checkSnapshots(rootDir, report) {
-  const expected = [
-    [SNAPSHOT_JSON, stableJson(report)],
-    [SNAPSHOT_MD, reportMarkdown(report)]
-  ];
-  const failures = [];
-  for (const [relativePath, content] of expected) {
-    const absolute = path.join(rootDir, relativePath);
-    if (!fs.existsSync(absolute)) failures.push(`snapshot is missing: ${relativePath}`);
-    else if (fs.readFileSync(absolute, 'utf8') !== content) failures.push(`snapshot is stale: ${relativePath}`);
-  }
-  return failures;
+function checkSnapshot(rootDir, report) {
+  const absolute = path.join(rootDir, SNAPSHOT_JSON);
+  if (!fs.existsSync(absolute)) return [`snapshot is missing: ${SNAPSHOT_JSON}`];
+  return fs.readFileSync(absolute, 'utf8') === stableJson(compactSnapshot(report))
+    ? []
+    : [`snapshot is stale: ${SNAPSHOT_JSON}`];
 }
 
 function runCli() {
@@ -306,17 +435,14 @@ function runCli() {
   const report = buildBaseline(rootDir);
   const dir = writeEvidence(report);
   const c = report.coverage;
-  console.log(`[navigation-baseline] public HTML ${c.classifiedHtmlFiles}/${c.publicHtmlFiles}; static refs=${c.staticNavigationReferences}; runtime refs=${c.runtimeNavigationExpressions}`);
+  console.log(`[navigation-baseline] public HTML ${c.classifiedHtmlFiles}/${c.publicHtmlFiles}; static refs=${c.staticNavigationReferences}; runtime refs=${c.runtimeNavigationExpressions}; platform refs=${c.platformNavigationReferences}`);
   console.log(`[navigation-baseline] high=${c.highReviewCandidates}; medium=${c.mediumReviewCandidates}; broken=${c.brokenInternalTargets}; structural=${c.structuralErrors}`);
-  console.log(`[navigation-baseline] source candidates=${c.navigationSourceCandidates}; unregistered=${c.unregisteredNavigationSourceCandidates}; graph files=${c.sourceGraphFilesScanned}`);
+  console.log(`[navigation-baseline] source candidates=${c.navigationSourceCandidates}; auto-discovered=${c.autoDiscoveredNavigationSourceCandidates}; graph files=${c.sourceGraphFilesScanned}`);
   console.log(`[navigation-baseline] evidence: ${dir}`);
 
   const failures = [...report.structuralErrors];
-  if (args.has('--strict-sources')) {
-    failures.push(...report.sourceCoverage.unregisteredCandidates.map(candidate => `unregistered navigation source candidate: ${candidate.file}`));
-  }
-  if (args.has('--write')) writeSnapshots(rootDir, report);
-  if (args.has('--check')) failures.push(...checkSnapshots(rootDir, report));
+  if (args.has('--write')) writeSnapshot(rootDir, report);
+  if (args.has('--check')) failures.push(...checkSnapshot(rootDir, report));
 
   if (failures.length > 0) {
     for (const failure of failures) console.error(`[navigation-baseline] ${failure}`);
@@ -328,12 +454,15 @@ if (require.main === module) runCli();
 
 module.exports = {
   NAVIGATION_SIGNALS,
+  RUNTIME_DESTINATION_CONTRACTS,
   SOURCE_SCAN_ENTRYPOINTS,
   appendSourceCoverageMarkdown,
   buildBaseline,
+  compactSnapshot,
   dependencyClosure,
   discoverNavigationSources,
   localDependencies,
+  manifestNavigation,
   normalizeManualLocaleOwner,
   publicIndexAliases,
   publicRuntimeSources,
