@@ -14,6 +14,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare-generated:
+    name: Temporary canonical regeneration
+    if: github.event_name == 'pull_request' && github.head_ref == 'feat/storage-safety-reading-blog-20260917' && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR head for canonical generation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up pinned CI Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Generate and commit canonical outputs only
+        shell: bash
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          node scripts/prepare-pr.cjs
+          git add -A
+          # この一時ジョブ自身は生成コミットへ混ぜず、生成物だけを積む。
+          git reset -- .github/workflows/quality-check.yml
+          if git diff --cached --quiet; then
+            echo "Canonical outputs are already synchronized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: 正規生成物を同期"
+          git push origin "HEAD:${TARGET_BRANCH}"
+
   gate:
     name: PR Gate
     runs-on: ubuntu-24.04
