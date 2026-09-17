@@ -11,6 +11,7 @@ const {
   candidateGenerators,
   extractAnchors,
   fileToPublicPath,
+  hasExplicitTargetMarker,
   localeOf,
   resolveInternalHref,
   targetExists,
@@ -24,9 +25,10 @@ function edge(overrides = {}) {
     sourceLocale: 'en',
     targetLocale: 'ja',
     target: '/articles/example.html',
+    label: '',
     surface: 'body',
     hasHreflang: false,
-    explicitJapaneseFallback: false,
+    explicitLocaleFallback: false,
     ...overrides
   };
 }
@@ -56,20 +58,38 @@ test('navigation source-map keeps transition normalization deterministic', () =>
   assert.equal(targetExists('/feed.xml', new Set(['/feed.xml'])), true);
 });
 
-test('explicit switches and visible Japanese fallbacks are separated from accidental crossings', () => {
+test('explicit switches and visible destination markers are separated from accidental crossings', () => {
   assert.equal(transitionKind(edge({ surface: 'region-switcher' })), 'region-switch');
   assert.equal(transitionKind(edge({ surface: 'locale-switcher' })), 'locale-switch');
   assert.equal(transitionKind(edge({ hasHreflang: true })), 'locale-switch');
-  assert.equal(transitionKind(edge({ explicitJapaneseFallback: true })), 'explicit-ja-fallback');
+  assert.equal(transitionKind(edge({ explicitLocaleFallback: true })), 'explicit-locale-fallback');
   assert.equal(transitionKind(edge()), 'cross-locale-candidate');
   assert.equal(transitionKind(edge({ targetLocale: 'en' })), 'same-locale');
 
-  for (const label of ['Japanese reference page', '일본어 참고 페이지', '日文參考頁', 'Privacy (Japanese)']) {
-    const [anchor] = extractAnchors(`<a href="/privacy.html">${label}</a>`, '/en/');
-    assert.equal(anchor.explicitJapaneseFallback, true, `visible Japanese fallback label must be recognized: ${label}`);
+  const examples = [
+    ['Japanese reference page', 'ja'],
+    ['일본어 참고 페이지', 'ja'],
+    ['日文參考頁', 'ja'],
+    ['Open U.S. calculator →', 'en'],
+    ['영문 등급 가이드 보기', 'en'],
+    ['한국어', 'ko'],
+    ['繁體中文指南（台灣）', 'tw'],
+    ['Hong Kong', 'hk'],
+    ['India', 'in']
+  ];
+  for (const [label, targetLocale] of examples) {
+    assert.equal(hasExplicitTargetMarker(label, targetLocale), true, `destination marker must be recognized: ${label} -> ${targetLocale}`);
   }
-  const [unmarked] = extractAnchors('<a href="/privacy.html">Privacy Policy</a>', '/en/');
-  assert.equal(unmarked.explicitJapaneseFallback, false, 'unmarked cross-locale link must stay reviewable');
+  assert.equal(hasExplicitTargetMarker('Privacy Policy', 'ja'), false, 'unmarked cross-locale link must stay reviewable');
+
+  for (const [label, href] of [
+    ['Japanese reference page', '/privacy.html'],
+    ['영문 등급 가이드 보기', '/en/articles/google-play-points-levels.html'],
+    ['繁體中文', '/tw/']
+  ]) {
+    const [anchor] = extractAnchors(`<a href="${href}">${label}</a>`, '/ko/');
+    assert.equal(anchor.explicitLocaleFallback, true, `anchor must carry explicit locale classification: ${label}`);
+  }
 });
 
 test('known page families retain explicit generator ownership candidates', () => {
