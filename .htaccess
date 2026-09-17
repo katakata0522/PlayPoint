@@ -86,8 +86,14 @@ Options -Indexes
   <FilesMatch "\.(js|mjs)$">
     Header set Cache-Control "public, max-age=300, must-revalidate"
   </FilesMatch>
-  # 内容ハッシュ付きのCSS/JSだけを長期保存する。上の短期設定はv付き資産では上書きされる。
-  Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{QUERY_STRING} =~ m#(^|&)v=[a-zA-Z0-9_-]+(&|$)#"
+  # 同じFilesMatch階層で後から上書きする。HTML/JSONなどには版条件を適用しない。
+  <FilesMatch "\.(css|js|mjs)$">
+    Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{QUERY_STRING} =~ m#(^|&)v=[a-zA-Z0-9_-]+(&|$)#"
+  </FilesMatch>
+  # SW本体は版付きURLでも短期再検証を維持し、更新確認を長期キャッシュに閉じ込めない。
+  <Files "sw.js">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </Files>
   # 記事一覧は版付きURLでも短時間で再検証し、新着記事が古いJSONに固定されるのを防ぐ。
   <Files "articles.json">
     Header set Cache-Control "public, max-age=300, must-revalidate"

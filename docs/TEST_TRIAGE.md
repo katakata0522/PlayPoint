@@ -101,6 +101,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | 日記保存の成功/失敗/サイレント保存 | `tests/diary-save-behavior.test.cjs` | Analytics event allowlist |
 | URL優先の地域表示・地域切替 | `tests/region-navigation-behavior.test.cjs` | `runtime-module-guards` の責務集約guard + Browser smoke |
 | Service Worker install/activate/fetch/cache fallback | `tests/service-worker-behavior.test.cjs` | asset packaging / deploy smoke |
+| CSS/JSの版別HTTP cache・HTML/SW/JSON/revisionの再検証 | `tests/helpers/apache-cache-contract.cjs`（PR Gateの実Apache/TLS） | `tests/http-cache-contract.test.cjs` は応答判定・失敗伝播、`security-health-check.cjs` は本番HTTPと前後SHA |
 | ブログ一覧の検索・ページング・カテゴリ・リセット・ARIA | `.github/scripts/browser-smoke.cjs` | Node側のブログUI ownershipメタガードは不要 |
 | 本番revision取得・IPv4・retry | `tests/deploy-revision-readiness.test.cjs` | 実HTTPとtransport呼出の挙動。helper名・ソース断片の重複固定はしない |
 | Browser entrypointで本番SHA不足を拒否 | `tests/blog-runtime-regressions.test.cjs` | 実entrypointを隔離VMで実行し失敗reportを検証 |
@@ -259,9 +260,9 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 - 横断監査ファイルは単純移動・分割しない。名前が似ていても違う仕様のケースを落とす危険がある。各ファイルの全assertを一律に書き換えたという意味ではない。
 - preflight/PR Gate/production/rollbackの実行回数・権限・ハード性能budgetは維持する。検査専用変更だけで不必要な本番再配信を増やすdeploy判定変更も採用しない。
 
-## 現行の全テストファイル台帳（2026-09-17）
+## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の171ファイルを全件分類（第2回テスト個別監査の追加3ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -276,7 +277,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
 | 公開・CI | 10 |
-| 性能・配信 | 4 |
+| 性能・配信 | 5 |
 | アクセシビリティ | 5 |
 | 横断監査 | 8 |
 
@@ -349,6 +350,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | `growth-foundation-regression.test.cjs` | 横断監査 | 記事一覧JSONは版付き静的資産より短い再検証ルールを優先する |
 | `high-priority-audit.test.cjs` | 横断監査 | PWA起動は保存済み地域を復元する専用ランチャーを経由する |
 | `home-status-intent-routing.test.cjs` | UI・導線 | 日本語トップはランク別必要額LPへ静的導線を持つ |
+| `http-cache-contract.test.cjs` | 性能・配信 | HTTP応答の版別cache・重複ヘッダー・本文/状態・通信失敗・前後revisionを検証する |
 | `human-sitemap-task-hub.test.cjs` | SEO・公開整合 | human sitemap is a task hub instead of a full URL warehouse |
 | `info-return-navigation.test.cjs` | UI・導線 | 案内ページの戻り先は同一オリジンのパスだけから言語を引き継ぐ |
 | `interactive-input-surfaces.test.cjs` | アクセシビリティ | 日本語ゲーム計算機は課金予定額を自分で打てる |
@@ -485,3 +487,28 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | 閲覧時Cache API障害・背景処理の寿命・異なる版の分離 | `service-worker-behavior.test.cjs` | 既存6を精査、新規6で見逃しを補完。installの必須先読みは緩和しない |
 
 helpersは公開ソースを実行する検査用部品であり、新しい製品ランタイムではない。実ブラウザの登録・制御・オフライン確認は既存browser-smokeへ残す。多タブ更新と実quota不足、S08のApache実HTTPは未完了として保持する。
+
+
+## 個別監査・修正の第4回（2026-09-18）
+
+S08で残っていたApache実HTTPを検証した。S08は既に個別精査80に含まれるため重複加算せず、基準930中80精査・850未精査を維持する。第3回末尾のS08未完了は当時の状態であり、本節で実HTTPへの移行を記録する。
+
+### 再現した実不具合と最小修正
+
+- 従来の設定では、版付きJavaScriptがFilesMatchの短期指定に上書きされていた。一方、版クエリ付きHTML/一般JSONは一年間immutableになり、deploy-status/revisionには短期禁止と長期保存の矛盾したCache-Controlが二重に付いていた。従来の宣言文字列検査はこれを見逃していた。
+- immutableをCSS/JS/MJSのFilesMatchだけに限定し、同じ設定階層の順序で適用する。sw.jsは版クエリがあっても短期再検証へ戻す。UI・HTML・CSS・計算式・保存形式・広告・Consent・公開範囲には変更しない。
+- 既にブラウザが長期保存した個別URLを即時消去できることは保証しない。ユーザーデータの消去や強制キャッシュ初期化は行わない。
+
+### 検査所有と実行経路
+
+| 層 | 主担当 | 保証 |
+|---|---|---|
+| 純粋な応答判定と失敗伝播 | `tests/http-cache-contract.test.cjs` | 12ケース。指示順等の同義変更を許容し、誤った長期保存・重複/矛盾・不正max-age・誤HTTP status・別本文・前後SHA切替・通信失敗を拒否 |
+| 候補設定の実行 | `tests/helpers/apache-cache-contract.cjs` | 候補.htaccessを無変更で隔離Apache/TLSへ適用。99応答（実パス・階層・版/非版/空/不正版・404・転送）を検証。fixture専用CAでTLS検証し、終了時にプロセス/一時領域を片付ける |
+| 公開環境 | `.github/scripts/security-health-check.cjs` → `http-cache-contract.cjs` | 66応答と検査前後のexact revision。既存production-security工程の失敗としてverified化を止める。旧snapshot復旧は従来どおりsnapshot自身の検証コードを使う |
+
+Apache統合検査は既存PR Gate内で一回実行する。Windowsの通常Node単体検査にApacheを必須化しない。新しいworkflow/job・権限・外部サービス・依存パッケージ・性能閾値を増やさない。既存のCI証跡保管先へJSONを保存する。
+
+旧S08の宣言検査とmarkup fixture内のcache宣言ケース（2ケース）は上記へ置換。markupの存在・順序・偽タグ拒否は残す。第2回表のmarkup cache担当は本節へ移管した。現行ケース数の計算上は943−2＋12＝953、圧縮後は18−1＝17となるが、実際の全件合否・件数は当該PR Gate成果物を正本とし、件数を固定するテストは追加しない。
+
+ローカルの実Apache検証では、旧設定を含む故障7種類を拒否し、同義表記変更2種類を受理した。通常Node・Apacheの両方でOS依存を区別する。これはHTTPキャッシュの検証であり、Service Workerの多タブ更新・実quota不足のブラウザ検証は引き続き未完了。残る850ケースの必要性を承認したという意味ではない。
