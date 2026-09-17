@@ -7,9 +7,10 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const historyScriptPath = path.join(root, '.github', 'scripts', 'snapshot-history.sh');
 const historyWorkflowPath = path.join(root, '.github', 'workflows', 'snapshot-history.yml');
+const deployWorkflowPath = path.join(root, '.github', 'workflows', 'deploy.yml');
 const rollbackWorkflowPath = path.join(root, '.github', 'workflows', 'rollback.yml');
 const historyScript = fs.readFileSync(historyScriptPath, 'utf8');
-const historyWorkflow = fs.readFileSync(historyWorkflowPath, 'utf8');
+const deployWorkflow = fs.readFileSync(deployWorkflowPath, 'utf8');
 const rollbackWorkflow = fs.readFileSync(rollbackWorkflowPath, 'utf8');
 
 test('verified履歴は公開領域外へSHA単位で最大5世代だけ保持する', () => {
@@ -41,17 +42,22 @@ test('verified履歴はsymlink・別所有領域・metadata不一致をfail-clos
   assert.match(historyScript, /--exclude '\/kanji-slicer\/\*\*\*'/);
 });
 
-test('履歴自動保存は成功したmain Deployだけを監視し本番排他ロックを共有する', () => {
-  assert.match(historyWorkflow, /^name: Archive verified snapshot history/m);
-  assert.match(historyWorkflow, /workflow_run:/);
-  assert.match(historyWorkflow, /Deploy to Xserver/);
-  assert.match(historyWorkflow, /github\.event\.workflow_run\.conclusion == 'success'/);
-  assert.match(historyWorkflow, /github\.event\.workflow_run\.head_branch == 'main'/);
-  assert.match(historyWorkflow, /github\.event\.workflow_run\.head_repository\.full_name == github\.repository/);
-  assert.match(historyWorkflow, /group: deploy-playpoint-main/);
-  assert.match(historyWorkflow, /ref: main/);
-  assert.match(historyWorkflow, /snapshot-history\.sh --archive-live/);
-  assert.match(historyWorkflow, /snapshot-history\.sh --list/);
+test('verified履歴は別runnerを起動せず成功した実DeployのSSHを再利用する', () => {
+  assert.equal(fs.existsSync(historyWorkflowPath), false, 'standalone snapshot-history workflow must be removed');
+  assert.match(deployWorkflow, /- name: Archive verified production history/);
+  assert.match(deployWorkflow, /id: archive_verified_production_history/);
+  assert.match(deployWorkflow, /if: steps\.deploy-impact\.outputs\.deploy_needed == 'true' && steps\.publish-verified\.outcome == 'success'/);
+  assert.match(deployWorkflow, /continue-on-error: true/);
+  assert.match(deployWorkflow, /snapshot-history\.sh --archive-live/);
+  assert.match(deployWorkflow, /snapshot-history\.sh --list/);
+
+  const setupSshIndex = deployWorkflow.indexOf('- name: Setup SSH');
+  const publishIndex = deployWorkflow.indexOf('- name: Publish verified deployment status');
+  const archiveIndex = deployWorkflow.indexOf('- name: Archive verified production history');
+  const removeSshIndex = deployWorkflow.indexOf('- name: Remove SSH material');
+  assert.ok(setupSshIndex >= 0 && setupSshIndex < publishIndex);
+  assert.ok(publishIndex < archiveIndex, 'history must only archive after verified publication');
+  assert.ok(archiveIndex < removeSshIndex, 'history must reuse the already prepared SSH session');
 });
 
 test('手動rollbackは履歴一覧・明示SHA検証・現本番保全・activateの順で復元する', () => {
