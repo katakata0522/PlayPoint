@@ -21,11 +21,13 @@ function attributes(tag) {
 }
 
 function inspectHtml(html) {
-  const markup = html.replace(/<!--[\s\S]*?-->/g, '').replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '');
   const ids = new Set();
   const hrefs = [];
-  for (const match of markup.matchAll(/<([a-z][\w:-]*)\b[^>]*>/gi)) {
-    const tag = match[1].toLowerCase();
+  // 除去後の断片を連結せず、元HTMLのtokenを一度ずつ読む。
+  const tokens = /<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1\s*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  for (const match of html.matchAll(tokens)) {
+    if (!match[2]) continue;
+    const tag = match[2].toLowerCase();
     const attrs = attributes(match[0]);
     if (attrs.id) ids.add(attrs.id);
     if (tag === 'a' && attrs.name) ids.add(attrs.name);

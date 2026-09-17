@@ -38,3 +38,10 @@ test('fragment検査は欠損・不正escapeを落とし、コメント内やscr
   assert.equal(report.checked, 3);
   assert.deepEqual(report.issues.map(item => item.reason), ['missing-fragment', 'invalid-fragment-encoding', 'missing-fragment']);
 });
+
+
+test('fragment解析はコメント除去による断片連結や引用内の大なり記号で偽IDを作らない', () => {
+  const report = checkFragments([{ publicPath: '/', html: '<a href="#injected">a</a><a href="#real">b</a><i<!--hidden--> id="injected"><p title="a > b" id="real"></p>' }]);
+  assert.equal(report.checked, 2);
+  assert.deepEqual(report.issues.map(item => item.fragment), ['injected']);
+});
