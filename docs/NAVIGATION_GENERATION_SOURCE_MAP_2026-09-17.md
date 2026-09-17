@@ -4,13 +4,13 @@
 
 **この台帳PRではリンクそのものを修正しません。** 仕様として必要な地域・言語横断と、誤遷移の可能性がある横断を先に分離し、次PR以降で生成済みHTMLではなく実際の生成元を直せる状態にすることが目的です。
 
-基準は PR #337 の head `1c8bdc3da469b380f0ae363a9885a5e6d921c42f`、PR Gate run `35207739254` の成功evidenceです。complete preflight と必須Chromiumはともに成功しています。
+基準は PR #337 で生成された成功CI evidenceです。complete preflight と必須Chromiumの両方を通過した監査結果を固定しています。
 
 ## 1. 監査範囲
 
 | 項目 | 確定値 |
 |---|---:|
-| リポジトリ内走査ファイル | 923 |
+| リポジトリ内走査ファイル | 924 |
 | 公開HTML | 398 |
 | 内部anchor遷移 | 13,387 |
 | canonical / hreflang metadata link | 2,202 |
