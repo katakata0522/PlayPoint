@@ -11,6 +11,7 @@ const {
   candidateGenerators,
   extractAnchors,
   fileToPublicPath,
+  findCallColumn,
   hasExplicitTargetMarker,
   localeOf,
   resolveInternalHref,
@@ -107,6 +108,17 @@ test('known page families retain explicit generator ownership candidates', () =>
   const region = candidateGenerators('/hk/');
   assert.equal(region.group, 'expanded-region-top');
   assert.ok(region.sources.includes('scripts/region-page-sync.cjs'));
+});
+
+test('pipeline call scanner uses identifier boundaries without constructing regular expressions from names', () => {
+  assert.equal(findCallColumn('syncArticleDiscovery({ rootDir });', 'syncArticleDiscovery'), 0);
+  assert.equal(findCallColumn('  syncArticleDiscovery ({ rootDir });', 'syncArticleDiscovery'), 2);
+  assert.equal(findCallColumn('prefixsyncArticleDiscovery({ rootDir });', 'syncArticleDiscovery'), -1);
+  assert.equal(findCallColumn('syncArticleDiscoveryExtra({ rootDir });', 'syncArticleDiscovery'), -1);
+  assert.equal(findCallColumn('tool$({ rootDir });', 'tool$'), 0);
+
+  const source = fs.readFileSync(path.join(root, 'scripts/navigation-source-map.cjs'), 'utf8');
+  assert.doesNotMatch(source, /new\s+RegExp\s*\(/, 'pipeline inventory must not rebuild dynamic RegExp patterns from imported names');
 });
 
 test('build pipeline inventory captures assigned calls, late imports, repeat finalizers and side-effect generation', () => {
