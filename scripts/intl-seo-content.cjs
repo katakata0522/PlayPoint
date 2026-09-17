@@ -106,7 +106,7 @@ const PAGE_TYPES = {
       h1: 'How much does it take to reach Google Play Points Diamond?',
       lead: 'Diamond is the top status many Play Points users search for, but the useful question is not only the total spend. You need to check how many points are still missing, whether a promotion applies, and whether your country uses the same earning conditions.',
       cta: 'Calculate Diamond progress',
-      secondary: 'Read Diamond value notes',
+      secondary: 'Read Diamond value notes (Japan, Japanese)',
       secondaryHref: '/articles/2025-12-25-diamond-worth-it.html',
       summary: ['Preset: Platinum to Diamond', 'Best for: users close to the top tier', 'Check: remaining points and promotion rules'],
       sections: [

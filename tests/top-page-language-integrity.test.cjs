@@ -8,6 +8,7 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 const { createLocales } = require('../scripts/locale-config.cjs');
+const { hasExplicitTargetMarker } = require('../scripts/navigation-source-map.cjs');
 const { buildLocalizedHtml } = require('../scripts/language-page-builder.cjs');
 
 const localeCases = {
@@ -83,12 +84,12 @@ test('3言語トップはJavaScript実行前からウィジェット名が翻訳
   for (const [langDir, localeCase] of Object.entries(localeCases)) {
     const generated = buildLocalizedHtml(source, langDir, locales[langDir]);
     const tracked = read(`${langDir}/index.html`);
-    const expectedPattern = new RegExp(
-      `<a[^>]+data-lang-key="linkWidget"[^>]*>${escapeRegex(localeCase.expectedWidget)}<\\/a>`
-    );
-
-    assert.match(generated, expectedPattern, `${langDir}: generated widget fallback is not localized`);
-    assert.match(tracked, expectedPattern, `${langDir}: tracked widget fallback is not localized`);
+    for (const [kind, html] of [['generated', generated], ['tracked', tracked]]) {
+      const links = [...html.matchAll(/<a\b[^>]*data-lang-key="linkWidget"[^>]*>([^<]+)<\/a>/g)];
+      assert.equal(links.length, 1, `${langDir}: ${kind} keeps one widget entry`);
+      assert.ok(links[0][1].startsWith(localeCase.expectedWidget), `${langDir}: ${kind} widget name is localized`);
+      assert.ok(hasExplicitTargetMarker(links[0][1], 'ja'), `${langDir}: ${kind} identifies the Japanese guide`);
+    }
     assert.doesNotMatch(tracked, /data-lang-key="linkWidget">無料ウィジェット<\/a>/);
   }
 });

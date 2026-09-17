@@ -201,3 +201,20 @@ test('絶対パス・外部URL・既存の相対リンクを文言更新で混�
     assert.equal(link.href, expected, `${pathname}: ${href}`);
   }
 });
+
+test('日本語の埋め込み案内へのリンクは6地域で静的・実行後のURLと表示が一致する', () => {
+  const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
+  const { hasExplicitTargetMarker } = require('../scripts/navigation-source-map.cjs');
+  const configs = loadConfigs(true);
+  for (const [region, pathname] of [['JP', '/'], ['US', '/en/'], ['KR', '/ko/'], ['TW', '/tw/'], ['HK', '/hk/'], ['IN', '/in/']]) {
+    const link = { tagName: 'A', dataset: { langKey: 'linkWidget' }, textContent: '', href: '' };
+    loadUi({ configs, region, pathname, elements: [link] }).UI.updateUIText();
+    const html = fs.readFileSync(path.join(root, pathname.slice(1), 'index.html'), 'utf8');
+    const staticLink = html.match(/<a\b[^>]*href="([^"]+)"[^>]*data-lang-key="linkWidget"[^>]*>([^<]+)<\/a>/);
+    assert.ok(staticLink, `${region}: widget link must remain present`);
+    assert.equal(new URL(link.href, 'https://playpoint-sim.com' + pathname).pathname, '/embed.html');
+    assert.equal(new URL(staticLink[1], 'https://playpoint-sim.com' + pathname).pathname, '/embed.html');
+    assert.equal(staticLink[2], link.textContent, `${region}: no runtime loss of language notice`);
+    if (region !== 'JP') assert.ok(hasExplicitTargetMarker(link.textContent, 'ja'), region);
+  }
+});
