@@ -39,6 +39,7 @@ const phaseConfig = {
   'JavaScript構文検証': { id: 'syntax', deterministic: true },
   '生成物の再現性検証': { id: 'build-output', deterministic: true },
   '第2章ナビゲーション遷移・生成元棚卸し': { id: 'navigation-provenance', deterministic: true },
+  '第2章ナビゲーション基準差分検証': { id: 'navigation-provenance-baseline', dependsOn: ['navigation-provenance'], deterministic: true },
   '公開アセット圧縮': { id: 'minify', dependsOn: ['syntax', 'public-files', 'build-output'] },
   '圧縮後JavaScript構文検証': { id: 'post-minify-syntax', dependsOn: ['minify'], deterministic: true },
   '圧縮後の配信境界回帰テスト': { id: 'post-minify-tests', dependsOn: ['minify', 'post-minify-syntax'] }
@@ -147,6 +148,7 @@ try {
   runPhase('SEO/セキュリティ契約監査', process.execPath, ['.github/scripts/security-seo-contract.cjs']);
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('第2章ナビゲーション遷移・生成元棚卸し', process.execPath, ['scripts/navigation-provenance-baseline.cjs']);
+  runPhase('第2章ナビゲーション基準差分検証', process.execPath, ['scripts/navigation-provenance-baseline-check.cjs']);
   runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
