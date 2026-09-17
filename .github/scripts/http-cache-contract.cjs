@@ -10,7 +10,7 @@ const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
 function cacheCases({ fixture = false } = {}) {
   const targets = [
     ['/js/main.js', 'script'], ['/style.css', 'style'], ['/', 'html'], ['/en/', 'html'],
-    ['/sw.js', 'worker'], ['/blog/articles.json', 'articles'], ['/deploy-status.json', 'revision'], ['/deploy-revision.txt', 'revision'],
+    ['/sw.js', 'worker'], ['/blog/articles.json', 'articles'], ['/status/deploy-status.json', 'revision'], ['/status/deploy-revision.txt', 'revision'],
     ['/manifest.json', 'manifest'], ['/feed.xml', 'feed'], ['/atom.xml', 'feed']
   ];
   if (fixture) targets.push(
@@ -104,8 +104,8 @@ async function verifyHttpCache({ baseUrl, fixture = false, request = fetchSnapsh
     startedAt: new Date().toISOString(), fixtureRuntime, observations: [], passed: false };
   const obtain = url => retry(() => request(url), { attempts, delayMs: 500 });
   const observeRevision = async () => {
-    const result = await obtain(urlFor('/deploy-revision.txt'));
-    assertCacheResponse({ path: '/deploy-revision.txt', status: 200, policy: 'revision' }, result);
+    const result = await obtain(urlFor('/status/deploy-revision.txt'));
+    assertCacheResponse({ path: '/status/deploy-revision.txt', status: 200, policy: 'revision' }, result);
     const observed = result.body.trim();
     assert.equal(observed, expectedRevision, 'Production revision changed or differs from the expected revision');
     return observed;

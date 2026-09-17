@@ -24,7 +24,7 @@ function fakeRequest({ fixture = true, mutate } = {}) {
     const item = cases.find(entry => entry.path === lookup.pathname + lookup.search);
     assert.ok(item, 'unexpected fixture URL: ' + lookup);
     const body = fixture ? `fixture:${lookup.pathname.endsWith('/') ? lookup.pathname + 'index.html' : lookup.pathname}\n` :
-      lookup.pathname === '/deploy-revision.txt' ? revision + '\n' : 'public content';
+      lookup.pathname === '/status/deploy-revision.txt' ? revision + '\n' : 'public content';
     const result = response(expectedHeaders[item.policy], item.status, body);
     if (mutate) mutate(result, item, lookup);
     return result;
@@ -114,7 +114,7 @@ test('本番検査は前後の同じrevisionを確認し、途中の切替を失
   const outputFile = path.join(directory, 'failure.json');
   let revisionReads = 0;
   const request = fakeRequest({ fixture: false, mutate(result, item, url) {
-    if (url.pathname === '/deploy-revision.txt' && !url.searchParams.has('v') && !url.searchParams.has('preview')) {
+    if (url.pathname === '/status/deploy-revision.txt' && !url.searchParams.has('v') && !url.searchParams.has('preview')) {
       revisionReads++;
       if (revisionReads > 2) result.body = 'b'.repeat(40);
     }
