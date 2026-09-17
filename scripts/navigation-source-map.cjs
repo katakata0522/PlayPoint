@@ -273,6 +273,27 @@ function requireLocalNames(lhs) {
   }).filter(Boolean);
 }
 
+function isIdentifierChar(char) {
+  return typeof char === 'string' && /[A-Za-z0-9_$]/.test(char);
+}
+
+function findCallColumn(line, fn) {
+  let from = 0;
+  while (from < line.length) {
+    const index = line.indexOf(fn, from);
+    if (index < 0) return -1;
+    const before = index > 0 ? line[index - 1] : '';
+    const after = line[index + fn.length] || '';
+    if (!isIdentifierChar(before) && !isIdentifierChar(after)) {
+      let cursor = index + fn.length;
+      while (cursor < line.length && /\s/.test(line[cursor])) cursor += 1;
+      if (line[cursor] === '(') return index;
+    }
+    from = index + fn.length;
+  }
+  return -1;
+}
+
 function buildPipeline(rootDir) {
   const buildFile = path.join(rootDir, 'scripts', 'build-html.js');
   if (!fs.existsSync(buildFile)) return [];
@@ -288,14 +309,11 @@ function buildPipeline(rootDir) {
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
     const line = lines[lineIndex];
     const trimmed = line.trimStart();
-    if (trimmed.startsWith('//')) continue;
+    if (trimmed.startsWith('//') || /^(?:async\s+)?function\b/.test(trimmed)) continue;
     const found = [];
     for (const [fn, source] of requires) {
-      if (new RegExp(`^(?:async\\s+)?function\\s+${fn.replace(/[$]/g, '\\$&')}\\b`).test(trimmed)) continue;
-      const match = new RegExp(`\\b${fn.replace(/[$]/g, '\\$&')}\\s*\\(`).exec(line);
-      if (match && !/\brequire\s*\(/.test(line.slice(0, match.index + match[0].length))) {
-        found.push({ column: match.index, function: fn, source });
-      }
+      const column = findCallColumn(line, fn);
+      if (column >= 0) found.push({ column, function: fn, source });
     }
     const sideEffect = /require\(['"]\.\/generate-game-simulators\.cjs['"]\)/.exec(line);
     if (sideEffect) found.push({ column: sideEffect.index, function: '[side-effect require]', source: 'scripts/generate-game-simulators.cjs' });
@@ -514,6 +532,7 @@ module.exports = {
   classifyEdge,
   extractAnchors,
   fileToPublicPath,
+  findCallColumn,
   hasExplicitTargetMarker,
   localeOf,
   markdown,
