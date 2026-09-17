@@ -13,8 +13,10 @@ PlayPoint stores a small amount of state in the browser. A UI refactor, schema c
 | `playpointLastMainCalculationV1` | `js/first-view.js` | localStorage | Version 1, per-region last successful main-calculation input | No | Never | Malformed/unknown data is preserved before a valid V1 replacement |
 | `playpointLastMainCalculationRecoveryV1` | `js/language-suggestion.js` | localStorage | Recovery envelope containing the previous malformed or future-version value | Manual recovery only | Never | A different existing recovery copy is never overwritten |
 | `playpointPreferredRegion` | `js/region-navigation.js` | localStorage | Region code string | No | No raw value | Invalid/unavailable storage falls back to path/browser locale |
-| `playpoint_reading_library_v1` | `js/reading-library.js` | localStorage | Saved articles (100), recent articles (20), history flag | No | Never | Phase 1 follow-up: add the same explicit schema/fail-closed contract |
-| `katakata_blog_settings` | `blog/script.js` | localStorage | Theme and sort preferences | No | Only finite theme-change classification | Phase 1 follow-up: prevent malformed settings from being cleaned and overwritten |
+| `playpoint_reading_library_v1` | `js/reading-library.js` | localStorage | Saved articles (100), recent articles (20), history flag | No | Never | Malformed/future data is not interpreted as current data; invalid current-like data is normalized only after the original raw value can be recovered |
+| `playpointReadingLibraryRecoveryV1` | `js/reading-library.js` | localStorage | Recovery envelope containing the previous malformed, invalid-schema, or future-version reading-library value | Manual recovery only | Never | A different existing recovery copy is never overwritten |
+| `katakata_blog_settings` | `blog/script.js` + `js/reading-library.js` safety guard | localStorage | Theme and sort preferences; unknown legacy fields are retained | No | Only finite theme-change classification | Malformed/invalid/future settings read as defaults and are preserved before the first valid replacement |
+| `katakataBlogSettingsRecoveryV1` | `js/reading-library.js` | localStorage | Recovery envelope containing the previous malformed, invalid-schema, or future-version blog-settings value | Manual recovery only | Never | A different existing recovery copy is never overwritten |
 | `playpointCalculatorEntryContext` | `js/analytics-core.js` | sessionStorage | Consent-gated finite attribution values, maximum 30 minutes | No | Allowed finite values only | Invalid/expired data is removed; no form value is stored |
 | `playpointLangBannerClosed` | `js/first-view.js` | sessionStorage | Boolean-like dismissal marker for the current tab | No | No | Failure only re-shows the recommendation |
 | `playpoint:widget-referral-tracked` | `js/widget-referral.js` | sessionStorage | Per-tab deduplication marker | No | Event classification only | Failure may duplicate the event but does not affect user data |
@@ -35,12 +37,14 @@ PlayPoint stores a small amount of state in the browser. A UI refactor, schema c
 
 ## Current implementation boundary
 
-The first Stage 1 patch protects the two calculator-owned stores that can be automatically rewritten during normal calculation or diary use:
+Stage 1 now protects all four PlayPoint-owned persistent JSON stores that normal UI actions can rewrite:
 
 - `hokuhokuDiaryData`
 - `playpointLastMainCalculationV1`
+- `playpoint_reading_library_v1`
+- `katakata_blog_settings`
 
-The reading library and blog settings remain inventoried follow-up items. Their implementation should be changed in a separate minimal PR so a large article-runtime diff is not mixed into diary and calculator safety.
+The two calculator-owned stores are guarded by `js/language-suggestion.js`. The reading library and blog preferences are guarded by `js/reading-library.js`, which is already loaded by the article discovery runtime. No storage migration is performed at page load: an invalid raw value is retained until a user action attempts a valid replacement, and that replacement is committed only after the exact previous raw value has been placed in its recovery envelope.
 
 ## Test obligations
 
