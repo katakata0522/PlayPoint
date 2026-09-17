@@ -30,10 +30,10 @@ function updateLocalizedLink(element, value, isSubDir) {
     if (!value.href) return;
 
     const rawHref = value.href;
-    const isExternal = rawHref.startsWith('http') || rawHref.startsWith('//');
+    const isAbsolute = rawHref.startsWith('http') || rawHref.startsWith('/');
     const isLocalizedFile = rawHref.startsWith('articles/');
     const prefix = (isSubDir && !isLocalizedFile) ? '../' : './';
-    element.href = isExternal ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
+    element.href = isAbsolute ? rawHref : (prefix + rawHref.replace(/^\.\//, ''));
 }
 
 function setElementVisibility(element, isVisible) {

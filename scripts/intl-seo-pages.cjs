@@ -141,7 +141,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
   const related = [
     [page.jaPath, locale.referenceLabel],
     ...locale.articles,
-    ['/author/katakata.html', locale.policyLabel]
+    [`/${localeKey}/author/katakata.html`, locale.policyLabel]
   ];
   const schemas = [
     {
@@ -152,7 +152,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
       url: canonical,
       inLanguage: locale.lang,
       dateModified: contentModifiedAt,
-      author: { '@type': 'Person', name: locale.author, url: 'https://playpoint-sim.com/author/katakata.html' },
+      author: { '@type': 'Person', name: locale.author, url: `https://playpoint-sim.com/${localeKey}/author/katakata.html` },
       isPartOf: { '@type': 'WebSite', name: locale.siteName, url: `https://playpoint-sim.com/${localeKey}/` }
     },
     {
@@ -254,7 +254,7 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
             <span class="footer-separator">|</span>
             <a href="/${localeKey}/articles/">${escapeHtml(locale.blog)}</a>
             <span class="footer-separator">|</span>
-            <a href="/author/katakata.html">${escapeHtml(locale.policyLabel)}</a>
+            <a href="/${localeKey}/author/katakata.html">${escapeHtml(locale.policyLabel)}</a>
             <span class="footer-separator">|</span>
             <a href="/privacy.html">${escapeHtml(locale.privacyLabel)}</a>
             <span class="footer-separator">|</span>
@@ -307,12 +307,12 @@ function renderArticle(article, assetVersions) {
   const authorName = article.author || 'Katakata';
   const siteName = article.siteName || 'Google Play Points Calculator';
   const ctaHref = article.ctaHref || '/en/';
-  const nextLinks = article.nextLinks || [
+  const nextLinks = (article.nextLinks || [
     ['/en/status/diamond/', 'Diamond cost calculator'],
     ['/en/campaign/2x/', '2x promotion calculator'],
     ['/en/amount/10000/', '$50 US reverse estimate'],
-    ['/author/katakata.html', 'Editorial policy']
-  ];
+    [`/${localeKey}/author/katakata.html`, 'Editorial policy']
+  ]).map(([href, label]) => [href === '/author/katakata.html' ? `/${localeKey}/author/katakata.html` : href, label]);
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -323,7 +323,7 @@ function renderArticle(article, assetVersions) {
     datePublished: publishedAt,
     dateModified: modifiedAt,
     image: 'https://playpoint-sim.com/ogp.png',
-    author: { '@type': 'Person', name: authorName, url: 'https://playpoint-sim.com/author/katakata.html' },
+    author: { '@type': 'Person', name: authorName, url: `https://playpoint-sim.com/${localeKey}/author/katakata.html` },
     publisher: { '@type': 'Organization', name: siteName, url: 'https://playpoint-sim.com/', logo: { '@type': 'ImageObject', url: 'https://playpoint-sim.com/favicon.svg' } }
   };
   const faqSchema = article.faqStructuredData !== false && Array.isArray(article.faq) && article.faq.length ? {
@@ -416,7 +416,7 @@ ${jsonLd(faqSchema)}
 
     <aside class="author-box" aria-label="${escapeHtml(labels.authorAria)}">
         <p class="author-box-label">${escapeHtml(labels.authorLabel)}</p>
-        <p class="author-box-name"><a href="/author/katakata.html" rel="author">${escapeHtml(authorName)}</a> - ${escapeHtml(labels.authorNameSuffix)}</p>
+        <p class="author-box-name"><a href="/${localeKey}/author/katakata.html" rel="author">${escapeHtml(authorName)}</a> - ${escapeHtml(labels.authorNameSuffix)}</p>
         <p>${escapeHtml(labels.authorBody)}</p>
     </aside>
 

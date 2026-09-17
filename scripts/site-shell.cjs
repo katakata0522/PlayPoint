@@ -18,7 +18,7 @@ const LP_FOOTER_PROFILES = Object.freeze({
       Object.freeze({ href: '/en/', label: 'Home Calculator' }),
       Object.freeze({ href: '/en/games/', label: 'Game Calculators' }),
       Object.freeze({ href: '/en/articles/', label: 'Guides' }),
-      Object.freeze({ href: '/author/katakata.html', label: 'About / Verification' }),
+      Object.freeze({ href: '/en/author/katakata.html', label: 'About / Verification' }),
       Object.freeze({ href: '/privacy.html', label: 'Privacy Policy (Japanese)' }),
       Object.freeze({ href: '/terms.html', label: 'Terms of Service (Japanese)' })
     ]),
@@ -30,7 +30,7 @@ const LP_FOOTER_PROFILES = Object.freeze({
       Object.freeze({ href: '/ko/', label: '종합 계산기' }),
       Object.freeze({ href: '/ko/games/', label: '게임별 계산기' }),
       Object.freeze({ href: '/ko/articles/', label: '가이드' }),
-      Object.freeze({ href: '/author/katakata.html', label: '운영자 / 검증방침' }),
+      Object.freeze({ href: '/ko/author/katakata.html', label: '운영자 / 검증방침' }),
       Object.freeze({ href: '/privacy.html', label: '개인정보처리방침 (일본어)' }),
       Object.freeze({ href: '/terms.html', label: '이용약관 (일본어)' })
     ]),
@@ -42,7 +42,7 @@ const LP_FOOTER_PROFILES = Object.freeze({
       Object.freeze({ href: '/tw/', label: '綜合計算機' }),
       Object.freeze({ href: '/tw/games/', label: '遊戲專屬計算' }),
       Object.freeze({ href: '/tw/articles/', label: '攻略指南' }),
-      Object.freeze({ href: '/author/katakata.html', label: '營運團隊 / 驗證方針' }),
+      Object.freeze({ href: '/tw/author/katakata.html', label: '營運團隊 / 驗證方針' }),
       Object.freeze({ href: '/privacy.html', label: '隱私權政策 (日文)' }),
       Object.freeze({ href: '/terms.html', label: '服務條款 (日文)' })
     ]),

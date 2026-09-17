@@ -8,19 +8,19 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 
-function loadUi({ lang = 'ja', reducedMotion = false } = {}) {
+function loadUi({ lang = 'ja', reducedMotion = false, configs = {}, region = 'JP', pathname = '/', elements = [] } = {}) {
   const listeners = new Map();
   const rafCallbacks = [];
   const document = {
     documentElement: { lang },
     addEventListener(type, handler) { listeners.set(type, handler); },
     getElementById() { return null; },
-    querySelectorAll() { return []; }
+    querySelectorAll(selector) { return selector === '[data-lang-key]' ? elements : []; }
   };
   const window = {
     __TEST_ENV__: true,
     PP_APP: {},
-    location: { pathname: '/' },
+    location: { pathname },
     matchMedia() { return { matches: reducedMotion }; },
     requestAnimationFrame(callback) {
       rafCallbacks.push(callback);
@@ -30,8 +30,8 @@ function loadUi({ lang = 'ja', reducedMotion = false } = {}) {
   const context = {
     document,
     window,
-    CONFIGS: {},
-    STATE: { currentRegion: 'JP', dom: {} },
+    CONFIGS: configs,
+    STATE: { currentRegion: region, dom: {} },
     CONSTANTS: {
       CLASS_HIDDEN: 'hidden',
       CLASS_HAS_RESULT: 'has-result',
@@ -154,5 +154,50 @@ test('global error toast follows the static document language at runtime', () =>
 
     assert.equal(handled, true, `${lang}: global error should be handled`);
     assert.deepEqual(calls, [[message, 'error']], `${lang}: localized error toast`);
+  }
+});
+
+
+test('著者導線は実ランタイムの文言更新後も各言語版を保ち、静的HTMLと一致する', () => {
+  const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
+  const configs = loadConfigs(true);
+  const cases = [
+    ['JP', '/', '/author/katakata.html'],
+    ['US', '/en/', '/en/author/katakata.html'],
+    ['KR', '/ko/', '/ko/author/katakata.html'],
+    ['TW', '/tw/', '/tw/author/katakata.html'],
+    ['HK', '/hk/', '/tw/author/katakata.html'],
+    ['IN', '/in/', '/en/author/katakata.html']
+  ];
+  for (const [region, pathname, target] of cases) {
+    const link = { tagName: 'A', dataset: { langKey: 'linkAuthor' }, textContent: '', href: '' };
+    const { UI } = loadUi({ configs, region, pathname, elements: [link] });
+    UI.updateUIText();
+    assert.equal(new URL(link.href, 'https://playpoint-sim.com' + pathname).pathname, target, region);
+    const html = fs.readFileSync(path.join(root, pathname.slice(1), 'index.html'), 'utf8');
+    const staticLink = html.match(/<a\b[^>]*href="([^"]+)"[^>]*data-lang-key="linkAuthor"[^>]*>([^<]+)<\/a>/);
+    assert.ok(staticLink, `${region}: static author link must remain present`);
+    assert.equal(new URL(staticLink[1], 'https://playpoint-sim.com' + pathname).pathname, target, region);
+    assert.equal(staticLink[2], link.textContent, `${region}: static/runtime author label`);
+    if (region === 'HK') assert.match(link.textContent, /繁體中文/);
+    if (region === 'IN') assert.match(link.textContent, /English/);
+    if (['US', 'KR', 'TW'].includes(region)) assert.doesNotMatch(link.textContent, /Japanese|일본어|日文/);
+  }
+});
+
+test('絶対パス・外部URL・既存の相対リンクを文言更新で混同しない', () => {
+  for (const [pathname, href, expected] of [
+    ['/en/', '/en/author/katakata.html?from=footer#policy', '/en/author/katakata.html?from=footer#policy'],
+    ['/', '/ko/author/katakata.html', '/ko/author/katakata.html'],
+    ['/tw/', 'https://example.com/author/', 'https://example.com/author/'],
+    ['/ko/', '//example.com/guide', '//example.com/guide'],
+    ['/en/', 'privacy.html', '../privacy.html'],
+    ['/en/', 'articles/example.html', './articles/example.html'],
+    ['/', 'author/katakata.html', './author/katakata.html']
+  ]) {
+    const link = { tagName: 'A', dataset: { langKey: 'linkAuthor' } };
+    const configs = { JP: { lang: 'ja', uiText: { linkAuthor: { text: 'Author', href } }, tooltips: {} } };
+    loadUi({ configs, pathname, elements: [link] }).UI.updateUIText();
+    assert.equal(link.href, expected, `${pathname}: ${href}`);
   }
 });

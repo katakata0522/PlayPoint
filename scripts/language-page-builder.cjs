@@ -136,6 +136,9 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   // 海外版では翻訳済み記事一覧へ遷移させ、日本語ブログへ迷い込ませない。
   output = output.replace('href="../blog/" data-lang-key="linkArticles"', 'href="./articles/" data-lang-key="linkArticles"');
 
+  // 著者紹介は既存の同言語版へ。日本語版の相対パスを引き継がない。
+  output = output.replaceAll('href="../author/katakata.html"', `href="/${langDir}/author/katakata.html"`);
+
   // 6. JSON-LD の置換
   // SoftwareApplication
   output = output.replace(/"name": "(?:Playポイント計算機|Google Play Points 計算機)"/g, `"name": "${config.appName}"`);

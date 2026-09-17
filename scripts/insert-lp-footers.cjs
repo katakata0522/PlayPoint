@@ -36,6 +36,27 @@ function normalizeLpFooter(content, locKey) {
   return withoutLegacy;
 }
 
+// 旧フッターの一度限りの移行とは分け、手書き海外LPを共通プロフィールへ継続同期する。
+function syncIntlManualLpFooters(rootDir) {
+  const summary = { checked: 0, changed: 0 };
+  for (const locale of ['en', 'ko', 'tw']) {
+    for (const slug of ['maintenance/diamond', 'maintenance/platinum', 'points-cost']) {
+      const file = path.join(rootDir, locale, slug, 'index.html');
+      if (!fs.existsSync(file)) continue;
+      const before = fs.readFileSync(file, 'utf8');
+      const footerPattern = /<footer class="page-footer">[\s\S]*?<\/footer>/g;
+      const matches = [...before.matchAll(footerPattern)];
+      if (matches.length !== 1) throw new Error(`Expected one managed footer: ${locale}/${slug}`);
+      const after = before.replace(footerPattern, () => renderPageFooter(getLpFooterProfile(locale)).trimStart());
+      summary.checked += 1;
+      if (after === before) continue;
+      fs.writeFileSync(file, after, 'utf8');
+      summary.changed += 1;
+    }
+  }
+  return summary;
+}
+
 function processDirectory(dir) {
   const list = fs.readdirSync(dir);
   list.forEach(file => {
@@ -71,5 +92,6 @@ module.exports = {
   getLocale,
   normalizeLpFooter,
   processDirectory,
-  stripLegacyFamilyFooters
+  stripLegacyFamilyFooters,
+  syncIntlManualLpFooters
 };

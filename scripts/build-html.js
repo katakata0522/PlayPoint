@@ -33,6 +33,7 @@ const { syncRegionPages, syncRegionSitemap } = require('./region-page-sync.cjs')
 const { syncRegionHreflang } = require('./region-hreflang-sync.cjs');
 const { syncCalculatorHeaders } = require('./calculator-header-sync.cjs');
 const { applyLpMonetization } = require('./insert-lp-monetization.cjs');
+const { syncIntlManualLpFooters } = require('./insert-lp-footers.cjs');
 const { syncManualLpFaqFiles } = require('./lp-faq-sync.cjs');
 const { syncManualLpHreflangFiles } = require('./manual-lp-hreflang-sync.cjs');
 const { getSyncedHtmlFiles } = require('./build-targets.cjs');
@@ -127,6 +128,8 @@ console.log(`[build-html] synchronized fixed-page Site Shell headers: ${fixedPag
 const legalLanguageNavSummary = syncLegalPageLanguageNavs(rootDir);
 console.log(`[build-html] synchronized legal-page Site Shell language navs: ${legalLanguageNavSummary.changed}/${legalLanguageNavSummary.checked} updated`);
 applyLpMonetization(rootDir);
+const intlLpFooterSummary = syncIntlManualLpFooters(rootDir);
+console.log(`[build-html] synchronized international manual LP footers: ${intlLpFooterSummary.changed}/${intlLpFooterSummary.checked} updated`);
 const lpFaqSummary = syncManualLpFaqFiles(rootDir, { checkOnly: false });
 console.log(`[build-html] synchronized manual LP FAQ schema: ${lpFaqSummary.changed} updated`);
 const lpHreflangSummary = syncManualLpHreflangFiles(rootDir, { checkOnly: false });

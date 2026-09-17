@@ -569,7 +569,7 @@ function synchronizeArticle(html, localeKey, relativePath, relatedArticles = nul
   const localAuthorHref = '/' + localeKey + '/author/katakata.html';
   const localAuthorUrl = 'https://playpoint-sim.com' + localAuthorHref;
   const localizedHtml = styledHtml
-    .replace(/href=(["'])(?:\.\.\/|\/)?author\/katakata\.html\1/gi, 'href=$1' + localAuthorHref + '$1')
+    .replace(/href=(["'])(?:(?:\.\.\/){1,2}|\/)?author\/katakata\.html\1/gi, 'href=$1' + localAuthorHref + '$1')
     .replace(/https:\/\/playpoint-sim\.com\/author\/katakata\.html/g, localAuthorUrl);
   const withoutChrome = localizedHtml.replace(markerPattern(CHROME_START, CHROME_END), newline);
   const unwrapped = unwrapGeneratedLayout(withoutChrome, relativePath);

@@ -18,9 +18,9 @@ const root = path.resolve(__dirname, '..');
 
 const expectedPrimaryLinks = Object.freeze({
   ja: ['/', '/games/', '/blog/', '/author/katakata.html', '/privacy.html', '/terms.html'],
-  en: ['/en/', '/en/games/', '/en/articles/', '/author/katakata.html', '/privacy.html', '/terms.html'],
-  ko: ['/ko/', '/ko/games/', '/ko/articles/', '/author/katakata.html', '/privacy.html', '/terms.html'],
-  tw: ['/tw/', '/tw/games/', '/tw/articles/', '/author/katakata.html', '/privacy.html', '/terms.html']
+  en: ['/en/', '/en/games/', '/en/articles/', '/en/author/katakata.html', '/privacy.html', '/terms.html'],
+  ko: ['/ko/', '/ko/games/', '/ko/articles/', '/ko/author/katakata.html', '/privacy.html', '/terms.html'],
+  tw: ['/tw/', '/tw/games/', '/tw/articles/', '/tw/author/katakata.html', '/privacy.html', '/terms.html']
 });
 
 const canonicalFooterPages = Object.freeze([
