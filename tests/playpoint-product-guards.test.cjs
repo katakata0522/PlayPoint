@@ -43,26 +43,7 @@ test('記事・ブログはGA4 eventを直接送らず共通計測境界を利�
   assert.match(blog, /PlayPointAnalytics/, 'ブログ一覧が共通計測境界を利用していません');
 });
 
-test('デプロイ同期は公開不要な運用ファイルをルート限定で除外する', () => {
-  const workflow = read('.github/workflows/deploy.yml');
-  const deployScript = read('.github/scripts/deploy-rsync.sh');
-
-  assert.ok(workflow.includes('bash .github/scripts/deploy-rsync.sh'), '専用デプロイスクリプトを実行していません');
-  for (const pattern of [
-    "--exclude '/docs/***'",
-    "--exclude '/scripts/***'",
-    "--exclude '/みんな用URL.txt'",
-    "--exclude '/CNAME'"
-  ]) {
-    assert.ok(deployScript.includes(pattern), `rsync除外が不足しています: ${pattern}`);
-  }
-  for (const unsafePattern of [
-    "--exclude 'docs*'",
-    "--exclude 'scripts*'"
-  ]) {
-    assert.ok(!deployScript.includes(unsafePattern), `全階層へ広がる除外が残っています: ${unsafePattern}`);
-  }
-});
+// P04: deploy-cleanupの実rsync fixtureへ統合（root除外・同名サブ階層保持・別管理領域保護）。
 
 test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ行う', () => {
   const minifierSource = read('.github/scripts/minify.cjs');
@@ -88,16 +69,7 @@ test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ�
   }
 });
 
-test('デプロイ前検証はasset version同期後JSの構文を確認する', () => {
-  const workflow = read('.github/workflows/deploy.yml');
-  const preflight = read('.github/scripts/preflight.cjs');
-  const minifyIndex = preflight.indexOf("runPhase('公開アセット圧縮'");
-
-  assert.ok(fs.existsSync(path.join(root, '.github/scripts/verify-js-syntax.cjs')), 'JS構文検証スクリプトがありません');
-  assert.ok(workflow.includes('node .github/scripts/preflight.cjs --prepare-deploy'), 'デプロイ前の一括検証を実行していません');
-  assert.ok(minifyIndex >= 0, '一括検証にミニファイ処理がありません');
-  assert.ok(preflight.slice(minifyIndex).includes("runPhase('圧縮後JavaScript構文検証'"), 'ミニファイ後のJS構文検証がありません');
-});
+// P06/P13: preflight-execution-contractが実行順序・対象集合・構文エラー伝播を主担当として検証する。
 
 test('CIデプロイはコミット済み成果物だけを公開する', () => {
   const workflow = read('.github/workflows/deploy.yml');
@@ -115,14 +87,7 @@ test('CIデプロイはコミット済み成果物だけを公開する', () => 
   assert.ok(verifier.includes("'git', ['diff', '--exit-code', '--', ...generatedFiles]"), '生成物の未コミット差分を対象ファイル単位で検出していません');
 });
 
-test('デプロイ前JS構文検証はGitHub Actions用スクリプトも対象にする', () => {
-  const verifier = read('.github/scripts/verify-js-syntax.cjs');
-
-  assert.ok(!verifier.includes("'.github'"), '.github/scripts配下の検証スクリプトが構文チェック対象外です');
-  assert.ok(verifier.includes("'.github/workflows'"), 'workflow定義はJS構文チェックから除外してください');
-  assert.ok(verifier.includes("'.github/scripts/verify-js-syntax.cjs'"), '構文検証スクリプト自身を明示的に検証していません');
-  assert.ok(verifier.includes("'.github/scripts/smoke-test.cjs'"), '本番スモークスクリプトをrsync前に構文検証していません');
-});
+// P08: syntax-verifier-executionで実CLIに運用JSの構文エラーと必須ファイル欠損を与える。
 
 test('多言語トップはJS実行前の主要文言も翻訳済みにする', () => {
   const en = read('en/index.html');
@@ -160,22 +125,7 @@ test('デプロイ検証の変更でもワークフローを実行する', () =>
   assert.ok(!workflow.includes("- '.github/**'"), '.github配下の検証変更がデプロイワークフローから除外されています');
 });
 
-test('デプロイ前検証は圧縮前に全回帰し、圧縮後は配信境界だけ再実行する', () => {
-  const preflight = read('.github/scripts/preflight.cjs');
-  const minifyIndex = preflight.indexOf("runPhase('公開アセット圧縮'");
-  assert.ok(minifyIndex >= 0, 'ミニファイ処理がありません');
-  assert.ok(preflight.includes("runPhase('全回帰テスト'"), 'ミニファイ前の全回帰テストがありません');
-  assert.ok(preflight.includes('postMinifyTestFiles'), '圧縮後重点テスト一覧がありません');
-  assert.ok(
-    preflight.slice(minifyIndex).includes("runPhase('圧縮後の配信境界回帰テスト'"),
-    '圧縮後の配信境界回帰テストがありません'
-  );
-  assert.ok(
-    !preflight.slice(minifyIndex).includes("runPhase('圧縮後の全回帰テスト'"),
-    '圧縮後に全量再実行が残っています'
-  );
-  assert.ok(preflight.includes(".filter(file => file.endsWith('.test.cjs'))"), 'テストファイルが動的に収集されていません');
-});
+// P06/P13: preflight-execution-contractが実行順序・対象集合・構文エラー伝播を主担当として検証する。
 
 test('本番スモークテストの期待文字列は配信元ファイルに存在する', () => {
   const smokeTest = read('.github/scripts/smoke-test.cjs');
@@ -269,11 +219,7 @@ test('ブログ初期表示は最終件数と同じ6枚のスケルトンをHTML
   assert.match(script, /i < CONFIG\.itemsPerPage/);
 });
 
-test('計算詳細は項目名と値を2列で揃え、値の内部は分断しない', () => {
-  const css = read('style.css');
-  assert.match(css, /\.result-detail-grid\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto;/s);
-  assert.doesNotMatch(css, /\.result-detail-grid\s+(?:span|strong)\s*\{/);
-});
+// P21: CSS記法ではなく必須browser-smokeの計算詳細実表示（項目・値・改行・はみ出し）で検証する。
 
 test('計算結果リンクのhover規則を閉じ、後続のツールチップ非表示を巻き込まない', () => {
   const css = read('style.css');

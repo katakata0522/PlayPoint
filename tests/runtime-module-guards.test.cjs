@@ -5,7 +5,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
-const { createAppModuleRevision } = require('../scripts/asset-sync.cjs');
+const { createAppModuleRevision, createFileRevision, ROOT_SERVICE_WORKER_ASSETS } = require('../scripts/asset-sync.cjs');
+const { cssTargets } = require('../.github/scripts/minify.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -33,7 +34,7 @@ test('分離した実行時モジュールはキャッシュ改訂・Service Wor
   for (const file of runtimeModules) {
     const importPath = `./${path.basename(file)}`;
     assert.ok(main.includes(importPath), `main.js import missing: ${importPath}`);
-    assert.ok(assetSync.includes(`'${file}'`), `asset-sync missing: ${file}`);
+    assert.ok(assetSync.includes(`'${file}'`) || assetSync.includes(`"${file}"`), `asset-sync missing: ${file}`);
     assert.ok(
       serviceWorker.includes(`'./${file}'`) || serviceWorker.includes(`"./${file}"`),
       `sw missing: ${file}`
@@ -42,18 +43,19 @@ test('分離した実行時モジュールはキャッシュ改訂・Service Wor
 });
 
 test('共通計測とブログ共通CSSは版管理され、CSSだけ圧縮対象に含まれる', () => {
-  const minify = read('.github/scripts/minify.cjs');
+
   const assetSync = read('scripts/asset-sync.cjs');
   const serviceWorker = read('sw.js');
   const components = read('blog/components.js');
 
   for (const file of sharedRuntimeAssets) {
-    assert.ok(assetSync.includes(`'${file}'`), `asset-sync missing: ${file}`);
+    assert.ok(assetSync.includes(`'${file}'`) || assetSync.includes(`"${file}"`), `asset-sync missing: ${file}`);
   }
-  assert.ok(minify.includes("'blog/common-components.css'"), 'blog common CSS should stay in the CSS compression targets');
-  assert.match(serviceWorker, /'\.\/js\/analytics-core\.js\?v=[a-f0-9]{10}'/);
-  assert.ok(assetSync.includes("versionKey: 'analyticsCoreVersion'"));
-  assert.match(read('js/config.js'), /import '\.\/analytics-core\.js\?v=[a-f0-9]{10}'/);
+  assert.ok(cssTargets.includes('blog/common-components.css'), 'ブログ共通CSSが圧縮対象から欠落');
+  const revision = createFileRevision(root, 'js/analytics-core.js');
+  assert.ok(serviceWorker.includes(`./js/analytics-core.js?v=${revision}`), 'precacheの版が実資産と異なる');
+  assert.ok(ROOT_SERVICE_WORKER_ASSETS.some(asset => asset.assetPath === './js/analytics-core.js'), '共通計測資産が版管理対象にない');
+  assert.match(read('js/config.js'), new RegExp(`import\\s*[\"']\\./analytics-core\\.js\\?v=${revision}[\"']`));
   assert.ok(components.includes('blog/common-components.css'));
 });
 
@@ -78,6 +80,8 @@ test('アプリモジュールのキャッシュ世代は改行コードが違�
   }
 
   assert.equal(createAppModuleRevision(lfRoot), createAppModuleRevision(crlfRoot));
+  fs.appendFileSync(path.join(crlfRoot, 'js/config.js'), '\nconst changed = true;\n');
+  assert.notEqual(createAppModuleRevision(lfRoot), createAppModuleRevision(crlfRoot), '内容変更を固定hashで見逃さない');
 });
 
 test('公開HTMLは外部Google Fontsへ接続しない', () => {
@@ -97,13 +101,7 @@ test('公開HTMLは外部Google Fontsへ接続しない', () => {
   }
 });
 
-test('埋め込みウィジェットは外部依存なしで計算できる', () => {
-  const embed = read('embed.html');
-  const widget = read('embed/playpoint-widget.js');
-  assert.match(embed, /playpoint-widget\.js/);
-  assert.ok(widget.length > 500, 'widget script too thin');
-  assert.doesNotMatch(widget, /from ['"]\.\.\/js\//);
-});
+// R05: コード長の代用検査は廃止。必須embed-widget-smokeで独立読込と4言語の実計算を検証する。
 
 test('埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える', () => {
   const embed = read('embed.html');

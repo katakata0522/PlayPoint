@@ -261,7 +261,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 
 ## 現行の全テストファイル台帳（2026-09-17）
 
-`tests/*.test.cjs` の168ファイルを全件分類。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の171ファイルを全件分類（第2回テスト個別監査の追加3ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -275,10 +275,10 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
-| 公開・CI | 8 |
+| 公開・CI | 10 |
 | 性能・配信 | 4 |
 | アクセシビリティ | 5 |
-| 横断監査 | 7 |
+| 横断監査 | 8 |
 
 | ファイル（tests/） | 主責務 | 代表保証 |
 |---|---|---|
@@ -450,3 +450,26 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | `ui-runtime-behavior.test.cjs` | UI・導線 | calculator tab keyboard navigation moves focus/click by WAI-ARIA order and skips disabled tabs |
 | `weekly-reward-ui.test.cjs` | UI・導線 | ウィークリーリワードUIは既存の日記保存契約を変更せず表示層だけを担当する |
 | `workflow-step-ids.test.cjs` | 公開・CI | duplicate id mapping keys fail even when an if key separates them |
+
+## 個別監査・修正の第2回（2026-09-17）
+
+ファイル分類とケース個別承認を分ける。基準930ケースの個別精査は74、未精査856。全件の必要性を承認した状態ではない。対応リストは `TEST_AUDIT_PROGRESS_2026-09-17.md` と同名JSONへ集約する。
+
+| 保証 | 現行の主担当 | 移行元／境界 |
+|---|---|---|
+| preflightの実対象・実行順序・欠損/エラー伝播 | `tests/preflight-execution-contract.test.cjs` | P06/P13。CI05はcheck-only起動、全件数は固定しない |
+| 運用JSを含む構文検査の実CLI | `tests/syntax-verifier-execution.test.cjs` | P08。欠損・壊れたJSで失敗 |
+| 実転送引数の除外・保護と有限retry | `tests/deploy-cleanup.test.cjs` | P04/D02をD01へ統合。remote snapshotの実行保証とは別 |
+| 結果値の読みやすさ・主要CTAの実表示 | `.github/scripts/browser-smoke.cjs` | P21を実画面へ。静的DOM順序はS04/S05にも残す |
+| 独立ウィジェットの通常/逆算・境界4言語 | `.github/scripts/embed-widget-smoke.cjs` | R05。コード長の疑似保証は廃止 |
+| 静的順序と有効Cache-Control宣言の故障fixture | `tests/markup-contract-fixtures.test.cjs` | S04/S05/S08の補助。Apache HTTP全体の模倣ではない |
+
+追加された台帳行：
+
+| ファイル（tests/） | 主責務 | 代表保証 |
+|---|---|---|
+| `preflight-execution-contract.test.cjs` | 公開・CI | 必須検査の欠損・空集合を拒否し、実行順序と失敗伝播を確認する |
+| `syntax-verifier-execution.test.cjs` | 公開・CI | 実CLIで運用JSの構文エラー・必須ファイル欠損を検出する |
+| `markup-contract-fixtures.test.cjs` | 横断監査 | 説明欠損・偽タグ・コメントだけの設定・条件反転を拒否する |
+
+ローカル全体検証は934ケース、圧縮後は2ファイル15ケース（同じ934の一部）。前段の168/930/16は第3章時点の履歴であり恒久閾値ではない。

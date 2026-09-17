@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { runPreflight } = require('./helpers/preflight-fixture.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
@@ -72,37 +73,22 @@ test('AI同期プリフライト本体は非公開toolsに置き、公開ミラ�
   assert.match(deployScript, /--exclude '\/tools\/\*\*\*'/);
 });
 
-test('preflightは本番同期前に鮮度・記事正規化・全送信URL Headを検証する', () => {
-  const preflight = read('.github/scripts/preflight.cjs');
-  const freshCommand = "['scripts/latest-hub-audit.cjs', '--fresh']";
-  const navigationCheck = "['scripts/article-content-navigation-normalize.cjs', '--check']";
-  const seoCheck = "['scripts/article-seo-normalize.cjs', '--check']";
-  const headAudit = "['scripts/seo-head-audit.cjs']";
-
-  assert.ok(preflight.includes(freshCommand), 'latest hub freshness check is missing');
-  assert.ok(preflight.includes(navigationCheck), 'article navigation check-only phase is missing');
-  assert.ok(preflight.includes(seoCheck), 'article SEO check-only phase is missing');
-  assert.ok(preflight.includes(headAudit), 'submitted URL head audit is missing');
-  assert.ok(
-    !preflight.includes("['scripts/article-content-navigation-normalize.cjs']"),
-    'preflight must not rewrite article navigation'
-  );
-  assert.ok(
-    !preflight.includes("['scripts/article-seo-normalize.cjs']"),
-    'preflight must not rewrite article SEO'
-  );
-
-  const freshIndex = preflight.indexOf(freshCommand);
-  const navigationIndex = preflight.indexOf(navigationCheck);
-  const seoIndex = preflight.indexOf(seoCheck);
-  const headAuditIndex = preflight.indexOf(headAudit);
-  const minifyIndex = preflight.indexOf("['.github/scripts/minify.cjs']");
-
-  assert.ok(minifyIndex >= 0, 'minify phase is missing');
-  assert.ok(freshIndex < minifyIndex, 'latest hub freshness must be checked before deploy preparation');
-  assert.ok(navigationIndex < minifyIndex, 'article navigation must be checked before deploy preparation');
-  assert.ok(seoIndex < minifyIndex, 'article SEO must be checked before deploy preparation');
-  assert.ok(headAuditIndex < minifyIndex, 'submitted URL head audit must run before deploy preparation');
+test('preflightは本番同期前に鮮度・記事正規化・全送信URL Headを検証する', t => {
+  const result = runPreflight(t);
+  assert.equal(result.exitCode, 0);
+  const commands = result.calls.map(call => call.args);
+  const minify = commands.findIndex(args => args[0] === '.github/scripts/minify.cjs');
+  assert.ok(minify >= 0);
+  for (const expected of [
+    ['scripts/latest-hub-audit.cjs', '--fresh'],
+    ['scripts/article-content-navigation-normalize.cjs', '--check'],
+    ['scripts/article-seo-normalize.cjs', '--check'],
+    ['scripts/seo-head-audit.cjs']
+  ]) {
+    const index = commands.findIndex(args => args[0] === expected[0]);
+    assert.ok(index >= 0 && index < minify, expected[0]);
+    assert.deepEqual(commands[index], expected, '書換えではなく指定の検査モードを実行する');
+  }
 });
 
 test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準備失敗では本番を触らない', () => {
@@ -178,6 +164,7 @@ test('本番Chromium失敗はverified前かつproduction mutation後なので自
   const publishIndex = workflow.indexOf('- name: Publish verified deployment status');
   const rollbackIndex = workflow.indexOf('- name: Auto-rollback failed production mutation');
 
+  assert.ok([mirrorIndex, browserIndex, publishIndex, rollbackIndex].every(index => index >= 0), '復旧対象の実行工程が欠落している');
   assert.ok(mirrorIndex < browserIndex && browserIndex < publishIndex && publishIndex < rollbackIndex);
   assert.match(getStepBlock(workflow, 'Verify production in Chromium before verified status'), /id: production-browser/);
 
