@@ -65,6 +65,13 @@ function restoreMutableFiles() {
   }
 }
 
+// 同じテスト実行を端末と保存済み証跡へ出力する。再実行や判定の書換えは行わない。
+// 出力先は公開tree外の既存CI証跡ディレクトリ。失敗時も既存always()保管で取得できる。
+function testArgs(files, reportName) {
+  return ['--test', '--test-reporter=tap', '--test-reporter-destination=stdout',
+    '--test-reporter=tap', '--test-reporter-destination=' + path.join(evidenceDir(), reportName), ...files];
+}
+
 function runPhase(name, command, args) {
   console.log('\n=== ' + name + ' ===');
   const phase = phases.run({ name, id: args[0], ...phaseConfig[name] }, () => spawnSync(command, args, {
@@ -163,11 +170,11 @@ try {
     path.join(evidenceDir(), 'navigation-source-map')
   ]);
   runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
-  runPhase('全回帰テスト', process.execPath, ['--test', ...testFiles]);
+  runPhase('全回帰テスト', process.execPath, testArgs(testFiles, 'regression.tap'));
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);
   runPhase('圧縮後JavaScript構文検証', process.execPath, ['.github/scripts/verify-js-syntax.cjs']);
-  runPhase('圧縮後の配信境界回帰テスト', process.execPath, ['--test', ...postMinifyTestFiles]);
+  runPhase('圧縮後の配信境界回帰テスト', process.execPath, testArgs(postMinifyTestFiles, 'post-minify-tests.tap'));
 } finally {
   try {
     if (!prepareDeploy) restoreMutableFiles();
