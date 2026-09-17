@@ -33,7 +33,9 @@ jobs:
           first=pathlib.Path('.github/ch3-payload-0.bin').read_bytes()
           encoded=base64.b64encode(pathlib.Path('.github/ch3-payload-1.bin').read_bytes()).decode()
           encoded=encoded.replace('HpidGr13Kh1Kh1X1','HpidGr13Kh1X1').replace('LaVmJsGJsjb6','LaVmJsjb6')
-          raw=first+base64.b64decode(encoded)
+          encoded=encoded.rstrip('=')
+          encoded+='='*((-len(encoded))%4)
+          raw=first+base64.b64decode(encoded,validate=True)
           assert hashlib.sha256(raw).hexdigest()=='00888e0c8a694d285a224bad08c2a5a9b28b6693525edb720cc4ec48886a97b7','Source payload integrity mismatch'
           payload=json.loads(lzma.decompress(raw))
           patch=pathlib.Path(os.environ['RUNNER_TEMP'])/'chapter3.patch'
