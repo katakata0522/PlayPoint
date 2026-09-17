@@ -20,7 +20,6 @@ on:
       - '.github/workflows/seo-healthcheck.yml'
       - '.github/workflows/rollback.yml'
       - '.github/workflows/deploy-recovery-watchdog.yml'
-      - '.github/workflows/snapshot-history.yml'
 
 permissions:
   contents: read
@@ -258,6 +257,17 @@ jobs:
 
           bash .github/scripts/deploy-rsync.sh --publish-status
           node .github/scripts/verify-deploy-status.cjs
+
+      # verified履歴は別runnerを起動せず、このDeployで準備済みのSSHを再利用する。
+      # 履歴保管は補助機能なので、失敗しても正常にverified化された本番をrollbackしない。
+      - name: Archive verified production history
+        id: archive_verified_production_history
+        if: steps.deploy-impact.outputs.deploy_needed == 'true' && steps.publish-verified.outcome == 'success'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          bash .github/scripts/snapshot-history.sh --archive-live
+          bash .github/scripts/snapshot-history.sh --list
 
       # ここからは失敗したreleaseを成功扱いにしない復旧レーン。
       # GitHub側の証跡保管など非criticalな失敗では戻さず、本番mutation/検証/verified公開の失敗だけを対象にする。
