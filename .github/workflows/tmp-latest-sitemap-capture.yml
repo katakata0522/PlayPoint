@@ -1,0 +1,40 @@
+name: Temporary latest sitemap capture
+
+on:
+  push:
+    branches:
+      - chore/latest-hub-verify-20260918
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tmp-latest-sitemap-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up pinned CI Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Generate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Upload generated sitemap only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: generated-latest-sitemap-${{ github.run_id }}
+          path: sitemap.xml
+          if-no-files-found: error
+          retention-days: 1
