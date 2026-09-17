@@ -1,6 +1,9 @@
 (function (root) {
   'use strict';
   const KEY = 'playpoint_reading_library_v1';
+  const RECOVERY_KEY = 'playpointReadingLibraryRecoveryV1';
+  const BLOG_KEY = 'katakata_blog_settings';
+  const BLOG_RECOVERY_KEY = 'katakataBlogSettingsRecoveryV1';
   function normalizeArticlePath(value) {
     if (typeof value !== 'string') return null;
     if (/^\/(?:en\/|ko\/|tw\/)?articles\/[a-z0-9-]+\.html$/.test(value) && !value.endsWith('/index.html')) return value;
@@ -13,6 +16,77 @@
     return (Array.isArray(items) ? items : []).map(item => item && ({ ...item, path: normalizeArticlePath(item.path) }))
       .filter(item => item && safePath(item.path) && typeof item.title === 'string' && !seen.has(item.path) && seen.add(item.path))
       .slice(0, limit).map(item => ({ path: item.path, title: item.title.slice(0, 240) }));
+  }
+  const plainObject = value => !!value && typeof value === 'object' && !Array.isArray(value);
+  function validateReadingStore(value) {
+    if (!plainObject(value) || !Object.keys(value).every(key => ['saved', 'recent', 'historyEnabled'].includes(key))) return false;
+    if ('historyEnabled' in value && typeof value.historyEnabled !== 'boolean') return false;
+    for (const [key, limit] of [['saved', 100], ['recent', 20]]) {
+      if (!(key in value)) continue;
+      if (!Array.isArray(value[key]) || value[key].length > limit) return false;
+      const seen = new Set();
+      for (const item of value[key]) {
+        if (!plainObject(item) || !Object.keys(item).every(name => name === 'path' || name === 'title') || typeof item.title !== 'string' || item.title.length > 240) return false;
+        const articlePath = normalizeArticlePath(item.path);
+        if (articlePath === null || articlePath !== item.path || seen.has(articlePath)) return false;
+        seen.add(articlePath);
+      }
+    }
+    return true;
+  }
+  function validateBlogSettings(value) {
+    return plainObject(value)
+      && (!('theme' in value) || value.theme === 'light' || value.theme === 'dark')
+      && (!('sortNewestFirst' in value) || typeof value.sortNewestFirst === 'boolean');
+  }
+  const SAFETY = {
+    [KEY]: [RECOVERY_KEY, validateReadingStore],
+    [BLOG_KEY]: [BLOG_RECOVERY_KEY, validateBlogSettings]
+  };
+  const SAFETY_MARK = Symbol.for('pp.articleStorageSafety.v1');
+  function storageValueKind(key, raw) {
+    if (raw === null) return 0;
+    let value;
+    try { value = JSON.parse(raw); } catch { return 'malformed-json'; }
+    if (Number.isInteger(value?.version) && value.version > 1) return 'future-version';
+    return SAFETY[key][1](value) ? 1 : 'invalid-schema';
+  }
+  function sameRecovery(text, key, raw) {
+    try { const value = JSON.parse(text); return value?.sourceKey === key && value?.raw === raw; } catch { return false; }
+  }
+  function installArticleStorageSafety(target = root, now = () => new Date().toISOString()) {
+    let storage, prototype;
+    try { storage = target?.localStorage; prototype = target?.Storage?.prototype; } catch { return false; }
+    if (!storage || !prototype) return false;
+    if (prototype[SAFETY_MARK]) return true;
+    const originalGet = prototype.getItem, originalSet = prototype.setItem;
+    if (typeof originalGet !== 'function' || typeof originalSet !== 'function') return false;
+    try {
+      prototype.getItem = function (key) {
+        key = String(key);
+        const raw = originalGet.call(this, key), owned = SAFETY[key];
+        if (this !== storage || !owned) return raw;
+        const kind = storageValueKind(key, raw);
+        if ((key === BLOG_KEY && kind !== 0 && kind !== 1) || kind === 'future-version') return null;
+        return raw;
+      };
+      prototype.setItem = function (key, value) {
+        key = String(key);
+        const owned = SAFETY[key];
+        if (this !== storage || !owned) return originalSet.call(this, key, value);
+        value = String(value);
+        if (storageValueKind(key, value) !== 1) throw new TypeError('refused to write invalid data');
+        const raw = originalGet.call(this, key), reason = storageValueKind(key, raw);
+        if (reason !== 0 && reason !== 1) {
+          const recoveryKey = owned[0], recovery = originalGet.call(this, recoveryKey);
+          if (recovery === null) originalSet.call(this, recoveryKey, JSON.stringify({ version: 1, sourceKey: key, reason, capturedAt: now(), raw }));
+          else if (!sameRecovery(recovery, key, raw)) throw new Error('different recovery copy already exists');
+        }
+        return originalSet.call(this, key, value);
+      };
+      prototype[SAFETY_MARK] = true;
+    } catch { return false; }
+    return true;
   }
   function makeStore(storage) {
     function read() {
@@ -38,9 +112,10 @@
     ko: ['나중에 읽기', '저장됨', '저장한 글·최근 읽은 글', '나중에 읽기', '최근 읽은 글', '목록에서 삭제', '목록 비우기', '아직 글이 없습니다.', '이 기기에만 저장됩니다. 저장한 글은 최대 100개, 최근 읽은 글은 20개까지이며 브라우저 데이터를 삭제하면 사라집니다.', '읽은 글 기록하기', '저장 공간을 사용할 수 없습니다. 브라우저 설정을 확인해 주세요.', '글을 저장했습니다.', '저장을 해제했습니다.'],
     tw: ['稍後閱讀', '已儲存', '已儲存文章與閱讀紀錄', '稍後閱讀', '最近閱讀', '從清單移除', '清空清單', '目前沒有文章。', '只儲存在此裝置：最多 100 篇收藏、20 篇閱讀紀錄。清除瀏覽器資料後，清單也會刪除。', '保留閱讀紀錄', '無法使用儲存空間，請檢查瀏覽器設定。', '已儲存文章。', '已取消儲存。']
   };
-  const api = { KEY, safePath, normalizeArticlePath, cleanItems, makeStore, COPY };
+  const api = { KEY, RECOVERY_KEY, BLOG_KEY, BLOG_RECOVERY_KEY, safePath, normalizeArticlePath, cleanItems, validateReadingStore, validateBlogSettings, installArticleStorageSafety, makeStore, COPY };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root?.document) return;
+  installArticleStorageSafety(root);
   root.PlayPointReading = api;
   function init() {
     const document = root.document, pathname = normalizeArticlePath(root.location.pathname) || root.location.pathname;
