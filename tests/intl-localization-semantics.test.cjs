@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { PAGE_TYPES } = require('../scripts/intl-seo-content.cjs');
+const { createLocales } = require('../scripts/locale-config.cjs');
 const {
   STATUS_PAGE_QUERIES
 } = require('../scripts/intl-localization-normalize.cjs');
@@ -18,6 +19,17 @@ function collectHtmlFiles(directory) {
     if (entry.isDirectory()) return collectHtmlFiles(absolutePath);
     return entry.isFile() && entry.name.endsWith('.html') ? [absolutePath] : [];
   });
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function assertRuntimeOverride(source, region, key, expected) {
+  const pattern = new RegExp(
+    "CONFIGS\\." + region + "\\.uiText\\." + key + "\\s*=\\s*'" + escapeRegExp(expected) + "'"
+  );
+  assert.match(source, pattern, region + '.' + key + ': runtime override must match locale-config SSOT');
 }
 
 // 同じ検索意図でも、現在等級と不足ポイントは各地域の公式進行条件に合わせて固定する。
@@ -66,21 +78,15 @@ test('韓国・台湾の生成SEO LPは補助ラベルまで現地語にする',
   }
 });
 
-test('韓国トップと台湾トップは自然な地域表現を静的HTMLと実行時の両方で維持する', () => {
-  const ko = read('ko/index.html');
-  assert.match(ko, /다음 등급까지 얼마가 필요할까\?/);
-  assert.doesNotMatch(ko, /등급 업까지 얼마 남았지/);
-  assert.match(ko, /js\/intl-copy-overrides\.js/);
-
-  const tw = read('tw/index.html');
-  assert.match(tw, /這筆消費有幾點？/);
-  assert.doesNotMatch(tw, /逆算模式/);
-  assert.match(tw, /js\/intl-copy-overrides\.js/);
-
+test('国際トップの実行時copy overrideは静的生成SSOTと一致する', () => {
+  const locales = createLocales();
   const runtime = read('js/intl-copy-overrides.js');
-  assert.match(runtime, /다음 등급까지 얼마가 필요할까\?/);
-  assert.match(runtime, /這筆消費有幾點？/);
-  assert.match(runtime, /🎁 Log weekly/);
+
+  assertRuntimeOverride(runtime, 'US', 'tabDiary', locales.en.staticText.tabDiary);
+  assertRuntimeOverride(runtime, 'US', 'sectionTitleDiary', locales.en.staticText.sectionTitleDiary);
+  assertRuntimeOverride(runtime, 'KR', 'title', locales.ko.title);
+  assertRuntimeOverride(runtime, 'TW', 'tabReverse', locales.tw.staticText.tabReverse);
+  assertRuntimeOverride(runtime, 'TW', 'sectionTitleReverse', locales.tw.staticText.sectionTitleReverse);
 });
 
 test('台湾公開HTMLでは問題解決カテゴリを「問題排解」に統一する', () => {

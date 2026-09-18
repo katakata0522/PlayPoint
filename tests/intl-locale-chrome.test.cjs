@@ -141,16 +141,12 @@ function usRuntimeLinkText(configSource, key) {
   return match[1];
 }
 
-test('記事・LPの計算機判定は共通analytics境界へ集約し6地域を扱う', () => {
-  const analytics = read('js/analytics-core.js');
+test('記事・LPの計算機判定は共通analytics境界を再実装しない', () => {
   const article = read('blog/article.js');
   const intent = read('js/intent-tracking.js');
 
-  for (const calculatorPath of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {
-    assert.ok(analytics.includes(`'${calculatorPath}'`), `analytics core missing: ${calculatorPath}`);
-  }
-  // Deliberately static: the contract is that both callers use the shared
-  // architecture boundary rather than reimplementing destination logic locally.
+  // The six-locale destination behavior belongs to analytics-core.test.cjs.
+  // Here we only protect the architecture boundary used by both callers.
   assert.match(article, /analytics\.isCalculatorDestination\(url\)/);
   assert.match(intent, /analytics\.isCalculatorDestination\(url\)/);
   assert.doesNotMatch(article, /function isCalculatorDestination/);

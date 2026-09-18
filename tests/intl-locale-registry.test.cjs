@@ -40,7 +40,6 @@ test('international content registries stay aligned with canonical locale identi
 });
 
 test('published international x-default links resolve to the canonical default locale', () => {
-  assert.equal(DEFAULT_INTERNATIONAL_LOCALE, expectedLocales[0]);
   assert.ok(expectedLocales.includes(DEFAULT_INTERNATIONAL_LOCALE));
 
   let checked = 0;

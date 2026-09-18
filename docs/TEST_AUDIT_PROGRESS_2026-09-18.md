@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中663精査・267未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第17回を末尾へ追記する。
+最新集計: **基準930ケース中706精査・224未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第18回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -490,3 +490,34 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. pre-init error用static html langをJP/US/KR/TW/HK/INの6地域へ補完。
 
 公開HTML/CSS/JS・デザイン・copy・地域挙動は変更していない。
+
+## 第18回: 国際locale・獲得率意味・翻訳境界43ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した9ファイル43ケースを、国際locale SSOT、公開EN/KO/TW成果物、TW/HK用語契約、analytics共通境界と突合して個別精査した。対象9ファイルは基準コミットとWave17完了時mainで同一内容。既精査663へ43を加え、**706精査・224未精査**とする。ケース数は増減せず、現行実行集合**959ケース**を維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| intl-amount-earn-rate | 3 | 全維持。未公開fallbackと公開Amountの獲得率意味を保証。未公開fallbackは成果物だけでは守れないためsource意味guardを残す |
+| intl-article-earn-rate-meaning | 4 | 全維持。全国際記事の旧multiplier入力説明・週平均復活を拒否 |
+| intl-locale-chrome | 10 | 全維持。6地域destination behaviorの重複をanalytics-core ownerへ委譲し、callerの共通境界利用だけを保持 |
+| intl-locale-registry | 2 | 全維持。default localeを配列先頭へ固定せず、canonical集合所属＋公開x-default一致へ変更 |
+| intl-localization-quality | 7 | 全維持。TW/HKのshare target対応をsource regexではなく実normalizeTarget behaviorへ変更 |
+| intl-localization-semantics | 6 | 全維持。KO/TW/EN runtime copyのhardcoded二重snapshotをlocale-config SSOT一致へ変更 |
+| intl-status-campaign-earn-rate | 4 | 全維持。status/campaignの最終特別獲得率意味と動的editorial dateを保証 |
+| meaning-consistency | 2 | 全維持。公開トップ・ゲーム比較表の獲得率意味を成果物で保証 |
+| localization-quality-audit | 5 | 全維持。地域ARIAの二重ownerをWave17へ委譲し、日本語限定destination marker・旧banner禁止を維持 |
+
+### 変更したテスト設計
+
+1. `DEFAULT_INTERNATIONAL_LOCALE === INTERNATIONAL_LOCALES[0]` という配列順依存を削除し、明示defaultがcanonical集合に属し、x-defaultがそのdefaultへ解決することを契約にする。
+2. calculator destinationの6地域behaviorは既精査 `analytics-core.test.cjs` に一本化し、`intl-locale-chrome` はarticle/intent callerが共通APIを再実装しない境界だけを守る。
+3. TW/HKのGold/Platinum共有URL正規化は `share.js` のregex文字列ではなく `normalizeTarget()` をVM実行して確認する。
+4. `intl-copy-overrides.js` のKO/TW/EN文言は別テストと同じhardcoded文字列を重ねず、`locale-config.cjs` の静的生成SSOTと一致することを確認する。
+5. 地域selectorのlocalized ARIAはWave17 ownerへ一本化し、`localization-quality-audit` は日本語ページへのdestination markerという別責務へ限定する。
+6. 翻訳そのものが利用者向け意味契約になっている用語、旧誤訳の禁止、特別獲得率とmultiplierの意味分離は緩めない。
+
+公開HTML/CSS/JS・翻訳文言・計算式・地域設定・生成物・保存形式は変更していない。tests/docsのみの変更である。

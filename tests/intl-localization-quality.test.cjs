@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const { ARTICLE_JA_ALTERNATES, INTL_LOCALES, SITE_ORIGIN, intlUrl } = require('../scripts/intl-article-hreflang-sync.cjs');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const terminologyContract = require('../scripts/tw-terminology-contract.cjs');
@@ -21,6 +22,17 @@ function walkHtml(dir) {
     else if (entry.name.endsWith('.html')) files.push(file);
   }
   return files;
+}
+
+function loadShareRuntime() {
+  const source = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
+  const context = {
+    URL,
+    URLSearchParams,
+    window: { location: { href: 'https://playpoint-sim.com/' } }
+  };
+  vm.runInNewContext(source + '\n;globalThis.__PLAYPOINT_SHARE__ = SHARE;', context);
+  return context.__PLAYPOINT_SHARE__;
 }
 
 test('Korean article hub keeps the missing/not-completing negation', () => {
@@ -59,8 +71,11 @@ test('Hong Kong keeps its own official tier names', () => {
   assert.ok(hk.includes('鉑金級'));
   assert.ok(!hk.includes('黃金級'));
   assert.ok(!hk.includes('白金級'));
-  const share = fs.readFileSync(path.join(root, 'js', 'share.js'), 'utf8');
-  assert.ok(share.includes('黃金|金級'), 'shared target normalization must support both Taiwan and Hong Kong Gold labels');
+  const share = loadShareRuntime();
+  assert.equal(share.normalizeTarget('黃金級'), 'gold');
+  assert.equal(share.normalizeTarget('金級'), 'gold');
+  assert.equal(share.normalizeTarget('白金級'), 'platinum');
+  assert.equal(share.normalizeTarget('鉑金級'), 'platinum');
 });
 
 test('Taiwan terminology contract covers the embeddable widget and fails instead of silently rewriting', () => {

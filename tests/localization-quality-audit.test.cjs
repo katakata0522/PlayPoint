@@ -8,25 +8,29 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const { createLocales } = require('../scripts/locale-config.cjs');
-const { getCalculatorHeaderProfile } = require('../scripts/site-shell.cjs');
 
-const TOP_PAGE_EXPECTATIONS = Object.freeze({
-  'index.html': { aria: 'Play の国または地域' },
-  'en/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' },
-  'ko/index.html': { aria: 'Play 국가 또는 지역', latest: '🆕 최신 정보 허브 (일본어)', lab: '🧪 KatakataLab (일본어)' },
-  'tw/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
-  'hk/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
-  'in/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' }
+const CALCULATOR_TOP_PAGES = Object.freeze([
+  'index.html',
+  'en/index.html',
+  'ko/index.html',
+  'tw/index.html',
+  'hk/index.html',
+  'in/index.html'
+]);
+
+const JAPANESE_ONLY_DESTINATION_MARKERS = Object.freeze({
+  'en/index.html': { latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' },
+  'ko/index.html': { latest: '🆕 최신 정보 허브 (일본어)', lab: '🧪 KatakataLab (일본어)' },
+  'tw/index.html': { latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
+  'hk/index.html': { latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
+  'in/index.html': { latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' }
 });
 
-test('calculator top pages keep localized region aria and Japanese-only destination markers', () => {
-  for (const [file, expected] of Object.entries(TOP_PAGE_EXPECTATIONS)) {
-    const profile = getCalculatorHeaderProfile(file);
+test('international calculator top pages mark Japanese-only destinations in their own language', () => {
+  for (const [file, expected] of Object.entries(JAPANESE_ONLY_DESTINATION_MARKERS)) {
     const html = read(file);
-    assert.equal(profile.regionAriaLabel, expected.aria, `${file}: canonical region aria label`);
-    assert.ok(html.includes(`class="region-switch" aria-label="${expected.aria}"`), `${file}: static region aria label`);
-    if (expected.latest) assert.ok(html.includes(`>${expected.latest}</a>`), `${file}: latest Japanese-only marker`);
-    if (expected.lab) assert.ok(html.includes(`>${expected.lab}</a>`), `${file}: KatakataLab Japanese-only marker`);
+    assert.ok(html.includes(`>${expected.latest}</a>`), `${file}: latest Japanese-only marker`);
+    assert.ok(html.includes(`>${expected.lab}</a>`), `${file}: KatakataLab Japanese-only marker`);
   }
 });
 
@@ -72,7 +76,7 @@ test('Japanese changelog names the Taiwan locale as Traditional Chinese', () => 
 });
 
 test('obsolete English language suggestion banner markup is not shipped on calculator top pages', () => {
-  for (const file of Object.keys(TOP_PAGE_EXPECTATIONS)) {
+  for (const file of CALCULATOR_TOP_PAGES) {
     const html = read(file);
     assert.ok(!html.includes('language-suggestion-banner'), `${file}: legacy language banner container remains`);
     assert.ok(!html.includes('English version is available!'), `${file}: legacy English banner copy remains`);
