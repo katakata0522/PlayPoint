@@ -118,16 +118,21 @@ test('通信障害だけ有限回再試行し、非通信エラーを即時に�
   assert.equal(fatal.status, 23);
   assert.equal(fatal.calls.filter(c => c.command === 'rsync').length, 1);
   assert.ok(!fatal.calls.some(c => ['sleep', 'ssh'].includes(c.command)), '失敗後に待機やremote cleanupを実行しない');
+  const deployMaxAttempts = Number(script.match(/^DEPLOY_MAX_ATTEMPTS=(\d+)$/m)?.[1] || 0);
+  const defaultMaxAttempts = Number(script.match(/^DEFAULT_MAX_ATTEMPTS=(\d+)$/m)?.[1] || 0);
+  assert.ok(defaultMaxAttempts >= 2 && defaultMaxAttempts <= 10, 'auxiliary retry budget must stay bounded');
+  assert.ok(deployMaxAttempts >= defaultMaxAttempts && deployMaxAttempts <= 10, 'main mirror may retry longer but must stay bounded');
+
   const exhausted = runDeployTransport(t, { exits: [255] });
   assert.equal(exhausted.status, 255);
-  assert.equal(exhausted.calls.filter(c => c.command === 'rsync').length, 7, '現行の再試行上限');
+  assert.equal(exhausted.calls.filter(c => c.command === 'rsync').length, deployMaxAttempts, 'main mirror follows the configured retry budget');
   const sleeps = exhausted.calls.filter(c => c.command === 'sleep');
-  assert.equal(sleeps.length, 6);
+  assert.equal(sleeps.length, deployMaxAttempts - 1);
   assert.ok(sleeps.every(c => Number(c.args[0]) >= 1 && Number(c.args[0]) <= 60), '待機時間を有限に保つ');
   for (const [mode, command] of [['--snapshot-verified', 'ssh'], ['--publish-status', 'rsync'], ['deploy', 'ssh']]) {
     const stopped = runDeployTransport(t, { mode, exits: command === 'rsync' ? [255] : [0], sshExits: command === 'ssh' ? [255] : [0] });
     assert.equal(stopped.status, 255, mode);
-    assert.equal(stopped.calls.filter(c => c.command === command).length, 5, `${mode}: 補助処理の上限`);
+    assert.equal(stopped.calls.filter(c => c.command === command).length, defaultMaxAttempts, `${mode}: 補助処理はSSOTの上限で停止する`);
   }
   // workflow→共有再試行処理の結線は別契約。内部メッセージの固定はしない。
   assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --publish-status/);
