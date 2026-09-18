@@ -443,7 +443,7 @@
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium"
   },
-  "expectedCurrentCasesAfterWave10": 956,
+  "expectedCurrentCasesAfterWave10": 957,
   "wave10": {
     "date": "2026-09-18",
     "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
@@ -491,6 +491,14 @@
       "prepare-pr/preflight labels: reachability and click-depth observation"
     ],
     "productionFilesChanged": false,
-    "authoritativeValidation": "PR Gate saved TAP / Chromium"
+    "authoritativeValidation": "PR Gate saved TAP / Chromium",
+    "concurrentMainChanges": [
+      {
+        "pr": 353,
+        "effect": "基準930外のgrowth-critical回帰1ケースを追加",
+        "auditProgressEffect": "none",
+        "currentCaseDelta": 1
+      }
+    ]
   }
 }
