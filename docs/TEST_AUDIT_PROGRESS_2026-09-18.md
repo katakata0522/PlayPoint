@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中892精査・38未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
+最新集計: **基準930ケース中909精査・21未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `cdf5e2999719edf8e96cafeeca3a205cd9364fae`（Deploy run 35217972469 の全回帰 930/930 を実行正本として再確認）。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -852,4 +852,31 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・テストコードは変更していない。
+
+## 第33回: 海外rank maintenance・比較・維持計算17ケース（2026-09-18）
+
+### 集計
+
+`intl-maintenance-calculators` 7、`intl-platinum-diamond` 5、`intl-rank-maintenance` 5の基準17 identityを、Google Play公式現行条件・公開成果物・manual generation ownerと照合した。
+
+**892精査から17件を加え、909精査・21未精査。** 重複1件をowner統合したため、現行実行集合は959→**958ケース**。
+
+### 判断
+
+- maintenance calculators 7: 全維持。
+- platinum/diamond 5: 4維持、manual上書き防止1件を `manual-intl-articles` behavior ownerへ統合。
+- rank maintenance 5: 全維持。
+
+### 公式条件
+
+US 3000/10000・1.4/1.6、KR 2400/15000・1.6/2、TW 4000/15000・1.75/2、JP 4000/15000・1.75/2の現行条件と一致。levelは到達後翌暦年末まで保持され、前年の獲得ポイントで翌年levelを再判定。返品/キャンセル分はlevel progressからも控除される。
+
+### 残り21ケース
+
+- ci-performance-sampling: 9
+- intl-regional-accuracy: 5
+- intl-rewards-quests: 5
+- 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
+
+公開コード・記事本文・地域数値・generatorは変更していない。
 
