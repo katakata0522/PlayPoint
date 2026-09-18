@@ -546,7 +546,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - runtime regression fixtureはJP Silver=1.25や `<dl>` 完全一致をmutation pointにせず、対象意味を保ったままcurrent sourceへ適応する。
 - PR Gate checkoutは `fetch-depth: 2` 完全一致ではなく、base revisionを取得できる2以上またはfull fetchを許容する。
 
-公開HTML/CSS/JS、Site Shell profiles、リンク文言、記事本文、計算式、保存形式、workflowは変更しない。rendererの固定件数制約だけを一般化するため `scripts/site-shell.cjs` を変更するが、現行profile入力に対する生成出力はbyte-equivalentであることをPR Gateで確認する。
+公開HTML/CSS/JS、Site Shell profiles、リンク文言、記事本文、計算式、保存形式、workflowは変更しない。rendererの固定件数制約だけを一般化するため `scripts/site-shell.cjs` を変更する。現行profile入力の出力不変は、complete preflight内のSite Shell byte-canonical/idempotency契約とChromiumで確認する。条件付きbuild-refactor/runtime比較レーンは今回の変更分類では対象外ならskipを正しく扱う。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
