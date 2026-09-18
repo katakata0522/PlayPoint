@@ -801,8 +801,11 @@
     "cases": 967,
     "testFiles": 176,
     "postMinifyCases": 17,
-    "pr": 389,
-    "main": "b9083a15c688ad948bfc4ea7f7ea478e021034c5",
-    "branch": "refactor/post-audit-ssot-ci-20260918"
+    "validatedHead": "c268e7bdac4a14c965c4313949b2b56cf43b5d36",
+    "pr": 390,
+    "prGateRunId": 35331364037,
+    "performanceRunId": 35331364008,
+    "codeQlRunName": "PR #390",
+    "publicMergeRevision": "b0c9e10156a9c8a149a0274f323aa5ea930c1f6c"
   }
 }
