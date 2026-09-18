@@ -1172,12 +1172,12 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 基準: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の全回帰930/930。
 - 精査済みbaseline identity: **930 / 930**。
 - 未精査baseline identity: **0**。
-- 現行回帰集合: **967ケース**（基準後追加の有効ケースと今回追加したdrift/SSOT/CI影響回帰9ケースを含む）。
+- 現行回帰集合: **968ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
 - 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の176ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の177ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1187,7 +1187,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | 生成・再現性 | 23 |
 | UI・導線 | 21 |
 | 保存 | 5 |
-| 地域・翻訳 | 38 |
+| 地域・翻訳 | 39 |
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
@@ -1304,6 +1304,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `latest-hub-operations.test.cjs` | 内容・事実・対象範囲 | 最新情報ハブは確認範囲・公式参照・確認日・次回確認目安を明示する |
 | `localization-quality-audit.test.cjs` | 地域・翻訳 | calculator top pages keep localized region aria and Japanese-only destination markers |
 | `localized-top-targets.test.cjs` | 生成・再現性 | 公開locale識別子は副作用のないleaf moduleを正本として各設定と一致する |
+| `locale-ssot-usage.test.cjs` | 地域・翻訳 | production/CI scriptがcanonical EN/KO/TW locale tupleを再定義しない |
 | `lp-faq-sync.test.cjs` | 生成・再現性 | visible details are the source of truth for FAQPage JSON-LD |
 | `lp-monetization-idempotency.test.cjs` | 生成・再現性 | LP収益セクションの正規化は全対象でbyte-idempotent |
 | `main-calculator-ui.test.cjs` | UI・導線 | 通常計算は必要な獲得率入力を主画面へ残し、旧パック設定を除去する |
