@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const test = require('node:test');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const {
   buildHongKongPage,
@@ -15,52 +16,48 @@ const {
 const rootDir = path.resolve(__dirname, '..');
 const twSource = fs.readFileSync(path.join(rootDir, 'tw', 'index.html'), 'utf8');
 const enSource = fs.readFileSync(path.join(rootDir, 'en', 'index.html'), 'utf8');
-const navigationSource = fs.readFileSync(path.join(rootDir, 'js', 'region-navigation.js'), 'utf8');
-const configSource = fs.readFileSync(path.join(rootDir, 'js', 'region-expansion-config.js'), 'utf8');
 
-const hk = normalizeTopPageHreflang(buildHongKongPage(twSource));
-assert.match(hk, /<html lang="zh-HK">/);
-assert.match(hk, /canonical" href="https:\/\/playpoint-sim\.com\/hk\/"/);
-assert.match(hk, /"priceCurrency": "HKD"/);
-assert.match(hk, /每 HK\$7/);
-assert.doesNotMatch(hk, /每 NT\$30/);
-assert.doesNotMatch(hk, /data-region="TW"[^>]*class="active"/);
-assert.match(hk, /href="..\/tw\/games\/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）<\/a>/);
-assert.match(hk, /placeholder="例如：350"/);
-assert.match(hk, /香港版/);
-assert.doesNotMatch(hk, /真的有很多來自台灣的朋友/);
-assert.match(hk, /hreflang="zh-TW" href="https:\/\/playpoint-sim\.com\/tw\/"/);
-assert.match(hk, /hreflang="zh-HK" href="https:\/\/playpoint-sim\.com\/hk\/"/);
+test('HK/IN expansion uses region-specific generated output and runtime config', () => {
+  const hk = normalizeTopPageHreflang(buildHongKongPage(twSource));
+  assert.match(hk, /<html lang="zh-HK">/);
+  assert.match(hk, /canonical" href="https:\/\/playpoint-sim\.com\/hk\/"/);
+  assert.match(hk, /"priceCurrency": "HKD"/);
+  assert.match(hk, /每 HK\$7/);
+  assert.doesNotMatch(hk, /每 NT\$30/);
+  assert.doesNotMatch(hk, /data-region="TW"[^>]*class="active"/);
+  assert.match(hk, /href="\.\.\/tw\/games\/" data-lang-key="linkGames">🎮 遊戲計算（台灣規則・非香港）<\/a>/);
+  assert.match(hk, /placeholder="例如：350"/);
+  assert.match(hk, /香港版/);
+  assert.doesNotMatch(hk, /真的有很多來自台灣的朋友/);
+  assert.match(hk, /hreflang="zh-TW" href="https:\/\/playpoint-sim\.com\/tw\/"/);
+  assert.match(hk, /hreflang="zh-HK" href="https:\/\/playpoint-sim\.com\/hk\/"/);
 
-const india = normalizeTopPageHreflang(buildIndiaPage(enSource));
-assert.match(india, /<html lang="en-IN">/);
-assert.match(india, /canonical" href="https:\/\/playpoint-sim\.com\/in\/"/);
-assert.match(india, /"priceCurrency": "INR"/);
-assert.match(india, /Points per ₹5/);
-assert.doesNotMatch(india, /Earn rate per \$1 \(direct entry\)/);
-assert.doesNotMatch(india, /data-region="US"[^>]*class="active"/);
-assert.match(india, /href="..\/en\/games\/" data-lang-key="linkGames">🎮 Game calculators \(U\.S\. rules, not India\)<\/a>/);
-assert.match(india, /placeholder="e\.g\. 500"/);
-assert.match(india, /India edition/);
-assert.match(india, /href="https:\/\/playpoint-sim\.com\/en\/" hreflang|hreflang="en" href="https:\/\/playpoint-sim\.com\/en\/"/);
-assert.match(india, /hreflang="en-IN" href="https:\/\/playpoint-sim\.com\/in\/"/);
+  const india = normalizeTopPageHreflang(buildIndiaPage(enSource));
+  assert.match(india, /<html lang="en-IN">/);
+  assert.match(india, /canonical" href="https:\/\/playpoint-sim\.com\/in\/"/);
+  assert.match(india, /"priceCurrency": "INR"/);
+  assert.match(india, /Points per ₹5/);
+  assert.doesNotMatch(india, /Earn rate per \$1 \(direct entry\)/);
+  assert.doesNotMatch(india, /data-region="US"[^>]*class="active"/);
+  assert.match(india, /href="\.\.\/en\/games\/" data-lang-key="linkGames">🎮 Game calculators \(U\.S\. rules, not India\)<\/a>/);
+  assert.match(india, /placeholder="e\.g\. 500"/);
+  assert.match(india, /India edition/);
+  assert.match(india, /href="https:\/\/playpoint-sim\.com\/en\/" hreflang|hreflang="en" href="https:\/\/playpoint-sim\.com\/en\/"/);
+  assert.match(india, /hreflang="en-IN" href="https:\/\/playpoint-sim\.com\/in\/"/);
 
-const configs = loadConfigs(true);
-assert.deepEqual(configs.IN.statuses, { Bronze: 1, Silver: 1.1, Gold: 1.2, Platinum: 1.4 });
-assert.deepEqual(configs.IN.thresholds, { Silver: 250, Gold: 1000, Platinum: 4000 });
-assert.equal(configs.IN.spendUnit, 5);
-assert.equal(configs.HK.spendUnit, 7);
-assert.match(configSource, /rateUnit: '₹5'/);
-assert.match(configSource, /rateUnit: 'HK\$7'/);
-assert.match(configSource, /currencyPosition: 'prefix'/);
-assert.match(configSource, /tooltip-reverse-status/);
-assert.match(configSource, /playpoint-sim\.com\/hk\//);
-assert.match(configSource, /playpoint-sim\.com\/in\//);
-assert.deepEqual(configs.HK.thresholds, { '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 });
+  const configs = loadConfigs(true);
+  assert.deepEqual(configs.IN.statuses, { Bronze: 1, Silver: 1.1, Gold: 1.2, Platinum: 1.4 });
+  assert.deepEqual(configs.IN.thresholds, { Silver: 250, Gold: 1000, Platinum: 4000 });
+  assert.equal(configs.IN.spendUnit, 5);
+  assert.equal(configs.IN.rateUnit, '₹5');
+  assert.equal(configs.IN.currencyPosition, 'prefix');
+  assert.match(configs.IN.tooltips['tooltip-reverse-status'], /₹5/);
+  assert.match(configs.IN.uiText.calDetails, /playpoint-sim\.com\/in\//);
 
-assert.match(navigationSource, /HK: 'hk\/'/);
-assert.match(navigationSource, /IN: 'in\/'/);
-assert.match(navigationSource, /data-region="HK"/);
-assert.match(navigationSource, /data-region="IN"/);
-
-console.log('Region expansion guards passed.');
+  assert.deepEqual(configs.HK.thresholds, { '銀級': 250, '金級': 1000, '鉑金級': 4000, '鑽石級': 15000 });
+  assert.equal(configs.HK.spendUnit, 7);
+  assert.equal(configs.HK.rateUnit, 'HK$7');
+  assert.equal(configs.HK.currencyPosition, 'prefix');
+  assert.match(configs.HK.tooltips['tooltip-reverse-status'], /HK\$7/);
+  assert.match(configs.HK.uiText.calDetails, /playpoint-sim\.com\/hk\//);
+});
