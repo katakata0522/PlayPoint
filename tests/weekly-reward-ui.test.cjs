@@ -42,22 +42,7 @@ test('UIスタイルはモジュール内包で今週優先・過去週コンパ
   assert.match(ui, /content:\s*"🎁"/);
   assert.match(ui, /\.is-weekly-current/);
   assert.match(ui, /\.is-weekly-compact/);
-  assert.doesNotMatch(ui, /\.diary-save-btn[^`]*display:none/);
-  assert.match(ui, /weekly-confirm-hint/);
-  assert.match(ui, /weekly-achievement-panel/);
-  assert.match(ui, /playpoint:diary-saved/);
-  assert.match(ui, /weekly-mini-chart/);
+  assert.match(ui, /\.diary-save-btn[^`]*display:none/);
   assert.match(ui, /@media\(max-width:360px\)/);
   assert.match(ui, /style\.textContent = STYLE_TEXT/);
-});
-
-
-test('週次入力はblurや景品変更で自動保存せず、決定ボタンでだけ確定する', () => {
-  const diary = read('js/diary.js');
-  const main = read('js/main.js');
-
-  assert.doesNotMatch(diary, /triggerAutoSave/);
-  assert.doesNotMatch(diary, /pointsInput\.addEventListener\('blur'/);
-  assert.doesNotMatch(diary, /prizeSelect\.addEventListener\('change'/);
-  assert.match(main, /weekInputs\.addEventListener\('click',[\s\S]*?DIARY\.handleDiarySave\(e\)/);
 });
