@@ -161,7 +161,7 @@ export const DIARY = {
                 <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${displayPoints}" min="0" step="1" inputmode="numeric">
                 <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
                 <div class="diary-btn-group">
-                    <button class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
+                    <button type="button" class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
                     <button type="button" class="diary-x-share-btn" data-week="${weekNum}" title="X（Twitter）でシェア" aria-label="Xでシェア">𝕏</button>
                 </div>
             `;
@@ -169,24 +169,17 @@ export const DIARY = {
             // オートセーブ用のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
             const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
-            const saveBtn = row.querySelector(`.diary-save-btn[data-week="${weekNum}"]`);
             const shareBtn = row.querySelector(`.diary-x-share-btn[data-week="${weekNum}"]`);
 
-            const triggerAutoSave = () => {
-                this.handleDiarySave({ target: saveBtn }, true); // サイレント保存
-            };
-
-            pointsInput.addEventListener('blur', triggerAutoSave);
-            prizeSelect.addEventListener('change', triggerAutoSave);
-
+            // 入力だけでは確定しない。ユーザーが「決定」ボタンを押した時だけ保存する。
             if (shareBtn) {
                 shareBtn.addEventListener('click', () => {
-                    const currentPoints = pointsInput.value;
-                    const currentPrize = prizeSelect.value;
-                    if (currentPoints !== '') {
-                        triggerAutoSave();
+                    const currentPoints = pointsInput.value.trim();
+                    if (currentPoints === '') {
+                        pointsInput.focus({ preventScroll: true });
+                        return;
                     }
-                    SHARE.shareRewardToX(currentPoints, currentPrize);
+                    SHARE.shareRewardToX(currentPoints, prizeSelect.value);
                 });
             }
 
