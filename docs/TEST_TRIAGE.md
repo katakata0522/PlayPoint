@@ -1071,6 +1071,35 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・記事本文・翻訳・テストコードは変更していない。docsのみの変更である。
 
+
+## 個別監査・修正の第33回（2026-09-18）
+
+基準930ケースに含まれる「海外ランク維持・Platinum/Diamond比較・維持計算」3ファイル17ケースを、Google Play公式の現行US/KR/TW/JPランク条件・通常獲得率・年次level progress仕様、公開記事/計算ページ、既精査manual ownerへ突合して個別精査した。
+
+**基準930中909精査・21未精査。** 基準17 identityはすべて精査完了。うち1件は既存behavior ownerへ統合するため、現行実行集合は959→**958ケース**へ1件減る。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-maintenance-calculators.test.cjs` | 7 | 全件維持。US/KR/TWのPlatinum/Diamond閾値・通常率・通貨単位・実計算・hreflang・発見性・manual維持ページ境界を保証 |
+| `intl-platinum-diamond.test.cjs` | 5 | 4件を固有ownerとして維持。manual記事上書き防止のsource文字列1件は `manual-intl-articles.test.cjs` の実generator behaviorへ統合し削除 |
+| `intl-rank-maintenance.test.cjs` | 5 | 全件維持。翌暦年末までのlevel保持、前年獲得ポイントによる再判定、refund/cancel境界、4言語SEO/hreflangを保証 |
+
+### 現行公式との照合
+
+- US: Platinum 3,000〜9,999 / $1あたり1.4pt、Diamond 10,000以上 / $1あたり1.6pt。
+- KR: Platinum 2,400〜14,999 / ₩1,000あたり1.60pt、Diamond 15,000以上 / 2pt。
+- TW: Platinum 4,000〜14,999 / NT$30あたり1.75pt、Diamond 15,000以上 / 2pt。
+- JP: Platinum 4,000〜14,999 / ¥100あたり1.75pt、Diamond 15,000以上 / 2pt。
+- 新しいlevelへ到達すると翌暦年末まで保持され、年初のlevelは前年の獲得ポイントで再判定される。返品・キャンセル対象の獲得ポイントはlevel progressからも差し引かれる。
+
+### 重複整理
+
+`intl-platinum-diamond` の旧1ケースは、`MANUAL_COMPARISON_ARTICLES` というprivate定数名と `if (article.manual) continue` というprivate source文を検査していた。一方、第22回で精査済みの `manual-intl-articles.test.cjs` はmanual正本一覧にPlatinum/Diamond比較記事を含み、実 `writeIntlSeoPages` を一時出力先で実行してmanual fileが生成されないことを直接保証している。後者が同等以上のownerなのでidentityを統合し、弱い重複1ケースを削除する。
+
+維持計算の公式数値・通貨・購入単位、記事の地域別条件、rank maintenanceの意味は緩和しない。
+
+公開HTML/CSS/JS・記事本文・地域数値・計算式・generatorは変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
