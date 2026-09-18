@@ -31,7 +31,7 @@ function syncIndexMetadataContent(indexHtml, contentModifiedAt, assetVersion) {
   content = replaceDateMetadata(content, contentModifiedAt);
   const version = `${assetVersion}a`;
 
-  content = content.replace(/サイト更新: \d{4}-\d{2}-\d{2}/g, `サイト更新: ${contentModifiedAt}`);
+  content = content.replace(/(?:サイト更新|内容更新): \d{4}-\d{2}-\d{2}/g, `内容更新: ${contentModifiedAt}`);
   content = replaceAssetVersion(content, 'style.css', version);
   content = replaceAssetVersion(content, 'js/main.js', version);
   content = replaceAssetVersion(content, 'js/third-party.js', version);
