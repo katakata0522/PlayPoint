@@ -460,7 +460,11 @@ export const DIARY = {
 
     // 週ごとの入力データ保存処理
     handleDiarySave(e, isSilent = false) {
-        if (e.target.tagName !== 'BUTTON' || !e.target.dataset.week) return;
+        if (
+            e.target.tagName !== 'BUTTON'
+            || !e.target.dataset.week
+            || !e.target.classList?.contains('diary-save-btn')
+        ) return;
 
         const weekNum = e.target.dataset.week;
         const pointsInput = STATE.dom.weekInputs.querySelector(`#week${weekNum}_points`);

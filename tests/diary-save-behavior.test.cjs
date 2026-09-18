@@ -25,6 +25,7 @@ function createRuntime({ saveFails = false } = {}) {
   const button = {
     tagName: 'BUTTON',
     dataset: { week: '1' },
+    classList: { contains(name) { return name === 'diary-save-btn'; } },
     textContent: '保存',
     disabled: false
   };
@@ -169,4 +170,24 @@ test('実装は入力blur・景品change・X共有を保存トリガーにしな
   const shareBlock = rawSource.match(/if \(shareBtn\) \{[\s\S]*?STATE\.dom\.weekInputs\.appendChild\(row\);/)?.[0] || '';
   assert.ok(shareBlock, 'share handler block was not found');
   assert.doesNotMatch(shareBlock, /handleDiarySave|saveDiaryData/);
+});
+
+
+test('X共有ボタンは委譲クリックを通っても日記保存処理を起動しない', () => {
+  const runtime = createRuntime();
+  const shareButton = {
+    tagName: 'BUTTON',
+    dataset: { week: '1' },
+    classList: { contains(name) { return name === 'diary-x-share-btn'; } },
+    textContent: '𝕏',
+    disabled: false
+  };
+
+  runtime.diary.handleDiarySave({ target: shareButton });
+
+  assert.equal(runtime.savedValues.length, 0);
+  assert.equal(runtime.analyticsEvents.length, 0);
+  assert.equal(runtime.summaryCalls, 0);
+  assert.equal(runtime.dispatchedEvents.length, 0);
+  assert.equal(runtime.toastCalls.length, 0);
 });
