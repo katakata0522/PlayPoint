@@ -1,8 +1,8 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中899精査・31未精査**（第31回でbaseline全件を再照合し、第30回時点の917/13を879/51へ訂正後、11ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
+最新集計: **基準930ケース中892精査・38未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
 
-基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
+基準: `katakata0522/PlayPoint` / `cdf5e2999719edf8e96cafeeca3a205cd9364fae`（Deploy run 35217972469 の全回帰 930/930 を実行正本として再確認）。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
 ## 集計と完了境界
 
@@ -718,7 +718,7 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 
 ### 集計
 
-基準930コミットに存在した5ファイル24ケースを、地域runtime config・Speculation Rules・repository実参照・CSP/Deploy/security healthと照合した。既精査866へ24を加え、**890精査・40未精査**とする。ケース数は増減せず現行959ケースを維持する。
+基準930コミットに存在した5ファイル24ケースを、地域runtime config・Speculation Rules・repository実参照・CSP/Deploy/security healthと照合した。既精査866へ24を加え、**883精査・47未精査**とする。ケース数は増減せず現行959ケースを維持する。
 
 ### ファイル別判断
 
@@ -776,13 +776,13 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 
 ## 台帳再照合（第30回終了時集計の訂正）
 
-基準コミット `d46527f7f1adf692c1d5dc881d7ed186052f0ce6` の `tests/*.test.cjs` 全171ファイルと、初期80件＋第5〜30回の精査記録をファイル/実行時ケース単位で再照合した。
+基準コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の `tests/*.test.cjs` 全168ファイルと、初期80件＋第5〜30回の精査記録をファイル/実行時ケース単位で再照合した。
 
-第30回終了時の **917精査・13未精査** は誤りで、未記録9ファイル49ケースと第22回明示保留2ケースが精査済み側へ誤加算されていた。基準runnerは全test fileを自動列挙していたため、これらも基準930に含まれる。
+第30回終了時の **917精査・13未精査** は誤りで、未記録9ファイル56ケースと第22回明示保留2ケースが精査済み側へ誤加算されていた。基準runnerは全test fileを自動列挙していたため、これらも基準930に含まれる。
 
-訂正値は **879精査・51未精査**。
+訂正値は **872精査・58未精査**。
 
-未精査51ケース:
+未精査58ケース:
 - intl-coupon-credit: 4
 - intl-demand-content-quality: 9
 - intl-maintenance-calculators: 7
@@ -791,11 +791,11 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-regional-accuracy: 5
 - intl-rewards-quests: 5
 - intl-topic-pages: 7
-- markup-contract-fixtures: 2
+- ci-performance-sampling: 9
 - intl-content-expansionの第22回事実保留: 1
 - intl-game-guide-expansionの第22回事実保留: 1
 
-合計51。過去Waveの個別判断自体は取り消さず、進捗集計だけを訂正する。
+合計58。過去Waveの個別判断自体は取り消さず、進捗集計だけを訂正する。
 
 ## 第31回: 国際topic・coupon 11ケース（2026-09-18）
 
@@ -803,7 +803,7 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 
 `intl-topic-pages.test.cjs` 7ケースと `intl-coupon-credit.test.cjs` 4ケースを、公開成果物・sitemap/hreflang・内部リンク・Google Play公式一次情報と照合して個別精査した。
 
-訂正後879精査へ11を加え、**890精査・40未精査**とする。ケース数・テストコードは変更せず、現行959ケースを維持する。
+訂正後872精査へ11を加え、**883精査・47未精査**とする。ケース数・テストコードは変更せず、現行959ケースを維持する。
 
 ### 判断
 
@@ -811,15 +811,16 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-coupon-credit 4: 全維持。coupon適用条件、Play credit期限/通貨/Play country変更、4言語SEO/hreflang、発見性、内部リンクは現在も妥当。
 - 任意文字数・ページ数・特定DOM実装を固定するケースはなく、今回削除/統合は不要。
 
-### 残り40ケース
+### 残り47ケース
 
+- ci-performance-sampling: 9
 - intl-demand-content-quality: 9
 - intl-maintenance-calculators: 7
 - intl-platinum-diamond: 5
 - intl-rank-maintenance: 5
 - intl-regional-accuracy: 5
 - intl-rewards-quests: 5
-- markup-contract-fixtures: 2
+- ci-performance-sampling: 9
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・翻訳・テストコードは変更していない。
@@ -828,7 +829,7 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 
 `intl-demand-content-quality.test.cjs` はloop生成のためsource declaration 1件ではなく、`demandContracts` 9項目＝基準9ケースとして精査した。
 
-**890精査から9件を加え、899精査・31未精査。**
+**883精査から9件を加え、892精査・38未精査。**
 
 ### 判断
 
@@ -841,14 +842,15 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - Points期限は最後の獲得または使用から1年の意味を維持。
 - non-calculator Roleへgeneric calculator promptを出さない契約を維持。
 
-### 残り31ケース
+### 残り38ケース
 
+- ci-performance-sampling: 9
 - intl-maintenance-calculators: 7
 - intl-platinum-diamond: 5
 - intl-rank-maintenance: 5
 - intl-regional-accuracy: 5
 - intl-rewards-quests: 5
-- markup-contract-fixtures: 2
+- ci-performance-sampling: 9
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・テストコードは変更していない。
