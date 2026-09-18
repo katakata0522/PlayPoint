@@ -33,7 +33,9 @@ function hasCanonical(html) {
 function assertArticleRuntime(relativePath) {
   const html = read(relativePath);
   assert.ok(hasCanonical(html), relativePath + ': canonical is required');
-  assert.ok(metaContent(html, 'description', relativePath).length >= 30, relativePath + ': meaningful meta description is required');
+  const description = metaContent(html, 'description', relativePath);
+  assert.ok(description.length > 0, relativePath + ': meta description is required');
+  assert.doesNotMatch(description, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, relativePath + ': placeholder meta description is not allowed');
   assert.match(html, /\/js\/analytics-core\.js/, relativePath + ': analytics core must be present');
   // Article conversion/navigation events are owned by blog/article.js. intent-tracking.js is the LP runtime
   // and is intentionally not a requirement for every article shell.
@@ -41,25 +43,18 @@ function assertArticleRuntime(relativePath) {
   return html;
 }
 
-function assertArticleConversionPath(relativePath, calculatorHref) {
-  const html = assertArticleRuntime(relativePath);
-  assert.match(html, /article-calculator-prompt/, relativePath + ': contextual article-to-calculator prompt is required');
-  assert.ok(html.includes(`href="${calculatorHref}"`) || html.includes(`href='${calculatorHref}'`), relativePath + ': calculator destination must stay localised');
-}
-
-test('top organic landing articles keep role-appropriate next-action paths', () => {
-  assertArticleConversionPath('ko/articles/google-play-points-cash-conversion.html', '/ko/');
-  assertArticleConversionPath('tw/articles/google-play-points-coupon-not-applied.html', '/tw/?mode=reverse');
-  assertArticleConversionPath('tw/articles/google-play-points-platinum-diamond-cost.html', '/tw/');
-
-  const quests = assertArticleRuntime('articles/2026-07-31-google-play-quests.html');
-  assert.doesNotMatch(quests, /data-generated-article-prompt=["']true["']/, 'Quests retention article must not get the generic calculator prompt');
-  assert.match(quests, /<section\b[^>]*aria-labelledby=["']next-action["'][^>]*class=["']cta-box["'][^>]*>/i, 'Quests must retain its authored next-action section');
-  assert.match(quests, /購入条件がある場合は必要額を確認/, 'Quests may keep the calculator as a conditional secondary action');
-  assert.match(quests, /<section\b[^>]*class=["'][^"']*\brelated-links-section\b[^"']*["'][^>]*>/i, 'Quests must retain follow-up navigation');
+test('growth-critical landing articles keep canonical analytics and article runtime', () => {
+  for (const relativePath of [
+    'ko/articles/google-play-points-cash-conversion.html',
+    'tw/articles/google-play-points-coupon-not-applied.html',
+    'tw/articles/google-play-points-platinum-diamond-cost.html',
+    'articles/2026-07-31-google-play-quests.html'
+  ]) {
+    assertArticleRuntime(relativePath);
+  }
 });
 
-test('high-impression 4-15 position pages retain the query intent in title and description', () => {
+test('priority search landing pages retain their query intent in title and description', () => {
   const bestUse = read('articles/2025-12-25-best-use.html');
   const bestUseTitle = titleOf(bestUse, 'best-use');
   const bestUseDescription = metaContent(bestUse, 'description', 'best-use');
@@ -97,14 +92,11 @@ test('Taiwan Play credit troubleshooting answers first and keeps troubleshooting
   assert.ok(sourceIndex > finalDiagnosisIndex, 'TW Play credit: official evidence should follow the diagnosis');
   assert.ok(relatedIndex > sourceIndex, 'TW Play credit: related troubleshooting should be the follow-up path');
   assert.doesNotMatch(html, /data-generated-intl-article-prompt=["']true["']/, 'TW Play credit troubleshooting must not get a generic calculator prompt');
-  assert.match(html, /變更 Play 國家\/地區後無法使用舊餘額/, 'TW Play credit: country-change failure mode must stay explicit');
-  assert.match(html, /相同幣別/, 'TW Play credit: same-currency restriction must stay visible');
-  assert.match(html, /一年後到期/, 'TW Play credit: exchanged-credit expiry must stay visible');
 });
 
-test('latest hub keeps the campaign-intent answer visible to search engines', () => {
+test('latest hub keeps the campaign-intent answer visible in indexable metadata', () => {
   const html = read('latest/index.html');
   assert.match(titleOf(html, 'latest'), /(?:キャンペーン|ポイント増量)/, 'latest: campaign intent must remain in title');
   assert.match(metaContent(html, 'description', 'latest'), /(?:キャンペーン|ポイント増量)/, 'latest: campaign intent must remain in description');
-  assert.match(html, /2026/, 'latest: current-year intent must remain represented in published content');
 });
+

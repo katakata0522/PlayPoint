@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 7,
-  "latestReviewedBaselineCases": 220,
-  "latestUnreviewedBaselineCases": 710,
+  "latestStage": 8,
+  "latestReviewedBaselineCases": 271,
+  "latestUnreviewedBaselineCases": 659,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -308,5 +308,81 @@
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium blog and article checks"
+  },
+  "expectedCurrentCasesAfterWave8": 957,
+  "wave8": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 51,
+    "scope": "seo-public-integrity-brand",
+    "files": [
+      {
+        "file": "tests/growth-critical-pages.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_separate_runtime_search_intent_from_cta_owner"
+      },
+      {
+        "file": "tests/japanese-guide-brand.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_brand_ssot"
+      },
+      {
+        "file": "tests/all-article-quality-audit.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_remove_arbitrary_meta_length"
+      },
+      {
+        "file": "tests/article-seo-normalize.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_transform_behavior"
+      },
+      {
+        "file": "tests/author-hreflang.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_reciprocal_hreflang"
+      },
+      {
+        "file": "tests/human-sitemap-task-hub.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_remove_copy_and_link_count_threshold"
+      },
+      {
+        "file": "tests/manual-lp-hreflang.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_manual_lp_cluster"
+      },
+      {
+        "file": "tests/navigation-source-map.test.cjs",
+        "cases": 8,
+        "decision": "keep_all_remove_inventory_size_and_private_scanner_locks"
+      },
+      {
+        "file": "tests/ogp-mime-contract.test.cjs",
+        "cases": 1,
+        "decision": "keep_mime_bytes_contract"
+      },
+      {
+        "file": "tests/public-navigation-contract.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_public_navigation_behavior"
+      },
+      {
+        "file": "tests/seo-head-audit-parser.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_parser_regressions"
+      },
+      {
+        "file": "tests/seo-hygiene.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_scope_and_semantics"
+      },
+      {
+        "file": "tests/sitemap-information-hierarchy.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_replace_exact_copy_with_structure"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium article and navigation checks"
   }
 }

@@ -8,20 +8,26 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.html'), 'utf8');
 
-test('human sitemap introduces the page purpose before secondary navigation groups', () => {
-  const mainStart = sitemap.indexOf('<main class="container" data-human-sitemap-mode="task-hub">');
-  const h1Index = sitemap.indexOf('<h1>Playポイント計算機 サイト案内</h1>', mainStart);
-  const firstH2Index = sitemap.indexOf('<h2>', mainStart);
-  const leadIndex = sitemap.indexOf('<p>URLを全部並べる一覧ではなく', mainStart);
+test('human sitemap introduces its purpose before secondary navigation groups', () => {
+  const mainMatch = sitemap.match(/<main\b[^>]*data-human-sitemap-mode=["']task-hub["'][^>]*>([\s\S]*?)<\/main>/i);
+  assert.ok(mainMatch, 'task-hub main is missing');
+  const main = mainMatch[1];
+  const h1Index = main.search(/<h1\b/i);
+  const h1End = main.indexOf('</h1>', h1Index);
+  const leadIndex = main.indexOf('<p', h1End);
+  const firstH2Index = main.indexOf('<h2', h1End);
 
-  assert.ok(mainStart >= 0);
-  assert.ok(h1Index > mainStart);
-  assert.ok(leadIndex > h1Index);
-  assert.ok(firstH2Index > leadIndex);
-  assert.equal((sitemap.match(/<h1\b/g) || []).length, 1);
+  assert.ok(h1Index >= 0, 'human sitemap needs one primary heading');
+  assert.ok(h1End > h1Index, 'primary heading must close');
+  assert.ok(leadIndex > h1End, 'purpose lead must follow the primary heading');
+  assert.ok(firstH2Index > leadIndex, 'secondary navigation groups must follow the purpose lead');
+  assert.equal((main.match(/<h1\b/gi) || []).length, 1);
 });
 
 test('comparison reference remains discoverable exactly once after the sitemap hierarchy repair', () => {
-  assert.equal((sitemap.match(/href="compare\/earning-rates\/"/g) || []).length, 1);
-  assert.match(sitemap, />獲得率・通常／2pt／3ptの比較表<\/a>/);
+  const matches = [...sitemap.matchAll(/<a\b[^>]*href=["']compare\/earning-rates\/["'][^>]*>([\s\S]*?)<\/a>/gi)];
+  assert.equal(matches.length, 1);
+  const label = matches[0][1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  assert.ok(label.length > 0, 'comparison reference needs visible link text');
 });
+
