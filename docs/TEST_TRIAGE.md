@@ -612,6 +612,36 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。今回の変更はtests/docsのみで、現在の「維持＋次ランク」実装もそのまま残る。ただしテストは、その実装方式自体ではなく利用者に提示するtargetが設定上有効で重複しないことを契約とする。
 
+
+## 個別監査・修正の第16回（2026-09-18）
+
+基準930ケースに含まれる「地域コア」4ファイル10ケースを、現行mainの6地域HTML・地域生成器・runtime設定・実ESM依存グラフ・Service Worker install要求と突合して個別精査した。対象4ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` からWave15後まで同一で、PR #364後の地域関連コードにも競合する変更はない。
+
+**基準930中643精査・287未精査。** ケース数は増減せず、PR #364のGateで確認された現行実行集合**959ケース**を維持する。公開HTML/CSS/JS・地域数値・表示文言・遷移挙動は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `attention-country-classification.test.cjs` | 4 | 全件維持。6地域導線・HK/IN専用条件・ブラウザ言語だけで国を断定しない境界・内容日整合を維持。6地域を列挙した英文1文の完全一致だけを除外 |
+| `region-expansion.test.cjs` | 1 | 維持。HK/IN生成結果とruntime configを直接検証し、config/navigationソース文字列の二重固定を除去 |
+| `region-navigation-behavior.test.cjs` | 4 | 全件維持・変更なし。URL優先、保存値、segment誤判定防止、6地域切替を実script behaviorで検証 |
+| `region-runtime-wiring.test.cjs` | 1 | 維持。import文・private定数・source断片の固定を、実ESM graph・asset revision input・実SW install precacheへ置換 |
+
+### 現行公式条件との照合
+
+- Google公式の香港向け現行表は、250/1,000/4,000/15,000ptの境界と、HK$7あたり1/1.25/1.5/1.75/2ptを示す。
+- Google公式のインド向け現行表は、250/1,000/4,000ptの境界、₹5あたり1/1.1/1.2/1.4pt、Platinumが現行最高ランクであることを示す。
+- したがって地域数値のテストは弱めず、実装方法の固定だけを外す。
+
+### 今回の過剰固定・重複整理
+
+- 注意ページは「6地域を列挙した英文が一字一句同じ」である必要はない。各地域名・一意な導線・公式確認経路が存在することを契約にする。
+- HK/IN設定は `region-expansion-config.js` 内の `rateUnit` 等の文字列を検索せず、`loadConfigs(true)` が返す実runtime設定を検査する。
+- HK/IN遷移URLは `region-expansion` 側のsource regexから外す。実際の切替結果は `region-navigation-behavior` が主担当。
+- 結果ナビ責務は特定import文や `deepFreeze({...})` の形を固定しない。active ESM graph上で `region-navigation` / `calculator` から結果ナビ設定へ到達し、cache revision対象に入り、HK/INトップが実install precacheへ入ることを保証する。
+- 旧 `region-result-navigation.js` の二重owner復活だけは、責務重複防止として不存在を維持する。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
