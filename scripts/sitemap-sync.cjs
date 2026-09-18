@@ -27,8 +27,7 @@ const RETIRED_CONTENT_URLS = new Set([
   `${SITE_ORIGIN}/en/articles/google-play-points-reflection-timing.html`
 ]);
 const SEARCH_QUALITY_HOLD_URLS = new Set([
-  `${SITE_ORIGIN}/articles/2026-08-17-diamond-valley-festival-guide.html`,
-  `${SITE_ORIGIN}/articles/2026-08-17-tgs-google-play-vip.html`
+  `${SITE_ORIGIN}/articles/2026-08-17-diamond-valley-festival-guide.html`
 ]);
 const DEDICATED_SITEMAP_PATTERN = /^sitemap-intl-.*\.xml$/;
 const GENERATED_LISTED_START = '<!-- generated-listed-articles:start -->';

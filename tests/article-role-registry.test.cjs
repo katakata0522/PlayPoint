@@ -55,7 +55,7 @@ test('代表記事を検索意図ではなくプロダクト上の仕事で分�
     ['en/articles/google-play-points-platinum-diamond-cost.html', true, 'calculator_bridge'],
     ['tw/articles/google-play-points-levels.html', true, 'reference'],
     ['tw/articles/google-play-points-country-differences.html', true, 'reference'],
-    ['articles/2026-08-17-tgs-google-play-vip.html', false, 'hold']
+    ['articles/2026-08-17-tgs-google-play-vip.html', true, 'retention']
   ];
 
   for (const [file, listed, expected] of cases) {
