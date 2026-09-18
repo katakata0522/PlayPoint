@@ -19,8 +19,8 @@
     "R02",
     "S07"
   ],
-  "currentCases": 958,
-  "testFiles": 173,
+  "currentCases": 967,
+  "testFiles": 176,
   "postMinifyCases": 17,
   "items": [
     {
@@ -798,10 +798,11 @@
     "runId": 35217972469
   },
   "currentSuiteEvidence": {
-    "cases": 958,
-    "testFiles": 173,
+    "cases": 967,
+    "testFiles": 176,
     "postMinifyCases": 17,
     "pr": 389,
-    "main": "b9083a15c688ad948bfc4ea7f7ea478e021034c5"
+    "main": "b9083a15c688ad948bfc4ea7f7ea478e021034c5",
+    "branch": "refactor/post-audit-ssot-ci-20260918"
   }
 }
