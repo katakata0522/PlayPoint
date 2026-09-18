@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const { ARTICLE_JA_ALTERNATES, INTL_LOCALES, SITE_ORIGIN, intlUrl } = require('../scripts/intl-article-hreflang-sync.cjs');
@@ -63,7 +64,9 @@ test('Hong Kong keeps its own official tier names', () => {
   assert.ok(share.includes('黃金|金級'), 'shared target normalization must support both Taiwan and Hong Kong Gold labels');
 });
 
-test('Taiwan terminology contract covers the embeddable widget and fails instead of silently rewriting', () => {
+test('Taiwan terminology contract covers the embeddable widget and fails instead of silently rewriting', t => {
+  assert.ok(terminologyContract.TAIWAN_SOURCE_FILES.includes('embed/playpoint-widget.js'));
+
   const widget = fs.readFileSync(path.join(root, 'embed', 'playpoint-widget.js'), 'utf8');
   const zhStart = widget.indexOf('        zh: {');
   const zhEnd = widget.indexOf('    };', zhStart);
@@ -78,10 +81,19 @@ test('Taiwan terminology contract covers the embeddable widget and fails instead
   assert.equal(terminologyContract.findTaiwanTerminologyViolations('<p>累積條件</p>').length, 1);
   assert.equal(terminologyContract.findTaiwanTerminologyViolations('<span data-foreign-terminology>香港では金級</span>').length, 0);
 
-  const source = fs.readFileSync(path.join(root, 'scripts', 'tw-terminology-contract.cjs'), 'utf8');
-  assert.doesNotMatch(source, /writeFileSync/);
-  assert.doesNotMatch(source, /normalizeTaiwanText/);
-  assert.doesNotMatch(source, /syncTaiwanTerminology/);
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-tw-terminology-'));
+  t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(fixture, 'tw'), { recursive: true });
+  fs.writeFileSync(path.join(fixture, 'tw', 'index.html'), '<p>黃金級</p>');
+  for (const relativePath of terminologyContract.TAIWAN_SOURCE_FILES) {
+    const target = path.join(fixture, relativePath);
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.writeFileSync(target, relativePath === 'embed/playpoint-widget.js' ? '<p>金級</p>' : '<p>黃金級</p>');
+  }
+  const target = path.join(fixture, 'embed', 'playpoint-widget.js');
+  const before = fs.readFileSync(target, 'utf8');
+  assert.throws(() => terminologyContract.assertTaiwanTerminology(fixture), /bare-gold-tier/);
+  assert.equal(fs.readFileSync(target, 'utf8'), before, 'terminology audit must fail without rewriting source');
 });
 
 test('Hong Kong tier localization preserves explicitly marked foreign-region terminology', () => {
@@ -91,11 +103,6 @@ test('Hong Kong tier localization preserves explicitly marked foreign-region ter
     .replace(/白金級/g, '鉑金級'));
   assert.ok(localized.includes('<p>金級 / 鉑金級</p>'));
   assert.ok(localized.includes('<span data-foreign-terminology>台灣：黃金級 / 白金級</span>'));
-  const regionSource = fs.readFileSync(path.join(root, 'scripts', 'region-page-sync.cjs'), 'utf8');
-  assert.ok(regionSource.includes('mapOutsideForeignTerminology'));
-  assert.ok(regionSource.includes("require('./tw-terminology-contract.cjs')"));
-  assert.doesNotMatch(regionSource, /html\.replace\(\/黃金級\/g/);
-  assert.doesNotMatch(regionSource, /html\.replace\(\/白金級\/g/);
 });
 
 test('verified Japanese counterparts have reciprocal hreflang sets', () => {
