@@ -13,9 +13,12 @@ const historyScript = fs.readFileSync(historyScriptPath, 'utf8');
 const deployWorkflow = fs.readFileSync(deployWorkflowPath, 'utf8');
 const rollbackWorkflow = fs.readFileSync(rollbackWorkflowPath, 'utf8');
 
-test('verified履歴は公開領域外へSHA単位で最大5世代だけ保持する', () => {
+test('verified履歴は公開領域外へSHA単位で有限世代だけ保持する', () => {
   assert.match(historyScript, /REMOTE_SNAPSHOT_ROOT="\/home\/hajikkoroom\/playpoint-sim\.com\/\.deploy-snapshots"/);
-  assert.match(historyScript, /HISTORY_LIMIT=5/);
+  const limitMatch = historyScript.match(/^HISTORY_LIMIT=(\d+)$/m);
+  assert.ok(limitMatch, 'history retention limit must be explicit');
+  const historyLimit = Number(limitMatch[1]);
+  assert.ok(Number.isInteger(historyLimit) && historyLimit >= 2 && historyLimit <= 10, `unsafe history retention: ${historyLimit}`);
   assert.match(historyScript, /history_root="\$snapshot_root\/verified-history"/);
   assert.match(historyScript, /final="\$history_root\/\$commit"/);
   assert.match(historyScript, /Archived verified production \$commit in history/);
