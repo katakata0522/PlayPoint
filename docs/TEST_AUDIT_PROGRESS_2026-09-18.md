@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中918精査・12未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
+最新集計: **基準930ケース中930精査・0未精査（完了）**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第35回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `cdf5e2999719edf8e96cafeeca3a205cd9364fae`（Deploy run 35217972469 の全回帰 930/930 を実行正本として再確認）。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -908,4 +908,39 @@ US 3000/10000・1.4/1.6、KR 2400/15000・1.6/2、TW 4000/15000・1.75/2、JP 40
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・性能budget・workflowは変更していない。
+
+## 第35回: 最終12ケース（2026-09-18）
+
+### 集計
+
+残っていた `intl-regional-accuracy` 5、`intl-rewards-quests` 5、第22回事実依存保留の `intl-content-expansion` 1 / `intl-game-guide-expansion` 1を一次情報と公開成果物へ再照合した。
+
+**918精査から12件を加え、基準930/930精査完了・未精査0。** 現行回帰集合は958ケースを維持する。
+
+### 判断
+
+| 対象 | 基準件数 | 判定 |
+|---|---:|---|
+| intl-regional-accuracy | 5 | 全維持。代表金額/全文copy snapshotを意味＋公式source契約へ |
+| intl-rewards-quests | 5 | 全維持。Super Weekly現行条件・Quest条件を維持し、Super Ticket過去ルールをcurrent account/card scopeへ |
+| intl-content-expansion | 1 | 第22回保留完了。9topic×3localeのfact/source matrixを現行Google公式へ再照合し維持 |
+| intl-game-guide-expansion | 1 | 第22回保留完了。地域価格/用語/購入経路を一次情報へ再照合。HBR時限5% OFFのみ恒久契約から除外 |
+
+### 主な変更
+
+1. 金額LPは $50 / ₩50,000 / NT$1,500という代表値そのものではなく、現地通貨＋正のreverse amount＋locale destinationを保証。
+2. gift card / subscriptionの全文sentence固定を意味＋現行official sourceへ変更。
+3. Super Weekly PrizeのGold以上・Friday・limited stock・premium非保証を現行契約として維持。Super Ticketは現在のaccount/cardを優先し、過去schedule/trade-offを恒久仕様にしない。
+4. HBRの5% OFFはpromotion snapshotなので外し、Taiwan/Hong Kong/Macao scope＋WEB SHOP独自pointsを維持。
+5. Questのaccount/activity、personalization、Play Games profile、qualified purchase、refund/cancel境界は現行公式と一致するため維持。
+
+### 監査完了状態
+
+- baseline: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` / 930ケース。
+- reviewed: **930 / 930**。
+- unreviewed: **0**。
+- current regression suite: **958ケース**。
+- 基準件数へ戻すことは目的にしない。重複はownerへ統合し、基準後の有効な回帰は残す。
+
+公開コード・記事本文・翻訳・計算式・performance budget・workflowは変更していない。
 
