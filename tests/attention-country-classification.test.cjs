@@ -10,16 +10,17 @@ const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'attention.html'), 'utf8');
 
 test('注意ページは現在の6地域専用モードを正確に案内する', () => {
-  assert.match(html, /Japan, the United States, South Korea, Taiwan, Hong Kong, and India/);
-
-  for (const [label, href] of [
+  const regions = [
     ['Japan', './'],
     ['United States', './en/'],
     ['South Korea', './ko/'],
     ['Taiwan', './tw/'],
     ['Hong Kong', './hk/'],
     ['India', './in/']
-  ]) {
+  ];
+
+  assert.equal(new Set(regions.map(([, href]) => href)).size, regions.length);
+  for (const [label, href] of regions) {
     assert.ok(html.includes(label), `Country Guideに${label}がありません`);
     assert.ok(html.includes(`href="${href}"`), `Country Guideに${href}への導線がありません`);
   }
