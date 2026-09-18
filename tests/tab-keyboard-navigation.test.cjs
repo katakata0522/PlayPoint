@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 test('calculator tabs expose roving tabindex and tab semantics in every locale', () => {
-  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(relativePath);
     assert.match(html, /class="tab-switch" role="tablist"/, `${relativePath}: tablist is missing`);
     assert.match(html, /id="tab-main" role="tab" aria-selected="true"[^>]*tabindex="0"/, `${relativePath}: active tab semantics are missing`);
