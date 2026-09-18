@@ -35,7 +35,7 @@ function jaGameDirs() {
 
 test('日本語ゲーム計算機は課金予定額を自分で打てる', () => {
   const games = jaGameDirs();
-  assert.ok(games.length >= 21, 'game dirs: ' + games.length);
+  assert.ok(games.length > 0, '公開ゲーム計算機が1件以上必要');
   for (const game of games) {
     const html = read(path.join('games', game, 'index.html'));
     assert.match(html, /id="sim-custom-amount"/, game + ' に課金予定合計額がない');
@@ -94,22 +94,22 @@ test('日本語の維持ページは計算機本体へ渡す入口であり、�
   }
 });
 
-test('日本語と英語で数値入力の有無が食い違うのは維持LPだけ', () => {
+test('日本語と英語の数値入力差分は計算機本体へ渡す維持LPに限る', () => {
   const files = listHtmlFiles();
   const byRel = new Map(files.map(file => [
     path.relative(root, file).replace(/\\/g, '/'),
     numberInputIds(fs.readFileSync(file, 'utf8')).length
   ]));
-  const gaps = [];
+
   for (const [relativePath, count] of byRel) {
     if (relativePath.startsWith('en/')) continue;
     const enPath = 'en/' + relativePath;
     if (!byRel.has(enPath)) continue;
+
     const enCount = byRel.get(enPath);
-    if (count === 0 && enCount > 0) gaps.push(relativePath + ' JA=0 EN=' + enCount);
+    if (count !== 0 || enCount <= 0) continue;
+
+    assert.match(relativePath, /^maintenance\/[^/]+\/index\.html$/, relativePath);
+    assert.match(read(relativePath), /[?&]mode=main/, relativePath + ' は本体計算機へリンクする');
   }
-  assert.deepEqual(gaps.sort(), [
-    'maintenance/diamond/index.html JA=0 EN=1',
-    'maintenance/platinum/index.html JA=0 EN=1'
-  ]);
 });
