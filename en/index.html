@@ -207,10 +207,10 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play country or region">
-            <button data-region="JP">🇯🇵 日本</button>
-            <button data-region="US" class="active">🇺🇸 United States</button>
-            <button data-region="KR">🇰🇷 대한민국</button>
-            <button data-region="TW">🇹🇼 台灣</button>
+            <button data-region="JP">JP</button>
+            <button data-region="US" class="active">US</button>
+            <button data-region="KR">KR</button>
+            <button data-region="TW">TW</button>
         </div>
         <div class="header-links">
             <a href="../attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ Country notes</a>
@@ -224,9 +224,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <p id="site-description" class="site-description" data-lang-key="siteDescription">Calculate how much you need to spend to reach the next Google Play Points level.<br>Enter your current status, target status, and points needed; the calculator compares your base earn rate with the special earn rate shown in Google Play and uses the higher rate.</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">How much left?</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">Points from spend</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">🎁 Log weekly</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">Standard</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">Reverse</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">Weekly Rewards Diary</button>
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">
@@ -463,7 +463,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="../js/intl-copy-overrides.js?v=52d2b07474"></script>
+<script type="module" src="../js/intl-copy-overrides.js?v=9ce9a93354"></script>
 <script type="module" src="../js/main.js?v=3b3de5a2df"></script>
 <script src="../js/third-party.js?v=2517871a38" defer></script>
 

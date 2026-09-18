@@ -12,14 +12,14 @@ const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const VIEWPORT_WIDTHS = [320, 360, 390, 412];
 const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
-const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
+const PRIMARY_MOBILE_LABELS = ['JP', 'US', 'KR', 'TW'];
 const LOCALES = [
   { key: 'JP', path: '', toggleLabel: '🌐', activeRegion: 'JP' },
   { key: 'US', path: 'en/', toggleLabel: '🌐', activeRegion: 'US' },
   { key: 'KR', path: 'ko/', toggleLabel: '🌐', activeRegion: 'KR' },
   { key: 'TW', path: 'tw/', toggleLabel: '🌐', activeRegion: 'TW' },
-  { key: 'HK', path: 'hk/', toggleLabel: '🇭🇰 HK', activeRegion: 'HK' },
-  { key: 'IN', path: 'in/', toggleLabel: '🇮🇳 IN', activeRegion: 'IN' }
+  { key: 'HK', path: 'hk/', toggleLabel: 'HK', activeRegion: 'HK' },
+  { key: 'IN', path: 'in/', toggleLabel: 'IN', activeRegion: 'IN' }
 ];
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -174,6 +174,7 @@ async function inspectLayout(page) {
       return {
         region: button.dataset.region,
         mobileText: mobile?.textContent?.trim() || '',
+        desktopText: desktop?.textContent?.trim() || '',
         mobileDisplay: mobile ? getComputedStyle(mobile).display : '',
         desktopDisplay: desktop ? getComputedStyle(desktop).display : ''
       };
@@ -314,10 +315,20 @@ async function verifyLocale(browser, baseUrl, locale) {
     assert(desktopLayout.display === 'flex' || desktopLayout.display === 'inline-flex',
       `${locale.key} desktop: expected flex-based selector, got ${desktopLayout.display}`);
     assertSelectionState(desktopLayout, locale, 'desktop');
+    assert(desktopLayout.switchRect.left >= -1 && desktopLayout.switchRect.right <= desktopLayout.viewportWidth + 1,
+      `${locale.key} desktop: region selector escapes viewport (${desktopLayout.switchRect.left}..${desktopLayout.switchRect.right}/${desktopLayout.viewportWidth})`);
+    assert(desktopLayout.documentScrollWidth <= desktopLayout.viewportWidth + 1,
+      `${locale.key} desktop: page horizontally overflows (${desktopLayout.documentScrollWidth} > ${desktopLayout.viewportWidth})`);
     assert(desktopLayout.toggleBorderTopRightRadius >= 5.5 && desktopLayout.toggleBorderBottomRightRadius >= 5.5,
-      `${locale.key} desktop: more toggle must own rounded right edge (${desktopLayout.toggleBorderTopRightRadius}/${desktopLayout.toggleBorderBottomRightRadius})`);
-    assert(desktopLayout.toggleBorderLeftWidth <= 0.5,
-      `${locale.key} desktop: duplicate divider remains before more toggle (${desktopLayout.toggleBorderLeftWidth}px)`);
+      `${locale.key} desktop: more toggle must remain individually rounded (${desktopLayout.toggleBorderTopRightRadius}/${desktopLayout.toggleBorderBottomRightRadius})`);
+    assert(desktopLayout.toggleBorderLeftWidth >= 0.5,
+      `${locale.key} desktop: separated more control lost its left border (${desktopLayout.toggleBorderLeftWidth}px)`);
+    desktopLayout.labels.forEach((label, index) => {
+      assert(label.desktopText === PRIMARY_MOBILE_LABELS[index],
+        `${locale.key} desktop: unexpected compact label for ${label.region}: ${label.desktopText}`);
+      assert(label.desktopDisplay !== 'none',
+        `${locale.key} desktop: compact desktop label hidden for ${label.region}`);
+    });
     results.push({ width: DESKTOP_VIEWPORT_WIDTH, ...desktopLayout });
     console.log(`ok - ${locale.key} desktop region edge and active state`);
 

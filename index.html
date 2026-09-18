@@ -207,10 +207,10 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play の国または地域">
-            <button data-region="JP" class="active">🇯🇵 日本</button>
-            <button data-region="US">🇺🇸 United States</button>
-            <button data-region="KR">🇰🇷 대한민국</button>
-            <button data-region="TW">🇹🇼 台灣</button>
+            <button data-region="JP" class="active">JP</button>
+            <button data-region="US">US</button>
+            <button data-region="KR">KR</button>
+            <button data-region="TW">TW</button>
         </div>
         <div class="header-links">
             <a href="attention.html" class="alert-link" data-country-notes-link data-lang-key="linkAttention">⚠️ For users outside Japan</a>
@@ -224,9 +224,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <p id="site-description" class="site-description" data-lang-key="siteDescription">目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">あといくら必要？</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">この課金で何pt？</button>
-        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">🎁 週次を記録</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">通常計算</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算モード</button>
+        <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">ウィークリーリワード記録</button>
     </div>
 
     <div id="mainMode" role="tabpanel" aria-labelledby="tab-main" aria-hidden="false" data-visible-base-rate-layout="true">

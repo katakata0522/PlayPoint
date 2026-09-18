@@ -8,10 +8,10 @@ const { runEsmProbe } = require('./helpers/runtime-esm.cjs');
 
 const root = path.resolve(__dirname, '..');
 const primaryRegions = [
-  ['JP', '🇯🇵 日本'],
-  ['US', '🇺🇸 United States'],
-  ['KR', '🇰🇷 대한민국'],
-  ['TW', '🇹🇼 台灣']
+  ['JP', 'JP'],
+  ['US', 'US'],
+  ['KR', 'KR'],
+  ['TW', 'TW']
 ];
 const primaryRegionFiles = new Set(['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']);
 const expandedRegionFiles = new Map([
@@ -55,8 +55,8 @@ test('expanded selector keeps Hong Kong and India discoverable as regions', () =
   assert.match(js, /香港 Hong Kong/);
   assert.match(js, />India</);
   assert.match(js, /More regions/);
-  assert.match(js, /🇭🇰 HK/);
-  assert.match(js, /🇮🇳 IN/);
+  assert.match(js, /HK: \{ short: 'HK' \}/);
+  assert.match(js, /IN: \{ short: 'IN' \}/);
   assert.match(js, /aria-current/);
 });
 
@@ -83,13 +83,17 @@ test('mobile selector keeps separate compact labels and a 44px touch target', ()
   assert.match(css, /min-height: 44px/);
 });
 
-test('desktop selector does not depend on OS flag-emoji rendering', () => {
+test('desktop selector keeps compact visible codes without flag-glyph dependence', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
+  const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
 
-  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-switch > button\[data-region\] \{[\s\S]*?font-size: 0/);
-  for (const [region, label] of [['JP', '日本'], ['US', 'United States'], ['KR', '대한민국'], ['TW', '台灣']]) {
-    assert.match(css, new RegExp(`button\\[data-region="${region}"\\]::before \\{[\\s\\S]*?background-image: url\\("data:image\\/svg\\+xml;base64,`));
-    assert.ok(css.includes(`button[data-region="${region}"]::after {\n    content: "${label}";`), `missing desktop text label for ${region}`);
+  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?gap: 0\.35rem/);
+  assert.doesNotMatch(css, /data:image\/svg\+xml;base64/);
+  for (const region of ['JP', 'US', 'KR', 'TW']) {
+    assert.ok(
+      js.includes(`${region}: { desktop: '${region}', mobile: '${region}' }`),
+      `missing compact visible label for ${region}`
+    );
   }
 });
 
