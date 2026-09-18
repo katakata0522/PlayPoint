@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中697精査・233未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第18回を末尾へ追記する。
+最新集計: **基準930ケース中715精査・215未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第19回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -517,3 +517,18 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 5. HK/IN author link 3本固定を、1件以上＋全リンクのtarget/fallback semanticsへ変更。
 
 公開HTML/CSS/JS・翻訳copy・記事本文・hreflang・著者導線は変更していない。
+
+## 第19回: 国際ガイド発見性・関連記事・人気記事・sidebar 18ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル18ケースをtaxonomy・hub・related helper・popular SSOT・sidebar公開成果物と照合。既精査697へ18を加え、**715精査・215未精査**とする。現行959ケースは維持。
+
+### 判断
+
+- intl-guide-discovery 5: 全維持。5件/20件以上snapshotをSSOT一致・category coverageへ。
+- intl-related-guides 3: 全維持。3件固定/6 signature閾値を意味契約へ。
+- intl-popular-guides 3: 全維持。固定snapshot日/固定5件をISO日付・SSOT/helper一致へ。
+- intl-navigation-sidebar-v1 7: 全維持。locale手書き配列をcanonical SSOTへ。
+
+公開HTML/CSS/JS・記事本文・表示件数・人気順・related生成は変更していない。

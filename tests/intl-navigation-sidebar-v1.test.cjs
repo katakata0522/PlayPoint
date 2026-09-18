@@ -6,7 +6,8 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const locales = ['en', 'ko', 'tw'];
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
+const locales = INTERNATIONAL_LOCALES;
 
 function read(locale, file) {
   return fs.readFileSync(path.join(root, locale, 'articles', file), 'utf8');

@@ -13,6 +13,7 @@ const {
   extractHubLinks,
   renderHubBody
 } = require('../scripts/intl-hub-discovery.cjs');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -55,21 +56,29 @@ test('hub title extraction decodes entities once and rejects embedded markup', (
 });
 
 test('international start guides are curated per locale instead of translated from one global list', () => {
-  const en = getStartHereHrefs('en');
-  const ko = getStartHereHrefs('ko');
-  const tw = getStartHereHrefs('tw');
+  const byLocale = Object.fromEntries(INTERNATIONAL_LOCALES.map(locale => [locale, getStartHereHrefs(locale)]));
 
-  assert.equal(en.length, 5);
-  assert.equal(ko.length, 5);
-  assert.equal(tw.length, 5);
-  assert.notDeepEqual(en, ko);
-  assert.notDeepEqual(en, tw);
-  assert.notDeepEqual(ko, tw);
-  assert.deepEqual(getStartHereHrefs('unsupported-locale'), en);
+  for (const [locale, hrefs] of Object.entries(byLocale)) {
+    assert.ok(hrefs.length > 0, `${locale}: curated start list must not be empty`);
+    assert.equal(new Set(hrefs).size, hrefs.length, `${locale}: curated starts must be unique`);
+    for (const href of hrefs) {
+      assert.ok(href.startsWith(`/${locale}/articles/`), `${locale}: start guide must stay in locale`);
+      assert.ok(fs.existsSync(path.join(root, href.slice(1))), `${locale}: missing curated start ${href}`);
+    }
+  }
+
+  for (let i = 0; i < INTERNATIONAL_LOCALES.length; i += 1) {
+    for (let j = i + 1; j < INTERNATIONAL_LOCALES.length; j += 1) {
+      const left = INTERNATIONAL_LOCALES[i];
+      const right = INTERNATIONAL_LOCALES[j];
+      assert.notDeepEqual(byLocale[left], byLocale[right], `${left}/${right}: curation should remain market-specific`);
+    }
+  }
+  assert.deepEqual(getStartHereHrefs('unsupported-locale'), byLocale.en);
 });
 
-test('EN/KO/TW hubs provide five locale-curated starts plus searchable category cards', () => {
-  for (const locale of ['en', 'ko', 'tw']) {
+test('international hubs render their curated starts plus searchable category cards', () => {
+  for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/index.html`);
     const content = getArticleContent(html);
 
@@ -86,10 +95,10 @@ test('EN/KO/TW hubs provide five locale-curated starts plus searchable category 
     assert.deepEqual(featuredHrefs, getStartHereHrefs(locale), `${locale}: featured guides must match locale curation`);
 
     const allCards = [...content.matchAll(/data-guide-card data-category="([^"]+)"/g)].map(match => match[1]);
-    assert.ok(allCards.length >= 20, `${locale}: searchable catalog is unexpectedly small`);
+    assert.ok(allCards.length > featuredHrefs.length, `${locale}: searchable catalog must extend beyond curated starts`);
     for (const category of allCards) assert.ok(CATEGORY_KEYS.includes(category), `${locale}: unknown category ${category}`);
-
     for (const category of CATEGORY_KEYS) {
+      assert.ok(allCards.includes(category), `${locale}: catalog has no ${category} guide`);
       assert.match(content, new RegExp(`data-guide-filter="${category}"`), `${locale}: missing ${category} filter`);
     }
   }
