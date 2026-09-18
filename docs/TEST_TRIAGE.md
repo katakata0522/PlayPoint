@@ -693,6 +693,30 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第19回（2026-09-18）
+
+基準930ケースに含まれる「国際ガイド発見性・関連記事・人気記事・sidebar」4ファイル18ケースを、taxonomy SSOT、公開hub、related ranking helper、popular editorial SSOT、BreadcrumbList、6地域switcherと突合して個別精査した。
+
+**基準930中715精査・215未精査。** ケース数は増減せず、現行959ケースを維持する。公開HTML/CSS/JS・記事本文・sidebar表示件数・人気記事順・関連記事生成は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-guide-discovery.test.cjs` | 5 | 全件維持。taxonomy・XSS安全性・locale別curation・search/filter・active navigationを維持。Start 5件・catalog 20件以上という規模snapshotをSSOT一致/category coverageへ変更 |
+| `intl-related-guides.test.cjs` | 3 | 全件維持。ranking fixtureと高signal導線を維持。公開sidebar 3件固定・文脈signature 6種以上を非空/一意/同locale/自己リンクなし/複数文脈へ変更 |
+| `intl-popular-guides.test.cjs` | 3 | 全件維持。editorial SSOT・rank・current self-link防止を維持。snapshot日 `2026-09-02` と5件固定を有効日付・SSOT件数/helper出力一致へ変更 |
+| `intl-navigation-sidebar-v1.test.cjs` | 7 | 全件維持。Role別next action、breadcrumb、author trust、region switcher、BreadcrumbListを維持。EN/KO/TW一覧をcanonical `INTERNATIONAL_LOCALES` から導出 |
+
+### 今回の過剰固定・重複整理
+
+- `START_HERE_SLUGS` はlocale別curationのSSOTなので、テスト側で5件を再定義しない。非空・一意・同locale・実在を確認し、公開featured cardがSSOTと完全一致することを保証する。
+- hub全catalogの「20件以上」は記事数増減に依存する任意閾値なので削除。curated startより広いcatalogであり、全taxonomy categoryに実記事があり、filterが存在することを契約にする。
+- related sidebarの件数3は現在のrenderer判断であり、テスト品質指標にしない。非空・一意・自己リンクなし・同locale・実在を守り、記事ごとに少なくとも複数の異なる関連集合が生じることを保証する。
+- popular snapshotは更新時に正しく日付を進められるよう、特定日完全一致ではなくISO日付として妥当であることを検証する。popular list件数もSSOT配列長・helper/render結果から導出する。
+- navigation sidebarのcontent locale一覧は `INTERNATIONAL_LOCALES` に一本化する。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
