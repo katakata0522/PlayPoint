@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中190精査・740未精査**。以下の第3回記録は当時の証跡として保持し、第5回・第6回を末尾へ追記する。
+最新集計: **基準930ケース中220精査・710未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第7回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -146,3 +146,31 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. result navigationの同一instance/deep freeze固定を廃止し、外部変更が後続取得へ漏れないbehavior 1件へ統合する。
 
 第5回後958ケースから1件純減し、静的計算上957ケース。最終件数・合否はこの変更のPR Gate保存TAPを正本とする。公開コード・UI・copy・数式・保存形式・workflowは変更していない。
+
+
+## 第7回: 記事探索・ブログ一覧・内部回遊30ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した6ファイル30ケースを現行mainと照合した。対象ファイルは基準コミットと第6回完了時mainで同一内容。既精査190へ30を加え、**220精査・710未精査**とする。今回はケース数の純減なしで、現行957ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| article-discovery-retention | 11 | 全維持。検索・anchor・本文抽出・読書リスト・URL正規化はbehavior。diary週/outcome reportも必要だが別責務 |
+| blog-listing-ux | 7 | 全維持。taxonomyのカテゴリ数固定とprivate animation名固定だけ除外 |
+| info-return-navigation | 2 | 全維持。同一origin referrerとfallback地域の安全な実script behavior |
+| internal-link-targets | 4 | 全維持。属性順完全一致を意味ベースのhref/target/rel契約へ変更 |
+| japanese-navigation-sidebar | 3 | 全維持。role別next action、関連記事、本文/SEO非干渉 |
+| top-article-calculator-funnel | 3 | 全維持。CTAのcopy snapshotを外し、回答順・destination・prompt重複防止を維持 |
+
+### 変更したテスト設計
+
+1. ブログ一覧のゲーム名filterは記事カテゴリ数に依存させず、filter一覧の重複なし/有効値と実filter behaviorを確認する。
+2. 記事可視性はprivate animation関数名の不存在ではなく、初期CSSで主要カードを不可視にしないこととBrowser smokeに委ねる。
+3. 内部リンクsame-tab化は正規化後タグ文字列の属性順ではなく、href維持・target除去・無関係rel維持を確認する。
+4. 上位記事CTAは本文の特定フレーズではなく、記事役割に応じた回答後の配置と計算機destinationを確認する。
+5. growth-critical-pages / japanese-guide-brandはUIではなくSEO/ブランド責務として後続精査へ回し、今回の30件へ加算しない。
+
+公開コード・記事本文・表示文言・検索ロジック・保存仕様・workflowは変更していない。
