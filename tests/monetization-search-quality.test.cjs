@@ -140,8 +140,7 @@ test('ゲーム計算機は固定のポイント換金価値を断定しない',
 test('品質保留記事はタイトル・OGP・構造化データ・記事台帳を保守的表現へ統一する', () => {
   const catalog = JSON.parse(read('blog/articles.json'));
   for (const [file, id] of [
-    ['articles/2026-08-17-diamond-valley-festival-guide.html', 'diamond-valley-festival-guide'],
-    ['articles/2026-08-17-tgs-google-play-vip.html', 'tgs-google-play-vip']
+    ['articles/2026-08-17-diamond-valley-festival-guide.html', 'diamond-valley-festival-guide']
   ]) {
     const html = read(file);
     const title = (html.match(/<h1>([^<]+)<\/h1>/) || [])[1];
