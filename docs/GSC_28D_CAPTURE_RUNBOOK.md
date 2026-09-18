@@ -42,7 +42,7 @@ Issue #181 が必要とする「過去28日 vs その直前28日」の非重複�
 
 GitHub:
 
-`ops/apps-script/gsc-nonoverlap-28d.gs`
+`scripts/gsc-nonoverlap-28d.gs`
 
 既存の PlayPoint Analytics に紐づく Apps Script プロジェクトへこのファイルを追加する。
 
