@@ -1,3 +1,5 @@
+HISTORICAL SNAPSHOT — 非正本。記事数・構造の現在値には使用しないでください。現行状態は tests/ と生成器・公開成果物を基準に確認してください。
+
 Total articles scanned: 154
 
 === Articles with Manual HTML TOC (74) ===
