@@ -66,6 +66,18 @@ test('Search Console baseline keeps Raw, Normalized and Property Total as separa
   assert.equal(baseline.searchConsole.beforeAfterComparison.overlap, 'forbidden');
   assert.equal(baseline.searchConsole.beforeAfterComparison.compareSameIntent, true);
   assert.equal(baseline.searchConsole.beforeAfterComparison.compareSameMetricDefinitions, true);
+  const capture = baseline.searchConsole.captureContract;
+  assert.equal(capture.historySheet, '🗃GSC 28日履歴');
+  assert.equal(capture.comparisonSheet, '🔍GSC 28日比較');
+  assert.deepEqual(capture.dimensions, ['query', 'exact_url']);
+  assert.deepEqual(capture.windowRoles, ['current_28d', 'previous_28d']);
+  assert.equal(capture.finalDataOnly, true);
+  assert.equal(capture.failClosedWhenPairMissing, true);
+  assert.deepEqual(capture.idempotencyKey, ['pair_id', 'window_role', 'search_query', 'exact_url']);
+  assert.match(capture.rule, /rolling 30-day snapshot/);
+  for (const required of ['search_query', 'exact_url', 'period_start', 'period_end', 'clicks', 'impressions', 'ctr', 'avg_position']) {
+    assert.ok(capture.requiredColumns.includes(required), `missing GSC capture column: ${required}`);
+  }
 });
 
 test('AdSense anomaly remains reviewable evidence instead of being silently corrected or removed', () => {
