@@ -4,17 +4,40 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { INTL_ARTICLES, LOCALES, PAGE_TYPES } = require('../scripts/intl-seo-content.cjs');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 const articleFiles = [];
-for (const locale of ['en', 'ko', 'tw']) {
+for (const locale of INTERNATIONAL_LOCALES) {
   const dir = path.join(root, locale, 'articles');
   for (const name of fs.readdirSync(dir)) {
     if (name.endsWith('.html')) articleFiles.push(`${locale}/articles/${name}`);
   }
 }
+
+function collectStrings(value, output = []) {
+  if (typeof value === 'string') {
+    output.push(value);
+    return output;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectStrings(item, output);
+    return output;
+  }
+  if (value && typeof value === 'object') {
+    for (const item of Object.values(value)) collectStrings(item, output);
+  }
+  return output;
+}
+
+const canonicalInternationalContent = collectStrings({
+  INTL_ARTICLES,
+  LOCALES,
+  PAGE_TYPES
+}).join('\n');
 
 const staleArticlePhrases = [
   'Use the calculator at 1x first',
@@ -48,14 +71,13 @@ const staleArticlePhrases = [
 ];
 
 test('international article source does not teach multiplier-as-input semantics', () => {
-  const source = read('scripts/intl-seo-content.cjs');
   for (const phrase of staleArticlePhrases) {
-    assert.ok(!source.includes(phrase), `stale international article source wording remains: ${phrase}`);
+    assert.ok(!canonicalInternationalContent.includes(phrase), `stale canonical international wording remains: ${phrase}`);
   }
-  assert.match(source, /final special earn rate shown/);
-  assert.match(source, /최종 특별 적립률/);
-  assert.match(source, /最終.*特別獲點率/);
-  assert.match(source, /multiplier=1/); // legacy URL compatibility remains intentionally supported.
+  assert.match(canonicalInternationalContent, /final special earn rate shown/);
+  assert.match(canonicalInternationalContent, /최종 특별 적립률/);
+  assert.match(canonicalInternationalContent, /最終.*特別獲點率/);
+  assert.match(canonicalInternationalContent, /multiplier=1/); // legacy URL compatibility remains intentionally supported.
 });
 
 test('published international articles do not expose stale multiplier input instructions', () => {

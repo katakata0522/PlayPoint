@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中715精査・215未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第19回を末尾へ追記する。
+最新集計: **基準930ケース中728精査・202未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第20回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -532,3 +532,28 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-navigation-sidebar-v1 7: 全維持。locale手書き配列をcanonical SSOTへ。
 
 公開HTML/CSS/JS・記事本文・表示件数・人気順・related生成は変更していない。
+
+## 第20回: 国際獲得率意味・互換導線13ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル13ケースを、国際SEOコンテンツSSOT・公開EN/KO/TW成果物・status/campaign生成LP・ゲーム比較表と照合して個別精査した。既精査715へ13を加え、**728精査・202未精査**とする。ケース数は増減せず、現行実行集合**959ケース**を維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| intl-amount-earn-rate | 3 | 全維持。未公開fallbackのsource全文snapshotをexport済みPAGE_TYPESの意味契約へ変更 |
+| intl-article-earn-rate-meaning | 4 | 全維持。raw source全文ではなくexport済みcanonical content dataを監査し、公開全記事の旧multiplier説明禁止も維持 |
+| intl-status-campaign-earn-rate | 4 | 全維持。日付対象15件手書きとlegacy multiplier値1/2/3固定をPAGE_TYPES・canonical localeから導出 |
+| meaning-consistency | 2 | 全維持・変更なし。公開トップとゲーム比較表の利用者向け獲得率意味を直接保証 |
+
+### 変更したテスト設計
+
+1. dormant Amount fallbackは `scripts/intl-seo-content.cjs` のファイル全文に特定文があることを固定せず、exportされた `PAGE_TYPES.amount10000` のsummary/sectionsが特別獲得率の意味を持ち、旧multiplier用語を教えないことを検証する。
+2. 国際記事source guardはコメント・コード配置を含むraw file検索から、`INTL_ARTICLES` / `LOCALES` / `PAGE_TYPES` の実export値を再帰的に検査する方式へ変更する。公開HTML側の全記事guardは別層として残す。
+3. status/campaignの日付同期対象は15パスの手書きsnapshotを廃止し、`PAGE_TYPES` のstatus/campaign全件 × `INTERNATIONAL_LOCALES` から導出する。
+4. backward-compatible `multiplier` はテスト側で1/2/3を再定義せず、各PAGE_TYPES queryの値と実公開calculator linkを照合する。
+5. `meaning-consistency` の地域別獲得率表現は、コピーそのものが利用者への意味契約なので緩めない。
+
+公開HTML/CSS/JS・記事本文・翻訳copy・計算式・1728例・生成物・保存形式は変更していない。tests/docsのみの変更である。
