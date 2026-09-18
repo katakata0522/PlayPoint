@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 10,
-  "latestReviewedBaselineCases": 375,
-  "latestUnreviewedBaselineCases": 555,
+  "latestStage": 11,
+  "latestReviewedBaselineCases": 448,
+  "latestUnreviewedBaselineCases": 482,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -500,5 +500,68 @@
         "currentCaseDelta": 1
       }
     ]
+  },
+  "expectedCurrentCasesAfterWave11": 956,
+  "wave11": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 73,
+    "scope": "game-prices-purchase-routes-deep-guides",
+    "files": [
+      {
+        "file": "tests/game-earn-rate-copy.test.cjs",
+        "cases": 1,
+        "decision": "keep_rendered_output_guard_remove_generator_source_duplication"
+      },
+      {
+        "file": "tests/game-guide-article-hub.test.cjs",
+        "cases": 13,
+        "decision": "keep_12_merge_1_remove_exact_count_date_classes_private_regex"
+      },
+      {
+        "file": "tests/game-guide-text-safety.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_escape_and_text_behavior"
+      },
+      {
+        "file": "tests/game-seo-depth.test.cjs",
+        "cases": 9,
+        "decision": "keep_all_derive_rendered_values_from_game_seo_ssot"
+      },
+      {
+        "file": "tests/game-seo-expanded.test.cjs",
+        "cases": 15,
+        "decision": "keep_all_derive_wave2_output_values_from_ssot"
+      },
+      {
+        "file": "tests/game-seo-wave3.test.cjs",
+        "cases": 10,
+        "decision": "keep_all_derive_mechanics_from_ssot_generalize_stale_claims"
+      },
+      {
+        "file": "tests/game-seo-wave4.test.cjs",
+        "cases": 9,
+        "decision": "keep_all_derive_webstore_facts_from_ssot_generalize_stale_claims"
+      },
+      {
+        "file": "tests/game-seo-wave5.test.cjs",
+        "cases": 11,
+        "decision": "keep_all_remove_arbitrary_source_content_heading_thresholds"
+      },
+      {
+        "file": "tests/rescued-pad-and-articles.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_remove_historical_design_class_bans"
+      }
+    ],
+    "mergedCases": [
+      {
+        "from": "game-guide-article-hub",
+        "name": "blog runtime explicitly accepts deep game guides without opening arbitrary paths",
+        "owner": "game-guide-article-hub actual sanitizeArticleFile behavior case"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium"
   }
 }

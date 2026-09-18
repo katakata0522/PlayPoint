@@ -449,6 +449,38 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、記事本文、記事台帳、redirect、sitemap、計算式、保存形式は変更しない。変更対象はtests、検査用scripts、preflight表示名、監査文書のみで、本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第11回（2026-09-18）
+
+基準930ケースに含まれる「ゲーム固有の価格・課金経路・深掘りガイド」9ファイル73ケースを、現行のゲームSSOT、verification state、公式source URL、生成済みゲーム計算機・深掘り記事・記事台帳・検索index・sitemapと突合して個別精査した。対象9ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` とWave10完了時mainで同一内容だったため、73ケースを基準件数へ加算する。
+
+**基準930中448精査・482未精査。** `game-guide-article-hub` の「blog runtimeがdeep game guide用regexをsource文字列として持つ」1ケースは、同ファイルの `sanitizeArticleFile` 実関数をVM実行して許可/拒否境界を直接確認するbehavior caseが同等以上を保証しているため統合する。Wave10後957ケースから静的計算上956ケース。実件数・合否は当該PR Gate保存TAPを正本とする。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `game-earn-rate-copy.test.cjs` | 1 | 維持。公開ゲームページの旧「倍率/1%」表現復活防止を成果物で確認し、generator source文字列の二重固定を除外 |
+| `game-guide-article-hub.test.cjs` | 13 | 12ケース維持・1件統合。17本exact、2026-09-13 exact、装飾class群、private regex source固定を除外し、catalog一意性・manifest/filter・検索index・canonical/sitemap・実sanitize・記事Role・冪等修復を維持 |
+| `game-guide-text-safety.test.cjs` | 2 | 全件維持。タイトル/関連ラベルのHTML escapeとscript/style除外は直接security/data behavior |
+| `game-seo-depth.test.cjs` | 9 | 全件維持。FGOの確認済み価格/330回、原神price snapshot、モンストWeb商品、ブルアカfail-closedを維持。公開HTML側の数値はGAME_SEO SSOTから導出 |
+| `game-seo-expanded.test.cjs` | 15 | 全件維持。スタレ/ZZZ/ウマ娘/プロセカ/NIKKE/学マスのverification stateとfail-closedを維持。生成HTMLの重複数値はSSOT同期へ変更 |
+| `game-seo-wave3.test.cjs` | 10 | 全件維持。ポケポケ/PAD/アークナイツ/ドッカン/鳴潮の確認済みmechanicsと未確認price分離。深掘り本文の数値はSSOTから導出し、旧全文card snapshotは危険な旧price claimへ一般化 |
+| `game-seo-wave4.test.cjs` | 9 | 全件維持。HBR/崩壊3rd/ファンパレ/Reverse:1999のWeb決済・Google Play境界を維持。guide数値はWave4 SSOTから導出し、旧全文card snapshotを旧固定price claimへ一般化 |
+| `game-seo-wave5.test.cjs` | 11 | 全件維持。プロスピA/Pokémon GO/eFootballの購入経路・地域別rate・portal・sitemapを維持。source「4件以上」、HTML 7000文字以上、h2 5個以上という任意量閾値を廃止 |
+| `rescued-pad-and-articles.test.cjs` | 3 | 全件維持。PAD全locale、救出記事の台帳/著者/公式source/関連記事、専用OGP実体と重複防止を維持。#168時代のCSS class禁止は記事design ownerへ委譲 |
+
+### 今回の事実契約と過剰固定の分離
+
+- FGOの聖晶石価格、330回確定召喚、PADパス980円、モンストWebショップ190個/月1回200個、ウマスク980円など、現在も公式一次情報と整合する確認済み値はSSOT側の事実契約として維持する。
+- ただし同じ値をSSOT・親計算機・深掘り記事テストへ何度もリテラルで書かない。SSOTの確認済み値と公開成果物の同期を検証し、値更新時に「正しい変更なのに複数snapshotを手修正する」構造を解消する。
+- `verification=official` / `current-published-price-snapshot` / `*-price-recheck-pending` と `publishGooglePlayPrices=false` の区別を維持する。公開一次情報で現行価格を固定できないゲームは自由入力へfail closedし、旧priceや固定天井円額を復活させない。
+- deep guide catalogは「17本」という当時の件数ではなく、非空・ID/file一意・正規path・Article Role・manifest/search/filter同期を契約にする。
+- game guideのofficial verification dateは `2026-09-13` をテストへ再記載せず、記事catalogのmodified日とverification registryが一致することを保証する。
+- blog runtimeのdeep guide許可はprivate変数名/regex sourceではなく、実 `sanitizeArticleFile` を実行して正常pathを通し、path traversal/URL/query/未登録pathを拒否するbehaviorをownerにする。
+- Wave5の「sourceが4件以上」「HTML 7000文字以上」「h2が5個以上」は品質そのものではないため廃止し、Google Play公式sourceを含むこと、HTTPS source、購入経路分離、必要sectionの存在へ変更する。
+- 救出記事の古い `btn-clean-shimmer|clean-accordion|pro-con-grid` class禁止は履歴design snapshotのため外し、Article Design System/browser smokeへ委譲する。
+
+公開HTML/CSS/JS、ゲームSSOT、価格、記事本文、記事台帳、検索index、sitemap、計算式、保存形式、workflowは変更しない。tests/docsのみの変更で本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

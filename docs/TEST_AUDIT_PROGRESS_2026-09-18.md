@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中375精査・555未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第10回を末尾へ追記する。
+最新集計: **基準930ケース中448精査・482未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第11回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -280,3 +280,36 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 7. author profile件数、changelog version番号、JP/TW記事の見出し/CTA全文snapshotを除去。
 
 公開コード・記事本文・台帳・redirect・sitemap・計算式・保存形式は変更していない。
+
+
+## 第11回: ゲーム固有価格・課金経路・深掘りガイド73ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した9ファイル73ケースを現行mainと照合した。対象ファイルは基準コミットとWave10完了時mainで同一内容。既精査375へ73を加え、**448精査・482未精査**とする。source regexだけを確認する重複1ケースを実sanitize behaviorへ統合するため、現行957ケースから静的計算上956ケース。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| game-earn-rate-copy | 1 | 維持。generator sourceではなく公開成果物の旧倍率表現をguard |
+| game-guide-article-hub | 13 | 12維持・1統合。17本/date/class/private regex snapshotをdata/behavior契約へ |
+| game-guide-text-safety | 2 | 全維持。HTML escape/hidden region text extraction |
+| game-seo-depth | 9 | 全維持。FGO/原神/モンスト/ブルアカ、HTML数値をGAME_SEO SSOT同期へ |
+| game-seo-expanded | 15 | 全維持。Wave2 verification/fail-closed、HTML数値をSSOT同期へ |
+| game-seo-wave3 | 10 | 全維持。verified mechanics/price pending分離、旧card全文を危険price claim guardへ |
+| game-seo-wave4 | 9 | 全維持。Web/Google Play境界、guide値をWave4 SSOT同期へ |
+| game-seo-wave5 | 11 | 全維持。任意source数/文字数/h2数閾値を除外し意味契約を維持 |
+| rescued-pad-and-articles | 3 | 全維持。古いdesign class禁止だけ除外し救出記事/OGP保証を維持 |
+
+### 変更したテスト設計
+
+1. deep guide catalogは17件exactではなく、非空・ID/file一意・path/Role/manifest/filter/search同期を保証。
+2. official verification dateは固定日ではなくcatalog.modifiedとverification registryの一致。
+3. blog deep-guide inputはsource regex guardを削除し、実sanitizerの許可/拒否behaviorへ統合。
+4. FGO/原神/モンスト/スタレ/ZZZ/ウマ娘/プロセカ/PAD/アークナイツ/HBR/崩壊3rd/ファンパレ/プロスピA/Pokémon GO/eFootballの生成HTMLは各SSOTから期待値を導出。
+5. price未確認ゲームのfail-closedと旧固定price復活防止は維持。
+6. Wave5のsource件数・HTML文字数・h2数を品質条件にしない。
+7. 救出記事の#168 design class禁止はdesign ownerへ委譲し、台帳・著者・公式source・関連記事・OGPを保証。
+
+公開コード・ゲームSSOT・記事本文・台帳・検索index・sitemap・workflowは変更していない。

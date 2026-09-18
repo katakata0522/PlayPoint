@@ -7,6 +7,7 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
+const formatNumber = value => new Intl.NumberFormat('ja-JP').format(value);
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('../scripts/game-seo-wave4-data.cjs');
 const { getGeneratedGamePageContentDate } = require('../scripts/content-dates.cjs');
 const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
@@ -47,7 +48,7 @@ test('Wave 4 official sources are pinned to intended domains and paths', () => {
   assertSource(SOURCES.reverseTopUp, 're1999.bluepoch.com', '/payment/info');
 });
 
-test('HBR parent fails closed while the guide preserves current official Web Shop advantages', () => {
+test('HBR parent fails closed while the guide reflects the Web Shop SSOT', () => {
   const html = read('games/hbr/index.html');
   assert.ok(html.includes('Google Playの表示額を入力'));
   assert.ok(html.includes('./google-play-vs-webshop/'));
@@ -56,14 +57,16 @@ test('HBR parent fails closed while the guide preserves current official Web Sho
   }
 
   const guide = read('games/hbr/google-play-vs-webshop/index.html');
-  assert.ok(guide.includes('アプリ内より5%OFF'));
-  assert.ok(guide.includes('購入金額の<strong>1%分のWEB SHOPポイント'));
-  assert.ok(guide.includes('プレミアムパス/ライトパスはWEB SHOPから加入できない'));
-  assert.ok(guide.includes('10,000個/9,500円'));
-  assert.ok(guide.includes('30,000個/28,500円'));
+  const webShop = GAME_SEO_WAVE4.hbr.webShop;
+  assert.ok(guide.includes('アプリ内より' + webShop.appItemDiscountPercent + '%OFF'));
+  assert.ok(guide.includes('購入金額の<strong>' + webShop.basePointPercent + '%分のWEB SHOPポイント'));
+  assert.match(guide, /パス.*WEB SHOP.*加入できない/);
+  for (const example of webShop.currentQuartzExamples.filter(item => item.quartz >= 10000)) {
+    assert.ok(guide.includes(formatNumber(example.quartz) + '個/' + formatNumber(example.price) + '円'));
+  }
 });
 
-test('Honkai Impact 3rd removes cash pity guesses and explains official Charge Center boundaries', () => {
+test('Honkai Impact 3rd removes cash pity guesses and reflects Charge Center SSOT boundaries', () => {
   const html = read('games/honkai3rd/index.html');
   assert.ok(html.includes('Google Playの表示額を入力'));
   assert.ok(html.includes('./google-play-vs-charge-center/'));
@@ -72,13 +75,14 @@ test('Honkai Impact 3rd removes cash pity guesses and explains official Charge C
   }
 
   const guide = read('games/honkai3rd/google-play-vs-charge-center/index.html');
-  assert.ok(guide.includes('月パス以外の水晶2倍チャージボーナス'));
-  assert.ok(guide.includes('180日未満'));
-  assert.ok(guide.includes('2026年3月5日〜4月16日'));
-  assert.ok(guide.includes('恒常割引ではありません'));
+  const charge = GAME_SEO_WAVE4.honkai3rd.chargeCenter;
+  assert.match(guide, /月パス以外の水晶2倍チャージボーナス/);
+  assert.ok(guide.includes(String(charge.monthlyPassCanExtendWhenRemainingDaysBelow) + '日未満'));
+  assert.equal(charge.historical2026CouponCampaign.currentStandingDiscount, false);
+  assert.match(guide, /恒常割引ではありません/);
 });
 
-test('Phantom Parade fails closed for Google Play while preserving current official Web Shop evidence', () => {
+test('Phantom Parade fails closed for Google Play while reflecting Web Shop SSOT', () => {
   const html = read('games/phantomparade/index.html');
   assert.ok(html.includes('Google Playの表示額を入力'));
   assert.ok(html.includes('./google-play-vs-webshop/'));
@@ -87,11 +91,12 @@ test('Phantom Parade fails closed for Google Play while preserving current offic
   }
 
   const guide = read('games/phantomparade/google-play-vs-webshop/index.html');
-  assert.ok(guide.includes('初回は<strong>17〜20%増量'));
-  assert.ok(guide.includes('4〜5%増量'));
-  assert.ok(guide.includes('マイルpt'));
-  assert.ok(guide.includes('ファンパレボーナス610円'));
-  assert.ok(guide.includes('Google Play Pointsとは別'));
+  const webShop = GAME_SEO_WAVE4.phantomparade.webShop;
+  assert.ok(guide.includes('初回は<strong>' + webShop.currentPaidBeadFirstBonusPercentRange.join('〜') + '%増量'));
+  assert.ok(guide.includes(webShop.currentPackBonusPercentRange.join('〜') + '%増量'));
+  assert.match(guide, /マイルpt/);
+  for (const example of webShop.currentPassExamples) assert.ok(guide.includes(example.name + formatNumber(example.price) + '円'));
+  assert.match(guide, /Google Play Pointsとは別/);
 });
 
 test('Reverse 1999 removes fixed product and pity cash data because official prices are purchase-page based', () => {
@@ -103,17 +108,17 @@ test('Reverse 1999 removes fixed product and pity cash data because official pri
   assert.ok(html.includes('公式が価格を購入ページ表示としている'));
 });
 
-test('stale Wave 4 card descriptions do not survive across Japanese game pages', () => {
-  const stale = [
-    'ヘブンバーンズレッド（ヘブバン）のクォーツ購入、ライト/プレミアムパス、200連天井ガチャで貯まるGoogle Play Pointsをパッと計算！',
-    '崩壊3rdの水晶購入、ギフトコイン、月パス、90連キャラ確定天井で貯まるGoogle Play Pointsをパッと計算！',
-    '呪術廻戦ファントムパレード（ファンパレ）の有償廻珠、ファンパレパス、250連天井ガチャで貯まるPlayポイントをサクッと計算！',
-    'リバース：1999の純雨の雫パック、咆哮のひと月（月パス）、70連/140連天井ガチャで貯まるGoogle Play Pointsを即時計算！'
+test('stale Wave 4 fixed-price claims do not survive across Japanese game pages', () => {
+  const staleClaims = [
+    'プレミアムパス (2,900円)',
+    '確定天井 90連 (約50,400円)',
+    'ファンパレパス (1,000円)',
+    '咆哮のひと月 (610円)'
   ];
   const files = getGamePageHtmlFiles(root).filter(file => file.startsWith('games/'));
   for (const file of files) {
     const html = read(file);
-    for (const text of stale) assert.ok(!html.includes(text), `${file} should not retain stale Wave 4 card copy`);
+    for (const text of staleClaims) assert.ok(!html.includes(text), `${file} should not retain stale Wave 4 fact: ${text}`);
   }
 });
 
