@@ -180,6 +180,7 @@ test('計算完了が初回成功イベントより先でも記事起点を失�
   assert.equal(eventCalls(context, 'calculator_funnel_completed')[0].entry_source_path, '/tw/articles/google-play-quests.html');
 });
 
+
 test('許可外イベント・パラメータ・外部遷移は送信または保存しない', () => {
   const { context, storage } = createRuntime('granted');
   const analytics = context.PlayPointAnalytics;
@@ -189,14 +190,27 @@ test('許可外イベント・パラメータ・外部遷移は送信または�
   assert.equal(analytics.rememberCalculatorEntry('https://example.com/', {
     source_path: '/articles/guide.html'
   }), false);
+
+  for (const params of [null, undefined, false, 0, 'private input', [], {}]) {
+    assert.equal(analytics.sanitizeParams('article_navigation_click', params), null);
+    assert.equal(analytics.track('article_navigation_click', params), false);
+  }
+
   analytics.track('search', {
     search_term: '<script>very long</script>',
     results_count: -1,
     secret: 'drop'
   });
+  analytics.track('search', {
+    search_term: 'private@example.com',
+    results_count: 3,
+    secret: 'drop'
+  });
 
   assert.equal(eventCalls(context, 'unknown_event').length, 0);
+  assert.equal(eventCalls(context, 'article_navigation_click').length, 0);
   assert.deepEqual(eventCalls(context, 'search')[0], {});
+  assert.deepEqual(eventCalls(context, 'search')[1], { results_count: 3 });
   assert.equal(storage.size, 0);
 });
 
