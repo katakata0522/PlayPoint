@@ -48,6 +48,17 @@ test('51記事すべてがgame_decisionで公式Googleソースと相互hreflang
   }
 });
 
+test('英語ゲーム特集のmeta descriptionは単語・文途中で切らず検索意図を完結させる', () => {
+  for (const guide of ALL_GUIDES) {
+    const html = renderGuide('en', guide);
+    const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
+    assert.ok(description.length > 0, guide.slug + ': description is required');
+    assert.ok(description.length <= 180, guide.slug + ': description must stay concise');
+    assert.match(description, /[.!?]$/, guide.slug + ': description must end as a complete sentence');
+    assert.doesNotMatch(description, /^Region-aware game purchase guide\./, guide.slug + ': generic prefix wastes the snippet');
+  }
+});
+
 test('地域固有の価格・公式用語を日本語版から機械換算しない', () => {
   const bySlug = slug => ALL_GUIDES.find(guide => guide.slug === slug);
 

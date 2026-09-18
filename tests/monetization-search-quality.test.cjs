@@ -55,8 +55,7 @@ test('記事・ブログGA4はconfig後にreadinessを立てる', () => {
 
 test('未確認の未来イベント記事は検索品質保留としてnoindex・サイトマップ除外する', () => {
   const files = [
-    'articles/2026-08-17-diamond-valley-festival-guide.html',
-    'articles/2026-08-17-tgs-google-play-vip.html'
+    'articles/2026-08-17-diamond-valley-festival-guide.html'
   ];
   const mainSitemap = read('sitemap.xml');
   const blogSitemap = read('blog/sitemap.xml');
@@ -77,6 +76,24 @@ test('未確認の未来イベント記事は検索品質保留としてnoindex�
     assert.ok(!read('sitemap.html').includes(name), name + ': 人向けサイトマップに残っています');
     assert.equal(item.listed, false, name + ': 記事台帳で非掲載になっていません');
   }
+});
+
+test('公式発表済みのTGS 2026記事はindex対象へ戻し、現行公式条件を保持する', () => {
+  const file = 'articles/2026-08-17-tgs-google-play-vip.html';
+  const html = read(file);
+  const catalog = JSON.parse(read('blog/articles.json'));
+  const item = catalog.find(entry => entry.file === '../' + file);
+  assert.match(html, /name="robots" content="index, follow, max-image-preview:large"/);
+  assert.doesNotMatch(html, /公式発表待ち|2026年TGSのGoogle Play VIP特典は未確認/);
+  assert.match(html, /2026年9月19日（土）〜21日（月）/);
+  assert.match(html, /幕張メッセ ホール7/);
+  assert.match(html, /同行者最大5名/);
+  assert.match(html, /ダイヤモンドラウンジ/);
+  assert.match(html, /ダイヤモンドキット/);
+  assert.match(html, /2,000pt/);
+  assert.match(html, /3,000pt/);
+  assert.ok(item && item.listed !== false, 'TGS 2026 article must be listed');
+  assert.equal(item.modified, '2026-09-18');
 });
 
 test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {
@@ -123,8 +140,7 @@ test('ゲーム計算機は固定のポイント換金価値を断定しない',
 test('品質保留記事はタイトル・OGP・構造化データ・記事台帳を保守的表現へ統一する', () => {
   const catalog = JSON.parse(read('blog/articles.json'));
   for (const [file, id] of [
-    ['articles/2026-08-17-diamond-valley-festival-guide.html', 'diamond-valley-festival-guide'],
-    ['articles/2026-08-17-tgs-google-play-vip.html', 'tgs-google-play-vip']
+    ['articles/2026-08-17-diamond-valley-festival-guide.html', 'diamond-valley-festival-guide']
   ]) {
     const html = read(file);
     const title = (html.match(/<h1>([^<]+)<\/h1>/) || [])[1];
