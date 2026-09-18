@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中829精査・101未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第25回を末尾へ追記する。
+最新集計: **基準930ケース中844精査・86未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第26回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -663,3 +663,26 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 4. watchdogのmirror試行判定・別Deploy保護・trusted main制御面を維持する。
 
 公開サイト・Deploy先・rollback処理・現行HISTORY_LIMIT値は変更していない。
+
+## 第26回: browser runtime・revision evidence 15ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した3ファイル15ケースを、本番browser entrypoint・revision evidence・CI runtime helper/lockfileと照合した。既精査829へ15を加え、**844精査・86未精査**とする。ケース数は増減せず現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| blog-runtime-regressions | 1 | 維持・変更なし |
+| browser-revision-evidence | 8 | 全維持・変更なし |
+| browser-runtime-ssot | 6 | 全維持。Playwright/Lighthouseのexact version number snapshotだけをsemver pin＋lock一致へ |
+
+### 変更したテスト設計
+
+1. Playwright/Lighthouseはexact semver pinを必須としつつ、現在のversion番号自体はテストへ二重記載しない。
+2. lockfileがmanifest versionと一致しintegrityを持つ契約は維持する。
+3. SHA evidence・manifest digest・別checkout/別本番拒否・4復旧レーン結合は緩和しない。
+4. browser runtime helper ownershipとauto-rollbackでの再install禁止も維持する。
+
+公開コード・browser dependency・lockfile・workflowは変更していない。
