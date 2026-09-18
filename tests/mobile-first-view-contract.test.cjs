@@ -306,32 +306,43 @@ test('公開トップは役割が分かる既存タブ名と、入力を邪魔�
 });
 
 
-test('モード説明は通常・逆算・週次で文脈を切り替え、週次では週次記事だけを2列カードで案内する', () => {
-  const ui = read('js/ui.js');
 
-  assert.match(ui, /descriptions:[\s\S]*?main:[\s\S]*?reverse:[\s\S]*?diary:/);
-  assert.match(ui, /ウィークリー関連ガイド/);
-  assert.match(ui, /ボタンがない・受け取れない時/);
-  assert.match(ui, /スーパーウィークリーの条件・賞品/);
-  assert.match(ui, /mode-context-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(ui, /getMainOnlySections/);
-  assert.match(ui, /setElementVisibility\(section, isMain\)/);
+test('モード別ガイドは初期表示に載せず、逆算・週次の操作時だけ遅延読込する', () => {
+  const ui = read('js/ui.js');
+  const experience = read('js/home-experience.js');
+  const worker = read('sw.js');
+
+  assert.match(ui, /import\('\/js\/home-experience\.js\?v=20260919_1'\)/);
+  assert.match(ui, /HOME_EXPERIENCE_SCROLL_THRESHOLD = 320/);
+  assert.doesNotMatch(worker, /home-experience\.js/, 'home experience must not inflate initial Service Worker precache');
+  assert.match(experience, /descriptions:[\s\S]*?reverse:[\s\S]*?diary:/);
+});
+
+test('週次モードは週次記事だけを見える2列カードで案内する', () => {
+  const experience = read('js/home-experience.js');
+
+  assert.match(experience, /ウィークリー関連ガイド/);
+  assert.match(experience, /ボタンがない・受け取れない時/);
+  assert.match(experience, /スーパーウィークリーの条件・賞品/);
+  assert.match(experience, /mode-context-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(experience, /mainOnlySections/);
+  assert.match(experience, /for \(const section of sections\) setVisible\(section, isMain\)/);
 });
 
 test('スマホ記事導線はカードを2列にし、極小幅だけ1列へ退避する', () => {
-  const ui = read('js/ui.js');
+  const experience = read('js/home-experience.js');
 
-  assert.match(ui, /@media\(max-width:640px\)[^\n]*article-link-list\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(ui, /@media\(max-width:340px\)\{\.mode-context-grid,\.article-link-list\{grid-template-columns:1fr\}/);
-  assert.match(ui, /article-link-title\{font-size:\.93rem/);
+  assert.match(experience, /@media\(max-width:640px\)[^\n]*article-link-list\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(experience, /@media\(max-width:340px\)\{\.mode-context-grid,\.article-link-list\{grid-template-columns:1fr\}/);
+  assert.match(experience, /article-link-title\{font-size:\.93rem/);
 });
 
 test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
-  const ui = read('js/ui.js');
+  const experience = read('js/home-experience.js');
 
-  assert.match(ui, /\.back-to-top\{[^\n]*width:48px;height:48px/);
-  assert.match(ui, /button\.id = 'back-to-top'/);
-  assert.match(ui, /window\.scrollTo\(\{ top: 0, behavior: prefersReducedMotion \? 'auto' : 'smooth' \}\)/);
-  assert.match(ui, /window\.innerHeight \* 0\.85/);
-  assert.match(ui, /prefers-reduced-motion:reduce/);
+  assert.match(experience, /\.back-to-top\{[^\n]*width:48px;height:48px/);
+  assert.match(experience, /backToTopButton\.id = 'back-to-top'/);
+  assert.match(experience, /window\.scrollTo\(\{ top: 0, behavior: reduced \? 'auto' : 'smooth' \}\)/);
+  assert.match(experience, /window\.innerHeight \* 0\.85/);
+  assert.match(experience, /prefers-reduced-motion:reduce/);
 });
