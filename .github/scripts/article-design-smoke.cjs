@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
 const { chromium } = require('playwright-core');
+const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
@@ -22,7 +23,7 @@ const CASES = process.env.ARTICLE_REVIEW_ALL === '1'
       ...JSON.parse(fs.readFileSync(path.join(ROOT, 'blog/articles.json'), 'utf8'))
         .filter(article => article.listed !== false)
         .map(article => article.file.replace(/^\.\.\//, '')),
-      ...['en', 'ko', 'tw'].flatMap(locale => fs.readdirSync(path.join(ROOT, locale, 'articles'))
+      ...INTERNATIONAL_LOCALES.flatMap(locale => fs.readdirSync(path.join(ROOT, locale, 'articles'))
         .filter(file => file.endsWith('.html') && file !== 'index.html')
         .map(file => locale + '/articles/' + file))
     ].map(file => ({ key: file.replace(/[/.]/g, '-'), path: file, allArticle: true }))
