@@ -200,33 +200,8 @@ const ALL_GUIDES = GUIDES;
 function escapeHtml(value) {
   return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-function completeEnglishDescription(value, maxLength = 180) {
-  const text = String(value || '').replace(/\\s+/g, ' ').trim();
-  if (text.length <= maxLength) return text;
-
-  const sentences = text.match(/.*?[.!?](?:\\s|$)|.+$/g)?.map(sentence => sentence.trim()).filter(Boolean) || [];
-  let complete = '';
-  for (const sentence of sentences) {
-    const candidate = complete ? `${complete} ${sentence}` : sentence;
-    if (candidate.length > maxLength) break;
-    complete = candidate;
-  }
-  if (complete) return complete;
-
-  const firstSentence = sentences[0] || text;
-  const limited = firstSentence.slice(0, maxLength);
-  const clauseBoundary = Math.max(limited.lastIndexOf(';'), limited.lastIndexOf(','), limited.lastIndexOf(':'));
-  if (clauseBoundary >= 80) {
-    return limited.slice(0, clauseBoundary).trim().replace(/[;,:]+$/, '') + '.';
-  }
-
-  const wordBoundary = limited.lastIndexOf(' ');
-  const end = wordBoundary >= 80 ? wordBoundary : maxLength;
-  return limited.slice(0, end).trim().replace(/[;,:]+$/, '') + '.';
-}
-
 function descriptionFor(content, localeKey) {
-  if (localeKey === 'en') return completeEnglishDescription(content.market);
+  if (localeKey === 'en') return String(content.market || '').replace(/\\s+/g, ' ').trim();
   const prefix = localeKey === 'ko' ? '지역별 공식 조건을 확인하는 게임 결제 가이드. ' : '依地區官方條件整理的遊戲消費指南。';
   return (prefix + content.market).slice(0, 180);
 }
