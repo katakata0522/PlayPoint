@@ -5,6 +5,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
+const { APP_MODULE_FILES } = require('../scripts/asset-sync.cjs');
+const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
+const { createRuntime: createServiceWorkerRuntime } = require('./helpers/service-worker-runtime.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -130,21 +133,24 @@ function installAdvancedSettings(fixture) {
   return { container, body, toggle, toggleListeners };
 }
 
-test('スマホ詳細設定は初回HTMLに存在し、first-view runtimeは入力DOMを作り直さない', () => {
-  for (const indexPath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
-    const html = read(indexPath);
-    assert.ok(html.includes('id="calculator-advanced-settings"'), `${indexPath}: advanced settings missing`);
-    assert.ok(html.includes('id="calculator-advanced-settings-body"'), `${indexPath}: advanced body missing`);
-    assert.ok(html.includes('id="playpoint-first-view-critical"'), `${indexPath}: critical style missing`);
-    assert.ok(html.includes('id="playpoint-first-view-state"'), `${indexPath}: bootstrap state missing`);
-  }
 
-  // First-paint boundary: moving/creating calculator input DOM in this runtime would
-  // reintroduce layout shift before interaction, so these narrow negative guards stay.
-  const source = read('js/first-view.js');
-  assert.doesNotMatch(source, /insertAdjacentElement/);
-  assert.doesNotMatch(source, /append\(baseRateLabel/);
-  assert.doesNotMatch(source, /document\.createElement\(['"](?:style|div)['"]\)/);
+test('first-view runtimeは既存の計算入力DOMを再生成せず詳細設定だけを拡張する', () => {
+  const fixture = loadFirstView({ search: '?mode=main&multiplier=3' });
+  const existingInputs = new Map([
+    ['currentStatus', { id: 'currentStatus' }],
+    ['targetStatus', { id: 'targetStatus' }],
+    ['neededPoints', { id: 'neededPoints' }],
+    ['baseRate', { id: 'baseRate' }],
+    ['multiplier', { id: 'multiplier' }]
+  ]);
+  for (const [id, element] of existingInputs) fixture.elements.set(id, element);
+  installAdvancedSettings(fixture);
+
+  fixture.api.enhanceCalculatorAdvancedSettings();
+
+  for (const [id, element] of existingInputs) {
+    assert.strictEqual(fixture.document.getElementById(id), element, `${id}: first-view runtime replaced the existing input node`);
+  }
 });
 
 test('キャンペーン条件付きURLは詳細設定を実際に開き、モバイル折りたたみ状態を同期する', () => {
@@ -210,31 +216,47 @@ test('地域提案は国まで明示されたブラウザlocaleだけを既存�
   }
 });
 
-test('キャンペーン初期状態bootstrapは公開HTMLでbodyより前に実行される', () => {
+
+test('キャンペーン初期状態bootstrapはbody前で実行され、mainかつ倍率1超だけを開く', () => {
+  const scenarios = [
+    ['?mode=main&multiplier=3', 'open'],
+    ['?mode=main&multiplier=1', undefined],
+    ['?mode=reverse&multiplier=3', undefined],
+    ['?mode=main&multiplier=bad', undefined]
+  ];
+
   for (const indexPath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(indexPath);
-    const bootstrap = html.indexOf('id="playpoint-first-view-state"');
+    const match = html.match(/<script id="playpoint-first-view-state">([\s\S]*?)<\/script>/);
     const body = html.indexOf('<body');
-    assert.ok(bootstrap >= 0 && bootstrap < body, `${indexPath}: first-view state must run before body`);
-    const snippet = html.slice(bootstrap, body);
-    assert.match(snippet, /mode['"]?\)===['"]main['"]/);
-    assert.match(snippet, /multiplier/);
-    assert.match(snippet, /playpointAdvancedSettings=['"]open['"]/);
+    assert.ok(match, `${indexPath}: first-view state script missing`);
+    assert.ok(match.index < body, `${indexPath}: first-view state must run before body`);
+
+    for (const [search, expected] of scenarios) {
+      const context = {
+        URLSearchParams,
+        location: { search },
+        document: { documentElement: { dataset: {} } }
+      };
+      vm.createContext(context);
+      vm.runInContext(match[1], context, { filename: `${indexPath}:first-view-state` });
+      assert.equal(context.document.documentElement.dataset.playpointAdvancedSettings, expected, `${indexPath}: ${search}`);
+    }
   }
 });
 
-test('ファーストビュー処理は互換モジュール経由で読み込まれ、Service Workerの必須シェルにも含まれる', () => {
-  const languageSuggestion = read('js/language-suggestion.js');
-  const assetSync = read('scripts/asset-sync.cjs');
-  const serviceWorker = read('sw.js');
 
-  // Delivery/cache ownership is intentionally static: a runtime unit test cannot
-  // prove that the browser can fetch the module on the first offline shell load.
-  assert.match(languageSuggestion, /from '\.\/first-view\.js'/);
-  assert.ok(assetSync.includes("'js/first-view.js'"));
-  assert.ok(serviceWorker.includes("'./js/first-view.js'"));
+test('first-viewは実ESM依存・cache改訂・Service Worker先読みに含まれる', async () => {
+  const graph = runEsmProbe({ kind: 'graph' });
+  const firstViewUrl = `${ORIGIN}/js/first-view.js`;
+  assert.ok(graph.some(item => item.url === firstViewUrl), 'first-view.js is not reachable from the active ESM graph');
+  assert.ok(APP_MODULE_FILES.includes('js/first-view.js'), 'first-view.js is missing from app module revision inputs');
+
+  const worker = createServiceWorkerRuntime();
+  await worker.fireInstall();
+  const precache = new Set(worker.addAllCalls.flat().map(item => new URL(item.url, `${ORIGIN}/`).href));
+  assert.ok(precache.has(firstViewUrl), 'first-view.js is missing from the actual Service Worker install precache');
 });
-
 
 test('前回の通常計算は地域別に端末内へ1件だけ保持し、別地域を上書きしない', () => {
   const fixture = loadFirstView({ region: 'JP' });
