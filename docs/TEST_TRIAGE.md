@@ -548,6 +548,45 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、Site Shell profiles、リンク文言、記事本文、計算式、保存形式、workflowは変更しない。rendererの固定件数制約だけを一般化するため `scripts/site-shell.cjs` を変更する。現行profile入力の出力不変は、complete preflight内のSite Shell byte-canonical/idempotency契約とChromiumで確認する。条件付きbuild-refactor/runtime比較レーンは今回の変更分類では対象外ならskipを正しく扱う。
 
+
+## 個別監査・修正の第14回（2026-09-18）
+
+「公開・CI」カテゴリ10ファイルを実査した。基準930に存在するのは8ファイル57ケースで、`preflight-execution-contract.test.cjs` 8ケースと `syntax-verifier-execution.test.cjs` 1ケースは基準930後の追加なので、現行品質として精査するが基準進捗には加算しない。
+
+**基準930中602精査・328未精査。** Wave14自体は現行ケース数を増減せず、PR #357〜#361までを含む現行実行集合は**959ケース**を維持する。
+
+| 対象 | 基準ケース | 現行ケース | 判断 |
+|---|---:|---:|---|
+| `ci-guardrails.test.cjs` | 10 | 10 | 全件維持。必須PR Gate、Deploy ownership、production Chromium、rollback境界を維持。artifact保持7日・timeout15分・fetch-depth=2のチューニング値をbounded contractへ変更 |
+| `ci-stability.test.cjs` | 11 | 11 | 全件維持。phase failure伝播、CI evidence、navigation retry、runtime setup、observability failure区別を維持。navigation最大3回をexported SSOTから導出 |
+| `deploy-cleanup.test.cjs` | 11 | 10 | 基準11ケースを全件精査。既に現行では「厳密mirror」と「別管理領域保護」が実rsync引数の1 behavior caseへ統合済み。retry 7/5回の二重固定をshell policy SSOT＋有限上限へ変更 |
+| `deploy-impact-classifier.test.cjs` | 7 | 9 | 基準7件全維持＋後発2件も精査。公開/非公開/ビルド入力/未知root/CLI判定は現在のfail-closed設計として妥当 |
+| `deploy-revision-readiness.test.cjs` | 4 | 4 | 全件維持。stale read許容・exact SHA必須・bounded retry・IPv4/no-cache transport |
+| `ogp-mime-deployment.test.cjs` | 2 | 2 | 全件維持。JPEG実体の互換PNG URLと実Content-Type検査 |
+| `public-deployment-tree.test.cjs` | 5 | 5 | 全件維持。root allowlist、unknown fail-closed、明示staging、repository root直deploy拒否 |
+| `workflow-step-ids.test.cjs` | 7 | 7 | 全件維持。step key/id重複をworkflow全件で検出し、heredoc等のfalse positiveを避ける |
+| `preflight-execution-contract.test.cjs` | 基準外 | 8 | 後発8件を全件精査。必須配信境界欠損、空回帰集合、pre/post-minify順序、実TAP証跡、失敗保存、保存先I/O失敗をbehaviorで検査しており維持 |
+| `syntax-verifier-execution.test.cjs` | 基準外 | 1 | 後発1件を精査。実CLIでowned JSの構文破損・必須ファイル欠損を検出し、docs/testsを対象外にする実行契約として維持 |
+
+### 今回の過剰固定整理
+
+- PR Gateのartifact retentionを「必ず7日」、job timeoutを「必ず15分」と固定しない。retentionは1〜30日、PR Gate timeoutは5〜60分の有限範囲を要求し、運用調整だけでテストを壊さない。
+- Deploy checkoutの `fetch-depth: 2` 完全一致をやめ、base diffに必要な履歴を持つ `0`（full）または2以上を許容する。
+- browser navigation retryの上限値は `.github/scripts/browser-navigation-retry.cjs` の `MAX_NAVIGATION_ATTEMPTS` をSSOT化し、テスト側へ3を二重記載しない。現在値3は維持し、1〜5の有限範囲を安全境界とする。
+- deploy transportの `DEPLOY_MAX_ATTEMPTS=7` / `DEFAULT_MAX_ATTEMPTS=5` はshell policyから読み、実transportがその上限で止まることを検証する。値そのものは変更せず、2〜10の有限範囲とmain>=auxiliaryを保証する。
+
+### 維持した厳格な安全網
+
+- public deploymentは明示allowlist stagingのみで、repository rootを直接rsyncしない。
+- unknown rootは無視せずfail-closed側へ送る。
+- verified snapshotは本番変更前に検証し、rollback revisionをexact 40-char SHAで固定する。
+- transient network errorだけを再試行し、非通信エラーは即失敗する。
+- production Chromiumはverified publicationより前、失敗時rollback対象となる。
+- preflightは必須検査欠損・空集合・TAP保存失敗を成功扱いしない。
+- CI evidenceは任意env・step outputs・event secretを保存しない。
+- workflow step ID重複、owned CI JS構文破損、OGP MIME不整合をfailさせる。
+
+公開HTML/CSS/JS、deploy先、retry実値、workflow順序、公開allowlist、rollback仕様は変更していない。CI helperでnavigation retry ceilingをSSOT化し、tests側のチューニング値固定だけを整理する。
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
