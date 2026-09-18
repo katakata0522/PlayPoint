@@ -68,7 +68,7 @@ const generatedFiles = [
   'js/third-party.js',
   'blog/articles.json',
   'blog/article-search-index.json',
-  ...['en', 'ko', 'tw'].map(locale => `${locale}/articles/article-search-index.json`),
+  ...INTERNATIONAL_LOCALES.map(locale => `${locale}/articles/article-search-index.json`),
   ...articleHtmlFiles,
   ...Object.keys(EDITORIAL_TARGETS),
   ...syncedHtmlFiles,
