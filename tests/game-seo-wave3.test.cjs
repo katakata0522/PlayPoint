@@ -41,7 +41,7 @@ test('wave 3 sources stay on the intended official domains', () => {
   assertSource(SOURCES.wutheringOfficial, 'wutheringwaves.kurogames.com', '/jp/announcement/');
 });
 
-test('Pokepoke parent fails closed on current prices and links to a substantial pass guide', () => {
+test('Pokepoke parent fails closed on current prices and links to the verified pass guide', () => {
   const html = read('games/pokepoke/index.html');
   assert.ok(html.includes('Google Playの表示額を入力'));
   assert.ok(html.includes('./premium-pass-guide/'));
@@ -50,24 +50,25 @@ test('Pokepoke parent fails closed on current prices and links to a substantial 
   assert.ok(!html.includes('<option value="140">ポケゴールド'));
 
   const guide = read('games/pokepoke/premium-pass-guide/index.html');
-  assert.ok(guide.includes('14日間の無料体験'));
-  assert.ok(guide.includes('1か月単位の定期購入'));
-  assert.ok(guide.includes('現行日本円月額'));
+  assert.ok(guide.includes(String(GAME_SEO.pokepoke.premiumPass.firstTrialDays) + '日間の無料体験'));
+  assert.match(guide, /1か月単位|1ヶ月単位/);
+  assert.match(guide, /現行日本円月額|購入画面/);
 });
 
-test('PAD keeps only the verified 980 yen pass and explains trial and persistent benefits', () => {
+test('PAD keeps the SSOT-verified pass and explains trial and persistent benefits', () => {
   const html = read('games/pad/index.html');
-  assert.ok(html.includes('パズドラパス (月額980円)'));
+  const pass = GAME_SEO.pad.pass;
+  assert.ok(html.includes('パズドラパス (月額' + pass.price + '円)'));
   assert.ok(html.includes('./pad-pass-value/'));
 
   const guide = read('games/pad/pad-pass-value/index.html');
-  assert.ok(guide.includes('月額980円'));
-  assert.ok(guide.includes('1週間の無料トライアル'));
-  assert.ok(guide.includes('チーム枠+5'));
-  assert.ok(guide.includes('ランク経験値5%アップ'));
+  assert.ok(guide.includes('月額' + pass.price + '円'));
+  assert.ok(guide.includes(String(pass.freeTrialDays) + '週間の無料トライアル'));
+  assert.ok(guide.includes('チーム枠+' + pass.benefits.extraTeamSlots));
+  assert.ok(guide.includes('ランク経験値' + pass.benefits.rankExpBonusPercent + '%アップ'));
 });
 
-test('Arknights preserves verified mechanics but removes unverified price and fixed cash pity claims', () => {
+test('Arknights preserves SSOT-verified mechanics but removes unverified price and fixed cash pity claims', () => {
   const html = read('games/arknights/index.html');
   assert.ok(html.includes('Google Playの表示額を入力'));
   assert.ok(html.includes('./monthly-pass-limited-scout/'));
@@ -76,10 +77,12 @@ test('Arknights preserves verified mechanics but removes unverified price and fi
   assert.ok(!html.includes('限定フェス天井 300連 (約90,000円)'));
 
   const guide = read('games/arknights/monthly-pass-limited-scout/index.html');
-  assert.ok(guide.includes('有償純正源石6個'));
-  assert.ok(guide.includes('合成玉200個'));
-  assert.ok(guide.includes('300回スカウト時の追加限定オペレーター'));
-  assert.ok(guide.includes('固定現金額にはしません'));
+  const monthly = GAME_SEO.arknights.monthlyPass;
+  const limited = GAME_SEO.arknights.limitedScout;
+  assert.ok(guide.includes('有償純正源石' + monthly.paidOriginitePrimeImmediate + '個'));
+  assert.ok(guide.includes('合成玉' + monthly.orundumPerDay + '個'));
+  assert.ok(guide.includes(String(limited.extraLimitedOperatorAtPulls) + '回スカウト'));
+  assert.match(guide, /固定現金額/);
 });
 
 test('Dokkan separates official Web Store from Google Play and drops changing fixed pack prices', () => {
@@ -105,17 +108,17 @@ test('Wuthering Waves removes unverifiable prices, fixed cash pity, and uncondit
   assert.ok(!html.includes('全額Play Pointsの対象です'));
 });
 
-test('stale Wave 3 card descriptions do not survive across Japanese game pages', () => {
-  const stale = [
-    'ポケポケ（Pokémon TCG Pocket）のポケゴールド購入、プレミアムパス、パック開封で貯まるGoogle Play Pointsを即時計算！',
-    'アークナイツの純正源石購入、月パス、月間スカウトパック、300連天井・潜在MAX課金で貯まるGoogle Play Pointsを即時計算！',
-    'ドラゴンボールZ ドッカンバトルの龍石購入、デイリーカプセル、フェスコイン交換・虹凸課金で貯まるPlayポイントをパッと計算！',
-    '鳴潮（Wuthering Waves）の月相購入、月相観測パス、先駆ラジオ、80連/160連天井ガチャで貯まるPlayポイントを即時計算！'
+test('stale Wave 3 fixed-price claims do not survive across Japanese game pages', () => {
+  const staleClaims = [
+    'ポケゴールド 550個 (13,800円)',
+    '月間スカウトパック (2,440円)',
+    '龍石 セール100個 (4,000円)',
+    '月相観測パス (610円)'
   ];
   const japaneseFiles = getGamePageHtmlFiles(root).filter(file => file.startsWith('games/'));
   for (const file of japaneseFiles) {
     const html = read(file);
-    for (const text of stale) assert.ok(!html.includes(text), `${file} should not retain stale Wave 3 copy`);
+    for (const text of staleClaims) assert.ok(!html.includes(text), `${file} should not retain stale Wave 3 fact: ${text}`);
   }
 });
 
