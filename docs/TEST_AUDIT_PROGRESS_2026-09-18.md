@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中909精査・21未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
+最新集計: **基準930ケース中918精査・12未精査**（基準930の実行正本 `cdf5e299...` を再照合し、第30回時点を872/58へ訂正。第31回11ケース、第32回9ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `cdf5e2999719edf8e96cafeeca3a205cd9364fae`（Deploy run 35217972469 の全回帰 930/930 を実行正本として再確認）。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -879,4 +879,33 @@ US 3000/10000・1.4/1.6、KR 2400/15000・1.6/2、TW 4000/15000・1.75/2、JP 40
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・地域数値・generatorは変更していない。
+
+## 第34回: CI性能sampling 9基準ケース＋後発1ケース（2026-09-18）
+
+### 集計
+
+`ci-performance-sampling.test.cjs` の基準9ケースをperformance budget/suite/CI仕様と照合した。現行の追加1ケースも確認するが基準930へは加算しない。
+
+**909精査から9件を加え、918精査・12未精査。** 現行実行集合958ケースを維持。
+
+### 判断
+
+- 基準9ケース: 全維持。
+- 後発1ケース: 維持。
+- hard budgetや測定ページを緩和せず、fixture側の現在値二重固定だけをSSOTから導出する。
+
+### 変更
+
+1. byte境界をhardcoded 358400/358401から実budget limit/limit+1へ。
+2. timing/byte追加測定fixtureを実hard limit+1へ。
+3. calls 10/8、URL数6、blocked pattern 6をPAGES/BLOCKEDとsampling policyから導出。
+4. 6ページ、top3sample、timing-only +2、hard budgets/targetsは意図的policyとして維持。
+
+### 残り12ケース
+
+- intl-regional-accuracy: 5
+- intl-rewards-quests: 5
+- 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
+
+公開コード・性能budget・workflowは変更していない。
 
