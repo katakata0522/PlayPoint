@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const {
+  affiliateSection,
   lpFiles,
   normalizeLpContent
 } = require('../scripts/insert-lp-monetization.cjs');
@@ -20,10 +21,11 @@ test('LP収益セクションの正規化は全対象でbyte-idempotent', () => 
 
     assert.equal(twice, once, `${file}: 2回目の正規化で差分が出ています`);
     assert.equal(
-      (once.match(/課金前に確認したいギフトコード購入条件/g) || []).length,
+      (once.match(/class="lp-affiliate-box"/g) || []).length,
       1,
-      `${file}: 管理セクションは1件だけである必要があります`
+      `${file}: managed monetization section must appear exactly once`
     );
+    assert.ok(once.includes(affiliateSection.trim()), `${file}: canonical monetization section drifted`);
   }
 });
 

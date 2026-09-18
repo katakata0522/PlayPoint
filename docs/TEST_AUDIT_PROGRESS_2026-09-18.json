@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 12,
-  "latestReviewedBaselineCases": 512,
-  "latestUnreviewedBaselineCases": 418,
+  "latestStage": 13,
+  "latestReviewedBaselineCases": 545,
+  "latestUnreviewedBaselineCases": 385,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -654,5 +654,62 @@
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium"
+  },
+  "expectedCurrentCasesAfterWave13": 958,
+  "wave13": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 33,
+    "scope": "site-shell-refactor-output-runtime-comparison",
+    "files": [
+      {
+        "file": "tests/lp-monetization-idempotency.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_use_canonical_managed_structure"
+      },
+      {
+        "file": "tests/refactor-output-equivalence.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_public_output_equivalence_owner"
+      },
+      {
+        "file": "tests/refactor-runtime-comparison.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_remove_arbitrary_case_thresholds_and_exact_mutation_literals"
+      },
+      {
+        "file": "tests/site-shell-calculator-header.test.cjs",
+        "cases": 5,
+        "decision": "keep_all_registry_driven_no_fixed_item_counts"
+      },
+      {
+        "file": "tests/site-shell-footer.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_semantic_footer_profile_contract"
+      },
+      {
+        "file": "tests/site-shell-header.test.cjs",
+        "cases": 5,
+        "decision": "keep_all_registry_driven_fixed_headers"
+      },
+      {
+        "file": "tests/site-shell-legal-nav.test.cjs",
+        "cases": 5,
+        "decision": "keep_all_derive_checked_count_from_targets"
+      }
+    ],
+    "implementationChanges": [
+      "scripts/site-shell.cjs renderCalculatorHeader: exact 4 region buttons / 4 links -> non-empty arrays + unique region ids"
+    ],
+    "productionOutputExpectedChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Site Shell byte-canonical and idempotency contracts / Chromium; conditional build-refactor and runtime comparison lanes may skip when classifier does not select them",
+    "concurrentMainChanges": [
+      {
+        "pr": 357,
+        "effect": "基準930外のEN game description/TGS公開条件の回帰2ケースを追加",
+        "auditProgressEffect": "none",
+        "currentCaseDelta": 2
+      }
+    ]
   }
 }

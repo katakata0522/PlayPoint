@@ -16,13 +16,6 @@ const {
 
 const root = path.resolve(__dirname, '..');
 
-const expectedPrimaryLinks = Object.freeze({
-  ja: ['/', '/games/', '/blog/', '/author/katakata.html', '/privacy.html', '/terms.html'],
-  en: ['/en/', '/en/games/', '/en/articles/', '/en/author/katakata.html', '/privacy.html', '/terms.html'],
-  ko: ['/ko/', '/ko/games/', '/ko/articles/', '/ko/author/katakata.html', '/privacy.html', '/terms.html'],
-  tw: ['/tw/', '/tw/games/', '/tw/articles/', '/tw/author/katakata.html', '/privacy.html', '/terms.html']
-});
-
 const canonicalFooterPages = Object.freeze([
   'points-cost/index.html',
   'en/points-cost/index.html',
@@ -36,15 +29,22 @@ const canonicalFooterPages = Object.freeze([
   'tw/maintenance/diamond/index.html'
 ]);
 
-test('Stage 12A footer profiles are immutable and keep the current six-link structure', () => {
+test('footer profiles are immutable and preserve locale, author and legal navigation', () => {
   assert.ok(Object.isFrozen(LP_FOOTER_PROFILES));
-  for (const [locale, expectedHrefs] of Object.entries(expectedPrimaryLinks)) {
-    const profile = getLpFooterProfile(locale);
+  for (const [locale, profile] of Object.entries(LP_FOOTER_PROFILES)) {
+    assert.equal(getLpFooterProfile(locale), profile);
     assert.ok(Object.isFrozen(profile));
     assert.ok(Object.isFrozen(profile.links));
-    assert.deepEqual(profile.links.map(link => link.href), expectedHrefs);
+    assert.ok(profile.links.length > 0, locale + ': footer links must not be empty');
+
+    const hrefs = profile.links.map(link => link.href);
+    assert.equal(new Set(hrefs).size, hrefs.length, locale + ': footer hrefs must stay unique');
+    assert.ok(hrefs.includes(locale === 'ja' ? '/' : '/' + locale + '/'), locale + ': locale home is missing');
+    assert.ok(hrefs.includes(locale === 'ja' ? '/author/katakata.html' : '/' + locale + '/author/katakata.html'), locale + ': author/verification link is missing');
+    assert.ok(hrefs.includes('/privacy.html'), locale + ': privacy link is missing');
+    assert.ok(hrefs.includes('/terms.html'), locale + ': terms link is missing');
     assert.match(profile.disclaimer, /Google/);
-    assert.match(profile.copyright, /^© 2026 /);
+    assert.match(profile.copyright, /^©\s+\d{4}\s+/);
   }
 });
 

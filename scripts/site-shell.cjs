@@ -294,11 +294,14 @@ function renderCalculatorHeader(profile, indent = '') {
   if (!profile || !Array.isArray(profile.regionButtons) || !Array.isArray(profile.links)) {
     throw new TypeError('Calculator header profile requires regionButtons and links arrays.');
   }
-  if (profile.regionButtons.length !== 4 || profile.links.length !== 4 || !profile.regionAriaLabel) {
-    throw new TypeError('Calculator header requires four region buttons, four links, and an aria label.');
+  if (profile.regionButtons.length === 0 || profile.links.length === 0 || !profile.regionAriaLabel) {
+    throw new TypeError('Calculator header requires non-empty region buttons, links, and an aria label.');
   }
 
   const knownRegions = new Set(profile.regionButtons.map(button => button.region));
+  if (knownRegions.size !== profile.regionButtons.length) {
+    throw new TypeError('Calculator header region buttons must use unique region ids.');
+  }
   if (profile.activeRegion !== null && !knownRegions.has(profile.activeRegion)) {
     throw new RangeError(`Unknown active calculator region: ${profile.activeRegion}`);
   }
