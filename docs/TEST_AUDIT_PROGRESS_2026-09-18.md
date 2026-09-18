@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中602精査・328未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第14回を末尾へ追記する。
+最新集計: **基準930ケース中633精査・297未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第15回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -412,3 +412,30 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 4. deploy retry回数はshellのDEFAULT/DEPLOY policyから導出し、有限範囲・main>=auxiliary・実transport停止回数を検証。
 
 公開物・deploy先・retry実値・rollback仕様・allowlistは変更していない。
+
+## 第15回: 計算・入力面31ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル31ケースを現行mainの計算実装・地域設定・6地域公開HTMLと照合した。4ファイルは基準コミットとWave14完了時mainで同一内容。既精査602へ31を加え、**633精査・297未精査**とする。ケース数の増減はなく、現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| calculator-input-validation | 3 | 全維持。有限値・HTML validity・厳しい入力境界をbehaviorで検証 |
+| decimal-inputmode | 2 | 全維持。JP/EN/KO/TWだけだった対象を現行HTMLが同契約を満たすHK/INまで拡張 |
+| interactive-input-surfaces | 7 | 全維持。21件以上というゲーム規模snapshotとJA/EN差分exact listだけを意味契約へ |
+| playpoint-calculation-contracts | 19 | 全維持。次ランクonly・JP 5件・option index固定をconfig/valid transition/unique optionへ変更し、1728例・数式・丸め・KR単位は維持 |
+
+### 変更したテスト設計
+
+1. ゲームinventory件数は別ownerへ委譲し、入力面テストは存在する公開ゲームの入力UIを確認する。
+2. JA/ENの入力差分は特定2パスのsnapshotではなく、maintenance LP＋`mode=main`導線という役割で許容する。
+3. target optionの「1件/2件」「配列0/1番」を契約にせず、設定済み遷移に属する・必要な昇格先を含む・重複しないことを保証する。
+4. status件数は5固定ではなくJP configから導出する。
+5. ゴールド→プラチナ1728例は遷移labelで特定して維持する。
+6. decimal/numeric keyboard契約を6地域へ補完する。
+
+公開HTML/CSS/JS・計算式・copy・地域設定・保存形式は変更していない。
+
