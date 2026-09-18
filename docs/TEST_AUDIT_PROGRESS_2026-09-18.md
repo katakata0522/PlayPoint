@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中633精査・297未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第15回を末尾へ追記する。
+最新集計: **基準930ケース中643精査・287未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第16回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -438,4 +438,30 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. decimal/numeric keyboard契約を6地域へ補完する。
 
 公開HTML/CSS/JS・計算式・copy・地域設定・保存形式は変更していない。
+
+## 第16回: 地域コア10ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル10ケースを、6地域公開HTML・地域生成器・runtime config・実ESM graph・Service Worker install要求と照合した。既精査633へ10を加え、**643精査・287未精査**とする。ケース数の増減はなく、PR #364後も現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| attention-country-classification | 4 | 全維持。英文列挙1文の全文snapshotだけ除外し、6地域名・導線・公式確認・内容日を維持 |
+| region-expansion | 1 | 維持。生成HK/IN成果物＋実runtime configへ集約し、config/navigation source regexを除去 |
+| region-navigation-behavior | 4 | 全維持・変更なし。URL優先・保存・segment・実切替behavior |
+| region-runtime-wiring | 1 | 維持。source shapeから実ESM graph・APP_MODULE_FILES・SW install precacheへ置換 |
+
+### 変更したテスト設計
+
+1. 6地域の案内を特定の英文1文ではなく、地域名＋一意なdestinationで保証する。
+2. HK/INのrate unit・通貨位置・tooltips・URLは読み込まれたruntime configを検証する。
+3. 地域切替URLのownerはregion-navigation behaviorへ一本化し、region-expansionでsource文字列を再検査しない。
+4. result navigationの配線はimport文の引用符やobject literal形状ではなく、Node自身が解釈したactive ESM dependency graphで検証する。
+5. HK/INトップのoffline install境界は実Service Worker runtimeのaddAll要求を検査する。
+6. 廃止済みregion-result-navigationの復活だけは二重owner防止の明示guardとして残す。
+
+公開HTML/CSS/JS・地域条件・copy・計算式・保存形式は変更していない。
 
