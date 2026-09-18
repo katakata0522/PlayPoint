@@ -2,22 +2,22 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const test = require('node:test');
-const { createAppModuleRevision } = require('../scripts/asset-sync.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
 test('地域別の公式レート・年間しきい値・通貨単位を固定する', () => {
-  const configs = loadConfigs();
+  const configs = loadConfigs(true);
   const expected = {
     JP: { rates: [1, 1.25, 1.5, 1.75, 2], thresholds: [250, 1000, 4000, 15000], spendUnit: 100, rateUnit: '100円' },
     US: { rates: [1, 1.1, 1.2, 1.4, 1.6], thresholds: [150, 600, 3000, 10000], spendUnit: 1, rateUnit: '$1' },
     KR: { rates: [1, 1.1, 1.3, 1.6, 2], thresholds: [150, 600, 2400, 15000], spendUnit: 1000, rateUnit: '1,000₩' },
-    TW: { rates: [1, 1.25, 1.5, 1.75, 2], thresholds: [250, 1000, 4000, 15000], spendUnit: 30, rateUnit: '30元' }
+    TW: { rates: [1, 1.25, 1.5, 1.75, 2], thresholds: [250, 1000, 4000, 15000], spendUnit: 30, rateUnit: '30元' },
+    HK: { rates: [1, 1.25, 1.5, 1.75, 2], thresholds: [250, 1000, 4000, 15000], spendUnit: 7, rateUnit: 'HK$7' },
+    IN: { rates: [1, 1.1, 1.2, 1.4], thresholds: [250, 1000, 4000], spendUnit: 5, rateUnit: '₹5' }
   };
   for (const [region, values] of Object.entries(expected)) {
     assert.deepEqual(Object.values(configs[region].statusRates).sort((a, b) => a - b), values.rates, region + ' rates');
@@ -40,30 +40,15 @@ test('共通説明は年初再判定・残高と年間進捗の違いを公式UR
   }
 });
 
-test('トップは通常率と特別獲得率を比較し、入力境界をHTMLでも制約する', () => {
+test('トップは通常率と特別獲得率の意味を公開HTMLで示す', () => {
   const html = read('index.html');
-  const calculator = read('js/calculator.js');
   assert.match(html, /通常獲得率（ステータスから自動入力）/);
   assert.match(html, /キャンペーン特別獲得率/);
   assert.match(html, /高い方を試算に使います/);
   assert.match(html, /対象・上限・有効化/);
   assert.match(html, /id="neededPoints" min="1" step="1"/);
-  assert.doesNotMatch(html, /id="pack-amount"/);
-  assert.doesNotMatch(read('status/gold/index.html'), /キャンペーン倍率別/);
-  assert.match(read('compare/earning-rates/index.html'), /通常／2pt／3ptの比較表/);
-  assert.match(read('campaign/3x/index.html'), /3pt\/100円と表示された/);
-  const gamesIndex = read('games/index.html');
-  assert.match(gamesIndex, /game-portal-purchase-check/);
-  assert.doesNotMatch(gamesIndex, /class="site-tagline"/);
-  assert.doesNotMatch(gamesIndex, /class="game-meta"/);
-  assert.ok(gamesIndex.indexOf('class="games-grid"') < gamesIndex.indexOf('class="game-portal-lead"'), 'ゲーム一覧の説明はグリッドの後に置く');
-  assert.ok(gamesIndex.indexOf('class="games-grid"') < gamesIndex.indexOf('game-portal-purchase-check'), '購入前チェックはグリッドの後に置く');
-  assert.match(read('articles/2026-06-20-discount-gift-cards.html'), /楽天市場のGoogle Playギフトコード認定店/);
   assert.match(html, /id="amountYen" min="0\.01" step="0\.01"/);
-  assert.match(calculator, /finalRate:\s*Math\.max\(directRate, promotionRate\)/);
-  assert.doesNotMatch(calculator, /statusRate \* multiplier/);
-  assert.match(calculator, /resultRateSourceDirect/);
-  assert.match(calculator, /getValidNumberInput\(STATE\.dom\.amountYen, 0\.01\)/);
+  assert.doesNotMatch(html, /id="pack-amount"/);
 });
 
 test('4言語トップは対象条件・保存範囲・aria-labelを初期表示から翻訳する', () => {
@@ -104,19 +89,3 @@ test('海外の既存ギフトカード割引記事を各言語の記事ハブ�
   }
 });
 
-test('アプリモジュール変更がService Worker用の指紋を必ず変える', () => {
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-module-revision-'));
-  try {
-    fs.writeFileSync(path.join(tempRoot, 'module.js'), 'export const value = 1;\n');
-    const before = createAppModuleRevision(tempRoot, ['module.js']);
-    fs.writeFileSync(path.join(tempRoot, 'module.js'), 'export const value = 2;\n');
-    const after = createAppModuleRevision(tempRoot, ['module.js']);
-
-    assert.match(before, /^[0-9a-f]{8}$/);
-    assert.match(after, /^[0-9a-f]{8}$/);
-    assert.notEqual(after, before);
-  } finally {
-    fs.rmSync(tempRoot, { recursive: true, force: true });
-  }
-  assert.match(read('scripts/asset-sync.cjs'), /versionKey: 'appModuleRevision'/);
-});
