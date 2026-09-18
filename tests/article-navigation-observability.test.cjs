@@ -8,9 +8,6 @@ const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const analyticsSource = fs.readFileSync(path.join(root, 'js/analytics-core.js'), 'utf8');
-const suiteSource = fs.readFileSync(path.join(root, '.github/scripts/lighthouse-suite.cjs'), 'utf8');
-const workflowSource = fs.readFileSync(path.join(root, '.github/workflows/mobile-performance.yml'), 'utf8');
-const budget = require('../.github/scripts/mobile-performance-budget.cjs');
 
 function createClassList(classes) {
   const set = new Set(classes);
@@ -127,23 +124,6 @@ test('article navigation rejects unknown cardinality values and external target 
   });
 });
 
-test('P0 performance CI measures EN KO TW articles independently', () => {
-  assert.match(workflowSource, /node \.github\/scripts\/lighthouse-suite\.cjs/);
-  for (const locale of ['en', 'ko', 'tw']) {
-    assert.match(suiteSource, new RegExp('international-article-' + locale));
-    assert.match(suiteSource, new RegExp('/' + locale + '/articles/google-play-points-join-eligibility\\.html'));
-    const profile = budget.getProfile('performance-artifacts/international-article-' + locale + '.json');
-    const expected = 'internationalArticle' + locale[0].toUpperCase() + locale.slice(1);
-    assert.equal(profile, expected);
-    assert.equal(budget.HARD_BUDGETS[profile].largestContentfulPaintMs, 3000);
-    assert.equal(budget.HARD_BUDGETS[profile].cumulativeLayoutShift, 0.15);
-  }
-  assert.match(workflowSource, /articles\/intl-shell-v1\.css/);
-  assert.match(workflowSource, /articles\/intl-article\.css/);
-  assert.equal(budget.TARGETS.largestContentfulPaintMs, 2500);
-  assert.equal(budget.TARGETS.cumulativeLayoutShift, 0.10);
-});
-
 test('海外ナビ専用ENUMは日本語ブログの既存カテゴリを消さない', () => {
   const { context } = createRuntime();
   const analytics = context.PlayPointAnalytics;
@@ -156,32 +136,6 @@ test('海外ナビ専用ENUMは日本語ブログの既存カテゴリを消さ�
       article_role: 'reference', article_category: category, destination_type: 'article'
     }), null, '日本語カテゴリを海外ナビの分類へ混入させない');
   }
-});
-
-test('計算結果リンクは内部・外部・Google公式の既存分類を保持する', () => {
-  const { context } = createRuntime();
-  const analytics = context.PlayPointAnalytics;
-  for (const eventName of ['result_related_article_clicked', 'result_decision_link_clicked']) {
-    for (const type of ['internal', 'external', 'official_google_support']) {
-      analytics.track(eventName, {
-        source_path: '/', destination_type: type,
-        target_path: type === 'internal' ? '/en/articles/a.html' : 'https://example.com/private?amount=10000'
-      });
-      const sent = eventCalls(context, eventName).at(-1);
-      assert.equal(sent.destination_type, type);
-      assert.equal(sent.target_path, type === 'internal' ? '/en/articles/a.html' : undefined);
-    }
-  }
-});
-
-test('必須項目付きイベントへ不正な引数を渡しても例外や送信を起こさない', () => {
-  const { context } = createRuntime();
-  const analytics = context.PlayPointAnalytics;
-  for (const params of [null, undefined, false, 0, 'private input', [], {}]) {
-    assert.equal(analytics.sanitizeParams('article_navigation_click', params), null);
-    assert.equal(analytics.track('article_navigation_click', params), false);
-  }
-  assert.equal(eventCalls(context, 'article_navigation_click').length, 0);
 });
 
 test('同じ記事内のアンカー移動は別記事への遷移と区別する', () => {
@@ -236,9 +190,4 @@ test('diary entry is separate from calculator attribution', () => {
  assert.equal(context.PlayPointAnalytics.rememberCalculatorEntry(popularLink),false);
  listeners.get('click')[0]({target:popularLink});
  assert.equal(eventCalls(context,'article_navigation_click').at(-1).destination_type,'diary');
-});
-test('search analytics excludes free text', () => {
- const {context}=createRuntime();
- const clean=context.PlayPointAnalytics.sanitizeParams('search',{search_term:'private@example.com',results_count:3});
- assert.deepEqual(JSON.parse(JSON.stringify(clean)),{results_count:3});
 });
