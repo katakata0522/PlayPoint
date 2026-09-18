@@ -875,6 +875,27 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・Deploy/rollback実装・現行HISTORY_LIMIT値は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第26回（2026-09-18）
+
+基準930ケースに含まれる「browser runtime・revision evidence」3ファイル15ケースを、本番browser entrypoint・SHA evidence binder・CI runtime helper/lockfileと突合して個別精査した。
+
+**基準930中844精査・86未精査。** 15ケースはすべて保証を維持し、ケース数は増減しない。現行959ケースを維持する。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `blog-runtime-regressions.test.cjs` | 1 | 維持・変更なし。本番browser entrypointが期待SHA不足を起動前に拒否し、失敗reportを残す実行契約 |
+| `browser-revision-evidence.test.cjs` | 8 | 全維持・変更なし。前後SHA、途中revision変化、HTTP失敗、manifest digest、別checkout/別本番拒否、旧snapshot互換、4復旧レーン、CLI照合はいずれも証跡の信頼境界 |
+| `browser-runtime-ssot.test.cjs` | 6 | 全維持。Playwright/Lighthouseの特定version番号snapshotだけをexact semver pin＋lock一致へ変更。共通helper ownership、重複install禁止、Deploy入力、Bash構文は維持 |
+
+### 今回の過剰固定・安全境界
+
+- CI browser依存は再現性のためexact pinが必要だが、`1.63.0`や`13.4.1`という現在値そのものをテストへ二重記載する必要はない。manifestが`x.y.z`でexact pinされ、lockfileの実versionと一致することを契約にする。
+- 本番SHAの40文字lowercase厳格性、before/after/suite終了時の同一revision、evidence digest改変検出はrelease証跡の信頼境界なので緩和しない。
+- browser runtimeの共通helper一本化と、同一runner auto-rollbackでの再install禁止はActions時間・失敗面積を抑える運用境界として維持する。
+
+公開HTML/CSS/JS・browser依存version・lockfile・workflow・本番検証経路は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
