@@ -2,13 +2,15 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
 const {
   MANUAL_INTL_ARTICLE_FILES,
   readManualIntlArticleDates
 } = require('../scripts/manual-intl-articles.cjs');
-const { getPublishedIntlArticles } = require('../scripts/intl-seo-pages.cjs');
+const { getPublishedIntlArticles, writeIntlSeoPages } = require('../scripts/intl-seo-pages.cjs');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -21,7 +23,10 @@ test('地域別に手動確認した記事の正本一覧は重複せず実在�
   );
 
   for (const relativePath of MANUAL_INTL_ARTICLE_FILES) {
-    assert.match(relativePath, /^(?:en|ko|tw)\/articles\/[^/]+\.html$/);
+    const [locale, directory, file] = relativePath.split('/');
+    assert.ok(INTERNATIONAL_LOCALES.includes(locale), `${relativePath}: unsupported locale`);
+    assert.equal(directory, 'articles', `${relativePath}: manual article must live under articles/`);
+    assert.match(file || '', /^[^/]+\.html$/, `${relativePath}: invalid article filename`);
     assert.ok(fs.existsSync(path.join(root, relativePath)), `${relativePath}: 正本HTMLがありません`);
   }
 });
@@ -65,6 +70,23 @@ test('国際記事生成は手動正本をmanual所有権で除外する', () =>
     if (article) assert.equal(article.manual, true, `${relativePath}: manual所有権がありません`);
   }
 
-  const generator = fs.readFileSync(path.join(root, 'scripts/intl-seo-pages.cjs'), 'utf8');
-  assert.match(generator, /if \(article\.manual\) continue;/, '生成処理がmanual記事を明示的に除外していません');
+  const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-manual-intl-generation-'));
+  try {
+    const versions = new Proxy({}, { get: () => 'test-revision' });
+    writeIntlSeoPages(fixtureRoot, versions);
+
+    const generatedArticle = articles.find(article => article.manual !== true);
+    assert.ok(generatedArticle, 'behavior fixture needs at least one generated international article');
+    assert.ok(fs.existsSync(path.join(fixtureRoot, generatedArticle.file)), 'generator did not run its normal article path');
+
+    for (const relativePath of registeredManualFiles) {
+      assert.equal(
+        fs.existsSync(path.join(fixtureRoot, relativePath)),
+        false,
+        `${relativePath}: manual canonical article must not be generated into an empty output tree`
+      );
+    }
+  } finally {
+    fs.rmSync(fixtureRoot, { recursive: true, force: true });
+  }
 });

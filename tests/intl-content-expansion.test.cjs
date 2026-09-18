@@ -4,13 +4,11 @@ const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { DEFAULT_INTERNATIONAL_LOCALE } = require('../scripts/locale-ids.cjs');
+const { LOCALES: locales, TOPICS: expansionTopics } = require('../scripts/intl-content-expansion.cjs');
 
 const root = path.resolve(__dirname, '..');
-const locales = [
-  { key: 'en', lang: 'en' },
-  { key: 'ko', lang: 'ko' },
-  { key: 'tw', lang: 'zh-TW' }
-];
+const defaultLocale = locales.find(locale => locale.key === DEFAULT_INTERNATIONAL_LOCALE);
 const topics = [
   {
     slug: "google-play-balance-combine-payment.html",
@@ -107,7 +105,9 @@ function schemas(html) {
 }
 
 test('国・地域別の実用記事を3言語で意味のある本文として公開する', () => {
+  const publishedSlugs = new Set(expansionTopics.map(topic => topic.slug));
   for (const topic of topics) {
+    assert.ok(publishedSlugs.has(topic.slug), `${topic.slug}: editorial audit target is not in the expansion SSOT`);
     for (const locale of locales) {
       const relativePath = articlePath(locale, topic);
       assert.ok(fs.existsSync(path.join(root, relativePath)), relativePath);
@@ -115,7 +115,7 @@ test('国・地域別の実用記事を3言語で意味のある本文として�
       const canonical = `https://playpoint-sim.com/${relativePath}`;
       const data = schemas(html);
 
-      assert.ok(html.includes(`<html lang="${locale.lang}">`), relativePath);
+      assert.ok(html.includes(`<html lang="${locale.hreflang}">`), relativePath);
       assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), relativePath);
       assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, relativePath);
       assert.ok((html.match(/<p\b/g) || []).length >= 1, `${relativePath}: explanatory paragraph`);
@@ -137,9 +137,10 @@ test('国・地域別の実用記事を3言語で意味のある本文として�
       }
       for (const candidate of locales) {
         const target = `https://playpoint-sim.com/${articlePath(candidate, topic)}`;
-        assert.ok(html.includes(`hreflang="${candidate.lang}" href="${target}"`), `${relativePath}: ${candidate.lang}`);
+        assert.ok(html.includes(`hreflang="${candidate.hreflang}" href="${target}"`), `${relativePath}: ${candidate.hreflang}`);
       }
-      assert.ok(html.includes(`hreflang="x-default" href="https://playpoint-sim.com/${articlePath(locales[0], topic)}"`));
+      assert.ok(defaultLocale, 'default international locale is missing from content expansion locales');
+      assert.ok(html.includes(`hreflang="x-default" href="https://playpoint-sim.com/${articlePath(defaultLocale, topic)}"`));
     }
   }
 });
@@ -148,8 +149,6 @@ test('言語別記事一覧と専用サイトマップから対象ページを�
   const sitemap = read('sitemap-intl-content-expansion.xml');
   const robots = read('robots.txt');
   assert.ok(robots.includes('Sitemap: https://playpoint-sim.com/sitemap-intl-content-expansion.xml'));
-  assert.ok((sitemap.match(/<url>/g) || []).length >= topics.length * locales.length);
-
   for (const locale of locales) {
     const index = read(`${locale.key}/articles/index.html`);
     for (const topic of topics) {
@@ -157,7 +156,7 @@ test('言語別記事一覧と専用サイトマップから対象ページを�
       const url = `https://playpoint-sim.com/${relativePath}`;
       assert.ok(index.includes(`/${relativePath}`), `${locale.key} index: ${topic.slug}`);
       assert.ok(sitemap.includes(`<loc>${url}</loc>`), url);
-      assert.ok(sitemap.includes(`hreflang="${locale.lang}" href="${url}"`), `${url}: hreflang`);
+      assert.ok(sitemap.includes(`hreflang="${locale.hreflang}" href="${url}"`), `${url}: hreflang`);
     }
   }
 });
