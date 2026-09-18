@@ -64,18 +64,22 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
         id: 'raw',
         dimensions: ['query', 'exact_url'],
         preserveFragment: true,
+        aggregationType: 'byPage',
         purpose: 'Preserve the exact query and URL evidence, including fragment-level exposure.'
       },
       {
         id: 'normalized',
         dimensions: ['query', 'base_url'],
         preserveFragment: false,
+        aggregationType: 'derived_from_raw',
+        derivedFrom: 'raw',
         purpose: 'Make page-level SEO decisions without fragment duplication.'
       },
       {
         id: 'property_total',
         dimensions: [],
         preserveFragment: false,
+        aggregationType: 'byProperty',
         purpose: 'Keep total clicks/impressions including anonymous-query contribution.'
       }
     ],
@@ -89,27 +93,41 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
     captureContract: {
       historySheet: '🗃GSC 28日履歴',
       comparisonSheet: '🔍GSC 28日比較',
-      dimensions: ['query', 'exact_url'],
+      normalizedComparisonSheet: '🧹GSC 28日正規化',
+      searchType: 'web',
+      apiTimezone: 'America/Los_Angeles',
       windowRoles: ['current_28d', 'previous_28d'],
+      requiredLayers: ['raw', 'normalized', 'property_total'],
       requiredColumns: [
         'pair_id',
         'window_role',
+        'layer',
         'period_start',
         'period_end',
         'record_type',
         'search_query',
         'exact_url',
+        'base_url',
         'clicks',
         'impressions',
         'ctr',
         'avg_position',
         'data_state',
+        'search_type',
+        'dimensions',
+        'request_aggregation_type',
+        'response_aggregation_type',
+        'site_property',
+        'api_timezone',
         'fetched_at',
-        'source'
+        'source',
+        'derivation'
       ],
       finalDataOnly: true,
-      idempotencyKey: ['pair_id', 'window_role', 'search_query', 'exact_url'],
+      idempotencyKey: ['pair_id', 'window_role', 'layer', 'record_type', 'search_query', 'exact_url', 'base_url'],
       failClosedWhenPairMissing: true,
+      failClosedWhenLayerMissing: true,
+      verifyResponseAggregationType: true,
       rule: 'Never treat a rolling 30-day snapshot as the previous non-overlapping 28-day comparison.'
     }
   },
