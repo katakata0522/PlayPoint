@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 11,
-  "latestReviewedBaselineCases": 448,
-  "latestUnreviewedBaselineCases": 482,
+  "latestStage": 12,
+  "latestReviewedBaselineCases": 512,
+  "latestUnreviewedBaselineCases": 418,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -559,6 +559,97 @@
         "from": "game-guide-article-hub",
         "name": "blog runtime explicitly accepts deep game guides without opening arbitrary paths",
         "owner": "game-guide-article-hub actual sanitizeArticleFile behavior case"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium"
+  },
+  "expectedCurrentCasesAfterWave12": 956,
+  "wave12": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 64,
+    "scope": "article-generation-dates-roles-game-ssot-faq",
+    "files": [
+      {
+        "file": "tests/article-content-navigation-normalize.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_navigation_normalization_behavior"
+      },
+      {
+        "file": "tests/article-date-contract.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_replace_article_count_threshold_with_inventory_equality"
+      },
+      {
+        "file": "tests/article-role-context-required.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_role_context_contract"
+      },
+      {
+        "file": "tests/article-role-next-action-audit.test.cjs",
+        "cases": 1,
+        "decision": "keep_replace_all_roles_nonempty_snapshot_with_inventory_and_total_role_equality"
+      },
+      {
+        "file": "tests/article-role-registry.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_role_registry_contracts"
+      },
+      {
+        "file": "tests/blog-index-sync.test.cjs",
+        "cases": 5,
+        "decision": "keep_all_registry_static_index_and_prepare_pr_contracts"
+      },
+      {
+        "file": "tests/build-io-boundaries.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_replace_exact_read_counts_with_scope_write_and_idempotency"
+      },
+      {
+        "file": "tests/build-output-equivalence.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_boundary_only_equivalence"
+      },
+      {
+        "file": "tests/build-pipeline-simplification.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_replace_exact_call_counts_with_presence_and_dependency_order"
+      },
+      {
+        "file": "tests/content-date-separation.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_content_date_ssot_separation"
+      },
+      {
+        "file": "tests/editorial-summary-integrity.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_editorial_summary_integrity"
+      },
+      {
+        "file": "tests/game-page-locale-predicate.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_game_locale_predicate"
+      },
+      {
+        "file": "tests/game-page-ssot.test.cjs",
+        "cases": 5,
+        "decision": "keep_all_game_page_ssot"
+      },
+      {
+        "file": "tests/game-seo-common.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_replace_exact_io_counts_with_scope_order_idempotency"
+      },
+      {
+        "file": "tests/localized-top-targets.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_locale_leaf_ssot"
+      },
+      {
+        "file": "tests/lp-faq-sync.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_visible_faq_structured_data_sync"
       }
     ],
     "productionFilesChanged": false,
