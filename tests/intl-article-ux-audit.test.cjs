@@ -2,12 +2,14 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
+const { COPY } = require('../scripts/intl-shell-copy.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 
 test('international article hubs keep the shared article shell', () => {
-  for (const locale of ['en', 'ko', 'tw']) {
+  for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/index.html`);
     assert.match(html, /intl-article-site-header/);
     assert.match(html, /layout-container intl-layout-container/);
@@ -17,7 +19,7 @@ test('international article hubs keep the shared article shell', () => {
 });
 
 test('legacy gift-card stylesheet cannot override international article layout', () => {
-  for (const locale of ['en', 'ko', 'tw']) {
+  for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/2026-06-20-discount-gift-cards.html`);
     assert.doesNotMatch(html, /article-gift-card\.css/);
     assert.match(html, /\/articles\/intl-article\.css/);
@@ -49,17 +51,16 @@ test('international navigation classification follows article intent instead of 
 });
 
 test('international global navigation mirrors the Japanese two-line rhythm with localized sublabels', () => {
-  const expected = {
-    en: ['Cost simulator', 'Play Points guide', 'Country, eligibility, setup', 'Purchases, coupons, credit', 'Progress & weekly perks', 'Missing points & errors'],
-    ko: ['필요 금액 계산', 'Play Points 가이드', '국가·계정 설정', '결제·쿠폰·교환', '진행도·주간 혜택', '미반영·오류 확인'],
-    tw: ['所需金額估算', 'Play Points 指南', '地區與帳號設定', '購買、優惠與兌換', '進度與每週福利', '未入帳與錯誤確認']
-  };
-  for (const locale of ['en', 'ko', 'tw']) {
+  for (const locale of INTERNATIONAL_LOCALES) {
     const html = read(`${locale}/articles/google-play-points-country-change.html`);
     const globalNav = html.match(/<nav class="global-nav intl-global-nav"[\s\S]*?<\/nav>/)?.[0] || '';
     const readableNav = globalNav.replace(/&amp;/g, '&');
-    assert.equal((globalNav.match(/class="nav-sub"/g) || []).length, 6, `${locale}: six localized nav sublabels`);
-    for (const label of expected[locale]) assert.ok(readableNav.includes(label), `${locale}: missing nav sublabel ${label}`);
+    const expectedLabels = Object.values(COPY[locale].navSub);
+    const renderedLabels = [...readableNav.matchAll(/<span class="nav-sub">([^<]+)<\/span>/g)].map(match => match[1]);
+
+    assert.equal(renderedLabels.length, expectedLabels.length, `${locale}: localized nav sublabel count`);
+    assert.equal(new Set(renderedLabels).size, renderedLabels.length, `${locale}: nav sublabels must be unique`);
+    for (const label of expectedLabels) assert.ok(renderedLabels.includes(label), `${locale}: missing nav sublabel ${label}`);
   }
 });
 

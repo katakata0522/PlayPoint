@@ -717,6 +717,28 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第20回（2026-09-18）
+
+基準930ケースに含まれる「国際記事レイアウト・reading flow・UX」3ファイル25ケースを、公開記事shell、shared article CSS、Role prompt、COPY SSOT、必須Browser検証と突合して個別精査した。
+
+**基準930中740精査・190未精査。** ケース数は増減せず、現行959ケースを維持する。公開HTML/CSS/JS・記事本文・Role・CTA・デザイン値は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-article-layout.test.cjs` | 8 | 全件維持。同期冪等・h1安全・全記事shell・typography・trust/discovery・author shell・CSS ownershipを維持。border-radius 6px / padding 36px 40px等の具体値固定を、Japanese shared CSSを先に読み国際overrideを後置する継承契約へ変更 |
+| `intl-article-reading-flow.test.cjs` | 10 | 全件維持。calculator_bridge、knowledge boundary、contextual CTA、非calculator Role、全国際記事prompt policyを維持。locale配列のみcanonical SSOT化 |
+| `intl-article-ux-audit.test.cjs` | 7 | 全件維持。hub shell、旧gift-card CSS排除、日本語非干渉、intent分類、font fallback、compact headingを維持。nav sublabelの手書きcopy配列と6件固定を `COPY[locale].navSub` 正本との一致へ変更 |
+
+### 今回の過剰固定・重複整理
+
+- 国際CSSが日本語デザインを継承する保証を `border-radius: 6px` / `padding: 36px 40px` / transparent/0 といった現在値のsnapshotで表現しない。全locale記事が `/articles/article-shared.css` を先に読み、`intl-article.css` を後から重ね、国際CSSがbrand/theme tokenを再定義しないことを保証する。
+- global navigationの6個の補助文言をテストへコピーしない。公開HTMLの `nav-sub` 集合が `intl-shell-copy.cjs` のlocale別SSOTと一意に一致することを検証する。
+- layout側の「nav-itemが6回並ぶ」regexはUX ownerと重複するため、task navigation自体の存在へ縮小。localized sublabel完全性はUX ownerが担当する。
+- EN/KO/TWのcontent locale一覧は3ファイルとも `INTERNATIONAL_LOCALES` へ寄せる。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

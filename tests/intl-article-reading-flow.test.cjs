@@ -12,8 +12,9 @@ const {
   insertIntlArticlePrompt,
   shouldGenerateIntlArticlePrompt
 } = require(path.join(root, 'scripts', 'intl-article-reading-flow.cjs'));
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
-const locales = ['en', 'ko', 'tw'];
+const locales = INTERNATIONAL_LOCALES;
 
 function calculatorBridgePath(locale) {
   return `${locale}/articles/google-play-points-100-value.html`;

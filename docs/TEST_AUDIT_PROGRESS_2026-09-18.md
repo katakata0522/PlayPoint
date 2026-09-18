@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中715精査・215未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第19回を末尾へ追記する。
+最新集計: **基準930ケース中740精査・190未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第20回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -532,3 +532,17 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-navigation-sidebar-v1 7: 全維持。locale手書き配列をcanonical SSOTへ。
 
 公開HTML/CSS/JS・記事本文・表示件数・人気順・related生成は変更していない。
+
+## 第20回: 国際記事レイアウト・reading flow・UX 25ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した3ファイル25ケースをshared CSS・公開shell・Role prompt・COPY SSOT・Browser ownerと照合。既精査715へ25を加え、**740精査・190未精査**とする。現行959ケースは維持。
+
+### 判断
+
+- intl-article-layout 8: 全維持。pixel/design snapshotをshared CSS load-order契約へ。
+- intl-article-reading-flow 10: 全維持。Role/CTA/knowledge boundaryはそのまま、localeをSSOT化。
+- intl-article-ux-audit 7: 全維持。nav sublabelの手書きcopy/6件固定をCOPY SSOT一致へ。
+
+公開HTML/CSS/JS・記事本文・Role・CTA・デザイン値は変更していない。
