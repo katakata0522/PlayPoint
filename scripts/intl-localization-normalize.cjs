@@ -1,4 +1,5 @@
 'use strict';
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -153,7 +154,7 @@ function normalizeIntlGeneratedCopy(rootDir) {
     }
   }
 
-  for (const localeKey of ['en', 'ko', 'tw']) {
+  for (const localeKey of INTERNATIONAL_LOCALES) {
     mark(`${localeKey}/index.html`, injectRuntimeCopyOverride);
   }
 
