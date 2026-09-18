@@ -12,7 +12,7 @@ const source = fs.readFileSync(path.resolve(__dirname, '../js/diary.js'), 'utf8'
 
 const toPlain = (value) => JSON.parse(JSON.stringify(value));
 
-function createRuntime({ saveFails = false } = {}) {
+function createRuntime({ saveFails = false, pointsValue = '125' } = {}) {
   const analyticsEvents = [];
   const dispatchedEvents = [];
   const toastCalls = [];
@@ -20,7 +20,7 @@ function createRuntime({ saveFails = false } = {}) {
   let engagedCalls = 0;
   let summaryCalls = 0;
 
-  const pointsInput = { value: '125' };
+  const pointsInput = { value: pointsValue };
   const prizeSelect = { value: 'Silver reward' };
   const button = {
     tagName: 'BUTTON',
@@ -93,13 +93,14 @@ function createRuntime({ saveFails = false } = {}) {
 
   context.window = context;
   vm.createContext(context);
-  vm.runInContext(`${source}\nglobalThis.__DIARY = DIARY;`, context, { filename: 'diary.js' });
+  vm.runInContext(`${source}\nglobalThis.__DIARY = DIARY; globalThis.__DIARY_PURE = DIARY_PURE;`, context, { filename: 'diary.js' });
   context.__DIARY.updateSummary = () => { summaryCalls += 1; };
 
   return {
     analyticsEvents,
     button,
     diary: context.__DIARY,
+    pure: context.__DIARY_PURE,
     dispatchedEvents,
     get engagedCalls() { return engagedCalls; },
     get summaryCalls() { return summaryCalls; },
@@ -190,4 +191,24 @@ test('X共有ボタンは委譲クリックを通っても日記保存処理を�
   assert.equal(runtime.summaryCalls, 0);
   assert.equal(runtime.dispatchedEvents.length, 0);
   assert.equal(runtime.toastCalls.length, 0);
+});
+
+
+test('5桁以上だけ「本当に？」対象にし、4桁は通常値として扱う', () => {
+  const runtime = createRuntime();
+  assert.equal(runtime.pure.shouldQuestionLargePoints('9999'), false);
+  assert.equal(runtime.pure.shouldQuestionLargePoints('10000'), true);
+  assert.equal(runtime.pure.shouldQuestionLargePoints('99999'), true);
+  assert.equal(runtime.pure.shouldQuestionLargePoints(''), false);
+  assert.equal(runtime.pure.shouldQuestionLargePoints('abc'), false);
+});
+
+test('5桁のポイントも警告止まりで、そのまま記録すれば正規データとして保存する', () => {
+  const runtime = createRuntime({ pointsValue: '10000' });
+
+  runtime.diary.handleDiarySave({ target: runtime.button });
+
+  assert.equal(runtime.savedValues.length, 1);
+  assert.equal(JSON.parse(runtime.savedValues[0].value)[2026][8][1].points, '10000');
+  assert.equal(runtime.toastCalls.some(call => call.type === 'error'), false);
 });
