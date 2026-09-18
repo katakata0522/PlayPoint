@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中775精査・155未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第23回を末尾へ追記する。
+最新集計: **基準930ケース中800精査・130未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第24回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -613,3 +613,29 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. `article-shared.css` のmain column `36px 40px`という具体padding snapshotは外し、heading/muted/main backgroundのsemantic token所有権を維持する。実レイアウト・overflow・focus・reduced-motionは `article-design-smoke.cjs` が代表記事×3 viewportで保証する。
 
 公開HTML/CSS/JS・デザイン値・記事本文・計算式・1728例・生成物は変更していない。tests/docsのみの変更である。
+
+## 第24回: 保存・復元・0値安全境界25ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した5ファイル25ケースを、保存schema validator、localStorage recovery、日記save/import behavior、0pt計算、ゲーム購入単位丸め、公開記事の信頼境界と突合して個別精査した。既精査775へ25を加え、**800精査・130未精査**とする。ケース数は増減せず、現行実行集合**959ケース**を維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| article-storage-safety-contract | 7 | 全維持・変更なし。記事保存/ブログ設定のschema、malformed/future recovery、競合recovery拒否、冪等導入、無関係storage非干渉 |
+| diary-save-behavior | 3 | 全維持・変更なし。失敗時非成功扱い、通常保存の一度性、silent saveの通知境界 |
+| site-integrity-audit-regressions | 5 | 全維持。0pt、import merge、0pt計算完了、購入単位丸めを維持。維持判断/トラブル記事の安全な全文copy固定だけ意味・anchor契約へ整理 |
+| storage-safety-contract | 9 | 全維持・変更なし。日記/最終計算schema、raw recovery、future version、fail-closed、owned store inventory |
+| storage-safety-source-contract | 1 | 維持。first-view互換exportの引用符形式だけ緩め、recovery keyとUI/計算非干渉境界は維持 |
+
+### 変更したテスト設計
+
+1. 保存キー、schema version、recovery key/reasonは移行互換性そのものなのでexact contractとして残す。件数削減のために緩めない。
+2. Platinum維持判断は危険な旧断定（固定3万円、絶対にお得、固定年間差）を引き続き拒否する。一方、正しい説明文の全文を固定せず、「万人共通/一律/固定額の損益分岐点を置かない」という意味を保証する。
+3. 反映タイミング記事は主回答が目次より前という情報設計を維持し、CTAの日本語全文ではなく `#first-check` 導線と実target IDの存在を保証する。
+4. `language-suggestion.js` のfirst-view再exportはsingle quoteという実装書式を契約にせず、single/double quoteを許容する。recoveryキーとUI/計算への非干渉はarchitecture boundaryとして残す。
+5. 日記0pt、空/無関係import拒否、正常save/failed save/silent save、ゲーム購入単位丸めは実behaviorであり全件維持する。
+
+公開HTML/CSS/JS・計算式・1728例・保存形式・保存キー・記事本文・デザインは変更していない。tests/docsのみの変更である。

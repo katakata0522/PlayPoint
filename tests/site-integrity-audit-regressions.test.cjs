@@ -239,11 +239,17 @@ test('維持判断とトラブル記事の表示順は監査で決めた信頼�
   assert.doesNotMatch(maintenance, /経済的に絶対にお得/);
   assert.doesNotMatch(maintenance, /年間約1,500[〜-]3,000pt差/);
   assert.match(maintenance, /1\.75pt \/ 100円/);
-  assert.match(maintenance, /万人共通の固定額による損益分岐点/);
+  assert.match(maintenance, /損益分岐点/);
+  assert.match(
+    maintenance,
+    /(?:万人共通|一律|固定額)[\s\S]{0,80}(?:置かず|決めない|設定しない)/,
+    '維持判断は万人共通の固定損益分岐点を置かない'
+  );
 
   const article = fs.readFileSync(path.join(root, 'articles/2026-03-10-play-points-reflection-timing.html'), 'utf8');
   const answerIndex = article.indexOf('class="answer-box editorial-answer"');
   const tocIndex = article.indexOf('class="inpage-toc"');
   assert.ok(answerIndex >= 0 && tocIndex >= 0 && answerIndex < tocIndex, '主回答は目次より先に表示する');
-  assert.match(article, /href="#first-check">まず30秒で確認する4項目を見る/);
+  assert.match(article, /href="#first-check"/);
+  assert.match(article, /id="first-check"/);
 });
