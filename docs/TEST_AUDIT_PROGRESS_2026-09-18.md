@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中149精査・781未精査**。以下の第3回記録は当時の証跡として保持し、第5回を末尾へ追記する。
+最新集計: **基準930ケース中190精査・740未精査**。以下の第3回記録は当時の証跡として保持し、第5回・第6回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -115,3 +115,34 @@
 5. `monetization-search-quality` は特定callback名の完全一致をやめ、代表公開面が共通runtimeへ接続し、広告用途がConsent boundaryを通ることを確認する。
 
 PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが、最終件数と合否はこの変更のPR Gate成果物を正本とする。公開コード・広告ID・Consent実装・数式・UI・保存形式・workflow・性能閾値は変更していない。
+
+
+## 第6回: 計算機UI・first view・結果導線41ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した8ファイル41ケースを現行mainと照合した。対象ファイルは基準コミットと第5回完了時mainで同一内容。既精査149へ41を加え、**190精査・740未精査**とする。実装方式2ケースを1 behaviorへ統合するが、基準ケースの精査件数は41のまま二重加算しない。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| main-calculator-ui | 4 | 全維持。主画面の必要入力・冪等layout・6地域copy・初期input contract |
+| mobile-first-view-contract | 9 | 全保証維持。source regex 3箇所をnode再利用behaviorへ、bootstrapを実inline実行へ、配信をESM/SW実行へ変更 |
+| mobile-first-view-intro | 4 | 全維持。全文snapshotとSEOキーワード順を外し、first-view意味・短さ・static/runtime一致をowner化 |
+| calculator-result-guidance-visibility | 1 | 維持。render後のdetails外表示順 |
+| playpoint-result-contracts | 8 | 全維持。6地域DOM順と実CONFIG値へ強化 |
+| result-navigation-config | 5 | 2実装方式ケースを1汚染防止behaviorへ統合。6地域/全リンク/coverageは維持 |
+| share-behavior | 4 | 全維持。共有URL生成・復元・不正値拒否 |
+| ui-runtime-behavior | 6 | 全維持。keyboard/reduced-motion/error locale/runtime link解決 |
+
+### 変更したテスト設計
+
+1. first-view runtimeはprivate API名や特定DOM操作の不存在ではなく、既存の計算入力nodeを再生成しない結果で検証する。
+2. first-view bootstrapは公開6地域のinline scriptを実行し、main×倍率1超だけopenになることを検証する。
+3. first-view module deliveryは実ESM依存、asset revision入力、実Service Worker install precacheを照合する。
+4. 日本語introは全文一致をやめ、短さ・改行なし・計算意図・static/hydration一致を検証する。title/metaのキーワード順はUI ownerから外す。
+5. 結果DOM順をJP/US/KR/TWだけでなくHK/INまで拡張し、details見出しはconfig source文字列でなく読み込んだ6地域CONFIGを検証する。
+6. result navigationの同一instance/deep freeze固定を廃止し、外部変更が後続取得へ漏れないbehavior 1件へ統合する。
+
+第5回後958ケースから1件純減し、静的計算上957ケース。最終件数・合否はこの変更のPR Gate保存TAPを正本とする。公開コード・UI・copy・数式・保存形式・workflowは変更していない。

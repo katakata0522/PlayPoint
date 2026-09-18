@@ -7,6 +7,7 @@ const {
   createSelect,
   createInput,
   loadCalculatorContext,
+  loadConfigs,
   test,
 } = require('./helpers/playpoint-calculator-test-context.cjs');
 
@@ -91,8 +92,9 @@ test('計算結果の統合導線には金額や条件に応じた次の判断�
   assert.ok([...guidanceBlock.matchAll(/<a href="([^"]+)"/g)].length <= 3, '統合導線は3件以内にしてください');
 });
 
-test('主要結果、共有、折りたたみ詳細の順で4言語ページに配置する', () => {
-  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+
+test('主要結果、共有、折りたたみ詳細の順を公開6地域で維持する', () => {
+  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
     const resultPosition = html.indexOf('id="result"');
     const actionsPosition = html.indexOf('id="result-actions"');
@@ -101,10 +103,14 @@ test('主要結果、共有、折りたたみ詳細の順で4言語ページに�
   }
 });
 
-test('折りたたみ詳細の見出しを4言語で用意する', () => {
-  const configSource = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
-  for (const label of ['計算の詳細を見る', 'View calculation details', '계산 상세 보기', '查看計算詳情']) {
-    assert.ok(configSource.includes(label), `折りたたみ見出しがありません: ${label}`);
+
+test('折りたたみ詳細の見出しを公開6地域の設定へ用意する', () => {
+  const configs = loadConfigs(true);
+  for (const region of ['JP', 'US', 'KR', 'TW', 'HK', 'IN']) {
+    const label = configs[region]?.uiText?.resultDetailsSummary;
+    assert.equal(typeof label, 'string', `${region}: resultDetailsSummary must be a string`);
+    assert.ok(label.trim(), `${region}: resultDetailsSummary must not be empty`);
+    assert.doesNotMatch(label, /undefined|null|\{[^}]+\}/i, `${region}: resultDetailsSummary contains an unresolved value`);
   }
 });
 
