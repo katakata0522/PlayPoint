@@ -311,7 +311,7 @@ test('モード説明は通常・逆算・週次で文脈を切り替え、週�
 
   assert.match(ui, /descriptions:[\s\S]*?main:[\s\S]*?reverse:[\s\S]*?diary:/);
   assert.match(ui, /ウィークリー関連ガイド/);
-  assert.match(ui, /受け取れない・ボタンがない時/);
+  assert.match(ui, /ボタンがない・受け取れない時/);
   assert.match(ui, /スーパーウィークリーの条件・賞品/);
   assert.match(ui, /mode-context-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(ui, /getMainOnlySections/);
