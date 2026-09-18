@@ -15,7 +15,7 @@ function inputTagById(html, id) {
 }
 
 test('fractional spending inputs request a decimal mobile keyboard in every calculator locale', () => {
-  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(relativePath);
     const amountInput = inputTagById(html, 'amountYen');
 
@@ -26,7 +26,7 @@ test('fractional spending inputs request a decimal mobile keyboard in every calc
 });
 
 test('integer-only points input keeps the numeric keyboard hint', () => {
-  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+  for (const relativePath of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(relativePath);
     const pointsInput = inputTagById(html, 'neededPoints');
 
