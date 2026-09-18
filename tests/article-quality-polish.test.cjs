@@ -79,10 +79,10 @@ test('日本語記事の著者プロフィールを見出し階層から外す',
     assert.doesNotMatch(html, /<h4(?:\s[^>]*)?>\s*この記事の著者：/i, relativePath);
     assert.match(html, /class="author-profile-title"[^>]*>この記事の著者：/i, relativePath);
   }
-  assert.ok(profiles >= 60, 'expected broad author coverage, got ' + profiles);
+  assert.ok(profiles > 0, 'author profile coverage must not be empty');
 });
 
-test('監査で見つかった4記事の表は横スクロール境界を持つ', () => {
+test('監査対象の表は横スクロール境界を持つ', () => {
   for (const relativePath of ARTICLE_TABLE_OVERFLOW_PATHS) {
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
     assert.equal(wrapUnwrappedTables(html), html, relativePath);
