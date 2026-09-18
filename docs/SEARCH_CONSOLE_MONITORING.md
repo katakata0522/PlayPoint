@@ -125,3 +125,21 @@ Search Consoleでは月次で国フィルタを切り替え、表示回数が増
 
 - Search Console の権限操作はアカウント保有者のみ実施可能
 - 本リポジトリでは運用手順を管理し、実操作は管理画面で行う
+
+
+## 非重複28日比較の保存契約（2026-09-19追加）
+
+`PlayPoint Analytics` の最新ビューだけでは、ローリング更新後に「その直前28日」の query × URL raw を再現できない。
+Issue #181 の比較証拠は、次の専用レイヤーへ保存する。
+
+- `🗃GSC 28日履歴`: current_28d / previous_28d を同じ `pair_id` で保存するraw正本
+- `🔍GSC 28日比較`: query × exact URL ごとの Click / Impression / CTR / Position と前期間差を確認する人間向けビュー
+- 実装・導入手順: `docs/GSC_28D_CAPTURE_RUNBOOK.md`
+- Apps Scriptモジュール: `ops/apps-script/gsc-nonoverlap-28d.gs`
+
+比較は Search Console の FINAL データだけを使用し、各窓は28日、互いに非重複でなければならない。
+current / previous の片方が欠ける場合、ローリング30日スナップショットしかない場合、
+または query / exact URL が欠ける場合は `BLOCKED` とし、SEO変更の根拠に使わない。
+
+通常の `🔎検索語×ページ` と `🎯SEO改善候補` は最新状況を見る運用ビューとして残す。
+最新ビューの更新と、比較証拠の履歴保存は別責務として扱う。
