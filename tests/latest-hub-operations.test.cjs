@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const { CONTENT_DATE_OVERRIDES } = require('../scripts/html-sync.cjs');
 const {
   extractVerificationDate,
@@ -54,20 +55,8 @@ test('最新情報ハブは週次3制度とクエストを別項目として扱�
   assert.ok(latestHtml.includes('../articles/2026-07-31-google-play-quests.html'));
 });
 
-test('生成処理は公開ページの公式確認日を正本として使い、確認していない日に進めない', () => {
-  const contentDatesSource = fs.readFileSync(path.join(root, 'scripts', 'content-dates.cjs'), 'utf8');
-
+test('生成処理は公開ページの公式確認日を内容日SSOTとして使う', () => {
   assert.equal(CONTENT_DATE_OVERRIDES['latest/index.html'], verificationDate);
-  assert.match(
-    contentDatesSource,
-    /'latest\/index\.html': LATEST_HUB_VERIFICATION_DATE/,
-    'latest hub content date should be derived from the verified date instead of a second date literal'
-  );
-  assert.doesNotMatch(
-    contentDatesSource,
-    /'latest\/index\.html': '\d{4}-\d{2}-\d{2}'/,
-    'content-dates.cjs must not duplicate the latest hub verification date literal'
-  );
 });
 
 test('鮮度検査は確認日から14日を超えた状態を検出する', () => {
@@ -156,9 +145,69 @@ test('運用手順は日付だけの更新と個別オファーの一般化を�
   assert.ok(guide.includes('CONTENT_DATE_OVERRIDES'));
 });
 
-test('最新情報ハブの共通計測はサイトルートの同意管理を読み込む', () => {
-  const components = fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8');
+test('最新情報ハブの共通componentはlatest階層からサイトルートの同意管理を要求する', () => {
+  assert.match(latestHtml, /<script\s+src=["']\.\.\/blog\/components\.js\?v=[^"']+["']/);
 
-  assert.match(components, /const isLatestPage = window\.location\.pathname\.includes\('\/latest\/'\);/);
-  assert.match(components, /isArticlePageTop \|\| isBlogPage \|\| isLatestPage/);
+  const appended = [];
+  let domReady = null;
+  const makeElement = tagName => ({
+    tagName: String(tagName).toUpperCase(),
+    dataset: {},
+    className: '',
+    innerHTML: '',
+    rel: '',
+    href: '',
+    src: '',
+    async: false,
+    crossOrigin: '',
+    addEventListener() {},
+    setAttribute() {},
+    append() {},
+    appendChild() {},
+    insertAdjacentElement() {}
+  });
+  const document = {
+    head: { appendChild(node) { appended.push(node); } },
+    body: {
+      firstChild: null,
+      insertBefore() {},
+      appendChild() {}
+    },
+    querySelector() { return null; },
+    querySelectorAll() { return []; },
+    createElement: makeElement,
+    addEventListener(type, handler) {
+      if (type === 'DOMContentLoaded') domReady = handler;
+    }
+  };
+  const window = {
+    location: { pathname: '/latest/' },
+    navigator: {},
+    PlayPointAnalytics: {
+      installGtagBridge() {},
+      markAnalyticsReady() {}
+    },
+    requestIdleCallback(callback) { callback(); },
+    setTimeout(callback) { callback(); },
+    matchMedia() { return { matches: false }; },
+    gtag() {}
+  };
+  const context = {
+    window,
+    document,
+    console: { error() {}, warn() {} },
+    localStorage: { getItem() { return null; } },
+    Date,
+    Promise,
+    setTimeout: window.setTimeout
+  };
+  vm.createContext(context);
+  vm.runInContext(fs.readFileSync(path.join(root, 'blog', 'components.js'), 'utf8'), context, { filename: 'components.js' });
+  assert.equal(typeof domReady, 'function');
+  domReady();
+
+  const consentRequest = appended.find(node => String(node.src || '').includes('/js/consent.js'));
+  assert.ok(consentRequest, 'latest page did not request the shared consent manager');
+  assert.match(consentRequest.src, /^\.\.\/js\/consent\.js\?v=/);
 });
+

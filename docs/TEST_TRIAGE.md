@@ -382,6 +382,41 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、記事本文、ブランド文言、SEO metadata、canonical/hreflang、sitemap、feed、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第9回（2026-09-18）
+
+基準930ケースに含まれる「Play Points本体の公式事実・ランク条件・獲得率の意味」8ファイル65ケースを、現行Google公式ヘルプ、現行mainの地域SSOT、公開記事・LP・最新情報ハブと突合して個別精査した。対象8ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と第8回完了時mainで同一内容だった。なお `campaign-lp-meaning-consistency` と `status-lp-meaning-consistency` はループ内で `test()` を生成するため、単純なsource declaration数ではなく実行時ケース数4件・6件として基準件数へ加算する。
+
+**基準930中336精査・594未精査。** `common-pages-fact-ux` の「アプリモジュール変更でSW用指紋が変わる」1ケースは、既精査owner `runtime-module-guards.test.cjs` が実ESM・内容改訂・precacheまで同等以上に保証済みのため統合する。第8回後957ケースから静的計算上956ケース。実件数・合否は当該PR Gate保存TAPを正本とする。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `about-playpoints-current-official.test.cjs` | 4 | 全件維持。日本の獲得対象・5ステータス・常設/個別特典境界を維持。更新日だけ固定日snapshotから内容日SSOTとの一致へ変更 |
+| `article-fact-regression.test.cjs` | 27 | 全件維持。週次3制度、ランク条件、期限、支払/参加条件、誇張防止などの事実回帰owner。公式「獲得対象」ページ間でGoogle Oneの記載差があるため、特定サービス名の必須化ではなく一次情報の範囲を超えて一般化しない契約へ変更 |
+| `campaign-lp-meaning-consistency.test.cjs` | 4 | 全件維持。2x/3x/waitの入力は「倍率」ではなくGoogle Play表示の特別獲得率であることを保証 |
+| `common-pages-fact-ux.test.cjs` | 6 | 5ケース維持・1件既存ownerへ統合。地域数値をJP/US/KR/TWからHK/INを含む6地域へ強化。巨大な混在テストは公開トップの獲得率意味/入力境界へ縮小 |
+| `latest-hub-operations.test.cjs` | 12 | 全件維持。確認日・次回確認日・鮮度・日付妥当性・運用禁止事項を維持。content-datesのprivate変数名固定をSSOT値一致へ、Consent配線のsource regexを実components VM behaviorへ変更 |
+| `status-lp-meaning-consistency.test.cjs` | 6 | 全件維持。Silver/Gold/Diamond LPの特別獲得率意味と削除済み週平均の再発防止 |
+| `status-platinum-meaning.test.cjs` | 2 | 全件維持。Platinum LPの特別獲得率意味と月/日平均表示を維持 |
+| `trust-pages-consistency.test.cjs` | 4 | 全件維持。実配信中のAdSense/Rakuten affiliate、登録不要terms、human sitemap regional hub整合を保証 |
+
+### 現行一次情報との照合で確認した境界
+
+- 日本の通常ウィークリーリワードはシルバー以上、金曜更新。Play Pass加入者向け週次ボーナス/ブースターは日本を含む対象地域で木曜更新。Play Pass加入によるGoldステータス特典は仏・独・米・英のみで、日本は対象外。この3制度を同一視しない。
+- 日本の公式「ポイントを貯める」案内には、現在の新しいページでアプリ/ゲーム、アプリ内・ゲーム内購入/定期購入、書籍が列挙される一方、別の現行公式ページにはAndroidからのGoogle One定期購入も残る。テストは片方のサービス例を唯一の正本にせず、公式URLと「未確認サービスを対象と断定しない」境界を守る。
+- 地域別ランク・通常獲得率は6地域の現行SSOTと照合。香港は5レベル、インドはPlatinumが最高の4レベルである差もテストへ含める。
+
+### 今回の過剰固定・重複整理
+
+- `about-playpoints` の更新日 `2026-09-14` をテストへ二重記載しない。内容日台帳の値と公開meta/JSON-LD/可視日付が一致することを保証する。
+- Google Oneという1サービス名の存在だけを「日本の現在獲得対象」の証明にしない。一次情報ページ間の記載差を許容しつつ、YouTube Premium等の未確認サービスを公式対象と断定しない。
+- `common-pages-fact-ux` の計算JS private式・ゲームポータル順序・アフィリエイト文言を1ケースへ詰め込まず、公開トップの意味とinput boundaryに限定する。計算behaviorは計算owner、ゲーム導線は各UI owner、広告/affiliateは収益/法務ownerが担当する。
+- app module revisionの内容変更検知は `runtime-module-guards` が実import・revision・Service Worker precacheまで検証済みのため重複1件を削除。
+- latest hubのcontent-dateはprivate変数名やsource断片を固定せず、公開ページから抽出した確認日と内容日SSOTの一致を契約にする。
+- latest hubのConsent経路は `isLatestPage` 等のprivate変数名を探さず、実 `blog/components.js` を `/latest/` として実行しサイトルートのConsent managerを要求することを確認する。
+
+公開HTML/CSS/JS、記事本文、公式数値、ブランド、保存形式、workflow、権限、性能閾値は変更しない。今回もtests/docsのみの変更で、本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

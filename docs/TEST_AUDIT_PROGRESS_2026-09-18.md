@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中271精査・659未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第8回を末尾へ追記する。
+最新集計: **基準930ケース中336精査・594未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第9回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -210,3 +210,42 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. sitemap hierarchyは具体的文言ではなくH1→目的説明→secondary groups、比較リンクは一意href＋非空labelを保証。
 
 公開コード・記事本文・ブランド・metadata・sitemap/feed・workflowは変更していない。
+
+
+## 第9回: Play Points本体の公式事実・ランク・獲得率65ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した8ファイル65ケースを現行mainと照合した。対象ファイルは基準コミットと第8回完了時mainで同一内容。既精査271へ65を加え、**336精査・594未精査**とする。ループ生成テストを実行時件数で数え、source declaration数だけで過少計上しない。既精査ownerへ重複1ケースを統合するため、現行957ケースから静的計算上956ケース。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| about-playpoints-current-official | 4 | 全維持。更新日exact snapshotのみSSOT一致へ変更 |
+| article-fact-regression | 27 | 全維持。一次情報の範囲を超える断定防止へ調整し、週次/Pass/ランク/期限等の事実回帰を維持 |
+| campaign-lp-meaning-consistency | 4 | 全維持。倍率入力への回帰を拒否 |
+| common-pages-fact-ux | 6 | 5維持・1統合。6地域の公式数値へ拡張、混在static testを公開意味へ縮小 |
+| latest-hub-operations | 12 | 全維持。private source固定をSSOT equality / VM behaviorへ変更 |
+| status-lp-meaning-consistency | 6 | 全維持。特別獲得率意味と週平均復活防止 |
+| status-platinum-meaning | 2 | 全維持。Platinum意味/表示契約 |
+| trust-pages-consistency | 4 | 全維持。実配信の広告/affiliate/terms/sitemap契約 |
+
+### 現行公式との照合結果
+
+- 通常ウィークリー: シルバー以上・金曜更新。
+- Play Pass週次: 日本を含む対象地域・木曜更新。
+- Play Pass加入Gold特典: 仏/独/米/英のみ、日本は対象外。
+- 日本の獲得対象公式ページは、新ページと旧URLの現行ページでGoogle Oneの列挙有無に差があるため、特定サービス名ではなく公式source boundaryを契約にする。
+- HKを含む5レベル地域と、DiamondのないIndia 4レベルを含め6地域の数値を検査する。
+
+### 変更したテスト設計
+
+1. aboutページの更新日は固定日ではなく内容日SSOTと公開4表現の一致。
+2. getting-started/subscription/YouTube PremiumはGoogle One exact wordingではなく、公式source URLと未確認サービス非断定を保証。
+3. Play Pass articleは日本の木曜週次と加入Gold特典の対象国を別制度として明示的に検査。
+4. common-pagesの地域数値を6地域へ拡張し、巨大mixed testからprivate calculation実装・game/affiliate別責務を外す。
+5. app module revision重複1件を既精査runtime-module-guardsへ統合。
+6. latest hubはcontent-dateのsource変数名を固定せずSSOT equality、Consentはactual components VM実行で保証。
+
+公開コード・記事本文・数式・保存形式・workflowは変更していない。

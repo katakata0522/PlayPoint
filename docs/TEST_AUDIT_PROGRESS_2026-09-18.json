@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 8,
-  "latestReviewedBaselineCases": 271,
-  "latestUnreviewedBaselineCases": 659,
+  "latestStage": 9,
+  "latestReviewedBaselineCases": 336,
+  "latestUnreviewedBaselineCases": 594,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -384,5 +384,63 @@
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium article and navigation checks"
+  },
+  "expectedCurrentCasesAfterWave9": 956,
+  "wave9": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 65,
+    "scope": "core-official-facts-levels-earn-rate-meaning",
+    "files": [
+      {
+        "file": "tests/about-playpoints-current-official.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_derive_content_date_from_ssot"
+      },
+      {
+        "file": "tests/article-fact-regression.test.cjs",
+        "cases": 27,
+        "decision": "keep_all_align_to_official_source_boundaries_and_separate_play_pass_programs"
+      },
+      {
+        "file": "tests/campaign-lp-meaning-consistency.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_special_earn_rate_semantics"
+      },
+      {
+        "file": "tests/common-pages-fact-ux.test.cjs",
+        "cases": 6,
+        "decision": "keep_5_merge_1_expand_official_region_contract_to_6_regions"
+      },
+      {
+        "file": "tests/latest-hub-operations.test.cjs",
+        "cases": 12,
+        "decision": "keep_all_replace_private_source_guards_with_ssot_and_vm_behavior"
+      },
+      {
+        "file": "tests/status-lp-meaning-consistency.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_status_lp_semantics"
+      },
+      {
+        "file": "tests/status-platinum-meaning.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_platinum_semantics"
+      },
+      {
+        "file": "tests/trust-pages-consistency.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_match_shipped_ads_affiliate_terms_sitemap"
+      }
+    ],
+    "mergedCases": [
+      {
+        "from": "common-pages-fact-ux",
+        "name": "app module changes always change Service Worker fingerprint",
+        "owner": "runtime-module-guards"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium"
   }
 }

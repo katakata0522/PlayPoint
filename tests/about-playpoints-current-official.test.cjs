@@ -50,9 +50,10 @@ test('基礎ページは個別オファーと常設制度を分け、一次情�
 });
 
 test('意味のある本文更新日はHTMLと内容日台帳で一致する', () => {
-  assert.equal(CONTENT_DATE_OVERRIDES['about-playpoints.html'], '2026-09-14');
-  assert.match(html, /<meta name="last-modified" content="2026-09-14">/);
-  assert.match(html, /<meta property="article:modified_time" content="2026-09-14T00:00:00\+09:00">/);
-  assert.match(html, /"dateModified": "2026-09-14"/);
-  assert.match(html, /最終更新: 2026-09-14/);
+  const contentDate = CONTENT_DATE_OVERRIDES['about-playpoints.html'];
+  assert.match(contentDate, /^\d{4}-\d{2}-\d{2}$/);
+  assert.ok(html.includes(`<meta name="last-modified" content="${contentDate}">`));
+  assert.ok(html.includes(`<meta property="article:modified_time" content="${contentDate}T00:00:00+09:00">`));
+  assert.ok(html.includes(`"dateModified": "${contentDate}"`));
+  assert.ok(html.includes(`最終更新: ${contentDate}`));
 });
