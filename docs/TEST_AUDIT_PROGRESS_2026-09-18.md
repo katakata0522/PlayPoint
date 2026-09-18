@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中775精査・155未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第23回を末尾へ追記する。
+最新集計: **基準930ケース中795精査・135未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第24回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -613,3 +613,27 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. `article-shared.css` のmain column `36px 40px`という具体padding snapshotは外し、heading/muted/main backgroundのsemantic token所有権を維持する。実レイアウト・overflow・focus・reduced-motionは `article-design-smoke.cjs` が代表記事×3 viewportで保証する。
 
 公開HTML/CSS/JS・デザイン値・記事本文・計算式・1728例・生成物は変更していない。tests/docsのみの変更である。
+
+## 第24回: 保存・復旧安全20ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル20ケースを、保存runtime・validator・recovery behavior・日記保存副作用・active ESM graphと照合した。既精査775へ20を加え、**795精査・135未精査**とする。ケース数は増減せず現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| article-storage-safety-contract | 7 | 全維持・変更なし。記事/ブログ保存のschema・raw recovery・future version・衝突防止 |
+| diary-save-behavior | 3 | 全維持・変更なし。失敗/通常/silent保存の副作用境界 |
+| storage-safety-contract | 9 | 全維持・変更なし。owned storeのschema・recovery・fail-closed・idempotency・台帳 |
+| storage-safety-source-contract | 1 | 維持。source regexからactive ESM dependency boundaryへ変更 |
+
+### 変更したテスト設計
+
+1. recovery keyやfirst-view export文字列をsource contractで二重固定しない。実Storage behavior ownerを正本とする。
+2. compatibility exportはNodeが解釈したactive ESM graphで`language-suggestion`→`first-view`依存を確認する。
+3. UI/計算非干渉は単語不存在ではなく、`calculator.js` / `ui.js`へ直接依存しないarchitecture boundaryで保証する。
+4. malformed/future schema、異なるrecovery衝突、invalid write拒否、保存失敗時の成功副作用禁止は緩和しない。
+
+公開HTML/CSS/JS・保存schema・保存キー・UI・計算式は変更していない。
