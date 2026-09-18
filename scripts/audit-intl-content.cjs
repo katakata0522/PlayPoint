@@ -2,12 +2,13 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 const snapshotPath = path.join(root, 'docs/data/intl-content-demand-2026-09-03.json');
 const outputPath = path.join(root, 'docs/INTL_CONTENT_AUDIT_2026-09-03.md');
 const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
-const locales = ['en', 'ko', 'tw'];
+const locales = INTERNATIONAL_LOCALES;
 
 function stripHtml(html) {
   return html
