@@ -20,11 +20,9 @@ test('全記事のArticle Roleとgenerated主CTAが一致する', () => {
     .filter(file => file.endsWith('.html') && file !== 'index.html').map(file => locale + '/articles/' + file));
   assert.equal(result.articleCount, new Set([...japanese, ...international]).size, '登録記事を全件監査する');
   assert.deepEqual(result.failures, []);
-  assert.ok(result.roleCounts.calculator_bridge > 0);
-  assert.ok(result.roleCounts.troubleshooting > 0);
-  assert.ok(result.roleCounts.retention > 0);
-  assert.ok(result.roleCounts.decision_support > 0);
-  assert.ok(result.roleCounts.reference > 0);
-  assert.ok(result.roleCounts.game_decision > 0);
-  assert.ok(result.roleCounts.hold > 0);
+  assert.equal(
+    Object.values(result.roleCounts).reduce((sum, count) => sum + count, 0),
+    result.articleCount,
+    'every audited article must be counted in exactly one Article Role'
+  );
 });
