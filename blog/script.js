@@ -478,7 +478,7 @@
     let bodySearchPromise;
     function loadBodySearch() {
         if (bodySearchPromise) return bodySearchPromise;
-        bodySearchPromise = fetch('article-search-index.json', { cache: 'no-cache' }).then(response => {
+        bodySearchPromise = fetch('article-search-index.json').then(response => {
             if (!response.ok) throw new Error('Search index unavailable');
             return response.json();
         }).then(index => {
