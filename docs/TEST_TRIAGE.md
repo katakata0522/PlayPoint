@@ -291,6 +291,35 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、計算式、保存形式、記事、広告ID、Consent実装、workflow、権限、性能閾値は変更しない。今回の変更はテストと監査文書だけで、本番Deployを必要とする公開差分を作らない。
 
+
+## 個別監査・修正の第6回（2026-09-18）
+
+第5回に続き、基準930ケースに含まれる「計算機UI・first view・結果導線」8ファイル41ケースを現行mainの実装と突合して個別精査した。対象8ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と第5回完了時mainで同一内容だったため、後発ケースを混ぜず41ケースを基準件数へ加算する。
+
+**基準930中190精査・740未精査。** 第5回後の実行集合958ケースから、`result-navigation-config` の「同一object instance」「deep freeze」という実装方式2ケースを「呼び出し側の変更が後続計算を汚染しない」1 behaviorケースへ統合するため、静的計算上957ケース。実件数・合否は当該PR Gate保存TAPを正本とし、件数固定テストは追加しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `main-calculator-ui.test.cjs` | 4 | 全件維持。通常獲得率/特別獲得率の可視化、冪等化、6地域copy、主要入力の初期DOMは利用者向けUI契約 |
+| `mobile-first-view-contract.test.cjs` | 9 | 全件保証維持。入力DOMの再生成禁止をprivate source regexから既存node再利用behaviorへ変更。bootstrapはinline scriptを実行して判定。first-view配信は実ESM graph・asset revision・SW install precacheで検証 |
+| `mobile-first-view-intro.test.cjs` | 4 | 全件維持。日本語冒頭の全文一致を廃止し、短さ・改行非依存・計算意図・static/hydration一致へ変更。title/metaの特定キーワード順はUI契約から外す |
+| `calculator-result-guidance-visibility.test.cjs` | 1 | 維持。実render結果でdetails→購入確認→次アクションの表示順を検証 |
+| `playpoint-result-contracts.test.cjs` | 8 | 全件維持。結果/共有/details順を4地域から6地域へ拡張。details見出しはconfig source文字列検索でなく実CONFIG値を検証 |
+| `result-navigation-config.test.cjs` | 5 | 4保証へ整理。同一instance・deep freezeという内部方式を捨て、呼び出し側の変更が後続取得を汚染しないbehaviorへ統合。全リンク・6地域・coverage fail-closedは維持 |
+| `share-behavior.test.cjs` | 4 | 全件維持。共有URLの生成・復元・境界値拒否はいずれも実API behavior |
+| `ui-runtime-behavior.test.cjs` | 6 | 全件維持。keyboard、reduced motion、error locale、著者/埋め込み導線のruntime解決は実利用挙動 |
+
+### 今回の過剰固定・重複整理
+
+- first-viewが `insertAdjacentElement` や特定 `createElement` を使わないこと自体は契約にしない。既存の計算入力nodeがruntime後も同一であることを検証し、初期DOMの存在は既精査owner `static-calculator-delivery` が担当する。
+- `playpoint-first-view-state` のソース断片 `mode===main` 等をregexで探さず、各公開6地域の実inline scriptを4シナリオで実行する。
+- first-viewのimport引用符・SW文字列を固定せず、active ESM graph / `APP_MODULE_FILES` / 実SW installのprecache URLで保証する。
+- 日本語first-viewの一文を全文snapshotしない。staticとhydrationの一致、強制改行なし、80文字以内、目標/必要/ポイントの意味を守る。
+- UIテストからtitle/meta descriptionの特定キーワード並びを外す。SEO成果物の構造・公開整合は既存SEO ownerに任せ、UI側は可視本文の3つの計算意図を守る。
+- result navigationは「同じobjectを返す」「deep freezeする」を要求しない。共有mutable singletonでもcloneでも、呼び出し側の変更が次の利用へ漏れないことだけを契約にする。
+
+公開HTML/CSS/JS、計算式、保存形式、記事、コピー、結果ナビ設定値、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
