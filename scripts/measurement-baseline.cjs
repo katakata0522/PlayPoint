@@ -85,6 +85,32 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       overlap: 'forbidden',
       compareSameIntent: true,
       compareSameMetricDefinitions: true
+    },
+    captureContract: {
+      historySheet: '🗃GSC 28日履歴',
+      comparisonSheet: '🔍GSC 28日比較',
+      dimensions: ['query', 'exact_url'],
+      windowRoles: ['current_28d', 'previous_28d'],
+      requiredColumns: [
+        'pair_id',
+        'window_role',
+        'period_start',
+        'period_end',
+        'record_type',
+        'search_query',
+        'exact_url',
+        'clicks',
+        'impressions',
+        'ctr',
+        'avg_position',
+        'data_state',
+        'fetched_at',
+        'source'
+      ],
+      finalDataOnly: true,
+      idempotencyKey: ['pair_id', 'window_role', 'search_query', 'exact_url'],
+      failClosedWhenPairMissing: true,
+      rule: 'Never treat a rolling 30-day snapshot as the previous non-overlapping 28-day comparison.'
     }
   },
   adsense: {
