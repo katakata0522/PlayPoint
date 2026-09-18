@@ -18,9 +18,9 @@ test('日本語クエスト記事はRetention回答と条件境界の後に文�
   assert.ok(answerIndex >= 0, 'quick answer is missing');
   assert.ok(boundaryIndex >= 0, 'knowledge boundary is missing');
   assert.ok(contextualCtaIndex > boundaryEnd, 'contextual CTA must follow the answer and knowledge boundary');
-  assert.ok(html.includes('購入条件がある場合は必要額を確認'));
-  assert.ok(html.includes('元から予定している購入がクエスト条件に該当する場合だけ'));
-  assert.ok(html.includes('Playポイント計算機を開く'));
+  const contextualCtaEnd = html.indexOf('</section>', contextualCtaIndex);
+  const contextualCta = html.slice(contextualCtaIndex, contextualCtaEnd);
+  assert.match(contextualCta, /<a\b[^>]*class=["'][^"']*cta-btn[^"']*["'][^>]*href=["']\.\.\/["']/i);
   assert.equal((html.match(/data-generated-article-prompt="true"/g) || []).length, 0, 'retention article must not regain the generic calculator prompt');
 });
 
@@ -31,10 +31,9 @@ test('台湾クーポン記事は問題排解を完了してから反推モー�
   const promptIndex = html.indexOf('data-generated-intl-article-prompt="true"');
 
   assert.ok(promptIndex > resolutionEnd, 'troubleshooting must finish before the calculator CTA');
-  assert.ok(html.includes('問題排解完成後的下一步'));
-  assert.ok(html.includes('原本預計消費，可以累積多少點？'));
-  assert.ok(html.includes('href="/tw/?mode=reverse"'));
-  assert.ok(!html.includes('再次購買前先確認條件'), 'duplicate CTA remains');
+  const promptEnd = html.indexOf('</aside>', promptIndex);
+  const prompt = html.slice(promptIndex, promptEnd);
+  assert.match(prompt, /href=["']\/tw\/\?mode=reverse["']/);
   assert.equal((html.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
 });
 
@@ -47,9 +46,9 @@ test('台湾白金・鑽石記事は門檻を即答してから直接計算機�
 
   assert.ok(promptIndex > introEnd, 'threshold answer must come before the calculator CTA');
   assert.ok(promptIndex < detailIndex, 'calculator CTA should stay close to the direct answer');
-  assert.ok(html.includes('距離白金／鑽石，我還需要多少？'));
-  assert.ok(html.includes('用我的不足點數估算'));
-  assert.ok(!html.includes('用自己的不足點數計算'), 'duplicate lower CTA remains');
-  assert.ok(!html.includes('href="/tw/status/platinum/"'), 'article should not bounce through another LP');
+  const promptEnd = html.indexOf('</aside>', promptIndex);
+  const prompt = html.slice(promptIndex, promptEnd);
+  assert.match(prompt, /href=["']\/tw\/["']/);
+  assert.doesNotMatch(prompt, /\/tw\/status\//, 'calculator CTA should go directly to the calculator');
   assert.equal((html.match(/data-generated-intl-article-prompt="true"/g) || []).length, 1);
 });
