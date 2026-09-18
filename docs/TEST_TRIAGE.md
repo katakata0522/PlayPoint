@@ -1041,6 +1041,32 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・記事本文・翻訳・sitemap・テストコードは変更していない。docsのみの変更である。
 
+
+## 個別監査・修正の第32回（2026-09-18）
+
+基準930ケースに含まれる `intl-demand-content-quality.test.cjs` の**実行時9ケース**を、公開記事の検索意図・回答順序・Google Play公式一次情報と突合して個別精査した。source上はloop内の1つの `test()` 宣言だが、`demandContracts` 9項目が実行時に9ケースを生成するため、基準進捗も9件として扱う。
+
+**基準930中899精査・31未精査。** 9ケースはすべて保証を維持し、テストコード変更は不要。現行959ケースを維持する。
+
+### 9ケースの判断
+
+- ENのPoints利用判断記事: 「万人共通の最良交換先はない」「実際に使う価値÷必要ポイント」で比較する検索意図を維持。
+- TW Weekly Reward: 通常Weekly Rewardの金曜更新と、Play Pass週次の木曜更新を区別し、missing rewardの確認導線を維持。
+- TW Points利用記事: coupon/Play creditの選択と最低消費条件を直接回答する。
+- EN/KO Quests: quest表示・購入step・Play Games profile・cancel/refundによる取消を問題解決フローとして維持。
+- KO Super Ticket: Super Weekly Reward/Super Ticketの取得・利用、現在カード/元報酬の扱い、premium賞品を保証しない境界を維持。
+- EN gift-card: Play Points/Play balanceでgift cardを買えないこと、Play creditとgift cardを区別し、digital gift-card購入は通常のPoints獲得対象ではない境界を維持。
+- KO/TW expiration: 最後の獲得または使用から1年という現行Points期限を直接回答する。
+
+### テスト設計判断
+
+- 9件とも記事の文字数や見出し数ではなく、**検索者が知りたい主回答が存在するか**を検査するため維持。
+- non-calculator Roleへ汎用計算CTAを自動挿入しない契約もArticle Roleの意味に直結するため維持。
+- 各記事のmarker IDは回答位置を識別する公開anchor/構造として利用されており、現時点ではprivate実装固定と判断しない。
+- 公式source IDやfact phraseは、誤訳・古い制度混同を防ぐfact regressionとして維持する。
+
+公開HTML/CSS/JS・記事本文・翻訳・テストコードは変更していない。docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
