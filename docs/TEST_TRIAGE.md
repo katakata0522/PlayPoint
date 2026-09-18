@@ -347,6 +347,41 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、記事本文、表示文言、検索ロジック、読書リスト仕様、ナビ設定、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第8回（2026-09-18）
+
+第7回で保留したブランド/検索意図2ファイルと、基準930ケースに含まれるSEO・公開整合11ファイルを合わせ、13ファイル51ケースを現行mainの実装・生成器・公開成果物と突合して個別精査した。対象13ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と第7回完了時mainで同一内容だったため、後発ケースを混ぜず51ケースを基準件数へ加算する。
+
+**基準930中271精査・659未精査。** 今回はケース統合・削除を行わず、第7回後の現行957ケースを維持する。実件数・合否は当該PR Gate保存TAPを正本とする。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `growth-critical-pages.test.cjs` | 4 | 全件維持。CTA順序は第7回ownerへ委譲し、ここはcanonical/analytics/article runtimeと検索意図を担当。TWトラブル記事の具体的fact文言snapshotとlatestの固定年をSEO契約から除外 |
+| `japanese-guide-brand.test.cjs` | 3 | 全件維持。「Google Play Points 完全攻略ガイド」は意図的なブランドSSOT。記事ハブ・OGP・記事ヘッダー・RSS/Atomの一致とlegacy brand排除は正当な成果物契約 |
+| `all-article-quality-audit.test.cjs` | 4 | 全件維持。全公開記事のcanonical/H1/author/公式source/関連導線/Article JSON-LD/FAQ整合を維持。meta description 35文字以上という任意閾値を廃止し、非空・placeholderなしへ変更 |
+| `article-seo-normalize.test.cjs` | 6 | 全件維持。可視FAQとFAQPage同期、Article保持、robots/max-image-preview、check-onlyは実変換behavior |
+| `author-hreflang.test.cjs` | 2 | 全件維持。日本語＋生成3言語の相互hreflang clusterと冪等同期 |
+| `human-sitemap-task-hub.test.cjs` | 2 | 全件維持。task destination・技術URL分離・full article list再生成防止を維持。emoji/見出しcopyと「60リンク未満」閾値を除外 |
+| `manual-lp-hreflang.test.cjs` | 4 | 全件維持。manual LPの完全alternate cluster、FAQ責務分離、相互clusterを実成果物で検証 |
+| `navigation-source-map.test.cjs` | 8 | 全件維持。全公開面・locale・遷移分類・generator ownership・pipeline inventoryを維持。「HTML100ページ超」「40工程超」「先頭/末尾関数完全一致」「dynamic RegExp不使用」という実装/規模固定を除外 |
+| `ogp-mime-contract.test.cjs` | 1 | 維持。image/jpeg固定配信する.png互換URLの実体が全てJPEGであることはHTTP整合契約 |
+| `public-navigation-contract.test.cjs` | 4 | 全件維持。全公開リンク、説明のないlocale crossing、fragment、偽ID/不正escapeを実監査 |
+| `seo-head-audit-parser.test.cjs` | 4 | 全件維持。HTML entityとJSON-LD script終端のparser regressionをfixture behaviorで検証 |
+| `seo-hygiene.test.cjs` | 7 | 全件維持。XML sitemap重複、Play Points scope、専用sitemap分離、非対象記事混入、地域top/Q&Aの意味を保証 |
+| `sitemap-information-hierarchy.test.cjs` | 2 | 全件維持。H1→目的説明→secondary groupsという構造をcopy非依存で検証し、比較導線はhref一意＋可視labelの意味で確認 |
+
+### 今回の過剰固定整理
+
+- 検索順位「4〜15位」のような一時的観測値をテスト名・契約の根拠にしない。優先検索ページが検索意図を保つことだけを保証する。
+- article CTAの配置/destinationは第7回の `top-article-calculator-funnel` がowner。SEO側はcritical articleのcanonical・計測runtime・indexable metadataを担当する。
+- meta descriptionにSEO上の必須最小文字数はないため「35文字以上」を品質gateにしない。非空、placeholder/template残存なしを守る。
+- human sitemapは目的別hubであることを、主要task destinationとfull-list非生成で保証する。emoji・見出し本文・総リンク数60未満は契約にしない。
+- navigation inventoryは「100ページ以上」「40工程以上」のような規模閾値を品質指標にしない。空でない完全走査、6locale、未分類0、generator/pipelineの実捕捉を保証する。
+- pipeline scannerはidentifier boundaryの入出力behaviorを守り、内部で `RegExp` を使う/使わないという実装方式は固定しない。
+- human sitemap hierarchyは具体的H1/lead copyではなく、primary heading→purpose lead→secondary navigationの順序を守る。比較表リンクも表示文言全文ではなく一意href＋可視labelを契約にする。
+
+公開HTML/CSS/JS、記事本文、ブランド文言、SEO metadata、canonical/hreflang、sitemap、feed、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
