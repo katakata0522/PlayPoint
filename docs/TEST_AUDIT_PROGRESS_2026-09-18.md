@@ -1,4 +1,6 @@
-# PlayPoint テスト個別監査・修正チェックリスト（第3回）
+# PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
+
+最新集計: **基準930ケース中149精査・781未精査**。以下の第3回記録は当時の証跡として保持し、第5回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -80,3 +82,36 @@
 3. R04/R06/R07/R08等の未改修の文字列ガード、UI・同意・広告、CIの有効YAML/if条件、remote snapshot/cleanup、未精査850ケース。
 
 次はS08の公開HTTP契約を小単位で確認し、その後UI・同意・広告へ進む。未精査項目の一括削除や、テストを通すための公開デザイン変更は行わない。
+
+
+## 第5回: 計測・同意・広告69ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した11ファイル69ケースを現行mainと照合した。対象ファイルは監査開始時mainと基準コミットで同一内容。既精査80へ69を加え、**149精査・781未精査**とする。新規・移動先テストを二重加算しない。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| consent-state | 7 | 全維持。Consent状態機械のbehavior owner |
+| analytics-core | 10 | 全維持。不正paramsと検索free textの汎用ownerへ統合 |
+| third-party-analytics-integration | 7 | 全維持。GA4/AdSense/Consentの統合owner |
+| calculator-funnel-behavior | 7 | 全維持。dedupe/Consent/raw値遮断 |
+| calculator-funnel-analytics | 3 | 維持。#2だけprivate実装固定を除去 |
+| third-party-resilience | 2 | 全維持。外部依存の一時失敗復旧 |
+| analytics-runtime-attribution | 2 | 全維持。gtag置換時のattribution |
+| analytics-state-boundaries | 2 | 全維持。壊れたstateと有限queue |
+| article-navigation-observability | 12 | 8維持、1性能ownerへ移管、3を既存ownerへ統合 |
+| monetization-search-quality | 9 | 全保証維持。広告境界のprivate callback名固定だけ緩和 |
+| measurement-baseline-contract | 8 | 全維持。2026-09-15監査証跡owner |
+
+### 変更したテスト設計
+
+1. `analytics-core` の既存privacyケースへ、不正必須paramsと「検索語は捨てるがresults_countは残す」対照を吸収。
+2. `article-navigation-observability` から、結果リンク分類・不正params・search free textの同層重複3ケースを削除。性能ケースは削除ではなく`ci-performance-sampling`へ移管。
+3. `ci-performance-sampling` は `lighthouse-suite.PAGES` を直接検証し、EN/KO/TWの測定route・budget・workflow起動境界を所有。
+4. `calculator-funnel-analytics` はprivate変数名やDOM文字列の不存在を要求せず、mainから専用trackerへの最小architecture boundaryだけ残す。
+5. `monetization-search-quality` は特定callback名の完全一致をやめ、代表公開面が共通runtimeへ接続し、広告用途がConsent boundaryを通ることを確認する。
+
+PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが、最終件数と合否はこの変更のPR Gate成果物を正本とする。公開コード・広告ID・Consent実装・数式・UI・保存形式・workflow・性能閾値は変更していない。

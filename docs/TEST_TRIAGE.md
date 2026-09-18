@@ -260,6 +260,37 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 - 横断監査ファイルは単純移動・分割しない。名前が似ていても違う仕様のケースを落とす危険がある。各ファイルの全assertを一律に書き換えたという意味ではない。
 - preflight/PR Gate/production/rollbackの実行回数・権限・ハード性能budgetは維持する。検査専用変更だけで不必要な本番再配信を増やすdeploy判定変更も採用しない。
 
+
+## 個別監査・修正の第5回（2026-09-18）
+
+S08完了後の次順として、基準930ケースに含まれる「計測・同意・広告」責務群69ケースを現行mainの実装と突合して個別精査した。PR #346 / #347はテスト基盤を変更しておらず、対象11ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と監査開始時mainで同一内容だったため、後発ケースを誤加算せず69ケースを基準件数へ加算する。
+
+**基準930中149精査・781未精査。** 現行実行集合はPR #345時点961ケースから、重複3ケースをownerへ統合し、性能1ケースを別ownerへ移したため静的計算上958ケース。実件数・合否はPR Gate保存TAPを正本とし、件数固定テストは追加しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `consent-state.test.cjs` | 7 | 全件維持。GoogleFC/TCF、解析/広告の独立Consent、再同意、片側UNKNOWN、timeoutはいずれも状態遷移のbehavior保証 |
+| `analytics-core.test.cjs` | 10 | 全件維持。許可外params・不正必須params・検索free text除去の汎用ownerをここへ集約 |
+| `third-party-analytics-integration.test.cjs` | 7 | 全件維持。AdSense/GA4のロード順、Consent分離、retry、二重初期化防止は統合保証 |
+| `calculator-funnel-behavior.test.cjs` | 7 | 全件維持。dedupe・Consent・生入力非送信を実APIで検証 |
+| `calculator-funnel-analytics.test.cjs` | 3 | 3件とも保証は維持。#2のprivate変数名/DOM文字列禁止だけ削り、main→専用trackerの最小結線へ縮小。#3のmain結線staticはbehavior ownerができるまで残す |
+| `third-party-resilience.test.cjs` | 2 | 全件維持。一時失敗後の実復旧 |
+| `analytics-runtime-attribution.test.cjs` | 2 | 全件維持。外部gtag置換後の送信直前attribution |
+| `analytics-state-boundaries.test.cjs` | 2 | 全件維持。壊れたstorageの隔離と有限pending queue |
+| `article-navigation-observability.test.cjs` | 12 | 8件維持。性能1件を`ci-performance-sampling`へ移管。結果リンク分類1件は`calculator-funnel-analytics`、不正params1件と検索free text1件は`analytics-core`へ統合し重複削除 |
+| `monetization-search-quality.test.cjs` | 9 | 保証は全件維持。広告経路はprivate callback名固定をやめ、公開面→共通runtime＋広告Consent用途の境界へ緩和。非広告5件は将来の責務移管候補だが今回削除しない |
+| `measurement-baseline-contract.test.cjs` | 8 | 全件維持。通常の製品回帰ではなく2026-09-15監査証跡の改変防止ownerとして扱う |
+
+### 今回の重複整理
+
+- `article-navigation-observability` の「計算結果リンク分類」は既存 `calculator-funnel-analytics` が同じAnalytics sanitize境界を所有するため統合。
+- 同ファイルの「必須paramsへ不正型」「search free text除去」は汎用 `analytics-core` ownerへ対照ケースごと吸収。
+- 国際記事3地域の性能測定は `lighthouse-suite.cjs` が公開する `PAGES` を `ci-performance-sampling.test.cjs` から直接検査する。target名を別ファイルのソース文字列から探す方式は廃止。
+- `calculator-funnel-analytics` は `calculatorFunnelStartedModes` 等のprivate変数名や `document.` / `.value` という実装表記を契約にしない。dedupe・Consent・生入力遮断はbehavior ownerへ委ねる。
+- 広告経路は `whenAdsAllowed(loadArticleAdsense)` のようなcallback名完全一致を要求しない。公開HTMLが共通runtimeを読み、広告用途がConsent境界を通ることだけを高速static guardに残し、実広告要求はBrowser revenue smoke / third-party integrationが担当する。
+
+公開HTML/CSS/JS、計算式、保存形式、記事、広告ID、Consent実装、workflow、権限、性能閾値は変更しない。今回の変更はテストと監査文書だけで、本番Deployを必要とする公開差分を作らない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

@@ -20,6 +20,34 @@ function report(values = {}, url = 'http://127.0.0.1:4173/') {
 function files(dir, values, prefix = 'calculator-home') {
   return values.map((value, i) => { const file = path.join(dir, prefix + '-' + (i + 1) + '.json'); fs.writeFileSync(file, JSON.stringify(report(value))); return file; });
 }
+
+test('性能suiteの6ページと国際記事3地域は測定ownerから直接解決する', () => {
+  assert.deepEqual(suite.PAGES, [
+    ['calculator-home', '/'],
+    ['article-hub', '/blog/'],
+    ['representative-article', '/articles/2026-03-10-play-points-reflection-timing.html'],
+    ['international-article-en', '/en/articles/google-play-points-join-eligibility.html'],
+    ['international-article-ko', '/ko/articles/google-play-points-join-eligibility.html'],
+    ['international-article-tw', '/tw/articles/google-play-points-join-eligibility.html']
+  ]);
+  assert.equal(new Set(suite.PAGES.map(([, route]) => route)).size, suite.PAGES.length);
+
+  for (const locale of ['en', 'ko', 'tw']) {
+    const profile = budget.getProfile('performance-artifacts/international-article-' + locale + '.json');
+    const expected = 'internationalArticle' + locale[0].toUpperCase() + locale.slice(1);
+    assert.equal(profile, expected);
+    assert.equal(budget.HARD_BUDGETS[profile].largestContentfulPaintMs, 3000);
+    assert.equal(budget.HARD_BUDGETS[profile].cumulativeLayoutShift, 0.15);
+  }
+  assert.equal(budget.TARGETS.largestContentfulPaintMs, 2500);
+  assert.equal(budget.TARGETS.cumulativeLayoutShift, 0.10);
+
+  const workflow = fs.readFileSync(path.join(__dirname, '../.github/workflows/mobile-performance.yml'), 'utf8');
+  assert.match(workflow, /node \.github\/scripts\/lighthouse-suite\.cjs/);
+  assert.match(workflow, /articles\/intl-shell-v1\.css/);
+  assert.match(workflow, /articles\/intl-article\.css/);
+});
+
 test('時間の中央値が合格しても1sampleのbyte超過を隠さない', t => {
   const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [{ bytes: 358401 }, { bytes: 200000 }, { bytes: 200000 }]));
   assert.equal(result.classification, 'BUDGET_FAIL');
