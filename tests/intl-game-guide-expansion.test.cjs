@@ -48,15 +48,21 @@ test('51記事すべてがgame_decisionで公式Googleソースと相互hreflang
   }
 });
 
-test('英語ゲーム特集のmeta descriptionは単語・文途中で切らず検索意図を完結させる', () => {
+test('英語ゲーム特集のmeta descriptionは固定文字数で切らず、記事固有の説明を完結文で保持する', () => {
+  const descriptions = [];
   for (const guide of ALL_GUIDES) {
     const html = renderGuide('en', guide);
     const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
+    const expected = String(guide.content.en.market || '').replace(/\\s+/g, ' ').trim()
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;');
     assert.ok(description.length > 0, guide.slug + ': description is required');
-    assert.ok(description.length <= 180, guide.slug + ': description must stay concise');
+    assert.equal(description, expected, guide.slug + ': description must preserve the authored market summary without truncation');
     assert.match(description, /[.!?]$/, guide.slug + ': description must end as a complete sentence');
     assert.doesNotMatch(description, /^Region-aware game purchase guide\./, guide.slug + ': generic prefix wastes the snippet');
+    descriptions.push(description);
   }
+  assert.equal(new Set(descriptions).size, ALL_GUIDES.length, 'each English game guide must keep a distinct description');
 });
 
 test('地域固有の価格・公式用語を日本語版から機械換算しない', () => {
