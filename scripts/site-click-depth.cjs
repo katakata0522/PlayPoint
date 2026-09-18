@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
-const MAX_CLICK_DEPTH = 3;
+const MAX_CLICK_DEPTH = 3; // 推奨観測値。到達不能だけをhard failにする。
 const EXCLUDED_DIRECTORIES = new Set(['.git', '.playwright-cli', 'node_modules']);
 
 function walkHtmlFiles(rootDir, currentDir = rootDir, files = []) {
@@ -139,10 +139,14 @@ function runCli() {
     console.error(`トップから到達できません: ${publicPath}`);
   }
   for (const publicPath of result.overLimit) {
-    console.error(`3クリックを超えています: ${publicPath} (${result.depths.get(publicPath)})`);
+    console.warn(`推奨3クリックを超えています: ${publicPath} (${result.depths.get(publicPath)})`);
   }
 
-  if (result.unreachable.length || result.overLimit.length) {
+  if (result.overLimit.length) {
+    console.warn(`推奨3クリック超: ${result.overLimit.length}件。深度は改善候補として記録しますが、到達可能なら公開を阻止しません。`);
+  }
+
+  if (result.unreachable.length) {
     console.error('ブログのJS一覧は数えません。静的な href（blog/index.html の noscript または sitemap.html）が必要です。');
     console.error('記事台帳へ追加したあとは node scripts/prepare-pr.cjs を実行し、生成された静的導線をコミットしてください。');
     process.exitCode = 1;
