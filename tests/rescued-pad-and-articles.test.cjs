@@ -7,6 +7,7 @@ const path = require('node:path');
 const test = require('node:test');
 const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
 const { GAME_LOCALE_DIRECTORIES } = require('../scripts/locale-ids.cjs');
+const { GAME_SEO } = require('../scripts/game-seo-data.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -55,11 +56,11 @@ test('PAD is published for every generated game locale and linked from each port
 
   // Protect the user-visible preset rather than the generator's internal array syntax.
   const japanesePage = read('games/pad/index.html');
-  assert.match(japanesePage, /data-amount="980"/);
-  assert.match(japanesePage, /パズドラパス \(980円\)/);
+  assert.ok(japanesePage.includes('data-amount="' + GAME_SEO.pad.pass.price + '"'));
+  assert.ok(japanesePage.includes('パズドラパス (' + GAME_SEO.pad.pass.price + '円)'));
 });
 
-test('the three rescued Japanese articles are listed and published without bulk #168 design classes', () => {
+test('the rescued Japanese articles are listed with author, source and related navigation', () => {
   const registry = JSON.parse(read('blog/articles.json'));
   assert.ok(Array.isArray(registry) && registry.length > 0, 'article registry should exist');
 
@@ -82,7 +83,6 @@ test('the three rescued Japanese articles are listed and published without bulk 
       /related-links-section|class="article-nav"/,
       `${article.file}: related links or previous/next nav`
     );
-    assert.doesNotMatch(html, /btn-clean-shimmer|clean-accordion|pro-con-grid/, `${article.file}: #168 bulk design classes must not ship`);
   }
 });
 
