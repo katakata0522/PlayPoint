@@ -896,6 +896,34 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・browser依存version・lockfile・workflow・本番検証経路は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第27回（2026-09-18）
+
+基準930ケースに含まれる「日付・週次UI・トップ導線・性能/成長基盤」6ファイル22ケースを、計算core、週次UI module、公開トップ、asset versioning、.htaccess、公開HTMLのruntime順序と突合して個別精査した。
+
+**基準930中866精査・64未精査。** 22ケースはすべて保証を維持し、ケース数は増減しない。現行959ケースを維持する。公開HTML/CSS/JS・cache実値・UI・計算式は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `remaining-calendar-days.test.cjs` | 4 | 全件維持・変更なし。date-only境界、うるう年、DST差分、runtimeが共有helperを通るintegration guardはいずれも有効 |
+| `weekly-reward-ui.test.cjs` | 4 | 全件維持・変更なし。保存責務非侵入、日記タブ限定load、asset revision、今週/過去週/狭幅UI契約を維持 |
+| `home-status-intent-routing.test.cjs` | 1 | 維持・変更なし。日本語トップからSilver/Gold/Platinum/Diamond必要額LPへの静的導線は検索/回遊意図として必要 |
+| `performance-hardening.test.cjs` | 7 | 全件維持。content-visibilityの開始section=3、intrinsic 480px、immutable=31536000秒というチューニング値snapshotを意味/有限境界へ整理 |
+| `growth-foundation-regression.test.cjs` | 6 | 全件維持。articles.json=300秒、analytics挿入時の改行形状、共通CSS500文字以上を意味契約へ整理。calculator preload対象をHK/INまで6地域へ補完 |
+
+### 今回の過剰固定・不足整理
+
+- `remaining-calendar-days` はAmerica/New_York TZで旧elapsed-day式との1日差まで再現しており、単なるsource snapshotではない。日付ロジック回帰として維持する。
+- `weekly-reward-ui` はlocalStorage/日記save責務へ侵入しない境界を守るため維持する。表示改善moduleがデータownerへ肥大化するのを防ぐ。
+- 長文記事の`content-visibility`は「必ず3節目」「intrinsic 480px」を品質契約にしない。first sectionを遅延対象にせず、lower sectionへ限定し、印刷時解除する意味を守る。
+- versioned assetのimmutable期間は現行1年を変更しないが、テストはunversioned CSSより長く有限であることを保証する。実HTTP behaviorは後発`http-cache-contract`/Apache ownerが担当する。
+- `articles.json`の300秒は運用値であり、versioned immutable assetより短くmust-revalidateであることを契約にする。
+- analytics core挿入は順序・一意性・冪等性を守り、改行/indent完全一致を要求しない。
+- calculator topのmodulepreload契約は従来JP/US/KR/TWだけだったためHK/INを追加し6地域へ補完する。
+- blog common CSSは「500文字以上」という任意量ではなく、非空・外部CSS参照・JS inline CSS非所有を保証する。
+
+公開サイト挙動・cache実値・CSS値・記事本文は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

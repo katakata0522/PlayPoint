@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中844精査・86未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第26回を末尾へ追記する。
+最新集計: **基準930ケース中866精査・64未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第27回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -686,3 +686,30 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 4. browser runtime helper ownershipとauto-rollbackでの再install禁止も維持する。
 
 公開コード・browser dependency・lockfile・workflowは変更していない。
+
+## 第27回: 日付・週次UI・性能基盤22ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した6ファイル22ケースを、計算core・週次UI・公開トップ・asset versioning・cache/runtime順序と照合した。既精査844へ22を加え、**866精査・64未精査**とする。ケース数は増減せず現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| remaining-calendar-days | 4 | 全維持・変更なし |
+| weekly-reward-ui | 4 | 全維持・変更なし |
+| home-status-intent-routing | 1 | 維持・変更なし |
+| performance-hardening | 7 | 全維持。具体threshold/480px/1年exactを意味・bounded contractへ |
+| growth-foundation-regression | 6 | 全維持。300秒/改行/500文字snapshotを整理しHK/IN preloadを補完 |
+
+### 変更したテスト設計
+
+1. content-visibilityはfirst sectionを除外するlower-section契約とprint解除を守り、開始番号・intrinsic pxを固定しない。
+2. versioned immutable cacheはunversioned CSSより長く有限であることを保証し、現在の1年値は変更しない。
+3. articles.jsonはimmutable assetより短いmust-revalidate契約へ。
+4. analytics core挿入は一意・順序・冪等性を守り、whitespace snapshotを外す。
+5. calculator preloadをHK/INまで6地域へ拡張。
+6. blog common CSSは任意の文字数下限をやめ、非空＋外部CSS ownershipを守る。
+
+公開コード・cache値・デザイン・計算式は変更していない。

@@ -12,10 +12,13 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 
 test('記事一覧JSONは版付き静的資産より短い再検証ルールを優先する', () => {
   const htaccess = read('.htaccess');
-  const immutableIndex = htaccess.indexOf('max-age=31536000, immutable');
-  const articlesIndex = htaccess.indexOf('<Files "articles.json">');
-  assert.ok(immutableIndex >= 0 && articlesIndex > immutableIndex);
-  assert.match(htaccess.slice(articlesIndex), /max-age=300, must-revalidate/);
+  const immutable = htaccess.match(/max-age=(\d+),\s*immutable/);
+  const articlesBlock = htaccess.match(/<Files "articles\.json">([\s\S]*?)<\/Files>/);
+  assert.ok(immutable, 'immutable asset cache policy is missing');
+  assert.ok(articlesBlock, 'articles.json cache override is missing');
+  const articlesAge = articlesBlock[1].match(/max-age=(\d+),\s*must-revalidate/);
+  assert.ok(articlesAge, 'articles.json must require revalidation');
+  assert.ok(Number(articlesAge[1]) < Number(immutable[1]), 'articles.json must refresh sooner than versioned assets');
 });
 
 test('計測コアは対象HTMLへ実行スクリプトより前に一度だけ挿入する', () => {
@@ -24,7 +27,7 @@ test('計測コアは対象HTMLへ実行スクリプトより前に一度だけ�
   const twice = ensureAnalyticsCoreScript(once);
   assert.equal(once, twice, '同期処理が冪等ではありません');
   assert.ok(once.indexOf('/js/analytics-core.js') < once.indexOf('../blog/article.js'));
-  assert.match(once, /\n    <script src="\/js\/analytics-core\.js"><\/script>\n    <script defer/);
+  assert.match(once, /<script\s+src="\/js\/analytics-core\.js"><\/script>/);
   assert.equal((once.match(/analytics-core\.js/g) || []).length, 1);
 });
 
@@ -44,7 +47,7 @@ test('計算機系モジュールは同期scriptを増やさず計測コアを�
   const pointsCost = read('js/points-cost.js');
   assert.match(config, /^import '\.\/analytics-core\.js\?v=[a-f0-9]{10}';/m);
   assert.match(pointsCost, /^import '\.\/analytics-core\.js\?v=[a-f0-9]{10}';/m);
-  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(file);
     assert.doesNotMatch(html, /<script\b[^>]*src=["'][^"']*analytics-core\.js/);
     assert.match(html, /<link rel="modulepreload" href="(?:\.\.\/)?js\/analytics-core\.js\?v=[a-f0-9]{10}">/);
@@ -63,7 +66,7 @@ test('記事固有導線がある場合は汎用関連記事とCTAを重ねな�
 test('ブログ共通スタイルは外部CSSとして版管理し、JSへ大量埋め込みしない', () => {
   const components = read('blog/components.js');
   const css = read('blog/common-components.css');
-  assert.ok(css.length > 500, '共通CSSが空または不足しています');
+  assert.ok(css.trim(), '共通CSSが空です');
   assert.ok(components.includes('blog/common-components.css'));
   assert.doesNotMatch(components, /style\.textContent\s*=/);
   assert.doesNotMatch(components, /function injectStyles/);
