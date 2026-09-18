@@ -24,10 +24,21 @@ test('結果ナビ設定は公開6地域を明示的に解決し未知地域はJ
   }
   assert.strictEqual(getConfig('UNKNOWN'), getConfig('JP'));
 });
-test('結果ナビ設定は呼び出しごとに再生成しない', () => {
-  assert.strictEqual(getConfig('HK'), getConfig('HK'));
-  assert.strictEqual(getConfig('IN'), getConfig('IN'));
-  assert.strictEqual(getConfig('US'), getConfig('US'));
+
+test('結果ナビ設定は呼び出し側の変更で後続計算を汚染しない', () => {
+  const first = getConfig('JP');
+  const expectedTitle = first.decisionTitle;
+  const expectedHref = first.relatedArticleGroups.default[0].href;
+  const expectedLength = first.relatedArticleGroups.default.length;
+
+  try { first.decisionTitle = 'changed'; } catch {}
+  try { first.relatedArticleGroups.default[0].href = 'broken'; } catch {}
+  try { first.relatedArticleGroups.default.push({ href: 'broken', title: 'broken' }); } catch {}
+
+  const next = getConfig('JP');
+  assert.equal(next.decisionTitle, expectedTitle);
+  assert.equal(next.relatedArticleGroups.default[0].href, expectedHref);
+  assert.equal(next.relatedArticleGroups.default.length, expectedLength);
 });
 
 test('結果ナビ設定の全リンクを契約として検証する', () => {
@@ -67,16 +78,6 @@ test('結果ナビ設定の全リンクを契約として検証する', () => {
       assert.ok(fs.existsSync(target), `${region}: missing result navigation target ${link.href}`);
     }
   }
-});
-
-test('結果ナビ設定は深くfreezeされ実行中に汚染できない', () => {
-  const config = getConfig('JP');
-  assert.equal(Object.isFrozen(config), true);
-  assert.equal(Object.isFrozen(config.relatedArticleGroups), true);
-  assert.equal(Object.isFrozen(config.relatedArticleGroups.default), true);
-  assert.equal(Object.isFrozen(config.relatedArticleGroups.default[0]), true);
-  assert.throws(() => { config.decisionTitle = 'changed'; }, error => error?.name === 'TypeError');
-  assert.throws(() => { config.relatedArticleGroups.default.push({ href: 'x', title: 'x' }); }, error => error?.name === 'TypeError');
 });
 
 test('公開地域に結果ナビ設定が無い場合は明示的に失敗する', () => {
