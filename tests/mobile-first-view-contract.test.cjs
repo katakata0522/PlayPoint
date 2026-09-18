@@ -280,14 +280,14 @@ test('同じランク条件の再計算だけ前回との差を表示する', ()
   assert.match(fixture.api.formatLastCalculationText('JP', changedTarget, previous), /前回：1,200pt/);
 });
 
-test('公開トップは行動ベースのタブ名と、入力を邪魔しない前回値表示領域を持つ', () => {
+test('公開トップは役割が分かる既存タブ名と、入力を邪魔しない前回値表示領域を持つ', () => {
   const expected = {
-    'index.html': ['あといくら必要？', 'この課金で何pt？', '🎁 週次を記録'],
-    'en/index.html': ['How much left?', 'Points from spend', '🎁 Log weekly'],
-    'ko/index.html': ['얼마나 더 필요?', '이 결제로 몇 pt?', '🎁 주간 기록'],
-    'tw/index.html': ['還差多少？', '這筆消費有幾點？', '🎁 每週記錄'],
-    'hk/index.html': ['還差多少？', '這筆消費有幾點？', '🎁 每週記錄'],
-    'in/index.html': ['How much left?', 'Points from spend', '🎁 Log weekly']
+    'index.html': ['通常計算', '逆算モード', 'ウィークリーリワード記録'],
+    'en/index.html': ['Standard', 'Reverse', 'Weekly Rewards Diary'],
+    'ko/index.html': ['일반 계산', '역산 모드', '주간 리워드 일기'],
+    'tw/index.html': ['一般計算', '逆算模式', '每週獎勵日記'],
+    'hk/index.html': ['一般計算', '逆算模式', '每週獎勵日記'],
+    'in/index.html': ['Standard', 'Reverse', 'Weekly Rewards Diary']
   };
 
   for (const [indexPath, labels] of Object.entries(expected)) {
