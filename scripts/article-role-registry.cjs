@@ -91,7 +91,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'retention',
-    test: stem => /(?:super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign)/.test(stem)
+    test: stem => /(?:super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign|tgs-google-play-vip)/.test(stem)
   },
   {
     role: 'calculator_bridge',
