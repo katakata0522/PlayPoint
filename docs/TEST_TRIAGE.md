@@ -108,6 +108,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | Browser前後・suite完了SHA、Deploy証跡とのdigest結合 | `tests/browser-revision-evidence.test.cjs` | localhost/CLI fixtureと4本番レーンの起動境界。本番は実Chromium |
 | 保存JSON退避・将来schema拒否 | `tests/storage-safety-contract.test.cjs` / `tests/article-storage-safety-contract.test.cjs` | 別データ領域を分け、source契約はUI/数式非干渉だけを守る |
 | 全公開リンク・未説明地域横断・fragment | `tests/public-navigation-contract.test.cjs` | 台帳の分類仕様はnavigation-source-map、著者固有保証はintl-author-navigation、実遷移はChromium |
+| 公開記事の静的到達性・クリック深度観測 | `scripts/site-click-depth.cjs` | 未到達だけhard fail。3クリック超は改善候補として記録し公開を阻止しない |
 | 自動復旧の発火条件 | `tests/automatic-rollback.test.cjs` | 外部watchdogの状態入力はdeploy-recovery-watchdog、snapshotの実I/Oはsnapshot-history |
 | 証跡アップロード失敗の分類 | `tests/ci-stability.test.cjs` | OBSERVABILITY_FAILとCHECK_FAILを分離。rollback条件は緩めない |
 | モバイル性能budget | `.github/workflows/mobile-performance.yml` + `.github/scripts/mobile-performance-budget.cjs` | workflow実装を別Nodeテストでsnapshotしない |
@@ -217,7 +218,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 3. `node scripts/prepare-pr.cjs` を実行する（日付・アセット版はコミット済み値で固定）
 4. 生成された sitemap / feed / `blog/index.html` の noscript / `sitemap.html` / 関連リンクを確認してコミットする
 
-`node scripts/build-html.js` を env なしで回すとアセット版が時刻で変わり、再現性検査が落ちます。3クリック検査はブログのJS一覧を数えません。
+`node scripts/build-html.js` を env なしで回すとアセット版が時刻で変わり、再現性検査が落ちます。到達性検査はブログのJS一覧を数えず静的hrefを使います。3クリック超は観測値で、未到達だけをhard failにします。
 
 ---
 
@@ -416,6 +417,37 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - latest hubのConsent経路は `isLatestPage` 等のprivate変数名を探さず、実 `blog/components.js` を `/latest/` として実行しサイトルートのConsent managerを要求することを確認する。
 
 公開HTML/CSS/JS、記事本文、公式数値、ブランド、保存形式、workflow、権限、性能閾値は変更しない。今回もtests/docsのみの変更で、本番サイト挙動は変えない。
+
+
+## 個別監査・修正の第10回（2026-09-18）
+
+基準930ケースに含まれる「記事構成・台帳・コンテンツ役割」7ファイル39ケースを、現行記事台帳・記事Role監査・静的記事ハブ・redirect・生成器・公開HTMLと突合して個別精査した。対象7ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と第9回完了時mainで同一内容だったため、39ケースを基準件数へ加算する。
+
+**基準930中375精査・555未精査。** 今回はテストケース自体の削除・統合は行わず、現行実行集合は第9回後と同じ956ケースを維持する。3クリックという固定深度はhard gateから外すが、**トップから静的導線で到達できない記事は引き続きpreflightを失敗**させる。深度は改善候補として観測・出力する。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `article-content-audit-regression.test.cjs` | 8 | 全件維持。記事主回答順序、年齢/期限/海外過去条件/抽選、全記事ID一意、関連記事正規化は成果物・事実境界 |
+| `article-quality-polish.test.cjs` | 6 | 全件維持。多言語ゲーム記事UI・共通説明・日付meta・author heading・table overflowを維持。著者profile「60件以上」という履歴件数snapshotだけ除外 |
+| `changelog-hygiene.test.cjs` | 2 | 全件維持。Latestは先頭1件だけという意味を維持し、v2.4.0/v2.3.2の固定version snapshotを除外。韓国語混入防止も文全体一致から語境界へ縮小 |
+| `content-structure.test.cjs` | 10 | 全件維持。カテゴリ・redirect・answer-first・Role CTA・比較表・台帳/静的一覧・到達性・deep runtime・legacy intro・knowledge boundaryを保証。4カテゴリ固定/3クリックhard limit/private source/copy/layout固定を整理 |
+| `jp-cash-conversion-intent.test.cjs` | 2 | 全件維持。現金化/PayPayの検索意図と更新日/公式確認日分離を維持。title/H1/結論全文snapshotを意味検査へ変更 |
+| `play-points-content-evolution.test.cjs` | 7 | 全件維持。記事台帳一意、週次/Quest/無料/買い切り/継続課金の役割分離、第三者決済混入防止は固有コンテンツ契約 |
+| `tw-rank-cost-intent-boundaries.test.cjs` | 4 | 全件維持。100點/levels/白金鑽石費用ownerのscope分離を維持し、見出し・CTA全文snapshotを100點・公式閾値・owner link・direct calculator destinationへ置換 |
+
+### 今回の過剰固定・責務整理
+
+- 記事カテゴリを「永久に4種類」と固定しない。公開記事が非空カテゴリを持ち、そのカテゴリが静的記事ハブの `data-topic-cluster` と同期することを保証する。runtime側は未登録カテゴリもfallback表示できる現行設計。
+- 統合済み「反映されない」旧記事は301・台帳除外・sitemap除外・canonical正本を契約とし、統合先本文の特定2文や英語関連記事文脈まで固定しない。
+- Article Roleの全公開記事監査は専用owner `article-role-next-action-audit.test.cjs` に任せ、`content-structure` は `insertStaticPrompt` のunit behavior（冪等・回答後・詳細前・retention非生成）へ限定する。
+- 「トップから3クリック以内」は一般的な改善目安であり絶対的な公開要件ではないため、4クリック以上だけを理由にPR/Deployを落とさない。**到達不能はhard failのまま**。推奨3クリック超はログへ出して改善対象として残す。
+- deep URLのConsent境界は `third-party.js` のprivate変数名やquerySelector断片ではなく、公開深層ページが共通runtimeをroot-relativeで配信する成果物契約に変更する。
+- `knowledge-boundary__grid` という特定レイアウトclassの禁止をやめ、knowledge boundaryが存在する場合に見出しと説明を持つ意味契約へ変更する。
+- 日本語著者profileの「60記事以上」は現状件数snapshotなので廃止し、対象が空でないこと＋各profileが見出し階層を汚さないことを保証する。
+- changelogはversion番号を固定せず、timeline先頭だけがLatestであることを保証する。
+- JP cash conversion / 台湾rank-costは見出し・CTA全文ではなく検索意図、owner link、公式閾値、direct destinationで責務を守る。
+
+公開HTML/CSS/JS、記事本文、記事台帳、redirect、sitemap、計算式、保存形式は変更しない。変更対象はtests、検査用scripts、preflight表示名、監査文書のみで、本番サイト挙動は変えない。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
