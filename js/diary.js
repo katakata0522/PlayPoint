@@ -28,6 +28,12 @@ export const DIARY_PURE = {
             || (prize !== '' && prize !== String(defaultPrize ?? '').trim());
     },
 
+    shouldQuestionLargePoints(value) {
+        const normalizedPoints = this.normalizePointsValue(value);
+        return normalizedPoints !== '' && normalizedPoints !== null
+            && Number(normalizedPoints) >= 10000;
+    },
+
     summarizeYear(yearData = {}) {
         const monthlyTotals = Array.from({ length: 12 }, () => 0);
         let total = 0;
@@ -56,46 +62,46 @@ export const DIARY_PURE = {
 
 const WEEKLY_EXPERIENCE_COPY = Object.freeze({
     JP: Object.freeze({
-        hint: '数字と景品を確認して「決定」を押すと記録されます',
-        achievement: '記録できた！',
+        hint: '数字と景品を確認して「結果を記録」を押すと記録されます',
+        largeValueHint: '本当に……？ 5桁のポイントです。合っていればそのまま記録できます。',
         weekGain: '今週',
-        yearTotal: '今年ここまで',
-        chartLabel: '月別の積み上がり'
+        yearTotal: (year) => `${year}年累計`,
+        chartLabel: '月別ポイント'
     }),
     US: Object.freeze({
-        hint: 'Enter the result, then press Confirm to add it to your record',
-        achievement: 'Recorded!',
+        hint: 'Enter the result, then press Record result to add it to your record',
+        largeValueHint: 'Really…? That is a five-digit point value. If it is correct, you can record it as is.',
         weekGain: 'This week',
-        yearTotal: 'Year to date',
-        chartLabel: 'Monthly progress'
+        yearTotal: (year) => `${year} total`,
+        chartLabel: 'Monthly points'
     }),
     IN: Object.freeze({
-        hint: 'Enter the result, then press Confirm to add it to your record',
-        achievement: 'Recorded!',
+        hint: 'Enter the result, then press Record result to add it to your record',
+        largeValueHint: 'Really…? That is a five-digit point value. If it is correct, you can record it as is.',
         weekGain: 'This week',
-        yearTotal: 'Year to date',
-        chartLabel: 'Monthly progress'
+        yearTotal: (year) => `${year} total`,
+        chartLabel: 'Monthly points'
     }),
     KR: Object.freeze({
-        hint: '숫자와 리워드를 확인한 뒤 ‘확정’을 누르면 기록됩니다',
-        achievement: '기록 완료!',
+        hint: '숫자와 리워드를 확인한 뒤 ‘결과 기록’을 누르면 기록됩니다',
+        largeValueHint: '정말…? 5자리 포인트입니다. 맞다면 그대로 기록해도 됩니다.',
         weekGain: '이번 주',
-        yearTotal: '올해 누적',
-        chartLabel: '월별 누적'
+        yearTotal: (year) => `${year}년 누적`,
+        chartLabel: '월별 포인트'
     }),
     TW: Object.freeze({
-        hint: '確認點數與獎品後，按「確定」才會寫入記錄',
-        achievement: '記錄完成！',
+        hint: '確認點數與獎品後，按「記錄結果」才會寫入記錄',
+        largeValueHint: '真的……？這是 5 位數點數。若數字正確，可以直接記錄。',
         weekGain: '本週',
-        yearTotal: '今年累計',
-        chartLabel: '每月累積'
+        yearTotal: (year) => `${year}年累計`,
+        chartLabel: '每月點數'
     }),
     HK: Object.freeze({
-        hint: '確認點數與獎品後，按「確定」才會寫入記錄',
-        achievement: '記錄完成！',
+        hint: '確認點數與獎品後，按「記錄結果」才會寫入記錄',
+        largeValueHint: '真的……？這是 5 位數點數。若數字正確，可以直接記錄。',
         weekGain: '本週',
-        yearTotal: '今年累計',
-        chartLabel: '每月累積'
+        yearTotal: (year) => `${year}年累計`,
+        chartLabel: '每月點數'
     })
 });
 
@@ -160,27 +166,46 @@ export const DIARY = {
         style.id = WEEKLY_EXPLICIT_STYLE_ID;
         style.textContent = `
 #diaryMode .weekly-autosave-hint{display:none!important}
-#diaryMode .is-weekly-current{grid-template-areas:"current current" "label label" "points prize" "share share" "hint hint" "achievement achievement"!important}
+#diaryMode .diary-input-area>#selectedMonth,#diaryMode .weekly-month-section-title{display:none!important}
+#diaryMode .diary-input-area{padding-top:0!important}
+#diaryMode .is-weekly-current{grid-template-areas:"current current" "label label" "points prize" "large large" "share share" "hint hint" "achievement achievement"!important}
+#diaryMode .is-weekly-current>.weekly-points-field{grid-area:points}
+#diaryMode .is-weekly-current>.weekly-large-value-hint{grid-area:large}
 #diaryMode .is-weekly-current .diary-btn-group,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-btn-group{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:.55em!important;align-items:center}
 #diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-save-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;margin:0;background:#1e8e3e;color:#fff;border-color:#1e8e3e;font-weight:800}
 #diaryMode .is-weekly-current .diary-x-share-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-x-share-btn{min-width:44px;min-height:44px;margin:0}
+#diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-large-value-hint{display:none!important}
+.weekly-points-field{position:relative;min-width:0}
+.weekly-points-field>input{width:100%;box-sizing:border-box;margin:0;padding-right:2.4em}
+.weekly-points-unit{position:absolute;right:.75em;top:50%;transform:translateY(-50%);pointer-events:none;color:#64748b;font-size:.82em;font-weight:800}
 .weekly-confirm-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
-.weekly-achievement-panel{grid-area:achievement;width:100%;box-sizing:border-box;margin:.05em 0 0;padding:1em;border:1px solid rgba(11,87,208,.2);border-radius:12px;background:linear-gradient(180deg,rgba(11,87,208,.08),rgba(11,87,208,.025));text-align:left;overflow:hidden}
+.weekly-large-value-hint{margin:.15em 0 0;padding:.55em .7em;border-left:3px solid #f59e0b;border-radius:6px;background:rgba(245,158,11,.08);color:var(--text-color);font-size:.78em;line-height:1.45;text-align:left}
+.weekly-large-value-hint[hidden]{display:none!important}
+.weekly-achievement-panel{grid-area:achievement;width:100%;box-sizing:border-box;margin:.05em 0 0;padding:1em;border:1px solid rgba(11,87,208,.2);border-radius:12px;background:linear-gradient(180deg,rgba(11,87,208,.075),rgba(11,87,208,.018));text-align:left;overflow:hidden}
 .weekly-achievement-panel[hidden]{display:none}
-.weekly-achievement-kicker{margin:0 0 .7em;font-size:.92em;font-weight:900;color:var(--text-color)}
 .weekly-achievement-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55em}
-.weekly-achievement-metric{min-width:0;padding:.7em .75em;border:1px solid rgba(11,87,208,.12);border-radius:10px;background:var(--section-bg-color)}
-.weekly-achievement-metric span{display:block;margin-bottom:.15em;color:#4b5563;font-size:.72em;font-weight:700}
-.weekly-achievement-metric strong{display:block;color:var(--text-color);font-size:1.2em;line-height:1.25;overflow-wrap:anywhere}
-.weekly-mini-chart-title{margin:.8em 0 .4em;color:#4b5563;font-size:.72em;font-weight:700}
-.weekly-mini-chart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:3px;height:74px}
-.weekly-mini-bar{display:flex;align-items:flex-end;height:100%;min-width:0;border-radius:3px;background:rgba(11,87,208,.07);overflow:hidden}
-.weekly-mini-bar-fill{display:block;width:100%;height:var(--weekly-bar,2%);min-height:2px;border-radius:3px 3px 0 0;background:#0b57d0;transform-origin:bottom}
-.weekly-achievement-panel.is-celebrating{animation:weekly-achievement-pop .42s cubic-bezier(.2,.8,.2,1)}
-.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:weekly-bar-grow .55s cubic-bezier(.2,.8,.2,1)}
-@keyframes weekly-achievement-pop{0%{opacity:0;transform:translateY(-8px) scale(.985)}100%{opacity:1;transform:none}}
-@keyframes weekly-bar-grow{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
-@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:none}}
+.weekly-achievement-metric{min-width:0;padding:.72em .78em;border:1px solid rgba(11,87,208,.13);border-radius:10px;background:var(--section-bg-color)}
+.weekly-achievement-metric span{display:block;margin-bottom:.15em;color:#52606d;font-size:.72em;font-weight:800}
+.weekly-achievement-metric strong{display:block;color:var(--text-color);font-size:1.22em;line-height:1.25;overflow-wrap:anywhere}
+.weekly-mini-chart-title{margin:.9em 0 .45em;color:#52606d;font-size:.75em;font-weight:800}
+.weekly-mini-chart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:3px;min-height:94px;padding:.45em .25em .15em;border-radius:10px;background:linear-gradient(180deg,rgba(88,166,255,.035),rgba(63,185,80,.02))}
+.weekly-mini-item{display:grid;grid-template-rows:68px auto;gap:4px;min-width:0;align-items:end}
+.weekly-mini-bar{position:relative;display:flex;align-items:flex-end;height:68px;min-width:0;border-radius:5px;background:linear-gradient(180deg,rgba(88,166,255,.08),rgba(11,87,208,.035));overflow:hidden}
+.weekly-mini-bar-fill{display:block;width:100%;height:var(--weekly-bar,2%);min-height:2px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#58a6ff 0%,#4285f4 58%,#0b57d0 100%);box-shadow:0 -1px 5px rgba(66,133,244,.22);transform-origin:bottom}
+.weekly-mini-item.is-current-month .weekly-mini-bar{background:linear-gradient(180deg,rgba(88,166,255,.14),rgba(63,185,80,.07));box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}
+.weekly-mini-item.is-current-month .weekly-mini-bar-fill{background:linear-gradient(180deg,#58a6ff 0%,#4f9cf9 38%,#3fb950 100%);box-shadow:0 -2px 8px rgba(63,185,80,.32)}
+.weekly-mini-bar-label{display:block;min-width:0;color:#7a8694;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
+.weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0b57d0;font-weight:900}
+.weekly-achievement-panel.is-celebrating{animation:weekly-panel-in .28s ease-out}
+.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:weekly-bar-grow .62s cubic-bezier(.2,.78,.22,1) both;animation-delay:var(--weekly-delay,0ms)}
+.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label{animation:weekly-label-in .3s ease-out both;animation-delay:calc(var(--weekly-delay,0ms) + 260ms)}
+.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:weekly-current-glow .7s ease-out both;animation-delay:calc(var(--weekly-delay,0ms) + 420ms)}
+@keyframes weekly-panel-in{0%{opacity:.45;transform:translateY(-4px)}100%{opacity:1;transform:none}}
+@keyframes weekly-bar-grow{0%{transform:scaleY(0)}76%{transform:scaleY(1.045)}100%{transform:scaleY(1)}}
+@keyframes weekly-label-in{0%{opacity:0;transform:translateY(3px)}100%{opacity:1;transform:none}}
+@keyframes weekly-current-glow{0%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}55%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.4),0 0 12px rgba(63,185,80,.24)}100%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}}
+@media(max-width:360px){#diaryMode .is-weekly-current{grid-template-columns:1fr!important;grid-template-areas:"current" "label" "points" "prize" "large" "share" "hint" "achievement"!important}.weekly-achievement-metrics{grid-template-columns:1fr}.weekly-mini-chart{gap:2px;padding-left:.1em;padding-right:.1em}.weekly-mini-bar-label{font-size:.5rem}}
+@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label,.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:none}}
 `;
         document.head.appendChild(style);
     },
@@ -199,6 +224,13 @@ export const DIARY = {
         hint.textContent = this.getWeeklyExperienceCopy().hint;
         const group = row.querySelector('.diary-btn-group');
         (group || row).insertAdjacentElement('afterend', hint);
+    },
+
+    updateLargeValueHint(pointsInput, hint) {
+        if (!pointsInput || !hint) return;
+        const shouldQuestion = DIARY_PURE.shouldQuestionLargePoints(pointsInput.value);
+        hint.hidden = !shouldQuestion;
+        hint.textContent = shouldQuestion ? this.getWeeklyExperienceCopy().largeValueHint : '';
     },
 
     renderWeeklyAchievement(row, pointsValue, yearlySummary, animate = false) {
@@ -227,10 +259,6 @@ export const DIARY = {
 
         panel.innerHTML = '';
 
-        const kicker = document.createElement('p');
-        kicker.className = 'weekly-achievement-kicker';
-        kicker.textContent = '🎉 ' + copy.achievement;
-
         const metrics = document.createElement('div');
         metrics.className = 'weekly-achievement-metrics';
 
@@ -245,7 +273,7 @@ export const DIARY = {
         const yearMetric = document.createElement('div');
         yearMetric.className = 'weekly-achievement-metric';
         const yearLabel = document.createElement('span');
-        yearLabel.textContent = copy.yearTotal;
+        yearLabel.textContent = copy.yearTotal(STATE.diaryState.currentYear);
         const yearValue = document.createElement('strong');
         yearValue.textContent = Number(yearlySummary?.total || 0).toLocaleString(config.lang) + ' ' + texts.pointsUnit;
         yearMetric.append(yearLabel, yearValue);
@@ -263,6 +291,11 @@ export const DIARY = {
             copy.chartLabel + ': ' + Number(yearlySummary?.total || 0).toLocaleString(config.lang) + ' ' + texts.pointsUnit
         );
         totals.forEach((total, index) => {
+            const item = document.createElement('span');
+            item.className = 'weekly-mini-item';
+            item.style.setProperty('--weekly-delay', (index * 42) + 'ms');
+            if (index + 1 === STATE.diaryState.currentMonth) item.classList.add('is-current-month');
+
             const bar = document.createElement('span');
             bar.className = 'weekly-mini-bar';
             bar.title = texts.monthNames[index] + ': ' + Number(total).toLocaleString(config.lang) + ' ' + texts.pointsUnit;
@@ -270,10 +303,16 @@ export const DIARY = {
             fill.className = 'weekly-mini-bar-fill';
             fill.style.setProperty('--weekly-bar', Math.max(2, Math.round((Number(total) / maxValue) * 100)) + '%');
             bar.appendChild(fill);
-            chart.appendChild(bar);
+
+            const label = document.createElement('span');
+            label.className = 'weekly-mini-bar-label';
+            label.textContent = texts.monthNames[index];
+
+            item.append(bar, label);
+            chart.appendChild(item);
         });
 
-        panel.append(kicker, metrics, chartTitle, chart);
+        panel.append(metrics, chartTitle, chart);
         panel.hidden = false;
         panel.classList.remove('is-celebrating');
         if (animate) {
@@ -355,8 +394,12 @@ export const DIARY = {
             const prizeOptionsHTML = texts.prizeOptions.map(opt => `<option value="${opt}" ${weekData.prize === opt ? 'selected' : ''}>${opt}</option>`).join('');
             row.innerHTML = `
                 <label for="week${weekNum}_points">${texts.weekLabel}${weekNum}${texts.weekSuffix} (${dateString})</label>
-                <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${displayPoints}" min="0" step="1" inputmode="numeric">
+                <div class="weekly-points-field">
+                    <input type="number" id="week${weekNum}_points" placeholder="${texts.pointsPlaceholder}" value="${displayPoints}" min="0" step="1" inputmode="numeric">
+                    <span class="weekly-points-unit" aria-hidden="true">${texts.pointsUnit || 'pt'}</span>
+                </div>
                 <select id="week${weekNum}_prize" aria-label="${texts.prizeLabel}">${prizeOptionsHTML}</select>
+                <p class="weekly-large-value-hint" hidden aria-live="polite"></p>
                 <div class="diary-btn-group">
                     <button type="button" class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
                     <button type="button" class="diary-x-share-btn" data-week="${weekNum}" title="X（Twitter）でシェア" aria-label="Xでシェア">𝕏</button>
@@ -366,9 +409,13 @@ export const DIARY = {
             // 明示確定とX共有のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
             const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
+            const largeValueHint = row.querySelector('.weekly-large-value-hint');
             const shareBtn = row.querySelector(`.diary-x-share-btn[data-week="${weekNum}"]`);
 
-            // 入力だけでは確定しない。ユーザーが「決定」ボタンを押した時だけ保存する。
+            this.updateLargeValueHint(pointsInput, largeValueHint);
+            pointsInput.addEventListener('input', () => this.updateLargeValueHint(pointsInput, largeValueHint));
+
+            // 入力だけでは確定しない。ユーザーが「結果を記録」ボタンを押した時だけ保存する。
             if (shareBtn) {
                 shareBtn.addEventListener('click', () => {
                     const currentPoints = pointsInput.value.trim();
