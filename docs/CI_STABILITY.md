@@ -70,3 +70,11 @@ SMOKE_EXPECT_REVISION=<exact-40-character-sha> node .github/scripts/bind-browser
 既存のupload工程だけが失敗した場合のjob記録は `OBSERVABILITY_FAIL`。この分類はworkflowの成功/失敗やrollback条件を変更しない。計算・本番HTTP/Chromium等の本物の失敗が混在する場合は引き続き `CHECK_FAIL`。任意のcontinue-on-error工程を成功扱いにする汎用例外は設けない。
 
 故障注入はlocalhost HTTP・一時ディレクトリ・一時Gitリポジトリ・watchdogの純粋な判定入力を使用する。本番への意図的な誤配信・snapshot破損は行わない。
+
+## Merge gate と advisory checks
+
+- main rulesetの必須merge checkは `PR Gate`。これは全preflightを常時実行する。
+- `Low-end Android performance` は対象path変更時と週次で実行する性能監視で、現時点ではrequired merge checkではない。
+- GitHub CodeQLはPR / main pushで実行されるsecurity signalで、現時点ではrequired merge checkではない。
+- requiredかadvisoryかを「走っているかどうか」と混同しない。merge阻止が必要な契約はPR Gateへ統合する。
+- PR Gateは変更影響を分類し、docs/tests-onlyではApache実HTTPとChromiumを省略できる。公開成果物・runtime・browser検証基盤の変更では従来どおり必須とする。workflow_dispatchや差分不明時はfull verificationへfail-safeする。
