@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中890精査・40未精査**（第31回でbaseline全件を再照合し、第30回時点の917/13を879/51へ訂正後、11ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
+最新集計: **基準930ケース中899精査・31未精査**（第31回でbaseline全件を再照合し、第30回時点の917/13を879/51へ訂正後、11ケースを精査）。以下の第3回記録は当時の証跡として保持し、第5回〜第31回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -823,4 +823,33 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・翻訳・テストコードは変更していない。
+
+## 第32回: 需要別国際記事9ケース（2026-09-18）
+
+`intl-demand-content-quality.test.cjs` はloop生成のためsource declaration 1件ではなく、`demandContracts` 9項目＝基準9ケースとして精査した。
+
+**890精査から9件を加え、899精査・31未精査。**
+
+### 判断
+
+9ケースすべて維持・変更なし。
+
+- redemption / weekly reward / coupon use / quests / Super Ticket / gift card / expiration の各検索意図に対し、主回答と公式条件を直接検査している。
+- 通常Weekly Reward（金曜）とPlay Pass週次（木曜）を別制度として扱う。
+- questsのaccount/activity条件、Play Games profile、refund/cancel境界を維持。
+- gift cardとPlay creditを混同せず、Points/balanceでgift cardを購入できない境界を維持。
+- Points期限は最後の獲得または使用から1年の意味を維持。
+- non-calculator Roleへgeneric calculator promptを出さない契約を維持。
+
+### 残り31ケース
+
+- intl-maintenance-calculators: 7
+- intl-platinum-diamond: 5
+- intl-rank-maintenance: 5
+- intl-regional-accuracy: 5
+- intl-rewards-quests: 5
+- markup-contract-fixtures: 2
+- 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
+
+公開コード・記事本文・テストコードは変更していない。
 
