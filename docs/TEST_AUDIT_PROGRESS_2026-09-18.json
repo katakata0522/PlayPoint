@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 5,
-  "latestReviewedBaselineCases": 149,
-  "latestUnreviewedBaselineCases": 781,
+  "latestStage": 6,
+  "latestReviewedBaselineCases": 190,
+  "latestUnreviewedBaselineCases": 740,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -202,5 +202,66 @@
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / browser checks"
+  },
+  "expectedCurrentCasesAfterWave6": 957,
+  "wave6": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 41,
+    "scope": "calculator-ui-first-view-result-navigation",
+    "files": [
+      {
+        "file": "tests/main-calculator-ui.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_ui_behavior"
+      },
+      {
+        "file": "tests/mobile-first-view-contract.test.cjs",
+        "cases": 9,
+        "decision": "keep_all_replace_source_guards_with_runtime_delivery_behavior"
+      },
+      {
+        "file": "tests/mobile-first-view-intro.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_replace_exact_copy_and_seo_keyword_snapshot_with_semantic_ui_contract"
+      },
+      {
+        "file": "tests/calculator-result-guidance-visibility.test.cjs",
+        "cases": 1,
+        "decision": "keep_render_order_behavior"
+      },
+      {
+        "file": "tests/playpoint-result-contracts.test.cjs",
+        "cases": 8,
+        "decision": "keep_all_expand_six_regions_and_config_runtime"
+      },
+      {
+        "file": "tests/result-navigation-config.test.cjs",
+        "cases": 5,
+        "decision": "merge_identity_and_deep_freeze_into_mutation_isolation_behavior"
+      },
+      {
+        "file": "tests/share-behavior.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_share_behavior"
+      },
+      {
+        "file": "tests/ui-runtime-behavior.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_runtime_behavior"
+      }
+    ],
+    "mergedCases": [
+      {
+        "from": "result-navigation-config",
+        "names": [
+          "same object instance per call",
+          "deep frozen config"
+        ],
+        "owner": "result-navigation mutation isolation"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium checks"
   }
 }
