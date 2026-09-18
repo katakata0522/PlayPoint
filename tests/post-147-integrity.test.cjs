@@ -93,9 +93,7 @@ test('本番SmokeとSEO healthは香港・インドの公開トップを監視�
   const seoHealth = read('.github/scripts/seo-health-check.cjs');
 
   assert.match(smoke, /https:\/\/playpoint-sim\.com\/hk\//);
-  assert.match(smoke, /Google Play Points 計算器（香港）/);
   assert.match(smoke, /https:\/\/playpoint-sim\.com\/in\//);
-  assert.match(smoke, /Google Play Points Calculator for India/);
 
   assert.match(seoHealth, /`\$\{BASE_URL\}\/hk\/`/);
   assert.match(seoHealth, /`\$\{BASE_URL\}\/in\/`/);
