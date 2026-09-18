@@ -135,7 +135,7 @@ Issue #181 の比較証拠は、次の専用レイヤーへ保存する。
 - `🗃GSC 28日履歴`: current_28d / previous_28d を同じ `pair_id` で保存するraw正本
 - `🔍GSC 28日比較`: query × exact URL ごとの Click / Impression / CTR / Position と前期間差を確認する人間向けビュー
 - 実装・導入手順: `docs/GSC_28D_CAPTURE_RUNBOOK.md`
-- Apps Scriptモジュール: `ops/apps-script/gsc-nonoverlap-28d.gs`
+- Apps Scriptモジュール: `scripts/gsc-nonoverlap-28d.gs`
 
 比較は Search Console の FINAL データだけを使用し、各窓は28日、互いに非重複でなければならない。
 current / previous の片方が欠ける場合、ローリング30日スナップショットしかない場合、
