@@ -5,29 +5,25 @@
         ja: {
             monthsToggle: '月を選ぶ', currentWeek: '今週のリワード', thisMonth: '今月の記録',
             edit: '編集', close: '閉じる', input: '入力', noRecord: '未記録',
-            confirmHint: '数字と景品を確認して「決定」を押すと記録されます',
-            achievement: '記録できた！', weekGain: '今週', yearTotal: '今年ここまで', chartLabel: '月別の積み上がり',
+            autoSave: '変更は自動保存されます', saved: '自動保存済み',
             yearDetails: '年間の記録を見る', toolsDetails: '通知・バックアップ', recordedWeeks: '週記録', points: 'pt'
         },
         en: {
             monthsToggle: 'Choose month', currentWeek: 'This week’s reward', thisMonth: 'This month',
             edit: 'Edit', close: 'Close', input: 'Enter', noRecord: 'Not recorded',
-            confirmHint: 'Enter the result, then press Confirm to add it to your record',
-            achievement: 'Recorded!', weekGain: 'This week', yearTotal: 'Year to date', chartLabel: 'Monthly progress',
+            autoSave: 'Changes are saved automatically', saved: 'Auto-saved',
             yearDetails: 'View yearly records', toolsDetails: 'Reminders & backup', recordedWeeks: 'weeks recorded', points: 'pt'
         },
         ko: {
             monthsToggle: '월 선택', currentWeek: '이번 주 리워드', thisMonth: '이번 달 기록',
             edit: '수정', close: '닫기', input: '입력', noRecord: '미기록',
-            confirmHint: '숫자와 리워드를 확인한 뒤 ‘확정’을 누르면 기록됩니다',
-            achievement: '기록 완료!', weekGain: '이번 주', yearTotal: '올해 누적', chartLabel: '월별 누적',
+            autoSave: '변경 내용은 자동으로 저장됩니다', saved: '자동 저장됨',
             yearDetails: '연간 기록 보기', toolsDetails: '알림·백업', recordedWeeks: '주 기록', points: 'pt'
         },
         zh: {
             monthsToggle: '選擇月份', currentWeek: '本週獎勵', thisMonth: '本月記錄',
             edit: '編輯', close: '關閉', input: '輸入', noRecord: '尚未記錄',
-            confirmHint: '確認點數與獎品後，按「確定」才會寫入記錄',
-            achievement: '記錄完成！', weekGain: '本週', yearTotal: '今年累計', chartLabel: '每月累積',
+            autoSave: '變更會自動儲存', saved: '已自動儲存',
             yearDetails: '查看年度記錄', toolsDetails: '提醒與備份', recordedWeeks: '週已記錄', points: 'pt'
         }
     };
@@ -49,25 +45,8 @@
 #diaryMode .week-row.is-weekly-current{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"current current" "label label" "points prize" "share share" "hint hint";gap:.7em;padding:.95em;border:1.5px solid rgba(11,87,208,.3);background:linear-gradient(180deg,rgba(11,87,208,.065),var(--section-bg-color));box-shadow:0 7px 20px rgba(11,87,208,.08)}
 #diaryMode .is-weekly-current .weekly-current-label{grid-area:current;text-align:left;font-size:1.05em;font-weight:800;color:var(--text-color)}#diaryMode .is-weekly-current>label{grid-area:label;margin:0;color:var(--link-color);font-size:.82em;text-align:left}
 #diaryMode .is-weekly-current>input{grid-area:points}#diaryMode .is-weekly-current>select{grid-area:prize}#diaryMode .is-weekly-current>.diary-btn-group{grid-area:share}
-#diaryMode .is-weekly-current .diary-btn-group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.55em;min-height:44px}
-#diaryMode .is-weekly-current .diary-save-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:0;background:#1e8e3e;color:#fff;border-color:#1e8e3e;font-weight:800}
-#diaryMode .is-weekly-current .diary-x-share-btn{flex:0 0 auto;min-width:44px;min-height:44px;padding:.35em .8em}
-.weekly-confirm-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
-.weekly-achievement-panel{width:100%;box-sizing:border-box;margin:.05em 0 .15em;padding:1em;border:1px solid rgba(11,87,208,.2);border-radius:12px;background:linear-gradient(180deg,rgba(11,87,208,.08),rgba(11,87,208,.025));text-align:left;overflow:hidden}
-.weekly-achievement-panel[hidden]{display:none}
-.weekly-achievement-kicker{margin:0 0 .7em;font-size:.92em;font-weight:900;color:var(--text-color)}
-.weekly-achievement-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55em}
-.weekly-achievement-metric{min-width:0;padding:.7em .75em;border:1px solid rgba(11,87,208,.12);border-radius:10px;background:var(--section-bg-color)}
-.weekly-achievement-metric span{display:block;margin-bottom:.15em;color:#4b5563;font-size:.72em;font-weight:700}
-.weekly-achievement-metric strong{display:block;color:var(--text-color);font-size:1.2em;line-height:1.25;overflow-wrap:anywhere}
-.weekly-mini-chart-title{margin:.8em 0 .4em;color:#4b5563;font-size:.72em;font-weight:700}
-.weekly-mini-chart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:3px;height:74px}
-.weekly-mini-bar{display:flex;align-items:flex-end;height:100%;min-width:0;border-radius:3px;background:rgba(11,87,208,.07);overflow:hidden}
-.weekly-mini-bar-fill{display:block;width:100%;height:var(--weekly-bar,2%);min-height:2px;border-radius:3px 3px 0 0;background:#0b57d0;transform-origin:bottom}
-.weekly-achievement-panel.is-celebrating{animation:weekly-achievement-pop .42s cubic-bezier(.2,.8,.2,1)}
-.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:weekly-bar-grow .55s cubic-bezier(.2,.8,.2,1)}
-@keyframes weekly-achievement-pop{0%{opacity:0;transform:translateY(-8px) scale(.985)}100%{opacity:1;transform:none}}
-@keyframes weekly-bar-grow{0%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+#diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact .diary-save-btn{display:none}#diaryMode .is-weekly-current .diary-btn-group{justify-content:flex-end;min-height:34px}#diaryMode .is-weekly-current .diary-x-share-btn{flex:0 0 auto;min-width:42px;min-height:38px;padding:.35em .75em}
+.weekly-autosave-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
 #diaryMode .week-row.is-weekly-compact{display:block;padding:0;overflow:hidden}.weekly-compact-summary{display:flex;align-items:center;justify-content:space-between;gap:.7em;min-height:50px;padding:.55em .7em .55em .9em}.weekly-compact-main{display:flex;min-width:0;align-items:baseline;gap:.75em;text-align:left}.weekly-compact-main strong{flex:0 0 auto;color:var(--text-color)}.weekly-compact-main span{min-width:0;color:var(--link-color);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .weekly-edit-toggle{flex:0 0 auto;min-height:36px;margin:0;padding:.35em .75em;border:1px solid rgba(11,87,208,.22);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}.weekly-edit-toggle:hover:not(:disabled){background:rgba(11,87,208,.11)}
 #diaryMode .is-weekly-compact>label,#diaryMode .is-weekly-compact>input,#diaryMode .is-weekly-compact>select,#diaryMode .is-weekly-compact>.diary-btn-group{display:none}#diaryMode .is-weekly-compact.is-weekly-expanded{padding:.8em}#diaryMode .is-weekly-compact.is-weekly-expanded .weekly-compact-summary{margin:-.8em -.8em .7em;border-bottom:1px solid var(--weekly-border,rgba(11,87,208,.16))}
@@ -76,7 +55,7 @@
 .weekly-secondary-details{margin:.7em 0}.weekly-secondary-details[open]>summary{border-bottom:1px solid var(--weekly-border,rgba(11,87,208,.16))}.weekly-secondary-details .diary-year-chart-section,.weekly-secondary-details .diary-reminder-section,.weekly-secondary-details .diary-backup-section{margin:0;border:0;border-radius:0;box-shadow:none}.weekly-secondary-details .diary-year-chart-section{padding:.9em;background:transparent}.weekly-tools-details .diary-reminder-section,.weekly-tools-details .diary-backup-section{padding:.95em}#diaryMode .guest-notice{margin:.7em 0;padding:.72em .85em;font-size:.78em}
 @media(max-width:480px){.weekly-month-picker .month-selector{grid-template-columns:repeat(4,minmax(0,1fr))}#diaryMode .week-row.is-weekly-current{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#diaryMode .diary-summary.weekly-summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}#diaryMode .weekly-summary-strip .summary-box{min-width:0;padding:.68em}.weekly-compact-main{gap:.55em}}
 @media(max-width:360px){#diaryMode .week-row.is-weekly-current{grid-template-columns:1fr;grid-template-areas:"current" "label" "points" "prize" "share" "hint"}#diaryMode .diary-summary.weekly-summary-strip{grid-template-columns:1fr}}
-@media(prefers-reduced-motion:reduce){.weekly-month-picker>summary::after,.weekly-secondary-details>summary::after{transition:none}.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:none}}
+@media(prefers-reduced-motion:reduce){.weekly-month-picker>summary::after,.weekly-secondary-details>summary::after{transition:none}}
 `;
 
     const languageKey = (() => {
@@ -220,108 +199,33 @@
         compact.append(main, toggle);
     }
 
-    function ensureConfirmHint(row, isCurrent) {
+    function ensureAutoSaveHint(row, isCurrent) {
         if (!isCurrent) return;
-        let hint = row.querySelector('.weekly-confirm-hint');
+        let hint = row.querySelector('.weekly-autosave-hint');
         if (!hint) {
             hint = document.createElement('p');
-            hint.className = 'weekly-confirm-hint';
+            hint.className = 'weekly-autosave-hint';
+            hint.setAttribute('aria-live', 'polite');
             const group = row.querySelector('.diary-btn-group');
             (group || row).insertAdjacentElement('afterend', hint);
         }
-        hint.textContent = copy.confirmHint;
-    }
+        hint.textContent = copy.autoSave;
 
-    function ensureAchievementPanel(currentRow) {
-        if (!currentRow) return null;
-        let panel = document.querySelector('#weekInputs .weekly-achievement-panel');
-        if (!panel) {
-            panel = document.createElement('section');
-            panel.className = 'weekly-achievement-panel';
-            panel.hidden = true;
-            panel.setAttribute('aria-live', 'polite');
+        const input = row.querySelector('input[type="number"]');
+        const select = row.querySelector('select');
+        const markSaved = () => {
+            window.setTimeout(() => {
+                hint.textContent = copy.saved;
+                window.setTimeout(() => { hint.textContent = copy.autoSave; }, 1600);
+            }, 0);
+        };
+        if (input && !input.dataset.weeklyUiBound) {
+            input.dataset.weeklyUiBound = 'true';
+            input.addEventListener('blur', markSaved);
         }
-        if (panel.previousElementSibling !== currentRow) {
-            currentRow.insertAdjacentElement('afterend', panel);
-        }
-        return panel;
-    }
-
-    function readYearlyBars() {
-        const items = [...document.querySelectorAll('#diary-year-chart .diary-chart-item')];
-        const totals = items.map(item => {
-            const raw = (item.querySelector('.diary-chart-value')?.textContent || '').replace(/[^0-9.-]/g, '');
-            const value = Number(raw);
-            return Number.isFinite(value) && value >= 0 ? value : 0;
-        });
-        while (totals.length < 12) totals.push(0);
-        return totals.slice(0, 12);
-    }
-
-    function renderAchievementPanel(animate = false) {
-        const currentRow = document.querySelector('#weekInputs .week-row.is-weekly-current');
-        if (!currentRow) return;
-        const panel = ensureAchievementPanel(currentRow);
-        const input = currentRow.querySelector('input[type="number"]');
-        const rawPoints = input?.value?.trim() || '';
-        if (!rawPoints) {
-            panel.hidden = true;
-            panel.classList.remove('is-celebrating');
-            return;
-        }
-
-        const weekPoints = Number(rawPoints);
-        const yearlyText = document.getElementById('yearlyTotal')?.textContent?.trim() || '0';
-        const totals = readYearlyBars();
-        const max = Math.max(1, ...totals);
-
-        panel.innerHTML = '';
-        const kicker = document.createElement('p');
-        kicker.className = 'weekly-achievement-kicker';
-        kicker.textContent = '🎉 ' + copy.achievement;
-
-        const metrics = document.createElement('div');
-        metrics.className = 'weekly-achievement-metrics';
-        const weekMetric = document.createElement('div');
-        weekMetric.className = 'weekly-achievement-metric';
-        const weekLabel = document.createElement('span');
-        weekLabel.textContent = copy.weekGain;
-        const weekValue = document.createElement('strong');
-        weekValue.textContent = '+' + (Number.isFinite(weekPoints) ? weekPoints.toLocaleString() : '0') + ' ' + copy.points;
-        weekMetric.append(weekLabel, weekValue);
-
-        const yearMetric = document.createElement('div');
-        yearMetric.className = 'weekly-achievement-metric';
-        const yearLabel = document.createElement('span');
-        yearLabel.textContent = copy.yearTotal;
-        const yearValue = document.createElement('strong');
-        yearValue.textContent = yearlyText + ' ' + copy.points;
-        yearMetric.append(yearLabel, yearValue);
-        metrics.append(weekMetric, yearMetric);
-
-        const chartTitle = document.createElement('p');
-        chartTitle.className = 'weekly-mini-chart-title';
-        chartTitle.textContent = copy.chartLabel;
-        const chart = document.createElement('div');
-        chart.className = 'weekly-mini-chart';
-        chart.setAttribute('role', 'img');
-        chart.setAttribute('aria-label', copy.chartLabel + ': ' + yearlyText + ' ' + copy.points);
-        totals.forEach((total) => {
-            const bar = document.createElement('span');
-            bar.className = 'weekly-mini-bar';
-            const fill = document.createElement('span');
-            fill.className = 'weekly-mini-bar-fill';
-            fill.style.setProperty('--weekly-bar', Math.max(2, Math.round((total / max) * 100)) + '%');
-            bar.appendChild(fill);
-            chart.appendChild(bar);
-        });
-
-        panel.append(kicker, metrics, chartTitle, chart);
-        panel.hidden = false;
-        panel.classList.remove('is-celebrating');
-        if (animate) {
-            void panel.offsetWidth;
-            panel.classList.add('is-celebrating');
+        if (select && !select.dataset.weeklyUiBound) {
+            select.dataset.weeklyUiBound = 'true';
+            select.addEventListener('change', markSaved);
         }
     }
 
@@ -355,7 +259,7 @@
                     title.textContent = `🎁 ${copy.currentWeek}`;
                     row.insertBefore(title, row.firstChild);
                 }
-                ensureConfirmHint(row, true);
+                ensureAutoSaveHint(row, true);
             } else {
                 row.classList.remove('is-weekly-expanded');
                 makeCompactSummary(row, rowDate, isFuture);
@@ -365,7 +269,6 @@
         if (currentRow && container.firstElementChild !== currentRow) {
             container.insertBefore(currentRow, container.firstElementChild);
         }
-        if (currentRow) renderAchievementPanel(false);
     }
 
     function decorateSummary() {
@@ -426,15 +329,6 @@
         });
     }
 
-    function bindSavedFeedback() {
-        document.addEventListener('playpoint:diary-saved', () => {
-            window.setTimeout(() => {
-                decorateSummary();
-                renderAchievementPanel(true);
-            }, 0);
-        });
-    }
-
     function observeDiary() {
         const weekInputs = document.getElementById('weekInputs');
         if (!weekInputs) return;
@@ -445,7 +339,6 @@
     function init() {
         ensureStyles();
         bindDiaryTab();
-        bindSavedFeedback();
         observeDiary();
         selectCurrentMonth();
         queueDecorate();
