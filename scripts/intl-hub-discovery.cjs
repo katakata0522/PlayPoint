@@ -1,4 +1,5 @@
 'use strict';
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -176,7 +177,7 @@ function synchronizeHubFile(rootDir, localeKey) {
 
 function syncIntlHubDiscovery(rootDir) {
   let changed = 0;
-  for (const localeKey of ['en', 'ko', 'tw']) {
+  for (const localeKey of INTERNATIONAL_LOCALES) {
     if (synchronizeHubFile(rootDir, localeKey)) changed += 1;
   }
   return { checked: 3, changed };
