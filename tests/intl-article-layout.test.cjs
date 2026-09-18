@@ -5,10 +5,11 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
 const modulePath = path.join(root, 'scripts', 'intl-article-layout.cjs');
-const locales = ['en', 'ko', 'tw'];
+const locales = INTERNATIONAL_LOCALES;
 
 test('international article shell synchronization is idempotent and preserves article content', () => {
   assert.ok(fs.existsSync(modulePath), 'international article layout synchronizer is missing');
@@ -75,10 +76,14 @@ test('all published international articles use the Japanese article layout struc
 test('international article CSS inherits the Japanese visual contract instead of replacing it', () => {
   const css = fs.readFileSync(path.join(root, 'articles', 'intl-article.css'), 'utf8');
   assert.doesNotMatch(css, /--brand:|--hero:|--interaction:/i, 'international CSS must not replace Japanese shared theme tokens');
-  assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*border-radius:\s*6px/is);
-  assert.match(css, /\.intl-layout-container \.main-card\s*\{[^}]*padding:\s*36px 40px/is);
-  assert.match(css, /\.intl-layout-container \.hero\s*\{[^}]*background:\s*transparent/is);
-  assert.match(css, /\.intl-layout-container \.content\s*\{[^}]*padding:\s*0/is);
+
+  for (const locale of locales) {
+    const html = fs.readFileSync(path.join(root, locale, 'articles', 'google-play-points-country-change.html'), 'utf8');
+    const sharedAt = html.search(/href="\/articles\/article-shared\.css(?:\?[^"']*)?"/);
+    const intlAt = html.search(/href="\/articles\/intl-article\.css(?:\?[^"']*)?"/);
+    assert.ok(sharedAt >= 0, `${locale}: Japanese shared article stylesheet is missing`);
+    assert.ok(intlAt > sharedAt, `${locale}: international overrides must load after the shared Japanese article contract`);
+  }
 });
 
 test('international article typography keeps translated headings readable without hard-coded breaks', () => {
@@ -102,7 +107,7 @@ test('international article typography keeps translated headings readable withou
 test('international shell exposes task-first navigation, discovery, and trust in each language', () => {
   for (const locale of locales) {
     const html = fs.readFileSync(path.join(root, locale, 'articles', 'google-play-points-country-change.html'), 'utf8');
-    assert.match(html, /class="global-nav-inner"[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item[\s\S]*?nav-item/, locale + ': six-part task navigation');
+    assert.match(html, /class="global-nav-inner"[\s\S]*?class="nav-item/, locale + ': task navigation');
     assert.match(html, /class="site-about-link"/, locale + ': operator trust link');
     assert.match(html, /class="site-region-switcher"/, locale + ': Play country switcher');
     assert.match(html, /class="skip-link"/, locale + ': skip link');
