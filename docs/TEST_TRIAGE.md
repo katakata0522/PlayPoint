@@ -924,6 +924,31 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動・cache実値・CSS値・記事本文は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第28回（2026-09-18）
+
+基準930ケースに含まれる「横断integrity・security」5ファイル24ケースを、公開地域config、Speculation Rules、repository全参照監査、CSP/Deploy/security healthの現行ownerと突合して個別精査した。
+
+**基準930中890精査・40未精査。** 24ケースはすべて保証を維持し、ケース数は増減しない。現行959ケースを維持する。公開サイト・security policy・monitoring実値は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `high-priority-audit.test.cjs` | 3 | 全維持。PWA地域復元、6地域Country Guide、HK/INゲーム導線を維持。Country Guide全文sentence snapshotを除外し、HK/IN導線はsource文字列からruntime configへ変更 |
+| `playpoint-safety-guards.test.cjs` | 3 | 全維持・変更なし。削除済み週次自動差引の再発防止と過去固定calendar日時禁止 |
+| `post-147-integrity.test.cjs` | 5 | 全維持。Speculation Rules・6地域比較・preflight必須公開物・本番監視を維持。HK/IN smokeの特定title copy snapshotのみ除外 |
+| `repository-integrity-audit.test.cjs` | 7 | 全維持・変更なし。OS衝突、一時ファイル、内部参照/anchor、canonical、旧URL、画像実形式、orphan/duplicateを全repo実データで監査 |
+| `security-seo-hardening.test.cjs` | 6 | 全維持。CSP/秘密除外/required gate/live verification/weekly healthを維持。security/sitemap CLIの12000ms・2回exactを有限bounded policyへ変更 |
+
+### 今回の過剰固定・安全境界
+
+- Country Guideは6地域名とdestinationが揃うことが契約であり、6地域を1文で列挙する英文全文はcopy編集を不要に阻害するため固定しない。
+- HK/INのゲーム導線は`region-expansion-config.js`のsource文字列ではなく、実runtime configのlink text/hrefを確認する。
+- production smokeがHK/IN URLを監視することは維持するが、ページtitleの一字一句をmonitor ownerの存在証明として二重固定しない。
+- security/sitemap healthのtimeout/retryは無限待機や過剰retryを防ぐ有限境界が重要であり、現行12000ms/2回そのものは運用値。3〜30秒、1〜5回のbounded contractへ変更する。実値は変更しない。
+- repository integrityの全参照・canonical・実画像format・orphan/duplicate検出は静的文字列代理ではなく実repository集合を走査するため、そのまま維持する。
+
+公開HTML/CSS/JS・CSP・Deploy除外・security CLI実値・監視URLは変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

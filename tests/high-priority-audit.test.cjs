@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -36,15 +37,13 @@ test('Country Guideは現在の6地域専用モードを案内する', () => {
     assert.ok(guide.includes(`href="${href}"`), `Country Guideに${href}への導線がありません`);
   }
 
-  assert.ok(guide.includes('Japan, the United States, South Korea, Taiwan, Hong Kong, and India'));
-  assert.ok(!guide.includes('This calculator currently has dedicated modes for <strong>Japan, the United States, South Korea, and Taiwan</strong>'));
 });
 
 test('HKとINのゲーム導線は別地域ルールであることを明示する', () => {
-  const config = read('js/region-expansion-config.js');
+  const configs = loadConfigs(true);
 
-  assert.ok(config.includes("🎮 遊戲計算（台灣規則・非香港）"));
-  assert.ok(config.includes("🎮 Game calculators (U.S. rules, not India)"));
-  assert.ok(config.includes("href: '../tw/games/'"));
-  assert.ok(config.includes("href: '../en/games/'"));
+  assert.match(configs.HK.uiText.linkGames.text, /台灣規則.*非香港/);
+  assert.equal(configs.HK.uiText.linkGames.href, '../tw/games/');
+  assert.match(configs.IN.uiText.linkGames.text, /U\.S\. rules, not India/);
+  assert.equal(configs.IN.uiText.linkGames.href, '../en/games/');
 });

@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中866精査・64未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第27回を末尾へ追記する。
+最新集計: **基準930ケース中890精査・40未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第28回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -713,3 +713,29 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. blog common CSSは任意の文字数下限をやめ、非空＋外部CSS ownershipを守る。
 
 公開コード・cache値・デザイン・計算式は変更していない。
+
+## 第28回: 横断integrity・security 24ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した5ファイル24ケースを、地域runtime config・Speculation Rules・repository実参照・CSP/Deploy/security healthと照合した。既精査866へ24を加え、**890精査・40未精査**とする。ケース数は増減せず現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| high-priority-audit | 3 | 全維持。copy全文/source固定を意味/runtime configへ |
+| playpoint-safety-guards | 3 | 全維持・変更なし |
+| post-147-integrity | 5 | 全維持。HK/IN monitor title snapshotだけ除外 |
+| repository-integrity-audit | 7 | 全維持・変更なし |
+| security-seo-hardening | 6 | 全維持。timeout/retry exactをbounded contractへ |
+
+### 変更したテスト設計
+
+1. Country Guideは6地域名＋destinationを保証し、列挙英文全文は固定しない。
+2. HK/IN game linksは読み込まれたruntime configを検査する。
+3. smoke監視はHK/IN URLの存在を契約とし、title copyを二重固定しない。
+4. security/sitemap live checkはtimeout 3〜30秒・retry 1〜5回の有限範囲を要求し、現行値は変更しない。
+5. repository全体の参照/canonical/image/orphan監査はそのまま維持する。
+
+公開コード・security設定・運用値は変更していない。
