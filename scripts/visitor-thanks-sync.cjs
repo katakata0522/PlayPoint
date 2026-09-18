@@ -6,7 +6,7 @@ const path = require('node:path');
 const VISITOR_THANKS_BY_LOCALE = Object.freeze({
   ko: {
     ariaLabel: '감사 메시지',
-    lead: '한국에서 정말 많은 분들이 이 사이트를 찾아주고 계세요!',
+    lead: '한국어 페이지까지 찾아와 주셔서 정말 반갑습니다!',
     body: '찾아와 주셔서 정말 감사합니다.',
     signature: '일본에서, 사랑과 감사의 마음을 담아.',
     flagsAriaLabel: '일본과 한국',
@@ -14,7 +14,7 @@ const VISITOR_THANKS_BY_LOCALE = Object.freeze({
   },
   tw: {
     ariaLabel: '感謝訊息',
-    lead: '真的有很多來自台灣的朋友造訪這個網站！',
+    lead: '歡迎來到繁體中文頁面，很高興你來到這裡！',
     body: '真的非常謝謝大家的到來。',
     signature: '來自日本，帶著滿滿的愛與感謝。',
     flagsAriaLabel: '日本與台灣',
