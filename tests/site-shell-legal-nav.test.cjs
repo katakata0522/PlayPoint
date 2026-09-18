@@ -59,14 +59,14 @@ test('ファイル同期は対象2ページ以外へ触れず、check後も冪�
       fs.copyFileSync(path.join(rootDir, relativePath), path.join(tempRoot, relativePath));
     }
     let summary = syncLegalPageLanguageNavs(tempRoot);
-    assert.deepEqual(summary, { checked: 2, changed: 0, changedFiles: [] });
+    assert.deepEqual(summary, { checked: LEGAL_NAV_TARGETS.length, changed: 0, changedFiles: [] });
 
     const termsPath = path.join(tempRoot, 'terms.html');
     fs.writeFileSync(termsPath, fs.readFileSync(termsPath, 'utf8').replace('>国・地域ガイド</a>', '>地域ガイド drift</a>'));
     summary = syncLegalPageLanguageNavs(tempRoot);
-    assert.deepEqual(summary, { checked: 2, changed: 1, changedFiles: ['terms.html'] });
+    assert.deepEqual(summary, { checked: LEGAL_NAV_TARGETS.length, changed: 1, changedFiles: ['terms.html'] });
     summary = syncLegalPageLanguageNavs(tempRoot);
-    assert.deepEqual(summary, { checked: 2, changed: 0, changedFiles: [] });
+    assert.deepEqual(summary, { checked: LEGAL_NAV_TARGETS.length, changed: 0, changedFiles: [] });
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }

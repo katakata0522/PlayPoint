@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中512精査・418未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第12回を末尾へ追記する。
+最新集計: **基準930ケース中545精査・385未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第13回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -352,3 +352,38 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. game-seo-commonはread/write各1回ではなくscope/order/non-JA非干渉/repeat no-write。
 
 公開コード・生成器・記事本文・Role定義・日付・FAQ・workflowは変更していない。
+
+
+## 第13回: Site Shell・公開出力差分・runtime差分比較33ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した7ファイル33ケースを現行mainと照合した。対象ファイルは基準コミットとWave12完了時mainで同一内容。既精査512へ33を加え、**545精査・385未精査**とする。Wave13自体はケース数を増減しないが、並行PR #357が基準930外の回帰2件をmainへ追加したため、現行実行集合は**958ケース**。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| lp-monetization-idempotency | 2 | 全維持。見出し全文snapshot→canonical managed structure |
+| refactor-output-equivalence | 6 | 全維持。public byte-equivalence/隔離build/repeat差分の主owner |
+| refactor-runtime-comparison | 4 | 全維持。任意case数閾値/特定source mutationを一般化 |
+| site-shell-calculator-header | 5 | 全維持。6 target/4+4 item/ARIA map二重固定をregistry/semanticへ |
+| site-shell-footer | 6 | 全維持。exact six-link/copyright year snapshotをsemantic profile contractへ |
+| site-shell-header | 5 | 全維持。3 target/4 or 6 link countをregistry-drivenへ |
+| site-shell-legal-nav | 5 | 全維持。checked件数をLEGAL_NAV_TARGETSから導出 |
+
+### 実装側の最小改善
+
+`renderCalculatorHeader` は従来「region buttons 4個かつheader links 4個」でないと例外にしていたが、この件数自体はUI意味契約ではない。非空配列・ARIA label必須・region ID一意・activeRegion有効を要求する形へ一般化する。現行6 calculator profilesの出力は変更しない。
+
+### 維持した安全網
+
+- Site Shell rendererとコミット済みheader/footerのbyte一致。
+- drift repair後の冪等性。
+- HK/IN fallbackがlocal game coverageと誤認させないこと。
+- privacy/termsで偽の言語切替を出さないこと。
+- public build outputのbyte-equivalence、symlink fail-closed、隔離build。
+- runtime comparatorが数値・markup・required module regressionを実際に検出すること。
+- required PR Gateがbase SHAとruntime/visual independent gatesを使用すること。
+
+公開profile・表示文言・HTML・計算挙動は変更していない。今回のworkflow分類では条件付きbuild-refactor/runtime比較レーンは対象外でskipされ得るため、現行出力不変の正本はcomplete preflight内のbyte-canonical/idempotency契約とChromium結果とする。
