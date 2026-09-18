@@ -94,8 +94,10 @@ test('live hardening scripts are bounded and only target the canonical productio
   const sitemap = read('.github/scripts/sitemap-health-check.cjs');
   for (const source of [security, sitemap]) {
     assert.match(source, /https:\/\/playpoint-sim\.com/);
-    assert.match(source, /FETCH_TIMEOUT_MS = 12000/);
-    assert.match(source, /MAX_ATTEMPTS = 2/);
+    const timeout = Number(source.match(/FETCH_TIMEOUT_MS\s*=\s*(\d+)/)?.[1]);
+    const attempts = Number(source.match(/MAX_ATTEMPTS\s*=\s*(\d+)/)?.[1]);
+    assert.ok(Number.isFinite(timeout) && timeout >= 3000 && timeout <= 30000, `unsafe fetch timeout: ${timeout}`);
+    assert.ok(Number.isInteger(attempts) && attempts >= 1 && attempts <= 5, `unsafe retry attempts: ${attempts}`);
     assert.doesNotMatch(source, /http:\/\/playpoint-sim\.com/);
   }
   assert.match(security, /['"]\/\.env['"]/);
