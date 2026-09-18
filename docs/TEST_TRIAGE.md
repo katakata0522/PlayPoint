@@ -518,6 +518,36 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、記事本文、記事台帳、Role定義、content date、game SSOT、FAQ、生成器、workflowは変更しない。tests/docsのみの変更で本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第13回（2026-09-18）
+
+基準930ケースに含まれる「Site Shell・公開出力差分・runtime差分比較」7ファイル33ケースを、現行shared renderer、同期器、公開成果物比較、runtime differential comparator、PR Gate配線と突合して個別精査した。対象7ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` とWave12完了時mainで同一内容だったため、33ケースを基準件数へ加算する。
+
+**基準930中545精査・385未精査。** ケース削除・統合なし。Wave13自体は件数を増減しないが、並行PR #357が基準930外の回帰1ケースを追加したため、現行実行集合は**957ケース**。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `lp-monetization-idempotency.test.cjs` | 2 | 全件維持。managed収益sectionの一意性とcanonical byte-idempotencyを維持。見出し全文をmarkerにせず、canonical section/classで識別 |
+| `refactor-output-equivalence.test.cjs` | 6 | 全件維持。public manifestの追加/削除/変更、byte比較、symlink拒否、固定build env、隔離build、repeat差分証跡はrefactor safetyの主owner |
+| `refactor-runtime-comparison.test.cjs` | 4 | 全件維持。runtime differential、数値/markup regression、required module欠損、PR Gate配線を維持。6000/2000/1000等のケース数閾値と特定source文字列mutationを一般化 |
+| `site-shell-calculator-header.test.cjs` | 5 | 全件維持。registry/香港・インドfallback/byte-canonical/drift repair/build順序を維持。6ページ/4button/4link/ARIA手書きmapの二重固定を除外 |
+| `site-shell-footer.test.cjs` | 6 | 全件維持。renderer escape/markup ownership/legacy removal/canonical footer/fallbackを維持。各localeのexact 6-link snapshotと固定copyright年を意味契約へ変更 |
+| `site-shell-header.test.cjs` | 5 | 全件維持。Country & Region Guide legal境界/byte-canonical/drift repair/build順序を維持。3 target/4 links/6 linksのexact countをregistry駆動へ |
+| `site-shell-legal-nav.test.cjs` | 5 | 全件維持。privacy/termsの共通nav、偽言語切替拒否、migration/idempotency/build順序を維持。checked=2はLEGAL_NAV_TARGETS件数から導出 |
+
+### 今回の過剰固定・実装改善
+
+- Site ShellのStage 12A/B/Cという実装段階名を契約にしない。現在のshared registry/renderersがSSOTであり、target追加時に「件数が変わっただけ」で落ちないようにする。
+- footerはexact 6 href配列をテスト側へ二重記載せず、locale home・author/verification・privacy・terms・href一意性・Google disclaimer・copyright形式を保証する。
+- fixed-page headerはtarget=3、navLinks=4/6を固定せず、registry全targetがimmutableで有効なnavigationを持つことを保証する。Country & Region GuideのHK/IN導線とlegal分離は厳格に残す。
+- calculator headerはtarget=6、regionButtons=4、links=4を固定しない。profile配列が非空・region id一意・activeRegion有効・ARIA非空であることを保証し、HK/INの「他地域ルールである」fallback文言は専用契約として残す。
+- renderer本体 `renderCalculatorHeader` も同じ理由で4/4固定を外し、非空＋unique region idへ一般化する。現行profiles/公開HTMLの出力は変えない。
+- runtime differentialのcoverageをmain>6000/reverse>2000/pure>1000で固定せず、4種類すべてが正の実行件数を記録しmismatch 0であることを保証する。
+- runtime regression fixtureはJP Silver=1.25や `<dl>` 完全一致をmutation pointにせず、対象意味を保ったままcurrent sourceへ適応する。
+- PR Gate checkoutは `fetch-depth: 2` 完全一致ではなく、base revisionを取得できる2以上またはfull fetchを許容する。
+
+公開HTML/CSS/JS、Site Shell profiles、リンク文言、記事本文、計算式、保存形式、workflowは変更しない。rendererの固定件数制約だけを一般化するため `scripts/site-shell.cjs` を変更するが、現行profile入力に対する生成出力はbyte-equivalentであることをPR Gateで確認する。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
