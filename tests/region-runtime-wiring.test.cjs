@@ -1,29 +1,39 @@
 'use strict';
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const test = require('node:test');
+const { APP_MODULE_FILES } = require('../scripts/asset-sync.cjs');
+const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
+const { createRuntime } = require('./helpers/service-worker-runtime.cjs');
+
 const rootDir = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
-const main = read('js/main.js');
-const calculator = read('js/calculator.js');
-const regionNavigation = read('js/region-navigation.js');
-const resultNavigation = read('js/result-navigation-config.js');
-const assetSync = read('scripts/asset-sync.cjs');
-const serviceWorker = read('sw.js');
-assert.doesNotMatch(main, /installExpandedRegionResultNavigation/);
-assert.match(calculator, /import \{ getResultNavigationConfig \} from '\.\/result-navigation-config\.js';/);
-assert.match(calculator, /return getResultNavigationConfig\(STATE\.currentRegion\);/);
-assert.doesNotMatch(calculator, /const localized = \{/);
-assert.doesNotMatch(regionNavigation, /installExpandedRegionResultNavigation/);
-assert.doesNotMatch(regionNavigation, /import \{ CALC \} from '\.\/calculator\.js';/);
-assert.match(resultNavigation, /const RESULT_NAVIGATION_CONFIGS = deepFreeze\(\{ JP, US, KR, TW, HK, IN \}\);/);
-assert.match(resultNavigation, /export function assertResultNavigationCoverage\(regionCodes\)/);
-assert.match(regionNavigation, /assertResultNavigationCoverage\(Object\.keys\(CONFIGS\)\)/);
-assert.equal(fs.existsSync(path.join(rootDir, 'js/region-result-navigation.js')), false);
-assert.match(assetSync, /'js\/result-navigation-config\.js'/);
-assert.doesNotMatch(assetSync, /region-result-navigation\.js/);
-assert.match(serviceWorker, /'\.\/js\/result-navigation-config\.js'/);
-assert.doesNotMatch(serviceWorker, /region-result-navigation\.js/);
-assert.match(serviceWorker, /'\.\/hk\/'/);
-assert.match(serviceWorker, /'\.\/in\/'/);
-console.log('Region runtime wiring guards passed.');
+
+test('expanded-region runtime stays on the active ESM graph and install precache', async () => {
+  const graph = runEsmProbe({ kind: 'graph' });
+  const byPath = new Map(graph.map(item => [new URL(item.url).pathname, item]));
+  const importPaths = pathname => new Set((byPath.get(pathname)?.imports || []).map(url => new URL(url).pathname));
+
+  assert.ok(byPath.has('/js/region-navigation.js'));
+  assert.ok(byPath.has('/js/region-expansion-config.js'));
+  assert.ok(byPath.has('/js/result-navigation-config.js'));
+
+  assert.ok(importPaths('/js/region-navigation.js').has('/js/region-expansion-config.js'));
+  assert.ok(importPaths('/js/region-navigation.js').has('/js/result-navigation-config.js'));
+  assert.ok(importPaths('/js/calculator.js').has('/js/result-navigation-config.js'));
+
+  for (const file of ['js/region-navigation.js', 'js/region-expansion-config.js', 'js/result-navigation-config.js']) {
+    assert.ok(APP_MODULE_FILES.includes(file), `cache revision input missing: ${file}`);
+  }
+  assert.ok(!APP_MODULE_FILES.includes('js/region-result-navigation.js'));
+  assert.equal(fs.existsSync(path.join(rootDir, 'js/region-result-navigation.js')), false);
+
+  const worker = createRuntime();
+  await worker.fireInstall();
+  const precache = new Set(
+    worker.addAllCalls.flat().map(item => new URL(item.url, `${ORIGIN}/`).pathname)
+  );
+  assert.ok(precache.has('/hk/'), 'Hong Kong top page is missing from install precache');
+  assert.ok(precache.has('/in/'), 'India top page is missing from install precache');
+});
