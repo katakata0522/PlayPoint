@@ -13,7 +13,7 @@ const {
   isGameGuideArticlePath
 } = require('./game-guide-article-catalog.cjs');
 
-const INTERNATIONAL_LOCALES = Object.freeze(['en', 'ko', 'tw']);
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 const GENERATED_JA_PROMPT = /data-generated-article-prompt=["']true["']/g;
 const GENERATED_INTL_PROMPT = /data-generated-intl-article-prompt=["']true["']/g;
 const PRIMARY_CALCULATOR_PROMPT = /<aside\b[^>]*class=["'][^"']*\barticle-calculator-prompt\b[^"']*["'][^>]*>/i;
