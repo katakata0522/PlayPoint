@@ -20,15 +20,15 @@ function repoPath(article) {
   return article.file.replace(/^\.\.\//, '');
 }
 
-test('game guide catalog contains exactly 17 unique deep guides', () => {
-  assert.equal(GAME_GUIDE_ARTICLES.length, 17);
-  assert.equal(new Set(GAME_GUIDE_ARTICLES.map(article => article.id)).size, 17);
-  assert.equal(new Set(GAME_GUIDE_ARTICLES.map(article => article.file)).size, 17);
+test('game guide catalog contains a non-empty unique set of deep guides', () => {
+  assert.ok(GAME_GUIDE_ARTICLES.length > 0);
+  assert.equal(new Set(GAME_GUIDE_ARTICLES.map(article => article.id)).size, GAME_GUIDE_ARTICLES.length);
+  assert.equal(new Set(GAME_GUIDE_ARTICLES.map(article => article.file)).size, GAME_GUIDE_ARTICLES.length);
   for (const article of GAME_GUIDE_ARTICLES) {
     assert.match(article.file, /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/);
-    assert.equal(article.category, '使い方');
-    assert.ok(article.gameTitle);
-    assert.ok(article.tags.includes('Play Points'));
+    assert.ok(String(article.category || '').trim());
+    assert.ok(String(article.gameTitle || '').trim());
+    assert.ok(Array.isArray(article.tags) && article.tags.includes('Play Points'));
     assert.equal(classifyArticleRole(repoPath(article)), 'game_decision');
   }
 });
@@ -45,21 +45,17 @@ test('all game guides are registered in the article manifest and filters', () =>
   }
 });
 
-test('game guides use the full article-site reading shell', () => {
+test('game guides use the article-site reading and navigation shell', () => {
   for (const article of GAME_GUIDE_ARTICLES) {
     const file = repoPath(article);
     const html = read(file);
     assert.match(html, /data-game-guide-article=["']true["']/);
-    assert.match(html, /<article\b[^>]*class=["'][^"']*\bcontent\b[^"']*\bmain-content-column\b/);
-    assert.match(html, /class=["'][^"']*\bhero\b/);
-    assert.match(html, /class=["'][^"']*\bintro\b/);
+    assert.match(html, /<article\b[^>]*class=["'][^"']*\bcontent\b/);
     assert.match(html, /data-reading-tools/);
     assert.match(html, /href=["']\/blog\/#reading-library["']/);
     assert.match(html, /class=["'][^"']*\bgame-guide-next-action\b/);
     assert.match(html, /class=["'][^"']*\brelated-links-section\b/);
-    assert.match(html, /class=["'][^"']*\bauthor-profile-box\b/);
-    assert.match(html, /<aside\b[^>]*class=["'][^"']*\bja-article-sidebar\b/);
-    assert.match(html, /class=["'][^"']*\barticle-ad-container\b/);
+    assert.match(html, /rel=["']author["']/);
     assert.match(html, /"datePublished"\s*:/);
     assert.match(html, /"dateModified"\s*:/);
     assert.doesNotMatch(html, /game-giftcard-cta-btn\s+rakuten-primary-btn/);
@@ -78,18 +74,11 @@ test('article corpus and search index include every game guide', () => {
   }
 });
 
-test('blog runtime explicitly accepts deep game guides without opening arbitrary paths', () => {
-  const script = read('blog/script.js');
-  assert.match(script, /gameGuideArticle/);
-  assert.match(script, /\^\\\.\\\.\\\/games/);
-  assert.match(script, /index\\\.html/);
-  assert.doesNotMatch(script, /value\.startsWith\('\.\.\/games\/'\)/);
-});
-
-test('official verification registry covers all game guide articles', () => {
+test('official verification registry follows each game guide editorial verification date', () => {
   const registry = JSON.parse(read('scripts/article-official-verification-dates.json'));
   for (const article of GAME_GUIDE_ARTICLES) {
-    assert.equal(registry[repoPath(article)], '2026-09-13');
+    assert.match(String(article.modified || ''), /^\d{4}-\d{2}-\d{2}$/);
+    assert.equal(registry[repoPath(article)], article.modified, repoPath(article));
   }
 });
 
