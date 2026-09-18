@@ -795,7 +795,8 @@ function playPointGscBuildLayerComparisonSheet_(spreadsheet, sheetName, historyR
   sheet.getRange('M:M').setNumberFormat('0.00%');
   sheet.getRange('I:J').setNumberFormat('0.00');
   sheet.getRange('N:N').setNumberFormat('0.00');
-  sheet.getRange('D12:D12').setNumberFormat('0.00%');
+  sheet.getRange('D11:D12').setNumberFormat('0.00%');
+  sheet.getRange('E11:E12').setNumberFormat('0.00');
   sheet.autoResizeColumns(1, headers.length);
 }
 
