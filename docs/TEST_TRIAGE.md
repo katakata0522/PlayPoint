@@ -739,6 +739,41 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第21回（2026-09-18）
+
+基準930ケースのうち「多言語コンテンツ生成・手動正本同期」の**構造・生成責務11ケース**を個別精査した。対象4ファイルには事実依存の基準2ケースが含まれるため、それらは今回の完了数へ入れず、次の公式情報再検証群へ明示的に繰り越す。`intl-game-guide-expansion` の基準後追加2ケース（meta description切断防止）も現行品質として確認するが、基準930進捗には加算しない。
+
+**基準930中751精査・179未精査。** 公開HTML/CSS/JS・記事本文・地域別価格・公式用語・生成結果は変更しない。
+
+| 対象 | 今回精査する基準ケース | 判断 |
+|---|---:|---|
+| `intl-content-expansion.test.cjs` | 3 / 基準4 | sitemap/index発見性、内部リンク実在、日本語重複記事防止を精査。localeは生成側 `LOCALES` SSOTを使用し、sitemap総URL数の冗長な下限assertを除去。本文の公式事実・地域別数値1件は次回へ保留 |
+| `intl-manual-content-sync.test.cjs` | 1 | 全維持・変更なし。manual hub linkの冪等同期とarticle body非生成を実fixtureで保証 |
+| `manual-intl-articles.test.cjs` | 4 | 全件維持。manual正本一覧・日付・registry所有権を維持。generator sourceの `if (article.manual) continue` 文字列固定を、本物の `writeIntlSeoPages` を一時出力先で実行しmanual fileが生成されないbehaviorへ変更 |
+| `intl-game-guide-expansion.test.cjs` | 3 / 基準4 | SSOT inventory、game_decision/hreflang/source境界、temp再生成/idempotencyを精査。locale literal配列をcanonical `INTERNATIONAL_LOCALES` と照合。地域固有価格・公式用語1件は次回へ保留 |
+
+### 基準外の後発2ケース
+
+- EN game meta descriptionがauthored market summaryを切断せず、記事固有・完結文で保持する保証を維持。
+- EN/KO/TWとも180文字を超えるauthored summaryを固定上限で切らない回帰を維持。
+- これらはPR #360/#361由来の基準930後追加なので、11ケースの進捗へは加算しない。
+
+### 今回の過剰固定・重複整理
+
+- content expansionのlocale/hreflangをテスト側で `{ en, ko, tw }` と再定義せず、生成器の `LOCALES` を使用する。editorial fact matrixの対象slugがproduction `TOPICS` に実在することも照合する。
+- 専用sitemap内の `<url>` 総数下限は、その後の各対象URL・hreflang個別検査と重複するため削除する。
+- manual article generator除外はprivate source statementではなく、通常生成が実行された同じfixture内でmanual canonical fileが出力されないことを保証する。
+- manual article pathのlocale判定はregexへEN/KO/TWを埋め込まず `INTERNATIONAL_LOCALES` を使用する。
+- game guide locale registryもハードコード配列ではなくcanonical international locale SSOTと一致させる。
+
+### 次回へ残す事実依存2ケース
+
+1. `intl-content-expansion`: 9記事×各地域の本文phrase・Google公式source ID・地域別数値の現行妥当性。
+2. `intl-game-guide-expansion`: PAD/モンスト/HBR/原神/ウマ娘等の地域固有価格・固有用語・購入経路。
+
+これらは検索・公式一次情報を再確認してから精査し、構造監査の完了へ混ぜない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
