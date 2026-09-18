@@ -799,6 +799,33 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 これらは公式一次情報を再確認してから精査し、構造監査の完了へ混ぜない。
 
+## 第23回: アクセシビリティ・記事CSS/Design System 11ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した5ファイル11ケースを、6地域トップ、CSS全体、Article Design System監査、必須Chromiumのarticle-css/article-design smokeと突合して個別精査した。既精査764へ11を加え、**775精査・155未精査**とする。ケース数は増減せず、現行実行集合**959ケース**を維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| pwa-orientation-accessibility | 1 | 維持・変更なし。manifestのorientation lock禁止は成果物契約 |
+| reduced-motion | 1 | 維持・補強。media query存在だけでなく、実animationを持つCSSがduration/iteration/transitionを実際に抑制することを検査 |
+| tab-keyboard-navigation | 1 | 維持・補完。JP/EN/KO/TWだけでなくHK/INを含む公開6地域へ拡張 |
+| article-design-system | 4 | 全維持。nested selector/marker色hexの具体snapshotをprimitive存在・gradient意味・全記事auditへ整理 |
+| japanese-article-css-contract | 4 | 全維持。heroのtransparent/padding/max-width等のsource二重固定を必須Chromium ownerへ委譲し、load order・shared token所有権を維持 |
+
+### 変更したテスト設計
+
+1. `reduced-motion` は「同じCSS内にmedia queryがある」だけでは合格させず、reduced-motion blockをbrace-awareに抽出し、animation duration/iterationとtransition durationが実際に抑制されることを保証する。media内の `animation:none` 自体を通常animationと誤認しない。
+2. calculator tabのARIA/roving tabindexをHK/INにも拡張し、6地域トップすべてを同じアクセシビリティ契約にする。
+3. Article Design Systemのanswer/intro/relatedは特定のDOM子セレクタ文字列を正本化せず、shared CSSにprimitiveがあり、全記事auditが失敗0であることを静的層の契約にする。
+4. fluorescent markerはyellow/blue/redの特定hex色をテスト要件にせず、3primitiveがgradient強調とclone decorationを提供することを保証する。
+5. legacy/modern heroの透明背景・0px padding・text-shadow・max-width等の実見た目は必須 `article-css-smoke.cjs` がdesktop/mobileのcomputed styleで直接検証済み。Node側ではcompatibility CSSがshared tokenを再定義しないこととload orderへ責務を絞る。
+6. `article-shared.css` のmain column `36px 40px`という具体padding snapshotは外し、heading/muted/main backgroundのsemantic token所有権を維持する。実レイアウト・overflow・focus・reduced-motionは `article-design-smoke.cjs` が代表記事×3 viewportで保証する。
+
+公開HTML/CSS/JS・デザイン値・記事本文・計算式・1728例・生成物は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

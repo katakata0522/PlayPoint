@@ -11,17 +11,21 @@ const css = fs.readFileSync(path.join(root, 'articles', 'article-shared.css'), '
 
 test('Article Design System 2.0 is owned by article-shared.css', () => {
   assert.match(css, /ARTICLE_DESIGN_SYSTEM_V2_START/);
-  assert.match(css, /body \.content > \.answer-box/);
-  assert.match(css, /body \.content > \.intro > strong:first-child/);
-  assert.match(css, /body \.content \.related-links-section > ul/);
-  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
+  for (const primitive of ['answer-box', 'intro', 'related-links-section']) {
+    assert.match(css, new RegExp('\\.' + primitive + '\\b'), `${primitive}: shared design primitive is missing`);
+  }
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(css, /:focus-visible/);
 });
 
 test('fluorescent marker primitives remain available', () => {
-  assert.match(css, /\.marker-yellow[^{]*\{[\s\S]*?#fde68a/i);
-  assert.match(css, /\.marker-blue[^{]*\{[\s\S]*?#bae6fd/i);
-  assert.match(css, /\.marker-red[^{]*\{[\s\S]*?#fecdd3/i);
+  for (const marker of ['yellow', 'blue', 'red']) {
+    assert.match(
+      css,
+      new RegExp('\\.marker-' + marker + '[^{]*\\{[^}]*background(?:-image)?\\s*:\\s*linear-gradient', 'is'),
+      `marker-${marker}: fluorescent emphasis primitive is missing`
+    );
+  }
   assert.match(css, /box-decoration-break:\s*clone/i);
 });
 

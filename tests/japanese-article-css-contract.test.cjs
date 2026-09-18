@@ -15,24 +15,15 @@ function japaneseArticleFiles() {
     .sort();
 }
 
-function assertHeroNormalization(css, filename) {
-  assert.match(
-    css,
-    /body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s*\{[^}]*background:\s*transparent;[^}]*padding:\s*0;[^}]*text-align:\s*left;[^}]*border-radius:\s*0;[^}]*box-shadow:\s*none;/is,
-    `${filename}: published hero shell must yield to article-shared.css`
-  );
-  assert.match(
-    css,
-    /body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+h1,[\s\S]*?body\[data-article-category\]\s+\.main-content-column\s*>\s*\.hero\s+\.article-title\s*\{[^}]*max-width:\s*none;[^}]*text-shadow:\s*none;/is,
-    `${filename}: historical hero text decoration must be neutralized`
-  );
-}
-
 test('legacy and modern compatibility CSS yield the published hero shell to shared CSS', () => {
   for (const filename of compatibilitySheets) {
     const css = fs.readFileSync(path.join(articleDir, filename), 'utf8');
-    assertHeroNormalization(css, filename);
     assert.match(css, /article-shared\.css owns the published article chrome, layout and typography/i);
+    assert.doesNotMatch(
+      css,
+      /--cocoon-(?:heading|muted|main-bg)\s*:/i,
+      `${filename}: compatibility CSS must not redefine shared design tokens`
+    );
   }
 });
 
@@ -77,7 +68,7 @@ test('shared CSS remains the final Japanese article typography contract', () => 
 
   assert.match(css, /\.article-title,\s*\.hero h1\s*\{[^}]*color:\s*var\(--cocoon-heading\)/is);
   assert.match(css, /\.article-post-meta,\s*\.hero-meta\s*\{[^}]*color:\s*var\(--cocoon-muted\)/is);
-  assert.match(css, /\.main-content-column\s*\{[^}]*background:\s*var\(--cocoon-main-bg\)[^}]*padding:\s*36px 40px/is);
+  assert.match(css, /\.main-content-column\s*\{[^}]*background:\s*var\(--cocoon-main-bg\)/is);
 });
 
 test('published Japanese H1 is guarded by the shared heading token', () => {
