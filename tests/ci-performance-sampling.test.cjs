@@ -49,11 +49,15 @@ test('性能suiteの6ページと国際記事3地域は測定ownerから直接�
 });
 
 test('時間の中央値が合格しても1sampleのbyte超過を隠さない', t => {
-  const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [{ bytes: 358401 }, { bytes: 200000 }, { bytes: 200000 }]));
+  const limit = budget.HARD_BUDGETS.calculatorHome.totalByteWeight;
+  const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [
+    { bytes: limit + 1 },
+    { bytes: Math.max(1, limit - 1) },
+    { bytes: Math.max(1, limit - 1) }
+  ]));
   assert.equal(result.classification, 'BUDGET_FAIL');
-  assert.equal(result.metrics.totalByteWeight, 358401);
+  assert.equal(result.metrics.totalByteWeight, limit + 1);
   assert.match(result.failures.join('\n'), /totalByteWeight/);
-  assert.equal(budget.HARD_BUDGETS.calculatorHome.totalByteWeight, 358400);
 });
 test('時間系の外れ値と全sampleを中央値と同時に残す', t => {
   const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [{ tbt: 4221 }, { tbt: 23 }, { tbt: 94, cls: 0.433 }]));
@@ -90,8 +94,12 @@ test('異なるURL・測定環境を同じ中央値へ混ぜない', t => {
   assert.throws(() => budget.evaluateProfileGroup('calculatorHome', sample), /different measurement environments/);
 });
 test('追加測定は時間超過だけで発動し、byte超過や欠損を再試行しない', () => {
-  assert.equal(budget.needsAdditionalSamples(report({ lcp: 4000 }), 'articleHub'), true);
-  assert.equal(budget.needsAdditionalSamples(report({ lcp: 4000, bytes: 400000 }), 'articleHub'), false);
+  const limits = budget.HARD_BUDGETS.articleHub;
+  assert.equal(budget.needsAdditionalSamples(report({ lcp: limits.largestContentfulPaintMs + 1 }), 'articleHub'), true);
+  assert.equal(budget.needsAdditionalSamples(report({
+    lcp: limits.largestContentfulPaintMs + 1,
+    bytes: limits.totalByteWeight + 1
+  }), 'articleHub'), false);
   assert.equal(budget.needsAdditionalSamples(report(), 'articleHub'), false);
   const invalid = report(); invalid.categories.performance.score = null;
   assert.throws(() => budget.needsAdditionalSamples(invalid, 'articleHub'));
@@ -113,12 +121,15 @@ test('suiteは同一6ページを測り、初回時間超過の2sampleだけを�
   }) });
   assert.equal(exit, 0);
   const manifest = JSON.parse(fs.readFileSync(path.join(outputDir, 'audit-manifest.json')));
-  assert.equal(calls.length, 10);
-  assert.equal(manifest.attempts.length, 10);
+  const expectedCalls = suite.PAGES.length + 4; // home +2, one timing breach +2
+  assert.equal(calls.length, expectedCalls);
+  assert.equal(manifest.attempts.length, expectedCalls);
   assert.equal(manifest.thirdPartyBlocked, true);
-  assert.ok(calls.every(call => call.args.filter(arg => arg.startsWith('--blocked-url-patterns=')).length === 6));
-  assert.equal(new Set(calls.map(call => call.args[1])).size, 6);
-  assert.equal(budget.reportPathsFromArgs(['--manifest', path.join(outputDir, 'audit-manifest.json')]).length, 10);
+  assert.ok(calls.every(call =>
+    call.args.filter(arg => arg.startsWith('--blocked-url-patterns=')).length === suite.BLOCKED.length
+  ));
+  assert.equal(new Set(calls.map(call => call.args[1])).size, suite.PAGES.length);
+  assert.equal(budget.reportPathsFromArgs(['--manifest', path.join(outputDir, 'audit-manifest.json')]).length, expectedCalls);
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 0);
   const saved = JSON.parse(fs.readFileSync(path.join(outputDir, 'budget-summary.json')));
   assert.equal(saved.evaluations.find(group => group.profile === 'articleHub').sampleCount, 3);
@@ -128,7 +139,7 @@ test('suiteはbyte違反を追加測定で消さず、本番の外部通信は�
   assert.equal(suite.main({ outputDir, env: { AUDIT_TARGET: 'production' }, execute: executeFixture(calls, (value, file) => {
     if (path.basename(file) === 'article-hub.json') value.audits['total-byte-weight'].numericValue = 400000;
   }) }), 0);
-  assert.equal(calls.length, 8);
+  assert.equal(calls.length, suite.PAGES.length + 2); // home always has 3 samples
   assert.ok(calls.every(call => !call.args.some(arg => arg.startsWith('--blocked-url-patterns='))));
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 1);
 });
@@ -137,7 +148,10 @@ test('suiteのCLI失敗はvalid JSONが残っても成功にしない', t => {
   assert.equal(suite.main({ outputDir, env: { AUDIT_TARGET: 'local' }, execute: executeFixture(calls, (_, __, count) => count === 1 ? 1 : 0) }), 1);
   const manifestFile = path.join(outputDir, 'audit-manifest.json');
   assert.throws(() => budget.reportPathsFromArgs(['--manifest', manifestFile]), /did not complete/);
-  assert.equal(budget.reportPathsFromArgs(['--manifest', manifestFile], { requireComplete: false }).length, 8);
+  assert.equal(
+    budget.reportPathsFromArgs(['--manifest', manifestFile], { requireComplete: false }).length,
+    suite.PAGES.length + 2
+  );
   assert.throws(() => suite.main({ outputDir, env: { AUDIT_TARGET: 'other' } }), /AUDIT_TARGET/);
   assert.throws(() => suite.main({ outputDir, env: { AUDIT_TARGET: 'local', AUDIT_BASE_URL: 'https://elsewhere.test' } }), /origin/);
 });
