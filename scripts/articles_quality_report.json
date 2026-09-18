@@ -1577,5 +1577,13 @@
         "assets_exist": true
       }
     }
+  ],
+  "status": "historical",
+  "authoritative": false,
+  "note": "49記事時代のスナップショット。現行記事品質の正本ではない。tests/all-article-quality-audit.test.cjs 等の現行監査を使用する。",
+  "supersededBy": [
+    "tests/all-article-quality-audit.test.cjs",
+    "tests/article-quality-polish.test.cjs",
+    "docs/TEST_TRIAGE.md"
   ]
 }

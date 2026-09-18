@@ -38,11 +38,11 @@ test('トップHTMLは内容更新日とアセット版を独立して同期す�
   const source = [
     '<meta name="last-modified" content="2020-01-01">',
     '<script src="js/main.js?v=old"></script>',
-    '<p>サイト更新: 2020-01-01</p>'
+    '<p>内容更新: 2020-01-01</p>'
   ].join('\n');
   const output = syncIndexMetadataContent(source, TOP_PAGE_CONTENT_DATES.ja, '20991231_2359');
   assert.match(output, new RegExp(`last-modified" content="${TOP_PAGE_CONTENT_DATES.ja}`));
-  assert.match(output, new RegExp(`サイト更新: ${TOP_PAGE_CONTENT_DATES.ja}`));
+  assert.match(output, new RegExp(`内容更新: ${TOP_PAGE_CONTENT_DATES.ja}`));
   assert.match(output, /js\/main\.js\?v=20991231_2359a/);
   assert.doesNotMatch(output, /2099-12-31/);
 });

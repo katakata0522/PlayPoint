@@ -1,11 +1,11 @@
 {
-  "schemaVersion": 1,
-  "stage": 3,
-  "baselineCommit": "d46527f7f1adf692c1d5dc881d7ed186052f0ce6",
+  "schemaVersion": 2,
+  "stage": 35,
+  "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
   "previousLedger": "TEST_AUDIT_PROGRESS_2026-09-17.json",
   "baselineCases": 930,
-  "reviewedBaselineCases": 80,
-  "unreviewedBaselineCases": 850,
+  "reviewedBaselineCases": 930,
+  "unreviewedBaselineCases": 0,
   "newlyReviewedIds": [
     "SW01",
     "SW02",
@@ -19,9 +19,9 @@
     "R02",
     "S07"
   ],
-  "currentCases": 943,
-  "testFiles": 171,
-  "postMinifyCases": 18,
+  "currentCases": 967,
+  "testFiles": 176,
+  "postMinifyCases": 17,
   "items": [
     {
       "id": "R01",
@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 14,
-  "latestReviewedBaselineCases": 602,
-  "latestUnreviewedBaselineCases": 328,
+  "latestStage": 35,
+  "latestReviewedBaselineCases": 930,
+  "latestUnreviewedBaselineCases": 0,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -787,5 +787,22 @@
     "productionFilesChanged": false,
     "expectedDeployImpact": "CI runtime helper is classified as deploy input; actual deploy workflow decision must be verified after merge",
     "authoritativeValidation": "PR Gate saved TAP / Chromium / post-merge Deploy impact outcome"
+  },
+  "auditCompleted": true,
+  "auditCompletedAt": "2026-09-18",
+  "currentSuiteSemantics": "baseline identity audit completed; current suite includes post-baseline regression tests and owner consolidations",
+  "fullWaveHistory": "docs/TEST_AUDIT_PROGRESS_2026-09-18.md",
+  "authoritativeBaselineRun": {
+    "commit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "cases": 930,
+    "runId": 35217972469
+  },
+  "currentSuiteEvidence": {
+    "cases": 967,
+    "testFiles": 176,
+    "postMinifyCases": 17,
+    "pr": 389,
+    "main": "b9083a15c688ad948bfc4ea7f7ea478e021034c5",
+    "branch": "refactor/post-audit-ssot-ci-20260918"
   }
 }

@@ -1,4 +1,5 @@
 'use strict';
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
@@ -16,7 +17,7 @@ function text(html) {
 function articleEntries(root) {
   const jp = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
     .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), locale: 'ja' }));
-  const intl = ['en', 'ko', 'tw'].flatMap(locale => fs.readdirSync(path.join(root, locale, 'articles')).filter(f => f.endsWith('.html') && f !== 'index.html')
+  const intl = INTERNATIONAL_LOCALES.flatMap(locale => fs.readdirSync(path.join(root, locale, 'articles')).filter(f => f.endsWith('.html') && f !== 'index.html')
     .map(f => ({ path: `${locale}/articles/${f}`, locale })));
   return [...jp, ...intl];
 }
@@ -114,7 +115,7 @@ function applyDiscoveryAssets(html, assets) {
 
 function syncArticleDiscovery(root) {
   const entries = articleEntries(root), indexes = { ja: [], en: [], ko: [], tw: [] };
-  const hubs = ['blog/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/index.html`)];
+  const hubs = ['blog/index.html', ...INTERNATIONAL_LOCALES.map(l => `${l}/articles/index.html`)];
   const assets = buildDiscoveryAssets(root);
   for (const entry of entries) {
     const file = path.join(root, entry.path);

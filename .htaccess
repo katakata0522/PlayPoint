@@ -98,6 +98,10 @@ Options -Indexes
   <Files "articles.json">
     Header set Cache-Control "public, max-age=300, must-revalidate"
   </Files>
+  # 本文検索indexも短期キャッシュを許可し、再訪のたびの強制再検証を避ける。
+  <Files "article-search-index.json">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </Files>
   <Files "feed.xml">
     Header set Cache-Control "public, max-age=1800"
   </Files>

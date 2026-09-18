@@ -22,7 +22,7 @@ function runSecurity(t, { expectedRevision = '', mode = '' } = {}) {
     fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, text);
   };
   for (const name of ['index.html', 'en/index.html', 'games/prospi-a/index.html', 'games/pokemon-go/index.html',
-    'js/main.js', 'style.css', 'sw.js', 'blog/articles.json', 'manifest.json', 'feed.xml', 'atom.xml']) write(name, 'fixture');
+    'js/main.js', 'style.css', 'sw.js', 'blog/articles.json', 'blog/article-search-index.json', 'manifest.json', 'feed.xml', 'atom.xml']) write(name, 'fixture');
   writeDeployStatusFromEnvironment({ DEPLOY_PUBLIC_STATUS: 'deploying', GITHUB_SHA: revision,
     GITHUB_REF_NAME: 'main', DEPLOY_STARTED_AT: '2026-09-18T00:00:00Z',
     GITHUB_REPOSITORY: 'fixture/fixture', GITHUB_RUN_ID: '1', GITHUB_RUN_NUMBER: '1' }, publicRoot);
@@ -51,7 +51,7 @@ global.fetch = async input => {
   if (/\.(?:js|mjs|css)$/.test(url.pathname) && /^[a-zA-Z0-9_-]+$/.test(url.searchParams.get('v') || '')) cache = 'public, max-age=31536000, immutable';
   else if (/\.(?:js|mjs)$/.test(url.pathname)) cache = 'public, max-age=300, must-revalidate';
   else if (url.pathname.endsWith('.css')) cache = 'max-age=604800';
-  if (url.pathname === '/sw.js' || url.pathname === '/blog/articles.json') cache = 'public, max-age=300, must-revalidate';
+  if (url.pathname === '/sw.js' || url.pathname === '/blog/articles.json' || url.pathname === '/blog/article-search-index.json') cache = 'public, max-age=300, must-revalidate';
   if (url.pathname === '/manifest.json') cache = 'public, max-age=86400';
   if (url.pathname === '/feed.xml' || url.pathname === '/atom.xml') cache = 'public, max-age=1800';
   if (marker) cache = 'no-store, no-cache, must-revalidate, max-age=0';

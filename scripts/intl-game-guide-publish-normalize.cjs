@@ -1,4 +1,5 @@
 'use strict';
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const fs = require('node:fs');
 const path = require('node:path');
@@ -51,7 +52,7 @@ function normalizeGeneratedGuideFile(file, locale) {
 function publishLocalizedGameGuides(rootDir) {
   const generated = writeLocalizedGameGuides(rootDir);
   let normalized = 0;
-  for (const locale of ['en', 'ko', 'tw']) {
+  for (const locale of INTERNATIONAL_LOCALES) {
     for (const guide of ALL_GUIDES) {
       const file = path.join(rootDir, locale, 'articles', `${guide.slug}.html`);
       if (!fs.existsSync(file)) throw new Error(`Localized game guide is missing after generation: ${path.relative(rootDir, file)}`);

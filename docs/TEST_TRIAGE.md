@@ -938,6 +938,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `post-147-integrity.test.cjs` | 5 | 全維持。Speculation Rules・6地域比較・preflight必須公開物・本番監視を維持。HK/IN smokeの特定title copy snapshotのみ除外 |
 | `repository-integrity-audit.test.cjs` | 7 | 全維持・変更なし。OS衝突、一時ファイル、内部参照/anchor、canonical、旧URL、画像実形式、orphan/duplicateを全repo実データで監査 |
 | `security-seo-hardening.test.cjs` | 6 | 全維持。CSP/秘密除外/required gate/live verification/weekly healthを維持。security/sitemap CLIの12000ms・2回exactを有限bounded policyへ変更 |
+| `security-health-execution.test.cjs` | 公開・CI | 本番security CLIが/status/ marker、revision不一致、HTTP失敗を実実行で拒否する |
 
 ### 今回の過剰固定・安全境界
 
@@ -1171,12 +1172,12 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 基準: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の全回帰930/930。
 - 精査済みbaseline identity: **930 / 930**。
 - 未精査baseline identity: **0**。
-- 現行回帰集合: **958ケース**（基準後追加の有効ケースを含み、監査中に重複ownerを整理した結果）。
+- 現行回帰集合: **967ケース**（基準後追加の有効ケースと今回追加したdrift/SSOT/CI影響回帰9ケースを含む）。
 - 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の176ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1186,14 +1187,14 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | 生成・再現性 | 23 |
 | UI・導線 | 21 |
 | 保存 | 5 |
-| 地域・翻訳 | 37 |
+| 地域・翻訳 | 38 |
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
-| 公開・CI | 10 |
+| 公開・CI | 12 |
 | 性能・配信 | 5 |
 | アクセシビリティ | 5 |
-| 横断監査 | 8 |
+| 横断監査 | 9 |
 
 | ファイル（tests/） | 主責務 | 代表保証 |
 |---|---|---|
@@ -1233,6 +1234,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `campaign-lp-meaning-consistency.test.cjs` | 内容・事実・対象範囲 | ${label} campaign LP does not describe the input as a multiplier |
 | `changelog-hygiene.test.cjs` | 内容・事実・対象範囲 | 更新履歴はLatest表示を最新エントリ1件だけに持つ |
 | `ci-guardrails.test.cjs` | 公開・CI | 必須PR GateがローカルChromium検証を所有し、Standalone Browser SmokeをActions登録しない |
+| `pr-gate-impact.test.cjs` | 公開・CI | 変更pathからApache/Chromium必要性をfail-safeに分類し、docs/tests-onlyの無駄な重検証を避ける |
 | `ci-performance-sampling.test.cjs` | 性能・配信 | 時間の中央値が合格しても1sampleのbyte超過を隠さない |
 | `ci-stability.test.cjs` | 公開・CI | 上流失敗は依存工程だけを止め、独立工程を続行し全体を失敗にする |
 | `common-pages-fact-ux.test.cjs` | 内容・事実・対象範囲 | 地域別の公式レート・年間しきい値・通貨単位を固定する |
@@ -1332,9 +1334,11 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `region-expansion.test.cjs` | 地域・翻訳 | HK/IN生成・地域別数値・UI辞書の境界 |
 | `region-navigation-behavior.test.cjs` | 地域・翻訳 | ルートは保存済み地域が違っても日本表示を選び、保存設定そのものは上書きしない |
 | `region-runtime-wiring.test.cjs` | 地域・翻訳 | 地域結果導線の責務集約・配信参照の静的境界 |
+| `region-rule-copy-consistency.test.cjs` | 地域・翻訳 | game/embedの独立runtimeに複製した地域rule数値をcanonical region-rulesと自動照合する |
 | `region-selector-semantics.test.cjs` | 地域・翻訳 | ${file} presents Play country/region rather than language-only labels |
 | `remaining-calendar-days.test.cjs` | 計算 | remaining calendar days uses date-only boundaries |
 | `repository-integrity-audit.test.cjs` | 横断監査 | ファイル名はOS差で衝突せず、一時ファイルを追跡しない |
+| `test-audit-ledger-consistency.test.cjs` | 横断監査 | 監査summary JSON/Markdownと現行tests全ファイル台帳のdriftを拒否する |
 | `rescued-pad-and-articles.test.cjs` | 内容・事実・対象範囲 | PAD is published for every generated game locale and linked from each portal |
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `rollback-workflow.test.cjs` | 復旧 | 通常Deployは本番を書き換える前に保存snapshotを再検証する |

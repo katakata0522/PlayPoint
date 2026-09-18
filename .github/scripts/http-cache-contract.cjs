@@ -10,7 +10,7 @@ const { mapWithConcurrency, retry } = require('./http-check-utils.cjs');
 function cacheCases({ fixture = false } = {}) {
   const targets = [
     ['/js/main.js', 'script'], ['/style.css', 'style'], ['/', 'html'], ['/en/', 'html'],
-    ['/sw.js', 'worker'], ['/blog/articles.json', 'articles'], ['/status/deploy-status.json', 'revision'], ['/status/deploy-revision.txt', 'revision'],
+    ['/sw.js', 'worker'], ['/blog/articles.json', 'articles'], ['/blog/article-search-index.json', 'articles'], ['/status/deploy-status.json', 'revision'], ['/status/deploy-revision.txt', 'revision'],
     ['/manifest.json', 'manifest'], ['/feed.xml', 'feed'], ['/atom.xml', 'feed']
   ];
   if (fixture) targets.push(
