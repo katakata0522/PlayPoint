@@ -23,11 +23,11 @@ test('Playwright対応Chromium・固定依存・日本語fontは単一helperが�
   const manifest = JSON.parse(read('.github/ci-runtime/package.json'));
   const lock = JSON.parse(read('.github/ci-runtime/package-lock.json'));
   assert.equal(manifest.private, true);
-  assert.equal(manifest.dependencies['playwright-core'], '1.63.0');
+  assert.match(manifest.dependencies['playwright-core'], /^\d+\.\d+\.\d+$/, 'playwright-core must stay exactly pinned');
   assert.equal(Object.keys(manifest.dependencies).length, 1);
   const performance = JSON.parse(read('.github/ci-runtime/lighthouse/package.json'));
   const performanceLock = JSON.parse(read('.github/ci-runtime/lighthouse/package-lock.json'));
-  assert.equal(performance.dependencies.lighthouse, '13.4.1');
+  assert.match(performance.dependencies.lighthouse, /^\d+\.\d+\.\d+$/, 'lighthouse must stay exactly pinned');
   assert.equal(performanceLock.packages['node_modules/lighthouse'].version, performance.dependencies.lighthouse);
   for (const [name, version] of Object.entries(manifest.dependencies)) {
     assert.equal(lock.packages[''].dependencies[name], version);
