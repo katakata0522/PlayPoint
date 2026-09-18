@@ -96,7 +96,9 @@ test('原神の空月記事はSSOTの受取条件・通常チャージとの差�
   assert.ok(html.includes('合計最大' + formatNumber(welkin.maxPrimogemEquivalent) + '原石相当'));
   assert.ok(html.includes(String(welkin.days) + '日'));
   assert.ok(html.includes('Google Play経由'));
-  assert.ok(html.includes(correction.item));
+  const basePackAmount = correction.item.match(/\d+/)?.[0];
+  assert.ok(basePackAmount, 'Genshin corrected pack amount is missing from SSOT');
+  assert.ok(html.includes(basePackAmount + '個'));
   assert.ok(html.includes(formatNumber(correction.price) + '円'));
 });
 
