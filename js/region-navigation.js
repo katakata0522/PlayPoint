@@ -18,15 +18,15 @@ const REGION_PATHS = Object.freeze({
 });
 
 const PRIMARY_REGION_LABELS = Object.freeze({
-    JP: { desktop: '🇯🇵 日本', mobile: '🇯🇵 JP' },
-    US: { desktop: '🇺🇸 United States', mobile: '🇺🇸 US' },
-    KR: { desktop: '🇰🇷 대한민국', mobile: '🇰🇷 KR' },
-    TW: { desktop: '🇹🇼 台灣', mobile: '🇹🇼 TW' }
+    JP: { desktop: 'JP', mobile: 'JP' },
+    US: { desktop: 'US', mobile: 'US' },
+    KR: { desktop: 'KR', mobile: 'KR' },
+    TW: { desktop: 'TW', mobile: 'TW' }
 });
 
 const EXPANDED_REGION_TOGGLE_LABELS = Object.freeze({
-    HK: { short: '🇭🇰 HK' },
-    IN: { short: '🇮🇳 IN' }
+    HK: { short: 'HK' },
+    IN: { short: 'IN' }
 });
 
 const REGION_ACCESSIBLE_NAMES = Object.freeze({
@@ -148,10 +148,10 @@ function ensureRegionSelectorCriticalStyle() {
   .region-switch > button[data-region]::after {
     font-size: clamp(0.72rem, 3.5vw, 0.82rem);
   }
-  .region-switch > button[data-region="JP"]::after { content: "🇯🇵 JP"; }
-  .region-switch > button[data-region="US"]::after { content: "🇺🇸 US"; }
-  .region-switch > button[data-region="KR"]::after { content: "🇰🇷 KR"; }
-  .region-switch > button[data-region="TW"]::after { content: "🇹🇼 TW"; }
+  .region-switch > button[data-region="JP"]::after { content: "JP"; }
+  .region-switch > button[data-region="US"]::after { content: "US"; }
+  .region-switch > button[data-region="KR"]::after { content: "KR"; }
+  .region-switch > button[data-region="TW"]::after { content: "TW"; }
 }`;
     document.head.appendChild(style);
 }
