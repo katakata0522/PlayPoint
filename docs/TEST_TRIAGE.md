@@ -938,6 +938,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `post-147-integrity.test.cjs` | 5 | 全維持。Speculation Rules・6地域比較・preflight必須公開物・本番監視を維持。HK/IN smokeの特定title copy snapshotのみ除外 |
 | `repository-integrity-audit.test.cjs` | 7 | 全維持・変更なし。OS衝突、一時ファイル、内部参照/anchor、canonical、旧URL、画像実形式、orphan/duplicateを全repo実データで監査 |
 | `security-seo-hardening.test.cjs` | 6 | 全維持。CSP/秘密除外/required gate/live verification/weekly healthを維持。security/sitemap CLIの12000ms・2回exactを有限bounded policyへ変更 |
+| `security-health-execution.test.cjs` | 公開・CI | 本番security CLIが/status/ marker、revision不一致、HTTP失敗を実実行で拒否する |
 
 ### 今回の過剰固定・安全境界
 
@@ -1176,7 +1177,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の173ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1190,7 +1191,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
-| 公開・CI | 10 |
+| 公開・CI | 11 |
 | 性能・配信 | 5 |
 | アクセシビリティ | 5 |
 | 横断監査 | 8 |
