@@ -35,7 +35,7 @@ function assertArticleRuntime(relativePath) {
   assert.ok(hasCanonical(html), relativePath + ': canonical is required');
   const description = metaContent(html, 'description', relativePath);
   assert.ok(description.length > 0, relativePath + ': meta description is required');
-  assert.doesNotMatch(description, /placeholder|lorem ipsum|\\bTBD\\b|\\bTODO\\b/i, relativePath + ': placeholder meta description is not allowed');
+  assert.doesNotMatch(description, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, relativePath + ': placeholder meta description is not allowed');
   assert.match(html, /\/js\/analytics-core\.js/, relativePath + ': analytics core must be present');
   // Article conversion/navigation events are owned by blog/article.js. intent-tracking.js is the LP runtime
   // and is intentionally not a requirement for every article shell.
