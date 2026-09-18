@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中800精査・130未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第24回を末尾へ追記する。
+最新集計: **基準930ケース中829精査・101未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第25回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -639,3 +639,27 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 5. 日記0pt、空/無関係import拒否、正常save/failed save/silent save、ゲーム購入単位丸めは実behaviorであり全件維持する。
 
 公開HTML/CSS/JS・計算式・1728例・保存形式・保存キー・記事本文・デザインは変更していない。tests/docsのみの変更である。
+
+## 第25回: rollback・復旧29ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した4ファイル29ケースを、Deploy/rollback/watchdog workflow・snapshot helper・復元後verificationと照合した。既精査800へ29を加え、**829精査・101未精査**とする。ケース数は増減せず現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| automatic-rollback | 9 | 全維持・変更なし |
+| deploy-recovery-watchdog | 7 | 全維持・変更なし |
+| rollback-workflow | 6 | 全維持・変更なし |
+| snapshot-history | 7 | 全維持。HISTORY_LIMIT=5 exactだけbounded retention policyへ |
+
+### 変更したテスト設計
+
+1. snapshot保持世代は現在値5を変えず、テストだけを2〜10の有限範囲へ変更する。
+2. exact rollback SHA・snapshot metadata・symlink/別所有領域拒否は維持する。
+3. rollback後も元release失敗は失敗のまま、復元版自身のHTTP→Chromium検証を必須とする。
+4. watchdogのmirror試行判定・別Deploy保護・trusted main制御面を維持する。
+
+公開サイト・Deploy先・rollback処理・現行HISTORY_LIMIT値は変更していない。
