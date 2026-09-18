@@ -65,8 +65,8 @@ function replaceContentDate(html) {
     .replace(/(<meta name="last-modified" content=")\d{4}-\d{2}-\d{2}(">)/, `$1${REGION_CONTENT_DATE}$2`)
     .replace(/(<meta property="article:modified_time" content=")\d{4}-\d{2}-\d{2}T[^\"]*(">)/, `$1${REGION_CONTENT_DATE}T00:00:00+09:00$2`)
     .replace(/("dateModified": ")\d{4}-\d{2}-\d{2}(")/g, `$1${REGION_CONTENT_DATE}$2`)
-    .replace(/(Last Updated:\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`)
-    .replace(/(最後更新：\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`);
+    .replace(/((?:Last Updated|Content updated):\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`)
+    .replace(/((?:最後更新|內容更新)[:：]\s*)\d{4}-\d{2}-\d{2}/g, `$1${REGION_CONTENT_DATE}`);
 }
 
 // 香港・インドは既存の同言語プロフィールを参照し、遷移先言語を可視化する。
