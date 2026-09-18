@@ -7,6 +7,7 @@ const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
+const formatNumber = value => new Intl.NumberFormat('ja-JP').format(value);
 const { VERIFIED_AT, SOURCES, GAME_SEO_WAVE4 } = require('../scripts/game-seo-wave4-data.cjs');
 const { getGeneratedGamePageContentDate } = require('../scripts/content-dates.cjs');
 const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
