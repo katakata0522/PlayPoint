@@ -139,6 +139,7 @@ function getModeContextCopy() {
 }
 
 function ensureHomeExperienceStyles() {
+    if (typeof document.createElement !== 'function') return;
     if (document.getElementById(HOME_EXPERIENCE_STYLE_ID)) return;
     const style = document.createElement('style');
     style.id = HOME_EXPERIENCE_STYLE_ID;
@@ -174,6 +175,7 @@ function getMainOnlySections() {
 }
 
 function ensureModeContextSection() {
+    if (typeof document.createElement !== 'function') return null;
     let section = document.getElementById('mode-context-section');
     if (section) return section;
 
@@ -200,6 +202,7 @@ function renderModeContext(mode) {
     for (const section of getMainOnlySections()) setElementVisibility(section, isMain);
 
     const contextSection = ensureModeContextSection();
+    if (!contextSection) return;
     if (isMain) {
         setElementVisibility(contextSection, false);
         contextSection.replaceChildren();
@@ -429,6 +432,7 @@ export const UI = {
     },
 
     initBackToTop() {
+        if (typeof document.createElement !== 'function' || !document.body?.appendChild) return;
         ensureHomeExperienceStyles();
         if (document.getElementById('back-to-top')) return;
 
