@@ -974,7 +974,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 基準930ケースに含まれる `full-integrity-audit.test.cjs` 14ケースを、既精査の専用ownerと公開成果物へ突合して個別精査した。
 
-**基準930中917精査・13未精査。** 14ケースはすべて保証を維持し、ケース数は増減しない。現行959ケースを維持する。
+**当時集計では基準930中917精査・13未精査としていたが、後続の全baseline file再照合で未記録51ケースが判明したため、この集計は第31回で訂正する。** 14ケース自体の精査判断は有効で、現行959ケースも維持する。
 
 | 対象 | 基準ケース | 判断 |
 |---|---:|---|
@@ -988,6 +988,58 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 法務日付、CSP、収益browser経路、2pt/100円の旧誤金額、affiliate誇張、既知表示破損は独立した事故防止契約として維持する。
 
 公開HTML/CSS/JS・generator・記事本文・CSPは変更していない。tests/docsのみの変更である。
+
+
+## 台帳再照合と第31回（2026-09-18）
+
+第30回終了時の「917精査・13未精査」は、Wave18以降の国際系で**ファイル単位の未記録ケースを精査済みへ含めていた集計誤り**があることを、基準コミット `d46527f7f1adf692c1d5dc881d7ed186052f0ce6` の `tests/*.test.cjs` 全171ファイルと、初期80件＋第5〜30回の明示精査記録を再照合して確認した。
+
+基準runnerは当時から `tests/*.test.cjs` を全件自動列挙していたため、「ファイルは存在したが基準930には含まれない」という扱いにはできない。未記録9ファイルの実行時49ケースと、第22回で明示保留した2ケースを合わせ、**第30回終了時の正しい集計を879精査・51未精査へ訂正する。**
+
+### 再照合で未精査と確定した51ケース
+
+| 対象 | 基準ケース | 状態 |
+|---|---:|---|
+| `intl-coupon-credit.test.cjs` | 4 | 第31回で精査 |
+| `intl-demand-content-quality.test.cjs` | 9 | 未精査 |
+| `intl-maintenance-calculators.test.cjs` | 7 | 未精査 |
+| `intl-platinum-diamond.test.cjs` | 5 | 未精査 |
+| `intl-rank-maintenance.test.cjs` | 5 | 未精査 |
+| `intl-regional-accuracy.test.cjs` | 5 | 未精査 |
+| `intl-rewards-quests.test.cjs` | 5 | 未精査 |
+| `intl-topic-pages.test.cjs` | 7 | 第31回で精査 |
+| `markup-contract-fixtures.test.cjs` | 2 | 未精査 |
+| `intl-content-expansion.test.cjs` | 1 | 第22回からの事実依存保留 |
+| `intl-game-guide-expansion.test.cjs` | 1 | 第22回からの事実依存保留 |
+
+合計は **51ケース**。これにより基準930との算術が一致する。
+
+### 第31回: 国際topic・coupon 11ケース
+
+`intl-topic-pages.test.cjs` の7ケースと `intl-coupon-credit.test.cjs` の4ケースを、現行公開HTML・sitemap/hreflang・内部リンクとGoogle Play公式一次情報へ突合して個別精査した。
+
+**訂正後879精査から11件を加え、基準930中890精査・40未精査。** 現行テストケース数は変更せず959ケースを維持する。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-topic-pages.test.cjs` | 7 | 全件維持。ポイント利用/参加条件、通常週次/Play Pass週次、複数アカウントの意味・公式source・同locale相互導線・sitemapを維持 |
+| `intl-coupon-credit.test.cjs` | 4 | 全件維持。coupon適用条件、Play credit期限/通貨/国変更、4言語SEO/hreflang、専用sitemap、発見性、内部リンクを維持 |
+
+### 公式情報の再確認境界
+
+- Play Pointsから交換したcoupon/Play creditの有効期限、coupon適用条件、同一アカウント条件はGoogle Play公式ヘルプと一致。
+- Play Points参加条件のsupported country、学校/保護者管理アカウント、支払方法・請求先の地域条件は現行公式案内と一致。
+- 通常Weekly RewardはSilver以上・金曜更新、Play Pass週次は別制度で木曜更新。両者を混同しない現在のテスト契約を維持。
+- Play country変更時の残高/Play Points境界、同一通貨条件も現行公式ヘルプと一致。
+
+### テスト設計判断
+
+- `intl-topic-pages` のsitemap件数は固定の任意閾値ではなく、configured topics × canonical locale数から導出されるため維持。
+- 本文phraseは装飾copyではなく、公式条件を誤訳・欠落させないための多言語fact regressionとして維持。
+- `intl-coupon-credit` の4言語cluster/hreflang/peer linkは公開成果物契約であり、別SEO ownerとの単純重複ではない。
+- 今回はテストコード変更不要。公式事実と現在の公開成果物が一致していることを確認し、精査済みidentityとして台帳へ加える。
+
+公開HTML/CSS/JS・記事本文・翻訳・sitemap・テストコードは変更していない。docsのみの変更である。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
