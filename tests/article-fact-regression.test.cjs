@@ -22,9 +22,11 @@ test('通常のウィークリーリワードとPlay Pass週次特典を区別�
   assert.doesNotMatch(html, /Play Pointsに登録していれば<strong>無料で毎週もらえます/);
 });
 
-test('入門記事の獲得対象は現在の日本向け公式案内に合わせる', () => {
+test('入門記事は一次情報の範囲を超えて獲得対象を一般化しない', () => {
   const html = readArticle('2025-12-25-getting-started.html');
-  assert.match(html, /Androidから(?:購入したGoogle One|のGoogle One定期購入|Google Oneを定期購入)/);
+  assert.match(html, /アプリ|ゲーム/);
+  assert.match(html, /書籍/);
+  assert.match(html, /support\.google\.com\/googleplay\/answer\/(?:15776742|9077192)/);
   assert.doesNotMatch(html, /映画・書籍・音楽/);
   assert.doesNotMatch(html, /YouTube Premium、Google One/);
   assert.doesNotMatch(html, /ウィークリーリワードの上限アップ/);
@@ -48,9 +50,10 @@ test('ゲーム以外の記事は終了・未確認サービスを獲得対象�
   assert.doesNotMatch(html, /映画・書籍・音楽・有料アプリ、<strong>すべて対象/);
 });
 
-test('サブスク記事は現行の公式確認項目だけを例示する', () => {
+test('サブスク記事は公式確認できる請求経路だけを対象例として扱う', () => {
   const html = readArticle('2025-12-25-subscription.html');
-  assert.match(html, /Androidから(?:購入したGoogle One|のGoogle One定期購入|Google Oneを定期購入)/);
+  assert.match(html, /Google Playを通じたアプリ内・ゲーム内の定期購入|Google Playの定期購入一覧/);
+  assert.match(html, /support\.google\.com\/googleplay\/answer\/9077192/);
   assert.doesNotMatch(html, /YouTube Premium/);
   assert.doesNotMatch(html, /Spotify, Netflix/);
   assert.match(html, /Play Pointsの(?:ポイント)?履歴/);
@@ -108,10 +111,10 @@ test('Playポイントデー記事は最大7倍を全員共通と書かない', 
   assert.doesNotMatch(html, /カレンダー/);
 });
 
-test('YouTube Premium記事は公式獲得対象リストへ載せない', () => {
+test('YouTube Premium記事は未確認の定期購入を公式獲得対象と断定しない', () => {
   const html = readArticle('2026-08-16-youtube-premium-play-points.html');
   assert.match(html, /YouTube Premiumというサービス名は載っていません/);
-  assert.match(html, /AndroidからのGoogle One定期購入/);
+  assert.match(html, /support\.google\.com\/googleplay\/answer\/(?:15776742|9077192)/);
   assert.doesNotMatch(html, /Android(?:アプリ)?から契約すれば必ず貯まる/);
   assert.doesNotMatch(html, /公式の獲得対象です[^か]/);
 });
@@ -139,12 +142,14 @@ test('1月1日再判定記事は残高リセットと到達年の即日降格を
   assert.doesNotMatch(html, /到達した翌年1月1日に必ず下がる/);
 });
 
-test('Play Pass記事は日本をゴールド特典対象国に入れず木曜週次と金曜を分ける', () => {
+test('Play Pass記事は日本の木曜週次と加入時Gold特典を別制度として扱う', () => {
   const html = readArticle('2026-08-16-play-pass-worth-it.html');
+  assert.match(html, /日本は、Play Pass加入者向けPlay Points週次ボーナス・ブースターの公式対象地域に含まれます/);
   assert.match(html, /木曜日/);
-  assert.match(html, /フランス、ドイツ、米国、英国/);
+  assert.match(html, /通常の金曜ウィークリーリワードとは別制度/);
+  assert.match(html, /answer\/16507543/);
+  assert.match(html, /answer\/14673382/);
   assert.match(html, /日本はその対象国リストに入っていません/);
-  assert.doesNotMatch(html, /カレンダー/);
   assert.doesNotMatch(html, /日本でPlay Passに入るとゴールドになります[^か]/);
 });
 
@@ -235,11 +240,12 @@ test('パズドラ救出記事は未確認の石単価とパス9ptを公式事�
   assert.match(html, /購入前にゲーム内とGoogle Playの表示を確認/);
 });
 
-test('ゴールド対プラチナ記事は日本のパス特典対象国を誤らない', () => {
+test('ゴールド対プラチナ記事はPlay Pass Gold特典と日本の週次制度を混同しない', () => {
   const html = readArticle('2026-08-16-gold-platinum-worth-it.html');
   assert.match(html, /約(?:20万|200,000)円/);
-  assert.match(html, /フランス、ドイツ、米国、英国/);
+  assert.match(html, /answer\/14673382/);
   assert.match(html, /日本は含まれていません/);
+  assert.match(html, /日本の木曜週次特典とは分けて考えます/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
-  assert.doesNotMatch(html, /カレンダー/);
 });
+
