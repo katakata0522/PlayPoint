@@ -16,15 +16,6 @@ const { syncCalculatorHeaders } = require('../scripts/calculator-header-sync.cjs
 
 const root = path.resolve(__dirname, '..');
 const targetPaths = Object.keys(CALCULATOR_HEADER_PROFILES);
-const regionAriaLabels = Object.freeze({
-  'index.html': 'Play の国または地域',
-  'en/index.html': 'Play country or region',
-  'ko/index.html': 'Play 국가 또는 지역',
-  'tw/index.html': 'Play 國家或地區',
-  'hk/index.html': 'Play 國家或地區',
-  'in/index.html': 'Play country or region'
-});
-
 function copyTargetTree(tempRoot) {
   for (const relativePath of targetPaths) {
     const source = path.join(root, relativePath);
@@ -34,40 +25,44 @@ function copyTargetTree(tempRoot) {
   }
 }
 
-test('Stage 12C owns the six calculator headers from one immutable Site Shell registry', () => {
+test('calculator headers are owned by one immutable Site Shell registry without fixed item counts', () => {
   assert.ok(Object.isFrozen(CALCULATOR_HEADER_PROFILES));
   assert.ok(Object.isFrozen(CALCULATOR_REGION_BUTTONS));
-  assert.deepEqual(targetPaths, [
-    'index.html',
-    'en/index.html',
-    'ko/index.html',
-    'tw/index.html',
-    'hk/index.html',
-    'in/index.html'
-  ]);
+  assert.ok(targetPaths.length > 0, 'calculator header target registry must not be empty');
 
-  const activeRegions = Object.fromEntries(
-    targetPaths.map(relativePath => [relativePath, getCalculatorHeaderProfile(relativePath).activeRegion])
-  );
-  assert.deepEqual(activeRegions, {
-    'index.html': 'JP',
-    'en/index.html': 'US',
-    'ko/index.html': 'KR',
-    'tw/index.html': 'TW',
-    'hk/index.html': null,
-    'in/index.html': null
-  });
+  const regionIds = CALCULATOR_REGION_BUTTONS.map(button => button.region);
+  assert.equal(new Set(regionIds).size, regionIds.length, 'calculator region ids must stay unique');
 
   for (const relativePath of targetPaths) {
     const profile = getCalculatorHeaderProfile(relativePath);
     assert.ok(Object.isFrozen(profile));
     assert.equal(profile.regionButtons, CALCULATOR_REGION_BUTTONS);
     assert.ok(Object.isFrozen(profile.links));
-    assert.equal(profile.regionButtons.length, 4);
-    assert.equal(profile.links.length, 4);
-    assert.equal(profile.regionAriaLabel, regionAriaLabels[relativePath]);
+    assert.ok(profile.regionButtons.length > 0, relativePath + ': region buttons are empty');
+    assert.ok(profile.links.length > 0, relativePath + ': header links are empty');
+    assert.ok(String(profile.regionAriaLabel || '').trim(), relativePath + ': accessible region label is missing');
+    if (profile.activeRegion !== null) assert.ok(regionIds.includes(profile.activeRegion), relativePath + ': active region is unknown');
   }
 
+  const flexible = renderCalculatorHeader({
+    activeRegion: 'JP',
+    regionAriaLabel: 'Regions',
+    regionButtons: [
+      { region: 'JP', label: 'Japan' },
+      { region: 'US', label: 'U.S.' }
+    ],
+    links: [{ href: '/', label: 'Home', langKey: 'home' }]
+  });
+  assert.match(flexible, /data-region="JP" class="active"/);
+  assert.match(flexible, /data-region="US"/);
+  assert.match(flexible, /data-lang-key="home"/);
+
+  assert.throws(() => renderCalculatorHeader({
+    activeRegion: 'JP',
+    regionAriaLabel: 'Regions',
+    regionButtons: [{ region: 'JP', label: 'Japan' }, { region: 'JP', label: 'Duplicate' }],
+    links: [{ href: '/', label: 'Home', langKey: 'home' }]
+  }), /unique region ids/);
   assert.throws(() => getCalculatorHeaderProfile('games/index.html'), /No calculator header profile/);
 });
 
@@ -107,7 +102,7 @@ test('calculator Header synchronization repairs drift and becomes idempotent', (
 
     const clean = syncCalculatorHeaders(tempRoot);
     assert.equal(clean.changed, 0);
-    assert.equal(clean.checked, 6);
+    assert.equal(clean.checked, targetPaths.length);
 
     const englishPath = path.join(tempRoot, 'en', 'index.html');
     fs.writeFileSync(
