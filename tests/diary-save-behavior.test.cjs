@@ -159,3 +159,14 @@ test('サイレント保存はデータと計測を確定するが成功toast・
   assert.deepEqual(runtime.dispatchedEvents, []);
   assert.equal(runtime.toastCalls.some(call => call.message === '保存しました'), false);
 });
+
+
+test('実装は入力blur・景品change・X共有を保存トリガーにしない', () => {
+  const rawSource = fs.readFileSync(path.resolve(__dirname, '../js/diary.js'), 'utf8');
+  assert.doesNotMatch(rawSource, /triggerAutoSave/);
+  assert.doesNotMatch(rawSource, /pointsInput\.addEventListener\('blur'/);
+  assert.doesNotMatch(rawSource, /prizeSelect\.addEventListener\('change'/);
+  const shareBlock = rawSource.match(/if \(shareBtn\) \{[\s\S]*?STATE\.dom\.weekInputs\.appendChild\(row\);/)?.[0] || '';
+  assert.ok(shareBlock, 'share handler block was not found');
+  assert.doesNotMatch(shareBlock, /handleDiarySave|saveDiaryData/);
+});

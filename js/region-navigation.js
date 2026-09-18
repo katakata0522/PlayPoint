@@ -18,10 +18,10 @@ const REGION_PATHS = Object.freeze({
 });
 
 const PRIMARY_REGION_LABELS = Object.freeze({
-    JP: { desktop: 'JP', mobile: 'JP' },
-    US: { desktop: 'US', mobile: 'US' },
-    KR: { desktop: 'KR', mobile: 'KR' },
-    TW: { desktop: 'TW', mobile: 'TW' }
+    JP: { desktop: 'JP', mobile: '🇯🇵 JP' },
+    US: { desktop: 'US', mobile: '🇺🇸 US' },
+    KR: { desktop: 'KR', mobile: '🇰🇷 KR' },
+    TW: { desktop: 'TW', mobile: '🇹🇼 TW' }
 });
 
 const EXPANDED_REGION_TOGGLE_LABELS = Object.freeze({
@@ -148,10 +148,10 @@ function ensureRegionSelectorCriticalStyle() {
   .region-switch > button[data-region]::after {
     font-size: clamp(0.72rem, 3.5vw, 0.82rem);
   }
-  .region-switch > button[data-region="JP"]::after { content: "JP"; }
-  .region-switch > button[data-region="US"]::after { content: "US"; }
-  .region-switch > button[data-region="KR"]::after { content: "KR"; }
-  .region-switch > button[data-region="TW"]::after { content: "TW"; }
+  .region-switch > button[data-region="JP"]::after { content: "🇯🇵 JP"; }
+  .region-switch > button[data-region="US"]::after { content: "🇺🇸 US"; }
+  .region-switch > button[data-region="KR"]::after { content: "🇰🇷 KR"; }
+  .region-switch > button[data-region="TW"]::after { content: "🇹🇼 TW"; }
 }`;
     document.head.appendChild(style);
 }

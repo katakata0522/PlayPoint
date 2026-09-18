@@ -89,10 +89,11 @@ test('desktop selector keeps compact visible codes without flag-glyph dependence
 
   assert.match(css, /@media \(min-width: 521px\)[\s\S]*?gap: 0\.35rem/);
   assert.doesNotMatch(css, /data:image\/svg\+xml;base64/);
-  for (const region of ['JP', 'US', 'KR', 'TW']) {
+  const labels = { JP: '🇯🇵 JP', US: '🇺🇸 US', KR: '🇰🇷 KR', TW: '🇹🇼 TW' };
+  for (const [region, mobile] of Object.entries(labels)) {
     assert.ok(
-      js.includes(`${region}: { desktop: '${region}', mobile: '${region}' }`),
-      `missing compact visible label for ${region}`
+      js.includes(`${region}: { desktop: '${region}', mobile: '${mobile}' }`),
+      `missing responsive visible label for ${region}`
     );
   }
 });

@@ -12,7 +12,8 @@ const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const VIEWPORT_WIDTHS = [320, 360, 390, 412];
 const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
-const PRIMARY_MOBILE_LABELS = ['JP', 'US', 'KR', 'TW'];
+const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
+const PRIMARY_DESKTOP_LABELS = ['JP', 'US', 'KR', 'TW'];
 const LOCALES = [
   { key: 'JP', path: '', toggleLabel: '🌐', activeRegion: 'JP' },
   { key: 'US', path: 'en/', toggleLabel: '🌐', activeRegion: 'US' },
@@ -324,7 +325,7 @@ async function verifyLocale(browser, baseUrl, locale) {
     assert(desktopLayout.toggleBorderLeftWidth >= 0.5,
       `${locale.key} desktop: separated more control lost its left border (${desktopLayout.toggleBorderLeftWidth}px)`);
     desktopLayout.labels.forEach((label, index) => {
-      assert(label.desktopText === PRIMARY_MOBILE_LABELS[index],
+      assert(label.desktopText === PRIMARY_DESKTOP_LABELS[index],
         `${locale.key} desktop: unexpected compact label for ${label.region}: ${label.desktopText}`);
       assert(label.desktopDisplay !== 'none',
         `${locale.key} desktop: compact desktop label hidden for ${label.region}`);
