@@ -1100,6 +1100,28 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・記事本文・地域数値・計算式・generatorは変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第34回（2026-09-18）
+
+基準930ケースに含まれる `ci-performance-sampling.test.cjs` の9ケースを、現行 `mobile-performance-budget.cjs` / `lighthouse-suite.cjs` / `CI_STABILITY.md` と突合して個別精査した。現行ファイルには基準後追加の「性能suiteの6ページと国際記事3地域は測定ownerから直接解決する」1ケースがあるため、現行10ケースを確認するが基準進捗へは9件だけ加算する。
+
+**基準930中918精査・12未精査。** 現行実行集合は958ケースを維持する。
+
+### 判断
+
+基準9ケースは全件維持。性能hard budget・6ページsample・トップ3sample・時間超過時のみ追加2sample・byte最大値・invalid/欠損fail-closed・環境混在拒否・中断manifest診断はいずれも現行CIの信頼境界。
+
+基準後追加1ケースも維持。現行6ページ、国際EN/KO/TW代表記事、hard budget/target ownership、workflow結線を確認する現行品質ケースとして妥当。
+
+### 過剰固定の整理
+
+- byte超過fixtureの `358400/358401` は現在の350KiB budgetをテスト側へ二重記載していた。実 `HARD_BUDGETS.calculatorHome.totalByteWeight` を読み、limit+1で境界を検証する形へ変更。budget実値は変更しない。
+- 追加測定fixtureの `4000ms / 400000bytes` も、実 `articleHub` hard limitから+1を導出する。
+- suite call総数 `10/8`、測定URL数 `6`、blocked pattern数 `6` は、`suite.PAGES.length` / `suite.BLOCKED.length` とsampling policyから導出する。
+- 一方、**測定対象6ページ・hard budget・target値・top3sample・timing breach時2sample追加**は `CI_STABILITY.md` で意図的なpolicyとして定義されているため、緩和・削除しない。
+
+公開コード・性能budget・測定対象・Lighthouse設定・workflowは変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
