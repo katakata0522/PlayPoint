@@ -7,7 +7,7 @@ const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 const { createPhaseRunner } = require('../.github/scripts/ci-phase-runner.cjs');
 const { classifyPhase, classifyJob, cleanError, finalize } = require('../.github/scripts/ci-evidence.cjs');
-const { withNavigationRetry } = require('../.github/scripts/browser-navigation-retry.cjs');
+const { MAX_NAVIGATION_ATTEMPTS, withNavigationRetry } = require('../.github/scripts/browser-navigation-retry.cjs');
 const { classifyDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 const root = path.resolve(__dirname, '..');
 function temporary(t) {
@@ -73,11 +73,12 @@ test('初回navigation失敗と再試行成功を両方保存する', async () =
   assert.deepEqual(events.map(e => e.attempt), [1, 2]);
   assert.ok(events.every(e => e.url === 'https://example.com/test'));
 });
-test('navigationは最大3回で失敗を伝播し、初回成功を再試行しない', async () => {
+test('navigationはSSOT上限までで失敗を伝播し、初回成功を再試行しない', async () => {
+  assert.ok(Number.isInteger(MAX_NAVIGATION_ATTEMPTS) && MAX_NAVIGATION_ATTEMPTS >= 1 && MAX_NAVIGATION_ATTEMPTS <= 5);
   const events = [];
   await assert.rejects(withNavigationRetry({ url: 'https://example.com/', operation: async () => { throw new Error('still failing'); },
     delay: async () => {}, onAttempt: item => events.push(item) }), /still failing/);
-  assert.equal(events.length, 3);
+  assert.equal(events.length, MAX_NAVIGATION_ATTEMPTS);
   const success = [];
   await withNavigationRetry({ url: 'https://example.com/', operation: async () => true, delay: async () => { throw new Error('unexpected retry'); }, onAttempt: item => success.push(item) });
   assert.equal(success.length, 1);
@@ -88,7 +89,7 @@ test('証跡保存の失敗をnavigationの失敗として再試行しない', a
   await assert.rejects(withNavigationRetry({ url: 'https://example.com/', operation: async () => ++calls,
     delay: async () => {}, onAttempt: () => { throw new Error('disk full'); } }), /disk full/);
   assert.equal(calls, 1);
-  await assert.rejects(withNavigationRetry({ maxAttempts: 4 }), /1..3/);
+  await assert.rejects(withNavigationRetry({ maxAttempts: MAX_NAVIGATION_ATTEMPTS + 1 }), new RegExp(`1\\.\\.${MAX_NAVIGATION_ATTEMPTS}`));
   assert.equal(cleanError(new Error('timeout https://u:pw@example.com/path?q=token\nsecond line')), 'timeout https://example.com/path');
 });
 test('job証跡は任意の環境変数・step outputs・event本文を記録しない', t => {

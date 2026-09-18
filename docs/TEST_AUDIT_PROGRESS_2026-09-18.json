@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 13,
-  "latestReviewedBaselineCases": 545,
-  "latestUnreviewedBaselineCases": 385,
+  "latestStage": 14,
+  "latestReviewedBaselineCases": 602,
+  "latestUnreviewedBaselineCases": 328,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -711,5 +711,81 @@
         "currentCaseDelta": 2
       }
     ]
+  },
+  "expectedCurrentCasesAfterWave14": 959,
+  "wave14": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 57,
+    "reviewedPostBaselineCases": 9,
+    "scope": "public-ci-deploy-gates-evidence",
+    "files": [
+      {
+        "file": "tests/ci-guardrails.test.cjs",
+        "baselineCases": 10,
+        "currentCases": 10,
+        "decision": "keep_all_bound_retention_timeout_fetch_depth"
+      },
+      {
+        "file": "tests/ci-stability.test.cjs",
+        "baselineCases": 11,
+        "currentCases": 11,
+        "decision": "keep_all_navigation_retry_ceiling_to_exported_ssot"
+      },
+      {
+        "file": "tests/deploy-cleanup.test.cjs",
+        "baselineCases": 11,
+        "currentCases": 10,
+        "decision": "review_all_baseline_identities_confirm_existing_consolidation_derive_retry_counts_from_shell_policy"
+      },
+      {
+        "file": "tests/deploy-impact-classifier.test.cjs",
+        "baselineCases": 7,
+        "currentCases": 9,
+        "decision": "keep_all_plus_review_2_postbaseline_fail_closed_cases"
+      },
+      {
+        "file": "tests/deploy-revision-readiness.test.cjs",
+        "baselineCases": 4,
+        "currentCases": 4,
+        "decision": "keep_all_exact_revision_bounded_readiness"
+      },
+      {
+        "file": "tests/ogp-mime-deployment.test.cjs",
+        "baselineCases": 2,
+        "currentCases": 2,
+        "decision": "keep_all_real_content_type_contract"
+      },
+      {
+        "file": "tests/public-deployment-tree.test.cjs",
+        "baselineCases": 5,
+        "currentCases": 5,
+        "decision": "keep_all_explicit_public_staging_allowlist"
+      },
+      {
+        "file": "tests/workflow-step-ids.test.cjs",
+        "baselineCases": 7,
+        "currentCases": 7,
+        "decision": "keep_all_workflow_step_metadata_guard"
+      },
+      {
+        "file": "tests/preflight-execution-contract.test.cjs",
+        "baselineCases": 0,
+        "currentCases": 8,
+        "decision": "postbaseline_keep_all_execution_and_evidence_contracts"
+      },
+      {
+        "file": "tests/syntax-verifier-execution.test.cjs",
+        "baselineCases": 0,
+        "currentCases": 1,
+        "decision": "postbaseline_keep_real_cli_execution_contract"
+      }
+    ],
+    "implementationChanges": [
+      ".github/scripts/browser-navigation-retry.cjs exports MAX_NAVIGATION_ATTEMPTS and uses it as default/validation SSOT"
+    ],
+    "productionFilesChanged": false,
+    "expectedDeployImpact": "CI runtime helper is classified as deploy input; actual deploy workflow decision must be verified after merge",
+    "authoritativeValidation": "PR Gate saved TAP / Chromium / post-merge Deploy impact outcome"
   }
 }

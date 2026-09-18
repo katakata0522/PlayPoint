@@ -50,8 +50,11 @@ test('PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが�
   assert.match(qualityWorkflow, /^\s+node \.github\/scripts\/preflight\.cjs 2>&1 \| tee "\$RUNNER_TEMP\/playpoint-preflight\.log"\s*$/m);
   assert.doesNotMatch(qualityWorkflow, /continue-on-error|\|\|\s*true/);
   assert.match(qualityWorkflow, /if: always\(\)/);
-  assert.match(qualityWorkflow, /retention-days: 7/);
-  assert.match(qualityWorkflow, /timeout-minutes: 15/);
+  const retentionDays = [...qualityWorkflow.matchAll(/retention-days:\s*(\d+)/g)].map(match => Number(match[1]));
+  assert.ok(retentionDays.length > 0, 'PR Gate artifact retention is missing');
+  assert.ok(retentionDays.every(days => Number.isInteger(days) && days >= 1 && days <= 30), 'artifact retention must stay bounded');
+  const timeout = Number(qualityWorkflow.match(/timeout-minutes:\s*(\d+)/)?.[1] || 0);
+  assert.ok(Number.isInteger(timeout) && timeout >= 5 && timeout <= 60, 'PR Gate timeout must stay finite without pinning one tuning value');
   assert.doesNotMatch(qualityWorkflow, /preflight\.cjs --prepare-deploy/);
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });
@@ -134,7 +137,9 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
 
   assert.match(workflow, /name: Detect production deploy impact/);
   assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
-  assert.match(workflow, /fetch-depth: 2/);
+  const fetchDepths = [...workflow.matchAll(/fetch-depth:\s*(\d+)/g)].map(match => Number(match[1]));
+  assert.ok(fetchDepths.length > 0, 'Deploy checkout depth is missing');
+  assert.ok(fetchDepths.every(depth => depth === 0 || depth >= 2), 'Deploy checkout must retain enough history for base diffing');
   assert.match(workflow, /git diff --name-only --no-renames/);
 
   for (const stepName of [

@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中545精査・385未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第13回を末尾へ追記する。
+最新集計: **基準930ケース中602精査・328未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第14回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -387,3 +387,28 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - required PR Gateがbase SHAとruntime/visual independent gatesを使用すること。
 
 公開profile・表示文言・HTML・計算挙動は変更していない。今回のworkflow分類では条件付きbuild-refactor/runtime比較レーンは対象外でskipされ得るため、現行出力不変の正本はcomplete preflight内のbyte-canonical/idempotency契約とChromium結果とする。
+
+
+## 第14回: 公開・CI 57基準ケース＋後発9ケース（2026-09-18）
+
+### 集計
+
+公開・CIカテゴリ10ファイルを精査。基準930に存在する8ファイル57ケースを既精査545へ加え、**602精査・328未精査**とする。後発のpreflight execution 8件とsyntax verifier execution 1件は現行品質として精査済みだが基準930進捗には加算しない。Wave14自体はケース数を増減せず、現行959ケースを維持する。
+
+### 判断
+
+- ci-guardrails 10: 全維持。retention 7日 / timeout 15分 / fetch-depth 2 exactだけbounded contractへ。
+- ci-stability 11: 全維持。navigation retry ceilingをMAX_NAVIGATION_ATTEMPTS SSOTへ。
+- deploy-cleanup 基準11→現行10: 基準11 identitiesを全精査。既存統合1件を確認し、retry 7/5 snapshotをshell policy連動へ。
+- deploy-impact-classifier 基準7→現行9: 基準7＋後発2を全維持。
+- deploy-revision-readiness 4、ogp-mime-deployment 2、public-deployment-tree 5、workflow-step-ids 7: 全維持。
+- preflight-execution-contract 8、syntax-verifier-execution 1: 基準外後発だがbehavior中心で有効、全維持。
+
+### 変更した設計
+
+1. artifact retention / PR Gate timeoutは有限な安全範囲を検査し、1つの運用値に固定しない。
+2. checkout depthはfull fetchまたはbase diff可能な2以上を許容。
+3. navigation retry上限をCI helperのexported SSOTへ集約。
+4. deploy retry回数はshellのDEFAULT/DEPLOY policyから導出し、有限範囲・main>=auxiliary・実transport停止回数を検証。
+
+公開物・deploy先・retry実値・rollback仕様・allowlistは変更していない。
