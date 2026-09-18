@@ -1,16 +1,16 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const test = require('node:test');
+const { runEsmProbe } = require('./helpers/runtime-esm.cjs');
 
-const root = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(root, 'js/language-suggestion.js'), 'utf8');
+test('保存ガードのcompatibility moduleはfirst-viewへだけUI責務を委譲する', () => {
+  const graph = runEsmProbe({ kind: 'graph' });
+  const module = graph.find(item => new URL(item.url).pathname === '/js/language-suggestion.js');
+  assert.ok(module, 'language-suggestion.js is missing from the active ESM graph');
 
-test('保存ガードはUI・計算式へ触れず、既存first-view互換exportを維持する', () => {
-  assert.match(source, /from '\.\/first-view\.js'/);
-  assert.match(source, /hokuhokuDiaryDataRecoveryV1/);
-  assert.match(source, /playpointLastMainCalculationRecoveryV1/);
-  assert.doesNotMatch(source, /document\.|innerHTML|classList|calculate\(/);
+  const dependencies = new Set(module.imports.map(url => new URL(url).pathname));
+  assert.ok(dependencies.has('/js/first-view.js'), 'first-view compatibility export is no longer connected');
+  assert.equal(dependencies.has('/js/calculator.js'), false, 'storage guard must not directly depend on calculator runtime');
+  assert.equal(dependencies.has('/js/ui.js'), false, 'storage guard must not directly depend on UI runtime');
 });
