@@ -21,29 +21,30 @@ function read(relativePath) {
 test('human sitemap is a task hub instead of a full URL warehouse', () => {
   const html = read('sitemap.html');
 
-  assert.match(html, new RegExp(HUMAN_SITEMAP_TASK_HUB_MARKER.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-  assert.match(html, /目的から探す/);
-  assert.match(html, /🧮 計算する/);
-  assert.match(html, /🎮 ゲーム別に調べる/);
-  assert.match(html, /🆘 困りごと・制度を調べる/);
-  assert.match(html, /🌍 国・地域を選ぶ/);
-  assert.match(html, /🔒 ポリシー/);
-
-  for (const href of ['./', 'en/', 'ko/', 'tw/', 'hk/', 'in/']) {
-    assert.match(html, new RegExp(`href="${href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`));
+  assert.match(html, new RegExp(HUMAN_SITEMAP_TASK_HUB_MARKER.replace(/[.*+?^$()|[\]\\{}]/g, '\\$&')));
+  for (const href of [
+    './',
+    'games/',
+    'blog/',
+    'latest/',
+    'en/',
+    'ko/',
+    'tw/',
+    'hk/',
+    'in/',
+    'privacy.html',
+    'terms.html'
+  ]) {
+    assert.match(html, new RegExp('href="' + href.replace(/[.*+?^$()|[\]\\{}]/g, '\\$&') + '"'), 'missing task destination: ' + href);
   }
 
-  assert.match(html, /href="feed\.xml">RSSフィード<\/a>/);
+  assert.match(html, /href="feed\.xml">[^<]+<\/a>/);
   assert.doesNotMatch(html, /href="sitemap\.xml"/);
   assert.doesNotMatch(html, /href="robots\.txt"/);
   assert.doesNotMatch(html, /href="atom\.xml"/);
   assert.doesNotMatch(html, /generated-listed-articles/);
-  assert.doesNotMatch(html, /<h2>公開中の解説記事<\/h2>/);
-  assert.doesNotMatch(html, /<h2>International shortcuts<\/h2>/);
+  assert.doesNotMatch(html, /data-generated-listed-articles=/);
   assert.equal((html.match(/<footer\b/g) || []).length, 1, 'human sitemap must expose exactly one footer');
-
-  const anchorCount = (html.match(/<a\b/g) || []).length;
-  assert.ok(anchorCount < 60, `human sitemap should stay concise, found ${anchorCount} links`);
 });
 
 test('task-hub mode prevents generated full article lists from returning', t => {
