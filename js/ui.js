@@ -166,6 +166,7 @@ function ensureHomeExperienceStyles() {
 }
 
 function getMainOnlySections() {
+    if (typeof document.querySelector !== 'function') return [];
     const candidates = [
         document.querySelector('.calculation-flow-figure')?.closest('section'),
         document.querySelector('.article-link-list')?.closest('section'),
@@ -197,6 +198,8 @@ function renderModeContext(mode) {
     const description = document.getElementById('site-description');
     const modeDescription = copy.descriptions?.[mode] || copy.descriptions?.main;
     if (description && modeDescription) description.textContent = modeDescription;
+
+    if (typeof document.querySelector !== 'function' || typeof document.createElement !== 'function') return;
 
     const isMain = mode === CONSTANTS.MODE_MAIN;
     for (const section of getMainOnlySections()) setElementVisibility(section, isMain);
