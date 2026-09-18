@@ -100,10 +100,10 @@ const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
 });
 
 const CALCULATOR_REGION_BUTTONS = Object.freeze([
-  Object.freeze({ region: 'JP', label: '🇯🇵 日本' }),
-  Object.freeze({ region: 'US', label: '🇺🇸 United States' }),
-  Object.freeze({ region: 'KR', label: '🇰🇷 대한민국' }),
-  Object.freeze({ region: 'TW', label: '🇹🇼 台灣' })
+  Object.freeze({ region: 'JP', label: 'JP' }),
+  Object.freeze({ region: 'US', label: 'US' }),
+  Object.freeze({ region: 'KR', label: 'KR' }),
+  Object.freeze({ region: 'TW', label: 'TW' })
 ]);
 
 const KATAKATA_LINK_BASE = Object.freeze({
