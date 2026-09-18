@@ -826,6 +826,29 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・デザイン値・記事本文・計算式・1728例・生成物は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第24回（2026-09-18）
+
+基準930ケースに含まれる「保存・復旧安全」4ファイル20ケースを、現行保存runtime・schema validator・recovery envelope・日記保存副作用・active ESM graphと突合して個別精査した。
+
+**基準930中795精査・135未精査。** 20ケースはいずれも保証自体を維持し、ケース数は増減しない。現行実行集合959ケースを維持する。公開HTML/CSS/JS・保存schema・保存キー・UI・計算式は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `article-storage-safety-contract.test.cjs` | 7 | 全件維持・変更なし。記事保存/ブログ設定のschema、壊れたraw退避、future version、recovery衝突、session/unrelated非干渉はいずれもbehavior契約 |
+| `diary-save-behavior.test.cjs` | 3 | 全件維持・変更なし。保存失敗時の成功副作用禁止、通常保存、silent保存の通知/計測境界はユーザー挙動として必要 |
+| `storage-safety-contract.test.cjs` | 9 | 全件維持・変更なし。日記/直近計算schema、malformed/future recovery、invalid write拒否、idempotent導入、localStorage access fail-closed、保存台帳を維持 |
+| `storage-safety-source-contract.test.cjs` | 1 | 維持。キー名・import文・UI文字列不存在のsource regexを、active ESM graph上のfirst-view委譲とcalculator/UIへの直接依存禁止へ置換 |
+
+### 今回の過剰固定・重複整理
+
+- recovery key名の存在やmalformed/future dataの退避は、`storage-safety-contract` / `article-storage-safety-contract` が実Storage behaviorで既に直接検証する。source contractで同じ文字列を再検索しない。
+- `from './first-view.js'` の引用符・export文形状自体は契約ではない。active ESM graph上で`language-suggestion.js`が`first-view.js`へ到達することを保証する。
+- 保存ガードがUI/計算へ直接侵入しない境界は、ソース中の`document`や`calculate(`という単語の不存在ではなく、active dependency graphで`calculator.js` / `ui.js`へ直接依存しないことを検証する。
+- 保存schema・future version保護・異なるrecovery上書き拒否・失敗時副作用禁止は安全性に直結するため緩和しない。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
