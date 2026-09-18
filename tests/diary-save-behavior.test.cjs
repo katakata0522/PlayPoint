@@ -166,5 +166,7 @@ test('実装は入力blur・景品change・X共有を保存トリガーにしな
   assert.doesNotMatch(rawSource, /triggerAutoSave/);
   assert.doesNotMatch(rawSource, /pointsInput\.addEventListener\('blur'/);
   assert.doesNotMatch(rawSource, /prizeSelect\.addEventListener\('change'/);
-  assert.doesNotMatch(rawSource, /shareBtn[\s\S]*?handleDiarySave/);
+  const shareBlock = rawSource.match(/if \(shareBtn\) \{[\s\S]*?STATE\.dom\.weekInputs\.appendChild\(row\);/)?.[0] || '';
+  assert.ok(shareBlock, 'share handler block was not found');
+  assert.doesNotMatch(shareBlock, /handleDiarySave|saveDiaryData/);
 });
