@@ -112,7 +112,7 @@ test('地域固有の価格・公式用語を日本語版から機械換算し�
 
   const hbrTw = renderGuide('tw', bySlug('heaven-burns-red-google-play-vs-web-shop'));
   assert.match(hbrTw, /台灣、香港、澳門/);
-  assert.match(hbrTw, /5% OFF/);
+  assert.match(hbrTw, /WEB SHOP\s*點數/);
 
   const genshinKo = renderGuide('ko', bySlug('genshin-welkin-moon-play-points'));
   assert.match(genshinKo, /공월 축복/);

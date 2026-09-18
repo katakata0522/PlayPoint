@@ -1122,6 +1122,58 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開コード・性能budget・測定対象・Lighthouse設定・workflowは変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第35回（最終基準12ケース、2026-09-18）
+
+基準930ケースの最後の12 identityを、Google Play公式ヘルプ・Google Play editorial・各ゲームの一次情報・現行公開成果物と突合して個別精査した。
+
+**基準930ケースは930/930精査完了・未精査0。** 現行実行集合は、第33回で弱い重複1ケースをbehavior ownerへ統合したため**958ケース**。基準930へケース数を戻すことは目的にせず、基準identityをすべて判断済みにしつつ、後発の有効な回帰テストを含む現行958ケースを品質正本とする。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-regional-accuracy.test.cjs` | 5 | 全件維持。任意の代表金額・全文copy固定を意味契約へ変更し、現地通貨、正の逆算初期値、gift card/対象購入分離、Google Play subscription、US公式地域sourceを維持 |
+| `intl-rewards-quests.test.cjs` | 5 | 全件維持。4言語cluster/SEO/source/Quest条件/発見性を維持。Super Weekly Prizeは現行公式のGold以上・金曜・在庫制・非保証を守り、Super Ticketは古い個別ルールを全員共通の現行仕様として固定せず現在のaccount/card条件へ委譲 |
+| `intl-content-expansion.test.cjs` | 1 | 第22回事実依存保留を完了。9topic×EN/KO/TWの本文phrase、Google公式source ID、地域別数値/意味を現行一次情報へ再照合して維持 |
+| `intl-game-guide-expansion.test.cjs` | 1 | 第22回事実依存保留を完了。PAD/モンスト/HBR/原神/ウマ娘の地域別価格・用語・購入経路を一次情報へ再照合。HBRの一時的5% OFFだけを恒久契約から外し、台湾・香港・澳門限定とWEB SHOP独自ポイントを維持 |
+
+### 現行公式情報との照合結果
+
+- Google Playで購入した対象アプリ/ゲーム、アプリ内購入、Google Play経由のsubscriptionはPlay Points獲得対象。税金はポイント計算対象外で、国ごとに条件が異なる。
+- Digital gift card購入は原則Play Points獲得対象外（対象ユーザー向けの特定promotionを除く）で、Play balance / Play Pointsでgift cardを購入できない。
+- Questはaccount設定・activityで表示/stepが異なり、personalizationやPlay Games profileが必要な場合がある。Points獲得対象transactionがpurchase stepとなり、cancel/refundで進捗やrewardが戻る場合がある。
+- 通常Weekly PrizeはSilver以上で金曜更新。Play Pass subscriber向けweekly bonus/boosterは別制度で木曜更新。
+- Super Weekly PrizeはGold以上が対象になり得て、金曜0時に更新。賞品はavailability/stock制でpremium prizeを保証しない。
+- 現在取得できるSuper Weekly Prize公式ページに対し、過去のSuper Ticket専用editorialは現時点で安定した現行sourceとして扱えないため、Ticket固有の過去schedule/trade-offを全利用者共通の恒久テスト契約にはしない。記事自身の「現在のaccount/cardを優先する」境界をテストする。
+- Google Play country変更時はPoints/levelを新しい国へ引き継げず、旧国のPlay balanceも新しい国では利用できない。
+- 国際実用記事で使うPlay balance併用、coupon/credit、rounding/tax、weekly reward/Play Pass、promotionのsource IDは現行Google公式ヘルプで再確認した。
+
+### ゲーム一次情報の照合結果
+
+- Puzzle & Dragons North AmericaのP&D PassはUS$8.99/月、Android Google Play対応、1週間free trialの一次情報を確認。
+- 怪物彈珠台湾Web Shopは2026-08-31改定で宝珠35個がNT$620等の現行価格を公式告知で確認。
+- Heaven Burns Red台湾WEBSHOPは台湾・香港・澳門限定を明示し、WEB SHOPポイントを独立提供。一方5% OFFは商品/時期依存のpromotionなので恒久回帰条件から外す。
+- ウマ娘「ウマスク」は月額980円でGoogle Play版等から購入可能、2026年からCygames WebStoreでも購入可能であることを公式portal/supportで確認。
+- Genshin ImpactのBlessing of the Welkin Moonは30日型で毎日Primogemsを受け取り、購入時Genesis Crystalsが付与されるfirst-party helpを確認。外部checkoutをGoogle Play billingと同一視しない契約を維持。
+- 地域価格・商品名を日本円から機械換算して他地域の公式価格として表示しない、というテストの主目的は全件維持する。
+
+### 最終テスト設計整理
+
+1. `intl-regional-accuracy` の $50 / ₩50,000 / NT$1,500 は記事の代表入力値であり公式制度値ではないため、現地通貨表示＋正のreverse calculator amount＋正しいlocale destinationへ一般化。
+2. gift card / subscriptionは全文sentenceを固定せず、意味と現行公式sourceを要求する。
+3. Super Weekly Prizeのlimited stock・非保証・現行公式sourceは維持し、Super Ticketはcurrent account/card scopeと「過去配布ルールを現行保証しない」注意を要求する。
+4. `intl-game-guide-expansion` のHBR 5% OFFは時限promotionなので除外。地域制限・独自WEB SHOP pointsという安定した購入経路契約へ変更。
+5. `intl-content-expansion` の9topic fact matrixは任意文字数ノルマではなく、誤訳・地域数値混同を検出するfact regressionのため維持。
+
+公開HTML/CSS/JS・記事本文・翻訳・計算式・地域設定・性能budget・workflowは変更していない。変更はtests/docsのみ。
+
+### 基準監査完了
+
+- 基準: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の全回帰930/930。
+- 精査済みbaseline identity: **930 / 930**。
+- 未精査baseline identity: **0**。
+- 現行回帰集合: **958ケース**（基準後追加の有効ケースを含み、監査中に重複ownerを整理した結果）。
+- 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
