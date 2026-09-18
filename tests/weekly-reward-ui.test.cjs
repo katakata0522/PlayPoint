@@ -46,3 +46,30 @@ test('UIスタイルはモジュール内包で今週優先・過去週コンパ
   assert.match(ui, /@media\(max-width:360px\)/);
   assert.match(ui, /style\.textContent = STYLE_TEXT/);
 });
+
+
+test('今月見出しの重複を画面から隠し、週次カードの日付側へ視線を集める', () => {
+  const diary = read('js/diary.js');
+  assert.match(diary, /diary-input-area>#selectedMonth,[^\n]*weekly-month-section-title\{display:none!important\}/);
+});
+
+test('記録直後グラフは詳細グラフ相当のグラデーション・月表示・現在月強調・段階アニメーションを持つ', () => {
+  const diary = read('js/diary.js');
+  assert.match(diary, /linear-gradient\(180deg,#58a6ff[^\n]*#3fb950/);
+  assert.match(diary, /weekly-mini-bar-label/);
+  assert.match(diary, /is-current-month/);
+  assert.match(diary, /--weekly-delay/);
+  assert.match(diary, /weekly-bar-grow/);
+  assert.match(diary, /weekly-current-glow/);
+  assert.doesNotMatch(diary, /weekly-achievement-kicker/);
+  assert.doesNotMatch(diary, /記録できた！/);
+});
+
+test('ポイント入力はpt単位を常時見せ、5桁警告は非ブロッキングである', () => {
+  const diary = read('js/diary.js');
+  assert.match(diary, /weekly-points-unit/);
+  assert.match(diary, /shouldQuestionLargePoints/);
+  assert.match(diary, />= 10000/);
+  assert.doesNotMatch(diary, /window\.confirm|confirm\(/);
+  assert.match(diary, /合っていればそのまま記録できます/);
+});
