@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中336精査・594未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第9回を末尾へ追記する。
+最新集計: **基準930ケース中375精査・555未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第10回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -249,3 +249,34 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. latest hubはcontent-dateのsource変数名を固定せずSSOT equality、Consentはactual components VM実行で保証。
 
 公開コード・記事本文・数式・保存形式・workflowは変更していない。
+
+
+## 第10回: 記事構成・台帳・コンテンツ役割39ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した7ファイル39ケースを現行mainと照合した。対象ファイルは基準コミットと第9回完了時mainで同一内容。既精査336へ39を加え、**375精査・555未精査**とする。ケース数純減なしで現行956ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| article-content-audit-regression | 8 | 全維持。記事主回答/事実境界/ID一意/再生成冪等 |
+| article-quality-polish | 6 | 全維持。author profile 60件以上という件数snapshotだけ除外 |
+| changelog-hygiene | 2 | 全維持。version固定を外し先頭Latest 1件へ |
+| content-structure | 10 | 全維持。4カテゴリ/3クリック/private source/design class固定を意味契約へ |
+| jp-cash-conversion-intent | 2 | 全維持。全文copy snapshotを現金化/PayPay intentへ |
+| play-points-content-evolution | 7 | 全維持。公式記事群の役割分離・台帳一意 |
+| tw-rank-cost-intent-boundaries | 4 | 全維持。copy snapshotをowner/threshold/destinationへ |
+
+### 変更したテスト・preflight設計
+
+1. カテゴリは4種類exactではなく、公開記事台帳と静的記事ハブのcategory cluster同期を保証。
+2. 301統合はredirect/registry/sitemap/canonicalをownerとし、統合先の特定copyを固定しない。
+3. Article Roleの全件最終監査は専用ownerへ任せ、content-structureはprompt生成unit behaviorへ限定。
+4. クリック深度は3を推奨値として観測し、未到達のみhard fail。prepare-pr/preflightの表示名も「到達性・クリック深度観測」へ変更。
+5. deep URLはthird-party runtimeのprivate実装ではなく公開HTMLのroot-relative配信を確認。
+6. knowledge boundaryは特定grid禁止ではなく見出し＋説明を保証。
+7. author profile件数、changelog version番号、JP/TW記事の見出し/CTA全文snapshotを除去。
+
+公開コード・記事本文・台帳・redirect・sitemap・計算式・保存形式は変更していない。
