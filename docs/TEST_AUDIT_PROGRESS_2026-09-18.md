@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中740精査・190未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第20回を末尾へ追記する。
+最新集計: **基準930ケース中751精査・179未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第21回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -546,3 +546,18 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-article-ux-audit 7: 全維持。nav sublabelの手書きcopy/6件固定をCOPY SSOT一致へ。
 
 公開HTML/CSS/JS・記事本文・Role・CTA・デザイン値は変更していない。
+
+## 第21回: 多言語生成・manual正本 11基準ケース＋後発2ケース（2026-09-18）
+
+### 集計
+
+生成・正本責務の基準11ケースを精査し、**751精査・179未精査**へ進める。事実依存2基準ケースは未精査のまま次回へ残す。ゲームmeta descriptionの後発2ケースは精査するが基準進捗へ加算しない。
+
+### 判断
+
+- intl-content-expansion: 基準4中3精査。locale SSOT化、sitemap総数重複assert除去。本文事実1件は保留。
+- intl-manual-content-sync: 1全維持。
+- manual-intl-articles: 4全維持。manual skipをsource regexから実生成behaviorへ。
+- intl-game-guide-expansion: 基準4中3精査＋後発2維持。locale SSOT化。地域価格/用語1件は保留。
+
+公開物・記事本文・地域価格・用語・生成結果は変更していない。
