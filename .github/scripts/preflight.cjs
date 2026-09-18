@@ -169,7 +169,7 @@ try {
     '--evidence-dir',
     path.join(evidenceDir(), 'navigation-source-map')
   ]);
-  runPhase('公開記事の3クリック以内検証', process.execPath, ['scripts/site-click-depth.cjs']);
+  runPhase('公開記事の到達性・クリック深度観測', process.execPath, ['scripts/site-click-depth.cjs']);
   runPhase('全回帰テスト', process.execPath, testArgs(testFiles, 'regression.tap'));
   runPhase('ads.txt検証', process.execPath, ['.github/scripts/check-ads-txt.cjs']);
   runPhase('公開アセット圧縮', process.execPath, ['.github/scripts/minify.cjs']);

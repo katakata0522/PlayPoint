@@ -58,7 +58,7 @@ run('生成物の同期（日付・アセット版はコミット済み値で固
   PLAYPOINT_ASSET_VERSION: pins.assetVersion
 });
 // 記事内関連リンクの正規化はbuild-html.js内で完了している。
-run('公開記事の3クリック以内検証', ['scripts/site-click-depth.cjs']);
+run('公開記事の到達性・クリック深度観測', ['scripts/site-click-depth.cjs']);
 
 const missingOfficial = scanOfficialSources();
 if (missingOfficial.length > 0) {

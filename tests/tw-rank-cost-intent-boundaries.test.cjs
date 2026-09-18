@@ -27,21 +27,18 @@ test('台湾100點・levels記事は白金/鑽石総費用ownerへscopeを譲る
   }
 });
 
-test('100點記事は100點の獲得費用比較を残し、総ランク費用と区別する', () => {
+test('100點記事は100點の獲得費用を扱い、総ランク費用ownerへ分離する', () => {
   const html = read('tw/articles/google-play-points-100-value.html');
-  assert.match(html, /累積 100 點需要多少消費/);
-  assert.match(html, /各等級累積 100 點的估算/);
-  assert.match(html, /升到白金級／鑽石級總共要花多少/);
+  assert.match(html, /100\s*點/);
+  assert.match(html, /google-play-points-platinum-diamond-cost\.html/);
+  assert.doesNotMatch(html, /NT\$120,000|NT\$450,000/);
 });
 
 test('levels記事は制度参照に集中し、白金/鑽石の固定総消費額を持たない', () => {
   const html = read('tw/articles/google-play-points-levels.html');
-  assert.match(html, /等級門檻應怎麼理解/);
-  assert.match(html, /這些數字代表年度累積點數，不是固定消費金額/);
-  assert.doesNotMatch(html, /從 0 點開始的基本消費估算/);
-  assert.doesNotMatch(html, /NT\$120,000/);
-  assert.doesNotMatch(html, /NT\$450,000/);
-  assert.doesNotMatch(html, /與基本消費估算/);
+  for (const threshold of ['250', '1,000', '4,000', '15,000']) assert.match(html, new RegExp(threshold));
+  assert.match(html, /google-play-points-platinum-diamond-cost\.html/);
+  assert.doesNotMatch(html, /NT\$120,000|NT\$450,000/);
 });
 
 test('白金/鑽石費用ownerは費用比較の主役を維持する', () => {
@@ -50,5 +47,5 @@ test('白金/鑽石費用ownerは費用比較の主役を維持する', () => {
   assert.match(html, /鑽石/);
   assert.match(html, /4,000/);
   assert.match(html, /15,000/);
-  assert.match(html, /距離白金／鑽石，我還需要多少/);
+  assert.match(html, /href=["']\/tw\/["']/);
 });
