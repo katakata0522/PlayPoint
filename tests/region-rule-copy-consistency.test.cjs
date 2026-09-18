@@ -15,7 +15,7 @@ function extractObject(source, startMarker, endMarker) {
   const end = source.indexOf(endMarker, start + startMarker.length);
   assert.ok(start >= 0 && end > start, `object markers missing: ${startMarker}`);
   const literal = source.slice(start + startMarker.length, end).trim();
-  return vm.runInNewContext('(' + literal + ')', { console });
+  return vm.runInNewContext('(' + literal + '\n})', { console });
 }
 
 function canonicalRanks(config) {
