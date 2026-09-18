@@ -63,7 +63,9 @@ test('PAD keeps the SSOT-verified pass and explains trial and persistent benefit
 
   const guide = read('games/pad/pad-pass-value/index.html');
   assert.ok(guide.includes('月額' + pass.price + '円'));
-  assert.ok(guide.includes(String(pass.freeTrialDays) + '週間の無料トライアル'));
+  const trialWeeks = pass.freeTrialDays / 7;
+  assert.ok(Number.isInteger(trialWeeks) && trialWeeks > 0, 'PAD free trial should convert to whole weeks');
+  assert.ok(guide.includes(String(trialWeeks) + '週間の無料トライアル'));
   assert.ok(guide.includes('チーム枠+' + pass.benefits.extraTeamSlots));
   assert.ok(guide.includes('ランク経験値' + pass.benefits.rankExpBonusPercent + '%アップ'));
 });
