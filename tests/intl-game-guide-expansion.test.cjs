@@ -55,7 +55,8 @@ test('英語ゲーム特集のmeta descriptionは固定文字数で切らず、�
     const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
     const expected = String(guide.content.en.market || '').replace(/\\s+/g, ' ').trim()
       .replace(/&/g, '&amp;')
-      .replace(/"/g, '&quot;');
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
     assert.ok(description.length > 0, guide.slug + ': description is required');
     assert.equal(description, expected, guide.slug + ': description must preserve the authored market summary without truncation');
     assert.match(description, /[.!?]$/, guide.slug + ': description must end as a complete sentence');
