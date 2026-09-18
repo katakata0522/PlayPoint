@@ -109,5 +109,98 @@
     "completePreflightPassed": true,
     "postMinifyPassed": 18
   },
-  "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。"
+  "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
+  "latestStage": 5,
+  "latestReviewedBaselineCases": 149,
+  "latestUnreviewedBaselineCases": 781,
+  "expectedCurrentCasesAfterWave5": 958,
+  "wave5": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 69,
+    "scope": "measurement-consent-ads",
+    "files": [
+      {
+        "file": "tests/consent-state.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_behavior"
+      },
+      {
+        "file": "tests/analytics-core.test.cjs",
+        "cases": 10,
+        "decision": "keep_all_absorb_generic_privacy_cases"
+      },
+      {
+        "file": "tests/third-party-analytics-integration.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_integration"
+      },
+      {
+        "file": "tests/calculator-funnel-behavior.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_behavior"
+      },
+      {
+        "file": "tests/calculator-funnel-analytics.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_relax_private_implementation_guard"
+      },
+      {
+        "file": "tests/third-party-resilience.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_resilience"
+      },
+      {
+        "file": "tests/analytics-runtime-attribution.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_runtime_attribution"
+      },
+      {
+        "file": "tests/analytics-state-boundaries.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_state_boundary"
+      },
+      {
+        "file": "tests/article-navigation-observability.test.cjs",
+        "cases": 12,
+        "decision": "keep_8_move_1_merge_3"
+      },
+      {
+        "file": "tests/monetization-search-quality.test.cjs",
+        "cases": 9,
+        "decision": "keep_guarantees_relax_private_callback_lock"
+      },
+      {
+        "file": "tests/measurement-baseline-contract.test.cjs",
+        "cases": 8,
+        "decision": "keep_as_audit_evidence_not_product_behavior"
+      }
+    ],
+    "mergedCases": [
+      {
+        "from": "article-navigation-observability",
+        "name": "result link classification",
+        "owner": "calculator-funnel-analytics"
+      },
+      {
+        "from": "article-navigation-observability",
+        "name": "invalid required params",
+        "owner": "analytics-core"
+      },
+      {
+        "from": "article-navigation-observability",
+        "name": "search free text exclusion",
+        "owner": "analytics-core"
+      }
+    ],
+    "movedCases": [
+      {
+        "from": "article-navigation-observability",
+        "name": "international article performance scope",
+        "owner": "ci-performance-sampling"
+      }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / browser checks"
+  }
 }
