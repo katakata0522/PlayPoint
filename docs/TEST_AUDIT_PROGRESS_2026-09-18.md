@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中663精査・267未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第17回を末尾へ追記する。
+最新集計: **基準930ケース中697精査・233未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第18回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -490,3 +490,30 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 6. pre-init error用static html langをJP/US/KR/TW/HK/INの6地域へ補完。
 
 公開HTML/CSS/JS・デザイン・copy・地域挙動は変更していない。
+
+## 第18回: 国際locale基盤・翻訳意味・著者導線34ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した6ファイル34ケースを、canonical locale ID・公開HTML・TW terminology contract・hreflang/sitemap・footer同期・navigation auditと照合した。既精査663へ34を加え、**697精査・233未精査**とする。ケース数の増減はなく現行959ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 基準件数 | 判定 |
+|---|---:|---|
+| intl-locale-registry | 2 | 全維持・変更なし。canonical locale registry/x-default SSOT |
+| intl-localization-semantics | 6 | 全維持・変更なし。地域preset・earn-rate意味・自然copy・TW用語 |
+| intl-localization-quality | 7 | 全維持。用語監査の非破壊性を実fixture behaviorへ変更 |
+| localization-quality-audit | 5 | 全維持・変更なし。top source copy/region marker/changelog/legacy banner |
+| intl-locale-chrome | 10 | 全維持・変更なし。記事/LP/game chromeとanalytics boundary |
+| intl-author-navigation | 4 | 全維持。locale/件数snapshotをcanonical inventoryと意味契約へ |
+
+### 変更したテスト設計
+
+1. TW terminology auditはsourceの禁止関数名チェックから、違反fixture→例外＋file unchangedの実I/O behaviorへ。
+2. HK foreign terminologyはpure transform behaviorを主契約とし、region-page-sync内部のrequire/replace形状を固定しない。
+3. EN/KO/TW author locale一覧を `INTERNATIONAL_LOCALES` SSOTから導出。
+4. manual LP footerの9件固定をfixture paths数へ変更。
+5. HK/IN author link 3本固定を、1件以上＋全リンクのtarget/fallback semanticsへ変更。
+
+公開HTML/CSS/JS・翻訳copy・記事本文・hreflang・著者導線は変更していない。

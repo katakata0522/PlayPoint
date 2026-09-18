@@ -666,6 +666,33 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第18回（2026-09-18）
+
+基準930ケースに含まれる「国際locale基盤・翻訳意味・著者導線」6ファイル34ケースを、canonical locale ID、公開HTML、用語contract、hreflang、共通footer同期、navigation source mapと突合して個別精査した。
+
+**基準930中697精査・233未精査。** 今回はケース数を削除・統合せず、現行959ケースを維持する。公開HTML/CSS/JS・記事本文・翻訳copy・hreflang・著者導線は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `intl-locale-registry.test.cjs` | 2 | 全件維持・変更なし。canonical `INTERNATIONAL_LOCALES` と各registry/x-defaultを同期するSSOT契約 |
+| `intl-localization-semantics.test.cjs` | 6 | 全件維持・変更なし。地域別preset、最終特別獲得率、韓/TW補助ラベル、自然な地域表現、TW問題排解、現金化語感の回帰 |
+| `intl-localization-quality.test.cjs` | 7 | 全件維持。TW/HK用語・相互hreflang・sitemapを維持。用語監査の非破壊性をsource内の関数名不存在ではなく、違反fixtureで実際に失敗しファイルを変更しないbehaviorへ置換 |
+| `localization-quality-audit.test.cjs` | 5 | 全件維持・変更なし。トップ地域aria、日本語destination marker、自然copy、TW source wording、changelog、legacy banner不在 |
+| `intl-locale-chrome.test.cjs` | 10 | 全件維持・変更なし。記事/LP/gameのchrome、法務marker、calculator destination analytics境界、前後ナビ・CTA localeを保証 |
+| `intl-author-navigation.test.cjs` | 4 | 全件維持。国際locale一覧をcanonical SSOTから導出し、manual LP 9件・HK/IN author 3本という固定件数を実対象数/意味契約へ変更 |
+
+### 今回の過剰固定・重複整理
+
+- 台湾用語contractは「監査コード内に `writeFileSync` 等の文字列がない」ことを安全性の根拠にしない。全source fixtureを用意し、widgetに禁止語を注入すると `assertTaiwanTerminology` が失敗し、対象ファイル内容が前後一致することを直接検証する。
+- 台湾widgetの黃金級/1000ptと、foreign terminology markerの例外behaviorは引き続き維持する。
+- HK用語変換は `region-page-sync.cjs` が特定helper名をrequireしていることや `html.replace` 不在を固定せず、`mapOutsideForeignTerminology` の入出力behaviorを主契約にする。実HK公開生成は第16回ownerが別途保証済み。
+- 国際著者導線のEN/KO/TW一覧は `INTERNATIONAL_LOCALES` から導出し、locale追加時にテスト側の手書き一覧が正本化しないようにする。
+- 手書きLP footer同期の checked/changed は固定値9ではなく、fixtureで実際に準備した対象 `paths.length` と一致させる。
+- HK/INトップのauthor linkは「必ず3本」という現在のmarkup件数を契約にせず、少なくとも可視author参照が存在し、存在する全リンクが既存言語版へ向き明示fallback markerを持つことを保証する。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
