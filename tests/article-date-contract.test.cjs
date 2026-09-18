@@ -4,6 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const {
+  getArticleFiles,
   syncArticleDateContract,
   synchronizeArticleDateHtml
 } = require('../scripts/article-date-contract.cjs');
@@ -132,7 +133,9 @@ test('記事日付同期は冪等である', () => {
 });
 
 test('公開中の全記事が日付SSOTと同期済みである', () => {
+  const expectedFiles = getArticleFiles(rootDir);
   const summary = syncArticleDateContract(rootDir, { checkOnly: true });
-  assert.ok(summary.checked > 100, `expected > 100 articles, got ${summary.checked}`);
+  assert.ok(expectedFiles.length > 0, 'article inventory must not be empty');
+  assert.equal(summary.checked, expectedFiles.length, 'date contract must audit the complete article inventory');
   assert.equal(summary.changed, 0, `日付同期が必要な記事: ${summary.changedFiles.join(', ')}`);
 });
