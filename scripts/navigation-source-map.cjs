@@ -3,10 +3,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { isPublicRepositoryPath } = require('../.github/scripts/public-paths.cjs');
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
-const LOCALE_PREFIXES = new Set(['en', 'ko', 'tw', 'hk', 'in']);
-const CONTENT_LOCALES = new Set(['en', 'ko', 'tw']);
+const LOCALE_PREFIXES = new Set([...INTERNATIONAL_LOCALES, 'hk', 'in']);
+const CONTENT_LOCALES = new Set(INTERNATIONAL_LOCALES);
 const EXCLUDED_DIRS = new Set(['.git', '.playwright-cli', 'node_modules', '.ci-evidence']);
 const SOURCE_EXTENSIONS = new Set(['.js', '.cjs', '.mjs', '.html', '.md', '.yml', '.yaml']);
 const EXPLICIT_TARGET_MARKERS = Object.freeze({
