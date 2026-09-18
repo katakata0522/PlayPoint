@@ -71,7 +71,7 @@ test('new international guides are sourced, attributable and structurally usable
     assert.ok(visibleText(body), `${file}: article body is empty`);
     assert.match(html, /<h1\b[^>]*>[\s\S]*?<\/h1>/i, `${file}: visible article heading is missing`);
     assert.match(html, /official-source-note/, `${file}: official source section is missing`);
-    assert.match(html, /support\.google\.com\/googleplay/, `${file}: Google official source is missing`);
+    assert.match(html, /(?:support\.google\.com\/googleplay|play\.google\.com\/store\/apps\/editorial)/, `${file}: Google official source is missing`);
     assert.match(html, /related-links-section/, `${file}: related guide section is missing`);
     assert.match(html, /rel="author"/, `${file}: visible author attribution is missing`);
     assert.ok(schemas(html, file).some(schema => schema['@type'] === 'Article'), `${file}: Article JSON-LD missing`);
