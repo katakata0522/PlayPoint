@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中220精査・710未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第7回を末尾へ追記する。
+最新集計: **基準930ケース中271精査・659未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第8回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -174,3 +174,39 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 5. growth-critical-pages / japanese-guide-brandはUIではなくSEO/ブランド責務として後続精査へ回し、今回の30件へ加算しない。
 
 公開コード・記事本文・表示文言・検索ロジック・保存仕様・workflowは変更していない。
+
+
+## 第8回: SEO・公開整合・ブランド51ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した13ファイル51ケースを現行mainと照合した。対象ファイルは基準コミットと第7回完了時mainで同一内容。既精査220へ51を加え、**271精査・659未精査**とする。今回はケース数純減なしで、現行957ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| growth-critical-pages | 4 | 全維持。CTA owner重複を外し、critical articleのruntime/検索意図へ責務を限定 |
+| japanese-guide-brand | 3 | 全維持。ブランドSSOT・OGP・記事header・Feed整合 |
+| all-article-quality-audit | 4 | 全維持。35文字閾値だけ廃止し、構造/公式source/JSON-LD/placeholder防止を維持 |
+| article-seo-normalize | 6 | 全維持。FAQ/robotsの実変換behavior |
+| author-hreflang | 2 | 全維持。author alternate clusterと冪等性 |
+| human-sitemap-task-hub | 2 | 全維持。copy/emoji/60リンク閾値を外しtask destinationsとfull-list排除を維持 |
+| manual-lp-hreflang | 4 | 全維持。manual LP clusterとFAQ責務分離 |
+| navigation-source-map | 8 | 全維持。100ページ/40工程/先頭末尾関数/private実装固定を外し、完全走査とownershipを維持 |
+| ogp-mime-contract | 1 | 維持。JPEG固定配信と実bytesの一致 |
+| public-navigation-contract | 4 | 全維持。全リンク・locale crossing・fragment実監査 |
+| seo-head-audit-parser | 4 | 全維持。entity/JSON-LD parser regression |
+| seo-hygiene | 7 | 全維持。sitemap scope/重複/意味整合 |
+| sitemap-information-hierarchy | 2 | 全維持。copy snapshotを構造・一意hrefへ置換 |
+
+### 変更したテスト設計
+
+1. growth-criticalのCTA配置は第7回ownerへ譲り、SEO側はcanonical・analytics/article runtime・query intentを担当。
+2. 全記事meta descriptionは任意の35文字下限ではなく、非空・placeholder/template残存なしを保証。
+3. human sitemapは主要task destinationとfull article list非生成を保証し、emoji/heading copy/総リンク数は自由にする。
+4. navigation source-mapは規模の数値閾値を捨て、非空inventory・6locale・未分類0・実generator/pipeline捕捉を保証。
+5. scannerの内部RegExp使用可否、pipelineの先頭/末尾関数名を契約にしない。
+6. sitemap hierarchyは具体的文言ではなくH1→目的説明→secondary groups、比較リンクは一意href＋非空labelを保証。
+
+公開コード・記事本文・ブランド・metadata・sitemap/feed・workflowは変更していない。
