@@ -9,6 +9,7 @@ const { getGamePageHtmlFiles } = require('../scripts/game-page-targets.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(root, relative), 'utf8');
+const formatNumber = value => new Intl.NumberFormat('ja-JP').format(value);
 
 function assertSource(urlText, host, pathname) {
   const parsed = new URL(urlText);
@@ -40,56 +41,64 @@ test('第2波の一次情報・公開スナップショットURLは想定ホス�
   assertSource(SOURCES.gakumasDmmSettlement, 'dmg-gakuen.idolmaster-official.jp', '/fund-settlement/');
 });
 
-test('スタレは旧980帯価格と固定天井円額を公開計算機から除く', () => {
+test('スタレはSSOTの価格補正を使い、旧価格と固定天井円額を公開計算機から除く', () => {
   const html = read('games/starrail/index.html');
-  assert.match(html, /往日の夢華 980\+110個 \(1,840円\)/);
-  assert.doesNotMatch(html, /往日の夢華 980\+110個 \(1,220円\)/);
+  const correction = GAME_SEO.starrail.japanPriceCorrections[0];
+  assert.ok(html.includes(correction.item + ' (' + formatNumber(correction.price) + '円)'));
+  assert.ok(!html.includes(correction.item + ' (' + formatNumber(correction.oldPrice) + '円)'));
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /supply-pass-value\//);
 });
 
-test('スタレ深掘りは列車補給標章の総量・速度・Play Pointsを分ける', () => {
+test('スタレ深掘りはSSOTの列車補給標章の総量・速度・Play Pointsを分ける', () => {
   const html = read('games/starrail/supply-pass-value/index.html');
-  assert.match(html, /610円/);
-  assert.match(html, /最大3,000星玉相当/);
-  assert.match(html, /ログインしなかった日の90星玉は後からまとめて受け取れない/);
-  assert.match(html, /固定の円額を断定しません/);
+  const pass = GAME_SEO.starrail.supplyPass;
+  assert.ok(html.includes(formatNumber(pass.price) + '円'));
+  assert.ok(html.includes('最大' + formatNumber(pass.maxJadeEquivalent) + '星玉相当'));
+  assert.ok(html.includes(String(pass.stellarJadePerDay) + '星玉'));
+  assert.match(html, /受け取れない|補填されない/);
+  assert.match(html, /固定の円額/);
 });
 
-test('ゼンゼロは旧980帯価格と固定天井円額を公開計算機から除く', () => {
+test('ゼンゼロはSSOTの価格補正を使い、旧価格と固定天井円額を公開計算機から除く', () => {
   const html = read('games/zzz/index.html');
-  assert.match(html, /モノクローム 980\+110個 \(1,840円\)/);
-  assert.doesNotMatch(html, /モノクローム 980\+110個 \(1,220円\)/);
+  const correction = GAME_SEO.zzz.japanPriceCorrections[0];
+  assert.ok(html.includes(correction.item + ' (' + formatNumber(correction.price) + '円)'));
+  assert.ok(!html.includes(correction.item + ' (' + formatNumber(correction.oldPrice) + '円)'));
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /membership-value\//);
 });
 
-test('ゼンゼロ深掘りはインターノット会員を即時チャージと混同しない', () => {
+test('ゼンゼロ深掘りはSSOTの会員総量を即時チャージと混同しない', () => {
   const html = read('games/zzz/membership-value/index.html');
-  assert.match(html, /610円/);
-  assert.match(html, /最大3,000ポリクローム相当/);
-  assert.match(html, /即時に3,000個を受け取る商品ではない/);
-  assert.match(html, /固定の円額としては扱いません/);
+  const membership = GAME_SEO.zzz.membership;
+  assert.ok(html.includes(formatNumber(membership.price) + '円'));
+  assert.ok(html.includes('最大' + formatNumber(membership.maxPolychromeEquivalent) + 'ポリクローム相当'));
+  assert.ok(html.includes(String(membership.days) + '日'));
+  assert.match(html, /即時に.*受け取る商品ではない/);
+  assert.match(html, /固定の円額/);
 });
 
-test('ウマ娘は終了済みデイリージュエルパックを購入候補から除外する', () => {
+test('ウマ娘は終了済み商品を除外しSSOTの現行月額サービスを使う', () => {
   const html = read('games/umamusume/index.html');
   assert.doesNotMatch(html, /<option[^>]*>デイリージュエルパック/);
   assert.doesNotMatch(html, /data-amount="60000"/);
   assert.doesNotMatch(html, /200連=6万円/);
-  assert.match(html, /ウマスク（980円）/);
-  assert.match(html, /ウマプラン（1,980円）/);
+  assert.ok(html.includes('ウマスク（' + formatNumber(GAME_SEO.umamusume.umasuku.price) + '円）'));
+  assert.ok(html.includes('ウマプラン（' + formatNumber(GAME_SEO.umamusume.umaplan.price) + '円）'));
   assert.match(html, /umasuku-value\//);
 });
 
-test('ウマスク深掘りは現行公式特典と未受取仕様を説明する', () => {
+test('ウマスク深掘りはSSOTの現行公式特典と未受取仕様を説明する', () => {
   const html = read('games/umamusume/umasuku-value/index.html');
-  assert.match(html, /2024年12月19日4:59に販売終了/);
-  assert.match(html, /有償ジュエル500個 \+ 無償ジュエル50個/);
-  assert.match(html, /未受取分は次回ログイン時にまとめてプレゼントへ送られる/);
-  assert.match(html, /Google PlayとCygames WebStoreは別の購入経路/);
+  const umasuku = GAME_SEO.umamusume.umasuku;
+  assert.match(html, /販売終了/);
+  assert.ok(html.includes('有償ジュエル' + umasuku.paidJewelsOnPurchaseOrRenewal + '個'));
+  assert.ok(html.includes('無償ジュエル' + umasuku.freeJewelsOnPurchaseOrRenewal + '個'));
+  assert.ok(html.includes('次回ログイン'));
+  assert.match(html, /Google Play.*Cygames WebStore|Cygames WebStore.*Google Play/);
 });
 
 test('他ゲームのカードにも終了済みウマ娘説明を残さない', () => {
@@ -99,15 +108,16 @@ test('他ゲームのカードにも終了済みウマ娘説明を残さない',
   }
 });
 
-test('プロセカはWebStore価格をGoogle Play価格へ流用せず自由入力に落とす', () => {
+test('プロセカはSSOTのWebStore価格をGoogle Play価格へ流用せず自由入力に落とす', () => {
   const parent = read('games/proseka/index.html');
   const guide = read('games/proseka/google-play-vs-webstore/index.html');
+  const webStore = GAME_SEO.proseka.webStore;
   assert.match(parent, /Google Play購入画面の金額を入力/);
   assert.doesNotMatch(parent, /data-amount="90000"/);
   assert.doesNotMatch(parent, /プロセカの天井（9万円）/);
   assert.match(parent, /google-play-vs-webstore\//);
-  assert.match(guide, /160 \/ 480 \/ 1,000 \/ 1,800 \/ 3,000 \/ 4,900 \/ 10,000円/);
-  assert.match(guide, /BASIC 480円、DELUXE 1,500円、PRECIOUS 3,000円/);
+  for (const price of webStore.crystalProductPrices) assert.ok(guide.includes(formatNumber(price)));
+  for (const pass of Object.values(webStore.colorfulPass)) assert.ok(guide.includes(formatNumber(pass.price) + '円'));
   assert.match(guide, /公式WebStoreはGoogle Play上の購入ではない/);
 });
 
