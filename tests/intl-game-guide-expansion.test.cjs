@@ -17,11 +17,12 @@ const {
   writeLocalizedGameGuides
 } = require('../scripts/intl-game-guide-expansion.cjs');
 const { classifyArticleRole } = require('../scripts/article-role-registry.cjs');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 test('多言語ゲーム特集はSSOTの全ガイドを全ロケールへ一意に展開する', () => {
   const locales = Object.keys(LOCALES);
   assert.ok(ALL_GUIDES.length > 0, 'localized game guide catalog must not be empty');
-  assert.deepEqual(locales.sort(), ['en', 'ko', 'tw']);
+  assert.deepEqual([...locales].sort(), [...INTERNATIONAL_LOCALES].sort(), 'game-guide locale registry must follow the canonical international locales');
   assert.equal(new Set(ALL_GUIDES.map(guide => guide.slug)).size, ALL_GUIDES.length);
   const hrefs = locales.flatMap(locale => ALL_GUIDES.map(guide => hrefFor(locale, guide.slug)));
   assert.equal(hrefs.length, ALL_GUIDES.length * locales.length);
