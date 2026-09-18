@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const { PHASE2_MEASUREMENT_BASELINE: baseline } = require('../scripts/measurement-baseline.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -118,4 +119,47 @@ test('analytics plan records the confirmed key event without closing DebugView b
   assert.match(analytics, /`calculation_completed`[^\n]*Key event[^\n]*確認済み/);
   assert.match(analytics, /DebugView[^\n]*未完了/);
   assert.match(analytics, /app_display_mode[^\n]*未登録/);
+});
+
+
+function loadGscCaptureRuntime() {
+  const source = read('scripts/gsc-nonoverlap-28d.gs');
+  const context = {};
+  vm.createContext(context);
+  vm.runInContext(source, context, { filename: 'gsc-nonoverlap-28d.gs' });
+  return { source, context };
+}
+
+test('GSC capture module keeps adjacent non-overlapping 28-day query × exact URL FINAL windows', () => {
+  const { source, context } = loadGscCaptureRuntime();
+  const windows = context.playPointGscBuildWindows_('2026-09-11');
+
+  assert.deepEqual(
+    JSON.parse(JSON.stringify(windows)),
+    {
+      current: { start: '2026-08-15', end: '2026-09-11', days: 28 },
+      previous: { start: '2026-07-18', end: '2026-08-14', days: 28 }
+    }
+  );
+  assert.equal(context.playPointGscShiftIsoDate_(windows.previous.end, 1), windows.current.start);
+
+  assert.match(source, /dimensions:\s*\['query', 'page'\]/);
+  assert.match(source, /dataState:\s*'final'/);
+  assert.match(source, /aggregationType:\s*'byPage'/);
+  assert.match(source, /rowLimit:\s*25000/);
+  assert.match(source, /startRow\s*\+=\s*rows\.length/);
+  assert.match(source, /current_28d/);
+  assert.match(source, /previous_28d/);
+  assert.match(source, /SKIPPED_ALREADY_CAPTURED/);
+});
+
+test('GSC capture module exposes one idempotent weekly installer and dedicated history/comparison sheets', () => {
+  const { source, context } = loadGscCaptureRuntime();
+  assert.equal(typeof context.captureGscNonOverlapping28d, 'function');
+  assert.equal(typeof context.installPlayPointGsc28dWeeklyTrigger, 'function');
+  assert.match(source, /🗃GSC 28日履歴/);
+  assert.match(source, /🔍GSC 28日比較/);
+  assert.match(source, /getProjectTriggers\(\)/);
+  assert.match(source, /getHandlerFunction\(\) === handler/);
+  assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);
 });
