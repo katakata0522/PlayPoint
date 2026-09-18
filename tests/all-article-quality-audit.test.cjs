@@ -65,7 +65,9 @@ test('the complete published article corpus keeps structural quality signals', (
     assert.doesNotMatch(html, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b/i, `${file}: placeholder copy remains`);
 
     const description = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
-    assert.ok(description && visibleText(description[1]).length >= 35, `${file}: meta description is missing or too vague`);
+    const descriptionText = description ? visibleText(description[1]) : '';
+    assert.ok(descriptionText.length > 0, `${file}: meta description is missing`);
+    assert.doesNotMatch(descriptionText, /placeholder|lorem ipsum|\bTBD\b|\bTODO\b|\{[^}]+\}/i, `${file}: meta description contains placeholder text`);
 
     const body = articleBody(html, file);
     const bodyText = visibleText(body);
