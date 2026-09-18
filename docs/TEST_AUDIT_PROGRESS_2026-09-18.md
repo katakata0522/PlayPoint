@@ -386,4 +386,4 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - runtime comparatorが数値・markup・required module regressionを実際に検出すること。
 - required PR Gateがbase SHAとruntime/visual independent gatesを使用すること。
 
-公開profile・表示文言・HTML・計算挙動は変更していない。
+公開profile・表示文言・HTML・計算挙動は変更していない。今回のworkflow分類では条件付きbuild-refactor/runtime比較レーンは対象外でskipされ得るため、現行出力不変の正本はcomplete preflight内のbyte-canonical/idempotency契約とChromium結果とする。
