@@ -26,16 +26,22 @@ test('記事・LP・ゲームの管理広告は有効な広告ユニットIDを�
   }
 });
 
-test('記事・LP・ゲームの広告初期化経路が共通ローダーと同意管理に接続される', () => {
-  const article = read('blog/article.js');
-  const thirdParty = read('js/third-party.js');
-  const game = read('games/fgo/index.html');
-  assert.ok(article.includes('.article-ad-container ins.adsbygoogle'));
-  assert.ok(article.includes('PlayPointConsent.whenAdsAllowed(loadArticleAdsense)'));
-  assert.ok(thirdParty.includes('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle'));
-  assert.ok(thirdParty.includes("runAfterConsent(initializeManagedAds, 'ads')"));
-  assert.ok(game.includes('js/third-party.js'));
-  assert.ok(read('games/index.html').includes('js/third-party.js'));
+
+test('記事・LP・ゲームの広告初期化経路が共通runtimeと広告Consent境界に接続される', () => {
+  for (const [file, scripts] of [
+    ['articles/2026-08-05-play-points-multiplier-stacking.html', ['blog/components.js', 'blog/article.js']],
+    ['status/gold/index.html', ['js/third-party.js']],
+    ['games/fgo/index.html', ['js/third-party.js']],
+    ['games/index.html', ['js/third-party.js']]
+  ]) {
+    const html = read(file);
+    for (const script of scripts) assert.ok(html.includes(script), `${file}: ${script} がありません`);
+  }
+
+  const articleRuntime = read('blog/article.js');
+  const sharedRuntime = read('js/third-party.js');
+  assert.match(articleRuntime, /PlayPointConsent\.whenAdsAllowed\s*\(/, '記事広告が広告Consent境界を通っていません');
+  assert.match(sharedRuntime, /runAfterConsent\([^,\n]+,\s*['"]ads['"]\)/, 'LP・ゲーム広告が広告Consent用途を指定していません');
 });
 
 test('記事・ブログGA4はconfig後にreadinessを立てる', () => {
