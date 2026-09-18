@@ -702,7 +702,7 @@
       "scripts/site-shell.cjs renderCalculatorHeader: exact 4 region buttons / 4 links -> non-empty arrays + unique region ids"
     ],
     "productionOutputExpectedChanged": false,
-    "authoritativeValidation": "PR Gate saved TAP / output equivalence / runtime+visual / Chromium",
+    "authoritativeValidation": "PR Gate saved TAP / Site Shell byte-canonical and idempotency contracts / Chromium; conditional build-refactor and runtime comparison lanes may skip when classifier does not select them",
     "concurrentMainChanges": [
       {
         "pr": 357,
