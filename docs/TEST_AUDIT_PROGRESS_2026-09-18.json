@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 6,
-  "latestReviewedBaselineCases": 190,
-  "latestUnreviewedBaselineCases": 740,
+  "latestStage": 7,
+  "latestReviewedBaselineCases": 220,
+  "latestUnreviewedBaselineCases": 710,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -263,5 +263,50 @@
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium checks"
+  },
+  "expectedCurrentCasesAfterWave7": 957,
+  "wave7": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 30,
+    "scope": "article-discovery-blog-listing-internal-navigation",
+    "files": [
+      {
+        "file": "tests/article-discovery-retention.test.cjs",
+        "cases": 11,
+        "decision": "keep_all_behavior_note_mixed_responsibilities"
+      },
+      {
+        "file": "tests/blog-listing-ux.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_remove_taxonomy_count_and_private_animation_name_locks"
+      },
+      {
+        "file": "tests/info-return-navigation.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_same_origin_navigation_behavior"
+      },
+      {
+        "file": "tests/internal-link-targets.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_compare_link_semantics_not_attribute_order"
+      },
+      {
+        "file": "tests/japanese-navigation-sidebar.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_role_based_navigation"
+      },
+      {
+        "file": "tests/top-article-calculator-funnel.test.cjs",
+        "cases": 3,
+        "decision": "keep_all_remove_copy_snapshot_keep_flow_and_destination"
+      }
+    ],
+    "deferredFromUiCategory": [
+      "tests/growth-critical-pages.test.cjs",
+      "tests/japanese-guide-brand.test.cjs"
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium blog and article checks"
   }
 }

@@ -320,6 +320,33 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、計算式、保存形式、記事、コピー、結果ナビ設定値、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第7回（2026-09-18）
+
+第6回に続き、基準930ケースに含まれる「記事探索・ブログ一覧・内部回遊」6ファイル30ケースを現行mainの実装と突合して個別精査した。対象6ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` と第6回完了時mainで同一内容だったため、後発ケースを混ぜず30ケースを基準件数へ加算する。
+
+**基準930中220精査・710未精査。** 今回はケース統合・削除を行わず、現行実行集合は第6回後と同じ957ケースを維持する。実件数・合否は当該PR Gate保存TAPを正本とし、件数固定テストは追加しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `article-discovery-retention.test.cjs` | 11 | 全件維持。4言語検索・section anchor・抽出境界・読書リスト安全性・上限・URL正規化はbehavior保証。diary週判定とoutcome reportはファイル内で別責務だが必要保証なので今回削除/移動しない |
+| `blog-listing-ux.test.cjs` | 7 | 全件維持。検索/ゲーム名filter/page jump/公開controls/可視性/pagination contractを維持。カテゴリが今後も必ず4種類というtaxonomy固定をUI契約から除外し、scroll animation関数名の不存在も要求しない |
+| `info-return-navigation.test.cjs` | 2 | 全件維持。同一origin referrerだけで言語を引き継ぎ、外部・偽origin・http・不正URLを拒否する実inline-script behavior |
+| `internal-link-targets.test.cjs` | 4 | 全件維持。内部/外部分類・same-tab化・runtime external例外・公開HTML全走査を維持。正規化後HTMLの属性順・quote形式の完全一致だけを外し、href/target/relの意味を検証 |
+| `japanese-navigation-sidebar.test.cjs` | 3 | 全件維持。公開記事のnext action・関連記事、本文/SEO非干渉、article role別の次行動を保証。3関連記事は現行デザイン契約として維持 |
+| `top-article-calculator-funnel.test.cjs` | 3 | 全件維持。Retention/トラブル/比較記事の回答順序と計算機destinationを維持。CTA本文の特定文言snapshotを外し、配置・直接遷移・generated prompt重複なしを保証 |
+
+### 今回の過剰固定整理
+
+- ブログ一覧UIから `articles.json` のカテゴリが永久に4種類であることを要求しない。検索・ゲーム名filterはカテゴリtaxonomyとは独立したbehaviorとして検証する。
+- 記事カードが可視である保証はCSS初期状態と既存Browser smokeが担当するため、`fade-in-up` / `setupScrollAnimations` / `scrollObserver` といったprivate実装名の不存在は契約にしない。
+- 内部リンク正規化は、属性の並び順やquote形式まで完全一致させず、内部リンクがsame-tabになり、`noopener/noreferrer`だけが不要時に除かれ、`nofollow/sponsored`等の無関係なrelを保持する意味で検証する。
+- 上位記事CTAは見出し・本文の特定文言を固定しない。Retention回答/問題解決/門檻回答の後にCTAがあり、正しい通常/逆算計算機へ直接遷移し、generic promptが重複しないことを契約にする。
+
+`growth-critical-pages.test.cjs` と `japanese-guide-brand.test.cjs` はUI台帳に置かれているが、主責務がSEO意図・ブランド文言のため今回の30件には含めない。後続の内容/ブランド責務群で精査し、重複加算を避ける。
+
+公開HTML/CSS/JS、記事本文、表示文言、検索ロジック、読書リスト仕様、ナビ設定、workflow、権限、性能閾値は変更しない。今回もテストと監査文書だけを変更し、本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

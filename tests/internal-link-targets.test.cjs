@@ -24,6 +24,15 @@ function walkHtmlFiles(directory) {
   return files;
 }
 
+function attributeValue(tag, name) {
+  const doubleQuoted = tag.match(new RegExp('\\b' + name + '\\s*=\\s*"([^"]*)"', 'i'));
+  if (doubleQuoted) return doubleQuoted[1];
+  const singleQuoted = tag.match(new RegExp("\\b" + name + "\\s*=\\s*'([^']*)'", 'i'));
+  if (singleQuoted) return singleQuoted[1];
+  const unquoted = tag.match(new RegExp('\\b' + name + '\\s*=\\s*([^\\s>]+)', 'i'));
+  return unquoted ? unquoted[1] : null;
+}
+
 test('internal URL detection separates PlayPoint navigation from external destinations', () => {
   for (const href of [
     '../attention.html',
@@ -49,18 +58,19 @@ test('internal URL detection separates PlayPoint navigation from external destin
 });
 
 test('internal blank targets become same-tab links without discarding unrelated rel tokens', () => {
-  assert.equal(
-    normalizeInternalAnchorTarget('<a href="../attention.html" target="_blank" rel="noopener noreferrer">'),
-    '<a href="../attention.html">'
-  );
-  assert.equal(
-    normalizeInternalAnchorTarget('<a target="_blank" rel="nofollow noopener sponsored noreferrer" href="/offers/">'),
-    '<a rel="nofollow sponsored" href="/offers/">'
-  );
-  assert.equal(
-    normalizeInternalAnchorTarget('<a href="https://playpoint-sim.com/blog/" target="_blank">'),
-    '<a href="https://playpoint-sim.com/blog/">'
-  );
+  const cases = [
+    ['<a href="../attention.html" target="_blank" rel="noopener noreferrer">', '../attention.html', []],
+    ['<a target="_blank" rel="nofollow noopener sponsored noreferrer" href="/offers/">', '/offers/', ['nofollow', 'sponsored']],
+    ['<a href="https://playpoint-sim.com/blog/" target="_blank">', 'https://playpoint-sim.com/blog/', []]
+  ];
+
+  for (const [input, expectedHref, expectedRel] of cases) {
+    const normalized = normalizeInternalAnchorTarget(input);
+    assert.equal(attributeValue(normalized, 'href'), expectedHref);
+    assert.equal(attributeValue(normalized, 'target'), null, normalized);
+    const rel = String(attributeValue(normalized, 'rel') || '').split(/\s+/).filter(Boolean).sort();
+    assert.deepEqual(rel, expectedRel.slice().sort(), normalized);
+  }
 });
 
 test('external and runtime-external blank targets stay untouched', () => {
