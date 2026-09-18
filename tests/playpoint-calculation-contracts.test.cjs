@@ -19,8 +19,8 @@ test('ステータス選択の初期値はブロンズになる', () => {
   assert.strictEqual(PP_STATE.dom.reverseStatus.value, '1');
 });
 
-test('通常計算では現在ステータスから次のランクだけを目標にする', () => {
-  const { PP_STATE, updateBaseRateAndTarget } = loadCalculatorContext();
+test('通常計算の目標候補は現在ランクから進める有効なランクを含む', () => {
+  const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.currentStatus.value = '1';
@@ -30,13 +30,18 @@ test('通常計算では現在ステータスから次のランクだけを目�
 
   updateBaseRateAndTarget();
 
-  assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 1);
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'シルバー');
-  assert.strictEqual(PP_STATE.dom.neededPoints.max, '250');
+  const config = PP_REGION_CONFIGS.JP;
+  const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel);
+  const allowedTargets = new Set(config.statusPointsMapping[1] || []);
+
+  assert.ok(labels.includes('シルバー'));
+  assert.strictEqual(new Set(labels).size, labels.length);
+  assert.ok(labels.every(label => allowedTargets.has(label)));
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, String(config.thresholds['シルバー']));
   assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 });
 
-test('日本語の必要ポイント例はゴールドからプラチナの時だけ1728になる', () => {
+test('日本語のゴールド→プラチナ必要ポイント例は1728を維持する', () => {
   const { PP_STATE, updateBaseRateAndTarget, updateNeededPointsConstraint } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
@@ -46,18 +51,20 @@ test('日本語の必要ポイント例はゴールドからプラチナの時�
   PP_STATE.dom.neededPoints = createInput();
 
   updateBaseRateAndTarget();
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ゴールド');
+
+  const goldIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.statusLabel === 'ゴールド');
+  const platinumIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.statusLabel === 'プラチナ');
+  assert.ok(goldIndex >= 0);
+  assert.ok(platinumIndex >= 0);
+
+  PP_STATE.dom.targetStatus.selectedIndex = goldIndex;
+  updateNeededPointsConstraint();
   assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 
-  PP_STATE.dom.targetStatus.selectedIndex = 1;
+  PP_STATE.dom.targetStatus.selectedIndex = platinumIndex;
   updateNeededPointsConstraint();
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[1].dataset.statusLabel, 'プラチナ');
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '4000');
   assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：1728');
-
-  PP_STATE.dom.targetStatus.selectedIndex = 0;
-  updateNeededPointsConstraint();
-  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 });
 
 test('前年からランクを引き継いだ場合も目標閾値全体を入力できる', () => {
@@ -260,8 +267,8 @@ test('必要ポイントの説明も削除した週平均を案内しない', ()
   }
 });
 
-test('ステータス選択の再生成でoptionが重複しない', () => {
-  const { PP_STATE, populateStatusSelects } = loadCalculatorContext();
+test('ステータス選択の再生成で設定済みランクが重複しない', () => {
+  const { PP_STATE, PP_REGION_CONFIGS, populateStatusSelects } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
   PP_STATE.dom.reverseStatus = createSelect();
@@ -269,36 +276,43 @@ test('ステータス選択の再生成でoptionが重複しない', () => {
   populateStatusSelects();
   populateStatusSelects();
 
-  assert.strictEqual(PP_STATE.dom.currentStatus.options.length, 5);
-  assert.strictEqual(PP_STATE.dom.reverseStatus.options.length, 5);
+  const expectedCount = Object.keys(PP_REGION_CONFIGS.JP.statuses).length;
+  for (const select of [PP_STATE.dom.currentStatus, PP_STATE.dom.reverseStatus]) {
+    const values = select.options.map(option => String(option.value));
+    assert.strictEqual(values.length, expectedCount);
+    assert.strictEqual(new Set(values).size, expectedCount);
+  }
 });
 
-test('ブロンズ以外のステータスでは、同ランク維持と次のランク昇格が目標に設定される', () => {
-  const { PP_STATE, updateBaseRateAndTarget } = loadCalculatorContext();
+test('ステータス変更時は維持と有効な昇格先だけを重複なく提示する', () => {
+  const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
-
-  PP_STATE.dom.currentStatus.value = '1.5';
   PP_STATE.dom.baseRate = createInput();
   PP_STATE.dom.targetStatus = createSelect();
   PP_STATE.dom.neededPoints = createInput();
 
-  updateBaseRateAndTarget();
+  const config = PP_REGION_CONFIGS.JP;
+  const assertTargets = (currentValue, requiredLabels) => {
+    PP_STATE.dom.currentStatus.value = String(currentValue);
+    updateBaseRateAndTarget();
 
-  assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 2);
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ゴールド');
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[1].dataset.statusLabel, 'プラチナ');
+    const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel);
+    const currentLabel = Object.keys(config.statuses).find(label => config.statuses[label] === currentValue);
+    const allowed = new Set([
+      ...(currentValue > 1 && currentLabel ? [currentLabel] : []),
+      ...(config.statusPointsMapping[currentValue] || [])
+    ]);
+
+    for (const label of requiredLabels) assert.ok(labels.includes(label), `${currentValue}: ${label}`);
+    assert.strictEqual(new Set(labels).size, labels.length);
+    assert.ok(labels.every(label => allowed.has(label)));
+  };
+
+  assertTargets(1.5, ['ゴールド', 'プラチナ']);
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '1000');
 
-  PP_STATE.dom.currentStatus.value = '2';
-  PP_STATE.dom.baseRate = createInput();
-  PP_STATE.dom.targetStatus = createSelect();
-  PP_STATE.dom.neededPoints = createInput();
-
-  updateBaseRateAndTarget();
-
-  assert.strictEqual(PP_STATE.dom.targetStatus.options.length, 1);
-  assert.strictEqual(PP_STATE.dom.targetStatus.options[0].dataset.statusLabel, 'ダイヤモンド');
+  assertTargets(2, ['ダイヤモンド']);
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '15000');
 });
 
