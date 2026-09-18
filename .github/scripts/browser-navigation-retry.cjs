@@ -1,7 +1,8 @@
 'use strict';
 const { cleanError } = require('./ci-evidence.cjs');
-async function withNavigationRetry({ url, operation, delay, onAttempt, maxAttempts = 3 }) {
-  if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > 3) throw new Error('navigation retry limit must be 1..3');
+const MAX_NAVIGATION_ATTEMPTS = 3;
+async function withNavigationRetry({ url, operation, delay, onAttempt, maxAttempts = MAX_NAVIGATION_ATTEMPTS }) {
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1 || maxAttempts > MAX_NAVIGATION_ATTEMPTS) throw new Error(`navigation retry limit must be 1..${MAX_NAVIGATION_ATTEMPTS}`);
   const parsed = new URL(url);
   const safeUrl = parsed.origin + parsed.pathname;
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
@@ -19,4 +20,4 @@ async function withNavigationRetry({ url, operation, delay, onAttempt, maxAttemp
     return value;
   }
 }
-module.exports = { withNavigationRetry };
+module.exports = { MAX_NAVIGATION_ATTEMPTS, withNavigationRetry };
