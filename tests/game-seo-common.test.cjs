@@ -49,31 +49,28 @@ test('shared writer normalizes only line endings and never writes unchanged cont
   assert.equal(writeIfChanged(root, 'games/test/index.html', 'text\r\n'), false);
 });
 
-test('multiple ordered description replacements read and write each Japanese page once', t => {
+test('multiple ordered description replacements preserve scope, order and idempotency', t => {
   const root = fixture(t);
   for (const file of ['games/test/index.html', 'games/test/guide/index.html', 'en/games/test/index.html']) {
     writeIfChanged(root, file, 'old second unchanged');
   }
-  const originalRead = fs.readFileSync, originalWrite = fs.writeFileSync;
-  const reads = [], writes = [];
-  t.mock.method(fs, 'readFileSync', function (file, ...args) {
-    reads.push(path.relative(root, file));
-    return Reflect.apply(originalRead, this, [file, ...args]);
-  });
+  const originalWrite = fs.writeFileSync;
+  const writes = [];
   t.mock.method(fs, 'writeFileSync', function (file, ...args) {
     writes.push(path.relative(root, file));
     return Reflect.apply(originalWrite, this, [file, ...args]);
   });
+
   const replacements = [['old', 'intermediate'], ['intermediate', 'new'], ['second', 'other']];
   const expected = ['games/test/index.html', 'games/test/guide/index.html'];
   assert.deepEqual(replaceDescriptionsAcrossGamePages(root, replacements), expected);
-  assert.deepEqual(reads, expected);
-  assert.deepEqual(writes, expected);
-  assert.equal(originalRead(path.join(root, expected[0]), 'utf8'), 'new other unchanged');
-  assert.equal(originalRead(path.join(root, 'en/games/test/index.html'), 'utf8'), 'old second unchanged');
+  assert.equal(writes.every(file => expected.includes(file)), true, 'non-Japanese or unrelated files must not be written');
+  assert.equal(fs.readFileSync(path.join(root, expected[0]), 'utf8'), 'new other unchanged');
+  assert.equal(fs.readFileSync(path.join(root, 'en/games/test/index.html'), 'utf8'), 'old second unchanged');
+
   writes.length = 0;
   assert.deepEqual(replaceDescriptionsAcrossGamePages(root, replacements), []);
-  assert.equal(writes.length, 0);
+  assert.equal(writes.length, 0, 'repeat execution must not rewrite unchanged files');
 });
 
 test('all-language correction must be explicitly selected and does not touch non-game articles', t => {

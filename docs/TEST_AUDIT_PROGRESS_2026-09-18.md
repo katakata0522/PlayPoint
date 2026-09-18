@@ -1,6 +1,6 @@
 # PlayPoint テスト個別監査・修正チェックリスト（2026-09-18）
 
-最新集計: **基準930ケース中448精査・482未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第11回を末尾へ追記する。
+最新集計: **基準930ケース中512精査・418未精査**。以下の第3回記録は当時の証跡として保持し、第5回〜第12回を末尾へ追記する。
 
 基準: `katakata0522/PlayPoint` / `d46527f7f1adf692c1d5dc881d7ed186052f0ce6`。作業単位: R01/R02/S07の残件と、既存Service Worker 6ケース。
 
@@ -313,3 +313,42 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 7. 救出記事の#168 design class禁止はdesign ownerへ委譲し、台帳・著者・公式source・関連記事・OGPを保証。
 
 公開コード・ゲームSSOT・記事本文・台帳・検索index・sitemap・workflowは変更していない。
+
+
+## 第12回: 記事生成・日付・Role・ゲーム生成SSOT・FAQ同期64ケース（2026-09-18）
+
+### 集計
+
+基準930コミットに存在した16ファイル64ケースを現行mainと照合した。対象ファイルは基準コミットとWave11完了時mainで同一内容。既精査448へ64を加え、**512精査・418未精査**とする。ケース増減なしで現行956ケースを維持する。
+
+### ファイル別判断
+
+| ファイル | 件数 | 判定 |
+|---|---:|---|
+| article-content-navigation-normalize | 7 | 全維持。関連記事/scope/check-only/冪等/self-link rejection |
+| article-date-contract | 6 | 全維持。100件超snapshot→実inventory件数一致 |
+| article-role-context-required | 2 | 全維持。Role context必須/国際例外 |
+| article-role-next-action-audit | 1 | 維持。全Role populated snapshotを除外、inventory cross-checkへ |
+| article-role-registry | 6 | 全維持。Role definition/classification/fail-closed |
+| blog-index-sync | 5 | 全維持。registry→static index/sitemap/PR pins |
+| build-io-boundaries | 6 | 全維持。exact read counts→scope/write/idempotency |
+| build-output-equivalence | 2 | 全維持。boundary-only normalize |
+| build-pipeline-simplification | 2 | 全維持。exact call counts→minimum presence + dependency order |
+| content-date-separation | 4 | 全維持。build/content date SSOT separation |
+| editorial-summary-integrity | 3 | 全維持。marker cleanup/canonical block |
+| game-page-locale-predicate | 3 | 全維持。canonical game locale predicate |
+| game-page-ssot | 5 | 全維持。game outputs/sitemap/date/sync |
+| game-seo-common | 6 | 全維持。exact I/O counts→scope/order/idempotency |
+| localized-top-targets | 3 | 全維持。locale leaf SSOT |
+| lp-faq-sync | 3 | 全維持。visible FAQ→FAQPage JSON-LD |
+
+### 変更したテスト設計
+
+1. 日付監査件数は100超ではなくgetArticleFilesの実inventoryと一致。
+2. Article Role監査は全Role非空を要求せず、全記事が1Roleへ集計されfailure 0を保証。
+3. Role監査対象数はlocale手書き一覧ではなく独立article inventoryと照合。
+4. build I/Oはexact read回数ではなく対象外write禁止・write churn抑止・asset再評価・repeat idempotency・欠損fail closed。
+5. build pipelineはhreflang/asset/game-hubのexact呼出回数ではなく必要工程の存在と依存順序。
+6. game-seo-commonはread/write各1回ではなくscope/order/non-JA非干渉/repeat no-write。
+
+公開コード・生成器・記事本文・Role定義・日付・FAQ・workflowは変更していない。

@@ -481,6 +481,43 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS、ゲームSSOT、価格、記事本文、記事台帳、検索index、sitemap、計算式、保存形式、workflowは変更しない。tests/docsのみの変更で本番サイト挙動は変えない。
 
+
+## 個別監査・修正の第12回（2026-09-18）
+
+基準930ケースに含まれる「記事生成・日付・Role・ゲーム生成SSOT・FAQ同期」16ファイル64ケースを、現行SSOT・生成器・公開成果物・冪等性・fail-closed境界と突合して個別精査した。対象16ファイルは基準930コミット `cdf5e2999719edf8e96cafeeca3a205cd9364fae` とWave11完了時mainで同一内容だったため、64ケースを基準件数へ加算する。
+
+**基準930中512精査・418未精査。** 今回はケース削除・統合なし。現行実行集合は956ケースを維持する。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `article-content-navigation-normalize.test.cjs` | 7 | 全件維持。関連記事挿入/保持/scope note/check-only/冪等/自己リンク拒否はtransform behavior |
+| `article-date-contract.test.cjs` | 6 | 全件維持。更新日と公式確認日の意味分離・legacy meta保持・冪等・全件同期を維持。記事数100超という任意閾値を実inventory件数との一致へ変更 |
+| `article-role-context-required.test.cjs` | 2 | 全件維持。relativePath必須と国際contextual CTA例外の実契約 |
+| `article-role-next-action-audit.test.cjs` | 1 | 維持。全件Role/CTA監査。各Roleが必ず1件以上存在する状態snapshotを外し、別SSOTのarticle inventory件数と全Role集計一致へ |
+| `article-role-registry.test.cjs` | 6 | 全件維持。Role定義・全記事分類・代表job分類・未知記事fail-closedはプロダクト契約 |
+| `blog-index-sync.test.cjs` | 5 | 全件維持。台帳→静的新着/カテゴリ、非掲載除外、未知カテゴリfail-closed、PR準備pin、人向けsitemap同期 |
+| `build-io-boundaries.test.cjs` | 6 | 全件維持。I/Oなしtransform、asset hash更新、地域補正、price safetyを維持。read回数exactを外し、対象外write禁止・1同期内write churn抑止・再実行冪等へ |
+| `build-output-equivalence.test.cjs` | 2 | 全件維持。改行境界のみ許容しsemantic/internal whitespace driftは拒否 |
+| `build-pipeline-simplification.test.cjs` | 2 | 全件維持。必要な最終化順序/手動国際記事所有権を維持。hreflang=2回、asset=1回、game hub=1回のexact call countを最低必要回数＋順序へ変更 |
+| `content-date-separation.test.cjs` | 4 | 全件維持。build dateとcontent date分離、top/sitemap/build-targetsのSSOT一元化 |
+| `editorial-summary-integrity.test.cjs` | 3 | 全件維持。壊れたmarker cleanup・空行正規化・自動対象のcanonical block一意 |
+| `game-page-locale-predicate.test.cjs` | 3 | 全件維持。canonical localeのgame path判定と不正path拒否 |
+| `game-page-ssot.test.cjs` | 5 | 全件維持。locale game set・sitemap/date・override・同期passをSSOTで保証 |
+| `game-seo-common.test.cjs` | 6 | 全件維持。required edit/fail-closed/writer/範囲指定/title ownershipを維持。read/write各1回exactをscope・order・再実行無writeへ変更 |
+| `localized-top-targets.test.cjs` | 3 | 全件維持。locale ID leaf SSOT・top/article target整合 |
+| `lp-faq-sync.test.cjs` | 3 | 全件維持。可視FAQをJSON-LD正本としbyte-idempotent/manual LP一致 |
+
+### 今回の過剰固定整理
+
+- 公開記事総数を「100件超」と固定しない。日付同期が監査する件数と、同じSSOTから取得した実article inventory件数が一致することを保証する。
+- Article Roleは「全Roleが常に1件以上存在」を要求しない。記事の追加・統合で一時的に0件になるRoleを品質低下とみなさず、全監査記事がちょうど1Roleへ数えられ、failuresが0であることを保証する。
+- Article Role全件inventoryで `en/ko/tw` をテスト側に二重記載せず、別の日付契約inventoryと全件数を突合する。
+- build I/Oはread回数そのものを仕様にしない。対象外writeをしない、1同期で同一targetを無意味に何度もwriteしない、asset変更を次回runで再評価する、2回目は不要なwriteをしない、欠損契約はfail closedすることを保証する。
+- build pipelineは同義な安全工程の追加で落ちないよう、exact invocation countではなく「必要工程が存在し、依存する最終化順序が守られる」ことを契約にする。
+- game SEO共通replacementもread回数exactを外し、日本語game scope、replacement順序、non-JA非干渉、再実行無writeを保証する。
+
+公開HTML/CSS/JS、記事本文、記事台帳、Role定義、content date、game SSOT、FAQ、生成器、workflowは変更しない。tests/docsのみの変更で本番サイト挙動は変えない。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
