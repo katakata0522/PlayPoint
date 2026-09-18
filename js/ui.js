@@ -5,6 +5,50 @@ import { CONFIGS, STATE, CONSTANTS, getNextFridayCalendarWindow } from './config
 const HTML_TEXT_KEYS = new Set(['siteDescription', 'warningRate', 'guestNotice']);
 const LOCALIZED_PAGE_PREFIXES = ['/en/', '/ko/', '/tw/'];
 const TAB_NAVIGATION_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'Home', 'End']);
+const HOME_EXPERIENCE_SCROLL_THRESHOLD = 320;
+let homeExperiencePromise = null;
+let homeExperienceScrollBound = false;
+
+function loadHomeExperience() {
+    if (!homeExperiencePromise) {
+        homeExperiencePromise = import('/js/home-experience.js?v=20260919_1').catch((error) => {
+            homeExperiencePromise = null;
+            throw error;
+        });
+    }
+    return homeExperiencePromise;
+}
+
+function resetMainDescription() {
+    const description = document.getElementById('site-description');
+    const value = CONFIGS[STATE.currentRegion]?.uiText?.siteDescription;
+    if (!description || !value) return;
+    description.innerHTML = value;
+}
+
+function syncHomeExperience(mode) {
+    if (mode === CONSTANTS.MODE_MAIN && !homeExperiencePromise) {
+        resetMainDescription();
+        return;
+    }
+    void loadHomeExperience()
+        .then((module) => module.renderHomeExperience(mode, STATE.currentRegion))
+        .catch((error) => console.warn('Home experience enhancement failed:', error));
+}
+
+function bindLazyHomeExperience() {
+    if (homeExperienceScrollBound || typeof window.addEventListener !== 'function') return;
+    homeExperienceScrollBound = true;
+    const loadAfterScroll = () => {
+        if (window.scrollY < HOME_EXPERIENCE_SCROLL_THRESHOLD) return;
+        window.removeEventListener('scroll', loadAfterScroll);
+        void loadHomeExperience()
+            .then((module) => module.renderHomeExperience(UI.activeMode || CONSTANTS.MODE_MAIN, STATE.currentRegion))
+            .catch((error) => console.warn('Home experience enhancement failed:', error));
+    };
+    window.addEventListener('scroll', loadAfterScroll, { passive: true });
+    loadAfterScroll();
+}
 const UNEXPECTED_ERROR_MESSAGES = Object.freeze({
     ja: '予期せぬエラーが発生しました。ページをリロードしてみてください。',
     en: 'An unexpected error occurred. Please try reloading the page.',
@@ -86,6 +130,7 @@ function handleTabListKeydown(event) {
 
 export const UI = {
     toastTimerId: null,
+    activeMode: CONSTANTS.MODE_MAIN,
 
     // トースト通知を表示するメソッド
     showToast(message, type = 'normal') {
@@ -187,6 +232,11 @@ export const UI = {
             const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${dates}&recur=RRULE:FREQ=WEEKLY;BYDAY=FR&details=${encodeURIComponent(details)}`;
             gcalBtn.href = gcalUrl;
         }
+
+        bindLazyHomeExperience();
+        if (this.activeMode !== CONSTANTS.MODE_MAIN || homeExperiencePromise) {
+            syncHomeExperience(this.activeMode || CONSTANTS.MODE_MAIN);
+        }
     },
 
     // 結果要素に残った前回計算の共有用データを破棄
@@ -266,6 +316,7 @@ export const UI = {
 
     // モード（タブ）の切替メソッド
     switchMode(mode) {
+        this.activeMode = mode;
         setPanelVisibility(STATE.dom.mainMode, mode === CONSTANTS.MODE_MAIN);
         setPanelVisibility(STATE.dom.reverseMode, mode === CONSTANTS.MODE_REVERSE);
         setPanelVisibility(STATE.dom.diaryMode, mode === CONSTANTS.MODE_DIARY);
@@ -277,6 +328,8 @@ export const UI = {
         });
         if (STATE.dom.result) this.clearResult(STATE.dom.result);
         if (STATE.dom.reverseResult) this.clearResult(STATE.dom.reverseResult);
+        if (mode === CONSTANTS.MODE_MAIN) resetMainDescription();
+        syncHomeExperience(mode);
     },
 
     // ツールチップを閉じるメソッド

@@ -304,3 +304,45 @@ test('公開トップは役割が分かる既存タブ名と、入力を邪魔�
   assert.doesNotMatch(firstView, /ANALYTICS|gtag|dataLayer/, 'raw previous values must not enter analytics code');
   assert.match(read('privacy.html'), /直近の通常計算で入力した現在・目標ステータスと必要ポイント/);
 });
+
+
+
+test('モード別ガイドは初期表示に載せず、逆算・週次の操作時だけ遅延読込する', () => {
+  const ui = read('js/ui.js');
+  const experience = read('js/home-experience.js');
+  const worker = read('sw.js');
+
+  assert.match(ui, /import\('\/js\/home-experience\.js\?v=20260919_1'\)/);
+  assert.match(ui, /HOME_EXPERIENCE_SCROLL_THRESHOLD = 320/);
+  assert.doesNotMatch(worker, /home-experience\.js/, 'home experience must not inflate initial Service Worker precache');
+  assert.match(experience, /descriptions:[\s\S]*?reverse:[\s\S]*?diary:/);
+});
+
+test('週次モードは週次記事だけを見える2列カードで案内する', () => {
+  const experience = read('js/home-experience.js');
+
+  assert.match(experience, /ウィークリー関連ガイド/);
+  assert.match(experience, /ボタンがない・受け取れない時/);
+  assert.match(experience, /スーパーウィークリーの条件・賞品/);
+  assert.match(experience, /mode-context-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(experience, /mainOnlySections/);
+  assert.match(experience, /for \(const section of sections\) setVisible\(section, isMain\)/);
+});
+
+test('スマホ記事導線はカードを2列にし、極小幅だけ1列へ退避する', () => {
+  const experience = read('js/home-experience.js');
+
+  assert.match(experience, /@media\(max-width:640px\)[^\n]*article-link-list\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(experience, /@media\(max-width:340px\)\{\.mode-context-grid,\.article-link-list\{grid-template-columns:1fr\}/);
+  assert.match(experience, /article-link-title\{font-size:\.93rem/);
+});
+
+test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
+  const experience = read('js/home-experience.js');
+
+  assert.match(experience, /\.back-to-top\{[^\n]*width:48px;height:48px/);
+  assert.match(experience, /backToTopButton\.id = 'back-to-top'/);
+  assert.match(experience, /window\.scrollTo\(\{ top: 0, behavior: reduced \? 'auto' : 'smooth' \}\)/);
+  assert.match(experience, /window\.innerHeight \* 0\.85/);
+  assert.match(experience, /prefers-reduced-motion:reduce/);
+});

@@ -11,6 +11,12 @@ export const DIARY_PURE = {
         friday.setDate(friday.getDate() - (friday.getDay() + 2) % 7);
         return { year: friday.getFullYear(), month: friday.getMonth() + 1, week: Math.floor((friday.getDate() - 1) / 7) + 1 };
     },
+
+    nextFriday(now = new Date()) {
+        const friday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+        friday.setDate(friday.getDate() - (friday.getDay() + 2) % 7 + 7);
+        return friday;
+    },
     normalizePointsValue(value) {
         if (value === null || value === undefined) return '';
         const raw = String(value).trim();
@@ -63,45 +69,63 @@ export const DIARY_PURE = {
 const WEEKLY_EXPERIENCE_COPY = Object.freeze({
     JP: Object.freeze({
         hint: '数字と景品を確認して「結果を記録」を押すと記録されます',
-        largeValueHint: '本当に……？ 5桁のポイントです。合っていればそのまま記録できます。',
+        largeValueHint: '本当に…？（このままの値でも記録に残せます）',
         weekGain: '今週',
         yearTotal: (year) => `${year}年累計`,
-        chartLabel: '月別ポイント'
+        chartLabel: '月別ポイント',
+        shareAria: 'この週の結果をXで共有',
+        nextReward: '次のウィークリー',
+        calendarCta: 'Googleカレンダーに登録'
     }),
     US: Object.freeze({
         hint: 'Enter the result, then press Record result to add it to your record',
-        largeValueHint: 'Really…? That is a five-digit point value. If it is correct, you can record it as is.',
+        largeValueHint: 'Really…? (You can still record this value as entered.)',
         weekGain: 'This week',
         yearTotal: (year) => `${year} total`,
-        chartLabel: 'Monthly points'
+        chartLabel: 'Monthly points',
+        shareAria: 'Share this week’s result on X',
+        nextReward: 'Next weekly reward',
+        calendarCta: 'Add to Google Calendar'
     }),
     IN: Object.freeze({
         hint: 'Enter the result, then press Record result to add it to your record',
-        largeValueHint: 'Really…? That is a five-digit point value. If it is correct, you can record it as is.',
+        largeValueHint: 'Really…? (You can still record this value as entered.)',
         weekGain: 'This week',
         yearTotal: (year) => `${year} total`,
-        chartLabel: 'Monthly points'
+        chartLabel: 'Monthly points',
+        shareAria: 'Share this week’s result on X',
+        nextReward: 'Next weekly reward',
+        calendarCta: 'Add to Google Calendar'
     }),
     KR: Object.freeze({
         hint: '숫자와 리워드를 확인한 뒤 ‘결과 기록’을 누르면 기록됩니다',
-        largeValueHint: '정말…? 5자리 포인트입니다. 맞다면 그대로 기록해도 됩니다.',
+        largeValueHint: '정말…? (이 값 그대로도 기록할 수 있습니다.)',
         weekGain: '이번 주',
         yearTotal: (year) => `${year}년 누적`,
-        chartLabel: '월별 포인트'
+        chartLabel: '월별 포인트',
+        shareAria: '이번 주 결과를 X에 공유',
+        nextReward: '다음 주간 리워드',
+        calendarCta: 'Google 캘린더에 등록'
     }),
     TW: Object.freeze({
         hint: '確認點數與獎品後，按「記錄結果」才會寫入記錄',
-        largeValueHint: '真的……？這是 5 位數點數。若數字正確，可以直接記錄。',
+        largeValueHint: '真的…？（這個數值也可以直接保留並記錄。）',
         weekGain: '本週',
         yearTotal: (year) => `${year}年累計`,
-        chartLabel: '每月點數'
+        chartLabel: '每月點數',
+        shareAria: '在 X 分享本週結果',
+        nextReward: '下次每週獎勵',
+        calendarCta: '新增至 Google 日曆'
     }),
     HK: Object.freeze({
         hint: '確認點數與獎品後，按「記錄結果」才會寫入記錄',
-        largeValueHint: '真的……？這是 5 位數點數。若數字正確，可以直接記錄。',
+        largeValueHint: '真的…？（這個數值也可以直接保留並記錄。）',
         weekGain: '本週',
         yearTotal: (year) => `${year}年累計`,
-        chartLabel: '每月點數'
+        chartLabel: '每月點數',
+        shareAria: '在 X 分享本週結果',
+        nextReward: '下次每週獎勵',
+        calendarCta: '新增至 Google 日曆'
     })
 });
 
@@ -196,6 +220,10 @@ export const DIARY = {
 .weekly-mini-item.is-current-month .weekly-mini-bar-fill{background:linear-gradient(180deg,#58a6ff 0%,#4f9cf9 38%,#3fb950 100%);box-shadow:0 -2px 8px rgba(63,185,80,.32)}
 .weekly-mini-bar-label{display:block;min-width:0;color:#7a8694;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
 .weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0b57d0;font-weight:900}
+.weekly-next-reward{display:flex;align-items:center;justify-content:space-between;gap:.7em;flex-wrap:wrap;margin:.8em 0 0;padding-top:.7em;border-top:1px solid rgba(11,87,208,.12);font-size:.82em;line-height:1.5}
+.weekly-next-reward strong{color:var(--text-color);font-weight:900}
+.weekly-next-reward a{color:#0b57d0;font-weight:800;text-decoration:none}
+.weekly-next-reward a:hover{text-decoration:underline}
 .weekly-achievement-panel.is-celebrating{animation:weekly-panel-in .28s ease-out}
 .weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:weekly-bar-grow .62s cubic-bezier(.2,.78,.22,1) both;animation-delay:var(--weekly-delay,0ms)}
 .weekly-achievement-panel.is-celebrating .weekly-mini-bar-label{animation:weekly-label-in .3s ease-out both;animation-delay:calc(var(--weekly-delay,0ms) + 260ms)}
@@ -312,7 +340,32 @@ export const DIARY = {
             chart.appendChild(item);
         });
 
-        panel.append(metrics, chartTitle, chart);
+        const nextReward = document.createElement('div');
+        nextReward.className = 'weekly-next-reward';
+        const nextDate = DIARY_PURE.nextFriday();
+        const nextDateText = new Intl.DateTimeFormat(config.lang, {
+            month: 'numeric',
+            day: 'numeric',
+            weekday: 'short'
+        }).format(nextDate);
+        const nextLabel = document.createElement('span');
+        nextLabel.append(document.createTextNode(copy.nextReward + ' '));
+        const nextStrong = document.createElement('strong');
+        nextStrong.textContent = nextDateText;
+        nextLabel.appendChild(nextStrong);
+        nextReward.appendChild(nextLabel);
+
+        const calendarSource = document.getElementById('register-google-cal-btn');
+        if (calendarSource?.href && !calendarSource.href.endsWith('#')) {
+            const calendarLink = document.createElement('a');
+            calendarLink.href = calendarSource.href;
+            calendarLink.target = '_blank';
+            calendarLink.rel = 'noopener noreferrer';
+            calendarLink.textContent = copy.calendarCta;
+            nextReward.appendChild(calendarLink);
+        }
+
+        panel.append(metrics, chartTitle, chart, nextReward);
         panel.hidden = false;
         panel.classList.remove('is-celebrating');
         if (animate) {
@@ -402,7 +455,7 @@ export const DIARY = {
                 <p class="weekly-large-value-hint" hidden aria-live="polite"></p>
                 <div class="diary-btn-group">
                     <button type="button" class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
-                    <button type="button" class="diary-x-share-btn" data-week="${weekNum}" title="X（Twitter）でシェア" aria-label="Xでシェア">𝕏</button>
+                    <button type="button" class="diary-x-share-btn" data-week="${weekNum}">𝕏</button>
                 </div>
             `;
 
@@ -411,7 +464,12 @@ export const DIARY = {
             const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
             const largeValueHint = row.querySelector('.weekly-large-value-hint');
             const shareBtn = row.querySelector(`.diary-x-share-btn[data-week="${weekNum}"]`);
+            const weeklyCopy = this.getWeeklyExperienceCopy();
 
+            if (shareBtn) {
+                shareBtn.title = weeklyCopy.shareAria;
+                shareBtn.setAttribute('aria-label', weeklyCopy.shareAria);
+            }
             this.updateLargeValueHint(pointsInput, largeValueHint);
             pointsInput.addEventListener('input', () => this.updateLargeValueHint(pointsInput, largeValueHint));
 
