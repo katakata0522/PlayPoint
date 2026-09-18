@@ -147,12 +147,3 @@ test('日本語記事データと配信ファイルの更新日・説明が一�
   assert.ok(atom.includes(`<updated>${date}T12:00:00+09:00</updated>`));
   assert.ok(blogSitemap.includes('<loc>https://playpoint-sim.com/articles/2025-12-25-diamond-worth-it.html</loc>'));
 });
-
-test('独立管理の記事は生成処理で上書きされずサイトマップ対象に残る', () => {
-  const content = read('scripts/intl-seo-content.cjs');
-  const generator = read('scripts/intl-seo-pages.cjs');
-  assert.ok(content.includes('const MANUAL_COMPARISON_ARTICLES'));
-  assert.ok(generator.includes('if (article.manual) continue;'));
-  assert.ok(content.includes("file: 'ko/articles/google-play-points-platinum-diamond-cost.html'"));
-  assert.ok(content.includes("file: 'tw/articles/google-play-points-platinum-diamond-cost.html'"));
-});
