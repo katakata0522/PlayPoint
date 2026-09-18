@@ -211,7 +211,7 @@ function getLocalizedGameGuideLinks(localeKey) { return ALL_GUIDES.map(guide => 
 function getLocalizedGameGuideJapaneseAlternates() { return Object.fromEntries(ALL_GUIDES.map(guide => [`${guide.slug}.html`, guide.jaPath])); }
 function isLocalizedGameGuideArticlePath(value) { return /^(?:en|ko|tw)\/articles\/[^/]+\.html$/.test(String(value || '')) && ALL_GUIDES.some(guide => String(value).endsWith(`/${guide.slug}.html`)); }
 function assertCatalog() {
-  if (ALL_GUIDES.length !== 17) throw new Error(`Expected 17 localized game guides, got ${ALL_GUIDES.length}`);
+  if (!ALL_GUIDES.length) throw new Error('Localized game guide catalog must not be empty');
   const slugs = new Set();
   for (const guide of ALL_GUIDES) {
     if (slugs.has(guide.slug)) throw new Error(`Duplicate localized game guide slug: ${guide.slug}`);

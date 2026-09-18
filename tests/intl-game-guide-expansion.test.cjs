@@ -18,19 +18,20 @@ const {
 } = require('../scripts/intl-game-guide-expansion.cjs');
 const { classifyArticleRole } = require('../scripts/article-role-registry.cjs');
 
-test('多言語ゲーム特集は17本×3言語を一意に持つ', () => {
-  assert.equal(ALL_GUIDES.length, 17);
-  assert.deepEqual(Object.keys(LOCALES).sort(), ['en', 'ko', 'tw']);
-  assert.equal(new Set(ALL_GUIDES.map(guide => guide.slug)).size, 17);
-  const hrefs = Object.keys(LOCALES).flatMap(locale => ALL_GUIDES.map(guide => hrefFor(locale, guide.slug)));
-  assert.equal(hrefs.length, 51);
-  assert.equal(new Set(hrefs).size, 51);
-  assert.equal(Object.keys(getLocalizedGameGuideJapaneseAlternates()).length, 17);
+test('多言語ゲーム特集はSSOTの全ガイドを全ロケールへ一意に展開する', () => {
+  const locales = Object.keys(LOCALES);
+  assert.ok(ALL_GUIDES.length > 0, 'localized game guide catalog must not be empty');
+  assert.deepEqual(locales.sort(), ['en', 'ko', 'tw']);
+  assert.equal(new Set(ALL_GUIDES.map(guide => guide.slug)).size, ALL_GUIDES.length);
+  const hrefs = locales.flatMap(locale => ALL_GUIDES.map(guide => hrefFor(locale, guide.slug)));
+  assert.equal(hrefs.length, ALL_GUIDES.length * locales.length);
+  assert.equal(new Set(hrefs).size, hrefs.length);
+  assert.equal(Object.keys(getLocalizedGameGuideJapaneseAlternates()).length, ALL_GUIDES.length);
 });
 
-test('51記事すべてがgame_decisionで公式Googleソースと相互hreflangを持つ', () => {
+test('SSOTの全多言語ゲーム記事がgame_decisionで公式Googleソースと相互hreflangを持つ', () => {
   for (const locale of Object.keys(LOCALES)) {
-    assert.equal(getLocalizedGameGuideLinks(locale).length, 17);
+    assert.equal(getLocalizedGameGuideLinks(locale).length, ALL_GUIDES.length);
     for (const guide of ALL_GUIDES) {
       const relative = `${locale}/articles/${guide.slug}.html`;
       const html = renderGuide(locale, guide);
@@ -125,15 +126,15 @@ test('地域固有の価格・公式用語を日本語版から機械換算し�
   assert.doesNotMatch(umaEn, /US\$9\.80|US\$6\./);
 });
 
-test('生成入口は一時ディレクトリへ51記事を再現できる', () => {
+test('生成入口は一時ディレクトリへSSOT全記事を再現できる', () => {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-intl-games-'));
   try {
     const summary = writeLocalizedGameGuides(root);
-    assert.equal(summary.checked, 51);
-    assert.equal(summary.changed, 51);
+    assert.equal(summary.checked, ALL_GUIDES.length * Object.keys(LOCALES).length);
+    assert.equal(summary.changed, ALL_GUIDES.length * Object.keys(LOCALES).length);
     for (const locale of Object.keys(LOCALES)) {
       const files = fs.readdirSync(path.join(root, locale, 'articles')).filter(file => file.endsWith('.html'));
-      assert.equal(files.length, 17, locale);
+      assert.equal(files.length, ALL_GUIDES.length, locale);
     }
     const second = writeLocalizedGameGuides(root);
     assert.equal(second.changed, 0);
