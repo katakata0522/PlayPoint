@@ -73,7 +73,7 @@
   let bodySearchPromise;
   function loadBodySearch() {
     if (bodySearchPromise) return bodySearchPromise;
-    bodySearchPromise = fetch('article-search-index.json', { cache: 'no-cache' }).then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); }).then(index => {
+    bodySearchPromise = fetch('article-search-index.json').then(response => { if (!response.ok) throw Error('Unavailable'); return response.json(); }).then(index => {
     const byPath = new Map(index.articles.map(article => [article.path, article]));
     articles = articles.map(article => byPath.get(article.path) || article); applyFilters();
   }).catch(() => { const notice = document.createElement('p'); notice.setAttribute('role', 'status'); notice.textContent = copy[4]; search.after(notice); });
