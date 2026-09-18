@@ -4,11 +4,23 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { PAGE_TYPES } = require('../scripts/intl-seo-content.cjs');
+const { INTERNATIONAL_LOCALES } = require('../scripts/locale-ids.cjs');
 
 const root = path.resolve(__dirname, '..');
+const statusAndCampaignPages = Object.values(PAGE_TYPES).filter(page => /^(?:status|campaign)\//.test(page.slug));
 
 function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
+}
+
+function calculatorLinks(html) {
+  return [...html.matchAll(/href="([^"]+)"/g)]
+    .map(match => match[1])
+    .filter(href => {
+      const url = new URL(href, 'https://playpoint-sim.com/');
+      return url.pathname === '/en/' && url.searchParams.get('mode') === 'main';
+    });
 }
 
 test('international status pages describe final special earn rates instead of multiplying tier rates', () => {
@@ -65,34 +77,33 @@ test('campaign wait pages compare confirmed rates without treating 2x or 3x as a
 });
 
 test('published international status and campaign pages expose editorial dates without pinning rollout history', () => {
-  for (const file of [
-    'ko/status/diamond/index.html',
-    'en/status/platinum/index.html',
-    'ko/status/platinum/index.html',
-    'tw/status/platinum/index.html',
-    'en/status/gold/index.html',
-    'ko/status/gold/index.html',
-    'tw/status/gold/index.html',
-    'en/campaign/wait/index.html',
-    'ko/campaign/wait/index.html',
-    'tw/campaign/wait/index.html',
-    'en/status/diamond/index.html',
-    'tw/status/diamond/index.html',
-    'en/status/silver/index.html',
-    'en/campaign/2x/index.html',
-    'en/campaign/3x/index.html'
-  ]) {
-    const html = read(file);
-    const meta = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
-    const schema = html.match(/"dateModified":\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
-    assert.ok(meta, `${file}: last-modified`);
-    assert.equal(schema, meta, `${file}: structured date should match metadata`);
+  assert.ok(statusAndCampaignPages.length > 0, 'status/campaign page registry must not be empty');
+
+  for (const page of statusAndCampaignPages) {
+    for (const locale of INTERNATIONAL_LOCALES) {
+      const file = `${locale}/${page.slug}/index.html`;
+      const html = read(file);
+      const meta = html.match(/<meta name="last-modified" content="(\d{4}-\d{2}-\d{2})">/)?.[1];
+      const schema = html.match(/"dateModified":\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
+      assert.ok(meta, `${file}: last-modified`);
+      assert.equal(schema, meta, `${file}: structured date should match metadata`);
+    }
   }
 });
 
 test('legacy multiplier query parameters remain for backward-compatible calculator links', () => {
-  assert.match(read('en/status/gold/index.html'), /multiplier=1/);
-  assert.match(read('en/campaign/2x/index.html'), /multiplier=2/);
-  assert.match(read('en/campaign/3x/index.html'), /multiplier=3/);
-  assert.match(read('en/campaign/wait/index.html'), /multiplier=2/);
+  for (const key of ['gold', 'campaign2x', 'campaign3x', 'campaignWait']) {
+    const page = PAGE_TYPES[key];
+    assert.ok(page, `PAGE_TYPES.${key} is missing`);
+    const expectedMultiplier = new URLSearchParams(page.query).get('multiplier');
+    assert.ok(expectedMultiplier, `${key}: canonical multiplier compatibility value is missing`);
+
+    const html = read(`en/${page.slug}/index.html`);
+    const links = calculatorLinks(html);
+    assert.ok(links.length > 0, `${page.slug}: calculator link is missing`);
+    assert.ok(
+      links.some(href => new URL(href, 'https://playpoint-sim.com/').searchParams.get('multiplier') === expectedMultiplier),
+      `${page.slug}: generated calculator link must preserve canonical legacy multiplier`
+    );
+  }
 });

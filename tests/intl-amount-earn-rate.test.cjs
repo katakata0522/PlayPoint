@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { PAGE_TYPES } = require('../scripts/intl-seo-content.cjs');
 
 const root = path.resolve(__dirname, '..');
 
@@ -11,21 +12,32 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
+function amountSourceCopy(locale) {
+  const copy = PAGE_TYPES.amount10000?.[locale];
+  assert.ok(copy, `amount10000.${locale}: canonical content is missing`);
+  return {
+    summary: (copy.summary || []).join('\n'),
+    sections: (copy.sections || []).flat().join('\n')
+  };
+}
+
 test('dormant international Amount fallback copy uses special earn-rate terminology', () => {
-  const source = read('scripts/intl-seo-content.cjs');
+  assert.equal(PAGE_TYPES.amount10000.slug, 'amount/10000');
+  assert.equal(PAGE_TYPES.amount10000.mode, 'reverse');
 
-  assert.match(source, /Check: status, special earn rate, eligible amount/);
-  assert.match(source, /Change the status and special earn rate to match your account/);
-  assert.doesNotMatch(source, /Check: status, multiplier, eligible amount/);
-  assert.doesNotMatch(source, /Change the status and multiplier to match your account/);
+  const expectations = {
+    en: { required: /special earn rate/i, stale: /\bmultiplier\b/i },
+    ko: { required: /특별 적립률/, stale: /배율/ },
+    tw: { required: /特別獲點率/, stale: /倍率/ }
+  };
 
-  assert.match(source, /확인: 등급, 특별 적립률, 대상 금액/);
-  assert.match(source, /실제 등급과 특별 적립률에 맞게 바꾸세요/);
-  assert.doesNotMatch(source, /확인: 등급, 배율, 대상 금액/);
-  assert.doesNotMatch(source, /실제 등급과 배율에 맞게 바꾸세요/);
-
-  assert.match(source, /確認: 等級、特別獲點率、適用金額/);
-  assert.doesNotMatch(source, /確認: 等級、倍率、適用金額/);
+  for (const [locale, { required, stale }] of Object.entries(expectations)) {
+    const copy = amountSourceCopy(locale);
+    assert.match(copy.summary, required, `${locale}: summary must use earn-rate semantics`);
+    assert.match(copy.sections, required, `${locale}: section copy must use earn-rate semantics`);
+    assert.doesNotMatch(copy.summary, stale, `${locale}: stale multiplier terminology in summary`);
+    assert.doesNotMatch(copy.sections, stale, `${locale}: stale multiplier terminology in sections`);
+  }
 });
 
 test('published Japanese Amount copy uses special earn-rate terminology', () => {
