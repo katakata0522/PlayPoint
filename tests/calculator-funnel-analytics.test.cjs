@@ -42,7 +42,12 @@ test('計算ファネルイベントは分類値だけを許可し入力値を�
 
 test('計算ファネルの状態管理は専用モジュールへ集約する', () => {
   assert.match(mainSource, /from '\.\/calculator-funnel-analytics\.js'/, 'mainが専用ファネルモジュールを利用していません');
-  assert.match(mainSource, /createCalculatorFunnelAnalytics/, 'mainがファネルトラッカーを初期化していません');
+  const factoryStart = mainSource.indexOf('createCalculatorFunnelAnalytics({');
+  const factoryEnd = mainSource.indexOf('});', factoryStart);
+  assert.ok(factoryStart >= 0 && factoryEnd > factoryStart, 'mainがファネルトラッカーを初期化していません');
+  const factorySetup = mainSource.slice(factoryStart, factoryEnd);
+  assert.match(factorySetup, /\bgetConsentStatus\s*:/, 'Consent状態がmainからファネルトラッカーへ注入されていません');
+  assert.match(factorySetup, /\bgetRegion\s*:/, '地域分類がmainからファネルトラッカーへ注入されていません');
 });
 
 test('結果リンク計測は外部URLを内部pathへ偽装せず遷移種別だけ残す', () => {
