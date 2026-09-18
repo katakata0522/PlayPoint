@@ -1,0 +1,43 @@
+name: EN Description Canonical Sync
+
+on:
+  push:
+    branches:
+      - fix/remove-en-description-hard-limit-20260918
+    paths:
+      - ".github/workflows/en-description-canonical-sync.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
+        with:
+          ref: fix/remove-en-description-hard-limit-20260918
+
+      - name: Set up pinned CI Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.0.1
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Generate canonical outputs
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit generated outputs
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "Canonical outputs already match."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "build: sync EN descriptions without hard limit"
+          git push origin HEAD:fix/remove-en-description-hard-limit-20260918
