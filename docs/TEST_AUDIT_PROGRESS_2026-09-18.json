@@ -655,7 +655,7 @@
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium"
   },
-  "expectedCurrentCasesAfterWave13": 957,
+  "expectedCurrentCasesAfterWave13": 958,
   "wave13": {
     "date": "2026-09-18",
     "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
@@ -706,9 +706,9 @@
     "concurrentMainChanges": [
       {
         "pr": 357,
-        "effect": "基準930外のEN game description/TGS回帰1ケースを追加",
+        "effect": "基準930外のEN game description/TGS公開条件の回帰2ケースを追加",
         "auditProgressEffect": "none",
-        "currentCaseDelta": 1
+        "currentCaseDelta": 2
       }
     ]
   }
