@@ -718,7 +718,7 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 
 ### 集計
 
-基準930コミットに存在した5ファイル24ケースを、地域runtime config・Speculation Rules・repository実参照・CSP/Deploy/security healthと照合した。既精査866へ24を加え、**883精査・47未精査**とする。ケース数は増減せず現行959ケースを維持する。
+基準930コミットに存在した5ファイル24ケースを、地域runtime config・Speculation Rules・repository実参照・CSP/Deploy/security healthと照合した。既精査866へ24を加え、**890精査・40未精査**とする。ケース数は増減せず現行959ケースを維持する。
 
 ### ファイル別判断
 
@@ -820,7 +820,6 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-rank-maintenance: 5
 - intl-regional-accuracy: 5
 - intl-rewards-quests: 5
-- ci-performance-sampling: 9
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・翻訳・テストコードは変更していない。
@@ -850,7 +849,6 @@ PR #345時点の保存TAPは961/961。今回の静的ケース計算は958だが
 - intl-rank-maintenance: 5
 - intl-regional-accuracy: 5
 - intl-rewards-quests: 5
-- ci-performance-sampling: 9
 - 第22回事実保留: intl-content-expansion 1 / intl-game-guide-expansion 1
 
 公開コード・記事本文・テストコードは変更していない。
