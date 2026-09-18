@@ -110,9 +110,9 @@
     "postMinifyPassed": 18
   },
   "mergeAndProductionEvidence": "対応PRの最終HEAD・完了記録で確認。未実行を成功と扱わない。",
-  "latestStage": 9,
-  "latestReviewedBaselineCases": 336,
-  "latestUnreviewedBaselineCases": 594,
+  "latestStage": 10,
+  "latestReviewedBaselineCases": 375,
+  "latestUnreviewedBaselineCases": 555,
   "expectedCurrentCasesAfterWave5": 958,
   "wave5": {
     "date": "2026-09-18",
@@ -439,6 +439,56 @@
         "name": "app module changes always change Service Worker fingerprint",
         "owner": "runtime-module-guards"
       }
+    ],
+    "productionFilesChanged": false,
+    "authoritativeValidation": "PR Gate saved TAP / Chromium"
+  },
+  "expectedCurrentCasesAfterWave10": 956,
+  "wave10": {
+    "date": "2026-09-18",
+    "baselineCommit": "cdf5e2999719edf8e96cafeeca3a205cd9364fae",
+    "reviewedBaselineCases": 39,
+    "scope": "article-structure-registry-content-roles",
+    "files": [
+      {
+        "file": "tests/article-content-audit-regression.test.cjs",
+        "cases": 8,
+        "decision": "keep_all_article_content_regressions"
+      },
+      {
+        "file": "tests/article-quality-polish.test.cjs",
+        "cases": 6,
+        "decision": "keep_all_remove_author_profile_count_snapshot"
+      },
+      {
+        "file": "tests/changelog-hygiene.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_latest_marker_version_agnostic"
+      },
+      {
+        "file": "tests/content-structure.test.cjs",
+        "cases": 10,
+        "decision": "keep_all_dynamic_taxonomy_reachability_and_semantic_structure"
+      },
+      {
+        "file": "tests/jp-cash-conversion-intent.test.cjs",
+        "cases": 2,
+        "decision": "keep_all_semantic_cash_paypay_intent"
+      },
+      {
+        "file": "tests/play-points-content-evolution.test.cjs",
+        "cases": 7,
+        "decision": "keep_all_content_role_boundaries"
+      },
+      {
+        "file": "tests/tw-rank-cost-intent-boundaries.test.cjs",
+        "cases": 4,
+        "decision": "keep_all_owner_threshold_destination_boundaries"
+      }
+    ],
+    "operationalChanges": [
+      "site-click-depth: unreachable hard fail, >3 advisory",
+      "prepare-pr/preflight labels: reachability and click-depth observation"
     ],
     "productionFilesChanged": false,
     "authoritativeValidation": "PR Gate saved TAP / Chromium"
