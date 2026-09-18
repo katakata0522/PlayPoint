@@ -71,5 +71,24 @@ test('ポイント入力はpt単位を常時見せ、5桁警告は非ブロッ�
   assert.match(diary, /shouldQuestionLargePoints/);
   assert.match(diary, />= 10000/);
   assert.doesNotMatch(diary, /window\.confirm|confirm\(/);
-  assert.match(diary, /合っていればそのまま記録できます/);
+  assert.match(diary, /本当に…？（このままの値でも記録に残せます）/);
+});
+
+
+test('X共有ラベルは地域別コピーを使い、日本語固定ariaを残さない', () => {
+  const diary = read('js/diary.js');
+
+  assert.match(diary, /shareAria: 'この週の結果をXで共有'/);
+  assert.match(diary, /shareBtn\.setAttribute\('aria-label', weeklyCopy\.shareAria\)/);
+  assert.doesNotMatch(diary, /aria-label="Xでシェア"/);
+});
+
+test('記録結果には次の金曜日とGoogleカレンダー導線をコンパクトに表示する', () => {
+  const diary = read('js/diary.js');
+
+  assert.match(diary, /nextFriday\(now = new Date\(\)\)/);
+  assert.match(diary, /weekly-next-reward/);
+  assert.match(diary, /register-google-cal-btn/);
+  assert.match(diary, /copy\.nextReward/);
+  assert.match(diary, /copy\.calendarCta/);
 });
