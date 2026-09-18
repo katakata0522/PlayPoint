@@ -1,3 +1,4 @@
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 const fs = require('fs');
 const path = require('path');
 const { getLpFooterProfile, renderPageFooter } = require('./site-shell.cjs');
@@ -39,7 +40,7 @@ function normalizeLpFooter(content, locKey) {
 // 旧フッターの一度限りの移行とは分け、手書き海外LPを共通プロフィールへ継続同期する。
 function syncIntlManualLpFooters(rootDir) {
   const summary = { checked: 0, changed: 0 };
-  for (const locale of ['en', 'ko', 'tw']) {
+  for (const locale of INTERNATIONAL_LOCALES) {
     for (const slug of ['maintenance/diamond', 'maintenance/platinum', 'points-cost']) {
       const file = path.join(rootDir, locale, slug, 'index.html');
       if (!fs.existsSync(file)) continue;
