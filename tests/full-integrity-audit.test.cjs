@@ -75,15 +75,17 @@ test('必須ブラウザCIはゲームと記事の収益経路を検査する', 
   assert.match(smoke, /article-ad-container/);
 });
 
-test('国際LPはundefinedフッターやランク率×倍率の説明を生成しない', () => {
-  const content = read('scripts/intl-seo-content.cjs');
-  assert.match(content, /trademarkNotice/);
-  assert.ok(!content.includes('Preset: 3x multiplier'));
-  assert.ok(!content.includes('초기 조건: 3배 배율'));
-  assert.ok(!content.includes('預設: 3 倍倍率'));
-  for (const file of ['en/campaign/3x/index.html', 'ko/campaign/3x/index.html', 'tw/campaign/3x/index.html']) {
+test('国際3x LPはundefinedを出さず最終特別獲得率として説明する', () => {
+  const cases = [
+    ['en/campaign/3x/index.html', /special earn rate of 3 points per \$1/i, /does not multiply|rather than multiplying/i],
+    ['ko/campaign/3x/index.html', /1,000원당 3pt.*특별 적립률/, /기본 적립률에 3을 곱하지/],
+    ['tw/campaign/3x/index.html', /每 NT\$30 3 點.*特別獲點率/, /不會把.*基本獲點率乘以 3/]
+  ];
+  for (const [file, ratePattern, noMultiplyPattern] of cases) {
     const html = read(file);
     assert.ok(!html.includes('>undefined<'), file);
+    assert.match(html, ratePattern, file);
+    assert.match(html, noMultiplyPattern, file);
   }
 });
 
@@ -135,15 +137,17 @@ test('LP収益セクションはcanonical buildで冪等に同期される', () 
 });
 
 test('国際2xページも最終特別獲得率として説明する', () => {
-  const source = read('scripts/intl-seo-content.cjs');
-  assert.ok(!source.includes('Preset: 2x multiplier'));
-  assert.ok(!source.includes('with a 2x multiplier'));
-  assert.ok(!source.includes('초기 조건: 2배 배율'));
-  assert.ok(!source.includes('預設: 2 倍倍率'));
-  assert.ok(source.includes('special earn rate of 2 points per $1'));
-  assert.ok(source.includes("secondaryHref: '/en/campaign/3x/'"));
-  assert.ok(source.includes("secondaryHref: '/ko/campaign/3x/'"));
-  assert.ok(source.includes("secondaryHref: '/tw/campaign/3x/'"));
+  const cases = [
+    ['en/campaign/2x/index.html', /special earn rate of 2 points per \$1/i, /does not multiply|rather than multiplying/i, '/en/campaign/3x/'],
+    ['ko/campaign/2x/index.html', /1,000원당 2pt.*특별 적립률/, /기본 적립률에 2를 곱하지/, '/ko/campaign/3x/'],
+    ['tw/campaign/2x/index.html', /每 NT\$30 2 點.*特別獲點率/, /不會把.*基本獲點率乘以 2/, '/tw/campaign/3x/']
+  ];
+  for (const [file, ratePattern, noMultiplyPattern, nextHref] of cases) {
+    const html = read(file);
+    assert.match(html, ratePattern, file);
+    assert.match(html, noMultiplyPattern, file);
+    assert.ok(html.includes(`href="${nextHref}"`), `${file}: 3x comparison link`);
+  }
 });
 
 test('記事共通導線は固定交換価値や旧キャンペーン倍率を断定しない', () => {
