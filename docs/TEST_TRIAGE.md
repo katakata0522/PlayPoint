@@ -852,6 +852,29 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開HTML/CSS/JS・計算式・1728例・保存形式・保存キー・記事本文・デザインは変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第25回（2026-09-18）
+
+基準930ケースに含まれる「rollback・復旧」4ファイル29ケースを、Deploy/rollback/watchdog workflow、snapshot helper、復元後検証経路と突合して個別精査した。
+
+**基準930中829精査・101未精査。** 29ケースはすべて保証を維持し、ケース数は増減しない。現行959ケースを維持する。公開サイト・Deploy先・rollback SHA・復元手順は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `automatic-rollback.test.cjs` | 9 | 全件維持・変更なし。production mutation/critical failureだけで発火、verified snapshot exact SHA、失敗release非成功化、復元版自身でのHTTP→Chromium再検証、SSH cleanupを保証 |
+| `deploy-recovery-watchdog.test.cjs` | 7 | 全件維持・変更なし。mirror未試行では復元しない、別Deploy保護、trusted main制御面、verified snapshotのみ復元、外部restore後の再検証を保証 |
+| `rollback-workflow.test.cjs` | 6 | 全件維持・変更なし。手動main限定、明示SHA一致、symlink/別所有領域fail-closed、復元後の検証を保証 |
+| `snapshot-history.test.cjs` | 7 | 全件維持。履歴世代数5のexact snapshotだけを2〜10世代の有限policyへ変更。SHA単位履歴、symlink/metadata/別所有領域、Deploy SSH再利用、atomic activate、Bash構文は維持 |
+
+### 今回の過剰固定・安全境界
+
+- snapshot履歴の保持数は「必ず5」であること自体が安全契約ではない。rollback候補を複数保持しつつ無制限増加を防ぐため、2〜10世代の有限範囲を要求する。
+- exact 40文字SHA、snapshot metadata一致、symlink拒否、別所有領域保護、production mutation前のsnapshot検証はセキュリティ/復旧境界なので緩和しない。
+- rollback成功で元release失敗を成功扱いにしない契約、復元revision自身の検証コードでHTTP/SEO/security/Chromiumを再実行する契約も維持する。
+- watchdogはmirror未試行・別Deploy進行中・既にverifiedの場合にrestoreしない。過剰復旧を避けるfail-safeとして維持する。
+
+公開HTML/CSS/JS・Deploy/rollback実装・現行HISTORY_LIMIT値は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
