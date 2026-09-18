@@ -66,6 +66,36 @@ test('英語ゲーム特集のmeta descriptionは固定文字数で切らず、�
   assert.equal(new Set(descriptions).size, ALL_GUIDES.length, 'each English game guide must keep a distinct description');
 });
 
+test('多言語ゲーム特集のmeta descriptionは180文字を超えても固定上限で切らない', () => {
+  const base = ALL_GUIDES[0];
+  const longMarket = ('This intentionally long authored summary stays complete and is not cut by a fixed character limit. ').repeat(3).trim();
+  const prefixes = {
+    en: '',
+    ko: '지역별 공식 조건을 확인하는 게임 결제 가이드. ',
+    tw: '依地區官方條件整理的遊戲消費指南。'
+  };
+
+  for (const locale of Object.keys(LOCALES)) {
+    const guide = {
+      ...base,
+      content: {
+        ...base.content,
+        [locale]: { ...base.content[locale], market: longMarket }
+      }
+    };
+    const html = renderGuide(locale, guide);
+    const description = (html.match(/<meta name="description" content="([^"]*)">/) || [])[1] || '';
+    const expected = (prefixes[locale] + longMarket)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    assert.ok(description.length > 180, locale + ': regression fixture must exceed the old cap');
+    assert.equal(description, expected, locale + ': description must preserve the complete authored summary');
+  }
+});
+
 test('地域固有の価格・公式用語を日本語版から機械換算しない', () => {
   const bySlug = slug => ALL_GUIDES.find(guide => guide.slug === slug);
 
