@@ -11,7 +11,7 @@ const { createLocales } = require('../scripts/locale-config.cjs');
 const { hasExplicitTargetMarker } = require('../scripts/navigation-source-map.cjs');
 const { buildLocalizedHtml } = require('../scripts/language-page-builder.cjs');
 
-const localeCases = {
+const generatedLocaleCases = {
   en: {
     expectedWidget: 'Free widget',
     expectedFeedName: 'Google Play Points Calculator',
@@ -29,6 +29,22 @@ const localeCases = {
     expectedFeedName: 'Google Play Points 計算器',
     expectedChartAria: '只在此裝置上比較每月記錄的點數。',
     forbiddenScripts: /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u
+  }
+};
+
+const trackedLocaleCases = {
+  ...generatedLocaleCases,
+  hk: {
+    expectedWidget: '免費小工具',
+    expectedFeedName: 'Google Play Points 計算器',
+    expectedChartAria: '只在此裝置上比較每月記錄的點數。',
+    forbiddenScripts: /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]/u
+  },
+  in: {
+    expectedWidget: 'Free widget',
+    expectedFeedName: 'Google Play Points Calculator',
+    expectedChartAria: 'Compare monthly recorded points only on this device.',
+    forbiddenScripts: /[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Han}]/u
   }
 };
 
@@ -53,8 +69,8 @@ function getUserFacingSurface(html) {
 
 test('地域セレクタだけを属性追加に依存せず多言語混入監査から除外する', () => {
   const selector = '<div data-test="region" class="top region-switch compact" aria-label="Play country or region"><button>🇯🇵 日本</button><button>🇰🇷 대한민국</button><button>🇹🇼 台灣</button></div>';
-  assert.equal(getUserFacingSurface(`${selector}<main>English only</main>`).match(localeCases.en.forbiddenScripts), null);
-  assert.notEqual(getUserFacingSurface('<main>English text 日本</main>').match(localeCases.en.forbiddenScripts), null);
+  assert.equal(getUserFacingSurface(`${selector}<main>English only</main>`).match(trackedLocaleCases.en.forbiddenScripts), null);
+  assert.notEqual(getUserFacingSurface('<main>English text 日本</main>').match(trackedLocaleCases.en.forbiddenScripts), null);
 });
 
 test('静的生成辞書は多言語フッターの全リンク文言を持つ', () => {
@@ -77,11 +93,11 @@ test('静的生成辞書は多言語フッターの全リンク文言を持つ',
   }
 });
 
-test('3言語トップはJavaScript実行前からウィジェット名が翻訳されている', () => {
+test('多言語トップはJavaScript実行前からウィジェット名が翻訳されている', () => {
   const source = read('index.html');
   const locales = createLocales('2026-08-06');
 
-  for (const [langDir, localeCase] of Object.entries(localeCases)) {
+  for (const [langDir, localeCase] of Object.entries(generatedLocaleCases)) {
     const generated = buildLocalizedHtml(source, langDir, locales[langDir]);
     const tracked = read(`${langDir}/index.html`);
     for (const [kind, html] of [['generated', generated], ['tracked', tracked]]) {
@@ -92,13 +108,22 @@ test('3言語トップはJavaScript実行前からウィジェット名が翻訳
     }
     assert.doesNotMatch(tracked, /data-lang-key="linkWidget">無料ウィジェット<\/a>/);
   }
+
+  for (const langDir of ['hk', 'in']) {
+    const localeCase = trackedLocaleCases[langDir];
+    const tracked = read(`${langDir}/index.html`);
+    const links = [...tracked.matchAll(/<a\b[^>]*data-lang-key="linkWidget"[^>]*>([^<]+)<\/a>/g)];
+    assert.equal(links.length, 1, `${langDir}: tracked keeps one widget entry`);
+    assert.ok(links[0][1].startsWith(localeCase.expectedWidget), `${langDir}: tracked widget name is localized`);
+    assert.ok(hasExplicitTargetMarker(links[0][1], 'ja'), `${langDir}: tracked identifies the Japanese guide`);
+  }
 });
 
 test('フィード名と年次グラフの読み上げ文言を各言語で静的生成する', () => {
   const source = read('index.html');
   const locales = createLocales('2026-08-06');
 
-  for (const [langDir, localeCase] of Object.entries(localeCases)) {
+  for (const [langDir, localeCase] of Object.entries(generatedLocaleCases)) {
     const outputs = [
       ['generated', buildLocalizedHtml(source, langDir, locales[langDir])],
       ['tracked', read(`${langDir}/index.html`)]
@@ -122,10 +147,22 @@ test('フィード名と年次グラフの読み上げ文言を各言語で静�
       );
     }
   }
+
+  for (const langDir of ['hk', 'in']) {
+    const localeCase = trackedLocaleCases[langDir];
+    const html = read(`${langDir}/index.html`);
+    assert.match(html, new RegExp(`type="application/rss\\+xml" title="${escapeRegex(localeCase.expectedFeedName)} RSS"`), `${langDir}: tracked RSS title`);
+    assert.match(html, new RegExp(`type="application/atom\\+xml" title="${escapeRegex(localeCase.expectedFeedName)} Atom"`), `${langDir}: tracked Atom title`);
+    assert.match(
+      html,
+      new RegExp(`<div id="diary-year-chart"[^>]*aria-label="${escapeRegex(localeCase.expectedChartAria)}"[^>]*data-lang-aria="yearlyChartDescription"`),
+      `${langDir}: tracked year-chart aria label`
+    );
+  }
 });
 
 test('多言語トップの利用者向け静的文言へ別言語の文字が混入しない', () => {
-  for (const [langDir, localeCase] of Object.entries(localeCases)) {
+  for (const [langDir, localeCase] of Object.entries(trackedLocaleCases)) {
     const surface = getUserFacingSurface(read(`${langDir}/index.html`));
     const match = surface.match(localeCase.forbiddenScripts);
     assert.equal(match, null, `${langDir}: foreign-script character remains: ${match && match[0]}`);

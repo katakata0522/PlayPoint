@@ -13,7 +13,9 @@ test('each calculator entry page has a stable static lang for pre-init errors', 
     ['index.html', 'ja'],
     ['en/index.html', 'en'],
     ['ko/index.html', 'ko'],
-    ['tw/index.html', 'zh-TW']
+    ['tw/index.html', 'zh-TW'],
+    ['hk/index.html', 'zh-HK'],
+    ['in/index.html', 'en-IN']
   ];
 
   for (const [relativePath, lang] of entries) {

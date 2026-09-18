@@ -642,6 +642,30 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 公開サイト挙動は変更していない。tests/docsのみの変更である。
 
+
+## 個別監査・修正の第17回（2026-09-18）
+
+基準930ケースに含まれる「地域セレクタ・静的言語整合」4ファイル20ケースを、6地域公開HTML、first-view owner、active ESM graph、必須Chromiumのmobile-region-layout smokeと突合して個別精査した。
+
+**基準930中663精査・267未精査。** ケース数は増減せず、現行実行集合**959ケース**を維持する。公開HTML/CSS/JS・表示文言・デザイン・地域挙動は変更しない。
+
+| 対象 | 基準ケース | 判断 |
+|---|---:|---|
+| `region-selector-semantics.test.cjs` | 13 | 全件維持。6地域の初期HTML、HK/IN発見性、first-paint保護、44px touch target、desktop flag asset、localized accessible nameを維持。Chromiumが所有する5列/1行/選択色/右端geometryの具体CSS値と、browser-language recommendationの重複source snapshotを整理 |
+| `top-page-language-integrity.test.cjs` | 5 | 全件維持。生成EN/KO/TWに加え、別生成経路のHK/IN tracked topもwidget/feed/chart/static language leak監査へ追加 |
+| `en-locale-hygiene.test.cjs` | 1 | 維持。英語HTML監査を`en/`だけでなく英語Indiaトップの`in/`にも拡張 |
+| `global-error-localization.test.cjs` | 1 | 維持。「each calculator entry」の実態に合わせ、HK `zh-HK` とIN `en-IN`を追加 |
+
+### 今回の過剰固定・不足整理
+
+- browser-languageの国別推薦マッピングは既精査 `mobile-first-view-contract` が実関数behaviorで所有するため、region-selector側で`startsWith(...)`やprivate DOM関数名を再固定しない。ここではcompatibility moduleがactive ESM graph上でfirst-viewへ依存することだけを確認する。
+- mobile selectorの5列・同一行・ラベル表示・選択色・desktop右端geometryは必須 `mobile-region-layout-smoke` が6地域×320/360/390/412px＋1024pxのcomputed layoutで検証済み。Node側は具体的grid値・色hex・radius pxを二重固定しない。
+- first-paint用critical styleがboot前に注入される順序、44px touch target、desktop/mobile labelの役割分離、OS flag emoji非依存、localized accessible namesは静的境界として維持する。
+- HK/INはEN/KO/TWと生成経路が異なるため、従来の3言語generator loopへ無理に混ぜず、tracked outputを同じ意味契約で追加検査する。
+- 英語IndiaとHK/INの静的`lang`を取りこぼしていたため、言語混入・pre-init error localeの対象を6地域へ補完する。
+
+公開サイト挙動は変更していない。tests/docsのみの変更である。
+
 ## 現行の全テストファイル台帳（2026-09-18）
 
 `tests/*.test.cjs` の172ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。

@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { runEsmProbe } = require('./helpers/runtime-esm.cjs');
 
 const root = path.resolve(__dirname, '..');
 const primaryRegions = [
@@ -56,56 +57,30 @@ test('expanded selector keeps Hong Kong and India discoverable as regions', () =
   assert.match(js, /More regions/);
   assert.match(js, /🇭🇰 HK/);
   assert.match(js, /🇮🇳 IN/);
-  assert.match(js, /data-region-active="false"/);
-  assert.match(js, /toggle\.dataset\.regionActive = activeExpandedRegion \? 'true' : 'false'/);
   assert.match(js, /aria-current/);
 });
 
-test('browser-language suggestion requires a country-specific locale before choosing Play rules', () => {
-  const compatibility = fs.readFileSync(path.join(root, 'js', 'language-suggestion.js'), 'utf8');
-  const firstView = fs.readFileSync(path.join(root, 'js', 'first-view.js'), 'utf8');
-
-  assert.match(compatibility, /from '\.\/first-view\.js'/);
-  for (const locale of ['en-us', 'ko-kr', 'zh-tw', 'zh-hk', 'en-in']) {
-    assert.ok(firstView.includes(`startsWith('${locale}')`), `missing explicit locale guard: ${locale}`);
-  }
-  assert.match(firstView, /browserLang\.startsWith\('ko'\)\) return null/);
-  assert.match(firstView, /browserLang\.startsWith\('zh'\)\) return null/);
-  assert.match(firstView, /browserLang\.startsWith\('en'\)\) return null/);
-  assert.match(firstView, /hideLegacyBanner\(\)/);
-  assert.match(firstView, /markRegionRecommended\(region, RECOMMENDATION_COPY/);
-  assert.match(firstView, /aria-description/);
-  assert.doesNotMatch(firstView, /languageSuggestionBanner\.classList\.remove\(CONSTANTS\.CLASS_HIDDEN\)/);
+test('browser-language compatibility delegates recommendation behavior to first-view', () => {
+  const graph = runEsmProbe({ kind: 'graph' });
+  const compatibility = graph.find(item => new URL(item.url).pathname === '/js/language-suggestion.js');
+  assert.ok(compatibility, 'language-suggestion.js is missing from the active ESM graph');
+  const dependencies = new Set(compatibility.imports.map(url => new URL(url).pathname));
+  assert.ok(dependencies.has('/js/first-view.js'), 'browser-language compatibility no longer delegates to first-view');
 });
 
-test('mobile selector owns first paint before the async stylesheet arrives', () => {
+test('mobile selector owns first-paint protection before the async stylesheet arrives', () => {
   const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
-  const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
 
   assert.match(js, /REGION_SELECTOR_CRITICAL_STYLE_ID = 'region-selector-critical-style'/);
   assert.match(js, /ensureRegionSelectorCriticalStyle\(\);[\s\S]*?const bootRegionSelector/);
-  assert.match(js, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
-  assert.match(js, /font-size: 0/);
-  for (const [region, label] of [['JP', '🇯🇵 JP'], ['US', '🇺🇸 US'], ['KR', '🇰🇷 KR'], ['TW', '🇹🇼 TW']]) {
-    assert.ok(js.includes(`button[data-region="${region}"]::after { content: "${label}"; }`), `missing critical label for ${region}`);
-  }
-
-  assert.match(css, /\.region-switch > button\[data-region\]::after \{[\s\S]*?content: none/);
-  assert.match(css, /@media \(max-width: 520px\)[\s\S]*?\.region-switch \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
 });
 
-test('mobile selector keeps full desktop country names but shows compact region codes in one row', () => {
+test('mobile selector keeps separate compact labels and a 44px touch target', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
-  const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
 
   assert.match(css, /\.region-label-desktop \{[\s\S]*?display: none/);
   assert.match(css, /\.region-label-mobile \{[\s\S]*?display: inline/);
-  assert.match(css, /\.region-switch \.region-more \{[\s\S]*?grid-column: auto/);
   assert.match(css, /min-height: 44px/);
-
-  for (const label of ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW']) {
-    assert.ok(js.includes(label), `missing compact mobile label: ${label}`);
-  }
 });
 
 test('desktop selector does not depend on OS flag-emoji rendering', () => {
@@ -129,11 +104,9 @@ test('region selector uses localized accessible names instead of English-only la
   assert.match(js, /button\.setAttribute\('aria-label', `\$\{accessibleName\} — \$\{copy\.regionSuffix\}`\)/);
 });
 
-test('region selection color and desktop right edge are owned by region-selector.css', () => {
+test('region selector state styling uses the expanded-region data state', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
 
   assert.match(css, /\.region-more-toggle\[data-region-active="true"\]/);
-  assert.match(css, /background: var\(--input-focus-border-color, #005fcc\) !important/);
-  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-switch \.region-more-toggle \{[\s\S]*?border-left: 0;[\s\S]*?border-top-right-radius: 6px;[\s\S]*?border-bottom-right-radius: 6px/);
   assert.doesNotMatch(css, /\.region-more-toggle\.active \{/);
 });
