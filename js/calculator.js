@@ -172,8 +172,9 @@ export const CALC = {
             });
         }
 
-        // 2. 次のランクの「昇格」を追加
-        const nextTargets = (config.statusPointsMapping[currentStatusValue] || []).slice(0, 1);
+        // 2. 現在ランクより上の「昇格」候補をすべて追加
+        // statusPointsMapping が昇格候補のSSOT。UI側で最初の1件へ切り詰めない。
+        const nextTargets = config.statusPointsMapping[currentStatusValue] || [];
         nextTargets.forEach(targetLabel => {
             const points = config.thresholds[targetLabel];
             if (points) {

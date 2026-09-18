@@ -34,10 +34,9 @@ test('通常計算の目標候補は現在ランクから進める有効なラ�
   const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel);
   const allowedTargets = new Set(config.statusPointsMapping[1] || []);
 
-  assert.ok(labels.includes('シルバー'));
+  assert.deepStrictEqual(labels, [...allowedTargets], 'ブロンズではSSOTの全上位ランクを目標候補にする');
   assert.strictEqual(new Set(labels).size, labels.length);
-  assert.ok(labels.every(label => allowedTargets.has(label)));
-  assert.strictEqual(PP_STATE.dom.neededPoints.max, String(config.thresholds['シルバー']));
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, String(config.thresholds[labels[0]]));
   assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 });
 
@@ -284,36 +283,38 @@ test('ステータス選択の再生成で設定済みランクが重複しな�
   }
 });
 
-test('ステータス変更時は維持と有効な昇格先だけを重複なく提示する', () => {
+test('各地域で維持とSSOTの全上位ランクを重複なく提示する', () => {
   const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
-  PP_STATE.currentRegion = 'JP';
-  PP_STATE.dom.currentStatus = createSelect();
-  PP_STATE.dom.baseRate = createInput();
-  PP_STATE.dom.targetStatus = createSelect();
-  PP_STATE.dom.neededPoints = createInput();
 
-  const config = PP_REGION_CONFIGS.JP;
-  const assertTargets = (currentValue, requiredLabels) => {
-    PP_STATE.dom.currentStatus.value = String(currentValue);
-    updateBaseRateAndTarget();
+  for (const [region, config] of Object.entries(PP_REGION_CONFIGS)) {
+    PP_STATE.currentRegion = region;
+    PP_STATE.dom.currentStatus = createSelect();
+    PP_STATE.dom.baseRate = createInput();
+    PP_STATE.dom.targetStatus = createSelect();
+    PP_STATE.dom.neededPoints = createInput();
 
-    const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel);
-    const currentLabel = Object.keys(config.statuses).find(label => config.statuses[label] === currentValue);
-    const allowed = new Set([
-      ...(currentValue > 1 && currentLabel ? [currentLabel] : []),
-      ...(config.statusPointsMapping[currentValue] || [])
-    ]);
+    for (const [currentLabel, currentValue] of Object.entries(config.statuses)) {
+      PP_STATE.dom.currentStatus.value = String(currentValue);
+      updateBaseRateAndTarget();
 
-    for (const label of requiredLabels) assert.ok(labels.includes(label), `${currentValue}: ${label}`);
-    assert.strictEqual(new Set(labels).size, labels.length);
-    assert.ok(labels.every(label => allowed.has(label)));
-  };
+      const expected = [
+        ...(Number(currentValue) > 1 ? [currentLabel] : []),
+        ...(config.statusPointsMapping[currentValue] || [])
+      ];
+      const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel).filter(Boolean);
 
-  assertTargets(1.5, ['ゴールド', 'プラチナ']);
-  assert.strictEqual(PP_STATE.dom.neededPoints.max, '1000');
+      assert.deepStrictEqual(labels, expected, `${region}/${currentLabel}: target candidates must exactly follow region SSOT`);
+      assert.strictEqual(new Set(labels).size, labels.length, `${region}/${currentLabel}: duplicate target candidates`);
 
-  assertTargets(2, ['ダイヤモンド']);
-  assert.strictEqual(PP_STATE.dom.neededPoints.max, '15000');
+      if (expected.length) {
+        assert.strictEqual(
+          PP_STATE.dom.neededPoints.max,
+          String(config.thresholds[expected[0]]),
+          `${region}/${currentLabel}: default constraint must match first visible target`
+        );
+      }
+    }
+  }
 });
 
 test('韓国（KR）リージョンの spendUnit 正確性検証', () => {
