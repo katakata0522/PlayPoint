@@ -1,4 +1,5 @@
 'use strict';
+const { INTERNATIONAL_LOCALES } = require('./locale-ids.cjs');
 
 const fs = require('fs');
 const path = require('path');
@@ -268,7 +269,7 @@ function getGameSitemapEntries(rootDir) {
 }
 
 function getLocalizedGameGuideSitemapEntries() {
-  return ['en', 'ko', 'tw'].flatMap(localeKey => ALL_GUIDES.map(guide => ({
+  return INTERNATIONAL_LOCALES.flatMap(localeKey => ALL_GUIDES.map(guide => ({
     url: `${SITE_ORIGIN}${intlGameGuideHrefFor(localeKey, guide.slug)}`,
     lastmod: INTL_GAME_GUIDE_MODIFIED_AT
   })));
