@@ -98,5 +98,37 @@ test('latest hub keeps the campaign-intent answer visible in indexable metadata'
   const html = read('latest/index.html');
   assert.match(titleOf(html, 'latest'), /(?:キャンペーン|ポイント増量)/, 'latest: campaign intent must remain in title');
   assert.match(metaContent(html, 'description', 'latest'), /(?:キャンペーン|ポイント増量)/, 'latest: campaign intent must remain in description');
+  assert.match(html, /ポイントアップ/, 'latest: colloquial point-up wording should bridge to the campaign owner without title stuffing');
+});
+
+test('ambiguous search intents hand off to the dedicated owner pages', () => {
+  const platinum = read('status/platinum/index.html');
+  assert.match(titleOf(platinum, 'platinum cost'), /プラチナ.*いくら/, 'platinum cost owner must keep the direct cost intent');
+
+  const ordinaryWeekly = read('articles/2025-12-25-weekly-reward.html');
+  assert.match(titleOf(ordinaryWeekly, 'ordinary weekly'), /ウィークリーリワードとは/, 'ordinary weekly owner must keep the generic definition intent');
+
+  const superWeekly = read('articles/2026-07-31-super-weekly-reward.html');
+  const quickAnswerIndex = superWeekly.indexOf('id="quick-answer"');
+  const ordinaryOwnerLinkIndex = superWeekly.indexOf('href="./2025-12-25-weekly-reward.html"', quickAnswerIndex);
+  assert.ok(quickAnswerIndex >= 0, 'super weekly: quick answer is required');
+  assert.ok(
+    ordinaryOwnerLinkIndex > quickAnswerIndex && ordinaryOwnerLinkIndex < quickAnswerIndex + 2200,
+    'super weekly: generic weekly intent should be handed to the ordinary-weekly owner near the first answer'
+  );
+
+  const koreanUse = read('ko/articles/google-play-points-use-coupons.html');
+  assert.match(
+    koreanUse,
+    /href="\/ko\/articles\/google-play-points-balance-history-progress\.html"/,
+    'KO use-coupons: balance/check intent must route to the dedicated balance owner'
+  );
+
+  const koreanBalance = read('ko/articles/google-play-points-balance-history-progress.html');
+  assert.match(
+    titleOf(koreanBalance, 'KO balance'),
+    /잔액.*확인/,
+    'KO balance owner must keep balance/check intent explicit'
+  );
 });
 
