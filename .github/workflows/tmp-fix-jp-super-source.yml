@@ -1,0 +1,160 @@
+name: Temporary fix Japan Super Weekly source
+
+on:
+  push:
+    branches:
+      - fix/latest-hub-jp-super-source-20260918
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tmp-fix-jp-super-source-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/latest-hub-jp-super-source-20260918
+          persist-credentials: true
+
+      - name: Set up pinned CI Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+
+      - name: Correct Japan source boundary and related article
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path, old, new, count=1):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              actual = text.count(old)
+              if actual != count:
+                  raise SystemExit(f'{path}: expected {count} occurrence(s), found {actual}: {old[:100]!r}')
+              p.write_text(text.replace(old, new), encoding='utf-8')
+
+          latest = Path('latest/index.html')
+          if 'スーパー週次の一般公開ページは現在も「3月の賞品」' not in latest.read_text(encoding='utf-8'):
+              print('Japan Super Weekly source correction is already applied; no-op.')
+              raise SystemExit(0)
+
+          replace_exact(
+              'latest/index.html',
+              '<div class="lp-warning-box"><strong>確認範囲:</strong> Google Play Pointsの制度、ランク、週次特典、クエスト、問題解決手順はGoogle公式情報と照合します。現在表示される獲得率、対象アプリ、賞品、クエスト、在庫はアカウントごとに異なるため、Google Play画面を最終判断に使ってください。</div>',
+              '<div class="lp-warning-box"><strong>確認範囲:</strong> Google Play Pointsの制度、ランク、週次特典、クエスト、問題解決手順はGoogle公式情報と照合します。公開ページで一般条件や賞品掲載を確認しつつ、現在の残数、最終的な参加資格、個別の獲得率・対象アプリ・クエストはアカウントごとに異なるため、Google Play画面を最終判断に使ってください。</div>'
+          )
+          replace_exact(
+              'latest/index.html',
+              '<p>スーパーウィークリーリワードはゴールド以上が主な対象です。賞品数には限りがあり、ステータスや追加資格条件によって内容が異なる場合があります。過去の高額賞品例は今週の当選を保証しません。</p>',
+              '<p>スーパーウィークリーリワードはゴールド以上が主な対象です。2026年9月18日に確認した日本向け公開ページでは、Razer製品、GREEN SPOONクーポン、HORI製品、LG製品などがステータス別賞品として掲載されています。賞品数には限りがあり、追加資格条件や残数はアカウント側の表示を最終判断にしてください。</p>'
+          )
+          replace_exact(
+              'latest/index.html',
+              '<p>スーパー週次の一般公開ページは現在も「3月の賞品」を例示しているため、これを9月18日時点の賞品一覧や現在庫とは扱いません。今週の賞品、残数、最終的な対象可否は、参加資格のある各アカウントのGoogle Play画面に表示された内容を最終判断にしてください。</p>',
+              '<p>日本向けの公開ページでは、9月18日時点でRazer・GREEN SPOON・HORI・LGなどの賞品がステータス別に掲載されています。一方、残りの賞品数と最終的な参加資格は、参加資格のある各アカウントで確認する仕様です。公開ページで確認できる賞品掲載と、アカウント内の残数・対象可否を分けて扱います。</p>\n    <p>なお、<code>hl=ja</code>だけでは日本向けページとは限りません。日本語表示でも国表示が米国の別ページには「3月の賞品」が残っていたため、今回から国表示が「日本 (日本語)」の公開ページだけを日本向けスーパー週次の根拠として採用します。</p>'
+          )
+          replace_exact(
+              'latest/index.html',
+              'https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_editorialmd_loyalty_swp_cujs_unenrolled_fcp',
+              'https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_games_editorialmd_loyalty_swp_cujs_bronzeandsilver_fcp'
+          )
+          replace_exact(
+              'latest/index.html',
+              '<p>通常・スーパー・Play Pass週次特典を日本向けGoogle公式情報で再確認し、主要仕様に変更がないことを確認しました。スーパー週次の一般公開ページに残る「3月の賞品」は現在の賞品・在庫として扱わず、アカウント内表示を最終判断とする区分も維持しています。期限前のクエスト、プロモーション、ランク条件、問題解決手順の確認日は変更していません。</p>',
+              '<p>通常・スーパー・Play Pass週次特典を日本向けGoogle公式情報で再確認し、主要仕様に変更がないことを確認しました。スーパー週次は日本向け公開ページに現行のステータス別賞品が掲載されていることも確認し、公開賞品とアカウント内の残数・最終対象可否を分ける整理へ補正しました。日本語表示でも国表示が米国の別ページは日本向け根拠から除外しています。期限前のクエスト、プロモーション、ランク条件、問題解決手順の確認日は変更していません。</p>'
+          )
+
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<meta name="playpoint:official-verified" content="2026-09-08">',
+              '<meta name="playpoint:official-verified" content="2026-09-18">'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<meta name="last-modified" content="2026-09-12">',
+              '<meta name="last-modified" content="2026-09-18">'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<meta property="article:modified_time" content="2026-09-12T00:00:00+09:00" />',
+              '<meta property="article:modified_time" content="2026-09-18T00:00:00+09:00" />'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '"dateModified":"2026-09-12"',
+              '"dateModified":"2026-09-18"'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '更新 <time data-article-date="modified" datetime="2026-09-12">2026/09/12</time> ・ 公式情報確認 <time data-article-date="official-verified" datetime="2026-09-08">2026/09/08</time>',
+              '更新 <time data-article-date="modified" datetime="2026-09-18">2026/09/18</time> ・ 公式情報確認 <time data-article-date="official-verified" datetime="2026-09-18">2026/09/18</time>'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '「SNSで誰かが言っていた」ではなく、まずGoogle自身が掲載しているものから見ます。2026年9月8日に確認した公式ページでは、過去の賞品例として次が明記されています。',
+              '「SNSで誰かが言っていた」ではなく、まずGoogle自身が掲載しているものから見ます。2026年9月18日に確認した日本向け公式ページでは、過去の賞品例として次が明記されています。'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<p>さらに現在公開されている公式の賞品紹介ページには、Razerのウェブカメラ・マウス・ヘッドフォン、バッグ類、AirbnbやAllbirdsなどのギフトカードといった具体例も掲載されています。</p>',
+              '<p>さらに2026年9月18日に確認した日本向けの公式ページでは、Razerのウェブカメラ・マウス・ヘッドフォン、GREEN SPOONのクーポン、HORIのモバイルゲームコントローラ関連、LGの家電・ゲーミングモニターなどが、ステータス別の賞品として掲載されています。</p>'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<h3 id="article-section-5">ここは「日本で今週も同じ」とは読みません</h3>\n      <p>公開ページにはドル建てギフトカードなど地域差を感じる賞品も含まれています。したがって、この一覧は<strong>スーパーウィークリーで扱われる賞品の幅を知る例</strong>として紹介し、日本の自分のアカウントで同じ賞品が出るとは断定しません。今週の内容はPlay Pointsの「特典」画面が最終確認先です。</p>',
+              '<h3 id="article-section-5">公開賞品と自分の残数・参加可否は分けて見る</h3>\n      <p>日本向け公開ページで賞品掲載を確認できても、賞品数には限りがあり、ステータスや追加資格条件で内容が異なる場合があります。<strong>公開ページは現在の賞品候補の確認、Google Playの「特典」画面は自分の残数・参加可否の最終確認</strong>として使い分けます。</p>'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '検索すると一番気になるところですが、2026年9月8日時点で確認できるGoogle公式情報には、スーパーウィークリーリワードの<strong>数値の当選確率</strong>は掲載されていません。',
+              '検索すると一番気になるところですが、2026年9月18日時点で確認できる日本向けGoogle公式情報には、スーパーウィークリーリワードの<strong>数値の当選確率</strong>は掲載されていません。'
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '公式の過去例ではPixel 8 Pro、Pixel Watch 2、ギフトカード、ゲーム機器、Play Pointsなどです。今週の賞品は特典画面を確認してください。',
+              '公式の過去例ではPixel 8 Pro、Pixel Watch 2、ギフトカード、ゲーム機器、Play Pointsなどです。現在の公開賞品は日本向け公式ページで確認でき、残数と最終的な参加可否は特典画面を確認してください。',
+              count=2
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '      <li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_editorialmd_loyalty_swp_cujs_unenrolled_fcp" rel="noopener noreferrer" target="_blank">スーパーウィークリーリワード</a></li>\n',
+              ''
+          )
+          replace_exact(
+              'articles/2026-07-31-super-weekly-reward.html',
+              '<p class="small">公式情報の最終確認：2026年9月8日。過去の賞品やユーザー当選例は「現在も同じ賞品・枠数・確率」という意味ではありません。</p>',
+              '<p class="small">公式情報の最終確認：2026年9月18日。日本向け公開ページの賞品掲載と、アカウントごとの残数・参加可否を分けて確認しています。過去の賞品やユーザー当選例は「現在も同じ賞品・枠数・確率」という意味ではありません。</p>'
+          )
+          replace_exact(
+              'scripts/article-official-verification-dates.json',
+              '  "articles/2026-07-31-super-weekly-reward.html": "2026-09-08",',
+              '  "articles/2026-07-31-super-weekly-reward.html": "2026-09-18",'
+          )
+          PY
+
+      - name: Regenerate canonical derived files
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit correction
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add latest/index.html articles/2026-07-31-super-weekly-reward.html scripts/article-official-verification-dates.json sitemap.xml blog/sitemap.xml atom.xml blog/articles.json blog/index.html blog/index-auto.html 2>/dev/null || true
+          git add -u
+          git commit -m "fix: 日本向けスーパー週次の公式ソース境界を補正"
+          git push origin HEAD:fix/latest-hub-jp-super-source-20260918
