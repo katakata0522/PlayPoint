@@ -59,9 +59,13 @@ test('Search Console baseline keeps Raw, Normalized and Property Total as separa
   const total = baseline.searchConsole.layers[2];
   assert.deepEqual(raw.dimensions, ['query', 'exact_url']);
   assert.equal(raw.preserveFragment, true);
+  assert.equal(raw.aggregationType, 'byPage');
   assert.deepEqual(normalized.dimensions, ['query', 'base_url']);
   assert.equal(normalized.preserveFragment, false);
+  assert.equal(normalized.aggregationType, 'derived_from_raw');
+  assert.equal(normalized.derivedFrom, 'raw');
   assert.deepEqual(total.dimensions, []);
+  assert.equal(total.aggregationType, 'byProperty');
   assert.equal(baseline.searchConsole.ga4Comparison, 'organic_search_split_by_search_engine');
   assert.equal(baseline.searchConsole.beforeAfterComparison.seoWindowDays, 28);
   assert.equal(baseline.searchConsole.beforeAfterComparison.overlap, 'forbidden');
@@ -70,13 +74,35 @@ test('Search Console baseline keeps Raw, Normalized and Property Total as separa
   const capture = baseline.searchConsole.captureContract;
   assert.equal(capture.historySheet, '🗃GSC 28日履歴');
   assert.equal(capture.comparisonSheet, '🔍GSC 28日比較');
-  assert.deepEqual(capture.dimensions, ['query', 'exact_url']);
+  assert.equal(capture.normalizedComparisonSheet, '🧹GSC 28日正規化');
+  assert.equal(capture.searchType, 'web');
+  assert.equal(capture.apiTimezone, 'America/Los_Angeles');
   assert.deepEqual(capture.windowRoles, ['current_28d', 'previous_28d']);
+  assert.deepEqual(capture.requiredLayers, ['raw', 'normalized', 'property_total']);
   assert.equal(capture.finalDataOnly, true);
   assert.equal(capture.failClosedWhenPairMissing, true);
-  assert.deepEqual(capture.idempotencyKey, ['pair_id', 'window_role', 'search_query', 'exact_url']);
+  assert.equal(capture.failClosedWhenLayerMissing, true);
+  assert.equal(capture.verifyResponseAggregationType, true);
+  assert.deepEqual(capture.idempotencyKey, ['pair_id', 'window_role', 'layer', 'record_type', 'search_query', 'exact_url', 'base_url']);
   assert.match(capture.rule, /rolling 30-day snapshot/);
-  for (const required of ['search_query', 'exact_url', 'period_start', 'period_end', 'clicks', 'impressions', 'ctr', 'avg_position']) {
+  for (const required of [
+    'layer',
+    'search_query',
+    'exact_url',
+    'base_url',
+    'period_start',
+    'period_end',
+    'clicks',
+    'impressions',
+    'ctr',
+    'avg_position',
+    'search_type',
+    'dimensions',
+    'request_aggregation_type',
+    'response_aggregation_type',
+    'site_property',
+    'api_timezone'
+  ]) {
     assert.ok(capture.requiredColumns.includes(required), `missing GSC capture column: ${required}`);
   }
 });
@@ -146,11 +172,74 @@ test('GSC capture module keeps adjacent non-overlapping 28-day query × exact UR
   assert.match(source, /dimensions:\s*\['query', 'page'\]/);
   assert.match(source, /dataState:\s*'final'/);
   assert.match(source, /aggregationType:\s*'byPage'/);
+  assert.match(source, /aggregationType:\s*'byProperty'/);
+  assert.match(source, /dimensions:\s*\[\]/);
+  assert.match(source, /responseAggregationType/);
+  assert.match(source, /America\/Los_Angeles/);
   assert.match(source, /rowLimit:\s*25000/);
   assert.match(source, /startRow\s*\+=\s*rows\.length/);
   assert.match(source, /current_28d/);
   assert.match(source, /previous_28d/);
-  assert.match(source, /SKIPPED_ALREADY_CAPTURED/);
+  assert.match(source, /SKIPPED_ALREADY_COMPLETE/);
+});
+
+test('GSC normalization strips fragments only and aggregates position by impressions', () => {
+  const { context } = loadGscCaptureRuntime();
+  const rows = context.playPointGscNormalizeRows_([
+    {
+      query: 'diamond cost',
+      exactUrl: 'https://playpoint-sim.com/status/diamond/#result',
+      clicks: 2,
+      impressions: 10,
+      ctr: 0.2,
+      position: 4
+    },
+    {
+      query: 'diamond cost',
+      exactUrl: 'https://playpoint-sim.com/status/diamond/#details',
+      clicks: 1,
+      impressions: 30,
+      ctr: 1 / 30,
+      position: 8
+    }
+  ]);
+
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].baseUrl, 'https://playpoint-sim.com/status/diamond/');
+  assert.equal(rows[0].clicks, 3);
+  assert.equal(rows[0].impressions, 40);
+  assert.equal(rows[0].ctr, 3 / 40);
+  assert.equal(rows[0].position, 7);
+});
+
+test('GSC P0 capture requires Raw, Normalized and Property Total for both windows', () => {
+  const { source, context } = loadGscCaptureRuntime();
+
+  const makeRow = (role, layer) => {
+    const row = Array(23).fill('');
+    row[0] = 'pair';
+    row[1] = role;
+    row[2] = layer;
+    return row;
+  };
+
+  const complete = [
+    makeRow('current_28d', 'raw'),
+    makeRow('current_28d', 'normalized'),
+    makeRow('current_28d', 'property_total'),
+    makeRow('previous_28d', 'raw'),
+    makeRow('previous_28d', 'normalized'),
+    makeRow('previous_28d', 'property_total')
+  ];
+
+  assert.equal(context.playPointGscPairComplete_(complete), true);
+  assert.equal(context.playPointGscPairComplete_(complete.slice(0, 5)), false);
+  assert.match(source, /QUERY_PAGE_RAW/);
+  assert.match(source, /QUERY_BASE_URL_NORMALIZED/);
+  assert.match(source, /PROPERTY_TOTAL/);
+  assert.match(source, /site_property/);
+  assert.match(source, /request_aggregation_type/);
+  assert.match(source, /response_aggregation_type/);
 });
 
 test('GSC capture module exposes one idempotent weekly installer and dedicated history/comparison sheets', () => {
@@ -159,6 +248,7 @@ test('GSC capture module exposes one idempotent weekly installer and dedicated h
   assert.equal(typeof context.installPlayPointGsc28dWeeklyTrigger, 'function');
   assert.match(source, /🗃GSC 28日履歴/);
   assert.match(source, /🔍GSC 28日比較/);
+  assert.match(source, /🧹GSC 28日正規化/);
   assert.match(source, /getProjectTriggers\(\)/);
   assert.match(source, /getHandlerFunction\(\) === handler/);
   assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);

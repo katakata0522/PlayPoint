@@ -132,14 +132,19 @@ Search Consoleでは月次で国フィルタを切り替え、表示回数が増
 `PlayPoint Analytics` の最新ビューだけでは、ローリング更新後に「その直前28日」の query × URL raw を再現できない。
 Issue #181 の比較証拠は、次の専用レイヤーへ保存する。
 
-- `🗃GSC 28日履歴`: current_28d / previous_28d を同じ `pair_id` で保存するraw正本
-- `🔍GSC 28日比較`: query × exact URL ごとの Click / Impression / CTR / Position と前期間差を確認する人間向けビュー
+- `🗃GSC 28日履歴`: current_28d / previous_28d を同じ `pair_id` で保存する比較証拠SSOT
+- `🔍GSC 28日比較`: Raw（query × exact URL）の前後比較
+- `🧹GSC 28日正規化`: Normalized（query × base URL）の前後比較
+- Property Total: dimensionなし / `byProperty` をAPIから直接取得し、query行合計で代用しない
 - 実装・導入手順: `docs/GSC_28D_CAPTURE_RUNBOOK.md`
 - Apps Scriptモジュール: `scripts/gsc-nonoverlap-28d.gs`
 
 比較は Search Console の FINAL データだけを使用し、各窓は28日、互いに非重複でなければならない。
-current / previous の片方が欠ける場合、ローリング30日スナップショットしかない場合、
-または query / exact URL が欠ける場合は `BLOCKED` とし、SEO変更の根拠に使わない。
+履歴には `site_property / search_type / dimensions / request_aggregation_type / response_aggregation_type / api_timezone` も保存する。
+Search Console APIの日付は `America/Los_Angeles` 基準として扱う。
+
+current / previous の片方、Raw / Normalized / Property Total のいずれか、
+または取得条件メタデータが欠ける場合は `BLOCKED` とし、SEO変更の根拠に使わない。
 
 通常の `🔎検索語×ページ` と `🎯SEO改善候補` は最新状況を見る運用ビューとして残す。
 最新ビューの更新と、比較証拠の履歴保存は別責務として扱う。
