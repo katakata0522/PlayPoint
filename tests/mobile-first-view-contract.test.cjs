@@ -349,21 +349,31 @@ test('計算フローはGoogleコア4色を段階と接続へ使う', () => {
   assert.doesNotMatch(svg, /#58a6ff|#3fb950/i);
 });
 
-test('トップ下部は短さを保ちつつ具体的な利用場面・ランクの表情・FAQを残す', () => {
+test('トップ下部は機能説明とおすすめ利用場面を分け、ランクの表情・FAQを残す', () => {
   const html = read('index.html');
   const css = read('style.css');
   const experience = read('js/home-experience.js');
+  const compactFlow = read('images/calculation-flow-compact.svg');
   const description = html.match(/<!-- DESCRIPTION_SECTION_START -->([\s\S]*?)<!-- DESCRIPTION_SECTION_END -->/)?.[1] || '';
   const articles = html.match(/<!-- ARTICLE_DRAWER_START -->([\s\S]*?)<!-- ARTICLE_DRAWER_END -->/)?.[1] || '';
   const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
 
+  assert.ok(description.includes('class="home-description-lead"'));
+  assert.match(description, /目標ステータスまでに必要な課金額/);
+  assert.match(description, /5,000円なら何ポイント/);
+  assert.match(description, /毎週のウィークリーリワード記録/);
+  assert.match(description, /こんな人におすすめ/);
   assert.ok(description.includes('class="home-use-cases"'));
   assert.equal((description.match(/<li>/g) || []).length, 4);
   assert.match(description, /ダイヤモンドへの[\s\S]*ランクアップ/);
   assert.match(description, /あと1,000pt/);
   assert.match(description, /5,000円課金したら何ポイント/);
-  assert.match(description, /ウィークリーリワード/);
-  assert.doesNotMatch(description, /home-description-lead/);
+  assert.match(description, /1年分まとめて振り返りたい/);
+  assert.match(description, /images\/calculation-flow-compact\.svg/);
+  assert.match(compactFlow, /1,728 pt/);
+  assert.match(compactFlow, /2\.0 pt/);
+  assert.match(compactFlow, /¥86,400/);
+  assert.doesNotMatch(compactFlow, /POINTS|RATE|ESTIMATE|GOAL GAP|REWARD CONDITION|SPENDING GUIDE/);
 
   assert.equal((articles.match(/home-rank-card--/g) || []).length, 4);
   for (const rank of ['silver', 'gold', 'platinum', 'diamond']) {
