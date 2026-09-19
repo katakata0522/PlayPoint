@@ -70,8 +70,9 @@ async function capture(entry) {
   }
   if (!sourceImageUrl) throw new Error('Official icon URL not found for ' + entry.gameTitle);
 
-  const { response, bytes } = await fetchBuffer(sourceImageUrl, {
-    accept: 'image/avif,image/webp,image/png,image/jpeg,image/*'
+  const requestedImageUrl = sourceImageUrl.replace(/=s0-br30$/, '=w256-h256');
+  const { response, bytes } = await fetchBuffer(requestedImageUrl, {
+    accept: 'image/png,image/jpeg,image/webp,image/*'
   });
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.startsWith('image/')) throw new Error('Not an image: ' + contentType);
@@ -87,6 +88,7 @@ async function capture(entry) {
     rightsHolder: entry.rightsHolder,
     sourcePageUrl: entry.sourcePageUrl,
     sourceImageUrl,
+    requestedImageUrl,
     file: filename,
     contentType,
     bytes: bytes.length,
