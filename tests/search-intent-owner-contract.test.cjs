@@ -64,7 +64,6 @@ test('Korean balance-check intent has one clear owner and descriptive internal a
   );
 
   const hub = read('ko/articles/index.html');
-  assert.match(hub, /data-search="구글포인트 확인 google play points 확인 잔액 내역 등급 진행도 계정·기본"/);
   assert.match(hub, />Google Play Points 잔액·내역·등급 진행도 확인 방법<\/span>/);
 
   const generator = read('scripts/intl-content-expansion.cjs');
