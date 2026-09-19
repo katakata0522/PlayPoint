@@ -1,0 +1,59 @@
+name: Refresh game list icons
+
+on:
+  push:
+    branches:
+      - feat/game-list-thumbnails-20260919
+    paths:
+      - '.github/workflows/refresh-game-list-icons.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d342e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/game-list-thumbnails-20260919
+          persist-credentials: true
+          fetch-depth: 2
+      - name: Capture lightweight official Google Play icons
+        run: node scripts/capture-game-thumbnails.cjs
+      - name: Verify WebP count and byte budget
+        shell: bash
+        run: |
+          set -euo pipefail
+          count="$(find .tmp/game-icons -maxdepth 1 -type f -name '*.webp' | wc -l)"
+          total="$(find .tmp/game-icons -maxdepth 1 -type f -name '*.webp' -printf '%s\n' | awk '{s+=$1} END{print s+0}')"
+          echo "webp_count=$count total_bytes=$total"
+          test "$count" -eq 17
+          test "$total" -le 200000
+      - name: Replace local list icons and synchronize manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f images/game-icons/*.png
+          cp .tmp/game-icons/*.webp images/game-icons/
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const file = 'scripts/game-thumbnail-assets.cjs';
+          let source = fs.readFileSync(file, 'utf8');
+          source = source
+            .replace("'images/game-icons/' + gameId + '.png'", "'images/game-icons/' + gameId + '.webp'")
+            .replace("modification: 'resize-only-128px'", "modification: 'resize-only-128px-webp'");
+          fs.writeFileSync(file, source);
+          NODE
+          node scripts/game-guide-article-hub-sync.cjs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/game-icons scripts/game-thumbnail-assets.cjs blog/articles.json games
+          git diff --cached --stat
+          if git diff --cached --quiet; then
+            echo "Optimized icons already current."
+            exit 0
+          fi
+          git commit -m "perf: optimize game list icons as WebP"
+          git push origin HEAD:feat/game-list-thumbnails-20260919
