@@ -129,9 +129,14 @@ const DEDICATED_OGP_ARTICLES = Object.freeze([
   }
 ]);
 
-test('救出記事と8月19日記事は専用JPEG実体のOGPを持ち、内容が重複しない', () => {
+test('救出記事と8月19日記事は専用OGPを保持し、一覧サムネイルとは独立して管理する', () => {
   const registry = JSON.parse(read('blog/articles.json'));
   const hashes = new Map();
+  const gameListThumbnails = new Map([
+    ['umamusume-half-anniversary-points', '../images/game-icons/umamusume.webp'],
+    ['dokkan-battle-dragon-ball-play-points', '../images/game-icons/dokkan.webp'],
+    ['pad-puzzle-and-dragons-play-points', '../images/game-icons/pad.webp']
+  ]);
 
   for (const article of DEDICATED_OGP_ARTICLES) {
     const absolute = path.join(root, article.ogp);
@@ -151,9 +156,18 @@ test('救出記事と8月19日記事は専用JPEG実体のOGPを持ち、内容�
 
     const html = read(article.file);
     const publicUrl = `https://playpoint-sim.com/${article.ogp}`;
-    assert.match(html, new RegExp(publicUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    const escapedPublicUrl = publicUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(html, new RegExp(escapedPublicUrl));
+
     const entry = registry.find(item => item.id === article.id);
     assert.ok(entry, `${article.id} should be listed`);
-    assert.equal(entry.thumbnail, `../${article.ogp}`);
+
+    if (gameListThumbnails.has(article.id)) {
+      assert.equal(entry.thumbnail, gameListThumbnails.get(article.id));
+      assert.equal(entry.thumbnailKind, 'app-icon');
+      assert.equal(entry.ogp, `../${article.ogp}`);
+    } else {
+      assert.equal(entry.thumbnail, `../${article.ogp}`);
+    }
   }
 });

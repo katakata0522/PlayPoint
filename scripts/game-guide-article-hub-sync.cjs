@@ -8,6 +8,7 @@ const {
   articleForPath,
   syncGameGuideArticleManifest
 } = require('./game-guide-article-catalog.cjs');
+const { getGameThumbnailAsset } = require('./game-thumbnail-assets.cjs');
 
 const JSON_LD_SCRIPT = /<script\b([^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*)>([\s\S]*?)<\/script>/gi;
 
@@ -79,7 +80,7 @@ function synchronizeStructuredData(head, article) {
     }
     const node = firstArticleNode(data);
     if (!node) return full;
-    node.image ||= new URL(article.thumbnail || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
+    node.image ||= new URL(article.ogp || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
     node.datePublished = article.date || PUBLISHED_AT;
     node.dateModified = article.modified || article.date || PUBLISHED_AT;
     return `<script${attrs}>\n${JSON.stringify(data, null, 2)}\n</script>`;
@@ -127,7 +128,11 @@ function standardizeHead(originalHead, article) {
       '$1\n  <link rel="stylesheet" href="/articles/game-guide-article.css" />');
   }
   head = ensureMeta(head, 'article:published_time', article.date || PUBLISHED_AT);
-  head = ensureMeta(head, 'article:modified_time', article.modified || article.date || PUBLISHED_AT);
+  const modified = article.modified || article.date || PUBLISHED_AT;
+  const modifiedMeta = /^\d{4}-\d{2}-\d{2}$/.test(modified)
+    ? modified + 'T00:00:00+09:00'
+    : modified;
+  head = ensureMeta(head, 'article:modified_time', modifiedMeta);
   return head;
 }
 
@@ -170,6 +175,22 @@ function normalizeBodySections(body) {
   return output;
 }
 
+function ensureGooglePlayAppSource(body, article) {
+  const asset = getGameThumbnailAsset(article.gameTitle);
+  if (!asset?.sourcePageUrl) return String(body);
+  const escapedSourcePageUrl = escapeHtml(asset.sourcePageUrl);
+  if (String(body).includes(asset.sourcePageUrl) || String(body).includes(escapedSourcePageUrl)) return String(body);
+
+  const sourceSection = /(<section\b[^>]*class=["'][^"']*\bsource-list\b[^"']*["'][^>]*>[\s\S]*?<ul\b[^>]*>)([\s\S]*?)(<\/ul>[\s\S]*?<\/section>)/i;
+  if (!sourceSection.test(body)) {
+    throw new Error(`${article.id}: source-list is required before adding the Google Play app source`);
+  }
+
+  const label = `Google Play公式：${article.gameTitle} アプリ掲載`;
+  const item = `<li><a href="${escapedSourcePageUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>`;
+  return String(body).replace(sourceSection, (full, open, items, close) => `${open}${items}${item}${close}`);
+}
+
 function renderFaqSection(pairs) {
   if (!pairs.length) return '';
   return `\n<section class="section game-guide-visible-faq"><h2>よくある質問</h2>${pairs.map(item => `<div class="faq-item"><h3>Q. ${escapeHtml(item.q)}</h3><p>A. ${escapeHtml(item.a)}</p></div>`).join('')}</section>`;
@@ -206,7 +227,8 @@ function transformGameGuide(rootDir, article) {
   if (!headMatch) throw new Error(`${relativePath}: head not found`);
   const head = standardizeHead(headMatch[0], article);
   if (/data-game-guide-article=["']true["']/.test(original)) {
-    const repaired = original.replace(headMatch[0], () => head);
+    let repaired = original.replace(headMatch[0], () => head);
+    repaired = ensureGooglePlayAppSource(repaired, article);
     if (repaired === original) return false;
     fs.writeFileSync(absolutePath, repaired, 'utf8');
     return true;
@@ -214,7 +236,7 @@ function transformGameGuide(rootDir, article) {
   const faqPairs = extractFaqPairs(head);
   const main = extractGuideMain(original, relativePath);
   const cta = removeParentCta(main.body);
-  const body = normalizeBodySections(cta.body);
+  const body = ensureGooglePlayAppSource(normalizeBodySections(cta.body), article);
   const output = renderShell({
     head,
     article,
@@ -241,6 +263,7 @@ function syncGameGuideArticleHub(rootDir) {
 module.exports = {
   stripHtml,
   extractFaqPairs,
+  ensureGooglePlayAppSource,
   normalizeBodySections,
   renderShell,
   syncGameGuideArticleHub,

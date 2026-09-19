@@ -202,10 +202,15 @@
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
         const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/.test(value);
         const sharedSiteOgp = value === '../ogp.png';
-        if (!standardThumbnail && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
+        if (!standardThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
         if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
         return value;
+    }
+
+    function sanitizeArticleThumbnailKind(value) {
+        return ['generic', 'app-icon', 'event-visual'].includes(value) ? value : 'generic';
     }
 
     // 記事JSONの値を描画前に正規化する
@@ -225,6 +230,7 @@
             description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
             listed: article.listed !== false,
             searchIndex: BlogUtils.buildArticleSearchIndex({
                 title,
@@ -235,8 +241,49 @@
         };
     }
 
-    function shouldRenderArticleThumbnails() {
-        return !(window.matchMedia && window.matchMedia('(max-width: 760px)').matches);
+    const COMPACT_THUMBNAIL_QUERY = '(max-width: 760px)';
+    const COMPACT_THUMBNAIL_ROOT_MARGIN = '96px 0px';
+    const TRANSPARENT_THUMBNAIL_PLACEHOLDER = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    let compactThumbnailObserver = null;
+
+    function isCompactArticleList() {
+        return Boolean(window.matchMedia && window.matchMedia(COMPACT_THUMBNAIL_QUERY).matches);
+    }
+
+    function shouldRenderArticleThumbnail(article) {
+        if (!isCompactArticleList()) return true;
+        return article?.thumbnailKind === 'app-icon' || article?.thumbnailKind === 'event-visual';
+    }
+
+    function loadDeferredThumbnail(image) {
+        const source = image?.dataset?.src;
+        if (!source) return;
+        image.src = source;
+        delete image.dataset.src;
+    }
+
+    function getCompactThumbnailObserver() {
+        if (!('IntersectionObserver' in window)) return null;
+        if (!compactThumbnailObserver) {
+            compactThumbnailObserver = new IntersectionObserver((entries, observer) => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+                    loadDeferredThumbnail(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            }, { rootMargin: COMPACT_THUMBNAIL_ROOT_MARGIN });
+        }
+        return compactThumbnailObserver;
+    }
+
+    function observeDeferredThumbnail(image) {
+        if (!image?.dataset?.src) return;
+        const observer = getCompactThumbnailObserver();
+        if (!observer) {
+            loadDeferredThumbnail(image);
+            return;
+        }
+        observer.observe(image);
     }
 
     // Create AdSense ad element
@@ -878,8 +925,7 @@
         dom.grid.setAttribute('aria-live', 'polite');
 
         let articleIndex = 0;
-        const renderThumbnails = shouldRenderArticleThumbnails();
-
+        let compactThumbnailIndex = 0;
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
             if (idx > 0 && idx % CONFIG.adInterval === 0) {
@@ -906,11 +952,25 @@
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
-            const thumbnailMarkup = renderThumbnails
-                ? `<img src="${safeThumbnail}" alt="${safeTitle}" width="600" height="400" loading="lazy" decoding="async" fetchpriority="low">`
+            const renderThumbnail = shouldRenderArticleThumbnail(article);
+            const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
+            const compactExplicitThumbnail = renderThumbnail
+                && isCompactArticleList()
+                && (thumbnailKind === 'app-icon' || thumbnailKind === 'event-visual');
+            const loadCompactThumbnailImmediately = compactExplicitThumbnail && compactThumbnailIndex === 0;
+            if (compactExplicitThumbnail) compactThumbnailIndex += 1;
+            const deferThumbnail = compactExplicitThumbnail && !loadCompactThumbnailImmediately;
+            const thumbnailWidth = thumbnailKind === 'app-icon' ? 96 : 600;
+            const thumbnailHeight = thumbnailKind === 'app-icon' ? 96 : 400;
+            const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
+            const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
+            const thumbnailMarkup = renderThumbnail
+                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="${safeTitle}" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
                 : '';
-            const thumbnailClass = renderThumbnails ? 'card-thumb' : 'card-thumb card-thumb--text-only';
-            const thumbnailStyle = renderThumbnails ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
+            const thumbnailClass = renderThumbnail
+                ? `card-thumb card-thumb--${thumbnailKind}`
+                : 'card-thumb card-thumb--text-only';
+            const thumbnailStyle = renderThumbnail ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
 
             card.innerHTML = `
                 <div class="${thumbnailClass}"${thumbnailStyle}>
@@ -931,7 +991,10 @@
 
             // Attach error handler
             const img = card.querySelector('img');
-            if (img) img.onerror = () => BlogUtils.handleImageError(img);
+            if (img) {
+                img.onerror = () => BlogUtils.handleImageError(img);
+                if (img.dataset.src) observeDeferredThumbnail(img);
+            }
 
             dom.grid.appendChild(card);
             articleIndex++;

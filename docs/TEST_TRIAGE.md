@@ -466,6 +466,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `game-seo-wave3.test.cjs` | 10 | 全件維持。ポケポケ/PAD/アークナイツ/ドッカン/鳴潮の確認済みmechanicsと未確認price分離。深掘り本文の数値はSSOTから導出し、旧全文card snapshotは危険な旧price claimへ一般化 |
 | `game-seo-wave4.test.cjs` | 9 | 全件維持。HBR/崩壊3rd/ファンパレ/Reverse:1999のWeb決済・Google Play境界を維持。guide数値はWave4 SSOTから導出し、旧全文card snapshotを旧固定price claimへ一般化 |
 | `game-seo-wave5.test.cjs` | 11 | 全件維持。プロスピA/Pokémon GO/eFootballの購入経路・地域別rate・portal・sitemapを維持。source「4件以上」、HTML 7000文字以上、h2 5個以上という任意量閾値を廃止 |
+| `game-thumbnail-assets.test.cjs` | UI・導線 | ゲーム記事一覧の公式アイコン・出典台帳・OGP分離・本文非表示を保証する |
 | `rescued-pad-and-articles.test.cjs` | 3 | 全件維持。PAD全locale、救出記事の台帳/著者/公式source/関連記事、専用OGP実体と重複防止を維持。#168時代のCSS class禁止は記事design ownerへ委譲 |
 
 ### 今回の事実契約と過剰固定の分離
@@ -1172,12 +1173,12 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 基準: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の全回帰930/930。
 - 精査済みbaseline identity: **930 / 930**。
 - 未精査baseline identity: **0**。
-- 現行回帰集合: **968ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
+- 現行回帰集合: **973ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
 - 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の178ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の179ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1185,7 +1186,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | SEO・公開整合 | 12 |
 | 計測・同意・広告 | 11 |
 | 生成・再現性 | 23 |
-| UI・導線 | 21 |
+| UI・導線 | 22 |
 | 保存 | 5 |
 | 地域・翻訳 | 39 |
 | 復旧 | 4 |

@@ -689,6 +689,27 @@ height: 100%;
 object-fit: cover;
 transition: transform 0.3s ease;
 }
+.card-thumb--app-icon {
+display: grid;
+place-items: center;
+padding: 8px;
+background: var(--bg-secondary);
+}
+.card-thumb--app-icon img {
+width: min(96px, 100%);
+height: min(96px, 100%);
+object-fit: contain;
+border-radius: 18%;
+}
+.card-thumb--app-icon .card-category {
+display: none;
+}
+.article-card:hover .card-thumb--app-icon img {
+transform: none;
+}
+.card-thumb--event-visual img {
+object-fit: cover;
+}
 .article-card:hover .card-thumb img {
 transform: scale(1.05);
 }
