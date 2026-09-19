@@ -51,6 +51,7 @@ test('代表記事を検索意図ではなくプロダクト上の仕事で分�
     ['articles/2026-03-10-play-points-reflection-timing.html', true, 'troubleshooting'],
     ['articles/2025-12-25-weekly-reward.html', true, 'retention'],
     ['articles/2026-07-31-google-play-quests.html', true, 'retention'],
+    ['articles/2026-09-19-google-play-super-ticket.html', true, 'retention'],
     ['articles/2026-08-25-pad-puzzle-and-dragons-play-points.html', true, 'game_decision'],
     ['en/articles/google-play-points-platinum-diamond-cost.html', true, 'calculator_bridge'],
     ['tw/articles/google-play-points-levels.html', true, 'reference'],

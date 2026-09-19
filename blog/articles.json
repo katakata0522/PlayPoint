@@ -608,6 +608,39 @@
     "listed": true
   },
   {
+    "id": "google-play-super-ticket-2026",
+    "title": "突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "使い方",
+    "tags": [
+      "Google Play",
+      "Super Ticket",
+      "スーパーチケット",
+      "スーパーウィークリーリワード",
+      "Play Pass"
+    ],
+    "description": "Google PlayのSuper Ticketは何に使う？スーパーウィークリーとの違い、火曜・木曜の配布実測、Play Pass・プラチナ・ダイヤモンドとの関係、元の賞品が消える注意点を整理します。",
+    "file": "../articles/2026-09-19-google-play-super-ticket.html",
+    "related": [
+      [
+        "/articles/2026-07-31-super-weekly-reward.html",
+        "スーパーウィークリーリワードの賞品・確率を確認する"
+      ],
+      [
+        "/articles/2025-12-25-weekly-reward.html",
+        "通常のウィークリーリワードとの違いを見る"
+      ],
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Play Passの木曜週次特典を確認する"
+      ]
+    ],
+    "thumbnail": "../articles/ogp/weekly-reward.png",
+    "source": "article",
+    "listed": true
+  },
+  {
     "id": "pad-puzzle-and-dragons-play-points",
     "title": "【パズドラ】魔法石・パズパスの選び方とPlayポイント｜受け取り条件・更新・確定セットの注意点",
     "date": "2026-08-25",
@@ -1091,7 +1124,7 @@
   },
   {
     "id": "super-weekly-reward",
-    "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket",
+    "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク",
     "date": "2026-07-31",
     "modified": "2026-09-19",
     "category": "ランク",
@@ -1101,7 +1134,7 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認すること、Super Ticketの注意を整理します。",
+    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認することを整理します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
