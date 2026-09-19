@@ -33,7 +33,9 @@ test('thumbnail registry keeps provenance and never activates a missing local as
       assert.ok(entry.sourceImageUrl, entry.gameTitle + ': active asset needs sourceImageUrl');
       assert.ok(entry.acquiredAt, entry.gameTitle + ': active asset needs acquiredAt');
       assert.match(entry.localPath, /^images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/);
-      assert.equal(fs.existsSync(path.join(root, entry.localPath)), true, entry.localPath + ' should exist');
+      const absolute = path.join(root, entry.localPath);
+      assert.equal(fs.existsSync(absolute), true, entry.localPath + ' should exist');
+      assert.ok(fs.statSync(absolute).size <= 50 * 1024, entry.localPath + ' should stay within the 50KB mobile list-image budget');
     }
   }
 });
