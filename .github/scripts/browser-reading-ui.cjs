@@ -23,12 +23,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     return page.evaluate(selectors => {
       const rgb = color => (color.match(/[\d.]+/g)||[]).map(Number).slice(0,3);
       const luminance = color => rgb(color).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((s,v,i)=>s+v*[.2126,.7152,.0722][i],0);
-      return selectors.map(selector=>{
-        const el=document.querySelector(selector); if(!el) return {selector,missing:true};
-        let parent=el, bg='rgb(255, 255, 255)';
-        while(parent) { const c=getComputedStyle(parent).backgroundColor; if(c!=='rgba(0, 0, 0, 0)'&&c!=='transparent'){bg=c;break;} parent=parent.parentElement; }
-        const fg=getComputedStyle(el).color, a=luminance(fg),b=luminance(bg);
-        return {selector,fg,bg,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
+      return selectors.flatMap(selector=>{
+        const elements=[...document.querySelectorAll(selector)].filter(el=>el.getClientRects().length&&getComputedStyle(el).visibility!=='hidden');
+        if(!elements.length) return [{selector,missing:true}];
+        return elements.map((el,index)=>{
+          let parent=el, bg='rgb(255, 255, 255)';
+          while(parent) { const c=getComputedStyle(parent).backgroundColor; if(c!=='rgba(0, 0, 0, 0)'&&c!=='transparent'){bg=c;break;} parent=parent.parentElement; }
+          const fg=getComputedStyle(el).color, a=luminance(fg),b=luminance(bg);
+          return {selector,index,fg,bg,ratio:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};
+        });
       });
     },selectors);
   }
@@ -47,7 +50,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
           return channels.length===3 && (t==='dark' ? Math.max(...channels)<128 : Math.min(...channels)>180);
         },theme,{timeout:10000});
         const samples = await palette(page,['h1','.article-card h3','.article-card time','#category-filter button.active','#search-input']);
-        if(await page.locator('.card-thumb--text-only .card-category').count()) samples.push(...await palette(page,['.card-thumb--text-only .card-category']));
+        if(await page.locator('.card-category:visible').count()) samples.push(...await palette(page,['.card-category']));
         for(const sample of samples) assert(!sample.missing && sample.ratio>=4.5,`${theme}/${width}: ${JSON.stringify(sample)}`);
         const bg = await page.evaluate(()=>getComputedStyle(document.body).backgroundColor);
         report.themes.push({width,theme,bg,samples});
