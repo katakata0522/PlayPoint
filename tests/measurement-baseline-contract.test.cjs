@@ -403,3 +403,26 @@ test('P2 URL Inspection stays bounded to critical and top-search URLs and record
   assert.match(source, /playPointP12ErrorText_\(error\)/);
   assert.match(source, /\[P1P2:' \+ stage \+ '\]/);
 });
+
+test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERROR semantics', () => {
+  const { source, context } = loadP12Runtime();
+
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthSheet, '🩺データ鮮度・システム状態');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.PAGE_VALUE, 'P1 ページ価値ファネル');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.SEARCH_CROSS, 'P1 検索クロス分析');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.URL_INSPECTION, 'P2 URL Inspection');
+
+  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
+    availability: { gsc: true, organic: true, articleClicks: true, attributed: true, revenue: true }
+  }), 'OK');
+  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
+    availability: { gsc: true, organic: true, articleClicks: true, attributed: false, revenue: true }
+  }), 'PARTIAL');
+  assert.equal(context.playPointP12ResultState_('URL_INSPECTION', { errors: 2 }), 'PARTIAL');
+
+  assert.match(source, /playPointP12HealthStart_/);
+  assert.match(source, /playPointP12HealthSuccess_/);
+  assert.match(source, /playPointP12HealthError_/);
+  assert.match(source, /consecutiveFailures/);
+  assert.match(source, /実行ログの\[P1P2:/);
+});
