@@ -1,5 +1,38 @@
 [
   {
+    "id": "google-play-super-ticket-2026",
+    "title": "突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "使い方",
+    "tags": [
+      "Google Play",
+      "Super Ticket",
+      "スーパーチケット",
+      "スーパーウィークリーリワード",
+      "Play Pass"
+    ],
+    "description": "Google PlayのSuper Ticketは何に使う？スーパーウィークリーとの違い、火曜・木曜の配布実測、Play Pass・プラチナ・ダイヤモンドとの関係、元の賞品が消える注意点を整理します。",
+    "file": "../articles/2026-09-19-google-play-super-ticket.html",
+    "related": [
+      [
+        "/articles/2026-07-31-super-weekly-reward.html",
+        "スーパーウィークリーリワードの賞品・確率を確認する"
+      ],
+      [
+        "/articles/2025-12-25-weekly-reward.html",
+        "通常のウィークリーリワードとの違いを見る"
+      ],
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Play Passの木曜週次特典を確認する"
+      ]
+    ],
+    "thumbnail": "../articles/ogp/weekly-reward.png",
+    "source": "article",
+    "listed": true
+  },
+  {
     "id": "fgo-pity-cost-2026",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
     "category": "使い方",
