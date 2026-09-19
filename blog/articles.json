@@ -1124,7 +1124,7 @@
   },
   {
     "id": "super-weekly-reward",
-    "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket",
+    "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク",
     "date": "2026-07-31",
     "modified": "2026-09-19",
     "category": "ランク",
@@ -1134,7 +1134,7 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認すること、Super Ticketの注意を整理します。",
+    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認することを整理します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
