@@ -391,12 +391,12 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 3);
   assert.match(faq, /このサイトはGoogle公式のサービスですか？/);
   assert.match(faq, /Google公式のサービスではありません/);
-  assert.match(faq, /個人で運営している非公式の計算・情報サイト/);
+  assert.match(faq, /個人運営の非公式サイト/);
   assert.match(faq, /たびたび出てくる「1,728」って何ですか？/);
   assert.match(faq, /info\.html#about-section/);
   assert.match(faq, /入力した内容やウィークリー記録はどこに保存されますか/);
   assert.match(faq, /今使っている端末のブラウザ内に保存/);
-  assert.match(faq, /運営者のサーバーやGoogleアカウントへ自動保存する仕組みではありません/);
+  assert.match(faq, /運営者のサーバーやGoogleアカウントには自動保存されません/);
   assert.match(faq, /「書き出し」でバックアップ/);
   assert.doesNotMatch(faq, /A\. いいえ/);
   assert.doesNotMatch(faq, /計算結果どおりのポイントが必ず付与されますか/);
