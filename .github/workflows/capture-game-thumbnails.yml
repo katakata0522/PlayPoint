@@ -1,0 +1,29 @@
+name: Capture game thumbnail assets
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/capture-game-thumbnails.yml'
+      - 'scripts/capture-game-thumbnails.cjs'
+      - 'scripts/game-thumbnail-assets.cjs'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Capture official Google Play icon assets
+        run: node scripts/capture-game-thumbnails.cjs
+      - name: Upload captured assets for review
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: game-thumbnail-assets
+          path: .tmp/game-icons/
+          if-no-files-found: error
+          retention-days: 1
