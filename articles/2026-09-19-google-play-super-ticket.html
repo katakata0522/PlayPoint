@@ -41,38 +41,45 @@
   }
   </script>
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"FAQPage",
-    "mainEntity":[
-      {
-        "@type":"Question",
-        "name":"Google PlayのSuper Ticketとは何ですか？",
-        "acceptedAnswer":{"@type":"Answer","text":"スーパーウィークリーリワードでPlay Pointsなどのポイント報酬を受け取ったあと、現在の報酬を放棄してもう一度抽選するためのチケットです。使用後に元の報酬へ戻すことはできません。"}
-      },
-      {
-        "@type":"Question",
-        "name":"Super Ticketは火曜日と木曜日にもらえますか？",
-        "acceptedAnswer":{"@type":"Answer","text":"2026年の複数の実測では、プラチナ・ダイヤモンド向けが火曜、Play Pass向けが木曜に表示された例が継続しています。ただし現在のGoogle公開ヘルプはSuper Ticketの現行配布曜日を明記していないため、全アカウント共通仕様とは断定できません。"}
-      },
-      {
-        "@type":"Question",
-        "name":"Super Ticketを使うと最初にもらったポイントは残りますか？",
-        "acceptedAnswer":{"@type":"Answer","text":"残りません。Super Ticketを使う場合は現在の報酬を放棄して再抽選します。再抽選後に同じ価値やそれ以下の賞品になる場合もあるため、使う前に現在の報酬を確認してください。"}
-      },
-      {
-        "@type":"Question",
-        "name":"Super Ticketは貯めておけますか？",
-        "acceptedAnswer":{"@type":"Answer","text":"2026年に公開された利用画面の記録では、貯めて使う週を選べ、複数枚を同じスーパーウィークリーで使えるとされています。一方で有効期限もあるため、Google Playの特典画面に表示される期限を優先してください。"}
-      },
-      {
-        "@type":"Question",
-        "name":"Super Ticketが表示されないのはなぜですか？",
-        "acceptedAnswer":{"@type":"Answer","text":"2026年には同じランクでも表示されない、通知だけ届いて特典欄にないというユーザー報告があります。現在GoogleはSuper Ticket固有の公開トラブルシューティングを出していません。Play Pass特典全体では、端末変更後に表示まで最長15日かかる場合があると公式案内されています。"}
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Super Ticketは毎週もらえる?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "2026年には毎週の配布実測が多数あります。ただし現在GoogleはSuper Ticketの現行配布周期を公開ヘルプで明記していないため、全アカウントで毎週と断定はしません。"
       }
-    ]
-  }
-  </script>
+    },
+    {
+      "@type": "Question",
+      "name": "Play Passに入ればGoldでももらえる?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "2026年にはGold + Play Passで木曜のSuper Ticketが出た実測があります。一方、Goldだけで火曜のステータス由来Super Ticketが毎週出るという根拠は現時点では弱いです。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "何ポイントなら使うべき?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "公式の正解はありません。私はPlatinumなら20ポイント以下、Diamondなら30ポイント以下を「使ってもいいかな」の目安にしていますが、統計的な期待値ではなく個人的な運用ラインです。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ticketを使えば必ず良い賞品になる?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "いいえ。再抽選後に同じ価値やそれ以下になる場合があります。現在の報酬を捨てる前に、それを手放しても後悔しないか確認してください。"
+      }
+    }
+  ]
+}
+</script>
   <script type="speculationrules">
   {
     "prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"selector_matches":"[rel~=nofollow]"}}]},"eagerness":"moderate"}],
@@ -82,10 +89,10 @@
   <link rel="stylesheet" href="/articles/japanese-shell.css?v=ca5a355d8e" />
 
   <!-- discovery-assets:start -->
-  <link rel="stylesheet" href="/articles/article-discovery.css?v=d8144284de" />
-  <script defer src="/js/article-search.js?v=7c8bd5d42a"></script>
-  <script defer src="/js/reading-library.js?v=143eb97d1c"></script>
-  <!-- discovery-assets:end -->
+<link rel="stylesheet" href="/articles/article-discovery.css?v=d8144284de">
+<script defer src="/js/article-search.js?v=7c8bd5d42a"></script>
+<script defer src="/js/reading-library.js?v=143eb97d1c"></script>
+<!-- discovery-assets:end -->
 </head>
 <body data-article-category="使い方">
 
@@ -99,16 +106,7 @@
   </div>
 </header>
 
-<nav class="global-nav ja-global-nav" aria-label="目的から探す">
-  <div class="global-nav-inner">
-    <a class="nav-item" href="/"><span>計算する</span></a>
-    <a class="nav-item" href="/blog/"><span>ガイドを探す</span></a>
-    <a class="nav-item" href="/blog/?category=トラブル"><span>トラブルを解決</span></a>
-    <a class="nav-item" href="/articles/2025-12-25-best-use.html"><span>貯める・使う</span></a>
-    <a class="nav-item" href="/articles/2026-08-05-play-points-levels-guide.html"><span>ランク・特典</span></a>
-    <a class="nav-item" href="/articles/2025-12-25-getting-started.html"><span>アカウント・基本</span></a>
-  </div>
-</nav>
+<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner"><a class="nav-item" href="/"><span>計算する</span></a><a class="nav-item" href="/blog/"><span>ガイドを探す</span></a><a class="nav-item" href="/blog/?category=トラブル"><span>トラブルを解決</span></a><a class="nav-item" href="/articles/2025-12-25-best-use.html"><span>貯める・使う</span></a><a class="nav-item" href="/articles/2026-08-05-play-points-levels-guide.html"><span>ランク・特典</span></a><a class="nav-item" href="/articles/2025-12-25-getting-started.html"><span>アカウント・基本</span></a></div></nav>
 
 <div class="breadcrumbs-wrapper">
   <nav aria-label="パンくずリスト">
@@ -126,6 +124,8 @@
     <h1 class="article-title" id="article-title">突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた</h1>
     <p class="hero-meta">公開 <time data-article-date="published" datetime="2026-09-19">2026/09/19</time> ・ 更新 <time data-article-date="modified" datetime="2026-09-19">2026/09/19</time> ・ 公式情報確認 <time data-article-date="official-verified" datetime="2026-09-19">2026/09/19</time></p>
   </header>
+<!-- reading-tools:start --><div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">あとで読む</button><a href="/blog/#reading-library">保存した記事・閲覧履歴</a><span role="status"></span></div><!-- reading-tools:end -->
+
 
   <div class="intro">
     <p>ある日、Google Playの「特典」を開いたら、見慣れない<strong>「Super Ticket」</strong>が出てきました。</p>
@@ -140,7 +140,7 @@
   </section>
 
   <section class="section">
-    <h2>Super Ticketを一言でいうと何？</h2>
+    <h2 id="article-section-1">Super Ticketを一言でいうと何？</h2>
     <p>通常のウィークリーリワードとは別に、<strong>ゴールド以上が参加できる「スーパーウィークリーリワード」の結果を引き直すための特典</strong>です。</p>
     <p>2026年に公開されたSuper Ticketの利用画面を継続記録している「PCあそぶ」では、利用規約画面として次の内容が確認されています。</p>
     <ul>
@@ -154,7 +154,7 @@
   </section>
 
   <section class="section">
-    <h2>普通のウィークリーリワード、スーパー週次、Super Ticketの違い</h2>
+    <h2 id="article-section-2">普通のウィークリーリワード、スーパー週次、Super Ticketの違い</h2>
     <div class="table-wrapper">
       <table>
         <thead>
@@ -189,7 +189,7 @@
   </section>
 
   <section class="section knowledge-boundary">
-    <h2>誰がもらえる？――ここは「公式」と「2026年の実測」を分ける</h2>
+    <h2 id="article-section-3">誰がもらえる？――ここは「公式」と「2026年の実測」を分ける</h2>
     <p>以前Googleが公開していたSuper Ticket専用ページには、Play PassとDiamondは30日ごと、Platinumは90日ごとという案内がありました。ただし、<strong>2026年9月19日に当サイトからその公式URLを確認すると「Not Found」になっており、現行仕様の根拠としては使えません。</strong></p>
     <p>一方、2026年の実際の配布を継続して記録しているPCあそぶでは、3月以降、次のパターンが何週も確認されています。</p>
     <div class="table-wrapper">
@@ -207,7 +207,7 @@
   </section>
 
   <section class="section">
-    <h2>「火曜」「水曜まで」「木曜」は本当？</h2>
+    <h2 id="article-section-4">「火曜」「水曜まで」「木曜」は本当？</h2>
     <p>少なくとも2026年の複数実測では、かなり一貫しています。PCあそぶの記録では、Platinum/Diamond向けが火曜〜水曜、Play Pass向けが木曜〜金曜という配布が3月から7月まで繰り返し記録されています。</p>
     <p>Google PlayコミュニティやRedditにも、火曜に「Your Platinum Super Ticket is here」と通知され、翌日までに保存するよう表示されたという報告があります。</p>
     <aside class="official-source-note">
@@ -217,7 +217,7 @@
   </section>
 
   <section class="section">
-    <h2>Super Ticketの使い方</h2>
+    <h2 id="article-section-5">Super Ticketの使い方</h2>
     <ol>
       <li>Google Playストアを開く</li>
       <li>プロフィールアイコン → <strong>Play Points</strong> → <strong>特典</strong>を確認する</li>
@@ -230,7 +230,7 @@
   </section>
 
   <section class="section">
-    <h2>私はいつ使う？――統計ではなく、運営者のざっくり目安</h2>
+    <h2 id="article-section-6">私はいつ使う？――統計ではなく、運営者のざっくり目安</h2>
     <p>ここからはGoogle公式仕様ではなく、<strong>このサイト運営者の個人的な使い方</strong>です。期待値を計算した統計データではありません。</p>
     <p><strong>私なら、Platinumで20ポイント以下、Diamondで30ポイント以下なら「使ってもいいかな」寄りです。</strong></p>
     <p>理由は単純で、すでに十分うれしい報酬なら、わざわざ下振れの可能性を取る必要がないからです。逆に低いポイントなら「どうせならもう一回」に気持ちが傾きます。</p>
@@ -238,20 +238,20 @@
   </section>
 
   <section class="section">
-    <h2>使わない方がいいケース</h2>
-    <h3>いまの賞品に満足している</h3>
+    <h2 id="article-section-7">使わない方がいいケース</h2>
+    <h3 id="article-section-8">いまの賞品に満足している</h3>
     <p>当たり前ですが、欲しかった賞品や「これなら十分」と思えるポイントが出ているなら、無理に引き直す必要はありません。Super Ticketは上振れだけでなく下振れもあります。</p>
 
-    <h3>大型イベントや特別賞品の時期が近く、期限に余裕がある</h3>
+    <h3 id="article-section-9">大型イベントや特別賞品の時期が近く、期限に余裕がある</h3>
     <p>TGS、ホリデーシーズンなど、大型イベントや特別賞品が近いと「そこで使いたい」と考えるのは自然です。PCあそぶの記録でも、Super Ticketを貯めて使う週を選べる利用画面が確認されています。</p>
     <p>ただし、<strong>「大型イベント前なら必ず豪華になる」という公式ルールは確認できていません。</strong> 温存する場合は、Google Playの特典画面に表示されるSuper Ticketの有効期限を必ず確認してください。</p>
 
-    <h3>期限が近いのに「いつかもっと良い週が来る」と待ち続けている</h3>
+    <h3 id="article-section-10">期限が近いのに「いつかもっと良い週が来る」と待ち続けている</h3>
     <p>使わないまま失効するのが一番もったいないので、期限が近い場合は「何ポイント以下なら使う」と自分のラインを決めておくと迷いにくいです。</p>
   </section>
 
   <section class="section">
-    <h2>Super Ticketが表示されない・通知だけ来る例もある</h2>
+    <h2 id="article-section-11">Super Ticketが表示されない・通知だけ来る例もある</h2>
     <p>2026年のGoogle PlayコミュニティやRedditには、<strong>PlatinumなのにSuper Ticketが表示されない、通知をタップしても特典欄にない、同じランクの家族には出ているのに自分には出ない</strong>という報告があります。</p>
     <p>現時点でGoogleは、Super Ticket固有の公開トラブルシューティングを用意していません。そのため、個別アカウントの原因をこのサイトから断定することはできません。</p>
     <p>まずは次を確認してください。</p>
@@ -266,7 +266,7 @@
   </section>
 
   <section class="section">
-    <h2>いま分かっていること、まだ分からないこと</h2>
+    <h2 id="article-section-12">いま分かっていること、まだ分からないこと</h2>
     <div class="table-wrapper">
       <table>
         <thead><tr><th>項目</th><th>2026年9月時点</th></tr></thead>
@@ -284,28 +284,28 @@
   </section>
 
   <section class="section faq-section">
-    <h2>よく聞かれそうなこと</h2>
+    <h2 id="article-section-13">よく聞かれそうなこと</h2>
     <div class="faq-item">
-      <h3>Super Ticketは毎週もらえる？</h3>
+      <h3 id="article-section-14">Super Ticketは毎週もらえる？</h3>
       <p>2026年には毎週の配布実測が多数あります。ただし現在GoogleはSuper Ticketの現行配布周期を公開ヘルプで明記していないため、全アカウントで毎週と断定はしません。</p>
     </div>
     <div class="faq-item">
-      <h3>Play Passに入ればGoldでももらえる？</h3>
+      <h3 id="article-section-15">Play Passに入ればGoldでももらえる？</h3>
       <p>2026年にはGold + Play Passで木曜のSuper Ticketが出た実測があります。一方、Goldだけで火曜のステータス由来Super Ticketが毎週出るという根拠は現時点では弱いです。</p>
     </div>
     <div class="faq-item">
-      <h3>何ポイントなら使うべき？</h3>
+      <h3 id="article-section-16">何ポイントなら使うべき？</h3>
       <p>公式の正解はありません。私はPlatinumなら20ポイント以下、Diamondなら30ポイント以下を「使ってもいいかな」の目安にしていますが、統計的な期待値ではなく個人的な運用ラインです。</p>
     </div>
     <div class="faq-item">
-      <h3>Ticketを使えば必ず良い賞品になる？</h3>
+      <h3 id="article-section-17">Ticketを使えば必ず良い賞品になる？</h3>
       <p>いいえ。再抽選後に同じ価値やそれ以下になる場合があります。現在の報酬を捨てる前に、それを手放しても後悔しないか確認してください。</p>
     </div>
   </section>
 
   <section class="section" id="sources">
-    <h2>今回確認した情報源</h2>
-    <h3>Google公式</h3>
+    <h2 id="article-section-18">今回確認した情報源</h2>
+    <h3 id="article-section-19">Google公式</h3>
     <ul>
       <li><a href="https://play.google.com/store/apps/editorial?hl=ja&amp;id=mc_games_editorialmd_loyalty_swp_cujs_bronzeandsilver_fcp" target="_blank" rel="noopener noreferrer">Google Play公式：スーパー ウィークリー リワード</a> — ゴールド以上、金曜更新、賞品在庫と参加ルール</li>
       <li><a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">Google Playヘルプ：Google Play ポイントを貯める、管理する（日本）</a> — 通常ウィークリーはシルバー以上・金曜リセット</li>
@@ -314,7 +314,7 @@
       <li><a href="https://play.google.com/store/apps/editorial?id=mc_games_editorialmd_product_gpp_swp_super_tickets_fcp" target="_blank" rel="noopener noreferrer">以前のGoogle Play Super Ticket専用URL</a> — 2026年9月19日確認時はNot Found</li>
     </ul>
 
-    <h3>継続実測・コミュニティ</h3>
+    <h3 id="article-section-20">継続実測・コミュニティ</h3>
     <ul>
       <li><a href="https://pc.asobu.co.jp/google-play-pass-super-ticket/" target="_blank" rel="noopener noreferrer"><strong>PCあそぶ（PCまなぶ）：Super Ticketの配布日・利用画面の継続記録</strong></a> — 火曜/木曜の配布実測、期限、利用規約画面を参考にしました</li>
       <li><a href="https://support.google.com/googleplay/thread/424103996/what-is-a-super-ticket?hl=en" target="_blank" rel="noopener noreferrer">Google Playコミュニティ：What is a super ticket?</a> — Product Expertによる機能説明</li>
@@ -326,7 +326,7 @@
   </section>
 
   <section class="section related-links-section">
-    <h2>次に読むなら</h2>
+    <h2 id="article-section-21">次に読むなら</h2>
     <ul>
       <li><a href="./2026-07-31-super-weekly-reward.html">スーパーウィークリーリワードの賞品・確率・対象条件を見る</a></li>
       <li><a href="./2025-12-25-weekly-reward.html">普通のウィークリーリワードとの違いを確認する</a></li>
@@ -351,20 +351,14 @@
   </div>
 </article>
 
-<aside class="sidebar-column ja-article-sidebar" aria-label="記事の次の行動と関連ガイド" data-article-role="retention" data-article-category="levels">
+<aside class="sidebar-column ja-article-sidebar" aria-label="記事の次の行動と関連ガイド" data-article-role="retention" data-article-category="earn">
   <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-retention">
     <h2 class="sidebar-widget-title">次にやること</h2>
-    <div class="sidebar-widget-body"><a class="sidebar-next-link" href="/latest/">今週の特典・キャンペーンを確認する</a></div>
+    <div class="sidebar-widget-body"><a class="sidebar-next-link" href="/latest/">次回の特典・確認日を調べる</a></div>
   </section>
   <section class="sidebar-widget sidebar-widget--related">
     <h2 class="sidebar-widget-title">あわせて読みたい</h2>
-    <div class="sidebar-widget-body">
-      <ul class="sidebar-related-list">
-        <li><a class="sidebar-related-link" href="/articles/2026-07-31-super-weekly-reward.html">Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket</a></li>
-        <li><a class="sidebar-related-link" href="/articles/2025-12-25-weekly-reward.html">Google Play Pointsのウィークリーリワードとは？</a></li>
-        <li><a class="sidebar-related-link" href="/articles/2026-08-16-play-pass-worth-it.html">Play Passはポイント目的で入るべき？</a></li>
-      </ul>
-    </div>
+    <div class="sidebar-widget-body"><ul class="sidebar-related-list"><li><a class="sidebar-related-link" href="/articles/2026-07-31-super-weekly-reward.html">Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク</a></li><li><a class="sidebar-related-link" href="/articles/2025-12-25-weekly-reward.html">Google Play Pointsのウィークリーリワードとは？何が当たる・何曜日・対象ランク</a></li><li><a class="sidebar-related-link" href="/articles/2026-08-16-play-pass-worth-it.html">Play Passはポイント目的で入るべき？木曜週次と対象条件</a></li></ul></div>
   </section>
   <section class="sidebar-widget sidebar-widget--author">
     <h2 class="sidebar-widget-title">運営者・情報の確認方針</h2>
