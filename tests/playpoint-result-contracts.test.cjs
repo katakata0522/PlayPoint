@@ -207,3 +207,31 @@ test('計算結果のエラー表示とクリアは前回の共有用データ�
   assert.deepStrictEqual(Object.keys(target.dataset), []);
   assert.ok(!classNames.has('has-result'));
 });
+
+
+test('目標ランク別の導線は選択したランクの専用ページを最優先する', () => {
+  const { PP_STATE, getRelatedArticles } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+
+  const expected = {
+    'シルバー': 'status/silver/',
+    'ゴールド': 'status/gold/',
+    'プラチナ': 'status/platinum/',
+    'ダイヤモンド': 'status/diamond/'
+  };
+  for (const [label, href] of Object.entries(expected)) {
+    assert.equal(getRelatedArticles(label, 1)[0]?.href, href, label);
+  }
+});
+
+test('残りポイントの一言はゴール直前だけ前向きに出す', () => {
+  const { PP_STATE, getProgressCheer } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+
+  assert.equal(getProgressCheer(500), '');
+  assert.equal(getProgressCheer(499), 'もう一歩！');
+  assert.equal(getProgressCheer(101), 'もう一歩！');
+  assert.equal(getProgressCheer(100), 'ラストスパート🔥');
+  assert.equal(getProgressCheer(1), 'ラストスパート🔥');
+  assert.equal(getProgressCheer(0), '');
+});
