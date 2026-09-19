@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
+  <title id="title">Play Points calculation example</title>
+  <desc id="desc">A three-card example showing 1,728 points, a rate of 2.0 points per 100 yen, and an estimated spend of about 86,400 yen.</desc>
+  <defs>
+    <filter id="shadow" x="-12%" y="-20%" width="124%" height="155%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#3c4043" flood-opacity=".12"/>
+    </filter>
+    <linearGradient id="link12" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#4285F4"/>
+      <stop offset=".56" stop-color="#FBBC04"/>
+      <stop offset="1" stop-color="#EA4335"/>
+    </linearGradient>
+    <linearGradient id="link23" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#EA4335"/>
+      <stop offset=".52" stop-color="#FBBC04"/>
+      <stop offset="1" stop-color="#34A853"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="360" rx="28" fill="#F8FAFD"/>
+  <path d="M28 28h904" stroke="#E8EAED" stroke-width="1"/>
+
+  <g filter="url(#shadow)">
+    <rect x="54" y="76" width="246" height="208" rx="24" fill="#FFFFFF" stroke="#4285F4" stroke-width="3"/>
+    <rect x="357" y="76" width="246" height="208" rx="24" fill="#FFFFFF" stroke="#EA4335" stroke-width="3"/>
+    <rect x="660" y="76" width="246" height="208" rx="24" fill="#FFFFFF" stroke="#34A853" stroke-width="3"/>
+  </g>
+
+  <rect x="54" y="76" width="246" height="11" rx="6" fill="#4285F4"/>
+  <rect x="357" y="76" width="246" height="11" rx="6" fill="#EA4335"/>
+  <rect x="660" y="76" width="246" height="11" rx="6" fill="#34A853"/>
+
+  <g fill="none" stroke-linecap="round" stroke-width="7">
+    <path d="M308 180h37" stroke="url(#link12)"/>
+    <path d="M611 180h37" stroke="url(#link23)"/>
+  </g>
+  <path d="m333 166 15 14-15 14" fill="none" stroke="#EA4335" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m636 166 15 14-15 14" fill="none" stroke="#34A853" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
+    <g font-size="29" font-weight="800">
+      <text x="177" y="126" fill="#4285F4">01</text>
+      <text x="480" y="126" fill="#EA4335">02</text>
+      <text x="783" y="126" fill="#34A853">03</text>
+    </g>
+
+    <text x="177" y="211" fill="#202124" font-size="52" font-weight="800">1,728 pt</text>
+
+    <text x="480" y="194" fill="#EA4335" font-size="49" font-weight="800">2.0 pt</text>
+    <text x="480" y="236" fill="#5F6368" font-size="30" font-weight="750">/ ¥100</text>
+
+    <text x="783" y="211" fill="#202124" font-size="47" font-weight="800">¥86,400</text>
+  </g>
+</svg>
