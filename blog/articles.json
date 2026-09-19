@@ -1051,7 +1051,7 @@
   },
   {
     "id": "super-weekly-reward",
-    "title": "Google Play Pointsスーパーウィークリーリワード｜賞品・確率・当選例・Super Ticket",
+    "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket",
     "date": "2026-07-31",
     "modified": "2026-09-12",
     "category": "ランク",
@@ -1061,13 +1061,13 @@
       "ゴールド",
       "毎週"
     ],
-    "description": "スーパーウィークリーリワードでは何が当たる？Google公式の過去賞品、2024年に日本で確認された例、確率が非公開である点、早めに受け取る意味、Super Ticketの注意を整理します。",
+    "description": "Google Play Pointsのスーパーウィークリーリワードとは？対象ランク、過去の賞品例、確率が非公開である点、金曜に確認すること、Super Ticketの注意を整理します。",
     "file": "../articles/2026-07-31-super-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png"
   },
   {
     "id": "google-play-quests",
-    "title": "Google Playのクエストとは？表示されない・達成されない時の確認方法",
+    "title": "Google Playのクエストとは？購入条件と表示・達成されない時の確認方法",
     "date": "2026-07-31",
     "modified": "2026-09-12",
     "category": "キャンペーン",
@@ -1077,7 +1077,7 @@
       "Play Points",
       "達成条件"
     ],
-    "description": "Google Playのクエストについて、表示場所、対象者ごとに異なる達成条件、購入として数えられる取引、Play Gamesログインやパーソナライズ設定、返金時の扱いをGoogle公式情報から解説します。",
+    "description": "Google Playのクエストとは？「購入」に数えられる取引、表示場所、対象者ごとの達成条件、Play Gamesログイン、返金時の扱いをGoogle公式情報から確認します。",
     "file": "../articles/2026-07-31-google-play-quests.html",
     "thumbnail": "../articles/ogp/campaign.png"
   },
@@ -1213,7 +1213,7 @@
   },
   {
     "id": "play-points-reflection-timing",
-    "title": "Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番",
+    "title": "Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番",
     "date": "2026-03-10",
     "category": "トラブル",
     "tags": [
@@ -1222,7 +1222,7 @@
       "保留",
       "確認方法"
     ],
-    "description": "課金したのにPlay Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。",
+    "description": "課金したのにGoogle Play Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
     "modified": "2026-09-12"
