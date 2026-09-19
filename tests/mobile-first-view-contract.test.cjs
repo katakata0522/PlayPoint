@@ -363,7 +363,7 @@ test('スマホのトップ下部は重複説明を減らし、ランク4導線�
   assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 4);
   assert.match(css, /\.home-secondary-section\s*\{/);
-  assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
 });
 
 test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
