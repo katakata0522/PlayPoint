@@ -133,9 +133,9 @@ test('救出記事と8月19日記事は専用OGPを保持し、一覧サムネ�
   const registry = JSON.parse(read('blog/articles.json'));
   const hashes = new Map();
   const gameListThumbnails = new Map([
-    ['umamusume-half-anniversary-points', '../images/game-icons/umamusume.png'],
-    ['dokkan-battle-dragon-ball-play-points', '../images/game-icons/dokkan.png'],
-    ['pad-puzzle-and-dragons-play-points', '../images/game-icons/pad.png']
+    ['umamusume-half-anniversary-points', '../images/game-icons/umamusume.webp'],
+    ['dokkan-battle-dragon-ball-play-points', '../images/game-icons/dokkan.webp'],
+    ['pad-puzzle-and-dragons-play-points', '../images/game-icons/pad.webp']
   ]);
 
   for (const article of DEDICATED_OGP_ARTICLES) {
