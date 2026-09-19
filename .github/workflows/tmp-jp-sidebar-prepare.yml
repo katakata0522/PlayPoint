@@ -14,15 +14,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: feat/jp-sidebar-popular-search-v2-20260919
           fetch-depth: 0
+          persist-credentials: true
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up pinned CI Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: '22.23.2'
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
 
       - name: Regenerate deterministic outputs
         run: node scripts/prepare-pr.cjs
@@ -35,10 +37,6 @@ jobs:
         run: |
           set -euo pipefail
           git rm .github/workflows/tmp-jp-sidebar-prepare.yml
-          if git diff --quiet && git diff --cached --quiet; then
-            echo "No changes to commit."
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
