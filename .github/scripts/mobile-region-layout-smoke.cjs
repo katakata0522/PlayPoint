@@ -173,16 +173,14 @@ async function inspectLayout(page) {
     const labels = primaryButtons.map(button => {
       const mobile = button.querySelector('.region-label-mobile');
       const desktop = button.querySelector('.region-label-desktop');
-      const flag = desktop?.querySelector('.region-flag-img');
+      const flagStyle = desktop ? getComputedStyle(desktop, '::before') : null;
       return {
         region: button.dataset.region,
         mobileText: mobile?.textContent?.trim() || '',
         desktopText: desktop?.textContent?.trim() || '',
         mobileDisplay: mobile ? getComputedStyle(mobile).display : '',
         desktopDisplay: desktop ? getComputedStyle(desktop).display : '',
-        flagSrc: flag?.getAttribute('src') || '',
-        flagNaturalWidth: flag?.naturalWidth || 0,
-        flagNaturalHeight: flag?.naturalHeight || 0
+        flagBackground: flagStyle?.backgroundImage || ''
       };
     });
 
@@ -315,6 +313,7 @@ async function verifyLocale(browser, baseUrl, locale) {
     }
 
     await page.setViewportSize({ width: TABLET_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
+    await page.waitForFunction(() => Boolean(document.querySelector('link[data-desktop-topbar-style]')?.sheet), null, { timeout: 10_000 });
     await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display !== 'grid', null, { timeout: 10_000 });
     const tabletLayout = await inspectLayout(page);
     assert(tabletLayout, `${locale.key} tablet: region selector was not fully initialized`);
@@ -323,11 +322,12 @@ async function verifyLocale(browser, baseUrl, locale) {
     assert(tabletLayout.documentScrollWidth <= tabletLayout.viewportWidth + 1,
       `${locale.key} tablet: page horizontally overflows (${tabletLayout.documentScrollWidth} > ${tabletLayout.viewportWidth})`);
     tabletLayout.labels.forEach(label => {
-      assert(label.flagSrc.endsWith(`/images/flags/${label.region.toLowerCase()}.svg`),
-        `${locale.key} tablet: missing local flag for ${label.region}: ${label.flagSrc}`);
-      assert(label.flagNaturalWidth > 0 && label.flagNaturalHeight > 0,
-        `${locale.key} tablet: flag did not decode for ${label.region}`);
+      assert(label.flagBackground.includes(`/images/flags/${label.region.toLowerCase()}.svg`),
+        `${locale.key} tablet: missing local flag background for ${label.region}: ${label.flagBackground}`);
     });
+    await page.waitForFunction(() => ['jp','us','kr','tw'].every(code =>
+      performance.getEntriesByType('resource').some(entry => entry.name.includes(`/images/flags/${code}.svg`))
+    ), null, { timeout: 10_000 });
     results.push({ width: TABLET_VIEWPORT_WIDTH, ...tabletLayout });
     console.log(`ok - ${locale.key} tablet shell width and SVG flags`);
 
@@ -359,10 +359,8 @@ async function verifyLocale(browser, baseUrl, locale) {
         `${locale.key} desktop: unexpected compact label for ${label.region}: ${label.desktopText}`);
       assert(label.desktopDisplay !== 'none',
         `${locale.key} desktop: compact desktop label hidden for ${label.region}`);
-      assert(label.flagSrc.endsWith(`/images/flags/${label.region.toLowerCase()}.svg`),
-        `${locale.key} desktop: missing local flag for ${label.region}: ${label.flagSrc}`);
-      assert(label.flagNaturalWidth > 0 && label.flagNaturalHeight > 0,
-        `${locale.key} desktop: flag did not decode for ${label.region}`);
+      assert(label.flagBackground.includes(`/images/flags/${label.region.toLowerCase()}.svg`),
+        `${locale.key} desktop: missing local flag background for ${label.region}: ${label.flagBackground}`);
     });
 
     const articleLink = page.locator('.header-links a[href*="blog"]').first();
