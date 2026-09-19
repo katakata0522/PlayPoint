@@ -29,9 +29,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/fgo.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "genshin-welkin-value-2026",
@@ -62,9 +63,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/genshin.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "monst-google-play-vs-webshop-2026",
@@ -95,9 +97,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/monst.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "starrail-supply-pass-value-2026",
@@ -129,9 +132,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/starrail.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "zzz-membership-value-2026",
@@ -163,9 +167,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/zzz.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "umamusume-umasuku-value-2026",
@@ -197,9 +202,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/umamusume.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "proseka-google-play-vs-webstore-2026",
@@ -231,9 +237,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/proseka.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "pokepoke-premium-pass-guide-2026",
@@ -265,9 +272,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/pokepoke.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "pad-pass-value-2026",
@@ -299,9 +307,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/pad.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "arknights-monthly-pass-limited-scout-2026",
@@ -333,9 +342,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/arknights.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "dokkan-google-play-vs-webstore-2026",
@@ -366,9 +376,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/dokkan.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "hbr-google-play-vs-webshop-2026",
@@ -400,9 +411,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/hbr.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "honkai3rd-google-play-vs-charge-center-2026",
@@ -433,9 +445,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/honkai3rd.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "phantomparade-google-play-vs-webshop-2026",
@@ -467,9 +480,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/phantomparade.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "prospi-a-google-play-vs-konami-store-2026",
@@ -501,9 +515,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/prospi-a.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "pokemon-go-google-play-vs-webstore-2026",
@@ -535,9 +550,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/pokemon-go.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "efootball-google-play-points-vs-efootball-points-2026",
@@ -569,9 +585,10 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../ogp.png",
+    "thumbnail": "../images/game-icons/efootball.png",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "pad-puzzle-and-dragons-play-points",
@@ -585,8 +602,9 @@
     ],
     "description": "パズドラパスを使い切れるか、魔法石セットと確定セットをどう比べるかを具体例で解説。自動更新、受け取り条件、Google Play Pointsの獲得と交換価値を分けて判断できます。",
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
-    "thumbnail": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png",
-    "modified": "2026-09-12"
+    "thumbnail": "../images/game-icons/pad.png",
+    "modified": "2026-09-12",
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
@@ -600,8 +618,9 @@
     ],
     "description": "龍石の総数だけでなく、ガシャ期限までに受け取れる数でデイリー型商品と即時購入を比較。コインの対象条件とPlayポイントを分け、予算内で選ぶ方法を解説します。",
     "file": "../articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html",
-    "thumbnail": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png",
-    "modified": "2026-09-12"
+    "thumbnail": "../images/game-icons/dokkan.png",
+    "modified": "2026-09-12",
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "umamusume-half-anniversary-points",
@@ -615,8 +634,9 @@
     ],
     "description": "ウマ娘のハーフアニバで、無料ガチャ・引換券・有償ジュエルをどう比べるか。購入前に対象と期限を確認し、仮の価格例で予算とPlayポイントを分けて判断する方法を解説します。",
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
-    "thumbnail": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png",
-    "modified": "2026-09-12"
+    "thumbnail": "../images/game-icons/umamusume.png",
+    "modified": "2026-09-12",
+    "thumbnailKind": "app-icon"
   },
   {
     "id": "play-points-locked",
