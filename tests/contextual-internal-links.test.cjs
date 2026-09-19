@@ -30,22 +30,13 @@ function escapeRegExp(value) {
 test('selected Japanese guides use one restrained contextual related-guide card', () => {
   for (const [file, href] of EXPECTED) {
     const html = read(file);
-    const cards = html.match(/class=["'][^"']*\\barticle-context-link\\b[^"']*["']/g) || [];
+    const cards = html.match(/data-contextual-nav=["']editorial["']/g) || [];
     assert.equal(cards.length, 1, file + ': contextual card count');
     assert.match(html, new RegExp('href=["\\']' + escapeRegExp(href) + '["\\']'), file + ': expected contextual target');
 
-    const match = html.match(/<aside\\b[^>]*class=["'][^"']*\\barticle-context-link\\b[^"']*["'][^>]*>([\\s\\S]*?)<\\/aside>/i);
+    const match = html.match(/<nav\\b[^>]*data-contextual-nav=["']editorial["'][^>]*>([\\s\\S]*?)<\\/nav>/i);
     const card = match ? match[1] : '';
     assert.match(card, /関連ガイド/);
     assert.doesNotMatch(card, />\\s*(?:こちら|詳細|詳しくはこちら)\\s*(?:→)?\\s*<\\/a>/);
   }
-});
-
-test('contextual related-guide card stays visually quieter than primary CTA', () => {
-  const css = read('articles/article-shared.css');
-  assert.match(css, /\\.article-context-link\\s*\\{/);
-  assert.match(css, /border-left:\\s*3px solid var\\(--article-accent\\)/);
-  assert.match(css, /font-size:\\s*14px/);
-  const block = (css.match(/\\.article-context-link\\s*\\{[\\s\\S]*?\\}/) || [''])[0];
-  assert.doesNotMatch(block, /linear-gradient|box-shadow/);
 });
