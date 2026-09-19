@@ -1,5 +1,42 @@
 [
   {
+    "id": "play-points-promotion-not-showing",
+    "title": "「みんなには出てるのに自分にはない」Google Play Pointsの増量キャンペーンが表示されない理由",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "トラブル",
+    "tags": [
+      "Play Points",
+      "ポイント増量",
+      "ポイントアップ",
+      "表示されない",
+      "キャンペーン"
+    ],
+    "description": "Google Play Pointsのポイント増量・ポイントアップキャンペーンが自分だけ表示されない時の確認順を解説。全員対象とは限らない理由、Playのカスタマイズ設定、Play Pass、PC限定、新端末、国・通貨条件まで整理します。",
+    "file": "../articles/2026-09-19-play-points-promotion-not-showing.html",
+    "related": [
+      [
+        "/latest/",
+        "次のポイント増量キャンペーン予定・最新情報"
+      ],
+      [
+        "/articles/2025-12-25-campaign.html",
+        "キャンペーンを待つべきか判断する"
+      ],
+      [
+        "/articles/2026-08-16-play-pass-worth-it.html",
+        "Play Passの木曜週次と対象条件"
+      ],
+      [
+        "/articles/2026-03-10-play-points-reflection-timing.html",
+        "購入後にポイントが反映されない時の確認"
+      ]
+    ],
+    "thumbnail": "../articles/ogp/campaign.png",
+    "source": "article",
+    "listed": true
+  },
+  {
     "id": "fgo-pity-cost-2026",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
     "category": "使い方",
