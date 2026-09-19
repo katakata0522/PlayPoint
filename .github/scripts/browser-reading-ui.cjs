@@ -39,8 +39,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await page.setViewportSize({width,height:844});
       for (const theme of ['light','dark']) {
         if (await page.locator('html').getAttribute('data-reading-theme') !== theme) await page.locator('#theme-toggle').click();
-        await page.waitForFunction(t=>document.documentElement.dataset.readingTheme===t,theme);
+        // The attribute changes synchronously, but color-scheme style resolution can finish on the next paint.
+        // Wait for the actual requested surface; an attribute-only match cannot prove that the theme works.
+        await page.waitForFunction(t=>{
+          if(document.documentElement.dataset.readingTheme!==t) return false;
+          const channels=getComputedStyle(document.body).backgroundColor.match(/[\d.]+/g)?.slice(0,3).map(Number)||[];
+          return channels.length===3 && (t==='dark' ? Math.max(...channels)<128 : Math.min(...channels)>180);
+        },theme,{timeout:10000});
         const samples = await palette(page,['h1','.article-card h3','.article-card time','#category-filter button.active','#search-input']);
+        if(await page.locator('.card-thumb--text-only .card-category').count()) samples.push(...await palette(page,['.card-thumb--text-only .card-category']));
         for(const sample of samples) assert(!sample.missing && sample.ratio>=4.5,`${theme}/${width}: ${JSON.stringify(sample)}`);
         const bg = await page.evaluate(()=>getComputedStyle(document.body).backgroundColor);
         report.themes.push({width,theme,bg,samples});
@@ -51,8 +58,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.reload({waitUntil:'domcontentloaded'}); await cards(page);
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme persisted across reload');
     await page.setViewportSize({width:390,height:844});
+    // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
+    await goto(page,'blog/?game=FGO'); await cards(page);
     // 実画像をスクロールで読み込み、1px placeholderを合格にしない。
     const images = page.locator('.card-thumb--app-icon img');
+    assert(await images.count()>0,'Known game filter must expose a real app icon');
     for(let i=0;i<await images.count();i++) {
       const image=images.nth(i); await image.scrollIntoViewIfNeeded();
       await image.evaluate(img=>new Promise((resolve,reject)=>{
@@ -61,6 +71,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       }));
     }
     report.interactions.decodedIcons = await images.count();
+    await goto(page,'blog/'); await cards(page);
     const responsive=[];
     for(const width of [320,360,412,421,480,600,640,760,768,1024]) {
       await page.setViewportSize({width,height:844});
@@ -142,10 +153,10 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     });
     let indexAllowed=false,indexAttempts=0;
     await f.route('**/blog/article-search-index.json*',async route=>{indexAttempts++;if(!indexAllowed)return route.fulfill({status:503,body:'temporarily unavailable'});return route.continue();});
-    await f.route('**/images/game-icons/fgo.webp',route=>route.fulfill({status:404,body:'fixture image failure'}));
+    await f.route('**/images/game-icons/fgo.webp*',route=>route.fulfill({status:404,body:'fixture image failure'}));
     const fault=await f.newPage(),faultErrors=[];fault.on('pageerror',e=>faultErrors.push(e.message));
-    await goto(fault,'blog/');await cards(fault);
-    await fault.waitForFunction(()=>document.querySelector('.card-thumb img')?.src.endsWith('/images/article-placeholder.svg'));
+    await goto(fault,'blog/?game=FGO');await cards(fault);
+    await fault.waitForFunction(()=>document.querySelector('.article-card[href*="fgo/pity-cost"] .card-thumb img')?.src.endsWith('/images/article-placeholder.svg'));
     await fault.locator('#search-input').fill('329回以内');
     await fault.locator('#body-search-notice button').waitFor({state:'visible'});
     indexAllowed=true; await fault.locator('#body-search-notice button').click();

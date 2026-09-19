@@ -141,34 +141,26 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "課金目標の計算はどのように行われますか？",
+          "name": "計算結果どおりのポイントが必ず付与されますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。"
+            "text": "いいえ。計算結果は入力した条件にもとづく目安です。購入単位の計算、対象購入、反映時期、Google Playに表示される特別獲得率などで差が出ることがあるため、決済前のGoogle Play表示を最終確認してください。"
           }
         },
         {
           "@type": "Question",
-          "name": "逆算モードとは何ですか？",
+          "name": "PlayPointはGoogle公式ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。"
+            "text": "いいえ。PlayPointは個人運営の非公式ツールです。最新のステータス条件や特典内容はGoogle Play公式の表示をご確認ください。"
           }
         },
         {
           "@type": "Question",
-          "name": "Playポイント計算機は公式ですか？",
+          "name": "入力した内容やウィークリー記録はどこに保存されますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "いいえ。Playポイント計算機はGoogle公式ではない個人運営の非公式ツールです。計算結果は目安として使い、最新のステータス条件や特典内容はGoogle Play公式の表示をご確認ください。"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "ウィークリーリワード記録のデータは保存されますか？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "入力データはこのブラウザのローカルストレージにのみ保存されます。サイトデータの削除や端末・ブラウザ変更に備え、書き出しデータを安全な場所へ保管できます。"
+            "text": "計算やウィークリー記録はこのブラウザ内で扱います。ウィークリー記録はローカルストレージに保存され、端末・ブラウザを変えても自動では引き継がれません。必要に応じて書き出しデータを保管してください。"
           }
         }
       ]
@@ -401,7 +393,13 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <!-- DESCRIPTION_SECTION_START -->
     <section class="section home-secondary-section home-description-section">
         <h2 data-lang-key="descriptionSectionTitle">Play Points 計算機でできること</h2>
-        <p class="home-description-lead">Google Play Points の<strong>ランクアップまでの必要課金額</strong>、<strong>課金額から獲得できるポイント</strong>、<strong>キャンペーン特別獲得率を使った試算</strong>を、このページですぐ確認できます。</p>
+        <p class="home-use-cases-title">こんな時に使えます</p>
+        <ul class="home-use-cases">
+            <li>ダイヤモンドへの<strong>ランクアップ</strong>までの道のりを、身に染みて確かめたい</li>
+            <li><strong>あと1,000pt。</strong>結局いくら必要なのか知りたい</li>
+            <li><strong>5,000円課金したら何ポイント獲得できる？</strong> キャンペーン時との差も数字で見たい</li>
+            <li>毎週のウィークリーリワードを、<strong>1年分まとめて振り返りたい</strong></li>
+        </ul>
         <figure class="calculation-flow-figure">
             <img src="images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="不足ポイント、還元条件、必要課金額目安を順番に確認する計算の流れ">
             <figcaption>不足ポイント → 還元条件 → 必要課金額の目安。図中の1,728ptは入力例です。</figcaption>
@@ -411,12 +409,12 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <!-- ARTICLE_DRAWER_START -->
     <section class="section home-secondary-section home-guides-section">
       <h2 data-lang-key="articleDrawerTitle">よくある悩みを確認する</h2>
-      <p class="home-guides-lead">ランク別の必要額は専用ページへ。詳しい解説やトラブル対処は記事一覧にまとめています。</p>
+      <p class="home-guides-lead">気になるランクを選んで、残りの道のりを数字で確認。</p>
       <ul class="article-link-list home-rank-links" aria-label="ランク別の必要額を確認">
-        <li><a class="article-link-card" href="status/silver/"><span class="article-link-tag">ランク必要額</span> <span class="article-link-title">シルバーはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/gold/"><span class="article-link-tag">ランク必要額</span> <span class="article-link-title">ゴールドはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/platinum/"><span class="article-link-tag">ランク必要額</span> <span class="article-link-title">プラチナはいくら必要？</span></a></li>
-        <li><a class="article-link-card" href="status/diamond/"><span class="article-link-tag">ランク必要額</span> <span class="article-link-title">ダイヤモンドはいくら必要？</span></a></li>
+        <li><a class="article-link-card home-rank-card home-rank-card--silver" href="status/silver/"><span class="article-link-tag">SILVER</span><span class="article-link-title">シルバーはいくら必要？</span><span class="home-rank-hint">まずはシルバーまでの目安を確認</span></a></li>
+        <li><a class="article-link-card home-rank-card home-rank-card--gold" href="status/gold/"><span class="article-link-tag">GOLD</span><span class="article-link-title">ゴールドはいくら必要？</span><span class="home-rank-hint">ゴールドまでの距離を数字で確認</span></a></li>
+        <li><a class="article-link-card home-rank-card home-rank-card--platinum" href="status/platinum/"><span class="article-link-tag">PLATINUM</span><span class="article-link-title">プラチナはいくら必要？</span><span class="home-rank-hint">「あと少し」を金額にしてみる</span></a></li>
+        <li><a class="article-link-card home-rank-card home-rank-card--diamond" href="status/diamond/"><span class="article-link-tag">DIAMOND</span><span class="article-link-title">ダイヤモンドはいくら必要？</span><span class="home-rank-hint">最高ランクまで、どれくらい？</span></a></li>
       </ul>
       <nav class="home-guide-shortcuts" aria-label="その他のガイド">
         <a href="latest/">最新情報</a>
@@ -430,20 +428,16 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <section class="section home-secondary-section home-faq-section">
         <h2 data-lang-key="faqSectionTitle">❓ よくある質問 (FAQ)</h2>
         <details class="faq-item">
-            <summary>Q. 課金目標の計算はどのように行われますか？</summary>
-            <p>A. 現在のステータスと目標ステータスまでの不足ポイントを入力することで、現在の通常獲得率とGoogle Playに表示されたキャンペーン特別獲得率を比較し、適用される高い獲得率を使って必要な課金額を算出します。</p>
+            <summary>Q. 計算結果どおりのポイントが必ず付与されますか？</summary>
+            <p>A. いいえ。計算結果は入力した条件にもとづく目安です。購入単位の計算、対象購入、反映時期、Google Playに表示される特別獲得率などで差が出ることがあるため、決済前のGoogle Play表示を最終確認してください。</p>
         </details>
         <details class="faq-item">
-            <summary>Q. 逆算モードとは何ですか？</summary>
-            <p>A. 課金する金額（円）を入力すると、現在のステータスやキャンペーン設定に応じて、獲得できる予想ポイント数をシミュレーションします。</p>
+            <summary>Q. PlayPointはGoogle公式ですか？</summary>
+            <p>A. いいえ。PlayPointは個人運営の非公式ツールです。最新のステータス条件や特典内容はGoogle Play公式の表示をご確認ください。</p>
         </details>
         <details class="faq-item">
-            <summary>Q. Playポイント計算機は公式ですか？</summary>
-            <p>A. いいえ。Playポイント計算機はGoogle公式ではない個人運営の非公式ツールです。計算結果は目安として使い、最新のステータス条件や特典内容はGoogle Play公式の表示をご確認ください。</p>
-        </details>
-        <details class="faq-item">
-            <summary>Q. ウィークリーリワード記録のデータは保存されますか？</summary>
-            <p>A. 入力データはこのブラウザのローカルストレージにのみ保存されます。サイトデータの削除や端末・ブラウザ変更に備え、書き出しデータを安全な場所へ保管できます。</p>
+            <summary>Q. 入力した内容やウィークリー記録はどこに保存されますか？</summary>
+            <p>A. 計算やウィークリー記録はこのブラウザ内で扱います。ウィークリー記録はローカルストレージに保存され、端末・ブラウザを変えても自動では引き継がれません。必要に応じて書き出しデータを保管してください。</p>
         </details>
     </section>
     <!-- FAQ_SECTION_END -->

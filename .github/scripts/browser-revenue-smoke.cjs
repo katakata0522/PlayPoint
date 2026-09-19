@@ -151,7 +151,7 @@ async function main() {
       const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
       for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
       assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');
-      assert.equal(await page.evaluate(()=>window.adsbygoogle.length),before,'Sorting does not refresh ad slots');
+      assert(await page.evaluate(()=>window.adsbygoogle.length)===before,'Sorting does not refresh ad slots');
       await context.close();
       console.log('ok - article hub consent and persistent ad slots: '+mode);
     }
