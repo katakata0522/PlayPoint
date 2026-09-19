@@ -58,9 +58,12 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
     assert.ok(!/\sstyle=/.test(card), file + ': contextual guide must use the shared design system instead of inline CSS');
 
     const sectionStart = html.lastIndexOf('<section', navStart);
-    const sectionOpenEnd = sectionStart >= 0 ? html.indexOf('>', sectionStart) : -1;
-    const sectionOpen = sectionStart >= 0 && sectionOpenEnd >= 0 ? html.slice(sectionStart, sectionOpenEnd + 1) : '';
-    assert.ok(!/answer-box|editorial-answer/.test(sectionOpen), file + ': contextual guide must stay outside the primary answer box');
+    const sectionClose = html.lastIndexOf('</section>', navStart);
+    if (sectionStart > sectionClose) {
+      const sectionOpenEnd = html.indexOf('>', sectionStart);
+      const sectionOpen = sectionOpenEnd >= 0 ? html.slice(sectionStart, sectionOpenEnd + 1) : '';
+      assert.ok(!/answer-box|editorial-answer/.test(sectionOpen), file + ': contextual guide must stay outside the primary answer box');
+    }
 
     const lastCalloutStart = html.lastIndexOf('<div class="callout', navStart);
     const lastDivClose = html.lastIndexOf('</div>', navStart);
