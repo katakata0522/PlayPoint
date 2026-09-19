@@ -126,39 +126,33 @@ function createLocales() {
     </script>
     <!-- FAQ_JSON_LD_END -->`,
         faqSection: `    <!-- FAQ_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-faq-section">
         <h2>❓ Frequently Asked Questions (FAQ)</h2>
-        <div class="faq-item">
-            <h3>Q. How is the spending goal calculated?</h3>
+        <details class="faq-item">
+            <summary>Q. How is the spending goal calculated?</summary>
             <p>A. By inputting your current points and target status, the calculator compares your base earn rate with any special earn rate shown in Google Play and uses the higher rate. It does not multiply the two rates.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. What is the reverse calculation mode?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. What is the reverse calculation mode?</summary>
             <p>A. By inputting the spending amount, the tool simulates expected points using the higher of your base earn rate and any special earn rate shown in Google Play.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. Is this an official Google page?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. Is this an official Google page?</summary>
             <p>A. No. This site is an unofficial personal tool and is not operated by Google. Use the calculation result as an estimate, and check the official Google Play screen for the latest status conditions and benefits.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. Is my weekly reward diary data saved?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. Is my weekly reward diary data saved?</summary>
             <p>A. Diary data is stored only in this browser's local storage. It does not move to another device or browser and can be lost when site data is cleared or private browsing ends. Keep an exported copy if needed.</p>
-        </div>
+        </details>
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-description-section">
         <h2>What You Can Do with Google Play Points Calculator</h2>
-        <p>On this page, you can check <strong>how much you need to level up</strong>, <strong>how many points you can earn with your current spending</strong>, and <strong>how a special earn rate shown in Google Play changes the estimate</strong>.</p>
-        <p>This is especially helpful when you want to make decisions based on numbers rather than intuition, such as "just a little more to Platinum," "want to know if I can reach Diamond," or "wondering if I should wait for a point boost campaign."</p>
-        <ul>
-            <li>Estimate the required spending to reach Platinum or Diamond status.</li>
-            <li>Compare base earn rates with special earn rates shown in Google Play for reverse calculations.</li>
-            <li>Manage your weekly earned points manually in the Weekly Rewards Diary.</li>
-        </ul>
+        <p class="home-description-lead">Use this page to check <strong>the spending needed to level up</strong>, <strong>the Play Points you can earn from a spending amount</strong>, and <strong>estimates using a special earn rate shown in Google Play</strong>.</p>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="Three-step flow from points needed through the selected reward condition to estimated spending">
-            <figcaption>Three steps from the points gap and reward condition to an estimated spending amount. The 1,728-point figure is an input example.</figcaption>
+            <figcaption>Points gap → reward condition → estimated spending. The 1,728-point figure is an input example.</figcaption>
         </figure>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -287,39 +281,33 @@ function createLocales() {
     </script>
     <!-- FAQ_JSON_LD_END -->`,
         faqSection: `    <!-- FAQ_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-faq-section">
         <h2>❓ 자주 묻는 질문 (FAQ)</h2>
-        <div class="faq-item">
-            <h3>Q. 등급 달성 계산은 어떻게 진행되나요?</h3>
+        <details class="faq-item">
+            <summary>Q. 등급 달성 계산은 어떻게 진행되나요?</summary>
             <p>A. 현재 상태와 목표 등급까지 부족한 포인트를 입력하면, 기본 적립률과 Google Play에 표시된 특별 적립률을 비교해 높은 값을 사용하여 필요한 결제 금액을 계산합니다. 두 적립률을 서로 곱하지 않습니다.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 역산 모드는 무엇인가요?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 역산 모드는 무엇인가요?</summary>
             <p>A. 결제할 금액을 입력하면, 현재 등급의 기본 적립률과 Google Play에 표시된 특별 적립률 중 높은 값을 사용해 획득 예상 포인트를 시뮬레이션합니다.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 이 콘텐츠는 공식 페이지인가요?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 이 콘텐츠는 공식 페이지인가요?</summary>
             <p>A. 아니요. 이 사이트는 Google이 운영하는 공식 페이지가 아니라 개인이 운영하는 비공식 계산 도구입니다. 계산 결과는 참고용으로만 사용하고, 최신 등급 조건과 혜택은 Google Play 공식 화면에서 확인해 주세요.</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 주간 리워드 일지 데이터는 저장되나요?</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 주간 리워드 일지 데이터는 저장되나요?</summary>
             <p>A. 일지 데이터는 이 브라우저의 로컬 저장소에만 보관됩니다. 사이트 데이터 삭제, 비공개 탐색 종료, 다른 기기나 브라우저로 이동할 때는 자동으로 이어지지 않으므로 필요하면 내보낸 데이터를 보관하세요.</p>
-        </div>
+        </details>
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-description-section">
         <h2>구글 플레이 포인트 계산기로 할 수 있는 것</h2>
-        <p>이 페이지에서는 구글 플레이 포인트의 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>현재 결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 적용했을 때 예상치가 어떻게 달라지는지</strong>를 한눈에 확인할 수 있습니다.</p>
-        <p>특히 '플래티넘까지 조금 남았을 때', '다이아몬드 달성 가능 여부를 알고 싶을 때', '포인트 증량 이벤트를 기다려야 할지 고민될 때' 감이 아닌 숫자로 쉽게 판단할 수 있도록 도와줍니다.</p>
-        <ul>
-            <li>플래티넘, 다이아몬드 등급 달성에 필요한 결제 금액 시뮬레이션</li>
-            <li>기본 적립률과 Google Play에 표시된 특별 적립률을 비교하여 획득 포인트 역산</li>
-            <li>주간 리워드 일기로 매주 획득한 포인트를 편리하게 관리</li>
-        </ul>
+        <p class="home-description-lead">이 페이지에서 <strong>등급 업까지 필요한 결제 금액</strong>, <strong>결제 금액으로 획득 가능한 포인트</strong>, <strong>Google Play에 표시된 특별 적립률을 사용한 예상치</strong>를 바로 확인할 수 있습니다.</p>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="필요 포인트와 적립 조건에서 예상 결제 금액까지 이어지는 3단계 계산 흐름">
-            <figcaption>필요 포인트와 적립 조건으로 예상 결제 금액을 구하는 3단계입니다. 그림의 1,728pt는 입력 예시입니다.</figcaption>
+            <figcaption>필요 포인트 → 적립 조건 → 예상 결제 금액. 그림의 1,728pt는 입력 예시입니다.</figcaption>
         </figure>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,
@@ -448,39 +436,33 @@ function createLocales() {
     </script>
     <!-- FAQ_JSON_LD_END -->`,
         faqSection: `    <!-- FAQ_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-faq-section">
         <h2>❓ 常見問題 (FAQ)</h2>
-        <div class="faq-item">
-            <h3>Q. 升級目標的消費金額是如何計算的？</h3>
+        <details class="faq-item">
+            <summary>Q. 升級目標的消費金額是如何計算的？</summary>
             <p>A. 輸入目前點數與目標等級所需點數後，系統會比較基本獲點率與 Google Play 顯示的活動特別獲點率，採用較高者計算所需消費金額，不會把兩個獲點率相乘。</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 什麼是反推模式？</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 什麼是反推模式？</summary>
             <p>A. 輸入預計消費金額後，系統會使用目前等級的基本獲點率與 Google Play 顯示的活動特別獲點率中較高者，估算可獲得點數。</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 這是官方內容嗎？</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 這是官方內容嗎？</summary>
             <p>A. 不是。本站不是 Google 官方營運的頁面，而是個人製作的非官方試算工具。計算結果請作為參考，最新等級條件與優惠內容請以 Google Play 官方畫面為準。</p>
-        </div>
-        <div class="faq-item">
-            <h3>Q. 每週獎勵紀錄的資料會被儲存嗎？</h3>
+        </details>
+        <details class="faq-item">
+            <summary>Q. 每週獎勵紀錄的資料會被儲存嗎？</summary>
             <p>A. 日記資料只儲存在此瀏覽器的本機儲存空間。清除網站資料、結束無痕瀏覽或改用其他裝置與瀏覽器時不會自動移轉；如有需要請保留匯出資料。</p>
-        </div>
+        </details>
     </section>
     <!-- FAQ_SECTION_END -->`,
         descriptionSection: `    <!-- DESCRIPTION_SECTION_START -->
-    <section class="section">
+    <section class="section home-secondary-section home-description-section">
         <h2>Google Play 點數計算器可以做什麼？</h2>
-        <p>在此頁面中，您可以確認 <strong>距離升級還差多少消費金額</strong>、<strong>以目前的消費額可以獲得多少點數</strong>，以及 <strong>Google Play 顯示活動特別獲點率時，預估點數會如何變化</strong>。</p>
-        <p>特別是在「距離白金級還差一點點」、「想知道是否能達到鑽石級」或「正在猶豫是否要等待點數加倍活動」時，能協助您以具體數字而非憑感覺進行判斷。</p>
-        <ul>
-            <li>估算達到白金級、鑽石級所需的消費金額。</li>
-            <li>比較基本獲點率與 Google Play 顯示的活動特別獲點率，進行點數反推。</li>
-            <li>利用每週獎勵日記，在手邊輕鬆記錄與管理每週獲得的點數。</li>
-        </ul>
+        <p class="home-description-lead">此頁面可直接確認 <strong>升級所需的消費金額</strong>、<strong>消費金額可獲得的點數</strong>，以及 <strong>套用 Google Play 顯示的活動特別獲點率後的預估結果</strong>。</p>
         <figure class="calculation-flow-figure">
             <img src="../images/calculation-flow.svg" width="960" height="360" loading="lazy" decoding="async" alt="從所需點數與回饋條件到預估消費金額的三步驟計算流程">
-            <figcaption>從點數差距與回饋條件算出預估消費金額的三個步驟。圖中的1,728pt是輸入範例。</figcaption>
+            <figcaption>所需點數 → 獲點條件 → 預估消費金額。圖中的 1,728pt 是輸入範例。</figcaption>
         </figure>
     </section>
     <!-- DESCRIPTION_SECTION_END -->`,

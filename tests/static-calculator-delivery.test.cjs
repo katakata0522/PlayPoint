@@ -124,11 +124,13 @@ test('6地域トップは通常デザインを保ちつつ主要CTAをモバイ�
   }
 });
 
-test('日本語トップは説明の後に通常の記事一覧を表示する', () => {
+test('日本語トップは説明の後にランク導線と記事ハブだけをコンパクトに表示する', () => {
   const html = read('index.html');
   assertOrderedAttributes(html, 'data-lang-key', ['descriptionSectionTitle', 'articleDrawerTitle'], '日本語トップ');
   assert.ok(!html.includes('home-article-carousel'));
-  assert.ok(html.includes('すべての記事を見る'));
+  assert.ok(html.includes('class="home-guide-shortcuts"'));
+  assert.ok(html.includes('href="blog/"'));
+  assert.ok(html.includes('href="latest/"'));
 });
 
 test('多言語生成処理は通常計算専用ラベルを実際のHTMLへ適用する', () => {

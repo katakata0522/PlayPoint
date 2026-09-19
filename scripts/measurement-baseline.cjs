@@ -137,6 +137,16 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       windowDays: 30,
       lagDays: 3,
       primaryUnit: 'activeUsers',
+      gscDimensions: ['page'],
+      gscAggregationType: 'byPage',
+      gscFinalDataOnly: true,
+      pageKey: 'normalized_site_relative_path',
+      joinIntegrity: {
+        metric: 'gsc_click_weighted_to_ga4_organic',
+        minimumClicks: 20,
+        minimumJoinRate: 0.5,
+        unnormalizedAbsoluteUrlForbidden: true
+      },
       attributionDimension: 'entry_source_path',
       events: {
         articleToCalculator: 'article_to_calculator_clicked',

@@ -145,7 +145,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
   var period = playPointP12BuildGa4Period_();
 
   var gsc = playPointP12SafeSource_(function() {
-    return playPointP12FetchGscQueryPage_(siteUrl, period.start, period.end);
+    return playPointP12FetchGscPage_(siteUrl, period.start, period.end);
   });
   var organic = playPointP12SafeSource_(function() {
     return playPointP12FetchOrganicLandings_(propertyId, period);
@@ -174,6 +174,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
       revenue: revenue.ok
     }
   });
+  var joinIntegrity = playPointP12AssessPageValueJoin_(rows);
 
   var sheet = playPointP12EnsureSheet_(spreadsheet, PLAYPOINT_P12_CONFIG.pageValueSheet, 14);
   sheet.clearContents();
@@ -186,7 +187,10 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
       'GSC property', siteUrl,
       '主単位', 'activeUsers',
       '収益source', 'GA4 publisher metrics',
-      '状態', playPointP12AvailabilityLabel_([gsc, organic, articleClicks, attributed, revenue]),
+      '状態', playPointP12PageValueStateLabel_(
+        [gsc, organic, articleClicks, attributed, revenue],
+        joinIntegrity
+      ),
       '', ''
     ],
     [
@@ -260,7 +264,8 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
       articleClicks: articleClicks.ok,
       attributed: attributed.ok,
       revenue: revenue.ok
-    }
+    },
+    joinIntegrity: joinIntegrity
   };
 }
 
@@ -584,6 +589,83 @@ function playPointP12BuildPageValueRows_(input) {
   });
 }
 
+function playPointP12AssessPageValueJoin_(rows) {
+  var totalGscClicks = 0;
+  var joinedGscClicks = 0;
+  var gscClickRows = 0;
+  var joinedGscClickRows = 0;
+  var absoluteUrlKeys = 0;
+
+  (rows || []).forEach(function(row) {
+    var page = String(row.page || '');
+    if (/^https?:\/\//i.test(page)) absoluteUrlKeys += 1;
+
+    var clicks = Number(row.searchClicks || 0);
+    if (clicks <= 0) return;
+
+    gscClickRows += 1;
+    totalGscClicks += clicks;
+
+    if (Number(row.organicSessions || 0) > 0 || Number(row.organicUsers || 0) > 0) {
+      joinedGscClickRows += 1;
+      joinedGscClicks += clicks;
+    }
+  });
+
+  var joinRate = totalGscClicks > 0 ? joinedGscClicks / totalGscClicks : null;
+  var status = 'OK';
+  var reason = '';
+
+  if (absoluteUrlKeys > 0) {
+    status = 'PARTIAL';
+    reason = 'unnormalized_absolute_url_keys';
+  } else if (totalGscClicks >= 20 && joinRate < 0.5) {
+    status = 'PARTIAL';
+    reason = 'low_gsc_ga4_join_rate';
+  } else if (totalGscClicks < 20) {
+    status = 'LOW_SAMPLE';
+    reason = 'gsc_click_sample_below_20';
+  }
+
+  return {
+    status: status,
+    reason: reason,
+    totalGscClicks: totalGscClicks,
+    joinedGscClicks: joinedGscClicks,
+    joinRate: joinRate,
+    gscClickRows: gscClickRows,
+    joinedGscClickRows: joinedGscClickRows,
+    absoluteUrlKeys: absoluteUrlKeys,
+    minimumClicks: 20,
+    minimumJoinRate: 0.5
+  };
+}
+
+function playPointP12JoinIntegrityText_(joinIntegrity) {
+  if (!joinIntegrity) return 'join=unknown';
+  var rate = joinIntegrity.joinRate === null
+    ? 'n/a'
+    : (joinIntegrity.joinRate * 100).toFixed(1) + '%';
+  return 'join=' + rate +
+    ', GSC clicks=' + Number(joinIntegrity.totalGscClicks || 0) +
+    ', joined clicks=' + Number(joinIntegrity.joinedGscClicks || 0) +
+    ', absolute URL keys=' + Number(joinIntegrity.absoluteUrlKeys || 0) +
+    (joinIntegrity.reason ? ', reason=' + joinIntegrity.reason : '');
+}
+
+function playPointP12PageValueStateLabel_(sources, joinIntegrity) {
+  var sourceLabel = playPointP12AvailabilityLabel_(sources);
+  if (sourceLabel !== 'OK') return sourceLabel;
+  if (!joinIntegrity) return 'PARTIAL (join integrity unavailable)';
+  if (joinIntegrity.status === 'PARTIAL') {
+    return 'PARTIAL (' + playPointP12JoinIntegrityText_(joinIntegrity) + ')';
+  }
+  if (joinIntegrity.status === 'LOW_SAMPLE') {
+    return 'OK (join sample small: ' + playPointP12JoinIntegrityText_(joinIntegrity) + ')';
+  }
+  return 'OK (' + playPointP12JoinIntegrityText_(joinIntegrity) + ')';
+}
+
 function playPointP12CrossOutputRows_(type, result, periods) {
   if (!result.ok) return [];
   return (result.rows || []).map(function(row) {
@@ -650,18 +732,21 @@ function playPointP12FetchGscCrossPair_(siteUrl, periods, dimensions) {
   };
 }
 
-function playPointP12FetchGscQueryPage_(siteUrl, startDate, endDate) {
+function playPointP12FetchGscPage_(siteUrl, startDate, endDate) {
+  // Page-value funnel needs page totals, not query × page rows.
+  // Query dimensions can omit anonymized/long-tail rows and are owned by the
+  // dedicated Search Console intent-analysis sheets instead.
   var result = playPointP12FetchGscRows_(
     siteUrl,
     startDate,
     endDate,
-    ['query', 'page'],
+    ['page'],
     'byPage'
   );
 
   return result.rows.map(function(row) {
     return {
-      page: playPointP12NormalizePage_(row.keys && row.keys[1] ? row.keys[1] : ''),
+      page: playPointP12NormalizePage_(row.keys && row.keys[0] ? row.keys[0] : ''),
       clicks: Number(row.clicks || 0),
       impressions: Number(row.impressions || 0)
     };
@@ -1178,9 +1263,12 @@ function playPointP12TryHealth_(fn) {
 function playPointP12ResultState_(stage, result) {
   if (stage === 'PAGE_VALUE') {
     var availability = result && result.availability ? result.availability : {};
-    return Object.keys(availability).some(function(key) { return availability[key] === false; })
-      ? 'PARTIAL'
-      : 'OK';
+    var sourcePartial = Object.keys(availability).some(function(key) {
+      return availability[key] === false;
+    });
+    var joinPartial = result && result.joinIntegrity &&
+      result.joinIntegrity.status === 'PARTIAL';
+    return sourcePartial || joinPartial ? 'PARTIAL' : 'OK';
   }
 
   if (stage === 'SEARCH_CROSS') {
@@ -1218,15 +1306,25 @@ function playPointP12HealthStart_(stage, started) {
 }
 
 function playPointP12HealthSuccess_(stage, finished, state, result) {
+  var note = 'P1/P2 collector verified';
+  if (state === 'PARTIAL') {
+    if (stage === 'PAGE_VALUE' && result && result.joinIntegrity &&
+        result.joinIntegrity.status === 'PARTIAL') {
+      note = 'GSC/GA4 join integrity warning: ' +
+        playPointP12JoinIntegrityText_(result.joinIntegrity) +
+        '。実行ログの[P1P2:PAGE_VALUE]を確認';
+    } else {
+      note = '一部sourceが未取得。実行ログの[P1P2:' + stage + ']を確認';
+    }
+  }
+
   playPointP12UpsertHealth_(stage, {
     lastSuccess: finished,
     dataLatest: playPointP12ResultDataLatest_(stage, result),
     state: state,
     consecutiveFailures: 0,
     error: '',
-    note: state === 'PARTIAL'
-      ? '一部sourceが未取得。実行ログの[P1P2:' + stage + ']を確認'
-      : 'P1/P2 collector verified'
+    note: note
   });
 }
 
@@ -1314,13 +1412,22 @@ function playPointP12NormalizePage_(value) {
   var text = String(value || '').trim();
   if (!text || text === '(not set)') return text;
 
-  try {
-    var url = new URL(text, 'https://playpoint-sim.com');
-    text = url.pathname || '/';
-  } catch (ignored) {
+  // Apps Script V8 does not provide the browser/Node URL global consistently.
+  // Normalize with string operations so GSC absolute URLs and GA4 page paths
+  // always join to the same site-relative key.
+  var absolute = text.match(/^https?:\/\/([^\/?#]+)([^?#]*)/i);
+  if (absolute) {
+    var host = String(absolute[1] || '').toLowerCase();
+    if (host !== 'playpoint-sim.com' && host !== 'www.playpoint-sim.com') {
+      return '';
+    }
+    text = absolute[2] || '/';
+  } else {
     text = text.split(/[?#]/, 1)[0] || '/';
   }
 
+  text = text.split(/[?#]/, 1)[0] || '/';
+  if (text.charAt(0) !== '/') text = '/' + text;
   if (text.length > 1 && text.charAt(text.length - 1) === '/') {
     text = text.slice(0, -1);
   }

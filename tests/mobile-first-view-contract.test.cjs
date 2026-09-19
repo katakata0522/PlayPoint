@@ -338,6 +338,34 @@ test('スマホ記事導線はカードを2列にし、極小幅だけ1列へ退
   assert.match(experience, /article-link-title\{font-size:\.93rem/);
 });
 
+test('計算フローはGoogleコア4色を段階と接続へ使う', () => {
+  const svg = read('images/calculation-flow.svg');
+
+  for (const hex of ['#4285F4', '#EA4335', '#FBBC04', '#34A853']) {
+    assert.ok(svg.includes(hex), `missing Google core color: ${hex}`);
+  }
+  assert.match(svg, /id="link12"/);
+  assert.match(svg, /id="link23"/);
+  assert.doesNotMatch(svg, /#58a6ff|#3fb950/i);
+});
+
+test('スマホのトップ下部は重複説明を減らし、ランク4導線と折りたたみFAQへ圧縮する', () => {
+  const html = read('index.html');
+  const css = read('style.css');
+  const description = html.match(/<!-- DESCRIPTION_SECTION_START -->([\s\S]*?)<!-- DESCRIPTION_SECTION_END -->/)?.[1] || '';
+  const articles = html.match(/<!-- ARTICLE_DRAWER_START -->([\s\S]*?)<!-- ARTICLE_DRAWER_END -->/)?.[1] || '';
+  const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
+
+  assert.ok(description.includes('home-description-lead'));
+  assert.doesNotMatch(description, /<ul\b/);
+  assert.equal((articles.match(/class="article-link-card"/g) || []).length, 4);
+  assert.ok(articles.includes('class="home-guide-shortcuts"'));
+  assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
+  assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 4);
+  assert.match(css, /\.home-secondary-section\s*\{/);
+  assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+});
+
 test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
   const experience = read('js/home-experience.js');
   const backToTop = read('js/home-back-to-top.js');
