@@ -50,44 +50,20 @@ function nextFor(role, related, article) {
 }
 
 function renderSearchWidget() {
-  return `  <section class="sidebar-widget sidebar-widget--search">
-    <h2 class="sidebar-widget-title">記事を探す</h2>
-    <div class="sidebar-widget-body">
-      <form class="sidebar-search-form" action="/blog/" method="get" role="search">
-        <input class="sidebar-search-input" type="search" name="q" placeholder="キーワードで検索" aria-label="記事を検索">
-        <button class="sidebar-search-button" type="submit">検索</button>
-      </form>
-      <div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/blog/">すべての記事を見る</a></div>
-    </div>
-  </section>`;
+  return `  <section class="sidebar-widget sidebar-widget--search"><h2 class="sidebar-widget-title">記事を探す</h2><div class="sidebar-widget-body"><form class="sidebar-search-form" action="/blog/" method="get" role="search"><input class="sidebar-search-input" type="search" name="q" placeholder="キーワードで検索" aria-label="記事を検索"><button class="sidebar-search-button" type="submit">検索</button></form><div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/blog/">すべての記事を見る</a></div></div></section>`;
 }
 
 function renderPopularWidget(article) {
   const popular = getJapanesePopularGuides(article.href, 5);
-  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}">
-    <h2 class="sidebar-widget-title">今月よく読まれている記事</h2>
-    <div class="sidebar-widget-body">
-      <p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}の閲覧傾向・週1回更新</p>
-      <ol class="sidebar-popular-list">${popular.map(item => {
-        const rank = String(item.rank).padStart(2, '0');
-        if (item.isCurrent) return `<li class="sidebar-popular-item is-current"><span class="sidebar-popular-rank">${rank}</span><div><span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span></div></li>`;
-        return `<li class="sidebar-popular-item"><span class="sidebar-popular-rank">${rank}</span><a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`;
-      }).join('')}</ol>
-    </div>
-  </section>`;
+  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">今月よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}の閲覧傾向・週1回更新</p><ol class="sidebar-popular-list">${popular.map(item => {
+    const rank = String(item.rank).padStart(2, '0');
+    if (item.isCurrent) return `<li class="sidebar-popular-item is-current"><span class="sidebar-popular-rank">${rank}</span><div><span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span></div></li>`;
+    return `<li class="sidebar-popular-item"><span class="sidebar-popular-rank">${rank}</span><a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`;
+  }).join('')}</ol></div></section>`;
 }
 
 function renderAuthorWidget() {
-  return `  <section class="sidebar-widget sidebar-widget--author">
-    <h2 class="sidebar-widget-title">運営者情報</h2>
-    <div class="sidebar-widget-body">
-      <div class="sidebar-author-avatar" aria-hidden="true">か</div>
-      <p class="sidebar-author-name">かたかた</p>
-      <p class="sidebar-author-copy">2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達。本人がいちばんびっくりしつつ、お得なゲーム課金やGoogle Playまわりの情報を、実際に使いながら調べて発信しています。</p>
-      <p class="sidebar-author-aside">好きな食べ物は湯葉と納豆。ここはGoogle Playとは特に関係ありません。</p>
-      <div class="sidebar-author-links"><a href="/author/katakata.html">運営者について</a><a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">KatakataLab</a></div>
-    </div>
-  </section>`;
+  return `  <section class="sidebar-widget sidebar-widget--author"><h2 class="sidebar-widget-title">運営者情報</h2><div class="sidebar-widget-body"><div class="sidebar-author-avatar" aria-hidden="true">か</div><p class="sidebar-author-name">かたかた</p><p class="sidebar-author-copy">2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達。本人がいちばんびっくりしつつ、お得なゲーム課金やGoogle Playまわりの情報を、実際に使いながら調べて発信しています。</p><p class="sidebar-author-aside">好きな食べ物は湯葉と納豆。ここはGoogle Playとは特に関係ありません。</p><div class="sidebar-author-links"><a href="/author/katakata.html">運営者について</a><a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">KatakataLab</a></div></div></section>`;
 }
 
 function renderSidebar(article, role, related) {
@@ -95,14 +71,8 @@ function renderSidebar(article, role, related) {
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・人気記事・次の行動と関連記事" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
 ${renderSearchWidget()}
 ${renderPopularWidget(article)}
-  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}">
-    <h2 class="sidebar-widget-title">次にやること</h2>
-    <div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a></div>
-  </section>
-  <section class="sidebar-widget sidebar-widget--related">
-    <h2 class="sidebar-widget-title">あわせて読みたい</h2>
-    <div class="sidebar-widget-body"><ul class="sidebar-related-list">${related.map(item => `<li><a class="sidebar-related-link" href="${item.href}">${escapeHtml(item.label)}</a></li>`).join('')}</ul></div>
-  </section>
+  <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a></div></section>
+  <section class="sidebar-widget sidebar-widget--related"><h2 class="sidebar-widget-title">あわせて読みたい</h2><div class="sidebar-widget-body"><ul class="sidebar-related-list">${related.map(item => `<li><a class="sidebar-related-link" href="${item.href}">${escapeHtml(item.label)}</a></li>`).join('')}</ul></div></section>
 ${renderAuthorWidget()}
 </aside>`;
 }
@@ -123,7 +93,7 @@ function transformArticle(html, article, catalog) {
     after = after.slice(0, end + 10) + '\n' + sidebar + after.slice(end + 10);
   }
   if (!after.includes('/articles/japanese-shell.css')) after = after.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
-  if (!after.includes('/articles/japanese-sidebar-v2.css')) after = after.replace('</head>', '<link rel="stylesheet" href="${SIDEBAR_STYLESHEET}">\n</head>');
+  if (!after.includes('/articles/japanese-sidebar-v2.css')) after = after.replace('</head>', '<link rel="stylesheet" href="' + SIDEBAR_STYLESHEET + '">\n</head>');
   return after;
 }
 
