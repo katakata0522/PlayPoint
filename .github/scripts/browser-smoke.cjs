@@ -484,6 +484,11 @@ async function verifyBlogPage(browser, baseUrl) {
       sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
       sidebarInert: document.querySelector('#sidebar')?.hasAttribute('inert'),
       thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
+      appIconThumbnails: document.querySelectorAll('.article-card .card-thumb--app-icon img').length,
+      eventVisualThumbnails: document.querySelectorAll('.article-card .card-thumb--event-visual img').length,
+      genericThumbnailImages: document.querySelectorAll('.article-card .card-thumb--generic img').length,
+      oversizedAppIcons: [...document.querySelectorAll('.article-card .card-thumb--app-icon img')]
+        .filter(image => image.naturalWidth > 128 || image.naturalHeight > 128).length,
       textOnlyThumbnails: document.querySelectorAll('.article-card .card-thumb--text-only').length
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
@@ -491,8 +496,12 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
     assert(initial.toggleExpanded === 'false' && initial.sidebarHidden === 'true', 'Blog sidebar initial ARIA state mismatch');
     assert(initial.sidebarInert === true, 'Blog sidebar must be inert while closed');
-    assert(initial.thumbnailImages === 0, `Blog mobile cards loaded ${initial.thumbnailImages} heavy thumbnail images`);
-    assert(initial.textOnlyThumbnails === initial.cards, `Blog compact thumbnails mismatch: ${initial.textOnlyThumbnails}/${initial.cards}`);
+    assert(initial.genericThumbnailImages === 0, `Blog mobile cards loaded ${initial.genericThumbnailImages} generic OGP thumbnails`);
+    assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
+      `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
+    assert(initial.oversizedAppIcons === 0, `Blog mobile app icons exceed the 128px list-image budget: ${initial.oversizedAppIcons}`);
+    assert(initial.textOnlyThumbnails + initial.thumbnailImages === initial.cards,
+      `Blog compact thumbnails mismatch: text=${initial.textOnlyThumbnails}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
 
     const nextButton = page.getByRole('button', { name: '次へ →' });
     if (await nextButton.count()) {
