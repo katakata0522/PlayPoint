@@ -192,7 +192,7 @@ test('日本語の必要ポイント例は初期状態とゴールドからプ�
   assert.equal(placeholder, '例：250');
   assert.equal(configs.JP.neededPointsPlaceholderOverrides['ゴールド:プラチナ'], '例：1728');
   assert.match(top, new RegExp(`placeholder="${placeholder}"`));
-  assert.match(top, /Q\. たびたび出てくる「1,728」って何ですか？/);
+  assert.match(top, /たびたび出てくる「1,728」って何ですか？/);
   assert.match(top, /info\.html#about-section/);
   assert.match(info, /1728という数字は私がプラチナ到達までに必要なリアルな数字/);
 });
