@@ -92,7 +92,6 @@ function transformArticle(html, article, catalog) {
     after = after.slice(0, end + 10) + '\n' + sidebar + after.slice(end + 10);
   }
   if (!after.includes('/articles/japanese-shell.css')) after = after.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
-  if (!after.includes('/articles/japanese-sidebar-v2.css')) after = after.replace('</head>', '<link rel="stylesheet" href="' + SIDEBAR_STYLESHEET + '">\n</head>');
   return after;
 }
 
