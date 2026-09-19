@@ -466,6 +466,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `game-seo-wave3.test.cjs` | 10 | 全件維持。ポケポケ/PAD/アークナイツ/ドッカン/鳴潮の確認済みmechanicsと未確認price分離。深掘り本文の数値はSSOTから導出し、旧全文card snapshotは危険な旧price claimへ一般化 |
 | `game-seo-wave4.test.cjs` | 9 | 全件維持。HBR/崩壊3rd/ファンパレ/Reverse:1999のWeb決済・Google Play境界を維持。guide数値はWave4 SSOTから導出し、旧全文card snapshotを旧固定price claimへ一般化 |
 | `game-seo-wave5.test.cjs` | 11 | 全件維持。プロスピA/Pokémon GO/eFootballの購入経路・地域別rate・portal・sitemapを維持。source「4件以上」、HTML 7000文字以上、h2 5個以上という任意量閾値を廃止 |
+| `game-thumbnail-assets.test.cjs` | UI・導線 | ゲーム記事一覧の公式アイコン・出典台帳・OGP分離・本文非表示を保証する |
 | `rescued-pad-and-articles.test.cjs` | 3 | 全件維持。PAD全locale、救出記事の台帳/著者/公式source/関連記事、専用OGP実体と重複防止を維持。#168時代のCSS class禁止は記事design ownerへ委譲 |
 
 ### 今回の事実契約と過剰固定の分離
@@ -1172,17 +1173,17 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 基準: `cdf5e2999719edf8e96cafeeca3a205cd9364fae` の全回帰930/930。
 - 精査済みbaseline identity: **930 / 930**。
 - 未精査baseline identity: **0**。
-- 現行回帰集合: **968ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
+- 現行回帰集合: **973ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
 - 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の178ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の179ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
 | 内容・事実・対象範囲 | 24 |
-| SEO・公開整合 | 11 |
+| SEO・公開整合 | 12 |
 | 計測・同意・広告 | 11 |
 | 生成・再現性 | 23 |
 | UI・導線 | 22 |
@@ -1261,7 +1262,6 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `game-seo-wave3.test.cjs` | 内容・事実・対象範囲 | wave 3 verification states separate verified mechanics from unverified prices |
 | `game-seo-wave4.test.cjs` | 内容・事実・対象範囲 | Wave 4 verification data separates Web payment facts from unverified Google Play prices |
 | `game-seo-wave5.test.cjs` | 内容・事実・対象範囲 | Wave 5 SSOT separates verified purchase routes from unverified current prices |
-| `game-thumbnail-assets.test.cjs` | UI・導線 | ゲーム記事一覧の公式アイコン・出典台帳・OGP分離・本文非表示を保証する |
 | `global-error-localization.test.cjs` | 地域・翻訳 | each calculator entry page has a stable static lang for pre-init errors |
 | `growth-critical-pages.test.cjs` | UI・導線 | top organic landing articles keep role-appropriate next-action paths |
 | `growth-foundation-regression.test.cjs` | 横断監査 | 記事一覧JSONは版付き静的資産より短い再検証ルールを優先する |
@@ -1345,6 +1345,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `rollback-workflow.test.cjs` | 復旧 | 通常Deployは本番を書き換える前に保存snapshotを再検証する |
 | `runtime-module-guards.test.cjs` | 性能・配信 | 分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる |
+| `search-intent-owner-contract.test.cjs` | SEO・公開整合 | 実測で確認した検索意図をtitle/H1と説明的内部リンクで守り、ownerの再混線を防ぐ |
 | `security-seo-hardening.test.cjs` | 横断監査 | security headers and CSP stay fail-closed without unused third-party allowlists |
 | `seo-head-audit-parser.test.cjs` | SEO・公開整合 | Head監査はHTMLエンティティを一度だけデコードし二重アンエスケープしない |
 | `seo-hygiene.test.cjs` | SEO・公開整合 | 送信するXMLサイトマップ間でURLを重複させない |
