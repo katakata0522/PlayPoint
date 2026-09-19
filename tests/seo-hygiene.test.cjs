@@ -108,11 +108,10 @@ test('韓国語トップは為替計算をうたわず実際の入力条件を�
   assert.ok(html.includes(`<meta name="last-modified" content="${TOP_PAGE_CONTENT_DATES.ko}">`));
 });
 
-test('Q&Aは現在のランク判定と計算機の責任範囲を明示する', () => {
-  const html = read('info.html');
+test('トップ計算機はキャンペーン試算の責任範囲を明示する', () => {
+  const html = read('index.html');
 
-  assert.ok(html.includes('到達したステータスは翌年末まで維持され'));
-  assert.ok(html.includes('毎年初めに前年の獲得ポイントで再判定されます'));
-  assert.ok(html.includes('キャンペーンの併用可否や対象判定を保証するものではありません'));
+  assert.ok(html.includes('Google Playに表示された特別獲得率と通常獲得率の高い方を試算に使います'));
+  assert.ok(html.includes('対象・上限・有効化はキャンペーン画面で確認してください'));
   assert.ok(!html.includes('2000プレイポイント'));
 });

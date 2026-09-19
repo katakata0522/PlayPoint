@@ -87,7 +87,6 @@ const JAPANESE_FIXED_HEADER_PROFILE = Object.freeze({
 
 const FIXED_PAGE_HEADER_PROFILES = Object.freeze({
   'about-playpoints.html': JAPANESE_FIXED_HEADER_PROFILE,
-  'info.html': JAPANESE_FIXED_HEADER_PROFILE,
   'attention.html': Object.freeze({
     topBarStyle: 'margin-bottom:20px;',
     headerLinksStyle: 'width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:10px;',

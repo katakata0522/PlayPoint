@@ -27,17 +27,18 @@ test('地域別の公式レート・年間しきい値・通貨単位を固定�
   }
 });
 
-test('共通説明は年初再判定・残高と年間進捗の違いを公式URL付きで示す', () => {
+test('あとがきページは感謝→開発秘話→アップデートの順で、重複Q&Aと不要な上部ナビを持たない', () => {
   const html = read('info.html');
-  assert.match(html, /到達したステータスは翌年末まで維持/);
-  assert.match(html, /毎年初めに前年の獲得ポイントで再判定/);
-  assert.match(html, /現在のポイント残高と年間のステータス進捗は同じですか/);
-  assert.match(html, /返金・キャンセルでは残高とステータス判定ポイントから差し引かれる場合/);
-  assert.match(html, /answer\/9080348\?co=GENIE\.CountryCode%3DJP&amp;hl=ja/);
-  assert.match(html, /answer\/9077192\?co=GENIE\.CountryCode%3DJP&amp;hl=ja/);
-  for (const obsolete of ['毎年12月31日にステータスが更新', '85,000円', '2,000ポイント', '3,800円']) {
-    assert.ok(!html.includes(obsolete), '古い又は根拠を確認できない記述が残っています: ' + obsolete);
-  }
+  assert.match(html, /<h1>あとがき・アップデート情報<\/h1>/);
+  const thanks = html.indexOf('id="thanks-section"');
+  const about = html.indexOf('id="about-section"');
+  const update = html.indexOf('id="update-section"');
+  assert.ok(thanks >= 0 && thanks < about && about < update);
+  assert.match(html, /<h2>あとがき・開発秘話<\/h2>/);
+  assert.doesNotMatch(html, /id="qa-section"/);
+  assert.doesNotMatch(html, /"@type": "FAQPage"/);
+  assert.doesNotMatch(html, /class="lang-nav"/);
+  assert.doesNotMatch(html, /<div class="top-bar">/);
 });
 
 test('トップは通常率と特別獲得率の意味を公開HTMLで示す', () => {
