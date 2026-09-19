@@ -71,18 +71,20 @@ test('記録直後グラフは週ごとの色を積み上げ、月表示・現�
 
 test('ポイント入力はpt単位を常時見せ、5桁警告は非ブロッキングである', () => {
   const diary = read('js/diary.js');
+  const copy = read('js/weekly-experience-copy.js');
   assert.match(diary, /weekly-points-unit/);
   assert.match(diary, /shouldQuestionLargePoints/);
   assert.match(diary, />= 10000/);
   assert.doesNotMatch(diary, /window\.confirm|confirm\(/);
-  assert.match(diary, /本当に…？（このままの値でも記録に残せます）/);
+  assert.match(copy, /本当に…？（このままの値でも記録に残せます）/);
 });
 
 
 test('X共有ラベルは地域別コピーを使い、日本語固定ariaを残さない', () => {
   const diary = read('js/diary.js');
+  const copy = read('js/weekly-experience-copy.js');
 
-  assert.match(diary, /shareAria: 'この週の結果をXで共有'/);
+  assert.match(copy, /shareAria: 'この週の結果をXで共有'/);
   assert.match(diary, /share\.setAttribute\('aria-label', copy\.shareAria\)/);
   assert.match(diary, /weekly-result-share/);
   assert.doesNotMatch(diary, /aria-label="Xでシェア"/);
@@ -109,9 +111,10 @@ test('詳細年間グラフも月合計の単色棒ではなく週別スタッ�
 
 test('今週は保存後にロックし、編集・未保存・変更保存の状態を明示する', () => {
   const diary = read('js/diary.js');
-  assert.match(diary, /saved: '記録済み ✓'/);
-  assert.match(diary, /unsaved: '未保存の変更'/);
-  assert.match(diary, /saveChanges: '変更を保存'/);
+  const copy = read('js/weekly-experience-copy.js');
+  assert.match(copy, /saved: '記録済み ✓'/);
+  assert.match(copy, /unsaved: '未保存の変更'/);
+  assert.match(copy, /saveChanges: '変更を保存'/);
   assert.match(diary, /setCurrentWeekRecordMode/);
   assert.match(diary, /input\.disabled = saved/);
   assert.match(diary, /select\.disabled = saved/);
@@ -128,7 +131,8 @@ test('X共有は入力行ではなく記録結果の後にだけ表示する', (
 
 test('自己最高更新だけ「今年いちばん✨」を記録結果へ出せる', () => {
   const diary = read('js/diary.js');
+  const copy = read('js/weekly-experience-copy.js');
   assert.match(diary, /isNewYearBest/);
-  assert.match(diary, /yearBest: '今年いちばん✨'/);
+  assert.match(copy, /yearBest: '今年いちばん✨'/);
   assert.match(diary, /weekly-achievement-milestone/);
 });

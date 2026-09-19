@@ -43,7 +43,7 @@ test('結果ナビ設定は呼び出し側の変更で後続計算を汚染し�
 
 test('結果ナビ設定の全リンクを契約として検証する', () => {
   const regionBasePaths = { JP: '', US: 'en', KR: 'ko', TW: 'tw', HK: 'hk', IN: 'in' };
-  const actionKeys = ['highSpend', 'campaign', 'diamond', 'platinum', 'nearYearEnd', 'notShowing', 'giftCards'];
+  const actionKeys = ['highSpend', 'campaign', 'diamond', 'platinum', 'nearYearEnd', 'giftCards'];
 
   for (const [region, basePath] of Object.entries(regionBasePaths)) {
     const config = getConfig(region);
@@ -76,6 +76,29 @@ test('結果ナビ設定の全リンクを契約として検証する', () => {
         : path.resolve(root, basePath, cleanHref);
       if (fs.existsSync(target) && fs.statSync(target).isDirectory()) target = path.join(target, 'index.html');
       assert.ok(fs.existsSync(target), `${region}: missing result navigation target ${link.href}`);
+    }
+  }
+});
+
+test('専用ランク導線の対応表は実在ページだけを宣言する', () => {
+  const regionBasePaths = { JP: '', US: 'en', KR: 'ko', TW: 'tw', HK: 'hk', IN: 'in' };
+
+  for (const [region, basePath] of Object.entries(regionBasePaths)) {
+    const config = getConfig(region);
+    assert.ok(Array.isArray(config.statusPageRanks), `${region}: statusPageRanks`);
+    assert.ok(Array.isArray(config.maintenancePageRanks), `${region}: maintenancePageRanks`);
+
+    for (const rank of config.statusPageRanks) {
+      assert.ok(
+        fs.existsSync(path.join(root, basePath, 'status', rank, 'index.html')),
+        `${region}: missing status page for ${rank}`
+      );
+    }
+    for (const rank of config.maintenancePageRanks) {
+      assert.ok(
+        fs.existsSync(path.join(root, basePath, 'maintenance', rank, 'index.html')),
+        `${region}: missing maintenance page for ${rank}`
+      );
     }
   }
 });

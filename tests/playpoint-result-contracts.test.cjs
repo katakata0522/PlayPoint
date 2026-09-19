@@ -67,6 +67,49 @@ test('計算結果の統合導線は検索意図別LPを優先する', () => {
   assert.ok(links.includes('maintenance/platinum/'), 'プラチナ維持LPへの導線がありません');
 });
 
+test('専用ランク導線の表示名は昇格・維持の文脈を残す', () => {
+  const { PP_STATE, getRelatedArticles } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+
+  const upgrade = getRelatedArticles('プラチナ', 1, 'upgrade')[0];
+  const maintain = getRelatedArticles('プラチナ', 1, 'maintain')[0];
+
+  assert.equal(upgrade.href, 'status/platinum/');
+  assert.match(upgrade.title, /プラチナ.*昇格/);
+  assert.equal(maintain.href, 'maintenance/platinum/');
+  assert.match(maintain.title, /プラチナ.*維持/);
+});
+
+test('通常時の判断導線は未発生トラブルや購入前チェックを混ぜない', () => {
+  const { PP_STATE, getDecisionLinks } = loadCalculatorContext();
+  PP_STATE.currentRegion = 'JP';
+
+  const normal = getDecisionLinks(10000, 'シルバー', 1, 100);
+  assert.equal(normal.length, 0);
+
+  const highSpend = getDecisionLinks(60000, 'プラチナ', 1, 100);
+  assert.ok(highSpend.some(link => link.href === 'campaign/3x/'));
+  assert.ok(highSpend.every(link => link.href !== 'articles/2026-03-10-play-points-reflection-timing.html'));
+  assert.ok(highSpend.every(link => link.href !== 'articles/2026-06-20-discount-gift-cards.html'));
+
+  const nearYearEnd = getDecisionLinks(10000, 'シルバー', 1, 30);
+  assert.ok(nearYearEnd.some(link => link.href === 'articles/2026-03-10-play-points-reflection-timing.html'));
+});
+
+test('通常時の関連記事にも未発生トラブル記事を混ぜない', () => {
+  const { PP_STATE, getRelatedArticles } = loadCalculatorContext();
+
+  PP_STATE.currentRegion = 'JP';
+  assert.ok(
+    getRelatedArticles('シルバー', 1).every(link => link.href !== 'articles/2026-03-10-play-points-reflection-timing.html')
+  );
+
+  PP_STATE.currentRegion = 'US';
+  assert.ok(
+    getRelatedArticles('Silver', 1).every(link => link.href !== 'articles/google-play-points-not-showing.html')
+  );
+});
+
 test('計算結果の統合導線には金額や条件に応じた次の判断が含まれる', () => {
   const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
@@ -137,6 +180,11 @@ test('計算結果の直後に買う前のギフト確認リンクを出す', ()
   assert.ok(renderedResultDetails[0].includes('result-purchase-check'));
   assert.ok(renderedResultDetails[0].includes('articles/2026-06-20-discount-gift-cards.html'));
   assert.ok(renderedResultDetails[0].includes('買う前にギフトコードの還元条件を見る'));
+  assert.equal(
+    [...renderedResultDetails[0].matchAll(/articles\/2026-06-20-discount-gift-cards\.html/g)].length,
+    1,
+    '購入前チェックは同じ結果内で1回だけ表示する'
+  );
 
   reverseCalculate();
   assert.ok(renderedResults[1].content.includes('result-purchase-check'));
@@ -208,6 +256,23 @@ test('計算結果のエラー表示とクリアは前回の共有用データ�
   assert.ok(!classNames.has('has-result'));
 });
 
+
+test('ランク導線は翻訳文字列の正規表現ではなくSSOTのランクIDで解決する', () => {
+  const { PP_STATE, getTargetRankKey } = loadCalculatorContext();
+
+  for (const [region, label, expected] of [
+    ['JP', 'ダイヤモンド', 'diamond'],
+    ['US', 'Diamond', 'diamond'],
+    ['KR', '다이아몬드', 'diamond'],
+    ['TW', '鑽石級', 'diamond']
+  ]) {
+    PP_STATE.currentRegion = region;
+    assert.equal(getTargetRankKey(label), expected, region);
+  }
+
+  PP_STATE.currentRegion = 'JP';
+  assert.equal(getTargetRankKey('表示文言が変わっても', 'diamond'), 'diamond');
+});
 
 test('目標ランク別の導線は選択したランクの専用ページを最優先する', () => {
   const { PP_STATE, getRelatedArticles } = loadCalculatorContext();
