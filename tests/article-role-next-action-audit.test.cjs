@@ -76,4 +76,3 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
     assert.ok(lastCalloutStart < 0 || lastDivClose > lastCalloutStart, file + ': contextual guide must stay outside callout boxes');
   }
 });
-

@@ -99,3 +99,44 @@ test('blog pagination styles cover the runtime DOM contract without pinning rend
   }
   assert.match(compact, /cursor:\s*text/);
 });
+
+test('search sorting uses the selected meaning, stays stable, and leaves source records unchanged', () => {
+  const list = Object.freeze([
+    Object.freeze({ id:'old', title:'Guide', description:'天井',date:'2025-12-25', modified:'2026-09-18' }),
+    Object.freeze({ id:'new', title:'天井', description:'Guide',date:'2026-09-13', modified:'2026-09-13' }),
+    Object.freeze({ id:'missing', title:'Other',date:'invalid' })
+  ]);
+  const order = mode => blogUtils.sortListedArticles(list,{mode,search:'天井'}).map(a=>a.id);
+  assert.deepEqual(order('relevance'), ['new','old','missing']);
+  assert.deepEqual(order('oldest'), ['old','new','missing']);
+  assert.deepEqual(order('newest'), ['new','old','missing']);
+  assert.deepEqual(order('updated'), ['old','new','missing']);
+  assert.deepEqual(list.map(a=>a.id),['old','new','missing']);
+  assert.deepEqual(blogUtils.sortListedArticles([{id:'a',date:'2026-01-01'},{id:'b',date:'2026-01-01'}],{mode:'newest'}).map(a=>a.id), ['a','b']);
+});
+
+test('URL and page-input normalization rejects fractional, negative and malformed input', () => {
+  for (const input of [-1,0,'-2','2.7','1e2','2junk','',NaN,Infinity,'9999999999999999999999']) assert.equal(clampPageJump(input,13),1,String(input));
+  assert.equal(clampPageJump(' ３ ',13),3);
+  assert.equal(clampPageJump('999',13),13);
+  assert.equal(clampPageJump('2',0),1);
+  assert.equal(blogUtils.validArticleDate('2026-02-30'),'');
+  assert.equal(blogUtils.validArticleDate('2024-02-29'),'2024-02-29');
+});
+
+test('broken thumbnails use same-origin fallback and cannot loop or replace the article link', () => {
+  const image = { src:'../images/game-icons/fgo.webp', alt:'FGO', onerror:()=>{}, classList:{add(){}} };
+  blogUtils.handleImageError(image);
+  assert.equal(image.onerror,null);
+  assert.equal(image.src, '/images/article-placeholder.svg');
+  assert.equal(image.alt,'');
+  assert.ok(fs.existsSync(path.join(root,image.src)));
+});
+
+test('reading theme resolves saved intent before the system preference and ignores invalid values', () => {
+  const {resolveTheme} = require('../js/reading-theme.js');
+  assert.equal(resolveTheme({theme:'dark'},false),'dark');
+  assert.equal(resolveTheme({theme:'light'},true),'light');
+  assert.equal(resolveTheme(null,true),'dark');
+  assert.equal(resolveTheme({theme:'invalid'},false),'light');
+});

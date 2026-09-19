@@ -9,6 +9,7 @@ const { writeJson } = require('./ci-evidence.cjs');
 const navigationAttempts = [];
 const { hasExplicitTargetMarker } = require('../../scripts/navigation-source-map.cjs');
 const { createRevisionSession } = require('./browser-revision-evidence.cjs');
+const { verifyReadingUi } = require('./browser-reading-ui.cjs');
 const { verifyStaticPresentation, verifyResultPresentation } = require('./calculator-presentation-contract.cjs');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -568,7 +569,8 @@ async function verifyBlogPage(browser, baseUrl) {
 
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');
-    return { initial, resetState, category, openState, closeState, errors: browserState.values };
+    const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
+    return { initial, resetState, category, openState, closeState, readingUi, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, 'blog.png');
     throw error;

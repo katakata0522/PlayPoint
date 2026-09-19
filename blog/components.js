@@ -85,15 +85,7 @@
     function applyArticlePresentationSettings() {
         if (!window.location.pathname.includes('/articles/')) return;
 
-        let theme = 'dark';
-        try {
-            const savedSettings = JSON.parse(localStorage.getItem('katakata_blog_settings') || '{}');
-            if (savedSettings.theme === 'light' || savedSettings.theme === 'dark') {
-                theme = savedSettings.theme;
-            }
-        } catch (error) {
-            console.warn('ブログ設定を読み込めませんでした。既定テーマを使用します。', error);
-        }
+        const theme = document.documentElement?.dataset.readingTheme || 'light';
 
         const allowedCategories = ['ランク', 'トラブル', '使い方', 'キャンペーン'];
         const category = document.querySelector('meta[name="article:category"]')?.content;
@@ -143,11 +135,25 @@
         document.head.appendChild(script);
     }
 
+    function requestBlogAds(container = document) {
+        if (!isBlogPage) return;
+        return runAfterConsent(() => {
+            container.querySelectorAll('.article-ad ins.adsbygoogle, .blog-bottom-ad ins.adsbygoogle').forEach(ad => {
+                if (!ad.isConnected || ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
+                ad.dataset.playpointAdRequested = 'true';
+                try { (window.adsbygoogle = window.adsbygoogle || []).push({}); }
+                catch (error) { delete ad.dataset.playpointAdRequested; console.error('Blog ad request failed:', error); }
+            });
+        }, 'ads');
+    }
+    window.PlayPointBlogAds = { request: requestBlogAds };
+
     function setupBlogAdsense() {
         if (!(isBlogPage || isArticlePageTop)) return;
         // Google Privacy & Messaging / TCFの初期化に必要な非同期ライブラリは早期取得する。
         // 手動広告枠のpushはarticle.js側でad_storage許可後にだけ実行する。
         loadBlogAdsense();
+        if (isBlogPage) void requestBlogAds();
     }
 
     function ensureCommonStyles() {

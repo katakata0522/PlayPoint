@@ -67,7 +67,7 @@ function createRuntime({
       return null;
     },
     querySelectorAll(selector) {
-      return selector === '.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle'
+      return selector === '.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle'
         ? managedAds
         : [];
     },

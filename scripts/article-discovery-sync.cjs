@@ -23,7 +23,8 @@ function articleEntries(root) {
 }
 function extractSections(html) {
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
-  const body = article.replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
+  const body = article.replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
+    .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
@@ -66,6 +67,19 @@ function replaceExistingMarkedBlock(html, name, block) {
   return html.replace(pattern, () => block.trim());
 }
 
+// 日付の値と正本のtime要素を保持し、最初に見える日付だけを要約する。
+function compactReadingMetadata(html, locale) {
+  html = html.replace(/<details class="reading-metadata"><summary>[\s\S]*?<\/summary>([\s\S]*?)<\/details>/g, '$1');
+  const copy = { ja: ['公開', '更新', '日付の詳細'], en: ['Published', 'Updated', 'Date details'], ko: ['공개', '수정', '날짜 정보'], tw: ['發佈', '更新', '日期詳情'] }[locale];
+  return html.replace(/<(p|div)\b([^>]*\bclass="[^"]*(?:hero-meta|article-post-meta|article-meta)[^"]*"[^>]*)>([\s\S]*?)<\/\1>/g, (whole, tag, attrs, inner) => {
+    const published = inner.match(/data-article-date="published" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
+    const modified = inner.match(/data-article-date="modified" datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
+    if (!published) return whole;
+    const updated = modified && modified > published;
+    return `<details class="reading-metadata"><summary>${copy[updated ? 1 : 0]} ${updated ? modified : published} <span>${copy[2]}</span></summary>${whole}</details>`;
+  });
+}
+
 function prepareDiscoveryArticle(html, entry) {
   const role = classifyArticleRole(entry.path);
   html = withoutReadingMount(html);
@@ -93,7 +107,7 @@ function prepareDiscoveryArticle(html, entry) {
   } else {
   html = html.replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
   }
-  html = readingMount(html, entry.locale, false);
+  html = readingMount(compactReadingMetadata(html, entry.locale), entry.locale, false);
   const record = { path: '/' + entry.path, title: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || entry.title || ''),
       description: entry.description || text(html.match(/<meta name="description" content="([^"]*)"/)?.[1] || ''),
       category: entry.category || '', tags: entry.tags || [], role, sections: extractSections(html) };
@@ -101,16 +115,18 @@ function prepareDiscoveryArticle(html, entry) {
 }
 
 function buildDiscoveryAssets(root) {
-  // この工程ではアセットを書き換えないため、同じ3ファイルのハッシュは一度でよい。
-  const scripts = ['js/article-search.js', 'js/reading-library.js'].map(asset => `<script defer src="/${asset}?v=${createRevision(path.join(root, asset))}"></script>`).join('\n');
-  return `\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${createRevision(path.join(root, 'articles/article-discovery.css'))}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
+  const version = asset => createRevision(path.join(root, asset));
+  const scripts = ['js/article-search.js', 'js/reading-library.js', 'js/reading-experience.js'].map(asset => `<script defer src="/${asset}?v=${version(asset)}"></script>`).join('\n');
+  return `\n<!-- discovery-assets:start -->\n<script src="/js/reading-theme.js?v=${version('js/reading-theme.js')}"></script>\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${version('articles/article-discovery.css')}">\n<link rel="stylesheet" href="/articles/reading-theme.css?v=${version('articles/reading-theme.css')}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
 }
 
 function applyDiscoveryAssets(html, assets) {
-  const updated = replaceExistingMarkedBlock(html, 'discovery-assets', assets);
-  if (updated !== null) return updated;
-  return html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->/g, '')
-    .replace('</head>', assets + '</head>');
+  // JSが遮断されても共通の読みやすいlight配色を使う。通常時は同期theme scriptが保存/OS設定を優先する。
+  html = html.replace(/<html\b([^>]*)>/i, (_tag, attributes) =>
+    '<html' + attributes.replace(/\sdata-reading-theme=(?:"[^"]*"|'[^']*')/gi, '') + ' data-reading-theme="light">');
+  // 共通テーマを各ページの既存CSSより後で適用する。二重挿入せず再生成も安定させる。
+  return html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->\s*/g, '\n')
+    .replace(/\s*<\/head>/, assets + '</head>');
 }
 
 function syncArticleDiscovery(root) {
@@ -140,5 +156,5 @@ function syncArticleDiscovery(root) {
   }
   return entries.length;
 }
-module.exports = { text, articleEntries, extractSections, prepareDiscoveryArticle, syncArticleDiscovery };
+module.exports = { text, articleEntries, extractSections, prepareDiscoveryArticle, compactReadingMetadata, applyDiscoveryAssets, syncArticleDiscovery };
 if (require.main === module) console.log('Article discovery:', syncArticleDiscovery(path.resolve(__dirname, '..')));

@@ -1,4 +1,5 @@
 'use strict';
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const assert = require('node:assert');
 const fs = require('node:fs');
@@ -66,7 +67,7 @@ test('クーポン・Playクレジット問題解決記事は4言語でSEO公開
       const jsonLd = schemas(html);
       const canonical = `https://playpoint-sim.com/${relativePath}`;
 
-      assert.ok(html.includes(`<html lang="${locale.lang}">`));
+      assert.strictEqual(openingTags(html).find(node => node.tag === 'html')?.attrs.lang, locale.lang);
       assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`));
       assert.ok(title.trim(), `${relativePath}: title is required`);
       assert.ok(description.trim(), `${relativePath}: description is required`);
