@@ -51,19 +51,20 @@ function startServer() {
   });
 }
 
-async function configureContext(context, origin) {
-  await context.addInitScript(() => {
-    const granted = {
-      analyticsStoragePurposeConsentStatus: 1,
-      adStoragePurposeConsentStatus: 1,
-      adUserDataPurposeConsentStatus: 1,
-      adPersonalizationPurposeConsentStatus: 1
-    };
+async function configureContext(context, origin, initialMode = 'granted') {
+  await context.addInitScript(initialMode => {
+    let mode = initialMode;
+    const callbacks = [];
+    const values = () => { const status = mode === 'granted' ? 1 : mode === 'denied' ? 2 : 0; return {
+      analyticsStoragePurposeConsentStatus: status, adStoragePurposeConsentStatus: status, adUserDataPurposeConsentStatus: status, adPersonalizationPurposeConsentStatus: status
+    }; };
+    window.__testSetConsent = next => { mode = next; callbacks.forEach(item => item.CONSENT_MODE_DATA_READY?.()); };
     window.googlefc = {
-      getGoogleConsentModeValues() { return granted; },
+      getGoogleConsentModeValues() { return values(); },
       showRevocationMessage() {},
       callbackQueue: {
         push(item) {
+          callbacks.push(item);
           setTimeout(() => {
             if (item && typeof item.CONSENT_MODE_DATA_READY === 'function') item.CONSENT_MODE_DATA_READY();
             if (item && typeof item.CONSENT_API_READY === 'function') item.CONSENT_API_READY();
@@ -72,7 +73,7 @@ async function configureContext(context, origin) {
         }
       }
     };
-  });
+  }, initialMode);
 
   await context.route('**/*', async route => {
     const url = new URL(route.request().url());
@@ -133,6 +134,36 @@ async function main() {
   });
 
   try {
+    for (const mode of ['pending','denied','granted']) {
+      const context=await browser.newContext({viewport:{width:390,height:844}});
+      await configureContext(context,origin,mode);
+      const page=await context.newPage();
+      await page.goto(new URL('blog/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
+      await page.locator('.article-card').first().waitFor({state:'visible'});
+      await page.waitForFunction(expected=>window.PlayPointConsent?.getAdStatus()===expected,mode);
+      await page.locator('#sort-toggle').selectOption('oldest');
+      if(mode!=='granted') {
+        assert(await page.evaluate(()=>(window.adsbygoogle?.length||0)===0),'No manual ad request before permission: '+mode);
+        assert(await page.evaluate(()=>![...document.scripts].some(s=>s.src.includes('googletagmanager.com/gtag/js'))),'No GA script before analytics permission: '+mode);
+        await page.evaluate(()=>window.__testSetConsent('granted'));
+      }
+      await waitForRevenueRuntime(page,'.article-ad ins.adsbygoogle');
+      const before=await page.evaluate(()=>{window.__auditAdNode=document.querySelector('.article-ad');return window.adsbygoogle.length;});
+      for(const order of ['newest','oldest','updated']) await page.locator('#sort-toggle').selectOption(order);
+      assert(await page.evaluate(()=>window.__auditAdNode===document.querySelector('.article-ad')&&window.__auditAdNode.isConnected),'Ad node is preserved across rendering');
+      assert.equal(await page.evaluate(()=>window.adsbygoogle.length),before,'Sorting does not refresh ad slots');
+      await context.close();
+      console.log('ok - article hub consent and persistent ad slots: '+mode);
+    }
+    {
+      const context=await browser.newContext({viewport:{width:390,height:844}});
+      await configureContext(context,origin);
+      const page=await context.newPage();
+      await page.goto(new URL('games/fgo/pity-cost/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
+      await waitForRevenueRuntime(page,'.article-ad-container ins.adsbygoogle');
+      await context.close();
+      console.log('ok - deep game guide consent/analytics/ad runtime');
+    }
     const gamePaths = ['games/genshin/', 'en/games/genshin/', 'ko/games/genshin/', 'tw/games/genshin/'];
     for (const gamePath of gamePaths) {
       const context = await browser.newContext({ viewport: { width: 390, height: 844 } });

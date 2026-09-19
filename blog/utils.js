@@ -2,7 +2,7 @@
     'use strict';
 
     // Constant for placeholder image (centralized)
-    const PLACEHOLDER_IMAGE = 'https://placehold.co/600x400/e0e0e0/999999?text=No+Image';
+    const PLACEHOLDER_IMAGE = '/images/article-placeholder.svg';
 
     // 記事一覧のゲーム名絞り込み（articles.json に第5カテゴリを足さない）
     const GAME_TITLE_FILTERS = Object.freeze(['FGO', '原神', 'モンスト', 'スタレ', 'ゼンゼロ', 'ウマ娘', 'プロセカ', 'ポケポケ', 'パズドラ', 'アークナイツ', 'ドッカン', 'ヘブバン', '崩壊3rd', 'ファンパレ', 'プロスピA', 'Pokémon GO', 'eFootball']);
@@ -63,8 +63,8 @@
         const normalized = String(raw ?? '').replace(/[０-９]/g, function (digit) {
             return String.fromCharCode(digit.charCodeAt(0) - 0xFEE0);
         });
-        let page = parseInt(normalized, 10);
-        if (!Number.isFinite(page) || page < 1) page = 1;
+        let page = /^\d+$/.test(normalized.trim()) ? Number(normalized) : 1;
+        if (!Number.isSafeInteger(page) || page < 1) page = 1;
         const maxPage = Math.max(1, Number(totalPages) || 1);
         if (page > maxPage) page = maxPage;
         return page;
@@ -88,6 +88,28 @@
             if (gameTitle && !articleMatchesGameTitle(article, gameTitle)) return false;
             return true;
         });
+    }
+
+    function validArticleDate(value) {
+        if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return '';
+        const time = Date.parse(value + 'T00:00:00Z');
+        return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) === value ? value : '';
+    }
+
+    function sortListedArticles(articles, { mode = 'newest', search = '' } = {}) {
+        const scorer = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
+        return articles.map((article, index) => ({ article, index })).sort((a, b) => {
+            if (mode === 'relevance' && search && scorer) {
+                const difference = scorer.score(b.article, search, 'ja') - scorer.score(a.article, search, 'ja');
+                if (difference) return difference;
+            }
+            const date = article => mode === 'updated'
+                ? (validArticleDate(article.modified) > validArticleDate(article.date) ? article.modified : validArticleDate(article.date))
+                : validArticleDate(article.date);
+            const left = date(a.article), right = date(b.article);
+            if (!left || !right) return left ? -1 : right ? 1 : a.index - b.index;
+            return (mode === 'oldest' ? left.localeCompare(right) : right.localeCompare(left)) || a.index - b.index;
+        }).map(item => item.article);
     }
 
     // Global Utilities for Katakata Blog
@@ -136,7 +158,8 @@
         handleImageError: function (img) {
             img.onerror = null; // Prevent infinite loop
             img.src = PLACEHOLDER_IMAGE;
-            img.alt = 'Image not found';
+            img.alt = '';
+            img.closest?.('.card-thumb')?.classList.add('card-thumb--fallback');
         },
 
         /**
@@ -167,7 +190,8 @@
         articleMatchesGameTitle: articleMatchesGameTitle,
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
-        GAME_TITLE_FILTERS: GAME_TITLE_FILTERS
+        GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
+        validArticleDate, sortListedArticles
     };
 
     const api = Object.assign({}, BlogUtils, {
@@ -176,7 +200,8 @@
         articleMatchesGameTitle: articleMatchesGameTitle,
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
-        GAME_TITLE_FILTERS: GAME_TITLE_FILTERS
+        GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
+        validArticleDate, sortListedArticles
     });
 
     if (typeof module === 'object' && module.exports) {

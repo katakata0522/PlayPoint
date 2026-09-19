@@ -73,7 +73,7 @@
     }
 
     function initializeManagedAds() {
-        document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle').forEach((ad) => {
+        document.querySelectorAll('.lp-ad-container ins.adsbygoogle, .game-ad-container ins.adsbygoogle, body[data-game-guide-article] .article-ad-container ins.adsbygoogle').forEach((ad) => {
             if (!ad.dataset.adSlot) ad.dataset.adSlot = MANAGED_ADSENSE_SLOT;
             if (ad.dataset.playpointAdRequested === 'true' || ad.dataset.adsbygoogleStatus) return;
             ad.dataset.playpointAdRequested = 'true';

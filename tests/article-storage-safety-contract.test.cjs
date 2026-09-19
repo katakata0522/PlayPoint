@@ -133,3 +133,32 @@ test('guardは反復導入可能で、sessionStorageと無関係なlocalStorage�
   assert.equal(target.sessionStorage.getItem(KEY), '{not-json');
   assert.equal(target.localStorage.getItem('unrelated'), '{not-json');
 });
+
+test('explicit recovery backs up corrupt data, preserves other keys, and rejects conflicting or future backups', () => {
+  const {recoverStore} = require('../js/reading-library.js');
+  const target = targetWith({[KEY]:'{broken', diary:'untouched'});
+  installArticleStorageSafety(target);
+  assert.equal(recoverStore(target.localStorage,()=> '2026-09-19T00:00:00Z'),true);
+  assert.equal(JSON.parse(target.localStorage.getItem(RECOVERY_KEY)).raw,'{broken');
+  assert.deepEqual(makeStore(target.localStorage).read(),{saved:[],recent:[],historyEnabled:true});
+  assert.equal(target.localStorage.getItem('diary'),'untouched');
+  assert.equal(recoverStore(target.localStorage),false);
+  const conflict = targetWith({[KEY]:'{new', [RECOVERY_KEY]:JSON.stringify({sourceKey:KEY,raw:'{old'})});
+  installArticleStorageSafety(conflict);
+  assert.throws(()=>recoverStore(conflict.localStorage),e=>e.code==='recovery_conflict');
+  assert.equal(conflict.localStorage.getItem(KEY),'{new');
+  const raw = JSON.stringify({version:2,saved:[articleA]});
+  const future = targetWith({[KEY]:raw}); installArticleStorageSafety(future);
+  assert.throws(()=>makeStore(future.localStorage).visit(articleA),e=>e.code==='future_version');
+  assert.throws(()=>recoverStore(future.localStorage),e=>e.code==='future_version');
+  assert.equal(future.localStorage.values.get(KEY),raw);
+  assert.equal(future.localStorage.getItem(RECOVERY_KEY),null);
+});
+
+test('failed backup writes leave the original unreadable value unchanged', () => {
+  const {recoverStore} = require('../js/reading-library.js');
+  let raw = '{broken';
+  const storage = {getItem:key=>key===KEY?raw:null,setItem(){throw Error('quota');}};
+  assert.throws(()=>recoverStore(storage),/quota/);
+  assert.equal(raw,'{broken');
+});

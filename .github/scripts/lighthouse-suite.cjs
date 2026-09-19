@@ -24,7 +24,7 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
   if (env.AUDIT_BASE_URL && env.AUDIT_BASE_URL !== base) throw new Error('Unexpected audit origin');
   fs.mkdirSync(outputDir, { recursive: true });
   const manifest = { schemaVersion: 1, target, base, environment: fingerprint(env),
-    policy: 'home=3; other pages=1, timing-only breach adds 2; all samples retained; bytes use maximum',
+    policy: 'home/hub=3; other pages=1, timing-only breach adds 2; all samples retained; bytes use maximum',
     thirdPartyBlocked: target === 'local', reports: [], attempts: [], passed: false };
   const save = () => writeJson(path.join(outputDir, 'audit-manifest.json'), manifest);
   function audit(name, route, number, isHome) {
@@ -46,7 +46,7 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
     try { return readReport(file); } catch (error) { attempt.error = cleanError(error); save(); return null; }
   }
   for (const [name, route] of PAGES) {
-    const home = name === 'calculator-home';
+    const home = name === 'calculator-home' || name === 'article-hub';
     const first = audit(name, route, 1, home);
     let additional = home;
     if (!home && first) {

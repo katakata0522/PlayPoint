@@ -37,13 +37,15 @@
   function validateBlogSettings(value) {
     return plainObject(value)
       && (!('theme' in value) || value.theme === 'light' || value.theme === 'dark')
-      && (!('sortNewestFirst' in value) || typeof value.sortNewestFirst === 'boolean');
+      && (!('sortNewestFirst' in value) || typeof value.sortNewestFirst === 'boolean')
+      && (!('sortMode' in value) || ['newest', 'oldest', 'updated'].includes(value.sortMode));
   }
   const SAFETY = {
     [KEY]: [RECOVERY_KEY, validateReadingStore],
     [BLOG_KEY]: [BLOG_RECOVERY_KEY, validateBlogSettings]
   };
   const SAFETY_MARK = Symbol.for('pp.articleStorageSafety.v1');
+  const rawReaders = new WeakMap();
   function storageValueKind(key, raw) {
     if (raw === null) return 0;
     let value;
@@ -62,6 +64,7 @@
     const originalGet = prototype.getItem, originalSet = prototype.setItem;
     if (typeof originalGet !== 'function' || typeof originalSet !== 'function') return false;
     try {
+      rawReaders.set(storage, key => originalGet.call(storage, key));
       prototype.getItem = function (key) {
         key = String(key);
         const raw = originalGet.call(this, key), owned = SAFETY[key];
@@ -88,9 +91,26 @@
     } catch { return false; }
     return true;
   }
+  function inspectStore(storage) {
+    const raw = rawReaders.get(storage)?.(KEY) ?? storage.getItem(KEY);
+    return { raw, kind: storageValueKind(KEY, raw) };
+  }
+  function recoverStore(storage, now = () => new Date().toISOString()) {
+    const { raw, kind } = inspectStore(storage);
+    if (kind === 0 || kind === 1) return false;
+    if (kind === 'future-version') throw Object.assign(Error('Newer version is protected'), { code: 'future_version' });
+    const existing = storage.getItem(RECOVERY_KEY);
+    if (existing !== null && !sameRecovery(existing, KEY, raw)) throw Object.assign(Error('Existing recovery is protected'), { code: 'recovery_conflict' });
+    if (existing === null) storage.setItem(RECOVERY_KEY, JSON.stringify({ version: 1, sourceKey: KEY, reason: kind, capturedAt: now(), raw }));
+    // 退避の書込成功後だけ初期化。容量/権限エラーは元データを維持する。
+    storage.setItem(KEY, JSON.stringify({ saved: [], recent: [], historyEnabled: true }));
+    return true;
+  }
   function makeStore(storage) {
     function read() {
-      const raw = JSON.parse(storage.getItem(KEY) || '{}');
+      const inspected = inspectStore(storage);
+      if (inspected.kind === 'future-version') throw Object.assign(Error('Newer version is protected'), { code: 'future_version' });
+      const raw = JSON.parse(inspected.raw || '{}');
       return { saved: cleanItems(raw?.saved, 100), recent: cleanItems(raw?.recent, 20), historyEnabled: raw?.historyEnabled !== false };
     }
     function change(callback) { const state = read(); callback(state); storage.setItem(KEY, JSON.stringify(state)); return state; }
@@ -103,7 +123,7 @@
       visit(item) { if (!safePath(item?.path)) return read(); item = { ...item, path: normalizeArticlePath(item.path) }; return change(s => { if (s.historyEnabled) s.recent = cleanItems([item, ...s.recent.filter(x => x.path !== item.path)], 20); }); },
       clear(type) { if (!['saved', 'recent'].includes(type)) throw Error('Invalid list'); return change(s => { s[type] = []; }); },
       remove(type, articlePath) { if (!['saved', 'recent'].includes(type)) throw Error('Invalid list'); return change(s => { s[type] = s[type].filter(x => x.path !== normalizeArticlePath(articlePath)); }); },
-      history(enabled) { return change(s => { s.historyEnabled = Boolean(enabled); if (!enabled) s.recent = []; }); }
+      history(enabled) { return change(s => { s.historyEnabled = Boolean(enabled); }); }
     };
   }
   const COPY = {
@@ -112,7 +132,13 @@
     ko: ['나중에 읽기', '저장됨', '저장한 글·최근 읽은 글', '나중에 읽기', '최근 읽은 글', '목록에서 삭제', '목록 비우기', '아직 글이 없습니다.', '이 기기에만 저장됩니다. 저장한 글은 최대 100개, 최근 읽은 글은 20개까지이며 브라우저 데이터를 삭제하면 사라집니다.', '읽은 글 기록하기', '저장 공간을 사용할 수 없습니다. 브라우저 설정을 확인해 주세요.', '글을 저장했습니다.', '저장을 해제했습니다.'],
     tw: ['稍後閱讀', '已儲存', '已儲存文章與閱讀紀錄', '稍後閱讀', '最近閱讀', '從清單移除', '清空清單', '目前沒有文章。', '只儲存在此裝置：最多 100 篇收藏、20 篇閱讀紀錄。清除瀏覽器資料後，清單也會刪除。', '保留閱讀紀錄', '無法使用儲存空間，請檢查瀏覽器設定。', '已儲存文章。', '已取消儲存。']
   };
-  const api = { KEY, RECOVERY_KEY, BLOG_KEY, BLOG_RECOVERY_KEY, safePath, normalizeArticlePath, cleanItems, validateReadingStore, validateBlogSettings, installArticleStorageSafety, makeStore, COPY };
+  const RECOVERY_COPY = {
+    ja: ['保存データを読み取れません。元のデータは変更していません。', '退避して保存機能を初期化', '現在の保存・履歴を退避して、空のリストで再開しますか？', '元データを退避し、保存機能を初期化しました。', '新しいバージョンの保存データです。上書きせず保護しています。', '別の退避データがあるため初期化できません。データを確認してください。', 'このリストをすべて削除しますか？もう一方のリストは残ります。', '削除しました。', '容量不足のため保存できません。不要な保存記事を整理してください。'],
+    en: ['Saved data could not be read. The original is unchanged.', 'Back up and reset reading lists', 'Back up current reading data and start with empty lists?', 'Original data backed up; reading lists reset.', 'Data from a newer version is protected from overwrite.', 'A different backup already exists. Review your saved data before resetting.', 'Clear this entire list? The other list will be kept.', 'List cleared.', 'Storage is full. Remove unneeded saved articles.'],
+    ko: ['저장 데이터를 읽을 수 없습니다. 원본은 변경하지 않았습니다.', '백업 후 읽기 목록 초기화', '현재 데이터를 백업하고 빈 목록으로 시작할까요?', '원본을 백업하고 목록을 초기화했습니다.', '새 버전의 데이터는 덮어쓰지 않고 보호합니다.', '다른 백업이 있습니다. 초기화 전에 데이터를 확인해 주세요.', '이 목록을 모두 지울까요? 다른 목록은 유지됩니다.', '목록을 비웠습니다.', '저장 공간이 부족합니다. 불필요한 저장 글을 정리해 주세요.'],
+    tw: ['無法讀取儲存資料，原始資料未變更。', '備份並重設閱讀清單', '備份目前的資料，並以空白清單重新開始？', '已備份原始資料並重設清單。', '這是較新版本的資料，已保護而不覆寫。', '已有不同的備份，請先檢查資料再重設。', '清除此清單的所有項目？另一份清單會保留。', '已清除清單。', '儲存空間不足，請移除不需要的已儲存文章。']
+  };
+  const api = { KEY, RECOVERY_KEY, BLOG_KEY, BLOG_RECOVERY_KEY, safePath, normalizeArticlePath, cleanItems, validateReadingStore, validateBlogSettings, installArticleStorageSafety, makeStore, inspectStore, recoverStore, COPY };
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (!root?.document) return;
   installArticleStorageSafety(root);
@@ -124,10 +150,19 @@
     const isHub = pathname === hub || pathname === hub + 'index.html';
     const article = document.querySelector('article.content, article'), h1 = document.querySelector('main h1, h1');
     if (!isHub && (!safePath(pathname) || !h1)) return;
-    let store; try { store = makeStore(root.localStorage); store.read(); } catch { store = null; }
+    let store, storeError; try { store = makeStore(root.localStorage); store.read(); } catch (error) { store = null; storeError = error; }
     const element = (tag, text) => { const el = document.createElement(tag); if (text) el.textContent = text; return el; };
     const status = element('span'); status.setAttribute('role', 'status');
-    function attempt(action) { try { if (!store) throw Error('No storage'); action(); } catch (error) { status.textContent = error.code === 'saved_limit' ? { ja: '保存は100件までです。不要な記事を削除してから保存してください。', en: 'You can save up to 100 articles. Remove one before saving another.', ko: '최대 100개까지 저장할 수 있습니다. 기존 글을 삭제한 뒤 저장해 주세요.', tw: '最多可儲存100篇，請先移除不需要的文章再儲存。' }[locale] : copy[10]; } }
+    const recoveryCopy = RECOVERY_COPY[locale];
+    function describeError(error) {
+      if (error?.code === 'future_version') return recoveryCopy[4];
+      if (error?.code === 'recovery_conflict') return recoveryCopy[5];
+      if (error?.name === 'SyntaxError') return recoveryCopy[0];
+      if (error?.name === 'QuotaExceededError') return recoveryCopy[8];
+      if (error?.code === 'saved_limit') return { ja: '保存は100件までです。不要な記事を削除してから保存してください。', en: 'You can save up to 100 articles. Remove one before saving another.', ko: '최대 100개까지 저장할 수 있습니다. 기존 글을 삭제한 뒤 저장해 주세요.', tw: '最多可儲存100篇，請先移除不需要的文章再儲存。' }[locale];
+      return copy[10];
+    }
+    function attempt(action) { try { if (!store) throw storeError || Error('No storage'); action(); } catch (error) { status.textContent = describeError(error); } }
     let button, current;
     if (!isHub) {
       current = { path: pathname, title: h1.textContent.trim() };
@@ -148,8 +183,10 @@
     const mount = document.querySelector('[data-intl-guide-controls], #article-grid, #articles-grid, #blog-grid, .articles-grid');
     if (!panel.isConnected) { if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel); }
     function render() {
+      const focused = controls.querySelector(':focus');
+      const restoreKey = focused?.dataset.readingFocus;
       controls.replaceChildren(); const state = store.read();
-      const label = element('label'), checkbox = element('input'); checkbox.type = 'checkbox'; checkbox.checked = state.historyEnabled;
+      const label = element('label'), checkbox = element('input'); checkbox.type = 'checkbox'; checkbox.dataset.readingFocus = 'history'; checkbox.checked = state.historyEnabled;
       checkbox.addEventListener('change', () => attempt(() => { store.history(checkbox.checked); render(); }));
       label.append(checkbox, document.createTextNode(' ' + copy[9])); controls.append(label);
       ['saved', 'recent'].forEach((type, index) => {
@@ -157,16 +194,33 @@
         if (!state[type].length) controls.append(element('p', copy[7]));
         for (const item of state[type]) {
           const row = element('li'), link = element('a', item.title); link.href = item.path;
-          const remove = element('button', copy[5]); remove.type = 'button'; remove.setAttribute('aria-label', copy[5] + ': ' + item.title);
+          const remove = element('button', copy[5]); remove.type = 'button'; remove.dataset.readingFocus = type + ':' + item.path; remove.setAttribute('aria-label', copy[5] + ': ' + item.title);
           remove.addEventListener('click', () => attempt(() => { store.remove(type, item.path); render(); })); row.append(link, remove); list.append(row);
         }
         controls.append(list);
-        if (state[type].length) { const clear = element('button', copy[6]); clear.type = 'button'; clear.addEventListener('click', () => attempt(() => { store.clear(type); render(); })); controls.append(clear); }
+        if (state[type].length) { const clear = element('button', copy[6]); clear.type = 'button'; clear.dataset.readingFocus = 'clear:' + type; clear.addEventListener('click', () => { if (root.confirm(recoveryCopy[6])) attempt(() => { store.clear(type); render(); status.textContent = recoveryCopy[7]; }); }); controls.append(clear); }
       });
+      if (restoreKey) (Array.from(controls.querySelectorAll('[data-reading-focus]')).find(el => el.dataset.readingFocus === restoreKey) || controls.querySelector('input'))?.focus({ preventScroll: true });
     }
     function openFromHash() { if (root.location.hash === '#reading-library') { panel.open = true; panel.scrollIntoView({ block: 'start' }); } }
-    attempt(render); openFromHash(); root.addEventListener('hashchange', openFromHash);
-    root.addEventListener('storage', event => { if (event.key === KEY || event.key === null) attempt(render); });
+    if (store) attempt(render);
+    else {
+      status.textContent = describeError(storeError);
+      try {
+        const kind = inspectStore(root.localStorage).kind;
+        if (kind === 'malformed-json' || kind === 'invalid-schema') {
+          const recover = element('button', recoveryCopy[1]); recover.type = 'button';
+          recover.addEventListener('click', () => {
+            if (!root.confirm(recoveryCopy[2])) return;
+            try { recoverStore(root.localStorage); store = makeStore(root.localStorage); render(); status.textContent = recoveryCopy[3]; controls.querySelector('input')?.focus(); }
+            catch (error) { status.textContent = describeError(error); }
+          });
+          controls.append(recover);
+        }
+      } catch { /* 権限拒否時は初期化ボタンを出さない。 */ }
+    }
+    openFromHash(); root.addEventListener('hashchange', openFromHash);
+    root.addEventListener('storage', event => { if (event.key === KEY || event.key === null) { try { store = makeStore(root.localStorage); store.read(); } catch (error) { store = null; storeError = error; } attempt(render); } });
   }
   if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', init); else init();
 })(typeof globalThis === 'object' ? globalThis : this);

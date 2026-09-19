@@ -59,7 +59,8 @@ test('reading list persists, deduplicates and removes only its own data', () => 
  store.toggle(a);store.visit(a);store.visit(a);
  assert.equal(makeStore(storage).read().saved.length,1);
  assert.equal(store.read().recent.length,1);
- store.history(false);store.visit(a);assert.equal(store.read().recent.length,0);
+ const beforePause = store.read().recent; store.history(false); store.visit({path:"/articles/not-recorded.html",title:"Not recorded"});
+ assert.deepEqual(store.read().recent,beforePause); store.clear("recent"); assert.equal(store.read().recent.length,0);
  store.toggle(a);assert.equal(store.read().saved.length,0);
  store.toggle(a);store.clear('saved');assert.equal(storage.getItem('playpointDiaryData'),'existing diary');
  assert.equal(safePath('//evil.example/a.html'),false);
@@ -140,4 +141,14 @@ test('ゲーム記事の正規URLとindex.htmlを保存・履歴で重複させ�
     assert.equal(safePath(candidate), false, candidate);
     assert.throws(() => store.toggle({ path: candidate, title: '不正' }), /Invalid article/);
   }
+});
+
+test('compact metadata keeps typed source dates and author links without fabricating freshness', () => {
+  const {compactReadingMetadata}=require('../scripts/article-discovery-sync.cjs');
+  const original='<h1>Title unchanged</h1><p class="hero-meta">公開 <time data-article-date="published" datetime="2025-12-25">2025/12/25</time> ・ 更新 <time data-article-date="modified" datetime="2026-09-08">2026/09/08</time> ・ 公式確認 <time data-article-date="official-verified" datetime="2026-08-01">2026/08/01</time> ・ <a href="/author/katakata.html">著者</a></p>';
+  const next=compactReadingMetadata(original,'ja');
+  assert.ok(next.includes('<summary>更新 2026-09-08'));
+  assert.ok(next.includes(original.slice(original.indexOf('<p'))));
+  assert.equal((next.match(/data-article-date=/g)||[]).length,3);
+  assert.equal(compactReadingMetadata(next,'ja'),next);
 });
