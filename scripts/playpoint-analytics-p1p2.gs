@@ -22,6 +22,12 @@ var PLAYPOINT_P12_CONFIG = Object.freeze({
   searchCrossSheet: '🔎検索クロス分析',
   urlInspectionSheet: '🧭URL検査',
   logSheet: '実行ログ',
+  healthSheet: '🩺データ鮮度・システム状態',
+  healthComponents: Object.freeze({
+    PAGE_VALUE: 'P1 ページ価値ファネル',
+    SEARCH_CROSS: 'P1 検索クロス分析',
+    URL_INSPECTION: 'P2 URL Inspection'
+  }),
   ga4PropertyIdDefault: '489079798',
   ga4Timezone: 'Asia/Tokyo',
   ga4WindowDays: 30,
@@ -93,29 +99,41 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
 function playPointP12RunStage_(stage, fn) {
   var started = new Date();
   playPointP12Log_('INFO', stage, 'started');
+  playPointP12TryHealth_(function() {
+    playPointP12HealthStart_(stage, started);
+  });
 
   try {
     var result = fn();
+    var finished = new Date();
+    var resultState = playPointP12ResultState_(stage, result);
     playPointP12Log_(
-      'INFO',
+      resultState === 'PARTIAL' ? 'WARN' : 'INFO',
       stage,
-      'success ' + playPointP12CompactJson_(result)
+      'success state=' + resultState + ' ' + playPointP12CompactJson_(result)
     );
+    playPointP12TryHealth_(function() {
+      playPointP12HealthSuccess_(stage, finished, resultState, result);
+    });
     return {
       stage: stage,
-      status: 'OK',
+      status: resultState,
       startedAt: started,
-      finishedAt: new Date(),
+      finishedAt: finished,
       result: result
     };
   } catch (error) {
+    var finished = new Date();
     var message = playPointP12ErrorText_(error);
     playPointP12Log_('ERROR', stage, message);
+    playPointP12TryHealth_(function() {
+      playPointP12HealthError_(stage, finished, message);
+    });
     return {
       stage: stage,
       status: 'ERROR',
       startedAt: started,
-      finishedAt: new Date(),
+      finishedAt: finished,
       error: message
     };
   }
@@ -1121,6 +1139,149 @@ function playPointP12Log_(level, stage, message) {
   } catch (ignored) {
     // Logging must never hide the original data-collection result.
   }
+}
+
+function playPointP12TryHealth_(fn) {
+  try {
+    fn();
+  } catch (ignored) {
+    // Health reporting is secondary and must never hide collection results.
+  }
+}
+
+function playPointP12ResultState_(stage, result) {
+  if (stage === 'PAGE_VALUE') {
+    var availability = result && result.availability ? result.availability : {};
+    return Object.keys(availability).some(function(key) { return availability[key] === false; })
+      ? 'PARTIAL'
+      : 'OK';
+  }
+
+  if (stage === 'SEARCH_CROSS') {
+    var cross = result && result.availability ? result.availability : {};
+    return Object.keys(cross).some(function(key) { return cross[key] === false; })
+      ? 'PARTIAL'
+      : 'OK';
+  }
+
+  if (stage === 'URL_INSPECTION') {
+    return result && Number(result.errors || 0) > 0 ? 'PARTIAL' : 'OK';
+  }
+
+  return 'OK';
+}
+
+function playPointP12ResultDataLatest_(stage, result) {
+  if (stage === 'PAGE_VALUE' && result && result.period) {
+    return result.period.end || '';
+  }
+  if (stage === 'SEARCH_CROSS' && result && result.gscPeriods && result.gscPeriods.current) {
+    return result.gscPeriods.current.end || '';
+  }
+  if (stage === 'URL_INSPECTION') {
+    return Utilities.formatDate(new Date(), PLAYPOINT_P12_CONFIG.ga4Timezone, 'yyyy-MM-dd');
+  }
+  return '';
+}
+
+function playPointP12HealthStart_(stage, started) {
+  playPointP12UpsertHealth_(stage, {
+    lastAttempt: started,
+    state: 'RUNNING'
+  });
+}
+
+function playPointP12HealthSuccess_(stage, finished, state, result) {
+  playPointP12UpsertHealth_(stage, {
+    lastSuccess: finished,
+    dataLatest: playPointP12ResultDataLatest_(stage, result),
+    state: state,
+    consecutiveFailures: 0,
+    error: '',
+    note: state === 'PARTIAL'
+      ? '一部sourceが未取得。実行ログの[P1P2:' + stage + ']を確認'
+      : 'P1/P2 collector verified'
+  });
+}
+
+function playPointP12HealthError_(stage, finished, message) {
+  var current = playPointP12ReadHealthRow_(stage);
+  playPointP12UpsertHealth_(stage, {
+    state: 'ERROR',
+    consecutiveFailures: Number(current.consecutiveFailures || 0) + 1,
+    error: message,
+    note: '実行ログの[P1P2:' + stage + ']に詳細あり'
+  });
+}
+
+function playPointP12ReadHealthRow_(stage) {
+  var spreadsheet = playPointP12GetSpreadsheet_();
+  var sheet = spreadsheet.getSheetByName(PLAYPOINT_P12_CONFIG.healthSheet);
+  var component = PLAYPOINT_P12_CONFIG.healthComponents[stage] || ('P1P2 ' + stage);
+
+  if (!sheet || sheet.getLastRow() < 2) {
+    return {
+      row: null,
+      component: component,
+      values: [component, '', '', '', '', 0, '', ''],
+      consecutiveFailures: 0
+    };
+  }
+
+  var names = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  for (var i = 0; i < names.length; i += 1) {
+    if (String(names[i][0] || '') === component) {
+      var rowNumber = i + 2;
+      var values = sheet.getRange(rowNumber, 1, 1, 8).getValues()[0];
+      return {
+        row: rowNumber,
+        component: component,
+        values: values,
+        consecutiveFailures: Number(values[5] || 0)
+      };
+    }
+  }
+
+  return {
+    row: null,
+    component: component,
+    values: [component, '', '', '', '', 0, '', ''],
+    consecutiveFailures: 0
+  };
+}
+
+function playPointP12UpsertHealth_(stage, changes) {
+  var spreadsheet = playPointP12GetSpreadsheet_();
+  var sheet = spreadsheet.getSheetByName(PLAYPOINT_P12_CONFIG.healthSheet);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(PLAYPOINT_P12_CONFIG.healthSheet);
+    sheet.getRange('A1:H1').setValues([[
+      'コンポーネント',
+      '最終試行',
+      '最終成功',
+      'データ最新',
+      '状態',
+      '連続失敗',
+      '最終エラー',
+      '補足'
+    ]]);
+  }
+
+  var current = playPointP12ReadHealthRow_(stage);
+  var values = current.values.slice();
+  values[0] = current.component;
+
+  if (Object.prototype.hasOwnProperty.call(changes, 'lastAttempt')) values[1] = changes.lastAttempt;
+  if (Object.prototype.hasOwnProperty.call(changes, 'lastSuccess')) values[2] = changes.lastSuccess;
+  if (Object.prototype.hasOwnProperty.call(changes, 'dataLatest')) values[3] = changes.dataLatest;
+  if (Object.prototype.hasOwnProperty.call(changes, 'state')) values[4] = changes.state;
+  if (Object.prototype.hasOwnProperty.call(changes, 'consecutiveFailures')) values[5] = changes.consecutiveFailures;
+  if (Object.prototype.hasOwnProperty.call(changes, 'error')) values[6] = changes.error;
+  if (Object.prototype.hasOwnProperty.call(changes, 'note')) values[7] = changes.note;
+
+  var targetRow = current.row || (sheet.getLastRow() + 1);
+  sheet.getRange(targetRow, 1, 1, 8).setValues([values]);
+  sheet.getRange(targetRow, 2, 1, 2).setNumberFormat('yyyy-mm-dd h:mm:ss');
 }
 
 function playPointP12NormalizePage_(value) {
