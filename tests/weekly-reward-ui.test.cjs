@@ -56,7 +56,8 @@ test('今月見出しの重複を画面から隠し、週次カードの日付�
 test('記録直後グラフは週ごとの色を積み上げ、月表示・現在週強調・段階アニメーションを持つ', () => {
   const diary = read('js/diary.js');
   assert.match(diary, /monthlyWeeks/);
-  for (const week of [1, 2, 3, 4, 5]) assert.match(diary, new RegExp('weekly-week-segment week-' + week));
+  assert.match(diary, /weekly-week-segment week-/);
+  for (const week of [1, 2, 3, 4, 5]) assert.match(diary, new RegExp('weekly-week-segment\\.week-' + week));
   assert.match(diary, /weekly-mini-stack/);
   assert.match(diary, /weekly-mini-bar-label/);
   assert.match(diary, /is-current-month/);
@@ -82,7 +83,8 @@ test('X共有ラベルは地域別コピーを使い、日本語固定ariaを残
   const diary = read('js/diary.js');
 
   assert.match(diary, /shareAria: 'この週の結果をXで共有'/);
-  assert.match(diary, /shareBtn\.setAttribute\('aria-label', weeklyCopy\.shareAria\)/);
+  assert.match(diary, /share\.setAttribute\('aria-label', copy\.shareAria\)/);
+  assert.match(diary, /weekly-result-share/);
   assert.doesNotMatch(diary, /aria-label="Xでシェア"/);
 });
 
