@@ -15,7 +15,7 @@ const NAV = Object.freeze([
   ['/articles/2026-08-05-play-points-levels-guide.html', 'ランク・特典'],
   ['/articles/2025-12-25-getting-started.html', 'アカウント・基本']
 ]);
-const SIDEBAR_STYLESHEET = '/articles/japanese-sidebar-v2.css?v=39163469fb';
+const SIDEBAR_STYLESHEET = '/articles/japanese-sidebar-v2.css?v=a151192444';
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const SIDEBAR = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 const GLOBAL_NAV = /<nav\b[^>]*class=["'][^"']*\bglobal-nav\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
@@ -50,7 +50,7 @@ function nextFor(role, related, article) {
 }
 
 function renderSearchWidget() {
-  return `  <section class="sidebar-widget sidebar-widget--search"><h2 class="sidebar-widget-title">記事を探す</h2><div class="sidebar-widget-body"><form class="sidebar-search-form" action="/blog/" method="get" role="search"><input class="sidebar-search-input" type="search" name="q" placeholder="キーワードで検索" aria-label="記事を検索"><button class="sidebar-search-button" type="submit">検索</button></form><div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/blog/">すべての記事を見る</a></div></div></section>`;
+  return `  <section class="sidebar-widget sidebar-widget--search"><h2 class="sidebar-widget-title">記事を探す</h2><div class="sidebar-widget-body"><form class="sidebar-search-form" action="/blog/" method="get" role="search"><input class="sidebar-search-input" type="search" name="q" aria-label="記事を検索"><button class="sidebar-search-button" type="submit">検索</button></form><div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/blog/">すべての記事を見る</a></div></div></section>`;
 }
 
 function renderPopularWidget(article) {
