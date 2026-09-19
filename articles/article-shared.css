@@ -1708,3 +1708,36 @@ contain-intrinsic-size: none;
 html { scroll-behavior: auto !important; }
 }
 /* ARTICLE_DESIGN_SYSTEM_V2_END */
+
+.article-context-link {
+margin: 18px 0 24px;
+padding: 13px 15px;
+border: 1px solid #dbe3ec;
+border-left: 3px solid var(--article-accent);
+border-radius: 6px;
+background: #fbfcfe;
+font-size: 14px;
+line-height: 1.65;
+}
+.article-context-link__label {
+display: block;
+margin-bottom: 3px;
+color: var(--article-accent-dark);
+font-size: 11.5px;
+font-weight: 800;
+letter-spacing: 0.03em;
+}
+.article-context-link a {
+color: var(--cocoon-link);
+font-weight: 700;
+text-decoration: none;
+}
+.article-context-link a:hover {
+text-decoration: underline;
+}
+@media (max-width: 600px) {
+.article-context-link {
+margin: 16px 0 20px;
+padding: 12px 13px;
+}
+}
