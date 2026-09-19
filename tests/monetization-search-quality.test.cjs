@@ -85,15 +85,17 @@ test('公式発表済みのTGS 2026記事はindex対象へ戻し、現行公式�
   const item = catalog.find(entry => entry.file === '../' + file);
   assert.match(html, /name="robots" content="index, follow, max-image-preview:large"/);
   assert.doesNotMatch(html, /公式発表待ち|2026年TGSのGoogle Play VIP特典は未確認/);
-  assert.match(html, /2026年9月19日（土）〜21日（月）/);
-  assert.match(html, /幕張メッセ ホール7/);
+  assert.match(html, /2026年9月19日（土）〜21日（月・祝）/);
+  assert.match(html, /幕張メッセ.*ホール7/);
   assert.match(html, /同行者最大5名/);
+  assert.match(html, /最大8人同時対戦/);
+  assert.match(html, /TGS限定ビッグショッパー/);
+  assert.match(html, /限定デザインステッカー/);
   assert.match(html, /ダイヤモンドラウンジ/);
   assert.match(html, /ダイヤモンドキット/);
-  assert.match(html, /2,000pt/);
-  assert.match(html, /3,000pt/);
+  assert.match(html, /PC版Google Play Games/);
   assert.ok(item && item.listed !== false, 'TGS 2026 article must be listed');
-  assert.equal(item.modified, '2026-09-18');
+  assert.equal(item.modified, '2026-09-19');
 });
 
 test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {
