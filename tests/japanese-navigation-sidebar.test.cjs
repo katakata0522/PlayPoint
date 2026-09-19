@@ -4,23 +4,46 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { transformArticle, nextFor } = require('../scripts/japanese-navigation-sidebar.cjs');
+const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT } = require('../scripts/japanese-popular-guides.cjs');
 const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
   .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, ''), label: a.title }));
 
-test('日本語の全公開記事は次行動1件・関連記事3件を持ち、自己リンクと非公開記事を除外する', () => {
+test('日本語の全公開記事は検索・人気5件・次行動1件・関連記事3件を持つ', () => {
   const publicPaths = new Set(articles.map(a => a.href));
   for (const article of articles) {
     const html = fs.readFileSync(path.join(root, article.path), 'utf8');
     const sidebar = html.match(/<aside class="sidebar-column ja-article-sidebar"[\s\S]*?<\/aside>/)?.[0];
     assert.ok(sidebar, article.path);
+    assert.match(sidebar, /class="sidebar-search-form" action="\/blog\/" method="get"/, article.path);
+    assert.match(sidebar, /class="sidebar-search-input"[^>]*name="q"/, article.path);
+    assert.equal((sidebar.match(/class="sidebar-popular-item(?: is-current)?"/g) || []).length, 5, article.path);
+    assert.ok(sidebar.includes('今月よく読まれている記事'), article.path);
+    assert.ok(sidebar.includes('直近30日の閲覧傾向・週1回更新'), article.path);
+    assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
     assert.equal(links.length, 3, article.path);
     assert.equal(new Set(links).size, 3, article.path);
     for (const href of links) { assert.notEqual(href, article.href); assert.ok(publicPaths.has(href)); }
+    assert.ok(sidebar.includes('運営者情報'), article.path);
+    assert.ok(sidebar.includes('2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達'), article.path);
+    assert.ok(sidebar.includes('湯葉と納豆'), article.path);
+    assert.ok(html.includes('/articles/japanese-sidebar-v2.css?v=39163469fb'), article.path);
     assert.equal(transformArticle(html, article, articles), html, article.path + ': 再生成は冪等');
   }
+});
+
+test('人気ランキングは日本語30日実測のTop5をPV非表示で保持する', () => {
+  assert.equal(POPULAR_GUIDES_SNAPSHOT, '2026-09-19');
+  assert.equal(JAPANESE_POPULAR_GUIDES.length, 5);
+  assert.deepEqual(JAPANESE_POPULAR_GUIDES.map(item => item[0]), [
+    '/articles/2026-07-31-google-play-quests.html',
+    '/articles/2026-06-20-discount-gift-cards.html',
+    '/articles/2026-07-31-super-weekly-reward.html',
+    '/articles/2026-07-24-play-points-cash-conversion.html',
+    '/articles/2025-12-25-best-use.html'
+  ]);
 });
 
 test('本文とSEO情報は変更せず、サイドバーがない記事にも導線を追加できる', () => {
