@@ -274,7 +274,15 @@ export const DIARY = {
 .weekly-achievement-metric{min-width:0;padding:.72em .78em;border:1px solid rgba(11,87,208,.13);border-radius:10px;background:var(--section-bg-color)}
 .weekly-achievement-metric span{display:block;margin-bottom:.15em;color:#52606d;font-size:.72em;font-weight:800}
 .weekly-achievement-metric strong{display:block;color:var(--text-color);font-size:1.22em;line-height:1.25;overflow-wrap:anywhere}
-.weekly-mini-chart-title{margin:.9em 0 .45em;color:#52606d;font-size:.75em;font-weight:800}
+.weekly-mini-chart-title{margin:.9em 0 .35em;color:#52606d;font-size:.75em;font-weight:800}
+.weekly-week-legend{display:flex;align-items:center;gap:.46em;flex-wrap:wrap;margin:0 0 .42em;color:#667085;font-size:.64em}
+.weekly-week-legend-item{display:inline-flex;align-items:center;gap:.22em;white-space:nowrap}
+.weekly-week-legend-dot{display:inline-block;width:.72em;height:.72em;border-radius:3px}
+.weekly-week-legend-dot.week-1{background:linear-gradient(180deg,#91c8ff,#63a3f5)}
+.weekly-week-legend-dot.week-2{background:linear-gradient(180deg,#78aaf6,#527fe8)}
+.weekly-week-legend-dot.week-3{background:linear-gradient(180deg,#9b8ff1,#7164dc)}
+.weekly-week-legend-dot.week-4{background:linear-gradient(180deg,#62c4bb,#349b8f)}
+.weekly-week-legend-dot.week-5{background:linear-gradient(180deg,#6bc486,#3c9c5b)}
 .weekly-mini-chart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:3px;min-height:94px;padding:.45em .25em .15em;border-radius:10px;background:linear-gradient(180deg,rgba(88,166,255,.035),rgba(63,185,80,.02))}
 .weekly-mini-item{display:grid;grid-template-rows:68px auto;gap:4px;min-width:0;align-items:end}
 .weekly-mini-bar{position:relative;display:flex;align-items:flex-end;height:68px;min-width:0;border-radius:5px;background:linear-gradient(180deg,rgba(88,166,255,.08),rgba(11,87,208,.035));overflow:hidden}
@@ -489,6 +497,21 @@ export const DIARY = {
         chartTitle.className = 'weekly-mini-chart-title';
         chartTitle.textContent = copy.chartLabel;
 
+        const legend = document.createElement('div');
+        legend.className = 'weekly-week-legend';
+        for (let weekIndex = 0; weekIndex < 5; weekIndex++) {
+            const legendItem = document.createElement('span');
+            legendItem.className = 'weekly-week-legend-item';
+            const dot = document.createElement('span');
+            dot.className = 'weekly-week-legend-dot week-' + (weekIndex + 1);
+            dot.setAttribute('aria-hidden', 'true');
+            const text = document.createElement('span');
+            text.textContent = String(weekIndex + 1);
+            legendItem.title = texts.weekLabel + (weekIndex + 1) + texts.weekSuffix;
+            legendItem.append(dot, text);
+            legend.appendChild(legendItem);
+        }
+
         const chart = document.createElement('div');
         chart.className = 'weekly-mini-chart';
         chart.setAttribute('role', 'img');
@@ -584,7 +607,7 @@ export const DIARY = {
             milestone.textContent = milestoneText;
             panel.appendChild(milestone);
         }
-        panel.append(metrics, chartTitle, chart, resultActions, nextReward);
+        panel.append(metrics, chartTitle, legend, chart, resultActions, nextReward);
         panel.hidden = false;
         panel.classList.remove('is-celebrating');
         if (animate) {
