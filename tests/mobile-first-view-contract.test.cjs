@@ -389,16 +389,23 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
 
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 3);
-  assert.match(faq, /Q\. このサイトはGoogle公式ですか？/);
+  assert.match(faq, /このサイトはGoogle公式のサービスですか？/);
+  assert.match(faq, /Google公式のサービスではありません/);
+  assert.match(faq, /個人で運営している非公式の計算・情報サイト/);
   assert.match(faq, /たびたび出てくる「1,728」って何ですか？/);
   assert.match(faq, /info\.html#about-section/);
   assert.match(faq, /入力した内容やウィークリー記録はどこに保存されますか/);
+  assert.match(faq, /今使っている端末のブラウザ内に保存/);
+  assert.match(faq, /運営者のサーバーやGoogleアカウントへ自動保存する仕組みではありません/);
+  assert.match(faq, /「書き出し」でバックアップ/);
+  assert.doesNotMatch(faq, /A\. いいえ/);
   assert.doesNotMatch(faq, /計算結果どおりのポイントが必ず付与されますか/);
-  assert.ok(faq.indexOf('このサイトはGoogle公式ですか？') < faq.indexOf('たびたび出てくる「1,728」って何ですか？'));
+  assert.ok(faq.indexOf('このサイトはGoogle公式のサービスですか？') < faq.indexOf('たびたび出てくる「1,728」って何ですか？'));
 
   assert.match(css, /\.home-secondary-section\s*\{/);
   assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
   assert.match(experience, /\.home-use-cases\{/);
+  assert.match(css, /\.home-use-cases li::marker\s*\{[\s\S]*?color:\s*#4285F4/);
   assert.match(experience, /\.home-rank-card--silver\{/);
   assert.match(experience, /\.home-rank-card--gold\{/);
   assert.match(experience, /\.home-rank-card--platinum\{/);
