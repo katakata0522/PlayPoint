@@ -1,4 +1,5 @@
 'use strict';
+const { openingTags } = require('./markup-contract.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -39,7 +40,7 @@ function assertBasicSeo(html, relativePath, { lang, siteName, requireFaq = true 
   const canonical = `${SITE}/${relativePath}`;
   const jsonLd = schemas(html);
 
-  assert.ok(html.includes(`<html lang="${lang}">`), `${relativePath}: lang`);
+  assert.strictEqual(openingTags(html).find(node => node.tag === 'html')?.attrs.lang, lang, `${relativePath}: lang`);
   assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), `${relativePath}: canonical`);
   assert.ok(title.trim(), `${relativePath}: title`);
   assert.ok(description.trim(), `${relativePath}: description`);

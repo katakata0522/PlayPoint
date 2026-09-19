@@ -121,6 +121,9 @@ function buildDiscoveryAssets(root) {
 }
 
 function applyDiscoveryAssets(html, assets) {
+  // JSが遮断されても共通の読みやすいlight配色を使う。通常時は同期theme scriptが保存/OS設定を優先する。
+  html = html.replace(/<html\b([^>]*)>/i, (_tag, attributes) =>
+    '<html' + attributes.replace(/\sdata-reading-theme=(?:"[^"]*"|'[^']*')/gi, '') + ' data-reading-theme="light">');
   // 共通テーマを各ページの既存CSSより後で適用する。二重挿入せず再生成も安定させる。
   return html.replace(/\s*<!-- discovery-assets:start -->[\s\S]*?<!-- discovery-assets:end -->\s*/g, '\n')
     .replace(/\s*<\/head>/, assets + '</head>');
@@ -153,5 +156,5 @@ function syncArticleDiscovery(root) {
   }
   return entries.length;
 }
-module.exports = { text, articleEntries, extractSections, prepareDiscoveryArticle, compactReadingMetadata, syncArticleDiscovery };
+module.exports = { text, articleEntries, extractSections, prepareDiscoveryArticle, compactReadingMetadata, applyDiscoveryAssets, syncArticleDiscovery };
 if (require.main === module) console.log('Article discovery:', syncArticleDiscovery(path.resolve(__dirname, '..')));

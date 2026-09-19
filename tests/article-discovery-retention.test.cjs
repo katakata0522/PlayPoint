@@ -152,3 +152,23 @@ test('compact metadata keeps typed source dates and author links without fabrica
   assert.equal((next.match(/data-article-date=/g)||[]).length,3);
   assert.equal(compactReadingMetadata(next,'ja'),next);
 });
+
+
+test('static reading fallback is readable without scripts and preserves page language and content', () => {
+  const {applyDiscoveryAssets}=require('../scripts/article-discovery-sync.cjs');
+  const assets='\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/reading-theme.css">\n<!-- discovery-assets:end -->\n';
+  for(const lang of ['ja','en','ko','zh-TW']) {
+    const original=`<!doctype html><html lang="${lang}"><head><title>Original title</title></head><body><h1>Original content</h1></body></html>`;
+    const next=applyDiscoveryAssets(original,assets);
+    assert.match(next, /<html[^>]*data-reading-theme="light"/);
+    assert.ok(next.includes(`lang="${lang}"`));
+    assert.ok(next.endsWith('<body><h1>Original content</h1></body></html>'));
+    assert.equal(applyDiscoveryAssets(next,assets),next);
+    assert.equal(applyDiscoveryAssets(next.replace('data-reading-theme="light"', 'data-reading-theme="dark"'),assets),next);
+  }
+  for(const locale of ['ja','en','ko','tw']) {
+    for(const articlePath of publishedPaths(locale)) {
+      assert.match(fs.readFileSync(path.join(root,articlePath.slice(1)),'utf8'), /<html[^>]*data-reading-theme="light"/, articlePath);
+    }
+  }
+});
