@@ -267,6 +267,10 @@ transform: translateY(-1px);
 box-shadow: 0 4px 10px rgba(11, 87, 208, 0.12);
 text-decoration: none;
 }
+.top-bar a:focus-visible {
+outline: 3px solid var(--input-focus-border-color, #005fcc);
+outline-offset: 2px;
+}
 .toast {
 visibility: hidden;
 min-width: 250px;
