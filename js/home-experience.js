@@ -138,7 +138,7 @@ function ensureStyles() {
 .home-use-cases-title{margin:.05em 0 .45em;font-size:.94rem;font-weight:800;color:var(--text-color,#202124)}
 .home-use-cases{display:grid;gap:.42em;margin:0 0 .78em;padding-left:1.28em}
 .home-use-cases li{margin:0;line-height:1.55;color:var(--text-color,#202124)}
-.home-use-cases li::marker{color:#4285F4}
+
 .home-rank-card{--rank-accent:#6b7280;--rank-glow:rgba(107,114,128,.18);position:relative;overflow:hidden;isolation:isolate;border-width:2px;background:linear-gradient(135deg,var(--rank-wash,rgba(107,114,128,.055)),transparent 62%),var(--section-bg-color,#fff)}
 .home-rank-card::after{content:"";position:absolute;z-index:0;right:-28px;top:-36px;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle,var(--rank-glow) 0%,transparent 68%);pointer-events:none}
 .home-rank-card>*{position:relative;z-index:1}
