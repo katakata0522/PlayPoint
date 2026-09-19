@@ -62,6 +62,20 @@ test('Super Ticket intent has a dedicated owner and Super Weekly hands off to it
   );
 });
 
+test('JP promotion-not-showing intent has one troubleshooting owner and contextual hand-offs', () => {
+  const owner = read('articles/2026-09-19-play-points-promotion-not-showing.html');
+  assert.match(owner, /増量キャンペーンが表示されない理由/);
+  assert.match(owner, /Google Playでのカスタマイズ/);
+  assert.match(owner, /href="\.\/2026-08-16-play-pass-worth-it\.html"/);
+  assert.match(owner, /href="\.\/2026-03-10-play-points-reflection-timing\.html"/);
+
+  const campaign = read('articles/2025-12-25-campaign.html');
+  assert.match(campaign, /href="\.\/2026-09-19-play-points-promotion-not-showing\.html"/);
+
+  const latest = read('latest/index.html');
+  assert.match(latest, /href="\.\.\/articles\/2026-09-19-play-points-promotion-not-showing\.html"/);
+});
+
 test('Korean balance-check intent has one clear owner and descriptive internal anchors', () => {
   const balance = read('ko/articles/google-play-points-balance-history-progress.html');
   assert.match(
