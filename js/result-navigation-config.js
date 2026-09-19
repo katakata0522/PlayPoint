@@ -7,8 +7,6 @@ const JP = {
     relatedArticleGroups: {
         platinum: [
             { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
-            { href: 'status/platinum/', title: 'プラチナ到達はいくら必要？' },
-            { href: 'status/diamond/', title: 'ダイヤモンド到達はいくら必要？' },
             { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
             { href: 'articles/2025-12-25-weekly-reward.html', title: 'ウィークリーリワードの受け取り方' },
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' },
@@ -48,8 +46,8 @@ const JP = {
 
 const US = {
     relatedArticleGroups: {
-        platinum: [{ href: 'status/platinum/', title: 'Platinum cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
-        diamond: [{ href: 'status/diamond/', title: 'Diamond cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
+        platinum: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
+        diamond: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: 'Promotion not applied: what to check' }, { href: 'articles/google-play-points-gift-cards.html', title: 'Gift card conditions' }],
         default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }, { href: 'articles/google-play-points-not-showing.html', title: 'Points not showing: what to check' }]
     },
@@ -65,8 +63,8 @@ const US = {
 
 const KR = {
     relatedArticleGroups: {
-        platinum: [{ href: 'status/platinum/', title: '플래티넘 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
-        diamond: [{ href: 'status/diamond/', title: '다이아몬드 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
+        platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
+        diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 미적용 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-not-showing.html', title: '포인트 미반영 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }]
     },
@@ -82,8 +80,8 @@ const KR = {
 
 const TW = {
     relatedArticleGroups: {
-        platinum: [{ href: 'status/platinum/', title: '白金級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
-        diamond: [{ href: 'status/diamond/', title: '鑽石級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
+        platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
+        diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '活動未套用確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-not-showing.html', title: '點數未顯示確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }]
     },

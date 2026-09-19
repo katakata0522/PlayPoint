@@ -306,19 +306,16 @@ test('地域差案内は日本語トップでも英語の注意導線として�
   }
 });
 
-test('計算方法と検証方針を全言語で本文から確認できる', () => {
-  const expected = {
-    'index.html': /入力値は外部へ送信せず、このブラウザ上で計算します/,
-    'en/index.html': /Inputs are calculated in this browser and are not sent externally/,
-    'ko/index.html': /입력값은 외부로 전송하지 않고 이 브라우저에서 계산합니다/,
-    'tw/index.html': /輸入內容不會傳送到外部，而是在此瀏覽器中完成計算/
-  };
-  for (const [file, pattern] of Object.entries(expected)) {
+test('計算と検証の説明責任はトップを占有せず運営・検証方針へ集約する', () => {
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html']) {
     const html = read(file);
-    assert.match(html, pattern, file);
-    const authorHref = file === 'index.html' ? 'author/katakata.html' : `/${file.split('/')[0]}/author/katakata.html`;
-    assert.ok(html.includes(`href="${authorHref}" rel="author"`), `${file}: localized author link in body`);
+    assert.doesNotMatch(html, /class="calculation-method-note"/, `${file}: top still contains verification prose`);
   }
+
+  assert.match(read('author/katakata.html'), /計算機の扱い[\s\S]*入力値そのものを外部へ送信しません/);
+  assert.match(read('en/author/katakata.html'), /How the calculator handles inputs[\s\S]*raw input values are not sent externally/);
+  assert.match(read('ko/author/katakata.html'), /계산기 입력값 처리 방식[\s\S]*입력값 자체를 외부로 전송하지 않습니다/);
+  assert.match(read('tw/author/katakata.html'), /計算器如何處理輸入值[\s\S]*原始輸入值傳送到外部/);
 });
 
 test('ブログ広告はスクロール量に依存せず共通ローダーから初期化する', () => {

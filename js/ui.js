@@ -11,7 +11,7 @@ let homeExperienceScrollBound = false;
 
 function loadHomeExperience() {
     if (!homeExperiencePromise) {
-        homeExperiencePromise = import('/js/home-experience.js?v=20260919_1').catch((error) => {
+        homeExperiencePromise = import('/js/home-experience.js?v=20260919_2').catch((error) => {
             homeExperiencePromise = null;
             throw error;
         });
