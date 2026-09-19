@@ -35,3 +35,5 @@ jobs:
           git diff --stat
           echo "=== changed paths ==="
           git status --porcelain=v1 | sed -E 's/^.. //' | sort -u
+          echo "=== unexpected existing article diffs ==="
+          git diff -- articles/2025-12-25-expiration.html articles/2025-12-25-refund.html
