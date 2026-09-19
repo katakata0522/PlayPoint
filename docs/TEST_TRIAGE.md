@@ -1177,7 +1177,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の177ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の178ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1185,7 +1185,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | SEO・公開整合 | 11 |
 | 計測・同意・広告 | 11 |
 | 生成・再現性 | 23 |
-| UI・導線 | 21 |
+| UI・導線 | 22 |
 | 保存 | 5 |
 | 地域・翻訳 | 39 |
 | 復旧 | 4 |
@@ -1261,6 +1261,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `game-seo-wave3.test.cjs` | 内容・事実・対象範囲 | wave 3 verification states separate verified mechanics from unverified prices |
 | `game-seo-wave4.test.cjs` | 内容・事実・対象範囲 | Wave 4 verification data separates Web payment facts from unverified Google Play prices |
 | `game-seo-wave5.test.cjs` | 内容・事実・対象範囲 | Wave 5 SSOT separates verified purchase routes from unverified current prices |
+| `game-thumbnail-assets.test.cjs` | UI・導線 | ゲーム記事一覧の公式アイコン・出典台帳・OGP分離・本文非表示を保証する |
 | `global-error-localization.test.cjs` | 地域・翻訳 | each calculator entry page has a stable static lang for pre-init errors |
 | `growth-critical-pages.test.cjs` | UI・導線 | top organic landing articles keep role-appropriate next-action paths |
 | `growth-foundation-regression.test.cjs` | 横断監査 | 記事一覧JSONは版付き静的資産より短い再検証ルールを優先する |
