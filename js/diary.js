@@ -248,12 +248,19 @@ export const DIARY = {
 #diaryMode .weekly-autosave-hint{display:none!important}
 #diaryMode .diary-input-area>#selectedMonth,#diaryMode .weekly-month-section-title{display:none!important}
 #diaryMode .diary-input-area{padding-top:0!important}
-#diaryMode .is-weekly-current{grid-template-areas:"current current" "label label" "points prize" "large large" "share share" "hint hint" "achievement achievement"!important}
+#diaryMode .is-weekly-current{grid-template-areas:"current current" "label label" "points prize" "large large" "share share" "state state" "hint hint" "achievement achievement"!important}
 #diaryMode .is-weekly-current>.weekly-points-field{grid-area:points}
 #diaryMode .is-weekly-current>.weekly-large-value-hint{grid-area:large}
-#diaryMode .is-weekly-current .diary-btn-group,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-btn-group{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:.55em!important;align-items:center}
+#diaryMode .is-weekly-current .diary-btn-group,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-btn-group{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.55em!important;align-items:center}
 #diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-save-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;margin:0;background:#1e8e3e;color:#fff;border-color:#1e8e3e;font-weight:800}
-#diaryMode .is-weekly-current .diary-x-share-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-x-share-btn{min-width:44px;min-height:44px;margin:0}
+#diaryMode .diary-save-btn[hidden]{display:none!important}
+#diaryMode .weekly-record-state{grid-area:state;display:flex;align-items:center;justify-content:space-between;gap:.7em;min-height:38px;padding:.45em .6em;border-radius:8px;background:rgba(63,185,80,.07);color:var(--text-color);font-size:.82em}
+#diaryMode .weekly-record-state[hidden]{display:none!important}
+#diaryMode .weekly-record-state.is-dirty{background:rgba(245,158,11,.08)}
+#diaryMode .weekly-record-status{font-weight:800}
+#diaryMode .weekly-record-edit{min-height:34px;margin:0;padding:.3em .7em;border:1px solid rgba(11,87,208,.2);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}
+#diaryMode .weekly-record-edit:hover:not(:disabled){background:rgba(11,87,208,.11)}
+#diaryMode .is-weekly-current input:disabled,#diaryMode .is-weekly-current select:disabled{opacity:.86;cursor:default;background:rgba(15,23,42,.025)}
 #diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-large-value-hint{display:none!important}
 .weekly-points-field{position:relative;min-width:0}
 .weekly-points-field>input{width:100%;box-sizing:border-box;margin:0;padding-right:2.4em}
@@ -271,25 +278,35 @@ export const DIARY = {
 .weekly-mini-chart{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));align-items:end;gap:3px;min-height:94px;padding:.45em .25em .15em;border-radius:10px;background:linear-gradient(180deg,rgba(88,166,255,.035),rgba(63,185,80,.02))}
 .weekly-mini-item{display:grid;grid-template-rows:68px auto;gap:4px;min-width:0;align-items:end}
 .weekly-mini-bar{position:relative;display:flex;align-items:flex-end;height:68px;min-width:0;border-radius:5px;background:linear-gradient(180deg,rgba(88,166,255,.08),rgba(11,87,208,.035));overflow:hidden}
-.weekly-mini-bar-fill{display:block;width:100%;height:var(--weekly-bar,2%);min-height:2px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#58a6ff 0%,#4285f4 58%,#0b57d0 100%);box-shadow:0 -1px 5px rgba(66,133,244,.22);transform-origin:bottom}
+.weekly-mini-stack{display:flex;flex-direction:column-reverse;width:100%;height:var(--weekly-bar,2%);min-height:2px;overflow:hidden;border-radius:5px 5px 2px 2px;transform-origin:bottom}
+.weekly-week-segment{display:block;min-height:1px;flex-basis:0;transform-origin:bottom;box-shadow:inset 0 1px rgba(255,255,255,.32)}
+.weekly-week-segment.week-1{background:linear-gradient(180deg,#91c8ff,#63a3f5)}
+.weekly-week-segment.week-2{background:linear-gradient(180deg,#78aaf6,#527fe8)}
+.weekly-week-segment.week-3{background:linear-gradient(180deg,#9b8ff1,#7164dc)}
+.weekly-week-segment.week-4{background:linear-gradient(180deg,#62c4bb,#349b8f)}
+.weekly-week-segment.week-5{background:linear-gradient(180deg,#6bc486,#3c9c5b)}
+.weekly-week-segment.is-current-week-segment{filter:saturate(1.12) brightness(1.04);box-shadow:inset 0 1px rgba(255,255,255,.48),0 0 7px rgba(63,185,80,.35)}
 .weekly-mini-item.is-current-month .weekly-mini-bar{background:linear-gradient(180deg,rgba(88,166,255,.14),rgba(63,185,80,.07));box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}
-.weekly-mini-item.is-current-month .weekly-mini-bar-fill{background:linear-gradient(180deg,#58a6ff 0%,#4f9cf9 38%,#3fb950 100%);box-shadow:0 -2px 8px rgba(63,185,80,.32)}
 .weekly-mini-bar-label{display:block;min-width:0;color:#7a8694;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
 .weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0b57d0;font-weight:900}
 .weekly-next-reward{display:flex;align-items:center;justify-content:space-between;gap:.7em;flex-wrap:wrap;margin:.8em 0 0;padding-top:.7em;border-top:1px solid rgba(11,87,208,.12);font-size:.82em;line-height:1.5}
 .weekly-next-reward strong{color:var(--text-color);font-weight:900}
 .weekly-next-reward a{color:#0b57d0;font-weight:800;text-decoration:none}
 .weekly-next-reward a:hover{text-decoration:underline}
+.weekly-achievement-milestone{margin:0 0 .65em;color:#795900;font-size:.88em;font-weight:900}
+.weekly-result-actions{display:flex;justify-content:flex-end;margin:.75em 0 0}
+.weekly-result-share{min-height:38px;margin:0;padding:.42em .8em;border:1px solid rgba(17,24,39,.16);border-radius:8px;background:#111827;color:#fff;box-shadow:none;font-size:.82em;font-weight:800}
+.weekly-result-share:hover:not(:disabled){background:#242b38;box-shadow:none}
 .weekly-achievement-panel.is-celebrating{animation:weekly-panel-in .28s ease-out}
-.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill{animation:weekly-bar-grow .62s cubic-bezier(.2,.78,.22,1) both;animation-delay:var(--weekly-delay,0ms)}
+.weekly-achievement-panel.is-celebrating .weekly-week-segment{animation:weekly-week-rise .46s cubic-bezier(.2,.78,.22,1) both;animation-delay:calc(var(--weekly-delay,0ms) + var(--weekly-week-delay,0ms))}
 .weekly-achievement-panel.is-celebrating .weekly-mini-bar-label{animation:weekly-label-in .3s ease-out both;animation-delay:calc(var(--weekly-delay,0ms) + 260ms)}
 .weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:weekly-current-glow .7s ease-out both;animation-delay:calc(var(--weekly-delay,0ms) + 420ms)}
 @keyframes weekly-panel-in{0%{opacity:.45;transform:translateY(-4px)}100%{opacity:1;transform:none}}
-@keyframes weekly-bar-grow{0%{transform:scaleY(0)}76%{transform:scaleY(1.045)}100%{transform:scaleY(1)}}
+@keyframes weekly-week-rise{0%{opacity:0;transform:scaleY(0)}76%{opacity:1;transform:scaleY(1.04)}100%{opacity:1;transform:scaleY(1)}}
 @keyframes weekly-label-in{0%{opacity:0;transform:translateY(3px)}100%{opacity:1;transform:none}}
 @keyframes weekly-current-glow{0%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}55%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.4),0 0 12px rgba(63,185,80,.24)}100%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}}
-@media(max-width:360px){#diaryMode .is-weekly-current{grid-template-columns:1fr!important;grid-template-areas:"current" "label" "points" "prize" "large" "share" "hint" "achievement"!important}.weekly-achievement-metrics{grid-template-columns:1fr}.weekly-mini-chart{gap:2px;padding-left:.1em;padding-right:.1em}.weekly-mini-bar-label{font-size:.5rem}}
-@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-fill,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label,.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:none}}
+@media(max-width:360px){#diaryMode .is-weekly-current{grid-template-columns:1fr!important;grid-template-areas:"current" "label" "points" "prize" "large" "share" "state" "hint" "achievement"!important}.weekly-achievement-metrics{grid-template-columns:1fr}.weekly-mini-chart{gap:2px;padding-left:.1em;padding-right:.1em}.weekly-mini-bar-label{font-size:.5rem}}
+@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-week-segment,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label,.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:none}}
 `;
         document.head.appendChild(style);
     },
@@ -317,7 +334,112 @@ export const DIARY = {
         hint.textContent = shouldQuestion ? this.getWeeklyExperienceCopy().largeValueHint : '';
     },
 
-    renderWeeklyAchievement(row, pointsValue, yearlySummary, animate = false) {
+    setCurrentWeekRecordMode(row, mode) {
+        if (!row) return;
+        const copy = this.getWeeklyExperienceCopy();
+        const texts = CONFIGS[STATE.currentRegion].uiText;
+        const input = row.querySelector('input[type="number"]');
+        const select = row.querySelector('select');
+        const save = row.querySelector('.diary-save-btn');
+        const state = row.querySelector('.weekly-record-state');
+        const status = row.querySelector('.weekly-record-status');
+        const edit = row.querySelector('.weekly-record-edit');
+        const hint = row.querySelector('.weekly-confirm-hint');
+        if (!input || !select || !save || !state || !status || !edit) return;
+
+        row.dataset.recordMode = mode;
+        const saved = mode === 'saved';
+        input.disabled = saved;
+        select.disabled = saved;
+        save.hidden = saved;
+        state.hidden = mode === 'new';
+        edit.hidden = mode !== 'saved';
+        state.classList.remove('is-dirty');
+
+        if (mode === 'saved') {
+            status.textContent = copy.saved;
+            save.textContent = texts.saveButton;
+            if (hint) hint.hidden = true;
+        } else if (mode === 'editing') {
+            status.textContent = copy.saved;
+            save.textContent = copy.saveChanges;
+            if (hint) hint.hidden = true;
+        } else {
+            status.textContent = '';
+            save.textContent = texts.saveButton;
+            if (hint) hint.hidden = false;
+        }
+    },
+
+    updateCurrentWeekDirtyState(row) {
+        if (!row || row.dataset.recordMode !== 'editing') return;
+        const copy = this.getWeeklyExperienceCopy();
+        const input = row.querySelector('input[type="number"]');
+        const select = row.querySelector('select');
+        const state = row.querySelector('.weekly-record-state');
+        const status = row.querySelector('.weekly-record-status');
+        if (!input || !select || !state || !status) return;
+        const normalized = DIARY_PURE.normalizePointsValue(input.value);
+        const currentPoints = normalized === null ? input.value.trim() : normalized;
+        const dirty = String(currentPoints) !== String(row.dataset.savedPoints ?? '')
+            || String(select.value ?? '') !== String(row.dataset.savedPrize ?? '');
+        status.textContent = dirty ? copy.unsaved : copy.saved;
+        state.classList.toggle('is-dirty', dirty);
+    },
+
+    configureCurrentWeekRecordState(row, weekData, defaultPrize) {
+        if (!row) return;
+        const copy = this.getWeeklyExperienceCopy();
+        const input = row.querySelector('input[type="number"]');
+        const select = row.querySelector('select');
+        const save = row.querySelector('.diary-save-btn');
+        const edit = row.querySelector('.weekly-record-edit');
+        if (!input || !select || !save || !edit) return;
+
+        const normalized = DIARY_PURE.normalizePointsValue(weekData?.points);
+        const savedEntry = DIARY_PURE.hasMeaningfulEntry(weekData || {}, defaultPrize);
+        if (savedEntry) {
+            row.dataset.savedPoints = normalized === null ? '' : normalized;
+            row.dataset.savedPrize = String(weekData?.prize ?? '');
+            this.setCurrentWeekRecordMode(row, 'saved');
+        } else {
+            delete row.dataset.savedPoints;
+            delete row.dataset.savedPrize;
+            this.setCurrentWeekRecordMode(row, 'new');
+        }
+
+        edit.addEventListener('click', () => {
+            this.setCurrentWeekRecordMode(row, 'editing');
+            input.focus({ preventScroll: true });
+        });
+        input.addEventListener('input', () => this.updateCurrentWeekDirtyState(row));
+        select.addEventListener('change', () => this.updateCurrentWeekDirtyState(row));
+        input.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' || save.hidden || input.disabled) return;
+            event.preventDefault();
+            save.click();
+        });
+    },
+
+    commitCurrentWeekRecordState(weekNum, pointsValue, prizeValue) {
+        if (!this.isCurrentDiaryWeek(weekNum)) return;
+        const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
+        if (!row) return;
+        row.dataset.savedPoints = String(pointsValue ?? '');
+        row.dataset.savedPrize = String(prizeValue ?? '');
+        this.setCurrentWeekRecordMode(row, 'saved');
+    },
+
+    resetCurrentWeekRecordState(weekNum) {
+        if (!this.isCurrentDiaryWeek(weekNum)) return;
+        const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
+        if (!row) return;
+        delete row.dataset.savedPoints;
+        delete row.dataset.savedPrize;
+        this.setCurrentWeekRecordMode(row, 'new');
+    },
+
+    renderWeeklyAchievement(row, pointsValue, yearlySummary, animate = false, milestoneText = '') {
         if (!row) return;
         let panel = row.querySelector('.weekly-achievement-panel');
         if (!panel) {
@@ -374,19 +496,40 @@ export const DIARY = {
             'aria-label',
             copy.chartLabel + ': ' + Number(yearlySummary?.total || 0).toLocaleString(config.lang) + ' ' + texts.pointsUnit
         );
+        const monthlyWeeks = yearlySummary?.monthlyWeeks || Array.from({ length: 12 }, () => Array.from({ length: 5 }, () => 0));
+        const currentWeek = DIARY_PURE.currentWeek();
         totals.forEach((total, index) => {
             const item = document.createElement('span');
             item.className = 'weekly-mini-item';
-            item.style.setProperty('--weekly-delay', (index * 42) + 'ms');
+            item.style.setProperty('--weekly-delay', (index * 32) + 'ms');
             if (index + 1 === STATE.diaryState.currentMonth) item.classList.add('is-current-month');
 
             const bar = document.createElement('span');
             bar.className = 'weekly-mini-bar';
             bar.title = texts.monthNames[index] + ': ' + Number(total).toLocaleString(config.lang) + ' ' + texts.pointsUnit;
-            const fill = document.createElement('span');
-            fill.className = 'weekly-mini-bar-fill';
-            fill.style.setProperty('--weekly-bar', Math.max(2, Math.round((Number(total) / maxValue) * 100)) + '%');
-            bar.appendChild(fill);
+
+            const stack = document.createElement('span');
+            stack.className = 'weekly-mini-stack';
+            stack.style.setProperty('--weekly-bar', Math.max(2, Math.round((Number(total) / maxValue) * 100)) + '%');
+            const weekValues = monthlyWeeks[index] || [];
+            weekValues.forEach((weekPoints, weekIndex) => {
+                if (!Number(weekPoints)) return;
+                const segment = document.createElement('span');
+                segment.className = 'weekly-week-segment week-' + (weekIndex + 1);
+                segment.style.flexGrow = String(weekPoints);
+                segment.style.setProperty('--weekly-week-delay', (weekIndex * 65) + 'ms');
+                if (
+                    STATE.diaryState.currentYear === currentWeek.year
+                    && index + 1 === currentWeek.month
+                    && weekIndex + 1 === currentWeek.week
+                ) {
+                    segment.classList.add('is-current-week-segment');
+                }
+                segment.title = texts.weekLabel + (weekIndex + 1) + texts.weekSuffix + ': '
+                    + Number(weekPoints).toLocaleString(config.lang) + ' ' + texts.pointsUnit;
+                stack.appendChild(segment);
+            });
+            bar.appendChild(stack);
 
             const label = document.createElement('span');
             label.className = 'weekly-mini-bar-label';
@@ -395,6 +538,20 @@ export const DIARY = {
             item.append(bar, label);
             chart.appendChild(item);
         });
+
+        const resultActions = document.createElement('div');
+        resultActions.className = 'weekly-result-actions';
+        const share = document.createElement('button');
+        share.type = 'button';
+        share.className = 'weekly-result-share';
+        share.textContent = copy.shareText;
+        share.title = copy.shareAria;
+        share.setAttribute('aria-label', copy.shareAria);
+        share.addEventListener('click', () => {
+            const prize = row.querySelector('select')?.value || '';
+            SHARE.shareRewardToX(normalizedPoints, prize);
+        });
+        resultActions.appendChild(share);
 
         const nextReward = document.createElement('div');
         nextReward.className = 'weekly-next-reward';
@@ -421,7 +578,13 @@ export const DIARY = {
             nextReward.appendChild(calendarLink);
         }
 
-        panel.append(metrics, chartTitle, chart, nextReward);
+        if (milestoneText) {
+            const milestone = document.createElement('p');
+            milestone.className = 'weekly-achievement-milestone';
+            milestone.textContent = milestoneText;
+            panel.appendChild(milestone);
+        }
+        panel.append(metrics, chartTitle, chart, resultActions, nextReward);
         panel.hidden = false;
         panel.classList.remove('is-celebrating');
         if (animate) {
@@ -430,22 +593,23 @@ export const DIARY = {
         }
     },
 
-    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData) {
+    decorateExplicitCurrentWeek(row, weekNum, pointsValue, yearData, weekData, defaultPrize) {
         if (!this.isCurrentDiaryWeek(weekNum)) return;
         this.ensureWeeklyExperienceStyle();
         row.classList.add('is-weekly-current', 'is-weekly-expanded');
         this.ensureWeeklyConfirmHint(row);
+        this.configureCurrentWeekRecordState(row, weekData, defaultPrize);
         this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), false);
     },
 
-    refreshWeeklyAchievement(weekNum, pointsValue, yearData, animate = false) {
+    refreshWeeklyAchievement(weekNum, pointsValue, yearData, animate = false, milestoneText = '') {
         if (!this.isCurrentDiaryWeek(weekNum)) return;
         const row = STATE.dom.weekInputs?.querySelector('#week' + weekNum + '_points')?.closest('.week-row');
         if (!row) return;
         this.ensureWeeklyExperienceStyle();
         row.classList.add('is-weekly-current', 'is-weekly-expanded');
         this.ensureWeeklyConfirmHint(row);
-        this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), animate);
+        this.renderWeeklyAchievement(row, pointsValue, DIARY_PURE.summarizeYear(yearData), animate, milestoneText);
     },
 
     // 日記（アワード）画面のレンダリング
@@ -511,37 +675,32 @@ export const DIARY = {
                 <p class="weekly-large-value-hint" hidden aria-live="polite"></p>
                 <div class="diary-btn-group">
                     <button type="button" class="diary-save-btn" data-week="${weekNum}">${texts.saveButton}</button>
-                    <button type="button" class="diary-x-share-btn" data-week="${weekNum}">𝕏</button>
+                </div>
+                <div class="weekly-record-state" hidden aria-live="polite">
+                    <span class="weekly-record-status"></span>
+                    <button type="button" class="weekly-record-edit"></button>
                 </div>
             `;
 
             // 明示確定とX共有のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
-            const prizeSelect = row.querySelector(`#week${weekNum}_prize`);
             const largeValueHint = row.querySelector('.weekly-large-value-hint');
-            const shareBtn = row.querySelector(`.diary-x-share-btn[data-week="${weekNum}"]`);
+            const editButton = row.querySelector('.weekly-record-edit');
             const weeklyCopy = this.getWeeklyExperienceCopy();
 
-            if (shareBtn) {
-                shareBtn.title = weeklyCopy.shareAria;
-                shareBtn.setAttribute('aria-label', weeklyCopy.shareAria);
-            }
+            if (editButton) editButton.textContent = weeklyCopy.edit;
             this.updateLargeValueHint(pointsInput, largeValueHint);
             pointsInput.addEventListener('input', () => this.updateLargeValueHint(pointsInput, largeValueHint));
 
-            // 入力だけでは確定しない。ユーザーが「結果を記録」ボタンを押した時だけ保存する。
-            if (shareBtn) {
-                shareBtn.addEventListener('click', () => {
-                    const currentPoints = pointsInput.value.trim();
-                    if (currentPoints === '') {
-                        pointsInput.focus({ preventScroll: true });
-                        return;
-                    }
-                    SHARE.shareRewardToX(currentPoints, prizeSelect.value);
-                });
-            }
-
-            this.decorateExplicitCurrentWeek(row, weekNum, displayPoints, yearData);
+            // 入力だけでは確定しない。「結果を記録」または編集後の「変更を保存」で確定する。
+            this.decorateExplicitCurrentWeek(
+                row,
+                weekNum,
+                displayPoints,
+                yearData,
+                weekData,
+                texts.prizeOptions?.[0] || ''
+            );
             STATE.dom.weekInputs.appendChild(row);
         });
     },
@@ -565,21 +724,27 @@ export const DIARY = {
         const yearlySummary = DIARY_PURE.summarizeYear(yearData);
         STATE.dom.yearlyTotal.textContent = yearlySummary.total.toLocaleString(config.lang);
         STATE.dom.yearlyAverage.textContent = yearlySummary.average.toFixed(1);
-        this.renderYearChart(yearlySummary.monthlyTotals);
+        this.renderYearChart(yearlySummary);
     },
 
     // 保存済みデータだけを使い、月ごとの比較をDOMでアクセシブルに描画する。
-    renderYearChart(monthlyTotals) {
+    renderYearChart(yearlySummary) {
         if (!STATE.dom.diaryYearChart) return;
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
+        const monthlyTotals = yearlySummary?.monthlyTotals || Array.from({ length: 12 }, () => 0);
+        const monthlyWeeks = yearlySummary?.monthlyWeeks || Array.from({ length: 12 }, () => Array.from({ length: 5 }, () => 0));
         const maxValue = Math.max(1, ...monthlyTotals);
+        const currentWeek = DIARY_PURE.currentWeek();
         STATE.dom.diaryYearChart.innerHTML = '';
         STATE.dom.diaryYearChart.setAttribute('aria-label', texts.yearlyChartDescription || '');
 
         monthlyTotals.forEach((total, index) => {
             const item = document.createElement('div');
             item.className = 'diary-chart-item';
+            if (STATE.diaryState.currentYear === currentWeek.year && index + 1 === currentWeek.month) {
+                item.classList.add('is-current-month');
+            }
             item.setAttribute('aria-label', `${texts.monthNames[index]}: ${total.toLocaleString(config.lang)} ${texts.pointsUnit}`);
 
             const value = document.createElement('span');
@@ -588,10 +753,29 @@ export const DIARY = {
 
             const track = document.createElement('span');
             track.className = 'diary-chart-track';
-            const bar = document.createElement('span');
-            bar.className = 'diary-chart-bar';
-            bar.style.setProperty('--bar-height', `${Math.round((total / maxValue) * 100)}%`);
-            track.appendChild(bar);
+            const stack = document.createElement('span');
+            stack.className = 'diary-chart-bar diary-chart-stack';
+            stack.style.setProperty('--bar-height', `${Math.round((total / maxValue) * 100)}%`);
+
+            const weekValues = monthlyWeeks[index] || [];
+            weekValues.forEach((weekPoints, weekIndex) => {
+                if (!Number(weekPoints)) return;
+                const segment = document.createElement('span');
+                segment.className = 'diary-week-segment week-' + (weekIndex + 1);
+                segment.style.flexGrow = String(weekPoints);
+                segment.style.setProperty('--diary-week-delay', (weekIndex * 55) + 'ms');
+                if (
+                    STATE.diaryState.currentYear === currentWeek.year
+                    && index + 1 === currentWeek.month
+                    && weekIndex + 1 === currentWeek.week
+                ) {
+                    segment.classList.add('is-current-week-segment');
+                }
+                segment.title = texts.weekLabel + (weekIndex + 1) + texts.weekSuffix + ': '
+                    + Number(weekPoints).toLocaleString(config.lang) + ' ' + texts.pointsUnit;
+                stack.appendChild(segment);
+            });
+            track.appendChild(stack);
 
             const label = document.createElement('span');
             label.className = 'diary-chart-label';
@@ -600,7 +784,6 @@ export const DIARY = {
             STATE.dom.diaryYearChart.appendChild(item);
         });
     },
-
     showSaveConfirmation(button, texts) {
         if (!button) return;
         const originalText = texts.saveButton;
@@ -645,6 +828,9 @@ export const DIARY = {
         const yearKey = STATE.diaryState.currentYear;
         const monthKey = STATE.diaryState.currentMonth;
         const previousEntry = data?.[yearKey]?.[monthKey]?.[weekNum];
+        const yearDataBeforeSave = data?.[yearKey] || {};
+        const isYearBest = normalizedPoints !== ''
+            && DIARY_PURE.isNewYearBest(yearDataBeforeSave, normalizedPoints);
         const hasMeaningfulEntry = DIARY_PURE.hasMeaningfulEntry(nextEntry, defaultPrize);
 
         if (!hasMeaningfulEntry) {
@@ -657,6 +843,7 @@ export const DIARY = {
             this.cleanEmptyDiaryContainers(data, yearKey, monthKey);
             if (!this.saveDiaryData(data)) return;
             this.updateSummary();
+            this.resetCurrentWeekRecordState(weekNum);
             this.refreshWeeklyAchievement(weekNum, '', data[yearKey] || {}, false);
             if (!isSilent) {
                 UI.showToast(texts.toastDiarySaveSuccess);
@@ -677,9 +864,10 @@ export const DIARY = {
 
         if (isUnchanged) {
             if (!isSilent) {
+                this.commitCurrentWeekRecordState(weekNum, normalizedPoints, nextEntry.prize);
                 this.refreshWeeklyAchievement(weekNum, normalizedPoints, data[yearKey] || {}, true);
                 UI.showToast(texts.toastDiarySaveSuccess);
-                this.showSaveConfirmation(e.target, texts);
+                if (!this.isCurrentDiaryWeek(weekNum)) this.showSaveConfirmation(e.target, texts);
             }
             return;
         }
@@ -698,12 +886,19 @@ export const DIARY = {
 
         this.updateSummary();
         if (!isSilent) {
-            this.refreshWeeklyAchievement(weekNum, normalizedPoints, data[yearKey] || {}, true);
+            this.commitCurrentWeekRecordState(weekNum, normalizedPoints, nextEntry.prize);
+            this.refreshWeeklyAchievement(
+                weekNum,
+                normalizedPoints,
+                data[yearKey] || {},
+                true,
+                isYearBest ? this.getWeeklyExperienceCopy().yearBest : ''
+            );
             UI.showToast(texts.toastDiarySaveSuccess);
             document.dispatchEvent(new CustomEvent('playpoint:diary-saved', {
                 detail: { region: STATE.currentRegion }
             }));
-            this.showSaveConfirmation(e.target, texts);
+            if (!this.isCurrentDiaryWeek(weekNum)) this.showSaveConfirmation(e.target, texts);
         }
     },
 
