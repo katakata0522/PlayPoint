@@ -1177,12 +1177,12 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の177ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の178ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
 | 内容・事実・対象範囲 | 24 |
-| SEO・公開整合 | 11 |
+| SEO・公開整合 | 12 |
 | 計測・同意・広告 | 11 |
 | 生成・再現性 | 23 |
 | UI・導線 | 21 |
@@ -1344,6 +1344,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `rollback-workflow.test.cjs` | 復旧 | 通常Deployは本番を書き換える前に保存snapshotを再検証する |
 | `runtime-module-guards.test.cjs` | 性能・配信 | 分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる |
+| `search-intent-owner-contract.test.cjs` | SEO・公開整合 | 実測で確認した検索意図をtitle/H1と説明的内部リンクで守り、ownerの再混線を防ぐ |
 | `security-seo-hardening.test.cjs` | 横断監査 | security headers and CSP stay fail-closed without unused third-party allowlists |
 | `seo-head-audit-parser.test.cjs` | SEO・公開整合 | Head監査はHTMLエンティティを一度だけデコードし二重アンエスケープしない |
 | `seo-hygiene.test.cjs` | SEO・公開整合 | 送信するXMLサイトマップ間でURLを重複させない |
