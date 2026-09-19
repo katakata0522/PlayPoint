@@ -15,7 +15,6 @@ const NAV = Object.freeze([
   ['/articles/2026-08-05-play-points-levels-guide.html', 'ランク・特典'],
   ['/articles/2025-12-25-getting-started.html', 'アカウント・基本']
 ]);
-const SIDEBAR_STYLESHEET = '/articles/japanese-sidebar-v2.css?v=a151192444';
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const SIDEBAR = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 const GLOBAL_NAV = /<nav\b[^>]*class=["'][^"']*\bglobal-nav\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
@@ -85,7 +84,7 @@ function transformArticle(html, article, catalog) {
   const nav = '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === article.href ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
   const sidebar = renderSidebar(article, role, related);
-  let after = html.replace(GLOBAL_NAV, nav);
+  let after = html.replace(GLOBAL_NAV, nav).replace(/<link\\b[^>]*href=[\"'][^\"']*\\/articles\\/japanese-sidebar-v2\\.css(?:\\?[^\"']*)?[\"'][^>]*>\\s*/gi, '');
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {
     const end = after.lastIndexOf('</article>');

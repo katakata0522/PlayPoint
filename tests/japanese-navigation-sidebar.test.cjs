@@ -29,7 +29,8 @@ test('日本語の全公開記事は検索・人気5件・次行動1件・関連
     assert.ok(sidebar.includes('運営者情報'), article.path);
     assert.ok(sidebar.includes('2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達'), article.path);
     assert.ok(sidebar.includes('湯葉と納豆'), article.path);
-    assert.ok(html.includes('/articles/japanese-sidebar-v2.css?v=a151192444'), article.path);
+    assert.match(html, /\\/articles\\/japanese-shell\\.css\\?v=/, article.path);
+    assert.ok(!html.includes('/articles/japanese-sidebar-v2.css'), article.path + ': sidebar CSSは共通CSSへ統合');
     assert.equal(transformArticle(html, article, articles), html, article.path + ': 再生成は冪等');
   }
 });
@@ -64,4 +65,13 @@ test('問題解決や基礎記事を一律に計算機へ誘導しない', () =>
   for (const role of ['troubleshooting', 'reference', 'decision_support']) assert.deepEqual(nextFor(role, related), [related[0].href, related[0].label]);
   assert.equal(nextFor('calculator_bridge', related)[0], '/');
   assert.equal(nextFor('retention', related)[0], '/latest/');
+});
+
+
+test('検索・人気記事のスタイルは既存の日本語共通CSSへ統合する', () => {
+  const css = fs.readFileSync(path.join(root, 'articles', 'japanese-shell.css'), 'utf8');
+  assert.match(css, /\.sidebar-search-form/);
+  assert.match(css, /\.sidebar-popular-item/);
+  assert.match(css, /\.sidebar-widget--author/);
+  assert.ok(!fs.existsSync(path.join(root, 'articles', 'japanese-sidebar-v2.css')));
 });

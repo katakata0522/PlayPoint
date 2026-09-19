@@ -10,7 +10,7 @@
 4. 本文の編集済み関連記事を優先した「あわせて読みたい」3件
 5. 運営者情報
 
-生成元は `scripts/japanese-navigation-sidebar.cjs`、人気記事SSOTは `scripts/japanese-popular-guides.cjs`、入口は `scripts/build-html.js`。
+生成元は `scripts/japanese-navigation-sidebar.cjs`、人気記事SSOTは `scripts/japanese-popular-guides.cjs`、入口は `scripts/build-html.js`。追加のレンダリング阻害CSSを増やさないため、検索・人気記事・運営者情報のスタイルは既存の `articles/japanese-shell.css` に統合する。
 
 ## 人気記事の更新方針
 
