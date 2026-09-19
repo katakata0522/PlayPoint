@@ -165,6 +165,7 @@ test('救出記事と8月19日記事は専用OGPを保持し、一覧サムネ�
     if (gameListThumbnails.has(article.id)) {
       assert.equal(entry.thumbnail, gameListThumbnails.get(article.id));
       assert.equal(entry.thumbnailKind, 'app-icon');
+      assert.equal(entry.ogp, `../${article.ogp}`);
     } else {
       assert.equal(entry.thumbnail, `../${article.ogp}`);
     }
