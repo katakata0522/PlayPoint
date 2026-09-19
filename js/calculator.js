@@ -27,7 +27,7 @@ export const CALC = {
         return '';
     },
 
-    getRelatedArticles(targetStatusLabel, multiplier) {
+    getRelatedArticles(targetStatusLabel, multiplier, targetKind = 'upgrade') {
         const target = String(targetStatusLabel || '').toLowerCase();
         const groups = this.getResultNavigation().relatedArticleGroups;
         const candidates = [];
@@ -36,7 +36,11 @@ export const CALC = {
         else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) rankGroup = 'platinum';
         else if (/gold|ゴールド|골드|金級/i.test(target)) rankGroup = 'gold';
         else if (/silver|シルバー|실버|銀級/i.test(target)) rankGroup = 'silver';
-        if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
+        const maintenanceGroup = targetKind === 'maintain'
+            ? groups[rankGroup + 'Maintenance']
+            : null;
+        if (maintenanceGroup) candidates.push(...maintenanceGroup.slice(0, 3));
+        else if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
         if (multiplier > 1) candidates.push(...groups.campaign.slice(0, 2));
         candidates.push(...groups.default);
 
@@ -81,8 +85,8 @@ export const CALC = {
         }).slice(0, 4);
     },
 
-    getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
-        const relatedArticles = this.getRelatedArticles(targetStatusLabel, multiplier);
+    getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade') {
+        const relatedArticles = this.getRelatedArticles(targetStatusLabel, multiplier, targetKind);
         const decisionLinks = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
         const prioritizedLinks = [
             ...relatedArticles.slice(0, 1).map(link => ({ ...link, linkType: 'related' })),
@@ -98,8 +102,8 @@ export const CALC = {
         }).slice(0, 3);
     },
 
-    renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
-        const links = this.getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+    renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade') {
+        const links = this.getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind);
         if (!links.length) return '';
 
         const items = links
@@ -177,7 +181,8 @@ export const CALC = {
             availableTargets.push({
                 label: `${currentStatusLabel} (${config.uiText.statusKeep || '維持'})`,
                 value: config.thresholds[currentStatusLabel],
-                statusLabel: currentStatusLabel
+                statusLabel: currentStatusLabel,
+                targetKind: 'maintain'
             });
         }
 
@@ -190,7 +195,8 @@ export const CALC = {
                 availableTargets.push({
                     label: `${targetLabel} (${config.uiText.statusUp || '昇格'})`,
                     value: points,
-                    statusLabel: targetLabel
+                    statusLabel: targetLabel,
+                    targetKind: 'upgrade'
                 });
             }
         });
@@ -200,6 +206,7 @@ export const CALC = {
             const pointsStr = target.value.toLocaleString(config.lang);
             const option = new Option(`${target.label} (${pointsStr}pt)`, target.value);
             option.dataset.statusLabel = target.statusLabel;
+            option.dataset.targetKind = target.targetKind;
             STATE.dom.targetStatus.add(option);
         });
 
@@ -367,6 +374,7 @@ export const CALC = {
         const normalRate = config.statusRates[currentStatusValue];
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
         const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
+        const targetKind = selectedTargetOption?.dataset.targetKind || 'upgrade';
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
 
@@ -394,7 +402,7 @@ export const CALC = {
         const { resultContent, resultDetailsContent } = renderMainResult({
             config, neededPoints: finalNeededPoints, totalAmountNeeded, remainingMonths, remainingDays,
             finalRate, rateSourceLabel, comparison,
-            guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays),
+            guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind),
             purchaseCheckContent: finalNeededPoints > 0 ? this.renderPurchaseCheckLink() : '',
             progressCheer: this.getProgressCheer(finalNeededPoints)
         });
