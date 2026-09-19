@@ -133,7 +133,7 @@ margin: 0.5rem 0;
 margin-bottom: 0.3rem;
 }
 .table-card {
-background: #fafafa;
+background: var(--reading-soft, #fafafa);
 border-radius: var(--radius);
 overflow: hidden;
 margin: 1.5rem 0;
@@ -160,7 +160,7 @@ tr:last-child td {
 border-bottom: none;
 }
 .steps {
-background: #fafafa;
+background: var(--reading-soft, #fafafa);
 border-radius: var(--radius);
 padding: 1.5rem;
 margin: 1.5rem 0;
@@ -177,7 +177,7 @@ font-size: 1rem;
 color: var(--accent);
 }
 .faq-item {
-background: #fafafa;
+background: var(--reading-soft, #fafafa);
 border-radius: 12px;
 padding: 1.2rem;
 margin-bottom: 1rem;

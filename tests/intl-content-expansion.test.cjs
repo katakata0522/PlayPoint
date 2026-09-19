@@ -1,4 +1,5 @@
 'use strict';
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const assert = require('node:assert');
 const fs = require('node:fs');
@@ -115,7 +116,7 @@ test('国・地域別の実用記事を3言語で意味のある本文として�
       const canonical = `https://playpoint-sim.com/${relativePath}`;
       const data = schemas(html);
 
-      assert.ok(html.includes(`<html lang="${locale.hreflang}">`), relativePath);
+      assert.strictEqual(openingTags(html).find(node => node.tag === 'html')?.attrs.lang, locale.hreflang, relativePath);
       assert.ok(html.includes(`<link rel="canonical" href="${canonical}">`), relativePath);
       assert.strictEqual((html.match(/<h1\b/g) || []).length, 1, relativePath);
       assert.ok((html.match(/<p\b/g) || []).length >= 1, `${relativePath}: explanatory paragraph`);

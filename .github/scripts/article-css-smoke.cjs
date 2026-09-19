@@ -32,6 +32,22 @@ function assert(value, message) {
   if (!value) throw new Error(message);
 }
 
+// Verify the effective semantic color, not a hex literal from a retired palette.
+function contrastRatio(foreground, background) {
+  function luminance(value) {
+    const match = /^rgb\(\s*(\d+(?:\.\d+)?)[, ]+\s*(\d+(?:\.\d+)?)[, ]+\s*(\d+(?:\.\d+)?)\s*\)$/.exec(value);
+    assert(match, `Expected an opaque RGB color, received ${value}`);
+    const linear = match.slice(1).map(Number).map(channel => {
+      assert(channel >= 0 && channel <= 255, `Invalid color channel: ${channel}`);
+      const normalized = channel / 255;
+      return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+    });
+    return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+  }
+  const a = luminance(foreground), b = luminance(background);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}
+
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -123,13 +139,15 @@ async function readStyleReadiness(page, compatibility) {
     const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
     const compatibilityLink = links.find(link => link.href.includes(compatibility));
     const sharedLink = links.find(link => link.href.includes('article-shared.css'));
+    const readingLink = links.find(link => link.href.includes('reading-theme.css'));
     return {
       readyState: document.readyState,
-      headingToken: getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim(),
+      headingToken: getComputedStyle(document.body).getPropertyValue('--cocoon-heading').trim(),
       compatibilityHref: compatibilityLink?.href || '',
       compatibilityAttached: Boolean(compatibilityLink?.sheet),
       sharedHref: sharedLink?.href || '',
       sharedAttached: Boolean(sharedLink?.sheet),
+      readingAttached: !readingLink || Boolean(readingLink.sheet),
       stylesheetCount: document.styleSheets.length
     };
   }, { compatibility });
@@ -141,7 +159,7 @@ async function waitForArticleStylesReady(page, article, viewport) {
 
   while (Date.now() < deadline) {
     readiness = await readStyleReadiness(page, article.compatibility);
-    if (readiness.compatibilityAttached && readiness.sharedAttached && readiness.headingToken) return readiness;
+    if (readiness.compatibilityAttached && readiness.sharedAttached && readiness.readingAttached && readiness.headingToken) return readiness;
     await delay(STYLE_READINESS_POLL_MS);
   }
 
@@ -174,6 +192,13 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
       const heroStyle = hero ? getComputedStyle(hero) : null;
       const titleStyle = title ? getComputedStyle(title) : null;
       const mainStyle = main ? getComputedStyle(main) : null;
+      // Resolve the heading token on the same reading surface as the title.
+      // A valid token match alone is insufficient: contrast is checked below too.
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:absolute;visibility:hidden;color:var(--cocoon-heading)';
+      (main || document.body).append(probe);
+      const semanticHeadingColor = getComputedStyle(probe).color;
+      probe.remove();
       const stylesheetLinks = [...document.querySelectorAll('link[rel="stylesheet"]')];
       const compatibilityLink = stylesheetLinks.find(link => link.href.includes(compatibility));
       const sharedLink = stylesheetLinks.find(link => link.href.includes('article-shared.css'));
@@ -193,7 +218,8 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
           maxWidth: titleStyle.maxWidth
         } : null,
         mainBackground: mainStyle?.backgroundColor || '',
-        headingToken: getComputedStyle(document.documentElement).getPropertyValue('--cocoon-heading').trim(),
+        semanticHeadingColor,
+        headingToken: getComputedStyle(document.body).getPropertyValue('--cocoon-heading').trim(),
         hasCompatibility: Boolean(compatibilityLink),
         compatibilityLoaded: Boolean(compatibilityLink?.sheet),
         hasShared: Boolean(sharedLink),
@@ -217,8 +243,9 @@ async function inspectArticle(browser, baseUrl, article, viewport) {
       result.hero.paddingLeft
     ].every(value => value === '0px'), `${article.key}/${viewport.key}: hero padding ${JSON.stringify(result.hero)}`);
     assert(result.hero.textAlign === 'left' || result.hero.textAlign === 'start', `${article.key}/${viewport.key}: hero text-align ${result.hero.textAlign}`);
-    assert(result.headingToken.toLowerCase() === '#1a202c', `${article.key}/${viewport.key}: heading token ${result.headingToken || '(empty)'}`);
-    assert(result.title.color === 'rgb(26, 32, 44)', `${article.key}/${viewport.key}: title color ${result.title.color}`);
+    assert(result.headingToken, `${article.key}/${viewport.key}: heading token missing`);
+    assert(result.title.color === result.semanticHeadingColor, `${article.key}/${viewport.key}: title color ${result.title.color} differs from heading token ${result.semanticHeadingColor}`);
+    assert(contrastRatio(result.title.color, result.mainBackground) >= 4.5, `${article.key}/${viewport.key}: insufficient title contrast (${result.title.color} on ${result.mainBackground})`);
     assert(result.title.textShadow === 'none', `${article.key}/${viewport.key}: title shadow ${result.title.textShadow}`);
     assert(result.title.maxWidth === 'none', `${article.key}/${viewport.key}: title max-width ${result.title.maxWidth}`);
     assert(result.mainBackground === 'rgb(255, 255, 255)', `${article.key}/${viewport.key}: main background ${result.mainBackground}`);

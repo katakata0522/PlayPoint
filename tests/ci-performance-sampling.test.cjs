@@ -114,10 +114,10 @@ function executeFixture(calls, alter) {
     return { status };
   };
 }
-test('suiteは同一6ページを測り、初回時間超過の2sampleだけを追加する', t => {
+test('suiteは同一6ページを測り、homeと記事ハブを3sampleで比較する', t => {
   const outputDir = temporary(t), calls = [];
   const exit = suite.main({ outputDir, env: { AUDIT_TARGET: 'local' }, execute: executeFixture(calls, (value, file) => {
-    if (path.basename(file) === 'article-hub.json') value.audits['largest-contentful-paint'].numericValue = 4000;
+    if (path.basename(file) === 'article-hub-1.json') value.audits['largest-contentful-paint'].numericValue = 4000;
   }) });
   assert.equal(exit, 0);
   const manifest = JSON.parse(fs.readFileSync(path.join(outputDir, 'audit-manifest.json')));
@@ -137,9 +137,9 @@ test('suiteは同一6ページを測り、初回時間超過の2sampleだけを�
 test('suiteはbyte違反を追加測定で消さず、本番の外部通信は遮断しない', t => {
   const outputDir = temporary(t), calls = [];
   assert.equal(suite.main({ outputDir, env: { AUDIT_TARGET: 'production' }, execute: executeFixture(calls, (value, file) => {
-    if (path.basename(file) === 'article-hub.json') value.audits['total-byte-weight'].numericValue = 400000;
+    if (path.basename(file) === 'article-hub-1.json') value.audits['total-byte-weight'].numericValue = 400000;
   }) }), 0);
-  assert.equal(calls.length, suite.PAGES.length + 2); // home always has 3 samples
+  assert.equal(calls.length, suite.PAGES.length + 4); // home and hub each retain all 3 samples
   assert.ok(calls.every(call => !call.args.some(arg => arg.startsWith('--blocked-url-patterns='))));
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 1);
 });
@@ -150,7 +150,7 @@ test('suiteのCLI失敗はvalid JSONが残っても成功にしない', t => {
   assert.throws(() => budget.reportPathsFromArgs(['--manifest', manifestFile]), /did not complete/);
   assert.equal(
     budget.reportPathsFromArgs(['--manifest', manifestFile], { requireComplete: false }).length,
-    suite.PAGES.length + 2
+    suite.PAGES.length + 4
   );
   assert.throws(() => suite.main({ outputDir, env: { AUDIT_TARGET: 'other' } }), /AUDIT_TARGET/);
   assert.throws(() => suite.main({ outputDir, env: { AUDIT_TARGET: 'local', AUDIT_BASE_URL: 'https://elsewhere.test' } }), /origin/);

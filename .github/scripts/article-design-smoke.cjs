@@ -88,6 +88,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       const relatedStyle = style(related);
       return {
         sharedLoaded: Boolean(shared?.sheet),
+        fallbackTheme: document.documentElement.dataset.readingTheme,
         answer: answerStyle ? { borderLeftWidth: answerStyle.borderLeftWidth, borderRadius: answerStyle.borderRadius, backgroundImage: answerStyle.backgroundImage } : null,
         intro: introStyle ? { textAlign: introStyle.textAlign, borderLeftWidth: introStyle.borderLeftWidth } : null,
         summary: summaryStyle ? { borderRadius: summaryStyle.borderRadius, borderTopWidth: summaryStyle.borderTopWidth } : null,
@@ -99,6 +100,7 @@ async function inspect(browser, baseUrl, article, viewport) {
     });
 
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
+    assert(result.fallbackTheme === 'light', article.key + '/' + viewport.key + ': readable static theme missing without JavaScript');
     if (!article.allArticle || result.answer) {
       assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
       assert(parseFloat(result.answer.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': answer accent missing');

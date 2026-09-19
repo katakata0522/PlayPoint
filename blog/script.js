@@ -10,7 +10,6 @@
         adInterval: 3,
         newThresholdDays: 7,
         searchDebounceMs: 300,
-        placeholderImage: 'https://placehold.co/600x400/e0e0e0/999999?text=No+Image',
         storageKey: 'katakata_blog_settings',
         maxRetries: 3
     };
@@ -52,17 +51,18 @@
             }
         },
         getTheme: function () {
-            return this.get().theme || 'dark';
+            return window.PlayPointReadingTheme?.get() || this.get().theme || 'light';
         },
         setTheme: function (theme) {
             this.set({ theme });
         },
         getSortOrder: function () {
-            const saved = this.get().sortNewestFirst;
-            return saved !== undefined ? saved : true;
+            const saved = this.get();
+            if (['newest', 'oldest', 'updated'].includes(saved.sortMode)) return saved.sortMode;
+            return typeof saved.sortNewestFirst === 'boolean' ? (saved.sortNewestFirst ? 'newest' : 'oldest') : null;
         },
-        setSortOrder: function (newestFirst) {
-            this.set({ sortNewestFirst: newestFirst });
+        setSortOrder: function (mode) {
+            if (mode !== 'relevance') this.set({ sortMode: mode, sortNewestFirst: mode !== 'oldest' });
         }
     };
 
@@ -108,8 +108,8 @@
                 category: params.get('category') || 'all',
                 search: params.get('q') || '',
                 game: params.get('game') || '',
-                page: parseInt(params.get('page'), 10) || 1,
-                sort: params.get('sort') !== 'oldest'
+                page: params.get('page') || '1',
+                sort: ['newest', 'oldest', 'updated', 'relevance'].includes(params.get('sort')) ? params.get('sort') : null
             };
         },
         set: function (state) {
@@ -138,8 +138,8 @@
                 url.searchParams.delete('page');
             }
             // Sort
-            if (state.sort === false) {
-                url.searchParams.set('sort', 'oldest');
+            if (state.sort && (sortIsExplicit || state.sort !== (state.search ? 'relevance' : 'newest'))) {
+                url.searchParams.set('sort', state.sort);
             } else {
                 url.searchParams.delete('sort');
             }
@@ -153,7 +153,8 @@
     let currentSearch = '';
     let currentGameTitle = '';
     let currentPage = 1;
-    let sortNewestFirst = true;
+    let sortMode = 'newest';
+    let sortIsExplicit = false;
     let searchDebounceTimer = null;
     let fetchRetryCount = 0;
 
@@ -187,7 +188,7 @@
         const now = new Date();
         const diffTime = now - articleDate;
         const diffDays = diffTime / (1000 * 60 * 60 * 24);
-        return diffDays <= CONFIG.newThresholdDays;
+        return diffDays >= 0 && diffDays <= CONFIG.newThresholdDays;
     }
 
     function sanitizeArticleFile(value) {
@@ -224,7 +225,9 @@
         return {
             id: typeof article.id === 'string' ? article.id : '',
             title,
-            date: typeof article.date === 'string' ? article.date : '',
+            listTitle: typeof article.listTitle === 'string' && article.listTitle.trim() ? article.listTitle.trim() : title,
+            date: BlogUtils.validArticleDate(article.date),
+            modified: BlogUtils.validArticleDate(article.modified),
             category,
             tags,
             description,
@@ -286,6 +289,7 @@
         observer.observe(image);
     }
 
+    let listingAd = null;
     // Create AdSense ad element
     function createAdElement() {
         const adContainer = document.createElement('div');
@@ -348,6 +352,7 @@
     // Create Skeleton Loading Cards
     function showSkeletonLoading() {
         if (!dom.grid) return;
+        compactThumbnailObserver?.disconnect();
         if (dom.grid.querySelectorAll('.skeleton-card').length === CONFIG.itemsPerPage) return;
         dom.grid.innerHTML = '';
         for (let i = 0; i < CONFIG.itemsPerPage; i++) {
@@ -369,32 +374,51 @@
     // Helper functions moved to utils.js
 
     // Sidebar Toggle Functions
+    const sidebarBackground = new Set();
+    let sidebarPreviousOverflow = '';
     function setSidebarState(isOpen) {
-        // aria-hidden / inert を付ける前に、閉じる操作ではフォーカスをトグルへ戻す。
-        if (!isOpen && dom.sidebarToggle) {
-            dom.sidebarToggle.focus();
-        }
-
-        if (dom.sidebar) {
-            dom.sidebar.classList.toggle('active', isOpen);
-            dom.sidebar.setAttribute('aria-hidden', String(!isOpen));
-            if (isOpen) {
-                dom.sidebar.removeAttribute('inert');
-            } else {
-                dom.sidebar.setAttribute('inert', '');
+        if (!dom.sidebar) return;
+        if (isOpen) {
+            sidebarPreviousOverflow = document.body.style.overflow;
+            dom.sidebar.classList.add('active');
+            dom.sidebar.setAttribute('aria-hidden', 'false');
+            dom.sidebar.removeAttribute('inert');
+            dom.sidebar.setAttribute('role', 'dialog');
+            dom.sidebar.setAttribute('aria-modal', 'true');
+            (dom.sidebarClose || dom.sidebar).focus({ preventScroll: true });
+            for (const element of document.body.children) {
+                if (element === dom.sidebar || element === dom.sidebarOverlay || element.hasAttribute('inert') || /^(SCRIPT|STYLE|LINK)$/.test(element.tagName)) continue;
+                element.setAttribute('inert', '');
+                sidebarBackground.add(element);
             }
+        } else {
+            for (const element of sidebarBackground) element.removeAttribute('inert');
+            sidebarBackground.clear();
+            dom.sidebarToggle?.focus({ preventScroll: true });
+            dom.sidebar.classList.remove('active');
+            dom.sidebar.setAttribute('aria-hidden', 'true');
+            dom.sidebar.setAttribute('inert', '');
+            dom.sidebar.removeAttribute('aria-modal');
         }
-        if (dom.sidebarOverlay) dom.sidebarOverlay.classList.toggle('active', isOpen);
+        dom.sidebarOverlay?.classList.toggle('active', isOpen);
         if (dom.sidebarToggle) {
             dom.sidebarToggle.classList.toggle('active', isOpen);
             dom.sidebarToggle.setAttribute('aria-expanded', String(isOpen));
             dom.sidebarToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
         }
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+        document.body.style.overflow = isOpen ? 'hidden' : sidebarPreviousOverflow;
+    }
 
-        if (isOpen && dom.sidebar) {
-            const focusTarget = dom.sidebarClose || dom.sidebar.querySelector('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
-            if (focusTarget) focusTarget.focus();
+    function containSidebarFocus(event) {
+        if (!dom.sidebar?.classList.contains('active') || event.key !== 'Tab') return;
+        const items = [...dom.sidebar.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')]
+            .filter(element => !element.closest('[inert]') && element.getClientRects().length);
+        if (!items.length) { event.preventDefault(); dom.sidebar.focus(); return; }
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !dom.sidebar.contains(document.activeElement))) {
+            event.preventDefault(); last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !dom.sidebar.contains(document.activeElement))) {
+            event.preventDefault(); first.focus();
         }
     }
 
@@ -496,45 +520,70 @@
             }
         });
 
+        document.addEventListener('keydown', containSidebarFocus);
+        window.matchMedia?.(COMPACT_THUMBNAIL_QUERY).addEventListener?.('change', () => { if (allArticles.length) render(); });
+
         // Restore state from URL and LocalStorage
         const urlState = URLState.get();
         currentCategory = urlState.category;
         currentSearch = urlState.search;
         currentGameTitle = urlState.game;
         currentPage = urlState.page;
-        sortNewestFirst = urlState.sort !== undefined ? urlState.sort : Storage.getSortOrder();
-
-        // Restore search input from URL
-        if (dom.searchInput && currentSearch) {
-            dom.searchInput.value = currentSearch;
-        }
-
-        // Update sort button UI
-        if (dom.sortToggle) {
-            if (sortNewestFirst) {
-                dom.sortToggle.innerHTML = '<span class="sort-icon">↓</span> 新しい順';
-            } else {
-                dom.sortToggle.innerHTML = '<span class="sort-icon">↑</span> 古い順';
-            }
-        }
+        const storedSort = Storage.getSortOrder();
+        sortIsExplicit = Boolean(urlState.sort || storedSort);
+        sortMode = urlState.sort || storedSort || (currentSearch ? 'relevance' : 'newest');
+        if (!currentSearch && sortMode === 'relevance') sortMode = 'newest';
+        if (dom.searchInput && currentSearch) dom.searchInput.value = currentSearch;
+        updateSortControl();
 
         await loadArticles();
     }
 
     // 本文検索は検索欄を使う時に取得し、記事一覧の初期表示を待たせない。
-    let bodySearchPromise;
+    let bodySearchPromise = null;
+    let bodySearchReady = false;
+    function searchNotice(message, retry = false) {
+        let notice = document.getElementById('body-search-notice');
+        if (!notice) {
+            notice = document.createElement('div');
+            notice.id = 'body-search-notice';
+            notice.className = 'body-search-notice';
+            notice.setAttribute('role', 'status');
+            document.querySelector('.search-sort-row')?.after(notice);
+        }
+        notice.replaceChildren(); notice.hidden = !message;
+        if (!message) return;
+        const text = document.createElement('span'); text.textContent = message; notice.append(text);
+        if (retry) {
+            const button = document.createElement('button'); button.type = 'button'; button.textContent = '本文検索を再試行';
+            button.addEventListener('click', async () => { if (await loadBodySearch()) render(); });
+            notice.append(button);
+        }
+    }
     function loadBodySearch() {
+        if (bodySearchReady) return Promise.resolve(true);
         if (bodySearchPromise) return bodySearchPromise;
-        bodySearchPromise = fetch('article-search-index.json').then(response => {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+        searchNotice('本文も検索できるように読み込んでいます…');
+        dom.grid?.setAttribute('aria-busy', 'true');
+        bodySearchPromise = fetch('article-search-index.json', { signal: controller.signal }).then(response => {
             if (!response.ok) throw new Error('Search index unavailable');
             return response.json();
         }).then(index => {
+            if (!Array.isArray(index?.articles)) throw new Error('Invalid search index');
             const byPath = new Map(index.articles.map(item => [item.path, item]));
             allArticles.forEach(article => { article.sections = byPath.get(new URL(article.file, window.location.href).pathname)?.sections || []; });
+            bodySearchReady = true;
+            searchNotice('');
+            return true;
         }).catch(() => {
-            const notice = document.createElement('p');
-            notice.textContent = '本文検索を読み込めませんでした。現在はタイトル・説明・タグから検索できます。';
-            notice.setAttribute('role', 'status'); dom.searchInput?.after(notice);
+            searchNotice('本文検索を読み込めませんでした。現在はタイトル・説明・タグから検索できます。', true);
+            return false;
+        }).finally(() => {
+            clearTimeout(timeout);
+            bodySearchPromise = null;
+            dom.grid?.setAttribute('aria-busy', 'false');
         });
         return bodySearchPromise;
     }
@@ -553,43 +602,36 @@
             setupCategoryOverflow();
             setupGameTitleFilter();
 
-            // Search setup with debounce
-            if (dom.searchInput) {
-                const debouncedSearch = debounce(async (value) => {
+            // 入力を待たせず暫定結果を描画し、本文索引の取得後も最新の条件だけで描画する。
+            if (dom.searchInput && !dom.searchInput.dataset.bound) {
+                dom.searchInput.dataset.bound = 'true';
+                const debouncedSearch = debounce(async value => {
                     currentSearch = value;
+                    if (!sortIsExplicit) sortMode = value ? 'relevance' : 'newest';
+                    if (!value && sortMode === 'relevance') sortMode = Storage.getSortOrder() || 'newest';
+                    currentPage = 1;
+                    updateURLState();
+                    render();
                     if (value) await loadBodySearch();
                     if (currentSearch !== value) return;
-                    currentPage = 1;
-                    updateURLState();
                     render();
-                    // Track search in GA4
-                    if (value) {
-                        const filtered = filterArticles();
-                        Analytics.trackSearch(value, filtered.length);
-                    }
+                    if (value) Analytics.trackSearch(value, filterArticles().length);
                 }, CONFIG.searchDebounceMs);
-
-                dom.searchInput.addEventListener('focus', () => { loadBodySearch(); }, { once: true });
-                dom.searchInput.addEventListener('input', (e) => {
-                    debouncedSearch(e.target.value.toLowerCase().trim());
-                });
+                dom.searchInput.addEventListener('focus', () => { loadBodySearch(); });
+                dom.searchInput.addEventListener('input', event => debouncedSearch(event.target.value.trim()));
             }
-
-            // Sort toggle setup
-            if (dom.sortToggle) {
-                dom.sortToggle.addEventListener('click', () => {
-                    sortNewestFirst = !sortNewestFirst;
-                    Storage.setSortOrder(sortNewestFirst);
-                    if (sortNewestFirst) {
-                        dom.sortToggle.innerHTML = '<span class="sort-icon">↓</span> 新しい順';
-                    } else {
-                        dom.sortToggle.innerHTML = '<span class="sort-icon">↑</span> 古い順';
-                    }
+            if (dom.sortToggle && !dom.sortToggle.dataset.bound) {
+                dom.sortToggle.dataset.bound = 'true';
+                dom.sortToggle.addEventListener('change', () => {
+                    sortMode = dom.sortToggle.value;
+                    sortIsExplicit = true;
+                    Storage.setSortOrder(sortMode);
                     currentPage = 1;
-                    updateURLState();
-                    render();
+                    updateURLState(); render();
                 });
             }
+
+
 
             // Handle browser back/forward buttons
             window.addEventListener('popstate', () => {
@@ -598,7 +640,8 @@
                 currentSearch = state.search;
                 currentGameTitle = state.game;
                 currentPage = state.page;
-                sortNewestFirst = state.sort;
+                sortIsExplicit = Boolean(state.sort || Storage.getSortOrder());
+                sortMode = state.sort || Storage.getSortOrder() || (currentSearch ? 'relevance' : 'newest');
 
                 if (dom.searchInput) {
                     dom.searchInput.value = currentSearch;
@@ -612,8 +655,8 @@
                 render();
             });
 
-            if (currentSearch) await loadBodySearch();
             render();
+            if (currentSearch) { await loadBodySearch(); render(); }
 
         } catch (e) {
             console.error('Article loading error:', e);
@@ -669,7 +712,7 @@
             search: currentSearch,
             game: currentGameTitle,
             page: currentPage,
-            sort: sortNewestFirst
+            sort: sortMode
         });
     }
 
@@ -710,30 +753,17 @@
         });
     }
 
-    // Theme toggle
-    function initTheme() {
-        const savedTheme = Storage.getTheme();
-        document.body.dataset.theme = savedTheme;
-        updateThemeToggleUI();
+    // テーマの読込・保存・他ページとの共有はreading-theme.jsだけが所有する。
+    function initTheme() { window.PlayPointReadingTheme?.refresh(); }
+    function setupThemeToggle() { window.PlayPointReadingTheme?.mount(); }
+    function updateSortControl() {
+        if (!dom.sortToggle) return;
+        const relevance = dom.sortToggle.querySelector('[value="relevance"]');
+        if (relevance) { relevance.disabled = !currentSearch; relevance.hidden = !currentSearch; }
+        if (!currentSearch && sortMode === 'relevance') sortMode = 'newest';
+        dom.sortToggle.value = sortMode;
     }
 
-    function toggleTheme() {
-        const currentTheme = document.body.dataset.theme || 'dark';
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.body.dataset.theme = newTheme;
-        Storage.setTheme(newTheme);
-        updateThemeToggleUI();
-        Analytics.trackThemeChange(newTheme);
-    }
-
-    function updateThemeToggleUI() {
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            const isDark = document.body.dataset.theme === 'dark';
-            themeToggle.innerHTML = isDark ? '☀️' : '🌙';
-            themeToggle.setAttribute('aria-label', isDark ? 'ライトモードに切替' : 'ダークモードに切替');
-        }
-    }
 
     // Populate Tag Cloud
     function populateTagCloud(articles) {
@@ -815,6 +845,7 @@
             btn.textContent = cat === 'all' ? `すべて (${count})` : `${cat} (${count})`;
             btn.dataset.category = cat;
             btn.className = cat === currentCategory ? 'active' : '';
+            btn.setAttribute('aria-pressed', String(cat === currentCategory));
             btn.addEventListener('click', () => {
                 setCategory(cat);
             });
@@ -826,11 +857,13 @@
         if (dom.categoryFilter) {
             dom.categoryFilter.querySelectorAll('button').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.category === currentCategory);
+                btn.setAttribute('aria-pressed', String(btn.dataset.category === currentCategory));
             });
         }
         if (dom.sidebarCategories) {
             dom.sidebarCategories.querySelectorAll('button').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.category === currentCategory);
+                btn.setAttribute('aria-pressed', String(btn.dataset.category === currentCategory));
             });
         }
     }
@@ -866,30 +899,27 @@
 
         let filtered = filterArticles();
 
-        // 2. Sort (based on direction)
-        if (currentSearch && window.PlayPointSearch) {
-            filtered.sort((a, b) => window.PlayPointSearch.score(b, currentSearch, 'ja') - window.PlayPointSearch.score(a, currentSearch, 'ja'));
-        } else if (sortNewestFirst) {
-            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-        } else {
-            filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
-        }
+        updateSortControl();
+        filtered = BlogUtils.sortListedArticles(filtered, { mode: sortMode, search: currentSearch });
 
-        // 画面上の「〜の記事：N件」は位置も冗長なので出さない。
-        // スクリーンリーダー向けの非表示ステータスには初期件数も残す。
+        // 通常一覧は件数を繰り返さず、絞り込み中だけ条件と実際の件数を短く見せる。
         if (dom.resultStatus) {
-            if (currentSearch) {
-                dom.resultStatus.textContent = '「' + currentSearch + '」の検索結果 ' + filtered.length + '件';
-            } else if (currentCategory !== 'all') {
-                dom.resultStatus.textContent = currentCategory + ' ' + filtered.length + '件';
-            } else {
-                dom.resultStatus.textContent = filtered.length + '件';
+            const active = Boolean(currentSearch || currentGameTitle || currentCategory !== 'all');
+            const conditions = [currentSearch ? '「' + currentSearch + '」' : '', currentGameTitle, currentCategory !== 'all' ? currentCategory : ''].filter(Boolean);
+            dom.resultStatus.classList.toggle('visually-hidden', !active);
+            dom.resultStatus.replaceChildren(document.createTextNode((conditions.length ? conditions.join(' / ') + '：' : '') + filtered.length + '件'));
+            if (active) {
+                const clear = document.createElement('button'); clear.type = 'button'; clear.className = 'filter-reset-inline'; clear.textContent = '条件を解除';
+                clear.addEventListener('click', () => { resetFilters(); dom.searchInput?.focus(); });
+                dom.resultStatus.append(clear);
             }
         }
 
+
         // 3. Paginate
         const totalPages = Math.ceil(filtered.length / CONFIG.itemsPerPage);
-        if (currentPage > totalPages) currentPage = 1;
+        currentPage = BlogUtils.clampPageJump(currentPage, totalPages);
+        updateURLState();
 
         const start = (currentPage - 1) * CONFIG.itemsPerPage;
         const end = start + CONFIG.itemsPerPage;
@@ -897,11 +927,12 @@
 
         // Render Grid
         if (dom.loading) dom.loading.classList.add('hidden');
-        dom.grid.innerHTML = '';
+        compactThumbnailObserver?.disconnect();
+        for (const child of Array.from(dom.grid.childNodes)) { if (child !== listingAd) child.remove(); }
 
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);
-          dom.grid.innerHTML = '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>';
+          dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
           document.getElementById('reset-filters').addEventListener('click', resetFilters);
           const recovery = document.createElement('div'); recovery.className = 'search-recovery';
           if (currentCategory !== 'all' || currentGameTitle) {
@@ -921,27 +952,32 @@
           renderPagination(0); return;
         }
 
-        // Accessibility: Announce updates
-        dom.grid.setAttribute('aria-live', 'polite');
+        // 結果件数・ページ番号だけを通知し、一覧全文の重複読上げを避ける。
+        dom.grid.removeAttribute('aria-live');
 
         let articleIndex = 0;
         let compactThumbnailIndex = 0;
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
             if (idx > 0 && idx % CONFIG.adInterval === 0) {
-                const adEl = createAdElement();
-                dom.grid.appendChild(adEl);
-                // Push ad
-                try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) { }
+                const adEl = listingAd || (listingAd = createAdElement());
+                if (!adEl.isConnected) dom.grid.appendChild(adEl);
+                if (!adEl.dataset.requestScheduled) {
+                    adEl.dataset.requestScheduled = 'true';
+                    void window.PlayPointBlogAds?.request(dom.grid);
+                }
             }
 
             const card = document.createElement('a');
-            const safeTitle = BlogUtils.escapeHtml(article.title);
+            const safeTitle = BlogUtils.escapeHtml(article.listTitle);
+            card.setAttribute('aria-label', article.title);
             const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
             const safeDesc = BlogUtils.escapeHtml(snippet?.text || article.description);
             const safeCategory = BlogUtils.escapeHtml(article.category);
             const safeFile = BlogUtils.escapeHtml(article.file);
             const safeThumbnail = BlogUtils.escapeHtml(article.thumbnail);
+            const updated = article.modified && article.modified > article.date ? article.modified : '';
+            const dateMarkup = `<time datetime="${updated || article.date}">${updated ? '更新 ' : ''}${BlogUtils.formatDate(updated || article.date)}</time>`;
             const categoryColor = getCategoryColor(article.category);
             const isNew = isNewArticle(article.date);
             const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
@@ -965,21 +1001,21 @@
             const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
             const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
             const thumbnailMarkup = renderThumbnail
-                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="${safeTitle}" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
+                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
                 : '';
             const thumbnailClass = renderThumbnail
                 ? `card-thumb card-thumb--${thumbnailKind}`
                 : 'card-thumb card-thumb--text-only';
-            const thumbnailStyle = renderThumbnail ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
+            const thumbnailStyle = '';
 
             card.innerHTML = `
                 <div class="${thumbnailClass}"${thumbnailStyle}>
                     ${thumbnailMarkup}
-                    <span class="card-category badge" style="background: ${categoryColor};">${safeCategory}</span>
+                    <span class="card-category badge" >${safeCategory}</span>
                     ${newBadge}
                 </div>
                 <div class="card-content">
-                    <time datetime="${article.date}">${BlogUtils.formatDate(article.date)}</time>
+                    ${dateMarkup}
                     <h3>${safeTitle}</h3>
                     ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>
@@ -996,7 +1032,8 @@
                 if (img.dataset.src) observeDeferredThumbnail(img);
             }
 
-            dom.grid.appendChild(card);
+            if (listingAd?.isConnected && idx < CONFIG.adInterval) dom.grid.insertBefore(card, listingAd);
+            else dom.grid.appendChild(card);
             articleIndex++;
         });
 
@@ -1006,8 +1043,12 @@
 
     function renderPagination(totalPages) {
         if (!dom.pagination) return;
+        const focused = dom.pagination.contains(document.activeElement) ? document.activeElement : null;
+        const focusSelector = focused?.matches('.pagination-next') ? '.pagination-next'
+            : focused?.matches('.pagination-prev') ? '.pagination-prev'
+            : focused?.matches('.pagination-page-input') ? '.pagination-page-input' : null;
         dom.pagination.innerHTML = '';
-        if (totalPages <= 1) return;
+        if (totalPages <= 1) { if (focusSelector) { dom.grid.tabIndex = -1; dom.grid.focus({ preventScroll: true }); } return; }
 
         const wrapper = document.createElement('div');
         wrapper.className = 'pagination-compact-wrapper';
@@ -1042,7 +1083,6 @@
         pageInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                pageInput.blur();
                 jumpFromInput();
             }
         });
@@ -1068,6 +1108,8 @@
         status.className = 'pagination-status visually-hidden';
         status.textContent = currentPage + ' / ' + totalPages;
         status.setAttribute('aria-current', 'page');
+        status.setAttribute('role', 'status');
+        status.setAttribute('aria-live', 'polite');
 
         const next = document.createElement('button');
         next.textContent = '次へ →';
@@ -1077,6 +1119,10 @@
 
         wrapper.append(prev, inputWrap, next, status);
         dom.pagination.append(wrapper);
+        if (focusSelector) {
+            const target = dom.pagination.querySelector(focusSelector);
+            (target && !target.disabled ? target : pageInput).focus({ preventScroll: true });
+        }
     }
 
     function setupCategoryOverflow() {
@@ -1093,7 +1139,7 @@
         const scrollTarget = dom.categoryFilter || dom.grid;
         if (scrollTarget) {
             const topOfGrid = scrollTarget.getBoundingClientRect().top + window.scrollY - 100;
-            window.scrollTo({ top: topOfGrid, behavior: 'smooth' });
+            window.scrollTo({ top: topOfGrid, behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         }
     }
 
@@ -1120,17 +1166,11 @@
 
         // Scroll to top on click
         backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
         });
     }
 
-    // Theme Toggle Button
-    function setupThemeToggle() {
-        const themeToggle = document.getElementById('theme-toggle');
-        if (themeToggle) {
-            themeToggle.addEventListener('click', toggleTheme);
-        }
-    }
+
 
     function setupStaticReloadButton() {
         const reloadBtn = document.getElementById('error-reload');

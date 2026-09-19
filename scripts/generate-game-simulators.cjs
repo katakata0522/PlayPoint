@@ -1060,7 +1060,12 @@ const GAMES_DATA = [
     },
     packs: {
       ja: [
+        { name: '初心者応援パック プレミアム (1,000円)', price: 1000 },
+        { name: 'コラボスターターパック (1,000円)', price: 1000 },
+        { name: '初獲得パック (1,800円)', price: 1800 },
+        { name: '選べる！アビリティパック (3,800円)', price: 3800 },
         { name: 'モンパス (480円)', price: 480 },
+        { name: 'モンパスプレミアム (1,980円)', price: 1980 },
         { name: 'オーブ 2個 (160円)', price: 160 },
         { name: 'オーブ 6個 (480円)', price: 480 },
         { name: 'オーブ 14個 (1,000円)', price: 1000 },
@@ -1090,6 +1095,7 @@ const GAMES_DATA = [
     },
     presets: {
       ja: [
+        { label: '初心者応援パック プレミアム (1,000円)', amount: 1000, mult: 1 },
         { label: 'モンパス月額 (480円)', amount: 480, mult: 1 },
         { label: '10連分 50個 (約3,500円)', amount: 3500, mult: 1 },
         { label: '新春・周年ガチャ (100,000円)', amount: 100000, mult: 1 }

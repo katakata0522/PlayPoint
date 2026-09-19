@@ -7,7 +7,7 @@ const { getJapaneseArticleRepoPaths } = require('./game-guide-article-catalog.cj
 const GUIDE_BRAND = 'Google Play Points 完全攻略ガイド';
 const GUIDE_PAGE_TITLE = `${GUIDE_BRAND} | Playポイント計算機`;
 const GUIDE_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
-const GUIDE_HERO_TEXT = 'ランク攻略・ポイントの使い方・キャンペーン・トラブル解決・ゲーム別課金まで。Google Play Pointsを使いこなすための攻略情報を、公式情報と計算例でまとめています。';
+const GUIDE_HERO_TEXT = 'ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。';
 
 const LEGACY_BLOG_TITLES = Object.freeze([
   'Google Play Points攻略・使い方ブログ | Playポイント計算機',
@@ -25,6 +25,7 @@ const LEGACY_BLOG_DESCRIPTIONS = Object.freeze([
 ]);
 
 const LEGACY_HERO_TEXTS = Object.freeze([
+  'ランク攻略・ポイントの使い方・キャンペーン・トラブル解決・ゲーム別課金まで。Google Play Pointsを使いこなすための攻略情報を、公式情報と計算例でまとめています。',
   '反映されない時の確認、100ポイントの目安、ランク維持、キャンペーン条件を、公式情報と計算例をもとに整理しています。'
 ]);
 
