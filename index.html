@@ -190,20 +190,6 @@
 .calculator-advanced-settings__body{display:block;margin-top:.7em}
 .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
 html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(.is-open) .calculator-advanced-settings__body{position:static!important;width:auto!important;height:auto!important;margin-top:.7em!important;padding:initial!important;overflow:visible!important;clip:auto!important;clip-path:none!important;white-space:normal!important}}
-.home-use-cases-title{margin:.05em 0 .45em;font-size:.94rem;font-weight:800;color:var(--text-color,#202124)}
-.home-use-cases{display:grid;gap:.42em;margin:0 0 .78em;padding-left:1.28em}
-.home-use-cases li{margin:0;line-height:1.55;color:var(--text-color,#202124)}
-.home-use-cases li::marker{color:#4285F4}
-.home-rank-card{--rank-accent:#6b7280;--rank-glow:rgba(107,114,128,.18);position:relative;overflow:hidden;isolation:isolate;border-width:2px;background:linear-gradient(135deg,var(--rank-wash,rgba(107,114,128,.055)),transparent 62%),var(--section-bg-color,#fff)}
-.home-rank-card::after{content:"";position:absolute;z-index:0;right:-28px;top:-36px;width:92px;height:92px;border-radius:50%;background:radial-gradient(circle,var(--rank-glow) 0%,transparent 68%);pointer-events:none}
-.home-rank-card>*{position:relative;z-index:1}
-.home-rank-card .article-link-tag{color:var(--rank-accent);background:var(--rank-tag-bg,rgba(107,114,128,.1))}
-.home-rank-card--silver{--rank-accent:#7D8896;--rank-glow:rgba(125,136,150,.24);--rank-wash:rgba(125,136,150,.065);--rank-tag-bg:rgba(125,136,150,.12);border-color:#AEB7C2}
-.home-rank-card--gold{--rank-accent:#9A6D00;--rank-glow:rgba(251,188,4,.25);--rank-wash:rgba(251,188,4,.075);--rank-tag-bg:rgba(251,188,4,.13);border-color:#D5AD3B}
-.home-rank-card--platinum{--rank-accent:#557A9B;--rank-glow:rgba(112,151,184,.22);--rank-wash:rgba(112,151,184,.07);--rank-tag-bg:rgba(112,151,184,.12);border-color:#91ABC1}
-.home-rank-card--diamond{--rank-accent:#2877D4;--rank-glow:rgba(66,133,244,.24);--rank-wash:rgba(66,133,244,.07);--rank-tag-bg:rgba(66,133,244,.11);border-color:#78AEEF;background:linear-gradient(135deg,rgba(66,133,244,.075),rgba(234,67,53,.018) 52%,rgba(52,168,83,.05)),var(--section-bg-color,#fff)}
-.home-rank-hint{display:block;margin-top:.38em;color:var(--muted-text-color,#5f6368);font-size:.79rem;line-height:1.42;font-weight:600}
-@media(max-width:640px){.home-use-cases-title{font-size:.9rem}.home-use-cases{gap:.34em;margin-bottom:.6em;padding-left:1.16em}.home-use-cases li{font-size:.88rem;line-height:1.48}.home-rank-hint{font-size:.72rem;line-height:1.35}}
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
@@ -409,9 +395,9 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
         <h2 data-lang-key="descriptionSectionTitle">Play Points 計算機でできること</h2>
         <p class="home-use-cases-title">こんな時に使えます</p>
         <ul class="home-use-cases">
-            <li>ダイヤモンドまでの道のりを、<strong>身に染みて確かめたい</strong></li>
+            <li>ダイヤモンドへの<strong>ランクアップ</strong>までの道のりを、身に染みて確かめたい</li>
             <li><strong>あと1,000pt。</strong>結局いくら必要なのか知りたい</li>
-            <li><strong>5,000円課金したら何ポイント？</strong>を数字で見たい</li>
+            <li><strong>5,000円課金したら何ポイント獲得できる？</strong> キャンペーン時との差も数字で見たい</li>
             <li>毎週のウィークリーリワードを、<strong>1年分まとめて振り返りたい</strong></li>
         </ul>
         <figure class="calculation-flow-figure">
