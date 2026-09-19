@@ -136,6 +136,7 @@ function loadCalculatorContext(dateClass = Date) {
         getRateDetails: PP_APP.CALC.getRateDetails.bind(PP_APP.CALC),
         getRemainingMonths: PP_APP.CALC.getRemainingMonths.bind(PP_APP.CALC),
         getNextFridayCalendarWindow,
+        getTargetRankKey: PP_APP.CALC.getTargetRankKey.bind(PP_APP.CALC),
         getRelatedArticles: PP_APP.CALC.getRelatedArticles.bind(PP_APP.CALC),
         getDecisionLinks: PP_APP.CALC.getDecisionLinks.bind(PP_APP.CALC),
         getProgressCheer: PP_APP.CALC.getProgressCheer.bind(PP_APP.CALC),

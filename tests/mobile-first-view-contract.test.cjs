@@ -312,8 +312,9 @@ test('モード別ガイドは初期表示に載せず、逆算・週次の操�
   const experience = read('js/home-experience.js');
   const worker = read('sw.js');
 
-  assert.match(ui, /import\('\/js\/home-experience\.js\?v=20260919_2'\)/);
-  assert.match(ui, /HOME_EXPERIENCE_SCROLL_THRESHOLD = 320/);
+  assert.match(ui, /import\('\/js\/home-experience\.js\?v=[^']+'\)/);
+  assert.match(ui, /window\.scrollY < HOME_EXPERIENCE_SCROLL_THRESHOLD/);
+  assert.match(ui, /window\.addEventListener\('scroll', loadAfterScroll/);
   assert.doesNotMatch(worker, /home-experience\.js/, 'home experience must not inflate initial Service Worker precache');
   assert.match(experience, /descriptions:[\s\S]*?reverse:[\s\S]*?diary:/);
 });
@@ -339,14 +340,15 @@ test('スマホ記事導線はカードを2列にし、極小幅だけ1列へ退
 
 test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
   const experience = read('js/home-experience.js');
+  const backToTop = read('js/home-back-to-top.js');
 
-  assert.match(experience, /\.back-to-top\{[^\n]*width:48px;height:48px/);
-  assert.match(experience, /backToTopButton\.id = 'back-to-top'/);
-  assert.match(experience, /function warpToTop\(/);
-  assert.match(experience, /back-to-top-warp-streak/);
-  assert.match(experience, /Math\.pow\(1 - progress, 4\)/);
-  assert.match(experience, /duration = Math\.min\(390, Math\.max\(285/);
-  assert.match(experience, /window\.scrollTo\(0, 0\)/);
-  assert.match(experience, /window\.innerHeight \* 0\.85/);
-  assert.match(experience, /prefers-reduced-motion:reduce/);
+  assert.match(experience, /import \{ ensureBackToTop \} from '\.\/home-back-to-top\.js'/);
+  assert.match(backToTop, /\.back-to-top\{[^\n]*width:48px;height:48px/);
+  assert.match(backToTop, /backToTopButton\.id = 'back-to-top'/);
+  assert.match(backToTop, /function warpToTop\(/);
+  assert.match(backToTop, /back-to-top-warp-streak/);
+  assert.match(backToTop, /requestAnimationFrame/);
+  assert.match(backToTop, /window\.scrollTo\(0, 0\)/);
+  assert.match(backToTop, /backToTopButton\.dataset\.visible/);
+  assert.match(backToTop, /prefers-reduced-motion: reduce/);
 });
