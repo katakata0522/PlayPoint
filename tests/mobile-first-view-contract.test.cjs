@@ -361,7 +361,7 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.ok(description.includes('class="home-description-lead"'));
   assert.match(description, /このサイトでは/);
   assert.match(description, /目標ステータスまでに必要な課金額/);
-  assert.match(description, /○○円なら何ポイント？<br>/);
+  assert.match(description, /○○円なら何ポイント？」<br>/);
   assert.match(description, /といった逆算/);
   assert.match(description, /毎週お楽しみのウィークリーリワード記録/);
   assert.match(description, /<br>/);
