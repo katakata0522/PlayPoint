@@ -3,7 +3,7 @@
 const { LOCALES } = require('./intl-seo-content.cjs');
 const { renderArticleChrome, renderSidebar } = require('./intl-article-layout.cjs');
 
-const UPDATED_AT = '2026-08-28';
+const UPDATED_AT = '2026-09-19';
 
 const AUTHOR_CONTENT = Object.freeze({
   en: {
@@ -17,6 +17,8 @@ const AUTHOR_CONTENT = Object.freeze({
       'Calculation examples are checked against the calculator settings used on this site.',
       'When an important rule changes, the affected guide and its verification date are reviewed.'
     ],
+    calculatorTitle: 'How the calculator handles inputs',
+    calculatorBody: 'Values entered in the calculator are processed in your browser for the calculation and the raw input values are not sent externally. The estimate uses the points you still need and the earning condition you selected. Actual points can differ because of per-purchase rounding, tax treatment, eligible items, and the offer shown to your account; confirm the final conditions in Google Play.',
     workflowTitle: 'Checks before publication',
     workflow: [
       'Match the claim, source, and verification date against first-party information.',
@@ -45,6 +47,8 @@ const AUTHOR_CONTENT = Object.freeze({
       '계산 예시는 사이트 계산기의 입력 조건과 결과가 일치하는지 확인합니다.',
       '중요한 규칙 변경을 확인하면 관련 기사와 검증 날짜를 다시 점검합니다.'
     ],
+    calculatorTitle: '계산기 입력값 처리 방식',
+    calculatorBody: '계산기에 입력한 값은 계산을 위해 이 브라우저에서 처리되며 입력값 자체를 외부로 전송하지 않습니다. 필요한 포인트와 선택한 적립 조건으로 필요 금액과 예상 포인트를 계산합니다. 실제 적립은 구매별 반올림, 세금 처리, 대상 상품, 계정에 표시된 프로모션 조건에 따라 달라질 수 있으므로 최종 조건은 Google Play 화면에서 확인하세요.',
     workflowTitle: '공개 전 확인 절차',
     workflow: [
       '기사의 주장, 근거, 확인 날짜를 공식 정보와 대조합니다.',
@@ -73,6 +77,8 @@ const AUTHOR_CONTENT = Object.freeze({
       '計算範例會與本站計算器的輸入條件與結果互相核對。',
       '確認重要規則變更後，會重新檢查相關文章與驗證日期。'
     ],
+    calculatorTitle: '計算器如何處理輸入值',
+    calculatorBody: '計算器中的輸入值會在此瀏覽器中處理，不會把原始輸入值傳送到外部。系統會依尚缺點數與所選獲點條件估算所需金額與可獲得點數。實際獲點可能因每筆購買的取整、稅務處理、適用商品及帳號顯示的活動條件而不同，請以 Google Play 畫面顯示的最終條件為準。',
     workflowTitle: '發布前檢查流程',
     workflow: [
       '把文章主張、來源與確認日期和官方資訊逐一核對。',
@@ -171,6 +177,7 @@ ${chrome}
   </header>
   <article class="content">
     <section class="section"><h2>${escapeHtml(content.verificationTitle)}</h2>${renderList(content.verification)}</section>
+    <section class="section"><h2>${escapeHtml(content.calculatorTitle)}</h2><p>${escapeHtml(content.calculatorBody)}</p></section>
     <section class="section"><h2>${escapeHtml(content.workflowTitle)}</h2><ol>${content.workflow.map(item => '<li>' + escapeHtml(item) + '</li>').join('')}</ol></section>
     <section class="section"><h2>${escapeHtml(content.correctionsTitle)}</h2><p>${escapeHtml(content.correctionsBody)}</p></section>
     <section class="section"><h2>${escapeHtml(content.regionalTitle)}</h2><div class="sidebar-tip-box">${escapeHtml(content.regionalBody)}</div></section>

@@ -9,7 +9,7 @@ export function renderCurrencyAmount(value, config) {
 }
 
 export function renderMainResult({ config, neededPoints, totalAmountNeeded, remainingMonths,
-    remainingDays, finalRate, rateSourceLabel, comparison, guidanceContent = '', purchaseCheckContent = '' }) {
+    remainingDays, finalRate, rateSourceLabel, comparison, guidanceContent = '', purchaseCheckContent = '', progressCheer = '' }) {
     const texts = config.uiText;
         const calculationNoteText = texts.calculationNote.replace('{months}', remainingMonths);
         let resultContent = '';
@@ -72,6 +72,7 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} ${renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
                 </dl>
+                ${progressCheer ? `<p class="result-progress-cheer" style="margin:.55em 0 0;color:#1e8e3e;font-weight:900;font-size:.92em;letter-spacing:.01em;">${progressCheer}</p>` : ''}
                 ${premiseContent}
             `;
             resultDetailsContent = `

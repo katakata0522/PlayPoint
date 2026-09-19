@@ -168,9 +168,8 @@ test('実装は入力blur・景品change・X共有を保存トリガーにしな
   assert.doesNotMatch(rawSource, /triggerAutoSave/);
   assert.doesNotMatch(rawSource, /pointsInput\.addEventListener\('blur'/);
   assert.doesNotMatch(rawSource, /prizeSelect\.addEventListener\('change'/);
-  const shareBlock = rawSource.match(/if \(shareBtn\) \{[\s\S]*?STATE\.dom\.weekInputs\.appendChild\(row\);/)?.[0] || '';
-  assert.ok(shareBlock, 'share handler block was not found');
-  assert.doesNotMatch(shareBlock, /handleDiarySave|saveDiaryData/);
+  assert.doesNotMatch(rawSource, /diary-x-share-btn/);
+  assert.match(rawSource, /classList\?\.contains\('diary-save-btn'\)/);
 });
 
 
@@ -211,4 +210,32 @@ test('5桁のポイントも警告止まりで、そのまま記録すれば正�
   assert.equal(runtime.savedValues.length, 1);
   assert.equal(JSON.parse(runtime.savedValues[0].value)[2026][8][1].points, '10000');
   assert.equal(runtime.toastCalls.some(call => call.type === 'error'), false);
+});
+
+
+test('年間自己ベストは既存記録を上回った時だけ成立し、初回記録は煽らない', () => {
+  const runtime = createRuntime();
+  const yearData = {
+    1: { 1: { points: '40' }, 2: { points: '125' } },
+    2: { 1: { points: '80' } }
+  };
+
+  assert.equal(runtime.pure.isNewYearBest({}, '150'), false);
+  assert.equal(runtime.pure.isNewYearBest(yearData, '125'), false);
+  assert.equal(runtime.pure.isNewYearBest(yearData, '124'), false);
+  assert.equal(runtime.pure.isNewYearBest(yearData, '126'), true);
+});
+
+test('年間集計は月合計に加えて第1〜第5週の積み上げ値を保持する', () => {
+  const runtime = createRuntime();
+  const summary = toPlain(runtime.pure.summarizeYear({
+    1: {
+      1: { points: '10' },
+      2: { points: '20' },
+      5: { points: '50' }
+    }
+  }));
+
+  assert.deepEqual(summary.monthlyTotals.slice(0, 2), [80, 0]);
+  assert.deepEqual(summary.monthlyWeeks[0], [10, 20, 0, 0, 50]);
 });

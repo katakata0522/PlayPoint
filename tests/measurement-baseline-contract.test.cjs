@@ -378,6 +378,27 @@ test('P1 page-value aggregation uses activeUsers attribution and derives user co
   assert.equal(rows[0].state, 'OK');
 });
 
+test('P1 safe-source wrapper preserves structured GSC cross rows and response aggregation', () => {
+  const { context } = loadP12Runtime();
+
+  const structured = context.playPointP12SafeSource_(() => ({
+    rows: [{ query: 'diamond', value: 'jpn' }],
+    responseAggregationType: 'byProperty'
+  }));
+
+  assert.equal(structured.ok, true);
+  assert.equal(Array.isArray(structured.rows), true);
+  assert.equal(structured.rows.length, 1);
+  assert.equal(structured.rows[0].query, 'diamond');
+  assert.equal(structured.responseAggregationType, 'byProperty');
+  assert.equal(structured.error, '');
+
+  const simple = context.playPointP12SafeSource_(() => [{ sourceMedium: 'google / organic' }]);
+  assert.equal(simple.ok, true);
+  assert.equal(Array.isArray(simple.rows), true);
+  assert.equal(simple.rows.length, 1);
+});
+
 test('P1 GSC cross windows are adjacent non-overlapping 28 days and use query×country/device byProperty FINAL evidence', () => {
   const { source, context } = loadP12Runtime();
   const windows = context.playPointP12BuildNonOverlapping28d_('2026-09-11');

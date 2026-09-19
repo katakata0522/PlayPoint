@@ -138,6 +138,7 @@ function loadCalculatorContext(dateClass = Date) {
         getNextFridayCalendarWindow,
         getRelatedArticles: PP_APP.CALC.getRelatedArticles.bind(PP_APP.CALC),
         getDecisionLinks: PP_APP.CALC.getDecisionLinks.bind(PP_APP.CALC),
+        getProgressCheer: PP_APP.CALC.getProgressCheer.bind(PP_APP.CALC),
         computeMainResult: PP_APP.CALC_PURE.computeMainResult.bind(PP_APP.CALC_PURE),
         computeRateComparison: PP_APP.CALC_PURE.computeRateComparison.bind(PP_APP.CALC_PURE),
         calculate: PP_APP.CALC.calculate.bind(PP_APP.CALC),
