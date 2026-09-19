@@ -111,24 +111,60 @@
   font-weight: 600;
 }
 
-/* Keep the primary selector compact. Full localized country names remain in
-   aria-label/title, while the visible row stays JP / US / KR / TW / globe. */
+/* Desktop/tablet uses local SVG flags so Windows does not depend on
+   regional-indicator emoji rendering. Accessible country names stay on the button. */
 @media (min-width: 521px) {
   .region-switch {
-    gap: 0.35rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
   }
 
   .region-switch > button[data-region],
   .region-switch .region-more-toggle {
+    min-width: 76px;
+    min-height: 44px;
+    padding: 0.5rem 0.68rem;
     border: 1px solid var(--input-border-color) !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
+  }
+
+  .region-label-desktop {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.42rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .region-label-code {
+    font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+
+  .region-flag-img {
+    display: block;
+    width: 24px;
+    height: 18px;
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18);
   }
 
   .region-switch > button:first-child {
     border-right: 1px solid var(--input-border-color) !important;
   }
 
+  .region-switch .region-more {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
+
   .region-switch .region-more-toggle {
+    min-width: 52px;
     border-left: 1px solid var(--input-border-color) !important;
   }
 }
