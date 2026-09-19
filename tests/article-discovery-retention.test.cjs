@@ -59,7 +59,8 @@ test('reading list persists, deduplicates and removes only its own data', () => 
  store.toggle(a);store.visit(a);store.visit(a);
  assert.equal(makeStore(storage).read().saved.length,1);
  assert.equal(store.read().recent.length,1);
- store.history(false);store.visit(a);assert.equal(store.read().recent.length,0);
+ const beforePause = store.read().recent; store.history(false); store.visit({path:"/articles/not-recorded.html",title:"Not recorded"});
+ assert.deepEqual(store.read().recent,beforePause); store.clear("recent"); assert.equal(store.read().recent.length,0);
  store.toggle(a);assert.equal(store.read().saved.length,0);
  store.toggle(a);store.clear('saved');assert.equal(storage.getItem('playpointDiaryData'),'existing diary');
  assert.equal(safePath('//evil.example/a.html'),false);
@@ -139,5 +140,35 @@ test('ゲーム記事の正規URLとindex.htmlを保存・履歴で重複させ�
   for (const candidate of ['/games/', '/games/fgo/', '/games/fgo/../', '/games/fgo/%2e%2e/', '/games/fgo/pity-cost/?x=1', '//evil.example/games/fgo/pity-cost/', 'javascript:alert(1)', '/games/fgo/pity-cost/extra.html']) {
     assert.equal(safePath(candidate), false, candidate);
     assert.throws(() => store.toggle({ path: candidate, title: '不正' }), /Invalid article/);
+  }
+});
+
+test('compact metadata keeps typed source dates and author links without fabricating freshness', () => {
+  const {compactReadingMetadata}=require('../scripts/article-discovery-sync.cjs');
+  const original='<h1>Title unchanged</h1><p class="hero-meta">公開 <time data-article-date="published" datetime="2025-12-25">2025/12/25</time> ・ 更新 <time data-article-date="modified" datetime="2026-09-08">2026/09/08</time> ・ 公式確認 <time data-article-date="official-verified" datetime="2026-08-01">2026/08/01</time> ・ <a href="/author/katakata.html">著者</a></p>';
+  const next=compactReadingMetadata(original,'ja');
+  assert.ok(next.includes('<summary>更新 2026-09-08'));
+  assert.ok(next.includes(original.slice(original.indexOf('<p'))));
+  assert.equal((next.match(/data-article-date=/g)||[]).length,3);
+  assert.equal(compactReadingMetadata(next,'ja'),next);
+});
+
+
+test('static reading fallback is readable without scripts and preserves page language and content', () => {
+  const {applyDiscoveryAssets}=require('../scripts/article-discovery-sync.cjs');
+  const assets='\n<!-- discovery-assets:start -->\n<link rel="stylesheet" href="/articles/reading-theme.css">\n<!-- discovery-assets:end -->\n';
+  for(const lang of ['ja','en','ko','zh-TW']) {
+    const original=`<!doctype html><html lang="${lang}"><head><title>Original title</title></head><body><h1>Original content</h1></body></html>`;
+    const next=applyDiscoveryAssets(original,assets);
+    assert.match(next, /<html[^>]*data-reading-theme="light"/);
+    assert.ok(next.includes(`lang="${lang}"`));
+    assert.ok(next.endsWith('<body><h1>Original content</h1></body></html>'));
+    assert.equal(applyDiscoveryAssets(next,assets),next);
+    assert.equal(applyDiscoveryAssets(next.replace('data-reading-theme="light"', 'data-reading-theme="dark"'),assets),next);
+  }
+  for(const locale of ['ja','en','ko','tw']) {
+    for(const articlePath of publishedPaths(locale)) {
+      assert.match(fs.readFileSync(path.join(root,articlePath.slice(1)),'utf8'), /<html[^>]*data-reading-theme="light"/, articlePath);
+    }
   }
 });

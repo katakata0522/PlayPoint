@@ -1,0 +1,86 @@
+/* 記事サイト専用の意味色。計算機トップには読み込まない。 */
+html[data-reading-theme] {
+  --reading-bg:#f4f7fb; --reading-surface:#fff; --reading-soft:#f1f5f9;
+  --reading-text:#233044; --reading-muted:#526176; --reading-border:#cbd5e1;
+  --reading-brand:#164e63; --reading-brand-text:#164e63;
+  --reading-link:#0b57d0; --reading-action:#166534; --reading-on-action:#fff;
+  --reading-note-bg:#eef5fb; --reading-warning-bg:#fff6e5; --reading-warning:#854d0e;
+  --reading-selected:#0b57d0; --reading-on-selected:#fff;
+  color-scheme:light;
+  background:var(--reading-bg);
+}
+html[data-reading-theme="dark"] {
+  --reading-bg:#111923; --reading-surface:#1c2836; --reading-soft:#253446;
+  --reading-text:#ebf0f7; --reading-muted:#b4c2d3; --reading-border:#52647a;
+  --reading-brand-text:#99d9e7; --reading-link:#9bc6ff;
+  --reading-action:#a0ddb6; --reading-on-action:#132e1d;
+  --reading-note-bg:#203549; --reading-warning-bg:#3c3120; --reading-warning:#f4ce8d;
+  --reading-selected:#9bc6ff; --reading-on-selected:#112840;
+  color-scheme:dark;
+}
+html[data-reading-theme] body {
+  --bg-primary:var(--reading-bg); --bg-secondary:var(--reading-soft);
+  --bg-card:var(--reading-surface); --bg-card-hover:var(--reading-soft);
+  --text-primary:var(--reading-text); --text-secondary:var(--reading-muted); --text-muted:var(--reading-muted); --text-main:var(--reading-text);
+  --border-color:var(--reading-border); --accent:var(--reading-link); --accent-glow:transparent;
+  --pp-shell-bg:var(--reading-bg); --pp-shell-surface:var(--reading-surface); --pp-shell-surface-soft:var(--reading-soft);
+  --pp-shell-text:var(--reading-text); --pp-shell-muted:var(--reading-muted); --pp-shell-border:var(--reading-border); --pp-shell-border-strong:var(--reading-border);
+  --pp-shell-brand:var(--reading-brand-text); --pp-shell-link:var(--reading-link); --pp-shell-action:var(--reading-action); --pp-shell-focus:var(--reading-link);
+  --cocoon-bg:var(--reading-bg); --cocoon-main-bg:var(--reading-surface); --cocoon-header-bg:var(--reading-surface);
+  --cocoon-text:var(--reading-text); --cocoon-heading:var(--reading-text); --cocoon-muted:var(--reading-muted); --cocoon-border:var(--reading-border);
+  --cocoon-theme:var(--reading-brand-text); --cocoon-link:var(--reading-link);
+  --bg:var(--reading-bg); --card:var(--reading-surface); --text:var(--reading-text); --muted:var(--reading-muted); --border:var(--reading-border);
+  --brand:var(--reading-brand-text); --brand-dark:var(--reading-brand-text); --brand-soft:var(--reading-note-bg);
+  --article-accent:var(--reading-brand-text); --article-accent-dark:var(--reading-brand-text); --article-accent-soft:var(--reading-note-bg);
+  --article-ds-text:var(--reading-text); --article-ds-muted:var(--reading-muted); --article-ds-surface:var(--reading-surface); --article-ds-soft:var(--reading-soft); --article-ds-border:var(--reading-border); --article-ds-focus:var(--reading-link); --article-ds-marker:var(--reading-warning-bg);
+  --interaction:var(--reading-action); --interaction-hover:var(--reading-action); --warning:var(--reading-warning); --warning-soft:var(--reading-warning-bg);
+  background:var(--reading-bg); color:var(--reading-text);
+}
+html[data-reading-theme] :is(.blog-header.glass-panel,.site-header) { background:var(--reading-surface); color:var(--reading-text); }
+html[data-reading-theme] .filter-bar button.active { background:var(--reading-selected); color:var(--reading-on-selected); border-color:var(--reading-selected); box-shadow:none; }
+html[data-reading-theme] :is(.sidebar-header,.cta-banner-btn,.reset-btn) { background:var(--reading-selected); color:var(--reading-on-selected); }
+html[data-reading-theme] .sidebar-close { color:inherit; background:transparent; }
+html[data-reading-theme] .blog-index-compact .card-thumb:not(.card-thumb--text-only) .badge { background:var(--reading-soft); color:var(--reading-text); border:1px solid var(--reading-border); }
+html[data-reading-theme] :is(.brand,.site-logo,.hero-title) { color:var(--reading-text); }
+html[data-reading-theme] .hero-title { background:none; -webkit-text-fill-color:currentColor; text-wrap:balance; }
+html[data-reading-theme] .breadcrumbs-wrapper span { color:var(--reading-muted); }
+html[data-reading-theme] .breadcrumbs-wrapper { line-height:1.65; }
+html[data-reading-theme] :is(.reading-theme-toggle,.theme-toggle) {
+  display:inline-flex; flex:0 0 44px; align-items:center; justify-content:center;
+  width:44px; height:44px; min-height:44px; padding:0;
+  border:1px solid var(--reading-border); border-radius:50%;
+  background:var(--reading-surface); color:var(--reading-text); cursor:pointer; font:inherit;
+}
+html[data-reading-theme] :is(a,button,input,select,summary,[tabindex]):focus-visible { outline:3px solid var(--reading-link); outline-offset:3px; }
+#reading-theme-notice { font-size:.8rem; max-width:24rem; }
+@media print { html[data-reading-theme] { --reading-bg:#fff; --reading-surface:#fff; --reading-soft:#fff; --reading-text:#111; --reading-muted:#333; --reading-brand-text:#111; --reading-link:#111; color-scheme:light; } .reading-theme-toggle,.theme-toggle { display:none; } }
+
+/* 明暗で共通の「読む」導線。色面は結論と本当の注意に絞る。 */
+html[data-reading-theme] .article-game-calc-info p { color:#b4c2d3; }
+html[data-reading-theme] .ja-article-sidebar .sidebar-widget-title { background:var(--reading-soft); color:var(--reading-text); border-bottom:1px solid var(--reading-border); }
+html[data-reading-theme] .sidebar-next-link { color:var(--reading-action); border-color:var(--reading-action); }
+html[data-reading-theme] .reading-tools button[aria-pressed=true] { background:var(--reading-selected); color:var(--reading-on-selected); }
+html[data-reading-theme] .reading-metadata > :is(.hero-meta,.article-post-meta,.article-meta) { color:var(--reading-muted); margin-bottom:.4rem; }
+html[data-reading-theme] .article-card:hover { transform:none; box-shadow:0 2px 10px rgb(0 0 0 / .08); }
+html[data-reading-theme] .article-card:hover .card-thumb img { transform:none; }
+@media (max-width:760px) {
+  html[data-reading-theme] .site-header { padding:8px 0; }
+  html[data-reading-theme] .site-header-inner { gap:4px 10px; }
+  html[data-reading-theme] .site-logo { font-size:15px; line-height:1.4; flex:0 1 auto; }
+  html[data-reading-theme] .site-header-links { gap:6px 10px; font-size:12px; }
+  html[data-reading-theme] .site-tagline { display:none; }
+  html[data-reading-theme] .ja-global-nav .nav-item { padding:7px 4px; min-height:38px; font-size:11.5px; }
+  html[data-reading-theme] .breadcrumbs-wrapper { margin-top:8px; font-size:12px; }
+  html[data-reading-theme] .layout-container { margin-top:10px; }
+  html[data-reading-theme] .main-content-column { padding:20px 16px; }
+  html[data-reading-theme] .main-content-column > .hero { padding:0; margin-bottom:12px; }
+  html[data-reading-theme] .main-content-column > .hero .hero-badge { margin-bottom:6px; padding:2px 7px; font-size:11px; }
+  html[data-reading-theme] .reading-tools a { max-width:14em; }
+}
+
+html[data-reading-theme] .site-footer { background:var(--reading-soft); color:var(--reading-muted); }
+html[data-reading-theme] .site-footer a { color:var(--reading-link); }
+
+html[data-reading-theme] .main-content-column .cta-box { background:var(--reading-soft); color:var(--reading-text); }
+html[data-reading-theme] .main-content-column .cta-box :is(h2,h3,p) { color:var(--reading-text); }
+html[data-reading-theme] .main-content-column .cta-btn { background:var(--reading-action); color:var(--reading-on-action); }

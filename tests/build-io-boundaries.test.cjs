@@ -42,7 +42,7 @@ function discoveryFixture(t) {
   const root = fixture(t);
   const articles = ['articles/2025-12-25-weekly-reward.html', 'games/fgo/pity-cost/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/google-play-points-weekly-reward.html`)];
   const hubs = ['blog/index.html', ...['en', 'ko', 'tw'].map(l => `${l}/articles/index.html`)];
-  const assets = ['js/article-search.js', 'js/reading-library.js', 'articles/article-discovery.css'];
+  const assets = ['js/article-search.js', 'js/reading-library.js', 'js/reading-theme.js', 'js/reading-experience.js', 'articles/article-discovery.css', 'articles/reading-theme.css'];
   for (const file of articles) write(root, file, articleHtml);
   for (const file of hubs) write(root, file, hubHtml);
   for (const file of assets) write(root, file, 'fixture asset');

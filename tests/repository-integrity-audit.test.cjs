@@ -165,7 +165,9 @@ function references(relativePath, content) {
     return [
       ...content.matchAll(/\b(?:import|export)\s+(?:[^'";]+?\s+from\s+)?["']([^"']+)["']/g),
       ...content.matchAll(/\bimport\(\s*["']([^"']+)["']\s*\)/g),
-      ...content.matchAll(/\brequire\(\s*["']([^"']+)["']\s*\)/g)
+      ...content.matchAll(/\brequire\(\s*["']([^"']+)["']\s*\)/g),
+      // 実行時に指定する静的ローカル画像も、存在・参照の検査対象にする。
+      ...content.matchAll(/["']((?:\/|\.\.?\/)(?:images|articles\/ogp)\/[^"'\s${}]+\.(?:svg|webp|png|jpe?g))["']/g)
     ].map(match => match[1]);
   }
   if (extension === '.xml') return [...content.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map(match => match[1]);

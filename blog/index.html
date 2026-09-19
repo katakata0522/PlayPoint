@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-reading-theme="light">
 
 <head>
     <meta charset="UTF-8">
@@ -27,7 +27,7 @@
     <!-- Favicon -->
     <link rel="icon" href="../favicon.svg">
 <link rel="stylesheet" href="style.css?v=3270625c5e">
-    <link rel="stylesheet" href="index-compact.css?v=7e3e7f885b">
+    <link rel="stylesheet" href="index-compact.css?v=71fd16e955">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -122,13 +122,15 @@
       ]
     }
     </script>
-
+<link rel="stylesheet" href="/site-shell-vnext.css?v=4b03dc6f82">
 <!-- discovery-assets:start -->
-<link rel="stylesheet" href="/articles/article-discovery.css?v=d8144284de">
+<script src="/js/reading-theme.js?v=2d86999bab"></script>
+<link rel="stylesheet" href="/articles/article-discovery.css?v=33aa0402e2">
+<link rel="stylesheet" href="/articles/reading-theme.css?v=7b59d1d520">
 <script defer src="/js/article-search.js?v=7c8bd5d42a"></script>
-<script defer src="/js/reading-library.js?v=143eb97d1c"></script>
+<script defer src="/js/reading-library.js?v=b0196d7a02"></script>
+<script defer src="/js/reading-experience.js?v=6e61067303"></script>
 <!-- discovery-assets:end -->
-  <link rel="stylesheet" href="/site-shell-vnext.css?v=4b03dc6f82">
 </head>
 
 <body class="blog-index-compact">
@@ -168,7 +170,7 @@
         <!-- Hero Section -->
         <section class="hero-section">
             <h1 class="hero-title">Google Play Points 完全攻略ガイド</h1>
-            <p class="hero-text">ランク攻略・ポイントの使い方・キャンペーン・トラブル解決・ゲーム別課金まで。Google Play Pointsを使いこなすための攻略情報を、公式情報と計算例でまとめています。</p>
+            <p class="hero-text">ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。</p>
         </section>
 
         <!-- Filters -->
@@ -187,9 +189,12 @@
                 </select>
             </div>
             <div class="sort-container">
-                <button id="sort-toggle" class="sort-btn" aria-label="並び替え">
-                    <span class="sort-icon">↓</span> 新しい順
-                </button>
+                <select id="sort-toggle" class="sort-btn" aria-label="記事の並び順">
+                    <option value="relevance" hidden disabled>関連度順</option>
+                    <option value="newest">新しい順</option>
+                    <option value="oldest">古い順</option>
+                    <option value="updated">更新日順</option>
+                </select>
             </div>
         </div>
 
@@ -198,7 +203,7 @@
 
         <!-- Article Grid -->
 <!-- reading-tools:start --><details id="reading-library" class="reading-library"><summary>保存した記事・閲覧履歴</summary><p>この端末だけに保存します（保存100件・履歴20件まで）。ブラウザのデータ削除で消えます。</p></details><!-- reading-tools:end -->
-<div id="article-grid" class="grid-container">
+<div id="article-grid" class="grid-container" tabindex="-1" aria-label="記事の検索結果">
             <div class="skeleton-card" aria-hidden="true"><div class="skeleton-thumb"></div><div class="skeleton-content"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div></div>
             <div class="skeleton-card" aria-hidden="true"><div class="skeleton-thumb"></div><div class="skeleton-content"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div></div>
             <div class="skeleton-card" aria-hidden="true"><div class="skeleton-thumb"></div><div class="skeleton-content"><div class="skeleton-line short"></div><div class="skeleton-line long"></div><div class="skeleton-line medium"></div></div></div>
@@ -416,9 +421,6 @@
         <div class="blog-bottom-ad">
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3845885843809455"
                 data-ad-slot="8250492620" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
         </div>
 
     </main>
@@ -444,9 +446,9 @@
     <!-- Back to Top Button -->
     <button id="back-to-top" class="back-to-top" aria-label="トップへ戻る" title="トップへ戻る">↑</button>
 
-    <script src="utils.js?v=c6c35b8ef4"></script>
-    <script src="components.js?v=e5377a9d24"></script>
-    <script src="script.js?v=e640b01d7f"></script>
+    <script src="utils.js?v=b2bccec6cd"></script>
+    <script src="components.js?v=9ea78e7c23"></script>
+    <script src="script.js?v=fe1fc34588"></script>
 </body>
 
 </html>

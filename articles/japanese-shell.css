@@ -17,5 +17,5 @@
   .ja-global-nav .nav-item { min-width: 0; padding: 10px 4px; font-size: 12px; text-align: center; }
   .ja-article-sidebar { width: 100%; }
 }
-.ja-article-sidebar a { color: #0f4c5c; text-underline-offset: 3px; }
-.ja-article-sidebar a:hover { color: #087968; }
+.ja-article-sidebar a { color: var(--reading-link, #0f4c5c); text-underline-offset: 3px; }
+.ja-article-sidebar a:hover { color: var(--reading-link, #087968); }
