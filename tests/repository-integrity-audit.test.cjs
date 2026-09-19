@@ -31,6 +31,8 @@ const runtimeEntrypoints = new Set([
   'ko/articles/article-search-index.json',
   'tw/articles/article-search-index.json',
   'region-selector.css',
+  // Loaded by region-navigation.js only when the viewport is wider than mobile.
+  'desktop-topbar.css',
   'sw.js'
 ]);
 const standaloneAssets = new Set([
