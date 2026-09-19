@@ -1,4 +1,5 @@
 name: Inspect contextual-link generated outputs
+# rerun after existing-design-system switch
 
 on:
   push:
