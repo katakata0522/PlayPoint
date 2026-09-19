@@ -96,6 +96,20 @@ test('通常時の判断導線は未発生トラブルや購入前チェック�
   assert.ok(nearYearEnd.some(link => link.href === 'articles/2026-03-10-play-points-reflection-timing.html'));
 });
 
+test('通常時の関連記事にも未発生トラブル記事を混ぜない', () => {
+  const { PP_STATE, getRelatedArticles } = loadCalculatorContext();
+
+  PP_STATE.currentRegion = 'JP';
+  assert.ok(
+    getRelatedArticles('シルバー', 1).every(link => link.href !== 'articles/2026-03-10-play-points-reflection-timing.html')
+  );
+
+  PP_STATE.currentRegion = 'US';
+  assert.ok(
+    getRelatedArticles('Silver', 1).every(link => link.href !== 'articles/google-play-points-not-showing.html')
+  );
+});
+
 test('計算結果の統合導線には金額や条件に応じた次の判断が含まれる', () => {
   const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResultDetails } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
