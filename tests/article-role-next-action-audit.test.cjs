@@ -53,9 +53,15 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
     const navEnd = html.indexOf('</nav>', markerIndex);
     assert.ok(navStart >= 0 && navEnd > navStart, file + ': contextual nav markup is incomplete');
     const card = html.slice(navStart, navEnd + 6);
-    assert.ok(card.includes('関連ガイド｜'), file + ': contextual link needs a visible purpose label');
+    assert.ok(card.includes('aria-label="この話をもう少し詳しく"'), file + ': contextual nav needs a concise purpose label');
+    assert.ok(!card.includes('関連ガイド｜'), file + ': repeated system-like prefix should not be part of the link text');
     assert.ok(!/>\s*(?:こちら|詳細|詳しくはこちら)\s*(?:→)?\s*<\/a>/.test(card), file + ': generic anchor text is not allowed');
     assert.ok(!/\sstyle=/.test(card), file + ': contextual guide must use the shared design system instead of inline CSS');
+    assert.match(
+      html,
+      /href="\/articles\/contextual-guide-links\.css\?v=[a-f0-9]{10}"/,
+      file + ': contextual guide component stylesheet is missing'
+    );
 
     const sectionStart = html.lastIndexOf('<section', navStart);
     const sectionClose = html.lastIndexOf('</section>', navStart);
