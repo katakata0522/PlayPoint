@@ -19,6 +19,18 @@ const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '
 const SIDEBAR = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
 const GLOBAL_NAV = /<nav\b[^>]*class=["'][^"']*\bglobal-nav\b[^"']*["'][^>]*>[\s\S]*?<\/nav>/i;
 
+const LEGACY_SIDEBAR_LINKS = Object.freeze([
+  '<link rel="stylesheet" href="/articles/japanese-sidebar-v2.css?v=a151192444">\n',
+  '<link rel="stylesheet" href="/articles/japanese-sidebar-v2.css">\n'
+]);
+
+function removeLegacySidebarStylesheet(html) {
+  let result = html;
+  for (const link of LEGACY_SIDEBAR_LINKS) result = result.replaceAll(link, '');
+  return result;
+}
+
+
 function categoryFor(article, role) {
   if (role === 'troubleshooting') return 'troubleshooting';
   if (article.category === 'ランク') return 'levels';
