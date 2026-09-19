@@ -63,6 +63,16 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.setViewportSize({width:390,height:844});
     // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
     await goto(page,'blog/'); await cards(page);
+    const filterPanel = page.locator('#article-filter-panel');
+    assert.equal(await filterPanel.evaluate(el=>el.open),false,'Optional filters stay collapsed on the default list');
+    const order = await page.evaluate(()=>({
+      search:document.querySelector('#search-input')?.getBoundingClientRect().top,
+      purpose:document.querySelector('.search-pathways--primary')?.getBoundingClientRect().top,
+      filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
+      list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
+    }));
+    assert(order.search < order.purpose && order.purpose < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
+    await filterPanel.locator('summary').click();
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
     await gameFilter.locator('option[value="FGO"]').waitFor({ state: 'attached', timeout: 10000 });
@@ -91,7 +101,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         controls:[...document.querySelectorAll('#theme-toggle,#sidebar-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
-      assert.equal(state.columns,width<=480?1:width<=768?2:4,`Purpose-grid breakpoint ${width}`);
+      assert.equal(state.columns,width<=340?1:width<=768?2:4,`Purpose-grid breakpoint ${width}`);
       responsive.push({width,...state});
     }
     report.interactions.responsive=responsive;
