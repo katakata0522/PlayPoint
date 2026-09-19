@@ -72,3 +72,16 @@ test('article list renderer supports local icons without allowing arbitrary remo
   assert.match(script, /shouldRenderArticleThumbnail\(article\)/);
   assert.doesNotMatch(script, /https\?:\\\/\\\/[^\\n]*safeThumbnail/);
 });
+
+test('game guides expose the official app listing without turning the app icon into the article hero or OGP', () => {
+  for (const article of GAME_GUIDE_ARTICLES) {
+    const entry = GAME_THUMBNAIL_ASSETS[article.gameTitle];
+    const relativePath = article.file.replace(/^\.\.\//, '');
+    const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
+
+    assert.ok(html.includes(entry.sourcePageUrl.replaceAll('&', '&amp;')), article.id + ': official app listing source should be visible');
+    assert.match(html, /<meta[^>]+property=["']og:image["'][^>]+content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']/i, article.id + ': OGP should stay separate from the list icon');
+    assert.match(html, /"image"\s*:\s*"https:\/\/playpoint-sim\.com\/ogp\.png"/, article.id + ': structured-data image should stay on the article OGP');
+    assert.doesNotMatch(html, /<body[\s\S]*<img\b[^>]+images\/game-icons\//i, article.id + ': article body should not gain a large app-icon hero');
+  }
+});
