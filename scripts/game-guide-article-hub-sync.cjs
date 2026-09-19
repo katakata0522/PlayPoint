@@ -80,7 +80,7 @@ function synchronizeStructuredData(head, article) {
     }
     const node = firstArticleNode(data);
     if (!node) return full;
-    node.image ||= new URL(article.thumbnail || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
+    node.image ||= new URL(article.ogp || '../ogp.png', 'https://playpoint-sim.com/blog/').href;
     node.datePublished = article.date || PUBLISHED_AT;
     node.dateModified = article.modified || article.date || PUBLISHED_AT;
     return `<script${attrs}>\n${JSON.stringify(data, null, 2)}\n</script>`;
