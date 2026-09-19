@@ -38,12 +38,30 @@ test('thumbnail registry keeps provenance and never activates a missing local as
   }
 });
 
-test('pending game icons fail safe to the current generic thumbnail', () => {
+test('active game icons resolve to local app-icon thumbnails and unknown games fail safe', () => {
   for (const entry of Object.values(GAME_THUMBNAIL_ASSETS)) {
-    const resolved = resolveGameThumbnail(entry.gameTitle);
-    if (entry.status !== 'active') {
-      assert.deepEqual(resolved, { thumbnail: '../ogp.png', thumbnailKind: 'generic' });
-    }
+    assert.equal(entry.status, 'active');
+    assert.deepEqual(resolveGameThumbnail(entry.gameTitle), {
+      thumbnail: '../' + entry.localPath,
+      thumbnailKind: 'app-icon'
+    });
+  }
+  assert.deepEqual(resolveGameThumbnail('未登録ゲーム'), {
+    thumbnail: '../ogp.png',
+    thumbnailKind: 'generic'
+  });
+});
+
+test('game-guide manifest entries use the registry thumbnail contract', () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'));
+  for (const article of GAME_GUIDE_ARTICLES) {
+    const entry = manifest.find(item => item.id === article.id);
+    assert.ok(entry, article.id + ': manifest entry should exist');
+    assert.deepEqual(
+      { thumbnail: entry.thumbnail, thumbnailKind: entry.thumbnailKind },
+      resolveGameThumbnail(article.gameTitle),
+      article.id + ': manifest thumbnail should follow registry'
+    );
   }
 });
 
