@@ -250,6 +250,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   ...article,
   date: PUBLISHED_AT,
   modified: MODIFIED_AT,
+  ogp: '../ogp.png',
   ...resolveGameThumbnail(article.gameTitle),
   source: 'game-guide',
   listed: true
