@@ -1,17 +1,28 @@
 # 日本語記事のNavigation / Sidebar
 
-## 変更範囲
-公開中の日本語57記事。記事本文・title・H1・meta・主CTA・Article Roleは維持する。
-目的別ナビ、Roleに応じた次行動1件、本文の編集済み関連記事を優先した3件、運営者・検証方針、記事一覧を静的生成する。未公開2記事は変更しない。
+## 現行構成
 
-生成元は scripts/japanese-navigation-sidebar.cjs、入口は scripts/build-html.js。
-日本語の article_navigation_click は既存の同意・有限分類・内部パス制限を共有する。金額・リンク文言・個人識別子・外部URLは送信しない。
+公開中の日本語記事では、本文・title・H1・meta・主CTA・Article Roleを維持しながら、右サイドバーを次の順序で静的生成する。
 
-## 判断保留
-日本語Popular Top 5は検証可能なGA4スナップショット未取得のため表示しない。海外の順位を流用しない。
-既存の関連記事Role警告6件はリンク切れではなく観察候補。9/22〜25の確定データで再評価する既存方針を維持する。
-検索順位4〜15位の記事は直近のSEO変更の評価期間中。新しいSearch Consoleデータを取得してから対象を確定する。
+1. 記事検索
+2. 今月よく読まれている記事（直近30日の日本語記事Top 5、週1回更新、PV数は非表示）
+3. Article Roleに応じた「次にやること」1件
+4. 本文の編集済み関連記事を優先した「あわせて読みたい」3件
+5. 運営者情報
 
-## 確認
-57記事の本文がS1 HEADと一致。生成の冪等性、自己リンク・未公開記事の除外、次行動と関連記事の数、日本語計測と同意拒否を回帰検査する。
-代表記事を1280px・390px・320pxで確認し、全161記事のDesign System監査と既存の全preflightを実行する。
+生成元は `scripts/japanese-navigation-sidebar.cjs`、人気記事SSOTは `scripts/japanese-popular-guides.cjs`、入口は `scripts/build-html.js`。
+
+## 人気記事の更新方針
+
+- 根拠は PlayPoint Analytics の `📄ページ別分析` にある日本語記事の直近30日PV順位。
+- UIにはPV数を表示しない。
+- 週1回だけスナップショットを更新し、短期ノイズで毎日順位を動かさない。
+- 現在読んでいる記事がTop 5内の場合は自己リンクにせず「閲覧中」と表示する。
+- 海外版の順位は日本語ランキングへ流用しない。
+- データが欠損・暫定・期間不一致なら前回の確定スナップショットを維持する。
+
+## 計測
+
+日本語の `article_navigation_click` は既存の同意・有限分類・内部パス制限を共有する。
+人気記事は `component=popular`、関連記事は `component=related`、次行動は `component=next_step` として区別する。
+検索語そのものやPV数、金額、個人識別子、外部URLはこのナビ計測へ送信しない。
