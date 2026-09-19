@@ -24,6 +24,16 @@ const JP = {
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' },
             { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
         ],
+        platinumMaintenance: [
+            { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
+            { href: 'status/diamond/', title: '次にダイヤモンドを目指す場合' }
+        ],
+        diamondMaintenance: [
+            { href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' },
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
+            { href: 'articles/2025-12-25-diamond-vip.html', title: 'ダイヤモンドの特典を確認する' }
+        ],
         diamond: [
             { href: 'status/diamond/', title: 'ダイヤモンド到達はいくら必要？' },
             { href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' },
