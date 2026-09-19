@@ -107,6 +107,43 @@ test('Search Console baseline keeps Raw, Normalized and Property Total as separa
   }
 });
 
+test('P1/P2 analytics sheet sync contract uses user-based funnel, GA4 publisher revenue, GSC cross analysis and bounded URL inspection', () => {
+  const sync = baseline.analyticsSheetSync;
+  assert.equal(sync.pageValue.sheet, '📊ページ価値ファネル');
+  assert.equal(sync.pageValue.primaryUnit, 'activeUsers');
+  assert.equal(sync.pageValue.attributionDimension, 'entry_source_path');
+  assert.equal(sync.pageValue.events.articleToCalculator, 'article_to_calculator_clicked');
+  assert.equal(sync.pageValue.events.calculatorStart, 'calculator_form_started');
+  assert.equal(sync.pageValue.events.firstSuccess, 'calculator_funnel_completed');
+  assert.equal(sync.pageValue.pageRevenueSource, 'ga4_publisher_metrics');
+  assert.deepEqual(sync.pageValue.pageRevenueMetrics, [
+    'totalAdRevenue',
+    'publisherAdImpressions',
+    'publisherAdClicks',
+    'screenPageViews'
+  ]);
+  assert.equal(sync.pageValue.adsensePageUrlBreakdownIsPrimary, false);
+  assert.equal(sync.pageValue.unavailableValue, 'blank_not_zero');
+
+  assert.equal(sync.searchCross.sheet, '🔎検索クロス分析');
+  assert.equal(sync.searchCross.ga4OrganicDimension, 'sessionSourceMedium');
+  assert.deepEqual(sync.searchCross.gscDimensions, [
+    ['query', 'country'],
+    ['query', 'device']
+  ]);
+  assert.equal(sync.searchCross.gscWindowDays, 28);
+  assert.equal(sync.searchCross.overlap, 'forbidden');
+  assert.equal(sync.searchCross.finalDataOnly, true);
+  assert.equal(sync.searchCross.aggregationType, 'byProperty');
+
+  assert.equal(sync.urlInspection.sheet, '🧭URL検査');
+  assert.equal(sync.urlInspection.maxUrlsPerRun, 30);
+  assert.deepEqual(sync.urlInspection.selection, ['fixed_critical', 'top_gsc_impressions']);
+  assert.equal(sync.logging.sheet, '実行ログ');
+  assert.equal(sync.logging.forbidOpaqueErrorOnly, true);
+  assert.equal(sync.logging.preserveLegacyLogs, true);
+});
+
 test('AdSense anomaly remains reviewable evidence instead of being silently corrected or removed', () => {
   const anomaly = baseline.adsense.anomalies.find(item => item.date === '2026-08-27');
   assert.ok(anomaly);
@@ -252,4 +289,140 @@ test('GSC capture module exposes one idempotent weekly installer and dedicated h
   assert.match(source, /getProjectTriggers\(\)/);
   assert.match(source, /getHandlerFunction\(\) === handler/);
   assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);
+});
+
+
+function loadP12Runtime() {
+  const source = read('scripts/playpoint-analytics-p1p2.gs');
+  const context = {};
+  vm.createContext(context);
+  vm.runInContext(source, context, { filename: 'playpoint-analytics-p1p2.gs' });
+  return { source, context };
+}
+
+test('P1/P2 collector is valid JavaScript and exposes one capture plus one idempotent weekly installer', () => {
+  const { source, context } = loadP12Runtime();
+  assert.equal(typeof context.capturePlayPointAnalyticsP1P2, 'function');
+  assert.equal(typeof context.installPlayPointAnalyticsP1P2WeeklyTrigger, 'function');
+  assert.match(source, /getProjectTriggers\(\)/);
+  assert.match(source, /getHandlerFunction\(\) === handler/);
+  assert.match(source, /onWeekDay\(ScriptApp\.WeekDay\.FRIDAY\)/);
+  assert.match(source, /\[P1P2:/);
+  assert.doesNotMatch(source, /AdSense[^\n]*PAGE_URL[^\n]*reports:generate/);
+});
+
+test('P1 page-value aggregation keeps unavailable funnel/revenue blank instead of coercing them to zero', () => {
+  const { context } = loadP12Runtime();
+  const rows = context.playPointP12BuildPageValueRows_({
+    gscRows: [{ page: '/article', clicks: 2, impressions: 100 }],
+    organicRows: [{ page: '/article', sessions: 10, activeUsers: 8 }],
+    articleClickRows: [],
+    attributedRows: [],
+    revenueRows: [],
+    availability: {
+      gsc: true,
+      organic: true,
+      articleClicks: false,
+      attributed: false,
+      revenue: false
+    }
+  });
+
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].searchCtr, 0.02);
+  assert.equal(rows[0].organicUsers, 8);
+  assert.equal(rows[0].articleToCalculatorUsers, null);
+  assert.equal(rows[0].calculatorStartUsers, null);
+  assert.equal(rows[0].firstSuccessUsers, null);
+  assert.equal(rows[0].userCompletionRate, null);
+  assert.equal(rows[0].pageAdRevenue, null);
+  assert.equal(rows[0].revenuePerOrganicUser, null);
+  assert.match(rows[0].state, /CTA/);
+  assert.match(rows[0].state, /Funnel/);
+  assert.match(rows[0].state, /Revenue/);
+});
+
+test('P1 page-value aggregation uses activeUsers attribution and derives user completion and revenue per organic user', () => {
+  const { context } = loadP12Runtime();
+  const rows = context.playPointP12BuildPageValueRows_({
+    gscRows: [{ page: '/article', clicks: 3, impressions: 60 }],
+    organicRows: [{ page: '/article', sessions: 12, activeUsers: 10 }],
+    articleClickRows: [{ page: '/article', activeUsers: 4, eventCount: 7 }],
+    attributedRows: [
+      { page: '/article', eventName: 'calculator_form_started', activeUsers: 3, eventCount: 5 },
+      { page: '/article', eventName: 'calculator_funnel_completed', activeUsers: 2, eventCount: 4 }
+    ],
+    revenueRows: [{
+      page: '/article',
+      totalAdRevenue: 5,
+      publisherAdImpressions: 20,
+      publisherAdClicks: 1,
+      screenPageViews: 15
+    }],
+    availability: {
+      gsc: true,
+      organic: true,
+      articleClicks: true,
+      attributed: true,
+      revenue: true
+    }
+  });
+
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].articleToCalculatorUsers, 4);
+  assert.equal(rows[0].calculatorStartUsers, 3);
+  assert.equal(rows[0].firstSuccessUsers, 2);
+  assert.equal(rows[0].userCompletionRate, 2 / 3);
+  assert.equal(rows[0].pageAdRevenue, 5);
+  assert.equal(rows[0].revenuePerOrganicUser, 0.5);
+  assert.equal(rows[0].state, 'OK');
+});
+
+test('P1 GSC cross windows are adjacent non-overlapping 28 days and use query×country/device byProperty FINAL evidence', () => {
+  const { source, context } = loadP12Runtime();
+  const windows = context.playPointP12BuildNonOverlapping28d_('2026-09-11');
+
+  assert.deepEqual(JSON.parse(JSON.stringify(windows)), {
+    current: { start: '2026-08-15', end: '2026-09-11', days: 28 },
+    previous: { start: '2026-07-18', end: '2026-08-14', days: 28 }
+  });
+  assert.match(source, /\['query', 'country'\]/);
+  assert.match(source, /\['query', 'device'\]/);
+  assert.match(source, /dataState:\s*'final'/);
+  assert.match(source, /'byProperty'/);
+  assert.match(source, /sessionSourceMedium/);
+});
+
+test('P2 URL Inspection stays bounded to critical and top-search URLs and records actual per-URL errors', () => {
+  const { source, context } = loadP12Runtime();
+  assert.equal(context.PLAYPOINT_P12_CONFIG.urlInspectionMaxUrls, 30);
+  assert.ok(context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/'));
+  assert.match(source, /urlInspection\/index:inspect/);
+  assert.match(source, /FIXED_CRITICAL/);
+  assert.match(source, /TOP_GSC_IMPRESSIONS/);
+  assert.match(source, /playPointP12ErrorText_\(error\)/);
+  assert.match(source, /\[P1P2:' \+ stage \+ '\]/);
+});
+
+test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERROR semantics', () => {
+  const { source, context } = loadP12Runtime();
+
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthSheet, '🩺データ鮮度・システム状態');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.PAGE_VALUE, 'P1 ページ価値ファネル');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.SEARCH_CROSS, 'P1 検索クロス分析');
+  assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.URL_INSPECTION, 'P2 URL Inspection');
+
+  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
+    availability: { gsc: true, organic: true, articleClicks: true, attributed: true, revenue: true }
+  }), 'OK');
+  assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
+    availability: { gsc: true, organic: true, articleClicks: true, attributed: false, revenue: true }
+  }), 'PARTIAL');
+  assert.equal(context.playPointP12ResultState_('URL_INSPECTION', { errors: 2 }), 'PARTIAL');
+
+  assert.match(source, /playPointP12HealthStart_/);
+  assert.match(source, /playPointP12HealthSuccess_/);
+  assert.match(source, /playPointP12HealthError_/);
+  assert.match(source, /consecutiveFailures/);
+  assert.match(source, /実行ログの\[P1P2:/);
 });

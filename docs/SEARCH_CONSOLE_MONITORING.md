@@ -148,3 +148,22 @@ current / previous の片方、Raw / Normalized / Property Total のいずれか
 
 通常の `🔎検索語×ページ` と `🎯SEO改善候補` は最新状況を見る運用ビューとして残す。
 最新ビューの更新と、比較証拠の履歴保存は別責務として扱う。
+
+
+## P1/P2 分析レイヤー（2026-09-19追加）
+
+P0のRaw / Normalized / Property Totalに加えて、SEO判断の切り分け用に次を取得する。
+
+- `🔎検索クロス分析`
+  - GA4 Organic Search: `sessionSourceMedium`
+  - GSC: Query × Country / Query × Device
+  - GSCは非重複28日FINAL・`byProperty`
+- `🧭URL検査`
+  - 固定重要URL + GSC表示回数上位URL
+  - 1回最大30URL
+  - index / canonical / fetch / robotsを確認
+
+Country / Deviceのクロス行は検索改善候補の診断用であり、サイト総量のProperty Totalとして扱わない。
+URL Inspectionも全URL常時監視には使わず、需要不足と技術的なindex問題の切り分けに限定する。
+
+ページ価値・収益・構造化ログを含む実装契約は `docs/PLAYPOINT_ANALYTICS_P1P2_RUNBOOK.md` を正本とする。
