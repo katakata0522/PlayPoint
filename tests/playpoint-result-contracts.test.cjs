@@ -85,7 +85,7 @@ test('通常時の判断導線は未発生トラブルや購入前チェック�
   PP_STATE.currentRegion = 'JP';
 
   const normal = getDecisionLinks(10000, 'シルバー', 1, 100);
-  assert.deepStrictEqual(normal, []);
+  assert.equal(normal.length, 0);
 
   const highSpend = getDecisionLinks(60000, 'プラチナ', 1, 100);
   assert.ok(highSpend.some(link => link.href === 'campaign/3x/'));
