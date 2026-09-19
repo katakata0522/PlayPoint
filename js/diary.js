@@ -294,6 +294,16 @@ export const DIARY = {
 .weekly-week-segment.week-4{background:linear-gradient(180deg,#62c4bb,#349b8f)}
 .weekly-week-segment.week-5{background:linear-gradient(180deg,#6bc486,#3c9c5b)}
 .weekly-week-segment.is-current-week-segment{filter:saturate(1.12) brightness(1.04);box-shadow:inset 0 1px rgba(255,255,255,.48),0 0 7px rgba(63,185,80,.35)}
+.diary-chart-stack{display:flex;flex-direction:column-reverse;overflow:hidden;background:transparent;box-shadow:0 -1px 6px rgba(66,133,244,.16)}
+.diary-week-segment{display:block;min-height:1px;flex-basis:0;transform-origin:bottom;box-shadow:inset 0 1px rgba(255,255,255,.34);animation:diary-week-rise .42s cubic-bezier(.2,.78,.22,1) both;animation-delay:var(--diary-week-delay,0ms)}
+.diary-week-segment.week-1{background:linear-gradient(180deg,#91c8ff,#63a3f5)}
+.diary-week-segment.week-2{background:linear-gradient(180deg,#78aaf6,#527fe8)}
+.diary-week-segment.week-3{background:linear-gradient(180deg,#9b8ff1,#7164dc)}
+.diary-week-segment.week-4{background:linear-gradient(180deg,#62c4bb,#349b8f)}
+.diary-week-segment.week-5{background:linear-gradient(180deg,#6bc486,#3c9c5b)}
+.diary-week-segment.is-current-week-segment{filter:saturate(1.12) brightness(1.04);box-shadow:inset 0 1px rgba(255,255,255,.5),0 0 8px rgba(63,185,80,.28)}
+.diary-chart-item.is-current-month .diary-chart-track{box-shadow:inset 0 0 0 1px rgba(11,87,208,.18);background:rgba(88,166,255,.115)}
+.diary-chart-item.is-current-month .diary-chart-label,.diary-chart-item.is-current-month .diary-chart-value{color:var(--link-hover-color);font-weight:800}
 .weekly-mini-item.is-current-month .weekly-mini-bar{background:linear-gradient(180deg,rgba(88,166,255,.14),rgba(63,185,80,.07));box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}
 .weekly-mini-bar-label{display:block;min-width:0;color:#7a8694;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
 .weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0b57d0;font-weight:900}
@@ -313,8 +323,9 @@ export const DIARY = {
 @keyframes weekly-week-rise{0%{opacity:0;transform:scaleY(0)}76%{opacity:1;transform:scaleY(1.04)}100%{opacity:1;transform:scaleY(1)}}
 @keyframes weekly-label-in{0%{opacity:0;transform:translateY(3px)}100%{opacity:1;transform:none}}
 @keyframes weekly-current-glow{0%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}55%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.4),0 0 12px rgba(63,185,80,.24)}100%{box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}}
+@keyframes diary-week-rise{0%{opacity:0;transform:scaleY(0)}75%{opacity:1;transform:scaleY(1.035)}100%{opacity:1;transform:scaleY(1)}}
 @media(max-width:360px){#diaryMode .is-weekly-current{grid-template-columns:1fr!important;grid-template-areas:"current" "label" "points" "prize" "large" "share" "state" "hint" "achievement"!important}.weekly-achievement-metrics{grid-template-columns:1fr}.weekly-mini-chart{gap:2px;padding-left:.1em;padding-right:.1em}.weekly-mini-bar-label{font-size:.5rem}}
-@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-week-segment,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label,.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar{animation:none}}
+@media(prefers-reduced-motion:reduce){.weekly-achievement-panel.is-celebrating,.weekly-achievement-panel.is-celebrating .weekly-week-segment,.weekly-achievement-panel.is-celebrating .weekly-mini-bar-label,.weekly-achievement-panel.is-celebrating .weekly-mini-item.is-current-month .weekly-mini-bar,.diary-week-segment{animation:none}}
 `;
         document.head.appendChild(style);
     },
@@ -705,7 +716,7 @@ export const DIARY = {
                 </div>
             `;
 
-            // 明示確定とX共有のイベントハンドラを登録
+            // 明示確定のイベントハンドラを登録
             const pointsInput = row.querySelector(`#week${weekNum}_points`);
             const largeValueHint = row.querySelector('.weekly-large-value-hint');
             const editButton = row.querySelector('.weekly-record-edit');
