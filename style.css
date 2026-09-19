@@ -417,6 +417,10 @@ text-decoration: none;
 background: rgba(11, 87, 208, 0.09);
 text-decoration: underline;
 }
+.home-faq-section .faq-item {
+content-visibility: visible;
+contain-intrinsic-size: auto;
+}
 .faq-item {
 border: 1px solid var(--input-border-color);
 border-radius: 8px;
