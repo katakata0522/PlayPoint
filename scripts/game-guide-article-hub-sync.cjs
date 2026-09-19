@@ -8,6 +8,7 @@ const {
   articleForPath,
   syncGameGuideArticleManifest
 } = require('./game-guide-article-catalog.cjs');
+const { getGameThumbnailAsset } = require('./game-thumbnail-assets.cjs');
 
 const JSON_LD_SCRIPT = /<script\b([^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*)>([\s\S]*?)<\/script>/gi;
 
@@ -170,6 +171,20 @@ function normalizeBodySections(body) {
   return output;
 }
 
+function ensureGooglePlayAppSource(body, article) {
+  const asset = getGameThumbnailAsset(article.gameTitle);
+  if (!asset?.sourcePageUrl || String(body).includes(asset.sourcePageUrl)) return String(body);
+
+  const sourceSection = /(<section\b[^>]*class=["'][^"']*\bsource-list\b[^"']*["'][^>]*>[\s\S]*?<ul\b[^>]*>)([\s\S]*?)(<\/ul>[\s\S]*?<\/section>)/i;
+  if (!sourceSection.test(body)) {
+    throw new Error(`${article.id}: source-list is required before adding the Google Play app source`);
+  }
+
+  const label = `Google Play公式：${article.gameTitle} アプリ掲載`;
+  const item = `<li><a href="${escapeHtml(asset.sourcePageUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>`;
+  return String(body).replace(sourceSection, (full, open, items, close) => `${open}${items}${item}${close}`);
+}
+
 function renderFaqSection(pairs) {
   if (!pairs.length) return '';
   return `\n<section class="section game-guide-visible-faq"><h2>よくある質問</h2>${pairs.map(item => `<div class="faq-item"><h3>Q. ${escapeHtml(item.q)}</h3><p>A. ${escapeHtml(item.a)}</p></div>`).join('')}</section>`;
@@ -206,7 +221,8 @@ function transformGameGuide(rootDir, article) {
   if (!headMatch) throw new Error(`${relativePath}: head not found`);
   const head = standardizeHead(headMatch[0], article);
   if (/data-game-guide-article=["']true["']/.test(original)) {
-    const repaired = original.replace(headMatch[0], () => head);
+    let repaired = original.replace(headMatch[0], () => head);
+    repaired = ensureGooglePlayAppSource(repaired, article);
     if (repaired === original) return false;
     fs.writeFileSync(absolutePath, repaired, 'utf8');
     return true;
@@ -214,7 +230,7 @@ function transformGameGuide(rootDir, article) {
   const faqPairs = extractFaqPairs(head);
   const main = extractGuideMain(original, relativePath);
   const cta = removeParentCta(main.body);
-  const body = normalizeBodySections(cta.body);
+  const body = ensureGooglePlayAppSource(normalizeBodySections(cta.body), article);
   const output = renderShell({
     head,
     article,
@@ -241,6 +257,7 @@ function syncGameGuideArticleHub(rootDir) {
 module.exports = {
   stripHtml,
   extractFaqPairs,
+  ensureGooglePlayAppSource,
   normalizeBodySections,
   renderShell,
   syncGameGuideArticleHub,
