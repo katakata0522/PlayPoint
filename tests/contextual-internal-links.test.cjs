@@ -32,11 +32,21 @@ test('selected Japanese guides use one restrained contextual related-guide card'
     const html = read(file);
     const cards = html.match(/data-contextual-nav=["']editorial["']/g) || [];
     assert.equal(cards.length, 1, file + ': contextual card count');
-    assert.match(html, new RegExp('href=["\\']' + escapeRegExp(href) + '["\\']'), file + ': expected contextual target');
+    assert.match(html, new RegExp("href=[\\\"']" + escapeRegExp(href) + "[\\\"']"), file + ': expected contextual target');
 
     const match = html.match(/<nav\\b[^>]*data-contextual-nav=["']editorial["'][^>]*>([\\s\\S]*?)<\\/nav>/i);
     const card = match ? match[1] : '';
     assert.match(card, /関連ガイド/);
     assert.doesNotMatch(card, />\\s*(?:こちら|詳細|詳しくはこちら)\\s*(?:→)?\\s*<\\/a>/);
+
+    const navIndex = html.indexOf('data-contextual-nav="editorial"');
+    const sectionStart = html.lastIndexOf('<section', navIndex);
+    const sectionOpenEnd = sectionStart >= 0 ? html.indexOf('>', sectionStart) : -1;
+    const sectionOpen = sectionStart >= 0 && sectionOpenEnd >= 0 ? html.slice(sectionStart, sectionOpenEnd + 1) : '';
+    assert.doesNotMatch(sectionOpen, /answer-box|editorial-answer/, file + ': card must stay outside the primary answer box');
+
+    const lastCalloutStart = html.lastIndexOf('<div class="callout', navIndex);
+    const lastDivClose = html.lastIndexOf('</div>', navIndex);
+    assert.ok(lastCalloutStart < 0 || lastDivClose > lastCalloutStart, file + ': card must stay outside callout boxes');
   }
 });
