@@ -5,7 +5,7 @@ const path = require('node:path');
 const { mapOutsideForeignTerminology } = require('./tw-terminology-contract.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
-const REGION_CONTENT_DATE = '2026-08-23';
+const REGION_CONTENT_DATE = '2026-09-19';
 
 const REGION_PAGES = Object.freeze({
   hk: {
