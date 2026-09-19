@@ -29,7 +29,7 @@ test('日本語の全公開記事は検索・人気5件・次行動1件・関連
     assert.ok(sidebar.includes('運営者情報'), article.path);
     assert.ok(sidebar.includes('2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達'), article.path);
     assert.ok(sidebar.includes('湯葉と納豆'), article.path);
-    assert.match(html, /\\/articles\\/japanese-shell\\.css\\?v=/, article.path);
+    assert.ok(html.includes('/articles/japanese-shell.css?v='), article.path);
     assert.ok(!html.includes('/articles/japanese-sidebar-v2.css'), article.path + ': sidebar CSSは共通CSSへ統合');
     assert.equal(transformArticle(html, article, articles), html, article.path + ': 再生成は冪等');
   }
