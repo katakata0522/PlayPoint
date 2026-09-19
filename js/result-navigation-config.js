@@ -5,16 +5,8 @@ const OFFICIAL_IN = 'https://support.google.com/googleplay/answer/9080348?co=GEN
 
 const JP = {
     relatedArticleGroups: {
-        silver: [
-            { href: 'status/silver/', title: 'シルバー到達はいくら必要？' },
-            { href: 'articles/2025-12-25-getting-started.html', title: 'Play Pointsの基本を確認する' },
-            { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
-        ],
-        gold: [
-            { href: 'status/gold/', title: 'ゴールド到達はいくら必要？' },
-            { href: 'articles/2026-08-05-play-points-levels-guide.html', title: 'ランク条件をまとめて確認する' },
-            { href: 'articles/2025-12-25-campaign.html', title: 'キャンペーン時の獲得率を確認する' }
-        ],
+        silver: [{ href: 'status/silver/', title: 'シルバー到達はいくら必要？' }],
+        gold: [{ href: 'status/gold/', title: 'ゴールド到達はいくら必要？' }],
         platinum: [
             { href: 'status/platinum/', title: 'プラチナ到達はいくら必要？' },
             { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
@@ -24,16 +16,8 @@ const JP = {
             { href: 'articles/2026-06-20-discount-gift-cards.html', title: 'お得に課金するためのギフトコード活用' },
             { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
         ],
-        platinumMaintenance: [
-            { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
-            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
-            { href: 'status/diamond/', title: '次にダイヤモンドを目指す場合' }
-        ],
-        diamondMaintenance: [
-            { href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' },
-            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
-            { href: 'articles/2025-12-25-diamond-vip.html', title: 'ダイヤモンドの特典を確認する' }
-        ],
+        platinumMaintenance: [{ href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' }],
+        diamondMaintenance: [{ href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' }],
         diamond: [
             { href: 'status/diamond/', title: 'ダイヤモンド到達はいくら必要？' },
             { href: 'maintenance/diamond/', title: 'ダイヤモンド維持はいくら必要？' },
@@ -68,8 +52,8 @@ const JP = {
 
 const US = {
     relatedArticleGroups: {
-        silver: [{ href: 'status/silver/', title: 'Silver cost calculator' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
-        gold: [{ href: 'status/gold/', title: 'Gold cost calculator' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
+        silver: [{ href: 'status/silver/', title: 'Silver cost calculator' }],
+        gold: [{ href: 'status/gold/', title: 'Gold cost calculator' }],
         platinum: [{ href: 'status/platinum/', title: 'Platinum cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         diamond: [{ href: 'status/diamond/', title: 'Diamond cost calculator' }, { href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: 'Promotion not applied: what to check' }, { href: 'articles/google-play-points-gift-cards.html', title: 'Gift card conditions' }],
@@ -87,8 +71,8 @@ const US = {
 
 const KR = {
     relatedArticleGroups: {
-        silver: [{ href: 'status/silver/', title: '실버 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }],
-        gold: [{ href: 'status/gold/', title: '골드 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }],
+        silver: [{ href: 'status/silver/', title: '실버 목표 계산기' }],
+        gold: [{ href: 'status/gold/', title: '골드 목표 계산기' }],
         platinum: [{ href: 'status/platinum/', title: '플래티넘 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         diamond: [{ href: 'status/diamond/', title: '다이아몬드 목표 계산기' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 미적용 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
@@ -106,8 +90,8 @@ const KR = {
 
 const TW = {
     relatedArticleGroups: {
-        silver: [{ href: 'status/silver/', title: '銀級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }],
-        gold: [{ href: 'status/gold/', title: '金級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }],
+        silver: [{ href: 'status/silver/', title: '銀級目標計算器' }],
+        gold: [{ href: 'status/gold/', title: '金級目標計算器' }],
         platinum: [{ href: 'status/platinum/', title: '白金級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         diamond: [{ href: 'status/diamond/', title: '鑽石級目標計算器' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '活動未套用確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
