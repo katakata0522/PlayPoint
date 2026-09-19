@@ -1049,7 +1049,33 @@ function playPointP12GetSiteUrl_() {
 
 function playPointP12SafeSource_(fn) {
   try {
-    return { ok: true, rows: fn(), error: '' };
+    var value = fn();
+
+    if (Array.isArray(value)) {
+      return { ok: true, rows: value, error: '' };
+    }
+
+    if (value && typeof value === 'object' && Array.isArray(value.rows)) {
+      var structured = {
+        ok: true,
+        rows: value.rows,
+        error: ''
+      };
+
+      Object.keys(value).forEach(function(key) {
+        if (key === 'rows') return;
+        structured[key] = value[key];
+      });
+
+      return structured;
+    }
+
+    return {
+      ok: true,
+      rows: [],
+      value: value,
+      error: ''
+    };
   } catch (error) {
     return { ok: false, rows: [], error: playPointP12ErrorText_(error) };
   }
