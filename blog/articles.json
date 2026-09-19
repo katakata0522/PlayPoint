@@ -625,6 +625,109 @@
     "listed": true
   },
   {
+    "id": "monst-in-app-packs-guide-2026",
+    "title": "モンスト課金パックのコスパ・おすすめ一覧｜Playポイント還元と購入優先度",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "使い方",
+    "gameTitle": "モンスト",
+    "tags": [
+      "モンスト",
+      "初心者応援パック",
+      "コラボパック",
+      "モンパス",
+      "Play Points"
+    ],
+    "description": "モンストの初心者応援パック、プレミアム、初獲得パック、コラボスターターパック、選べるアビリティパック、モンパス＆プレミアムの価格・特典・オーブ単価・Playポイント還元を徹底比較。課金優先度ランキングと毎月1日の活用法を解説します。",
+    "file": "../articles/2026-09-19-monst-in-app-packs-guide.html",
+    "related": [
+      [
+        "/articles/2026-09-19-monst-web-shop-vs-google-play.html",
+        "モンストWebショップとGoogle Play課金の比較を見る"
+      ],
+      [
+        "/games/monst/google-play-vs-webshop/",
+        "モンストのWebショップ比較計算機を見る"
+      ],
+      [
+        "/articles/2026-08-16-play-points-day.html",
+        "毎月1日のPlayポイントデー詳細を確認する"
+      ]
+    ],
+    "thumbnail": "../images/game-icons/monst.webp",
+    "thumbnailKind": "app-icon",
+    "source": "article",
+    "listed": true
+  },
+  {
+    "id": "monst-web-shop-vs-google-play-2026",
+    "title": "モンストWebショップとGoogle Play課金はどっちがお得？オーブ増量・ポイント損得分岐点",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "使い方",
+    "gameTitle": "モンスト",
+    "tags": [
+      "モンスト",
+      "Webショップ",
+      "オーブ",
+      "Google Play Points",
+      "課金比較"
+    ],
+    "description": "モンストWebショップのオーブ増量・ストライクシールと、Google Play課金のPlay Points（毎月1日最大7倍・ギフトコード還元）はどちらが得か徹底比較。金額別の損得分岐点と、プレイヤータイプ別の賢い使い分けを解説します。",
+    "file": "../articles/2026-09-19-monst-web-shop-vs-google-play.html",
+    "related": [
+      [
+        "/articles/2026-09-19-monst-in-app-packs-guide.html",
+        "モンスト課金パックのおすすめ比較を見る"
+      ],
+      [
+        "/games/monst/google-play-vs-webshop/",
+        "モンストWebショップ損得分岐計算機を見る"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "公式WebストアとGoogle Play課金の違いを確認する"
+      ]
+    ],
+    "thumbnail": "../images/game-icons/monst.webp",
+    "thumbnailKind": "app-icon",
+    "source": "article",
+    "listed": true
+  },
+  {
+    "id": "play-points-calendar-schedule-guide-2026",
+    "title": "Google Play Pointsお得カレンダー｜毎日・毎週・毎月・年間イベントのスケジュール完全攻略",
+    "date": "2026-09-19",
+    "modified": "2026-09-19",
+    "category": "キャンペーン",
+    "tags": [
+      "Play Points",
+      "お得カレンダー",
+      "ウィークリーリワード",
+      "Play Gamesストリーク",
+      "年間スケジュール"
+    ],
+    "description": "Google Play Pointsの「毎日・毎週・毎月・年間」のお得イベントを完全カレンダー化。Google Play Gamesの連続記録カレンダー、金曜ウィークリーリワード、毎月1日Playポイントデー、大型イベントの活用法を徹底解説します。",
+    "file": "../articles/2026-09-19-play-points-calendar-schedule-guide.html",
+    "related": [
+      [
+        "/articles/2025-12-25-weekly-reward.html",
+        "ウィークリーリワードの基本仕様を確認する"
+      ],
+      [
+        "/articles/2026-07-31-super-weekly-reward.html",
+        "スーパーウィークリーリワードの攻略を見る"
+      ],
+      [
+        "/articles/2026-08-16-play-points-day.html",
+        "毎月1日Playポイントデーの還元率を見る"
+      ]
+    ],
+    "thumbnail": "../articles/ogp/campaign.png",
+    "source": "article",
+    "listed": true
+  },
+  {
     "id": "google-play-super-ticket-2026",
     "title": "突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた",
     "date": "2026-09-19",

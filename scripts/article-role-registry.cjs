@@ -83,7 +83,7 @@ function stemOf(relativePath) {
 const ROLE_RULES = Object.freeze([
   {
     role: 'game_decision',
-    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary)/.test(stem)
+    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-)/.test(stem)
   },
   {
     role: 'troubleshooting',
@@ -91,7 +91,7 @@ const ROLE_RULES = Object.freeze([
   },
   {
     role: 'retention',
-    test: stem => /(?:super-ticket|super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign|tgs-google-play-vip)/.test(stem)
+    test: stem => /(?:super-ticket|super-weekly-reward|weekly-reward|google-play-quests|play-points-day|new-year-campaign|tgs-google-play-vip|calendar-schedule)/.test(stem)
   },
   {
     role: 'calculator_bridge',
