@@ -1053,7 +1053,7 @@
     "id": "super-weekly-reward",
     "title": "Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket",
     "date": "2026-07-31",
-    "modified": "2026-09-12",
+    "modified": "2026-09-19",
     "category": "ランク",
     "tags": [
       "Play Points",
@@ -1069,7 +1069,7 @@
     "id": "google-play-quests",
     "title": "Google Playのクエストとは？購入条件と表示・達成されない時の確認方法",
     "date": "2026-07-31",
-    "modified": "2026-09-12",
+    "modified": "2026-09-19",
     "category": "キャンペーン",
     "tags": [
       "Google Play",
@@ -1225,7 +1225,7 @@
     "description": "課金したのにGoogle Play Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
-    "modified": "2026-09-12"
+    "modified": "2026-09-19"
   },
   {
     "id": "multiple-accounts",
