@@ -361,7 +361,8 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.ok(description.includes('class="home-description-lead"'));
   assert.match(description, /このサイトでは/);
   assert.match(description, /目標ステータスまでに必要な課金額/);
-  assert.match(description, /○○円なら何ポイント/);
+  assert.match(description, /○○円なら何ポイント？<br>/);
+  assert.match(description, /といった逆算/);
   assert.match(description, /毎週お楽しみのウィークリーリワード記録/);
   assert.match(description, /<br>/);
   assert.match(description, /<strong>こんな人におすすめ<\/strong>/);
@@ -372,6 +373,7 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.match(description, /あと1,000pt/);
   assert.match(description, /5,000円課金したら何ポイント/);
   assert.match(description, /1年分まとめて振り返りたい/);
+  assert.doesNotMatch(description, /を、/);
   assert.match(description, /images\/calculation-flow-compact\.svg/);
   assert.match(compactFlow, /1,728 pt/);
   assert.match(compactFlow, /2\.0 pt/);
