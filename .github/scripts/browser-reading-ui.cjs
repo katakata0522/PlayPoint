@@ -19,6 +19,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert(response?.ok(), route + ' HTTP failure');
   }
   async function cards(page) { await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000}); }
+  async function openOptionalFilters(page) {
+    const panel = page.locator('#article-filter-panel');
+    if (!(await panel.evaluate(el => el.open))) await panel.locator('summary').click();
+    await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
+  }
   async function palette(page, selectors) {
     return page.evaluate(selectors => {
       const rgb = color => (color.match(/[\d.]+/g)||[]).map(Number).slice(0,3);
@@ -183,6 +188,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await fault.locator('.article-card[href*="fgo/pity-cost"]').waitFor({state:'visible'});
     assert(indexAttempts>=2,'Index retries after transient failure');
     await fault.locator('#article-result-status button').click(); await cards(fault);
+    await openOptionalFilters(fault);
     for(let i=0;i<20;i++) await fault.locator('#sort-toggle').selectOption(i%2?'newest':'oldest');
     assert(await fault.evaluate(()=>window.__readingObservers.every(o=>[...o.targets].every(t=>t.isConnected))),'Detached image targets are released');
     assert.equal(faultErrors.length,0,JSON.stringify(faultErrors));
@@ -197,6 +203,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await sortContext.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
     await sortContext.route('**/blog/article-search-index.json*',route=>route.fulfill({status:200,contentType:'application/json',body:'{"articles":[]}'}));
     const sp=await sortContext.newPage();await goto(sp,'blog/?q=auditneedle');await cards(sp);
+    await openOptionalFilters(sp);
     const orders={};
     for(const [mode,expected] of [['relevance','fgo/pity-cost'],['oldest','2025-12-25-best-use'],['newest','fgo/pity-cost'],['updated','2025-12-25-best-use']]) {
       await sp.locator('#sort-toggle').selectOption(mode);
