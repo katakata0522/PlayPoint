@@ -39,7 +39,7 @@ const TOPICS = [
     slug: "google-play-points-balance-history-progress.html",
     labels: {
       en: "Where to check Play Points balance, history and level progress",
-      ko: "Play Points 잔액·내역·등급 진행도 확인 방법",
+      ko: "Google Play Points 잔액·내역·등급 진행도 확인 방법",
       tw: "Play Points 餘額、記錄與等級進度怎麼看"
     }
   },
