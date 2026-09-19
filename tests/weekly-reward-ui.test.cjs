@@ -101,11 +101,10 @@ test('記録結果には次の金曜日とGoogleカレンダー導線をコン�
 
 test('詳細年間グラフも月合計の単色棒ではなく週別スタックを使う', () => {
   const diary = read('js/diary.js');
-  const css = read('style.css');
   assert.match(diary, /diary-chart-stack/);
   assert.match(diary, /diary-week-segment week-/);
-  assert.match(css, /\.diary-chart-stack[\s\S]*flex-direction:\s*column-reverse/);
-  for (const week of [1, 2, 3, 4, 5]) assert.match(css, new RegExp('diary-week-segment\\.week-' + week));
+  assert.match(diary, /\.diary-chart-stack\{[^\n]*flex-direction:column-reverse/);
+  for (const week of [1, 2, 3, 4, 5]) assert.match(diary, new RegExp('diary-week-segment\\.week-' + week));
 });
 
 test('今週は保存後にロックし、編集・未保存・変更保存の状態を明示する', () => {
