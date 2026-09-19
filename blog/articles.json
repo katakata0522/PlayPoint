@@ -30,7 +30,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/fgo.png",
+    "thumbnail": "../images/game-icons/fgo.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -65,7 +65,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/genshin.png",
+    "thumbnail": "../images/game-icons/genshin.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -100,7 +100,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/monst.png",
+    "thumbnail": "../images/game-icons/monst.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -136,7 +136,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/starrail.png",
+    "thumbnail": "../images/game-icons/starrail.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -172,7 +172,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/zzz.png",
+    "thumbnail": "../images/game-icons/zzz.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -208,7 +208,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/umamusume.png",
+    "thumbnail": "../images/game-icons/umamusume.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -244,7 +244,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/proseka.png",
+    "thumbnail": "../images/game-icons/proseka.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -280,7 +280,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/pokepoke.png",
+    "thumbnail": "../images/game-icons/pokepoke.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -316,7 +316,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/pad.png",
+    "thumbnail": "../images/game-icons/pad.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -352,7 +352,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/arknights.png",
+    "thumbnail": "../images/game-icons/arknights.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -387,7 +387,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/dokkan.png",
+    "thumbnail": "../images/game-icons/dokkan.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -423,7 +423,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/hbr.png",
+    "thumbnail": "../images/game-icons/hbr.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -458,7 +458,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/honkai3rd.png",
+    "thumbnail": "../images/game-icons/honkai3rd.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -494,7 +494,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/phantomparade.png",
+    "thumbnail": "../images/game-icons/phantomparade.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -530,7 +530,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/prospi-a.png",
+    "thumbnail": "../images/game-icons/prospi-a.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -566,7 +566,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/pokemon-go.png",
+    "thumbnail": "../images/game-icons/pokemon-go.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true
@@ -602,7 +602,7 @@
     "date": "2026-09-13",
     "modified": "2026-09-13",
     "ogp": "../ogp.png",
-    "thumbnail": "../images/game-icons/efootball.png",
+    "thumbnail": "../images/game-icons/efootball.webp",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
     "listed": true

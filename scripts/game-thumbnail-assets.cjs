@@ -15,7 +15,7 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
     assetType: 'app_icon',
     sourcePageUrl,
     sourceImageUrl,
-    localPath: 'images/game-icons/' + gameId + '.png',
+    localPath: 'images/game-icons/' + gameId + '.webp',
     acquiredAt: ACQUIRED_AT,
     modification: 'resize-only-128px',
     usage: 'article-list-thumbnail',
