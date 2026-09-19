@@ -202,10 +202,15 @@
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
         const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/.test(value);
         const sharedSiteOgp = value === '../ogp.png';
-        if (!standardThumbnail && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
+        if (!standardThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
         if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
         return value;
+    }
+
+    function sanitizeArticleThumbnailKind(value) {
+        return ['generic', 'app-icon', 'event-visual'].includes(value) ? value : 'generic';
     }
 
     // 記事JSONの値を描画前に正規化する
@@ -225,6 +230,7 @@
             description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
             listed: article.listed !== false,
             searchIndex: BlogUtils.buildArticleSearchIndex({
                 title,
@@ -235,8 +241,10 @@
         };
     }
 
-    function shouldRenderArticleThumbnails() {
-        return !(window.matchMedia && window.matchMedia('(max-width: 760px)').matches);
+    function shouldRenderArticleThumbnail(article) {
+        const compact = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+        if (!compact) return true;
+        return article?.thumbnailKind === 'app-icon' || article?.thumbnailKind === 'event-visual';
     }
 
     // Create AdSense ad element
@@ -878,8 +886,6 @@
         dom.grid.setAttribute('aria-live', 'polite');
 
         let articleIndex = 0;
-        const renderThumbnails = shouldRenderArticleThumbnails();
-
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
             if (idx > 0 && idx % CONFIG.adInterval === 0) {
@@ -906,11 +912,15 @@
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
-            const thumbnailMarkup = renderThumbnails
+            const renderThumbnail = shouldRenderArticleThumbnail(article);
+            const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
+            const thumbnailMarkup = renderThumbnail
                 ? `<img src="${safeThumbnail}" alt="${safeTitle}" width="600" height="400" loading="lazy" decoding="async" fetchpriority="low">`
                 : '';
-            const thumbnailClass = renderThumbnails ? 'card-thumb' : 'card-thumb card-thumb--text-only';
-            const thumbnailStyle = renderThumbnails ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
+            const thumbnailClass = renderThumbnail
+                ? `card-thumb card-thumb--${thumbnailKind}`
+                : 'card-thumb card-thumb--text-only';
+            const thumbnailStyle = renderThumbnail ? '' : ` style="background: linear-gradient(135deg, ${categoryColor}55, var(--bg-secondary));"`;
 
             card.innerHTML = `
                 <div class="${thumbnailClass}"${thumbnailStyle}>
