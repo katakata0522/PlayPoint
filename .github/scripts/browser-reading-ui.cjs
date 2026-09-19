@@ -62,7 +62,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme persisted across reload');
     await page.setViewportSize({width:390,height:844});
     // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
-    await goto(page,'blog/?game=FGO'); await cards(page);
+    await goto(page,'blog/'); await cards(page);
+    const gameFilter = page.locator('#game-title-filter');
+    await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
+    await gameFilter.locator('option[value="FGO"]').waitFor({ state: 'attached', timeout: 10000 });
+    await gameFilter.selectOption('FGO');
+    await page.waitForFunction(() => new URL(location.href).searchParams.get('game') === 'FGO');
+    await cards(page);
+    assert.equal(await gameFilter.inputValue(), 'FGO', 'Game selection matches the URL');
     // 実画像をスクロールで読み込み、1px placeholderを合格にしない。
     const images = page.locator('.card-thumb--app-icon img');
     assert(await images.count()>0,'Known game filter must expose a real app icon');
