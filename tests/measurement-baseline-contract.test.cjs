@@ -111,6 +111,14 @@ test('P1/P2 analytics sheet sync contract uses user-based funnel, GA4 publisher 
   const sync = baseline.analyticsSheetSync;
   assert.equal(sync.pageValue.sheet, '📊ページ価値ファネル');
   assert.equal(sync.pageValue.primaryUnit, 'activeUsers');
+  assert.deepEqual(sync.pageValue.gscDimensions, ['page']);
+  assert.equal(sync.pageValue.gscAggregationType, 'byPage');
+  assert.equal(sync.pageValue.gscFinalDataOnly, true);
+  assert.equal(sync.pageValue.pageKey, 'normalized_site_relative_path');
+  assert.equal(sync.pageValue.joinIntegrity.metric, 'gsc_click_weighted_to_ga4_organic');
+  assert.equal(sync.pageValue.joinIntegrity.minimumClicks, 20);
+  assert.equal(sync.pageValue.joinIntegrity.minimumJoinRate, 0.5);
+  assert.equal(sync.pageValue.joinIntegrity.unnormalizedAbsoluteUrlForbidden, true);
   assert.equal(sync.pageValue.attributionDimension, 'entry_source_path');
   assert.equal(sync.pageValue.events.articleToCalculator, 'article_to_calculator_clicked');
   assert.equal(sync.pageValue.events.calculatorStart, 'calculator_form_started');
@@ -378,6 +386,133 @@ test('P1 page-value aggregation uses activeUsers attribution and derives user co
   assert.equal(rows[0].state, 'OK');
 });
 
+test('P1 page normalization joins Search Console absolute URLs with GA4 paths without URL global', () => {
+  const { source, context } = loadP12Runtime();
+
+  assert.doesNotMatch(source, /new URL\(/);
+  assert.equal(
+    context.playPointP12NormalizePage_('https://playpoint-sim.com/articles/example.html?utm=x#section'),
+    '/articles/example.html'
+  );
+  assert.equal(
+    context.playPointP12NormalizePage_('/articles/example.html/?utm=x#section'),
+    '/articles/example.html'
+  );
+  assert.equal(
+    context.playPointP12NormalizePage_('articles/example.html'),
+    '/articles/example.html'
+  );
+  assert.equal(
+    context.playPointP12NormalizePage_('https://example.com/articles/example.html'),
+    ''
+  );
+
+  const rows = context.playPointP12BuildPageValueRows_({
+    gscRows: [{
+      page: 'https://playpoint-sim.com/articles/example.html',
+      clicks: 12,
+      impressions: 300
+    }],
+    organicRows: [{
+      page: '/articles/example.html',
+      sessions: 20,
+      activeUsers: 18
+    }],
+    articleClickRows: [],
+    attributedRows: [],
+    revenueRows: [],
+    availability: {
+      gsc: true,
+      organic: true,
+      articleClicks: false,
+      attributed: false,
+      revenue: false
+    }
+  });
+
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].page, '/articles/example.html');
+  assert.equal(rows[0].searchClicks, 12);
+  assert.equal(rows[0].organicSessions, 20);
+});
+
+test('P1 page-value GSC source uses page-only byPage FINAL evidence instead of query by page totals', () => {
+  const { source, context } = loadP12Runtime();
+
+  let captured = null;
+  context.playPointP12FetchGscRows_ = (siteUrl, startDate, endDate, dimensions, aggregationType) => {
+    captured = { siteUrl, startDate, endDate, dimensions, aggregationType };
+    return {
+      rows: [{
+        keys: ['https://playpoint-sim.com/articles/example.html'],
+        clicks: 9,
+        impressions: 240
+      }],
+      responseAggregationType: 'byPage'
+    };
+  };
+
+  const rows = context.playPointP12FetchGscPage_(
+    'sc-domain:playpoint-sim.com',
+    '2026-08-18',
+    '2026-09-16'
+  );
+
+  assert.deepEqual(JSON.parse(JSON.stringify(captured.dimensions)), ['page']);
+  assert.equal(captured.aggregationType, 'byPage');
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].page, '/articles/example.html');
+  assert.equal(rows[0].clicks, 9);
+  assert.doesNotMatch(source, /playPointP12FetchGscQueryPage_/);
+});
+
+test('P1 page-value join integrity fails closed to PARTIAL when GSC and GA4 keys split', () => {
+  const { context } = loadP12Runtime();
+
+  const broken = context.playPointP12AssessPageValueJoin_([
+    {
+      page: 'https://playpoint-sim.com/articles/example.html',
+      searchClicks: 30,
+      organicSessions: 0,
+      organicUsers: 0
+    },
+    {
+      page: '/articles/example.html',
+      searchClicks: 0,
+      organicSessions: 40,
+      organicUsers: 35
+    }
+  ]);
+
+  assert.equal(broken.status, 'PARTIAL');
+  assert.equal(broken.absoluteUrlKeys, 1);
+  assert.equal(broken.joinRate, 0);
+  assert.equal(
+    context.playPointP12ResultState_('PAGE_VALUE', {
+      availability: {
+        gsc: true,
+        organic: true,
+        articleClicks: true,
+        attributed: true,
+        revenue: true
+      },
+      joinIntegrity: broken
+    }),
+    'PARTIAL'
+  );
+
+  const healthy = context.playPointP12AssessPageValueJoin_([
+    {
+      page: '/articles/example.html',
+      searchClicks: 30,
+      organicSessions: 40,
+      organicUsers: 35
+    }
+  ]);
+  assert.equal(healthy.status, 'OK');
+  assert.equal(healthy.joinRate, 1);
+});
+
 test('P1 safe-source wrapper preserves structured GSC cross rows and response aggregation', () => {
   const { context } = loadP12Runtime();
 
@@ -434,7 +569,8 @@ test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERR
   assert.equal(context.PLAYPOINT_P12_CONFIG.healthComponents.URL_INSPECTION, 'P2 URL Inspection');
 
   assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
-    availability: { gsc: true, organic: true, articleClicks: true, attributed: true, revenue: true }
+    availability: { gsc: true, organic: true, articleClicks: true, attributed: true, revenue: true },
+    joinIntegrity: { status: 'OK' }
   }), 'OK');
   assert.equal(context.playPointP12ResultState_('PAGE_VALUE', {
     availability: { gsc: true, organic: true, articleClicks: true, attributed: false, revenue: true }
