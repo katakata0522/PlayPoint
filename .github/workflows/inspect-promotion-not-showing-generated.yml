@@ -1,5 +1,4 @@
-name: Inspect promotion-not-showing generated outputs
-# rerun after manifest reorder
+name: Sync promotion-not-showing generated outputs
 
 on:
   push:
@@ -9,16 +8,17 @@ on:
       - '.github/workflows/inspect-promotion-not-showing-generated.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  inspect:
+  sync:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: feat/promotion-not-showing-20260919
+          persist-credentials: true
           fetch-depth: 2
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
@@ -26,15 +26,41 @@ jobs:
           package-manager-cache: false
       - name: Run canonical PR preparation
         run: node scripts/prepare-pr.cjs
-      - name: Show generated changes
-        if: always()
+      - name: Reject unrelated generated changes
         shell: bash
         run: |
-          echo "=== git status ==="
-          git status --short
-          echo "=== diff stat ==="
-          git diff --stat
-          echo "=== changed paths ==="
-          git status --porcelain=v1 | sed -E 's/^.. //' | sort -u
-          echo "=== unexpected existing article diffs ==="
-          git diff -- articles/2025-12-25-expiration.html articles/2025-12-25-refund.html
+          set -euo pipefail
+          allowed_file="$(mktemp)"
+          cat > "$allowed_file" <<'EOF'
+          articles/2026-09-19-play-points-promotion-not-showing.html
+          atom.xml
+          blog/article-search-index.json
+          blog/index.html
+          blog/sitemap.xml
+          feed.xml
+          sitemap.xml
+          EOF
+          sort -u "$allowed_file" -o "$allowed_file"
+          changed_file="$(mktemp)"
+          git status --porcelain=v1 | sed -E 's/^.. //' | sort -u > "$changed_file"
+          echo "Generated changes:"
+          cat "$changed_file"
+          unexpected="$(comm -23 "$changed_file" "$allowed_file" || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected generated files:" >&2
+            printf '%s\n' "$unexpected" >&2
+            exit 1
+          fi
+      - name: Commit canonical generated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add             articles/2026-09-19-play-points-promotion-not-showing.html             atom.xml             blog/article-search-index.json             blog/index.html             blog/sitemap.xml             feed.xml             sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Generated outputs already canonical."
+            exit 0
+          fi
+          git commit -m "build: sync promotion-not-showing generated outputs"
+          git push origin HEAD:feat/promotion-not-showing-20260919
