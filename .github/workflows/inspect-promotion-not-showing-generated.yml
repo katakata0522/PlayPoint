@@ -1,4 +1,5 @@
 name: Inspect promotion-not-showing generated outputs
+# rerun after manifest reorder
 
 on:
   push:
