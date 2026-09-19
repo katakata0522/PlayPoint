@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { resolveGameThumbnail } = require('./game-thumbnail-assets.cjs');
 
 const PUBLISHED_AT = '2026-09-13';
 const MODIFIED_AT = '2026-09-13';
@@ -249,7 +250,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   ...article,
   date: PUBLISHED_AT,
   modified: MODIFIED_AT,
-  thumbnail: '../ogp.png',
+  ...resolveGameThumbnail(article.gameTitle),
   source: 'game-guide',
   listed: true
 })));
