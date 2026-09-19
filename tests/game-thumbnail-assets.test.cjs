@@ -76,6 +76,9 @@ test('article list renderer supports local icons without allowing arbitrary remo
   assert.match(script, /data-src/);
   assert.match(script, /COMPACT_THUMBNAIL_ROOT_MARGIN = '96px 0px'/);
   assert.match(script, /TRANSPARENT_THUMBNAIL_PLACEHOLDER/);
+  assert.match(script, /loadCompactThumbnailImmediately/);
+  assert.match(script, /compactThumbnailIndex === 0/);
+  assert.match(script, /thumbnailFetchPriority/);
   assert.doesNotMatch(script, /https\?:\\\/\\\/[^\\n]*safeThumbnail/);
 });
 

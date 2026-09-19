@@ -925,6 +925,7 @@
         dom.grid.setAttribute('aria-live', 'polite');
 
         let articleIndex = 0;
+        let compactThumbnailIndex = 0;
         pageItems.forEach((article, idx) => {
             // Insert ad after every adInterval articles
             if (idx > 0 && idx % CONFIG.adInterval === 0) {
@@ -953,13 +954,18 @@
             });
             const renderThumbnail = shouldRenderArticleThumbnail(article);
             const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
-            const deferThumbnail = renderThumbnail
+            const compactExplicitThumbnail = renderThumbnail
                 && isCompactArticleList()
                 && (thumbnailKind === 'app-icon' || thumbnailKind === 'event-visual');
+            const loadCompactThumbnailImmediately = compactExplicitThumbnail && compactThumbnailIndex === 0;
+            if (compactExplicitThumbnail) compactThumbnailIndex += 1;
+            const deferThumbnail = compactExplicitThumbnail && !loadCompactThumbnailImmediately;
             const thumbnailWidth = thumbnailKind === 'app-icon' ? 96 : 600;
             const thumbnailHeight = thumbnailKind === 'app-icon' ? 96 : 400;
+            const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
+            const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
             const thumbnailMarkup = renderThumbnail
-                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="${safeTitle}" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="lazy" decoding="async" fetchpriority="low">`
+                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="${safeTitle}" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
                 : '';
             const thumbnailClass = renderThumbnail
                 ? `card-thumb card-thumb--${thumbnailKind}`
