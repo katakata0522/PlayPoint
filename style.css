@@ -620,15 +620,6 @@ line-height: 1.6;
 font-weight: 700;
 text-align: center;
 }
-.calculation-method-note {
-margin: 1em 0 0;
-padding: 0.85em 0.95em;
-border-left: 4px solid var(--input-focus-border-color);
-border-radius: 6px;
-background: rgba(11, 87, 208, 0.045);
-font-size: 0.9em;
-line-height: 1.7;
-}
 .calculation-flow-figure {
 margin: 1.25em 0;
 max-width: 100%;
