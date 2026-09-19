@@ -31,8 +31,7 @@ const JP = {
         default: [
             { href: 'articles/2025-12-25-getting-started.html', title: 'Google Play Pointsの始め方' },
             { href: 'articles/2025-12-25-check-balance.html', title: 'ポイント残高・履歴の確認方法' },
-            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' },
-            { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: 'Play Pointsの反映タイミング' }
+            { href: 'articles/2025-12-25-playpoints-rank-maintenance.html', title: 'ランク維持期間の仕組み' }
         ]
     },
     decisionTitle: '計算したあとのおすすめ',
@@ -52,7 +51,7 @@ const US = {
         platinum: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         diamond: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: 'Promotion not applied: what to check' }, { href: 'articles/google-play-points-gift-cards.html', title: 'Gift card conditions' }],
-        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }, { href: 'articles/google-play-points-not-showing.html', title: 'Points not showing: what to check' }]
+        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }]
     },
     decisionTitle: 'What to check next',
     highSpend: { href: 'campaign/3x/', title: 'Compare a 3x promotion', note: 'Check the difference before buying' },
@@ -70,7 +69,7 @@ const KR = {
         platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '캠페인 미적용 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
-        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-not-showing.html', title: '포인트 미반영 확인' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }]
+        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }]
     },
     decisionTitle: '다음으로 확인할 사항',
     highSpend: { href: 'campaign/3x/', title: '3배 캠페인과 비교', note: '구매 전 차이를 확인하세요' },
@@ -88,7 +87,7 @@ const TW = {
         platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         campaign: [{ href: 'articles/google-play-points-promotion-not-applied.html', title: '活動未套用確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
-        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-not-showing.html', title: '點數未顯示確認' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }]
+        default: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }]
     },
     decisionTitle: '接下來請確認',
     highSpend: { href: 'campaign/3x/', title: '比較 3 倍活動', note: '購買前先確認差異' },
