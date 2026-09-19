@@ -11,12 +11,17 @@ const MAX_BYTES = 2 * 1024 * 1024;
 const USER_AGENT = 'Mozilla/5.0 (compatible; PlayPointThumbnailAudit/1.0; +https://playpoint-sim.com/)';
 
 function decodeHtml(value) {
-  return String(value || '')
-    .replaceAll('&amp;', '&')
-    .replaceAll('&quot;', '"')
-    .replaceAll('&#39;', "'")
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-    .replace(/&#([0-9]+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)));
+  return String(value || '').replace(
+    /&(amp|quot|#39|#x[0-9a-f]+|#[0-9]+);/gi,
+    (entity, token) => {
+      const normalized = token.toLowerCase();
+      if (normalized === 'amp') return '&';
+      if (normalized === 'quot') return '"';
+      if (normalized === '#39') return "'";
+      if (normalized.startsWith('#x')) return String.fromCodePoint(parseInt(normalized.slice(2), 16));
+      return String.fromCodePoint(parseInt(normalized.slice(1), 10));
+    }
+  );
 }
 
 function extractMeta(html, key) {
