@@ -32,7 +32,8 @@
     "thumbnail": "../images/game-icons/fgo.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "genshin-welkin-value-2026",
@@ -66,7 +67,8 @@
     "thumbnail": "../images/game-icons/genshin.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "monst-google-play-vs-webshop-2026",
@@ -100,7 +102,8 @@
     "thumbnail": "../images/game-icons/monst.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "starrail-supply-pass-value-2026",
@@ -135,7 +138,8 @@
     "thumbnail": "../images/game-icons/starrail.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "zzz-membership-value-2026",
@@ -170,7 +174,8 @@
     "thumbnail": "../images/game-icons/zzz.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "umamusume-umasuku-value-2026",
@@ -205,7 +210,8 @@
     "thumbnail": "../images/game-icons/umamusume.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "proseka-google-play-vs-webstore-2026",
@@ -240,7 +246,8 @@
     "thumbnail": "../images/game-icons/proseka.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "pokepoke-premium-pass-guide-2026",
@@ -275,7 +282,8 @@
     "thumbnail": "../images/game-icons/pokepoke.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "pad-pass-value-2026",
@@ -310,7 +318,8 @@
     "thumbnail": "../images/game-icons/pad.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "arknights-monthly-pass-limited-scout-2026",
@@ -345,7 +354,8 @@
     "thumbnail": "../images/game-icons/arknights.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "dokkan-google-play-vs-webstore-2026",
@@ -379,7 +389,8 @@
     "thumbnail": "../images/game-icons/dokkan.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "hbr-google-play-vs-webshop-2026",
@@ -414,7 +425,8 @@
     "thumbnail": "../images/game-icons/hbr.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "honkai3rd-google-play-vs-charge-center-2026",
@@ -448,7 +460,8 @@
     "thumbnail": "../images/game-icons/honkai3rd.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "phantomparade-google-play-vs-webshop-2026",
@@ -483,7 +496,8 @@
     "thumbnail": "../images/game-icons/phantomparade.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "prospi-a-google-play-vs-konami-store-2026",
@@ -518,7 +532,8 @@
     "thumbnail": "../images/game-icons/prospi-a.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "pokemon-go-google-play-vs-webstore-2026",
@@ -553,7 +568,8 @@
     "thumbnail": "../images/game-icons/pokemon-go.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "efootball-google-play-points-vs-efootball-points-2026",
@@ -588,7 +604,8 @@
     "thumbnail": "../images/game-icons/efootball.png",
     "thumbnailKind": "app-icon",
     "source": "game-guide",
-    "listed": true
+    "listed": true,
+    "ogp": "../ogp.png"
   },
   {
     "id": "pad-puzzle-and-dragons-play-points",
@@ -604,7 +621,8 @@
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
     "thumbnail": "../images/game-icons/pad.png",
     "modified": "2026-09-12",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "ogp": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png"
   },
   {
     "id": "dokkan-battle-dragon-ball-play-points",
@@ -620,7 +638,8 @@
     "file": "../articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html",
     "thumbnail": "../images/game-icons/dokkan.png",
     "modified": "2026-09-12",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "ogp": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png"
   },
   {
     "id": "umamusume-half-anniversary-points",
@@ -636,7 +655,8 @@
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
     "thumbnail": "../images/game-icons/umamusume.png",
     "modified": "2026-09-12",
-    "thumbnailKind": "app-icon"
+    "thumbnailKind": "app-icon",
+    "ogp": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png"
   },
   {
     "id": "play-points-locked",
