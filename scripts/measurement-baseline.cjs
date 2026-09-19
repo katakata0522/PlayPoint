@@ -131,6 +131,55 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       rule: 'Never treat a rolling 30-day snapshot as the previous non-overlapping 28-day comparison.'
     }
   },
+  analyticsSheetSync: {
+    pageValue: {
+      sheet: '📊ページ価値ファネル',
+      windowDays: 30,
+      lagDays: 3,
+      primaryUnit: 'activeUsers',
+      attributionDimension: 'entry_source_path',
+      events: {
+        articleToCalculator: 'article_to_calculator_clicked',
+        calculatorStart: 'calculator_form_started',
+        firstSuccess: 'calculator_funnel_completed'
+      },
+      pageRevenueSource: 'ga4_publisher_metrics',
+      pageRevenueMetrics: [
+        'totalAdRevenue',
+        'publisherAdImpressions',
+        'publisherAdClicks',
+        'screenPageViews'
+      ],
+      adsensePageUrlBreakdownIsPrimary: false,
+      unavailableValue: 'blank_not_zero'
+    },
+    searchCross: {
+      sheet: '🔎検索クロス分析',
+      ga4OrganicDimension: 'sessionSourceMedium',
+      gscDimensions: [
+        ['query', 'country'],
+        ['query', 'device']
+      ],
+      gscWindowDays: 28,
+      overlap: 'forbidden',
+      finalDataOnly: true,
+      aggregationType: 'byProperty'
+    },
+    urlInspection: {
+      sheet: '🧭URL検査',
+      maxUrlsPerRun: 30,
+      selection: ['fixed_critical', 'top_gsc_impressions'],
+      mode: 'latest_snapshot',
+      purpose: 'Differentiate low demand from indexing/canonical/fetch problems without inspecting every URL.'
+    },
+    logging: {
+      sheet: '実行ログ',
+      prefix: '[P1P2:',
+      structuredStages: ['PAGE_VALUE', 'SEARCH_CROSS', 'URL_INSPECTION'],
+      forbidOpaqueErrorOnly: true,
+      preserveLegacyLogs: true
+    }
+  },
   adsense: {
     coreMetrics: [
       'revenue_per_organic_landing_session',
@@ -170,7 +219,8 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
     'DebugView raw-value absence',
     'DebugView consent-before-grant and post-denial behavior',
     'app_display_mode GA4 custom-dimension registration',
-    'non-overlapping previous-28-days Search Console query-by-URL comparison'
+    'non-overlapping previous-28-days Search Console query-by-URL comparison',
+    'PlayPoint Analytics P1/P2 bound Apps Script first run and verification'
   ]
 });
 
