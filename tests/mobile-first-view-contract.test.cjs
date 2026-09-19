@@ -359,16 +359,21 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
 
   assert.ok(description.includes('class="home-description-lead"'));
+  assert.match(description, /このサイトでは/);
   assert.match(description, /目標ステータスまでに必要な課金額/);
-  assert.match(description, /5,000円なら何ポイント/);
-  assert.match(description, /毎週のウィークリーリワード記録/);
-  assert.match(description, /こんな人におすすめ/);
+  assert.match(description, /○○円なら何ポイント？」<br>/);
+  assert.match(description, /といった逆算/);
+  assert.match(description, /毎週お楽しみのウィークリーリワード記録/);
+  assert.match(description, /<br>/);
+  assert.match(description, /<strong>こんな人におすすめ<\/strong>/);
+  assert.doesNotMatch(description, /<strong>目標ステータス|<strong>5,000円|<strong>毎週のウィークリー|ランクアップ<\/strong>|あと1,000pt。<\/strong>|1年分まとめて振り返りたい<\/strong>/);
   assert.ok(description.includes('class="home-use-cases"'));
   assert.equal((description.match(/<li>/g) || []).length, 4);
   assert.match(description, /ダイヤモンドへの[\s\S]*ランクアップ/);
   assert.match(description, /あと1,000pt/);
   assert.match(description, /5,000円課金したら何ポイント/);
   assert.match(description, /1年分まとめて振り返りたい/);
+  assert.doesNotMatch(description, /を、/);
   assert.match(description, /images\/calculation-flow-compact\.svg/);
   assert.match(compactFlow, /1,728 pt/);
   assert.match(compactFlow, /2\.0 pt/);
@@ -384,9 +389,12 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
 
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 3);
-  assert.match(faq, /計算結果どおりのポイントが必ず付与されますか/);
-  assert.match(faq, /PlayPointはGoogle公式ですか/);
+  assert.match(faq, /Q\. このサイトはGoogle公式ですか？/);
+  assert.match(faq, /たびたび出てくる「1,728」って何ですか？/);
+  assert.match(faq, /info\.html#about-section/);
   assert.match(faq, /入力した内容やウィークリー記録はどこに保存されますか/);
+  assert.doesNotMatch(faq, /計算結果どおりのポイントが必ず付与されますか/);
+  assert.ok(faq.indexOf('このサイトはGoogle公式ですか？') < faq.indexOf('たびたび出てくる「1,728」って何ですか？'));
 
   assert.match(css, /\.home-secondary-section\s*\{/);
   assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
