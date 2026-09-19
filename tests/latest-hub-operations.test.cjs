@@ -145,6 +145,18 @@ test('運用手順は日付だけの更新と個別オファーの一般化を�
   assert.ok(guide.includes('CONTENT_DATE_OVERRIDES'));
 });
 
+test('最新情報ハブはLP共通の同意付き計測runtimeを直接読み込む', () => {
+  assert.match(latestHtml, /<script\s+src=["']\/js\/analytics-core\.js\?v=[^"']+["']/);
+  assert.match(latestHtml, /<script\s+src=["']\/js\/intent-tracking\.js\?v=[^"']+["']/);
+  assert.match(latestHtml, /<script\s+src=["']\/js\/third-party\.js\?v=[^"']+["']/);
+
+  const analyticsIndex = latestHtml.indexOf('/js/analytics-core.js');
+  const thirdPartyIndex = latestHtml.indexOf('/js/third-party.js');
+  const componentsIndex = latestHtml.indexOf('../blog/components.js');
+  assert.ok(analyticsIndex >= 0 && thirdPartyIndex > analyticsIndex);
+  assert.ok(componentsIndex > thirdPartyIndex, 'latest: LP analytics/consent runtime must initialize before common components');
+});
+
 test('最新情報ハブの共通componentはlatest階層からサイトルートの同意管理を要求する', () => {
   assert.match(latestHtml, /<script\s+src=["']\.\.\/blog\/components\.js\?v=[^"']+["']/);
 
