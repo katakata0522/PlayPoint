@@ -1,0 +1,96 @@
+name: Sync game thumbnail generated outputs
+
+on:
+  push:
+    branches:
+      - feat/game-list-thumbnails-20260919
+    paths:
+      - '.github/workflows/sync-game-thumbnail-generated.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/game-list-thumbnails-20260919
+          persist-credentials: true
+          fetch-depth: 2
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Run canonical PR preparation
+        run: node scripts/prepare-pr.cjs
+      - name: Reject unrelated generated changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          allowed_file="$(mktemp)"
+          cat > "$allowed_file" <<'EOF'
+          blog/article-search-index.json
+          blog/articles.json
+          blog/index.html
+          games/arknights/monthly-pass-limited-scout/index.html
+          games/dokkan/google-play-vs-webstore/index.html
+          games/efootball/google-play-points-vs-efootball-points/index.html
+          games/fgo/pity-cost/index.html
+          games/genshin/welkin-value/index.html
+          games/hbr/google-play-vs-webshop/index.html
+          games/honkai3rd/google-play-vs-charge-center/index.html
+          games/monst/google-play-vs-webshop/index.html
+          games/pad/pad-pass-value/index.html
+          games/phantomparade/google-play-vs-webshop/index.html
+          games/pokemon-go/google-play-vs-webstore/index.html
+          games/pokepoke/premium-pass-guide/index.html
+          games/proseka/google-play-vs-webstore/index.html
+          games/prospi-a/google-play-vs-konami-store/index.html
+          games/starrail/supply-pass-value/index.html
+          games/umamusume/umasuku-value/index.html
+          games/zzz/membership-value/index.html
+          EOF
+          sort -u "$allowed_file" -o "$allowed_file"
+          changed_file="$(mktemp)"
+          git status --porcelain=v1 | sed -E 's/^.. //' | sort -u > "$changed_file"
+          echo "Generated changes:"
+          cat "$changed_file"
+          unexpected="$(comm -23 "$changed_file" "$allowed_file" || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected generated files:" >&2
+            printf '%s\n' "$unexpected" >&2
+            exit 1
+          fi
+      - name: Commit canonical generated outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add blog/article-search-index.json blog/articles.json blog/index.html \
+            games/arknights/monthly-pass-limited-scout/index.html \
+            games/dokkan/google-play-vs-webstore/index.html \
+            games/efootball/google-play-points-vs-efootball-points/index.html \
+            games/fgo/pity-cost/index.html \
+            games/genshin/welkin-value/index.html \
+            games/hbr/google-play-vs-webshop/index.html \
+            games/honkai3rd/google-play-vs-charge-center/index.html \
+            games/monst/google-play-vs-webshop/index.html \
+            games/pad/pad-pass-value/index.html \
+            games/phantomparade/google-play-vs-webshop/index.html \
+            games/pokemon-go/google-play-vs-webstore/index.html \
+            games/pokepoke/premium-pass-guide/index.html \
+            games/proseka/google-play-vs-webstore/index.html \
+            games/prospi-a/google-play-vs-konami-store/index.html \
+            games/starrail/supply-pass-value/index.html \
+            games/umamusume/umasuku-value/index.html \
+            games/zzz/membership-value/index.html
+          if git diff --cached --quiet; then
+            echo "Generated outputs already canonical."
+            exit 0
+          fi
+          git commit -m "build: sync game thumbnail generated outputs"
+          git push origin HEAD:feat/game-list-thumbnails-20260919
