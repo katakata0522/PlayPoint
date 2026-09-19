@@ -4,6 +4,8 @@ const OFFICIAL_HK = 'https://support.google.com/googleplay/answer/9080348?co=GEN
 const OFFICIAL_IN = 'https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DIN&hl=en-IN';
 
 const JP = {
+    statusPageRanks: Object.freeze(['silver','gold','platinum','diamond']),
+    maintenancePageRanks: Object.freeze(['platinum','diamond']),
     relatedArticleGroups: {
         platinum: [
             { href: 'maintenance/platinum/', title: 'プラチナ維持はいくら必要？' },
@@ -40,11 +42,12 @@ const JP = {
     diamond: { href: 'articles/2025-12-25-diamond-worth-it.html', title: 'ダイヤモンドが本当に得か見る', note: '必要額と特典価値を比較' },
     platinum: { href: 'maintenance/platinum/', title: 'プラチナ維持も確認する', note: '到達後のペースを確認' },
     nearYearEnd: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '年末前に反映タイミングを見る', note: '締め直前の遅れを避ける' },
-    notShowing: { href: 'articles/2026-03-10-play-points-reflection-timing.html', title: '課金後にポイントがつかない時の確認手順', note: '購入履歴と保留中を確認' },
     giftCards: { href: 'articles/2026-06-20-discount-gift-cards.html', title: '購入前チェックで使いすぎを防ぐ', note: 'ギフトコードや還元上限を確認' }
 };
 
 const US = {
+    statusPageRanks: Object.freeze(['silver','gold','platinum','diamond']),
+    maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
         platinum: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
         diamond: [{ href: 'articles/google-play-points-platinum-diamond-cost.html', title: 'Platinum and Diamond cost guide' }, { href: 'articles/google-play-points-levels.html', title: 'Google Play Points levels' }],
@@ -57,11 +60,12 @@ const US = {
     diamond: { href: 'status/diamond/', title: 'Check the Diamond target', note: 'Review the points and spending estimate' },
     platinum: { href: 'status/platinum/', title: 'Check the Platinum target', note: 'Review the points and spending estimate' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: 'Check point reflection timing', note: 'Avoid a delay near year-end' },
-    notShowing: { href: 'articles/google-play-points-not-showing.html', title: 'Check missing points', note: 'Review purchase history and pending items' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: 'Check gift card conditions', note: 'Confirm eligibility before buying' }
 };
 
 const KR = {
+    statusPageRanks: Object.freeze(['silver','gold','platinum','diamond']),
+    maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
         platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
         diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 등급 안내' }, { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인' }],
@@ -74,11 +78,12 @@ const KR = {
     diamond: { href: 'status/diamond/', title: '다이아몬드 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
     platinum: { href: 'status/platinum/', title: '플래티넘 목표 확인', note: '필요 포인트와 예상 금액을 확인하세요' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '포인트 반영 상태 확인', note: '연말 전 반영 상태를 확인하세요' },
-    notShowing: { href: 'articles/google-play-points-not-showing.html', title: '포인트 미반영 확인', note: '구매 내역과 보류 항목을 확인하세요' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '기프트카드 조건 확인', note: '구매 전 대상 여부를 확인하세요' }
 };
 
 const TW = {
+    statusPageRanks: Object.freeze(['silver','gold','platinum','diamond']),
+    maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
         platinum: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
         diamond: [{ href: 'articles/google-play-points-levels.html', title: 'Google Play Points 等級說明' }, { href: 'articles/google-play-points-gift-cards.html', title: '禮物卡條件確認' }],
@@ -91,13 +96,14 @@ const TW = {
     diamond: { href: 'status/diamond/', title: '確認鑽石級目標', note: '確認所需點數與預估金額' },
     platinum: { href: 'status/platinum/', title: '確認白金級目標', note: '確認所需點數與預估金額' },
     nearYearEnd: { href: 'articles/google-play-points-not-showing.html', title: '確認點數入帳狀態', note: '年底前確認入帳狀態' },
-    notShowing: { href: 'articles/google-play-points-not-showing.html', title: '確認點數未顯示', note: '確認購買紀錄與處理中項目' },
     giftCards: { href: 'articles/google-play-points-gift-cards.html', title: '確認禮物卡條件', note: '購買前確認是否符合資格' }
 };
 
 const HK_OFFICIAL = { href: OFFICIAL_HK, title: 'Google Play 香港官方等級與獲點率', note: '確認最新香港條件' };
 const HK_NOTES = { href: '../attention.html', title: '查看國家／地區注意事項', note: '購買前確認適用條件' };
 const HK = {
+    statusPageRanks: Object.freeze([]),
+    maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
         platinum: [HK_OFFICIAL, HK_NOTES],
         diamond: [HK_OFFICIAL, HK_NOTES],
@@ -110,13 +116,14 @@ const HK = {
     diamond: HK_OFFICIAL,
     platinum: HK_OFFICIAL,
     nearYearEnd: HK_OFFICIAL,
-    notShowing: HK_NOTES,
     giftCards: HK_NOTES
 };
 
 const IN_OFFICIAL = { href: OFFICIAL_IN, title: 'Official Google Play India levels and earn rates', note: 'Check the latest India conditions' };
 const IN_NOTES = { href: '../attention.html', title: 'Check country and promotion notes', note: 'Confirm eligibility before buying' };
 const IN = {
+    statusPageRanks: Object.freeze([]),
+    maintenancePageRanks: Object.freeze([]),
     relatedArticleGroups: {
         platinum: [IN_OFFICIAL, IN_NOTES],
         diamond: [IN_OFFICIAL, IN_NOTES],
@@ -129,7 +136,6 @@ const IN = {
     diamond: IN_OFFICIAL,
     platinum: IN_OFFICIAL,
     nearYearEnd: IN_OFFICIAL,
-    notShowing: IN_NOTES,
     giftCards: IN_NOTES
 };
 
