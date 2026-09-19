@@ -40,6 +40,30 @@ test('通常計算の目標候補は現在ランクから進める有効なラ�
   assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
 });
 
+test('目標候補は表示言語と独立したランクIDを保持する', () => {
+  const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
+
+  for (const [region, config] of Object.entries(PP_REGION_CONFIGS)) {
+    PP_STATE.currentRegion = region;
+    PP_STATE.dom.currentStatus = createSelect();
+    PP_STATE.dom.currentStatus.value = String(Object.values(config.statuses)[0]);
+    PP_STATE.dom.baseRate = createInput();
+    PP_STATE.dom.targetStatus = createSelect();
+    PP_STATE.dom.neededPoints = createInput();
+
+    updateBaseRateAndTarget();
+
+    for (const option of PP_STATE.dom.targetStatus.options) {
+      if (!option.dataset.statusLabel) continue;
+      assert.strictEqual(
+        option.dataset.rankKey,
+        config.tierIdsByLabel[option.dataset.statusLabel],
+        `${region}/${option.dataset.statusLabel}: rank id must come from region SSOT`
+      );
+    }
+  }
+});
+
 test('日本語のゴールド→プラチナ必要ポイント例は1728を維持する', () => {
   const { PP_STATE, updateBaseRateAndTarget, updateNeededPointsConstraint } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
