@@ -115,9 +115,10 @@ export const CALC = {
             ...relatedArticles.slice(1).map(link => ({ ...link, linkType: 'related' }))
         ];
 
+        const purchaseCheckHref = this.getResultNavigation().giftCards?.href || '';
         const seen = new Set();
         return prioritizedLinks.filter(link => {
-            if (seen.has(link.href)) return false;
+            if (!link?.href || link.href === purchaseCheckHref || seen.has(link.href)) return false;
             seen.add(link.href);
             return true;
         }).slice(0, 3);
