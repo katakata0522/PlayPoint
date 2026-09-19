@@ -619,7 +619,7 @@
     ],
     "description": "パズドラパスを使い切れるか、魔法石セットと確定セットをどう比べるかを具体例で解説。自動更新、受け取り条件、Google Play Pointsの獲得と交換価値を分けて判断できます。",
     "file": "../articles/2026-08-25-pad-puzzle-and-dragons-play-points.html",
-    "thumbnail": "../images/game-icons/pad.png",
+    "thumbnail": "../images/game-icons/pad.webp",
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-pad-puzzle-and-dragons-play-points.png"
@@ -636,7 +636,7 @@
     ],
     "description": "龍石の総数だけでなく、ガシャ期限までに受け取れる数でデイリー型商品と即時購入を比較。コインの対象条件とPlayポイントを分け、予算内で選ぶ方法を解説します。",
     "file": "../articles/2026-08-25-dokkan-battle-dragon-ball-play-points.html",
-    "thumbnail": "../images/game-icons/dokkan.png",
+    "thumbnail": "../images/game-icons/dokkan.webp",
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-25-dokkan-battle-dragon-ball-play-points.png"
@@ -653,7 +653,7 @@
     ],
     "description": "ウマ娘のハーフアニバで、無料ガチャ・引換券・有償ジュエルをどう比べるか。購入前に対象と期限を確認し、仮の価格例で予算とPlayポイントを分けて判断する方法を解説します。",
     "file": "../articles/2026-08-24-umamusume-half-anniversary-points.html",
-    "thumbnail": "../images/game-icons/umamusume.png",
+    "thumbnail": "../images/game-icons/umamusume.webp",
     "modified": "2026-09-12",
     "thumbnailKind": "app-icon",
     "ogp": "../articles/ogp/2026-08-24-umamusume-half-anniversary-points.png"
