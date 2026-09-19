@@ -312,7 +312,7 @@ test('モード別ガイドは初期表示に載せず、逆算・週次の操�
   const experience = read('js/home-experience.js');
   const worker = read('sw.js');
 
-  assert.match(ui, /import\('\/js\/home-experience\\.js\\?v=20260919_2'\)/);
+  assert.match(ui, /import\('\/js\/home-experience\.js\?v=20260919_2'\)/);
   assert.match(ui, /HOME_EXPERIENCE_SCROLL_THRESHOLD = 320/);
   assert.doesNotMatch(worker, /home-experience\.js/, 'home experience must not inflate initial Service Worker precache');
   assert.match(experience, /descriptions:[\s\S]*?reverse:[\s\S]*?diary:/);
