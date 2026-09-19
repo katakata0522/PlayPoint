@@ -696,6 +696,8 @@ padding: 8px;
 background: var(--bg-secondary);
 }
 .card-thumb--app-icon img {
+width: min(96px, 100%);
+height: min(96px, 100%);
 object-fit: contain;
 border-radius: 18%;
 }
