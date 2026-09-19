@@ -258,18 +258,12 @@ font-weight: 700;
 text-decoration: none;
 transition: all 0.2s ease;
 }
-.top-bar a:hover,
-.top-bar a:focus-visible {
-background: rgba(11, 87, 208, 0.11);
-color: #0842a0;
-border-color: rgba(11, 87, 208, 0.34);
+.top-bar a:hover {
+background: #0b57d0;
+color: #ffffff;
+border-color: #0b57d0;
 transform: translateY(-1px);
-box-shadow: 0 4px 10px rgba(11, 87, 208, 0.12);
-text-decoration: none;
-}
-.top-bar a:focus-visible {
-outline: 3px solid var(--input-focus-border-color, #005fcc);
-outline-offset: 2px;
+box-shadow: 0 4px 10px rgba(11, 87, 208, 0.25);
 }
 .toast {
 visibility: hidden;
@@ -308,16 +302,9 @@ min-height: 44px;
 max-width: 100%;
 box-sizing: border-box;
 }
-.header-links a:hover,
-.header-links a:focus-visible {
-text-decoration: none;
-color: #0842a0 !important;
-}
-.header-links .alert-link:hover,
-.header-links .alert-link:focus-visible {
-background: rgba(180, 35, 44, 0.08);
-border-color: rgba(180, 35, 44, 0.26);
-color: #8d1c24 !important;
+.header-links a:hover {
+text-decoration: underline;
+color: var(--link-hover-color);
 }
 h1, h2, h3, h4 {
 color: var(--text-color);
@@ -406,9 +393,7 @@ font-weight: 700;
 margin: 0;
 line-height: 1.65;
 }
-.home-use-cases li::marker {
-color: #4285F4;
-}
+.home-use-cases li::marker { color: #4285F4; }
 .home-guide-shortcuts {
 display: flex;
 flex-wrap: wrap;
@@ -1910,34 +1895,9 @@ font-weight: bold;
 #confirmImportBtn:hover {
 background-color: #c82333;
 }
-@media (min-width: 700px) {
+@media(min-width:1024px){
 .calculator-wrapper {
-max-width: 720px;
-}
-.top-bar {
-padding: 0.65rem 0.75rem;
-border: 1px solid rgba(11, 87, 208, 0.14);
-border-radius: 14px;
-background: rgba(255, 255, 255, 0.56);
-box-shadow: 0 5px 18px rgba(31, 41, 55, 0.05);
-}
-.top-bar .region-switch {
-flex: 0 0 auto;
-}
-.header-links {
-flex: 1 1 320px;
-align-items: center;
-justify-content: flex-end;
-gap: 0.45rem 0.55rem;
-}
-.top-bar a {
-min-height: 42px;
-padding: 0.42rem 0.78rem;
-}
-}
-@media (min-width: 1024px) {
-.calculator-wrapper {
-max-width: 820px;
+max-width: 660px;
 }
 }
 @media(max-width:480px){
