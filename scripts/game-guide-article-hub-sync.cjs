@@ -173,7 +173,9 @@ function normalizeBodySections(body) {
 
 function ensureGooglePlayAppSource(body, article) {
   const asset = getGameThumbnailAsset(article.gameTitle);
-  if (!asset?.sourcePageUrl || String(body).includes(asset.sourcePageUrl)) return String(body);
+  if (!asset?.sourcePageUrl) return String(body);
+  const escapedSourcePageUrl = escapeHtml(asset.sourcePageUrl);
+  if (String(body).includes(asset.sourcePageUrl) || String(body).includes(escapedSourcePageUrl)) return String(body);
 
   const sourceSection = /(<section\b[^>]*class=["'][^"']*\bsource-list\b[^"']*["'][^>]*>[\s\S]*?<ul\b[^>]*>)([\s\S]*?)(<\/ul>[\s\S]*?<\/section>)/i;
   if (!sourceSection.test(body)) {
@@ -181,7 +183,7 @@ function ensureGooglePlayAppSource(body, article) {
   }
 
   const label = `Google Play公式：${article.gameTitle} アプリ掲載`;
-  const item = `<li><a href="${escapeHtml(asset.sourcePageUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>`;
+  const item = `<li><a href="${escapedSourcePageUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)}</a></li>`;
   return String(body).replace(sourceSection, (full, open, items, close) => `${open}${items}${item}${close}`);
 }
 
