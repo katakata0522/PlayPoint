@@ -24,6 +24,15 @@ const PRIMARY_REGION_LABELS = Object.freeze({
     TW: { desktop: 'TW', mobile: '🇹🇼 TW' }
 });
 
+const REGION_FLAG_ASSETS = Object.freeze({
+    JP: '/images/flags/jp.svg',
+    US: '/images/flags/us.svg',
+    KR: '/images/flags/kr.svg',
+    TW: '/images/flags/tw.svg',
+    HK: '/images/flags/hk.svg',
+    IN: '/images/flags/in.svg'
+});
+
 const EXPANDED_REGION_TOGGLE_LABELS = Object.freeze({
     HK: { short: 'HK' },
     IN: { short: 'IN' }
@@ -165,10 +174,30 @@ function ensureRegionSelectorStylesheet() {
     document.head.appendChild(link);
 }
 
+function createRegionFlag(region) {
+    const src = REGION_FLAG_ASSETS[region];
+    if (!src) return null;
+    const flag = document.createElement('img');
+    flag.className = 'region-flag-img';
+    flag.src = src;
+    flag.width = 24;
+    flag.height = 18;
+    flag.alt = '';
+    flag.setAttribute('aria-hidden', 'true');
+    flag.decoding = 'async';
+    return flag;
+}
+
 function applyResponsiveRegionLabel(button, region, label) {
     const desktop = document.createElement('span');
     desktop.className = 'region-label-desktop';
-    desktop.textContent = label.desktop;
+    desktop.setAttribute('aria-hidden', 'true');
+    const flag = createRegionFlag(region);
+    const code = document.createElement('span');
+    code.className = 'region-label-code';
+    code.textContent = label.desktop;
+    if (flag) desktop.append(flag);
+    desktop.append(code);
 
     const mobile = document.createElement('span');
     mobile.className = 'region-label-mobile';
@@ -253,11 +282,11 @@ export function ensureRegionSelector() {
         <div class="region-more-menu" data-region-menu role="menu" aria-label="${copy.menu}" hidden>
             <p class="region-more-menu__title">${copy.more}</p>
             <button type="button" class="region-more-option" role="menuitem" data-region="HK">
-                <span class="region-more-option__flag" aria-hidden="true">🇭🇰</span>
+                <span class="region-more-option__flag" aria-hidden="true"><img class="region-flag-img" src="/images/flags/hk.svg" width="24" height="18" alt="" decoding="async"></span>
                 <span class="region-more-option__copy"><span class="region-more-option__name">香港 Hong Kong</span><span class="region-more-option__detail">繁體中文 · HKD</span></span>
             </button>
             <button type="button" class="region-more-option" role="menuitem" data-region="IN">
-                <span class="region-more-option__flag" aria-hidden="true">🇮🇳</span>
+                <span class="region-more-option__flag" aria-hidden="true"><img class="region-flag-img" src="/images/flags/in.svg" width="24" height="18" alt="" decoding="async"></span>
                 <span class="region-more-option__copy"><span class="region-more-option__name">India</span><span class="region-more-option__detail">English · INR</span></span>
             </button>
         </div>`;
