@@ -359,10 +359,13 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
 
   assert.ok(description.includes('class="home-description-lead"'));
+  assert.match(description, /このサイトでは/);
   assert.match(description, /目標ステータスまでに必要な課金額/);
-  assert.match(description, /5,000円なら何ポイント/);
-  assert.match(description, /毎週のウィークリーリワード記録/);
-  assert.match(description, /こんな人におすすめ/);
+  assert.match(description, /○○円なら何ポイント/);
+  assert.match(description, /毎週お楽しみのウィークリーリワード記録/);
+  assert.match(description, /<br>/);
+  assert.match(description, /<strong>こんな人におすすめ<\/strong>/);
+  assert.doesNotMatch(description, /<strong>目標ステータス|<strong>5,000円|<strong>毎週のウィークリー|ランクアップ<\/strong>|あと1,000pt。<\/strong>|1年分まとめて振り返りたい<\/strong>/);
   assert.ok(description.includes('class="home-use-cases"'));
   assert.equal((description.match(/<li>/g) || []).length, 4);
   assert.match(description, /ダイヤモンドへの[\s\S]*ランクアップ/);
