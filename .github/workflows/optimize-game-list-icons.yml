@@ -1,0 +1,66 @@
+name: Optimize game list icons
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/optimize-game-list-icons.yml'
+      - 'scripts/capture-game-thumbnails.cjs'
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feat/game-list-thumbnails-20260919'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: feat/game-list-thumbnails-20260919
+          persist-credentials: true
+          fetch-depth: 2
+      - name: Capture lightweight official icons
+        run: node scripts/capture-game-thumbnails.cjs
+      - name: Verify WebP budget
+        run: |
+          set -euo pipefail
+          count="$(find .tmp/game-icons -maxdepth 1 -type f -name '*.webp' | wc -l)"
+          total="$(find .tmp/game-icons -maxdepth 1 -type f -name '*.webp' -printf '%s\n' | awk '{s+=$1} END{print s+0}')"
+          echo "webp_count=$count total_bytes=$total"
+          test "$count" -eq 17
+          test "$total" -le 200000
+      - name: Replace branch-only PNG icons with WebP
+        run: |
+          set -euo pipefail
+          rm -f images/game-icons/*.png
+          cp .tmp/game-icons/*.webp images/game-icons/
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const path = 'scripts/game-thumbnail-assets.cjs';
+          let source = fs.readFileSync(path, 'utf8');
+          source = source
+            .replace("'images/game-icons/' + gameId + '.png'", "'images/game-icons/' + gameId + '.webp'")
+            .replace("modification: 'resize-only-128px'", "modification: 'resize-only-128px-webp'");
+          fs.writeFileSync(path, source);
+          NODE
+          node scripts/game-guide-article-hub-sync.cjs
+      - name: Commit optimized icons
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/game-icons scripts/game-thumbnail-assets.cjs blog/articles.json games
+          if git diff --cached --quiet; then
+            echo "No optimized icon changes to commit."
+          else
+            git commit -m "perf: optimize game list icons"
+            git push origin HEAD:feat/game-list-thumbnails-20260919
+          fi
+      - name: Upload optimization evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: optimized-game-list-icons
+          path: .tmp/game-icons/
+          if-no-files-found: error
+          retention-days: 1
