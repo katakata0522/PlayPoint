@@ -13,10 +13,10 @@ const { VERIFIED_AT: GAME_SEO_WAVE5_VERIFIED_AT } = require('./game-seo-wave5-da
 // Content dates only change when the corresponding page receives a meaningful
 // editorial update. Build timestamps and asset cache versions are kept separate.
 const TOP_PAGE_CONTENT_DATES = Object.freeze({
-  ja: '2026-08-12',
-  en: '2026-08-12',
-  ko: '2026-07-26',
-  tw: '2026-08-12'
+  ja: '2026-09-19',
+  en: '2026-09-19',
+  ko: '2026-09-19',
+  tw: '2026-09-19'
 });
 
 const rootDir = path.resolve(__dirname, '..');
