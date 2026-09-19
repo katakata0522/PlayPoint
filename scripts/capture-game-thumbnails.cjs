@@ -70,7 +70,7 @@ async function capture(entry) {
   }
   if (!sourceImageUrl) throw new Error('Official icon URL not found for ' + entry.gameTitle);
 
-  const requestedImageUrl = sourceImageUrl.replace(/=s0-br30$/, '=w128-h128');
+  const requestedImageUrl = sourceImageUrl.replace(/=s0-br30$/, '=w128-h128-rw');
   const { response, bytes } = await fetchBuffer(requestedImageUrl, {
     accept: 'image/png,image/jpeg,image/webp,image/*'
   });
