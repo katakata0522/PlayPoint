@@ -12,11 +12,11 @@ test('high-impression JP articles expose the observed search intent without keyw
   const superWeekly = read('articles/2026-07-31-super-weekly-reward.html');
   assert.match(
     superWeekly,
-    /<title>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket<\/title>/
+    /<title>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク<\/title>/
   );
   assert.match(
     superWeekly,
-    /<h1[^>]*>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket<\/h1>/
+    /<h1[^>]*>Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク<\/h1>/
   );
   assert.match(superWeekly, /スーパーウィークリーリワードとは？何が当たるの？/);
 
@@ -39,6 +39,26 @@ test('high-impression JP articles expose the observed search intent without keyw
   assert.match(
     reflection,
     /<h1[^>]*>Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番<\/h1>/
+  );
+});
+
+test('Super Ticket intent has a dedicated owner and Super Weekly hands off to it', () => {
+  const ticket = read('articles/2026-09-19-google-play-super-ticket.html');
+  assert.match(
+    ticket,
+    /<title>突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた<\/title>/
+  );
+  assert.match(ticket, /Super Ticketは「スーパーウィークリーの引き直し券」/);
+  assert.match(ticket, /pc\.asobu\.co\.jp\/google-play-pass-super-ticket\//);
+
+  const superWeekly = read('articles/2026-07-31-super-weekly-reward.html');
+  assert.match(
+    superWeekly,
+    /href="\.\/2026-09-19-google-play-super-ticket\.html"/
+  );
+  assert.doesNotMatch(
+    superWeekly,
+    /<title>[^<]*Super Ticket[^<]*<\/title>/
   );
 });
 
@@ -88,7 +108,8 @@ test('exchange comparison and cash-out pages state their different jobs with rec
 
 test('central article surfaces stay in sync with updated JP titles', () => {
   const expected = [
-    'Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・Super Ticket',
+    'Google Play Pointsスーパーウィークリーリワードとは？賞品・確率・対象ランク',
+    '突然現れたGoogle Playの「Super Ticket（スーパーチケット）」とは？使い方・もらえる日を調べてみた',
     'Google Playのクエストとは？購入条件と表示・達成されない時の確認方法',
     'Google Play Pointsが反映されない・遅い時は？いつ付くかと確認する順番'
   ];
