@@ -54,6 +54,7 @@ export function createRegionCalculationConfig(region) {
         statuses: Object.fromEntries(tiers.map(tier => [tier.label, tier.rate])),
         statusRates: Object.fromEntries(tiers.map(tier => [tier.rate, tier.rate])),
         thresholds: Object.fromEntries(tiers.slice(1).map(tier => [tier.label, tier.threshold])),
+        tierIdsByLabel: Object.fromEntries(tiers.map(tier => [tier.label, tier.id])),
         statusPointsMapping: Object.fromEntries(tiers.map((tier, index) =>
             [tier.rate, tiers.slice(index + 1).map(next => next.label)])),
         spendUnit
