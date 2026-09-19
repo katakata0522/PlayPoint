@@ -79,7 +79,7 @@ GA4管理画面ではセッション/ユーザー単位も併記し、繰り返�
 
 ## Measurement Readiness
 
-実装と自動テスト上は計測可能。2026-09-15時点で `calculation_completed` のKey event登録と `entry_source_path` / `entry_link_context` / `calculator_preset` のCustom Dimension登録はread-only Admin APIで確認済み。一方、DebugView実測と `app_display_mode` Custom Dimension登録は未完了なので、そこだけは「運用前確認中」のままとする。サイト内導線は外部集客用UTMから分離済みで、GA4のセッション参照元を上書きしない。
+実装と自動テスト上は計測可能。`calculation_completed` のKey event登録、`entry_source_path` / `entry_link_context` / `calculator_preset` に加え、2026-09-19に `app_display_mode` もGA4のEVENT scope Custom Dimensionとして登録済み。登録には一度限りの `analytics.edit` を使い、成功確認後に権限とmaster pushトリガーを撤去して通常のread-only監査へ戻した。残る「運用前確認中」はDebugView実測だけとする。サイト内導線は外部集客用UTMから分離済みで、GA4のセッション参照元を上書きしない。
 
 ### 2026-08-11 本番点検（当時の状態）
 
@@ -96,6 +96,15 @@ GA4管理画面ではセッション/ユーザー単位も併記し、繰り返�
 - `app_display_mode` は公開コードから送信しているが、2026-09-10監査時点ではGA4 Custom Dimensionとして未登録。したがってstandalone利用者は0ではなく取得不可。
 - DebugViewでの実ブラウザ受信、raw値非送信、同意前/拒否後の挙動は未完了。コード側の回帰テストを実測の代替にしない。
 - 変更前Baselineは `scripts/measurement-baseline.cjs` の `phase2-pre-change-2026-09-15` と `docs/MEASUREMENT_AUDIT_2026-09-15.md` を正本とする。
+
+### 2026-09-19 本番点検
+
+- `app_display_mode`: **GA4 EVENT scope Custom Dimensionとして登録済み**。trend-reporter の一度限りWorkflow run #62 が成功し、登録後は一時的な `analytics.edit` scope とmaster push triggerを撤去して `analytics.readonly` 運用へ戻した。
+- `PlayPoint Analytics` の `🩺データ鮮度・システム状態` では、GA4 Realtimeが **2026-09-19 22:01 JST** に更新成功、状態 `REALTIME`、連続失敗 `0`。
+- GA4 Intraday / AdSense Intraday / 今日ページ別も **2026-09-19** の暫定データを取得し、連続失敗 `0`。
+- `📊ページ価値ファネル` は対象期間 **2026-08-18〜2026-09-16**、状態 **OK**。GSC click-weighted joinは **89.1%**（GSC clicks 1499 / joined clicks 1336）、absolute URL keyは `0`。
+- DebugViewでの実ブラウザ受信、raw値非送信、同意前/拒否後の挙動は引き続き未完了。API、Sheet、回帰テストをDebugView実測の代替にはしない。
+- Issue #180 は **DebugView固有の最終確認だけを残してopen継続**する。
 
 担当: PlayPoint運営者。イベント追加時は本書と回帰テストを同時に更新する。
 
