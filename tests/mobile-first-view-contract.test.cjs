@@ -359,7 +359,7 @@ test('トップ下部は短さを保ちつつ具体的な利用場面・ラン�
 
   assert.ok(description.includes('class="home-use-cases"'));
   assert.equal((description.match(/<li>/g) || []).length, 4);
-  assert.match(description, /ダイヤモンドまでの道のり/);
+  assert.match(description, /ダイヤモンドへの[\s\S]*ランクアップ/);
   assert.match(description, /あと1,000pt/);
   assert.match(description, /5,000円課金したら何ポイント/);
   assert.match(description, /ウィークリーリワード/);
