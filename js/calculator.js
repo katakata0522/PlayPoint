@@ -19,15 +19,24 @@ export const CALC = {
         return getResultNavigationConfig(STATE.currentRegion);
     },
 
+    getProgressCheer(neededPoints) {
+        const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+        if (!Number.isFinite(neededPoints) || neededPoints <= 0) return '';
+        if (neededPoints <= 100) return texts.resultCheerLast100 || '';
+        if (neededPoints < 500) return texts.resultCheerUnder500 || '';
+        return '';
+    },
+
     getRelatedArticles(targetStatusLabel, multiplier) {
         const target = String(targetStatusLabel || '').toLowerCase();
         const groups = this.getResultNavigation().relatedArticleGroups;
         const candidates = [];
-        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
-            candidates.push(...groups.diamond.slice(0, 3));
-        } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
-            candidates.push(...groups.platinum.slice(0, 3));
-        }
+        let rankGroup = 'default';
+        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) rankGroup = 'diamond';
+        else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) rankGroup = 'platinum';
+        else if (/gold|ゴールド|골드|金級/i.test(target)) rankGroup = 'gold';
+        else if (/silver|シルバー|실버|銀級/i.test(target)) rankGroup = 'silver';
+        if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
         if (multiplier > 1) candidates.push(...groups.campaign.slice(0, 2));
         candidates.push(...groups.default);
 
@@ -386,7 +395,8 @@ export const CALC = {
             config, neededPoints: finalNeededPoints, totalAmountNeeded, remainingMonths, remainingDays,
             finalRate, rateSourceLabel, comparison,
             guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays),
-            purchaseCheckContent: finalNeededPoints > 0 ? this.renderPurchaseCheckLink() : ''
+            purchaseCheckContent: finalNeededPoints > 0 ? this.renderPurchaseCheckLink() : '',
+            progressCheer: this.getProgressCheer(finalNeededPoints)
         });
 
         UI.displayResult(STATE.dom.result, resultContent);
