@@ -1,0 +1,41 @@
+name: Temporary prepare blog home
+on:
+  push:
+    branches:
+      - "feat/blog-home-discovery-first-20260919"
+    paths:
+      - ".github/workflows/tmp-blog-home-prepare.yml"
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: "feat/blog-home-discovery-first-20260919"
+          fetch-depth: 0
+      - name: Set up pinned Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+          check-latest: false
+      - name: Synchronize deterministic generated output
+        run: node scripts/prepare-pr.cjs
+      - name: Commit generated output and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm ".github/workflows/tmp-blog-home-prepare.yml"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No generated changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build: sync blog home generated output"
+          git push origin HEAD:"feat/blog-home-discovery-first-20260919"
