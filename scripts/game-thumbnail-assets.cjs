@@ -17,7 +17,7 @@ function activeAsset(gameId, gameTitle, rightsHolder, sourcePageUrl, sourceImage
     sourceImageUrl,
     localPath: 'images/game-icons/' + gameId + '.png',
     acquiredAt: ACQUIRED_AT,
-    modification: 'resize-only-256px',
+    modification: 'resize-only-128px',
     usage: 'article-list-thumbnail',
     status: 'active',
     notes: 'Google Playの公式アプリ掲載ページで現行アイコンを確認し、同ページが参照するGoogle配信画像を256pxへ縮小してローカル保存。内容改変・外部CDNホットリンクなし。'
