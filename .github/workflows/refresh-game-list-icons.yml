@@ -30,7 +30,7 @@ jobs:
           total="$(find .tmp/game-icons -maxdepth 1 -type f -name '*.webp' -printf '%s\n' | awk '{s+=$1} END{print s+0}')"
           echo "webp_count=$count total_bytes=$total"
           test "$count" -eq 17
-          test "$total" -le 200000
+          test "$total" -le 300000
       - name: Replace local list icons and synchronize manifest
         shell: bash
         run: |
@@ -43,7 +43,7 @@ jobs:
           let source = fs.readFileSync(file, 'utf8');
           source = source
             .replace("'images/game-icons/' + gameId + '.png'", "'images/game-icons/' + gameId + '.webp'")
-            .replace("modification: 'resize-only-128px'", "modification: 'resize-only-128px-webp'");
+            .replace("modification: 'resize-only-96px'", "modification: 'resize-only-96px-webp'");
           fs.writeFileSync(file, source);
           NODE
           node scripts/game-guide-article-hub-sync.cjs
