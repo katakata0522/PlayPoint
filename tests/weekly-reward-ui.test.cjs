@@ -66,9 +66,9 @@ test('記録直後グラフは週ごとの色を積み上げ、月表示・現�
   assert.match(diary, /weekly-week-rise/);
   assert.match(diary, /weekly-current-glow/);
   for (const [week, color] of [[1, '#4285F4'], [2, '#EA4335'], [3, '#FBBC04'], [4, '#34A853'], [5, '#8AB4F8']]) {
-    assert.match(diary, new RegExp('weekly-week-legend-dot\\\\.week-' + week + '\\{background:' + color + '\\}'));
-    assert.match(diary, new RegExp('weekly-week-segment\\\\.week-' + week + '\\{background:' + color + '\\}'));
-    assert.match(diary, new RegExp('diary-week-segment\\\\.week-' + week + '\\{background:' + color + '\\}'));
+    assert.ok(diary.includes('.weekly-week-legend-dot.week-' + week + '{background:' + color + '}'));
+    assert.ok(diary.includes('.weekly-week-segment.week-' + week + '{background:' + color + '}'));
+    assert.ok(diary.includes('.diary-week-segment.week-' + week + '{background:' + color + '}'));
   }
   assert.match(diary, /weekly-mini-stack\{[^\n]*flex-direction:column/);
   assert.match(diary, /weekly-week-segment\.is-current-week-segment\{filter:none/);
