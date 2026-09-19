@@ -29,11 +29,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/fgo.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/fgo.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "genshin-welkin-value-2026",
@@ -64,11 +64,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/genshin.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/genshin.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "monst-google-play-vs-webshop-2026",
@@ -99,11 +99,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/monst.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/monst.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "starrail-supply-pass-value-2026",
@@ -135,11 +135,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/starrail.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/starrail.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "zzz-membership-value-2026",
@@ -171,11 +171,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/zzz.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/zzz.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "umamusume-umasuku-value-2026",
@@ -207,11 +207,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/umamusume.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/umamusume.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "proseka-google-play-vs-webstore-2026",
@@ -243,11 +243,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/proseka.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/proseka.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "pokepoke-premium-pass-guide-2026",
@@ -279,11 +279,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/pokepoke.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/pokepoke.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "pad-pass-value-2026",
@@ -315,11 +315,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/pad.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/pad.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "arknights-monthly-pass-limited-scout-2026",
@@ -351,11 +351,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/arknights.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/arknights.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "dokkan-google-play-vs-webstore-2026",
@@ -386,11 +386,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/dokkan.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/dokkan.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "hbr-google-play-vs-webshop-2026",
@@ -422,11 +422,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/hbr.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/hbr.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "honkai3rd-google-play-vs-charge-center-2026",
@@ -457,11 +457,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/honkai3rd.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/honkai3rd.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "phantomparade-google-play-vs-webshop-2026",
@@ -493,11 +493,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/phantomparade.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/phantomparade.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "prospi-a-google-play-vs-konami-store-2026",
@@ -529,11 +529,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/prospi-a.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/prospi-a.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "pokemon-go-google-play-vs-webstore-2026",
@@ -565,11 +565,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/pokemon-go.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/pokemon-go.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "efootball-google-play-points-vs-efootball-points-2026",
@@ -601,11 +601,11 @@
     ],
     "date": "2026-09-13",
     "modified": "2026-09-13",
-    "thumbnail": "../images/game-icons/efootball.webp",
-    "source": "game-guide",
-    "listed": true,
     "ogp": "../ogp.png",
-    "thumbnailKind": "app-icon"
+    "thumbnail": "../images/game-icons/efootball.webp",
+    "thumbnailKind": "app-icon",
+    "source": "game-guide",
+    "listed": true
   },
   {
     "id": "pad-puzzle-and-dragons-play-points",

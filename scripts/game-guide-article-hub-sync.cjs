@@ -128,7 +128,11 @@ function standardizeHead(originalHead, article) {
       '$1\n  <link rel="stylesheet" href="/articles/game-guide-article.css" />');
   }
   head = ensureMeta(head, 'article:published_time', article.date || PUBLISHED_AT);
-  head = ensureMeta(head, 'article:modified_time', article.modified || article.date || PUBLISHED_AT);
+  const modified = article.modified || article.date || PUBLISHED_AT;
+  const modifiedMeta = /^\d{4}-\d{2}-\d{2}$/.test(modified)
+    ? modified + 'T00:00:00+09:00'
+    : modified;
+  head = ensureMeta(head, 'article:modified_time', modifiedMeta);
   return head;
 }
 
