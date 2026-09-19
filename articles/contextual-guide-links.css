@@ -1,0 +1,58 @@
+/* Contextual editorial bridge: one focused next-read link inside the article flow. */
+.contextual-guide-links[data-contextual-nav="editorial"] {
+  margin: 22px 0 30px;
+}
+
+.contextual-guide-links[data-contextual-nav="editorial"]::before {
+  content: "この話をもう少し詳しく";
+  display: block;
+  margin: 0 0 7px;
+  color: var(--cocoon-muted, #64748b);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+}
+
+body .content .contextual-guide-links[data-contextual-nav="editorial"] > ul {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+body .content .contextual-guide-links[data-contextual-nav="editorial"] > ul > li > a {
+  min-height: 0;
+  padding: 12px 14px;
+  border-color: var(--cocoon-border, #e2e8f0);
+  border-left: 4px solid var(--cocoon-link, #0284c7);
+  background: var(--cocoon-main-bg, #ffffff);
+  color: var(--cocoon-link, #0284c7);
+  box-shadow: none;
+  transform: none;
+}
+
+body .content .contextual-guide-links[data-contextual-nav="editorial"] > ul > li > a::after {
+  content: "→";
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding-left: 0.75rem;
+  font-weight: 800;
+}
+
+@media (hover: hover) {
+  body .content .contextual-guide-links[data-contextual-nav="editorial"] > ul > li > a:hover {
+    border-color: var(--cocoon-link, #0284c7);
+    background: var(--article-ds-soft, #f8fafc);
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .contextual-guide-links[data-contextual-nav="editorial"] {
+    margin: 18px 0 24px;
+  }
+
+  body .content .contextual-guide-links[data-contextual-nav="editorial"] > ul > li > a {
+    padding: 11px 12px;
+  }
+}
