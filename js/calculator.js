@@ -36,11 +36,15 @@ export const CALC = {
         else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) rankGroup = 'platinum';
         else if (/gold|ゴールド|골드|金級/i.test(target)) rankGroup = 'gold';
         else if (/silver|シルバー|실버|銀級/i.test(target)) rankGroup = 'silver';
-        const maintenanceGroup = targetKind === 'maintain'
-            ? groups[rankGroup + 'Maintenance']
-            : null;
-        if (maintenanceGroup) candidates.push(...maintenanceGroup.slice(0, 3));
-        else if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
+        const supportsStatusPage = ['JP', 'US', 'KR', 'TW'].includes(STATE.currentRegion);
+        const supportsMaintenancePage = STATE.currentRegion === 'JP'
+            && (rankGroup === 'platinum' || rankGroup === 'diamond');
+        if (rankGroup !== 'default' && targetKind === 'maintain' && supportsMaintenancePage) {
+            candidates.push({ href: `maintenance/${rankGroup}/`, title: targetStatusLabel });
+        } else if (rankGroup !== 'default' && targetKind !== 'maintain' && supportsStatusPage) {
+            candidates.push({ href: `status/${rankGroup}/`, title: targetStatusLabel });
+        }
+        if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
         if (multiplier > 1) candidates.push(...groups.campaign.slice(0, 2));
         candidates.push(...groups.default);
 
