@@ -1,38 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="360" viewBox="0 0 960 360" role="img" aria-labelledby="title desc">
   <title id="title">Play Points calculation flow</title>
-  <desc id="desc">A three-step flow from required points through reward rate to estimated spending.</desc>
+  <desc id="desc">A three-step flow from required points through reward rate to estimated spending, connected with blue, red, yellow, and green accents.</desc>
   <defs>
-    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
-      <stop offset="0" stop-color="#0d1117"/>
-      <stop offset="1" stop-color="#17243a"/>
-    </linearGradient>
-    <linearGradient id="card" x1="0" x2="1">
-      <stop offset="0" stop-color="#1c2635"/>
-      <stop offset="1" stop-color="#202f44"/>
-    </linearGradient>
-    <filter id="shadow" x="-10%" y="-20%" width="120%" height="150%">
-      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000" flood-opacity=".24"/>
+    <filter id="shadow" x="-12%" y="-20%" width="124%" height="155%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#3c4043" flood-opacity=".12"/>
     </filter>
+    <linearGradient id="link12" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#4285F4"/>
+      <stop offset=".56" stop-color="#FBBC04"/>
+      <stop offset="1" stop-color="#EA4335"/>
+    </linearGradient>
+    <linearGradient id="link23" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#EA4335"/>
+      <stop offset=".52" stop-color="#FBBC04"/>
+      <stop offset="1" stop-color="#34A853"/>
+    </linearGradient>
   </defs>
-  <rect width="960" height="360" rx="28" fill="url(#bg)"/>
-  <g fill="none" stroke="#58a6ff" stroke-width="5" stroke-linecap="round">
-    <path d="M300 180h64"/><path d="m350 165 16 15-16 15"/>
-    <path d="M596 180h64"/><path d="m646 165 16 15-16 15"/>
+
+  <rect width="960" height="360" rx="28" fill="#F8FAFD"/>
+  <path d="M28 28h904" stroke="#E8EAED" stroke-width="1"/>
+
+  <g fill="none" stroke-linecap="round" stroke-width="7">
+    <path d="M300 180h64" stroke="url(#link12)"/>
+    <path d="M596 180h64" stroke="url(#link23)"/>
   </g>
+  <path d="m350 165 16 15-16 15" fill="none" stroke="#EA4335" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m646 165 16 15-16 15" fill="none" stroke="#34A853" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
   <g filter="url(#shadow)">
-    <rect x="54" y="72" width="246" height="216" rx="24" fill="url(#card)" stroke="#30363d"/>
-    <rect x="364" y="72" width="232" height="216" rx="24" fill="url(#card)" stroke="#30363d"/>
-    <rect x="660" y="72" width="246" height="216" rx="24" fill="url(#card)" stroke="#3fb950"/>
+    <rect x="54" y="72" width="246" height="216" rx="24" fill="#FFFFFF" stroke="#4285F4" stroke-width="3"/>
+    <rect x="364" y="72" width="232" height="216" rx="24" fill="#FFFFFF" stroke="#EA4335" stroke-width="3"/>
+    <rect x="660" y="72" width="246" height="216" rx="24" fill="#FFFFFF" stroke="#34A853" stroke-width="3"/>
   </g>
-  <g font-family="system-ui, sans-serif" text-anchor="middle">
-    <g fill="#8b949e" font-size="22" font-weight="700">
-      <text x="177" y="116">01 · POINTS</text><text x="480" y="116">02 · RATE</text><text x="783" y="116">03 · ESTIMATE</text>
+
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" text-anchor="middle">
+    <g font-size="21" font-weight="800">
+      <text x="177" y="116" fill="#4285F4">01 · POINTS</text>
+      <text x="480" y="116" fill="#EA4335">02 · RATE</text>
+      <text x="783" y="116" fill="#34A853">03 · ESTIMATE</text>
     </g>
-    <text x="177" y="201" fill="#f0f6fc" font-size="54" font-weight="800">1,728 pt</text>
-    <text x="480" y="201" fill="#58a6ff" font-size="54" font-weight="800">× 2.0</text>
-    <text x="783" y="201" fill="#3fb950" font-size="48" font-weight="800">≈ ¥86,400</text>
-    <g fill="#b1bac4" font-size="18">
-      <text x="177" y="246">GOAL GAP</text><text x="480" y="246">REWARD CONDITION</text><text x="783" y="246">SPENDING GUIDE</text>
+
+    <rect x="116" y="142" width="122" height="8" rx="4" fill="#4285F4" opacity=".16"/>
+    <rect x="419" y="142" width="122" height="8" rx="4" fill="#FBBC04" opacity=".72"/>
+    <rect x="722" y="142" width="122" height="8" rx="4" fill="#34A853" opacity=".16"/>
+
+    <text x="177" y="205" fill="#202124" font-size="52" font-weight="800">1,728 pt</text>
+    <text x="480" y="205" fill="#EA4335" font-size="52" font-weight="800">× 2.0</text>
+    <text x="783" y="205" fill="#34A853" font-size="46" font-weight="800">≈ ¥86,400</text>
+
+    <g fill="#5F6368" font-size="17" font-weight="650">
+      <text x="177" y="248">GOAL GAP</text>
+      <text x="480" y="248">REWARD CONDITION</text>
+      <text x="783" y="248">SPENDING GUIDE</text>
     </g>
   </g>
 </svg>
