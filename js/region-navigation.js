@@ -157,19 +157,16 @@ function ensureRegionSelectorCriticalStyle() {
 }
 
 function ensureRegionSelectorStylesheet() {
-    if (!document.querySelector('link[data-region-selector-style]')) {
+    const add = (key, file) => {
+        if (document.querySelector(`link[data-${key}]`)) return;
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = `${getRootPrefix()}region-selector.css`;
-        link.dataset.regionSelectorStyle = 'true';
+        link.href = `${getRootPrefix()}${file}`;
+        link.dataset[key.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = 'true';
         document.head.appendChild(link);
-    }
-    if (window.innerWidth <= 520 || document.querySelector('link[data-desktop-topbar-style]')) return;
-    const desktop = document.createElement('link');
-    desktop.rel = 'stylesheet';
-    desktop.href = `${getRootPrefix()}desktop-topbar.css`;
-    desktop.dataset.desktopTopbarStyle = 'true';
-    document.head.appendChild(desktop);
+    };
+    add('region-selector-style', 'region-selector.css');
+    if (window.innerWidth > 520) add('desktop-topbar-style', 'desktop-topbar.css');
 }
 
 function applyResponsiveRegionLabel(button, region, label) {
@@ -341,9 +338,7 @@ if (typeof document !== 'undefined') {
     } else {
         bootRegionSelector();
     }
-    window.matchMedia?.('(min-width: 521px)').addEventListener?.('change', event => {
-        if (event.matches) ensureRegionSelectorStylesheet();
-    });
+    window.matchMedia?.('(min-width: 521px)').addEventListener?.('change', ensureRegionSelectorStylesheet);
 }
 
 if (typeof window !== 'undefined' && window.__TEST_ENV__) {
