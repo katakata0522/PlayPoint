@@ -84,7 +84,7 @@ function transformArticle(html, article, catalog) {
   const nav = '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === article.href ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
   const sidebar = renderSidebar(article, role, related);
-  let after = html.replace(GLOBAL_NAV, nav).replace(/<link\\b[^>]*href=[\"'][^\"']*\\/articles\\/japanese-sidebar-v2\\.css(?:\\?[^\"']*)?[\"'][^>]*>\\s*/gi, '');
+  let after = removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav));
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {
     const end = after.lastIndexOf('</article>');
