@@ -1,0 +1,94 @@
+/* PC / tablet only. Loaded lazily by region-navigation.js above 520px. */
+@media (min-width: 521px) {
+  .region-switch {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: .5rem;
+  }
+  .region-switch > button[data-region],
+  .region-switch .region-more-toggle {
+    min-width: 76px;
+    min-height: 44px;
+    padding: .5rem .68rem;
+    border: 1px solid var(--input-border-color) !important;
+    border-radius: 8px !important;
+  }
+  .region-label-desktop {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .42rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .region-label-desktop::before,
+  .region-more-option__flag::before {
+    content: "";
+    display: inline-block;
+    width: 24px;
+    height: 18px;
+    flex: 0 0 24px;
+    border-radius: 2px;
+    background: center / cover no-repeat;
+    box-shadow: 0 0 0 1px rgba(31,41,55,.18);
+  }
+  button[data-region="JP"] .region-label-desktop::before { background-image: url("images/flags/jp.svg"); }
+  button[data-region="US"] .region-label-desktop::before { background-image: url("images/flags/us.svg"); }
+  button[data-region="KR"] .region-label-desktop::before { background-image: url("images/flags/kr.svg"); }
+  button[data-region="TW"] .region-label-desktop::before { background-image: url("images/flags/tw.svg"); }
+
+  .region-switch .region-more { display: inline-flex; flex: 0 0 auto; }
+  .region-switch .region-more-toggle { min-width: 52px; }
+  .region-more-option__flag { display: inline-flex; font-size: 0; }
+  .region-more-option[data-region="HK"] .region-more-option__flag::before { background-image: url("images/flags/hk.svg"); }
+  .region-more-option[data-region="IN"] .region-more-option__flag::before { background-image: url("images/flags/in.svg"); }
+
+  .region-switch > button[data-region]:hover:not(.active),
+  .region-switch .region-more-toggle:hover:not([data-region-active="true"]) {
+    background: rgba(0,95,204,.08) !important;
+    color: var(--text-color,#1f2937) !important;
+    border-color: rgba(0,95,204,.34) !important;
+    box-shadow: 0 3px 9px rgba(0,95,204,.1);
+  }
+}
+@media (min-width: 700px) {
+  .calculator-wrapper { max-width: 720px; }
+  .top-bar {
+    padding: .65rem .75rem;
+    border: 1px solid rgba(11,87,208,.14);
+    border-radius: 14px;
+    background: rgba(255,255,255,.56);
+    box-shadow: 0 5px 18px rgba(31,41,55,.05);
+  }
+  .top-bar .region-switch { flex: 0 0 auto; }
+  .header-links {
+    flex: 1 1 320px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .45rem .55rem;
+  }
+  .top-bar a { min-height: 42px; padding: .42rem .78rem; }
+  .top-bar a:hover,
+  .top-bar a:focus-visible {
+    background: rgba(11,87,208,.11);
+    color: #0842a0 !important;
+    border-color: rgba(11,87,208,.34);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(11,87,208,.12);
+    text-decoration: none;
+  }
+  .top-bar a:focus-visible {
+    outline: 3px solid var(--input-focus-border-color,#005fcc);
+    outline-offset: 2px;
+  }
+  .header-links .alert-link:hover,
+  .header-links .alert-link:focus-visible {
+    background: rgba(180,35,44,.08);
+    border-color: rgba(180,35,44,.26);
+    color: #8d1c24 !important;
+  }
+}
+@media (min-width: 1024px) {
+  .calculator-wrapper { max-width: 820px; }
+}
