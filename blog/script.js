@@ -322,7 +322,8 @@
         sidebarCategories: document.getElementById('sidebar-categories'),
         sidebarRecent: document.getElementById('sidebar-recent'),
         resultStatus: document.getElementById('article-result-status'),
-        categoryScrollHint: document.getElementById('category-scroll-hint')
+        categoryScrollHint: document.getElementById('category-scroll-hint'),
+        filterPanel: document.getElementById('article-filter-panel')
     };
 
     // Create Particles in Hero Section
@@ -535,6 +536,7 @@
         if (!currentSearch && sortMode === 'relevance') sortMode = 'newest';
         if (dom.searchInput && currentSearch) dom.searchInput.value = currentSearch;
         updateSortControl();
+        syncFilterPanelState();
 
         await loadArticles();
     }
@@ -651,6 +653,7 @@
                 }
 
                 syncCategoryActiveState();
+                syncFilterPanelState();
                 if (currentSearch) loadBodySearch().then(render);
                 render();
             });
@@ -762,6 +765,18 @@
         if (relevance) { relevance.disabled = !currentSearch; relevance.hidden = !currentSearch; }
         if (!currentSearch && sortMode === 'relevance') sortMode = 'newest';
         dom.sortToggle.value = sortMode;
+    }
+
+    function syncFilterPanelState() {
+        if (!dom.filterPanel) return;
+        const hasOptionalFilter = Boolean(
+            currentGameTitle ||
+            currentCategory !== 'all' ||
+            sortMode === 'oldest' ||
+            sortMode === 'updated'
+        );
+        dom.filterPanel.classList.toggle('has-active-filter', hasOptionalFilter);
+        if (hasOptionalFilter) dom.filterPanel.open = true;
     }
 
 
@@ -900,6 +915,7 @@
         let filtered = filterArticles();
 
         updateSortControl();
+        syncFilterPanelState();
         filtered = BlogUtils.sortListedArticles(filtered, { mode: sortMode, search: currentSearch });
 
         // 通常一覧は件数を繰り返さず、絞り込み中だけ条件と実際の件数を短く見せる。
