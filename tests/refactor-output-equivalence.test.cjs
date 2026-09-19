@@ -9,7 +9,8 @@ const { publicManifest, compareManifests, fixedBuildEnvironment, verify } = requ
 
 function directory(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-equivalence-test-'));
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  // 隔離Gitの終了直後にファイルが現れる一時競合だけ再試行し、上限後は後片付けも失敗させる。
+  t.after(() => fs.rmSync(root, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }));
   return root;
 }
 function write(root, file, content) {

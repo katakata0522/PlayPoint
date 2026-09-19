@@ -40,7 +40,7 @@ html[data-reading-theme] :is(.blog-header.glass-panel,.site-header) { background
 html[data-reading-theme] .filter-bar button.active { background:var(--reading-selected); color:var(--reading-on-selected); border-color:var(--reading-selected); box-shadow:none; }
 html[data-reading-theme] :is(.sidebar-header,.cta-banner-btn,.reset-btn) { background:var(--reading-selected); color:var(--reading-on-selected); }
 html[data-reading-theme] .sidebar-close { color:inherit; background:transparent; }
-html[data-reading-theme] .blog-index-compact .card-thumb:not(.card-thumb--text-only) .badge { color:#000; }
+html[data-reading-theme] .blog-index-compact .card-thumb:not(.card-thumb--text-only) .badge { background:var(--reading-soft); color:var(--reading-text); border:1px solid var(--reading-border); }
 html[data-reading-theme] :is(.brand,.site-logo,.hero-title) { color:var(--reading-text); }
 html[data-reading-theme] .hero-title { background:none; -webkit-text-fill-color:currentColor; text-wrap:balance; }
 html[data-reading-theme] .breadcrumbs-wrapper span { color:var(--reading-muted); }
