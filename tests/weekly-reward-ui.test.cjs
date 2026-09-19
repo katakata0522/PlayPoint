@@ -53,13 +53,16 @@ test('今月見出しの重複を画面から隠し、週次カードの日付�
   assert.match(diary, /diary-input-area>#selectedMonth,[^\n]*weekly-month-section-title\{display:none!important\}/);
 });
 
-test('記録直後グラフは詳細グラフ相当のグラデーション・月表示・現在月強調・段階アニメーションを持つ', () => {
+test('記録直後グラフは週ごとの色を積み上げ、月表示・現在週強調・段階アニメーションを持つ', () => {
   const diary = read('js/diary.js');
-  assert.match(diary, /linear-gradient\(180deg,#58a6ff[^\n]*#3fb950/);
+  assert.match(diary, /monthlyWeeks/);
+  for (const week of [1, 2, 3, 4, 5]) assert.match(diary, new RegExp('weekly-week-segment week-' + week));
+  assert.match(diary, /weekly-mini-stack/);
   assert.match(diary, /weekly-mini-bar-label/);
   assert.match(diary, /is-current-month/);
-  assert.match(diary, /--weekly-delay/);
-  assert.match(diary, /weekly-bar-grow/);
+  assert.match(diary, /is-current-week-segment/);
+  assert.match(diary, /--weekly-week-delay/);
+  assert.match(diary, /weekly-week-rise/);
   assert.match(diary, /weekly-current-glow/);
   assert.doesNotMatch(diary, /weekly-achievement-kicker/);
   assert.doesNotMatch(diary, /記録できた！/);
@@ -91,4 +94,40 @@ test('記録結果には次の金曜日とGoogleカレンダー導線をコン�
   assert.match(diary, /register-google-cal-btn/);
   assert.match(diary, /copy\.nextReward/);
   assert.match(diary, /copy\.calendarCta/);
+});
+
+
+test('詳細年間グラフも月合計の単色棒ではなく週別スタックを使う', () => {
+  const diary = read('js/diary.js');
+  const css = read('style.css');
+  assert.match(diary, /diary-chart-stack/);
+  assert.match(diary, /diary-week-segment week-/);
+  assert.match(css, /\.diary-chart-stack[\s\S]*flex-direction:\s*column-reverse/);
+  for (const week of [1, 2, 3, 4, 5]) assert.match(css, new RegExp('diary-week-segment\\.week-' + week));
+});
+
+test('今週は保存後にロックし、編集・未保存・変更保存の状態を明示する', () => {
+  const diary = read('js/diary.js');
+  assert.match(diary, /saved: '記録済み ✓'/);
+  assert.match(diary, /unsaved: '未保存の変更'/);
+  assert.match(diary, /saveChanges: '変更を保存'/);
+  assert.match(diary, /setCurrentWeekRecordMode/);
+  assert.match(diary, /input\.disabled = saved/);
+  assert.match(diary, /select\.disabled = saved/);
+  assert.match(diary, /weekly-record-edit/);
+  assert.match(diary, /event\.key !== 'Enter'/);
+});
+
+test('X共有は入力行ではなく記録結果の後にだけ表示する', () => {
+  const diary = read('js/diary.js');
+  assert.doesNotMatch(diary, /diary-x-share-btn/);
+  assert.match(diary, /weekly-result-share/);
+  assert.match(diary, /SHARE\.shareRewardToX\(normalizedPoints, prize\)/);
+});
+
+test('自己最高更新だけ「今年いちばん✨」を記録結果へ出せる', () => {
+  const diary = read('js/diary.js');
+  assert.match(diary, /isNewYearBest/);
+  assert.match(diary, /yearBest: '今年いちばん✨'/);
+  assert.match(diary, /weekly-achievement-milestone/);
 });
