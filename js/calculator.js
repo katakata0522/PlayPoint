@@ -27,37 +27,55 @@ export const CALC = {
         return '';
     },
 
-    getRelatedArticles(targetStatusLabel, multiplier, targetKind = 'upgrade') {
-        const target = String(targetStatusLabel || '').toLowerCase();
-        const groups = this.getResultNavigation().relatedArticleGroups;
+    getTargetRankKey(targetStatusLabel, explicitRankKey = '') {
+        const allowed = ['silver', 'gold', 'platinum', 'diamond'];
+        const explicit = String(explicitRankKey || '').trim().toLowerCase();
+        if (allowed.includes(explicit)) return explicit;
+
+        const config = CONFIGS[STATE.currentRegion];
+        const mapped = config?.tierIdsByLabel?.[String(targetStatusLabel || '')] || '';
+        return allowed.includes(mapped) ? mapped : 'default';
+    },
+
+    getTargetNavigationTitle(targetStatusLabel, targetKind = 'upgrade') {
+        const texts = CONFIGS[STATE.currentRegion]?.uiText || {};
+        const kindLabel = targetKind === 'maintain'
+            ? (texts.statusKeep || 'Maintain')
+            : (texts.statusUp || 'Level up');
+        return targetStatusLabel ? `${targetStatusLabel} (${kindLabel})` : kindLabel;
+    },
+
+    getRelatedArticles(targetStatusLabel, multiplier, targetKind = 'upgrade', targetRankKey = '') {
+        const rankGroup = this.getTargetRankKey(targetStatusLabel, targetRankKey);
+        const navigation = this.getResultNavigation();
+        const groups = navigation.relatedArticleGroups;
         const candidates = [];
-        let rankGroup = 'default';
-        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) rankGroup = 'diamond';
-        else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) rankGroup = 'platinum';
-        else if (/gold|ゴールド|골드|金級/i.test(target)) rankGroup = 'gold';
-        else if (/silver|シルバー|실버|銀級/i.test(target)) rankGroup = 'silver';
-        const supportsStatusPage = ['JP', 'US', 'KR', 'TW'].includes(STATE.currentRegion);
-        const supportsMaintenancePage = STATE.currentRegion === 'JP'
-            && (rankGroup === 'platinum' || rankGroup === 'diamond');
-        if (rankGroup !== 'default' && targetKind === 'maintain' && supportsMaintenancePage) {
-            candidates.push({ href: `maintenance/${rankGroup}/`, title: targetStatusLabel });
-        } else if (rankGroup !== 'default' && targetKind !== 'maintain' && supportsStatusPage) {
-            candidates.push({ href: `status/${rankGroup}/`, title: targetStatusLabel });
+        const dedicatedTitle = this.getTargetNavigationTitle(targetStatusLabel, targetKind);
+
+        if (rankGroup !== 'default'
+            && targetKind === 'maintain'
+            && navigation.maintenancePageRanks.includes(rankGroup)) {
+            candidates.push({ href: `maintenance/${rankGroup}/`, title: dedicatedTitle });
+        } else if (rankGroup !== 'default'
+            && targetKind !== 'maintain'
+            && navigation.statusPageRanks.includes(rankGroup)) {
+            candidates.push({ href: `status/${rankGroup}/`, title: dedicatedTitle });
         }
+
         if (groups[rankGroup]) candidates.push(...groups[rankGroup].slice(0, 3));
         if (multiplier > 1) candidates.push(...groups.campaign.slice(0, 2));
         candidates.push(...groups.default);
 
         const seen = new Set();
         return candidates.filter(article => {
-            if (seen.has(article.href)) return false;
+            if (!article?.href || seen.has(article.href)) return false;
             seen.add(article.href);
             return true;
         }).slice(0, 4);
     },
 
-    getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays) {
-        const target = String(targetStatusLabel || '').toLowerCase();
+    getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetRankKey = '') {
+        const rankGroup = this.getTargetRankKey(targetStatusLabel, targetRankKey);
         const links = [];
         const navigation = this.getResultNavigation();
 
@@ -67,31 +85,30 @@ export const CALC = {
             links.push(navigation.campaign);
         }
 
-        if (/diamond|ダイヤ|다이아|鑽石/i.test(target)) {
+        if (rankGroup === 'diamond') {
             links.push(navigation.diamond);
-        } else if (/platinum|プラチナ|플래티넘|白金/i.test(target)) {
+        } else if (rankGroup === 'platinum') {
             links.push(navigation.platinum);
         }
 
+        // 年末が近い場合だけ反映タイミングを判断材料として出す。
+        // 通常時に「ポイントがつかない」トラブル導線を常設しない。
         if (remainingDays <= 45) {
             links.push(navigation.nearYearEnd);
-        } else {
-            links.push(navigation.notShowing);
         }
 
-        links.push(navigation.giftCards);
-
+        // ギフトコード確認は renderPurchaseCheckLink() が専用の位置で1回だけ担当する。
         const seen = new Set();
         return links.filter(link => {
-            if (seen.has(link.href)) return false;
+            if (!link?.href || seen.has(link.href)) return false;
             seen.add(link.href);
             return true;
         }).slice(0, 4);
     },
 
-    getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade') {
-        const relatedArticles = this.getRelatedArticles(targetStatusLabel, multiplier, targetKind);
-        const decisionLinks = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays);
+    getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade', targetRankKey = '') {
+        const relatedArticles = this.getRelatedArticles(targetStatusLabel, multiplier, targetKind, targetRankKey);
+        const decisionLinks = this.getDecisionLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetRankKey);
         const prioritizedLinks = [
             ...relatedArticles.slice(0, 1).map(link => ({ ...link, linkType: 'related' })),
             ...decisionLinks.map(link => ({ ...link, linkType: 'decision' })),
@@ -106,8 +123,8 @@ export const CALC = {
         }).slice(0, 3);
     },
 
-    renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade') {
-        const links = this.getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind);
+    renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind = 'upgrade', targetRankKey = '') {
+        const links = this.getResultGuidanceLinks(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind, targetRankKey);
         if (!links.length) return '';
 
         const items = links
@@ -186,6 +203,7 @@ export const CALC = {
                 label: `${currentStatusLabel} (${config.uiText.statusKeep || '維持'})`,
                 value: config.thresholds[currentStatusLabel],
                 statusLabel: currentStatusLabel,
+                rankKey: config.tierIdsByLabel?.[currentStatusLabel] || '',
                 targetKind: 'maintain'
             });
         }
@@ -200,6 +218,7 @@ export const CALC = {
                     label: `${targetLabel} (${config.uiText.statusUp || '昇格'})`,
                     value: points,
                     statusLabel: targetLabel,
+                    rankKey: config.tierIdsByLabel?.[targetLabel] || '',
                     targetKind: 'upgrade'
                 });
             }
@@ -210,6 +229,7 @@ export const CALC = {
             const pointsStr = target.value.toLocaleString(config.lang);
             const option = new Option(`${target.label} (${pointsStr}pt)`, target.value);
             option.dataset.statusLabel = target.statusLabel;
+            option.dataset.rankKey = target.rankKey;
             option.dataset.targetKind = target.targetKind;
             STATE.dom.targetStatus.add(option);
         });
@@ -378,6 +398,7 @@ export const CALC = {
         const normalRate = config.statusRates[currentStatusValue];
         const selectedTargetOption = STATE.dom.targetStatus.options[STATE.dom.targetStatus.selectedIndex];
         const targetStatusLabel = selectedTargetOption ? selectedTargetOption.dataset.statusLabel : null;
+        const targetRankKey = selectedTargetOption?.dataset.rankKey || this.getTargetRankKey(targetStatusLabel);
         const targetKind = selectedTargetOption?.dataset.targetKind || 'upgrade';
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
@@ -406,7 +427,7 @@ export const CALC = {
         const { resultContent, resultDetailsContent } = renderMainResult({
             config, neededPoints: finalNeededPoints, totalAmountNeeded, remainingMonths, remainingDays,
             finalRate, rateSourceLabel, comparison,
-            guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind),
+            guidanceContent: this.renderResultGuidance(totalAmountNeeded, targetStatusLabel, multiplier, remainingDays, targetKind, targetRankKey),
             purchaseCheckContent: finalNeededPoints > 0 ? this.renderPurchaseCheckLink() : '',
             progressCheer: this.getProgressCheer(finalNeededPoints)
         });
