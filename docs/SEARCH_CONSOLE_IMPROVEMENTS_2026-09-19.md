@@ -243,3 +243,80 @@ Country / Deviceでも主因は日本・モバイル。
 
 2026-09-25に上の3候補を再確認し、同じ傾向が維持されていればそれぞれ別PRで最小差分を実装する。
 一度に3対象を変更せず、どの変更がCTR/owner整理へ効いたか追えるようにする。
+
+---
+
+# PR #408 実装後の観察ロック
+
+PR #408「SEO: 低CTRクエリの検索意図とページownerを最小差分で整理」は
+**2026-09-19 13:56 JST** にmainへマージされ、
+**2026-09-19 13:59 JST** にXserver Deployが成功した。
+
+Search Console APIは `America/Los_Angeles` の日付を使うため、これは
+**2026-09-18 21:59 PT** に相当する。
+したがって 2026-09-18 PT は変更前後が混在するため、効果測定のpost期間には使わない。
+
+- 変更前の固定ベースライン: **2026-08-20〜2026-09-16 PT**（28日、FINAL）
+- mixed day: **2026-09-18 PT**（効果測定から除外）
+- 変更後の最初の完全日: **2026-09-19 PT**
+- 初期採用確認: **2026-09-25前後**
+- 変更後28日が完全に揃う窓: **2026-09-19〜2026-10-16 PT**
+- 本評価: 上記post 28日がFINALになってから
+
+## #408変更前ベースライン
+
+評価時はRawのfragment別行を合算せず、`🧹GSC 28日正規化` のbase URL単位を正本にする。
+
+| 検索意図 / query | 変更前 Imp. | Click | CTR | Pos | 主な観察 |
+| --- | ---: | ---: | ---: | ---: | --- |
+| `スーパーウィークリーリワード` | 390 | 0 | 0.00% | 6.06 | title/H1「とは？」の採用とCTR |
+| `google play クエスト 購入` | 205 | 0 | 0.00% | 4.33 | 「購入条件」明示後のCTR |
+| `グーグルプレイポイント 反映されない` | 50 | 0 | 0.00% | 5.88 | Google Play Points表記後のCTR |
+| `구글포인트 확인` | 326 | 0 | 0.00% | 9.29 | use-coupons → balance/historyページへのowner移行 |
+| `google play ポイント交換` | 171 | 0 | 0.00% | 9.71 | cash-conversion → best-useへのowner整理 |
+
+補助ベースライン:
+
+- `google play ポイント交換 おすすめ` → `/articles/2025-12-25-best-use.html`
+  - 344 Imp. / 7 Click / CTR 2.03% / Pos 7.55
+- `google play ポイント交換 おすすめ` → cash-conversion
+  - 75 Imp. / 1 Click / CTR 1.33% / Pos 9.23
+
+## 評価ルール
+
+### title/H1を変更した3群
+
+CTRだけで成功判定しない。
+
+1. CTR
+2. 平均掲載順位
+3. 表示回数
+4. URL InspectionのLast crawl
+5. Google canonical / User canonical
+
+を同時に見る。
+
+順位が大きく変わった場合は、CTR上昇をtitle/H1変更だけの効果とは扱わない。
+
+### owner整理2群
+
+CTRより先に、queryに対する **base URL別の表示シェア** を見る。
+
+- 韓国語 `구글포인트 확인`
+  - 旧owner: `/ko/articles/google-play-points-use-coupons.html`
+  - 意図したowner: `/ko/articles/google-play-points-balance-history-progress.html`
+- 日本語 `google play ポイント交換`
+  - 現状owner: `/articles/2026-07-24-play-points-cash-conversion.html`
+  - 交換先比較の意図したowner: `/articles/2025-12-25-best-use.html`
+
+新ownerの表示シェアが増えているなら、クリック増加前でもowner整理の初期シグナルとして記録する。
+
+## 変更凍結
+
+#408対象ページは、事実誤認・制度変更・重大なUX不具合を除き、
+**初期採用確認までは追加SEO改稿を重ねない**。
+
+2026-09-25は「最終評価日」ではなく、
+再クロール・title採用・owner移行が始まったかを見る最初の確認日にする。
+28日効果判定はpost窓がFINALになってから行う。
+

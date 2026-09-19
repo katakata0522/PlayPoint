@@ -55,6 +55,30 @@ P0の `scripts/gsc-nonoverlap-28d.gs` と同じbound Apps Scriptプロジェク�
 
 計算開始・初回成功は `entry_source_path` で元ページへ帰属する。
 
+### GSCページ集計と結合健全性
+
+ページ価値ファネルの検索クリック・表示は、検索意図分析用の `query × page` を合算しない。
+Search Console APIを **`page` 単独 / `byPage` / `FINAL`** で取得する。
+
+理由:
+
+- queryディメンションは匿名化・long-tail行が表から除外されることがある
+- ページ価値ファネルは「検索語の内訳」ではなくページ全体の流入量を扱う
+- query × pageは `🗃GSC 28日履歴` / `🧹GSC 28日正規化` 側で検索意図分析に使う
+
+GSCは絶対URL、GA4はパスを返すため、結合キーは必ず
+**site-relative path**（例: `/articles/example.html`）へ正規化する。
+Apps Script V8ではブラウザ/Nodeの `URL` globalへ依存しない。
+
+収集後はGSCクリックを重みとしてGA4 Organic landingとのjoin率を検査する。
+
+- 20クリック未満: `LOW_SAMPLE`（異常判定しない）
+- 20クリック以上かつjoin率50%未満: `PARTIAL`
+- 正規化後のキーに `https://...` が1件でも残る: `PARTIAL`
+- `PARTIAL` の間はページ価値ファネルをSEO判断のSSOTにしない
+
+API取得成功だけでは `OK` にしない。**取得成功と結合成功を別々に検証する。**
+
 ### ページ別収益
 
 ページ別収益の主経路はGA4 Data APIのpublisher metrics。
