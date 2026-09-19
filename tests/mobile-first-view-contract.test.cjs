@@ -352,6 +352,7 @@ test('計算フローはGoogleコア4色を段階と接続へ使う', () => {
 test('トップ下部は短さを保ちつつ具体的な利用場面・ランクの表情・FAQを残す', () => {
   const html = read('index.html');
   const css = read('style.css');
+  const experience = read('js/home-experience.js');
   const description = html.match(/<!-- DESCRIPTION_SECTION_START -->([\s\S]*?)<!-- DESCRIPTION_SECTION_END -->/)?.[1] || '';
   const articles = html.match(/<!-- ARTICLE_DRAWER_START -->([\s\S]*?)<!-- ARTICLE_DRAWER_END -->/)?.[1] || '';
   const faq = html.match(/<!-- FAQ_SECTION_START -->([\s\S]*?)<!-- FAQ_SECTION_END -->/)?.[1] || '';
@@ -379,11 +380,11 @@ test('トップ下部は短さを保ちつつ具体的な利用場面・ラン�
 
   assert.match(css, /\.home-secondary-section\s*\{/);
   assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(html, /\.home-use-cases\{/);
-  assert.match(html, /\.home-rank-card--silver\{/);
-  assert.match(html, /\.home-rank-card--gold\{/);
-  assert.match(html, /\.home-rank-card--platinum\{/);
-  assert.match(html, /\.home-rank-card--diamond\{/);
+  assert.match(experience, /\.home-use-cases\{/);
+  assert.match(experience, /\.home-rank-card--silver\{/);
+  assert.match(experience, /\.home-rank-card--gold\{/);
+  assert.match(experience, /\.home-rank-card--platinum\{/);
+  assert.match(experience, /\.home-rank-card--diamond\{/);
 });
 
 test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
