@@ -72,7 +72,7 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
                     <dt>${texts.resultLabelTotalYen}</dt>
                     <dd><b>${texts.approxLabel} ${renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
                 </dl>
-                ${progressCheer ? `<p class="result-progress-cheer">${progressCheer}</p>` : ''}
+                ${progressCheer ? `<p class="result-progress-cheer" style="margin:.55em 0 0;color:#1e8e3e;font-weight:900;font-size:.92em;letter-spacing:.01em;">${progressCheer}</p>` : ''}
                 ${premiseContent}
             `;
             resultDetailsContent = `
