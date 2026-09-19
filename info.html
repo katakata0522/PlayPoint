@@ -2,66 +2,37 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>あとがき・Q&A - Playポイント計算ツール</title>
+    <title>あとがき・アップデート情報 - Playポイント計算ツール</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Playポイント計算機のQ&A、更新履歴、開発経緯、非公式ツールとしての使い方をまとめたページです。計算結果の見方や確認時の注意点も整理しています。">
+  <meta name="description" content="Playポイント計算機をご利用いただいた皆さまへの感謝、開発のきっかけや裏話、これまでのアップデート情報をまとめたページです。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-08-18">
-    <meta property="article:modified_time" content="2026-08-18T00:00:00+09:00">
+    <meta name="last-modified" content="2026-09-19">
+    <meta property="article:modified_time" content="2026-09-19T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/info.html">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/info.html">
-    <meta property="og:title" content="あとがき・Q&A | Playポイント計算機">
-    <meta property="og:description" content="Playポイント計算機のQ&A、更新履歴、開発経緯をまとめたページです。">
+    <meta property="og:title" content="あとがき・アップデート情報 | Playポイント計算機">
+    <meta property="og:description" content="Playポイント計算機への感謝、開発秘話、アップデート情報をまとめたページです。">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://playpoint-sim.com/info.html">
     <meta property="og:image" content="https://playpoint-sim.com/ogp.png">
     <meta property="og:site_name" content="Playポイント計算機">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="あとがき・Q&A | Playポイント計算機">
-    <meta name="twitter:description" content="Playポイント計算機のQ&A、更新履歴、開発経緯をまとめたページです。">
+    <meta name="twitter:title" content="あとがき・アップデート情報 | Playポイント計算機">
+    <meta name="twitter:description" content="Playポイント計算機への感謝、開発秘話、アップデート情報をまとめたページです。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
     <link rel="stylesheet" href="style.css?v=7065e3ea95">
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{
-        "@type": "Question",
-        "name": "月平均の「○ヶ月」って何ですか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。この表示は、今年のステータス進捗を12月31日までの残り期間で均等に見るための目安です。到達したステータスは翌年末まで維持され、毎年初めに前年の獲得ポイントで再判定されます。"
-        }
-      }, {
-        "@type": "Question",
-        "name": "例題の「1728」って何ですか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "開発者が実際にプラチナ到達までに必要だったポイントを例として掲載しています。"
-        }
-      }, {
-        "@type": "Question",
-        "name": "還元設定の計算はどうなっていますか？",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Google Playに表示された特別獲得率と現在ステータスの通常獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定は保証せず、公式画面の条件を優先してください。"
-        }
-      }]
-    }
-    </script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "あとがき・Q&A",
+      "name": "あとがき・アップデート情報",
       "url": "https://playpoint-sim.com/info.html",
       "inLanguage": "ja",
-      "dateModified": "2026-08-18",
+      "dateModified": "2026-09-19",
       "author": {
         "@type": "Person",
         "name": "かたかた"
@@ -78,7 +49,7 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "あとがき・Q&A",
+            "name": "あとがき・アップデート情報",
             "item": "https://playpoint-sim.com/info.html"
           }
         ]
@@ -90,22 +61,7 @@
 <body>
 
 <main class="calculator-wrapper">
-    <div class="top-bar">
-      <div class="header-links" style="width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-        <div class="lang-nav" style="font-size: 0.9em;">
-          <a href="./" style="margin-right: 12px; color: #007bff; text-decoration: none;">日本語</a>
-          <a href="./en/" style="margin-right: 12px; color: #007bff; text-decoration: none;">English</a>
-          <a href="./ko/" style="margin-right: 12px; color: #007bff; text-decoration: none;">한국어</a>
-          <a href="./tw/" style="margin-right: 12px; color: #007bff; text-decoration: none;">繁體中文</a>
-        </div>
-        <div>
-          <a href="privacy.html">プライバシーポリシー</a>
-          <a href="terms.html" style="margin-left: 1em;">利用規約</a>
-        </div>
-      </div>
-    </div>
-
-    <h1>あとがき・Q&A</h1>
+    <h1>あとがき・アップデート情報</h1>
 
     <div class="section" id="thanks-section">
       <h2>ご利用ありがとうございます！</h2>
@@ -123,22 +79,22 @@
       </p>
     </div>
 
-    <div class="section" id="qa-section">
-      <h2>よくある質問 (Q&A)</h2>
-      <dl id="qa-section-dl" style="margin-left: 0; padding-left: 0;">
-        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 月平均の「○ヶ月」って何ですか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 今年の残り月数です。目標達成に必要な課金額を、年末までに均等に割った場合の月あたりの目安を示しています。<br>この表示は、今年のステータス進捗を12月31日までの残り期間で均等に見るための目安です。到達したステータスは翌年末まで維持され、毎年初めに前年の獲得ポイントで再判定されます。</dd>
-
-        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 例題の「1728」って何ですか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 開発者がプラチナに達するまでに必要だったポイントの例です。開発の経緯や詳細は、このページの下部にある <a href="#about-section"><b>あとがき・開発経緯</b></a> をぜひお読みになってください。</dd>
-
-        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 還元設定の計算はどうなっていますか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. Google Playのオファー画面に「100円ごとに3ポイント」のような特別獲得率が表示される場合は、その最終的な獲得率をキャンペーン欄へ入力します。計算機は現在ステータスの通常獲得率と特別獲得率を比較し、高い方を試算に使います。通常獲得率へキャンペーン数字を掛ける計算ではありません。キャンペーンの併用可否や対象判定を保証するものではありません。対象アプリ、期間、上限、有効化の要否はGoogle Playの公式画面を優先してください。</dd>
-        <dt style="font-weight: bold; color: #0b57d0; margin-top: 1.2em; margin-bottom: 0.3em; position: relative; padding-left: 1.5em;">Q. 現在のポイント残高と年間のステータス進捗は同じですか？</dt>
-        <dd style="margin-left: 0; padding-left: 1.5em; margin-bottom: 1em; color: #555;">A. 同じではありません。現在の残高は使えるポイント数、年間の進捗はその暦年にステータス判定へ加算されたポイントです。ポイントを使っただけで年間進捗が同じ分だけ減るわけではありませんが、対象購入の返金・キャンセルでは残高とステータス判定ポイントから差し引かれる場合があります。</dd>
-      </dl>
-      <p style="font-size: 0.9em; color: #555;">公式確認：<a href="https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">ステータスの判定</a> ／ <a href="https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&amp;hl=ja" target="_blank" rel="noopener noreferrer">ポイントの獲得・管理</a></p>
+    <div class="section" id="about-section">
+      <h2>あとがき・開発秘話</h2>
+      <p>
+        これを作ろうと思ったきっかけは、ニコニコ超会議のGoogle PlayブースでPlay Pointsのステータスを意識したことでした。以下は当時の開発経緯であり、現在のイベント特典や開催条件を案内するものではありません。<br>
+        私はゴールドステータスだったのでどれくらい課金すればプラチナになれるか計算ツールを調べましたが全く出てこず...<br>それならば作ってしまえとできたのがこのサイト（アプリ）。<br>
+        例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>必要額は地域、現在のステータス、公式画面に表示される不足ポイント、対象キャンペーンによって変わります。現在の条件を入力して目安を確認できるようにしたのが、この計算機です。<br>
+        そんなノリと勢いでできたこのサイトが、あなたの生活をほんの少し豊かにすることを願っています。<br>ここまでお読みいただきありがとうございました！
+      </p>
+      <p style="margin-top: 1.5em; font-weight: bold; color: var(--text-color);">
+        開発者: かたかた
+      </p>
+      <p style="font-size: 0.86em; color: var(--link-color);">
+        最終更新日: 2026年9月19日
+      </p>
     </div>
+
 
     <div class="section" id="update-section">
       <h2>アップデート情報 (Update Log)</h2>
@@ -154,34 +110,17 @@
       </div>
     </div>
 
-    <div class="section" id="about-section">
-      <h2>あとがき・開発経緯</h2>
-      <p>
-        これを作ろうと思ったきっかけは、ニコニコ超会議のGoogle PlayブースでPlay Pointsのステータスを意識したことでした。以下は当時の開発経緯であり、現在のイベント特典や開催条件を案内するものではありません。<br>
-        私はゴールドステータスだったのでどれくらい課金すればプラチナになれるか計算ツールを調べましたが全く出てこず...<br>それならば作ってしまえとできたのがこのサイト（アプリ）。<br>
-        例に出てくる1728という数字は私がプラチナ到達までに必要なリアルな数字だったんですね。<br>必要額は地域、現在のステータス、公式画面に表示される不足ポイント、対象キャンペーンによって変わります。現在の条件を入力して目安を確認できるようにしたのが、この計算機です。<br>
-        そんなノリと勢いでできたこのサイトが、あなたの生活をほんの少し豊かにすることを願っています。<br>ここまでお読みいただきありがとうございました！
-      </p>
-      <p style="margin-top: 1.5em; font-weight: bold; color: var(--text-color);">
-        開発者: かたかた
-      </p>
-      <p style="font-size: 0.86em; color: var(--link-color);">
-        最終更新日: 2026年8月18日
-      </p>
-    </div>
-
     <div class="back-link-wrapper">
         <a href="index.html" class="btn-back-home" id="btn-back-home">← 計算ツールに戻る</a>
     </div>
 
     <footer class="page-footer">
       <p>
-        <a href="info.html">あとがき・Q&A</a>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSe0HDPLt-jfNXuiGmJ3gxlxUtgeGJ5-AM16Bz2yNw5bk3irNw/viewform?usp=dialog" target="_blank" rel="noopener noreferrer" style="margin-left: 0.5em;">ご意見・ご感想</a>
         <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
         <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
       </p>
-      <p class="meta-line">運営者: かたかた / 最終更新: 2026-08-18</p>
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-09-19</p>
       <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
         <p class="copyright">
         © <span id="copyright-year">2026</span> PlayPoint Simulation Tool

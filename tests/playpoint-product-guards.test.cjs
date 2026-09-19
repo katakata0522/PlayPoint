@@ -187,11 +187,13 @@ test('多言語トップの実行時記事リンクは各言語の記事一覧�
 test('日本語の必要ポイント例は初期状態とゴールドからプラチナの実例を使い分ける', () => {
   const configs = loadConfigs();
   const placeholder = configs.JP.uiText.neededPointsPlaceholder;
+  const top = read('index.html');
   const info = read('info.html');
   assert.equal(placeholder, '例：250');
   assert.equal(configs.JP.neededPointsPlaceholderOverrides['ゴールド:プラチナ'], '例：1728');
-  assert.match(read('index.html'), new RegExp(`placeholder="${placeholder}"`));
-  assert.match(info, /Q\. 例題の「1728」って何ですか？/);
+  assert.match(top, new RegExp(`placeholder="${placeholder}"`));
+  assert.match(top, /Q\. たびたび出てくる「1,728」って何ですか？/);
+  assert.match(top, /info\.html#about-section/);
   assert.match(info, /1728という数字は私がプラチナ到達までに必要なリアルな数字/);
 });
 

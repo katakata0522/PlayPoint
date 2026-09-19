@@ -89,11 +89,11 @@ test('国際3x LPはundefinedを出さず最終特別獲得率として説明す
   }
 });
 
-test('Q&Aのキャンペーン説明は重複せず公式画面を優先する', () => {
-  const html = read('info.html');
+test('トップ計算機はキャンペーン説明を重複させず公式画面を優先する', () => {
+  const html = read('index.html');
   assert.ok(!html.includes('表示される場合はGoogle Playのオファー画面'));
-  assert.ok(html.includes('通常獲得率へキャンペーン数字を掛ける計算ではありません'));
-  assert.ok(html.includes('キャンペーンの併用可否や対象判定を保証するものではありません'));
+  assert.ok(html.includes('ステータスの通常獲得率へ倍率を掛けません'));
+  assert.ok(html.includes('対象・上限・有効化はキャンペーン画面で確認してください'));
 });
 
 test('2pt/100円LPはランク通常率へ2を掛けた旧金額を残さない', () => {
