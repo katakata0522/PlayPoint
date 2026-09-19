@@ -19,6 +19,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert(response?.ok(), route + ' HTTP failure');
   }
   async function cards(page) { await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000}); }
+  async function openOptionalFilters(page) {
+    const panel = page.locator('#article-filter-panel');
+    if (!(await panel.evaluate(el => el.open))) await panel.locator('summary').click();
+    await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
+  }
   async function palette(page, selectors) {
     return page.evaluate(selectors => {
       const rgb = color => (color.match(/[\d.]+/g)||[]).map(Number).slice(0,3);
@@ -63,6 +68,16 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.setViewportSize({width:390,height:844});
     // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
     await goto(page,'blog/'); await cards(page);
+    const filterPanel = page.locator('#article-filter-panel');
+    assert.equal(await filterPanel.evaluate(el=>el.open),false,'Optional filters stay collapsed on the default list');
+    const order = await page.evaluate(()=>({
+      search:document.querySelector('#search-input')?.getBoundingClientRect().top,
+      purpose:document.querySelector('.search-pathways--primary')?.getBoundingClientRect().top,
+      filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
+      list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
+    }));
+    assert(order.search < order.purpose && order.purpose < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
+    await filterPanel.locator('summary').click();
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
     await gameFilter.locator('option[value="FGO"]').waitFor({ state: 'attached', timeout: 10000 });
@@ -91,7 +106,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         controls:[...document.querySelectorAll('#theme-toggle,#sidebar-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
-      assert.equal(state.columns,width<=480?1:width<=768?2:4,`Purpose-grid breakpoint ${width}`);
+      assert.equal(state.columns,width<=340?1:width<=768?2:4,`Purpose-grid breakpoint ${width}`);
       responsive.push({width,...state});
     }
     report.interactions.responsive=responsive;
@@ -173,6 +188,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await fault.locator('.article-card[href*="fgo/pity-cost"]').waitFor({state:'visible'});
     assert(indexAttempts>=2,'Index retries after transient failure');
     await fault.locator('#article-result-status button').click(); await cards(fault);
+    await openOptionalFilters(fault);
     for(let i=0;i<20;i++) await fault.locator('#sort-toggle').selectOption(i%2?'newest':'oldest');
     assert(await fault.evaluate(()=>window.__readingObservers.every(o=>[...o.targets].every(t=>t.isConnected))),'Detached image targets are released');
     assert.equal(faultErrors.length,0,JSON.stringify(faultErrors));
@@ -187,6 +203,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await sortContext.route('**/blog/articles.json*',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(fixture)}));
     await sortContext.route('**/blog/article-search-index.json*',route=>route.fulfill({status:200,contentType:'application/json',body:'{"articles":[]}'}));
     const sp=await sortContext.newPage();await goto(sp,'blog/?q=auditneedle');await cards(sp);
+    await openOptionalFilters(sp);
     const orders={};
     for(const [mode,expected] of [['relevance','fgo/pity-cost'],['oldest','2025-12-25-best-use'],['newest','fgo/pity-cost'],['updated','2025-12-25-best-use']]) {
       await sp.locator('#sort-toggle').selectOption(mode);

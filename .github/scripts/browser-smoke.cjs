@@ -538,11 +538,17 @@ async function verifyBlogPage(browser, baseUrl) {
     }));
     assert(resetState.activeCategory === 'all' && resetState.query === '', 'Blog reset state is inconsistent');
 
+    const filterPanel = page.locator('#article-filter-panel');
+    if (!(await filterPanel.evaluate(element => element.open))) {
+      await filterPanel.locator('summary').click();
+    }
     const categoryButton = page.locator('#category-filter button:not([data-category="all"])').first();
+    await categoryButton.waitFor({ state: 'visible', timeout: 10_000 });
     const category = await categoryButton.getAttribute('data-category');
     await categoryButton.click();
     await page.waitForFunction(expected => new URL(location.href).searchParams.get('category') === expected, category);
     assert(await categoryButton.evaluate(element => element.classList.contains('active')), 'Blog category active state did not update');
+    assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a category filter is active');
 
     await page.locator('#sidebar-toggle').click();
     await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'true');

@@ -141,6 +141,9 @@ async function main() {
       await page.goto(new URL('blog/',baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
       await page.locator('.article-card').first().waitFor({state:'visible'});
       await page.waitForFunction(expected=>window.PlayPointConsent?.getAdStatus()===expected,mode);
+      const filterPanel = page.locator('#article-filter-panel');
+      if (!(await filterPanel.evaluate(element => element.open))) await filterPanel.locator('summary').click();
+      await page.locator('#sort-toggle').waitFor({state:'visible',timeout:10000});
       await page.locator('#sort-toggle').selectOption('oldest');
       if(mode!=='granted') {
         assert(await page.evaluate(()=>(window.adsbygoogle?.length||0)===0),'No manual ad request before permission: '+mode);

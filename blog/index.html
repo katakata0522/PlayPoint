@@ -27,7 +27,7 @@
     <!-- Favicon -->
     <link rel="icon" href="../favicon.svg">
 <link rel="stylesheet" href="style.css?v=3270625c5e">
-    <link rel="stylesheet" href="index-compact.css?v=71fd16e955">
+    <link rel="stylesheet" href="index-compact.css?v=f641bc1834">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -173,33 +173,97 @@
             <p class="hero-text">ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。</p>
         </section>
 
-        <!-- Filters -->
-        <div id="category-filter" class="filter-bar" aria-label="カテゴリー">
-            <!-- Categories injected by JS -->
-        </div>
-        <p id="category-scroll-hint" class="filter-scroll-hint" hidden>カテゴリーは横にスクロールできます</p>
-        <div class="search-sort-row">
-            <div class="search-container">
-                <input type="search" id="search-input" placeholder="キーワードで記事を検索..." aria-label="記事を検索">
+        <!-- Discovery: search first, then purpose, then optional filters -->
+        <section class="blog-discovery" aria-labelledby="blog-discovery-title">
+            <div class="blog-discovery-header">
+                <h2 id="blog-discovery-title">記事を探す</h2>
+                <p>知りたいことをそのまま入力するか、近い目的から選べます。</p>
             </div>
-            <div class="game-filter-container">
-                <label class="game-filter-label" for="game-title-filter">ゲーム名</label>
-                <select id="game-title-filter" aria-label="ゲーム名で絞り込み">
-                    <option value="">すべてのゲーム</option>
-                </select>
+
+            <div class="search-sort-row search-sort-row--primary">
+                <div class="search-container">
+                    <input type="search" id="search-input" placeholder="例：ポイントが反映されない、ダイヤモンド、ギフトコード" aria-label="記事を検索">
+                </div>
             </div>
-            <div class="sort-container">
-                <select id="sort-toggle" class="sort-btn" aria-label="記事の並び順">
-                    <option value="relevance" hidden disabled>関連度順</option>
-                    <option value="newest">新しい順</option>
-                    <option value="oldest">古い順</option>
-                    <option value="updated">更新日順</option>
-                </select>
-            </div>
-        </div>
+
+            <section class="search-pathways search-pathways--primary" aria-labelledby="search-pathways-title">
+              <div class="search-pathways-inner">
+                <div class="search-pathways-header">
+                  <h2 id="search-pathways-title">目的から探す</h2>
+                  <p>迷った時は、近いテーマから代表記事へ進めます。</p>
+                </div>
+                <div class="search-pathways-grid">
+                  <a class="search-pathway-card pathway-rank" href="../articles/2026-08-05-play-points-levels-guide.html">
+                    <div class="pathway-card-header">
+                      <span class="pathway-icon" aria-hidden="true">📊</span>
+                      <strong class="pathway-title">ランク</strong>
+                    </div>
+                    <span class="pathway-desc">条件・必要ポイント・特典を比較</span>
+                    <span class="pathway-arrow" aria-hidden="true">➔</span>
+                  </a>
+                  <a class="search-pathway-card pathway-trouble" href="../articles/2026-03-10-play-points-reflection-timing.html">
+                    <div class="pathway-card-header">
+                      <span class="pathway-icon" aria-hidden="true">🛠️</span>
+                      <strong class="pathway-title">トラブル</strong>
+                    </div>
+                    <span class="pathway-desc">反映が遅い時の確認手順</span>
+                    <span class="pathway-arrow" aria-hidden="true">➔</span>
+                  </a>
+                  <a class="search-pathway-card pathway-howto" href="../articles/2025-12-25-getting-started.html">
+                    <div class="pathway-card-header">
+                      <span class="pathway-icon" aria-hidden="true">📖</span>
+                      <strong class="pathway-title">使い方</strong>
+                    </div>
+                    <span class="pathway-desc">始め方と最初の確認</span>
+                    <span class="pathway-arrow" aria-hidden="true">➔</span>
+                  </a>
+                  <a class="search-pathway-card pathway-campaign" href="../articles/2025-12-25-campaign.html">
+                    <div class="pathway-card-header">
+                      <span class="pathway-icon" aria-hidden="true">🎁</span>
+                      <strong class="pathway-title">キャンペーン</strong>
+                    </div>
+                    <span class="pathway-desc">待つべきかを判断</span>
+                    <span class="pathway-arrow" aria-hidden="true">➔</span>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <details id="article-filter-panel" class="article-filter-panel">
+                <summary>絞り込み・並び替え</summary>
+                <div class="article-filter-panel-body">
+                    <div id="category-filter" class="filter-bar" aria-label="カテゴリー">
+                        <!-- Categories injected by JS -->
+                    </div>
+                    <p id="category-scroll-hint" class="filter-scroll-hint" hidden>カテゴリーは横にスクロールできます</p>
+                    <div class="secondary-filter-row">
+                        <div class="game-filter-container">
+                            <label class="game-filter-label" for="game-title-filter">ゲーム名</label>
+                            <select id="game-title-filter" aria-label="ゲーム名で絞り込み">
+                                <option value="">すべてのゲーム</option>
+                            </select>
+                        </div>
+                        <div class="sort-container">
+                            <label class="game-filter-label" for="sort-toggle">並び順</label>
+                            <select id="sort-toggle" class="sort-btn" aria-label="記事の並び順">
+                                <option value="relevance" hidden disabled>関連度順</option>
+                                <option value="newest">新しい順</option>
+                                <option value="oldest">古い順</option>
+                                <option value="updated">更新日順</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </section>
 
         <!-- 件数表示はカテゴリボタン側の (35) 等で足りるため、ここには出さない -->
         <p id="article-result-status" class="article-result-status visually-hidden" role="status" aria-live="polite"></p>
+
+        <div class="article-list-heading">
+            <h2>記事一覧</h2>
+            <p>通常は新しい記事から表示します。検索中は関連度順に切り替わります。</p>
+        </div>
 
         <!-- Article Grid -->
 <!-- reading-tools:start --><details id="reading-library" class="reading-library"><summary>保存した記事・閲覧履歴</summary><p>この端末だけに保存します（保存100件・履歴20件まで）。ブラウザのデータ削除で消えます。</p></details><!-- reading-tools:end -->
@@ -332,55 +396,21 @@
         <div id="pagination" class="pagination">
             <!-- Populated by JS -->
         </div>
-        <section class="search-pathways" aria-labelledby="search-pathways-title">
-          <div class="search-pathways-inner">
+        <section class="search-pathways search-pathways--utility" aria-labelledby="utility-pathways-title">
+          <div class="search-pathways-inner search-pathways-inner--utility">
             <div class="search-pathways-header">
-              <h2 id="search-pathways-title">4つの目的から記事を選ぶ</h2>
-              <p>迷った時だけ、近いテーマから代表記事へ進めます。</p>
-            </div>
-            <div class="search-pathways-grid">
-              <a class="search-pathway-card pathway-rank" href="../articles/2026-08-05-play-points-levels-guide.html">
-                <div class="pathway-card-header">
-                  <span class="pathway-icon">📊</span>
-                  <strong class="pathway-title">ランク</strong>
-                </div>
-                <span class="pathway-desc">条件・必要ポイント・特典を比較</span>
-                <span class="pathway-arrow">➔</span>
-              </a>
-              <a class="search-pathway-card pathway-trouble" href="../articles/2026-03-10-play-points-reflection-timing.html">
-                <div class="pathway-card-header">
-                  <span class="pathway-icon">🛠️</span>
-                  <strong class="pathway-title">トラブル</strong>
-                </div>
-                <span class="pathway-desc">反映が遅い時の確認手順</span>
-                <span class="pathway-arrow">➔</span>
-              </a>
-              <a class="search-pathway-card pathway-howto" href="../articles/2025-12-25-getting-started.html">
-                <div class="pathway-card-header">
-                  <span class="pathway-icon">📖</span>
-                  <strong class="pathway-title">使い方</strong>
-                </div>
-                <span class="pathway-desc">始め方と最初の確認</span>
-                <span class="pathway-arrow">➔</span>
-              </a>
-              <a class="search-pathway-card pathway-campaign" href="../articles/2025-12-25-campaign.html">
-                <div class="pathway-card-header">
-                  <span class="pathway-icon">🎁</span>
-                  <strong class="pathway-title">キャンペーン</strong>
-                </div>
-                <span class="pathway-desc">待つべきかを判断</span>
-                <span class="pathway-arrow">➔</span>
-              </a>
+              <h2 id="utility-pathways-title">計算や地域ガイドも使えます</h2>
+              <p>記事で確認したあと、自分の条件に合わせて計算したい時の入口です。</p>
             </div>
 
             <!-- クイック計算ピルチップリンク -->
             <div class="pathways-quick-section">
               <div class="quick-section-label">⚡ よく使われる計算・早見表</div>
               <nav class="search-pathways-quick-links" aria-label="よく使う計算・比較ページ">
-                <a href="../maintenance/platinum/" class="quick-pill"><span class="pill-icon">💎</span>プラチナ維持の必要額</a>
-                <a href="../amount/10000/" class="quick-pill"><span class="pill-icon">💴</span>1万円で貯まるポイント</a>
-                <a href="../compare/earning-rates/" class="quick-pill"><span class="pill-icon">📊</span>獲得率と倍率の比較表</a>
-                <a href="../points-cost/?points=500" class="quick-pill"><span class="pill-icon">🎯</span>500ポイントの必要額</a>
+                <a href="../maintenance/platinum/" class="quick-pill"><span class="pill-icon" aria-hidden="true">💎</span>プラチナ維持の必要額</a>
+                <a href="../amount/10000/" class="quick-pill"><span class="pill-icon" aria-hidden="true">💴</span>1万円で貯まるポイント</a>
+                <a href="../compare/earning-rates/" class="quick-pill"><span class="pill-icon" aria-hidden="true">📊</span>獲得率と倍率の比較表</a>
+                <a href="../points-cost/?points=500" class="quick-pill"><span class="pill-icon" aria-hidden="true">🎯</span>500ポイントの必要額</a>
               </nav>
 
               <div class="quick-lang-section">
@@ -393,7 +423,6 @@
               </div>
             </div>
 
-            <!-- 🎮 ゲーム別計算機特設ミニバナー -->
             <div class="pathways-games-banner">
               <div class="games-banner-left">
                 <span class="games-banner-badge">🎮 ソシャゲ特化</span>
@@ -448,7 +477,7 @@
 
     <script src="utils.js?v=b2bccec6cd"></script>
     <script src="components.js?v=9ea78e7c23"></script>
-    <script src="script.js?v=fe1fc34588"></script>
+    <script src="script.js?v=811e434fa6"></script>
 </body>
 
 </html>
