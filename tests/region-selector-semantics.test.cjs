@@ -89,7 +89,7 @@ test('desktop selector loads local SVG flags only in the desktop/tablet styleshe
 
   assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-label-desktop::before/);
   assert.match(css, /width: 24px;[\s\S]*?height: 18px;/);
-  assert.match(js, /window\.innerWidth <= 520/);
+  assert.match(js, /window\.innerWidth > 520/);
   assert.match(js, /desktop-topbar\.css/);
   assert.match(js, /data-desktop-topbar-style/);
 
