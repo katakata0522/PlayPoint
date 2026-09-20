@@ -215,6 +215,62 @@ test('12月31日でも通常計算は合計必要額を表示する', () => {
   assert.ok(!renderedResults[0].content.includes('/月'));
 });
 
+function setupJpMain(neededValue) {
+  const ctx = loadCalculatorContext();
+  const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget } = ctx;
+  PP_STATE.currentRegion = 'JP';
+  PP_STATE.dom.currentStatus = createSelect();
+  PP_STATE.dom.reverseStatus = createSelect();
+  PP_STATE.dom.baseRate = createInput();
+  PP_STATE.dom.targetStatus = createSelect();
+  PP_STATE.dom.neededPoints = createInput(neededValue);
+  PP_STATE.dom.neededPoints.step = '1';
+  PP_STATE.dom.multiplier = createInput('1');
+  PP_STATE.dom.result = { dataset: {}, innerHTML: '', isError: false };
+  populateStatusSelects();
+  updateBaseRateAndTarget();
+  return ctx;
+}
+
+test('必要ポイントの空欄は課金不要にせず入力エラーにする', () => {
+  const { calculate, renderedResults } = setupJpMain('');
+  calculate();
+  assert.strictEqual(renderedResults[0].isError, true);
+  assert.ok(renderedResults[0].content.includes('有効な数値'));
+  assert.ok(!renderedResults[0].content.includes('課金不要'));
+});
+
+test('必要ポイント0は達成済みとして課金不要を出す', () => {
+  const { calculate, renderedResults } = setupJpMain('0');
+  calculate();
+  assert.strictEqual(renderedResults[0].isError, false);
+  assert.ok(renderedResults[0].content.includes('課金不要'));
+});
+
+test('目標閾値を超える必要ポイントは目標矛盾エラーにする', () => {
+  const { PP_STATE, calculate, renderedResults, updateNeededPointsConstraint } = setupJpMain('251');
+  PP_STATE.dom.neededPoints.max = '250';
+  updateNeededPointsConstraint();
+  PP_STATE.dom.neededPoints.value = '251';
+  calculate();
+  assert.strictEqual(renderedResults[0].isError, true);
+  assert.ok(renderedResults[0].content.includes('選択した目標ステータスに対して不正'));
+});
+
+test('目標変更は入力済み必要ポイントを黙って切り詰めない', () => {
+  const { PP_STATE, updateNeededPointsConstraint } = setupJpMain('1000');
+  const gold = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.statusLabel === 'ゴールド');
+  const silver = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.statusLabel === 'シルバー');
+  assert.ok(gold >= 0 && silver >= 0);
+  PP_STATE.dom.targetStatus.selectedIndex = gold;
+  updateNeededPointsConstraint();
+  PP_STATE.dom.neededPoints.value = '1000';
+  PP_STATE.dom.targetStatus.selectedIndex = silver;
+  updateNeededPointsConstraint();
+  assert.strictEqual(PP_STATE.dom.neededPoints.value, '1000');
+  assert.ok(Number(PP_STATE.dom.neededPoints.max) < 1000);
+});
+
 test('必要ポイントはHTMLの整数制約に違反する小数を拒否する', () => {
   const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
@@ -307,7 +363,7 @@ test('ステータス選択の再生成で設定済みランクが重複しな�
   }
 });
 
-test('各地域で維持とSSOTの全上位ランクを重複なく提示する', () => {
+test('各地域でSSOTの全上位ランクを先に出し、維持は末尾へ重複なく提示する', () => {
   const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
 
   for (const [region, config] of Object.entries(PP_REGION_CONFIGS)) {
@@ -322,13 +378,17 @@ test('各地域で維持とSSOTの全上位ランクを重複なく提示する'
       updateBaseRateAndTarget();
 
       const expected = [
-        ...(Number(currentValue) > 1 ? [currentLabel] : []),
-        ...(config.statusPointsMapping[currentValue] || [])
+        ...(config.statusPointsMapping[currentValue] || []),
+        ...(Number(currentValue) > 1 ? [currentLabel] : [])
       ];
       const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel).filter(Boolean);
+      const kinds = PP_STATE.dom.targetStatus.options.map(option => option.dataset.targetKind).filter(Boolean);
 
       assert.deepStrictEqual(labels, expected, `${region}/${currentLabel}: target candidates must exactly follow region SSOT`);
       assert.strictEqual(new Set(labels).size, labels.length, `${region}/${currentLabel}: duplicate target candidates`);
+      if ((config.statusPointsMapping[currentValue] || []).length) {
+        assert.strictEqual(kinds[0], 'upgrade', `${region}/${currentLabel}: default target must be the next upgrade`);
+      }
 
       if (expected.length) {
         assert.strictEqual(
