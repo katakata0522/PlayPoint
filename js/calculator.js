@@ -198,18 +198,7 @@ export const CALC = {
         const statusLabels = Object.keys(config.statuses);
         const currentStatusLabel = statusLabels.find(label => config.statuses[label] === currentStatusValue);
 
-        // 1. 同ランクの「維持」を追加（ブロンズ以外のステータス）
-        if (currentStatusLabel && currentStatusValue > 1.0) {
-            availableTargets.push({
-                label: `${currentStatusLabel} (${config.uiText.statusKeep || '維持'})`,
-                value: config.thresholds[currentStatusLabel],
-                statusLabel: currentStatusLabel,
-                rankKey: config.tierIdsByLabel?.[currentStatusLabel] || '',
-                targetKind: 'maintain'
-            });
-        }
-
-        // 2. 現在ランクより上の「昇格」候補をすべて追加
+        // 1. 現在ランクより上の「昇格」候補を先に出す（ランクアップ計算が主用途）
         // statusPointsMapping が昇格候補のSSOT。UI側で最初の1件へ切り詰めない。
         const nextTargets = config.statusPointsMapping[currentStatusValue] || [];
         nextTargets.forEach(targetLabel => {
@@ -224,6 +213,17 @@ export const CALC = {
                 });
             }
         });
+
+        // 2. 同ランクの「維持」は末尾へ（ブロンズ以外）
+        if (currentStatusLabel && currentStatusValue > 1.0) {
+            availableTargets.push({
+                label: `${currentStatusLabel} (${config.uiText.statusKeep || '維持'})`,
+                value: config.thresholds[currentStatusLabel],
+                statusLabel: currentStatusLabel,
+                rankKey: config.tierIdsByLabel?.[currentStatusLabel] || '',
+                targetKind: 'maintain'
+            });
+        }
 
         // DOMに追加
         availableTargets.forEach(target => {
@@ -313,12 +313,6 @@ export const CALC = {
         }
 
         STATE.dom.neededPoints.max = String(maxNeededPoints);
-
-        // すでに入力されている値が新しい最大値を超えている場合、自動的に最大値にクランプする
-        const currentVal = parseFloat(STATE.dom.neededPoints.value);
-        if (Number.isFinite(currentVal) && currentVal > maxNeededPoints) {
-            STATE.dom.neededPoints.value = String(maxNeededPoints);
-        }
     },
 
     // 年末までの残り月数を算出（カレンダー基準）
@@ -390,7 +384,15 @@ export const CALC = {
         const now = new Date();
         const remainingDays = CALC_PURE.getRemainingCalendarDays(now);
         if (STATE.dom.neededPoints) STATE.dom.neededPoints.min = '0';
-        const neededPoints = this.getValidNumberInput(STATE.dom.neededPoints, 0);
+        const neededRaw = STATE.dom.neededPoints ? String(STATE.dom.neededPoints.value ?? '').trim() : '';
+        const neededParsed = neededRaw === '' ? NaN : Number(neededRaw);
+        const neededValidity = STATE.dom.neededPoints && STATE.dom.neededPoints.validity;
+        const neededRangeOverflow = Boolean(neededValidity && neededValidity.rangeOverflow);
+        const neededPoints = neededRaw === ''
+            ? null
+            : ((neededValidity && neededValidity.valid === false && !neededRangeOverflow) || !Number.isFinite(neededParsed) || neededParsed < 0
+                ? null
+                : neededParsed);
         const multiplier = this.getValidNumberInput(STATE.dom.multiplier, 1);
         const rateDetails = this.getRateDetails(STATE.dom.baseRate, STATE.dom.currentStatus, STATE.dom.multiplier);
         const finalRate = rateDetails ? rateDetails.finalRate : null;
@@ -404,10 +406,14 @@ export const CALC = {
         const targetThreshold = selectedTargetOption ? parseFloat(selectedTargetOption.value) : NaN;
         const maxNeededPoints = this.getMaxNeededPointsForTarget(config, currentStatusValue, targetThreshold);
 
-        if (neededPoints === null || neededPoints < 0) return UI.displayResult(STATE.dom.result, texts.errorNeededPoints || texts.errorInput, true);
+        if (neededRaw === '' || neededPoints === null || neededPoints < 0) {
+            return UI.displayResult(STATE.dom.result, texts.errorNeededPoints || texts.errorInput, true);
+        }
         if (!targetStatusLabel) return UI.displayResult(STATE.dom.result, texts.errorTargetStatus || texts.errorInput, true);
         if (finalRate === null || finalRate <= 0) return UI.displayResult(STATE.dom.result, texts.errorRate, true);
-        if (maxNeededPoints === null || neededPoints > maxNeededPoints) return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
+        if (maxNeededPoints === null || neededPoints > maxNeededPoints) {
+            return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
+        }
 
         const finalNeededPoints = neededPoints;
         const spendUnit = config.spendUnit || 100;

@@ -1358,7 +1358,9 @@ color: #0b57d0;
 .lp-table-wrap {
 overflow-x: auto;
 -webkit-overflow-scrolling: touch;
+width: 100%;
 max-width: 100%;
+box-sizing: border-box;
 border: 1px solid rgba(0, 0, 0, 0.1);
 border-radius: 12px;
 margin: 1.2rem 0;
@@ -2028,7 +2030,6 @@ font-size: 0.88em;
 margin-top: 0.45em;
 font-size: 0.86em;
 }
-}
 h1 {
 font-size: 1.38em;
 line-height: 1.35;
@@ -2077,17 +2078,23 @@ grid-template-columns: 1fr;
 .lp-action-row .lp-secondary-link {
 width: 100%;
 }
+.calculator-wrapper,
+.lp-wrapper {
+max-width: 100%;
+box-sizing: border-box;
+}
 .lp-comparison-table {
 min-width: 0 !important;
 width: 100%;
+max-width: 100%;
 table-layout: fixed;
-font-size: 0.78rem;
+font-size: 0.75rem;
 }
 .lp-comparison-table th,
 .lp-comparison-table td {
-padding: 0.5rem 0.3rem;
+padding: 0.45rem 0.2rem;
 white-space: normal;
-word-break: break-word;
+overflow-wrap: anywhere;
 }
 .comparison-reference-page h1,
 .comparison-reference-section h2 {

@@ -25,7 +25,9 @@ test('通常計算の補足導線は1グループに統合し最大3件だけ表
   populateStatusSelects();
   PP_STATE.dom.currentStatus.value = '1.75';
   updateBaseRateAndTarget();
-  PP_STATE.dom.targetStatus.selectedIndex = 1;
+  const campaignUpgradeIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.targetKind === 'upgrade');
+  assert.ok(campaignUpgradeIndex >= 0, 'ダイヤモンド昇格の目標がありません');
+  PP_STATE.dom.targetStatus.selectedIndex = campaignUpgradeIndex;
   calculate();
 
   const content = renderedResultDetails[0];
@@ -58,7 +60,9 @@ test('計算結果の統合導線は検索意図別LPを優先する', () => {
   populateStatusSelects();
   PP_STATE.dom.currentStatus.value = '1.75';
   updateBaseRateAndTarget();
-  PP_STATE.dom.targetStatus.selectedIndex = 0;
+  const maintainIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.targetKind === 'maintain');
+  assert.ok(maintainIndex >= 0, 'プラチナ維持の目標がありません');
+  PP_STATE.dom.targetStatus.selectedIndex = maintainIndex;
   calculate();
 
   const content = renderedResultDetails[0];
@@ -124,7 +128,9 @@ test('計算結果の統合導線には金額や条件に応じた次の判断�
   populateStatusSelects();
   PP_STATE.dom.currentStatus.value = '1.75';
   updateBaseRateAndTarget();
-  PP_STATE.dom.targetStatus.selectedIndex = 1;
+  const diamondUpgradeIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.targetKind === 'upgrade');
+  assert.ok(diamondUpgradeIndex >= 0, 'ダイヤモンド昇格の目標がありません');
+  PP_STATE.dom.targetStatus.selectedIndex = diamondUpgradeIndex;
   calculate();
 
   const content = renderedResultDetails[0];
