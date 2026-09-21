@@ -66,7 +66,7 @@ function renderSearchWidget() {
 
 function renderPopularWidget(article) {
   const popular = getJapanesePopularGuides(article.href, 5);
-  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">今月よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}の閲覧傾向・週1回更新</p><ol class="sidebar-popular-list">${popular.map(item => {
+  return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">今月よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}の閲覧傾向・順位更新 ${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}</p><ol class="sidebar-popular-list">${popular.map(item => {
     const rank = String(item.rank).padStart(2, '0');
     if (item.isCurrent) return `<li class="sidebar-popular-item is-current"><span class="sidebar-popular-rank">${rank}</span><div><span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span></div></li>`;
     return `<li class="sidebar-popular-item"><span class="sidebar-popular-rank">${rank}</span><a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a></li>`;
