@@ -366,6 +366,7 @@ async function verifyLocale(browser, baseUrl, locale) {
 
     const articleLink = page.locator('.header-links a[data-lang-key="linkArticles"]').first();
     await articleLink.hover();
+    await page.waitForTimeout(250);
     const hoverState = await articleLink.evaluate(element => {
       const style = getComputedStyle(element);
       return { color: style.color, backgroundColor: style.backgroundColor };
