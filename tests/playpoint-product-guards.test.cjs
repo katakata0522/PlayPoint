@@ -50,6 +50,7 @@ test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ�
 
   for (const file of [
     'style.css',
+    'region-selector.css',
     'visitor-thanks.css',
     'blog/style.css',
     'blog/common-components.css',
