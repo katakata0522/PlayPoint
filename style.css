@@ -21,11 +21,6 @@
 --warning-border-color: #f5c6cb;
 --warning-text-color: #9f1d28;
 }
-#tab-diary::before {
-content:"🎁";
-display:inline-block;
-margin-right:.35em;
-}
 .comparison-reference-page {
 max-width: 980px;
 margin: 0 auto;
