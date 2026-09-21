@@ -45,18 +45,33 @@ test('記事・ブログはGA4 eventを直接送らず共通計測境界を利�
 
 // P04: deploy-cleanupの実rsync fixtureへ統合（root除外・同名サブ階層保持・別管理領域保護）。
 
-test('デプロイ時はCSSだけを圧縮し、JSはasset version同期だけ行う', () => {
+test('デプロイ時は実在する公開CSSだけを圧縮し、JSはasset version同期だけ行う', () => {
   const minifierSource = read('.github/scripts/minify.cjs');
+  const { cssTargets } = require('../.github/scripts/minify.cjs');
 
   for (const file of [
     'style.css',
     'region-selector.css',
     'visitor-thanks.css',
+    'site-shell-vnext.css',
+    'points-cost.css',
+    'articles/article-shared.css',
+    'articles/article-modern.css',
+    'articles/article-discovery.css',
+    'articles/game-guide-article.css',
+    'articles/intl-article.css',
+    'articles/intl-shell-v1.css',
+    'articles/japanese-shell.css',
+    'articles/reading-theme.css',
     'blog/style.css',
     'blog/common-components.css',
-    'en/articles/intl-article.css'
+    'blog/index-compact.css',
+    'games/games.css'
   ]) {
-    assert.ok(minifierSource.includes(file), `CSS圧縮対象が不足しています: ${file}`);
+    assert.ok(cssTargets.includes(file), `CSS圧縮対象が不足しています: ${file}`);
+  }
+  for (const file of cssTargets) {
+    assert.ok(fs.existsSync(path.join(root, file)), `存在しないCSSを圧縮対象にしています: ${file}`);
   }
 
   assert.ok(!minifierSource.includes('function minifyJS('), '実行しないJS minifierが残っています');
