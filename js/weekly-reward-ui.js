@@ -29,7 +29,6 @@
     };
 
     const STYLE_TEXT = `
-#tab-diary::before{content:"🎁";display:inline-block;margin-right:.35em}
 #diaryMode.weekly-ui-ready{--weekly-accent:#0b57d0;--weekly-soft:rgba(11,87,208,.06);--weekly-border:rgba(11,87,208,.16)}
 #diaryMode .diary-header{margin:1.05em 0 .75em}#diaryMode .diary-header h2{font-size:1.45em}
 .weekly-month-picker,.weekly-secondary-details{border:1px solid var(--weekly-border,rgba(11,87,208,.16));border-radius:10px;background:var(--section-bg-color);overflow:hidden}
