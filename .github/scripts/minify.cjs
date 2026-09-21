@@ -13,6 +13,7 @@ function minifyCSS(content) {
 
 const cssTargets = [
   'style.css',
+  'region-selector.css',
   'visitor-thanks.css',
   'articles/article-gift-card.css',
   'articles/article-legacy.css',
