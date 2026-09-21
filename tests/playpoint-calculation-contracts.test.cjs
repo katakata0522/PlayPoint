@@ -292,7 +292,7 @@ test('必要ポイントはHTMLの整数制約に違反する小数を拒否す�
   assert.ok(renderedResults[0].content.includes('有効な数値'));
 });
 
-test('通常計算は主要結果と折りたたみ詳細を分け、週平均と年末までの残り日数を表示しない', () => {
+test('通常計算は必要額と月日目安を主要結果へ出し、週平均と年末までの残り日数は出さない', () => {
   class FakeDate extends Date {
     constructor(...args) {
       if (args.length === 0) return new Date(2026, 0, 1);
@@ -319,8 +319,11 @@ test('通常計算は主要結果と折りたたみ詳細を分け、週平均�
 
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(renderedResults[0].content.includes('合計の必要課金額目安'));
-  assert.ok(!renderedResults[0].content.includes('月平均目安'));
-  assert.ok(!renderedResults[0].content.includes('1日あたり目安'));
+  assert.ok(renderedResults[0].content.includes('result-hero'));
+  assert.ok(renderedResults[0].content.includes('月平均目安'));
+  assert.ok(renderedResults[0].content.includes('1日あたり目安'));
+  assert.ok(!renderedResults[0].content.includes('週平均目安'));
+  assert.ok(!renderedResults[0].content.includes('年末までの残り日数'));
   assert.strictEqual(renderedResultDetails.length, 1);
   assert.ok(renderedResultDetails[0].includes('<details'));
   assert.ok(renderedResultDetails[0].includes('計算の詳細を見る'));

@@ -1178,7 +1178,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の179ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の180ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1343,6 +1343,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `test-audit-ledger-consistency.test.cjs` | 横断監査 | 監査summary JSON/Markdownと現行tests全ファイル台帳のdriftを拒否する |
 | `rescued-pad-and-articles.test.cjs` | 内容・事実・対象範囲 | PAD is published for every generated game locale and linked from each portal |
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
+| `result-presentation-contract.test.cjs` | UI・導線 | 計算結果の金額主役、空カード非表示、日本語折り返し、早見表の円を検証 |
 | `rollback-workflow.test.cjs` | 復旧 | 通常Deployは本番を書き換える前に保存snapshotを再検証する |
 | `runtime-module-guards.test.cjs` | 性能・配信 | 分離した実行時モジュールはキャッシュ改訂・Service Worker先読みに含まれる |
 | `search-intent-owner-contract.test.cjs` | SEO・公開整合 | 実測で確認した検索意図をtitle/H1と説明的内部リンクで守り、ownerの再混線を防ぐ |
