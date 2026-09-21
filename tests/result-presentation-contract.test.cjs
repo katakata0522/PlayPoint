@@ -102,10 +102,10 @@ test('日本語見出しは単語の途中で折らず、説明文の途中改�
   assert.doesNotMatch(css, /h1 \{[\r\n]+font-size: 1\.38em;[\r\n]+line-height: 1\.35;[\r\n]+overflow-wrap: anywhere;[\r\n]+\}/);
   assert.doesNotMatch(description, /何ポイント？」\s*<br>/);
   assert.match(description, /何ポイント？」といった逆算/);
-  assert.match(articles, /シルバーは<wbr>いくら必要？/);
-  assert.match(articles, /ゴールドは<wbr>いくら必要？/);
-  assert.match(articles, /プラチナは<wbr>いくら必要？/);
-  assert.match(articles, /ダイヤモンドは<wbr>いくら必要？/);
+  assert.match(articles, /ダイヤモンドに<wbr>なるには？/);
+  assert.match(articles, /クエストって何？<wbr>どう達成する？/);
+  assert.match(articles, /貯まったポイント、<wbr>何に使う？/);
+  assert.match(articles, /Google Playを<wbr>お得に買うには？/);
 });
 
 test('早見表は数字と円を分けず、狭い画面では表の中だけ横スクロールする', () => {

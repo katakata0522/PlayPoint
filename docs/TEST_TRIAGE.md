@@ -1444,3 +1444,7 @@ Apache統合検査は既存PR Gate内で一回実行する。Windowsの通常Nod
 | `update-japanese-popular-guides.test.cjs` | ランキング更新 | 不完全・重複・古い集計の拒否、公開記事選定、PV非公開、同順位無変更、dry-runと書込み |
 
 固定された9/19順位は運用データのため、japanese-navigation-sidebarの固定順位検査を公開記事5件・一意・生成整合へ移した。順位計算と失敗時の保存維持は上記の実行検査が担当する。
+
+## 2026-09-22 トップのおすすめ4記事
+
+ユーザー指定の既存4記事への導線は `mobile-first-view-contract.test.cjs` で順序・URL・実在を確認する。改行位置は既存の `result-presentation-contract.test.cjs` で確認し、旧ランク4種の文言固定を今回の表示に更新した。テストファイルの追加・削除はない。
