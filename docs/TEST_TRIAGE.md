@@ -1448,3 +1448,5 @@ Apache統合検査は既存PR Gate内で一回実行する。Windowsの通常Nod
 ## 2026-09-22 トップのおすすめ4記事
 
 ユーザー指定の既存4記事への導線は `mobile-first-view-contract.test.cjs` で順序・URL・実在を確認する。改行位置は既存の `result-presentation-contract.test.cjs` で確認し、旧ランク4種の文言固定を今回の表示に更新した。テストファイルの追加・削除はない。
+
+`home-status-intent-routing.test.cjs` の旧ランク別LP固定も、4テーマのリンク文言と記事URLの対応を確認する検査に更新した。
