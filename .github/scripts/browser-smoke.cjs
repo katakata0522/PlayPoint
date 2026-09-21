@@ -332,15 +332,21 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
       return {
         requiredAmount: Number(result?.dataset.requiredYen),
         targetStatus: result?.dataset.targetStatusLabel || '',
-        valueRows: result?.querySelectorAll('dl dt').length || 0,
+        hasHero: Boolean(result?.querySelector('.result-hero')),
+        countTargets: result?.querySelectorAll('.count-target').length || 0,
         relatedLinks: result?.querySelectorAll('[data-result-related-link]').length || 0,
         html: result?.innerHTML || ''
       };
     });
     assert(Number.isFinite(mainResult.requiredAmount) && mainResult.requiredAmount > 0, `${locale.key} main amount is invalid`);
-    assert(mainResult.targetStatus && mainResult.valueRows >= 2, `${locale.key} main result is incomplete`);
+    assert(mainResult.targetStatus && mainResult.hasHero && mainResult.countTargets >= 2, `${locale.key} main result is incomplete`);
     assert(mainResult.relatedLinks <= 4, `${locale.key} too many related links: ${mainResult.relatedLinks}`);
-    if (locale.currencyPrefix) assert(mainResult.html.includes(`${locale.currencyPrefix}<span class="count-target"`), `${locale.key} currency is not prefix-formatted`);
+    if (locale.currencyPrefix) {
+      assert(
+        mainResult.html.includes(`>${locale.currencyPrefix}</span><span class="count-target`),
+        `${locale.key} currency is not prefix-formatted`
+      );
+    }
 
     mainResult.presentation = await verifyResultPresentation(page, locale.key);
 
