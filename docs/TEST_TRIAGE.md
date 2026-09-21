@@ -1450,3 +1450,7 @@ Apache統合検査は既存PR Gate内で一回実行する。Windowsの通常Nod
 ユーザー指定の既存4記事への導線は `mobile-first-view-contract.test.cjs` で順序・URL・実在を確認する。改行位置は既存の `result-presentation-contract.test.cjs` で確認し、旧ランク4種の文言固定を今回の表示に更新した。テストファイルの追加・削除はない。
 
 `home-status-intent-routing.test.cjs` の旧ランク別LP固定も、4テーマのリンク文言と記事URLの対応を確認する検査に更新した。
+
+## 2026-09-22 更新情報の要約と詳細
+
+`changelog-hygiene.test.cjs` で、あとがきの直近5件が詳細履歴の先頭5件へ順番どおりにつながることを確認する。Latest一件の既存検査は項目への直接リンク用id属性を許容する。

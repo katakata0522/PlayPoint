@@ -7,8 +7,8 @@
   <meta name="description" content="Playポイント計算機のアップデート履歴と開発の軌跡をタイムライン形式で整理。計算機能、記事、海外向けSEO、使いやすさ改善の変更内容を確認できます。">
     <meta name="robots" content="index,follow">
     <meta name="author" content="かたかた">
-    <meta name="last-modified" content="2026-08-12">
-    <meta property="article:modified_time" content="2026-08-12T00:00:00+09:00">
+    <meta name="last-modified" content="2026-09-22">
+    <meta property="article:modified_time" content="2026-09-22T00:00:00+09:00">
     <link rel="canonical" href="https://playpoint-sim.com/changelog.html">
     <link rel="alternate" hreflang="ja" href="https://playpoint-sim.com/changelog.html">
     <link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/changelog.html">
@@ -89,6 +89,7 @@
             color: var(--text-color, #1e293b);
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 8px;
         }
         .timeline-badge {
@@ -126,7 +127,7 @@
       "name": "アップデートの歴史（開発の軌跡）",
       "url": "https://playpoint-sim.com/changelog.html",
       "inLanguage": "ja",
-      "dateModified": "2026-08-12",
+      "dateModified": "2026-09-22",
       "author": {
         "@type": "Person",
         "name": "かたかた"
@@ -169,14 +170,142 @@
 
     <h1>アップデートの歴史 (Update History)</h1>
     <p style="text-align: center; color: var(--link-color); max-width: 600px; margin: 0.5rem auto 1.5rem auto; font-size: 0.95em; line-height: 1.6;">
-        「Playポイント計算機」の最初期リリースから現在までの開発の軌跡です。おかげさまで、多くの機能改善やSEO・多言語対応を実現してきました。
+        計算、リワード記録、記事探しがどう便利になったかを、新しい順に紹介します。気になる機能は、各項目のリンクから試せます。
     </p>
 
     <div class="timeline">
-        <!-- v2.4.0 -->
-        <div class="timeline-item latest">
+        <div class="timeline-item latest" id="purpose-guides">
             <div class="timeline-content">
-                <h2 class="timeline-version">v2.4.0 <span class="timeline-badge">Latest</span></h2>
+                <h2 class="timeline-version">目的から選べる、おすすめ記事4枚 <span class="timeline-badge">Latest</span></h2>
+                <div class="timeline-date"><time datetime="2026-09-22">2026年09月22日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>トップページに、ダイヤモンドを目指す人、クエストを知りたい人、ポイントを使いたい人、お得に購入したい人に向けた4枚のカードを配置しました。</li>
+                        <li>それぞれの疑問に合う既存記事へ直接進めます。カードにはテーマと確認できる内容を添えました。</li>
+                    </ul>
+                    <p><a href="index.html">トップページを見る →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="clear-results">
+            <div class="timeline-content">
+                <h2 class="timeline-version">計算結果の必要額を、ひと目で分かりやすく</h2>
+                <div class="timeline-date"><time datetime="2026-09-21">2026年09月21日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>ランクアップに必要な金額を計算結果の中心に置き、最初に確認したい数字を見つけやすくしました。</li>
+                        <li>補足情報との強弱や文章の折り返しを整え、スマートフォンでも結果を読みやすくしました。</li>
+                    </ul>
+                    <p><a href="index.html">必要額を計算する →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="article-discovery">
+            <div class="timeline-content">
+                <h2 class="timeline-version">記事検索と人気記事で、知りたい情報へ</h2>
+                <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>記事一覧では検索を先に使える配置にし、検索中は関連度順で記事を探せるようにしました。カテゴリーからの絞り込みも使えます。</li>
+                        <li>日本語記事のサイドバーに検索と、直近30日の閲覧傾向をもとにした人気記事5件を追加しました。読んでいる記事から次の情報を探せます。</li>
+                        <li>本文に合った関連ガイドへの案内や、ゲーム記事一覧のアイコン表示も整えました。</li>
+                    </ul>
+                    <p><a href="blog/">記事を探す →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="weekly-diary">
+            <div class="timeline-content">
+                <h2 class="timeline-version">リワード日記に、記録の積み重ねが見えるグラフ</h2>
+                <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>今週の記録を中心に入力できる画面へ整理し、入力内容を決定したかどうかが分かる表示にしました。</li>
+                        <li>週ごとのポイントの積み上げや達成状況をグラフで確認でき、年間の記録を振り返りやすくなりました。</li>
+                        <li>記録後の共有と次回の特典確認への案内も整えました。</li>
+                    </ul>
+                    <p><a href="index.html">リワード記録を使える計算機へ →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="monst-packs">
+            <div class="timeline-content">
+                <h2 class="timeline-version">モンストの課金パックを計算・比較しやすく</h2>
+                <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>モンストのゲーム別計算にアプリ内課金パックを追加し、購入を考えているパックから試算できるようにしました。</li>
+                        <li>課金パック、Webショップとの比較、お得な購入時期を確認するカレンダーの3記事を追加しました。計算ページから関連情報も確認できます。</li>
+                    </ul>
+                    <p><a href="games/monst/">モンストの計算ページを見る →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="mobile-calculator">
+            <div class="timeline-content">
+                <h2 class="timeline-version">スマートフォンで、計算を始めやすい画面へ</h2>
+                <div class="timeline-date"><time datetime="2026-09-16">2026年09月16日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>現在のステータス、目標ステータス、必要ポイントの入力から計算へ進みやすい順序に整理しました。</li>
+                        <li>詳細設定を折りたためるようにし、狭い画面でも基本の計算を始めやすくしました。通常計算・逆算・リワード記録はタブで切り替えられます。</li>
+                    </ul>
+                    <p><a href="index.html">計算機を使う →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="game-guides">
+            <div class="timeline-content">
+                <h2 class="timeline-version">ゲーム別の購入ガイドを拡充</h2>
+                <div class="timeline-date"><time datetime="2026-09-13">2026年09月13日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>ゲーム別17ガイドを記事一覧にまとめ、計算ページと購入ガイドを行き来しやすくしました。</li>
+                        <li>月パスやWebストア、ゲーム内通貨の購入について、ゲームごとの条件を確認できる内容を拡充しました。プロスピA・Pokémon GO・eFootballの情報も追加しています。</li>
+                    </ul>
+                    <p><a href="games/">ゲーム別の計算・ガイドを見る →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="article-dates">
+            <div class="timeline-content">
+                <h2 class="timeline-version">記事の更新日と、公式情報の確認日を分けて表示</h2>
+                <div class="timeline-date"><time datetime="2026-08-28">2026年08月28日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>記事の公開日・更新日と、公式情報を確認した日を区別する表示を導入しました。情報の新しさを判断しやすくしています。</li>
+                        <li>日本語と外国語の記事で、読み始めの案内や関連記事への導線も整えました。</li>
+                    </ul>
+                    <p><a href="blog/">記事一覧を見る →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item" id="earning-rate">
+            <div class="timeline-content">
+                <h2 class="timeline-version">キャンペーンの特別獲得率を、そのまま試算</h2>
+                <div class="timeline-date"><time datetime="2026-08-18">2026年08月18日</time></div>
+                <div class="timeline-body">
+                    <ul>
+                        <li>通常獲得率と、Google Playに表示された特別獲得率を比較し、高い方で試算する計算と案内へ統一しました。</li>
+                        <li>「100円ごとに何ポイント」という表示を入力に使えるよう整理し、現在の条件で必要額を確認しやすくしました。</li>
+                    </ul>
+                    <p><a href="index.html">獲得率を指定して計算する →</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- v2.4.0 -->
+        <div class="timeline-item">
+            <div class="timeline-content">
+                <h2 class="timeline-version">v2.4.0</h2>
                 <div class="timeline-date">2026年7月24日</div>
                 <div class="timeline-body">
                     <ul>
@@ -335,7 +464,7 @@
         <a href="about-playpoints.html" style="margin-left: 0.5em;">Playポイントって何？</a>
         <a href="sitemap.html" style="margin-left: 0.5em;">サイトマップ</a>
       </p>
-      <p class="meta-line">運営者: かたかた / 最終更新: 2026-08-12</p>
+      <p class="meta-line">運営者: かたかた / 最終更新: 2026-09-22</p>
       <p class="site-footer-trademark">Google Play、Google Play ロゴ、Android は Google LLC の商標です。当サイトは個人によって運営される非公式のファンサイト・計算ツールであり、Google LLC および掲載されている各ゲームの配信元・開発会社とは一切関係ありません。</p>
         <p class="copyright">
         © <span id="copyright-year">2026</span> PlayPoint Simulation Tool
