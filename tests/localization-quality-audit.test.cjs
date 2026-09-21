@@ -12,11 +12,11 @@ const { getCalculatorHeaderProfile } = require('../scripts/site-shell.cjs');
 
 const TOP_PAGE_EXPECTATIONS = Object.freeze({
   'index.html': { aria: 'Play の国または地域' },
-  'en/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' },
-  'ko/index.html': { aria: 'Play 국가 또는 지역', latest: '🆕 최신 정보 허브 (일본어)', lab: '🧪 KatakataLab (일본어)' },
-  'tw/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
-  'hk/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)', lab: '🧪 KatakataLab (日文)' },
-  'in/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)', lab: '🧪 KatakataLab (Japanese)' }
+  'en/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)' },
+  'ko/index.html': { aria: 'Play 국가 또는 지역', latest: '🆕 최신 정보 허브 (일본어)' },
+  'tw/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)' },
+  'hk/index.html': { aria: 'Play 國家或地區', latest: '🆕 最新資訊中心 (日文)' },
+  'in/index.html': { aria: 'Play country or region', latest: '🆕 Latest Hub (Japanese)' }
 });
 
 test('calculator top pages keep localized region aria and Japanese-only destination markers', () => {
@@ -26,7 +26,7 @@ test('calculator top pages keep localized region aria and Japanese-only destinat
     assert.equal(profile.regionAriaLabel, expected.aria, `${file}: canonical region aria label`);
     assert.ok(html.includes(`class="region-switch" aria-label="${expected.aria}"`), `${file}: static region aria label`);
     if (expected.latest) assert.ok(html.includes(`>${expected.latest}</a>`), `${file}: latest Japanese-only marker`);
-    if (expected.lab) assert.ok(html.includes(`>${expected.lab}</a>`), `${file}: KatakataLab Japanese-only marker`);
+    assert.doesNotMatch(html, /data-lang-key="linkKatakata"/, `${file}: removed calculator header link`);
   }
 });
 
