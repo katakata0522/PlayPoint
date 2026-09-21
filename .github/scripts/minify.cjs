@@ -17,7 +17,6 @@ const cssTargets = [
   'visitor-thanks.css',
   'site-shell-vnext.css',
   'points-cost.css',
-  'articles/article-gift-card.css',
   'articles/article-legacy.css',
   'articles/article-modern.css',
   'articles/article-shared.css',
