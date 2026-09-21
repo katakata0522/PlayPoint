@@ -116,54 +116,7 @@ jobs:
           for attempt in {1..40}; do
             if curl --fail --silent --show-error --insecure --compressed https://127.0.0.1:4173/ > /dev/null; then
               headers="$(curl --silent --show-error --insecure --compressed -D - -o /dev/null https://127.0.0.1:4173/style.css | tr -d '\r')"
-              if grep -qi '^Content-Encoding: gzip
-
-      - name: Install performance browser runtime
-        id: ci_browser
-        run: bash .github/scripts/setup-browser-runtime.sh --performance
-
-      - name: Audit calculator, hubs and representative articles
-        id: ci_audit
-        run: node .github/scripts/lighthouse-suite.cjs
-
-      - name: Save Lighthouse diagnostics
-        id: save_lighthouse_diagnostics
-        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
-        run: node .github/scripts/lighthouse-diagnostics.cjs --manifest performance-artifacts/audit-manifest.json --output-dir performance-artifacts
-
-      - name: Enforce strengthened mobile performance budgets
-        id: enforce_strengthened_mobile_performance_budgets
-        if: ${{ always() && (steps.ci_audit.outcome == 'success' || steps.ci_audit.outcome == 'failure') }}
-        run: node .github/scripts/mobile-performance-budget.cjs --manifest performance-artifacts/audit-manifest.json
-
-      - name: Upload Lighthouse reports and CLS evidence
-        id: upload_lighthouse_reports_and_cls_evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: low-end-android-performance-${{ github.event_name }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: performance-artifacts/
-          if-no-files-found: warn
-          retention-days: 14
-
-      - name: Record CI job outcome
-        id: record_ci_job_outcome
-        if: always()
-        env:
-          CI_JOB_STATUS: ${{ job.status }}
-          CI_STEPS_JSON: ${{ toJSON(steps) }}
-        run: node .github/scripts/ci-evidence.cjs finalize
-
-      - name: Preserve CI environment and phase evidence
-        id: preserve_ci_environment_and_phase_evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: ci-evidence-${{ github.job }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/playpoint-ci-evidence/
-          if-no-files-found: warn
-          retention-days: 7
- <<< "$headers"; then
+              if grep -qi '^Content-Encoding: gzip$' <<< "$headers"; then
                 echo 'Local performance server is using Apache mod_deflate gzip.'
                 exit 0
               fi
