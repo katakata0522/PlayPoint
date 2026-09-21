@@ -10,6 +10,7 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const VIEWPORT_WIDTHS = [320, 360, 390, 412];
+// Tablet/desktop checks validate rendered geometry and decoded local flag resources, not CSS implementation details.
 const TABLET_VIEWPORT_WIDTH = 768;
 const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
