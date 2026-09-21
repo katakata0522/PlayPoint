@@ -57,6 +57,20 @@
     }
     </script>
   <link rel="stylesheet" href="/site-shell-vnext.css?v=51f267d66c">
+    <style>
+      /* 本人のあとがきは保ち、更新一覧と詳細への入口だけを整える。 */
+      #update-section .update-highlights { list-style: none; padding: 0; margin: 1.2em 0; }
+      #update-section .update-highlights li { margin: 0; padding: 1em 0; border-bottom: 1px solid var(--pp-shell-border, #dbe3ee); line-height: 1.7; }
+      #update-section .update-highlights li:first-child { padding-top: 0; }
+      #update-section .update-highlights li:last-child { border-bottom: 0; padding-bottom: 0; }
+      #update-section .update-highlights time { display: block; margin-bottom: .35em; color: var(--pp-shell-muted, #475569); font-size: .85em; font-weight: 650; }
+      #update-section .update-highlights a { display: inline-block; padding: .2em 0; line-height: 1.5; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+      #update-section .update-history-link { display: inline-flex; gap: .35em; max-width: 100%; box-sizing: border-box; min-height: 48px; padding: .8em 1.2em; border-color: #0b57d0; background: #0b57d0; color: #fff !important; box-shadow: 0 4px 12px rgba(11, 87, 208, .2); line-height: 1.5; }
+      #update-section .update-history-link span:last-child { word-break: keep-all; overflow-wrap: break-word; }
+      #update-section .update-history-link:hover { background: #0842a0; color: #fff !important; box-shadow: 0 6px 16px rgba(11, 87, 208, .3); }
+      #update-section a:focus-visible { outline: 3px solid #0b57d0; outline-offset: 4px; }
+      #update-section .update-history-link:focus-visible { background: #0842a0; color: #fff !important; }
+    </style>
 </head>
 <body>
 
@@ -99,15 +113,15 @@
     <div class="section" id="update-section">
       <h2>アップデート情報</h2>
       <p>主なアップデートを、新しい順に5件紹介します。</p>
-      <ul>
-        <li><time datetime="2026-09-22">2026/09/22</time>：<a href="changelog.html#purpose-guides"><strong>目的から選べる、おすすめ記事4枚</strong></a><br>ダイヤモンド・クエスト・ポイントの使い道・ギフトコードへ、トップから迷わず移動。</li>
-        <li><time datetime="2026-09-21">2026/09/21</time>：<a href="changelog.html#clear-results"><strong>計算結果の必要額を、ひと目で分かりやすく</strong></a><br>必要な金額を大きく表示し、結果の読み取りやすさを改善。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time>：<a href="changelog.html#article-discovery"><strong>記事検索と人気記事で、知りたい情報へ</strong></a><br>記事一覧の検索と、記事横の検索・人気記事5件を整備。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time>：<a href="changelog.html#weekly-diary"><strong>リワード日記に、記録の積み重ねが見えるグラフ</strong></a><br>今週の入力・記録状態・週ごとの積み上げを分かりやすく。</li>
-        <li><time datetime="2026-09-19">2026/09/19</time>：<a href="changelog.html#monst-packs"><strong>モンストの課金パックを計算・比較しやすく</strong></a><br>ゲーム別計算にパックを追加し、購入先比較やカレンダーの記事を公開。</li>
+      <ul class="update-highlights">
+        <li><time datetime="2026-09-22">2026/09/22</time><a href="changelog.html#purpose-guides"><strong>目的から選べる4つの記事</strong></a><br>ダイヤモンド・クエスト・ポイントの使い道・ギフトコードへ、トップから迷わず移動。</li>
+        <li><time datetime="2026-09-21">2026/09/21</time><a href="changelog.html#clear-results"><strong>必要な金額をひと目で</strong></a><br>必要な金額を大きく表示し、結果の読み取りやすさを改善。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#article-discovery"><strong>記事検索と人気記事を追加</strong></a><br>記事一覧の検索と、記事横の検索・人気記事5件を整備。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#weekly-diary"><strong>リワード日記のグラフを充実</strong></a><br>今週の入力・記録状態・週ごとの積み上げを分かりやすく。</li>
+        <li><time datetime="2026-09-19">2026/09/19</time><a href="changelog.html#monst-packs"><strong>モンストのパックを計算・比較</strong></a><br>ゲーム別計算にパックを追加し、購入先比較やカレンダーの記事を公開。</li>
       </ul>
       <div style="margin-top: 1.5em; text-align: center;">
-        <a href="changelog.html" class="btn-back-home" style="display: inline-block; text-decoration: none;">詳しいアップデート情報・これまでの改善を見る</a>
+        <a href="changelog.html" class="btn-back-home update-history-link"><span aria-hidden="true">👉</span><span>アップデートの歴史は<wbr>こちら！</span></a>
       </div>
     </div>
 

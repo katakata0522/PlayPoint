@@ -118,6 +118,21 @@
         .timeline-body li:last-child {
             margin-bottom: 0;
         }
+        /* 線・丸・最新の黄色は残し、長い説明は読み進めやすくする。 */
+        .timeline-content { text-align: left; }
+        .timeline-version { text-align: left; font-size: clamp(1.05rem, 2.5vw, 1.25rem); line-height: 1.5; }
+        .timeline-body { line-height: 1.8; }
+        .timeline-body a { text-underline-offset: .2em; }
+        .timeline-body a:focus-visible { outline: 3px solid #0b57d0; outline-offset: 4px; }
+        .timeline-item[id] { scroll-margin-top: 1rem; }
+        @media (max-width: 640px) {
+            .timeline { padding: 0; margin: 1.5rem auto; }
+            .timeline::after { left: 10px; }
+            .timeline-item { padding: 8px 0 24px 28px; }
+            .timeline-item::after { left: 10px; }
+            .timeline-content { padding: 1rem; }
+            .timeline-body ul { padding-left: 1.15rem; }
+        }
     </style>
     
     <script type="application/ld+json">
@@ -176,7 +191,7 @@
     <div class="timeline">
         <div class="timeline-item latest" id="purpose-guides">
             <div class="timeline-content">
-                <h2 class="timeline-version">目的から選べる、おすすめ記事4枚 <span class="timeline-badge">Latest</span></h2>
+                <h2 class="timeline-version">目的から選べる4つの記事 <span class="timeline-badge">Latest</span></h2>
                 <div class="timeline-date"><time datetime="2026-09-22">2026年09月22日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -190,7 +205,7 @@
 
         <div class="timeline-item" id="clear-results">
             <div class="timeline-content">
-                <h2 class="timeline-version">計算結果の必要額を、ひと目で分かりやすく</h2>
+                <h2 class="timeline-version">必要な金額をひと目で</h2>
                 <div class="timeline-date"><time datetime="2026-09-21">2026年09月21日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -204,7 +219,7 @@
 
         <div class="timeline-item" id="article-discovery">
             <div class="timeline-content">
-                <h2 class="timeline-version">記事検索と人気記事で、知りたい情報へ</h2>
+                <h2 class="timeline-version">記事検索と人気記事を追加</h2>
                 <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -219,7 +234,7 @@
 
         <div class="timeline-item" id="weekly-diary">
             <div class="timeline-content">
-                <h2 class="timeline-version">リワード日記に、記録の積み重ねが見えるグラフ</h2>
+                <h2 class="timeline-version">リワード日記のグラフを充実</h2>
                 <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -234,7 +249,7 @@
 
         <div class="timeline-item" id="monst-packs">
             <div class="timeline-content">
-                <h2 class="timeline-version">モンストの課金パックを計算・比較しやすく</h2>
+                <h2 class="timeline-version">モンストのパックを計算・比較</h2>
                 <div class="timeline-date"><time datetime="2026-09-19">2026年09月19日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -248,7 +263,7 @@
 
         <div class="timeline-item" id="mobile-calculator">
             <div class="timeline-content">
-                <h2 class="timeline-version">スマートフォンで、計算を始めやすい画面へ</h2>
+                <h2 class="timeline-version">スマホで計算を始めやすく</h2>
                 <div class="timeline-date"><time datetime="2026-09-16">2026年09月16日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -276,7 +291,7 @@
 
         <div class="timeline-item" id="article-dates">
             <div class="timeline-content">
-                <h2 class="timeline-version">記事の更新日と、公式情報の確認日を分けて表示</h2>
+                <h2 class="timeline-version">記事の更新日・確認日を見やすく</h2>
                 <div class="timeline-date"><time datetime="2026-08-28">2026年08月28日</time></div>
                 <div class="timeline-body">
                     <ul>
@@ -290,7 +305,7 @@
 
         <div class="timeline-item" id="earning-rate">
             <div class="timeline-content">
-                <h2 class="timeline-version">キャンペーンの特別獲得率を、そのまま試算</h2>
+                <h2 class="timeline-version">特別獲得率をそのまま試算</h2>
                 <div class="timeline-date"><time datetime="2026-08-18">2026年08月18日</time></div>
                 <div class="timeline-body">
                     <ul>
