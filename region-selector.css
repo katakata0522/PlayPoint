@@ -114,22 +114,47 @@
 /* Keep the primary selector compact. Full localized country names remain in
    aria-label/title, while the visible row stays JP / US / KR / TW / globe. */
 @media (min-width: 521px) {
-  .region-switch {
-    gap: 0.35rem;
-  }
+  .region-switch { gap: 0.5rem; }
 
   .region-switch > button[data-region],
   .region-switch .region-more-toggle {
+    min-width: 76px;
     border: 1px solid var(--input-border-color) !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
   }
 
-  .region-switch > button:first-child {
-    border-right: 1px solid var(--input-border-color) !important;
+  .region-label-desktop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
   }
 
-  .region-switch .region-more-toggle {
-    border-left: 1px solid var(--input-border-color) !important;
+  .region-label-desktop::before,
+  .region-more-option__flag::before {
+    content: "";
+    width: 24px;
+    height: 18px;
+    flex: 0 0 24px;
+    border-radius: 2px;
+    background: center / cover no-repeat;
+    box-shadow: 0 0 0 1px rgba(31, 41, 55, 0.18);
+  }
+
+  button[data-region="JP"] .region-label-desktop::before { background-image: url("images/flags/jp.svg"); }
+  button[data-region="US"] .region-label-desktop::before { background-image: url("images/flags/us.svg"); }
+  button[data-region="KR"] .region-label-desktop::before { background-image: url("images/flags/kr.svg"); }
+  button[data-region="TW"] .region-label-desktop::before { background-image: url("images/flags/tw.svg"); }
+  .region-more-option[data-region="HK"] .region-more-option__flag::before { background-image: url("images/flags/hk.svg"); }
+  .region-more-option[data-region="IN"] .region-more-option__flag::before { background-image: url("images/flags/in.svg"); }
+
+  .region-switch .region-more-toggle { min-width: 52px; }
+  .region-more-option__flag { font-size: 0; }
+
+  .region-switch > button[data-region]:hover:not(.active),
+  .region-switch .region-more-toggle:hover:not([data-region-active="true"]) {
+    background: rgba(0, 95, 204, 0.08) !important;
+    color: var(--text-color, #1f2937) !important;
+    border-color: rgba(0, 95, 204, 0.34) !important;
   }
 }
 

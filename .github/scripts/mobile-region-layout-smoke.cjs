@@ -10,6 +10,8 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const VIEWPORT_WIDTHS = [320, 360, 390, 412];
+// Tablet/desktop checks validate rendered geometry and decoded local flag resources, not CSS implementation details.
+const TABLET_VIEWPORT_WIDTH = 768;
 const DESKTOP_VIEWPORT_WIDTH = 1024;
 const VIEWPORT_HEIGHT = 844;
 const PRIMARY_MOBILE_LABELS = ['🇯🇵 JP', '🇺🇸 US', '🇰🇷 KR', '🇹🇼 TW'];
@@ -172,12 +174,14 @@ async function inspectLayout(page) {
     const labels = primaryButtons.map(button => {
       const mobile = button.querySelector('.region-label-mobile');
       const desktop = button.querySelector('.region-label-desktop');
+      const flagStyle = desktop ? getComputedStyle(desktop, '::before') : null;
       return {
         region: button.dataset.region,
         mobileText: mobile?.textContent?.trim() || '',
         desktopText: desktop?.textContent?.trim() || '',
         mobileDisplay: mobile ? getComputedStyle(mobile).display : '',
-        desktopDisplay: desktop ? getComputedStyle(desktop).display : ''
+        desktopDisplay: desktop ? getComputedStyle(desktop).display : '',
+        flagBackground: flagStyle?.backgroundImage || ''
       };
     });
 
@@ -193,6 +197,8 @@ async function inspectLayout(page) {
       ? getComputedStyle(document.querySelector('#calculateButton')).backgroundColor
       : '';
     const rowTopSpread = Math.max(...directItemRects.map(item => item.top)) - Math.min(...directItemRects.map(item => item.top));
+    const wrapperRect = document.querySelector('.calculator-wrapper')?.getBoundingClientRect();
+    const topBarRect = document.querySelector('.top-bar')?.getBoundingClientRect();
 
     return {
       display: switchStyle.display,
@@ -217,6 +223,8 @@ async function inspectLayout(page) {
       selectedBackground,
       actionBackground,
       criticalStylePresent: Boolean(document.getElementById('region-selector-critical-style')),
+      wrapperWidth: wrapperRect?.width || 0,
+      topBarWidth: topBarRect?.width || 0,
       toggleBorderTopRightRadius: parseFloat(toggleStyle.borderTopRightRadius) || 0,
       toggleBorderBottomRightRadius: parseFloat(toggleStyle.borderBottomRightRadius) || 0,
       toggleBorderLeftWidth: parseFloat(toggleStyle.borderLeftWidth) || 0,
@@ -305,6 +313,25 @@ async function verifyLocale(browser, baseUrl, locale) {
       console.log(`ok - ${locale.key} compact mobile region layout at ${width}px`);
     }
 
+    await page.setViewportSize({ width: TABLET_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
+    await page.waitForFunction(() => Boolean(document.querySelector('link[data-region-selector-style]')?.sheet), null, { timeout: 10_000 });
+    await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display !== 'grid', null, { timeout: 10_000 });
+    const tabletLayout = await inspectLayout(page);
+    assert(tabletLayout, `${locale.key} tablet: region selector was not fully initialized`);
+    assert(tabletLayout.wrapperWidth >= 700, `${locale.key} tablet: calculator shell remained too narrow (${tabletLayout.wrapperWidth}px)`);
+    assert(tabletLayout.topBarWidth >= 700, `${locale.key} tablet: top bar remained too narrow (${tabletLayout.topBarWidth}px)`);
+    assert(tabletLayout.documentScrollWidth <= tabletLayout.viewportWidth + 1,
+      `${locale.key} tablet: page horizontally overflows (${tabletLayout.documentScrollWidth} > ${tabletLayout.viewportWidth})`);
+    tabletLayout.labels.forEach(label => {
+      assert(label.flagBackground.includes(`/images/flags/${label.region.toLowerCase()}.svg`),
+        `${locale.key} tablet: missing local flag background for ${label.region}: ${label.flagBackground}`);
+    });
+    await page.waitForFunction(() => ['jp','us','kr','tw'].every(code =>
+      performance.getEntriesByType('resource').some(entry => entry.name.includes(`/images/flags/${code}.svg`))
+    ), null, { timeout: 10_000 });
+    results.push({ width: TABLET_VIEWPORT_WIDTH, ...tabletLayout });
+    console.log(`ok - ${locale.key} tablet shell width and SVG flags`);
+
     await page.setViewportSize({ width: DESKTOP_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
     await page.waitForFunction(() => {
       const switcher = document.querySelector('.region-switch');
@@ -324,13 +351,32 @@ async function verifyLocale(browser, baseUrl, locale) {
       `${locale.key} desktop: more toggle must remain individually rounded (${desktopLayout.toggleBorderTopRightRadius}/${desktopLayout.toggleBorderBottomRightRadius})`);
     assert(desktopLayout.toggleBorderLeftWidth >= 0.5,
       `${locale.key} desktop: separated more control lost its left border (${desktopLayout.toggleBorderLeftWidth}px)`);
+    assert(desktopLayout.wrapperWidth >= 800,
+      `${locale.key} desktop: calculator shell remained too narrow (${desktopLayout.wrapperWidth}px)`);
+    assert(desktopLayout.topBarWidth >= 800,
+      `${locale.key} desktop: top bar remained too narrow (${desktopLayout.topBarWidth}px)`);
     desktopLayout.labels.forEach((label, index) => {
       assert(label.desktopText === PRIMARY_DESKTOP_LABELS[index],
         `${locale.key} desktop: unexpected compact label for ${label.region}: ${label.desktopText}`);
       assert(label.desktopDisplay !== 'none',
         `${locale.key} desktop: compact desktop label hidden for ${label.region}`);
+      assert(label.flagBackground.includes(`/images/flags/${label.region.toLowerCase()}.svg`),
+        `${locale.key} desktop: missing local flag background for ${label.region}: ${label.flagBackground}`);
     });
-    results.push({ width: DESKTOP_VIEWPORT_WIDTH, ...desktopLayout });
+
+    const articleLink = page.locator('.header-links a[data-lang-key="linkArticles"]').first();
+    await articleLink.hover();
+    await page.waitForTimeout(250);
+    const hoverState = await articleLink.evaluate(element => {
+      const style = getComputedStyle(element);
+      return { color: style.color, backgroundColor: style.backgroundColor };
+    });
+    assert(hoverState.backgroundColor !== 'rgb(11, 87, 208)',
+      `${locale.key} desktop: article link still uses the old saturated-blue hover`);
+    assert(hoverState.color !== 'rgb(31, 41, 55)' && hoverState.color !== 'rgb(55, 65, 81)',
+      `${locale.key} desktop: article link hover text stayed dark gray on blue: ${hoverState.color}`);
+
+    results.push({ width: DESKTOP_VIEWPORT_WIDTH, ...desktopLayout, hoverState });
     console.log(`ok - ${locale.key} desktop region edge and active state`);
 
     return results;
@@ -388,7 +434,7 @@ async function main() {
   }
 
   assert(report.passed, 'Mobile region layout smoke test failed. See browser-smoke-artifacts/mobile-region-layout-report.json.');
-  console.log(`Region layout smoke test passed (${report.mode}, ${LOCALES.length} locales × mobile ${VIEWPORT_WIDTHS.join('/')}px + desktop ${DESKTOP_VIEWPORT_WIDTH}px).`);
+  console.log(`Region layout smoke test passed (${report.mode}, ${LOCALES.length} locales × mobile ${VIEWPORT_WIDTHS.join('/')}px + tablet ${TABLET_VIEWPORT_WIDTH}px + desktop ${DESKTOP_VIEWPORT_WIDTH}px).`);
 }
 
 main().catch(error => {
