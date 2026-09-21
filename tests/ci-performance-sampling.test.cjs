@@ -11,7 +11,7 @@ function temporary(t) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-lh-test-'));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true })); return dir;
 }
-function report(values = {}, url = 'http://127.0.0.1:4173/') {
+function report(values = {}, url = 'https://127.0.0.1:4173/') {
   return { finalUrl: url, lighthouseVersion: '13.4.1', environment: { hostUserAgent: 'test-Chromium' }, configSettings: { formFactor: 'mobile' },
     categories: { performance: { score: values.score ?? 0.9 } }, audits: {
       'largest-contentful-paint': { numericValue: values.lcp ?? 1800 }, 'total-blocking-time': { numericValue: values.tbt ?? 100 },
@@ -46,6 +46,10 @@ test('性能suiteの6ページと国際記事3地域は測定ownerから直接�
   assert.match(workflow, /node \.github\/scripts\/lighthouse-suite\.cjs/);
   assert.match(workflow, /articles\/intl-shell-v1\.css/);
   assert.match(workflow, /articles\/intl-article\.css/);
+  assert.match(workflow, /performance-apache-server\.cjs/);
+  assert.match(workflow, /AUDIT_BASE_URL=https:\/\/127\.0\.0\.1:4173/);
+  assert.match(workflow, /Content-Encoding: gzip/);
+  assert.match(workflow, /'\.htaccess'/);
 });
 
 test('時間の中央値が合格しても1sampleのbyte超過を隠さない', t => {
@@ -129,6 +133,8 @@ test('suiteは同一6ページを測り、homeと記事ハブを3sampleで比較
     call.args.filter(arg => arg.startsWith('--blocked-url-patterns=')).length === suite.BLOCKED.length
   ));
   assert.equal(new Set(calls.map(call => call.args[1])).size, suite.PAGES.length);
+  assert.ok(calls.every(call => call.args.some(arg => arg.includes('--ignore-certificate-errors'))),
+    'local Lighthouse must trust only the isolated self-signed audit origin');
   assert.equal(budget.reportPathsFromArgs(['--manifest', path.join(outputDir, 'audit-manifest.json')]).length, expectedCalls);
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 0);
   const saved = JSON.parse(fs.readFileSync(path.join(outputDir, 'budget-summary.json')));
@@ -141,6 +147,8 @@ test('suiteはbyte違反を追加測定で消さず、本番の外部通信は�
   }) }), 0);
   assert.equal(calls.length, suite.PAGES.length + 4); // home and hub each retain all 3 samples
   assert.ok(calls.every(call => !call.args.some(arg => arg.startsWith('--blocked-url-patterns='))));
+  assert.ok(calls.every(call => !call.args.some(arg => arg.includes('--ignore-certificate-errors'))),
+    'production Lighthouse must use normal certificate validation');
   assert.equal(budget.main(['--manifest', path.join(outputDir, 'audit-manifest.json')]), 1);
 });
 test('suiteのCLI失敗はvalid JSONが残っても成功にしない', t => {

@@ -20,7 +20,7 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
   const root = path.resolve(__dirname, '../..');
   const target = env.AUDIT_TARGET;
   if (!['local', 'production'].includes(target)) throw new Error('AUDIT_TARGET must be local or production');
-  const base = target === 'local' ? 'http://127.0.0.1:4173' : 'https://playpoint-sim.com';
+  const base = target === 'local' ? 'https://127.0.0.1:4173' : 'https://playpoint-sim.com';
   if (env.AUDIT_BASE_URL && env.AUDIT_BASE_URL !== base) throw new Error('Unexpected audit origin');
   fs.mkdirSync(outputDir, { recursive: true });
   const manifest = { schemaVersion: 1, target, base, environment: fingerprint(env),
@@ -35,7 +35,9 @@ function main({ outputDir = 'performance-artifacts', env = process.env, execute 
     save();
     const args = [path.join(root, '.github/ci-runtime/lighthouse/node_modules/lighthouse/cli/index.js'), base + route,
       '--only-categories=performance', '--form-factor=mobile', '--throttling.cpuSlowdownMultiplier=6',
-      '--output=json', '--output-path=' + file, '--chrome-flags=--headless --no-sandbox --disable-gpu', '--max-wait-for-load=45000',
+      '--output=json', '--output-path=' + file,
+      '--chrome-flags=--headless --no-sandbox --disable-gpu' + (target === 'local' ? ' --ignore-certificate-errors' : ''),
+      '--max-wait-for-load=45000',
       ...(target === 'local' ? BLOCKED.map(pattern => '--blocked-url-patterns=' + pattern) : []), '--quiet'];
     const started = Date.now();
     const result = execute(process.execPath, args, { cwd: root, env, stdio: 'inherit', timeout: 120000 });

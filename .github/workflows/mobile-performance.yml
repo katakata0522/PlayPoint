@@ -37,8 +37,10 @@ on:
       - 'en/articles/google-play-points-join-eligibility.html'
       - 'ko/articles/google-play-points-join-eligibility.html'
       - 'tw/articles/google-play-points-join-eligibility.html'
+      - '.htaccess'
       - '.github/workflows/mobile-performance.yml'
       - '.github/scripts/minify.cjs'
+      - '.github/scripts/performance-apache-server.cjs'
       - '.github/scripts/mobile-performance-budget.cjs'
       - '.github/scripts/lighthouse-diagnostics.cjs'
       - '.github/scripts/lighthouse-suite.cjs'
@@ -93,7 +95,7 @@ jobs:
           if [[ "$target" == "production" ]]; then
             echo 'AUDIT_BASE_URL=https://playpoint-sim.com' >> "$GITHUB_ENV"
           else
-            echo 'AUDIT_BASE_URL=http://127.0.0.1:4173' >> "$GITHUB_ENV"
+            echo 'AUDIT_BASE_URL=https://127.0.0.1:4173' >> "$GITHUB_ENV"
           fi
           echo "AUDIT_TARGET=$target" >> "$GITHUB_ENV"
 
@@ -103,17 +105,21 @@ jobs:
         if: env.AUDIT_TARGET == 'local'
         run: node .github/scripts/minify.cjs
 
-      - name: Start local static server
+      - name: Start production-like Apache with gzip
         id: start_local_static_server
         if: env.AUDIT_TARGET == 'local'
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/playpoint-performance-server.log 2>&1 &
+          node .github/scripts/performance-apache-server.cjs > /tmp/playpoint-performance-server.log 2>&1 &
           echo $! > /tmp/playpoint-performance-server.pid
-          for attempt in {1..20}; do
-            if curl --fail --silent --show-error http://127.0.0.1:4173/ > /dev/null; then
-              exit 0
+          for attempt in {1..40}; do
+            if curl --fail --silent --show-error --insecure --compressed https://127.0.0.1:4173/ > /dev/null; then
+              headers="$(curl --silent --show-error --insecure --compressed -D - -o /dev/null https://127.0.0.1:4173/style.css | tr -d '\r')"
+              if grep -qi '^Content-Encoding: gzip$' <<< "$headers"; then
+                echo 'Local performance server is using Apache mod_deflate gzip.'
+                exit 0
+              fi
             fi
             sleep 0.5
           done
