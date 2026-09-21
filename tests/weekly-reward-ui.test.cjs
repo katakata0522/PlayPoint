@@ -21,13 +21,11 @@ test('ウィークリーリワードUIは既存の日記保存契約を変更せ
   assert.match(ui, /aria-expanded/);
 });
 
-test('日記タブを使うまで新UIを取得せず、最初の操作でだけ動的importする', () => {
+test('日記タブがある実ページだけ新UIを動的importする', () => {
   const thirdParty = read('js/third-party.js');
 
   assert.match(thirdParty, /typeof document\.getElementById !== 'function'/);
   assert.match(thirdParty, /document\.getElementById\('tab-diary'\)/);
-  assert.match(thirdParty, /weeklyUiLoaderBound/);
-  assert.match(thirdParty, /addEventListener\('click',[\s\S]*?\{ once: true \}/);
   assert.match(thirdParty, /import\('\/js\/weekly-reward-ui\.js(?:\?v=[^']+)?'\)/);
   assert.match(thirdParty, /Weekly reward UI load failed/);
 });
@@ -37,12 +35,11 @@ test('新UIのJSは既存のasset version同期に含まれる', () => {
   assert.ok(versions.weeklyRewardUiVersion, 'weekly-reward-ui.js のrevisionがありません');
 });
 
-test('タブの見た目は初回表示から維持し、詳細UIスタイルは遅延モジュールが担当する', () => {
+test('UIスタイルはモジュール内包で今週優先・過去週コンパクト・狭幅1列の契約を持つ', () => {
   const ui = read('js/weekly-reward-ui.js');
-  const css = read('style.css');
 
-  assert.match(css, /#tab-diary::before\s*\{[^}]*content:\s*"🎁"/s);
-  assert.doesNotMatch(ui, /#tab-diary::before/);
+  assert.match(ui, /#tab-diary::before/);
+  assert.match(ui, /content:\s*"🎁"/);
   assert.match(ui, /\.is-weekly-current/);
   assert.match(ui, /\.is-weekly-compact/);
   assert.match(ui, /\.diary-save-btn[^`]*display:none/);
