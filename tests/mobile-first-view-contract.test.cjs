@@ -349,7 +349,7 @@ test('計算フローはGoogleコア4色を段階と接続へ使う', () => {
   assert.doesNotMatch(svg, /#58a6ff|#3fb950/i);
 });
 
-test('トップ下部は機能説明とおすすめ利用場面を分け、ランクの表情・FAQを残す', () => {
+test('トップ下部は機能説明とおすすめ利用場面を分け、目的別の4記事・FAQを残す', () => {
   const html = read('index.html');
   const css = read('style.css');
   const experience = read('js/home-experience.js');
@@ -385,7 +385,15 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   }
   assert.equal((articles.match(/class="home-rank-hint"/g) || []).length, 4);
   assert.ok(articles.includes('class="home-guide-shortcuts"'));
-  assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
+  const articleHrefs = [...articles.matchAll(/class="article-link-card[^"]*" href="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(articleHrefs, [
+    "articles/2025-12-25-diamond-worth-it.html",
+    "articles/2026-07-31-google-play-quests.html",
+    "articles/2025-12-25-best-use.html",
+    "articles/2026-06-20-discount-gift-cards.html"
+]);
+  for (const href of articleHrefs) assert.ok(read(href).includes('<html'), href);
+  assert.match(articles, /目的から選ぶおすすめ記事/);
 
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 3);
   assert.match(faq, /このサイトはGoogle公式のサービスですか？/);
