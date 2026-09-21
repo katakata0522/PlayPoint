@@ -2,10 +2,27 @@
 
 // 表示用HTMLだけを生成する。計算・DOM更新・共有データ保存・計測は行わない。
 export function renderCurrencyAmount(value, config) {
-    const amountMarkup = `<span class="count-target" data-value="${value}">0</span>`;
-    return config.currencyPosition === 'prefix'
-        ? `${config.currencySymbol}${amountMarkup}`
-        : `${amountMarkup} ${config.currencySymbol}`;
+    const amountMarkup = `<span class="count-target result-amount__value" data-value="${value}">0</span>`;
+    const unitMarkup = `<span class="result-amount__unit">${config.currencySymbol}</span>`;
+    const inner = config.currencyPosition === 'prefix'
+        ? `${unitMarkup}${amountMarkup}`
+        : `${amountMarkup}${unitMarkup}`;
+    return `<span class="result-amount">${inner}</span>`;
+}
+
+function renderPointsAmount(value, unit = 'pt') {
+    return `<span class="result-amount"><span class="count-target result-amount__value" data-value="${value}">0</span><span class="result-amount__unit">${unit}</span></span>`;
+}
+
+function renderResultHero({ label, approxLabel = '', amountHtml, metaHtml = '', paceHtml = '' }) {
+    return `
+                <div class="result-hero">
+                    <p class="result-hero__label">${label}</p>
+                    <p class="result-hero__amount">${approxLabel ? `<span class="result-hero__approx">${approxLabel}</span>` : ''}${amountHtml}</p>
+                    ${metaHtml}
+                    ${paceHtml}
+                </div>
+            `;
 }
 
 export function renderMainResult({ config, neededPoints, totalAmountNeeded, remainingMonths,
@@ -17,15 +34,15 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
 
         if (neededPoints === 0) {
             resultContent = `
-                <div style="padding:1em; background:rgba(40, 167, 69, 0.1); border: 2px solid #28a745; border-radius: 8px; text-align:center; font-weight:bold; color:#218838; margin-bottom:1em;">
+                <div class="result-free-clear">
                     🎉 ${texts.resultLabelFreeClear || '課金不要'}
                 </div>
-                <dl>
-                    <dt>${texts.resultLabelNeededPoints}</dt>
-                    <dd><b><span class="count-target" data-value="0">0</span> pt</b></dd>
-                    <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>${texts.approxLabel} ${renderCurrencyAmount(0, config)}</b></dd>
-                </dl>
+                ${renderResultHero({
+                    label: texts.resultLabelTotalYen,
+                    approxLabel: texts.approxLabel,
+                    amountHtml: renderCurrencyAmount(0, config),
+                    metaHtml: `<p class="result-hero__meta">${texts.resultLabelNeededPoints} ${renderPointsAmount(0)}</p>`
+                })}
             `;
             // 追加支出が不要な状態では、購入導線や追加の支出判断リンクを出さない。
             resultDetailsContent = '';
@@ -65,14 +82,24 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
                 </p>
             `;
 
+            const monthlyPace = remainingMonths > 0
+                ? `<span>${texts.resultLabelMonthlyYen} (${remainingMonths}${texts.resultLabelMonths}) ${texts.approxLabel} ${renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingMonths), config)}${texts.perMonth || ''}</span>`
+                : '';
+            const dailyPace = remainingDays > 0
+                ? `<span>${texts.resultLabelDailyYen || '1日あたり目安'} ${texts.approxLabel} ${renderCurrencyAmount(Math.ceil(totalAmountNeeded / remainingDays), config)}${texts.perDay || ''}</span>`
+                : '';
+            const paceHtml = (monthlyPace || dailyPace)
+                ? `<p class="result-hero__pace">${monthlyPace}${dailyPace}</p>`
+                : '';
             resultContent = `
-                <dl>
-                    <dt>${texts.resultLabelNeededPoints}</dt>
-                    <dd><b><span class="count-target" data-value="${neededPoints}">0</span> pt</b></dd>
-                    <dt>${texts.resultLabelTotalYen}</dt>
-                    <dd><b>${texts.approxLabel} ${renderCurrencyAmount(totalAmountNeeded, config)}</b></dd>
-                </dl>
-                ${progressCheer ? `<p class="result-progress-cheer" style="margin:.55em 0 0;color:#1e8e3e;font-weight:900;font-size:.92em;letter-spacing:.01em;">${progressCheer}</p>` : ''}
+                ${renderResultHero({
+                    label: texts.resultLabelTotalYen,
+                    approxLabel: texts.approxLabel,
+                    amountHtml: renderCurrencyAmount(totalAmountNeeded, config),
+                    metaHtml: `<p class="result-hero__meta">${texts.resultLabelNeededPoints} ${renderPointsAmount(neededPoints)}</p>`,
+                    paceHtml
+                })}
+                ${progressCheer ? `<p class="result-progress-cheer">${progressCheer}</p>` : ''}
                 ${premiseContent}
             `;
             resultDetailsContent = `
@@ -98,12 +125,13 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
 export function renderReverseResult({ config, earnedPoints, finalRate, rateSourceLabel, purchaseCheckContent = '' }) {
     const texts = config.uiText;
     return `
-            <dl>
-                <dt>${texts.resultLabelEarnedPoints}</dt>
-                <dd><b>${texts.approxLabel} <span class="count-target" data-value="${earnedPoints}">0</span> pt</b></dd>
-            </dl>
+            ${renderResultHero({
+                label: texts.resultLabelEarnedPoints,
+                approxLabel: texts.approxLabel,
+                amountHtml: renderPointsAmount(earnedPoints)
+            })}
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-            <p class="rounding-assumption-note" style="font-size:0.82em; color:var(--link-color); margin:0.8em 0 0; line-height:1.5;">${texts.roundingNoteReverse}</p>
+            <p class="rounding-assumption-note">${texts.roundingNoteReverse}</p>
             ${purchaseCheckContent}
         `;
 

@@ -15,6 +15,7 @@
 --button-disabled-bg-color: #6b7280;
 --result-bg-color: #f8f9fa;
 --result-border-color: #28a745;
+--result-amount-color: #c5221f;
 --tab-inactive-bg-color: #4b5563;
 --warning-bg-color: #f8d7da;
 --warning-border-color: #f5c6cb;
@@ -499,12 +500,96 @@ background-color: var(--button-hover-bg-color);
 button:disabled {
 background-color: var(--button-disabled-bg-color);
 }
+#mainMode>.section:has(>#result):not(:has(.has-result)) {
+display: none;
+}
+.result:not(.has-result) {
+display: none;
+margin: 0;
+}
 .result.has-result {
 background-color: var(--result-bg-color);
 border-left: 4px solid var(--result-border-color);
 }
-.result b {
-color: var(--link-hover-color);
+.result-amount,
+.result-amount__value {
+font-variant-numeric: tabular-nums;
+}
+.result-amount {
+display: inline-flex;
+align-items: baseline;
+gap: 0.12em;
+}
+.result-amount__value {
+font-weight: 800;
+color: var(--result-amount-color);
+letter-spacing: -0.02em;
+}
+.result-amount__unit {
+font-size: 0.72em;
+font-weight: 600;
+color: #6b7280;
+line-height: 1;
+}
+.result-hero {
+margin: 0;
+}
+.result-hero__label {
+margin: 0;
+font-size: 0.82em;
+font-weight: 600;
+color: var(--link-color);
+}
+.result-hero__amount {
+display: flex;
+flex-wrap: wrap;
+align-items: baseline;
+gap: 0.25em 0.35em;
+margin: 0.15em 0 0;
+line-height: 1.1;
+}
+.result-hero__amount .result-amount__value {
+font-size: clamp(1.9rem, 7vw, 2.4rem);
+}
+.result-hero__amount .result-amount__unit {
+font-size: 1rem;
+}
+.result-hero__approx {
+font-size: 0.9rem;
+font-weight: 700;
+color: #6b7280;
+}
+.result-hero__meta,
+.result-hero__pace {
+display: flex;
+flex-wrap: wrap;
+align-items: baseline;
+gap: 0.3em 0.9em;
+margin: 0.55em 0 0;
+font-size: 0.88em;
+font-weight: 600;
+color: var(--text-color);
+}
+.result-hero__meta .result-amount__value,
+.result-hero__pace .result-amount__value {
+font-size: 1.05em;
+}
+.result-free-clear {
+padding: 0.75em;
+margin: 0 0 0.85em;
+background: rgba(40, 167, 69, 0.1);
+border: 2px solid #28a745;
+border-radius: 8px;
+text-align: center;
+font-weight: bold;
+color: #218838;
+}
+.result-progress-cheer {
+margin: 0.55em 0 0;
+color: #1e8e3e;
+font-weight: 900;
+font-size: 0.92em;
+letter-spacing: 0.01em;
 }
 .tab-switch button {
 background: var(--tab-inactive-bg-color);
@@ -610,6 +695,14 @@ font-size: 1.55em;
 margin: 0.35em 0 0.3em;
 font-weight: bold;
 }
+h1,
+.lp-hero h1,
+.article-link-title,
+.home-rank-hint {
+word-break: keep-all;
+overflow-wrap: break-word;
+line-break: strict;
+}
 .site-description {
 font-size: 0.95em;
 margin: 0.35em auto 1em;
@@ -709,21 +802,22 @@ text-align: left;
 margin-top: 0.75em;
 }
 .result-details details {
-border: 1px solid rgba(11, 87, 208, 0.16);
-border-radius: 8px;
-background: rgba(11, 87, 208, 0.025);
+border: 0;
+border-radius: 0;
+background: transparent;
 }
 .result-details summary {
-display: flex;
+display: inline-flex;
 min-height: 44px;
 align-items: center;
-padding: 0.7em 0.85em;
+padding: 0.15em 0;
 color: var(--link-hover-color);
 font-weight: 700;
 cursor: pointer;
 }
 .result-details summary:hover {
-background: rgba(11, 87, 208, 0.06);
+background: transparent;
+text-decoration: underline;
 }
 .result-details-content {
 padding: 0 0.85em 0.85em;
@@ -1379,6 +1473,9 @@ padding: 0.95rem 1.1rem;
 border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 vertical-align: middle;
 text-align: left;
+white-space: nowrap;
+word-break: keep-all;
+overflow-wrap: normal;
 }
 .lp-comparison-table th {
 background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
@@ -2033,7 +2130,8 @@ font-size: 0.86em;
 h1 {
 font-size: 1.38em;
 line-height: 1.35;
-overflow-wrap: anywhere;
+word-break: keep-all;
+overflow-wrap: break-word;
 }
 .site-description {
 max-width: 100%;
@@ -2084,17 +2182,18 @@ max-width: 100%;
 box-sizing: border-box;
 }
 .lp-comparison-table {
-min-width: 0 !important;
-width: 100%;
-max-width: 100%;
-table-layout: fixed;
-font-size: 0.75rem;
+width: max-content;
+min-width: 100%;
+max-width: none;
+table-layout: auto;
+font-size: 0.85rem;
 }
 .lp-comparison-table th,
 .lp-comparison-table td {
-padding: 0.45rem 0.2rem;
-white-space: normal;
-overflow-wrap: anywhere;
+padding: 0.55rem 0.7rem;
+white-space: nowrap;
+overflow-wrap: normal;
+word-break: keep-all;
 }
 .comparison-reference-page h1,
 .comparison-reference-section h2 {
