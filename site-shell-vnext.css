@@ -396,8 +396,15 @@ main.container .region-grid a {
   border: 1px solid var(--pp-shell-link);
   border-radius: 999px;
   background: var(--pp-shell-surface);
-  color: var(--pp-shell-link);
+  color: var(--pp-shell-link) !important;
+  box-shadow: none;
   font-weight: 750;
+}
+
+.calculator-wrapper .btn-back-home:hover,
+.calculator-wrapper .btn-back-home:focus-visible {
+  background: #eef4ff;
+  color: var(--pp-shell-brand) !important;
 }
 
 /* ---------- Blog index: 既存の情報設計を保ったままShellだけ寄せる ---------- */
