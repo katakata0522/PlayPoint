@@ -55,9 +55,9 @@ test('案内ページの戻り先は同一オリジンのパスだけから言�
 
 test('更新履歴の戻りラベルも外部referrerでは言語を切り替えない', () => {
   const sameOriginCases = [
-    ['https://playpoint-sim.com/ko/articles/guide.html', '← Q&A로 돌아가기'],
-    ['https://playpoint-sim.com/tw/', '← 返回問與答'],
-    ['https://playpoint-sim.com/en/', '← Go Back to Q&A'],
+    ['https://playpoint-sim.com/ko/articles/guide.html', '← 후기 및 업데이트로 돌아가기'],
+    ['https://playpoint-sim.com/tw/', '← 返回後記與更新資訊'],
+    ['https://playpoint-sim.com/en/', '← Back to Afterword & Updates'],
     ['https://playpoint-sim.com/?next=/ko/', '← あとがきに戻る']
   ];
   for (const [referrer, expectedText] of sameOriginCases) {
@@ -76,8 +76,8 @@ test('更新履歴の戻りラベルも外部referrerでは言語を切り替え
   ]) {
     const button = buttonState('changelog.html', referrer, 'US');
     assert.equal(button.href, 'info.html');
-    assert.equal(button.textContent, '← Go Back to Q&A', referrer);
+    assert.equal(button.textContent, '← Back to Afterword & Updates', referrer);
   }
 
-  assert.equal(buttonState('changelog.html', '', 'KR').textContent, '← Q&A로 돌아가기');
+  assert.equal(buttonState('changelog.html', '', 'KR').textContent, '← 후기 및 업데이트로 돌아가기');
 });

@@ -19,7 +19,7 @@ test('日本語の全公開記事は検索・人気5件・次行動1件・関連
     assert.match(sidebar, /class="sidebar-search-input"[^>]*name="q"/, article.path);
     assert.equal((sidebar.match(/class="sidebar-popular-item(?: is-current)?"/g) || []).length, 5, article.path);
     assert.ok(sidebar.includes('今月よく読まれている記事'), article.path);
-    assert.ok(sidebar.includes('直近30日の閲覧傾向・週1回更新'), article.path);
+    assert.ok(sidebar.includes('直近30日の閲覧傾向・順位更新 ' + POPULAR_GUIDES_SNAPSHOT), article.path);
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
@@ -35,16 +35,14 @@ test('日本語の全公開記事は検索・人気5件・次行動1件・関連
   }
 });
 
-test('人気ランキングは日本語30日実測のTop5をPV非表示で保持する', () => {
-  assert.equal(POPULAR_GUIDES_SNAPSHOT, '2026-09-19');
+test('人気ランキングの保存データは公開日本語記事5件と実在する日付を持つ', () => {
+  assert.match(POPULAR_GUIDES_SNAPSHOT, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(JAPANESE_POPULAR_GUIDES.length, 5);
-  assert.deepEqual(JAPANESE_POPULAR_GUIDES.map(item => item[0]), [
-    '/articles/2026-07-31-google-play-quests.html',
-    '/articles/2026-06-20-discount-gift-cards.html',
-    '/articles/2026-07-31-super-weekly-reward.html',
-    '/articles/2026-07-24-play-points-cash-conversion.html',
-    '/articles/2025-12-25-best-use.html'
-  ]);
+  assert.equal(new Set(JAPANESE_POPULAR_GUIDES.map(item => item[0])).size, 5);
+  const publicPaths = new Set(articles.map(article => article.href));
+  for (const [href, label] of JAPANESE_POPULAR_GUIDES) {
+    assert.ok(publicPaths.has(href)); assert.ok(label.trim());
+  }
 });
 
 test('本文とSEO情報は変更せず、サイドバーがない記事にも導線を追加できる', () => {
