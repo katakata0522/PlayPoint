@@ -5,13 +5,21 @@ const path = require('node:path');
 const { writeJson } = require('./ci-evidence.cjs');
 
 const KB = 1024;
+const TRANSFER_BASELINE_FILE = path.resolve(__dirname, '../performance/transfer-baselines.json');
+const TRANSFER_BASELINE_CONFIG = Object.freeze(JSON.parse(fs.readFileSync(TRANSFER_BASELINE_FILE, 'utf8')));
+if (TRANSFER_BASELINE_CONFIG.schemaVersion !== 1 || !TRANSFER_BASELINE_CONFIG.profiles) {
+  throw new Error('invalid transfer baseline config');
+}
+const TRANSFER_BASELINES = Object.freeze(TRANSFER_BASELINE_CONFIG.profiles);
+const TRANSFER_ADVISORY_GROWTH_RATIO = TRANSFER_BASELINE_CONFIG.advisoryGrowthRatio;
+
 
 const ARTICLE_HARD_BUDGET = Object.freeze({
   performanceScore: 0.70,
   largestContentfulPaintMs: 3000,
   totalBlockingTimeMs: 800,
   cumulativeLayoutShift: 0.15,
-  totalByteWeight: 350 * KB
+  firstPartyTransferBytes: 350 * KB
 });
 
 const HARD_BUDGETS = Object.freeze({
@@ -20,7 +28,7 @@ const HARD_BUDGETS = Object.freeze({
     largestContentfulPaintMs: 3500,
     totalBlockingTimeMs: 1200,
     cumulativeLayoutShift: 0.15,
-    totalByteWeight: 350 * KB
+    firstPartyTransferBytes: 350 * KB
   }),
   calculatorHome: Object.freeze({
     performanceScore: 0.65,
@@ -30,14 +38,14 @@ const HARD_BUDGETS = Object.freeze({
     // 初期化・同意管理を含むトップページだけは段階的に縮める移行上限。
     totalBlockingTimeMs: 1800,
     cumulativeLayoutShift: 0.15,
-    totalByteWeight: 350 * KB
+    firstPartyTransferBytes: 350 * KB
   }),
   articleHub: Object.freeze({
     performanceScore: 0.65,
     largestContentfulPaintMs: 3500,
     totalBlockingTimeMs: 1200,
     cumulativeLayoutShift: 0.15,
-    totalByteWeight: 350 * KB
+    firstPartyTransferBytes: 350 * KB
   }),
   representativeArticle: ARTICLE_HARD_BUDGET,
   internationalArticleEn: ARTICLE_HARD_BUDGET,
@@ -49,8 +57,7 @@ const TARGETS = Object.freeze({
   performanceScore: 0.80,
   largestContentfulPaintMs: 2500,
   totalBlockingTimeMs: 600,
-  cumulativeLayoutShift: 0.10,
-  totalByteWeight: 300 * KB
+  cumulativeLayoutShift: 0.10
 });
 
 const MINIMUM_SAMPLES = Object.freeze({
@@ -68,7 +75,16 @@ const METRIC_KEYS = Object.freeze([
   'largestContentfulPaintMs',
   'totalBlockingTimeMs',
   'cumulativeLayoutShift',
-  'totalByteWeight'
+  'totalByteWeight',
+  'firstPartyTransferBytes',
+  'firstPartyResourceBytes'
+]);
+const MAX_AGGREGATION_KEYS = new Set(['totalByteWeight', 'firstPartyTransferBytes', 'firstPartyResourceBytes']);
+const UX_METRIC_KEYS = Object.freeze([
+  'performanceScore',
+  'largestContentfulPaintMs',
+  'totalBlockingTimeMs',
+  'cumulativeLayoutShift'
 ]);
 
 function readReport(reportPath) {
@@ -100,15 +116,44 @@ function getProfile(reportPath) {
   return 'default';
 }
 
+function extractNetworkMetrics(report) {
+  const finalUrl = report.finalDisplayedUrl || report.finalUrl;
+  const items = report.audits?.['network-requests']?.details?.items;
+  if (!finalUrl || !Array.isArray(items)) throw new Error('network request details are missing');
+  const origin = new URL(finalUrl).origin;
+  let firstPartyTransferBytes = 0;
+  let firstPartyResourceBytes = 0;
+  let firstPartyRequests = 0;
+  for (const item of items) {
+    if (!item?.url) continue;
+    let requestOrigin;
+    try { requestOrigin = new URL(item.url).origin; } catch { continue; }
+    if (requestOrigin !== origin) continue;
+    const transferSize = Number(item.transferSize);
+    const resourceSize = Number(item.resourceSize);
+    if (!Number.isFinite(transferSize) || transferSize < 0 || !Number.isFinite(resourceSize) || resourceSize < 0) {
+      throw new Error('invalid first-party network byte metric');
+    }
+    firstPartyTransferBytes += transferSize;
+    firstPartyResourceBytes += resourceSize;
+    firstPartyRequests += 1;
+  }
+  if (firstPartyRequests === 0) throw new Error('no first-party network requests were measured');
+  return { firstPartyTransferBytes, firstPartyResourceBytes, firstPartyRequests };
+}
+
 function extractMetrics(report) {
   const score = report.categories.performance.score;
   if (!Number.isFinite(score) || score < 0 || score > 1) throw new Error('performanceScore is missing or invalid');
+  const network = extractNetworkMetrics(report);
   return {
     performanceScore: score,
     largestContentfulPaintMs: auditValue(report, 'largest-contentful-paint'),
     totalBlockingTimeMs: auditValue(report, 'total-blocking-time'),
     cumulativeLayoutShift: auditValue(report, 'cumulative-layout-shift'),
-    totalByteWeight: auditValue(report, 'total-byte-weight')
+    totalByteWeight: auditValue(report, 'total-byte-weight'),
+    firstPartyTransferBytes: network.firstPartyTransferBytes,
+    firstPartyResourceBytes: network.firstPartyResourceBytes
   };
 }
 
@@ -129,7 +174,7 @@ function aggregateMetrics(metricSets) {
   }
   return Object.fromEntries(METRIC_KEYS.map(key => [
     key,
-    key === 'totalByteWeight'
+    MAX_AGGREGATION_KEYS.has(key)
       ? Math.max(...metricSets.map(metrics => metrics[key]))
       : median(metricSets.map(metrics => metrics[key]))
   ]));
@@ -148,10 +193,10 @@ function spreadMetrics(samples) {
 }
 function needsAdditionalSamples(report, profile) {
   const metrics = extractMetrics(report);
-  // byte超過や計測欠損は、再測定で通す対象ではない。初回sampleは必ず残す。
+  // first-party転送超過や計測欠損は、再測定で通す対象ではない。初回sampleは必ず残す。
   const limits = HARD_BUDGETS[profile] || HARD_BUDGETS.default;
-  return metrics.totalByteWeight <= limits.totalByteWeight &&
-    METRIC_KEYS.some(key => key !== 'totalByteWeight' && compareMetric(key, metrics[key], limits[key]));
+  return metrics.firstPartyTransferBytes <= limits.firstPartyTransferBytes &&
+    UX_METRIC_KEYS.some(key => compareMetric(key, metrics[key], limits[key]));
 }
 function reportPathsFromArgs(argv, { requireComplete = true } = {}) {
   if (argv[0] !== '--manifest') return argv;
@@ -186,11 +231,22 @@ function evaluateMetrics(profile, metrics) {
   return { budgets, failures, targetWarnings };
 }
 
+function evaluateTransferRegression(profile, metrics) {
+  const baseline = Number(TRANSFER_BASELINES[profile]);
+  if (!Number.isFinite(baseline) || baseline <= 0) return { baseline: null, advisoryLimit: null, warnings: [] };
+  const advisoryLimit = Math.ceil(baseline * TRANSFER_ADVISORY_GROWTH_RATIO);
+  const warnings = metrics.firstPartyTransferBytes > advisoryLimit
+    ? [`firstPartyTransferBytes: ${metrics.firstPartyTransferBytes}（gzip基準 ${baseline} から ${Math.round((metrics.firstPartyTransferBytes / baseline - 1) * 100)}%増、観察ライン: ${advisoryLimit}）`]
+    : [];
+  return { baseline, advisoryLimit, warnings };
+}
+
 function evaluateReport(reportPath) {
   const report = readReport(reportPath);
   const profile = getProfile(reportPath);
   const metrics = extractMetrics(report);
   const evaluation = evaluateMetrics(profile, metrics);
+  const transferRegression = evaluateTransferRegression(profile, metrics);
   console.log(JSON.stringify({
     files: [reportPath],
     urls: [report.finalDisplayedUrl || report.finalUrl],
@@ -200,9 +256,11 @@ function evaluateReport(reportPath) {
     metrics,
     hardBudgets: evaluation.budgets,
     nextTargets: TARGETS,
-    targetWarnings: evaluation.targetWarnings
+    transferBaseline: transferRegression,
+    targetWarnings: evaluation.targetWarnings,
+    transferWarnings: transferRegression.warnings
   }, null, 2));
-  return { metrics, ...evaluation };
+  return { metrics, ...evaluation, transferBaseline: transferRegression, transferWarnings: transferRegression.warnings };
 }
 
 function groupReportPaths(reportPaths) {
@@ -228,6 +286,7 @@ function evaluateProfileGroup(profile, reportPaths) {
   const sampleMetrics = reports.map(extractMetrics);
   const metrics = aggregateMetrics(sampleMetrics);
   const evaluation = evaluateMetrics(profile, metrics);
+  const transferRegression = evaluateTransferRegression(profile, metrics);
   const result = {
     profile,
     files: reportPaths,
@@ -237,13 +296,15 @@ function evaluateProfileGroup(profile, reportPaths) {
     requiredSamples,
     sampleMetrics,
     spread: spreadMetrics(sampleMetrics),
-    aggregationByMetric: Object.fromEntries(METRIC_KEYS.map(key => [key, key === 'totalByteWeight' ? 'maximum' : 'median'])),
+    aggregationByMetric: Object.fromEntries(METRIC_KEYS.map(key => [key, MAX_AGGREGATION_KEYS.has(key) ? 'maximum' : 'median'])),
     individualBreaches: sampleMetrics.flatMap((sample, index) => evaluateMetrics(profile, sample).failures.map(failure => ({ sample: index + 1, file: reportPaths[index], failure }))),
     metrics,
     hardBudgets: evaluation.budgets,
     nextTargets: TARGETS,
+    transferBaseline: transferRegression,
     failures: [...sampleFailures, ...evaluation.failures],
-    targetWarnings: evaluation.targetWarnings
+    targetWarnings: evaluation.targetWarnings,
+    transferWarnings: transferRegression.warnings
   };
   result.classification = result.failures.length ? 'BUDGET_FAIL' : result.individualBreaches.length ? 'PASS_WITH_OUTLIERS' : 'PASS';
   console.log(JSON.stringify(result, null, 2));
@@ -260,29 +321,33 @@ function main(argv = process.argv.slice(2)) {
   const evaluations = [...groupReportPaths(reportPaths)]
     .map(([profile, paths]) => {
       try { return evaluateProfileGroup(profile, paths); }
-      catch (error) { return { profile, files: paths, sampleCount: paths.length, classification: 'INVALID_MEASUREMENT', failures: [error.message], targetWarnings: [] }; }
+      catch (error) { return { profile, files: paths, sampleCount: paths.length, classification: 'INVALID_MEASUREMENT', failures: [error.message], targetWarnings: [], transferWarnings: [] }; }
     });
   if (argv[0] === '--manifest') writeJson(path.join(path.dirname(argv[1]), 'budget-summary.json'), { schemaVersion: 1, evaluations });
   const failures = evaluations.flatMap(evaluation =>
     evaluation.failures.map(failure => `${evaluation.profile}: ${failure}`)
   );
-  const warnings = evaluations.flatMap(evaluation =>
-    evaluation.targetWarnings.map(warning => `${evaluation.profile}: ${warning}`)
-  );
+  const warnings = evaluations.flatMap(evaluation => [
+    ...evaluation.targetWarnings.map(warning => `${evaluation.profile}: ${warning}`),
+    ...evaluation.transferWarnings.map(warning => `${evaluation.profile}: ${warning}`)
+  ]);
 
   if (warnings.length > 0) {
-    console.warn('次段階の快適性目標には未到達の項目があります。');
-    warnings.forEach(warning => console.warn(`- ${warning}`));
+    console.warn('快適性目標またはgzip転送量の観察ラインに注意項目があります。');
+    warnings.forEach(warning => {
+      console.warn(`- ${warning}`);
+      if (process.env.GITHUB_ACTIONS === 'true') console.warn(`::warning title=Performance advisory::${warning}`);
+    });
   }
 
   if (failures.length > 0) {
-    console.error('低性能Android相当の性能予算を超過しました。');
+    console.error('制約モバイルのハード性能予算を超過しました。');
     failures.forEach(failure => console.error(`- ${failure}`));
     return 1;
   }
 
   const sampleCount = evaluations.reduce((sum, evaluation) => sum + evaluation.sampleCount, 0);
-  console.log(`低性能Android相当の強化済み性能予算内です（${evaluations.length}ページ種別・${sampleCount}測定）。`);
+  console.log(`制約モバイル（6x CPU・gzip first-party転送）のハード性能予算内です（${evaluations.length}ページ種別・${sampleCount}測定）。`);
   return 0;
 }
 
@@ -297,6 +362,10 @@ module.exports = {
   METRIC_KEYS,
   MINIMUM_SAMPLES,
   TARGETS,
+  TRANSFER_ADVISORY_GROWTH_RATIO,
+  TRANSFER_BASELINES,
+  extractNetworkMetrics,
+  evaluateTransferRegression,
   spreadMetrics,
   needsAdditionalSamples,
   reportPathsFromArgs,
