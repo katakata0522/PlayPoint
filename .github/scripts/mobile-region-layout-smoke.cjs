@@ -364,7 +364,7 @@ async function verifyLocale(browser, baseUrl, locale) {
         `${locale.key} desktop: missing local flag background for ${label.region}: ${label.flagBackground}`);
     });
 
-    const articleLink = page.locator('.header-links a[href*="blog"]').first();
+    const articleLink = page.locator('.header-links a[data-lang-key="linkArticles"]').first();
     await articleLink.hover();
     const hoverState = await articleLink.evaluate(element => {
       const style = getComputedStyle(element);
