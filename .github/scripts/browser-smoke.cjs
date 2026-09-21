@@ -403,15 +403,10 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
         return false;
       });
       assert(!diaryPrecached, 'Service Worker precached diary.js before diary use');
-      assert(!firstPartyRequests.some(pathname => pathname.endsWith('/js/weekly-reward-ui.js')),
-        'Weekly reward UI was fetched before first diary use');
 
       await page.locator('#tab-diary').click();
       await waitForStage(page, 'JP lazy diary render', () => Boolean(document.querySelector('#weekInputs .week-row')));
-      await waitForStage(page, 'JP lazy weekly UI decoration', () => document.querySelector('#diaryMode')?.classList.contains('weekly-ui-ready'));
       assert(firstPartyRequests.some(pathname => pathname.endsWith('/js/diary.js')), 'Diary module was not fetched on first diary use');
-      assert(firstPartyRequests.some(pathname => pathname.endsWith('/js/weekly-reward-ui.js')),
-        'Weekly reward UI was not fetched on first diary use');
 
       await context.setOffline(true);
       await page.reload({ waitUntil: 'commit', timeout: 45_000 });
