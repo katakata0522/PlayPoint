@@ -126,6 +126,16 @@
         return weeklyRewardUiPromise;
     }
 
+    function bindWeeklyRewardUiLoad() {
+        if (typeof document.getElementById !== 'function') return;
+        const tab = document.getElementById('tab-diary');
+        if (!tab || tab.dataset.weeklyUiLoaderBound === 'true') return;
+        tab.dataset.weeklyUiLoaderBound = 'true';
+        tab.addEventListener('click', () => {
+            bindWeeklyRewardUiLoad();
+        }, { once: true });
+    }
+
     function ensureAnalyticsCore() {
         if (window.PlayPointAnalytics) return Promise.resolve(window.PlayPointAnalytics);
         if (!analyticsCorePromise) {
