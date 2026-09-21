@@ -83,18 +83,25 @@ test('mobile selector keeps separate compact labels and a 44px touch target', ()
   assert.match(css, /min-height: 44px/);
 });
 
-test('desktop selector keeps compact visible codes without flag-glyph dependence', () => {
+test('desktop selector uses local SVG flags without depending on platform emoji rendering', () => {
   const css = fs.readFileSync(path.join(root, 'region-selector.css'), 'utf8');
   const js = fs.readFileSync(path.join(root, 'js', 'region-navigation.js'), 'utf8');
 
-  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?gap: 0\.35rem/);
+  assert.match(css, /@media \(min-width: 521px\)[\s\S]*?\.region-label-desktop::before/);
+  assert.match(css, /width: 24px;[\s\S]*?height: 18px;/);
   assert.doesNotMatch(css, /data:image\/svg\+xml;base64/);
+
   const labels = { JP: '🇯🇵 JP', US: '🇺🇸 US', KR: '🇰🇷 KR', TW: '🇹🇼 TW' };
+  const assets = { JP: 'jp.svg', US: 'us.svg', KR: 'kr.svg', TW: 'tw.svg', HK: 'hk.svg', IN: 'in.svg' };
   for (const [region, mobile] of Object.entries(labels)) {
     assert.ok(
       js.includes(`${region}: { desktop: '${region}', mobile: '${mobile}' }`),
       `missing responsive visible label for ${region}`
     );
+  }
+  for (const [region, file] of Object.entries(assets)) {
+    assert.ok(fs.existsSync(path.join(root, 'images', 'flags', file)), `missing local flag asset ${file}`);
+    assert.match(css, new RegExp(`data-region=["']${region}["'][\\s\\S]*?flags/${file.replace('.', '\\.')}`));
   }
 });
 
