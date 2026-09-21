@@ -105,14 +105,6 @@ const CALCULATOR_REGION_BUTTONS = Object.freeze([
   Object.freeze({ region: 'TW', label: 'TW' })
 ]);
 
-const KATAKATA_LINK_BASE = Object.freeze({
-  href: 'https://katakatalab.com/',
-  target: '_blank',
-  rel: 'noopener noreferrer',
-  className: 'header-link-secondary',
-  langKey: 'linkKatakata'
-});
-
 function freezeCalculatorLinks(links) {
   return Object.freeze(links.map(link => Object.freeze(link)));
 }
@@ -131,37 +123,31 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
     { href: 'attention.html', label: '⚠️ For users outside Japan', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: 'games/', label: '🎮 ゲーム別計算', langKey: 'linkGames' },
     { href: 'blog/', label: '📝 記事一覧', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab' }
   ]),
   'en/index.html': calculatorHeaderProfile('US', 'Play country or region', [
     { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: '../games/', label: '🎮 Game Calculators', langKey: 'linkGames' },
     { href: './articles/', label: '📝 Articles', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (Japanese)' }
   ]),
   'ko/index.html': calculatorHeaderProfile('KR', 'Play 국가 또는 지역', [
     { href: '../attention.html', label: '⚠️ 국가별 안내', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: '../games/', label: '🎮 게임별 계산', langKey: 'linkGames' },
     { href: './articles/', label: '📝 가이드', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (일본어)' }
   ]),
   'tw/index.html': calculatorHeaderProfile('TW', 'Play 國家或地區', [
     { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: '../games/', label: '🎮 遊戲專屬計算', langKey: 'linkGames' },
     { href: './articles/', label: '📝 指南', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (日文)' }
   ]),
   'hk/index.html': calculatorHeaderProfile(null, 'Play 國家或地區', [
     { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: '../tw/games/', label: '🎮 遊戲計算（台灣規則・非香港）', langKey: 'linkGames' },
     { href: '../tw/articles/', label: '📝 指南', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (日文)' }
   ]),
   'in/index.html': calculatorHeaderProfile(null, 'Play country or region', [
     { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
     { href: '../en/games/', label: '🎮 Game calculators (U.S. rules, not India)', langKey: 'linkGames' },
     { href: '../en/articles/', label: '📝 Articles', langKey: 'linkArticles' },
-    { ...KATAKATA_LINK_BASE, label: '🧪 KatakataLab (Japanese)' }
   ])
 });
 

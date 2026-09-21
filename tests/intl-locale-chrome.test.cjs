@@ -187,7 +187,7 @@ test('英語トップの法務・情報ラベルは日本語ページだと分�
   const runtime = read('js/config.js');
   const homepage = read('en/index.html');
   const generated = createLocales().en.staticText;
-  const markedKeys = ['linkPrivacy', 'linkTerms', 'linkQA', 'linkLatest', 'linkKatakata'];
+  const markedKeys = ['linkPrivacy', 'linkTerms', 'linkQA', 'linkLatest'];
 
   for (const key of markedKeys) {
     const expected = usRuntimeLinkText(runtime, key);
