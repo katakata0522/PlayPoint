@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "measurement": {
+    "kind": "apache-gzip-local-third-party-blocked",
+    "measuredAt": "2026-09-21",
+    "sourceSha": "f8654474115d171513ee4a5e698a816712a34386",
+    "workflowRunId": 35592037695,
+    "lighthouseVersion": "13.4.1",
+    "cpuSlowdownMultiplier": 6,
+    "networkProfile": "Lighthouse mobile default / Slow 4G",
+    "note": "Observed after switching PR audits from python http.server to the repository .htaccess on Apache mod_deflate gzip."
+  },
+  "advisoryGrowthRatio": 1.2,
+  "profiles": {
+    "calculatorHome": 152051,
+    "articleHub": 129920,
+    "representativeArticle": 102727,
+    "internationalArticleEn": 81997,
+    "internationalArticleKo": 82578,
+    "internationalArticleTw": 82455
+  }
+}

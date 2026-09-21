@@ -50,6 +50,32 @@ function detailRows(details) {
   return [];
 }
 
+function networkSummary(report) {
+  const finalUrl = report.finalDisplayedUrl || report.finalUrl;
+  const items = report.audits?.['network-requests']?.details?.items || [];
+  if (!finalUrl) return null;
+  const origin = new URL(finalUrl).origin;
+  const summarize = rows => rows.reduce((totals, item) => {
+    const transferSize = Number(item.transferSize);
+    const resourceSize = Number(item.resourceSize);
+    if (Number.isFinite(transferSize) && transferSize >= 0) totals.transferBytes += transferSize;
+    if (Number.isFinite(resourceSize) && resourceSize >= 0) totals.resourceBytes += resourceSize;
+    totals.requests += 1;
+    return totals;
+  }, { requests: 0, transferBytes: 0, resourceBytes: 0 });
+  const firstParty = items.filter(item => {
+    try { return new URL(item.url).origin === origin; } catch { return false; }
+  });
+  const firstPartyTotals = summarize(firstParty);
+  return {
+    firstParty: firstPartyTotals,
+    all: summarize(items),
+    compressionRatio: firstPartyTotals.resourceBytes > 0
+      ? firstPartyTotals.transferBytes / firstPartyTotals.resourceBytes
+      : null
+  };
+}
+
 function layoutShiftCauses(item) {
   const subItems = item?.subItems?.items;
   if (!Array.isArray(subItems)) return [];
@@ -117,6 +143,7 @@ function topOpportunities(report) {
 
 function summarize(reportPath) {
   const report = readJson(reportPath);
+  const network = networkSummary(report);
   return {
     file: reportPath,
     url: report.finalDisplayedUrl || report.finalUrl || '',
@@ -134,7 +161,11 @@ function summarize(reportPath) {
       totalBlockingTimeMs: numericValue(report, 'total-blocking-time'),
       cumulativeLayoutShift: numericValue(report, 'cumulative-layout-shift'),
       speedIndexMs: numericValue(report, 'speed-index'),
-      totalByteWeight: numericValue(report, 'total-byte-weight')
+      totalByteWeight: numericValue(report, 'total-byte-weight'),
+      firstPartyTransferBytes: network?.firstParty?.transferBytes ?? null,
+      firstPartyResourceBytes: network?.firstParty?.resourceBytes ?? null,
+      firstPartyCompressionRatio: network?.compressionRatio ?? null,
+      allTransferBytes: network?.all?.transferBytes ?? null
     },
     layoutShiftElements: layoutShiftItems(report),
     longTasks: longTaskItems(report),
@@ -143,7 +174,7 @@ function summarize(reportPath) {
 }
 
 function toMarkdown(summaries) {
-  const lines = ['# Low-end Android Lighthouse diagnostics', ''];
+  const lines = ['# Constrained mobile Lighthouse diagnostics', ''];
   for (const summary of summaries) {
     lines.push(`## ${summary.url || summary.file}`, '');
     if (summary.error) { lines.push('INVALID_MEASUREMENT: ' + summary.error, ''); continue; }
@@ -210,6 +241,7 @@ module.exports = {
   layoutShiftItems,
   longTaskItems,
   main,
+  networkSummary,
   parseArgs,
   summarize,
   toMarkdown,

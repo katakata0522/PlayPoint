@@ -1,8 +1,8 @@
-name: Low-end Android performance
+name: Constrained mobile performance
 
-# Phase 1 verified baseline (6x CPU slowdown, production-like minified assets):
-# calculator median LCP 2.259s / 245KB, article hub LCP 1.952s / 140KB,
-# representative article LCP 1.880s / CLS 0.0039.
+# Constrained-mobile audit: 6x CPU slowdown + Lighthouse mobile network profile.
+# PRs use the repository .htaccess on isolated Apache HTTPS and verify gzip before measuring.
+# First-party gzip transfer has a 350KiB safety cap; measured baselines are advisory regression signals.
 on:
   workflow_dispatch:
     inputs:

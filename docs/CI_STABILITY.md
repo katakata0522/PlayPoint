@@ -36,15 +36,19 @@ PR Gateの全preflightは`preflight.json`に工程ID・所要時間・終了コ�
 
 ## 性能の計測・判定
 
-測定対象6ページとモバイル6倍CPU条件を維持。ローカルでは従来どおり広告/計測の外部通信を除外、本番では除外しない。両者の結果を同じ母集団と扱わない。
+性能jobは「Low-end Android」という曖昧な端末名ではなく、**制約モバイル条件**として扱う。測定対象6ページ、Lighthouse mobile、6倍CPU低速化を維持する。PRは隔離Apache HTTPSでリポジトリの実 `.htaccess` を読み、`mod_deflate` のgzip応答を確認してから測定する。ローカルでは広告/計測の外部通信を除外し、本番では除外しない。両者の結果を同じ母集団と扱わない。
 
-トップは常に3sample。他のページは初回に時間/scoreだけがhard budgetを超えた場合、2sampleを追加する。初回の悪い値も含む3件で判定する。byte超過や測定欠損を「成功するまで再実行」することはしない。途中で失敗したCLI・欠損したJSON・無効な数値・未測定のページは成功にしない。
+トップは常に3sample。他のページは初回に時間/scoreだけがhard budgetを超えた場合、2sampleを追加する。初回の悪い値も含む3件で判定する。first-party転送超過や測定欠損を「成功するまで再実行」することはしない。途中で失敗したCLI・欠損したJSON・無効な数値・未測定のページは成功にしない。
 
-時間/scoreは中央値、byteは最大値。どのsampleであっても350KiB超過を中央値で隠さない。既存の全hard budgetと次段階のtarget値は維持する。`audit-manifest.json`が今回実行したsampleの正本になり、ディレクトリに残った古いJSONをglobして足さない。
+時間/scoreは中央値、転送量とresource量は最大値。**350KiBはfirst-party gzip転送量の安全上限**であり、一般的なAndroid端末の絶対的な境界や快適性目標とは扱わない。広告・Analytics等のthird-party転送量は総量として記録するが、自サイトの350KiB判定へ混ぜない。LCP/TBT/CLS/Scoreは従来どおりhard budgetと快適性targetを持つ。
 
-`budget-summary.json`は全sampleの数値、中央値、最小・最大、平均、範囲、標準偏差、MAD、sample単位のbudget超過を保存する。中央値が合格でも外れ値があれば`PASS_WITH_OUTLIERS`と表示する。これは「問題なし」の証明ではなく要観察の成功。LighthouseのJSON、診断、resource内訳は14日保存し、揺らぎの原因調査と初期転送量削減の根拠にする。
+2026-09-21に本番同様gzipへ測定を修正した時点のfirst-party実測を `.github/performance/transfer-baselines.json` に証跡付きで保存する。baseline比20%超は**advisory warning**であり自動失敗にはしない。小さな有益UI変更を数KB単位で機械的に拒否しない一方、意図しない肥大化をレビューで見えるようにする。baseline変更は性能改善の達成値ではなく、新しい比較基準を採用する変更として理由と測定runを残す。
 
-Node/ブラウザ/Lighthouseが変わった前後のscore差を、そのまま製品の改善量と報告しない。比較するなら、同一公開ソースに旧環境と新環境を当てた対照測定が必要。今回の変更は転送量自体を削減するものではなく、既存の小さいheadroomは別の公開アセット最適化で扱う。
+Lighthouseの `totalByteWeight`（全転送量）、same-originの `firstPartyTransferBytes`、展開後の `firstPartyResourceBytes` を別々に記録する。gzipが効いているかを確認するため、診断にはfirst-partyの transfer/resource 比も残す。これにより「ネットで送った量」と「ブラウザが展開後に扱う資産量」を混同しない。
+
+`audit-manifest.json`が今回実行したsampleの正本になり、ディレクトリに残った古いJSONをglobして足さない。`budget-summary.json`は全sampleの数値、中央値、最小・最大、平均、範囲、標準偏差、MAD、sample単位のhard budget超過とtransfer advisoryを保存する。中央値が合格でも外れ値があれば`PASS_WITH_OUTLIERS`と表示する。LighthouseのJSON、診断、resource内訳は14日保存する。
+
+Node/ブラウザ/Lighthouseが変わった前後のscore差を、そのまま製品の改善量と報告しない。比較するなら同一公開ソースへ旧環境と新環境を当てた対照測定が必要。
 
 ## 故障注入と反復
 
@@ -74,7 +78,7 @@ SMOKE_EXPECT_REVISION=<exact-40-character-sha> node .github/scripts/bind-browser
 ## Merge gate と advisory checks
 
 - main rulesetの必須merge checkは `PR Gate`。これは全preflightを常時実行する。
-- `Low-end Android performance` は対象path変更時と週次で実行する性能監視で、現時点ではrequired merge checkではない。
+- `Constrained mobile performance` は対象path変更時と週次で実行する性能監視で、現時点ではrequired merge checkではない。
 - GitHub CodeQLはPR / main pushで実行されるsecurity signalで、現時点ではrequired merge checkではない。
 - requiredかadvisoryかを「走っているかどうか」と混同しない。merge阻止が必要な契約はPR Gateへ統合する。
 - PR Gateは変更影響を分類し、docs/tests-onlyではApache実HTTPとChromiumを省略できる。公開成果物・runtime・browser検証基盤の変更では従来どおり必須とする。workflow_dispatchや差分不明時はfull verificationへfail-safeする。
