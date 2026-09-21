@@ -12,10 +12,32 @@ function temporary(t) {
   t.after(() => fs.rmSync(dir, { recursive: true, force: true })); return dir;
 }
 function report(values = {}, url = 'https://127.0.0.1:4173/') {
+  const origin = new URL(url).origin;
+  const firstPartyBytes = values.firstPartyBytes ?? values.bytes ?? 200000;
+  const thirdPartyBytes = values.thirdPartyBytes ?? 0;
+  const totalBytes = values.totalBytes ?? firstPartyBytes + thirdPartyBytes;
+  const resourceBytes = values.resourceBytes ?? firstPartyBytes * 2;
+  const networkItems = [{
+    url: origin + '/app.js',
+    resourceType: 'Script',
+    transferSize: firstPartyBytes,
+    resourceSize: resourceBytes,
+    statusCode: 200
+  }];
+  if (thirdPartyBytes > 0) {
+    networkItems.push({
+      url: 'https://example-third-party.invalid/tracker.js',
+      resourceType: 'Script',
+      transferSize: thirdPartyBytes,
+      resourceSize: thirdPartyBytes,
+      statusCode: 200
+    });
+  }
   return { finalUrl: url, lighthouseVersion: '13.4.1', environment: { hostUserAgent: 'test-Chromium' }, configSettings: { formFactor: 'mobile' },
     categories: { performance: { score: values.score ?? 0.9 } }, audits: {
       'largest-contentful-paint': { numericValue: values.lcp ?? 1800 }, 'total-blocking-time': { numericValue: values.tbt ?? 100 },
-      'cumulative-layout-shift': { numericValue: values.cls ?? 0.01 }, 'total-byte-weight': { numericValue: values.bytes ?? 200000 } } };
+      'cumulative-layout-shift': { numericValue: values.cls ?? 0.01 }, 'total-byte-weight': { numericValue: totalBytes },
+      'network-requests': { details: { items: networkItems } } } };
 }
 function files(dir, values, prefix = 'calculator-home') {
   return values.map((value, i) => { const file = path.join(dir, prefix + '-' + (i + 1) + '.json'); fs.writeFileSync(file, JSON.stringify(report(value))); return file; });
@@ -41,6 +63,8 @@ test('性能suiteの6ページと国際記事3地域は測定ownerから直接�
   }
   assert.equal(budget.TARGETS.largestContentfulPaintMs, 2500);
   assert.equal(budget.TARGETS.cumulativeLayoutShift, 0.10);
+  assert.equal(budget.TARGETS.totalByteWeight, undefined);
+  assert.ok(budget.TRANSFER_BASELINES.calculatorHome > 0);
 
   const workflow = fs.readFileSync(path.join(__dirname, '../.github/workflows/mobile-performance.yml'), 'utf8');
   assert.match(workflow, /node \.github\/scripts\/lighthouse-suite\.cjs/);
@@ -52,17 +76,50 @@ test('性能suiteの6ページと国際記事3地域は測定ownerから直接�
   assert.match(workflow, /'\.htaccess'/);
 });
 
-test('時間の中央値が合格しても1sampleのbyte超過を隠さない', t => {
-  const limit = budget.HARD_BUDGETS.calculatorHome.totalByteWeight;
+test('時間の中央値が合格しても1sampleのfirst-party gzip超過を隠さない', t => {
+  const limit = budget.HARD_BUDGETS.calculatorHome.firstPartyTransferBytes;
   const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [
-    { bytes: limit + 1 },
-    { bytes: Math.max(1, limit - 1) },
-    { bytes: Math.max(1, limit - 1) }
+    { firstPartyBytes: limit + 1 },
+    { firstPartyBytes: Math.max(1, limit - 1) },
+    { firstPartyBytes: Math.max(1, limit - 1) }
   ]));
   assert.equal(result.classification, 'BUDGET_FAIL');
-  assert.equal(result.metrics.totalByteWeight, limit + 1);
-  assert.match(result.failures.join('\n'), /totalByteWeight/);
+  assert.equal(result.metrics.firstPartyTransferBytes, limit + 1);
+  assert.match(result.failures.join('\n'), /firstPartyTransferBytes/);
 });
+test('第三者通信は総量へ残すが自サイトgzip budgetを汚染しない', t => {
+  const baseline = budget.TRANSFER_BASELINES.calculatorHome;
+  const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [
+    { firstPartyBytes: baseline, thirdPartyBytes: 700000 },
+    { firstPartyBytes: baseline, thirdPartyBytes: 650000 },
+    { firstPartyBytes: baseline, thirdPartyBytes: 600000 }
+  ]));
+  assert.equal(result.classification, 'PASS');
+  assert.equal(result.metrics.firstPartyTransferBytes, baseline);
+  assert.ok(result.metrics.totalByteWeight > budget.HARD_BUDGETS.calculatorHome.firstPartyTransferBytes);
+  assert.equal(result.failures.length, 0);
+});
+
+test('gzip baselineから20%を超える増加は警告だけにして有益な小変更を自動拒否しない', t => {
+  const baseline = budget.TRANSFER_BASELINES.calculatorHome;
+  const firstPartyBytes = Math.ceil(baseline * budget.TRANSFER_ADVISORY_GROWTH_RATIO) + 1;
+  const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [
+    { firstPartyBytes }, { firstPartyBytes }, { firstPartyBytes }
+  ]));
+  assert.equal(result.classification, 'PASS');
+  assert.equal(result.failures.length, 0);
+  assert.equal(result.transferWarnings.length, 1);
+  assert.match(result.transferWarnings[0], /gzip基準/);
+});
+
+test('診断はgzip転送量と展開後resource量を分ける', () => {
+  const sample = report({ firstPartyBytes: 100000, resourceBytes: 240000, thirdPartyBytes: 50000 });
+  const summary = diagnostics.networkSummary(sample);
+  assert.deepEqual(summary.firstParty, { requests: 1, transferBytes: 100000, resourceBytes: 240000 });
+  assert.equal(summary.all.transferBytes, 150000);
+  assert.equal(summary.compressionRatio, 100000 / 240000);
+});
+
 test('時間系の外れ値と全sampleを中央値と同時に残す', t => {
   const result = budget.evaluateProfileGroup('calculatorHome', files(temporary(t), [{ tbt: 4221 }, { tbt: 23 }, { tbt: 94, cls: 0.433 }]));
   assert.equal(result.classification, 'PASS_WITH_OUTLIERS');
@@ -102,7 +159,7 @@ test('追加測定は時間超過だけで発動し、byte超過や欠損を再�
   assert.equal(budget.needsAdditionalSamples(report({ lcp: limits.largestContentfulPaintMs + 1 }), 'articleHub'), true);
   assert.equal(budget.needsAdditionalSamples(report({
     lcp: limits.largestContentfulPaintMs + 1,
-    bytes: limits.totalByteWeight + 1
+    firstPartyBytes: limits.firstPartyTransferBytes + 1
   }), 'articleHub'), false);
   assert.equal(budget.needsAdditionalSamples(report(), 'articleHub'), false);
   const invalid = report(); invalid.categories.performance.score = null;
@@ -140,10 +197,14 @@ test('suiteは同一6ページを測り、homeと記事ハブを3sampleで比較
   const saved = JSON.parse(fs.readFileSync(path.join(outputDir, 'budget-summary.json')));
   assert.equal(saved.evaluations.find(group => group.profile === 'articleHub').sampleCount, 3);
 });
-test('suiteはbyte違反を追加測定で消さず、本番の外部通信は遮断しない', t => {
+test('suiteはfirst-party違反を追加測定で消さず、本番の外部通信は遮断しない', t => {
   const outputDir = temporary(t), calls = [];
   assert.equal(suite.main({ outputDir, env: { AUDIT_TARGET: 'production' }, execute: executeFixture(calls, (value, file) => {
-    if (path.basename(file) === 'article-hub-1.json') value.audits['total-byte-weight'].numericValue = 400000;
+    if (path.basename(file) === 'article-hub-1.json') {
+      const limit = budget.HARD_BUDGETS.articleHub.firstPartyTransferBytes;
+      value.audits['network-requests'].details.items[0].transferSize = limit + 1;
+      value.audits['total-byte-weight'].numericValue = limit + 1;
+    }
   }) }), 0);
   assert.equal(calls.length, suite.PAGES.length + 4); // home and hub each retain all 3 samples
   assert.ok(calls.every(call => !call.args.some(arg => arg.startsWith('--blocked-url-patterns='))));
