@@ -388,12 +388,18 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、ラ�
   assert.doesNotMatch(articles, /2026-03-10-play-points-reflection-timing|2025-12-25-best-use|2026-06-20-discount-gift-cards/);
 
   assert.equal((faq.match(/<details class="faq-item">/g) || []).length, 3);
-  assert.match(faq, /Q\. このサイトはGoogle公式ですか？/);
+  assert.match(faq, /このサイトはGoogle公式のサービスですか？/);
+  assert.match(faq, /個人運営の非公式サイト/);
+  assert.match(faq, /Google Playアプリ/);
+  assert.match(faq, /Google公式ヘルプ/);
   assert.match(faq, /たびたび出てくる「1,728」って何ですか？/);
   assert.match(faq, /info\.html#about-section/);
   assert.match(faq, /入力した内容やウィークリー記録はどこに保存されますか/);
+  assert.match(faq, /今使っている端末のブラウザ内に保存/);
+  assert.match(faq, /運営者のサーバーやGoogleアカウントには自動保存されません/);
+  assert.match(faq, /「書き出し」でバックアップ/);
   assert.doesNotMatch(faq, /計算結果どおりのポイントが必ず付与されますか/);
-  assert.ok(faq.indexOf('このサイトはGoogle公式ですか？') < faq.indexOf('たびたび出てくる「1,728」って何ですか？'));
+  assert.ok(faq.indexOf('このサイトはGoogle公式') < faq.indexOf('たびたび出てくる「1,728」って何ですか？'));
 
   assert.match(css, /\.home-secondary-section\s*\{/);
   assert.match(css, /\.home-rank-links\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
