@@ -229,6 +229,22 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const recovered=await st.evaluate(()=>({raw:JSON.parse(localStorage.getItem('playpointReadingLibraryRecoveryV1')).raw,state:JSON.parse(localStorage.getItem('playpoint_reading_library_v1'))}));
     assert.equal(recovered.raw,'{broken');assert.equal(recovered.state.saved.length,0);
     report.storage.backupRecovery=true;
+    // 内部のif文ではなく、実ページの通信とDOMで海外記事の境界を守る。
+    const intlContext=await context(), ip=await intlContext.newPage();
+    report.interactions.internationalResources=[];
+    for(const locale of ['en','ko','tw']) {
+      const requests=[];
+      const record=request=>requests.push(new URL(request.url()).pathname);
+      ip.on('request',record);
+      await goto(ip,`${locale}/articles/google-play-points-weekly-reward.html`);
+      await ip.waitForLoadState('load');
+      ip.off('request',record);
+      assert(requests.includes('/blog/article.js'),locale+': article runtime was not exercised');
+      assert(!requests.includes('/blog/articles.json'),locale+': Japanese article catalog must not be requested');
+      assert(!requests.includes('/js/article-search.js'),locale+': hub-only search code must not be requested');
+      assert.equal(await ip.locator('#article-nav').count(),0,locale+': empty previous/next navigation remains');
+      report.interactions.internationalResources.push({locale,unusedRequests:0});
+    }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));
     return report;
   } catch(error) {

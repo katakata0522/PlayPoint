@@ -167,21 +167,6 @@ test('モバイル下部CTAの閉じる操作名は言語別で日本語固定�
   assert.match(source, /closeAria: '關閉'/);
 });
 
-test('海外記事は日本語記事一覧JSONを取らず空の前後ナビを外す', () => {
-  const source = read('blog/article.js');
-  const init = source.slice(source.indexOf('async function init()'));
-  const fetchAt = init.indexOf('fetch(CONFIG.articlesUrl)');
-  assert.ok(fetchAt !== -1, 'articles.json fetch is missing');
-  const beforeFetch = init.slice(0, fetchAt);
-  // This is a network-boundary ordering guard. Turning article.js into a test-only
-  // module just to expose init would increase production coupling more than it removes.
-  assert.match(
-    beforeFetch,
-    /if \(getLocale\(\) !== 'ja'\) \{\s*const navContainer = document\.getElementById\('article-nav'\);\s*if \(navContainer\) navContainer\.remove\(\);\s*return;/
-  );
-  assert.ok(init.indexOf("if (getLocale() !== 'ja')") < fetchAt);
-});
-
 test('英語トップの法務・情報ラベルは日本語ページだと分かるランタイム表記と一致する', () => {
   const { createLocales } = require('../scripts/locale-config.cjs');
   const runtime = read('js/config.js');
