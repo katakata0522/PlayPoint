@@ -9,12 +9,12 @@ const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 const { getJapanesePopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('./japanese-popular-guides.cjs');
 
 const NAV = Object.freeze([
-  ['/', '計算する'],
-  ['/blog/', 'ガイドを探す'],
-  ['/blog/?category=トラブル', 'トラブルを解決'],
-  ['/articles/2025-12-25-best-use.html', '貯める・使う'],
+  ['/blog/', '記事一覧'],
+  ['/latest/', '最新情報'],
   ['/articles/2026-08-05-play-points-levels-guide.html', 'ランク・特典'],
-  ['/articles/2025-12-25-getting-started.html', 'アカウント・基本']
+  ['/articles/2025-12-25-best-use.html', '貯める・使う'],
+  ['/blog/?category=トラブル', '困ったとき'],
+  ['/', '計算する']
 ]);
 const escapeHtml = value => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const SIDEBAR = /<aside\b[^>]*class=["'][^"']*\bsidebar-column\b[^"']*["'][^>]*>[\s\S]*?<\/aside>/i;
@@ -79,6 +79,51 @@ function renderAuthorWidget() {
   return `  <section class="sidebar-widget sidebar-widget--author"><h2 class="sidebar-widget-title">運営者情報</h2><div class="sidebar-widget-body"><div class="sidebar-author-avatar" aria-hidden="true">か</div><p class="sidebar-author-name">かたかた</p><p class="sidebar-author-copy">2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達。本人がいちばんびっくりしつつ、お得なゲーム課金やGoogle Playまわりの情報を、実際に使いながら調べて発信しています。</p><p class="sidebar-author-aside">好きな食べ物は湯葉と納豆。ここはGoogle Playとは特に関係ありません。</p><div class="sidebar-author-links"><a href="/author/katakata.html">運営者について</a><a href="https://katakatalab.com/" target="_blank" rel="noopener noreferrer">KatakataLab</a></div></div></section>`;
 }
 
+// 一覧・本文・最新情報で同じ入口と見た目を使う。
+function renderHeader(isBlog = false) {
+  return `<header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="${isBlog ? 'brand' : 'site-logo'}">${isBlog ? '' : '🎮 '}Google Play Points 完全攻略ガイド</a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>`;
+}
+
+function renderNavigation(current) {
+  return '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
+    + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === current ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
+}
+
+function renderHubSidebar(current) {
+  return `<aside class="sidebar-column ja-article-sidebar guide-hub-sidebar" aria-label="人気記事と計算機">
+${renderPopularWidget({ href: current })}
+<section class="sidebar-widget"><h2 class="sidebar-widget-title">必要額を計算する</h2><div class="sidebar-widget-body"><p>目標ランクまであといくら？現在のポイントから確認できます。</p><a class="sidebar-next-link" href="/">Playポイント計算機へ →</a></div></section>
+${renderAuthorWidget()}
+</aside>`;
+}
+
+function syncGuideHubs(root) {
+  for (const [file, current] of [['blog/index.html', '/blog/'], ['latest/index.html', '/latest/']]) {
+    const absolute = path.join(root, file);
+    if (!fs.existsSync(absolute)) continue;
+    const before = fs.readFileSync(absolute, 'utf8');
+    let html = before;
+    const isBlog = current === '/blog/';
+    const header = renderHeader(isBlog) + '\n' + renderNavigation(current);
+    if (html.includes('<!-- guide-header:start -->')) {
+      html = html.replace(/<!-- guide-header:start -->[\s\S]*?<!-- guide-header:end -->/, `<!-- guide-header:start -->${header}<!-- guide-header:end -->`);
+    } else if (isBlog) {
+      html = html.replace(/<header class="blog-header[\s\S]*?<\/aside>/, `<!-- guide-header:start -->${header}<!-- guide-header:end -->`);
+      html = html.replace('<main>', '<div class="guide-hub-layout"><main class="guide-hub-main">');
+      html = html.replace('</main>', '</main><!-- guide-sidebar:start --><!-- guide-sidebar:end --></div>');
+    } else {
+      html = html.replace(/[ \t]*<header class="lp-page-header">[\s\S]*?<\/header>/, '');
+      html = html.replace(/(<main class="calculator-wrapper lp-wrapper latest-visual">)/, `<!-- guide-header:start -->${header}<!-- guide-header:end --><div class="guide-hub-layout guide-latest-layout">$1`);
+      html = html.replace('</main>', '</main><!-- guide-sidebar:start --><!-- guide-sidebar:end --></div>');
+      html = html.replace('<html lang="ja">', '<html lang="ja" data-reading-theme="light">');
+      html = html.replace('</head>', '<script src="/js/reading-theme.js"></script>\n<link rel="stylesheet" href="/articles/reading-theme.css">\n</head>');
+    }
+    html = html.replace(/<!-- guide-sidebar:start -->[\s\S]*?<!-- guide-sidebar:end -->/, `<!-- guide-sidebar:start -->${renderHubSidebar(current)}<!-- guide-sidebar:end -->`);
+    if (!html.includes('/articles/japanese-shell.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
+    if (before !== html) fs.writeFileSync(absolute, html);
+  }
+}
+
 function renderSidebar(article, role, related) {
   const [href, label] = nextFor(role, related, article);
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・人気記事・次の行動と関連記事" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
@@ -94,10 +139,10 @@ function transformArticle(html, article, catalog) {
   const role = classifyArticleRole(article.path, { listed: article.listed !== false });
   if (!role) throw new Error(article.path + ': 記事Roleがありません');
   const related = relatedFor(article, html, catalog);
-  const nav = '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
-    + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === article.href ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
+  const nav = renderNavigation(article.href);
   const sidebar = renderSidebar(article, role, related);
   let after = normalizeSharedArticleCopy(removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav)));
+  after = after.replace(/<header\b[^>]*class="[^"]*\bsite-header\b[^"]*"[^>]*>[\s\S]*?<\/header>/, renderHeader());
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {
     const end = after.lastIndexOf('</article>');
@@ -119,6 +164,7 @@ function syncJapaneseNavigation(root) {
     const after = transformArticle(before, article, catalog);
     if (before !== after) { fs.writeFileSync(absolute, after); changed++; }
   }
+  syncGuideHubs(root);
   return { checked: catalog.length, changed };
 }
-module.exports = { NAV, relatedFor, nextFor, renderSidebar, transformArticle, syncJapaneseNavigation };
+module.exports = { NAV, relatedFor, nextFor, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };
