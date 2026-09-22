@@ -126,17 +126,17 @@ const CALCULATOR_HEADER_PROFILES = Object.freeze({
   ]),
   'en/index.html': calculatorHeaderProfile('US', 'Play country or region', [
     { href: '../attention.html', label: '⚠️ Country notes', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../games/', label: '🎮 Game Calculators', langKey: 'linkGames' },
+    { href: './games/', label: '🎮 Game Calculators', langKey: 'linkGames' },
     { href: './articles/', label: '📝 Articles', langKey: 'linkArticles' },
   ]),
   'ko/index.html': calculatorHeaderProfile('KR', 'Play 국가 또는 지역', [
     { href: '../attention.html', label: '⚠️ 국가별 안내', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../games/', label: '🎮 게임별 계산', langKey: 'linkGames' },
+    { href: './games/', label: '🎮 게임별 계산', langKey: 'linkGames' },
     { href: './articles/', label: '📝 가이드', langKey: 'linkArticles' },
   ]),
   'tw/index.html': calculatorHeaderProfile('TW', 'Play 國家或地區', [
     { href: '../attention.html', label: '⚠️ 地區注意事項', className: 'alert-link', countryNotes: true, langKey: 'linkAttention' },
-    { href: '../games/', label: '🎮 遊戲專屬計算', langKey: 'linkGames' },
+    { href: './games/', label: '🎮 遊戲專屬計算', langKey: 'linkGames' },
     { href: './articles/', label: '📝 指南', langKey: 'linkArticles' },
   ]),
   'hk/index.html': calculatorHeaderProfile(null, 'Play 國家或地區', [

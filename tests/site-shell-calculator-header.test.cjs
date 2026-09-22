@@ -95,6 +95,17 @@ test('committed calculator pages are already byte-canonical for the shared Heade
   }
 });
 
+test('海外の計算機からゲーム一覧へ進んでも国・地域を維持する', () => {
+  for (const locale of ['en', 'ko', 'tw']) {
+    const relativePath = `${locale}/index.html`;
+    const profile = getCalculatorHeaderProfile(relativePath);
+    const games = profile.links.find(link => link.langKey === 'linkGames');
+    const destination = new URL(games.href, `https://playpoint-sim.com/${relativePath}`);
+    assert.equal(destination.pathname, `/${locale}/games/`);
+    assert.ok(fs.existsSync(path.join(root, locale, 'games', 'index.html')));
+  }
+});
+
 test('calculator Header synchronization repairs drift and becomes idempotent', () => {
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-calculator-shell-'));
   try {
