@@ -728,7 +728,13 @@
           ];
           const list = document.createElement('ul');
           choices.forEach(item => { const li = document.createElement('li'), link = document.createElement('a'); link.href = item.href; link.textContent = item.title; li.append(link); list.append(li); });
-          recovery.append(list); dom.grid.append(recovery);
+          recovery.append(list);
+          const latestLink = document.createElement('a');
+          const benefitQuery = /steel\s*series|スチール\s*シリーズ|pixel|ピクセル/i.test(currentSearch.normalize('NFKC'));
+          latestLink.href = benefitQuery ? '/latest/?filter=other' : '/latest/';
+          latestLink.textContent = benefitQuery ? 'Pixel・SteelSeriesなど「その他の特典」を見る' : '記事になっていないキャンペーンは最新情報で確認する';
+          const latestChoice = document.createElement('p'); latestChoice.append(latestLink); recovery.append(latestChoice);
+          dom.grid.append(recovery);
           renderPagination(0); return;
         }
 

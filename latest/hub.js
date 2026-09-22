@@ -38,7 +38,8 @@
     upcoming: '開始日時が確認できた新しいポイント企画は、現在掲載していません。',
     other: '掲載中のその他の特典はありません。'
   };
-  let selected = 'active';
+  // 検索結果から特典の区分へ直接案内する。未知の値は開催中へ戻す。
+  let selected = /(?:^|[?&])filter=(active|soon|upcoming|other)(?:&|$)/.exec(window.location?.search || '')?.[1] || 'active';
   let lastRender = '';
   function render(filter, focus = false) {
     selected = filter;

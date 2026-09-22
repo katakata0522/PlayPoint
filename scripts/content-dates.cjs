@@ -55,7 +55,7 @@ const GAME_PAGE_CONTENT_DATE_OVERRIDES = Object.freeze({
   'games/honkai3rd/index.html': GAME_SEO_VERIFIED_AT,
   'games/honkai3rd/google-play-vs-charge-center/index.html': GAME_SEO_VERIFIED_AT,
   'games/monst/index.html': GAME_SEO_VERIFIED_AT,
-  'games/monst/google-play-vs-webshop/index.html': GAME_SEO_VERIFIED_AT,
+  'games/monst/google-play-vs-webshop/index.html': '2026-09-22',
   'games/nikke/index.html': GAME_SEO_VERIFIED_AT,
   'games/pad/index.html': GAME_SEO_VERIFIED_AT,
   'games/pad/pad-pass-value/index.html': GAME_SEO_VERIFIED_AT,

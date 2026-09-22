@@ -40,14 +40,16 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'monst-google-play-vs-webshop-2026',
-    title: 'モンストはGoogle Play課金とWebショップどっちがお得？月イチ200個とPlay Points比較【2026年】',
+    modified: '2026-09-22',
+    title: 'モンストの購入経路ガイド｜アプリ180個・Web190個・月イチ200個の違い',
     category: '使い方',
     gameTitle: 'モンスト',
-    listTitle: 'モンスト｜Google Playと公式ショップを比較',
+    listTitle: 'モンスト｜購入経路・オーブ数の基本比較',
     tags: ['モンスト', 'Webショップ', 'オーブ', 'Play Points'],
     description: 'モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。',
     file: '../games/monst/google-play-vs-webshop/index.html',
     related: [
+      ['/articles/2026-09-19-monst-web-shop-vs-google-play.html', '1万円課金のポイント価値・損得分岐点を計算する'],
       ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
       ['/articles/2026-08-05-play-points-multiplier-stacking.html', '特別獲得率の扱いを確認する'],
       ['/games/prospi-a/google-play-vs-konami-store/', 'プロスピAの公式ストア比較を見る']
@@ -266,7 +268,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
 ].map(article => Object.freeze({
   ...article,
   date: PUBLISHED_AT,
-  modified: MODIFIED_AT,
+  modified: article.modified || MODIFIED_AT,
   ogp: '../ogp.png',
   ...resolveGameThumbnail(article.gameTitle),
   source: 'game-guide',
