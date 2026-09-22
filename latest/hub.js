@@ -39,19 +39,28 @@
     other: '掲載中のその他の特典はありません。'
   };
   let selected = 'active';
+  let lastRender = '';
   function render(filter, focus = false) {
     selected = filter;
+    const now = Date.now();
+    const states = cards.map(card => classifyBenefit(card.dataset, now));
+    const signature = JSON.stringify([filter, states, cards.map(card => card.dataset.kind)]);
+    // 定期確認は続けるが、期限・タブが変わらなければDOMと読み上げ領域を更新しない。
+    if (signature === lastRender) {
+      if (focus) tabs.find(tab => tab.dataset.filter === filter)?.focus();
+      return;
+    }
+    lastRender = signature;
     let visible = 0;
     let expired = 0;
-    const now = Date.now();
     tabs.forEach(tab => {
       const current = tab.dataset.filter === filter;
       tab.setAttribute('aria-selected', String(current));
       tab.tabIndex = current ? 0 : -1;
       if (current && focus) tab.focus();
     });
-    cards.forEach(card => {
-      const state = classifyBenefit(card.dataset, now);
+    cards.forEach((card, index) => {
+      const state = states[index];
       const badge = card.querySelector('[data-benefit-status]');
       if (state === 'ended') {
         badge.textContent = '終了';

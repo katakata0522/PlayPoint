@@ -137,8 +137,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert.equal(actual,expected||total);
       assert.equal(new URL(page.url()).searchParams.get('page'),actual==='1'?null:actual,'URL matches displayed page');
     }
+    const articleRequests = [];
+    const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
+    page.on('request', recordArticleRequest);
     await goto(page,'games/fgo/pity-cost/');
     await page.locator('[data-reading-theme-toggle]').waitFor({state:'visible'});
+    page.off('request', recordArticleRequest);
+    assert(!articleRequests.includes('/blog/articles.json'), '静的関連記事がある本文では一覧データを取得しない');
+    assert(!articleRequests.includes('/js/article-search.js'), '本文では一覧用の検索コードを読み込まない');
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme carried into game article');
     for(const sample of await palette(page,['h1','.breadcrumbs-wrapper span:last-child','.reading-metadata summary','.pack-table tbody td','.cta-btn'])) assert(sample.ratio>=4.5,JSON.stringify(sample));
     await page.locator('.reading-table-compact').first().waitFor({state:'attached'});

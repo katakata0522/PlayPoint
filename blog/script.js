@@ -50,12 +50,6 @@
                 console.warn('LocalStorage write error:', e);
             }
         },
-        getTheme: function () {
-            return window.PlayPointReadingTheme?.get() || this.get().theme || 'light';
-        },
-        setTheme: function (theme) {
-            this.set({ theme });
-        },
         getSortOrder: function () {
             const saved = this.get();
             if (['newest', 'oldest', 'updated'].includes(saved.sortMode)) return saved.sortMode;
@@ -89,11 +83,6 @@
         trackCategoryFilter: function (category) {
             this.track('category_filter', {
                 category_name: category
-            });
-        },
-        trackThemeChange: function (theme) {
-            this.track('theme_change', {
-                theme_mode: theme
             });
         }
     };
@@ -173,11 +162,6 @@
     // Get category color with fallback
     function getCategoryColor(category) {
         return CATEGORIES[category]?.color || '#58a6ff';
-    }
-
-    // Get category order with fallback
-    function getCategoryOrder(category) {
-        return CATEGORIES[category]?.order || 999;
     }
 
     // Check if article is new (within threshold days) - timezone safe
@@ -315,41 +299,10 @@
         sortToggle: document.getElementById('sort-toggle'),
         loading: null,
         error: null,
-        // Sidebar elements
-        sidebarToggle: document.getElementById('sidebar-toggle'),
-        sidebar: document.getElementById('sidebar'),
-        sidebarOverlay: document.getElementById('sidebar-overlay'),
-        sidebarClose: document.getElementById('sidebar-close'),
-        sidebarCategories: document.getElementById('sidebar-categories'),
-        sidebarRecent: document.getElementById('sidebar-recent'),
         resultStatus: document.getElementById('article-result-status'),
         categoryScrollHint: document.getElementById('category-scroll-hint'),
         filterPanel: document.getElementById('article-filter-panel')
     };
-
-    // Create Particles in Hero Section
-    function createParticles() {
-        const heroSection = document.querySelector('.hero-section');
-        if (!heroSection) return;
-
-        // Create container if not exists
-        let container = document.getElementById('particles-container');
-        if (!container) {
-            container = document.createElement('div');
-            container.id = 'particles-container';
-            heroSection.insertBefore(container, heroSection.firstChild);
-        }
-
-        // Create particles
-        for (let i = 0; i < 15; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 8 + 's';
-            particle.style.animationDuration = (6 + Math.random() * 4) + 's';
-            container.appendChild(particle);
-        }
-    }
 
     // Create Skeleton Loading Cards
     function showSkeletonLoading() {
@@ -375,119 +328,6 @@
 
     // Helper functions moved to utils.js
 
-    // Sidebar Toggle Functions
-    const sidebarBackground = new Set();
-    let sidebarPreviousOverflow = '';
-    function setSidebarState(isOpen) {
-        if (!dom.sidebar) return;
-        if (isOpen) {
-            sidebarPreviousOverflow = document.body.style.overflow;
-            dom.sidebar.classList.add('active');
-            dom.sidebar.setAttribute('aria-hidden', 'false');
-            dom.sidebar.removeAttribute('inert');
-            dom.sidebar.setAttribute('role', 'dialog');
-            dom.sidebar.setAttribute('aria-modal', 'true');
-            (dom.sidebarClose || dom.sidebar).focus({ preventScroll: true });
-            for (const element of document.body.children) {
-                if (element === dom.sidebar || element === dom.sidebarOverlay || element.hasAttribute('inert') || /^(SCRIPT|STYLE|LINK)$/.test(element.tagName)) continue;
-                element.setAttribute('inert', '');
-                sidebarBackground.add(element);
-            }
-        } else {
-            for (const element of sidebarBackground) element.removeAttribute('inert');
-            sidebarBackground.clear();
-            dom.sidebarToggle?.focus({ preventScroll: true });
-            dom.sidebar.classList.remove('active');
-            dom.sidebar.setAttribute('aria-hidden', 'true');
-            dom.sidebar.setAttribute('inert', '');
-            dom.sidebar.removeAttribute('aria-modal');
-        }
-        dom.sidebarOverlay?.classList.toggle('active', isOpen);
-        if (dom.sidebarToggle) {
-            dom.sidebarToggle.classList.toggle('active', isOpen);
-            dom.sidebarToggle.setAttribute('aria-expanded', String(isOpen));
-            dom.sidebarToggle.setAttribute('aria-label', isOpen ? 'メニューを閉じる' : 'メニューを開く');
-        }
-        document.body.style.overflow = isOpen ? 'hidden' : sidebarPreviousOverflow;
-    }
-
-    function containSidebarFocus(event) {
-        if (!dom.sidebar?.classList.contains('active') || event.key !== 'Tab') return;
-        const items = [...dom.sidebar.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])')]
-            .filter(element => !element.closest('[inert]') && element.getClientRects().length);
-        if (!items.length) { event.preventDefault(); dom.sidebar.focus(); return; }
-        const first = items[0], last = items[items.length - 1];
-        if (event.shiftKey && (document.activeElement === first || !dom.sidebar.contains(document.activeElement))) {
-            event.preventDefault(); last.focus();
-        } else if (!event.shiftKey && (document.activeElement === last || !dom.sidebar.contains(document.activeElement))) {
-            event.preventDefault(); first.focus();
-        }
-    }
-
-    function openSidebar() {
-        setSidebarState(true);
-    }
-
-    function closeSidebar() {
-        setSidebarState(false);
-    }
-
-    function populateSidebarCategories(articles) {
-        if (!dom.sidebarCategories) return;
-
-        // Get unique categories that exist in articles
-        const existingCategories = new Set(articles.map(a => a.category).filter(Boolean));
-
-        // Build ordered list using CATEGORIES config
-        const orderedCategories = ['all'];
-        Object.keys(CATEGORIES)
-            .sort((a, b) => CATEGORIES[a].order - CATEGORIES[b].order)
-            .forEach(cat => {
-                if (existingCategories.has(cat)) orderedCategories.push(cat);
-            });
-        // Add any new categories not in config
-        existingCategories.forEach(cat => {
-            if (!orderedCategories.includes(cat)) orderedCategories.push(cat);
-        });
-
-        dom.sidebarCategories.innerHTML = '';
-        orderedCategories.forEach(cat => {
-            const li = document.createElement('li');
-            const btn = document.createElement('button');
-            btn.textContent = cat === 'all' ? '📚 すべての記事' : `📂 ${cat}`;
-            btn.dataset.category = cat;
-            btn.className = cat === currentCategory ? 'active' : '';
-            btn.addEventListener('click', () => {
-                setCategory(cat);
-                closeSidebar();
-                // Update active state
-                dom.sidebarCategories.querySelectorAll('button').forEach(b => {
-                    b.classList.toggle('active', b.dataset.category === cat);
-                });
-            });
-            li.appendChild(btn);
-            dom.sidebarCategories.appendChild(li);
-        });
-    }
-
-    function populateSidebarRecent(articles) {
-        if (!dom.sidebarRecent) return;
-        // Get latest 5 articles
-        const sorted = [...articles].sort((a, b) => new Date(b.date) - new Date(a.date));
-        const recent = sorted.slice(0, 5);
-
-        dom.sidebarRecent.innerHTML = '';
-        recent.forEach(article => {
-            const li = document.createElement('li');
-            const a = document.createElement('a');
-            a.href = article.file;
-            a.textContent = BlogUtils.escapeHtml(article.title);
-            a.title = article.title;
-            li.appendChild(a);
-            dom.sidebarRecent.appendChild(li);
-        });
-    }
-
     // Initialize
     async function init() {
         // Dynamic Footer Year
@@ -499,30 +339,6 @@
         // Show skeleton loading while fetching
         showSkeletonLoading();
 
-        // Sidebar Event Listeners
-        if (dom.sidebarToggle) {
-            dom.sidebarToggle.addEventListener('click', () => {
-                if (dom.sidebar.classList.contains('active')) {
-                    closeSidebar();
-                } else {
-                    openSidebar();
-                }
-            });
-        }
-        if (dom.sidebarClose) {
-            dom.sidebarClose.addEventListener('click', closeSidebar);
-        }
-        if (dom.sidebarOverlay) {
-            dom.sidebarOverlay.addEventListener('click', closeSidebar);
-        }
-        // Close sidebar on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && dom.sidebar && dom.sidebar.classList.contains('active')) {
-                closeSidebar();
-            }
-        });
-
-        document.addEventListener('keydown', containSidebarFocus);
         window.matchMedia?.(COMPACT_THUMBNAIL_QUERY).addEventListener?.('change', () => { if (allArticles.length) render(); });
 
         // Restore state from URL and LocalStorage
@@ -781,53 +597,6 @@
     }
 
 
-    // Populate Tag Cloud
-    function populateTagCloud(articles) {
-        const tagContainer = document.getElementById('tag-cloud');
-        if (!tagContainer) return;
-
-        // Count tag occurrences
-        const tagCounts = {};
-        articles.forEach(article => {
-            (article.tags || []).forEach(tag => {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-            });
-        });
-
-        // Sort by count (descending) and take top 15
-        const sortedTags = Object.entries(tagCounts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 15);
-
-        if (sortedTags.length === 0) {
-            tagContainer.innerHTML = '<p style="color: var(--text-muted);">タグがありません</p>';
-            return;
-        }
-
-        const maxCount = sortedTags[0][1];
-        tagContainer.innerHTML = '';
-
-        sortedTags.forEach(([tag, count]) => {
-            const size = 0.75 + (count / maxCount) * 0.5; // 0.75rem to 1.25rem
-            const tagEl = document.createElement('button');
-            tagEl.className = 'tag-item';
-            tagEl.textContent = `#${tag}`;
-            tagEl.style.fontSize = `${size}rem`;
-            tagEl.title = `${count}件の記事`;
-            tagEl.addEventListener('click', () => {
-                if (dom.searchInput) {
-                    dom.searchInput.value = tag;
-                    currentSearch = tag.toLowerCase();
-                    currentPage = 1;
-                    updateURLState();
-                    render();
-                    closeSidebar();
-                }
-            });
-            tagContainer.appendChild(tagEl);
-        });
-    }
-
     function setupCategories(articles) {
         if (!dom.categoryFilter) return;
 
@@ -872,12 +641,6 @@
     function syncCategoryActiveState() {
         if (dom.categoryFilter) {
             dom.categoryFilter.querySelectorAll('button').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.category === currentCategory);
-                btn.setAttribute('aria-pressed', String(btn.dataset.category === currentCategory));
-            });
-        }
-        if (dom.sidebarCategories) {
-            dom.sidebarCategories.querySelectorAll('button').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.category === currentCategory);
                 btn.setAttribute('aria-pressed', String(btn.dataset.category === currentCategory));
             });

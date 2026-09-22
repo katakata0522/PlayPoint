@@ -36,10 +36,12 @@
   function applyFilters() {
     const query = search.value.trim(), engine = window.PlayPointSearch; let visible = 0;
     const byPath = new Map(articles.map(article => [article.path, article]));
-    const ordered = cards.slice();
-    if (query && engine) ordered.sort((a, b) => engine.score(byPath.get(new URL(b.href).pathname), query, locale) - engine.score(byPath.get(new URL(a.href).pathname), query, locale));
-    for (const card of ordered) {
+    const ordered = cards.map(card => {
       const article = byPath.get(new URL(card.href).pathname);
+      return { card, article, score: query && engine ? engine.score(article, query, locale) : 0 };
+    });
+    if (query && engine) ordered.sort((a, b) => b.score - a.score);
+    for (const { card, article } of ordered) {
       const categoryMatches = activeCategory === 'all' || card.dataset.category === activeCategory;
       const queryMatches = !query || (engine ? engine.matches(article, query, locale) : card.dataset.search.toLowerCase().includes(query.toLowerCase()));
       card.hidden = !(categoryMatches && queryMatches);

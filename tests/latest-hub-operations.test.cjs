@@ -249,3 +249,40 @@ test('期限不明の個別報告・週次特典をまもなく終了や開始�
   assert.equal(classifyBenefit({ category: 'points', kind: 'weekly' }), 'active');
   assert.equal(classifyBenefit({ category: 'points', end: 'invalid-date' }), 'unknown');
 });
+
+test('同じ状態の定期確認はDOMを書き換えず、開始・終了時刻では表示を更新する', () => {
+  const vm = require('node:vm');
+  let now = Date.parse('2026-09-01T00:00:00Z'), writes = 0, timer, focused;
+  function node() {
+    const value = { dataset: {}, handlers: {}, attributes: {},
+      setAttribute(key, text) { writes++; this.attributes[key] = text; },
+      addEventListener(key, callback) { this.handlers[key] = callback; },
+      focus() { focused = this; }, append(child) { writes++; child.parentElement = this; } };
+    for (const key of ['hidden', 'textContent', 'tabIndex']) {
+      let stored;
+      Object.defineProperty(value, key, { get: () => stored, set: next => { writes++; stored = next; } });
+    }
+    return value;
+  }
+  const tabs = ['active', 'soon', 'upcoming', 'other'].map(filter => { const tab = node(); tab.dataset.filter = filter; return tab; });
+  const grid = node(), endedList = node(), ended = node(), count = node(), badge = node(), message = node(), empty = node();
+  empty.querySelector = () => message;
+  const card = node(); card.dataset = { category: 'points', kind: 'dated', start: '2026-09-02T00:00:00Z', end: '2026-09-15T00:00:00Z' };
+  card.querySelector = () => badge; card.parentElement = grid;
+  const nodes = { '#benefit-panel .benefit-grid': grid, '#benefit-panel': node(), '.benefit-ended': ended,
+    '[data-ended-list]': endedList, '.benefit-count': count, '.benefit-empty': empty, '[data-filter-note]': node(), '[role="tablist"]': node() };
+  const board = { querySelector: key => nodes[key], querySelectorAll: key => key === '[role="tab"]' ? tabs : [card] };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'latest/hub.js'), 'utf8'), {
+    Date: { now: () => now, parse: Date.parse }, window: { setInterval(callback) { timer = callback; } },
+    document: { hidden: false, querySelector: () => board, addEventListener() {} }
+  });
+  tabs[2].handlers.click(); assert.equal(card.hidden, false); assert.equal(count.textContent, '1件の情報');
+  writes = 0; timer(); timer(); assert.equal(writes, 0, '変化のない確認で読み上げ領域を更新しない');
+  now = Date.parse(card.dataset.start); timer(); assert.equal(card.hidden, true);
+  tabs[0].handlers.click(); assert.equal(card.hidden, false); assert.equal(badge.textContent, '開催期間中');
+  now = Date.parse('2026-09-10T00:00:00Z'); timer(); assert.equal(badge.textContent, 'まもなく終了');
+  assert.equal(card.hidden, false, '終了間近も開催中に含む');
+  tabs[0].handlers.keydown({ key: 'Home', preventDefault() {} }); assert.equal(focused, tabs[0]);
+  now = Date.parse(card.dataset.end); timer(); assert.equal(card.parentElement, endedList);
+  assert.equal(ended.hidden, false); assert.equal(count.textContent, '0件の情報'); assert.equal(badge.textContent, '終了');
+});

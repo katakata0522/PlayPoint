@@ -7,8 +7,9 @@
   const copy = { ja: ['比較表', '表は横にスクロールできます'], en: ['Comparison table', 'Scroll horizontally to see the full table'], ko: ['비교표', '표를 좌우로 스크롤할 수 있습니다'], tw: ['比較表', '可左右捲動查看完整表格'] }[locale];
   let wrappers = [], observer;
   function refreshTables() {
-    wrappers.forEach(({ wrapper, hint }) => {
-      const overflow = wrapper.scrollWidth > wrapper.clientWidth + 2;
+    // 先に全表を測ってから属性を書き込み、表ごとの再レイアウトを避ける。
+    const measurements = wrappers.map(entry => ({ ...entry, overflow: entry.wrapper.scrollWidth > entry.wrapper.clientWidth + 2 }));
+    measurements.forEach(({ wrapper, hint, overflow }) => {
       hint.hidden = !overflow;
       wrapper.classList.toggle('reading-table-overflow', overflow);
       if (overflow) { wrapper.tabIndex = 0; wrapper.setAttribute('role', 'region'); wrapper.setAttribute('aria-label', copy[0] + ' — ' + copy[1]); }
@@ -31,6 +32,7 @@
       wrapper.before(hint); wrappers.push({ wrapper, hint });
     });
     refreshTables();
+    if (!wrappers.length) return;
     if ('ResizeObserver' in root) { observer = new root.ResizeObserver(refreshTables); wrappers.forEach(({ wrapper }) => observer.observe(wrapper)); }
     else root.addEventListener('resize', refreshTables, { passive: true });
   }

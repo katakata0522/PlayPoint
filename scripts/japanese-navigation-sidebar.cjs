@@ -42,9 +42,13 @@ function categoryFor(article, role) {
 function relatedFor(article, html, catalog) {
   const byPath = new Map(catalog.map(item => [item.path, item]));
   const selected = extractRelatedTargets(article.path, html).filter(target => target !== article.path && byPath.has(target));
-  for (const [href] of selectRelatedArticles(catalog, article.path, catalog.length)) {
-    const target = href.replace(/^\//, '');
-    if (!selected.includes(target)) selected.push(target);
+  // 本文に3件そろっている場合は、全候補の採点・並べ替えを省く。
+  if (selected.length < 3) {
+    for (const [href] of selectRelatedArticles(catalog, article.path, catalog.length)) {
+      const target = href.replace(/^\//, '');
+      if (!selected.includes(target)) selected.push(target);
+      if (selected.length >= 3) break;
+    }
   }
   return selected.slice(0, 3).map(target => byPath.get(target));
 }

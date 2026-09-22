@@ -8,9 +8,13 @@
     tw: [['playpoints', 'googleplaypoints', 'google playpoints', 'googleplay points', 'google play points', 'play points', 'play 點數', 'play點數', 'google play 點數', 'google play點數', 'googleplay點數'], ['到期', '有效期限', '過期', '失效'], ['未入帳', '沒有入帳', '沒收到', '未收到'], ['每週', '每周', '週獎勵']]
   };
   function normalize(value) { return String(value || '').normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  // 同義語は固定なので、記事・比較回数ごとに正規化と並べ替えを繰り返さない。
+  const replacementsByLocale = Object.fromEntries(Object.entries(groups).map(([locale, aliases]) => [locale,
+    aliases.flatMap((group, index) => group.map(word => [normalize(word), 'zzalias' + index + 'zz'])).sort((a, b) => b[0].length - a[0].length)
+  ]));
   function canonical(value, locale = 'ja') {
     let result = normalize(value);
-    const replacements = (groups[locale] || groups.en).flatMap((group, index) => group.map(word => [normalize(word), 'zzalias' + index + 'zz'])).sort((a, b) => b[0].length - a[0].length);
+    const replacements = replacementsByLocale[locale] || replacementsByLocale.en;
     for (const [word, replacement] of replacements) result = result.split(word).join(replacement);
     return result;
   }
@@ -37,7 +41,8 @@
   function excerpt(article, query, locale) {
     if (!normalize(query)) return { text: article.description || '', id: '', heading: '' };
     const terms = tokens(query, locale);
-    if (terms.every(term => canonical(article.title, locale).includes(term)) && article.description) {
+    const title = canonical(article.title, locale);
+    if (terms.every(term => title.includes(term)) && article.description) {
       return { text: article.description, id: '', heading: '' };
     }
     let best = null, bestScore = 0;
@@ -48,14 +53,18 @@
     }
     if (!best) return { text: article.description || '', id: '', heading: '' };
     const text = String(best.text || best.heading);
-    const literal = normalize(query).split(' ').filter(Boolean).map(t => normalize(text).indexOf(t)).filter(i => i >= 0);
+    const normalizedText = normalize(text);
+    const literal = normalize(query).split(' ').filter(Boolean).map(t => normalizedText.indexOf(t)).filter(i => i >= 0);
     const start = Math.max(0, (literal.length ? Math.min(...literal) : 0) - 40);
     return { text: (start ? '…' : '') + text.slice(start, start + 180) + (text.length > start + 180 ? '…' : ''), id: best.id || '', heading: best.heading || '' };
   }
   function suggest(articles, query, locale) {
     const terms = tokens(query, locale);
     if (!terms.length) return [];
-    return articles.map(article => ({ article, count: terms.filter(t => canonical(searchable(article), locale).includes(t)).length }))
+    return articles.map(article => {
+      const haystack = canonical(searchable(article), locale);
+      return { article, count: terms.filter(t => haystack.includes(t)).length };
+    })
       .filter(item => item.count > 0).sort((a, b) => b.count - a.count).slice(0, 3).map(item => item.article);
   }
   const api = { normalize, canonical, tokens, matches, score, excerpt, suggest };
