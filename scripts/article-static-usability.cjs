@@ -18,7 +18,7 @@ const HEADER_HTML = `    <header class="header article-static-header">
             <a class="logo" href="../index.html">🎮 ${GUIDE_BRAND}</a>
             <nav class="nav" aria-label="記事サイト">
                 <a href="../blog/">📝 記事一覧</a>
-                <a href="https://katakatalab.com/">🧪 KatakataLab</a>
+                <a href="../latest/">最新情報</a>
             </nav>
         </div>
     </header>
@@ -72,7 +72,7 @@ function japaneseArticlePaths(rootDir) {
 }
 
 function insertStaticHeader(html) {
-  if (html.includes(HEADER_MARKER)) return html;
+  if (html.includes(HEADER_MARKER)) return html.replace(/<header\b[^>]*class="[^"]*article-static-header[^"]*"[^>]*>[\s\S]*?<\/header>/, HEADER_HTML.trim());
   const mainIndex = html.search(/<main\b/i);
   if (mainIndex < 0) return html;
   return `${html.slice(0, mainIndex)}${HEADER_HTML}${html.slice(mainIndex)}`;
@@ -156,9 +156,20 @@ function insertStaticPrompt(html, options = {}) {
 
 function normalizeSharedArticleCopy(html) {
   return html
+    .replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi, header => header.replace(/<a\b[^>]*href="https:\/\/katakatalab\.com\/"[^>]*>[\s\S]*?<\/a>/g, '<a href="/latest/">最新情報</a>'))
     .replaceAll('不足ポイントとキャンペーン倍率から、目標ランクまでの必要課金額を即シミュレーション！', '不足ポイントとGoogle Playに表示されたキャンペーン特別獲得率から、目標ランクまでの必要課金額をシミュレーションできます。')
     .replaceAll('<span class="sidebar-event-tag">5と0の日</span>\n                        <span><strong>楽天市場 5と0のつく日！</strong> ギフトコード認定店でポイント還元UP</span>', '<span class="sidebar-event-tag">購入前確認</span>\n                        <span><strong>ギフトコードの還元条件を確認</strong> 付与率・上限・エントリー要否は購入時の表示を確認</span>')
     .replaceAll('Playポイントは、ゲーム内アイテムクーポンに交換すると「1pt = 最大2円〜3円相当」の価値になることがあります！', 'Play Pointsの交換先や必要ポイント数は時期・国・アカウントで変わります。「使う」画面に表示された現在の条件を確認してください。');
+}
+
+function compactStaticToc(html) {
+  const toc = html.match(/<nav\b[^>]*class="[^"]*\binpage-toc\b[^"]*"[^>]*>[\s\S]*?<\/nav>/);
+  if (!toc) return html;
+  const compact = toc[0].replace(/^<nav/, '<details').replace(/<\/nav>$/, '</details>')
+    .replace(/<div class="inpage-toc-title">[\s\S]*?<\/div>/, '<summary class="inpage-toc-title">目次を開く</summary>');
+  const without = html.replace(toc[0], '').replace(/^[ \t]+(?=\r?$)/gm, '');
+  const answer = without.match(/<section\b[^>]*class="[^"]*\banswer-box\b[^"]*"[^>]*>[\s\S]*?<\/section>/);
+  return answer ? without.replace(answer[0], answer[0] + '\n' + compact) : html.replace(toc[0], compact);
 }
 
 function synchronizeArticleStaticUsability(rootDir) {
@@ -168,7 +179,7 @@ function synchronizeArticleStaticUsability(rootDir) {
       throw new Error(`記事一覧にあるHTMLが見つかりません: ${entry.relativePath}`);
     }
     const original = fs.readFileSync(entry.absolutePath, 'utf8');
-    const next = normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original), entry));
+    const next = compactStaticToc(normalizeSharedArticleCopy(insertStaticPrompt(insertStaticHeader(original), entry)));
     if (next === original) continue;
     fs.writeFileSync(entry.absolutePath, next, 'utf8');
     updated += 1;

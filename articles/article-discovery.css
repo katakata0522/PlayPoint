@@ -4,6 +4,11 @@
 .reading-tools a, .reading-library a { color:inherit; text-decoration:underline; text-underline-offset:.18em; }
 .reading-library { margin:1.5rem 0; padding:1rem; border:1px solid #94a3b8; border-radius:.65rem; }
 .reading-library summary { cursor:pointer; font-weight:700; min-height:44px; }
+details.inpage-toc { padding:.5rem .85rem; margin:1rem 0; }
+details.inpage-toc > summary { cursor:pointer; min-height:44px; display:list-item; align-content:center; font-weight:700; }
+details.inpage-toc > summary.inpage-toc-title { margin:0; padding:0; border:0; font-size:1rem; }
+details.inpage-toc:not([open]) > :not(summary) { display:none; }
+details.inpage-toc :focus-visible { outline:3px solid #0891b2; outline-offset:3px; }
 .reading-library ul { padding-left:1.3rem; }
 .reading-library li { margin:.7rem 0; overflow-wrap:anywhere; }
 .reading-library li button { margin-left:.5rem; font-size:.85em; }

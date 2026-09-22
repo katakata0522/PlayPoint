@@ -800,3 +800,33 @@ body.blog-index-compact .search-pathways-inner--utility .pathways-quick-section 
     }
 }
 /* BLOG_HOME_DISCOVERY_FIRST_END */
+
+/* 説明の枠より、検索と記事の選択に画面を使う。 */
+html[data-reading-theme] body.blog-index-compact .hero-section { background:transparent; box-shadow:none; border:0; }
+body.blog-index-compact .article-card { display:grid; grid-template-columns:112px minmax(0,1fr); align-items:stretch; }
+body.blog-index-compact .article-card .card-thumb { height:100%; min-height:112px; }
+@media (min-width:761px) and (max-width:980px) {
+  body.blog-index-compact .article-card .card-thumb { height:auto; }
+  body.blog-index-compact .article-card .card-content { min-width:0; }
+}
+body.blog-index-compact .hero-section { margin: .5rem auto .75rem; padding: .4rem 1rem; border: 0; box-shadow: none; background: transparent; }
+body.blog-index-compact .blog-discovery-header { margin: 0; }
+body.blog-index-compact .search-pathways--primary .search-pathways-inner { padding: 0; border: 0; box-shadow: none; background: transparent; }
+body.blog-index-compact .search-pathways--primary .search-pathways-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: .5rem; }
+body.blog-index-compact .search-pathways--primary .search-pathway-card { min-height: 0; padding: .65rem; gap: .25rem; }
+body.blog-index-compact .search-pathways--primary .pathway-card-header { gap: .3rem; }
+body.blog-index-compact .search-pathways--primary .pathway-title { font-size: .95rem; line-height: 1.5; }
+body.blog-index-compact .search-pathways--primary .pathway-desc { font-size: .875rem; line-height: 1.5; }
+body.blog-index-compact .search-pathways--primary .pathway-arrow { display: none; }
+body.blog-index-compact .search-pathways--primary .pathway-icon { font-size: 1rem; }
+body.blog-index-compact .article-filter-panel > summary { padding: .4rem .75rem; min-height: 44px; box-sizing: border-box; font-size: .875rem; }
+body.blog-index-compact .article-card .card-desc { font-size: .875rem; line-height: 1.6; }
+body.blog-index-compact .article-card .card-content h3 { font-size: 1.05rem; line-height: 1.5; }
+body.blog-index-compact .reading-library { padding: .5rem .75rem; }
+@media (max-width: 760px) {
+  body.blog-index-compact .article-card { grid-template-columns:88px minmax(0,1fr); }
+  body.blog-index-compact .search-pathways--primary .search-pathways-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  body.blog-index-compact .search-pathways--primary .pathway-card-header { flex-wrap: wrap; }
+  body.blog-index-compact .search-pathways--primary .pathway-icon { display: none; }
+  body.blog-index-compact .hero-title { font-size: 1.3rem; }
+}
