@@ -692,27 +692,10 @@
             BlogUtils.setupShareButton();
         }
 
-        // Reading Progress Bar Setup (only add once)
-        if (!scrollListenerAdded) {
-            scrollListenerAdded = true;
-            window.addEventListener('scroll', () => {
-                const progressBar = document.getElementById('reading-progress');
-                if (!progressBar) return;
-
-                const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-                if (scrollHeight <= 0) return; // Prevent division by zero
-                const scrolled = (scrollTop / scrollHeight) * 100;
-
-                progressBar.style.width = scrolled + '%';
-            });
-        }
-
-        if (getLocale() !== 'ja') {
-            const navContainer = document.getElementById('article-nav');
-            if (navContainer) navContainer.remove();
-            return;
-        }
+        // 本文の静的な関連記事を優先し、動的な表示先がないページでは一覧を取得しない。
+        document.getElementById('article-nav')?.remove();
+        const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');
+        if (getLocale() !== 'ja' || !container) return;
 
         try {
             const response = await fetch(CONFIG.articlesUrl);
@@ -724,13 +707,6 @@
             const currentPath = window.location.pathname;
             const currentFilename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
             const currentCategory = getCurrentCategory();
-
-            // 日付順の前後移動より、本文の疑問に対応する関連記事を優先する。
-            document.getElementById('article-nav')?.remove();
-
-            // Related Articles
-            const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');
-            if (!container) return;
 
             // Filter out current article
             const others = allArticles.filter(a => !a.file.includes(currentFilename));
@@ -792,42 +768,6 @@
                 container.innerHTML = '<p style="text-align: center; color: #999;">関連記事の読み込みに失敗しました。</p>';
             }
         }
-    }
-
-    // Previous / Next Article Navigation
-    function setupPrevNextNav(articles) {
-        if (getLocale() !== 'ja') return;
-        const navContainer = document.getElementById('article-nav');
-        if (!navContainer) return;
-
-        const currentPath = window.location.pathname;
-        const currentFilename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
-
-        // Sort articles by date (newest first)
-        const sorted = [...articles].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        // Find current article index
-        const currentIndex = sorted.findIndex(a => a.file.includes(currentFilename));
-        if (currentIndex === -1) return;
-
-        const utils = getUtils();
-        const prevArticle = currentIndex > 0 ? sorted[currentIndex - 1] : null;
-        const nextArticle = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
-
-        navContainer.innerHTML = `
-            ${prevArticle ? `
-                <a href="${prevArticle.file.replace('../articles/', './')}" class="article-nav-link prev">
-                    <span class="article-nav-label">← 前の記事</span>
-                    <span class="article-nav-title">${utils.escapeHtml(prevArticle.title)}</span>
-                </a>
-            ` : '<div class="article-nav-link disabled"><span class="article-nav-label">前の記事はありません</span></div>'}
-            ${nextArticle ? `
-                <a href="${nextArticle.file.replace('../articles/', './')}" class="article-nav-link next">
-                    <span class="article-nav-label">次の記事 →</span>
-                    <span class="article-nav-title">${utils.escapeHtml(nextArticle.title)}</span>
-                </a>
-            ` : '<div class="article-nav-link disabled next"><span class="article-nav-label">次の記事はありません</span></div>'}
-        `;
     }
 
     document.addEventListener('DOMContentLoaded', init);

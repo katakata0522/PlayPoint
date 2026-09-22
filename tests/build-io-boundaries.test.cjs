@@ -88,14 +88,20 @@ test('記事とハブは対象内だけを更新し、再実行で不要な再�
   for (const file of assets) assert.ok((io.reads.get(file) || 0) >= 1, file + ': shared asset must be re-evaluated between sync runs');
 });
 
-test('検索用アセットを編集した次の同期では全対象の参照が更新される', t => {
+test('検索用アセットは一覧だけで参照し、編集後の同期でハッシュを更新する', t => {
   const { root, articles, hubs } = discoveryFixture(t);
   syncArticleDiscovery(root);
   write(root, 'js/article-search.js', 'new asset');
   const expected = crypto.createHash('sha256').update('new asset').digest('hex').slice(0, 10);
   syncArticleDiscovery(root);
-  for (const file of [...articles, ...hubs]) {
+  for (const file of hubs) {
     assert.ok(fs.readFileSync(path.join(root, file), 'utf8').includes(`/js/article-search.js?v=${expected}`), file);
+    assert.ok(!fs.readFileSync(path.join(root, file), 'utf8').includes('/js/reading-experience.js'), file);
+  }
+  for (const file of articles) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.ok(!html.includes('/js/article-search.js'), file);
+    assert.ok(html.includes('/js/reading-experience.js'), file);
   }
 });
 

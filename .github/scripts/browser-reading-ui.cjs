@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
+const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
 
 // 同じPR Gate/本番ブラウザsuiteに統合。外部広告は押さず、故障条件はこのcontextだけへ注入する。
 async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifactDir) {
@@ -137,8 +138,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       assert.equal(actual,expected||total);
       assert.equal(new URL(page.url()).searchParams.get('page'),actual==='1'?null:actual,'URL matches displayed page');
     }
+    const articleRequests = [];
+    const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
+    page.on('request', recordArticleRequest);
     await goto(page,'games/fgo/pity-cost/');
     await page.locator('[data-reading-theme-toggle]').waitFor({state:'visible'});
+    page.off('request', recordArticleRequest);
+    assert(!articleRequests.includes('/blog/articles.json'), '静的関連記事がある本文では一覧データを取得しない');
+    assert(!articleRequests.includes('/js/article-search.js'), '本文では一覧用の検索コードを読み込まない');
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme carried into game article');
     for(const sample of await palette(page,['h1','.breadcrumbs-wrapper span:last-child','.reading-metadata summary','.pack-table tbody td','.cta-btn'])) assert(sample.ratio>=4.5,JSON.stringify(sample));
     await page.locator('.reading-table-compact').first().waitFor({state:'attached'});
@@ -223,6 +230,22 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const recovered=await st.evaluate(()=>({raw:JSON.parse(localStorage.getItem('playpointReadingLibraryRecoveryV1')).raw,state:JSON.parse(localStorage.getItem('playpoint_reading_library_v1'))}));
     assert.equal(recovered.raw,'{broken');assert.equal(recovered.state.saved.length,0);
     report.storage.backupRecovery=true;
+    // 内部のif文ではなく、実ページの通信とDOMで海外記事の境界を守る。
+    const intlContext=await context(), ip=await intlContext.newPage();
+    report.interactions.internationalResources=[];
+    for(const locale of INTERNATIONAL_LOCALES) {
+      const requests=[];
+      const record=request=>requests.push(new URL(request.url()).pathname);
+      ip.on('request',record);
+      await goto(ip,`${locale}/articles/google-play-points-weekly-reward.html`);
+      await ip.waitForLoadState('load');
+      ip.off('request',record);
+      assert(requests.includes('/blog/article.js'),locale+': article runtime was not exercised');
+      assert(!requests.includes('/blog/articles.json'),locale+': Japanese article catalog must not be requested');
+      assert(!requests.includes('/js/article-search.js'),locale+': hub-only search code must not be requested');
+      assert.equal(await ip.locator('#article-nav').count(),0,locale+': empty previous/next navigation remains');
+      report.interactions.internationalResources.push({locale,unusedRequests:0});
+    }
     fs.writeFileSync(path.join(artifactDir,'reading-ui-report.json'),JSON.stringify(report,null,2));
     return report;
   } catch(error) {

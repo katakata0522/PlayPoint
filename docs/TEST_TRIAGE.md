@@ -103,6 +103,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | Service Worker install/activate/fetch/cache fallback | `tests/service-worker-behavior.test.cjs` | asset packaging / deploy smoke |
 | CSS/JSの版別HTTP cache・HTML/SW/JSON/revisionの再検証 | `tests/helpers/apache-cache-contract.cjs`（PR Gateの実Apache/TLS） | `tests/http-cache-contract.test.cjs` は応答判定・失敗伝播、`security-health-check.cjs` は本番HTTPと前後SHA |
 | ブログ一覧の検索・ページング・カテゴリ・リセット・ARIA | `.github/scripts/browser-smoke.cjs` | Node側のブログUI ownershipメタガードは不要 |
+| 記事で不要な一覧JSON・検索JSを取得しない、海外記事の空の前後ナビ除去 | `.github/scripts/browser-reading-ui.cjs` | 日本語ゲーム記事・英語・韓国語・繁体字の実通信とDOMを確認。`intl-locale-chrome` の内部if文への依存を移行 |
 | 本番revision取得・IPv4・retry | `tests/deploy-revision-readiness.test.cjs` | 実HTTPとtransport呼出の挙動。helper名・ソース断片の重複固定はしない |
 | Browser entrypointで本番SHA不足を拒否 | `tests/blog-runtime-regressions.test.cjs` | 実entrypointを隔離VMで実行し失敗reportを検証 |
 | Browser前後・suite完了SHA、Deploy証跡とのdigest結合 | `tests/browser-revision-evidence.test.cjs` | localhost/CLI fixtureと4本番レーンの起動境界。本番は実Chromium |

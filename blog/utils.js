@@ -98,15 +98,16 @@
 
     function sortListedArticles(articles, { mode = 'newest', search = '' } = {}) {
         const scorer = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
-        return articles.map((article, index) => ({ article, index })).sort((a, b) => {
-            if (mode === 'relevance' && search && scorer) {
-                const difference = scorer.score(b.article, search, 'ja') - scorer.score(a.article, search, 'ja');
-                if (difference) return difference;
-            }
-            const date = article => mode === 'updated'
-                ? (validArticleDate(article.modified) > validArticleDate(article.date) ? article.modified : validArticleDate(article.date))
-                : validArticleDate(article.date);
-            const left = date(a.article), right = date(b.article);
+        // 比較関数内で同じ記事の本文評価や日付解析を繰り返さない。順位・同点順は維持する。
+        return articles.map((article, index) => {
+            const published = validArticleDate(article.date);
+            const modified = mode === 'updated' ? validArticleDate(article.modified) : '';
+            return { article, index, date: modified > published ? modified : published,
+                score: mode === 'relevance' && search && scorer ? scorer.score(article, search, 'ja') : 0 };
+        }).sort((a, b) => {
+            const difference = b.score - a.score;
+            if (difference) return difference;
+            const left = a.date, right = b.date;
             if (!left || !right) return left ? -1 : right ? 1 : a.index - b.index;
             return (mode === 'oldest' ? left.localeCompare(right) : right.localeCompare(left)) || a.index - b.index;
         }).map(item => item.article);

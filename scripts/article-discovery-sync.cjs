@@ -122,9 +122,20 @@ function prepareDiscoveryArticle(html, entry) {
 }
 
 function buildDiscoveryAssets(root) {
-  const version = asset => createRevision(path.join(root, asset));
-  const scripts = ['js/article-search.js', 'js/reading-library.js', 'js/reading-experience.js'].map(asset => `<script defer src="/${asset}?v=${version(asset)}"></script>`).join('\n');
-  return `\n<!-- discovery-assets:start -->\n<script src="/js/reading-theme.js?v=${version('js/reading-theme.js')}"></script>\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${version('articles/article-discovery.css')}">\n<link rel="stylesheet" href="/articles/reading-theme.css?v=${version('articles/reading-theme.css')}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
+  const versions = new Map();
+  const version = asset => {
+    if (!versions.has(asset)) versions.set(asset, createRevision(path.join(root, asset)));
+    return versions.get(asset);
+  };
+  const block = assets => {
+    const scripts = assets.map(asset => `<script defer src="/${asset}?v=${version(asset)}"></script>`).join('\n');
+    return `\n<!-- discovery-assets:start -->\n<script src="/js/reading-theme.js?v=${version('js/reading-theme.js')}"></script>\n<link rel="stylesheet" href="/articles/article-discovery.css?v=${version('articles/article-discovery.css')}">\n<link rel="stylesheet" href="/articles/reading-theme.css?v=${version('articles/reading-theme.css')}">\n${scripts}\n<!-- discovery-assets:end -->\n`;
+  };
+  // 検索は一覧、表の拡張は本文だけ。保存とテーマは両方で使う。
+  return {
+    article: block(['js/reading-library.js', 'js/reading-experience.js']),
+    hub: block(['js/article-search.js', 'js/reading-library.js'])
+  };
 }
 
 function applyDiscoveryAssets(html, assets) {
@@ -144,7 +155,7 @@ function syncArticleDiscovery(root) {
     const file = path.join(root, entry.path);
     const before = fs.readFileSync(file, 'utf8');
     const prepared = prepareDiscoveryArticle(before, entry);
-    const html = applyDiscoveryAssets(prepared.html, assets);
+    const html = applyDiscoveryAssets(prepared.html, assets.article);
     // 本文とアセットを別々に読み書きせず、記事単位で最終結果だけ保存する。
     if (html !== before) fs.writeFileSync(file, html);
     indexes[entry.locale].push(prepared.record);
@@ -158,7 +169,7 @@ function syncArticleDiscovery(root) {
     const file = path.join(root, relative);
     const before = fs.readFileSync(file, 'utf8');
     const locale = relative.startsWith('blog/') ? 'ja' : relative.split('/')[0];
-    const html = readingMount(applyDiscoveryAssets(before, assets), locale, true);
+    const html = readingMount(applyDiscoveryAssets(before, assets.hub), locale, true);
     if (html !== before) fs.writeFileSync(file, html);
   }
   return entries.length;
