@@ -160,7 +160,7 @@
         if (document.querySelector('link[data-common-components-style]')) return;
         const stylesheet = document.createElement('link');
         stylesheet.rel = 'stylesheet';
-        stylesheet.href = rootPath + 'blog/common-components.css?v=bf40a1b867';
+        stylesheet.href = rootPath + 'blog/common-components.css?v=9d1effbc4d';
         stylesheet.dataset.commonComponentsStyle = 'true';
         document.head.appendChild(stylesheet);
     }

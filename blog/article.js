@@ -594,90 +594,9 @@
         }
     }
 
-    function setupMobileStickyCta() {
-        if (getLocale() === 'ja' && document.querySelector('[data-article-role]')?.dataset.articleRole !== 'calculator_bridge') return;
-        if (document.querySelector('.mobile-sticky-cta')) return;
-        if (sessionStorage.getItem('dismiss_mobile_sticky_cta') === '1') return;
-
-        const loc = getLocale();
-        const config = {
-            ja: {
-                title: '💡 あなたの場合はいくら必要？',
-                sub: '条件を入力して必要額をすぐ確認',
-                btn: '計算機を開く',
-                href: '../',
-                closeAria: '閉じる'
-            },
-            en: {
-                title: '💡 How much do you need?',
-                sub: 'Simulate with your regional settings',
-                btn: 'Open Calculator',
-                href: '/en/',
-                closeAria: 'Close'
-            },
-            ko: {
-                title: '💡 내 조건에서 필요한 금액은?',
-                sub: '내 계정 조건으로 바로 계산',
-                btn: '계산기 열기',
-                href: '/ko/',
-                closeAria: '닫기'
-            },
-            tw: {
-                title: '💡 你的情況需要花費多少？',
-                sub: '輸入目前條件立即試算',
-                btn: '開啟計算機',
-                href: '/tw/',
-                closeAria: '關閉'
-            }
-        };
-
-        const t = config[loc] || config.ja;
-
-        const cta = document.createElement('div');
-        cta.className = 'mobile-sticky-cta';
-        cta.innerHTML = `
-            <div class="mobile-sticky-cta-content">
-                <div class="mobile-sticky-cta-title">${t.title}</div>
-                <div class="mobile-sticky-cta-sub">${t.sub}</div>
-            </div>
-            <a href="${t.href}" class="mobile-sticky-cta-btn">${t.btn}</a>
-            <button class="mobile-sticky-cta-close" aria-label="${fallbackUtils.escapeHtml(t.closeAria)}">&times;</button>
-        `;
-
-        const closeBtn = cta.querySelector('.mobile-sticky-cta-close');
-        closeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            cta.classList.remove('visible');
-            sessionStorage.setItem('dismiss_mobile_sticky_cta', '1');
-            setTimeout(() => cta.remove(), 300);
-        });
-
-        document.body.appendChild(cta);
-
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
-
-                    if (progress > 0.20 && progress < 0.96) {
-                        cta.classList.add('visible');
-                    } else {
-                        cta.classList.remove('visible');
-                    }
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }, { passive: true });
-    }
-
     async function init() {
         setupReadingProgressBar();
         setupReadingTime();
-        setupMobileStickyCta();
         setupArticleUsability();
         setupCalculatorPrompt();
         setupInlineCalculatorWidgets();
