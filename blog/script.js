@@ -231,6 +231,7 @@
             category,
             tags,
             description,
+            listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
             thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
@@ -988,7 +989,7 @@
             const safeTitle = BlogUtils.escapeHtml(article.listTitle);
             card.setAttribute('aria-label', article.title);
             const snippet = window.PlayPointSearch?.excerpt(article, currentSearch, 'ja');
-            const safeDesc = BlogUtils.escapeHtml(snippet?.text || article.description);
+            const safeDesc = BlogUtils.escapeHtml(currentSearch ? (snippet?.text || article.description) : article.listDescription);
             const safeCategory = BlogUtils.escapeHtml(article.category);
             const safeFile = BlogUtils.escapeHtml(article.file);
             const safeThumbnail = BlogUtils.escapeHtml(article.thumbnail);

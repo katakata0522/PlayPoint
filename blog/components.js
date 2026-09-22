@@ -187,7 +187,7 @@
                 <a class="logo" href="${rootPath}index.html">🎮 Playポイント計算機</a>
                 <nav class="nav">
                     <a href="${rootPath}blog/">📝 記事一覧</a>
-                    <a href="https://katakatalab.com/">🧪 KatakataLab</a>
+                    <a href="${rootPath}latest/">最新情報</a>
                 </nav>
             </div>
             `;
@@ -225,13 +225,13 @@
             .filter(heading => !heading.closest('.faq, .cta-box, .article-next-step-cta, .article-calculator-prompt, .cocoon-box-point'));
         if (headings.length < 3) return;
 
-        const tocContainer = document.createElement('nav');
+        const tocContainer = document.createElement('details');
         tocContainer.className = 'inpage-toc';
         tocContainer.setAttribute('aria-label', 'この記事の目次');
 
-        const tocTitle = document.createElement('div');
+        const tocTitle = document.createElement('summary');
         tocTitle.className = 'inpage-toc-title';
-        tocTitle.textContent = '📋 目次';
+        tocTitle.textContent = '目次を開く';
 
         const tocList = document.createElement('ol');
 
@@ -257,12 +257,13 @@
         const badgeGrid = content.querySelector('.feature-badge-grid');
         const summaryBox = content.querySelector('.summary-box');
         const intro = content.querySelector('.intro');
-        const anchor = badgeGrid || pointBox || summaryBox || intro;
+        const answer = content.querySelector('.answer-box, .editorial-summary');
+        const anchor = answer || badgeGrid || pointBox || summaryBox || intro;
         if (anchor) {
             anchor.insertAdjacentElement('afterend', tocContainer);
             return;
         }
-        headings[0].insertAdjacentElement('beforebegin', tocContainer);
+        (headings[0].closest('section') || headings[0]).insertAdjacentElement('afterend', tocContainer);
     }
 
     ensureCommonStyles();

@@ -107,6 +107,7 @@
     }
 
     function setupCalculatorPrompt() {
+        if (getLocale() === 'ja' && document.querySelector('[data-article-role]')?.dataset.articleRole !== 'calculator_bridge') return;
         if (document.querySelector('.article-calculator-prompt')) return;
         const content = document.querySelector('.content');
         if (!content) return;
@@ -594,6 +595,7 @@
     }
 
     function setupMobileStickyCta() {
+        if (getLocale() === 'ja' && document.querySelector('[data-article-role]')?.dataset.articleRole !== 'calculator_bridge') return;
         if (document.querySelector('.mobile-sticky-cta')) return;
         if (sessionStorage.getItem('dismiss_mobile_sticky_cta') === '1') return;
 
@@ -723,7 +725,8 @@
             const currentFilename = currentPath.substring(currentPath.lastIndexOf('/') + 1);
             const currentCategory = getCurrentCategory();
 
-            setupPrevNextNav(allArticles);
+            // 日付順の前後移動より、本文の疑問に対応する関連記事を優先する。
+            document.getElementById('article-nav')?.remove();
 
             // Related Articles
             const container = document.getElementById('recommended-grid') || document.getElementById('related-articles');

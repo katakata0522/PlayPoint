@@ -9,6 +9,24 @@ const { KEY, makeStore, safePath } = require('../js/reading-library.js');
 const { extractSections, text } = require('../scripts/article-discovery-sync.cjs');
 const outcomes = require('../scripts/article-outcome-report.cjs');
 const root = path.resolve(__dirname, '..');
+test('自然な未反映の質問では一般的な確認手順を先頭にし、個別条件は維持する', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/article-search-index.json'), 'utf8')).articles;
+  for (const query of ['ポイントがつかない', 'ポイントが付かない', '反映されない', '反映']) {
+    const hits = articles.filter(a => search.matches(a, query, 'ja')).sort((a,b) => search.score(b,query,'ja') - search.score(a,query,'ja'));
+    assert.match(hits[0]?.path || '', /reflection-timing/, query);
+    assert.ok(!/この記事の著者|スポンサーリンク/.test(search.excerpt(hits[0],query,'ja').text));
+  }
+  const query = 'インストール 付かない';
+  const hits = articles.filter(a => search.matches(a,query,'ja')).sort((a,b) => search.score(b,query,'ja')-search.score(a,query,'ja'));
+  assert.match(hits[0]?.path || '', /install-offer/);
+  const pixel = articles.find(a => /pixel-discount/.test(a.path));
+  assert.equal(search.excerpt(pixel,'Pixel','ja').heading, '');
+});
+
+test('関連記事と著者情報を検索の回答候補にしない', () => {
+  const html = '<article><header><h1>タイトル</h1></header><h2 id="answer">答え</h2><p>役立つ説明</p><h2 id="related">状況に合わせて次に読む記事</h2><p>他の情報</p><div class="author-profile-box"><p>この記事の著者</p></div></article>';
+  assert.deepEqual(extractSections(html), [{id:'answer',heading:'答え',text:'役立つ説明'}]);
+});
 function publishedPaths(locale) {
   if (locale === 'ja') return JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8'))
     .filter(article => article.listed !== false).map(article => '/' + article.file.slice(3));

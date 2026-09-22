@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
   .map(a => ({ ...a, path: a.file.replace(/^\.\.\//, ''), href: '/' + a.file.replace(/^\.\.\//, ''), label: a.title }));
 
-test('日本語の全公開記事は検索・人気5件・次行動1件・関連記事3件を持つ', () => {
+test('日本語の全公開記事は検索・人気5件・次行動1件を持ち、関連記事は本文に集約する', () => {
   const publicPaths = new Set(articles.map(a => a.href));
   for (const article of articles) {
     const html = fs.readFileSync(path.join(root, article.path), 'utf8');
@@ -23,8 +23,8 @@ test('日本語の全公開記事は検索・人気5件・次行動1件・関連
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
-    assert.equal(links.length, 3, article.path);
-    assert.equal(new Set(links).size, 3, article.path);
+    assert.equal(links.length, 0, article.path + ': 本文の関連記事をサイドバーに重複させない');
+    assert.match(html, /related-links-section|contextual-guide-links|article-related-guides/, article.path);
     for (const href of links) { assert.notEqual(href, article.href); assert.ok(publicPaths.has(href)); }
     assert.ok(sidebar.includes('運営者情報'), article.path);
     assert.ok(sidebar.includes('2026年9月、ついにGoogle Play Pointsのダイヤモンドに到達'), article.path);

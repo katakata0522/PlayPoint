@@ -63,11 +63,8 @@ function syncBlogIndexBrand(html) {
   if (!next.includes(`<title>${GUIDE_PAGE_TITLE}</title>`)) {
     throw new Error('blog/index.html: 完全攻略ガイドのtitleを同期できませんでした');
   }
-  if (!next.includes(`<h1 class="hero-title">${GUIDE_BRAND}</h1>`)) {
-    throw new Error('blog/index.html: 完全攻略ガイドのH1を同期できませんでした');
-  }
-  if (!next.includes(`<p class="hero-text">${GUIDE_HERO_TEXT}</p>`)) {
-    throw new Error('blog/index.html: 完全攻略ガイドの導入文を同期できませんでした');
+  if (!next.includes('<h1 class="hero-title">Google Play Points 記事一覧</h1>')) {
+    throw new Error('blog/index.html: 記事一覧のH1がありません');
   }
   if (!next.includes(`class="brand">${GUIDE_BRAND}</a>`)) {
     throw new Error('blog/index.html: 完全攻略ガイドのヘッダーブランドを同期できませんでした');

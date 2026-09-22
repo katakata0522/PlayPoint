@@ -103,10 +103,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       const state=await page.evaluate(()=>({
         overflow:document.documentElement.scrollWidth>innerWidth,
         columns:getComputedStyle(document.querySelector('.search-pathways-grid')).gridTemplateColumns.split(' ').length,
-        controls:[...document.querySelectorAll('#theme-toggle,#sidebar-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})
+        controls:[...document.querySelectorAll('#theme-toggle,#sidebar-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
+        pathwaysFit:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].every(el=>el.scrollWidth<=el.clientWidth+1 && el.getBoundingClientRect().height>=44),
+        firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
-      assert.equal(state.columns,width<=340?1:width<=768?2:4,`Purpose-grid breakpoint ${width}`);
+      assert.equal(state.columns,width<=760?2:4,`Purpose-grid breakpoint ${width}`);
+      assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`);
+      assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
       responsive.push({width,...state});
     }
     report.interactions.responsive=responsive;

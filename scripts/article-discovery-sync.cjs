@@ -23,14 +23,14 @@ function articleEntries(root) {
 }
 function extractSections(html) {
   const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1] || '';
-  const body = article.replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
+  const body = article.split(/<div\b[^>]*class=["'][^"']*\bauthor-profile-box\b/i)[0].replace(/<header\b[^>]*>[\s\S]*?<\/header>/gi, ' ').replace(/<details class="reading-metadata">[\s\S]*?<\/details>/g, ' ')
     .replace(/<!-- reading-tools:start -->[\s\S]*?<!-- reading-tools:end -->/g, ' ')
     .replace(/<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '')
     .replace(/<aside\b[^>]*>[\s\S]*?<\/aside>/gi, '').replace(/<nav\b[^>]*>[\s\S]*?<\/nav>/gi, '');
   const headings = [...body.matchAll(/<h([23])\b([^>]*)>([\s\S]*?)<\/h\1>/gi)];
   const sections = headings.map((m, i) => ({ id: m[2].match(/\bid=["']([^"']+)/)?.[1] || '', heading: text(m[3]),
     text: text(body.slice(m.index + m[0].length, headings[i + 1]?.index ?? body.length)).slice(0, 12000) }))
-    .filter(s => s.text && !/関連記事|著者|公式参照|確認に使用|Related|Sources|About the author|관련 글|참고 자료|相關文章|參考資料/i.test(s.heading));
+    .filter(s => s.text && !/関連記事|次に読む|次に確認|あわせて読みたい|著者|公式参照|確認に使用|確認した.*(?:情報|公式)|Related|Sources|About the author|관련 글|참고 자료|相關文章|參考資料/i.test(s.heading));
   const intro = text(body.slice(0, headings[0]?.index ?? body.length));
   if (intro) sections.unshift({ id: html.match(/<h1\b[^>]*\bid=["']([^"']+)/i)?.[1] || 'article-title', heading: text(html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1] || ''), text: intro });
   return sections;
@@ -54,6 +54,7 @@ function readingMount(html, locale, isHub) {
     ? '<details id="reading-library" class="reading-library"><summary>' + copy[2] + '</summary><p>' + copy[8] + '</p></details>'
     : '<div class="reading-tools" data-reading-tools><button type="button" disabled aria-pressed="false">' + copy[0] + '</button><a href="' + hub + '#reading-library">' + copy[2] + '</a><span role="status"></span></div>';
   const block = '\n<!-- reading-tools:start -->' + inner + '<!-- reading-tools:end -->\n';
+  if (isHub && locale === 'ja') return html.replace(/(<div\b[^>]*id="pagination"[^>]*>[\s\S]*?<\/div>)/i, '$1' + block);
   if (isHub) return html.replace(/[ \t]*(<div\b[^>]*(?:data-intl-guide-controls|id="article-grid")[^>]*>)/i, (_, tag) => block + tag);
   const header = [...html.matchAll(/<header\b[^>]*>[\s\S]*?<\/header>/gi)].find(match => /<h1\b/i.test(match[0]));
   if (header) return html.replace(header[0], tag => tag + block);
@@ -99,7 +100,13 @@ function prepareDiscoveryArticle(html, entry) {
       return `<h${level}${attrs} id="article-section-${index}">`;
     }) + end;
   });
-  if (role === 'retention' && /weekly-reward/.test(entry.path)) {
+  const existingDiary = entry.locale === 'ja' && html.match(/<section\b[^>]*aria-labelledby="diary-cta"[^>]*>[\s\S]*?<\/section>/);
+  if (existingDiary) {
+    // 本文の日記案内を活かし、同じ案内を末尾へ重ねない。
+    html = html.replace(existingDiary[0], existingDiary[0].replace(/href="\.\.\/"/, 'href="/?mode=diary&amp;week=current" data-diary-entry')
+      .replace('受け取ったポイントを週ごとに残して、自分だけの年間記録を作れます。', '受け取ったポイントを週ごとに記録できます。記録はこの端末に保存され、Google Playとは連携しません。'))
+      .replace(/\s*<!-- discovery-diary:start -->[\s\S]*?<!-- discovery-diary:end -->/g, '');
+  } else if (role === 'retention' && /weekly-reward/.test(entry.path)) {
     const copy = diaryCopy[entry.locale], home = entry.locale === 'ja' ? '/' : `/${entry.locale}/`;
     const block = `\n<!-- discovery-diary:start --><aside class="article-diary-link"><h2>${copy[0]}</h2><p>${copy[1]}</p><a href="${home}?mode=diary&amp;week=current" data-diary-entry>${copy[2]}</a></aside><!-- discovery-diary:end -->\n`;
     html = replaceExistingMarkedBlock(html, 'discovery-diary', block) ??

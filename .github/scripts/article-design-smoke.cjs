@@ -148,7 +148,8 @@ async function inspect(browser, baseUrl, article, viewport) {
       const sidebar = page.locator('.ja-article-sidebar');
       assert(await sidebar.count() === 1, article.key + ': 日本語サイドバーがありません');
       assert(await sidebar.locator('.sidebar-next-link').count() === 1, article.key + ': 次行動は1件');
-      assert(await sidebar.locator('.sidebar-related-link').count() === 3, article.key + ': 関連記事は3件');
+      assert(await sidebar.locator('.sidebar-related-link').count() === 0, article.key + ': 本文の関連記事をサイドバーに重複させない');
+      assert(await relatedTarget.count() > 0, article.key + ': 本文の関連記事を残す');
       const next = sidebar.locator('.sidebar-next-link');
       await next.focus();
       const outline = await next.evaluate(el => ({ width: parseFloat(getComputedStyle(el).outlineWidth), visible: el.matches(':focus-visible') }));

@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
+const { normalizeSharedArticleCopy } = require('./article-static-usability.cjs');
 const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
 const { selectRelatedArticles } = require('./intl-related-guides.cjs');
 const { getJapanesePopularGuides, POPULAR_GUIDES_SNAPSHOT, POPULAR_GUIDES_WINDOW } = require('./japanese-popular-guides.cjs');
@@ -49,6 +50,7 @@ function relatedFor(article, html, catalog) {
 }
 
 function nextFor(role, related, article) {
+  if (/pixel-discount/.test(article?.path || '')) return ['/latest/', '最新情報の「その他の特典」を確認する'];
   if (role === 'calculator_bridge') return ['/', 'あなたの必要額を計算する'];
   if (role === 'retention') return ['/latest/', '次回の特典・確認日を調べる'];
   if (role === 'game_decision') {
@@ -83,7 +85,6 @@ function renderSidebar(article, role, related) {
 ${renderSearchWidget()}
 ${renderPopularWidget(article)}
   <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a></div></section>
-  <section class="sidebar-widget sidebar-widget--related"><h2 class="sidebar-widget-title">あわせて読みたい</h2><div class="sidebar-widget-body"><ul class="sidebar-related-list">${related.map(item => `<li><a class="sidebar-related-link" href="${item.href}">${escapeHtml(item.label)}</a></li>`).join('')}</ul></div></section>
 ${renderAuthorWidget()}
 </aside>`;
 }
@@ -96,7 +97,7 @@ function transformArticle(html, article, catalog) {
   const nav = '<nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner">'
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === article.href ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
   const sidebar = renderSidebar(article, role, related);
-  let after = removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav));
+  let after = normalizeSharedArticleCopy(removeLegacySidebarStylesheet(html.replace(GLOBAL_NAV, nav)));
   if (SIDEBAR.test(after)) after = after.replace(SIDEBAR, sidebar);
   else {
     const end = after.lastIndexOf('</article>');

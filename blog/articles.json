@@ -657,7 +657,9 @@
     "thumbnail": "../images/game-icons/monst.webp",
     "thumbnailKind": "app-icon",
     "source": "article",
-    "listed": true
+    "listed": true,
+    "listTitle": "モンスト｜課金パックの価格・特典・購入優先度",
+    "listDescription": "各パックの価格とオーブ単価を比較。自分に必要な特典から購入候補を選べます。"
   },
   {
     "id": "monst-web-shop-vs-google-play-2026",
@@ -692,7 +694,9 @@
     "thumbnail": "../images/game-icons/monst.webp",
     "thumbnailKind": "app-icon",
     "source": "article",
-    "listed": true
+    "listed": true,
+    "listTitle": "モンスト｜公式ショップとGoogle Playはどちらがお得？",
+    "listDescription": "オーブ増量とポイント還元を比較し、購入額に応じた使い分けを確認できます。"
   },
   {
     "id": "play-points-calendar-schedule-guide-2026",
@@ -725,7 +729,9 @@
     ],
     "thumbnail": "../articles/ogp/campaign.png",
     "source": "article",
-    "listed": true
+    "listed": true,
+    "listTitle": "Play Pointsのお得カレンダー｜毎週・毎月の確認日",
+    "listDescription": "週次リワードやポイント増量日など、いつ何を確認するかを一覧で整理します。"
   },
   {
     "id": "google-play-super-ticket-2026",
@@ -1151,7 +1157,9 @@
     "description": "Pixel関連特典は個別オファーとGoogle Storeコードへのポイント交換を区別。「特典」と「使う」の確認先、対象商品・金額・期限の読み方を解説します。",
     "file": "../articles/2026-08-16-pixel-discount-coupon.html",
     "thumbnail": "../articles/ogp/pixel-discount-coupon.png",
-    "modified": "2026-09-12"
+    "modified": "2026-09-12",
+    "listTitle": "Pixel割引はどこで確認する？",
+    "listDescription": "個別配布の「特典」と、ポイント交換の「使う」の違い・確認手順を整理します。"
   },
   {
     "id": "weekly-reward-not-showing",
@@ -1198,7 +1206,9 @@
     ],
     "description": "日本のGoogle Play Pointsをブロンズからダイヤモンドまで一覧比較。必要ポイント、通常獲得率、ウィークリーリワード、ランクアップ時の購入額目安、残高との違いを解説します。",
     "file": "../articles/2026-08-05-play-points-levels-guide.html",
-    "thumbnail": "../articles/ogp/diamond-worth-it.png"
+    "thumbnail": "../articles/ogp/diamond-worth-it.png",
+    "listTitle": "Play Pointsのランク一覧｜条件・必要額・特典",
+    "listDescription": "各ランクの必要ポイントと特典を比較し、目標までの条件を確認できます。"
   },
   {
     "id": "play-points-cannot-join",
@@ -1455,7 +1465,9 @@
     "description": "課金したのにGoogle Play Pointsが反映されない時は、注文状態、ポイント履歴、購入アカウント、参加時期を順に確認。Google公式の確認項目と、待っても付かないケースを整理します。",
     "file": "../articles/2026-03-10-play-points-reflection-timing.html",
     "thumbnail": "../articles/ogp/2026-03-10-play-points-reflection-timing.png",
-    "modified": "2026-09-19"
+    "modified": "2026-09-19",
+    "listTitle": "ポイントが付かない｜確認する順番と待ち時間",
+    "listDescription": "注文状態・ポイント履歴・購入アカウントを確認し、状況に合う対処へ進めます。"
   },
   {
     "id": "multiple-accounts",
@@ -1631,7 +1643,9 @@
     "description": "Google Play Pointsの通常ウィークリーリワードは日本ではシルバー以上・毎週金曜更新。何が当たるのか、スーパー週次・Play Pass週次との違い、年間記録の実例も整理します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
-    "modified": "2026-09-08"
+    "modified": "2026-09-08",
+    "listTitle": "ウィークリーリワード｜曜日・対象・受け取り方",
+    "listDescription": "通常・スーパー・Play Passの違いと、受け取り画面を確認できます。"
   },
   {
     "id": "getting-started",
