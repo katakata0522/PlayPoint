@@ -43,7 +43,8 @@ test('最新情報ハブは確認範囲・公式参照・確認日・次回確�
   assert.ok(latestHtml.includes(`<meta name="last-modified" content="${verificationDate}">`));
   assert.match(latestHtml, new RegExp(`"dateModified"\\s*:\\s*"${verificationDate}"`));
   assert.ok(latestHtml.includes(`最終更新: <time datetime="${verificationDate}">${verificationDate}</time>`));
-  assert.match(latestHtml, /<header[^>]*>[\s\S]*?<nav class="eng-nav"/);
+  assert.match(latestHtml, /<header class="site-header guide-header"/);
+  assert.match(latestHtml, /<nav class="global-nav ja-global-nav" aria-label="目的から探す"/);
 });
 
 test('最新情報ハブは週次3制度とクエストを別項目として扱う', () => {

@@ -487,9 +487,7 @@ async function verifyBlogPage(browser, baseUrl) {
       resultStatus: document.querySelector('#article-result-status')?.textContent || '',
       pagination: document.querySelector('.pagination-status')?.textContent || '',
       activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
-      toggleExpanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      sidebarHidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
-      sidebarInert: document.querySelector('#sidebar')?.hasAttribute('inert'),
+      navigationLinks: document.querySelectorAll('.ja-global-nav .nav-item').length,
       thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
       appIconThumbnails: document.querySelectorAll('.article-card .card-thumb--app-icon img').length,
       eventVisualThumbnails: document.querySelectorAll('.article-card .card-thumb--event-visual img').length,
@@ -501,8 +499,7 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
-    assert(initial.toggleExpanded === 'false' && initial.sidebarHidden === 'true', 'Blog sidebar initial ARIA state mismatch');
-    assert(initial.sidebarInert === true, 'Blog sidebar must be inert while closed');
+    assert(initial.navigationLinks === 6, 'Blog primary destinations must be visible without opening a menu');
     assert(initial.genericThumbnailImages === 0, `Blog mobile cards loaded ${initial.genericThumbnailImages} generic OGP thumbnails`);
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
@@ -556,33 +553,29 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(await categoryButton.evaluate(element => element.classList.contains('active')), 'Blog category active state did not update');
     assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a category filter is active');
 
-    await page.locator('#sidebar-toggle').click();
-    await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'true');
-    const openState = await page.evaluate(() => ({
-      expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
-      inert: document.querySelector('#sidebar')?.hasAttribute('inert'),
-      activeElement: document.activeElement?.id || ''
-    }));
-    assert(openState.expanded === 'true' && openState.hidden === 'false', 'Blog sidebar open ARIA state mismatch');
-    assert(openState.inert === false, 'Blog sidebar remained inert after opening');
-    assert(openState.activeElement === 'sidebar-close', 'Blog sidebar open focus mismatch: ' + openState.activeElement);
-    await page.keyboard.press('Escape');
-    await page.waitForFunction(() => document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded') === 'false');
-    const closeState = await page.evaluate(() => ({
-      expanded: document.querySelector('#sidebar-toggle')?.getAttribute('aria-expanded'),
-      hidden: document.querySelector('#sidebar')?.getAttribute('aria-hidden'),
-      inert: document.querySelector('#sidebar')?.hasAttribute('inert'),
-      activeElement: document.activeElement?.id || ''
-    }));
-    assert(closeState.expanded === 'false' && closeState.hidden === 'true', 'Blog sidebar close ARIA state mismatch');
-    assert(closeState.inert === true, 'Blog sidebar must become inert after closing');
-    assert(closeState.activeElement === 'sidebar-toggle', 'Blog sidebar close focus mismatch: ' + closeState.activeElement);
+    // 常時表示ナビはキーボードでも直接移動できる。
+    const latestLink = page.locator('.ja-global-nav a[href="/latest/"]');
+    await latestLink.focus();
+    await page.keyboard.press('Enter');
+    await page.waitForURL('**/latest/');
+    assert(await page.locator('.ja-global-nav a[aria-current="page"]').getAttribute('href') === '/latest/', 'Latest navigation current-page state mismatch');
+    await page.locator('.ja-global-nav a[href="/blog/"]').click();
+    await page.locator('.article-card').first().waitFor();
+    // PCでサムネイルの旧固定幅が本文に重ならないことも確認する。
+    for (const width of [390, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      const boxes = await page.locator('.article-card').first().evaluate(card => {
+        const image = card.querySelector('.card-thumb').getBoundingClientRect();
+        const content = card.querySelector('.card-content').getBoundingClientRect();
+        return { right: image.right, left: content.left, overflow: document.documentElement.scrollWidth - innerWidth };
+      });
+      assert(boxes.right <= boxes.left + 1 && boxes.overflow <= 1, 'Blog card image overlaps its text or viewport at ' + width);
+    }
 
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');
     const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
-    return { initial, resetState, category, openState, closeState, readingUi, errors: browserState.values };
+    return { initial, resetState, category, readingUi, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, 'blog.png');
     throw error;

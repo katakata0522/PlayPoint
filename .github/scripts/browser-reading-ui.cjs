@@ -116,15 +116,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.responsive=responsive;
     await page.setViewportSize({width:390,height:844});
 
-    await page.locator('#sidebar-toggle').click();
-    await page.waitForFunction(()=>document.activeElement?.id==='sidebar-close');
-    await page.keyboard.press('Shift+Tab');
-    assert(await page.evaluate(()=>document.querySelector('#sidebar').contains(document.activeElement)),'Backward focus cannot escape the modal');
+    const destinations=page.locator('.ja-global-nav a');
+    assert.equal(await destinations.count(),6);
+    await destinations.first().focus();
     await page.keyboard.press('Tab');
-    assert.equal(await page.evaluate(()=>document.activeElement.id),'sidebar-close');
-    assert(await page.locator('main').evaluate(el=>el.inert),'Background must be inert while menu is open');
-    await page.keyboard.press('Escape');
-    assert.equal(await page.evaluate(()=>document.activeElement.id),'sidebar-toggle');
+    assert(await destinations.nth(1).evaluate(el=>el===document.activeElement),'Primary navigation follows the visible order');
     assert.equal(await page.locator('main').evaluate(el=>el.inert),false);
     await page.locator('.pagination-next').focus(); await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.querySelector('.pagination-page-input')?.value==='2');

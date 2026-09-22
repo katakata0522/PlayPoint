@@ -73,3 +73,25 @@ test('検索・人気記事のスタイルは既存の日本語共通CSSへ統�
   assert.match(css, /\.sidebar-widget--author/);
   assert.ok(!fs.existsSync(path.join(root, 'articles', 'japanese-sidebar-v2.css')));
 });
+
+test('記事一覧・最新情報・本文は同じ6つの行き先を持つ', () => {
+  const pages = ['blog/index.html', 'latest/index.html', articles[0].path];
+  const targets = pages.map(file => {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.equal((html.match(/class="site-header guide-header"/g) || []).length, 1, file);
+    const nav = html.match(/<nav class="global-nav ja-global-nav"[\s\S]*?<\/nav>/)?.[0];
+    assert.ok(nav, file);
+    assert.ok(!html.includes('id="sidebar-toggle"'), file + ': 主導線をメニュー内に隠さない');
+    return [...nav.matchAll(/href="([^"]+)"/g)].map(match => match[1]);
+  });
+  assert.equal(targets[0].length, 6);
+  assert.deepEqual(targets[1], targets[0]);
+  assert.deepEqual(targets[2], targets[0]);
+  assert.ok(targets[0].includes('/latest/'));
+  for (const file of pages.slice(0, 2)) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.ok(html.includes(`data-popular-snapshot="${POPULAR_GUIDES_SNAPSHOT}"`), file);
+    assert.equal((html.match(/<main\b/g) || []).length, 1, file);
+    assert.equal((html.match(/<h1\b/g) || []).length, 1, file);
+  }
+});
