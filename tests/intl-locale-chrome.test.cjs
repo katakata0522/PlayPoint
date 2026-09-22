@@ -157,16 +157,6 @@ test('記事・LPの計算機判定は共通analytics境界へ集約し6地域�
   assert.doesNotMatch(intent, /function isCalculatorDestination/);
 });
 
-test('モバイル下部CTAの閉じる操作名は言語別で日本語固定にしない', () => {
-  const source = read('blog/article.js');
-  assert.ok(!source.includes('aria-label="閉じる"'));
-  assert.match(source, /aria-label="\$\{fallbackUtils\.escapeHtml\(t\.closeAria\)\}"/);
-  assert.match(source, /closeAria: '閉じる'/);
-  assert.match(source, /closeAria: 'Close'/);
-  assert.match(source, /closeAria: '닫기'/);
-  assert.match(source, /closeAria: '關閉'/);
-});
-
 test('英語トップの法務・情報ラベルは日本語ページだと分かるランタイム表記と一致する', () => {
   const { createLocales } = require('../scripts/locale-config.cjs');
   const runtime = read('js/config.js');

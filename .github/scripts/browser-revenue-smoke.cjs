@@ -236,6 +236,24 @@ async function main() {
     assert(articleState.runtimeLoader, 'article runtime loader missing');
     assertExternalRequests(requests, 'article');
     assert(errors.length === 0, `article browser errors: ${errors.join(' | ')}`);
+
+    // 広告枠の検証に加え、広告と競合する固定案内を戻さず地域別導線を残す。
+    for (const [articlePath, calculatorPath] of [
+      ['articles/2026-08-05-fastest-silver.html', '/'],
+      ['en/articles/google-play-points-fastest-silver.html', '/en/'],
+      ['ko/articles/google-play-points-fastest-silver.html', '/ko/'],
+      ['tw/articles/google-play-points-fastest-silver.html', '/tw/']
+    ]) {
+      await page.goto(new URL(articlePath, baseUrl).href, { waitUntil: 'domcontentloaded' });
+      const prompt = page.locator('.article-calculator-prompt a');
+      await prompt.waitFor({ state: 'attached' });
+      await page.evaluate(() => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * 0.4));
+      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+      assert(await page.locator('.mobile-sticky-cta').count() === 0, `${articlePath}: fixed CTA must not compete with anchor ads`);
+      await prompt.click();
+      await page.waitForURL(new URL(calculatorPath, baseUrl).href);
+      assert(new URL(page.url()).pathname === calculatorPath, `${articlePath}: locale calculator destination`);
+    }
     await context.close();
     console.log('ok - article revenue smoke');
   } finally {
