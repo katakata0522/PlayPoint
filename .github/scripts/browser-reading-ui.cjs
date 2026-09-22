@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
+const { INTERNATIONAL_LOCALES } = require('../../scripts/locale-ids.cjs');
 
 // 同じPR Gate/本番ブラウザsuiteに統合。外部広告は押さず、故障条件はこのcontextだけへ注入する。
 async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifactDir) {
@@ -232,7 +233,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     // 内部のif文ではなく、実ページの通信とDOMで海外記事の境界を守る。
     const intlContext=await context(), ip=await intlContext.newPage();
     report.interactions.internationalResources=[];
-    for(const locale of ['en','ko','tw']) {
+    for(const locale of INTERNATIONAL_LOCALES) {
       const requests=[];
       const record=request=>requests.push(new URL(request.url()).pathname);
       ip.on('request',record);
