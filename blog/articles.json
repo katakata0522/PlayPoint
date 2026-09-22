@@ -74,10 +74,11 @@
   },
   {
     "id": "monst-google-play-vs-webshop-2026",
-    "title": "モンストはGoogle Play課金とWebショップどっちがお得？月イチ200個とPlay Points比較【2026年】",
+    "modified": "2026-09-22",
+    "title": "モンストの購入経路ガイド｜アプリ180個・Web190個・月イチ200個の違い",
     "category": "使い方",
     "gameTitle": "モンスト",
-    "listTitle": "モンスト｜Google Playと公式ショップを比較",
+    "listTitle": "モンスト｜購入経路・オーブ数の基本比較",
     "tags": [
       "モンスト",
       "Webショップ",
@@ -87,6 +88,10 @@
     "description": "モンストの1万円課金を比較。アプリ内180個、Webショップ190個、月イチ200個の差とGoogle Play Pointsを含めた選び方を整理します。",
     "file": "../games/monst/google-play-vs-webshop/index.html",
     "related": [
+      [
+        "/articles/2026-09-19-monst-web-shop-vs-google-play.html",
+        "1万円課金のポイント価値・損得分岐点を計算する"
+      ],
       [
         "/articles/2026-08-19-web-store-external-billing-points.html",
         "公式WebストアとGoogle Play課金の違いを確認する"
@@ -101,7 +106,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/monst.webp",
     "thumbnailKind": "app-icon",
@@ -663,9 +667,9 @@
   },
   {
     "id": "monst-web-shop-vs-google-play-2026",
-    "title": "モンストWebショップとGoogle Play課金はどっちがお得？オーブ増量・ポイント損得分岐点",
+    "title": "モンスト1万円課金の損得分岐点｜Web190・200個とポイント価値を計算",
     "date": "2026-09-19",
-    "modified": "2026-09-19",
+    "modified": "2026-09-22",
     "category": "使い方",
     "gameTitle": "モンスト",
     "tags": [
@@ -675,7 +679,7 @@
       "Google Play Points",
       "課金比較"
     ],
-    "description": "モンストWebショップのオーブ増量・ストライクシールと、Google Play課金のPlay Points（毎月1日最大7倍・ギフトコード還元）はどちらが得か徹底比較。金額別の損得分岐点と、プレイヤータイプ別の賢い使い分けを解説します。",
+    "description": "アプリ180個・Web通常190個・月1回200個を1万円で比較。ポイントを将来使える価値として評価したとき、何円分で逆転するかを計算式と条件別の表で確認できます。",
     "file": "../articles/2026-09-19-monst-web-shop-vs-google-play.html",
     "related": [
       [
@@ -684,7 +688,7 @@
       ],
       [
         "/games/monst/google-play-vs-webshop/",
-        "モンストWebショップ損得分岐計算機を見る"
+        "購入経路・オーブ数の基本比較を見る"
       ],
       [
         "/articles/2026-08-19-web-store-external-billing-points.html",
@@ -695,14 +699,14 @@
     "thumbnailKind": "app-icon",
     "source": "article",
     "listed": true,
-    "listTitle": "モンスト｜公式ショップとGoogle Playはどちらがお得？",
+    "listTitle": "モンスト｜1万円課金の損得分岐点を計算",
     "listDescription": "オーブ増量とポイント還元を比較し、購入額に応じた使い分けを確認できます。"
   },
   {
     "id": "play-points-calendar-schedule-guide-2026",
     "title": "Google Play Pointsお得カレンダー｜毎日・毎週・毎月・年間イベントのスケジュール完全攻略",
     "date": "2026-09-19",
-    "modified": "2026-09-19",
+    "modified": "2026-09-22",
     "category": "キャンペーン",
     "tags": [
       "Play Points",
@@ -1643,7 +1647,7 @@
     "description": "Google Play Pointsの通常ウィークリーリワードは日本ではシルバー以上・毎週金曜更新。何が当たるのか、スーパー週次・Play Pass週次との違い、年間記録の実例も整理します。",
     "file": "../articles/2025-12-25-weekly-reward.html",
     "thumbnail": "../articles/ogp/weekly-reward.png",
-    "modified": "2026-09-08",
+    "modified": "2026-09-22",
     "listTitle": "ウィークリーリワード｜曜日・対象・受け取り方",
     "listDescription": "通常・スーパー・Play Passの違いと、受け取り画面を確認できます。"
   },

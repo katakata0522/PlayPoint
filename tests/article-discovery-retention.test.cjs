@@ -190,3 +190,13 @@ test('static reading fallback is readable without scripts and preserves page lan
     }
   }
 });
+
+test('一般的な入門・使い道の質問は案内記事へ、ゲーム指定はそのまま検索する', () => {
+  const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/article-search-index.json'), 'utf8')).articles;
+  const hits = query => articles.filter(a => search.matches(a, query, 'ja')).sort((a,b) => search.score(b,query,'ja') - search.score(a,query,'ja'));
+  for (const query of ['初心者','初めて','Play Points 初心者','プレイポイント 始め方']) assert.match(hits(query)[0]?.path || '', /getting-started/, query);
+  for (const query of ['ポイントを使う','ポイントの使い方','ポイントの交換先','Play Points 使いたい']) assert.match(hits(query)[0]?.path || '', /best-use/, query);
+  assert.match(hits('モンスト 初心者')[0]?.path || '', /monst/, 'ゲーム指定を入門ガイドで上書きしない');
+  assert.equal(hits('初心者 存在しない検索語xyz').length,0, '追加条件を無視しない');
+  assert.match(hits('Ｐｉｘｅｌ')[0]?.path || '', /pixel/);
+});

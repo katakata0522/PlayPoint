@@ -273,9 +273,11 @@ test('同じ状態の定期確認はDOMを書き換えず、開始・終了時�
     '[data-ended-list]': endedList, '.benefit-count': count, '.benefit-empty': empty, '[data-filter-note]': node(), '[role="tablist"]': node() };
   const board = { querySelector: key => nodes[key], querySelectorAll: key => key === '[role="tab"]' ? tabs : [card] };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'latest/hub.js'), 'utf8'), {
-    Date: { now: () => now, parse: Date.parse }, window: { setInterval(callback) { timer = callback; } },
+    Date: { now: () => now, parse: Date.parse }, window: { location: { search: '?filter=upcoming' }, setInterval(callback) { timer = callback; } },
     document: { hidden: false, querySelector: () => board, addEventListener() {} }
   });
+  assert.equal(tabs[2].attributes['aria-selected'], 'true', '開始予定への直接リンクで対象タブを開く');
+  assert.equal(card.hidden, false, '直接リンクの初回描画で開始前の企画を表示する');
   tabs[2].handlers.click(); assert.equal(card.hidden, false); assert.equal(count.textContent, '1件の情報');
   writes = 0; timer(); timer(); assert.equal(writes, 0, '変化のない確認で読み上げ領域を更新しない');
   now = Date.parse(card.dataset.start); timer(); assert.equal(card.hidden, true);

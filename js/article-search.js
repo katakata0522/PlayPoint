@@ -27,16 +27,28 @@
     }
     return [...new Set(value.split(' ').filter(Boolean))].slice(0, 12);
   }
+  // 一般的な目的だけを案内記事へ寄せる。ゲーム名などの追加条件がある質問には適用しない。
+  function intentOwner(query, locale) {
+    if (locale !== 'ja') return '';
+    const purpose = canonical(query, locale).replace(/^zzalias0zz\s*/, '').trim();
+    if (/^(?:初心者|はじめて|初めて|始め方|はじめ方|登録方法)$/.test(purpose)) return '2025-12-25-getting-started.html';
+    if (/^(?:ポイント(?:の使い方|を使う|を使いたい|交換|の交換先)|使い方|使う|使いたい|交換先)$/.test(purpose)) return '2025-12-25-best-use.html';
+    return '';
+  }
+  function isIntentOwner(article, query, locale) {
+    const owner = intentOwner(query, locale);
+    return !!owner && (article.path || article.file || '').endsWith('/' + owner);
+  }
   function sections(article) { return Array.isArray(article.sections) ? article.sections : []; }
   function searchable(article) { return [article.title, article.description, article.category, ...(article.tags || []), ...sections(article).map(s => s.heading + ' ' + s.text)].join(' '); }
-  function matches(article, query, locale) { const haystack = canonical(searchable(article), locale); return tokens(query, locale).every(token => haystack.includes(token)); }
+  function matches(article, query, locale) { if (isIntentOwner(article, query, locale)) return true; const haystack = canonical(searchable(article), locale); return tokens(query, locale).every(token => haystack.includes(token)); }
   function score(article, query, locale) {
     const terms = tokens(query, locale);
     const title = canonical(article.title, locale);
     const headings = canonical(sections(article).map(s => s.heading).join(' '), locale);
     const generalMissing = locale === 'ja' && terms.includes('zzalias2zz') && terms.every(term => ['zzalias0zz', 'zzalias2zz', 'ポイント'].includes(term));
     const mainAnswer = generalMissing && /reflection-timing\.html$/.test(article.path || article.file || '');
-    return (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (title.includes(token) ? 10 : 0) + (headings.includes(token) ? 2 : 0), 0);
+    return (isIntentOwner(article, query, locale) ? 50 : 0) + (mainAnswer ? 30 : 0) + terms.reduce((sum, token) => sum + (title.includes(token) ? 10 : 0) + (headings.includes(token) ? 2 : 0), 0);
   }
   function excerpt(article, query, locale) {
     if (!normalize(query)) return { text: article.description || '', id: '', heading: '' };

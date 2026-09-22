@@ -25,10 +25,6 @@
 .benefit-theme-boost { --benefit-tint:#e5f5ec; --benefit-ink:#176043; }
 .benefit-theme-gear { --benefit-tint:#e9edf7; --benefit-ink:#3a4c70; }
 .benefit-theme-phone { --benefit-tint:#fff0e8; --benefit-ink:#8b3d20; }
-.benefit-card-top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 6px 20px; background: var(--benefit-tint); color: var(--benefit-ink); overflow: hidden; }
-.benefit-card-top::after { content:""; position: absolute; width: 110px; height: 110px; right: -18px; top: -30px; border: 18px solid #ffffff70; border-radius: 50%; pointer-events: none; }
-.benefit-visual-label { font-size: 16px; font-weight: 700; line-height: 1.6; z-index: 1; }
-.benefit-icon { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; border-radius: 10px; background: #ffffffb8; font-size: 24px; transform: rotate(-7deg); z-index: 1; }
 .benefit-card-body { padding: 12px 24px; }
 .benefit-labels { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .benefit-status,.benefit-tag { display: inline-block; padding: 3px 9px; border-radius: 6px; font-size: 14px; line-height: 1.6; }
@@ -66,8 +62,6 @@
  .benefit-grid { grid-template-columns: minmax(0,1fr); gap: 16px; }
  .benefit-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; padding: 4px; }
  .benefit-tabs button { font-size: 16px; padding: 10px 4px; }
- .benefit-card-top { min-height: 44px; padding: 6px 20px; }
- .benefit-icon { width: 32px; height: 32px; flex-basis: 32px; font-size: 24px; }
  .benefit-card-body { padding: 12px 20px; }
  .benefit-card dl { padding: 6px 12px; }
 }
@@ -81,3 +75,13 @@
 
 /* ページ見出しとの重複を避け、一覧の名前は支援技術に残す。 */
 .benefit-board > h2 { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* A案の色・文字サイズを保ち、カード内の重複と縦余白を減らす。 */
+html[lang="ja"] body .guide-latest-layout .benefit-card .benefit-card-body { padding:12px 16px; }
+.benefit-card h3 > span { font-size:20px; }
+.benefit-card dl { margin:8px 0; padding:4px 10px; }
+.benefit-card dl div { margin:2px 0; }
+.benefit-card .benefit-action { min-height:44px; padding:6px 12px; }
+.benefit-details { margin:6px 0 0; border-bottom:0; }
+.benefit-details summary { font-size:14px; padding:8px 0; }
+.benefit-diary { display:flex; align-items:center; min-height:44px; margin-top:2px; font-size:14px; line-height:1.6; color:var(--reading-link,#0b57d0); text-underline-offset:3px; }
