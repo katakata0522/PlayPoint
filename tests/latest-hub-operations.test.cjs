@@ -223,3 +223,28 @@ test('最新情報ハブの共通componentはlatest階層からサイトルー�
   assert.match(consentRequest.src, /^\.\.\/js\/consent\.js\?v=/);
 });
 
+
+const { classifyBenefit } = require('../latest/hub.js');
+
+test('期限付き企画は日本時間の開始・7日前・終了の境界で分類が切り替わる', () => {
+  const offer = { category: 'points', start: '2026-09-10T10:00:00+09:00', end: '2026-10-16T10:00:00+09:00' };
+  const at = value => classifyBenefit(offer, Date.parse(value));
+  assert.equal(at('2026-09-10T09:59:59+09:00'), 'upcoming');
+  assert.equal(at(offer.start), 'active');
+  assert.equal(at('2026-10-09T09:59:59+09:00'), 'active');
+  assert.equal(at('2026-10-09T10:00:00+09:00'), 'soon');
+  assert.equal(at('2026-10-16T09:59:59+09:00'), 'soon');
+  assert.equal(at(offer.end), 'ended');
+});
+
+test('その他の製品特典は期限間近でもポイント企画に混ぜず、終了後は終了扱いにする', () => {
+  const offer = { category: 'other', end: '2027-03-31T23:46:00+09:00' };
+  assert.equal(classifyBenefit(offer, Date.parse('2027-03-30T12:00:00+09:00')), 'other');
+  assert.equal(classifyBenefit(offer, Date.parse(offer.end)), 'ended');
+});
+
+test('期限不明の個別報告・週次特典をまもなく終了や開始予定にしない', () => {
+  assert.equal(classifyBenefit({ category: 'other', kind: 'report' }), 'other');
+  assert.equal(classifyBenefit({ category: 'points', kind: 'weekly' }), 'active');
+  assert.equal(classifyBenefit({ category: 'points', end: 'invalid-date' }), 'unknown');
+});
