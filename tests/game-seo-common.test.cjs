@@ -57,7 +57,7 @@ test('multiple ordered description replacements preserve scope, order and idempo
   const originalWrite = fs.writeFileSync;
   const writes = [];
   t.mock.method(fs, 'writeFileSync', function (file, ...args) {
-    writes.push(path.relative(root, file));
+    writes.push(path.relative(root, file).replace(/\\/g, '/'));
     return Reflect.apply(originalWrite, this, [file, ...args]);
   });
 

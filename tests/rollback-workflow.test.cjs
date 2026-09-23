@@ -4,8 +4,8 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const deployWorkflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8');
-const rollbackWorkflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'rollback.yml'), 'utf8');
+const deployWorkflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8').replace(/\r\n/g, '\n');
+const rollbackWorkflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'rollback.yml'), 'utf8').replace(/\r\n/g, '\n');
 const deployScript = fs.readFileSync(path.join(root, '.github', 'scripts', 'deploy-rsync.sh'), 'utf8');
 
 test('通常Deployは本番を書き換える前に保存snapshotを再検証する', () => {

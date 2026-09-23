@@ -8,7 +8,7 @@ const test = require('node:test');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 
 const root = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
 
 function extractObject(source, startMarker, endMarker) {
   const start = source.indexOf(startMarker);

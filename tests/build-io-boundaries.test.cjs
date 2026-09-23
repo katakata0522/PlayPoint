@@ -24,12 +24,12 @@ function ioCounts(t, root) {
   const reads = new Map(), writes = new Map();
   const read = fs.readFileSync, save = fs.writeFileSync;
   t.mock.method(fs, 'readFileSync', function (file, ...args) {
-    const key = path.relative(root, String(file));
+    const key = path.relative(root, String(file)).replace(/\\/g, '/');
     reads.set(key, (reads.get(key) || 0) + 1);
     return Reflect.apply(read, this, [file, ...args]);
   });
   t.mock.method(fs, 'writeFileSync', function (file, ...args) {
-    const key = path.relative(root, String(file));
+    const key = path.relative(root, String(file)).replace(/\\/g, '/');
     writes.set(key, (writes.get(key) || 0) + 1);
     return Reflect.apply(save, this, [file, ...args]);
   });
