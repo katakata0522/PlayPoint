@@ -95,7 +95,9 @@ test('公式発表済みのTGS 2026記事はindex対象へ戻し、現行公式�
   assert.match(html, /ダイヤモンドキット/);
   assert.match(html, /PC版Google Play Games/);
   assert.ok(item && item.listed !== false, 'TGS 2026 article must be listed');
-  assert.equal(item.modified, '2026-09-19');
+  assert.equal(item.modified, '2026-09-22');
+  assert.match(html, /開催終了・記録/);
+  assert.ok(html.includes('href="/latest/"'));
 });
 
 test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {

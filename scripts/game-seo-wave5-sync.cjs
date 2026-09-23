@@ -57,9 +57,9 @@ const COPY = Object.freeze({
 const GAME_COPY = Object.freeze({
   'prospi-a': {
     ja: { name: 'プロ野球スピリッツA (プロスピA)', short: 'プロスピA', description: 'プロスピAのAndroid/Google Play課金予定額からPlay Pointsを計算。KONAMI Gamesストアは別決済として分離し、パワスピ・ゴールドやdポイントとの違いも確認できます。', note: 'Androidのアプリ内エナジー購入はGoogleアカウントの支払い方法でストア決済されます。KONAMI Gamesストアは別のWEB決済です。', guide: 'Google PlayとKONAMI Gamesストアはどっちがお得？' },
-    en: { name: 'Pro Yakyuu Spirits A (Japan reference)', short: 'Prospi A', description: 'Japan-reference Google Play Points calculator for Pro Yakyuu Spirits A. Enter the current Google Play checkout amount and keep KONAMI Games Store rewards separate.', note: 'This page documents the Japan Android purchase flow. KONAMI confirms in-app Energy purchases use the OS account payment method, while KONAMI Games Store is a separate web checkout.' },
-    ko: { name: '프로야구 스피리츠 A (일본판 기준)', short: '프로스피 A', description: '일본판 프로스피 A의 Google Play 결제액으로 Play Points를 계산합니다. KONAMI Games 스토어의 자체 보상은 Google Play Points와 분리합니다.', note: '이 페이지는 일본판 Android 결제 흐름을 기준으로 합니다. 앱 내 에너지 구매와 KONAMI Games 스토어는 서로 다른 결제 경로입니다.' },
-    tw: { name: '職業棒球之魂 A（日本版參考）', short: 'Prospi A', description: '以日本版職業棒球之魂 A 的 Google Play 實際結帳金額估算 Play Points，並將 KONAMI Games 商店的自有回饋分開處理。', note: '本頁以日本版 Android 購買流程作為參考。App 內 Energy 購買與 KONAMI Games 商店是不同付款路徑。' }
+    en: { name: 'Pro Yakyuu Spirits A (Japan reference)', short: 'Prospi A', description: 'Japan-reference Google Play Points calculator for Pro Yakyuu Spirits A. Enter the current Google Play checkout amount and keep KONAMI Games Store rewards separate.', note: 'This page documents the Japan Android purchase flow. The calculator below uses US dollars and US Play country rates; it does not convert Japanese prices. For yen purchases on a Japan Play account, use the <a href="/games/prospi-a/" hreflang="ja">Japan calculator</a>. Availability outside Japan is not guaranteed. KONAMI confirms in-app Energy purchases use the OS account payment method, while KONAMI Games Store is a separate web checkout.' },
+    ko: { name: '프로야구 스피리츠 A (일본판 기준)', short: '프로스피 A', description: '일본판 프로스피 A의 Google Play 결제액으로 Play Points를 계산합니다. KONAMI Games 스토어의 자체 보상은 Google Play Points와 분리합니다.', note: '이 페이지는 일본판 Android 결제 흐름을 기준으로 합니다. 아래 계산기는 한국 Play 계정의 원화 기준이며 일본 가격을 환산하지 않습니다. 일본 계정의 엔화 결제는 <a href="/games/prospi-a/" hreflang="ja">일본어 계산기</a>를 사용하세요. 한국 계정에서의 구매 가능 여부는 보장하지 않습니다. 앱 내 에너지 구매와 KONAMI Games 스토어는 서로 다른 결제 경로입니다.' },
+    tw: { name: '職業棒球之魂 A（日本版參考）', short: 'Prospi A', description: '以日本版職業棒球之魂 A 的 Google Play 實際結帳金額估算 Play Points，並將 KONAMI Games 商店的自有回饋分開處理。', note: '本頁以日本版 Android 購買流程作為參考。下方計算器採用台灣 Play 帳號與新台幣規則，不會換算日本售價。日本帳號的日圓購買請使用<a href="/games/prospi-a/" hreflang="ja">日本計算器</a>，本頁不保證台灣帳號可購買。App 內 Energy 購買與 KONAMI Games 商店是不同付款路徑。' }
   },
   'pokemon-go': {
     ja: { name: 'Pokémon GO', short: 'Pokémon GO', description: 'Pokémon GOのGoogle Play課金予定額からPlay Pointsを計算。AndroidはGoogle PlayとGalaxy Storeを区別し、Web Storeのボーナスポケコイン・Reward Roadも別軸で比較できます。', note: 'Androidのアプリ内購入はGoogle PlayまたはGalaxy Storeで完了します。Play Pointsを数えるのはGoogle Play決済として表示される購入だけです。', guide: 'Google PlayとWeb Storeはどっちがお得？' },
@@ -109,7 +109,10 @@ function alternates(slug) {
 
 function sourceLinks(slug, locale) {
   const cfg = GAME_SEO_WAVE5[slug];
-  return cfg.sources.map((url, index) => `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${locale === 'ja' ? `公式ソース ${index + 1}` : locale === 'ko' ? `공식 출처 ${index + 1}` : locale === 'tw' ? `官方來源 ${index + 1}` : `Official source ${index + 1}`}</a></li>`).join('');
+  const country = { ja: 'JP', en: 'US', ko: 'KR', tw: 'TW' }[locale];
+  const language = { ja: 'ja', en: 'en', ko: 'ko', tw: 'zh-Hant' }[locale];
+  return cfg.sources.map(url => url.includes('support.google.com/googleplay/')
+    ? url.replace('CountryCode%3DJP', 'CountryCode%3D' + country).replace('hl=ja', 'hl=' + language) : url).map((url, index) => `<li><a href="${url}" target="_blank" rel="noopener noreferrer">${locale === 'ja' ? `公式ソース ${index + 1}` : locale === 'ko' ? `공식 출처 ${index + 1}` : locale === 'tw' ? `官方來源 ${index + 1}` : `Official source ${index + 1}`}</a></li>`).join('');
 }
 
 function statusOptions(locale) {

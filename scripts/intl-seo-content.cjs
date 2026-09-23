@@ -253,7 +253,7 @@ const PAGE_TYPES = {
       secondaryHref: '/en/status/platinum/',
       summary: ['Preset: Silver to Gold', 'Best for: first realistic status goal', 'Check: missing points and local rules'],
       sections: [
-        ['Start with the next reachable tier', 'Gold can be a practical target when the missing points are close to spending you already planned. Enter only the points still needed for the next status.'],
+        ['US Gold starts at 600 annual points', 'For a US account at exactly 150 annual points, another 450 points are needed. At the Silver rate of 1.1 points per $1, the fixed-rate estimate is 450 ÷ 1.1, or about $409.09 before tax. This is a planning estimate: Google rounds individual purchases. Use your actual remaining annual progress instead of your redeemable balance.'],
         ['Compare before waiting for a campaign', 'Start with your normal tier earn rate, then compare the final special earn rate shown in Google Play only when the purchase is eligible and useful.'],
         ['Use local Google Play conditions', 'Rewards, point rates, and campaign details may differ by country or account, so the Google Play app should decide the final rule.'],
         ['Avoid making Gold a spending excuse', 'If the estimate is far above normal purchases, staying at the current level may be the better decision.']
@@ -275,7 +275,7 @@ const PAGE_TYPES = {
       secondaryHref: '/ko/status/platinum/',
       summary: ['초기 조건: 실버에서 골드', '추천: 첫 등급 목표', '확인: 남은 포인트와 지역 조건'],
       sections: [
-        ['가까운 목표부터 보기', '골드는 예정된 결제와 가까운 금액일 때 의미가 있습니다. 누적 포인트가 아니라 목표까지 남은 포인트를 입력하세요.'],
+        ['한국 골드는 연간 600포인트부터', '연간 진행도가 정확히 150포인트인 실버라면 450포인트가 더 필요합니다. 실버 기본 적립률인 1,000원당 1.1포인트를 고정하면 450 ÷ 1.1 × 1,000, 즉 세금 제외 약 409,091원입니다. 구매별 반올림으로 실제 결과는 달라질 수 있습니다. 사용 가능한 잔액이 아니라 실제 남은 연간 포인트를 입력하세요.'],
         ['캠페인 전후 비교', '먼저 현재 등급의 기본 적립률을 기준으로 보고, 실제 대상 결제일 때만 Google Play에 표시된 최종 특별 적립률을 입력해 비교하세요.'],
         ['한국 계정 조건 확인', '리워드, 적립률, 캠페인은 국가와 계정에 따라 달라질 수 있으므로 Google Play 앱을 최종 기준으로 보세요.'],
         ['무리한 결제 방지', '평소 소비보다 필요한 금액이 크다면 현재 등급을 유지하는 선택도 합리적입니다.']
@@ -297,7 +297,7 @@ const PAGE_TYPES = {
       secondaryHref: '/tw/status/platinum/',
       summary: ['預設: 銀級到黃金級', '適合: 第一個實際目標', '確認: 剩餘點數與地區條件'],
       sections: [
-        ['先看最近的等級', '黃金級適合用來判斷下一步是否值得。請輸入目標還差的點數，而不是累積總點數。'],
+        ['台灣黃金級從年度 1,000 點開始', '年度進度剛好為 250 點的銀級帳號，還差 750 點。以銀級每 NT$30 得 1.25 點固定估算，750 ÷ 1.25 × 30 = 未稅 NT$18,000。這是規劃用估算，逐筆購買的四捨五入可能改變結果。請輸入實際尚缺的年度點數，不要使用可兌換餘額。'],
         ['比較活動前後', '先以目前等級基本獲點率建立基準，只有在消費確定符合活動時，才輸入 Google Play 顯示的最終特別獲點率估算。'],
         ['以所在地區 App 為準', '回饋、活動與資格可能依地區或帳號不同，最終仍要確認 Google Play App。'],
         ['避免為等級硬買', '如果估算金額高於平常消費，維持目前等級可能更合理。']
@@ -1739,7 +1739,7 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-refund.html', 'What happens to Play Points after a refund?'],
       ['/en/articles/google-play-points-family-sharing.html', 'Can Play Points be shared with family?']
     ],
-    extraModifiedAt: '2026-07-26',
+    extraModifiedAt: '2026-09-22',
     extraArticles: [
       ['/en/articles/2026-06-20-discount-gift-cards.html', 'Gift card discounts: checks before buying'],
       ['/en/articles/google-play-points-weekly-reward.html', 'Weekly Play Points rewards'],
@@ -1749,6 +1749,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/en/articles/google-play-points-coupon-not-applied.html', 'Coupon not applied'],
       ['/en/articles/google-play-points-play-credit-not-working.html', 'Play credit cannot be exchanged or used'],
       ['/en/articles/google-play-points-level-maintenance-reset.html', 'Level maintenance and yearly reset'],
+      ['/en/status/silver/', 'US Silver: estimate the remaining cost'],
+      ['/en/status/gold/', 'US Gold: estimate the remaining cost'],
+      ['/en/amount/10000/', 'Points for $50 of eligible US spending'],
       ['/en/maintenance/platinum/', 'Platinum maintenance calculator'],
       ['/en/maintenance/diamond/', 'Diamond maintenance calculator']
     ]
@@ -1764,7 +1767,7 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-refund.html', '환불 후 Play Points는 어떻게 될까?'],
       ['/ko/articles/google-play-points-family-sharing.html', 'Play Points를 가족과 공유할 수 있을까?']
     ],
-    extraModifiedAt: '2026-07-26',
+    extraModifiedAt: '2026-09-22',
     extraArticles: [
       ['/ko/articles/2026-06-20-discount-gift-cards.html', 'Google Play 기프트카드 할인 구매 전 확인'],
       ['/ko/articles/google-play-points-weekly-reward.html', '주간 Play Points 리워드'],
@@ -1774,6 +1777,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/ko/articles/google-play-points-coupon-not-applied.html', '쿠폰이 자동 적용되지 않을 때'],
       ['/ko/articles/google-play-points-play-credit-not-working.html', 'Play 크레딧을 교환하거나 사용할 수 없을 때'],
       ['/ko/articles/google-play-points-level-maintenance-reset.html', '등급 유지와 연초 재산정'],
+      ['/ko/status/silver/', '한국 실버까지 필요한 금액'],
+      ['/ko/status/gold/', '한국 골드까지 필요한 금액'],
+      ['/ko/amount/10000/', '한국 50,000원 구매 시 예상 포인트'],
       ['/ko/maintenance/platinum/', '플래티넘 유지 계산기'],
       ['/ko/maintenance/diamond/', '다이아몬드 유지 계산기']
     ]
@@ -1789,7 +1795,7 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-refund.html', '退款後 Play Points 怎麼辦？'],
       ['/tw/articles/google-play-points-family-sharing.html', 'Play Points 可以和家人共享嗎？']
     ],
-    extraModifiedAt: '2026-07-26',
+    extraModifiedAt: '2026-09-22',
     extraArticles: [
       ['/tw/articles/2026-06-20-discount-gift-cards.html', 'Google Play 禮物卡折扣購買前檢查'],
       ['/tw/articles/google-play-points-weekly-reward.html', '每週 Play Points 獎勵'],
@@ -1799,6 +1805,9 @@ const ARTICLE_HUB_CONTENT = {
       ['/tw/articles/google-play-points-coupon-not-applied.html', '折價券沒有自動套用時'],
       ['/tw/articles/google-play-points-play-credit-not-working.html', 'Play 抵用金無法兌換或使用時'],
       ['/tw/articles/google-play-points-level-maintenance-reset.html', '等級維持與年初重新判定'],
+      ['/tw/status/silver/', '台灣銀級尚需消費多少'],
+      ['/tw/status/gold/', '台灣黃金級尚需消費多少'],
+      ['/tw/amount/10000/', '台灣消費 NT$1,500 的預估點數'],
       ['/tw/maintenance/platinum/', '白金級維持計算器'],
       ['/tw/maintenance/diamond/', '鑽石級維持計算器']
     ]

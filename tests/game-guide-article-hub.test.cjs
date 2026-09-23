@@ -74,11 +74,15 @@ test('article corpus and search index include every game guide', () => {
   }
 });
 
-test('official verification registry follows each game guide editorial verification date', () => {
+test('official verification date is preserved independently of editorial changes', () => {
   const registry = JSON.parse(read('scripts/article-official-verification-dates.json'));
   for (const article of GAME_GUIDE_ARTICLES) {
     assert.match(String(article.modified || ''), /^\d{4}-\d{2}-\d{2}$/);
-    assert.equal(registry[repoPath(article)], article.modified, repoPath(article));
+    const file = repoPath(article);
+    const verified = registry[file];
+    assert.match(String(verified || ''), /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(verified <= article.modified, file + ': verification cannot follow the editorial date');
+    assert.ok(read(file).includes('<meta name="playpoint:official-verified" content="' + verified + '">'), file);
   }
 });
 
