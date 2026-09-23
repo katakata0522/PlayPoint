@@ -1179,12 +1179,12 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の182ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の183ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
 | 内容・事実・対象範囲 | 24 |
-| SEO・公開整合 | 12 |
+| SEO・公開整合 | 13 |
 | 計測・同意・広告 | 11 |
 | 生成・再現性 | 23 |
 | UI・導線 | 23 |
@@ -1320,6 +1320,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `monetization-search-quality.test.cjs` | 計測・同意・広告 | 記事・LP・ゲームの管理広告は有効な広告ユニットIDを持つ |
 | `navigation-source-map.test.cjs` | SEO・公開整合 | navigation source-map scans the complete checked-in public HTML surface |
 | `ogp-mime-contract.test.cjs` | SEO・公開整合 | JPEG固定配信する記事OGPはJPEG実体だけを置く |
+| `ogp-standardization.test.cjs` | SEO・公開整合 | 全64記事は重複のない専用OGP画像URLを持ち、共通ogp.pngを使用しない |
 | `ogp-mime-deployment.test.cjs` | 公開・CI | JPEG実体の既存OGP URLをimage/jpegとして配信する |
 | `performance-hardening.test.cjs` | 性能・配信 | 記事CSSは外部化され、AdSense以外のinline styleを残さない |
 | `play-points-content-evolution.test.cjs` | 内容・事実・対象範囲 | 新規記事は記事台帳へ一意に登録される |

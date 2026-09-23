@@ -132,6 +132,12 @@ function htmlReferences(content) {
   for (const match of content.matchAll(/\bsrcset\s*=\s*["']([^"']+)["']/gi)) {
     values.push(...match[1].split(',').map(item => item.trim().split(/\s+/, 1)[0]).filter(Boolean));
   }
+  for (const match of content.matchAll(/<meta\s+[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)["']/gi)) {
+    values.push(match[1]);
+  }
+  for (const match of content.matchAll(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi)) {
+    values.push(match[1]);
+  }
   return values;
 }
 
