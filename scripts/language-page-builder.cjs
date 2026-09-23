@@ -97,6 +97,12 @@ function buildLocalizedHtml(indexHtml, langDir, config) {
   output = output.replace(/(<meta name="twitter:title" content=")[^"]+(">)/, `<meta name="twitter:title" content="${config.ogTitle}">`);
   output = output.replace(/(<meta name="twitter:description" content=")[^"]+(">)/, `<meta name="twitter:description" content="${config.ogDescription}">`);
   output = output.replace(/(<meta property="og:site_name" content=")[^"]+(">)/, `<meta property="og:site_name" content="${config.appName}">`);
+  const LOCALE_OG = { en: 'en_US', ko: 'ko_KR', tw: 'zh_TW' };
+  const ALT_OG = { en: `${config.appName} OGP Image`, ko: `${config.appName} OGP 이미지`, tw: `${config.appName} OGP 圖片` };
+  if (LOCALE_OG[langDir]) {
+    output = output.replace(/(<meta property="og:locale" content=")[^"]+(">)/, `<meta property="og:locale" content="${LOCALE_OG[langDir]}">`);
+    output = output.replace(/(<meta property="og:image:alt" content=")[^"]+(">)/, `<meta property="og:image:alt" content="${ALT_OG[langDir]}">`);
+  }
   // og:url は各言語版の実URLに置換（SNSシェア・OGP正確性のため必須）
   output = output.replace(
     /(<meta property="og:url" content=")[^"]+(">)/,

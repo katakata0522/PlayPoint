@@ -87,6 +87,8 @@ function buildHongKongPage(source) {
   html = replaceMetaContent(html, 'name="description"', config.description);
   html = replaceMetaContent(html, 'property="og:title"', config.title);
   html = replaceMetaContent(html, 'property="og:description"', config.description);
+  html = replaceMetaContent(html, 'property="og:locale"', 'zh_HK');
+  html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points 計算器（香港） OGP 圖片');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replaceAll(`${SITE_ORIGIN}/tw/`, `${SITE_ORIGIN}/hk/`);
@@ -119,6 +121,8 @@ function buildIndiaPage(source) {
   html = replaceMetaContent(html, 'name="description"', config.description);
   html = replaceMetaContent(html, 'property="og:title"', config.title);
   html = replaceMetaContent(html, 'property="og:description"', config.description);
+  html = replaceMetaContent(html, 'property="og:locale"', 'en_IN');
+  html = replaceMetaContent(html, 'property="og:image:alt"', 'Google Play Points Calculator India OGP Image');
   html = replaceMetaContent(html, 'name="twitter:title"', config.title);
   html = replaceMetaContent(html, 'name="twitter:description"', config.description);
   html = html.replaceAll(`${SITE_ORIGIN}/en/`, `${SITE_ORIGIN}/in/`);

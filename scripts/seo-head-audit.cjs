@@ -20,6 +20,32 @@ function read(relativePath, rootDir) {
   return fs.readFileSync(path.join(rootDir, relativePath), 'utf8');
 }
 
+function getImageDimensions(buffer) {
+  if (!buffer || buffer.length < 24) return null;
+  if (buffer.subarray(1, 4).toString('ascii') === 'PNG') {
+    return {
+      width: buffer.readUInt32BE(16),
+      height: buffer.readUInt32BE(20)
+    };
+  }
+  if (buffer[0] === 0xFF && buffer[1] === 0xD8) {
+    let i = 2;
+    while (i < buffer.length) {
+      if (buffer[i] !== 0xFF) { i++; continue; }
+      const marker = buffer[i + 1];
+      if (marker === 0xC0 || marker === 0xC2) {
+        return {
+          height: buffer.readUInt16BE(i + 5),
+          width: buffer.readUInt16BE(i + 7)
+        };
+      }
+      const len = buffer.readUInt16BE(i + 2);
+      i += 2 + len;
+    }
+  }
+  return null;
+}
+
 function parseAttributes(tag) {
   const attributes = {};
   const pattern = /([^\s=<>\/]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
@@ -174,7 +200,7 @@ function discoverPublicHtmlFiles(rootDir, currentDir = rootDir) {
   });
 }
 
-function inspectPage(url, file, html) {
+function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
   const errors = [];
   const warnings = [];
   const headMatch = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i);
@@ -228,6 +254,13 @@ function inspectPage(url, file, html) {
   const ogDescription = metaContent(metaTags, 'property', 'og:description').filter(Boolean);
   const ogImage = metaContent(metaTags, 'property', 'og:image').filter(Boolean);
   const ogUrl = metaContent(metaTags, 'property', 'og:url').filter(Boolean);
+  const ogWidth = metaContent(metaTags, 'property', 'og:image:width').filter(Boolean);
+  const ogHeight = metaContent(metaTags, 'property', 'og:image:height').filter(Boolean);
+  const ogAlt = metaContent(metaTags, 'property', 'og:image:alt').filter(Boolean);
+  const ogType = metaContent(metaTags, 'property', 'og:image:type').filter(Boolean);
+  const ogLocale = metaContent(metaTags, 'property', 'og:locale').filter(Boolean);
+  const twitterImage = metaContent(metaTags, 'name', 'twitter:image').filter(Boolean);
+
   const missingOgp = [
     ['og:title', ogTitle],
     ['og:description', ogDescription],
@@ -238,6 +271,57 @@ function inspectPage(url, file, html) {
     warnings.push(createIssue('ogp-incomplete', { url, file, detail: missingOgp.join(', ') }));
   } else if (ogUrl[0] !== url) {
     warnings.push(createIssue('og-url-mismatch', { url, file, detail: `og:url=${ogUrl[0]}` }));
+  }
+
+  // Articles and common pages strict OGP standards
+  const isArticleOrCommon = file.startsWith('articles/') || [
+    'index.html', 'about-playpoints.html', 'attention.html', 'changelog.html',
+    'embed.html', 'info.html', 'privacy.html', 'terms.html', 'sitemap.html',
+    'author/katakata.html', 'blog/index.html',
+    'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'
+  ].includes(file);
+
+  if (isArticleOrCommon) {
+    if (ogWidth.length !== 1 || ogWidth[0] !== '1200') {
+      errors.push(createIssue('og-width-invalid', { url, file, detail: `og:image:width=${ogWidth[0] || 'missing'}` }));
+    }
+    if (ogHeight.length !== 1 || ogHeight[0] !== '630') {
+      errors.push(createIssue('og-height-invalid', { url, file, detail: `og:image:height=${ogHeight[0] || 'missing'}` }));
+    }
+    if (ogAlt.length !== 1 || !ogAlt[0]) {
+      errors.push(createIssue('og-alt-missing', { url, file }));
+    }
+    if (ogType.length !== 1 || !['image/png', 'image/jpeg'].includes(ogType[0])) {
+      errors.push(createIssue('og-type-invalid', { url, file, detail: `og:image:type=${ogType[0] || 'missing'}` }));
+    }
+    if (ogLocale.length !== 1 || !ogLocale[0]) {
+      errors.push(createIssue('og-locale-missing', { url, file }));
+    }
+    if (twitterImage.length === 1 && ogImage.length === 1 && twitterImage[0] !== ogImage[0]) {
+      errors.push(createIssue('twitter-image-mismatch', { url, file, detail: `twitter:image=${twitterImage[0]} vs og:image=${ogImage[0]}` }));
+    }
+
+    // Verify local image file dimensions
+    if (ogImage.length === 1 && ogImage[0].startsWith(ORIGIN + '/')) {
+      const localImagePath = path.join(rootDir, decodeURIComponent(new URL(ogImage[0]).pathname.replace(/^\//, '')));
+      if (!fs.existsSync(localImagePath)) {
+        errors.push(createIssue('og-image-file-missing', { url, file, detail: ogImage[0] }));
+      } else {
+        try {
+          const buf = fs.readFileSync(localImagePath);
+          const dim = getImageDimensions(buf);
+          if (dim && (dim.width !== 1200 || dim.height !== 630)) {
+            errors.push(createIssue('og-image-dimension-mismatch', {
+              url,
+              file,
+              detail: `${dim.width}x${dim.height} (expected 1200x630)`
+            }));
+          }
+        } catch (e) {
+          warnings.push(createIssue('og-image-read-error', { url, file, detail: e.message }));
+        }
+      }
+    }
   }
 
   const alternates = linkTags
@@ -337,7 +421,7 @@ function auditSeoHeads(rootDir = path.resolve(__dirname, '..')) {
       errors.push(createIssue('sitemap-local-file-missing', { url, file }));
       continue;
     }
-    const page = inspectPage(url, file, fs.readFileSync(absolutePath, 'utf8'));
+    const page = inspectPage(url, file, fs.readFileSync(absolutePath, 'utf8'), rootDir);
     pages.push(page);
     errors.push(...page.errors);
     warnings.push(...page.warnings);

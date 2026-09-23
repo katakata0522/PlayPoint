@@ -18,6 +18,7 @@
 - 変更に関係する入力境界・例外・権限を確認する。テストは挙動・出力を優先し、同じ保証が既存の検査にある場合は重複した静的ガードを追加しない。
 - 影響する検証から始め、合格済みの同じ差分に対する検査は繰り返さない。失敗は原因を修正して該当項目を再検証する。
 - UIは影響する画面幅・操作を実ブラウザで確認する。公開後は変更URLと必要な挙動・アセットを確認する。
+- OGP画像は1200×630（幅1200px以上、比率1.91:1、Discover最適化）で制作・配置する。記事ごとの重複を禁止し、個別記事は専用画像を割り当てる。articles/ogp/配下はJPEG実体契約（.htaccess ForceType image/jpeg）を守り、og:image:width="1200", og:image:height="630", og:image:alt, og:image:type, og:locale, twitter:imageを完備する（詳細は docs/OGP_SPECIFICATION_POLICY.md）。
 - テストの所有・設計を変更する場合は docs/TEST_TRIAGE.md。移行経緯が必要な場合だけ docs/TEST_BEHAVIOR_MIGRATION_2026-08-19.md。履歴を現在の要件と扱わない。
 
 ## Gitと公開
