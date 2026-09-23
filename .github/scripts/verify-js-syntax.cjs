@@ -49,7 +49,7 @@ for (const file of jsFiles.sort()) {
 
   if (result.status !== 0) {
     failed = true;
-    console.error(`Syntax check failed: ${path.relative(root, file)}`);
+    console.error(`Syntax check failed: ${path.relative(root, file).replace(/\\/g, '/')}`);
     if (result.stderr) console.error(result.stderr.trim());
   }
 }

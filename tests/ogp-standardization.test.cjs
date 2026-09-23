@@ -117,3 +117,25 @@ test('共通ページは1200x630のogp.pngと統一メタタグを持つ', () =>
   assert.equal(rootDim.width, 1200, 'root ogp.png の幅が1200pxであること');
   assert.equal(rootDim.height, 630, 'root ogp.png の高さが630pxであること');
 });
+
+test('多言語トップページは1200x630のogp.pngと各言語メタタグを持つ', () => {
+  const intlPages = [
+    { file: 'en/index.html', locale: 'en_US' },
+    { file: 'ko/index.html', locale: 'ko_KR' },
+    { file: 'tw/index.html', locale: 'zh_TW' },
+    { file: 'hk/index.html', locale: 'zh_HK' },
+    { file: 'in/index.html', locale: 'en_IN' }
+  ];
+
+  for (const { file, locale } of intlPages) {
+    const html = fs.readFileSync(path.join(root, file), 'utf8');
+    assert.match(html, /<meta property=["']og:image["'] content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']\s*\/?>/, `${file} に og:image があること`);
+    assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
+    assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
+    assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/png["']\s*\/?>/, `${file} に og:image:type="image/png" があること`);
+    assert.match(html, new RegExp(`<meta property=["']og:locale["'] content=["']${locale}["']\\s*\\/?>`), `${file} に og:locale="${locale}" があること`);
+    assert.match(html, /<meta property=["']og:image:alt["'] content=["'][^"']+["']\s*\/?>/, `${file} に 空でない og:image:alt があること`);
+    assert.match(html, /<meta name=["']twitter:card["'] content=["']summary_large_image["']\s*\/?>/, `${file} に twitter:card があること`);
+    assert.match(html, /<meta name=["']twitter:image["'] content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']\s*\/?>/, `${file} に twitter:image があること`);
+  }
+});
