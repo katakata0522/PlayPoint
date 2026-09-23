@@ -86,7 +86,7 @@ function extractHubLinks(articleHtml) {
   const linkPattern = /<li>\s*<a href="([^"]+)">([^<]*)<\/a>\s*<\/li>/g;
   for (const match of articleHtml.matchAll(linkPattern)) {
     const href = match[1];
-    if (!/^\/(?:en|ko|tw)\/(?:articles|maintenance)\//.test(href) || seen.has(href)) continue;
+    if (!/^\/(?:en|ko|tw)\/(?:articles\/|maintenance\/|status\/(?:silver|gold)\/$|amount\/10000\/$)/.test(href) || seen.has(href)) continue;
     const title = decodeHtmlText(match[2].trim());
     if (!title) continue;
     seen.add(href);

@@ -10,6 +10,7 @@ const MODIFIED_AT = '2026-09-13';
 const GAME_GUIDE_ARTICLES = Object.freeze([
   {
     id: 'fgo-pity-cost-2026',
+    modified: '2026-09-23',
     title: 'FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】',
     category: '使い方',
     gameTitle: 'FGO',
@@ -25,6 +26,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'genshin-welkin-value-2026',
+    modified: '2026-09-23',
     title: '原神「空月の祝福」はどれくらいお得？610円・原石3000相当とPlay Points',
     category: '使い方',
     gameTitle: '原神',
@@ -57,6 +59,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'starrail-supply-pass-value-2026',
+    modified: '2026-09-23',
     title: 'スタレ「列車補給標章」はどれくらいお得？610円・3000星玉相当とPlay Points',
     category: '使い方',
     gameTitle: 'スタレ',
@@ -72,6 +75,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'zzz-membership-value-2026',
+    modified: '2026-09-23',
     title: 'ゼンゼロ「インターノット会員」はお得？610円・3000相当とPlay Points',
     category: '使い方',
     gameTitle: 'ゼンゼロ',
@@ -87,6 +91,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'umamusume-umasuku-value-2026',
+    modified: '2026-09-23',
     title: 'ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】',
     category: '使い方',
     gameTitle: 'ウマ娘',
@@ -132,6 +137,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pad-pass-value-2026',
+    modified: '2026-09-23',
     title: 'パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】',
     category: '使い方',
     gameTitle: 'パズドラ',

@@ -138,7 +138,17 @@ function renderSeoPage(localeKey, pageKey, assetVersions, contentModifiedAt = ge
   const canonical = pageUrl(localeKey, page.slug);
   const calcQuery = content.query || page.query;
   const calcHref = `/${localeKey}/?mode=${page.mode}&${calcQuery}`;
+  const discoveryLinks = (ARTICLE_HUB_CONTENT[localeKey].extraArticles || [])
+    .filter(([href]) => /\/(?:status\/(?:gold|silver)|amount\/10000)\//.test(href));
+  const isDiscoveryPage = ['gold', 'silver', 'amount10000'].includes(pageKey);
+  const country = { en: 'US', ko: 'KR', tw: 'TW' }[localeKey];
+  const sourceLabel = { en: 'Google: local levels, earning and rounding rules', ko: 'Google 공식: 한국 등급과 포인트 계산 규칙', tw: 'Google 官方：台灣等級與點數計算規則' }[localeKey];
   const related = [
+    ...(isDiscoveryPage ? discoveryLinks.filter(([href]) => href !== '/' + localeKey + '/' + page.slug + '/') : []),
+    ...(isDiscoveryPage ? [
+      ['https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3D' + country + '&hl=' + locale.lang, sourceLabel],
+      ['https://support.google.com/googleplay/answer/15776742?co=GENIE.CountryCode%3D' + country + '&hl=' + locale.lang, sourceLabel]
+    ] : []),
     [page.jaPath, locale.referenceLabel],
     ...locale.articles,
     [`/${localeKey}/author/katakata.html`, locale.policyLabel]
@@ -482,8 +492,8 @@ function renderArticleHub(localeKey, assetVersions) {
     let bucket = 'more';
     if (priorityHrefs.has(href)) bucket = 'start';
     else if (/not-showing|not-applied|quests|refund|coupon|play-credit|device-change/.test(href)) bucket = 'trouble';
-    else if (/level|silver|platinum|diamond|weekly|reward/.test(href)) bucket = 'levels';
-    else if (/earn|500-1000|apps-books|subscription|gift-card|discount|promo|promotion|rounding|cash-conversion|use-coupons/.test(href)) bucket = 'earn';
+    else if (/level|silver|gold|platinum|diamond|weekly|reward/.test(href)) bucket = 'levels';
+    else if (/earn|amount|500-1000|apps-books|subscription|gift-card|discount|promo|promotion|rounding|cash-conversion|use-coupons/.test(href)) bucket = 'earn';
     else if (/join|balance|history|account|family|country/.test(href)) bucket = 'account';
     buckets[bucket].push(link);
   }

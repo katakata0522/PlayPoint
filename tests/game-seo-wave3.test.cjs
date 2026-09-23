@@ -133,7 +133,7 @@ test('Wave 3 guides are sitemap-visible and use verified editorial dates', () =>
   ];
   const sitemap = read('sitemap.xml');
   for (const file of paths) {
-    assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
+    assert.equal(getGeneratedGamePageContentDate(file), file === 'games/pad/pad-pass-value/index.html' ? '2026-09-23' : VERIFIED_AT);
     const relativeUrl = `/${file.replace(/index\.html$/, '')}`;
     assert.ok(sitemap.includes(relativeUrl), `${relativeUrl} should be present in sitemap`);
   }

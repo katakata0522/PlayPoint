@@ -1,6 +1,7 @@
 [
   {
     "id": "fgo-pity-cost-2026",
+    "modified": "2026-09-23",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
     "category": "使い方",
     "gameTitle": "FGO",
@@ -29,7 +30,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/fgo.webp",
     "thumbnailKind": "app-icon",
@@ -38,6 +38,7 @@
   },
   {
     "id": "genshin-welkin-value-2026",
+    "modified": "2026-09-23",
     "title": "原神「空月の祝福」はどれくらいお得？610円・原石3000相当とPlay Points",
     "category": "使い方",
     "gameTitle": "原神",
@@ -65,7 +66,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/genshin.webp",
     "thumbnailKind": "app-icon",
@@ -114,6 +114,7 @@
   },
   {
     "id": "starrail-supply-pass-value-2026",
+    "modified": "2026-09-23",
     "title": "スタレ「列車補給標章」はどれくらいお得？610円・3000星玉相当とPlay Points",
     "category": "使い方",
     "gameTitle": "スタレ",
@@ -142,7 +143,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/starrail.webp",
     "thumbnailKind": "app-icon",
@@ -151,6 +151,7 @@
   },
   {
     "id": "zzz-membership-value-2026",
+    "modified": "2026-09-23",
     "title": "ゼンゼロ「インターノット会員」はお得？610円・3000相当とPlay Points",
     "category": "使い方",
     "gameTitle": "ゼンゼロ",
@@ -179,7 +180,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/zzz.webp",
     "thumbnailKind": "app-icon",
@@ -188,6 +188,7 @@
   },
   {
     "id": "umamusume-umasuku-value-2026",
+    "modified": "2026-09-23",
     "title": "ウマ娘「ウマスク」はどれくらいお得？月980円・ジュエル・Play Points比較【2026年】",
     "category": "使い方",
     "gameTitle": "ウマ娘",
@@ -216,7 +217,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/umamusume.webp",
     "thumbnailKind": "app-icon",
@@ -299,6 +299,7 @@
   },
   {
     "id": "pad-pass-value-2026",
+    "modified": "2026-09-23",
     "title": "パズドラパスは月額980円で何が得？無料トライアル・特典・Play Points【2026年】",
     "category": "使い方",
     "gameTitle": "パズドラ",
@@ -327,7 +328,6 @@
       ]
     ],
     "date": "2026-09-13",
-    "modified": "2026-09-13",
     "ogp": "../ogp.png",
     "thumbnail": "../images/game-icons/pad.webp",
     "thumbnailKind": "app-icon",
@@ -940,7 +940,7 @@
   },
   {
     "id": "tgs-google-play-vip",
-    "title": "TGS2026 Google Playブースガイド｜入場条件・限定グッズ・ダイヤモンド特典",
+    "title": "【開催終了】TGS2026 Google Playブースガイド｜入場条件・限定グッズ・ダイヤモンド特典",
     "date": "2026-08-17",
     "category": "キャンペーン",
     "tags": [
@@ -950,10 +950,11 @@
       "プラチナ",
       "ダイヤモンド"
     ],
-    "description": "東京ゲームショウ2026のGoogle Playブースを現地向けに整理。ホール7、一般公開日の入場条件、最大8人対戦、先着ノベルティ、ダイヤモンドラウンジ、非VIPでも利用できるPC・Androidコーナーと回り方を解説します。",
+    "description": "2026年9月21日までのTGS2026 Google Playブースについて、入場条件・会場特典・ラウンジの当時の案内を残した記録です。",
     "file": "../articles/2026-08-17-tgs-google-play-vip.html",
     "thumbnail": "../articles/ogp/campaign.png",
-    "modified": "2026-09-19"
+    "modified": "2026-09-22",
+    "listTitle": "【開催終了】TGS2026 Google Playブースの記録"
   },
   {
     "id": "diamond-valley-festival-guide",

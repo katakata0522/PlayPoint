@@ -55,6 +55,20 @@ test('hub title extraction decodes entities once and rejects embedded markup', (
   assert.match(rendered, /&amp;lt;script&gt;/);
 });
 
+test('regional planning pages are reachable from the guide library and level guide', () => {
+  for (const locale of INTERNATIONAL_LOCALES) {
+    const hub = getArticleContent(read(`${locale}/articles/index.html`));
+    const guide = read(`${locale}/articles/google-play-points-levels.html`);
+    for (const slug of ['status/silver', 'status/gold', 'amount/10000']) {
+      const href = `/${locale}/${slug}/`;
+      assert.ok(hub.includes(`href="${href}"`), `${href}: library entrance missing`);
+      assert.ok(guide.includes(`href="${href}"`), `${href}: related-guide entrance missing`);
+      assert.ok(fs.existsSync(path.join(root, locale, slug, 'index.html')), `${href}: target missing`);
+      assert.equal(getIntlGuideCategory(href), slug.startsWith('status/') ? 'levels' : 'earn');
+    }
+  }
+});
+
 test('international start guides are curated per locale instead of translated from one global list', () => {
   const byLocale = Object.fromEntries(INTERNATIONAL_LOCALES.map(locale => [locale, getStartHereHrefs(locale)]));
 

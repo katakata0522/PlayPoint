@@ -12,8 +12,9 @@ const {
 } = require('./game-seo-data.cjs');
 
 function pointTableHtml(amount) {
-  const rows = GOOGLE_PLAY_JP_LEVELS.map(level => `<tr><td>${level.label}</td><td>${level.rate}pt / 100円</td><td>約 ${roundedPointsForYen(amount, level.rate).toLocaleString('ja-JP')}pt</td></tr>`).join('\n');
-  return `<div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>Play Pointsステータス</th><th>通常獲得率</th><th>${Number(amount).toLocaleString('ja-JP')}円購入時</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const eligibleAmount = amount / 1.1;
+  const rows = GOOGLE_PLAY_JP_LEVELS.map(level => `<tr><td>${level.label}</td><td>${level.rate}pt / 100円</td><td>約 ${roundedPointsForYen(eligibleAmount, level.rate).toLocaleString('ja-JP')}pt</td></tr>`).join('\n');
+  return `<div class="pack-table-wrap"><table class="pack-table"><thead><tr><th>Play Pointsステータス</th><th>通常獲得率</th><th>${Number(amount).toLocaleString('ja-JP')}円購入時</th></tr></thead><tbody>${rows}</tbody></table></div><p>税込価格に消費税10%が含まれると仮定し、税抜換算額から計算した概算です。複数の商品を買う場合は商品ごとに丸められるため、合計額からの試算とは差が出ます。実際の税額・対象額と獲得予定ポイントはGoogle Playの購入画面で確認してください。</p>`;
 }
 
 const guideShell = createGuideShell({
