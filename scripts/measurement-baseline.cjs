@@ -196,6 +196,15 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       'revenue_per_successful_calculation',
       'publisher_impressions_per_session'
     ],
+    pageUrlBreakdown: {
+      owner: 'diagnostic_only',
+      scheduled: false,
+      sourceOfTruth: false,
+      requiredProductFilter: 'PRODUCT_CODE==AFC',
+      noRowsMeaning: 'unavailable_not_zero',
+      preserveHistoricalLogs: true,
+      preserveHistoricalArchives: true
+    },
     anomalies: [
       {
         date: '2026-08-27',
