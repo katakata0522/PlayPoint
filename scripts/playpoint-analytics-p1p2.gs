@@ -42,7 +42,7 @@ var PLAYPOINT_P12_CONFIG = Object.freeze({
     'https://playpoint-sim.com/',
     'https://playpoint-sim.com/latest/',
     'https://playpoint-sim.com/blog/',
-    'https://playpoint-sim.com/articles/',
+    'https://playpoint-sim.com/games/',
     'https://playpoint-sim.com/about-playpoints.html',
     'https://playpoint-sim.com/info.html',
     'https://playpoint-sim.com/status/diamond/',
