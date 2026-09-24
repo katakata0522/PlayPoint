@@ -359,6 +359,15 @@ test('P1/P2 collector is valid JavaScript and exposes one capture plus one idemp
   assert.doesNotMatch(source, /AdSense[^\n]*PAGE_URL[^\n]*reports:generate/);
 });
 
+test('P1 Organic landing uses query-free landingPage so activeUsers are not re-summed across query variants', () => {
+  const { source } = loadP12Runtime();
+  const organicStart = source.indexOf('function playPointP12FetchOrganicLandings_');
+  const organicEnd = source.indexOf('function playPointP12FetchArticleClicks_', organicStart);
+  const organicSource = source.slice(organicStart, organicEnd);
+  assert.match(organicSource, /name: 'landingPage'/);
+  assert.doesNotMatch(organicSource, /landingPagePlusQueryString/);
+});
+
 test('P1 page-value aggregation keeps unavailable GSC and Organic metrics blank instead of false zeroes', () => {
   const { context } = loadP12Runtime();
   const rows = context.playPointP12BuildPageValueRows_({
