@@ -359,6 +359,41 @@ test('P1/P2 collector is valid JavaScript and exposes one capture plus one idemp
   assert.doesNotMatch(source, /AdSense[^\n]*PAGE_URL[^\n]*reports:generate/);
 });
 
+test('P1 page-value aggregation keeps unavailable GSC and Organic metrics blank instead of false zeroes', () => {
+  const { context } = loadP12Runtime();
+  const rows = context.playPointP12BuildPageValueRows_({
+    gscRows: [],
+    organicRows: [],
+    articleClickRows: [],
+    attributedRows: [],
+    revenueRows: [{
+      page: '/article',
+      totalAdRevenue: 3,
+      publisherAdImpressions: 10,
+      publisherAdClicks: 1,
+      screenPageViews: 20
+    }],
+    availability: {
+      gsc: false,
+      organic: false,
+      articleClicks: false,
+      attributed: false,
+      revenue: true
+    }
+  });
+
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].searchClicks, null);
+  assert.equal(rows[0].searchImpressions, null);
+  assert.equal(rows[0].searchCtr, null);
+  assert.equal(rows[0].organicSessions, null);
+  assert.equal(rows[0].organicUsers, null);
+  assert.equal(rows[0].pageAdRevenue, 3);
+  assert.equal(rows[0].revenuePerOrganicUser, null);
+  assert.match(rows[0].state, /GSC/);
+  assert.match(rows[0].state, /Organic/);
+});
+
 test('P1 page-value aggregation keeps unavailable funnel/revenue blank instead of coercing them to zero', () => {
   const { context } = loadP12Runtime();
   const rows = context.playPointP12BuildPageValueRows_({
