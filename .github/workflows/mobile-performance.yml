@@ -130,6 +130,26 @@ jobs:
         id: ci_browser
         run: bash .github/scripts/setup-browser-runtime.sh --performance
 
+      - name: One-off live PageSpeed-style audit
+        id: live_pagespeed_style_audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p performance-artifacts
+          lighthouse_cli=".github/ci-runtime/lighthouse/node_modules/lighthouse/cli/index.js"
+          node "$lighthouse_cli" https://playpoint-sim.com/ \
+            --only-categories=performance,accessibility,best-practices,seo \
+            --form-factor=mobile \
+            --output=json \
+            --output-path=performance-artifacts/live-pagespeed-mobile.json \
+            --chrome-flags="--headless --no-sandbox --disable-gpu"
+          node "$lighthouse_cli" https://playpoint-sim.com/ \
+            --only-categories=performance,accessibility,best-practices,seo \
+            --preset=desktop \
+            --output=json \
+            --output-path=performance-artifacts/live-pagespeed-desktop.json \
+            --chrome-flags="--headless --no-sandbox --disable-gpu"
+
       - name: Audit calculator, hubs and representative articles
         id: ci_audit
         run: node .github/scripts/lighthouse-suite.cjs
