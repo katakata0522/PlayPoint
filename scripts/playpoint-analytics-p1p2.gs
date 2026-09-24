@@ -840,7 +840,7 @@ function playPointP12FetchGscRows_(siteUrl, startDate, endDate, dimensions, aggr
 function playPointP12FetchOrganicLandings_(propertyId, period) {
   var payload = playPointP12Ga4Report_(propertyId, {
     dateRanges: [{ startDate: period.start, endDate: period.end }],
-    dimensions: [{ name: 'landingPagePlusQueryString' }],
+    dimensions: [{ name: 'landingPage' }],
     metrics: [{ name: 'sessions' }, { name: 'activeUsers' }],
     dimensionFilter: {
       filter: {
