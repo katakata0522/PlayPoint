@@ -518,11 +518,11 @@ function playPointP12BuildPageValueRows_(input) {
     if (!map[key]) {
       map[key] = {
         page: key,
-        searchClicks: 0,
-        searchImpressions: 0,
-        searchCtr: 0,
-        organicSessions: 0,
-        organicUsers: 0,
+        searchClicks: null,
+        searchImpressions: null,
+        searchCtr: null,
+        organicSessions: null,
+        organicUsers: null,
         pageViews: null,
         articleToCalculatorUsers: null,
         calculatorStartUsers: null,
@@ -535,19 +535,27 @@ function playPointP12BuildPageValueRows_(input) {
     return map[key];
   }
 
-  (input.gscRows || []).forEach(function(row) {
-    var item = ensure(row.page);
-    if (!item) return;
-    item.searchClicks += Number(row.clicks || 0);
-    item.searchImpressions += Number(row.impressions || 0);
-  });
+  if (input.availability && input.availability.gsc) {
+    (input.gscRows || []).forEach(function(row) {
+      var item = ensure(row.page);
+      if (!item) return;
+      if (item.searchClicks === null) item.searchClicks = 0;
+      if (item.searchImpressions === null) item.searchImpressions = 0;
+      item.searchClicks += Number(row.clicks || 0);
+      item.searchImpressions += Number(row.impressions || 0);
+    });
+  }
 
-  (input.organicRows || []).forEach(function(row) {
-    var item = ensure(row.page);
-    if (!item) return;
-    item.organicSessions += Number(row.sessions || 0);
-    item.organicUsers += Number(row.activeUsers || 0);
-  });
+  if (input.availability && input.availability.organic) {
+    (input.organicRows || []).forEach(function(row) {
+      var item = ensure(row.page);
+      if (!item) return;
+      if (item.organicSessions === null) item.organicSessions = 0;
+      if (item.organicUsers === null) item.organicUsers = 0;
+      item.organicSessions += Number(row.sessions || 0);
+      item.organicUsers += Number(row.activeUsers || 0);
+    });
+  }
 
   if (input.availability && input.availability.articleClicks) {
     (input.articleClickRows || []).forEach(function(row) {
@@ -585,7 +593,9 @@ function playPointP12BuildPageValueRows_(input) {
 
   Object.keys(map).forEach(function(key) {
     var item = map[key];
-    item.searchCtr = item.searchImpressions > 0 ? item.searchClicks / item.searchImpressions : 0;
+    item.searchCtr = item.searchImpressions === null
+      ? null
+      : (item.searchImpressions > 0 ? item.searchClicks / item.searchImpressions : 0);
 
     if (item.calculatorStartUsers !== null && item.firstSuccessUsers !== null) {
       item.userCompletionRate = item.calculatorStartUsers > 0
