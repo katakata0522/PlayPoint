@@ -94,6 +94,32 @@ API取得成功だけでは `OK` にしない。**取得成功と結合成功を
 
 AdSense全体収益は照合用途として残す。
 
+### 旧 AdSense `PAGE_URL` 経路の廃止方針
+
+旧 v11.5 コアには、AdSense Management APIへ `PAGE_URL` / `DATE + PAGE_URL` を定期送信する処理が残っていた。
+2026-09-24の実行ログでは、この経路だけが `The combination of requested dimensions is unavailable` を継続して返し、
+GA4/AdSenseの日次コアやP1のGA4 publisher metricsは正常だった。
+
+運用上のownerを次のように固定する。
+
+- **サイト全体のAdSense収益:** AdSense日次/Intradayを正本にする。
+- **ページ別広告収益:** GA4 publisher metricsを正本にする。
+- **AdSense `PAGE_URL`:** 自動日次・背景バックフィル・週次分析から外す。正本・フォールバックには使わない。
+- 過去の `PAGE_URL` WARN、過去CSV、旧シートは監査証拠として書き換えたり0埋めしたりしない。
+- 旧 `💰ページ別収益` / `💰ページ収益日次` が存在しなくても、新しい同期処理から再生成しない。
+
+AdSense `PAGE_URL` を将来**診断目的で手動利用する場合だけ**、AdSense for Contentへ限定する
+`PRODUCT_CODE==AFC` フィルタを必須にする。ページURL breakdownには最低インプレッション閾値があるため、
+0行は「収益0」と断定せず、診断結果なしとして扱う。診断結果をページ収益SSOTへ昇格させない。
+
+bound Apps Scriptの旧コアを移行した後は、次を確認する。
+
+1. `runMasterpieceSync` の通常日次処理で新しい `AdSenseページ収益日次取得失敗` WARNが増えない。
+2. `runWeeklyDetailedAnalysis` で新しい `AdSenseページ別収益取得失敗` WARNが増えない。
+3. `AdSense_GA4日次データ` と `AdSense Intraday` は引き続き更新される。
+4. `📊ページ価値ファネル` の「ページ収益」はGA4 publisher metricsで更新され、未取得時は空欄になる。
+5. `🩺データ鮮度・システム状態` でP1ページ価値ファネルがOK/PARTIAL/ERRORを実データどおりに示す。
+
 GA4 publisher metricsが取得できない場合は収益を **0にせず空欄** とする。
 
 ## P1: 検索クロス分析
