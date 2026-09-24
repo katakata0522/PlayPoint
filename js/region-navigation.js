@@ -178,7 +178,7 @@ function applyResponsiveRegionLabel(button, region, label) {
     const copy = getSelectorCopy();
     const accessibleName = getAccessibleRegionName(region);
     button.replaceChildren(desktop, mobile);
-    button.setAttribute('aria-label', `${accessibleName} — ${copy.regionSuffix}`);
+    button.setAttribute('aria-label', `${label.desktop} ${accessibleName} — ${copy.regionSuffix}`);
     button.title = accessibleName;
 }
 
