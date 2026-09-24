@@ -152,6 +152,23 @@ test('P1/P2 analytics sheet sync contract uses user-based funnel, GA4 publisher 
   assert.equal(sync.logging.preserveLegacyLogs, true);
 });
 
+test('legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the scheduled page-revenue SSOT', () => {
+  const pageUrl = baseline.adsense.pageUrlBreakdown;
+  assert.equal(pageUrl.owner, 'diagnostic_only');
+  assert.equal(pageUrl.scheduled, false);
+  assert.equal(pageUrl.sourceOfTruth, false);
+  assert.equal(pageUrl.requiredProductFilter, 'PRODUCT_CODE==AFC');
+  assert.equal(pageUrl.noRowsMeaning, 'unavailable_not_zero');
+  assert.equal(pageUrl.preserveHistoricalLogs, true);
+  assert.equal(pageUrl.preserveHistoricalArchives, true);
+
+  const runbook = read('docs/PLAYPOINT_ANALYTICS_P1P2_RUNBOOK.md');
+  assert.match(runbook, /PAGE_URL.*自動日次・背景バックフィル・週次分析から外す/s);
+  assert.match(runbook, /PRODUCT_CODE==AFC/);
+  assert.match(runbook, /過去の.*WARN.*監査証拠/s);
+  assert.match(runbook, /GA4 publisher metrics.*正本/s);
+});
+
 test('AdSense anomaly remains reviewable evidence instead of being silently corrected or removed', () => {
   const anomaly = baseline.adsense.anomalies.find(item => item.date === '2026-08-27');
   assert.ok(anomaly);
