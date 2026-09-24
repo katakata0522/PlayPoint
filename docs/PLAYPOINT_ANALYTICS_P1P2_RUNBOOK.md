@@ -284,3 +284,23 @@ v11.5.1の共有dedupeは、その手動整理が終わるまでの安全網で�
 - AdSense Intraday / AdSense_GA4日次データは従来どおり更新される
 
 過去ログや過去Archiveは監査証拠として削除・0埋めしない。
+
+## v11.6: アカウント非依存の自動実行
+
+Apps Scriptのインストール型トリガーは、作成したGoogleアカウントの権限で実行される。
+また、別アカウントが作成したトリガーは現在のアカウントから見えないことがある。
+
+v11.6ではメールアドレス固定をSSOTにせず、Script Propertiesへ保存した **active triggerUid** を自動実行のSSOTにする。
+
+- 最後に正式インストールされたtriggerUidだけを本処理する
+- 別アカウント所有の古いトリガーが残っていても `SKIPPED_STALE_TRIGGER` として無視する
+- 同時発火はScript Lock + 時間窓dedupeで二重本処理を防ぐ
+- 手動実行にはtriggerUidがないため、アカウントに関係なく実行できる
+- 自動実行を別アカウントへ引き継ぐ場合は、そのアカウントからinstallerを1回実行すればactive setが切り替わる
+- ただし、そのアカウント自体にGA4 / AdSense / Search Console / Sheetの権限が無い場合、権限そのものをコードで代替することはできない。core installerは事前検査でその状態を検出し、壊れたトリガーを作らず停止する
+
+### GSC 28日比較のtrigger event
+
+`captureGscNonOverlapping28d()` は手動実行時に任意の日付文字列を受け取れる一方、時間主導トリガーからはevent objectが第1引数として渡される。
+
+v11.6対応では両者を型で分離し、event objectを日付として解釈しない。
