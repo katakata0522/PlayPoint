@@ -304,3 +304,19 @@ v11.6ではメールアドレス固定をSSOTにせず、Script Propertiesへ保
 `captureGscNonOverlapping28d()` は手動実行時に任意の日付文字列を受け取れる一方、時間主導トリガーからはevent objectが第1引数として渡される。
 
 v11.6対応では両者を型で分離し、event objectを日付として解釈しない。
+
+
+### v11.6.2 hardening
+
+- active trigger registryが壊れた／install済みなのに消えた場合は、旧トリガーへfail-openせずscheduled runをfail-closedで停止する。
+- core 5本のtriggerUidは一括でregistryへ保存し、途中保存で半端なactive setを作らない。
+- P1/P2 / GSC installerはregistry有効化に失敗した場合、新しく作ったtriggerを削除してロールバックする。
+- 週次Drive Archiveは旧PAGE_URL系ではなく、`📊ページ価値ファネル` / `🔎検索クロス分析` / `🧭URL検査` / GSC 28日比較を保存する。
+- P1/P2とGSC 28日比較にも週次鮮度のSTALE判定を持たせる。
+
+
+### ページ収益比率の解釈
+
+`totalAdRevenue` はページ単位の全流入広告収益であり、Organic Searchだけに帰属させた収益ではない。
+したがって `全流入ページ収益 / Organic LPユーザー（参考）` はページ価値の診断比率であり、
+「Organicユーザー1人が生んだ収益」という因果指標として扱わない。

@@ -92,17 +92,25 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
   });
 
   if (typeof playPointAutomationRegisterTrigger_ === 'function') {
-    var created = ScriptApp.newTrigger(handler)
-      .timeBased()
-      .onWeekDay(ScriptApp.WeekDay.FRIDAY)
-      .atHour(9)
-      .create();
+    var created = null;
+    try {
+      created = ScriptApp.newTrigger(handler)
+        .timeBased()
+        .onWeekDay(ScriptApp.WeekDay.FRIDAY)
+        .atHour(9)
+        .create();
 
-    playPointAutomationRegisterTrigger_(handler, created);
-    existing.forEach(function(trigger) {
-      try { ScriptApp.deleteTrigger(trigger); } catch (ignored) {}
-    });
-    return 'CREATED_ACTIVE_WEEKLY_FRIDAY_TRIGGER';
+      playPointAutomationRegisterTrigger_(handler, created);
+      existing.forEach(function(trigger) {
+        try { ScriptApp.deleteTrigger(trigger); } catch (ignored) {}
+      });
+      return 'CREATED_ACTIVE_WEEKLY_FRIDAY_TRIGGER';
+    } catch (error) {
+      if (created) {
+        try { ScriptApp.deleteTrigger(created); } catch (ignoredRollback) {}
+      }
+      throw error;
+    }
   }
 
   if (existing.length) return 'EXISTING_TRIGGER';
@@ -226,7 +234,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
       'Search/GA4/収益を同じ期間で再構築。AdSense PAGE_URLの失敗をページ別収益のSSOTにしない。',
       '未取得値', '空欄（0にしない）',
       '計算開始/成功', 'entry_source_pathで元ページへ帰属',
-      '収益', 'totalAdRevenue / publisherAdImpressions / publisherAdClicks',
+      '収益', 'totalAdRevenue（全流入ページ収益） / publisherAdImpressions / publisherAdClicks',
       'SEO変更', '母数と検索意図を別途確認',
       '', '', '', ''
     ]
@@ -245,7 +253,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
     '初回計算成功ユーザー',
     'Start→Success',
     'ページ広告収益',
-    '収益 / Organic LPユーザー',
+    '全流入ページ収益 / Organic LPユーザー（参考）',
     '状態'
   ];
   sheet.getRange(5, 1, 1, headers.length).setValues([headers]);
@@ -510,11 +518,11 @@ function playPointP12BuildPageValueRows_(input) {
     if (!map[key]) {
       map[key] = {
         page: key,
-        searchClicks: 0,
-        searchImpressions: 0,
-        searchCtr: 0,
-        organicSessions: 0,
-        organicUsers: 0,
+        searchClicks: null,
+        searchImpressions: null,
+        searchCtr: null,
+        organicSessions: null,
+        organicUsers: null,
         pageViews: null,
         articleToCalculatorUsers: null,
         calculatorStartUsers: null,
@@ -527,19 +535,27 @@ function playPointP12BuildPageValueRows_(input) {
     return map[key];
   }
 
-  (input.gscRows || []).forEach(function(row) {
-    var item = ensure(row.page);
-    if (!item) return;
-    item.searchClicks += Number(row.clicks || 0);
-    item.searchImpressions += Number(row.impressions || 0);
-  });
+  if (input.availability && input.availability.gsc) {
+    (input.gscRows || []).forEach(function(row) {
+      var item = ensure(row.page);
+      if (!item) return;
+      if (item.searchClicks === null) item.searchClicks = 0;
+      if (item.searchImpressions === null) item.searchImpressions = 0;
+      item.searchClicks += Number(row.clicks || 0);
+      item.searchImpressions += Number(row.impressions || 0);
+    });
+  }
 
-  (input.organicRows || []).forEach(function(row) {
-    var item = ensure(row.page);
-    if (!item) return;
-    item.organicSessions += Number(row.sessions || 0);
-    item.organicUsers += Number(row.activeUsers || 0);
-  });
+  if (input.availability && input.availability.organic) {
+    (input.organicRows || []).forEach(function(row) {
+      var item = ensure(row.page);
+      if (!item) return;
+      if (item.organicSessions === null) item.organicSessions = 0;
+      if (item.organicUsers === null) item.organicUsers = 0;
+      item.organicSessions += Number(row.sessions || 0);
+      item.organicUsers += Number(row.activeUsers || 0);
+    });
+  }
 
   if (input.availability && input.availability.articleClicks) {
     (input.articleClickRows || []).forEach(function(row) {
@@ -577,7 +593,9 @@ function playPointP12BuildPageValueRows_(input) {
 
   Object.keys(map).forEach(function(key) {
     var item = map[key];
-    item.searchCtr = item.searchImpressions > 0 ? item.searchClicks / item.searchImpressions : 0;
+    item.searchCtr = item.searchImpressions === null
+      ? null
+      : (item.searchImpressions > 0 ? item.searchClicks / item.searchImpressions : 0);
 
     if (item.calculatorStartUsers !== null && item.firstSuccessUsers !== null) {
       item.userCompletionRate = item.calculatorStartUsers > 0
@@ -822,7 +840,7 @@ function playPointP12FetchGscRows_(siteUrl, startDate, endDate, dimensions, aggr
 function playPointP12FetchOrganicLandings_(propertyId, period) {
   var payload = playPointP12Ga4Report_(propertyId, {
     dateRanges: [{ startDate: period.start, endDate: period.end }],
-    dimensions: [{ name: 'landingPagePlusQueryString' }],
+    dimensions: [{ name: 'landingPage' }],
     metrics: [{ name: 'sessions' }, { name: 'activeUsers' }],
     dimensionFilter: {
       filter: {
