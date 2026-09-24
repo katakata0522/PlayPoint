@@ -92,17 +92,25 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
   });
 
   if (typeof playPointAutomationRegisterTrigger_ === 'function') {
-    var created = ScriptApp.newTrigger(handler)
-      .timeBased()
-      .onWeekDay(ScriptApp.WeekDay.FRIDAY)
-      .atHour(9)
-      .create();
+    var created = null;
+    try {
+      created = ScriptApp.newTrigger(handler)
+        .timeBased()
+        .onWeekDay(ScriptApp.WeekDay.FRIDAY)
+        .atHour(9)
+        .create();
 
-    playPointAutomationRegisterTrigger_(handler, created);
-    existing.forEach(function(trigger) {
-      try { ScriptApp.deleteTrigger(trigger); } catch (ignored) {}
-    });
-    return 'CREATED_ACTIVE_WEEKLY_FRIDAY_TRIGGER';
+      playPointAutomationRegisterTrigger_(handler, created);
+      existing.forEach(function(trigger) {
+        try { ScriptApp.deleteTrigger(trigger); } catch (ignored) {}
+      });
+      return 'CREATED_ACTIVE_WEEKLY_FRIDAY_TRIGGER';
+    } catch (error) {
+      if (created) {
+        try { ScriptApp.deleteTrigger(created); } catch (ignoredRollback) {}
+      }
+      throw error;
+    }
   }
 
   if (existing.length) return 'EXISTING_TRIGGER';
