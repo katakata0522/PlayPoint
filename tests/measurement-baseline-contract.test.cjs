@@ -553,6 +553,8 @@ test('P2 URL Inspection stays bounded to critical and top-search URLs and record
   const { source, context } = loadP12Runtime();
   assert.equal(context.PLAYPOINT_P12_CONFIG.urlInspectionMaxUrls, 30);
   assert.ok(context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/'));
+  assert.ok(context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/games/'));
+  assert.ok(!context.PLAYPOINT_P12_CONFIG.fixedInspectionUrls.includes('https://playpoint-sim.com/articles/'));
   assert.match(source, /urlInspection\/index:inspect/);
   assert.match(source, /FIXED_CRITICAL/);
   assert.match(source, /TOP_GSC_IMPRESSIONS/);
