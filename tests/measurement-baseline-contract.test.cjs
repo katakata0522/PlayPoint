@@ -332,6 +332,13 @@ function loadP12Runtime() {
   return { source, context };
 }
 
+test('P1/P2 and GSC installers roll back a newly-created trigger if registry activation fails', () => {
+  const p12 = loadP12Runtime().source;
+  const gsc = loadGscCaptureRuntime().source;
+  assert.match(p12, /if \(created\) \{\s*try \{ ScriptApp\.deleteTrigger\(created\)/);
+  assert.match(gsc, /if \(created\) \{\s*try \{ ScriptApp\.deleteTrigger\(created\)/);
+});
+
 test('P1/P2 and GSC installers can register an active trigger UID when the v11.6 core is present', () => {
   const p12 = loadP12Runtime().source;
   const gsc = loadGscCaptureRuntime().source;
