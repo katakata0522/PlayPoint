@@ -304,6 +304,13 @@ test('GSC P0 capture requires Raw, Normalized and Property Total for both window
   assert.match(source, /response_aggregation_type/);
 });
 
+test('GSC scheduled capture separates trigger event objects from manual final-end-date strings', () => {
+  const { source } = loadGscCaptureRuntime();
+  assert.match(source, /typeof input === 'object'/);
+  assert.match(source, /typeof input === 'string'/);
+  assert.match(source, /playPointAutomationTriggerAllowed_\('captureGscNonOverlapping28d', event\)/);
+});
+
 test('GSC capture module exposes one idempotent weekly installer and dedicated history/comparison sheets', () => {
   const { source, context } = loadGscCaptureRuntime();
   assert.equal(typeof context.captureGscNonOverlapping28d, 'function');
@@ -324,6 +331,15 @@ function loadP12Runtime() {
   vm.runInContext(source, context, { filename: 'playpoint-analytics-p1p2.gs' });
   return { source, context };
 }
+
+test('P1/P2 and GSC installers can register an active trigger UID when the v11.6 core is present', () => {
+  const p12 = loadP12Runtime().source;
+  const gsc = loadGscCaptureRuntime().source;
+  assert.match(p12, /playPointAutomationRegisterTrigger_\(handler, created\)/);
+  assert.match(gsc, /playPointAutomationRegisterTrigger_\(handler, created\)/);
+  assert.match(p12, /SKIPPED_STALE_TRIGGER/);
+  assert.match(gsc, /SKIPPED_STALE_TRIGGER/);
+});
 
 test('P1/P2 collector is valid JavaScript and exposes one capture plus one idempotent weekly installer', () => {
   const { source, context } = loadP12Runtime();
