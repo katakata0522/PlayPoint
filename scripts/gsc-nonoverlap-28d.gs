@@ -54,7 +54,15 @@ var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
   ]
 });
 
-function captureGscNonOverlapping28d(finalEndDateText) {
+function captureGscNonOverlapping28d(input) {
+  var event = input && typeof input === 'object' ? input : null;
+  var finalEndDateText = typeof input === 'string' ? input : '';
+
+  if (typeof playPointAutomationTriggerAllowed_ === 'function' &&
+      !playPointAutomationTriggerAllowed_('captureGscNonOverlapping28d', event)) {
+    return { status: 'SKIPPED_STALE_TRIGGER' };
+  }
+
   var spreadsheet = playPointGscGetSpreadsheet_();
   var siteUrl = playPointGscGetSiteUrl_();
   var finalEnd = finalEndDateText || playPointGscFindLatestFinalDate_(siteUrl);
@@ -129,11 +137,25 @@ function captureGscNonOverlapping28d(finalEndDateText) {
 
 function installPlayPointGsc28dWeeklyTrigger() {
   var handler = 'captureGscNonOverlapping28d';
-  var existing = ScriptApp.getProjectTriggers().some(function(trigger) {
+  var existing = ScriptApp.getProjectTriggers().filter(function(trigger) {
     return trigger.getHandlerFunction() === handler;
   });
-  if (existing) return 'EXISTING_TRIGGER';
 
+  if (typeof playPointAutomationRegisterTrigger_ === 'function') {
+    var created = ScriptApp.newTrigger(handler)
+      .timeBased()
+      .onWeekDay(ScriptApp.WeekDay.FRIDAY)
+      .atHour(8)
+      .create();
+
+    playPointAutomationRegisterTrigger_(handler, created);
+    existing.forEach(function(trigger) {
+      try { ScriptApp.deleteTrigger(trigger); } catch (ignored) {}
+    });
+    return 'CREATED_ACTIVE_WEEKLY_FRIDAY_TRIGGER';
+  }
+
+  if (existing.length) return 'EXISTING_TRIGGER';
   ScriptApp.newTrigger(handler)
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.FRIDAY)
