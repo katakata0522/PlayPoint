@@ -197,7 +197,9 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       pageUrlScheduledCollection: false,
       pageHistoryBackfillRevenueOwner: 'ga4_publisher_metrics',
       preserveExternalHealthComponents: true,
-      formulaLikeLogMessagesEscapedAsText: true
+      formulaLikeLogMessagesEscapedAsText: true,
+      highFrequencyLifecycleLogsSuppressed: true,
+      intradayReturnStateDefined: true
     }
   },
   adsense: {
