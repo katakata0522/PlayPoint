@@ -113,7 +113,13 @@ test('region selector uses localized accessible names instead of English-only la
   assert.match(js, /Google Play Points 국가\/지역/);
   assert.match(js, /Google Play Points 國家\/地區/);
   assert.match(js, /getAccessibleRegionName\(region\)/);
-  assert.match(js, /button\.setAttribute\('aria-label', `\$\{accessibleName\} — \$\{copy\.regionSuffix\}`\)/);
+  assert.match(js, /button\.setAttribute\('aria-label', `\$\{label\.desktop\} \$\{accessibleName\} — \$\{copy\.regionSuffix\}`\)/);
+});
+
+test('calculator footer trademark keeps WCAG AA contrast on the default background', () => {
+  const css = fs.readFileSync(path.join(root, 'style.css'), 'utf8');
+
+  assert.match(css, /\.site-footer-trademark \{[\s\S]*?color: #5b677a;/);
 });
 
 test('region selector state styling uses the expanded-region data state', () => {
