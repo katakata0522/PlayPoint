@@ -1,6 +1,6 @@
 # PlayPoint Analytics P1/P2 導入・運用
 
-最終更新: 2026-09-19
+最終更新: 2026-09-24
 
 ## 対象
 
@@ -229,6 +229,26 @@ P0は金曜8時台、P1/P2は金曜9時台に実行する。
 
 その場合は空欄またはPARTIAL / ERRORとして残し、SEO変更・収益判断を強行しない。
 
+
+## 自動実行ownerと旧トリガー
+
+2026-09-24の実行ログでは、通常日次の旧PAGE_URL失敗が毎朝おおむね2回記録されていた。
+Apps Scriptのinstallable triggerは作成者アカウントで実行され、別アカウントが作成したtriggerを他のアカウントから列挙できない。
+そのため「現在のアカウントで重複triggerを削除した」だけでは、別アカウント由来の旧triggerが残る場合がある。
+
+P0 / P1-P2 collectorは、Script Property `PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL` が設定済みの場合、
+実行アカウントを識別できる時だけowner一致を要求する。別アカウント由来のtriggerは
+`SKIPPED_NON_OWNER_TRIGGER` として収集処理を行わない。
+
+旧コア側も同じowner guardを持たせる。実際のtrigger一覧は、過去にtriggerを作成した可能性がある各Googleアカウントで
+Apps Scriptの「トリガー」を開いて確認し、最終的には自動実行ownerの1セットだけを残す。
+
+### 旧コアv11.5系で同時に直すこと
+
+- `実行ログ` へ `=` / `+` / `-` / `@` から始まる文字列をそのまま書かない。監査テキストとしてescapeし、正常INFOが `#ERROR!` になるのを防ぐ。
+- `🩺データ鮮度・システム状態` を再構築するとき、旧コア自身が所有しないcomponent行を保持する。P0/P1/P2の健康行を消さない。
+- ページ履歴バックフィルはGA4ページ履歴だけを進める。退役済みAdSense `PAGE_URL` 失敗でバックフィル全体を止めない。
+- 過去の `#ERROR!` 表示やPAGE_URL WARNは監査証拠として保持し、新しい実行だけ正常化する。
 
 ## 健康状態の更新
 
