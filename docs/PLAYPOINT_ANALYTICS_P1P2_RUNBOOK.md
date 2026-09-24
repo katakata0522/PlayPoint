@@ -320,3 +320,11 @@ v11.6対応では両者を型で分離し、event objectを日付として解釈
 `totalAdRevenue` はページ単位の全流入広告収益であり、Organic Searchだけに帰属させた収益ではない。
 したがって `全流入ページ収益 / Organic LPユーザー（参考）` はページ価値の診断比率であり、
 「Organicユーザー1人が生んだ収益」という因果指標として扱わない。
+
+### P1/P2 期間・表示上限の契約
+
+- ページ価値ファネルの共通30日窓は、GA4のsettled候補日（既定3日lag）とSearch Consoleの最新FINAL日の早い方を終端にする。Search/GA4/収益の対象期間を同じ日に揃える。
+- Search Console FINAL日の判定自体が失敗した場合は、GA4/収益まで巻き添えで止めず、GSCだけUNAVAILABLEのPARTIALとして扱う。
+- 検索クロス分析はシート負荷のため最大5,000行を維持するが、総件数が上限を超えた場合は PARTIAL (TRUNCATED ...) と総件数/表示件数を明示する。
+- Success users / Start users（期間内比率）は同一期間内のactiveUsers比であり、厳密なユーザーコホート転換率ではない。
+- P1/P2とGSC週次triggerは Asia/Tokyo を明示し、Apps Scriptプロジェクトのタイムゾーン変更に引きずられない。
