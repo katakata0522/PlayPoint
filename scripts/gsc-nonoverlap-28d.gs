@@ -21,6 +21,7 @@ var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
   finalProbeDays: 14,
   searchType: 'web',
   apiTimezone: 'America/Los_Angeles',
+  triggerTimezone: 'Asia/Tokyo',
   sourceLabel: 'Search Console Search Analytics API',
   layers: Object.freeze({
     raw: 'raw',
@@ -148,6 +149,7 @@ function installPlayPointGsc28dWeeklyTrigger() {
         .timeBased()
         .onWeekDay(ScriptApp.WeekDay.FRIDAY)
         .atHour(8)
+        .inTimezone(PLAYPOINT_GSC_28D_CONFIG.triggerTimezone)
         .create();
 
       playPointAutomationRegisterTrigger_(handler, created);
@@ -168,6 +170,7 @@ function installPlayPointGsc28dWeeklyTrigger() {
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.FRIDAY)
     .atHour(8)
+    .inTimezone(PLAYPOINT_GSC_28D_CONFIG.triggerTimezone)
     .create();
 
   return 'CREATED_WEEKLY_FRIDAY_TRIGGER';
@@ -188,6 +191,9 @@ function playPointGscGetSiteUrl_() {
   var fromProperty = PropertiesService.getScriptProperties().getProperty('SEARCH_CONSOLE_SITE_URL');
   if (fromProperty) return fromProperty;
 
+  if (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.SEARCH_CONSOLE_SITE_URL) {
+    return CONFIG.SEARCH_CONSOLE_SITE_URL;
+  }
   if (typeof SEARCH_CONSOLE_SITE_URL !== 'undefined' && SEARCH_CONSOLE_SITE_URL) {
     return SEARCH_CONSOLE_SITE_URL;
   }
