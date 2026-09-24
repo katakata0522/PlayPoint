@@ -99,7 +99,7 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
 function playPointP12RunStage_(stage, fn) {
   var started = new Date();
   playPointP12Log_('INFO', stage, 'started');
-  playPointP12TryHealth_(function() {
+  playPointP12TryHealth_(stage, function() {
     playPointP12HealthStart_(stage, started);
   });
 
@@ -112,7 +112,7 @@ function playPointP12RunStage_(stage, fn) {
       stage,
       'success state=' + resultState + ' ' + playPointP12CompactJson_(result)
     );
-    playPointP12TryHealth_(function() {
+    playPointP12TryHealth_(stage, function() {
       playPointP12HealthSuccess_(stage, finished, resultState, result);
     });
     return {
@@ -126,7 +126,7 @@ function playPointP12RunStage_(stage, fn) {
     var finished = new Date();
     var message = playPointP12ErrorText_(error);
     playPointP12Log_('ERROR', stage, message);
-    playPointP12TryHealth_(function() {
+    playPointP12TryHealth_(stage, function() {
       playPointP12HealthError_(stage, finished, message);
     });
     return {
@@ -1252,11 +1252,17 @@ function playPointP12Log_(level, stage, message) {
   }
 }
 
-function playPointP12TryHealth_(fn) {
+function playPointP12TryHealth_(stage, fn) {
   try {
     fn();
-  } catch (ignored) {
-    // Health reporting is secondary and must never hide collection results.
+  } catch (error) {
+    // Health reporting is secondary and must never hide collection results,
+    // but monitoring failure itself must remain observable.
+    playPointP12Log_(
+      'WARN',
+      stage || 'HEALTH',
+      'health update failed: ' + playPointP12ErrorText_(error)
+    );
   }
 }
 
