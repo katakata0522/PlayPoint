@@ -176,6 +176,8 @@ test('analytics automation has one cross-account owner and legacy-core hardening
   assert.equal(baseline.automation.legacyCore.pageHistoryBackfillRevenueOwner, 'ga4_publisher_metrics');
   assert.equal(baseline.automation.legacyCore.preserveExternalHealthComponents, true);
   assert.equal(baseline.automation.legacyCore.formulaLikeLogMessagesEscapedAsText, true);
+  assert.equal(baseline.automation.legacyCore.highFrequencyLifecycleLogsSuppressed, true);
+  assert.equal(baseline.automation.legacyCore.intradayReturnStateDefined, true);
 
   const gsc = read('scripts/gsc-nonoverlap-28d.gs');
   const p12 = read('scripts/playpoint-analytics-p1p2.gs');
