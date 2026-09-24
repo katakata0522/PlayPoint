@@ -579,6 +579,13 @@ test('P2 URL Inspection stays bounded to critical and top-search URLs and record
   assert.match(source, /\[P1P2:' \+ stage \+ '\]/);
 });
 
+test('P1/P2 health reporting failures are logged instead of being silently swallowed', () => {
+  const { source } = loadP12Runtime();
+  assert.match(source, /health update failed:/);
+  assert.match(source, /playPointP12TryHealth_\(stage, fn\)/);
+  assert.doesNotMatch(source, /function playPointP12TryHealth_\(fn\)/);
+});
+
 test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERROR semantics', () => {
   const { source, context } = loadP12Runtime();
 
