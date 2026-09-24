@@ -234,7 +234,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
       'Search/GA4/収益を同じ期間で再構築。AdSense PAGE_URLの失敗をページ別収益のSSOTにしない。',
       '未取得値', '空欄（0にしない）',
       '計算開始/成功', 'entry_source_pathで元ページへ帰属',
-      '収益', 'totalAdRevenue / publisherAdImpressions / publisherAdClicks',
+      '収益', 'totalAdRevenue（全流入ページ収益） / publisherAdImpressions / publisherAdClicks',
       'SEO変更', '母数と検索意図を別途確認',
       '', '', '', ''
     ]
@@ -253,7 +253,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
     '初回計算成功ユーザー',
     'Start→Success',
     'ページ広告収益',
-    '収益 / Organic LPユーザー',
+    '全流入ページ収益 / Organic LPユーザー（参考）',
     '状態'
   ];
   sheet.getRange(5, 1, 1, headers.length).setValues([headers]);
