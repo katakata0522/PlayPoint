@@ -190,6 +190,18 @@ const PHASE2_MEASUREMENT_BASELINE = deepFreeze({
       preserveLegacyLogs: true
     }
   },
+  automation: {
+    ownerProperty: 'PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL',
+    crossAccountTriggerGuard: true,
+    legacyCore: {
+      pageUrlScheduledCollection: false,
+      pageHistoryBackfillRevenueOwner: 'ga4_publisher_metrics',
+      preserveExternalHealthComponents: true,
+      formulaLikeLogMessagesEscapedAsText: true,
+      highFrequencyLifecycleLogsSuppressed: true,
+      intradayReturnStateDefined: true
+    }
+  },
   adsense: {
     coreMetrics: [
       'revenue_per_organic_landing_session',

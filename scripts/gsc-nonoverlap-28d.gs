@@ -55,6 +55,9 @@ var PLAYPOINT_GSC_28D_CONFIG = Object.freeze({
 });
 
 function captureGscNonOverlapping28d(finalEndDateText) {
+  if (!playPointGscAutomationOwnerAllowsCurrentExecution_()) {
+    return { status: 'SKIPPED_NON_OWNER_TRIGGER' };
+  }
   var spreadsheet = playPointGscGetSpreadsheet_();
   var siteUrl = playPointGscGetSiteUrl_();
   var finalEnd = finalEndDateText || playPointGscFindLatestFinalDate_(siteUrl);
@@ -128,6 +131,9 @@ function captureGscNonOverlapping28d(finalEndDateText) {
 }
 
 function installPlayPointGsc28dWeeklyTrigger() {
+  if (!playPointGscAutomationOwnerAllowsCurrentExecution_()) {
+    throw new Error('GSC 28日トリガーはPlayPoint Analyticsの自動実行ownerから設定してください。');
+  }
   var handler = 'captureGscNonOverlapping28d';
   var existing = ScriptApp.getProjectTriggers().some(function(trigger) {
     return trigger.getHandlerFunction() === handler;
@@ -141,6 +147,23 @@ function installPlayPointGsc28dWeeklyTrigger() {
     .create();
 
   return 'CREATED_WEEKLY_FRIDAY_TRIGGER';
+}
+
+function playPointGscAutomationOwnerAllowsCurrentExecution_() {
+  var properties = PropertiesService.getScriptProperties();
+  var owner = String(
+    properties.getProperty('PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL') || ''
+  ).trim().toLowerCase();
+  var current = '';
+  try {
+    current = String(Session.getEffectiveUser().getEmail() || '').trim().toLowerCase();
+  } catch (ignored) {
+    current = '';
+  }
+
+  // owner未設定または実行アカウントを識別できない環境では既存動作を止めない。
+  // ownerとcurrentが両方分かる時だけ、別アカウント由来の旧トリガーを無害化する。
+  return !owner || !current || owner === current;
 }
 
 function playPointGscGetSpreadsheet_() {

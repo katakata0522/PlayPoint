@@ -53,6 +53,9 @@ var PLAYPOINT_P12_CONFIG = Object.freeze({
 });
 
 function capturePlayPointAnalyticsP1P2() {
+  if (!playPointP12AutomationOwnerAllowsCurrentExecution_()) {
+    return [{ stage: 'OWNER_GUARD', status: 'SKIPPED_NON_OWNER_TRIGGER' }];
+  }
   var spreadsheet = playPointP12GetSpreadsheet_();
   var summary = [];
 
@@ -81,6 +84,9 @@ function capturePlayPointAnalyticsP1P2() {
 }
 
 function installPlayPointAnalyticsP1P2WeeklyTrigger() {
+  if (!playPointP12AutomationOwnerAllowsCurrentExecution_()) {
+    throw new Error('P1/P2トリガーはPlayPoint Analyticsの自動実行ownerから設定してください。');
+  }
   var handler = 'capturePlayPointAnalyticsP1P2';
   var existing = ScriptApp.getProjectTriggers().some(function(trigger) {
     return trigger.getHandlerFunction() === handler;
@@ -1105,6 +1111,21 @@ function playPointP12GoogleJson_(url, options) {
   }
 
   return text ? JSON.parse(text) : {};
+}
+
+function playPointP12AutomationOwnerAllowsCurrentExecution_() {
+  var properties = PropertiesService.getScriptProperties();
+  var owner = String(
+    properties.getProperty('PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL') || ''
+  ).trim().toLowerCase();
+  var current = '';
+  try {
+    current = String(Session.getEffectiveUser().getEmail() || '').trim().toLowerCase();
+  } catch (ignored) {
+    current = '';
+  }
+
+  return !owner || !current || owner === current;
 }
 
 function playPointP12GetSpreadsheet_() {

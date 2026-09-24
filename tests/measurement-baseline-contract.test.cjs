@@ -169,6 +169,25 @@ test('legacy AdSense PAGE_URL breakdown is diagnostic-only and cannot become the
   assert.match(runbook, /GA4 publisher metrics.*正本/s);
 });
 
+test('analytics automation has one cross-account owner and legacy-core hardening contracts', () => {
+  assert.equal(baseline.automation.ownerProperty, 'PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL');
+  assert.equal(baseline.automation.crossAccountTriggerGuard, true);
+  assert.equal(baseline.automation.legacyCore.pageUrlScheduledCollection, false);
+  assert.equal(baseline.automation.legacyCore.pageHistoryBackfillRevenueOwner, 'ga4_publisher_metrics');
+  assert.equal(baseline.automation.legacyCore.preserveExternalHealthComponents, true);
+  assert.equal(baseline.automation.legacyCore.formulaLikeLogMessagesEscapedAsText, true);
+  assert.equal(baseline.automation.legacyCore.highFrequencyLifecycleLogsSuppressed, true);
+  assert.equal(baseline.automation.legacyCore.intradayReturnStateDefined, true);
+
+  const gsc = read('scripts/gsc-nonoverlap-28d.gs');
+  const p12 = read('scripts/playpoint-analytics-p1p2.gs');
+  for (const source of [gsc, p12]) {
+    assert.match(source, /PLAYPOINT_ANALYTICS_AUTOMATION_OWNER_EMAIL/);
+    assert.match(source, /SKIPPED_NON_OWNER_TRIGGER/);
+    assert.match(source, /Session\.getEffectiveUser\(\)\.getEmail\(\)/);
+  }
+});
+
 test('AdSense anomaly remains reviewable evidence instead of being silently corrected or removed', () => {
   const anomaly = baseline.adsense.anomalies.find(item => item.date === '2026-08-27');
   assert.ok(anomaly);
