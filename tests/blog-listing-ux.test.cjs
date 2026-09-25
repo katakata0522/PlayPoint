@@ -49,6 +49,23 @@ test('game-title filtering matches title or tags without a fifth articles.json c
   );
 });
 
+test('reader-facing browse taxonomy filters the full public corpus without breaking legacy categories', () => {
+  const registry = JSON.parse(read('blog/articles.json')).filter(article => article.listed !== false);
+  const topics = ['はじめて・基本', 'ランク・ステータス', '貯める・キャンペーン', '使う・交換', 'トラブル・アカウント', 'ゲーム別課金', '最新情報・イベント'];
+  assert.ok(registry.length > topics.length);
+  assert.ok(registry.every(article => topics.includes(article.browseCategory)));
+  for (const topic of topics) {
+    const expectedCount = registry.filter(article => article.browseCategory === topic).length;
+    assert.ok(expectedCount > 0, topic);
+    const hits = blogUtils.filterListedArticles(registry, { browseCategory: topic });
+    assert.equal(hits.length, expectedCount, topic);
+    assert.ok(hits.every(article => article.browseCategory === topic), topic);
+  }
+  const legacyTrouble = blogUtils.filterListedArticles(registry, { category: 'トラブル' });
+  assert.ok(legacyTrouble.length > 0);
+  assert.ok(legacyTrouble.every(article => article.category === 'トラブル'));
+});
+
 test('page-number jump clamps full-width digits into the published page range', () => {
   assert.equal(clampPageJump('３', 10), 3);
   assert.equal(clampPageJump('0', 10), 1);

@@ -5,10 +5,13 @@
 公開日本語記事の本文・SEO・主CTA・Article Roleを維持し、右サイドバーを次の順序で静的生成する。
 
 1. 記事検索
-2. 今月よく読まれている記事（直近30日の日本語 `/articles/` Top 5、PV非表示）
-3. Article Roleに応じた「次にやること」1件
-4. 本文の編集済み関連記事を優先した「あわせて読みたい」3件
-5. 運営者情報
+2. 「カテゴリーから探す」7分類（公開記事台帳の `browseCategory` から件数を自動集計）
+3. 今月よく読まれている記事（直近30日の日本語公開記事 Top 5、PV非表示。1位だけ画像付き）
+4. Article Roleに応じた「次にやること」1件
+5. 本文の編集済み関連記事を優先した「あわせて読みたい」3件
+6. 運営者情報
+
+表示用7分類は「はじめて・基本 / ランク・ステータス / 貯める・キャンペーン / 使う・交換 / トラブル・アカウント / ゲーム別課金 / 最新情報・イベント」。既存の `category`（ランク / トラブル / 使い方 / キャンペーン）は旧URLと記事カード互換のため残し、読者向け絞り込みは `?topic=` を使う。
 
 生成元は `scripts/japanese-navigation-sidebar.cjs`、順位データは `scripts/japanese-popular-guides.snapshot.json`、参照APIは `scripts/japanese-popular-guides.cjs`、生成入口は `scripts/build-html.js`。スタイルは既存の `articles/japanese-shell.css` を使う。現在の記事がTop 5なら自己リンクを作らず「閲覧中」とする。
 

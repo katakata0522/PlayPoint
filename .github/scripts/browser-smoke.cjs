@@ -486,7 +486,7 @@ async function verifyBlogPage(browser, baseUrl) {
       cards: document.querySelectorAll('.article-card').length,
       resultStatus: document.querySelector('#article-result-status')?.textContent || '',
       pagination: document.querySelector('.pagination-status')?.textContent || '',
-      activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
+      activeTopic: document.querySelector('#category-filter button.active')?.dataset.topic ?? null,
       navigationLinks: document.querySelectorAll('.ja-global-nav .nav-item').length,
       thumbnailImages: document.querySelectorAll('.article-card .card-thumb img').length,
       appIconThumbnails: document.querySelectorAll('.article-card .card-thumb--app-icon img').length,
@@ -498,7 +498,7 @@ async function verifyBlogPage(browser, baseUrl) {
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
-    assert(initial.activeCategory === 'all', `Blog initial category mismatch: ${initial.activeCategory}`);
+    assert(initial.activeTopic === '', `Blog initial topic mismatch: ${initial.activeTopic}`);
     assert(initial.navigationLinks === 6, 'Blog primary destinations must be visible without opening a menu');
     assert(initial.genericThumbnailImages === 0, `Blog mobile cards loaded ${initial.genericThumbnailImages} generic OGP thumbnails`);
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
@@ -533,25 +533,25 @@ async function verifyBlogPage(browser, baseUrl) {
     await page.locator('.article-card').first().waitFor({ state: 'visible', timeout: 30_000 });
     await page.waitForFunction(() => {
       const url = new URL(location.href);
-      return !url.searchParams.has('q') && !url.searchParams.has('category') && !url.searchParams.has('page');
+      return !url.searchParams.has('q') && !url.searchParams.has('category') && !url.searchParams.has('topic') && !url.searchParams.has('page');
     });
     const resetState = await page.evaluate(() => ({
-      activeCategory: document.querySelector('#category-filter button.active')?.dataset.category || '',
+      activeTopic: document.querySelector('#category-filter button.active')?.dataset.topic ?? null,
       query: document.querySelector('#search-input')?.value || ''
     }));
-    assert(resetState.activeCategory === 'all' && resetState.query === '', 'Blog reset state is inconsistent');
+    assert(resetState.activeTopic === '' && resetState.query === '', 'Blog reset state is inconsistent');
 
     const filterPanel = page.locator('#article-filter-panel');
     if (!(await filterPanel.evaluate(element => element.open))) {
       await filterPanel.locator('summary').click();
     }
-    const categoryButton = page.locator('#category-filter button:not([data-category="all"])').first();
-    await categoryButton.waitFor({ state: 'visible', timeout: 10_000 });
-    const category = await categoryButton.getAttribute('data-category');
-    await categoryButton.click();
-    await page.waitForFunction(expected => new URL(location.href).searchParams.get('category') === expected, category);
-    assert(await categoryButton.evaluate(element => element.classList.contains('active')), 'Blog category active state did not update');
-    assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a category filter is active');
+    const topicButton = page.locator('#category-filter button[data-topic]:not([data-topic=""])').first();
+    await topicButton.waitFor({ state: 'visible', timeout: 10_000 });
+    const topic = await topicButton.getAttribute('data-topic');
+    await topicButton.click();
+    await page.waitForFunction(expected => new URL(location.href).searchParams.get('topic') === expected, topic);
+    assert(await topicButton.evaluate(element => element.classList.contains('active')), 'Blog topic active state did not update');
+    assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a topic filter is active');
 
     // 常時表示ナビはキーボードでも直接移動できる。
     const latestLink = page.locator('.ja-global-nav a[href="/latest/"]');
@@ -575,7 +575,7 @@ async function verifyBlogPage(browser, baseUrl) {
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');
     const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
-    return { initial, resetState, category, readingUi, errors: browserState.values };
+    return { initial, resetState, topic, readingUi, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, 'blog.png');
     throw error;
