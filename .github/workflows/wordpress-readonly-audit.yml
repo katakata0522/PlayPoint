@@ -1,0 +1,173 @@
+name: WordPress Readonly Audit
+
+on:
+  push:
+    branches:
+      - audit/wordpress-readonly-20260925
+    paths:
+      - '.github/workflows/wordpress-readonly-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Setup SSH
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test -n "${SSH_PRIVATE_KEY_B64:-}"
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -P '' -f ~/.ssh/id_ed25519 >/dev/null
+          cat > ~/.ssh/known_hosts <<'EOF'
+          [hajikkoroom.xsrv.jp]:10022 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEKKSe2ENjD1KRgSqCY7ji78s0zqCNCKBRNfRaxRV7sh
+          EOF
+          chmod 600 ~/.ssh/known_hosts
+          unset SSH_PRIVATE_KEY_B64
+
+      - name: Audit WordPress without mutations
+        run: |
+          set -euo pipefail
+          ssh -p 10022 -i ~/.ssh/id_ed25519 \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o PubkeyAuthentication=yes \
+            -o PreferredAuthentications=publickey \
+            -o PasswordAuthentication=no \
+            -o KbdInteractiveAuthentication=no \
+            -o ForwardAgent=no \
+            -o ClearAllForwardings=yes \
+            -o RequestTTY=no \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            -o LogLevel=ERROR \
+            -o ConnectTimeout=15 \
+            hajikkoroom@hajikkoroom.xsrv.jp bash -s <<'REMOTE'
+          set -euo pipefail
+          DOMAIN_ROOT="/home/hajikkoroom/playpoint-sim.com"
+          PUBLIC_ROOT="$DOMAIN_ROOT/public_html"
+
+          echo "=== AUDIT META ==="
+          echo "domain_root=$DOMAIN_ROOT"
+          echo "public_root=$PUBLIC_ROOT"
+          echo "public_root_exists=$([ -d "$PUBLIC_ROOT" ] && echo yes || echo no)"
+          echo "shell=$(basename "${SHELL:-unknown}")"
+
+          echo "=== PUBLIC ROOT TOP LEVEL ==="
+          find "$PUBLIC_ROOT" -mindepth 1 -maxdepth 1 -printf '%f\n' 2>/dev/null | sort | head -n 200
+
+          echo "=== WORDPRESS CONFIG LOCATIONS ==="
+          mapfile -t configs < <(
+            find "$DOMAIN_ROOT" \
+              -path "$DOMAIN_ROOT/.deploy-snapshots" -prune -o \
+              -type f -name wp-config.php -print 2>/dev/null | sort
+          )
+          echo "wp_config_count=${#configs[@]}"
+          printf '%s\n' "${configs[@]:-}"
+
+          echo "=== RUNTIME AVAILABILITY ==="
+          if command -v php >/dev/null 2>&1; then
+            echo "php_cli=$(command -v php)"
+            php -r 'echo "php_version=".PHP_VERSION.PHP_EOL;' || true
+          else
+            echo "php_cli=missing"
+          fi
+          if command -v wp >/dev/null 2>&1; then
+            echo "wp_cli=$(command -v wp)"
+            wp --info 2>/dev/null | sed -E '/^(MySQL binary|Composer)/d' || true
+          else
+            echo "wp_cli=missing"
+          fi
+
+          for config in "${configs[@]}"; do
+            root="$(dirname "$config")"
+            case "$root" in
+              "$DOMAIN_ROOT"/*) ;;
+              *) echo "unsafe_wp_root=$root"; continue ;;
+            esac
+
+            echo "=== WORDPRESS INSTANCE ==="
+            echo "wp_root=$root"
+            echo "inside_public_root=$([[ "$root" == "$PUBLIC_ROOT"* ]] && echo yes || echo no)"
+
+            for target in "$root" "$root/wp-content" "$root/.htaccess"; do
+              if [ -e "$target" ]; then
+                stat -c 'stat=%U:%G %a %n' "$target" 2>/dev/null || true
+              else
+                echo "missing=$target"
+              fi
+            done
+
+            if [ -f "$root/wp-includes/version.php" ]; then
+              version="$(sed -n "s/.*\\$wp_version = '\([^']*\)'.*/\1/p" "$root/wp-includes/version.php" | head -n 1)"
+              echo "wp_version_file=${version:-unknown}"
+            fi
+
+            if [ -f "$root/.htaccess" ]; then
+              echo "wp_htaccess_sha256=$(sha256sum "$root/.htaccess" | awk '{print $1}')"
+              echo "wp_htaccess_wordpress_markers=$(grep -Ec 'BEGIN WordPress|END WordPress' "$root/.htaccess" || true)"
+            else
+              echo "wp_htaccess=missing"
+            fi
+
+            echo "themes_present:"
+            find "$root/wp-content/themes" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort || true
+            echo "plugins_present:"
+            find "$root/wp-content/plugins" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' 2>/dev/null | sort || true
+
+            if command -v wp >/dev/null 2>&1; then
+              WP=(wp --path="$root" --skip-plugins --skip-themes)
+              echo "wp_core_installed=$("${WP[@]}" core is-installed >/dev/null 2>&1 && echo yes || echo no)"
+              echo "wp_core_version=$("${WP[@]}" core version 2>/dev/null || echo unavailable)"
+              echo "home=$("${WP[@]}" option get home 2>/dev/null || echo unavailable)"
+              echo "siteurl=$("${WP[@]}" option get siteurl 2>/dev/null || echo unavailable)"
+              echo "permalink_structure=$("${WP[@]}" option get permalink_structure 2>/dev/null || echo unavailable)"
+              echo "blog_public=$("${WP[@]}" option get blog_public 2>/dev/null || echo unavailable)"
+              echo "show_on_front=$("${WP[@]}" option get show_on_front 2>/dev/null || echo unavailable)"
+              echo "page_for_posts=$("${WP[@]}" option get page_for_posts 2>/dev/null || echo unavailable)"
+              echo "stylesheet=$("${WP[@]}" option get stylesheet 2>/dev/null || echo unavailable)"
+              echo "template=$("${WP[@]}" option get template 2>/dev/null || echo unavailable)"
+              echo "published_posts=$("${WP[@]}" post list --post_type=post --post_status=publish --format=count 2>/dev/null || echo unavailable)"
+              echo "published_pages=$("${WP[@]}" post list --post_type=page --post_status=publish --format=count 2>/dev/null || echo unavailable)"
+              echo "theme_list:"
+              "${WP[@]}" theme list --fields=name,status,version --format=csv 2>/dev/null || true
+              echo "plugin_list:"
+              "${WP[@]}" plugin list --fields=name,status,version --format=csv 2>/dev/null || true
+            fi
+          done
+
+          echo "=== ROUTING / COLLISION CHECKS ==="
+          for target in \
+            "$PUBLIC_ROOT/.htaccess" \
+            "$PUBLIC_ROOT/blog" \
+            "$PUBLIC_ROOT/articles" \
+            "$PUBLIC_ROOT/index.html"; do
+            if [ -e "$target" ]; then
+              stat -c 'route_target=%F %U:%G %a %n' "$target" 2>/dev/null || true
+            else
+              echo "route_target=missing $target"
+            fi
+          done
+          if [ -f "$PUBLIC_ROOT/.htaccess" ]; then
+            echo "public_htaccess_sha256=$(sha256sum "$PUBLIC_ROOT/.htaccess" | awk '{print $1}')"
+            echo "public_htaccess_wp_markers=$(grep -Ec 'BEGIN WordPress|END WordPress' "$PUBLIC_ROOT/.htaccess" || true)"
+          fi
+
+          echo "=== END READONLY AUDIT ==="
+          REMOTE
+
+      - name: Remove SSH material
+        if: always()
+        run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
