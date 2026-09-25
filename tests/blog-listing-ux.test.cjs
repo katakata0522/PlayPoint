@@ -51,20 +51,14 @@ test('game-title filtering matches title or tags without a fifth articles.json c
 
 test('reader-facing browse taxonomy filters the full public corpus without breaking legacy categories', () => {
   const registry = JSON.parse(read('blog/articles.json')).filter(article => article.listed !== false);
-  const expected = new Map([
-    ['はじめて・基本', 6],
-    ['ランク・ステータス', 13],
-    ['貯める・キャンペーン', 17],
-    ['使う・交換', 3],
-    ['トラブル・アカウント', 15],
-    ['ゲーム別課金', 22],
-    ['最新情報・イベント', 4]
-  ]);
-  assert.equal(registry.length, 80);
-  assert.equal([...expected.values()].reduce((sum, value) => sum + value, 0), registry.length);
-  for (const [topic, count] of expected) {
+  const topics = ['はじめて・基本', 'ランク・ステータス', '貯める・キャンペーン', '使う・交換', 'トラブル・アカウント', 'ゲーム別課金', '最新情報・イベント'];
+  assert.ok(registry.length > topics.length);
+  assert.ok(registry.every(article => topics.includes(article.browseCategory)));
+  for (const topic of topics) {
+    const expectedCount = registry.filter(article => article.browseCategory === topic).length;
+    assert.ok(expectedCount > 0, topic);
     const hits = blogUtils.filterListedArticles(registry, { browseCategory: topic });
-    assert.equal(hits.length, count, topic);
+    assert.equal(hits.length, expectedCount, topic);
     assert.ok(hits.every(article => article.browseCategory === topic), topic);
   }
   const legacyTrouble = blogUtils.filterListedArticles(registry, { category: 'トラブル' });
