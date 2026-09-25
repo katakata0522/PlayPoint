@@ -575,7 +575,7 @@ async function verifyBlogPage(browser, baseUrl) {
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');
     const readingUi = await verifyReadingUi(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
-    return { initial, resetState, category, readingUi, errors: browserState.values };
+    return { initial, resetState, topic, readingUi, errors: browserState.values };
   } catch (error) {
     await saveScreenshot(page, 'blog.png');
     throw error;
