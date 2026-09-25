@@ -88,6 +88,31 @@ jobs:
           echo "account_wp_config_count=${#account_configs[@]}"
           printf '%s\n' "${account_configs[@]:-}"
 
+          echo "=== EXISTING ACCOUNT WORDPRESS METADATA ==="
+          for config in "${account_configs[@]}"; do
+            root="$(dirname "$config")"
+            case "$root" in
+              /home/hajikkoroom/*/public_html|/home/hajikkoroom/*/public_html/*) ;;
+              *) echo "skip_unexpected_account_wp_root=$root"; continue ;;
+            esac
+            echo "existing_wp_root=$root"
+            if command -v wp >/dev/null 2>&1; then
+              WP=(wp --path="$root" --skip-plugins --skip-themes)
+              echo "existing_wp_core_version=$("${WP[@]}" core version 2>/dev/null || echo unavailable)"
+              echo "existing_home=$("${WP[@]}" option get home 2>/dev/null || echo unavailable)"
+              echo "existing_siteurl=$("${WP[@]}" option get siteurl 2>/dev/null || echo unavailable)"
+              echo "existing_permalink_structure=$("${WP[@]}" option get permalink_structure 2>/dev/null || echo unavailable)"
+              echo "existing_blog_public=$("${WP[@]}" option get blog_public 2>/dev/null || echo unavailable)"
+              echo "existing_stylesheet=$("${WP[@]}" option get stylesheet 2>/dev/null || echo unavailable)"
+              echo "existing_template=$("${WP[@]}" option get template 2>/dev/null || echo unavailable)"
+              echo "existing_published_posts=$("${WP[@]}" post list --post_type=post --post_status=publish --format=count 2>/dev/null || echo unavailable)"
+              echo "existing_theme_list:"
+              "${WP[@]}" theme list --fields=name,status,version --format=csv 2>/dev/null || true
+              echo "existing_plugin_list:"
+              "${WP[@]}" plugin list --fields=name,status,version --format=csv 2>/dev/null || true
+            fi
+          done
+
           echo "=== RUNTIME AVAILABILITY ==="
           if command -v php >/dev/null 2>&1; then
             echo "php_cli=$(command -v php)"
