@@ -22,7 +22,7 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.equal((sidebar.match(/class="sidebar-popular-item(?: sidebar-popular-item--featured)?(?: is-current)?"/g) || []).length, 5, article.path);
     assert.equal((sidebar.match(/sidebar-popular-item--featured/g) || []).length, 1, article.path);
     assert.ok(sidebar.includes('今月よく読まれている記事'), article.path);
-    assert.ok(sidebar.includes('直近30日の閲覧傾向・順位更新 ' + POPULAR_GUIDES_SNAPSHOT), article.path);
+    assert.ok(sidebar.includes('直近30日・' + POPULAR_GUIDES_SNAPSHOT + '更新'), article.path);
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
     assert.equal((sidebar.match(/class="sidebar-next-link"/g) || []).length, 1, article.path);
     const links = [...sidebar.matchAll(/class="sidebar-related-link" href="([^"]+)"/g)].map(m => m[1]);
