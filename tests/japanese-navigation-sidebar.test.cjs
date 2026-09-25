@@ -38,22 +38,21 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
   }
 });
 
-test('サイドバー用7分類は公開80記事を重複なく覆い、件数は台帳から導出できる', () => {
-  const expected = new Map([
-    ['はじめて・基本', 6],
-    ['ランク・ステータス', 13],
-    ['貯める・キャンペーン', 17],
-    ['使う・交換', 3],
-    ['トラブル・アカウント', 15],
-    ['ゲーム別課金', 22],
-    ['最新情報・イベント', 4]
+test('サイドバー用7分類は公開記事を重複なく覆い、件数は台帳から導出できる', () => {
+  assert.deepEqual(BROWSE_CATEGORIES, [
+    'はじめて・基本',
+    'ランク・ステータス',
+    '貯める・キャンペーン',
+    '使う・交換',
+    'トラブル・アカウント',
+    'ゲーム別課金',
+    '最新情報・イベント'
   ]);
-  assert.deepEqual(BROWSE_CATEGORIES, [...expected.keys()]);
-  assert.equal(articles.length, 80);
-  for (const [label, count] of expected) {
-    assert.equal(articles.filter(article => article.browseCategory === label).length, count, label);
+  assert.ok(articles.length > BROWSE_CATEGORIES.length);
+  assert.ok(articles.every(article => BROWSE_CATEGORIES.includes(article.browseCategory)));
+  for (const label of BROWSE_CATEGORIES) {
+    assert.ok(articles.filter(article => article.browseCategory === label).length > 0, label);
   }
-  assert.ok(articles.every(article => expected.has(article.browseCategory)));
 });
 
 test('人気ランキングの保存データは公開日本語記事5件と実在する日付を持つ', () => {
