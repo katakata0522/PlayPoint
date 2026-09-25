@@ -73,17 +73,19 @@
     /**
      * 一覧表示用フィルタ。カテゴリ・AND検索・ゲーム名を同じ経路でかける
      * @param {object[]} articles
-     * @param {{category?: string, search?: string, gameTitle?: string}} state
+     * @param {{category?: string, browseCategory?: string, search?: string, gameTitle?: string}} state
      * @returns {object[]}
      */
     function filterListedArticles(articles, state) {
         const list = Array.isArray(articles) ? articles : [];
         const filters = state && typeof state === 'object' ? state : {};
         const category = typeof filters.category === 'string' ? filters.category : 'all';
+        const browseCategory = typeof filters.browseCategory === 'string' ? filters.browseCategory : '';
         const search = typeof filters.search === 'string' ? filters.search : '';
         const gameTitle = typeof filters.gameTitle === 'string' ? filters.gameTitle : '';
         return list.filter(article => {
             if (category && category !== 'all' && article.category !== category) return false;
+            if (browseCategory && article.browseCategory !== browseCategory) return false;
             if (search && !articleMatchesSearch(article, search)) return false;
             if (gameTitle && !articleMatchesGameTitle(article, gameTitle)) return false;
             return true;
