@@ -204,6 +204,84 @@ jobs:
           echo "=== END READONLY AUDIT ==="
           REMOTE
 
+      - name: Inspect existing credential/config presence without revealing secrets
+        env:
+          HAS_XSERVER_API_KEY: ${{ secrets.XSERVER_API_KEY }}
+          HAS_XSERVER_API_KEY_READONLY: ${{ secrets.XSERVER_API_KEY_READONLY }}
+          HAS_XSERVER_API_KEY_MIGRATION: ${{ secrets.XSERVER_API_KEY_MIGRATION }}
+          HAS_XSERVER_SERVERNAME: ${{ secrets.XSERVER_SERVERNAME }}
+          HAS_WP_REST_USER: ${{ secrets.WP_REST_USER }}
+          HAS_WP_REST_APP_PASSWORD: ${{ secrets.WP_REST_APP_PASSWORD }}
+          HAS_WORDPRESS_USER: ${{ secrets.WORDPRESS_USER }}
+          HAS_WORDPRESS_APP_PASSWORD: ${{ secrets.WORDPRESS_APP_PASSWORD }}
+          HAS_WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: |
+          set -euo pipefail
+          for name in \
+            HAS_XSERVER_API_KEY \
+            HAS_XSERVER_API_KEY_READONLY \
+            HAS_XSERVER_API_KEY_MIGRATION \
+            HAS_XSERVER_SERVERNAME \
+            HAS_WP_REST_USER \
+            HAS_WP_REST_APP_PASSWORD \
+            HAS_WORDPRESS_USER \
+            HAS_WORDPRESS_APP_PASSWORD \
+            HAS_WP_APP_PASSWORD; do
+            if [ -n "${!name:-}" ]; then
+              echo "$name=present"
+            else
+              echo "$name=absent"
+            fi
+          done
+
+          ssh -p 10022 -i ~/.ssh/id_ed25519 \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" -o LogLevel=ERROR \
+            hajikkoroom@hajikkoroom.xsrv.jp bash -s <<'REMOTE'
+          set -euo pipefail
+          HOME_DIR="/home/hajikkoroom"
+
+          echo "=== XSERVER CLI / MCP CONFIG PRESENCE ON SERVER ACCOUNT ==="
+          if command -v xserver >/dev/null 2>&1; then
+            echo "xserver_cli=present"
+            xserver --version 2>/dev/null || true
+          else
+            echo "xserver_cli=absent"
+          fi
+
+          for p in \
+            "$HOME_DIR/.config/xserver-cli/config.json" \
+            "$HOME_DIR/.gemini/settings.json" \
+            "$HOME_DIR/.config/gemini/settings.json" \
+            "$HOME_DIR/.cursor/mcp.json" \
+            "$HOME_DIR/.claude.json" \
+            "$HOME_DIR/.config/Claude/claude_desktop_config.json" \
+            "$HOME_DIR/.mcp.json"; do
+            if [ -f "$p" ]; then
+              echo "config_present=$p"
+            else
+              echo "config_absent=$p"
+            fi
+          done
+
+          echo "=== WORDPRESS APPLICATION PASSWORD STATUS ==="
+          WP_ROOT="/home/hajikkoroom/hajikkogurashi0816.com/public_html"
+          if [ -f "$WP_ROOT/wp-config.php" ] && command -v wp >/dev/null 2>&1; then
+            supported="$(wp --path="$WP_ROOT" --skip-plugins --skip-themes eval 'echo wp_is_application_passwords_supported() ? "yes" : "no";' 2>/dev/null || echo unavailable)"
+            echo "wp_application_passwords_supported=$supported"
+            total=0
+            while IFS= read -r uid; do
+              [ -n "$uid" ] || continue
+              count="$(wp --path="$WP_ROOT" --skip-plugins --skip-themes user application-password list "$uid" --field=uuid 2>/dev/null | sed '/^$/d' | wc -l | tr -d '[:space:]')"
+              total=$((total + count))
+            done < <(wp --path="$WP_ROOT" --skip-plugins --skip-themes user list --field=ID 2>/dev/null || true)
+            echo "wp_application_password_count=$total"
+          else
+            echo "wp_application_passwords_supported=unavailable"
+            echo "wp_application_password_count=unavailable"
+          fi
+          REMOTE
+
       - name: Remove SSH material
         if: always()
         run: rm -f ~/.ssh/id_ed25519 ~/.ssh/known_hosts
