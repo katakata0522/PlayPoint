@@ -5,7 +5,7 @@
     // Configuration Constants
     // ===========================================
     const CONFIG = {
-        articlesUrl: 'articles.json?v=20260818_1200a',
+        articlesUrl: 'articles.json?v=20260925_sidebar1',
         itemsPerPage: 6,
         adInterval: 3,
         newThresholdDays: 7,
