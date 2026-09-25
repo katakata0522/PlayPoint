@@ -28,6 +28,18 @@
         'キャンペーン': { order: 4, color: '#f59e0b' }
     };
 
+    // 読者が「何を知りたいか」で探すための表示用分類。
+    // 既存の4カテゴリは互換性と記事カード表示のため残し、一覧フィルタはこの分類を使う。
+    const BROWSE_CATEGORIES = [
+        'はじめて・基本',
+        'ランク・ステータス',
+        '貯める・キャンペーン',
+        '使う・交換',
+        'トラブル・アカウント',
+        'ゲーム別課金',
+        '最新情報・イベント'
+    ];
+
     // ===========================================
     // LocalStorage Manager
     // ===========================================
@@ -95,6 +107,7 @@
             const params = new URLSearchParams(window.location.search);
             return {
                 category: params.get('category') || 'all',
+                topic: params.get('topic') || '',
                 search: params.get('q') || '',
                 game: params.get('game') || '',
                 page: params.get('page') || '1',
@@ -108,6 +121,12 @@
                 url.searchParams.set('category', state.category);
             } else {
                 url.searchParams.delete('category');
+            }
+            // Reader-facing browse taxonomy. Legacy ?category= stays supported.
+            if (state.topic) {
+                url.searchParams.set('topic', state.topic);
+            } else {
+                url.searchParams.delete('topic');
             }
             // Search
             if (state.search) {
@@ -139,6 +158,7 @@
     // State
     let allArticles = [];
     let currentCategory = 'all';
+    let currentBrowseCategory = '';
     let currentSearch = '';
     let currentGameTitle = '';
     let currentPage = 1;
@@ -213,6 +233,7 @@
             date: BlogUtils.validArticleDate(article.date),
             modified: BlogUtils.validArticleDate(article.modified),
             category,
+            browseCategory: typeof article.browseCategory === 'string' ? article.browseCategory : '',
             tags,
             description,
             listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
@@ -344,6 +365,7 @@
         // Restore state from URL and LocalStorage
         const urlState = URLState.get();
         currentCategory = urlState.category;
+        currentBrowseCategory = urlState.topic;
         currentSearch = urlState.search;
         currentGameTitle = urlState.game;
         currentPage = urlState.page;
@@ -414,6 +436,7 @@
             if (!response.ok) throw new Error('Failed to load articles');
             const articles = await response.json();
             allArticles = (Array.isArray(articles) ? articles.map(normalizeArticle) : []).filter(a => a.file !== '#' && a.listed !== false && !/side[ -]?fire|サイドfire/i.test(a.title + ' ' + a.description + ' ' + a.tags.join(' ')));
+            if (currentBrowseCategory && !BROWSE_CATEGORIES.includes(currentBrowseCategory)) currentBrowseCategory = '';
             fetchRetryCount = 0; // Reset on success
 
             // Extract categories
@@ -456,6 +479,7 @@
             window.addEventListener('popstate', () => {
                 const state = URLState.get();
                 currentCategory = state.category;
+                currentBrowseCategory = state.topic;
                 currentSearch = state.search;
                 currentGameTitle = state.game;
                 currentPage = state.page;
@@ -529,6 +553,7 @@
     function updateURLState() {
         URLState.set({
             category: currentCategory,
+            topic: currentBrowseCategory,
             search: currentSearch,
             game: currentGameTitle,
             page: currentPage,
@@ -540,6 +565,7 @@
     function filterArticles() {
         return BlogUtils.filterListedArticles(allArticles, {
             category: currentCategory,
+            browseCategory: currentBrowseCategory,
             search: currentSearch,
             gameTitle: currentGameTitle
         });
@@ -588,6 +614,7 @@
         if (!dom.filterPanel) return;
         const hasOptionalFilter = Boolean(
             currentGameTitle ||
+            currentBrowseCategory ||
             currentCategory !== 'all' ||
             sortMode === 'oldest' ||
             sortMode === 'updated'
@@ -600,40 +627,24 @@
     function setupCategories(articles) {
         if (!dom.categoryFilter) return;
 
-        // Count articles per category
-        const categoryCounts = { 'all': articles.length };
-        articles.forEach(a => {
-            if (a.category) {
-                categoryCounts[a.category] = (categoryCounts[a.category] || 0) + 1;
+        const topicCounts = Object.fromEntries(BROWSE_CATEGORIES.map(topic => [topic, 0]));
+        articles.forEach(article => {
+            if (Object.prototype.hasOwnProperty.call(topicCounts, article.browseCategory)) {
+                topicCounts[article.browseCategory] += 1;
             }
         });
 
-        // Get unique categories that exist in articles
-        const existingCategories = new Set(articles.map(a => a.category).filter(Boolean));
-
-        // Build ordered list using CATEGORIES config
-        const orderedCategories = ['all'];
-        Object.keys(CATEGORIES)
-            .sort((a, b) => CATEGORIES[a].order - CATEGORIES[b].order)
-            .forEach(cat => {
-                if (existingCategories.has(cat)) orderedCategories.push(cat);
-            });
-        // Add any new categories not in config
-        existingCategories.forEach(cat => {
-            if (!orderedCategories.includes(cat)) orderedCategories.push(cat);
-        });
-
         dom.categoryFilter.innerHTML = '';
-        orderedCategories.forEach(cat => {
+        const topics = ['', ...BROWSE_CATEGORIES.filter(topic => topicCounts[topic] > 0)];
+        topics.forEach(topic => {
             const btn = document.createElement('button');
-            const count = categoryCounts[cat] || 0;
-            btn.textContent = cat === 'all' ? `すべて (${count})` : `${cat} (${count})`;
-            btn.dataset.category = cat;
-            btn.className = cat === currentCategory ? 'active' : '';
-            btn.setAttribute('aria-pressed', String(cat === currentCategory));
-            btn.addEventListener('click', () => {
-                setCategory(cat);
-            });
+            const count = topic ? topicCounts[topic] : articles.length;
+            btn.textContent = topic ? `${topic} (${count})` : `すべて (${count})`;
+            btn.dataset.topic = topic;
+            const active = topic === currentBrowseCategory && (topic || currentCategory === 'all');
+            btn.className = active ? 'active' : '';
+            btn.setAttribute('aria-pressed', String(Boolean(active)));
+            btn.addEventListener('click', () => setBrowseCategory(topic));
             dom.categoryFilter.appendChild(btn);
         });
     }
@@ -641,14 +652,17 @@
     function syncCategoryActiveState() {
         if (dom.categoryFilter) {
             dom.categoryFilter.querySelectorAll('button').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.category === currentCategory);
-                btn.setAttribute('aria-pressed', String(btn.dataset.category === currentCategory));
+                const active = btn.dataset.topic === currentBrowseCategory
+                    && (btn.dataset.topic || currentCategory === 'all');
+                btn.classList.toggle('active', Boolean(active));
+                btn.setAttribute('aria-pressed', String(Boolean(active)));
             });
         }
     }
 
     function resetFilters() {
         currentCategory = 'all';
+        currentBrowseCategory = '';
         currentSearch = '';
         currentGameTitle = '';
         currentPage = 1;
@@ -659,15 +673,13 @@
         render();
     }
 
-    function setCategory(cat) {
-        currentCategory = cat;
+    function setBrowseCategory(topic) {
+        currentBrowseCategory = topic;
+        currentCategory = 'all';
         currentPage = 1;
 
-        // Update URL state
         updateURLState();
-
-        // Track in GA4
-        Analytics.trackCategoryFilter(cat);
+        Analytics.trackCategoryFilter(topic || 'all');
 
         syncCategoryActiveState();
         render();
@@ -684,8 +696,8 @@
 
         // 通常一覧は件数を繰り返さず、絞り込み中だけ条件と実際の件数を短く見せる。
         if (dom.resultStatus) {
-            const active = Boolean(currentSearch || currentGameTitle || currentCategory !== 'all');
-            const conditions = [currentSearch ? '「' + currentSearch + '」' : '', currentGameTitle, currentCategory !== 'all' ? currentCategory : ''].filter(Boolean);
+            const active = Boolean(currentSearch || currentGameTitle || currentBrowseCategory || currentCategory !== 'all');
+            const conditions = [currentSearch ? '「' + currentSearch + '」' : '', currentGameTitle, currentBrowseCategory, currentCategory !== 'all' ? currentCategory : ''].filter(Boolean);
             dom.resultStatus.classList.toggle('visually-hidden', !active);
             dom.resultStatus.replaceChildren(document.createTextNode((conditions.length ? conditions.join(' / ') + '：' : '') + filtered.length + '件'));
             if (active) {
@@ -715,9 +727,9 @@
           dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
           document.getElementById('reset-filters').addEventListener('click', resetFilters);
           const recovery = document.createElement('div'); recovery.className = 'search-recovery';
-          if (currentCategory !== 'all' || currentGameTitle) {
+          if (currentBrowseCategory || currentCategory !== 'all' || currentGameTitle) {
               const widen = document.createElement('button'); widen.type = 'button'; widen.textContent = '検索語を残して、全カテゴリーから探す';
-              widen.addEventListener('click', () => { currentCategory = 'all'; currentGameTitle = ''; currentPage = 1; if (dom.gameTitleFilter) dom.gameTitleFilter.value = ''; syncCategoryActiveState(); updateURLState(); render(); }); recovery.append(widen);
+              widen.addEventListener('click', () => { currentBrowseCategory = ''; currentCategory = 'all'; currentGameTitle = ''; currentPage = 1; if (dom.gameTitleFilter) dom.gameTitleFilter.value = ''; syncCategoryActiveState(); updateURLState(); render(); }); recovery.append(widen);
           }
           const related = window.PlayPointSearch?.suggest(allArticles, currentSearch, 'ja') || [];
           const label = document.createElement('p'); label.textContent = related.length ? '一部のキーワードに関連する記事' : '目的から探す'; recovery.append(label);
