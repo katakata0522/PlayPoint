@@ -68,7 +68,7 @@ jobs:
           echo "=== PUBLIC ROOT TOP LEVEL ==="
           find "$PUBLIC_ROOT" -mindepth 1 -maxdepth 1 -printf '%f\n' 2>/dev/null | sort | head -n 200
 
-          echo "=== WORDPRESS CONFIG LOCATIONS ==="
+          echo "=== WORDPRESS CONFIG LOCATIONS: PLAYPOINT DOMAIN ==="
           mapfile -t configs < <(
             find "$DOMAIN_ROOT" \
               -path "$DOMAIN_ROOT/.deploy-snapshots" -prune -o \
@@ -76,6 +76,17 @@ jobs:
           )
           echo "wp_config_count=${#configs[@]}"
           printf '%s\n' "${configs[@]:-}"
+
+          echo "=== WORDPRESS CONFIG LOCATIONS: XSERV ACCOUNT ==="
+          mapfile -t account_configs < <(
+            find /home/hajikkoroom \
+              -path '*/.deploy-snapshots' -prune -o \
+              -path '*/.cache' -prune -o \
+              -path '*/.wp-cli/cache' -prune -o \
+              -maxdepth 5 -type f -name wp-config.php -print 2>/dev/null | sort
+          )
+          echo "account_wp_config_count=${#account_configs[@]}"
+          printf '%s\n' "${account_configs[@]:-}"
 
           echo "=== RUNTIME AVAILABILITY ==="
           if command -v php >/dev/null 2>&1; then
