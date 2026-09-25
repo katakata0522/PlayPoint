@@ -20,6 +20,48 @@
 .ja-article-sidebar a { color: var(--reading-link, #0f4c5c); text-underline-offset: 3px; }
 .ja-article-sidebar a:hover { color: var(--reading-link, #087968); }
 
+
+/* Sidebar discovery: reader-facing topics with live article counts. */
+.ja-article-sidebar .sidebar-widget--browse .sidebar-widget-body { padding: 6px 12px 10px; }
+.ja-article-sidebar .sidebar-browse-list { list-style: none; margin: 0; padding: 0; }
+.ja-article-sidebar .sidebar-browse-item { margin: 0; border-bottom: 1px solid var(--reading-border, #edf1f5); }
+.ja-article-sidebar .sidebar-browse-item:last-child { border-bottom: 0; }
+.ja-article-sidebar .sidebar-browse-category {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 40px; padding: 7px 5px; color: var(--reading-text, #263447);
+  font-size: 12.5px; font-weight: 680; line-height: 1.45; text-decoration: none;
+}
+.ja-article-sidebar .sidebar-browse-category:hover,
+.ja-article-sidebar .sidebar-browse-category:focus-visible { color: var(--reading-link, #087968); text-decoration: underline; text-underline-offset: .16em; }
+.ja-article-sidebar .sidebar-browse-count {
+  flex: 0 0 auto; min-width: 27px; padding: 2px 6px; border-radius: 999px;
+  background: var(--reading-soft, #f3f6f7); color: var(--reading-muted, #64748b);
+  font-size: 10px; font-weight: 760; line-height: 1.4; text-align: center; font-variant-numeric: tabular-nums;
+}
+.ja-article-sidebar .sidebar-browse-item.is-current-topic .sidebar-browse-category { color: var(--reading-brand, #176773); font-weight: 820; }
+.ja-article-sidebar .sidebar-browse-item.is-current-topic .sidebar-browse-count { background: #e6f4f1; color: #0f766e; }
+
+/* Popular ranking: only No.1 gets visual emphasis; the rest stay scan-friendly. */
+.ja-article-sidebar .sidebar-popular-item--featured {
+  grid-template-columns: 30px 62px minmax(0, 1fr);
+  gap: 8px; align-items: center; padding: 4px 0 11px;
+}
+.ja-article-sidebar .sidebar-popular-item--featured .sidebar-popular-rank {
+  align-self: start; padding-top: 2px; color: var(--reading-brand, #176773); font-size: 18px;
+}
+.ja-article-sidebar .sidebar-popular-thumb {
+  width: 62px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--reading-border, #dbe2ea);
+  border-radius: 7px; background: var(--reading-soft, #f5f8fa);
+}
+.ja-article-sidebar .sidebar-popular-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.ja-article-sidebar .sidebar-popular-feature-copy { min-width: 0; }
+.ja-article-sidebar .sidebar-popular-topic {
+  display: block; margin-bottom: 3px; color: var(--reading-muted, #64748b);
+  font-size: 9.5px; font-weight: 760; line-height: 1.35;
+}
+.ja-article-sidebar .sidebar-popular-item--featured .sidebar-popular-link,
+.ja-article-sidebar .sidebar-popular-item--featured .sidebar-popular-current-title { font-size: 13px; line-height: 1.45; }
+
 /* Japanese article sidebar v2: search first, 30-day popularity, focused next steps. */
 .ja-article-sidebar .sidebar-widget--search .sidebar-widget-body { padding: 14px 16px 16px; }
 .ja-article-sidebar .sidebar-search-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
