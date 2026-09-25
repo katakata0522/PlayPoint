@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { transformArticle, nextFor } = require('../scripts/japanese-navigation-sidebar.cjs');
+const { BROWSE_CATEGORIES, transformArticle, nextFor } = require('../scripts/japanese-navigation-sidebar.cjs');
 const { JAPANESE_POPULAR_GUIDES, POPULAR_GUIDES_SNAPSHOT } = require('../scripts/japanese-popular-guides.cjs');
 const root = path.resolve(__dirname, '..');
 const articles = JSON.parse(fs.readFileSync(path.join(root, 'blog/articles.json'), 'utf8')).filter(a => a.listed !== false)
@@ -17,7 +17,10 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.ok(sidebar, article.path);
     assert.match(sidebar, /class="sidebar-search-form" action="\/blog\/" method="get"/, article.path);
     assert.match(sidebar, /class="sidebar-search-input"[^>]*name="q"/, article.path);
-    assert.equal((sidebar.match(/class="sidebar-popular-item(?: is-current)?"/g) || []).length, 5, article.path);
+    assert.equal((sidebar.match(/class="sidebar-browse-category"/g) || []).length, BROWSE_CATEGORIES.length, article.path);
+    assert.ok(sidebar.includes('/blog/?topic='), article.path);
+    assert.equal((sidebar.match(/class="sidebar-popular-item(?: sidebar-popular-item--featured)?(?: is-current)?"/g) || []).length, 5, article.path);
+    assert.equal((sidebar.match(/sidebar-popular-item--featured/g) || []).length, 1, article.path);
     assert.ok(sidebar.includes('今月よく読まれている記事'), article.path);
     assert.ok(sidebar.includes('直近30日の閲覧傾向・順位更新 ' + POPULAR_GUIDES_SNAPSHOT), article.path);
     assert.ok(!/\bPV\b|ページビュー/.test(sidebar), article.path + ': PV数は公開しない');
@@ -33,6 +36,24 @@ test('日本語の全公開記事は検索・人気5件・次行動1件を持ち
     assert.ok(!html.includes('/articles/japanese-sidebar-v2.css'), article.path + ': sidebar CSSは共通CSSへ統合');
     assert.equal(transformArticle(html, article, articles), html, article.path + ': 再生成は冪等');
   }
+});
+
+test('サイドバー用7分類は公開80記事を重複なく覆い、件数は台帳から導出できる', () => {
+  const expected = new Map([
+    ['はじめて・基本', 6],
+    ['ランク・ステータス', 13],
+    ['貯める・キャンペーン', 17],
+    ['使う・交換', 3],
+    ['トラブル・アカウント', 15],
+    ['ゲーム別課金', 22],
+    ['最新情報・イベント', 4]
+  ]);
+  assert.deepEqual(BROWSE_CATEGORIES, [...expected.keys()]);
+  assert.equal(articles.length, 80);
+  for (const [label, count] of expected) {
+    assert.equal(articles.filter(article => article.browseCategory === label).length, count, label);
+  }
+  assert.ok(articles.every(article => expected.has(article.browseCategory)));
 });
 
 test('人気ランキングの保存データは公開日本語記事5件と実在する日付を持つ', () => {
