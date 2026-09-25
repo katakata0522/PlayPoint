@@ -80,7 +80,7 @@ function renderSearchWidget() {
   return `  <section class="sidebar-widget sidebar-widget--search"><h2 class="sidebar-widget-title">記事を探す</h2><div class="sidebar-widget-body"><form class="sidebar-search-form" action="/blog/" method="get" role="search"><input class="sidebar-search-input" type="search" name="q" aria-label="記事を検索"><button class="sidebar-search-button" type="submit">検索</button></form><div class="sidebar-search-footer"><a class="sidebar-browse-link" href="/blog/">すべての記事を見る</a></div></div></section>`;
 }
 
-function renderBrowseWidget(catalog, currentArticle = null) {
+function renderBrowseWidget(catalog = [], currentArticle = null) {
   const counts = new Map(BROWSE_CATEGORIES.map(label => [label, 0]));
   for (const article of catalog) {
     if (counts.has(article.browseCategory)) counts.set(article.browseCategory, counts.get(article.browseCategory) + 1);
@@ -98,7 +98,7 @@ function publicThumbnail(value) {
   return '';
 }
 
-function renderPopularWidget(article, catalog) {
+function renderPopularWidget(article, catalog = []) {
   const popular = getJapanesePopularGuides(article.href, 5);
   const byHref = new Map(catalog.map(item => [item.href, item]));
   return `  <section class="sidebar-widget sidebar-widget--popular" data-popular-snapshot="${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}"><h2 class="sidebar-widget-title">今月よく読まれている記事</h2><div class="sidebar-widget-body"><p class="sidebar-widget-note">${escapeHtml(POPULAR_GUIDES_WINDOW)}・${escapeHtml(POPULAR_GUIDES_SNAPSHOT)}更新</p><ol class="sidebar-popular-list">${popular.map(item => {
@@ -131,7 +131,7 @@ function renderNavigation(current) {
     + NAV.map(([href, label]) => `<a class="nav-item" href="${escapeHtml(href)}"${href === current ? ' aria-current="page"' : ''}><span>${label}</span></a>`).join('') + '</div></nav>';
 }
 
-function renderHubSidebar(current, catalog) {
+function renderHubSidebar(current, catalog = []) {
   return `<aside class="sidebar-column ja-article-sidebar guide-hub-sidebar" aria-label="カテゴリー・人気記事と計算機">
 ${renderBrowseWidget(catalog)}
 ${renderPopularWidget({ href: current }, catalog)}
@@ -167,7 +167,7 @@ function syncGuideHubs(root, catalog) {
   }
 }
 
-function renderSidebar(article, role, related, catalog) {
+function renderSidebar(article, role, related, catalog = []) {
   const [href, label] = nextFor(role, related, article);
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・カテゴリー・人気記事・次の行動" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
 ${renderSearchWidget()}
