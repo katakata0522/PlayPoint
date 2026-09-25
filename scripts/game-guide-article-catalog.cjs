@@ -324,7 +324,7 @@ function syncGameGuideArticleManifest(rootDir) {
   const guideIds = new Set(GAME_GUIDE_ARTICLES.map(article => article.id));
   const guideFiles = new Set(GAME_GUIDE_ARTICLES.map(article => article.file));
   const base = existing.filter(article => !guideIds.has(article?.id) && !guideFiles.has(article?.file) && article?.source !== 'game-guide');
-  const merged = [...GAME_GUIDE_ARTICLES.map(article => ({ ...article })), ...base];
+  const merged = [...GAME_GUIDE_ARTICLES.map(article => ({ ...article, browseCategory: 'ゲーム別課金' })), ...base];
   const next = JSON.stringify(merged, null, 2) + '\n';
   const previous = fs.readFileSync(manifestPath, 'utf8');
   if (next === previous) return { changed: false, total: merged.length, gameGuides: GAME_GUIDE_ARTICLES.length };
