@@ -411,8 +411,12 @@ export const CALC = {
         }
         if (!targetStatusLabel) return UI.displayResult(STATE.dom.result, texts.errorTargetStatus || texts.errorInput, true);
         if (finalRate === null || finalRate <= 0) return UI.displayResult(STATE.dom.result, texts.errorRate, true);
-        if (maxNeededPoints === null || neededPoints > maxNeededPoints) {
-            return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency, true);
+        if (maxNeededPoints === null) return UI.displayResult(STATE.dom.result, texts.errorTargetStatus || texts.errorInput, true);
+        if (neededPoints > maxNeededPoints) {
+            const detail = texts.errorTargetConsistencyDetail
+                ? texts.errorTargetConsistencyDetail.replace('{target}', targetStatusLabel).replace('{max}', maxNeededPoints.toLocaleString(config.lang))
+                : '';
+            return UI.displayResult(STATE.dom.result, texts.errorTargetConsistency + detail, true);
         }
 
         const finalNeededPoints = neededPoints;

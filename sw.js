@@ -1,7 +1,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'playpoint-calc-v';
-const CACHE_NAME = 'playpoint-calc-v20260926_1852-624ac904';;
+const CACHE_NAME = 'playpoint-calc-v20260926_1852-32ea1a54';;
 // 初回は計算機の必須シェルだけを先読みし、記事・日記などは実利用時にキャッシュする。
 const ASSETS = [
   './',
@@ -21,7 +21,7 @@ const ASSETS = [
   './js/region-rules.js',
   './js/share.js',
   './js/main-calculator-ui.js?v=59493be776',
-  './js/main.js?v=3b3de5a2df',
+  './js/main.js?v=9f9669086c',
   './js/web-vitals.js',
   './js/region-navigation.js',
   './js/region-expansion-config.js',

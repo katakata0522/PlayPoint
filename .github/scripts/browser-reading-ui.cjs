@@ -147,6 +147,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
+      if(width<=760) {
+        const textCards=await page.locator('.article-card').evaluateAll(cards=>cards.filter(card=>!card.querySelector('img')).map(card=>({
+          titleWidth:card.querySelector('h3').getBoundingClientRect().width,
+          cardWidth:card.getBoundingClientRect().width,
+          topic:card.querySelector('.card-topic')?.textContent.trim(),
+          emptyImageFrames:card.querySelectorAll('.card-thumb').length
+        })));
+        assert(textCards.every(card=>card.titleWidth>=card.cardWidth*.85&&card.topic&&card.emptyImageFrames===0),`Text articles must use the available width at ${width}: ${JSON.stringify(textCards)}`);
+      }
       if(width>760) { assert.equal(state.columns,4,`Purpose-grid breakpoint ${width}`); assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`); }
       assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
       responsive.push({width,...state});

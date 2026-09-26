@@ -40,7 +40,7 @@
     <meta name="twitter:description" content="Google Play Points のランクアップまでにあといくら必要か、課金額やGoogle Playに表示されたキャンペーン特別獲得率を反映した目安を逆算できます。">
     <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-    <link rel="modulepreload" href="js/main.js?v=3b3de5a2df">
+    <link rel="modulepreload" href="js/main.js?v=9f9669086c">
     <link rel="modulepreload" href="js/config.js">
     <link rel="modulepreload" href="js/analytics-core.js?v=96fa25c428">
     <link rel="modulepreload" href="js/ui.js">
@@ -222,8 +222,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <p id="site-description" class="site-description" data-lang-key="siteDescription">目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">通常計算</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算モード</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">必要な金額を調べる</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">もらえるポイントを調べる</button>
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">ウィークリーリワード記録</button>
     </div>
 
@@ -293,7 +293,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
+            <h2 data-lang-key="sectionTitleReverse">課金額からポイントを計算</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">課金額（円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
@@ -479,7 +479,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <div id="toast" class="toast"></div>
 </main>
 
-<script type="module" src="js/main.js?v=3b3de5a2df"></script>
+<script type="module" src="js/main.js?v=9f9669086c"></script>
 <script src="js/third-party.js?v=3c45c66015" defer></script>
 
 </body>
