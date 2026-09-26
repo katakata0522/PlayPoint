@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { renderGuideBrand } = require('./japanese-guide-brand.cjs');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { normalizeSharedArticleCopy } = require('./article-static-usability.cjs');
 const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
@@ -126,13 +127,15 @@ function renderAuthorWidget() {
 
 // 一覧・本文・最新情報で同じ入口と見た目を使う。
 function renderHeader(isBlog = false) {
-  return `<header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="${isBlog ? 'brand' : 'site-logo'}">${isBlog ? '' : '🎮 '}Google Play Points 完全攻略ガイド</a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>`;
+  return `<header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="${isBlog ? 'brand' : 'site-logo'}">${renderGuideBrand(isBlog)}</a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>`;
 }
 
 function navigationAssets(html) {
-  if (!html.includes('/articles/guide-navigation.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/articles/guide-navigation.css">\n</head>');
-  if (!html.includes('/js/guide-navigation.js')) html = html.replace('</body>', '<script defer src="/js/guide-navigation.js"></script>\n</body>');
-  return html;
+  if (html.includes('<!-- guide-navigation-assets:start -->')) return html;
+  // 生成済みの専用ブロックを置換する。旧配置は独立した行ごと移行する。
+  html = html.replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\n?/g, '');
+  html = html.split('\n').filter(line => !/^\s*<(?:link|script)\s[^<>]*(?:href="\/articles\/guide-navigation\.css|src="\/js\/guide-navigation\.js)/.test(line)).join('\n');
+  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js"></script>\n<!-- guide-navigation-assets:end -->\n</head>');
 }
 
 function renderGamesWidget(catalog) {
@@ -229,7 +232,13 @@ function syncJapaneseNavigation(root) {
   syncGuideHubs(root, catalog);
   const home = path.join(root, 'index.html');
   const homeBefore = fs.readFileSync(home, 'utf8');
-  const homeAfter = navigationAssets(homeBefore);
+  let homeAfter = navigationAssets(homeBefore);
+  const calculatorHeader = '<!-- guide-calculator-header:start --><header class="guide-header guide-calculator-header"><div class="site-header-inner"><a href="/" class="site-logo"><span class="guide-brand-short">PlayPoint<span>ポイント計算機</span></span></a></div></header><!-- guide-calculator-header:end -->';
+  if (homeAfter.includes('<!-- guide-calculator-header:start -->')) {
+    homeAfter = homeAfter.replace(/<!-- guide-calculator-header:start -->[\s\S]*?<!-- guide-calculator-header:end -->/, calculatorHeader);
+  } else {
+    homeAfter = homeAfter.replace('<body>', '<body>\n' + calculatorHeader);
+  }
   if (homeAfter !== homeBefore) fs.writeFileSync(home, homeAfter);
   return { checked: catalog.length, changed };
 }

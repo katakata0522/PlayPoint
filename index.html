@@ -195,9 +195,13 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
-<link rel="stylesheet" href="/articles/guide-navigation.css?v=200cbf7c0e">
+<!-- guide-navigation-assets:start -->
+<link rel="stylesheet" href="/articles/guide-navigation.css?v=fc7a5e8bcb">
+<script src="/js/guide-navigation.js?v=99faf253d5"></script>
+<!-- guide-navigation-assets:end -->
 </head>
 <body>
+<!-- guide-calculator-header:start --><header class="guide-header guide-calculator-header"><div class="site-header-inner"><a href="/" class="site-logo"><span class="guide-brand-short">PlayPoint<span>ポイント計算機</span></span></a></div></header><!-- guide-calculator-header:end -->
 
 <main class="calculator-wrapper">
    <div class="top-bar">
@@ -478,6 +482,5 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 <script type="module" src="js/main.js?v=3b3de5a2df"></script>
 <script src="js/third-party.js?v=3c45c66015" defer></script>
 
-<script defer src="/js/guide-navigation.js?v=dff85ff3fd"></script>
 </body>
 </html>

@@ -210,7 +210,18 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await openMenu(page);
       assert.equal(await page.locator('#guide-menu').evaluate(el=>el.matches(':modal')),true);
       await page.screenshot({path:path.join(artifactDir,`mobile-${name}-menu-390.png`)});
-      for (let i=0;i<25;i++) { await page.keyboard.press('Tab'); assert(await page.locator('#guide-menu').evaluate(el=>el.contains(document.activeElement)),'Menu must retain keyboard focus'); }
+      // ネイティブdialogはブラウザのアドレスバーへの移動を許す。
+      // 文書にフォーカスがある間、背後のページへ漏れないことを検証する。
+      for (const key of ['Tab', 'Shift+Tab']) for (let i=0;i<25;i++) {
+        await page.keyboard.press(key);
+        const focus = await page.locator('#guide-menu').evaluate(el => ({
+          modal: el.matches(':modal'), inside: el.contains(document.activeElement),
+          browserChrome: !document.hasFocus() && document.activeElement === document.body,
+          active: document.activeElement?.outerHTML.slice(0,200)
+        }));
+        assert(focus.modal && (focus.inside || focus.browserChrome),'Menu must isolate page focus: '+JSON.stringify(focus));
+      }
+      await page.locator('#guide-menu .guide-close').focus();
       await closeMenu(page);
       assert(await page.locator('[aria-controls="guide-menu"]').evaluate(el=>el===document.activeElement),'Closing restores the menu button');
       await openMenu(page); await page.setViewportSize({width:1024,height:844});

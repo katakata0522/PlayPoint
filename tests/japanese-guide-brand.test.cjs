@@ -31,7 +31,8 @@ test('日本語記事ハブは「Google Play Points 完全攻略ガイド」を�
   assert.match(html, new RegExp(`<title>${GUIDE_PAGE_TITLE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</title>`));
   assert.ok(html.includes(`content="${GUIDE_DESCRIPTION}"`));
   assert.ok(html.includes(`property="og:site_name" content="${GUIDE_BRAND}"`));
-  assert.ok(html.includes(`class="brand">${GUIDE_BRAND}</a>`));
+  const brand = html.match(/<a\b[^>]*class="brand"[^>]*>([\s\S]*?)<\/a>/)?.[1].replace(/<[^>]*>/g, '');
+  assert.ok(brand?.includes(GUIDE_BRAND), 'ヘッダーに正式なガイド名がある');
   assert.ok(html.includes('<h1 class="hero-title">Google Play Points 記事一覧</h1>'));
   assert.ok(!html.includes('<p class="hero-text">'), '検索前の重複する紹介文を戻さない');
   assert.ok(html.includes(`title="${GUIDE_BRAND} RSS"`));
@@ -47,7 +48,8 @@ test('公開中の日本語記事はヘッダー・OGP・記事一覧導線を�
 
   for (const relativePath of files) {
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
-    assert.ok(html.includes(`🎮 ${GUIDE_BRAND}</a>`), `${relativePath}: header brand`);
+    const brand = html.match(/<a\b[^>]*class="(?:site-logo|logo)"[^>]*>([\s\S]*?)<\/a>/)?.[1].replace(/<[^>]*>/g, '');
+    assert.ok(brand?.includes(GUIDE_BRAND), `${relativePath}: header brand`);
     assert.ok(html.includes(`property="og:site_name" content="${GUIDE_BRAND}"`), `${relativePath}: og:site_name`);
     assert.equal(html.includes('Google Play Points 計算機 ＆ 攻略ガイド'), false, `${relativePath}: legacy header`);
     assert.equal(html.includes('<span class="nav-sub">全攻略ガイド</span>'), false, `${relativePath}: legacy nav label`);

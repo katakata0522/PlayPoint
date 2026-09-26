@@ -2,22 +2,24 @@
 (function () {
   'use strict';
   const doc = document;
+  if (doc.documentElement.lang !== 'ja' || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
+  // headで同期実行し、最初の描画からスマホ用の配置を確保する。
+  doc.documentElement.classList.add('guide-navigation-enabled');
   function init() {
-    if (doc.documentElement.lang !== 'ja' || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
     let header = doc.querySelector('.guide-header');
-    const home = !header && /^\/(?:index\.html)?$/.test(location.pathname) && doc.querySelector('.calculator-wrapper > .top-bar');
+    const home = /^\/(?:index\.html)?$/.test(location.pathname) && doc.querySelector('.calculator-wrapper > .top-bar');
     if (!header && !home) return;
     const el = (tag, className, text) => {
       const node = doc.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node;
     };
-    if (home) {
+    if (home && !header) {
       header = el('header', 'guide-header guide-calculator-header');
       const inner = el('div', 'site-header-inner'), brand = el('a', 'site-logo');
       brand.href = '/'; brand.append(el('span', 'guide-brand-short', 'PlayPoint'));
       brand.firstChild.append(el('span', '', 'ポイント計算機')); inner.append(brand); header.append(inner); doc.body.prepend(header);
     }
     const inner = header.querySelector('.site-header-inner');
-    if (!home) {
+    if (!home && !inner.querySelector('.guide-brand-short')) {
       const brand = inner.querySelector('.brand,.site-logo'), full = el('span', 'guide-brand-full', brand.textContent), short = el('span', 'guide-brand-short', 'PlayPoint');
       short.append(el('span', '', '記事ガイド')); brand.replaceChildren(full, short);
     }
