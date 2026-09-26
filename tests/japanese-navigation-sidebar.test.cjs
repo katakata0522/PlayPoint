@@ -115,3 +115,9 @@ test('記事一覧・最新情報・本文は同じ6つの行き先を持つ', (
     assert.equal((html.match(/<h1\b/g) || []).length, 1, file);
   }
 });
+
+
+test('ゲーム記事の次の行動は本文台帳の同じゲームの計算機を使う', () => {
+  assert.deepEqual(nextFor('game_decision', [], {gameTitle:'ブルアカ', related:[['/games/bluearchive/','計算する']]}), ['/games/bluearchive/','ブルアカの購入額を計算する']);
+  assert.equal(nextFor('game_decision', [], {gameTitle:'ポケスリ'})[0], '/articles/2026-07-25-play-points-coupon-not-applied.html');
+});

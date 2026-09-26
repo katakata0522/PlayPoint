@@ -157,3 +157,16 @@ test('reading theme resolves saved intent before the system preference and ignor
   assert.equal(resolveTheme(null,true),'dark');
   assert.equal(resolveTheme({theme:'invalid'},false),'light');
 });
+
+
+test('ゲーム略称と複合検索から、記事がない場合も該当する計算機へ案内する', () => {
+  const calculators = JSON.parse(read('blog/game-calculators.json'));
+  for (const [query, id] of [['ブルアカ 課金', 'bluearchive'], ['鳴潮 月パス', 'wutheringwaves'], ['メメントモリ', 'mementomori'], ['学マス', 'gakumas'], ['ニケ', 'nikke'], ['プロスピA', 'prospi-a']]) {
+    assert.deepEqual(blogUtils.relatedGameCalculators(calculators, query, '').map(game => game.id), [id], query);
+  }
+  assert.deepEqual(blogUtils.relatedGameCalculators(calculators, '存在しないゲーム', ''), []);
+  assert.deepEqual(blogUtils.relatedGameCalculators(calculators, '', 'ブルアカ').map(game => game.id), ['bluearchive']);
+  assert.deepEqual(blogUtils.relatedGameCalculators([{title:'ブルアカ',id:'bluearchive',href:'https://example.com'}], 'ブルアカ', ''), []);
+  assert.ok(blogUtils.gameTitleFilters([{gameTitle:'追加ゲーム'}]).includes('追加ゲーム'));
+  for (const game of calculators) assert.ok(fs.existsSync(path.join(root, game.href, 'index.html')), game.href);
+});

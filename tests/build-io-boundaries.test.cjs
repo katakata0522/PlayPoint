@@ -46,6 +46,7 @@ function discoveryFixture(t) {
   for (const file of articles) write(root, file, articleHtml);
   for (const file of hubs) write(root, file, hubHtml);
   for (const file of assets) write(root, file, 'fixture asset');
+  write(root, 'games/index.html', '<a class="game-portal-card" href="./fgo/"><h2 class="game-card-title">Fate/Grand Order (FGO)</h2></a>');
   write(root, 'blog/articles.json', JSON.stringify(articles.slice(0, 2).map(file => ({ file: '../' + file, title: 'Guide' }))));
   return { root, articles, hubs, assets };
 }
@@ -70,6 +71,8 @@ test('記事とハブは対象内だけを更新し、再実行で不要な再�
   const { root, articles, hubs, assets } = discoveryFixture(t);
   const io = ioCounts(t, root);
   assert.equal(syncArticleDiscovery(root), articles.length);
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root, 'blog/game-calculators.json'), 'utf8')),
+    [{ id: 'fgo', title: 'Fate/Grand Order (FGO)', href: '/games/fgo/' }]);
 
   for (const file of [...articles, ...hubs]) {
     assert.ok((io.reads.get(file) || 0) >= 1, file + ': target must be read');
@@ -85,6 +88,7 @@ test('記事とハブは対象内だけを更新し、再実行で不要な再�
   for (const file of ['blog', 'en/articles', 'ko/articles', 'tw/articles']) {
     assert.equal(io.writes.has(`${file}/article-search-index.json`), false);
   }
+  assert.equal(io.writes.has('blog/game-calculators.json'), false);
   for (const file of assets) assert.ok((io.reads.get(file) || 0) >= 1, file + ': shared asset must be re-evaluated between sync runs');
 });
 
@@ -179,4 +183,3 @@ test('価格安全補正は対象だけを変更し、再実行で冪等かつ�
   fs.rmSync(path.join(root, 'games/fgo/index.html'));
   assert.throws(() => syncGameSeoSafety(root), /ENOENT/);
 });
-

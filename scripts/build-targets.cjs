@@ -68,6 +68,7 @@ const generatedFiles = [
   'js/third-party.js',
   'blog/articles.json',
   'blog/article-search-index.json',
+  'blog/game-calculators.json',
   ...INTERNATIONAL_LOCALES.map(locale => `${locale}/articles/article-search-index.json`),
   ...articleHtmlFiles,
   ...Object.keys(EDITORIAL_TARGETS),

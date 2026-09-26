@@ -83,7 +83,7 @@ function stemOf(relativePath) {
 const ROLE_RULES = Object.freeze([
   {
     role: 'game_decision',
-    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-)/.test(stem)
+    test: stem => /(?:pad-puzzle-and-dragons|dokkan-battle|umamusume-half-anniversary|monst-|pokemon-sleep-|gakumas-|bluearchive-|nikke-)/.test(stem)
   },
   {
     role: 'troubleshooting',

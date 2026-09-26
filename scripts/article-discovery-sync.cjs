@@ -148,6 +148,16 @@ function applyDiscoveryAssets(html, assets) {
 }
 
 function syncArticleDiscovery(root) {
+  // 最終生成済みのゲーム一覧を使い、後続の拡張で追加されたタイトルも検索へ含める。
+  const portal = fs.readFileSync(path.join(root, 'games/index.html'), 'utf8');
+  const calculators = [...portal.matchAll(/<a\b[^>]*class="game-portal-card"[^>]*href="\.\/([a-z0-9-]+)\/"[^>]*>[\s\S]*?<h2 class="game-card-title">([\s\S]*?)<\/h2>[\s\S]*?<\/a>/g)]
+    .map(match => ({ id: match[1], title: text(match[2]), href: '/games/' + match[1] + '/' }));
+  if (!calculators.length) throw new Error('ゲーム一覧から検索候補を生成できません');
+  const calculatorFile = path.join(root, 'blog/game-calculators.json');
+  const calculatorOutput = JSON.stringify(calculators, null, 2) + '\n';
+  if (!fs.existsSync(calculatorFile) || fs.readFileSync(calculatorFile, 'utf8') !== calculatorOutput) {
+    fs.writeFileSync(calculatorFile, calculatorOutput);
+  }
   const entries = articleEntries(root), indexes = { ja: [], en: [], ko: [], tw: [] };
   const hubs = ['blog/index.html', ...INTERNATIONAL_LOCALES.map(l => `${l}/articles/index.html`)];
   const assets = buildDiscoveryAssets(root);
