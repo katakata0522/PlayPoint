@@ -438,8 +438,29 @@
         fetch('game-calculators.json').then(response => {
             if (!response.ok) throw new Error('Game links unavailable');
             return response.json();
-        }).then(items => { gameCalculators = Array.isArray(items) ? items : []; render(); })
+        }).then(items => { gameCalculators = Array.isArray(items) ? items : []; renderGameCalculatorLinks(); })
             .catch(() => { gameCalculatorsLoaded = false; });
+    }
+
+    // 案内の到着で記事やフォーカスを作り直さない。通信が遅い場合も操作中の要素を保つ。
+    function renderGameCalculatorLinks() {
+        if (!dom.grid) return;
+        dom.grid.querySelector('.game-search-links')?.remove();
+        const calculatorMatches = BlogUtils.relatedGameCalculators(gameCalculators, currentSearch, currentGameTitle);
+        if (calculatorMatches.length) {
+            const section = document.createElement('section'); section.className = 'game-search-links';
+            section.setAttribute('aria-label', '関連するゲームの計算機');
+            const label = document.createElement('p'); label.textContent = '購入額が決まっている方はこちら'; section.append(label);
+            const links = document.createElement('ul');
+            calculatorMatches.forEach(game => {
+                const li = document.createElement('li'), link = document.createElement('a');
+                link.href = game.href; link.textContent = game.title + 'のポイントを計算する'; li.append(link); links.append(li);
+            });
+            section.append(links);
+            const emptyState = dom.grid.querySelector('.empty-state');
+            if (emptyState) emptyState.after(section);
+            else dom.grid.prepend(section);
+        }
     }
 
     // Load articles with retry logic
@@ -737,18 +758,7 @@
         compactThumbnailObserver?.disconnect();
         for (const child of Array.from(dom.grid.childNodes)) { if (child !== listingAd) child.remove(); }
 
-        const calculatorMatches = BlogUtils.relatedGameCalculators(gameCalculators, currentSearch, currentGameTitle);
-        if (calculatorMatches.length) {
-            const section = document.createElement('section'); section.className = 'game-search-links';
-            section.setAttribute('aria-label', '関連するゲームの計算機');
-            const label = document.createElement('p'); label.textContent = '購入額が決まっている方はこちら'; section.append(label);
-            const links = document.createElement('ul');
-            calculatorMatches.forEach(game => {
-                const li = document.createElement('li'), link = document.createElement('a');
-                link.href = game.href; link.textContent = game.title + 'のポイントを計算する'; li.append(link); links.append(li);
-            });
-            section.append(links); dom.grid.append(section);
-        }
+        renderGameCalculatorLinks();
 
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);

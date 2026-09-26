@@ -67,6 +67,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.reload({waitUntil:'domcontentloaded'}); await cards(page);
     assert.equal(await page.locator('html').getAttribute('data-reading-theme'),'dark','Theme persisted across reload');
     await page.setViewportSize({width:390,height:844});
+    // 計算機案内が遅れて届いても、選択済みの記事カードを作り直さない。
+    let releaseCalculators;
+    const calculatorReady = new Promise(resolve => { releaseCalculators = resolve; });
+    await page.route('**/blog/game-calculators.json', async route => {
+      const response = await route.fetch();
+      await calculatorReady;
+      await route.fulfill({ response });
+    });
     // 新着記事の追加順に依存せず、画像を持つ公開ゲーム記事を検証する。
     await goto(page,'blog/'); await cards(page);
     const filterPanel = page.locator('#article-filter-panel');
@@ -86,6 +94,12 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await page.waitForFunction(() => new URL(location.href).searchParams.get('game') === 'FGO');
     await cards(page);
     assert.equal(await gameFilter.inputValue(), 'FGO', 'Game selection matches the URL');
+    const stableArticle = await page.locator('.article-card').first().elementHandle();
+    releaseCalculators();
+    await page.locator('.game-search-links a[href="/games/fgo/"]').waitFor({ state: 'visible', timeout: 10000 });
+    assert(await stableArticle.evaluate(el => el.isConnected), '計算機案内の到着で記事カードを交換しない');
+    await page.unroute('**/blog/game-calculators.json');
+    report.interactions.lateCalculatorLinks = true;
     // 実画像をスクロールで読み込み、1px placeholderを合格にしない。
     const images = page.locator('.card-thumb--app-icon img');
     assert(await images.count()>0,'Known game filter must expose a real app icon');
