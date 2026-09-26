@@ -42,7 +42,7 @@
 .ja-article-sidebar .sidebar-browse-item.is-current-topic .sidebar-browse-count { background: #e6f4f1; color: #0f766e; }
 
 /* Popular ranking: only No.1 gets visual emphasis; the rest stay scan-friendly. */
-.ja-article-sidebar .sidebar-popular-item--featured {
+.ja-article-sidebar .sidebar-popular-item.sidebar-popular-item--featured {
   grid-template-columns: 30px 62px minmax(0, 1fr);
   gap: 8px; align-items: center; padding: 4px 0 11px;
 }
@@ -190,6 +190,7 @@ html[lang="ja"] body .guide-latest-layout .benefit-action:hover { text-decoratio
   html[lang="ja"] body .main-content-column h1 { font-size:23px; }
   html[lang="ja"] body .ja-article-sidebar { display:flex; }
   html[lang="ja"] body.blog-index-compact .hero-title { font-size:23px; line-height:1.5; }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card { padding:6px 10px; }
   html[lang="ja"] body.blog-index-compact .article-card { grid-template-columns:88px minmax(0,1fr); }
   html[lang="ja"] body.blog-index-compact .article-card .card-content { padding:12px; }
   html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:17px; }
@@ -197,3 +198,5 @@ html[lang="ja"] body .guide-latest-layout .benefit-action:hover { text-decoratio
   html[lang="ja"] body .guide-latest-layout .lp-hero h1 { font-size:24px; }
   html[lang="ja"] body .guide-latest-layout .benefit-tabs { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+
+.ja-article-sidebar .sidebar-popular-item.sidebar-popular-item--text-only { grid-template-columns: 30px minmax(0, 1fr); }

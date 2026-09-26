@@ -11,6 +11,7 @@ const ARTIFACT_DIR = path.join(ROOT, 'browser-smoke-artifacts');
 const CHROME_PATH = process.env.CHROME_PATH;
 const REQUESTED_BASE_URL = (process.env.SMOKE_BASE_URL || '').trim();
 const REPRESENTATIVE_CASES = [
+  ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
@@ -87,6 +88,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       const markerStyle = style(marker);
       const relatedStyle = style(related);
       return {
+        popularCopyWidth: document.querySelector('.sidebar-popular-feature-copy')?.getBoundingClientRect().width || 0,
         sharedLoaded: Boolean(shared?.sheet),
         fallbackTheme: document.documentElement.dataset.readingTheme,
         answer: answerStyle ? { borderLeftWidth: answerStyle.borderLeftWidth, borderRadius: answerStyle.borderRadius, backgroundImage: answerStyle.backgroundImage } : null,
@@ -99,6 +101,7 @@ async function inspect(browser, baseUrl, article, viewport) {
       };
     });
 
+    if (viewport.width > 860 && result.popularCopyWidth) assert(result.popularCopyWidth >= 80, article.key + ': 人気記事の本文幅が狭すぎる');
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
     assert(result.fallbackTheme === 'light', article.key + '/' + viewport.key + ': readable static theme missing without JavaScript');
     if (!article.allArticle || result.answer) {

@@ -37,9 +37,9 @@ function getImageDimensions(buffer) {
   return null;
 }
 
-test('全64記事は重複のない専用OGP画像URLを持ち、共通ogp.pngを使用しない', () => {
+test('全記事は重複のない専用OGP画像URLを持ち、共通ogp.pngを使用しない', () => {
   const files = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html'));
-  assert.equal(files.length, 64, 'articles/ に全64記事が存在すること');
+  assert.ok(files.length > 0, '記事の検査対象が空でないこと');
 
   const ogImages = new Map();
   for (const file of files) {
@@ -57,10 +57,10 @@ test('全64記事は重複のない専用OGP画像URLを持ち、共通ogp.png�
     ogImages.set(ogUrl, file);
   }
 
-  assert.equal(ogImages.size, 64, '全64記事がそれぞれ一意なOGP画像を持つこと');
+  assert.equal(ogImages.size, files.length, '全記事がそれぞれ一意なOGP画像を持つこと');
 });
 
-test('全64記事のHTMLは1200x630規格・alt・MIME型・locale・Twitterタグを完備する', () => {
+test('全記事のHTMLは1200x630規格・alt・MIME型・locale・Twitterタグを完備する', () => {
   const files = fs.readdirSync(articlesDir).filter(f => f.endsWith('.html'));
 
   for (const file of files) {

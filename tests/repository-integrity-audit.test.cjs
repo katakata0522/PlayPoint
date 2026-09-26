@@ -27,6 +27,7 @@ const runtimeEntrypoints = new Set([
   'blog/articles.json',
   // Search data is fetched relative to each hub at runtime.
   'blog/article-search-index.json',
+  'blog/game-calculators.json',
   'en/articles/article-search-index.json',
   'ko/articles/article-search-index.json',
   'tw/articles/article-search-index.json',

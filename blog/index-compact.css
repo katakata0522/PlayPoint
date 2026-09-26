@@ -830,3 +830,11 @@ body.blog-index-compact .reading-library { padding: .5rem .75rem; }
   body.blog-index-compact .search-pathways--primary .pathway-icon { display: none; }
   body.blog-index-compact .hero-title { font-size: 1.3rem; }
 }
+
+/* ゲームの入口は検索欄のそばに置き、狭い画面でも操作できる幅を保つ。 */
+.blog-discovery > .game-filter-container { display: grid; grid-template-columns: max-content minmax(0, 320px); align-items: center; gap: 8px 12px; margin: 6px 0; min-width: 0; }
+.blog-discovery > .game-filter-container select { width: 100%; min-width: 0; min-height: 44px; }
+.game-search-links { grid-column: 1 / -1; padding: 12px 16px; border: 1px solid var(--reading-border, #dbe2ea); border-radius: 8px; background: var(--reading-soft, #f5f8fa); }
+.game-search-links p { margin: 0 0 6px; font-size: 13px; }
+.game-search-links ul { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding-left: 18px; }
+.game-search-links a { display: inline-block; padding: 5px 0; overflow-wrap: anywhere; }

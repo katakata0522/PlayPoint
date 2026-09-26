@@ -103,8 +103,12 @@
         "特別獲得率の扱いを確認する"
       ],
       [
-        "/games/prospi-a/google-play-vs-konami-store/",
-        "プロスピAの公式ストア比較を見る"
+        "/articles/2026-09-19-monst-in-app-packs-guide.html",
+        "モンストのパック・モンパスを目的から選ぶ"
+      ],
+      [
+        "/games/monst/",
+        "モンストの購入額でポイントを計算する"
       ]
     ],
     "date": "2026-09-13",
@@ -646,10 +650,145 @@
     "browseCategory": "ゲーム別課金"
   },
   {
+    "id": "nikke-monthly-card-midasbuy-2026",
+    "title": "NIKKEの30日補給とMidasbuyはどう選ぶ？受取日数・購入経路を比較",
+    "date": "2026-09-26",
+    "modified": "2026-09-26",
+    "category": "使い方",
+    "gameTitle": "NIKKE",
+    "listTitle": "NIKKE｜30日補給とMidasbuyの選び方",
+    "tags": [
+      "NIKKE",
+      "ニケ",
+      "勝利の女神",
+      "30日",
+      "30DAY補給品",
+      "マンスリーカード",
+      "Midasbuy"
+    ],
+    "description": "NIKKEの公式Midasbuyで確認したマンスリーカード800円・30日間の受取条件を解説。即時購入やGoogle Play Pointsとの違いも比較します。",
+    "file": "../articles/2026-09-26-nikke-monthly-card-midasbuy.html",
+    "related": [
+      [
+        "/games/nikke/",
+        "NIKKEの購入額でポイントを試算する"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "公式WebストアとGoogle Playの違いを確認する"
+      ]
+    ],
+    "ogp": "../articles/ogp/2026-09-26-nikke-monthly-card-midasbuy.png",
+    "browseCategory": "ゲーム別課金",
+    "listed": true,
+    "thumbnail": "../articles/ogp/2026-09-26-nikke-monthly-card-midasbuy.png",
+    "thumbnailKind": "generic"
+  },
+  {
+    "id": "bluearchive-monthly-packs-guide-2026",
+    "title": "ブルアカのマンスリーはどっち？AP特典・受取日・購入先の違い",
+    "date": "2026-09-26",
+    "modified": "2026-09-26",
+    "category": "使い方",
+    "gameTitle": "ブルアカ",
+    "listTitle": "ブルアカ｜マンスリーと購入先の選び方",
+    "tags": [
+      "ブルアカ",
+      "ブルーアーカイブ",
+      "Blue Archive",
+      "マンスリー",
+      "ハーフ",
+      "Yostar"
+    ],
+    "description": "ブルアカのマンスリーとハーフを、学園交流会のAP特典、公式チャージセンターでの受取日、Google Play Pointsの違いから比較します。",
+    "file": "../articles/2026-09-26-bluearchive-monthly-packs-guide.html",
+    "related": [
+      [
+        "/games/bluearchive/",
+        "ブルアカの購入額でポイントを試算する"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "Web購入でPlay Pointsが付かない理由を見る"
+      ]
+    ],
+    "ogp": "../articles/ogp/2026-09-26-bluearchive-monthly-packs-guide.png",
+    "browseCategory": "ゲーム別課金",
+    "listed": true,
+    "thumbnail": "../articles/ogp/2026-09-26-bluearchive-monthly-packs-guide.png",
+    "thumbnailKind": "generic"
+  },
+  {
+    "id": "gakumas-webshop-google-play-2026",
+    "title": "学マスはWEB SHOPとGoogle Playどっち？ジュエル数・DMMとの違いを比較",
+    "date": "2026-09-26",
+    "modified": "2026-09-26",
+    "category": "使い方",
+    "gameTitle": "学マス",
+    "listTitle": "学マス｜WEB SHOP・Google Play・DMMの違い",
+    "tags": [
+      "学マス",
+      "学園アイドルマスター",
+      "WEB SHOP",
+      "ジュエル",
+      "DMM"
+    ],
+    "description": "学マス公式WEB SHOPのジュエル価格と増量、スマホ版とDMM版の扱いを確認。Play Pointsを含めて購入先を選ぶ方法を解説します。",
+    "file": "../articles/2026-09-26-gakumas-webshop-google-play.html",
+    "related": [
+      [
+        "/games/gakumas/",
+        "学マスの購入額でポイントを試算する"
+      ],
+      [
+        "/articles/2026-08-19-web-store-external-billing-points.html",
+        "外部決済とGoogle Playの違いを確認する"
+      ]
+    ],
+    "ogp": "../articles/ogp/2026-09-26-gakumas-webshop-google-play.png",
+    "browseCategory": "ゲーム別課金",
+    "listed": true,
+    "thumbnail": "../articles/ogp/2026-09-26-gakumas-webshop-google-play.png",
+    "thumbnailKind": "generic"
+  },
+  {
+    "id": "pokemon-sleep-play-points-coupon-2026",
+    "title": "ポケスリでPlay Pointsを使うには？クーポン交換から割引確認まで",
+    "date": "2026-09-26",
+    "modified": "2026-09-26",
+    "category": "使い方",
+    "gameTitle": "ポケスリ",
+    "listTitle": "ポケスリ｜クーポンの交換・使い方",
+    "tags": [
+      "ポケスリ",
+      "Pokémon Sleep",
+      "ポケモンスリープ",
+      "クーポン",
+      "交換"
+    ],
+    "description": "Pokémon SleepのGoogle Playクーポンを、交換場所・購入時の割引・有効期限から解説。表示されない場合やプレミアムパスを買う前の確認点もまとめます。",
+    "file": "../articles/2026-09-26-pokemon-sleep-play-points-coupon.html",
+    "related": [
+      [
+        "/articles/2025-12-25-best-use.html",
+        "クーポンとPlayクレジットの使い道を比べる"
+      ],
+      [
+        "/articles/2026-07-25-play-points-coupon-not-applied.html",
+        "割引が適用されないときの確認順"
+      ]
+    ],
+    "ogp": "../articles/ogp/2026-09-26-pokemon-sleep-play-points-coupon.png",
+    "browseCategory": "ゲーム別課金",
+    "listed": true,
+    "thumbnail": "../articles/ogp/2026-09-26-pokemon-sleep-play-points-coupon.png",
+    "thumbnailKind": "generic"
+  },
+  {
     "id": "monst-in-app-packs-guide-2026",
     "title": "モンスト課金パックのコスパ・おすすめ一覧｜Playポイント還元と購入優先度",
     "date": "2026-09-19",
-    "modified": "2026-09-19",
+    "modified": "2026-09-26",
     "category": "使い方",
     "gameTitle": "モンスト",
     "tags": [
@@ -659,27 +798,27 @@
       "モンパス",
       "Play Points"
     ],
-    "description": "モンストの初心者応援パック、プレミアム、初獲得パック、コラボスターターパック、選べるアビリティパック、モンパス＆プレミアムの価格・特典・オーブ単価・Playポイント還元を徹底比較。課金優先度ランキングと毎月1日の活用法を解説します。",
+    "description": "モンストの常設パックとモンパスを、公式の価格・中身・購入条件から比較。確定ガチャの違い、税抜価格からのPlay Points計算、遊び方に合う選び方をまとめます。",
     "file": "../articles/2026-09-19-monst-in-app-packs-guide.html",
     "related": [
       [
-        "/articles/2026-09-19-monst-web-shop-vs-google-play.html",
-        "モンストWebショップとGoogle Play課金の比較を見る"
-      ],
-      [
         "/games/monst/google-play-vs-webshop/",
-        "モンストのWebショップ比較計算機を見る"
+        "モンストの購入経路・オーブ数を比べる"
       ],
       [
-        "/articles/2026-08-16-play-points-day.html",
-        "毎月1日のPlayポイントデー詳細を確認する"
+        "/articles/2026-09-19-monst-web-shop-vs-google-play.html",
+        "1万円課金のポイント価値を比べる"
+      ],
+      [
+        "/games/monst/",
+        "自分の購入額でポイントを計算する"
       ]
     ],
     "thumbnail": "../images/game-icons/monst.webp",
     "thumbnailKind": "app-icon",
     "source": "article",
     "listed": true,
-    "listTitle": "モンスト｜課金パックの価格・特典・購入優先度",
+    "listTitle": "モンスト｜パックとモンパスの選び方",
     "listDescription": "各パックの価格とオーブ単価を比較。自分に必要な特典から購入候補を選べます。",
     "browseCategory": "ゲーム別課金"
   },
@@ -725,7 +864,7 @@
     "id": "play-points-calendar-schedule-guide-2026",
     "title": "Google Play Pointsお得カレンダー｜毎日・毎週・毎月・年間イベントのスケジュール完全攻略",
     "date": "2026-09-19",
-    "modified": "2026-09-22",
+    "modified": "2026-09-26",
     "category": "キャンペーン",
     "tags": [
       "Play Points",

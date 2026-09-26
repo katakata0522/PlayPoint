@@ -1,0 +1,122 @@
+[
+  {
+    "id": "genshin",
+    "title": "原神 (Genshin Impact)",
+    "href": "/games/genshin/"
+  },
+  {
+    "id": "starrail",
+    "title": "崩壊：スターレイル (Honkai: Star Rail)",
+    "href": "/games/starrail/"
+  },
+  {
+    "id": "zzz",
+    "title": "ゼンレスゾーンゼロ (Zenless Zone Zero)",
+    "href": "/games/zzz/"
+  },
+  {
+    "id": "bluearchive",
+    "title": "ブルーアーカイブ (Blue Archive)",
+    "href": "/games/bluearchive/"
+  },
+  {
+    "id": "pokepoke",
+    "title": "Pokémon TCG Pocket (ポケポケ)",
+    "href": "/games/pokepoke/"
+  },
+  {
+    "id": "fgo",
+    "title": "Fate/Grand Order (FGO)",
+    "href": "/games/fgo/"
+  },
+  {
+    "id": "umamusume",
+    "title": "ウマ娘 プリティーダービー",
+    "href": "/games/umamusume/"
+  },
+  {
+    "id": "monst",
+    "title": "モンスターストライク (モンスト)",
+    "href": "/games/monst/"
+  },
+  {
+    "id": "gakumas",
+    "title": "学園アイドルマスター (学マス)",
+    "href": "/games/gakumas/"
+  },
+  {
+    "id": "proseka",
+    "title": "プロジェクトセカイ (プロセカ)",
+    "href": "/games/proseka/"
+  },
+  {
+    "id": "nikke",
+    "title": "勝利の女神：NIKKE",
+    "href": "/games/nikke/"
+  },
+  {
+    "id": "wutheringwaves",
+    "title": "鳴潮 (Wuthering Waves)",
+    "href": "/games/wutheringwaves/"
+  },
+  {
+    "id": "dokkan",
+    "title": "ドラゴンボールZ ドッカンバトル",
+    "href": "/games/dokkan/"
+  },
+  {
+    "id": "pad",
+    "title": "パズル＆ドラゴンズ (Puzzle & Dragons)",
+    "href": "/games/pad/"
+  },
+  {
+    "id": "arknights",
+    "title": "アークナイツ (Arknights)",
+    "href": "/games/arknights/"
+  },
+  {
+    "id": "hbr",
+    "title": "ヘブンバーンズレッド (ヘブバン)",
+    "href": "/games/hbr/"
+  },
+  {
+    "id": "mementomori",
+    "title": "メメントモリ (MementoMori)",
+    "href": "/games/mementomori/"
+  },
+  {
+    "id": "phantomparade",
+    "title": "呪術廻戦 ファントムパレード (ファンパレ)",
+    "href": "/games/phantomparade/"
+  },
+  {
+    "id": "reverse1999",
+    "title": "リバース：1999 (Reverse: 1999)",
+    "href": "/games/reverse1999/"
+  },
+  {
+    "id": "honkai3rd",
+    "title": "崩壊3rd (Honkai Impact 3rd)",
+    "href": "/games/honkai3rd/"
+  },
+  {
+    "id": "shadowversewb",
+    "title": "シャドウバース ワールズビヨンド",
+    "href": "/games/shadowversewb/"
+  },
+  {
+    "id": "prospi-a",
+    "title": "プロ野球スピリッツA (プロスピA)",
+    "href": "/games/prospi-a/"
+  },
+  {
+    "id": "pokemon-go",
+    "title": "Pokémon GO",
+    "href": "/games/pokemon-go/"
+  },
+  {
+    "id": "efootball",
+    "title": "eFootball™",
+    "href": "/games/efootball/"
+  }
+]

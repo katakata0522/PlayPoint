@@ -70,6 +70,9 @@ function nextFor(role, related, article) {
   if (role === 'game_decision') {
     const match = String(article?.path || '').match(/^games\/([^/]+)\/[^/]+\/index\.html$/);
     if (match) return ['/games/' + match[1] + '/', '同じゲームの課金額を計算する'];
+    const calculator = (article?.related || []).find(([href]) => /^\/games\/[a-z0-9-]+\/$/.test(href));
+    if (calculator) return [calculator[0], (article.gameTitle || '同じゲーム') + 'の購入額を計算する'];
+    if (article?.gameTitle === 'ポケスリ') return ['/articles/2026-07-25-play-points-coupon-not-applied.html', 'クーポンが使えないときの確認順を見る'];
     return ['/games/', 'ゲーム別の購入額を試算する'];
   }
   if (role === 'hold' || !related.length) return ['/blog/', '公開中のガイドを探す'];
@@ -111,7 +114,7 @@ function renderPopularWidget(article, catalog = []) {
       ? `<span class="sidebar-popular-current-title">${escapeHtml(item.label)}</span><span class="sidebar-popular-reading">閲覧中</span>`
       : `<a class="sidebar-popular-link" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`;
     if (featured) {
-      return `<li class="sidebar-popular-item sidebar-popular-item--featured${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb"><img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
+      return `<li class="sidebar-popular-item sidebar-popular-item--featured${thumbnail ? '' : ' sidebar-popular-item--text-only'}${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span>${thumbnail ? `<div class="sidebar-popular-thumb"><img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" decoding="async"></div>` : ''}<div class="sidebar-popular-feature-copy">${topic}${title}</div></li>`;
     }
     return `<li class="sidebar-popular-item${item.isCurrent ? ' is-current' : ''}"><span class="sidebar-popular-rank">${rank}</span><div>${title}</div></li>`;
   }).join('')}</ol></div></section>`;

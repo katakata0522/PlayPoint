@@ -5,7 +5,25 @@
     const PLACEHOLDER_IMAGE = '/images/article-placeholder.svg';
 
     // 記事一覧のゲーム名絞り込み（articles.json に第5カテゴリを足さない）
-    const GAME_TITLE_FILTERS = Object.freeze(['FGO', '原神', 'モンスト', 'スタレ', 'ゼンゼロ', 'ウマ娘', 'プロセカ', 'ポケポケ', 'パズドラ', 'アークナイツ', 'ドッカン', 'ヘブバン', '崩壊3rd', 'ファンパレ', 'プロスピA', 'Pokémon GO', 'eFootball']);
+    const GAME_TITLE_FILTERS = Object.freeze(['FGO', '原神', 'モンスト', 'スタレ', 'ゼンゼロ', 'ウマ娘', 'プロセカ', 'ポケポケ', 'パズドラ', 'アークナイツ', 'ドッカン', 'ヘブバン', '崩壊3rd', 'ファンパレ', 'プロスピA', 'Pokémon GO', 'eFootball', 'ポケスリ', '学マス', 'ブルアカ', 'NIKKE']);
+
+    function gameTitleFilters(articles) {
+        return [...new Set([...GAME_TITLE_FILTERS, ...(articles || []).map(a => a.gameTitle).filter(Boolean)])];
+    }
+
+    function relatedGameCalculators(calculators, query, gameTitle) {
+        const search = root.PlayPointSearch || (typeof require === 'function' ? require('../js/article-search.js') : null);
+        const normalize = value => search ? search.canonical(value, 'ja') : String(value || '').toLowerCase();
+        const selected = normalize(gameTitle), input = normalize(query);
+        if (!selected && !input) return [];
+        return (calculators || []).filter(game => {
+            if (!/^\/games\/[a-z0-9-]+\/$/.test(game.href)) return false;
+            const names = [game.title, ...String(game.title).split(/[()]/), game.id].map(normalize).filter(Boolean);
+            const terms = search ? search.tokens(query, 'ja') : input.split(/\s+/);
+            return selected ? names.some(name => name.includes(selected) || selected.includes(name))
+                : names.some(name => input.includes(name) || terms.some(term => name.includes(term)));
+        }).slice(0, 3);
+    }
 
     /**
      * タイトル・説明・タグ・カテゴリを小文字化してメモリ内検索用インデックスにする
@@ -47,6 +65,7 @@
     function articleMatchesGameTitle(article, gameTitle) {
         if (!gameTitle) return true;
         const source = article && typeof article === 'object' ? article : {};
+        if (source.gameTitle === gameTitle) return true;
         const title = typeof source.title === 'string' ? source.title : '';
         const tags = Array.isArray(source.tags) ? source.tags : [];
         if (title.includes(gameTitle)) return true;
@@ -194,7 +213,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators
     };
 
     const api = Object.assign({}, BlogUtils, {
@@ -204,7 +223,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators
     });
 
     if (typeof module === 'object' && module.exports) {

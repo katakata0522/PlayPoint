@@ -54,7 +54,8 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
       ['/articles/2026-09-19-monst-web-shop-vs-google-play.html', '1万円課金のポイント価値・損得分岐点を計算する'],
       ['/articles/2026-08-19-web-store-external-billing-points.html', '公式WebストアとGoogle Play課金の違いを確認する'],
       ['/articles/2026-08-05-play-points-multiplier-stacking.html', '特別獲得率の扱いを確認する'],
-      ['/games/prospi-a/google-play-vs-konami-store/', 'プロスピAの公式ストア比較を見る']
+      ['/articles/2026-09-19-monst-in-app-packs-guide.html', 'モンストのパック・モンパスを目的から選ぶ'],
+      ['/games/monst/', 'モンストの購入額でポイントを計算する']
     ]
   },
   {

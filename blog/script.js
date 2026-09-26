@@ -233,6 +233,7 @@
             date: BlogUtils.validArticleDate(article.date),
             modified: BlogUtils.validArticleDate(article.modified),
             category,
+            gameTitle: typeof article.gameTitle === 'string' ? article.gameTitle : '',
             browseCategory: typeof article.browseCategory === 'string' ? article.browseCategory : '',
             tags,
             description,
@@ -429,6 +430,18 @@
         return bodySearchPromise;
     }
 
+    let gameCalculators = [];
+    let gameCalculatorsLoaded = false;
+    function loadGameCalculators() {
+        if (gameCalculatorsLoaded) return;
+        gameCalculatorsLoaded = true;
+        fetch('game-calculators.json').then(response => {
+            if (!response.ok) throw new Error('Game links unavailable');
+            return response.json();
+        }).then(items => { gameCalculators = Array.isArray(items) ? items : []; render(); })
+            .catch(() => { gameCalculatorsLoaded = false; });
+    }
+
     // Load articles with retry logic
     async function loadArticles() {
         try {
@@ -443,6 +456,7 @@
             setupCategories(allArticles);
             setupCategoryOverflow();
             setupGameTitleFilter();
+            loadGameCalculators();
 
             // 入力を待たせず暫定結果を描画し、本文索引の取得後も最新の条件だけで描画する。
             if (dom.searchInput && !dom.searchInput.dataset.bound) {
@@ -576,7 +590,8 @@
         if (!select) return;
 
         const existing = new Set(Array.from(select.options).map(option => option.value));
-        BlogUtils.GAME_TITLE_FILTERS.forEach(name => {
+        const gameNames = BlogUtils.gameTitleFilters(allArticles);
+        gameNames.forEach(name => {
             if (existing.has(name)) return;
             const option = document.createElement('option');
             option.value = name;
@@ -584,7 +599,7 @@
             select.appendChild(option);
         });
 
-        if (currentGameTitle && !BlogUtils.GAME_TITLE_FILTERS.includes(currentGameTitle)) {
+        if (currentGameTitle && !gameNames.includes(currentGameTitle)) {
             currentGameTitle = '';
         }
         select.value = currentGameTitle;
@@ -722,9 +737,22 @@
         compactThumbnailObserver?.disconnect();
         for (const child of Array.from(dom.grid.childNodes)) { if (child !== listingAd) child.remove(); }
 
+        const calculatorMatches = BlogUtils.relatedGameCalculators(gameCalculators, currentSearch, currentGameTitle);
+        if (calculatorMatches.length) {
+            const section = document.createElement('section'); section.className = 'game-search-links';
+            section.setAttribute('aria-label', '関連するゲームの計算機');
+            const label = document.createElement('p'); label.textContent = '購入額が決まっている方はこちら'; section.append(label);
+            const links = document.createElement('ul');
+            calculatorMatches.forEach(game => {
+                const li = document.createElement('li'), link = document.createElement('a');
+                link.href = game.href; link.textContent = game.title + 'のポイントを計算する'; li.append(link); links.append(li);
+            });
+            section.append(links); dom.grid.append(section);
+        }
+
         if (pageItems.length === 0) {
           var q = BlogUtils.escapeHtml(currentSearch);
-          dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」の記事は見つかりませんでした' : '該当する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
+          dom.grid.insertAdjacentHTML('afterbegin', '<div class="empty-state"><h2>' + (q ? '「' + q + '」に一致する記事は見つかりませんでした' : 'この絞り込みに一致する記事はありません') + '</h2><p>表記を短くするか、「必要額」「反映」「キャンペーン」などでもお試しください。</p><button class="reset-btn" id="reset-filters">検索とカテゴリーをリセット</button></div>');
           document.getElementById('reset-filters').addEventListener('click', resetFilters);
           const recovery = document.createElement('div'); recovery.className = 'search-recovery';
           if (currentBrowseCategory || currentCategory !== 'all' || currentGameTitle) {
