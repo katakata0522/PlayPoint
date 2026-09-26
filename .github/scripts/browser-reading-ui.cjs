@@ -77,6 +77,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
           const channels=getComputedStyle(document.body).backgroundColor.match(/[\d.]+/g)?.slice(0,3).map(Number)||[];
           return channels.length===3 && (t==='dark' ? Math.max(...channels)<128 : Math.min(...channels)>180);
         },theme,{timeout:10000});
+        const brand = page.locator('.guide-header .brand');
+        assert(await brand.isVisible() && (await brand.innerText()).includes(width <= 760 ? 'PlayPoint' : 'Google Play Points'),`${theme}/${width}: header brand must be visible`);
         const samples = await palette(page,['h1','.article-card h3','.article-card time','#category-filter button.active','#search-input']);
         if(await page.locator('.card-category:visible').count()) samples.push(...await palette(page,['.card-category']));
         for(const sample of samples) assert(!sample.missing && sample.ratio>=4.5,`${theme}/${width}: ${JSON.stringify(sample)}`);
