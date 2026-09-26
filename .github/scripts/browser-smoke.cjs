@@ -323,6 +323,17 @@ async function verifyHydratedPage(browser, baseUrl, locale) {
     ), selectedRate);
     assert(sameNumber(await page.locator('#baseRate').inputValue(), selectedRate), `${locale.key} automatic earn-rate mismatch`);
 
+    if (locale.key === 'JP') {
+      const maxPoints = Number(await page.locator('#neededPoints').getAttribute('max'));
+      const targetLabel = await page.locator('#targetStatus option:checked').getAttribute('data-status-label');
+      await page.locator('#neededPoints').fill(String(maxPoints + 1));
+      await page.locator('#calculateButton').click();
+      const correction = await page.locator('#result .error-text').innerText();
+      assert(correction.includes(targetLabel) && correction.includes(maxPoints.toLocaleString('ja-JP')) && correction.includes('目標ステータス'), 'Invalid points must explain the selected target, limit, and how to correct it');
+      assert(await page.locator('#neededPoints').inputValue() === String(maxPoints + 1), 'Validation must preserve the entered value');
+      await saveScreenshot(page, 'jp-points-correction.png');
+    }
+
     const minimumPoints = Number(await page.locator('#neededPoints').getAttribute('min')) || 1;
     await page.locator('#neededPoints').fill(String(Math.max(125, minimumPoints)));
     await page.locator('#calculateButton').click();
@@ -494,7 +505,7 @@ async function verifyBlogPage(browser, baseUrl) {
       genericThumbnailImages: document.querySelectorAll('.article-card .card-thumb--generic img').length,
       oversizedAppIcons: [...document.querySelectorAll('.article-card .card-thumb--app-icon img')]
         .filter(image => image.naturalWidth > 128 || image.naturalHeight > 128).length,
-      textOnlyThumbnails: document.querySelectorAll('.article-card .card-thumb--text-only').length
+      textOnlyCards: [...document.querySelectorAll('.article-card')].filter(card => !card.querySelector('.card-thumb') && card.querySelector('.card-topic')?.textContent.trim()).length
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
@@ -504,8 +515,8 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
     assert(initial.oversizedAppIcons === 0, `Blog mobile app icons exceed the 128px list-image budget: ${initial.oversizedAppIcons}`);
-    assert(initial.textOnlyThumbnails + initial.thumbnailImages === initial.cards,
-      `Blog compact thumbnails mismatch: text=${initial.textOnlyThumbnails}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
+    assert(initial.textOnlyCards + initial.thumbnailImages === initial.cards,
+      `Blog compact article presentation mismatch: text=${initial.textOnlyCards}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
 
     const nextButton = page.getByRole('button', { name: '次へ →' });
     if (await nextButton.count()) {
@@ -566,12 +577,15 @@ async function verifyBlogPage(browser, baseUrl) {
     // PCでサムネイルの旧固定幅が本文に重ならないことも確認する。
     for (const width of [390, 1280]) {
       await page.setViewportSize({ width, height: 900 });
-      const boxes = await page.locator('.article-card').first().evaluate(card => {
-        const image = card.querySelector('.card-thumb').getBoundingClientRect();
+      await page.waitForFunction(mobile => [...document.querySelectorAll('.article-card')].every(card => mobile
+        ? !card.querySelector('.card-thumb--generic')
+        : Boolean(card.querySelector('.card-thumb'))), width <= 760);
+      const boxes = await page.locator('.article-card').evaluateAll(cards => cards.map(card => {
+        const image = card.querySelector('.card-thumb')?.getBoundingClientRect();
         const content = card.querySelector('.card-content').getBoundingClientRect();
-        return { right: image.right, left: content.left, overflow: document.documentElement.scrollWidth - innerWidth };
-      });
-      assert(boxes.right <= boxes.left + 1 && boxes.overflow <= 1, 'Blog card image overlaps its text or viewport at ' + width);
+        return { right: image?.right ?? content.left, left: content.left, overflow: document.documentElement.scrollWidth - innerWidth };
+      }));
+      assert(boxes.every(box => box.right <= box.left + 1 && box.overflow <= 1), 'Blog card image overlaps its text or viewport at ' + width);
     }
 
     await page.waitForTimeout(500);

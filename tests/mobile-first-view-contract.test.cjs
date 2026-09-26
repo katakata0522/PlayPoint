@@ -8,6 +8,7 @@ const vm = require('node:vm');
 const { APP_MODULE_FILES } = require('../scripts/asset-sync.cjs');
 const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
 const { createRuntime: createServiceWorkerRuntime } = require('./helpers/service-worker-runtime.cjs');
+const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -280,19 +281,19 @@ test('同じランク条件の再計算だけ前回との差を表示する', ()
   assert.match(fixture.api.formatLastCalculationText('JP', changedTarget, previous), /前回：1,200pt/);
 });
 
-test('公開トップは役割が分かる既存タブ名と、入力を邪魔しない前回値表示領域を持つ', () => {
+test('公開トップのタブ名は実行時の地域設定と一致し、前回値表示は入力を邪魔しない', () => {
+  const configs = loadConfigs(true);
   const expected = {
-    'index.html': ['通常計算', '逆算モード', 'ウィークリーリワード記録'],
-    'en/index.html': ['Standard', 'Reverse', 'Weekly Rewards Diary'],
-    'ko/index.html': ['일반 계산', '역산 모드', '주간 리워드 일기'],
-    'tw/index.html': ['一般計算', '逆算模式', '每週獎勵日記'],
-    'hk/index.html': ['一般計算', '逆算模式', '每週獎勵日記'],
-    'in/index.html': ['Standard', 'Reverse', 'Weekly Rewards Diary']
+    'index.html': 'JP', 'en/index.html': 'US', 'ko/index.html': 'KR',
+    'tw/index.html': 'TW', 'hk/index.html': 'HK', 'in/index.html': 'IN'
   };
 
-  for (const [indexPath, labels] of Object.entries(expected)) {
+  for (const [indexPath, region] of Object.entries(expected)) {
     const html = read(indexPath);
-    labels.forEach(label => assert.ok(html.includes(label), indexPath + ': missing ' + label));
+    for (const key of ['tabMain', 'tabReverse', 'tabDiary']) {
+      const label = html.match(new RegExp(`data-lang-key="${key}">([^<]+)</button>`))?.[1];
+      assert.equal(label, configs[region].uiText[key], indexPath + ': static/runtime tab label mismatch');
+    }
     assert.ok(html.includes('id="calculator-last-value"'), indexPath + ': memory UI missing');
     const needed = html.indexOf('id="neededPoints"');
     const calculate = html.indexOf('id="calculateButton"');

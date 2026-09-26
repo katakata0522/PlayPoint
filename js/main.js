@@ -92,7 +92,9 @@ function getValidationErrorType(mode) {
             ['errorInput', 'invalid_input']
         ];
 
-    const matched = candidates.find(([key]) => texts[key] && texts[key] === message);
+    // 目標と上限の補足を付けても、計測へ送るのは固定のエラー種別だけにする。
+    const matched = candidates.find(([key]) => texts[key] && (texts[key] === message
+        || (key === 'errorTargetConsistency' && message.startsWith(texts[key]))));
     return matched ? matched[1] : 'unknown';
 }
 

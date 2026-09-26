@@ -825,6 +825,7 @@
                 Analytics.trackArticleClick(article.title, article.category);
             });
             const renderThumbnail = shouldRenderArticleThumbnail(article);
+            card.classList.toggle('article-card--text-only', !renderThumbnail);
             const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
             const compactExplicitThumbnail = renderThumbnail
                 && isCompactArticleList()
@@ -839,20 +840,17 @@
             const thumbnailMarkup = renderThumbnail
                 ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
                 : '';
-            const thumbnailClass = renderThumbnail
-                ? `card-thumb card-thumb--${thumbnailKind}`
-                : 'card-thumb card-thumb--text-only';
-            const thumbnailStyle = '';
+            const thumbnailClass = `card-thumb card-thumb--${thumbnailKind}`;
             const thumbnailLabel = !renderThumbnail && article.gameTitle ? BlogUtils.escapeHtml(article.gameTitle) : safeCategory;
 
             card.innerHTML = `
-                <div class="${thumbnailClass}"${thumbnailStyle}>
+                ${renderThumbnail ? `<div class="${thumbnailClass}">
                     ${thumbnailMarkup}
                     <span class="card-category badge" >${thumbnailLabel}</span>
                     ${newBadge}
-                </div>
+                </div>` : ''}
                 <div class="card-content">
-                    ${dateMarkup}
+                    <div class="card-meta">${!renderThumbnail ? `<span class="card-topic">${thumbnailLabel}</span>` : ''}${dateMarkup}</div>
                     <h3>${safeTitle}</h3>
                     ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>

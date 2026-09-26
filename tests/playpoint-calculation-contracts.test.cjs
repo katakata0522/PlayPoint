@@ -236,7 +236,7 @@ test('必要ポイントの空欄は課金不要にせず入力エラーにす�
   const { calculate, renderedResults } = setupJpMain('');
   calculate();
   assert.strictEqual(renderedResults[0].isError, true);
-  assert.ok(renderedResults[0].content.includes('有効な数値'));
+  assert.match(renderedResults[0].content, /0以上の整数/);
   assert.ok(!renderedResults[0].content.includes('課金不要'));
 });
 
@@ -247,14 +247,27 @@ test('必要ポイント0は達成済みとして課金不要を出す', () => {
   assert.ok(renderedResults[0].content.includes('課金不要'));
 });
 
-test('目標閾値を超える必要ポイントは目標矛盾エラーにする', () => {
+test('目標を超えた入力は選択中のランク・上限・修正方法を案内する', () => {
   const { PP_STATE, calculate, renderedResults, updateNeededPointsConstraint } = setupJpMain('251');
   PP_STATE.dom.neededPoints.max = '250';
   updateNeededPointsConstraint();
   PP_STATE.dom.neededPoints.value = '251';
   calculate();
   assert.strictEqual(renderedResults[0].isError, true);
-  assert.ok(renderedResults[0].content.includes('選択した目標ステータスに対して不正'));
+  assert.match(renderedResults[0].content, /シルバー/);
+  assert.match(renderedResults[0].content, /0〜250pt/);
+  assert.match(renderedResults[0].content, /目標ステータス.*変更/);
+  assert.strictEqual(PP_STATE.dom.neededPoints.value, '251', '入力を自動で書き換えない');
+
+  PP_STATE.dom.targetStatus.selectedIndex = PP_STATE.dom.targetStatus.options.findIndex(option => option.dataset.statusLabel === 'ゴールド');
+  updateNeededPointsConstraint();
+  PP_STATE.dom.neededPoints.value = '1001';
+  calculate();
+  assert.match(renderedResults.at(-1).content, /ゴールド/);
+  assert.match(renderedResults.at(-1).content, /0〜1,000pt/);
+  PP_STATE.dom.neededPoints.value = '1000';
+  calculate();
+  assert.strictEqual(renderedResults.at(-1).isError, false, '上限内へ直すと計算できる');
 });
 
 test('目標変更は入力済み必要ポイントを黙って切り詰めない', () => {
@@ -289,7 +302,7 @@ test('必要ポイントはHTMLの整数制約に違反する小数を拒否す�
   calculate();
 
   assert.strictEqual(renderedResults[0].isError, true);
-  assert.ok(renderedResults[0].content.includes('有効な数値'));
+  assert.match(renderedResults[0].content, /0以上の整数/);
 });
 
 test('通常計算は必要額と月日目安を主要結果へ出し、週平均と年末までの残り日数は出さない', () => {
