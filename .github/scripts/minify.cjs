@@ -16,6 +16,7 @@ const cssTargets = [
   'region-selector.css',
   'visitor-thanks.css',
   'site-shell-vnext.css',
+  'articles/guide-navigation.css',
   'points-cost.css',
   'articles/article-legacy.css',
   'articles/article-modern.css',

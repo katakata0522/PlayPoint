@@ -101,6 +101,7 @@ test('多言語トップはJavaScript実行前からウィジェット名が翻�
     const generated = buildLocalizedHtml(source, langDir, locales[langDir]);
     const tracked = read(`${langDir}/index.html`);
     for (const [kind, html] of [['generated', generated], ['tracked', tracked]]) {
+      assert.doesNotMatch(html, /guide-navigation\.(?:js|css)|guide-calculator-header/, `${langDir}: ${kind} excludes the Japanese-only menu`);
       const links = [...html.matchAll(/<a\b[^>]*data-lang-key="linkWidget"[^>]*>([^<]+)<\/a>/g)];
       assert.equal(links.length, 1, `${langDir}: ${kind} keeps one widget entry`);
       assert.ok(links[0][1].startsWith(localeCase.expectedWidget), `${langDir}: ${kind} widget name is localized`);

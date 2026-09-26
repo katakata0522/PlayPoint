@@ -843,11 +843,12 @@
                 ? `card-thumb card-thumb--${thumbnailKind}`
                 : 'card-thumb card-thumb--text-only';
             const thumbnailStyle = '';
+            const thumbnailLabel = !renderThumbnail && article.gameTitle ? BlogUtils.escapeHtml(article.gameTitle) : safeCategory;
 
             card.innerHTML = `
                 <div class="${thumbnailClass}"${thumbnailStyle}>
                     ${thumbnailMarkup}
-                    <span class="card-category badge" >${safeCategory}</span>
+                    <span class="card-category badge" >${thumbnailLabel}</span>
                     ${newBadge}
                 </div>
                 <div class="card-content">

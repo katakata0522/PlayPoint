@@ -27,7 +27,7 @@
       // 列数だけでなく全行を確認する。colspanのある複雑な表は横スクロールを維持。
       const rows = Array.from(table.rows);
       const columns = Math.max(0, ...rows.map(row => Array.from(row.cells).reduce((n, cell) => n + cell.colSpan, 0)));
-      if (table.classList.contains('pack-table') && columns > 0 && columns <= 3) table.classList.add('reading-table-compact');
+      if ((table.classList.contains('pack-table') && columns > 0 && columns <= 3) || (columns === 2 && rows.every(row => Array.from(row.cells).every(cell => cell.colSpan === 1)))) table.classList.add('reading-table-compact');
       const hint = doc.createElement('p'); hint.className = 'reading-table-hint'; hint.textContent = copy[1]; hint.hidden = true;
       wrapper.before(hint); wrappers.push({ wrapper, hint });
     });

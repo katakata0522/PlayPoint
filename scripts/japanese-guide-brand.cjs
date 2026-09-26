@@ -9,6 +9,10 @@ const GUIDE_PAGE_TITLE = `${GUIDE_BRAND} | Playポイント計算機`;
 const GUIDE_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャンペーン、反映トラブル、ゲーム別攻略を、公式情報と計算例で整理した完全攻略ガイドです。';
 const GUIDE_HERO_TEXT = 'ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。';
 
+function renderGuideBrand(isBlog = false) {
+  return `<span class="guide-brand-full">${isBlog ? '' : '🎮 '}${GUIDE_BRAND}</span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span>`;
+}
+
 const LEGACY_BLOG_TITLES = Object.freeze([
   'Google Play Points攻略・使い方ブログ | Playポイント計算機',
   'Google Play Points 攻略・使い方記事 | Playポイント計算機'
@@ -46,6 +50,7 @@ function syncBlogIndexBrand(html) {
   next = replaceKnownValue(next, LEGACY_BLOG_DESCRIPTIONS, GUIDE_DESCRIPTION);
   next = replaceKnownValue(next, LEGACY_BLOG_NAMES, GUIDE_BRAND);
   next = replaceKnownValue(next, LEGACY_HERO_TEXTS, GUIDE_HERO_TEXT);
+  next = next.replace(`class="brand">${GUIDE_BRAND}</a>`, `class="brand">${renderGuideBrand(true)}</a>`);
 
   next = next.replace(
     /(<meta\s+property=["']og:site_name["']\s+content=["'])(?:PlayPoint Lab\.|Playポイント計算機)(["'][^>]*>)/i,
@@ -66,7 +71,7 @@ function syncBlogIndexBrand(html) {
   if (!next.includes('<h1 class="hero-title">Google Play Points 記事一覧</h1>')) {
     throw new Error('blog/index.html: 記事一覧のH1がありません');
   }
-  if (!next.includes(`class="brand">${GUIDE_BRAND}</a>`)) {
+  if (!next.includes(`class="brand">${renderGuideBrand(true)}</a>`)) {
     throw new Error('blog/index.html: 完全攻略ガイドのヘッダーブランドを同期できませんでした');
   }
   if (!next.includes(`property="og:site_name" content="${GUIDE_BRAND}"`)) {
@@ -81,7 +86,7 @@ function syncArticleHeaderBrand(html, relativePath) {
   if (!logoPattern.test(html)) {
     throw new Error(`${relativePath}: 記事ヘッダーのロゴリンクが見つかりません`);
   }
-  return html.replace(logoPattern, `$1🎮 ${GUIDE_BRAND}$2`);
+  return html.replace(logoPattern, `$1${renderGuideBrand()}$2`);
 }
 
 function syncArticleOgSiteName(html) {
@@ -108,7 +113,7 @@ function syncArticleBrand(html, relativePath) {
   next = next.replaceAll('<span class="nav-sub">全攻略ガイド</span>', '<span class="nav-sub">完全攻略ガイド</span>');
   next = syncArticleOgSiteName(next);
 
-  const guidePattern = new RegExp(`<a\\b(?=[^>]*\\bclass=["'][^"']*\\b(?:site-logo|logo)\\b[^"']*["'])[^>]*>🎮\\s*${escapeRegExp(GUIDE_BRAND)}<\\/a>`, 'i');
+  const guidePattern = new RegExp(`<a\\b(?=[^>]*\\bclass=["'][^"']*\\b(?:site-logo|logo)\\b[^"']*["'])[^>]*>${escapeRegExp(renderGuideBrand())}<\\/a>`, 'i');
   if (!guidePattern.test(next)) {
     throw new Error(`${relativePath}: 記事ヘッダーを「${GUIDE_BRAND}」へ同期できませんでした`);
   }
@@ -158,6 +163,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  renderGuideBrand,
   GUIDE_BRAND,
   GUIDE_DESCRIPTION,
   GUIDE_HERO_TEXT,

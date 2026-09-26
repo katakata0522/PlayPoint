@@ -19,6 +19,27 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const response = await page.goto(new URL(route,baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
     assert(response?.ok(), route + ' HTTP failure');
   }
+  async function waitNavigationLayout(page) {
+    // 幅変更の直後はCSSが先に切り替わり、matchMediaの通知でDOMが移動する。
+    await page.waitForFunction(() => {
+      if (!document.documentElement.classList.contains('guide-navigation-enabled')) return true;
+      const menu = document.getElementById('guide-menu');
+      const navigation = document.querySelector('.ja-global-nav,.top-bar');
+      const mobile = matchMedia('(max-width:760px)').matches;
+      return menu && navigation && menu.contains(navigation) === mobile && (mobile || !menu.open);
+    });
+  }
+  async function openMenu(page) {
+    await waitNavigationLayout(page);
+    if (await page.locator('.guide-nav-button[aria-controls="guide-menu"]:visible').count() && !(await page.locator('#guide-menu').evaluate(el=>el.open))) await page.locator('[aria-controls="guide-menu"]').click();
+  }
+  async function closeMenu(page) { if (await page.locator('#guide-menu[open]').count()) await page.keyboard.press('Escape'); }
+  async function chooseTheme(page) {
+    await openMenu(page);
+    const settings=page.locator('.guide-menu-group').filter({has:page.locator('#theme-toggle')});
+    if (await settings.count() && !(await settings.evaluate(el=>el.open))) await settings.locator('summary').click();
+    await page.locator('#theme-toggle').click(); await closeMenu(page);
+  }
   async function cards(page) { await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000}); }
   async function openOptionalFilters(page) {
     const panel = page.locator('#article-filter-panel');
@@ -46,8 +67,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await goto(page,'blog/'); await cards(page);
     for (const width of [390,1024]) {
       await page.setViewportSize({width,height:844});
+      await waitNavigationLayout(page);
       for (const theme of ['light','dark']) {
-        if (await page.locator('html').getAttribute('data-reading-theme') !== theme) await page.locator('#theme-toggle').click();
+        if (await page.locator('html').getAttribute('data-reading-theme') !== theme) await chooseTheme(page);
         // The attribute changes synchronously, but color-scheme style resolution can finish on the next paint.
         // Wait for the actual requested surface; an attribute-only match cannot prove that the theme works.
         await page.waitForFunction(t=>{
@@ -81,11 +103,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await filterPanel.evaluate(el=>el.open),false,'Optional filters stay collapsed on the default list');
     const order = await page.evaluate(()=>({
       search:document.querySelector('#search-input')?.getBoundingClientRect().top,
-      purpose:document.querySelector('.search-pathways--primary')?.getBoundingClientRect().top,
+      game:document.querySelector('#game-title-filter')?.getBoundingClientRect().top,
       filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
       list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
     }));
-    assert(order.search < order.purpose && order.purpose < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
+    assert(order.search < order.game && order.game < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
     await filterPanel.locator('summary').click();
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
@@ -118,24 +140,25 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       const state=await page.evaluate(()=>({
         overflow:document.documentElement.scrollWidth>innerWidth,
         columns:getComputedStyle(document.querySelector('.search-pathways-grid')).gridTemplateColumns.split(' ').length,
-        controls:[...document.querySelectorAll('#theme-toggle,#sidebar-toggle')].every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
+        controls:[...document.querySelectorAll('.guide-nav-button')].filter(el=>el.getClientRects().length).every(el=>{const r=el.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;}),
         pathwaysFit:[...document.querySelectorAll('.search-pathways--primary .search-pathway-card')].every(el=>el.scrollWidth<=el.clientWidth+1 && el.getBoundingClientRect().height>=44),
         firstArticleY:document.querySelector('.article-card').getBoundingClientRect().top+scrollY
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
-      assert.equal(state.columns,width<=760?2:4,`Purpose-grid breakpoint ${width}`);
-      assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`);
+      if(width>760) { assert.equal(state.columns,4,`Purpose-grid breakpoint ${width}`); assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`); }
       assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
       responsive.push({width,...state});
     }
     report.interactions.responsive=responsive;
     await page.setViewportSize({width:390,height:844});
 
+    await openMenu(page);
     const destinations=page.locator('.ja-global-nav a');
     assert.equal(await destinations.count(),6);
     await destinations.first().focus();
     await page.keyboard.press('Tab');
     assert(await destinations.nth(1).evaluate(el=>el===document.activeElement),'Primary navigation follows the visible order');
+    await closeMenu(page);
     assert.equal(await page.locator('main').evaluate(el=>el.inert),false);
     await page.locator('.pagination-next').focus(); await page.keyboard.press('Enter');
     await page.waitForFunction(()=>document.querySelector('.pagination-page-input')?.value==='2');
@@ -156,7 +179,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const recordArticleRequest = request => articleRequests.push(new URL(request.url()).pathname);
     page.on('request', recordArticleRequest);
     await goto(page,'games/fgo/pity-cost/');
-    await page.locator('[data-reading-theme-toggle]').waitFor({state:'visible'});
+    await page.locator('[data-reading-theme-toggle]').waitFor({state:'attached'});
     page.off('request', recordArticleRequest);
     assert(!articleRequests.includes('/blog/articles.json'), '静的関連記事がある本文では一覧データを取得しない');
     assert(!articleRequests.includes('/js/article-search.js'), '本文では一覧用の検索コードを読み込まない');
@@ -168,6 +191,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       const tables=await page.locator('.pack-table').evaluateAll(tables=>tables.map(table=>({w:table.getBoundingClientRect().width,available:table.parentElement.clientWidth,scroll:table.parentElement.scrollWidth})));
       assert(tables.every(t=>t.scroll<=t.available+2),`All three columns visible at ${width}: ${JSON.stringify(tables)}`);
     }
+    await page.screenshot({path:path.join(artifactDir,'reading-game-390.png')});
     const save=page.locator('[data-reading-tools] button'); await save.click();
     assert.equal(await save.getAttribute('aria-pressed'),'true');
     await goto(page,'blog/#reading-library');
@@ -185,6 +209,63 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(cleared.recent.length,0); assert.deepEqual(cleared.saved,prior.saved);
     report.storage.pausePreservesHistory=true; report.storage.confirmedClear=true;
     report.interactions.modal = report.interactions.pagination = report.interactions.urlNormalization = report.interactions.savedRoundTrip = true;
+
+    if (await page.locator('html').getAttribute('data-reading-theme') === 'dark') await chooseTheme(page);
+    const mobilePages = [['home',''],['blog','blog/'],['article','articles/2026-09-26-pokemon-sleep-play-points-coupon.html']];
+    report.interactions.mobileNavigation = [];
+    for (const [name,route] of mobilePages) {
+      await goto(page,route);
+      await page.locator('.guide-nav-button').first().waitFor({state:'visible'});
+      if (name === 'blog') await cards(page);
+      if (name === 'home') await page.locator('#calculateButton').waitFor({state:'visible'});
+      await page.evaluate(()=>scrollTo(0,0));
+      await openMenu(page);
+      assert.equal(await page.locator('#guide-menu').evaluate(el=>el.matches(':modal')),true);
+      await page.screenshot({path:path.join(artifactDir,`mobile-${name}-menu-390.png`)});
+      // ネイティブdialogはブラウザのアドレスバーへの移動を許す。
+      // 文書にフォーカスがある間、背後のページへ漏れないことを検証する。
+      for (const key of ['Tab', 'Shift+Tab']) for (let i=0;i<25;i++) {
+        await page.keyboard.press(key);
+        const focus = await page.locator('#guide-menu').evaluate(el => ({
+          modal: el.matches(':modal'), inside: el.contains(document.activeElement),
+          browserChrome: !document.hasFocus() && document.activeElement === document.body,
+          active: document.activeElement?.outerHTML.slice(0,200)
+        }));
+        assert(focus.modal && (focus.inside || focus.browserChrome),'Menu must isolate page focus: '+JSON.stringify(focus));
+      }
+      await page.locator('#guide-menu .guide-close').focus();
+      await closeMenu(page);
+      assert(await page.locator('[aria-controls="guide-menu"]').evaluate(el=>el===document.activeElement),'Closing restores the menu button');
+      await openMenu(page); await page.setViewportSize({width:1024,height:844});
+      await waitNavigationLayout(page);
+      assert.equal(await page.locator('#guide-menu').evaluate(el=>el.open),false);
+      assert.equal(await page.locator('#guide-menu .ja-global-nav,#guide-menu .top-bar').count(),0,'Desktop restores the existing navigation');
+      await page.setViewportSize({width:320,height:844}); await openMenu(page);
+      assert(await page.locator('#guide-menu').evaluate(el=>el.scrollWidth<=el.clientWidth+1),'Small menu does not overflow');
+      await closeMenu(page); await page.setViewportSize({width:390,height:844});
+      if (name==='article') {
+        await page.locator('[aria-controls="guide-toc"]').click();
+        await page.screenshot({path:path.join(artifactDir,'mobile-article-toc-390.png')});
+        await page.locator('#guide-toc a[href="#article-section-2"]').click();
+        assert.equal(await page.locator('#guide-toc').evaluate(el=>el.open),false);
+        await page.waitForFunction(()=>{const y=document.getElementById('article-section-2').getBoundingClientRect().top;return y>=55&&y<200;});
+        assert(await page.locator('#article-section-2').evaluate(el=>el===document.activeElement),'TOC puts focus on the chosen heading');
+        for(const width of [320,390]) { await page.setViewportSize({width,height:844}); assert(await page.locator('[data-reading-table]').evaluateAll(nodes=>nodes.every(el=>el.scrollWidth<=el.clientWidth+2)),'Two-column table remains readable'); }
+      }
+      await page.evaluate(()=>scrollTo(0,0));
+      const shots=[];
+      for(let index=0;index<50;index++) {
+        await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+        const state=await page.evaluate(()=>({y:scrollY,height:innerHeight,bottom:document.documentElement.scrollHeight,overflow:document.documentElement.scrollWidth>innerWidth+1}));
+        assert(!state.overflow,`${name}: horizontal page overflow`);
+        await page.screenshot({path:path.join(artifactDir,`mobile-${name}-scroll-${String(index).padStart(2,'0')}.png`)});
+        shots.push(state);
+        if(state.y+state.height>=state.bottom-2) break;
+        await page.evaluate(()=>scrollBy({top:innerHeight-80,behavior:'instant'}));
+      }
+      assert(shots.at(-1).y+shots.at(-1).height>=shots.at(-1).bottom-2,'Screenshots reach the end of '+name);
+      report.interactions.mobileNavigation.push({name,shots});
+    }
 
     // 三つの同意状態と、故障条件は専用context。実ユーザーの保存データを利用しない。
     const f = await context();

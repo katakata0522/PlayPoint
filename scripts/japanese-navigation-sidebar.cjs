@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { renderGuideBrand } = require('./japanese-guide-brand.cjs');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { normalizeSharedArticleCopy } = require('./article-static-usability.cjs');
 const { extractRelatedTargets } = require('./article-role-next-action-audit.cjs');
@@ -126,7 +127,20 @@ function renderAuthorWidget() {
 
 // 一覧・本文・最新情報で同じ入口と見た目を使う。
 function renderHeader(isBlog = false) {
-  return `<header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="${isBlog ? 'brand' : 'site-logo'}">${isBlog ? '' : '🎮 '}Google Play Points 完全攻略ガイド</a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>`;
+  return `<header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="${isBlog ? 'brand' : 'site-logo'}">${renderGuideBrand(isBlog)}</a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>`;
+}
+
+function navigationAssets(html) {
+  if (html.includes('<!-- guide-navigation-assets:start -->')) return html;
+  // 生成済みの専用ブロックを置換する。旧配置は独立した行ごと移行する。
+  html = html.replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\n?/g, '');
+  html = html.split('\n').filter(line => !/^\s*<(?:link|script)\s[^<>]*(?:href="\/articles\/guide-navigation\.css|src="\/js\/guide-navigation\.js)/.test(line)).join('\n');
+  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js"></script>\n<!-- guide-navigation-assets:end -->\n</head>');
+}
+
+function renderGamesWidget(catalog) {
+  const games = [...new Set(catalog.map(item => item.gameTitle).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ja'));
+  return `<section class="sidebar-widget sidebar-widget--games"><h2 class="sidebar-widget-title">ゲーム別に探す</h2><div class="sidebar-widget-body"><ul class="sidebar-game-list">${games.map(name => `<li><a href="/blog/?game=${encodeURIComponent(name)}">${escapeHtml(name)}</a></li>`).join('')}</ul><a href="/games/">ゲーム別の計算機を見る</a></div></section>`;
 }
 
 function renderNavigation(current) {
@@ -136,7 +150,9 @@ function renderNavigation(current) {
 
 function renderHubSidebar(current, catalog = []) {
   return `<aside class="sidebar-column ja-article-sidebar guide-hub-sidebar" aria-label="カテゴリー・人気記事と計算機">
+${renderSearchWidget()}
 ${renderBrowseWidget(catalog)}
+${renderGamesWidget(catalog)}
 ${renderPopularWidget({ href: current }, catalog)}
 <section class="sidebar-widget"><h2 class="sidebar-widget-title">必要額を計算する</h2><div class="sidebar-widget-body"><p>目標ランクまであといくら？現在のポイントから確認できます。</p><a class="sidebar-next-link" href="/">Playポイント計算機へ →</a></div></section>
 ${renderAuthorWidget()}
@@ -166,6 +182,7 @@ function syncGuideHubs(root, catalog) {
     }
     html = html.replace(/<!-- guide-sidebar:start -->[\s\S]*?<!-- guide-sidebar:end -->/, `<!-- guide-sidebar:start -->${renderHubSidebar(current, catalog)}<!-- guide-sidebar:end -->`);
     if (!html.includes('/articles/japanese-shell.css')) html = html.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
+    html = navigationAssets(html);
     if (before !== html) fs.writeFileSync(absolute, html);
   }
 }
@@ -175,6 +192,7 @@ function renderSidebar(article, role, related, catalog = []) {
   return `<aside class="sidebar-column ja-article-sidebar" aria-label="記事検索・カテゴリー・人気記事・次の行動" data-article-role="${role}" data-article-category="${categoryFor(article, role)}">
 ${renderSearchWidget()}
 ${renderBrowseWidget(catalog, article)}
+${renderGamesWidget(catalog)}
 ${renderPopularWidget(article, catalog)}
   <section class="sidebar-widget sidebar-widget--next sidebar-widget--role-${role}"><h2 class="sidebar-widget-title">次にやること</h2><div class="sidebar-widget-body"><a class="sidebar-next-link" href="${escapeHtml(href)}">${escapeHtml(label)}</a></div></section>
 ${renderAuthorWidget()}
@@ -197,7 +215,7 @@ function transformArticle(html, article, catalog) {
     after = after.slice(0, end + 10) + '\n' + sidebar + after.slice(end + 10);
   }
   if (!after.includes('/articles/japanese-shell.css')) after = after.replace('</head>', '<link rel="stylesheet" href="/articles/japanese-shell.css">\n</head>');
-  return after;
+  return navigationAssets(after);
 }
 
 function syncJapaneseNavigation(root) {
@@ -212,6 +230,16 @@ function syncJapaneseNavigation(root) {
     if (before !== after) { fs.writeFileSync(absolute, after); changed++; }
   }
   syncGuideHubs(root, catalog);
+  const home = path.join(root, 'index.html');
+  const homeBefore = fs.readFileSync(home, 'utf8');
+  let homeAfter = navigationAssets(homeBefore);
+  const calculatorHeader = '<!-- guide-calculator-header:start --><header class="guide-header guide-calculator-header"><div class="site-header-inner"><a href="/" class="site-logo"><span class="guide-brand-short">PlayPoint<span>ポイント計算機</span></span></a></div></header><!-- guide-calculator-header:end -->';
+  if (homeAfter.includes('<!-- guide-calculator-header:start -->')) {
+    homeAfter = homeAfter.replace(/<!-- guide-calculator-header:start -->[\s\S]*?<!-- guide-calculator-header:end -->/, calculatorHeader);
+  } else {
+    homeAfter = homeAfter.replace('<body>', '<body>\n' + calculatorHeader);
+  }
+  if (homeAfter !== homeBefore) fs.writeFileSync(home, homeAfter);
   return { checked: catalog.length, changed };
 }
 module.exports = { BROWSE_CATEGORIES, NAV, relatedFor, nextFor, renderBrowseWidget, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };

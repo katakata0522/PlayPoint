@@ -60,7 +60,10 @@ function replaceSimplifiedCalculatorCopy(html, copy) {
 }
 
 function buildLocalizedHtml(indexHtml, langDir, config) {
-  let output = indexHtml;
+  // 日本語の読書メニューは日本語トップだけに配信する。
+  let output = indexHtml
+    .replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\n?/g, '')
+    .replace(/<!-- guide-calculator-header:start -->[\s\S]*?<!-- guide-calculator-header:end -->\n?/g, '');
 
   if (config.modifiedAt) {
     output = replaceDateMetadata(output, config.modifiedAt, {

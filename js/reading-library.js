@@ -162,27 +162,31 @@
       if (error?.code === 'saved_limit') return { ja: '保存は100件までです。不要な記事を削除してから保存してください。', en: 'You can save up to 100 articles. Remove one before saving another.', ko: '최대 100개까지 저장할 수 있습니다. 기존 글을 삭제한 뒤 저장해 주세요.', tw: '最多可儲存100篇，請先移除不需要的文章再儲存。' }[locale];
       return copy[10];
     }
-    function attempt(action) { try { if (!store) throw storeError || Error('No storage'); action(); } catch (error) { status.textContent = describeError(error); } }
-    let button, current;
+    let buttonStatus;
+    function attempt(action) { try { if (!store) throw storeError || Error('No storage'); action(); } catch (error) { status.textContent = describeError(error); if (buttonStatus) buttonStatus.textContent = status.textContent; } }
+    let button, current, updateButton;
+    const localLibrary = locale === 'ja' && document.querySelector('.guide-header');
     if (!isHub) {
       current = { path: pathname, title: h1.textContent.trim() };
       const tools = document.querySelector('[data-reading-tools]') || element('div'); tools.className = 'reading-tools';
       button = element('button', copy[0]); button.type = 'button'; button.setAttribute('aria-pressed', 'false');
-      function updateButton() { const saved = store.read().saved.some(item => item.path === pathname); button.textContent = copy[saved ? 1 : 0]; button.setAttribute('aria-pressed', String(saved)); }
-      button.addEventListener('click', () => attempt(() => { store.toggle(current); updateButton(); status.textContent = copy[button.getAttribute('aria-pressed') === 'true' ? 11 : 12]; }));
-      const link = element('a', copy[2]); link.href = hub + '#reading-library';
-      tools.replaceChildren(button, link, status);
+      updateButton = () => { const saved = store.read().saved.some(item => item.path === pathname); button.textContent = copy[saved ? 1 : 0]; button.setAttribute('aria-pressed', String(saved)); };
+      buttonStatus = element('span'); buttonStatus.setAttribute('role', 'status');
+      button.addEventListener('click', () => attempt(() => { store.toggle(current); updateButton(); buttonStatus.textContent = copy[button.getAttribute('aria-pressed') === 'true' ? 11 : 12]; if (localLibrary) render(); }));
+      const link = element('a', copy[2]); link.href = (localLibrary ? '' : hub) + '#reading-library';
+      tools.replaceChildren(button, link, buttonStatus);
       if (!tools.isConnected) { const header = h1.closest('header'); (header && !header.classList.contains('site-header') ? header : h1).after(tools); }
       attempt(() => { store.visit(current); updateButton(); });
       root.addEventListener('storage', event => { if (event.key === KEY || event.key === null) attempt(updateButton); });
-      return;
+      if (!localLibrary) return;
     }
     const panel = document.getElementById('reading-library') || element('details'); panel.id = 'reading-library'; panel.className = 'reading-library';
     panel.replaceChildren(element('summary', copy[2]), element('p', copy[8]));
     const controls = element('div'); panel.append(controls, status);
     const mount = document.querySelector('[data-intl-guide-controls], #article-grid, #articles-grid, #blog-grid, .articles-grid');
-    if (!panel.isConnected) { if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel); }
+    if (!panel.isConnected) { if (!isHub && localLibrary) document.querySelector('aside.ja-article-sidebar').append(panel); else if (mount) mount.before(panel); else (document.querySelector('main') || document.body).append(panel); }
     function render() {
+      updateButton?.();
       const focused = controls.querySelector(':focus');
       const restoreKey = focused?.dataset.readingFocus;
       controls.replaceChildren(); const state = store.read();
