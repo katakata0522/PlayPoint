@@ -3,7 +3,7 @@
   'use strict';
   const doc = document;
   function init() {
-    if (doc.documentElement.lang !== 'ja' || !window.HTMLDialogElement) return;
+    if (doc.documentElement.lang !== 'ja' || typeof window.HTMLDialogElement?.prototype.showModal !== 'function') return;
     let header = doc.querySelector('.guide-header');
     const home = !header && /^\/(?:index\.html)?$/.test(location.pathname) && doc.querySelector('.calculator-wrapper > .top-bar');
     if (!header && !home) return;
@@ -29,8 +29,8 @@
       const dialog = el('dialog', 'guide-dialog'); dialog.id = id; dialog.setAttribute('aria-labelledby', id + '-title');
       const top = el('div', 'guide-dialog-header'), heading = el('h2', '', title), close = el('button', 'guide-close', '閉じる ×');
       heading.id = id + '-title'; close.type = 'button'; close.autofocus = true; close.setAttribute('aria-label', title + 'を閉じる'); top.append(heading, close); dialog.append(top); doc.body.append(dialog);
-      const finish = () => { trigger.setAttribute('aria-expanded', 'false'); doc.documentElement.classList.remove('guide-dialog-open'); };
-      const open = () => { if (dialog.open) return; dialog.showModal(); trigger.setAttribute('aria-expanded', 'true'); doc.documentElement.classList.add('guide-dialog-open'); };
+      const finish = () => { trigger.setAttribute('aria-expanded', String(dialog.open)); if (!doc.querySelector('.guide-dialog[open]')) doc.documentElement.classList.remove('guide-dialog-open'); };
+      const open = () => { if (dialog.open) return; dialog.showModal(); dialog.scrollTop = 0; trigger.setAttribute('aria-expanded', 'true'); doc.documentElement.classList.add('guide-dialog-open'); };
       trigger.addEventListener('click', open); close.addEventListener('click', () => dialog.close()); dialog.addEventListener('close', finish);
       dialog.addEventListener('click', event => { if (event.target === dialog) { const r = dialog.getBoundingClientRect(); if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close(); } });
       return { dialog, open };

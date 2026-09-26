@@ -9,21 +9,21 @@ html body .guide-dialog { position:fixed; inset:0 auto 0 0; margin:0; padding:0;
 html body .guide-dialog-header { position:sticky; top:0; z-index:1; display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:64px; padding:0 16px; border-bottom:1px solid var(--reading-border, #d7e3df); background:var(--reading-surface, #fff); }
 html body .guide-dialog-header h2 { margin:0; padding:0; border:0; font-size:17px; line-height:1.5; background:none; color:inherit; }
 html body .guide-close { width:auto; min-width:76px; min-height:44px; margin:0; padding:8px; border:1px solid var(--reading-border, #d7e3df); border-radius:6px; box-shadow:none; background:var(--reading-surface, #fff); color:inherit; font:inherit; cursor:pointer; }
-html body .guide-menu-body { display:flex; flex-direction:column; gap:0; padding:8px 16px max(24px, env(safe-area-inset-bottom)); }
-html body .guide-menu-body .sidebar-widget { border:0; border-radius:0; background:none; box-shadow:none; margin:0; }
-html body .guide-menu-body .sidebar-widget--games { display:block; }
-html body .guide-menu-body .sidebar-widget-title { font-size:13px; color:var(--reading-muted, #526c71); background:none; padding:12px 0 4px; }
-html body .guide-menu-body .sidebar-widget-body { padding:8px 0 16px; }
-html body .guide-menu-body .sidebar-search-input { font-size:16px; }
-html body .guide-menu-body .sidebar-search-footer { display:none; }
-html body .guide-menu-body .ja-global-nav { display:block; background:none; border:0; padding:8px 0; }
-html body .guide-menu-body .global-nav-inner { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
-html body .guide-menu-body .ja-global-nav .nav-item { color:var(--reading-link, #176773); background:var(--reading-soft, #eaf2ef); border:0; border-radius:5px; min-height:44px; font-size:14px; }
-html body .guide-menu-body .sidebar-browse-category { min-height:44px; font-size:14px; padding:5px 0; box-sizing:border-box; }
-html body .guide-menu-group, html body .guide-menu-body .reading-library { margin:0; padding:0; border:0; border-top:1px solid var(--reading-border, #d7e3df); border-radius:0; background:none; }
-html body .guide-menu-group > summary, html body .guide-menu-body .reading-library > summary { padding:15px 0; font-size:15px; font-weight:700; cursor:pointer; }
+html[lang="ja"] body .guide-dialog .guide-menu-body { display:flex; flex-direction:column; gap:0; padding:8px 16px max(24px, env(safe-area-inset-bottom)); }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-widget { border:0; border-radius:0; background:none; box-shadow:none; margin:0; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-widget--games { display:block; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-widget-title { font-size:13px; color:var(--reading-muted, #526c71); background:none; padding:12px 0 4px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-widget-body { padding:8px 0 16px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-search-input { font-size:16px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-search-footer { display:none; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .ja-global-nav { display:block; background:none; border:0; padding:8px 0; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .global-nav-inner { display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .ja-global-nav .nav-item { color:var(--reading-link, #176773); background:var(--reading-soft, #eaf2ef); border:0; border-radius:5px; min-height:44px; font-size:14px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .sidebar-browse-category { min-height:44px; font-size:14px; padding:5px 0; box-sizing:border-box; }
+html[lang="ja"] body .guide-dialog .guide-menu-group, html[lang="ja"] body .guide-dialog .guide-menu-body .reading-library { margin:0; padding:0; border:0; border-top:1px solid var(--reading-border, #d7e3df); border-radius:0; background:none; }
+html[lang="ja"] body .guide-dialog .guide-menu-group > summary, html[lang="ja"] body .guide-dialog .guide-menu-body .reading-library > summary { padding:15px 0; font-size:15px; font-weight:700; cursor:pointer; }
 .guide-menu-group .sidebar-widget-title { display:none; }
-html body .guide-menu-body .site-header-links { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0 16px; }
+html[lang="ja"] body .guide-dialog .guide-menu-body .site-header-links { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0 16px; }
 .guide-menu-body a { color:var(--reading-link, #176773); text-underline-offset:3px; }
 .guide-menu-body :is(p,li,a) { overflow-wrap:anywhere; }
 .guide-dialog :is(a,button,input,summary):focus-visible { outline:3px solid var(--reading-link, #176773); outline-offset:2px; }
@@ -33,7 +33,7 @@ html body #guide-toc { inset:auto 0 0; width:100%; height:auto; max-height:80dvh
 @media(max-width:760px) {
   html.guide-navigation-ready body .guide-header { position:sticky; top:0; z-index:100; padding:0 12px; width:100%; box-sizing:border-box; background:var(--reading-surface, #fff); border-bottom:1px solid var(--reading-border, #d7e3df); }
   html.guide-navigation-ready body .guide-header .site-header-inner { display:grid; grid-template-columns:72px minmax(0,1fr) 72px; align-items:center; min-height:56px; gap:4px; margin:0 auto; }
-  html.guide-navigation-ready body .guide-header :is(.brand,.site-logo) { text-align:center; font-size:19px; line-height:1.1; color:var(--reading-text, #203d43); text-decoration:none; font-weight:800; }
+  html.guide-navigation-ready body .guide-header :is(.brand,.site-logo) { display:block; margin:0; max-width:none; text-align:center; font-size:19px; line-height:1.1; color:var(--reading-text, #203d43); text-decoration:none; font-weight:800; }
   .guide-navigation-ready .guide-brand-full { display:none; }
   .guide-navigation-ready .guide-brand-short { display:block; letter-spacing:.01em; }
   .guide-brand-short > span { display:block; margin-top:4px; font-size:10px; font-weight:500; letter-spacing:.06em; }
@@ -72,7 +72,7 @@ html body #guide-toc { inset:auto 0 0; width:100%; height:auto; max-height:80dvh
   html.guide-navigation-ready body.blog-index-compact .article-card .card-content h3 { font-size:16px; line-height:1.6; }
   html.guide-navigation-ready body.blog-index-compact .article-card .card-desc { font-size:14px; }
   html.guide-navigation-ready body.blog-index-compact aside.ja-article-sidebar { margin-top:28px; }
-  html body .guide-menu-body .top-bar { display:flex; flex-direction:column; gap:20px; padding:16px 0; margin:0; }
-  html body .guide-menu-body .top-bar .header-links { display:flex; flex-direction:column; gap:8px; }
-  html body .guide-menu-body .top-bar .header-links a { display:block; padding:10px 0; min-height:44px; box-sizing:border-box; font-size:14px; }
+  html[lang="ja"] body .guide-dialog .guide-menu-body .top-bar { display:flex; flex-direction:column; gap:20px; padding:16px 0; margin:0; }
+  html[lang="ja"] body .guide-dialog .guide-menu-body .top-bar .header-links { display:flex; flex-direction:column; gap:8px; }
+  html[lang="ja"] body .guide-dialog .guide-menu-body .top-bar .header-links a { display:block; padding:10px 0; min-height:44px; box-sizing:border-box; font-size:14px; }
 }

@@ -91,11 +91,11 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     assert.equal(await filterPanel.evaluate(el=>el.open),false,'Optional filters stay collapsed on the default list');
     const order = await page.evaluate(()=>({
       search:document.querySelector('#search-input')?.getBoundingClientRect().top,
-      purpose:document.querySelector('.search-pathways--primary')?.getBoundingClientRect().top,
+      game:document.querySelector('#game-title-filter')?.getBoundingClientRect().top,
       filters:document.querySelector('#article-filter-panel')?.getBoundingClientRect().top,
       list:document.querySelector('.article-list-heading')?.getBoundingClientRect().top
     }));
-    assert(order.search < order.purpose && order.purpose < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
+    assert(order.search < order.game && order.game < order.filters && order.filters < order.list,'Discovery order: '+JSON.stringify(order));
     await filterPanel.locator('summary').click();
     const gameFilter = page.locator('#game-title-filter');
     await gameFilter.waitFor({ state: 'visible', timeout: 10000 });
@@ -198,6 +198,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.storage.pausePreservesHistory=true; report.storage.confirmedClear=true;
     report.interactions.modal = report.interactions.pagination = report.interactions.urlNormalization = report.interactions.savedRoundTrip = true;
 
+    if (await page.locator('html').getAttribute('data-reading-theme') === 'dark') await chooseTheme(page);
     const mobilePages = [['home',''],['blog','blog/'],['article','articles/2026-09-26-pokemon-sleep-play-points-coupon.html']];
     report.interactions.mobileNavigation = [];
     for (const [name,route] of mobilePages) {
@@ -236,7 +237,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
         await page.screenshot({path:path.join(artifactDir,`mobile-${name}-scroll-${String(index).padStart(2,'0')}.png`)});
         shots.push(state);
         if(state.y+state.height>=state.bottom-2) break;
-        await page.evaluate(()=>scrollBy(0,innerHeight-80));
+        await page.evaluate(()=>scrollBy({top:innerHeight-80,behavior:'instant'}));
       }
       assert(shots.at(-1).y+shots.at(-1).height>=shots.at(-1).bottom-2,'Screenshots reach the end of '+name);
       report.interactions.mobileNavigation.push({name,shots});
