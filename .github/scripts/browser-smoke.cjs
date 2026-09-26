@@ -499,7 +499,7 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeTopic === '', `Blog initial topic mismatch: ${initial.activeTopic}`);
-    assert(initial.navigationLinks === 6, 'Blog primary destinations must be visible without opening a menu');
+    assert(initial.navigationLinks === 6, 'Blog keeps all six primary destinations');
     assert(initial.genericThumbnailImages === 0, `Blog mobile cards loaded ${initial.genericThumbnailImages} generic OGP thumbnails`);
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
@@ -553,12 +553,14 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(await topicButton.evaluate(element => element.classList.contains('active')), 'Blog topic active state did not update');
     assert(await filterPanel.evaluate(element => element.open), 'Blog optional filters should stay open while a topic filter is active');
 
-    // 常時表示ナビはキーボードでも直接移動できる。
+    // スマホはメニューから、PCは常時表示ナビから同じ行き先へ移動できる。
+    if (await page.locator('[aria-controls="guide-menu"]:visible').count()) await page.locator('[aria-controls="guide-menu"]').click();
     const latestLink = page.locator('.ja-global-nav a[href="/latest/"]');
     await latestLink.focus();
     await page.keyboard.press('Enter');
     await page.waitForURL('**/latest/');
     assert(await page.locator('.ja-global-nav a[aria-current="page"]').getAttribute('href') === '/latest/', 'Latest navigation current-page state mismatch');
+    if (await page.locator('[aria-controls="guide-menu"]:visible').count()) await page.locator('[aria-controls="guide-menu"]').click();
     await page.locator('.ja-global-nav a[href="/blog/"]').click();
     await page.locator('.article-card').first().waitFor();
     // PCでサムネイルの旧固定幅が本文に重ならないことも確認する。

@@ -278,6 +278,7 @@ async function verifyLocale(browser, baseUrl, locale) {
 
     for (const width of VIEWPORT_WIDTHS) {
       await page.setViewportSize({ width, height: VIEWPORT_HEIGHT });
+      if(locale.key==='JP' && !(await page.locator('#guide-menu').evaluate(el=>el.open))) await page.locator('[aria-controls="guide-menu"]').click();
       await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display === 'grid', null, { timeout: 10_000 });
       const layout = await inspectLayout(page);
       assert(layout, `${locale.key} ${width}px: region selector was not fully initialized`);
