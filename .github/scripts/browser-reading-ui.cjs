@@ -19,7 +19,18 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const response = await page.goto(new URL(route,baseUrl).href,{waitUntil:'domcontentloaded',timeout:45000});
     assert(response?.ok(), route + ' HTTP failure');
   }
+  async function waitNavigationLayout(page) {
+    // 幅変更の直後はCSSが先に切り替わり、matchMediaの通知でDOMが移動する。
+    await page.waitForFunction(() => {
+      if (!document.documentElement.classList.contains('guide-navigation-enabled')) return true;
+      const menu = document.getElementById('guide-menu');
+      const navigation = document.querySelector('.ja-global-nav,.top-bar');
+      const mobile = matchMedia('(max-width:760px)').matches;
+      return menu && navigation && menu.contains(navigation) === mobile && (mobile || !menu.open);
+    });
+  }
   async function openMenu(page) {
+    await waitNavigationLayout(page);
     if (await page.locator('.guide-nav-button[aria-controls="guide-menu"]:visible').count() && !(await page.locator('#guide-menu').evaluate(el=>el.open))) await page.locator('[aria-controls="guide-menu"]').click();
   }
   async function closeMenu(page) { if (await page.locator('#guide-menu[open]').count()) await page.keyboard.press('Escape'); }
@@ -56,6 +67,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     await goto(page,'blog/'); await cards(page);
     for (const width of [390,1024]) {
       await page.setViewportSize({width,height:844});
+      await waitNavigationLayout(page);
       for (const theme of ['light','dark']) {
         if (await page.locator('html').getAttribute('data-reading-theme') !== theme) await chooseTheme(page);
         // The attribute changes synchronously, but color-scheme style resolution can finish on the next paint.
@@ -225,6 +237,7 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       await closeMenu(page);
       assert(await page.locator('[aria-controls="guide-menu"]').evaluate(el=>el===document.activeElement),'Closing restores the menu button');
       await openMenu(page); await page.setViewportSize({width:1024,height:844});
+      await waitNavigationLayout(page);
       assert.equal(await page.locator('#guide-menu').evaluate(el=>el.open),false);
       assert.equal(await page.locator('#guide-menu .ja-global-nav,#guide-menu .top-bar').count(),0,'Desktop restores the existing navigation');
       await page.setViewportSize({width:320,height:844}); await openMenu(page);
