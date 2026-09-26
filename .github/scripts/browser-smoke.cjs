@@ -505,7 +505,7 @@ async function verifyBlogPage(browser, baseUrl) {
       genericThumbnailImages: document.querySelectorAll('.article-card .card-thumb--generic img').length,
       oversizedAppIcons: [...document.querySelectorAll('.article-card .card-thumb--app-icon img')]
         .filter(image => image.naturalWidth > 128 || image.naturalHeight > 128).length,
-      textOnlyThumbnails: document.querySelectorAll('.article-card .card-thumb--text-only').length
+      textOnlyCards: [...document.querySelectorAll('.article-card')].filter(card => !card.querySelector('.card-thumb') && card.querySelector('.card-topic')?.textContent.trim()).length
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
@@ -515,8 +515,8 @@ async function verifyBlogPage(browser, baseUrl) {
     assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
     assert(initial.oversizedAppIcons === 0, `Blog mobile app icons exceed the 128px list-image budget: ${initial.oversizedAppIcons}`);
-    assert(initial.textOnlyThumbnails + initial.thumbnailImages === initial.cards,
-      `Blog compact thumbnails mismatch: text=${initial.textOnlyThumbnails}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
+    assert(initial.textOnlyCards + initial.thumbnailImages === initial.cards,
+      `Blog compact article presentation mismatch: text=${initial.textOnlyCards}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
 
     const nextButton = page.getByRole('button', { name: '次へ →' });
     if (await nextButton.count()) {
