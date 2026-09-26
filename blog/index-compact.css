@@ -826,7 +826,6 @@ body.blog-index-compact .reading-library { padding: .5rem .75rem; }
 @media (max-width: 760px) {
   body.blog-index-compact .article-card { grid-template-columns:88px minmax(0,1fr); }
   body.blog-index-compact .search-pathways--primary .search-pathways-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
-  body.blog-index-compact .search-pathways--primary .search-pathway-card { padding: .4rem .65rem; }
   body.blog-index-compact .search-pathways--primary .pathway-card-header { flex-wrap: wrap; }
   body.blog-index-compact .search-pathways--primary .pathway-icon { display: none; }
   body.blog-index-compact .hero-title { font-size: 1.3rem; }

@@ -190,6 +190,7 @@ html[lang="ja"] body .guide-latest-layout .benefit-action:hover { text-decoratio
   html[lang="ja"] body .main-content-column h1 { font-size:23px; }
   html[lang="ja"] body .ja-article-sidebar { display:flex; }
   html[lang="ja"] body.blog-index-compact .hero-title { font-size:23px; line-height:1.5; }
+  html[lang="ja"] body.blog-index-compact .search-pathways--primary .search-pathway-card { padding:6px 10px; }
   html[lang="ja"] body.blog-index-compact .article-card { grid-template-columns:88px minmax(0,1fr); }
   html[lang="ja"] body.blog-index-compact .article-card .card-content { padding:12px; }
   html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:17px; }
