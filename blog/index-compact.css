@@ -779,7 +779,7 @@ body.blog-index-compact .search-pathways-inner--utility .pathways-quick-section 
 /* 説明の枠より、検索と記事の選択に画面を使う。 */
 html[data-reading-theme] body.blog-index-compact .hero-section { background:transparent; box-shadow:none; border:0; }
 body.blog-index-compact .article-card { display:grid; grid-template-columns:112px minmax(0,1fr); align-items:stretch; }
-body.blog-index-compact .article-card.article-card--text-only { display:block; }
+body.blog-index-compact .article-card--text-only .card-content { grid-column:1 / -1; }
 body.blog-index-compact .card-meta { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem .65rem; }
 body.blog-index-compact .card-meta time { margin:0; }
 body.blog-index-compact .card-topic { padding:.1rem .4rem; border-radius:4px; background:var(--bg-secondary); color:var(--text-primary); font-size:.75rem; line-height:1.5; overflow-wrap:anywhere; }
