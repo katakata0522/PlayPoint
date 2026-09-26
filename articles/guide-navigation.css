@@ -1,5 +1,6 @@
 /* 開閉できる入口。JavaScriptが利用できないときは元のナビを表示する。 */
 .guide-brand-short, .guide-nav-button, .guide-header-spacer, .guide-calculator-header { display:none; }
+.guide-header .guide-brand-full { display:inline; }
 .sidebar-game-list { list-style:none; padding:0; margin:0 0 12px; }
 .sidebar-game-list a { display:block; padding:10px 0; }
 .sidebar-widget--games { display:none; }
