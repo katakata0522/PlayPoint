@@ -173,7 +173,9 @@ test('Wave 5 deep guides are discoverable in sitemap with verified editorial dat
   for (const file of guideFiles) {
     const url = `https://playpoint-sim.com/${file.replace(/index\.html$/, '')}`;
     assert.ok(sitemap.includes(`<loc>${url}</loc>`), `${url} should be in sitemap`);
-    assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
+    const modified = read(file).match(/<meta name="last-modified" content="([^"]+)"/)[1];
+    assert.equal(getGeneratedGamePageContentDate(file), modified);
+    assert.ok(sitemap.match(/<url>[\s\S]*?<\/url>/g).find(entry => entry.includes(`<loc>${url}</loc>`)).includes(`<lastmod>${modified}</lastmod>`));
   }
 });
 

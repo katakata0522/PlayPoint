@@ -1,5 +1,7 @@
 'use strict';
 
+const { syncVerifiedInputOnly } = require('./game-seo-safety-sync.cjs');
+
 const { read, writeIfChanged, requireGuideMetadata, createRequiredEdits } = require('./game-seo-common.cjs');
 const { replaceRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo');
 
@@ -114,17 +116,17 @@ function renderFgoGuide() {
 function renderGenshinGuide() {
   const data = GAME_SEO.genshin;
   const faq = [
-    { q: '空月の祝福は610円で合計何原石相当ですか？', a: '購入時の創世結晶300個と、30日間毎日ログインした場合の原石90個×30日=2,700個を合わせ、最大3,000原石相当です。ログインしなかった日の原石は受け取れません。' },
+    { q: '空月の祝福は合計何原石相当ですか？', a: '購入時の創世結晶300個と、30日間毎日ログインした場合の原石90個×30日=2,700個を合わせ、最大3,000原石相当です。ログインしなかった日の原石は受け取れません。' },
     { q: '原神の180連は何円ですか？', a: '最大28,800原石が必要ですが、所持原石、初回2倍、空月の祝福、イベント配布などで必要な課金額が変わるため、PlayPointでは1つの固定金額を断定しません。' }
   ];
   const body = `
-      <section class="section"><h2>空月の祝福は「610円で最大3,000原石相当」</h2><p>空月の祝福は購入時に創世結晶300個、その後30日間、ログインした日に原石90個ずつ受け取れます。30日すべて受け取れば2,700原石なので、創世結晶を1:1で原石に変換する前提では<strong>合計最大3,000原石相当</strong>です。</p><p>同じ610円帯の創世結晶300個を基準にすると、受け取り切った空月はベース量の約10倍相当になります。ただし空月は30日かけて受け取る商品で、即時に3,000原石を得る商品ではありません。初回2倍や期間限定のチャージ特典とも条件が違うため、単純な「10倍お得」とだけ扱わないのが安全です。</p></section>
-      <section class="section"><h2>空月610円で貯まるPlay Points</h2>${pointTableHtml(data.welkin.price)}<p><strong>Google Play経由で購入した場合</strong>にPlay Pointsの対象になります。HoYoverse公式チャージセンターなどGoogle Play外の決済は、Google Playでの購入ではないため、Play Points獲得を前提に比較しません。</p></section>
-      <section class="section"><h2>90連・180連を「固定の円額」にしない理由</h2><p>キャラクター祈願で最大90連なら14,400原石、すり抜け後も含む最大180連なら28,800原石が必要になる計算です。ただし、実際の現金負担は所持原石、紡がれた運命、空月、イベント配布、初回2倍、チャージ特典によって大きく変わります。そのため本サイトでは、旧ページにあった「90連=約27,000円」「180連=約54,000円」のような一律プリセットを廃止し、確認できる商品価格または自由入力からPlay Pointsを計算する方針にします。</p></section>
-      <section class="section"><h2>価格確認で修正した点</h2><p>創世結晶980個の日本向け価格は、現在確認できる価格スナップショットで<strong>1,840円</strong>です。旧データの1,220円は修正対象です。購入前にはAndroidのGoogle Play購入画面を最終確認してください。</p></section>
-      <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.genshinPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：2026年の価格掲載スナップショット</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li><li><a href="${SOURCES.googlePlayLevels}" target="_blank" rel="noopener noreferrer">Google Play公式：日本のステータス別獲得率</a></li></ul></section>
+      <section class="section"><h2>空月の祝福は最大3,000原石相当</h2><p>空月の祝福は購入時に創世結晶300個、その後30日間、ログインした日に原石90個ずつ受け取れます。30日すべて受け取れば2,700原石なので、創世結晶を1:1で原石に変換する前提では<strong>合計最大3,000原石相当</strong>です。</p><p>ログインしなかった日の原石は後から受け取れず、有効期間も延長されません。即時チャージとは受け取れる時期が異なるため、実際にログインできる日数と必要な時期を基準に比較してください。</p></section>
+      <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p><strong>Google Play経由で購入した場合</strong>にPlay Pointsの対象になります。HoYoverse公式チャージセンターなどGoogle Play外の決済は、Google Playでの購入ではないため、Play Points獲得を前提に比較しません。</p></section>
+      <section class="section"><h2>90連・180連を「固定の円額」にしない理由</h2><p>キャラクター祈願で最大90連なら14,400原石、すり抜け後も含む最大180連なら28,800原石が必要になる計算です。ただし、実際の現金負担は所持原石、紡がれた運命、空月、イベント配布、初回2倍、チャージ特典によって大きく変わります。そのため本サイトでは、一律の円額は示さず、実際に購入する金額からPlay Pointsを計算します。</p></section>
+      <section class="section"><h2>価格はGoogle Playの購入画面で確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
+      <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.genshinWelkinReference}" target="_blank" rel="noopener noreferrer">HoYoverse公式ヘルプ：空月の祝福の内容・未ログイン日の扱い</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li><li><a href="${SOURCES.googlePlayLevels}" target="_blank" rel="noopener noreferrer">Google Play公式：日本のステータス別獲得率</a></li></ul></section>
       <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">原神 Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'genshin', slug: 'welkin-value', pageDescription: '原神の空月の祝福を、610円・最大3,000原石相当・Google Play Pointsの観点で比較。創世結晶の通常購入や90連/180連との違いも整理します。', lead: '空月の祝福は安い一方で、30日ログインが必要な定額型です。即時チャージと同じ物差しで比べず、「原石量」「受取速度」「Play Points」の3つに分けて判断します。', body, faq });
+  return guideShell({ gameId: 'genshin', slug: 'welkin-value', pageDescription: '原神の空月の祝福を、最大3,000原石相当・受取条件・Google Play Pointsの観点で比較。創世結晶の通常購入や90連/180連との違いも整理します。', lead: '空月の祝福は安い一方で、30日ログインが必要な定額型です。即時チャージと同じ物差しで比べず、「原石量」「受取速度」「Play Points」の3つに分けて判断します。', body, faq });
 }
 
 function renderMonstGuide() {
@@ -163,17 +165,21 @@ function syncFgo(rootDir) {
 
 function syncGenshin(rootDir) {
   const file = 'games/genshin/index.html';
+  const inputChanged = syncVerifiedInputOnly(rootDir, {
+    file,
+    presetLabel: '購入画面の金額を入力',
+    optionLabel: 'Google Playの購入予定額（自由入力）',
+    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
+    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
+  });
   let html = read(rootDir, file);
-  html = replaceRequired(html, '<option value="1220">創世結晶 980+110個 (1,220円)</option>', '<option value="1840">創世結晶 980+110個 (1,840円)</option>', 'Genshin 980 select price');
-  html = replaceRequired(html, '<tr><td>創世結晶 980+110個 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>', '<tr><td>創世結晶 980+110個 (1,840円)</td><td>1,840 円</td><td>約 18 pt</td><td>約 92 pt</td></tr>', 'Genshin 980 table price');
-  const presets = `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">空月の祝福（610円）</button>\n                  <button type="button" class="preset-btn" data-amount="1840" data-mult="1" aria-pressed="false">創世結晶980+110個（1,840円）</button>\n                  <button type="button" class="preset-btn" data-amount="12000" data-mult="1" aria-pressed="false">創世結晶6480+1600個（12,000円）</button>\n              </div>`;
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, presets, '創世結晶980+110個（1,840円）', 'Genshin verified presets');
   html = html.replaceAll('原神で確定天井（180連）まで課金すると何ポイント貯まりますか？', '原神の90連・180連は何円ですか？');
   html = html.replaceAll('180連（約54,000円）課金した場合、通常時（1pt/100円）で約540pt、Google Playに100円あたり4〜7ptの特別獲得率が表示され、その購入が対象なら約2,160pt〜3,780pt貯まります。', '90連は最大14,400原石、180連は最大28,800原石が目安ですが、所持原石・空月・初回2倍・配布分で実際の課金額が変わるため固定の円額は断定しません。購入予定額を計算機へ入力し、Google Playの獲得予定ポイント表示を最終確認してください。');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `原神価格・空月・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="genshin"><h2>空月と通常チャージ、どちらが自分向き？</h2><p>空月の祝福は610円で、30日すべて受け取れば創世結晶300個+原石2,700個、最大3,000原石相当です。一方で即時チャージとは受取速度が違います。旧データで1,220円になっていた創世結晶980個帯は1,840円へ修正しました。</p><p><a href="./welkin-value/">空月610円のお得度とPlay Pointsを詳しく比較する ➔</a></p></section>`;
+  const block = `<section class="section" data-game-seo-guide="genshin"><h2>空月の祝福と通常チャージを比較する</h2><p>空月の祝福は30日すべて受け取れば創世結晶300個と原石2,700個、最大3,000原石相当です。即時チャージとは受取速度が違います。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./welkin-value/">空月の祝福の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
+  html = html.replace(/<section class="section" data-game-seo-guide="genshin">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="genshin"', 'Genshin guide block');
-  return writeIfChanged(rootDir, file, html);
+  return writeIfChanged(rootDir, file, html) || inputChanged;
 }
 
 function syncMonst(rootDir) {

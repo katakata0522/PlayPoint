@@ -18,21 +18,21 @@ function assertSource(urlText, host, pathname) {
   assert.equal(parsed.pathname, pathname);
 }
 
-test('第2波SSOTは価格スナップショット・公式情報・価格再確認待ちを区別する', () => {
-  assert.equal(GAME_SEO.starrail.verification, 'current-published-price-snapshot');
-  assert.equal(GAME_SEO.zzz.verification, 'current-published-price-snapshot');
+test('第2波SSOTは商品内容の公式確認と価格再確認待ちを区別する', () => {
+  assert.equal(GAME_SEO.starrail.verification, 'specification-verified-google-play-price-pending');
+  assert.equal(GAME_SEO.zzz.verification, 'specification-verified-google-play-price-pending');
   assert.equal(GAME_SEO.umamusume.verification, 'official');
   assert.equal(GAME_SEO.proseka.verification, 'official-webstore-current-google-play-price-recheck-pending');
   assert.equal(GAME_SEO.proseka.publishGooglePlayPrices, false);
   assert.equal(GAME_SEO.nikke.publishGooglePlayPrices, false);
   assert.equal(GAME_SEO.gakumas.publishGooglePlayPrices, false);
-  assert.deepEqual(GAME_SEO.starrail.japanPriceCorrections[0], { item: '往日の夢華 980+110個', oldPrice: 1220, price: 1840 });
-  assert.deepEqual(GAME_SEO.zzz.japanPriceCorrections[0], { item: 'モノクローム 980+110個', oldPrice: 1220, price: 1840 });
+  assert.equal(GAME_SEO.starrail.publishGooglePlayPrices, false);
+  assert.equal(GAME_SEO.zzz.publishGooglePlayPrices, false);
 });
 
-test('第2波の一次情報・公開スナップショットURLは想定ホストとパスを厳密に持つ', () => {
-  assertSource(SOURCES.starrailPriceSnapshot, 'www.hoyolab.com', '/article/43772496');
-  assertSource(SOURCES.zzzPriceSnapshot, 'www.hoyolab.com', '/article/36511454');
+test('第2波の商品内容の一次情報URLは想定ホストとパスを厳密に持つ', () => {
+  assertSource(SOURCES.starrailSupplyPassReference, 'store.epicgames.com', '/p/honkai-star-rail-express-supply-pass-b72410');
+  assertSource(SOURCES.zzzMembershipReference, 'store.playstation.com', '/en-nz/product/EP7711-PPSA20599_00-NAPPS5VIPUSD0499');
   assertSource(SOURCES.umamusumeUmasuku, 'webstore.cygames.com', '/umamusume/subscriptions/detail/umapack/');
   assertSource(SOURCES.umamusumeUmasukuLaunch, 'umamusume.jp', '/steam-news/detail');
   assertSource(SOURCES.prosekaWebStore, 'pjsekai.sega.jp', '/webstore');
@@ -41,11 +41,13 @@ test('第2波の一次情報・公開スナップショットURLは想定ホス�
   assertSource(SOURCES.gakumasDmmSettlement, 'dmg-gakuen.idolmaster-official.jp', '/fund-settlement/');
 });
 
-test('スタレはSSOTの価格補正を使い、旧価格と固定天井円額を公開計算機から除く', () => {
+test('スタレは未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = read('games/starrail/index.html');
-  const correction = GAME_SEO.starrail.japanPriceCorrections[0];
-  assert.ok(html.includes(correction.item + ' (' + formatNumber(correction.price) + '円)'));
-  assert.ok(!html.includes(correction.item + ' (' + formatNumber(correction.oldPrice) + '円)'));
+  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
+  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
+  assert.match(select, /value="custom" selected/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /supply-pass-value\//);
@@ -54,18 +56,21 @@ test('スタレはSSOTの価格補正を使い、旧価格と固定天井円額�
 test('スタレ深掘りはSSOTの列車補給標章の総量・速度・Play Pointsを分ける', () => {
   const html = read('games/starrail/supply-pass-value/index.html');
   const pass = GAME_SEO.starrail.supplyPass;
-  assert.ok(html.includes(formatNumber(pass.price) + '円'));
+  assert.equal(pass.price, undefined);
+  assert.ok(html.includes(SOURCES.starrailSupplyPassReference));
   assert.ok(html.includes('最大' + formatNumber(pass.maxJadeEquivalent) + '星玉相当'));
   assert.ok(html.includes(String(pass.stellarJadePerDay) + '星玉'));
   assert.match(html, /受け取れない|補填されない/);
   assert.match(html, /固定の円額/);
 });
 
-test('ゼンゼロはSSOTの価格補正を使い、旧価格と固定天井円額を公開計算機から除く', () => {
+test('ゼンゼロは未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = read('games/zzz/index.html');
-  const correction = GAME_SEO.zzz.japanPriceCorrections[0];
-  assert.ok(html.includes(correction.item + ' (' + formatNumber(correction.price) + '円)'));
-  assert.ok(!html.includes(correction.item + ' (' + formatNumber(correction.oldPrice) + '円)'));
+  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
+  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
+  assert.match(select, /value="custom" selected/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
   assert.doesNotMatch(html, /data-amount="27000"/);
   assert.doesNotMatch(html, /data-amount="54000"/);
   assert.match(html, /membership-value\//);
@@ -74,7 +79,8 @@ test('ゼンゼロはSSOTの価格補正を使い、旧価格と固定天井円�
 test('ゼンゼロ深掘りはSSOTの会員総量を即時チャージと混同しない', () => {
   const html = read('games/zzz/membership-value/index.html');
   const membership = GAME_SEO.zzz.membership;
-  assert.ok(html.includes(formatNumber(membership.price) + '円'));
+  assert.equal(membership.price, undefined);
+  assert.ok(html.includes(SOURCES.zzzMembershipReference));
   assert.ok(html.includes('最大' + formatNumber(membership.maxPolychromeEquivalent) + 'ポリクローム相当'));
   assert.ok(html.includes(String(membership.days) + '日'));
   assert.match(html, /即時に.*受け取る商品ではない/);

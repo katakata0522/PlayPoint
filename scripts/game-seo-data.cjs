@@ -6,6 +6,7 @@ const { getRegionRule } = require('../js/region-rules.js');
 const GOOGLE_PLAY_JP_LEVELS = getRegionRule('JP').tiers.map(({ id, label, rate }) => ({ id, label, rate }));
 
 const SOURCES = {
+  genshinWelkinReference: 'https://support.hoyoverse.com/hc/en-us/articles/52089442214809-What-happens-to-my-Blessing-of-the-Welkin-Moon-Primogems-if-I-don-t-log-in',
   googlePlayEarn: 'https://support.google.com/googleplay/answer/9077192?co=GENIE.CountryCode%3DJP&hl=ja',
   googlePlayLevels: 'https://support.google.com/googleplay/answer/9080348?co=GENIE.CountryCode%3DJP&hl=ja',
   fgoPrice: 'https://news.fate-go.jp/2022/0930mquf/',
@@ -14,11 +15,8 @@ const SOURCES = {
   monstMonthlyWeb: 'https://www.monster-strike.com/news/20240929_1.html',
   monstWebLaunch: 'https://www.monster-strike.com/news/20240808_10.html',
   monstWebCurrent: 'https://webshop.monster-strike.com/transaction',
-  genshinPriceSnapshot: 'https://www.hoyolab.com/article/46140522',
-  starrailPriceSnapshot: 'https://www.hoyolab.com/article/43772496',
-  starrailSupplyPassReference: 'https://www.hoyolab.com/article/26127599',
-  zzzPriceSnapshot: 'https://www.hoyolab.com/article/36511454',
-  zzzMembershipReference: 'https://www.hoyolab.com/article/35795196',
+  starrailSupplyPassReference: 'https://store.epicgames.com/p/honkai-star-rail-express-supply-pass-b72410',
+  zzzMembershipReference: 'https://store.playstation.com/en-nz/product/EP7711-PPSA20599_00-NAPPS5VIPUSD0499',
   umamusumeUmasuku: 'https://webstore.cygames.com/umamusume/subscriptions/detail/umapack/',
   umamusumeUmasukuLaunch: 'https://umamusume.jp/steam-news/detail?id=2264',
   umamusumeUmaplan: 'https://umamusume.jp/news/detail?id=3097',
@@ -77,14 +75,11 @@ const GAME_SEO = {
     }
   },
   genshin: {
-    verifiedAt: VERIFIED_AT,
-    verification: 'current-published-price-snapshot',
-    sources: [SOURCES.genshinPriceSnapshot, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
-    japanPriceCorrections: [
-      { item: '創世結晶 980+110個', oldPrice: 1220, price: 1840 }
-    ],
+    verifiedAt: '2026-09-27',
+    verification: 'specification-verified-google-play-price-pending',
+    publishGooglePlayPrices: false,
+    sources: [SOURCES.genshinWelkinReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     welkin: {
-      price: 610,
       genesisCrystalsImmediate: 300,
       primogemsPerDay: 90,
       days: 30,
@@ -93,14 +88,11 @@ const GAME_SEO = {
     }
   },
   starrail: {
-    verifiedAt: VERIFIED_AT,
-    verification: 'current-published-price-snapshot',
-    sources: [SOURCES.starrailPriceSnapshot, SOURCES.starrailSupplyPassReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
-    japanPriceCorrections: [
-      { item: '往日の夢華 980+110個', oldPrice: 1220, price: 1840 }
-    ],
+    verifiedAt: '2026-09-27',
+    verification: 'specification-verified-google-play-price-pending',
+    publishGooglePlayPrices: false,
+    sources: [SOURCES.starrailSupplyPassReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     supplyPass: {
-      price: 610,
       oneiricShardsImmediate: 300,
       stellarJadePerDay: 90,
       days: 30,
@@ -109,14 +101,11 @@ const GAME_SEO = {
     }
   },
   zzz: {
-    verifiedAt: VERIFIED_AT,
-    verification: 'current-published-price-snapshot',
-    sources: [SOURCES.zzzPriceSnapshot, SOURCES.zzzMembershipReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
-    japanPriceCorrections: [
-      { item: 'モノクローム 980+110個', oldPrice: 1220, price: 1840 }
-    ],
+    verifiedAt: '2026-09-27',
+    verification: 'specification-verified-google-play-price-pending',
+    publishGooglePlayPrices: false,
+    sources: [SOURCES.zzzMembershipReference, SOURCES.googlePlayEarn, SOURCES.googlePlayLevels],
     membership: {
-      price: 610,
       monochromeImmediate: 300,
       polychromePerDay: 90,
       days: 30,

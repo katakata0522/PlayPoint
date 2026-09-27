@@ -130,7 +130,8 @@ test('Wave 4 deep guides are discoverable and use verified editorial dates', () 
   ];
   const sitemap = read('sitemap.xml');
   for (const file of guides) {
-    assert.equal(getGeneratedGamePageContentDate(file), VERIFIED_AT);
+    const modified = read(file).match(/<meta name="last-modified" content="([^"]+)"/)[1];
+    assert.equal(getGeneratedGamePageContentDate(file), modified);
     assert.ok(sitemap.includes(`/${file.replace(/index\.html$/, '')}`), `${file} should be in sitemap`);
   }
   assert.equal(getGeneratedGamePageContentDate('games/reverse1999/index.html'), VERIFIED_AT);
