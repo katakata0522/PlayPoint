@@ -78,28 +78,25 @@ test('FGO深掘り記事はSSOTの確定召喚・福袋値と公式根拠を同�
   assertHasHref(html, SOURCES.googlePlayEarn);
 });
 
-test('原神はSSOTの価格補正を使い、旧価格と固定天井円額を公開計算機から除く', () => {
+test('原神は未確認の固定価格を使わず、購入予定額を自由入力できる', () => {
   const html = genshin();
-  const correction = GAME_SEO.genshin.japanPriceCorrections[0];
-  assert.ok(html.includes(correction.item + ' (' + formatNumber(correction.price) + '円)'));
-  assert.ok(html.includes('空月の祝福（' + formatNumber(GAME_SEO.genshin.welkin.price) + '円）'));
+  assert.equal(GAME_SEO.genshin.publishGooglePlayPrices, false);
+  const select = html.match(/<select id="sim-pack-select">([\s\S]*?)<\/select>/)[1];
+  assert.deepEqual([...select.matchAll(/<option value="([^"]+)"/g)].map(match => match[1]), ['custom']);
+  assert.match(select, /value="custom" selected/);
+  assert.match(html, /id="sim-custom-amount" value="0"/);
+  assert.deepEqual([...html.matchAll(/data-amount="([^"]+)"/g)].map(match => Number(match[1])), [0]);
   assert.ok(html.includes('./welkin-value/'));
-  assert.ok(!html.includes(correction.item + ' (' + formatNumber(correction.oldPrice) + '円)'));
-  assert.ok(!html.includes('確定天井 180連 (約54,000円)'));
-  assert.ok(!html.includes('仮天井 90連 (約27,000円)'));
 });
 
 test('原神の空月記事はSSOTの受取条件・通常チャージとの差・Play Points経路を分ける', () => {
   const html = read('games/genshin/welkin-value/index.html');
   const welkin = GAME_SEO.genshin.welkin;
-  const correction = GAME_SEO.genshin.japanPriceCorrections[0];
   assert.ok(html.includes('合計最大' + formatNumber(welkin.maxPrimogemEquivalent) + '原石相当'));
   assert.ok(html.includes(String(welkin.days) + '日'));
   assert.ok(html.includes('Google Play経由'));
-  const basePackAmount = correction.item.match(/\d+/)?.[0];
-  assert.ok(basePackAmount, 'Genshin corrected pack amount is missing from SSOT');
-  assert.ok(html.includes(basePackAmount + '個'));
-  assert.ok(html.includes(formatNumber(correction.price) + '円'));
+  assert.equal(welkin.price, undefined);
+  assertHasHref(html, SOURCES.genshinWelkinReference);
 });
 
 test('モンスト記事はSSOTのアプリ・Web・月一商品を区別しGoogle Play外決済を誤認しない', () => {

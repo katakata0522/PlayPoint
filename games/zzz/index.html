@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
-  <meta name="last-modified" content="2026-09-13" />
+  <meta name="last-modified" content="2026-09-27" />
   <meta name="author" content="かたかた" />
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
   <title>ゼンレスゾーンゼロ (Zenless Zone Zero) - Playポイント計算機</title>
@@ -139,7 +139,7 @@
           <header class="game-header">
               <span class="game-badge">⚡ 人気ゲーム別シミュレーター</span>
               <h1 class="game-title">ゼンレスゾーンゼロ (Zenless Zone Zero)</h1>
-              <p class="game-meta">ゼンゼロ価格・インターノット会員・Play Points確認：2026-09-13 ｜ Google Play Points (100円=1pt)</p>
+              <p class="game-meta">月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認</p>
           </header>
 
           <p>ゼンレスゾーンゼロ（ゼンゼロ）のモノクローム購入、インターノット会員、成長プラン、180連天井で貯まるPlayポイントをサクッと計算！パック別還元早見表や使い道もまとめているので、課金前の確認にぜひ使ってみてくださいね。</p>
@@ -150,9 +150,7 @@
 
               <p class="preset-heading">▼ 目標プリセット：</p>
               <div class="preset-buttons">
-                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">インターノット会員（610円）</button>
-                  <button type="button" class="preset-btn" data-amount="1840" data-mult="1" aria-pressed="false">モノクローム980+110個（1,840円）</button>
-                  <button type="button" class="preset-btn" data-amount="12000" data-mult="1" aria-pressed="false">モノクローム6480+1600個（12,000円）</button>
+                  <button type="button" class="preset-btn active" data-amount="0" data-mult="1" aria-pressed="true">購入画面の金額を入力</button>
               </div>
 
               <form id="game-sim-form">
@@ -160,15 +158,7 @@
                       <div class="input-field">
                           <label for="sim-pack-select">課金パックを選択：</label>
                           <select id="sim-pack-select">
-                              <option value="610">インターノット会員 (610円)</option>
-                  <option value="1220">エリドゥファンド 成長プラン (1,220円)</option>
-                  <option value="120">モノクローム 60個 (120円)</option>
-                  <option value="610">モノクローム 300+30個 (610円)</option>
-                  <option value="1840">モノクローム 980+110個 (1,840円)</option>
-                  <option value="3680">モノクローム 1980+260個 (3,680円)</option>
-                  <option value="6100">モノクローム 3280+600個 (6,100円)</option>
-                  <option value="12000">モノクローム 6480+1600個 (12,000円)</option>
-                              <option value="custom">自由入力（カスタム金額）</option>
+                              <option value="custom" selected>Google Playの購入予定額（自由入力）</option>
                           </select>
                       </div>
 
@@ -179,7 +169,7 @@
 
                       <div class="input-field">
                           <label for="sim-custom-amount">課金予定合計額（円）：</label>
-                          <input type="number" id="sim-custom-amount" value="610" min="0" step="any" inputmode="decimal">
+                          <input type="number" id="sim-custom-amount" value="0" min="0" step="any" inputmode="decimal">
                       </div>
 
                       <div class="input-field">
@@ -274,14 +264,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr><td>インターノット会員 (610円)</td><td>610 円</td><td>約 6 pt</td><td>約 31 pt</td></tr>
-<tr><td>エリドゥファンド 成長プラン (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>
-<tr><td>モノクローム 60個 (120円)</td><td>120 円</td><td>約 1 pt</td><td>約 6 pt</td></tr>
-<tr><td>モノクローム 300+30個 (610円)</td><td>610 円</td><td>約 6 pt</td><td>約 31 pt</td></tr>
-<tr><td>モノクローム 980+110個 (1,840円)</td><td>1,840 円</td><td>約 18 pt</td><td>約 92 pt</td></tr>
-<tr><td>モノクローム 1980+260個 (3,680円)</td><td>3,680 円</td><td>約 37 pt</td><td>約 184 pt</td></tr>
-<tr><td>モノクローム 3280+600個 (6,100円)</td><td>6,100 円</td><td>約 61 pt</td><td>約 305 pt</td></tr>
-<tr><td>モノクローム 6480+1600個 (12,000円)</td><td>12,000 円</td><td>約 120 pt</td><td>約 600 pt</td></tr>
+<tr><td colspan="4">Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。</td></tr>
                       </tbody>
                   </table>
               </div>
@@ -330,7 +313,7 @@
 <p>はい。Android端末またはPC版Google Play Gamesで決済するとPlay Pointsが貯まります。</p>
           </section>
 
-          <section class="section" data-game-seo-guide="zzz"><h2>インターノット会員と通常チャージを同じ物差しで比較しない</h2><p>月パスは30日かけて受け取る商品です。旧980個帯価格1,220円と27,000円/54,000円の固定天井プリセットを修正し、実際の課金予定額で計算します。</p><p><a href="./membership-value/">インターノット会員610円のお得度とPlay Pointsを見る ➔</a></p></section>
+          <section class="section" data-game-seo-guide="zzz"><h2>インターノット会員と通常チャージを比較する</h2><p>インターノット会員は購入時のモノクローム300個と、30日間のログインで得るポリクロームを合わせて最大3,000ポリクローム相当です。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./membership-value/">インターノット会員の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>
 
           <section class="section game-source-section">
               <h2>出典・確認範囲</h2>

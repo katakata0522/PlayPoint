@@ -1,5 +1,7 @@
 'use strict';
 
+const { syncVerifiedInputOnly } = require('./game-seo-safety-sync.cjs');
+
 const { read, writeIfChanged, createGuideShell, createRequiredEdits } = require('./game-seo-common.cjs');
 const { replaceRequired, replaceAllRequired, replaceRegexRequired, insertBeforeRequired } = createRequiredEdits('game-seo-expanded');
 
@@ -32,17 +34,17 @@ function renderStarrailGuide() {
   const data = GAME_SEO.starrail;
   const pass = data.supplyPass;
   const body = `
-    <section class="section"><h2>列車補給標章は610円で最大3,000星玉相当</h2><p>購入時に往日の夢華300個を受け取り、30日間はログインした日に星玉90個を受け取れます。30日すべて受け取ると2,700星玉なので、往日の夢華300個を1:1で星玉へ交換する前提では<strong>最大3,000星玉相当</strong>です。</p><p>ログインしなかった日の90星玉は後からまとめて受け取れないため、即時チャージと同じ「610円で3,000個の商品」として扱わないことが重要です。</p></section>
-    <section class="section"><h2>通常チャージとの違い：980個帯は現在1,840円</h2><p>現在確認できる日本向け価格スナップショットでは、往日の夢華980個帯は<strong>1,840円</strong>です。旧PlayPointに残っていた1,220円は現行値として使わないよう修正します。価格スナップショットは公式価格表そのものではないため、購入直前のGoogle Play表示を最終正本にします。</p></section>
-    <section class="section"><h2>90連・180連を固定の円額にしない</h2><p>ガチャに必要な星玉は所持星玉、チケット、イベント配布、列車補給標章、初回チャージ特典などで補えるため、旧ページの「90連=約27,000円」「180連=約54,000円」という一律プリセットは実負担を正確に表しません。PlayPointでは、確認できる商品または実際の課金予定額を入力してPlay Pointsを計算する方式に変更します。</p></section>
-    <section class="section"><h2>Google Playで610円購入した場合のPlay Points目安</h2>${pointTableHtml(pass.price)}<p>列車補給標章を<strong>Google Play経由</strong>で購入した場合に限り、Google Play上の対象購入としてPlay Pointsを計算します。HoYoverseの別決済経路をGoogle Play購入として数えません。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.starrailPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：現在確認できる日本向け価格スナップショット</a></li><li><a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">HoYoLAB：列車補給標章の受取仕様</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>列車補給標章は最大3,000星玉相当</h2><p>購入時に往日の夢華300個を受け取り、30日間はログインした日に星玉90個を受け取れます。30日すべて受け取ると2,700星玉なので、往日の夢華300個を1:1で星玉へ交換する前提では<strong>最大3,000星玉相当</strong>です。</p><p>ログインしなかった日の90星玉は後からまとめて受け取れないため、即時チャージと同じ「購入直後に3,000個を受け取れる商品」として扱わないことが重要です。</p></section>
+    <section class="section"><h2>価格は購入経路ごとに確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
+    <section class="section"><h2>90連・180連を固定の円額にしない</h2><p>ガチャに必要な星玉は所持星玉、チケット、イベント配布、列車補給標章、初回チャージ特典などで補えるため、固定の円額では実負担を正確に表せません。実際の課金予定額を入力してPlay Pointsを計算してください。</p></section>
+    <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p>列車補給標章を<strong>Google Play経由</strong>で購入した場合に限り、Google Play上の対象購入としてPlay Pointsを計算します。HoYoverseの別決済経路をGoogle Play購入として数えません。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.starrailSupplyPassReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明（Epic Games）：列車補給標章の内容。Google Play価格の出典ではありません</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">スターレイル Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'starrail', slug: 'supply-pass-value', pageDescription: '崩壊：スターレイルの列車補給標章を610円・最大3,000星玉相当・受取速度・Google Play Pointsで比較。旧980個帯価格と固定天井額も見直します。',
+  return guideShell({ gameId: 'starrail', slug: 'supply-pass-value', pageDescription: '崩壊：スターレイルの列車補給標章を最大3,000星玉相当・受取速度・Google Play Pointsで比較。購入価格はGoogle Playの表示で確認します。',
     lead: '列車補給標章はコスパが高い一方、30日かけて受け取る商品です。通常チャージ、ガチャ資金、Play Pointsを同じ数字で混ぜずに比較します。',
     body,
     faq: [
-      { q: '列車補給標章は610円で何星玉相当ですか？', a: '購入時の往日の夢華300個と、30日すべてログインした場合の星玉90個×30日を合わせ、最大3,000星玉相当です。ログインしなかった日の90星玉は後から受け取れません。' },
+      { q: '列車補給標章は何星玉相当ですか？', a: '購入時の往日の夢華300個と、30日すべてログインした場合の星玉90個×30日を合わせ、最大3,000星玉相当です。ログインしなかった日の90星玉は後から受け取れません。' },
       { q: 'スタレの180連は何円ですか？', a: '所持星玉・チケット・配布・列車補給標章・初回特典で実際の現金負担が変わるため、PlayPointでは固定の円額を断定しません。' }
     ]
   });
@@ -52,18 +54,18 @@ function renderZzzGuide() {
   const data = GAME_SEO.zzz;
   const pass = data.membership;
   const body = `
-    <section class="section"><h2>インターノット会員は610円で最大3,000ポリクローム相当</h2><p>購入時にモノクローム300個、その後30日間にポリクローム90個ずつを受け取る定額型です。30日分をすべて受け取れば2,700ポリクロームなので、モノクローム300個を1:1で換算する前提では<strong>最大3,000ポリクローム相当</strong>です。</p><p>即時に3,000個を受け取る商品ではないため、通常チャージとは「総量」と「受取速度」を分けて比較します。</p></section>
-    <section class="section"><h2>モノクローム980個帯の旧1,220円を修正</h2><p>現在確認できる日本向け価格スナップショットでは、モノクローム980個帯は<strong>1,840円</strong>です。PlayPointに残っていた1,220円は現行値として扱いません。最終的な購入価格はGoogle Playの決済画面を確認してください。</p></section>
-    <section class="section"><h2>90連・180連を「何円」と固定しない</h2><p>ガチャ必要量が同じでも、所持ポリクローム、暗号化マスターテープ、インターノット会員、イベント配布、初回増量などで現金負担は変わります。このため旧ページの27,000円・54,000円プリセットを撤去し、実際に支払う予定額からPlay Pointsを計算します。</p></section>
-    <section class="section"><h2>Google Playで610円購入した場合のPlay Points目安</h2>${pointTableHtml(pass.price)}<p>Play PointsはGoogle Play上の対象購入を基準にします。ゲーム外・Google Play外の決済経路は同じものとして加算しません。</p></section>
-    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.zzzPriceSnapshot}" target="_blank" rel="noopener noreferrer">HoYoLAB：日本向けモノクローム価格の掲載例</a></li><li><a href="${SOURCES.zzzMembershipReference}" target="_blank" rel="noopener noreferrer">HoYoLAB：インターノット会員の内容</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
+    <section class="section"><h2>インターノット会員は最大3,000ポリクローム相当</h2><p>購入時にモノクローム300個、その後30日間にポリクローム90個ずつを受け取る定額型です。30日分をすべて受け取れば2,700ポリクロームなので、モノクローム300個を1:1で換算する前提では<strong>最大3,000ポリクローム相当</strong>です。</p><p>即時に3,000個を受け取る商品ではないため、通常チャージとは「総量」と「受取速度」を分けて比較します。</p></section>
+    <section class="section"><h2>価格は購入経路ごとに確認する</h2><p>月パスと通常チャージの価格は、利用地域・購入経路・販売時期で異なる場合があります。このページでは日本のGoogle Playの現行価格を確定できていないため、金額を固定した価格表は掲載していません。購入する商品の価格と内容をGoogle Playの購入画面で確認し、実際の支払予定額を計算機に入力してください。</p></section>
+    <section class="section"><h2>90連・180連を「何円」と固定しない</h2><p>ガチャ必要量が同じでも、所持ポリクローム、暗号化マスターテープ、インターノット会員、イベント配布、初回増量などで現金負担は変わります。このため固定の円額では示さず、実際に支払う予定額からPlay Pointsを計算します。</p></section>
+    <section class="section"><h2>購入額からPlay Pointsを計算する</h2><p>以下は税込1,000円の対象商品を購入する場合の計算例です。月パスの販売価格を示すものではありません。</p>${pointTableHtml(1000)}<p>Play PointsはGoogle Play上の対象購入を基準にします。ゲーム外・Google Play外の決済経路は同じものとして加算しません。</p></section>
+    <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.zzzMembershipReference}" target="_blank" rel="noopener noreferrer">COGNOSPHEREの商品説明（PlayStation）：会員の内容。Google Play価格の出典ではありません</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">ゼンゼロ Play Points計算機へ戻る ➔</a></p>`;
-  return guideShell({ gameId: 'zzz', slug: 'membership-value', pageDescription: 'ゼンレスゾーンゼロのインターノット会員を610円・最大3,000ポリクローム相当・受取速度・Google Play Pointsで比較。旧価格と固定天井額も整理します。',
+  return guideShell({ gameId: 'zzz', slug: 'membership-value', pageDescription: 'ゼンレスゾーンゼロのインターノット会員を最大3,000ポリクローム相当・受取速度・Google Play Pointsで比較。購入価格はGoogle Playの表示で確認します。',
     lead: '月パス型のインターノット会員と即時チャージでは、同じ金額でも価値の出方が違います。総量・速度・Play Pointsを分けて確認します。',
     body,
     faq: [
-      { q: 'インターノット会員は610円で何ポリクローム相当ですか？', a: '購入時のモノクローム300個と、30日分のポリクローム90個×30日を合わせ、すべて受け取れば最大3,000ポリクローム相当です。' },
-      { q: 'ゼンゼロの180連は固定で54,000円ですか？', a: '所持通貨・チケット・配布・月パス・初回増量で実負担が変わるため、固定の円額としては扱いません。' }
+      { q: 'インターノット会員は何ポリクローム相当ですか？', a: '購入時のモノクローム300個と、30日分のポリクローム90個×30日を合わせ、すべて受け取れば最大3,000ポリクローム相当です。' },
+      { q: 'ゼンゼロの180連は何円ですか？', a: '所持通貨・チケット・配布・月パス・初回増量で実負担が変わるため、固定の円額としては扱いません。' }
     ]
   });
 }
@@ -110,28 +112,36 @@ function renderProsekaGuide() {
 
 function syncStarrail(rootDir) {
   const file = 'games/starrail/index.html';
+  const inputChanged = syncVerifiedInputOnly(rootDir, {
+    file,
+    presetLabel: '購入画面の金額を入力',
+    optionLabel: 'Google Playの購入予定額（自由入力）',
+    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
+    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
+  });
   let html = read(rootDir, file);
-  html = replaceRequired(html, '<option value="1220">往日の夢華 980+110個 (1,220円)</option>', '<option value="1840">往日の夢華 980+110個 (1,840円)</option>', 'Star Rail 980 select');
-  html = replaceRequired(html, '<tr><td>往日の夢華 980+110個 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>', '<tr><td>往日の夢華 980+110個 (1,840円)</td><td>1,840 円</td><td>約 18 pt</td><td>約 92 pt</td></tr>', 'Star Rail 980 table');
-  const presets = `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">列車補給標章（610円）</button>\n                  <button type="button" class="preset-btn" data-amount="1840" data-mult="1" aria-pressed="false">往日の夢華980+110個（1,840円）</button>\n                  <button type="button" class="preset-btn" data-amount="12000" data-mult="1" aria-pressed="false">往日の夢華6480+1600個（12,000円）</button>\n              </div>`;
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, presets, '往日の夢華980+110個（1,840円）', 'Star Rail presets');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `スタレ価格・列車補給標章・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="starrail"><h2>固定の天井円額ではなく、月パス・現行価格・実支払額で比較</h2><p>旧ページの27,000円/54,000円プリセットを撤去し、列車補給標章610円、往日の夢華980個帯1,840円など確認できる支払額から計算します。</p><p><a href="./supply-pass-value/">列車補給標章610円のお得度とPlay Pointsを詳しく見る ➔</a></p></section>`;
+  const block = `<section class="section" data-game-seo-guide="starrail"><h2>列車補給標章と通常チャージを比較する</h2><p>列車補給標章は購入時の往日の夢華300個と、30日間のログインで得る星玉を合わせて最大3,000星玉相当です。価格はGoogle Playの購入画面で確認し、実際の支払予定額で計算してください。</p><p><a href="./supply-pass-value/">列車補給標章の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
+  html = html.replace(/<section class="section" data-game-seo-guide="starrail">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="starrail"', 'Star Rail guide block');
-  return writeIfChanged(rootDir, file, html);
+  return writeIfChanged(rootDir, file, html) || inputChanged;
 }
 
 function syncZzz(rootDir) {
   const file = 'games/zzz/index.html';
+  const inputChanged = syncVerifiedInputOnly(rootDir, {
+    file,
+    presetLabel: '購入画面の金額を入力',
+    optionLabel: 'Google Playの購入予定額（自由入力）',
+    tableMessage: 'Google Playの購入画面で確認した金額を入力してください。商品価格は購入経路・地域・時期で異なる場合があります。',
+    gameMeta: '月パスの商品内容確認：2026-09-27／Google Play価格は購入画面で確認'
+  });
   let html = read(rootDir, file);
-  html = replaceRequired(html, '<option value="1220">モノクローム 980+110個 (1,220円)</option>', '<option value="1840">モノクローム 980+110個 (1,840円)</option>', 'ZZZ 980 select');
-  html = replaceRequired(html, '<tr><td>モノクローム 980+110個 (1,220円)</td><td>1,220 円</td><td>約 12 pt</td><td>約 61 pt</td></tr>', '<tr><td>モノクローム 980+110個 (1,840円)</td><td>1,840 円</td><td>約 18 pt</td><td>約 92 pt</td></tr>', 'ZZZ 980 table');
-  const presets = `<div class="preset-buttons">\n                  <button type="button" class="preset-btn active" data-amount="610" data-mult="1" aria-pressed="true">インターノット会員（610円）</button>\n                  <button type="button" class="preset-btn" data-amount="1840" data-mult="1" aria-pressed="false">モノクローム980+110個（1,840円）</button>\n                  <button type="button" class="preset-btn" data-amount="12000" data-mult="1" aria-pressed="false">モノクローム6480+1600個（12,000円）</button>\n              </div>`;
-  html = replaceRegexRequired(html, /<div class="preset-buttons">[\s\S]*?<\/div>/, presets, 'モノクローム980+110個（1,840円）', 'ZZZ presets');
   html = html.replace('Play Points獲得率確認：2026年8月（ゲーム内価格・天井は参考値）', `ゼンゼロ価格・インターノット会員・Play Points確認：${VERIFIED_AT}`);
-  const block = `<section class="section" data-game-seo-guide="zzz"><h2>インターノット会員と通常チャージを同じ物差しで比較しない</h2><p>月パスは30日かけて受け取る商品です。旧980個帯価格1,220円と27,000円/54,000円の固定天井プリセットを修正し、実際の課金予定額で計算します。</p><p><a href="./membership-value/">インターノット会員610円のお得度とPlay Pointsを見る ➔</a></p></section>`;
+  const block = `<section class="section" data-game-seo-guide="zzz"><h2>インターノット会員と通常チャージを比較する</h2><p>インターノット会員は購入時のモノクローム300個と、30日間のログインで得るポリクロームを合わせて最大3,000ポリクローム相当です。価格はGoogle Playの購入画面で確認してください。</p><p><a href="./membership-value/">インターノット会員の受取条件とPlay Pointsを詳しく見る ➔</a></p></section>`;
+  html = html.replace(/<section class="section" data-game-seo-guide="zzz">[\s\S]*?<\/section>/, block);
   html = insertBeforeRequired(html, '<section class="section game-source-section">', block, 'data-game-seo-guide="zzz"', 'ZZZ guide block');
-  return writeIfChanged(rootDir, file, html);
+  return writeIfChanged(rootDir, file, html) || inputChanged;
 }
 
 function syncUmamusume(rootDir) {

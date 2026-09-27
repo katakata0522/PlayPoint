@@ -152,4 +152,4 @@ function syncGameSeoSafety(rootDir) {
   return { checked: 5, changedFiles: [...new Set(changedFiles)].sort() };
 }
 
-module.exports = { syncGameSeoSafety };
+module.exports = { syncGameSeoSafety, syncVerifiedInputOnly };

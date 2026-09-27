@@ -43,7 +43,7 @@ function renderHi3Guide() {
   const body = `
     <section class="section"><h2>公式チャージセンターとゲーム内は、特典の一部を共有</h2><p>崩壊3rd公式は、HoYoverse公式チャージセンターを提供しています。公式案内では、<strong>月パス以外の水晶2倍チャージボーナスはゲーム内とチャージセンターで共有</strong>され、チャージセンターで購入してもゲーム内のチャージ特典を受け取れると説明しています。</p></section>
     <section class="section"><h2>月パスは有効期間180日未満なら延長購入可能</h2><p>公式案内では、月パスの残り有効期間が180日未満の場合に追加購入して期間を延長できます。現行日本Google Playの月パス価格は公開一次情報で固定できないため、本サイトでは旧600円を現行価格として扱いません。</p></section>
-    <section class="section"><h2>チャージセンターでは独自割引キャンペーンもあり得る</h2><p>2026年3月5日〜4月16日には、公式チャージセンター向けに5%・10%割引クーポンを配布する期間限定イベントが実施されました。これは終了済みキャンペーンであり、恒常割引ではありません。現在のお得度はチャージセンターの決済直前表示で確認してください。</p></section>
+    <section class="section"><h2>チャージセンターでは独自割引キャンペーンもあり得る</h2><p>海外向けの公式案内では、2026年3月5日〜4月16日にチャージセンター向けの5%・10%割引クーポンを配布する期間限定イベントが実施されました。これは海外向けの終了済みキャンペーンの例です。日本向けの開催を示すものではなく、恒常割引ではありません。現在のお得度はチャージセンターの決済直前表示で確認してください。</p></section>
     <section class="section"><h2>Google Play PointsはGoogle Play購入と分ける</h2><p>HoYoverse公式チャージセンターはGoogle Play上の購入ではありません。Google Play Pointsを重視する場合は、Google Play側の購入確認画面に表示されるポイントと、チャージセンター側の割引・特典を別軸で比較します。</p></section>
     <section class="section"><h2>出典</h2><ul><li><a href="${SOURCES.hi3ChargeCenterLaunch}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：チャージセンター</a></li><li><a href="${SOURCES.hi3TopUpDiscount2026}" target="_blank" rel="noopener noreferrer">崩壊3rd公式：2026年チャージセンター割引イベント</a></li><li><a href="${SOURCES.googlePlayEarn}" target="_blank" rel="noopener noreferrer">Google Play公式：ポイントの計算方法</a></li></ul></section>
     <p><a class="game-giftcard-cta-btn rakuten-primary-btn" href="../">崩壊3rd Play Points計算機へ戻る ➔</a></p>`;

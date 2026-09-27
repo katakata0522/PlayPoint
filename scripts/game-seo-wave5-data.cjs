@@ -56,7 +56,7 @@ const GAME_SEO_WAVE5 = Object.freeze({
       rewardRoadEligiblePurchaseRule: 'real-money-eligible-purchases',
       giftCardAndPokeCoinPurchasesExcludedFromRewardRoad: true
     },
-    note: 'AndroidではGoogle PlayまたはGalaxy Storeで購入が完了するため、Google Play Pointsを数えるのはGoogle Play決済として表示される購入だけ。Pokémon GO Web Storeは別決済で、ボーナスポケコイン・Web限定商品・Reward Roadを別軸で比較する。'
+    note: 'AndroidではGoogle PlayまたはGalaxy Storeで購入が完了するため、Google Play Pointsを数えるのはGoogle Play決済として表示される購入だけ。Pokémon GO Web Storeは別決済で、ボーナスポケコイン・Web限定商品を比較し、両経路の対象購入で進むReward Roadも別制度として確認する。'
   },
   efootball: {
     icon: '⚽',
