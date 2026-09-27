@@ -10,7 +10,7 @@ const EDITORIAL_MODIFIED_DATE = '2026-09-12';
 const EDITORIAL_TARGETS = Object.freeze({
   'articles/2026-03-10-play-points-reflection-timing.html': {
     manualStructure: true,
-    modifiedDate: '2026-09-19',
+    modifiedDate: '2026-09-27',
     answer: '購入が完了しているのにポイントが見えない場合は、注文状態、Play Points履歴、購入したGoogleアカウント、キャンペーン条件の順で確認します。待ち時間だけでは原因を切り分けられません。',
     known: [
       '注文が完了・保留・キャンセル・返金のどれかは購入履歴で確認できます。',
