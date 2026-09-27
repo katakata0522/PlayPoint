@@ -199,6 +199,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'honkai3rd-google-play-vs-charge-center-2026',
+    modified: '2026-09-27',
     title: '崩壊3rdはGoogle Playと公式チャージセンターどっち？2倍特典・月パス・Play Points【2026年】',
     category: '使い方',
     gameTitle: '崩壊3rd',
@@ -244,6 +245,7 @@ const GAME_GUIDE_ARTICLES = Object.freeze([
   },
   {
     id: 'pokemon-go-google-play-vs-webstore-2026',
+    modified: '2026-09-27',
     title: 'Pokémon GOはGoogle PlayとWeb Storeどっちがお得？ボーナスポケコイン・Reward Road・Play Points比較【2026年】',
     category: '使い方',
     gameTitle: 'Pokémon GO',
