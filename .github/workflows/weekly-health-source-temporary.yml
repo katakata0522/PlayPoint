@@ -1,23 +1,149 @@
-name: Temporary health source snapshot
+name: Temporary verified health repair sync
 on:
   pull_request:
-    types: [opened]
+    types: [synchronize]
 permissions:
   contents: read
 jobs:
-  snapshot:
-    if: github.head_ref == 'fix/weekly-health-20260928'
+  sync:
+    if: github.event.pull_request.number == 477 && github.head_ref == 'fix/weekly-health-20260928' && github.event.pull_request.head.repo.full_name == github.repository && github.actor == 'katakata0522'
+    permissions:
+      contents: write
     runs-on: ubuntu-24.04
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          persist-credentials: false
-          ref: 3c8897425db9ca808dc134ffcad8c8303b9bf707
-      - name: Archive the verified public baseline only
-        run: git archive --format=zip --output="$RUNNER_TEMP/health-baseline.zip" HEAD
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
         with:
-          name: health-baseline-3c889742
-          path: ${{ runner.temp }}/health-baseline.zip
-          retention-days: 1
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: Apply bounded repair and remove this temporary workflow
+        shell: bash
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_HEAD"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          root=Path.cwd()
+          image=root/'images/navigation-thumbnails/4e864f334e04ae1a-186.webp'
+          assert hashlib.sha256((root/'articles/ogp/campaign.png').read_bytes()).hexdigest().startswith('4e864f334e04ae1a')
+          assert len(image.read_bytes()) == 3184
+          p=root/'scripts/japanese-navigation-sidebar.cjs'; s=p.read_text()
+          s=s.replace("const path = require('node:path');", "const path = require('node:path');\nconst { createHash } = require('node:crypto');")
+          start=s.index('function publicThumbnail(value) {'); end=s.index('\nfunction renderPopularWidget', start)
+          s=s[:start]+'''function publicThumbnail(value, rootDir = path.resolve(__dirname, '..')) {
+            const relative = String(value || '').replace(/^\\.\\.\\//, '');
+            if (!/^(?:articles\\/ogp\\/[^/?#]+\\.png|images\\/game-icons\\/[a-z0-9-]+\\.(?:png|jpe?g|webp)|ogp\\.png)$/i.test(relative)) return '';
+            const original = '/' + relative;
+            const sourcePath = path.join(rootDir, relative);
+            if (!fs.existsSync(sourcePath)) return original;
+            // 小表示用の派生画像は原本の内容に結び付ける。原本更新時は古い派生を使わない。
+            const digest = createHash('sha256').update(fs.readFileSync(sourcePath)).digest('hex').slice(0, 16);
+            const thumbnail = `images/navigation-thumbnails/${digest}-186.webp`;
+            return fs.existsSync(path.join(rootDir, thumbnail)) ? '/' + thumbnail : original;
+          }
+          '''+s[end:]
+          s=s.replace('module.exports = { BROWSE_CATEGORIES,','module.exports = { publicThumbnail, BROWSE_CATEGORIES,')
+          p.write_text(s)
+          p=root/'tests/japanese-navigation-sidebar.test.cjs'
+          p.write_text(p.read_text()+r'''
+
+          test('人気記事の小画像は原本の内容と一致する派生だけを使い、欠損・更新時は原本へ戻す', t => {
+            const os = require('node:os');
+            const { createHash } = require('node:crypto');
+            const { publicThumbnail } = require('../scripts/japanese-navigation-sidebar.cjs');
+            const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-sidebar-thumbnail-'));
+            t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
+            fs.mkdirSync(path.join(fixture, 'articles/ogp'), { recursive: true });
+            fs.mkdirSync(path.join(fixture, 'images/navigation-thumbnails'), { recursive: true });
+            const source = 'articles/ogp/example.png';
+            fs.writeFileSync(path.join(fixture, source), 'original');
+            const digest = createHash('sha256').update('original').digest('hex').slice(0, 16);
+            const derivative = `images/navigation-thumbnails/${digest}-186.webp`;
+            assert.equal(publicThumbnail('../' + source, fixture), '/' + source);
+            fs.writeFileSync(path.join(fixture, derivative), 'small');
+            assert.equal(publicThumbnail('../' + source, fixture), '/' + derivative);
+            fs.writeFileSync(path.join(fixture, source), 'updated');
+            assert.equal(publicThumbnail('../' + source, fixture), '/' + source);
+            for (const unsafe of ['https://example.com/a.png', '../../outside.png', 'javascript:alert(1)', '']) {
+              assert.equal(publicThumbnail(unsafe, fixture), '');
+            }
+          });
+          ''')
+          p=root/'tests/ci-guardrails.test.cjs'
+          p.write_text(p.read_text()+r'''
+
+          test('SEO監視は期限切れ後も独立検査を実行し、準備失敗・キャンセル・検査失敗を隠さない', () => {
+            const workflow = read('.github/workflows/seo-healthcheck.yml');
+            const vm = require('node:vm');
+            for (const name of ['Check all submitted sitemaps', 'Check production security headers', 'Check production internal links']) {
+              const block = getStepBlock(workflow, name);
+              const expression = block.match(/^\s+if: \$\{\{ (.+) \}\}\s*$/m)?.[1];
+              assert.ok(expression, `${name}: 独立実行の条件が必要`);
+              assert.doesNotMatch(block, /continue-on-error|\|\|\s*true/);
+              const prepared = { checkout_code: { outcome: 'success' }, ci_node: { outcome: 'success' }, record_ci_environment: { outcome: 'success' } };
+              const evaluate = (steps, cancelled = false) => vm.runInNewContext(expression, { steps, cancelled: () => cancelled }, { timeout: 100 });
+              for (const outcome of ['success', 'failure', 'skipped']) {
+                assert.equal(evaluate({ ...prepared, check_technical_seo_basics_and_latest_hub_schedule: { outcome } }), true);
+              }
+              assert.equal(evaluate(prepared, true), false);
+              for (const dependency of Object.keys(prepared)) {
+                for (const outcome of ['failure', 'skipped', 'cancelled']) {
+                  assert.equal(evaluate({ ...prepared, [dependency]: { outcome } }), false);
+                }
+              }
+            }
+            assert.doesNotMatch(workflow, /^\s+continue-on-error:/m);
+            assert.match(getStepBlock(workflow, 'Check technical SEO basics and latest hub schedule'), /LATEST_HUB_ENFORCE_NEXT_CHECK: '1'/);
+          });
+          ''')
+          p=root/'latest/index.html'; s=p.read_text()
+          s=s.replace('data-latest-verified datetime="2026-09-22">2026-09-22','data-latest-verified datetime="2026-09-28">2026-09-28')
+          s=s.replace('"dateModified":"2026-09-22"','"dateModified":"2026-09-28"').replace('最終更新: <time datetime="2026-09-22">2026-09-22</time>','最終更新: <time datetime="2026-09-28">2026-09-28</time>')
+          s=s.replace('Google公式ヘルプに基づく案内 · 確認日: <time datetime="2026-09-18">2026-09-18</time>','Google公式ヘルプに基づく案内 · 確認日: <time datetime="2026-09-28">2026-09-28</time>')
+          s=s.replace('Google公式説明に基づく案内 · 確認日: <time datetime="2026-09-15">2026-09-15</time>','Google公式説明に基づく案内 · 確認日: <time datetime="2026-09-28">2026-09-28</time>')
+          s=s.replace('Google公式ヘルプ · 確認日: <time datetime="2026-09-22">2026-09-22</time>','Google公式ヘルプ · 確認日: <time datetime="2026-09-28">2026-09-28</time>')
+          s=s.replace('検証日: <time datetime="2026-09-18">2026-09-18</time> / 次回確認目安: 2026-09-25頃','制度説明の再確認日: <time datetime="2026-09-28">2026-09-28</time> / 次回確認目安: 2026-10-02頃')
+          s=s.replace('検証日: <time datetime="2026-09-18">2026-09-18</time> / 次回確認目安: 2026-09-24頃','検証日: <time datetime="2026-09-28">2026-09-28</time> / 次回確認目安: 2026-10-01頃')
+          s=s.replace('公式説明の検証日: <time datetime="2026-09-15">2026-09-15</time> / 次回確認目安: 2026-09-22頃','公式説明の検証日: <time datetime="2026-09-28">2026-09-28</time> / 次回確認目安: 2026-10-05頃')
+          old='賞品数には限りがあり、追加資格条件や残数はアカウント側の表示を最終判断にしてください。</p>'
+          assert s.count(old)==1
+          s=s.replace(old,old+'<p>9月28日は公開の制度説明を再確認しましたが、日本向けの最新賞品一覧は未確認です。上記は9月18日の確認記録であり、今週の賞品を保証するものではありません。</p>')
+          new='''  <section class="section" aria-labelledby="review-20260928-title">
+              <h2 id="review-20260928-title">2026年9月28日の確認結果</h2>
+              <p>期限が来た通常週次・Play Pass週次・クエスト・ポイント獲得プロモーションの公式説明を再確認しました。受け取り曜日、対象者ごとの条件、購入時の獲得率の扱いに、掲載内容を変える差異は見つかりませんでした。</p>
+              <p>スーパー週次は対象ランク・金曜更新・在庫制の制度説明のみを再確認しています。日本向けの最新賞品と各アカウントの残数は未確認です。日本語表示でも地域が異なる賞品を日本向けとして転記せず、9月18日の国内賞品の確認記録を残しています。</p>
+              <p>ランク条件・問題解決手順は次回確認目安の10月15日前なので、確認日は変更していません。</p>
+            </section>
+
+          '''
+          s=s.replace('  <section class="section" aria-labelledby="result-title">',new+'  <section class="section" aria-labelledby="result-title">')
+          p.write_text(s)
+          p=root/'docs/TEST_TRIAGE.md'
+          p.write_text(p.read_text()+'''
+
+          ## 2026-09-28 本番監視の独立性と小画像
+
+          - `ci-guardrails.test.cjs`: SEO期限切れでも独立したsitemap/security/internal-link監視を実行し、準備失敗・キャンセルでは実行しない。実workflowの条件を失敗・成功の組合せで検証し、失敗の無視や鮮度検査の解除はしない。
+          - `japanese-navigation-sidebar.test.cjs`: 原本内容に一致する小表示用画像だけを選び、派生欠損・原本更新時は原本へ戻す。OGP原本・記事本文・人気順位・CSSは変更しない。
+          - 本番performanceの外部広告・CMP由来の処理負荷/レイアウト変化は別途実測が必要。小画像化だけで解消済みとは扱わない。
+          ''')
+          (root/'.github/workflows/weekly-health-source-temporary.yml').unlink()
+          PY
+          node scripts/prepare-pr.cjs
+          git add -A
+          git commit -m '本番監視・公式制度の再確認・小画像を同期し一時処理を削除'
+          node .github/scripts/preflight.cjs
+          node scripts/latest-hub-audit.cjs --fresh --next-check
+          test -z "$(git status --porcelain)"
+          test ! -e .github/workflows/weekly-health-source-temporary.yml
+          test "$(git ls-remote origin refs/heads/fix/weekly-health-20260928 | cut -f1)" = "$EXPECTED_HEAD"
+          git push origin HEAD:refs/heads/fix/weekly-health-20260928
