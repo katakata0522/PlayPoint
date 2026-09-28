@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { createHash } = require('node:crypto');
 const { renderGuideBrand } = require('./japanese-guide-brand.cjs');
 const { classifyArticleRole } = require('./article-role-registry.cjs');
 const { normalizeSharedArticleCopy } = require('./article-static-usability.cjs');
@@ -96,10 +97,16 @@ function renderBrowseWidget(catalog = [], currentArticle = null) {
   }).join('')}</ul></div></section>`;
 }
 
-function publicThumbnail(value) {
+function publicThumbnail(value, rootDir = path.resolve(__dirname, '..')) {
   const relative = String(value || '').replace(/^\.\.\//, '');
-  if (/^(?:articles\/ogp\/[^/?#]+\.png|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)|ogp\.png)$/i.test(relative)) return '/' + relative;
-  return '';
+  if (!/^(?:articles\/ogp\/[^/?#]+\.png|images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)|ogp\.png)$/i.test(relative)) return '';
+  const original = '/' + relative;
+  const sourcePath = path.join(rootDir, relative);
+  if (!fs.existsSync(sourcePath)) return original;
+  // 小表示用の派生画像は原本の内容に結び付ける。原本更新時は古い派生を使わない。
+  const digest = createHash('sha256').update(fs.readFileSync(sourcePath)).digest('hex').slice(0, 16);
+  const thumbnail = `images/navigation-thumbnails/${digest}-186.webp`;
+  return fs.existsSync(path.join(rootDir, thumbnail)) ? '/' + thumbnail : original;
 }
 
 function renderPopularWidget(article, catalog = []) {
@@ -242,4 +249,4 @@ function syncJapaneseNavigation(root) {
   if (homeAfter !== homeBefore) fs.writeFileSync(home, homeAfter);
   return { checked: catalog.length, changed };
 }
-module.exports = { BROWSE_CATEGORIES, NAV, relatedFor, nextFor, renderBrowseWidget, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };
+module.exports = { publicThumbnail, BROWSE_CATEGORIES, NAV, relatedFor, nextFor, renderBrowseWidget, renderSidebar, renderHeader, renderNavigation, syncGuideHubs, transformArticle, syncJapaneseNavigation };
