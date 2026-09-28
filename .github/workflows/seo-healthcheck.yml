@@ -40,16 +40,22 @@ jobs:
           LATEST_HUB_ENFORCE_NEXT_CHECK: '1'
         run: node .github/scripts/seo-health-check.cjs
 
+      # Independent monitors must still run after another monitor fails.
+      # Do not run without a valid checkout/runtime or after cancellation.
+      # Failures remain failures: no continue-on-error or relaxed checks.
       - name: Check all submitted sitemaps
         id: check_all_submitted_sitemaps
+        if: ${{ !cancelled() && steps.checkout_code.outcome == 'success' && steps.ci_node.outcome == 'success' && steps.record_ci_environment.outcome == 'success' }}
         run: node .github/scripts/sitemap-health-check.cjs
 
       - name: Check production security headers
         id: check_production_security_headers
+        if: ${{ !cancelled() && steps.checkout_code.outcome == 'success' && steps.ci_node.outcome == 'success' && steps.record_ci_environment.outcome == 'success' }}
         run: node .github/scripts/security-health-check.cjs
 
       - name: Check production internal links
         id: check_production_internal_links
+        if: ${{ !cancelled() && steps.checkout_code.outcome == 'success' && steps.ci_node.outcome == 'success' && steps.record_ci_environment.outcome == 'success' }}
         run: node .github/scripts/live-internal-link-check.cjs
 
       - name: Record CI job outcome

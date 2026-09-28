@@ -1,12 +1,12 @@
 name: Temporary health source snapshot
 on:
-  push:
-    branches: [fix/weekly-health-20260928]
-    paths: [.github/workflows/weekly-health-source-temporary.yml]
+  pull_request:
+    types: [opened]
 permissions:
   contents: read
 jobs:
   snapshot:
+    if: github.head_ref == 'fix/weekly-health-20260928'
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     steps:
