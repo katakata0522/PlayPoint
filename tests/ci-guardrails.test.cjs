@@ -196,3 +196,28 @@ test('退避したBrowser Smokeレシピはlocal・productionの手動再確認�
   assert.match(workflow, /if: inputs\.target == 'local'/);
   assert.match(workflow, /if: inputs\.target == 'production'/);
 });
+
+
+test('SEO監視は期限切れ後も独立検査を実行し、準備失敗・キャンセル・検査失敗を隠さない', () => {
+  const workflow = read('.github/workflows/seo-healthcheck.yml');
+  const vm = require('node:vm');
+  for (const name of ['Check all submitted sitemaps', 'Check production security headers', 'Check production internal links']) {
+    const block = getStepBlock(workflow, name);
+    const expression = block.match(/^\s+if: \$\{\{ (.+) \}\}\s*$/m)?.[1];
+    assert.ok(expression, `${name}: 独立実行の条件が必要`);
+    assert.doesNotMatch(block, /continue-on-error|\|\|\s*true/);
+    const prepared = { checkout_code: { outcome: 'success' }, ci_node: { outcome: 'success' }, record_ci_environment: { outcome: 'success' } };
+    const evaluate = (steps, cancelled = false) => vm.runInNewContext(expression, { steps, cancelled: () => cancelled }, { timeout: 100 });
+    for (const outcome of ['success', 'failure', 'skipped']) {
+      assert.equal(evaluate({ ...prepared, check_technical_seo_basics_and_latest_hub_schedule: { outcome } }), true);
+    }
+    assert.equal(evaluate(prepared, true), false);
+    for (const dependency of Object.keys(prepared)) {
+      for (const outcome of ['failure', 'skipped', 'cancelled']) {
+        assert.equal(evaluate({ ...prepared, [dependency]: { outcome } }), false);
+      }
+    }
+  }
+  assert.doesNotMatch(workflow, /^\s+continue-on-error:/m);
+  assert.match(getStepBlock(workflow, 'Check technical SEO basics and latest hub schedule'), /LATEST_HUB_ENFORCE_NEXT_CHECK: '1'/);
+});

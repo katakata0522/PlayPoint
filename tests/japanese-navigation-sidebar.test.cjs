@@ -121,3 +121,26 @@ test('ゲーム記事の次の行動は本文台帳の同じゲームの計算�
   assert.deepEqual(nextFor('game_decision', [], {gameTitle:'ブルアカ', related:[['/games/bluearchive/','計算する']]}), ['/games/bluearchive/','ブルアカの購入額を計算する']);
   assert.equal(nextFor('game_decision', [], {gameTitle:'ポケスリ'})[0], '/articles/2026-07-25-play-points-coupon-not-applied.html');
 });
+
+
+test('人気記事の小画像は原本の内容と一致する派生だけを使い、欠損・更新時は原本へ戻す', t => {
+  const os = require('node:os');
+  const { createHash } = require('node:crypto');
+  const { publicThumbnail } = require('../scripts/japanese-navigation-sidebar.cjs');
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-sidebar-thumbnail-'));
+  t.after(() => fs.rmSync(fixture, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(fixture, 'articles/ogp'), { recursive: true });
+  fs.mkdirSync(path.join(fixture, 'images/navigation-thumbnails'), { recursive: true });
+  const source = 'articles/ogp/example.png';
+  fs.writeFileSync(path.join(fixture, source), 'original');
+  const digest = createHash('sha256').update('original').digest('hex').slice(0, 16);
+  const derivative = `images/navigation-thumbnails/${digest}-186.webp`;
+  assert.equal(publicThumbnail('../' + source, fixture), '/' + source);
+  fs.writeFileSync(path.join(fixture, derivative), 'small');
+  assert.equal(publicThumbnail('../' + source, fixture), '/' + derivative);
+  fs.writeFileSync(path.join(fixture, source), 'updated');
+  assert.equal(publicThumbnail('../' + source, fixture), '/' + source);
+  for (const unsafe of ['https://example.com/a.png', '../../outside.png', 'javascript:alert(1)', '']) {
+    assert.equal(publicThumbnail(unsafe, fixture), '');
+  }
+});
