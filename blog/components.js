@@ -3,7 +3,9 @@
 
     const GA_MEASUREMENT_ID = 'G-HED6D0FR4L';
     const ADSENSE_CLIENT = 'ca-pub-3845885843809455';
+    const ADSENSE_RETRY_DELAY_MS = 3000;
     let blogAdsenseLoaded = false;
+    let blogAdsenseRetryAttempted = false;
     let consentManagerPromise = null;
     let analyticsCorePromise = null;
 
@@ -55,7 +57,11 @@
     }
 
     function runAfterConsent(callback, purpose = 'analytics') {
-        return Promise.all([ensureAnalyticsCore(), ensureConsentManager()])
+        // 広告の同意確認を解析モジュールの取得成否に依存させない。
+        const prerequisites = purpose === 'ads'
+            ? ensureConsentManager()
+            : Promise.all([ensureAnalyticsCore(), ensureConsentManager()]);
+        return prerequisites
             .then(() => {
                 const consent = window.PlayPointConsent;
                 if (purpose === 'ads' && typeof consent.whenAdsAllowed === 'function') {
@@ -129,8 +135,15 @@
         script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
         script.crossOrigin = 'anonymous';
         script.onerror = () => {
+            // 自分で作成した失敗タグだけを除去し、同じURLを一度だけ再取得する。
+            script.onerror = null;
+            script.remove();
             blogAdsenseLoaded = false;
             console.error('AdSense load failed');
+            if (!blogAdsenseRetryAttempted) {
+                blogAdsenseRetryAttempted = true;
+                window.setTimeout(loadBlogAdsense, ADSENSE_RETRY_DELAY_MS);
+            }
         };
         document.head.appendChild(script);
     }
@@ -267,7 +280,7 @@
     }
 
     ensureCommonStyles();
-    void ensureAnalyticsCore();
+    void ensureAnalyticsCore().catch((error) => console.warn('Analytics core preload failed:', error));
     applyArticlePresentationSettings();
 
     // Execute functions
