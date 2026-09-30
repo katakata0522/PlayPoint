@@ -1,5 +1,7 @@
---- PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs
-+++ PlayPoint_Analytics_v11_6_2_DriveSafe_Code.gs
+diff --git a/PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs b/PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs
+index 2643aeb..4670cd8 100644
+--- a/PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs
++++ b/PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs
 @@ -1,6 +1,6 @@
  /**
   * 👑 PlayPoint Analytics
@@ -21,7 +23,9 @@
 -  VERSION: '11.6.0',
 +  VERSION: '11.6.2',
  
-@@ -721,8 +723,32 @@
+   // ===== 判明済みの接続先 =====
+   GA4_PROPERTY_ID: '489079798',
+@@ -721,8 +723,32 @@ function runSyncCore_(options) {
        }
  
        SpreadsheetApp.flush();
@@ -56,7 +60,7 @@
  
        const message = [
          options.source + 'が正常に完了しました。',
-@@ -736,19 +762,20 @@
+@@ -736,19 +762,20 @@ function runSyncCore_(options) {
              ' / AdSense=' + adsensePageHistoryStatus,
          options.backfillDays ? 'ページ履歴背景補完: バックフィルでは省略' : 'ページ履歴背景補完: ' + pageBackfillStatus,
          options.backfillDays ? '詳細分析: バックフィルでは省略（別メニューで更新可能）' : '詳細分析: 週次処理へ分離',
@@ -83,7 +87,9 @@
 +        warnings: driveMaintenanceWarnings
 +      };
      });
-@@ -2914,7 +2941,13 @@
+   } catch (error) {
+     if (logSheet) {
+@@ -2914,7 +2941,13 @@ function cleanupOldBackups_(folder) {
    });
  
    backups.slice(Math.max(1, CONFIG.BACKUP_RETENTION_COUNT)).forEach(function (file) {
@@ -98,7 +104,7 @@
    });
  }
  
-@@ -3199,10 +3232,45 @@
+@@ -3199,8 +3232,43 @@ function getOrCreateNestedFolder_(root, pathParts) {
  }
  
  function createOrReplaceTextFile_(folder, fileName, text, mimeType) {

@@ -87,3 +87,16 @@ live bound Apps Scriptへ反映後は次の日次実行で以下を確認する�
 - GA4 Realtime / Intraday / AdSense Intraday / Search速報の既存正常経路を壊さない
 
 過去ログは監査証拠として削除・書き換えない。
+
+## パッチ形式の再検証（2026-09-30）
+
+元の差分にはハンクの行数不整合があり、標準の `git apply` で読み込めなかった。保存済み v11.6.1 に適用した結果から差分を再生成し、通常の `git apply --check` と適用後の構文検査が通ることを確認した。
+
+作業用コピーのあるフォルダで、以下を順に実行する。ファイル名は v11.6.1 のまま、内部のバージョンと処理が v11.6.2 になる。原本は別に保管する。
+
+```text
+git apply --check <このリポジトリの絶対パス>/docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch
+git apply <このリポジトリの絶対パス>/docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch
+```
+
+稼働中コードがこの保存版と異なる場合は先に照合し、独自変更を保つ。構文検査とGitHubへの反映は、bound Apps Scriptへの適用・正常実行の証明ではない。
