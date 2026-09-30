@@ -37,6 +37,11 @@ const TOPICS = [
   },
   {
     slug: "google-play-points-balance-history-progress.html",
+    lastmodByLocale: {
+      en: "2026-09-12",
+      ko: "2026-09-19",
+      tw: "2026-09-12"
+    },
     labels: {
       en: "Where to check Play Points balance, history and level progress",
       ko: "Google Play Points 잔액·내역·등급 진행도 확인 방법",
@@ -162,7 +167,7 @@ function writeSitemap(rootDir) {
       const japaneseAlternate = jaPath
         ? `    <xhtml:link rel="alternate" hreflang="ja" href="https://playpoint-sim.com${jaPath}" />\n`
         : '';
-      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${topic.publishedAt || PUBLISHED_AT}</lastmod>\n${japaneseAlternate}${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath(DEFAULT_INTERNATIONAL_LOCALE, topic.slug)}" />\n  </url>`);
+      urls.push(`  <url>\n    <loc>${loc}</loc>\n    <lastmod>${topic.lastmodByLocale?.[locale.key] || topic.publishedAt || PUBLISHED_AT}</lastmod>\n${japaneseAlternate}${alternates}\n    <xhtml:link rel="alternate" hreflang="x-default" href="https://playpoint-sim.com/${articlePath(DEFAULT_INTERNATIONAL_LOCALE, topic.slug)}" />\n  </url>`);
     }
   }
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${urls.join('\n')}\n</urlset>\n`;
