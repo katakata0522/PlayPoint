@@ -18,6 +18,7 @@ const DEPLOYMENT_INPUTS = new Set([
   '.github/scripts/minify.cjs',
   '.github/scripts/deploy-rsync.sh',
   '.github/scripts/deploy-status.cjs',
+  '.github/scripts/resolve-live-deploy-base.cjs',
   '.github/scripts/public-paths.cjs',
   '.github/scripts/prepare-public-tree.cjs',
   '.github/scripts/setup-browser-runtime.sh',
