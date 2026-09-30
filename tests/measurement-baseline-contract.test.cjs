@@ -679,7 +679,7 @@ test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERR
 
 
 test('v11.6.2 Drive safety patch separates reconciled analytics success from owner-sensitive archive maintenance', () => {
-  const patch = read('patches/playpoint-analytics-v11.6.2-drive-safe.patch');
+  const patch = read('docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch');
   const added = patch.split('\n')
     .filter(line => line.startsWith('+') && !line.startsWith('+++'))
     .map(line => line.slice(1))
