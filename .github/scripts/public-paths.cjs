@@ -19,6 +19,7 @@ const PUBLIC_ROOT_FILES = new Set([
   'icon-512.png',
   'index.html',
   'info.html',
+  '9884d02d82192ef32eac196f82d0bd85ce281735.txt',
   'manifest.json',
   'ogp.png',
   'ogp.svg',

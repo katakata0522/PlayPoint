@@ -1179,7 +1179,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-18）
 
-`tests/*.test.cjs` の183ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の184ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1193,7 +1193,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
-| 公開・CI | 12 |
+| 公開・CI | 13 |
 | 性能・配信 | 5 |
 | アクセシビリティ | 5 |
 | 横断監査 | 9 |
@@ -1274,6 +1274,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `info-return-navigation.test.cjs` | UI・導線 | 案内ページの戻り先は同一オリジンのパスだけから言語を引き継ぐ |
 | `interactive-input-surfaces.test.cjs` | アクセシビリティ | 日本語ゲーム計算機は課金予定額を自分で打てる |
 | `internal-link-targets.test.cjs` | UI・導線 | internal URL detection separates PlayPoint navigation from external destinations |
+| `indexnow-notify.test.cjs` | 公開・CI | verified後だけ変更HTMLをIndexNowへ通知し、公開キー・host境界・安全skip・非rollbackを守る |
 | `intl-amount-earn-rate.test.cjs` | 地域・翻訳 | dormant international Amount fallback copy uses special earn-rate terminology |
 | `intl-article-earn-rate-meaning.test.cjs` | 地域・翻訳 | international article source does not teach multiplier-as-input semantics |
 | `intl-article-layout.test.cjs` | 地域・翻訳 | international article shell synchronization is idempotent and preserves article content |
