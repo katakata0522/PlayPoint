@@ -76,7 +76,7 @@ Google DriveのMy Driveでは、ファイルをゴミ箱へ移せるのは所有
 
 GitHubはbound Apps Scriptへ自動同期されない。
 
-このリポジトリの `patches/playpoint-analytics-v11.6.2-drive-safe.patch` は、保存版 `PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs` に対する差分の正本とする。
+このリポジトリの `docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch` は、保存版 `PlayPoint_Analytics_v11_6_1_UiSafe_Code.gs` に対する差分の正本とする。
 
 live bound Apps Scriptへ反映後は次の日次実行で以下を確認する。
 
