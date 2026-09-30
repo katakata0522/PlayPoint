@@ -40,14 +40,8 @@ jobs:
           git add -A
           git diff --cached --quiet -- js/third-party.js js/consent.js .htaccess .github/workflows .github/scripts/deploy-rsync.sh
           git commit -m '監査優先修正：スマホ幅・不正入力・対象額説明・読み上げ・全言語head検査（広告位置変更なし）'
-      - name: 公開候補の全事前検証（提出前に削除する作業専用workflowは対象外）
-        run: |
-          set -euo pipefail
-          helper=.github/workflows/audit-workbench-20260930.yml
-          cp "$helper" "$RUNNER_TEMP/audit-workbench.yml"
-          rm "$helper"
-          trap 'cp "$RUNNER_TEMP/audit-workbench.yml" "$helper"' EXIT
-          node .github/scripts/preflight.cjs > "$RUNNER_TEMP/audit-preflight.log" 2>&1
+      - name: 追跡中の全ファイルを保持して事前検証
+        run: node .github/scripts/preflight.cjs > "$RUNNER_TEMP/audit-preflight.log" 2>&1
       - name: 既存lockのブラウザとaxeを準備
         id: browser
         run: bash .github/scripts/setup-browser-runtime.sh --performance
