@@ -249,3 +249,23 @@ test('ゴールド対プラチナ記事はPlay Pass Gold特典と日本の週次
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
 });
 
+
+test('Super Ticketは現行の対象条件と保存・使用期限を分け、FAQも一致する', () => {
+  const html = readArticle('2026-09-19-google-play-super-ticket.html');
+  const body = html.slice(html.indexOf('<body'));
+  assert.match(body, /answer\/9080348\?co=GENIE.CountryCode%3DJP/);
+  assert.match(body, /プラチナ・ダイヤモンド（Play Passなし）<\/td><td>1枚<\/td><td>対象外/);
+  assert.match(body, /ゴールド＋Play Pass<\/td><td>対象外<\/td><td>1枚/);
+  assert.match(body, /プラチナ・ダイヤモンド＋Play Pass<\/td><td>1枚<\/td><td>さらに1枚/);
+  assert.match(body, /保存できる期間：48時間/);
+  assert.match(body, /利用可能になってから8週間後の最初の木曜日/);
+  assert.match(body, /引き直すと元の報酬は受け取れません/);
+  assert.doesNotMatch(body, /現行配布周期を公開ヘルプで明記していない|期限まで読めるスクショをまだ残せていません/);
+  const schemas = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
+    .map(match => JSON.parse(match[1]));
+  const faq = schemas.find(schema => schema['@type'] === 'FAQPage');
+  assert.ok(faq.mainEntity.length >= 6);
+  for (const question of faq.mainEntity) {
+    assert.ok(body.includes(question.acceptedAnswer.text), `FAQ本文と構造化データが不一致: ${question.name}`);
+  }
+});
