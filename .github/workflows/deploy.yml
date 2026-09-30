@@ -260,6 +260,17 @@ jobs:
           bash .github/scripts/deploy-rsync.sh --publish-status
           node .github/scripts/verify-deploy-status.cjs
 
+      # IndexNowは検索エンジンへの発見通知であり、本番の健全性やrollback条件ではない。
+      # verified公開後だけ、push差分に含まれる公開HTML URLを通知する。
+      - name: Notify IndexNow after verified deployment
+        id: notify-indexnow
+        if: steps.deploy-impact.outputs.deploy_needed == 'true' && steps.publish-verified.outcome == 'success'
+        continue-on-error: true
+        env:
+          INDEXNOW_BASE_SHA: ${{ github.event.before }}
+          INDEXNOW_HEAD_SHA: ${{ github.sha }}
+        run: node .github/scripts/indexnow-notify.cjs
+
       # verified履歴は別runnerを起動せず、このDeployで準備済みのSSHを再利用する。
       # 履歴保管は補助機能なので、失敗しても正常にverified化された本番をrollbackしない。
       - name: Archive verified production history
