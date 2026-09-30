@@ -98,6 +98,7 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
         .timeBased()
         .onWeekDay(ScriptApp.WeekDay.FRIDAY)
         .atHour(9)
+        .inTimezone(PLAYPOINT_P12_CONFIG.ga4Timezone)
         .create();
 
       playPointAutomationRegisterTrigger_(handler, created);
@@ -118,6 +119,7 @@ function installPlayPointAnalyticsP1P2WeeklyTrigger() {
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.FRIDAY)
     .atHour(9)
+    .inTimezone(PLAYPOINT_P12_CONFIG.ga4Timezone)
     .create();
 
   return 'CREATED_WEEKLY_FRIDAY_TRIGGER';
@@ -169,9 +171,29 @@ function playPointP12RunStage_(stage, fn) {
 function playPointP12CapturePageValueFunnel_(spreadsheet) {
   var propertyId = playPointP12GetGa4PropertyId_();
   var siteUrl = playPointP12GetSiteUrl_();
-  var period = playPointP12BuildGa4Period_();
+  var ga4CandidatePeriod = playPointP12BuildGa4Period_();
+  var period = Object.assign({}, ga4CandidatePeriod);
+  var gscFinalError = '';
+
+  try {
+    var latestGscFinal = playPointP12FindLatestGscFinalDate_(siteUrl);
+    var commonEnd = latestGscFinal < ga4CandidatePeriod.end
+      ? latestGscFinal
+      : ga4CandidatePeriod.end;
+    period = {
+      start: playPointP12ShiftIsoDate_(commonEnd, -(PLAYPOINT_P12_CONFIG.ga4WindowDays - 1)),
+      end: commonEnd,
+      days: PLAYPOINT_P12_CONFIG.ga4WindowDays,
+      lagDays: PLAYPOINT_P12_CONFIG.ga4LagDays,
+      ga4CandidateEnd: ga4CandidatePeriod.end,
+      gscFinalEnd: latestGscFinal
+    };
+  } catch (periodError) {
+    gscFinalError = playPointP12ErrorText_(periodError);
+  }
 
   var gsc = playPointP12SafeSource_(function() {
+    if (gscFinalError) throw new Error(gscFinalError);
     return playPointP12FetchGscPage_(siteUrl, period.start, period.end);
   });
   var organic = playPointP12SafeSource_(function() {
@@ -251,7 +273,7 @@ function playPointP12CapturePageValueFunnel_(spreadsheet) {
     '記事→計算ユーザー',
     '計算開始ユーザー',
     '初回計算成功ユーザー',
-    'Start→Success',
+    'Success users / Start users（期間内比率）',
     'ページ広告収益',
     '全流入ページ収益 / Organic LPユーザー（参考）',
     '状態'
@@ -383,9 +405,24 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
       Math.max(Number(a[5] || 0), Number(a[6] || 0));
   });
 
-  if (crossRows.length > PLAYPOINT_P12_CONFIG.crossSheetMaxRows) {
+  var crossRowsTotal = crossRows.length;
+  var crossRowsTruncated = crossRowsTotal > PLAYPOINT_P12_CONFIG.crossSheetMaxRows;
+  if (crossRowsTruncated) {
     crossRows = crossRows.slice(0, PLAYPOINT_P12_CONFIG.crossSheetMaxRows);
   }
+
+  var crossSourceState = playPointP12AvailabilityLabel_([engines, queryCountry, queryDevice]);
+  var crossState = crossSourceState;
+  if (crossRowsTruncated) {
+    crossState = (crossSourceState === 'OK' ? 'PARTIAL' : crossSourceState) +
+      ' (TRUNCATED ' + crossRows.length + ' / ' + crossRowsTotal + ')';
+  }
+  sheet.getRange('F2').setValue(crossState);
+  sheet.getRange('A4:F4').setValues([[
+    'クロス総行数', crossRowsTotal,
+    'シート表示行数', crossRows.length,
+    '表示上限', PLAYPOINT_P12_CONFIG.crossSheetMaxRows
+  ]]);
 
   if (crossRows.length) {
     playPointP12EnsureRows_(sheet, crossHeaderRow + crossRows.length);
@@ -399,6 +436,8 @@ function playPointP12CaptureSearchCross_(spreadsheet) {
     gscPeriods: gscPeriods,
     organicEngineRows: engineRows.length,
     crossRows: crossRows.length,
+    crossRowsTotal: crossRowsTotal,
+    truncated: crossRowsTruncated,
     availability: {
       engines: engines.ok,
       queryCountry: queryCountry.ok,
@@ -1154,14 +1193,21 @@ function playPointP12GetSpreadsheet_() {
 }
 
 function playPointP12GetGa4PropertyId_() {
-  return PropertiesService.getScriptProperties().getProperty('GA4_PROPERTY_ID') ||
-    PLAYPOINT_P12_CONFIG.ga4PropertyIdDefault;
+  var fromProperty = PropertiesService.getScriptProperties().getProperty('GA4_PROPERTY_ID');
+  if (fromProperty) return fromProperty;
+  if (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.GA4_PROPERTY_ID) {
+    return String(CONFIG.GA4_PROPERTY_ID);
+  }
+  return PLAYPOINT_P12_CONFIG.ga4PropertyIdDefault;
 }
 
 function playPointP12GetSiteUrl_() {
   var fromProperty = PropertiesService.getScriptProperties().getProperty('SEARCH_CONSOLE_SITE_URL');
   if (fromProperty) return fromProperty;
 
+  if (typeof CONFIG !== 'undefined' && CONFIG && CONFIG.SEARCH_CONSOLE_SITE_URL) {
+    return CONFIG.SEARCH_CONSOLE_SITE_URL;
+  }
   if (typeof SEARCH_CONSOLE_SITE_URL !== 'undefined' && SEARCH_CONSOLE_SITE_URL) {
     return SEARCH_CONSOLE_SITE_URL;
   }
@@ -1316,9 +1362,8 @@ function playPointP12ResultState_(stage, result) {
 
   if (stage === 'SEARCH_CROSS') {
     var cross = result && result.availability ? result.availability : {};
-    return Object.keys(cross).some(function(key) { return cross[key] === false; })
-      ? 'PARTIAL'
-      : 'OK';
+    var sourcePartial = Object.keys(cross).some(function(key) { return cross[key] === false; });
+    return sourcePartial || (result && result.truncated) ? 'PARTIAL' : 'OK';
   }
 
   if (stage === 'URL_INSPECTION') {
@@ -1356,6 +1401,10 @@ function playPointP12HealthSuccess_(stage, finished, state, result) {
       note = 'GSC/GA4 join integrity warning: ' +
         playPointP12JoinIntegrityText_(result.joinIntegrity) +
         '。実行ログの[P1P2:PAGE_VALUE]を確認';
+    } else if (stage === 'SEARCH_CROSS' && result && result.truncated) {
+      note = '検索クロス分析は表示上限で省略: ' +
+        Number(result.crossRows || 0) + ' / ' + Number(result.crossRowsTotal || 0) +
+        '。API取得失敗ではありません。';
     } else {
       note = '一部sourceが未取得。実行ログの[P1P2:' + stage + ']を確認';
     }

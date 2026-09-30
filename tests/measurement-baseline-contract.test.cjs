@@ -348,6 +348,37 @@ test('P1/P2 and GSC installers can register an active trigger UID when the v11.6
   assert.match(gsc, /SKIPPED_STALE_TRIGGER/);
 });
 
+test('P1/P2 and GSC weekly triggers pin Asia/Tokyo explicitly', () => {
+  const p12 = loadP12Runtime().source;
+  const gsc = loadGscCaptureRuntime().source;
+  assert.match(p12, /inTimezone\(PLAYPOINT_P12_CONFIG\.ga4Timezone\)/);
+  assert.match(gsc, /triggerTimezone:\s*'Asia\/Tokyo'/);
+  assert.match(gsc, /inTimezone\(PLAYPOINT_GSC_28D_CONFIG\.triggerTimezone\)/);
+});
+
+test('P1/P2 and GSC can reuse the core CONFIG instead of depending on hidden script properties', () => {
+  const p12 = loadP12Runtime().source;
+  const gsc = loadGscCaptureRuntime().source;
+  assert.match(p12, /CONFIG\.SEARCH_CONSOLE_SITE_URL/);
+  assert.match(p12, /CONFIG\.GA4_PROPERTY_ID/);
+  assert.match(gsc, /CONFIG\.SEARCH_CONSOLE_SITE_URL/);
+});
+
+test('P1 page-value aligns its 30-day window to the earlier of GA4 settled end and latest GSC FINAL', () => {
+  const { source } = loadP12Runtime();
+  assert.match(source, /latestGscFinal < ga4CandidatePeriod\.end/);
+  assert.match(source, /gscFinalEnd:\s*latestGscFinal/);
+  assert.match(source, /ga4CandidateEnd:\s*ga4CandidatePeriod\.end/);
+});
+
+test('P1 search-cross surfaces sheet truncation instead of silently reporting OK', () => {
+  const { source } = loadP12Runtime();
+  assert.match(source, /crossRowsTotal/);
+  assert.match(source, /crossRowsTruncated/);
+  assert.match(source, /TRUNCATED/);
+  assert.match(source, /result && result\.truncated/);
+});
+
 test('P1/P2 collector is valid JavaScript and exposes one capture plus one idempotent weekly installer', () => {
   const { source, context } = loadP12Runtime();
   assert.equal(typeof context.capturePlayPointAnalyticsP1P2, 'function');
@@ -703,4 +734,76 @@ test('v11.6.2 Drive safety patch separates reconciled analytics success from own
   assert.match(runbook, /Drive補助保存だけ失敗.*日次再照合はRECONCILED/s);
   assert.match(runbook, /trash-first置換を廃止/);
   assert.match(runbook, /6\/6 success/);
+});
+
+function stubAnalyticsSheet(context) {
+  const writes = [];
+  const sheet = { clearContents() {}, getRange(...args) { return {
+    setValue(value) { writes.push({ args, value }); },
+    setValues(value) { writes.push({ args, value }); }
+  }; } };
+  context.PropertiesService = { getScriptProperties: () => ({ getProperty: key => key === 'SEARCH_CONSOLE_SITE_URL' ? 'sc-domain:playpoint-sim.com' : null }) };
+  context.playPointP12EnsureSheet_ = () => sheet;
+  context.playPointP12EnsureRows_ = () => {};
+  context.playPointP12StylePageValueSheet_ = () => {};
+  context.playPointP12StyleSearchCrossSheet_ = () => {};
+  context.playPointP12NowText_ = () => '2026-09-30';
+  context.playPointP12BuildGa4Period_ = () => ({ start: '2026-08-29', end: '2026-09-27', days: 30 });
+  return writes;
+}
+
+test('P1 capture sends the same common window to every source and preserves GA4 when the FINAL probe fails', () => {
+  for (const finalEnd of ['2026-09-25', '2026-09-29', null]) {
+    const { context } = loadP12Runtime();
+    stubAnalyticsSheet(context);
+    const requests = [];
+    context.playPointP12FindLatestGscFinalDate_ = () => {
+      if (!finalEnd) throw new Error('GSC unavailable');
+      return finalEnd;
+    };
+    context.playPointP12FetchGscPage_ = (_site, start, end) => {
+      requests.push({ source: 'gsc', start, end }); return [];
+    };
+    for (const name of ['OrganicLandings', 'ArticleClicks', 'AttributedFunnel', 'PageRevenue']) {
+      context[`playPointP12Fetch${name}_`] = (_id, period) => {
+        requests.push({ source: name, start: period.start, end: period.end }); return [];
+      };
+    }
+    const result = context.playPointP12CapturePageValueFunnel_({});
+    const expectedEnd = finalEnd === '2026-09-25' ? finalEnd : '2026-09-27';
+    assert.equal(result.period.end, expectedEnd);
+    assert.equal(inclusiveDays(result.period.start, result.period.end), 30);
+    assert.equal(requests.length, finalEnd ? 5 : 4);
+    for (const request of requests) {
+      assert.equal(request.start, result.period.start);
+      assert.equal(request.end, result.period.end);
+    }
+    assert.equal(result.availability.gsc, Boolean(finalEnd));
+    assert.equal(result.availability.organic, true);
+    assert.equal(result.availability.revenue, true);
+    assert.equal(context.playPointP12ResultState_('PAGE_VALUE', result), finalEnd ? 'OK' : 'PARTIAL');
+  }
+});
+
+test('P1 search-cross caps sheet output while preserving totals and truthful health state', () => {
+  for (const count of [0, 5000, 5001]) {
+    const { context } = loadP12Runtime();
+    const writes = stubAnalyticsSheet(context);
+    context.playPointP12FindLatestGscFinalDate_ = () => '2026-09-25';
+    context.playPointP12FetchOrganicEngines_ = () => [];
+    context.playPointP12FetchGscCrossPair_ = () => ({ current: [], previous: [] });
+    context.playPointP12CrossOutputRows_ = type => type === 'COUNTRY'
+      ? Array.from({ length: count }, (_, i) => ['COUNTRY', `query-${i}`, 'jp', 1, 0, i, 0]) : [];
+    const result = context.playPointP12CaptureSearchCross_({});
+    assert.equal(result.crossRowsTotal, count);
+    assert.equal(result.crossRows, Math.min(5000, count));
+    assert.equal(result.truncated, count > 5000);
+    assert.equal(context.playPointP12ResultState_('SEARCH_CROSS', result), count > 5000 ? 'PARTIAL' : 'OK');
+    const status = writes.find(write => write.args[0] === 'F2').value;
+    assert.equal(status, count > 5000 ? 'PARTIAL (TRUNCATED 5000 / 5001)' : 'OK');
+    if (count > 0) {
+      const data = writes.find(write => write.args.length === 4 && write.args[2] === Math.min(5000, count));
+      assert.equal(data.value.length, Math.min(5000, count));
+    }
+  }
 });
