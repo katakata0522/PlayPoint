@@ -193,3 +193,47 @@ test('anomaly drilldown uses separate one/two-dimension reports instead of risky
     ]
   );
 });
+
+
+test('AdSense Apps Script request uses the v2 flattened date parameter names', () => {
+  const context = load();
+  let captured = null;
+  context.AdSense = {
+    Accounts: {
+      Reports: {
+        generate(accountName, options) {
+          captured = { accountName, options };
+          return {
+            headers: [
+              { name: 'COUNTRY_CODE', type: 'DIMENSION' },
+              { name: 'ESTIMATED_EARNINGS', type: 'METRIC_CURRENCY', currency: 'JPY' },
+              { name: 'CLICKS', type: 'METRIC_TALLY' },
+              { name: 'IMPRESSIONS', type: 'METRIC_TALLY' },
+              { name: 'PAGE_VIEWS', type: 'METRIC_TALLY' },
+              { name: 'IMPRESSIONS_CTR', type: 'METRIC_RATIO' },
+              { name: 'IMPRESSIONS_RPM', type: 'METRIC_CURRENCY', currency: 'JPY' },
+              { name: 'COST_PER_CLICK', type: 'METRIC_CURRENCY', currency: 'JPY' }
+            ],
+            rows: []
+          };
+        }
+      }
+    }
+  };
+
+  context.playPointRevenueGenerateAdSenseReport_(
+    'accounts/pub-12345',
+    '2026-09-29',
+    ['COUNTRY_CODE']
+  );
+
+  assert.equal(captured.accountName, 'accounts/pub-12345');
+  assert.equal(captured.options['startDate.year'], 2026);
+  assert.equal(captured.options['startDate.month'], 9);
+  assert.equal(captured.options['startDate.day'], 29);
+  assert.equal(captured.options['endDate.year'], 2026);
+  assert.equal(captured.options['endDate.month'], 9);
+  assert.equal(captured.options['endDate.day'], 29);
+  assert.equal('startDate' in captured.options, false);
+  assert.equal('endDate' in captured.options, false);
+});
