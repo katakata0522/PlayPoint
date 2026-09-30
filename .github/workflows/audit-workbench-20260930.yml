@@ -1,0 +1,30 @@
+name: Audit workbench 20260930
+on:
+  push:
+    branches: [fix/audit-priority-no-ads-20260930]
+    paths: [.github/workflows/audit-workbench-20260930.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    if: github.ref == 'refs/heads/fix/audit-priority-no-ads-20260930'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 088334d32f71b5d694ef01c5f9c011e8afd47d5a
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 固定mainのGitオブジェクトだけを退避（資格情報・設定・本番通信なし）
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = 088334d32f71b5d694ef01c5f9c011e8afd47d5a
+          git bundle create "$RUNNER_TEMP/playpoint-base.bundle" HEAD
+          git bundle verify "$RUNNER_TEMP/playpoint-base.bundle"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: audit-base-088334d
+          path: ${{ runner.temp }}/playpoint-base.bundle
+          retention-days: 1
+          if-no-files-found: error
