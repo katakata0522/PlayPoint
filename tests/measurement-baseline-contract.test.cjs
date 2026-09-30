@@ -807,3 +807,10 @@ test('P1 search-cross caps sheet output while preserving totals and truthful hea
     }
   }
 });
+
+test('Drive safety patch is a valid unified diff for the existing saved core filename', () => {
+  const { execFileSync } = require('node:child_process');
+  const patch = read('docs/patches/playpoint-analytics-v11.6.2-drive-safe.patch');
+  const stat = execFileSync('git', ['apply', '--numstat', '-'], { cwd: root, input: patch, encoding: 'utf8' });
+  assert.match(stat, /^\d+\t\d+\tPlayPoint_Analytics_v11_6_1_UiSafe_Code\.gs\s*$/);
+});
