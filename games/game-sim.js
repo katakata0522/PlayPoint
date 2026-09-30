@@ -137,25 +137,49 @@
         return LOCALE_CONFIGS['ja'];
     }
 
+    // 入力上限はこの計算機の安全域。Google Playの購入上限ではない。
+    function getInputLimits(cfg) {
+        return { amount: cfg.unitSpend * 1000000, count: 999, rate: 100 };
+    }
+
+    function numericValue(value) {
+        if (typeof value === 'number') return value;
+        if (typeof value !== 'string' || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(value.trim())) return NaN;
+        return Number(value);
+    }
+
     function calculateGamePoints(amount, multiplier, currentStatusRate, cfg, options = {}) {
-        const validAmount = Math.max(0, parseFloat(amount) || 0);
-        const validMult = Math.max(1, parseFloat(multiplier) || 1);
-        const rate = Math.max(parseFloat(currentStatusRate) || 1.0, validMult);
-        const purchaseCount = Math.max(1, parseInt(options.purchaseCount, 10) || 1);
-        const fallbackAmountPerPurchase = purchaseCount > 0 ? validAmount / purchaseCount : validAmount;
-        const parsedAmountPerPurchase = parseFloat(options.amountPerPurchase);
-        const amountPerPurchase = Number.isFinite(parsedAmountPerPurchase) && parsedAmountPerPurchase >= 0
-            ? parsedAmountPerPurchase
-            : fallbackAmountPerPurchase;
-        const parsedEligibleAmount = options.eligibleAmountPerPurchase === null || options.eligibleAmountPerPurchase === undefined || options.eligibleAmountPerPurchase === ''
-            ? NaN
-            : parseFloat(options.eligibleAmountPerPurchase);
-        const hasEligibleAmount = Number.isFinite(parsedEligibleAmount) && parsedEligibleAmount >= 0 && parsedEligibleAmount <= amountPerPurchase;
-        const eligibleAmountPerPurchase = hasEligibleAmount ? parsedEligibleAmount : amountPerPurchase;
+        const limits = getInputLimits(cfg);
+        const invalid = (field, max) => ({ valid: false, error: { field, max } });
+        const validMoney = (value, max) => Number.isFinite(value) && value >= 0 && value <= max
+            && Number.isSafeInteger(Math.round(value * 100));
+        const validAmount = numericValue(amount);
+        if (!validMoney(validAmount, limits.amount)) return invalid('amount', limits.amount);
+        const purchaseCount = options.purchaseCount === undefined ? 1 : numericValue(options.purchaseCount);
+        if (!Number.isInteger(purchaseCount) || purchaseCount < 1 || purchaseCount > limits.count) return invalid('count', limits.count);
+        const validMult = numericValue(multiplier);
+        const statusRate = numericValue(currentStatusRate);
+        if (!Number.isFinite(validMult) || validMult < 1 || validMult > limits.rate) return invalid('rate', limits.rate);
+        if (!Number.isFinite(statusRate) || statusRate <= 0 || statusRate > limits.rate) return invalid('status', limits.rate);
+        const rate = Math.max(statusRate, validMult);
+        const amountPerPurchase = options.amountPerPurchase === undefined
+            ? validAmount / purchaseCount : numericValue(options.amountPerPurchase);
+        if (!validMoney(amountPerPurchase, limits.amount)) return invalid('pack', limits.amount);
+        const subtotal = amountPerPurchase * purchaseCount;
+        if (!Number.isFinite(subtotal) || Math.abs(subtotal - validAmount) > Math.max(1, validAmount) * Number.EPSILON * 4) {
+            return invalid('amount', limits.amount);
+        }
+        const rawEligible = options.eligibleAmountPerPurchase;
+        const hasEligibleAmount = rawEligible !== undefined && rawEligible !== null
+            && !(typeof rawEligible === 'string' && rawEligible.trim() === '');
+        const eligibleAmountPerPurchase = hasEligibleAmount ? numericValue(rawEligible) : amountPerPurchase;
+        if (!validMoney(eligibleAmountPerPurchase, amountPerPurchase)) return invalid('eligible', amountPerPurchase);
         const pointsPerPurchase = Math.round((eligibleAmountPerPurchase / cfg.unitSpend) * rate);
         const points = pointsPerPurchase * purchaseCount;
+        if (!Number.isSafeInteger(pointsPerPurchase) || !Number.isSafeInteger(points)) return invalid('amount', limits.amount);
 
         return {
+            valid: true,
             amount: validAmount,
             rate,
             points,
@@ -165,6 +189,45 @@
             pointsPerPurchase,
             usesEligibleAmount: hasEligibleAmount
         };
+    }
+
+    function inputErrorText(error, cfg) {
+        const amount = `${cfg.currencyPrefix}${Number(error.max).toLocaleString(cfg.lang)}${cfg.currencySuffix}`;
+        const messages = {
+            ja: {
+                amount: `0〜${amount}の金額を入力してください（この計算機の入力上限です）。`,
+                pack: '一覧から課金パックを選び直してください。',
+                count: `購入回数は1〜${error.max}の整数で入力してください。`,
+                eligible: `対象商品価格は0〜${amount}で入力してください。不明な場合は空欄にしてください。`,
+                rate: '一覧からキャンペーンの特別獲得率を選び直してください。',
+                status: '一覧から現在の会員ランクを選び直してください。'
+            },
+            en: {
+                amount: `Enter an amount from 0 to ${amount} (this calculator's input limit).`,
+                pack: 'Choose a purchase pack from the list.',
+                count: `Enter a whole number of purchases from 1 to ${error.max}.`,
+                eligible: `Enter an eligible item price from 0 to ${amount}, or leave it blank if unknown.`,
+                rate: 'Choose a promotion earn rate from the list.',
+                status: 'Choose your current level from the list.'
+            },
+            ko: {
+                amount: `0~${amount} 범위의 금액을 입력하세요(이 계산기의 입력 한도).`,
+                pack: '목록에서 결제 패키지를 다시 선택하세요.',
+                count: `구매 횟수는 1~${error.max}의 정수로 입력하세요.`,
+                eligible: `대상 상품 가격은 0~${amount}로 입력하세요. 모르면 비워 두세요.`,
+                rate: '목록에서 프로모션 특별 적립률을 다시 선택하세요.',
+                status: '목록에서 현재 등급을 다시 선택하세요.'
+            },
+            'zh-TW': {
+                amount: `請輸入 0～${amount} 的金額（本計算器的輸入上限）。`,
+                pack: '請從清單重新選擇儲值方案。',
+                count: `購買次數請輸入 1～${error.max} 的整數。`,
+                eligible: `適用商品價格請輸入 0～${amount}，不清楚時請留空。`,
+                rate: '請從清單重新選擇活動獲點率。',
+                status: '請從清單重新選擇目前等級。'
+            }
+        };
+        return (messages[cfg.lang] || messages.en)[error.field];
     }
 
     function getReachedRank(totalEarnedPoints, cfg) {
@@ -246,6 +309,48 @@
         const resultContainer = document.querySelector('.game-result-container');
         const presetBtns = document.querySelectorAll('.preset-btn');
 
+        function setPackCountVisibility(visible) {
+            if (!countInput) return;
+            const field = countInput.closest ? countInput.closest('.input-field') : null;
+            if (field) field.hidden = !visible;
+            countInput.style.display = visible ? 'inline-block' : 'none';
+        }
+
+        const limits = getInputLimits(cfg);
+        const fields = { amount: customAmountInput, pack: packSelect, count: countInput,
+            eligible: eligibleAmountInput, rate: multSelect, status: statusSelect };
+        const errorNodes = new Map();
+        const urlErrors = new Map();
+        let hasUrlAmount = false;
+        if (customAmountInput) customAmountInput.max = String(limits.amount);
+        if (countInput) { countInput.max = String(limits.count); countInput.step = '1'; }
+        for (const [key, input] of Object.entries(fields)) {
+            if (!input) continue;
+            const node = document.createElement('p');
+            node.id = `${input.id}-error`;
+            node.className = 'game-input-error';
+            node.hidden = true;
+            node.setAttribute('aria-live', 'polite');
+            input.insertAdjacentElement('afterend', node);
+            errorNodes.set(key, node);
+            const ids = new Set((input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+            ids.add(node.id);
+            input.setAttribute('aria-describedby', [...ids].join(' '));
+            // URLの不正値は、対応する欄を利用者が編集するまで正常値へ置き換えない。
+            for (const event of ['input', 'change']) input.addEventListener(event, () => urlErrors.delete(key));
+        }
+
+        function showInputError(error) {
+            for (const [key, node] of errorNodes) {
+                const active = error && error.field === key;
+                fields[key].setAttribute('aria-invalid', active ? 'true' : 'false');
+                node.hidden = !active;
+                node.textContent = active ? inputErrorText(error, cfg) : '';
+            }
+            if (resultContainer) resultContainer.hidden = Boolean(error);
+        }
+
+
         const meta = document.querySelector('.game-meta');
         if (meta && cfg.verificationText) meta.textContent = cfg.verificationText;
 
@@ -292,59 +397,38 @@
             else eligibleAmountInput.removeAttribute('max');
         }
 
-        // URLクエリパラメータの初期読み込み。旧URLの amount だけでも引き続き動作する。
+        // 共有URLも手入力と同じ検証へ通す。parseFloatによる部分読み・切捨てはしない。
         try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const paramAmount = urlParams.get('amount');
-            const paramPack = urlParams.get('pack');
-            const paramCount = urlParams.get('count');
-            const paramEligible = urlParams.get('eligible');
-            const paramMult = urlParams.get('mult');
-            const paramStatus = urlParams.get('status');
-            let matchedPackFromUrl = false;
-
-            if (paramPack !== null && packSelect && !isNaN(parseFloat(paramPack))) {
-                for (let i = 0; i < packSelect.options.length; i++) {
-                    if (parseFloat(packSelect.options[i].value) === parseFloat(paramPack)) {
-                        packSelect.selectedIndex = i;
-                        matchedPackFromUrl = true;
-                        break;
-                    }
-                }
-                if (matchedPackFromUrl && countInput) {
-                    countInput.value = String(Math.max(1, parseInt(paramCount, 10) || 1));
-                    countInput.style.display = 'inline-block';
-                }
+            const params = new URLSearchParams(window.location.search);
+            hasUrlAmount = params.has('amount') || params.has('pack');
+            const readParam = (param, key, max) => {
+                if (!params.has(param) || !fields[key]) return;
+                const raw = params.get(param);
+                if (!(key === 'eligible' && raw.trim() === '') && !Number.isFinite(numericValue(raw))) urlErrors.set(key, { field: key, max });
+                fields[key].value = raw;
+            };
+            readParam('amount', 'amount', limits.amount);
+            readParam('count', 'count', limits.count);
+            readParam('eligible', 'eligible', limits.amount);
+            for (const [param, key] of [['mult', 'rate'], ['status', 'status']]) {
+                if (!params.has(param) || !fields[key]) continue;
+                const value = numericValue(params.get(param));
+                const option = [...fields[key].options].find(o => numericValue(o.value) === value);
+                fields[key].value = option ? option.value : '';
             }
-
-            if (paramAmount !== null && !isNaN(parseFloat(paramAmount))) {
-                if (customAmountInput) customAmountInput.value = parseFloat(paramAmount);
-                if (packSelect && !matchedPackFromUrl) {
-                    let matched = false;
-                    for (let i = 0; i < packSelect.options.length; i++) {
-                        if (parseFloat(packSelect.options[i].value) === parseFloat(paramAmount)) {
-                            packSelect.selectedIndex = i;
-                            matched = true;
-                            break;
-                        }
-                    }
-                    if (!matched) {
-                        packSelect.value = 'custom';
-                        if (countInput) countInput.style.display = 'none';
-                    }
-                }
+            if (packSelect && hasUrlAmount) {
+                const pack = params.has('pack') ? numericValue(params.get('pack')) : numericValue(params.get('amount'));
+                const option = [...packSelect.options].find(o => numericValue(o.value) === pack);
+                packSelect.value = option ? option.value : 'custom';
+                if (params.has('pack') && !option) urlErrors.set('pack', { field: 'pack', max: limits.amount });
+                if (countInput) setPackCountVisibility(Boolean(option));
             }
-            if (paramEligible !== null && eligibleAmountInput && !isNaN(parseFloat(paramEligible))) {
-                eligibleAmountInput.value = paramEligible;
-            }
-            if (paramMult !== null && multSelect) multSelect.value = paramMult;
-            if (paramStatus !== null && statusSelect) statusSelect.value = paramStatus;
-        } catch (e) {
-            console.error('Failed to parse URL query params', e);
+        } catch (error) {
+            console.error('Failed to parse URL query params', error);
         }
 
         // 初期ロード時の双方向同期判定
-        if (customAmountInput && packSelect) {
+        if (customAmountInput && packSelect && !hasUrlAmount) {
             const initVal = parseFloat(customAmountInput.value) || 0;
             const currentPackVal = parseFloat(packSelect.value);
             const currentCount = Math.max(1, parseInt(countInput?.value, 10) || 1);
@@ -362,48 +446,32 @@
             }
             if (!matched) {
                 packSelect.value = 'custom';
-                if (countInput) countInput.style.display = 'none';
+                if (countInput) setPackCountVisibility(false);
             } else if (countInput) {
-                countInput.style.display = 'inline-block';
+                setPackCountVisibility(true);
             }
         }
         refreshEligibleField();
 
         function getCurrentCalculation() {
-            let amount = 0;
-            let amountPerPurchase = 0;
-            let purchaseCount = 1;
             const isPack = packSelect && countInput && packSelect.value !== 'custom';
-
-            if (isPack) {
-                amountPerPurchase = Math.max(0, parseFloat(packSelect.value) || 0);
-                purchaseCount = Math.max(1, parseInt(countInput.value, 10) || 1);
-                amount = amountPerPurchase * purchaseCount;
-                if (customAmountInput) customAmountInput.value = amount;
-            } else if (customAmountInput) {
-                amount = Math.max(0, parseFloat(customAmountInput.value) || 0);
-                amountPerPurchase = amount;
-            }
-
+            const purchaseCount = isPack ? numericValue(countInput.value) : 1;
+            const amountPerPurchase = isPack ? numericValue(packSelect.value) : numericValue(customAmountInput?.value);
+            const amount = isPack ? amountPerPurchase * purchaseCount : amountPerPurchase;
             refreshEligibleField();
-            const rawEligible = eligibleAmountInput ? eligibleAmountInput.value.trim() : '';
-            const parsedEligible = rawEligible === '' ? null : parseFloat(rawEligible);
-            const eligibleAmount = parsedEligible !== null
-                && Number.isFinite(parsedEligible)
-                && parsedEligible >= 0
-                && parsedEligible <= amountPerPurchase
-                ? parsedEligible
-                : null;
-            if (eligibleAmountInput) eligibleAmountInput.setAttribute('aria-invalid', rawEligible !== '' && eligibleAmount === null ? 'true' : 'false');
-
-            const mult = multSelect ? parseFloat(multSelect.value) : 1;
-            const statusRate = statusSelect ? parseFloat(statusSelect.value) : 1.0;
-            const result = calculateGamePoints(amount, mult, statusRate, cfg, {
-                purchaseCount,
-                amountPerPurchase,
-                eligibleAmountPerPurchase: eligibleAmount
-            });
-
+            // 非表示の購入回数は自由金額モードの計算条件に含めない。
+            let error = [...urlErrors.values()].find(item => item.field !== 'count' || isPack);
+            if (!error && isPack && (!Number.isInteger(purchaseCount) || purchaseCount < 1 || purchaseCount > limits.count)) {
+                error = { field: 'count', max: limits.count };
+            }
+            if (!error && eligibleAmountInput?.validity?.badInput) error = { field: 'eligible', max: amountPerPurchase };
+            const result = error ? { valid: false, error } : calculateGamePoints(amount,
+                multSelect ? multSelect.value : 1, statusSelect ? statusSelect.value : 1, cfg, {
+                    purchaseCount, amountPerPurchase,
+                    eligibleAmountPerPurchase: eligibleAmountInput ? eligibleAmountInput.value : null
+                });
+            showInputError(result.valid ? null : result.error);
+            if (result.valid && isPack && customAmountInput) customAmountInput.value = String(result.amount);
             return { result, isPack };
         }
 
@@ -424,6 +492,7 @@
         function update(isUserAction) {
             const calculation = getCurrentCalculation();
             const res = calculation.result;
+            if (!res.valid) return;
             const rankInfo = getReachedRank(res.points, cfg);
 
             if (totalAmountEl) {
@@ -455,6 +524,7 @@
                     rankProgressBar.style.width = '100%';
                     rankProgressBar.setAttribute('aria-valuenow', '100');
                 }
+                rankProgressBar.setAttribute('aria-valuetext', nextRankProgressEl.textContent);
             }
 
             if (ctaSavingsEl && cfg.savingsText) {
@@ -480,6 +550,7 @@
             btnShareX.addEventListener('click', () => {
                 const calculation = getCurrentCalculation();
                 const res = calculation.result;
+                if (!res.valid) return;
                 const amount = res.amount;
                 const currentTitle = document.querySelector('h1.game-title') ? document.querySelector('h1.game-title').textContent : 'PlayPoint';
                 const shareUrl = buildShareUrl(calculation);
@@ -504,7 +575,9 @@
         const btnCopyLink = document.getElementById('btn-copy-link');
         if (btnCopyLink) {
             btnCopyLink.addEventListener('click', () => {
-                const shareUrl = buildShareUrl(getCurrentCalculation());
+                const calculation = getCurrentCalculation();
+                if (!calculation.result.valid) return;
+                const shareUrl = buildShareUrl(calculation);
 
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(shareUrl).then(() => {
@@ -535,7 +608,8 @@
                     btn.classList.add('active');
                     btn.setAttribute('aria-pressed', 'true');
 
-                    const targetAmount = parseFloat(btn.getAttribute('data-amount')) || 0;
+                    urlErrors.clear();
+                    const targetAmount = numericValue(btn.getAttribute('data-amount'));
                     const targetMult = btn.getAttribute('data-mult');
                     if (customAmountInput) customAmountInput.value = targetAmount;
                     if (eligibleAmountInput) eligibleAmountInput.value = '';
@@ -553,11 +627,11 @@
                         if (matched) {
                             if (countInput) {
                                 countInput.value = '1';
-                                countInput.style.display = 'inline-block';
+                                setPackCountVisibility(true);
                             }
                         } else {
                             packSelect.value = 'custom';
-                            if (countInput) countInput.style.display = 'none';
+                            if (countInput) setPackCountVisibility(false);
                         }
                     }
 
@@ -570,16 +644,16 @@
         // パックセレクト変更
         if (packSelect) {
             packSelect.addEventListener('change', () => {
+                // パックを選び直した操作は、URL由来の旧合計額に優先する。
+                urlErrors.delete('amount');
                 presetBtns.forEach(b => {
                     b.classList.remove('active');
                     b.setAttribute('aria-pressed', 'false');
                 });
                 if (eligibleAmountInput) eligibleAmountInput.value = '';
                 if (countInput) {
-                    countInput.style.display = packSelect.value === 'custom' ? 'none' : 'inline-block';
-                    if (packSelect.value !== 'custom' && (!countInput.value || parseInt(countInput.value, 10) < 1)) {
-                        countInput.value = '1';
-                    }
+                    setPackCountVisibility(packSelect.value !== 'custom');
+
                 }
                 refreshEligibleField();
                 update(true);
@@ -591,7 +665,7 @@
             customAmountInput.addEventListener('input', () => {
                 if (packSelect && packSelect.value !== 'custom') {
                     packSelect.value = 'custom';
-                    if (countInput) countInput.style.display = 'none';
+                    if (countInput) setPackCountVisibility(false);
                     if (eligibleAmountInput) eligibleAmountInput.value = '';
                 }
                 presetBtns.forEach(b => {
@@ -613,11 +687,16 @@
             }
         });
 
+        form.addEventListener('submit', event => {
+            event.preventDefault();
+            update(true);
+            form.querySelector('[aria-invalid="true"]')?.focus();
+        });
         update(false);
     }
 
     if (typeof window !== 'undefined' && window.__TEST_ENV__) {
-        window.PP_GAME_SIM_TEST = { calculateGamePoints, getReachedRank };
+        window.PP_GAME_SIM_TEST = { calculateGamePoints, getReachedRank, getInputLimits, localeConfigs: LOCALE_CONFIGS };
     }
 
     if (document.readyState === 'loading') {

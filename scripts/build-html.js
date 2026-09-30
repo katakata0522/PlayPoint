@@ -183,5 +183,9 @@ console.log('[build-html] synchronized article search and reading tools:', syncA
 const finalIntlJaHreflangSummary = syncIntlArticleJapaneseHreflang(rootDir);
 console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntlJaHreflangSummary.changed}/${finalIntlJaHreflangSummary.checked} updated`);
 
+// 翻訳・ゲーム・機能ページも、最終生成物の画像実体と補助タグを一致させる。
+const { syncSubmittedPageOgp } = require('./update-common-pages-ogp.cjs');
+console.log('[build-html] finalized submitted-page OGP:', syncSubmittedPageOgp(rootDir));
+
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);

@@ -47,7 +47,7 @@
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=7e19d7bd99">
+    <link rel="stylesheet" href="../style.css?v=6ade3e72f3">
     <script type="speculationrules">
     {
   "prefetch": [
@@ -261,6 +261,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <button type="button" id="calculator-last-value-reuse" class="calculator-last-value__reuse" data-lang-key="lastCalculationReuse">Use last values</button>
             </div>
             <button id="calculateButton" data-lang-key="calculateButton">Calculate amount</button>
+            <p class="rounding-assumption-note calculator-basis-note" id="main-points-basis" data-lang-key="pointsBasisNote">Amounts use the eligible item price before tax. Entering the checkout total gives an estimate. Check the points shown by Google Play before purchase.</p>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">Adjust earn rates & promotion (optional)</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
@@ -303,7 +304,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" role="button" tabindex="0" aria-label="Show explanation" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
-            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="e.g. 500" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder" aria-describedby="reverse-points-basis">
+            <p class="rounding-assumption-note calculator-basis-note" id="reverse-points-basis" data-lang-key="pointsBasisNote">Amounts use the eligible item price before tax. Entering the checkout total gives an estimate. Check the points shown by Google Play before purchase.</p>
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">Current status</span>

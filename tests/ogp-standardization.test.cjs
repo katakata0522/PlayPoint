@@ -105,7 +105,9 @@ test('共通ページは1200x630のogp.pngと統一メタタグを持つ', () =>
     assert.match(html, /<meta property=["']og:image:width["'] content=["']1200["']\s*\/?>/, `${file} に og:image:width="1200" があること`);
     assert.match(html, /<meta property=["']og:image:height["'] content=["']630["']\s*\/?>/, `${file} に og:image:height="630" があること`);
     assert.match(html, /<meta property=["']og:image:type["'] content=["']image\/png["']\s*\/?>/, `${file} に og:image:type="image/png" があること`);
-    assert.match(html, /<meta property=["']og:locale["'] content=["']ja_JP["']\s*\/?>/, `${file} に og:locale="ja_JP" があること`);
+    const expectedLocale = file === 'attention.html' ? 'en_US' : 'ja_JP';
+    const actualLocale = html.match(/<meta property=["']og:locale["'] content=["']([^"']+)["']/)?.[1];
+    assert.equal(actualLocale, expectedLocale, `${file} の本文言語と共有言語が一致すること`);
     assert.match(html, /<meta property=["']og:image:alt["'] content=["'][^"']+["']\s*\/?>/, `${file} に og:image:alt があること`);
   }
 

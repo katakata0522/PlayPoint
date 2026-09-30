@@ -64,3 +64,30 @@ test('JSON-LD抽出はscript接頭辞だけの文字列を終了タグと誤認�
   assert.deepEqual(page.schemaTypes, ['WebPage']);
   assert.equal(page.errors.some(issue => issue.code === 'jsonld-invalid'), false);
 });
+
+// 一部の日本語ファイルだけ通る「0エラー」を再発させない。
+const { completeHeadOgp } = require('../scripts/update-common-pages-ogp.cjs');
+const rootDir = require('node:path').resolve(__dirname, '..');
+for (const file of ['en/articles/fixture.html', 'ko/articles/fixture.html', 'tw/articles/fixture.html',
+  'games/fixture/index.html', 'en/games/fixture/index.html', 'campaign/3x/index.html', 'maintenance/diamond/index.html']) {
+  test(`${file}: 補助タグ欠落を検出し共通生成後は全契約を満たす`, () => {
+    const url = 'https://playpoint-sim.com/' + file;
+    const html = pageHtml().replaceAll(URL, url);
+    const before = inspectPage(url, file, html);
+    for (const code of ['og-width-invalid', 'og-height-invalid', 'og-alt-missing', 'og-type-invalid', 'og-locale-missing', 'twitter-image-missing']) {
+      assert.ok(before.errors.some(issue => issue.code === code), code);
+    }
+    const fixed = completeHeadOgp(html, rootDir);
+    assert.deepEqual(inspectPage(url, file, fixed).errors, []);
+    assert.equal(completeHeadOgp(fixed, rootDir), fixed, '再生成でタグが増殖しない');
+    assert.equal(fixed.split('<body>')[1], html.split('<body>')[1], '本文を変更しない');
+  });
+}
+test('共有画像の共通生成は実体・既存代替テキストを維持し、欠落や重複を隠さない', () => {
+  const html = pageHtml().replace('</head>', () => '<meta property="og:image:alt" content="Fish &amp; chips $&amp;">\n</head>');
+  const fixed = completeHeadOgp(html, rootDir);
+  assert.ok(fixed.includes('content="Fish &amp; chips $&amp;"'));
+  assert.ok(fixed.includes('property="og:image" content="https://playpoint-sim.com/ogp.png"'));
+  assert.throws(() => completeHeadOgp(html.replace(/<meta property="og:image"[^>]*>/, ''), rootDir), /og:image/);
+  assert.throws(() => completeHeadOgp(fixed.replace('</head>', '<meta property="og:image:width" content="1200"></head>'), rootDir), /重複/);
+});

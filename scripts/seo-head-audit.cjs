@@ -206,7 +206,7 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
   const headMatch = html.match(/<head\b[^>]*>([\s\S]*?)<\/head>/i);
   if (!headMatch) {
     errors.push(createIssue('head-missing', { url, file }));
-    return { url, file, locale: localeForUrl(url), errors, warnings };
+    return { url, file, locale: localeForUrl(url), alternates: [], errors, warnings };
   }
 
   const head = headMatch[1];
@@ -268,20 +268,13 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
     ['og:url', ogUrl]
   ].filter(([, values]) => values.length !== 1).map(([name]) => name);
   if (missingOgp.length > 0) {
-    warnings.push(createIssue('ogp-incomplete', { url, file, detail: missingOgp.join(', ') }));
+    errors.push(createIssue('ogp-incomplete', { url, file, detail: missingOgp.join(', ') }));
   } else if (ogUrl[0] !== url) {
-    warnings.push(createIssue('og-url-mismatch', { url, file, detail: `og:url=${ogUrl[0]}` }));
+    errors.push(createIssue('og-url-mismatch', { url, file, detail: `og:url=${ogUrl[0]}` }));
   }
 
-  // Articles and common pages strict OGP standards
-  const isArticleOrCommon = file.startsWith('articles/') || [
-    'index.html', 'about-playpoints.html', 'attention.html', 'changelog.html',
-    'embed.html', 'info.html', 'privacy.html', 'terms.html', 'sitemap.html',
-    'author/katakata.html', 'blog/index.html',
-    'en/index.html', 'ko/index.html', 'tw/index.html', 'hk/index.html', 'in/index.html'
-  ].includes(file);
-
-  if (isArticleOrCommon) {
+  // 送信URLは言語・テンプレートによらず同じ共有画像契約を検査する。
+  {
     if (ogWidth.length !== 1 || ogWidth[0] !== '1200') {
       errors.push(createIssue('og-width-invalid', { url, file, detail: `og:image:width=${ogWidth[0] || 'missing'}` }));
     }
@@ -296,6 +289,9 @@ function inspectPage(url, file, html, rootDir = path.resolve(__dirname, '..')) {
     }
     if (ogLocale.length !== 1 || !ogLocale[0]) {
       errors.push(createIssue('og-locale-missing', { url, file }));
+    }
+    if (twitterImage.length !== 1) {
+      errors.push(createIssue('twitter-image-missing', { url, file }));
     }
     if (twitterImage.length === 1 && ogImage.length === 1 && twitterImage[0] !== ogImage[0]) {
       errors.push(createIssue('twitter-image-mismatch', { url, file, detail: `twitter:image=${twitterImage[0]} vs og:image=${ogImage[0]}` }));
@@ -519,6 +515,9 @@ module.exports = {
   auditSeoHeads,
   formatIssue,
   inspectPage,
+  parseAttributes,
+  normalizeText,
+  getImageDimensions,
   sitemapFilesFromRobots,
   sitemapUrls,
   urlToLocalHtml

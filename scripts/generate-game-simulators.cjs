@@ -2528,11 +2528,11 @@ function generateGamePageHtml(game, localeKey) {
                   <!-- ランク進捗 -->
                   <div class="rank-progress-wrapper">
                       <div class="rank-progress-header">
-                          <span>${loc.resProgressTitle}</span>
+                          <span id="res-progress-label">${loc.resProgressTitle}</span>
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-labelledby="res-progress-label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                   </div>
 

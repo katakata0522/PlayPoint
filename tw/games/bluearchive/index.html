@@ -22,13 +22,18 @@
   <meta property="og:description" content="計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！" />
   <meta property="og:url" content="https://playpoint-sim.com/tw/games/bluearchive/" />
   <meta property="og:image" content="https://playpoint-sim.com/ogp.png" />
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="蔚藍檔案 (Blue Archive) - Google Play Points 計算器">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:locale" content="zh_TW">
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="蔚藍檔案 (Blue Archive) - Google Play Points 計算器" />
   <meta name="twitter:description" content="計算蔚藍檔案青輝石禮包、月卡、200抽招募點數兌換(保底)課金可獲得的 Play Points！" />
-  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png" />
+  <meta name="twitter:image" content="https://playpoint-sim.com/ogp.png">
 
-  <link rel="stylesheet" href="../../../articles/article-shared.css?v=ee95677a37" />
-  <link rel="stylesheet" href="../../../games/games.css?v=f69085d498" />
+  <link rel="stylesheet" href="../../../articles/article-shared.css?v=1f6473289d" />
+  <link rel="stylesheet" href="../../../games/games.css?v=71f9d76f99" />
 
   <script type="application/ld+json">
   {
@@ -221,11 +226,11 @@
                   <!-- ランク進捗 -->
                   <div class="rank-progress-wrapper">
                       <div class="rank-progress-header">
-                          <span>以 0 點起算的參考進度</span>
+                          <span id="res-progress-label">以 0 點起算的參考進度</span>
                           <span id="res-next-progress">-</span>
                       </div>
                       <div class="rank-bar-bg">
-                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          <div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-labelledby="res-progress-label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                   </div>
 
@@ -547,6 +552,6 @@
 
   <script src="../../../js/analytics-core.js?v=96fa25c428"></script>
   <script src="../../../js/third-party.js?v=3c45c66015"></script>
-  <script src="../../../games/game-sim.js?v=7d3ab36020"></script>
+  <script src="../../../games/game-sim.js?v=2325ebf133"></script>
 </body>
 </html>

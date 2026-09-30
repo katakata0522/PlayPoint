@@ -47,7 +47,7 @@
     <link rel="modulepreload" href="../js/ui.js">
     <link rel="modulepreload" href="../js/share.js">
     <link rel="modulepreload" href="../js/calculator.js">
-    <link rel="stylesheet" href="../style.css?v=7e19d7bd99">
+    <link rel="stylesheet" href="../style.css?v=6ade3e72f3">
     <link rel="stylesheet" href="../visitor-thanks.css?v=82a36e2418">
     <script type="speculationrules">
     {
@@ -261,6 +261,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <button type="button" id="calculator-last-value-reuse" class="calculator-last-value__reuse" data-lang-key="lastCalculationReuse">使用上次條件</button>
             </div>
             <button id="calculateButton" data-lang-key="calculateButton">計算消費金額</button>
+            <p class="rounding-assumption-note calculator-basis-note" id="main-points-basis" data-lang-key="pointsBasisNote">金額以不含稅的點數適用商品價格為準。輸入付款總額時僅為估算，購買前請確認 Google Play 顯示的預計點數。</p>
             <div id="calculator-advanced-settings" class="calculator-advanced-settings">
     <button type="button" class="calculator-advanced-settings__toggle" aria-controls="calculator-advanced-settings-body" aria-expanded="false"><span data-simplified-calculator-copy="advancedSettingsLabel">調整獲點率與活動（選填）</span><span class="calculator-advanced-settings__chevron" aria-hidden="true">⌄</span></button>
     <div id="calculator-advanced-settings-body" class="calculator-advanced-settings__body" role="group">
@@ -303,7 +304,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
                 <span class="info-btn" role="button" tabindex="0" aria-label="顯示說明" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>
                 <div class="tooltip-box" id="tooltip-amount-yen" hidden></div>
             </label>
-            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder">
+            <input type="number" id="amountYen" min="0.01" step="0.01" placeholder="例如：350" inputmode="decimal" data-lang-placeholder="amountYenPlaceholder" aria-describedby="reverse-points-basis">
+            <p class="rounding-assumption-note calculator-basis-note" id="reverse-points-basis" data-lang-key="pointsBasisNote">金額以不含稅的點數適用商品價格為準。輸入付款總額時僅為估算，購買前請確認 Google Play 顯示的預計點數。</p>
 
             <label for="reverseStatus" class="label-with-tooltip">
                 <span data-lang-key="labelCurrentStatus">目前等級</span>

@@ -78,6 +78,7 @@ export function renderMainResult({ config, neededPoints, totalAmountNeeded, rema
             const premiseContent = `
                 <p class="rounding-assumption-note">
                     <strong>${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}</strong>${rateSourceLabel ? ` · ${rateSourceLabel}` : ''}<br>
+                    ${texts.pointsBasisNote}<br>
                     ${texts.roundingNoteWithoutPack}
                 </p>
             `;
@@ -131,7 +132,7 @@ export function renderReverseResult({ config, earnedPoints, finalRate, rateSourc
                 amountHtml: renderPointsAmount(earnedPoints)
             })}
             <span class="rate-info">(${texts.resultLabelRate}: ${finalRate.toFixed(2)} pt/${config.rateUnit}${rateSourceLabel ? ` · ${rateSourceLabel}` : ''})</span>
-            <p class="rounding-assumption-note">${texts.roundingNoteReverse}</p>
+            <p class="rounding-assumption-note">${texts.pointsBasisNote}<br>${texts.roundingNoteReverse}</p>
             ${purchaseCheckContent}
         `;
 
