@@ -676,3 +676,31 @@ test('P1/P2 collector updates health rows from WAITING to RUNNING/OK/PARTIAL/ERR
   assert.match(source, /consecutiveFailures/);
   assert.match(source, /実行ログの\[P1P2:/);
 });
+
+
+test('v11.6.2 Drive safety patch separates reconciled analytics success from owner-sensitive archive maintenance', () => {
+  const patch = read('patches/playpoint-analytics-v11.6.2-drive-safe.patch');
+  const added = patch.split('\n')
+    .filter(line => line.startsWith('+') && !line.startsWith('+++'))
+    .map(line => line.slice(1))
+    .join('\n');
+
+  assert.match(added, /VERSION:\s*'11\.6\.2'/);
+  assert.match(added, /recordHealthSuccess_\('DAILY_RECONCILE'/);
+  assert.match(added, /月初Driveバックアップを保留（分析本体は成功）/);
+  assert.match(added, /完了月Driveアーカイブを保留（分析本体は成功）/);
+  assert.ok(
+    added.indexOf("recordHealthSuccess_('DAILY_RECONCILE'") <
+      added.indexOf('maybeCreateMonthlyBackup_'),
+    'daily reconciliation must be marked successful before optional Drive maintenance'
+  );
+
+  assert.match(added, /file\.setContent\(content\)/);
+  assert.match(added, /uniqueArchiveFallbackName_/);
+  assert.doesNotMatch(added, /existing\.next\(\)\.setTrashed\(true\)/);
+
+  const runbook = read('docs/PLAYPOINT_ANALYTICS_DRIVE_SAFETY_2026-09-30.md');
+  assert.match(runbook, /Drive補助保存だけ失敗.*日次再照合はRECONCILED/s);
+  assert.match(runbook, /trash-first置換を廃止/);
+  assert.match(runbook, /6\/6 success/);
+});
