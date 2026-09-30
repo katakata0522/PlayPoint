@@ -252,6 +252,17 @@ function assertSelectionState(layout, locale, widthLabel) {
     `${locale.key} ${widthLabel}: region state color must differ from primary action color (${layout.selectedBackground})`);
 }
 
+// CSSの切替はmatchMediaのchange処理（メニューからナビを戻す）より先に見える。
+// 広い画面ではDOMの移動完了を待ち、直後の過渡的なダイアログ幅を測らない。
+// 幅・はみ出し・国旗・選択状態の合格条件は従来どおり保持する。
+async function waitForWideNavigation(page) {
+  await page.waitForFunction(() => {
+    const topBar = document.querySelector('.calculator-wrapper > .top-bar');
+    const menu = document.getElementById('guide-menu');
+    return Boolean(topBar && (!menu || !menu.open));
+  }, null, { timeout: 10_000 });
+}
+
 async function verifyLocale(browser, baseUrl, locale) {
   const origin = new URL(baseUrl).origin;
   const context = await browser.newContext({
@@ -317,6 +328,7 @@ async function verifyLocale(browser, baseUrl, locale) {
     await page.setViewportSize({ width: TABLET_VIEWPORT_WIDTH, height: VIEWPORT_HEIGHT });
     await page.waitForFunction(() => Boolean(document.querySelector('link[data-region-selector-style]')?.sheet), null, { timeout: 10_000 });
     await page.waitForFunction(() => getComputedStyle(document.querySelector('.region-switch')).display !== 'grid', null, { timeout: 10_000 });
+    await waitForWideNavigation(page);
     const tabletLayout = await inspectLayout(page);
     assert(tabletLayout, `${locale.key} tablet: region selector was not fully initialized`);
     assert(tabletLayout.wrapperWidth >= 700, `${locale.key} tablet: calculator shell remained too narrow (${tabletLayout.wrapperWidth}px)`);
@@ -339,6 +351,7 @@ async function verifyLocale(browser, baseUrl, locale) {
       if (!switcher || window.innerWidth < 521) return false;
       return getComputedStyle(switcher).display !== 'grid';
     }, null, { timeout: 10_000 });
+    await waitForWideNavigation(page);
     const desktopLayout = await inspectLayout(page);
     assert(desktopLayout, `${locale.key} desktop: region selector was not fully initialized`);
     assert(desktopLayout.display === 'flex' || desktopLayout.display === 'inline-flex',
