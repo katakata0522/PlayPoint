@@ -444,8 +444,12 @@ function playPointRevenueGenerateAdSenseReport_(accountName, targetDate, dimensi
   ];
 
   var report = AdSense.Accounts.Reports.generate(accountName, {
-    startDate: date,
-    endDate: date,
+    'startDate.year': date.year,
+    'startDate.month': date.month,
+    'startDate.day': date.day,
+    'endDate.year': date.year,
+    'endDate.month': date.month,
+    'endDate.day': date.day,
     dimensions: dimensions,
     metrics: PLAYPOINT_REVENUE_DIAG_CONFIG.metrics,
     filters: filters,
