@@ -97,6 +97,8 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | GA4初期化・初回page_view・二重初期化防止 | `tests/third-party-analytics-integration.test.cjs` | `tests/analytics-core.test.cjs` |
 | third-party load順序・Analytics/広告Consent分離・AdSense retry | `tests/third-party-analytics-integration.test.cjs` | ブログ広告の共通境界guard |
 | 計算機の数値入力受理・拒否 | `tests/calculator-input-validation.test.cjs` | Browser calculator smoke |
+| ゲーム計算の通貨別上限・不正値・任意対象額・購入回数 | `tests/game-input-validation.test.cjs` | Chromiumの入力・訂正・共有リンク復元と連携 |
+| 全送信URLのOGP補助タグ・画像実体・生成冪等性 | `tests/seo-head-audit-parser.test.cjs` / `scripts/seo-head-audit.cjs` | 翻訳・ゲーム・機能ページの欠落fixtureを同じ契約で検査 |
 | 計算ファネル開始/完了/dedupe/Consent | `tests/calculator-funnel-behavior.test.cjs` | `tests/calculator-funnel-analytics.test.cjs` はraw値遮断・ownership境界 |
 | 日記保存の成功/失敗/サイレント保存 | `tests/diary-save-behavior.test.cjs` | Analytics event allowlist |
 | URL優先の地域表示・地域切替 | `tests/region-navigation-behavior.test.cjs` | `runtime-module-guards` の責務集約guard + Browser smoke |
@@ -1179,7 +1181,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-30）
 
-`tests/*.test.cjs` の185ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の186ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1255,6 +1257,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `game-earn-rate-copy.test.cjs` | 内容・事実・対象範囲 | ゲームページは旧倍率表現ではなく特別獲得率として案内する |
 | `game-guide-article-hub.test.cjs` | 内容・事実・対象範囲 | game guide catalog contains exactly 17 unique deep guides |
 | `game-guide-text-safety.test.cjs` | 内容・事実・対象範囲 | ゲーム記事のタイトルとバッジはHTMLではなく文字列として出力する |
+| `game-input-validation.test.cjs` | 計算・入力 | 4地域の通貨別上限・非有限値・負数・任意対象額・購入回数を実演算で検証 |
 | `game-page-locale-predicate.test.cjs` | 生成・再現性 | generated game page predicate follows every canonical game locale directory |
 | `game-page-ssot.test.cjs` | 生成・再現性 | generated top-level game outputs cover the canonical game locales with the same game set |
 | `game-seo-common.test.cjs` | 生成・再現性 | required edits keep repeat execution safe but reject missing source contracts |
@@ -1477,3 +1480,9 @@ browser-reading-uiを操作の主担当とし、メニュー開閉・フォー�
 - `ci-guardrails.test.cjs`: SEO期限切れでも独立したsitemap/security/internal-link監視を実行し、準備失敗・キャンセルでは実行しない。実workflowの条件を失敗・成功の組合せで検証し、失敗の無視や鮮度検査の解除はしない。
 - `japanese-navigation-sidebar.test.cjs`: 原本内容に一致する小表示用画像だけを選び、派生欠損・原本更新時は原本へ戻す。OGP原本・記事本文・人気順位・CSSは変更しない。
 - 本番performanceの外部広告・CMP由来の処理負荷/レイアウト変化は別途実測が必要。小画像化だけで解消済みとは扱わない。
+
+## 2026-09-30 総合監査の優先修正（広告位置を除外）
+
+ゲーム入力のエラーは数式修正ではなく入力境界の契約として追加。既存の購入ごとの端数処理を維持する。`browser-smoke.cjs` が呼ぶ `game-calculator-browser.cjs` は全ゲームの表示幅・入力訂正・進捗の名前を実DOMで確認し、同じ経路で公開前後のrevision照合も維持する。
+
+Head監査はファイル名の例外を廃止し、全サイトマップURLへ同じ契約を適用する。英語の `attention.html` に日本語localeを要求していた既存OGPテストは、実際の本文言語に一致する `en_US` を要求する形へ訂正。他の共通ページ、日本語記事、国別トップの保証は維持する。

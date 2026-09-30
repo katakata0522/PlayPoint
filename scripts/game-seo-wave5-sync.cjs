@@ -199,7 +199,7 @@ function parentPage(slug, locale) {
         <div class="result-stat-box"><span class="result-stat-label">${c.points}</span><strong id="res-earned-points" class="result-stat-value highlight">- pt</strong></div>
         <div class="result-stat-box"><span class="result-stat-label">${c.value}</span><strong id="res-point-value-yen" class="result-stat-value">-</strong></div>
         <div class="result-stat-box"><span class="result-stat-label">${c.rank}</span><strong id="res-reached-rank" class="result-stat-value">-</strong></div>
-      </div><div class="rank-progress-wrapper"><div class="rank-progress-header"><span>${c.progress}</span><span id="res-next-progress">-</span></div><div class="rank-bar-bg"><div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div>
+      </div><div class="rank-progress-wrapper"><div class="rank-progress-header"><span id="res-progress-label">${c.progress}</span><span id="res-next-progress">-</span></div><div class="rank-bar-bg"><div id="res-rank-bar" class="rank-bar-fill" role="progressbar" aria-labelledby="res-progress-label" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div></div>
       <div class="game-share-actions"><button type="button" id="btn-share-x" class="game-share-btn x-btn"><span>${c.share}</span></button><button type="button" id="btn-copy-link" class="game-share-btn copy-btn"><span>${c.copy}</span></button></div></div>
     </section>
     ${adMarkup(locale)}

@@ -47,12 +47,12 @@
 .sidebar-widget--role-troubleshooting { border-top-color: #b45309; }
 .sidebar-widget--role-retention { border-top-color: #7c3aed; }
 .sidebar-widget--role-decision_support, .sidebar-widget--role-game_decision { border-top-color: #2563eb; }
-.sidebar-widget-note { margin: -2px 0 10px; color: #8491a3; font-size: 10.5px; line-height: 1.4; }
+.sidebar-widget-note { margin: -2px 0 10px; color: #526075; font-size: 10.5px; line-height: 1.4; }
 .sidebar-popular-list, .sidebar-related-list { list-style: none; margin: 0; padding: 0; }
 .sidebar-popular-item { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 9px; align-items: start; padding: 10px 0; border-bottom: 1px solid #eef2f6; }
 .sidebar-popular-item:first-child { padding-top: 2px; }
 .sidebar-popular-item:last-child { padding-bottom: 2px; border-bottom: 0; }
-.sidebar-popular-rank { color: #a0aabb; font-size: 17px; font-weight: 850; font-variant-numeric: tabular-nums; line-height: 1.25; }
+.sidebar-popular-rank { color: #526075; font-size: 17px; font-weight: 850; font-variant-numeric: tabular-nums; line-height: 1.25; }
 .sidebar-popular-item:first-child .sidebar-popular-rank { color: #0f766e; }
 .sidebar-popular-link, .sidebar-popular-current-title { color: #233044; font-size: 12.8px; font-weight: 720; line-height: 1.5; text-decoration: none !important; overflow-wrap: anywhere; }
 .sidebar-popular-link:hover, .sidebar-popular-link:focus-visible { color: var(--reading-link, #0369a1); text-decoration: underline !important; text-underline-offset: 0.16em; }

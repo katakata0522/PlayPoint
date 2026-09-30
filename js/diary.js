@@ -154,7 +154,7 @@ export const DIARY = {
 #diaryMode .is-weekly-current>.weekly-points-field{grid-area:points}
 #diaryMode .is-weekly-current>.weekly-large-value-hint{grid-area:large}
 #diaryMode .is-weekly-current .diary-btn-group,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-btn-group{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:.55em!important;align-items:center}
-#diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-save-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;margin:0;background:#1e8e3e;color:#fff;border-color:#1e8e3e;font-weight:800}
+#diaryMode .is-weekly-current .diary-save-btn,#diaryMode .is-weekly-compact.is-weekly-expanded .diary-save-btn{display:inline-flex!important;align-items:center;justify-content:center;min-height:44px;margin:0;background:#1f7a35;color:#fff;border-color:#1f7a35;font-weight:800}
 #diaryMode .diary-save-btn[hidden]{display:none!important}
 #diaryMode .weekly-record-state{grid-area:state;display:flex;align-items:center;justify-content:space-between;gap:.7em;min-height:38px;padding:.45em .6em;border-radius:8px;background:rgba(63,185,80,.07);color:var(--text-color);font-size:.82em}
 #diaryMode .weekly-record-state[hidden]{display:none!important}

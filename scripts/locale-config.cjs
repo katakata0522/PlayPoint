@@ -18,6 +18,7 @@ function createLocales() {
         alternateName: 'Play Points Calculator',
         appDesc: 'An unofficial simulation tool to calculate required spending to reach Google Play Points goals based on your current status.',
         staticText: {
+            pointsBasisNote: 'Amounts use the eligible item price before tax. Entering the checkout total gives an estimate. Check the points shown by Google Play before purchase.',
             closeAria: 'Close', showHelpAria: 'Show explanation', shareResultAria: 'Share calculation result', prevYearAria: 'Previous year', nextYearAria: 'Next year',
             mainTitle: 'Google Play Points Calculator',
             siteAlias: 'Also known as Play Points Calculator / unofficial tool',
@@ -178,6 +179,7 @@ function createLocales() {
         alternateName: '구글 플레이 포인트 계산기',
         appDesc: '구글 플레이 포인트의 현재 등급에서 목표 등급까지 필요한 결제 금액을 계산할 수 있는 도구입니다.',
         staticText: {
+            pointsBasisNote: '금액은 세금을 제외한 포인트 적립 대상 상품 가격 기준입니다. 결제 총액을 입력하면 추정치가 됩니다. 구매 전 Google Play의 예상 적립 포인트를 확인하세요.',
             closeAria: '닫기', showHelpAria: '설명 보기', shareResultAria: '계산 결과 공유', prevYearAria: '이전 연도', nextYearAria: '다음 연도',
             mainTitle: 'Google Play Points 계산기',
             siteAlias: '별칭: 구글 플레이 포인트 계산기 / 비공식 도구',
@@ -333,6 +335,7 @@ function createLocales() {
         alternateName: 'Google Play 點數計算器',
         appDesc: '本工具可協助計算從目前等級達到 Google Play 點數目標等級所需的消費金額。',
         staticText: {
+            pointsBasisNote: '金額以不含稅的點數適用商品價格為準。輸入付款總額時僅為估算，購買前請確認 Google Play 顯示的預計點數。',
             closeAria: '關閉', showHelpAria: '顯示說明', shareResultAria: '分享計算結果', prevYearAria: '上一年', nextYearAria: '下一年',
             mainTitle: 'Google Play Points 計算器',
             siteAlias: '別稱: Google Play 點數計算器 / 非官方工具',

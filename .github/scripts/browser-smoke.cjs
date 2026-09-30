@@ -652,9 +652,17 @@ async function main() {
       report.blog = { passed: false, error: error.message };
       console.error(`not ok - Blog: ${error.message}`);
     }
+    try {
+      const { verifyGameCalculators } = require('./game-calculator-browser.cjs');
+      report.games = await verifyGameCalculators(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
+      console.log('ok - Game calculator responsive layout, input boundaries and progress names');
+    } catch (error) {
+      report.games = { passed: false, error: error.message };
+      console.error('not ok - Game calculators:', error.message);
+    }
     stage = 'revision-after';
     await revisionSession.check(baseUrl, 'after-browser');
-    report.passed = report.locales.every(result => result.passed) && report.blog.passed;
+    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed;
   } catch (error) {
     report.error = error.message;
     report.failedStage = stage;

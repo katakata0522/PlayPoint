@@ -481,7 +481,7 @@
                         margin-top: 12px;
                         border: 0;
                         border-radius: 8px;
-                        background: #10b981;
+                        background: #047857;
                         color: #ffffff;
                         font-size: 14px;
                         font-weight: 700;
@@ -489,7 +489,7 @@
                         transition: background-color 0.15s ease-in-out;
                     }
                     button.calc-btn:hover {
-                        background: #059669;
+                        background: #065f46;
                     }
                     output {
                         display: block;
