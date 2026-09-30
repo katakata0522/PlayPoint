@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { runPreflight } = require('./helpers/preflight-fixture.cjs');
+const { detectDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
@@ -122,7 +123,7 @@ test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準�
   assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
 });
 
-test('検証・復旧専用workflowの変更だけでは本番Deployを起動しない', () => {
+test('検証・復旧専用workflowは公開差分に分類せず、parity照合後に本番mutationをskipできる', () => {
   const workflow = read('.github/workflows/deploy.yml');
 
   for (const workflowPath of [
@@ -133,8 +134,14 @@ test('検証・復旧専用workflowの変更だけでは本番Deployを起動し
     '.github/workflows/rollback.yml',
     '.github/workflows/deploy-recovery-watchdog.yml'
   ]) {
-    assert.ok(workflow.includes(`- '${workflowPath}'`), `${workflowPath} must be ignored by Deploy push trigger`);
+    assert.equal(
+      detectDeployImpact([workflowPath]).deployNeeded,
+      false,
+      `${workflowPath} must remain non-public`
+    );
   }
+  assert.doesNotMatch(workflow, /^\s+paths-ignore:\s*$/m);
+  assert.match(getStepBlock(workflow, 'Detect production deploy impact'), /resolve-live-deploy-base\.cjs/);
   assert.equal(fs.existsSync(path.join(root, '.github/workflows/snapshot-history.yml')), false);
 });
 
