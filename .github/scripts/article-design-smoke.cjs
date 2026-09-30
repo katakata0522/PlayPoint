@@ -167,6 +167,14 @@ async function inspect(browser, baseUrl, article, viewport) {
     const evidenceName = 'article-design-' + article.key + '-' + viewport.key;
     await page.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '.png'), fullPage: true });
     fs.writeFileSync(path.join(ARTIFACT_DIR, evidenceName + '.json'), JSON.stringify({ article, viewport, result, focus }, null, 2));
+    if (article.key === 'retention-super-ticket') {
+      // 遅延描画される追記部分も、画面内へ移動して証跡に残す。
+      for (const id of ['article-section-3', 'save-use-deadlines', 'article-section-5']) {
+        const section = page.locator('.section').filter({ has: page.locator('#' + id) });
+        await section.scrollIntoViewIfNeeded();
+        await section.screenshot({ path: path.join(ARTIFACT_DIR, evidenceName + '-' + id + '.png') });
+      }
+    }
     console.log('[article-design-smoke] ' + article.key + '/' + viewport.key + ': OK');
   } catch (error) {
     fs.mkdirSync(ARTIFACT_DIR, { recursive: true });
