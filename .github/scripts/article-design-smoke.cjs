@@ -14,6 +14,7 @@ const REPRESENTATIVE_CASES = [
   ...['monst-in-app-packs-guide', 'pokemon-sleep-play-points-coupon', 'gakumas-webshop-google-play', 'bluearchive-monthly-packs-guide', 'nikke-monthly-card-midasbuy'].map(slug => ({ key: slug, path: 'articles/' + (slug.startsWith('monst') ? '2026-09-19-' : '2026-09-26-') + slug + '.html', allArticle: true, related: true })),
   { key: 'decision-normalized', path: 'articles/2025-12-25-best-use.html', noIntro: true, summary: true, related: true },
   { key: 'troubleshooting-modern', path: 'articles/2026-03-10-play-points-reflection-timing.html', related: true },
+  { key: 'retention-super-ticket', path: 'articles/2026-09-19-google-play-super-ticket.html', related: true },
   { key: 'retention-quests', path: 'articles/2026-07-31-google-play-quests.html', related: true },
   { key: 'game-decision-deep', path: 'games/fgo/pity-cost/index.html', allArticle: true, intro: true, related: true },
   { key: 'international-decision', path: 'en/articles/google-play-points-earn-free.html', related: true }
