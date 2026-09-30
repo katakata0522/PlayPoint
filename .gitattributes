@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Keep executable patch context identical on Windows checkouts
+docs/patches/*.patch text eol=lf

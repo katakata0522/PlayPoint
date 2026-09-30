@@ -100,3 +100,5 @@ git apply <このリポジトリの絶対パス>/docs/patches/playpoint-analytic
 ```
 
 稼働中コードがこの保存版と異なる場合は先に照合し、独自変更を保つ。構文検査とGitHubへの反映は、bound Apps Scriptへの適用・正常実行の証明ではない。
+
+Windows の自動 CRLF 変換でも文脈が一致しなくなるため、`docs/patches/*.patch` の保存・取得時の改行を `.gitattributes` で LF に固定する。保存版の作業用コピーも LF で用意する。
