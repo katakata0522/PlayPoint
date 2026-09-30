@@ -1,6 +1,6 @@
 # PlayPoint テスト仕分けメモ
 
-最終更新: 2026-09-18
+最終更新: 2026-09-30
 対象: `katakata0522/PlayPoint`（本番正本。`cli-auto/PlayPoint` ではない）
 
 ## 整理の履歴（当時の本数。現在値は末尾の全件台帳）
@@ -1177,15 +1177,15 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 - 現行回帰集合: **973ケース**（基準後追加の有効ケースと監査後追加したdrift/SSOT/CI影響回帰10ケースを含む）。
 - 今後は「未精査テストを消化するフェーズ」ではなく、変更時に各ownerのbehavior/public-output contractを維持する通常運用へ移行する。
 
-## 現行の全テストファイル台帳（2026-09-18）
+## 現行の全テストファイル台帳（2026-09-30）
 
-`tests/*.test.cjs` の184ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の185ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
 | 内容・事実・対象範囲 | 24 |
 | SEO・公開整合 | 13 |
-| 計測・同意・広告 | 11 |
+| 計測・同意・広告 | 12 |
 | 生成・再現性 | 23 |
 | UI・導線 | 23 |
 | 保存 | 5 |
@@ -1329,6 +1329,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `playpoint-calculation-contracts.test.cjs` | 計算 | ステータス選択の初期値はブロンズになる |
 | `playpoint-product-guards.test.cjs` | 横断監査 | 著者ページのOGP画像は実在する |
 | `playpoint-result-contracts.test.cjs` | UI・導線 | 通常計算の補足導線は1グループに統合し最大3件だけ表示する |
+| `playpoint-revenue-diagnostics.test.cjs` | 計測・同意・広告 | 日次収益の外れ値をアクセス・クリック・広告単価へ分離し、AdSense drilldownとfail-closed契約を守る |
 | `playpoint-safety-guards.test.cjs` | 計算 | 削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない |
 | `post-147-integrity.test.cjs` | 横断監査 | Speculation Rules normalizer groups multiple href matches under OR |
 | `public-deployment-tree.test.cjs` | 公開・CI | repository root has no unreviewed deployment entries |
