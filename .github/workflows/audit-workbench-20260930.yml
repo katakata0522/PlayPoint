@@ -40,6 +40,7 @@ jobs:
           }
           apply_blobs audit-source b264336a2075000756da951353578083bccba2c6a0bc8e8a488c14ba18e0b7ee 101434e01721e26df7318e613b5dcb44f6ab2c6f b17e7d4ef9ef89eb42dc810078d13818c708ed0b 0c9a833f55dddfd138351ec4fd4dd163ae30879d 46fe3f87a1018444c236df53b85fd86d60b8883d bc30a89ff455ceceed1f0af1e0a93f5ec636caf5 0e02c9f7a0f8da603095c140933e4adef34d3f49
           apply_blobs audit-browser-fixes 26787014ca46bacac6c35c2a4b6886813ddc10dc92290b3f408402821dd5819f 3ac5f596d83ad3b083d66cd53c013a82e3bc3524 5cd678a424db265e21a2c8b606d9e3b17df2f7f0
+          apply_blobs audit-locale-contrast f110a2baaf75ba3d461a84616bdde3f6c65fde951311e4dc1e8827d29acd0c75 764f1fcc072cd7205bfc826c22cc4e70dfad7d8d
           node scripts/prepare-pr.cjs > "$RUNNER_TEMP/audit-prepare.log" 2>&1
           git config user.name 'PlayPoint maintenance'
           git config user.email '191018749+katakata0522@users.noreply.github.com'
