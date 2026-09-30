@@ -96,6 +96,16 @@ test('Korean balance-check intent has one clear owner and descriptive internal a
     useCoupons,
     /href="\/ko\/articles\/google-play-points-balance-history-progress\.html">Google Play Points 잔액·내역·등급 진행도 확인 방법<\/a>/
   );
+  assert.match(
+    useCoupons,
+    /Google Play Points 잔액·내역·등급 진행도 확인 방법<\/a>을 보세요\./
+  );
+
+  const sitemap = read('sitemap-intl-content-expansion.xml');
+  assert.match(
+    sitemap,
+    /<loc>https:\/\/playpoint-sim\.com\/ko\/articles\/google-play-points-balance-history-progress\.html<\/loc>\s*<lastmod>2026-09-19<\/lastmod>/
+  );
 
   const hub = read('ko/articles/index.html');
   assert.match(hub, />Google Play Points 잔액·내역·등급 진행도 확인 방법<\/span>/);
