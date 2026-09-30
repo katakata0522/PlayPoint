@@ -4,27 +4,117 @@ on:
     branches: [fix/audit-priority-no-ads-20260930]
     paths: [.github/workflows/audit-workbench-20260930.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  source:
+  verify:
     if: github.ref == 'refs/heads/fix/audit-priority-no-ads-20260930'
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
-          ref: 088334d32f71b5d694ef01c5f9c011e8afd47d5a
           fetch-depth: 0
           persist-credentials: false
-      - name: 固定mainのGitオブジェクトだけを退避（資格情報・設定・本番通信なし）
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version-file: .github/ci-runtime/node-version
+          package-manager-cache: false
+      - name: 固定した修正を適用し既存生成処理を実行
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = 088334d32f71b5d694ef01c5f9c011e8afd47d5a
-          git bundle create "$RUNNER_TEMP/playpoint-base.bundle" HEAD
-          git bundle verify "$RUNNER_TEMP/playpoint-base.bundle"
+          test "$GITHUB_REF" = refs/heads/fix/audit-priority-no-ads-20260930
+          git merge-base --is-ancestor 088334d32f71b5d694ef01c5f9c011e8afd47d5a HEAD
+          : > "$RUNNER_TEMP/audit.patch.gz"
+          for sha in 101434e01721e26df7318e613b5dcb44f6ab2c6f b17e7d4ef9ef89eb42dc810078d13818c708ed0b 0c9a833f55dddfd138351ec4fd4dd163ae30879d 46fe3f87a1018444c236df53b85fd86d60b8883d bc30a89ff455ceceed1f0af1e0a93f5ec636caf5 0e02c9f7a0f8da603095c140933e4adef34d3f49; do
+            gh api "repos/$GITHUB_REPOSITORY/git/blobs/$sha" --jq .content | base64 --decode >> "$RUNNER_TEMP/audit.patch.gz"
+          done
+          gzip -dc "$RUNNER_TEMP/audit.patch.gz" > "$RUNNER_TEMP/audit.patch"
+          echo "b264336a2075000756da951353578083bccba2c6a0bc8e8a488c14ba18e0b7ee  $RUNNER_TEMP/audit.patch" | sha256sum -c -
+          git apply --check --unidiff-zero "$RUNNER_TEMP/audit.patch"
+          git apply --unidiff-zero "$RUNNER_TEMP/audit.patch"
+          node scripts/prepare-pr.cjs > "$RUNNER_TEMP/audit-prepare.log" 2>&1
+          git config user.name 'PlayPoint maintenance'
+          git config user.email '191018749+katakata0522@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet -- js/third-party.js js/consent.js .htaccess .github/workflows .github/scripts/deploy-rsync.sh
+          git commit -m '監査優先修正：スマホ幅・不正入力・対象額説明・読み上げ・全言語head検査（広告位置変更なし）'
+      - name: 公開候補の全事前検証（提出前に削除する作業専用workflowは対象外）
+        run: |
+          set -euo pipefail
+          helper=.github/workflows/audit-workbench-20260930.yml
+          cp "$helper" "$RUNNER_TEMP/audit-workbench.yml"
+          rm "$helper"
+          trap 'cp "$RUNNER_TEMP/audit-workbench.yml" "$helper"' EXIT
+          node .github/scripts/preflight.cjs > "$RUNNER_TEMP/audit-preflight.log" 2>&1
+      - name: 既存lockのブラウザとaxeを準備
+        id: browser
+        run: bash .github/scripts/setup-browser-runtime.sh --performance
+      - name: 全ゲーム・地域トップ・日記のブラウザ回帰
+        run: node .github/scripts/browser-smoke.cjs > "$RUNNER_TEMP/audit-browser.log" 2>&1
+      - name: 代表画面のコントラストと進捗バーを実測
+        if: always() && steps.browser.outcome == 'success'
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/audit-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          cat > "$RUNNER_TEMP/audit-contrast.cjs" <<'JS'
+          const {chromium}=require('playwright-core');
+          const fs=require('node:fs');
+          const path=require('node:path');
+          (async()=>{
+            const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true});
+            const context=await browser.newContext({viewport:{width:390,height:844},locale:'ja-JP',reducedMotion:'reduce',serviceWorkers:'block'});
+            await context.route('**/*',r=>new URL(r.request().url()).origin==='http://127.0.0.1:8765'?r.continue():r.abort());
+            const page=await context.newPage();
+            const targets=['/','/en/','/ko/','/tw/','/hk/','/in/','/games/','/games/nikke/','/en/games/nikke/','/ko/games/nikke/','/tw/games/nikke/','/campaign/3x/','/campaign/wait/','/compare/earning-rates/','/maintenance/diamond/','/amount/10000/','/blog/','/latest/','/author/katakata.html','/info.html','/embed.html','/sitemap.html'];
+            const rows=[];
+            for(const url of targets){
+              try{
+                await page.goto('http://127.0.0.1:8765'+url,{waitUntil:'load'});
+                await page.evaluate(()=>document.fonts.ready);
+                await page.waitForTimeout(150);
+                await page.addScriptTag({path:path.join(process.cwd(),'.github/ci-runtime/lighthouse/node_modules/axe-core/axe.min.js')});
+                const result=await page.evaluate(()=>axe.run(document,{runOnly:{type:'rule',values:['color-contrast','aria-progressbar-name']}}));
+                rows.push({url,violations:result.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>({target:n.target,html:n.html,summary:n.failureSummary}))}))});
+                if(url==='/'){
+                  await page.locator('#tab-diary').click();
+                  await page.waitForTimeout(250);
+                  const diary=await page.evaluate(()=>axe.run(document,{runOnly:{type:'rule',values:['color-contrast']}}));
+                  rows.push({url:'/#diary',violations:diary.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>({target:n.target,html:n.html,summary:n.failureSummary}))}))});
+                }
+              }catch(error){rows.push({url,error:error.message});}
+            }
+            fs.mkdirSync('browser-smoke-artifacts',{recursive:true});
+            fs.writeFileSync('browser-smoke-artifacts/audit-contrast.json',JSON.stringify(rows,null,2));
+            console.log(JSON.stringify(rows));
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exitCode=1;});
+          JS
+          node "$RUNNER_TEMP/audit-contrast.cjs" > "$RUNNER_TEMP/audit-contrast.log" 2>&1
+      - name: 検証済み候補を作業ブランチだけに保存
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/fix/audit-priority-no-ads-20260930
+          git diff --exit-code
+          git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin HEAD:refs/heads/fix/audit-priority-no-ads-20260930
+      - name: 候補Gitオブジェクトの検証証跡
+        if: always()
+        run: |
+          git bundle create "$RUNNER_TEMP/audit-candidate.bundle" HEAD ^088334d32f71b5d694ef01c5f9c011e8afd47d5a
+          git rev-parse HEAD > "$RUNNER_TEMP/audit-candidate-sha.txt"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
         with:
-          name: audit-base-088334d
-          path: ${{ runner.temp }}/playpoint-base.bundle
-          retention-days: 1
+          name: audit-priority-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/audit-*.log
+            ${{ runner.temp }}/audit-candidate.bundle
+            ${{ runner.temp }}/audit-candidate-sha.txt
+            browser-smoke-artifacts/
+          retention-days: 3
           if-no-files-found: error
