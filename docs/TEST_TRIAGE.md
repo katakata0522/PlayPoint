@@ -400,6 +400,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `campaign-lp-meaning-consistency.test.cjs` | 4 | 全件維持。2x/3x/waitの入力は「倍率」ではなくGoogle Play表示の特別獲得率であることを保証 |
 | `common-pages-fact-ux.test.cjs` | 6 | 5ケース維持・1件既存ownerへ統合。地域数値をJP/US/KR/TWからHK/INを含む6地域へ強化。巨大な混在テストは公開トップの獲得率意味/入力境界へ縮小 |
 | `latest-hub-operations.test.cjs` | 12 | 全件維持。確認日・次回確認日・鮮度・日付妥当性・運用禁止事項を維持。content-datesのprivate変数名固定をSSOT値一致へ、Consent配線のsource regexを実components VM behaviorへ変更 |
+| `live-deploy-base.test.cjs` | 公開・CI | verified本番revisionだけをDeploy差分基準として採用し、不一致・未検証状態はfail-closedにする |
 | `status-lp-meaning-consistency.test.cjs` | 6 | 全件維持。Silver/Gold/Diamond LPの特別獲得率意味と削除済み週平均の再発防止 |
 | `status-platinum-meaning.test.cjs` | 2 | 全件維持。Platinum LPの特別獲得率意味と月/日平均表示を維持 |
 | `trust-pages-consistency.test.cjs` | 4 | 全件維持。実配信中のAdSense/Rakuten affiliate、登録不要terms、human sitemap regional hub整合を保証 |
@@ -1181,7 +1182,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 
 ## 現行の全テストファイル台帳（2026-09-30）
 
-`tests/*.test.cjs` の186ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
+`tests/*.test.cjs` の187ファイルを全件分類（第2回の追加3ファイル、第4回のHTTP応答検査1ファイルを含む）。ファイル数と内部のtestケース数は別物。代表保証は実ファイルのテスト名から採録し、その他のケースを省略・無効化したものではない。
 
 | 主責務 | ファイル数 |
 |---|---:|
@@ -1195,7 +1196,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | 復旧 | 4 |
 | ブラウザ検証 | 3 |
 | 計算 | 5 |
-| 公開・CI | 13 |
+| 公開・CI | 14 |
 | 性能・配信 | 5 |
 | アクセシビリティ | 5 |
 | 横断監査 | 9 |

@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { runPreflight } = require('./helpers/preflight-fixture.cjs');
+const { detectDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
@@ -59,12 +60,18 @@ test('PR Gateは失敗を隠さない検査専用ゲートで、Deployだけが�
   assert.match(deployWorkflow, /preflight\.cjs --prepare-deploy/);
 });
 
-test('Deployは本番非公開のtests・docs・tools変更だけでは起動しない', () => {
+test('Deployはmainの全pushでverified productionとの差分を照合し、非公開変更は後段でskipする', () => {
   const workflow = read('.github/workflows/deploy.yml');
-  assert.match(workflow, /- 'tests\/\*\*'/);
-  assert.match(workflow, /- 'docs\/\*\*'/);
-  assert.match(workflow, /- 'tools\/\*\*'/);
-  assert.match(workflow, /- 'scripts\/ai-sync-preflight\.cjs'/);
+  const impactBlock = getStepBlock(workflow, 'Detect production deploy impact');
+
+  assert.doesNotMatch(workflow, /^\s+paths-ignore:\s*$/m);
+  assert.match(impactBlock, /resolve-live-deploy-base\.cjs/);
+  assert.match(impactBlock, /git diff --name-only --no-renames "\$live_revision" "\$GITHUB_SHA"/);
+  assert.match(impactBlock, /Unable to prove the current verified production revision; deploying as a fail-safe/);
+  assert.doesNotMatch(impactBlock, /github\.event\.before|before_sha/);
+
+  const skipBlock = getStepBlock(workflow, 'Skip production deployment for non-public changes');
+  assert.match(skipBlock, /steps\.deploy-impact\.outputs\.deploy_needed == 'false'/);
 });
 
 test('AI同期プリフライト本体は非公開toolsに置き、公開ミラーから除外する', () => {
@@ -116,7 +123,7 @@ test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準�
   assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
 });
 
-test('検証・復旧専用workflowの変更だけでは本番Deployを起動しない', () => {
+test('検証・復旧専用workflowは公開差分に分類せず、parity照合後に本番mutationをskipできる', () => {
   const workflow = read('.github/workflows/deploy.yml');
 
   for (const workflowPath of [
@@ -127,8 +134,14 @@ test('検証・復旧専用workflowの変更だけでは本番Deployを起動し
     '.github/workflows/rollback.yml',
     '.github/workflows/deploy-recovery-watchdog.yml'
   ]) {
-    assert.ok(workflow.includes(`- '${workflowPath}'`), `${workflowPath} must be ignored by Deploy push trigger`);
+    assert.equal(
+      detectDeployImpact([workflowPath]).deployNeeded,
+      false,
+      `${workflowPath} must remain non-public`
+    );
   }
+  assert.doesNotMatch(workflow, /^\s+paths-ignore:\s*$/m);
+  assert.match(getStepBlock(workflow, 'Detect production deploy impact'), /resolve-live-deploy-base\.cjs/);
   assert.equal(fs.existsSync(path.join(root, '.github/workflows/snapshot-history.yml')), false);
 });
 
@@ -136,7 +149,9 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
   const workflow = read('.github/workflows/deploy.yml');
 
   assert.match(workflow, /name: Detect production deploy impact/);
+  assert.match(workflow, /node \.github\/scripts\/resolve-live-deploy-base\.cjs/);
   assert.match(workflow, /node \.github\/scripts\/detect-deploy-impact\.cjs/);
+  assert.match(workflow, /git fetch --no-tags --depth=1 origin "\$live_revision"/);
   const fetchDepths = [...workflow.matchAll(/fetch-depth:\s*(\d+)/g)].map(match => Number(match[1]));
   assert.ok(fetchDepths.length > 0, 'Deploy checkout depth is missing');
   assert.ok(fetchDepths.every(depth => depth === 0 || depth >= 2), 'Deploy checkout must retain enough history for base diffing');

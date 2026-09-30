@@ -6,20 +6,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - '**.md'
-      - '.gitignore'
-      - '.gitattributes'
-      - 'tests/**'
-      - 'docs/**'
-      - 'tools/**'
-      - 'scripts/ai-sync-preflight.cjs'
-      - '.github/workflows/browser-smoke.yml'
-      - '.github/workflows/mobile-performance.yml'
-      - '.github/workflows/quality-check.yml'
-      - '.github/workflows/seo-healthcheck.yml'
-      - '.github/workflows/rollback.yml'
-      - '.github/workflows/deploy-recovery-watchdog.yml'
 
 permissions:
   contents: read
@@ -65,33 +51,56 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo 'Manual deployment requested; production deploy is required.'
             echo 'deploy_needed=true' >> "$GITHUB_OUTPUT"
+            echo 'base_source=manual' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          before_sha="$(jq -r '.before // empty' "$GITHUB_EVENT_PATH" 2>/dev/null || true)"
-          zero_sha="0000000000000000000000000000000000000000"
-
-          if [[ ! "$before_sha" =~ ^[0-9a-f]{40}$ ]] || [ "$before_sha" = "$zero_sha" ]; then
-            echo 'Push base SHA is unavailable; deploying as a fail-safe.'
+          # The source of truth is the last production revision that completed
+          # the verified publication gate, not merely the previous Git push.
+          # This prevents a verifier-only follow-up commit from hiding public
+          # changes that were automatically rolled back in an earlier run.
+          live_revision=''
+          if ! live_revision="$(node .github/scripts/resolve-live-deploy-base.cjs)"; then
+            echo 'Unable to prove the current verified production revision; deploying as a fail-safe.'
             echo 'deploy_needed=true' >> "$GITHUB_OUTPUT"
+            echo 'base_source=unverified-live' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          if ! git cat-file -e "$before_sha^{commit}" 2>/dev/null; then
-            echo 'Push base commit is outside the shallow checkout; deploying as a fail-safe.'
+          echo "Verified production revision: $live_revision"
+          echo "base_revision=$live_revision" >> "$GITHUB_OUTPUT"
+          echo 'base_source=verified-production' >> "$GITHUB_OUTPUT"
+
+          if [ "$live_revision" = "$GITHUB_SHA" ]; then
+            echo 'Current Git SHA is already the verified production revision.'
+            echo 'deploy_needed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if ! git cat-file -e "$live_revision^{commit}" 2>/dev/null; then
+            echo "Verified production revision is outside the checkout; fetching $live_revision."
+            if ! git fetch --no-tags --depth=1 origin "$live_revision"; then
+              echo 'Unable to fetch the verified production revision; deploying as a fail-safe.'
+              echo 'deploy_needed=true' >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          if ! git cat-file -e "$live_revision^{commit}" 2>/dev/null; then
+            echo 'Verified production revision is still unavailable after fetch; deploying as a fail-safe.'
             echo 'deploy_needed=true' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
           # renameは旧pathの削除も本番へ反映する必要があるため、rename検出を無効化して旧/新を両方判定する。
-          changed_files="$(git diff --name-only --no-renames "$before_sha" "$GITHUB_SHA")"
-          echo 'Changed files:'
+          changed_files="$(git diff --name-only --no-renames "$live_revision" "$GITHUB_SHA")"
+          echo 'Changes since verified production:'
           if [ -n "$changed_files" ]; then
             printf '%s\n' "$changed_files"
           else
             echo '(none detected)'
-            echo 'No changed files were detected; deploying as a fail-safe.'
-            echo 'deploy_needed=true' >> "$GITHUB_OUTPUT"
+            echo 'Verified production and current source have no repository-tree difference.'
+            echo 'deploy_needed=false' >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
