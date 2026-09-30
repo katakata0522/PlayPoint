@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { detectDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 
 const root = path.resolve(__dirname, '..');
 const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'deploy.yml'), 'utf8').replace(/\r\n/g, '\n');
@@ -130,8 +131,10 @@ test('復旧Chromiumは本番変更前に共通helperで準備したbrowser runt
   assert.doesNotMatch(rollbackBrowserBlock, /apt-get|npm install|fonts-noto-cjk|setup-browser-runtime\.sh/);
 });
 
-test('手動rollback workflowだけの変更は通常Deployを起動しない', () => {
-  assert.match(workflow, /- '\.github\/workflows\/rollback\.yml'/);
+test('手動rollback workflowだけの変更は公開差分にせず、main pushではproduction parityだけ再照合する', () => {
+  assert.equal(detectDeployImpact(['.github/workflows/rollback.yml']).deployNeeded, false);
+  assert.doesNotMatch(workflow, /^\s+paths-ignore:\s*$/m);
+  assert.match(getStepBlock('Detect production deploy impact'), /resolve-live-deploy-base\.cjs/);
 });
 
 test('SSH material cleanupは自動rollbackレーンより後でもalwaysで実行する', () => {
