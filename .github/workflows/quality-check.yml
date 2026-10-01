@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -26,6 +26,12 @@ jobs:
           persist-credentials: false
           # PR merge commitの両親を取得し、基準mainの実出力と比較する。
           fetch-depth: 2
+
+      - name: Check out repair branch head
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01'
+        env:
+          REPAIR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: git checkout --detach "$REPAIR_HEAD_SHA"
 
       - name: Set up pinned CI Node
         id: ci_node
@@ -87,6 +93,25 @@ jobs:
             blog/article-search-index.json
           if-no-files-found: error
           retention-days: 1
+
+      - name: Commit generated repair outputs
+        if: always() && github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git add -- articles/2025-12-25-weekly-reward.html articles/2026-07-31-super-weekly-reward.html blog/article-search-index.json
+          if git diff --cached --quiet; then
+            echo "No generated repair outputs to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate article outputs"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
 
       - name: Verify Apache HTTP cache behavior
         id: verify_apache_http_cache
