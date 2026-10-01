@@ -148,6 +148,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       }));
       assert(!state.overflow&&state.controls,`Responsive overflow at ${width}: ${JSON.stringify(state)}`);
       if(width<=760) {
+        assert.equal(state.columns,2,`Mobile purpose-grid breakpoint ${width}`);
+        assert(state.pathwaysFit,`Mobile purpose links must fit and remain tappable at ${width}`);
         const visualCards=await page.locator('.article-card--visual').evaluateAll(cards=>cards.map(card=>({
           titleWidth:card.querySelector('h3').getBoundingClientRect().width,
           titleLeft:card.querySelector('h3').getBoundingClientRect().left,
