@@ -88,6 +88,7 @@ export const DIARY_PURE = {
 };
 
 const WEEKLY_EXPLICIT_STYLE_ID = 'weekly-explicit-save-style';
+let diaryViewInitialized = false;
 
 export const DIARY = {
     openCurrentWeek() {
@@ -163,7 +164,7 @@ export const DIARY = {
 #diaryMode .weekly-record-edit{min-height:34px;margin:0;padding:.3em .7em;border:1px solid rgba(11,87,208,.2);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}
 #diaryMode .weekly-record-edit:hover:not(:disabled){background:rgba(11,87,208,.11)}
 #diaryMode .is-weekly-current input:disabled,#diaryMode .is-weekly-current select:disabled{opacity:.86;cursor:default;background:rgba(15,23,42,.025)}
-#diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-large-value-hint{display:none!important}
+#diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-large-value-hint,#diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-points-field{display:none!important}
 .weekly-points-field{position:relative;min-width:0}
 .weekly-points-field>input{width:100%;box-sizing:border-box;margin:0;padding-right:2.4em}
 .weekly-points-unit{position:absolute;right:.75em;top:50%;transform:translateY(-50%);pointer-events:none;color:#64748b;font-size:.82em;font-weight:800}
@@ -551,6 +552,15 @@ export const DIARY = {
     // 日記（アワード）画面のレンダリング
     renderDiary() {
         if (!STATE.dom.diaryMode) return;
+        // 初回だけ直近の金曜日へそろえる。月・年の境界でも同じ週に記録する。
+        if (!diaryViewInitialized) {
+            const current = DIARY_PURE.currentWeek();
+            STATE.diaryState.currentYear = current.year;
+            STATE.diaryState.currentMonth = current.month;
+            diaryViewInitialized = true;
+        }
+        // 現在週を含まない月でも、展開した行の保存ボタンを表示する。
+        this.ensureWeeklyExperienceStyle();
         const config = CONFIGS[STATE.currentRegion];
         const texts = config.uiText;
         STATE.dom.currentYear.textContent = `${STATE.diaryState.currentYear}${texts.yearSuffix || ''}`;
