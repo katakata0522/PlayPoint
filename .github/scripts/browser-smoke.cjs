@@ -504,19 +504,18 @@ async function verifyBlogPage(browser, baseUrl) {
       eventVisualThumbnails: document.querySelectorAll('.article-card .card-thumb--event-visual img').length,
       genericThumbnailImages: document.querySelectorAll('.article-card .card-thumb--generic img').length,
       oversizedAppIcons: [...document.querySelectorAll('.article-card .card-thumb--app-icon img')]
-        .filter(image => image.naturalWidth > 128 || image.naturalHeight > 128).length,
-      textOnlyCards: [...document.querySelectorAll('.article-card')].filter(card => !card.querySelector('.card-thumb') && card.querySelector('.card-topic')?.textContent.trim()).length
+        .filter(image => image.naturalWidth > 128 || image.naturalHeight > 128).length
     }));
     assert(initial.cards > 0, 'Blog initial article cards were not rendered');
     assert(/件/.test(initial.resultStatus), `Blog result status missing: ${initial.resultStatus}`);
     assert(initial.activeTopic === '', `Blog initial topic mismatch: ${initial.activeTopic}`);
     assert(initial.navigationLinks === 6, 'Blog keeps all six primary destinations');
-    assert(initial.genericThumbnailImages === 0, `Blog mobile cards loaded ${initial.genericThumbnailImages} generic OGP thumbnails`);
-    assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails,
+    assert(initial.genericThumbnailImages > 0, '通常記事のサムネイルがスマホでも表示される');
+    assert(initial.thumbnailImages === initial.appIconThumbnails + initial.eventVisualThumbnails + initial.genericThumbnailImages,
       `Blog mobile cards loaded an unclassified thumbnail: ${initial.thumbnailImages}`);
     assert(initial.oversizedAppIcons === 0, `Blog mobile app icons exceed the 128px list-image budget: ${initial.oversizedAppIcons}`);
-    assert(initial.textOnlyCards + initial.thumbnailImages === initial.cards,
-      `Blog compact article presentation mismatch: text=${initial.textOnlyCards}, images=${initial.thumbnailImages}, cards=${initial.cards}`);
+    assert(initial.thumbnailImages === initial.cards,
+      `Blog compact article presentation mismatch: images=${initial.thumbnailImages}, cards=${initial.cards}`);
 
     const nextButton = page.getByRole('button', { name: '次へ →' });
     if (await nextButton.count()) {
@@ -574,18 +573,32 @@ async function verifyBlogPage(browser, baseUrl) {
     if (await page.locator('[aria-controls="guide-menu"]:visible').count()) await page.locator('[aria-controls="guide-menu"]').click();
     await page.locator('.ja-global-nav a[href="/blog/"]').click();
     await page.locator('.article-card').first().waitFor();
-    // PCでサムネイルの旧固定幅が本文に重ならないことも確認する。
-    for (const width of [390, 1280]) {
+    // 通常サムネイルは実画像を読み込み、1px placeholderを合格にしない。
+    const visualImage = page.locator('.card-thumb--generic img').first();
+    await visualImage.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => {
+      const image = document.querySelector('.card-thumb--generic img');
+      return image && !image.dataset.src && image.complete && image.naturalWidth > 1;
+    });
+    assert(!(await visualImage.getAttribute('src')).includes('article-placeholder'), '通常サムネイルの原本を読み込む');
+    // スマホは画像の下、PCは右に本文を配置し、横長画像を切り取らない。
+    for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
-      await page.waitForFunction(mobile => [...document.querySelectorAll('.article-card')].every(card => mobile
-        ? !card.querySelector('.card-thumb--generic')
-        : Boolean(card.querySelector('.card-thumb'))), width <= 760);
       const boxes = await page.locator('.article-card').evaluateAll(cards => cards.map(card => {
-        const image = card.querySelector('.card-thumb')?.getBoundingClientRect();
+        const thumb = card.querySelector('.card-thumb');
+        const image = thumb?.getBoundingClientRect();
         const content = card.querySelector('.card-content').getBoundingClientRect();
-        return { right: image?.right ?? content.left, left: content.left, overflow: document.documentElement.scrollWidth - innerWidth };
+        const visual = card.classList.contains('article-card--visual');
+        return {
+          fits: Boolean(image) && (visual && innerWidth <= 760 ? image.bottom <= content.top + 1 : image.right <= content.left + 1),
+          ratio: visual ? image.width / image.height : null,
+          fit: getComputedStyle(thumb.querySelector('img')).objectFit,
+          overflow: document.documentElement.scrollWidth - innerWidth
+        };
       }));
-      assert(boxes.every(box => box.right <= box.left + 1 && box.overflow <= 1), 'Blog card image overlaps its text or viewport at ' + width);
+      assert(boxes.every(box => box.fits && box.overflow <= 1), 'Blog card image overlaps its text or viewport at ' + width);
+      assert(boxes.every(box => box.ratio === null || Math.abs(box.ratio - 1200 / 630) < 0.02 && box.fit === 'contain'), '横長サムネイルの全体と比率を維持する: ' + width);
+      if (width === 390 || width === 1280) await saveScreenshot(page, `blog-thumbnails-${width}.png`);
     }
 
     await page.waitForTimeout(500);

@@ -71,7 +71,6 @@ test('article list renderer supports local icons without allowing arbitrary remo
   const script = fs.readFileSync(path.join(root, 'blog/script.js'), 'utf8');
   assert.match(script, /images\\\/game-icons/);
   assert.match(script, /thumbnailKind/);
-  assert.match(script, /shouldRenderArticleThumbnail\(article\)/);
   assert.match(script, /IntersectionObserver/);
   assert.match(script, /data-src/);
   assert.match(script, /COMPACT_THUMBNAIL_ROOT_MARGIN = '96px 0px'/);
