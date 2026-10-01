@@ -78,9 +78,19 @@ const RELATED_SECTIONS = {
   'articles/2026-08-17-tgs-google-play-vip.html': {
     heading: '次に確認したい関連記事',
     links: [
+      ['./2026-10-01-black-diamond-diamond-vip.html', 'TGSで見えた上位招待層と未発表ステータスを検証'],
       ['./2025-12-25-diamond-vip.html', 'プラチナ・ダイヤモンドの公式特典を確認'],
       ['./2026-08-05-play-points-levels-guide.html', 'Play Pointsのステータス条件を確認'],
       ['./2025-12-25-playpoints-rank-maintenance.html', '年末のランク維持条件を確認']
+    ]
+  },
+  'articles/2026-10-01-black-diamond-diamond-vip.html': {
+    heading: '次に確認したい関連記事',
+    links: [
+      ['./2026-08-05-play-points-levels-guide.html', '現在の公式5ランクと必要ポイントを確認'],
+      ['./2025-12-25-diamond-vip.html', '現在のダイヤモンド特典を公式情報で確認'],
+      ['./2026-08-17-tgs-google-play-vip.html', 'TGS2026のダイヤモンドラウンジ記録を見る'],
+      ['./2025-12-25-playpoints-rank-maintenance.html', '公開ランクの維持期間と再判定を確認']
     ]
   },
   'articles/2026-08-24-umamusume-half-anniversary-points.html': {

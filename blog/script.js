@@ -260,11 +260,6 @@
         return Boolean(window.matchMedia && window.matchMedia(COMPACT_THUMBNAIL_QUERY).matches);
     }
 
-    function shouldRenderArticleThumbnail(article) {
-        if (!isCompactArticleList()) return true;
-        return article?.thumbnailKind === 'app-icon' || article?.thumbnailKind === 'event-visual';
-    }
-
     function loadDeferredThumbnail(image) {
         const source = image?.dataset?.src;
         if (!source) return;
@@ -824,33 +819,28 @@
             card.addEventListener('click', () => {
                 Analytics.trackArticleClick(article.title, article.category);
             });
-            const renderThumbnail = shouldRenderArticleThumbnail(article);
-            card.classList.toggle('article-card--text-only', !renderThumbnail);
             const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
-            const compactExplicitThumbnail = renderThumbnail
-                && isCompactArticleList()
-                && (thumbnailKind === 'app-icon' || thumbnailKind === 'event-visual');
+            const visualThumbnail = thumbnailKind !== 'app-icon';
+            card.classList.toggle('article-card--visual', visualThumbnail);
+            const compactExplicitThumbnail = isCompactArticleList();
             const loadCompactThumbnailImmediately = compactExplicitThumbnail && compactThumbnailIndex === 0;
             if (compactExplicitThumbnail) compactThumbnailIndex += 1;
             const deferThumbnail = compactExplicitThumbnail && !loadCompactThumbnailImmediately;
-            const thumbnailWidth = thumbnailKind === 'app-icon' ? 96 : 600;
-            const thumbnailHeight = thumbnailKind === 'app-icon' ? 96 : 400;
+            const thumbnailWidth = thumbnailKind === 'app-icon' ? 96 : 1200;
+            const thumbnailHeight = thumbnailKind === 'app-icon' ? 96 : 630;
             const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
             const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
-            const thumbnailMarkup = renderThumbnail
-                ? `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`
-                : '';
+            const thumbnailMarkup = `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`;
             const thumbnailClass = `card-thumb card-thumb--${thumbnailKind}`;
-            const thumbnailLabel = !renderThumbnail && article.gameTitle ? BlogUtils.escapeHtml(article.gameTitle) : safeCategory;
+            const thumbnailLabel = safeCategory;
 
             card.innerHTML = `
-                ${renderThumbnail ? `<div class="${thumbnailClass}">
+                <div class="${thumbnailClass}">
                     ${thumbnailMarkup}
-                    <span class="card-category badge" >${thumbnailLabel}</span>
-                    ${newBadge}
-                </div>` : ''}
+                    ${visualThumbnail ? '' : `<span class="card-category badge">${thumbnailLabel}</span>${newBadge}`}
+                </div>
                 <div class="card-content">
-                    <div class="card-meta">${!renderThumbnail ? `<span class="card-topic">${thumbnailLabel}</span>` : ''}${dateMarkup}</div>
+                    <div class="card-meta">${visualThumbnail ? `<span class="card-topic">${thumbnailLabel}</span>${newBadge}` : ''}${dateMarkup}</div>
                     <h3>${safeTitle}</h3>
                     ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>
