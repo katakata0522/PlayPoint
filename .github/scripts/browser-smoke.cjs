@@ -585,6 +585,17 @@ async function verifyBlogPage(browser, baseUrl) {
     // 一覧は画像と本文を並べ、原本の比率と画像内の文字を保つ。
     for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
+      // 幅の切替と遅延画像の読込で再配置が進む間は、完成前の寸法を断定しない。
+      // 期待する表示へ到達しなければ5秒で失敗する。比率や切取りの条件は緩めない。
+      await page.waitForFunction(expectedWidth => {
+        if (innerWidth !== expectedWidth) return false;
+        const thumbnails = [...document.querySelectorAll('.article-card--visual .card-thumb')];
+        return thumbnails.length > 0 && thumbnails.every(thumb => {
+          const bounds = thumb.getBoundingClientRect();
+          return bounds.height > 0 && Math.abs(bounds.width / bounds.height - 1200 / 630) < 0.02
+            && getComputedStyle(thumb.querySelector('img')).objectFit === 'contain';
+        });
+      }, width, { polling: 'raf', timeout: 5_000 });
       const boxes = await page.locator('.article-card').evaluateAll(cards => cards.map(card => {
         const thumb = card.querySelector('.card-thumb');
         const image = thumb?.getBoundingClientRect();
