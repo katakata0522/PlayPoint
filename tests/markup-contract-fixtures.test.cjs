@@ -13,3 +13,34 @@ test('静的順序の検査は存在を必須にし、コメントやscript内�
 });
 
 // Cache-ControlはHTTP応答の単体検査とPR Gateの実Apache検査へ移行した。
+test('多言語の共有検査は属性の順序や引用符を固定せず、偽リンク・偽本文を拒否する', () => {
+  const { assertBasicSeo, assertHreflang, assertOfficialAnswers, assertPhrases, assertLocalAnchorsExist, schemas } = require('./helpers/intl-check.cjs');
+  const seo = `<html lang='en'><head><title>Example</title><meta content='Description' name='description'>
+    <link href='https://playpoint-sim.com/en/articles/example.html' rel='canonical'>
+    <meta content='Example Site' property='og:site_name'>
+    <script data-other='ok' type = 'application/ld+json'>{"@type":"Article"}</script>
+    <script type='application/ld+json'>{"@type":"FAQPage"}</script></head><body><h1>Example</h1>
+    <a href='/en/' class='other cta-btn'>Calculate</a><a href='/en/author/katakata.html'>Author</a></body></html>`;
+  const basic = html => assertBasicSeo(html, 'en/articles/example.html', { lang: 'en', siteName: 'Example Site' });
+  basic(seo);
+  for (const element of ["<link href='https://playpoint-sim.com/en/articles/example.html' rel='canonical'>", "<a href='/en/' class='other cta-btn'>Calculate</a>", '<h1>Example</h1>']) {
+    assert.throws(() => basic(seo.replace(element, `<!--${element}-->`)));
+  }
+  assert.deepEqual(schemas('<!--<script type="application/ld+json">{"@type":"Article"}</script>-->'), []);
+  assert.deepEqual(schemas(`<script data-note="type='application/ld+json'">not JSON</script>`), []);
+  assert.throws(() => schemas('<script type="application/ld+json">broken</script>'));
+  const alternate = `<link href='/en/' hreflang='en' rel='alternate'>`;
+  assertHreflang(alternate, 'fixture', ['en']);
+  assert.throws(() => assertHreflang(`<!--${alternate}-->`, 'fixture', ['en']));
+  assert.throws(() => assertHreflang(`<div hreflang='en'>Fake</div>`, 'fixture', ['en']));
+  const official = `<a href='https://support.google.com/googleplay/answer/9077247?hl=en'>Official</a>`;
+  assertOfficialAnswers(official, 'fixture', ['9077247']);
+  for (const bad of [`<!--${official}-->`, official.replace('support.google.com', 'support.google.com.example.com'), official.replace('9077247?', '90772470?')]) assert.throws(() => assertOfficialAnswers(bad, 'fixture', ['9077247']));
+  assertPhrases('<p>expire after one year</p>', 'fixture', ['expire after one year']);
+  assertPhrases('<script>hidden</script\t\n bar><p>expire after one year</p>', 'fixture', ['expire after one year']);
+  assertPhrases('<script>hidden</script-not-an-end>expire after one year</script><p>Visible</p>', 'fixture', ['Visible']);
+  assert.throws(() => assertPhrases('<script>hidden</script-not-an-end>expire after one year</script><p>Visible</p>', 'fixture', ['expire after one year']));
+  for (const bad of ['<!-- expire after one year -->', '<script>expire after one year</script>', '<style>expire after one year</style>']) assert.throws(() => assertPhrases(bad, 'fixture', ['expire after one year']));
+  for (const quote of ['"', "'", '']) assert.throws(() => assertLocalAnchorsExist(`<a href=${quote}/__missing_fixture__.html${quote}>Broken</a>`, 'fixture'));
+  assertLocalAnchorsExist(`<a href='/en/?mode=x#result'>Exists</a>`, 'fixture');
+});

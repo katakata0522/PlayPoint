@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const test = require('node:test');
 
 const root = path.resolve(__dirname, '../..');
 
@@ -151,16 +152,6 @@ function loadCalculatorContext(dateClass = Date) {
   ].join('\n');
   vm.runInContext(code, context, { filename: 'calculator-bundle.js' });
   return context.__pp;
-}
-
-function test(name, fn) {
-  try {
-    fn();
-    console.log(`ok - ${name}`);
-  } catch (error) {
-    console.error(`not ok - ${name}`);
-    throw error;
-  }
 }
 
 module.exports = {
