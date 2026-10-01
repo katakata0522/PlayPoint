@@ -131,19 +131,4 @@ test('calculator Header synchronization repairs drift and becomes idempotent', (
   }
 });
 
-test('canonical build applies calculator Header synchronization after regional generation and before public asset finalization', () => {
-  const source = fs.readFileSync(path.join(root, 'scripts', 'build-html.js'), 'utf8');
-  assert.match(source, /require\('\.\/calculator-header-sync\.cjs'\)/);
-
-  const localizedIndex = source.indexOf('writeLocalizedPages(rootDir');
-  const regionIndex = source.indexOf('syncRegionPages(rootDir)');
-  const regionHreflangIndex = source.indexOf('syncRegionHreflang(rootDir)');
-  const headerIndex = source.indexOf('syncCalculatorHeaders(rootDir)');
-  const publicAssetsIndex = source.indexOf('syncPublicAssetVersions(rootDir)');
-
-  assert.ok(localizedIndex >= 0);
-  assert.ok(regionIndex > localizedIndex);
-  assert.ok(regionHreflangIndex > regionIndex);
-  assert.ok(headerIndex > regionHreflangIndex);
-  assert.ok(publicAssetsIndex > headerIndex);
-});
+// 結線の主担当はverify-build-output。地域別の実HTMLと修復・冪等性は上で守る。

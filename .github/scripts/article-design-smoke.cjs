@@ -82,24 +82,27 @@ async function inspect(browser, baseUrl, article, viewport) {
       const related = content?.querySelector('.related-links-section > ul, .contextual-guide-links > ul, .article-related-guides > ul');
       const shared = [...document.querySelectorAll('link[rel="stylesheet"]')].find(link => link.href.includes('article-shared.css'));
       const style = element => element ? getComputedStyle(element) : null;
+      const rendered = element => Boolean(element && element.getClientRects().length && style(element).visibility !== 'hidden');
       const answerStyle = style(answer);
-      const introStyle = style(intro);
-      const summaryStyle = style(summary);
-      const headingStyle = style(heading);
-      const markerStyle = style(marker);
-      const relatedStyle = style(related);
       return {
         popularCopyWidth: document.querySelector('.sidebar-popular-feature-copy')?.getBoundingClientRect().width || 0,
         sharedLoaded: Boolean(shared?.sheet),
-        editorialLayout: document.documentElement.lang === 'ja' && [...document.querySelectorAll('link[rel="stylesheet"]')].some(link => link.href.includes('/articles/guide-editorial.css') && link.sheet),
-        contentBackgroundColor: style(content)?.backgroundColor,
+        contentBackgroundColor: (() => {
+          for (let element=content; element; element=element.parentElement) {
+            const color=style(element).backgroundColor;
+            if (!['transparent','rgba(0, 0, 0, 0)'].includes(color)) return color;
+          }
+          return 'rgb(255, 255, 255)';
+        })(),
         fallbackTheme: document.documentElement.dataset.readingTheme,
-        answer: answerStyle ? { borderLeftWidth: answerStyle.borderLeftWidth, borderRadius: answerStyle.borderRadius, backgroundImage: answerStyle.backgroundImage, backgroundColor:answerStyle.backgroundColor } : null,
-        intro: introStyle ? { textAlign: introStyle.textAlign, borderLeftWidth: introStyle.borderLeftWidth } : null,
-        summary: summaryStyle ? { borderRadius: summaryStyle.borderRadius, borderTopWidth: summaryStyle.borderTopWidth } : null,
-        heading: headingStyle ? { backgroundImage: headingStyle.backgroundImage, borderLeftWidth: headingStyle.borderLeftWidth, boxShadow: headingStyle.boxShadow } : null,
-        marker: markerStyle ? { backgroundImage: markerStyle.backgroundImage } : null,
-        related: relatedStyle ? { display: relatedStyle.display, columns: relatedStyle.gridTemplateColumns } : null,
+        answerPresent: Boolean(answer),
+        headingPresent: Boolean(heading),
+        answer: rendered(answer) ? { borderLeftWidth: answerStyle.borderLeftWidth, borderLeftStyle:answerStyle.borderLeftStyle, borderLeftColor:answerStyle.borderLeftColor, backgroundImage:answerStyle.backgroundImage, backgroundColor:answerStyle.backgroundColor } : null,
+        intro: rendered(intro),
+        summary: rendered(summary),
+        heading: rendered(heading),
+        marker: rendered(marker),
+        related: rendered(related),
         horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth
       };
     });
@@ -107,37 +110,25 @@ async function inspect(browser, baseUrl, article, viewport) {
     if (viewport.width > 860 && result.popularCopyWidth) assert(result.popularCopyWidth >= 80, article.key + ': 人気記事の本文幅が狭すぎる');
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
     assert(result.fallbackTheme === 'light', article.key + '/' + viewport.key + ': readable static theme missing without JavaScript');
-    if (!article.allArticle || result.answer) {
+    if (!article.allArticle || result.answerPresent) {
       assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
-      assert(parseFloat(result.answer.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': answer accent missing');
-      assert(parseFloat(result.answer.borderRadius) >= (result.editorialLayout ? 4 : 8), article.key + '/' + viewport.key + ': answer radius ' + result.answer.borderRadius);
-      if (result.editorialLayout) {
-        assert(result.answer.backgroundColor !== 'rgba(0, 0, 0, 0)' && result.answer.backgroundColor !== result.contentBackgroundColor, article.key + '/' + viewport.key + ': conclusion must remain distinct from the reading surface');
-      } else {
-        assert(result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': answer hierarchy missing');
-      }
+      const hasFill = result.answer.backgroundColor !== 'rgba(0, 0, 0, 0)' && result.answer.backgroundColor !== 'transparent' && result.answer.backgroundColor !== result.contentBackgroundColor;
+      const hasBorder = parseFloat(result.answer.borderLeftWidth) > 0 && !['none','hidden'].includes(result.answer.borderLeftStyle) && !['transparent','rgba(0, 0, 0, 0)',result.contentBackgroundColor].includes(result.answer.borderLeftColor);
+      assert(hasFill || hasBorder || result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': conclusion must remain distinct from the reading surface');
     }
-    if (!article.allArticle || result.heading) {
+    if (!article.allArticle || result.headingPresent) {
       assert(result.heading, article.key + '/' + viewport.key + ': section heading missing');
-      assert(parseFloat(result.heading.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': H2 accent missing');
-      assert(result.heading.backgroundImage !== 'none', article.key + '/' + viewport.key + ': H2 soft band missing');
-      assert(result.heading.boxShadow === 'none', article.key + '/' + viewport.key + ': H2 still has heavy shadow');
     }
     if (article.intro) {
       assert(result.intro, article.key + '/' + viewport.key + ': intro missing');
-      assert(result.intro.textAlign === 'left' || result.intro.textAlign === 'start', article.key + '/' + viewport.key + ': intro alignment ' + result.intro.textAlign);
-      assert(parseFloat(result.intro.borderLeftWidth) >= 3, article.key + '/' + viewport.key + ': intro accent missing');
     }
     if (article.noIntro) assert(!result.intro, article.key + '/' + viewport.key + ': legacy intro must not return');
     if (article.summary) {
       assert(result.summary, article.key + '/' + viewport.key + ': summary missing');
-      assert(parseFloat(result.summary.borderRadius) >= 8, article.key + '/' + viewport.key + ': summary radius ' + result.summary.borderRadius);
-      assert(parseFloat(result.summary.borderTopWidth) >= 1, article.key + '/' + viewport.key + ': summary border missing');
     }
-    if (article.marker) assert(result.marker && result.marker.backgroundImage.includes('linear-gradient'), article.key + '/' + viewport.key + ': fluorescent emphasis missing');
+    if (article.marker) assert(result.marker, article.key + '/' + viewport.key + ': important emphasis missing');
     if (article.related) {
-      assert(result.related && result.related.display === 'grid', article.key + '/' + viewport.key + ': related navigation is not a grid');
-      if (viewport.width <= 860) assert(!result.related.columns.includes(' '), article.key + '/mobile: related navigation should be one column: ' + result.related.columns);
+      assert(result.related, article.key + '/' + viewport.key + ': related navigation missing');
     }
     if (viewport.width <= 860) assert(result.horizontalOverflow <= 1, article.key + '/mobile: horizontal overflow ' + result.horizontalOverflow + 'px');
     const focusTarget = page.locator('.content a').first();

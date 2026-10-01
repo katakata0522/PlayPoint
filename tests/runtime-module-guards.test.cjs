@@ -29,6 +29,27 @@ const runtimeModules = [
 const graph = runEsmProbe({ kind: 'graph' });
 const revision = file => createHash('sha256').update(read(file).replace(/\r\n/g, '\n')).digest('hex').slice(0, 10);
 
+test('公開HTMLのローカルCSS・JavaScriptは実在し、実内容と一致する版を参照する', () => {
+  const { createRevision, listPublicHtmlFiles, resolveLocalAsset } = require('../scripts/article-asset-versioning.cjs');
+  for (const file of listPublicHtmlFiles(root)) {
+    const html = fs.readFileSync(file, 'utf8');
+    const references = [
+      ...[...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi)].map(match => ({extension:'.css',href:match[1]})),
+      ...[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(match => ({extension:'.js',href:match[1]}))
+    ];
+    for (const reference of references) {
+      if (/^(?:https?:)?\/\//i.test(reference.href)) continue;
+      if (!reference.href.split(/[?#]/,1)[0].endsWith(reference.extension)) continue;
+      const label = `${path.relative(root,file)}: ${reference.href}`;
+      const asset = resolveLocalAsset(root,file,reference.href,reference.extension);
+      assert.ok(asset, label + ': ローカル資産がありません');
+      const version = new URL(reference.href.replaceAll('&amp;','&'), ORIGIN + '/').searchParams.get('v');
+      assert.match(version || '', /^[a-f0-9]{10}$/i, label + ': 内容版がありません');
+      assert.equal(version,createRevision(asset),label + ': 実内容と参照版が異なります');
+    }
+  }
+});
+
 test('分離した実行時モジュールは実import・cache改訂・実先読み要求へ結線される', async (t) => {
   const worker = createRuntime();
   await worker.fireInstall();
