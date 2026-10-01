@@ -38,9 +38,11 @@ test('目標変更後の必要ポイント例は選択中の上限内の整数�
   PP_STATE.dom.targetStatus.selectedIndex = goldIndex;
   updateNeededPointsConstraint();
   function assertValidExample() {
-    const example = PP_STATE.dom.neededPoints.placeholder.match(/(?:^|[^0-9])([0-9]+)\s*$/)?.[1];
-    assert.ok(example, '入力例には整数を示す');
-    assert.ok(Number(example) >= 0 && Number(example) <= Number(PP_STATE.dom.neededPoints.max));
+    const examples = PP_STATE.dom.neededPoints.placeholder.match(/[-+]?\d[\d,.]*/g) || [];
+    assert.strictEqual(examples.length, 1, '入力例には1つの数値を示す');
+    const example = Number(examples[0].replaceAll(',', ''));
+    assert.ok(Number.isInteger(example), '入力例には整数を示す');
+    assert.ok(example >= 0 && example <= Number(PP_STATE.dom.neededPoints.max));
   }
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '1000');
   assertValidExample();
