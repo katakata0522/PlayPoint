@@ -87,6 +87,15 @@ async function verifyDiaryBoundaries(browser, baseUrl, locales, blockExternalReq
         await page.screenshot({ path: path.join(artifactDir, 'diary-' + date.slice(0, 10) + '-' + width + '.png'), fullPage: true });
       }
       results.push({ locale: locale.key, date, width, currentWeek: { year, month, week }, saveEditReload: true, otherMonthSave: true, invalidInputPreserved: true });
+    } catch (error) {
+      error.message = locale.key + '/' + date + '/' + width + ': ' + error.message;
+      if (artifactDir) {
+        fs.mkdirSync(artifactDir, { recursive: true });
+        const failed = context.pages()[0];
+        if (failed) await failed.screenshot({ path: path.join(artifactDir, 'diary-failed-' + locale.key + '-' + width + '.png'), fullPage: true }).catch(() => {});
+        fs.writeFileSync(path.join(artifactDir, 'diary-failure.json'), JSON.stringify({ scenario, message: error.message, stack: error.stack }, null, 2));
+      }
+      throw error;
     } finally {
       await context.close();
     }

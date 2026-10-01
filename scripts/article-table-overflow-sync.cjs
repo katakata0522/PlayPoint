@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { listPublicHtmlFiles } = require('./article-asset-versioning.cjs');
+const { normalizeText } = require('./seo-head-audit.cjs');
 
 const ARTICLE_TABLE_OVERFLOW_PATHS = Object.freeze([
   'articles/2026-06-20-discount-gift-cards.html',
@@ -56,9 +57,12 @@ function makeScrollableRegionsAccessible(html) {
     if (!/\brole=/.test(next)) next = next.replace(/>$/, ' role="region">');
     if (!/\baria-label(?:ledby)?=/.test(next)) {
       const headings = [...source.slice(0, offset).matchAll(/<h[1-6]\b[^>]*>([\s\S]*?)<\/h[1-6]>/gi)];
-      const heading = (headings.at(-1)?.[1] || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 120);
+      const headingMarkup = headings.at(-1)?.[1] || '';
+      const textNodes = [...headingMarkup.matchAll(/(?:^|>)([^<>]*)(?=<|$)/g)].map(match => match[1]);
+      const heading = normalizeText(textNodes.join(' ')).slice(0, 120);
       const name = (heading ? heading + ': ' : '') + label;
-      next = next.replace(/>$/, ' aria-label="' + name.replace(/"/g, '&quot;') + '">');
+      const escapedName = name.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+      next = next.replace(/>$/, ' aria-label="' + escapedName + '">');
     }
     return next;
   });

@@ -114,3 +114,14 @@ test('表の同期はスクリプト・スタイル・コメント内の例を�
   assert.ok(output.startsWith(protectedHtml));
   assert.match(output.slice(protectedHtml.length), /tabindex="0" role="region" aria-label=/);
 });
+
+
+test('表の名前はHTML実体を文字として扱い、属性の区切りをエスケープする', () => {
+  const html = '<html lang="ja"><h2>&lt;script&gt; &quot; onfocus=&quot;alert(1)</h2><div class="lp-table-wrap"><table></table></div>';
+  const output = makeScrollableRegionsAccessible(html);
+  const tag = output.match(/<div[^>]*>/)[0];
+  assert.match(tag, /aria-label="&lt;script&gt; &quot; onfocus=&quot;alert\(1\): /);
+  assert.equal((tag.match(/aria-label=/g) || []).length, 1);
+  assert.ok(!tag.includes('" onfocus="'));
+  assert.equal(makeScrollableRegionsAccessible(output), output);
+});
