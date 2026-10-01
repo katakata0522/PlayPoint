@@ -146,6 +146,14 @@ const DISTINCT_MAPPING = {
     points: ['Super Ticketとは', '受け取り・利用方法', 'もらえるタイミング'],
     accentColor: '#f59e0b'
   },
+  '2026-10-01-black-diamond-diamond-vip.html': {
+    image: '2026-10-01-black-diamond-diamond-vip.png',
+    template: 'levels-guide',
+    category: '未発表ステータス検証',
+    subtitle: 'Diamond VIP・Black Diamondの証拠と未確定情報',
+    points: ['公式は5ランクのまま', 'TGSで招待制VIPを確認', 'APK解析は確度を分けて検証'],
+    accentColor: '#4338ca'
+  },
 
   // Previously best-use.png (2)
   '2026-07-25-play-credit-not-working.html': {
