@@ -65,6 +65,13 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
   try {
     const c = await context(), page = await c.newPage();
     await goto(page,'blog/'); await cards(page);
+    async function verifyArticleNavigation() {
+      const unprotected = await page.evaluate(() => [...document.querySelectorAll('a[href]')]
+        .filter(link => new URL(link.href).origin === location.origin && link.dataset.googleVignette !== 'false')
+        .map(link => link.getAttribute('href')));
+      assert.deepEqual(unprotected, [], 'Guide navigation and dynamically rendered results must not trigger vignette ads');
+    }
+    await verifyArticleNavigation();
     for (const width of [390,1024]) {
       await page.setViewportSize({width,height:844});
       await waitNavigationLayout(page);
@@ -122,6 +129,8 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     releaseCalculators();
     await page.locator('.game-search-links a[href="/games/fgo/"]').waitFor({ state: 'visible', timeout: 10000 });
     assert(await stableArticle.evaluate(el => el.isConnected), '計算機案内の到着で記事カードを交換しない');
+    await verifyArticleNavigation();
+    report.interactions.vignetteProtectedNavigation = true;
     await page.unroute('**/blog/game-calculators.json');
     report.interactions.lateCalculatorLinks = true;
     // 実画像をスクロールで読み込み、1px placeholderを合格にしない。

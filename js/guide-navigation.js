@@ -1,3 +1,32 @@
+/* 記事の移動は全画面広告で遮らない。広告のアカウント設定や計算機トップは変更しない。 */
+(function () {
+  'use strict';
+  const doc = document;
+  if (doc.documentElement.lang !== 'ja') return;
+  // Google公式: https://support.google.com/adsense/answer/17016693
+  const protectLinks = node => {
+    if (node.nodeType !== 1) return;
+    const links = [...node.querySelectorAll('a[href]')];
+    if (node.matches('a[href]')) links.unshift(node);
+    for (const link of links) {
+      try {
+        if (new URL(link.getAttribute('href'), doc.baseURI).origin === location.origin) {
+          link.setAttribute('data-google-vignette', 'false');
+        }
+      } catch { /* 解釈できないリンクは既存のまま残す。 */ }
+    }
+  };
+  const init = () => {
+    if (!doc.querySelector('.guide-header')) return;
+    protectLinks(doc.body);
+    // 検索結果・保存記事・履歴は後から作られるため、追加された要素だけを扱う。
+    new MutationObserver(records => {
+      for (const record of records) for (const node of record.addedNodes) protectLinks(node);
+    }).observe(doc.body, { childList: true, subtree: true });
+  };
+  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init, { once: true }); else init();
+})();
+
 /* スマホでは既存の入口をメニューへ移す。複製せず、保存状態や操作を引き継ぐ。 */
 (function () {
   'use strict';
