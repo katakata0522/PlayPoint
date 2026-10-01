@@ -11,7 +11,7 @@ async function loadGuard() {
   const source = fs.readFileSync(path.join(root, 'js/language-suggestion.js'), 'utf8')
     .replace(/\nexport \{[\s\S]*?\} from '\.\/first-view\.js';\s*$/, '\n');
   const dataUrl = `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;
-  return import(dataUrl + `#${Date.now()}-${Math.random()}`);
+  return import(dataUrl);
 }
 
 function targetWith(entries = {}) {
@@ -166,4 +166,23 @@ test('storage contract inventories owned persistent and temporary stores', () =>
     'katakata_blog_settings',
     'playpointCalculatorEntryContext'
   ]) assert.match(contract, new RegExp(key));
+});
+
+test('failed recovery writes block replacement of calculator-owned data', async () => {
+  const api = await loadGuard();
+  const writes = [];
+  class QuotaStorage {
+    constructor() { this.values = new Map([['hokuhokuDiaryData', '{broken']]); }
+    getItem(key) { return this.values.get(key) ?? null; }
+    setItem(key, value) {
+      writes.push(key);
+      if (key === 'hokuhokuDiaryDataRecoveryV1') throw Error('quota');
+      this.values.set(key, String(value));
+    }
+  }
+  const target = {Storage: QuotaStorage, localStorage: new QuotaStorage()};
+  assert.equal(api.installOwnedStorageSafety(target), true);
+  assert.throws(() => target.localStorage.setItem('hokuhokuDiaryData', validDiary), /quota/);
+  assert.equal(target.localStorage.getItem('hokuhokuDiaryData'), '{broken');
+  assert.deepEqual(writes, ['hokuhokuDiaryDataRecoveryV1']);
 });

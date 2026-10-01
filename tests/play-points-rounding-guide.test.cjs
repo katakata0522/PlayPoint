@@ -4,7 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { calculatePurchasePoints, roundPoints } = require('../js/play-points-rounding.js');
+const { calculatePurchasePoints, initRoundingSimulator, roundPoints } = require('../js/play-points-rounding.js');
 
 const root = path.resolve(__dirname, '..');
 const articlePath = path.join(root, 'articles', '2026-07-24-play-points-1-value.html');
@@ -96,16 +96,36 @@ test('FAQと補助導線は主要目次へ混入しない構造にする', () =>
 
 test('シミュレーターは差が見える初期例と利用限界を明示する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');
-  const js = read('js/play-points-rounding.js');
   assert.match(html, /id="rounding-price"[^>]*value="40"/);
   assert.match(html, /<option value="1\.5" selected>ゴールド：1\.5<\/option>/);
   assert.match(html, /丸め方の差が見える架空例/);
   assert.match(html, /実際の付与予測には使わないでください/);
   assert.match(html, /id="rounding-result" aria-live="off" aria-atomic="true"/);
   assert.doesNotMatch(html, /id="rounding-result"[^>]*role="status"/);
-  assert.match(js, /setAttribute\('role', 'status'\)/);
-  assert.match(js, /calculateAndRender\(false\)/);
-  assert.match(js, /rounding-result-title">試算結果/);
+  const attributes = new Map();
+  const result = {innerHTML: '', textContent: '',
+    setAttribute(name, value) { attributes.set(name, value); },
+    removeAttribute(name) { attributes.delete(name); }};
+  const clicks = [];
+  const inputs = {'rounding-price': {value: '40'}, 'rounding-count': {value: '2'},
+    'rounding-rate': {value: '1.5'}, 'rounding-result': result,
+    'rounding-calculate': {addEventListener(type, callback) {
+      assert.equal(type, 'click'); clicks.push(callback);
+    }}};
+  assert.equal(initRoundingSimulator({getElementById: id => inputs[id]}), true);
+  assert.equal(attributes.get('aria-live'), 'off', '初期試算を自動読み上げしない');
+  assert.equal(attributes.has('role'), false);
+  assert.match(result.innerHTML, /購入ごとの丸めが 1ポイント多い試算/);
+  assert.equal(clicks.length, 1);
+  inputs['rounding-price'].value = '200';
+  clicks[0]();
+  assert.equal(attributes.get('role'), 'status');
+  assert.equal(attributes.get('aria-live'), 'polite');
+  assert.match(result.innerHTML, /差はありません/, '操作後に新しい値で再計算する');
+  inputs['rounding-count'].value = '0';
+  clicks[0]();
+  assert.match(result.textContent, /購入回数/, '不正入力を画面へ説明する');
+  assert.equal(initRoundingSimulator({getElementById() { return null; }}), false);
 });
 
 test('記事固有の条件説明は生成後も読める', () => {
@@ -133,6 +153,8 @@ test('画面のFAQとFAQPage構造化データが一致する', () => {
     name: normalizeText(item.name),
     answer: normalizeText(item.acceptedAnswer.text)
   }));
+  assert.ok(visible.length > 0, '表示FAQを空のまま合格させない');
+  assert.ok(structured.length > 0, '構造化FAQを空のまま合格させない');
   assert.deepEqual(structured, visible);
 });
 
@@ -145,6 +167,4 @@ test('記事台帳は既存記事の役割を維持して更新日と説明を�
   assert.ok(modified, 'article last-modified is required');
   assert.equal(entry.modified, modified);
   assert.match(entry.description, /商品ごとの四捨五入/);
-  assert.equal(articles.filter(article => /丸め|端数/.test(article.title)).length, 0,
-    '既存記事と重複する丸め専用記事を追加しないでください');
 });

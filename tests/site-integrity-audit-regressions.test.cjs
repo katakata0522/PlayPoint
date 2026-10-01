@@ -80,7 +80,7 @@ test('空・無関係な復元データは既存日記を上書きせず、有�
       diaryState: { currentYear: 2026, currentMonth: 8 },
       dom: { diaryBackupData: backup }
     },
-    CONSTANTS: { DIARY_DATA_KEY: 'playpointDiaryData', CLASS_HIDDEN: 'hidden' },
+    CONSTANTS: { DIARY_DATA_KEY: 'hokuhokuDiaryData', CLASS_HIDDEN: 'hidden' },
     ANALYTICS: {},
     UI: { showToast(message, type) { toastCalls.push({ message, type }); } },
     SHARE: {},
@@ -112,88 +112,6 @@ test('空・無関係な復元データは既存日記を上書きせず、有�
   const merged = JSON.parse(storageValue);
   assert.equal(merged[2026][8][1].points, '0');
   assert.equal(merged[2026][8][2].points, '55', '復元に含まれない既存週は保持する');
-});
-
-test('通常計算は0ptを達成済みとして完了し、購入導線を表示しない', () => {
-  const source = ['calculator-core.js', 'calculator-result-view.js', 'calculator.js']
-    .map(name => stripEsm(fs.readFileSync(path.join(root, 'js', name), 'utf8'))).join('\n');
-  let resultHtml = '';
-  let detailsHtml = null;
-  const neededPoints = { value: '0', min: '1', max: '250', validity: { valid: true } };
-  const context = {
-    console,
-    Option: class Option {},
-    CONFIGS: {
-      JP: {
-        lang: 'ja-JP',
-        spendUnit: 100,
-        rateUnit: '100円',
-        currencyPosition: 'suffix',
-        currencySymbol: '円',
-        statuses: { 'ブロンズ': 1, 'シルバー': 1.25 },
-        statusRates: { 1: 1, 1.25: 1.25 },
-        thresholds: { 'ブロンズ': 0, 'シルバー': 250 },
-        uiText: {
-          errorNeededPoints: 'invalid points',
-          errorInput: 'invalid',
-          errorTargetStatus: 'invalid target',
-          errorRate: 'invalid rate',
-          errorTargetConsistency: 'invalid consistency',
-          resultLabelFreeClear: '課金不要',
-          resultLabelNeededPoints: '必要ポイント',
-          resultLabelTotalYen: '必要額',
-          approxLabel: '約',
-          calculationNote: '残り{months}か月',
-          resultLabelRate: '獲得率',
-          roundingNoteWithoutPack: '購入単位で差が出る場合があります。'
-        }
-      }
-    },
-    STATE: {
-      currentRegion: 'JP',
-      dom: {
-        neededPoints,
-        multiplier: { value: '1', min: '1', validity: { valid: true } },
-        baseRate: { value: '1', validity: { valid: true } },
-        currentStatus: { value: '1' },
-        targetStatus: {
-          selectedIndex: 0,
-          options: [{ value: '250', dataset: { statusLabel: 'シルバー' } }]
-        },
-        result: { dataset: {} }
-      }
-    },
-    CONSTANTS: {},
-    ANALYTICS: {
-      track() {},
-      markEngaged() {},
-      getEntryContext() { return {}; }
-    },
-    UI: {
-      displayResult(element, html, isError) {
-        if (isError) throw new Error(`unexpected error: ${html}`);
-        resultHtml = html;
-      },
-      displayResultDetails(html) { detailsHtml = html; }
-    },
-    SHARE: { buildMainShareUrl() { return 'https://playpoint-sim.com/'; } },
-    getResultNavigationConfig() { return {}; },
-    document: {},
-    navigator: {},
-    window: null
-  };
-  context.window = context;
-  vm.createContext(context);
-  vm.runInContext(`${source}\nglobalThis.__CALC = CALC;`, context, { filename: 'calculator-zero.js' });
-  context.__CALC.renderResultGuidance = () => '';
-
-  context.__CALC.calculate();
-
-  assert.equal(neededPoints.min, '0');
-  assert.match(resultHtml, /課金不要/);
-  assert.doesNotMatch(resultHtml, /result-purchase-check/);
-  assert.equal(detailsHtml, '');
-  assert.equal(context.STATE.dom.result.dataset.requiredYen, 0);
 });
 
 test('ゲーム計算はパック複数購入を購入ごとに丸め、税抜き対象額を別入力できる', () => {

@@ -6,7 +6,6 @@ const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
-const calculatorPath = path.join(root, 'js', 'calculator.js');
 
 function loadCalcPure(dateClass = Date) {
   const source = fs.readFileSync(path.join(root, 'js', 'calculator-core.js'), 'utf8')
@@ -37,7 +36,7 @@ test('remaining calendar days handles leap-year boundaries', () => {
   assert.equal(calc.getRemainingCalendarDays(new Date(2028, 11, 31, 23, 30)), 1);
 });
 
-test('remaining calendar days is stable while New York is on DST', () => {
+test('DST date boundaries produce the correct user-visible daily amount', () => {
   const script = String.raw`
     const fs = require('node:fs');
     const vm = require('node:vm');
@@ -50,30 +49,46 @@ test('remaining calendar days is stable while New York is on DST', () => {
     const baseDate = new Date(2026, 6, 1, 0, 30);
     const nextYearStart = new Date(baseDate.getFullYear() + 1, 0, 1);
     const oldElapsedDayResult = Math.max(0, Math.ceil((nextYearStart - baseDate) / 86400000));
+    const { createInput, createSelect, loadCalculatorContext } = require('./tests/helpers/playpoint-calculator-test-context.cjs');
+    class FixedDate extends Date {
+      constructor(...args) { super(...(args.length ? args : [2026, 6, 1, 0, 30])); }
+    }
+    const runtime = loadCalculatorContext(FixedDate);
+    const { PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults } = runtime;
+    PP_STATE.currentRegion = 'JP';
+    PP_STATE.dom.currentStatus = createSelect();
+    PP_STATE.dom.reverseStatus = createSelect();
+    PP_STATE.dom.targetStatus = createSelect();
+    PP_STATE.dom.baseRate = createInput();
+    PP_STATE.dom.neededPoints = createInput('185');
+    PP_STATE.dom.multiplier = createInput('1');
+    PP_STATE.dom.result = {dataset: {}};
+    populateStatusSelects();
+    updateBaseRateAndTarget();
+    calculate();
+    const visibleDailyAmount = renderedResults[0].content.match(/1日あたり目安[^<]*[\s\S]*?data-value="(\d+)"/)?.[1];
     process.stdout.write(JSON.stringify({
       calendarDays: context.__CALC_PURE.getRemainingCalendarDays(baseDate),
-      oldElapsedDayResult
+      oldElapsedDayResult,
+      isError: renderedResults[0].isError,
+      requiredAmount: PP_STATE.dom.result.dataset.requiredYen,
+      visibleDailyAmount: Number(visibleDailyAmount)
     }));
   `;
 
   const child = spawnSync(process.execPath, ['-e', script], {
     cwd: root,
     env: { ...process.env, TZ: 'America/New_York' },
-    encoding: 'utf8'
+    encoding: 'utf8', timeout: 15000
   });
 
+  if (child.error) throw child.error;
   assert.equal(child.status, 0, child.stderr);
   assert.deepEqual(JSON.parse(child.stdout), {
     calendarDays: 184,
-    oldElapsedDayResult: 185
+    oldElapsedDayResult: 185,
+    isError: false,
+    requiredAmount: 18500,
+    visibleDailyAmount: 101
   });
-});
-
-test('calculator runtime keeps the shared date-only helper on the user-visible calculation path', () => {
-  const source = fs.readFileSync(calculatorPath, 'utf8');
-
-  // This is intentionally a narrow integration guard: the behavior tests above own
-  // the algorithm, while this only prevents the runtime from silently bypassing it.
-  assert.match(source, /CALC_PURE\.getRemainingCalendarDays\s*\(/);
-  assert.doesNotMatch(source, /Math\.ceil\(\(nextYearStart - now\) \/ \(1000 \* 60 \* 60 \* 24\)\)/);
 });
