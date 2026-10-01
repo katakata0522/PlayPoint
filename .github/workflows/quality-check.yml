@@ -76,6 +76,18 @@ jobs:
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
       # 設定を模倣せず、候補の.htaccessを実Apache/TLSで評価する。Node単体検査はWindowsでも維持。
+      - name: Preserve generated repair outputs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: generated-repair-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            articles/2025-12-25-weekly-reward.html
+            articles/2026-07-31-super-weekly-reward.html
+            blog/article-search-index.json
+          if-no-files-found: error
+          retention-days: 1
+
       - name: Verify Apache HTTP cache behavior
         id: verify_apache_http_cache
         if: steps.pr_gate_impact.outputs.apache_required == 'true'
