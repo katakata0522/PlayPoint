@@ -820,7 +820,8 @@
                 Analytics.trackArticleClick(article.title, article.category);
             });
             const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
-            card.classList.toggle('article-card--visual', thumbnailKind !== 'app-icon');
+            const visualThumbnail = thumbnailKind !== 'app-icon';
+            card.classList.toggle('article-card--visual', visualThumbnail);
             const compactExplicitThumbnail = isCompactArticleList();
             const loadCompactThumbnailImmediately = compactExplicitThumbnail && compactThumbnailIndex === 0;
             if (compactExplicitThumbnail) compactThumbnailIndex += 1;
@@ -836,11 +837,10 @@
             card.innerHTML = `
                 <div class="${thumbnailClass}">
                     ${thumbnailMarkup}
-                    <span class="card-category badge" >${thumbnailLabel}</span>
-                    ${newBadge}
+                    ${visualThumbnail ? '' : `<span class="card-category badge">${thumbnailLabel}</span>${newBadge}`}
                 </div>
                 <div class="card-content">
-                    <div class="card-meta">${dateMarkup}</div>
+                    <div class="card-meta">${visualThumbnail ? `<span class="card-topic">${thumbnailLabel}</span>${newBadge}` : ''}${dateMarkup}</div>
                     <h3>${safeTitle}</h3>
                     ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>

@@ -155,6 +155,7 @@ html[lang="ja"] body.blog-index-compact .article-card .card-content { min-width:
 html[lang="ja"] body.blog-index-compact .article-card .card-content h3 { font-size:18px; line-height:1.55; margin:4px 0 8px; }
 html[lang="ja"] body.blog-index-compact .article-card .card-desc { font-size:15px; line-height:1.7; margin:0 0 10px; }
 html[lang="ja"] body.blog-index-compact .article-card .card-meta { font-size:13px; }
+html[lang="ja"] body.blog-index-compact .article-card .card-meta .badge-new { position:static; }
 html[lang="ja"] body .guide-latest-layout .latest-visual { width:100%; max-width:none; min-width:0; margin:0; padding:0; background:transparent; border:0; box-shadow:none; border-radius:0; }
 html[lang="ja"] body .guide-latest-layout .lp-hero { margin:0 0 20px; }
 html[lang="ja"] body .guide-latest-layout .lp-hero h1 { font-size:28px; color:var(--reading-text); }

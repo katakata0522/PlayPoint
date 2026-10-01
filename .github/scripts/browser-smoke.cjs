@@ -581,6 +581,7 @@ async function verifyBlogPage(browser, baseUrl) {
       return image && !image.dataset.src && image.complete && image.naturalWidth > 1;
     });
     assert(!(await visualImage.getAttribute('src')).includes('article-placeholder'), '通常サムネイルの原本を読み込む');
+    assert(await page.locator('.article-card--visual .card-thumb :is(.card-category, .badge-new)').count() === 0, 'ラベルが横長サムネイルの文字を覆わない');
     // スマホは画像の下、PCは右に本文を配置し、横長画像を切り取らない。
     for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
