@@ -150,10 +150,14 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       if(width<=760) {
         const visualCards=await page.locator('.article-card--visual').evaluateAll(cards=>cards.map(card=>({
           titleWidth:card.querySelector('h3').getBoundingClientRect().width,
+          titleLeft:card.querySelector('h3').getBoundingClientRect().left,
+          titleRight:card.querySelector('h3').getBoundingClientRect().right,
+          imageRight:card.querySelector('.card-thumb').getBoundingClientRect().right,
+          cardRight:card.getBoundingClientRect().right,
           cardWidth:card.getBoundingClientRect().width,
           imageFrames:card.querySelectorAll('.card-thumb img').length
         })));
-        assert(visualCards.length>0&&visualCards.every(card=>card.titleWidth>=card.cardWidth*.85&&card.imageFrames===1),`サムネイル付き記事のタイトルはスマホの横幅を使う: ${width}: ${JSON.stringify(visualCards)}`);
+        assert(visualCards.length>0&&visualCards.every(card=>card.titleWidth>=150&&card.titleLeft>=card.imageRight+8&&card.titleRight<=card.cardRight+1&&card.imageFrames===1),`スマホの記事は画像と見出しを重ねず並べ、見出しの可読幅を確保する: ${width}: ${JSON.stringify(visualCards)}`);
       }
       if(width>760) { assert.equal(state.columns,4,`Purpose-grid breakpoint ${width}`); assert(state.pathwaysFit,`Purpose links must fit and remain tappable at ${width}`); }
       assert(state.firstArticleY<700,`First article is pushed below the initial screen at ${width}: ${state.firstArticleY}`);
