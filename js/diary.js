@@ -161,13 +161,13 @@ export const DIARY = {
 #diaryMode .weekly-record-state[hidden]{display:none!important}
 #diaryMode .weekly-record-state.is-dirty{background:rgba(245,158,11,.08)}
 #diaryMode .weekly-record-status{font-weight:800}
-#diaryMode .weekly-record-edit{min-height:34px;margin:0;padding:.3em .7em;border:1px solid rgba(11,87,208,.2);border-radius:7px;background:rgba(11,87,208,.06);color:var(--link-hover-color);box-shadow:none;font-size:.82em}
+#diaryMode .weekly-record-edit{min-height:34px;margin:0;padding:.3em .7em;border:1px solid rgba(11,87,208,.2);border-radius:7px;background:rgba(11,87,208,.06);color:#0842a0;box-shadow:none;font-size:.82em}
 #diaryMode .weekly-record-edit:hover:not(:disabled){background:rgba(11,87,208,.11)}
 #diaryMode .is-weekly-current input:disabled,#diaryMode .is-weekly-current select:disabled{opacity:.86;cursor:default;background:rgba(15,23,42,.025)}
 #diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-large-value-hint,#diaryMode .is-weekly-compact:not(.is-weekly-expanded)>.weekly-points-field{display:none!important}
 .weekly-points-field{position:relative;min-width:0}
 .weekly-points-field>input{width:100%;box-sizing:border-box;margin:0;padding-right:2.4em}
-.weekly-points-unit{position:absolute;right:.75em;top:50%;transform:translateY(-50%);pointer-events:none;color:#64748b;font-size:.82em;font-weight:800}
+.weekly-points-unit{position:absolute;right:.75em;top:50%;transform:translateY(-50%);pointer-events:none;color:#475569;font-size:.82em;font-weight:800}
 .weekly-confirm-hint{grid-area:hint;margin:0;color:#4b5563;font-size:.78em;text-align:left}
 .weekly-large-value-hint{margin:.15em 0 0;padding:.55em .7em;border-left:3px solid #f59e0b;border-radius:6px;background:rgba(245,158,11,.08);color:var(--text-color);font-size:.78em;line-height:1.45;text-align:left}
 .weekly-large-value-hint[hidden]{display:none!important}
@@ -178,7 +178,7 @@ export const DIARY = {
 .weekly-achievement-metric span{display:block;margin-bottom:.15em;color:#52606d;font-size:.72em;font-weight:800}
 .weekly-achievement-metric strong{display:block;color:var(--text-color);font-size:1.22em;line-height:1.25;overflow-wrap:anywhere}
 .weekly-mini-chart-title{margin:.9em 0 .35em;color:#52606d;font-size:.75em;font-weight:800}
-.weekly-week-legend{display:flex;align-items:center;gap:.46em;flex-wrap:wrap;margin:0 0 .42em;color:#667085;font-size:.64em}
+.weekly-week-legend{display:flex;align-items:center;gap:.46em;flex-wrap:wrap;margin:0 0 .42em;color:#475569;font-size:.64em}
 .weekly-week-legend-item{display:inline-flex;align-items:center;gap:.22em;white-space:nowrap}
 .weekly-week-legend-dot{display:inline-block;width:.72em;height:.72em;border-radius:3px}
 .weekly-week-legend-dot.week-1{background:#4285F4}
@@ -208,8 +208,8 @@ export const DIARY = {
 .diary-chart-item.is-current-month .diary-chart-track{box-shadow:inset 0 0 0 1px rgba(11,87,208,.18);background:rgba(88,166,255,.115)}
 .diary-chart-item.is-current-month .diary-chart-label,.diary-chart-item.is-current-month .diary-chart-value{color:var(--link-hover-color);font-weight:800}
 .weekly-mini-item.is-current-month .weekly-mini-bar{background:linear-gradient(180deg,rgba(88,166,255,.14),rgba(63,185,80,.07));box-shadow:inset 0 0 0 1px rgba(63,185,80,.2)}
-.weekly-mini-bar-label{display:block;min-width:0;color:#7a8694;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
-.weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0b57d0;font-weight:900}
+.weekly-mini-bar-label{display:block;min-width:0;color:#475569;font-size:clamp(.5rem,2.1vw,.62rem);font-weight:700;line-height:1;text-align:center;white-space:nowrap;overflow:hidden}
+.weekly-mini-item.is-current-month .weekly-mini-bar-label{color:#0842a0;font-weight:900}
 .weekly-next-reward{display:flex;align-items:center;justify-content:space-between;gap:.7em;flex-wrap:wrap;margin:.8em 0 0;padding-top:.7em;border-top:1px solid rgba(11,87,208,.12);font-size:.82em;line-height:1.5}
 .weekly-next-reward strong{color:var(--text-color);font-weight:900}
 .weekly-next-reward a{color:#0b57d0;font-weight:800;text-decoration:none}

@@ -1,6 +1,6 @@
 # PlayPoint テスト仕分けメモ
 
-最終更新: 2026-09-30
+最終更新: 2026-10-01
 対象: `katakata0522/PlayPoint`（本番正本。`cli-auto/PlayPoint` ではない）
 
 ## 整理の履歴（当時の本数。現在値は末尾の全件台帳）
@@ -101,6 +101,7 @@ private関数の名前、内部処理の並び、完全一致するコード断�
 | 全送信URLのOGP補助タグ・画像実体・生成冪等性 | `tests/seo-head-audit-parser.test.cjs` / `scripts/seo-head-audit.cjs` | 翻訳・ゲーム・機能ページの欠落fixtureを同じ契約で検査 |
 | 計算ファネル開始/完了/dedupe/Consent | `tests/calculator-funnel-behavior.test.cjs` | `tests/calculator-funnel-analytics.test.cjs` はraw値遮断・ownership境界 |
 | 日記保存の成功/失敗/サイレント保存 | `tests/diary-save-behavior.test.cjs` | Analytics event allowlist |
+| 共通テンプレートの左右キー操作、リンク識別、文字コントラストの通常/hover/focus/選択状態、共有画面のopener切断 | `.github/scripts/browser-smoke.cjs`（`accessibility-browser.cjs`） | 16ページ・320/390/1440px。表ラッパーの生成冪等性・既存名保持は `article-quality-polish` |
 | 日記の月・年境界、保存ボタン、別月編集、再読み込み | `.github/scripts/browser-smoke.cjs`（`diary-browser.cjs`） | 日時を固定し、遅延読み込み後の実操作を確認 |
 | URL優先の地域表示・地域切替 | `tests/region-navigation-behavior.test.cjs` | `runtime-module-guards` の責務集約guard + Browser smoke |
 | Service Worker install/activate/fetch/cache fallback | `tests/service-worker-behavior.test.cjs` | asset packaging / deploy smoke |

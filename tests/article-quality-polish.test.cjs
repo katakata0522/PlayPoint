@@ -9,7 +9,7 @@ const root = path.join(__dirname, '..');
 const { ALL_GUIDES, LOCALES, renderGuide } = require('../scripts/intl-game-guide-expansion.cjs');
 const { extractSupplementalMetaItems, getArticleFiles } = require('../scripts/article-date-contract.cjs');
 const { getJapaneseArticleRepoPaths } = require('../scripts/game-guide-article-catalog.cjs');
-const { ARTICLE_TABLE_OVERFLOW_PATHS, wrapUnwrappedTables } = require('../scripts/article-table-overflow-sync.cjs');
+const { ARTICLE_TABLE_OVERFLOW_PATHS, wrapUnwrappedTables, makeScrollableRegionsAccessible } = require('../scripts/article-table-overflow-sync.cjs');
 
 function stripTags(value) {
   return String(value).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -88,4 +88,29 @@ test('監査対象の表は横スクロール境界を持つ', () => {
     assert.equal(wrapUnwrappedTables(html), html, relativePath);
     assert.match(html, /class="table-wrap"/, relativePath);
   }
+});
+
+
+test('共通の表ラッパーは名前付きでキーボード操作でき、再生成でも重複しない', () => {
+  for (const [lang, name] of [['ja', '比較表'], ['en', 'Comparison table'], ['ko', '비교표'], ['zh-TW', '比較表']]) {
+    const input = '<html lang="' + lang + '"><h2>条件 &amp; <strong>比較</strong></h2><div class="lp-table-wrap"><table><tr><td>123</td></tr></table></div>';
+    const output = makeScrollableRegionsAccessible(input);
+    assert.match(output, /tabindex="0" role="region" aria-label="条件 &amp; 比較: /);
+    assert.ok(output.includes(name));
+    assert.ok(output.includes('<table><tr><td>123</td></tr></table>'));
+    assert.equal(makeScrollableRegionsAccessible(output), output);
+  }
+});
+
+test('既存のアクセシブル名と子リンク、表ではない類似クラスを保持する', () => {
+  const input = '<div class="table-wrap" aria-labelledby="title" tabindex="0" role="region"><a href="/">戻る</a></div><div class="table-card-title">見出し</div>';
+  assert.equal(makeScrollableRegionsAccessible(input), input);
+});
+
+
+test('表の同期はスクリプト・スタイル・コメント内の例を変更しない', () => {
+  const protectedHtml = '<script>const example = \'<div class="table-wrap">\';</script><style>/* <div class="table-wrap"> */</style><!-- <div class="table-wrap"> -->';
+  const output = makeScrollableRegionsAccessible(protectedHtml + '<div class="table-wrap"><table></table></div>');
+  assert.ok(output.startsWith(protectedHtml));
+  assert.match(output.slice(protectedHtml.length), /tabindex="0" role="region" aria-label=/);
 });
