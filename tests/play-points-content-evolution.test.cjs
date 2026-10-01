@@ -54,14 +54,16 @@ test('クエスト記事は対象・購入・ログイン・返金条件を案�
   assert.ok(html.includes('./2025-12-25-play-games.html'));
 });
 
-test('週次親記事は3制度を比較し日記を主要導線にする', () => {
+test('週次親記事はランク別週次・Super Ticket・Play Passを分け日記を主要導線にする', () => {
   const html = read('articles/2025-12-25-weekly-reward.html');
 
-  assert.ok(html.includes('通常のウィークリーリワード'));
+  assert.ok(html.includes('シルバーのウィークリーリワード'));
   assert.ok(html.includes('スーパーウィークリーリワード'));
+  assert.ok(html.includes('Super Ticket'));
   assert.ok(html.includes('Play Passの週次ボーナス・ブースター'));
   assert.ok(html.includes('ほくほくリワード日記'));
   assert.ok(html.includes('./2026-07-31-super-weekly-reward.html'));
+  assert.ok(html.includes('./2026-09-19-google-play-super-ticket.html'));
 });
 
 test('無料獲得記事は無料・追加購入なし・有料条件を混同しない', () => {
