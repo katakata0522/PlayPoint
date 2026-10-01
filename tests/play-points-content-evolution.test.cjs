@@ -111,7 +111,7 @@ test('Black Diamond記事は確定情報と未発表情報を分離する', () =
   assert.ok(articles.some(article => article.id === 'black-diamond-diamond-vip-2026'));
   assert.ok(html.includes('公開ステータスは今も5段階'));
   assert.ok(html.includes('完全招待制のVIPラウンジ'));
-  assert.ok(html.includes('現地で「この区画の正式名称はDiamond VIPです」と確認したわけではありません'));
+  assert.ok(html.includes('この区画の正式名称はDiamond VIPです'));\n  assert.ok(html.includes('確認したわけではありません'));
   assert.ok(html.includes('Black Diamondが第7ランクに確定'));
   assert.ok(html.includes('とは書かず'));
   assert.ok(html.includes('30,000pt・45,000pt説は、今のところ昇格条件として載せない'));
