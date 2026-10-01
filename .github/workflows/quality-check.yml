@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -27,41 +27,12 @@ jobs:
           # PR merge commitの両親を取得し、基準mainの実出力と比較する。
           fetch-depth: 2
 
-      - name: Check out repair branch head
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01'
-        env:
-          REPAIR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: git checkout --detach "$REPAIR_HEAD_SHA"
-
       - name: Set up pinned CI Node
         id: ci_node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .github/ci-runtime/node-version
           package-manager-cache: false
-
-      - name: Run canonical PR preparation
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01'
-        run: node scripts/prepare-pr.cjs
-
-      - name: Commit canonical generated outputs
-        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HEAD_REF: ${{ github.head_ref }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          git add -A
-          if git diff --cached --quiet; then
-            echo "Canonical preparation produced no changes."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: regenerate article outputs"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
 
       - name: Record CI environment
         id: record_ci_environment
@@ -105,37 +76,6 @@ jobs:
           node .github/scripts/preflight.cjs 2>&1 | tee "$RUNNER_TEMP/playpoint-preflight.log"
 
       # 設定を模倣せず、候補の.htaccessを実Apache/TLSで評価する。Node単体検査はWindowsでも維持。
-      - name: Preserve generated repair outputs
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: generated-repair-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            articles/2025-12-25-weekly-reward.html
-            articles/2026-07-31-super-weekly-reward.html
-            blog/article-search-index.json
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Commit generated repair outputs
-        if: always() && github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01' && github.event.pull_request.head.repo.full_name == github.repository
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HEAD_REF: ${{ github.head_ref }}
-          REPOSITORY: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          git add -- articles/2025-12-25-weekly-reward.html articles/2026-07-31-super-weekly-reward.html blog/article-search-index.json
-          if git diff --cached --quiet; then
-            echo "No generated repair outputs to commit."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: regenerate article outputs"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
-
       - name: Verify Apache HTTP cache behavior
         id: verify_apache_http_cache
         if: steps.pr_gate_impact.outputs.apache_required == 'true'
