@@ -725,11 +725,11 @@
         syncFilterPanelState();
         filtered = BlogUtils.sortListedArticles(filtered, { mode: sortMode, search: currentSearch });
 
-        // 通常一覧は件数を繰り返さず、絞り込み中だけ条件と実際の件数を短く見せる。
+        // 全件・絞り込みとも実際の件数を示し、適用中の条件を解除できる。
         if (dom.resultStatus) {
             const active = Boolean(currentSearch || currentGameTitle || currentBrowseCategory || currentCategory !== 'all');
             const conditions = [currentSearch ? '「' + currentSearch + '」' : '', currentGameTitle, currentBrowseCategory, currentCategory !== 'all' ? currentCategory : ''].filter(Boolean);
-            dom.resultStatus.classList.toggle('visually-hidden', !active);
+            dom.resultStatus.classList.remove('visually-hidden');
             dom.resultStatus.replaceChildren(document.createTextNode((conditions.length ? conditions.join(' / ') + '：' : '') + filtered.length + '件'));
             if (active) {
                 const clear = document.createElement('button'); clear.type = 'button'; clear.className = 'filter-reset-inline'; clear.textContent = '条件を解除';
@@ -837,10 +837,9 @@
             card.innerHTML = `
                 <div class="${thumbnailClass}">
                     ${thumbnailMarkup}
-                    ${visualThumbnail ? '' : `<span class="card-category badge">${thumbnailLabel}</span>${newBadge}`}
                 </div>
                 <div class="card-content">
-                    <div class="card-meta">${visualThumbnail ? `<span class="card-topic">${thumbnailLabel}</span>${newBadge}` : ''}${dateMarkup}</div>
+                    <div class="card-meta"><span class="card-topic">${thumbnailLabel}</span>${newBadge}${dateMarkup}</div>
                     <h3>${safeTitle}</h3>
                     ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
                     <p class="card-desc">${safeDesc}</p>

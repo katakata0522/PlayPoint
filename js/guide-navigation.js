@@ -6,20 +6,13 @@
   // headで同期実行し、最初の描画からスマホ用の配置を確保する。
   doc.documentElement.classList.add('guide-navigation-enabled');
   function init() {
-    let header = doc.querySelector('.guide-header');
-    const home = /^\/(?:index\.html)?$/.test(location.pathname) && doc.querySelector('.calculator-wrapper > .top-bar');
-    if (!header && !home) return;
+    const header = doc.querySelector('.guide-header');
+    if (!header) return;
     const el = (tag, className, text) => {
       const node = doc.createElement(tag); if (className) node.className = className; if (text) node.textContent = text; return node;
     };
-    if (home && !header) {
-      header = el('header', 'guide-header guide-calculator-header');
-      const inner = el('div', 'site-header-inner'), brand = el('a', 'site-logo');
-      brand.href = '/'; brand.append(el('span', 'guide-brand-short', 'PlayPoint'));
-      brand.firstChild.append(el('span', '', 'ポイント計算機')); inner.append(brand); header.append(inner); doc.body.prepend(header);
-    }
     const inner = header.querySelector('.site-header-inner');
-    if (!home && !inner.querySelector('.guide-brand-short')) {
+    if (!inner.querySelector('.guide-brand-short')) {
       const brand = inner.querySelector('.brand,.site-logo'), full = el('span', 'guide-brand-full', brand.textContent), short = el('span', 'guide-brand-short', 'PlayPoint');
       short.append(el('span', '', '記事ガイド')); brand.replaceChildren(full, short);
     }
@@ -61,7 +54,6 @@
     }
     const settings = header.querySelector('.site-header-links');
     moveLater(settings, '表示・運営者情報');
-    if (home) { moveLater(home); const articles = el('a', 'guide-header-articles', '記事一覧'); articles.href = '/blog/'; inner.append(articles); }
 
     const article = doc.querySelector('article.content, article.main-content-column');
     let toc;
@@ -77,7 +69,7 @@
         toc.dialog.append(nav);
       }
     }
-    if (!home && !toc) inner.append(el('span', 'guide-header-spacer'));
+    if (!toc) inner.append(el('span', 'guide-header-spacer'));
     const media = matchMedia('(max-width: 760px)');
     function layout() {
       menu.dialog.close(); toc?.dialog.close();

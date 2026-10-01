@@ -221,13 +221,25 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     report.interactions.modal = report.interactions.pagination = report.interactions.urlNormalization = report.interactions.savedRoundTrip = true;
 
     if (await page.locator('html').getAttribute('data-reading-theme') === 'dark') await chooseTheme(page);
-    const mobilePages = [['home',''],['blog','blog/'],['article','articles/2026-09-26-pokemon-sleep-play-points-coupon.html']];
+    // 計算機トップの9月22日表示はガイド用メニューと独立する。
+    await goto(page,'');
+    for (const width of [320,390,1280]) {
+      await page.setViewportSize({width,height:844});
+      await page.locator('#calculateButton').waitFor({state:'visible'});
+      assert.equal(await page.locator('#guide-menu,.guide-calculator-header').count(),0,'Calculator has no guide menu');
+      assert.equal(await page.locator('#tab-main').innerText(),'通常計算');
+      assert.equal(await page.locator('#tab-reverse').innerText(),'逆算モード');
+      assert(await page.locator('.top-bar .region-switch').isVisible(),'Region selector remains on the page');
+      assert(await page.locator('.top-bar .header-links a[href$="blog/"]').isVisible(),'Article link remains on the page');
+    }
+    report.interactions.calculatorHeaderRestored = true;
+    await page.setViewportSize({width:390,height:844});
+    const mobilePages = [['blog','blog/'],['article','articles/2026-09-26-pokemon-sleep-play-points-coupon.html']];
     report.interactions.mobileNavigation = [];
     for (const [name,route] of mobilePages) {
       await goto(page,route);
       await page.locator('.guide-nav-button').first().waitFor({state:'visible'});
       if (name === 'blog') await cards(page);
-      if (name === 'home') await page.locator('#calculateButton').waitFor({state:'visible'});
       await page.evaluate(()=>scrollTo(0,0));
       await openMenu(page);
       assert.equal(await page.locator('#guide-menu').evaluate(el=>el.matches(':modal')),true);

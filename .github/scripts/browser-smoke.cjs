@@ -582,7 +582,7 @@ async function verifyBlogPage(browser, baseUrl) {
     });
     assert(!(await visualImage.getAttribute('src')).includes('article-placeholder'), '通常サムネイルの原本を読み込む');
     assert(await page.locator('.article-card--visual .card-thumb :is(.card-category, .badge-new)').count() === 0, 'ラベルが横長サムネイルの文字を覆わない');
-    // スマホは画像の下、PCは右に本文を配置し、横長画像を切り取らない。
+    // 一覧は画像と本文を並べ、原本の比率と画像内の文字を保つ。
     for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       const boxes = await page.locator('.article-card').evaluateAll(cards => cards.map(card => {
@@ -591,7 +591,7 @@ async function verifyBlogPage(browser, baseUrl) {
         const content = card.querySelector('.card-content').getBoundingClientRect();
         const visual = card.classList.contains('article-card--visual');
         return {
-          fits: Boolean(image) && (visual && innerWidth <= 760 ? image.bottom <= content.top + 1 : image.right <= content.left + 1),
+          fits: Boolean(image) && (image.right <= content.left + 1),
           ratio: visual ? image.width / image.height : null,
           fit: getComputedStyle(thumb.querySelector('img')).objectFit,
           overflow: document.documentElement.scrollWidth - innerWidth

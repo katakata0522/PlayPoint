@@ -138,11 +138,12 @@ function renderHeader(isBlog = false) {
 }
 
 function navigationAssets(html) {
-  if (html.includes('<!-- guide-navigation-assets:start -->')) return html;
+  const existing = html.match(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->/)?.[0];
+  if (existing?.includes('/articles/guide-editorial.css')) return html;
   // 生成済みの専用ブロックを置換する。旧配置は独立した行ごと移行する。
   html = html.replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\n?/g, '');
-  html = html.split('\n').filter(line => !/^\s*<(?:link|script)\s[^<>]*(?:href="\/articles\/guide-navigation\.css|src="\/js\/guide-navigation\.js)/.test(line)).join('\n');
-  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js"></script>\n<!-- guide-navigation-assets:end -->\n</head>');
+  html = html.split('\n').filter(line => !/^\s*<(?:link|script)\s[^<>]*(?:href="\/articles\/(?:guide-navigation|guide-editorial)\.css|src="\/js\/guide-navigation\.js)/.test(line)).join('\n');
+  return html.replace('</head>', '<!-- guide-navigation-assets:start -->\n<link rel="stylesheet" href="/articles/guide-navigation.css">\n<script src="/js/guide-navigation.js"></script>\n<link rel="stylesheet" href="/articles/guide-editorial.css">\n<!-- guide-navigation-assets:end -->\n</head>');
 }
 
 function renderGamesWidget(catalog) {
@@ -239,13 +240,10 @@ function syncJapaneseNavigation(root) {
   syncGuideHubs(root, catalog);
   const home = path.join(root, 'index.html');
   const homeBefore = fs.readFileSync(home, 'utf8');
-  let homeAfter = navigationAssets(homeBefore);
-  const calculatorHeader = '<!-- guide-calculator-header:start --><header class="guide-header guide-calculator-header"><div class="site-header-inner"><a href="/" class="site-logo"><span class="guide-brand-short">PlayPoint<span>ポイント計算機</span></span></a></div></header><!-- guide-calculator-header:end -->';
-  if (homeAfter.includes('<!-- guide-calculator-header:start -->')) {
-    homeAfter = homeAfter.replace(/<!-- guide-calculator-header:start -->[\s\S]*?<!-- guide-calculator-header:end -->/, calculatorHeader);
-  } else {
-    homeAfter = homeAfter.replace('<body>', '<body>\n' + calculatorHeader);
-  }
+  // 計算機トップは9月22日の独立したヘッダーを維持する。
+  const homeAfter = homeBefore
+    .replace(/<!-- guide-navigation-assets:start -->[\s\S]*?<!-- guide-navigation-assets:end -->\s*/g, '')
+    .replace(/<!-- guide-calculator-header:start -->[\s\S]*?<!-- guide-calculator-header:end -->\s*/g, '');
   if (homeAfter !== homeBefore) fs.writeFileSync(home, homeAfter);
   return { checked: catalog.length, changed };
 }

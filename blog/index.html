@@ -132,7 +132,8 @@
 <link rel="stylesheet" href="/articles/japanese-shell.css?v=d16155b158">
 <!-- guide-navigation-assets:start -->
 <link rel="stylesheet" href="/articles/guide-navigation.css?v=1fdc90c133">
-<script src="/js/guide-navigation.js?v=99faf253d5"></script>
+<script src="/js/guide-navigation.js?v=3d31e41eaa"></script>
+<link rel="stylesheet" href="/articles/guide-editorial.css?v=67783b0beb">
 <!-- guide-navigation-assets:end -->
 <!-- discovery-assets:start -->
 <script src="/js/reading-theme.js?v=2d86999bab"></script>
@@ -146,7 +147,7 @@
 <body class="blog-index-compact">
 
     <!-- Header -->
-    <!-- guide-header:start --><header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="brand"><span class="guide-brand-full">Google Play Points 完全攻略ガイド</span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span></a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>
+    <!-- guide-header:start --><header class="site-header guide-header"><div class="site-header-inner"><a href="/blog/" class="brand"><span class="guide-brand-full"><span class="guide-wordmark">PlayPoint<span class="guide-brand-points" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="guide-brand-caption">Google Play Points 完全攻略ガイド</span></span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span></a><div class="site-header-links"><a href="/author/katakata.html">運営者・検証方針</a><button type="button" id="theme-toggle" class="reading-theme-toggle" aria-label="テーマ切替">☀️</button></div></div></header>
 <nav class="global-nav ja-global-nav" aria-label="目的から探す"><div class="global-nav-inner"><a class="nav-item" href="/blog/" aria-current="page"><span>記事一覧</span></a><a class="nav-item" href="/latest/"><span>最新情報</span></a><a class="nav-item" href="/articles/2026-08-05-play-points-levels-guide.html"><span>ランク・特典</span></a><a class="nav-item" href="/articles/2025-12-25-best-use.html"><span>貯める・使う</span></a><a class="nav-item" href="/blog/?category=トラブル"><span>困ったとき</span></a><a class="nav-item" href="/"><span>計算する</span></a></div></nav><!-- guide-header:end -->
 
     <div class="guide-hub-layout"><main class="guide-hub-main">
@@ -159,7 +160,9 @@
 
         <!-- Hero Section -->
         <section class="hero-section">
+            <p class="guide-eyebrow">PLAYPOINT GUIDE</p>
             <h1 class="hero-title">Google Play Points 記事一覧</h1>
+            <p class="guide-intro">ランク、使い道、困ったとき。知りたいことから探せます。</p>
         </section>
 
         <!-- Discovery: search first, then purpose, then optional filters -->
@@ -170,7 +173,8 @@
 
             <div class="search-sort-row search-sort-row--primary">
                 <div class="search-container">
-                    <input type="search" id="search-input" placeholder="例：ポケスリ クーポン、ブルアカ、ポイントが反映されない" aria-label="記事を検索">
+                    <label class="guide-search-label" for="search-input">キーワードで探す</label>
+                    <input type="search" id="search-input" placeholder="例：ランク、クーポン、反映されない" aria-label="記事を検索">
                 </div>
             </div>
 
@@ -224,7 +228,7 @@
             </section>
 
             <details id="article-filter-panel" class="article-filter-panel">
-                <summary>絞り込み・並び替え</summary>
+                <summary>カテゴリー・並び順</summary>
                 <div class="article-filter-panel-body">
                     <div id="category-filter" class="filter-bar" aria-label="カテゴリー">
                         <!-- Categories injected by JS -->
@@ -245,8 +249,8 @@
             </details>
         </section>
 
-        <!-- 件数表示はカテゴリボタン側の (35) 等で足りるため、ここには出さない -->
-        <p id="article-result-status" class="article-result-status visually-hidden" role="status" aria-live="polite"></p>
+        <!-- 絞り込み結果は、表示と読み上げの両方で伝える。 -->
+        <p id="article-result-status" class="article-result-status" role="status" aria-live="polite"></p>
 
         <div class="article-list-heading">
             <h2>記事一覧</h2>
@@ -476,7 +480,7 @@
 
     <script src="utils.js?v=0d5906ab78"></script>
     <script src="components.js?v=f66982e7bc"></script>
-    <script src="script.js?v=7a7b7b7bbb"></script>
+    <script src="script.js?v=3a7efc887c"></script>
 </body>
 
 </html>
