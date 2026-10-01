@@ -98,13 +98,5 @@ test('fixed-page Header synchronization repairs drift and becomes idempotent', (
   }
 });
 
-test('canonical build applies fixed-page Header synchronization before public asset finalization', () => {
-  const source = fs.readFileSync(path.join(root, 'scripts', 'build-html.js'), 'utf8');
-  assert.match(source, /require\('\.\/fixed-page-header-sync\.cjs'\)/);
-  const htmlSyncIndex = source.indexOf('syncHtmlFiles(rootDir');
-  const headerSyncIndex = source.indexOf('syncFixedPageHeaders(rootDir)');
-  const publicAssetsIndex = source.indexOf('syncPublicAssetVersions(rootDir)');
-  assert.ok(htmlSyncIndex >= 0);
-  assert.ok(headerSyncIndex > htmlSyncIndex);
-  assert.ok(publicAssetsIndex > headerSyncIndex);
-});
+// 生成処理への結線はverify-build-outputの実生成結果で確認する。
+// 呼び出し名・ソース内の並びは固定しない。

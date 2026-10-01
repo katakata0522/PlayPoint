@@ -45,8 +45,7 @@ test('記事・ブログはGA4 eventを直接送らず共通計測境界を利�
 
 // P04: deploy-cleanupの実rsync fixtureへ統合（root除外・同名サブ階層保持・別管理領域保護）。
 
-test('デプロイ時は実在する公開CSSだけを圧縮し、JSはasset version同期だけ行う', () => {
-  const minifierSource = read('.github/scripts/minify.cjs');
+test('公開CSSの圧縮対象は実在し、主要スタイルを含む', () => {
   const { cssTargets } = require('../.github/scripts/minify.cjs');
 
   for (const file of [
@@ -71,17 +70,8 @@ test('デプロイ時は実在する公開CSSだけを圧縮し、JSはasset ver
     assert.ok(cssTargets.includes(file), `CSS圧縮対象が不足しています: ${file}`);
   }
   for (const file of cssTargets) {
+    assert.ok(file.endsWith('.css'), `CSS以外をCSS圧縮へ通しません: ${file}`);
     assert.ok(fs.existsSync(path.join(root, file)), `存在しないCSSを圧縮対象にしています: ${file}`);
-  }
-
-  assert.ok(!minifierSource.includes('function minifyJS('), '実行しないJS minifierが残っています');
-  for (const operation of [
-    'syncDynamicArticleStylesheetVersion',
-    'syncSharedRuntimeAssetVersions',
-    'syncRootServiceWorker',
-    'syncPublicAssetVersions'
-  ]) {
-    assert.ok(minifierSource.includes(operation), `asset version同期処理が不足しています: ${operation}`);
   }
 });
 

@@ -72,13 +72,4 @@ test('ファイル同期は対象2ページ以外へ触れず、check後も冪�
   }
 });
 
-test('canonical buildはHTML同期後・公開asset確定前に法務ナビを同期する', () => {
-  const build = fs.readFileSync(path.join(rootDir, 'scripts', 'build-html.js'), 'utf8');
-  const htmlSync = build.indexOf('syncHtmlFiles(rootDir');
-  const fixedHeaderSync = build.indexOf('syncFixedPageHeaders(rootDir)');
-  const legalNavSync = build.indexOf('syncLegalPageLanguageNavs(rootDir)');
-  const publicAssets = build.indexOf('syncPublicAssetVersions(rootDir)');
-  assert.ok(htmlSync >= 0 && fixedHeaderSync > htmlSync);
-  assert.ok(legalNavSync > fixedHeaderSync);
-  assert.ok(publicAssets > legalNavSync);
-});
+// verify-build-outputで最終HTMLを確認し、内部の呼び出し順は重複して固定しない。

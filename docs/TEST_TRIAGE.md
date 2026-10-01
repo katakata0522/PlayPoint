@@ -1,5 +1,16 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-01 テストの過剰固定を整理
+
+- サイドバーの好物の記述は本人の訂正により生成元・公開HTMLから削除。自己紹介の日付・言い回しは固定せず、運営者ページへの導線を確認する。
+- 過去の監査完了件数・commit・stage・Markdown文言の固定検査を削除。過去の記録は保存し、現行テストの分類台帳の網羅性だけを確認する。台帳を説明する文章の完全一致は要求しない。
+- CSS圧縮は主要CSSの存在とCSS以外を通さないことを確認。内部の同期関数名や使われていない関数名の禁止は削除。内容hashと実参照はruntime-module-guards、圧縮後の配信境界、本番検証が担当する。
+- performance-hardeningの資産URL形式2検査と全公開HTMLの内容hash検査を、runtime-module-guardsの1検査へ集約。参照の形式・実在・実内容の一致を一度の走査で確認し、既存の圧縮後レーンでも同じ保証を実行する。形式が不正な版や欠損ファイルを走査から飛ばさない。
+- 固定ページ・計算機・法務ナビの生成呼び出し順をソース文字列で重複固定する3検査を削除。公開HTMLの一致・修復・冪等性の既存検査と、必須verify-build-outputの実生成による比較を維持する。
+- 記事デザインの罫線4px・角丸・グラデーション・CSS Gridの固定を除去。結論が実際に描画され、背景・罫線・面のいずれかで本文と区別できることを確認する。見出し・関連記事の描画、はみ出し、クリック可能性、キーボードフォーカス、reduced motionは維持する。
+
+件数を減らすことを合格条件にしない。計算・保存・同意・公開境界の検査は削減対象外。
+
 ## 2026-10-01 ガイド再設計と計算機ヘッダーの復元
 
 利用者の依頼で、計算機トップは9月22日の地域選択・補助リンクと「通常計算／逆算モード」に戻す。記事用メニューは記事ガイドだけで使う。`browser-reading-ui.cjs` は320/390/1280pxで計算機にメニューが生じず、地域選択と記事リンクが見えることを確認する。ガイドのダイアログ、目次、保存、検索、明暗テーマの検査は維持する。
@@ -10,7 +21,7 @@
 
 重要な目的別4入口はスマホでも検索の近くに2列で表示する。`browser-reading-ui.cjs` は320～760pxで2列・44px以上の操作高さ・文字の収まりと、最初の記事が700px未満から見えることを確認する。
 
-`browser-reading-ui.cjs` は横並びでも見出し150px以上と画像との非重複を確認する。`article-design-smoke.cjs` は日本語の新デザインの結論に、本文と異なる不透明な背景と4px以上の左罫線を要求する。以前のグラデーションの有無を新デザインの合否条件にせず、未変更の海外記事は従来の検査を維持する。
+`browser-reading-ui.cjs` は横並びでも見出し150px以上と画像との非重複を確認する。`article-design-smoke.cjs` は結論の描画と本文との区別を確認し、罫線の太さ・角丸・グラデーションなどの表現方法は固定しない。
 
 公開前検査で未変更の埋め込みコード領域に、右スクロール開始直後の4pxを基準に左操作し待機が失敗する揺らぎを確認。`accessibility-browser.cjs` は右移動後6フレーム位置が安定してから左操作し、右への移動と左への戻りの保証を維持する。サイトのキー操作や保護設定は変更しない。
 
@@ -1369,7 +1380,7 @@ S08完了後の次順として、基準930ケースに含まれる「計測・�
 | `region-selector-semantics.test.cjs` | 地域・翻訳 | ${file} presents Play country/region rather than language-only labels |
 | `remaining-calendar-days.test.cjs` | 計算 | remaining calendar days uses date-only boundaries |
 | `repository-integrity-audit.test.cjs` | 横断監査 | ファイル名はOS差で衝突せず、一時ファイルを追跡しない |
-| `test-audit-ledger-consistency.test.cjs` | 横断監査 | 監査summary JSON/Markdownと現行tests全ファイル台帳のdriftを拒否する |
+| `test-audit-ledger-consistency.test.cjs` | 横断監査 | 現行tests全ファイルが分類台帳に含まれることを確認する。過去の監査記録は公開の合否条件にしない |
 | `rescued-pad-and-articles.test.cjs` | 内容・事実・対象範囲 | PAD is published for every generated game locale and linked from each portal |
 | `result-navigation-config.test.cjs` | UI・導線 | 結果ナビ設定は公開6地域を明示的に解決し未知地域はJPへ戻す |
 | `result-presentation-contract.test.cjs` | UI・導線 | 計算結果の金額主役、空カード非表示、日本語折り返し、早見表の円を検証 |
