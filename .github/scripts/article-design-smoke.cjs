@@ -95,6 +95,8 @@ async function inspect(browser, baseUrl, article, viewport) {
           return 'rgb(255, 255, 255)';
         })(),
         fallbackTheme: document.documentElement.dataset.readingTheme,
+        answerPresent: Boolean(answer),
+        headingPresent: Boolean(heading),
         answer: rendered(answer) ? { borderLeftWidth: answerStyle.borderLeftWidth, borderLeftStyle:answerStyle.borderLeftStyle, borderLeftColor:answerStyle.borderLeftColor, backgroundImage:answerStyle.backgroundImage, backgroundColor:answerStyle.backgroundColor } : null,
         intro: rendered(intro),
         summary: rendered(summary),
@@ -108,13 +110,13 @@ async function inspect(browser, baseUrl, article, viewport) {
     if (viewport.width > 860 && result.popularCopyWidth) assert(result.popularCopyWidth >= 80, article.key + ': 人気記事の本文幅が狭すぎる');
     assert(result.sharedLoaded, article.key + '/' + viewport.key + ': article-shared.css not attached');
     assert(result.fallbackTheme === 'light', article.key + '/' + viewport.key + ': readable static theme missing without JavaScript');
-    if (!article.allArticle || result.answer) {
+    if (!article.allArticle || result.answerPresent) {
       assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
       const hasFill = result.answer.backgroundColor !== 'rgba(0, 0, 0, 0)' && result.answer.backgroundColor !== 'transparent' && result.answer.backgroundColor !== result.contentBackgroundColor;
       const hasBorder = parseFloat(result.answer.borderLeftWidth) > 0 && !['none','hidden'].includes(result.answer.borderLeftStyle) && !['transparent','rgba(0, 0, 0, 0)',result.contentBackgroundColor].includes(result.answer.borderLeftColor);
       assert(hasFill || hasBorder || result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': conclusion must remain distinct from the reading surface');
     }
-    if (!article.allArticle || result.heading) {
+    if (!article.allArticle || result.headingPresent) {
       assert(result.heading, article.key + '/' + viewport.key + ': section heading missing');
     }
     if (article.intro) {
