@@ -40,6 +40,29 @@ jobs:
           node-version-file: .github/ci-runtime/node-version
           package-manager-cache: false
 
+      - name: Run canonical PR preparation
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01'
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit canonical generated outputs
+        if: github.event_name == 'pull_request' && github.head_ref == 'fix/google-play-points-2026-10-01' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Canonical preparation produced no changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate article outputs"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
+
       - name: Record CI environment
         id: record_ci_environment
         run: node .github/scripts/ci-evidence.cjs
