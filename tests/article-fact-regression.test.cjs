@@ -9,14 +9,15 @@ function readArticle(fileName) {
   return fs.readFileSync(path.join(root, 'articles', fileName), 'utf8');
 }
 
-test('通常のウィークリーリワードとPlay Pass週次特典を区別して案内する', () => {
+test('ランク別週次・Super Ticket・Play Pass週次を現行仕様で区別する', () => {
   const html = readArticle('2025-12-25-weekly-reward.html');
-  assert.match(html, /通常のウィークリーリワード/);
-  assert.match(html, /シルバー以上/);
+  assert.match(html, /シルバー.*ウィークリーリワード/);
+  assert.match(html, /ゴールド.*スーパーウィークリーリワード/);
+  assert.match(html, /プラチナ・ダイヤモンド.*火曜日.*Super Ticket|火曜日.*Super Ticket/);
   assert.match(html, /Play Pass/);
-  assert.match(html, /通常のウィークリーリワードはシルバー以上が公式対象/);
-  assert.match(html, /通常のウィークリーリワードはシルバー以上/);
-  assert.match(html, /Play Pass加入中なら木曜日/);
+  assert.match(html, /木曜日/);
+  assert.match(html, /金曜日/);
+  assert.doesNotMatch(html, /通常のウィークリーリワードはシルバー以上/);
   assert.doesNotMatch(html, /利用者.*表示報告|例外的な表示報告/);
   assert.doesNotMatch(html, /最大\s*(?:3|10|200|500|1,000)\s*pt/);
   assert.doesNotMatch(html, /Play Pointsに登録していれば<strong>無料で毎週もらえます/);
@@ -30,15 +31,18 @@ test('入門記事は一次情報の範囲を超えて獲得対象を一般化�
   assert.doesNotMatch(html, /映画・書籍・音楽/);
   assert.doesNotMatch(html, /YouTube Premium、Google One/);
   assert.doesNotMatch(html, /ウィークリーリワードの上限アップ/);
-  assert.match(html, /シルバー以上になったら<strong>通常のウィークリーリワード/);
+  assert.match(html, /シルバー.*ウィークリーリワード/);
+  assert.match(html, /ゴールド以上.*スーパーウィークリーリワード/);
 });
 
-test('週次特典を使う補足記事にもシルバー以上の条件を明記する', () => {
+test('週次特典を使う補足記事もランク別の現行名称を守る', () => {
   const expiration = readArticle('2025-12-25-expiration.html');
   const multipleAccounts = readArticle('2025-12-25-multiple-accounts.html');
-  assert.match(expiration, /シルバー以上/);
+  assert.match(expiration, /シルバー.*ウィークリーリワード/);
+  assert.match(expiration, /ゴールド以上.*スーパーウィークリーリワード/);
   assert.doesNotMatch(expiration, /ウィークリーリワード<\/strong>を受け取る（毎週無料）/);
-  assert.match(multipleAccounts, /通常のウィークリーリワードは、<strong>シルバー以上の対象アカウント/);
+  assert.match(multipleAccounts, /アカウントごとの現在ステータス/);
+  assert.match(multipleAccounts, /スーパーウィークリーリワード/);
   assert.match(multipleAccounts, /Play Pass向け/);
 });
 
@@ -88,6 +92,10 @@ test('日本語ランク総合記事は5段階としきい値の違いを説明�
     assert.match(html, new RegExp(threshold));
   }
   assert.match(html, /使えるポイント残高|年間のレベル進捗/);
+  assert.match(html, /ゴールドのスーパーウィークリーリワード/);
+  assert.match(html, /プラチナのスーパーウィークリーリワード/);
+  assert.match(html, /ダイヤモンドのスーパーウィークリーリワード/);
+  assert.match(html, /毎週Super Ticket 1枚/);
 });
 
 test('倍率記事は直接レートと倍率入力を足し合わせない', () => {
@@ -107,6 +115,8 @@ test('Playポイントデー記事は最大7倍を全員共通と書かない', 
   assert.match(html, /最大7倍/);
   assert.match(html, /貯める/);
   assert.match(html, /ステータスによって変わる/);
+  assert.match(html, /2026年10月1日/);
+  assert.match(html, /5倍.*3倍|3倍.*5倍/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍|全員が7倍/);
   assert.doesNotMatch(html, /カレンダー/);
 });
@@ -126,10 +136,12 @@ test('Pixel割引記事は常設特典表に無いことを明記する', () => 
   assert.doesNotMatch(html, /必ずクーポン|常設特典としてPixel|最大3万円/);
 });
 
-test('ウィークリーリワード非表示記事はシルバー以上と金曜を守り上限を断定しない', () => {
+test('ウィークリーリワード非表示記事はランク別週次と曜日を守り上限を断定しない', () => {
   const html = readArticle('2026-08-16-weekly-reward-not-showing.html');
-  assert.match(html, /シルバー以上/);
+  assert.match(html, /シルバー.*ウィークリーリワード/);
+  assert.match(html, /ゴールド.*スーパーウィークリーリワード/);
   assert.match(html, /金曜日/);
+  assert.match(html, /火曜|火曜日/);
   assert.doesNotMatch(html, /最大\s*(?:100|200|500|1,000)\s*(?:pt|ポイント)/);
   assert.doesNotMatch(html, /カレンダー/);
 });
@@ -146,7 +158,8 @@ test('Play Pass記事は日本の木曜週次と加入時Gold特典を別制度�
   const html = readArticle('2026-08-16-play-pass-worth-it.html');
   assert.match(html, /日本は、Play Pass加入者向けPlay Points週次ボーナス・ブースターの公式対象地域に含まれます/);
   assert.match(html, /木曜日/);
-  assert.match(html, /通常の金曜ウィークリーリワードとは別制度/);
+  assert.match(html, /金曜のステータス別週次リワードとは別制度/);
+  assert.match(html, /ゴールド・プラチナ・ダイヤモンド.*毎週木曜日.*Super Ticket|毎週木曜日.*Super Ticket/);
   assert.match(html, /answer\/16507543/);
   assert.match(html, /answer\/14673382/);
   assert.match(html, /日本はその対象国リストに入っていません/);
@@ -246,6 +259,8 @@ test('ゴールド対プラチナ記事はPlay Pass Gold特典と日本の週次
   assert.match(html, /answer\/14673382/);
   assert.match(html, /日本は含まれていません/);
   assert.match(html, /日本の木曜週次特典とは分けて考えます/);
+  assert.match(html, /Super Ticket/);
+  assert.match(html, /毎週1枚/);
   assert.doesNotMatch(html, /ダイヤ(?:モンド)?は5倍|プラチナは3倍/);
 });
 
