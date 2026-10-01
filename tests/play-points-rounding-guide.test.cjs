@@ -37,13 +37,18 @@ test('購入ごとの丸めと総額への一度だけの丸めを分ける', ()
 test('丸め関数は非負のポイントを最も近い整数へ丸める', () => {
   assert.equal(roundPoints(6.25), 6);
   assert.equal(roundPoints(7.5), 8);
+  assert.equal(roundPoints(0), 0);
   assert.throws(() => roundPoints(-0.1), /0以上/);
+  assert.throws(() => roundPoints(Infinity), TypeError);
 });
 
 test('不正な購入回数と獲得率を拒否する', () => {
   assert.throws(() => calculatePurchasePoints({ price: 100, count: 0, rate: 1 }), /1～1000/);
   assert.throws(() => calculatePurchasePoints({ price: 100, count: 1.5, rate: 1 }), /整数/);
+  assert.equal(calculatePurchasePoints({ price: 100, count: 1000, rate: 1 }).separateTotal, 1000);
+  assert.throws(() => calculatePurchasePoints({ price: 100, count: 1001, rate: 1 }), RangeError);
   assert.throws(() => calculatePurchasePoints({ price: 100, count: 1, rate: 0 }), /0より大きい/);
+  assert.throws(() => calculatePurchasePoints({ price: 100, count: 1, rate: Infinity }), TypeError);
 });
 
 test('記事は税抜・四捨五入・機能の限界を明示する', () => {
