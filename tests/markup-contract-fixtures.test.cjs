@@ -37,6 +37,9 @@ test('多言語の共有検査は属性の順序や引用符を固定せず、�
   assertOfficialAnswers(official, 'fixture', ['9077247']);
   for (const bad of [`<!--${official}-->`, official.replace('support.google.com', 'support.google.com.example.com'), official.replace('9077247?', '90772470?')]) assert.throws(() => assertOfficialAnswers(bad, 'fixture', ['9077247']));
   assertPhrases('<p>expire after one year</p>', 'fixture', ['expire after one year']);
+  assertPhrases('<script>hidden</script\t\n bar><p>expire after one year</p>', 'fixture', ['expire after one year']);
+  assertPhrases('<script>hidden</script-not-an-end>expire after one year</script><p>Visible</p>', 'fixture', ['Visible']);
+  assert.throws(() => assertPhrases('<script>hidden</script-not-an-end>expire after one year</script><p>Visible</p>', 'fixture', ['expire after one year']));
   for (const bad of ['<!-- expire after one year -->', '<script>expire after one year</script>', '<style>expire after one year</style>']) assert.throws(() => assertPhrases(bad, 'fixture', ['expire after one year']));
   for (const quote of ['"', "'", '']) assert.throws(() => assertLocalAnchorsExist(`<a href=${quote}/__missing_fixture__.html${quote}>Broken</a>`, 'fixture'));
   assertLocalAnchorsExist(`<a href='/en/?mode=x#result'>Exists</a>`, 'fixture');

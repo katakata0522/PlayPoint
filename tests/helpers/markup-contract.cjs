@@ -11,7 +11,7 @@ function parseAttributes(tag) {
 }
 function openingTags(html) {
   const tags = [];
-  const tokens = /<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1\s*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  const tokens = /<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
   for (const token of html.matchAll(tokens)) {
     if (!token[2]) continue;
     const attrs = parseAttributes(token[0]);

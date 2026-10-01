@@ -34,12 +34,12 @@ function withoutComments(html) {
 }
 
 function staticMarkup(html) {
-  return withoutComments(html).replace(/<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1\s*>|$)/gi, '');
+  return withoutComments(html).replace(/<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)/gi, '');
 }
 
 function schemas(html) {
   const result = [];
-  for (const match of withoutComments(html).matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)<\/script\s*>/gi)) {
+  for (const match of withoutComments(html).matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)<\/script(?=[\s/>])[^>]*>/gi)) {
     if (parseAttributes('script ' + match[1]).type?.toLowerCase() === 'application/ld+json') result.push(JSON.parse(match[2]));
   }
   return result;
