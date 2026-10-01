@@ -2,15 +2,19 @@
 const assert = require('node:assert/strict');
 
 // 静的配信の識別子と順序だけを読む。レイアウト・可視性はChromiumが担当する。
+function parseAttributes(tag) {
+  const attrs = Object.create(null);
+  for (const attr of tag.matchAll(/\s([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
+    attrs[attr[1].toLowerCase()] = attr[2] ?? attr[3] ?? attr[4];
+  }
+  return attrs;
+}
 function openingTags(html) {
   const tags = [];
   const tokens = /<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1\s*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
   for (const token of html.matchAll(tokens)) {
     if (!token[2]) continue;
-    const attrs = Object.create(null);
-    for (const attr of token[0].matchAll(/\s([\w:-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g)) {
-      attrs[attr[1].toLowerCase()] = attr[2] ?? attr[3] ?? attr[4];
-    }
+    const attrs = parseAttributes(token[0]);
     tags.push({ tag: token[2].toLowerCase(), attrs, index: token.index });
   }
   return tags;
@@ -25,4 +29,4 @@ function assertOrderedAttributes(html, attribute, values, label) {
     previous = matches[0].index;
   }
 }
-module.exports = { openingTags, assertOrderedAttributes };
+module.exports = { openingTags, parseAttributes, assertOrderedAttributes };
