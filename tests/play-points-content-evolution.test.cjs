@@ -10,6 +10,7 @@ const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf
 
 const superWeeklyPath = 'articles/2026-07-31-super-weekly-reward.html';
 const questsPath = 'articles/2026-07-31-google-play-quests.html';
+const blackDiamondPath = 'articles/2026-10-01-black-diamond-diamond-vip.html';
 
 test('新規記事は記事台帳へ一意に登録される', () => {
   const articles = JSON.parse(read('blog/articles.json'));
@@ -99,4 +100,23 @@ test('今回のPlay Points公式記事群へ第三者決済キャンペーンを
   for (const relativePath of paths) {
     assert.doesNotMatch(read(relativePath), /\bJCB\b/i, relativePath);
   }
+});
+
+
+test('Black Diamond記事は確定情報と未発表情報を分離する', () => {
+  const html = read(blackDiamondPath);
+  const articles = JSON.parse(read('blog/articles.json'));
+
+  assert.ok(fs.existsSync(path.join(root, blackDiamondPath)));
+  assert.ok(articles.some(article => article.id === 'black-diamond-diamond-vip-2026'));
+  assert.ok(html.includes('公開ステータスは今も5段階'));
+  assert.ok(html.includes('完全招待制のVIPラウンジ'));
+  assert.ok(html.includes('現地で「この区画の正式名称はDiamond VIPです」と確認したわけではありません'));
+  assert.ok(html.includes('Black Diamondが第7ランクに確定'));
+  assert.ok(html.includes('とは書かず'));
+  assert.ok(html.includes('30,000pt・45,000pt説は、今のところ昇格条件として載せない'));
+  assert.ok(html.includes('support.google.com/googleplay/answer/9080348'));
+  assert.ok(html.includes('playpoints.withgoogle.com/tgs/2026/offline'));
+  assert.ok(html.includes('jetstream.blog/2026/09/09/google-play-points-black-diamond-diamond-vip-app-teardown'));
+  assert.ok(html.includes('esports-world.jp/report/66112'));
 });
