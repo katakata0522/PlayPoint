@@ -57,7 +57,7 @@ const { syncGameSeoWave5 } = require('./game-seo-wave5-sync.cjs');
 const { syncGameSeoWave5RegionalRates } = require('./game-seo-wave5-regional-sync.cjs');
 const { syncGameGuideArticleHub } = require('./game-guide-article-hub-sync.cjs');
 const { syncArticleAuthorSemantics } = require('./article-author-semantics.cjs');
-const { syncArticleTableOverflow } = require('./article-table-overflow-sync.cjs');
+const { syncArticleTableOverflow, syncScrollableRegions } = require('./article-table-overflow-sync.cjs');
 
 const rootDir = path.join(__dirname, '..');
 
@@ -186,6 +186,8 @@ console.log(`[build-html] finalized international/Japanese hreflang: ${finalIntl
 // 翻訳・ゲーム・機能ページも、最終生成物の画像実体と補助タグを一致させる。
 const { syncSubmittedPageOgp } = require('./update-common-pages-ogp.cjs');
 console.log('[build-html] finalized submitted-page OGP:', syncSubmittedPageOgp(rootDir));
+
+console.log('[build-html] finalized keyboard-scroll regions:', syncScrollableRegions(rootDir));
 
 const twTerminologySummary = assertTaiwanTerminology(rootDir);
 console.log(`[build-html] verified Taiwan terminology contract: ${twTerminologySummary.htmlFilesChecked} HTML files + ${twTerminologySummary.sourceFilesChecked} source assets checked`);

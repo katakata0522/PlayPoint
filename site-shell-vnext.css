@@ -52,6 +52,19 @@ a {
   text-underline-offset: 0.16em;
 }
 
+/* 本文とパンくずのリンクは色以外でも識別できるようにする。 */
+.container p a,
+.container li a,
+body.blog-index-compact .breadcrumb a {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+body.blog-index-compact .breadcrumb a {
+  opacity: 1;
+  color: var(--pp-shell-link);
+}
+
 a:hover {
   text-decoration-thickness: 2px;
 }

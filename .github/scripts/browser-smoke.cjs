@@ -668,9 +668,17 @@ async function main() {
       report.diary = { passed: false, error: error.message };
       console.error('not ok - Diary:', error.message);
     }
+    try {
+      const { verifyCommonAccessibility } = require('./accessibility-browser.cjs');
+      report.accessibility = await verifyCommonAccessibility(browser, baseUrl, blockExternalRequests, ARTIFACT_DIR);
+      console.log('ok - Common keyboard scrolling, link identification, contrast states and share opener');
+    } catch (error) {
+      report.accessibility = { passed: false, error: error.message };
+      console.error('not ok - Common accessibility:', error.message);
+    }
     stage = 'revision-after';
     await revisionSession.check(baseUrl, 'after-browser');
-    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed;
+    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed && report.accessibility.passed;
   } catch (error) {
     report.error = error.message;
     report.failedStage = stage;

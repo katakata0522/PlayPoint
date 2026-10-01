@@ -499,7 +499,7 @@ export const CALC = {
         const config = CONFIGS[STATE.currentRegion];
         const hashtags = config.uiText.tweetHashtags || "#Playポイント計算してみた\n#GooglePlayポイント";
         const fullText = `${text}\n\n${hashtags}\n\n${shareUrl}`;
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}`, '_blank');
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(fullText)}`, '_blank', 'noopener,noreferrer');
     },
 
     // 結果コピー

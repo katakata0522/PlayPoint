@@ -1628,3 +1628,9 @@ contain-intrinsic-size: none;
 html { scroll-behavior: auto !important; }
 }
 /* ARTICLE_DESIGN_SYSTEM_V2_END */
+
+/* 表を左右キーで読む際のフォーカスを明示する。 */
+:is(.lp-table-wrap, .pack-table-wrap, .comparison-reference-table-wrap, .table-wrap, .table-card, .table-wrapper)[tabindex="0"]:focus-visible {
+  outline: 3px solid var(--reading-link, #0b57d0);
+  outline-offset: 3px;
+}

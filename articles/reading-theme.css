@@ -84,3 +84,12 @@ html[data-reading-theme] .site-footer a { color:var(--reading-link); }
 html[data-reading-theme] .main-content-column .cta-box { background:var(--reading-soft); color:var(--reading-text); }
 html[data-reading-theme] .main-content-column .cta-box :is(h2,h3,p) { color:var(--reading-text); }
 html[data-reading-theme] .main-content-column .cta-btn { background:var(--reading-action); color:var(--reading-on-action); }
+/* 明暗切替を持つ案内ページも、パネルと文字を同じ意味色で描画する。 */
+html[data-reading-theme] :is(.lp-hero-panel) { background:var(--reading-note-bg); color:var(--reading-text); }
+html[data-reading-theme] .lp-hero-panel :is(h2,h3) { color:var(--reading-text); }
+html[data-reading-theme] .benefit-board > h2 { color:var(--reading-text); }
+html[data-reading-theme] .lp-affiliate-box { background:var(--reading-warning-bg); color:var(--reading-warning); }
+html[data-reading-theme] :is(.lp-affiliate-box-title,.lp-affiliate-box-text) { color:var(--reading-warning); }
+html[data-reading-theme] :is(.lp-affiliate-sublink,.page-footer a) { color:var(--reading-link); }
+html[data-reading-theme] :is(.site-footer-trademark,.copyright) { color:var(--reading-muted); }
+html[data-reading-theme] .lp-note { color:var(--reading-muted); }
