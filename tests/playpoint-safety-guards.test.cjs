@@ -3,18 +3,31 @@ const fs = require('fs');
 const path = require('path');
 const {
   root,
+  createInput,
+  createSelect,
+  loadCalculatorContext,
   test,
 } = require('./helpers/playpoint-calculator-test-context.cjs');
 
-test('削除済みのウィークリーリワード自動差し引きは設定にも計算処理にも残さない', () => {
-  const configSource = fs.readFileSync(path.join(root, 'js', 'config.js'), 'utf8');
-  const calculatorSource = fs.readFileSync(path.join(root, 'js', 'calculator.js'), 'utf8');
-  const localeSource = fs.readFileSync(path.join(root, 'scripts', 'locale-config.cjs'), 'utf8');
-
-  assert.ok(!configSource.includes('weeklyRewardEstimates'), '旧リワード推定設定が残っています');
-  assert.ok(!configSource.includes('subtractRewardsLabel'), '旧リワード差し引き文言が残っています');
-  assert.ok(!calculatorSource.includes('subtractRewards'), '旧リワード差し引き分岐が残っています');
-  assert.ok(!localeSource.includes('subtractRewardsLabel'), '言語ページ生成設定に旧文言が残っています');
+test('入力した必要ポイントを自動的に差し引かず、そのまま必要額へ換算する', () => {
+  // ランク率・閾値の設定整合とは別に、入力10ptの換算額を既知値で確認する。
+  for (const [region, expectedAmount] of Object.entries({JP: 1000, US: 10, KR: 10000, TW: 300})) {
+    const {PP_STATE, populateStatusSelects, updateBaseRateAndTarget, calculate, renderedResults} = loadCalculatorContext();
+    PP_STATE.currentRegion = region;
+    PP_STATE.dom.currentStatus = createSelect();
+    PP_STATE.dom.reverseStatus = createSelect();
+    PP_STATE.dom.targetStatus = createSelect();
+    PP_STATE.dom.baseRate = createInput();
+    PP_STATE.dom.neededPoints = createInput('10');
+    PP_STATE.dom.multiplier = createInput('1');
+    PP_STATE.dom.result = {dataset: {}};
+    populateStatusSelects();
+    updateBaseRateAndTarget();
+    calculate();
+    assert.strictEqual(renderedResults[0].isError, false, region);
+    assert.strictEqual(PP_STATE.dom.result.dataset.requiredYen, expectedAmount, region);
+    assert.ok(renderedResults[0].content.includes('data-value="10"'), region + ': input points stay unchanged');
+  }
 });
 
 test('公開LPは削除済みのウィークリーリワード差し引き操作を案内しない', () => {

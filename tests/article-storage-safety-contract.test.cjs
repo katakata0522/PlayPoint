@@ -158,7 +158,16 @@ test('explicit recovery backs up corrupt data, preserves other keys, and rejects
 test('failed backup writes leave the original unreadable value unchanged', () => {
   const {recoverStore} = require('../js/reading-library.js');
   let raw = '{broken';
-  const storage = {getItem:key=>key===KEY?raw:null,setItem(){throw Error('quota');}};
+  const writes = [];
+  const storage = {
+    getItem: key => key === KEY ? raw : null,
+    setItem(key, value) {
+      writes.push(key);
+      if (key === RECOVERY_KEY) throw Error('quota');
+      if (key === KEY) raw = value;
+    }
+  };
   assert.throws(()=>recoverStore(storage),/quota/);
   assert.equal(raw,'{broken');
+  assert.deepEqual(writes, [RECOVERY_KEY], '元データへの書込は退避成功後だけ');
 });

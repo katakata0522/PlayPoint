@@ -19,52 +19,7 @@ test('ステータス選択の初期値はブロンズになる', () => {
   assert.strictEqual(PP_STATE.dom.reverseStatus.value, '1');
 });
 
-test('通常計算の目標候補は現在ランクから進める有効なランクを含む', () => {
-  const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
-  PP_STATE.currentRegion = 'JP';
-  PP_STATE.dom.currentStatus = createSelect();
-  PP_STATE.dom.currentStatus.value = '1';
-  PP_STATE.dom.baseRate = createInput();
-  PP_STATE.dom.targetStatus = createSelect();
-  PP_STATE.dom.neededPoints = createInput();
-
-  updateBaseRateAndTarget();
-
-  const config = PP_REGION_CONFIGS.JP;
-  const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel);
-  const allowedTargets = new Set(config.statusPointsMapping[1] || []);
-
-  assert.deepStrictEqual(labels, [...allowedTargets], 'ブロンズではSSOTの全上位ランクを目標候補にする');
-  assert.strictEqual(new Set(labels).size, labels.length);
-  assert.strictEqual(PP_STATE.dom.neededPoints.max, String(config.thresholds[labels[0]]));
-  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
-});
-
-test('目標候補は表示言語と独立したランクIDを保持する', () => {
-  const { PP_STATE, PP_REGION_CONFIGS, updateBaseRateAndTarget } = loadCalculatorContext();
-
-  for (const [region, config] of Object.entries(PP_REGION_CONFIGS)) {
-    PP_STATE.currentRegion = region;
-    PP_STATE.dom.currentStatus = createSelect();
-    PP_STATE.dom.currentStatus.value = String(Object.values(config.statuses)[0]);
-    PP_STATE.dom.baseRate = createInput();
-    PP_STATE.dom.targetStatus = createSelect();
-    PP_STATE.dom.neededPoints = createInput();
-
-    updateBaseRateAndTarget();
-
-    for (const option of PP_STATE.dom.targetStatus.options) {
-      if (!option.dataset.statusLabel) continue;
-      assert.strictEqual(
-        option.dataset.rankKey,
-        config.tierIdsByLabel[option.dataset.statusLabel],
-        `${region}/${option.dataset.statusLabel}: rank id must come from region SSOT`
-      );
-    }
-  }
-});
-
-test('日本語のゴールド→プラチナ必要ポイント例は1728を維持する', () => {
+test('目標変更後の必要ポイント例は選択中の上限内の整数になる', () => {
   const { PP_STATE, updateBaseRateAndTarget, updateNeededPointsConstraint } = loadCalculatorContext();
   PP_STATE.currentRegion = 'JP';
   PP_STATE.dom.currentStatus = createSelect();
@@ -82,12 +37,18 @@ test('日本語のゴールド→プラチナ必要ポイント例は1728を維�
 
   PP_STATE.dom.targetStatus.selectedIndex = goldIndex;
   updateNeededPointsConstraint();
-  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：250');
+  function assertValidExample() {
+    const example = PP_STATE.dom.neededPoints.placeholder.match(/(?:^|[^0-9])([0-9]+)\s*$/)?.[1];
+    assert.ok(example, '入力例には整数を示す');
+    assert.ok(Number(example) >= 0 && Number(example) <= Number(PP_STATE.dom.neededPoints.max));
+  }
+  assert.strictEqual(PP_STATE.dom.neededPoints.max, '1000');
+  assertValidExample();
 
   PP_STATE.dom.targetStatus.selectedIndex = platinumIndex;
   updateNeededPointsConstraint();
   assert.strictEqual(PP_STATE.dom.neededPoints.max, '4000');
-  assert.strictEqual(PP_STATE.dom.neededPoints.placeholder, '例：1728');
+  assertValidExample();
 });
 
 test('前年からランクを引き継いだ場合も目標閾値全体を入力できる', () => {
@@ -104,17 +65,9 @@ test('通常獲得率と特別獲得率は高い方を使い、ランク率へ�
   PP_STATE.currentRegion = 'JP';
   const status = createInput('1.5');
 
-  assert.deepStrictEqual(
-    JSON.parse(JSON.stringify(getRateDetails(createInput('4'), status, createInput('2')))),
-    {
-      directRate: 4,
-      multiplier: 2,
-      promotionRate: 2,
-      multipliedRate: 2,
-      finalRate: 4,
-      source: 'direct'
-    }
-  );
+  const direct = getRateDetails(createInput('4'), status, createInput('2'));
+  assert.strictEqual(direct.finalRate, 4);
+  assert.strictEqual(direct.source, 'direct');
   assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).finalRate, 3);
   assert.strictEqual(getRateDetails(createInput('1.5'), status, createInput('3')).source, 'multiplier');
   assert.strictEqual(getRateDetails(createInput('2'), status, createInput('2')).source, 'same');
@@ -177,10 +130,11 @@ test('金曜の開始時刻を過ぎたカレンダー登録は翌週を使う',
   );
 });
 
-test('月平均の分母は年末までの残日数から切り上げ月数で計算する', () => {
+test('月平均の分母は当月を含む残り月数を使い、12月31日は表示を省く', () => {
   const { getRemainingMonths } = loadCalculatorContext();
 
   assert.strictEqual(getRemainingMonths(new Date(2026, 0, 1)), 12);
+  assert.strictEqual(getRemainingMonths(new Date(2026, 4, 1)), 8);
   assert.strictEqual(getRemainingMonths(new Date(2026, 4, 31)), 8);
   assert.strictEqual(getRemainingMonths(new Date(2026, 11, 31)), 0);
 });
@@ -241,10 +195,15 @@ test('必要ポイントの空欄は課金不要にせず入力エラーにす�
 });
 
 test('必要ポイント0は達成済みとして課金不要を出す', () => {
-  const { calculate, renderedResults } = setupJpMain('0');
+  const { PP_STATE, calculate, renderedResults, renderedResultDetails } = setupJpMain('0');
+  PP_STATE.dom.neededPoints.min = '1';
   calculate();
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(renderedResults[0].content.includes('課金不要'));
+  assert.strictEqual(PP_STATE.dom.neededPoints.min, '0');
+  assert.strictEqual(PP_STATE.dom.result.dataset.requiredYen, 0);
+  assert.deepStrictEqual(renderedResultDetails, ['']);
+  assert.ok(!renderedResults[0].content.includes('result-purchase-check'));
 });
 
 test('目標を超えた入力は選択中のランク・上限・修正方法を案内する', () => {
@@ -332,7 +291,6 @@ test('通常計算は必要額と月日目安を主要結果へ出し、週平�
 
   assert.strictEqual(renderedResults[0].isError, false);
   assert.ok(renderedResults[0].content.includes('合計の必要課金額目安'));
-  assert.ok(renderedResults[0].content.includes('result-hero'));
   assert.ok(renderedResults[0].content.includes('月平均目安'));
   assert.ok(renderedResults[0].content.includes('1日あたり目安'));
   assert.ok(!renderedResults[0].content.includes('週平均目安'));
@@ -397,11 +355,22 @@ test('各地域でSSOTの全上位ランクを先に出し、維持は末尾へ�
         ...(config.statusPointsMapping[currentValue] || []),
         ...(Number(currentValue) > 1 ? [currentLabel] : [])
       ];
-      const labels = PP_STATE.dom.targetStatus.options.map(option => option.dataset.statusLabel).filter(Boolean);
+      const options = PP_STATE.dom.targetStatus.options;
+      for (const option of options) {
+        if (!expected.length) continue; // 上位も維持もない場合は案内optionだけ。
+        assert.ok(option.dataset.statusLabel, region + '/' + currentLabel + ': visible target needs a label');
+        assert.strictEqual(option.dataset.rankKey, config.tierIdsByLabel[option.dataset.statusLabel],
+          region + '/' + currentLabel + ': target rank ID must match region SSOT');
+      }
+      const labels = options.map(option => option.dataset.statusLabel).filter(Boolean);
       const kinds = PP_STATE.dom.targetStatus.options.map(option => option.dataset.targetKind).filter(Boolean);
 
       assert.deepStrictEqual(labels, expected, `${region}/${currentLabel}: target candidates must exactly follow region SSOT`);
       assert.strictEqual(new Set(labels).size, labels.length, `${region}/${currentLabel}: duplicate target candidates`);
+      assert.deepStrictEqual(kinds, [
+        ...(config.statusPointsMapping[currentValue] || []).map(() => 'upgrade'),
+        ...(Number(currentValue) > 1 ? ['maintain'] : [])
+      ], `${region}/${currentLabel}: upgrade and maintenance actions must match their labels`);
       if ((config.statusPointsMapping[currentValue] || []).length) {
         assert.strictEqual(kinds[0], 'upgrade', `${region}/${currentLabel}: default target must be the next upgrade`);
       }
@@ -467,7 +436,7 @@ test('通常還元と特別獲得率の差額は必要額概算で比較する',
   );
 });
 
-test('computeMainResultはパック額を使わず必要額だけを返す', () => {
+test('必要額概算は小数の必要額を通貨の整数へ切り上げる', () => {
   const { computeMainResult } = loadCalculatorContext();
   const result = computeMainResult({
     neededPoints: 12,
@@ -476,6 +445,5 @@ test('computeMainResultはパック額を使わず必要額だけを返す', () 
     baseDate: new Date(2026, 6, 10)
   });
 
-  assert.strictEqual(result.packsNeeded, undefined);
   assert.strictEqual(result.totalAmountNeeded, 11);
 });

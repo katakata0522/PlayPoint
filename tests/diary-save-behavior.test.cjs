@@ -57,7 +57,7 @@ function createRuntime({ saveFails = false, pointsValue = '125' } = {}) {
       }
     },
     CONSTANTS: {
-      DIARY_DATA_KEY: 'playpointDiaryData',
+      DIARY_DATA_KEY: 'hokuhokuDiaryData',
       SAVE_CONFIRMATION_DURATION: 100,
       CLASS_ACTIVE: 'active',
       CLASS_HIDDEN: 'hidden'
@@ -98,6 +98,8 @@ function createRuntime({ saveFails = false, pointsValue = '125' } = {}) {
 
   return {
     analyticsEvents,
+    pointsInput,
+    prizeSelect,
     button,
     diary: context.__DIARY,
     pure: context.__DIARY_PURE,
@@ -130,7 +132,7 @@ test('通常保存が成功した時だけ保存データ・計測・成功通�
   runtime.diary.handleDiarySave({ target: runtime.button });
 
   assert.equal(runtime.savedValues.length, 1);
-  assert.equal(runtime.savedValues[0].key, 'playpointDiaryData');
+  assert.equal(runtime.savedValues[0].key, 'hokuhokuDiaryData');
   assert.deepEqual(JSON.parse(runtime.savedValues[0].value), {
     2026: { 8: { 1: { points: '125', prize: 'Silver reward' } } }
   });
@@ -163,15 +165,39 @@ test('サイレント保存はデータと計測を確定するが成功toast・
 });
 
 
-test('実装は入力blur・景品change・X共有を保存トリガーにしない', () => {
-  const rawSource = fs.readFileSync(path.resolve(__dirname, '../js/diary.js'), 'utf8');
-  assert.doesNotMatch(rawSource, /triggerAutoSave/);
-  assert.doesNotMatch(rawSource, /pointsInput\.addEventListener\('blur'/);
-  assert.doesNotMatch(rawSource, /prizeSelect\.addEventListener\('change'/);
-  assert.doesNotMatch(rawSource, /diary-x-share-btn/);
-  assert.match(rawSource, /classList\?\.contains\('diary-save-btn'\)/);
+test('現在週の入力・blur・景品変更は自動保存せず変更状態だけを更新する', () => {
+  const runtime = createRuntime();
+  function events(element) {
+    const listeners = new Map();
+    element.addEventListener = (type, callback) => {
+      if (!listeners.has(type)) listeners.set(type, []);
+      listeners.get(type).push(callback);
+    };
+    return type => (listeners.get(type) || []).forEach(callback => callback({target: element}));
+  }
+  const inputEvent = events(runtime.pointsInput);
+  const prizeEvent = events(runtime.prizeSelect);
+  const edit = {};
+  events(edit);
+  const row = {dataset: {}, querySelector(selector) {
+    return {'input[type="number"]': runtime.pointsInput, select: runtime.prizeSelect,
+      '.diary-save-btn': runtime.button, '.weekly-record-edit': edit}[selector] || null;
+  }};
+  let dirtyCalls = 0;
+  runtime.diary.getWeeklyExperienceCopy = () => ({});
+  runtime.diary.setCurrentWeekRecordMode = () => {};
+  runtime.diary.updateCurrentWeekDirtyState = () => { dirtyCalls += 1; };
+  runtime.diary.configureCurrentWeekRecordState(row, {}, '未選択');
+  runtime.pointsInput.value = '150';
+  inputEvent('input');
+  inputEvent('blur');
+  runtime.prizeSelect.value = 'Gold reward';
+  prizeEvent('change');
+  assert.equal(dirtyCalls, 2, '実際に登録された変更ハンドラが動く');
+  assert.deepEqual(runtime.savedValues, []);
+  assert.deepEqual(runtime.analyticsEvents, []);
+  assert.deepEqual(runtime.dispatchedEvents, []);
 });
-
 
 test('X共有ボタンは委譲クリックを通っても日記保存処理を起動しない', () => {
   const runtime = createRuntime();
