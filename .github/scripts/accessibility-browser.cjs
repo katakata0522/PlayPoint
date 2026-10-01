@@ -143,7 +143,21 @@ async function verifyCommonAccessibility(browser, baseUrl, blockExternalRequests
           await region.evaluate(el => { el.scrollLeft = 0; });
           await page.keyboard.press('ArrowRight');
           await page.waitForFunction(el => el.scrollLeft > 0, await region.elementHandle());
-          const right = await region.evaluate(el => el.scrollLeft);
+          // ブラウザーのキーによるスクロールはアニメーションする。
+          // 開始直後の数pxを基準に逆操作すると、前の移動が続いて誤判定になる。
+          const right = await region.evaluate(el => new Promise((resolve, reject) => {
+            const started = performance.now();
+            let previous = el.scrollLeft, stableFrames = 0;
+            function frame() {
+              const current = el.scrollLeft;
+              stableFrames = current === previous ? stableFrames + 1 : 0;
+              previous = current;
+              if (stableFrames >= 6) return resolve(current);
+              if (performance.now() - started > 10000) return reject(new Error('Keyboard scroll did not settle'));
+              requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
+          }));
           await page.keyboard.press('ArrowLeft');
           await page.waitForFunction(({ el, right }) => el.scrollLeft < right, { el: await region.elementHandle(), right });
           row.keyboardScroll.push({ width, name: size.name, max: size.max, right });
