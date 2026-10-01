@@ -660,9 +660,17 @@ async function main() {
       report.games = { passed: false, error: error.message };
       console.error('not ok - Game calculators:', error.message);
     }
+    try {
+      const { verifyDiaryBoundaries } = require('./diary-browser.cjs');
+      report.diary = await verifyDiaryBoundaries(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
+      console.log('ok - Diary month/year boundaries, save, edit, reload and other months');
+    } catch (error) {
+      report.diary = { passed: false, error: error.message };
+      console.error('not ok - Diary:', error.message);
+    }
     stage = 'revision-after';
     await revisionSession.check(baseUrl, 'after-browser');
-    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed;
+    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed;
   } catch (error) {
     report.error = error.message;
     report.failedStage = stage;
