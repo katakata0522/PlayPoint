@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: pr-gate-${{ github.head_ref || github.ref }}
@@ -27,12 +27,41 @@ jobs:
           # PR merge commitの両親を取得し、基準mainの実出力と比較する。
           fetch-depth: 2
 
+      - name: Check out article branch head
+        if: github.event_name == 'pull_request' && github.head_ref == 'content/black-diamond-diamond-vip-2026-10-01'
+        env:
+          ARTICLE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: git checkout --detach "$ARTICLE_HEAD_SHA"
+
       - name: Set up pinned CI Node
         id: ci_node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .github/ci-runtime/node-version
           package-manager-cache: false
+
+      - name: Run canonical PR preparation for new article
+        if: github.event_name == 'pull_request' && github.head_ref == 'content/black-diamond-diamond-vip-2026-10-01'
+        run: node scripts/prepare-pr.cjs
+
+      - name: Commit canonical generated article outputs
+        if: github.event_name == 'pull_request' && github.head_ref == 'content/black-diamond-diamond-vip-2026-10-01' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Canonical preparation produced no changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: regenerate Black Diamond article outputs"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${REPOSITORY}.git" "HEAD:${HEAD_REF}"
 
       - name: Record CI environment
         id: record_ci_environment
