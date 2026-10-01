@@ -1,41 +1,5 @@
 [
   {
-    "id": "black-diamond-diamond-vip-2026",
-    "title": "Google Play Pointsにブラックダイヤモンド？ダイヤモンドVIPと新ランクの痕跡を検証",
-    "date": "2026-10-01",
-    "modified": "2026-10-01",
-    "category": "ランク",
-    "tags": [
-      "Play Points",
-      "Diamond VIP",
-      "Black Diamond",
-      "ダイヤモンド",
-      "TGS2026"
-    ],
-    "description": "Google Play Pointsに未発表の上位ステータス「Diamond VIP」「Black Diamond」はある？公式の5段階表、TGS2026の招待制VIPラウンジ、公式キャンペーン表記、PlayストアのAPK解析を分けて検証します。必要ポイントや開始日は未確定として整理。",
-    "file": "../articles/2026-10-01-black-diamond-diamond-vip.html",
-    "related": [
-      [
-        "/articles/2026-08-05-play-points-levels-guide.html",
-        "現在の公式ランク一覧を確認する"
-      ],
-      [
-        "/articles/2025-12-25-diamond-vip.html",
-        "現在のダイヤモンド特典を確認する"
-      ],
-      [
-        "/articles/2026-08-17-tgs-google-play-vip.html",
-        "TGS2026のダイヤモンドラウンジ記録を見る"
-      ]
-    ],
-    "thumbnail": "../articles/ogp/2026-08-05-play-points-levels-guide.png",
-    "source": "article",
-    "listed": true,
-    "listTitle": "Black Diamond・Diamond VIPはある？新ランクの痕跡を検証",
-    "listDescription": "公開ランクは5段階のまま。TGS現地確認、公式ページ、APK解析を分けて整理します。",
-    "browseCategory": "ランク・ステータス"
-  },
-  {
     "id": "fgo-pity-cost-2026",
     "modified": "2026-09-23",
     "title": "FGO天井330回はいくら？聖晶石価格・福袋・Play Points還元【2026年】",
@@ -684,6 +648,42 @@
     "source": "game-guide",
     "listed": true,
     "browseCategory": "ゲーム別課金"
+  },
+  {
+    "id": "black-diamond-diamond-vip-2026",
+    "title": "Google Play Pointsにブラックダイヤモンド？ダイヤモンドVIPと新ランクの痕跡を検証",
+    "date": "2026-10-01",
+    "modified": "2026-10-01",
+    "category": "ランク",
+    "tags": [
+      "Play Points",
+      "Diamond VIP",
+      "Black Diamond",
+      "ダイヤモンド",
+      "TGS2026"
+    ],
+    "description": "Google Play Pointsに未発表の上位ステータス「Diamond VIP」「Black Diamond」はある？公式の5段階表、TGS2026の招待制VIPラウンジ、公式キャンペーン表記、PlayストアのAPK解析を分けて検証します。必要ポイントや開始日は未確定として整理。",
+    "file": "../articles/2026-10-01-black-diamond-diamond-vip.html",
+    "related": [
+      [
+        "/articles/2026-08-05-play-points-levels-guide.html",
+        "現在の公式ランク一覧を確認する"
+      ],
+      [
+        "/articles/2025-12-25-diamond-vip.html",
+        "現在のダイヤモンド特典を確認する"
+      ],
+      [
+        "/articles/2026-08-17-tgs-google-play-vip.html",
+        "TGS2026のダイヤモンドラウンジ記録を見る"
+      ]
+    ],
+    "thumbnail": "../articles/ogp/2026-08-05-play-points-levels-guide.png",
+    "source": "article",
+    "listed": true,
+    "listTitle": "Black Diamond・Diamond VIPはある？新ランクの痕跡を検証",
+    "listDescription": "公開ランクは5段階のまま。TGS現地確認、公式ページ、APK解析を分けて整理します。",
+    "browseCategory": "ランク・ステータス"
   },
   {
     "id": "nikke-monthly-card-midasbuy-2026",
