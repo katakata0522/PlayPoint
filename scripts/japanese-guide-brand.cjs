@@ -10,7 +10,7 @@ const GUIDE_DESCRIPTION = 'Google Play Pointsのランク、使い方、キャ�
 const GUIDE_HERO_TEXT = 'ランク・使い方・キャンペーン・トラブル・ゲーム別課金を、公式情報と計算例から探せます。';
 
 function renderGuideBrand(isBlog = false) {
-  return `<span class="guide-brand-full">${isBlog ? '' : '🎮 '}${GUIDE_BRAND}</span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span>`;
+  return `<span class="guide-brand-full"><span class="guide-wordmark">PlayPoint<span class="guide-brand-points" aria-hidden="true"><i></i><i></i><i></i></span></span><span class="guide-brand-caption">${GUIDE_BRAND}</span></span><span class="guide-brand-short">PlayPoint<span>記事ガイド</span></span>`;
 }
 
 const LEGACY_BLOG_TITLES = Object.freeze([

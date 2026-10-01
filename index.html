@@ -196,14 +196,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 @media(prefers-reduced-motion:reduce){.calculator-advanced-settings__chevron{transition:none}}
 </style>
         <script id="playpoint-first-view-state">(function(){try{var p=new URLSearchParams(location.search);if(p.get('mode')==='main'&&Number(p.get('multiplier'))>1){document.documentElement.dataset.playpointAdvancedSettings='open';}}catch(e){}})();</script>
-<!-- guide-navigation-assets:start -->
-<link rel="stylesheet" href="/articles/guide-navigation.css?v=1fdc90c133">
-<script src="/js/guide-navigation.js?v=99faf253d5"></script>
-<!-- guide-navigation-assets:end -->
 </head>
 <body>
-<!-- guide-calculator-header:start --><header class="guide-header guide-calculator-header"><div class="site-header-inner"><a href="/" class="site-logo"><span class="guide-brand-short">PlayPoint<span>ポイント計算機</span></span></a></div></header><!-- guide-calculator-header:end -->
-
 <main class="calculator-wrapper">
    <div class="top-bar">
         <div class="region-switch" aria-label="Play の国または地域">
@@ -223,8 +217,8 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
     <p id="site-description" class="site-description" data-lang-key="siteDescription">目標ランクまであといくら必要か、現在のステータスと必要ポイントから計算できます。</p>
 
     <div class="tab-switch" role="tablist">
-        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">必要な金額を調べる</button>
-        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">もらえるポイントを調べる</button>
+        <button id="tab-main" role="tab" aria-selected="true" aria-controls="mainMode" data-mode="main" class="active" tabindex="0" data-lang-key="tabMain">通常計算</button>
+        <button id="tab-reverse" role="tab" aria-selected="false" aria-controls="reverseMode" data-mode="reverse" tabindex="-1" data-lang-key="tabReverse">逆算モード</button>
         <button id="tab-diary" role="tab" aria-selected="false" aria-controls="diaryMode" data-mode="diary" tabindex="-1" data-lang-key="tabDiary">ウィークリーリワード記録</button>
     </div>
 
@@ -295,7 +289,7 @@ html[data-playpoint-advanced-settings="open"] .calculator-advanced-settings:not(
 
     <div id="reverseMode" class="hidden" hidden role="tabpanel" aria-labelledby="tab-reverse" aria-hidden="true">
         <div class="section">
-            <h2 data-lang-key="sectionTitleReverse">課金額からポイントを計算</h2>
+            <h2 data-lang-key="sectionTitleReverse">逆算モード</h2>
             <label for="amountYen" class="label-with-tooltip">
                 <span data-lang-key="labelAmountYen">課金額（円）</span>
                 <span class="info-btn" role="button" tabindex="0" aria-label="説明を表示" data-lang-aria="showHelpAria" aria-expanded="false" aria-controls="tooltip-amount-yen">?</span>

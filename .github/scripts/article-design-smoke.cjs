@@ -91,8 +91,10 @@ async function inspect(browser, baseUrl, article, viewport) {
       return {
         popularCopyWidth: document.querySelector('.sidebar-popular-feature-copy')?.getBoundingClientRect().width || 0,
         sharedLoaded: Boolean(shared?.sheet),
+        editorialLayout: document.documentElement.lang === 'ja' && [...document.querySelectorAll('link[rel="stylesheet"]')].some(link => link.href.includes('/articles/guide-editorial.css') && link.sheet),
+        contentBackgroundColor: style(content)?.backgroundColor,
         fallbackTheme: document.documentElement.dataset.readingTheme,
-        answer: answerStyle ? { borderLeftWidth: answerStyle.borderLeftWidth, borderRadius: answerStyle.borderRadius, backgroundImage: answerStyle.backgroundImage } : null,
+        answer: answerStyle ? { borderLeftWidth: answerStyle.borderLeftWidth, borderRadius: answerStyle.borderRadius, backgroundImage: answerStyle.backgroundImage, backgroundColor:answerStyle.backgroundColor } : null,
         intro: introStyle ? { textAlign: introStyle.textAlign, borderLeftWidth: introStyle.borderLeftWidth } : null,
         summary: summaryStyle ? { borderRadius: summaryStyle.borderRadius, borderTopWidth: summaryStyle.borderTopWidth } : null,
         heading: headingStyle ? { backgroundImage: headingStyle.backgroundImage, borderLeftWidth: headingStyle.borderLeftWidth, boxShadow: headingStyle.boxShadow } : null,
@@ -108,8 +110,12 @@ async function inspect(browser, baseUrl, article, viewport) {
     if (!article.allArticle || result.answer) {
       assert(result.answer, article.key + '/' + viewport.key + ': answer surface missing');
       assert(parseFloat(result.answer.borderLeftWidth) >= 4, article.key + '/' + viewport.key + ': answer accent missing');
-      assert(parseFloat(result.answer.borderRadius) >= 8, article.key + '/' + viewport.key + ': answer radius ' + result.answer.borderRadius);
-      assert(result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': answer hierarchy missing');
+      assert(parseFloat(result.answer.borderRadius) >= (result.editorialLayout ? 4 : 8), article.key + '/' + viewport.key + ': answer radius ' + result.answer.borderRadius);
+      if (result.editorialLayout) {
+        assert(result.answer.backgroundColor !== 'rgba(0, 0, 0, 0)' && result.answer.backgroundColor !== result.contentBackgroundColor, article.key + '/' + viewport.key + ': conclusion must remain distinct from the reading surface');
+      } else {
+        assert(result.answer.backgroundImage !== 'none', article.key + '/' + viewport.key + ': answer hierarchy missing');
+      }
     }
     if (!article.allArticle || result.heading) {
       assert(result.heading, article.key + '/' + viewport.key + ': section heading missing');
