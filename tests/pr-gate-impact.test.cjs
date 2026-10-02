@@ -31,13 +31,17 @@ test('browser検証基盤自身の変更もChromiumを必須にする', () => {
     '.github/scripts/calculator-presentation-contract.cjs',
     '.github/scripts/game-calculator-browser.cjs',
     '.github/scripts/setup-browser-runtime.sh',
+    '.github/scripts/browser-revision-evidence.cjs',
+    '.github/scripts/verify-deploy-revision.cjs',
+    '.github/scripts/detect-pr-gate-impact.cjs',
     '.github/ci-runtime/package-lock.json',
   ]) {
     assert.equal(classifyPrGateImpact([file]).browserRequired, true, file);
   }
 });
 
-test('Apache実HTTPは.htaccess/cache contract変更時だけ必須にする', () => {
+test('Apache実HTTPは設定・cache検査・影響判定の変更時に必須にする', () => {
+  assert.equal(classifyPrGateImpact(['.github/scripts/detect-pr-gate-impact.cjs']).apacheRequired, true);
   assert.equal(classifyPrGateImpact(['.htaccess']).apacheRequired, true);
   assert.equal(classifyPrGateImpact(['tests/helpers/apache-cache-contract.cjs']).apacheRequired, true);
   assert.equal(classifyPrGateImpact(['.github/scripts/http-cache-contract.cjs']).apacheRequired, true);

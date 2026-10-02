@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const test = require('node:test');
+const os = require('node:os');
 const { runDeployTransport } = require('./helpers/deploy-transport-fixture.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -74,7 +75,7 @@ test('デプロイ前snapshotはverified本番だけを公開領域外へ1世代
   assert.match(workflow, /bash \.github\/scripts\/deploy-rsync\.sh --snapshot-verified/);
 });
 
-test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', () => {
+test('移設済み・非公開・統合済みの旧パスをXserver上の実体で検査する', t => {
   assert.match(script, /Refusing to inspect unexpected deployment root/);
   assert.match(script, /\/home\/hajikkoroom\/playpoint-sim\.com\/public_html/);
 
@@ -104,6 +105,27 @@ test('移設済み・非公開・統合済みの旧パスをXserver上の実体�
 
   assert.match(script, /\[ -e "\$target" \] \|\| \[ -L "\$target" \]/);
   assert.match(script, /Sensitive or non-public server artifacts are absent\./);
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-cleanup-local-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const shellPath = process.platform === 'win32'
+    ? '/' + directory.replaceAll('\\', '/').replace(/^([A-Za-z]):/, (_, drive) => drive.toLowerCase()) : directory;
+  const body = script.slice(script.indexOf('verify_remote_cleanup_once() {')).match(/<<'REMOTE'\r?\n([\s\S]*?)\r?\nREMOTE/)?.[1];
+  assert.ok(body);
+  const input = body.replaceAll('/home/hajikkoroom/playpoint-sim.com/public_html', shellPath);
+  const run = () => spawnSync(process.platform === 'win32' ? 'C:/Program Files/Git/bin/bash.exe' : 'bash', ['-s', '--', shellPath], { input, encoding: 'utf8', timeout: 5000 });
+  for (const dir of ['manner', 'kanji-slicer', 'articles/docs']) fs.mkdirSync(path.join(directory, dir), { recursive: true });
+  assert.equal(run().status, 0, '別所有領域・公開サブ階層を禁止しない');
+  for (const file of ['README.md', '.env.local', 'credential.key', 'calculator.html']) {
+    fs.writeFileSync(path.join(directory, file), 'synthetic fixture');
+    assert.equal(run().status, 1, file + ': 残存を拒否');
+    fs.unlinkSync(path.join(directory, file));
+  }
+  if (process.platform !== 'win32') {
+    const link = path.join(directory, 'tools'); fs.symlinkSync('/missing-fixture', link);
+    assert.equal(run().status, 1, '壊れたsymlinkの旧公開物も拒否');
+    fs.unlinkSync(link);
+  }
+  assert.equal(run().status, 0);
 });
 
 test('通信障害だけ有限回再試行し、非通信エラーを即時に返す', t => {

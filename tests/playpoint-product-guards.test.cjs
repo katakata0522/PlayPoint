@@ -5,17 +5,23 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 const test = require('node:test');
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'utf8');
 
+const elementText = html => [...html.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<\/?[a-z][\w:-]*\b(?:"[^"]*"|'[^']*'|[^'">])*>|([^<]+)/gi)]
+  .filter(match => match[2] !== undefined).map(match => match[2]).join('');
+
 // --- former playpoint-nine-fixes ---
 
 test('著者ページのOGP画像は実在する', () => {
-  const html = read('author/katakata.html');
-  const match = html.match(/<meta\s+property="og:image"\s+content="https:\/\/playpoint-sim\.com\/([^"]+)"/);
-  assert.ok(match, 'og:imageがありません');
-  assert.ok(fs.existsSync(path.join(root, match[1])), `OGP画像が存在しません: ${match[1]}`);
+  const tags = openingTags(read('author/katakata.html'));
+  const images = tags.filter(node => node.tag === 'meta' && node.attrs.property === 'og:image');
+  assert.equal(images.length, 1);
+  const url = new URL(images[0].attrs.content);
+  assert.equal(url.origin, 'https://playpoint-sim.com');
+  assert.ok(fs.statSync(path.join(root, url.pathname.slice(1))).isFile());
 });
 
 test('Consentの公開UIと広告境界に旧独自同意フローを戻さない', () => {
@@ -96,40 +102,24 @@ test('CIデプロイはコミット済み成果物だけを公開する', () => 
 // P08: syntax-verifier-executionで実CLIに運用JSの構文エラーと必須ファイル欠損を与える。
 
 test('多言語トップはJS実行前の主要文言も翻訳済みにする', () => {
-  const en = read('en/index.html');
-  const ko = read('ko/index.html');
-  const tw = read('tw/index.html');
-
-  assert.ok(en.includes('<h1 id="main-title" data-lang-key="mainTitle">Google Play Points Calculator</h1>'));
-  assert.ok(ko.includes('<h1 id="main-title" data-lang-key="mainTitle">Google Play Points 계산기</h1>'));
-  assert.ok(tw.includes('<h1 id="main-title" data-lang-key="mainTitle">Google Play Points 計算器</h1>'));
-  assert.ok(!en.includes('data-lang-key="tabMain">通常計算</button>'));
-  assert.ok(!ko.includes('data-lang-key="tabMain">通常計算</button>'));
-  assert.ok(!tw.includes('data-lang-key="tabMain">通常計算</button>'));
+  for (const [file, expected] of [['en/index.html', 'Google Play Points Calculator'], ['ko/index.html', 'Google Play Points 계산기'], ['tw/index.html', 'Google Play Points 計算器']]) {
+    const html = read(file), tags = openingTags(html);
+    const headings = tags.filter(node => node.tag === 'h1' && node.attrs.id === 'main-title');
+    assert.equal(headings.length, 1, file);
+    assert.equal(headings[0].attrs['data-lang-key'], 'mainTitle');
+    const text = elementText(html.slice(headings[0].index).split(/<\/h1\s*>/i)[0]).trim();
+    assert.equal(text, expected, file);
+    const tab = tags.find(node => node.tag === 'button' && node.attrs['data-lang-key'] === 'tabMain');
+    assert.ok(tab, file + ': main tab missing');
+    assert.doesNotMatch(elementText(html.slice(tab.index).split(/<\/button\s*>/i)[0]), /通常計算/);
+  }
 });
 
-test('Xserver同期後に本番スモークテストを実行する', () => {
-  const workflow = read('.github/workflows/deploy.yml');
-  assert.ok(workflow.includes('node .github/scripts/smoke-test.cjs'));
-  assert.ok(fs.existsSync(path.join(root, '.github/scripts/smoke-test.cjs')));
-});
+// T0821: T0219 / tests/ci-guardrails.test.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 
-test('Xserver同期後に本番SEOヘルスチェックを実行する', () => {
-  const deployWorkflow = read('.github/workflows/deploy.yml');
-  const seoWorkflow = read('.github/workflows/seo-healthcheck.yml');
-  const smokeIndex = deployWorkflow.indexOf('node .github/scripts/smoke-test.cjs');
-  const deployIndex = deployWorkflow.indexOf('node .github/scripts/seo-health-check.cjs');
+// T0822: T0219 + T0963 + T0964 へ統合。監査IDと理由は履歴台帳へ保持。
 
-  assert.ok(fs.existsSync(path.join(root, '.github/scripts/seo-health-check.cjs')), 'SEOヘルスチェックスクリプトがありません');
-  assert.ok(smokeIndex >= 0, '本番スモークテストがありません');
-  assert.ok(deployIndex > smokeIndex, '本番SEOヘルスチェックがrsync後のスモーク確認後に実行されていません');
-  assert.ok(seoWorkflow.includes('node .github/scripts/seo-health-check.cjs'), '週次SEO Health Checkとデプロイ後SEO確認が別実装になっています');
-});
-
-test('デプロイ検証の変更でもワークフローを実行する', () => {
-  const workflow = read('.github/workflows/deploy.yml');
-  assert.ok(!workflow.includes("- '.github/**'"), '.github配下の検証変更がデプロイワークフローから除外されています');
-});
+// T0823: T0216 / tests/ci-guardrails.test.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 
 // P06/P13: preflight-execution-contractが実行順序・対象集合・構文エラー伝播を主担当として検証する。
 
@@ -204,17 +194,16 @@ test('日本語の必要ポイント例は初期状態とゴールドからプ�
 });
 
 test('タブ・補足・復元欄はCSSが失敗してもhidden属性で初期非表示になる', () => {
-  const html = read('index.html');
-  const ui = read('js/ui.js');
-  const diary = read('js/diary.js');
-  assert.match(html, /id="reverseMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
-  assert.match(html, /id="diaryMode"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
-  assert.match(html, /id="backup-input-wrapper"[^>]*\bhidden\b[^>]*aria-hidden="true"/);
-  assert.match(html, /<label for="diaryBackupData"[^>]*data-lang-key="backupDataLabel"/);
-  assert.equal((html.match(/class="tooltip-box"[^>]*\bhidden\b/g) || []).length, 9);
-  assert.match(ui, /element\.hidden = !isVisible/);
-  assert.match(ui, /tooltip\.hidden = false/);
-  assert.match(diary, /backupInputWrapper\.hidden = !isHidden/);
+  const html = read('index.html'), tags = openingTags(html);
+  const hidden = node => Object.hasOwn(node.attrs, 'hidden') || /\shidden(?:\s|>)/.test(html.slice(node.index, html.indexOf('>', node.index) + 1));
+  for (const id of ['reverseMode', 'diaryMode', 'backup-input-wrapper']) {
+    const node = tags.find(node => node.attrs.id === id);
+    assert.ok(node && hidden(node), id + ': hidden');
+    assert.equal(node.attrs['aria-hidden'], 'true', id);
+  }
+  assert.ok(tags.some(node => node.tag === 'label' && node.attrs.for === 'diaryBackupData' && node.attrs['data-lang-key'] === 'backupDataLabel'));
+  const boxes = tags.filter(node => (node.attrs.class || '').split(/\s+/).includes('tooltip-box'));
+  assert.ok(boxes.length > 0); assert.ok(boxes.every(hidden));
 });
 
 test('ブログ初期表示は最終件数と同じ6枚のスケルトンをHTMLで確保する', () => {
@@ -265,11 +254,12 @@ test('日記の景品選択には全言語で読み上げ可能な名前があ�
 
 test('トップページは大きな画像プレビューとOGP画像サイズを明示する', () => {
   for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
-    const html = read(file);
-    assert.match(html, /<meta name="robots" content="index,follow,max-image-preview:large">/, file);
-    assert.match(html, /<meta property="og:image:width" content="1200">/, file);
-    assert.match(html, /<meta property="og:image:height" content="630">/, file);
-    assert.match(html, /<meta property="og:image:type" content="image\/png">/, file);
+    const metas = openingTags(read(file)).filter(node => node.tag === 'meta');
+    const robots = metas.find(node => node.attrs.name === 'robots')?.attrs.content || '';
+    assert.ok(robots.split(/\s*,\s*/).includes('max-image-preview:large'), file);
+    for (const [property, content] of [['og:image:width', '1200'], ['og:image:height', '630'], ['og:image:type', 'image/png']]) {
+      assert.equal(metas.find(node => node.attrs.property === property)?.attrs.content, content, file + ': ' + property);
+    }
   }
 });
 
@@ -308,9 +298,13 @@ test('日記の重複通知を表示せず、カレンダー登録は残す', ()
 });
 
 test('地域差案内は日本語トップでも英語の注意導線として表示する', () => {
-  assert.match(read('index.html'), /data-country-notes-link[^>]*>⚠️ For users outside Japan<\/a>/);
-  for (const file of ['en/index.html', 'ko/index.html', 'tw/index.html']) {
-    assert.match(read(file), /data-country-notes-link(?! hidden)/);
+  for (const file of ['index.html', 'en/index.html', 'ko/index.html', 'tw/index.html']) {
+    const html = read(file);
+    const links = openingTags(html).filter(node => node.tag === 'a' && /\bdata-country-notes-link\b/.test(html.slice(node.index, html.indexOf('>', node.index) + 1)));
+    assert.equal(links.length, 1, file);
+    assert.ok(links[0].attrs.href?.endsWith('attention.html'), file);
+    assert.ok(!Object.hasOwn(links[0].attrs, 'hidden') && !/\shidden(?:\s|>)/.test(html.slice(links[0].index, html.indexOf('>', links[0].index) + 1)), file);
+    if (file === 'index.html') assert.match(html.slice(links[0].index).split(/<\/a\s*>/i)[0], /For users outside Japan/);
   }
 });
 
@@ -326,11 +320,4 @@ test('計算と検証の説明責任はトップを占有せず運営・検証�
   assert.match(read('tw/author/katakata.html'), /計算器如何處理輸入值[\s\S]*原始輸入值傳送到外部/);
 });
 
-test('ブログ広告はスクロール量に依存せず共通ローダーから初期化する', () => {
-  const articleSource = read('blog/article.js');
-  const components = read('blog/components.js');
-
-  assert.doesNotMatch(articleSource, /window\.scrollY\s*<\s*600/);
-  assert.doesNotMatch(components, /window\.scrollY\s*<\s*600/);
-  assert.match(components, /loadBlogAdsense\(\);/);
-});
+// T0839: tests/third-party-resilience.test.cjs + .github/scripts/browser-revenue-smoke.cjs へ統合。監査IDと理由は履歴台帳へ保持。

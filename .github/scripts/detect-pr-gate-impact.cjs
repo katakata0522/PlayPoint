@@ -21,12 +21,16 @@ const BROWSER_GATE_INPUTS = Object.freeze([
   '.github/scripts/browser-revenue-smoke.cjs',
   '.github/scripts/embed-widget-smoke.cjs',
   '.github/scripts/browser-navigation-retry.cjs',
+  '.github/scripts/browser-revision-evidence.cjs',
+  '.github/scripts/verify-deploy-revision.cjs',
+  '.github/scripts/detect-pr-gate-impact.cjs',
   '.github/scripts/bind-browser-evidence.cjs',
   '.github/scripts/refactor-runtime-compatibility.cjs',
   '.github/scripts/refactor-visual-smoke.cjs',
 ]);
 
 const APACHE_GATE_INPUTS = Object.freeze([
+  '.github/scripts/detect-pr-gate-impact.cjs',
   '.htaccess',
   'tests/helpers/apache-cache-contract.cjs',
   '.github/scripts/http-cache-contract.cjs',

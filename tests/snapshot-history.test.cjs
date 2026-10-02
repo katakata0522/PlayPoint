@@ -10,8 +10,37 @@ const historyWorkflowPath = path.join(root, '.github', 'workflows', 'snapshot-hi
 const deployWorkflowPath = path.join(root, '.github', 'workflows', 'deploy.yml');
 const rollbackWorkflowPath = path.join(root, '.github', 'workflows', 'rollback.yml');
 const historyScript = fs.readFileSync(historyScriptPath, 'utf8');
+const os = require('node:os');
 const deployWorkflow = fs.readFileSync(deployWorkflowPath, 'utf8');
 const rollbackWorkflow = fs.readFileSync(rollbackWorkflowPath, 'utf8');
+
+function localHistory(t) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pp-history-local-'));
+  t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
+  const sha = 'a'.repeat(40), live = path.join(dir, 'public'), snapshots = path.join(dir, 'snapshots');
+  const selected = path.join(snapshots, 'verified-history', sha);
+  fs.mkdirSync(path.join(selected, 'site/status'), { recursive: true });
+  fs.mkdirSync(live);
+  fs.writeFileSync(path.join(live, 'keep.txt'), 'live unchanged');
+  const write = (file, text) => fs.writeFileSync(path.join(selected, file), text);
+  write('revision.txt', sha); write('status.txt', 'verified');
+  write('site/status/deploy-revision.txt', sha);
+  write('site/status/deploy-status.json', JSON.stringify({ status: 'verified', commit: sha }, null, 2));
+  const shellPath = value => process.platform === 'win32'
+    ? '/' + value.replaceAll('\\', '/').replace(/^([A-Za-z]):/, (_, drive) => drive.toLowerCase()) : value;
+  const body = historyScript.match(/<<'REMOTE'\r?\n([\s\S]*?)\r?\nREMOTE/)?.[1];
+  assert.ok(body, 'remote history body missing');
+  const input = body.replaceAll('/home/hajikkoroom/playpoint-sim.com/public_html', shellPath(live))
+    .replaceAll('/home/hajikkoroom/playpoint-sim.com/.deploy-snapshots', shellPath(snapshots));
+  const run = (mode, target) => {
+    const args = ['-s', '--', shellPath(live), shellPath(snapshots), '5', mode];
+    if (target !== undefined) args.push(target);
+    const result = spawnSync(process.platform === 'win32' ? 'C:/Program Files/Git/bin/bash.exe' : 'bash', args, { input, encoding: 'utf8', timeout: 5000 });
+    assert.ifError(result.error);
+    return result;
+  };
+  return { dir, sha, selected, live, snapshots, write, run };
+}
 
 test('verified履歴は公開領域外へSHA単位で有限世代だけ保持する', () => {
   assert.match(historyScript, /REMOTE_SNAPSHOT_ROOT="\/home\/hajikkoroom\/playpoint-sim\.com\/\.deploy-snapshots"/);
@@ -28,19 +57,32 @@ test('verified履歴は公開領域外へSHA単位で有限世代だけ保持す
   assert.match(historyScript, /Current production is '\$status', not verified/);
 });
 
-test('SSH越しに末尾の任意引数が消えてもarchive/listはnounsetで落ちない', () => {
-  assert.match(historyScript, /target_revision="\$\{5:-\}"/);
-  assert.match(historyScript, /protected_revision="\$\{6:-\}"/);
-  assert.doesNotMatch(historyScript, /^target_revision="\$5"$/m);
-  assert.doesNotMatch(historyScript, /^protected_revision="\$6"$/m);
+test('SSH越しに末尾の任意引数が消えてもarchive/listはnounsetで落ちない', t => {
+  const fixture = localHistory(t);
+  const result = fixture.run('--list');
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes(fixture.sha));
+  assert.equal(fixture.run('--archive-live').status, 2, '実metadata欠損で停止しnounsetで落ちない');
 });
 
-test('verified履歴はsymlink・別所有領域・metadata不一致をfail-closedにする', () => {
-  assert.match(historyScript, /find "\$snapshot" -type l -print -quit/);
-  assert.match(historyScript, /Verified history snapshot contains a symlink/);
-  assert.match(historyScript, /for owned_elsewhere in manner kanji-slicer/);
-  assert.match(historyScript, /Verified history snapshot contains separately owned path/);
-  assert.match(historyScript, /Verified history snapshot revision metadata disagrees/);
+test('verified履歴はsymlink・別所有領域・metadata不一致をfail-closedにする', t => {
+  const fixture = localHistory(t);
+  assert.equal(fixture.run('--verify', fixture.sha).status, 0);
+  fixture.write('site/status/deploy-revision.txt', 'b'.repeat(40));
+  assert.equal(fixture.run('--verify', fixture.sha).status, 2);
+  fixture.write('site/status/deploy-revision.txt', fixture.sha);
+  for (const name of ['manner', 'kanji-slicer']) {
+    const owned = path.join(fixture.selected, 'site', name); fs.mkdirSync(owned);
+    assert.equal(fixture.run('--verify', fixture.sha).status, 2);
+    fs.rmdirSync(owned);
+  }
+  if (process.platform !== 'win32') {
+    const link = path.join(fixture.selected, 'site', 'link'); fs.symlinkSync('/missing-fixture', link);
+    assert.equal(fixture.run('--verify', fixture.sha).status, 2);
+    fs.unlinkSync(link);
+  }
+  fs.unlinkSync(path.join(fixture.selected, 'revision.txt'));
+  assert.equal(fixture.run('--verify', fixture.sha).status, 2);
   assert.match(historyScript, /--exclude '\/manner\/\*\*\*'/);
   assert.match(historyScript, /--exclude '\/kanji-slicer\/\*\*\*'/);
 });
@@ -87,20 +129,26 @@ test('手動rollbackは履歴一覧・明示SHA検証・現本番保全・activa
   assert.ok(activateIndex < restoreIndex);
 });
 
-test('履歴activateはproductionを直接書き換えずcanonical previous snapshotだけを原子的に切り替える', () => {
-  assert.match(historyScript, /previous_snapshot="\$snapshot_root\/previous-verified"/);
-  assert.match(historyScript, /cp -a "\$selected" "\$tmp"/);
-  assert.match(historyScript, /mv "\$previous_snapshot" "\$old"/);
-  assert.match(historyScript, /mv "\$tmp" "\$previous_snapshot"/);
-  assert.match(historyScript, /previous rollback source restored when available/);
-  assert.doesNotMatch(historyScript, /rsync[^\n]*"\$selected\/site\/"[^\n]*"\$root\/"/);
+test('履歴activateはproductionを直接書き換えずcanonical previous snapshotだけを原子的に切り替える', t => {
+  const fixture = localHistory(t);
+  const previous = path.join(fixture.snapshots, 'previous-verified');
+  fs.mkdirSync(previous); fs.writeFileSync(path.join(previous, 'old.txt'), 'previous source');
+  const activated = fixture.run('--activate', fixture.sha);
+  assert.equal(activated.status, 0, activated.stderr);
+  assert.equal(fs.readFileSync(path.join(previous, 'revision.txt'), 'utf8'), fixture.sha);
+  assert.equal(fs.existsSync(path.join(previous, 'old.txt')), false);
+  assert.equal(fs.readFileSync(path.join(fixture.live, 'keep.txt'), 'utf8'), 'live unchanged');
+  assert.equal(fs.readFileSync(path.join(fixture.selected, 'revision.txt'), 'utf8'), fixture.sha);
+  assert.equal(fixture.run('--activate', 'b'.repeat(40)).status, 2);
+  assert.equal(fs.readFileSync(path.join(previous, 'revision.txt'), 'utf8'), fixture.sha, '欠損候補で前rollback sourceを破棄しない');
 });
 
 test('snapshot history helperのBash構文が有効である', (t) => {
   const bashScriptPath = process.platform === 'win32'
     ? `/${historyScriptPath.replace(/\\/g, '/').replace(/^([A-Za-z]):/, (_, drive) => drive.toLowerCase())}`
     : historyScriptPath;
-  const result = spawnSync('bash', ['-n', bashScriptPath], { encoding: 'utf8' });
+  const bash = process.platform === 'win32' && fs.existsSync('C:/Program Files/Git/bin/bash.exe') ? 'C:/Program Files/Git/bin/bash.exe' : 'bash';
+  const result = spawnSync(bash, ['-n', bashScriptPath], { encoding: 'utf8' });
   if (result.error && result.error.code === 'ENOENT') {
     t.skip('bashがない環境ではGitHub Actions上の検査に委ねます');
     return;

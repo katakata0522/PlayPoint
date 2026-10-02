@@ -50,6 +50,28 @@ test('public allowlist makes operational artifacts non-public by default', () =>
 });
 
 test('prepared deployment tree contains only explicit public roots', (t) => {
+  const boundary = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-stage-boundary-'));
+  t.after(() => fs.rmSync(boundary, { recursive: true, force: true }));
+  const source = path.join(boundary, 'repository');
+  fs.mkdirSync(source);
+  for (const file of PUBLIC_ROOT_FILES) fs.writeFileSync(path.join(source, file), 'fixture');
+  for (const dir of PUBLIC_TOP_LEVEL_DIRECTORIES) fs.mkdirSync(path.join(source, dir));
+  const marker = path.join(boundary, 'keep.txt');
+  fs.writeFileSync(marker, 'preserve');
+  for (const unsafe of [source, path.join(source, 'stage'), boundary]) {
+    assert.throws(() => preparePublicTree(unsafe, { sourceRoot: source }), /outside the repository root/);
+    assert.equal(fs.readFileSync(marker, 'utf8'), 'preserve');
+    assert.equal(fs.readFileSync(path.join(source, 'index.html'), 'utf8'), 'fixture');
+  }
+  if (process.platform !== 'win32') {
+    const link = path.join(source, 'js', 'private-link');
+    fs.symlinkSync(marker, link);
+    assert.throws(() => preparePublicTree(path.join(boundary, 'candidate'), { sourceRoot: source }), /Symlink is not allowed/);
+    fs.unlinkSync(link);
+    assert.equal(fs.readFileSync(marker, 'utf8'), 'preserve');
+  }
+  fs.unlinkSync(path.join(source, 'style.css'));
+  assert.throws(() => preparePublicTree(path.join(boundary, 'candidate'), { sourceRoot: source }), /Allowlisted public entry is missing/);
   const destination = fs.mkdtempSync(path.join(os.tmpdir(), 'playpoint-public-tree-'));
   t.after(() => fs.rmSync(destination, { recursive: true, force: true }));
 

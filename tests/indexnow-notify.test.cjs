@@ -32,6 +32,10 @@ test('repository HTML paths map to canonical public URLs without touching non-HT
   assert.equal(repositoryPathToPublicUrl('articles/example.html'), 'https://playpoint-sim.com/articles/example.html');
   assert.equal(repositoryPathToPublicUrl('js/main.js'), null);
   assert.equal(repositoryPathToPublicUrl('robots.txt'), null);
+  for (const file of ['docs/private.html', 'tests/fixture.html', 'tools/report.html',
+    'unclassified/page.html', '../index.html', 'articles/../docs/private.html']) {
+    assert.equal(repositoryPathToPublicUrl(file), null, file);
+  }
 });
 
 test('changed public URLs include additions, modifications and deletions once', () => {
@@ -42,6 +46,7 @@ test('changed public URLs include additions, modifications and deletions once', 
       return [
         'M\tindex.html',
         'M\tlatest/index.html',
+        'A\tdocs/private.html',
         'A\tarticles/new.html',
         'D\tarticles/old.html',
         'M\tjs/main.js',
@@ -77,6 +82,9 @@ test('IndexNow payload is host-scoped and rejects foreign URLs', () => {
     urlList: ['https://playpoint-sim.com/latest/'],
   });
   assert.throws(() => buildIndexNowPayload(['https://example.com/']));
+  for (const url of ['http://playpoint-sim.com/', 'https://playpoint-sim.com:444/', 'https://u:p@playpoint-sim.com/']) {
+    assert.throws(() => buildIndexNowPayload([url]), /outside canonical host/);
+  }
 });
 
 test('IndexNow submission verifies the live key before posting the bounded JSON batch', async () => {
@@ -102,6 +110,16 @@ test('IndexNow submission verifies the live key before posting the bounded JSON 
     'https://playpoint-sim.com/latest/',
     'https://playpoint-sim.com/articles/example.html',
   ]);
+  let posts = 0;
+  await assert.rejects(submitIndexNow(['https://playpoint-sim.com/latest/'], { fetchImpl: async (url, options) => {
+    if (options.method === 'POST') posts++;
+    return { ok: true, status: 200, async text() { return 'incorrect-public-key'; } };
+  } }), /key verification failed/);
+  assert.equal(posts, 0, '鍵検証失敗で通知しない');
+  await assert.rejects(submitIndexNow(['https://playpoint-sim.com/latest/'], { fetchImpl: async (url, options) => ({
+    ok: options.method === 'GET', status: options.method === 'GET' ? 200 : 500,
+    async text() { return options.method === 'GET' ? INDEXNOW_KEY : 'server error'; }
+  }) }), /submission failed: HTTP 500/);
 });
 
 test('Deploy notifies IndexNow only after verified publication and never makes discovery failure a rollback trigger', () => {

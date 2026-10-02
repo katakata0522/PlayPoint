@@ -1,5 +1,17 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-02 第7段階：公開・復旧・横断検査
+
+担当27ファイル200項目と先行移管6項目を同じ安定IDで個別精査する。T1151の先行完了を保持し、テストの実行成功と必要性の判定を区別する。件数削減は目標にしない。
+
+公開treeの保存先が正本の親ディレクトリである入力を拒否し、正本と既存データの消失を防ぐ。IndexNowは公開allowlistに属するHTMLだけを通知候補にし、親参照・別origin・認証情報付きURLを拒否する。revision観測部品と影響判定自身の変更も、既存PR Gateの必須Chromiumへ分類する。公開先・権限・workflowは増やさない。
+
+snapshot検証・履歴検証・履歴activateは正本のSSH heredoc本文を一時ローカル領域で動かす。実metadata不整合、別所有領域、欠損を拒否し、Linuxではsymlinkと実rsyncの復元・古いファイル削除・別所有領域保持も確認する。転送中断後はrolling_backのままでverifiedを偽装しない。これは本番rollbackの実行証明ではない。SSH転送の既存fixture原本は保持する。
+
+自動rollbackとDeploy影響ゲート、runtime比較レーンの条件は実式を評価し、成功・失敗・skip・本番差分なしの組合せを確認する。公開OGP MIMEの主担当は実SEO CLIで、正本HTMLを読み、image/jpegと404・誤MIMEの失敗伝播を確認する。PWAランチャーは全6地域、未知地域、保存値なし、Storage障害で実scriptの移動先を確認する。公開参照・canonical・anchor・初期UIは実tagを読み、コメントで補完せず、引用符・属性順の正常変更を許容する。
+
+articles.jsonのcache宣言、関連記事のprivate関数名、共通CSSの旧writer名、本番smoke/SEO起動・main全pushの重複、LPのprivate build呼出名、ブログ広告の旧scrollY禁止の計8項目は既存のHTTP/Apache・実DOM・runtime・CI検査へ統合する。履歴ID・移行先・理由は監査台帳に保持する。共有補助コード10原本と他段階の判定を変更しない。
+
 ## 2026-10-02 第6段階：記事・SEO・地域差
 
 76ファイルの元442項目と先行移管30項目の計472項目を個別に精査する。現行の国別公式レートはランク・閾値・通貨単位の対応で守り、数値の集合だけの一致では合格にしない。構造検査は登録済み日本語記事とEN/KO/TW記事が対象で、通常anchorを相互hreflangの代用にせず、コメントだけの出典やmetaを認めない。日本語articles直下のOGP検査は対象範囲を明示し、固定64枚条件を外して非空・参照画像の実在・画像実体の一意性を確認する。

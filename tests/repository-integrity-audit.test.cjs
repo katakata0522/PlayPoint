@@ -6,13 +6,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 const { execFileSync } = require('node:child_process');
+const { isPublicRepositoryPath } = require('../.github/scripts/public-paths.cjs');
+const { openingTags, parseAttributes } = require('./helpers/markup-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const originHosts = new Set(['playpoint-sim.com', 'www.playpoint-sim.com']);
-const excludedTop = new Set(['.git', '.github', 'docs', 'node_modules', 'scripts', 'tests']);
-const excludedRoot = new Set([
-  '.gitattributes', '.gitignore', 'AGENTS.md', 'CNAME', 'README.md', 'みんな用URL.txt'
-]);
 const textExtensions = new Set([
   '.css', '.cjs', '.html', '.htm', '.js', '.json', '.md', '.mjs', '.svg',
   '.txt', '.webmanifest', '.xml', '.yaml', '.yml'
@@ -64,8 +62,7 @@ const files = execFileSync('git', ['ls-files', '-z'], { cwd: root, encoding: 'ut
 const fileSet = new Set(files);
 
 function isDeployable(relativePath) {
-  if (excludedRoot.has(relativePath)) return false;
-  return !excludedTop.has(relativePath.split('/')[0]);
+  return isPublicRepositoryPath(relativePath);
 }
 
 function isText(relativePath) {
@@ -128,16 +125,16 @@ function fragment(raw) {
 }
 
 function htmlReferences(content) {
-  const values = [...content.matchAll(/\b(?:action|data-src|href|poster|src)\s*=\s*["']([^"']+)["']/gi)]
-    .map(match => match[1]);
-  for (const match of content.matchAll(/\bsrcset\s*=\s*["']([^"']+)["']/gi)) {
-    values.push(...match[1].split(',').map(item => item.trim().split(/\s+/, 1)[0]).filter(Boolean));
+  const tags = openingTags(content);
+  for (const match of content.matchAll(/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>([\s\S]*?)(?:<\/\1(?=[\s/>])[^>]*>|$)/gi)) {
+    if (match[1]?.toLowerCase() !== 'script') continue;
+    tags.push({ tag: 'script', attrs: parseAttributes('script ' + match[2]) });
   }
-  for (const match of content.matchAll(/<meta\s+[^>]*(?:property|name)=["'](?:og:image|twitter:image)["'][^>]*content=["']([^"']+)["']/gi)) {
-    values.push(match[1]);
-  }
-  for (const match of content.matchAll(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/gi)) {
-    values.push(match[1]);
+  const values = [];
+  for (const { tag, attrs } of tags) {
+    for (const key of ['action', 'data-src', 'href', 'poster', 'src']) if (attrs[key]) values.push(attrs[key]);
+    if (attrs.srcset) values.push(...attrs.srcset.split(',').map(item => item.trim().split(/\s+/, 1)[0]).filter(Boolean));
+    if (tag === 'meta' && ['og:image', 'twitter:image'].includes(attrs.property || attrs.name) && attrs.content) values.push(attrs.content);
   }
   return values;
 }
@@ -183,7 +180,7 @@ function references(relativePath, content) {
 }
 
 function ids(content) {
-  return new Set([...content.matchAll(/\b(?:id|name)\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]));
+  return new Set(openingTags(content).flatMap(node => [node.attrs.id, node.attrs.name]).filter(Boolean));
 }
 
 const resolvedReferences = new Set(runtimeEntrypoints);
@@ -235,13 +232,12 @@ test('全公開HTMLのcanonicalは自己一致し重複しない', () => {
   const problems = [];
   for (const [relativePath, content] of textFiles) {
     if (!isDeployable(relativePath) || path.extname(relativePath).toLowerCase() !== '.html') continue;
-    const match = content.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i)
-      || content.match(/<link\s+[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i);
-    if (!match) {
-      problems.push(`${relativePath}: canonicalなし`);
+    const canonicals = openingTags(content).filter(node => node.tag === 'link' && (node.attrs.rel || '').toLowerCase().split(/\s+/).includes('canonical'));
+    if (canonicals.length !== 1 || !canonicals[0].attrs.href) {
+      problems.push(`${relativePath}: canonicalは1個必要`);
       continue;
     }
-    const canonical = match[1];
+    const canonical = canonicals[0].attrs.href;
     const target = candidates(relativePath, canonical).find(candidate => fileSet.has(candidate));
     if (target !== relativePath) problems.push(`${relativePath}: ${canonical} -> ${target || '解決不能'}`);
     if (owners.has(canonical)) problems.push(`${canonical}: ${owners.get(canonical)} / ${relativePath}`);

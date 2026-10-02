@@ -8,7 +8,7 @@ const { runPreflight } = require('./helpers/preflight-fixture.cjs');
 const { detectDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 
 const root = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
+const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n').replace(/^\s*#.*$/gm, '');
 
 const getStepBlock = (workflow, stepName) => {
   const marker = `- name: ${stepName}`;
@@ -120,6 +120,8 @@ test('Deployはproduction Chromiumをverified前に所有し、ブラウザ準�
   assert.ok(securityIndex < browserIndex, 'Chromium must run after basic live health checks');
   assert.ok(browserIndex < publishIndex, 'verified status must wait for production Chromium');
   assert.match(getStepBlock(deployWorkflow, 'Install production browser verifier'), /bash \.github\/scripts\/setup-browser-runtime\.sh/);
+  assert.match(getStepBlock(deployWorkflow, 'Verify production deployment'), /^\s+node \.github\/scripts\/smoke-test\.cjs\s*$/m);
+  assert.match(getStepBlock(deployWorkflow, 'Verify production SEO health'), /^\s+run: node \.github\/scripts\/seo-health-check\.cjs\s*$/m);
   assert.match(deployWorkflow, /SMOKE_BASE_URL: https:\/\/playpoint-sim\.com\//);
 });
 
@@ -169,11 +171,12 @@ test('Deployは変更影響を判定して本番処理を一括でゲートす�
     'Publish verified deployment status',
   ]) {
     const block = getStepBlock(workflow, stepName);
-    assert.match(
-      block,
-      /^\s+if: steps\.deploy-impact\.outputs\.deploy_needed == 'true'\s*$/m,
-      `${stepName} must be gated by deploy impact`
-    );
+    const condition = block.match(/^\s+if:\s*(.+)$/m)?.[1].replace(/^\$\{\{\s*|\s*\}\}$/g, '');
+    assert.ok(condition, stepName + ': impact condition missing');
+    const expression = condition.replace(/steps\.([\w-]+)/g, (_, id) => `steps[${JSON.stringify(id)}]`);
+    for (const value of ['true', 'false', '']) {
+      assert.equal(require('node:vm').runInNewContext(expression, { steps: { 'deploy-impact': { outputs: { deploy_needed: value } } } }, { timeout: 100 }), value === 'true', stepName + ': ' + value);
+    }
   }
 });
 
