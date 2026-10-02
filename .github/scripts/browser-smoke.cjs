@@ -35,6 +35,7 @@ const MIME_TYPES = {
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
   '.png': 'image/png',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.woff2': 'font/woff2',
@@ -581,37 +582,55 @@ async function verifyBlogPage(browser, baseUrl) {
       return image && !image.dataset.src && image.complete && image.naturalWidth > 1;
     });
     assert(!(await visualImage.getAttribute('src')).includes('article-placeholder'), '通常サムネイルの原本を読み込む');
-    assert(await page.locator('.article-card--visual .card-thumb :is(.card-category, .badge-new)').count() === 0, 'ラベルが横長サムネイルの文字を覆わない');
-    // 一覧は画像と本文を並べ、原本の比率と画像内の文字を保つ。
+    assert(await page.locator('.article-card--visual .card-thumb :is(.card-category, .badge-new)').count() === 0, 'サムネイル上に一覧ラベルを重ねない');
+
+    // 記事種別に関係なく同じ正方形スロットを使う。通常画像はcrop、ゲームアイコンだけ余白付きcontain。
     for (const width of [320, 390, 760, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
-      // 幅の切替と遅延画像の読込で再配置が進む間は、完成前の寸法を断定しない。
-      // 期待する表示へ到達しなければ5秒で失敗する。比率や切取りの条件は緩めない。
-      await page.waitForFunction(expectedWidth => {
+      const expectedThumbWidth = width <= 360 ? 88 : width <= 760 ? 96 : 120;
+      await page.waitForFunction(({ expectedWidth, expectedThumbWidth }) => {
         if (innerWidth !== expectedWidth) return false;
-        const thumbnails = [...document.querySelectorAll('.article-card--visual .card-thumb')];
+        const thumbnails = [...document.querySelectorAll('.article-card .card-thumb')];
         return thumbnails.length > 0 && thumbnails.every(thumb => {
           const bounds = thumb.getBoundingClientRect();
-          return bounds.height > 0 && Math.abs(bounds.width / bounds.height - 1200 / 630) < 0.02
-            && getComputedStyle(thumb.querySelector('img')).objectFit === 'contain';
+          const image = thumb.querySelector('img');
+          const appIcon = thumb.classList.contains('card-thumb--app-icon');
+          return bounds.height > 0
+            && Math.abs(bounds.width - bounds.height) <= 1
+            && Math.abs(bounds.width - expectedThumbWidth) <= 1
+            && getComputedStyle(image).objectFit === (appIcon ? 'contain' : 'cover');
         });
-      }, width, { polling: 'raf', timeout: 5_000 });
+      }, { expectedWidth: width, expectedThumbWidth }, { polling: 'raf', timeout: 5_000 });
+
       const boxes = await page.locator('.article-card').evaluateAll(cards => cards.map(card => {
         const thumb = card.querySelector('.card-thumb');
-        const image = thumb?.getBoundingClientRect();
-        const content = card.querySelector('.card-content').getBoundingClientRect();
-        const visual = card.classList.contains('article-card--visual');
+        const frame = thumb?.getBoundingClientRect();
+        const content = (card.querySelector('.card-main') || card.querySelector('.card-content')).getBoundingClientRect();
+        const appIcon = thumb?.classList.contains('card-thumb--app-icon');
         return {
-          fits: Boolean(image) && (image.right <= content.left + 1),
-          ratio: visual ? image.width / image.height : null,
+          fits: Boolean(frame) && frame.right <= content.left + 1,
+          ratio: frame ? frame.width / frame.height : null,
+          width: frame?.width || 0,
           fit: getComputedStyle(thumb.querySelector('img')).objectFit,
+          expectedFit: appIcon ? 'contain' : 'cover',
           overflow: document.documentElement.scrollWidth - innerWidth
         };
       }));
       assert(boxes.every(box => box.fits && box.overflow <= 1), 'Blog card image overlaps its text or viewport at ' + width);
-      assert(boxes.every(box => box.ratio === null || Math.abs(box.ratio - 1200 / 630) < 0.02 && box.fit === 'contain'), '横長サムネイルの全体と比率を維持する: ' + width);
-      if (width === 390 || width === 1280) await saveScreenshot(page, `blog-thumbnails-${width}.png`);
+      assert(boxes.every(box => Math.abs(box.ratio - 1) < 0.02 && Math.abs(box.width - expectedThumbWidth) <= 1 && box.fit === box.expectedFit), '記事一覧サムネイルを固定正方形で表示する: ' + width);
+      if ([390, 768, 1280].includes(width)) await saveScreenshot(page, `blog-thumbnails-${width}.png`);
     }
+
+    // User-visible mobile first view: prove that the list itself is present without an initial scroll.
+    await page.setViewportSize({ width:390, height:844 });
+    await page.evaluate(() => scrollTo(0, 0));
+    await page.waitForFunction(() => {
+      const card = document.querySelector('.article-card');
+      if (!card) return false;
+      const rect = card.getBoundingClientRect();
+      return rect.top < 540 && Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0) >= 160;
+    }, null, { polling:'raf', timeout:5_000 });
+    await page.screenshot({ path:path.join(ARTIFACT_DIR,'blog-first-view-390.png'), fullPage:false });
 
     await page.waitForTimeout(500);
     browserState.verify('Blog browser errors');

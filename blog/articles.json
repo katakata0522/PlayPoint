@@ -678,12 +678,13 @@
         "TGS2026のダイヤモンドラウンジ記録を見る"
       ]
     ],
-    "thumbnail": "../articles/ogp/2026-10-01-black-diamond-diamond-vip.png",
+    "thumbnail": "../articles/thumbnails/black-diamond.webp",
     "source": "article",
     "listed": true,
     "listTitle": "Black Diamond・Diamond VIPはある？新ランクの痕跡を検証",
     "listDescription": "公開ランクは5段階のまま。TGS現地確認、公式ページ、APK解析を分けて整理します。",
-    "browseCategory": "ランク・ステータス"
+    "browseCategory": "ランク・ステータス",
+    "thumbnailKind": "generic"
   },
   {
     "id": "nikke-monthly-card-midasbuy-2026",
@@ -717,7 +718,7 @@
     "ogp": "../articles/ogp/2026-09-26-nikke-monthly-card-midasbuy.png",
     "browseCategory": "ゲーム別課金",
     "listed": true,
-    "thumbnail": "../articles/ogp/2026-09-26-nikke-monthly-card-midasbuy.png",
+    "thumbnail": "../articles/thumbnails/nikke-30day-midasbuy.webp",
     "thumbnailKind": "generic"
   },
   {
@@ -817,7 +818,7 @@
     "ogp": "../articles/ogp/2026-09-26-pokemon-sleep-play-points-coupon.png",
     "browseCategory": "ゲーム別課金",
     "listed": true,
-    "thumbnail": "../articles/ogp/2026-09-26-pokemon-sleep-play-points-coupon.png",
+    "thumbnail": "../articles/thumbnails/pokemon-sleep-coupon.webp",
     "thumbnailKind": "generic"
   },
   {
@@ -850,8 +851,8 @@
         "自分の購入額でポイントを計算する"
       ]
     ],
-    "thumbnail": "../images/game-icons/monst.webp",
-    "thumbnailKind": "app-icon",
+    "thumbnail": "../articles/thumbnails/monst-pack-monpass.webp",
+    "thumbnailKind": "generic",
     "source": "article",
     "listed": true,
     "listTitle": "モンスト｜パックとモンパスの選び方",
@@ -1432,10 +1433,11 @@
     ],
     "description": "日本のGoogle Play Pointsをブロンズからダイヤモンドまで一覧比較。必要ポイント、通常獲得率、ウィークリーリワード、ランクアップ時の購入額目安、残高との違いを解説します。",
     "file": "../articles/2026-08-05-play-points-levels-guide.html",
-    "thumbnail": "../articles/ogp/diamond-worth-it.png",
+    "thumbnail": "../articles/thumbnails/play-points-rank-comparison.webp",
     "listTitle": "Play Pointsのランク一覧｜条件・必要額・特典",
     "listDescription": "各ランクの必要ポイントと特典を比較し、目標までの条件を確認できます。",
-    "browseCategory": "ランク・ステータス"
+    "browseCategory": "ランク・ステータス",
+    "thumbnailKind": "generic"
   },
   {
     "id": "play-points-cannot-join",

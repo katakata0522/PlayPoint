@@ -207,9 +207,10 @@
     function sanitizeArticleThumbnail(value) {
         if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
         const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const editorialThumbnail = /^\.\.\/articles\/thumbnails\/[a-z0-9-]+\.webp$/.test(value);
         const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/.test(value);
         const sharedSiteOgp = value === '../ogp.png';
-        if (!standardThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
+        if (!standardThumbnail && !editorialThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
         if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
         return value;
     }
@@ -840,11 +841,13 @@
                 </div>
                 <div class="card-content">
                     <div class="card-meta"><span class="card-topic">${thumbnailLabel}</span>${newBadge}${dateMarkup}</div>
-                    <h3>${safeTitle}</h3>
-                    ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
-                    <p class="card-desc">${safeDesc}</p>
-                    <div class="card-tags">
-                        ${article.tags.map(t => `#${BlogUtils.escapeHtml(t)}`).join(' ')}
+                    <div class="card-main">
+                        <h3>${safeTitle}</h3>
+                        ${currentSearch && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : ''}
+                        <p class="card-desc">${safeDesc}</p>
+                        <div class="card-tags">
+                            ${article.tags.map(t => `#${BlogUtils.escapeHtml(t)}`).join(' ')}
+                        </div>
                     </div>
                 </div>
             `;
