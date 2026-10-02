@@ -44,7 +44,7 @@ function preparePublicTree(destinationRoot, { sourceRoot = DEFAULT_SOURCE_ROOT }
   const source = path.resolve(sourceRoot);
   const destination = path.resolve(destinationRoot || '');
   if (!destinationRoot) throw new Error('A destination directory is required for the public deployment tree.');
-  if (isInside(source, destination)) {
+  if (isInside(source, destination) || isInside(destination, source)) {
     throw new Error(`Public deployment destination must be outside the repository root: ${destination}`);
   }
 

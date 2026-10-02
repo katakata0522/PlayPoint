@@ -31,6 +31,9 @@ test('browser検証基盤自身の変更もChromiumを必須にする', () => {
     '.github/scripts/calculator-presentation-contract.cjs',
     '.github/scripts/game-calculator-browser.cjs',
     '.github/scripts/setup-browser-runtime.sh',
+    '.github/scripts/browser-revision-evidence.cjs',
+    '.github/scripts/verify-deploy-revision.cjs',
+    '.github/scripts/detect-pr-gate-impact.cjs',
     '.github/ci-runtime/package-lock.json',
   ]) {
     assert.equal(classifyPrGateImpact([file]).browserRequired, true, file);

@@ -30,12 +30,17 @@ test('元Deployのproduction mirrorが実際に試行された時だけattempted
   assert.equal(wasProductionMirrorAttempted(jobsPayload({ conclusion: 'cancelled' })), true);
   assert.equal(wasProductionMirrorAttempted(jobsPayload({ conclusion: 'skipped' })), false);
   assert.equal(wasProductionMirrorAttempted({ jobs: [{ name: 'deploy', steps: [] }] }), false);
+  assert.equal(wasProductionMirrorAttempted(null), false);
+  assert.equal(wasProductionMirrorAttempted({ jobs: [{ name: 'unrelated', steps: [{ name: MIRROR_STEP_NAME, status: 'completed', conclusion: 'success' }] }] }), false);
+  for (const status of ['queued', 'in_progress']) assert.equal(wasProductionMirrorAttempted(jobsPayload({ status, conclusion: 'failure' })), false);
 });
 
 test('pre-mutation失敗・復旧済みverified・別Deploy進行中では外部restoreしない', () => {
   assert.deepEqual(decideRecovery({ sourceConclusion: 'failure', sourceHeadSha: sha, mirrorAttempted: false, live: { kind: 'verified', commit: otherSha } }), { needed: false, reason: 'mirror_not_attempted' });
   assert.deepEqual(decideRecovery({ sourceConclusion: 'cancelled', sourceHeadSha: sha, mirrorAttempted: true, live: { kind: 'verified', commit: sha } }), { needed: false, reason: 'live_verified' });
   assert.deepEqual(decideRecovery({ sourceConclusion: 'failure', sourceHeadSha: sha, mirrorAttempted: true, live: { kind: 'deploying', commit: otherSha } }), { needed: false, reason: 'different_deploy_in_progress' });
+  assert.deepEqual(decideRecovery({ sourceConclusion: 'success', sourceHeadSha: sha, mirrorAttempted: true, live: { kind: 'unreachable' } }), { needed: false, reason: 'source_success' });
+  assert.throws(() => decideRecovery({ sourceHeadSha: 'bad', mirrorAttempted: true, live: { kind: 'unreachable' } }), /40-character SHA/);
 });
 
 test('mirror試行後に元SHAがdeploying・unverified・unreachableなら外部restore対象にする', () => {

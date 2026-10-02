@@ -62,7 +62,24 @@ test('changed rendered markup and missing required modules fail the comparator',
 });
 
 test('runtime refactoring uses the real base revision and both independent comparison gates inside required PR Gate', () => {
-  const workflow = fs.readFileSync(path.join(root, '.github/workflows/quality-check.yml'), 'utf8');
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/quality-check.yml'), 'utf8').replace(/^\s*#.*$/gm, '');
+  const block = workflow.split(/^      - /m).find(part => part.includes('id: compare_refactored_runtime_and_appearance_with_the_base_revision'));
+  assert.ok(block, 'comparison step missing');
+  const expression = block.match(/^\s+if: (.+)$/m)?.[1];
+  assert.ok(expression);
+  const vm = require('node:vm');
+  const evaluate = (event, branch) => vm.runInNewContext(expression, {
+    github: { event_name: event, head_ref: branch }, startsWith: (value, prefix) => value.startsWith(prefix)
+  }, { timeout: 100 });
+  assert.equal(evaluate('pull_request', 'refactor/runtime-example'), true);
+  assert.equal(evaluate('pull_request', 'fix/example'), false);
+  assert.equal(evaluate('workflow_dispatch', 'refactor/runtime-example'), false);
+  assert.match(block, /set -euo pipefail/);
+  assert.doesNotMatch(block, /continue-on-error|\|\|\s*true/);
+  const archive = block.indexOf('git archive "$REFACTOR_BASE_SHA"');
+  const runtime = block.indexOf('node .github/scripts/refactor-runtime-compatibility.cjs "$baseline_dir"');
+  const visual = block.indexOf('node .github/scripts/refactor-visual-smoke.cjs "$baseline_dir"');
+  assert.ok(archive >= 0 && runtime > archive && visual > runtime);
   assert.ok(workflow.includes('github.event.pull_request.base.sha'));
   assert.ok(workflow.includes('git archive "$REFACTOR_BASE_SHA"'));
   assert.ok(workflow.includes('node .github/scripts/refactor-runtime-compatibility.cjs "$baseline_dir"'));

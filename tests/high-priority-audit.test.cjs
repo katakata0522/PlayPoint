@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
+const { openingTags } = require('./helpers/markup-contract.cjs');
 const { loadConfigs } = require('./helpers/playpoint-calculator-test-context.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -15,15 +17,23 @@ test('PWA起動は保存済み地域を復元する専用ランチャーを経�
   const serviceWorker = read('sw.js');
 
   assert.equal(manifest.start_url, '/pwa-launch.html');
-  assert.match(launcher, /playpointPreferredRegion/);
-  for (const target of ['/', '/en/', '/ko/', '/tw/', '/hk/', '/in/']) {
-    assert.ok(launcher.includes(`'${target}'`), `PWAランチャーに地域パスがありません: ${target}`);
+  const inline = launcher.replace(/<!--[\s\S]*?-->/g, '').match(/<script\b[^>]*>([\s\S]*?)<\/script>/i)?.[1];
+  assert.ok(inline, 'PWA launcher script missing');
+  for (const [region, expected] of [['JP', '/'], ['US', '/en/'], ['KR', '/ko/'], ['TW', '/tw/'], ['HK', '/hk/'], ['IN', '/in/'], ['UNKNOWN', '/'], [null, '/'], ['throw', '/']]) {
+    const actual = [];
+    vm.runInNewContext(inline, { localStorage: { getItem(key) {
+      assert.equal(key, 'playpointPreferredRegion');
+      if (region === 'throw') throw new Error('storage denied');
+      return region;
+    } }, window: { location: { replace(value) { actual.push(value); } } } }, { timeout: 100 });
+    assert.deepEqual(actual, [expected], String(region));
   }
   assert.ok(serviceWorker.includes("'./pwa-launch.html'"), 'PWAランチャーがオフライン先読み対象にありません');
 });
 
 test('Country Guideは現在の6地域専用モードを案内する', () => {
   const guide = read('attention.html');
+  const links = openingTags(guide).filter(node => node.tag === 'a');
 
   for (const [label, href] of [
     ['Japan', './'],
@@ -34,7 +44,7 @@ test('Country Guideは現在の6地域専用モードを案内する', () => {
     ['India', './in/']
   ]) {
     assert.ok(guide.includes(label), `Country Guideに${label}がありません`);
-    assert.ok(guide.includes(`href="${href}"`), `Country Guideに${href}への導線がありません`);
+    assert.ok(links.some(node => node.attrs.href === href), `Country Guideに${href}への導線がありません`);
   }
 
 });

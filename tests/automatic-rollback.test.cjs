@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const { detectDeployImpact } = require('../.github/scripts/detect-deploy-impact.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -56,6 +57,21 @@ test('自動rollbackは本番mutationまたはcritical検証の失敗だけで�
       rollbackSlice.includes(`steps.${id}.outcome == 'failure'`),
       `auto rollback must explicitly recognize ${id} failure`
     );
+  }
+  const expression = rollbackSlice.match(/^\s+if: \$\{\{ (.+) \}\}\s*$/m)?.[1];
+  assert.ok(expression, 'rollback condition missing');
+  const executable = expression.replace(/steps\.([\w-]+)/g, (_, id) => `steps[${JSON.stringify(id)}]`);
+  const evaluate = (outcomes = {}, revision = 'a'.repeat(40), failed = true) => {
+    const steps = { 'rollback-snapshot': { outputs: { revision } } };
+    for (const [, id] of criticalSteps) steps[id] = { outcome: outcomes[id] || 'success' };
+    return vm.runInNewContext(executable, { steps, failure: () => failed }, { timeout: 100 });
+  };
+  assert.equal(evaluate(), false, 'unrelated failure must not restore production');
+  for (const [, id] of criticalSteps) {
+    assert.equal(evaluate({ [id]: 'failure' }), true, id);
+    assert.equal(evaluate({ [id]: 'failure' }, ''), false, 'unverified snapshot');
+    assert.equal(evaluate({ [id]: 'failure' }, 'a'.repeat(40), false), false, 'no job failure');
+    for (const outcome of ['success', 'skipped', 'cancelled']) assert.equal(evaluate({ [id]: outcome }), false, id + ': ' + outcome);
   }
   assert.ok(!rollbackSlice.includes("outcome == 'skipped'"), 'pre-mutation/skipped work must not trigger rollback');
   assert.ok(!rollbackSlice.includes("outcome == 'success'"), 'successful production work alone must not trigger rollback');

@@ -1,6 +1,7 @@
 'use strict';
 
 const { execFileSync } = require('node:child_process');
+const { isPublicRepositoryPath } = require('./public-paths.cjs');
 
 const SITE_ORIGIN = 'https://playpoint-sim.com';
 const SITE_HOST = 'playpoint-sim.com';
@@ -19,7 +20,9 @@ function normalizeRepositoryPath(value) {
 
 function repositoryPathToPublicUrl(filePath) {
   const normalized = normalizeRepositoryPath(filePath);
-  if (!normalized || !/\.html$/i.test(normalized)) return null;
+  if (!normalized || !/\.html$/i.test(normalized)
+    || normalized.split('/').some(part => part === '..' || part === '.')
+    || !isPublicRepositoryPath(normalized)) return null;
   if (normalized === 'index.html') return `${SITE_ORIGIN}/`;
   if (/\/index\.html$/i.test(normalized)) {
     return `${SITE_ORIGIN}/${normalized.slice(0, -'index.html'.length)}`;
@@ -79,7 +82,7 @@ function buildIndexNowPayload(urls) {
   if (urls.length > MAX_URLS) throw new Error(`IndexNow URL batch exceeds protocol limit: ${urls.length} > ${MAX_URLS}`);
   for (const url of urls) {
     const parsed = new URL(url);
-    if (parsed.protocol !== 'https:' || parsed.hostname !== SITE_HOST) {
+    if (parsed.origin !== SITE_ORIGIN || parsed.username || parsed.password) {
       throw new Error(`IndexNow URL is outside canonical host: ${url}`);
     }
   }

@@ -6,39 +6,35 @@ const path = require('node:path');
 const test = require('node:test');
 const { ensureAnalyticsCoreScript } = require('../scripts/analytics-runtime-sync.cjs');
 const { listPublicHtmlFiles } = require('../scripts/article-asset-versioning.cjs');
+const { parseAttributes } = require('./helpers/markup-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
+const scripts = html => [...html.replace(/<!--[\s\S]*?(?:-->|$)/g, '').matchAll(/<script\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?<\/script\s*>/gi)]
+  .map(match => ({ attrs: parseAttributes('script ' + match[1]), index: match.index }));
 
-test('記事一覧JSONは版付き静的資産より短い再検証ルールを優先する', () => {
-  const htaccess = read('.htaccess');
-  const immutable = htaccess.match(/max-age=(\d+),\s*immutable/);
-  const articlesBlock = htaccess.match(/<Files "articles\.json">([\s\S]*?)<\/Files>/);
-  assert.ok(immutable, 'immutable asset cache policy is missing');
-  assert.ok(articlesBlock, 'articles.json cache override is missing');
-  const articlesAge = articlesBlock[1].match(/max-age=(\d+),\s*must-revalidate/);
-  assert.ok(articlesAge, 'articles.json must require revalidation');
-  assert.ok(Number(articlesAge[1]) < Number(immutable[1]), 'articles.json must refresh sooner than versioned assets');
-});
+// T0451: tests/http-cache-contract.test.cjs + tests/helpers/apache-cache-contract.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 
 test('計測コアは対象HTMLへ実行スクリプトより前に一度だけ挿入する', () => {
   const input = '<body>\n    <script defer src="../blog/article.js?v=old"></script>\n</body>';
   const once = ensureAnalyticsCoreScript(input);
   const twice = ensureAnalyticsCoreScript(once);
   assert.equal(once, twice, '同期処理が冪等ではありません');
-  assert.ok(once.indexOf('/js/analytics-core.js') < once.indexOf('../blog/article.js'));
-  assert.match(once, /<script\s+src="\/js\/analytics-core\.js"><\/script>/);
-  assert.equal((once.match(/analytics-core\.js/g) || []).length, 1);
+  const actual = scripts(once);
+  const core = actual.filter(node => node.attrs.src?.split('?')[0] === '/js/analytics-core.js');
+  assert.equal(core.length, 1);
+  assert.ok(core[0].index < actual.find(node => node.attrs.src?.startsWith('../blog/article.js')).index);
 });
 
 test('計測対象の公開HTMLは共通コアを実行スクリプトより先に読み込む', () => {
-  const runtimePattern = /<script\b[^>]*\bsrc=["'][^"']*(?:js\/intent-tracking|blog\/article|blog\/script)\.js/i;
   for (const htmlFile of listPublicHtmlFiles(root)) {
     const html = fs.readFileSync(htmlFile, 'utf8');
-    const runtimeIndex = html.search(runtimePattern);
-    if (runtimeIndex < 0) continue;
-    const coreIndex = html.search(/<script\b[^>]*\bsrc=["'][^"']*js\/analytics-core\.js/i);
-    assert.ok(coreIndex >= 0 && coreIndex < runtimeIndex, path.relative(root, htmlFile));
+    const actual = scripts(html);
+    const runtime = actual.find(node => /(?:js\/intent-tracking|blog\/article|blog\/script)\.js(?:[?#]|$)/.test(node.attrs.src || ''));
+    if (!runtime) continue;
+    const core = actual.filter(node => /js\/analytics-core\.js(?:[?#]|$)/.test(node.attrs.src || ''));
+    assert.equal(core.length, 1, path.relative(root, htmlFile));
+    assert.ok(core[0].index < runtime.index, path.relative(root, htmlFile));
   }
 });
 
@@ -54,20 +50,6 @@ test('計算機系モジュールは同期scriptを増やさず計測コアを�
   }
 });
 
-test('記事固有導線がある場合は汎用関連記事とCTAを重ねない', () => {
-  const article = read('blog/article.js');
-  for (const selector of ['.related-links-section', '.article-related-guides']) {
-    assert.ok(article.includes(selector), `重複回避セレクタがありません: ${selector}`);
-  }
-  assert.match(article, /setupContextualGuideLinks[\s\S]*?document\.querySelector\([^\n]+related-links-section/);
-  assert.match(article, /setupArticleNextStepCta[\s\S]*?document\.querySelector\([^\n]+related-links-section/);
-});
+// T0455: .github/scripts/ui-contract-browser.cjs へ統合。監査IDと理由は履歴台帳へ保持。
 
-test('ブログ共通スタイルは外部CSSとして版管理し、JSへ大量埋め込みしない', () => {
-  const components = read('blog/components.js');
-  const css = read('blog/common-components.css');
-  assert.ok(css.trim(), '共通CSSが空です');
-  assert.ok(components.includes('blog/common-components.css'));
-  assert.doesNotMatch(components, /style\.textContent\s*=/);
-  assert.doesNotMatch(components, /function injectStyles/);
-});
+// T0456: tests/runtime-module-guards.test.cjs へ統合。監査IDと理由は履歴台帳へ保持。

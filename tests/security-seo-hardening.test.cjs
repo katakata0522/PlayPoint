@@ -6,7 +6,7 @@ const path = require('node:path');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8');
+const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/^\s*#.*$/gm, '');
 
 test('security headers and CSP stay fail-closed without unused third-party allowlists', () => {
   const htaccess = read('.htaccess');

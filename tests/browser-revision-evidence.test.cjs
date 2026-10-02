@@ -117,7 +117,7 @@ test('以前のsnapshotのchecked/expected/actual形式をそのまま厳密検�
 test('4つの本番・復旧レーンはHTTPと同じSHAを渡し、全browser suite後に証跡を結合する', () => {
   let count = 0;
   for (const file of ['deploy.yml', 'rollback.yml', 'deploy-recovery-watchdog.yml']) {
-    const source = fs.readFileSync(path.join(root, '.github/workflows', file), 'utf8');
+    const source = fs.readFileSync(path.join(root, '.github/workflows', file), 'utf8').replace(/^\s*#.*$/gm, '');
     let httpRevision;
     for (const block of source.split(/^      - /m)) {
       const expectedHttp = block.match(/EXPECTED_DEPLOY_REVISION:\s*(.+)/);

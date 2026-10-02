@@ -7,7 +7,7 @@ const { spawnSync } = require('node:child_process');
 const test = require('node:test');
 
 const root = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n');
+const read = relativePath => fs.readFileSync(path.join(root, relativePath), 'utf8').replace(/\r\n?/g, '\n').replace(/^\s*#.*$/gm, '');
 const helperPath = '.github/scripts/setup-browser-runtime.sh';
 const helper = read(helperPath);
 
@@ -24,7 +24,7 @@ test('Playwright対応Chromium・固定依存・日本語fontは単一helperが�
   const lock = JSON.parse(read('.github/ci-runtime/package-lock.json'));
   assert.equal(manifest.private, true);
   assert.match(manifest.dependencies['playwright-core'], /^\d+\.\d+\.\d+$/, 'playwright-core must stay exactly pinned');
-  assert.equal(Object.keys(manifest.dependencies).length, 1);
+  assert.equal(manifest.dependencies.lighthouse, undefined, '性能専用依存を通常runtimeへ混ぜない');
   const performance = JSON.parse(read('.github/ci-runtime/lighthouse/package.json'));
   const performanceLock = JSON.parse(read('.github/ci-runtime/lighthouse/package-lock.json'));
   assert.match(performance.dependencies.lighthouse, /^\d+\.\d+\.\d+$/, 'lighthouse must stay exactly pinned');
@@ -88,7 +88,8 @@ test('共通browser runtime helperのBash構文が有効である', (t) => {
   const bashPath = process.platform === 'win32'
     ? `/${absolute.replace(/\\/g, '/').replace(/^([A-Za-z]):/, (_, drive) => drive.toLowerCase())}`
     : absolute;
-  const result = spawnSync('bash', ['-n', bashPath], { encoding: 'utf8' });
+  const bash = process.platform === 'win32' && fs.existsSync('C:/Program Files/Git/bin/bash.exe') ? 'C:/Program Files/Git/bin/bash.exe' : 'bash';
+  const result = spawnSync(bash, ['-n', bashPath], { encoding: 'utf8' });
   if (result.error && result.error.code === 'ENOENT') {
     t.skip('bashがない環境ではGitHub Actions上の検査に委ねます');
     return;
