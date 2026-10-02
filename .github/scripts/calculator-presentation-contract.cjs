@@ -6,6 +6,18 @@ async function verifyStaticPresentation(page, locale) {
   const viewports = [];
   for (const width of [320, 390, 1024]) {
     await page.setViewportSize({ width, height: 844 });
+    // 外部広告が先頭に追加されても、入力欄のflex・CTA順序を維持する。
+    const adBoundary = await page.evaluate(() => {
+      const mode = document.getElementById('mainMode');
+      const inputs = document.getElementById('currentStatus')?.closest('.section');
+      const before = { display: getComputedStyle(inputs).display, direction: getComputedStyle(inputs).flexDirection };
+      const ad = document.createElement('div'); ad.className = 'google-auto-placed';
+      mode.prepend(ad);
+      const after = { display: getComputedStyle(inputs).display, direction: getComputedStyle(inputs).flexDirection };
+      ad.remove(); return { before, after };
+    });
+    assert.equal(adBoundary.after.display, 'flex', `${locale}/${width}: 広告挿入で入力レイアウトが外れる`);
+    assert.deepEqual(adBoundary.after, adBoundary.before, `${locale}/${width}: 広告が入力レイアウトを変更する`);
     const observed = await page.evaluate(() => {
       const button = document.getElementById('calculateButton');
       const optional = document.getElementById('calculator-advanced-settings');

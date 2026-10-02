@@ -63,6 +63,31 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     },selectors);
   }
   try {
+    // 台帳の通信を止めても、最初の6件の本文・リンクを利用できる。
+    const delayed = await context(), initialPage = await delayed.newPage();
+    let releaseCatalog;
+    const catalogReady = new Promise(resolve => { releaseCatalog = resolve; });
+    await delayed.route('**/blog/articles.json*', async route => { await catalogReady; await route.continue(); });
+    await goto(initialPage, 'blog/');
+    await initialPage.locator('[data-blog-initial-card]').first().waitFor({state:'visible'});
+    assert.equal(await initialPage.locator('.article-card').count(), 6);
+    const firstCard = await initialPage.locator('.article-card').first().elementHandle();
+    const initialTitle = await firstCard.$eval('h3', node => node.textContent);
+    assert(initialTitle.trim(), '台帳の追加通信前に見出しを読める');
+    releaseCatalog();
+    await initialPage.locator('.pagination-next').waitFor({state:'visible'});
+    assert(await firstCard.evaluate(node => node.isConnected), '同じ初期カードを通信後に作り直さない');
+    assert.equal(await initialPage.locator('.article-card').first().locator('h3').textContent(), initialTitle);
+    await delayed.close();
+    const offline = await context(), offlinePage = await offline.newPage();
+    await offline.route('**/blog/articles.json*', route => route.fulfill({status:503,body:'unavailable'}));
+    await goto(offlinePage, 'blog/');
+    await offlinePage.locator('.error-state').waitFor({state:'visible'});
+    assert.equal(await offlinePage.locator('.article-card').count(),6,'通信失敗時も記事リンクを残す');
+    await offlinePage.locator('#retry-load').click();
+    assert.equal(await offlinePage.locator('.article-card').count(),6,'再試行中も記事リンクを残す');
+    await offline.close();
+    report.interactions.initialCards = { count:6, retainedAfterCatalog:true, retainedOnFailure:true };
     const c = await context(), page = await c.newPage();
     await goto(page,'blog/'); await cards(page);
     async function verifyArticleNavigation() {

@@ -2663,9 +2663,9 @@ font-size: 0.8rem;
 }
 }
 .calculator-basis-note { font-size: .85rem; line-height: 1.6; }
-#mainMode > .section:first-child > #main-points-basis { order: 2; }
+#main-calculator-inputs > #main-points-basis { order: 2; }
 @media (min-width: 641px) {
-  #mainMode > .section:first-child > #main-points-basis { order: 3; }
+  #main-calculator-inputs > #main-points-basis { order: 3; }
 }
 
 /* 横スクロール領域のキーボードフォーカスを明示する。 */

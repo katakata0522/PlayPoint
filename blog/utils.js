@@ -135,6 +135,90 @@
     }
 
     // Global Utilities for Katakata Blog
+    function sanitizeArticleFile(value) {
+        if (typeof value !== 'string') return '#';
+        const standardArticle = /^\.\.\/articles\/[^/]+\.html$/.test(value);
+        const gameGuideArticle = /^\.\.\/games\/[a-z0-9-]+\/[a-z0-9-]+\/index\.html$/.test(value);
+        if (!standardArticle && !gameGuideArticle) return '#';
+        if (/[<>"']/.test(value)) return '#';
+        return value;
+    }
+
+    function sanitizeArticleThumbnail(value) {
+        if (typeof value !== 'string') return BlogUtils.getPlaceholderImage();
+        const standardThumbnail = /^\.\.\/articles\/ogp\/[^/]+\.png$/.test(value);
+        const editorialThumbnail = /^\.\.\/articles\/thumbnails\/[a-z0-9-]+\.webp$/.test(value);
+        const gameIcon = /^\.\.\/images\/game-icons\/[a-z0-9-]+\.(?:png|jpe?g|webp)$/.test(value);
+        const sharedSiteOgp = value === '../ogp.png';
+        if (!standardThumbnail && !editorialThumbnail && !gameIcon && !sharedSiteOgp) return BlogUtils.getPlaceholderImage();
+        if (/[<>"']/.test(value)) return BlogUtils.getPlaceholderImage();
+        return value;
+    }
+
+    function sanitizeArticleThumbnailKind(value) {
+        return ['generic', 'app-icon', 'event-visual'].includes(value) ? value : 'generic';
+    }
+
+    function sanitizeArticleThumbnailPosition(value) {
+        return ['left', 'center', 'right'].includes(value) ? value : 'center';
+    }
+
+    // 記事JSONの値を描画前に正規化する
+    function normalizeArticle(article) {
+        article = article && typeof article === 'object' ? article : {};
+        const tags = Array.isArray(article.tags) ? article.tags.filter(tag => typeof tag === 'string') : [];
+        const title = typeof article.title === 'string' ? article.title : '';
+        const description = typeof article.description === 'string' ? article.description : '';
+        const category = typeof article.category === 'string' ? article.category : '';
+
+        return {
+            id: typeof article.id === 'string' ? article.id : '',
+            title,
+            listTitle: typeof article.listTitle === 'string' && article.listTitle.trim() ? article.listTitle.trim() : title,
+            date: BlogUtils.validArticleDate(article.date),
+            modified: BlogUtils.validArticleDate(article.modified),
+            category,
+            gameTitle: typeof article.gameTitle === 'string' ? article.gameTitle : '',
+            browseCategory: typeof article.browseCategory === 'string' ? article.browseCategory : '',
+            tags,
+            description,
+            listDescription: typeof article.listDescription === 'string' ? article.listDescription : description,
+            file: sanitizeArticleFile(article.file),
+            thumbnail: sanitizeArticleThumbnail(article.thumbnail),
+            thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
+            thumbnailPosition: sanitizeArticleThumbnailPosition(article.thumbnailPosition),
+            listed: article.listed !== false,
+            searchIndex: BlogUtils.buildArticleSearchIndex({
+                title,
+                description,
+                tags,
+                category
+            })
+        };
+    }
+
+
+    // 静的な初期カードと検索後のカードは同じ正規化・描画経路を使う。
+    function articleCardIdentity(article) {
+        return JSON.stringify([article.title, article.listTitle, article.date, article.modified, article.category, article.tags, article.listDescription, article.file, article.thumbnail, article.thumbnailKind, article.thumbnailPosition]);
+    }
+    function articleCardMarkup(article, { search = '', snippet = null, isNew = false, compact = false, first = false, staticCard = false } = {}) {
+        const safeTitle = BlogUtils.escapeHtml(article.listTitle);
+        const safeDesc = BlogUtils.escapeHtml(search ? (snippet?.text || article.description) : article.listDescription);
+        const safeCategory = BlogUtils.escapeHtml(article.category);
+        const updated = article.modified && article.modified > article.date ? article.modified : '';
+        const dateMarkup = '<time datetime="' + (updated || article.date) + '">' + (updated ? '更新 ' : '') + BlogUtils.formatDate(updated || article.date) + '</time>';
+        const newBadge = isNew ? '<span class="badge-new">NEW</span>' : '';
+        const kind = article.thumbnailKind, position = article.thumbnailPosition;
+        const deferThumbnail = compact && !first;
+        const placeholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+        const source = BlogUtils.escapeHtml(article.thumbnail);
+        const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + (kind === 'app-icon' ? 96 : 1200) + '" height="' + (kind === 'app-icon' ? 96 : 630) + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
+        // 画面外画像はスマホの初回描画と競合させず、PCはnative lazy loadingを使う。
+        const thumbnail = staticCard && !first ? '<picture><source media="(max-width:760px)" srcset="' + placeholder + '">' + image + '</picture>' : image;
+        return '<div class="card-thumb card-thumb--' + kind + ' card-thumb--focus-' + position + '">' + thumbnail + '</div><div class="card-content"><div class="card-meta"><span class="card-topic">' + safeCategory + '</span>' + newBadge + dateMarkup + '</div><div class="card-main"><h3>' + safeTitle + '</h3>' + (search && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : '') + '<p class="card-desc">' + safeDesc + '</p><div class="card-tags">' + article.tags.map(t => '#' + BlogUtils.escapeHtml(t)).join(' ') + '</div></div></div>';
+    }
+
     const BlogUtils = {
 
         /**
@@ -213,7 +297,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity
     };
 
     const api = Object.assign({}, BlogUtils, {
@@ -223,7 +307,7 @@
         clampPageJump: clampPageJump,
         filterListedArticles: filterListedArticles,
         GAME_TITLE_FILTERS: GAME_TITLE_FILTERS,
-        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators
+        validArticleDate, sortListedArticles, gameTitleFilters, relatedGameCalculators, normalizeArticle, articleCardMarkup, articleCardIdentity
     });
 
     if (typeof module === 'object' && module.exports) {

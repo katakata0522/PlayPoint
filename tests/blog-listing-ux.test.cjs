@@ -142,10 +142,11 @@ test('editorial thumbnails can opt into a sanitized focal position', () => {
   assert.equal(blackDiamond.thumbnail, '../articles/ogp/2026-10-01-black-diamond-diamond-vip.png');
   assert.equal(blackDiamond.thumbnailPosition, 'left');
 
-  const script = read('blog/script.js');
   const css = read('blog/article-list.css');
-  assert.match(script, /function sanitizeArticleThumbnailPosition\(value\)/);
-  assert.match(script, /card-thumb--focus-\$\{thumbnailPosition\}/);
+  const normalized = blogUtils.normalizeArticle(blackDiamond);
+  assert.equal(normalized.thumbnailPosition, 'left');
+  assert.match(blogUtils.articleCardMarkup(normalized), /card-thumb--focus-left/);
+  assert.equal(blogUtils.normalizeArticle({ ...blackDiamond, thumbnailPosition: 'left" onclick="bad' }).thumbnailPosition, 'center');
   assert.match(css, /\.card-thumb--focus-left img/);
   assert.match(css, /object-position:left center/);
 });

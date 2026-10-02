@@ -116,6 +116,8 @@ function getAccessibleRegionName(region) {
 }
 
 function ensureRegionSelectorCriticalStyle() {
+    // headで正式なスタイルを取得済みなら、後から暫定のラベルへ戻さない。
+    if (document.querySelector('link[data-region-selector-style]')) return;
     if (document.getElementById(REGION_SELECTOR_CRITICAL_STYLE_ID)) return;
 
     const style = document.createElement('style');
