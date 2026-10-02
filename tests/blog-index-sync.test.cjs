@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 const {
   listedJapaneseArticles,
   syncBlogStaticArticleIndex,
@@ -132,12 +133,43 @@ test('未知カテゴリの公開記事は静的一覧へ混ぜず失敗する',
   );
 });
 
-test('PR準備コマンドは日付とアセット版を固定して生成する', () => {
-  const source = fs.readFileSync(path.join(__dirname, '..', 'scripts', 'prepare-pr.cjs'), 'utf8');
-  assert.match(source, /PLAYPOINT_MODIFIED_DATE/);
-  assert.match(source, /PLAYPOINT_ASSET_VERSION/);
-  assert.match(source, /scripts\/build-html\.js/);
-  assert.match(source, /scripts\/site-click-depth\.cjs/);
+test('PR準備コマンドは実際の生成子プロセスへコミット済みの日付と版を渡す', () => {
+  const source = fs.readFileSync(path.join(__dirname,'../scripts/prepare-pr.cjs'),'utf8');
+  function execute(index,worker,calls = []) {
+    const context = {
+      __dirname: path.join(__dirname,'../scripts'),
+      console: {log(){},error(){}},
+      process: {execPath:process.execPath,env:{PLAYPOINT_MODIFIED_DATE:'wrong',PLAYPOINT_ASSET_VERSION:'wrong'},exit(code){throw Error('exit:'+code);}},
+      require(id) {
+        if (id==='node:child_process') return {spawnSync(command,args,options){calls.push({command,args,options});return {status:0,stdout:''};}};
+        if (id==='node:fs') return {readFileSync(file){
+          if (path.basename(file)==='index.html') return index;
+          if (path.basename(file)==='sw.js') return worker;
+          if (path.basename(file)==='articles.json') return '[]';
+          throw Error('unexpected read '+file);
+        },existsSync(){return false;}};
+        if (id==='node:path') return path;
+        if (id==='./locale-ids.cjs') return {INTERNATIONAL_LOCALES:[]};
+        throw Error('unexpected import '+id);
+      }
+    };
+    vm.runInNewContext(source,context,{filename:'prepare-pr.cjs',timeout:2000});
+    return calls;
+  }
+  const index = '<meta name="last-modified" content="2026-01-02">';
+  const worker = "const CACHE = 'playpoint-calc-v20260102_3-abcd';";
+  const calls = execute(index,worker);
+  const build = calls.find(call=>call.args[0]==='scripts/build-html.js');
+  assert.ok(build);
+  assert.equal(build.options.env.PLAYPOINT_MODIFIED_DATE,'2026-01-02');
+  assert.equal(build.options.env.PLAYPOINT_ASSET_VERSION,'20260102_3');
+  const reachability = calls.findIndex(call=>call.args[0]==='scripts/site-click-depth.cjs');
+  assert.ok(reachability > calls.indexOf(build));
+  for (const [badIndex,badWorker] of [['unknown',worker],[index,'unknown']]) {
+    const invalidCalls=[];
+    assert.throws(()=>execute(badIndex,badWorker,invalidCalls),/exit:1/);
+    assert.equal(invalidCalls.length,0,'版の読取不能では生成も後続検査も開始しない');
+  }
 });
 
 test('人向けサイトマップは未掲載の公開記事だけを生成欄へ足す', t => {

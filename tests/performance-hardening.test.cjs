@@ -42,19 +42,6 @@ test('画面外描画の最適化は長文下部だけに限定し、印刷時�
   assert.match(css, /@media\s+print[\s\S]*content-visibility:\s*visible/);
 });
 
-test('バージョン付き資産だけを長期immutableでキャッシュする', () => {
-  const htaccess = fs.readFileSync(path.join(root, '.htaccess'), 'utf8');
-  const immutable = htaccess.match(/max-age=(\d+),\s*immutable/);
-  const cssDefault = htaccess.match(/text\/css "access plus (\d+) days"/);
-  assert.ok(immutable, 'versioned immutable cache policy is missing');
-  assert.ok(cssDefault, 'unversioned CSS cache policy is missing');
-  const immutableSeconds = Number(immutable[1]);
-  const cssDefaultSeconds = Number(cssDefault[1]) * 86400;
-  assert.ok(immutableSeconds > cssDefaultSeconds, 'versioned assets must outlive unversioned CSS cache');
-  assert.ok(immutableSeconds <= 63_072_000, 'immutable cache lifetime must stay finite');
-  assert.match(htaccess, /QUERY_STRING[\s\S]*\bv=/);
-});
+// キャッシュの期間・版境界はhttp-cache-contractと実Apache検証が担当。
 
-test('未参照だった旧共通CSSを公開物に残さない', () => {
-  assert.equal(fs.existsSync(path.join(root, 'articles/article-common.css')), false);
-});
+// 旧ファイルの不存在を永久固定しない。現行の実参照はruntime-module-guardsが担当。

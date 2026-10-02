@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const root = path.resolve(__dirname, '..');
 const { GAME_THUMBNAIL_ASSETS, resolveGameThumbnail } = require('../scripts/game-thumbnail-assets.cjs');
@@ -87,9 +88,19 @@ test('game guides expose the official app listing without turning the app icon i
     const relativePath = article.file.replace(/^\.\.\//, '');
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
 
-    assert.ok(html.includes(entry.sourcePageUrl.replaceAll('&', '&amp;')), article.id + ': official app listing source should be visible');
-    assert.match(html, /<meta[^>]+property=["']og:image["'][^>]+content=["']https:\/\/playpoint-sim\.com\/ogp\.png["']/i, article.id + ': OGP should stay separate from the list icon');
-    assert.match(html, /"image"\s*:\s*"https:\/\/playpoint-sim\.com\/ogp\.png"/, article.id + ': structured-data image should stay on the article OGP');
-    assert.doesNotMatch(html, /<body[\s\S]*<img\b[^>]+images\/game-icons\//i, article.id + ': article body should not gain a large app-icon hero');
+    const tags = openingTags(html);
+    assert.ok(tags.some(tag=>tag.tag==='a' && tag.attrs.href?.replaceAll('&amp;','&')===entry.sourcePageUrl),article.id+': 公式アプリへの実リンクが必要');
+    const metas = openingTags(html).filter(tag=>tag.tag==='meta');
+    const ogp = metas.find(tag=>tag.attrs.property==='og:image')?.attrs.content;
+    assert.ok(ogp && ogp.startsWith('https://playpoint-sim.com/'), article.id+': 同一サイトのOGPが必要');
+    assert.ok(!ogp.includes('/images/game-icons/'),article.id+': 一覧アイコンをOGPへ流用しない');
+    assert.ok(fs.existsSync(path.join(root,new URL(ogp).pathname)),article.id+': OGP資産が実在する');
+    const graphs = [...html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].flatMap(match=>{
+      const value=JSON.parse(match[1]);return value['@graph'] || (Array.isArray(value)?value:[value]);
+    });
+    const articleData = graphs.find(item=>item['@type']==='Article');
+    assert.ok(articleData);
+    assert.equal(articleData.image,ogp,article.id+': 公開メタとArticleの画像を一致させる');
+    assert.ok(!tags.some(tag=>tag.tag==='img' && /images\/game-icons\//.test(tag.attrs.src||'')),article.id+': 記事を一覧アイコンのheroへ置換しない');
   }
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
 
@@ -53,36 +52,31 @@ test('サイトマップの言語トップは内容日台帳の言語集合と�
     .map(url => `<url><loc>${url}</loc><lastmod>2099-12-31</lastmod></url>`)
     .join('\n');
   const output = syncSitemapContent(source);
-  const sitemapSource = fs.readFileSync(path.join(root, 'scripts', 'sitemap-sync.cjs'), 'utf8');
 
   assert.deepEqual(TOP_PAGE_URLS, expectedUrls);
   for (const date of Object.values(TOP_PAGE_CONTENT_DATES)) {
     assert.match(output, new RegExp(`<lastmod>${date}<\\/lastmod>`));
   }
   assert.doesNotMatch(output, /2099-12-31/);
-  assert.match(sitemapSource, /Object\.keys\(TOP_PAGE_CONTENT_DATES\)\.map\(topPageUrlForLocale\)/);
-  assert.match(sitemapSource, /Object\.entries\(contentDates\)\.map/);
-  assert.doesNotMatch(
-    sitemapSource,
-    /const TOP_PAGE_URLS = \[/,
-    'sitemap-sync.cjs must not restore a second handwritten top-page URL list'
-  );
+  const customDates = { ja:'2020-01-01', en:'2021-02-03', zz:'2022-03-04' };
+  const customUrls = Object.keys(customDates).map(topPageUrlForLocale);
+  const customSource = customUrls.map(url=>'<url><loc>'+url+'</loc><lastmod>2099-12-31</lastmod></url>').join('\n');
+  const customOutput = syncSitemapContent(customSource,customDates,customUrls);
+  for (const [locale,date] of Object.entries(customDates)) {
+    const url = topPageUrlForLocale(locale);
+    const block = [...customOutput.matchAll(/<url>[\s\S]*?<\/url>/g)].map(m=>m[0]).find(b=>b.includes('<loc>'+url+'</loc>'));
+    assert.ok(block && block.includes('<lastmod>'+date+'</lastmod>'),url+': URL別の内容日を守る');
+  }
 });
 
-test('静的HTML同期対象は内容日台帳から導出し、対象一覧を二重管理しない', () => {
+test('静的HTML同期対象は内容日台帳の全対象と一致する', () => {
   const expectedStaticFiles = Object.keys(CONTENT_DATE_OVERRIDES)
     .filter(file => !isGeneratedGamePagePath(file))
     .sort();
   const actualStaticFiles = getSyncedHtmlFiles(root)
     .filter(file => !isGeneratedGamePagePath(file))
     .sort();
-  const buildTargetsSource = fs.readFileSync(path.join(root, 'scripts', 'build-targets.cjs'), 'utf8');
 
   assert.deepEqual(actualStaticFiles, expectedStaticFiles);
-  assert.match(buildTargetsSource, /Object\.keys\(CONTENT_DATE_OVERRIDES\)/);
-  assert.doesNotMatch(
-    buildTargetsSource,
-    /const staticSyncedHtmlFiles = \[\s*['"]/,
-    'build-targets.cjs must not restore a second handwritten static sync-target list'
-  );
+
 });

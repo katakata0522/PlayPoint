@@ -3,6 +3,8 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const os = require('node:os');
+const { openingTags } = require('./helpers/markup-contract.cjs');
 const test = require('node:test');
 const {
   LP_FOOTER_PROFILES,
@@ -11,6 +13,7 @@ const {
 } = require('../scripts/site-shell.cjs');
 const {
   normalizeLpFooter,
+  syncIntlManualLpFooters,
   stripLegacyFamilyFooters
 } = require('../scripts/insert-lp-footers.cjs');
 
@@ -63,14 +66,29 @@ test('shared footer renderer preserves semantic footer structure and escapes uns
   assert.match(html, /<p class="copyright">© 2026 Test<\/p>/);
 });
 
-test('LP footer updater delegates markup ownership to the shared Site Shell renderer', () => {
-  const source = fs.readFileSync(path.join(root, 'scripts', 'insert-lp-footers.cjs'), 'utf8');
-  assert.match(source, /require\('\.\/site-shell\.cjs'\)/);
-  assert.match(source, /renderPageFooter\(getLpFooterProfile\(locKey\)\)/);
-  assert.doesNotMatch(source, /const footerData\s*=/);
-  assert.doesNotMatch(source, /footer-nav-links/);
-  assert.doesNotMatch(source, /site-footer-trademark/);
-  assert.doesNotMatch(source, /<p class="copyright">/);
+test('LPフッター同期は各言語の共有出力へ修復し、再実行で書き換えない', t => {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(),'playpoint-footer-sync-'));
+  t.after(()=>fs.rmSync(tempRoot,{recursive:true,force:true}));
+  const files = canonicalFooterPages.filter(file=>!file.startsWith('points-cost/'));
+  for (const file of files) {
+    const target = path.join(tempRoot,file);
+    fs.mkdirSync(path.dirname(target),{recursive:true});
+    fs.writeFileSync(target,'<main>Preserved body</main><footer class="page-footer"><p>stale</p></footer>');
+  }
+  fs.writeFileSync(path.join(tempRoot,'unrelated.html'),'untouched');
+  const first = syncIntlManualLpFooters(tempRoot);
+  assert.equal(first.checked,files.length);
+  assert.equal(first.changed,files.length);
+  for (const file of files) {
+    const html = fs.readFileSync(path.join(tempRoot,file),'utf8');
+    assert.equal(html,'<main>Preserved body</main>'+renderPageFooter(getLpFooterProfile(file.split('/')[0])).trimStart());
+  }
+  t.mock.method(fs,'writeFileSync',()=>{throw Error('無変更時に不要な書込み');});
+  assert.equal(syncIntlManualLpFooters(tempRoot).changed,0);
+  t.mock.restoreAll();
+  assert.equal(fs.readFileSync(path.join(tempRoot,'unrelated.html'),'utf8'),'untouched');
+  fs.writeFileSync(path.join(tempRoot,files[0]),'<main>Missing footer</main>');
+  assert.throws(()=>syncIntlManualLpFooters(tempRoot),/Expected one managed footer/);
 });
 
 test('legacy family footers are removed before the canonical Site Shell footer is synchronized', () => {

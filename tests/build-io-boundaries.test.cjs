@@ -69,10 +69,15 @@ test('記事変換はI/Oなしで本文・既存アンカー・入力レコー�
 
 test('記事とハブは対象内だけを更新し、再実行で不要な再書き込みを増やさない', t => {
   const { root, articles, hubs, assets } = discoveryFixture(t);
+  write(root,'docs/unrelated.txt','untouched');
   const io = ioCounts(t, root);
   assert.equal(syncArticleDiscovery(root), articles.length);
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root, 'blog/game-calculators.json'), 'utf8')),
     [{ id: 'fgo', title: 'Fate/Grand Order (FGO)', href: '/games/fgo/' }]);
+  const allowed = new Set([...articles,...hubs,'blog/game-calculators.json',
+    ...['blog','en/articles','ko/articles','tw/articles'].map(dir=>dir+'/article-search-index.json')]);
+  assert.ok([...io.writes.keys()].every(file=>allowed.has(file)),'対象外へ書き込まない');
+  assert.equal(fs.readFileSync(path.join(root,'docs/unrelated.txt'),'utf8'),'untouched');
 
   for (const file of [...articles, ...hubs]) {
     assert.ok((io.reads.get(file) || 0) >= 1, file + ': target must be read');

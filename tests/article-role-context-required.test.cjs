@@ -30,7 +30,7 @@ test('Role-aware prompt生成はrelativePathなしで旧一律CTAへフォール
   );
 });
 
-test('明示した国際文脈CTA例外はH1変更で静かに失効しない', () => {
+test('国際文脈CTA例外は現在のH1に対応し、対象外見出しを誤認しない', () => {
   for (const relativePath of Object.keys(CONTEXTUAL_PROMPT_PATHS)) {
     const locale = relativePath.split('/', 1)[0];
     const html = fs.readFileSync(path.join(root, relativePath), 'utf8');
@@ -39,6 +39,9 @@ test('明示した国際文脈CTA例外はH1変更で静かに失効しない', 
       true,
       relativePath + ': contextual prompt contract no longer matches the published article'
     );
+    const changedHeading = html.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i,'<h1>Unrelated fixture heading</h1>');
+    assert.notEqual(changedHeading,html,'H1変更のfixtureを実際に作る');
+    assert.equal(hasVerifiedContextualPrompt(changedHeading,locale,relativePath),false,relativePath+': 対象外H1を旧文脈として認識しない');
     assert.equal(
       (html.match(/data-generated-intl-article-prompt="true"/g) || []).length,
       1,
