@@ -215,7 +215,7 @@
         const source = BlogUtils.escapeHtml(article.thumbnail);
         const image = '<img src="' + (deferThumbnail ? placeholder : source) + '"' + (deferThumbnail || (staticCard && !first) ? ' data-src="' + source + '"' : '') + ' alt="" width="' + (kind === 'app-icon' ? 96 : 1200) + '" height="' + (kind === 'app-icon' ? 96 : 630) + '" loading="' + (first ? 'eager' : 'lazy') + '" decoding="async" fetchpriority="' + (first ? 'high' : 'low') + '">';
         // 画面外画像はスマホの初回描画と競合させず、PCはnative lazy loadingを使う。
-        const thumbnail = staticCard && !first ? '<picture><source media="(max-width:760px)" srcset="' + placeholder + '">' + image + '</picture>' : image;
+        const thumbnail = staticCard && !first ? '<picture><source media="(max-width:760px)" srcset="' + PLACEHOLDER_IMAGE + '">' + image + '</picture>' : image;
         return '<div class="card-thumb card-thumb--' + kind + ' card-thumb--focus-' + position + '">' + thumbnail + '</div><div class="card-content"><div class="card-meta"><span class="card-topic">' + safeCategory + '</span>' + newBadge + dateMarkup + '</div><div class="card-main"><h3>' + safeTitle + '</h3>' + (search && snippet?.heading ? '<span class="search-snippet-heading">' + BlogUtils.escapeHtml(snippet.heading) + '</span>' : '') + '<p class="card-desc">' + safeDesc + '</p><div class="card-tags">' + article.tags.map(t => '#' + BlogUtils.escapeHtml(t)).join(' ') + '</div></div></div>';
     }
 
