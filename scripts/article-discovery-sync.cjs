@@ -83,6 +83,10 @@ function compactReadingMetadata(html, locale) {
 
 function prepareDiscoveryArticle(html, entry) {
   const role = classifyArticleRole(entry.path);
+  // 本文の解析を待たせず、計測コア→依存コードの実行順は維持する。
+  // 初回配色を決めるreading-themeとナビ配置の同期処理は対象外。
+  html = html.replace(/<script\b[^>]*\bsrc=["'][^"']*(?:js\/(?:analytics-core|intent-tracking|third-party)|blog\/article)\.js(?:\?[^"']*)?["'][^>]*>/gi,
+    tag => /\b(?:defer|async|type)\s*(?:=|\s|>)/i.test(tag) ? tag : tag.replace('<script', '<script defer'));
   html = withoutReadingMount(html);
   html = html.replace(/\s*<p class="article-region-scope">[\s\S]*?<\/p>/g, '');
   if (entry.locale !== 'ja') {

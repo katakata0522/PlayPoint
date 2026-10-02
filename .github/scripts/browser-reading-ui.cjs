@@ -323,6 +323,37 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
       report.interactions.mobileNavigation.push({name,shots});
     }
 
+    // 画面外の表を強制計測せず、接近・幅変更・履歴復帰でも操作を準備できる。
+    const tableContext = await context();
+    await tableContext.addInitScript(() => {
+      const native = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollWidth');
+      window.__tableMeasurements = [];
+      Object.defineProperty(Element.prototype, 'scrollWidth', { ...native, get() {
+        if (this.hasAttribute('data-reading-table')) window.__tableMeasurements.push(this.id);
+        return native.get.call(this);
+      } });
+    });
+    const tablePage = await tableContext.newPage();
+    const tableFixture = '/articles/reading-table-performance-fixture.html';
+    await tablePage.route(new URL(tableFixture, baseUrl).href, route => route.fulfill({contentType:'text/html',body:
+      '<html><head><style>table{min-width:900px}.table-wrap{overflow:auto}.spacer{height:12000px}.section{content-visibility:auto;contain-intrinsic-size:auto 480px}</style></head><body><article class="content"><section class="section"><div class="table-wrap" id="near"><table><tr><td>A</td><td>B</td><td>C</td></tr></table></div></section><div class="spacer"></div><section class="section"><div class="table-wrap" id="far"><table><tr><td>D</td><td>E</td><td>F</td></tr></table></div></section></article><script src="/js/reading-experience.js"></script></body></html>'}));
+    await goto(tablePage, tableFixture);
+    await tablePage.locator('#near[tabindex="0"]').waitFor();
+    assert.equal(await tablePage.evaluate(()=>window.__tableMeasurements.includes('far')),false,'Offscreen table must not force initial layout');
+    await tablePage.locator('#far').scrollIntoViewIfNeeded();
+    await tablePage.locator('#far[tabindex="0"][role="region"]').waitFor();
+    await tablePage.locator('#far').focus(); await tablePage.keyboard.press('ArrowRight');
+    await tablePage.waitForFunction(()=>document.getElementById('far').scrollLeft>0);
+    await tablePage.setViewportSize({width:1280,height:844});
+    await tablePage.waitForFunction(()=>!document.getElementById('far').hasAttribute('tabindex'));
+    await tablePage.evaluate(()=>{dispatchEvent(new PageTransitionEvent('pagehide'));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});
+    await tablePage.setViewportSize({width:320,height:844});
+    await tablePage.locator('#far[tabindex="0"]').waitFor();
+    await tablePage.addInitScript(()=>{window.IntersectionObserver=undefined;});
+    await goto(tablePage,tableFixture);
+    await tablePage.locator('#far[tabindex="0"]').waitFor({state:'attached'});
+    report.interactions.tableVisibility = report.interactions.tableResize = report.interactions.tableHistoryRestore = report.interactions.tableObserverFallback = true;
+
     // 三つの同意状態と、故障条件は専用context。実ユーザーの保存データを利用しない。
     const f = await context();
     await f.addInitScript(()=>{

@@ -170,7 +170,7 @@ async function checkArticle(url) {
     throw new Error(`${url}: search-intent scope note missing`);
   }
   if (url.includes(`${BASE_URL}/articles/`)) {
-    assertIncludes(body, /<script\s+src="\.\.\/blog\/article\.js\?v=[^"]+"><\/script>/i, `${url}: shared article script missing`);
+    assertIncludes(body, /<script\b[^>]*\bsrc="\.\.\/blog\/article\.js\?v=[^"]+"[^>]*><\/script>/i, `${url}: shared article script missing`);
   }
 }
 
