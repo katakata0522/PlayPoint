@@ -678,13 +678,14 @@
         "TGS2026のダイヤモンドラウンジ記録を見る"
       ]
     ],
-    "thumbnail": "../articles/thumbnails/black-diamond.webp",
+    "thumbnail": "../articles/ogp/2026-10-01-black-diamond-diamond-vip.png",
     "source": "article",
     "listed": true,
     "listTitle": "Black Diamond・Diamond VIPはある？新ランクの痕跡を検証",
     "listDescription": "公開ランクは5段階のまま。TGS現地確認、公式ページ、APK解析を分けて整理します。",
     "browseCategory": "ランク・ステータス",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "thumbnailPosition": "left"
   },
   {
     "id": "nikke-monthly-card-midasbuy-2026",
