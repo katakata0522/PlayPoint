@@ -219,6 +219,10 @@
         return ['generic', 'app-icon', 'event-visual'].includes(value) ? value : 'generic';
     }
 
+    function sanitizeArticleThumbnailPosition(value) {
+        return ['left', 'center', 'right'].includes(value) ? value : 'center';
+    }
+
     // 記事JSONの値を描画前に正規化する
     function normalizeArticle(article) {
         article = article && typeof article === 'object' ? article : {};
@@ -242,6 +246,7 @@
             file: sanitizeArticleFile(article.file),
             thumbnail: sanitizeArticleThumbnail(article.thumbnail),
             thumbnailKind: sanitizeArticleThumbnailKind(article.thumbnailKind),
+            thumbnailPosition: sanitizeArticleThumbnailPosition(article.thumbnailPosition),
             listed: article.listed !== false,
             searchIndex: BlogUtils.buildArticleSearchIndex({
                 title,
@@ -821,6 +826,7 @@
                 Analytics.trackArticleClick(article.title, article.category);
             });
             const thumbnailKind = sanitizeArticleThumbnailKind(article.thumbnailKind);
+            const thumbnailPosition = sanitizeArticleThumbnailPosition(article.thumbnailPosition);
             const visualThumbnail = thumbnailKind !== 'app-icon';
             card.classList.toggle('article-card--visual', visualThumbnail);
             const compactExplicitThumbnail = isCompactArticleList();
@@ -832,7 +838,7 @@
             const thumbnailLoading = loadCompactThumbnailImmediately ? 'eager' : 'lazy';
             const thumbnailFetchPriority = loadCompactThumbnailImmediately ? 'high' : 'low';
             const thumbnailMarkup = `<img src="${deferThumbnail ? TRANSPARENT_THUMBNAIL_PLACEHOLDER : safeThumbnail}"${deferThumbnail ? ` data-src="${safeThumbnail}"` : ''} alt="" width="${thumbnailWidth}" height="${thumbnailHeight}" loading="${thumbnailLoading}" decoding="async" fetchpriority="${thumbnailFetchPriority}">`;
-            const thumbnailClass = `card-thumb card-thumb--${thumbnailKind}`;
+            const thumbnailClass = `card-thumb card-thumb--${thumbnailKind} card-thumb--focus-${thumbnailPosition}`;
             const thumbnailLabel = safeCategory;
 
             card.innerHTML = `
