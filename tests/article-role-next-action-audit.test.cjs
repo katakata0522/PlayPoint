@@ -63,16 +63,6 @@ test('選定した日本語記事は本文を邪魔しない文脈型の関連�
       file + ': contextual guide component stylesheet is missing'
     );
 
-    const sectionStart = html.lastIndexOf('<section', navStart);
-    const sectionClose = html.lastIndexOf('</section>', navStart);
-    if (sectionStart > sectionClose) {
-      const sectionOpenEnd = html.indexOf('>', sectionStart);
-      const sectionOpen = sectionOpenEnd >= 0 ? html.slice(sectionStart, sectionOpenEnd + 1) : '';
-      assert.ok(!/answer-box|editorial-answer/.test(sectionOpen), file + ': contextual guide must stay outside the primary answer box');
-    }
-
-    const lastCalloutStart = html.lastIndexOf('<div class="callout', navStart);
-    const lastDivClose = html.lastIndexOf('</div>', navStart);
-    assert.ok(lastCalloutStart < 0 || lastDivClose > lastCalloutStart, file + ': contextual guide must stay outside callout boxes');
+    // 実際の祖先要素・幅・フォーカスはui-contract-browserが全対象を確認する。
   }
 });

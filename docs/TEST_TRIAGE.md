@@ -1585,3 +1585,19 @@ browser-reading-uiを操作の主担当とし、メニュー開閉・フォー�
 ゲーム入力のエラーは数式修正ではなく入力境界の契約として追加。既存の購入ごとの端数処理を維持する。`browser-smoke.cjs` が呼ぶ `game-calculator-browser.cjs` は全ゲームの表示幅・入力訂正・進捗の名前を実DOMで確認し、同じ経路で公開前後のrevision照合も維持する。
 
 Head監査はファイル名の例外を廃止し、全サイトマップURLへ同じ契約を適用する。英語の `attention.html` に日本語localeを要求していた既存OGPテストは、実際の本文言語に一致する `en_US` を要求する形へ訂正。他の共通ページ、日本語記事、国別トップの保証は維持する。
+
+## 2026-10-02 段階監査5：画面・操作・アクセシビリティ
+
+31ファイルの元173項目と先行段階からの13移管、計186項目を対象にする。個別ID・旧判断・退役理由は外部の監査台帳に保存し、件数削減を目標にしない。
+
+実ブラウザで、補足・FAQ見出しが記事目次へ混入する不具合と、印刷時にも下段の記事がcontent-visibility:autoに留まる不具合を再現した。目次の対象除外と印刷時の優先順位だけを修正し、本文・広告位置・画面デザインは変更しない。版付き生成物も同じPRで同期する。
+
+| 主担当 | 保証 |
+| --- | --- |
+| `browser-smoke.cjs` → `ui-contract-browser.cjs` | 6地域の実キーボードタブ・URL優先、2日時のGoogle Calendar URLと実ICSダウンロード、端数計算の初期/再計算/エラー、補足見出し除外、印刷のcomputed style、遅延読込み・4記事・戻る操作、thumbnail優先度/安全URL/実observer、clipboard成功と失敗、12記事の実DOM内関連導線 |
+| `browser-smoke.cjs` → `diary-browser.cjs` | 保存前/保存/編集/Enter/再読込み、年月境界、6地域の共有名・単位・大値ヒント、重複見出し非表示、5週分の実グラフ値/色/年表示、reduced motion |
+| `browser-smoke.cjs` → `accessibility-browser.cjs` | 実背景を合成した文字のコントラスト、hover/focus/dark、名前・キーボード。背景のない単独文字のopacityだけを合成し、子要素のあるgroup opacityはunknownのまま拒否 |
+| `browser-revenue-smoke.cjs` | 記事・LP・gameの未許可広告遮断、実計算操作のfunnel重複防止と拒否後の再開始。Google連携はstubであり実サービスへの送信成功を証明しない |
+| 既存Node検査 | 公開HTMLの入力type/inputmode・ARIA参照は実タグを読む。コメント中の偽タグを拒否し同じ属性の引用符変更を許容。公開人気記事の日付は実在するUTC日付も確認 |
+
+上記へ移したprivate関数名・CSS宣言列・古いヘッダー/固定過去日時の検査は退役履歴として保持する。ブラウザhelperだけの変更でも既存PR GateのChromium検証が動くよう影響判定に登録する。新しいworkflow・必須ゲート・フレームワークは追加しない。実外部広告/CMP負荷、内容の意味・最新公式資料、CI/公開経路の残る精査は後続段階へ保持する。

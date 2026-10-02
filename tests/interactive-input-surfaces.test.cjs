@@ -1,4 +1,5 @@
 'use strict';
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -19,11 +20,7 @@ function listHtmlFiles(currentDir = root, acc = []) {
 }
 
 function numberInputIds(html) {
-  const tags = html.match(/<input\b[^>]*type=["']number["'][^>]*>/gi) || [];
-  return tags.map(tag => {
-    const match = tag.match(/\bid=["']([^"']+)["']/i);
-    return match ? match[1] : tag.slice(0, 80);
-  });
+  return openingTags(html).filter(tag=>tag.tag==='input'&&tag.attrs.type==='number').map(tag=>tag.attrs.id);
 }
 
 function jaGameDirs() {
@@ -33,25 +30,19 @@ function jaGameDirs() {
     .sort();
 }
 
-test('日本語ゲーム計算機は課金予定額を自分で打てる', () => {
-  const games = jaGameDirs();
-  assert.ok(games.length > 0, '公開ゲーム計算機が1件以上必要');
-  for (const game of games) {
-    const html = read(path.join('games', game, 'index.html'));
-    assert.match(html, /id="sim-custom-amount"/, game + ' に課金予定合計額がない');
-    assert.match(html, /id="sim-pack-count"/, game + ' にパック個数がない');
+test("日本語ゲーム計算機は課金予定額を自分で打てる", () => {
+  const games=jaGameDirs();assert.ok(games.length>0);
+  for(const locale of [''])for(const game of games){
+    const file=path.join(locale,'games',game,'index.html');const tags=openingTags(read(file));
+    for(const id of ['sim-custom-amount','sim-pack-count']){const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id===id);assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);}
   }
 });
 
-test('海外ゲーム計算機も課金予定額入力を残している', () => {
-  const games = jaGameDirs();
-  for (const locale of ['en', 'ko', 'tw']) {
-    for (const game of games) {
-      const relativePath = path.join(locale, 'games', game, 'index.html');
-      const html = read(relativePath);
-      assert.match(html, /id="sim-custom-amount"/, relativePath);
-      assert.match(html, /id="sim-pack-count"/, relativePath);
-    }
+test("海外ゲーム計算機も課金予定額入力を残している", () => {
+  const games=jaGameDirs();assert.ok(games.length>0);
+  for(const locale of ['en','ko','tw'])for(const game of games){
+    const file=path.join(locale,'games',game,'index.html');const tags=openingTags(read(file));
+    for(const id of ['sim-custom-amount','sim-pack-count']){const matches=tags.filter(tag=>tag.tag==='input'&&tag.attrs.id===id);assert.equal(matches.length,1,file);assert.equal(matches[0].attrs.type,'number',file);}
   }
 });
 
@@ -65,22 +56,15 @@ test('各言語トップは必要ポイントと金額を数値入力できる',
   }
 });
 
-test('points-cost は目標ポイントを数値入力できる', () => {
-  for (const page of ['points-cost/index.html', 'en/points-cost/index.html', 'ko/points-cost/index.html', 'tw/points-cost/index.html']) {
-    const html = read(page);
-    assert.match(html, /id="points-target"/, page);
-    assert.match(html, /type="number"/, page);
+test("points-cost は目標ポイントを数値入力できる", () => {
+  for(const file of ['points-cost/index.html','en/points-cost/index.html','ko/points-cost/index.html','tw/points-cost/index.html']){
+    const inputs=openingTags(read(file)).filter(tag=>tag.tag==='input'&&tag.attrs.id==='points-target');assert.equal(inputs.length,1,file);assert.equal(inputs[0].attrs.type,'number',file);
   }
 });
 
-test('海外の維持計算ページは進捗を数値入力できる', () => {
-  for (const locale of ['en', 'ko', 'tw']) {
-    for (const rank of ['platinum', 'diamond']) {
-      const page = locale + '/maintenance/' + rank + '/index.html';
-      const html = read(page);
-      assert.match(html, /data-progress-input/, page);
-      assert.ok(numberInputIds(html).includes('level-progress'), page);
-    }
+test("海外の維持計算ページは進捗を数値入力できる", () => {
+  for(const locale of ['en','ko','tw'])for(const rank of ['platinum','diamond']){
+    const file=locale+'/maintenance/'+rank+'/index.html';assert.ok(numberInputIds(read(file)).includes('level-progress'),file);
   }
 });
 

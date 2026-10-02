@@ -32,15 +32,6 @@ test('記事CSSは外部化され、AdSense以外のinline styleを残さない'
 
 // CSS/JSのURL形式と実内容の一致はruntime-module-guardsへ集約し、圧縮後も検証する。
 
-test('画面外描画の最適化は長文下部だけに限定し、印刷時に解除する', () => {
-  const css = fs.readFileSync(path.join(root, 'articles/article-shared.css'), 'utf8');
-  assert.match(css, /@supports\s*\(content-visibility:\s*auto\)/);
-  const threshold = css.match(/\.content\s*>\s*\.section:nth-of-type\(n\s*\+\s*(\d+)\)/);
-  assert.ok(threshold, 'lower article sections must own content-visibility');
-  assert.ok(Number(threshold[1]) >= 2, 'first article section must not be deferred');
-  assert.match(css, /contain-intrinsic-size:\s*auto\s+\d+px/);
-  assert.match(css, /@media\s+print[\s\S]*content-visibility:\s*visible/);
-});
 
 // キャッシュの期間・版境界はhttp-cache-contractと実Apache検証が担当。
 

@@ -173,14 +173,10 @@ test('公開HTMLは外部Google Fontsへ接続しない', () => {
 
 // R05: コード長の代用検査は廃止。必須embed-widget-smokeで独立読込と4言語の実計算を検証する。
 
-test('埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える', () => {
-  const embed = read('embed.html');
-  assert.match(embed, /PlayPointAnalytics\?\.track\('widget_code_copied'/);
-  assert.doesNotMatch(embed, /window\.gtag\('event', 'widget_code_copied'/);
-  assert.match(embed, /HK: 'hk\/'/);
-  assert.match(embed, /IN: 'in\/'/);
-  assert.match(embed, /browserLang\.startsWith\('zh-hk'\)/);
-  assert.match(embed, /browserLang\.startsWith\('en-in'\)/);
+test("埋め込みジェネレーターの計測と地域導線は共通境界・6地域へ揃える", () => {
+  const embed=read('embed.html');
+  assert.doesNotMatch(embed,/window\.gtag\(['"]event['"],\s*['"]widget_code_copied['"]/);
+  // 実コピー成功/失敗とHK/INのリンクはbrowser-smokeのuiContracts。
 });
 
 test('主要計測イベントは実coreが受理し、未許可パラメータを送らない', () => {
@@ -195,12 +191,4 @@ test('主要計測イベントは実coreが受理し、未許可パラメータ�
     assert.equal(context.PlayPointAnalytics.track(eventName,{private_raw_input:'secret'}),true,eventName);
     assert.deepEqual(Array.from(eventCalls(context,eventName)),[{}],eventName);
   }
-});
-
-test('地域表示の決定と保存責務はregion-navigationへ集約する', () => {
-  const main = read('js/main.js');
-
-  assert.match(main, /applyRegionFromPath/, 'mainがURL由来の地域初期化を委譲していません');
-  assert.doesNotMatch(main, /STORAGE_REGION_KEY/, 'mainが地域保存キーを直接扱っています');
-  assert.doesNotMatch(main, /playpointPreferredRegion/, 'mainが地域保存の実装詳細を直接所有しています');
 });

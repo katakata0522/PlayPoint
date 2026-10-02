@@ -1,4 +1,5 @@
 'use strict';
+const { openingTags } = require('./helpers/markup-contract.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -41,13 +42,12 @@ test('fixed-page headers are owned by one immutable Site Shell registry', () => 
   assert.throws(() => getFixedPageHeaderProfile('unknown.html'), /No fixed-page header profile/);
 });
 
-test('afterword page intentionally stays outside the shared fixed-page Header registry', () => {
-  assert.equal(Object.hasOwn(FIXED_PAGE_HEADER_PROFILES, 'info.html'), false);
-  const html = fs.readFileSync(path.join(root, 'info.html'), 'utf8');
-  assert.doesNotMatch(html, /<div class="top-bar"/);
-  assert.doesNotMatch(html, /class="lang-nav"/);
-  assert.doesNotMatch(html, /<a href="privacy\.html">プライバシーポリシー<\/a>/);
-  assert.doesNotMatch(html, /<a href="terms\.html"[^>]*>利用規約<\/a>/);
+test("afterword page intentionally stays outside the shared fixed-page Header registry", () => {
+  assert.equal(Object.hasOwn(FIXED_PAGE_HEADER_PROFILES,'info.html'),false);
+  const tags=openingTags(fs.readFileSync(path.join(root,'info.html'),'utf8'));
+  assert.ok(!tags.some(tag=>(tag.attrs.class||'').split(/\s+/).some(value=>['top-bar','lang-nav'].includes(value))));
+  assert.equal(tags.filter(tag=>tag.tag==='a'&&tag.attrs.id==='btn-back-home').length,1);
+  // 実表示・戻り操作・コントラストはbrowser-smokeが確認する。
 });
 
 test('Country & Region Guide keeps legal links out of the primary header and in the footer', () => {

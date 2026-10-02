@@ -1,3 +1,4 @@
+const { openingTags } = require('./helpers/markup-contract.cjs');
 'use strict';
 
 const assert = require('node:assert/strict');
@@ -71,33 +72,14 @@ test('記事冒頭は通常獲得率と交換価値を分けて即答する', ()
   assert.match(html, /1ポイントを使うときの価値は交換先によって変わり、常に1円分とは限りません/);
 });
 
-test('記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ', () => {
-  const html = fs.readFileSync(articlePath, 'utf8');
-  assert.equal((html.match(/class="article-calculator-prompt rounding-jump"/g) || []).length, 1);
-  assert.equal((html.match(/class="article-next-step-cta"/g) || []).length, 1);
-  assert.equal((html.match(/class="contextual-guide-links related-links-section"/g) || []).length, 1);
-  assert.match(html, /href="#rounding-simulator-section"/);
-  assert.match(html, /差が出る例を見る/);
-  assert.doesNotMatch(html, /<section class="cta-box"/);
+test("記事固有の導線だけを1つずつ表示し、自動導線の重複を防ぐ", () => {
+  const tags=openingTags(fs.readFileSync(articlePath,'utf8'));
+  const has=(tag,value)=>(tag.attrs.class||'').split(/\s+/).includes(value);
+  for(const token of ['rounding-jump','article-next-step-cta'])assert.equal(tags.filter(tag=>has(tag,token)).length,1,token);
+  assert.equal(tags.filter(tag=>has(tag,'contextual-guide-links')&&has(tag,'related-links-section')).length,1);
+  assert.ok(tags.some(tag=>tag.tag==='a'&&tag.attrs.href==='#rounding-simulator-section'));
 });
 
-test('スマホでは比較表をカード表示し、主要操作を画面幅いっぱいにする', () => {
-  const html = fs.readFileSync(articlePath, 'utf8');
-  const css = read('articles/styles/2026-07-24-play-points-1-value.css');
-  assert.equal((html.match(/class="rounding-table"/g) || []).length, 2);
-  assert.equal((html.match(/class="table-wrap rounding-table-wrap"/g) || []).length, 2);
-  assert.match(html, /data-label="100円あたり"/);
-  assert.match(html, /data-label="途中計算"/);
-  assert.match(css, /\.rounding-table td::before/);
-  assert.match(css, /\.rounding-jump__button,\s*\.rounding-action\s*\{\s*width:\s*100%/);
-});
-
-test('FAQと補助導線は主要目次へ混入しない構造にする', () => {
-  const html = fs.readFileSync(articlePath, 'utf8');
-  assert.match(html, /<section class="section faq">/);
-  assert.match(html, /<aside class="contextual-guide-links related-links-section"/);
-  assert.doesNotMatch(html, /<section class="section related-links-section"/);
-});
 
 test('シミュレーターは差が見える初期例と利用限界を明示する', () => {
   const html = fs.readFileSync(articlePath, 'utf8');

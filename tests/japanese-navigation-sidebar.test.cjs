@@ -52,14 +52,11 @@ test('サイドバー用7分類は公開記事を重複なく覆い、件数は�
   }
 });
 
-test('人気ランキングの保存データは公開日本語記事5件と実在する日付を持つ', () => {
-  assert.match(POPULAR_GUIDES_SNAPSHOT, /^\d{4}-\d{2}-\d{2}$/);
-  assert.equal(JAPANESE_POPULAR_GUIDES.length, 5);
-  assert.equal(new Set(JAPANESE_POPULAR_GUIDES.map(item => item[0])).size, 5);
-  const publicPaths = new Set(articles.map(article => article.href));
-  for (const [href, label] of JAPANESE_POPULAR_GUIDES) {
-    assert.ok(publicPaths.has(href)); assert.ok(label.trim());
-  }
+test("人気ランキングの保存データは公開日本語記事5件と実在する日付を持つ", () => {
+  assert.match(POPULAR_GUIDES_SNAPSHOT,/^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(new Date(POPULAR_GUIDES_SNAPSHOT+'T00:00:00Z').toISOString().slice(0,10),POPULAR_GUIDES_SNAPSHOT);
+  assert.equal(JAPANESE_POPULAR_GUIDES.length,5);assert.equal(new Set(JAPANESE_POPULAR_GUIDES.map(item=>item[0])).size,5);
+  const publicPaths=new Set(articles.map(article=>article.href));for(const [href,label]of JAPANESE_POPULAR_GUIDES){assert.ok(publicPaths.has(href));assert.ok(label.trim());}
 });
 
 test('本文とSEO情報は変更せず、サイドバーがない記事にも導線を追加できる', () => {

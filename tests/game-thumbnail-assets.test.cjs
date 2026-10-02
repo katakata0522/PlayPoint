@@ -68,19 +68,6 @@ test('game-guide manifest entries use the registry thumbnail contract', () => {
   }
 });
 
-test('article list renderer supports local icons without allowing arbitrary remote thumbnails', () => {
-  const script = fs.readFileSync(path.join(root, 'blog/script.js'), 'utf8');
-  assert.match(script, /images\\\/game-icons/);
-  assert.match(script, /thumbnailKind/);
-  assert.match(script, /IntersectionObserver/);
-  assert.match(script, /data-src/);
-  assert.match(script, /COMPACT_THUMBNAIL_ROOT_MARGIN = '96px 0px'/);
-  assert.match(script, /TRANSPARENT_THUMBNAIL_PLACEHOLDER/);
-  assert.match(script, /loadCompactThumbnailImmediately/);
-  assert.match(script, /compactThumbnailIndex === 0/);
-  assert.match(script, /thumbnailFetchPriority/);
-  assert.doesNotMatch(script, /https\?:\\\/\\\/[^\\n]*safeThumbnail/);
-});
 
 test('game guides expose the official app listing without turning the app icon into the article hero or OGP', () => {
   for (const article of GAME_GUIDE_ARTICLES) {
