@@ -912,8 +912,8 @@ contain-intrinsic-size: auto 480px;
 .content > .section,
 .content > .related-links-section,
 .content > .recommended-section {
-content-visibility: visible;
-contain-intrinsic-size: none;
+content-visibility: visible !important;
+contain-intrinsic-size: none !important;
 }
 }
 .inline-calc-widget {

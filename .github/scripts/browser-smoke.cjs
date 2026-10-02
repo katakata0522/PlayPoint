@@ -701,9 +701,17 @@ async function main() {
       report.accessibility = { passed: false, error: error.message };
       console.error('not ok - Common accessibility:', error.message);
     }
+    try {
+      const { verifyUiContracts } = require('./ui-contract-browser.cjs');
+      report.uiContracts = await verifyUiContracts(browser, baseUrl, LOCALES, blockExternalRequests, ARTIFACT_DIR);
+      console.log('ok - UI keyboard, calendar outputs, comparison article, print and clipboard');
+    } catch (error) {
+      report.uiContracts = { passed: false, error: error.message };
+      console.error('not ok - UI contracts:', error.message);
+    }
     stage = 'revision-after';
     await revisionSession.check(baseUrl, 'after-browser');
-    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed && report.accessibility.passed;
+    report.passed = report.locales.every(result => result.passed) && report.blog.passed && report.games.passed && report.diary.passed && report.accessibility.passed && report.uiContracts.passed;
   } catch (error) {
     report.error = error.message;
     report.failedStage = stage;

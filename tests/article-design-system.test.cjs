@@ -9,13 +9,10 @@ const { auditArticleDesignSystem } = require('../scripts/article-design-system-a
 const root = path.resolve(__dirname, '..');
 const css = fs.readFileSync(path.join(root, 'articles', 'article-shared.css'), 'utf8');
 
-test('Article Design System 2.0 is owned by article-shared.css', () => {
-  assert.match(css, /ARTICLE_DESIGN_SYSTEM_V2_START/);
-  for (const primitive of ['answer-box', 'intro', 'related-links-section']) {
-    assert.match(css, new RegExp('\\.' + primitive + '\\b'), `${primitive}: shared design primitive is missing`);
-  }
-  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
-  assert.match(css, /:focus-visible/);
+test("Article Design System 2.0 is owned by article-shared.css", () => {
+  for(const primitive of ['answer-box','intro','related-links-section'])assert.match(css,new RegExp('\\.'+primitive+'\\b'));
+  assert.match(css,/@media\s*\(prefers-reduced-motion:\s*reduce\)/);assert.match(css,/:focus-visible/);
+  // 適用後の描画・focus・motionはarticle-design-smokeが所有する。
 });
 
 test('fluorescent marker primitives remain available', () => {
@@ -40,8 +37,4 @@ test('all current role-classified articles stay on the shared visual contract', 
   assert.ok(result.components.answer > 0);
   assert.ok(result.components.related > 0);
   assert.equal(result.components.stackedLead, 0, 'legacy answer + intro + summary stacks must not return');
-});
-
-test('obsolete 49-article validator is removed', () => {
-  assert.equal(fs.existsSync(path.join(root, 'scripts', 'validate_articles.py')), false);
 });

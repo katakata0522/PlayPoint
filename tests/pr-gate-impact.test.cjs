@@ -24,6 +24,12 @@ test('browser検証基盤自身の変更もChromiumを必須にする', () => {
   for (const file of [
     '.github/workflows/quality-check.yml',
     '.github/scripts/browser-smoke.cjs',
+    '.github/scripts/ui-contract-browser.cjs',
+    '.github/scripts/diary-browser.cjs',
+    '.github/scripts/accessibility-browser.cjs',
+    '.github/scripts/browser-reading-ui.cjs',
+    '.github/scripts/calculator-presentation-contract.cjs',
+    '.github/scripts/game-calculator-browser.cjs',
     '.github/scripts/setup-browser-runtime.sh',
     '.github/ci-runtime/package-lock.json',
   ]) {

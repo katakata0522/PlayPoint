@@ -87,7 +87,7 @@
     const article = doc.querySelector('article.content, article.main-content-column');
     let toc;
     if (article) {
-      const headings = [...article.querySelectorAll('h2[id]')].filter(h => !h.closest('.author-profile-box,.related-links-section,.article-ad-container'));
+      const headings = [...article.querySelectorAll('h2[id]')].filter(h => !h.closest('.author-profile-box,.related-links-section,.article-ad-container,.faq,.contextual-guide-links,.article-calculator-prompt,.article-next-step-cta'));
       if (headings.length) {
         const trigger = button('目次', 'guide-toc'); inner.append(trigger); toc = makeDialog('guide-toc', 'この記事の目次', trigger);
         const nav = el('nav', 'guide-toc-links'); nav.setAttribute('aria-label', 'この記事の目次');

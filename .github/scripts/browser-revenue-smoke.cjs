@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const http = require('node:http');
 const path = require('node:path');
+const strictAssert = require('node:assert/strict');
 const { chromium } = require('playwright-core');
 
 const ROOT = path.resolve(__dirname, '../..');
@@ -134,6 +135,58 @@ async function main() {
   });
 
   try {
+    // 記事・LP・ゲームの実入口で、広告許可前の0要求と許可後の接続を確認する。
+    for (const [target, selector] of [
+      ['articles/2026-08-05-play-points-multiplier-stacking.html', '.article-ad-container ins.adsbygoogle'],
+      ['status/gold/', 'ins.adsbygoogle'],
+      ['games/fgo/', '.game-ad-container ins.adsbygoogle']
+    ]) {
+      for (const mode of ['pending', 'denied']) {
+        const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+        try {
+          await configureContext(context, origin, mode);
+          const page = await context.newPage();
+          await page.goto(new URL(target, baseUrl).href, { waitUntil: 'load' });
+          await page.waitForFunction(expected => window.PlayPointConsent?.getAdStatus() === expected, mode);
+          assert(await page.evaluate(() => (window.adsbygoogle?.length || 0) === 0), target + ': 許可前の広告要求');
+          await page.evaluate(() => window.__testSetConsent('granted'));
+          await waitForRevenueRuntime(page, selector);
+        } finally { await context.close(); }
+      }
+      console.log('ok - actual ad entry permission boundary: ' + target);
+    }
+    // main.jsの実DOM登録から送信手前のdataLayerへ接続。外部GAスクリプトはstub済み。
+    {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+      try {
+        await configureContext(context, origin);
+        const page = await context.newPage();
+        await page.goto(baseUrl, { waitUntil: 'load' });
+        await page.waitForFunction(() => document.querySelector('#currentStatus')?.options.length > 1 && window.PlayPointConsent?.getStatus() === 'granted');
+        const count = name => page.evaluate(name => (window.dataLayer || []).filter(item => item[0] === 'event' && item[1] === name).length, name);
+        await page.locator('#neededPoints').fill('100');
+        await page.locator('#calculateButton').click();
+        await page.waitForFunction(() => (window.dataLayer || []).some(item => item[0] === 'event' && item[1] === 'calculator_funnel_completed'));
+        strictAssert.equal(await count('calculator_form_started'), 1);
+        strictAssert.equal(await count('calculator_funnel_completed'), 1);
+        await page.locator('#calculateButton').click();
+        strictAssert.equal(await count('calculator_funnel_completed'), 1, 'DOM連打のdedupe');
+        await page.evaluate(() => window.__testSetConsent('denied'));
+        await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'denied');
+        await page.locator('#neededPoints').fill('120');
+        await page.locator('#calculateButton').click();
+        strictAssert.equal(await count('calculator_funnel_completed'), 1, '拒否中の送信');
+        await page.evaluate(() => window.__testSetConsent('granted'));
+        await page.waitForFunction(() => window.PlayPointConsent?.getStatus() === 'granted');
+        await page.locator('#neededPoints').fill('130');
+        await page.locator('#neededPoints').press('Enter');
+        await page.waitForFunction(() => (window.dataLayer || []).filter(item => item[0] === 'event' && item[1] === 'calculator_funnel_completed').length === 2);
+        strictAssert.equal(await count('calculator_form_started'), 2, '拒否後のDOMイベントで再開始');
+        const payloads = await page.evaluate(() => (window.dataLayer || []).filter(item => item[0] === 'event' && /^calculator_/.test(item[1])).map(item => item[2]));
+        strictAssert.ok(payloads.length > 0 && payloads.every(payload => !Object.hasOwn(payload, 'needed_points') && !Object.hasOwn(payload, 'amount')));
+      } finally { await context.close(); }
+      console.log('ok - actual calculator DOM funnel, dedupe, denied reset and Enter');
+    }
     for (const mode of ['pending','denied','granted']) {
       const context=await browser.newContext({viewport:{width:390,height:844}});
       await configureContext(context,origin,mode);

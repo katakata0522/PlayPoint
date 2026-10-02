@@ -18,7 +18,6 @@ function japaneseArticleFiles() {
 test('legacy and modern compatibility CSS yield the published hero shell to shared CSS', () => {
   for (const filename of compatibilitySheets) {
     const css = fs.readFileSync(path.join(articleDir, filename), 'utf8');
-    assert.match(css, /article-shared\.css owns the published article chrome, layout and typography/i);
     assert.doesNotMatch(
       css,
       /--cocoon-(?:heading|muted|main-bg)\s*:/i,

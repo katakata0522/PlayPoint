@@ -41,11 +41,17 @@ function measureTextContrast(scope = "body") {
     for (let ancestor = element; ancestor; ancestor = ancestor.parentElement) chain.unshift(ancestor);
     let low = [255, 255, 255], high = [255, 255, 255];
     const unknown = [];
+    let textOpacity = 1;
     for (const ancestor of chain) {
       const style = getComputedStyle(ancestor);
       const bg = parse(style.backgroundColor);
       if (bg) { low = blend(bg, low); high = blend(bg, high); }
-      if (+style.opacity < 1) unknown.push('group opacity');
+      if (+style.opacity < 1) {
+        // 背景のない単独text要素だけは前景alphaとして合成できる。
+        // 子や背景を含むグループ透明度は不明のまま合格へ含めない。
+        if (ancestor === element && element.childElementCount === 0 && bg?.[3] === 0 && style.backgroundImage === 'none') textOpacity *= +style.opacity;
+        else unknown.push('group opacity');
+      }
       if (style.backgroundImage === 'none' || style.backgroundClip === 'text' || style.webkitBackgroundClip === 'text') continue;
       for (const layer of layers(style.backgroundImage)) {
         if (!layer.includes('gradient(')) { unknown.push('background image'); continue; }
@@ -65,7 +71,7 @@ function measureTextContrast(scope = "body") {
       if (!stops.length) { unknown.push('unsupported text gradient'); continue; }
       fgLow = low.map((_, i) => Math.min(...stops.map(c => blend(c, low)[i])));
       fgHigh = high.map((_, i) => Math.max(...stops.map(c => blend(c, high)[i])));
-    } else { fgLow = blend(foreground, low); fgHigh = blend(foreground, high); }
+    } else { const effective = [...foreground.slice(0, 3), foreground[3] * textOpacity]; fgLow = blend(effective, low); fgHigh = blend(effective, high); }
     const bgMin = luminance(low), bgMax = luminance(high), fgMin = luminance(fgLow), fgMax = luminance(fgHigh);
     const ratio = fgMax < bgMin ? (bgMin + .05) / (fgMax + .05) : fgMin > bgMax ? (fgMin + .05) / (bgMax + .05) : 1;
     const required = parseFloat(style.fontSize) >= 24 || (parseFloat(style.fontSize) >= 18.6667 && parseFloat(style.fontWeight) >= 700) ? 3 : 4.5;
@@ -89,6 +95,12 @@ async function verifyCommonAccessibility(browser, baseUrl, blockExternalRequests
     assert.ok(fixture.find(v => v.text === 'bad').ratio < 4.5);
     assert.ok(fixture.find(v => v.text === 'good').ratio >= 4.5);
     assert.ok(fixture.find(v => v.text === 'layered').ratio < 4.5);
+    await page.setContent('<div style="background:#fff"><span style="color:#374151;opacity:.72">opacity good</span><span style="color:#374151;opacity:.2">opacity bad</span><div style="opacity:.72"><span>group unknown</span></div></div>');
+    const opacityFixture = await page.evaluate(measureTextContrast);
+    assert.ok(opacityFixture.find(v => v.text === 'opacity good').ratio >= 4.5);
+    assert.deepEqual(opacityFixture.find(v => v.text === 'opacity good').unknown, []);
+    assert.ok(opacityFixture.find(v => v.text === 'opacity bad').ratio < 4.5);
+    assert.ok(opacityFixture.find(v => v.text === 'group unknown').unknown.includes('group opacity'));
     for (const pathname of PAGES) {
       const row = { path: pathname, states: [], keyboardScroll: [], passed: false };
       report.pages.push(row);

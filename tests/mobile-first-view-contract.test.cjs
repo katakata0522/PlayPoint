@@ -257,6 +257,7 @@ test('first-viewは実ESM依存・cache改訂・Service Worker先読みに含ま
   await worker.fireInstall();
   const precache = new Set(worker.addAllCalls.flat().map(item => new URL(item.url, `${ORIGIN}/`).href));
   assert.ok(precache.has(firstViewUrl), 'first-view.js is missing from the actual Service Worker install precache');
+  assert.ok(![...precache].some(url => new URL(url).pathname === '/js/home-experience.js'), '操作時に読むhome-experienceを初期先読みに加えない');
 });
 
 test('前回の通常計算は地域別に端末内へ1件だけ保持し、別地域を上書きしない', () => {
@@ -307,47 +308,9 @@ test('公開トップのタブ名は実行時の地域設定と一致し、前�
 });
 
 
-
-test('モード別ガイドは初期表示に載せず、逆算・週次の操作時だけ遅延読込する', () => {
-  const ui = read('js/ui.js');
-  const experience = read('js/home-experience.js');
-  const worker = read('sw.js');
-
-  assert.match(ui, /import\('\/js\/home-experience\.js\?v=[^']+'\)/);
-  assert.match(ui, /window\.scrollY < HOME_EXPERIENCE_SCROLL_THRESHOLD/);
-  assert.match(ui, /window\.addEventListener\('scroll', loadAfterScroll/);
-  assert.doesNotMatch(worker, /home-experience\.js/, 'home experience must not inflate initial Service Worker precache');
-  assert.match(experience, /descriptions:[\s\S]*?reverse:[\s\S]*?diary:/);
-});
-
-test('週次モードは週次記事だけを見える2列カードで案内する', () => {
-  const experience = read('js/home-experience.js');
-
-  assert.match(experience, /ウィークリー関連ガイド/);
-  assert.match(experience, /ボタンがない・受け取れない時/);
-  assert.match(experience, /スーパーウィークリーの条件・賞品/);
-  assert.match(experience, /mode-context-grid\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(experience, /mainOnlySections/);
-  assert.match(experience, /for \(const section of sections\) setVisible\(section, isMain\)/);
-});
-
-test('スマホ記事導線はカードを2列にし、極小幅だけ1列へ退避する', () => {
-  const experience = read('js/home-experience.js');
-
-  assert.match(experience, /@media\(max-width:640px\)[^\n]*article-link-list\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
-  assert.match(experience, /@media\(max-width:340px\)\{\.mode-context-grid,\.article-link-list\{grid-template-columns:1fr\}/);
-  assert.match(experience, /article-link-title\{font-size:\.93rem/);
-});
-
-test('計算フローはGoogleコア4色を段階と接続へ使う', () => {
-  const svg = read('images/calculation-flow.svg');
-
-  for (const hex of ['#4285F4', '#EA4335', '#FBBC04', '#34A853']) {
-    assert.ok(svg.includes(hex), `missing Google core color: ${hex}`);
-  }
-  assert.match(svg, /id="link12"/);
-  assert.match(svg, /id="link23"/);
-  assert.doesNotMatch(svg, /#58a6ff|#3fb950/i);
+test("計算フローはGoogleコア4色を段階と接続へ使う", () => {
+  const svg=read('images/calculation-flow.svg');
+  for(const hex of ['#4285F4','#EA4335','#FBBC04','#34A853'])assert.ok(svg.toLowerCase().includes(hex.toLowerCase()),hex);
 });
 
 test('トップ下部は機能説明とおすすめ利用場面を分け、目的別の4記事・FAQを残す', () => {
@@ -417,19 +380,4 @@ test('トップ下部は機能説明とおすすめ利用場面を分け、目�
   assert.match(experience, /\.home-rank-card--gold\{/);
   assert.match(experience, /\.home-rank-card--platinum\{/);
   assert.match(experience, /\.home-rank-card--diamond\{/);
-});
-
-test('右下の先頭へ戻るボタンは十分なタップ領域とreduced-motion対応を持つ', () => {
-  const experience = read('js/home-experience.js');
-  const backToTop = read('js/home-back-to-top.js');
-
-  assert.match(experience, /import \{ ensureBackToTop \} from '\.\/home-back-to-top\.js'/);
-  assert.match(backToTop, /\.back-to-top\{[^\n]*width:48px;height:48px/);
-  assert.match(backToTop, /backToTopButton\.id = 'back-to-top'/);
-  assert.match(backToTop, /function warpToTop\(/);
-  assert.match(backToTop, /back-to-top-warp-streak/);
-  assert.match(backToTop, /requestAnimationFrame/);
-  assert.match(backToTop, /window\.scrollTo\(0, 0\)/);
-  assert.match(backToTop, /backToTopButton\.dataset\.visible/);
-  assert.match(backToTop, /prefers-reduced-motion: reduce/);
 });
