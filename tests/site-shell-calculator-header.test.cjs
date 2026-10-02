@@ -70,20 +70,16 @@ test('calculator Site Shell preserves Hong Kong and India fallback navigation wi
   const hongKong = getCalculatorHeaderProfile('hk/index.html');
   const india = getCalculatorHeaderProfile('in/index.html');
 
-  assert.deepEqual(
-    hongKong.links.slice(1, 3).map(link => [link.href, link.label]),
-    [
-      ['../tw/games/', '🎮 遊戲計算（台灣規則・非香港）'],
-      ['../tw/articles/', '📝 指南']
-    ]
-  );
-  assert.deepEqual(
-    india.links.slice(1, 3).map(link => [link.href, link.label]),
-    [
-      ['../en/games/', '🎮 Game calculators (U.S. rules, not India)'],
-      ['../en/articles/', '📝 Articles']
-    ]
-  );
+  const hkGames=hongKong.links.find(link=>link.langKey==='linkGames');
+  const inGames=india.links.find(link=>link.langKey==='linkGames');
+  assert.equal(new URL(hkGames.href,'https://playpoint-sim.com/hk/').pathname,'/tw/games/');
+  assert.match(hkGames.label,/台灣規則/);
+  assert.match(hkGames.label,/非香港/);
+  assert.equal(new URL(inGames.href,'https://playpoint-sim.com/in/').pathname,'/en/games/');
+  assert.match(inGames.label,/U\.S\. rules/);
+  assert.match(inGames.label,/not India/);
+  assert.ok(hongKong.links.some(link=>new URL(link.href,'https://playpoint-sim.com/hk/').pathname==='/tw/articles/'));
+  assert.ok(india.links.some(link=>new URL(link.href,'https://playpoint-sim.com/in/').pathname==='/en/articles/'));
 });
 
 test('committed calculator pages are already byte-canonical for the shared Header renderer', () => {

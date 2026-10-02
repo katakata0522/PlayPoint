@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
+const vm = require('node:vm');
 
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
@@ -82,14 +83,40 @@ test('公式発表済みのTGS 2026記事はindex対象へ戻し、現行公式�
   assert.ok(html.includes('href="/latest/"'));
 });
 
-test('広告生成スクリプト自体もdata-ad-slotを保持する', () => {
-  for (const file of [
-    'scripts/insert-article-ads.cjs',
-    'scripts/insert-lp-monetization.cjs',
-    'scripts/generate-game-simulators.cjs'
-  ]) {
-    assert.ok(read(file).includes('data-ad-slot=\"' + SLOT + '\"'), file);
-  }
+// 実entrypointを隔離I/Oで実行し、生成された広告要素だけを確認する。
+function generatedFiles(script, initial={}) {
+  const files = new Map(Object.entries(initial).map(([file,content])=>[path.resolve(root,file),content]));
+  const writes = new Map();
+  const io = {
+    existsSync(file){return files.has(path.resolve(file));},
+    mkdirSync(){},
+    readdirSync(dir){return [...files.keys()].filter(file=>path.dirname(file)===path.resolve(dir)).map(file=>path.basename(file));},
+    readFileSync(file){const key=path.resolve(file);assert.ok(files.has(key),'fixture read: '+key);return files.get(key);},
+    writeFileSync(file,content){
+      const key=path.resolve(file);assert.ok(key.startsWith(root+path.sep),'生成がroot外へ書く');
+      files.set(key,String(content));writes.set(path.relative(root,key).replaceAll('\\','/'),String(content));
+    }
+  };
+  vm.runInNewContext(read(script),{__dirname:path.join(root,'scripts'),require(id){
+    if(id==='fs')return io;if(id==='path')return path;throw Error('Unexpected dependency '+id);
+  },console:{log(){}}},{filename:script,timeout:5000});
+  return writes;
+}
+let gameOutputs;
+function generatedGames(){return gameOutputs ||= generatedFiles('scripts/generate-game-simulators.cjs',{'blog/articles.json':read('blog/articles.json')});}
+function assertAdUnits(html,label) {
+  const units=openingTags(html).filter(node=>node.tag==='ins' && (node.attrs.class||'').split(/\s+/).includes('adsbygoogle'));
+  assert.ok(units.length>0,label+': 広告要素がない');
+  for(const unit of units)assert.equal(unit.attrs['data-ad-slot'],SLOT,label);
+}
+test('実広告生成の出力は記事・LP・4言語ゲームの有効なslotを保持する', () => {
+  const article=generatedFiles('scripts/insert-article-ads.cjs',{'articles/fixture.html':'<article>Preserved body</article>'});
+  assertAdUnits(article.get('articles/fixture.html'),'記事生成');
+  const {normalizeLpContent} = require('../scripts/insert-lp-monetization.cjs');
+  assertAdUnits(normalizeLpContent('<main>Preserved body</main>'),'LP生成');
+  const outputs=[...generatedGames()].filter(([file])=>!/(^|\/)games\/index.html$/.test(file));
+  assert.ok(outputs.length>0);
+  for(const [file,html] of outputs)assertAdUnits(html,file);
 });
 
 test('ゲーム計算機の国別公式レートは現行Google表と一致する', () => {
@@ -137,10 +164,27 @@ test('品質保留記事はタイトル・OGP・構造化データ・記事台�
   }
 });
 
-test('ゲーム計算機4言語に未定義テンプレート値を残さない', () => {
-  for (const file of ['games/fgo/index.html', 'en/games/fgo/index.html', 'ko/games/fgo/index.html', 'tw/games/fgo/index.html']) {
-    const html = read(file);
-    assert.ok(!html.includes('>undefined<'), file);
-    assert.ok(!html.includes('undefined</'), file);
+function assertNoMissingTemplateValues(html,label) {
+  const missing=/\b(?:undefined|NaN)\b|\$\{[^}]*\}/;
+  const tokens=/<!--[\s\S]*?(?:-->|$)|<(script|style)\b[^>]*>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<\/?[a-z][\w:-]*\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  let cursor=0;
+  for (const token of html.matchAll(tokens)) {
+    assert.doesNotMatch(html.slice(cursor,token.index),missing,label+': 表示値が未定義');
+    if (!token[1]) for(const node of openingTags(token[0]))for(const value of Object.values(node.attrs))
+      assert.doesNotMatch(value,missing,label+': 属性値が未定義');
+    cursor=token.index+token[0].length;
   }
+  assert.doesNotMatch(html.slice(cursor),missing,label+': 表示値が未定義');
+}
+test('全ゲームの生成出力と公開4言語ページに未定義テンプレート値を残さない', () => {
+  const {getGamePageHtmlFiles}=require('../scripts/game-page-targets.cjs');
+  const files=getGamePageHtmlFiles(root);
+  assert.ok(files.length>0);
+  for(const file of files)assertNoMissingTemplateValues(read(file),file);
+  assert.ok(generatedGames().size>0);
+  for(const [file,html] of generatedGames())assertNoMissingTemplateValues(html,file);
+  for(const bad of ['<p>value: undefined result</p>','<a href="/games/undefined/">Guide</a>','<p>NaN points</p>','<p>\$'+'{missing}</p>'])
+    assert.throws(()=>assertNoMissingTemplateValues(bad,'欠損fixture'));
+  assertNoMissingTemplateValues('<script>let undefinedValue;</script><!-- undefined --> <p>Valid</p>','非表示のコード');
+  assertNoMissingTemplateValues('<script>undefined</script\t\n bar><p>Valid</p>','終了タグ属性');
 });

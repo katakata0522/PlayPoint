@@ -45,14 +45,8 @@ test('壊れた平文マーカーと複数の正規ブロックをまとめて�
   assert.equal(stripEditorialSummaryBlocks(cleaned), cleaned, 'cleanup must be idempotent');
 });
 
-test('編集要約を除去した跡の空行を1つへ正規化する', () => {
-  const html = `<p>before</p>\n<!-- editorial-summary:start -->\n<section>summary</section>\n<!-- editorial-summary:end -->\n\n\n\n            <!---->\n<section>after</section>`;
+// 空行の完全一致は利用者向け契約ではない。本文保持と冪等性は上の検査が担当。
 
-  assert.equal(
-    stripEditorialSummaryBlocks(html),
-    '<p>before</p>\n<!---->\n<section>after</section>'
-  );
-});
 test('自動生成対象の記事はeditorial summaryを1ブロックだけ持つ', () => {
   const automaticTargets = Object.entries(EDITORIAL_TARGETS)
     .filter(([, config]) => !config.manualStructure)

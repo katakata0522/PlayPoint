@@ -8,6 +8,7 @@ const test = require('node:test');
 const { createAppModuleRevision, collectAssetVersions, APP_MODULE_FILES, ROOT_SERVICE_WORKER_ASSETS } = require('../scripts/asset-sync.cjs');
 const { cssTargets } = require('../.github/scripts/minify.cjs');
 const { createHash } = require('node:crypto');
+const { parseAttributes } = require('./helpers/markup-contract.cjs');
 const { runEsmProbe, ORIGIN } = require('./helpers/runtime-esm.cjs');
 const { createRuntime } = require('./helpers/service-worker-runtime.cjs');
 const { observeComponentStyles } = require('./helpers/component-styles.cjs');
@@ -29,25 +30,56 @@ const runtimeModules = [
 const graph = runEsmProbe({ kind: 'graph' });
 const revision = file => createHash('sha256').update(read(file).replace(/\r\n/g, '\n')).digest('hex').slice(0, 10);
 
-test('公開HTMLのローカルCSS・JavaScriptは実在し、実内容と一致する版を参照する', () => {
-  const { createRevision, listPublicHtmlFiles, resolveLocalAsset } = require('../scripts/article-asset-versioning.cjs');
-  for (const file of listPublicHtmlFiles(root)) {
-    const html = fs.readFileSync(file, 'utf8');
-    const references = [
-      ...[...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi)].map(match => ({extension:'.css',href:match[1]})),
-      ...[...html.matchAll(/<script\b[^>]*src=["']([^"']+)["']/gi)].map(match => ({extension:'.js',href:match[1]}))
-    ];
-    for (const reference of references) {
-      if (/^(?:https?:)?\/\//i.test(reference.href)) continue;
-      if (!reference.href.split(/[?#]/,1)[0].endsWith(reference.extension)) continue;
-      const label = `${path.relative(root,file)}: ${reference.href}`;
-      const asset = resolveLocalAsset(root,file,reference.href,reference.extension);
-      assert.ok(asset, label + ': ローカル資産がありません');
-      const version = new URL(reference.href.replaceAll('&amp;','&'), ORIGIN + '/').searchParams.get('v');
-      assert.match(version || '', /^[a-f0-9]{10}$/i, label + ': 内容版がありません');
-      assert.equal(version,createRevision(asset),label + ': 実内容と参照版が異なります');
-    }
+// raw textのscript/styleとコメントは1トークンで読み、本文の偽タグを参照にしない。
+function publicAssetReferences(html) {
+  const references=[];
+  const tokens=/<!--[\s\S]*?(?:-->|$)|<(script|style)\b((?:"[^"]*"|'[^']*'|[^'">])*)>[\s\S]*?(?:<\/\1(?=[\s/>])[^>]*>|$)|<([a-z][\w:-]*)\b(?:"[^"]*"|'[^']*'|[^'">])*>/gi;
+  for (const token of html.matchAll(tokens)) {
+    const tag=(token[1]||token[3]||'').toLowerCase();
+    if (!tag || tag==='style') continue;
+    const attrs=parseAttributes(tag==='script'?'<script'+token[2]+'>':token[0]);
+    if (tag==='link' && (attrs.rel||'').toLowerCase().split(/\s+/).includes('stylesheet')) references.push({href:attrs.href,extensions:['.css']});
+    if (tag==='script' && attrs.src) references.push({href:attrs.src,extensions:['.js','.mjs']});
   }
+  return references;
+}
+function assertPublicAssetReferences(html,file,base=root) {
+  const { createRevision, resolveLocalAsset } = require('../scripts/article-asset-versioning.cjs');
+  for (const reference of publicAssetReferences(html)) {
+    const href = (reference.href || '').replaceAll('&amp;','&');
+    if (/^(?:https?:)?\/\//i.test(href)) continue;
+    const label = path.relative(base,file)+': '+href;
+    const extension = reference.extensions.find(ext=>href.split(/[?#]/,1)[0].endsWith(ext));
+    assert.ok(extension,label+': CSS/JS参照の拡張子が不正');
+    const asset = resolveLocalAsset(base,file,href,extension);
+    assert.ok(asset,label+': ローカル資産がありません');
+    const versions = new URL(href,ORIGIN+'/').searchParams.getAll('v');
+    assert.equal(versions.length,1,label+': 内容版は1つ必要');
+    assert.match(versions[0],/^[a-f0-9]{10}$/i,label+': 内容版が不正');
+    assert.equal(versions[0],createRevision(asset),label+': 実内容と参照版が異なります');
+  }
+}
+test('公開HTMLのローカルCSS・JavaScriptは実在し、実内容と一致する版を参照する', t => {
+  const { listPublicHtmlFiles,createRevision } = require('../scripts/article-asset-versioning.cjs');
+  const files = listPublicHtmlFiles(root);
+  assert.ok(files.length > 0);
+  for (const file of files) assertPublicAssetReferences(fs.readFileSync(file,'utf8'),file);
+  const base=fs.mkdtempSync(path.join(os.tmpdir(),'playpoint-asset-markup-'));
+  t.after(()=>fs.rmSync(base,{recursive:true,force:true}));
+  for (const asset of ['a.css','a.js','a.mjs']) fs.writeFileSync(path.join(base,asset),'fixture');
+  const version=createRevision(path.join(base,'a.css'));
+  const page=path.join(base,'index.html');
+  const valid="<link href='/a.css?v="+version+"' rel='stylesheet'><script src='/a.mjs?v="+version+"'></script>";
+  assertPublicAssetReferences(valid,page,base);
+  assertPublicAssetReferences(`<!-- <link rel="stylesheet" href="missing.css"> --><script>const fake = '<link rel="stylesheet" href="fake.css">';</script>`+valid,page,base);
+  assertPublicAssetReferences(`<script>const fake = '<link rel="stylesheet" href="fake.css">';</script\t\n bar>`+valid,page,base);
+  for (const bad of [
+    "<link href='/missing.css?v="+version+"' rel='stylesheet'>",
+    "<link href='/a.css?v=0000000000' rel='stylesheet'>",
+    "<link href='/a.css' rel='stylesheet'>",
+    "<link href='/a.css?v="+version+"&v="+version+"' rel='stylesheet'>",
+    "<script src='/missing.mjs?v="+version+"'></script>"
+  ]) assert.throws(()=>assertPublicAssetReferences(bad,page,base));
 });
 
 test('分離した実行時モジュールは実import・cache改訂・実先読み要求へ結線される', async (t) => {
@@ -151,15 +183,17 @@ test('埋め込みジェネレーターの計測と地域導線は共通境界�
   assert.match(embed, /browserLang\.startsWith\('en-in'\)/);
 });
 
-test('許可された主要計測イベント名が設定に残る', () => {
-  const analyticsCore = read('js/analytics-core.js');
+test('主要計測イベントは実coreが受理し、未許可パラメータを送らない', () => {
+  const { createAnalyticsRuntime, eventCalls } = require('./helpers/analytics-runtime.cjs');
+  const { context } = createAnalyticsRuntime({consentStatus:'granted',ready:true});
   for (const eventName of [
     'calendar_reminder_added',
     'pwa_install_accepted',
     'widget_code_copied',
     'widget_referral_landed'
   ]) {
-    assert.ok(analyticsCore.includes(eventName), eventName);
+    assert.equal(context.PlayPointAnalytics.track(eventName,{private_raw_input:'secret'}),true,eventName);
+    assert.deepEqual(Array.from(eventCalls(context,eventName)),[{}],eventName);
   }
 });
 

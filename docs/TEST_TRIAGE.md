@@ -1,5 +1,24 @@
 # PlayPoint テスト仕分けメモ
 
+## 2026-10-02 第4段階：生成・資産・配信
+
+30ファイルの元156項目と、第3段階からの広告生成・未定義値2項目を個別判断する。件数削減を目標にせず、現在の出力・既存データ保持・入力拒否・配信境界を主担当で守る。内部の呼出名・呼出順、過去の未参照ファイルの不存在、空行の完全一致は永久契約にしない。
+
+- `build-pipeline-simplification`: pipeline内の関数名・並びを固定する検査を、既存の必須`verify-build-output`と各成果物検査へ集約する。手動記事の所有権は実generatorを既存正本入りの隔離treeで2回動かし、通常の自動生成も成功しながら元バイトを保持することを確認。空tree側の既存manual検査とは入力状態が異なる。
+- `blog-index-sync`: prepare-prの実entrypointを実行し、生成子プロセスへの日付・版の受渡し、生成後の到達性検査、読取不能時の停止を確認する。`content-date-separation`は各URLの内容日と追加localeを実sitemapへ同期し、私的な`Object.entries`表記や配列宣言の禁止を外す。
+- `runtime-module-guards`: 全公開HTMLの資産実在/hash検査を1つの主担当に保つ。hrefがrelより先でも、引用符やMJSでも検査する。コメント・script本文の偽タグは除外し、欠損・古いhash・版なし・重複vを拒否する。同じ検査を既存の圧縮後レーンでも使う。主要4イベントは実coreの受理と余分な生入力の除外で確認する。
+- `monetization-search-quality`: article広告entrypointは隔離I/Oで、LP normalizerと4言語game generatorは実出力で広告slotを確認する。未定義値はFGOだけでなく全game公開ページと生成出力の本文・属性を確認し、script内コードを表示値と混同しない。
+- `site-shell-footer`: 実ファイル同期で9言語LPの故障を共有rendererへ修復し、本文・対象外保持、再実行0書込、footer欠落の拒否を確認。内部の関数名・markupの禁止は外す。HK/IN fallbackは配列位置や文言全体を固定せず、実URLと地域規則の注記を守る。
+- `game-thumbnail-assets`: OGPを`ogp.png`だけへ固定せず、同一サイトの実在画像とArticle imageの一致、一覧icon非流用、公式appへの実anchorを確認。専用画像への更新を許容する。`build-io-boundaries`には対象外への書込を拒否する集合検査と保持sentinelを補う。
+
+生成順序の文字列、cleanup空行、cache設定の語句は既存主担当へ統合し、旧CSS不存在の歴史検査は退役する。cacheの実validator、HTTP status・revision・応答本文・bounded retry、SWのinstall/activate/fetch・waitUntil・cache障害・版分離の挙動検査は維持。byte-canonical検査は共有生成元との出力一致を守るもので、生成元の安全な表現変更を禁止しない。
+
+現在のH1を確認するCTA検査を「H1変更でも失効しない」と呼んでいたため、対象外H1の負例を加え実保証に合う名称へ修正した。役割/KPI・H1文脈の意味は第6段階へ、関連記事の実DOM、thumbnail runtime、content-visibility/印刷、embed操作、region初期化、afterword導線は第5段階へ、workflowのbase/head実行結線は第7段階へ移管する。未移行の旧static guardを保証なしに先行削除しない。
+
+隔離読込み差替え16比較で、誤った生成日付、manual上書き、footer無修復、commentだけ正しい広告slot、FGO以外の未定義title、href先行の古いCSS版、commentだけ残るeventを旧pass/新failとして確認。別の実在OGPへ同じ画像参照を変更する入力は旧fail/新pass。故障を製品ファイルへ書かず、新たなCIゲートやフレームワークは追加しない。
+
+VM/制御I/Oの成功と実ブラウザ・本番Apache・GA/AdSense通信は別の証拠。製品ランタイム、広告位置、記事本文、デザイン、公開設定は今回変更しない。
+
 ## 2026-10-02 第3段階：計測・同意・広告
 
 12ファイルの元121項目を個別判断。過去の観測件数・確認日・次回レビュー日・文書の言い回しは保存済みbaselineと監査文書に残し、現在の回帰契約から外す。計算・日記の生入力遮断は実allowlist、取得不能と0の区別は実集計、分析異常は実分類が担当する。件数を整理の目標にしない。
