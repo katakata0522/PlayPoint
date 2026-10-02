@@ -938,7 +938,7 @@
     "id": "google-play-super-ticket-2026",
     "title": "Google PlayのSuper Ticket（スーパーチケット）とは？配布日・保存期限・使い方",
     "date": "2026-09-19",
-    "modified": "2026-09-30",
+    "modified": "2026-10-03",
     "category": "使い方",
     "tags": [
       "Google Play",
@@ -1160,7 +1160,7 @@
     "description": "2026年9月21日までのTGS2026 Google Playブースについて、入場条件・会場特典・ラウンジの当時の案内を残した記録です。",
     "file": "../articles/2026-08-17-tgs-google-play-vip.html",
     "thumbnail": "../articles/ogp/campaign.png",
-    "modified": "2026-09-22",
+    "modified": "2026-10-03",
     "listTitle": "【開催終了】TGS2026 Google Playブースの記録",
     "browseCategory": "最新情報・イベント"
   },
@@ -1195,7 +1195,7 @@
     "description": "日本のPlay Pass加入者向けPlay Points週次ボーナス・ブースターは木曜日更新の別制度です。ゴールド付与特典の公式対象国には日本は入っていません。加入判断は画面の特典と予定購入で行います。",
     "file": "../articles/2026-08-16-play-pass-worth-it.html",
     "thumbnail": "../articles/ogp/play-pass-worth-it.png",
-    "modified": "2026-09-27",
+    "modified": "2026-10-03",
     "browseCategory": "貯める・キャンペーン"
   },
   {
@@ -1438,7 +1438,8 @@
     "listTitle": "Play Pointsのランク一覧｜条件・必要額・特典",
     "listDescription": "各ランクの必要ポイントと特典を比較し、目標までの条件を確認できます。",
     "browseCategory": "ランク・ステータス",
-    "thumbnailKind": "generic"
+    "thumbnailKind": "generic",
+    "modified": "2026-10-03"
   },
   {
     "id": "play-points-cannot-join",
@@ -1780,7 +1781,7 @@
     "description": "Google Play Pointsは最後の獲得・使用から1年で失効します。期限の確認方法、ランク進捗や交換後クレジットとの違い、失効対策を解説します。",
     "file": "../articles/2025-12-25-expiration.html",
     "thumbnail": "../articles/ogp/expiration.png",
-    "modified": "2026-08-04",
+    "modified": "2026-10-03",
     "browseCategory": "はじめて・基本"
   },
   {
