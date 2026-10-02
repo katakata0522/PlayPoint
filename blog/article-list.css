@@ -28,6 +28,14 @@ html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb img {
   object-position:center;
   transform:none;
 }
+html[lang="ja"] body.blog-index-compact .article-card .card-thumb--focus-left img,
+html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb--focus-left img {
+  object-position:left center;
+}
+html[lang="ja"] body.blog-index-compact .article-card .card-thumb--focus-right img,
+html[lang="ja"] body.blog-index-compact .article-card--visual .card-thumb--focus-right img {
+  object-position:right center;
+}
 html[lang="ja"] body.blog-index-compact .article-card .card-thumb--app-icon img {
   object-fit:contain;
   padding:10px;
