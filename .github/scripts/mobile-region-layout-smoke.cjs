@@ -222,7 +222,8 @@ async function inspectLayout(page) {
       visualActiveCount: primaryActiveRegions.length + (toggleRegionActive ? 1 : 0),
       selectedBackground,
       actionBackground,
-      criticalStylePresent: Boolean(document.getElementById('region-selector-critical-style')),
+      initialRegionStyleLoaded: Boolean(document.head.querySelector('link[data-region-selector-style]')?.sheet),
+      temporaryRegionStylePresent: Boolean(document.getElementById('region-selector-critical-style')),
       wrapperWidth: wrapperRect?.width || 0,
       topBarWidth: topBarRect?.width || 0,
       toggleBorderTopRightRadius: parseFloat(toggleStyle.borderTopRightRadius) || 0,
@@ -301,7 +302,8 @@ async function verifyLocale(browser, baseUrl, locale) {
         .map(item => `${item.tag}${item.id ? `#${item.id}` : ''}${item.className ? `.${item.className.split(/\s+/).filter(Boolean).join('.')}` : ''} [${item.left}, ${item.right}]`)
         .join(' | ');
 
-      assert(layout.criticalStylePresent, `${locale.key} ${width}px: critical first-paint style is missing`);
+      assert(layout.initialRegionStyleLoaded, `${locale.key} ${width}px: initial head stylesheet is missing or not loaded`);
+      assert(!layout.temporaryRegionStylePresent, `${locale.key} ${width}px: temporary region style can override the initial stylesheet`);
       assert(layout.display === 'grid', `${locale.key} ${width}px: expected grid, got ${layout.display}`);
       assert(layout.columnCount === 5, `${locale.key} ${width}px: expected 5 columns, got ${layout.columnCount}`);
       assert(layout.rowTopSpread <= 1.5, `${locale.key} ${width}px: region controls are not on one row (top spread ${layout.rowTopSpread})`);
