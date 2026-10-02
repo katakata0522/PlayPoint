@@ -40,7 +40,15 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     if (await settings.count() && !(await settings.evaluate(el=>el.open))) await settings.locator('summary').click();
     await page.locator('#theme-toggle').click(); await closeMenu(page);
   }
-  async function cards(page) { await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000}); }
+  async function cards(page) {
+    await page.locator('.article-card').first().waitFor({state:'visible',timeout:30000});
+    // 初期カードは台帳より先に読める。操作・カテゴリの検証は取得完了を待つ。
+    await page.waitForFunction(() =>
+      document.querySelector('#category-filter button.active')
+      && document.querySelector('#article-grid')?.getAttribute('aria-busy') !== 'true'
+      && document.querySelector('#search-input')?.disabled === false,
+      null, {timeout:30000});
+  }
   async function openOptionalFilters(page) {
     const panel = page.locator('#article-filter-panel');
     if (!(await panel.evaluate(el => el.open))) await panel.locator('summary').click();
@@ -74,7 +82,9 @@ async function verifyReadingUi(browser, baseUrl, blockExternalRequests, artifact
     const firstCard = await initialPage.locator('.article-card').first().elementHandle();
     const initialTitle = await firstCard.$eval('h3', node => node.textContent);
     assert(initialTitle.trim(), '台帳の追加通信前に見出しを読める');
+    assert(await initialPage.locator('#search-input').isDisabled(), '台帳の取得中は検索準備が完了していない');
     releaseCatalog();
+    await cards(initialPage);
     await initialPage.locator('.pagination-next').waitFor({state:'visible'});
     assert(await firstCard.evaluate(node => node.isConnected), '同じ初期カードを通信後に作り直さない');
     assert.equal(await initialPage.locator('.article-card').first().locator('h3').textContent(), initialTitle);
